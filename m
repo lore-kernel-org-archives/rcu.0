@@ -1,96 +1,87 @@
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B6520FAB6;
-	Thu, 17 Jul 2025 20:15:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA552AEF5;
+	Thu, 17 Jul 2025 20:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752783321; cv=none; b=X/V1ksPzHcUjUOHrMfCPtvtPUquqN6Gk4nPJua3AV0qlbuL+BIIIgffJ0ZNfg4VnTk9HHacNDZKgHkP1iefyNcO3iKEBMFwjl3wRxDJguftAk5ouWyhhQvPTAOLJks7jgE2neARHvSrYQTJI7eP77JTNE0dwCACg/rosfV4aMW0=
+	t=1752784721; cv=none; b=Px5ftW6JQn6CYoPHc50JA/MSQ/tyiTL9JSEVA8rvfRATkI6NNlDIyrvAgzZf12aHblnK/ZdqiZQ69AJyOfd9P/62KptG8NTdy4Qp+zKUoEuYa2khM/Qnk8bSs3t3HrmAX7U0AWhYqz8B8irZ9PPoJ/kiwuaJ3jerq3VmAZMDLUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752783321; c=relaxed/simple;
-	bh=orGo+e6PmYRc0yhWBvx1j4JissPIl+skfAa2q8N5kA0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=lwSJuI0uAhR+b6PT/HeVK5cilLlii/+FzBe/dF0qaMvIewnrp5VL7wCdmk8gxZ0LH8UsuTWJNi9TzdjkzvgtDJpeRRAz9/cMBPMpHci4V6l9iPnsHZyXBnaIxk9rksvMOo3ZYYNE1o2WBAAa+/aOfFJBHadTWP6sVJEumn9Qz1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=qYCc5Pq8; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+	s=arc-20240116; t=1752784721; c=relaxed/simple;
+	bh=7GyQUocLfLcFj7HM0l9V/mer49iHPDl7xAtCMgjYXr0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hBHxxSMyqstoSIGqq5i/pCJ+ipPP/qxW7Vm9j06Sulx+OXOKKIUDVwPJyuTygZqEG99s1OM9upmjFvD3CNtt9kJjJvrL6B3vxr6T8j9ZsYDMRVKL/IlJoSdg8S6kUNYWI5wQSuzlRStMv4QH2iJx1ZUGJvDOgOMCrBnDB//I8ZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o/3Wlho0; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="qYCc5Pq8"
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EAA3C403E1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1752783319; bh=JyCg4buwTgeSf92B/ckI/zvTVv0LR8OvvXEMHW9FLS0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=qYCc5Pq80L6NNEBj2nIkMRSfXwRNZVFA142TIKS71oO93QeMrUiwUaGDZ/y7nfxfx
-	 +90gEWFUHF12P+VtJRq1VQ2M0/Oja9691zPeOzeF231p7EhN9jqjSl4ngmWxWAP1+3
-	 FMGh3GIAtNSGzQDpkZEo0p88oolcTwiDszuxwRW8R0di9EOWUDPd7h7I0Z9oYPMY7n
-	 VK0T1VmZQCfIsfH2pQfbU1E19FiXStyvhtDqMYJlM9RjxTy/B6Lz8EUkgWe6xsMiHm
-	 Io5WHV/mpecywRV8aiQDXNeywsfh6aSr6nDggpO3XQMZBkz3k7UIl9q81huOsI+AxG
-	 E8tNUWD+HFvxQ==
-Received: from localhost (unknown [IPv6:2601:280:4600:2da9::1fe])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id EAA3C403E1;
-	Thu, 17 Jul 2025 20:15:18 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Bagas Sanjaya <bagasdotme@gmail.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Documentation
- <linux-doc@vger.kernel.org>, Linux RCU <rcu@vger.kernel.org>, Linux CPU
- Architectures Development <linux-arch@vger.kernel.org>, Linux LKMM
- <lkmm@lists.linux.dev>, Linux KVM <kvm@vger.kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker
- <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel
- Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>,
- Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang@linux.dev>, Alan Stern <stern@rowland.harvard.edu>,
- Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin
- <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, Jade Alglave
- <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, Akira
- Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, Mark
- Rutland <mark.rutland@arm.com>, Ingo Molnar <mingo@redhat.com>, Waiman
- Long <longman@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>, Bagas
- Sanjaya <bagasdotme@gmail.com>, Andrew Morton <akpm@linux-foundation.org>,
- Tejun Heo <tj@kernel.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
- Changyuan Lyu <changyuanl@google.com>, Dan Williams
- <dan.j.williams@intel.com>, Xavier <xavier_qy@163.com>, Randy Dunlap
- <rdunlap@infradead.org>, Maarten Lankhorst <dev@lankhorst.se>, Christian
- Brauner <brauner@kernel.org>
-Subject: Re: [PATCH 0/4] Convert atomic_*.txt and memory-barriers.txt to reST
-In-Reply-To: <878qknc56f.fsf@trenco.lwn.net>
-References: <20250717080617.35577-1-bagasdotme@gmail.com>
- <878qknc56f.fsf@trenco.lwn.net>
-Date: Thu, 17 Jul 2025 14:15:18 -0600
-Message-ID: <87freua815.fsf@trenco.lwn.net>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o/3Wlho0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24960C4CEE3;
+	Thu, 17 Jul 2025 20:38:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752784721;
+	bh=7GyQUocLfLcFj7HM0l9V/mer49iHPDl7xAtCMgjYXr0=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=o/3Wlho0HXDXZcLtRAB4W3s27qiRPz5zYBaNZUoWBuUm/AdQb36SUpeaaxnlrx3uu
+	 avNKunobPbFGjkvthUQrS8rmUIXi8nzUmjnCd4JKI3DIpd+hK1xXpWJ+o2t4Vd5U1z
+	 mwasSZVb4iY6jK5s3mjOo2DEkkC6dU+yGsvFXntpPBCuKlRUBlzcsNuHwNcw1AaPwY
+	 YqYN11bnuDdq5O5F01xIX+t56iwotV/WRjrOw1fYQVHnvSpLkX0lDYswff6IjS+RJT
+	 xhj63CDG34/J+IJzSMbEA3eQCEnxgY22HRO7sBDGu62Q5l1FShxo4qMLiVUp8Xd+Td
+	 8ia/jyNPJLBhA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id BC40ECE13CD; Thu, 17 Jul 2025 13:38:40 -0700 (PDT)
+Date: Thu, 17 Jul 2025 13:38:40 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Boqun Feng <boqun.feng@gmail.com>, linux-rt-devel@lists.linux.dev,
+	rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH RFC 6/4] srcu: Add guards for SRCU-fast readers
+Message-ID: <f77b3b38-d150-4ee9-be65-fac2b877a355@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop>
+ <bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
+ <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop>
+ <20250716110922.0dadc4ec@batman.local.home>
+ <895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop>
+ <bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
+ <58866d6b-f4d9-4aaf-abce-10ddf526c3ad@paulmck-laptop>
+ <20250717151934.282d8310@batman.local.home>
+ <af022343-1719-4882-bf86-ec49e59f77c3@paulmck-laptop>
+ <20250717155638.63c4f58d@batman.local.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250717155638.63c4f58d@batman.local.home>
 
-Jonathan Corbet <corbet@lwn.net> writes:
+On Thu, Jul 17, 2025 at 03:56:38PM -0400, Steven Rostedt wrote:
+> On Thu, 17 Jul 2025 12:51:29 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > Thank you!  I will apply this on my next rebase.
+> > 
+> > The normal process puts this into the v6.18 merge window, that it, the
+> > merge window after the upcoming one.  If you need it sooner, please let
+> > us know.
+> 
+> I'd suggest 6.17. I can understand the delay for updates to the RCU
+> logic for how subtle it can be, where more testing is required. But
+> adding a guard() helper is pretty trivial and useful to have. I
+> wouldn't delay it.
 
-> Bagas Sanjaya <bagasdotme@gmail.com> writes:
->
->> Atomic types, atomic bitops, and memory barriers docs are included in kernel
->> docs build since commit e40573a43d163a ("docs: put atomic*.txt and
->> memory-barriers.txt into the core-api book") as a wrapper stub for
->> corresponding uncoverted txt docs. Let's turn them into full-fledged reST docs. 
->
-> Did it occur to you to look at the changelog for the commit you cite,
-> which explains why those documents are handled the way they are...?
+OK thank you, and let's see what we can do in v6.17.
 
-I'm sorry, that caught me at the wrong time, and I was rather more harsh
-than I should have been.  I should not have responded that way.
-
-For future reference, though, when somebody has gone out of their way to
-accomplish a task in a specific way, there usually *is* a reason for it.
-If you can't find that reason, the best thing to do is usually to ask.
-
-Thanks,
-
-jon
+							Thanx, Paul
