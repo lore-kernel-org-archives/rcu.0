@@ -1,121 +1,210 @@
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1E32F85CD;
-	Thu, 17 Jul 2025 15:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E45F2F7D18;
+	Thu, 17 Jul 2025 15:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752766061; cv=none; b=uh3NhmoFGae3PxsdoIFsjNy8Maf5RYSqshBRY5UzaT/z6fiSc1yWTZyeroXoJ5jnxCaDQ1+6tMOzfURsJb/Ik2T0zccbuT8gqwOFFGmSEYDNu26oBJv/dYu0nnQUKQDurNhmSPRCqX27vMwiaZsTbtXqaKGEXKq+oVf3M5L+GI0=
+	t=1752766219; cv=none; b=HwG96j47bkihNmputQPU2P9tsfbd1ncp5ppVsL9Cp5JpMcWcxEWOt+KScvwaOhgWLgp/RNx4/2h9sVo9T4gKorSDk9qNlq2NHOc52xGSARP77vrpF8/hP6WjYD5ViddeACfN0z4pEQ6AHT3FpUy+umofGymRXq/6nn/KG0518Hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752766061; c=relaxed/simple;
-	bh=LhrFHpYsRnEHg0B/lmcoVHLZfq1NyHa1tH7Idp+Qoz0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YbWBzKStLZ7uK39Gvv4+Ri+tFjF4vlS26GTGC16/PxVGO777FFgTMMu2OFrYnGD5ohjjnDt045XBuSRSuEfpIVLj78x6SzpaushfjoPK5UYI0dlVR0UmVDit2gTG25O/TOzmy9zpxUju71pVt1LFG8L7Jq81tcfh3doNlQxji1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ILvzVPaH; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1752766219; c=relaxed/simple;
+	bh=+Uo5z3GI60wRQMyDig+cCLdS1x45i/ACASbRLV6ML6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tEmFwPf9+k5/aVY2jKL7J2jMSeIrbi6OuRiuPFhVbGxoBpk9AY/2qBIlTOriaZ0JMiru5wkLu+JcYcFRCLwZRZCuc/9w35WjfFZg2NxNhZoSI9BcZvyDwNzx+ScpdmFSGJxhjS9dHHDlbPZ+ceylT4Ga55tQovAt488dqJFTLLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JfItBHQi; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ILvzVPaH"
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3a4f379662cso827861f8f.0;
-        Thu, 17 Jul 2025 08:27:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752766058; x=1753370858; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LhrFHpYsRnEHg0B/lmcoVHLZfq1NyHa1tH7Idp+Qoz0=;
-        b=ILvzVPaHjISgRDF6EzAJI/fWPvKDbv6KKGi9ciReNN1vI//3fa3ht2zmsbijetCLoI
-         QkRfIjjCdGm1SgwJQuqnyXMilwonM5n8oi4oOGxZRUE0ufrpfpPjm8QEdib1L3K2FTlo
-         zZMYkn1NVU2NPLDxA8yYOFiinvzqM+Dw/vp3kRlspKguEUaN425po8rhqGk3vDI0gKx6
-         eoeIrb6nJbZl2kiRFzlzb4mWuBkrzNCAO4GyEXEMshveQtYt7io8fnclIthZN4GD8+fi
-         KJO9RoZ4NwKqWlLQVWQj54iyavVN3kWxETLqwLeOqzElYzyeld8GUZo5dCD5893X9jCJ
-         VaeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752766058; x=1753370858;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LhrFHpYsRnEHg0B/lmcoVHLZfq1NyHa1tH7Idp+Qoz0=;
-        b=fICuIA56ig6/6Ck7Qh1M6G7zBEktZjUa2UEhnbXy7ldKhRjEq3bwusRq6zZXNSKMaE
-         dQaCNbC5KggZzP8/vb718o+4upn1yQP4LAI7YY+9cge1spp2YDUYcyhJ060kUgi9/vbz
-         4Ml48OoOAvQY/3bZvkPNGaeIdFgRWralgIQFAOudsSWZnU0s3C5Z8iX56Uq9fIv2Nl8l
-         6ykP8gnuiAVTIs9PjeVgIOLanWnXbgppN3nIp2BJ7u3ss4j3ruBFObEUyR2Fne8z3g6V
-         Zzqo6O8YX0m+0wijsw7bV0m3IbFe3XvdLR/J/nCP6nKlZLPjUkRJRjTRIv1OSxYUMjSd
-         nJ4w==
-X-Forwarded-Encrypted: i=1; AJvYcCUSOs64CliDIrdt2DstHmIWqS4NOQrYwHpla7xd6EQdTWFdI/kImlwbaPmZ90VbNikbhf9Q@vger.kernel.org, AJvYcCWV7KKNmrC7BjQXHmqoiGjsuJZCIhNYlesAE/enpGMW5GjTcuP9Hlaixu66xHDvhZW0yas=@vger.kernel.org, AJvYcCXrRaYFw0u3pWvdylnpQWVwFaLEjfKRd9EHEZmsLBv/7tVPQpgo91htkGB/6SCf6etUXWTE/UPRyNgv7I3e8calYkJD@vger.kernel.org
-X-Gm-Message-State: AOJu0YxD0WdzOVzRsWTyBLg3TLKbubjVwBRociwyPjmlCoG09DIznwUD
-	+Ezcp6idPwUqniggZgfgRzEHJbRKS2k7egXYKIOuuRi+C8+qihcBbrxNt7GeClbs6kpFuVTlAdK
-	0QHvziFSxblK+Xvemp2OQ4oWuRHi1sKzHCQ==
-X-Gm-Gg: ASbGncsXt048p+YEJ/36Es7a3yHEO2hjUP4e9YCQI/rMtWVHsNdAFqJq79u+w6v8lOj
-	8ZI4AsyP2sYNvjruegi8gm3eYuGboNGoOe4QTunIfDuQVOOYMUX+gY/h04/iihJDM8c2Qn0HEfK
-	A5va/VcuYcr42Nak2LXzTHRSQQoWS76HdLa6JSgya9mQN/stEkNN6vG+9SLQEauElOz4+fg8U9w
-	9ZxgQMjqz3J5eJTQGxOVWs=
-X-Google-Smtp-Source: AGHT+IG8k6sso9++qlBvVzKzU6GGWQpGnwuYDmx/VuR8lzCOZhOVTOskA3kl3KXW2xQF9DvJIDyU9xRvxYQr+HGx64U=
-X-Received: by 2002:a05:6000:402a:b0:3a5:27ba:47c7 with SMTP id
- ffacd0b85a97d-3b60e50ff6amr6259702f8f.48.1752766058238; Thu, 17 Jul 2025
- 08:27:38 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JfItBHQi"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA556C4CEE3;
+	Thu, 17 Jul 2025 15:30:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752766218;
+	bh=+Uo5z3GI60wRQMyDig+cCLdS1x45i/ACASbRLV6ML6g=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=JfItBHQiONOKrUQC2r7MQ3GFE58hCt+o+WQvoYaojVC8sKM8CP0rxpQBSCsiba8An
+	 AN8ML3Qx+mj6dOVW1ykSYUEaf9w7uqEkwZ9X4j/DhB0Ycnobbme0dwQ+ZyWkJOx0sY
+	 0EqjVkQs6R5WbzPI8Tv8WUhYEROeTuqWTu1036KfI0FwmnmBt//zZspiGF0fzqqfc8
+	 hXiKQRseXLkXAlMStdj834YvbYqib/fG1U8rnz7OuoRiBls6fckl6EiAKdSEN6/mHp
+	 hT1seecD8ZJpx6+PxDcdTxM8YOPFA2wBie/n7TehLcwWuLDNeoctGSb/RXsYZh2WsB
+	 Cz3D8K5f06w4w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 383CFCE09F5; Thu, 17 Jul 2025 08:30:13 -0700 (PDT)
+Date: Thu, 17 Jul 2025 08:30:13 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Boqun Feng <boqun.feng@gmail.com>, linux-rt-devel@lists.linux.dev,
+	rcu@vger.kernel.org,
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
+Message-ID: <f8baf05d-2472-4184-a154-805b0a818531@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop>
+ <ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
+ <512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop>
+ <bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
+ <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop>
+ <20250716110922.0dadc4ec@batman.local.home>
+ <895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop>
+ <bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
+ <e8f7829c-51c9-494a-827a-ee471b2e17cd@efficios.com>
+ <CAADnVQL7gz3OwUVCzt7dbJHvZzOK1zC4AOgMDu5mg6ssKuYU6Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <03083dee-6668-44bb-9299-20eb68fd00b8@paulmck-laptop>
- <fa80f087-d4ff-4499-aec9-157edafb85eb@paulmck-laptop> <29b5c215-7006-4b27-ae12-c983657465e1@efficios.com>
- <acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop> <ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
- <512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop> <bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
- <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop> <20250716110922.0dadc4ec@batman.local.home>
- <895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop> <bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
- <e8f7829c-51c9-494a-827a-ee471b2e17cd@efficios.com> <CAADnVQL7gz3OwUVCzt7dbJHvZzOK1zC4AOgMDu5mg6ssKuYU6Q@mail.gmail.com>
- <20250717111216.4949063d@batman.local.home>
-In-Reply-To: <20250717111216.4949063d@batman.local.home>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 17 Jul 2025 08:27:24 -0700
-X-Gm-Features: Ac12FXzFRC8adLl7CZkn_RpMEeWocBjx5K-fqVR_zZuPS6uWVV2ffn0TRaEQxn4
-Message-ID: <CAADnVQ+r8=Nw0fz8huFHDNe2Z6UnQNyqXW1=sMOrOGd8WniTyw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Boqun Feng <boqun.feng@gmail.com>, 
-	linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
-	Josh Triplett <josh@joshtriplett.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQL7gz3OwUVCzt7dbJHvZzOK1zC4AOgMDu5mg6ssKuYU6Q@mail.gmail.com>
 
-On Thu, Jul 17, 2025 at 8:12=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Thu, 17 Jul 2025 07:57:27 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->
-> > I still don't understand what problem is being solved.
-> > As current tracepoint code stands there is no issue with it at all
-> > on PREEMPT_RT from bpf pov.
-> > bpf progs that attach to tracepoints are not sleepable.
-> > They don't call rt_spinlock either.
-> > Recognizing tracepoints that can sleep/fault and allow
-> > sleepable bpf progs there is on our to do list,
-> > but afaik it doesn't need any changes to tracepoint infra.
-> > There is no need to replace existing preempt_disable wrappers
-> > with sleepable srcu_fast or anything else.
->
-> From the PREEMPT_RT point of view, it wants BPF to be preemptable. It
-> may stop migration, but if someone adds a long running BPF program
-> (when I say long running, it could be anything more than 10us), and it
-> executes on a low priority task. If that BPF program is not preemptable
-> it can delay a high priority task from running. That defeats the
-> purpose of PREEMPT_RT.
->
-> If this is unsolvable, then we will need to make PREEMPT_RT and BPF
-> mutually exclusive in the configs.
+On Thu, Jul 17, 2025 at 07:57:27AM -0700, Alexei Starovoitov wrote:
+> On Thu, Jul 17, 2025 at 6:14 AM Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+> >
+> > On 2025-07-16 18:54, Paul E. McKenney wrote:
+> > > On Wed, Jul 16, 2025 at 01:35:48PM -0700, Paul E. McKenney wrote:
+> > >> On Wed, Jul 16, 2025 at 11:09:22AM -0400, Steven Rostedt wrote:
+> > >>> On Fri, 11 Jul 2025 10:05:26 -0700
+> > >>> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > >>>
+> > >>>> This trace point will invoke rcu_read_unlock{,_notrace}(), which will
+> > >>>> note that preemption is disabled.  If rcutree.use_softirq is set and
+> > >>>> this task is blocking an expedited RCU grace period, it will directly
+> > >>>> invoke the non-notrace function raise_softirq_irqoff().  Otherwise,
+> > >>>> it will directly invoke the non-notrace function irq_work_queue_on().
+> > >>>
+> > >>> Just to clarify some things; A function annotated by "notrace" simply
+> > >>> will not have the ftrace hook to that function, but that function may
+> > >>> very well have tracing triggered inside of it.
+> > >>>
+> > >>> Functions with "_notrace" in its name (like preempt_disable_notrace())
+> > >>> should not have any tracing instrumentation (as Mathieu stated)
+> > >>> inside of it, so that it can be used in the tracing infrastructure.
+> > >>>
+> > >>> raise_softirq_irqoff() has a tracepoint inside of it. If we have the
+> > >>> tracing infrastructure call that, and we happen to enable that
+> > >>> tracepoint, we will have:
+> > >>>
+> > >>>    raise_softirq_irqoff()
+> > >>>       trace_softirq_raise()
+> > >>>         [..]
+> > >>>           raise_softirq_irqoff()
+> > >>>              trace_softirq_raise()
+> > >>>                 [..]
+> > >>>                   Ad infinitum!
+> > >>>
+> > >>> I'm not sure if that's what is being proposed or not, but I just wanted
+> > >>> to make sure everyone is aware of the above.
+> > >>
+> > >> OK, I *think* I might actually understand the problem.  Maybe.
+> > >>
+> > >> I am sure that the usual suspects will not be shy about correcting any
+> > >> misapprehensions in the following.  ;-)
+> > >>
+> > >> My guess is that some users of real-time Linux would like to use BPF
+> > >> programs while still getting decent latencies out of their systems.
+> > >> (Not something I would have predicted, but then again, I was surprised
+> > >> some years back to see people with a 4096-CPU system complaining about
+> > >> 200-microsecond latency blows from RCU.)  And the BPF guys (now CCed)
+> > >> made some changes some years back to support this, perhaps most notably
+> > >> replacing some uses of preempt_disable() with migrate_disable().
+> > >>
+> > >> Except that the current __DECLARE_TRACE() macro defeats this work
+> > >> for tracepoints by disabling preemption across the tracepoint call,
+> > >> which might well be a BPF program.  So we need to do something to
+> > >> __DECLARE_TRACE() to get the right sort of protection while still leaving
+> > >> preemption enabled.
+> > >>
+> > >> One way of attacking this problem is to use preemptible RCU.  The problem
+> > >> with this is that although one could construct a trace-safe version
+> > >> of rcu_read_unlock(), these would negate some optimizations that Lai
+> > >> Jiangshan worked so hard to put in place.  Plus those optimizations
+> > >> also simplified the code quite a bit.  Which is why I was pushing back
+> > >> so hard, especially given that I did not realize that real-time systems
+> > >> would be running BPF programs concurrently with real-time applications.
+> > >> This meant that I was looking for a functional problem with the current
+> > >> disabling of preemption, and not finding it.
+> > >>
+> > >> So another way of dealing with this is to use SRCU-fast, which is
+> > >> like SRCU, but dispenses with the smp_mb() calls and the redundant
+> > >> read-side array indexing.  Plus it is easy to make _notrace variants
+> > >> srcu_read_lock_fast_notrace() and srcu_read_unlock_fast_notrace(),
+> > >> along with the requisite guards.
+> > >>
+> > >> Re-introducing SRCU requires reverting most of e53244e2c893 ("tracepoint:
+> > >> Remove SRCU protection"), and I have hacked together this and the
+> > >> prerequisites mentioned in the previous paragraph.
+> > >>
+> > >> These are passing ridiculously light testing, but probably have at
+> > >> least their share of bugs.
+> > >>
+> > >> But first, do I actually finally understand the problem?
+> > >
+> > > OK, they pass somewhat less ridiculously moderate testing, though I have
+> > > not yet hit them over the head with the ftrace selftests.
+> > >
+> > > So might as well post them.
+> > >
+> > > Thoughts?
+> >
+> > Your explanation of the problem context fits my understanding.
+> >
+> > Note that I've mostly been pulled into this by Sebastian who wanted
+> > to understand better the how we could make the tracepoint
+> > instrumentation work with bpf probes that need to sleep due to
+> > locking. Hence my original somewhat high-level desiderata.
+> 
+> I still don't understand what problem is being solved.
+> As current tracepoint code stands there is no issue with it at all
+> on PREEMPT_RT from bpf pov.
+> bpf progs that attach to tracepoints are not sleepable.
+> They don't call rt_spinlock either.
+> Recognizing tracepoints that can sleep/fault and allow
+> sleepable bpf progs there is on our to do list,
+> but afaik it doesn't need any changes to tracepoint infra.
+> There is no need to replace existing preempt_disable wrappers
+> with sleepable srcu_fast or anything else.
 
-Stop this fud, please.
+As I understand it, functionally there is no problem.
 
-bpf progs were preemptible for years and had no issue in RT.
-tracepoints are using preempt_disable() still and that's a
-tracepoint infra problem. Nothing to do with users of tracepoints.
+And if the BPF program has been attached to preemption-disabled code,
+there is also no unnecessary damage to real-time latency.  Preemption is
+presumably disabled for a reason, and that reason must be respected.
+Presumably, people using BPF in real-time systems are careful to either
+avoid attaching BPF programs to non-preemptible code on the one hand or
+carefully limit the runtime of those BPF programs.
+
+But if the BPF program has been attached to code having preemption
+enabled, then the current call to guard(preempt_notrace)() within
+__DECLARE_TRACE() means that the entire BPF program is running with
+preemption disabled, and for no good reason.
+
+Although this is not a functional issue, it is a first-class bug in
+terms of needlessly degrading real-time latency.
+
+And even though it isn't what Sebastian originally asked Mathieu for
+help with, it still needs to be fixed.
+
+My current offer is replacing that guard(preempt_notrace)() with its
+SRCU-fast counterpart of guard(srcu_fast_notrace)(&tracepoint_srcu).
+
+Light testing is going well thus far, though I clearly need the real-time
+guys to both review and test.
+
+I am sure that Mathieu, Sebastian, and the rest won't be shy about
+correcting any confusion on my part.  ;-)
+
+							Thanx, Paul
