@@ -1,82 +1,96 @@
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAD941F95C;
-	Thu, 17 Jul 2025 19:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B6520FAB6;
+	Thu, 17 Jul 2025 20:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752782209; cv=none; b=Xy0G1hX6q0jPq69iEZol/iU5uK7iWBuhZWdfmiQLgv8XwXx3wNXHa8CAZIxh66MxI3HJxBy5Ha0yZIgXsP/m8dcBXZA05D3Xf48Mw1Pj/sV5MOd9KKLF3D7y99vv7kPsCr+Kn7cg/e+z7v7HJsENWL5LxwYLcJTp3KXKMXLxqq0=
+	t=1752783321; cv=none; b=X/V1ksPzHcUjUOHrMfCPtvtPUquqN6Gk4nPJua3AV0qlbuL+BIIIgffJ0ZNfg4VnTk9HHacNDZKgHkP1iefyNcO3iKEBMFwjl3wRxDJguftAk5ouWyhhQvPTAOLJks7jgE2neARHvSrYQTJI7eP77JTNE0dwCACg/rosfV4aMW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752782209; c=relaxed/simple;
-	bh=I8eSrBKt326m+9P+PY4C4XiY4LCX892lLorjoTKNHq8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ELuk8tRXGvQCVEEbzdcaioScWNnOeOKkQAGq/VXBUtV11fSi+MBJGIUX1Rx2jpGFbBswE868y1weFBSEa6cGVp9jMN1FI4ggZph76Es7Zm/Yymx7xdSoTUfcrusFuX21NEpEzbGZLy3ogNqYGaVZeznilm3vqYSKS0xkz7C8nzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay01.hostedemail.com (Postfix) with ESMTP id 1C4BD1D8B2E;
-	Thu, 17 Jul 2025 19:56:45 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id 7636720025;
-	Thu, 17 Jul 2025 19:56:41 +0000 (UTC)
-Date: Thu, 17 Jul 2025 15:56:38 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sebastian Andrzej
- Siewior <bigeasy@linutronix.de>, Boqun Feng <boqun.feng@gmail.com>,
- linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Frederic Weisbecker
- <frederic@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
- Triplett <josh@joshtriplett.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- bpf@vger.kernel.org
-Subject: Re: [PATCH RFC 6/4] srcu: Add guards for SRCU-fast readers
-Message-ID: <20250717155638.63c4f58d@batman.local.home>
-In-Reply-To: <af022343-1719-4882-bf86-ec49e59f77c3@paulmck-laptop>
-References: <acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop>
-	<ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
-	<512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop>
-	<bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
-	<16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop>
-	<20250716110922.0dadc4ec@batman.local.home>
-	<895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop>
-	<bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
-	<58866d6b-f4d9-4aaf-abce-10ddf526c3ad@paulmck-laptop>
-	<20250717151934.282d8310@batman.local.home>
-	<af022343-1719-4882-bf86-ec49e59f77c3@paulmck-laptop>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1752783321; c=relaxed/simple;
+	bh=orGo+e6PmYRc0yhWBvx1j4JissPIl+skfAa2q8N5kA0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=lwSJuI0uAhR+b6PT/HeVK5cilLlii/+FzBe/dF0qaMvIewnrp5VL7wCdmk8gxZ0LH8UsuTWJNi9TzdjkzvgtDJpeRRAz9/cMBPMpHci4V6l9iPnsHZyXBnaIxk9rksvMOo3ZYYNE1o2WBAAa+/aOfFJBHadTWP6sVJEumn9Qz1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=qYCc5Pq8; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="qYCc5Pq8"
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EAA3C403E1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1752783319; bh=JyCg4buwTgeSf92B/ckI/zvTVv0LR8OvvXEMHW9FLS0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=qYCc5Pq80L6NNEBj2nIkMRSfXwRNZVFA142TIKS71oO93QeMrUiwUaGDZ/y7nfxfx
+	 +90gEWFUHF12P+VtJRq1VQ2M0/Oja9691zPeOzeF231p7EhN9jqjSl4ngmWxWAP1+3
+	 FMGh3GIAtNSGzQDpkZEo0p88oolcTwiDszuxwRW8R0di9EOWUDPd7h7I0Z9oYPMY7n
+	 VK0T1VmZQCfIsfH2pQfbU1E19FiXStyvhtDqMYJlM9RjxTy/B6Lz8EUkgWe6xsMiHm
+	 Io5WHV/mpecywRV8aiQDXNeywsfh6aSr6nDggpO3XQMZBkz3k7UIl9q81huOsI+AxG
+	 E8tNUWD+HFvxQ==
+Received: from localhost (unknown [IPv6:2601:280:4600:2da9::1fe])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id EAA3C403E1;
+	Thu, 17 Jul 2025 20:15:18 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Bagas Sanjaya <bagasdotme@gmail.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Documentation
+ <linux-doc@vger.kernel.org>, Linux RCU <rcu@vger.kernel.org>, Linux CPU
+ Architectures Development <linux-arch@vger.kernel.org>, Linux LKMM
+ <lkmm@lists.linux.dev>, Linux KVM <kvm@vger.kernel.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker
+ <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel
+ Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>,
+ Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang@linux.dev>, Alan Stern <stern@rowland.harvard.edu>,
+ Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin
+ <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, Jade Alglave
+ <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, Akira
+ Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ingo Molnar <mingo@redhat.com>, Waiman
+ Long <longman@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>, Bagas
+ Sanjaya <bagasdotme@gmail.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Tejun Heo <tj@kernel.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+ Changyuan Lyu <changyuanl@google.com>, Dan Williams
+ <dan.j.williams@intel.com>, Xavier <xavier_qy@163.com>, Randy Dunlap
+ <rdunlap@infradead.org>, Maarten Lankhorst <dev@lankhorst.se>, Christian
+ Brauner <brauner@kernel.org>
+Subject: Re: [PATCH 0/4] Convert atomic_*.txt and memory-barriers.txt to reST
+In-Reply-To: <878qknc56f.fsf@trenco.lwn.net>
+References: <20250717080617.35577-1-bagasdotme@gmail.com>
+ <878qknc56f.fsf@trenco.lwn.net>
+Date: Thu, 17 Jul 2025 14:15:18 -0600
+Message-ID: <87freua815.fsf@trenco.lwn.net>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: cicr4697j8g1qtjxa9hwuygj9mi3hg99
-X-Rspamd-Server: rspamout08
-X-Rspamd-Queue-Id: 7636720025
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19JduZW30vm/goGxt8d4wvYnbavzn2et1Y=
-X-HE-Tag: 1752782201-661520
-X-HE-Meta: U2FsdGVkX18fBDw8T8RnJurhGLzaWeEq/lPcgAdqC4oZ8R00PQCoJqebIBTvlGw/55ILxNuOeGvUkeXQmuO+rUp7gxVpZ+4dj/hDiqK6CJektI9tV9e2YQc6x7OgFqNmEtC9SzYRWwtkcx3B5UVcWMbU2uNcpmSgcnInvruH74QXVjlmcB9O+prPpMnqUlwv+UtrJvChfHm1TNr/s5EzlPeXQX0hgUAYQTTxHa/JxxojgNPszjQ8SqRmNiFsJNfS0oGzKSOH/AM4OA5Qqt4LG/B8da5JYkE0dyordnnG5SnJJzmBAZBdA8lIQVif+M5OgT+0YhG98n+c3UZ16O2PraymV7XHDd6w
+Content-Type: text/plain
 
-On Thu, 17 Jul 2025 12:51:29 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+Jonathan Corbet <corbet@lwn.net> writes:
 
-> Thank you!  I will apply this on my next rebase.
-> 
-> The normal process puts this into the v6.18 merge window, that it, the
-> merge window after the upcoming one.  If you need it sooner, please let
-> us know.
+> Bagas Sanjaya <bagasdotme@gmail.com> writes:
+>
+>> Atomic types, atomic bitops, and memory barriers docs are included in kernel
+>> docs build since commit e40573a43d163a ("docs: put atomic*.txt and
+>> memory-barriers.txt into the core-api book") as a wrapper stub for
+>> corresponding uncoverted txt docs. Let's turn them into full-fledged reST docs. 
+>
+> Did it occur to you to look at the changelog for the commit you cite,
+> which explains why those documents are handled the way they are...?
 
-I'd suggest 6.17. I can understand the delay for updates to the RCU
-logic for how subtle it can be, where more testing is required. But
-adding a guard() helper is pretty trivial and useful to have. I
-wouldn't delay it.
+I'm sorry, that caught me at the wrong time, and I was rather more harsh
+than I should have been.  I should not have responded that way.
+
+For future reference, though, when somebody has gone out of their way to
+accomplish a task in a specific way, there usually *is* a reason for it.
+If you can't find that reason, the best thing to do is usually to ask.
 
 Thanks,
 
--- Steve
+jon
