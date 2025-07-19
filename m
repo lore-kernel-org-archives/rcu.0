@@ -1,91 +1,106 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3E82E7651
-	for <rcu@vger.kernel.org>; Fri, 18 Jul 2025 17:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E726B2110;
+	Sat, 19 Jul 2025 00:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752860875; cv=none; b=kdOVYqD4Pgdeuqp9AB730RhtEDhZ51Tv6C7LN7fnoPYdppJTMp3BP7XhwykwsqjDo7iNj9ClRJyyL9MPmMH8Qcx0ZzMSMIedMIA6hBg1ecS5gPc2z1Cegn0C69Hn2m4y+xeJNA/YppDgUCbXYeVRXndhi7TTGJl9MIRnvPtMabs=
+	t=1752884882; cv=none; b=BIkY2cQdughOch89ZDUv0NnYveS7o8wmJ1vnfHnaePEH95KyXrcsrepsX+Mc/L9CWp7zKgyBJj9cyEPF33vBxFnIeFoFObwxpJd4CW1bsm6og186Qt+bzQIfHqpr2ljJMDp72ThF7smvdCTxn/aL1J8xjNFrn8RAXHpst81nl0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752860875; c=relaxed/simple;
-	bh=TQ5sIc3/fS9d7as3xkHo1eM8e1rfdQq1Sm4+kNzYGYY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SJA/8/K7Zla22IoyEAlS+IPTa3PnzVxYWT4jxgy+7/Wm21NPlDC1Jn4fRU799ORmPvFY6aEvDPEMayBmd0qhLzec1CiNXMceTkJuwTOVSQE5+6muKRP4q8FjhsYsVJVi+PGWcW7UVnVu0Pp3yVxojIajce8dGIiMxyOAMzuUamM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VImTx7ea; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752884882; c=relaxed/simple;
+	bh=peO+H93Yb/AoZJd5yCIfu7Ot2DeGqz3/MglVOEZqKMM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d4AMoRLkiyzin+7PA7wnzZWLvWAi9t65W+pm7UrIJWx1EvSmB0xiNxoZGuJrUeVV1O26ykgPuQjXh5Q8Hg4nZvJEbYZuieKqaG9oxoCkmqITzAt+e6CqS23llxxl6B+YpARt9rqNeuaRr0nIOTupfuQ0K47U0d7s6mJqGSYWBmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sKL3fdR1; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VImTx7ea"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D91FBC4CEED
-	for <rcu@vger.kernel.org>; Fri, 18 Jul 2025 17:47:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sKL3fdR1"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FE9EC4CEEB;
+	Sat, 19 Jul 2025 00:28:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752860874;
-	bh=TQ5sIc3/fS9d7as3xkHo1eM8e1rfdQq1Sm4+kNzYGYY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=VImTx7ea6LzKv0M4D8DZ7v7F5SIfT6JXEGuIpH/zVRWdnne0A2z4D3GCNO6ADVdt4
-	 Qd8MxmHaTwRS0R9ZWr0lDLK2u4C8tT/DqRr9MtwOcQN5Rbva2oWI59tPSDqZ1iyAlJ
-	 XAC6dh8gHseLnJrBDv/IyLHTFNxxCfUjqBQtbmbygckpg6LnfA+/Otb4qnewkl3A3c
-	 S4EJvl0o7mgx5J73RJ95pike27P7W8drH3dhAinpCYiK/4hYg6MW41VMwk5WMDdtew
-	 PNSb6kt626ZhqEk/8Ro442MpRigD/rWsIwMyIWSKm1ih438fjiNna0ZDbhEB1rjzBo
-	 FTeq9oJeCvAiw==
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e7311e66a8eso2046742276.2
-        for <rcu@vger.kernel.org>; Fri, 18 Jul 2025 10:47:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUa0FXg7eYpQPv+exlFxR2ZDUpisG8Jhkq/So0KELKUCVXQv6hs1SfMAHDgTRNbobLByxw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1BEhIcXHUUC2kTt6CsLSwW9piCoLXrM+59UB+Gpsgx2EJctAc
-	boTIzOv3TcWLZwHg396YEVHDhVkSFm5qg6EZlxNjUjxVaI1QXwAo7nDxwaOH3eKKaVAqmswjXhM
-	9Y75BKheIbweiSBKaMRN/FYAWMkguHNB9JvmL8jjfJQ==
-X-Google-Smtp-Source: AGHT+IGF62ZhB5YEVxaJhGIkN8R80nfFEBJ4r5Kgp5IqfaUZOezsnRw+Vp7jVSibk5FzmxRQifa3Xm+8eZA2J98SRU0=
-X-Received: by 2002:a81:ff08:0:b0:718:4095:89bc with SMTP id
- 00721157ae682-718409593ffmr101899157b3.22.1752860873623; Fri, 18 Jul 2025
- 10:47:53 -0700 (PDT)
+	s=k20201202; t=1752884881;
+	bh=peO+H93Yb/AoZJd5yCIfu7Ot2DeGqz3/MglVOEZqKMM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=sKL3fdR1R4cmxwCN00/UVjbPE4Cl3Z8LKwDFzJ8tnymTVkonASALvc57OyLC1mrDc
+	 5E5VE0zfvDzrF3sO5o3T0Xs0zuFacGgVv9liHmWh8lWDGKhTuzM0ccleODxk7wOTmS
+	 uelwupa6Ow/D9XguTIC999WFeF5uU7NZ6OD5cIzLU6EVZC0JXUSva2zbMH29Tk8UVU
+	 RcNBktos6AEgOIskgM+/ACqu4K1QHmE32b70pGYZcfWbiAJYzcl+Zp2/lSduNg/zd8
+	 glM+zEBFOz/C1cIcbHV2LOpvSwcUkxF+zsUcMLQpffuBYyGlyXWYi7reja9Vw+2p/i
+	 5LXZBhTCQhx5g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id EB72ECE0D3A; Fri, 18 Jul 2025 17:28:00 -0700 (PDT)
+Date: Fri, 18 Jul 2025 17:28:00 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Boqun Feng <boqun.feng@gmail.com>, linux-rt-devel@lists.linux.dev,
+	rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+	bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
+Message-ID: <3cecf6c9-b2ee-4f34-9d1b-ca4cfb8e56a7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <fa80f087-d4ff-4499-aec9-157edafb85eb@paulmck-laptop>
+ <29b5c215-7006-4b27-ae12-c983657465e1@efficios.com>
+ <acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop>
+ <ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
+ <512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop>
+ <bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
+ <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop>
+ <20250716110922.0dadc4ec@batman.local.home>
+ <895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop>
+ <bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250718024134.1304745-1-ye.liu@linux.dev>
-In-Reply-To: <20250718024134.1304745-1-ye.liu@linux.dev>
-From: Chris Li <chrisl@kernel.org>
-Date: Fri, 18 Jul 2025 10:47:42 -0700
-X-Gmail-Original-Message-ID: <CACePvbXi7N9jRNNh0=geG2OsMxoTcvvJSi-kkDVcNcNB=TR54Q@mail.gmail.com>
-X-Gm-Features: Ac12FXzRXMWzzyNPLUodypwHPQlgKHKCmCfuuymE3eRodP9xi8uUTMGoTnQeFRM
-Message-ID: <CACePvbXi7N9jRNNh0=geG2OsMxoTcvvJSi-kkDVcNcNB=TR54Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: Replace (20 - PAGE_SHIFT) with common macros for
- pages<->MB conversion
-To: Ye Liu <ye.liu@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
-	Davidlohr Bueso <dave@stgolabs.net>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Josh Triplett <josh@joshtriplett.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	Ye Liu <liuye@kylinos.cn>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Michal Hocko <mhocko@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang@linux.dev>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Nico Pache <npache@redhat.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>, 
-	Kemeng Shi <shikemeng@huaweicloud.com>, Kairui Song <kasong@tencent.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
 
-On Thu, Jul 17, 2025 at 7:42=E2=80=AFPM Ye Liu <ye.liu@linux.dev> wrote:
->
-> From: Ye Liu <liuye@kylinos.cn>
->
-> Replace repeated (20 - PAGE_SHIFT) calculations with standard macros:
-> - MB_TO_PAGES(mb)    converts MB to page count
-> - PAGES_TO_MB(pages) converts pages to MB
->
-> No functional change.
+Hello!
 
-Thanks for doing this.
+This is version 2 of a patch series introducing SRCU-fast to the
+__DECLARE_TRACE() in place of the current preemption disabling.
+This change enable preemption of BPF programs attached to tracepoints
+in in, as is required for runtime use of BPF in real-time systems.
 
-Acked-by: Chris Li <chrisl@kernel.org>
+The patches are as follows:
 
-Chris
+1.	Move rcu_is_watching() checks to srcu_read_{,un}lock_fast().
+
+2.	Add srcu_read_lock_fast_notrace() and
+	srcu_read_unlock_fast_notrace().
+
+3.	Add guards for notrace variants of SRCU-fast readers.
+
+4.	Guard __DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast.
+
+Changes since RFC version:
+
+o	RFC patch 6/4 has been pulled into the shared RCU tree:
+	e88c632a8698 ("srcu: Add guards for SRCU-fast readers")
+
+o	RFC patch 5/4 (which removed the now-unnecessary special boot-time
+	avoidance of SRCU) has been folded into patch 4/4 shown above,
+	as suggested by Steven Rostedt.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/srcu.h       |    4 ++++
+ b/include/linux/srcutree.h   |    2 --
+ b/include/linux/tracepoint.h |    6 ++++--
+ b/kernel/tracepoint.c        |   21 ++++++++++++++++++++-
+ include/linux/srcu.h         |   30 ++++++++++++++++++++++++++++++
+ 5 files changed, 58 insertions(+), 5 deletions(-)
