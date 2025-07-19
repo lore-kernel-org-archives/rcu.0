@@ -1,109 +1,165 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5027E125B2;
-	Sat, 19 Jul 2025 00:28:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF4261C84AE;
+	Sat, 19 Jul 2025 07:08:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752884899; cv=none; b=Jes0NN34Uzekn4PObjbyZ2E/PccOeKv69EcvmWLn8GW8zX0CFlCJ7QE7JX18+cv4mzW28l0YfEmSphhuTFU1Y0531uf1fGr5IzfWK7zLiHzpg02NKAPMJQI+my2RqKO9edz+DNllGAts7MlYBsEo0ChqE3ExmVmI8ClRwPWyxxY=
+	t=1752908928; cv=none; b=WgpTXrhOgo/5yWv5MAeJWzAAzrh6sf3LKJsWYgAGUyuf51pUQT3DxyqtHqcCHbmJUUuKqGfL18aoKSW9gik1HoskayumnnuDJbLXOW7HJFuTv8PplKMZ6Dz8D1Ll/7/+hAcZ1PxTzNgNQ36p2Y2AX0YSi18WGCBswBTfyhsMlGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752884899; c=relaxed/simple;
-	bh=9QmLJANZefPN4fX6BWptBQk5yBPaFOqHuPr+mZ0Kvo4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PzjDix55d6XB0FkIwDyfxjcbKHPer6svevXVgwWFvzzwVsiFnJQv8h327FvP5JJP8BQugpY43bYsfqXy8t/NEcz99WT7OKwbkPQE9/fWLxGxKlQdq9aSCkfIVU72YbL7JuuAd5lKGnAKRN9Kwp2hk3X6Mc6U2lXZLX4efX0h50U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ifjq+2gK; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752908928; c=relaxed/simple;
+	bh=vufT61B0JmqwAIxP7VPqMs0HC4W5rnfofR5tYibjGiE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KuepfvtDx32JoxNpqspd/m5q2xPTwQdONgHoWXkla9/qKcHGxihOQ/dn23IzI+hhVnWC6+nlcsX/Dp0SHC/CyMbzKBP0GfYmPdXIIFQci05F43rIIccOwZcOY0AiGhfF/o0rTiENpl6CifP218MYqjfLVXEAkhr42XGSVJHF+cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aN4uofE8; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ifjq+2gK"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD8F0C4CEF1;
-	Sat, 19 Jul 2025 00:28:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752884898;
-	bh=9QmLJANZefPN4fX6BWptBQk5yBPaFOqHuPr+mZ0Kvo4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ifjq+2gKCKX4amJcdslj69q121nVmcLIc2OWZqqCGH0rLFErN5Pa1GjHLDz90GoYo
-	 sDMiekM/Kc2jIVSLNwq48F1O/F2zmSXAF4bo09kmzrBRgk1R0KOYqswGj6eiFpVoSl
-	 Yz00GhngEJdlapfSDzvUtJHtxXV7NFLsaefWDfMIsbffPTWLmVe1vWyWnIhjZTJ38V
-	 wnn0cNTXGTIn4k4C85cmTKdCKdR3FPaQd1jjEElJn1l7si1/MZ5opA6ktN3EBRfVzb
-	 vqKk0hUVw/ikxgbsz+5i1G7kJKzTDIJJstOFzqXEk2WuO6enfoUk6Qp1seubFo7C0S
-	 l3QByV3HOft5Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 7D961CE0D86; Fri, 18 Jul 2025 17:28:18 -0700 (PDT)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aN4uofE8"
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-60c6fea6742so5874643a12.1;
+        Sat, 19 Jul 2025 00:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752908925; x=1753513725; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UT5HypfoUTQWMwocYzVj5Hl5OahvJzyO3VxVcUyzP0k=;
+        b=aN4uofE8GRR5bClzmAAzfAjJ4IqoFNwk87Zd16hCDrK+TeQI+TfCOVOXoyW+kw0Dtd
+         wXckNn0WFttAPxJ1QZm+Gle//IrUPGWUXJ2qYyjx8Elp2XVTEsH+Tr65BeDFM1hoHc0j
+         a78mMUh4+TpZQR/hHY1uXANngzUH+820wZiPr1gcwdo82FVUEVjxhveoh6VoB2q3vNaz
+         IgQL0tpJEFHzN48yKpqiwYN/AJPg6byjS02k6Ryw6QGJHXgYOcJzK3O/5qoLvusQlwPz
+         jkLG1LJ0jmOx5Lu+nl9kTrLnhjf/piLLKwwyINDg4yrdHYPI8CHvcfJC7ledNgt/f/Xz
+         vCgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752908925; x=1753513725;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UT5HypfoUTQWMwocYzVj5Hl5OahvJzyO3VxVcUyzP0k=;
+        b=o3skrOENsRZATVyPmI/7TmtC9uuHI+VLteEw7Rd+APQRRWjI+vXcWqe3oktNkIAP0z
+         waYnJ+Q+4zQKwWIz/BN3VuSqfnBbU2m9Mr6wtVOS5shXiOe/3wg50H3A3ZwCv5vXAbjw
+         YkwYZ/pAORdZyVmaWPDSBUaH0D992ak06y/A9w5s/CHr7QutjziA38Z6gEtnVf4qyuvY
+         +PE1s6Ak9dl+Q37ruStNRFjm4jg83aHQiVzF4qfMTcAWV9UKKqufbCNf+tlOW9Xdk8S1
+         FfCXOrfsCZ51NdLy9WEo1GishpL0ZvaUIzXx5JtdtJWTqfMWwNCnAKandXVjnCrNpDD/
+         pxcw==
+X-Forwarded-Encrypted: i=1; AJvYcCU0x8SY/PlcfTq4MArPY49h6N9n7QhucmIgYiwTyQqEEppNdWfzhH8XM8sHQccJX6+4vsCJ@vger.kernel.org, AJvYcCVP8xQ0/l7NlHuzn/Tm9IFT0WePBJf+JBjBKuhdfWToWiu6IenaJrpz34ZPic79PaPRKjajfJN0W+TctQ==@vger.kernel.org, AJvYcCWGHQxmXXdYvNpimdN27ndINoZ8bYOcx+wuYvpur0jZokL5tLlVAJ0IOMozJBm6YtX2xwT2FyYFBsVO@vger.kernel.org, AJvYcCXzNKLlnaCfkVCDLv9o/tYI5xtI5cyZ1hGQPBMN89TVzMA+eI4Bp4ySvko0q0ten58LYF4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzAi1zLGwQhWdE+v/nrhVN1DXlJclOVaOdFrbM+GQdg/UmxDPfA
+	oEe6k7Jue5vqVGSUSJxJuL18g1iiLhzmZb3CpX5lq2F+JZYcvC3I1/FB
+X-Gm-Gg: ASbGncvMD7c5NnZCSj90clcPAR9eBptiiwGw02W1Snn27NK8xDfdV2pKyKYHPnGVC45
+	37P4lB7egpRLJSPyuDeFS2KHFC1sz9uFKpDSisNCkwgCRZESNmXtkhSt3KfdYVZ/U5vdzBI+4uo
+	BA1yldR1EyIAx6DVGCcAfiof+P2NL91VWbrA07AlO6Mz1hMKYHACm6K+vaVmrh1H8CDj4PMOkMk
+	P2Up39Iw/FVmwN1SOTs+m4mq3BqyQp/bWNFaJ1DKgcGjEeU5Y/hGDz4B0ajzqX3yfC6AcclYBw0
+	uF2VAoXJ+kFV6WHJn4aHiptYqMBrh16Jy/AAfjPOuZtMz6E7mYHKFv4cHFN19hiZnDfYZCSJ6HY
+	BWrK2Yse66duK+1W5vUw23A==
+X-Google-Smtp-Source: AGHT+IFThgtoJuSP5FXWdNpEpQ5czog6sgr2fMyqs2egrXeD+Pi/tn7lPVEjYiDM63dPY9Wul0I/mA==
+X-Received: by 2002:a17:907:7208:b0:ad5:8412:1c9 with SMTP id a640c23a62f3a-aec6a674779mr480258166b.59.1752908924588;
+        Sat, 19 Jul 2025 00:08:44 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6c7d8357sm253986566b.52.2025.07.19.00.08.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jul 2025 00:08:42 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 87B73423BF32; Sat, 19 Jul 2025 14:08:38 +0700 (WIB)
+Date: Sat, 19 Jul 2025 14:08:38 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Vegard Nossum <vegard.nossum@oracle.com>,
+	Peter Zijlstra <peterz@infradead.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Documentation <linux-doc@vger.kernel.org>,
+	Linux RCU <rcu@vger.kernel.org>,
+	Linux CPU Architectures Development <linux-arch@vger.kernel.org>,
+	Linux LKMM <lkmm@lists.linux.dev>, Linux KVM <kvm@vger.kernel.org>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH v2 2/4] srcu: Add srcu_read_lock_fast_notrace() and srcu_read_unlock_fast_notrace()
-Date: Fri, 18 Jul 2025 17:28:15 -0700
-Message-Id: <20250719002817.4121867-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <3cecf6c9-b2ee-4f34-9d1b-ca4cfb8e56a7@paulmck-laptop>
-References: <3cecf6c9-b2ee-4f34-9d1b-ca4cfb8e56a7@paulmck-laptop>
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, Jonathan Corbet <corbet@lwn.net>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Andrea Parri <parri.andrea@gmail.com>,
+	Will Deacon <will@kernel.org>, Nicholas Piggin <npiggin@gmail.com>,
+	David Howells <dhowells@redhat.com>,
+	Jade Alglave <j.alglave@ucl.ac.uk>,
+	Luc Maranget <luc.maranget@inria.fr>,
+	Akira Yokosawa <akiyks@gmail.com>,
+	Daniel Lustig <dlustig@nvidia.com>,
+	Mark Rutland <mark.rutland@arm.com>, Ingo Molnar <mingo@redhat.com>,
+	Waiman Long <longman@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Tejun Heo <tj@kernel.org>,
+	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+	Changyuan Lyu <changyuanl@google.com>,
+	Dan Williams <dan.j.williams@intel.com>, Xavier <xavier_qy@163.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Maarten Lankhorst <dev@lankhorst.se>,
+	Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH 0/4] Convert atomic_*.txt and memory-barriers.txt to reST
+Message-ID: <aHtEdoj_qgpq9NNa@archie.me>
+References: <20250717080617.35577-1-bagasdotme@gmail.com>
+ <20250717105554.GA1479557@noisy.programming.kicks-ass.net>
+ <aHjd-oisajaKW_Z5@archie.me>
+ <65735554-0420-4af7-881d-5243b83a3eb6@oracle.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2gLgncKtdrrHipxb"
+Content-Disposition: inline
+In-Reply-To: <65735554-0420-4af7-881d-5243b83a3eb6@oracle.com>
 
-This commit adds no-trace variants of the srcu_read_lock_fast() and
-srcu_read_unlock_fast() functions for tracing use.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/srcu.h | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+--2gLgncKtdrrHipxb
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 478c73d067f7d..7a692bf8f99b9 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -282,6 +282,20 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
- 	return retval;
- }
- 
-+/*
-+ * Used by tracing, cannot be traced and cannot call lockdep.
-+ * See srcu_read_lock_fast() for more information.
-+ */
-+static inline struct srcu_ctr __percpu *srcu_read_lock_fast_notrace(struct srcu_struct *ssp)
-+	__acquires(ssp)
-+{
-+	struct srcu_ctr __percpu *retval;
-+
-+	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
-+	retval = __srcu_read_lock_fast(ssp);
-+	return retval;
-+}
-+
- /**
-  * srcu_down_read_fast - register a new reader for an SRCU-protected structure.
-  * @ssp: srcu_struct in which to register the new reader.
-@@ -394,6 +408,17 @@ static inline void srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ct
- 	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_fast().");
- }
- 
-+/*
-+ * Used by tracing, cannot be traced and cannot call lockdep.
-+ * See srcu_read_unlock_fast() for more information.
-+ */
-+static inline void srcu_read_unlock_fast_notrace(struct srcu_struct *ssp,
-+						 struct srcu_ctr __percpu *scp) __releases(ssp)
-+{
-+	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
-+	__srcu_read_unlock_fast(ssp, scp);
-+}
-+
- /**
-  * srcu_up_read_fast - unregister a old reader from an SRCU-protected structure.
-  * @ssp: srcu_struct in which to unregister the old reader.
--- 
-2.40.1
+On Thu, Jul 17, 2025 at 01:56:12PM +0200, Vegard Nossum wrote:
+> On 17/07/2025 13:26, Bagas Sanjaya wrote:
+> > On Thu, Jul 17, 2025 at 12:55:54PM +0200, Peter Zijlstra wrote:
+> > > On Thu, Jul 17, 2025 at 03:06:13PM +0700, Bagas Sanjaya wrote:
+> > > > Bagas Sanjaya (4):
+> > > >    Documentation: memory-barriers: Convert to reST format
+> > > >    Documentation: atomic_bitops: Convert to reST format
+> > > >    Documentation: atomic_t: Convert to reST format
+> > > >    Documentation: atomic_bitops, atomic_t, memory-barriers: Link to
+> > > >      newly-converted docs
+> > >=20
+> > > NAK
+> > >=20
+> > > If these are merged I will no longer touch / update these files.
+> >=20
+> > Why? Do you mean these docs should be kept as-is (not converted)? Jon w=
+rote
+> > in e40573a43d163a that the conversion were opposed but AFAIK I can't fi=
+nd
+> > the rationale on lore.
+>=20
+> Here's one:
+>=20
+> https://lore.kernel.org/all/20200806064823.GA7292@infradead.org/
 
+OK, thanks!
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--2gLgncKtdrrHipxb
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaHtEawAKCRD2uYlJVVFO
+o1DEAQDTgA9l2rIBDAihhUg5LQsrzUGjdyEsn0EUAnvE5VwB3gEAorEAChqX8FzC
+FkHus6Bb8Vr43ZFqoi0M5HJt4JCX5Qg=
+=jzZz
+-----END PGP SIGNATURE-----
+
+--2gLgncKtdrrHipxb--
