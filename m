@@ -1,86 +1,97 @@
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C51341F16B;
-	Tue, 22 Jul 2025 22:47:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82604286887;
+	Tue, 22 Jul 2025 22:51:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753224462; cv=none; b=A54i4Lz2qyJ6NPWwbf8sCeTONhv0/8UglEVIhUMhTmDgb5vDTrc6zDR+I6T471g7K6wHOvWaAZ+f73iapvrdqeMuf8QtAIjp6c/CGAax4jgiBJXkWwZDbJ27mmUQjElawFMmF7yzECs6N5a2IWP6V+cY/FEfvvNhw610y6teNck=
+	t=1753224694; cv=none; b=TQx1rJ4hO7DwdVl53cuNDX91mZPDD8vRF4awDxCgao0Ia946UaTsNyZBBqJ8wVJUrtOWuR9wltoZiLhIgz1+knatPVymhP+gwZiehJNlTN0cp6W+j+jfLGN6xruUFE7Flx02yyc0D9Okub2WjJbhDURJA/Ts+0DoHdIcxaTh8fE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753224462; c=relaxed/simple;
-	bh=EoiyKUGwzUZrIFfFpBNeyjWZsXdD7GTQICDsD6VdHGU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a71cXf4dR43orCyGGrWKaeZXDq+CAeyJ5PlI7uFYpP7patt11DRrpi6gRk0N+FhpMgPhx4omj8Q6va6yl94zQuq3DXTrLGGXHpYFJ6c/irUu9srPqpf883ve6K8dp0Sz7J+41aEc77zvbBEI9nIb3MPmx90ODyrOXiJK3Opqhiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf17.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id 7AFE51A0368;
-	Tue, 22 Jul 2025 22:47:39 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf17.hostedemail.com (Postfix) with ESMTPA id 899E617;
-	Tue, 22 Jul 2025 22:47:37 +0000 (UTC)
-Date: Tue, 22 Jul 2025 18:47:36 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
+	s=arc-20240116; t=1753224694; c=relaxed/simple;
+	bh=Qf4+3hzhq++pMMtmyb/lCgsMtpnDXI8dbOqxqPA4PTQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MUs760mQy767NOiip5gzTCvf2F4qQbmBX2d98q1ThC4QITyjSKWmljcYTDEAZyjwlex5aMkNe84JfiuCriXwlWD7k3Pm2bx3AtZxa14ThBY19AIdlKsDP7Rmat3DMcdRCGvXwuCPR+ZPRpOXPlGgK6BQAZp5NtOxrQC1ka5Wwc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mdDBYFnQ; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mdDBYFnQ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01305C4CEEB;
+	Tue, 22 Jul 2025 22:51:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753224694;
+	bh=Qf4+3hzhq++pMMtmyb/lCgsMtpnDXI8dbOqxqPA4PTQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=mdDBYFnQL4ua1OvXZQcYPMxPdRwcU79e49ckLyeWgvyhEbCH61kufbCgAdTETTwj4
+	 Ne/AKiP9P/TMnjyU/wxV+KcYwoZ41dLHO2T+ekIdqG/FM7IjtfVdApcFdUkl4/VdVy
+	 HTH1hmSs1vif894usnC+bblDc7VU0InJRaSYeYE71pJJzKfRx0ByJBmKuMBnjmZU/3
+	 jWf6aS29w4ilXTcehTzJXBaMKH/kEMunq8mNO5lSdbpj3c/uVdHjLFluUA8CztRpM4
+	 Eb57GpXjSTkCgnZ3pH9cQBdR4rxiNMCYa3hGNiLpaXNC9gZ/V7uKRGsn4H0aKzDpAk
+	 decsl0f3gjkbw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 950CFCE0DEC; Tue, 22 Jul 2025 15:51:33 -0700 (PDT)
+Date: Tue, 22 Jul 2025 15:51:33 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
 Cc: Joel Fernandes <joelagnelf@nvidia.com>, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel-team@meta.com, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Subject: Re: [PATCH v3 2/4] srcu: Add srcu_read_lock_fast_notrace() and
  srcu_read_unlock_fast_notrace()
-Message-ID: <20250722184736.13a0e879@gandalf.local.home>
-In-Reply-To: <4ac56245-3185-414d-9ee1-2c4b4c0a9d5b@paulmck-laptop>
+Message-ID: <9cfb7c56-3f21-4707-81e9-db356ec956ed@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <7387f0c2-75bc-420d-aa7e-3a9ac72d369c@paulmck-laptop>
-	<20250721162433.10454-2-paulmck@kernel.org>
-	<20250722221100.GA377047@joelbox2>
-	<4ac56245-3185-414d-9ee1-2c4b4c0a9d5b@paulmck-laptop>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <20250721162433.10454-2-paulmck@kernel.org>
+ <20250722221100.GA377047@joelbox2>
+ <4ac56245-3185-414d-9ee1-2c4b4c0a9d5b@paulmck-laptop>
+ <20250722184736.13a0e879@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 3e7dn8tbtphsub7f43ixdetyg1o4hjwf
-X-Rspamd-Server: rspamout08
-X-Rspamd-Queue-Id: 899E617
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19JdSHX+WfFntKaXA9HnsVIVUv8qmc9gf0=
-X-HE-Tag: 1753224457-90458
-X-HE-Meta: U2FsdGVkX19eLl9Lk2E7eE7eJ9SkgmX3lXH5G5h338IYMZjZgOLP5YKjWvAjLOErRkGclRbvMZxUwNNuWrsePsi+3Xa9T7Boy3BL/OTQjx4YXxunsOxUK2kfkiMrnTJtlHXb4+lR7A2CXYB0DGt8TSTi3gx3wFKV9dExAau7loJ9X7QCp8gyTvjY7K3pBkfUdiunUFoly8s/dzFK/onJyMoqjCyjhN/ygMt/DNPRBlg+0hgOxmOqPVnSMJpCHNdmpYEISyCECkKbF73LaeNrp1NCTCul+7FtcEf+d12DQDzN/EevXHNCxyKJcCnaSzmp/FLHU2ft3R/3sLZGhkLmDN9RyUzG4xGO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250722184736.13a0e879@gandalf.local.home>
 
-On Tue, 22 Jul 2025 15:34:52 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-
-> > > +static inline struct srcu_ctr __percpu *srcu_read_lock_fast_notrace(struct srcu_struct *ssp)
-> > > +	__acquires(ssp)  
+On Tue, Jul 22, 2025 at 06:47:36PM -0400, Steven Rostedt wrote:
+> On Tue, 22 Jul 2025 15:34:52 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > > > +static inline struct srcu_ctr __percpu *srcu_read_lock_fast_notrace(struct srcu_struct *ssp)
+> > > > +	__acquires(ssp)  
+> > > 
+> > > Should these also be marked with 'notrace' attribute?
+> > > 
+> > > I am not sure what the precedent is, I do see a few examples of 'notrace' and
+> > > 'inline' in the same function signature though.  
 > > 
-> > Should these also be marked with 'notrace' attribute?
+> > Heh!!!
 > > 
-> > I am not sure what the precedent is, I do see a few examples of 'notrace' and
-> > 'inline' in the same function signature though.  
+> > There are six instance of static-inline notrace functions, and eight
+> > instances of static-inline non-notrace functions whose names contain
+> > "_notrace", not counting the srcu_read_lock_fast_notrace() and
+> > srcu_read_unlock_fast() functions currently under review.
+> > 
+> > My guess is that I should add "notrace" to handle the possible case
+> > where the compiler declines to inline this function.  I will do this
+> > on the next rebase unless I hear otherwise.
+> > 
+> > Steven, Mathieu, thoughts?
 > 
-> Heh!!!
+> If you add "__always_inline" then it will include "notrace" as inlined
+> functions are not traced. But we have removed "notrace" from the generic
+> "inline" a while ago. If the compiler decides to ignore an "inline" it
+> *will* be traced.
 > 
-> There are six instance of static-inline notrace functions, and eight
-> instances of static-inline non-notrace functions whose names contain
-> "_notrace", not counting the srcu_read_lock_fast_notrace() and
-> srcu_read_unlock_fast() functions currently under review.
-> 
-> My guess is that I should add "notrace" to handle the possible case
-> where the compiler declines to inline this function.  I will do this
-> on the next rebase unless I hear otherwise.
-> 
-> Steven, Mathieu, thoughts?
+> We probably should fix any "_notrace" functions that are not
+> "__always_inline" and do not have "notrace".
 
-If you add "__always_inline" then it will include "notrace" as inlined
-functions are not traced. But we have removed "notrace" from the generic
-"inline" a while ago. If the compiler decides to ignore an "inline" it
-*will* be traced.
+Very good, and thank you!
 
-We probably should fix any "_notrace" functions that are not
-"__always_inline" and do not have "notrace".
+On my next rebase, I will add "notrace" to srcu_read_lock_fast_notrace(),
+srcu_read_unlock_fast_notrace(), __srcu_read_lock_fast(), and
+__srcu_read_unlock_fast(), all of which are currently just static
+inline.
 
--- Steve
+							Thanx, Paul
