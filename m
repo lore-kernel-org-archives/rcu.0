@@ -1,146 +1,182 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3301C1AAA;
-	Wed, 23 Jul 2025 16:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725EF72626;
+	Wed, 23 Jul 2025 16:28:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753287858; cv=none; b=JcG2U8QOFuSu8lZ1/T2phZJK1sbQE4T/zrfeWQ9LYg+3tsMdK7LZ40FTETAGR22kxN4U1K7XxfpV54UTdqPFQObzli7qgpfAquNZ1pWDJ+vFXtszxZN3aqq1aiS1zCTcoikI/NoCHIhwWC3lEDSwqWRot2uJY/KsNLpwxnBTNJk=
+	t=1753288138; cv=none; b=jQJZi3k9sKS0BT9DeWNyg3B+92HLddQCOMW2+msbzYowUJyKnMOotLzUyeiBde+Omq/KGkWqGCgzgB18CzZ+mb3f0wQkEK76o2KRNjhaW/x9DSWBlmwyElmXSnmvFMdFp47s49hqbAHDrAcIO0vH59C/HNM8qyqn+gf1zCxmScs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753287858; c=relaxed/simple;
-	bh=/TS71y3VNFWgP6TWRd6SL9uz/jrouP8/vidq2THQ0mQ=;
+	s=arc-20240116; t=1753288138; c=relaxed/simple;
+	bh=0Wrm2nxAS+9Eny20S2WW+KNXRRSIRc2ZHcJ0yB0Upt0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tzZ3nrNH9aEM2FTFbXCwwRpiJQz+Whv989XghDxEHtgR3ptA6cQMYBKtvyIK0l/w8NYT4iodFP9JJKFefGPUV129SfmY8FylLPF29Ae0StAfPojTgg0i6GuqKkT2181KbTb2U5/qNn06ExMujGl8aIRfJ1MQttD11qAE9pe+qWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A6YSQOuz; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tyj4fkHLs97M+TujYyPFsLHJdSiXP/UpB/6bsWEVh1wm26Vs6cDXG7+R5KDEFF/mXezTjZqzTB4CTjXTl4+oWkeqXXLglYdAA0gzfX6fMsTJyJHgg4LwHGT7knZMPazsrGloqtKJjm/nm7n+p+YVG/zQXsDg7KTc9cpHUUCUXY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oSjlNz++; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A6YSQOuz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38CA2C4CEE7;
-	Wed, 23 Jul 2025 16:24:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oSjlNz++"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFE14C4CEE7;
+	Wed, 23 Jul 2025 16:28:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753287858;
-	bh=/TS71y3VNFWgP6TWRd6SL9uz/jrouP8/vidq2THQ0mQ=;
+	s=k20201202; t=1753288138;
+	bh=0Wrm2nxAS+9Eny20S2WW+KNXRRSIRc2ZHcJ0yB0Upt0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=A6YSQOuz+xR9SoGL+89T2UDnhJqmKToHcHnIoccQ18LDaEOaGh5nTPDG9nBY4JhxK
-	 BBMFLEKEOGcmAgrFO/BVYUCk8ENIRJ6UjTXJk3r078u3a0vadL98fcHyzdQ8MZO0QK
-	 qXCFQr3WymV9DE6qzyIuzXzKH9iVn8/JzQGpQvUuYmcNCrcx85+eibZIP8gdkC5HWH
-	 pY6cKjZ43DF3OJw5lozDcg9vd+LWUqUFuBIzKCJAbsJb2FRJ6gpo/nGr9Noun53NJv
-	 rzK/DF3yfEY4gsqlZmSNhlVn6zHPds/sI2SfjQ7ODNirL7rxq++W6q90jdLPtSOLJ3
-	 XwJmMuXujLXiA==
+	b=oSjlNz++axaXqwc297axNikqwbG7dy6j8InYuff7RNNxUYWNRzl2Wstf38YG9SPwR
+	 /I2ScR9mErW9ypf2j6WutUsM1loghRjmkeOue+LSAuKD/kBbxBgvjrKqD2zNarrC3a
+	 /viVfKmoqULxOQZ/GMPBBbJF0kfvU7bHmz9zOMytQKUC8q0sqLMqRVW8fcY02huwuK
+	 aIoUhqrv6FoY2e94tyP/czhxObwS+k/s06Z8a2bptHTY8VORpSfvR97g4Qi2IoRhou
+	 5sja05GfICHK+inri8RzvHeLW9MBBKeZtvipNCpQI/t7u++RXXL0wg8sydgERk5Ibs
+	 gmWUYIc8qQfpg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id CC247CE0AD1; Wed, 23 Jul 2025 09:24:17 -0700 (PDT)
-Date: Wed, 23 Jul 2025 09:24:17 -0700
+	id 8E0BECE0AD1; Wed, 23 Jul 2025 09:28:57 -0700 (PDT)
+Date: Wed, 23 Jul 2025 09:28:57 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 5/4] srcu: Document __srcu_read_{,un}lock_fast()
- implicit RCU readers
-Message-ID: <ee536672-2846-4174-94d4-3f42ba341324@paulmck-laptop>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH v3 2/4] srcu: Add srcu_read_lock_fast_notrace() and
+ srcu_read_unlock_fast_notrace()
+Message-ID: <807686da-42af-4196-bd8e-b763f073f104@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <ce304859-e258-45e7-b40f-b5cacc968eaf@paulmck-laptop>
- <9FAE52D6-D073-43D9-93D3-3E49006943B2@nvidia.com>
- <fa4fd174-065d-4a04-b080-ffe04d31313f@nvidia.com>
+References: <7387f0c2-75bc-420d-aa7e-3a9ac72d369c@paulmck-laptop>
+ <20250721162433.10454-2-paulmck@kernel.org>
+ <20250722221100.GA377047@joelbox2>
+ <4ac56245-3185-414d-9ee1-2c4b4c0a9d5b@paulmck-laptop>
+ <4a93cf9d-f609-4819-b902-9ddce71fa821@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fa4fd174-065d-4a04-b080-ffe04d31313f@nvidia.com>
+In-Reply-To: <4a93cf9d-f609-4819-b902-9ddce71fa821@efficios.com>
 
-On Wed, Jul 23, 2025 at 12:10:46PM -0400, Joel Fernandes wrote:
-> 
-> 
-> On 7/23/2025 9:32 AM, joelagnelf@nvidia.com wrote:
+On Wed, Jul 23, 2025 at 11:23:33AM -0400, Mathieu Desnoyers wrote:
+> On 2025-07-22 18:34, Paul E. McKenney wrote:
+> > On Tue, Jul 22, 2025 at 06:11:00PM -0400, Joel Fernandes wrote:
+> > > On Mon, Jul 21, 2025 at 09:24:31AM -0700, Paul E. McKenney wrote:
+> > > > This commit adds no-trace variants of the srcu_read_lock_fast() and
+> > > > srcu_read_unlock_fast() functions for tracing use.
+> > > > 
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > > > ---
+> > > >   include/linux/srcu.h | 25 +++++++++++++++++++++++++
+> > > >   1 file changed, 25 insertions(+)
+> > > > 
+> > > > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> > > > index 478c73d067f7d..7a692bf8f99b9 100644
+> > > > --- a/include/linux/srcu.h
+> > > > +++ b/include/linux/srcu.h
+> > > > @@ -282,6 +282,20 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
+> > > >   	return retval;
+> > > >   }
+> > > > +/*
+> > > > + * Used by tracing, cannot be traced and cannot call lockdep.
+> > > > + * See srcu_read_lock_fast() for more information.
+> > > > + */
+> > > > +static inline struct srcu_ctr __percpu *srcu_read_lock_fast_notrace(struct srcu_struct *ssp)
+> > > > +	__acquires(ssp)
+> > > 
+> > > Should these also be marked with 'notrace' attribute?
+> > > 
+> > > I am not sure what the precedent is, I do see a few examples of 'notrace' and
+> > > 'inline' in the same function signature though.
 > > 
+> > Heh!!!
 > > 
-> >> On Jul 22, 2025, at 6:17 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >>
-> >> ﻿This commit documents the implicit RCU readers that are implied by the
-> >> this_cpu_inc() and atomic_long_inc() operations in __srcu_read_lock_fast()
-> >> and __srcu_read_unlock_fast().  While in the area, fix the documentation
-> >> of the memory pairing of atomic_long_inc() in __srcu_read_lock_fast().
+> > There are six instance of static-inline notrace functions, and eight
+> > instances of static-inline non-notrace functions whose names contain
+> > "_notrace", not counting the srcu_read_lock_fast_notrace() and
+> > srcu_read_unlock_fast() functions currently under review.
 > > 
-> > Just to clarify, the implication here is since SRCU-fast uses synchronize_rcu on the update side, these operations result in blocking of classical RCU too. So simply using srcu fast is another way of achieving the previously used pre-empt-disabling in the use cases.
+> > My guess is that I should add "notrace" to handle the possible case
+> > where the compiler declines to inline this function.  I will do this
+> > on the next rebase unless I hear otherwise.
+> > 
+> > Steven, Mathieu, thoughts?
 > 
-> Hi Paul, it was nice sync'ing with you off-list. Following are my suggestions
-> and where I am coming from:
+> AFAIR, the always_inline gcc attribute takes care of making sure the
+> notrace is not needed in addition.
 > 
-> 1. For someone who doesn't know SRCU-fast depends on synchronize_rcu (me after a
-> few beers :P), the word 'RCU' in the comment you added to this patch, might come
-> across as 'which RCU are we referring to - SRCU or classical RCU or some other'.
-> So I would call it 'classical RCU reader' in the comment.
+> So I suspect that kernel APIs need to abide by the following rules
+> to be usable by instrumentation code:
 > 
-> 2. It would be good to call out specifically that, the SRCU-fast critical
-> section is akin to a classical RCU reader, because of its implementation's
-> dependence on synchronize_rcu() to overcome the lack of read-side memory barriers.
+> - if it's a function call, have a notrace attribute.
+> - if it's an inline (which the compiler may decide to implement as a
+>   function call), have a notrace attribute.
+> - if it's an __always_inline, then there is no way the compiler can
+>   possibly make it a function call, so the notrace would be useless
+>   there.
 > 
-> 3. I think since the potential size of these code comment suggestions, it may
-> make sense to provide a bigger comment suggesting these than providing them
-> inline as you did. And also calling out the tracing usecase in the comments for
-> additional usecase clarification.
+> So you may want to choose for either:
 > 
-> I could provide a patch to do all this soon, as we discussed, as well (unless
-> you're Ok with making this change as well).
+> - inline notrace, or
+> - __always_inline
+> 
+> Depending on how much freedom you want to grant the compiler with
+> respect to its inlining practices.
 
-Thank you very much for the clarification, and I will make the changes
-with attribution.
+In this case, I will (uncharacteristically) grant the compiler some
+freedom.  And so notrace it is!  ;-)
 
 							Thanx, Paul
 
-> Thanks!
+> Thanks,
 > 
->  - Joel
-> 
-> 
+> Mathieu
 > 
 > 
 > > 
-> > Or is the rationale for this something else?
+> > 							Thanx, Paul
 > > 
-> > I would probably spell this out more in a longer comment above the if/else, than modify the inline comments.
-> > 
-> > But I am probably misunderstood the whole thing. :-(
-> > 
-> > -Joel
-> > 
-> >>
-> >> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> >> Cc: Steven Rostedt <rostedt@goodmis.org>
-> >> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> >> Cc: <bpf@vger.kernel.org>
-> >>
-> >> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> >> index 043b5a67ef71e..78e1a7b845ba9 100644
-> >> --- a/include/linux/srcutree.h
-> >> +++ b/include/linux/srcutree.h
-> >> @@ -245,9 +245,9 @@ static inline struct srcu_ctr __percpu *__srcu_read_lock_fast(struct srcu_struct
-> >>    struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
-> >>
-> >>    if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
-> >> -        this_cpu_inc(scp->srcu_locks.counter); /* Y */
-> >> +        this_cpu_inc(scp->srcu_locks.counter); // Y, and implicit RCU reader.
-> >>    else
-> >> -        atomic_long_inc(raw_cpu_ptr(&scp->srcu_locks));  /* Z */
-> >> +        atomic_long_inc(raw_cpu_ptr(&scp->srcu_locks));  // Y, and implicit RCU reader.
-> >>    barrier(); /* Avoid leaking the critical section. */
-> >>    return scp;
-> >> }
-> >> @@ -271,9 +271,9 @@ static inline void __srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_
-> >> {
-> >>    barrier();  /* Avoid leaking the critical section. */
-> >>    if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
-> >> -        this_cpu_inc(scp->srcu_unlocks.counter);  /* Z */
-> >> +        this_cpu_inc(scp->srcu_unlocks.counter);  // Z, and implicit RCU reader.
-> >>    else
-> >> -        atomic_long_inc(raw_cpu_ptr(&scp->srcu_unlocks));  /* Z */
-> >> +        atomic_long_inc(raw_cpu_ptr(&scp->srcu_unlocks));  // Z, and implicit RCU reader.
-> >> }
-> >>
-> >> void __srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
-> >>
+> > > Other than that one nit:
+> > > Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+> > > 
+> > > thanks,
+> > > 
+> > >   - Joel
+> > > 
+> > > 
+> > > > +{
+> > > > +	struct srcu_ctr __percpu *retval;
+> > > > +
+> > > > +	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
+> > > > +	retval = __srcu_read_lock_fast(ssp);
+> > > > +	return retval;
+> > > > +}
+> > > > +
+> > > >   /**
+> > > >    * srcu_down_read_fast - register a new reader for an SRCU-protected structure.
+> > > >    * @ssp: srcu_struct in which to register the new reader.
+> > > > @@ -394,6 +408,17 @@ static inline void srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ct
+> > > >   	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_fast().");
+> > > >   }
+> > > > +/*
+> > > > + * Used by tracing, cannot be traced and cannot call lockdep.
+> > > > + * See srcu_read_unlock_fast() for more information.
+> > > > + */
+> > > > +static inline void srcu_read_unlock_fast_notrace(struct srcu_struct *ssp,
+> > > > +						 struct srcu_ctr __percpu *scp) __releases(ssp)
+> > > > +{
+> > > > +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
+> > > > +	__srcu_read_unlock_fast(ssp, scp);
+> > > > +}
+> > > > +
+> > > >   /**
+> > > >    * srcu_up_read_fast - unregister a old reader from an SRCU-protected structure.
+> > > >    * @ssp: srcu_struct in which to unregister the old reader.
+> > > > -- 
+> > > > 2.40.1
+> > > > 
 > 
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
