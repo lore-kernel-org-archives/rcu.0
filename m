@@ -1,85 +1,67 @@
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2088.outbound.protection.outlook.com [40.107.244.88])
+Received: from YT6PR01CU002.outbound.protection.outlook.com (mail-canadacentralazon11022115.outbound.protection.outlook.com [40.107.193.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F05E19CC3D;
-	Wed, 23 Jul 2025 14:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D083D2F548E;
+	Wed, 23 Jul 2025 15:23:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.193.115
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753281143; cv=fail; b=IWYFxVCnyUjpuO05BE1c3nH6nertOafKf9KbSD7yO//k5aaYbtsUboMP5AKb7WURDRrfIGDgvCt3ppqJxOsCATfH/7L9nN0k6jTLLyr2ktKV2EmwBmWX55CMxfkk3X2phEXpjg/MeIoEC2o4fcqNwrdSf9TjjjqWFOEBSQ5vmPg=
+	t=1753284221; cv=fail; b=iZzauiJP7aplZq+cN8XVvxACVeM8NqXf9ASYnbYyLYZ8AKDmE28LU7Iv2ohLHIFXXsq9C2cgIzBHOnD66Bi+LeVMNS+cQ0k08n8Tt0Qijht24U++iD6obHOMR7IjZIp2j9l+CBgZjJCVEOmfekx4KE0DmU+ABV26zsFxS+vIWOw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753281143; c=relaxed/simple;
-	bh=g5yxDW4XAXC9oF2kTU0lr2UMLb6LcMxEzbZQ6gByx1M=;
+	s=arc-20240116; t=1753284221; c=relaxed/simple;
+	bh=kXq5OZP7XfYOGNG0AIRgu8PF8DgqkcdE8wfYxkFSgvs=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=aQvlsT9XDDYVmErRYL6DwBALBasxQXF4i3FCpBOY95P4pMiYxRyQIwkFKsyA5gkCgoziML2LDVlR0kyNnD4WrjRYvZXYc41euW+5BLPHWZeqSMcCLSKJik29ItWgcR9mkG13Y8hUryUzsR4kSd93730jptaXxp/stbvzKfb2PzI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=I749SZ2X; arc=fail smtp.client-ip=40.107.244.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	 Content-Type:MIME-Version; b=HG8LSxhwqjR1UgIpWkGK63aZKmDa4LXFnGlh+bN6CLXchptjBrsERZMmM5B4TQY2ahoJX6eCTqjjrqC5XJgbCjVDBNGt/b8PMy9GNn0X5plfIXHoGj2zqHohjAzZ4+y15+WIg3EUNLmapXadGURiOA7ZgWHnjg20MYMv4k7hq9g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Lk0Mo8vV; arc=fail smtp.client-ip=40.107.193.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="I749SZ2X"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Lk0Mo8vV"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=aFhn736LkhEdOEXLm7FfHRkSWx8IqhQtMi9hrsTviEBkBw/f0ceGPwTp4mZbfj2czeWxTG4yYBWREsmjG25DTLYui7+/ognUuaLcohZ/Srh+SYgVoxihy8NraGg8phPsanD2wYJAIsP7nW3fUwj9TybXH7S7GqnucaB5T+sDkZRAgaI+laJM4QY4gntacNhqSheOcBLwQxPSoR03fyia5u1BS6BkOaYmjLW7WsaKq1m3rTCnlh112exsdSUDa2DnGaLcJ/kTCKsDe3Ot7eE5/tqyqwGt9FKLIN2mSPvSUjY2q05NO3st1J80NRLyl5cie4tM/albnXcqy26U3SsfIw==
+ b=ZlPRwIO/R2U/KXEmb297dSpjPlUYxTK2c/SPAedXhlZLRbRjo4gQNzRf/iUmVguHSxP4CTelicVJDVVSRmfxzYz3D9GwOva3wGWmrr+RER2kfkRZLN0PnlCB7d0kVWneN/bveTDCVT9JeR11sm3hcPNgYzMFRTrUJHsLT8A2eUpCS89AvwpANgpS/rDM+G2KptDJU2sTdLOZAVPbYrCKFFGo1UF+SpQWI7qq5XOxM5q+f49LD+OXPhq0jP8WzQPctHeF4jjv+5rmod2XD90ZyIZRuoOQGTlLGMj5FB8ADPc09T3c/Jh1WUPFiCgT0rayScs3ijHuFcshSqji/ngMyA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PZYs1xl2XJDfbmaZyoT7XQ2mNCt2E46c/pY314Z4wtQ=;
- b=yaMQfcRNPhOWhMXrakEpKWdwLBTverFXGI9n5OwSO1glXP9ny0nKL0LZatrbvdWZRmZ1AONgZNfRj0A8q8uCqPcubJKgu/VgwGm7kaqIva4LkDXi4Rx1xNGZqVWqZF6siAhbkFVhoHS1Gywj4o5eYX+hIkMVVTnQQc6qbKEEGYQLqxme9+xkC2G6Z3YiwA9SKRnwlSJGovf28fRIdSkjRCyVBWUoRWMrGFfFYLgT5O8imeO8MH4LuEiQBLBXHnD+Qsrbw0eD0Gmp6lqqLHLNvcCz/zOhBrBTvjIQLU07phSmhgrnmRxXuqCyBuSZM2HTwuOPygK5JB+XwHdfmBWL9g==
+ bh=qvtODRM32hkh0B3lg2Q1PzX+4BCnR7ovwaCrMCE3nas=;
+ b=ORtYngYw1gm1RV9dIyiDBrph8aRK6dkmoW+qNC/r1f0EKx/HxpshcKehjmn39vyu6h9VBMUhqWkZMyVaVgn7kzrYk9PtGNniLyi8OeUVizjO+MPQpMAbrkZ9aXZGfVUalZgN3beJgcfie5XWSpHWF+8dj2zHOAF6PK6mucLwPF/YykHPkHpA1nc+RrGrrR9HS/NMPmYhf/HIL3agb4yuBr878xWZqELID0/pOKIAuZS4guj1KnpDRS9w3VQCbyvtwikpt04gVL6SMfwx/WCJEiM9/8c9JKAYI2c6oOwryHr7dP6pXCqzoyKOZSbZ8vndpxhKaUBfabBdUEWeoe18Bw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
+ dkim=pass header.d=efficios.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PZYs1xl2XJDfbmaZyoT7XQ2mNCt2E46c/pY314Z4wtQ=;
- b=I749SZ2Xiqbxa5+6s/8dUumrH762sPZaDbig07l9aW1S6+iUZSPptSWWdTwvWuE17KxcWPkM4b3IMMQRiWH3KsryBu83WjOYjXyc84n6+7slJbEipua0szlwgNy8aezVkgcllxiPIz24MkNGDepo0F/QV36GKSUEEbE1OX+cPQJEHSCke2yv7JT6ajAVq4h+9LrZ858NNoTBAaJVkosRU96xU9uvk7lMvIYxCkJDDSybnHrTSQY74Kin+B51WxyXvCJO0xM08xWFpq+9/NGzYynIT4kvo5pi6s2TyZP4xBP2O54t5k1hRkwcPUtbVkfm/u0dMA7jIKRkNpw3RcpVbg==
+ bh=qvtODRM32hkh0B3lg2Q1PzX+4BCnR7ovwaCrMCE3nas=;
+ b=Lk0Mo8vVJZ/k+zhryZlSMbz3NR2qbdWX+8qk+lo3fhON32mMpnGqRwBvkgvgxJLebt0/XOQTP3OF02O+WpWbyBS3KCMVVy8o3RTdTgPw/R+Uod9YYRWAMi1VtZfxOTk9VbB9sZGN4WWpepXeg6FIJpF88enbFOs261Jqvs9WCmRI6+giNk+bIK9RlZ7QZsmIV/s0XrX9gN/kRASXhnS3/RPr4GauErUef/hW87rEf2IG9oJF7/IsRpoXLSNgkq5COUevYd7J7kVTbu5MyzJ2OGaz5uWMkEVOe07VgkmTbwXppEfHFM6l57XrUge44M7VmTlJq0AoKoDeQB5ThEp8GA==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by IA1PR12MB6356.namprd12.prod.outlook.com (2603:10b6:208:3e0::5) with
+ header.d=none;dmarc=none action=none header.from=efficios.com;
+Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:be::5)
+ by TO1PPF9CF16A047.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b08::66d) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8943.30; Wed, 23 Jul
- 2025 14:32:18 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%7]) with mapi id 15.20.8943.028; Wed, 23 Jul 2025
- 14:32:18 +0000
-Message-ID: <092ec583-9ad4-4d37-8dad-6008267a56a3@nvidia.com>
-Date: Wed, 23 Jul 2025 10:32:12 -0400
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8964.22; Wed, 23 Jul
+ 2025 15:23:35 +0000
+Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::50f1:2e3f:a5dd:5b4]) by YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::50f1:2e3f:a5dd:5b4%3]) with mapi id 15.20.8964.019; Wed, 23 Jul 2025
+ 15:23:35 +0000
+Message-ID: <4a93cf9d-f609-4819-b902-9ddce71fa821@efficios.com>
+Date: Wed, 23 Jul 2025 11:23:33 -0400
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rcu: Fix delayed execution of hurry callbacks
-To: =?UTF-8?B?VHplLW5hbiBXdSAo5ZCz5r6k5Y2XKQ==?= <Tze-nan.Wu@mediatek.com>,
- "frederic@kernel.org" <frederic@kernel.org>
-Cc: "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
- =?UTF-8?B?Q2hlbmctSnVpIFdhbmcgKOeOi+ato+edvyk=?=
- <Cheng-Jui.Wang@mediatek.com>, "josh@joshtriplett.org"
- <josh@joshtriplett.org>, "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
- "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
- "weiyangyang@vivo.com" <weiyangyang@vivo.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- "rostedt@goodmis.org" <rostedt@goodmis.org>,
- =?UTF-8?B?TG9ycnkgTHVvICjnvZfno4op?= <Lorry.Luo@mediatek.com>,
- =?UTF-8?B?Qm9idWxlIENoYW5nICjlvLXlvJjnvqkp?= <bobule.chang@mediatek.com>,
- "urezki@gmail.com" <urezki@gmail.com>,
- "qiang.zhang@linux.dev" <qiang.zhang@linux.dev>,
- "neeraj.upadhyay@kernel.org" <neeraj.upadhyay@kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- wsd_upstream <wsd_upstream@mediatek.com>,
- "paulmck@kernel.org" <paulmck@kernel.org>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
- "joel@joelfernandes.org" <joel@joelfernandes.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <20250717055341.246468-1-Tze-nan.Wu@mediatek.com>
- <aHj79rtgLm-7tT9E@localhost.localdomain>
- <2c69ead1047ff7b7671b8b577fe69884870f66fd.camel@mediatek.com>
+Subject: Re: [PATCH v3 2/4] srcu: Add srcu_read_lock_fast_notrace() and
+ srcu_read_unlock_fast_notrace()
+To: paulmck@kernel.org, Joel Fernandes <joelagnelf@nvidia.com>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+ rostedt@goodmis.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <7387f0c2-75bc-420d-aa7e-3a9ac72d369c@paulmck-laptop>
+ <20250721162433.10454-2-paulmck@kernel.org>
+ <20250722221100.GA377047@joelbox2>
+ <4ac56245-3185-414d-9ee1-2c4b4c0a9d5b@paulmck-laptop>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <2c69ead1047ff7b7671b8b577fe69884870f66fd.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MN2PR11CA0012.namprd11.prod.outlook.com
- (2603:10b6:208:23b::17) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+In-Reply-To: <4ac56245-3185-414d-9ee1-2c4b4c0a9d5b@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBP288CA0045.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:c01:9d::7) To YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:be::5)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -87,290 +69,215 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|IA1PR12MB6356:EE_
-X-MS-Office365-Filtering-Correlation-Id: a11b35c8-e6ed-41ef-66e9-08ddc9f5b9f1
+X-MS-TrafficTypeDiagnostic: YT2PR01MB9175:EE_|TO1PPF9CF16A047:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8eff76b8-5873-4081-ac73-08ddc9fce3ca
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?dFB5UFhYMTB2MFlvWVBZZW5BT1V5YmxnRklsamlBeHlXSkdGVFN3UlhLUzZM?=
- =?utf-8?B?OW9ZQ3UvRlZMa0ViZCtxcXRnb1RmaEZBNFdtVW9wTUhrbkpRL1JMK203NDVk?=
- =?utf-8?B?ZUxjaDZ6Y2N6MlAyN29aNWQ5QXc3L2dURlFCUVo3bGx3MlNJYzBidlJmbUFO?=
- =?utf-8?B?U0lwZjh3UEpDR2pScXVKL0NLZ05CZFBMYmdUTXRSN2NLRm90clAvb09MY00x?=
- =?utf-8?B?dm1IWm54WURmNi9TVUcyZStJZFZrZFlucUpmdmFkSXhmaEE5U2R5SUVvUDFB?=
- =?utf-8?B?MFkzTXpIdVY0am1sVHRBc1E4bHZDbzEyN3RJTTFqdk5JZTJCazQ2aktuYTdY?=
- =?utf-8?B?MkZDdXY4ZmFkR0ZwcFVkMW5iNlRMQjJYd0JXbWVpQTBISUloWXloZnR5Nytx?=
- =?utf-8?B?T1hYaTRtbzhuWG1ZWVpWejRYYmN1UEF6Q1ZxNUZ3aDNHWW10WE9ZMmVxWEtK?=
- =?utf-8?B?Mk1HZWxIWkJpK0dNSDBzMHQ2ZG1xWjVEVDhpdEJ4RkNRRkxSWkxhaFBMVWtD?=
- =?utf-8?B?QzhyQzhXZktkZkI2Q1dwMmxBSVhCWldaZ1pZUjJEVzZIYloycmNnKzFnbHlQ?=
- =?utf-8?B?ZHFZY2orOGNVNnJMd0xSaG5EcTJXYmptVjlDYytIanYza0p5dWZVL2pFZXEx?=
- =?utf-8?B?Mk0wY1hJSmZBNEFPWlpUdy9IQnpaSE11ZVJDZ0o4NlRUM0t1MTNVOWo3ZXZ6?=
- =?utf-8?B?NjB5VHBFOE4rVUp5ZG9razl3ZmU4dGpKN05XME9TWjN6UGVCa0ppVjFjV21T?=
- =?utf-8?B?MlJmL2dSQzF2RmdoNk4ycmNqT0ZYYnVva3lWdHg4SmtHWitrWGNuR3ZpUnVN?=
- =?utf-8?B?SklOaFFaVmRJNUhJOXFDUzJhL3dudjZ2VVBkN081VUZkKzB5RjE1Q2JVbFRZ?=
- =?utf-8?B?bkl5Nks0ZW5mSUQ1U0xlUFd2UUFLYjdSY211eEFQVlRHSUdSVkhkMVk5bVZJ?=
- =?utf-8?B?NGlLQVl5aGRUbjgxOWhRaWtYN2dyWjhqRjNXWkoxQ2srR2JuaVBDSkpCUGtY?=
- =?utf-8?B?Y2o0YnlUK3FLZmxCelYwRjRmT0QvMlZkdVd6MTVEeEVuMFU3d1cxT0RjSUQ4?=
- =?utf-8?B?bVJZbTJaM3gzUkozMEcyL2xaZlg5Z05qT00zQkUzeHJuZDhGc3F2RHVHcXMx?=
- =?utf-8?B?Z1RULzZCMW1pRjJrQlFGdDhmYkhQT2o5S2dsUVFOTFcyUFNzSE51dktRN3Ra?=
- =?utf-8?B?Rzh4ZGhvVUpSUno3U0lGM3N2aG9iVkNUMFdnZUJUdy84cUd2cCtFcDQ2UnJJ?=
- =?utf-8?B?RXFUSDFJRzI0QlRYWldyRVFCRXFnc1VwbEx0WlkrSzhBTktKcCtyVTNPUHpE?=
- =?utf-8?B?M0ltSVJaY1A3cFJhWjF1VFZUdWRhelVtUVNsRTdESVE4Sm05Y2k5WXVmTG1I?=
- =?utf-8?B?bjYxVis5OU9mbko2aG02akJBdWJUTnlvandXcnIySVJIK201bkxuYmFteDNw?=
- =?utf-8?B?aHNUWWpJZ2VnR1pOZHhSUksvRlNJMWVneHl1UUNVVE1hTmtwNi9HRkVVMTF4?=
- =?utf-8?B?NWVmdDdmT2tRZXliVWd4NjNYRFh4K2RmWngyMCsreXdDdzY4Rjd5VE9DMzNa?=
- =?utf-8?B?emtjSldQZ01TbkdGUXdrRXEySWs4Q29BR0k1L2liMG91S1c0YjROcjRoRlAz?=
- =?utf-8?B?U3h0NzRYWkk5R0F6enFGRFV4VzBaNERyaW5EeFVpZWwxd3poVDFwQkRna1Mz?=
- =?utf-8?B?ekJrVCtabmxQbVhoSUVDTDAyZTh1dE53eDN5bldVank2TXR5aHl1MEtRMTFu?=
- =?utf-8?B?WmxxZm5XZXJpQ3kwdjgwa1dVS0ljaXF1VWcrbXpMTFhVdVNJaEt1ajV4RDdD?=
- =?utf-8?B?bkYwdzJXSk83bkkySUgwOWZmRUxxUTdUY0wydEVZRzJJREpMS3hXR2RlY0Nx?=
- =?utf-8?B?SzRrTEkvZklWNGJpaVYyZlR0MkpLOXFNcUQvc3BjdFU3Zi9GQlFCL1FKZnQz?=
- =?utf-8?Q?nfruHoioL5Y=3D?=
+	=?utf-8?B?bGdJNmwxNFRmOWRqczhEaldQTXA1bHpTQXRnZ01wOStSaUJsQ2FjNVJFQ0xZ?=
+ =?utf-8?B?UTZkV1h4SFhVTmlhYzhqSTI0V09GbExrNjk1R0hILyt0RElsSzQvU0pYWUZD?=
+ =?utf-8?B?RzgzQjUzL0t2ZjZoT1lDODN3d01FdEVIUGphNXNSYXZ1b3p4ekNzalV1OFI0?=
+ =?utf-8?B?VVFmRXlwZll4ZHJvRmc1Vm5rbzFkekdkS1pDQTYwQW02bmpvVS9RNHp2Qzdn?=
+ =?utf-8?B?SnlqdG1PYktxWEZTSllqUzlNL0VGRlpZd3VJdWxZUGNNM05adDZhQlRlM1dw?=
+ =?utf-8?B?TU5WTE5KUmNJV3pmdmxpd0szcVdIVDVEc3ZCc0t5SnJEZ2cvODBXTkxBQzRa?=
+ =?utf-8?B?b1ljRjM3VzhlUkp2MHdob24xdmhtTUtUdzV2cWg4cWVjUTRCdjZKNnUxRi9n?=
+ =?utf-8?B?ZXBNYm1OZnEzUnY1Wmd2ZnFGZHlCSS91QkYwYkxtV3lUUDhkZWlqakQ1KzZZ?=
+ =?utf-8?B?VXFiSDVRdDRFckRnclJTdG1ITjBRbnBnTEZ0bDdEem0wdkhtdlFnZExvK0Nu?=
+ =?utf-8?B?ekNXUDBQeXZhbVpxekh2Y2lGZ3gyODh3UTIrZ2VpUk5GRExjQ1g2VWZEelFa?=
+ =?utf-8?B?eVp5ZnZtS0VUTEZwRXh3cis4bHkzUzZsd05VYThkeFFxaXhqOFJJUkRJVjd5?=
+ =?utf-8?B?c0NYT3BjMEh5OW9TNWNpSkpUVnNIdDFEVWxBdjVPWUJ3R3VtbUQvN05YMURO?=
+ =?utf-8?B?QWluY3RqdEJkblRFalVYUEFRa1lLbitVRnJXaTVOR2tVNXY3RWVqTmsySmgx?=
+ =?utf-8?B?a2J4U3o0K2tWWGVHS0JBSXRzNFVNejk0QWRDc2pjZDROYmRkWi9KWVU2UWgz?=
+ =?utf-8?B?UkhucHVZRXZnVmtHVE5DdmlnKy82Vkp2a05kcHBLRWk5UGljSFcyU2tQUkxQ?=
+ =?utf-8?B?QXFWQ3IzR2ZGeEZtUmdIdnhLaysrNmVtaVFMSS9qVE1EYjk0ZDN5TXhQcTIw?=
+ =?utf-8?B?dnR2V0lHYnFKRTdaZjFDUmxnbit1dmRsYXZvVWpXemxWdytTWlZXbUErazNr?=
+ =?utf-8?B?ei9qbzY4cXUrQjF1WjI2U2I5VzE4aWFXenllZ1k2YUx3K1ZpcmZkbVo1SlVj?=
+ =?utf-8?B?MUtsMHVla253eS9KcGtEM09wMFVQWU56YnpvbUpxTjE5ZUlyNDRLOWJvSko5?=
+ =?utf-8?B?M0YzNkxMVCtNNXp4Vmd1SGs2bkJ6WGswUzBQZTJsb21UbW5zRnROaFRiRm02?=
+ =?utf-8?B?YTZaTkt5SFMwS1RYZGdha0RqTmVKZWhPWmJHZEdKQVdFVGYva2xzZ3J1SXJw?=
+ =?utf-8?B?cUUrNkhLK21DSlk3N2M1Rll2NzlSRW1OSVM4NTMxOWM4NEJEemRpNldLL09q?=
+ =?utf-8?B?WlM2c2pnMXlkT1N4SE9hMUx1dE9ySDJKa1FWV2hUV3FJY0xzVFAxRTgwSk1v?=
+ =?utf-8?B?OHBJZ3NrTGZVeU45YWxlMnhoeFRGMVhqNFJmUGdIWUJtbHFlNVZGdkxiOEEz?=
+ =?utf-8?B?QU9pUHJKdzVxclA1b000T0d0RFJwLzB0a2duQXBIalEwd0pHZkptWk5Yd3hS?=
+ =?utf-8?B?eXJRZHFKSUhXNzhUOWVrcHdEbHB0UW1VTEVsdm9CZk15NnFoVXZpWHhrMzN0?=
+ =?utf-8?B?T0ZkSE5GSFFtY21pT3F1T25EdWpHZWNKSkg5VGR5Y2VNZnJLSkFNcFk1WFB5?=
+ =?utf-8?B?dUcwYURZcWpic2NqcFpSOE5yK2lHYWFXdkNUYTBkaFlSaEtWdWRVUi83elRL?=
+ =?utf-8?B?K3lid0o2djd3Y0R3YnpKK1hrZDdkeTd4aXlLS2hkTklXVDYzaE5LUnhDZmhZ?=
+ =?utf-8?B?Vm1NT1VjNEFDTWVZUkVNV05RdEhxWHQrbFNreVlHZHFKMUVXSlZSaDdLNml3?=
+ =?utf-8?Q?uHxcRgAXmmTNkCztkYX8pqkGNivUb2BdDfPEU=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7053199007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?OTRsMllmSHJOLzlUTGFOUmJhbDk2WGJCTHQvWEFVODFjTWk0dTBNUkhYUzRO?=
- =?utf-8?B?cVExY1VVSDQ2a2E0c1RzYnVCL0JuS3BBZXBzdnRvcjVFb3ZMQVo4KyswZEpE?=
- =?utf-8?B?NXp6RFVjM0JDSldpbHJmRnlKajZER2t5a3RWeDZ4dlhmRUdDVGozMFZKcXQ0?=
- =?utf-8?B?eGJKcXFGL3JId2ZHTWFGY3Nia1Z2K25TMlVHaC9Vb1hMc2owMTRkTlVkTjlV?=
- =?utf-8?B?eFBYc2ptbTF3R01hSXNJME50NXBiRzVIb044bXFCVjIrbGUvYitMRW1FdFF1?=
- =?utf-8?B?enpBNlIvUFRCQ0xkV2lLTmwyY0FiaUovYzFwMlRQN0pGOW1mRWgrRXUyWTVQ?=
- =?utf-8?B?WmFaRVVjTGN6djZORnpJV1doRE4yMWlna2M2dmlkeVNVZ0RXQVNjd0dNT2pa?=
- =?utf-8?B?SS8yaGd4RDVpUEQxVS9hZXlBaGlpSnVvcXo3emNQUW9hRGpZOS84TVJKdnE5?=
- =?utf-8?B?T2hZaTl5R3ZnTWxlSm03cGdDdENtTWduN2l0eHRDM2pVRmFoeVhKcHJzZVN4?=
- =?utf-8?B?OUcrSzB4VHc5aE8xSVR4VHVuZisybURlS2xiTE1Qc1JOZzI1NjFjMnB3OVIy?=
- =?utf-8?B?ZlZ2TVF3RjAvM2RFR05aQUdwUTdjcVhxS0pxT09NN01uWlhQaXZJaCtqTW1F?=
- =?utf-8?B?TDZmZ3VneWp4WGE5RUEzbWN3SE1RRGhQZ1Q5N1NrRFRoTkhBK1hEek5iYnBW?=
- =?utf-8?B?bk0raTJUWlo2NEZPL2lIOTZHME1EYnkrWVZPWWZiNzVTUzhmenpadmFXdC80?=
- =?utf-8?B?Z0tIMDE4cGpDeG1FVGxqUGNyZjBheDlxMk1OU295S1pNb1FrN1p1OWNHaGZH?=
- =?utf-8?B?UmRHNTZZVEFqeEJDQ3Q3eG1Ib0xqeVI0aFJIRGg1RXdEaWgweUc3b1dEUTQr?=
- =?utf-8?B?a0lwZGlxTWNncVZITEZpWnUwYnVpbUlwU2M1bG40SDlhWlhmOVZrakxvZkJu?=
- =?utf-8?B?bitaN0hkM1hpeTFHdXNOOGRSMktnaStjNm1mcERodWUyZmwzeEVEQjFBd0gx?=
- =?utf-8?B?a3dnZXExQzNuU3Jya2FNczc3QTFGOUxrOVVuK1ZPKzlNMWw2VUlIOXdWbmZJ?=
- =?utf-8?B?MSt2VmozS0hJVFU2dWg2R2hFeWM4aHRmWDc1NjVWdlpMaVYxdWd6ekUycWk2?=
- =?utf-8?B?Mm9sY24yNTg1R244OVFQNjByVkdXSW1XY252TXVDa3kyRllxSkpFSmY4aWs2?=
- =?utf-8?B?ZWdiYmZGSnlBVU9ZZ2dRWmJWQzQ3bERNaHBwbTQxWkdRcFAyc1VmRElXRU1T?=
- =?utf-8?B?NnlKcG5jR2NyWllDT0x0RkxpeFFlUi90bWZZU0JhWWhQNnFtTHV0OHF2d2xs?=
- =?utf-8?B?Q0JqVUVqY0t4T1dKTXFsZ3hWMnRBSzRHY3FDamF2ZHdaT1FXQjdITWwyWkY3?=
- =?utf-8?B?eW1CZmJWVzVva0Uzc3pNY2xvVFhqSjBibjZONjI4V0dFWE5oVThnRENTeTZ5?=
- =?utf-8?B?ZGFuVGFwc2NHRVRUUEJ1bTNSN016MWZKS0FuK3dtcURPZjdYdE9OUEE2c3pl?=
- =?utf-8?B?ekhmbm1BVUtKaGF6c0tQenhNMDlUWnVYbFdhaHNscUFlWVZhR1JlWGlsTVZN?=
- =?utf-8?B?Y3FLalgxcjltNkFFY2xPRnlIWDhhOG44VVo1SWNIcUNpZTJNTUxXRGsxbUpq?=
- =?utf-8?B?Yzc2MVNmUVlYZXlMODZ0MU05RHFOUGp4Q2MxajdWRkNVVVljWWhjazBFakh6?=
- =?utf-8?B?Ykdidklra1JJT1FNWEJUVTZmZHlySzM4NXN6bEpoZ3hvUUlhdmdOcWU0RTIr?=
- =?utf-8?B?SnRZQVJkSG9ROG4vZVlhaUM4M2tmRlN2Z0poQXhpVWtJNkViY3o2S2d3MExI?=
- =?utf-8?B?N3VRUmxKbVZzOGI5bWZvMjVpSTJIb3MxaWFDNHEyeEl3dEk2RU81ek9NV1Q3?=
- =?utf-8?B?ZFQza0lWMG1neDlaOVVqRkNQMzYrdHM5NU9IcTV4VUVXSHRoUWZWNzVTQzgr?=
- =?utf-8?B?MXdoTGIvTEdJZEdOL2QyTlQ5VGlFUnV5Z2h0aUpibXhUNjhMMWVzT2hSSWhF?=
- =?utf-8?B?S1BuNGdCREl4YytYTU5Da0VuU3FjUnptOEdFL3FPWnhacnJoOXBXVm1oSnFz?=
- =?utf-8?B?ODRCOEloRGx6RFdKQ0k0bTdRcm5VWVgrMFlLdDBFZUNxTXpaSUs3ckVURFZU?=
- =?utf-8?B?YmErTUx4ZWUxVDZ6ek5FSzhnbUtJeEd2RUtsQ2FiRmI0L3A0KzZxK2xDUFVB?=
- =?utf-8?B?SGc9PQ==?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a11b35c8-e6ed-41ef-66e9-08ddc9f5b9f1
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+	=?utf-8?B?QXJmSG52bW9CTVZwKytQa0xrbkhiQkFxbEN4UkFYWnhXZFo5WGlpNjRKWFpv?=
+ =?utf-8?B?azFXLzZ2ODRocHRhNVBLb1oyNkZHd3QxdWtZRERuSFlNVkVZZXRrQ25jNUs4?=
+ =?utf-8?B?d1dUMmZtVkVLbVBpRlhMaktoV3VkdmlFcHhpSmcyU0pKV0pLWUpiaVZBWXFm?=
+ =?utf-8?B?YU16bGlYaGxPUEJDZ0VGOUhkRFltbW9PRm5LT3VpdGIzR1hxK1E1NWF5Mjdo?=
+ =?utf-8?B?ZDBEKzB2USs5b0tQMENkeEh0bjhrcFAzWU5JWDV6QWV6QXdZR2tNZGxlWXJM?=
+ =?utf-8?B?ek1ZcmdSVm1hdU9teUhpYVQ0UnhIM3JEVGxDV2dOMFFTVVRLVStYNTdud1VY?=
+ =?utf-8?B?NGVUYys0bG9mT3RhQVp0c3lLRjZIOGFKMmtwY1E1R0pUOThIR1huYjZKY1Jv?=
+ =?utf-8?B?Q08xbXdzSTI3NFk4MXFXbC9zRUtuRWNTQW4xb3pGaFRwbi83cGVKWVF5ditC?=
+ =?utf-8?B?LzhCNTZjTXE4V3Vldld0Y3BsQU5aZ25VeEJHK3dGQ003VlUwREZrMk9zR2Rp?=
+ =?utf-8?B?MU1yVGpoNER5eEdkZHlXQUd2SmVYcmI4cm0wbU1oV3RBQ1d0MEZ5LzRQUnlE?=
+ =?utf-8?B?V2t0Q005OEovWVFTWStybFFMazlrNkFVeVRjbWdmSXNmdng5TWY4S0hqLzkz?=
+ =?utf-8?B?OHloQnBwUTF2YUkyNFpkMW5BUi9pS0hWVjFiUXlhTllYd2hHOExQUEYwampQ?=
+ =?utf-8?B?dyt0NW9NVjRKRkh1OFEwbzRMYjh6ZkZVSC9tc0hLSEZQK2JKcjNWamdiR25a?=
+ =?utf-8?B?VFFSTndPdkFMQXhQWk5tcjIxUGUwVVZYalpTdXQ4VlpyNU05QkpQTWkyMGIr?=
+ =?utf-8?B?a3BnS2F3NFJWQU5VVnlucHNMbFFvbTlESmhGSjN3YTBRZUpBaDE5bWhITVgz?=
+ =?utf-8?B?UUFDUWJ2T2NQODdmeVVsVXhveUlnT3Q1d1FpTUZMaUJLKzcvUlE4djA2cGZQ?=
+ =?utf-8?B?MmkvdkttVmlvVUhiZ1JqeU15OFErcjlneEtnbSsxWmJqdmZZa0V3WmtYcEVB?=
+ =?utf-8?B?ZWdKVit1MWNoNmVKOStVdHdnemtKaXVWSitaeDh3dXJGK0FZTXJRVVYrSCt1?=
+ =?utf-8?B?a1RXVTRlR2RIQ2ZzRityUFBwcEo5YWZORVZOQmRJYm5jZGRRMWhFSXE3ejU2?=
+ =?utf-8?B?blZsL0EwQmdBZFU5blExK1B0bWNHWVRlMjMvWG45VVlGRnViQlVFZXU5b3NE?=
+ =?utf-8?B?TTd6SGVGaUdycGNOa1FaTlIxSVNydEtQZnN2WUhjYmoxM3Z5Z1BGcU1rdStz?=
+ =?utf-8?B?emJCUVFSL2NIUXJtd2xReTk5OWY5cWcybWdNemNGSWpiOUNCK1BvMU1kZmhM?=
+ =?utf-8?B?cmRVcEZ3WnRSdklhQlB5UUZOcWljQnJtTUNhQzZKcFBGNVRiOVhCRlNobzM4?=
+ =?utf-8?B?MFdUU1N5RGdBSmNyeXhoang1VlFLM3UydUdDeXd4cXFzejJ2d0trdlVESkxa?=
+ =?utf-8?B?N202cThDQnYrWS9DdnVwaVdvU203eWRHNXo4TGVGTGRqNERkQjNWTFZCajVl?=
+ =?utf-8?B?YjQ5cEIrb3V6TEdHaHlZd3ArTzJJQmVDbmJ4ZlFGQTZRbFNsR0JiUGRUYmYz?=
+ =?utf-8?B?eHkxRGtFdWlFNGZ1RE43ekQvd0ZPbTE4RnVOMnJham1NeHhEUGMyaHBxRFJ3?=
+ =?utf-8?B?QU1uaURDSjU5Nks2eWpXbG5LVXN6ckR0dklOcW5PTHFlYnh1UEQvcGZUbUJ6?=
+ =?utf-8?B?M1FHcVB1ZnhId0laMkpNcjNaemRyTEFVaVYzc3pHUHpPZ1E2bFZYS2x3eXZB?=
+ =?utf-8?B?OUU1ODVLbW5lSHE4cjRJT2R3S0FMOHZKemdMVXRnUXN6a3I1ZnZEcExEdVZy?=
+ =?utf-8?B?ZlVsdHc2KzlSd0hHNE85TzU5QmdZUmppcGVDbVpLeUpwU2RaYW1RZm9ScFZ1?=
+ =?utf-8?B?U3hYb2wvYVBMUXViQ3ZiUUsrWjA0ZmFmWGJmSE9iUlQ5YXNpNWtVMEJpZ3hN?=
+ =?utf-8?B?ZVRmdStRU0UzSnZuV3dmNStZOGtsSUpvZGwxVHlQS2RzUW43d3lRejBudDVq?=
+ =?utf-8?B?WTV5RkVyVVUyWVo5TFNrdjhqUFFPVitEaW9zaFpBNlBjYVNZWmJTNVBNNTJG?=
+ =?utf-8?B?R0p0R3dsZytzZUNqcHR1UXUxa0RvQ1R3SGZWRzN2a01HV3YzRkVST29GMkx6?=
+ =?utf-8?B?NmlqOVpGQkw1UFNpOHVGZENFNWpuMjFqMy9uTEdkTERTWGFEUTVMeThrNHRN?=
+ =?utf-8?Q?drY5uuz3+ezWho2T0rNW6wo=3D?=
+X-OriginatorOrg: efficios.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8eff76b8-5873-4081-ac73-08ddc9fce3ca
+X-MS-Exchange-CrossTenant-AuthSource: YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2025 14:32:18.1658
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2025 15:23:35.1064
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uOnq8pGThYiBOisei+s1qGp1lnj8BFA5lEnxq4bP+0e2pgSmr8Mc11pT14Ivdl39r7JfTbQwXgT5jCVV/+PFSg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6356
+X-MS-Exchange-CrossTenant-UserPrincipalName: F2n3ykIyBK+PK5Dac+yp8YiH78caWTy3jF3ZcwymT0L3OqzUnWbeyJUe0ImWt+c+SAVqXdVo149wTLEx1U0qYPVWbtIVyULxX5/b+/55lfk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TO1PPF9CF16A047
 
-
-
-On 7/18/2025 5:10 AM, Tze-nan Wu (吳澤南) wrote:
-> On Thu, 2025-07-17 at 15:34 +0200, Frederic Weisbecker wrote:
->> 
->> External email : Please do not click links or open attachments until
->> you have verified the sender or the content.
->> 
->> 
->> Le Thu, Jul 17, 2025 at 01:53:38PM +0800, Tze-nan Wu a écrit :
->> > We observed a regression in our customer’s environment after
->> > enabling
->> > CONFIG_LAZY_RCU. In the Android Update Engine scenario, where
->> > ioctl() is
->> > used heavily, we found that callbacks queued via call_rcu_hurry
->> > (such as
->> > percpu_ref_switch_to_atomic_rcu) can sometimes be delayed by up to
->> > 5
->> > seconds before execution. This occurs because the new grace period
->> > does
->> > not start immediately after the previous one completes.
->> > 
->> > The root cause is that the wake_nocb_gp_defer() function now checks
->> > "rdp->nocb_defer_wakeup" instead of "rdp_gp->nocb_defer_wakeup". On
->> > CPUs
->> > that are not rcuog, "rdp->nocb_defer_wakeup" may always be
->> > RCU_NOCB_WAKE_NOT. This can cause "rdp_gp->nocb_defer_wakeup" to be
->> > downgraded and the "rdp_gp->nocb_timer" to be postponed by up to 10
->> > seconds, delaying the execution of hurry RCU callbacks.
->> > 
->> > The trace log of one scenario we encountered is as follow:
->> >   // previous GP ends at this point
->> >   rcu_preempt   [000] d..1.   137.240210: rcu_grace_period:
->> > rcu_preempt 8369 end
->> >   rcu_preempt   [000] .....   137.240212: rcu_grace_period:
->> > rcu_preempt 8372 reqwait
->> >   // call_rcu_hurry enqueues "percpu_ref_switch_to_atomic_rcu", the
->> > callback waited on by UpdateEngine
->> >   update_engine [002] d..1.   137.301593: __call_rcu_common: wyy:
->> > unlikely p_ref = 00000000********. lazy = 0
->> >   // FirstQ on cpu 2 rdp_gp->nocb_timer is set to fire after 1
->> > jiffy (4ms)
->> >   // and the rdp_gp->nocb_defer_wakeup is set to RCU_NOCB_WAKE
->> >   update_engine [002] d..2.   137.301595: rcu_nocb_wake:
->> > rcu_preempt 2 FirstQ on cpu2 with rdp_gp (cpu0).
->> >   // FirstBQ event on cpu2 during the 1 jiffy, make the timer
->> > postpond 10 seconds later.
->> >   // also, the rdp_gp->nocb_defer_wakeup is overwrite to
->> > RCU_NOCB_WAKE_LAZY
->> >   update_engine [002] d..1.   137.301601: rcu_nocb_wake:
->> > rcu_preempt 2 WakeEmptyIsDeferred
->> >   ...
->> >   ...
->> >   ...
->> >   // before the 10 seconds timeout, cpu0 received another
->> > call_rcu_hurry
->> >   // reset the timer to jiffies+1 and set the waketype =
->> > RCU_NOCB_WAKE.
->> >   kworker/u32:0 [000] d..2.   142.557564: rcu_nocb_wake:
->> > rcu_preempt 0 FirstQ
->> >   kworker/u32:0 [000] d..1.   142.557576: rcu_nocb_wake:
->> > rcu_preempt 0 WakeEmptyIsDeferred
->> >   kworker/u32:0 [000] d..1.   142.558296: rcu_nocb_wake:
->> > rcu_preempt 0 WakeNot
->> >   kworker/u32:0 [000] d..1.   142.558562: rcu_nocb_wake:
->> > rcu_preempt 0 WakeNot
->> >   // idle(do_nocb_deferred_wakeup) wake rcuog due to waketype ==
->> > RCU_NOCB_WAKE
->> >   <idle>        [000] d..1.   142.558786: rcu_nocb_wake:
->> > rcu_preempt 0 DoWake
->> >   <idle>        [000] dN.1.   142.558839: rcu_nocb_wake:
->> > rcu_preempt 0 DeferredWake
->> >   rcuog/0       [000] .....   142.558871: rcu_nocb_wake:
->> > rcu_preempt 0 EndSleep
->> >   rcuog/0       [000] .....   142.558877: rcu_nocb_wake:
->> > rcu_preempt 0 Check
->> >   // finally rcuog request a new GP at this point (5 seconds after
->> > the FirstQ event)
->> >   rcuog/0       [000] d..2.   142.558886: rcu_grace_period:
->> > rcu_preempt 8372 newreq
->> >   rcu_preempt   [001] d..1.   142.559458: rcu_grace_period:
->> > rcu_preempt 8373 start
->> >   ...
->> >   rcu_preempt   [000] d..1.   142.564258: rcu_grace_period:
->> > rcu_preempt 8373 end
->> >   rcuop/2       [000] D..1.   142.566337: rcu_batch_start:
->> > rcu_preempt CBs=219 bl=10
->> >   // the hurry CB is invoked at this point
->> >   rcuop/2       [000] b....   142.566352:
->> > blk_queue_usage_counter_release: wyy: wakeup. p_ref =
->> > 00000000********.
->> > 
->> > This patch changes the condition to check "rdp_gp-
->> > >nocb_defer_wakeup" in
->> > the lazy path. This prevents an already scheduled "rdp_gp-
->> > >nocb_timer"
->> > from being postponed and avoids overwriting "rdp_gp-
->> > >nocb_defer_wakeup"
->> > when it is not RCU_NOCB_WAKE_NOT.
->> > 
->> > Fixes: 3cb278e73be5 ("rcu: Make call_rcu() lazy to save power")
->> > Co-developed-by: Cheng-jui Wang <cheng-jui.wang@mediatek.com>
->> > Signed-off-by: Cheng-jui Wang <cheng-jui.wang@mediatek.com>
->> > Co-developed-by: Lorry.Luo@mediatek.com
->> > Signed-off-by: Lorry.Luo@mediatek.com
->> > Tested-by: weiyangyang@vivo.com
->> > Signed-off-by: weiyangyang@vivo.com
->> > Signed-off-by: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
->> > ---
->> > The regression is first observed by wyy in the Update Engine
->> > scenario
->> > with  CONFIG_LAZY_RCU enabled. there is an additional delay of 4–5
->> > seconds during the heavy ioctl API call, waiting for
->> > percpu_ref_switch_to_atomic_rcu (RCU hurry CB) to complete.
->> > 
->> > Initially, we suspected that the percpu_ref_switch_to_atomic_rcu
->> > function itself was taking too long. However, after enabling some
->> > custome and the following trace events: rcu_do_batch,
->> > rcu_nocb_wake, and
->> > rcu_grace_period. we found that the root cause was that rcuog was
->> > not
->> > being woken up in time to request a new GP. This led to the delay
->> > in
->> > invoking the hurry RCU callback (percpu_ref_switch_to_atomic_rcu).
->> > 
->> > Environment:
->> >   Android-16, Kernel: 6.12, 8 CPUs (ARM)
->> > 
->> > Configuration:
->> >   CONFIG_TREE_RCU=y
->> >   CONFIG_PREEMPT_RCU=y
->> >   CONFIG_LAZY_RCU=y
->> >   CONFIG_RCU_NOCB_CPU=y
->> >   CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y
->> >   rcu_nocb_gp_stride = -1 (default is 4 for 8 cores)
->> >   jiffies_lazy_flush = 10 * HZ
->> > 
->> > Contributions:
->> > Tze-Nan Wu:
->> > Collaborated with Cheng-Jui to discuss which tracepoints needed to
->> > be
->> > added, jointly analyzed the trace logs, identified the root cause,
->> > and
->> > proposed this upstream change.
->> > 
->> > Cheng-Jui Wang:
->> > Provided many valuable suggestions during the debugging process,
->> > repeatedly found breakthroughs when we were stuck, and helped
->> > identify
->> > the root cause.
->> > 
->> > Lorry Luo:
->> > Assisted in verifying whether rcu-hurry-callback was executed too
->> > long
->> > or deferred, supported with testing, and helped with communication.
->> > 
->> > Weiyangyang:
->> > Main tester who discovered the regression scenario, confirmed that
->> > enabling CONFIG_LAZY_RCU caused the regression, and verified that
->> > this
->> > patch resolves the issue
->> 
->> Nice team work :-)
->> 
-> Thanks :)
->> > 
->> > Note:
->> > With my limited understanding of lazy RCU, I am not fully confident
->> > that
->> > this is a real issue. In my opinion, hurry callbacks should not be
->> > delayed by other events such as firstBQ trace event.
->> > If my understanding is incorrect, I would greatly appreciate any
->> > guidance or clarification from the maintainers.
->> 
->> Your understanding looks quite right!
->> 
-> Glad to know I was on the right track.
+On 2025-07-22 18:34, Paul E. McKenney wrote:
+> On Tue, Jul 22, 2025 at 06:11:00PM -0400, Joel Fernandes wrote:
+>> On Mon, Jul 21, 2025 at 09:24:31AM -0700, Paul E. McKenney wrote:
+>>> This commit adds no-trace variants of the srcu_read_lock_fast() and
+>>> srcu_read_unlock_fast() functions for tracing use.
+>>>
+>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>>> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>>> ---
+>>>   include/linux/srcu.h | 25 +++++++++++++++++++++++++
+>>>   1 file changed, 25 insertions(+)
+>>>
+>>> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+>>> index 478c73d067f7d..7a692bf8f99b9 100644
+>>> --- a/include/linux/srcu.h
+>>> +++ b/include/linux/srcu.h
+>>> @@ -282,6 +282,20 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
+>>>   	return retval;
+>>>   }
+>>>   
+>>> +/*
+>>> + * Used by tracing, cannot be traced and cannot call lockdep.
+>>> + * See srcu_read_lock_fast() for more information.
+>>> + */
+>>> +static inline struct srcu_ctr __percpu *srcu_read_lock_fast_notrace(struct srcu_struct *ssp)
+>>> +	__acquires(ssp)
+>>
+>> Should these also be marked with 'notrace' attribute?
+>>
+>> I am not sure what the precedent is, I do see a few examples of 'notrace' and
+>> 'inline' in the same function signature though.
 > 
->> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
->> 
->> Since the issue is there for 3 years now and was introduced with
->> the CONFIG_LAZY_RCU new feature, it can probably wait a few weeks
->> for the next merge window.
+> Heh!!!
+> 
+> There are six instance of static-inline notrace functions, and eight
+> instances of static-inline non-notrace functions whose names contain
+> "_notrace", not counting the srcu_read_lock_fast_notrace() and
+> srcu_read_unlock_fast() functions currently under review.
+> 
+> My guess is that I should add "notrace" to handle the possible case
+> where the compiler declines to inline this function.  I will do this
+> on the next rebase unless I hear otherwise.
+> 
+> Steven, Mathieu, thoughts?
+
+AFAIR, the always_inline gcc attribute takes care of making sure the
+notrace is not needed in addition.
+
+So I suspect that kernel APIs need to abide by the following rules
+to be usable by instrumentation code:
+
+- if it's a function call, have a notrace attribute.
+- if it's an inline (which the compiler may decide to implement as a
+   function call), have a notrace attribute.
+- if it's an __always_inline, then there is no way the compiler can
+   possibly make it a function call, so the notrace would be useless
+   there.
+
+So you may want to choose for either:
+
+- inline notrace, or
+- __always_inline
+
+Depending on how much freedom you want to grant the compiler with
+respect to its inlining practices.
+
+Thanks,
+
+Mathieu
 
 
-Nice, thanks!
+> 
+> 							Thanx, Paul
+> 
+>> Other than that one nit:
+>> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+>>
+>> thanks,
+>>
+>>   - Joel
+>>
+>>
+>>> +{
+>>> +	struct srcu_ctr __percpu *retval;
+>>> +
+>>> +	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
+>>> +	retval = __srcu_read_lock_fast(ssp);
+>>> +	return retval;
+>>> +}
+>>> +
+>>>   /**
+>>>    * srcu_down_read_fast - register a new reader for an SRCU-protected structure.
+>>>    * @ssp: srcu_struct in which to register the new reader.
+>>> @@ -394,6 +408,17 @@ static inline void srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ct
+>>>   	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_fast().");
+>>>   }
+>>>   
+>>> +/*
+>>> + * Used by tracing, cannot be traced and cannot call lockdep.
+>>> + * See srcu_read_unlock_fast() for more information.
+>>> + */
+>>> +static inline void srcu_read_unlock_fast_notrace(struct srcu_struct *ssp,
+>>> +						 struct srcu_ctr __percpu *scp) __releases(ssp)
+>>> +{
+>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
+>>> +	__srcu_read_unlock_fast(ssp, scp);
+>>> +}
+>>> +
+>>>   /**
+>>>    * srcu_up_read_fast - unregister a old reader from an SRCU-protected structure.
+>>>    * @ssp: srcu_struct in which to unregister the old reader.
+>>> -- 
+>>> 2.40.1
+>>>
 
-Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
 
-I suggest let us add the Fixes tag too so that stable gets it.
-
-thanks,
-
- - Joel
-
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
