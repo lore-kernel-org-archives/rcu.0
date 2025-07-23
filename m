@@ -1,93 +1,93 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353C12376E6;
-	Wed, 23 Jul 2025 20:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D1D42065;
+	Wed, 23 Jul 2025 20:34:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753302485; cv=none; b=HgQ88ihMzpZNVW6IAn7xzGM0aRSIDPqslxLnF7hLC6GAkEJsjrec1kKAjoC6aUjOMWGrvXENr3W8PL4EJ7w9hIj6U/xTtRRfU9dc9nHxtg2nDz4IG2YzbML3Tdt7MY6qvTORK7w/ok6PjiiGgYM71gL35eQuNRsBwQzQmWqAV0s=
+	t=1753302896; cv=none; b=GwTExxy9XtuVlfTEShVGCj2HE3/gfNzfC69FTgmFwDdtfb1x3He2aGwO/bWxOvYAf34dVs+5Ai3Xb7F/s9jqxD5yx6R/dZy7tX1abjA2szoUl6LHHRxvWafBtIeaZnH8tm+kZVhU1EBV+6ELD7yxytMAqvJT9LBYSAOfTfdN8uY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753302485; c=relaxed/simple;
-	bh=4SSkEhAPaR3rmWNDWHon6TEQT0/S26eD/pqJzTj6tKY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VuF+DTXzsqjEw+mYKicDIXt4kAMSbyRLccpm/sT7a5wOsPj0yC1OSYJQiZ3Lx0gvhkkB77vvUXj33Eb6195uWoP7ZeS8nPAaHl8oKa5epcDoJlNrQEB4Su5+7OocJdfSAwvUlw83QFtJD6OQSko5gD1DggSJ8uiKF5lyOS6LfUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ULy0KYa/; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ULy0KYa/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC959C4CEFD;
-	Wed, 23 Jul 2025 20:28:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753302484;
-	bh=4SSkEhAPaR3rmWNDWHon6TEQT0/S26eD/pqJzTj6tKY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ULy0KYa/FimCMc+aEg4Xwoo6O80VGJfim2xYMZdinFvpInetq1E2+AhMUVE3wd1u6
-	 aIfYo+7B+pzrgyaCyTONE6y9GMreTgO54rzFRPmeseKJB5Vn/tRUPYPPFJEWokioNL
-	 vtXp4eyCGxVKQKj8GuRAviUaKL0gjYqK2FUXgS+jxNN71XRr1k51yspLV2Fd7nRnrQ
-	 4+GAr9cAq8Q+4m8WGgcvxU/M+yrkpp/aEOR/3dgbW6GYlmKFsmk3hw3MBARSbLE98N
-	 hZk5/7qjUh+SlPWC6BTJ99WB4k3d1qcm9xLOUD2TD59IxX5dFc09n5gW5wDCGN//SH
-	 f6ZkVxZe1iAtw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 13651CE0F52; Wed, 23 Jul 2025 13:28:04 -0700 (PDT)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	bpf@vger.kernel.org
-Subject: [PATCH v4 6/6] srcu: Document srcu_flip() memory-barrier D relation to SRCU-fast
-Date: Wed, 23 Jul 2025 13:28:00 -0700
-Message-Id: <20250723202800.2094614-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1753302896; c=relaxed/simple;
+	bh=nwUbdKhwRsspymSsNXvaMFNpqpvFm3GWxuD8/E96iig=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OMsJSRYY3BWP5Jjh4dRwac45/7SGXucKm05RCrIKs/RCoVUTXaUJcVIPue6POjIJABAPTHTssS2yF4M1q4ZtWLlfNYrXJNFSHcsQ+b9TSi+kKXZ9Q2lT33COJW4iFFpn8KNSkk4eNGlroQVrrziKo7OnfRTymR0VFg8u+yJDx4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id D52E0110F58;
+	Wed, 23 Jul 2025 20:34:50 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id 3A7E220010;
+	Wed, 23 Jul 2025 20:34:49 +0000 (UTC)
+Date: Wed, 23 Jul 2025 16:34:50 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 0/6] Switch __DECLARE_TRACE() to new notrace variant of
+ SRCU-fast
+Message-ID: <20250723163450.02bc299b@gandalf.local.home>
 In-Reply-To: <45397494-544e-41c0-bf48-c66d213fce05@paulmck-laptop>
 References: <45397494-544e-41c0-bf48-c66d213fce05@paulmck-laptop>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 3A7E220010
+X-Stat-Signature: nzg1kbwmb5qhpy4itixisewhpkddkjrx
+X-Rspamd-Server: rspamout06
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19SsEdMYVrsG5m3U60l6BeB5xDUJbFvF04=
+X-HE-Tag: 1753302889-137071
+X-HE-Meta: U2FsdGVkX18hzn3ui7P/M17SZO/GyLcB0stbWd/SfDbgW/r9VlL2HGOLMvAoAAjjbZhg8piUBniaeitlH6wdcNoSTy9VpRSm4tW6cAVH2WqGOdA0RwZJsylziid+DMhDTsPrypWBSfDIkxmblrDGtTjPJh2F5Ofy8AY/ZdtBvTuy4GE0v9tQ2emJ0pvGoC5vKQLtpRYsbgFWg2oD4bAgA8dyGVwYKToSlr1SmRb8zan3CAyuTp/IeLTW6Z8FmOOrdQgPW0mKGpziZI+6ns3Y1pSHbCAmR1JHtjTE1Hp7kYicM8af2Ay4hUErT0iyQzG8S+NKPLEA2eKBLtTOrIwzQnaW5XEDgiWc
 
-The smp_mb() memory barrier at the end of srcu_flip() has a comment,
-but that comment does not make it clear that this memory barrier is an
-optimization, as opposed to being needed for correctness.  This commit
-therefore adds this information and points out that it is omitted
-for SRCU-fast, where a much heavier weight synchronize_srcu() would
-be required.
+On Wed, 23 Jul 2025 13:27:54 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: <bpf@vger.kernel.org>
----
- kernel/rcu/srcutree.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+> This triggers continues to trigger a kernel test robot report of a
+> "using smp_processor_id() in preemptible" splat.  I looked for issues
+> with explicit preemption disabling, and, not finding any, will next turn
+> my attention to accesses to per-CPU variables.  Any and all insights
+> are welcome.
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index c5e8ebc493d5e..1ff94b76d91f1 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1168,6 +1168,16 @@ static void srcu_flip(struct srcu_struct *ssp)
- 	 * counter update.  Note that both this memory barrier and the
- 	 * one in srcu_readers_active_idx_check() provide the guarantee
- 	 * for __srcu_read_lock().
-+	 *
-+	 * Note that this is a performance optimization, in which we spend
-+	 * an otherwise unnecessary smp_mb() in order to reduce the number
-+	 * of full per-CPU-variable scans in srcu_readers_lock_idx() and
-+	 * srcu_readers_unlock_idx().  But this performance optimization
-+	 * is not so optimal for SRCU-fast, where we would be spending
-+	 * not smp_mb(), but rather synchronize_rcu().  At the same time,
-+	 * the overhead of the smp_mb() is in the noise, so there is no
-+	 * point in omitting it in the SRCU-fast case.  So the same code
-+	 * is executed either way.
- 	 */
- 	smp_mb(); /* D */  /* Pairs with C. */
+Currently perf and ftrace expect the tracepoints to be called with
+preemption disabled. You may need this:
+
+diff --git a/include/trace/perf.h b/include/trace/perf.h
+index a1754b73a8f5..1b7925a85966 100644
+--- a/include/trace/perf.h
++++ b/include/trace/perf.h
+@@ -71,7 +71,9 @@ perf_trace_##call(void *__data, proto)					\
+ 	u64 __count __attribute__((unused));				\
+ 	struct task_struct *__task __attribute__((unused));		\
+ 									\
++	preempt_disable_notrace();					\
+ 	do_perf_trace_##call(__data, args);				\
++	preempt_enable_notrace();					\
  }
--- 
-2.40.1
+ 
+ #undef DECLARE_EVENT_SYSCALL_CLASS
+diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+index 4f22136fd465..0504a423ca25 100644
+--- a/include/trace/trace_events.h
++++ b/include/trace/trace_events.h
+@@ -436,7 +436,9 @@ __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
+ static notrace void							\
+ trace_event_raw_event_##call(void *__data, proto)			\
+ {									\
++	preempt_disable_notrace();					\
+ 	do_trace_event_raw_event_##call(__data, args);			\
++	preempt_enable_notrace();					\
+ }
+ 
+ #undef DECLARE_EVENT_SYSCALL_CLASS
 
+
+But please add it with the change, as there's "preempt_count" accounting to
+report to the user that accounts that preemption was disabled when called.
+
+-- Steve
