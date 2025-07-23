@@ -1,67 +1,65 @@
-Received: from YT6PR01CU002.outbound.protection.outlook.com (mail-canadacentralazon11022115.outbound.protection.outlook.com [40.107.193.115])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2045.outbound.protection.outlook.com [40.107.92.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D083D2F548E;
-	Wed, 23 Jul 2025 15:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.193.115
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1060528DB3;
+	Wed, 23 Jul 2025 16:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.45
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753284221; cv=fail; b=iZzauiJP7aplZq+cN8XVvxACVeM8NqXf9ASYnbYyLYZ8AKDmE28LU7Iv2ohLHIFXXsq9C2cgIzBHOnD66Bi+LeVMNS+cQ0k08n8Tt0Qijht24U++iD6obHOMR7IjZIp2j9l+CBgZjJCVEOmfekx4KE0DmU+ABV26zsFxS+vIWOw=
+	t=1753287053; cv=fail; b=fFowrAq9CgPzKr6LT6GlDniUkZ4jdR8Oc/fJugyvDtYBrpgWYZmKRfZPzI1+23FViLbPCe293gho8AA8h1ZECs/R9AjCxaidKfNnXewfWvZjfq2gThUuU+5emL+faHlySFc0lQMFunXRAkwr3qO6LfheXDrfT3Jq0eFhEekHk50=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753284221; c=relaxed/simple;
-	bh=kXq5OZP7XfYOGNG0AIRgu8PF8DgqkcdE8wfYxkFSgvs=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=HG8LSxhwqjR1UgIpWkGK63aZKmDa4LXFnGlh+bN6CLXchptjBrsERZMmM5B4TQY2ahoJX6eCTqjjrqC5XJgbCjVDBNGt/b8PMy9GNn0X5plfIXHoGj2zqHohjAzZ4+y15+WIg3EUNLmapXadGURiOA7ZgWHnjg20MYMv4k7hq9g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Lk0Mo8vV; arc=fail smtp.client-ip=40.107.193.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	s=arc-20240116; t=1753287053; c=relaxed/simple;
+	bh=UF8oQ9BZ+UueSJcFa6rfcCeZgQLyISWi/8q/ofFY/10=;
+	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ewN1rzrAKRxdl6iEizLlv6r1eTR0FBSbX32fLThkj7ejgd4JbiyJZLVZeuKpbJaKOht4T7puthTJRt1BV9iPsMJ2N9sfIwnHlkNwU8WlRAiFB6j7tHQas9k4wtFqMcmaO/Sut/byNv5usUxFzAbTrf3G53v61cNbCjOFN0jhX0k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=HtvqQXCB; arc=fail smtp.client-ip=40.107.92.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Lk0Mo8vV"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="HtvqQXCB"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ZlPRwIO/R2U/KXEmb297dSpjPlUYxTK2c/SPAedXhlZLRbRjo4gQNzRf/iUmVguHSxP4CTelicVJDVVSRmfxzYz3D9GwOva3wGWmrr+RER2kfkRZLN0PnlCB7d0kVWneN/bveTDCVT9JeR11sm3hcPNgYzMFRTrUJHsLT8A2eUpCS89AvwpANgpS/rDM+G2KptDJU2sTdLOZAVPbYrCKFFGo1UF+SpQWI7qq5XOxM5q+f49LD+OXPhq0jP8WzQPctHeF4jjv+5rmod2XD90ZyIZRuoOQGTlLGMj5FB8ADPc09T3c/Jh1WUPFiCgT0rayScs3ijHuFcshSqji/ngMyA==
+ b=lbDcr75AfYkQ6tY/yxFIfED5ArV7jEjjalFeVtZcq21b6z78BCAaKKrAfC3NqzUZ8lYCduAVCFgbIKJwBCgFguqEhNbh1WqOVoyCcPNDyWc8mwI13t9JlpiV0Yd5oyfmV1gmV+Qt5ETpCv+d1B3L/yfVLwHCIypmPeMdgK8pRRgRktn2PaySZ/XxzXlLsuDaEqFCh/3gw65bCTCtdzhv0FdeAsHxcPE3TzfUt1iINfHJMeVvWwgJqC8aVix09lOkr43aKUT+XoXBJXVz2Dsm/geSzl8m2qi9M6Q/Z1MzR8Jz19bBh6n93MMs7AJyswChemq2TDLbMzXK5s0MwkwD5Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qvtODRM32hkh0B3lg2Q1PzX+4BCnR7ovwaCrMCE3nas=;
- b=ORtYngYw1gm1RV9dIyiDBrph8aRK6dkmoW+qNC/r1f0EKx/HxpshcKehjmn39vyu6h9VBMUhqWkZMyVaVgn7kzrYk9PtGNniLyi8OeUVizjO+MPQpMAbrkZ9aXZGfVUalZgN3beJgcfie5XWSpHWF+8dj2zHOAF6PK6mucLwPF/YykHPkHpA1nc+RrGrrR9HS/NMPmYhf/HIL3agb4yuBr878xWZqELID0/pOKIAuZS4guj1KnpDRS9w3VQCbyvtwikpt04gVL6SMfwx/WCJEiM9/8c9JKAYI2c6oOwryHr7dP6pXCqzoyKOZSbZ8vndpxhKaUBfabBdUEWeoe18Bw==
+ bh=Hy9KD9BxnU0ryTx5aVXj+9gIJMoORQ2GmqHStYYReeU=;
+ b=RYzSI0NLAp4um2eew1f04u4eFBih6ofg4pi2I0cormwRbYXox/VbKLXazdPQyAWVUviPgub7XNCo+i9aXwpP5S5bDcNxRK0zM/t2MpxJO1L69HehNLXD4S2mruuJyM92ddldYaxVf7C3te5ZbR/WX0J8cqTKhVUVpRlovbsqDD82/AJ3WQML+CBSHSI10ApP474HHDbq+U3K5ROHti5Hh7+LP6UHU/DUZRARI3x9CdtnpwDuA+YraUiJIFMhTEfYc6o5eQoQVNRGP5xUVwO2L06XdHMWBVmBME3CsUjjLwAm7GXgQSMVHKuAI9TbjHW4ZAO9LGwVAN4l9S+8EAf6wA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
- dkim=pass header.d=efficios.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
- s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qvtODRM32hkh0B3lg2Q1PzX+4BCnR7ovwaCrMCE3nas=;
- b=Lk0Mo8vVJZ/k+zhryZlSMbz3NR2qbdWX+8qk+lo3fhON32mMpnGqRwBvkgvgxJLebt0/XOQTP3OF02O+WpWbyBS3KCMVVy8o3RTdTgPw/R+Uod9YYRWAMi1VtZfxOTk9VbB9sZGN4WWpepXeg6FIJpF88enbFOs261Jqvs9WCmRI6+giNk+bIK9RlZ7QZsmIV/s0XrX9gN/kRASXhnS3/RPr4GauErUef/hW87rEf2IG9oJF7/IsRpoXLSNgkq5COUevYd7J7kVTbu5MyzJ2OGaz5uWMkEVOe07VgkmTbwXppEfHFM6l57XrUge44M7VmTlJq0AoKoDeQB5ThEp8GA==
+ bh=Hy9KD9BxnU0ryTx5aVXj+9gIJMoORQ2GmqHStYYReeU=;
+ b=HtvqQXCBPPjN/jWMecJwNM5fxu1atxNCBabR1Qx0Qydcb8XKTeGYKQDgYkis2a8cKBJxi5mTLfIsq20Od9OW8Rd3CmcqKgDUjhr7sKTLaeWQ09/8HEHEDZK9G5NhLEd3H8gWNTFxxPH7LW18OjqO9RKxNn4HZIaUFHHqkX03DkBx5PlvGR0b6B/urKuFuE+Bn3KWbw1CQ5uO0KnxWfKML12bqP5xy+SI9h6zoGObEJFSt6Mh4JW5e6U7KLkIep7TrqqZWTO/wcjNeanBgZ0ZDlu1Mb33FUa4QDZhL8U0foIaa+mTtSOuSPekppi4sgbdePnUygR8hTViAef9Pn6l3w==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=efficios.com;
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:be::5)
- by TO1PPF9CF16A047.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b08::66d) with
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by IA0PR12MB7675.namprd12.prod.outlook.com (2603:10b6:208:433::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8964.22; Wed, 23 Jul
- 2025 15:23:35 +0000
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::50f1:2e3f:a5dd:5b4]) by YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::50f1:2e3f:a5dd:5b4%3]) with mapi id 15.20.8964.019; Wed, 23 Jul 2025
- 15:23:35 +0000
-Message-ID: <4a93cf9d-f609-4819-b902-9ddce71fa821@efficios.com>
-Date: Wed, 23 Jul 2025 11:23:33 -0400
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8964.21; Wed, 23 Jul
+ 2025 16:10:48 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%7]) with mapi id 15.20.8943.028; Wed, 23 Jul 2025
+ 16:10:48 +0000
+Message-ID: <fa4fd174-065d-4a04-b080-ffe04d31313f@nvidia.com>
+Date: Wed, 23 Jul 2025 12:10:46 -0400
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] srcu: Add srcu_read_lock_fast_notrace() and
- srcu_read_unlock_fast_notrace()
-To: paulmck@kernel.org, Joel Fernandes <joelagnelf@nvidia.com>
+Subject: Re: [PATCH v3 5/4] srcu: Document __srcu_read_{,un}lock_fast()
+ implicit RCU readers
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: paulmck@kernel.org
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
- rostedt@goodmis.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <7387f0c2-75bc-420d-aa7e-3a9ac72d369c@paulmck-laptop>
- <20250721162433.10454-2-paulmck@kernel.org>
- <20250722221100.GA377047@joelbox2>
- <4ac56245-3185-414d-9ee1-2c4b4c0a9d5b@paulmck-laptop>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+ rostedt@goodmis.org, bpf@vger.kernel.org
+References: <ce304859-e258-45e7-b40f-b5cacc968eaf@paulmck-laptop>
+ <9FAE52D6-D073-43D9-93D3-3E49006943B2@nvidia.com>
 Content-Language: en-US
-In-Reply-To: <4ac56245-3185-414d-9ee1-2c4b4c0a9d5b@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBP288CA0045.CANP288.PROD.OUTLOOK.COM
- (2603:10b6:c01:9d::7) To YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:be::5)
+In-Reply-To: <9FAE52D6-D073-43D9-93D3-3E49006943B2@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BN9PR03CA0609.namprd03.prod.outlook.com
+ (2603:10b6:408:106::14) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -69,215 +67,182 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: YT2PR01MB9175:EE_|TO1PPF9CF16A047:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8eff76b8-5873-4081-ac73-08ddc9fce3ca
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|IA0PR12MB7675:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1f7bf031-8975-4e62-f45a-08ddca037cb2
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7053199007;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?bGdJNmwxNFRmOWRqczhEaldQTXA1bHpTQXRnZ01wOStSaUJsQ2FjNVJFQ0xZ?=
- =?utf-8?B?UTZkV1h4SFhVTmlhYzhqSTI0V09GbExrNjk1R0hILyt0RElsSzQvU0pYWUZD?=
- =?utf-8?B?RzgzQjUzL0t2ZjZoT1lDODN3d01FdEVIUGphNXNSYXZ1b3p4ekNzalV1OFI0?=
- =?utf-8?B?VVFmRXlwZll4ZHJvRmc1Vm5rbzFkekdkS1pDQTYwQW02bmpvVS9RNHp2Qzdn?=
- =?utf-8?B?SnlqdG1PYktxWEZTSllqUzlNL0VGRlpZd3VJdWxZUGNNM05adDZhQlRlM1dw?=
- =?utf-8?B?TU5WTE5KUmNJV3pmdmxpd0szcVdIVDVEc3ZCc0t5SnJEZ2cvODBXTkxBQzRa?=
- =?utf-8?B?b1ljRjM3VzhlUkp2MHdob24xdmhtTUtUdzV2cWg4cWVjUTRCdjZKNnUxRi9n?=
- =?utf-8?B?ZXBNYm1OZnEzUnY1Wmd2ZnFGZHlCSS91QkYwYkxtV3lUUDhkZWlqakQ1KzZZ?=
- =?utf-8?B?VXFiSDVRdDRFckRnclJTdG1ITjBRbnBnTEZ0bDdEem0wdkhtdlFnZExvK0Nu?=
- =?utf-8?B?ekNXUDBQeXZhbVpxekh2Y2lGZ3gyODh3UTIrZ2VpUk5GRExjQ1g2VWZEelFa?=
- =?utf-8?B?eVp5ZnZtS0VUTEZwRXh3cis4bHkzUzZsd05VYThkeFFxaXhqOFJJUkRJVjd5?=
- =?utf-8?B?c0NYT3BjMEh5OW9TNWNpSkpUVnNIdDFEVWxBdjVPWUJ3R3VtbUQvN05YMURO?=
- =?utf-8?B?QWluY3RqdEJkblRFalVYUEFRa1lLbitVRnJXaTVOR2tVNXY3RWVqTmsySmgx?=
- =?utf-8?B?a2J4U3o0K2tWWGVHS0JBSXRzNFVNejk0QWRDc2pjZDROYmRkWi9KWVU2UWgz?=
- =?utf-8?B?UkhucHVZRXZnVmtHVE5DdmlnKy82Vkp2a05kcHBLRWk5UGljSFcyU2tQUkxQ?=
- =?utf-8?B?QXFWQ3IzR2ZGeEZtUmdIdnhLaysrNmVtaVFMSS9qVE1EYjk0ZDN5TXhQcTIw?=
- =?utf-8?B?dnR2V0lHYnFKRTdaZjFDUmxnbit1dmRsYXZvVWpXemxWdytTWlZXbUErazNr?=
- =?utf-8?B?ei9qbzY4cXUrQjF1WjI2U2I5VzE4aWFXenllZ1k2YUx3K1ZpcmZkbVo1SlVj?=
- =?utf-8?B?MUtsMHVla253eS9KcGtEM09wMFVQWU56YnpvbUpxTjE5ZUlyNDRLOWJvSko5?=
- =?utf-8?B?M0YzNkxMVCtNNXp4Vmd1SGs2bkJ6WGswUzBQZTJsb21UbW5zRnROaFRiRm02?=
- =?utf-8?B?YTZaTkt5SFMwS1RYZGdha0RqTmVKZWhPWmJHZEdKQVdFVGYva2xzZ3J1SXJw?=
- =?utf-8?B?cUUrNkhLK21DSlk3N2M1Rll2NzlSRW1OSVM4NTMxOWM4NEJEemRpNldLL09q?=
- =?utf-8?B?WlM2c2pnMXlkT1N4SE9hMUx1dE9ySDJKa1FWV2hUV3FJY0xzVFAxRTgwSk1v?=
- =?utf-8?B?OHBJZ3NrTGZVeU45YWxlMnhoeFRGMVhqNFJmUGdIWUJtbHFlNVZGdkxiOEEz?=
- =?utf-8?B?QU9pUHJKdzVxclA1b000T0d0RFJwLzB0a2duQXBIalEwd0pHZkptWk5Yd3hS?=
- =?utf-8?B?eXJRZHFKSUhXNzhUOWVrcHdEbHB0UW1VTEVsdm9CZk15NnFoVXZpWHhrMzN0?=
- =?utf-8?B?T0ZkSE5GSFFtY21pT3F1T25EdWpHZWNKSkg5VGR5Y2VNZnJLSkFNcFk1WFB5?=
- =?utf-8?B?dUcwYURZcWpic2NqcFpSOE5yK2lHYWFXdkNUYTBkaFlSaEtWdWRVUi83elRL?=
- =?utf-8?B?K3lid0o2djd3Y0R3YnpKK1hrZDdkeTd4aXlLS2hkTklXVDYzaE5LUnhDZmhZ?=
- =?utf-8?B?Vm1NT1VjNEFDTWVZUkVNV05RdEhxWHQrbFNreVlHZHFKMUVXSlZSaDdLNml3?=
- =?utf-8?Q?uHxcRgAXmmTNkCztkYX8pqkGNivUb2BdDfPEU=3D?=
+	=?utf-8?B?aEsvYXlRdHNGcmE1VmdKNWdFZUtjUzNMNHBMV2EvaGFIeURkaHZFaGgrVlNN?=
+ =?utf-8?B?MHlDNmp2ZVJhZUR4dHBFWlErNVd5WkhIOUZGRklzUDhrM08xQUJsRzNZbU9o?=
+ =?utf-8?B?T21XdWpqSGtEVVY0UkVCU29ZK2krTnkyb3FoeUJwSWtCYjhrMzhwQ1FUWjFE?=
+ =?utf-8?B?bHZ6L2ZwaUpiVEpYVEtuSjJraXhQNkFMSVpXVHNaUXhNTUprOGx1Zlp6OEdX?=
+ =?utf-8?B?a3NMNkJQR3ZtL1dIc1dmNmlKdmFNd3ZXUE11Mi9RUXFZWGJBUXlacnYzSGQ3?=
+ =?utf-8?B?cEx6dE5oNzN3YVZqakJ1VXBlY2ZmeXdpWUVhSDNIdXkyWnl5SitEdUY5Mld1?=
+ =?utf-8?B?d2lYamRvaVdsNWxBeE56MHlKU0pWcCs4SXA0c2lwcnVHdU02WmtYaGhWa2sy?=
+ =?utf-8?B?RG1LNlJySnFhYWZOUFB0K2FSYmd2cnF2bVJ3c2ZHTEdhc3R6YnlzL0NTNUhQ?=
+ =?utf-8?B?YnpRWHZ2ZUZGTDNXcDNsbzNBRlExYk02MlVUQ1ViODBxZ3p5emxPNkw3Nmw0?=
+ =?utf-8?B?cG1IdS9EM0hPTzVxMndQQmV3bFB1b05ORGx5ZS8vc01lYzI1b0cvWUY1M1px?=
+ =?utf-8?B?bHd6QmdIWkg4d0crZWxGbXFOTkIwcW90TFlMZG9QYkxEMTZ0YmQ4OWxKblQy?=
+ =?utf-8?B?REl0WXluY3dyTFE5OWViWm5RRDBDTlhWaUFxRkQ3SDFOLzJyb0tFSWxUT2pt?=
+ =?utf-8?B?dmRmZGhlZnlUb0hOT0F5cDI5ZmJwd1BlVWFBS0JIWUdwbzdGd3BFTmdxKzRj?=
+ =?utf-8?B?VnpDYmlXWFFwM2dZOWUvWDhRR3FSMnRTQi82L1dtTzhUMDNLMzdXTzNzTXk3?=
+ =?utf-8?B?MVYwUzNENEcwdzRTK2JxeC9IQVB0MXIzNDRMR1FvQ3ZEUXZRWWVIdllvU3FF?=
+ =?utf-8?B?eVVGbGhIVkRxL3A3QVA4M2lTdlg4eTRjWHJnVHFMcWJIUWlFSjlDcHZYRVIy?=
+ =?utf-8?B?UWpsYnNoOTNJelI2UmxadGs0emFjUENGVW9zVjlITUJXVURLenE0YkhXb1p2?=
+ =?utf-8?B?bEFsSVJyblhDSjlqUlpsYTR3WGkrUU5CWjQ0Y3M4VnFOeEthcStGczN3S2tF?=
+ =?utf-8?B?KytYWldQUktRWmgxWkx3a0kyQVhXRUI0VlZzQUhQbzFVemFnT0xOWjg1bERU?=
+ =?utf-8?B?SFNnaDlIT1FrL3FvS2ZVV29scjZvMURtdkkwZWdXeUNrNHhBT2dncmtURUNY?=
+ =?utf-8?B?YUc3S3FEQ2pBNzhLcHhXQWp0a1Z0Y3NMMXROcmZQcHV4aXJ3YnVOREdoNnB2?=
+ =?utf-8?B?UTd0NXhUUjJUMXA1VmRTcEhxRFh4eVFrWWNiZkswMWMvcEgwL0YvY2l6blZv?=
+ =?utf-8?B?K2cvblpTMTZ6aEFnaGZyaDloVUVXY0JNY3NTTFhBc3N3dmdlM2xIUXRQRkhj?=
+ =?utf-8?B?d1d1OTR2ZWVPMkcxQ2hKQ05OdUJMSTRRZzRiQThaY2dKdi9OU1JWeUg0NzJq?=
+ =?utf-8?B?OUduNlBUUGs2bHlKcmQzTWJlNHhWSWtwdE0yeTIrOEZ2SVU0Wm5nMHZRU3ZS?=
+ =?utf-8?B?N2tHTW5kNnJHRUFoQXh3eGxjc1pZbTVkR0VlWWhwV0dIM1cyMTBvL3NBNjY0?=
+ =?utf-8?B?NDZrSlIwRzZtZjNmOXhqaUVWYjQxQlRONFQ5ZVYxbm9xZ0tDSXFSYkJxQnZJ?=
+ =?utf-8?B?b25VVkt0UWZmUkoycis3ZDFLOUZGTHkxelhDRGNGdW5TTitscGtYbS94cGw0?=
+ =?utf-8?B?NExKUExtN25SMVZqMUV2K0lneWoxblBwV0R1dnRhR3FJWldBZng0M1U0cUpK?=
+ =?utf-8?B?QlNjVFJDVVJyMUQ0Qk5yazZOMGhvN2QyNVZCRzlmcEN2WmVJRzBrb2J6UlBP?=
+ =?utf-8?B?QlNZZDRJRllBUCtTM3VwSi9JSkpQUWM2L2dvYzhibklUYmlxR2R6cjhZaThC?=
+ =?utf-8?B?UmRHV09FRjk5aG5sZnpTRDBPZ2xOQVVYQmM1eGw5VzdhaVJ1ME9ZbnZBdWtR?=
+ =?utf-8?Q?9Xu0c60j/70=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7053199007);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QXJmSG52bW9CTVZwKytQa0xrbkhiQkFxbEN4UkFYWnhXZFo5WGlpNjRKWFpv?=
- =?utf-8?B?azFXLzZ2ODRocHRhNVBLb1oyNkZHd3QxdWtZRERuSFlNVkVZZXRrQ25jNUs4?=
- =?utf-8?B?d1dUMmZtVkVLbVBpRlhMaktoV3VkdmlFcHhpSmcyU0pKV0pLWUpiaVZBWXFm?=
- =?utf-8?B?YU16bGlYaGxPUEJDZ0VGOUhkRFltbW9PRm5LT3VpdGIzR1hxK1E1NWF5Mjdo?=
- =?utf-8?B?ZDBEKzB2USs5b0tQMENkeEh0bjhrcFAzWU5JWDV6QWV6QXdZR2tNZGxlWXJM?=
- =?utf-8?B?ek1ZcmdSVm1hdU9teUhpYVQ0UnhIM3JEVGxDV2dOMFFTVVRLVStYNTdud1VY?=
- =?utf-8?B?NGVUYys0bG9mT3RhQVp0c3lLRjZIOGFKMmtwY1E1R0pUOThIR1huYjZKY1Jv?=
- =?utf-8?B?Q08xbXdzSTI3NFk4MXFXbC9zRUtuRWNTQW4xb3pGaFRwbi83cGVKWVF5ditC?=
- =?utf-8?B?LzhCNTZjTXE4V3Vldld0Y3BsQU5aZ25VeEJHK3dGQ003VlUwREZrMk9zR2Rp?=
- =?utf-8?B?MU1yVGpoNER5eEdkZHlXQUd2SmVYcmI4cm0wbU1oV3RBQ1d0MEZ5LzRQUnlE?=
- =?utf-8?B?V2t0Q005OEovWVFTWStybFFMazlrNkFVeVRjbWdmSXNmdng5TWY4S0hqLzkz?=
- =?utf-8?B?OHloQnBwUTF2YUkyNFpkMW5BUi9pS0hWVjFiUXlhTllYd2hHOExQUEYwampQ?=
- =?utf-8?B?dyt0NW9NVjRKRkh1OFEwbzRMYjh6ZkZVSC9tc0hLSEZQK2JKcjNWamdiR25a?=
- =?utf-8?B?VFFSTndPdkFMQXhQWk5tcjIxUGUwVVZYalpTdXQ4VlpyNU05QkpQTWkyMGIr?=
- =?utf-8?B?a3BnS2F3NFJWQU5VVnlucHNMbFFvbTlESmhGSjN3YTBRZUpBaDE5bWhITVgz?=
- =?utf-8?B?UUFDUWJ2T2NQODdmeVVsVXhveUlnT3Q1d1FpTUZMaUJLKzcvUlE4djA2cGZQ?=
- =?utf-8?B?MmkvdkttVmlvVUhiZ1JqeU15OFErcjlneEtnbSsxWmJqdmZZa0V3WmtYcEVB?=
- =?utf-8?B?ZWdKVit1MWNoNmVKOStVdHdnemtKaXVWSitaeDh3dXJGK0FZTXJRVVYrSCt1?=
- =?utf-8?B?a1RXVTRlR2RIQ2ZzRityUFBwcEo5YWZORVZOQmRJYm5jZGRRMWhFSXE3ejU2?=
- =?utf-8?B?blZsL0EwQmdBZFU5blExK1B0bWNHWVRlMjMvWG45VVlGRnViQlVFZXU5b3NE?=
- =?utf-8?B?TTd6SGVGaUdycGNOa1FaTlIxSVNydEtQZnN2WUhjYmoxM3Z5Z1BGcU1rdStz?=
- =?utf-8?B?emJCUVFSL2NIUXJtd2xReTk5OWY5cWcybWdNemNGSWpiOUNCK1BvMU1kZmhM?=
- =?utf-8?B?cmRVcEZ3WnRSdklhQlB5UUZOcWljQnJtTUNhQzZKcFBGNVRiOVhCRlNobzM4?=
- =?utf-8?B?MFdUU1N5RGdBSmNyeXhoang1VlFLM3UydUdDeXd4cXFzejJ2d0trdlVESkxa?=
- =?utf-8?B?N202cThDQnYrWS9DdnVwaVdvU203eWRHNXo4TGVGTGRqNERkQjNWTFZCajVl?=
- =?utf-8?B?YjQ5cEIrb3V6TEdHaHlZd3ArTzJJQmVDbmJ4ZlFGQTZRbFNsR0JiUGRUYmYz?=
- =?utf-8?B?eHkxRGtFdWlFNGZ1RE43ekQvd0ZPbTE4RnVOMnJham1NeHhEUGMyaHBxRFJ3?=
- =?utf-8?B?QU1uaURDSjU5Nks2eWpXbG5LVXN6ckR0dklOcW5PTHFlYnh1UEQvcGZUbUJ6?=
- =?utf-8?B?M1FHcVB1ZnhId0laMkpNcjNaemRyTEFVaVYzc3pHUHpPZ1E2bFZYS2x3eXZB?=
- =?utf-8?B?OUU1ODVLbW5lSHE4cjRJT2R3S0FMOHZKemdMVXRnUXN6a3I1ZnZEcExEdVZy?=
- =?utf-8?B?ZlVsdHc2KzlSd0hHNE85TzU5QmdZUmppcGVDbVpLeUpwU2RaYW1RZm9ScFZ1?=
- =?utf-8?B?U3hYb2wvYVBMUXViQ3ZiUUsrWjA0ZmFmWGJmSE9iUlQ5YXNpNWtVMEJpZ3hN?=
- =?utf-8?B?ZVRmdStRU0UzSnZuV3dmNStZOGtsSUpvZGwxVHlQS2RzUW43d3lRejBudDVq?=
- =?utf-8?B?WTV5RkVyVVUyWVo5TFNrdjhqUFFPVitEaW9zaFpBNlBjYVNZWmJTNVBNNTJG?=
- =?utf-8?B?R0p0R3dsZytzZUNqcHR1UXUxa0RvQ1R3SGZWRzN2a01HV3YzRkVST29GMkx6?=
- =?utf-8?B?NmlqOVpGQkw1UFNpOHVGZENFNWpuMjFqMy9uTEdkTERTWGFEUTVMeThrNHRN?=
- =?utf-8?Q?drY5uuz3+ezWho2T0rNW6wo=3D?=
-X-OriginatorOrg: efficios.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8eff76b8-5873-4081-ac73-08ddc9fce3ca
-X-MS-Exchange-CrossTenant-AuthSource: YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
+	=?utf-8?B?MUd5czE3ekZUc2ViMEg1SnFhWXQ2bTlBcisyYlEzbDU1SEFiZnFiY3RpSm9E?=
+ =?utf-8?B?ZFpza1NtYWlETzBUekJ1SDZlRmdoQTdIbk1ZU2I2MXpFUDQ4a0kxbUhCakNo?=
+ =?utf-8?B?NHpHVGp5STZSdXpPckNuRXlONlVVTTBUMVpnOU0rVUJhbVFnc20wSHdPQ2h5?=
+ =?utf-8?B?UlhCVXJuYXk4LzgzQlh5YU9NUGtsYlEvNGo5L05lQ042NFMxUmJQbHVVMjFW?=
+ =?utf-8?B?bmE3REJPTnladjlpUXVkK1NYN283aklZcnZpSC96SkR3YUMrdURqSmJOVUo2?=
+ =?utf-8?B?dWpRVDg4aXpJODVXL2J5RU1Rc0VsVzVNUDdNazZmS1hCK2lUczZnWmVVNmo1?=
+ =?utf-8?B?amtqSUtKWHhlWi83ZnZ1QXBHUlJaQ2RLMGF1bTUyN0pXWk5tK0xiNHl1Y2R3?=
+ =?utf-8?B?a2pQdXMzQk1JaDNybXJWemsvdVk3aUJBSkdzdzM0Vkt6S1VhRTI5UFE1MVJ1?=
+ =?utf-8?B?TjVQZ21YYlVjTDIvNVF4Q1RZODlnT2MzbS9KVVhraXVsSjVUcU4yNzhMVStJ?=
+ =?utf-8?B?cWJsMkpRaE1WaXVrbzUrUm1aUnRtSWNQS0J0R1RuODVJYklMQWc3M3lVblhy?=
+ =?utf-8?B?Zm5pT3VoR0R4bnpqek1SZlFJcE9UMEdmYjI5Q3VLaTIxbHYyRmhZV04vWVNW?=
+ =?utf-8?B?SlFNbzJ3WVRLNkY1UHdCSlg5MFlqc2pBT2dVRkVicEdVS1BwN2pvT2w1WVBP?=
+ =?utf-8?B?ZHFOZjRpM25IeFBqenBwWFZBSk5UZGZVSWlwaitpUitzeDFrTlVuN1hjSjhI?=
+ =?utf-8?B?dXVMbUl5eDJIZG4wT1l3TGJ3SWVtQ2xrQ3lHNjNPam1rRWNYbVdneGdoN01B?=
+ =?utf-8?B?TlpMcWtiTlorYlF0dzlZQUdKRDVtQ3ZQOHh1R3JrNUN4VGk5eXdCemdpbVJi?=
+ =?utf-8?B?ZlkzWTJ5VE5xNXd4eWZLZ2R0SjVjYjFyRFQzOHBMcVJ5aW9rcmV4K1dmMVRp?=
+ =?utf-8?B?eUlqMnB0VFVMWXFYVWl2cjEwUndYaC93MjZKTTg1bER2ZUo4V2JiUHlEYTl2?=
+ =?utf-8?B?blVTYjhia0FwQ0t3czFkRlhFcWdHaHcwUnpJZm9aODdWK0pWYXRpTlRYZUI1?=
+ =?utf-8?B?Y2xDNmx0c2xYRU9pbFhZNUp5c2NGaUsvY0RBc1NaTjJUUjBRVzBRaFZ4UmpC?=
+ =?utf-8?B?dnhXRFROYW14UHNDOGt4QTk1U3I4YU1nejVJdk00VTR5MTltUnNxaFNKNkhE?=
+ =?utf-8?B?bjczREJSMHNxN2pwczRGbitVK0tPMzdVUS82WGpCWnR5SHViZnFhYzZINTNV?=
+ =?utf-8?B?TjJoaHhzOVVCZE81MDh5MzlveUVpREhxbFh1SVRjcTJxNmRKQkRlcDBjWjlL?=
+ =?utf-8?B?VEhnMzBicTJYeTlXZW5ZQjZKK0ZkMi9lV0NDUUVOcmJLNGo1RDhDSHZPTi9t?=
+ =?utf-8?B?TEpiRmQ4Yno5MkVWMnJPRDBEUFc0bHRFQkRuV1B3RE1tWWFvNGtwQVBJRXpZ?=
+ =?utf-8?B?Zjl4WGE3d0c4RmVWV2U0aFNVak9QZWxSKzNBYkZFV3lNRWN4US90KzFGdWd4?=
+ =?utf-8?B?Zkp0RVNYZVdWZWZKaU1ua09VTEtQU2p0eThLcStmWVFhOXgvWVJsRFNac0J6?=
+ =?utf-8?B?eG9HOG9XS0pDNkpMd3VwMGdVd1pOS3Z3aTdPUjZ0ZS9aUlhMZHhQeVo3UW1O?=
+ =?utf-8?B?emxQSlMxNlhUUlZnUmxtd2oxYlJZUkxEL0k4ZUZmMlk1YlV2ampJVldtWCt6?=
+ =?utf-8?B?ZzhaNWllN0dZWDh1SXNCSi9JTFByUC8wc0dycGlZcjFFajQ5eHZjQzNXZVhV?=
+ =?utf-8?B?M3ltd29wemJjWjcySnFsajBpNVllaS83Z1Vac0ZjVGhFRE5jcHMzSVhxbHdj?=
+ =?utf-8?B?bnJJSk1QU3IvSU9kQ0xWSUJqdWdHU3M0MUZGdHJUbzBoUVZsc3dObStMeGIx?=
+ =?utf-8?B?MUJkcDI3T2ZtVHlESitTb1RiM092azJDMmpHQWxkVjBHeU5pa3dyK3V4ZWtx?=
+ =?utf-8?B?WVNHNUI2TG1KaWMwUkNScWduKzRQNkNncERWZngwcEdPNGRzNXB6T3FiZVhJ?=
+ =?utf-8?B?YTZWQ1lLUjBKS3c3Vm1hQVo5V05CZWYxczZyQi9xZkdnL1czNzF1QUZwUUpW?=
+ =?utf-8?B?cnphc0VPSHhnZVVLRTN3S2ZPYXJDZ0ZXUUUwTGR1TFFRNFJua3ZDNS9lTG5C?=
+ =?utf-8?B?SUYzTFFtNnVYVGpCYnFrcjJFSmtuSGpNak9hV1FwcDc5d21laVVLTVF3TTZN?=
+ =?utf-8?B?clE9PQ==?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f7bf031-8975-4e62-f45a-08ddca037cb2
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2025 15:23:35.1064
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2025 16:10:48.3346
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F2n3ykIyBK+PK5Dac+yp8YiH78caWTy3jF3ZcwymT0L3OqzUnWbeyJUe0ImWt+c+SAVqXdVo149wTLEx1U0qYPVWbtIVyULxX5/b+/55lfk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TO1PPF9CF16A047
+X-MS-Exchange-CrossTenant-UserPrincipalName: ppZFAi+0TU7kdsxWiRdJ/EMwxLhRu3XEKOG+K+uKVSQiWmA7D73gz+wwouVyW4AQNaWguWDjEmuT0ht9q4DvZw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7675
 
-On 2025-07-22 18:34, Paul E. McKenney wrote:
-> On Tue, Jul 22, 2025 at 06:11:00PM -0400, Joel Fernandes wrote:
->> On Mon, Jul 21, 2025 at 09:24:31AM -0700, Paul E. McKenney wrote:
->>> This commit adds no-trace variants of the srcu_read_lock_fast() and
->>> srcu_read_unlock_fast() functions for tracing use.
->>>
->>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>> Cc: Steven Rostedt <rostedt@goodmis.org>
->>> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->>> ---
->>>   include/linux/srcu.h | 25 +++++++++++++++++++++++++
->>>   1 file changed, 25 insertions(+)
->>>
->>> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
->>> index 478c73d067f7d..7a692bf8f99b9 100644
->>> --- a/include/linux/srcu.h
->>> +++ b/include/linux/srcu.h
->>> @@ -282,6 +282,20 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
->>>   	return retval;
->>>   }
->>>   
->>> +/*
->>> + * Used by tracing, cannot be traced and cannot call lockdep.
->>> + * See srcu_read_lock_fast() for more information.
->>> + */
->>> +static inline struct srcu_ctr __percpu *srcu_read_lock_fast_notrace(struct srcu_struct *ssp)
->>> +	__acquires(ssp)
+
+
+On 7/23/2025 9:32 AM, joelagnelf@nvidia.com wrote:
+> 
+> 
+>> On Jul 22, 2025, at 6:17 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
 >>
->> Should these also be marked with 'notrace' attribute?
->>
->> I am not sure what the precedent is, I do see a few examples of 'notrace' and
->> 'inline' in the same function signature though.
+>> ﻿This commit documents the implicit RCU readers that are implied by the
+>> this_cpu_inc() and atomic_long_inc() operations in __srcu_read_lock_fast()
+>> and __srcu_read_unlock_fast().  While in the area, fix the documentation
+>> of the memory pairing of atomic_long_inc() in __srcu_read_lock_fast().
 > 
-> Heh!!!
-> 
-> There are six instance of static-inline notrace functions, and eight
-> instances of static-inline non-notrace functions whose names contain
-> "_notrace", not counting the srcu_read_lock_fast_notrace() and
-> srcu_read_unlock_fast() functions currently under review.
-> 
-> My guess is that I should add "notrace" to handle the possible case
-> where the compiler declines to inline this function.  I will do this
-> on the next rebase unless I hear otherwise.
-> 
-> Steven, Mathieu, thoughts?
+> Just to clarify, the implication here is since SRCU-fast uses synchronize_rcu on the update side, these operations result in blocking of classical RCU too. So simply using srcu fast is another way of achieving the previously used pre-empt-disabling in the use cases.
 
-AFAIR, the always_inline gcc attribute takes care of making sure the
-notrace is not needed in addition.
+Hi Paul, it was nice sync'ing with you off-list. Following are my suggestions
+and where I am coming from:
 
-So I suspect that kernel APIs need to abide by the following rules
-to be usable by instrumentation code:
+1. For someone who doesn't know SRCU-fast depends on synchronize_rcu (me after a
+few beers :P), the word 'RCU' in the comment you added to this patch, might come
+across as 'which RCU are we referring to - SRCU or classical RCU or some other'.
+So I would call it 'classical RCU reader' in the comment.
 
-- if it's a function call, have a notrace attribute.
-- if it's an inline (which the compiler may decide to implement as a
-   function call), have a notrace attribute.
-- if it's an __always_inline, then there is no way the compiler can
-   possibly make it a function call, so the notrace would be useless
-   there.
+2. It would be good to call out specifically that, the SRCU-fast critical
+section is akin to a classical RCU reader, because of its implementation's
+dependence on synchronize_rcu() to overcome the lack of read-side memory barriers.
 
-So you may want to choose for either:
+3. I think since the potential size of these code comment suggestions, it may
+make sense to provide a bigger comment suggesting these than providing them
+inline as you did. And also calling out the tracing usecase in the comments for
+additional usecase clarification.
 
-- inline notrace, or
-- __always_inline
+I could provide a patch to do all this soon, as we discussed, as well (unless
+you're Ok with making this change as well).
 
-Depending on how much freedom you want to grant the compiler with
-respect to its inlining practices.
+Thanks!
 
-Thanks,
+ - Joel
 
-Mathieu
+
 
 
 > 
-> 							Thanx, Paul
+> Or is the rationale for this something else?
 > 
->> Other than that one nit:
->> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+> I would probably spell this out more in a longer comment above the if/else, than modify the inline comments.
+> 
+> But I am probably misunderstood the whole thing. :-(
+> 
+> -Joel
+> 
 >>
->> thanks,
+>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>> Cc: <bpf@vger.kernel.org>
 >>
->>   - Joel
+>> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+>> index 043b5a67ef71e..78e1a7b845ba9 100644
+>> --- a/include/linux/srcutree.h
+>> +++ b/include/linux/srcutree.h
+>> @@ -245,9 +245,9 @@ static inline struct srcu_ctr __percpu *__srcu_read_lock_fast(struct srcu_struct
+>>    struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
 >>
+>>    if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
+>> -        this_cpu_inc(scp->srcu_locks.counter); /* Y */
+>> +        this_cpu_inc(scp->srcu_locks.counter); // Y, and implicit RCU reader.
+>>    else
+>> -        atomic_long_inc(raw_cpu_ptr(&scp->srcu_locks));  /* Z */
+>> +        atomic_long_inc(raw_cpu_ptr(&scp->srcu_locks));  // Y, and implicit RCU reader.
+>>    barrier(); /* Avoid leaking the critical section. */
+>>    return scp;
+>> }
+>> @@ -271,9 +271,9 @@ static inline void __srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_
+>> {
+>>    barrier();  /* Avoid leaking the critical section. */
+>>    if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
+>> -        this_cpu_inc(scp->srcu_unlocks.counter);  /* Z */
+>> +        this_cpu_inc(scp->srcu_unlocks.counter);  // Z, and implicit RCU reader.
+>>    else
+>> -        atomic_long_inc(raw_cpu_ptr(&scp->srcu_unlocks));  /* Z */
+>> +        atomic_long_inc(raw_cpu_ptr(&scp->srcu_unlocks));  // Z, and implicit RCU reader.
+>> }
 >>
->>> +{
->>> +	struct srcu_ctr __percpu *retval;
->>> +
->>> +	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
->>> +	retval = __srcu_read_lock_fast(ssp);
->>> +	return retval;
->>> +}
->>> +
->>>   /**
->>>    * srcu_down_read_fast - register a new reader for an SRCU-protected structure.
->>>    * @ssp: srcu_struct in which to register the new reader.
->>> @@ -394,6 +408,17 @@ static inline void srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ct
->>>   	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_fast().");
->>>   }
->>>   
->>> +/*
->>> + * Used by tracing, cannot be traced and cannot call lockdep.
->>> + * See srcu_read_unlock_fast() for more information.
->>> + */
->>> +static inline void srcu_read_unlock_fast_notrace(struct srcu_struct *ssp,
->>> +						 struct srcu_ctr __percpu *scp) __releases(ssp)
->>> +{
->>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
->>> +	__srcu_read_unlock_fast(ssp, scp);
->>> +}
->>> +
->>>   /**
->>>    * srcu_up_read_fast - unregister a old reader from an SRCU-protected structure.
->>>    * @ssp: srcu_struct in which to unregister the old reader.
->>> -- 
->>> 2.40.1
->>>
+>> void __srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
+>>
 
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
