@@ -1,82 +1,41 @@
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB83C1DFE0B;
-	Thu, 24 Jul 2025 17:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F0C10A1F;
+	Sat, 26 Jul 2025 02:46:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753378623; cv=none; b=SkIvDlj9bMS3ZlhkrnMUsm9UlXrALqB/eV5YS0Vtor/JolHtezaMfJA6ua/XjqAODYdMEIO3r0ByZ/9FNU51kJoxevCV33qKtJkT/x5jGdB4DpJJw/+d8JzDTmBceLG3ajx5jlFPM0U8jALLyT4CCh1XbW0lZ51oCqt7yPEKq+Q=
+	t=1753497974; cv=none; b=KfBCarzC/OLw0+O1F1EnQK3c8ru7MVhIqE+ERlKlL794PiG0l9jL3zINVwzR3TnVnDRVXoCg21kUX+2JTLDI4SKIA/navj+XQAcmdNAmm+5t8oijuBP0c9mEAGYsco0yCpUd8h3EnZp5WjmHvHYTrlhwFYbWXKUgPov4IL3ExdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753378623; c=relaxed/simple;
-	bh=HV6X+Wq063Ubgqw5UZkXeD+Lotlatxd7ATFDPIMPXOg=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dybR8U/gtmDD534tlsv9FsdHEJeza1etqUaqIRRQES3NrfC+RU8GfapppFypzMZ0O5WD7I1Bfhx05Aac3t3R6PzJc5H4/C2BwOIPh/qD0tVXW3MGVe7FVHrAUzJw6m93u3PNtMruDnekKhmFz/li4kjvZcvYBtnZrfRedjh6XY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=faMsSSG3; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1753497974; c=relaxed/simple;
+	bh=Nfkk8YoHU5zbCSE3zfMLyNKb+yciYmAnYZ3+Gz9hfvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=pMi76iDpHMfHjoaAbfMiCLEl/FIuev6q1u7iArcr8CVn4UZ/fGEyxxSaddd8anCQUSUSGsOmBafcKmBAPuJBqcefoq042k7IRUN4cPnFM/0RlNLrOUkjnLkQh5tzGD/fowEoBCFOr37mbJBZkq+evI500/94xKmRecz2ot/4Hpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gflMb3HV; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="faMsSSG3"
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-55502821bd2so1430496e87.2;
-        Thu, 24 Jul 2025 10:37:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753378620; x=1753983420; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=u+0psVHngmmkd6BNaJj165FgVIaF52MaA8fovNqmaAQ=;
-        b=faMsSSG3YNMBjroDx1SJi4rDSe/3jIes6Y0Nlh8pyQUkpmXLgGuKSlq9QIP5Lhrb7Q
-         27vgzAINlM62CFvAekliHAsNk5ED0c2Tu10dEBWog7IUjxtiPEr5EKWDKVwA4nQ5oUNf
-         bF1jpQYFIzM2ACVl8XY9RTEUgE9jPD9vcGz80n8WOfo3rpJNpdVViJYfK8d2bCDi9+qI
-         eKLwQZLtzUqAbdLDLyTEc00c3QbyPT37zbf/OaEnWyL0yvSEsOvPMwVuWV9nxlFVutVL
-         iMdS+FOm6b7KYFiKLoJVdJDTCnuwZyy1Tt+vHCPn83tvIE3AQIr29DV9T3a78RHZjV/o
-         pYag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753378620; x=1753983420;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u+0psVHngmmkd6BNaJj165FgVIaF52MaA8fovNqmaAQ=;
-        b=j3DmVwiVbRILoAEd0ePvEFjRAV3Q7AgXaIeu+tsoOyLNNgOP+lv1Cm6GqNLwzdqOLY
-         HQ/hmCsRUX5iv7GjC9sWgvGD0otLEto0CnDVd+gp13rQ6Pu582xTErVDNd/UIdjKVYpt
-         qOsFKnYxjzN03Ci7suakgRqPNyFRFEOjpubrmYCbJzK0PgRbDGryci9Y1HiDjaqx6WqG
-         0mGf5wDHFSg6Hhp+7W7b2lDMl5Z1N3w+c5v4LG8EsPuCuLmVG/xX3uW/y9yq8DAYCxtx
-         lD8rCtK4rzEJQaQWrMz80gbuhoQ0xDDUeeibpQuLse1ZzXQccBZrz/BEFf9l3PPPPO29
-         Upag==
-X-Forwarded-Encrypted: i=1; AJvYcCU5psw6bMLV0yn46+1xafIMWGc0AmKN7+jxC7xkyJ0o8uChSj145gzi4HxXILqrQCCU5zr3cjh8BykXF8U=@vger.kernel.org, AJvYcCVAZ/JagPoDn5f6YBPFrG29I2p01sp+aTWDSjpbcaHhs/asTLD2k/tBHB0W39kvz48oLCMq@vger.kernel.org
-X-Gm-Message-State: AOJu0YxGLX6mpc3Q+XSa8Eem7m1VLi/ew59iFt0M398zk/m2WoJAa9Ca
-	RSqcdtJREd9o8wTOrsJFv4SL4JvrQ35N9KrlXuy+UYmBpOKJTEC7JO/C
-X-Gm-Gg: ASbGnctkegWDd/8CUxihqaH6zULngsaLUvoPoFl0nCqZmryUMzERumfh+rSitnSLaIk
-	yeAt1QU6NMQRdaWzLzax25Y3s86ft09dr6RO3GJ1N24bVDia/gYWTWagrVKUMCJmfrQXhVk90ir
-	VPhDGvOkKh8DudC1woLjR4Pq7XuVliGmD7zsuvhj3iXr6dMOaJJsE36PiAQc6yjVAZ8fQSlqmHW
-	cWFago2txs7NlTeB9I7XaXkNT9jnyoTIL0GArvP8OxjpjgzT6I7jxr2uNcNs87k3mQcIjF9kBxM
-	xUPwC5iB5u+KMVMEI5ITi8XyLrsHdQLoSIBX3uuSZE9jtl85gUDchiVodFgzKNqBGkSLKLHUw7R
-	WVfA5PhZMh1w52/HCnVNO7R6bodA2Lxyt8/EZGRIRRKejIpHhBw8j
-X-Google-Smtp-Source: AGHT+IFJ0U7TkNADQ2AfHDBSDKSrNM+CuHEwo6+dh7Yi/pvc6GyK1HnMSXZ+oyUuzgfWZ9O/y6V/sQ==
-X-Received: by 2002:a05:6512:1104:b0:553:2c65:f1d1 with SMTP id 2adb3069b0e04-55a5137e065mr2015821e87.13.1753378619517;
-        Thu, 24 Jul 2025 10:36:59 -0700 (PDT)
-Received: from pc636 (host-90-233-212-206.mobileonline.telia.com. [90.233.212.206])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-55b5b348ab3sm25610e87.53.2025.07.24.10.36.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jul 2025 10:36:58 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 24 Jul 2025 19:36:56 +0200
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Harry Yoo <harry.yoo@oracle.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	maple-tree@lists.infradead.org
-Subject: Re: [PATCH v5 02/14] slab: add sheaf support for batching
- kfree_rcu() operations
-Message-ID: <aIJvOLqljFiN_VLR@pc636>
-References: <20250723-slub-percpu-caches-v5-0-b792cd830f5d@suse.cz>
- <20250723-slub-percpu-caches-v5-2-b792cd830f5d@suse.cz>
- <aIEQQ0MW5e8KMvVL@pc636>
- <9cad7b86-4b77-4881-9cbf-637b6a61695d@suse.cz>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gflMb3HV"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C20C8C4CEE7;
+	Sat, 26 Jul 2025 02:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753497974;
+	bh=Nfkk8YoHU5zbCSE3zfMLyNKb+yciYmAnYZ3+Gz9hfvg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=gflMb3HVzZGj4rQLQFv/z1izpHT25agKqOKslu7OO9IhNLja4O+/D0ooZmdZGfdOi
+	 HM7XeBUeKSHw5W38ryRoijcEgkGRNx2toVJM2KU4qklEjyHNNreWL2S8MXVcAteOm0
+	 fgOCYroPn2Btlhtp+232+erHOJELglM4zsXiiWBDo/chNpuwaeZbZTDwrpK1D4nOEn
+	 fuVlQm9naxR/DTT6hemYT8DpzswbHZlgaBMmBQKYP/bM3tV6D91osQ3g0Gz16Si7ob
+	 pgGyZl2Qg9K/YMtI2Wa/QE+mTo3l1Sh4IrdOMt30dc4CbISdaoh0yFUeuG6P7ifx0a
+	 nlQWgS9BET0zg==
+Date: Sat, 26 Jul 2025 08:16:05 +0530
+From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
+To: torvalds@linux-foundation.org
+Cc: paulmck@kernel.org, joelagnelf@nvidia.com, frederic@kernel.org,
+	boqun.feng@gmail.com, urezki@gmail.com, qiang.zhang1211@gmail.com,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rcu@vger.kernel.org, Tze-nan.Wu@mediatek.com,
+	a.sadovnikov@ispras.ru
+Subject: [GIT PULL] RCU changes for v6.17
+Message-ID: <20250726024605.GA17131@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -85,93 +44,212 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9cad7b86-4b77-4881-9cbf-637b6a61695d@suse.cz>
 
-On Thu, Jul 24, 2025 at 04:30:49PM +0200, Vlastimil Babka wrote:
-> On 7/23/25 18:39, Uladzislau Rezki wrote:
-> > On Wed, Jul 23, 2025 at 03:34:35PM +0200, Vlastimil Babka wrote:
-> >>  static bool
-> >>  need_offload_krc(struct kfree_rcu_cpu *krcp)
-> >>  {
-> >> @@ -1952,6 +1973,9 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
-> >>  	if (!head)
-> >>  		might_sleep();
-> >>  
-> >> +	if (kfree_rcu_sheaf(ptr))
-> >> +		return;
-> >> +
-> >>
-> > I have a question here. kfree_rcu_sheaf(ptr) tries to revert freeing
-> > an object over one more newly introduced path. This patch adds infra
-> > for such purpose whereas we already have a main path over which we
-> > free memory.
-> > 
-> > Why do not we use existing logic? As i see you can do:
-> > 
-> >    if (unlikely(!slab_free_hook(s, p[i], init, true))) {
-> >         p[i] = p[--sheaf->size];
-> >         continue;
-> >    }
-> > 
-> > in the kfree_rcu_work() function where we process all ready to free objects.
-> 
-> I'm not sure I understand. In kfree_rcu_work() we process individual
-> objects. There is no sheaf that you reference in the code above?
-> Or are you suggesting we add e.g. a "channel" of sheaves to process in
-> addition to the existing channels of objects?
-> 
-There is no that above "sheaf" code. I put it just for reference.
-I suggested to put such objects into regular existing channels and
-process them. But for that purpose we need to check each SLAB object 
-because currently we can free them over kfree_bulk().
+Hello Linus,
 
-A separate channel can also be maintained but it would add more logic
-on top but at least it would consolidate the freeing path and use one
-RCU machinery.
+When the merge window opens, please pull this RCU update.
 
-From the other hand what else can we free? You have a code in your patch:
+The following changes since commit 86731a2a651e58953fc949573895f2fa6d456841:
 
-	if (is_vmalloc_addr(obj))
-		return false;
+  Linux 6.16-rc3 (2025-06-22 13:30:08 -0700)
 
-	folio = virt_to_folio(obj);
-	if (unlikely(!folio_test_slab(folio)))
-		return false;
+are available in the Git repository at:
 
-vmalloc pointers go its own way, others are SLAB. What else can it be?
-i.e. folio_test_slab() checks if obj->folio is part of the SLAB objects.
-Can it return zero?
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu.release.v6.17
 
-> > I mean, for slab objects we can replace kfree_bulk() and scan all pointers
-> > and free them over slab_free_hook().
-> 
-> The desired outcome after __rcu_free_sheaf_prepare() is to take the whole
-> sheaf and have it reused, not free individual objects. So we call
-> slab_free_hook() in __rcu_free_sheaf_prepare() but don't actually free
-> individual objects as necessary.
-> 
-I see.
+for you to fetch changes up to cc1d1365f0f414f6522378867baa997642a7e6b2:
 
-> > Also we do use a pooled API and other improvements to speed up freeing.
-> 
-> It could be useful to know the details as in Suren's measurements there's
-> issues with kfree_rcu() using sheaves when lazy rcu is used. Is the
-> kfree_rcu() infra avoiding being too lazy somehow? We could use the same
-> techniques for sheaves.
-> 
-I think, it is because your patch uses call_rcu() and not call_rcu_harry().
-There is one more tricky part, it is about how long rcu_free_sheaf()
-callback executes, because there are other callbacks in a queue which
-can wait its time.
+  Merge branches 'rcu-exp.23.07.2025', 'rcu.22.07.2025', 'torture-scripts.16.07.2025', 'srcu.19.07.2025', 'rcu.nocb.18.07.2025' and 'refscale.07.07.2025' into rcu.merge.23.07.2025 (2025-07-23 21:42:20 +0530)
 
-kfree_rcu() infra does not use call_rcu() chain because it can be slow.
-We can delay a process of freed objects if an array of pointers is not
-yet full. When a first object is added we arm the timer to kick the
-process in 5 seconds. Once an array becomes full the logic switches into
-a fast mode, reprogram a timer to trigger a process asap.
+Please note that below patch, which was initially picked for RCU next
+testing has been removed, as it gave false positives with RCU torture
+test. 
 
-Also, this patch creates a collision because it goes its own way. We
-have a kvfree_rcu_barrier() which becomes broken if this patch applied?
+https://lore.kernel.org/rcu/20250429134304.3824863-6-frederic@kernel.org/
 
---
-Uladzislau Rezki
+----------------------------------------------------------------
+RCU pull request for v6.17
+
+This pull request contains the following branches:
+
+rcu-exp.23.07.2025
+
+  - Protect against early RCU exp quiescent state reporting during exp
+    grace period initialization.
+
+  - Remove superfluous barrier in task unblock path.
+
+  - Remove the CPU online quiescent state report optimization, which is
+    error prone for certain scenarios.
+
+  - Add warning for unexpected pending requested expedited quiescent
+    state on dying CPU.
+
+rcu.22.07.2025
+
+  - Robustify rcu_is_cpu_rrupt_from_idle() by using more accurate
+    indicators of the actual context tracking state of a CPU.
+
+  - Handle ->defer_qs_iw_pending field data race.
+
+  - Enable rcu_normal_wake_from_gp by default on systems with <= 16 CPUs.
+
+  - Fix lockup in rcu_read_unlock() due to recursive irq_exit() calls.
+
+  - Refactor expedited handling condition in rcu_read_unlock_special().
+
+  - Documentation updates for hotplug and GP init scan ordering,
+    separation of rcu_state and rnp's gp_seq states, quiescent state
+    reporting for offline CPUs.
+
+torture-scripts.16.07.2025
+
+  - Cleanup and improve scripts : remove superfluous warnings for disabled
+    tests; better handling of kvm.sh --kconfig arg; suppress some confusing
+    diagnostics; tolerate bad kvm.sh args; add new diagnostic for build
+    output; fail allmodconfig testing on warnings.
+
+  - Include RCU_TORTURE_TEST_CHK_RDR_STATE config for KCSAN kernels.
+
+  - Disable default RCU-tasks and clocksource-wdog testing on arm64.
+
+  - Add EXPERT Kconfig option for arm64 KCSAN runs.
+
+  - Remove SRCU-lite testing.
+
+rcutorture.16.07.2025
+
+  - Start torture writer threads creation after reader threads to handle
+    race in SRCU-P scenario.
+
+  - Add SRCU down_read()/up_read() test.
+
+  - Add diagnostics for delayed SRCU up_read(), unmatched up_read(), print
+    number of up/down readers and the number of such readers which
+    migrated to other CPU.
+
+  - Ignore certain unsupported configurations for trivial RCU test.
+
+  - Fix splats in RT kernels due to inaccurate checks for BH-disabled
+    context.
+
+  - Enable checks and logs to capture intentionally exercised unexpected
+    scenarios (too short readers) for BUSTED test.
+
+  - Remove SRCU-lite testing.
+
+srcu.19.07.2025
+
+  - Expedite SRCU-fast grace periods.
+
+  - Remove SRCU-lite implementation.
+
+  - Add guards for SRCU-fast readers.
+
+rcu.nocb.18.07.2025
+
+  - Dump NOCB group leader state on stall detection.
+
+  - Robustify nocb_cb_kthread pointer accesses.
+
+  - Fix delayed execution of hurry callbacks when LAZY_RCU is enabled.
+
+refscale.07.07.2025
+
+  - Fix multiplication overflow in "loops" and "nreaders" calculations.
+
+----------------------------------------------------------------
+Artem Sadovnikov (1):
+      refscale: Check that nreaders and loops multiplication doesn't overflow
+
+Frederic Weisbecker (6):
+      rcu/exp: Protect against early QS report
+      rcu: Robustify rcu_is_cpu_rrupt_from_idle()
+      rcu/nocb: Dump gp state even if rdp gp itself is not offloaded
+      rcu/exp: Remove confusing needless full barrier on task unblock
+      rcu/exp: Remove needless CPU up quiescent state report
+      rcu/exp: Warn on QS requested on dying CPU
+
+Joel Fernandes (5):
+      rcu: Fix rcu_read_unlock() deadloop due to IRQ work
+      rcu: Refactor expedited handling check in rcu_read_unlock_special()
+      rcu: Document GP init vs hotplug-scan ordering requirements
+      rcu: Document separation of rcu_state and rnp's gp_seq
+      rcu: Document concurrent quiescent state reporting for offline CPUs
+
+Neeraj Upadhyay (AMD) (1):
+      Merge branches 'rcu-exp.23.07.2025', 'rcu.22.07.2025', 'torture-scripts.16.07.2025', 'srcu.19.07.2025', 'rcu.nocb.18.07.2025' and 'refscale.07.07.2025' into rcu.merge.23.07.2025
+
+Paul E. McKenney (32):
+      rcutorture: Print only one rtort_pipe_count splat
+      rcutorture: Start rcu_torture_writer() after rcu_torture_reader()
+      rcutorture: Make rcutorture_one_extend_check() account for hard IRQs
+      rcutorture: Add tests for SRCU up/down reader primitives
+      rcutorture: Pull rcu_torture_updown() loop body into new function
+      rcutorture: Complain if an ->up_read() is delayed more than 10 seconds
+      rcutorture: Check for ->up_read() without matching ->down_read()
+      rcutorture: Check for no up/down readers at task level
+      rcutorture: Print number of RCU up/down readers and migrations
+      rcutorture: Drop redundant "insoftirq" parameters
+      rcutorture: Make Trivial RCU ignore onoff_interval and shuffle_interval
+      rcutorture: Make BUSTED scenario check and log readers
+      torture: Suppress torture.sh "Zero time" messages for disabled tests
+      torture: Permit multiple space characters in kvm.sh --kconfig argument
+      torture: Make torture.sh KCSAN runs set CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE=y
+      torture: Default --no-rcutasksflavors on arm64
+      torture: Default --no-clocksourcewd on arm64
+      rcu: Protect ->defer_qs_iw_pending from data race
+      torture: Provide EXPERT Kconfig option for arm64 KCSAN torture.sh runs
+      torture: Suppress "find" diagnostics from torture.sh --do-none run
+      torture: Extract testid.txt generation to separate script
+      torture: Add textid.txt file to --do-allmodconfig and --do-rcu-rust runs
+      torture: Make torture.sh tolerate runs having bad kvm.sh arguments
+      torture: Add "ERROR" diagnostic for testing kernel-build output
+      torture: Make torture.sh --allmodconfig testing fail on warnings
+      torture: Remove support for SRCU-lite
+      rcutorture: Remove SRCU-lite scenarios
+      rcutorture: Remove support for SRCU-lite
+      srcu: Expedite SRCU-fast grace periods
+      srcu: Remove SRCU-lite implementation
+      checkpatch: Remove SRCU-lite deprecation
+      srcu: Add guards for SRCU-fast readers
+
+Tze-nan Wu (1):
+      rcu: Fix delayed execution of hurry callbacks
+
+Uladzislau Rezki (Sony) (2):
+      rcu: Enable rcu_normal_wake_from_gp on small systems
+      Documentation/kernel-parameters: Update rcu_normal_wake_from_gp doc
+
+Zqiang (2):
+      rcutorture: Fix rcutorture_one_extend_check() splat in RT kernels
+      rcu/nocb: Fix possible invalid rdp's->nocb_cb_kthread pointer access
+
+ Documentation/RCU/Design/Data-Structures/Data-Structures.rst |  33 ++++++
+ Documentation/RCU/Design/Requirements/Requirements.rst       | 128 +++++++++++++++++++++++
+ Documentation/admin-guide/kernel-parameters.txt              |   3 +-
+ include/linux/srcu.h                                         |  54 ++--------
+ include/linux/srcutiny.h                                     |   3 -
+ include/linux/srcutree.h                                     |  38 -------
+ kernel/rcu/rcutorture.c                                      | 356 +++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ kernel/rcu/refscale.c                                        |  42 ++------
+ kernel/rcu/srcutree.c                                        |   2 +
+ kernel/rcu/tree.c                                            |  80 ++++++++++++---
+ kernel/rcu/tree.h                                            |  13 ++-
+ kernel/rcu/tree_exp.h                                        |  59 ++---------
+ kernel/rcu/tree_nocb.h                                       |  10 +-
+ kernel/rcu/tree_plugin.h                                     | 122 ++++++++++++++++++----
+ kernel/rcu/tree_stall.h                                      |   3 +-
+ scripts/checkpatch.pl                                        |   2 -
+ tools/testing/selftests/rcutorture/bin/kvm-build.sh          |   2 +-
+ tools/testing/selftests/rcutorture/bin/kvm.sh                |  15 +--
+ tools/testing/selftests/rcutorture/bin/mktestid.sh           |  29 ++++++
+ tools/testing/selftests/rcutorture/bin/torture.sh            |  78 +++++++++++---
+ tools/testing/selftests/rcutorture/configs/rcu/BUSTED        |   3 +
+ tools/testing/selftests/rcutorture/configs/rcu/CFLIST        |   1 -
+ tools/testing/selftests/rcutorture/configs/rcu/SRCU-L        |  10 --
+ tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot   |   3 -
+ 24 files changed, 770 insertions(+), 319 deletions(-)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/mktestid.sh
+ delete mode 100644 tools/testing/selftests/rcutorture/configs/rcu/SRCU-L
+ delete mode 100644 tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot
