@@ -1,255 +1,126 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F0C10A1F;
-	Sat, 26 Jul 2025 02:46:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5AC3185E7F
+	for <rcu@vger.kernel.org>; Wed, 30 Jul 2025 02:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753497974; cv=none; b=KfBCarzC/OLw0+O1F1EnQK3c8ru7MVhIqE+ERlKlL794PiG0l9jL3zINVwzR3TnVnDRVXoCg21kUX+2JTLDI4SKIA/navj+XQAcmdNAmm+5t8oijuBP0c9mEAGYsco0yCpUd8h3EnZp5WjmHvHYTrlhwFYbWXKUgPov4IL3ExdE=
+	t=1753842246; cv=none; b=YRovAI6xJT85Q1rW/CmIfG+9MJwD7Oa0RG1XpXIZctbKxbvQo+YUjiR3V1Uz9dCzBoDVzglfEIsJdCE6Og/Ntv4FwobW6lLSgLzENGICVyopV0kaMzSsX1WhuVa912CVrT6IGHBwwZ7BAzUf2wQW4OLr6sf5uBHIOw8YcJjYgj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753497974; c=relaxed/simple;
-	bh=Nfkk8YoHU5zbCSE3zfMLyNKb+yciYmAnYZ3+Gz9hfvg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=pMi76iDpHMfHjoaAbfMiCLEl/FIuev6q1u7iArcr8CVn4UZ/fGEyxxSaddd8anCQUSUSGsOmBafcKmBAPuJBqcefoq042k7IRUN4cPnFM/0RlNLrOUkjnLkQh5tzGD/fowEoBCFOr37mbJBZkq+evI500/94xKmRecz2ot/4Hpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gflMb3HV; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1753842246; c=relaxed/simple;
+	bh=H0UUCMwPbauJFwXKf5FEJMbuxTY4gBIHnlfo177PUBI=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=tQZDdUPebEATq4y/PlZ7cuEyNMN2D5cnBVmlvnCgMR9uoZf3jwzhzrII8JdOV/+oXQrh/i2oYJEn7odt5KEUjt3aRp8UOp2Eboic2R9Vk8HUrYi4K93UawLkNsIDi4+dxsDRBHyS8cs+cgRXIYBCuFYBhg+nOWkItmUSnI55q2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuzhuo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3iX+nsSS; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yuzhuo.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gflMb3HV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C20C8C4CEE7;
-	Sat, 26 Jul 2025 02:46:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753497974;
-	bh=Nfkk8YoHU5zbCSE3zfMLyNKb+yciYmAnYZ3+Gz9hfvg=;
-	h=Date:From:To:Cc:Subject:From;
-	b=gflMb3HVzZGj4rQLQFv/z1izpHT25agKqOKslu7OO9IhNLja4O+/D0ooZmdZGfdOi
-	 HM7XeBUeKSHw5W38ryRoijcEgkGRNx2toVJM2KU4qklEjyHNNreWL2S8MXVcAteOm0
-	 fgOCYroPn2Btlhtp+232+erHOJELglM4zsXiiWBDo/chNpuwaeZbZTDwrpK1D4nOEn
-	 fuVlQm9naxR/DTT6hemYT8DpzswbHZlgaBMmBQKYP/bM3tV6D91osQ3g0Gz16Si7ob
-	 pgGyZl2Qg9K/YMtI2Wa/QE+mTo3l1Sh4IrdOMt30dc4CbISdaoh0yFUeuG6P7ifx0a
-	 nlQWgS9BET0zg==
-Date: Sat, 26 Jul 2025 08:16:05 +0530
-From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
-To: torvalds@linux-foundation.org
-Cc: paulmck@kernel.org, joelagnelf@nvidia.com, frederic@kernel.org,
-	boqun.feng@gmail.com, urezki@gmail.com, qiang.zhang1211@gmail.com,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rcu@vger.kernel.org, Tze-nan.Wu@mediatek.com,
-	a.sadovnikov@ispras.ru
-Subject: [GIT PULL] RCU changes for v6.17
-Message-ID: <20250726024605.GA17131@neeraj.linux>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3iX+nsSS"
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-74d12fa4619so5617762b3a.0
+        for <rcu@vger.kernel.org>; Tue, 29 Jul 2025 19:24:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1753842244; x=1754447044; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5Ci2ReqvExh5hUJsZr8hncyF/IZp83k8aCl7UPO5nf8=;
+        b=3iX+nsSS5v4DmZb69+fiu5gmJYfkfoyjOal8kwmHI+haOZ1kXHfZ57fg0xA6T8c49n
+         MNwtrJ1TdBC2IsRVCLxxppwSBhmhHlxZ3K4JeWr6FjSXpSAHdtNqjhnk9aqlDAfkvTX2
+         GwaPRFB6IfGASpslh0gLaX6g6rWVubGt0teOf8/QD5+cVF1ZSzMoMO+CP6sx9lZRMiqZ
+         quhHHohhVd4rprrtUIsK02siQC4G9wVhwdwGCyCnvvTaFk+6jxw98feP6OevdpTxMNlj
+         HxtQVJM+idrlGUIxHBwzFARHy9OHT7nGKmuVsYRykVM0SKN6L5WzztIM8T/zS5HtBPzg
+         JZDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753842244; x=1754447044;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5Ci2ReqvExh5hUJsZr8hncyF/IZp83k8aCl7UPO5nf8=;
+        b=qp5wYGu35dL/a0jFq09z9izI1QNLD8ialsPgMw4YKgFA8f/nC+8GgHaiCQSmews3uv
+         1BneB3a5lIXCF/OTgz12JEn5pTPBmS8MVAAP9jtgwQ60eHRHxRsibOFhXz1OL91SovSw
+         PFSngwjk7jXuIxDNv0W5cmyUy5axPte/CjVt25XD3fkDuMacZaixIa2RY1qNYqQutLaJ
+         6M+Kx0sLbTQq75LiL3hcYNXDv7VyF3TdF87hRjM13TxtfVk3Ukvtb/hiOftGqwsUEkt7
+         vLYV7c1sy5SBkECgaQGNDNXQSZlBsMeEAInJpM/ycMTChdXJvGsVqeaRvzAtbExXC+j+
+         BLAA==
+X-Forwarded-Encrypted: i=1; AJvYcCXrpI4iKb9btubvi3qre93TMf1DU3mZeUBf51oOH6gPSnh9JYfQqPYMEhqBdQa4KY9wghM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQ5EwZ8GiBQ4LPe72tcNVZlXfk0cg5e+3Kz9GYw/D1Iy8keS+F
+	efk2FOD4TqXM4bBC/kuhQbcVIaWIIkUFhG57InCjgb8fH1oif4ee0HQaULEeAN4Cgczx4w4lWBC
+	PVkt/Kw==
+X-Google-Smtp-Source: AGHT+IGCk06yTemJIvRZYVkO5wpPDlMdnXl+JYzRbjc4qUTdc6uFzIoU4ooIBU7ilF26pnQ7F85gFRA5qrM=
+X-Received: from pfhx21.prod.google.com ([2002:a05:6a00:1895:b0:747:af58:72ca])
+ (user=yuzhuo job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:1152:b0:748:33f3:8da3
+ with SMTP id d2e1a72fcca58-76ab30c3c7amr2430894b3a.19.1753842243778; Tue, 29
+ Jul 2025 19:24:03 -0700 (PDT)
+Date: Tue, 29 Jul 2025 19:23:43 -0700
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.50.1.552.g942d659e1b-goog
+Message-ID: <20250730022347.71722-1-yuzhuo@google.com>
+Subject: [PATCH v1 0/4] rcuscale: Add debugfs file based controls and CPU
+ affinity offset
+From: Yuzhuo Jing <yuzhuo@google.com>
+To: Ian Rogers <irogers@google.com>, Yuzhuo Jing <yzj@umich.edu>, Jonathan Corbet <corbet@lwn.net>, 
+	Davidlohr Bueso <dave@stgolabs.net>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, 
+	Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>, Frank van der Linden <fvdl@google.com>, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Cc: Yuzhuo Jing <yuzhuo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hello Linus,
+In an effort to add RCU benchmarks to the perf tool and to improve
+the base-metal rcuscale tests, this patch series adds several auxiliary
+features useful for testing tools.
 
-When the merge window opens, please pull this RCU update.
+This series introduces a few rcuscale options:
+  * writer_no_print: skip writer duration printing during shutdown, but
+    instead let users read from the new "writer_durations" debugfs file.
+    This drastically improves cleanup speed.
+  * block_start: an option to hold all worker thread until the new
+    debugfs "should_start" file is written.
+  * {reader,writer,kfree}_cpu_offset: the starting value of CPU affinity
+    for each type of threads.  This can be used to avoid scheduling
+    different types of threads on the same CPU.  The 4th patch in this
+    series shows drastic performance differences w/ and w/o overlaps.
 
-The following changes since commit 86731a2a651e58953fc949573895f2fa6d456841:
+This patch series creates an "rcuscale" folder in debugfs, containing
+the following files:
+  * writer_durations: a CSV formatted file containing writer id and
+    writer durations.
+  * {reader,writer,kfree}_tasks: the list of kernel task PIDs for
+    external tools to attach to.
+  * should_start: a writable file to signal the start of the experiment,
+    used in conjunction with the new "block_start" option.
+  * test_complete: a readable file to indicate whether the experiment has
+    finished or not.
 
-  Linux 6.16-rc3 (2025-06-22 13:30:08 -0700)
+RFCs:
+  * Should those new files reside in debugfs or in procfs?
+  * What format should be used for the writer_duartions file, and what
+    documentations should be updated for the file format definition?
+  * In the 4th patch, we see different characteristics between overlap
+    and non-overlap.  Current rcuscale creates nr_cpu readers and nr_cpu
+    writers, thus scheduling 2nr_cpu tasks on nr_cpu CPUs.  Should we
+    consider changes to this behavior?  Or add automatic conflict
+    resolutions when total threads <= nr_cpu.
 
-are available in the Git repository at:
+Thank you!
 
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu.release.v6.17
+Yuzhuo Jing (4):
+  rcuscale: Create debugfs file for writer durations
+  rcuscale: Create debugfs files for worker thread PIDs
+  rcuscale: Add file based start/finish control
+  rcuscale: Add CPU affinity offset options
 
-for you to fetch changes up to cc1d1365f0f414f6522378867baa997642a7e6b2:
+ .../admin-guide/kernel-parameters.txt         |  29 ++
+ kernel/rcu/rcuscale.c                         | 361 +++++++++++++++++-
+ 2 files changed, 377 insertions(+), 13 deletions(-)
 
-  Merge branches 'rcu-exp.23.07.2025', 'rcu.22.07.2025', 'torture-scripts.16.07.2025', 'srcu.19.07.2025', 'rcu.nocb.18.07.2025' and 'refscale.07.07.2025' into rcu.merge.23.07.2025 (2025-07-23 21:42:20 +0530)
+-- 
+2.50.1.552.g942d659e1b-goog
 
-Please note that below patch, which was initially picked for RCU next
-testing has been removed, as it gave false positives with RCU torture
-test. 
-
-https://lore.kernel.org/rcu/20250429134304.3824863-6-frederic@kernel.org/
-
-----------------------------------------------------------------
-RCU pull request for v6.17
-
-This pull request contains the following branches:
-
-rcu-exp.23.07.2025
-
-  - Protect against early RCU exp quiescent state reporting during exp
-    grace period initialization.
-
-  - Remove superfluous barrier in task unblock path.
-
-  - Remove the CPU online quiescent state report optimization, which is
-    error prone for certain scenarios.
-
-  - Add warning for unexpected pending requested expedited quiescent
-    state on dying CPU.
-
-rcu.22.07.2025
-
-  - Robustify rcu_is_cpu_rrupt_from_idle() by using more accurate
-    indicators of the actual context tracking state of a CPU.
-
-  - Handle ->defer_qs_iw_pending field data race.
-
-  - Enable rcu_normal_wake_from_gp by default on systems with <= 16 CPUs.
-
-  - Fix lockup in rcu_read_unlock() due to recursive irq_exit() calls.
-
-  - Refactor expedited handling condition in rcu_read_unlock_special().
-
-  - Documentation updates for hotplug and GP init scan ordering,
-    separation of rcu_state and rnp's gp_seq states, quiescent state
-    reporting for offline CPUs.
-
-torture-scripts.16.07.2025
-
-  - Cleanup and improve scripts : remove superfluous warnings for disabled
-    tests; better handling of kvm.sh --kconfig arg; suppress some confusing
-    diagnostics; tolerate bad kvm.sh args; add new diagnostic for build
-    output; fail allmodconfig testing on warnings.
-
-  - Include RCU_TORTURE_TEST_CHK_RDR_STATE config for KCSAN kernels.
-
-  - Disable default RCU-tasks and clocksource-wdog testing on arm64.
-
-  - Add EXPERT Kconfig option for arm64 KCSAN runs.
-
-  - Remove SRCU-lite testing.
-
-rcutorture.16.07.2025
-
-  - Start torture writer threads creation after reader threads to handle
-    race in SRCU-P scenario.
-
-  - Add SRCU down_read()/up_read() test.
-
-  - Add diagnostics for delayed SRCU up_read(), unmatched up_read(), print
-    number of up/down readers and the number of such readers which
-    migrated to other CPU.
-
-  - Ignore certain unsupported configurations for trivial RCU test.
-
-  - Fix splats in RT kernels due to inaccurate checks for BH-disabled
-    context.
-
-  - Enable checks and logs to capture intentionally exercised unexpected
-    scenarios (too short readers) for BUSTED test.
-
-  - Remove SRCU-lite testing.
-
-srcu.19.07.2025
-
-  - Expedite SRCU-fast grace periods.
-
-  - Remove SRCU-lite implementation.
-
-  - Add guards for SRCU-fast readers.
-
-rcu.nocb.18.07.2025
-
-  - Dump NOCB group leader state on stall detection.
-
-  - Robustify nocb_cb_kthread pointer accesses.
-
-  - Fix delayed execution of hurry callbacks when LAZY_RCU is enabled.
-
-refscale.07.07.2025
-
-  - Fix multiplication overflow in "loops" and "nreaders" calculations.
-
-----------------------------------------------------------------
-Artem Sadovnikov (1):
-      refscale: Check that nreaders and loops multiplication doesn't overflow
-
-Frederic Weisbecker (6):
-      rcu/exp: Protect against early QS report
-      rcu: Robustify rcu_is_cpu_rrupt_from_idle()
-      rcu/nocb: Dump gp state even if rdp gp itself is not offloaded
-      rcu/exp: Remove confusing needless full barrier on task unblock
-      rcu/exp: Remove needless CPU up quiescent state report
-      rcu/exp: Warn on QS requested on dying CPU
-
-Joel Fernandes (5):
-      rcu: Fix rcu_read_unlock() deadloop due to IRQ work
-      rcu: Refactor expedited handling check in rcu_read_unlock_special()
-      rcu: Document GP init vs hotplug-scan ordering requirements
-      rcu: Document separation of rcu_state and rnp's gp_seq
-      rcu: Document concurrent quiescent state reporting for offline CPUs
-
-Neeraj Upadhyay (AMD) (1):
-      Merge branches 'rcu-exp.23.07.2025', 'rcu.22.07.2025', 'torture-scripts.16.07.2025', 'srcu.19.07.2025', 'rcu.nocb.18.07.2025' and 'refscale.07.07.2025' into rcu.merge.23.07.2025
-
-Paul E. McKenney (32):
-      rcutorture: Print only one rtort_pipe_count splat
-      rcutorture: Start rcu_torture_writer() after rcu_torture_reader()
-      rcutorture: Make rcutorture_one_extend_check() account for hard IRQs
-      rcutorture: Add tests for SRCU up/down reader primitives
-      rcutorture: Pull rcu_torture_updown() loop body into new function
-      rcutorture: Complain if an ->up_read() is delayed more than 10 seconds
-      rcutorture: Check for ->up_read() without matching ->down_read()
-      rcutorture: Check for no up/down readers at task level
-      rcutorture: Print number of RCU up/down readers and migrations
-      rcutorture: Drop redundant "insoftirq" parameters
-      rcutorture: Make Trivial RCU ignore onoff_interval and shuffle_interval
-      rcutorture: Make BUSTED scenario check and log readers
-      torture: Suppress torture.sh "Zero time" messages for disabled tests
-      torture: Permit multiple space characters in kvm.sh --kconfig argument
-      torture: Make torture.sh KCSAN runs set CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE=y
-      torture: Default --no-rcutasksflavors on arm64
-      torture: Default --no-clocksourcewd on arm64
-      rcu: Protect ->defer_qs_iw_pending from data race
-      torture: Provide EXPERT Kconfig option for arm64 KCSAN torture.sh runs
-      torture: Suppress "find" diagnostics from torture.sh --do-none run
-      torture: Extract testid.txt generation to separate script
-      torture: Add textid.txt file to --do-allmodconfig and --do-rcu-rust runs
-      torture: Make torture.sh tolerate runs having bad kvm.sh arguments
-      torture: Add "ERROR" diagnostic for testing kernel-build output
-      torture: Make torture.sh --allmodconfig testing fail on warnings
-      torture: Remove support for SRCU-lite
-      rcutorture: Remove SRCU-lite scenarios
-      rcutorture: Remove support for SRCU-lite
-      srcu: Expedite SRCU-fast grace periods
-      srcu: Remove SRCU-lite implementation
-      checkpatch: Remove SRCU-lite deprecation
-      srcu: Add guards for SRCU-fast readers
-
-Tze-nan Wu (1):
-      rcu: Fix delayed execution of hurry callbacks
-
-Uladzislau Rezki (Sony) (2):
-      rcu: Enable rcu_normal_wake_from_gp on small systems
-      Documentation/kernel-parameters: Update rcu_normal_wake_from_gp doc
-
-Zqiang (2):
-      rcutorture: Fix rcutorture_one_extend_check() splat in RT kernels
-      rcu/nocb: Fix possible invalid rdp's->nocb_cb_kthread pointer access
-
- Documentation/RCU/Design/Data-Structures/Data-Structures.rst |  33 ++++++
- Documentation/RCU/Design/Requirements/Requirements.rst       | 128 +++++++++++++++++++++++
- Documentation/admin-guide/kernel-parameters.txt              |   3 +-
- include/linux/srcu.h                                         |  54 ++--------
- include/linux/srcutiny.h                                     |   3 -
- include/linux/srcutree.h                                     |  38 -------
- kernel/rcu/rcutorture.c                                      | 356 +++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
- kernel/rcu/refscale.c                                        |  42 ++------
- kernel/rcu/srcutree.c                                        |   2 +
- kernel/rcu/tree.c                                            |  80 ++++++++++++---
- kernel/rcu/tree.h                                            |  13 ++-
- kernel/rcu/tree_exp.h                                        |  59 ++---------
- kernel/rcu/tree_nocb.h                                       |  10 +-
- kernel/rcu/tree_plugin.h                                     | 122 ++++++++++++++++++----
- kernel/rcu/tree_stall.h                                      |   3 +-
- scripts/checkpatch.pl                                        |   2 -
- tools/testing/selftests/rcutorture/bin/kvm-build.sh          |   2 +-
- tools/testing/selftests/rcutorture/bin/kvm.sh                |  15 +--
- tools/testing/selftests/rcutorture/bin/mktestid.sh           |  29 ++++++
- tools/testing/selftests/rcutorture/bin/torture.sh            |  78 +++++++++++---
- tools/testing/selftests/rcutorture/configs/rcu/BUSTED        |   3 +
- tools/testing/selftests/rcutorture/configs/rcu/CFLIST        |   1 -
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-L        |  10 --
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot   |   3 -
- 24 files changed, 770 insertions(+), 319 deletions(-)
- create mode 100755 tools/testing/selftests/rcutorture/bin/mktestid.sh
- delete mode 100644 tools/testing/selftests/rcutorture/configs/rcu/SRCU-L
- delete mode 100644 tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot
