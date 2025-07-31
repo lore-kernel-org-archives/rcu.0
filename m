@@ -1,55 +1,55 @@
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1037A2C1589
-	for <rcu@vger.kernel.org>; Thu, 31 Jul 2025 13:26:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDD62C3745
+	for <rcu@vger.kernel.org>; Thu, 31 Jul 2025 13:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753968418; cv=none; b=gftwFgK8OM4F06S3qmm5fcMScTAxsmiPwW7eLJbPGw4SsFjqy5/MPo3hmcKbM76wYICb3XnLIH+jaE5yOc62WLGMLvT7EVXeUzY1Pvqlig4ygWV2XZGMM9srtmj1q/XCteoud8W0qLQYIdXQaWYR/IbhQ+ewVmMnPsq9+JpWEvI=
+	t=1753968419; cv=none; b=b3eUiSBUalPBeJVHHsQAy4/XpDLMTO0RGdKqGik7nRRUAliRaOFynbaHaFJylERDQQHnmbKdEnPNBT0GzbJJN7c7NUcJWgzk+Q6sVYs6RzQCQ6I2mLgg9DUaNStWYRl7arBAuRry2ClKfe1BofNFS23FpDVvZxfX5LkJvIC6Ud4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753968418; c=relaxed/simple;
-	bh=DHxNzNVWUr+O5o8IyHJuN8fdD6GVaiWbG6x9JXShmp0=;
+	s=arc-20240116; t=1753968419; c=relaxed/simple;
+	bh=SDLv3vRUm4a7IfRMbe5z27kgDuKQZrYHeqcv2Xeh6+M=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=AIxidifS/cqyrEPMlcjGc596Wt1kIHVeqjgV10XbdnnxZOPwB6wmcmynB1BgqA3PHBA4R11AIX5GZZbtnF70sd1CtNeb9XuKhcEedFXigTmeGoBRAfByXMyuG/yBSesON5YMhqnBdsDVgWzIrkS97YEYei2MtQSs5hailjhUtrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuzhuo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EY5BPP2T; arc=none smtp.client-ip=209.85.215.202
+	 To:Content-Type; b=FS21dYYY9rFwQxldEPXGnRK6Nw+98z15ZKt3v3ulcKzrSL1+06VytTQpFd4BQKtgPiUyyl3UifWihLW7uSn0CMbgeVe+uDwo99EIS3gV54XoGvduTkZXRnzTyRxtZlq/UuJ16sljXyp1Ot50Uwrr9SblMquWg8dqx4BAcmK9RKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuzhuo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wbBCNywm; arc=none smtp.client-ip=209.85.210.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yuzhuo.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EY5BPP2T"
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-b4227d86246so713927a12.0
-        for <rcu@vger.kernel.org>; Thu, 31 Jul 2025 06:26:55 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wbBCNywm"
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-75ab147e0f7so1065000b3a.2
+        for <rcu@vger.kernel.org>; Thu, 31 Jul 2025 06:26:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1753968415; x=1754573215; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1753968417; x=1754573217; darn=vger.kernel.org;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bkP7Z4Cqqv/NC5+ok8KneBr4i3bJ/7NR+0dUzs2HMi8=;
-        b=EY5BPP2T7uLDGS8T7JrCdxI6SpxCO3nSoXlqVls2F4J6o45YL5MbeaE7/+yIoTpErl
-         X9JvPt4FPBt0jXyCDmf1Nd5pMf5Boz6Ef/K/qDSphgk9H9NhWhsi2wrgPy3Rdu47YXdV
-         xrsd47wse6ZL5TwDgmphPQGtCburbHN12aM/U14x3SKn7gOa61JSHFdguC18GfsWC87j
-         Sc7ELTWuBWzqmDTMcF0p9+AYKs0X+hjQhxroxwpZFnaIEPgHo3vAWORi06W7HqGlOr3S
-         9GJm94wEsva/fW7RGkIhqCDayIsiRIUt4rjP4DmXG8dtS5p2f4FgyR1aR3PtScgctQH9
-         4hpQ==
+        bh=wx1jGBaHmAOK84M8vVvUKtj0B4hkxXN2QqsHHZy6RfE=;
+        b=wbBCNywmmpqQQ81W3dFaBcU308v0MLBz+V0Y//o5I/jCfTJs7kmdqLIXQxvMVmdcBJ
+         +lDjAg14SAVnG1yoq7uGDltRvaKfORXU59Y+j1bHFcpWM2yKu0Ptjx/Kx2gd273THlWc
+         BocD6kagQixb95YOooZ+yYrH+ZKw6VUqkMS6jvO0cvIEj515vEH7yt4ZakofnOWKtaaM
+         CrJWX4hbcBnF5tpby+IK7nQa/Yfsv1lWZlAsiATWMr+kLG+QqxkEURvTiwpngaVRam0+
+         5aVJ/XbIz2NGSxuXP78oYVsiAdECyAa+GAqLOWipacyYCNTRksCDcfxBiRJQwCGTj4t3
+         DkVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753968415; x=1754573215;
+        d=1e100.net; s=20230601; t=1753968417; x=1754573217;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bkP7Z4Cqqv/NC5+ok8KneBr4i3bJ/7NR+0dUzs2HMi8=;
-        b=C2JMS0PBoC+YrAQo6El8JBuMPepbThvLPkMgeXI/6+6mRh1AEARdwumclIYU7FJsLk
-         S6u5sx4vQ+wOFTVeKVxY4DSC1AVPST3qWXkHMjlUYNUGrHhl8DVWR+adMYNWHgnZKFHy
-         kPHk5t4UlXmF/o8w6pTVFQccDj9M/g0yeP4m+Gvciqqda2RQmoUvYquz3mykEDcIKckL
-         U61rPGsnYBlWnRolCg7LnJOJ33RmRE0dcBeBrNAcsJ2JAdYPh5Kauv7Gx0KOu9bh3NFG
-         Clo9144SB3jjWstkuvgZbFCY2PCBqjuGCTa1bXTNgx2vxJOFS1E3zCw95bHAPY68OICB
-         t30g==
-X-Forwarded-Encrypted: i=1; AJvYcCUgIPtzIgwT138a8sC5NtoyXR7lkmJITwlUzdEnDGz/q87NtOuVZdhQjBptP8APnCmC9Yo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6IeuSlTrXNEWeGbPrVPntEBRjfh0NQuhZyVgDL4F1NLaLDSql
-	MGg307/o3NwvxP/u+KjjWCW5pM48imknVW4eVw9cFzwJ/RaOeq2vqgvBkfzjsRr3KQaX6QQ1dhT
-	tvmUixw==
-X-Google-Smtp-Source: AGHT+IEwduAehduBW9EWHJOWUGqQXIKJ02sza7Y6mu7qiMI5Yth6Qmr0VERdlGJ8n+sQiOAH1nTf9mvtt4k=
-X-Received: from plnf7.prod.google.com ([2002:a17:903:1a67:b0:240:1bbf:686b])
- (user=yuzhuo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:c94b:b0:240:150d:9147
- with SMTP id d9443c01a7336-24096a56357mr111905495ad.13.1753968415132; Thu, 31
- Jul 2025 06:26:55 -0700 (PDT)
-Date: Thu, 31 Jul 2025 06:26:11 -0700
+        bh=wx1jGBaHmAOK84M8vVvUKtj0B4hkxXN2QqsHHZy6RfE=;
+        b=fajvSO9fK1PL6eKmfIlCzw2JE1+4VtFUyVSd3FTQzttr83pgb1XoeQWpfFPCxA7dGo
+         yB2Dz5vLCYZnIvlwMzVfj7wQ04qXBlO37ZNIwjrvTVuwxzxFXjRucwR8shQDGiuFsj24
+         6o1H9WX61OSD7nAAs/FCQbm8BPYb36ZrNdhnJEnxVBAOgWO77sA7ydFbTRmo5NxfE3P/
+         HflADSuYwCP3OSvSfcmEK3Cj1sBNxl/2b+cpgP/yVEaiX2oevSxar5VQGRuJln7xvJvG
+         LJdc1FHjwAglrzjh3ZTyqdyWQwQcxl5LbCz4YvZcgPrdIKj/hz3uMr9D6muU2oQETLso
+         sYcw==
+X-Forwarded-Encrypted: i=1; AJvYcCXMWxhhvm9HmyoBQiXhQX9Lx72r2fQnkpODumjuAg3gFQQ9YAJsDPJ5cCAp3MxU275aAbc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwGJUm9YU8y/+7wCDm+EXEY/BaKbHZF9JvL0hY0ONdLl9DtsZS
+	gowF82nYkA7ZJpFjlLXxbQvPev+UywkaXeqTMbljnAAKsH2fbQFi4oi080jxXQYcmeDC347Ighz
+	SytlOXA==
+X-Google-Smtp-Source: AGHT+IHy977OGKGUfQxfPzzgX/dUwkN3T5owF6V3wWPLDAGGgMWB1YafYG5tVw6JssVvWq6hdTG9MJzAQrY=
+X-Received: from pfll8.prod.google.com ([2002:a05:6a00:1588:b0:747:9faf:ed39])
+ (user=yuzhuo job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:339d:b0:218:96ad:720d
+ with SMTP id adf61e73a8af0-23dc0cf784dmr9622346637.1.1753968416873; Thu, 31
+ Jul 2025 06:26:56 -0700 (PDT)
+Date: Thu, 31 Jul 2025 06:26:12 -0700
 In-Reply-To: <20250731132615.938435-1-yuzhuo@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -59,8 +59,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250731132615.938435-1-yuzhuo@google.com>
 X-Mailer: git-send-email 2.50.1.565.gc32cd1483b-goog
-Message-ID: <20250731132615.938435-2-yuzhuo@google.com>
-Subject: [PATCH v1 1/5] perf bench: Add RCU benchmark using rcuscale kernel module
+Message-ID: <20250731132615.938435-3-yuzhuo@google.com>
+Subject: [PATCH v1 2/5] perf bench: Implement subprocess execution for 'sync rcu'
 From: Yuzhuo Jing <yuzhuo@google.com>
 To: Davidlohr Bueso <dave@stgolabs.net>, "Paul E . McKenney" <paulmck@kernel.org>, 
 	Josh Triplett <josh@joshtriplett.org>, Frederic Weisbecker <frederic@kernel.org>, 
@@ -78,928 +78,419 @@ To: Davidlohr Bueso <dave@stgolabs.net>, "Paul E . McKenney" <paulmck@kernel.org
 	rcu@vger.kernel.org, linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Add 'rcu' to the 'perf bench sync' collection.  This benchmark depends
-on the rcuscale kernel module, and also depends on new features
-in the rcuscale module that exposes control and internal state through
-debugfs.
+Monitor system state is useful for understanding performance impact.
+This patch enables running external tool during the benchmark.  It
+provides a similar semantic to 'perf record -- perf bench mem', except
+that the order is reversed.
 
-This patch adds the basic 'once' mode that runs one combination of
-rcuscale parameters.  Command usage is defined as:
+Because the benchmark threads are kernel module created kthreads, perf
+cannot directly attach to them.  This patch propose a method to execute
+the attach command from a child process, using command line
+substitution.
 
-  perf bench sync rcu [options..] [once <gp_type> [<param=value>..]]
+If any of the command string contains "{READER,WRITER,KFREE}_TASKS"
+placeholder, they are replaced with the real value upon startup.  The
+thread ID information comes from
+/sys/kernel/debug/rcuscale/{reader,writer,kfree}_tasks.
 
-* gp_type is one of "sync", "async", "exp"
-* Valid params can be found from `modinfo rcuscale`.  Except that
-  gp_exp, gp_async, and block_start are managed by the benchmark and
-  cannot be set by user.
+Example usage of running 'perf stat' to attach kernel threads:
 
-This benchmark parses the modinfo to validate the existence of user
-provided parameters.  It then executes modprobe to load rcuscale.
-Experiment start/finish is controlled through
-/sys/kernel/debug/rcuscale/{should_start,test_complete}.
-After the experiment finishes, it reads
-/sys/kernel/debug/rcuscale/writer_durations and outputs statistics.
-The statistic code (print_writer_duration_stats function) is derived
-from tools/testing/selftests/rcutorture/bin/kvm-recheck-rcuscale.sh.
-
-Example output:
-
-./perf bench sync rcu --hist once exp nreaders=1 nwriters=1
+$ ./perf bench sync rcu once  sync nreaders=1 nwriters=1 writer_cpu_offset=1 -- \
+          perf stat -e ipi:ipi_send_cpu,rcu:rcu_grace_period \
+          -t READER_TASKS,WRITER_TASKS
 \# Running 'sync/rcu' benchmark:
-Running experiment with options: gp_exp=1 nreaders=1 nwriters=1
+Running experiment with options: nreaders=1 nwriters=1 writer_cpu_offset=1
+Running child command: perf stat -e ipi:ipi_send_cpu,rcu:rcu_grace_period -t 1682932,1682933
+
+ Performance counter stats for thread id '1682932,1682933':
+
+             20105      ipi:ipi_send_cpu
+               702      rcu:rcu_grace_period
+
+      25.023871111 seconds time elapsed
+
 Experiment finished.
-Histogram bucket size: 0.1 microseconds
-8.8 11
-8.9 25
-9 27
-9.1 13
-9.2 6
-9.3 3
-9.4 2
-9.5 2
-9.6 3
-9.7 1
-9.8 1
-9.9 1
-10 2
-10.4 1
-10.5 1
-11.1 1
-6025.6 1
-Average grace-period duration: 68.734 microseconds
-Minimum grace-period duration: 8.813
-50th percentile grace-period duration: 9.044
-90th percentile grace-period duration: 9.625
-99th percentile grace-period duration: 10.516
-Maximum grace-period duration: 6025.679
+Waiting for child process to exit.
+Average grace-period duration: 188128.652 microseconds
+Minimum grace-period duration: 9000.221
+50th percentile grace-period duration: 217996.932
+90th percentile grace-period duration: 218001.019
+99th percentile grace-period duration: 218153.558
+Maximum grace-period duration: 326999.705
 
 Signed-off-by: Yuzhuo Jing <yuzhuo@google.com>
 ---
- tools/perf/bench/Build      |   1 +
- tools/perf/bench/bench.h    |   1 +
- tools/perf/bench/sync-rcu.c | 816 ++++++++++++++++++++++++++++++++++++
- tools/perf/builtin-bench.c  |   1 +
- 4 files changed, 819 insertions(+)
- create mode 100644 tools/perf/bench/sync-rcu.c
+ tools/perf/bench/sync-rcu.c | 252 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 247 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/bench/Build b/tools/perf/bench/Build
-index 13558279fa0e..f694f8715cfc 100644
---- a/tools/perf/bench/Build
-+++ b/tools/perf/bench/Build
-@@ -20,6 +20,7 @@ perf-bench-y += breakpoint.o
- perf-bench-y += pmu-scan.o
- perf-bench-y += uprobe.o
- perf-bench-y += sync.o
-+perf-bench-y += sync-rcu.o
- perf-bench-y += qspinlock.o
- 
- perf-bench-$(CONFIG_X86_64) += mem-memcpy-x86-64-asm.o
-diff --git a/tools/perf/bench/bench.h b/tools/perf/bench/bench.h
-index 42c0696b05fb..09c5b3af347f 100644
---- a/tools/perf/bench/bench.h
-+++ b/tools/perf/bench/bench.h
-@@ -24,6 +24,7 @@ int bench_sched_pipe(int argc, const char **argv);
- int bench_sched_seccomp_notify(int argc, const char **argv);
- int bench_sync_qspinlock(int argc, const char **argv);
- int bench_sync_ticket(int argc, const char **argv);
-+int bench_sync_rcu(int argc, const char **argv);
- int bench_syscall_basic(int argc, const char **argv);
- int bench_syscall_getpgid(int argc, const char **argv);
- int bench_syscall_fork(int argc, const char **argv);
 diff --git a/tools/perf/bench/sync-rcu.c b/tools/perf/bench/sync-rcu.c
-new file mode 100644
-index 000000000000..ac85841f0b68
---- /dev/null
+index ac85841f0b68..934d2416c216 100644
+--- a/tools/perf/bench/sync-rcu.c
 +++ b/tools/perf/bench/sync-rcu.c
-@@ -0,0 +1,816 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * RCU scale benchmark using rcuscale kernel module.
-+ *
-+ * 2025  Yuzhuo Jing <yuzhuo@google.com>
-+ */
-+#include <dirent.h>
-+#include <err.h>
-+#include <errno.h>
-+#include <inttypes.h>
-+#include <math.h>
-+#include <signal.h>
-+#include <stdbool.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <subcmd/parse-options.h>
-+#include <sys/cdefs.h>
-+#include <sys/wait.h>
-+
-+#include "bench.h"
-+
-+#define MAX_OPTS 64
-+#define MAX_OPTNAME 64
-+#define MAX_OPTTYPE 16
-+#define MAX_OPTVALUE 128
-+
-+#define INIT_CAPACITY 1024UL
-+
-+/* ============================ Global Options ============================ */
-+
-+static bool dryrun;
-+static unsigned int cooldown = 3;
-+static bool show_hist;
-+static const char *debugfs = "/sys/kernel/debug";
-+
-+static const struct option bench_rcu_options[] = {
-+	OPT_BOOLEAN('n',	"dryrun",	&dryrun,	"Dry run mode"),
-+	OPT_UINTEGER('c',	"cooldown",	&cooldown,
-+		"Sleep time between each run (default: 3 seconds)"),
-+	OPT_BOOLEAN(0,		"hist",		&show_hist,
-+		"Show histogram of writer durations"),
-+	OPT_STRING(0,		"debugfs",	&debugfs,	"path",
-+		"Debugfs mount point (default: /sys/kernel/debug)"),
-+	OPT_END()
-+};
-+
-+static const char *const bench_rcu_usage[] = {
-+	"RCU benchmark using rcuscale kernel module.",
+@@ -5,6 +5,7 @@
+  * 2025  Yuzhuo Jing <yuzhuo@google.com>
+  */
+ #include <dirent.h>
++#include <ctype.h>
+ #include <err.h>
+ #include <errno.h>
+ #include <inttypes.h>
+@@ -32,6 +33,7 @@
+ static bool dryrun;
+ static unsigned int cooldown = 3;
+ static bool show_hist;
++static unsigned int child_delay = 1;
+ static const char *debugfs = "/sys/kernel/debug";
+ 
+ static const struct option bench_rcu_options[] = {
+@@ -40,6 +42,8 @@ static const struct option bench_rcu_options[] = {
+ 		"Sleep time between each run (default: 3 seconds)"),
+ 	OPT_BOOLEAN(0,		"hist",		&show_hist,
+ 		"Show histogram of writer durations"),
++	OPT_UINTEGER(0,		"child-delay",	&child_delay,
++		"Wait for child startup before starting experiment (default: 1 second)"),
+ 	OPT_STRING(0,		"debugfs",	&debugfs,	"path",
+ 		"Debugfs mount point (default: /sys/kernel/debug)"),
+ 	OPT_END()
+@@ -48,13 +52,18 @@ static const struct option bench_rcu_options[] = {
+ static const char *const bench_rcu_usage[] = {
+ 	"RCU benchmark using rcuscale kernel module.",
+ 	"",
+-	"perf bench sync rcu [options..]",
+-	"perf bench sync rcu [options..] once  <gp_type> [<param=value>..]",
++	"perf bench sync rcu [options..] [-- <command>..]",
++	"perf bench sync rcu [options..] once  <gp_type> [<param=value>..] [-- <command>..]",
+ 	"",
+ 	"  <gp_type>: The type of grace period to use: sync, async, exp (expedited)",
+ 	"             This sets the gp_exp or gp_async kernel module parameters.",
+ 	"  <param>:   Any parameter of the rcuscale kernel module, e.g. holdoff=5.",
+ 	"             Valid options can be found from running `modinfo rcuscale`.",
++	"  <command>: A child command to run during the experiment.  This is useful",
++	"             for running tools that monitor system metrics during the",
++	"             experiment. If the command line string contains",
++	"             {READER,WRITER,KFREE}_TASKS placeholders, they will be substituted",
++	"             with the tasks PIDs, separated by comma.",
+ 	"",
+ 	"Notes on param:",
+ 	"  This benchmark manages gp_exp and gp_async, and sets block_start=1.",
+@@ -73,6 +82,10 @@ static const char *const bench_rcu_usage[] = {
+ 	"  perf bench sync rcu once",
+ 	"  perf bench sync rcu once  sync nreaders=1 nwriters=1 writer_cpu_offset=1",
+ 	"",
++	"  perf bench sync rcu once  sync nreaders=1 nwriters=1 writer_cpu_offset=1 -- \\",
++	"      perf stat -e ipi:ipi_send_cpu,rcu:rcu_grace_period \\",
++	"      -t READER_TASKS,WRITER_TASKS",
 +	"",
-+	"perf bench sync rcu [options..]",
-+	"perf bench sync rcu [options..] once  <gp_type> [<param=value>..]",
-+	"",
-+	"  <gp_type>: The type of grace period to use: sync, async, exp (expedited)",
-+	"             This sets the gp_exp or gp_async kernel module parameters.",
-+	"  <param>:   Any parameter of the rcuscale kernel module, e.g. holdoff=5.",
-+	"             Valid options can be found from running `modinfo rcuscale`.",
-+	"",
-+	"Notes on param:",
-+	"  This benchmark manages gp_exp and gp_async, and sets block_start=1.",
-+	"  User cannot override those parameters.  This benchmark also sets default",
-+	"  values writer_no_print=1 and holdoff=3, but users may override those.",
-+	"  Note that if nwriters=0, the rcuscale kernel module will not exit,",
-+	"  and the benchmark will sleep indefinitely.",
-+	"",
-+	"Modes:",
-+	"  default: Run 'once sync'.",
-+	"  once:  Run benchmark once, with all parameters passed through to the",
-+	"         kernel rcuscale module.",
-+	"",
-+	"Examples:",
-+	"  perf bench sync rcu --hist once exp nreaders=1 nwriters=1 writer_cpu_offset=1",
-+	"  perf bench sync rcu once",
-+	"  perf bench sync rcu once  sync nreaders=1 nwriters=1 writer_cpu_offset=1",
-+	"",
-+	"In case perf exited abnormally, user need to unload rcuscale by running:",
-+	"  modprobe -r rcuscale torture",
-+	"",
-+	"Global options:",  // continues to show bench_rcu_options
-+	NULL
+ 	"In case perf exited abnormally, user need to unload rcuscale by running:",
+ 	"  modprobe -r rcuscale torture",
+ 	"",
+@@ -105,6 +118,23 @@ struct modprobe_cmd {
+ 	}
+ #define MODPROBE_REMOVE_CMD "modprobe -r rcuscale torture"
+ 
++/*
++ * Generated subprocess command.
++ *
++ * Different from modprobe_cmd, this struct is owns the argv array and all
++ * strings in the array.  The only exception is child_cmd_template, which
++ * contains the remainder of argv parsing.
++ *
++ * Upon each runonce(), generate_child_command will make a copy of the strings
++ * in child_cmd_template and also substitute placeholders to actual value.
++ */
++struct child_cmd {
++	int argc;
++	char **argv;
 +};
 +
-+/* ============================ Runtime Options ============================ */
++static struct child_cmd child_cmd_template;
 +
-+#define MODPROBE_BASE_COUNT 3
-+#define MODPROBE_CMD_MAX (2 * MAX_OPTS + MODPROBE_BASE_COUNT + 1)
-+/*
-+ * The command line builder for modprobe.  The cmd array will be directly
-+ * passed to execvp.
-+ *
-+ * Note: the cmd array does not own the pointers in it.  Those argument
-+ * pointers could come from:
-+ *   - string literals (e.g. the "modprobe" and "rcuscale" command name)
-+ *   - simple_params
-+ */
-+struct modprobe_cmd {
-+	const char *cmd[MODPROBE_CMD_MAX];
-+	size_t count;
-+};
+ /*
+  * Generic modprobe parameter definition.  This is the storage for an
+  * instantiated module parameter.  This may come from parameters directly
+@@ -122,6 +152,7 @@ struct modprobe_param {
+ static struct modprobe_param simple_params[MAX_OPTS];
+ static int simple_params_count;
+ 
++static pid_t child_pid;
+ static bool in_child;
+ 
+ struct durations {
+@@ -177,6 +208,12 @@ static void cleanup(void)
+ 		return;
+ 
+ 	unload_module();
 +
-+#define MODPROBE_CMD_INIT						\
-+	struct modprobe_cmd modprobe_cmd = {				\
-+		{ "modprobe", "rcuscale", "block_start=1", NULL, },	\
-+		MODPROBE_BASE_COUNT,					\
++	if (child_pid) {
++		kill(child_pid, SIGTERM);
++		waitpid(child_pid, NULL, 0);
++		child_pid = 0;
 +	}
-+#define MODPROBE_REMOVE_CMD "modprobe -r rcuscale torture"
-+
-+/*
-+ * Generic modprobe parameter definition.  This is the storage for an
-+ * instantiated module parameter.  This may come from parameters directly
-+ * given by user, or generated.
-+ *
-+ * Format must be "key=value".
-+ */
-+struct modprobe_param {
-+	char value[MAX_OPTVALUE];
-+};
-+
-+/*
-+ * The storage for simple (i.e. non-range) module parameter strings.
-+ */
-+static struct modprobe_param simple_params[MAX_OPTS];
-+static int simple_params_count;
-+
-+static bool in_child;
-+
-+struct durations {
-+	u64 *values;
-+	size_t count;
-+	size_t capacity;
-+	u64 sum;
-+};
-+
-+/* ========================== Override parameters ======================= */
-+
-+/* Non-override module parameter.  This may be updated by "ratio" command. */
-+struct non_override_param {
-+	char name[MAX_OPTNAME];
-+};
-+static int non_override_params_count = 3;
-+static struct non_override_param non_override_params[MAX_OPTS] = {
-+	{ "block_start" },
-+	{ "gp_exp" },
-+	{ "gp_async" },
-+};
-+
-+struct overridable_param {
-+	char name[MAX_OPTNAME];
-+	bool user_overridden;
-+};
-+static struct overridable_param overridable_params[] = {
-+	{ "writer_no_print", false },
-+	{ "holdoff", false },
-+};
-+static const int overridable_params_count = ARRAY_SIZE(overridable_params);
-+
-+/* Valid module parameters parsed from modinfo. */
-+struct modinfo_parm {
-+	char name[MAX_OPTNAME];
-+	char type[MAX_OPTTYPE];
-+};
-+static struct modinfo_parm modinfo_parms[MAX_OPTS];
-+static int modinfo_parms_count;
-+
-+/* ========================== Cleanup functions ========================== */
-+
-+static void unload_module(void)
-+{
-+	if (system(MODPROBE_REMOVE_CMD) != 0)
-+		fprintf(stderr, "Failed to unload rcuscale kernel module.\n"
-+			"Please manually remove it using `"MODPROBE_REMOVE_CMD"`.\n");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (in_child)
-+		return;
-+
-+	unload_module();
-+}
-+
-+static void signal_handler(int sig)
-+{
-+	if (sig)
-+		fprintf(stderr, "perf: Signal %d received\n", sig);
-+	/* cleanup is registered in atexit */
-+	fprintf(stderr, "Cleaning up...\n");
-+	exit(1);
-+}
-+
-+static void setup_cleanup(void)
-+{
-+	atexit(cleanup);
-+	signal(SIGINT, signal_handler);
-+	signal(SIGTERM, signal_handler);
-+	signal(SIGSEGV, signal_handler);
-+}
-+
-+/*
-+ * Failure handling.  Use this for logical checks, and use "err" for those with
-+ * external interactions.
-+ */
-+#define fail(fmt, ...)						\
-+do {								\
-+	fprintf(stderr, "perf: "fmt"\n", ##__VA_ARGS__);	\
-+	exit(1);						\
-+} while (0)
-+
-+/* ============================ Modprobe info ============================ */
-+
-+/*
-+ * Parse modinfo and store the results in modinfo_parms.  Used to determine
-+ * whether an option is valid as a range parameter.
-+ *
-+ * The expected format is:
-+ *   nreaders:Number of RCU reader threads (int)
-+ *   nwriters:Number of RCU updater threads (int)
-+ */
-+static void parse_modinfo(void)
-+{
-+	char *line = NULL;
-+	size_t len = 0;
-+	FILE *fp;
-+
-+	fp = popen("modinfo rcuscale -0 -F parm", "r");
-+	if (!fp)
-+		err(EXIT_FAILURE, "Failed to run modinfo");
-+
-+	while (getdelim(&line, &len, '\0', fp) != -1) {
-+		char *type;
-+		char *remaining = NULL;
-+		char *name = strtok_r(line, ":", &remaining);
-+
-+		if (!name)
-+			fail("Failed to parse modinfo parameter name");
-+
-+		type = strrchr(remaining, '(');
-+		if (!type)
-+			fail("Failed to parse modinfo parameter type");
-+		remaining = NULL;
-+		type = strtok_r(type + 1, ")", &remaining);
-+		if (!type)
-+			fail("Failed to parse modinfo parameter type");
-+
-+		strlcpy(modinfo_parms[modinfo_parms_count].name, name, MAX_OPTNAME);
-+		strlcpy(modinfo_parms[modinfo_parms_count].type, type, MAX_OPTTYPE);
-+		modinfo_parms_count++;
-+	}
-+	if (!modinfo_parms_count)
-+		fail("Failed to read modinfo");
-+
-+	free(line);
-+	pclose(fp);
-+}
-+
-+/*
-+ * Check if the module parameter is an integer.
-+ */
-+static bool modparm_is_int(const char *name)
-+{
-+	for (int i = 0; i < modinfo_parms_count; i++) {
-+		if (strcmp(modinfo_parms[i].name, name) == 0)
-+			return strcmp(modinfo_parms[i].type, "int") == 0;
-+	}
-+	return false;
-+}
-+
-+/* ============================ Argument parsing ============================ */
-+
-+/*
-+ * Reserve memory for a pointer.
-+ *
-+ * If current capacity is 0, the minimum capacity is at least INIT_CAPACITY or
-+ * min_capacity.
-+ *
-+ * The current capacity is doubled if it is less than the minimum capacity.
-+ */
-+static void raw_reserve_size(void **ptr, size_t elemsize,
-+		size_t *current_capacity, size_t min_capacity)
-+{
-+	size_t new_capacity;
-+
-+	if (min_capacity == 0)
-+		min_capacity = INIT_CAPACITY;
-+
-+	if (*current_capacity >= min_capacity)
-+		return;
-+
-+	new_capacity = *current_capacity ?: min_capacity;
-+	while (new_capacity < min_capacity)
-+		new_capacity *= 2;
-+
-+	*ptr = realloc(*ptr, new_capacity * elemsize);
-+	if (!*ptr)
-+		fail("Failed to allocate memory");
-+	*current_capacity = new_capacity;
-+}
-+#define reserve_size(ptr, current_capacity, min_capacity) \
-+	raw_reserve_size((void **)(ptr), sizeof(**(ptr)), (current_capacity), (min_capacity))
-+
-+static int parse_int(const char *val)
-+{
-+	char *endptr;
-+	long num = strtol(val, &endptr, 10);
-+
-+	if (*endptr != '\0')
-+		fail("Invalid integer format: %s", val);
-+
-+	return (int)num;
-+}
-+
-+static void simple_params_add(const char *full)
-+{
-+	if (simple_params_count >= MAX_OPTS)
-+		fail("Too many module parameters");
-+	strlcpy(simple_params[simple_params_count++].value, full, MAX_OPTVALUE);
-+}
-+
-+static void parse_gp_type(const char *gp_type)
-+{
-+	if (strcmp(gp_type, "sync") == 0) {
-+		// no new option is added
-+	} else if (strcmp(gp_type, "async") == 0)
-+		simple_params_add("gp_async=1");
-+	else if (strcmp(gp_type, "exp") == 0)
-+		simple_params_add("gp_exp=1");
-+	else
-+		fail("Invalid grace period type: %s", gp_type);
-+}
-+
-+/*
-+ * Check if the option is already set.
-+ */
-+static bool param_has_conflict(const char *key)
-+{
-+	for (int i = 0; i < non_override_params_count; ++i) {
-+		if (strcmp(key, non_override_params[i].name) == 0)
-+			return true;
-+	}
-+	for (int i = 0; i < simple_params_count; ++i) {
-+		if (strncmp(key, simple_params[i].value, strlen(key)) == 0
-+			&& simple_params[i].value[strlen(key)] == '=')
-+			return true;
-+	}
-+	/* overridable_params are considered non conflict */
-+
-+	return false;
-+}
-+
-+static struct overridable_param *overridable_param_get(const char *key)
-+{
-+	for (int i = 0; i < overridable_params_count; ++i)
-+		if (strcmp(overridable_params[i].name, key) == 0)
-+			return overridable_params + i;
-+	return NULL;
-+}
-+
-+/*
-+ * For overridable_params, if user specifies it, set overridden so that it will
-+ * not be appended to modprobe cmd.
-+ */
-+static inline void param_try_set_user_override(const char *key)
-+{
-+	struct overridable_param *param = overridable_param_get(key);
-+
-+	if (param)
-+		param->user_overridden = true;
-+}
-+
-+/*
-+ * Validate basics about the parameter name.
-+ *
-+ * Note: This is supposed to only be used during parsing user provided
-+ * arguments.  This will also update the "user_overridden" flag for overridable
-+ * parameters.
-+ */
-+static void check_param_name(const char *name)
-+{
-+	if (strlen(name) + 1 > MAX_OPTNAME)
-+		fail("Module parameter name too long: %s", name);
-+	if (param_has_conflict(name))
-+		fail("Module parameter \"%s\" has conflict", name);
-+	/* Set user overridden if possible */
-+	param_try_set_user_override(name);
-+
-+	for (int i = 0; i < modinfo_parms_count; ++i) {
-+		if (strcmp(modinfo_parms[i].name, name) == 0)
-+			return;
-+	}
-+	fail("Module parameter \"%s\" does not exist in modinfo", name);
-+}
-+
-+/*
-+ * Parse module parameter.  Results are stored in params and range_params.
-+ *
-+ * If allow_range is false, all params are stored in params, and checks
-+ * the format cannot be range.
-+ *
-+ * If allow_range is true, params that only has one value will be stored in
-+ * params, and range ones will be stored in range_params.
-+ */
-+static void parse_module_params(int argc, const char *argv[])
-+{
-+	while (argc) {
-+		char *saved_ptr = NULL;
-+		char *key;
-+		char *value;
-+		char buf[MAX_OPTVALUE] = "";
-+
-+		if (strnlen(argv[0], MAX_OPTVALUE) >= MAX_OPTVALUE - 1)
-+			fail("Module parameter too long: \"%s\"", argv[0]);
-+		strlcpy(buf, argv[0], MAX_OPTVALUE);
-+
-+		/* Parse keys and values. */
-+		key = strtok_r(buf, "=", &saved_ptr);
-+		if (!key)
-+			fail("Failed to parse module option \"%s\"", argv[0]);
-+		check_param_name(key);
-+
-+		value = strtok_r(NULL, "=", &saved_ptr);
-+		if (!value || strlen(value) == 0)
-+			fail("Cannot find value for module option \"%s\"", key);
-+		if (strlen(value) + 1 > MAX_OPTVALUE)
-+			fail("Module parameter value too long: \"%s\"", value);
-+
-+		/* Ensure integer type value are integers, but don't need the value. */
-+		if (modparm_is_int(key))
-+			parse_int(value);
-+
-+		simple_params_add(argv[0]);
-+
-+		argc--;
-+		argv++;
-+	}
-+}
-+
-+/* ====================== Experiment Result Handling ====================== */
-+
-+static void durations_add(struct durations *durations, u64 duration)
-+{
-+	reserve_size(&durations->values, &durations->capacity, durations->count + 1);
-+	durations->values[durations->count++] = duration;
-+	durations->sum += duration;
-+}
-+
-+/*
-+ * Parse writer durations from debugfs and push them to durations array.
-+ *
-+ * The expected format is writer_id,duration.
-+ *
-+ * Durations are converted to microseconds and stored in durations array.
-+ */
-+static struct durations *parse_durations(void)
-+{
-+	char durations_path[PATH_MAX];
-+	FILE *fp = NULL;
-+	char *line = NULL;
-+	size_t len = 0;
-+	ssize_t read;
-+	u64 duration;
-+	struct durations *durations = calloc(1, sizeof(*durations));
-+
-+	if (!durations)
-+		fail("Failed to allocate memory for durations");
-+
-+	snprintf(durations_path, sizeof(durations_path), "%s/rcuscale/writer_durations", debugfs);
-+
-+	fp = fopen(durations_path, "r");
-+	if (!fp)
-+		err(EXIT_FAILURE, "Failed to open writer_durations");
-+
-+	while ((read = getline(&line, &len, fp)) != -1) {
-+		if (sscanf(line, "%*d,%lu", &duration) != 1)
-+			fail("Failed to parse writer duration. Line: %s", line);
-+		durations_add(durations, duration);
-+	}
-+
-+	free(line);
-+	fclose(fp);
-+
-+	return durations;
-+}
-+
-+static void free_durations(struct durations *durations)
-+{
-+	free(durations->values);
-+	free(durations);
-+}
-+
-+/*
-+ * Helper function for sorting.
-+ */
-+static int compare_duration(const void *a, const void *b)
-+{
-+	u64 aa = *(u64 *)a, bb = *(u64 *)b;
-+
-+	return aa < bb ? -1 : !!(aa > bb);
-+}
-+
-+/*
-+ * Print a trimmed zero converted ns to us, without automatic scientific
-+ * notation like %g.
-+ * e.g.  10000 ns -> 10 us
-+ * e.g.  10001 ns -> 10.001 us
-+ * e.g.  10100 ns -> 10.1 us
-+ */
-+static char *print_us(char *buf, u64 ns)
-+{
-+	int len;
-+
-+	sprintf(buf, "%"PRIu64, ns / 1000);
-+	if (ns % 1000 == 0)
-+		return buf;
-+
-+	sprintf(buf + strlen(buf), ".%03"PRIu64, ns % 1000);
-+	len = strlen(buf);
-+	while (len && buf[len - 1] == '0')
-+		buf[--len] = '\0';
-+
-+	return buf;
-+}
-+
-+/*
-+ * Print statistics of writer durations.
-+ *
-+ * This function is derived from
-+ * tools/testing/selftests/rcutorture/bin/kvm-recheck-rcuscale.sh
-+ * Note that the durations array are in nanoseconds, and are integers.
-+ */
-+static void print_writer_duration_stats(const struct durations *d)
-+{
-+	size_t pct50, pct90, pct99;
-+	size_t count;
-+	u64 div, last;
-+	char ms_us_buf[30];
-+	u64 *durations = d->values;
-+	size_t durations_count = d->count;
-+
-+	if (durations_count == 0) {
-+		printf("No rcuscale records found.\n");
-+		return;
-+	}
-+
-+	qsort(durations, durations_count, sizeof(*durations), compare_duration);
-+
-+	// Calculate percentiles
-+	pct50 = max(durations_count * 50 / 100, 1UL);
-+	pct90 = max(durations_count * 90 / 100, 1UL);
-+	pct99 = max(durations_count * 99 / 100, 1UL);
-+
-+#define US_NS 1000
-+#define us(ns) print_us(ms_us_buf, (ns))
-+
-+	if (show_hist) {
-+		// Calculate histogram bucket size based on 90th percentile
-+		div = pow(10, floor(log10((double)durations[pct90 - 1]) + 0.5)) / 100;
-+		if (div <= 0)
-+			div = 1;
-+		printf("Histogram bucket size: %s microseconds\n", us(div));
-+
-+		last = durations[0] - 10 * US_NS;
-+		count = 0;
-+		for (size_t i = 0; i < durations_count; ++i) {
-+			u64 current = durations[i] / div * div;
-+
-+			if (last == current) {
-+				count++;
-+			} else {
-+				if (count > 0)
-+					printf("%s %lu\n", us(last), count);
-+				count = 1;
-+				last = current;
-+			}
+ }
+ 
+ static void signal_handler(int sig)
+@@ -407,6 +444,13 @@ static void parse_module_params(int argc, const char *argv[])
+ 		char *value;
+ 		char buf[MAX_OPTVALUE] = "";
+ 
++		/* Handle child command. */
++		if (strcmp(argv[0], "--") == 0) {
++			child_cmd_template.argc = argc - 1;
++			child_cmd_template.argv = (char **)argv + 1;
++			break;
 +		}
-+		if (count > 0)
-+			printf("%s %lu\n", us(last), count);
-+	}
 +
-+	// Print statistics
-+	printf("Average grace-period duration: %s microseconds\n", us(d->sum / durations_count));
-+	printf("Minimum grace-period duration: %s\n", us(durations[0]));
-+	printf("50th percentile grace-period duration: %s\n", us(durations[pct50 - 1]));
-+	printf("90th percentile grace-period duration: %s\n", us(durations[pct90 - 1]));
-+	printf("99th percentile grace-period duration: %s\n", us(durations[pct99 - 1]));
-+	printf("Maximum grace-period duration: %s\n", us(durations[durations_count - 1]));
-+
-+#undef US_NS
-+#undef us
-+}
-+
-+/* ============================ Experiment Functions ============================ */
+ 		if (strnlen(argv[0], MAX_OPTVALUE) >= MAX_OPTVALUE - 1)
+ 			fail("Module parameter too long: \"%s\"", argv[0]);
+ 		strlcpy(buf, argv[0], MAX_OPTVALUE);
+@@ -434,6 +478,162 @@ static void parse_module_params(int argc, const char *argv[])
+ 	}
+ }
+ 
++/* ======================== Child Command Handling ========================= */
 +
 +/*
-+ * Trigger the experiment by writing 1 to should_start.
++ * Read reader, writer, or kfree tasks from debugfs, and return a comma
++ * separated string.
 + */
-+static void start_experiment(void)
++static char *get_tids(const char *debugfs_filename)
 +{
 +	char path[PATH_MAX];
 +	FILE *fp;
 +
-+	snprintf(path, sizeof(path), "%s/rcuscale/should_start", debugfs);
++	char *tids = calloc(INIT_CAPACITY, sizeof(char));
++	size_t tids_len = 0;
++	size_t tids_capacity = INIT_CAPACITY;
 +
-+	fp = fopen(path, "w");
++	char *line = NULL;
++	size_t line_buf_size = 0;
++
++	if (!tids)
++		fail("Failed to allocate memory for substitute string");
++
++	snprintf(path, sizeof(path), "%s/rcuscale/%s", debugfs, debugfs_filename);
++
++	fp = fopen(path, "r");
 +	if (!fp)
 +		err(EXIT_FAILURE, "Failed to open %s", path);
 +
-+	if (fprintf(fp, "1\n") < 0)
-+		err(EXIT_FAILURE, "Failed to write %s", path);
++	while (getline(&line, &line_buf_size, fp) != -1) {
++		size_t line_len = strlen(line);
++		bool is_first = (tids_len == 0);
 +
++		// trim white space and new line characters
++		while (line_len && isspace(line[line_len - 1]))
++			line[--line_len] = '\0';
++
++		// 2 for NUL-terminator and ","
++		reserve_size(&tids, &tids_capacity, tids_len + line_len + 2);
++		// skip "," for the first value
++		if (!is_first)
++			strlcpy(tids + tids_len, ",", 2);
++		strcat(tids + tids_len, line);
++		tids_len += line_len + !is_first;
++	}
++
++	free(line);
 +	fclose(fp);
++
++	return tids;
 +}
 +
 +/*
-+ * Wait for the experiment to complete by reading test_complete once every
-+ * second, until it is not 0.
++ * Replace the placeholder with the actual value.  Modifies the given new string.
 + */
-+static void wait_experiment(void)
++static void replace_child_arg(char **arg, const char *placeholder,
++				const char *debugfs_filename, char **replacement)
 +{
-+	char path[PATH_MAX];
-+
-+	snprintf(path, sizeof(path), "%s/rcuscale/test_complete", debugfs);
++	size_t str_capacity = strlen(*arg) + 1;
++	size_t placeholder_len = strlen(placeholder);
 +
 +	while (true) {
-+		int finished;
-+		FILE *fp = fopen(path, "r");
++		size_t replacement_len;
++		const char *found = strstr(*arg, placeholder);
++		size_t placeholder_off, suffix_off;
 +
-+		if (!fp)
-+			err(EXIT_FAILURE, "Failed to open %s", path);
++		if (found == NULL)
++			return;
 +
-+		if (fscanf(fp, "%d", &finished) != 1) {
-+			fclose(fp);
-+			err(EXIT_FAILURE, "Failed to read %s", path);
++		placeholder_off = found - *arg;
++		found = NULL;
++
++		/* Replacement is calculated lazily upon encountering placeholder */
++		if (*replacement == NULL)
++			*replacement = get_tids(debugfs_filename);
++
++		replacement_len = strlen(*replacement);
++
++		reserve_size(arg, &str_capacity,
++			str_capacity - placeholder_len + replacement_len + 1);
++
++		suffix_off = placeholder_off + placeholder_len;
++
++		/* Move:                   v suffix_off
++		 *       PREFIX PLACEHOLDER SUFFIX
++		 *             ^ placeholder_off
++		 * To:   PREFIX _______ SUFFIX
++		 * Or:   PREFIX _______________ SUFFIX
++		 *                             ^ placeholder_off+replacement_len
++		 */
++		memmove(*arg + placeholder_off + replacement_len,
++			*arg + suffix_off, strlen(*arg + suffix_off) + 1);
++		/* Fill in the replacement */
++		memcpy(*arg + placeholder_off, *replacement, replacement_len);
++	}
++}
++
++/*
++ * Generate child command by replacing {READER,WRITER,KFREE}_TASKS with the actual
++ * values, comma separated.  Caller must call free_child_command().
++ */
++static struct child_cmd *generate_child_command(void)
++{
++	char *reader_tasks_string = NULL;
++	char *writer_tasks_string = NULL;
++	char *kfree_tasks_string = NULL;
++	struct child_cmd *cmd = calloc(1, sizeof(*cmd));
++
++	if (!cmd)
++		fail("Failed to allocate memory for child command");
++
++	cmd->argc = child_cmd_template.argc;
++	if (cmd->argc == 0) {
++		cmd->argv = NULL;
++		return cmd;
++	}
++
++	cmd->argv = malloc((cmd->argc + 1) * sizeof(char *));
++	if (!cmd->argv)
++		fail("Failed to allocate memory for child command");
++
++	for (int i = 0; i < cmd->argc; ++i) {
++		char *arg = strdup(child_cmd_template.argv[i]);
++
++		if (!arg)
++			fail("Failed to allocate memory for child command");
++
++		if (dryrun) {
++			cmd->argv[i] = arg;
++			continue;
 +		}
 +
-+		fclose(fp);
++		replace_child_arg(&arg, "READER_TASKS", "reader_tasks", &reader_tasks_string);
++		replace_child_arg(&arg, "WRITER_TASKS", "writer_tasks", &writer_tasks_string);
++		replace_child_arg(&arg, "KFREE_TASKS", "kfree_tasks", &kfree_tasks_string);
 +
-+		if (finished)
-+			break;
-+
-+		sleep(1);
++		cmd->argv[i] = arg;
 +	}
++
++	cmd->argv[cmd->argc] = NULL;
++
++	free(reader_tasks_string);
++	free(writer_tasks_string);
++	free(kfree_tasks_string);
++
++	return cmd;
 +}
 +
 +/*
-+ * Run the constructed modprobe command.
++ * Free the child command.
 + */
-+static void run_modprobe(const struct modprobe_cmd *cmd)
++static void free_child_command(struct child_cmd *cmd)
 +{
-+	int retval;
-+	pid_t pid;
++	for (int i = 0; i < cmd->argc; i++)
++		free(cmd->argv[i]);
++	free(cmd->argv);
++}
 +
-+	if (dryrun)
+ /* ====================== Experiment Result Handling ====================== */
+ 
+ static void durations_add(struct durations *durations, u64 duration)
+@@ -692,18 +892,53 @@ static void print_params(const struct modprobe_cmd *cmd)
+ 		printf("\n");
+ }
+ 
++static void print_child_command(const struct child_cmd *cmd)
++{
++	if (cmd->argc == 0)
 +		return;
-+
-+	pid = fork();
-+	if (pid < 0)
-+		err(EXIT_FAILURE, "Failed to fork child process");
-+
-+	if (pid == 0) {
-+		execvp(cmd->cmd[0], (char *const *)cmd->cmd);
-+		in_child = true;
-+		err(EXIT_FAILURE, "Failed to execute modprobe command");
-+	}
-+	waitpid(pid, &retval, 0);
-+	if (retval)
-+		fail("modprobe failed, exiting.");
++	printf("Running child command:");
++	for (int i = 0; i < cmd->argc; ++i)
++		printf(" %s", cmd->argv[i]);
++	printf("\n");
 +}
 +
-+/*
-+ * Print modprobe parameters, but skip the base command line, and also skip
-+ * those overridable params not overridden by user.
-+ */
-+static void print_params(const struct modprobe_cmd *cmd)
-+{
-+	bool printed = false;
-+	char keybuf[MAX_OPTNAME];
-+	struct overridable_param *param;
+ /*
+  * Core Experiment function
+  */
+ static void runonce(const struct modprobe_cmd *modprobe_cmd)
+ {
++	struct child_cmd *child_cmd;
+ 	struct durations *durations;
+ 
+ 	print_params(modprobe_cmd);
+ 	run_modprobe(modprobe_cmd);
+ 
+-	if (dryrun)
++	child_cmd = generate_child_command();
++	print_child_command(child_cmd);
 +
-+	printf("Running experiment with options:");
-+	for (int i = MODPROBE_BASE_COUNT; cmd->cmd[i] != NULL; ++i) {
-+		if (sscanf(cmd->cmd[i], "%[^=]=", keybuf) != 1)
-+			fail("Invalid generated modprobe parameter: %s", cmd->cmd[i]);
-+		param = overridable_param_get(keybuf);
-+		if (param == NULL || param->user_overridden) {
-+			printed = true;
-+			printf(" %s", cmd->cmd[i]);
++	if (dryrun) {
++		free_child_command(child_cmd);
+ 		return;
++	}
++
++	if (child_cmd->argc != 0) {
++		// Start command in background
++		child_pid = fork();
++		if (child_pid < 0)
++			err(EXIT_FAILURE, "Failed to fork child process");
++
++		if (child_pid == 0) {
++			execvp(child_cmd->argv[0], child_cmd->argv);
++			in_child = true;
++			err(EXIT_FAILURE, "Failed to execute child command");
 +		}
++		// otherwise, parent process
 +	}
-+	if (!printed)
-+		printf(" (default)\n");
-+	else
-+		printf("\n");
-+}
++	free_child_command(child_cmd);
++	child_cmd = NULL;
 +
-+/*
-+ * Core Experiment function
-+ */
-+static void runonce(const struct modprobe_cmd *modprobe_cmd)
-+{
-+	struct durations *durations;
-+
-+	print_params(modprobe_cmd);
-+	run_modprobe(modprobe_cmd);
-+
-+	if (dryrun)
-+		return;
-+
-+	/* Start and wait for experiment */
-+	start_experiment();
-+	wait_experiment();
-+
-+	/* Parse writer durations */
-+	/* Wait until all kernel threads enter final wait */
-+	sleep(1);
-+	durations = parse_durations();
-+	unload_module();
-+
-+	printf("Experiment finished.\n");
-+
-+	/* Print statistics */
-+	print_writer_duration_stats(durations);
-+	free_durations(durations);
-+}
-+
-+static void modprobe_cmd_add(struct modprobe_cmd *cmd, const char *v)
-+{
-+	// 2 for NULL and v
-+	if (cmd->count + 2 >= MODPROBE_CMD_MAX)
-+		fail("Too many module parameters");
-+	cmd->cmd[cmd->count] = v;
-+	cmd->cmd[++cmd->count] = NULL;
-+}
-+
-+/*
-+ * Append parameters that are overridable by users.
-+ */
-+static void modprobe_cmd_add_overridable(struct modprobe_cmd *cmd)
-+{
-+	if (!param_has_conflict("writer_no_print"))
-+		modprobe_cmd_add(cmd, "writer_no_print=1");
-+	if (!param_has_conflict("holdoff"))
-+		modprobe_cmd_add(cmd, "holdoff=3");
-+}
-+
-+/*
-+ * Collect simple options into modprobe_cmd.
-+ */
-+static void modprobe_collect_simple_options(struct modprobe_cmd *cmd)
-+{
-+	for (int i = 0; i < simple_params_count; ++i)
-+		modprobe_cmd_add(cmd, simple_params[i].value);
-+
-+	modprobe_cmd_add_overridable(cmd);
-+}
-+
-+/*
-+ * Test once.  Does not allow ranges.
-+ */
-+static void test_once(int argc, const char *argv[])
-+{
-+	MODPROBE_CMD_INIT;
-+
-+	parse_module_params(argc, argv);
-+
-+	modprobe_collect_simple_options(&modprobe_cmd);
-+
-+	runonce(&modprobe_cmd);
-+}
-+
-+/* ============================= Entry Point ============================== */
-+
-+int bench_sync_rcu(int argc, const char **argv)
-+{
-+	void (*cmd)(int argc, const char *argv[]);
-+	const char *runmode, *gp_type;
-+
-+	/* Reset errno to avoid printing irrelavent error string */
-+	errno = 0;
-+
-+	/* Parse global options first. */
-+	argc = parse_options(argc, argv, bench_rcu_options, bench_rcu_usage,
-+			     PARSE_OPT_STOP_AT_NON_OPTION);
-+
-+	/* The empty case is equivalent to 'once sync'.
-+	 * Otherwise, at least two positional options are required:
-+	 * once/range/ratio and sync/async/exp
-+	 */
-+	if (argc == 0) {
-+		runmode = "once";
-+		gp_type = "sync";
-+	} else if (argc < 2) {
-+		usage_with_options(bench_rcu_usage, bench_rcu_options);
-+	} else {
-+		runmode = argv[0];
-+		gp_type = argv[1];
-+		argc -= 2;
-+		argv += 2;
++	/* Wait for child process to initialize */
++	sleep(child_delay);
+ 
+ 	/* Start and wait for experiment */
+ 	start_experiment();
+@@ -717,6 +952,13 @@ static void runonce(const struct modprobe_cmd *modprobe_cmd)
+ 
+ 	printf("Experiment finished.\n");
+ 
++	/* Wait for child to finish */
++	if (child_pid != 0) {
++		printf("Waiting for child process to exit.\n");
++		waitpid(child_pid, NULL, 0);
++		child_pid = 0;
 +	}
 +
-+	if (strcmp(runmode, "once") == 0)
-+		cmd = test_once;
-+	else
-+		usage_with_options(bench_rcu_usage, bench_rcu_options);
-+
-+	parse_gp_type(gp_type);
-+
-+	parse_modinfo();
-+	if (system(MODPROBE_REMOVE_CMD) != 0)
-+		err(EXIT_FAILURE, "Unloading existing rcuscale module failed");
-+
-+	setup_cleanup();
-+
-+	cmd(argc, argv);
-+
-+	return 0;
-+}
-diff --git a/tools/perf/builtin-bench.c b/tools/perf/builtin-bench.c
-index 8d945b846321..9d2e765c7e16 100644
---- a/tools/perf/builtin-bench.c
-+++ b/tools/perf/builtin-bench.c
-@@ -55,6 +55,7 @@ static struct bench sched_benchmarks[] = {
- static struct bench sync_benchmarks[] = {
- 	{ "qspinlock",	"Benchmark for queued spinlock",		bench_sync_qspinlock	},
- 	{ "ticket",	"Benchmark for ticket spinlock",		bench_sync_ticket	},
-+	{ "rcu",	"Benchmark using rcuscale kernel module",	bench_sync_rcu		},
- 	{ "all",	"Run all synchronization benchmarks",		NULL			},
- 	{ NULL,		NULL,						NULL			}
- };
+ 	/* Print statistics */
+ 	print_writer_duration_stats(durations);
+ 	free_durations(durations);
+@@ -779,13 +1021,13 @@ int bench_sync_rcu(int argc, const char **argv)
+ 
+ 	/* Parse global options first. */
+ 	argc = parse_options(argc, argv, bench_rcu_options, bench_rcu_usage,
+-			     PARSE_OPT_STOP_AT_NON_OPTION);
++			     PARSE_OPT_STOP_AT_NON_OPTION | PARSE_OPT_KEEP_DASHDASH);
+ 
+ 	/* The empty case is equivalent to 'once sync'.
+ 	 * Otherwise, at least two positional options are required:
+ 	 * once/range/ratio and sync/async/exp
+ 	 */
+-	if (argc == 0) {
++	if (argc == 0 || strcmp(argv[0], "--") == 0) {
+ 		runmode = "once";
+ 		gp_type = "sync";
+ 	} else if (argc < 2) {
 -- 
 2.50.1.565.gc32cd1483b-goog
 
