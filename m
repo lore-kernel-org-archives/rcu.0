@@ -1,45 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE122581;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E933623AD;
 	Fri,  1 Aug 2025 00:12:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754007159; cv=none; b=I1R/l0hL9o2550zpTJHBX67tyZsfzLzrQdCehew4eIF/7Q1RM//w1Nnm+2+CPfNm3xiuL9Tjdt9OUMM9iFBsJp63TiDIp7ZxguWKhEUPwsSZBcFgPZDQb2lo4XULok7NI3MpYQHVorHAXFYYv4VcSEVNHP/3wZdRJDkw1nBtOPg=
+	t=1754007159; cv=none; b=T4tPNC5bXZeL7zJ4KPfXybA1G+JbLrDPAvokkcDKQA29a1RxE1m1dw1M5DaNwZiC62oOMk2yFlMr5XTrwlfPIMtu+/xfOxOx5U3Sm80SmrF9Mv+SGBuccyV6NxVkhv2Js+ysCvUGl3wyuFmEBSCLC9JCJk7IqPmhO8OA3NcuqNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1754007159; c=relaxed/simple;
-	bh=KM0pcPI/pYjych/Wp0FAUKf1zUs9854rfr3spHZiqvE=;
+	bh=MJ5bAfE9Srk8OX6f3Xl/KDXvlfaoSrdv9K67Uthyu4c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BP1Ehc/OfTFqbCQjD7lHZ4V61mRgT38CfPqWawmlBm7KH3cm44R4VwMdcBbgf/x4Olro3Z/lvlc4N1QLY0LO1zid9nOIMhxbFdhZKrWwxAbcBe7mOOD1nJB5EDriDsDaoVt7nTvoB/Wai2NeuvYzPVpWuOmxtHie34DMSPIVt5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CU1nlMgT; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=POhfH3lzYLP0sEI86FGUF/QZPPg/exbDzAsv0g2riag7nNhc6EC6JoKhwZjO5IuGn0sp16TAeJSaP1eKY+eCxZbAIh21l6N3bFpj/2u5vN+teziEwwT7Hlny6JQffOOelXVSuviE40c2veIDQOSMdDbjxAVkGb6Lv2jx7abaIGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HWgl+S9v; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CU1nlMgT"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8910EC4CEF8;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HWgl+S9v"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82100C4CEF7;
 	Fri,  1 Aug 2025 00:12:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1754007158;
-	bh=KM0pcPI/pYjych/Wp0FAUKf1zUs9854rfr3spHZiqvE=;
+	bh=MJ5bAfE9Srk8OX6f3Xl/KDXvlfaoSrdv9K67Uthyu4c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CU1nlMgT6Uh0a877JgcE1NveM3vI+deSsYwCBGxVakUaUsfXUGiI2whCg7BF1LY/D
-	 kgykKa+/n0YJyhjsQiPmzgtVtkwWchSgw5lWjAWgdRSN77buD15na8ITkY7YpPh+xg
-	 zD3x3Kj4rFgtqbe7GZObdZcuoB31dGrgj4IOb3Z2zcQnObJGl8BVYobMtLfDdn4Qio
-	 xYeSVml5/ovK0KiRmYiBcmrP8mePVJQ/OJ/eFL4tRV9pNNXGXlm9NFnbUB6m1WsrY3
-	 vgyjxBaR3sEaHh5UPykAQa1O9JU0yEQ0VBf/kQ/WryW21MfOXM58FfR6O/hDCJRWVZ
-	 S2npQIg5Pw8pA==
+	b=HWgl+S9vzmpUr3PRe/9zMBRIhYjco/mdhRVDOU2M+3ZfXzPGMyaQm+tHBTX8RZOM/
+	 Oe6FNaWPfAXEpOODP4gwU9PBKi0v/IU9QjTfkogNupsbqaASHIXY4W8oOvuQmT19rH
+	 JBDYGr1O+O1xMtd2SSzq4j963ozDkD3ZwGjRlyRG5H1+vCRqnrWu0/tTFOWS3JCa1u
+	 3zJ+qeHmUB8DLihBk2NeYzdYXiV0jnDJkJGO46CIMmCbMR4TuaJZ6VhSb5hA+l9oxf
+	 oCNNqRFeIdNGzOMf1TxynrSllKw4G4WhCMHukeJmmIKqt93V9RcXZ8chfn8t5Sdm2b
+	 VKXbd4DBBWE0Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2F136CE0C3E; Thu, 31 Jul 2025 17:12:38 -0700 (PDT)
+	id 2B728CE0BB1; Thu, 31 Jul 2025 17:12:38 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	bpf@vger.kernel.org
-Subject: [PATCH v5 4/6] tracing: Guard __DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast
-Date: Thu, 31 Jul 2025 17:12:34 -0700
-Message-Id: <20250801001236.4091760-4-paulmck@kernel.org>
+Subject: [PATCH v5 3/6] srcu: Add guards for notrace variants of SRCU-fast readers
+Date: Thu, 31 Jul 2025 17:12:33 -0700
+Message-Id: <20250801001236.4091760-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c8842c55-faf8-4cde-89bf-da77d91eadcb@paulmck-laptop>
 References: <c8842c55-faf8-4cde-89bf-da77d91eadcb@paulmck-laptop>
@@ -51,180 +52,33 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The current use of guard(preempt_notrace)() within __DECLARE_TRACE()
-to protect invocation of __DO_TRACE_CALL() means that BPF programs
-attached to tracepoints are non-preemptible.  This is unhelpful in
-real-time systems, whose users apparently wish to use BPF while also
-achieving low latencies.  (Who knew?)
+This adds the usual scoped_guard(srcu_fast_notrace, &my_srcu) and
+guard(srcu_fast_notrace)(&my_srcu).
 
-One option would be to use preemptible RCU, but this introduces
-many opportunities for infinite recursion, which many consider to
-be counterproductive, especially given the relatively small stacks
-provided by the Linux kernel.  These opportunities could be shut down
-by sufficiently energetic duplication of code, but this sort of thing
-is considered impolite in some circles.
-
-Therefore, use the shiny new SRCU-fast API, which provides somewhat faster
-readers than those of preemptible RCU, at least on my laptop, where
-task_struct access is more expensive than access to per-CPU variables.
-And SRCU fast provides way faster readers than does SRCU, courtesy of
-being able to avoid the read-side use of smp_mb().  Also, it is quite
-straightforward to create srcu_read_{,un}lock_fast_notrace() functions.
-
-While in the area, SRCU now supports early boot call_srcu().  Therefore,
-remove the checks that used to avoid such use from rcu_free_old_probes()
-before this commit was applied:
-
-e53244e2c893 ("tracepoint: Remove SRCU protection")
-
-The current commit can be thought of as an approximate revert of that
-commit, with some compensating additions of preemption disabling pointed
-out by Steven Rostedt (thank you, Steven!).
-
-[ Apply kernel test robot feedback. ]
-
-Link: https://lore.kernel.org/all/20250613152218.1924093-1-bigeasy@linutronix.de/
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/tracepoint.h   |  6 ++++--
- include/trace/perf.h         |  2 ++
- include/trace/trace_events.h |  2 ++
- kernel/tracepoint.c          | 21 ++++++++++++++++++++-
- 4 files changed, 28 insertions(+), 3 deletions(-)
+ include/linux/srcu.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 826ce3f8e1f85..a22c1ab88560b 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -33,6 +33,8 @@ struct trace_eval_map {
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 7a692bf8f99b9..ada65b58bc4c5 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -515,4 +515,9 @@ DEFINE_LOCK_GUARD_1(srcu_fast, struct srcu_struct,
+ 		    srcu_read_unlock_fast(_T->lock, _T->scp),
+ 		    struct srcu_ctr __percpu *scp)
  
- #define TRACEPOINT_DEFAULT_PRIO	10
- 
-+extern struct srcu_struct tracepoint_srcu;
++DEFINE_LOCK_GUARD_1(srcu_fast_notrace, struct srcu_struct,
++		    _T->scp = srcu_read_lock_fast_notrace(_T->lock),
++		    srcu_read_unlock_fast_notrace(_T->lock, _T->scp),
++		    struct srcu_ctr __percpu *scp)
 +
- extern int
- tracepoint_probe_register(struct tracepoint *tp, void *probe, void *data);
- extern int
-@@ -115,7 +117,7 @@ void for_each_tracepoint_in_module(struct module *mod,
- static inline void tracepoint_synchronize_unregister(void)
- {
- 	synchronize_rcu_tasks_trace();
--	synchronize_rcu();
-+	synchronize_srcu(&tracepoint_srcu);
- }
- static inline bool tracepoint_is_faultable(struct tracepoint *tp)
- {
-@@ -271,7 +273,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 	static inline void __do_trace_##name(proto)			\
- 	{								\
- 		if (cond) {						\
--			guard(preempt_notrace)();			\
-+			guard(srcu_fast_notrace)(&tracepoint_srcu);	\
- 			__DO_TRACE_CALL(name, TP_ARGS(args));		\
- 		}							\
- 	}								\
-diff --git a/include/trace/perf.h b/include/trace/perf.h
-index a1754b73a8f55..1b7925a859665 100644
---- a/include/trace/perf.h
-+++ b/include/trace/perf.h
-@@ -71,7 +71,9 @@ perf_trace_##call(void *__data, proto)					\
- 	u64 __count __attribute__((unused));				\
- 	struct task_struct *__task __attribute__((unused));		\
- 									\
-+	preempt_disable_notrace();					\
- 	do_perf_trace_##call(__data, args);				\
-+	preempt_enable_notrace();					\
- }
- 
- #undef DECLARE_EVENT_SYSCALL_CLASS
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index 4f22136fd4656..0504a423ca253 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -436,7 +436,9 @@ __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
- static notrace void							\
- trace_event_raw_event_##call(void *__data, proto)			\
- {									\
-+	preempt_disable_notrace();					\
- 	do_trace_event_raw_event_##call(__data, args);			\
-+	preempt_enable_notrace();					\
- }
- 
- #undef DECLARE_EVENT_SYSCALL_CLASS
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 62719d2941c90..e19973015cbd7 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -25,6 +25,9 @@ enum tp_func_state {
- extern tracepoint_ptr_t __start___tracepoints_ptrs[];
- extern tracepoint_ptr_t __stop___tracepoints_ptrs[];
- 
-+DEFINE_SRCU(tracepoint_srcu);
-+EXPORT_SYMBOL_GPL(tracepoint_srcu);
-+
- enum tp_transition_sync {
- 	TP_TRANSITION_SYNC_1_0_1,
- 	TP_TRANSITION_SYNC_N_2_1,
-@@ -34,6 +37,7 @@ enum tp_transition_sync {
- 
- struct tp_transition_snapshot {
- 	unsigned long rcu;
-+	unsigned long srcu_gp;
- 	bool ongoing;
- };
- 
-@@ -46,6 +50,7 @@ static void tp_rcu_get_state(enum tp_transition_sync sync)
- 
- 	/* Keep the latest get_state snapshot. */
- 	snapshot->rcu = get_state_synchronize_rcu();
-+	snapshot->srcu_gp = start_poll_synchronize_srcu(&tracepoint_srcu);
- 	snapshot->ongoing = true;
- }
- 
-@@ -56,6 +61,8 @@ static void tp_rcu_cond_sync(enum tp_transition_sync sync)
- 	if (!snapshot->ongoing)
- 		return;
- 	cond_synchronize_rcu(snapshot->rcu);
-+	if (!poll_state_synchronize_srcu(&tracepoint_srcu, snapshot->srcu_gp))
-+		synchronize_srcu(&tracepoint_srcu);
- 	snapshot->ongoing = false;
- }
- 
-@@ -101,17 +108,29 @@ static inline void *allocate_probes(int count)
- 	return p == NULL ? NULL : p->probes;
- }
- 
--static void rcu_free_old_probes(struct rcu_head *head)
-+static void srcu_free_old_probes(struct rcu_head *head)
- {
- 	kfree(container_of(head, struct tp_probes, rcu));
- }
- 
-+static void rcu_free_old_probes(struct rcu_head *head)
-+{
-+	call_srcu(&tracepoint_srcu, head, srcu_free_old_probes);
-+}
-+
- static inline void release_probes(struct tracepoint *tp, struct tracepoint_func *old)
- {
- 	if (old) {
- 		struct tp_probes *tp_probes = container_of(old,
- 			struct tp_probes, probes[0]);
- 
-+		/*
-+		 * Tracepoint probes are protected by either RCU or
-+		 * Tasks Trace RCU and also by SRCU.  By calling the SRCU
-+		 * callback in the [Tasks Trace] RCU callback we cover
-+		 * both cases. So let us chain the SRCU and [Tasks Trace]
-+		 * RCU callbacks to wait for both grace periods.
-+		 */
- 		if (tracepoint_is_faultable(tp))
- 			call_rcu_tasks_trace(&tp_probes->rcu, rcu_free_old_probes);
- 		else
+ #endif
 -- 
 2.40.1
 
