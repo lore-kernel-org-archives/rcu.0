@@ -1,59 +1,41 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9698328002B;
-	Thu, 31 Jul 2025 23:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0CC360;
+	Fri,  1 Aug 2025 00:12:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754005133; cv=none; b=T21p5SHCuEuD/mvT8eQGxZENH2qkNp5i8C6jKVOu4CbaZTlyhXKLoOdw6oBHMTiPWyLYDQD4bYinLpqfk9vMwILEW39RmF0GQTV0tVdNrX7oqQULKwb7FREqhFECl+X34UBaUVBfW0yDpQyck6azSIWp/2/6d4u9mwVltP55IQ4=
+	t=1754007145; cv=none; b=eeXjdgQkDO3eE/CG6lV9CsNPHb64Dwf6KFKg1ANc8UOhvFoJnJlWBNYbowGAOIEQjK+Y+Bc3RWhVkGuSq/gnXZCChezg1yEgB1sJ0jrY5hICqXq35h0xxKX0bdlAjco9P8w2+SvZ3dVivRyq9Y5d7bURmu5JCqb9Vd+TSbssHhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754005133; c=relaxed/simple;
-	bh=ORv11BBiZIIxB64dqC73Reod0GBkNGunSRKP0P9RJkE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XpccA6Wj08TuYSc4O2779gBqZJoAoQu99xBPx1IXdTSyGSc7obNehfow8qODH8rUOGw4BaRLECOTEELku76JMjbVAJqbdE7nDSIUeOs8HwI5vvbUglfUzYmjJ5Eav7PSe40Dkt25JtT0SVNd0QaSfiHzTRKt+R8ujaDkJij3eTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gOH+cjZz; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1754007145; c=relaxed/simple;
+	bh=3GdFhIjoHuWUzXGnXNvNOl+qvZLKmjGvD5TiuBkOfVg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=JBgmcK6eQW9M46LG9SkpWfS6HfzZcbKjV1VP7hvaq7TY0aGgeypD4Wmu2IIfKp6CXMiwVTCvqFrWZ5vRvr/d3F/WQwgrUg6MqoY5hbkbFdODJMmWf+8SDmK4yAoaiXVZHcy4rhAZhtJgX9VmJYm5geZwOBNR2/TCHrpLRVCDMlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NkpSQqO7; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gOH+cjZz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F2E9C4CEEF;
-	Thu, 31 Jul 2025 23:38:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NkpSQqO7"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A093BC4CEEF;
+	Fri,  1 Aug 2025 00:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754005133;
-	bh=ORv11BBiZIIxB64dqC73Reod0GBkNGunSRKP0P9RJkE=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=gOH+cjZz85UXcqUOBspAaljr2Q8fhdksocWrc3mSqcar3rvVhx5CEmtzT00J+j8Wa
-	 hoi+qUkBIaejm2lRq0BeRo0QjnYNrZiUimiWaypivJl5ZPcafeCF1v/X6pBqWu15Jr
-	 aaEFXN9hOETgbwpdFTDWoH4LbuCNV9lao+iMBwIdEI0A9eiWl86Pfq/EnXoP9Px/Ab
-	 kCFwRYm8O/En7zMLwS/3XKOPiihed4NZih0YyH5Ig2UYR/XNn12Ut8xjkvpOIbNYBD
-	 Cn0SOZSykGWyHCU/+fDzSoen4s93faGh1puj5Yq3LWFvgF2yt0jmX9J/1g6AUUvK55
-	 kzdl/HYFvBiQQ==
+	s=k20201202; t=1754007144;
+	bh=3GdFhIjoHuWUzXGnXNvNOl+qvZLKmjGvD5TiuBkOfVg=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=NkpSQqO7lTYRzAOm/CKICpzEvfSCslPAahLCiJIpEpHFcwCxkNQoYk2ufinW8jsoo
+	 br3QpQB6pD5NyjvLoSkhMqJHgXjda6rPayDrk2T7lV50wZqCux9XxmEDVkxoTc1C7Z
+	 tEOkKHTk3dRkbhZACxgeJrlX9k0KjwPJjIXIX7BoAyaiEiLzpZgMgzTstRH+nPpFAQ
+	 3Nyy4aXtuMeKyevGlKMnFtCtnCWAn2wzND+YXCg0tRYXfj+dpklHDOB1LuMn7wD6i0
+	 qASBFdIf5AIkw+hWFG3lV6TdxjQNcYCuB4MsU5TWygTfLg1H3w7yRXrTVh8Ek96Hrh
+	 s3IBgRqDwX64g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id AD740CE09FA; Thu, 31 Jul 2025 16:38:52 -0700 (PDT)
-Date: Thu, 31 Jul 2025 16:38:52 -0700
+	id 3CB68CE0A73; Thu, 31 Jul 2025 17:12:24 -0700 (PDT)
+Date: Thu, 31 Jul 2025 17:12:24 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Yuzhuo Jing <yuzhuo@google.com>
-Cc: Ian Rogers <irogers@google.com>, Yuzhuo Jing <yzj@umich.edu>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Frank van der Linden <fvdl@google.com>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v1 0/4] rcuscale: Add debugfs file based controls and CPU
- affinity offset
-Message-ID: <185c8c12-4d6d-41a2-bb04-dfe1d00d01c4@paulmck-laptop>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH v5 0/6] Switch __DECLARE_TRACE() to new notrace variant of
+ SRCU-fast
+Message-ID: <c8842c55-faf8-4cde-89bf-da77d91eadcb@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20250730022347.71722-1-yuzhuo@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -62,107 +44,76 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250730022347.71722-1-yuzhuo@google.com>
 
-On Tue, Jul 29, 2025 at 07:23:43PM -0700, Yuzhuo Jing wrote:
-> In an effort to add RCU benchmarks to the perf tool and to improve
-> the base-metal rcuscale tests, this patch series adds several auxiliary
-> features useful for testing tools.
-> 
-> This series introduces a few rcuscale options:
->   * writer_no_print: skip writer duration printing during shutdown, but
->     instead let users read from the new "writer_durations" debugfs file.
->     This drastically improves cleanup speed.
+Hello!
 
-But existing scripts running something like this will continue to
-work, correct?  (It looks like they do, just checking.)
+This is version 5 of a patch series creating a new notrace variant of
+SRCU-fast and introducing it to the __DECLARE_TRACE() macro in place of
+the current preemption disabling.  This change enables preemption of BPF
+programs attached to tracepoints, as is required for runtime use of BPF
+in real-time systems.
 
-tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 5
+The patches are as follows:
 
-Don't get me wrong, your debugfs read-out performance increase looks
-quite good, but these tests run in a guest OS with minimal userspace.
-And by "minimal", I mean that they run out of an initrd having a root
-filesystem consisting of a single statically linked "init" program.  ;-)
+1.	Move rcu_is_watching() checks to srcu_read_{,un}lock_fast().
 
->   * block_start: an option to hold all worker thread until the new
->     debugfs "should_start" file is written.
->   * {reader,writer,kfree}_cpu_offset: the starting value of CPU affinity
->     for each type of threads.  This can be used to avoid scheduling
->     different types of threads on the same CPU.  The 4th patch in this
->     series shows drastic performance differences w/ and w/o overlaps.
+2.	Add srcu_read_lock_fast_notrace() and
+	srcu_read_unlock_fast_notrace().
 
-The usual use cases run only writers except for stress tests, but this
-seems like a good capability.
+3.	Add guards for notrace variants of SRCU-fast readers.
 
-> This patch series creates an "rcuscale" folder in debugfs, containing
-> the following files:
->   * writer_durations: a CSV formatted file containing writer id and
->     writer durations.
->   * {reader,writer,kfree}_tasks: the list of kernel task PIDs for
->     external tools to attach to.
->   * should_start: a writable file to signal the start of the experiment,
->     used in conjunction with the new "block_start" option.
->   * test_complete: a readable file to indicate whether the experiment has
->     finished or not.
-> 
-> RFCs:
->   * Should those new files reside in debugfs or in procfs?
+4.	Guard __DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast.
 
-New files in procfs face serious scrutiny, so your choice of debugfs
-is a good one.
+5.	Document __srcu_read_{,un}lock_fast() implicit RCU readers.
 
->   * What format should be used for the writer_duartions file, and what
->     documentations should be updated for the file format definition?
+6.	Document srcu_flip() memory-barrier D relation to SRCU-fast.
 
-Back in the old days, I would have insisted on space/tab separated fields.
-But gawk now supports a --csv flag, so I don't feel strongly about this.
+Changes since v4:
 
->   * In the 4th patch, we see different characteristics between overlap
->     and non-overlap.  Current rcuscale creates nr_cpu readers and nr_cpu
->     writers, thus scheduling 2nr_cpu tasks on nr_cpu CPUs.  Should we
->     consider changes to this behavior?  Or add automatic conflict
->     resolutions when total threads <= nr_cpu.
+o	Remove the redundant "notrace" tags per Boqun Feng feedback.
 
-The theory back in the day was that the updater would spend enough time
-blocked that this would not matter.  However, you have shown that it
-clearly does matter.
+o	Disable preemption for perf and ftrace per Steven Rostedt
+	feedback, which addresses the kernel test robot reports
+	provoked by earlier versions.
 
-Except that running the reader and writer on the same CPU seems to
-*improve* grace-period latency, with P99 value duration of 121,004
-microseconds for overlapping (your first patch 4/4 experiment) and of
-218,018 microseconds for non-overlapping.  Since shorter grace periods
-are usually considered better, this suggests better performance with
-the reader and writer running on the same thread.
+	https://lore.kernel.org/all/45397494-544e-41c0-bf48-c66d213fce05@paulmck-laptop/
 
-Or am I misreading your commit log?
+Changes since v3:
 
-It would not be too surprising for the overlapping case to provide
-faster grace periods because you are running PREEMPT=n and the writer
-kthread would force context switches more frequently.  But I figured
-that I should check.
+o	Add "notrace" per Joel, Steven, and Matthew feedback.
 
-> Thank you!
-> 
-> Yuzhuo Jing (4):
->   rcuscale: Create debugfs file for writer durations
->   rcuscale: Create debugfs files for worker thread PIDs
->   rcuscale: Add file based start/finish control
+o	Upgrade explanatory comments and add new ones per Joel feedback.
 
-This does not apply on the dev branch of my -rcu tree.  Which is not too
-surprising because kernel-parameters.txt is subject to change.  But when
-you repost to fix the bug that kernel test robot detected, could you
-please let me know what mainline version you are developing against?
-That would allow me to apply it there and then to rebase and resolve
-conflicts as needed.
+	https://lore.kernel.org/all/20250721162433.10454-1-paulmck@kernel.org/
 
-							Thanx, Paul
+Changes since v2:
 
->   rcuscale: Add CPU affinity offset options
-> 
->  .../admin-guide/kernel-parameters.txt         |  29 ++
->  kernel/rcu/rcuscale.c                         | 361 +++++++++++++++++-
->  2 files changed, 377 insertions(+), 13 deletions(-)
-> 
-> -- 
-> 2.50.1.552.g942d659e1b-goog
-> 
+o	Posting standalone as opposed to a reply.
+
+	https://lore.kernel.org/all/3cecf6c9-b2ee-4f34-9d1b-ca4cfb8e56a7@paulmck-laptop/
+
+Changes since RFC version:
+
+o	RFC patch 6/4 has been pulled into the shared RCU tree:
+	e88c632a8698 ("srcu: Add guards for SRCU-fast readers")
+
+o	RFC patch 5/4 (which removed the now-unnecessary special boot-time
+	avoidance of SRCU) has been folded into patch 4/4 shown above,
+	as suggested by Steven Rostedt.
+
+	https://lore.kernel.org/all/bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop/
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/srcu.h         |    4 +++
+ b/include/linux/srcutree.h     |    2 -
+ b/include/linux/tracepoint.h   |    6 +++--
+ b/include/trace/perf.h         |    2 +
+ b/include/trace/trace_events.h |    2 +
+ b/kernel/rcu/srcutree.c        |   10 ++++++++
+ b/kernel/tracepoint.c          |   21 +++++++++++++++++-
+ include/linux/srcu.h           |   30 ++++++++++++++++++++++++++
+ include/linux/srcutree.h       |   47 ++++++++++++++++++++++++++---------------
+ 9 files changed, 102 insertions(+), 22 deletions(-)
