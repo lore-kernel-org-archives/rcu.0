@@ -1,47 +1,47 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324B2283FDB
-	for <rcu@vger.kernel.org>; Fri,  8 Aug 2025 15:21:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EB2285067
+	for <rcu@vger.kernel.org>; Fri,  8 Aug 2025 15:21:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754666491; cv=none; b=T8v435NNSCOoQb2oDNtKqltZiBxKAqQvaMxcKy11vOUdQanN1Nk8jUuZV9Ex8ADl9WTgaft/UzSPn+zM66+3ukQoqhxI4X4lr4ksTXwbFvaQvVH+IjnFwZAb/Z43NWvlNDsYy8TquEeq0UeWFxK46E+3bkVRRMTsO8LxvO9mg1M=
+	t=1754666491; cv=none; b=TEB/MvxmUTsYs20u+D5R4ootcLs/oaG7gb2gwtHmMt/+2b5lPxmylMzE4upthAPXyWQRxqW9cEgOphZREMGc1b3BOaLeJu5X6G/Pr02aCX/GqfLCmhuiRiQ7GVJXXqZ+lyM1wixiruAUQdJJ6MF8QDIycEhbE8znPiTHfpqF3MU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1754666491; c=relaxed/simple;
-	bh=QFJWiaweEnjtZulZv+TQcP+SkZextOHNVPGHzdr08DY=;
+	bh=ZncYki1KL4ndbu/cEBgE3ithy3n1MacpG1Kddz8qY/A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hWIgTGLsxS9+6kuufFoRphT2B1o6zYI6p+JqJA0UZQ6t0YxZuwRN1tGqqfHC0zVdzWnMeIVPwK8M952Uvlfj/wnxV1mGFNsu6GehD62CgU/Rm6Sa9j+YJyoWJrTzfG8gwfopaRJ62piRZlcQPFIS/kSfUnyDt0vC77aeTUiHVlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HzB57zMv; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=Y/X0sMKhVAzglqS6/DaQOhAGX2FhkKA5G9Qh+mN/TVA37e0kvd+oK6pTYx94Y9whMO2VBawaxpw98K/DHh43xyKDgg2wGXrmUlA+yBY1yzV8NeMX9nIhIZz/JuRzmtcZkvqWBaYjjBwtE/2ivgVfB8T8zjulMybJpuTdCYFx/rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KdPgy8NU; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HzB57zMv"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KdPgy8NU"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754666486;
+	s=mimecast20190719; t=1754666485;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wEWvc3gO1vjmutC6sTx4SpSS9DqW2Vo8SMK8dJwY8nw=;
-	b=HzB57zMvRSnezSzCxiEYp6vSVa7cJ10Q42sg5KP9olEHRqB6xTyNHT4mUUYj1zEDzJdhXp
-	qc2ioprCEeRB7l1QMBCDVzFmlQW0RJiLGmy4Rzn7mBKJyqNB6J/ge8A0Gh66hxNUQQP1vO
-	RpY8nPJldykWLNXMuZ2JlJPOjV0hKDc=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+	bh=OkInnKItN1D64SESBQnElXZy3eYPYkSB5pXAhM/lfjA=;
+	b=KdPgy8NUBJ5o0bFjXGuNyb9nEiTm5SZWJJdt8zN8hxqsuhoTrP8yQuA361Y/njJQDyEWrf
+	MbiOZR7XHoR0+zRsfCgFgiV59lfVKGEXMqBbTQKTsbroGrIl/3JEW5F6b7rCPGMXjVfAB8
+	j689ynI36k7EsxHxWyy+gQGruX44FSQ=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-631-pKkLszEMMSyqCueLYuEvDg-1; Fri,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-596-a8ijxvpuNdOkYZYzaCQICw-1; Fri,
  08 Aug 2025 11:21:22 -0400
-X-MC-Unique: pKkLszEMMSyqCueLYuEvDg-1
-X-Mimecast-MFC-AGG-ID: pKkLszEMMSyqCueLYuEvDg_1754666455
+X-MC-Unique: a8ijxvpuNdOkYZYzaCQICw-1
+X-Mimecast-MFC-AGG-ID: a8ijxvpuNdOkYZYzaCQICw_1754666474
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F319E180029D;
-	Fri,  8 Aug 2025 15:20:54 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 17E4919560B1;
+	Fri,  8 Aug 2025 15:21:14 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.65.37])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2AC23180029B;
-	Fri,  8 Aug 2025 15:20:48 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3D1D51800294;
+	Fri,  8 Aug 2025 15:21:08 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -79,9 +79,9 @@ Cc: cgroups@vger.kernel.org,
 	Gabriele Monaco <gmonaco@redhat.com>,
 	Cestmir Kalina <ckalina@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 15/18] cgroup/cpuset: Enable RCU NO-CB CPU offloading of newly isolated CPUs
-Date: Fri,  8 Aug 2025 11:19:58 -0400
-Message-ID: <20250808152001.20245-6-longman@redhat.com>
+Subject: [RFC PATCH 18/18] cgroup/cpuset: Add pr_debug() statements for cpuhp_offline_cb() call
+Date: Fri,  8 Aug 2025 11:20:01 -0400
+Message-ID: <20250808152001.20245-9-longman@redhat.com>
 In-Reply-To: <20250808151053.19777-1-longman@redhat.com>
 References: <20250808151053.19777-1-longman@redhat.com>
 Precedence: bulk
@@ -93,97 +93,101 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-Make use of the provided rcu_nocb_cpu_offload()/rcu_nocb_cpu_deoffload()
-APIs to enable RCU NO-CB CPU offloading of newly isolated CPUs and
-deoffloading of de-isolated CPUs.
+Add some pr_debug() statements to actions performed related to the
+cpuhp_offline_cb() call to aid debugging. Since rcu_nocb_cpu_offload()
+and rcu_nocb_cpu_deoffload() will print out some info text, there is
+no need to add pr_debug() statements for them.
 
-Also add a new rcu_nocbs_enabled() helper function to determine if RCU
-NO-CB CPU offloading can be done.
-
-As nohz_full can now be specified without any CPU list, drop the test
-for cpumask_empty(tick_nohz_full_mask) in rcu_init_nohz().
-
-The RCU NO-CB CPU offloading feature can only used if either "rcs_nocbs"
-or the "nohz_full" boot command parameters are used so that the proper
-RCU NO-CB resources are properly initialized at boot time.
+Also update test_cpuset_prs.sh test script to enable printing of dynamic
+debug messages for the kernel/cgroup/cpuset.c file when loglevel is 7
+(debug).
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- include/linux/rcupdate.h |  2 ++
- kernel/cgroup/cpuset.c   | 14 ++++++++++++++
- kernel/rcu/tree_nocb.h   |  7 ++++++-
- 3 files changed, 22 insertions(+), 1 deletion(-)
+ kernel/cgroup/cpuset.c                         | 18 +++++++++++++-----
+ .../selftests/cgroup/test_cpuset_prs.sh        |  7 +++++++
+ 2 files changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 120536f4c6eb..642b80a4f071 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -140,6 +140,7 @@ void rcu_init_nohz(void);
- int rcu_nocb_cpu_offload(int cpu);
- int rcu_nocb_cpu_deoffload(int cpu);
- void rcu_nocb_flush_deferred_wakeup(void);
-+bool rcu_nocbs_enabled(void);
- 
- #define RCU_NOCB_LOCKDEP_WARN(c, s) RCU_LOCKDEP_WARN(c, s)
- 
-@@ -149,6 +150,7 @@ static inline void rcu_init_nohz(void) { }
- static inline int rcu_nocb_cpu_offload(int cpu) { return -EINVAL; }
- static inline int rcu_nocb_cpu_deoffload(int cpu) { return 0; }
- static inline void rcu_nocb_flush_deferred_wakeup(void) { }
-+static inline bool rcu_nocbs_enabled(void) { return false; }
- 
- #define RCU_NOCB_LOCKDEP_WARN(c, s)
- 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 45c82c18bec4..de9cb92a0fc7 100644
+index 489708f4e096..30632e4b5899 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -1416,6 +1416,20 @@ static int do_housekeeping_exclude_cpumask(void *arg __maybe_unused)
- 	}
- #endif
+@@ -21,6 +21,7 @@
+  *  License.  See the file COPYING in the main directory of the Linux
+  *  distribution for more details.
+  */
++#define pr_fmt(fmt) "cpuset: " fmt
+ #include "cpuset-internal.h"
  
-+	if (rcu_nocbs_enabled()) {
-+		/*
-+		 * Enable RCU NO-CB CPU offloading/deoffloading for the affected CPUs
-+		 */
-+		for_each_cpu(cpu, isolcpus_update_state.cpus) {
-+			if (cpumask_test_cpu(cpu, icpus))
-+				ret = rcu_nocb_cpu_offload(cpu);
-+			else
-+				ret = rcu_nocb_cpu_deoffload(cpu);
-+			if (WARN_ON_ONCE(ret))
-+				break;
-+		}
-+	}
+ #include <linux/context_tracking.h>
+@@ -1406,10 +1407,13 @@ static int do_housekeeping_exclude_cpumask(void *arg __maybe_unused)
+ 	if (tick_nohz_full_enabled()) {
+ 		tick_nohz_full_update_cpus(icpus);
+ 		for_each_cpu(cpu, isolcpus_update_state.cpus) {
+-			if (cpumask_test_cpu(cpu, icpus))
++			if (cpumask_test_cpu(cpu, icpus)) {
++				pr_debug("Add CPU %d to nohz_full\n", cpu);
+ 				ct_cpu_track_user(cpu);
+-			else
++			} else {
++				pr_debug("Remove CPU %d from nohz_full\n", cpu);
+ 				ct_cpu_untrack_user(cpu);
++			}
+ 		}
+ 	} else {
+ 		pr_warn_once("Full dynticks cannot be enabled without the nohz_full kernel boot parameter!\n");
+@@ -1425,6 +1429,7 @@ static int do_housekeeping_exclude_cpumask(void *arg __maybe_unused)
+ 				ret = rcu_nocb_cpu_offload(cpu);
+ 			else
+ 				ret = rcu_nocb_cpu_deoffload(cpu);
 +
- 	if (icpus != isolated_cpus)
- 		kfree(icpus);
- 	return ret;
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index e6cd56603cad..4d49a745b871 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1293,7 +1293,7 @@ void __init rcu_init_nohz(void)
- 	struct shrinker * __maybe_unused lazy_rcu_shrinker;
+ 			if (WARN_ON_ONCE(ret))
+ 				break;
+ 		}
+@@ -1468,11 +1473,14 @@ static void update_isolation_cpumasks(void)
+ 	 * Without any change in the set of nohz_full CPUs, we don't really
+ 	 * need to use CPU hotplug for making change in HK cpumasks.
+ 	 */
+-	if (cpumask_empty(isolcpus_update_state.cpus))
++	if (cpumask_empty(isolcpus_update_state.cpus)) {
+ 		ret = do_housekeeping_exclude_cpumask(NULL);
+-	else
++	} else {
++		pr_debug("cpuhp_offline_cb() called for CPUs %*pbl\n",
++			 cpumask_pr_args(isolcpus_update_state.cpus));
+ 		ret = cpuhp_offline_cb(isolcpus_update_state.cpus,
+ 				       do_housekeeping_exclude_cpumask, NULL);
++	}
+ 	/*
+ 	 * A errno value of -EPERM may be returned from cpuhp_offline_cb() if
+ 	 * any one of the CPUs in isolcpus_update_state.cpus can't be brought
+@@ -1481,7 +1489,7 @@ static void update_isolation_cpumasks(void)
+ 	 * isolated partition.
+ 	 */
+ 	if (ret == -EPERM)
+-		pr_warn_once("cpuset: The boot CPU shouldn't be used for isolated partition\n");
++		pr_warn_once("The boot CPU shouldn't be used for isolated partition\n");
+ 	else
+ 		WARN_ON_ONCE(ret < 0);
  
- #if defined(CONFIG_NO_HZ_FULL)
--	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
-+	if (tick_nohz_full_running)
- 		cpumask = tick_nohz_full_mask;
- #endif
+diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+index f61369be8bf6..43a12690775e 100755
+--- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
++++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+@@ -67,6 +67,13 @@ then
+ 	echo Y > /sys/kernel/debug/sched/verbose
+ fi
  
-@@ -1365,6 +1365,11 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
- 	mutex_init(&rdp->nocb_gp_kthread_mutex);
- }
- 
-+bool rcu_nocbs_enabled(void)
-+{
-+	return !!rcu_state.nocb_is_setup;
++# Enable dynamic debug messages for cpuset only
++DYN_DEBUG=/sys/kernel/debug/dynamic_debug/control
++[[ -f $DYN_DEBUG ]] && {
++	echo "-p" > $DYN_DEBUG
++	echo "file kernel/cgroup/cpuset.c +p" > $DYN_DEBUG
 +}
 +
- /*
-  * If the specified CPU is a no-CBs CPU that does not already have its
-  * rcuo CB kthread, spawn it.  Additionally, if the rcuo GP kthread
+ cd $CGROUP2
+ echo +cpuset > cgroup.subtree_control
+ 
 -- 
 2.50.0
 
