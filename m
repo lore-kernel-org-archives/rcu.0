@@ -1,287 +1,237 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F04438B;
-	Thu,  7 Aug 2025 05:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754545189; cv=fail; b=kwaf1/7QCsahaeomvR+IRFzOavSBQGEQ9oZlA3NEQR+xDGPHjYwo8FOrbC6qrLhyQqy5aWzBfRoHsHowvCVaChfFARKrFqW9ypePHtrsJZvyDFyKKfvwtJU5t80OVuZepk49+7yfT6m9+S7z7smStWuvt0tKVn7JOYoXsnhpVjI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754545189; c=relaxed/simple;
-	bh=5+97dd1UuK7KWIjjd1rGdYhDfWXAs0leqcudFp7zLEY=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=nquKgdpeF2vWunEcByUGqnWGBTzM6ysSkWbKwRNbpmAHBSC8Y5FzCLNZvCG7q2t9UK3ozl83tk+pgLPx2M4phY/K+0sY1vu2+udJ4LR/czvLrTyx+Hnx+A5ezLFUJ35OFuLCE1iJUnpJcYasuBZiTUkOGluPsAtlBSaf+296pM0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kd4n+3fk; arc=fail smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60425280035
+	for <rcu@vger.kernel.org>; Fri,  8 Aug 2025 15:11:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754665917; cv=none; b=D7JRQBU3qh5iNrLxnhcEvic077FE5W4P4oRJ82HyE4pKM8lJD3uu3Qr3RqWu3CQwvUAjd0/T6dlakPqoy5LYjoh0JdwPmnbBvSLA+2TjqcQlLhb1IqDhkgk6nlQ26DssLX6zCgH9ftMotoNpoeII0y5mQWs6lZZeMbwd7bfSobY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754665917; c=relaxed/simple;
+	bh=F8nbBLRNaq9ZRHK52cEhX8v06L1MGtyHCKna3p5NPhQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ca6KM+L+i/eW16cKiqHlZ/72vNCMA1zI3eefNpCgICl8YPaIM+1Ie3OTHLuyepA+tw3C1g+qwq+VEiIn0O9sRQgo4IYeJGKikGzT6AB5CADYGa3dWLYkxQMsAH+7TLvODFiKiQzKu55yvFul4OBytPV09klxZLXJeapHOLmIn5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jLyZNXvQ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kd4n+3fk"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1754545188; x=1786081188;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=5+97dd1UuK7KWIjjd1rGdYhDfWXAs0leqcudFp7zLEY=;
-  b=kd4n+3fkZvoUdwp8U97OD1f7UsOL9GlXuT5UzX9OtMjBcPBq1n6tCIvh
-   bK1w4t12dYt8ODMopp0NX+9LLXpCPUHvNTMsEaEkXvYpqDqrZArbVWe4o
-   x/caoxsetgVPvCN7jZAespMsmfg/ouAyrAn3wN1YNPluf8Ug6F1a3SelE
-   Pk3lxY0X2FGmeMkpDHXnVx/N6RF/ZJ8IPkNDHN3Ft//zIKro4hJ+daKbI
-   Y+OQ/2RWCe6/w8PweXhG7xzJS5dcgnhW5d5ZHGwWA2Tlzil9GMuLZ03F0
-   RvBct9QRVuPMFIcoS1HJNbXPaTEGL/QQSyZA7WYH49HEKcGmdnGMuIAqB
-   A==;
-X-CSE-ConnectionGUID: +9d+mxtOQvCs4Kscrbf87A==
-X-CSE-MsgGUID: R9/a8u9MSryKEQVdGSGiAQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11514"; a="67140079"
-X-IronPort-AV: E=Sophos;i="6.17,271,1747724400"; 
-   d="scan'208";a="67140079"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2025 22:39:47 -0700
-X-CSE-ConnectionGUID: rByKPI1hSJuSTmVD2WxXzQ==
-X-CSE-MsgGUID: DrYq84DHQaOnahIiVUFNYQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,271,1747724400"; 
-   d="scan'208";a="170342646"
-Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
-  by orviesa005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2025 22:39:47 -0700
-Received: from FMSMSX903.amr.corp.intel.com (10.18.126.92) by
- fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.26; Wed, 6 Aug 2025 22:39:46 -0700
-Received: from fmsedg903.ED.cps.intel.com (10.1.192.145) by
- FMSMSX903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.26 via Frontend Transport; Wed, 6 Aug 2025 22:39:46 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (40.107.243.56)
- by edgegateway.intel.com (192.55.55.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.26; Wed, 6 Aug 2025 22:39:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JjpOm7hZxkq5Oo9fmZXg26/WrpBdTuj7XvoVVFNRr0E5IRqadNTWb4ft0fbRIn1CRNcRyAkUP0TvJfOe3SNCNsRw19BppzI3OvejwqsCf4dbenntFYlkx56i8rdiDkHf60g4kH4lbaTPw8VC7lnDmwDYLA84url9zHEwOiFRKKuYxdfs5QpABpMpeEHIRkQkS1rEiXT2V9iY03jP7ELNhuGuZNz7Te4L83zeQzVRyX/6zNQf8IpIAqUGbLoxJ608waY7u5VA+QAvuxGWW+iFWSy/x2VcVXTDNTtmva7PJgG/T3CtalsIwLW8YxgrK/NAWxaJGNTa73LeIv/UgmncXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6g5kTmqLqwBvuMc5+ywptwPW9m8IIVUFACeqL7kWG/Q=;
- b=pedc4aIzNVJmZ9ZPXnbaU0jedKjHEUKdh/lRpP4v6ajS9GSvjh0J6dwbU4lWqtMlMZQLQ8ejTyu2+uj3G7LwyoHmlVdAsjT3dSB9Z8T7r+zRt4VUvag8VXN6idc3JnLTskuNaAI4d53kAZ9+v6K9SCUri9/+Xe/CK0LKxxjfuHTgHedIIK6Wi9Agfdk/NUx+R6rsdGmuRT63b+S6qJgphcLmhIvYjH+wOldxj3/lyS+zxxe4Jaq4v74fd/SyvUTYOW1oTdhjQuqwpj7mOsFWigemfV2f/rhIqK6PF79UKqhJAZZaXlidLNyQU4KzrlTfwvKrpewf60AyJ7VB8p15xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by BN9PR11MB5227.namprd11.prod.outlook.com (2603:10b6:408:134::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8989.11; Thu, 7 Aug
- 2025 05:39:44 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c%5]) with mapi id 15.20.9009.013; Thu, 7 Aug 2025
- 05:39:44 +0000
-Date: Thu, 7 Aug 2025 13:39:32 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-kernel@vger.kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Xiongfeng Wang
-	<wangxiongfeng2@huawei.com>, Qi Xi <xiqi2@huawei.com>, "Paul E. McKenney"
-	<paulmck@kernel.org>, Linux Kernel Functional Testing <lkft@linaro.org>,
-	<rcu@vger.kernel.org>, <oliver.sang@intel.com>
-Subject: [linus:master] [rcu]  b41642c877: BUG:kernel_hang_in_boot_stage
-Message-ID: <202508071303.c1134cce-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: MEWPR01CA0168.ausprd01.prod.outlook.com
- (2603:10c6:220:1f2::6) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jLyZNXvQ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1754665914;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=A3OeAL2hH5pGYTkgLU0jvPwLfGPcXeQXo67V4spjwz8=;
+	b=jLyZNXvQLir59HfHJ5x//2Gk/brDZT6nOyb6Uxkih9e31ruRNICARV8lTjLLgYkI02hm4U
+	mnTC0BrHOop0am7CbKMtQ6BFwBwnwWq/64PVDAHQANd4RoHkO22y+EoTGsX2Ng38JxmQEl
+	TnCVYhd0Gtm7paj8O6GSuZmyymzpFHM=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-387-5ZhcPWNMNyCCkbSwF1SfqQ-1; Fri,
+ 08 Aug 2025 11:11:50 -0400
+X-MC-Unique: 5ZhcPWNMNyCCkbSwF1SfqQ-1
+X-Mimecast-MFC-AGG-ID: 5ZhcPWNMNyCCkbSwF1SfqQ_1754665907
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 58C06195608F;
+	Fri,  8 Aug 2025 15:11:46 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.65.37])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 077AB1954196;
+	Fri,  8 Aug 2025 15:11:38 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Phil Auld <pauld@redhat.com>,
+	Costa Shulyupin <costa.shul@redhat.com>,
+	Gabriele Monaco <gmonaco@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [RFC PATCH 00/18] cgroup/cpuset: Enable runtime modification of
+Date: Fri,  8 Aug 2025 11:10:44 -0400
+Message-ID: <20250808151053.19777-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|BN9PR11MB5227:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8c96eb8e-5a7a-4965-5a34-08ddd574cfc6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?1YJeFJxq/fy4Ws5ycz6NthWXZS7QAi21Mvyj0WEmQQShsv8l88anj9FLb+1r?=
- =?us-ascii?Q?dxCjoSz7TT07I36aE9LqAVeOUEE0q86MClxHJVfFtNP3p+9P3vdDZbR/UUBe?=
- =?us-ascii?Q?JouTRQIy4q+neUDw+ZC+504vJWjYWK37B/rwCVyOSNJrat6U6Srmf7X5xA9+?=
- =?us-ascii?Q?pCC9yVzulnaJ3EdXeQwJw9g3rqcZcY+WAOjPXWtyDOCHbtX8lQrnM/lgCx1k?=
- =?us-ascii?Q?wp0LiaHgEHaQbgEtG733jLhyHOY3TmlAf30GlkZ8KEqR4ytO2cCi/Z4ZBeQ1?=
- =?us-ascii?Q?JOoEQHwWed08Tx0PbrO71yovj4bB5VHFTkH0mqMIavk0g/35h2HrQkB2Xasc?=
- =?us-ascii?Q?lq5JEp3Z5s0CGrFlM9+1LeNu1GsVxZXtr77heVd88ag4N4Zdott9qacE3NSD?=
- =?us-ascii?Q?wJwHW9pOGyvWF3r8Q8V1BYJl8QOGumLngKSdQ4AA4xn5dQqV5eayoN8pEDfR?=
- =?us-ascii?Q?ovaNOpaswRked7TjnnTBGkCIY5YHhVmT7zaoXnIfzJ5NcA33BwcQQx4iEkkA?=
- =?us-ascii?Q?k2zYaDr5mEW1B4OeAewhJl5t8bQ0NGsowDFRwQ9lf7i+7V8ZmNTPiHH7V3hm?=
- =?us-ascii?Q?fHFkppEhQY9rr2eWe9AUq0umJ2VX1CytmUtDz+XSLerDxVXQpyJ/tZmGVO9I?=
- =?us-ascii?Q?eTiu+BlCFXnmA9OxY/Tp3zx8NukIFjCSZiKyecqWlymKPfdRkktVy81ZTvLV?=
- =?us-ascii?Q?RmbC1elUd4MmQNuPWrJ+FFeN6ehHCVTKGoeSA5sIcSDxrVEnoAK5eORSZSvW?=
- =?us-ascii?Q?xjXhEt9MFhk8w0K8onya/zkuv/RiCQnm973Y4nzk1LuzAyonZBmTG1cpbXxw?=
- =?us-ascii?Q?+h+//1zJZP9g48nS2btIilClQNCvQEaWh8FuttjDQySaNZd74sGXPWfGIQsv?=
- =?us-ascii?Q?84PXu6TukPccRXfjtesZ9d8ZH4Hsrg9Gk4Rqige00IXlGvVoDsOvfjHIUwNR?=
- =?us-ascii?Q?DmQyCdpUphDso5QOgSBp/8iYNGtJ+5q7CY7UNoXLvKzQpwNp4s+T7nn4M1X5?=
- =?us-ascii?Q?KZVzGU4duBMonq5lPj+wAXHOFFUfTb6kYC9Wpyc3EM8igpKSru21As5DshqV?=
- =?us-ascii?Q?iCq3E01pJ1tP0YGk4ZTf4/xZ3oP5WxCTUTUL/kfSks2bbVKgkMz0e7IvKI4l?=
- =?us-ascii?Q?CtBZid4eZUr30ZtTJYYaAE/ggKa3JznxKQCRo/LUqto+bVeAWvkFgWTHZjqN?=
- =?us-ascii?Q?8ntzu/3FjaaFEteiiW73NY5CPd1ijIc9U6+uoM3DLQx58qEVFMB+LvL7MvPH?=
- =?us-ascii?Q?fFEctdpBALCE+0NpH/F2B9Bvsj2UO6USH5hQ1DvjtMmjg/tXr6LpISeKLLyQ?=
- =?us-ascii?Q?rmO2W2JKQDV7rBjh6LZh8PG9Sf78PimL/1RwvzGzJzaYNVGIo3r9rxGyWSD6?=
- =?us-ascii?Q?8HEo41KC3GpJKyLh5eVVmAVlGWte?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tEQtKEyi/A+HIq1aKt3VitcPstBY2k83zPLb4GWICjiqEtl3rUiXYOppUAan?=
- =?us-ascii?Q?lIZ3DpZ4SS0ua4T2HKW+nkNcQZAgEAi8oEQQ1yDk/RCQlTeqpKTGHXU/ZwII?=
- =?us-ascii?Q?G2hDl/Xv6T9Xs8JLa/3MlfJONBahYE77j6hyHII/uwIpG3fBpBx9nOCs7YzV?=
- =?us-ascii?Q?cDDWm8qxwzTuIzETpezYqE4ZSgtmW3XkKeuVJrnzPLM+259MOmGkn/l2bT0z?=
- =?us-ascii?Q?0B3avY3U+s88PJYuu9TdN9EcDi0ri/7HrdcPxIFEQYgafAGW0rfbjqffnafy?=
- =?us-ascii?Q?/3VQyZ2SFkSW6GWCxHMmzvz3dbrOuVmQvv2OyC7vtsiBNt34LG5fLXs6i/Gu?=
- =?us-ascii?Q?1PJ22UyD9TkEe+f6Yzpo2AvVn6uwcfZyvZ2Kq47GRZ0Yp8/kl8krNS9yOchr?=
- =?us-ascii?Q?cQxHjUfDey95tCjYDYjWmzUhfMbX8vmzQdnKZ6UAvZCPHzQy5ddcx7Jtkcch?=
- =?us-ascii?Q?jcanhcVs+3v0r9EDGrDf4v6TFfWceF3hAbQWA50+Q8LsvwCsRBogJ69iZSlC?=
- =?us-ascii?Q?hUVlHBPuoxvq8ploqAbkgiH0xJe4CTTksjKCEk+7abF9nhWBaSpfcjxmquGD?=
- =?us-ascii?Q?MzwUPJCVcWf4CskyfhYXjTbXC577dyFY0CIeRml6aKWqXR8bVbxzjygHgiz/?=
- =?us-ascii?Q?FQ9HhGVPjzbGceo4K8hnHE1/pcfAsUMZ8pp8djvFOmcAGLws19Qcsgwq2WZG?=
- =?us-ascii?Q?FFcJMEnTJjpOzeBqr+R0DnltAx2edSVUudvH46fLQzJPy1AeM9NovCMnDYCl?=
- =?us-ascii?Q?zq2sUY8MjjpUk0MZlZISTwMW7Q1zr2JKHQH3C28a8jyGqjGHKm0TdN7Hr/sh?=
- =?us-ascii?Q?yHp7Z/tdY30JcpCBOxJzpIc1v9oZV8+IOo0VgZzmo24cYj/LKDmR58BHKgP9?=
- =?us-ascii?Q?QFIQZLIt0HEW66etkrrj9ynOjPWiDhB+2zq0r3mVSjdRFynjV+tIhUKUOCoY?=
- =?us-ascii?Q?dnM6IYFgl6oe6RoLzfBXNR2733/1sfGAi/m8b14ukv2szcjNBT9NTyLYgZEE?=
- =?us-ascii?Q?k8nSw+sLrjEoCumXBHtKxhd+6pE5gmyZ1yylXv/LbV1YI+p6DeB2tPRtm2cQ?=
- =?us-ascii?Q?YwdIcCbPGXKJuzq5zD/K5iSB4ZPQKHJPN6UYjxwUzUwxOfHf4rD1mi1Q42UH?=
- =?us-ascii?Q?otxGfE+7IUMJmGuEe10/KcW7qXvDBS+1XGKPyJzLHXVaTazRiKNcj5Ogj1cL?=
- =?us-ascii?Q?JmlOcCaexCwH2ypd93A5rpSfLRqAcAlU9XML7D1sEIqG+MrKwNTzsibrOwBW?=
- =?us-ascii?Q?158JCUohgY6G5PuH2Gtw7Wd8qYbh4Scox2L/OzWCW5MlfwnQ4i6jkt+UUaM3?=
- =?us-ascii?Q?GBLCZMJ3Rf0ldpNWi4PO/uD63sseaLQ90B283qbVn/6X0k9cW3CFPcoCEcmr?=
- =?us-ascii?Q?z2pV/1d7GGwywWuT1SZtO9bkyWcZcPo/BjkE6Ojhg7KMDNFUI6qaRjoJ87cW?=
- =?us-ascii?Q?jFoKEaFEd8RsbW9cKRQ+tfOG51x7hS2KTMrHrVj3MdBnwxb53TkqpkH8pyVy?=
- =?us-ascii?Q?TN1osD2YgI8skXxZvq2ZvbUsjpnHCvAeg+buUrp8HvbGz/6KicWwfthmkP9D?=
- =?us-ascii?Q?cMC3aoUMiEZggS/RtEs9jYv7Im7gwWziypPPXMCBvS/WwZuEgbdLcjDq8COU?=
- =?us-ascii?Q?yA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c96eb8e-5a7a-4965-5a34-08ddd574cfc6
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2025 05:39:44.2391
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0B0UtZ49g3L0gJrNPRJSgRb3ppr0tOdOPGYjUaGHsFAau/Iiq6ahBE31JRkFV+2ASYMgP/GlYjGvhsZ62xwXZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5227
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
+The "nohz_full" and "rcu_nocbs" boot command parameters can be used to
+remove a lot of kernel overhead on a specific set of isolated CPUs which
+can be used to run some latency/bandwidth sensitive workloads with as
+little kernel disturbance/noise as possible. The problem with this mode
+of operation is the fact that it is a static configuration which cannot
+be changed after boot to adjust for changes in application loading.
 
+There is always a desire to enable runtime modification of the number
+of isolated CPUs that can be dedicated to this type of demanding
+workloads. This patchset is an attempt to do just that with an amount of
+CPU isolation close to what can be done with the nohz_full and rcu_nocbs
+boot kernel parameters.
 
-Hello,
+This patch series provides the ability to change the set of housekeeping
+CPUs at run time via the cpuset isolated partition functionality.
+Currently, the cpuset isolated partition is able to disable scheduler
+load balancing and the CPU affinity of the unbound workqueue to avoid the
+isolated CPUs. This patch series will extend that with other kernel noises
+associated with the nohz_full boot command line parameter which has the
+following sub-categories:
+  - tick
+  - timer
+  - RCU
+  - MISC
+  - WQ
+  - kthread
 
-kernel test robot noticed "BUG:kernel_hang_in_boot_stage" on:
+The rcu_nocbs is actually a subset of nohz_full focusing just on the
+RCU part of the kernel noises. The WQ part has already been handled by
+the current cpuset code.
 
-commit: b41642c87716bbd09797b1e4ea7d904f06c39b7b ("rcu: Fix rcu_read_unlock() deadloop due to IRQ work")
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+This series focuses on the tick and RCU part of the kernel noises by
+actively changing their internal data structures to track changes in
+the list of isolated CPUs used by cpuset isolated partitions.
 
-[test failed on linus/master      7e161a991ea71e6ec526abc8f40c6852ebe3d946]
-[test failed on linux-next/master 5c5a10f0be967a8950a2309ea965bae54251b50e]
+The dynamic update of the lists of housekeeping CPUs at run time will
+also have impact on the other part of the kernel noises that reference
+the lists of housekeeping CPUs at run time.
 
-in testcase: boot
+The pending patch series on timer migration[1], when properly integrated
+will support the timer part too.
 
-config: i386-randconfig-2006-20250804
-compiler: clang-20
-test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+The CPU hotplug functionality of the Linux kernel is used to facilitate
+the runtime change of the nohz_full isolated CPUs with minimal code
+changes. The CPUs that need to be switched from non-isolated to
+isolated or vice versa will be brought offline first, making the
+necessary changes and then brought back online afterward.
 
-(please refer to attached dmesg/kmsg for entire log/backtrace)
+The use of CPU hotplug, however, does have a slight drawback of
+freezing all the other CPUs in part of the offlining process using
+the stop machine feature of the kernel. That will cause a noticeable
+latency spikes in other running applications which may be significant
+to sensitive applications running on isolated CPUs in other isolated
+partitions at the time. Hopefully we can find a way to solve this
+problem in the future.
 
+One possible workaround for this is to reserve a set of nohz_full
+isolated CPUs at boot time using the nohz_full boot command parameter.
+The bringing of those nohz_full reserved CPUs into and out of isolated
+partitions will not invoke CPU hotplug and hence will not cause
+unexpected latency spikes. These reserved CPUs will only be needed
+if there are other existing isolated partitions running critical
+applications at the time when an isolated partition needs to be created.
 
-+-------------------------------+------------+------------+
-|                               | d827673d8a | b41642c877 |
-+-------------------------------+------------+------------+
-| boot_successes                | 15         | 0          |
-| boot_failures                 | 0          | 15         |
-| BUG:kernel_hang_in_boot_stage | 0          | 15         |
-+-------------------------------+------------+------------+
+Patches 1-4 updates the CPU isolation code at kernel/sched/isolation.c
+to enable dynamic update of the lists of housekeeping CPUs.
 
+Patch 5 introduces a new cpuhp_offline_cb() API for shutting down the
+given set of CPUs, running the given callback method and then bringing
+those CPUs back online again. This new API will block any incoming
+hotplug events from interfering this operation.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202508071303.c1134cce-lkp@intel.com
+Patches 6-9 updates the cpuset partition code to use the new cpuhp API
+to shut down the affect CPUs, making changes to the housekeeping
+cpumasks and then bring those CPUs online afterward.
 
+Patch 10 works around an issue in the DL server code that block the
+hotplug operation under certain configurations.
 
-[    8.004044][    T1] Run /init as init process
-[    8.004883][    T1]   with arguments:
-[    8.005620][    T1]     /init
-[    8.006332][    T1]   with environment:
-[    8.007080][    T1]     HOME=/
-[    8.007722][    T1]     TERM=linux
-[    8.008407][    T1]     RESULT_ROOT=/result/boot/1/vm-snb/quantal-i386-core-20190426.cgz/i386-randconfig-2006-20250804/clang-20/b41642c87716bbd09797b1e4ea7d904f06c39b7b/0
-[    8.010989][    T1]     BOOT_IMAGE=/pkg/linux/i386-randconfig-2006-20250804/clang-20/b41642c87716bbd09797b1e4ea7d904f06c39b7b/vmlinuz-6.16.0-rc3-00005-gb41642c87716
-[    8.013525][    T1]     branch=gustavoars/testing/wfamnae-next20250804
-[    8.014578][    T1]     job=/lkp/jobs/scheduled/vm-meta-10/boot-1-quantal-i386-core-20190426.cgz-i386-randconfig-2006-20250804-b41642c87716-20250805-101381-u20lqt-1.yaml
-[    8.016412][    T1]     user=lkp
-[    8.016884][    T1]     ARCH=i386
-[    8.017372][    T1]     kconfig=i386-randconfig-2006-20250804
-[    8.018109][    T1]     commit=b41642c87716bbd09797b1e4ea7d904f06c39b7b
-[    8.018928][    T1]     intremap=posted_msi
-[    8.019543][    T1]     max_uptime=600
-[    8.020064][    T1]     LKP_SERVER=internal-lkp-server
-[    8.020735][    T1]     selinux=0
-[    8.021215][    T1]     apic=debug
-[    8.021707][    T1]     prompt_ramdisk=0
-[    8.022251][    T1]     vga=normal
-[    8.022791][    T1]     ia32_emulation=on
-[    8.023339][    T1]     riscv_isa_fallback=1
-[    8.779434][    C0] random: crng init done
-LKP: ttyS0: 107: skip deploy intel ucode as no ucode is specified
-BUG: kernel hang in boot stage
+Patch 11-14 updates the timer tick and related code to enable proper
+updates to the set of CPUs requiring nohz_full dynticks support.
 
+Patch 15 enables runtime modification to the set of isolated CPUs
+requiring RCU NO-CB CPU support with minor changes to the RCU code.
 
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20250807/202508071303.c1134cce-lkp@intel.com
+Patches 16-18 includes other miscellaneous updates to cpuset code and
+documentation.
 
+This patch series is applied on top of some other cpuset patches[1]
+posted upstream recently.
 
-we didn't observe more information in dmesg. and we only observe this "kernel
-hang in boot stage" with a i386 random config. kernel is compiled by clang-20.
+[1] https://lore.kernel.org/lkml/20250806093855.86469-1-gmonaco@redhat.com/
+[2] https://lore.kernel.org/lkml/20250806172430.1155133-1-longman@redhat.com/
 
+Waiman Long (18):
+  sched/isolation: Enable runtime update of housekeeping cpumasks
+  sched/isolation: Call sched_tick_offload_init() when
+    HK_FLAG_KERNEL_NOISE is first set
+  sched/isolation: Use RCU to delay successive housekeeping cpumask
+    updates
+  sched/isolation: Add a debugfs file to dump housekeeping cpumasks
+  cpu/hotplug: Add a new cpuhp_offline_cb() API
+  cgroup/cpuset: Introduce a new top level isolcpus_update_mutex
+  cgroup/cpuset: Allow overwriting HK_TYPE_DOMAIN housekeeping cpumask
+  cgroup/cpuset: Use CPU hotplug to enable runtime nohz_full
+    modification
+  cgroup/cpuset: Revert "Include isolated cpuset CPUs in
+    cpu_is_isolated() check"
+  sched/core: Ignore DL BW deactivation error if in
+    cpuhp_offline_cb_mode
+  tick/nohz: Make nohz_full parameter optional
+  tick/nohz: Introduce tick_nohz_full_update_cpus() to update
+    tick_nohz_full_mask
+  tick/nohz: Allow runtime changes in full dynticks CPUs
+  tick: Pass timer tick job to an online HK CPU in tick_cpu_dying()
+  cgroup/cpuset: Enable RCU NO-CB CPU offloading of newly isolated CPUs
+  cgroup/cpuset: Don't set have_boot_nohz_full without any boot time
+    nohz_full CPU
+  cgroup/cpuset: Documentation updates & don't use CPU 0 for isolated
+    partition
+  cgroup/cpuset: Add pr_debug() statements for cpuhp_offline_cb() call
 
-as a contrast, parent dmesg looks like below:
-
-[    8.301768][    T1] Run /init as init process
-[    8.302821][    T1]   with arguments:
-[    8.303849][    T1]     /init
-[    8.304408][    T1]   with environment:
-[    8.305053][    T1]     HOME=/
-[    8.305635][    T1]     TERM=linux
-[    8.306225][    T1]     RESULT_ROOT=/result/boot/1/vm-snb/quantal-i386-core-20190426.cgz/i386-randconfig-2006-20250804/clang-20/d827673d8a4e69937dd3731da2686a2d8206aef5/0
-[    8.308434][    T1]     BOOT_IMAGE=/pkg/linux/i386-randconfig-2006-20250804/clang-20/d827673d8a4e69937dd3731da2686a2d8206aef5/vmlinuz-6.16.0-rc3-00004-gd827673d8a4e
-[    8.310619][    T1]     branch=gustavoars/testing/wfamnae-next20250804
-[    8.311610][    T1]     job=/lkp/jobs/scheduled/vm-meta-7/boot-1-quantal-i386-core-20190426.cgz-i386-randconfig-2006-20250804-d827673d8a4e-20250805-99925-p5h1vs-1.yaml
-[    8.313843][    T1]     user=lkp
-[    8.314287][    T1]     ARCH=i386
-[    8.314701][    T1]     kconfig=i386-randconfig-2006-20250804
-[    8.315329][    T1]     commit=d827673d8a4e69937dd3731da2686a2d8206aef5
-[    8.316029][    T1]     intremap=posted_msi
-[    8.316574][    T1]     max_uptime=600
-[    8.317018][    T1]     LKP_SERVER=internal-lkp-server
-[    8.317599][    T1]     selinux=0
-[    8.318009][    T1]     apic=debug
-[    8.318424][    T1]     prompt_ramdisk=0
-[    8.318888][    T1]     vga=normal
-[    8.319307][    T1]     ia32_emulation=on
-[    8.319841][    T1]     riscv_isa_fallback=1
-[    9.079686][    C0] random: crng init done
-LKP: ttyS0: 108: skip deploy intel ucode as no ucode is specified
-[    9.371040][  T182] udevd[182]: starting version 175
-LKP: ttyS0: 108: Kernel tests: Boot OK!
-LKP: ttyS0: 108: HOSTNAME vm-snb, MAC 52:54:00:12:34:56, kernel 6.16.0-rc3-00004-gd827673d8a4e 1
-LKP: ttyS0: 108:  /lkp/lkp/src/bin/run-lkp /lkp/jobs/scheduled/vm-meta-7/boot-1-quantal-i386-core-20190426.cgz-i386-randconfig-2006-20250804-d827673d8a4e-20250805-99925-p5h1vs-1.yaml
-[   10.016422][    T1] init: failsafe main process (327) killed by TERM signal
-[   10.080302][    T1] init: udev-fallback-graphics main process (366) terminated with status 1
-[   10.120853][    T1] init: networking main process (373) terminated with status 1
-LKP: ttyS0: 108: LKP: rebooting forcely
-[   21.082808][  T108] sysrq: Emergency Sync
-[   21.084955][   T40] Emergency Sync complete
-[   21.086476][  T108] sysrq: Resetting
-
-
+ Documentation/admin-guide/cgroup-v2.rst       |  33 +-
+ .../admin-guide/kernel-parameters.txt         |  19 +-
+ include/linux/context_tracking.h              |   8 +-
+ include/linux/cpuhplock.h                     |   9 +
+ include/linux/cpuset.h                        |   6 -
+ include/linux/rcupdate.h                      |   2 +
+ include/linux/sched/isolation.h               |   9 +-
+ include/linux/tick.h                          |   2 +
+ kernel/cgroup/cpuset.c                        | 344 ++++++++++++------
+ kernel/context_tracking.c                     |  21 +-
+ kernel/cpu.c                                  |  47 +++
+ kernel/rcu/tree_nocb.h                        |   7 +-
+ kernel/sched/core.c                           |   8 +-
+ kernel/sched/debug.c                          |  32 ++
+ kernel/sched/isolation.c                      | 151 +++++++-
+ kernel/sched/sched.h                          |   2 +-
+ kernel/time/tick-common.c                     |  15 +-
+ kernel/time/tick-sched.c                      |  24 +-
+ .../selftests/cgroup/test_cpuset_prs.sh       |  15 +-
+ 19 files changed, 583 insertions(+), 171 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.50.0
 
