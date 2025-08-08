@@ -1,47 +1,47 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76654284B4F
-	for <rcu@vger.kernel.org>; Fri,  8 Aug 2025 15:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324B2283FDB
+	for <rcu@vger.kernel.org>; Fri,  8 Aug 2025 15:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754666489; cv=none; b=MBnxh7yJJ0jRlUvD6kGT/ou7xpwKszy3CUvCbpHB0OqEhYoH+eH2fmyKJZwqknF/YI7Y9vaBB0GhVsSyAkai/ofBHgYuey/B2LhF4eDA+KRtzsP89EgTdBu5CxxRLyekxchfFz9qQZDN5xCO/S8GyHinWs2zClA1vaeXAAY8mOY=
+	t=1754666491; cv=none; b=T8v435NNSCOoQb2oDNtKqltZiBxKAqQvaMxcKy11vOUdQanN1Nk8jUuZV9Ex8ADl9WTgaft/UzSPn+zM66+3ukQoqhxI4X4lr4ksTXwbFvaQvVH+IjnFwZAb/Z43NWvlNDsYy8TquEeq0UeWFxK46E+3bkVRRMTsO8LxvO9mg1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754666489; c=relaxed/simple;
-	bh=1eqN4fGhzGayU80/Ck4ie8EzmZzXnviR7/KkMsLuG4w=;
+	s=arc-20240116; t=1754666491; c=relaxed/simple;
+	bh=QFJWiaweEnjtZulZv+TQcP+SkZextOHNVPGHzdr08DY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F1sPQAl0mqJ88dzqPNn7932rF0mMXmfnmsGO31zvSKNALwRWcFBmcUouiF4p/KaSOw6mEEt4TJaPemnUS1TygOIrjKfLAN9PoJM0SYFh+TQViuHHBIHP4jbvliWQmfC6LdeHe7Pbz1W9T9anuVoRwjqc0QCKkOcdvdYcMLDBTE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dOsDR9IR; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=hWIgTGLsxS9+6kuufFoRphT2B1o6zYI6p+JqJA0UZQ6t0YxZuwRN1tGqqfHC0zVdzWnMeIVPwK8M952Uvlfj/wnxV1mGFNsu6GehD62CgU/Rm6Sa9j+YJyoWJrTzfG8gwfopaRJ62piRZlcQPFIS/kSfUnyDt0vC77aeTUiHVlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HzB57zMv; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dOsDR9IR"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HzB57zMv"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754666485;
+	s=mimecast20190719; t=1754666486;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Trb4QHyh4VHqbF76osaAgQ0EsfsRdUKQSiAhsHdLVCE=;
-	b=dOsDR9IR1flHPLpENIFx5ypC3bwzEVLgOHd7Rlgu+bEQfdxvZxsyasw6Okkj+JLy3LobFC
-	kqEg7s2g4CR5NsqZQHYlM1Rm/y+DPF9ECYLqNdL6HnH3LV6NjviXLFEIAOeDH23x7BqHmN
-	XMiV+EHO7VUPdLWwvmaH7c0KmJR0/yU=
+	bh=wEWvc3gO1vjmutC6sTx4SpSS9DqW2Vo8SMK8dJwY8nw=;
+	b=HzB57zMvRSnezSzCxiEYp6vSVa7cJ10Q42sg5KP9olEHRqB6xTyNHT4mUUYj1zEDzJdhXp
+	qc2ioprCEeRB7l1QMBCDVzFmlQW0RJiLGmy4Rzn7mBKJyqNB6J/ge8A0Gh66hxNUQQP1vO
+	RpY8nPJldykWLNXMuZ2JlJPOjV0hKDc=
 Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-650-kb5xsjiRPEqGouRI64KuyQ-1; Fri,
- 08 Aug 2025 11:21:19 -0400
-X-MC-Unique: kb5xsjiRPEqGouRI64KuyQ-1
-X-Mimecast-MFC-AGG-ID: kb5xsjiRPEqGouRI64KuyQ_1754666462
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-631-pKkLszEMMSyqCueLYuEvDg-1; Fri,
+ 08 Aug 2025 11:21:22 -0400
+X-MC-Unique: pKkLszEMMSyqCueLYuEvDg-1
+X-Mimecast-MFC-AGG-ID: pKkLszEMMSyqCueLYuEvDg_1754666455
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CBC5C1800286;
-	Fri,  8 Aug 2025 15:21:01 +0000 (UTC)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F319E180029D;
+	Fri,  8 Aug 2025 15:20:54 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.65.37])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 26001180029B;
-	Fri,  8 Aug 2025 15:20:55 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2AC23180029B;
+	Fri,  8 Aug 2025 15:20:48 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -79,9 +79,9 @@ Cc: cgroups@vger.kernel.org,
 	Gabriele Monaco <gmonaco@redhat.com>,
 	Cestmir Kalina <ckalina@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 16/18] cgroup/cpuset: Don't set have_boot_nohz_full without any boot time nohz_full CPU
-Date: Fri,  8 Aug 2025 11:19:59 -0400
-Message-ID: <20250808152001.20245-7-longman@redhat.com>
+Subject: [RFC PATCH 15/18] cgroup/cpuset: Enable RCU NO-CB CPU offloading of newly isolated CPUs
+Date: Fri,  8 Aug 2025 11:19:58 -0400
+Message-ID: <20250808152001.20245-6-longman@redhat.com>
 In-Reply-To: <20250808151053.19777-1-longman@redhat.com>
 References: <20250808151053.19777-1-longman@redhat.com>
 Precedence: bulk
@@ -93,32 +93,97 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-As HK_TYPE_KERNEL_NOISE bit can now be set without any nohz_full CPU
-specified at boot time, don't set have_boot_nohz_full in this case.
+Make use of the provided rcu_nocb_cpu_offload()/rcu_nocb_cpu_deoffload()
+APIs to enable RCU NO-CB CPU offloading of newly isolated CPUs and
+deoffloading of de-isolated CPUs.
+
+Also add a new rcu_nocbs_enabled() helper function to determine if RCU
+NO-CB CPU offloading can be done.
+
+As nohz_full can now be specified without any CPU list, drop the test
+for cpumask_empty(tick_nohz_full_mask) in rcu_init_nohz().
+
+The RCU NO-CB CPU offloading feature can only used if either "rcs_nocbs"
+or the "nohz_full" boot command parameters are used so that the proper
+RCU NO-CB resources are properly initialized at boot time.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/cgroup/cpuset.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ include/linux/rcupdate.h |  2 ++
+ kernel/cgroup/cpuset.c   | 14 ++++++++++++++
+ kernel/rcu/tree_nocb.h   |  7 ++++++-
+ 3 files changed, 22 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 120536f4c6eb..642b80a4f071 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -140,6 +140,7 @@ void rcu_init_nohz(void);
+ int rcu_nocb_cpu_offload(int cpu);
+ int rcu_nocb_cpu_deoffload(int cpu);
+ void rcu_nocb_flush_deferred_wakeup(void);
++bool rcu_nocbs_enabled(void);
+ 
+ #define RCU_NOCB_LOCKDEP_WARN(c, s) RCU_LOCKDEP_WARN(c, s)
+ 
+@@ -149,6 +150,7 @@ static inline void rcu_init_nohz(void) { }
+ static inline int rcu_nocb_cpu_offload(int cpu) { return -EINVAL; }
+ static inline int rcu_nocb_cpu_deoffload(int cpu) { return 0; }
+ static inline void rcu_nocb_flush_deferred_wakeup(void) { }
++static inline bool rcu_nocbs_enabled(void) { return false; }
+ 
+ #define RCU_NOCB_LOCKDEP_WARN(c, s)
+ 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index de9cb92a0fc7..489708f4e096 100644
+index 45c82c18bec4..de9cb92a0fc7 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -3871,7 +3871,12 @@ int __init cpuset_init(void)
+@@ -1416,6 +1416,20 @@ static int do_housekeeping_exclude_cpumask(void *arg __maybe_unused)
+ 	}
+ #endif
  
- 	BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
++	if (rcu_nocbs_enabled()) {
++		/*
++		 * Enable RCU NO-CB CPU offloading/deoffloading for the affected CPUs
++		 */
++		for_each_cpu(cpu, isolcpus_update_state.cpus) {
++			if (cpumask_test_cpu(cpu, icpus))
++				ret = rcu_nocb_cpu_offload(cpu);
++			else
++				ret = rcu_nocb_cpu_deoffload(cpu);
++			if (WARN_ON_ONCE(ret))
++				break;
++		}
++	}
++
+ 	if (icpus != isolated_cpus)
+ 		kfree(icpus);
+ 	return ret;
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index e6cd56603cad..4d49a745b871 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1293,7 +1293,7 @@ void __init rcu_init_nohz(void)
+ 	struct shrinker * __maybe_unused lazy_rcu_shrinker;
  
--	have_boot_nohz_full = housekeeping_enabled(HK_TYPE_KERNEL_NOISE);
-+	/*
-+	 * HK_TYPE_KERNEL_NOISE bit can be set without any nohz_full CPU
-+	 */
-+	have_boot_nohz_full = housekeeping_enabled(HK_TYPE_KERNEL_NOISE) &&
-+			      !cpumask_equal(cpu_possible_mask,
-+					     housekeeping_cpumask(HK_TYPE_KERNEL_NOISE));
- 	have_boot_isolcpus  = housekeeping_enabled(HK_TYPE_DOMAIN);
- 	if (have_boot_nohz_full) {
- 		BUG_ON(!alloc_cpumask_var(&boot_nohz_full_hk_cpus, GFP_KERNEL));
+ #if defined(CONFIG_NO_HZ_FULL)
+-	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
++	if (tick_nohz_full_running)
+ 		cpumask = tick_nohz_full_mask;
+ #endif
+ 
+@@ -1365,6 +1365,11 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
+ 	mutex_init(&rdp->nocb_gp_kthread_mutex);
+ }
+ 
++bool rcu_nocbs_enabled(void)
++{
++	return !!rcu_state.nocb_is_setup;
++}
++
+ /*
+  * If the specified CPU is a no-CBs CPU that does not already have its
+  * rcuo CB kthread, spawn it.  Additionally, if the rcuo GP kthread
 -- 
 2.50.0
 
