@@ -1,47 +1,47 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BCE02836A4
-	for <rcu@vger.kernel.org>; Fri,  8 Aug 2025 15:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C809236A73
+	for <rcu@vger.kernel.org>; Fri,  8 Aug 2025 15:20:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754665983; cv=none; b=QPax8RTk/eTYF21PL2OqlWZw4X0rTTSDisVe6Fm0Pm2azyq1GywD5LW+X5RrLaI3E5+bfkjTKx4PD8ys3Ddqvd69D3CjwOhXb9sTv+wpuPOjVEut3cSqjAzGF3ha6KFgH7yeUgcd5ou76k1mFF5E17oqqmg/GbbLL+WllxOvw80=
+	t=1754666441; cv=none; b=lWyveUO2fHY6GfMY8Y3aKN3farZNeiIUxbgRAPnUOHlTsXbTUG8K0yx+NxwAwfqmjA3o75WC44sEPPFH+TY+tjFWMI1dnBMlamDTF8zlg8/N0TSZeXwFmim8r1Y+/etX2DUBphJxN6ifV/zIm9eoviRTz8RLZ6tCHx/1509Oo9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754665983; c=relaxed/simple;
-	bh=2v0z2UD/Jy6qrCjDearYXZy6ugISuWgSA/5PTA5JQTk=;
+	s=arc-20240116; t=1754666441; c=relaxed/simple;
+	bh=XH0Af+hJDBkCAuw5puHAq55b47h+GZUhJtnbmXxuG6g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DrtwLCWlo9PRQqWPTEcMz14vfpCz/vkAOP+sqZlfL5glGqqGbciPnGwqAW3U/+Ns0UD4U4WxgxPB5Tv4DrA6NM2IbxPdrhnuhqirmtGS0fQDRUlEPFUelfsqntWaw0HO/Nq/hhUwe1LG8WSWUcKumRSeeYksKolmh682hkCnnCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Tdz6+fJg; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=TJs/AstD1iVU0M+ZzIJgEELjQnA8DEfjmqP7bVWo/7dQW/uEl3cYRzcOfPD8EKZ2JfBoZOfRexk7kWMxIxvklChObidzEZyhgn78rbqXGXzFHeTTlHNbV4X85Xz09593QL2Sp7oZAtPUw8R5lUlDrvfyRBNL/2SRKAyRdv/X0dA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XneLpzWM; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Tdz6+fJg"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XneLpzWM"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754665981;
+	s=mimecast20190719; t=1754666439;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JL1VyN/kLh867ZyHGhu4edVO+k2wi+9swB6ARbL5mBI=;
-	b=Tdz6+fJgx/2e2DO08ye0HWbE0XkP5QO3Z6vy/bdUhtvd9m/OzCiHJ5Mrl35mvoec/eLfeB
-	Bt2+LFIBoFqWP/JtNFzRk0J9juZUameF80Zzr/uLldNZ9NOnKykTRfQ6WNGLJsZy73wCMk
-	sKC/fK59RKgvRGrt7ghAXLnKLahhaKk=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=8WLvzJ5WiuMjAOAmYSD8iakpWVzO3E6xQqHPmy68LCM=;
+	b=XneLpzWM1k3Wk5bTqr4Pt6j/1vNMNYjjlFXMOO1rI7IFRs0we1JqDTpSfBztsL/WbHV2zU
+	nYYNy/XPygXn4ZLGW55oUyv73OSgKDO2LA4CTbMpdD/UFHpJ9Y30dmfQhcqBkeAQluKQqm
+	gs5CfYW7V6A7zVDR/ZS+JlnK7zEhiAk=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-75-NmJOjs3_OsCCQTGZzcX6RQ-1; Fri,
- 08 Aug 2025 11:12:59 -0400
-X-MC-Unique: NmJOjs3_OsCCQTGZzcX6RQ-1
-X-Mimecast-MFC-AGG-ID: NmJOjs3_OsCCQTGZzcX6RQ_1754665975
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-557-vUyb1KdwOIq-OmnUSqoLsA-1; Fri,
+ 08 Aug 2025 11:20:31 -0400
+X-MC-Unique: vUyb1KdwOIq-OmnUSqoLsA-1
+X-Mimecast-MFC-AGG-ID: vUyb1KdwOIq-OmnUSqoLsA_1754666421
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 238531944D25;
-	Fri,  8 Aug 2025 15:12:53 +0000 (UTC)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 65E30180028C;
+	Fri,  8 Aug 2025 15:20:21 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.65.37])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3269F196FCAB;
-	Fri,  8 Aug 2025 15:12:42 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5657C1800294;
+	Fri,  8 Aug 2025 15:20:14 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -79,9 +79,9 @@ Cc: cgroups@vger.kernel.org,
 	Gabriele Monaco <gmonaco@redhat.com>,
 	Cestmir Kalina <ckalina@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 09/18] cgroup/cpuset: Revert "Include isolated cpuset CPUs in cpu_is_isolated() check"
-Date: Fri,  8 Aug 2025 11:10:53 -0400
-Message-ID: <20250808151053.19777-10-longman@redhat.com>
+Subject: [RFC PATCH 10/18] sched/core: Ignore DL BW deactivation error if in cpuhp_offline_cb_mode
+Date: Fri,  8 Aug 2025 11:19:53 -0400
+Message-ID: <20250808152001.20245-1-longman@redhat.com>
 In-Reply-To: <20250808151053.19777-1-longman@redhat.com>
 References: <20250808151053.19777-1-longman@redhat.com>
 Precedence: bulk
@@ -91,81 +91,42 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-Now that the HK_TYPE_DOMAIN cpumask is updated at run time to reflect
-changes made in isolated cpuset partitions. We no longer need a separate
-cpuset_cpu_is_isolated() function for checking isolated CPUs generated
-by cpuset. Revert commit 3232e7aad11e ("cgroup/cpuset: Include isolated
-cpuset CPUs in cpu_is_isolated() check").
+With the new strategy of using CPU hotplug to improve CPU isolation
+and the optimization of delaying sched domain rebuild until the whole
+process completes, we can run into a problem in shutting down the last
+CPU of a partition and a -EBUSY error may be returned. This -EBUSY
+error is caused by failing the DL BW check in dl_bw_deactivate().
+
+As the CPU deactivation is only temporary and it will be brought back
+up again in a short moment, there is no point in failing the operation
+because of this DL BW error in this transitioning period. Fix this
+problem by ignoring this error when in CPU hotplug offline callback mode
+(cpuhp_offline_cb_mode is on).
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- include/linux/cpuset.h          |  6 ------
- include/linux/sched/isolation.h |  3 +--
- kernel/cgroup/cpuset.c          | 11 -----------
- 3 files changed, 1 insertion(+), 19 deletions(-)
+ kernel/sched/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index 2ddb256187b5..a2ea8efebf36 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -76,7 +76,6 @@ extern void cpuset_lock(void);
- extern void cpuset_unlock(void);
- extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
- extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
--extern bool cpuset_cpu_is_isolated(int cpu);
- extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
- #define cpuset_current_mems_allowed (current->mems_allowed)
- void cpuset_init_current_mems_allowed(void);
-@@ -206,11 +205,6 @@ static inline bool cpuset_cpus_allowed_fallback(struct task_struct *p)
- 	return false;
- }
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9f02c047e25b..78f4ba73a9f2 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8469,7 +8469,11 @@ int sched_cpu_deactivate(unsigned int cpu)
  
--static inline bool cpuset_cpu_is_isolated(int cpu)
--{
--	return false;
--}
--
- static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
- {
- 	return node_possible_map;
-diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index af38d21d0d00..0bc4b3368d39 100644
---- a/include/linux/sched/isolation.h
-+++ b/include/linux/sched/isolation.h
-@@ -79,8 +79,7 @@ static inline bool housekeeping_cpu(int cpu, enum hk_type type)
- static inline bool cpu_is_isolated(int cpu)
- {
- 	return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN) ||
--	       !housekeeping_test_cpu(cpu, HK_TYPE_TICK) ||
--	       cpuset_cpu_is_isolated(cpu);
-+	       !housekeeping_test_cpu(cpu, HK_TYPE_TICK);
- }
+ 	ret = dl_bw_deactivate(cpu);
  
- #endif /* _LINUX_SCHED_ISOLATION_H */
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 60f336e50b05..6308bb14e018 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1455,17 +1455,6 @@ static void update_isolation_cpumasks(void)
- 	isolcpus_update_state.updating = false;
- }
+-	if (ret)
++	/*
++	 * Ignore DL BW error if in cpuhp offline callback mode as CPU
++	 * deactivation is only temporary.
++	 */
++	if (ret && !cpuhp_offline_cb_mode)
+ 		return ret;
  
--/**
-- * cpuset_cpu_is_isolated - Check if the given CPU is isolated
-- * @cpu: the CPU number to be checked
-- * Return: true if CPU is used in an isolated partition, false otherwise
-- */
--bool cpuset_cpu_is_isolated(int cpu)
--{
--	return cpumask_test_cpu(cpu, isolated_cpus);
--}
--EXPORT_SYMBOL_GPL(cpuset_cpu_is_isolated);
--
- /*
-  * compute_effective_exclusive_cpumask - compute effective exclusive CPUs
-  * @cs: cpuset
+ 	/*
 -- 
 2.50.0
 
