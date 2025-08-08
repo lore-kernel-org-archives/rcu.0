@@ -1,47 +1,47 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5E5284685
-	for <rcu@vger.kernel.org>; Fri,  8 Aug 2025 15:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E45284670
+	for <rcu@vger.kernel.org>; Fri,  8 Aug 2025 15:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754666444; cv=none; b=gHZJ4bAlD2p8A/S9d93oTB78LW70hHnWJgnMB/GiVz/zo/aFWWWjpEB5a/aHGJFXRzTN7IEfaAqQ42Ti4MRK5jGMUWLrQaNyiQJqsd/oMfuw5mHz3YgH64LBQv3dSF98BMxtLFXcKWa7SSmVksm2S84K9XFFQpFbTpH8VBdmmXk=
+	t=1754666485; cv=none; b=SxjF/gsr4dz+KU/XjB/I/rXhDVZW+Qf2tkK2n6rA1oTDXSVAHdBx0v4f0x2BqxnyQbzQaikL9I9S8P66ZHlh4RN97XKl6VQFJ3aIGeK1ctQGDDgESMTEOkryFb49qZZHdJ0TvVbl7yI+RlK7scNKWLqT0DeT4JWq4FLEBON6XXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754666444; c=relaxed/simple;
-	bh=KhnDnewWmNF5LBNjEEZdjlT1+NiVfMU/hEwiwCzSkY8=;
+	s=arc-20240116; t=1754666485; c=relaxed/simple;
+	bh=MBqCNbw0/4mMEsbRSaYRdm3BtIBo7r05XDeSRZQ1KiA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lIAlGrNtzRT00P5Faely6TDjbC7jDNXsB5+BVWPvbjNFuF8ls1aKDK6PI4k0aWNNvoiR4/iekOXFXu9G+om6Vztjt3lZ62A3F+5Imy8P1L4TJXcMSpnuQpFLdP+V/n5eapr5Z2oXGul5lSXvDvl0lxAxT3B5blMPWeil7Vyk81s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f0Du8bmS; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=TekbJChJ6deoBtnBYCW1Iz7WKQNALBfTxuKnGU+pr+2tjzyRlQMbnRaTJOeFVlTZVUGQn0m4HOJuAKLLleqkhfZ1dSYY4yY01kYVTHyHP50a0owIyn9iM5ioGiuQYtO5ltUR1TalT93JavKELOxfBhua35bXN5Zqd/l68x7O1/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a6rB64dA; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f0Du8bmS"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a6rB64dA"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754666442;
+	s=mimecast20190719; t=1754666482;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AxJEYuuRH3QK9/Cdhoov2KDfqFceQ8tv5+6IbkX7B5U=;
-	b=f0Du8bmSHDSWIbzI3SbMwqvYiqLc4VPb8rKFGD740+hdHwyp6R202OZ6QCbDNuaYGl2nX/
-	hLUANmmipr+pDalT3EDjOK6VBsiCKnrHEm4WwKAncoKDzq9XIBxhVUmmva05uSo9C74gA1
-	6nQuLu4ND0lI456bfYqkJbdj/vMjRrg=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+	bh=adgD1KsqgDBawHB48N8oiqlBQgZtCJcFgOO35w2t8QQ=;
+	b=a6rB64dA53BVgz+CvcVWHXzPM5IgjURWyq41AhtcKBC2VlLZjCFZn4Hz554DDyTRKRR25Z
+	6Il7ud1D7iisKeQIB1GjnGKFjm9Nw1I6e16eLJp54qpxMj09nS9LduJ3+q/x/qUyVfE0AH
+	WIA/q6iuVqhWrWbANDzKlqLHJtl/XBg=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-261-JK_dUM0TP86Dh_KVi_TrBw-1; Fri,
- 08 Aug 2025 11:20:39 -0400
-X-MC-Unique: JK_dUM0TP86Dh_KVi_TrBw-1
-X-Mimecast-MFC-AGG-ID: JK_dUM0TP86Dh_KVi_TrBw_1754666434
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-213-bNd6t_mVN-WPjfintDeu9A-1; Fri,
+ 08 Aug 2025 11:21:20 -0400
+X-MC-Unique: bNd6t_mVN-WPjfintDeu9A-1
+X-Mimecast-MFC-AGG-ID: bNd6t_mVN-WPjfintDeu9A_1754666468
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 96322180028C;
-	Fri,  8 Aug 2025 15:20:34 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EC26F195605F;
+	Fri,  8 Aug 2025 15:21:07 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.65.37])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 48E23180029B;
-	Fri,  8 Aug 2025 15:20:28 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 1DDF4180029B;
+	Fri,  8 Aug 2025 15:21:01 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -79,9 +79,9 @@ Cc: cgroups@vger.kernel.org,
 	Gabriele Monaco <gmonaco@redhat.com>,
 	Cestmir Kalina <ckalina@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 12/18] tick/nohz: Introduce tick_nohz_full_update_cpus() to update tick_nohz_full_mask
-Date: Fri,  8 Aug 2025 11:19:55 -0400
-Message-ID: <20250808152001.20245-3-longman@redhat.com>
+Subject: [RFC PATCH 17/18] cgroup/cpuset: Documentation updates & don't use CPU 0 for isolated partition
+Date: Fri,  8 Aug 2025 11:20:00 -0400
+Message-ID: <20250808152001.20245-8-longman@redhat.com>
 In-Reply-To: <20250808151053.19777-1-longman@redhat.com>
 References: <20250808151053.19777-1-longman@redhat.com>
 Precedence: bulk
@@ -93,54 +93,104 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-When the list of HK_FLAG_KERNEL_NOISE housekeeping CPUs are changed,
-we will need to update tick_nohz_full_mask so that dynticks can work
-correctly. Introduce a new tick_nohz_full_update_cpus() function
-that can be called at run time to update tick_nohz_full_mask.
+As CPU hotplug is now used to improve CPU isolation of CPUs in isolated
+partitions. The boot CPU (typically CPU 0) cannot be put offline
+impacting the amount of CPU isolation available. Now we have to advise
+users that the boot CPU should never be used for isolated partitions. A
+warning will be printed when boot CPU is used and the cgroup-v2.rst is
+updated accordingly. The test_cpuset_prs.sh selftest is also updated
+to remove CPU 0 when forming isolated partitions.
+
+Also update the cgroup-v2.rst file to show the need to specify the
+"nohz_full" kernel boot parameter to enable better nohz_full behavior
+for the CPUs in isolated partitions as well as the latency spike issue
+with using CPU hotplug.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- include/linux/tick.h     | 2 ++
- kernel/time/tick-sched.c | 6 ++++++
- 2 files changed, 8 insertions(+)
+ Documentation/admin-guide/cgroup-v2.rst       | 33 +++++++++++++++----
+ .../selftests/cgroup/test_cpuset_prs.sh       |  8 ++---
+ 2 files changed, 31 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/tick.h b/include/linux/tick.h
-index ac76ae9fa36d..34907c0b632c 100644
---- a/include/linux/tick.h
-+++ b/include/linux/tick.h
-@@ -272,6 +272,7 @@ static inline void tick_dep_clear_signal(struct signal_struct *signal,
- extern void tick_nohz_full_kick_cpu(int cpu);
- extern void __tick_nohz_task_switch(void);
- extern void __init tick_nohz_full_setup(cpumask_var_t cpumask);
-+extern void tick_nohz_full_update_cpus(cpumask_var_t cpumask);
- #else
- static inline bool tick_nohz_full_enabled(void) { return false; }
- static inline bool tick_nohz_full_cpu(int cpu) { return false; }
-@@ -297,6 +298,7 @@ static inline void tick_dep_clear_signal(struct signal_struct *signal,
- static inline void tick_nohz_full_kick_cpu(int cpu) { }
- static inline void __tick_nohz_task_switch(void) { }
- static inline void tick_nohz_full_setup(cpumask_var_t cpumask) { }
-+static inline void tick_nohz_full_update_cpus(cpumask_var_t cpumask) { return false; }
- #endif
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index d9d3cc7df348..26213383b34b 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2556,11 +2556,12 @@ Cpuset Interface Files
  
- static inline void tick_nohz_task_switch(void)
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 87b26a4471e7..9204808b7a55 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -604,6 +604,12 @@ void __init tick_nohz_full_setup(cpumask_var_t cpumask)
- 	tick_nohz_full_running = true;
- }
+ 	It accepts only the following input values when written to.
  
-+/* Get the new set of run-time nohz CPU list from cpuset */
-+void tick_nohz_full_update_cpus(cpumask_var_t cpumask)
-+{
-+	cpumask_copy(tick_nohz_full_mask, cpumask);
-+}
+-	  ==========	=====================================
++	  ==========	===============================================
+ 	  "member"	Non-root member of a partition
+ 	  "root"	Partition root
+-	  "isolated"	Partition root without load balancing
+-	  ==========	=====================================
++	  "isolated"	Partition root without load balancing and other
++		        OS noises
++	  ==========	===============================================
+ 
+ 	A cpuset partition is a collection of cpuset-enabled cgroups with
+ 	a partition root at the top of the hierarchy and its descendants
+@@ -2593,9 +2594,29 @@ Cpuset Interface Files
+ 
+ 	When set to "isolated", the CPUs in that partition will be in
+ 	an isolated state without any load balancing from the scheduler
+-	and excluded from the unbound workqueues.  Tasks placed in such
+-	a partition with multiple CPUs should be carefully distributed
+-	and bound to each of the individual CPUs for optimal performance.
++	and excluded from the unbound workqueues as well as without
++	other OS noises.  Tasks placed in such a partition with multiple
++	CPUs should be carefully distributed and bound to each of the
++	individual CPUs for optimal performance.
 +
- bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
- {
- 	/*
++	As CPU hotplug, if supported, is used to improve the degree of
++	CPU isolation close to the "nohz_full" kernel boot parameter.
++	The boot CPU (typically CPU 0) cannot be brought offline, so the
++	boot CPU should not be used for forming isolated partitions.
++	The "nohz_full" kernel boot parameter needs to be present to
++	enable full dynticks support and RCU no-callback CPU mode for
++	CPUs in isolated partitions even if the optional cpu list
++	isn't provided.  Without that, adding the "rcu_nocbs" boot
++	kernel parameter without the cpu list can be used to enable
++	RCU no-callback CPU mode without full dynticks.
++
++	Using CPU hotplug for creating or destroying an isolated
++	partition can cause latency spike in applications running
++	in other isolated partitions.  A reserved list of CPUs can
++	optionally be put in the "nohz_full" kernel boot parameter to
++	alleviate this problem.  When these reserved CPUs are used for
++	isolated partitions, CPU hotplug won't need to be invoked and
++	so there won't be latency spike in other isolated partitions.
+ 
+ 	A partition root ("root" or "isolated") can be in one of the
+ 	two possible states - valid or invalid.  An invalid partition
+diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+index a17256d9f88a..f61369be8bf6 100755
+--- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
++++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+@@ -318,8 +318,8 @@ TEST_MATRIX=(
+ 	# Invalid to valid local partition direct transition tests
+ 	" C1-3:S+:P2 X4:P2  .      .      .      .      .      .     0 A1:1-3|XA1:1-3|A2:1-3:XA2: A1:P2|A2:P-2 1-3"
+ 	" C1-3:S+:P2 X4:P2  .      .      .    X3:P2    .      .     0 A1:1-2|XA1:1-3|A2:3:XA2:3 A1:P2|A2:P2 1-3"
+-	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4|B1:4-6 A1:P-2|B1:P0"
+-	"  C0-3:P2   .      .    C4-6 C0-4:C0-3  .      .      .     0 A1:0-3|B1:4-6 A1:P2|B1:P0 0-3"
++	"  C1-3:P2   .      .    C4-6   C1-4     .      .      .     0 A1:1-4|B1:4-6 A1:P-2|B1:P0"
++	"  C1-3:P2   .      .    C4-6 C1-4:C1-3  .      .      .     0 A1:1-3|B1:4-6 A1:P2|B1:P0 1-3"
+ 
+ 	# Local partition invalidation tests
+ 	" C0-3:X1-3:S+:P2 C1-3:X2-3:S+:P2 C2-3:X3:P2 \
+@@ -329,8 +329,8 @@ TEST_MATRIX=(
+ 	" C0-3:X1-3:S+:P2 C1-3:X2-3:S+:P2 C2-3:X3:P2 \
+ 				   .      .    C4:X     .      .     0 A1:1-3|A2:1-3|A3:2-3|XA2:|XA3: A1:P2|A2:P-2|A3:P-2 1-3"
+ 	# Local partition CPU change tests
+-	" C0-5:S+:P2 C4-5:S+:P1 .  .      .    C3-5     .      .     0 A1:0-2|A2:3-5 A1:P2|A2:P1 0-2"
+-	" C0-5:S+:P2 C4-5:S+:P1 .  .    C1-5     .      .      .     0 A1:1-3|A2:4-5 A1:P2|A2:P1 1-3"
++	" C1-5:S+:P2 C4-5:S+:P1 .  .      .    C3-5     .      .     0 A1:1-2|A2:3-5 A1:P2|A2:P1 1-2"
++	" C1-5:S+:P2 C4-5:S+:P1 .  .    C2-5     .      .      .     0 A1:2-3|A2:4-5 A1:P2|A2:P1 2-3"
+ 
+ 	# cpus_allowed/exclusive_cpus update tests
+ 	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3 \
 -- 
 2.50.0
 
