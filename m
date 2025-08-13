@@ -1,47 +1,40 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0970F2EAB93;
-	Wed, 13 Aug 2025 13:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CF1288CA2;
+	Wed, 13 Aug 2025 16:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755093408; cv=none; b=nYvqQcHfPYQW1ZgIyWvcSCGSFV+ko53qi+QyBKNkouVyFFj/wXSN8JmAqwTSKmgiGFr8SsyjQnzGhRwSzPivBGYcHceGcVl+679MuQq/77xs1JhA6g17BXHHDkkSgUhmSnA/UAk1cKpRvcfPl8LdJll0AxuWEz6blz+/eyxPq6Q=
+	t=1755101100; cv=none; b=tPadt51Lj7Q4Nw8It+r+lJ6JAmhciZLAFV7s1hlwwtCT8Wi1ywo8/WFlW5l56wl3FBM1HXIcSlpaTEfh+zGQb2loOS4bi+7AvaM4qEzBUR0T2xpWGDLPQr+3WbIId4xXNkTZfDj0vrPHbru3yL7JnHgjEQbGNTbtxeSBh6QX27c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755093408; c=relaxed/simple;
-	bh=gIt4wTImh/l3IDHeafkDLD9teCM7tyU5c+ZlMd4aQ/c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rXQtXC4+wS3IKY09XqwKZobyhBwrLw8cEvFHmOz57kFYiHdM6Ae2J0BIluKLAxOBWUZ59e5LhP06g7e44OzkHmKfU9wVe7jSa8qFcoZduA+nl4d94Vucd0huSuDtHROgJzLVft9A2jb5AelyuigNj6WzWhdy1HVz7sH+tNsMZJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PYg7Y5tY; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1755101100; c=relaxed/simple;
+	bh=yiXLb8bycpvpUQxupXfp+O9anVMwvIgHsJkuMlujP3Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=rIdM8B1J2hAsCUDXK+Yj3GXQTYM/A42+o2l6Fdy+E6e6LgnvSmKAu+9jHpEKtGvPa+A3kxjsFkfSj/xvtmsmnEdaExJ8MQFVWgCWiTSV8AWV9V2pLbD+trOghd+g2knIoho8w1epdNFwg6RtsBi2/VbcFdVw+Y0UANOfxtZWYdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mqQib74R; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PYg7Y5tY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 160A7C4CEF6;
-	Wed, 13 Aug 2025 13:56:26 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mqQib74R"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFACCC4CEEF;
+	Wed, 13 Aug 2025 16:04:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755093406;
-	bh=gIt4wTImh/l3IDHeafkDLD9teCM7tyU5c+ZlMd4aQ/c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PYg7Y5tYS8bxCUIEypFDl5W8/CiRSdrwpOqka5NfearAhT1gBEWt5jllhzQWTLV96
-	 5PfixQHaiZtO1F0M7girUXngYNfJpaxaVL3nXFp1V6YOHVhx5ZSIDFTx6MG8cfjFMY
-	 A0X1bu7NVetbXD1Jp1Yl1Fo1VHHWbwp5xSUnoiXOc388y+Re3hdU6DrxqKFAIbyucz
-	 UKgDFkL+ptY3sDEi4/D/8uYuNPc7b063U3oCJDcpE19XGUmj0+Ae5hEQuk2W+YrSYz
-	 LBIx8iqjvFC4koIRs1usYCWEdRFqnpvXiKKI5Ri8aNEtukbJqBWDUPIfEFmcppgJ8G
-	 Qv8WiIQf+wfCQ==
-Date: Wed, 13 Aug 2025 19:25:49 +0530
+	s=k20201202; t=1755101100;
+	bh=yiXLb8bycpvpUQxupXfp+O9anVMwvIgHsJkuMlujP3Y=;
+	h=Date:From:To:Cc:Subject:From;
+	b=mqQib74RQ67gn0JQi7jQf8jin8mJ4NEx0UcPdAvOGtm547NhgLrRklBwslGTaDpRa
+	 K12OfvTvh21kRzfZ/Xh1PDrUBNzrWlIFlg7surEsLpApqfV8LdKG2vfobzzjwxH0HS
+	 ePXHYfGCeMkl/CtGNqtAzMq2+2ia0ADqWIZLDS/dVrNuJd9nX5/uLZJod0PQb0xu5a
+	 +PE4sWLYgjerPqxVBgtMSnijyyabreLSFct3x32JeffyZzk8MzVONXfUNF0uUPAr9P
+	 J2PAv/q1YYH7VWTKnn+ru71G6Owvm2U1wAlnMNYIhGwvRESoaTngTLGfepF9loF//8
+	 qssETdQbNKleQ==
+Date: Wed, 13 Aug 2025 21:33:40 +0530
 From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, linux-kernel@vger.kernel.org,
-	Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-	Qi Xi <xiqi2@huawei.com>, "Paul E. McKenney" <paulmck@kernel.org>,
-	Linux Kernel Functional Testing <lkft@linaro.org>,
+To: torvalds@linux-foundation.org
+Cc: paulmck@kernel.org, joelagnelf@nvidia.com, frederic@kernel.org,
+	boqun.feng@gmail.com, urezki@gmail.com, qiang.zhang1211@gmail.com,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
 	rcu@vger.kernel.org
-Subject: Re: [linus:master] [rcu]  b41642c877: BUG:kernel_hang_in_boot_stage
-Message-ID: <20250813135549.GA3156@neeraj.linux>
-References: <202508071303.c1134cce-lkp@intel.com>
- <aJY1DsIUQxzq1U1Q@localhost.localdomain>
- <20250813044024.GA2872@neeraj.linux>
- <aJyWmUdR0LzIiSai@xsang-OptiPlex-9020>
+Subject: [GIT PULL] RCU fix for v6.17
+Message-ID: <20250813160340.GA3357@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -50,42 +43,41 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aJyWmUdR0LzIiSai@xsang-OptiPlex-9020>
 
-On Wed, Aug 13, 2025 at 09:43:53PM +0800, Oliver Sang wrote:
-> hi, Neeraj,
-> 
-> On Wed, Aug 13, 2025 at 10:10:24AM +0530, Neeraj Upadhyay wrote:
-> > Hi kernel test robot,
-> > 
-> > > #syz test
-> 
-> sorry, we are not syz bot :) didn't capture this.
-> 
+Hello Linus,
 
-Ah ok!
+The following changes since commit 8f5ae30d69d7543eee0d70083daf4de8fe15d585:
 
-> [...]
-> 
-> > > Fixes: b41642c87716 ("rcu: Fix rcu_read_unlock() deadloop due to IRQ work")
-> > > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > > Closes: https://lore.kernel.org/oe-lkp/202508071303.c1134cce-lkp@intel.com
-> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > ---
-> > 
-> > Can you please update testing results with the proposed fix?
-> 
-> now we finished the test with the proposed fix, it works. thanks!
-> 
-> Tested-by: kernel test robot <oliver.sang@intel.com>
->
+  Linux 6.17-rc1 (2025-08-10 19:41:16 +0300)
 
-Thanks for testing!
+are available in the Git repository at:
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu.fixes.6.17
 
-- Neeraj
+for you to fetch changes up to 61399e0c5410567ef60cb1cda34cca42903842e3:
 
-> > 
-> > 
-> > - Neeraj
-> > 
+  rcu: Fix racy re-initialization of irq_work causing hangs (2025-08-11 08:43:49 +0530)
+
+----------------------------------------------------------------
+RCU fix for v6.17
+
+Fix a regression introduced by commit b41642c87716 ("rcu: Fix
+rcu_read_unlock() deadloop due to IRQ work") which results in boot hang
+as reported by kernel test bot at [1]. This issue happens because RCU
+re-initializes the deferred QS IRQ work everytime it is queued. With
+commit b41642c87716, the IRQ work re-initialization can happen while it
+is already queued. This results in IRQ work being requeued to itself.
+When IRQ work finally fires, as it is requeued to itself, it is
+repeatedly executed and results in hang. Fix this with initializing the
+IRQ work only once before the CPU boots.
+
+[1] https://lore.kernel.org/rcu/202508071303.c1134cce-lkp@intel.com/
+
+----------------------------------------------------------------
+Frederic Weisbecker (1):
+      rcu: Fix racy re-initialization of irq_work causing hangs
+
+ kernel/rcu/tree.c        | 2 ++
+ kernel/rcu/tree.h        | 1 +
+ kernel/rcu/tree_plugin.h | 8 ++++++--
+ 3 files changed, 9 insertions(+), 2 deletions(-)
