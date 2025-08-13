@@ -1,103 +1,90 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0C8322E;
-	Wed, 13 Aug 2025 04:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52F787261D
+	for <rcu@vger.kernel.org>; Wed, 13 Aug 2025 13:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755060103; cv=none; b=ACova7XXacSRHcHeHSkjNqHGPvIQnw2NG8mvTLZvzGO4GSiOJBjdi1Vp+mdtQ2vrbdpkFl7EdDWqgxUslPubGkhpc9FeFVX1qzLyh6cdH84jljMSWgD5Bw813iqBU7XYku1Ly2HhwlAwqhbEHyub7SmsUa+4WxNwJqZCnJvwdlU=
+	t=1755091818; cv=none; b=E1RZF4Ev8g86DHulYIOyANYQewUTvJ+/Orw85KXC7p4cjEUkVjDbIBJ2jkxFYp2E7PAxSzq5gXkvX6ClHkfXX3qUOEZzqx/C/17YglbCHhxwrwvSS8jhXQ2xXgk4ZWT+xEbu/O4AWyrLz8GG2XkPD/wJP+11vt5srV5B+opW+3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755060103; c=relaxed/simple;
-	bh=v2d764f2ep5EHkqA3NAse77cvCy3e/Ewnulm5smU8fI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X+FODy8mMk+xR/TQu+qbesAoQlb/QIwGVD4mRukAGDDBhEhp9g/mevxSR+ItH17mnsfI5VGN2CjKXF+fxZ0w1C0+hOoU2YmddmO4fJNLF3CPpnMVMWfXuRuV30HYH9ewjUvZkOSRysCBWlAfQIVjbb7TCuwdUXWfxo0GF74yTIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jrIzbobI; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1755091818; c=relaxed/simple;
+	bh=iQ9b0Cb8eF9TBVdPOCV8KSZn7JCwi53K7e/ZpVLsCJ4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rjldiHdX5eN1C7B7+W2jikTuY8dKRoEBOk2VieEJQGUsCifv1aVtCGfSK/iWa1g4tH9Fus3JzwA2/fUt2jOkOe+FuAbqZKge++wBIN0mKZeFskD+gfD0Hvfms2nPlZf0SMwMoT3KG7LLyS/yXbDZ6yL5p+10nPRPdj0skaX1HyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=a+Lih0xD; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jrIzbobI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51D0DC4CEEB;
-	Wed, 13 Aug 2025 04:41:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755060103;
-	bh=v2d764f2ep5EHkqA3NAse77cvCy3e/Ewnulm5smU8fI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jrIzbobI7/iWRr7TUYEjc8/cS662o0No7nQ+qiQxgJwACUex6dwWWL6pA5JAG4cuc
-	 JekVnAeLsihOc92MG2PLvmqtia4q3WMeKWbR+Re5piWUanG0Fs14AmPa46ovfeNS86
-	 nIxnLWhxLD9hLQpbaZK0OBvwR+8RVpLK+ky4np88RPzKUehsFD8SulFE/W07hLyyyx
-	 IvrWAYCdHmVuoGrwhOZE/AprUejn/FGisXLywH5O2x3ZIDt4+uI19OZ2SUptnFMiDD
-	 OqbGybsowpArfn+p7A4GcckoAgOYAxTeCYHKszQxOemPDbTmCYc4F820VKMvOMCP2K
-	 4Rzt9BBQGUj0w==
-Date: Wed, 13 Aug 2025 10:10:24 +0530
-From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>,
-	kernel test robot <oliver.sang@intel.com>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, linux-kernel@vger.kernel.org,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-	Qi Xi <xiqi2@huawei.com>, "Paul E. McKenney" <paulmck@kernel.org>,
-	Linux Kernel Functional Testing <lkft@linaro.org>,
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="a+Lih0xD"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755091814;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Zu+JuYXJn+DWqUaruHg9PtZqk5MrbwXE71fqX0qJjiE=;
+	b=a+Lih0xDiGZnJDe7EoXbqPfjIdRoFduhJjlyTxerTymULt7RSOa8yH0eENVThqElhFy6M3
+	pyPGGL+GZRu4m7lMLBYsDp0aVklV4AkDS0tmm9+OZqW44AaPerkC5UDxEfngsmO0RoxjOD
+	aJRCy76/g8yPHU9aa6cXBQXFUrmm8BU=
+From: Zqiang <qiang.zhang@linux.dev>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	boqun.feng@gmail.com,
+	urezki@gmail.com
+Cc: qiang.zhang@linux.dev,
 	rcu@vger.kernel.org
-Subject: Re: [linus:master] [rcu]  b41642c877: BUG:kernel_hang_in_boot_stage
-Message-ID: <20250813044024.GA2872@neeraj.linux>
-References: <202508071303.c1134cce-lkp@intel.com>
- <aJY1DsIUQxzq1U1Q@localhost.localdomain>
+Subject: [PATCH v2] rcu: Remove local_irq_save/restore() in rcu_preempt_deferred_qs_handler()
+Date: Wed, 13 Aug 2025 21:30:02 +0800
+Message-ID: <20250813133002.331879-1-qiang.zhang@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aJY1DsIUQxzq1U1Q@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi kernel test robot,
+Currently, the per-cpu rcu_data structure's->defer_qs_iw is initialized by
+IRQ_WORK_INIT_HARD(), this means the rcu_preempt_deferred_qs_handler()
+always be executed in the hardirq context of irq-disabled.
+This commit therefore remove local_irq_save/restore() operations in
+rcu_preempt_deferred_qs_handler() and add lockdep_assert_irqs_disabled()
+check, if someone mistakenly invokes this function in hardirq enabled
+context will splat.
 
-> #syz test
-> 
-> >From a3cc7624264743996d2ad1295741933103a8d63b Mon Sep 17 00:00:00 2001
-> From: Frederic Weisbecker <frederic@kernel.org>
-> Date: Fri, 8 Aug 2025 19:03:22 +0200
-> Subject: [PATCH] rcu: Fix racy re-initialization of irq_work causing hangs
-> 
-> RCU re-initializes the deferred QS irq work everytime before attempting
-> to queue it. However there are situations where the irq work is
-> attempted to be queued even though it is already queued. In that case
-> re-initializing messes-up with the irq work queue that is about to be
-> handled.
-> 
-> The chances for that to happen are higher when the architecture doesn't
-> support self-IPIs and irq work are then all lazy, such as with the
-> following sequence:
-> 
-> 1) rcu_read_unlock() is called when IRQs are disabled and there is a
->    grace period involving blocked tasks on the node. The irq work
->    is then initialized and queued.
-> 
-> 2) The related tasks are unblocked and the CPU quiescent state
->    is reported. rdp->defer_qs_iw_pending is reset to DEFER_QS_IDLE,
->    allowing the irq work to be requeued in the future (note the previous
->    one hasn't fired yet).
-> 
-> 3) A new grace period starts and the node has blocked tasks.
-> 
-> 4) rcu_read_unlock() is called when IRQs are disabled again. The irq work
->    is re-initialized (but it's queued! and its node is cleared) and
->    requeued. Which means it's requeued to itself.
-> 
-> 5) The irq work finally fires with the tick. But since it was requeued
->    to itself, it loops and hangs.
-> 
-> Fix this with initializing the irq work only once before the CPU boots.
-> 
-> Fixes: b41642c87716 ("rcu: Fix rcu_read_unlock() deadloop due to IRQ work")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202508071303.c1134cce-lkp@intel.com
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
+Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+---
+ kernel/rcu/tree_plugin.h | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Can you please update testing results with the proposed fix?
-
-
-- Neeraj
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index fc14adf15cbb..57e2ae51c0b2 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -626,11 +626,10 @@ notrace void rcu_preempt_deferred_qs(struct task_struct *t)
+  */
+ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
+ {
+-	unsigned long flags;
+ 	struct rcu_data *rdp;
+ 
++	lockdep_assert_irqs_disabled();
+ 	rdp = container_of(iwp, struct rcu_data, defer_qs_iw);
+-	local_irq_save(flags);
+ 
+ 	/*
+ 	 * If the IRQ work handler happens to run in the middle of RCU read-side
+@@ -647,8 +646,6 @@ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
+ 	 */
+ 	if (rcu_preempt_depth() > 0)
+ 		WRITE_ONCE(rdp->defer_qs_iw_pending, DEFER_QS_IDLE);
+-
+-	local_irq_restore(flags);
+ }
+ 
+ /*
+-- 
+2.48.1
 
