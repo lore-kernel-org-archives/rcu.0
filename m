@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076C1BE46;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4DAC133;
 	Sat, 16 Aug 2025 00:08:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755302920; cv=none; b=olrHzQZzFLdIlsgIpMWH2DeOk9RBqWWKdkuJ6yUY9qNvMsH2aHCcWZ5jHO9X5zEd4OwUVcfNkjsdawWIIYzScd/SVl7BMVw/r9NPZjwD9u2ZOttyCZxhsy1Cy5pRrMOeGG2mEiSyU3QjAKKNM7arTMkiexFOHpm/m+2Xsap4MGE=
+	t=1755302920; cv=none; b=eT3hYFbiZBHg1ByrS1YkNNZReLBmt9B12HreY7XorwCYNu9HAgIJaiT85vtD2xRcPfmUCxJVCVMU3LPo3xoEdUJp/I+yxl8rFR754QJ3J05rzAVoW2Artc8kSrIUQQ3nyHdeS3crTmV8BotyQtbj/6MlQMFt/KPOMu/6VUwLWVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1755302920; c=relaxed/simple;
-	bh=QRMj3cfejFshQ8gBkMpPIHQRTiBKhfo6s4NoeWXO8TE=;
+	bh=o0RHpAqGikfODESDcNqT7pVVwVOSWbUKhTNHQn++MVw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E3R5CIu+GYRDGdJLdc2CrweRYj22aR8183S+cnU4DHwf7h1wT1sgg5b/5UlOg6Fwo2/XwVChIBDyncYFSPHmRl23kH//GmX4CLyikrYjXX786XqnRlFBzYdWX0u2UL4Nq1C05BzsE3dmf0SUmnFe4cmozXGsoBULTXsCT8caZH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LQQ6jMrw; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=Q3CY8MnAH0u0r29qWGCwJaIFAMVTskvMr9we7taNqa/K80h1545jA+P84/Na98b+B5TN7xsPYb6bcBwv5x0Ox9XdJJpWLyTEeTEzBLlVdsRBNcrpG9Y73zNVg2kyh0/K6OyNusW6R6X2WLipQLQSLmUZ2riPfsP4QSbLrcbpayE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=azk3Iiys; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQQ6jMrw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4A61C4CEF5;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="azk3Iiys"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8FB3C4CEF8;
 	Sat, 16 Aug 2025 00:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1755302919;
-	bh=QRMj3cfejFshQ8gBkMpPIHQRTiBKhfo6s4NoeWXO8TE=;
+	bh=o0RHpAqGikfODESDcNqT7pVVwVOSWbUKhTNHQn++MVw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LQQ6jMrwTMk5BIj++yBMB1liZSzWDXLOTQaC2LXspZGdoJx4AxkJLXsBf2zFgYvtA
-	 AQYk2oCB1nVVUDlLZJZg43uzoIa7gKtj7SXObCmDPQg+niLwmHJc985vcO0iDJNlSv
-	 DqIt5+g/iT+7KZ9buOyy6xkXgZjvmlcgwVmT+iGEhHlBlTyb7VdV6/H6+xIpJu0+mm
-	 rXHDjiyv+JHe+kdsu17znIZ6ocUbIl0kKa/pQXxTD3QdL2EmtV6wUGy2X3GrAdYw30
-	 802/TzffghkF9prHZl3IylMcjh94XEafXZrcwYU21sUw+LCRG2rq15wtA2q9/UQ8fE
-	 qFawTKfHYi76Q==
+	b=azk3IiysjTqolV3J6YDwq2I7o4DlHtvpZh/bE+SvJckNG9Xro8x5i4wJtgGEvmmex
+	 OAawxZcdDYAVysaxqZlgYr4cfQu8g+JBfDHc4eeCyT1JJ/BPTyU88XstP+VRW11PGc
+	 H/fhsBoIJ0ylNyc1N6bfls54Ul1blvX6DnYmEkeeIn6eHtDVfpl4XLTdzZje1OVzwL
+	 mCPlTqnRs/xilAxF1wSoX2irh86Wyv9ZkMszPI7XUrLJjtKZYCZNkmNr9KilK0Xl1K
+	 M4sfgDBAUb7bYFGCzjgCcdnJSu626mL3HCbD8QYZFyNnTtzEG57IhtpzCuV6oJVQhy
+	 eERrtF0olIAUg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1ADF2CE0B6D; Fri, 15 Aug 2025 17:08:39 -0700 (PDT)
+	id 1872DCE0B31; Fri, 15 Aug 2025 17:08:39 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 4/7] rcutorture: Suppress "Writer stall state" reports during boot
-Date: Fri, 15 Aug 2025 17:08:34 -0700
-Message-Id: <20250816000837.2622858-4-paulmck@kernel.org>
+Subject: [PATCH 3/7] torture: Announce kernel boot status at torture-test startup
+Date: Fri, 15 Aug 2025 17:08:33 -0700
+Message-Id: <20250816000837.2622858-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <8758bcc6-901f-4828-b2fc-aa9f90e85451@paulmck-laptop>
 References: <8758bcc6-901f-4828-b2fc-aa9f90e85451@paulmck-laptop>
@@ -48,36 +48,40 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When rcutorture is running on only the one boot-time CPU while that CPU
-is busy invoking initcall() functions, the added load is quite likely to
-unduly delay the RCU grace-period kthread, rcutorture readers, and much
-else besides.  This can result in rcu_torture_stats_print() reporting
-rcutorture writer stalls, which are not really a bug in that environment.
-After all, one CPU can only do so much.
+Sometimes a given system takes surprisingly long to boot, for example,
+in one recent case, 70 seconds instead of three seconds.  It would
+be good to fix these slow-boot issues, but it would also be good for
+the torture tests to announce that the system was still booting at the
+start of the test.  Especially for tests that have a greater probability
+of false positives when run in the single-CPU boot-time environment.
+Yes, those tests should defend themselves, but we should also make this
+situation easier to diagnose.
 
-This commit therefore suppresses rcutorture writer stalls while the
-kernel is booting, that is, while rcu_inkernel_boot_has_ended() continues
-returning false.
+This commit therefore causes torture_print_module_parms() to print
+"still booting" at the end of its printk() that dumps out the values of
+its module parameters.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/torture.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 7a893d51d02b6a..49e048da4f6810 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2756,7 +2756,8 @@ rcu_torture_stats_print(void)
- 		cur_ops->stats();
- 	if (rtcv_snap == rcu_torture_current_version &&
- 	    rcu_access_pointer(rcu_torture_current) &&
--	    !rcu_stall_is_suppressed()) {
-+	    !rcu_stall_is_suppressed() &&
-+	    rcu_inkernel_boot_has_ended()) {
- 		int __maybe_unused flags = 0;
- 		unsigned long __maybe_unused gp_seq = 0;
+diff --git a/kernel/torture.c b/kernel/torture.c
+index 3a0a8cc604010a..5abb4b25d971cc 100644
+--- a/kernel/torture.c
++++ b/kernel/torture.c
+@@ -797,8 +797,9 @@ static unsigned long torture_init_jiffies;
+ static void
+ torture_print_module_parms(void)
+ {
+-	pr_alert("torture module --- %s:  disable_onoff_at_boot=%d ftrace_dump_at_shutdown=%d verbose_sleep_frequency=%d verbose_sleep_duration=%d random_shuffle=%d\n",
+-		 torture_type, disable_onoff_at_boot, ftrace_dump_at_shutdown, verbose_sleep_frequency, verbose_sleep_duration, random_shuffle);
++	pr_alert("torture module --- %s:  disable_onoff_at_boot=%d ftrace_dump_at_shutdown=%d verbose_sleep_frequency=%d verbose_sleep_duration=%d random_shuffle=%d%s\n",
++		 torture_type, disable_onoff_at_boot, ftrace_dump_at_shutdown, verbose_sleep_frequency, verbose_sleep_duration, random_shuffle,
++		 rcu_inkernel_boot_has_ended() ? "" : " still booting");
+ }
  
+ /*
 -- 
 2.40.1
 
