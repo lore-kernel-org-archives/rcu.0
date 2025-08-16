@@ -1,44 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9E942DA778;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B871E2D3EFA;
 	Sat, 16 Aug 2025 00:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755302410; cv=none; b=dQkAXBtqZULtb0Vo/qFnn7f2PoV0z70sfJrmmPoaovOrviX42KOVL3DGLLurl9QyO9H0HJsg69/Wx2i3WTWj+QojMZ7KgtINC5ZLjPJ6L+bm+3i8DOkS0kK5Jwofaj0KeYHYUhd0oaRQsyWIDEe3STvQo3lUh3Wt1e4gUKa51T4=
+	t=1755302410; cv=none; b=dJ4WUZ9zsF6sHrcIwRcm4BeDVqk32aDPfELSwWo8NjXbOWfYXoT5HROXoEtODL9bNVJgYlDO5KC/7mxnFwWyCZtqXp21BA4jFR04jzXEzyuSba6JpK4xEgdfUPEFkj9fYPRNSiPH2ijlmN/BJ21xGP93TGvTlxt6HzZdnHZTtLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1755302410; c=relaxed/simple;
-	bh=UBF0i4vX1lpONxPMzk+KRWffnxNvKh13MjTYdZMG8Z8=;
+	bh=sx/aMTOwkIm8Zaz1kuQ2mUJmqtZSUqCr6SzbEBFIuVw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r8CrrcFq8XvfGFVhO2VUK8CnZ6EqaKT4OYE+a32zZPH+gNf7Lh6nifAqha+jCztk1dII5pKfKte9AbbS0PURP63D2QbGZmI/vqBLEa1sMRbWRKQ93tuY4LL1K/bqVkcS8mHouqt/hu7sceG3BHwpccbBJo4sQUNU/HRmtFSwgyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uiIFSECk; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=On/LMyo8d7FLzIlriu5Ok4qnEBcL8+OpjZT8hm2tTo0auceTdInzSajWSHhsUBs8AW5LuhEQ0L72L/p5nE2J9vQURb2I7+8wVkR+DG5FGfkIu5lcvoZ+v2DTf2+KMHh1izxl1RxRppDgxVUsZzttCCfNdTEgOHZuzycjWMPZbnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s7okZ8df; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uiIFSECk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A098C4CEF5;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s7okZ8df"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F229C4CEF6;
 	Sat, 16 Aug 2025 00:00:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1755302410;
-	bh=UBF0i4vX1lpONxPMzk+KRWffnxNvKh13MjTYdZMG8Z8=;
+	bh=sx/aMTOwkIm8Zaz1kuQ2mUJmqtZSUqCr6SzbEBFIuVw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uiIFSECkALF03hV/uKHfhK2LUdOQO+xNIj9VCPGjisqYCW2sZkf6nLTkVmX5qL0qO
-	 rVp2hKnT5G4s8+pjGAfaKgbfdBy3299ZQEmnq6l/dyjJc2UTGeEebkusSbC6SJKTTN
-	 oASkCq8/JdiueoYyCeqKi9es/d2TaCzMEqFZx6pzMzMkHDKwvXOgDpFxWF/yKXOfs3
-	 eiz/V+S7TM1cMY36RGE0ual0uPlpX8TougFrbuhtsHpQBMs/gvIJ07ZIS8GhRpYsOI
-	 iGv/UdsAsuJPPYZ3Bp0wKaPIbfbVpmIyVld0qedHrn6ZCzQhsbsOEXHuiF4mgnrCx6
-	 xqiVuObTWOiZA==
+	b=s7okZ8dfkpIGXL0mUvHjL/UCgqPFaEpSR3ueo0m+HjYujCmdEQAicFeC6TG3MrrZw
+	 ej4rrTiMCQ7pX+eMFNqiX6N79ntcQcnti5Ui3YfhXqADSOexWfRCoekksan7pJBnje
+	 D3QbcgN86gqpgkaj7zxCBS2gM1RDk94gIkkj9Ad6UXxdeKyzOCtyLwPQsWdBiE+UlU
+	 zBEg9uGuajiEiUZ3Drh2wZAHePRH+mYO4s6K7IRr9CTlsG9M58AyfI+p68u8fNcwWD
+	 lKczhEg2tuKrHQu9DDIQm/FguxKpzyC0zdI4Vy80LSZMXAgTVa1pAHTOvf1GjZZYGv
+	 bgyZ3aLp7fy1w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 86751CE0B31; Fri, 15 Aug 2025 17:00:09 -0700 (PDT)
+	id 83B1CCE0B30; Fri, 15 Aug 2025 17:00:09 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	Akira Yokosawa <akiyks@gmail.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-Subject: [PATCH 3/3] rcu: docs: Requirements.rst: Abide by conventions of kernel documentation
-Date: Fri, 15 Aug 2025 17:00:07 -0700
-Message-Id: <20250816000007.2622326-3-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 2/3] doc: Add RCU guards to checklist.rst
+Date: Fri, 15 Aug 2025 17:00:06 -0700
+Message-Id: <20250816000007.2622326-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <9ea6b51e-b48a-474f-b7ae-4fb6414d0aaf@paulmck-laptop>
 References: <9ea6b51e-b48a-474f-b7ae-4fb6414d0aaf@paulmck-laptop>
@@ -50,136 +48,65 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Akira Yokosawa <akiyks@gmail.com>
+Also note that RCU guards can be easier to use.
 
-Here is a list of conventions applied here:
-
-- Don't mark up function names, to be taken care of by the automarkup
-  extension.  Just say func().
-- Instead of ".. code-block:: none", just say "::".
-- Mark inline literals by a pair of ``xxxx``.  Don't use rust doc's
-  dialect of `yyyy`.
-- Instead of emphasizing headings by **strong emphasis**, use sub-level
-  title adornments, in this case "^^^^^^^^^^" and make them proper
-  sub-sections under "Hotplug CPU".
-
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../RCU/Design/Requirements/Requirements.rst  | 52 +++++++++----------
- 1 file changed, 24 insertions(+), 28 deletions(-)
+ Documentation/RCU/checklist.rst | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index b0395540296b00..f24b3c0b9b0dc6 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -1973,9 +1973,7 @@ code, and the FQS loop, all of which refer to or modify this bookkeeping.
- Note that grace period initialization (rcu_gp_init()) must carefully sequence
- CPU hotplug scanning with grace period state changes. For example, the
- following race could occur in rcu_gp_init() if rcu_seq_start() were to happen
--after the CPU hotplug scanning.
--
--.. code-block:: none
-+after the CPU hotplug scanning::
+diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+index 7de3e308f330f6..c9bfb2b218e525 100644
+--- a/Documentation/RCU/checklist.rst
++++ b/Documentation/RCU/checklist.rst
+@@ -69,7 +69,13 @@ over a rather long period of time, but improvements are always welcome!
+ 	Explicit disabling of preemption (preempt_disable(), for example)
+ 	can serve as rcu_read_lock_sched(), but is less readable and
+ 	prevents lockdep from detecting locking issues.  Acquiring a
+-	spinlock also enters an RCU read-side critical section.
++	raw spinlock also enters an RCU read-side critical section.
++
++	The guard(rcu)() and scoped_guard(rcu) primitives designate
++	the remainder of the current scope or the next statement,
++	respectively, as the RCU read-side critical section.  Use of
++	these guards can be less error-prone than rcu_read_lock(),
++	rcu_read_unlock(), and friends.
  
-    CPU0 (rcu_gp_init)                   CPU1                          CPU2
-    ---------------------                ----                          ----
-@@ -2008,22 +2006,22 @@ after the CPU hotplug scanning.
-                                                                       kfree(r1);
-                                         r2 = *r0; // USE-AFTER-FREE!
+ 	Please note that you *cannot* rely on code known to be built
+ 	only in non-preemptible kernels.  Such code can and will break,
+@@ -405,9 +411,11 @@ over a rather long period of time, but improvements are always welcome!
+ 13.	Unlike most flavors of RCU, it *is* permissible to block in an
+ 	SRCU read-side critical section (demarked by srcu_read_lock()
+ 	and srcu_read_unlock()), hence the "SRCU": "sleepable RCU".
+-	Please note that if you don't need to sleep in read-side critical
+-	sections, you should be using RCU rather than SRCU, because RCU
+-	is almost always faster and easier to use than is SRCU.
++	As with RCU, guard(srcu)() and scoped_guard(srcu) forms are
++	available, and often provide greater ease of use.  Please note
++	that if you don't need to sleep in read-side critical sections,
++	you should be using RCU rather than SRCU, because RCU is almost
++	always faster and easier to use than is SRCU.
  
--By incrementing gp_seq first, CPU1's RCU read-side critical section
-+By incrementing ``gp_seq`` first, CPU1's RCU read-side critical section
- is guaranteed to not be missed by CPU2.
+ 	Also unlike other forms of RCU, explicit initialization and
+ 	cleanup is required either at build time via DEFINE_SRCU()
+@@ -443,10 +451,13 @@ over a rather long period of time, but improvements are always welcome!
+ 	real-time workloads than is synchronize_rcu_expedited().
  
--**Concurrent Quiescent State Reporting for Offline CPUs**
-+Concurrent Quiescent State Reporting for Offline CPUs
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 	It is also permissible to sleep in RCU Tasks Trace read-side
+-	critical section, which are delimited by rcu_read_lock_trace() and
+-	rcu_read_unlock_trace().  However, this is a specialized flavor
+-	of RCU, and you should not use it without first checking with
+-	its current users.  In most cases, you should instead use SRCU.
++	critical section, which are delimited by rcu_read_lock_trace()
++	and rcu_read_unlock_trace().  However, this is a specialized
++	flavor of RCU, and you should not use it without first checking
++	with its current users.  In most cases, you should instead
++	use SRCU.  As with RCU and SRCU, guard(rcu_tasks_trace)() and
++	scoped_guard(rcu_tasks_trace) are available, and often provide
++	greater ease of use.
  
- RCU must ensure that CPUs going offline report quiescent states to avoid
- blocking grace periods. This requires careful synchronization to handle
- race conditions
- 
--**Race condition causing Offline CPU to hang GP**
--
--A race between CPU offlining and new GP initialization (gp_init) may occur
--because `rcu_report_qs_rnp()` in `rcutree_report_cpu_dead()` must temporarily
--release the `rcu_node` lock to wake the RCU grace-period kthread:
-+Race condition causing Offline CPU to hang GP
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
--.. code-block:: none
-+A race between CPU offlining and new GP initialization (gp_init()) may occur
-+because rcu_report_qs_rnp() in rcutree_report_cpu_dead() must temporarily
-+release the ``rcu_node`` lock to wake the RCU grace-period kthread::
- 
-    CPU1 (going offline)                 CPU0 (GP kthread)
-    --------------------                 -----------------
-@@ -2044,15 +2042,14 @@ release the `rcu_node` lock to wake the RCU grace-period kthread:
-        // Reacquire lock (but too late)
-      rnp->qsmaskinitnext &= ~mask       // Finally clears bit
- 
--Without `ofl_lock`, the new grace period includes the offline CPU and waits
-+Without ``ofl_lock``, the new grace period includes the offline CPU and waits
- forever for its quiescent state causing a GP hang.
- 
--**A solution with ofl_lock**
-+A solution with ofl_lock
-+^^^^^^^^^^^^^^^^^^^^^^^^
- 
--The `ofl_lock` (offline lock) prevents `rcu_gp_init()` from running during
--the vulnerable window when `rcu_report_qs_rnp()` has released `rnp->lock`:
--
--.. code-block:: none
-+The ``ofl_lock`` (offline lock) prevents rcu_gp_init() from running during
-+the vulnerable window when rcu_report_qs_rnp() has released ``rnp->lock``::
- 
-    CPU0 (rcu_gp_init)                   CPU1 (rcutree_report_cpu_dead)
-    ------------------                   ------------------------------
-@@ -2065,21 +2062,20 @@ the vulnerable window when `rcu_report_qs_rnp()` has released `rnp->lock`:
-        arch_spin_unlock(&ofl_lock) ---> // Now CPU1 can proceed
-    }                                    // But snapshot already taken
- 
--**Another race causing GP hangs in rcu_gpu_init(): Reporting QS for Now-offline CPUs**
-+Another race causing GP hangs in rcu_gpu_init(): Reporting QS for Now-offline CPUs
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
- After the first loop takes an atomic snapshot of online CPUs, as shown above,
--the second loop in `rcu_gp_init()` detects CPUs that went offline between
--releasing `ofl_lock` and acquiring the per-node `rnp->lock`. This detection is
--crucial because:
-+the second loop in rcu_gp_init() detects CPUs that went offline between
-+releasing ``ofl_lock`` and acquiring the per-node ``rnp->lock``.
-+This detection is crucial because:
- 
- 1. The CPU might have gone offline after the snapshot but before the second loop
- 2. The offline CPU cannot report its own QS if it's already dead
- 3. Without this detection, the grace period would wait forever for CPUs that
-    are now offline.
- 
--The second loop performs this detection safely:
--
--.. code-block:: none
-+The second loop performs this detection safely::
- 
-    rcu_for_each_node_breadth_first(rnp) {
-        raw_spin_lock_irqsave_rcu_node(rnp, flags);
-@@ -2093,10 +2089,10 @@ The second loop performs this detection safely:
-    }
- 
- This approach ensures atomicity: quiescent state reporting for offline CPUs
--happens either in `rcu_gp_init()` (second loop) or in `rcutree_report_cpu_dead()`,
--never both and never neither. The `rnp->lock` held throughout the sequence
--prevents races - `rcutree_report_cpu_dead()` also acquires this lock when
--clearing `qsmaskinitnext`, ensuring mutual exclusion.
-+happens either in rcu_gp_init() (second loop) or in rcutree_report_cpu_dead(),
-+never both and never neither. The ``rnp->lock`` held throughout the sequence
-+prevents races - rcutree_report_cpu_dead() also acquires this lock when
-+clearing ``qsmaskinitnext``, ensuring mutual exclusion.
- 
- Scheduler and RCU
- ~~~~~~~~~~~~~~~~~
+ 	Note that rcu_assign_pointer() relates to SRCU just as it does to
+ 	other forms of RCU, but instead of rcu_dereference() you should
 -- 
 2.40.1
 
