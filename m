@@ -1,154 +1,179 @@
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0869156237;
-	Sat, 16 Aug 2025 05:38:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0006C22256C
+	for <rcu@vger.kernel.org>; Sat, 16 Aug 2025 07:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755322693; cv=none; b=gs5dMvtoB1lenrJ71B8tdlM8sMAqywwzKGoQzqwX6FtdL1n6p+ZbxM3frrAXgm5qFIPsxNoDPlkNat6xgrBV8wE08uuPklvWQtxuVGktEw8HUKY0s3pwXWcDXBYBNv1hY2QcplSt4HZ6YqKg00G2QwlY+YZQ3LoKJCOyBdBfXXA=
+	t=1755329243; cv=none; b=Om8IKmxp3Eb5gKiDIODeE04pw4JCU4VrHvw/8QHZYEC+CffxyOVDq5iyx205ZKMtaPdCXZyMIFltwxJhddxajFC1TiFz9I3cExhMz6dJTl0csCnZuWsyYrw41mfoJbFrLQ9O3E9y29DHD3m8BWUH0aoacxoySh37WOno6wydCMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755322693; c=relaxed/simple;
-	bh=tVuKm4RThZoQPlprqmu3ubqUYc/o4CVsIXpEz0C7TD4=;
+	s=arc-20240116; t=1755329243; c=relaxed/simple;
+	bh=6t+pWXtNvn3PngcOHMQ0az8IKzQqpXpauzoUr3nAI3k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dsrx1MMFIYXLYXVtXMTju7kaeLnJf6Verry26jLbNd2/pf5P0gqxVXNHYYfn8kuoY9FeGf+Whz/lCiLWmJXpHDkNzBtRwQ2rnBXiFOQGuDYDell8+ESGsOTpbkYvDZFCGrvAmdFpdsH8WeRYuLI3PWlTK//wzwW/oaevGzFSBbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PESN2K97; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=AlI9l/z+EmQD5wmWf1QUcCRkFYhKLnOmVItG8g8ciIB+1wb8JK5kVw+5Z1mL/Gxnf+SSs/pQQNEJu6VpYW6tbbOQwAnawJTJNqab9/aM8nAx/I/r1I5QjEvLKWSaFOMooHJL1FVOukZ8BpI2/nDVSDWj3svuU80CiOCsajAvch0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fQ0sK/hx; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PESN2K97"
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-24457f43981so17205375ad.0;
-        Fri, 15 Aug 2025 22:38:11 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fQ0sK/hx"
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-afcb78fb04cso413423666b.1
+        for <rcu@vger.kernel.org>; Sat, 16 Aug 2025 00:27:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755322691; x=1755927491; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=txsJxdJLKlLxnXtUbPqcQX6zvyfOTXsnwV+hroXlRvE=;
-        b=PESN2K97CZseI+dYzfKvjmUGvYyRyBawOFFm8fCmjwA13BUBNlHnm3PXKLIYrQPfCx
-         lcbgPIMSP2OwoFAetUUdbymdgrCubdpoBplEUpb0+mxsfCRHI+AvEbzl3TzYPEnj/XCm
-         WlSRpAo65tWOU1tttOb+D0qgp/HVvXPIsLH8f8nbpGVVYgxmyK8ueQLQmWmd+AIT/50K
-         HDg8PbAiHB/IoNPrgw1YmM+4kV9GIsHFf9uL/qxRdyeOYcyMenW3fWV3nfPa+/CaV69w
-         KLrvJZg3caY8QlNkw2ycWPxUgVbA7lq38va6BPnSGKAhbTqEAJUWc1DdpWtJMJSA6gHN
-         uyeg==
+        d=suse.com; s=google; t=1755329236; x=1755934036; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=FpiVReBk4pxi7WdSyaid9+sMC8akMMwfHAVHbbVirOA=;
+        b=fQ0sK/hxNVwmGst+oxWhkC/dXmt6K/rFa859hVG8g47Zycx0qEC1R8nZoswGF1Hwz/
+         jn8e1pBPnzIWD16izOjpOy8eDVvdmvgiqgdD6zO66cEEQXLIOB+dzgCHJqI77/x/V75D
+         WKqU6wqV+lQyzGbECZ8Uhg/vnz9NrKkaewXIqO+tBpW8ZZGoEsCv0iPO3T/8pEQV232M
+         heAao2AHf4HeKbyIX2OkWQu68voSvoA+7BIi32p6WS4MPJN9EbyIif7ki0VS44SWf7aN
+         f1KLlGL3dXdVrT4eeuz3VdyY5ilo9N+DxPHx6Z1hB0Id6BRM5inOTUKXh3A3RaUFpcOy
+         lPJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755322691; x=1755927491;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=txsJxdJLKlLxnXtUbPqcQX6zvyfOTXsnwV+hroXlRvE=;
-        b=Nd8xOupHEk6IQnnlvEw2VXNWqpvKPn+YfcVT6iVYEs6s9H7MT98WCiB5IH8qVO+E8Z
-         ZzH9xrJ57nnhzB4+tTVngPLI/iJDJ/0Iy22kQ9LWdcLCKGV5lh1ERVdgiz9Db83S0l73
-         RcCzIKQ75jLEQcQOfbdgn2bsDc/L4kqVUmzA8UIsvAXErE0vLmdpB6ZMWdmZXIvTjq7B
-         DXzoyV6KXYyOyg0+XM4Pz4x9MLVlrvSeHjoDbSz9IE27aUdwlcGRPEHESwfu3D77dCkf
-         UtgA90By+7OezRsWtrJ71noAaLfMIBLQcIlD7PcxHbjX+58YIWXpO7cTORd4h/bXKp8d
-         fZEw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6MMtEue4obuhOblx59GaaWyIbhrR0ZIlNeWM6zsMJZui465YKjkT1VIMN3qP1qs15YBZTT7QF+IRZUfI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/a1nsf0ekeoT52Sn498hijxCF67k7Pugm+Ngsf/sZFAPYVA6U
-	lZb0jiYGlS+77bIbgF0kcEk4H5xatuhsemZoaL/65JY+HTG5Eik/2A9v
-X-Gm-Gg: ASbGncuWyxgipExbSkpCb5c/mOez5Bjgxcc8cS4YYKZJhIa5nJnV3QA+R8MJYBncM8h
-	o2CV6PuBxYsmH2q2TfoK9CDpogtL5XNzzHbsmALHQ9MWMCOmtxVhmZGxZIHU+cz2mIco8ZCdXgL
-	j6Y7sPDaDJ2j06s2f5U68tsbdtGMYacZVFWbp7+zg9jhjNdLYCFRO9wyfKBzfgCtCDlsMb9Yl+0
-	ZF4+oooIjMQ/mWh4gPjEquf6s7KWMXl1CmbnEAKiwK/FZ6K+C20saqtu62cDws+MQlFpmxJg0ox
-	ZjaAcgh/kCGzSOtiJufOIrYP3tZK/ng2YA/eLB+FULnwUrBNmrjPx3TVo7XvTodJKNHHcvXYsxs
-	afpVu0gbeiUCxN97UgDkikRmStCx6iGNk
-X-Google-Smtp-Source: AGHT+IENoR3ifLxQCw1zNkdGAsO9uic8/hAXmf6TO+i6IM+xvi9L6a6LzSsO49oQHInyKcPP+Kg2jg==
-X-Received: by 2002:a17:902:f612:b0:242:9bc5:319e with SMTP id d9443c01a7336-24478feb6e1mr21577515ad.54.1755322690729;
-        Fri, 15 Aug 2025 22:38:10 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2446d53eec7sm27374205ad.118.2025.08.15.22.38.07
+        d=1e100.net; s=20230601; t=1755329236; x=1755934036;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FpiVReBk4pxi7WdSyaid9+sMC8akMMwfHAVHbbVirOA=;
+        b=uoFcFXBTTvqFeBFvZqEL3kcStXKyQQVJ2iqLpQwD8rXBHCP4a0kmz8CcdzjgSfpbfv
+         aVmfHOSoR5yHSWDMB5feS1zgZ04cWBb89Ycy1jvy71PEA8vt0wwchfySrO0YNA+n9SmV
+         1ykUb0qkPldaa4q83VnJa9YTWVZ0Vnw9/Qgdcx4Rmcrj2OItJpj0fCQo4ZIlqoutzhRy
+         JddkcTJ0Gm49gt2hCyMAtSeq7KMHClOXSrutMiTvKkOIqOG8mf6R54PmWZ0iXlaSQjDs
+         7FAqk6EMjhQi8qBpq3Z9rVKQQmmHKWJ3ra4JsrpN+6QjMP0WXw7bCcMPxNV5Fs/iUbUO
+         6DYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV0n0hNSQ3PUo8Pct5dN7WjXGrkW9gFwZumj9xdRUl7IrDEKokjQ53JugfK095Gfps5O5Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyq9zXTrpqa6WErDpgfZ3onhzwL+3Pn5Jt2l4r1b5n5h+ieOYh9
+	45eGa9wi82LYkReaZscn0YD5blsudKIzShS45ZJ1sT9EMfgTLIZyzKrOFnG5jtPzBA==
+X-Gm-Gg: ASbGncuypJvgEOEHAFw7AiAkKesLmopNf2W577oajUS22eIHIsqJMl/Uo9P6N4HJslz
+	OcPVEKRo/nPlzuYyGwbbXmGyhyPm2Sor+Lb1ODKryFFdrG+rg+v3pUTr7qd6aigMLTidVw7d5wt
+	tM5e9/kBT/JW4silSwofn8qk7GzCKkR0z/fF83vBiKPYxkr2+VxukwK8cilFcD2mTYBswXrMFqE
+	qtuFK0XOtTKgGR69+OA2/3ReYwWccjWG+VQ0r+6SWv5nhds2XBqvjeUdaG8cRVVdWgBVamZuqmx
+	ZsJu/sVqG8Jt70H7f2en3sEJcYASDU0g4Z6aZdNW2H1N7UdXx7M4YtnCMDKPN04X2V+s/meevzF
+	Y6uItCqCZIG8=
+X-Google-Smtp-Source: AGHT+IFg7imxaFEagNP0U5Ayia7U3tygLpXsVf6xKmyOpZitxVfNDophojGzUA2/MzddJEvPpEzhfA==
+X-Received: by 2002:a17:906:6a0f:b0:ae8:4776:fbb1 with SMTP id a640c23a62f3a-afcdc03d360mr411785966b.11.1755329236202;
+        Sat, 16 Aug 2025 00:27:16 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-afcdcea179esm312796166b.57.2025.08.16.00.27.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Aug 2025 22:38:08 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id C6F7B45187BE; Sat, 16 Aug 2025 12:38:05 +0700 (WIB)
-Date: Sat, 16 Aug 2025 12:38:05 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH 1/3] doc: Update whatisRCU.rst for recent RCU API
- additions
-Message-ID: <aKAZPTg-bUcz3ZGY@archie.me>
-References: <9ea6b51e-b48a-474f-b7ae-4fb6414d0aaf@paulmck-laptop>
- <20250816000007.2622326-1-paulmck@kernel.org>
- <aKAA3OHvISThlUX-@archie.me>
- <189f6091-016f-4a96-a1f1-321231aeddaf@paulmck-laptop>
+        Sat, 16 Aug 2025 00:27:15 -0700 (PDT)
+Date: Sat, 16 Aug 2025 07:27:14 +0000
+From: Wei Gao <wegao@suse.com>
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: kernel test robot <oliver.sang@intel.com>,
+	Menglong Dong <menglong8.dong@gmail.com>, kraig@google.com,
+	lkp@intel.com, netdev@vger.kernel.org, dsahern@kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	edumazet@google.com, horms@kernel.org, oe-lkp@lists.linux.dev,
+	kuba@kernel.org, pabeni@redhat.com, ncardwell@google.com,
+	davem@davemloft.net, ltp@lists.linux.it,
+	Menglong Dong <dongml2@chinatelecom.cn>
+Subject: Re: [LTP] [PATCH net v2] net: ip: order the reuseport socket in
+ __inet_hash
+Message-ID: <aKAy0nu2p6X9sKUw@localhost>
+References: <20250801090949.129941-1-dongml2@chinatelecom.cn>
+ <202508110750.a66a4225-lkp@intel.com>
+ <aJ_qbZDvDJwVoZGA@localhost>
+ <CAAVpQUCEGiRjoobf69Jd5M9vnZyi0N6crNUgSBpDTGNfrap1cA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fRUGg2D+ItjIc3ez"
-Content-Disposition: inline
-In-Reply-To: <189f6091-016f-4a96-a1f1-321231aeddaf@paulmck-laptop>
-
-
---fRUGg2D+ItjIc3ez
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAVpQUCEGiRjoobf69Jd5M9vnZyi0N6crNUgSBpDTGNfrap1cA@mail.gmail.com>
 
-On Fri, Aug 15, 2025 at 09:54:57PM -0700, Paul E. McKenney wrote:
-> On Sat, Aug 16, 2025 at 10:54:04AM +0700, Bagas Sanjaya wrote:
-> > On Fri, Aug 15, 2025 at 05:00:05PM -0700, Paul E. McKenney wrote:
-> > > +RCU: Initialization/cleanup/ordering::
-> > > +
-> > > +	RCU_INIT_POINTER
-> > > +	RCU_INITIALIZER
-> > > +	RCU_POINTER_INITIALIZER
-> > > +	init_rcu_head
-> > > +	destroy_rcu_head
-> > > +	init_rcu_head_on_stack
-> > > +	destroy_rcu_head_on_stack
-> > > +	SLAB_TYPESAFE_BY_RCU
-> > > +
-> > > +
-> > > +RCU: Quiescents states and control::
-> > > +
-> > > +	cond_resched_tasks_rcu_qs
-> > > +	rcu_all_qs
-> > > +	rcu_softirq_qs_periodic
-> > > +	rcu_end_inkernel_boot
-> > > +	rcu_expedite_gp
-> > > +	rcu_gp_is_expedited
-> > > +	rcu_unexpedite_gp
-> > > +	rcu_cpu_stall_reset
-> > > +	rcu_head_after_call_rcu
-> > > +	rcu_is_watching
-> > > +
-> > > +
-> > > +RCU-sync primitive:
-> > > +
-> > > +	rcu_sync_is_idle
-> > > +	rcu_sync_init
-> > > +	rcu_sync_enter
-> > > +	rcu_sync_exit
-> > > +	rcu_sync_dtor
-> >=20
-> > Looks like inconsistent (normal paragraph instead of literal code block=
- like
-> > the rest).
->=20
-> As in the "RCU-sync primitive:" needs another colon (":") at the end of
-> that line?  If so, agreed, will fix on next rebase, and thank you!
->=20
-
-Yup, that's what I mean.
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---fRUGg2D+ItjIc3ez
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaKAZOQAKCRD2uYlJVVFO
-o28xAQCv3ZdwzUTnkUnE2e3t3pAFt6rIXVPbCwDpVtE+3nnl/gEA/Th5PMG4I5ZD
-hhY8topuPyY9IUxkJivRPgOk51rvLgg=
-=jxTA
------END PGP SIGNATURE-----
-
---fRUGg2D+ItjIc3ez--
+On Fri, Aug 15, 2025 at 07:35:10PM -0700, Kuniyuki Iwashima wrote:
+> On Fri, Aug 15, 2025 at 7:18 PM Wei Gao <wegao@suse.com> wrote:
+> >
+> > On Mon, Aug 11, 2025 at 01:27:12PM +0800, kernel test robot wrote:
+> > >
+> > >
+> > > Hello,
+> > >
+> > > kernel test robot noticed "BUG:KASAN:slab-use-after-free_in__inet_hash" on:
+> > >
+> > > commit: 859ca60b71ef223e210d3d003a225d9ca70879fd ("[PATCH net v2] net: ip: order the reuseport socket in __inet_hash")
+> > > url: https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/net-ip-order-the-reuseport-socket-in-__inet_hash/20250801-171131
+> > > base: https://git.kernel.org/cgit/linux/kernel/git/davem/net.git 01051012887329ea78eaca19b1d2eac4c9f601b5
+> > > patch link: https://lore.kernel.org/all/20250801090949.129941-1-dongml2@chinatelecom.cn/
+> > > patch subject: [PATCH net v2] net: ip: order the reuseport socket in __inet_hash
+> > >
+> > > in testcase: ltp
+> > > version: ltp-x86_64-6505f9e29-1_20250802
+> > > with following parameters:
+> > >
+> > >       disk: 1HDD
+> > >       fs: ext4
+> > >       test: fs_perms_simple
+> > >
+> > >
+> > >
+> > > config: x86_64-rhel-9.4-ltp
+> > > compiler: gcc-12
+> > > test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
+> > >
+> > > (please refer to attached dmesg/kmsg for entire log/backtrace)
+> > >
+> > >
+> > >
+> > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > > the same patch/commit), kindly add following tags
+> > > | Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > | Closes: https://lore.kernel.org/oe-lkp/202508110750.a66a4225-lkp@intel.com
+> > >
+> > >
+> > > kern :err : [  128.186735] BUG: KASAN: slab-use-after-free in __inet_hash (net/ipv4/inet_hashtables.c:749 net/ipv4/inet_hashtables.c:800)
+> >
+> > This kasan error not related with LTP case, i guess it triggered by network
+> > related process such as bind etc. I try to give following patch to fix
+> > kasan error, correct me if any mistake, thanks.
+> 
+> Note that the report was for the patch in the mailing list
+> and the patch was not applied to net-next.git nor net.git.
+Thanks for note. 
+Since this email sent to LTP group so i got this. Since
+i'm interested in this 'kasan' problem, so trying to fix it.
+> 
+> 
+> >
+> > From: Wei Gao <wegao@suse.com>
+> > Date: Sat, 16 Aug 2025 09:32:56 +0800
+> > Subject: [PATCH v1] net: Fix BUG:KASAN:slab-use-after-free_in__inet_hash
+> >
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > Closes: https://lore.kernel.org/oe-lkp/202508110750.a66a4225-lkp@intel.com
+> > Signed-off-by: Wei Gao <wegao@suse.com>
+> > ---
+> >  include/linux/rculist_nulls.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+> > index da500f4ae142..5def9009c507 100644
+> > --- a/include/linux/rculist_nulls.h
+> > +++ b/include/linux/rculist_nulls.h
+> > @@ -57,7 +57,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
+> >   * @node: element of the list.
+> >   */
+> >  #define hlist_nulls_pprev_rcu(node) \
+> > -       (*((struct hlist_nulls_node __rcu __force **)&(node)->pprev))
+> > +       (*((struct hlist_nulls_node __rcu __force **)(node)->pprev))
+> >
+> >  /**
+> >   * hlist_nulls_del_rcu - deletes entry from hash list without re-initialization
+> > @@ -175,7 +175,7 @@ static inline void hlist_nulls_add_before_rcu(struct hlist_nulls_node *n,
+> >  {
+> >         WRITE_ONCE(n->pprev, next->pprev);
+> >         n->next = next;
+> > -       rcu_assign_pointer(hlist_nulls_pprev_rcu(n), n);
+> > +       rcu_assign_pointer(hlist_nulls_pprev_rcu(next), n);
+> >         WRITE_ONCE(next->pprev, &n->next);
+> >  }
+> >
+> > --
+> > 2.43.0
+> >
