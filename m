@@ -1,95 +1,108 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 928EF18E3F;
-	Tue, 19 Aug 2025 02:36:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DE038B;
+	Tue, 19 Aug 2025 04:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755570961; cv=none; b=KCURgJA6T2xaKfLta0n+HEfelOYlg45Wxuy+8jOKHwP+/C178Ajf8HHGkb7SgQfIosYkkLYtZ9l75DZ2mEg7BFURhcSdXQXnfrGuTgGT67ZeXKg2j91oSYB5UUGwkDkk8GHOPJdQlYOyZOmZoRp41f6ElzkIyNhq+TnTFLuei+4=
+	t=1755576970; cv=none; b=AuZM12q5pjXB7wywplG0IKzvA/8Fzuj4e7u05d4OZ8mOjzeTtH81HvKosb5QSmmrb9BTJ/cQsGez208BmhTas12wCrbFkBw+nl3n2rvu0iEyxvUd8Elbphvyj+/BrZs5h8zP8K8X37XXK8RovNzSlaZliIkQwboawEyEXKgqBNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755570961; c=relaxed/simple;
-	bh=YB6WUPSpspaizgFl347FQmQLBtab740JZ/pJYYXLjeU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fJ+ikFa+jfkAV3rvdwMrv/+2f/R7V9cyGh5/wqVOvpblmSaVSFT45rG2Cs7NsKsiuxs585DU/O8LOqaVR3R7f0bumVfsyZ9deVqIPoZStXL57YnmNBXh8IMTa2nW3cxrN6Afc4bq+O+yMcfafa5Wl+QwnNQ2zW48kSHzm2RoNDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LRw0eeg9; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1755576970; c=relaxed/simple;
+	bh=mMKWD0WJ0y9QEwCwbcOoeBt1IgYfCGCuNyoc6MTfx0I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g1mQS4ayp4inZRH7yWRrcrcIfYH7/ITvvhB+qRNNeSuM6wxvL5rZ7bGrMbW09Oo6Vrnwyx6BDhDWdZDxFBXbZgBg9lYM9EP47MLRwf4WxGofAR8wHcHENK6cF6Ov0jFlOz4SWn4VcRSVxrUu0X6tX2WQNj1y47fiS3USBwqb+8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=h8ue8rx5; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LRw0eeg9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E50E2C4CEED;
-	Tue, 19 Aug 2025 02:36:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755570961;
-	bh=YB6WUPSpspaizgFl347FQmQLBtab740JZ/pJYYXLjeU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=LRw0eeg92B6wjL2WHpTESLotyDy7KrHR5DRqHAUbmA0S1R7Lq+QxgkSkTk08ShnZq
-	 c+uTywzHp5s9rVDGM3xR7onqkqDx8YzQsjUgc2mHtmyOfv7O1I3XwKg3PwuIRJ8Vix
-	 UvXHP8meaIKC2LydXPg2CUKY7BVae7MqkTDDkcMzqjY+CRF/3ysp2sMxE56o7zuk9Z
-	 +h+VUCr/LkGKl4YOEkQBYPUa7wXZ3MbncGmKo8ZHPlQ3MYzcKlQffi/WiYRviFd3Ks
-	 WAw1i8n22mobDMJNFjCyBnOBqNZfV07OX9YNeNXIbMKZ6xb4MhaemPkXdsHYezCn3Z
-	 5xGYFExoRXfcQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 871D5CE122F; Mon, 18 Aug 2025 19:36:00 -0700 (PDT)
-Date: Mon, 18 Aug 2025 19:36:00 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux RCU <rcu@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>
-Subject: Re: [PATCH 1/2] Documentation: RCU: Reduce toctree depth
-Message-ID: <f483a724-1d63-4082-914f-dea8361d5c96@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250819012620.14606-1-bagasdotme@gmail.com>
- <20250819012620.14606-2-bagasdotme@gmail.com>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="h8ue8rx5"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=19oxCXqS33NB+Ssjwi1gbteR7DOix9Rje35Ru1DY3sI=; b=h8ue8rx5qK+78YoY3+G1kobzpr
+	snDiQ5CEVfNjNYwSUErMoAdqw5pcfOPReGnjzpctS8+Bved5Vv3fRVBREZtfDvTvGj2HWgJQLoY16
+	k0nUovOH5rLeW8ghwcdrFsrWPjQyu4d6WhpvdsyPSVMrrX7M95SPUGjGTnRyJOGUJgpGYOg0LLGWc
+	PjcyIGbDUEWWOZHaN38vTCfVl//1oQ8zLjgG6P97iqhfxbl3MVBdbsOYYBR/HB7ohm9XuQB+FR6Fd
+	n/g+eFhpU9QRRoCIQr0Sglws1O99N+aPC+mUOGtw6oIy/9MZ1LE0Rt1Huqgzso83B0BJ3XtX/SuTQ
+	qt3KbU5w==;
+Received: from [50.53.25.54] (helo=[192.168.254.17])
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uoDlV-00000009MZW-0XHm;
+	Tue, 19 Aug 2025 04:16:05 +0000
+Message-ID: <f36daf4d-ed4b-4ac2-9932-10e46abdc109@infradead.org>
+Date: Mon, 18 Aug 2025 21:16:04 -0700
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250819012620.14606-2-bagasdotme@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Documentation: RCU: Wrap kvm-remote.sh rerun snippet in
+ literal code block
+To: Bagas Sanjaya <bagasdotme@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Documentation <linux-doc@vger.kernel.org>,
+ Linux RCU <rcu@vger.kernel.org>
+Cc: Davidlohr Bueso <dave@stgolabs.net>, "Paul E. McKenney"
+ <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
+ Jonathan Corbet <corbet@lwn.net>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>
+References: <20250819004559.11429-1-bagasdotme@gmail.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20250819004559.11429-1-bagasdotme@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Aug 19, 2025 at 08:26:19AM +0700, Bagas Sanjaya wrote:
-> toctree index for RCU currently has maximum depth of 3. Since no docs
-> currently use more than 3 section heading levels, this effectively spills
-> the entire docs hierarchy.
+
+
+On 8/18/25 5:45 PM, Bagas Sanjaya wrote:
+> Unlike other kvm*.sh snippets in RCU torture test documentation,
+> kvm-remote.sh rerun snippet isn't formatted as literal code block,
+> causing it to be definition list instead in htmldocs output.
 > 
-> Tidy up by reducing toctree depth to 2 (only showing docs title and
-> second-level sections).
+> Wrap it like the rest.
 > 
+> Fixes: 0c208a793022 ("doc: Update torture.rst")
 > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-I pulled all three in for testing and review, thank you!
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-							Thanx, Paul
+BTW, 20 lines above this change, the text says:
+
+  If you the following command works::
+
+Do you have any idea what word is missing there?
+or maybe Paul can make a suggestion.
+
+Thanks.
 
 > ---
->  Documentation/RCU/index.rst | 2 +-
+>  Documentation/RCU/torture.rst | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
-> index 84a79903f6a883..e1be5b3c2c6773 100644
-> --- a/Documentation/RCU/index.rst
-> +++ b/Documentation/RCU/index.rst
-> @@ -7,7 +7,7 @@ RCU concepts
->  ============
+> diff --git a/Documentation/RCU/torture.rst b/Documentation/RCU/torture.rst
+> index 4b1f99c4181fee..cc57d01ed700ff 100644
+> --- a/Documentation/RCU/torture.rst
+> +++ b/Documentation/RCU/torture.rst
+> @@ -364,7 +364,7 @@ systems must come first.
+>  The kvm.sh ``--dryrun scenarios`` argument is useful for working out
+>  how many scenarios may be run in one batch across a group of systems.
 >  
->  .. toctree::
-> -   :maxdepth: 3
-> +   :maxdepth: 2
+> -You can also re-run a previous remote run in a manner similar to kvm.sh:
+> +You can also re-run a previous remote run in a manner similar to kvm.sh::
 >  
->     checklist
->     lockdep
-> -- 
-> An old man doll... just what I always wanted! - Clara
+>  	kvm-remote.sh "system0 system1 system2 system3 system4 system5" \
+>  		tools/testing/selftests/rcutorture/res/2022.11.03-11.26.28-remote \
 > 
+> base-commit: 61399e0c5410567ef60cb1cda34cca42903842e3
+
+-- 
+~Randy
