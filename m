@@ -1,180 +1,112 @@
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F0572D3A6A;
-	Thu, 21 Aug 2025 09:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8682253A1;
+	Thu, 21 Aug 2025 11:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755767228; cv=none; b=f22Uy2s8e6LRcRnd4xfUKAELwWSEWVKDT6x0/oJbV1sE/FwchapFTLsLnRsMF5qmewaDMbZMerHjLgX4U8pRLP8eOkeUXuyO+qrs3/bUlAREPSQ1oPPBzTqXASL2o+DeOOQk2WeDpdf/m0IxCksiCsWFXBJ6QCeTsZHRfqUKrMg=
+	t=1755776510; cv=none; b=imoJmaKMporvIzGbhojdUZfbSZPvcC4j66jhcc1n73rrz2SYO6PdZELvC6JvSVAxHFpz6QW1jR1QTCbW6osD5+KwmcBPpWapPLIJ+/7yMEtSm6E7cydR6BYeT7z+7r+bcgDK7InEFrx4/H6N3ZoEE7VtueAzVRx+XyxEds6iLiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755767228; c=relaxed/simple;
-	bh=6Lh4b5LMBBzYETFNUKgsMw+Mg8slBT6PgN9WlZyKi/I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RQ3OlDwRM0txVK9HnyN0N8pfzQfWCxaxriKaIl39MvMw/P4UmDziwqxMAV3RKsMi6SfZDt6+1It/KrA1yNou0ST5MnJ7XiBqWw63sWTKFtStuIcgjGfi77q9fcT+40dToHEku0epKoSC5kxxkHNCJd1q4eU+lt/+8qD9y8ZMwo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ao1n+ecf; arc=none smtp.client-ip=209.85.210.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1755776510; c=relaxed/simple;
+	bh=UlimAOmq4oBwLMElEItrHUAt5oszOCegMRpxWXdd0K0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YmsAxMjP/OHHaScujhABi/L274obWLypVjRTY71T9Zh46DgsLf+BfJi00urz+2fMKB6vTQYPpSkMDcay2xOR+rfedOkfgLPVQEKdQ+FPHhXqM9kmkpcGmWorIqRNNaAeRjIUGFCQmDSwyuqqbEv82vAxyx31zWUhh390sGccINY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=thnjZZX4; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ao1n+ecf"
-Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-76e6cbb991aso729468b3a.1;
-        Thu, 21 Aug 2025 02:07:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755767226; x=1756372026; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qA6vzGkbuWAEnBwZb/6LL/xPx2BmZVoZP3qls2M6vww=;
-        b=Ao1n+ecfl6Q43XMXVjN2memkN7Ay8VLhMyhZTFIxkqu1Sm2suh84xXLQtFCi2Vr8zr
-         HT/Yd4XG6d4m5YwPZDdYggk5YMNPIpaSPID1/Nnoko098FdZjqevmgthdcuDoV14hqDe
-         Jnxj32Qyg/nwcFdTzyEnnZXodufdm7/9N7EWpf4SvBic4+pY5FULUXzOEw4C/4eVsos7
-         AwYOT5QSVtR+xZT+2TDFlcT3tFyJk/cYY6KzAvm4sHQ0QxSfZErgdl2FviRObjwUFhsw
-         neLyJabsR9g0chB+yAKl+w2bFPmipQcgs2a8eDWZruPIqF0EuuczEkC1RcIPJKz78LjM
-         8C2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755767226; x=1756372026;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qA6vzGkbuWAEnBwZb/6LL/xPx2BmZVoZP3qls2M6vww=;
-        b=YV3lyBvM8y6OxXLro501VdU8zGXDasO2rxYSJ1WHZe88jrJTcsEXk/Z8hlLerKzK7d
-         eQaJSWshQSpzFVjfJTz5GaLv8vIdTqsfltbx+zfSwRZf22hmIbVLOjr2rAF8QE9Vhumh
-         cB6pgaTIpoZhkfwKlBGv/T2dZK9qVro/lcUagLCqf8usX1ZGd3lNHV5kMsae7YBAWsKf
-         4VYTc6mlIeLMXCTAl+ElsXnI3pkGrN8JKKsLv6h2/g/IaFcMrbyHhaQOLy+kpanlMowX
-         RarpPuMp+TpGIdCdin+5SmHQ3Sr5S47fU3r9YuoaLIg274l/Urx79HxeCVixCUF2ixtw
-         Mjug==
-X-Forwarded-Encrypted: i=1; AJvYcCUYt4qww6PttfpzUV+SLtHqtLjXuxLnCyuIrCUt3HiB6lyOFS/KwVYuUr6GSh3+W5PRlIAxJjC5yFW3jRkc@vger.kernel.org, AJvYcCVrv4vD8oO6IHt/KpDSEFLo0eIbXTbdaDFDgauOkhJpn3GkxxpDUKAHZNWI6GNp9F1duEJy@vger.kernel.org, AJvYcCWjtACkGMJW1xXQSFoWWr7XstjfP0DcQMpST0k/E//5oj/hoSdHJfQHdNj7rJBiyE9Fbx8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyuG/fo4nY0nXKYjlyNAxHXodcHJddhTYBpTcCOHaBKI8MnpSq7
-	Cl0RxoP5+sofzdKiEV31b0R7h6D5zCxWAab8pMRo53AwDpuk9B5gWhCj
-X-Gm-Gg: ASbGncuvSx11eqtFIzzq8ij2cbn17cpNlFygZ42so8QHWtEf7egdLAD20mikjKroZ7/
-	1A4NMRs5h1wMsrKvK4picAzjW/aHa5IG105U0yByjY30G5xMN9m33kiRyD37R8uS1ZCEI1kSW2l
-	TodcAhK/aDMCA0yVXLp1nAWc2y2yXRG/bGY3T6hqObsmj2eDSl0633zmK0N6MoTo2oFNvjIwrF5
-	sYKiQ2BohAUWxOh2ynrp3CdQWov062l4iBwH9o5PGheKgBiXbDjts0AWZGpNHZIHo1houGRoQ5c
-	+oBIVqm/RHq1PmAGffGp29DBUA/L9YQmvySsilu/DMU39nKNivbmHOgbXPntkBm1Uz2U+b9C0RG
-	IbooPvRXEeSjdd361LgeKazA=
-X-Google-Smtp-Source: AGHT+IFAxs155WkEAovxKXV2Qp7o7Ce69E4eJSaP9vrtG7bqjEQH//jftMOatslb46rp0Rv4pxscWQ==
-X-Received: by 2002:a05:6a00:190a:b0:76b:f73a:4457 with SMTP id d2e1a72fcca58-76ea314f59fmr2162223b3a.6.1755767226418;
-        Thu, 21 Aug 2025 02:07:06 -0700 (PDT)
-Received: from 7940hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76ea0c16351sm1708937b3a.14.2025.08.21.02.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Aug 2025 02:07:06 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: ast@kernel.org,
-	paulmck@kernel.org
-Cc: frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com,
-	josh@joshtriplett.org,
-	boqun.feng@gmail.com,
-	urezki@gmail.com,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="thnjZZX4"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38C06C4CEEB;
+	Thu, 21 Aug 2025 11:41:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755776510;
+	bh=UlimAOmq4oBwLMElEItrHUAt5oszOCegMRpxWXdd0K0=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=thnjZZX4M0j7D4VmGOdSAk4KMpbTymEJH6+vygU/eBOW/Y5XYrXKRwSNocQ79AAZI
+	 tNhfBxJBg3G399FlkyAZ/Ys1Bo9gr/jB3Qu1sgyEb9UmH4JMEjURK6QU2K9i5d2Sca
+	 CsI+KJNhsS6Pb0//+QqvQ+3uJ/s0bZNjs/6gsL4MoosfUOx8Ui7FqkBETdNbrMZIri
+	 nQe43p3CezaEVWHZIX0WFvZ1UnS364zDzdrB6MWPfw1dUY/vS7sHvGhuGulKKPo9mU
+	 PwZysvqIDGD1ktFoRYGUtZXVjWwjBcv6C30C0iu93nENDITwWGqArAEE51VdZ3egsn
+	 jE0YeLbweXzWA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D5A27CE0A48; Thu, 21 Aug 2025 04:41:49 -0700 (PDT)
+Date: Thu, 21 Aug 2025 04:41:49 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: ast@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com, josh@joshtriplett.org, boqun.feng@gmail.com,
+	urezki@gmail.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev, daniel@iogearbox.net,
+	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v3 7/7] bpf: use rcu_read_lock_dont_migrate() for trampoline.c
-Date: Thu, 21 Aug 2025 17:06:09 +0800
-Message-ID: <20250821090609.42508-8-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250821090609.42508-1-dongml2@chinatelecom.cn>
+Subject: Re: [PATCH bpf-next v3 1/7] rcu: add rcu_read_lock_dont_migrate()
+Message-ID: <a9745beb-133a-447d-80ea-b7322676b3ed@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <20250821090609.42508-1-dongml2@chinatelecom.cn>
+ <20250821090609.42508-2-dongml2@chinatelecom.cn>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250821090609.42508-2-dongml2@chinatelecom.cn>
 
-Use rcu_read_lock_dont_migrate() and rcu_read_unlock_migrate() in
-trampoline.c to obtain better performance when PREEMPT_RCU is not enabled.
+On Thu, Aug 21, 2025 at 05:06:03PM +0800, Menglong Dong wrote:
+> migrate_disable() is called to disable migration in the kernel, and it is
+> often used together with rcu_read_lock().
+> 
+> However, with PREEMPT_RCU disabled, it's unnecessary, as rcu_read_lock()
+> will always disable preemption, which will also disable migration.
+> 
+> Introduce rcu_read_lock_dont_migrate() and rcu_read_unlock_migrate(),
+> which will do the migration enable and disable only when PREEMPT_RCU.
+> 
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
-v2:
-- use rcu_read_lock_dont_migrate() instead of rcu_migrate_disable()
----
- kernel/bpf/trampoline.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+Much better!
 
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 0e364614c3a2..5949095e51c3 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -899,8 +899,7 @@ static __always_inline u64 notrace bpf_prog_start_time(void)
- static u64 notrace __bpf_prog_enter_recur(struct bpf_prog *prog, struct bpf_tramp_run_ctx *run_ctx)
- 	__acquires(RCU)
- {
--	rcu_read_lock();
--	migrate_disable();
-+	rcu_read_lock_dont_migrate();
- 
- 	run_ctx->saved_run_ctx = bpf_set_run_ctx(&run_ctx->run_ctx);
- 
-@@ -949,8 +948,7 @@ static void notrace __bpf_prog_exit_recur(struct bpf_prog *prog, u64 start,
- 
- 	update_prog_stats(prog, start);
- 	this_cpu_dec(*(prog->active));
--	migrate_enable();
--	rcu_read_unlock();
-+	rcu_read_unlock_migrate();
- }
- 
- static u64 notrace __bpf_prog_enter_lsm_cgroup(struct bpf_prog *prog,
-@@ -960,8 +958,7 @@ static u64 notrace __bpf_prog_enter_lsm_cgroup(struct bpf_prog *prog,
- 	/* Runtime stats are exported via actual BPF_LSM_CGROUP
- 	 * programs, not the shims.
- 	 */
--	rcu_read_lock();
--	migrate_disable();
-+	rcu_read_lock_dont_migrate();
- 
- 	run_ctx->saved_run_ctx = bpf_set_run_ctx(&run_ctx->run_ctx);
- 
-@@ -974,8 +971,7 @@ static void notrace __bpf_prog_exit_lsm_cgroup(struct bpf_prog *prog, u64 start,
- {
- 	bpf_reset_run_ctx(run_ctx->saved_run_ctx);
- 
--	migrate_enable();
--	rcu_read_unlock();
-+	rcu_read_unlock_migrate();
- }
- 
- u64 notrace __bpf_prog_enter_sleepable_recur(struct bpf_prog *prog,
-@@ -1033,8 +1029,7 @@ static u64 notrace __bpf_prog_enter(struct bpf_prog *prog,
- 				    struct bpf_tramp_run_ctx *run_ctx)
- 	__acquires(RCU)
- {
--	rcu_read_lock();
--	migrate_disable();
-+	rcu_read_lock_dont_migrate();
- 
- 	run_ctx->saved_run_ctx = bpf_set_run_ctx(&run_ctx->run_ctx);
- 
-@@ -1048,8 +1043,7 @@ static void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start,
- 	bpf_reset_run_ctx(run_ctx->saved_run_ctx);
- 
- 	update_prog_stats(prog, start);
--	migrate_enable();
--	rcu_read_unlock();
-+	rcu_read_unlock_migrate();
- }
- 
- void notrace __bpf_tramp_enter(struct bpf_tramp_image *tr)
--- 
-2.50.1
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
+> ---
+> v3:
+> - make rcu_read_lock_dont_migrate() more compact
+> 
+> v2:
+> - introduce rcu_read_lock_dont_migrate() instead of rcu_migrate_disable()
+> ---
+>  include/linux/rcupdate.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 120536f4c6eb..9691ca380a4f 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -962,6 +962,20 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+>  	preempt_enable_notrace();
+>  }
+>  
+> +static __always_inline void rcu_read_lock_dont_migrate(void)
+> +{
+> +	if (IS_ENABLED(CONFIG_PREEMPT_RCU))
+> +		migrate_disable();
+> +	rcu_read_lock();
+> +}
+> +
+> +static inline void rcu_read_unlock_migrate(void)
+> +{
+> +	rcu_read_unlock();
+> +	if (IS_ENABLED(CONFIG_PREEMPT_RCU))
+> +		migrate_enable();
+> +}
+> +
+>  /**
+>   * RCU_INIT_POINTER() - initialize an RCU protected pointer
+>   * @p: The pointer to be initialized.
+> -- 
+> 2.50.1
+> 
