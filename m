@@ -1,72 +1,73 @@
 Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BDE3126B3
-	for <rcu@vger.kernel.org>; Fri, 22 Aug 2025 16:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80927298CA2
+	for <rcu@vger.kernel.org>; Fri, 22 Aug 2025 19:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755881815; cv=none; b=dQdtbKwF9IVr1/4qT/jqZDzSIMnnykSovO71s9RNXz69XwzGygo6eOVPuODSnfooNn2z8b8TXcX2cy6ca5AfNMLoBTr4ZI6mcAO+xYhbGcHT/UVdkIheouMkXPDbBPxoRVH1oer9E6GmTYHBRm+C6ARwvwRY+5bxjlc9avMlp0s=
+	t=1755892734; cv=none; b=qnWHafZow/Ryd/26xmkhyxSc0DXNgb71I2nNQ4d5exSsLGm7gwDaoesG6OeW98K7nJzpNW+PnYXotLhHyP3QpGYW0WVUEqxrHOlc7RNxg30rhLwqZKIhBmbakzoALIazVR8dFA8jUc5VYRhltvFbWxXx6yx8OqSFsdvAfnJl1Og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755881815; c=relaxed/simple;
-	bh=K05aXzlURLhkW124leoe2bLJaZuJFdfYu3qH+zEKcLE=;
+	s=arc-20240116; t=1755892734; c=relaxed/simple;
+	bh=0bpzj0cYUX4ZSa6GcaVCsPrhX/HSDbWBDDsp5llwFEc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NfJb546uWSpR2ySVphI2cn3K3jN+4s9VsuAhv1k+LThmc8yXEHKW9Ek5wZoqN4RqSzRxoCuQIvjh4+IhzkZwnQEKZxD+mnUZwPfdOFaJLLrTF6IBwEgqjCoRDy0MhuU2LmoUU5fLulKi7kN7FYEy1cZFXxOR8pQjTL0a94jakqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UpKFzXqs; arc=none smtp.client-ip=209.85.160.180
+	 To:Cc:Content-Type; b=IOnwLoF0a1OzlBnFB7IanhlZDp8Hwp3f6KSa7eOtyXAUxgF07ANAyEtILyRLtYY64KuQiTFVv/XOHet32ER5rkrA3Y5p9DwdKK+6B9Ixgp60ioCJWRGtcfic3PaeV/LFOwr9pcOOTdOwybANrWwIc0D8+C8lB8/aQUa/oJxrdjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Hm25WOZF; arc=none smtp.client-ip=209.85.160.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UpKFzXqs"
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4b29b714f8cso6751cf.1
-        for <rcu@vger.kernel.org>; Fri, 22 Aug 2025 09:56:53 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Hm25WOZF"
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4b29b715106so15231cf.1
+        for <rcu@vger.kernel.org>; Fri, 22 Aug 2025 12:58:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755881813; x=1756486613; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1755892731; x=1756497531; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N7+mb346Ky9SrnqlMzxSuOIuQ43DVNmx39imjsZeCx8=;
-        b=UpKFzXqsKT/UFbyOxtHYMXOqwSgEuGVBFq+Pcr7vRmUBPq45HojYGF/d8wSlWMnzPW
-         6+EkXjdm9p7YuWv87OJBageq5YwRmBVfdRMUFJp78eL/E3eln+uC+o7nf9d0vgk1Og9Z
-         nQFJAoVgso1pEFKgkkMqY7GDi/K+lQ3KWWKAzWt85IY8xlh43rHv/YBeD69AW6Ik05iV
-         u7LQmKdWbw3wrFPQtDOXObPAJQm5TEjlIZJGv+k0IYiGvu09IpsddsHR313sVDKWP2uR
-         oSu1TSjk6cKkaKJbGnZbYBHOjqIh0JGzzdw4HItnIAPlUspB94+GVqs20mxvHY+DhzEt
-         Q25Q==
+        bh=1zbL7KxWZEdFtClBa6fqt36ZA0mgbM0HT/V3o4VWa5g=;
+        b=Hm25WOZFTRTvoa9Gz2sWojo93xy07l8AfCl8PndB3lSL63E+maR6gitr0Xdu0Cb5Qq
+         lwCycTaM7H8YSBPfRbBqj8nZWP+O7CtD3Uau3T67LVOgecxYG67sxxgZ/KGYzlGxOJMX
+         R7gmvGZqggKb/OcmqEF2Hma+oImdX693TY7RpL3xue/foHk3h+LOYKbzaYlai+7AfSj9
+         vv8eGb1lwRoq7iFs1BrsLFHQP9EmUrImTYMuCSn9vNguZyRpOghAMPqdaO09Pu0Xfu7p
+         mawad1umpmPmmHklJZLfCM/eK9jtFklQ1k9kbGyOgfrLKldcdlH9+mQUWyuFpQaorWef
+         t4pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755881813; x=1756486613;
+        d=1e100.net; s=20230601; t=1755892731; x=1756497531;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N7+mb346Ky9SrnqlMzxSuOIuQ43DVNmx39imjsZeCx8=;
-        b=MTd6eY/fN0mgvBCs8VS4+VVDmugHgYAaZprxkkJ30uc21A3YZBZ62O4dCn7hi+ArFk
-         bEwqMLMto1oia6OffR1jrV0Y/uRbvRwtlxkoE/sZil/84LAijOwdX0zLnGMdUEGHYtcQ
-         IJjaogi/vaLAJPs9Ce2iJS0lxuL3SjislBNJoGV1wrI0MCxy1Q3VaT166zsW5X5ZuMxy
-         8qPZ8QiBDquxjO9s91gwtRkR6YLUZpS+oAOud320LJ0kpY6Z2qJYbXIqR6DiP7DEObmn
-         S8ptoMtcE3MwBj+TKVmDrEHwrYMVyO9gqXmoesxV50j9XGIZ5aU8Ud0qL5Zdai9d85Yg
-         UAOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWDlxclD9ZZSsPcN6CecCHRDom/YsuciQ1IHhBIqz2q8OUmPgyrG/3M7UbtgtjQ0HGmCNM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzzmmujZqD15pUbsyRi9QH2I6buxVL1UUzmD2e91p1skymqckO+
-	BlIorOLqWcPjiof31Wilq0L4UquNlSdzTHTJPFCzJ74xs2PuXWvn5iLaZzteXShDqt20M4sF2a1
-	UAy1xD9F5clwMAkroNvqLeO3ix7Pq1CtVhqHFHspr
-X-Gm-Gg: ASbGncsPJvDL29iLQ98zvdzvytRRXIS4d/n6duxthJ8UH6j0Ot5/BGf7/d0geE9arSh
-	1uMCGAxWjENPCuJgpQWgtK4PGmM3Fvdk8bIYUyGPjd8VcU9kH4bPh00xuKB/MYA4JLoFrqeD+Hg
-	g7pLjFrZZcpBQWsezA7qck5nSJLujkKkEuOeBTSc3twoB/Fzulqw2CPKD6AGq+bO4H88vFp21c6
-	T7umsodU0DHOneoKmYESq4=
-X-Google-Smtp-Source: AGHT+IGw7Pkt+nPa5BqQmI3rSxIkNU+66I2ZSYPqvhJbttn+d3hLj7BStxnMej4LA7KUyYMX/ZtTCnEAprY29Edcnos=
-X-Received: by 2002:a05:622a:28a:b0:4a7:bed9:5251 with SMTP id
- d75a77b69052e-4b2ac55b35cmr5874671cf.9.1755881812465; Fri, 22 Aug 2025
- 09:56:52 -0700 (PDT)
+        bh=1zbL7KxWZEdFtClBa6fqt36ZA0mgbM0HT/V3o4VWa5g=;
+        b=OdZM6kZ0sxvmwdRFS6Gcv3wTaPoVe+r1i1Kue5IABXuReT0JLZO/o2nUEuC83MVTPT
+         7aimGELnC2Vpk9eknpNx2jVzpwOFCqUectV5O1Aer1MyjIGojcaY6PrUNUVWnWf7VR5M
+         An2GqdE/RPwvJVeamVyGaDAcQz1to3KJ2ZB/cXhAOjgQgEcHLwwbyEWJrdgc0RY42eMu
+         X/JDOqLl7CD0Ucck4YZCVs1SVlBchucyVe5ovOZawUOoqYh9m0ImNkE3sXKIAm8PFsfV
+         iqL7Roa6kcmAhvKigvOneqzvLkw21QSzFvbZhk5FoN+75q/ukUXod3LD8Jgfac1Jh/kA
+         oQxw==
+X-Forwarded-Encrypted: i=1; AJvYcCVvMwFlNJQFO+PXvT72q5Z0oZduj2ouqh4S+L7U1wA4iA41KIUZrjRWLzLfbNVewBBabo4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAfjrGlJInE3hhftyTivSedRETe3htg0XyiY+aabakKj2iS48R
+	f5Km5vzSJiMgkzhUopdC/k5avr2e72KA071vnVn+lRChcX9E1qMFmXEVX06OvfqHT2cZDM/xqR7
+	EKol6MH0m0cWDc03hFW9eTntmoYjKCHraXLDoYl/e
+X-Gm-Gg: ASbGncsNB+DKNwTdGjXO/2FhVDv2ZQfWHZQo9TSxGfyfFuv6Gdq1t+IaHJPWp2p7gMs
+	D0TIO5Bei7SLozpf9fFrUHQJNnx0qAiYhiW9t4ZwHBC3wWXZHE3XMJPh5lQtWee7SPM9G3tK7GL
+	SU+rGOBM3RSa9kiJu9ySk93Sa64J2MLf1GqBxoqM98K6KmkoRivCLpaAPunmQqrMY8FI+PcTfM9
+	yXlj2riFnrTCBnaQCh6Qd0=
+X-Google-Smtp-Source: AGHT+IFkGBfHZ2+PDQQ6XW2JA5HA4716qCgCxznra7rjS8t9rVJmfjNGxXpArpYN4u40i4cniAw7m/bxlDqhU+rScjw=
+X-Received: by 2002:ac8:7f47:0:b0:4a9:e17a:6287 with SMTP id
+ d75a77b69052e-4b2ba9faaefmr646441cf.7.1755892730905; Fri, 22 Aug 2025
+ 12:58:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250723-slub-percpu-caches-v5-0-b792cd830f5d@suse.cz> <20250723-slub-percpu-caches-v5-6-b792cd830f5d@suse.cz>
-In-Reply-To: <20250723-slub-percpu-caches-v5-6-b792cd830f5d@suse.cz>
+References: <20250723-slub-percpu-caches-v5-0-b792cd830f5d@suse.cz> <20250723-slub-percpu-caches-v5-10-b792cd830f5d@suse.cz>
+In-Reply-To: <20250723-slub-percpu-caches-v5-10-b792cd830f5d@suse.cz>
 From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 22 Aug 2025 09:56:41 -0700
-X-Gm-Features: Ac12FXx75l6CZ6aDpuoDjkLGCAv-mu9WsReIJ33ovw1NXAgsqe14IMrJ0Uqvw-s
-Message-ID: <CAJuCfpEsVE7Jae7PqWvgTtm38C5MPFx43+dDyYzfKLMQFuE_3A@mail.gmail.com>
-Subject: Re: [PATCH v5 06/14] tools: Add sheaves support to testing infrastructure
+Date: Fri, 22 Aug 2025 12:58:40 -0700
+X-Gm-Features: Ac12FXxtiMpVk0VN-fqcAsXzDvd7uIQeiITE8KpMBbIe5MvmOPVwZb-kbSUcaTc
+Message-ID: <CAJuCfpHdBJ+9zkT+8AbTkV+cGx4td5t9-Gdtf-jUW8G0RZHKHg@mail.gmail.com>
+Subject: Re: [PATCH v5 10/14] mm, slab: allow NUMA restricted allocations to
+ use percpu sheaves
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter <cl@gentwo.org>, 
 	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
@@ -79,188 +80,117 @@ Content-Transfer-Encoding: quoted-printable
 On Wed, Jul 23, 2025 at 6:35=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
 ote:
 >
-> From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+> Currently allocations asking for a specific node explicitly or via
+> mempolicy in strict_numa node bypass percpu sheaves. Since sheaves
+> contain mostly local objects, we can try allocating from them if the
+> local node happens to be the requested node or allowed by the mempolicy.
+> If we find the object from percpu sheaves is not from the expected node,
+> we skip the sheaves - this should be rare.
 >
-> Allocate a sheaf and fill it to the count amount.  Does not fill to the
-> sheaf limit to detect incorrect allocation requests.
->
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  tools/include/linux/slab.h   | 24 +++++++++++++
->  tools/testing/shared/linux.c | 84 ++++++++++++++++++++++++++++++++++++++=
-++++++
->  2 files changed, 108 insertions(+)
+>  mm/slub.c | 52 +++++++++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 45 insertions(+), 7 deletions(-)
 >
-> diff --git a/tools/include/linux/slab.h b/tools/include/linux/slab.h
-> index d1444e79f2685edb828adbce8b3fbb500c0f8844..1962d7f1abee154e1cda5dba2=
-8aef213088dd198 100644
-> --- a/tools/include/linux/slab.h
-> +++ b/tools/include/linux/slab.h
-> @@ -23,6 +23,13 @@ enum slab_state {
->         FULL
->  };
->
-> +struct slab_sheaf {
-> +       struct kmem_cache *cache;
-> +       unsigned int size;
-> +       unsigned int capacity;
-> +       void *objects[];
-> +};
-> +
->  struct kmem_cache_args {
->         unsigned int align;
->         unsigned int sheaf_capacity;
-> @@ -80,4 +87,21 @@ void kmem_cache_free_bulk(struct kmem_cache *cachep, s=
-ize_t size, void **list);
->  int kmem_cache_alloc_bulk(struct kmem_cache *cachep, gfp_t gfp, size_t s=
-ize,
->                           void **list);
->
-> +struct slab_sheaf *
-> +kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp_t gfp, unsigned int s=
-ize);
-> +
-> +void *
-> +kmem_cache_alloc_from_sheaf(struct kmem_cache *s, gfp_t gfp,
-> +               struct slab_sheaf *sheaf);
-> +
-> +void kmem_cache_return_sheaf(struct kmem_cache *s, gfp_t gfp,
-> +               struct slab_sheaf *sheaf);
-> +int kmem_cache_refill_sheaf(struct kmem_cache *s, gfp_t gfp,
-> +               struct slab_sheaf **sheafp, unsigned int size);
-> +
-> +static inline unsigned int kmem_cache_sheaf_size(struct slab_sheaf *shea=
-f)
-> +{
-> +       return sheaf->size;
-> +}
-> +
->  #endif         /* _TOOLS_SLAB_H */
-> diff --git a/tools/testing/shared/linux.c b/tools/testing/shared/linux.c
-> index f998555a1b2af4a899a468a652b04622df459ed3..e0255f53159bd3a1325d49192=
-283dd6790a5e3b8 100644
-> --- a/tools/testing/shared/linux.c
-> +++ b/tools/testing/shared/linux.c
-> @@ -181,6 +181,12 @@ int kmem_cache_alloc_bulk(struct kmem_cache *cachep,=
- gfp_t gfp, size_t size,
->         if (kmalloc_verbose)
->                 pr_debug("Bulk alloc %zu\n", size);
->
-> +       if (cachep->exec_callback) {
-> +               if (cachep->callback)
-> +                       cachep->callback(cachep->private);
-> +               cachep->exec_callback =3D false;
-> +       }
-> +
->         pthread_mutex_lock(&cachep->lock);
->         if (cachep->nr_objs >=3D size) {
->                 struct radix_tree_node *node;
-> @@ -270,6 +276,84 @@ __kmem_cache_create_args(const char *name, unsigned =
-int size,
->         return ret;
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 50fc35b8fc9b3101821c338e9469c134677ded51..b98983b8d2e3e04ea256d91ef=
+cf0215ff0ae7e38 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -4765,18 +4765,42 @@ __pcs_handle_empty(struct kmem_cache *s, struct s=
+lub_percpu_sheaves *pcs, gfp_t
 >  }
 >
-> +struct slab_sheaf *
-> +kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp_t gfp, unsigned int s=
-ize)
-> +{
-> +       struct slab_sheaf *sheaf;
-> +       unsigned int capacity;
+>  static __fastpath_inline
+> -void *alloc_from_pcs(struct kmem_cache *s, gfp_t gfp)
+> +void *alloc_from_pcs(struct kmem_cache *s, gfp_t gfp, int node)
+>  {
+>         struct slub_percpu_sheaves *pcs;
+>         void *object;
+>
+>  #ifdef CONFIG_NUMA
+> -       if (static_branch_unlikely(&strict_numa)) {
+> -               if (current->mempolicy)
+> -                       return NULL;
+> +       if (static_branch_unlikely(&strict_numa) &&
+> +                        node =3D=3D NUMA_NO_NODE) {
 > +
-> +       if (size > s->sheaf_capacity)
-> +               capacity =3D size;
-> +       else
-> +               capacity =3D s->sheaf_capacity;
-
-nit:
-capacity =3D max(size, s->sheaf_capacity);
-
+> +               struct mempolicy *mpol =3D current->mempolicy;
 > +
-> +       sheaf =3D malloc(sizeof(*sheaf) + sizeof(void *) * s->sheaf_capac=
-ity * capacity);
+> +               if (mpol) {
+> +                       /*
+> +                        * Special BIND rule support. If the local node
+> +                        * is in permitted set then do not redirect
+> +                        * to a particular node.
+> +                        * Otherwise we apply the memory policy to get
+> +                        * the node we need to allocate on.
+> +                        */
+> +                       if (mpol->mode !=3D MPOL_BIND ||
+> +                                       !node_isset(numa_mem_id(), mpol->=
+nodes))
+> +
+> +                               node =3D mempolicy_slab_node();
+> +               }
+>         }
+>  #endif
+>
+> +       if (unlikely(node !=3D NUMA_NO_NODE)) {
 
-Should this really be `sizeof(void *) * s->sheaf_capacity * capacity`
-or just `sizeof(void *) * capacity` ?
+Should this and later (node !=3D NUMA_NO_NODE) checks be still under
+#ifdef CONFIG_NUMA ?
 
-
-> +       if (!sheaf) {
-> +               return NULL;
+> +               /*
+> +                * We assume the percpu sheaves contain only local object=
+s
+> +                * although it's not completely guaranteed, so we verify =
+later.
+> +                */
+> +               if (node !=3D numa_mem_id())
+> +                       return NULL;
 > +       }
 > +
-> +       memset(sheaf, 0, size);
-> +       sheaf->cache =3D s;
-> +       sheaf->capacity =3D capacity;
-> +       sheaf->size =3D kmem_cache_alloc_bulk(s, gfp, size, sheaf->object=
-s);
-> +       if (!sheaf->size) {
-> +               free(sheaf);
-> +               return NULL;
+>         if (!local_trylock(&s->cpu_sheaves->lock))
+>                 return NULL;
+>
+> @@ -4788,7 +4812,21 @@ void *alloc_from_pcs(struct kmem_cache *s, gfp_t g=
+fp)
+>                         return NULL;
+>         }
+>
+> -       object =3D pcs->main->objects[--pcs->main->size];
+> +       object =3D pcs->main->objects[pcs->main->size - 1];
+> +
+> +       if (unlikely(node !=3D NUMA_NO_NODE)) {
+> +               /*
+> +                * Verify that the object was from the node we want. This=
+ could
+> +                * be false because of cpu migration during an unlocked p=
+art of
+> +                * the current allocation or previous freeing process.
+> +                */
+> +               if (folio_nid(virt_to_folio(object)) !=3D node) {
+> +                       local_unlock(&s->cpu_sheaves->lock);
+> +                       return NULL;
+> +               }
 > +       }
 > +
-> +       return sheaf;
-> +}
-> +
-> +int kmem_cache_refill_sheaf(struct kmem_cache *s, gfp_t gfp,
-> +                struct slab_sheaf **sheafp, unsigned int size)
-> +{
-> +       struct slab_sheaf *sheaf =3D *sheafp;
-> +       int refill;
-> +
-> +       if (sheaf->size >=3D size)
-> +               return 0;
-> +
-> +       if (size > sheaf->capacity) {
-> +               sheaf =3D kmem_cache_prefill_sheaf(s, gfp, size);
-> +               if (!sheaf)
-> +                       return -ENOMEM;
-> +
-> +               kmem_cache_return_sheaf(s, gfp, *sheafp);
-> +               *sheafp =3D sheaf;
-> +               return 0;
-> +       }
-> +
-> +       refill =3D kmem_cache_alloc_bulk(s, gfp, size - sheaf->size,
-> +                                      &sheaf->objects[sheaf->size]);
-> +       if (!refill)
-> +               return -ENOMEM;
-> +
-> +       sheaf->size +=3D refill;
-> +       return 0;
-> +}
-> +
-> +void kmem_cache_return_sheaf(struct kmem_cache *s, gfp_t gfp,
-> +                struct slab_sheaf *sheaf)
-> +{
-> +       if (sheaf->size) {
-> +               //s->non_kernel +=3D sheaf->size;
-
-Above comment seems obsolete.
-
-> +               kmem_cache_free_bulk(s, sheaf->size, &sheaf->objects[0]);
-> +       }
-> +       free(sheaf);
-> +}
-> +
-> +void *
-> +kmem_cache_alloc_from_sheaf(struct kmem_cache *s, gfp_t gfp,
-> +               struct slab_sheaf *sheaf)
-> +{
-> +       if (sheaf->size =3D=3D 0) {
-> +               printf("Nothing left in sheaf!\n");
-> +               return NULL;
-> +       }
-> +
-
-Should we clear sheaf->objects[sheaf->size] for additional safety?
-
-> +       return sheaf->objects[--sheaf->size];
-> +}
-> +
->  /*
->   * Test the test infrastructure for kem_cache_alloc/free and bulk counte=
-rparts.
->   */
+> +       pcs->main->size--;
+>
+>         local_unlock(&s->cpu_sheaves->lock);
+>
+> @@ -4888,8 +4926,8 @@ static __fastpath_inline void *slab_alloc_node(stru=
+ct kmem_cache *s, struct list
+>         if (unlikely(object))
+>                 goto out;
+>
+> -       if (s->cpu_sheaves && node =3D=3D NUMA_NO_NODE)
+> -               object =3D alloc_from_pcs(s, gfpflags);
+> +       if (s->cpu_sheaves)
+> +               object =3D alloc_from_pcs(s, gfpflags, node);
+>
+>         if (!object)
+>                 object =3D __slab_alloc_node(s, gfpflags, node, addr, ori=
+g_size);
 >
 > --
 > 2.50.1
