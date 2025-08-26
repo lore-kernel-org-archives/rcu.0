@@ -1,80 +1,81 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CA42FB976
-	for <rcu@vger.kernel.org>; Tue, 26 Aug 2025 08:51:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BF524466D
+	for <rcu@vger.kernel.org>; Tue, 26 Aug 2025 09:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756198299; cv=none; b=u7aB3KED+oRMiODgDu7U5Z4v8yrqvh2BM05qK8B6+nDEtCGwCzlIp7gE33U2Hx45hmb8LEbohZvMtgCTjE9OItn4ztfyKm7P6TXrpUoYGXQxXZQNSqfWGPwUo26hQ6kVXhMDlUcwv9BOyJCxJEil+C/oFPvjXlclXZi8YH1fjaQ=
+	t=1756200758; cv=none; b=P6Es4C7Im+4WYg/AO6dPfV7k7p5fbX3cbWdNnm2U1/uFehOsFCvNr8yRCJ0uyf1TjoxSJYAGQKe9XuVCgcv3bk3QK7t2LrA41h2xLrahv492DBjqYyo4WseMjMehgpQxzY+mvZPRyRNLA6s8goLXuhcbOOYuwh1URGk1wc2o9JY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756198299; c=relaxed/simple;
-	bh=Em6u5DU0XNGDf2sOo8Ctl/6DsXlXI2cN/yrG00i9JAQ=;
+	s=arc-20240116; t=1756200758; c=relaxed/simple;
+	bh=VV6m09mo17V1uvZS2p1XU0GrxydGOpxwZ4BnUGzCNTs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KEcfxRD7nGNN/fQo0Wydbph56gfu7Ko3OhszV8PMbn20/RoKVIhi7BvtDdAiUS3MGFWRz+2DrzJhNdIve25l9FaiIdOGDhxPjqrbkSNxRxmvNL26fokqoQWcIJFTXiaDr6aO6AEvkdqua7YoFJ7lOSN9T6tvah5mMmbNmVykuqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q36scFBY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=t53TWzCe; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q36scFBY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=t53TWzCe; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:Content-Type; b=Aw1LGqPvseXdCz7yx0Ol75uh6LAEo1281VCU2sBPdldcpoEVkZ5rklt22UPmK8z8WNKDS1nhF3LyJpyREOVOVwjiSN3mjfp3fkuZL/VaKVw2A90ePFoYJRaKzawJ05SrWDNQyy2wyvRJchqhvwMHQvHk+s93ubmVL1yiUWREbRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uEWElARM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rGS8ra4W; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uEWElARM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rGS8ra4W; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q36scFBY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="t53TWzCe";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q36scFBY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="t53TWzCe"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uEWElARM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rGS8ra4W";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uEWElARM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rGS8ra4W"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D271021241;
-	Tue, 26 Aug 2025 08:51:34 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 693621F787;
+	Tue, 26 Aug 2025 09:32:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756198294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1756200754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ufVkpPwtQutVDZsBUYqAOSqGDbYTWA0sDjJ69c5U8ZI=;
-	b=Q36scFBYhGcmbA/HFYYrNeARQr1EN3ffNW5Fk+uMM/wdhwEStZOMiwhmEYUamCEFLUVQjR
-	1p/hAXLzJFonWw+5Q5cR1DL/XVZ6iwTyN5fc54qafVjto5Ab8lqU8MNXYTWhueGa1bHD7C
-	JsuJ7ylY3Qhd7KMOnrqkMp7FrLAS0ws=
+	bh=S34knrkcg5bsPBEx/gfFkm6ib/YQpvSLU+ZhmToqIvk=;
+	b=uEWElARMQzfohbUNTeatvr54YNru6LNyZX3DnHEFbhE+nQIw/Q36xcXiA5TnxnHn/vXTjS
+	orveWKaQd+NYNu0yrK1bqrL/imwCgLEmZ8oinit/U95ujZ0QFHqEOTpka3MgK0d62XDN5K
+	qP/OZRW8NBiI4pZWeLm4EyU8C5fUuz0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756198294;
+	s=susede2_ed25519; t=1756200754;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ufVkpPwtQutVDZsBUYqAOSqGDbYTWA0sDjJ69c5U8ZI=;
-	b=t53TWzCeusuWJG/2cJ0mHNI/Tx282ahU/hmVeTE15zfNo/Y9+0sX6Vh80I0CfsIa8ratpi
-	E/U/kEL5buYK6nAg==
-Authentication-Results: smtp-out1.suse.de;
-	none
+	bh=S34knrkcg5bsPBEx/gfFkm6ib/YQpvSLU+ZhmToqIvk=;
+	b=rGS8ra4WiP7HyVpJLi/GiNTGeh4sQ6HTLErSqn077/0teQsjD537TlVRRvLxzFdRa9E4Xh
+	yLK3GXjvdlzuPeCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=uEWElARM;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=rGS8ra4W
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756198294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1756200754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ufVkpPwtQutVDZsBUYqAOSqGDbYTWA0sDjJ69c5U8ZI=;
-	b=Q36scFBYhGcmbA/HFYYrNeARQr1EN3ffNW5Fk+uMM/wdhwEStZOMiwhmEYUamCEFLUVQjR
-	1p/hAXLzJFonWw+5Q5cR1DL/XVZ6iwTyN5fc54qafVjto5Ab8lqU8MNXYTWhueGa1bHD7C
-	JsuJ7ylY3Qhd7KMOnrqkMp7FrLAS0ws=
+	bh=S34knrkcg5bsPBEx/gfFkm6ib/YQpvSLU+ZhmToqIvk=;
+	b=uEWElARMQzfohbUNTeatvr54YNru6LNyZX3DnHEFbhE+nQIw/Q36xcXiA5TnxnHn/vXTjS
+	orveWKaQd+NYNu0yrK1bqrL/imwCgLEmZ8oinit/U95ujZ0QFHqEOTpka3MgK0d62XDN5K
+	qP/OZRW8NBiI4pZWeLm4EyU8C5fUuz0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756198294;
+	s=susede2_ed25519; t=1756200754;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ufVkpPwtQutVDZsBUYqAOSqGDbYTWA0sDjJ69c5U8ZI=;
-	b=t53TWzCeusuWJG/2cJ0mHNI/Tx282ahU/hmVeTE15zfNo/Y9+0sX6Vh80I0CfsIa8ratpi
-	E/U/kEL5buYK6nAg==
+	bh=S34knrkcg5bsPBEx/gfFkm6ib/YQpvSLU+ZhmToqIvk=;
+	b=rGS8ra4WiP7HyVpJLi/GiNTGeh4sQ6HTLErSqn077/0teQsjD537TlVRRvLxzFdRa9E4Xh
+	yLK3GXjvdlzuPeCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8FC313A31;
-	Tue, 26 Aug 2025 08:51:34 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5240513479;
+	Tue, 26 Aug 2025 09:32:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Lz6SLJZ1rWhHVQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 26 Aug 2025 08:51:34 +0000
-Message-ID: <ce289766-6d7d-427a-b9bb-8cb3634dbe9b@suse.cz>
-Date: Tue, 26 Aug 2025 10:51:34 +0200
+	id ige+EzJ/rWiVYgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 26 Aug 2025 09:32:34 +0000
+Message-ID: <711d539d-da4b-4f77-9be6-ca11b6fa5162@suse.cz>
+Date: Tue, 26 Aug 2025 11:32:34 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -82,7 +83,8 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 01/14] slab: add opt-in caching layer of percpu sheaves
+Subject: Re: [PATCH v5 05/14] tools: Add testing support for changes to rcu
+ and slab for sheaves
 Content-Language: en-US
 To: Suren Baghdasaryan <surenb@google.com>
 Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
@@ -92,8 +94,8 @@ Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
  linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
  maple-tree@lists.infradead.org
 References: <20250723-slub-percpu-caches-v5-0-b792cd830f5d@suse.cz>
- <20250723-slub-percpu-caches-v5-1-b792cd830f5d@suse.cz>
- <CAJuCfpG5+oJY0aaE3=VOGtRxEoCgjejg-WTqrXU0TffFQ+7TQA@mail.gmail.com>
+ <20250723-slub-percpu-caches-v5-5-b792cd830f5d@suse.cz>
+ <CAJuCfpHR=hceuAcnaCr3Hg-3mknvsmYy7jSScA8SATn7iwoN_w@mail.gmail.com>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -134,62 +136,96 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
  dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
  m6M14QORSWTLRg==
-In-Reply-To: <CAJuCfpG5+oJY0aaE3=VOGtRxEoCgjejg-WTqrXU0TffFQ+7TQA@mail.gmail.com>
+In-Reply-To: <CAJuCfpHR=hceuAcnaCr3Hg-3mknvsmYy7jSScA8SATn7iwoN_w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-4.30 / 50.00];
+X-Spamd-Result: default: False [-4.51 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MX_GOOD(-0.01)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_ALL(0.00)[];
 	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[11];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FREEMAIL_CC(0.00)[oracle.com,gentwo.org,google.com,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
 	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,imap1.dmz-prg2.suse.org:helo]
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
 X-Spam-Flag: NO
 X-Spam-Level: 
-X-Spam-Score: -4.30
+X-Rspamd-Queue-Id: 693621F787
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.51
 
-On 8/19/25 06:19, Suren Baghdasaryan wrote:
->> @@ -5624,20 +6561,29 @@ static int init_kmem_cache_nodes(struct kmem_cache *s)
+On 8/22/25 18:28, Suren Baghdasaryan wrote:
+>> diff --git a/tools/testing/shared/linux/rcupdate.h b/tools/testing/shared/linux/rcupdate.h
+>> index fed468fb0c78db6f33fb1900c7110ab5f3c19c65..c95e2f0bbd93798e544d7d34e0823ed68414f924 100644
+>> --- a/tools/testing/shared/linux/rcupdate.h
+>> +++ b/tools/testing/shared/linux/rcupdate.h
+>> @@ -9,4 +9,26 @@
+>>  #define rcu_dereference_check(p, cond) rcu_dereference(p)
+>>  #define RCU_INIT_POINTER(p, v) do { (p) = (v); } while (0)
 >>
->>         for_each_node_mask(node, slab_nodes) {
->>                 struct kmem_cache_node *n;
->> +               struct node_barn *barn = NULL;
->>
->>                 if (slab_state == DOWN) {
->>                         early_kmem_cache_node_alloc(node);
->>                         continue;
->>                 }
+>> +void kmem_cache_free_active(void *objp);
+>> +static unsigned long kfree_cb_offset = 0;
 >> +
->> +               if (s->cpu_sheaves) {
->> +                       barn = kmalloc_node(sizeof(*barn), GFP_KERNEL, node);
+>> +static inline void kfree_rcu_cb(struct rcu_head *head)
+>> +{
+>> +       void *objp = (void *) ((unsigned long)head - kfree_cb_offset);
 >> +
->> +                       if (!barn)
->> +                               return 0;
->> +               }
+>> +       kmem_cache_free_active(objp);
+>> +}
 >> +
->>                 n = kmem_cache_alloc_node(kmem_cache_node,
->>                                                 GFP_KERNEL, node);
->> -
->>                 if (!n) {
->> -                       free_kmem_cache_nodes(s);
+>> +#ifndef offsetof
+>> +#define offsetof(TYPE, MEMBER) __builtin_offsetof(TYPE, MEMBER)
+>> +#endif
+>> +
 > 
-> Why do you skip free_kmem_cache_nodes() here?
+> We need a comment here that concurrent kfree_rcu() calls are not
+> supported because they would override each other's kfree_cb_offset.
 
-It's not necessary as the caller will perform __kmem_cache_release() which
-calls free_kmem_cache_nodes()
+I think it's a bit more complex and related to the commit log sentence "This
+only works with one kmem_cache, and only the first one used.". The first
+call to kfree_rcu sets kfree_cb_offset (but what if the rhv offset is
+actually 0?) so the others won't update it. So concurrent calls will work as
+far as from the same cache thus same offset. But I'd like Liam's
+confirmation and the comment text, if possible :)
 
-I have incorporated your other suggestions, thanks!
+> Kinda obvious but I think unusual limitations should be explicitly
+> called out.
+> 
+>> +#define kfree_rcu(ptr, rhv)                                            \
+>> +do {                                                                   \
+>> +       if (!kfree_cb_offset)                                           \
+>> +               kfree_cb_offset = offsetof(typeof(*(ptr)), rhv);        \
+>> +                                                                       \
+>> +       call_rcu(&ptr->rhv, kfree_rcu_cb);                              \
+>> +} while (0)
+> 
+> Any specific reason kfree_rcu() is a macro and not a static inline function?
+
+Think it's needed for the typeof() to work. The kernel's kfree_rcu() is
+similar in this aspect.
+
+>> +
+>>  #endif
+>>
+>> --
+>> 2.50.1
+>>
+
