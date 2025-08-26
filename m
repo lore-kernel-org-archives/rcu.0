@@ -1,80 +1,81 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB0130F55C
-	for <rcu@vger.kernel.org>; Tue, 26 Aug 2025 09:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878D02D3225
+	for <rcu@vger.kernel.org>; Tue, 26 Aug 2025 10:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756202386; cv=none; b=ADZgMIX9xz81dnAIoVblaslJ1UME0jVEVugUW/0uDC+O9lhmbycg3wkCPZumoq3RTCms46sRLjqWm7JNtJBMVy5jolidW4nmo1UzX4mZcpAI1ARcH7EeZ+jznRm1bjU03ozLGvly14oPn7ssrjDjDU62+FwKRuffuVwpHPmnx08=
+	t=1756203124; cv=none; b=LKhYhmmfbGS76+/Q0A7W0Eu5MJHJI4nS+m/Gejk4ASuZI5fAWsanA7PRumaRFwJz7PAYzk1zrIed2zR71rTGch3YWNexsEqUDtzfuOIQE/4bhJ0pGbciM5rTbOHFNdbUnk4lV14xRK2VwUpC+ycjwCS/IkbfQSA6OTDbCOkEVkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756202386; c=relaxed/simple;
-	bh=geFfM2smiA1cL76SlJ1JGQrp0uSK+mK1slJUy124+dU=;
+	s=arc-20240116; t=1756203124; c=relaxed/simple;
+	bh=2jBxlp7eFmbdTueoxcgWuQMvmEO8B8R+FpL1s6uOyXQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z9tSynWMmI25lmWZwM7H0E0B11e4gONUr2mfggGJ/1v1Ya1QQagV6m1/7dPsUR88CsVuHM8Yn+eFtn/UVbXotrN3H1+SVo6exAiLVPXmNp9ugjAclhr4y2dnYVWBQ53rzp8QyvnFLJx1acATwik8G/Tm+9mVgzONkAmc/NMId68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=H6pRfWAC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=D6FZDjnb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=H6pRfWAC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=D6FZDjnb; arc=none smtp.client-ip=195.135.223.131
+	 In-Reply-To:Content-Type; b=D23LbZeH2vNwWQZ91fZZfV0V9aeYKmxlq15g53ljaDP7ZSYaP8dOmCgYBKYmUHSNzFQjY/BtJzCbRKCqKbpWs36jlMAJzkg5gK4fpkr67+ciKBHulV6Ayv6hfI70ecp8AkzFLfa0flH1W1jjKDyX07u7+ljhgrgOegyThnv54Bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VhHj3jLN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FHDP1PGK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FRnrljDd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V4uN9i5L; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="H6pRfWAC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D6FZDjnb";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="H6pRfWAC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D6FZDjnb"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VhHj3jLN";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FHDP1PGK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FRnrljDd";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V4uN9i5L"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ACBFD1F449;
-	Tue, 26 Aug 2025 09:59:42 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9046421247;
+	Tue, 26 Aug 2025 10:11:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756202382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1756203120; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=nLnkaLaHWhifO4yBm8d+LtS+mu5qj07MhWGaW1OLi/4=;
-	b=H6pRfWAChXxpTYcPn/SkA1t9dNK50OYRLK0eswwiufg12Pk5Y+44Cp4zFSZTfOfGiJq1M5
-	ITbrrl2qsp2sdbPIv26Tyzp6UtPoEekEnd0CPK9S/O+cZre57mLQ7HGYd7WmjwQZgLPSZP
-	fhtX2basGMcOLC6PD43AXdA/5x23CqA=
+	bh=mmE9SEYGD2F3s4ICA+kzQeVmgCLv9DYvPz9hobyINKM=;
+	b=VhHj3jLNuEqak9vRiJQLJ6BX9DyzonAYtK5MRWGohb4hE5GX0Q7SiSNgY11Ut5cj/ewkdJ
+	emhk5DnwJ3yLgWnVCHnIFhuxZpydXz+u8dh/VMrBsxDb6m1qsAlJVCHBIhY2saM2zWGWH0
+	GorKOvfsQe1RSvTwJOctsYrnNfCYne8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756202382;
+	s=susede2_ed25519; t=1756203120;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=nLnkaLaHWhifO4yBm8d+LtS+mu5qj07MhWGaW1OLi/4=;
-	b=D6FZDjnbzbl0izyiAagyDx796+uJEZTL0skqhvcmgwODddu7zx//681uViDp47oZOuUJaQ
-	tBxvU3iOfq3CzxDg==
-Authentication-Results: smtp-out2.suse.de;
-	none
+	bh=mmE9SEYGD2F3s4ICA+kzQeVmgCLv9DYvPz9hobyINKM=;
+	b=FHDP1PGKNaRRsS+6/d6SJSr3LF+WI/esNSSMgzpma4Jsb7d/q22LluKCPGrvKHz8olynIK
+	1z4pc6DsSPmgJmCg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FRnrljDd;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=V4uN9i5L
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756202382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1756203119; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=nLnkaLaHWhifO4yBm8d+LtS+mu5qj07MhWGaW1OLi/4=;
-	b=H6pRfWAChXxpTYcPn/SkA1t9dNK50OYRLK0eswwiufg12Pk5Y+44Cp4zFSZTfOfGiJq1M5
-	ITbrrl2qsp2sdbPIv26Tyzp6UtPoEekEnd0CPK9S/O+cZre57mLQ7HGYd7WmjwQZgLPSZP
-	fhtX2basGMcOLC6PD43AXdA/5x23CqA=
+	bh=mmE9SEYGD2F3s4ICA+kzQeVmgCLv9DYvPz9hobyINKM=;
+	b=FRnrljDdXRC7Y1Iv20e7I3f40YzplWMV9xvdLO5CAGFAnH1f+5fgPZvPiYVDhK6k/udszh
+	xyf/rhCxxyLa/STM0Pf/l4ETdvV3UjCHeGegHTuscrRjmsq9BZWeizMmgn7s1LwIP189Ya
+	84Xx99nk12ymmmpySJCbZQcgbkEmlso=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756202382;
+	s=susede2_ed25519; t=1756203119;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=nLnkaLaHWhifO4yBm8d+LtS+mu5qj07MhWGaW1OLi/4=;
-	b=D6FZDjnbzbl0izyiAagyDx796+uJEZTL0skqhvcmgwODddu7zx//681uViDp47oZOuUJaQ
-	tBxvU3iOfq3CzxDg==
+	bh=mmE9SEYGD2F3s4ICA+kzQeVmgCLv9DYvPz9hobyINKM=;
+	b=V4uN9i5LFt9Hrvzh7qquMcNeebUF+sT//Dcz7rPSQOJhaBrR2WRiWP8ynwPQd43ZQB+Nop
+	r1dk7l5CBPp0RoDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9275213479;
-	Tue, 26 Aug 2025 09:59:42 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7909513479;
+	Tue, 26 Aug 2025 10:11:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LFlpI46FrWhKawAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 26 Aug 2025 09:59:42 +0000
-Message-ID: <95413138-1a9c-4b10-847d-cb37b68ba7c4@suse.cz>
-Date: Tue, 26 Aug 2025 11:59:42 +0200
+	id pawmHW+IrWikbwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 26 Aug 2025 10:11:59 +0000
+Message-ID: <c57e3da8-93b4-4c4a-8731-efafd382ddf1@suse.cz>
+Date: Tue, 26 Aug 2025 12:11:59 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -82,19 +83,20 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 06/14] tools: Add sheaves support to testing
- infrastructure
+Subject: Re: [PATCH v5 09/14] mm, slub: skip percpu sheaves for remote object
+ freeing
 Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Suren Baghdasaryan <surenb@google.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
  Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>, Harry Yoo <harry.yoo@oracle.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
  Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
  linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
  maple-tree@lists.infradead.org
 References: <20250723-slub-percpu-caches-v5-0-b792cd830f5d@suse.cz>
- <20250723-slub-percpu-caches-v5-6-b792cd830f5d@suse.cz>
- <CAJuCfpEsVE7Jae7PqWvgTtm38C5MPFx43+dDyYzfKLMQFuE_3A@mail.gmail.com>
+ <20250723-slub-percpu-caches-v5-9-b792cd830f5d@suse.cz>
+ <aKvzAvgwUyZN5GC6@hyeyoo>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -135,151 +137,107 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
  dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
  m6M14QORSWTLRg==
-In-Reply-To: <CAJuCfpEsVE7Jae7PqWvgTtm38C5MPFx43+dDyYzfKLMQFuE_3A@mail.gmail.com>
+In-Reply-To: <aKvzAvgwUyZN5GC6@hyeyoo>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-4.30 / 50.00];
+X-Spamd-Result: default: False [-4.51 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	URIBL_BLOCKED(0.00)[suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	MX_GOOD(-0.01)[];
+	TO_DN_SOME(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[oracle.com,gentwo.org,google.com,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	FREEMAIL_CC(0.00)[google.com,oracle.com,gentwo.org,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
 	RCPT_COUNT_SEVEN(0.00)[11];
 	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid]
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,oracle.com:email]
 X-Spam-Flag: NO
 X-Spam-Level: 
-X-Spam-Score: -4.30
+X-Rspamd-Queue-Id: 9046421247
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.51
 
-On 8/22/25 18:56, Suren Baghdasaryan wrote:
->> @@ -270,6 +276,84 @@ __kmem_cache_create_args(const char *name, unsigned int size,
->>         return ret;
+On 8/25/25 07:22, Harry Yoo wrote:
+> On Wed, Jul 23, 2025 at 03:34:42PM +0200, Vlastimil Babka wrote:
+>> Since we don't control the NUMA locality of objects in percpu sheaves,
+>> allocations with node restrictions bypass them. Allocations without
+>> restrictions may however still expect to get local objects with high
+>> probability, and the introduction of sheaves can decrease it due to
+>> freed object from a remote node ending up in percpu sheaves.
+>> 
+>> The fraction of such remote frees seems low (5% on an 8-node machine)
+>> but it can be expected that some cache or workload specific corner cases
+>> exist. We can either conclude that this is not a problem due to the low
+>> fraction, or we can make remote frees bypass percpu sheaves and go
+>> directly to their slabs. This will make the remote frees more expensive,
+>> but if if's only a small fraction, most frees will still benefit from
+>> the lower overhead of percpu sheaves.
+>> 
+>> This patch thus makes remote object freeing bypass percpu sheaves,
+>> including bulk freeing, and kfree_rcu() via the rcu_free sheaf. However
+>> it's not intended to be 100% guarantee that percpu sheaves will only
+>> contain local objects. The refill from slabs does not provide that
+>> guarantee in the first place, and there might be cpu migrations
+>> happening when we need to unlock the local_lock. Avoiding all that could
+>> be possible but complicated so we can leave it for later investigation
+>> whether it would be worth it. It can be expected that the more selective
+>> freeing will itself prevent accumulation of remote objects in percpu
+>> sheaves so any such violations would have only short-term effects.
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> ---
+>>  mm/slab_common.c |  7 +++++--
+>>  mm/slub.c        | 42 ++++++++++++++++++++++++++++++++++++------
+>>  2 files changed, 41 insertions(+), 8 deletions(-)
+>> 
+>> diff --git a/mm/slab_common.c b/mm/slab_common.c
+>> index 2d806e02568532a1000fd3912db6978e945dcfa8..f466f68a5bd82030a987baf849a98154cd48ef23 100644
+>> --- a/mm/slab_common.c
+>> +++ b/mm/slab_common.c
+>> @@ -1623,8 +1623,11 @@ static bool kfree_rcu_sheaf(void *obj)
+>>  
+>>  	slab = folio_slab(folio);
+>>  	s = slab->slab_cache;
+>> -	if (s->cpu_sheaves)
+>> -		return __kfree_rcu_sheaf(s, obj);
+>> +	if (s->cpu_sheaves) {
+>> +		if (likely(!IS_ENABLED(CONFIG_NUMA) ||
+>> +			   slab_nid(slab) == numa_node_id()))
+>> +			return __kfree_rcu_sheaf(s, obj);
+>> +	}
+> 
+> This should be numa_mem_id() to handle memory-less NUMA nodes as
+> Christoph mentioned [1]?
+> 
+> I saw you addressed this in most of places but not this one.
+
+Oops, right.
+> With that addressed, please feel free to add:
+> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
+
+Thanks!
+
+> [1] https://lore.kernel.org/linux-mm/c60ae681-6027-0626-8d4e-5833982bf1f0@gentwo.org
+> 
+>>  
+>>  	return false;
 >>  }
->>
->> +struct slab_sheaf *
->> +kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp_t gfp, unsigned int size)
->> +{
->> +       struct slab_sheaf *sheaf;
->> +       unsigned int capacity;
->> +
->> +       if (size > s->sheaf_capacity)
->> +               capacity = size;
->> +       else
->> +               capacity = s->sheaf_capacity;
 > 
-> nit:
-> capacity = max(size, s->sheaf_capacity);
-
-OK
-
->> +
->> +       sheaf = malloc(sizeof(*sheaf) + sizeof(void *) * s->sheaf_capacity * capacity);
-> 
-> Should this really be `sizeof(void *) * s->sheaf_capacity * capacity`
-> or just `sizeof(void *) * capacity` ?
-
-Right, so the whole thing should be:
-sizeof(*sheaf) + sizeof(void *) * capacity
-
-> 
->> +       if (!sheaf) {
->> +               return NULL;
->> +       }
->> +
->> +       memset(sheaf, 0, size);
-
-This is also wrong, so I'm changing it to calloc(1, ...) to get the zeroing
-there.
-
->> +       sheaf->cache = s;
->> +       sheaf->capacity = capacity;
->> +       sheaf->size = kmem_cache_alloc_bulk(s, gfp, size, sheaf->objects);
->> +       if (!sheaf->size) {
->> +               free(sheaf);
->> +               return NULL;
->> +       }
->> +
->> +       return sheaf;
->> +}
->> +
->> +int kmem_cache_refill_sheaf(struct kmem_cache *s, gfp_t gfp,
->> +                struct slab_sheaf **sheafp, unsigned int size)
->> +{
->> +       struct slab_sheaf *sheaf = *sheafp;
->> +       int refill;
->> +
->> +       if (sheaf->size >= size)
->> +               return 0;
->> +
->> +       if (size > sheaf->capacity) {
->> +               sheaf = kmem_cache_prefill_sheaf(s, gfp, size);
->> +               if (!sheaf)
->> +                       return -ENOMEM;
->> +
->> +               kmem_cache_return_sheaf(s, gfp, *sheafp);
->> +               *sheafp = sheaf;
->> +               return 0;
->> +       }
->> +
->> +       refill = kmem_cache_alloc_bulk(s, gfp, size - sheaf->size,
->> +                                      &sheaf->objects[sheaf->size]);
->> +       if (!refill)
->> +               return -ENOMEM;
->> +
->> +       sheaf->size += refill;
->> +       return 0;
->> +}
->> +
->> +void kmem_cache_return_sheaf(struct kmem_cache *s, gfp_t gfp,
->> +                struct slab_sheaf *sheaf)
->> +{
->> +       if (sheaf->size) {
->> +               //s->non_kernel += sheaf->size;
-> 
-> Above comment seems obsolete.
-
-Ack.
-
-> 
->> +               kmem_cache_free_bulk(s, sheaf->size, &sheaf->objects[0]);
->> +       }
->> +       free(sheaf);
->> +}
->> +
->> +void *
->> +kmem_cache_alloc_from_sheaf(struct kmem_cache *s, gfp_t gfp,
->> +               struct slab_sheaf *sheaf)
->> +{
->> +       if (sheaf->size == 0) {
->> +               printf("Nothing left in sheaf!\n");
->> +               return NULL;
->> +       }
->> +
-> 
-> Should we clear sheaf->objects[sheaf->size] for additional safety?
-
-OK.
->> +       return sheaf->objects[--sheaf->size];
->> +}
->> +
->>  /*
->>   * Test the test infrastructure for kem_cache_alloc/free and bulk counterparts.
->>   */
->>
->> --
->> 2.50.1
->>
 
