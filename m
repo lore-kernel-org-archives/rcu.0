@@ -1,139 +1,156 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCB8A2D837C;
-	Tue, 26 Aug 2025 16:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC33C219EB
+	for <rcu@vger.kernel.org>; Wed, 27 Aug 2025 00:19:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756227483; cv=none; b=XXhQxg+Z2zJ7Ls0Vfm5yhmEdAzyN7lyg7Rupp/xJ+CY/Qx7MtmI/+Iu7LJ6mJm5ZjpwOMx96WOEevVEQbTbbD63uChgix+YzdBTA201exvr4Z+D2QxGvwQ3oOxUnDtNL7jt8uNGyXA164c1FZ3zKYKVupuYV0ttdg3pYxdFmQJ0=
+	t=1756253966; cv=none; b=TBAKDWWIwNGiPMe/gpyFuQyyaAMJSmt0oQmgJEJSXgHke3AmaVzO7BtsZ/m0UgCGC877+JB1l0TK6syzqCaScLdcocrSrXsnQ07IOHdx2Y6ozKjn0BXoMkm6HoRYVk5hFNS/K+Sgmqz1doAeVnbdlBupk3gx5c6f2C02EgDHNW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756227483; c=relaxed/simple;
-	bh=fnUtXDAxJfdbxKoWIvjZ0YEMsdquajfs3Wt0vqohrgU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ubMmnoo2oZu9s6x/EePqUAL6yDQNyPSEn9QLVcp1fDTzFKhnPHdwNItf1KrVl76vYqHNUSo0T4xLsZrxMtzfPtxsYoeWBgZVL2BFKsLWS+Gn86AlRsHZVg5MsrA92wClIOcSii+yml4tMhTKqDDFw9xeLeS1jATQ2bfM51G8L/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fuvpJ+uR; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1756253966; c=relaxed/simple;
+	bh=Yx6UM87z90Ve7p+lWCl8R+FpbY+gFZTHVPHWZIEnMMk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tVmuQe7GuaSeg9Vyd2K6JiQ+QGoPMeN8XDKSRAzn35Pke58U5CGT++UjUT+lOhWArcQeddWaDEHS/lpb2xbffD0MfWgZtGFksPbk0/p/K6ObxQez+OBtVurcnDs9TqZpDN0CG1RAO0TQALwu2E9GhrcRdKRlPvv7IAwqjkbgT9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WZWxNZ0H; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fuvpJ+uR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C82A7C4CEF1;
-	Tue, 26 Aug 2025 16:58:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756227482;
-	bh=fnUtXDAxJfdbxKoWIvjZ0YEMsdquajfs3Wt0vqohrgU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fuvpJ+uRtRM9fzHvRv14jD9ZQo0Z+Ik1UILyoPgPF2jz8dNyPROaEFVvlvQAaXz4X
-	 ttXYaAtJGkub4HtTxq/BEINhmPDYT0kc4MO9Pt7hSTntGG0uTTAcFEzDYKdGxtFeT2
-	 qkjkQ9Njb/UFnPIIvb1+17UQA9vp2juzNUYGm3uywq3v8NTkaS1OlNFYQ09AI39lpx
-	 YQaZvSP4SUfRf4YlPPa54Y1tNy/wsF7ZVJVKqynCB7t8JfsAtW1Xvl7gh2NjEvVbqY
-	 byeS9jwZXrmVRhx6StAaC2vlVi6HX3Ox4JExT2RQEj9zwDNL3tioAysr1mHqOoXhAg
-	 8DUjtPx04KNjg==
-Date: Tue, 26 Aug 2025 16:58:00 +0000
-From: Wei Liu <wei.liu@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
-	Anup Patel <anup@brainfault.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org, loongarch@lists.linux.dev,
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-	linux-hyperv@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH 0/5] Drivers: hv: Fix NEED_RESCHED_LAZY and use common
- APIs
-Message-ID: <aK3nmOgVl4INJpjG@liuwe-devbox-ubuntu-v2.tail21d00.ts.net>
-References: <20250825200622.3759571-1-seanjc@google.com>
- <3188ca61-2591-4576-9777-1671689b7235@linux.microsoft.com>
- <aKz_ZMvvF0e9nwSn@google.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WZWxNZ0H"
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4b29b715106so80071cf.1
+        for <rcu@vger.kernel.org>; Tue, 26 Aug 2025 17:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1756253964; x=1756858764; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SE4j56bcgneni+baZfrodSksw7MRxk2x9FNKN/g2SD4=;
+        b=WZWxNZ0H9wQUKC4I1JU/lrjvWyD1EKUw2Mj3JCUgSlbDKTeHOCjSkHdoUcMDq4w8fL
+         4t6cCV52/4PB7z+SKA5uP9FJRf9QL9gqPUsarboFrWN4tGs4CP/oBRczypLwcJIwLUXM
+         uaagt+ygVja9oFfY2NxH0DjrpZr9aQBJZ9+1Q/wAHHRnZMFN9JRQT3h//OzASE9P+m9a
+         sU0Kk0JHrcD+Y/rsN0tdF4sij9evQhf3LsXIQsV/pvTgx+BJF1s3kVUuS4AnO9VrHz0k
+         /ztWr/QO0gWq+XTwRc2uuyk4YZ2Sg1kCHDyuwwqiYa2WKWEBhSx/CRro6on/d9L87Yxp
+         Ko0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756253964; x=1756858764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SE4j56bcgneni+baZfrodSksw7MRxk2x9FNKN/g2SD4=;
+        b=rigFTVKZyVHhAE1BEXSga6qjFHE66K1y0PY6uAe2h1Hk1By7/QIKv3BWjdG7bfHZfA
+         b8MG4Ui4sEpm4rHwohFsR+DyzMUAdkfoWZPTis3G9HafqHe+Z+L2A7tdDjiDOpfDDEhH
+         TZqlk+d4QHL7X0vkticNSBSD/PRte+WBwtMmS1vDeaLVABox7Rl/1mpzqIqVC3Z7FX15
+         SYkmQ2zi3zcw+X4bcIBlcv3rVXvMe2vKHKErqO4/nhj3X0pSUc86W9V98VY9XGq2NBbr
+         qfdCwtK9VnglcvAUX/uxWHk8ZyQ94O+q4R0A8iVmpimGX1cp04vo7y8H0y58whUR0iXv
+         5k2A==
+X-Forwarded-Encrypted: i=1; AJvYcCXTPTpFfBcQtysadiORj0Tuq7y5j5Wv/ENQo5xKzeBGbbbA0VuvGc38E6t0FMX8zqkkXg0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDyZb5qQ7YJWkuihgV7LqO1emHbtPEfRv6tpUr56HXTQwktgoX
+	xsuEj6gG1CsSEWQxYE37uc95SS0Dz7mdVaQR34eD6+I9FAUZWVksnPcs5NZh3Ta6r9vE5BkrdP+
+	AepcMU6cO8D5a4DnGx7Serr9KqyWoAt1zDyJkVwMH
+X-Gm-Gg: ASbGnctRyCW1KrB3MZZenvUPFc6ZzCZ63GRGpCDs5/PI8cAmvbqluP3Cta41ku/K1xA
+	8/WVnTl2TPAksaL0VPMPBxKFAeVYhnihnCpIbOjzNZGSvKkY6XtNVm1shUlwfJeYsFswqfTP4Ap
+	3qqE+azypvY4HE4zH/MGJ3ewIHR5q0zc2SPP5BIlcU4tHaLrwKG6aP1XXNWUzA9HeZaMWYYKrEH
+	9C1b8A8EwfEirYRFr4KJl4=
+X-Google-Smtp-Source: AGHT+IHKzkOVA97IoeFOhKzhjh88sPk1YwIXvTlOSZoPINFWeat9lSKrAMubEHDbEHy9C13HrZIHNUop3Q+tYrmsAvA=
+X-Received: by 2002:ac8:5a42:0:b0:4b2:939c:9c1a with SMTP id
+ d75a77b69052e-4b2e2c4f835mr7873931cf.13.1756253963326; Tue, 26 Aug 2025
+ 17:19:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aKz_ZMvvF0e9nwSn@google.com>
+References: <20250723-slub-percpu-caches-v5-0-b792cd830f5d@suse.cz>
+ <20250723-slub-percpu-caches-v5-5-b792cd830f5d@suse.cz> <CAJuCfpHR=hceuAcnaCr3Hg-3mknvsmYy7jSScA8SATn7iwoN_w@mail.gmail.com>
+ <711d539d-da4b-4f77-9be6-ca11b6fa5162@suse.cz>
+In-Reply-To: <711d539d-da4b-4f77-9be6-ca11b6fa5162@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 26 Aug 2025 17:19:11 -0700
+X-Gm-Features: Ac12FXzxRQWqZVSs96sDjlJgMo-UL6e05LwJ4TtNEU1hDljVd05nsUaqKjsm23A
+Message-ID: <CAJuCfpFC6XELVof1xbJ2rZoxX3rHQfd34Du3=N_UeinM2DzPVA@mail.gmail.com>
+Subject: Re: [PATCH v5 05/14] tools: Add testing support for changes to rcu
+ and slab for sheaves
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter <cl@gentwo.org>, 
+	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
+	maple-tree@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 25, 2025 at 05:27:16PM -0700, Sean Christopherson wrote:
-> On Mon, Aug 25, 2025, Nuno Das Neves wrote:
-> > On 8/25/2025 1:06 PM, Sean Christopherson wrote:
-> > > Fix a bug where MSHV root partitions don't honor NEED_RESCHED_LAZY, and then
-> > > deduplicate the TIF related MSHV code by turning the "kvm" entry APIs into
-> > > more generic "virt" APIs (which ideally would have been done when MSHV root
-> > > support was added).
-> > > 
-> > > Assuming all is well, maybe this could go through the tip tree?
-> > > 
-> > > The Hyper-V stuff and non-x86 architectures are compile-tested only.
-> > > 
-> > 
-> > Thanks Sean, I can test the root partition changes.
-> > 
-> > A similar change will be needed in mshv_vtl_main.c since it also calls
-> > mshv_do_pre_guest_mode_work() (hence the "common" in mshv_common.c).
-> 
-> Oof, more dependencies.  I suppose the easiest thing would be to send a series
-> against
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git queue
-> 
-> and then route everything through there?
+On Tue, Aug 26, 2025 at 2:32=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 8/22/25 18:28, Suren Baghdasaryan wrote:
+> >> diff --git a/tools/testing/shared/linux/rcupdate.h b/tools/testing/sha=
+red/linux/rcupdate.h
+> >> index fed468fb0c78db6f33fb1900c7110ab5f3c19c65..c95e2f0bbd93798e544d7d=
+34e0823ed68414f924 100644
+> >> --- a/tools/testing/shared/linux/rcupdate.h
+> >> +++ b/tools/testing/shared/linux/rcupdate.h
+> >> @@ -9,4 +9,26 @@
+> >>  #define rcu_dereference_check(p, cond) rcu_dereference(p)
+> >>  #define RCU_INIT_POINTER(p, v) do { (p) =3D (v); } while (0)
+> >>
+> >> +void kmem_cache_free_active(void *objp);
+> >> +static unsigned long kfree_cb_offset =3D 0;
+> >> +
+> >> +static inline void kfree_rcu_cb(struct rcu_head *head)
+> >> +{
+> >> +       void *objp =3D (void *) ((unsigned long)head - kfree_cb_offset=
+);
+> >> +
+> >> +       kmem_cache_free_active(objp);
+> >> +}
+> >> +
+> >> +#ifndef offsetof
+> >> +#define offsetof(TYPE, MEMBER) __builtin_offsetof(TYPE, MEMBER)
+> >> +#endif
+> >> +
+> >
+> > We need a comment here that concurrent kfree_rcu() calls are not
+> > supported because they would override each other's kfree_cb_offset.
+>
+> I think it's a bit more complex and related to the commit log sentence "T=
+his
+> only works with one kmem_cache, and only the first one used.". The first
+> call to kfree_rcu sets kfree_cb_offset (but what if the rhv offset is
+> actually 0?) so the others won't update it. So concurrent calls will work=
+ as
+> far as from the same cache thus same offset. But I'd like Liam's
+> confirmation and the comment text, if possible :)
+>
+> > Kinda obvious but I think unusual limitations should be explicitly
+> > called out.
+> >
+> >> +#define kfree_rcu(ptr, rhv)                                          =
+  \
+> >> +do {                                                                 =
+  \
+> >> +       if (!kfree_cb_offset)                                         =
+  \
+> >> +               kfree_cb_offset =3D offsetof(typeof(*(ptr)), rhv);    =
+    \
+> >> +                                                                     =
+  \
+> >> +       call_rcu(&ptr->rhv, kfree_rcu_cb);                            =
+  \
+> >> +} while (0)
+> >
+> > Any specific reason kfree_rcu() is a macro and not a static inline func=
+tion?
+>
+> Think it's needed for the typeof() to work. The kernel's kfree_rcu() is
+> similar in this aspect.
 
-Our fixes branch is on 6.17-rc1. You can use it as a base if you want
-to.
+Ah, got it. Thanks!
 
-> 
-> Alternatively, frontload the MSHV fixes (which I'll do regardless) and take those
-> through hyperv and the rest through the tip tree?  That seems like an absurd
-> amount of juggling though, especially if we want to get the cleanups into 6.18.
-> And if none of these lands, it's MSHV that'll suffer the most, so betting it all
-> on the hyperv tree doesn't seem terrible.
-> 
-
-I'm happy to do it however the community sees fit.
-
-> > Also, is it possible to make all the mshv driver changes in a single patch?
-> 
-> It's certainly possible, but I'd prefer not do to that.
-> 
-> > It seems like it would be cleaner than refactoring it in patches 1 & 2 and
-> > then deleting all the refactored code in patch 5.
-> 
-> Only if you don't care about backporting fixes, bisection, or maintaining code.
-> 
-> E.g. if checking NEED_RESCHED_LAZY somehow causes issues, it would be really nice
-> for that to bisect to exactly that patch, not a patch that also switches to a
-> completely different set of APIs.
-> 
-> And if someone is wants the fixes in a pre-6.18 kernel, they don't need to
-> backport all of the KVM and entry code changes just to get the fix.
-
-+1 on this.
-
-Thanks,
-Wei
-
-> 
-> As for the maintenance headache, see above.
+>
+> >> +
+> >>  #endif
+> >>
+> >> --
+> >> 2.50.1
+> >>
+>
