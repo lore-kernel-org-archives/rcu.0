@@ -1,59 +1,59 @@
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC33C219EB
-	for <rcu@vger.kernel.org>; Wed, 27 Aug 2025 00:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF00930CD91
+	for <rcu@vger.kernel.org>; Wed, 27 Aug 2025 02:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756253966; cv=none; b=TBAKDWWIwNGiPMe/gpyFuQyyaAMJSmt0oQmgJEJSXgHke3AmaVzO7BtsZ/m0UgCGC877+JB1l0TK6syzqCaScLdcocrSrXsnQ07IOHdx2Y6ozKjn0BXoMkm6HoRYVk5hFNS/K+Sgmqz1doAeVnbdlBupk3gx5c6f2C02EgDHNW8=
+	t=1756260242; cv=none; b=dqJaxH9YT1d3rZbfRTlZLKFllasp9yFUMpY32Z/+DkNdOl64SxM+RFHCvO9nx8HK6ZXDaMFF2oV3DWntjMdnCtcLp3nR+YLwJC3XhGiaMKiFfN1oSF5gFQ5qP/MCZb8kOOQGL8/ImFmc5mathXFnQIWHtgzjLK7ASQABFgWEXtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756253966; c=relaxed/simple;
-	bh=Yx6UM87z90Ve7p+lWCl8R+FpbY+gFZTHVPHWZIEnMMk=;
+	s=arc-20240116; t=1756260242; c=relaxed/simple;
+	bh=GphFMthgSDDmbSJxopXevPsEECgUp1EXbWynI/nyV9g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tVmuQe7GuaSeg9Vyd2K6JiQ+QGoPMeN8XDKSRAzn35Pke58U5CGT++UjUT+lOhWArcQeddWaDEHS/lpb2xbffD0MfWgZtGFksPbk0/p/K6ObxQez+OBtVurcnDs9TqZpDN0CG1RAO0TQALwu2E9GhrcRdKRlPvv7IAwqjkbgT9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WZWxNZ0H; arc=none smtp.client-ip=209.85.160.174
+	 To:Content-Type; b=aR4t6iGa3g/56m3443Zeit1N89z00DIo6kjliYgFkSzdYz4vMptY0hPpiNi9vz8zAEMfMGnCO31TragVde5gh/GeZEKieGi9lgAWq5IbaXtwuev+o/ofZSmRNzgAWNITFV9Y7E63lvDIOpoj6yEbD++wVyl6mBIQi+SDp+zL4yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aiUEpYj0; arc=none smtp.client-ip=209.85.160.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WZWxNZ0H"
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4b29b715106so80071cf.1
-        for <rcu@vger.kernel.org>; Tue, 26 Aug 2025 17:19:24 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aiUEpYj0"
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-4b29b714f8cso128431cf.1
+        for <rcu@vger.kernel.org>; Tue, 26 Aug 2025 19:03:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756253964; x=1756858764; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=google.com; s=20230601; t=1756260238; x=1756865038; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SE4j56bcgneni+baZfrodSksw7MRxk2x9FNKN/g2SD4=;
-        b=WZWxNZ0H9wQUKC4I1JU/lrjvWyD1EKUw2Mj3JCUgSlbDKTeHOCjSkHdoUcMDq4w8fL
-         4t6cCV52/4PB7z+SKA5uP9FJRf9QL9gqPUsarboFrWN4tGs4CP/oBRczypLwcJIwLUXM
-         uaagt+ygVja9oFfY2NxH0DjrpZr9aQBJZ9+1Q/wAHHRnZMFN9JRQT3h//OzASE9P+m9a
-         sU0Kk0JHrcD+Y/rsN0tdF4sij9evQhf3LsXIQsV/pvTgx+BJF1s3kVUuS4AnO9VrHz0k
-         /ztWr/QO0gWq+XTwRc2uuyk4YZ2Sg1kCHDyuwwqiYa2WKWEBhSx/CRro6on/d9L87Yxp
-         Ko0Q==
+        bh=oEVxPCA6kJd9PIc8bhpPohKEpWmPNTYIVsnrA96TQzY=;
+        b=aiUEpYj0XH00pwh10rhv65EDM9i0lQjgZW7XHKFP9hEELoKcjCy7+XkQVqodX4LwhM
+         X51NSb+84AsddNG8NXH3cL8x2f5hdM7FJJTRCxAkW8xs08w0ub9abbuCyUWv9/NafbY8
+         u0pKOTZm134elF7mdjNcQ5dsZRLxIAAm/qaYUibsdJXWPQ7tZ/xZI8ZK8D4ygpa24Fzs
+         CQYM5/dU3zu9FH8+aMOD8VoVpF3RYgGTmRbUbsUF2PMGmdJYOSP/rPrq7upSlsKo3S1y
+         nD3Frea/8NKynxXcdqXfh1VNkkbLHN9GNg74d+UlvAkMOgQBdUIowF1i7DYPIo2J7zx3
+         m5fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756253964; x=1756858764;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1756260238; x=1756865038;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SE4j56bcgneni+baZfrodSksw7MRxk2x9FNKN/g2SD4=;
-        b=rigFTVKZyVHhAE1BEXSga6qjFHE66K1y0PY6uAe2h1Hk1By7/QIKv3BWjdG7bfHZfA
-         b8MG4Ui4sEpm4rHwohFsR+DyzMUAdkfoWZPTis3G9HafqHe+Z+L2A7tdDjiDOpfDDEhH
-         TZqlk+d4QHL7X0vkticNSBSD/PRte+WBwtMmS1vDeaLVABox7Rl/1mpzqIqVC3Z7FX15
-         SYkmQ2zi3zcw+X4bcIBlcv3rVXvMe2vKHKErqO4/nhj3X0pSUc86W9V98VY9XGq2NBbr
-         qfdCwtK9VnglcvAUX/uxWHk8ZyQ94O+q4R0A8iVmpimGX1cp04vo7y8H0y58whUR0iXv
-         5k2A==
-X-Forwarded-Encrypted: i=1; AJvYcCXTPTpFfBcQtysadiORj0Tuq7y5j5Wv/ENQo5xKzeBGbbbA0VuvGc38E6t0FMX8zqkkXg0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDyZb5qQ7YJWkuihgV7LqO1emHbtPEfRv6tpUr56HXTQwktgoX
-	xsuEj6gG1CsSEWQxYE37uc95SS0Dz7mdVaQR34eD6+I9FAUZWVksnPcs5NZh3Ta6r9vE5BkrdP+
-	AepcMU6cO8D5a4DnGx7Serr9KqyWoAt1zDyJkVwMH
-X-Gm-Gg: ASbGnctRyCW1KrB3MZZenvUPFc6ZzCZ63GRGpCDs5/PI8cAmvbqluP3Cta41ku/K1xA
-	8/WVnTl2TPAksaL0VPMPBxKFAeVYhnihnCpIbOjzNZGSvKkY6XtNVm1shUlwfJeYsFswqfTP4Ap
-	3qqE+azypvY4HE4zH/MGJ3ewIHR5q0zc2SPP5BIlcU4tHaLrwKG6aP1XXNWUzA9HeZaMWYYKrEH
-	9C1b8A8EwfEirYRFr4KJl4=
-X-Google-Smtp-Source: AGHT+IHKzkOVA97IoeFOhKzhjh88sPk1YwIXvTlOSZoPINFWeat9lSKrAMubEHDbEHy9C13HrZIHNUop3Q+tYrmsAvA=
-X-Received: by 2002:ac8:5a42:0:b0:4b2:939c:9c1a with SMTP id
- d75a77b69052e-4b2e2c4f835mr7873931cf.13.1756253963326; Tue, 26 Aug 2025
- 17:19:23 -0700 (PDT)
+        bh=oEVxPCA6kJd9PIc8bhpPohKEpWmPNTYIVsnrA96TQzY=;
+        b=Jj0ixnpKLSMWR94oNlQKkkAAFFyGGfXxHxlTUjlkyCDlNmTy3G3NeEGdIbaIIvKgV/
+         O9+1VBAcqkXbFqLIE2lMn0UD9187Xo8GPctiy1H9CFJSUcS5bHlPS+mxhUuvNpfgjKAB
+         p7XFvSx97RiDYpSotE0bQ9AzhDz4TR3z790e/AkfinF9XFFEc6OvRTArPLzarjiySCSz
+         FMrG+edvdC44QWweV12aY12I8XLVixEN2BlCOxMsvVE8tS6+AI3Hr5RpdFOPIQxC4XwH
+         83mdjI8HraZ96Wsgfq16fQjjl9/KzQYPrhnZg36q7auHjAfedeaG7pTIkgXwMF2ZJP91
+         lb7g==
+X-Forwarded-Encrypted: i=1; AJvYcCXCcyDgu6+BKa9hf0EAnf8a+wTC0Xed8r41WysuVXDfiSg+tmMAL8Sc2BsBtfmaxnIjDVw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKzWubmXosKxF2WZ0oCmegLDkmU28lYo02sLIpvYmmAXGhnamb
+	3vYbjB7+eY82tuWyeyuP4SQQfPafLnZ95a9L9DcNQZV0ey5KeOmiE8dtA10MeL97m4gCAyT/WZK
+	GJGKyJvqzkMAKGroSMkqW029ITXcIeqzW0V8s8nq+e3O8ILC5trI7E81j
+X-Gm-Gg: ASbGncvUVik8bGlnGqGktgE8THvdwnGGcUbWMfdQ0TN+qjZwKHXnY3zH/BdaEaXdsGx
+	Vs4fTsAGjU1f1Iz8Qhs7BEMREcm2Sz2pBnjUbgTTnQQNI1om7Pub/pzhyd4pNCB3tMonLsQvy0/
+	bn0SLaZoxHM6sKX90yxbi81/bXLRp/GWlF4M9bEiUf+HrZ2lkyNf/8/Jm4kRsD/tXq+vOX93+lb
+	aOZJIMLbYERHXA2qfeNwNw=
+X-Google-Smtp-Source: AGHT+IGHtlhh0VeckNbHAmlQ5S3gzzBpECXGOQvdXGjlOYoxZxhVip/09NFraMdVHLQbgCey4/aMUVeZBI1/PDbyvZQ=
+X-Received: by 2002:a05:622a:4a0c:b0:4a7:179e:5fec with SMTP id
+ d75a77b69052e-4b2eac6a173mr5480691cf.15.1756260238092; Tue, 26 Aug 2025
+ 19:03:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -61,96 +61,211 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250723-slub-percpu-caches-v5-0-b792cd830f5d@suse.cz>
- <20250723-slub-percpu-caches-v5-5-b792cd830f5d@suse.cz> <CAJuCfpHR=hceuAcnaCr3Hg-3mknvsmYy7jSScA8SATn7iwoN_w@mail.gmail.com>
- <711d539d-da4b-4f77-9be6-ca11b6fa5162@suse.cz>
-In-Reply-To: <711d539d-da4b-4f77-9be6-ca11b6fa5162@suse.cz>
+ <20250723-slub-percpu-caches-v5-13-b792cd830f5d@suse.cz> <CAJuCfpEjaw+4Ay-Yx=unHev+M4M9FmNmz_PSYmtsFn3EToLBxg@mail.gmail.com>
+ <6rvzsp6i6p6kc63acbg7hmqlsfx5htvyg5rax3llrauwwyzg4e@f436k2inorfe>
+In-Reply-To: <6rvzsp6i6p6kc63acbg7hmqlsfx5htvyg5rax3llrauwwyzg4e@f436k2inorfe>
 From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 26 Aug 2025 17:19:11 -0700
-X-Gm-Features: Ac12FXzxRQWqZVSs96sDjlJgMo-UL6e05LwJ4TtNEU1hDljVd05nsUaqKjsm23A
-Message-ID: <CAJuCfpFC6XELVof1xbJ2rZoxX3rHQfd34Du3=N_UeinM2DzPVA@mail.gmail.com>
-Subject: Re: [PATCH v5 05/14] tools: Add testing support for changes to rcu
- and slab for sheaves
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter <cl@gentwo.org>, 
-	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	maple-tree@lists.infradead.org
+Date: Tue, 26 Aug 2025 19:03:46 -0700
+X-Gm-Features: Ac12FXzSeNiZvXDErfLgt2l37tNkMytOYphilgAYuXMgRYjKC_nzXLjq5XayMtI
+Message-ID: <CAJuCfpGPP_fR2KvcmHxFbUkZY8p4GQOt2X-bU+PY7nUeRg489w@mail.gmail.com>
+Subject: Re: [PATCH v5 13/14] maple_tree: Add single node allocation support
+ to maple state
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Suren Baghdasaryan <surenb@google.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Harry Yoo <harry.yoo@oracle.com>, 
+	Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	rcu@vger.kernel.org, maple-tree@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 26, 2025 at 2:32=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
+On Tue, Aug 26, 2025 at 8:11=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracl=
+e.com> wrote:
 >
-> On 8/22/25 18:28, Suren Baghdasaryan wrote:
-> >> diff --git a/tools/testing/shared/linux/rcupdate.h b/tools/testing/sha=
-red/linux/rcupdate.h
-> >> index fed468fb0c78db6f33fb1900c7110ab5f3c19c65..c95e2f0bbd93798e544d7d=
-34e0823ed68414f924 100644
-> >> --- a/tools/testing/shared/linux/rcupdate.h
-> >> +++ b/tools/testing/shared/linux/rcupdate.h
-> >> @@ -9,4 +9,26 @@
-> >>  #define rcu_dereference_check(p, cond) rcu_dereference(p)
-> >>  #define RCU_INIT_POINTER(p, v) do { (p) =3D (v); } while (0)
-> >>
-> >> +void kmem_cache_free_active(void *objp);
-> >> +static unsigned long kfree_cb_offset =3D 0;
-> >> +
-> >> +static inline void kfree_rcu_cb(struct rcu_head *head)
-> >> +{
-> >> +       void *objp =3D (void *) ((unsigned long)head - kfree_cb_offset=
-);
-> >> +
-> >> +       kmem_cache_free_active(objp);
-> >> +}
-> >> +
-> >> +#ifndef offsetof
-> >> +#define offsetof(TYPE, MEMBER) __builtin_offsetof(TYPE, MEMBER)
-> >> +#endif
-> >> +
+> * Suren Baghdasaryan <surenb@google.com> [250822 16:25]:
+> > On Wed, Jul 23, 2025 at 6:35=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz=
+> wrote:
+> > >
+> > > From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+> > >
+> > > The fast path through a write will require replacing a single node in
+> > > the tree.  Using a sheaf (32 nodes) is too heavy for the fast path, s=
+o
+> > > special case the node store operation by just allocating one node in =
+the
+> > > maple state.
+> > >
+> > > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+> > > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> > > ---
+> > >  include/linux/maple_tree.h |  4 +++-
+> > >  lib/maple_tree.c           | 47 ++++++++++++++++++++++++++++++++++++=
+++++------
+> > >  2 files changed, 44 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/include/linux/maple_tree.h b/include/linux/maple_tree.h
+> > > index 3cf1ae9dde7ce43fa20ae400c01fefad048c302e..61eb5e7d09ad0133978e3=
+ac4b2af66710421e769 100644
+> > > --- a/include/linux/maple_tree.h
+> > > +++ b/include/linux/maple_tree.h
+> > > @@ -443,6 +443,7 @@ struct ma_state {
+> > >         unsigned long min;              /* The minimum index of this =
+node - implied pivot min */
+> > >         unsigned long max;              /* The maximum index of this =
+node - implied pivot max */
+> > >         struct slab_sheaf *sheaf;       /* Allocated nodes for this o=
+peration */
+> > > +       struct maple_node *alloc;       /* allocated nodes */
+> > >         unsigned long node_request;
+> > >         enum maple_status status;       /* The status of the state (a=
+ctive, start, none, etc) */
+> > >         unsigned char depth;            /* depth of tree descent duri=
+ng write */
+> > > @@ -491,8 +492,9 @@ struct ma_wr_state {
+> > >                 .status =3D ma_start,                                =
+     \
+> > >                 .min =3D 0,                                          =
+     \
+> > >                 .max =3D ULONG_MAX,                                  =
+     \
+> > > -               .node_request=3D 0,                                  =
+     \
+> > >                 .sheaf =3D NULL,                                     =
+     \
+> > > +               .alloc =3D NULL,                                     =
+     \
+> > > +               .node_request=3D 0,                                  =
+     \
+> > >                 .mas_flags =3D 0,                                    =
+     \
+> > >                 .store_type =3D wr_invalid,                          =
+     \
+> > >         }
+> > > diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+> > > index 3c3c14a76d98ded3b619c178d64099b464a2ca23..9aa782b1497f224e7366e=
+bbd65f997523ee0c8ab 100644
+> > > --- a/lib/maple_tree.c
+> > > +++ b/lib/maple_tree.c
+> > > @@ -1101,16 +1101,23 @@ static int mas_ascend(struct ma_state *mas)
+> > >   *
+> > >   * Return: A pointer to a maple node.
+> > >   */
+> > > -static inline struct maple_node *mas_pop_node(struct ma_state *mas)
+> > > +static __always_inline struct maple_node *mas_pop_node(struct ma_sta=
+te *mas)
+> > >  {
+> > >         struct maple_node *ret;
+> > >
+> > > +       if (mas->alloc) {
+> > > +               ret =3D mas->alloc;
+> > > +               mas->alloc =3D NULL;
+> > > +               goto out;
+> > > +       }
+> > > +
+> > >         if (WARN_ON_ONCE(!mas->sheaf))
+> > >                 return NULL;
+> > >
+> > >         ret =3D kmem_cache_alloc_from_sheaf(maple_node_cache, GFP_NOW=
+AIT, mas->sheaf);
+> > > -       memset(ret, 0, sizeof(*ret));
+> > >
+> > > +out:
+> > > +       memset(ret, 0, sizeof(*ret));
+> > >         return ret;
+> > >  }
+> > >
+> > > @@ -1121,9 +1128,34 @@ static inline struct maple_node *mas_pop_node(=
+struct ma_state *mas)
+> > >   */
+> > >  static inline void mas_alloc_nodes(struct ma_state *mas, gfp_t gfp)
+> > >  {
+> > > -       if (unlikely(mas->sheaf)) {
+> > > -               unsigned long refill =3D mas->node_request;
+> > > +       if (!mas->node_request)
+> > > +               return;
+> > > +
+> > > +       if (mas->node_request =3D=3D 1) {
+> > > +               if (mas->sheaf)
+> > > +                       goto use_sheaf;
+> > > +
+> > > +               if (mas->alloc)
+> > > +                       return;
+> > >
+> > > +               mas->alloc =3D mt_alloc_one(gfp);
+> > > +               if (!mas->alloc)
+> > > +                       goto error;
+> > > +
+> > > +               mas->node_request =3D 0;
+> > > +               return;
+> > > +       }
+> > > +
+> > > +use_sheaf:
+> > > +       if (unlikely(mas->alloc)) {
 > >
-> > We need a comment here that concurrent kfree_rcu() calls are not
-> > supported because they would override each other's kfree_cb_offset.
+> > When would this condition happen?
 >
-> I think it's a bit more complex and related to the commit log sentence "T=
-his
-> only works with one kmem_cache, and only the first one used.". The first
-> call to kfree_rcu sets kfree_cb_offset (but what if the rhv offset is
-> actually 0?) so the others won't update it. So concurrent calls will work=
- as
-> far as from the same cache thus same offset. But I'd like Liam's
-> confirmation and the comment text, if possible :)
 >
-> > Kinda obvious but I think unusual limitations should be explicitly
-> > called out.
-> >
-> >> +#define kfree_rcu(ptr, rhv)                                          =
-  \
-> >> +do {                                                                 =
-  \
-> >> +       if (!kfree_cb_offset)                                         =
-  \
-> >> +               kfree_cb_offset =3D offsetof(typeof(*(ptr)), rhv);    =
-    \
-> >> +                                                                     =
-  \
-> >> +       call_rcu(&ptr->rhv, kfree_rcu_cb);                            =
-  \
-> >> +} while (0)
-> >
-> > Any specific reason kfree_rcu() is a macro and not a static inline func=
-tion?
->
-> Think it's needed for the typeof() to work. The kernel's kfree_rcu() is
-> similar in this aspect.
+> This would be the case if we have one node allocated and requested more
+> than one node.  That is, a chained request for nodes that ends up having
+> the alloc set and requesting a sheaf.
 
-Ah, got it. Thanks!
+Ah, ok. So this is also a recovery case when we thought we need only
+one node and then the situation changed and we need more than one?
 
 >
-> >> +
-> >>  #endif
-> >>
-> >> --
-> >> 2.50.1
-> >>
+> > Do we really need to free mas->alloc
+> > here or it can be reused for the next 1-node allocation?
 >
+> Most calls end in mas_destroy() so that won't happen today.
+>
+> We could reduce the number of allocations requested to the sheaf and let
+> the code find the mas->alloc first and use that.
+>
+> But remember, we are getting into this situation where code did a
+> mas_preallocate() then figured they needed to do something else (error
+> recovery, or changed the vma flags and now it can merge..) and will now
+> need additional nodes.  So this is a rare case, so I figured just free
+> it was the safest thing.
+
+Ok, got it. Both situations would be part of the unusual recovery
+case. Makes sense then. Thanks!
+
+
+>
+>
+> > > +               mt_free_one(mas->alloc);
+> > > +               mas->alloc =3D NULL;
+> > > +       }
+> > > +
+> > > +       if (mas->sheaf) {
+> > > +               unsigned long refill;
+> > > +
+> > > +               refill =3D mas->node_request;
+> > >                 if(kmem_cache_sheaf_size(mas->sheaf) >=3D refill) {
+> > >                         mas->node_request =3D 0;
+> > >                         return;
+> > > @@ -5386,8 +5418,11 @@ void mas_destroy(struct ma_state *mas)
+> > >         mas->node_request =3D 0;
+> > >         if (mas->sheaf)
+> > >                 mt_return_sheaf(mas->sheaf);
+> > > -
+> > >         mas->sheaf =3D NULL;
+> > > +
+> > > +       if (mas->alloc)
+> > > +               mt_free_one(mas->alloc);
+> > > +       mas->alloc =3D NULL;
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(mas_destroy);
+> > >
+> > > @@ -6074,7 +6109,7 @@ bool mas_nomem(struct ma_state *mas, gfp_t gfp)
+> > >                 mas_alloc_nodes(mas, gfp);
+> > >         }
+> > >
+> > > -       if (!mas->sheaf)
+> > > +       if (!mas->sheaf && !mas->alloc)
+> > >                 return false;
+> > >
+> > >         mas->status =3D ma_start;
+> > >
+> > > --
+> > > 2.50.1
+> > >
