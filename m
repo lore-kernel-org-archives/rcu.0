@@ -1,57 +1,57 @@
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E573E10957
-	for <rcu@vger.kernel.org>; Thu, 28 Aug 2025 00:02:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B8B1A3160
+	for <rcu@vger.kernel.org>; Thu, 28 Aug 2025 00:02:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756339327; cv=none; b=AxuEaJuVoz61wYYGisTlsowTja8Cmk5OnUAeo7OhPOo1nWVAjWGiG9nTuoMO2nuvLhvt9spgNJioDcU72pGO4y+b+SjjgXZ/RDNxgh+J0hVG5fVvMjHvGzKL7+OQUTYUNYxoqfEYAMkIhoO+cD1rgzSTkeMPG7vLO31IfRISTD0=
+	t=1756339329; cv=none; b=bH8sC0mmYET/gFxEvfXcHue6FNmDHo1U7ORgUaKFy77+6YghQ6cs5IMu2q0rVEhywYnPNnOrsXsgddqszvI1YX9/KhvkGujCRM2fMpu61AmpXNoaas83CiRgtFaVYIOOfDluCo+wvuoSqMTzvubdHdAvUFa7ZK6TnyB3XibLT/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756339327; c=relaxed/simple;
-	bh=8tZ83PeYs29SmFwlLYawA90+tGBTxdUNJGqvgVUYI08=;
+	s=arc-20240116; t=1756339329; c=relaxed/simple;
+	bh=TvCX+8FkP7MFHYKfg/0KhAOHMZdZcfiHEdWLUolI1Zo=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=W1BVJ6GpM9r2sODxKthvJZ2Chn0tvSx3/ibOe+HlfY/P6oGZsBnteLVBGwf11HwiyedlftbOYQmcfx9IFjkpewBp6dlZTniCKm2J2kWe337oMhLd+h6MfozpX+McD1Vn3sw7JvnE99NuM9zgA286yDNi187f4048mpxB+qUyrQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yo+AOOCE; arc=none smtp.client-ip=209.85.216.74
+	 To:Cc:Content-Type; b=sDsz+fLaSBuSrJUCxST1j3EOHemcdTgLTHixQ6u2JNMHbPzqYSeXhFGSyoaAus2DOjBzuqG+FUlbfQvl7u2EvdI1xCKTjRCHnlz4xizOpAL3RmvNPSWrdTFROK9SczG0KyBMPIybOeYPycQTa07WnRrlCIPpfVqDtrClNvgtJeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FwGjinL6; arc=none smtp.client-ip=209.85.210.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yo+AOOCE"
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-324e4c3af5fso368142a91.3
-        for <rcu@vger.kernel.org>; Wed, 27 Aug 2025 17:02:05 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FwGjinL6"
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-771e1451631so757006b3a.1
+        for <rcu@vger.kernel.org>; Wed, 27 Aug 2025 17:02:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756339325; x=1756944125; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1756339327; x=1756944127; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=hDymskQNp6wG2uiiMHxVPzsL1nAJPxy4zRxFOrP95kA=;
-        b=yo+AOOCEgQsPtXsvEZ3HLVcsX1TmXb2v7Tx+yKYWB17Taupoci1mHoBlWVe28a4bs2
-         AsY+GUQDG1/883XQ1o4nO+jPq0xLEyraGBiG40dNPFuzgziGLXNIkOfMQSyTcXohftCe
-         h09d91Rq2CcH4LY16snMRZa12iL9z9kOD/D+IoXX/waF3iGnXfqulzx7IHl8igthuTyl
-         Z8ZIwoN1Ub8S9PovdB9eTq6QHzlcYByPjvhk32rvT87HJBhNKqzv4lV7Zt28QP4B3bck
-         P0JDPtsS5c+8H3vMjven3/YyoNrd2Sdnz9fXfParttV3jgLhuu7PhwMyVjFMwy8YYYSL
-         YcqA==
+        bh=vhbQgqknyAyVeKaXs8kP6grJ1hrwQUkSmJiE25IRpuQ=;
+        b=FwGjinL6djn0iX+mCxZgJ6VgeV7qBbQopg+f1tDftimoOdpxj0PE1cGZiTSMRRw8Z4
+         bsRWFdiReGjHjjopEPvTo+25kWh2mZ4u6aFcZYEGcC+Nmhtxko3ZIGCaMf/iqh0FuS9Z
+         7RlAjao2y4po8a6a/DfbW38NOdniScT5kUdoRmDH/UVwTTLM0PmaKTNDlZGs9inTQbU7
+         82iOF6OVv73twgxpHgP6raLu6kw2J8MpCQui73xwaIj9RxdWX1OTBMLwP2tBizWnQpY4
+         zmdvSDiF/+ZLqrCr+oqyRDYlp47T7+7/i0/sfonud1ThTK1460RajvcywdvQbvTPl596
+         +cYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756339325; x=1756944125;
+        d=1e100.net; s=20230601; t=1756339327; x=1756944127;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hDymskQNp6wG2uiiMHxVPzsL1nAJPxy4zRxFOrP95kA=;
-        b=imejL6jjnj6UplDvL2oUxNp0b87o0qUhNg/XgWhCrVUeLzn86VYoKuSbLBDMPGBc5G
-         vhmLIyxfqgacxmLlp5vBc53QLcRCHbsVytDzhr8WWifAd3c1cEgboabjuik0vyH9tdhg
-         Ttav8Uz2wSUOpSqzCkIyUxBkz5gsIuQ8qMWQQdTA328T5F9cTXsR0T8+M5WGqQn1xyV/
-         C5V4NFs8XVBYlowS/zCbdGTfmMofiRn3PaKWefy7rMkCOgHUNlI1U0J3CWzVIaf328Tu
-         PL/n93QCfC+N0l9O6yCcDyl/NXm9dbt+soG4v6yqkS5TX3WHF31OQLXAW9VpIzNWLLQn
-         s7xg==
-X-Forwarded-Encrypted: i=1; AJvYcCXWt1KiylcrfLXOCk61ScLuwp8cwzO41mF/fk/ERVB1hrDqLONcmumdW+APuk6UsG2uqt8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwApNLh5yGzEIVFGFomAHOBxdv2lKUTO0bRfMR7P3UnnfQp5dB7
-	P1KhRe9OUG5ZyWzjhLCEw5nHMMrLw1KS05xpQLGPsXvpAPsO/JhQAQLrZjLDdwT+mh49rc539Bm
-	KJUrEOQ==
-X-Google-Smtp-Source: AGHT+IEpldWCysonYjdHETjodWyZtDlIBYcwDxX/6JZFBAIAnGNdK+zSnqMrfXxPLk2m5pFyKQhTG4/yaKw=
-X-Received: from pjj15.prod.google.com ([2002:a17:90b:554f:b0:325:833b:6f27])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:55c4:b0:327:aaeb:e814
- with SMTP id 98e67ed59e1d1-327aaebf1b1mr940666a91.23.1756339325323; Wed, 27
- Aug 2025 17:02:05 -0700 (PDT)
+        bh=vhbQgqknyAyVeKaXs8kP6grJ1hrwQUkSmJiE25IRpuQ=;
+        b=m80NPIQI3Ml65XPTnWKjB4jEZaOc0ersI2Jbf8AB8Qr1+zTsOrKEO8QvvvhIeil5y7
+         XLDkFJfPbtZlkYhXRdmHcLOkV/vUM3zGllj/gD8/K6zJ6400ylPN+5VZvbgoEpHbbX+E
+         IClxJcOxk7eluoLVqp2ARFP7r189dO5eojOYTRB+rr45WMpDGCPtZoUIQ53h9dbXn0vi
+         RNCQmLF4fZ3XSbI5VnSiwfYKvQ3eOeTe+TQ0ux+jQ8Xu1zbRbPhsnEKTZBQ2XdJQbYWZ
+         biCkV82kuuGPrcCsYeodfs+BMS4OlH3ONgRGEEsYw0r7KgKgom1IhCf2ZNzYoGKWqBNG
+         yFuw==
+X-Forwarded-Encrypted: i=1; AJvYcCWR1XucBSB9cXUB8loijQCJfu6+X5H3htQUhO0EQwyVU5r32K/+t8zoYqbK5D8ZttE8hGE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywm4vcLy2MM/1SCTibJyCakd5HYs5vnIYeZlXz2GIKUbx/lhB5v
+	0oby5vqEYSGuqsvGWvUWP6aUu6h/gTcgFBE4ENN1BJ0nhYYpyJjFkJXtjNGCGNEsWLQSDZoMkoO
+	ZucUKMA==
+X-Google-Smtp-Source: AGHT+IFSTSPK462uYm9CJ0EAHOKjQ8TiWstiYBGpgePwdPA6VvAffLDDZpu/ZHt6d1MsFofssMNf6pVc4TI=
+X-Received: from pfbdr10.prod.google.com ([2002:a05:6a00:4a8a:b0:772:a5a:298b])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:4b46:b0:76e:885a:c1c9
+ with SMTP id d2e1a72fcca58-7702fc24f39mr26347774b3a.27.1756339327187; Wed, 27
+ Aug 2025 17:02:07 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Wed, 27 Aug 2025 17:01:51 -0700
+Date: Wed, 27 Aug 2025 17:01:52 -0700
 In-Reply-To: <20250828000156.23389-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -61,8 +61,9 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250828000156.23389-1-seanjc@google.com>
 X-Mailer: git-send-email 2.51.0.268.g9569e192d0-goog
-Message-ID: <20250828000156.23389-3-seanjc@google.com>
-Subject: [PATCH v2 2/7] Drivers: hv: Disentangle VTL return cancellation from SIGPENDING
+Message-ID: <20250828000156.23389-4-seanjc@google.com>
+Subject: [PATCH v2 3/7] Drivers: hv: Disable IRQs only after handling pending
+ work before VTL return
 From: Sean Christopherson <seanjc@google.com>
 To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
 	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
@@ -85,50 +86,51 @@ Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	Nuno Das Neves <nunodasneves@linux.microsoft.com>, Mukesh R <mrathor@linux.microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Check for return to a lower VTL being cancelled separately from handling
-pending TIF-based work, as there is no need to immediately process pending
-work; the kernel will immediately exit to userspace (ignoring preemption)
-and handle the pending work at that time.
-
-Disentangling cancellation from the TIF-based work will allow switching to
-common virtualization APIs for detecting and processing pending work.
+Swap the order of checking for TIF-based work and cancellation, and disable
+IRQs only after checking and processing TIF-based work; checking TIF with
+IRQs enabled is a-ok, e.g. IRQs and preemption _must_ be enabled before
+handling the pending work.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- drivers/hv/mshv_vtl_main.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/hv/mshv_vtl_main.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/hv/mshv_vtl_main.c b/drivers/hv/mshv_vtl_main.c
-index 12f5e77b7095..aa09a76f0eff 100644
+index aa09a76f0eff..4ca13c54c0a0 100644
 --- a/drivers/hv/mshv_vtl_main.c
 +++ b/drivers/hv/mshv_vtl_main.c
-@@ -731,19 +731,21 @@ static int mshv_vtl_ioctl_return_to_lower_vtl(void)
- 						_TIF_NOTIFY_RESUME | _TIF_NOTIFY_SIGNAL |
- 						_TIF_NEED_RESCHED_LAZY;
- 		unsigned long ti_work;
--		u32 cancel;
- 		unsigned long irq_flags;
+@@ -735,16 +735,8 @@ static int mshv_vtl_ioctl_return_to_lower_vtl(void)
  		struct hv_vp_assist_page *hvp;
  		int ret;
  
- 		local_irq_save(irq_flags);
+-		local_irq_save(irq_flags);
+-		if (READ_ONCE(mshv_vtl_this_run()->cancel)) {
+-			local_irq_restore(irq_flags);
+-			preempt_enable();
+-			return -EINTR;
+-		}
+-
+ 		ti_work = READ_ONCE(current_thread_info()->flags);
+ 		if (unlikely(ti_work & VTL0_WORK)) {
+-			local_irq_restore(irq_flags);
+ 			preempt_enable();
+ 			ret = mshv_do_pre_guest_mode_work(ti_work);
+ 			if (ret)
+@@ -753,6 +745,13 @@ static int mshv_vtl_ioctl_return_to_lower_vtl(void)
+ 			continue;
+ 		}
+ 
++		local_irq_save(irq_flags);
 +		if (READ_ONCE(mshv_vtl_this_run()->cancel)) {
 +			local_irq_restore(irq_flags);
 +			preempt_enable();
 +			return -EINTR;
 +		}
 +
- 		ti_work = READ_ONCE(current_thread_info()->flags);
--		cancel = READ_ONCE(mshv_vtl_this_run()->cancel);
--		if (unlikely((ti_work & VTL0_WORK) || cancel)) {
-+		if (unlikely(ti_work & VTL0_WORK)) {
- 			local_irq_restore(irq_flags);
- 			preempt_enable();
--			if (cancel)
--				ti_work |= _TIF_SIGPENDING;
- 			ret = mshv_do_pre_guest_mode_work(ti_work);
- 			if (ret)
- 				return ret;
+ 		mshv_vtl_return(&mshv_vtl_this_run()->cpu_context);
+ 		local_irq_restore(irq_flags);
+ 
 -- 
 2.51.0.268.g9569e192d0-goog
 
