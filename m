@@ -1,447 +1,149 @@
-Received: from mout.web.de (mout.web.de [212.227.17.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BD530C615;
-	Thu, 28 Aug 2025 10:47:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839632309B9
+	for <rcu@vger.kernel.org>; Thu, 28 Aug 2025 14:25:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756378054; cv=none; b=J/Xpvp7L9lxVLVii9tfChjIGqZBusoUqCb6eL/MIaUeAK5uCwTrC4uKRl0SwnuC6hmxnCgh0AJ2O/oVHmPOyD76VCAAcfu9vJn8pHZ5oTCfmWZK7n1xpj9AZzETYVb5uLH0HIEYmnKwBXyCjrfmrbgDh1d4T7qihrGQjFfqtIkE=
+	t=1756391136; cv=none; b=JulRidbWGXjRzvvpyVaWkbLAg8UXWcKu99gdYA4wWOASFig8yZPkfbZlIfH8werQ+8HVztswATWJpIhjDf2Mi2R8PdMLKFatod3XCVx1RWgzf4gQ7t5ROIa2PholGVFYBvFDPboPpIYgaD7l/5ef2PlAkqzLIBFryxtKLVejT1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756378054; c=relaxed/simple;
-	bh=bH1+9tCrgFxXQQMyQJqGifsOSchntb5WWHYa+mdkBbw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VZWzSgZGge28ysvVotVAerBr9d70KlcARcN4UDra0MLlxqEhIpb+AcsdijbfLGsBZCffxizWQSUb520p/pSq1LVTx4smqgNN+/s9qISDYArolcq9l6LBw58gP9iWnV0uZxeQwMi8nQN6szii72iRe7E4d45J9l82OL2ROB8fO1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=fvofJaPk; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="fvofJaPk"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1756378022; x=1756982822; i=spasswolf@web.de;
-	bh=0WUJqsrAYnQkrI39CYTgeGfmXA2oXBJe4Y8RSF3Rocg=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=fvofJaPk04UEbJ0tgOPTIBGpJ+5yn1ns6pnWzY9auAAeMJh9B661CO0seeDvNONm
-	 idpKw4Sqb/9FPxqxLNdl2CLeFTB35nkaJbNQaCo5N37lk9ZchG7oc+JgTQw9KFnql
-	 ENlrQWDj/HaeTigmLBFJDqP+HND/AI4yNWw6LkFz9GROqOmDxKhaltszvNPwmGf6G
-	 54gR9B6KEXw30WNc+7EHAwfq7rnCV5r37Rw7PryUMSblTmB7YpsKL22JwD7lMrWQQ
-	 EQ9f7+8zm5GOrDqCh88ELVGiEGZ/TyldFMfeCtu7Z6P2Q5GW1XydgraXW0wAPqA+0
-	 bQZMZaiHeA/KCnxaWQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from localhost.localdomain ([95.223.134.88]) by smtp.web.de
- (mrweb106 [213.165.67.124]) with ESMTPSA (Nemesis) id
- 1MXocY-1uzJP73lBk-00Ynov; Thu, 28 Aug 2025 12:47:02 +0200
-From: Bert Karwatzki <spasswolf@web.de>
-To: vbabka@suse.cz
-Cc: Bert Karwatzki <spasswolf@web.de>,
-	Liam.Howlett@oracle.com,
-	cl@gentwo.org,
-	harry.yoo@oracle.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-rt-devel@lists.linux.dev,
-	maple-tree@lists.infradead.org,
-	rcu@vger.kernel.org,
-	rientjes@google.com,
-	roman.gushchin@linux.dev,
-	surenb@google.com,
-	urezki@gmail.com
-Subject: commit 4ca04daa23305 fails to compile with PREEMPT_RT=y
-Date: Thu, 28 Aug 2025 12:46:57 +0200
-Message-ID: <20250828104658.172649-1-spasswolf@web.de>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: 20250827-slub-percpu-caches-v6-2-f0f775a3f73f@suse.cz
-References: 
+	s=arc-20240116; t=1756391136; c=relaxed/simple;
+	bh=or4ymz+8rapxhUcqnPZhNyzaZe3k0OTQofWc3oLIz6k=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YHOulDTicGxTqfCD7bD1zt9CnoeiqEnk1REVjdcgB4iDvkxSkOPDFIxJyFCf6ryQrlH7GKDKJWsgLwtbiG3Sbc4iJ2HC7GtP2RctDa5yvZyC1vJDIumJzyO+9fYBSJl1C/i4s3NI4a2tyNiQWFXdEvE3F0yJxu+2kl/+7acn/Tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-886e162de4dso123793339f.1
+        for <rcu@vger.kernel.org>; Thu, 28 Aug 2025 07:25:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756391134; x=1756995934;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X401dxTztD/h02Lx3lrqLzK2dweQNmNnv6bEtQK8+EM=;
+        b=T5qqZQuM+NcOdViyu7i3AidU5PAtwq5tDGLo1LT557HyJG0j3GRIzFVhGNXJNDzcdA
+         /xw1nMx+zJCqoVCzUXDFnbrtSjiupTzhlkn3DRzdFQsH4DmXxkgiLUnwoTCQIVC1UVJM
+         0vqrWho8KpR2HH0tjXvSBRFFNzf/Bm9vX9Zvuh62eRVfGyZru+0aG70Abvzjsk1WjNpK
+         RbkiAtbDPLqLjhFS/jhhQRrzLMrI9mgc8mRa8r3/EF+Y5HW0EPiEAotEtwD1WjUL1uyU
+         hKaTH97aZBcJWEvZla9SG9FkFwbjjJX2RvFwhofCxxnRuPJKi9/vUvvdTwC1AA8Eq2zr
+         5oDw==
+X-Forwarded-Encrypted: i=1; AJvYcCXVzp7+0d4s/kidchGjVGuMU+JPEqIq4rhIYDIxGpGiZ+FJTEyRkEbfr3mlkquZ10VGYb8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxPloUFTVp37yaNuBTNyT1zglr10QAYpOvHsMWxOdN4VLjE2IhY
+	wIL16/CCKTygmbaZu64nfT9c26WcpdZuhqkYlmBLDvYABFgbRe1cQznb7xigPOI/6Ee1T15M9DF
+	IqtMb8/2RrUUbzW8xCm/n9Gr9lWh2jjku1DB79CCDIRGeoZ5vTH0wxhIDJBs=
+X-Google-Smtp-Source: AGHT+IF1JahB34Nzk8euvUaM8Fb3n8wWejPb8okot3E4s8ziUB2BctW//TxhVGjZgwBudcF+W5C7c9VLwAl8RNMreZuRKAXETc46
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:x8k7jnSLTIhjtWsrF57/r+ECHgT4S23aBF+WvPLQmxRQ3qbrz5Y
- BMzXjERZIhcrvgm87eBXEIlDnXJGKF3/Ms7eF6CIdyONbD98QI58RdZc2nhWL2SVAtUcZCQ
- e/BBxXpK01UvZAIXxHpebOLizmd0t7w46q0t6y5y/PMHD45G37CAx5c0v09E+o6K3FKZ0lz
- uGUaqyeXAFY313t+aashQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Np0hriZfIZM=;c6DZNBGjuihKHBEYf5ipWmKa4CR
- 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
- n40O4zoAjcUYx4VMoRt
+X-Received: by 2002:a05:6e02:4617:b0:3ea:d47f:5995 with SMTP id
+ e9e14a558f8ab-3ef08764393mr130298875ab.11.1756391133708; Thu, 28 Aug 2025
+ 07:25:33 -0700 (PDT)
+Date: Thu, 28 Aug 2025 07:25:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68b066dd.a70a0220.f8cc2.007b.GAE@google.com>
+Subject: [syzbot] [rcu?] BUG: unable to handle kernel paging request in rcu_cblist_dequeue
+From: syzbot <syzbot+dfae5535e0da40eb9879@syzkaller.appspotmail.com>
+To: boqun.feng@gmail.com, frederic@kernel.org, jiangshanlai@gmail.com, 
+	joelagnelf@nvidia.com, josh@joshtriplett.org, linux-kernel@vger.kernel.org, 
+	mathieu.desnoyers@efficios.com, neeraj.upadhyay@kernel.org, 
+	paulmck@kernel.org, qiang.zhang@linux.dev, rcu@vger.kernel.org, 
+	rostedt@goodmis.org, syzkaller-bugs@googlegroups.com, urezki@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-In noticed that linux next-20250828 fails to compile with the following er=
-ror:
+Hello,
 
-In file included from ./include/linux/spinlock.h:63,
-                 from ./include/linux/mmzone.h:8,
-                 from ./include/linux/gfp.h:7,
-                 from ./include/linux/mm.h:7,
-                 from mm/slub.c:13:
-mm/slub.c: In function =E2=80=98__pcs_replace_empty_main=E2=80=99:
-mm/slub.c:4727:64: error: =E2=80=98local_trylock_t=E2=80=99 {aka =E2=80=98=
-__seg_gs struct spinlock=E2=80=99} has no member named =E2=80=98llock=E2=
-=80=99; did you mean =E2=80=98lock=E2=80=99?
- 4727 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                                                                ^~~=
-~~
-./include/linux/lockdep.h:392:61: note: in definition of macro =E2=80=98lo=
-ckdep_assert_held=E2=80=99
-  392 | #define lockdep_assert_held(l)                  do { (void)(l); } =
-while (0)
-      |                                                             ^
-./include/linux/percpu-defs.h:245:9: note: in expansion of macro =E2=80=98=
-__verify_pcpu_ptr=E2=80=99
-  245 |         __verify_pcpu_ptr(ptr);                                   =
-      \
-      |         ^~~~~~~~~~~~~~~~~
-./include/linux/percpu-defs.h:256:27: note: in expansion of macro =E2=80=
-=98raw_cpu_ptr=E2=80=99
-  256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-      |                           ^~~~~~~~~~~
-mm/slub.c:4727:29: note: in expansion of macro =E2=80=98this_cpu_ptr=E2=80=
-=99
- 4727 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                             ^~~~~~~~~~~~
-mm/slub.c:4727:64: error: =E2=80=98local_trylock_t=E2=80=99 {aka =E2=80=98=
-__seg_gs struct spinlock=E2=80=99} has no member named =E2=80=98llock=E2=
-=80=99; did you mean =E2=80=98lock=E2=80=99?
- 4727 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                                                                ^~~=
-~~
-./include/linux/lockdep.h:392:61: note: in definition of macro =E2=80=98lo=
-ckdep_assert_held=E2=80=99
-  392 | #define lockdep_assert_held(l)                  do { (void)(l); } =
-while (0)
-      |                                                             ^
-./include/linux/percpu-defs.h:246:9: note: in expansion of macro =E2=80=98=
-arch_raw_cpu_ptr=E2=80=99
-  246 |         arch_raw_cpu_ptr(ptr);                                    =
-      \
-      |         ^~~~~~~~~~~~~~~~
-./include/linux/percpu-defs.h:256:27: note: in expansion of macro =E2=80=
-=98raw_cpu_ptr=E2=80=99
-  256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-      |                           ^~~~~~~~~~~
-mm/slub.c:4727:29: note: in expansion of macro =E2=80=98this_cpu_ptr=E2=80=
-=99
- 4727 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                             ^~~~~~~~~~~~
-mm/slub.c:4727:64: error: =E2=80=98local_trylock_t=E2=80=99 {aka =E2=80=98=
-__seg_gs struct spinlock=E2=80=99} has no member named =E2=80=98llock=E2=
-=80=99; did you mean =E2=80=98lock=E2=80=99?
- 4727 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                                                                ^~~=
-~~
-./include/linux/lockdep.h:392:61: note: in definition of macro =E2=80=98lo=
-ckdep_assert_held=E2=80=99
-  392 | #define lockdep_assert_held(l)                  do { (void)(l); } =
-while (0)
-      |                                                             ^
-./arch/x86/include/asm/percpu.h:68:10: note: in expansion of macro =E2=80=
-=98TYPEOF_UNQUAL=E2=80=99
-   68 |         (TYPEOF_UNQUAL(*(_ptr)) __force __kernel *)tcp_ptr__;     =
-      \
-      |          ^~~~~~~~~~~~~
-./include/linux/percpu-defs.h:246:9: note: in expansion of macro =E2=80=98=
-arch_raw_cpu_ptr=E2=80=99
-  246 |         arch_raw_cpu_ptr(ptr);                                    =
-      \
-      |         ^~~~~~~~~~~~~~~~
-./include/linux/percpu-defs.h:256:27: note: in expansion of macro =E2=80=
-=98raw_cpu_ptr=E2=80=99
-  256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-      |                           ^~~~~~~~~~~
-mm/slub.c:4727:29: note: in expansion of macro =E2=80=98this_cpu_ptr=E2=80=
-=99
- 4727 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                             ^~~~~~~~~~~~
-  CC      net/ipv4/route.o
-mm/slub.c: In function =E2=80=98__pcs_install_empty_sheaf=E2=80=99:
-  AS      lib/crypto/x86/sha1-ni-asm.o
-  CC      drivers/acpi/ec.o
-mm/slub.c:5604:64: error: =E2=80=98local_trylock_t=E2=80=99 {aka =E2=80=98=
-__seg_gs struct spinlock=E2=80=99} has no member named =E2=80=98llock=E2=
-=80=99; did you mean =E2=80=98lock=E2=80=99?
- 5604 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                                                                ^~~=
-~~
-./include/linux/lockdep.h:392:61: note: in definition of macro =E2=80=98lo=
-ckdep_assert_held=E2=80=99
-  392 | #define lockdep_assert_held(l)                  do { (void)(l); } =
-while (0)
-      |                                                             ^
-./include/linux/percpu-defs.h:245:9: note: in expansion of macro =E2=80=98=
-__verify_pcpu_ptr=E2=80=99
-  245 |         __verify_pcpu_ptr(ptr);                                   =
-      \
-      |         ^~~~~~~~~~~~~~~~~
-./include/linux/percpu-defs.h:256:27: note: in expansion of macro =E2=80=
-=98raw_cpu_ptr=E2=80=99
-  256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-      |                           ^~~~~~~~~~~
-mm/slub.c:5604:29: note: in expansion of macro =E2=80=98this_cpu_ptr=E2=80=
-=99
- 5604 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                             ^~~~~~~~~~~~
-mm/slub.c:5604:64: error: =E2=80=98local_trylock_t=E2=80=99 {aka =E2=80=98=
-__seg_gs struct spinlock=E2=80=99} has no member named =E2=80=98llock=E2=
-=80=99; did you mean =E2=80=98lock=E2=80=99?
- 5604 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                                                                ^~~=
-~~
-./include/linux/lockdep.h:392:61: note: in definition of macro =E2=80=98lo=
-ckdep_assert_held=E2=80=99
-  392 | #define lockdep_assert_held(l)                  do { (void)(l); } =
-while (0)
-      |                                                             ^
-./include/linux/percpu-defs.h:246:9: note: in expansion of macro =E2=80=98=
-arch_raw_cpu_ptr=E2=80=99
-  246 |         arch_raw_cpu_ptr(ptr);                                    =
-      \
-      |         ^~~~~~~~~~~~~~~~
-./include/linux/percpu-defs.h:256:27: note: in expansion of macro =E2=80=
-=98raw_cpu_ptr=E2=80=99
-  256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-      |                           ^~~~~~~~~~~
-mm/slub.c:5604:29: note: in expansion of macro =E2=80=98this_cpu_ptr=E2=80=
-=99
- 5604 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                             ^~~~~~~~~~~~
-mm/slub.c:5604:64: error: =E2=80=98local_trylock_t=E2=80=99 {aka =E2=80=98=
-__seg_gs struct spinlock=E2=80=99} has no member named =E2=80=98llock=E2=
-=80=99; did you mean =E2=80=98lock=E2=80=99?
- 5604 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                                                                ^~~=
-~~
-./include/linux/lockdep.h:392:61: note: in definition of macro =E2=80=98lo=
-ckdep_assert_held=E2=80=99
-  392 | #define lockdep_assert_held(l)                  do { (void)(l); } =
-while (0)
-      |                                                             ^
-./arch/x86/include/asm/percpu.h:68:10: note: in expansion of macro =E2=80=
-=98TYPEOF_UNQUAL=E2=80=99
-   68 |         (TYPEOF_UNQUAL(*(_ptr)) __force __kernel *)tcp_ptr__;     =
-      \
-      |          ^~~~~~~~~~~~~
-./include/linux/percpu-defs.h:246:9: note: in expansion of macro =E2=80=98=
-arch_raw_cpu_ptr=E2=80=99
-  246 |         arch_raw_cpu_ptr(ptr);                                    =
-      \
-      |         ^~~~~~~~~~~~~~~~
-./include/linux/percpu-defs.h:256:27: note: in expansion of macro =E2=80=
-=98raw_cpu_ptr=E2=80=99
-  256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-      |                           ^~~~~~~~~~~
-mm/slub.c:5604:29: note: in expansion of macro =E2=80=98this_cpu_ptr=E2=80=
-=99
- 5604 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                             ^~~~~~~~~~~~
-mm/slub.c: In function =E2=80=98__pcs_replace_full_main=E2=80=99:
-mm/slub.c:5653:64: error: =E2=80=98local_trylock_t=E2=80=99 {aka =E2=80=98=
-__seg_gs struct spinlock=E2=80=99} has no member named =E2=80=98llock=E2=
-=80=99; did you mean =E2=80=98lock=E2=80=99?
- 5653 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                                                                ^~~=
-~~
-./include/linux/lockdep.h:392:61: note: in definition of macro =E2=80=98lo=
-ckdep_assert_held=E2=80=99
-  392 | #define lockdep_assert_held(l)                  do { (void)(l); } =
-while (0)
-      |                                                             ^
-./include/linux/percpu-defs.h:245:9: note: in expansion of macro =E2=80=98=
-__verify_pcpu_ptr=E2=80=99
-  245 |         __verify_pcpu_ptr(ptr);                                   =
-      \
-      |         ^~~~~~~~~~~~~~~~~
-./include/linux/percpu-defs.h:256:27: note: in expansion of macro =E2=80=
-=98raw_cpu_ptr=E2=80=99
-  256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-      |                           ^~~~~~~~~~~
-mm/slub.c:5653:29: note: in expansion of macro =E2=80=98this_cpu_ptr=E2=80=
-=99
- 5653 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                             ^~~~~~~~~~~~
-mm/slub.c:5653:64: error: =E2=80=98local_trylock_t=E2=80=99 {aka =E2=80=98=
-__seg_gs struct spinlock=E2=80=99} has no member named =E2=80=98llock=E2=
-=80=99; did you mean =E2=80=98lock=E2=80=99?
- 5653 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                                                                ^~~=
-~~
-./include/linux/lockdep.h:392:61: note: in definition of macro =E2=80=98lo=
-ckdep_assert_held=E2=80=99
-  392 | #define lockdep_assert_held(l)                  do { (void)(l); } =
-while (0)
-      |                                                             ^
-./include/linux/percpu-defs.h:246:9: note: in expansion of macro =E2=80=98=
-arch_raw_cpu_ptr=E2=80=99
-  246 |         arch_raw_cpu_ptr(ptr);                                    =
-      \
-      |         ^~~~~~~~~~~~~~~~
-./include/linux/percpu-defs.h:256:27: note: in expansion of macro =E2=80=
-=98raw_cpu_ptr=E2=80=99
-  256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-      |                           ^~~~~~~~~~~
-mm/slub.c:5653:29: note: in expansion of macro =E2=80=98this_cpu_ptr=E2=80=
-=99
- 5653 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                             ^~~~~~~~~~~~
-mm/slub.c:5653:64: error: =E2=80=98local_trylock_t=E2=80=99 {aka =E2=80=98=
-__seg_gs struct spinlock=E2=80=99} has no member named =E2=80=98llock=E2=
-=80=99; did you mean =E2=80=98lock=E2=80=99?
- 5653 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                                                                ^~~=
-~~
-./include/linux/lockdep.h:392:61: note: in definition of macro =E2=80=98lo=
-ckdep_assert_held=E2=80=99
-  392 | #define lockdep_assert_held(l)                  do { (void)(l); } =
-while (0)
-      |                                                             ^
-./arch/x86/include/asm/percpu.h:68:10: note: in expansion of macro =E2=80=
-=98TYPEOF_UNQUAL=E2=80=99
-   68 |         (TYPEOF_UNQUAL(*(_ptr)) __force __kernel *)tcp_ptr__;     =
-      \
-      |          ^~~~~~~~~~~~~
-./include/linux/percpu-defs.h:246:9: note: in expansion of macro =E2=80=98=
-arch_raw_cpu_ptr=E2=80=99
-  246 |         arch_raw_cpu_ptr(ptr);                                    =
-      \
-      |         ^~~~~~~~~~~~~~~~
-./include/linux/percpu-defs.h:256:27: note: in expansion of macro =E2=80=
-=98raw_cpu_ptr=E2=80=99
-  256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-      |                           ^~~~~~~~~~~
-mm/slub.c:5653:29: note: in expansion of macro =E2=80=98this_cpu_ptr=E2=80=
-=99
- 5653 |         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llo=
-ck));
-      |                             ^~~~~~~~~~~~
+syzbot found the following issue on:
+
+HEAD commit:    8f5ae30d69d7 Linux 6.17-rc1
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1617e634580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5ac3d8b8abfcb
+dashboard link: https://syzkaller.appspot.com/bug?extid=dfae5535e0da40eb9879
+compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/18a2e4bd0c4a/disk-8f5ae30d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3b5395881b25/vmlinux-8f5ae30d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e875f4e3b7ff/Image-8f5ae30d.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dfae5535e0da40eb9879@syzkaller.appspotmail.com
+
+Unable to handle kernel paging request at virtual address ffff3ff7ee0a2600
+KASAN: maybe wild-memory-access in range [0xfffdffbf70513000-0xfffdffbf70513007]
+Mem abort info:
+  ESR = 0x0000000096000004
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x04: level 0 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000206ec9000
+[ffff3ff7ee0a2600] pgd=0000000000000000, p4d=0000000000000000
+Internal error: Oops: 0000000096000004 [#1]  SMP
+Modules linked in:
+CPU: 0 UID: 0 PID: 1816 Comm: kworker/0:2 Not tainted 6.17.0-rc1-syzkaller-g8f5ae30d69d7 #0 PREEMPT 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/30/2025
+Workqueue: rcu_gp srcu_invoke_callbacks
+pstate: 03400005 (nzcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+pc : rcu_cblist_dequeue+0x68/0xc8 kernel/rcu/rcu_segcblist.c:75
+lr : srcu_invoke_callbacks+0x198/0x394 kernel/rcu/srcutree.c:1802
+sp : ffff80009f9c7960
+x29: ffff80009f9c7960 x28: ffff80009f9c79c0 x27: dfff800000000000
+x26: ffff0000c5a5a918 x25: ffff0000c1092800 x24: fffffdffbf6e0e40
+x23: 1ffff00013f38f3c x22: dfff800000000000 x21: ffff80009f9c79f0
+x20: fffdffbf70513000 x19: ffff80009f9c79e0 x18: 0000000000000000
+x17: ffff80010c5d9000 x16: ffff8000805293e8 x15: 0000000000000001
+x14: 1fffffbff7edc1c8 x13: 0000000000000000 x12: 0000000000000000
+x11: ffff800093306be8 x10: 0000000000000001 x9 : 1fffbff7ee0a2600
+x8 : 0000000000000000 x7 : ffff8000805b4130 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000010
+x2 : 0000000000000006 x1 : ffff80008edc258c x0 : ffff80009f9c79e0
+Call trace:
+ rcu_cblist_dequeue+0x68/0xc8 kernel/rcu/rcu_segcblist.c:74 (P)
+ srcu_invoke_callbacks+0x198/0x394 kernel/rcu/srcutree.c:1802
+ process_one_work+0x7e8/0x155c kernel/workqueue.c:3236
+ process_scheduled_works kernel/workqueue.c:3319 [inline]
+ worker_thread+0x958/0xed8 kernel/workqueue.c:3400
+ kthread+0x5fc/0x75c kernel/kthread.c:463
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:844
+Code: f94002a8 d343fe89 d1000508 f90002a8 (38766928) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	f94002a8 	ldr	x8, [x21]
+   4:	d343fe89 	lsr	x9, x20, #3
+   8:	d1000508 	sub	x8, x8, #0x1
+   c:	f90002a8 	str	x8, [x21]
+* 10:	38766928 	ldrb	w8, [x9, x22] <-- trapping instruction
 
 
-The reason for this is that local_trylock_t is mapped to spinlock_t on=20
-PREEMPT_RT=3Dy and spinlock_t has no member named llock.
-If one changes the assertion like this the kernel compiles with PREEMPT_RT=
-=3Dy, too,
-but I'm not sure if the assertion is correctly used here. If not one has t=
-o use
-#ifdef PREEMPT_RT here I think:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 3ab91a1409f5..2138fecc8d37 100644
-=2D-- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4724,7 +4724,7 @@ __pcs_replace_empty_main(struct kmem_cache *s, struc=
-t slub_percpu_sheaves *pcs,
- 	struct slab_sheaf *full;
- 	bool can_alloc;
-=20
--	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llock));
-+	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
-=20
- 	if (pcs->spare && pcs->spare->size > 0) {
- 		swap(pcs->main, pcs->spare);
-@@ -5601,7 +5601,7 @@ static void __slab_free(struct kmem_cache *s, struct=
- slab *slab,
- static void __pcs_install_empty_sheaf(struct kmem_cache *s,
- 		struct slub_percpu_sheaves *pcs, struct slab_sheaf *empty)
- {
--	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llock));
-+	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
-=20
- 	/* This is what we expect to find if nobody interrupted us. */
- 	if (likely(!pcs->spare)) {
-@@ -5650,7 +5650,7 @@ __pcs_replace_full_main(struct kmem_cache *s, struct=
- slub_percpu_sheaves *pcs)
- 	bool put_fail;
-=20
- restart:
--	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock.llock));
-+	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
-=20
- 	put_fail =3D false;
-=20
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Bert Karwatzki
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
