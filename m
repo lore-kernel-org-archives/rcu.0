@@ -1,32 +1,38 @@
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6BBE179A3;
-	Fri, 29 Aug 2025 00:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55052257827;
+	Fri, 29 Aug 2025 07:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756425814; cv=none; b=YTBj0yqhbVA+ubrrf6ULi7Iugfb/zc07Vb5ecJcpQSMwmfeQFVVzD2SV+JgFp7y0rfqk5I1zyuwh0JuAHSppaYFOwhtXo2VG5DjflXvelxaKcSrx3jOh+eIJy+stKA1jWO6KUh2rrKhNz2Dz4nEaEDFG/cYJyA5tQgR2AIT2UPU=
+	t=1756451562; cv=none; b=N3fQ0tJpEsbhk+wET27NJ/U29cSgVSsXCjbl8ysDo0+HPb3y2BEbvUHCtavpMlITWU36q6lCKdjhi9KSWo60BbbH6J5Gi9K+EhL25Wt16KppoS5nfZvGxFxMKKbUUmaABZFiotHT+k6IovZ08WWeGWI/TB0NmNB+H17KtRe3YUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756425814; c=relaxed/simple;
-	bh=h9ECKGOoE8l6lXBXfI/nqr/yvcdfmjjurJiByFbfZ+g=;
+	s=arc-20240116; t=1756451562; c=relaxed/simple;
+	bh=RBXm4S5FBuOha0l5xdcg/VWrq76bHrw0N2QcJrhljjw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hxBnOUAOqJVRqK8WUpAb6X83ZGXxxFdmPoPs0eB30AwCuJFlcFClPLyuZyw3zJhLxmu3UTklnxyINB5mFN2x27+BIsgOoQbfjgGLHJD1mzHoj3Dg6k/ydyisxQ0CNngI4TpaFBeDciR9zG9dKWLcPcOZXtG9EYKLn+mMraICO2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=b/Cp3YVn; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+	 In-Reply-To:Content-Type; b=tsyIMZDS71FhWbVYdguudmtDJuuwwCTi0voHxu4qSksMbh03OBguOYRBAvTm1G1fhHYZL7j+H/tUl9KuJA0oVEJa42a2Lixe172DajQO7ePX0GBFEClgwBtjQaxemEO2vf6gtpePjuhHNoStIRK7tjGx5QS4saYvrdsn1hKRa94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=SQgExZaU; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="b/Cp3YVn"
-Received: from [100.65.128.219] (unknown [20.236.11.69])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 29236211080D;
-	Thu, 28 Aug 2025 17:03:30 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 29236211080D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1756425810;
-	bh=NHYELJgOgtoYXMJjyiZ6Y/1BY77k4JUs4dbKzcllNgc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=b/Cp3YVnPly7ZmtMQDa2AEMRoQa4CxzO0/V6ejotdr50lR5itAta36gVWEjEJkADW
-	 rU7s8pjJhzWn/fR2q78z1pzSDm8R5EbcWLUxToRvAEbLWCrmz4XX39aTX/yCwcbIg0
-	 s7ITLAqpkbVOXbI9g+AL0NaazVp0H0AaluYJk0kI=
-Message-ID: <c1a5ab1d-1601-46db-83da-b26422a2aabd@linux.microsoft.com>
-Date: Thu, 28 Aug 2025 17:03:28 -0700
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="SQgExZaU"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=zdH9NIb3jzwErV0CVrE+UYxgQyTjohr+oYD/uFKLX6I=; t=1756451560;
+	x=1756883560; b=SQgExZaUhXHLWq49WaDqF8nZTc9iPop2Ymp8Ls347lQGJmM0n88l7Gp7vkPHO
+	xMg2TgAwY7+GAff+sUId1TqcJCUirzMjd5dCP579ra1NwcPNYEOea/JoynlvKMJdj3LwRMYce7Ejn
+	1zC1DPavOF4G6yjQXuc+T4x5bNBOdt9UdCpIpJa694VbfKvN6c34FdBNTPssH/CoIQlPpHYUnXYGd
+	WRSOu1fU56SUS54QM81sXkZjMZ6Qza9z85m7/CqaDCa85Rpn3RCglzTRFjFZoZw4mzmnQfS1E+/aF
+	YQpD533JxP9k7/neeBwXVq3e8V0rGiJHoUFaRexwuQnb9ekRkQ==;
+Received: from [2a02:8108:8984:1d00:a0cf:1912:4be:477f]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
+	id 1urtHZ-008qQR-0w;
+	Fri, 29 Aug 2025 09:12:21 +0200
+Message-ID: <3aef893d-1218-4d98-b340-7300b74e9a60@leemhuis.info>
+Date: Fri, 29 Aug 2025 09:12:19 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -34,126 +40,103 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/7] Drivers: hv: Use common "entry virt" APIs to do
- work in root before running guest
-To: Sean Christopherson <seanjc@google.com>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>,
- Huacai Chen <chenhuacai@kernel.org>, Anup Patel <anup@brainfault.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Peter Zijlstra <peterz@infradead.org>,
- Andy Lutomirski <luto@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kvmarm@lists.linux.dev, kvm@vger.kernel.org, loongarch@lists.linux.dev,
- kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
- linux-hyperv@vger.kernel.org, rcu@vger.kernel.org,
- Mukesh R <mrathor@linux.microsoft.com>
-References: <20250828000156.23389-1-seanjc@google.com>
- <20250828000156.23389-7-seanjc@google.com>
-Content-Language: en-US
-From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-In-Reply-To: <20250828000156.23389-7-seanjc@google.com>
+Subject: Re: [PATCH v6 02/10] slab: add opt-in caching layer of percpu sheaves
+To: Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+ Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ maple-tree@lists.infradead.org,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ Stephen Rothwell <sfr@canb.auug.org.au>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Bert Karwatzki <spasswolf@web.de>
+References: <20250827-slub-percpu-caches-v6-0-f0f775a3f73f@suse.cz>
+ <20250827-slub-percpu-caches-v6-2-f0f775a3f73f@suse.cz>
+ <9f61c814-0d39-46f2-a540-cc9c0e716cf6@leemhuis.info>
+ <e58c8482-bd11-4111-b912-daf8b43ebb15@suse.cz>
+ <9705a0d1-0108-4f63-9a5c-9ca6c20eeb32@suse.cz>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Content-Language: de-DE, en-US
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <9705a0d1-0108-4f63-9a5c-9ca6c20eeb32@suse.cz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1756451560;447c4fba;
+X-HE-SMSGID: 1urtHZ-008qQR-0w
 
-On 8/27/2025 5:01 PM, Sean Christopherson wrote:
-> Use the kernel's common "entry virt" APIs to handle pending work prior to
-> (re)entering guest mode, now that the virt APIs don't have a superfluous
-> dependency on KVM.
+On 28.08.25 17:00, Vlastimil Babka wrote:
+> On 8/28/25 10:01, Vlastimil Babka wrote:
+>> On 8/28/25 09:43, Thorsten Leemhuis wrote:
+>>> On 27.08.25 10:26, Vlastimil Babka wrote:
+>>>> Specifying a non-zero value for a new struct kmem_cache_args field
+>>>> sheaf_capacity will setup a caching layer of percpu arrays called
+>>>> sheaves of given capacity for the created cache.
+>>>> [...]
+>>>
+>>> This patch showed up in linux-next today and from a *quick* glance at
+>>> things I suspect it might be the reason why my daily next rpm builds for
+>>> Fedora failed today like this:
+>>
+>> Hi, thanks for the report.
+> [...]
+>>> Full log: https://download.copr.fedorainfracloud.org/results/@kernel-vanilla/next/fedora-rawhide-x86_64/09498568-next-next-all/builder-live.log.gz
+>>
+>> Oh so I assume the .config here has both LOCKDEP and PREEMPT_RT?
+>> I tried to make lockdep_assert_held() with trylock but forgot about the RT
+>> difference. The solution is Alexei's patch
+>>
+>> https://lore.kernel.org/all/20250718021646.73353-2-
+>> alexei.starovoitov@gmail.com/
+>>
+>> Wonder if I can just fast-track it to here from that series?
 > 
-> No functional change intended.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  drivers/hv/Kconfig          |  1 +
->  drivers/hv/mshv_root_main.c | 32 ++++++--------------------------
->  2 files changed, 7 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
-> index 2e8df09db599..894037afcbf9 100644
-> --- a/drivers/hv/Kconfig
-> +++ b/drivers/hv/Kconfig
-> @@ -66,6 +66,7 @@ config MSHV_ROOT
->  	# no particular order, making it impossible to reassemble larger pages
->  	depends on PAGE_SIZE_4KB
->  	select EVENTFD
-> +	select VIRT_XFER_TO_GUEST_WORK
->  	default n
->  	help
->  	  Select this option to enable support for booting and running as root
-> diff --git a/drivers/hv/mshv_root_main.c b/drivers/hv/mshv_root_main.c
-> index 0d849f09160a..7c83f656e071 100644
-> --- a/drivers/hv/mshv_root_main.c
-> +++ b/drivers/hv/mshv_root_main.c
-> @@ -8,6 +8,7 @@
->   * Authors: Microsoft Linux virtualization team
->   */
->  
-> +#include <linux/entry-virt.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/fs.h>
-> @@ -481,29 +482,6 @@ mshv_vp_wait_for_hv_kick(struct mshv_vp *vp)
->  	return 0;
->  }
->  
-> -static int mshv_pre_guest_mode_work(struct mshv_vp *vp)
-> -{
-> -	const ulong work_flags = _TIF_NOTIFY_SIGNAL | _TIF_SIGPENDING |
-> -				 _TIF_NEED_RESCHED  | _TIF_NEED_RESCHED_LAZY |
-> -				 _TIF_NOTIFY_RESUME;
-> -	ulong th_flags;
-> -
-> -	th_flags = read_thread_flags();
-> -	while (th_flags & work_flags) {
-> -		int ret;
-> -
-> -		/* nb: following will call schedule */
-> -		ret = mshv_do_pre_guest_mode_work(th_flags);
-> -
-> -		if (ret)
-> -			return ret;
-> -
-> -		th_flags = read_thread_flags();
-> -	}
-> -
-> -	return 0;
-> -}
-> -
->  /* Must be called with interrupts enabled */
->  static long mshv_run_vp_with_root_scheduler(struct mshv_vp *vp)
->  {
-> @@ -524,9 +502,11 @@ static long mshv_run_vp_with_root_scheduler(struct mshv_vp *vp)
->  		u32 flags = 0;
->  		struct hv_output_dispatch_vp output;
->  
-> -		ret = mshv_pre_guest_mode_work(vp);
-> -		if (ret)
-> -			break;
-> +		if (__xfer_to_guest_mode_work_pending()) {
-> +			ret = xfer_to_guest_mode_handle_work();
-> +			if (ret)
-> +				break;
-> +		}
->  
->  		if (vp->run.flags.intercept_suspend)
->  			flags |= HV_DISPATCH_VP_FLAG_CLEAR_INTERCEPT_SUSPEND;
+> Did that for tomorrow's -next
 
-Also tested mshv_root with 1-6 applied, looks good to me. Possibly Naman,
-Saurabh, or Roman can test the mshv_vtl patches, I can't do it
-unfortunately.
+Thx, today's -next build worked smoothly! Ciao, Thorsten
 
-Tested-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Reviewed-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+
