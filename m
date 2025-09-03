@@ -1,1268 +1,233 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFEEE30AAAE
-	for <rcu@vger.kernel.org>; Wed,  3 Sep 2025 13:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756904516; cv=none; b=sS+4wtlYc/o3+pPNIMhi8SD1RYiDFA6zCTsJQcBD7BroMcatNvK2YAPIB8kGrAVGnXUgwFJku/AdiDyPFdpJRppfe5kYcpyjvCviXE/4B8CSr9yakDoWamnCJ/hfBq047KOcw1JgFpF2ZmBBYUzF//gIXErHJeAAj3xUy96pVlA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756904516; c=relaxed/simple;
-	bh=4MbU/ndqsU9rIaibB/aDJ9C+A4Ud56l5wiUiJjGNlpY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=h2VIAkrBqCpOdZUh/PzQcSwmsfboR6ZMN6B4OSQVA0H7bVB4pH8lPWGhzGFAR7bxaiFdjMT9J+1CEwCmKY/ZwLAHQp/LfMnWcmObwRr2vC778Qr10jPy4v7Be2ZqKqR2ADo1DSn+RjWwqgkeGEKNpdWbazBXa2NXihk9IYAxgEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WPm7uRoM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=l4Cjxfqy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WPm7uRoM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=l4Cjxfqy; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A9FF3081B3;
+	Wed,  3 Sep 2025 13:31:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756906312; cv=fail; b=YnRnRiX3489UfnJS/DYKX89bBEmictZAC/w4oIizh0xsxtvRejx23X+Z6iVpsp7wzD+MHRJrVbecmamUolL7GKOwr0UvxQWTsXghkayKkvAGC16DQdgeJr5hnceRNJrxhFtWApeKSyPcVI3kqfjgVEY0QTpmtZdALAdgSCVjLR4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756906312; c=relaxed/simple;
+	bh=xsMU9HG5gnMpejZyZDlAJ2yH5naWPMEpKiGfJZrD5xY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Vn5fHRNysQbLpe/T/DlJCuSH2bSK2C8rac8Vw9j/M60vuvS2DfUG40173GmvPcz7h0/JxvtIZ67FjZxJfPfZmqC0Ntjfp4mQ5ARb1hYSILM3HXJcZovtZINmFA7jnjT5ZyfGOlIjbMIkYwl6NUcVONlYcoCIAdsZgaGCkMzL4F0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VMjjh/rB; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=ToWrSJiI; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WPm7uRoM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="l4Cjxfqy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WPm7uRoM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="l4Cjxfqy"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D9F051F750;
-	Wed,  3 Sep 2025 13:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756904410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hm52WqvVVqHMnek513a3WUxA9fUfWZhAxDTco+ElhzE=;
-	b=WPm7uRoM9fRFAN0kplZtUP7zV7s4oBEZG5FOgEEVg6DUZRbzF0c0KVR69+5jXvj++U3iXz
-	hB1qLjbLl3K6miGUVpJhpQGAKY1kZsWMd3+ak5q4eG0Aos8wMRXa1LVTVVbc/Y3fPCwUd8
-	ljHki3zWJZnnpoLlFVcXVjtuu+L/3fw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756904410;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hm52WqvVVqHMnek513a3WUxA9fUfWZhAxDTco+ElhzE=;
-	b=l4Cjxfqy6iv4wAPe9aGwYoKpQgaC9EgGjk6CMt6ONt/bMWq23BAOIKx+bA+lCBaxm4o8Mb
-	N3HZkz+tTyNHlRAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756904410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hm52WqvVVqHMnek513a3WUxA9fUfWZhAxDTco+ElhzE=;
-	b=WPm7uRoM9fRFAN0kplZtUP7zV7s4oBEZG5FOgEEVg6DUZRbzF0c0KVR69+5jXvj++U3iXz
-	hB1qLjbLl3K6miGUVpJhpQGAKY1kZsWMd3+ak5q4eG0Aos8wMRXa1LVTVVbc/Y3fPCwUd8
-	ljHki3zWJZnnpoLlFVcXVjtuu+L/3fw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756904410;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hm52WqvVVqHMnek513a3WUxA9fUfWZhAxDTco+ElhzE=;
-	b=l4Cjxfqy6iv4wAPe9aGwYoKpQgaC9EgGjk6CMt6ONt/bMWq23BAOIKx+bA+lCBaxm4o8Mb
-	N3HZkz+tTyNHlRAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A6FF213A3B;
-	Wed,  3 Sep 2025 13:00:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0LR/KNo7uGitOAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 03 Sep 2025 13:00:10 +0000
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Wed, 03 Sep 2025 15:00:01 +0200
-Subject: [PATCH v7 19/21] maple_tree: Prefilled sheaf conversion and
- testing
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VMjjh/rB";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ToWrSJiI"
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5839NBfE016008;
+	Wed, 3 Sep 2025 13:31:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=corp-2025-04-25; bh=l/EpbuvLeFPhLUleXW
+	HHd3jJ+QYN6Ooc8sYw1uQqZno=; b=VMjjh/rBm49hdP2IIr68VAZQsah60tGRKt
+	EXRgNXUtoRiyBcWJYPrc6ExD56F/u3lIfEacKQFZBOWfBHr0GwhFSZ2osEoYw1eb
+	muxTb+PfTLLrJkzLRsWxRa8cFyNUHjUMBiPCmch8fywv3Kj1lFcfWyaDcOKwHsRM
+	/iBhoL6U7Nq0bP4UfQhwF3D/6ph/z8AsxM7GaZylmpFnnTT3SkMpwrFN3uUB6Qng
+	Vui3Qi1lCySBa2NfN8EN9F2P2ICgScZDLKNAhy7qmpjZM2l5nqltc7ve5s/XQi1H
+	MjDVM+MtjAzBNJOln03xCvej8EcNepd6+sM2mTbJV9W6jntxrJbw==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48ussyp7nv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 03 Sep 2025 13:31:26 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 583C8ZKJ040798;
+	Wed, 3 Sep 2025 13:31:26 GMT
+Received: from ph8pr06cu001.outbound.protection.outlook.com (mail-westus3azon11012009.outbound.protection.outlook.com [40.107.209.9])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 48uqra3j4t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 03 Sep 2025 13:31:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ULCdbcJ7sMnRzzFLeI2m3RyyDnRJ7AXkDKSR/5cJgmi+NnmwVBlG7yF99ubtRpAytXa0AqXmnDuPo0oFaR5+AEUWmqRcdIp8cgpJMDgHP5MY8a23wSlz5h+oD1i3ZzZXtlLRxsLy2CBZtdNjCILwEafK/pc9NKpGCRVl8HFa06ZtdKqAZYS337UIunhVG1AIcQNU5ebPryPqZxhmVUtM2U3qXciw5uA3eQi3uMTdGtr4iBLRCuxu4y5kEpyCHmEnVdzweR2pD3CrtFVkuvk2e7DUfbLka590Vp9bojfbgdmmUAfkbXAKt4FJct7Qf9c1CfEyNDapG1rW64YcSX/Q1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l/EpbuvLeFPhLUleXWHHd3jJ+QYN6Ooc8sYw1uQqZno=;
+ b=AC6FyVeTnSGTaFn0palENmqRrdT3Vw7o2i+Zj1nSbestem+XNyre8zUuiHS9os+hO94LaZO4M2krDLm5H7mxE3OJmXB+/wan1rhr9gxFuhR9acQifsIExu/TuuikNVoL5KX2ORd+zAlKnnKKbPpA20syUaxkE0Ke/fvMQUuPBlopweaOgD5aAWbS/0/i68K4dIW9Jc7VvIPrmmj7lbSue7k+TPb3skdWLEJUYs9WsUyL4rNPPmFcKk38O6Ltwil3UAFtA7jBIfiqK+EnnQqStMHkTzUlQLW0rsW9qKbzhriwwjxl750Ugh4sNLbHkCeU89s5H7dfvqG7kDhqMvVfzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l/EpbuvLeFPhLUleXWHHd3jJ+QYN6Ooc8sYw1uQqZno=;
+ b=ToWrSJiIOdqh8j//uzHzOqnvl0U1RonX8vJrmIf7cqdZsaBnTjN4/HdKH+B4yK/fdLqUhPyxdJ+Zlusu7CoG4u6a+iOU0j0WBYKz3ooG4p98SnDGSj4edsBwlhHw++wcbTFlkJaAlPvyJ2iUPB1TZOiLTcNybD7rBi4qDkmAslY=
+Received: from DM4PR10MB8218.namprd10.prod.outlook.com (2603:10b6:8:1cc::16)
+ by DS7PR10MB4975.namprd10.prod.outlook.com (2603:10b6:5:3b1::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.25; Wed, 3 Sep
+ 2025 13:31:23 +0000
+Received: from DM4PR10MB8218.namprd10.prod.outlook.com
+ ([fe80::2650:55cf:2816:5f2]) by DM4PR10MB8218.namprd10.prod.outlook.com
+ ([fe80::2650:55cf:2816:5f2%5]) with mapi id 15.20.9094.016; Wed, 3 Sep 2025
+ 13:31:23 +0000
+Date: Wed, 3 Sep 2025 14:31:21 +0100
+From: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Suren Baghdasaryan <surenb@google.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Christoph Lameter <cl@gentwo.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        maple-tree@lists.infradead.org
+Subject: Re: [PATCH v6 08/10] mm, vma: use percpu sheaves for vm_area_struct
+ cache
+Message-ID: <d396be64-3a95-499f-a074-68297fa7bb48@lucifer.local>
+References: <20250827-slub-percpu-caches-v6-0-f0f775a3f73f@suse.cz>
+ <20250827-slub-percpu-caches-v6-8-f0f775a3f73f@suse.cz>
+ <195d00ab-5429-48ff-b5dd-a45b26cd9ea9@lucifer.local>
+ <814c7054-3a43-4190-893f-22e074dc93cd@suse.cz>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <814c7054-3a43-4190-893f-22e074dc93cd@suse.cz>
+X-ClientProxiedBy: LO4P265CA0124.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:2c6::14) To DM4PR10MB8218.namprd10.prod.outlook.com
+ (2603:10b6:8:1cc::16)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250903-slub-percpu-caches-v7-19-71c114cdefef@suse.cz>
-References: <20250903-slub-percpu-caches-v7-0-71c114cdefef@suse.cz>
-In-Reply-To: <20250903-slub-percpu-caches-v7-0-71c114cdefef@suse.cz>
-To: Suren Baghdasaryan <surenb@google.com>, 
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, 
- Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, 
- Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org, 
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
- maple-tree@lists.infradead.org, vbabka@suse.cz
-X-Mailer: b4 0.14.2
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	RCVD_TLS_ALL(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux.dev,oracle.com,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org,suse.cz];
-	R_RATELIMIT(0.00)[to(RL941jgdop1fyjkq8h4),to_ip_from(RLwn5r54y1cp81no5tmbbew5oc)];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email,oracle.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -4.30
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR10MB8218:EE_|DS7PR10MB4975:EE_
+X-MS-Office365-Filtering-Correlation-Id: 57898ee7-5da0-48ce-33d2-08ddeaee2d0f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|366016|376014|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?dugPAJbwQDvfYR2acVkGTEj+ZT88gkHXVrIrvKBBuslgPryXWeDu7tIWwpr2?=
+ =?us-ascii?Q?VAlU/UlDtDA0kAINhIxJSWkfvBEZBAxZOs4hlxHROrh982Dqsx4Cph+vS6lZ?=
+ =?us-ascii?Q?ok1MrOUleE1U2efQkt52qP1rhVmkLrb/YOqDXFjfI0/QhX0Q9X5C0Ka6Rx+f?=
+ =?us-ascii?Q?g1HInm1Fd14rpQs7JBzVLs0UzYZnn3UkFxWQhXtNJq9UOsKquLf6L/z0TJRC?=
+ =?us-ascii?Q?jUMYNm+D7XBb4+GsdgH/1wsq+AoU5TCOlcYfnllBeai3uN35+nrWdd/F9Riv?=
+ =?us-ascii?Q?VFn94VQL2zOx66NMU7zyciX5qESGcXJOTGo1rwMd4uKHQoIJwlcxCoo1wiVZ?=
+ =?us-ascii?Q?C4TET+Xyj9LPtv/ktciqdZ5teWu//bis1ilBEW4KypAiusl5TomH79q39gRH?=
+ =?us-ascii?Q?ta3CHJgJB9nemmSwn22JcLPG4HWI9GKQv2Vfxq58syGI0aEMCwFbDFdsV3+q?=
+ =?us-ascii?Q?/yNz/stcY5A9n3CBOGYO/y1htbWfQDERGKmYeGYLkXv0v7ZFp3PYVbhR5MbM?=
+ =?us-ascii?Q?TVO9Kk/gVZPc/XuIRM3VpWFZdJNaT4Phd8E6UETsjiSJepqiqX6oAS0U9arw?=
+ =?us-ascii?Q?reI1gL9IAHVN5RgGPC2/SlvxgcjUaTvz+ZIHKeO004InKCdE+FrpCMiJyJE0?=
+ =?us-ascii?Q?zjrOIB3NEb94c9NEfJiKiTkVMWDHSqzswBaTyAEQiLHSTsxBrXrT3JcP7vfI?=
+ =?us-ascii?Q?Odi/Ruoo+UXqULz8ZM0ZndaHl5ulDYHrgZmFHt3OHZ4u4cdLatwD877v2JK4?=
+ =?us-ascii?Q?82ImgShNbeNsEEP5IOCSBlDtkQWeWd9wX8yTN/qMVT9XLthOHzIBRnO1VFbB?=
+ =?us-ascii?Q?7y/lz+0EmMRLRclQ8isO+aCktjrpThLloWLNFBc2hGc1i8tGMpG0J29eqb5u?=
+ =?us-ascii?Q?o//RVWQ+L/o/CFcubGnOBoXE/swV0VAsfTc82ByHMPZ5/MrNuMQTSv/zZkHj?=
+ =?us-ascii?Q?hOAm/XbdsdATjBMF8jqMfDZggiZCAUTq4I1zAnjTbeDPHzwI0quTi4R0b78m?=
+ =?us-ascii?Q?ocqGqBAg4z6zlfyPpUgOZSjR2kka27sasxHVHg+dZ+WEfHFGLrbiwhNQhYQB?=
+ =?us-ascii?Q?JWNP26IFgnkO1qx9A5gZ1rgpbOEeavdpuiAsb8oEz5ftzevah0niaUy0oQO2?=
+ =?us-ascii?Q?fhn8maZnMN4VC5UDPbDPqKKU74Q8igl8ByXivRjx/on6Z2rJy6VYnz0SjCDe?=
+ =?us-ascii?Q?uRVkHPYAdWQ4QKTA5O9c8mgslDUBpCdoVI6jkNgKma5Jjr2ho6Bh6MOa2cbP?=
+ =?us-ascii?Q?giI8MwP86yUuHb5pz2J5vsN3MDKObcoj2NWqklYUqZgJkhCrbNCa0Ty+mjuC?=
+ =?us-ascii?Q?AobCPzPDWAC8AINeSZETpj8dgLg8WpqXLl4uW43gqFbnNXEhK8VKkVUxa9yB?=
+ =?us-ascii?Q?Hm6OfQ+dOeXWBR1Nc4aCKpR1pYkFrQAGEh3w2/cmrc9sVpURYg=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR10MB8218.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(376014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?M8AaZm1+cRWfN7SuEoP/3d6C0LdvwzIdtYLhIsO5utdj3Kf9YgWq4P1M0vbr?=
+ =?us-ascii?Q?0NoQ3heUvI9ugMXxIrCPm6aIJj8uVPLlYMupCZIsEfVXcazjASg+qdYFlVkw?=
+ =?us-ascii?Q?d0eSneQbIYUxuQ0ytOSOfNNsMgwbt+7R6JkuyTK/iBf6PqqB4x4rLrg/UmAR?=
+ =?us-ascii?Q?G2ps1Pha+V9PB8Bu0C/t1ZjLnnIMlr6NrSLViEa++4nDELYC8EBPc8L5Sm5v?=
+ =?us-ascii?Q?yeIaJEohOXssJylCdeHOe6TRYl0MlGhEfdVQGUK0E+S1WHpaVxscQcmUATGK?=
+ =?us-ascii?Q?ptTmFkI/yd7JjBTQ4p2oL+Ysy9yZhItounxj7cxBXhopARDIOdMNHe1q/OgI?=
+ =?us-ascii?Q?u4HtTLF6pSaMpdSkPwyhzUlit0CsuGvzeSDkZWKqZBD5dClvRWj0hcYGFooH?=
+ =?us-ascii?Q?uUfosWc3hKjyU7+os6p66xGn8ocpIlUh21kjuUqF1b4caFmzxhb3rovpaLvP?=
+ =?us-ascii?Q?QbEt/fyPHjtMi4OCcDmSwPkd7XPgYoiZBILaYElfyJMTp+IvsfRLgqOcIiMu?=
+ =?us-ascii?Q?dBHmD/wmSoHhsRxXNS+XDmyTII3ymBPbHD3s674t+6h6MpST7/ZO10p4DXHW?=
+ =?us-ascii?Q?u3GAONoXjVB9D7pI4W+vyggaRg9kleXOsKCc54Xh2muMAvn0Q5iN9UonnjEu?=
+ =?us-ascii?Q?o3WkGw9XUoFAR1H9vQk4G63dxdfeP+3iCNs84veJVq3P2F9Phggbtd5/yMTG?=
+ =?us-ascii?Q?Z1eRtFs0xGN4AV8cf6+0/ma9IcnaG5Oka++VDGq4E9nsCmab2bWVtQnR8q6I?=
+ =?us-ascii?Q?nM5I5l1xMlMReEpBDyViR/D8Gvf0YG3uSbQPrO5lGWBt1JZpgGv1SWBKUF8z?=
+ =?us-ascii?Q?otTtkJoxcsl4+iy8NO5EwP4Gz8WfOiMZo2p84TSgk3kcS7iMYa/HDm/39SVW?=
+ =?us-ascii?Q?A5OJ+IIuZk5s4I9rkSaZnwPI2rusYFSw6lyVNqBeBmxud4MrAzQ9E1y2Myyv?=
+ =?us-ascii?Q?ltvSwUSIiq/VqtypILTRK9OAM8F5IFcU9H2XRR78hTg2Am6sW6A+25egHb7a?=
+ =?us-ascii?Q?ul4hBZMVmcfjUkN8ot9Dc6du9GwW3O4vkDXjJvMLeVbW09NTwgnO7843B4+s?=
+ =?us-ascii?Q?4ymj0ZzXO1uKjhgwLK5kG7ct8kp4JetAlK7E6qPv8ZM4DfkxDLnyGj76AAYL?=
+ =?us-ascii?Q?daWpG/iPFuFZ1kKFu0QaL+TN+F3jlQ8slqWrkHlegfAzeeCiknDtZCEE4UbJ?=
+ =?us-ascii?Q?Q5IyHyO1Yz3DxHrgzF/Cla/gyfOVGRgQeslB0LQvz5wrWO8+5mViOEUkvHA3?=
+ =?us-ascii?Q?M5ZF1s8zDwTX5To/oKL8Mv+rjMcIdX7q0MMlpOYV31HmoTfb5MiSf9U9S25y?=
+ =?us-ascii?Q?Qc0bwAsxf7g4rJiVocClwzmPWZKn/zLytaAcVrAh59C2/jDCv/3XE8gECASg?=
+ =?us-ascii?Q?mFXh6J79DtZ3Nic7mLKANYQFjVBPoAC4Kr8xe8ThVtuRKm1BW2/TH9Y7GRNp?=
+ =?us-ascii?Q?WdR2R5ulz+ZJQa5Mrt/OIJLJHReanS+uBTfUf46nDruDnAsCvxeRJ0V39Dq9?=
+ =?us-ascii?Q?72bKhK7mUFWv2cddISZYUCOydYMDZ4idqpFJHHduKvDhyLoa6BACjEu9OXY6?=
+ =?us-ascii?Q?sMBMc1AnA3NYCK/C2/eTTr2Mxr/hWPW2BcULlBWq0niuGMO7jE2fzjOchinM?=
+ =?us-ascii?Q?Jg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	xZKEdu80HcqLkmo6+jT3HXkBkAyn8rlYGV+s8ry3DCZ6QBv4dSpFrR/ejavftMHU3wRnTVVNntg32WxA0bp4S+Vc4tf6smWlZW9F4c8ABgy1bLSNudTpzti6O3YYX4TGD2DxIcoPhyP4HxbIJ1sAtYxFWZlU8XmvjL3YKSpegGjmVox6VivI5v1HJgj+AjtHxBnY14tuxkwLdF4QnXfkA0mewQIl+aRvVauAFAwBBYspEuDBmZ07/kzmAf6l0cuYkIvhehey+iILi7XE1OAzEc/7JRW39mXvjK6rYWKGfhMLec5UoHW34XbMxoED2D04Mrwv5022Sr6FDG01zW6ijLNZvCndLh1qPa38E/KDLEA9hkJItNjelwMsab2uIznkppsmsuL5q4t804CoFYwb8WjsVecPH0mpVcZ+2E2HYuIQ4FQK/S61mslj32zv4imIWO4N9dRP6OMHMRu/lAZbamVow2qTAnDzkbM/akqAsmAfXlZoFdBRdqoDTLLBzImSy7+OTXphYvtfZ9QZaPTFEooQTuag12OWdf2ffBjX4jMH7dJPoixDPF94Tk7tryNT/TbfFBx7DbioiKmihhPEA5hyWGt/kVTMe0dq2u6z9I0=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57898ee7-5da0-48ce-33d2-08ddeaee2d0f
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR10MB8218.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2025 13:31:23.6340
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CcpzG7GdiiT+xKNs4cUa84t/kfzqAZO7g4ijrPUrdlrZRtgUNbsR9ief6KmICJ43vLQNW1E9WIQE6fIvHpP3izJaGdSYO2HDPEGCqe3z6OA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB4975
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-03_07,2025-08-28_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 spamscore=0
+ malwarescore=0 mlxlogscore=999 phishscore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
+ definitions=main-2509030136
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODMwMDAzNCBTYWx0ZWRfX7VPB9Zw4paVs
+ 4x/gWP0g3XQ4OWFvnzBrkSpP3TMoitcOwYqmX4LjdjttOARzaaaYUESBy3fnZ1hJ0Vjg7lN/Q5n
+ YdHK+PHbRv0DX09B4jJ3pTbc6fVg6fMUivBvQ2r0Y8hZjsEL6pIYPznbXwjvDzxua5uWkN44sjb
+ QM+0s/d/w8f6rs8WA1itRoF8CA+lOgif4Fk4bowIdpMZEyv2GKkbh8e1DSnv1Kdwo0lNkbpOyTQ
+ fMHnZVhKpmTXuxp4qIQs3Gjyp8v3uAWFUQvdxMx29uxx/m3UeDHVAdgFcpwf6m84xXtpKib3H0r
+ 2iqKWANNn/OEq4fSSIQPU8/yRhRuY+IYjYGEosjlJCzM7DVufTK20qs53cDtukh0909otkCf0ZU
+ QVgLi8da
+X-Authority-Analysis: v=2.4 cv=X/9SKHTe c=1 sm=1 tr=0 ts=68b8432e cx=c_pps
+ a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
+ a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
+ a=yJojWOMRYYMA:10 a=GoEa3M9JfhUA:10 a=1XWaLZrsAAAA:8 a=mJ251A8HwLtJxyzuMY8A:9
+ a=CjuIK1q_8ugA:10
+X-Proofpoint-ORIG-GUID: RCE-4J7x0UA8lmhoTJh1gsbgrFpZ6XHX
+X-Proofpoint-GUID: RCE-4J7x0UA8lmhoTJh1gsbgrFpZ6XHX
 
-From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+On Wed, Sep 03, 2025 at 02:47:28PM +0200, Vlastimil Babka wrote:
+> On 9/2/25 13:13, Lorenzo Stoakes wrote:
+> > On Wed, Aug 27, 2025 at 10:26:40AM +0200, Vlastimil Babka wrote:
+> >> Create the vm_area_struct cache with percpu sheaves of size 32 to
+> >> improve its performance.
+> >>
+> >> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+> >> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> >> ---
+> >>  mm/vma_init.c | 1 +
+> >>  1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/mm/vma_init.c b/mm/vma_init.c
+> >> index 8e53c7943561e7324e7992946b4065dec1149b82..52c6b55fac4519e0da39ca75ad018e14449d1d95 100644
+> >> --- a/mm/vma_init.c
+> >> +++ b/mm/vma_init.c
+> >> @@ -16,6 +16,7 @@ void __init vma_state_init(void)
+> >>  	struct kmem_cache_args args = {
+> >>  		.use_freeptr_offset = true,
+> >>  		.freeptr_offset = offsetof(struct vm_area_struct, vm_freeptr),
+> >> +		.sheaf_capacity = 32,
+> >
+> > This breaks the VMA tests.
+> >
+> > Please also update tools/testing/vma/vma_internal.h to add this field
+> > (probably actually at the commit that adds the field in mainline :P)
+>
+> Thanks, one of Liam's patches to support maple tree tests with sheaves does
+> that, we somehow missed that the vma test also needs it so will reorder
+> accordingly.
+> > I do wish we could have these tests be run by a bot :/ seems today I am
+> > that bot :)
+> Sorry :)
 
-Use prefilled sheaves instead of bulk allocations. This should speed up
-the allocations and the return path of unused allocations.
-
-Remove the push and pop of nodes from the maple state as this is now
-handled by the slab layer with sheaves.
-
-Testing has been removed as necessary since the features of the tree
-have been reduced.
-
-Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- include/linux/maple_tree.h       |   6 +-
- lib/maple_tree.c                 | 329 ++++++---------------------
- lib/test_maple_tree.c            |   8 +
- tools/testing/radix-tree/maple.c | 464 ++-------------------------------------
- tools/testing/shared/linux.c     |   5 +-
- 5 files changed, 99 insertions(+), 713 deletions(-)
-
-diff --git a/include/linux/maple_tree.h b/include/linux/maple_tree.h
-index bafe143b1f783202e27b32567fffee4149e8e266..166fd67e00d882b1e6de1f80c1b590bba7497cd3 100644
---- a/include/linux/maple_tree.h
-+++ b/include/linux/maple_tree.h
-@@ -442,7 +442,8 @@ struct ma_state {
- 	struct maple_enode *node;	/* The node containing this entry */
- 	unsigned long min;		/* The minimum index of this node - implied pivot min */
- 	unsigned long max;		/* The maximum index of this node - implied pivot max */
--	struct maple_alloc *alloc;	/* Allocated nodes for this operation */
-+	struct slab_sheaf *sheaf;	/* Allocated nodes for this operation */
-+	unsigned long node_request;
- 	enum maple_status status;	/* The status of the state (active, start, none, etc) */
- 	unsigned char depth;		/* depth of tree descent during write */
- 	unsigned char offset;
-@@ -490,7 +491,8 @@ struct ma_wr_state {
- 		.status = ma_start,					\
- 		.min = 0,						\
- 		.max = ULONG_MAX,					\
--		.alloc = NULL,						\
-+		.node_request= 0,					\
-+		.sheaf = NULL,						\
- 		.mas_flags = 0,						\
- 		.store_type = wr_invalid,				\
- 	}
-diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-index b361b484cfcaacd99472dd4c2b8de9260b307425..3f14bfa7fe1c20aac3e127f0defd268c3dbca6aa 100644
---- a/lib/maple_tree.c
-+++ b/lib/maple_tree.c
-@@ -186,6 +186,22 @@ static inline void mt_free_bulk(size_t size, void __rcu **nodes)
- 	kmem_cache_free_bulk(maple_node_cache, size, (void **)nodes);
- }
- 
-+static void mt_return_sheaf(struct slab_sheaf *sheaf)
-+{
-+	kmem_cache_return_sheaf(maple_node_cache, GFP_KERNEL, sheaf);
-+}
-+
-+static struct slab_sheaf *mt_get_sheaf(gfp_t gfp, int count)
-+{
-+	return kmem_cache_prefill_sheaf(maple_node_cache, gfp, count);
-+}
-+
-+static int mt_refill_sheaf(gfp_t gfp, struct slab_sheaf **sheaf,
-+		unsigned int size)
-+{
-+	return kmem_cache_refill_sheaf(maple_node_cache, gfp, sheaf, size);
-+}
-+
- /*
-  * ma_free_rcu() - Use rcu callback to free a maple node
-  * @node: The node to free
-@@ -578,67 +594,6 @@ static __always_inline bool mte_dead_node(const struct maple_enode *enode)
- 	return ma_dead_node(node);
- }
- 
--/*
-- * mas_allocated() - Get the number of nodes allocated in a maple state.
-- * @mas: The maple state
-- *
-- * The ma_state alloc member is overloaded to hold a pointer to the first
-- * allocated node or to the number of requested nodes to allocate.  If bit 0 is
-- * set, then the alloc contains the number of requested nodes.  If there is an
-- * allocated node, then the total allocated nodes is in that node.
-- *
-- * Return: The total number of nodes allocated
-- */
--static inline unsigned long mas_allocated(const struct ma_state *mas)
--{
--	if (!mas->alloc || ((unsigned long)mas->alloc & 0x1))
--		return 0;
--
--	return mas->alloc->total;
--}
--
--/*
-- * mas_set_alloc_req() - Set the requested number of allocations.
-- * @mas: the maple state
-- * @count: the number of allocations.
-- *
-- * The requested number of allocations is either in the first allocated node,
-- * located in @mas->alloc->request_count, or directly in @mas->alloc if there is
-- * no allocated node.  Set the request either in the node or do the necessary
-- * encoding to store in @mas->alloc directly.
-- */
--static inline void mas_set_alloc_req(struct ma_state *mas, unsigned long count)
--{
--	if (!mas->alloc || ((unsigned long)mas->alloc & 0x1)) {
--		if (!count)
--			mas->alloc = NULL;
--		else
--			mas->alloc = (struct maple_alloc *)(((count) << 1U) | 1U);
--		return;
--	}
--
--	mas->alloc->request_count = count;
--}
--
--/*
-- * mas_alloc_req() - get the requested number of allocations.
-- * @mas: The maple state
-- *
-- * The alloc count is either stored directly in @mas, or in
-- * @mas->alloc->request_count if there is at least one node allocated.  Decode
-- * the request count if it's stored directly in @mas->alloc.
-- *
-- * Return: The allocation request count.
-- */
--static inline unsigned int mas_alloc_req(const struct ma_state *mas)
--{
--	if ((unsigned long)mas->alloc & 0x1)
--		return (unsigned long)(mas->alloc) >> 1;
--	else if (mas->alloc)
--		return mas->alloc->request_count;
--	return 0;
--}
--
- /*
-  * ma_pivots() - Get a pointer to the maple node pivots.
-  * @node: the maple node
-@@ -1142,77 +1097,15 @@ static int mas_ascend(struct ma_state *mas)
-  */
- static inline struct maple_node *mas_pop_node(struct ma_state *mas)
- {
--	struct maple_alloc *ret, *node = mas->alloc;
--	unsigned long total = mas_allocated(mas);
--	unsigned int req = mas_alloc_req(mas);
-+	struct maple_node *ret;
- 
--	/* nothing or a request pending. */
--	if (WARN_ON(!total))
-+	if (WARN_ON_ONCE(!mas->sheaf))
- 		return NULL;
- 
--	if (total == 1) {
--		/* single allocation in this ma_state */
--		mas->alloc = NULL;
--		ret = node;
--		goto single_node;
--	}
--
--	if (node->node_count == 1) {
--		/* Single allocation in this node. */
--		mas->alloc = node->slot[0];
--		mas->alloc->total = node->total - 1;
--		ret = node;
--		goto new_head;
--	}
--	node->total--;
--	ret = node->slot[--node->node_count];
--	node->slot[node->node_count] = NULL;
--
--single_node:
--new_head:
--	if (req) {
--		req++;
--		mas_set_alloc_req(mas, req);
--	}
--
-+	ret = kmem_cache_alloc_from_sheaf(maple_node_cache, GFP_NOWAIT, mas->sheaf);
- 	memset(ret, 0, sizeof(*ret));
--	return (struct maple_node *)ret;
--}
--
--/*
-- * mas_push_node() - Push a node back on the maple state allocation.
-- * @mas: The maple state
-- * @used: The used maple node
-- *
-- * Stores the maple node back into @mas->alloc for reuse.  Updates allocated and
-- * requested node count as necessary.
-- */
--static inline void mas_push_node(struct ma_state *mas, struct maple_node *used)
--{
--	struct maple_alloc *reuse = (struct maple_alloc *)used;
--	struct maple_alloc *head = mas->alloc;
--	unsigned long count;
--	unsigned int requested = mas_alloc_req(mas);
- 
--	count = mas_allocated(mas);
--
--	reuse->request_count = 0;
--	reuse->node_count = 0;
--	if (count) {
--		if (head->node_count < MAPLE_ALLOC_SLOTS) {
--			head->slot[head->node_count++] = reuse;
--			head->total++;
--			goto done;
--		}
--		reuse->slot[0] = head;
--		reuse->node_count = 1;
--	}
--
--	reuse->total = count + 1;
--	mas->alloc = reuse;
--done:
--	if (requested > 1)
--		mas_set_alloc_req(mas, requested - 1);
-+	return ret;
- }
- 
- /*
-@@ -1222,75 +1115,32 @@ static inline void mas_push_node(struct ma_state *mas, struct maple_node *used)
-  */
- static inline void mas_alloc_nodes(struct ma_state *mas, gfp_t gfp)
- {
--	struct maple_alloc *node;
--	unsigned long allocated = mas_allocated(mas);
--	unsigned int requested = mas_alloc_req(mas);
--	unsigned int count;
--	void **slots = NULL;
--	unsigned int max_req = 0;
--
--	if (!requested)
--		return;
-+	if (unlikely(mas->sheaf)) {
-+		unsigned long refill = mas->node_request;
- 
--	mas_set_alloc_req(mas, 0);
--	if (mas->mas_flags & MA_STATE_PREALLOC) {
--		if (allocated)
-+		if(kmem_cache_sheaf_size(mas->sheaf) >= refill) {
-+			mas->node_request = 0;
- 			return;
--		WARN_ON(!allocated);
--	}
--
--	if (!allocated || mas->alloc->node_count == MAPLE_ALLOC_SLOTS) {
--		node = (struct maple_alloc *)mt_alloc_one(gfp);
--		if (!node)
--			goto nomem_one;
--
--		if (allocated) {
--			node->slot[0] = mas->alloc;
--			node->node_count = 1;
--		} else {
--			node->node_count = 0;
- 		}
- 
--		mas->alloc = node;
--		node->total = ++allocated;
--		node->request_count = 0;
--		requested--;
--	}
-+		if (mt_refill_sheaf(gfp, &mas->sheaf, refill))
-+			goto error;
- 
--	node = mas->alloc;
--	while (requested) {
--		max_req = MAPLE_ALLOC_SLOTS - node->node_count;
--		slots = (void **)&node->slot[node->node_count];
--		max_req = min(requested, max_req);
--		count = mt_alloc_bulk(gfp, max_req, slots);
--		if (!count)
--			goto nomem_bulk;
--
--		if (node->node_count == 0) {
--			node->slot[0]->node_count = 0;
--			node->slot[0]->request_count = 0;
--		}
-+		mas->node_request = 0;
-+		return;
-+	}
- 
--		node->node_count += count;
--		allocated += count;
--		/* find a non-full node*/
--		do {
--			node = node->slot[0];
--		} while (unlikely(node->node_count == MAPLE_ALLOC_SLOTS));
--		requested -= count;
-+	mas->sheaf = mt_get_sheaf(gfp, mas->node_request);
-+	if (likely(mas->sheaf)) {
-+		mas->node_request = 0;
-+		return;
- 	}
--	mas->alloc->total = allocated;
--	return;
- 
--nomem_bulk:
--	/* Clean up potential freed allocations on bulk failure */
--	memset(slots, 0, max_req * sizeof(unsigned long));
--	mas->alloc->total = allocated;
--nomem_one:
--	mas_set_alloc_req(mas, requested);
-+error:
- 	mas_set_err(mas, -ENOMEM);
- }
- 
-+
- /*
-  * mas_free() - Free an encoded maple node
-  * @mas: The maple state
-@@ -1301,42 +1151,7 @@ static inline void mas_alloc_nodes(struct ma_state *mas, gfp_t gfp)
-  */
- static inline void mas_free(struct ma_state *mas, struct maple_enode *used)
- {
--	struct maple_node *tmp = mte_to_node(used);
--
--	if (mt_in_rcu(mas->tree))
--		ma_free_rcu(tmp);
--	else
--		mas_push_node(mas, tmp);
--}
--
--/*
-- * mas_node_count_gfp() - Check if enough nodes are allocated and request more
-- * if there is not enough nodes.
-- * @mas: The maple state
-- * @count: The number of nodes needed
-- * @gfp: the gfp flags
-- */
--static void mas_node_count_gfp(struct ma_state *mas, int count, gfp_t gfp)
--{
--	unsigned long allocated = mas_allocated(mas);
--
--	if (allocated < count) {
--		mas_set_alloc_req(mas, count - allocated);
--		mas_alloc_nodes(mas, gfp);
--	}
--}
--
--/*
-- * mas_node_count() - Check if enough nodes are allocated and request more if
-- * there is not enough nodes.
-- * @mas: The maple state
-- * @count: The number of nodes needed
-- *
-- * Note: Uses GFP_NOWAIT | __GFP_NOWARN for gfp flags.
-- */
--static void mas_node_count(struct ma_state *mas, int count)
--{
--	return mas_node_count_gfp(mas, count, GFP_NOWAIT | __GFP_NOWARN);
-+	ma_free_rcu(mte_to_node(used));
- }
- 
- /*
-@@ -2511,10 +2326,7 @@ static inline void mas_topiary_node(struct ma_state *mas,
- 	enode = tmp_mas->node;
- 	tmp = mte_to_node(enode);
- 	mte_set_node_dead(enode);
--	if (in_rcu)
--		ma_free_rcu(tmp);
--	else
--		mas_push_node(mas, tmp);
-+	ma_free_rcu(tmp);
- }
- 
- /*
-@@ -4162,7 +3974,7 @@ static inline void mas_wr_prealloc_setup(struct ma_wr_state *wr_mas)
-  *
-  * Return: Number of nodes required for preallocation.
-  */
--static inline int mas_prealloc_calc(struct ma_wr_state *wr_mas, void *entry)
-+static inline void mas_prealloc_calc(struct ma_wr_state *wr_mas, void *entry)
- {
- 	struct ma_state *mas = wr_mas->mas;
- 	unsigned char height = mas_mt_height(mas);
-@@ -4208,7 +4020,7 @@ static inline int mas_prealloc_calc(struct ma_wr_state *wr_mas, void *entry)
- 		WARN_ON_ONCE(1);
- 	}
- 
--	return ret;
-+	mas->node_request = ret;
- }
- 
- /*
-@@ -4269,15 +4081,15 @@ static inline enum store_type mas_wr_store_type(struct ma_wr_state *wr_mas)
-  */
- static inline void mas_wr_preallocate(struct ma_wr_state *wr_mas, void *entry)
- {
--	int request;
-+	struct ma_state *mas = wr_mas->mas;
- 
- 	mas_wr_prealloc_setup(wr_mas);
--	wr_mas->mas->store_type = mas_wr_store_type(wr_mas);
--	request = mas_prealloc_calc(wr_mas, entry);
--	if (!request)
-+	mas->store_type = mas_wr_store_type(wr_mas);
-+	mas_prealloc_calc(wr_mas, entry);
-+	if (!mas->node_request)
- 		return;
- 
--	mas_node_count(wr_mas->mas, request);
-+	mas_alloc_nodes(mas, GFP_NOWAIT | __GFP_NOWARN);
- }
- 
- /**
-@@ -5390,7 +5202,6 @@ static inline void mte_destroy_walk(struct maple_enode *enode,
-  */
- void *mas_store(struct ma_state *mas, void *entry)
- {
--	int request;
- 	MA_WR_STATE(wr_mas, mas, entry);
- 
- 	trace_ma_write(__func__, mas, 0, entry);
-@@ -5420,11 +5231,11 @@ void *mas_store(struct ma_state *mas, void *entry)
- 		return wr_mas.content;
- 	}
- 
--	request = mas_prealloc_calc(&wr_mas, entry);
--	if (!request)
-+	mas_prealloc_calc(&wr_mas, entry);
-+	if (!mas->node_request)
- 		goto store;
- 
--	mas_node_count(mas, request);
-+	mas_alloc_nodes(mas, GFP_NOWAIT | __GFP_NOWARN);
- 	if (mas_is_err(mas))
- 		return NULL;
- 
-@@ -5512,20 +5323,19 @@ EXPORT_SYMBOL_GPL(mas_store_prealloc);
- int mas_preallocate(struct ma_state *mas, void *entry, gfp_t gfp)
- {
- 	MA_WR_STATE(wr_mas, mas, entry);
--	int ret = 0;
--	int request;
- 
- 	mas_wr_prealloc_setup(&wr_mas);
- 	mas->store_type = mas_wr_store_type(&wr_mas);
--	request = mas_prealloc_calc(&wr_mas, entry);
--	if (!request)
-+	mas_prealloc_calc(&wr_mas, entry);
-+	if (!mas->node_request)
- 		goto set_flag;
- 
- 	mas->mas_flags &= ~MA_STATE_PREALLOC;
--	mas_node_count_gfp(mas, request, gfp);
-+	mas_alloc_nodes(mas, gfp);
- 	if (mas_is_err(mas)) {
--		mas_set_alloc_req(mas, 0);
--		ret = xa_err(mas->node);
-+		int ret = xa_err(mas->node);
-+
-+		mas->node_request = 0;
- 		mas_destroy(mas);
- 		mas_reset(mas);
- 		return ret;
-@@ -5533,7 +5343,7 @@ int mas_preallocate(struct ma_state *mas, void *entry, gfp_t gfp)
- 
- set_flag:
- 	mas->mas_flags |= MA_STATE_PREALLOC;
--	return ret;
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(mas_preallocate);
- 
-@@ -5547,9 +5357,6 @@ EXPORT_SYMBOL_GPL(mas_preallocate);
-  */
- void mas_destroy(struct ma_state *mas)
- {
--	struct maple_alloc *node;
--	unsigned long total;
--
- 	/*
- 	 * When using mas_for_each() to insert an expected number of elements,
- 	 * it is possible that the number inserted is less than the expected
-@@ -5570,21 +5377,11 @@ void mas_destroy(struct ma_state *mas)
- 	}
- 	mas->mas_flags &= ~(MA_STATE_BULK|MA_STATE_PREALLOC);
- 
--	total = mas_allocated(mas);
--	while (total) {
--		node = mas->alloc;
--		mas->alloc = node->slot[0];
--		if (node->node_count > 1) {
--			size_t count = node->node_count - 1;
--
--			mt_free_bulk(count, (void __rcu **)&node->slot[1]);
--			total -= count;
--		}
--		kfree(ma_mnode_ptr(node));
--		total--;
--	}
-+	mas->node_request = 0;
-+	if (mas->sheaf)
-+		mt_return_sheaf(mas->sheaf);
- 
--	mas->alloc = NULL;
-+	mas->sheaf = NULL;
- }
- EXPORT_SYMBOL_GPL(mas_destroy);
- 
-@@ -5634,7 +5431,8 @@ int mas_expected_entries(struct ma_state *mas, unsigned long nr_entries)
- 	/* Internal nodes */
- 	nr_nodes += DIV_ROUND_UP(nr_nodes, nonleaf_cap);
- 	/* Add working room for split (2 nodes) + new parents */
--	mas_node_count_gfp(mas, nr_nodes + 3, GFP_KERNEL);
-+	mas->node_request = nr_nodes + 3;
-+	mas_alloc_nodes(mas, GFP_KERNEL);
- 
- 	/* Detect if allocations run out */
- 	mas->mas_flags |= MA_STATE_PREALLOC;
-@@ -6281,7 +6079,7 @@ bool mas_nomem(struct ma_state *mas, gfp_t gfp)
- 		mas_alloc_nodes(mas, gfp);
- 	}
- 
--	if (!mas_allocated(mas))
-+	if (!mas->sheaf)
- 		return false;
- 
- 	mas->status = ma_start;
-@@ -7676,8 +7474,9 @@ void mas_dump(const struct ma_state *mas)
- 
- 	pr_err("[%u/%u] index=%lx last=%lx\n", mas->offset, mas->end,
- 	       mas->index, mas->last);
--	pr_err("     min=%lx max=%lx alloc=" PTR_FMT ", depth=%u, flags=%x\n",
--	       mas->min, mas->max, mas->alloc, mas->depth, mas->mas_flags);
-+	pr_err("     min=%lx max=%lx sheaf=" PTR_FMT ", request %lu depth=%u, flags=%x\n",
-+	       mas->min, mas->max, mas->sheaf, mas->node_request, mas->depth,
-+	       mas->mas_flags);
- 	if (mas->index > mas->last)
- 		pr_err("Check index & last\n");
- }
-diff --git a/lib/test_maple_tree.c b/lib/test_maple_tree.c
-index cb3936595b0d56a9682ff100eba54693a1427829..1848d127eb50650e7cc2b9dfbb15ed93aa889f01 100644
---- a/lib/test_maple_tree.c
-+++ b/lib/test_maple_tree.c
-@@ -2746,6 +2746,7 @@ static noinline void __init check_fuzzer(struct maple_tree *mt)
- 	mtree_test_erase(mt, ULONG_MAX - 10);
- }
- 
-+#if 0
- /* duplicate the tree with a specific gap */
- static noinline void __init check_dup_gaps(struct maple_tree *mt,
- 				    unsigned long nr_entries, bool zero_start,
-@@ -2770,6 +2771,7 @@ static noinline void __init check_dup_gaps(struct maple_tree *mt,
- 		mtree_store_range(mt, i*10, (i+1)*10 - gap,
- 				  xa_mk_value(i), GFP_KERNEL);
- 
-+	mt_dump(mt, mt_dump_dec);
- 	mt_init_flags(&newmt, MT_FLAGS_ALLOC_RANGE | MT_FLAGS_LOCK_EXTERN);
- 	mt_set_non_kernel(99999);
- 	down_write(&newmt_lock);
-@@ -2779,9 +2781,12 @@ static noinline void __init check_dup_gaps(struct maple_tree *mt,
- 
- 	rcu_read_lock();
- 	mas_for_each(&mas, tmp, ULONG_MAX) {
-+		printk("%lu nodes %lu\n", mas.index,
-+		       kmem_cache_sheaf_count(newmas.sheaf));
- 		newmas.index = mas.index;
- 		newmas.last = mas.last;
- 		mas_store(&newmas, tmp);
-+		mt_dump(&newmt, mt_dump_dec);
- 	}
- 	rcu_read_unlock();
- 	mas_destroy(&newmas);
-@@ -2878,6 +2883,7 @@ static noinline void __init check_dup(struct maple_tree *mt)
- 		cond_resched();
- 	}
- }
-+#endif
- 
- static noinline void __init check_bnode_min_spanning(struct maple_tree *mt)
- {
-@@ -4077,9 +4083,11 @@ static int __init maple_tree_seed(void)
- 	check_fuzzer(&tree);
- 	mtree_destroy(&tree);
- 
-+#if 0
- 	mt_init_flags(&tree, MT_FLAGS_ALLOC_RANGE);
- 	check_dup(&tree);
- 	mtree_destroy(&tree);
-+#endif
- 
- 	mt_init_flags(&tree, MT_FLAGS_ALLOC_RANGE);
- 	check_bnode_min_spanning(&tree);
-diff --git a/tools/testing/radix-tree/maple.c b/tools/testing/radix-tree/maple.c
-index 7fe91f24849b35723ec6aadbe45ec7d2abedcc11..da3e03d73b52162dab6fa5c368ad7b71b9e58521 100644
---- a/tools/testing/radix-tree/maple.c
-+++ b/tools/testing/radix-tree/maple.c
-@@ -57,430 +57,6 @@ struct rcu_reader_struct {
- 	struct rcu_test_struct2 *test;
- };
- 
--static int get_alloc_node_count(struct ma_state *mas)
--{
--	int count = 1;
--	struct maple_alloc *node = mas->alloc;
--
--	if (!node || ((unsigned long)node & 0x1))
--		return 0;
--	while (node->node_count) {
--		count += node->node_count;
--		node = node->slot[0];
--	}
--	return count;
--}
--
--static void check_mas_alloc_node_count(struct ma_state *mas)
--{
--	mas_node_count_gfp(mas, MAPLE_ALLOC_SLOTS + 1, GFP_KERNEL);
--	mas_node_count_gfp(mas, MAPLE_ALLOC_SLOTS + 3, GFP_KERNEL);
--	MT_BUG_ON(mas->tree, get_alloc_node_count(mas) != mas->alloc->total);
--	mas_destroy(mas);
--}
--
--/*
-- * check_new_node() - Check the creation of new nodes and error path
-- * verification.
-- */
--static noinline void __init check_new_node(struct maple_tree *mt)
--{
--
--	struct maple_node *mn, *mn2, *mn3;
--	struct maple_alloc *smn;
--	struct maple_node *nodes[100];
--	int i, j, total;
--
--	MA_STATE(mas, mt, 0, 0);
--
--	check_mas_alloc_node_count(&mas);
--
--	/* Try allocating 3 nodes */
--	mtree_lock(mt);
--	mt_set_non_kernel(0);
--	/* request 3 nodes to be allocated. */
--	mas_node_count(&mas, 3);
--	/* Allocation request of 3. */
--	MT_BUG_ON(mt, mas_alloc_req(&mas) != 3);
--	/* Allocate failed. */
--	MT_BUG_ON(mt, mas.node != MA_ERROR(-ENOMEM));
--	MT_BUG_ON(mt, !mas_nomem(&mas, GFP_KERNEL));
--
--	MT_BUG_ON(mt, mas_allocated(&mas) != 3);
--	mn = mas_pop_node(&mas);
--	MT_BUG_ON(mt, not_empty(mn));
--	MT_BUG_ON(mt, mn == NULL);
--	MT_BUG_ON(mt, mas.alloc == NULL);
--	MT_BUG_ON(mt, mas.alloc->slot[0] == NULL);
--	mas_push_node(&mas, mn);
--	mas_reset(&mas);
--	mas_destroy(&mas);
--	mtree_unlock(mt);
--
--
--	/* Try allocating 1 node, then 2 more */
--	mtree_lock(mt);
--	/* Set allocation request to 1. */
--	mas_set_alloc_req(&mas, 1);
--	/* Check Allocation request of 1. */
--	MT_BUG_ON(mt, mas_alloc_req(&mas) != 1);
--	mas_set_err(&mas, -ENOMEM);
--	/* Validate allocation request. */
--	MT_BUG_ON(mt, !mas_nomem(&mas, GFP_KERNEL));
--	/* Eat the requested node. */
--	mn = mas_pop_node(&mas);
--	MT_BUG_ON(mt, not_empty(mn));
--	MT_BUG_ON(mt, mn == NULL);
--	MT_BUG_ON(mt, mn->slot[0] != NULL);
--	MT_BUG_ON(mt, mn->slot[1] != NULL);
--	MT_BUG_ON(mt, mas_allocated(&mas) != 0);
--
--	mn->parent = ma_parent_ptr(mn);
--	ma_free_rcu(mn);
--	mas.status = ma_start;
--	mas_destroy(&mas);
--	/* Allocate 3 nodes, will fail. */
--	mas_node_count(&mas, 3);
--	/* Drop the lock and allocate 3 nodes. */
--	mas_nomem(&mas, GFP_KERNEL);
--	/* Ensure 3 are allocated. */
--	MT_BUG_ON(mt, mas_allocated(&mas) != 3);
--	/* Allocation request of 0. */
--	MT_BUG_ON(mt, mas_alloc_req(&mas) != 0);
--
--	MT_BUG_ON(mt, mas.alloc == NULL);
--	MT_BUG_ON(mt, mas.alloc->slot[0] == NULL);
--	MT_BUG_ON(mt, mas.alloc->slot[1] == NULL);
--	/* Ensure we counted 3. */
--	MT_BUG_ON(mt, mas_allocated(&mas) != 3);
--	/* Free. */
--	mas_reset(&mas);
--	mas_destroy(&mas);
--
--	/* Set allocation request to 1. */
--	mas_set_alloc_req(&mas, 1);
--	MT_BUG_ON(mt, mas_alloc_req(&mas) != 1);
--	mas_set_err(&mas, -ENOMEM);
--	/* Validate allocation request. */
--	MT_BUG_ON(mt, !mas_nomem(&mas, GFP_KERNEL));
--	MT_BUG_ON(mt, mas_allocated(&mas) != 1);
--	/* Check the node is only one node. */
--	mn = mas_pop_node(&mas);
--	MT_BUG_ON(mt, not_empty(mn));
--	MT_BUG_ON(mt, mas_allocated(&mas) != 0);
--	MT_BUG_ON(mt, mn == NULL);
--	MT_BUG_ON(mt, mn->slot[0] != NULL);
--	MT_BUG_ON(mt, mn->slot[1] != NULL);
--	MT_BUG_ON(mt, mas_allocated(&mas) != 0);
--	mas_push_node(&mas, mn);
--	MT_BUG_ON(mt, mas_allocated(&mas) != 1);
--	MT_BUG_ON(mt, mas.alloc->node_count);
--
--	mas_set_alloc_req(&mas, 2); /* request 2 more. */
--	MT_BUG_ON(mt, mas_alloc_req(&mas) != 2);
--	mas_set_err(&mas, -ENOMEM);
--	MT_BUG_ON(mt, !mas_nomem(&mas, GFP_KERNEL));
--	MT_BUG_ON(mt, mas_allocated(&mas) != 3);
--	MT_BUG_ON(mt, mas.alloc == NULL);
--	MT_BUG_ON(mt, mas.alloc->slot[0] == NULL);
--	MT_BUG_ON(mt, mas.alloc->slot[1] == NULL);
--	for (i = 2; i >= 0; i--) {
--		mn = mas_pop_node(&mas);
--		MT_BUG_ON(mt, mas_allocated(&mas) != i);
--		MT_BUG_ON(mt, !mn);
--		MT_BUG_ON(mt, not_empty(mn));
--		mn->parent = ma_parent_ptr(mn);
--		ma_free_rcu(mn);
--	}
--
--	total = 64;
--	mas_set_alloc_req(&mas, total); /* request 2 more. */
--	MT_BUG_ON(mt, mas_alloc_req(&mas) != total);
--	mas_set_err(&mas, -ENOMEM);
--	MT_BUG_ON(mt, !mas_nomem(&mas, GFP_KERNEL));
--	for (i = total; i > 0; i--) {
--		unsigned int e = 0; /* expected node_count */
--
--		if (!MAPLE_32BIT) {
--			if (i >= 35)
--				e = i - 34;
--			else if (i >= 5)
--				e = i - 4;
--			else if (i >= 2)
--				e = i - 1;
--		} else {
--			if (i >= 4)
--				e = i - 3;
--			else if (i >= 1)
--				e = i - 1;
--			else
--				e = 0;
--		}
--
--		MT_BUG_ON(mt, mas.alloc->node_count != e);
--		mn = mas_pop_node(&mas);
--		MT_BUG_ON(mt, not_empty(mn));
--		MT_BUG_ON(mt, mas_allocated(&mas) != i - 1);
--		MT_BUG_ON(mt, !mn);
--		mn->parent = ma_parent_ptr(mn);
--		ma_free_rcu(mn);
--	}
--
--	total = 100;
--	for (i = 1; i < total; i++) {
--		mas_set_alloc_req(&mas, i);
--		mas_set_err(&mas, -ENOMEM);
--		MT_BUG_ON(mt, !mas_nomem(&mas, GFP_KERNEL));
--		for (j = i; j > 0; j--) {
--			mn = mas_pop_node(&mas);
--			MT_BUG_ON(mt, mas_allocated(&mas) != j - 1);
--			MT_BUG_ON(mt, !mn);
--			MT_BUG_ON(mt, not_empty(mn));
--			mas_push_node(&mas, mn);
--			MT_BUG_ON(mt, mas_allocated(&mas) != j);
--			mn = mas_pop_node(&mas);
--			MT_BUG_ON(mt, not_empty(mn));
--			MT_BUG_ON(mt, mas_allocated(&mas) != j - 1);
--			mn->parent = ma_parent_ptr(mn);
--			ma_free_rcu(mn);
--		}
--		MT_BUG_ON(mt, mas_allocated(&mas) != 0);
--
--		mas_set_alloc_req(&mas, i);
--		mas_set_err(&mas, -ENOMEM);
--		MT_BUG_ON(mt, !mas_nomem(&mas, GFP_KERNEL));
--		for (j = 0; j <= i/2; j++) {
--			MT_BUG_ON(mt, mas_allocated(&mas) != i - j);
--			nodes[j] = mas_pop_node(&mas);
--			MT_BUG_ON(mt, mas_allocated(&mas) != i - j - 1);
--		}
--
--		while (j) {
--			j--;
--			mas_push_node(&mas, nodes[j]);
--			MT_BUG_ON(mt, mas_allocated(&mas) != i - j);
--		}
--		MT_BUG_ON(mt, mas_allocated(&mas) != i);
--		for (j = 0; j <= i/2; j++) {
--			MT_BUG_ON(mt, mas_allocated(&mas) != i - j);
--			mn = mas_pop_node(&mas);
--			MT_BUG_ON(mt, not_empty(mn));
--			mn->parent = ma_parent_ptr(mn);
--			ma_free_rcu(mn);
--			MT_BUG_ON(mt, mas_allocated(&mas) != i - j - 1);
--		}
--		mas_reset(&mas);
--		MT_BUG_ON(mt, mas_nomem(&mas, GFP_KERNEL));
--		mas_destroy(&mas);
--
--	}
--
--	/* Set allocation request. */
--	total = 500;
--	mas_node_count(&mas, total);
--	/* Drop the lock and allocate the nodes. */
--	mas_nomem(&mas, GFP_KERNEL);
--	MT_BUG_ON(mt, !mas.alloc);
--	i = 1;
--	smn = mas.alloc;
--	while (i < total) {
--		for (j = 0; j < MAPLE_ALLOC_SLOTS; j++) {
--			i++;
--			MT_BUG_ON(mt, !smn->slot[j]);
--			if (i == total)
--				break;
--		}
--		smn = smn->slot[0]; /* next. */
--	}
--	MT_BUG_ON(mt, mas_allocated(&mas) != total);
--	mas_reset(&mas);
--	mas_destroy(&mas); /* Free. */
--
--	MT_BUG_ON(mt, mas_allocated(&mas) != 0);
--	for (i = 1; i < 128; i++) {
--		mas_node_count(&mas, i); /* Request */
--		mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--		MT_BUG_ON(mt, mas_allocated(&mas) != i); /* check request filled */
--		for (j = i; j > 0; j--) { /*Free the requests */
--			mn = mas_pop_node(&mas); /* get the next node. */
--			MT_BUG_ON(mt, mn == NULL);
--			MT_BUG_ON(mt, not_empty(mn));
--			mn->parent = ma_parent_ptr(mn);
--			ma_free_rcu(mn);
--		}
--		MT_BUG_ON(mt, mas_allocated(&mas) != 0);
--	}
--
--	for (i = 1; i < MAPLE_NODE_MASK + 1; i++) {
--		MA_STATE(mas2, mt, 0, 0);
--		mas_node_count(&mas, i); /* Request */
--		mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--		MT_BUG_ON(mt, mas_allocated(&mas) != i); /* check request filled */
--		for (j = 1; j <= i; j++) { /* Move the allocations to mas2 */
--			mn = mas_pop_node(&mas); /* get the next node. */
--			MT_BUG_ON(mt, mn == NULL);
--			MT_BUG_ON(mt, not_empty(mn));
--			mas_push_node(&mas2, mn);
--			MT_BUG_ON(mt, mas_allocated(&mas2) != j);
--		}
--		MT_BUG_ON(mt, mas_allocated(&mas) != 0);
--		MT_BUG_ON(mt, mas_allocated(&mas2) != i);
--
--		for (j = i; j > 0; j--) { /*Free the requests */
--			MT_BUG_ON(mt, mas_allocated(&mas2) != j);
--			mn = mas_pop_node(&mas2); /* get the next node. */
--			MT_BUG_ON(mt, mn == NULL);
--			MT_BUG_ON(mt, not_empty(mn));
--			mn->parent = ma_parent_ptr(mn);
--			ma_free_rcu(mn);
--		}
--		MT_BUG_ON(mt, mas_allocated(&mas2) != 0);
--	}
--
--
--	MT_BUG_ON(mt, mas_allocated(&mas) != 0);
--	mas_node_count(&mas, MAPLE_ALLOC_SLOTS + 1); /* Request */
--	MT_BUG_ON(mt, mas.node != MA_ERROR(-ENOMEM));
--	MT_BUG_ON(mt, !mas_nomem(&mas, GFP_KERNEL));
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS + 1);
--	MT_BUG_ON(mt, mas.alloc->node_count != MAPLE_ALLOC_SLOTS);
--
--	mn = mas_pop_node(&mas); /* get the next node. */
--	MT_BUG_ON(mt, mn == NULL);
--	MT_BUG_ON(mt, not_empty(mn));
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS);
--	MT_BUG_ON(mt, mas.alloc->node_count != MAPLE_ALLOC_SLOTS - 1);
--
--	mas_push_node(&mas, mn);
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS + 1);
--	MT_BUG_ON(mt, mas.alloc->node_count != MAPLE_ALLOC_SLOTS);
--
--	/* Check the limit of pop/push/pop */
--	mas_node_count(&mas, MAPLE_ALLOC_SLOTS + 2); /* Request */
--	MT_BUG_ON(mt, mas_alloc_req(&mas) != 1);
--	MT_BUG_ON(mt, mas.node != MA_ERROR(-ENOMEM));
--	MT_BUG_ON(mt, !mas_nomem(&mas, GFP_KERNEL));
--	MT_BUG_ON(mt, mas_alloc_req(&mas));
--	MT_BUG_ON(mt, mas.alloc->node_count != 1);
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS + 2);
--	mn = mas_pop_node(&mas);
--	MT_BUG_ON(mt, not_empty(mn));
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS + 1);
--	MT_BUG_ON(mt, mas.alloc->node_count  != MAPLE_ALLOC_SLOTS);
--	mas_push_node(&mas, mn);
--	MT_BUG_ON(mt, mas.alloc->node_count != 1);
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS + 2);
--	mn = mas_pop_node(&mas);
--	MT_BUG_ON(mt, not_empty(mn));
--	mn->parent = ma_parent_ptr(mn);
--	ma_free_rcu(mn);
--	for (i = 1; i <= MAPLE_ALLOC_SLOTS + 1; i++) {
--		mn = mas_pop_node(&mas);
--		MT_BUG_ON(mt, not_empty(mn));
--		mn->parent = ma_parent_ptr(mn);
--		ma_free_rcu(mn);
--	}
--	MT_BUG_ON(mt, mas_allocated(&mas) != 0);
--
--
--	for (i = 3; i < MAPLE_NODE_MASK * 3; i++) {
--		mas.node = MA_ERROR(-ENOMEM);
--		mas_node_count(&mas, i); /* Request */
--		mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--		mn = mas_pop_node(&mas); /* get the next node. */
--		mas_push_node(&mas, mn); /* put it back */
--		mas_destroy(&mas);
--
--		mas.node = MA_ERROR(-ENOMEM);
--		mas_node_count(&mas, i); /* Request */
--		mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--		mn = mas_pop_node(&mas); /* get the next node. */
--		mn2 = mas_pop_node(&mas); /* get the next node. */
--		mas_push_node(&mas, mn); /* put them back */
--		mas_push_node(&mas, mn2);
--		mas_destroy(&mas);
--
--		mas.node = MA_ERROR(-ENOMEM);
--		mas_node_count(&mas, i); /* Request */
--		mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--		mn = mas_pop_node(&mas); /* get the next node. */
--		mn2 = mas_pop_node(&mas); /* get the next node. */
--		mn3 = mas_pop_node(&mas); /* get the next node. */
--		mas_push_node(&mas, mn); /* put them back */
--		mas_push_node(&mas, mn2);
--		mas_push_node(&mas, mn3);
--		mas_destroy(&mas);
--
--		mas.node = MA_ERROR(-ENOMEM);
--		mas_node_count(&mas, i); /* Request */
--		mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--		mn = mas_pop_node(&mas); /* get the next node. */
--		mn->parent = ma_parent_ptr(mn);
--		ma_free_rcu(mn);
--		mas_destroy(&mas);
--
--		mas.node = MA_ERROR(-ENOMEM);
--		mas_node_count(&mas, i); /* Request */
--		mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--		mn = mas_pop_node(&mas); /* get the next node. */
--		mn->parent = ma_parent_ptr(mn);
--		ma_free_rcu(mn);
--		mn = mas_pop_node(&mas); /* get the next node. */
--		mn->parent = ma_parent_ptr(mn);
--		ma_free_rcu(mn);
--		mn = mas_pop_node(&mas); /* get the next node. */
--		mn->parent = ma_parent_ptr(mn);
--		ma_free_rcu(mn);
--		mas_destroy(&mas);
--	}
--
--	mas.node = MA_ERROR(-ENOMEM);
--	mas_node_count(&mas, 5); /* Request */
--	mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--	MT_BUG_ON(mt, mas_allocated(&mas) != 5);
--	mas.node = MA_ERROR(-ENOMEM);
--	mas_node_count(&mas, 10); /* Request */
--	mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--	mas.status = ma_start;
--	MT_BUG_ON(mt, mas_allocated(&mas) != 10);
--	mas_destroy(&mas);
--
--	mas.node = MA_ERROR(-ENOMEM);
--	mas_node_count(&mas, MAPLE_ALLOC_SLOTS - 1); /* Request */
--	mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS - 1);
--	mas.node = MA_ERROR(-ENOMEM);
--	mas_node_count(&mas, 10 + MAPLE_ALLOC_SLOTS - 1); /* Request */
--	mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--	mas.status = ma_start;
--	MT_BUG_ON(mt, mas_allocated(&mas) != 10 + MAPLE_ALLOC_SLOTS - 1);
--	mas_destroy(&mas);
--
--	mas.node = MA_ERROR(-ENOMEM);
--	mas_node_count(&mas, MAPLE_ALLOC_SLOTS + 1); /* Request */
--	mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS + 1);
--	mas.node = MA_ERROR(-ENOMEM);
--	mas_node_count(&mas, MAPLE_ALLOC_SLOTS * 2 + 2); /* Request */
--	mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--	mas.status = ma_start;
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS * 2 + 2);
--	mas_destroy(&mas);
--
--	mas.node = MA_ERROR(-ENOMEM);
--	mas_node_count(&mas, MAPLE_ALLOC_SLOTS * 2 + 1); /* Request */
--	mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS * 2 + 1);
--	mas.node = MA_ERROR(-ENOMEM);
--	mas_node_count(&mas, MAPLE_ALLOC_SLOTS * 3 + 2); /* Request */
--	mas_nomem(&mas, GFP_KERNEL); /* Fill request */
--	mas.status = ma_start;
--	MT_BUG_ON(mt, mas_allocated(&mas) != MAPLE_ALLOC_SLOTS * 3 + 2);
--	mas_destroy(&mas);
--
--	mtree_unlock(mt);
--}
--
- /*
-  * Check erasing including RCU.
-  */
-@@ -35452,8 +35028,7 @@ static void check_dfs_preorder(struct maple_tree *mt)
- 	mt_init_flags(mt, MT_FLAGS_ALLOC_RANGE);
- 	mas_reset(&mas);
- 	mt_zero_nr_tallocated();
--	mt_set_non_kernel(200);
--	mas_expected_entries(&mas, max);
-+	mt_set_non_kernel(1000);
- 	for (count = 0; count <= max; count++) {
- 		mas.index = mas.last = count;
- 		mas_store(&mas, xa_mk_value(count));
-@@ -35518,6 +35093,13 @@ static unsigned char get_vacant_height(struct ma_wr_state *wr_mas, void *entry)
- 	return vacant_height;
- }
- 
-+static int mas_allocated(struct ma_state *mas)
-+{
-+	if (mas->sheaf)
-+		return kmem_cache_sheaf_size(mas->sheaf);
-+
-+	return 0;
-+}
- /* Preallocation testing */
- static noinline void __init check_prealloc(struct maple_tree *mt)
- {
-@@ -35536,7 +35118,10 @@ static noinline void __init check_prealloc(struct maple_tree *mt)
- 
- 	/* Spanning store */
- 	mas_set_range(&mas, 470, 500);
--	MT_BUG_ON(mt, mas_preallocate(&mas, ptr, GFP_KERNEL) != 0);
-+
-+	mas_wr_preallocate(&wr_mas, ptr);
-+	MT_BUG_ON(mt, mas.store_type != wr_spanning_store);
-+	MT_BUG_ON(mt, mas_is_err(&mas));
- 	allocated = mas_allocated(&mas);
- 	height = mas_mt_height(&mas);
- 	vacant_height = get_vacant_height(&wr_mas, ptr);
-@@ -35546,6 +35131,7 @@ static noinline void __init check_prealloc(struct maple_tree *mt)
- 	allocated = mas_allocated(&mas);
- 	MT_BUG_ON(mt, allocated != 0);
- 
-+	mas_wr_preallocate(&wr_mas, ptr);
- 	MT_BUG_ON(mt, mas_preallocate(&mas, ptr, GFP_KERNEL) != 0);
- 	allocated = mas_allocated(&mas);
- 	height = mas_mt_height(&mas);
-@@ -35586,20 +35172,6 @@ static noinline void __init check_prealloc(struct maple_tree *mt)
- 	mn->parent = ma_parent_ptr(mn);
- 	ma_free_rcu(mn);
- 
--	MT_BUG_ON(mt, mas_preallocate(&mas, ptr, GFP_KERNEL) != 0);
--	allocated = mas_allocated(&mas);
--	height = mas_mt_height(&mas);
--	vacant_height = get_vacant_height(&wr_mas, ptr);
--	MT_BUG_ON(mt, allocated != 1 + (height - vacant_height) * 3);
--	mn = mas_pop_node(&mas);
--	MT_BUG_ON(mt, mas_allocated(&mas) != allocated - 1);
--	mas_push_node(&mas, mn);
--	MT_BUG_ON(mt, mas_allocated(&mas) != allocated);
--	MT_BUG_ON(mt, mas_preallocate(&mas, ptr, GFP_KERNEL) != 0);
--	mas_destroy(&mas);
--	allocated = mas_allocated(&mas);
--	MT_BUG_ON(mt, allocated != 0);
--
- 	MT_BUG_ON(mt, mas_preallocate(&mas, ptr, GFP_KERNEL) != 0);
- 	allocated = mas_allocated(&mas);
- 	height = mas_mt_height(&mas);
-@@ -36400,11 +35972,17 @@ static void check_nomem_writer_race(struct maple_tree *mt)
- 	check_load(mt, 6, xa_mk_value(0xC));
- 	mtree_unlock(mt);
- 
-+	mt_set_non_kernel(0);
- 	/* test for the same race but with mas_store_gfp() */
- 	mtree_store_range(mt, 0, 5, xa_mk_value(0xA), GFP_KERNEL);
- 	mtree_store_range(mt, 6, 10, NULL, GFP_KERNEL);
- 
- 	mas_set_range(&mas, 0, 5);
-+
-+	/* setup writer 2 that will trigger the race condition */
-+	mt_set_private(mt);
-+	mt_set_callback(writer2);
-+
- 	mtree_lock(mt);
- 	mas_store_gfp(&mas, NULL, GFP_KERNEL);
- 
-@@ -36546,10 +36124,6 @@ void farmer_tests(void)
- 	check_erase_testset(&tree);
- 	mtree_destroy(&tree);
- 
--	mt_init_flags(&tree, 0);
--	check_new_node(&tree);
--	mtree_destroy(&tree);
--
- 	if (!MAPLE_32BIT) {
- 		mt_init_flags(&tree, MT_FLAGS_ALLOC_RANGE);
- 		check_rcu_simulated(&tree);
-diff --git a/tools/testing/shared/linux.c b/tools/testing/shared/linux.c
-index 4ceff7969b78cf8e33cd1e021c68bc9f8a02a7a1..8c72571559583759456c2b469a2abc2611117c13 100644
---- a/tools/testing/shared/linux.c
-+++ b/tools/testing/shared/linux.c
-@@ -64,7 +64,8 @@ void *kmem_cache_alloc_lru(struct kmem_cache *cachep, struct list_lru *lru,
- 
- 	if (!(gfp & __GFP_DIRECT_RECLAIM)) {
- 		if (!cachep->non_kernel) {
--			cachep->exec_callback = true;
-+			if (cachep->callback)
-+				cachep->exec_callback = true;
- 			return NULL;
- 		}
- 
-@@ -210,6 +211,8 @@ int kmem_cache_alloc_bulk(struct kmem_cache *cachep, gfp_t gfp, size_t size,
- 		for (i = 0; i < size; i++)
- 			__kmem_cache_free_locked(cachep, p[i]);
- 		pthread_mutex_unlock(&cachep->lock);
-+		if (cachep->callback)
-+			cachep->exec_callback = true;
- 		return 0;
- 	}
- 
-
--- 
-2.51.0
-
+Thanks :) Just happy to find the problem and help it get sorted! :>)
