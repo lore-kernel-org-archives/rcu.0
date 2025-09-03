@@ -1,82 +1,83 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB0B301026
-	for <rcu@vger.kernel.org>; Wed,  3 Sep 2025 13:00:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43AF530149B
+	for <rcu@vger.kernel.org>; Wed,  3 Sep 2025 13:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756904442; cv=none; b=ZWRqxwKDFpwDka3Rk7aLPeydDimDaYeeQ7TaUeaPlgodLaQQtQJnAGrmaEvk80AlJXbqjitvGssWGFFxbHR6rRlI5/OyFESkukogW0reEuTYXbI8rJNbXPJobAFioRpEz4lsWz5jLQT88gFwCQ5YKZvByCd7LFZ9B4IoZ+e+IEI=
+	t=1756904443; cv=none; b=dyNSi44b6NY3b8HdIK91oJML98aEm8x9g+x82z/IEF5hEDG5V525wv6kOh15x6+zMtCJwH7G97mgkjj9ik7PE/sKjiaRXVdnr7Ug7yFS//IB8myjp8GUPWqyCHXnwtrtVkjyaYSmwz6yZQQN76LoywrW13Veh1oRmiuWxkJ22HE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756904442; c=relaxed/simple;
-	bh=isKMO/oEHRqTdYv8cphz4X4oJvUf3JlTf8u3MNzeRuY=;
+	s=arc-20240116; t=1756904443; c=relaxed/simple;
+	bh=7CCSDJsDSo53rJ2Xve2xGVYoT/NsP8GXnfH4mSKfrok=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Pnr71KSvFMd97qkJoxn+fpIZu3qzHperyy+Yw/Lf+acTHRR7BagqOEN1lDFfOwzRD4UJlIKe124Z8UwLnyxtcnbHKDDIXw0TnX5ZkjbMnHu7vEI5WfSP1mRPZVCHZcOywvZhW0jmqQCIpubhjlsxt/hEnVvljFzZW2VRWAm3f5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xmlnP3KJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=N4++Wte7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xmlnP3KJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=N4++Wte7; arc=none smtp.client-ip=195.135.223.131
+	 In-Reply-To:To:Cc; b=Hbvqj97QbdEgh9TOa2BFXr+sAYL0RblvBYGsfGM9soICccaJQZH4t78r4T6G4gMV9WUIn8TOuEl3mvwqeloAFNPj5p8EpFQ3f5oncjvODzkXHUAjCNmfBKWW5Pnli4iDXi5oEvLF9NTyk/Y/jp6VggRKKFFegYnumibyN+/mYqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LoETShIM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MyQghC5D; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LoETShIM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MyQghC5D; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xmlnP3KJ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="N4++Wte7";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xmlnP3KJ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="N4++Wte7"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LoETShIM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MyQghC5D";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LoETShIM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MyQghC5D"
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AEC901F745;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4F49F21227;
 	Wed,  3 Sep 2025 13:00:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1756904410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Y8VowGBFfDXG/GD85vj37Bupo+CslYBKF/PIHnrFTIo=;
-	b=xmlnP3KJzd9cpQ2KM9zzpkXW/WInltLBBIOx1WWqZstmEQ8zlGEsKFADxRv2DWWqhVy+g7
-	bH6hbWOVsz1cZLixljP1tJxgbpWYrX16+YFgN6UjjsXNaHGrhSrVHTYdM+v2zVQvWkGRf1
-	2WBXlMwwIxcQZds6glBZ4JTZmCtNwBo=
+	bh=GvueOpBRqUSJBVmPF3IuGLVWneYsx8iJYPivjgPVl+E=;
+	b=LoETShIMk0pCx5L816uJyvFy7c4G6hgcTgDNeP0wdw3yv0H1gKUdk/cqAYnCOz9H7IfMBQ
+	HDr9bFcRAknhxCqHENhCd3m3YzDFv71MZmJZCdVgC1HKbU0Y75RhdAXAhziIlsleurg51T
+	VNyNCxItm6H6usKuYzzlrfROk7g2Vzw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1756904410;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Y8VowGBFfDXG/GD85vj37Bupo+CslYBKF/PIHnrFTIo=;
-	b=N4++Wte7jeEZOXvrC75+VMaUkacqmOM3kfAzUKtfPmsg95/u4HsVUJSInm3u2ssLDRl2z/
-	ZvUNnf7oZJOVtVBg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xmlnP3KJ;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=N4++Wte7
+	bh=GvueOpBRqUSJBVmPF3IuGLVWneYsx8iJYPivjgPVl+E=;
+	b=MyQghC5DsjfSLaNXl3OCffrJh1mZIzymp5cPWwwkaVoofGSGp5XZAZ+nQGdVjDXWQmPKlF
+	PfA/Q+4MQ1QPxkDQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LoETShIM;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=MyQghC5D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1756904410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Y8VowGBFfDXG/GD85vj37Bupo+CslYBKF/PIHnrFTIo=;
-	b=xmlnP3KJzd9cpQ2KM9zzpkXW/WInltLBBIOx1WWqZstmEQ8zlGEsKFADxRv2DWWqhVy+g7
-	bH6hbWOVsz1cZLixljP1tJxgbpWYrX16+YFgN6UjjsXNaHGrhSrVHTYdM+v2zVQvWkGRf1
-	2WBXlMwwIxcQZds6glBZ4JTZmCtNwBo=
+	bh=GvueOpBRqUSJBVmPF3IuGLVWneYsx8iJYPivjgPVl+E=;
+	b=LoETShIMk0pCx5L816uJyvFy7c4G6hgcTgDNeP0wdw3yv0H1gKUdk/cqAYnCOz9H7IfMBQ
+	HDr9bFcRAknhxCqHENhCd3m3YzDFv71MZmJZCdVgC1HKbU0Y75RhdAXAhziIlsleurg51T
+	VNyNCxItm6H6usKuYzzlrfROk7g2Vzw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1756904410;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Y8VowGBFfDXG/GD85vj37Bupo+CslYBKF/PIHnrFTIo=;
-	b=N4++Wte7jeEZOXvrC75+VMaUkacqmOM3kfAzUKtfPmsg95/u4HsVUJSInm3u2ssLDRl2z/
-	ZvUNnf7oZJOVtVBg==
+	bh=GvueOpBRqUSJBVmPF3IuGLVWneYsx8iJYPivjgPVl+E=;
+	b=MyQghC5DsjfSLaNXl3OCffrJh1mZIzymp5cPWwwkaVoofGSGp5XZAZ+nQGdVjDXWQmPKlF
+	PfA/Q+4MQ1QPxkDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DB42D13B03;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B0FB13AFB;
 	Wed,  3 Sep 2025 13:00:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +FNHNdk7uGitOAAAD6G6ig
+	id YPyuIdk7uGitOAAAD6G6ig
 	(envelope-from <vbabka@suse.cz>); Wed, 03 Sep 2025 13:00:09 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Wed, 03 Sep 2025 14:59:52 +0200
-Subject: [PATCH v7 10/21] tools/testing/vma: Implement vm_refcnt reset
+Date: Wed, 03 Sep 2025 14:59:48 +0200
+Subject: [PATCH v7 06/21] slab: determine barn status racily outside of
+ lock
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -85,7 +86,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250903-slub-percpu-caches-v7-10-71c114cdefef@suse.cz>
+Message-Id: <20250903-slub-percpu-caches-v7-6-71c114cdefef@suse.cz>
 References: <20250903-slub-percpu-caches-v7-0-71c114cdefef@suse.cz>
 In-Reply-To: <20250903-slub-percpu-caches-v7-0-71c114cdefef@suse.cz>
 To: Suren Baghdasaryan <surenb@google.com>, 
@@ -99,7 +100,7 @@ Cc: Roman Gushchin <roman.gushchin@linux.dev>,
 X-Mailer: b4 0.14.2
 X-Spam-Level: 
 X-Spam-Flag: NO
-X-Rspamd-Queue-Id: AEC901F745
+X-Rspamd-Queue-Id: 4F49F21227
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.51 / 50.00];
@@ -129,35 +130,99 @@ X-Spamd-Result: default: False [-4.51 / 50.00];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	DKIM_TRACE(0.00)[suse.cz:+];
 	R_RATELIMIT(0.00)[to_ip_from(RLfsjnp7neds983g95ihcnuzgq)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid,suse.cz:email,oracle.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
 X-Spam-Score: -4.51
 
-From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+The possibility of many barn operations is determined by the current
+number of full or empty sheaves. Taking the barn->lock just to find out
+that e.g. there are no empty sheaves results in unnecessary overhead and
+lock contention. Thus perform these checks outside of the lock with a
+data_race() annotated variable read and fail quickly without taking the
+lock.
 
-Add the reset of the ref count in vma_lock_init().  This is needed if
-the vma memory is not zeroed on allocation.
+Checks for sheaf availability that racily succeed have to be obviously
+repeated under the lock for correctness, but we can skip repeating
+checks if there are too many sheaves on the given list as the limits
+don't need to be strict.
 
-Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- tools/testing/vma/vma_internal.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/slub.c | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/vma/vma_internal.h b/tools/testing/vma/vma_internal.h
-index 3639aa8dd2b06ebe5b9cfcfe6669994fd38c482d..2f1c586400cfd65413d2ff82199590b43796b18c 100644
---- a/tools/testing/vma/vma_internal.h
-+++ b/tools/testing/vma/vma_internal.h
-@@ -1418,8 +1418,8 @@ static inline void ksm_exit(struct mm_struct *mm)
+diff --git a/mm/slub.c b/mm/slub.c
+index c6ca9b60acd15520410ac08d252bb09e111db6f1..d078630f7211b617f390a16fa080da8a1df45355 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2801,9 +2801,12 @@ static struct slab_sheaf *barn_get_empty_sheaf(struct node_barn *barn)
+ 	struct slab_sheaf *empty = NULL;
+ 	unsigned long flags;
  
- static inline void vma_lock_init(struct vm_area_struct *vma, bool reset_refcnt)
- {
--	(void)vma;
--	(void)reset_refcnt;
-+	if (reset_refcnt)
-+		refcount_set(&vma->vm_refcnt, 0);
- }
++	if (!data_race(barn->nr_empty))
++		return NULL;
++
+ 	spin_lock_irqsave(&barn->lock, flags);
  
- static inline void vma_numab_state_init(struct vm_area_struct *vma)
+-	if (barn->nr_empty) {
++	if (likely(barn->nr_empty)) {
+ 		empty = list_first_entry(&barn->sheaves_empty,
+ 					 struct slab_sheaf, barn_list);
+ 		list_del(&empty->barn_list);
+@@ -2850,6 +2853,9 @@ static struct slab_sheaf *barn_get_full_or_empty_sheaf(struct node_barn *barn)
+ 	struct slab_sheaf *sheaf = NULL;
+ 	unsigned long flags;
+ 
++	if (!data_race(barn->nr_full) && !data_race(barn->nr_empty))
++		return NULL;
++
+ 	spin_lock_irqsave(&barn->lock, flags);
+ 
+ 	if (barn->nr_full) {
+@@ -2880,9 +2886,12 @@ barn_replace_empty_sheaf(struct node_barn *barn, struct slab_sheaf *empty)
+ 	struct slab_sheaf *full = NULL;
+ 	unsigned long flags;
+ 
++	if (!data_race(barn->nr_full))
++		return NULL;
++
+ 	spin_lock_irqsave(&barn->lock, flags);
+ 
+-	if (barn->nr_full) {
++	if (likely(barn->nr_full)) {
+ 		full = list_first_entry(&barn->sheaves_full, struct slab_sheaf,
+ 					barn_list);
+ 		list_del(&full->barn_list);
+@@ -2906,19 +2915,23 @@ barn_replace_full_sheaf(struct node_barn *barn, struct slab_sheaf *full)
+ 	struct slab_sheaf *empty;
+ 	unsigned long flags;
+ 
++	/* we don't repeat this check under barn->lock as it's not critical */
++	if (data_race(barn->nr_full) >= MAX_FULL_SHEAVES)
++		return ERR_PTR(-E2BIG);
++	if (!data_race(barn->nr_empty))
++		return ERR_PTR(-ENOMEM);
++
+ 	spin_lock_irqsave(&barn->lock, flags);
+ 
+-	if (barn->nr_full >= MAX_FULL_SHEAVES) {
+-		empty = ERR_PTR(-E2BIG);
+-	} else if (!barn->nr_empty) {
+-		empty = ERR_PTR(-ENOMEM);
+-	} else {
++	if (likely(barn->nr_empty)) {
+ 		empty = list_first_entry(&barn->sheaves_empty, struct slab_sheaf,
+ 					 barn_list);
+ 		list_del(&empty->barn_list);
+ 		list_add(&full->barn_list, &barn->sheaves_full);
+ 		barn->nr_empty--;
+ 		barn->nr_full++;
++	} else {
++		empty = ERR_PTR(-ENOMEM);
+ 	}
+ 
+ 	spin_unlock_irqrestore(&barn->lock, flags);
 
 -- 
 2.51.0
