@@ -1,182 +1,191 @@
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D9522422E
-	for <rcu@vger.kernel.org>; Fri,  5 Sep 2025 05:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292B2284689
+	for <rcu@vger.kernel.org>; Fri,  5 Sep 2025 09:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757050787; cv=none; b=iH44UChGJJxzUf2/5cX2dNUEEzhFhIYNUIvPBfUeAkNEuaUbyk+vcw3bUjuhT/Hi+7EgJBxAfhlv5I/4lKU3+FtYTv5uOkvmlF1NkRDEBcV0GVQgdX1WO2JcavXpB1mA+QVeLNifKlNQJW8S52335zHW85OnQTeYs7xOj1xHOD8=
+	t=1757063284; cv=none; b=N3Kth3lOb2NmWAcWhi4ydI/WtIVg8jgT99xV1+DRpwnfumNUYlcBUYjqT+sqGbKDFUKxBm/VRC0PX8KxkJhiMt6nWdECER3Hgiv8HRsvfmyktTdqLvLBQy5vIc2HokFX4hNlapI8UlefdgRKV+q89U7Ak1upwwCnlN+Inot6PI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757050787; c=relaxed/simple;
-	bh=wP0Nh39SvLrrUzcjoVyfrVPxYIzy1SY/V7/2kWcMIHU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=syfz38fyMxFnv8ispU9TFzADUr5x5QPLdmpbJylR3kpbiVYYgaYuwl//2F0ZxUCZ4z5FXaBmBPpUrqcrUuwXCdIcgB0IgfqwIY+z/0OuCn1HFhl4ceQby3mxWMIM4/FR7mtQEJcXc5IVTh7fuc/LWBvjkDFoGmznIM0LHGehs0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lQwzYtm2; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	s=arc-20240116; t=1757063284; c=relaxed/simple;
+	bh=iFOnnxJrC94LV2LEks6kE1pmEF2x261VyN5f5eLmpgg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CJY7w+8vx2enVhoo8IzS4trrr8C+BbNvOSg9f7FA1valJSJyKLRdhs5imZ/Ld2VXNBkRct8Z0OQImNEROU2Ca/ieV6GFzORdvqynD8LXF/ZQb0mexhxIC8ezSCYtCK3IOVus1tIVQRLJ52/gxpWpp2yF964aPy/S9QarliJKwq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CsktbZDU; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lQwzYtm2"
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-32815c1ddc7so1566703a91.1
-        for <rcu@vger.kernel.org>; Thu, 04 Sep 2025 22:39:45 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CsktbZDU"
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3e4aeaa57b9so137991f8f.1
+        for <rcu@vger.kernel.org>; Fri, 05 Sep 2025 02:08:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757050785; x=1757655585; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3udnh9xsllR+FkjIGPPOo5bX8r6scLid4vmBPD5wmTc=;
-        b=lQwzYtm2NV4Io4r/i3BCtkCOVhcIr4Ap4aY1jaLJulrXaLdfg75M9pjFwojB5+NfTR
-         yHNRD18Y2qWcloAz3pRVhvfcE1ozVRkyC4xMA5+5XuqA3HgIOgoAZRLlWS5Ar0NFszU2
-         OZ6iyQ1zLlPxMtI7rbEhXVGLS65b9oBWuz2O2LPIJQnIddCHaMwaA2q3X5/wVYuPCV4A
-         ltJ6N26FjQ5ruch2n5EzaV7VzoWAeO0rn+jMgaJhMYg0zGD/lnaNlFwReK6FUlwFh67/
-         VIMIFskP0SM4Yl9o+nH4nt9Ysq/iV1lH3rr4bl8GwXz8DWXh+4346twU30d/LpBESjku
-         9DOQ==
+        d=suse.com; s=google; t=1757063280; x=1757668080; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RMG28cPmINkh9yGK/HjokSpuEVCf8KpRl5KQ/ClSDEs=;
+        b=CsktbZDUMLrmFf/KMdU6w0W6C5v7TPUsSEp5al2zyFDMWu9awaduoFqjRnx0N3lGI+
+         XRzS1Tj4JZcB4yiSV6ubZMOJUmXmFzEtyyN2sILapCM42dg4oPTlBSz2ru+1qaBmAW+W
+         wY6lCIyRa5PwvFv7q5n3nx39QwatebPcOjkwTaQ48+gxJKLRkw8mLnMTYQQopyF3/5n4
+         8q0J8EL0hfrHb5bARyigpyXe6ajCIf5uiz8tIdHgRaDfohrKEvbjBSiAGRzB9rvKZQvN
+         zHsjiVKx3tPCDBTQu4h2aDryvr/9vGHcJx0zYW+oiTddSB1y4V36wh68DqYYLB+zkL7N
+         rPJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757050785; x=1757655585;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3udnh9xsllR+FkjIGPPOo5bX8r6scLid4vmBPD5wmTc=;
-        b=iQqBn97HF6hh3cyf8qvU2sSUeb91RU5jzTj9K4AAyr0DKnHe11bMHHUuGYVCl/5goE
-         xzT6qkVn4Hqm3wZ7Oys6W6tyuV8+vkOYMhIuSdXOY9AFfyowDR8XhAXxvyLaGFnOhMen
-         hdguwg0KfkYCCO9gLI2Dazo5yOmdhzo2RLZOJtQLLPFTfRaDhk9hN7XxlX6zsxsMLmob
-         vkbbLQGAP+8dsOqjLKOXng7FXZKIAwsz8hfxQgCOpadAJ4S8bqxXsLvdyEGxondlosMT
-         nGcRIc/8iFbWpYPQb2vQv7fItS3CWh0XaCtIpwESLbwEm8bq8suqfpKkhe0U16GSm00Y
-         yZRw==
-X-Forwarded-Encrypted: i=1; AJvYcCWRC9j/hCqRPbOWH50VZDrgxiT/WfctiqSGwWv1w7BspnYsW4zZuwpjYs4QglO0ku9hhD8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyEMLtsV2FHS58ciSBNA3+t0jpP9n2yyHpT+mJflUTHz7udAXYg
-	HZv8sw5yyW/e6jyE0rPf+f1bzx1XwTMaIavlSXlrUgDxHD30ak9oH27u1GOiDnAg+wUqwbGeIU1
-	O4ISqDQ==
-X-Google-Smtp-Source: AGHT+IEl3aDxdJxOeFOgsIqqYfLRUExl039yXm0dtHzzby5zYzVGU35ZbpW1dVjZIdU0C50mCLd9IUYMCJw=
-X-Received: from pjuw15.prod.google.com ([2002:a17:90a:d60f:b0:325:5e4e:4bd4])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:3809:b0:329:dff0:701b
- with SMTP id 98e67ed59e1d1-329dff070c6mr19066965a91.17.1757050784899; Thu, 04
- Sep 2025 22:39:44 -0700 (PDT)
-Date: Thu, 4 Sep 2025 22:39:37 -0700
-In-Reply-To: <aLojpyTwAMdb1z6D@liuwe-devbox-ubuntu-v2.lamzopl0uupeniq2etz1fddiyg.xx.internal.cloudapp.net>
+        d=1e100.net; s=20230601; t=1757063280; x=1757668080;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RMG28cPmINkh9yGK/HjokSpuEVCf8KpRl5KQ/ClSDEs=;
+        b=vIueupobLcP3oNY3inMVFcycEx5XApH79O+rXRdZCnpUgbsEZCDIONZRoToD3c3Nf/
+         08Mt+jFF+XZ+V/LL3o+MmsgHFpjadcxSBe8+MP+FobUB2hlx9Dk9G0SaOSz1jmEnfx6r
+         q0UnAmeBzQMQb/ldSm6G3PuhwnKOEMhSVuVQn9Pej7fuCaNoxfPKGJJhdzEaT8LXOBMq
+         hlP4nZLhvm8zHcQ66BXwJQJgZvWUT7rf8OLQvLJB1PNAGUjs/40S+oE/hxc4yu0H1Rtt
+         QZZ9Xy69cuTKwykueqmhGFpBQ9VcogHDDUwWBG3R/lXA56jlzKeL1E0zlyjEEkHM0IiH
+         eleQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVvvyA8A3GJKo1wV5NN9mNbOt9/jEB98cGCvHoTLK8t8K2N9TrGixqz6JI7MDSDy1aF+rw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw5kF2xo/Ldy05oRdtkQ+jvDffFE+mv7YtGWdULwy1Pzg91E/L7
+	k7/dWoV1oVJh5mFFqXesAZ4bGV8ydXXTK1l3Xh5D7bSA+i2dcjntd2ho4lQxwSKyv14=
+X-Gm-Gg: ASbGncuPovELitbiFucTW54ZA7DnyQOrTnKNllE4J/kyRcta/thDGcZB1HX8rjhhxLC
+	I315ClZ+VIdmyrhAGeF9eQUhAzB6/3or9BVqMmirfugu7Pf8jEQOSdmzH4qhNXKBg6WvNFthRJu
+	jPqekgji7/fF+Y63aNSp+kSYX/jXQPWuzhAkzmwrGGH6sfz8zxGY/rEUX8GeEjP4pvB8kOqxoKg
+	N6jqok+eieeZ/4gbUiDAHytTY38Hnw2FHARoA3vD78ac0glyEitNgt2YFlmfiIz+7LpGQ0I+7mw
+	+0qcKaMF/r+HkFj0J5NpmHN5eS0c6pH6oDfOrLVT1FthSbBBvQnqgWeHX1gj//PtR2DrdGLMUc6
+	mjxVWx6UTa7YB+TFEqievzBn1XZYJ8OJwksbmn/FMbAadZlzdMT8/gt6VEw==
+X-Google-Smtp-Source: AGHT+IHXqencWzdhmJCLzSHG6b957AFApxs+PiiNiGv952XmmQ7dyv023BmoBwStfcQ3i9qpXNojQw==
+X-Received: by 2002:a05:6000:200f:b0:3d5:d5ea:38d5 with SMTP id ffacd0b85a97d-3d5d5ea4100mr18390890f8f.25.1757063280428;
+        Fri, 05 Sep 2025 02:08:00 -0700 (PDT)
+Received: from localhost.localdomain ([2a00:6d43:105:c401:e307:1a37:2e76:ce91])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45b7e7fec07sm311505335e9.10.2025.09.05.02.07.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Sep 2025 02:08:00 -0700 (PDT)
+From: Marco Crivellari <marco.crivellari@suse.com>
+To: linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>
+Subject: [PATCH 0/2] rcu: replace wq users and add WQ_PERCPU to alloc_workqueue() users
+Date: Fri,  5 Sep 2025 11:07:45 +0200
+Message-ID: <20250905090747.107232-1-marco.crivellari@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250828000156.23389-1-seanjc@google.com> <aLojpyTwAMdb1z6D@liuwe-devbox-ubuntu-v2.lamzopl0uupeniq2etz1fddiyg.xx.internal.cloudapp.net>
-Message-ID: <aLp3makY6FzuUwor@google.com>
-Subject: Re: [PATCH v2 0/7] Drivers: hv: Fix NEED_RESCHED_LAZY and use common APIs
-From: Sean Christopherson <seanjc@google.com>
-To: Wei Liu <wei.liu@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, 
-	Huacai Chen <chenhuacai@kernel.org>, Anup Patel <anup@brainfault.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, 
-	Dexuan Cui <decui@microsoft.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andy Lutomirski <luto@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
-	kvm@vger.kernel.org, loongarch@lists.linux.dev, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-hyperv@vger.kernel.org, 
-	rcu@vger.kernel.org, Nuno Das Neves <nunodasneves@linux.microsoft.com>, 
-	Mukesh R <mrathor@linux.microsoft.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 04, 2025, Wei Liu wrote:
-> On Wed, Aug 27, 2025 at 05:01:49PM -0700, Sean Christopherson wrote:
-> > Fix a bug where MSHV root partitions (and upper-level VTL code) don't honor
-> > NEED_RESCHED_LAZY, and then deduplicate the TIF related MSHV code by turning
-> > the "kvm" entry APIs into more generic "virt" APIs.
-> > 
-> > This version is based on
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git hyperv-next
-> > 
-> > in order to pickup the VTL changes that are queued for 6.18.  I also
-> > squashed the NEED_RESCHED_LAZY fixes for root and VTL modes into a single
-> > patch, as it should be easy/straightforward to drop the VTL change as needed
-> > if we want this in 6.17 or earlier.
-> > 
-> > That effectively means the full series is dependent on the VTL changes being
-> > fully merged for 6.18.  But I think that's ok as it's really only the MSHV
-> > changes that have any urgency whatsoever, and I assume that Microsoft is
-> > the only user that truly cares about the MSHV root fix.  I.e. if the whole
-> > thing gets delayed, I think it's only the Hyper-V folks that are impacted.
-> > 
-> > I have no preference what tree this goes through, or when, and can respin
-> > and/or split as needed.
-> > 
-> > As with v1, the Hyper-V stuff and non-x86 architectures are compile-tested
-> > only.
-> > 
-> > v2:
-> >  - Rebase on hyperv-next.
-> >  - Fix and converge the VTL code as well. [Peter, Nuno]
-> > 
-> > v1: https://lore.kernel.org/all/20250825200622.3759571-1-seanjc@google.com
-> > 
-> 
-> I dropped the mshv_vtl changes in this series and applied the rest
-> (including the KVM changes) to hyperv-next.
+Hi!
 
-mshv_do_pre_guest_mode_work() ended up getting left behind since its removal was
-in the last mshv_vtl patch.
+Below is a summary of a discussion about the Workqueue API and cpu isolation
+considerations. Details and more information are available here:
 
-  $ git grep mshv_do_pre_guest_mode_work
-  drivers/hv/mshv.h:int mshv_do_pre_guest_mode_work(ulong th_flags);
-  drivers/hv/mshv_common.c:int mshv_do_pre_guest_mode_work(ulong th_flags)
-  drivers/hv/mshv_common.c:EXPORT_SYMBOL_GPL(mshv_do_pre_guest_mode_work);
+        "workqueue: Always use wq_select_unbound_cpu() for WORK_CPU_UNBOUND."
+        https://lore.kernel.org/all/20250221112003.1dSuoGyc@linutronix.de/
 
-Want to squash this into 3786d7d6b3c0 ("mshv: Use common "entry virt" APIs to do
-work in root before running guest")?
+=== Current situation: problems ===
 
----
- drivers/hv/mshv.h        |  2 --
- drivers/hv/mshv_common.c | 22 ----------------------
- 2 files changed, 24 deletions(-)
+Let's consider a nohz_full system with isolated CPUs: wq_unbound_cpumask is
+set to the housekeeping CPUs, for !WQ_UNBOUND the local CPU is selected.
 
-diff --git a/drivers/hv/mshv.h b/drivers/hv/mshv.h
-index 0340a67acd0a..d4813df92b9c 100644
---- a/drivers/hv/mshv.h
-+++ b/drivers/hv/mshv.h
-@@ -25,6 +25,4 @@ int hv_call_set_vp_registers(u32 vp_index, u64 partition_id, u16 count,
- int hv_call_get_partition_property(u64 partition_id, u64 property_code,
- 				   u64 *property_value);
- 
--int mshv_do_pre_guest_mode_work(ulong th_flags);
--
- #endif /* _MSHV_H */
-diff --git a/drivers/hv/mshv_common.c b/drivers/hv/mshv_common.c
-index eb3df3e296bb..aa2be51979fd 100644
---- a/drivers/hv/mshv_common.c
-+++ b/drivers/hv/mshv_common.c
-@@ -138,25 +138,3 @@ int hv_call_get_partition_property(u64 partition_id,
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(hv_call_get_partition_property);
--
--/*
-- * Handle any pre-processing before going into the guest mode on this cpu, most
-- * notably call schedule(). Must be invoked with both preemption and
-- * interrupts enabled.
-- *
-- * Returns: 0 on success, -errno on error.
-- */
--int mshv_do_pre_guest_mode_work(ulong th_flags)
--{
--	if (th_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
--		return -EINTR;
--
--	if (th_flags & (_TIF_NEED_RESCHED | _TIF_NEED_RESCHED_LAZY))
--		schedule();
--
--	if (th_flags & _TIF_NOTIFY_RESUME)
--		resume_user_mode_work(NULL);
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(mshv_do_pre_guest_mode_work);
+This leads to different scenarios if a work item is scheduled on an isolated
+CPU where "delay" value is 0 or greater then 0:
+        schedule_delayed_work(, 0);
 
-base-commit: 3786d7d6b3c0a412ebe4439ba4a7d4b0e27d9a12
---
+This will be handled by __queue_work() that will queue the work item on the
+current local (isolated) CPU, while:
+
+        schedule_delayed_work(, 1);
+
+Will move the timer on an housekeeping CPU, and schedule the work there.
+
+Currently if a user enqueue a work item using schedule_delayed_work() the
+used wq is "system_wq" (per-cpu wq) while queue_delayed_work() use
+WORK_CPU_UNBOUND (used when a cpu is not specified). The same applies to
+schedule_work() that is using system_wq and queue_work(), that makes use
+again of WORK_CPU_UNBOUND.
+
+This lack of consistentcy cannot be addressed without refactoring the API.
+
+=== Plan and future plans ===
+
+This patchset is the first stone on a refactoring needed in order to
+address the points aforementioned; it will have a positive impact also
+on the cpu isolation, in the long term, moving away percpu workqueue in
+favor to an unbound model.
+
+These are the main steps:
+1)  API refactoring (that this patch is introducing)
+    -   Make more clear and uniform the system wq names, both per-cpu and
+        unbound. This to avoid any possible confusion on what should be
+        used.
+
+    -   Introduction of WQ_PERCPU: this flag is the complement of WQ_UNBOUND,
+        introduced in this patchset and used on all the callers that are not
+        currently using WQ_UNBOUND.
+
+        WQ_UNBOUND will be removed in a future release cycle.
+
+        Most users don't need to be per-cpu, because they don't have
+        locality requirements, because of that, a next future step will be
+        make "unbound" the default behavior.
+
+2)  Check who really needs to be per-cpu
+    -   Remove the WQ_PERCPU flag when is not strictly required.
+
+3)  Add a new API (prefer local cpu)
+    -   There are users that don't require a local execution, like mentioned
+        above; despite that, local execution yeld to performance gain.
+
+        This new API will prefer the local execution, without requiring it.
+
+=== Introduced Changes by this series ===
+
+1) [P 1] Replace use of system_wq
+
+        system_wq is a per-CPU workqueue, but his name is not clear.
+
+        Because of that, system_wq has been renamed in system_percpu_wq..
+
+2) [P 2] add WQ_PERCPU to remaining alloc_workqueue() users
+
+        Every alloc_workqueue() caller should use one among WQ_PERCPU or
+        WQ_UNBOUND. This is actually enforced warning if both or none of them
+        are present at the same time.
+
+        WQ_UNBOUND will be removed in a next release cycle.
+
+=== For Maintainers ===
+
+There are prerequisites for this series, already merged in the master branch.
+The commits are:
+
+128ea9f6ccfb6960293ae4212f4f97165e42222d ("workqueue: Add system_percpu_wq and
+system_dfl_wq")
+
+930c2ea566aff59e962c50b2421d5fcc3b98b8be ("workqueue: Add new WQ_PERCPU flag")
+
+
+Thanks!
+
+Marco Crivellari (2):
+  rcu: replace use of system_wq with system_percpu_wq
+  rcu: WQ_PERCPU added to alloc_workqueue users
+
+ kernel/rcu/tasks.h | 4 ++--
+ kernel/rcu/tree.c  | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+2.51.0
+
