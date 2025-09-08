@@ -1,114 +1,167 @@
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7611E306B08
-	for <rcu@vger.kernel.org>; Mon,  8 Sep 2025 13:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB96173;
+	Tue,  9 Sep 2025 00:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757337590; cv=none; b=r67mOhXnyxaxAOtkS8wJeT1PT59ZYhNIUk672iKdewoCR922TBq+XwAq1nm+9AtMAy1ih8I7rUbB6n2MQtUeeetEYGdRIH+vA6i3xYCpN3zCrauImkeiwPaXbL7/A4smoX4HKwfTpIogvsbxvSeDzI3kaB6FNYb6e2h6oV0yBmU=
+	t=1757376994; cv=none; b=eFY8CyUR/MZf64cFztBpvz2p2kRiH+OKKblJfbPv9rNCo6jRfpXRl1XqvwbbyADk1p2FGBJwZkrePqGSkP4n4dIO7Chpvs/+lmKWUXDNdyscSx92vPvh6DAYZLmkTUfD8TTMYWwPIbQwZk1thjKRBZQ5BjX8kyO8sPI4wfzvpN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757337590; c=relaxed/simple;
-	bh=CMkxjovtdluJdrhTykccaf/DPBkVzKytqf4GBlWPI+w=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=q+H3urGr+P2rYeTDHDa+Vapz4H5MJFmEHGB/pIqbLoBRFjaRC5bDLB0BG4/XBSlaOPUVqpUVDrLVix1l2AbptaM5jSLWalQjZg+Lp9x/JmTi9+oJdcyOikbWTznIG2yrdL6dvSvH0MCCIhddDzQe5/CGTgTyeYxKayd3R2isVJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hwUlUdSJ; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1757376994; c=relaxed/simple;
+	bh=7EmNl0AiWorMC2hdJ8vEHhI6St/xXWrepBy19CUbVGI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gOYhBlAJS8b1/RwXBidKz7dDamD0aPBTMAd/d13LSR/Gi+eCPcSVRRlHM8e2pA55tzYiwNR/hsSQG+FkR5oXCCmNiZPxM5HuDFUSytWEhAGgIqW3znr9+CIUbi2HSH6GTbCKfOlPFpmTTv+HRG8eVq7kwRngC+ZZQTxVI4v0llo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q5nD+AA4; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hwUlUdSJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q5nD+AA4"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDF63C4CEF1;
+	Tue,  9 Sep 2025 00:16:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757376993;
+	bh=7EmNl0AiWorMC2hdJ8vEHhI6St/xXWrepBy19CUbVGI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Q5nD+AA4WT6kvHkjsMLFy9Ys85te7ttCpjEHIfDX5W8na4UUvpZIxSZ0es1+LP6Uc
+	 4m1RKtU56dPei8F4OvGNd3VTuFYDV13xuI2cwYIIdd8Sb5mEYdGe7sILMS7zeRd2mo
+	 LqIrD7t0rJ4mxquNsEPlNeTZ2W9nckaCbvt7Wa/p+IYwryKbEwHh4BzHGVsXB8wbeY
+	 0VNmf9p5zf5RPHESdD7B3CCzlSDOF0QiudLIC5Lk0oe9tlAiskaQXZ0v+NRN3mI8jo
+	 nB7Mut5WvbXZO8hSRXhA0ZLk9BRSc6ST4z0whWIFIZbe86Z9pta91mLbk4NtWA1Q/N
+	 8xeKMxhbtsvQw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 83E22CE0EA2; Mon,  8 Sep 2025 08:07:48 -0700 (PDT)
+Date: Mon, 8 Sep 2025 08:07:48 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Marco Crivellari <marco.crivellari@suse.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Michal Hocko <mhocko@suse.com>, Jens Axboe <axboe@kernel.dk>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH 0/2] rcu: replace wq users and add WQ_PERCPU to
+ alloc_workqueue() users
+Message-ID: <c83ad820-3380-423d-aa1f-96e3cd2c56b4@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250905090747.107232-1-marco.crivellari@suse.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757337586;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yvWF9oiEuQKrAaQ99dbpu/iFnJzrE3J1N28AGILDc+8=;
-	b=hwUlUdSJC2YGXLwGISplUSfwmRM+Si9gNwupQ9M7EO+TwovGGPNGmYm8MD6h5tWgwYJWsF
-	ez6zY0pwEQ1A/n2jXe09ZXF1ECvsZJiibzcc9+Ys3x/pP8v8OtaTvQJ9EG+uk4Y6ukZC8+
-	sl+CNhrDUJkVtWmlGSRwO/zurrW2OA8=
-Date: Mon, 08 Sep 2025 13:19:44 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Zqiang" <qiang.zhang@linux.dev>
-Message-ID: <63d537e65b7f4b6f77a16112a871103d07a248d2@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH] srcu/tiny: Remove preempt_disable/enable() in
- srcu_gp_start_if_needed()
-To: paulmck@kernel.org
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
- boqun.feng@gmail.com, urezki@gmail.com, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <9dfa7d4f-6e3f-4084-a14f-beb1db06f817@paulmck-laptop>
-References: <20250908003155.557070-1-qiang.zhang@linux.dev>
- <9dfa7d4f-6e3f-4084-a14f-beb1db06f817@paulmck-laptop>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250905090747.107232-1-marco.crivellari@suse.com>
 
->=20
->=20On Mon, Sep 08, 2025 at 08:31:55AM +0800, Zqiang wrote:
->=20
->=20>=20
->=20> Currently, the srcu_gp_start_if_needed() is always be invoked in
-> >  preempt disable's critical section, this commit therefore remove
-> >  redundant preempt_disable/enable() in srcu_gp_start_if_needed().
-> >=20=20
->=20>  Fixes: 65b4a59557f6 ("srcu: Make Tiny SRCU explicitly disable pree=
-mption")
-> >  Signed-off-by: Zqiang <qiang.zhang@linux.dev>
-> >=20
->=20Looks good, but what would be a good way to make this code defend its=
-elf
-> against being invoked from someplace else that did have preemption
-> enabled? Especially given that the Tree SRCU version of this function
-> does get invoked with preemption enabled?
+On Fri, Sep 05, 2025 at 11:07:45AM +0200, Marco Crivellari wrote:
+> Hi!
+> 
+> Below is a summary of a discussion about the Workqueue API and cpu isolation
+> considerations. Details and more information are available here:
+> 
+>         "workqueue: Always use wq_select_unbound_cpu() for WORK_CPU_UNBOUND."
+>         https://lore.kernel.org/all/20250221112003.1dSuoGyc@linutronix.de/
+> 
+> === Current situation: problems ===
+> 
+> Let's consider a nohz_full system with isolated CPUs: wq_unbound_cpumask is
+> set to the housekeeping CPUs, for !WQ_UNBOUND the local CPU is selected.
+> 
+> This leads to different scenarios if a work item is scheduled on an isolated
+> CPU where "delay" value is 0 or greater then 0:
+>         schedule_delayed_work(, 0);
+> 
+> This will be handled by __queue_work() that will queue the work item on the
+> current local (isolated) CPU, while:
+> 
+>         schedule_delayed_work(, 1);
+> 
+> Will move the timer on an housekeeping CPU, and schedule the work there.
+> 
+> Currently if a user enqueue a work item using schedule_delayed_work() the
+> used wq is "system_wq" (per-cpu wq) while queue_delayed_work() use
+> WORK_CPU_UNBOUND (used when a cpu is not specified). The same applies to
+> schedule_work() that is using system_wq and queue_work(), that makes use
+> again of WORK_CPU_UNBOUND.
+> 
+> This lack of consistentcy cannot be addressed without refactoring the API.
+> 
+> === Plan and future plans ===
+> 
+> This patchset is the first stone on a refactoring needed in order to
+> address the points aforementioned; it will have a positive impact also
+> on the cpu isolation, in the long term, moving away percpu workqueue in
+> favor to an unbound model.
+> 
+> These are the main steps:
+> 1)  API refactoring (that this patch is introducing)
+>     -   Make more clear and uniform the system wq names, both per-cpu and
+>         unbound. This to avoid any possible confusion on what should be
+>         used.
+> 
+>     -   Introduction of WQ_PERCPU: this flag is the complement of WQ_UNBOUND,
+>         introduced in this patchset and used on all the callers that are not
+>         currently using WQ_UNBOUND.
+> 
+>         WQ_UNBOUND will be removed in a future release cycle.
+> 
+>         Most users don't need to be per-cpu, because they don't have
+>         locality requirements, because of that, a next future step will be
+>         make "unbound" the default behavior.
+> 
+> 2)  Check who really needs to be per-cpu
+>     -   Remove the WQ_PERCPU flag when is not strictly required.
+> 
+> 3)  Add a new API (prefer local cpu)
+>     -   There are users that don't require a local execution, like mentioned
+>         above; despite that, local execution yeld to performance gain.
+> 
+>         This new API will prefer the local execution, without requiring it.
+> 
+> === Introduced Changes by this series ===
+> 
+> 1) [P 1] Replace use of system_wq
+> 
+>         system_wq is a per-CPU workqueue, but his name is not clear.
+> 
+>         Because of that, system_wq has been renamed in system_percpu_wq..
+> 
+> 2) [P 2] add WQ_PERCPU to remaining alloc_workqueue() users
+> 
+>         Every alloc_workqueue() caller should use one among WQ_PERCPU or
+>         WQ_UNBOUND. This is actually enforced warning if both or none of them
+>         are present at the same time.
+> 
+>         WQ_UNBOUND will be removed in a next release cycle.
+> 
+> === For Maintainers ===
+> 
+> There are prerequisites for this series, already merged in the master branch.
+> The commits are:
+> 
+> 128ea9f6ccfb6960293ae4212f4f97165e42222d ("workqueue: Add system_percpu_wq and
+> system_dfl_wq")
+> 
+> 930c2ea566aff59e962c50b2421d5fcc3b98b8be ("workqueue: Add new WQ_PERCPU flag")
 
-ok, maybe we can add lockdep_assert_preemption_disabled() in
-the srcu_gp_start_if_needed() ?
+Queued for review and testing.  If you would prefer to route this some
+other way, please let me know.
 
-Thanks
-Zqiang
+							Thanx, Paul
 
-
->=20
->=20 Thanx, Paul
->=20
->=20>=20
->=20> ---
-> >  kernel/rcu/srcutiny.c | 3 ---
-> >  1 file changed, 3 deletions(-)
-> >=20=20
->=20>  diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> >  index b52ec45698e8..417bd0e4457c 100644
-> >  --- a/kernel/rcu/srcutiny.c
-> >  +++ b/kernel/rcu/srcutiny.c
-> >  @@ -181,10 +181,8 @@ static void srcu_gp_start_if_needed(struct srcu=
-_struct *ssp)
-> >  {
-> >  unsigned long cookie;
-> >=20=20
->=20>  - preempt_disable(); // Needed for PREEMPT_LAZY
-> >  cookie =3D get_state_synchronize_srcu(ssp);
-> >  if (ULONG_CMP_GE(READ_ONCE(ssp->srcu_idx_max), cookie)) {
-> >  - preempt_enable();
-> >  return;
-> >  }
-> >  WRITE_ONCE(ssp->srcu_idx_max, cookie);
-> >  @@ -194,7 +192,6 @@ static void srcu_gp_start_if_needed(struct srcu_=
-struct *ssp)
-> >  else if (list_empty(&ssp->srcu_work.entry))
-> >  list_add(&ssp->srcu_work.entry, &srcu_boot_list);
-> >  }
-> >  - preempt_enable();
-> >  }
-> >=20=20
->=20>  /*
-> >  --=20
->=20>  2.48.1
-> >
->
+> Thanks!
+> 
+> Marco Crivellari (2):
+>   rcu: replace use of system_wq with system_percpu_wq
+>   rcu: WQ_PERCPU added to alloc_workqueue users
+> 
+>  kernel/rcu/tasks.h | 4 ++--
+>  kernel/rcu/tree.c  | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> -- 
+> 2.51.0
+> 
