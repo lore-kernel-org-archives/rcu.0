@@ -1,112 +1,114 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F3C28C2CE;
-	Wed, 10 Sep 2025 12:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C7A1EF36B;
+	Wed, 10 Sep 2025 13:33:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757506568; cv=none; b=u/4MERzjYTdlKJ2EYIRSWb3xDSXtyQBVqn0LI8wqFQSTsaA6e4FCnw2FPBTsizI0G5ttz+rmvVZ2su9p6y08ugr4siNdZK5fcl6ar3GDlkaw+MxD2YKYbWgN3B2pdO32qLrIewW7Mma0hQtGH74ouPbL+huKL6K1pR/XfXYNtWY=
+	t=1757511193; cv=none; b=UPRw1dbigyKrZd35V4Ad5+5MluqChdZshZevVAPEE4wmGNNLpZrRzNQwSpKyiGMAxvkwhdwORqB0W1Yvq4csNhVaZaOl5NkRYAAwZpPUSPeUEbEqseNPuRXmX5f7lMNCceKC30qwyFUsdGyNYXusHGh8WTyZOINT+FtSJnIa0GQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757506568; c=relaxed/simple;
-	bh=g6AyXFzGOOtrtSINboRZHVMduybQL9dPz+W+Dc8Jf8s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kzFTYEozHxFOoo2x2q4vesseK860jQ4Jvde/Y2Fd4js/TOttigewamvOmQKyV0MgyGokHa9mxZXVsAkgbWikm/2eqvWnREG1uCePgatKNmRgl8EY/J31Rru0diMljNZLtA9VrZQEvjQStyWcf0OIfwG6uqk8TJ11AHI4fUhNajU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bRcASHLu; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1757511193; c=relaxed/simple;
+	bh=Tw0QTfnyqKrEkt7OfgUFYqL1O3TTE6wURjAAbyBOnds=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AZaqdRDRiSexKbY3gRReYfy4sO35jBQQh/z+nGPwC4EhfwkaZcztXycEZrRxlYQHWMCEKI3yMVvxTxqAb/h9dAxOLFpAuMAR6J0V2nNRDkf4dDm5U8DjPSoiY37KyWLs0iWCw49xz3Tymy7Xq80LreGHOekpGDMmRihqR6Cl69U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ruzTUkDs; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bRcASHLu"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757506566; x=1789042566;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=g6AyXFzGOOtrtSINboRZHVMduybQL9dPz+W+Dc8Jf8s=;
-  b=bRcASHLu88juj0nD2aOJo6qgcYwhys1fOnoyRG0nPF5DMDNYFtaSfi2w
-   JYxneHDIPfVn/n0w8k0vc//9t+M4kZI6K7gWcdZhJeAZx58r7VwgkvIS7
-   bYeCVlT2GduVTsoBkzs9vcfPrtZxejWoxp+enUT/XcLNdSn//IathD8tV
-   EkqAPCIp1O0P9ILkuQ9RQz9GpTK/CV2272iwIg6TbPlp5am2Pzc3fNfNv
-   Fp3jJA9O7DZGoHOX9lXO6E/lO63s4SzceJejJ+FcicE5eQwyd6gXJ3quX
-   6/LDUKG3w2qPArSFoT475W+nNZ722Ley9o0L/sQ0O8kFoJp3cpW45dNY3
-   A==;
-X-CSE-ConnectionGUID: 225iJJsCQt67h1seoo8wjA==
-X-CSE-MsgGUID: zbBMLNmzTiWQu4Yf9nzzfA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11548"; a="59889035"
-X-IronPort-AV: E=Sophos;i="6.18,254,1751266800"; 
-   d="scan'208";a="59889035"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2025 05:16:05 -0700
-X-CSE-ConnectionGUID: ezuoy6rDRXabEgsJPctGbA==
-X-CSE-MsgGUID: DUfIcSTBRGS1V9044/ofQg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,254,1751266800"; 
-   d="scan'208";a="204360475"
-Received: from baandr0id001.iind.intel.com ([10.66.253.151])
-  by fmviesa001.fm.intel.com with ESMTP; 10 Sep 2025 05:16:02 -0700
-From: Kaushlendra Kumar <kaushlendra.kumar@intel.com>
-To: dave@stgolabs.net,
-	paulmck@kernel.org,
-	josh@joshtriplett.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	rostedt@goodmis.org
-Cc: linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org,
-	markus.elfring@web.de,
-	Kaushlendra Kumar <kaushlendra.kumar@intel.com>
-Subject: [PATCH v3] rcu/rcutorture: Improve error handling in rcu_torture_fwd_prog_init()
-Date: Wed, 10 Sep 2025 17:44:27 +0530
-Message-Id: <20250910121427.3757718-1-kaushlendra.kumar@intel.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ruzTUkDs"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 235FCC4CEF0;
+	Wed, 10 Sep 2025 13:33:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757511193;
+	bh=Tw0QTfnyqKrEkt7OfgUFYqL1O3TTE6wURjAAbyBOnds=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=ruzTUkDssG9v+7bDCr1Dn78LqwMHtvwSp2Vn+/doFtdmR9gGZAlvMKnBJVMq6rZCq
+	 Si7ATH4YCrXdiwPqE65WDJ5byScWAFaW0aEIR/c1aZF/nzjQGVHDKdmHskdPA4+YVx
+	 ihsOKmXlQ1N9VAZ8JhbqDNs3/u/ehaDBeItipU6FFEF3v8pm9G4iiEtf9e1bWzEU13
+	 /MqflFUMFruvthk1yicRdBuv9tV14Q011uq0Oj9EGX1R2VuNAqRVN3doLw82jsbuz4
+	 syAOBgURGFQo+0wgOxMnfM40x6TNgkY6Z4Vwm+bMJmjdwoitxAq2q7yQM4KFHV7ARW
+	 Qz/vDdwECHPVA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 3384FCE0B24; Wed, 10 Sep 2025 06:33:12 -0700 (PDT)
+Date: Wed, 10 Sep 2025 06:33:12 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Kaushlendra Kumar <kaushlendra.kumar@intel.com>
+Cc: dave@stgolabs.net, josh@joshtriplett.org, frederic@kernel.org,
+	neeraj.upadhyay@kernel.org, rostedt@goodmis.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu/rcutorture: Improve error handling in
+ rcu_torture_fwd_prog_init()
+Message-ID: <41a572f2-b9d3-4985-a61e-bff0b3b0e4d3@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250910092820.3736526-1-kaushlendra.kumar@intel.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250910092820.3736526-1-kaushlendra.kumar@intel.com>
 
-Restructure error handling in rcu_torture_fwd_prog_init() to provide
-cleaner allocation failure paths. The current code checks both
-allocations in a single condition, making error handling less
-efficient and clear.
+On Wed, Sep 10, 2025 at 02:58:20PM +0530, Kaushlendra Kumar wrote:
+> Restructure error handling in rcu_torture_fwd_prog_init() to provide
+> cleaner allocation failure paths. The current code checks both
+> allocations in a single condition, making error handling less
+> efficient and clear.
+> 
+> The improved approach:
+> - Check rfp allocation immediately and return early on failure
+> - Separately handle fwd_prog_tasks allocation failure with proper
+>   cleanup
+> - Remove redundant kfree(fwd_prog_tasks) since it would be NULL on
+>   failure
 
-The improved approach:
-- Check rfp allocation immediately and return early on failure.
-- Separately handle fwd_prog_tasks allocation failure with proper
-  cleanup of allocated resources.
-- Remove redundant kfree(fwd_prog_tasks) since it would be NULL on
-  allocation failure.
+First, thank you for your interest in Linux-kernel RCU!
 
-Signed-off-by: Kaushlendra Kumar <kaushlendra.kumar@intel.com>
----
-Changes in v3:
-- Fixed word wrapping to eliminate orphaned words (runts).
-- Removed duplicate marker line in changelog.
-Changes in v2:
-- Fixed word wrapping in commit message to follow kernel guidelines
+However, you lost me on this one.  Please see below.
 
- kernel/rcu/rcutorture.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> Signed-off-by: Kaushlendra Kumar <kaushlendra.kumar@intel.com>
+> ---
+> Changes in v2:
+> - Fixed word wrapping in commit message to follow kernel guidelines
+> ---
+>  kernel/rcu/rcutorture.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 807fbf6123a7..6af0d207adba 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -2995,11 +2995,11 @@ static int __init rcu_torture_fwd_prog_init(void)
+>  	if (fwd_progress_div <= 0)
+>  		fwd_progress_div = 4;
+>  	rfp = kcalloc(fwd_progress, sizeof(*rfp), GFP_KERNEL);
+> +	if (!rfp)
+> +		return -ENOMEM;
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 807fbf6123a7..6af0d207adba 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2995,11 +2995,11 @@ static int __init rcu_torture_fwd_prog_init(void)
- 	if (fwd_progress_div <= 0)
- 		fwd_progress_div = 4;
- 	rfp = kcalloc(fwd_progress, sizeof(*rfp), GFP_KERNEL);
-+	if (!rfp)
-+		return -ENOMEM;
- 	fwd_prog_tasks = kcalloc(fwd_progress, sizeof(*fwd_prog_tasks), GFP_KERNEL);
--	if (!rfp || !fwd_prog_tasks) {
-+	if (!fwd_prog_tasks) {
- 		kfree(rfp);
--		kfree(fwd_prog_tasks);
--		fwd_prog_tasks = NULL;
- 		fwd_progress = 0;
- 		return -ENOMEM;
- 	}
--- 
-2.34.1
+Don't we still need to set fwd_progress to zero?
 
+>  	fwd_prog_tasks = kcalloc(fwd_progress, sizeof(*fwd_prog_tasks), GFP_KERNEL);
+
+Although this change does avoid the doomed kcalloc() attempt, why are
+we optimizing an infrequent failure case?
+
+> -	if (!rfp || !fwd_prog_tasks) {
+> +	if (!fwd_prog_tasks) {
+>  		kfree(rfp);
+> -		kfree(fwd_prog_tasks);
+
+Invoking kfree() on a NULL pointer is a well-defined no-op.
+
+> -		fwd_prog_tasks = NULL;
+>  		fwd_progress = 0;
+>  		return -ENOMEM;
+>  	}
+
+I don't see where this is helping the common-case success path, nor am
+I seeing need need to optimize this initialization-time-only code path.
+Adding the zeroing of fwd_progress will result in a net increase in the
+number of lines of code.
+
+So what am I missing here?
+
+							Thanx, Paul
