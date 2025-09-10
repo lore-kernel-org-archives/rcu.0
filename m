@@ -1,72 +1,85 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574132D3A98;
-	Tue,  9 Sep 2025 17:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B7B27056D;
+	Wed, 10 Sep 2025 07:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757438436; cv=none; b=G8EVKlvJg4HpscHN4F2hMTK+p3EjEaJQ7dtLUnHNhkwHBA0ErwgjsO+CHRGv83rEEJoJbjtO0z4bQi9//NgP4uWgF0mI/CJQfA/0IsMNxazwm395BktFcx6cWraTOBQpaptnE+R6g5MQE4EjXRDZfeGMlCxbQ1/9ScjDEO9PpyE=
+	t=1757489472; cv=none; b=RoK0qcFhCRUZH/SvgeDFb88s6kbS7Z7hTe7D2TtBSgmPNkcotAPdlXet/BWSOCfJtRrwT4eqqV2jpN3Vqis/rgYV7MMAnrg4Sax69SR8Xxz8hPEA06zD8mMmUQZ/TqxC4ftsMQTHnB0aVpAiE8+pYO3oB1KbsvvwRfMPxeHdbzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757438436; c=relaxed/simple;
-	bh=aDtO0EP2Luwblw7wXBa/S0nm/bbd84Amf4RIFEa0YMU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rOu7s5EO5pcY6yvB5luIoFuWha6+GE6iNzpLOnCFaM1pMlZHDc4SqD0SzbX/J5KaUIqB8uHa9JZUwiwzhJFIGFFQnpY95iUxwb1/RTKw4DyZ6IxZ5R0jbA6RD+xnTMaCg0+VWKJPpn0e2WFjeFVg62xhivLqT1lh+XFVPjhYc1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rWNA+SZ7; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1757489472; c=relaxed/simple;
+	bh=aLBtXmKx167i1YA63y7W4HmmeXF/5BMYUnmv/zS4pmY=;
+	h=From:Date:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bUQA2SCfxiy3RDNtyUYk7a7aDLCePRoZcKFOp1fDFEXZn5n9C6e++stBauYQctviunGKk3lxCjnrcOAgqfKLlzNm8gSlu3zGkA5c1rGPjqG/pV220pWTjx9M0Wt8tyfAsyacBs9Aaj6JJV42KMty1/S0V0/rNOLavS4VgE17QSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E7W7ltzx; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rWNA+SZ7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B305C4CEF4;
-	Tue,  9 Sep 2025 17:20:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757438435;
-	bh=aDtO0EP2Luwblw7wXBa/S0nm/bbd84Amf4RIFEa0YMU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rWNA+SZ7P7XMqvonOPAEdmtY55rXaIKEEzU9HK+ppzMNafCHRqDvkVmEoUduHt/rT
-	 aa5OZZx3ilY519/VHWj4+vwbhsuG88pY0+u24AUMR9OeOT4pFbgJb7ecQe/x2pWO4E
-	 vcn4jx2aGZ2e8t05J44ouMyfLu5WoVzT4hxN53UWANQ6M/G517uScWAOMTyKqRmi5V
-	 diqflVnydGhyAkUdxMQ6Bnquv1D4Xk2wLalfluyanQAMUeNCL713BGUmRtcdXk2oSb
-	 +eCWCY1ISYJlrL6GLeiTkLfqGaoEYVf8wOe7r+TdNoqrDDp/wKG1ImILx8nFyAfEJN
-	 RYEyJmVbovIiA==
-Date: Tue, 9 Sep 2025 17:20:34 +0000
-From: Wei Liu <wei.liu@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Wei Liu <wei.liu@kernel.org>, Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
-	Anup Patel <anup@brainfault.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Dexuan Cui <decui@microsoft.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org, loongarch@lists.linux.dev,
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-	linux-hyperv@vger.kernel.org, rcu@vger.kernel.org,
-	Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-	Mukesh R <mrathor@linux.microsoft.com>
-Subject: Re: [PATCH v2 0/7] Drivers: hv: Fix NEED_RESCHED_LAZY and use common
- APIs
-Message-ID: <aMBh4kPNOEUKvxpV@liuwe-devbox-ubuntu-v2.lamzopl0uupeniq2etz1fddiyg.xx.internal.cloudapp.net>
-References: <20250828000156.23389-1-seanjc@google.com>
- <aLojpyTwAMdb1z6D@liuwe-devbox-ubuntu-v2.lamzopl0uupeniq2etz1fddiyg.xx.internal.cloudapp.net>
- <aLp3makY6FzuUwor@google.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E7W7ltzx"
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-55f6bb0a364so6860905e87.1;
+        Wed, 10 Sep 2025 00:31:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757489469; x=1758094269; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xFHJxuICj98Guwl4fVnasAXJJOBn+5zR++ozDmXM+Ds=;
+        b=E7W7ltzxiL2cKj+i/H7a7JmfOCmggR88bpBlRwJ73XrNb3qY8NpgAPjlT9PC0J1+jI
+         nNM5x63OhyTQDDcAI2AHOnI/VHO/wZ1Xc1JLXN4ISPW/OO0Xp6F17U40/DI+mUm9Ifg5
+         qt5O/iYvK+D0e6Y9R0LGBwfj+WeP8KRhSFuFLXXfvovUB/DICST9xSR32AXwTE6P6+Xp
+         ws1FFzXCqqr9u0GMbGCaNGZRbBE5Vpn3zvCDPVcl3DmSOSLaB9zvxZf1dg171Sd71l/R
+         LnoyD0RYFlCzaKkXFG9uzDmRqITjPhGxwx54mq+fxl59LTkopk/sVHQ24mc6s181tBKZ
+         nGcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757489469; x=1758094269;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xFHJxuICj98Guwl4fVnasAXJJOBn+5zR++ozDmXM+Ds=;
+        b=K7Id0nIt/AT8hoqHN0SCRVvDZU7Z398Ql2JaOpfnEzYgfd5X4AMs15tMV+fsYKuPNh
+         81k78my/KG1oAbLp6hSnt6JyiKZjUUm7P0Ou9y7S2UOq1MzOZoHj3JyB4v+SzUhc5rXU
+         hB36h/txmIodA+WLW3hrFHNHYZ8u154ESgYcbexC7Zup4C2GaXjoJJDaPN2/0zhYgTJe
+         PRNxnddqCb8HwaxJmAz9val2oHheUkWpqy+l0nLHFKoCMHabTSc5iljqMpjHbPL+BLIe
+         uX+8Z0Fc+IvdnzOQYztmqm4JlfssvMCoGxJTKbY3JIPR7048xuHfn8Qqt0syVgXbK7Dy
+         4P1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUFLVlzHx3ZtIxVbkT9Tvj59Ca3xI07ROvN8q4cRtC8GbeiKI99NFBoq64/cV5DLIc1IV1x@vger.kernel.org, AJvYcCWmYqfbexwTCiXvgJQS+BzyFVsBeYeEdfOeKYftqOQm2VR6VCjd4H5xHvrbvr/Eluzju3BgDc/UfgErWvw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz+sSAjFTIe8cE0M+4PR8xOmW427sv5ru3NxBG2C69LAMZM4b0M
+	kL7WepG6i1bEIqpWLs60fl+iwWr387bGsqVg02C3OIpaa23Z+YPPbDp3z+5XQKpb
+X-Gm-Gg: ASbGncvxHF+IDmJ4YyU+Pzp6oFx8/6kzvGFRK80pX+AL3xwT7hRY1Es46+fgUdmHHEv
+	q0tHuPM9p8utuq6DHtCiH9J3mKTXLTuNJvxiQgpZSI70WLLYgyDm85vnZF4EMleotxdE3SJMUU/
+	CRnYfCEmBMwrGt9/qA9Hc6MXeDJ+jQeaiXWSWAkm/dkoCA4QsBH1edxcGMS/CUjRnIsJQyzq/l6
+	l7zPp01G/V0hVAd831i/x3qZDv1kece/UGA7yTcUzHHWqFY1nAvK6zOBIKVQbpDDJ73NhdOeOW3
+	5562anZ+i+UXFbMwfpPt9vrQn4OM24aL/IylG8Ga0WiF2zAR4ssrlNgkMMTnGHzOYeWUAxXs3XJ
+	jiQWByM43STd9MdoFgZBAKFG/CslEosd2i86xb9wnHj7r2nbNMvt16auICOC7ms483BheF8A=
+X-Google-Smtp-Source: AGHT+IEcsyTBCBDDV1Tw1uNbYG7FH9MeVABG6eLTqtCcX6osCxdSBBJoixssy7qrpruP7IVgjHC0lw==
+X-Received: by 2002:a05:6512:6404:b0:55f:65a3:cfe7 with SMTP id 2adb3069b0e04-56262e1c134mr4873760e87.49.1757489468302;
+        Wed, 10 Sep 2025 00:31:08 -0700 (PDT)
+Received: from pc636 (host-95-203-28-174.mobileonline.telia.com. [95.203.28.174])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5695ac78c7asm874530e87.99.2025.09.10.00.31.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Sep 2025 00:31:07 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Wed, 10 Sep 2025 09:31:05 +0200
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Harry Yoo <harry.yoo@oracle.com>,
+	Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	maple-tree@lists.infradead.org
+Subject: Re: [PATCH v7 04/21] slab: add sheaf support for batching
+ kfree_rcu() operations
+Message-ID: <aMEpOTLh8EX6DXYq@pc636>
+References: <20250903-slub-percpu-caches-v7-0-71c114cdefef@suse.cz>
+ <20250903-slub-percpu-caches-v7-4-71c114cdefef@suse.cz>
+ <aL7FFpIMmXtzzSL1@pc638.lan>
+ <6f8274da-a010-4bb3-b3d6-690481b5ace0@suse.cz>
+ <aL_uhPtztx7Ef0T2@pc636>
+ <772oyaa3j27tlklhpo6oqxsdtlvsg5goh2opzuig6xvgztgum4@scsoxrgtqm2f>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -75,58 +88,61 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aLp3makY6FzuUwor@google.com>
+In-Reply-To: <772oyaa3j27tlklhpo6oqxsdtlvsg5goh2opzuig6xvgztgum4@scsoxrgtqm2f>
 
-On Thu, Sep 04, 2025 at 10:39:37PM -0700, Sean Christopherson wrote:
-> On Thu, Sep 04, 2025, Wei Liu wrote:
-> > On Wed, Aug 27, 2025 at 05:01:49PM -0700, Sean Christopherson wrote:
-> > > Fix a bug where MSHV root partitions (and upper-level VTL code) don't honor
-> > > NEED_RESCHED_LAZY, and then deduplicate the TIF related MSHV code by turning
-> > > the "kvm" entry APIs into more generic "virt" APIs.
-> > > 
-> > > This version is based on
-> > > 
-> > >   git://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git hyperv-next
-> > > 
-> > > in order to pickup the VTL changes that are queued for 6.18.  I also
-> > > squashed the NEED_RESCHED_LAZY fixes for root and VTL modes into a single
-> > > patch, as it should be easy/straightforward to drop the VTL change as needed
-> > > if we want this in 6.17 or earlier.
-> > > 
-> > > That effectively means the full series is dependent on the VTL changes being
-> > > fully merged for 6.18.  But I think that's ok as it's really only the MSHV
-> > > changes that have any urgency whatsoever, and I assume that Microsoft is
-> > > the only user that truly cares about the MSHV root fix.  I.e. if the whole
-> > > thing gets delayed, I think it's only the Hyper-V folks that are impacted.
-> > > 
-> > > I have no preference what tree this goes through, or when, and can respin
-> > > and/or split as needed.
-> > > 
-> > > As with v1, the Hyper-V stuff and non-x86 architectures are compile-tested
-> > > only.
-> > > 
-> > > v2:
-> > >  - Rebase on hyperv-next.
-> > >  - Fix and converge the VTL code as well. [Peter, Nuno]
-> > > 
-> > > v1: https://lore.kernel.org/all/20250825200622.3759571-1-seanjc@google.com
-> > > 
+On Tue, Sep 09, 2025 at 10:35:15AM -0400, Liam R. Howlett wrote:
+> * Uladzislau Rezki <urezki@gmail.com> [250909 05:08]:
+> 
+> ...
+> 
 > > 
-> > I dropped the mshv_vtl changes in this series and applied the rest
-> > (including the KVM changes) to hyperv-next.
+> > > > - call_rcu() can be slow, therefore we do not use it in the kvfree_rcu().
+> > > 
+> > > If call_rcu() is called once per 32 kfree_rcu() filling up the rcu sheaf, is
+> > > it still too slow?
+> > >
+> > You do not know where in a queue this callback lands, in the beginning,
+> > in the end, etc. It is part of generic list which is processed one by
+> > one. It can contain thousands of callbacks.
 > 
-> mshv_do_pre_guest_mode_work() ended up getting left behind since its removal was
-> in the last mshv_vtl patch.
+> How does this differ from kvfree_rcu()?
 > 
->   $ git grep mshv_do_pre_guest_mode_work
->   drivers/hv/mshv.h:int mshv_do_pre_guest_mode_work(ulong th_flags);
->   drivers/hv/mshv_common.c:int mshv_do_pre_guest_mode_work(ulong th_flags)
->   drivers/hv/mshv_common.c:EXPORT_SYMBOL_GPL(mshv_do_pre_guest_mode_work);
+> Surely if you have enough calls to kvfree_rcu(), you will end up with a
+> large list of frees before the end of a grace period?  Our placement in
+> the freeing order would still be dependent on what else is using the
+> infrastructure in the same grace period, right?
 > 
-> Want to squash this into 3786d7d6b3c0 ("mshv: Use common "entry virt" APIs to do
-> work in root before running guest")?
-> 
+In kfree_rcu() we use page blocks to carry pointers. Lists can be used
+if there is a low memory condition so a page can not be allocated or
+cache is empty. But this is not part of carr_rcu() track in any way.
 
-It's done. Thanks for pointing it out.
+Right regular call_rcu() puts callback into its own internal lists and
+they are processed one by one during list iteration. In such lists you
+can have hundred of thousand callback.
 
-Wei
+>
+> How is kvfree_rcu() affected by rcu callback offloading to a specific
+> cpu and rcu expedite?  Often these two features come into play for
+> certain workloads which are of concern to us.
+> 
+We maintain a separate path. Offload is done after a grace period is
+over. It is classic way. Historically all deferred freeing was one
+call_rcu() per ptr.
+
+> > 
+> > If performance is not needed then it is not an issue. But in
+> > kvfree_rcu() we do not use it, because of we want to offload
+> > fast.
+> 
+> Today, I free things using call_rcu() and a custom callback so I would
+> think stacking 32 together would make the list shorter, but latency
+> would increase by waiting until there are 32.
+> 
+> If we wanted to flush the kvfree_rcu() list, is it done in the same way
+> as the call_rcu() list, or is there a better way?
+> 
+For this case we have kvfree_rcu_barrier(). It is not same as call_rcu()
+flushing.
+
+--
+Uladzislau Rezki
