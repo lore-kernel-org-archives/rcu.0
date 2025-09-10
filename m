@@ -1,102 +1,99 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647F22417F0;
-	Wed, 10 Sep 2025 15:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C78E32A3D8;
+	Wed, 10 Sep 2025 15:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757517358; cv=none; b=udoU/ZwEoH5pzhtu56QAAfPe+scbSI7EWGSTMkDyhV+sXfpGzbJBm8bakE1WREH387VBXygFlZmwU/dZ74nKKCnDwUNcRLEsHbOjzG0AH474O/r8PZOA1OLfDlQFSj7FlxR+JvsjVDzfHmaE4C/Wprib5SFt2LTbD0rapUCQiLA=
+	t=1757519541; cv=none; b=Qnf0TbEYiJiSDfwqSQV7hB2rOHNDvBCPUDNeCFz4cd0LACScbaUhgK0BwdrJyIYF8+0wLRMY8zPT7zohTGjJ9/z1zFrYY8SAy8Ycquxb+idQG+FlTGX5WezpsBzRFRLPLq8ZLc6Lod52MB+c0Vpc+6BgoN2FoTaAJOLYyvd37dA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757517358; c=relaxed/simple;
-	bh=3V2RhjkO8Zues0nf8PudCy3D2eUe0xtHPXbYJiuCv58=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ohz5L+oGor35qblBAOevwMFLfxSFFMvXdgeCDVFR9CdQM1t+pbmRxGHYvCimlW8XuAGNw689cWdhGpnMq9AIYU7pBHHbcvnxbF/+jMVBotYfoClkjxu3QxkXYtjfikW5ek1dUlwr7QssFc3pKygs7gVd2CHIx8yxoRAjQsLqyBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RfowFosm; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1757519541; c=relaxed/simple;
+	bh=+QnlDUP8buKjBRESEhzt4CYoYNQ0cHHIXhiRMLrk+OY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FLnpEVnzCxPoOjtvmaGmfU/Z6DeUAEUwmlehVUpfKez/f6A32Xyu3X0y8+4M0W0MyCA9IUph2aEBvD7sTJHHtKaqzbGey9uS6ZUWDAGMVkMZtn/8NG6VXpcc+UHWX0ckh3UWF56glgZ/VE+Gk1ogPlHIHwq/pA9BZHw6z16Wv2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PbvVaqBo; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RfowFosm"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757517358; x=1789053358;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3V2RhjkO8Zues0nf8PudCy3D2eUe0xtHPXbYJiuCv58=;
-  b=RfowFosmf8uMJvu2voDGNYAG2WrFweLedE3XgMoqhFP4DOx2hAxuKTYy
-   mEVIDjkaJL8dU+eu5V9R9tWtVgKkeAqOjDDQAqY4TfwHbdVZNl9Y1lrMa
-   xPN6ixSgO3B7UltmwKnDyYCNvz9nqY2G4SKuhGMGLc1JbCd7rLHrW9gEP
-   2jPviJBtRuDRzYMLwbo0f3j4MTXkBAuhHR/JfG58T78+btOez3lk2+Ua4
-   YpvxGKIi+UMIsj1IafKHnYw22GfSsXpCfZCiKGSfuGg8K41Z+gQ+JtFTJ
-   azV3AuJ4gtgfCV8d7OkRHjaznYf62EN2UjrosrR3THK1k18/lHrhY7LGu
-   A==;
-X-CSE-ConnectionGUID: Wyi+6Jp2SI66x1dUk+o67g==
-X-CSE-MsgGUID: fwidlMz3RtO9L8qyj79/xA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11549"; a="70449459"
-X-IronPort-AV: E=Sophos;i="6.18,254,1751266800"; 
-   d="scan'208";a="70449459"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2025 08:15:57 -0700
-X-CSE-ConnectionGUID: 34v2EslQReK3eKvufQjeSA==
-X-CSE-MsgGUID: cBSYEwz5SAeBrBLDLGfbPQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,254,1751266800"; 
-   d="scan'208";a="178624714"
-Received: from baandr0id001.iind.intel.com ([10.66.253.151])
-  by fmviesa004.fm.intel.com with ESMTP; 10 Sep 2025 08:15:54 -0700
-From: Kaushlendra Kumar <kaushlendra.kumar@intel.com>
-To: dave@stgolabs.net,
-	paulmck@kernel.org,
-	josh@joshtriplett.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	rostedt@goodmis.org
-Cc: linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org,
-	Kaushlendra Kumar <kaushlendra.kumar@intel.com>
-Subject: [PATCH v2] refperf: Remove redundant kfree() after torture_stop_kthread()
-Date: Wed, 10 Sep 2025 20:44:19 +0530
-Message-Id: <20250910151419.3762048-1-kaushlendra.kumar@intel.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PbvVaqBo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C0B2C4CEEB;
+	Wed, 10 Sep 2025 15:52:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757519541;
+	bh=+QnlDUP8buKjBRESEhzt4CYoYNQ0cHHIXhiRMLrk+OY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=PbvVaqBo5zoidymIKSi8H+rtvC2IISQ2rCMQXTuaLYjMmi0/B+67cNOrhYIYGxmRf
+	 Rf36NtXpCox1dJNGdzEElxCs9Oe3z2UqC/Ooorgsmj/UgnZywk+YyfN04U/tBor1/q
+	 Yy6nebCEXOJ4yltEUNDTmre5xsIprfrJBEXALEVYJD0IOQ37iTosDcqrK+naqzbuZ+
+	 0iwgyJ3XSkXB57z6Z45aqDhe2Zl/V8PtVjsa5zfY4ribuAfOiBF9m2EcmVArEDNYQ1
+	 e+oilJsnewnbr3RPkys1Mzi00f1P1eW9uwxO6W2BoqJ8C8i2W4hHnyKBTbtzaCQjzr
+	 191zaoB4xlVHw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 17877CE0B24; Wed, 10 Sep 2025 08:52:20 -0700 (PDT)
+Date: Wed, 10 Sep 2025 08:52:20 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: Zqiang <qiang.zhang@linux.dev>, frederic@kernel.org,
+	neeraj.upadhyay@kernel.org, boqun.feng@gmail.com, urezki@gmail.com,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] srcu/tiny: Remove preempt_disable/enable() in
+ srcu_gp_start_if_needed()
+Message-ID: <e5e69dc3-ebd3-47ae-b193-bc4b2de36904@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250909133928.615218-1-qiang.zhang@linux.dev>
+ <4c7d977b-7d09-48e0-9a88-bae93fa5e401@paulmck-laptop>
+ <20250910143620.GA561834@joelbox2>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250910143620.GA561834@joelbox2>
 
-Remove unnecessary kfree(main_task) call in ref_scale_cleanup() as
-torture_stop_kthread() already handles the memory cleanup for the
-task structure internally.
+On Wed, Sep 10, 2025 at 10:36:20AM -0400, Joel Fernandes wrote:
+> [..]
+> > >  kernel/rcu/srcutiny.c | 4 +---
+> > >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > > 
+> > > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> > > index b52ec45698e8..b2da188133fc 100644
+> > > --- a/kernel/rcu/srcutiny.c
+> > > +++ b/kernel/rcu/srcutiny.c
+> > > @@ -181,10 +181,9 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
+> > >  {
+> > >  	unsigned long cookie;
+> > >  
+> > > -	preempt_disable();  // Needed for PREEMPT_LAZY
+> > > +	lockdep_assert_preemption_disabled();
+> 
+> nit: Do we still want to keep the comment that the expectation of preemption
+> being disabled is for the LAZY case?
 
-The additional kfree(main_task) call after torture_stop_kthread()
-is redundant and confusing since torture_stop_kthread() sets the
-pointer to NULL, making this a no-op.
+Good point, and I do believe that we do.  Zqiang, any reason not to
+add this comment back in?
 
-This pattern is consistent with other torture test modules where
-torture_stop_kthread() is called without explicit kfree() of the
-task pointer, as the torture framework manages the task lifecycle
-internally.
+							Thanx, Paul
 
-Signed-off-by: Kaushlendra Kumar <kaushlendra.kumar@intel.com>
----
-Changes in v2:
-- Corrected commit message based on review feedback
-
- kernel/rcu/refscale.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 2c2648a3ad30..2bfa987f4ba9 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -1050,7 +1050,6 @@ ref_scale_cleanup(void)
- 	kfree(reader_tasks);
- 
- 	torture_stop_kthread("main_task", main_task);
--	kfree(main_task);
- 
- 	// Do scale-type-specific cleanup operations.
- 	if (cur_ops->cleanup != NULL)
--- 
-2.34.1
-
+> thanks,
+> 
+>  - Joel
+> 
+> 
+> > >  	cookie = get_state_synchronize_srcu(ssp);
+> > >  	if (ULONG_CMP_GE(READ_ONCE(ssp->srcu_idx_max), cookie)) {
+> > > -		preempt_enable();
+> > >  		return;
+> > >  	}
+> > >  	WRITE_ONCE(ssp->srcu_idx_max, cookie);
+> > > @@ -194,7 +193,6 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
+> > >  		else if (list_empty(&ssp->srcu_work.entry))
+> > >  			list_add(&ssp->srcu_work.entry, &srcu_boot_list);
+> > >  	}
+> > > -	preempt_enable();
+> > >  }
+> > >  
+> > >  /*
+> > > -- 
+> > > 2.48.1
+> > > 
