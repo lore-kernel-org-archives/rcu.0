@@ -1,108 +1,84 @@
-Received: from fuchsia.ash.relay.mailchannels.net (fuchsia.ash.relay.mailchannels.net [23.83.222.64])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2649124DD13;
-	Thu, 11 Sep 2025 18:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.222.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757615106; cv=pass; b=H/Nku2+pQBUXOC0CBFeUYxzcy8imGSk/LRnkZYpIWJzIpj01fWjM02w0OKhTogCs4+M0fXTQplSkEZDN1gsigTd5XHTm/+5kaZAqfxHtSC0NGA0OzXi50PX7j1TVydLUsAFWsQzJpxagHICVT07ZH6ug3u1ed5K7PQM9eLMddaM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757615106; c=relaxed/simple;
-	bh=WwDKNviDEA6uHAFz9Yp0OPtqfD47QY6biWgK1Hnh4aI=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 659A125484D;
+	Thu, 11 Sep 2025 19:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757619455; cv=none; b=CS0tkFlqTL3toFGF3eF9yUu7BpQDeSYSPQ2w8Doq36FPocPRJZEtgDgrIKum6HmbD7ej3pJJFAwmwf7ihevYFd0AiDq8emTrLUjGTwcmnx7cPlapWpK8uEQ433aKRgPMVGN0BAvdSG5qCmLY4ra2QENdgQKKwd6tkS2qf21op/M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757619455; c=relaxed/simple;
+	bh=ZjwiPBAwKH7AwJgS56aj0Mt8Iz098FGr9ay8z757enQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AXYX6yLidzPvNDffIZgGf+xREIlHvKRx0o5QUevfC7tx0nGJzimx+FyGKA0DbgMbWI3yDd6g7DWtsWHeuE6KgmCXV7jdqRPkauLZwuQVB7J3h44ujcbVZu8YDSuW6PYaSs3VjWLfqggYFGh9aXoxjR+u7yuTCsPTe/DePypmkH4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=LzY/w8/E; arc=pass smtp.client-ip=23.83.222.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
+	 Content-Type:Content-Disposition:In-Reply-To; b=LHI8x5PUY3Ueu3xx4laqR7frKpKzw48feJF/6klS4YdNFZ3ZBUV75OIOnpGt786EMEeRvF0BpksONJFStmbxyrAdXfkintuXVdHw4Pbdt+L1BgX1n0qMSQezXyTSgnhf0OQa8sg7Rg1kJNZBLZm4iAtguIXKHdpaxtjqGA7cfNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XX9+cqLB; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="LzY/w8/E"
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 241631A7AC1;
-	Thu, 11 Sep 2025 18:18:09 +0000 (UTC)
-Received: from pdx1-sub0-mail-a316.dreamhost.com (100-104-249-162.trex-nlb.outbound.svc.cluster.local [100.104.249.162])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 8DA4A1A63B1;
-	Thu, 11 Sep 2025 18:18:08 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1757614688; a=rsa-sha256;
-	cv=none;
-	b=kOv0Nixcl2tVIxpa5HUC262/eI5rmNXfnM1/wBYhQIDJ8qFRfsLCwt35FXEZZO3NqCcsb3
-	pDYpx7uHzj02mR/TE36un4nG4eeud/3QC04TBlir9R6KnAzMhLDcDr8mSYvfXUIN12qH0h
-	4vTbBqj3OBV9w5wdtDIWPZlGbWjxqP7/a2e6Q55fcjrh+05YxIuCuAtDa0hNP6t4ueHeW9
-	hOoNcI/4xVUHCZNrIsTm/rnO+R6Z2lSiQqLVD6nwcdk8R1zuXpnAHhj6ccfXYYAIqhxuer
-	KL3FL/7xvsNhiy6Agr3k7TvbdVQqrbvlKwQ7soBuUfl5MxIl+tYL/XRWcXckNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1757614688;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=WwDKNviDEA6uHAFz9Yp0OPtqfD47QY6biWgK1Hnh4aI=;
-	b=CHGNo8do+hWRbVisxMhRXsiBhnmxoD4CE/9RzPpIbGQBObdykqR3eTpi4RLVTsDwarrOZB
-	kq9cDpMjLfrD/5TeCVlF4jnv1PUXLmthy+cop7Q8rYb8ntXJOxy6U2qthRiDRPlBugnKrC
-	bYsasAPzM3IF9C/Bh28zrm8jgletzhHGxWNh6YwrI7hoz1WH7zcMsAvaRXQAGJmI0LF+iD
-	JRr/nZs0qJBKuIfLZPVbRx04znf9bzSzLB1X2w7aNH74icVuPrGafc4BPEmF675j85ObaE
-	5Un+1vJ8ixN3570x1F7gvhJSpNSKEVcHqUqocpxGL83XeWj/kMAOify9sIkamQ==
-ARC-Authentication-Results: i=1;
-	rspamd-7b5fd646f8-2rcbz;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Belong-Imminent: 470f186b1ecd2ef6_1757614688971_2644890682
-X-MC-Loop-Signature: 1757614688971:4168443260
-X-MC-Ingress-Time: 1757614688971
-Received: from pdx1-sub0-mail-a316.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.104.249.162 (trex/7.1.3);
-	Thu, 11 Sep 2025 18:18:08 +0000
-Received: from offworld (syn-076-167-199-067.res.spectrum.com [76.167.199.67])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dave@stgolabs.net)
-	by pdx1-sub0-mail-a316.dreamhost.com (Postfix) with ESMTPSA id 4cN5QR6tyGzFP;
-	Thu, 11 Sep 2025 11:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-	s=dreamhost; t=1757614688;
-	bh=WwDKNviDEA6uHAFz9Yp0OPtqfD47QY6biWgK1Hnh4aI=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=LzY/w8/EtH/v5rW2ELrJQ58G9a71xLJBr29V1KCkHA7UB+GzPxwD0+frxeJ5D8fUR
-	 QEvFkevHdX++xJIw7FYlhAT+Z+lz2bmp8B7eLHaYbXWK1ginF2+aZwAzTLEPDpp55Z
-	 D2ehuNw2S32s700x0/KpdqIqJUzgXmHUdKgKGT29LcqIkOc+4zjH0sszOjJ8yF11hT
-	 ped+FkwzgAZ0orZoB+AlBEvgudoPQg8S0u4PVHwKfgY+dnopeqI1+78aTtqvNAJaig
-	 j9Imz6KKv7yH2l41YgcuC5AqO712aVS5lwSp7RTJDP0gkCT0oXCzz0dEoB7+Y3borJ
-	 CuZWXsRFYDqFw==
-Date: Thu, 11 Sep 2025 11:18:05 -0700
-From: Davidlohr Bueso <dave@stgolabs.net>
-To: Kaushlendra Kumar <kaushlendra.kumar@intel.com>
-Cc: paulmck@kernel.org, josh@joshtriplett.org, frederic@kernel.org,
-	neeraj.upadhyay@kernel.org, rostedt@goodmis.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v2] rcu/segcblist: Use WRITE_ONCE() for rclp->len
- decrement
-Message-ID: <20250911181805.zowj27hon5nazhyp@offworld>
-References: <20250911162641.796716-1-kaushlendra.kumar@intel.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XX9+cqLB"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB9BFC4CEF0;
+	Thu, 11 Sep 2025 19:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757619455;
+	bh=ZjwiPBAwKH7AwJgS56aj0Mt8Iz098FGr9ay8z757enQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=XX9+cqLBMr76wKln6+ZslUVmujA3hk2EFkLM9+udoW+Nt9ycVpkfbjsD1NFEsa9O8
+	 775YozyyYLaOJJ2O2pqOlM++90jAdKWW3jn9B+QDFRomkbBIqft6NjKtdT+Plvuz6R
+	 Jqv4Dy8jT/NekCr/qGaGRGP4AiGEuPFtGUGyXMdJZOxBxd+VhYNu6MMr7aJd1w40oj
+	 FN2OYSTtqARK6j+Lqb3SiGMkg7Z7cTrB8UaHdAWR6OaXbkGqAiQGsdXyBAt6uK4a4M
+	 hfbGqIjHby2BxBsE4kJBiY0/3mnCLpu0D+8JU0gtEOkIGKQ5yy0mU7Y3A1dq9NF8iO
+	 XMpk20L9ZGW/w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 65ECFCE0C15; Thu, 11 Sep 2025 12:37:33 -0700 (PDT)
+Date: Thu, 11 Sep 2025 12:37:33 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: "Kumar, Kaushlendra" <kaushlendra.kumar@intel.com>
+Cc: "dave@stgolabs.net" <dave@stgolabs.net>,
+	"josh@joshtriplett.org" <josh@joshtriplett.org>,
+	"frederic@kernel.org" <frederic@kernel.org>,
+	"neeraj.upadhyay@kernel.org" <neeraj.upadhyay@kernel.org>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH] rcu/segcblist: Use WRITE_ONCE() for rclp->len decrement
+Message-ID: <f5d5811c-4908-45e8-9db7-c7cc00b45649@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250911051009.682429-1-kaushlendra.kumar@intel.com>
+ <d1cee525-84c4-41f8-8594-0643d532e3ff@paulmck-laptop>
+ <LV3PR11MB8768B531BD88260D26996285F509A@LV3PR11MB8768.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250911162641.796716-1-kaushlendra.kumar@intel.com>
-User-Agent: NeoMutt/20220429
+In-Reply-To: <LV3PR11MB8768B531BD88260D26996285F509A@LV3PR11MB8768.namprd11.prod.outlook.com>
 
-On Thu, 11 Sep 2025, Kaushlendra Kumar wrote:
+On Thu, Sep 11, 2025 at 03:46:08PM +0000, Kumar, Kaushlendra wrote:
+> On Thu, Sep 11, 2025 at 10:40:09AM +0530, Paul E. McKenney wrote:
+> > On Thu, Sep 11, 2025 at 10:40:09AM +0530, Kaushlendra Kumar wrote:
+> > > The rclp->len field is accessed concurrently by multiple contexts in 
+> > > RCU operations. Using WRITE_ONCE() provides the necessary memory 
+> > > ordering guarantees.
+> > 
+> > Could you please be specific here?  What calls to rcu_cblist_dequeue() are such that hte ->qlen field can be concurrently accessed?
+> > 
+> > (Full disclosure: I don't see any, and KCSAN hasn't found any.  Of course, that does not necessarily mean that there is no concurrent access.
+> > But we need such concurrent access called out explicitly here, because it might well be that the concurrent access is itself the bug.)
+> > 
+> > 							Thanx, Paul
+> 
+> Hi Paul,
+> 
+> Thank you for the clarification. You are absolutely correct. After reviewing the 
+> code more carefully, I cannot identify specific concurrent access patterns for 
+> the rclp->len field during rcu_cblist_dequeue() operations.
+> 
+> The primary motivation for this patch was to maintain consistency with 
+> rcu_cblist_enqueue(), which uses WRITE_ONCE() for the rclp->len increment. 
+> 
+> I will modify the message accordingly and send a patch.
 
->Use WRITE_ONCE() for rclp->len decrement in rcu_cblist_dequeue() to
->maintain consistency with rcu_cblist_enqueue(), which already uses
->WRITE_ONCE() for rclp->len increment. It maintains consistent access
->patterns to the rclp->len field across both enqueue and dequeue operations.
->
->Signed-off-by: Kaushlendra Kumar <kaushlendra.kumar@intel.com>
+Why exactly is a patch needed for this case?
 
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+							Thanx, Paul
