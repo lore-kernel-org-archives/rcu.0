@@ -1,328 +1,266 @@
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B15723D7E5;
-	Wed, 17 Sep 2025 08:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758097859; cv=fail; b=bLa18egxAthlGPFnoc3Qu/zW85pOpCfBshZTBQmvb10QNAmRUAFC+rNfPf9z8J+D+ZPkG8bT2fgmxHtYSPQtnwhwqr6f8PXC40k/k34BvcfcfFB2U4nViQKX3bXSzoZKbK099CGjlVScuPAW7Z6cGEE84KcXtM/FTHPOxOQIENs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758097859; c=relaxed/simple;
-	bh=9MZ9ykG3SUCVwKHf2qq04X+JLu+Sj1L6ZTzviX0B6ik=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=dS7+h8R4gWckmp7mJ7SJ9c77Gfsq+c4FXiEzCXyJVWK+OnbJ5ELEizXgpA/JdT7WmJiDCkpiKtvieYDW3phxxeLFgMig66d+1T3Gal7T/7g5tYZAX0UnBrUb9r8OoLdR6Vf7zkl6GeG9s71tHOTvshDGzGyhy3M1qouRqLZAHo4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=BhCXa4t1; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=TfLYVEYL; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2212F60A2
+	for <rcu@vger.kernel.org>; Wed, 17 Sep 2025 09:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758102914; cv=none; b=bQmuJ5HVc2qeCZam72fkeJqYI7YKc95qo6QSHtlklMEC/XbSLdpUsuwCbgkEsZaCIuTqVpJVqMIt31CoUsMLDT4Bw2LQEAGFpP8xbrZyqi1eodTuiZ5lLKJ/CjRLcFy1699nZLg6bYr2Uu+q9xAyu7KHU90XI1CnFAtOJtrNEmk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758102914; c=relaxed/simple;
+	bh=djdcQorHSJm5xluKvogCGQhjuFm525QfJ/2Px6pqFWM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OGYxxBsyOAgG4lKYQi1TQ+x7B6aTNsFh7eKVErKmTwg2pViY9tFDyMRVh6CVWB2zbBa7qc/ZfPsX4DUbGy+tckM10gtwOPE+z+oV8jXVcqB30+7V2lLq0K7FeCeXQnGw4+mWzbINMlluekPeBYKJqtmDjuc7xB0A3HHye/2dO/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SY14dfm7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CMxk7EMV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SY14dfm7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CMxk7EMV; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="BhCXa4t1";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="TfLYVEYL"
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58H7uMNw011142;
-	Wed, 17 Sep 2025 08:30:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=Mcqsu8Lk7h4/w8njXk
-	mzdfaxhnlB9skKDMKmqcHx1ns=; b=BhCXa4t1+AksHe4QXOMRcKS3Q73LwQknZe
-	l6FmoqP644s0sHnmIaMyXBCPoHn7u2HHpKjgObfbvUiuyhbFsK/AlATpRwNY4kaw
-	oVWxPrcv79P0zQ8OvORLa7TPmTgGrGBvMcxAd99xar7XFNmiK9crbItloDCOTX9I
-	zCuqYFKFqtkC8XvxdGyr1eETC8bKedLE4GuEVyKN+YoBebIU+EQ5aWU+dUpQ0JLr
-	zejjx0nSV2CtplK34CBJo1yc7AFRc70LhaF13oee2eEKmecpeHhCzkkzuuoj2F+9
-	4fYwB1/FnD3npvKTDBEEYtIqnV2XnPrYaVReUAN6YKdrKN6A0PSw==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 497fx9rqkq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Sep 2025 08:30:33 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 58H83W0a036935;
-	Wed, 17 Sep 2025 08:30:32 GMT
-Received: from byapr05cu005.outbound.protection.outlook.com (mail-westusazon11010042.outbound.protection.outlook.com [52.101.85.42])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 494y2dg1wr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Sep 2025 08:30:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=rYq9vAOEVpcQhBlfzEhfS4sEDr2GgVgX1g7jh2bhFVKk2yAqF6480YFADVjxro4tJDkbHRYUD4NpncPM+Y23iSTNeIOjy6mH1blJ0/WdbnkCrnGNxsTnnUldAZUuyh4H2WLdvb5/OXpuZowp+a+HzjGwAU3LHEzuudivmAP/ITu7MnNDX2ZlpPH9tt/jAsO2QqTeToSh+UDDyKM88H40C0jo/iaQ7S/0QnryWDoBoxW0wI88A3vJavxKgSLG9aq5PTe5E5S3+w3dViJ9RxwBsAJETgm+uI5F0sJvY1DYoUcZCrnuZlMc5LYnBIyQNuqRkXYGjI7DZ+sk1BpqkDIAHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Mcqsu8Lk7h4/w8njXkmzdfaxhnlB9skKDMKmqcHx1ns=;
- b=lhI1huGYyggJ2H/m7KJwHkbVU+i6APM02aCNBbasDYeDtmmSNIbbtUp2knUXYUiLJPCRJ9RCVR8qXZ1xKC0m+UuiD4LZL0mseLJc/L5zIEGXewkgpzG01xuE922euL8ODxWWv0U4dRB4IyzFzmj0kBHx9Pr6Y0ists6yuI9uh+Glw0588beW/MIw/vnTVHwO1b1FsrVAjbsrSmtaFVLSP9YHMQ71noxEoNr/x1lFD0ObLXPLzJvCrYrQ/IJcpWN6Eb55c7fP4NiEJQ/fdaSDbezqAc8T5lg403Hwssb458WqiTbB7MHm9BDFsn8GBFlkmv2SgsCr04eHTP50+b4EFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mcqsu8Lk7h4/w8njXkmzdfaxhnlB9skKDMKmqcHx1ns=;
- b=TfLYVEYLYq5Ci5JbpfEVyc+Kex/JAw9OwVzhKopgVXTXyTzuiZ+EYlV2wvehufBbTd5GupH7kz3weJZYMzEpGLIqZ1mC/9TUS3IBSroiqQiCcA93qGu++8aGCmyuI2e4Yi/xMK+jGXrD6U3fZ3zEkQFe/NjR5lHIOAEq2AX+v0E=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by CH2PR10MB4279.namprd10.prod.outlook.com (2603:10b6:610:a8::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9137.13; Wed, 17 Sep
- 2025 08:30:29 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23%7]) with mapi id 15.20.9115.018; Wed, 17 Sep 2025
- 08:30:29 +0000
-Date: Wed, 17 Sep 2025 17:30:20 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Suren Baghdasaryan <surenb@google.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Christoph Lameter <cl@gentwo.org>,
-        David Rientjes <rientjes@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        maple-tree@lists.infradead.org
-Subject: Re: [PATCH v8 04/23] slab: add sheaf support for batching
- kfree_rcu() operations
-Message-ID: <aMpxnACqmsQl-lp0@hyeyoo>
-References: <20250910-slub-percpu-caches-v8-0-ca3099d8352c@suse.cz>
- <20250910-slub-percpu-caches-v8-4-ca3099d8352c@suse.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250910-slub-percpu-caches-v8-4-ca3099d8352c@suse.cz>
-X-ClientProxiedBy: SEWP216CA0031.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2b5::16) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SY14dfm7";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CMxk7EMV";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SY14dfm7";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CMxk7EMV"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8A5AE220F2;
+	Wed, 17 Sep 2025 09:55:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758102910; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=jDMDJ1YRYJ021yCvgShr7WT3fYONkSGJfo3wVVSz2Pk=;
+	b=SY14dfm7OHlvUPij+l2PSHFHiu1atOnGFXcD7b4612B7JbbgmC9tJ8TnYwJaCG75maIbGh
+	Gz1JctR1j9E5RSq8bWoZY+fUrHml3gtirnZMn52Lskg7dFqIEx6FHHc6CPTncylMMhggM8
+	nBiUujMOkb3F0hTI27HKjjD5kw8T1Gw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758102910;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=jDMDJ1YRYJ021yCvgShr7WT3fYONkSGJfo3wVVSz2Pk=;
+	b=CMxk7EMVqabWgrnVYbfOUd5rFE1oMOjZ2PpM7CG5EY4YpFp4LVRCZ+ODTchVZYsJLkpJV0
+	kXoQegng0ii/UaDw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SY14dfm7;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=CMxk7EMV
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758102910; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=jDMDJ1YRYJ021yCvgShr7WT3fYONkSGJfo3wVVSz2Pk=;
+	b=SY14dfm7OHlvUPij+l2PSHFHiu1atOnGFXcD7b4612B7JbbgmC9tJ8TnYwJaCG75maIbGh
+	Gz1JctR1j9E5RSq8bWoZY+fUrHml3gtirnZMn52Lskg7dFqIEx6FHHc6CPTncylMMhggM8
+	nBiUujMOkb3F0hTI27HKjjD5kw8T1Gw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758102910;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=jDMDJ1YRYJ021yCvgShr7WT3fYONkSGJfo3wVVSz2Pk=;
+	b=CMxk7EMVqabWgrnVYbfOUd5rFE1oMOjZ2PpM7CG5EY4YpFp4LVRCZ+ODTchVZYsJLkpJV0
+	kXoQegng0ii/UaDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6FB55137C3;
+	Wed, 17 Sep 2025 09:55:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id w3avGn6Fymj0KQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 17 Sep 2025 09:55:10 +0000
+Message-ID: <bbda8c25-b575-4e98-b1ae-b103c6598d38@suse.cz>
+Date: Wed, 17 Sep 2025 11:55:10 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|CH2PR10MB4279:EE_
-X-MS-Office365-Filtering-Correlation-Id: ddc386e9-0607-4acf-cf69-08ddf5c4752e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?1xK7K8yoLagc65MLxFXdNlIRIy1eWPqJIBFvqvJ3tZ4wH4/v0oU5bwmBR2Ko?=
- =?us-ascii?Q?DPQzneOHh3OO7neGC+zODTphzaD6ljBZuuPXJvtXSJKCBTI/la6Ekf32tTfy?=
- =?us-ascii?Q?Rukdo9ZZh7iehkgInClyySniRmQopZ3qkbi+f7SyFVn4LB8Dnn9Ybr2C9Swu?=
- =?us-ascii?Q?rupxUczFZCQynNB31oj27SdJqfoOROjVJh1SqhlPWRQG3krVVdtTZ1s6Ofkn?=
- =?us-ascii?Q?zOMhqMYOAai1Q30mFnGD0vRlxDy2RyKqnQivc27Ld8ERlsnkWjTMwecLi4Kq?=
- =?us-ascii?Q?yXkcAdbijRPwte6GHWootIBlilryLpwNPWu9ck7W4LEyMtXoR7Sorge34YFV?=
- =?us-ascii?Q?POYeffM0iGj+BUmXBwFVSOXXpK4mzL3n//O+xuOVKXLlRCBMpyBR2+7CciEU?=
- =?us-ascii?Q?BViFMLD5oapDB384gkQkhycaCxI4a+xlNf3AaP7r6RdqMJ/4VChY++ansvNB?=
- =?us-ascii?Q?+iGHkxU2Pho0hXas6F5Qw4+8O13GZUOSSmLxJu4pQ3+ZgjFN+2deNcOBpP08?=
- =?us-ascii?Q?IyaLoMKKhq4Vwowte7fNO5WAjF3rQVMGo9Rp/0cfkmNOXLBaclOx9rsp4ExD?=
- =?us-ascii?Q?QkGyRqLlB3ln+TQhXybs0OzkOgL5rzxS2y+Rla2t7GPFp5gPpIEi25QUFVvN?=
- =?us-ascii?Q?bMB+qvW+98qVCC4v+yDMs+SwQkfy/VryMAZwM8fKaf6mhA3aN5S9kfgD5l9y?=
- =?us-ascii?Q?vD8QW5wlwGg04ZSHmWOl65ruoglnOOA5xNwP2Tq9mD28djlN/ARkV2dXPBU3?=
- =?us-ascii?Q?oQeqHChQZHil782mTmCLS3lZqNm2yg7Pr2iaqvHFU7gdN42B+EKSz+1GEYBM?=
- =?us-ascii?Q?O5dFLkIDVkwjsX6J3OpFuTM0Vff43wtGcvf5n9PHH1WnbgXXKtzKPoW8i8aw?=
- =?us-ascii?Q?Zz5WKilVVV8a+v5v5/A//IB4qROvx+9nfi2OyzDdgm5oXplOrT4fpmWvh1vS?=
- =?us-ascii?Q?uQWsKVdP7Rul13QyTbCU8lAFE679OCLs86f7WAK9Sb0efDu0n9o4UAWlwCnM?=
- =?us-ascii?Q?IaXT8LR9+kSiQlV77tppu7rSV4BCOB7xVGBQKbYWGYHHat1Cj/ZbLPkfaI8X?=
- =?us-ascii?Q?bJlVpGUgK615Mi7HpHT4aqZmCzbTpg+qhfiWU/hr6wBYL55R1R/e4Jvmgh25?=
- =?us-ascii?Q?Hg4v8tbwiE1vXVho2zYQsy9gm01neqxnATOJLjinF4Wg3oFLxbvxbjgEltkf?=
- =?us-ascii?Q?nMUf/dYfsVUqmHtTzViELICzDLEjZAUuhQhRumNA8HbGCGOly+s/2MZK3qyi?=
- =?us-ascii?Q?4V3iMXNm3TI2Y/uRo9jfGLquG7knu/fWboEULwI/r4Q7v53e4LRj7vayungx?=
- =?us-ascii?Q?cJVgiBMGtLFuWBRD5CVV5+OKKDxKIBzDb8UWElmqH08K+xoAkhYgKyobHB3O?=
- =?us-ascii?Q?94g1DLM2AT02n+BvgYmPpRUNZPh2vFNwmPQYzEcBMhKI9yoxf3r63A+c676e?=
- =?us-ascii?Q?N+SUY6oJHfQ=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?gePPqtN+3F6PQ+MgQhk2ILGOHDCxnAHjYFlFTEnLm6OgYo/vkTs1uuo07Ec+?=
- =?us-ascii?Q?3EZuL1jxXUNa5pdHTn49eGauw5IWmZj1wg27ZqGZgEc2dk137rxA4VmomY6e?=
- =?us-ascii?Q?977cNolQRQ2bCUwCmfMABRD4qdEGcAzhlJq7h60HirKKRN/HMWxnc0ImOhyT?=
- =?us-ascii?Q?zLTzFNuWouvVD1CVABLICh+pNFGKHncfRI3cd1k8HKJ3rWG1CgD4F2OKvwZt?=
- =?us-ascii?Q?d/pecdQ7nUHBBl/EGuGmYrbLUV6wpLPalBRID0KkOmH0s5v7cSl4l3Rz1DMT?=
- =?us-ascii?Q?XqwB1LvZkcuGAuaZZIa+4CXqVSHg+FK4OP/RuYkMYu+VsTz5pISz8uc/j0Ql?=
- =?us-ascii?Q?iclUD5W8IcpoZhKq2UddsdmtknaBU3Iu+wH+C9nzBxOthxhUFgSOeWfXhHI9?=
- =?us-ascii?Q?3+87b9KUuL+uK5ughgfN921atTN0mNPU+xc5G0kV3eZ5JkTmT6x1+s3DTrXO?=
- =?us-ascii?Q?oy7T2uhisu0pDw9cjTWH2SaDdGn47RTHINyCZn4WGGkU9P4W/t37GKlc+aE5?=
- =?us-ascii?Q?auQjIrg0LqPos0vcZ9Wnk7xqtloH2TznghI1cp1aL8TRwniozZKUnqI4f8+d?=
- =?us-ascii?Q?ggmAWxuM6bT1VKmz+rLohrIeEwafi9HNLI6KJKbzuNf8NcWkXkpvXsyaesnp?=
- =?us-ascii?Q?4CbPbdYsxqRrKGueXI03moK5GJufX85PFrd0hQHDP33fx0B0hKDY5QBkow3f?=
- =?us-ascii?Q?8ImN3JojL09zxSHz8i9luWQWTvKa/+2kV03gjN5kVq/2jSEoOjUlb+R8ALQP?=
- =?us-ascii?Q?0jywQX7PCsrGTyCiRnoi+UAathfN84MVIoJ38yVyGLkAFFhfs1j0OkR6U+K0?=
- =?us-ascii?Q?IQRyoicCLirF/9lIQCJqxcO3b2UAGFRtW6XTMLx7atsqxS+74X051Od7iXis?=
- =?us-ascii?Q?mhiBYwYhtQYbnc8+CWWct6YAr24/s+t6rn4h5pOthqC1dHFr34Aguzh0GtP6?=
- =?us-ascii?Q?uze576+86hpgh+otEfKysBMXi7TEQQa+lJFN1TFegSmAPYkn5eRo9yH7bgOm?=
- =?us-ascii?Q?QEzJVitIEsLj5lGOVWxj+V+hcwwrB7hxljpnKr7TtZjiKGXPIl0FsgFbi4LR?=
- =?us-ascii?Q?bOf7hBl0Y4OnkCqmEsnAa4+KQ4RzF8utUo/W9hmdSiDj2PQEMlqF4GoG/Aw5?=
- =?us-ascii?Q?ybUtqWfgXbUWmRp1ZtEws5Q8yHKKJhMpUBxkDP3rAaIwTjSguhaxQd8NeEnI?=
- =?us-ascii?Q?UDQW6jBl1zLv6OfnDQccaVh8xg4C33qQb4hYgOmPUonA8iwMQLYjnNye30VW?=
- =?us-ascii?Q?a2qq+npr8y33NnBvOeg9j5p8Pl8fUcyNYbsSbP7sikfZelZU5h/L1WWka/Xv?=
- =?us-ascii?Q?CItpCUqib5w2kf7nr7iR8jXwcUre1qjhSW+2gIY/Z/HF7vom5q2jwbjMMdJi?=
- =?us-ascii?Q?Bl/N8p4wvF9gp9BZiIOnpLKpss1bCL3svQQYnTLhCUveMzRHxqxwyqtKI+xQ?=
- =?us-ascii?Q?vP2U4yRSTQQ5CjX1kIhuHfw11C/rYRh9TjHrB6vJxHpfk6Wp3gUiXtNOUb/j?=
- =?us-ascii?Q?KZ2XWmGxjKkPkLPNBPFLTuNVB7OM6oR8C6Ql7/oJ8JldnmwWT4KC3N0iSrVB?=
- =?us-ascii?Q?m7G1zE8RpQZChB4FfijvoH6BqEqSWM1IgujxtF51?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	rnz6BoKjIdWQsUVyk7ghsC6Sdez1L+hg4AUw8JGcOcYlJLc9M+mdEDpVsUBvZJSaMkCraxI960svdJBJSKTjeRBGqmib7VvUcpduWZlpAxZTwheT6ZYr3uiasaVOKhIidJFToaNnFI2JwFSOZvRA9+Ra419CbTJvfxAbn9GLxqwW1jlwz5kK51hOCm7sXu22aKUilstd4dnzKr7EEsX1R5WSBjeBMK8+jb+8pl9XLMLXxKxyX6zEkngNuQ1tacQrgQc9sVolXPoka91Y8ZAgjIsJi65nIEdLL5b2z9lU1yfYo4hB5g/nnbvrtaIx8q53YBLcnJ9dcw1gXlML+2K++qwgqQlcxGXsVHMJxQ5/35LVTFfASEUWAUUnuIeHNb2YivtthU7+oKzfPksQkBD2dlvfJveZqB+8ETTvSK7JDLMPsp2Em4QGh+m3QP36ft4hAID8XlVlptwvWnP92HlQlqAMhLrH+RCXE6xdo5JrD7BgGi3/vP1mriSpkwUaXR958SK/sEfN1ZQgwp4hIXKW6g8KXCqj5OnBDO4RrzqZhzN+CzwpR4H33HdMl8Spq0vD9Pfmi/9sqLCySOq09wtl6HacqCRvHFBRTh7L65OVjfc=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ddc386e9-0607-4acf-cf69-08ddf5c4752e
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2025 08:30:28.9183
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OKmBFijoY4mhHY/t3UzmlcBOwbJGXrh1rVR2/g99ptGe8YJbqxcQHcUjilyMT6v/9W1YZ/klbKxxAlvIgyN6tQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4279
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-16_02,2025-09-17_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 spamscore=0
- adultscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
- definitions=main-2509170081
-X-Proofpoint-ORIG-GUID: bdZZebJWY_CE7Izh2FgGUyYwcSwXOHK0
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwMiBTYWx0ZWRfX0thbfIGoC350
- btQWd0YrTxzv/W1v9MKOn6GWgMjo4whTCpHy6w75fQjnW7vK2nnmsa7vw5Hb5FYUT16zHw3q+ui
- P0AtDHvpQI7wHPAKxB3RQhntJGblxQMTp4vwlUGRD7z+p5VtPT6BtMID1G8ZNJDOZjV3cmqrfxP
- SrhpWFKi3tve+85CiKKaNYU8lFGvy7Ms2peJX/vdqx/ZunNIzBST9i8jaM/n5OB8oBDqNrAOaG6
- RgeBpt+gnknFDk9CiJtDOXvfACluOVHPSsZhMDqt/2NFcYkn20MAKUxRzsu0kEe/o7fIB1A2Fjw
- aobL26gqlB2r8ziaoNQOaGlWjV+vjtcTeL0epzrBmYF9QZfxIrDBUnhJMsN9D87WFPi4ivpjpUY
- lLyI0oLterpc2IlGO7KJrWd9meNHXg==
-X-Proofpoint-GUID: bdZZebJWY_CE7Izh2FgGUyYwcSwXOHK0
-X-Authority-Analysis: v=2.4 cv=C7vpyRP+ c=1 sm=1 tr=0 ts=68ca71a9 b=1 cx=c_pps
- a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=yJojWOMRYYMA:10 a=GoEa3M9JfhUA:10 a=VaE9Vu_GMSX9YVFyq8oA:9
- a=CjuIK1q_8ugA:10 cc=ntf awl=host:12084
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 04/23] slab: add sheaf support for batching kfree_rcu()
+ operations
+Content-Language: en-US
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Suren Baghdasaryan <surenb@google.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ maple-tree@lists.infradead.org
+References: <20250910-slub-percpu-caches-v8-0-ca3099d8352c@suse.cz>
+ <20250910-slub-percpu-caches-v8-4-ca3099d8352c@suse.cz>
+ <aMpxnACqmsQl-lp0@hyeyoo>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <aMpxnACqmsQl-lp0@hyeyoo>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[google.com,oracle.com,gentwo.org,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 8A5AE220F2
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.51
 
-On Wed, Sep 10, 2025 at 10:01:06AM +0200, Vlastimil Babka wrote:
-> Extend the sheaf infrastructure for more efficient kfree_rcu() handling.
-> For caches with sheaves, on each cpu maintain a rcu_free sheaf in
-> addition to main and spare sheaves.
+On 9/17/25 10:30, Harry Yoo wrote:
+> On Wed, Sep 10, 2025 at 10:01:06AM +0200, Vlastimil Babka wrote:
+>> +/* needed for kvfree_rcu_barrier() */
+>> +void flush_all_rcu_sheaves()
+>> +{
+>> +	struct slub_percpu_sheaves *pcs;
+>> +	struct slub_flush_work *sfw;
+>> +	struct kmem_cache *s;
+>> +	bool flushed = false;
+>> +	unsigned int cpu;
+>> +
+>> +	cpus_read_lock();
+>> +	mutex_lock(&slab_mutex);
+>> +
+>> +	list_for_each_entry(s, &slab_caches, list) {
+>> +		if (!s->cpu_sheaves)
+>> +			continue;
+>> +
+>> +		mutex_lock(&flush_lock);
+>> +
+>> +		for_each_online_cpu(cpu) {
+>> +			sfw = &per_cpu(slub_flush, cpu);
+>> +			pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
+>> +
+>> +			if (!pcs->rcu_free || !pcs->rcu_free->size) {
 > 
-> kfree_rcu() operations will try to put objects on this sheaf. Once full,
-> the sheaf is detached and submitted to call_rcu() with a handler that
-> will try to put it in the barn, or flush to slab pages using bulk free,
-> when the barn is full. Then a new empty sheaf must be obtained to put
-> more objects there.
+> Is the compiler allowed to compile this to read pcs->rcu_free twice?
+> Something like:
 > 
-> It's possible that no free sheaves are available to use for a new
-> rcu_free sheaf, and the allocation in kfree_rcu() context can only use
-> GFP_NOWAIT and thus may fail. In that case, fall back to the existing
-> kfree_rcu() implementation.
+> flush_all_rcu_sheaves()			__kfree_rcu_sheaf()
 > 
-> Expected advantages:
-> - batching the kfree_rcu() operations, that could eventually replace the
->   existing batching
-> - sheaves can be reused for allocations via barn instead of being
->   flushed to slabs, which is more efficient
->   - this includes cases where only some cpus are allowed to process rcu
->     callbacks (Android)
-> 
-> Possible disadvantage:
-> - objects might be waiting for more than their grace period (it is
->   determined by the last object freed into the sheaf), increasing memory
->   usage - but the existing batching does that too.
-> 
-> Only implement this for CONFIG_KVFREE_RCU_BATCHED as the tiny
-> implementation favors smaller memory footprint over performance.
-> 
-> Also for now skip the usage of rcu sheaf for CONFIG_PREEMPT_RT as the
-> contexts where kfree_rcu() is called might not be compatible with taking
-> a barn spinlock or a GFP_NOWAIT allocation of a new sheaf taking a
-> spinlock - the current kfree_rcu() implementation avoids doing that.
-> 
-> Teach kvfree_rcu_barrier() to flush all rcu_free sheaves from all caches
-> that have them. This is not a cheap operation, but the barrier usage is
-> rare - currently kmem_cache_destroy() or on module unload.
-> 
-> Add CONFIG_SLUB_STATS counters free_rcu_sheaf and free_rcu_sheaf_fail to
-> count how many kfree_rcu() used the rcu_free sheaf successfully and how
-> many had to fall back to the existing implementation.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slab.h        |   3 +
->  mm/slab_common.c |  26 ++++++
->  mm/slub.c        | 266 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
->  3 files changed, 293 insertions(+), 2 deletions(-)
-> 
-> @@ -3840,6 +3895,80 @@ static void flush_all(struct kmem_cache *s)
->  	cpus_read_unlock();
->  }
->  
-> +/* needed for kvfree_rcu_barrier() */
-> +void flush_all_rcu_sheaves()
-> +{
-> +	struct slub_percpu_sheaves *pcs;
-> +	struct slub_flush_work *sfw;
-> +	struct kmem_cache *s;
-> +	bool flushed = false;
-> +	unsigned int cpu;
-> +
-> +	cpus_read_lock();
-> +	mutex_lock(&slab_mutex);
-> +
-> +	list_for_each_entry(s, &slab_caches, list) {
-> +		if (!s->cpu_sheaves)
-> +			continue;
-> +
-> +		mutex_lock(&flush_lock);
-> +
-> +		for_each_online_cpu(cpu) {
-> +			sfw = &per_cpu(slub_flush, cpu);
-> +			pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
-> +
-> +			if (!pcs->rcu_free || !pcs->rcu_free->size) {
+> pcs->rcu_free != NULL
+> 					pcs->rcu_free = NULL
+> pcs->rcu_free == NULL
+> /* NULL-pointer-deref */
+> pcs->rcu_free->size
 
-Is the compiler allowed to compile this to read pcs->rcu_free twice?
-Something like:
+Good point, I'll remove the size check and simply pcs->rcu_free non-null
+means we flush.
 
-flush_all_rcu_sheaves()			__kfree_rcu_sheaf()
+>> +				sfw->skip = true;
+>> +				continue;
+>> +			}
+>>
+>> +			INIT_WORK(&sfw->work, flush_rcu_sheaf);
+>> +			sfw->skip = false;
+>> +			sfw->s = s;
+>> +			queue_work_on(cpu, flushwq, &sfw->work);
+>> +			flushed = true;
+>> +		}
+>> +
+>> +		for_each_online_cpu(cpu) {
+>> +			sfw = &per_cpu(slub_flush, cpu);
+>> +			if (sfw->skip)
+>> +				continue;
+>> +			flush_work(&sfw->work);
+>> +		}
+>> +
+>> +		mutex_unlock(&flush_lock);
+>> +	}
+>> +
+>> +	mutex_unlock(&slab_mutex);
+>> +	cpus_read_unlock();
+>> +
+>> +	if (flushed)
+>> +		rcu_barrier();
+> 
+> I think we need to call rcu_barrier() even if flushed == false?
+> 
+> Maybe a kvfree_rcu()'d object was already waiting for the rcu callback to
+> be processed before flush_all_rcu_sheaves() is called, and
+> in flush_all_rcu_sheaves() we skipped all (cache, cpu) pairs,
+> so flushed == false but the rcu callback isn't processed yet
+> by the end of the function?
+> 
+> That sounds like a very unlikely to happen in a realistic scenario,
+> but still possible...
 
-pcs->rcu_free != NULL
-					pcs->rcu_free = NULL
-pcs->rcu_free == NULL
-/* NULL-pointer-deref */
-pcs->rcu_free->size
+Yes also good point, will flush unconditionally.
 
-> +				sfw->skip = true;
-> +				continue;
-> +			}
->
-> +			INIT_WORK(&sfw->work, flush_rcu_sheaf);
-> +			sfw->skip = false;
-> +			sfw->s = s;
-> +			queue_work_on(cpu, flushwq, &sfw->work);
-> +			flushed = true;
-> +		}
-> +
-> +		for_each_online_cpu(cpu) {
-> +			sfw = &per_cpu(slub_flush, cpu);
-> +			if (sfw->skip)
-> +				continue;
-> +			flush_work(&sfw->work);
-> +		}
-> +
-> +		mutex_unlock(&flush_lock);
-> +	}
-> +
-> +	mutex_unlock(&slab_mutex);
-> +	cpus_read_unlock();
-> +
-> +	if (flushed)
-> +		rcu_barrier();
+Maybe in __kfree_rcu_sheaf() I should also move the call_rcu(...) before
+local_unlock(). So we don't end up seeing a NULL pcs->rcu_free in
+flush_all_rcu_sheaves() because __kfree_rcu_sheaf() already set it to NULL,
+but didn't yet do the call_rcu() as it got preempted after local_unlock().
 
-I think we need to call rcu_barrier() even if flushed == false?
+But then rcu_barrier() itself probably won't mean we make sure such cpus
+finished the local_locked section, if we didn't queue work on them. So maybe
+we need synchronize_rcu()?
 
-Maybe a kvfree_rcu()'d object was already waiting for the rcu callback to
-be processed before flush_all_rcu_sheaves() is called, and
-in flush_all_rcu_sheaves() we skipped all (cache, cpu) pairs,
-so flushed == false but the rcu callback isn't processed yet
-by the end of the function?
-
-That sounds like a very unlikely to happen in a realistic scenario,
-but still possible...
-
--- 
-Cheers,
-Harry / Hyeonggon
