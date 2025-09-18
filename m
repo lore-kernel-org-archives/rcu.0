@@ -1,113 +1,132 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3599302152;
-	Thu, 18 Sep 2025 10:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D8062773F0;
+	Thu, 18 Sep 2025 10:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758190675; cv=none; b=oKVuLdKViIBpyAaYN780fJg3zp5TecwX74yVDqq4EjbYzjmfnIfhTY7meV2xaz2VAasvvLyrBAPDvSGd7yAjdJfoVqFTUyLNw2mRZp1pyHlx+YQF0mSQ6EqeYVOVsyvebAhvRYOIETiu6Qa9AlZ2pPKLIjcmvNXbtbZKeLjyZNY=
+	t=1758191201; cv=none; b=IFg35i7n/u6FkXWynBhHMvXtPGNH0pzyMXycg2wxKM2+zjnj2XXP87YarmsImAYx6CT+woPk51/Kc6BZNGHSYCjkPNt85vAW7R6bsqezSvV8zjX8ckvbM8UljeEahcf6ERK4MBKvi0ijY5MelcCEaxKCPrFuhfP/8caen1utwEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758190675; c=relaxed/simple;
-	bh=6xDiGB8aFzb5XzIZSlcQKXA0X1480AudJy/Ai6h9dH4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TW405nnqm7M88jR+kF1/dUavzFKqWikSWfyPHcyIsdwRKL6E1Xbwe0NZQqHGm0al1ucmRz0o4ernmJSFSLAxeYbeCDt5F/5ZMdOVAUno8mGF+wJu1SEwn6oRWp4/v3/b05TDJa8NWNQxtoyc1jU7NNy8UjL+DkGylTQqG9jGiBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ntAvZCfS; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1758191201; c=relaxed/simple;
+	bh=yj2eTWFg6tTTFj5zrGIcdAtT44odqMMwfL4AjM7REbM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=L1QxMwR2Jjz3hyfFxGLU2dWSOPrw/ANEVoYLKxdL0B5zfk70Jl4CyOiFU3vIKlmjs9lcL41Hk6dWw9K/4hOzIYrU6g1jT9OCv/gHyQwDiHTYZU3L4yTJ+WWmfPjSM93jWOWd9j7TnXA4LByjPIGgAcFDiKa/S9obs95MetxViLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=azYhtVC3; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ntAvZCfS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA14C4CEFE;
-	Thu, 18 Sep 2025 10:17:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="azYhtVC3"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 247C2C4CEE7;
+	Thu, 18 Sep 2025 10:26:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758190674;
-	bh=6xDiGB8aFzb5XzIZSlcQKXA0X1480AudJy/Ai6h9dH4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ntAvZCfSC1oWndqNEcqf8wbc3Q8Vft39a/xYjoJakKVz/t7G4Iaks5RCTrjP2o+IF
-	 GepSKHLkQVMSwP1MyQT+XZiy6TrJEmUa7i7apWiinbzByN82wTgjf7zvZeX86qHGxc
-	 SVeldUxfrKIA6C2x2masO2A04YSlURrJe2UVjv65JEAhLoWI3z8zMDMYrd0LPe2jgJ
-	 2i2O41laAaX3W6+D8BV3f5TApmJ55sbSoOV57Ttc9xpFdNfJHJYC0EaVwlW+qPFgFe
-	 NrgjTXAu+Rkj7xbh5ng4w4dtSt6xNl+pRM5VAV/MKASm8u6bu3Q0JOVfOO59DxfooY
-	 EUcKeUDcR9Vig==
+	s=k20201202; t=1758191201;
+	bh=yj2eTWFg6tTTFj5zrGIcdAtT44odqMMwfL4AjM7REbM=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=azYhtVC3tOHM9gLedI+p0yEO/L3PG38x1+4v/YEc+8zvOTWJAYiU4DFIINWthjIqW
+	 i5amzMnSFxW2U4Nvsx3A1/k0Sp1DIzQU5Yt7bkIqxArIVsgRpvTw0n/ymu1ytRnZKi
+	 IZsC2PzgkWKWcVOSn8Bt660Z8NDDGvxmtKQhNnZ3hCcCGabK/0UDhdpXVEUaP3hIZ0
+	 dCftSeM+Irv1++yEOhGgxsplXJIGwMaFLL1O1Fo0lBILI5WcrUzcpVuajF63BN2Gqu
+	 RS19CXirjp534wme1zpWvxcqCNJRIS9R+YlH+HbKB/IuzMASNYCJTxFfviFDmyMjQ+
+	 bEvZjkRoq0XDQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1CD7DCE10B6; Thu, 18 Sep 2025 03:17:54 -0700 (PDT)
+	id 9432ECE0B32; Thu, 18 Sep 2025 03:26:40 -0700 (PDT)
+Date: Thu, 18 Sep 2025 03:26:40 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Tejun Heo <tj@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2 5/5] rcu: WQ_PERCPU added to alloc_workqueue users
-Date: Thu, 18 Sep 2025 03:17:52 -0700
-Message-Id: <20250918101752.2592512-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <3773a6e3-8ec8-48c5-9277-264cd8ccbb10@paulmck-laptop>
-References: <3773a6e3-8ec8-48c5-9277-264cd8ccbb10@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH v7 0/6] Provide RCU changes needed to switch
+ __DECLARE_TRACE() to SRCU for -rt
+Message-ID: <89b6f92e-2aa6-4869-ad4f-47bb3fbadfbb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Marco Crivellari <marco.crivellari@suse.com>
+Hello!
 
-Currently if a user enqueue a work item using schedule_delayed_work() the
-used wq is "system_wq" (per-cpu wq) while queue_delayed_work() use
-WORK_CPU_UNBOUND (used when a cpu is not specified). The same applies to
-schedule_work() that is using system_wq and queue_work(), that makes use
-again of WORK_CPU_UNBOUND.
-This lack of consistentcy cannot be addressed without refactoring the API.
+This is version 7 of a patch series creating a new notrace variant of
+SRCU-fast for eventual use by the __DECLARE_TRACE() macro in place of the
+current preemption disabling for PREEMPT_RT kernels.  This change will
+enable preemption of BPF programs attached to tracepoints in PREEMPT_RT
+kernels, as is required for runtime use of BPF in real-time systems.
+Non-PREEMPT_RT kernels will continue to have such BPF programs be
+non-preemptible.
 
-alloc_workqueue() treats all queues as per-CPU by default, while unbound
-workqueues must opt-in via WQ_UNBOUND.
+The patches are as follows:
 
-This default is suboptimal: most workloads benefit from unbound queues,
-allowing the scheduler to place worker threads where they’re needed and
-reducing noise when CPUs are isolated.
+1.	Move rcu_is_watching() checks to srcu_read_{,un}lock_fast().
 
-This default is suboptimal: most workloads benefit from unbound queues,
-allowing the scheduler to place worker threads where they’re needed and
-reducing noise when CPUs are isolated.
+2.	Add srcu_read_lock_fast_notrace() and
+	srcu_read_unlock_fast_notrace().
 
-This patch adds a new WQ_PERCPU flag to explicitly request the use of
-the per-CPU behavior. Both flags coexist for one release cycle to allow
-callers to transition their calls.
+3.	Add guards for notrace variants of SRCU-fast readers.
 
-Once migration is complete, WQ_UNBOUND can be removed and unbound will
-become the implicit default.
+4.	Document __srcu_read_{,un}lock_fast() implicit RCU readers.
 
-With the introduction of the WQ_PERCPU flag (equivalent to !WQ_UNBOUND),
-any alloc_workqueue() caller that doesn’t explicitly specify WQ_UNBOUND
-must now use WQ_PERCPU.
+5.	Document srcu_flip() memory-barrier D relation to SRCU-fast.
 
-All existing users have been updated accordingly.
+6.	Remove preempt_disable/enable() in srcu_gp_start_if_needed(),
+	courtesy of Zqiang.
 
-Suggested-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes since v6:
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1291e0761d70ab..c51c4a0af6aa5e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4890,10 +4890,10 @@ void __init rcu_init(void)
- 	rcutree_online_cpu(cpu);
- 
- 	/* Create workqueue for Tree SRCU and for expedited GPs. */
--	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
-+	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM | WQ_PERCPU, 0);
- 	WARN_ON(!rcu_gp_wq);
- 
--	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM, 0);
-+	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM | WQ_PERCPU, 0);
- 	WARN_ON(!sync_wq);
- 
- 	/* Respect if explicitly disabled via a boot parameter. */
--- 
-2.40.1
+o	Deferred the application of SRCU-fast to __DECLARE_TRACE()
+	due to bugs located by the good services of kernel test robot.
+	Although the current version is looking good, it needs more
+	test time.
 
+o	Added patch 6.
+
+Changes since v5:
+
+o	Forward-port to v6.17-rc1.
+
+Changes since v4:
+
+o	Remove the redundant "notrace" tags per Boqun Feng feedback.
+
+o	Disable preemption for perf and ftrace per Steven Rostedt
+	feedback, which addresses the kernel test robot reports
+	provoked by earlier versions.
+
+	https://lore.kernel.org/all/45397494-544e-41c0-bf48-c66d213fce05@paulmck-laptop/
+
+Changes since v3:
+
+o	Add "notrace" per Joel, Steven, and Matthew feedback.
+
+o	Upgrade explanatory comments and add new ones per Joel feedback.
+
+	https://lore.kernel.org/all/20250721162433.10454-1-paulmck@kernel.org/
+
+Changes since v2:
+
+o	Posting standalone as opposed to a reply.
+
+	https://lore.kernel.org/all/3cecf6c9-b2ee-4f34-9d1b-ca4cfb8e56a7@paulmck-laptop/
+
+Changes since RFC version:
+
+o	RFC patch 6/4 has been pulled into the shared RCU tree:
+	e88c632a8698 ("srcu: Add guards for SRCU-fast readers")
+
+o	RFC patch 5/4 (which removed the now-unnecessary special boot-time
+	avoidance of SRCU) has been folded into patch 4/4 shown above,
+	as suggested by Steven Rostedt.
+
+	https://lore.kernel.org/all/bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop/
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/srcu.h     |    4 +++
+ b/include/linux/srcutree.h |    2 -
+ b/kernel/rcu/srcutiny.c    |    4 ---
+ b/kernel/rcu/srcutree.c    |   10 +++++++++
+ include/linux/srcu.h       |   30 ++++++++++++++++++++++++++++
+ include/linux/srcutree.h   |   47 ++++++++++++++++++++++++++++-----------------
+ 6 files changed, 75 insertions(+), 22 deletions(-)
