@@ -1,44 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F722FBE1E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015B52FB0BE;
 	Thu, 18 Sep 2025 10:14:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758190472; cv=none; b=JMMZRpi45+cnn2k2NzFrngnu7YNXF+13PlwiGjOpQ2EARk57e5lwHvOBGReG8ZQqPgrC/T2YlLlrV+fgvhf5whyZtYndE2KaeuSPn5xGCkKb7CFrcDaSJXxCmyuWraYkrll133JB5aoIepONtKu8B0bUrE9xAy0pj35jsZGBLQQ=
+	t=1758190473; cv=none; b=BTNaun2xxIJTFokpHd3x7qcxXeFKbn7ce5zTcEXfI9VNbF3oXsAIRbgBJqalHBjAAqh9LSzjJBUUHhPkPL9ERnTprYN6o8fy7ez6jkrlkXaDnK4aIjY0UKGztdNY/StCPBccxmxcyn8+Z3XQgpIvBEbSmOFuhw/JuSrl9a1CN6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758190472; c=relaxed/simple;
-	bh=JLNkugHHmXHvirqch5GRg/by6Ae59kNppZL93qAl5PI=;
+	s=arc-20240116; t=1758190473; c=relaxed/simple;
+	bh=4cPXhN+QWntHKUlZlbENageTOLIy+prm5bNBCxP4Zmo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EMWg6jMu8dkSnnogzlESPMXMMCn4LBpDbTs0Ivmejlo9bVUMpNDXQdOrHuDTWLq0zrUOwO/a/0ONaSIGBMDFm3tNfN2U4KkvRmU/iiIIv6y69mGdB1fnmHslnLMJqYTjqI5c00LND7zZ0LnsNG+rJH+WIqHRZLpAk/eAAtZZvGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uLdfKOH9; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=n62JSxWwkO2QyGF1bQzkugDQ7iETYDVj14R6Fl1zHzvIcYe/a/nxEi0Jo8xbVNplj8iCtvKT2bUEucfXtJJD9TTYdG8P+/UWHTpH0tXw/sq3EDfDAR5S0o6rM77hYT0T/HOY5WI4pjggO7sKG/eaTHVKhnK+nJpOn3snr7JcfPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ebNkBCJb; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uLdfKOH9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F055C4CEF7;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ebNkBCJb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDF06C4CEF0;
 	Thu, 18 Sep 2025 10:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1758190472;
-	bh=JLNkugHHmXHvirqch5GRg/by6Ae59kNppZL93qAl5PI=;
+	bh=4cPXhN+QWntHKUlZlbENageTOLIy+prm5bNBCxP4Zmo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uLdfKOH9rjQXRBP0g0dMJlJC+1haNJckWDn239hjFGi+S6S+XJDUNy6vpfx92OgxM
-	 j6YyJa6RLl3e6Xg4Y1KFuzmthIXvE3JcM+tbYz5UbxS+3sE9/wuUHyLMSlBk3MuLgZ
-	 xxkaQI2xPoplswkFCVq8MK7Qahf/6kULm/6KDBaVxsGbo/q375SqEGp2B4tid6McuS
-	 5n/Ly589cku5G0D6khDefVlfa/oK4LCRWHIZEQTlfqnYfCKyZx+15bW7XUAxSDpo3r
-	 t5cfAd/3aeAupagu7tOFzQxkUsCKxyX+h/90xmoZIFHZsIR4HUS9ghk7qo+EVvhPck
-	 bvS3SWN0hmMFw==
+	b=ebNkBCJbWzTviQv6xncPH4R5uQcf/9aJaR4QNACgp6R/NGTo6aWax2A7ZSrcYi7mM
+	 paG2GLltTQti/1QhQLwhqvGSoDvbvaAT0V/nrxNHDtD3xFlgKSkhjgCEOn9eAGWUjD
+	 E4ye5wNJ9iLlyCxy5gqVwYC7cAKbpB0RqyMmNnai6+ZZbJfkxnPK8DEfYBn7QuQ7Sh
+	 ns9DtlyCGmfWsWoHR0++rQrrFIQ0shnJtq6LotQkO/ZyYurfFpdC8GEft4x43hTk10
+	 TFwlTnV0U5v8TRdtqjRffPhejGzr4YwV/K4lhSxVUZ7LC931dojMpfjr8+YzgbPSrA
+	 G5XghrJQXKzjw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C32EFCE0F82; Thu, 18 Sep 2025 03:14:31 -0700 (PDT)
+	id C815BCE10DB; Thu, 18 Sep 2025 03:14:31 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	Bagas Sanjaya <bagasdotme@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2 4/8] Documentation: RCU: Wrap kvm-remote.sh rerun snippet in literal code block
-Date: Thu, 18 Sep 2025 03:14:26 -0700
-Message-Id: <20250918101430.2592294-4-paulmck@kernel.org>
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 6/8] Documentation: RCU: Retitle toctree index
+Date: Thu, 18 Sep 2025 03:14:28 -0700
+Message-Id: <20250918101430.2592294-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <921eb978-5f39-4480-bcf6-c735f859c694@paulmck-laptop>
 References: <921eb978-5f39-4480-bcf6-c735f859c694@paulmck-laptop>
@@ -52,33 +51,34 @@ Content-Transfer-Encoding: 8bit
 
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 
-Unlike other kvm*.sh snippets in RCU torture test documentation,
-kvm-remote.sh rerun snippet isn't formatted as literal code block,
-causing it to be definition list instead in htmldocs output.
+toctree index title ("RCU concepts") is rather a misnomer: RCU concepts
+is already described in rcu.rst, whereas the toctree suggests that
+the docs themes about handbook on RCU subsystem instead.
 
-Wrap it like the rest.
+Edit the title to reflect the fact.
 
-Fixes: 0c208a793022 ("doc: Update torture.rst")
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 ---
- Documentation/RCU/torture.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/RCU/index.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/RCU/torture.rst b/Documentation/RCU/torture.rst
-index 4b1f99c4181fee..cc57d01ed700ff 100644
---- a/Documentation/RCU/torture.rst
-+++ b/Documentation/RCU/torture.rst
-@@ -364,7 +364,7 @@ systems must come first.
- The kvm.sh ``--dryrun scenarios`` argument is useful for working out
- how many scenarios may be run in one batch across a group of systems.
+diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
+index e1be5b3c2c6773..ef26c78507d369 100644
+--- a/Documentation/RCU/index.rst
++++ b/Documentation/RCU/index.rst
+@@ -1,9 +1,9 @@
+ .. SPDX-License-Identifier: GPL-2.0
  
--You can also re-run a previous remote run in a manner similar to kvm.sh:
-+You can also re-run a previous remote run in a manner similar to kvm.sh::
+-.. _rcu_concepts:
++.. _rcu_handbook:
  
- 	kvm-remote.sh "system0 system1 system2 system3 system4 system5" \
- 		tools/testing/selftests/rcutorture/res/2022.11.03-11.26.28-remote \
+ ============
+-RCU concepts
++RCU Handbook
+ ============
+ 
+ .. toctree::
 -- 
 2.40.1
 
