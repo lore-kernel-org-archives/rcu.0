@@ -1,46 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BEE2882CE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF46299A81;
 	Thu, 18 Sep 2025 10:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758191207; cv=none; b=WEvUMNfjmRJU52//fXsBrKMRq+PRSSA9pVwKsQ5kBhAZX6yBKIvZTdx/LfXDYNrXIcH/mw9PC0jQHERUeLzOGu1BkbKG0IUnYOozk9vJP6WsA0Ye4U4YIkJir3RXvpDNAvBFEYIEpfrA7V6Nu3fFHkqGJjWrHILo0uKPuRta9ys=
+	t=1758191208; cv=none; b=mhqx0Wo92vqp28MMVeqwFmX9Ksk+b36oSLfu5VzseFIXQqNPxJE3fGsL1CoTNpu/0GVBPQcnnVVDj6vNAZqAciTG9WTivhyR3ST261Dwju0DLbnbJAqMEeM0ci+MS06OLWXXt0F8a8yz6I1iF4neWuJHKcdj+vXhAkGuoQjJPAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758191207; c=relaxed/simple;
-	bh=pvHoXIq/XZZkE26WZ9PeQrCmEPRe5uY95ng191EMoZw=;
+	s=arc-20240116; t=1758191208; c=relaxed/simple;
+	bh=bUr/c79awvu8OWGK8+lJnU//Ku79FE8Xqz9RETWtyqk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ixZ+B6FVSmVZ8Eb2tVqjBOnhtDvGjG0Zu+iZhGSPtNbbAV1iJlRiwNsR5cxQOptLFTeEVVDMiIXi6G3+rexpzU2wdc07CeZ0MKits4xEQlEFwqx7QMm9ZI1mdLB9yT5hQruwr0DNmdG5Ns/8hgPCbjzCz5h48DAUiX4WlvGQmpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jrccNUEn; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=NzWs6STjft1s9W837mlvxbxTd+bqEeh6CuIiFS/pnH7qR6aqZkPIZyG9ddhGAB7b+XjGgTlfZd6/wys94utGYFmCAcpb5hi567XxwGWeUnR1+c6Tm5SG+Gup2KU+qnFj+f4VUH4meAGmOSC7MtSl3IG9sRkUbtp+TqT7FWZbiDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o3u2Gg5t; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jrccNUEn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67114C4CEE7;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o3u2Gg5t"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AA0AC4CEFE;
 	Thu, 18 Sep 2025 10:26:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1758191207;
-	bh=pvHoXIq/XZZkE26WZ9PeQrCmEPRe5uY95ng191EMoZw=;
+	bh=bUr/c79awvu8OWGK8+lJnU//Ku79FE8Xqz9RETWtyqk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jrccNUEnjRHl9F8GDoKa1N7ClgGg/k52t4ZIFLCJsgVvQodJ7XqcwB1tCju/s6bBP
-	 syJQj+LS13u3dJXauOPTERhSy3GtobNeAzPHwOPhrkwiaWcxW/O32zSgyRz8vqK33s
-	 XGID4k2J13SxEaLCZl11tNOmhoHFOvz9jeeb046Uobepzy7K6JPaPc6UlTk+uixdd2
-	 Rb5jHDozj3OhMMr1LH4G+PPEkQhT92vb1tlUr3C9un8FgwCkFNMHNqIfbek3aoWSoG
-	 QdSYCJY/FQxfsCxQZTubHz4tPTIfChWF8bMXPfOtBo4tqxiVF2wgKDoQL9gBI1Aw6L
-	 5mjxG66EZn0mQ==
+	b=o3u2Gg5thkUtaN/NWfHNKAS3ogUHOVnaqYP5Dvo0z71KexcdHXAUFxOWauAF0z4V6
+	 cRdy/Y1sDwcGugIX3dO6q1thgjiQSQDV3HZ5J8gIM2IZ+TMqrW7z/FJkR2wr8o0XfO
+	 3+ko/bI6kwWiP+ggqp5UCJc4HD3yo+PdfZtb+Jw+Gw/MQ4yQJXXr6fXt9HxDMu3Hy/
+	 0Dc1d4gbvfQi4yCpUXo8PUb7cexVHOaA2nzvkO+AR1agmlSXs5ZIFFrtx+Q85CIrUy
+	 jwvEg6x3gpfqc5glLN/1JwtAHt5hHpAgvGmsfOceK6pTND+Np4vAG7F1hT+78GZdEI
+	 BLByvkTUTZzhw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E31D0CE0B32; Thu, 18 Sep 2025 03:26:46 -0700 (PDT)
+	id EED18CE10B6; Thu, 18 Sep 2025 03:26:46 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	bpf@vger.kernel.org
-Subject: [PATCH v2 1/6] srcu: Move rcu_is_watching() checks to srcu_read_{,un}lock_fast()
-Date: Thu, 18 Sep 2025 03:26:41 -0700
-Message-Id: <20250918102646.2592821-1-paulmck@kernel.org>
+Subject: [PATCH v2 5/6] srcu: Document srcu_flip() memory-barrier D relation to SRCU-fast
+Date: Thu, 18 Sep 2025 03:26:45 -0700
+Message-Id: <20250918102646.2592821-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <89b6f92e-2aa6-4869-ad4f-47bb3fbadfbb@paulmck-laptop>
 References: <89b6f92e-2aa6-4869-ad4f-47bb3fbadfbb@paulmck-laptop>
@@ -52,80 +51,43 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The rcu_is_watching() warnings are currently in the SRCU-tree
-implementations of __srcu_read_lock_fast() and __srcu_read_unlock_fast().
-However, this makes it difficult to create _notrace variants of
-srcu_read_lock_fast() and srcu_read_unlock_fast().  This commit therefore
-moves these checks to srcu_read_lock_fast(), srcu_read_unlock_fast(),
-srcu_down_read_fast(), and srcu_up_read_fast().
+The smp_mb() memory barrier at the end of srcu_flip() has a comment,
+but that comment does not make it clear that this memory barrier is an
+optimization, as opposed to being needed for correctness.  This commit
+therefore adds this information and points out that it is omitted
+for SRCU-fast, where a much heavier weight synchronize_srcu() would
+be required.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/srcu.h     | 4 ++++
- include/linux/srcutree.h | 2 --
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ kernel/rcu/srcutree.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index f179700fecafb8..478c73d067f7d3 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -275,6 +275,7 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
- {
- 	struct srcu_ctr __percpu *retval;
- 
-+	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_fast().");
- 	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
- 	retval = __srcu_read_lock_fast(ssp);
- 	rcu_try_lock_acquire(&ssp->dep_map);
-@@ -295,6 +296,7 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
- static inline struct srcu_ctr __percpu *srcu_down_read_fast(struct srcu_struct *ssp) __acquires(ssp)
- {
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
-+	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_down_read_fast().");
- 	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
- 	return __srcu_read_lock_fast(ssp);
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index c5e8ebc493d5ee..1ff94b76d91f15 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1168,6 +1168,16 @@ static void srcu_flip(struct srcu_struct *ssp)
+ 	 * counter update.  Note that both this memory barrier and the
+ 	 * one in srcu_readers_active_idx_check() provide the guarantee
+ 	 * for __srcu_read_lock().
++	 *
++	 * Note that this is a performance optimization, in which we spend
++	 * an otherwise unnecessary smp_mb() in order to reduce the number
++	 * of full per-CPU-variable scans in srcu_readers_lock_idx() and
++	 * srcu_readers_unlock_idx().  But this performance optimization
++	 * is not so optimal for SRCU-fast, where we would be spending
++	 * not smp_mb(), but rather synchronize_rcu().  At the same time,
++	 * the overhead of the smp_mb() is in the noise, so there is no
++	 * point in omitting it in the SRCU-fast case.  So the same code
++	 * is executed either way.
+ 	 */
+ 	smp_mb(); /* D */  /* Pairs with C. */
  }
-@@ -389,6 +391,7 @@ static inline void srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ct
- 	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
- 	srcu_lock_release(&ssp->dep_map);
- 	__srcu_read_unlock_fast(ssp, scp);
-+	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_fast().");
- }
- 
- /**
-@@ -405,6 +408,7 @@ static inline void srcu_up_read_fast(struct srcu_struct *ssp, struct srcu_ctr __
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
- 	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
- 	__srcu_read_unlock_fast(ssp, scp);
-+	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_up_read_fast().");
- }
- 
- /**
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index bf44d8d1e69eab..043b5a67ef71eb 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -244,7 +244,6 @@ static inline struct srcu_ctr __percpu *__srcu_read_lock_fast(struct srcu_struct
- {
- 	struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
- 
--	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_fast().");
- 	if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
- 		this_cpu_inc(scp->srcu_locks.counter); /* Y */
- 	else
-@@ -275,7 +274,6 @@ static inline void __srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_
- 		this_cpu_inc(scp->srcu_unlocks.counter);  /* Z */
- 	else
- 		atomic_long_inc(raw_cpu_ptr(&scp->srcu_unlocks));  /* Z */
--	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_fast().");
- }
- 
- void __srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
 -- 
 2.40.1
 
