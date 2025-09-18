@@ -1,180 +1,120 @@
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80ACE29E0E6
-	for <rcu@vger.kernel.org>; Wed, 17 Sep 2025 23:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90ED1DDE9
+	for <rcu@vger.kernel.org>; Thu, 18 Sep 2025 01:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758153598; cv=none; b=otJDt2rRMRxusQq2Zw3MUSQcoe4gm8qka/zSI7ttFrL+hApJu+0XyCjiH3yn1sOedGbV+d60sJF8U+nNPlZya2jcFupGba033CiqYkopFS635GBQXcGg48NnESihdZOSb8s52OmPEtjQqpjZOD08mU0qkUBIxw1x/DhiZQcWKGs=
+	t=1758157747; cv=none; b=VuAQVGwewYuOxBF/rm3ZHiS/9Kiyy0yOEQNY9PeXliHCPRcpLFvp7l4b1V0SKOsH2WwOBqqq0UsyCVllZLqj6P+A8UFrU+bSRr+0rx6d2t+PFPT8lhsxsj2c5u6HTFlFr1+pAcvTZhOHBJUHVATyJ/5VibbNBrLxebOULGi152s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758153598; c=relaxed/simple;
-	bh=UbRTRpfsOGgfpZIioAFpAKOsaB1KVt6XbNZbqziAcT8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T8eMW0M9S8NiF2KdyDv5seNDHLB3msYCtWA2aLmhGJ+I4E4r9zWN9B9K+QVydKIEV7DlIJXsPMDaPBsctILz0unaGB3uzQQoPlr87kuFGHrrsofm5Ja3Qn6OECkMFc94GWW76oJk5kH3lffQ3YJC02FpDNHo0BUx1KI4DpVwsW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2JyInma7; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1758157747; c=relaxed/simple;
+	bh=9P3nK7KV8J73AZhnweqFBC1fyBtgUxeHctZkxwZz33s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WhJORJd6gDnJWURE1l1Qt+NptsiMHsGZfE2d823TAaNEu115EBN1/q4Oh/DfRbfOYgN7ZyfFBrInJIF+qmjhdvV5F7l4LauzBQZxza+4y1Wdrrh5wtwNlwoZ29GDe+CDK/jrJRU1mq3at9KgcoyW1bVmsZmTW38rmJ4J34OdcWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TQLsCafi; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2JyInma7"
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-62efe182eb8so6447a12.0
-        for <rcu@vger.kernel.org>; Wed, 17 Sep 2025 16:59:56 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TQLsCafi"
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-32e372c413aso452032a91.0
+        for <rcu@vger.kernel.org>; Wed, 17 Sep 2025 18:09:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758153595; x=1758758395; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+k4UBANduixrTliP8GJRSvLIs5e04GQ1F54MlhsKt70=;
-        b=2JyInma7xf/gZzccMy4Qo3o+iMG9nhvU3BW/6g1q5+awfgdHy74BqmjRlLAMc+JtWz
-         978hIlzhwgAJyDvE2Ej7gC7rg9TaPx3JzhLVG9+dO+QedtVNzojkjexoee5oeouTXM2e
-         4qGG7LB9a37RWo3Mji7/nyndiJNWV53UyuhuwXZTAVJ7Kl03d6Uma2hqQHPOq7BTGh/g
-         8BRKEPvEqnQeR6sIDfAwjr9Wd0EYz2r0lBOuTDEk54MFz5NGRa6VM3OB5jESGHFab5XE
-         1UwfAO0romsZaA/sPC0kZrTM/d7duGpmNxfBZIkzC1rPefRmNB0ot4R0PAkDHKhIEep7
-         Bkkw==
+        d=gmail.com; s=20230601; t=1758157745; x=1758762545; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HHJ7zjhTR9v7nxYizl0r/XT118ERd6F82Pwgt1ZYl/s=;
+        b=TQLsCafiYHrSlAVVZm6Zj8Cch6nM2+Xm//vK9suMSe8fIfNaz/QhNxDE3LTr9+NUZq
+         OTo3ipo4/OXycfuIicpCtR/5f30jhAoZDVmN/p+X3+3PvF8gTx+UAsemrORcX0t50vAn
+         uB1FbkkyZ4BGHazouE+RHYc0bxSdXM4vgi/Zde64gLq4cSw8meTL+3TXY2LuPRtE4KXn
+         F3MRSkXAIj2lk12uuyoPwj9UgOebSaT1PNQZTJ6R7Jv+7oQbYotZS0XetOUJ+aqLrlJy
+         OcXKh77PM+NKOHr6N5n4d8E1Ivo3AV3W+ga8Hh74dc5qOjjokfLgyz4xfwErFj7le+zb
+         MupA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758153595; x=1758758395;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+k4UBANduixrTliP8GJRSvLIs5e04GQ1F54MlhsKt70=;
-        b=xSWVUMn86nJqP6ew8bMc7zro8Okh/lIV9teezwOy8yg7f5g5B9rBnYKHOJiKihBit+
-         uhmMDrwlWaSaELpc5u1FbdpNVnyuSzI4osuX4VQP7/n01EnX/yowYGxtpqePC1drYHWA
-         7h51O2GznWDQ1k8w965599+RIi1E3+ggUfuY0PcKbZKpzBuw3chePk3RDPQ0vZWofxcs
-         BGlgi42vJ0ItYMnkTWJNYDUNsLSXJE/bvAf2gnrUdvga5oLHRGguQV5gET0DnnOa5QBB
-         XuIFR6LQrc769jpPsTLPbIaizsJgrcLaBQZHioOnwmbmxbMzuUG72J3th/4P7f9jugDz
-         obXw==
-X-Forwarded-Encrypted: i=1; AJvYcCW8Mkp8buLROnxoYl1nEINs44i2AQsk1s4G9/pdVWPby1LctmZowGeNErej1Drde/a28Ac=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFJa6g7xX6R98SD68w+DcZZspClkk8KRjZb+ZNVEstjHNIE7pA
-	5BWuepomzBkpxm21vzevpaZlPdH8oUNzQXQM+/cD97w5Q9YZ3eK9Cy7Z0NEHOYt0TaaKjOiTxK9
-	HAqIG4qmxoIFUyKEArtF/55Zx8mPY3S9PwrG/Da5X
-X-Gm-Gg: ASbGncs3Ei9iADaBQv/C8VUQzBU8rgBxp5/CZGI5uurHST0uaqXaRnYbraQad3kOBVS
-	pN/One+4qazzWcmC6a8xF/q14Ow3iOy+k0/OqnBnpzP1yMHiuqn9bqBGpR2bLWGOt+pRNCGfJAt
-	qSISmlgbtrAofzxZ0c5CeE5Ifv1VuLXRatC0Qdvoqm5FJuhE5nPy0GaoXKSNjTPi72vaeK4EQim
-	rw7X9b2EYq01+JKc//o8D4BRipqflU=
-X-Google-Smtp-Source: AGHT+IGwvBQ/ma4OjhAb3mJBBGrTHlUUNFKF6gBGTFjvv6da4khKOL5MOMEB4k37fIEHnqabA3kXBI6Biko6ndlOJCc=
-X-Received: by 2002:a50:c05c:0:b0:61c:c08d:359d with SMTP id
- 4fb4d7f45d1cf-62f7e134801mr85622a12.4.1758153594515; Wed, 17 Sep 2025
- 16:59:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758157745; x=1758762545;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HHJ7zjhTR9v7nxYizl0r/XT118ERd6F82Pwgt1ZYl/s=;
+        b=jtVfCLr4veJdiBy/yd4zB/f1Y89R7A8XevuEAUewpsP1mBZikwde/t3bLs1D9quEiI
+         RKj5R4vhYWDkA7thOvmhwHofSXeEp6sqdNXBvNgIyWa5ez2bpAQALGg0gVhbdKmlhxR/
+         rjG59He52d2sGdWZljsUQy/N0n3mqKBdiW3WJyAWfKnYylQBsxFYT5Nptx12voH8SKz/
+         UC3QFmq0MDvbJrsQvk6gyus2iMiURsQE4jTSVnrhx1QQeHIWmJ1sFOdPfbv7/PYQiMuU
+         wDm0OG7kzSpVjZ4mGuzhNOs1GlgKPG4izAjFfJrYT3IniHcJrp1rfEjPvmkt8TsKmdcF
+         R7Mw==
+X-Forwarded-Encrypted: i=1; AJvYcCWAYlwAljYRXQ8zxoCANXmnEuSvPnlBWmBGWsd+SuDkryGrVWV59OJj20QR8VSZomtsAC8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWK8K1L9dRfUWkWe1N6AkWR1n9+2kVGQEy/L3D41h0/WVqkecC
+	CDNHjPTnzK8GiQmKE0w9iu34lN/PzovS1gPBjqDwSxw53GpMpsU5N/w2
+X-Gm-Gg: ASbGncsg76thq6mss1kCG8/lptrmXD59cIoYxThdC2KINl9qQ9kHXD368g3/ZcudcKp
+	gtFmbIS7Mdc/icmrQ3eTXGBOZUg9wMeErTPjANqDfum5Dj4MVDedSaHoFYSSJG6gPmQN1l9d7as
+	ZhnnKc6yq7Icd9b9lSZPuV3Nkj/0lIr2r5EeXXF3Yex5baeR3M2WvU6TeNvERVihowLMOp4FBvk
+	zwm+C61e3OqgCOzaMyjrqVxeMFkYL4JvoVQKvZmUAQEqYtOV2yqwWUshtQt97IRcUS27Dm8Mb3Y
+	Ne168xWJSpNuxWPFeEw3qpMx51QzNo/SXOt09II48OeMe+nq0T8WOis1Mzuc/xS1tx5crc+H5CC
+	S2XbS6FAAGAo7Ahnm9sV+ZXsxMVEspHtLOy0/NGpiD9ucWMezSl1nlTJOWoZH3WefrMiu2kmfC9
+	kTUFQW8EFhsoVj8byQBdYX
+X-Google-Smtp-Source: AGHT+IHuTybFeutlNUcFFDtekJviKXLRz++GzvphkgU6pKLG0Unl/lf+rV9kfu1ChnsFkO4xf4Ybow==
+X-Received: by 2002:a17:90b:51ca:b0:32e:345c:54fe with SMTP id 98e67ed59e1d1-32ee3f759aamr4709290a91.20.1758157745183;
+        Wed, 17 Sep 2025 18:09:05 -0700 (PDT)
+Received: from localhost.localdomain (140-211-169-189-openstack.osuosl.org. [140.211.169.189])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32ed257bb5asm3550089a91.0.2025.09.17.18.09.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Sep 2025 18:09:04 -0700 (PDT)
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+To: w@1wt.eu,
+	linux@weissschuh.net,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lance@osuosl.org
+Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH] tools/nolibc: make time_t robust if __kernel_old_time_t is missing in host headers
+Date: Thu, 18 Sep 2025 01:08:33 +0000
+Message-Id: <20250918010833.2760723-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250723-slub-percpu-caches-v5-0-b792cd830f5d@suse.cz>
- <20250913000935.1021068-1-sudarsanm@google.com> <qs3967pq-4nq7-67pq-2025-r7259o0s52p4@vanv.qr>
- <f5792407-d2b9-42b3-bc85-ed14eac945ec@paulmck-laptop> <d1ef1cbb-c18d-4da6-b56b-342e86dca525@suse.cz>
- <CAJuCfpEQ=RUgcAvRzE5jRrhhFpkm8E2PpBK9e9GhK26ZaJQt=Q@mail.gmail.com>
- <aMpE-oSjtlDU4TSl@pc636> <CAJuCfpHQ_JedSRHKKoYXyVzaFOm=dDWzgFZwqerfEC1fn35j0w@mail.gmail.com>
-In-Reply-To: <CAJuCfpHQ_JedSRHKKoYXyVzaFOm=dDWzgFZwqerfEC1fn35j0w@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 17 Sep 2025 16:59:41 -0700
-X-Gm-Features: AS18NWBx5aUJDxzgSbTWFT8kC_EPDfnr02N4rctMkVtLm9XJWaAMV1S3L1bSwvY
-Message-ID: <CAJuCfpE48n=QM0nY8yE3drqZU0wgC76=70EyftL1WZewEcykyA@mail.gmail.com>
-Subject: Re: Benchmarking [PATCH v5 00/14] SLUB percpu sheaves
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, paulmck@kernel.org, Jan Engelhardt <ej@inai.de>, 
-	Sudarsan Mahendran <sudarsanm@google.com>, Liam.Howlett@oracle.com, cl@gentwo.org, 
-	harry.yoo@oracle.com, howlett@gmail.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, maple-tree@lists.infradead.org, rcu@vger.kernel.org, 
-	rientjes@google.com, roman.gushchin@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 17, 2025 at 9:14=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Tue, Sep 16, 2025 at 10:19=E2=80=AFPM Uladzislau Rezki <urezki@gmail.c=
-om> wrote:
-> >
-> > On Tue, Sep 16, 2025 at 10:09:18AM -0700, Suren Baghdasaryan wrote:
-> > > On Mon, Sep 15, 2025 at 8:22=E2=80=AFAM Vlastimil Babka <vbabka@suse.=
-cz> wrote:
-> > > >
-> > > > On 9/15/25 14:13, Paul E. McKenney wrote:
-> > > > > On Mon, Sep 15, 2025 at 09:51:25AM +0200, Jan Engelhardt wrote:
-> > > > >>
-> > > > >> On Saturday 2025-09-13 02:09, Sudarsan Mahendran wrote:
-> > > > >> >
-> > > > >> >Summary of the results:
-> > > >
-> > > > In any case, thanks a lot for the results!
-> > > >
-> > > > >> >- Significant change (meaning >10% difference
-> > > > >> >  between base and experiment) on will-it-scale
-> > > > >> >  tests in AMD.
-> > > > >> >
-> > > > >> >Summary of AMD will-it-scale test changes:
-> > > > >> >
-> > > > >> >Number of runs : 15
-> > > > >> >Direction      : + is good
-> > > > >>
-> > > > >> If STDDEV grows more than mean, there is more jitter,
-> > > > >> which is not "good".
-> > > > >
-> > > > > This is true.  On the other hand, the mean grew way more in absol=
-ute
-> > > > > terms than did STDDEV.  So might this be a reasonable tradeoff?
-> > > >
-> > > > Also I'd point out that MIN of TEST is better than MAX of BASE, whi=
-ch means
-> > > > there's always an improvement for this config. So jitter here means=
- it's
-> > > > changing between better and more better :) and not between worse an=
-d (more)
-> > > > better.
-> > > >
-> > > > The annoying part of course is that for other configs it's consiste=
-ntly the
-> > > > opposite.
-> > >
-> > > Hi Vlastimil,
-> > > I ran my mmap stress test that runs 20000 cycles of mmapping 50 VMAs,
-> > > faulting them in then unmapping and timing only mmap and munmap calls=
-.
-> > > This is not a realistic scenario but works well for A/B comparison.
-> > >
-> > > The numbers are below with sheaves showing a clear improvement:
-> > >
-> > > Baseline
-> > >             avg             stdev
-> > > mmap        2.621073        0.2525161631
-> > > munmap      2.292965        0.008831973052
-> > > total       4.914038        0.2572620923
-> > >
-> > > Sheaves
-> > >             avg            stdev           avg_diff        stdev_diff
-> > > mmap        1.561220667    0.07748897037   -40.44%        -69.31%
-> > > munmap      2.042071       0.03603083448   -10.94%        307.96%
-> > > total       3.603291667    0.113209047     -26.67%        -55.99%
-> > >
-> > Could you run your test with dropping below patch?
->
-> Sure, will try later today and report.
+Commit 
+d5094bcb5bfd ("tools/nolibc: define time_t in terms of __kernel_old_time_t")
+made nolibc use the kernel's time type so that `time_t` matches
+`timespec::tv_sec` on all ABIs (notably x32).    
 
-Sheaves with [04/23] patch reverted:
+Some distributions (e.g. Ubuntu 20.04 on ppc64le with older
+exported headers under /usr/include) do not expose
+`__kernel_old_time_t`, causing nolibc builds that rely on host
+headers to fail (I discovered this when doing RCU torture test in
+PPC VM of Open Source Lab of Oregon State University).
+        
+Keep the new behavior, but add a small compatibility shim:
+if `__kernel_old_time_t` is not available, fall back to
+ `signed long`
 
-            avg             avg_diff
-mmap     2.143948        -18.20%
-munmap     2.343707        2.21%
-total     4.487655        -8.68%
+This preserves the intent of d5094bcb5bfd while letting nolibc
+build on systems with older exported headers.
 
+Fixes: d5094bcb5bfd ("tools/nolibc: define time_t in terms of __kernel_old_time_t")
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>    
+---
+ tools/include/nolibc/std.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
->
-> >
-> > [PATCH v8 04/23] slab: add sheaf support for batching kfree_rcu() opera=
-tions
-> >
-> > mmap()/munmap(), i assume it is a duration time in average, is the time
-> > in microseconds?
->
-> Yeah, it ends up being in microseconds. The actual reported time is
-> the total time in seconds that all mmap/munmap in the test consumed.
-> With 20000 cycles of 50 mmap/munmap calls we end up with 1000000
-> syscalls, so the number can be considered as duration in microseconds
-> for a single call.
->
-> >
-> > Thank you.
-> >
-> > --
-> > Uladzislau Rezki
+diff --git a/tools/include/nolibc/std.h b/tools/include/nolibc/std.h
+index ba950f0e7338..ea225a0b16e9 100644
+--- a/tools/include/nolibc/std.h
++++ b/tools/include/nolibc/std.h
+@@ -29,6 +29,10 @@ typedef unsigned long       nlink_t;
+ typedef   signed long         off_t;
+ typedef   signed long     blksize_t;
+ typedef   signed long      blkcnt_t;
++#ifndef __kernel_old_time_t
++typedef   signed long        time_t;
++#else
+ typedef __kernel_old_time_t  time_t;
++#endif
+ 
+ #endif /* _NOLIBC_STD_H */
+-- 
+2.25.1
+
