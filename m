@@ -1,91 +1,73 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12EF226D04;
-	Thu, 18 Sep 2025 10:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7022287242;
+	Thu, 18 Sep 2025 10:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758191380; cv=none; b=ZUHmVZ+yVXxILixjTLVeVC9UJaz07iYdpPFATAIY1lqJOYFUsn1/AV8ZhbYuTUWRRXaDf+iurbnEHcAxukjlBIQjTho5iQCatnZAs7VIQFMgYFAdkxsEhKIKfn37b4RDlnZR63XzwdaSSN2ng+adUhsh75/lKszlqvZnCYmTbi0=
+	t=1758191394; cv=none; b=u41atmO6ztHMG8x6SPytJN/Tn1+yCgfhkhV/AIXpvpvUVP9gaRhYt26BfMli8IGLxH8txrMbKmrBFX2U0PY1d8syUuyvxKdNFRzywtHE46y1HMLiEQP6ctajnFg3lrU5C9K7+TovbosKc2VJkvSxVi4tBZvLQjFcjJmrSezv6Co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758191380; c=relaxed/simple;
-	bh=AlkVX+a/HTI+sqM2IbRhIUn6Vy6tXX7E7Jxr8FIOEqA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=q+IC/DmddtXW4e8OiNeN+5d5+swbHUa92QQB8o1NCNNl0VFUQWl5lfEHN8EDxQN8mtXGmxjmuG+LsGoHJvPUCSUbULqvSqICqHMCuZVRYS8/WEm761y8/OmLoagy5t2Lf5AvLYjBLkT8oyhU69Bmakk5B4F0xuH0l3gG0HQ55fY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J94LKr8u; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1758191394; c=relaxed/simple;
+	bh=Cz/f8Ty/4zEpoYFihblKVOHBZS+Lk96uBujFwo+m+CE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ADl3c0lIwl2dwI6FtRl2LCMGEe2bozkEkJlbjbFQU5Fu1PCnvY75tMmOqA5wMEirq2PhBeH5VhqzORJC0GmDmmTwb8+AtgT7RrTBUPBZxL9dIxvDM/BvjGsTruN+VVZ2tyx0PW/Rrhy4TiRDeLS0sv5xYsrOaLdC/XE6YKfwF/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fum2RgkG; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J94LKr8u"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B818C4CEE7;
-	Thu, 18 Sep 2025 10:29:39 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fum2RgkG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7635EC4CEE7;
+	Thu, 18 Sep 2025 10:29:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758191379;
-	bh=AlkVX+a/HTI+sqM2IbRhIUn6Vy6tXX7E7Jxr8FIOEqA=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=J94LKr8u+A+dALxJdumKx6pF1sxRiJ6/bbSu9hRQ9pdWxSplHGrd0UaaJqGzFEs8B
-	 39jt6Gwrl8hFmaqQt0qYyuGSyCKyfufIVKutYfK8fVnsWaTycMpykb3IpdXgaDcGY6
-	 a+Kc8/+2fjy4jA7kHZp2dVkG6yPbt45yK71tmJqTDIlU8xhqSsm6pW0XyGUXTpguhp
-	 a4P3F3sE27qmmSri0MMF2xTtNB77IJeRaZyomwIDVd2w8oMXaea7YzyNdg1pxH9A/y
-	 xempjtBlXamjilH/EwVQpbREIkGONkzFQ6CzvBCn+Dy+PHUjTYvZoYJn3+b4FrU0R3
-	 0Q5oSnCvvKExA==
+	s=k20201202; t=1758191394;
+	bh=Cz/f8Ty/4zEpoYFihblKVOHBZS+Lk96uBujFwo+m+CE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Fum2RgkGRWgBJRmwKxED4fccQBDTOLQ4f7p/y8rgEEt0s/GudsVc3YzgsSdc2150z
+	 oAvB8oqQgUhalWzlQT0i4/NvTg9p7VyGALURQmQhhoDR7AEjKGoJdtdCLqARu2wLkm
+	 /gFedysQgmoqoAhSW7DVIUMwA//rxxKxbWmvqIef3PPxyKoAVbdib7EefdE0kbaVMM
+	 gzQ2C2FUwLGQb7eQljO+8smXVgeC09oyXZE4Xd2tvISLy9QYyqw4bGpDvGNzQgrI/N
+	 PZVc5GSCjIf/bqakEcvitRNnD+XStbY+xKOJTDB7WAoRh/tUiwM23VLJoB45qX0Pa+
+	 a9cf1S+chvUiQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id DAA92CE0B32; Thu, 18 Sep 2025 03:29:38 -0700 (PDT)
-Date: Thu, 18 Sep 2025 03:29:38 -0700
+	id D054CCE0D66; Thu, 18 Sep 2025 03:29:53 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH v2 0/11] RCU torture-test updates for v6.18
-Message-ID: <c0edd79a-f988-432c-b08a-18793b2e15d9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 02/11] torture: Add --do-normal parameter to torture.sh help text
+Date: Thu, 18 Sep 2025 03:29:43 -0700
+Message-Id: <20250918102952.2593045-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <c0edd79a-f988-432c-b08a-18793b2e15d9@paulmck-laptop>
+References: <c0edd79a-f988-432c-b08a-18793b2e15d9@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+The --do-normal parameter was missing from the torture.sh script's help
+text, so this commit adds it.  Hopefully better late than never!
 
-This series contains torture-test updates for v6.18:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/bin/torture.sh | 1 +
+ 1 file changed, 1 insertion(+)
 
-1.	Fix jitter.sh spin time.
+diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+index 611bc03a8dc705..a33ba109ef0b7f 100755
+--- a/tools/testing/selftests/rcutorture/bin/torture.sh
++++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+@@ -94,6 +94,7 @@ usage () {
+ 	echo "       --do-kvfree / --do-no-kvfree / --no-kvfree"
+ 	echo "       --do-locktorture / --do-no-locktorture / --no-locktorture"
+ 	echo "       --do-none"
++	echo "       --do-normal / --do-no-normal / --no-normal"
+ 	echo "       --do-rcuscale / --do-no-rcuscale / --no-rcuscale"
+ 	echo "       --do-rcutasksflavors / --do-no-rcutasksflavors / --no-rcutasksflavors"
+ 	echo "       --do-rcutorture / --do-no-rcutorture / --no-rcutorture"
+-- 
+2.40.1
 
-2.	Add --do-normal parameter to torture.sh help text.
-
-3.	Announce kernel boot status at torture-test startup.
-
-4.	Suppress "Writer stall state" reports during boot.
-
-5.	Delay rcutorture readers and writers until boot completes.
-
-6.	Delay CPU-hotplug operations until boot completes.
-
-7.	Delay forward-progress testing until boot completes.
-
-8.	Use kcalloc() instead of kzalloc(), courtesy of Qianfeng Rong.
-
-9.	Use kcalloc() instead of kzalloc(), courtesy of Qianfeng Rong.
-
-10.	Remove redundant kfree() after torture_stop_kthread(), courtesy
-	of Kaushlendra Kumar.
-
-11.	Set reader_tasks to NULL after kfree(), courtesy of Kaushlendra
-	Kumar.
-
-Changes since v1:
-
-o	Add patches 8-11.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/kernel/rcu/rcutorture.c                           |    3 +-
- b/kernel/rcu/refscale.c                             |    2 -
- b/kernel/torture.c                                  |    5 ++-
- b/tools/testing/selftests/rcutorture/bin/jitter.sh  |   27 +++++++++++++++++---
- b/tools/testing/selftests/rcutorture/bin/torture.sh |    1 
- kernel/rcu/rcutorture.c                             |   24 +++++++++++++----
- kernel/rcu/refscale.c                               |    2 -
- kernel/torture.c                                    |    2 +
- 8 files changed, 52 insertions(+), 14 deletions(-)
