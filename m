@@ -1,109 +1,96 @@
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C933D15442C;
-	Thu, 18 Sep 2025 20:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 284092D63FF;
+	Thu, 18 Sep 2025 20:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758225705; cv=none; b=KzXR87dcWLCZCWfKpGzKWBJQgowx0C0pXgHYYXJpmXnPllbZai/j+MGnfWAMb37iEwNSjf8x0Qhf92GEjGODnHqt3MRruqvQu/fvxq3YjMCbmTBksnRkilm87LQ9RJWOZiVDq7eUQK7eiz6G5hILGF8vN91RUf/VgEV5Bfd0VRc=
+	t=1758227833; cv=none; b=tiDxDeFl/yy+KmiA8Wh9a7c7KJjQOt1TSdLZiZ0sxvaLJ3TJtOSDCqrFR5RFK2gDMYzZuHnVNYOpgfxObY4KLN+tS2dY7dvYb8UsqbzMeTpH9j7EKRAcd+VAqH+Aqhgtsni1o/Z05QEsr8unXo4B0DskdfveUXSQ7ElG3iL1FjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758225705; c=relaxed/simple;
-	bh=LxDvrxY2bwQJFsQKv7V85HYqrETwbOshcRCYEPOyloM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VdljpkxID/5DuWldtGvlwSSpmKfChpJyDZlr8Xaa1f0fxxTnUJWDS255Dd+3/EcDXZfhgEKB/ibnai/Ic/jUSFnXzJ3o0c58TIq5VlWfk3VX2FB9CVCFoA2kpxQn7l6xmMO43sZ6lpvvds2rM5sDP1cEWL4PFROIYJhv8prM2QU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=PqVqB+Cu; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="PqVqB+Cu"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1758225696;
-	bh=LxDvrxY2bwQJFsQKv7V85HYqrETwbOshcRCYEPOyloM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PqVqB+Cuk9ACRvIgiHJRoXQt9di8KTVK4MWHR4KVM/rJySWN/lPVP0tSgdBO0mQe9
-	 bWRSaCsz6YGXluH+avcSZhsIRLcubblyKO64T2IcUTGBM/ThfEgbtTKt5RtPWerv0N
-	 lDyfmqU4oXywXXYFFtM8bzTsh4FUmNRc7isj7lXo=
-Date: Thu, 18 Sep 2025 22:01:35 +0200
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc: w@1wt.eu, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lance@osuosl.org
-Subject: Re: [PATCH] tools/nolibc: make time_t robust if __kernel_old_time_t
- is missing in host headers
-Message-ID: <6aa8f3da-05b8-482f-ae14-a1a67a393ebf@t-8ch.de>
-References: <20250918010833.2760723-1-zhouzhouyi@gmail.com>
+	s=arc-20240116; t=1758227833; c=relaxed/simple;
+	bh=K4mBwSrBNcKyhAm8gbEHryo4PTBkpR7Q30/ZWeXHl1I=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=V+UIXSbqTa16v04yCupiVXIUlIwsc1ePqF6QmiyG1QlhxnYlV7zG1a+Of9PDn8PfFKsuVjbBS2iSaDn56T2YZ3TD3VvKJbywK/2IgFPA9IfvAB5Ef8Ns/heq8pFizo9ZmRtJ7vwL8JmIuwVhJi8N/80y5Fk4fIrxoxxHAuuoyVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
+Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay07.hostedemail.com (Postfix) with ESMTP id 8E6D31604ED;
+	Thu, 18 Sep 2025 20:37:01 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 9D9BE6000D;
+	Thu, 18 Sep 2025 20:36:44 +0000 (UTC)
+Message-ID: <13389786a2a121c21a6f4940b4acf09fad53a3d9.camel@perches.com>
+Subject: Re: [PATCH v3 05/35] checkpatch: Warn about capability_unsafe()
+ without comment
+From: Joe Perches <joe@perches.com>
+To: Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>, 
+ Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will
+ Deacon <will@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck	
+ <luc.vanoostenryck@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+ Alexander Potapenko	 <glider@google.com>, Arnd Bergmann <arnd@arndb.de>,
+ Bart Van Assche	 <bvanassche@acm.org>, Bill Wendling <morbo@google.com>,
+ Christoph Hellwig	 <hch@lst.de>, Dmitry Vyukov <dvyukov@google.com>, Eric
+ Dumazet	 <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Herbert Xu
+ <herbert@gondor.apana.org.au>, Ian Rogers	 <irogers@google.com>, Jann Horn
+ <jannh@google.com>, Joel Fernandes	 <joelagnelf@nvidia.com>, Jonathan
+ Corbet <corbet@lwn.net>, Josh Triplett	 <josh@joshtriplett.org>, Justin
+ Stitt <justinstitt@google.com>, Kees Cook	 <kees@kernel.org>, Kentaro
+ Takeda <takedakn@nttdata.co.jp>, Lukas Bulwahn	 <lukas.bulwahn@gmail.com>,
+ Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Miguel Ojeda <ojeda@kernel.org>, Nathan
+ Chancellor	 <nathan@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Nick Desaulniers
+ <nick.desaulniers+lkml@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Tetsuo Handa	 <penguin-kernel@I-love.SAKURA.ne.jp>, Thomas Gleixner
+ <tglx@linutronix.de>,  Thomas Graf <tgraf@suug.ch>, Uladzislau Rezki
+ <urezki@gmail.com>, Waiman Long <longman@redhat.com>, 
+	kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, linux-sparse@vger.kernel.org, 
+	llvm@lists.linux.dev, rcu@vger.kernel.org
+Date: Thu, 18 Sep 2025 13:36:43 -0700
+In-Reply-To: <20250918140451.1289454-6-elver@google.com>
+References: <20250918140451.1289454-1-elver@google.com>
+	 <20250918140451.1289454-6-elver@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250918010833.2760723-1-zhouzhouyi@gmail.com>
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 9D9BE6000D
+X-Stat-Signature: py53mcfac346e64tk9rcf8ugswnwrn9n
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+Psz6mclmN7I07c5jPtb/CcemQyIEeoMA=
+X-HE-Tag: 1758227804-881299
+X-HE-Meta: U2FsdGVkX1+3ZResTrAAf9g9L6dJTCgmeXzyM4kYyOanBXCbxLPKLUzexU279fp4Uk1s32nIlGL7ALFntG4iQsakleJTeVRQim4oreS1teDe2c1v+Yr3chddZziKPoDc++AISXJQPhyq2w3G+YXN9VlSwrMnsmWf2JBDP+6EKscCwfkdUqEPS2c1jIOhGC9JFL5oLKZVp7yaxDYTVOVvcxJD81BMXbf5A4qGtQvLNkMWZnMoJtyHKmlojlv7i6K2T4g5I4c9AZ5UYsKsHO+RYQ2ZU++uSS7Q3j7El4OW8jbzA/Y7Pj1Sh8vbE9tWV5T5
 
-Hi Zhouyi,
+On Thu, 2025-09-18 at 15:59 +0200, Marco Elver wrote:
+> Warn about applications of capability_unsafe() without a comment, to
+> encourage documenting the reasoning behind why it was deemed safe.
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -6717,6 +6717,14 @@ sub process {
+>  			}
+>  		}
+> =20
+> +# check for capability_unsafe without a comment.
+> +		if ($line =3D~ /\bcapability_unsafe\b/) {
+> +			if (!ctx_has_comment($first_line, $linenr)) {
+> +				WARN("CAPABILITY_UNSAFE",
+> +				     "capability_unsafe without comment\n" . $herecurr);
 
-thanks for your report and patch!
+while most of these are using the same multi-line style
+I'd prefer combining and reducing indentation
 
-On 2025-09-18 01:08:33+0000, Zhouyi Zhou wrote:
-> Commit 
-> d5094bcb5bfd ("tools/nolibc: define time_t in terms of __kernel_old_time_t")
-> made nolibc use the kernel's time type so that `time_t` matches
-> `timespec::tv_sec` on all ABIs (notably x32).    
-
-FYI you don't need to keep the referenced commit message on a single
-line and should reflow it like regular text:
-
-Commit d5094bcb5bfd ("tools/nolibc: define time_t in terms of
-__kernel_old_time_t") made nolibc use the kernel's time type so that
-`time_t` matches `timespec::tv_sec` on all ABIs (notably x32).    
-
-(Source: I did the same thing as you until Linus told me to stop)
-
-> Some distributions (e.g. Ubuntu 20.04 on ppc64le with older
-> exported headers under /usr/include) do not expose
-> `__kernel_old_time_t`, causing nolibc builds that rely on host
-> headers to fail (I discovered this when doing RCU torture test in
-> PPC VM of Open Source Lab of Oregon State University).
-
-Instead of mentioning Ubuntu 20.04, just explain that __kernel_old_time_t
-is fairly new, notably from 2020 in commit 94c467ddb273 ("y2038: add
-__kernel_old_timespec and __kernel_old_time_t")
-
-> Keep the new behavior, but add a small compatibility shim:
-> if `__kernel_old_time_t` is not available, fall back to
->  `signed long`
-> 
-> This preserves the intent of d5094bcb5bfd while letting nolibc
-> build on systems with older exported headers.
-> 
-> Fixes: d5094bcb5bfd ("tools/nolibc: define time_t in terms of __kernel_old_time_t")
-> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>    
-> ---
->  tools/include/nolibc/std.h | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/tools/include/nolibc/std.h b/tools/include/nolibc/std.h
-> index ba950f0e7338..ea225a0b16e9 100644
-> --- a/tools/include/nolibc/std.h
-> +++ b/tools/include/nolibc/std.h
-> @@ -29,6 +29,10 @@ typedef unsigned long       nlink_t;
->  typedef   signed long         off_t;
->  typedef   signed long     blksize_t;
->  typedef   signed long      blkcnt_t;
-> +#ifndef __kernel_old_time_t
-> +typedef   signed long        time_t;
-> +#else
->  typedef __kernel_old_time_t  time_t;
-> +#endif
-
-I don't think this works as __kernel_old_time_t is never defined.
-Instead we could switch to __kernel_time_t, which is the same as
-__kernel_old_time_t and has existed for longer.
-
->
->  #endif /* _NOLIBC_STD_H */
-
-
-Thomas
+		if ($line =3D~ /\bcapability_unsafe\b/ &&
+		    !ctx_has_comment($first_line, $linenr)) {
+			WARN(etc...
