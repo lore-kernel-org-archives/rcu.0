@@ -1,325 +1,178 @@
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59E327A929;
-	Thu, 18 Sep 2025 15:31:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758209474; cv=fail; b=hCuUcoWtBPFWORTZaK1CA+4u2XmoPu0tI3GwiA5Js9sUXgDxzP9hucsFxx4pSex2mDcV45l3fPXkvMHmPSBphmwLLmhQB1rpTqBlevIyJGcm5Dc3Rnoft90HQOHn5cxpfIlALHJvxgWI9cVVr6CueuABE93ESeCKW5r/DtmBBBA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758209474; c=relaxed/simple;
-	bh=AdngFAivqyHT5t/vHHt48Ghw0sL9ee6TSwSxMh8DwlM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=MtqtDtK79sWddi+vRxWipKK8o7viVq3ZQeoLQxSV7Vb8msw/tSLafKLq3ccXA1hCOUjlSuQ8X9vN7IVyz5VdfGKRFa7quarp7Zd2oXilwpimDkFN9mz+6YKkcSo6juoJtNeqok8+1kyK859TgIR8aTmFKN+a7bnlUqTEsOBq0CM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=lMcIuhQm; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=HaGEH1y0; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E168B313296
+	for <rcu@vger.kernel.org>; Thu, 18 Sep 2025 15:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758210993; cv=none; b=Cjozsj1DpuLtKQ0jj/iW+w8GYhk7Bd+VBUnjMDURwcykLeIZImvY6IRtNoG6kV4o8tSELzqVcN66v+9QcjKX+YX/d48quco123/DQ51bXNOU+yZ9bPHOiHeKYBkLYjsl0bVfKEYiTnKvK1v57fjWvoUkN21b5Evebzn3LkBQx2A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758210993; c=relaxed/simple;
+	bh=XhR1h2E8azi9+Iqslf03I/SakVc5s2CaBmw/N8HkwwM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IaKNwDxShv5Trr6iUPzJyTSS7FonSdl2d4vigUiopwZYSfLY4jNo/aUZB3txd30vLzDv0lvSbctD+P/nqFahnrChnkCl3QNl6FNFZWdWjHgW5wSYgn1/WQugfWlhSKi+JGCfpCD/2sHZ6t6aYEDNwqPFaOusMFv8H59JKnDyunA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PKwILP4Q; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="lMcIuhQm";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="HaGEH1y0"
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58I7gqxU019440;
-	Thu, 18 Sep 2025 15:29:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=pIrZ/EzdpYEyCJIX9/pJD8GHVkt9YhpsPfIRn4YyriU=; b=
-	lMcIuhQmB8cKZ74El4SZad+8s0iyMkdxgfFFyK9EANTZcbObA6/rgWKFflYfp/RT
-	Vg5luR02JRAe4f4nTxrF9qszap7uW6KriUReCmhwzHo3CIjgp0klsTiNCS+Q96Ho
-	QmIDl8172e64meGkYCYHqAC2kJboxELnixu2AC5uW9ipEZcRLZuIJRJdH89zLsgh
-	1cVBd2mLqqswHkBOMCQsVfCbCTXc1OeX2yhQvOwsHe50P/ywLSxOqRpvVMcNtX5H
-	nQr5fbxB9ShysT5rCQu9FWyZDyCDVawpKJQYc82DGbQDI2rVulUPGX1msrKjJmFW
-	fVbh/AmUPuzDDvLxXpVWmQ==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 497fx6krhj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 18 Sep 2025 15:29:23 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 58IERXKc033739;
-	Thu, 18 Sep 2025 15:29:22 GMT
-Received: from sn4pr0501cu005.outbound.protection.outlook.com (mail-southcentralusazon11011037.outbound.protection.outlook.com [40.93.194.37])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 494y2f8dvx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 18 Sep 2025 15:29:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Z2wkjiFQXskpA74CjTz744+znI4ieHeMqdZjeI1ehbA0/aB09/E+TChe568xTWXV2D9Prf9f9ITyK01Xqs9cs8/tP+zJjb68IA/1RZTI/BO63xFNC//52NHE+FH2ApCBm97MSDS95KrlrV0dqf4YYuWaFEs+oQ2Y6JaHKXGgAUmReDxhjYc30ELse1vtnud9Ui4nNhWJNXrtKnsZU92gqbQlu3GpmAmf+qdPos6/3MrAWu9jqLVRA/VerZ8cT7zw1WaLAYYOGem+0hBDesMq5qC1W3c8O16n9AABnJuKOx0XUsHyaeO+WRl2FcYqh6QySrnKlvhLXIqWXnMbpIKesg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pIrZ/EzdpYEyCJIX9/pJD8GHVkt9YhpsPfIRn4YyriU=;
- b=V2J8MKdvmh7KJAwYjbmeH80qxl5t85457pGUSzFD4pNlzPyWUB7M9vXcIBWa9UrWYt+nn1iVJQEMMyqqIKrdXtAviNZ54U00Lx2bG2EvBeZVXWrjIRR/R1l4JQV2IiDywBSITpFCK4H0AlE8zCn08+c2wzojRuCHptHrnX16ojhTdXTdSGzS10cYWxoTJaZCrAwPUwBR/IgrWuaslGl8IGR8VEEnubDFEJFeQKc7Eq24u82oQaN4tVTjIao/v6gt/69f0QDMJDyBXrpjVN5ZoKPrl/Rxebf8TJdgWIjTYPxuKY2ynuUb242LOSlKu6f2KJzcUFK9y1eL2Yd8aASRPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PKwILP4Q"
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-3610cb77a2aso12196881fa.0
+        for <rcu@vger.kernel.org>; Thu, 18 Sep 2025 08:56:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pIrZ/EzdpYEyCJIX9/pJD8GHVkt9YhpsPfIRn4YyriU=;
- b=HaGEH1y0Bhs76tbxQtw/V95tDuoF1ZBO5gTBjD8jopo1l9+ei/qJM0gOJUFx8H0mHVupdgQYw/6Cc/uPhNvXPbmBQTi9iqzahX254cZh2Yn2RAliph4RbAcXYV/7kgP4Fl/QMtz1vk+RfG08pVHtD/SR6+eX1XYlymtTlBypq94=
-Received: from PH0PR10MB5777.namprd10.prod.outlook.com (2603:10b6:510:128::16)
- by PH7PR10MB6649.namprd10.prod.outlook.com (2603:10b6:510:208::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.19; Thu, 18 Sep
- 2025 15:29:18 +0000
-Received: from PH0PR10MB5777.namprd10.prod.outlook.com
- ([fe80::75a8:21cc:f343:f68c]) by PH0PR10MB5777.namprd10.prod.outlook.com
- ([fe80::75a8:21cc:f343:f68c%5]) with mapi id 15.20.9115.022; Thu, 18 Sep 2025
- 15:29:18 +0000
-Date: Thu, 18 Sep 2025 11:29:14 -0400
-From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Suren Baghdasaryan <surenb@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        paulmck@kernel.org, Jan Engelhardt <ej@inai.de>,
-        Sudarsan Mahendran <sudarsanm@google.com>, cl@gentwo.org,
-        harry.yoo@oracle.com, howlett@gmail.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, maple-tree@lists.infradead.org,
-        rcu@vger.kernel.org, rientjes@google.com, roman.gushchin@linux.dev
-Subject: Re: Benchmarking [PATCH v5 00/14] SLUB percpu sheaves
-Message-ID: <vhp6cqq6gx5xgs2ueo7az4wobs2rddjsucjwlxckx3us3p3pey@s62u2ruxkjw7>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Uladzislau Rezki <urezki@gmail.com>, Suren Baghdasaryan <surenb@google.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, paulmck@kernel.org, Jan Engelhardt <ej@inai.de>, 
-	Sudarsan Mahendran <sudarsanm@google.com>, cl@gentwo.org, harry.yoo@oracle.com, howlett@gmail.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, maple-tree@lists.infradead.org, 
-	rcu@vger.kernel.org, rientjes@google.com, roman.gushchin@linux.dev
-References: <20250723-slub-percpu-caches-v5-0-b792cd830f5d@suse.cz>
- <20250913000935.1021068-1-sudarsanm@google.com>
- <qs3967pq-4nq7-67pq-2025-r7259o0s52p4@vanv.qr>
- <f5792407-d2b9-42b3-bc85-ed14eac945ec@paulmck-laptop>
- <d1ef1cbb-c18d-4da6-b56b-342e86dca525@suse.cz>
- <CAJuCfpEQ=RUgcAvRzE5jRrhhFpkm8E2PpBK9e9GhK26ZaJQt=Q@mail.gmail.com>
- <aMpE-oSjtlDU4TSl@pc636>
- <CAJuCfpHQ_JedSRHKKoYXyVzaFOm=dDWzgFZwqerfEC1fn35j0w@mail.gmail.com>
- <CAJuCfpE48n=QM0nY8yE3drqZU0wgC76=70EyftL1WZewEcykyA@mail.gmail.com>
- <aMvx9GKgIWtrkZ_R@milan>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <aMvx9GKgIWtrkZ_R@milan>
-User-Agent: NeoMutt/20250510
-X-ClientProxiedBy: YT4PR01CA0434.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:10d::6) To PH0PR10MB5777.namprd10.prod.outlook.com
- (2603:10b6:510:128::16)
+        d=linux-foundation.org; s=google; t=1758210989; x=1758815789; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hpKO6CsQCuex3g+QZ22KGPC+ZgcKRmVKS1THDCqCkXc=;
+        b=PKwILP4Qw/F6r1G9jAuW3x+KHdLqbTsGTExJoGskI1TgcdYwqjhr+K8IfF/VkImrkO
+         18bveLC3gs+xTqJHw0eI/MK+do4yyrgUZzVWqhMqrB/GRruOlXwv4GqTvOzyZBgZCwGc
+         b4H0biACijJvytI0xGyKiEoXHMenz601ysGUU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758210989; x=1758815789;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hpKO6CsQCuex3g+QZ22KGPC+ZgcKRmVKS1THDCqCkXc=;
+        b=d76x6sjhV4FTpvFAsM3egxdZO3REhtf/bKnYvCypCLbrUjMJfcN9wTxzZsMbvZnmWE
+         a26Y9WZY7mu/bHU3ewynfblaetFDXl5W/BdbFzMMzQUfNW3NeSYqxWtKbZQFZ+6dICEn
+         jX+I8eXE8qmBqxCM6quBs5MpQ9fOMZEzeO+PkJDWxWHFDZf+jamiwuOqQjPOtKjaJ0L+
+         gnvQZRo3oN34iI2XDxhIMk6Ls/5SuuJdFTXe5pVf2ZCGilUlyfPhmtiSrVeifXLqWmHw
+         1fbcm/SUgQFY6dGtSO1PahKbzA9hMZGxEgVaCUSUdmjsdVEG3NXCVlvRh/eueMJUQLnX
+         nq/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUsGTUxtA2ujW5+KMUOVPMuihgZvbcjNrC97ZaPI97IDfWfq5Hilec5az56QUiQxdqFuU8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOJ8FFhMej+40xbzhDsKAOwK0aG4q/o7PIScxOSCqPJXbiHcOo
+	nIU0W3B0yq4h6gDHVbZWg3EUu+S1j62tfX+zPAjrhXLs3l5N7bFRAun4q2tUIUuAMfK28dDmEH9
+	8j8VhfydDpQ==
+X-Gm-Gg: ASbGncsK3IQq0rbEu49Xke5jsYRmBaL1z7bFO0owNttcRpiZydEAFGOcniAlNSyrtan
+	3gTofd4r6+ptMaK6w8j0aeaWuWrnQ+dQHuXflozDPAqVy3k9NIgKhKZYlvHJ9W7yOTxDsxt12+g
+	S4+ALGX0KVVEWZeVLTEoyra7kpab3G/2Qb6oVlHOw8Ww3ig1bHQSkv2IvuEN3yHUQm70rXuyy61
+	wy71UbYk3oTgsJqMWlHkHRxmReqAasoutsFrigo0Su52bDX2m4y9Jbkr9hniKF66NaCCVqMXXdE
+	8gXkU5ykA0mmDW/8Vr1nOZhuM6TR5VrXl/jdDacRChyb5eZsOVsv5dijL+DJyXC+5Y3AFcKXkbM
+	RHftiS2446loeNY9AOcNiMFsmd3a/f8RPJloPLFKmmaj53cFte63tjczNAHsY5Nxtp+kgo5xft6
+	C4xKrDXreHfRjSHFL9BNM=
+X-Google-Smtp-Source: AGHT+IFfEh3aHH3AlQyVhkh6wnz6KCGAoyQyriMGz7GZpdN2ahZAvnEy4ZALPoXs25j7Sv8mszRFMg==
+X-Received: by 2002:a2e:904f:0:b0:335:2d26:1408 with SMTP id 38308e7fff4ca-3617529137dmr8615681fa.21.1758210988743;
+        Thu, 18 Sep 2025 08:56:28 -0700 (PDT)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-578a9571dcbsm761208e87.96.2025.09.18.08.56.28
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Sep 2025 08:56:28 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-3515a0bca13so25297681fa.1
+        for <rcu@vger.kernel.org>; Thu, 18 Sep 2025 08:56:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV6Zf+jKMzCEq9VKpkctK4ATYSRWWy8ASUBpfH8ZlG7gdmKw4Tgxgkc2WKfJXXm5N2KfHE=@vger.kernel.org
+X-Received: by 2002:a17:907:9612:b0:b10:ecc6:5d8d with SMTP id
+ a640c23a62f3a-b1fac9c9b84mr417765966b.26.1758210601571; Thu, 18 Sep 2025
+ 08:50:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5777:EE_|PH7PR10MB6649:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6f496c17-7e91-45b2-ef4a-08ddf6c82218
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|7416014|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?dUVQZEg2ZnpVYjQvSUpwRnBPL0EvOGJBOUtQcjV4T1U3ZEh0N2c2eXYxUEZ2?=
- =?utf-8?B?M1RVRXJnb2p2NWw5dHFRKy9haEM0U2hPNGU2M2NVd29GSFNkVEQvU3ZmeFF1?=
- =?utf-8?B?cnlZdkMxK1BsWGdoUzNoM2hFQlFnUGpyRWVmUmJLbk1VdzBEKzJRTjRKNlU5?=
- =?utf-8?B?cHJ6a2plTHdURDROKzVUYVBwenZVWVZIQU9ldHV5RFc5dWNGOWZLMlU2OHZH?=
- =?utf-8?B?bGFyaGlLVUtESkhPblpzYi9yVWl5QkF0bzl5dlNiYlBIZXZ6ZHFmZ2ZZM2Z4?=
- =?utf-8?B?Z1hLYjc2TWZhOUdpRDVqTlF4OW01OUNUbTVHcmNVakJFME9MODBCeVNKM09F?=
- =?utf-8?B?UU83OWJhYTBqRmVCZzZLV2E5VlMrUW1DcnNoelg5aDA2SEQwNmhkM1RCenhy?=
- =?utf-8?B?bmZ6ejZpcWhOTkwxU0M1Znl3R05kOVE2VnVtQithV1h6OUx3RHNaTkd4c0xW?=
- =?utf-8?B?V3pranhTZzR5VGVma1RFc2dmd2FhWmFrY3RWNmRBSHl4aXdOSjZBd1Z4Skdm?=
- =?utf-8?B?MXJQeGhiT3BnMmZTQUwwTnhEWVR1QlZoZkMrR2J3N3U3MnNzN0NQdFowdnJM?=
- =?utf-8?B?a0hzSnAvcUZnVmdxcWdPbWxRcm5aK00zb09oS3VLNVJiNnNzd3pGWStyZzRl?=
- =?utf-8?B?QWNYdE0rQkdNRHI4dGFjL1VKUkc3eU1CakluOGdWVWkreWRJQjBSRTd5bDNl?=
- =?utf-8?B?VmwvWDF6aldwUkNrS0pkL2J3b3RVUzVIVWI1TEVFSTNzcE9udE9ia3p0ZDVj?=
- =?utf-8?B?WlBZZzVlWlhwM3owQlFMekVHZ3lpUWlEalVGenpGUVdXakQwcDZkeDVCMndO?=
- =?utf-8?B?SE5idTYxQ0pOdjRSdWJIL0llUnA4TVZvcEFvTmlpZmp6UlFiTEdqZVhjNHBL?=
- =?utf-8?B?Smd1RU90aE5lVlpUUWlhZ29YU2RzMnh2bnBPNHByRVd6VzlIL1YwV25jd3Ex?=
- =?utf-8?B?QVNyTUtWeUJtaXNDS1crVmFmSFBQZmZJUEFwVEVKOUtLNmhrVWFDRE5aTW5u?=
- =?utf-8?B?RzhIcTV3TTNHbUdmajlFYi8wNy9KVWM5aHlVL2hHVE1XUWJZd1pibnltV1VZ?=
- =?utf-8?B?aVY3bU5SNjBKUWp3UTF0dTdnb3hPbWxTVVlKaDRqSk1KZkVPbm9pM1A3UDNO?=
- =?utf-8?B?UTRUQXc5Y2NqYllyMHpaUW9CVDBXY3NMUFhXWXdnUzR5S1l1TWpRNlgwQVhK?=
- =?utf-8?B?RlBHenl6VzNWM1JvdFoxcE4zdDRtVW1ZNmh3TWJvSGpZMVpHczFPM2d6emN2?=
- =?utf-8?B?QWRwZjlXVGczQXhsR1d1WHBGUDV0RHhBeXB2SXBqWlZqWk9odTl3Qmd6WGJj?=
- =?utf-8?B?R0Q0dHVtRzJHdnRXT250d3R5QkprdjdwSmoxQ3VlUW5TUjNRYXN2SFc5a2tK?=
- =?utf-8?B?MU5nSnZBNXdlMXdhMENvbVpUKzZKM1I3SGg5Y2x0WmQwZ1RHN01HbFFxQTcv?=
- =?utf-8?B?R3RFVWx0ME4yMUF0bzU4bHFqbUZZNzFZeFBTeU9Kb2YrWDI1VXQ3MGdCeWVC?=
- =?utf-8?B?RW5UWnVRNDZxbmh3aC9nODV2ekFVRVdwc3h4cDJNRW5oanY3eC9yTGpBUWhl?=
- =?utf-8?B?RUxRbHN0Witkd2xodHMvbzd6SzliWkoyS21KNUlha1lmSlhCUWgwQ3IwR2la?=
- =?utf-8?B?YUU5eXFqcjlQUGNpSDRab0JKdTdZOFkrWDhSTW4yTnhKTDN6NG9TQzRwZzhm?=
- =?utf-8?B?S2s2ZU1LWHZqTlViRm5nSWdidTlkTU9nNGF5NFNibWRXY2ZwZjFVUnFqdDJ5?=
- =?utf-8?B?RHRha3kzdElpM1JuczJFd2FWQTdiVnFWazVOSXNoaGJVdDZVcjc4VXZqR0hM?=
- =?utf-8?B?cGlxeCtlM2l3QXNrdHRYbVdJcXMyM0ZQUUNycUQxeUJxeWdmdFlzanpwRldB?=
- =?utf-8?B?Wm5JOWJrZHk1emVNR3kvaUFrQVlpNFB3RDhIMlRQZFUwd0IwYTNqbk50YVlG?=
- =?utf-8?Q?Ubg0IAd8T6E=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5777.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?K3o2cWt1SDdzZVNxSU95cVVIdWhkcHFQc29GcDdJdEppQWR1STVwTUVHZTZt?=
- =?utf-8?B?NUNCVmxCalFUaUJ2Um5BU21tZkNvajdqVEJDOExoZDBLdFZHQzZ5a2tITW5X?=
- =?utf-8?B?eGt2L2ttc0VpV0NsZDFBbkNIYkZ3VWhYdjZFMndTZXlYTVUzSkhaM2F5aTA2?=
- =?utf-8?B?aHp4T3MzcWJxVUVMeGdPVnFwazE0em1XQ0RQRnF5Qk0xb1hCYnFEWFRNL2lT?=
- =?utf-8?B?QTdpR2VOTTByRVBxZTVMaHF2UGxFdVBpSjQzQmpnVEw1YyswTWVVWjJYU2Mr?=
- =?utf-8?B?eEplUDRIVGY3cFcxSXZZMTNIMVlDWXNMVTE1VkdPd1oraW9RMk1xWWM4cnlS?=
- =?utf-8?B?OFNFOWhLeU44NnZuc3hIelVUWWFRckc5SmJ1TjFwcDVzQWVOTnk4cGJ0SUZk?=
- =?utf-8?B?bUxnNGpQSzlZRm9QMUNWb0o3aUFSS01xYitXR2tkK1pUYVRhWHlNS0E3clBU?=
- =?utf-8?B?eDZkTmczTUM0bXdidTE2TW5sa01LSnRoRWU5WE9Gb0dXOWU3ano4WDc3bnZj?=
- =?utf-8?B?eFFDNDlvNmFnLzVxd1ZydnA2L2R5WDREZ2pDcUdiMWdaMHN1aVlZc0VWVmU0?=
- =?utf-8?B?MS9uTHo2bEFvWm1BV2VBL3B3OC95Wk41SUxYeWN3aXlLNFdSSTRsMVBGZi9R?=
- =?utf-8?B?c2JSNjhxQzBSRmpoc1IrSGdEQ3RsZkZtcmVRR0g1RkplaHZ4UC9UcEdqemdW?=
- =?utf-8?B?aTR3VXhDbnh1YUhoS000dWhTWURJUitLU3lqOHJJSmtXdWJ3WlEzZDBSaGRQ?=
- =?utf-8?B?U2s4bVM2Tng3K3FHNTZlOWtuQ1JJczFEUjBVY3Q3UkpCRTNmWjF5Ky9yWEc3?=
- =?utf-8?B?cU9sNkIybG44VWVBZ3NDekdEbDRnd0lmMFBkQkRmMit3S1VCRmhTOXE5TEIv?=
- =?utf-8?B?K2dsUDE2VDlwSTRvSno5cysvY2JidWUwdkNoZS9EMEdLTHlFYmIwd0hqQnZH?=
- =?utf-8?B?S0RRZDI0WlJuMGFzQXNaS3NaTXkxdWxxOVBUcE5mb1lBSldmcGUyV05SeUJB?=
- =?utf-8?B?WjJ6VG9mZ01tUUptK0JmZnE2ZXdwWml3S1lIaXJQenR6eXR3cnB0K0dFZ08v?=
- =?utf-8?B?QVJXZU91cDRiUmQybWE3WWUrNjc5MzRuZzE1MWZrcFBpZ0tWZTBXcHdTL0tl?=
- =?utf-8?B?TkNsbENkNjBya1FtQ2Qrb3NKY2hBQWtFbUluOXQrTTlvMUZ4Y0NTbEpGcGtV?=
- =?utf-8?B?aWxPMnBtVjcvK1VPNU9YVnFhOFZiU2k5Sm55LzhyTUxDa25LbXdBMzV1ZHFW?=
- =?utf-8?B?QjNIanpqV0lMUXZRZ2dVWGZoOUxhaFRmRWJIMERwY1VOTmhSWDRtV3VUSS9o?=
- =?utf-8?B?SDIzeUlReHQrb1FNZUtCeXlETzk1Q1NhSFFacWhLYUZ3KzdQZm9pak1GbjBK?=
- =?utf-8?B?TG5keEgwUHNwRmdkT05TRU1PYnU1clZPb3VrcE16VjFWcGtxK1RGWVlEcUdY?=
- =?utf-8?B?dGlNbXVKajJrdXJ1U21ZT0lwSGdndkJXSXBaYjN3bWVGRjNNZmVRcTFUQ0ta?=
- =?utf-8?B?czBXZWNpdkF1NzZtOGxDWHFxeVlzOWNiSTdyNTFTUE44cnV4WTBBT0srYmtL?=
- =?utf-8?B?NFNIRC8zRU9Obmx6eE8ya0k2eUhjTHdwVFZpZFdqbWgxanQ1N0ZLVmg1Sk5V?=
- =?utf-8?B?YmZPMHVQTjNUTGtGL1drdjI0dVluT2hyV0prbTNBeTNERk5JYVFYc1NTdml0?=
- =?utf-8?B?VGNrOXI4UGhlOW1JTnpZcU0yMUlDbFY1R2NKZENYRFRhMklXMHZzVUVKbUlv?=
- =?utf-8?B?UW5WZGlKZmdIK2xqclB3bFVVZmk1NkNsVzd0L2FnR0poMGQ2czBMN0MvYVJN?=
- =?utf-8?B?MVhuVHNEU1hNemhVUHNvNjR1QnYveklBdC9Pbzk2MXNOTVF4RlFveUttSDJS?=
- =?utf-8?B?WEx6aVc2NmFBeEMyVjRrZnFJUlp5WFVFRUNJSlRqbStFV0Y1Y0FjZEt0T0xF?=
- =?utf-8?B?b3dnWmJwc3ZaOXJvbUZEaFppRjMvOW50NU80UVNBNmh2L1k1SkZOSWc4emFt?=
- =?utf-8?B?SDdlVzhmcEdUL2NZd3psdTRJYVZUaWVQU1crWTRkK0FZYTdaVnduOTlneTJP?=
- =?utf-8?B?SzJkTEl1bm1kcjFIbFQ5N3pvbXo3ek9NazFlaEllREkrMGNsME5sWmJ2NXp2?=
- =?utf-8?Q?NVr6Az1e1J6dyUdF/SxLvPzOg?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	WXmvfDs4rQxppGgTUxkkZGIM+etNGsHskHNpYW1dQ6O7SsIXrGm9rVvmnDrWMR564ncM+H24BL570Zqa0M7C/nQ1qpVTnTj/WyewmD1ldU5GUrU4iPAsad+d3/4Jg803DU7sfTmSJCYj6YAyueTiwLXG0t8tIs5wYQVJba2UV7jJJR+IBzWSp75v9TgtaR05QqjdvYIK1GdcZjil+OSOjXfeJFKPhRDgLg24K3s4d4B5Zr2lFQj76VRcxz7z7qrDNclqFkG229FJYAN6xCP1Lzm9ozfW0jp4fLMcWkzEQn7LkzdZyEAhhvDZ8xyUmYAnTFd999DT3R6j9CFCE0SYmTh0KXQPoLb0gM4wZrUCgif0MOb9qWvici6vVbOc6NVktudbPOl9bvIUFo0CpQ6OEU6wIyqeRB2UAxWqWnJen9mrlDuLWOyHAheu5Acd58q/LxZzqFxuLdJoKCJidrn56LZUsh72FXhor3aB7AUM9XNZ55zJUU5860SE7ZzJt3JpbYt5PIgnAzZVesW5ZxkN5jb2ZURnxvOj9ZjZPne1JUXwKTT4u4zp8sVhNCTxOf0y324bkWjir4la/hADAZhLW+lGsfdt53kx/mKigCeju9g=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f496c17-7e91-45b2-ef4a-08ddf6c82218
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5777.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2025 15:29:18.5529
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qY0eoHtCLWafYkAhv+VylMpiih7o+d8iV/PPXdazdRPUKpD5JPg7ss9LV1c01F8FTv8BLIGo+8I6avesPQVvsw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6649
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-18_01,2025-09-18_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
- definitions=main-2509180136
-X-Authority-Analysis: v=2.4 cv=TqbmhCXh c=1 sm=1 tr=0 ts=68cc2553 b=1 cx=c_pps
- a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=yJojWOMRYYMA:10 a=GoEa3M9JfhUA:10 a=pGLkceISAAAA:8 a=1XWaLZrsAAAA:8
- a=Q1qIeLTNnsjay0MUresA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: UQ45rOqV3Cblvgur1Ft6pTh81KfPTA73
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwMiBTYWx0ZWRfX4dH0X3Z0TJgZ
- ARcX4bUwYF/6Jo5K+3eKusBKRB+J0sqyj8JmY0BhXBYtwZye43O5dZu4MQOPeKvYHVT393Y2nvr
- e3Q+Vulc3jFulnciubagUfufuvjYLH2TURVMnmtHH9t7ZE91WYS0NzRfGdXwyN91MiftcWNB2WG
- v7qBg6sZ2qL0xwTAJ6D2rmchkelPSwCDBD5WY5Cj5T1ekv84gsJLoI06LhLlh+JsoTOt6T1vNOh
- 82+6yaINT8pm6CkG5LmU7Y+gid4wmxGjmZtfvhKUOopQ6Xb9ws3ThCPZjhHoqGwYZmSz4VeIr5s
- wzDqLH1EPGhWEpJuOiIE1cErAC0jTEu3OnQiEqvGstynVZSV2Vqmv+xxE7HYj+MJTlSe6W2Z8RE
- le5BJAo+
-X-Proofpoint-ORIG-GUID: UQ45rOqV3Cblvgur1Ft6pTh81KfPTA73
+References: <20250918140451.1289454-1-elver@google.com>
+In-Reply-To: <20250918140451.1289454-1-elver@google.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 18 Sep 2025 08:49:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgd-Wcp0GpYaQnU7S9ci+FvFmaNw1gm75mzf0ZWdNLxvw@mail.gmail.com>
+X-Gm-Features: AS18NWBk4u9ObN57KesSGhJyt-aPlWZgKdxYhvzpAyoaxlNUF53WHe4dSKjzUBg
+Message-ID: <CAHk-=wgd-Wcp0GpYaQnU7S9ci+FvFmaNw1gm75mzf0ZWdNLxvw@mail.gmail.com>
+Subject: Re: [PATCH v3 00/35] Compiler-Based Capability- and Locking-Analysis
+To: Marco Elver <elver@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Bart Van Assche <bvanassche@acm.org>, Bill Wendling <morbo@google.com>, Christoph Hellwig <hch@lst.de>, 
+	Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>, 
+	Frederic Weisbecker <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, Ian Rogers <irogers@google.com>, 
+	Jann Horn <jannh@google.com>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Josh Triplett <josh@joshtriplett.org>, 
+	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>, 
+	Kentaro Takeda <takedakn@nttdata.co.jp>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
+	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, Thomas Gleixner <tglx@linutronix.de>, 
+	Thomas Graf <tgraf@suug.ch>, Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, 
+	kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, linux-sparse@vger.kernel.org, 
+	llvm@lists.linux.dev, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-* Uladzislau Rezki <urezki@gmail.com> [250918 07:50]:
-> On Wed, Sep 17, 2025 at 04:59:41PM -0700, Suren Baghdasaryan wrote:
-> > On Wed, Sep 17, 2025 at 9:14=E2=80=AFAM Suren Baghdasaryan <surenb@goog=
-le.com> wrote:
-> > >
-> > > On Tue, Sep 16, 2025 at 10:19=E2=80=AFPM Uladzislau Rezki <urezki@gma=
-il.com> wrote:
-> > > >
-> > > > On Tue, Sep 16, 2025 at 10:09:18AM -0700, Suren Baghdasaryan wrote:
-> > > > > On Mon, Sep 15, 2025 at 8:22=E2=80=AFAM Vlastimil Babka <vbabka@s=
-use.cz> wrote:
-> > > > > >
-> > > > > > On 9/15/25 14:13, Paul E. McKenney wrote:
-> > > > > > > On Mon, Sep 15, 2025 at 09:51:25AM +0200, Jan Engelhardt wrot=
-e:
-> > > > > > >>
-> > > > > > >> On Saturday 2025-09-13 02:09, Sudarsan Mahendran wrote:
-> > > > > > >> >
-> > > > > > >> >Summary of the results:
-> > > > > >
-> > > > > > In any case, thanks a lot for the results!
-> > > > > >
-> > > > > > >> >- Significant change (meaning >10% difference
-> > > > > > >> >  between base and experiment) on will-it-scale
-> > > > > > >> >  tests in AMD.
-> > > > > > >> >
-> > > > > > >> >Summary of AMD will-it-scale test changes:
-> > > > > > >> >
-> > > > > > >> >Number of runs : 15
-> > > > > > >> >Direction      : + is good
-> > > > > > >>
-> > > > > > >> If STDDEV grows more than mean, there is more jitter,
-> > > > > > >> which is not "good".
-> > > > > > >
-> > > > > > > This is true.  On the other hand, the mean grew way more in a=
-bsolute
-> > > > > > > terms than did STDDEV.  So might this be a reasonable tradeof=
-f?
-> > > > > >
-> > > > > > Also I'd point out that MIN of TEST is better than MAX of BASE,=
- which means
-> > > > > > there's always an improvement for this config. So jitter here m=
-eans it's
-> > > > > > changing between better and more better :) and not between wors=
-e and (more)
-> > > > > > better.
-> > > > > >
-> > > > > > The annoying part of course is that for other configs it's cons=
-istently the
-> > > > > > opposite.
-> > > > >
-> > > > > Hi Vlastimil,
-> > > > > I ran my mmap stress test that runs 20000 cycles of mmapping 50 V=
-MAs,
-> > > > > faulting them in then unmapping and timing only mmap and munmap c=
-alls.
-> > > > > This is not a realistic scenario but works well for A/B compariso=
-n.
-> > > > >
-> > > > > The numbers are below with sheaves showing a clear improvement:
-> > > > >
-> > > > > Baseline
-> > > > >             avg             stdev
-> > > > > mmap        2.621073        0.2525161631
-> > > > > munmap      2.292965        0.008831973052
-> > > > > total       4.914038        0.2572620923
-> > > > >
-> > > > > Sheaves
-> > > > >             avg            stdev           avg_diff        stdev_=
-diff
-> > > > > mmap        1.561220667    0.07748897037   -40.44%        -69.31%
-> > > > > munmap      2.042071       0.03603083448   -10.94%        307.96%
-> > > > > total       3.603291667    0.113209047     -26.67%        -55.99%
-> > > > >
-> > > > Could you run your test with dropping below patch?
-> > >
-> > > Sure, will try later today and report.
-> >=20
-> > Sheaves with [04/23] patch reverted:
-> >=20
-> >             avg             avg_diff
-> > mmap     2.143948        -18.20%
-> > munmap     2.343707        2.21%
-> > total     4.487655        -8.68%
-> >=20
-> With offloading over sheaves the mmap/munmap is faster, i assume it is
-> because of same objects are reused from the sheaves after reclaim. Wherea=
-s we,
-> kvfree_rcu() just free them.
+On Thu, 18 Sept 2025 at 07:05, Marco Elver <elver@google.com> wrote:
+>
+> Capability analysis is a C language extension, which enables statically
+> checking that user-definable "capabilities" are acquired and released where
+> required. An obvious application is lock-safety checking for the kernel's
+> various synchronization primitives (each of which represents a "capability"),
+> and checking that locking rules are not violated.
+>
+> Clang originally called the feature "Thread Safety Analysis" [1],
 
-Sorry, I am having trouble following where you think the speed up is
-coming from.
+So this looks really interesting, but I absolutely *hate* the new
+"capability" name.
 
-Can you clarify what you mean by offloading and reclaim in this context?
+We have existing and traditional - and very very different - meaning
+of "capabilities" in the kernel, and having this thing called
+"capability" is just wrong. Particularly as it then talks about
+"acquiring capabilities" - which is *EXACTLY* what our lon-existing
+capabilities are all about, but are something entirely and totally
+different.
 
-Thanks,
-Liam
+So please - call it something else. Even if clang then calls it
+'capability analysis", within the context of a kernel, please ignore
+that, and call it something that makes more sense (I don't think
+"capabilities" make sense even in the context of clang, but hey,
+that's _their_ choice - but we should not then take that bad choice
+and run with it).
 
+Sparse called it "context analysis", and while the "analysis" part is
+debatable - sparse never did much anything clever enough to merit
+calling it analysis - at least the "context" part of the name is I
+think somewhat sane.
+
+Because it's about making decisions based on the context the code runs in.
+
+But I'm certainly not married to the "context" name either. I'd still
+claim it makes more sense than "capability", but the real problem with
+"capability" isn't that it doesn't make sense, it's that we already
+*HAVE* that as a concept, and old and traditional use is important.
+
+But we do use the word "context" in this context quite widely even
+outside of the sparse usage, ie that's what we say when we talk about
+things like locking and RCU (ie we talk about running in "process
+context", or about "interrupt context" etc). That's obviously where
+the sparse naming comes from - it's not like sparse made that up.
+
+So I'm really happy to see compilers start exposing these kinds of
+interfaces, and the patches look sane apart from the absolutely
+horrible and unacceptable name. Really - there is no way in hell we
+can call this "capability" in a kernel context.
+
+I'd suggest just doing a search-and-replace of 's/capability/context/'
+and it would already make things a ton better. But maybe there are
+better names for this still?
+
+I mean, even apart from the fact that we have an existing meaning for
+"capability", just look at the documentation patch, and read the first
+sentence:
+
+  Capability analysis is a C language extension, which enables statically
+  checking that user-definable "capabilities" are acquired and released where
+  required.
+
+and just from a plain English language standpoint, the word
+"capability" makes zero sense. I think you even realized that, in that
+you put that word in quotes, because it's _so_ nonsensical.
+
+And if not "context", maybe some other word? But really, absolutely
+*not* "capability". Because that's just crazy talk.
+
+Please? Because other than this naming issue, I think this really is a
+good idea.
+
+           Linus
