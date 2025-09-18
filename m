@@ -1,42 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8472EB5BF;
-	Thu, 18 Sep 2025 10:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BB62F549E;
+	Thu, 18 Sep 2025 10:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758191394; cv=none; b=k/OhEoQlMlT+WLfpm2WCMJEk+MK5MMSofWGPhoIL/fq+s8nUbsjUiJ9J7plU+Kw8szu64dpq8J5SZmfLWr+c8FmFza+z1tsPqk6ClwcrQxpG1Kc7LsNmo0GJcAMAoA3S917syJWaIygOS2lBghnxr6JArLpJYGyuTh68nJ6/HMc=
+	t=1758191395; cv=none; b=t57SqAPePZMu3sOkVRAGVY7X9ioi9xo6hClbV8HW0xJMhT6C7aDa9DTnGpZpROkd2OsFhMm1Ddrvnddtu5C3uMZ/kHJQe93x0CrTeaEUVHI59LW1cWdM2Pe4DB9klFxqTxBVLyu02aq12999g1CwdzXI4UE6RqxvJYQiXyQQRwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758191394; c=relaxed/simple;
-	bh=Mp9NGrJWUWVhDqtHZIZvK7J6EzBqIIE/DcFZ0dsLmlI=;
+	s=arc-20240116; t=1758191395; c=relaxed/simple;
+	bh=iZgfujpyduVegeZVrLnoIiFFN0/XbNGUGBJBpNQfD5M=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cWK6SO19Y8czUnhDdRW7390zRI5l0uMmHVnEVqXbXyYpZ6qR62JvZ9AIg1tl3/w051X0D2nmXONNPz/gX7akwI65nheV2asdJPajvQQb4CSVx9B/AE3vDcweHO++vJuKl65Uu9G0dtZHqJSjW+cQ655O0CSXgMR/D9Gp4qETPq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MyvYsFVF; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=Xkj7clmEeQiHhZDp+lN6v0oXyN8OYRo8lvTsRaWL58opjSP75L9dXgE0hlaKXa8MJmylW5KKqJaF+R2ItXBbOCcKwyVXjBJuh03Kc23+kUwlvHspLYQOfZ5Iut8V7vbp3gJ98ENnbAE/3d+K0/LpDijU2GM8qZpyTIvis/fRaOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fLJcsvaZ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MyvYsFVF"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 840CAC4CEFB;
-	Thu, 18 Sep 2025 10:29:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fLJcsvaZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A55FC4CEFA;
+	Thu, 18 Sep 2025 10:29:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758191394;
-	bh=Mp9NGrJWUWVhDqtHZIZvK7J6EzBqIIE/DcFZ0dsLmlI=;
+	s=k20201202; t=1758191395;
+	bh=iZgfujpyduVegeZVrLnoIiFFN0/XbNGUGBJBpNQfD5M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MyvYsFVF++doDfDmql4rI45Ly/L4C6sSTlPhwMehw3YmWvFJxJ/BhN+uKI+7b51Ao
-	 ouhcbmsQQvbjDsAmP1FUTyIoANwHI4wrUG0qPSfG9ZOHnzHgcZAkap3SQi4pOqg4fC
-	 yS47Di4SMEkXElmAB0GPq9VNafK2lKv8MV9Ju+fgArO0h62zYyFwuCa/9owN+sEWxU
-	 /2ORzpAE3i1bm728Bf4H2m4IYlN1c4WGcI0cDSo5Yp5GTqrrevwQVexvhlNMzAqcmc
-	 kJADyuO7ZH3hP/KuIScc2oh2bVV/ppdndc4EuH3v/ZIc74k5fEoTVs+xoSXsUrN3wt
-	 72bTFrO6VS48A==
+	b=fLJcsvaZVN0eyoWgosOfeYKFYKnKUK3zfCzhEvOags3xR50Rznsz8h7F4tXyCa9Dd
+	 7yvQeTD6WFxweMu+8flOtn31OIyOzfvz2UzLgEqCptDP3ft1echMit9YF9VqGn7tKI
+	 G8jqeT2bDi5ZGAbf/Ov20mHChPclD+o/9IZ3HgtAEVVKLr2JofieCx0OtvCuw/Uvfi
+	 XVE+iRosJAelQ0Pz1IBWrcoKzh1EjEWhTzaINcMAnXKw8CA8XwurPPC7RDQ1UQtXbu
+	 Qeka/JByhB0zq+0cqLMLtycoGRO+TiaUaDWpQ9znVefyeZWIG4wP+88a+dJxQ0QFWf
+	 eowIZ7gXIXPnA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id CD70CCE0B32; Thu, 18 Sep 2025 03:29:53 -0700 (PDT)
+	id DF007CE1109; Thu, 18 Sep 2025 03:29:53 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2 01/11] rcutorture: Fix jitter.sh spin time
-Date: Thu, 18 Sep 2025 03:29:42 -0700
-Message-Id: <20250918102952.2593045-1-paulmck@kernel.org>
+	Qianfeng Rong <rongqianfeng@vivo.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 08/11] rcutorture: Use kcalloc() instead of kzalloc()
+Date: Thu, 18 Sep 2025 03:29:49 -0700
+Message-Id: <20250918102952.2593045-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c0edd79a-f988-432c-b08a-18793b2e15d9@paulmck-laptop>
 References: <c0edd79a-f988-432c-b08a-18793b2e15d9@paulmck-laptop>
@@ -48,66 +49,40 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-An embarrassing syntax error in jitter.sh makes for fixed spin time.
-This commit therefore makes it be variable, as intended, albeit with
-very coarse-grained adjustment.
+From: Qianfeng Rong <rongqianfeng@vivo.com>
 
+Use kcalloc() in rcu_torture_writer() to gain built-in overflow protection,
+making memory allocation safer when calculating allocation size compared to
+explicit multiplication.
+
+Change sizeof(ulo[0]) and sizeof(rgo[0]) to sizeof(*ulo) and sizeof(*rgo),
+as this is more consistent with coding conventions.
+
+Signed-off-by: Qianfeng Rong <rongqianfeng@vivo.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/jitter.sh        | 27 ++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+ kernel/rcu/rcutorture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
-index fd1ffaa5a1358e..3c1e5d3f88058c 100755
---- a/tools/testing/selftests/rcutorture/bin/jitter.sh
-+++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
-@@ -39,6 +39,22 @@ do
- 	fi
- done
- 
-+# Uses global variables startsecs, startns, endsecs, endns, and limit.
-+# Exit code is success for time not yet elapsed and failure otherwise.
-+function timecheck {
-+	local done=`awk -v limit=$limit \
-+			-v startsecs=$startsecs \
-+			-v startns=$startns \
-+			-v endsecs=$endsecs \
-+			-v endns=$endns < /dev/null '
-+		BEGIN {
-+			delta = (endsecs - startsecs) * 1000 * 1000;
-+			delta += int((endns - startns) / 1000);
-+			print delta >= limit;
-+		}'`
-+	return $done
-+}
-+
- while :
- do
- 	# Check for done.
-@@ -85,15 +101,20 @@ do
- 	n=$(($n+1))
- 	sleep .$sleeptime
- 
--	# Spin a random duration
-+	# Spin a random duration, but with rather coarse granularity.
- 	limit=`awk -v me=$me -v n=$n -v spinmax=$spinmax 'BEGIN {
- 		srand(n + me + systime());
- 		printf("%06d", int(rand() * spinmax));
- 	}' < /dev/null`
- 	n=$(($n+1))
--	for i in {1..$limit}
-+	startsecs=`date +%s`
-+	startns=`date +%N`
-+	endsecs=$startns
-+	endns=$endns
-+	while timecheck
- 	do
--		echo > /dev/null
-+		endsecs=`date +%s`
-+		endns=`date +%N`
- 	done
- done
- 
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index b8a684459381f2..29fe3c01312f60 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1572,12 +1572,12 @@ rcu_torture_writer(void *arg)
+ 		return 0;
+ 	}
+ 	if (cur_ops->poll_active > 0) {
+-		ulo = kzalloc(cur_ops->poll_active * sizeof(ulo[0]), GFP_KERNEL);
++		ulo = kcalloc(cur_ops->poll_active, sizeof(*ulo), GFP_KERNEL);
+ 		if (!WARN_ON(!ulo))
+ 			ulo_size = cur_ops->poll_active;
+ 	}
+ 	if (cur_ops->poll_active_full > 0) {
+-		rgo = kzalloc(cur_ops->poll_active_full * sizeof(rgo[0]), GFP_KERNEL);
++		rgo = kcalloc(cur_ops->poll_active_full, sizeof(*rgo), GFP_KERNEL);
+ 		if (!WARN_ON(!rgo))
+ 			rgo_size = cur_ops->poll_active_full;
+ 	}
 -- 
 2.40.1
 
