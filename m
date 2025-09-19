@@ -1,156 +1,114 @@
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43062222B4
-	for <rcu@vger.kernel.org>; Thu, 18 Sep 2025 21:48:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336601A7253
+	for <rcu@vger.kernel.org>; Fri, 19 Sep 2025 01:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758232083; cv=none; b=BTvlFwX/bjh/AHHxuuR99GqYXpY24NQB5mtdTzRxdpTuVpqHIMjBgUKLKssKCRV2kfjxCqXom6J9S7Tkug9e/JsoqK32ZFZO6rtSlfiNsAqDjYHJ6sJH/2NwS2ufo2GjpTWWjV8SnG15ax74NCqbjLJ6ROXjtDdWkwn4tY5TTdU=
+	t=1758246435; cv=none; b=dEJATJc/X7kbKedT27u5G5tGPuEupp6q3XSn2Rcqj9ky2efcGESViaadF++OTkKv3cTAv1eH9sFx7BpsqN9d3ZVaON7sF4BaNdH7l4RYvvOqA6jaqjMzzVZuxmCY/1jHoFK+QJLujNWGXzlQEDFhYl2BHBIfU4gWsPjaT+5xccg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758232083; c=relaxed/simple;
-	bh=OBdCMGeWv7G/tkOmZiDbcUQKLH/CnWF06gVEbnVu89c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M0pFwTzdSkoV8aFzFqqVUYCt5B1tF/sZwwtlJgmF/OLVsGFSUO8+GsyDYn5VbGb9aJcYCueS50l1KD0xYK7wow93XIyZw1t9k8kheM+yHx6eeRNUTpDXsL9AUYJ9hor6RfNkJv7tWjMQSAiadSZQVVPtAcBbznb688KHCsoJMHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=cfK9eoIS; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1758246435; c=relaxed/simple;
+	bh=tK7qZxWKS2HuhX167r9HRB0W9FfaI2Q3iMdOyh7NKV4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ADAPZ2PNNbwDgjs6pPz0GKQrL9lxNrfTG6zZNZYU2RSGtjKo2Izw/F7AWg64n0DNZl3Cj12qwd555dHqBa9PET2WTcDhnVQyQ9dxNqxw2xpOIjsb00OYxI1wLIbI6nBAzhxdXcBofYTipHkyL2s9VWQjel9+QIyc8uofT3+TCxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Iqj9/Lnn; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="cfK9eoIS"
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b2400dcc55eso99632366b.0
-        for <rcu@vger.kernel.org>; Thu, 18 Sep 2025 14:48:00 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iqj9/Lnn"
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7704f3c46ceso1530811b3a.2
+        for <rcu@vger.kernel.org>; Thu, 18 Sep 2025 18:47:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1758232079; x=1758836879; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mLiszfQw8YctXWgw7Rv1CzeIAYsEhv/enJDimwborHo=;
-        b=cfK9eoISwy9D70FL722Pe/nKSe5uTxaEevf5/xvwpig9ErinOUk3ZlSBaP66vG95A1
-         aUyIw3re0btHyZLNmgqJDBaEB6MDn3+gQl4o21fd94Ch/aruDenYqb2DHtHrChJNQVWh
-         gp1jUTpNZmLu0Bs+ATlq8nAebiMdvbX030U+I=
+        d=gmail.com; s=20230601; t=1758246432; x=1758851232; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ctSrW8wbv38Mk10S7M7Ab4SdtyDnVEwCrq9dHNHgWY4=;
+        b=Iqj9/Lnn+cCuAoT62r7WxCdNy9rFH2mEpCDNXJVkw0Ll9bnkgVSwmLLaqAXBf7VPec
+         OUSx64e5B4UM8QJ2vfKo7HS0bHaRr+sneEY7y/aH1QMxQ7QOjvZxH1gedKx4ifn2KiTA
+         PU4FycfiXe10DKzDmcOzE5kjkC1byn2MdpuYKFMzbYVbQjG3aVkZ0iEJxmWgvIoDMBXg
+         lSVAAVvbkClKx80hb1Hry67IhVCMTEa9YFmk1f4zmLjvNivb/PEyAjjBOJo1iXhuI/yB
+         dOCl5k7UqUsGlzRVeJ59Cq/G7onh5yph86q/EnHobJMsdc0cGnOZ6b/A/odPPWNQxpm0
+         m0/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758232079; x=1758836879;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1758246432; x=1758851232;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mLiszfQw8YctXWgw7Rv1CzeIAYsEhv/enJDimwborHo=;
-        b=qdD5SjqmwxzLZUEvgnD9BhduC+sAoJuu3mUnMtCA7JjU84ATv+XL7RIHA1GtuaJ5jK
-         2vTRMQvvuxT6xib531ctZ/f2u4WP8ev1VXdw6+FUiR5OxIiCsRh7p3iN+bdVAfRk8Snj
-         ANizcW53CYMgHZh35+yIO95sBlt382HBQa8cYgl5rq3DCRwMULyW4C32BQjGd9MsN5EV
-         aqAshv+a6G5DX5LnKRxyGOVuHIgfquj+tkJMaY48bYo1+RlYG9uIt+xPqn+WHd2HykDw
-         UACXM11+s5ZBCUxRkmbzFD+qroHY4Kv2MIIK+Ihzqggr1zvY1CodU81R9XNyg2in/Dmz
-         MZZA==
-X-Forwarded-Encrypted: i=1; AJvYcCVPyRkVoCho89uobaKntwHA1Sg6MNrQf9WVwrJa2gvJ23ssF+zHZ5I6UeCbcfz0eakwcnU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwASDMMfPITZu2r9wa1Bs7oI1eGviHiE1an+gRMCaWxfWb5id3g
-	F+zO8QFtMZqvVdW7fnzvmXB4RSLUF5ihTm5A0GRCt+ZLqbrWw0foWttmQ4yE3Xl1WmYYFd/8Fnu
-	ZpRsPqH23HA==
-X-Gm-Gg: ASbGncshr28tx4QQm2rHo9nPFrpWxNaYcsCZk9ynvFB2bBw/OIdR3u+AHZ6JQ8KquYg
-	cKWfAd2dORH7PieYEbH3sNKCkonONJiyyPsD9C/dawJ3p8q/kL2+3VkjXCLVL1de/MQx3aDiqDr
-	WtU5xbRZSNrU7Dr33RB2+OCBry6GK3BOofIw9S5WCUMm2neq9JEqjmABi+cS+Uf8O6doJi6HFTy
-	3UtoJrHM0ImD4bV3he6KgbBZF1zIdyX+GXnyF/sWAhBY9W8Qc4BTOhiDL3Ub9UgNG01FPaMfwpd
-	eJWKKQz6M++OpZCfjOdPIykMmiN9h9rGeOiRWVh7oa28TeRlIj8REO71daLbWkRlaXfiTdTYW5a
-	q757WKc/Gca84/u2TBF/YwGtSZamEF0PM8xqnMujLUDovZuoKzo3waJ6OtPjM0xonupoaQN7NEQ
-	zXJeP9bDG5KUpZV44=
-X-Google-Smtp-Source: AGHT+IHv5kqm6QBIkkDHD3oRXCsb7vtTkp6yGH5d7hiIGbmC1pfBKZU1IsdeW2KfuXWiWbpRqX5FaA==
-X-Received: by 2002:a17:907:3d8b:b0:b12:3f5f:603b with SMTP id a640c23a62f3a-b24ee3160f1mr82427666b.3.1758232078785;
-        Thu, 18 Sep 2025 14:47:58 -0700 (PDT)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b1fd271fcd1sm271039666b.107.2025.09.18.14.47.57
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Sep 2025 14:47:58 -0700 (PDT)
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-afcb7ae6ed0so215861966b.3
-        for <rcu@vger.kernel.org>; Thu, 18 Sep 2025 14:47:57 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWHcKxMlASkYtjU1bhIlNxDmjUm7tdMjmc84cvK4Qpr5MnUiCWqZrtQn3PhZ0yFStZO1YM=@vger.kernel.org
-X-Received: by 2002:a17:906:dc89:b0:b0f:a22a:4c30 with SMTP id
- a640c23a62f3a-b24f5685fdemr62738866b.47.1758232077501; Thu, 18 Sep 2025
- 14:47:57 -0700 (PDT)
+        bh=ctSrW8wbv38Mk10S7M7Ab4SdtyDnVEwCrq9dHNHgWY4=;
+        b=X8OJJhRkCK30r8z97ezYmGcuQIYaFGx1YmOSqFNOzyYXxbrpPaU3vovn9jnfVWBaYB
+         3PzHxUPiBSXFI4JNSFR6kFf4fj0eDLqEca01rSVWBRq2/m+nZZt7PR7OsDQypOIbeXem
+         Km+ym13aA8VOsodunp1lgHpEEd980yQosR0rZHTDerFLzngq+LFfjpsby+U1iphhCyl/
+         kZCh4SggrT8B5FU0KzNCsM+IIms6fJkHq+gRNN9pN4oX3jfOjy0fIHoZp+pQQ5u6QJfk
+         5GZWBJkidZn/coaG0+OerkLR5ubBxbSyMEENsPqdd6drlD7c87Koo6G59m3FYTvIGXfZ
+         a9dg==
+X-Forwarded-Encrypted: i=1; AJvYcCU7o4zv6GDtRrDV1irEAG+7LGNfMluHjYUGyj96MYtYKhl+y3c4D9RW9T9Jg8oR26FoChM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yym9DuX5B84dRloUJflmZo0KwAzoe5dA1t1tQ8MK4uFq/BL0rES
+	MVCRvB3Og7VTDzDHGMkcIDM+bMFYmiDA9fca4AqTdF+oNUI+wth17u7B
+X-Gm-Gg: ASbGncvZd3yGzghCULfkH5eju0ggeXhicoBH/BAy/7fOckJ3yBRX9XfR2ul0mOUqJRa
+	8n2CMRCWOc2bWGnvBtu/eSS+0ArJonZG3QEPTl86ND0ioMGV3kyXsCBcYmrq9IMOIa1qTiFRT3j
+	SLiY77SflIAy49KJLNhefPMglD0TYueGZd2fzv4FIto7H3+IXK85vKtMcypwi6Q/krWBCsAC9AI
+	sGecqWquyuBUpQf+542Gbi1gUo1OssRhNwUn6jrFr7ESAme1SuZ4WrO3X9QftDx7eSxQjvguP/A
+	IR6Wa8WMNQ/rJivNJfENjRVaLMRBenPOYIqC1Nx/6NCbpudN+WBL5ZBLCHMfuqfndmIe/KE000S
+	ufaHZqsemNqwqosI+/LjszcOt3DX7Jm+zR1uNqVXyqX3i+yqyX2fP0ydojiifJElved3+GEeOMw
+	xZLw==
+X-Google-Smtp-Source: AGHT+IHgzeQnEqpmnUs1J+YXPdqkcX/Yip9M+tbbNnqxQ78PLh+Qjx/qxIoFuDJdnI81p0BRulHRLA==
+X-Received: by 2002:a05:6a00:178d:b0:776:20f9:71f7 with SMTP id d2e1a72fcca58-77e4d708a65mr1943903b3a.8.1758246432434;
+        Thu, 18 Sep 2025 18:47:12 -0700 (PDT)
+Received: from localhost.localdomain (140-211-169-189-openstack.osuosl.org. [140.211.169.189])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77cfbb79c2esm3618114b3a.2.2025.09.18.18.47.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Sep 2025 18:47:11 -0700 (PDT)
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+To: w@1wt.eu,
+	linux@weissschuh.net,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lance@osuosl.org
+Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH v2] tools/nolibc: make time_t robust if __kernel_old_time_t is missing in host headers
+Date: Fri, 19 Sep 2025 01:46:43 +0000
+Message-Id: <20250919014643.2776037-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250918140451.1289454-1-elver@google.com> <CAHk-=wgd-Wcp0GpYaQnU7S9ci+FvFmaNw1gm75mzf0ZWdNLxvw@mail.gmail.com>
- <aMx4-B_WAtX2aiKx@elver.google.com>
-In-Reply-To: <aMx4-B_WAtX2aiKx@elver.google.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 18 Sep 2025 14:47:41 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgQO7c0zc8_VwaVSzG3fEVFFcjWzVBKM4jYjv8UiD2dkg@mail.gmail.com>
-X-Gm-Features: AS18NWBxHuMwwtU-EoNbPFA3uJ1YRJkAKqdurj12n-PWNJgH6ecKwZ8QZrX3P28
-Message-ID: <CAHk-=wgQO7c0zc8_VwaVSzG3fEVFFcjWzVBKM4jYjv8UiD2dkg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/35] Compiler-Based Capability- and Locking-Analysis
-To: Marco Elver <elver@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Bart Van Assche <bvanassche@acm.org>, Bill Wendling <morbo@google.com>, Christoph Hellwig <hch@lst.de>, 
-	Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Ian Rogers <irogers@google.com>, 
-	Jann Horn <jannh@google.com>, Joel Fernandes <joelagnelf@nvidia.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Josh Triplett <josh@joshtriplett.org>, 
-	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>, 
-	Kentaro Takeda <takedakn@nttdata.co.jp>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, Thomas Gleixner <tglx@linutronix.de>, 
-	Thomas Graf <tgraf@suug.ch>, Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, 
-	kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-security-module@vger.kernel.org, linux-sparse@vger.kernel.org, 
-	llvm@lists.linux.dev, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 18 Sept 2025 at 14:26, Marco Elver <elver@google.com> wrote:
->
-> Fair points. "Context Analysis" makes sense, but it makes the thing
-> (e.g. lock) used to establish that context a little awkward to refer to
-> -- see half-baked attempt at reworking the documentation below.
+Commit d5094bcb5bfd ("tools/nolibc: define time_t in terms of
+__kernel_old_time_t") made nolibc use the kernel's time type so that
+`time_t` matches `timespec::tv_sec` on all ABIs (notably x32).
 
-Yeah, I agree that some of that reads more than a bit oddly.
+But since __kernel_old_time_t
+is fairly new, notably from 2020 in commit 94c467ddb273 ("y2038: add
+__kernel_old_timespec and __kernel_old_time_t"), nolibc builds that
+rely on host headers may fail.
 
-I wonder if we could talk about "context analysis", but then when
-discussing what is *held* for a particular context, call that a
-"context token" or something like that?
+Switch to __kernel_time_t, which is the same as
+__kernel_old_time_t and has existed for longer.    
 
-But I don't mind your "Context guard" notion either. I'm not loving
-it, but it's not offensive to me either.
+Tested in PPC VM of Open Source Lab of Oregon State University
+(./tools/testing/selftests/rcutorture/bin/mkinitrd.sh)
 
-Then the language would be feel fairly straightforward,
+Fixes: d5094bcb5bfd ("tools/nolibc: define time_t in terms of __kernel_old_time_t")
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>                     
+---
+ tools/include/nolibc/std.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Eg:
+diff --git a/tools/include/nolibc/std.h b/tools/include/nolibc/std.h
+index ba950f0e7338..3940778822f4 100644
+--- a/tools/include/nolibc/std.h
++++ b/tools/include/nolibc/std.h
+@@ -29,6 +29,6 @@ typedef unsigned long       nlink_t;
+ typedef   signed long         off_t;
+ typedef   signed long     blksize_t;
+ typedef   signed long      blkcnt_t;
+-typedef __kernel_old_time_t  time_t;
++typedef __kernel_time_t  time_t;
+ 
+ #endif /* _NOLIBC_STD_H */
+-- 
+2.25.1
 
-> +Context analysis is a way to specify permissibility of operations to depend on
-> +contexts being held (or not held).
-
-That "contexts being held" sounds odd, but talking about "context
-markers", or "context tokens" would seem natural.
-
-An alternative would be to not talk about markers / tokens / guards at
-all, but simply about a context being *active*.
-
-IOW, instead of wording it like this:
-
-> +The set of contexts that are actually held by a given thread at a given point
-> +in program execution is a run-time concept.
-
-that talks about "being held", you could just state it in the sense of
-the "set of contexts being active", and that immediately reads fairly
-naturally, doesn't it?
-
-Because a context is a *state* you are in, it's not something you hold on to.
-
-The tokens - or whatever - would be only some internal implementation
-detail of how the compiler keeps track of which state is active, not
-the conceptual idea itself.
-
-So you name states, and you have functions to mark those context
-states as being entered or exited, but you don't really even have to
-talk about "holding" anything.
-
-No?
-
-               Linus
