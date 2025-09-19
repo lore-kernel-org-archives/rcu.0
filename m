@@ -1,434 +1,357 @@
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 863B62C3252;
-	Fri, 19 Sep 2025 06:48:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758264515; cv=fail; b=EACR9dXDbbJlo44UcE77tHVoeq10DKaT6gYD1cjLAT0VqdarwkyCZx/XjY+7D/2VP3TClyh7hFrQE3OVe5Y4CDR/t+ehhFexE8AhWYV/GRKjmTbu4JEGDLsD3ovTPE5A5iSe5HSyFQR/4Px9DyNaIQ6VNZtiU6yZB88XaSP05NY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758264515; c=relaxed/simple;
-	bh=ZWBTtP+5p9/bjvfZkiCcal16wCmXACKHudG90dXfcPs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=qvA/C5qkrGQ3p5jJCZciRmQvCyKQQV5c2xl4iG+RbrtqrG6j7mLfmaa+uGgJ902FshmHSYVqx3M9KrNER+X+7vMLQAhtkPR61nwheyAGDUyAvPdD7CgZJCvWn+hhGA9dzuO7WlmcH4T/m93JZ7oZEHnA75rqWFNN8U+V97jRUt4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=H21qLmGn; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=rGD8HbT+; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C165CDDC5
+	for <rcu@vger.kernel.org>; Fri, 19 Sep 2025 07:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758265347; cv=none; b=RXwIR9lFGoy5jDYIhAvY32yYrc2vzLJvkhcIGuNQmRCN+Fltp3xzkfXNw4zHznpNXntz+/u7X7ydUY5lENaGH+r2B4q2dfJpM0qdEdiQYTFSBUG/uq29JKlf0TVxP3SwfPEM/UUVcLUJdqrYtK/AzzOxSVxrBy27eNRQzuoPg08=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758265347; c=relaxed/simple;
+	bh=pPDugfiKD72cL4rxOMaAU9JjJdApsciU0jjUg1JLO1E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aPYIvNf+wP65adJfACtpXG/Oy7+L3psiGODSRe4Y1GUuZiOzKPI1yNL6NRZxGR4Vis2zjkMBygQDqkta/BCb+3rgA166sDJqzL3A2mQk8hKwOe9XmPJJkBlu1t0QE93HwKJF6uQ/Yjwy1aGpGIjmkHJPCMpvvPiNrpZaHv1ABfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XLOdRlFl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=racs1IQX; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XLOdRlFl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=racs1IQX; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="H21qLmGn";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="rGD8HbT+"
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58ILGH7Z018773;
-	Fri, 19 Sep 2025 06:48:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=ymKZNhEinJEaX4Th2x
-	N/1gjCho+RRZqwilnCPu+sdAk=; b=H21qLmGnneDIR7gt85xOIuc6I0pIEGIuZ3
-	N8P3tcO6fLadotGGd9Ot/r2+Hnlmd5u9qWw2gD3oN7Eq8IY0kkH3IYDpyDk1ncUd
-	Ie+zBJmHZmF9nJRwGmeTrnU7ZlsnJ5qaztJVRgc1qFYfNL5WsX2esL0DuI/KrQhH
-	dRg9h2jTijvBsjD9l+qbH0qcKlCZ8XQHMnxcjCk+lZjjYt9XjOryMlBC1jnZa3r1
-	B5ZgfhI2gvLb3q6Du8Gz8f5+y8Wh1S4NZMiE2GsQU/P96YJ8JsFa25uOfPuWTI3f
-	Qih+NxuSQ9eGTav557FVf+fM6gJ8ZflMbv7qgYTj6AMcJDOVuixA==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 497g0kd1ng-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 19 Sep 2025 06:48:15 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 58J5OQnb027290;
-	Fri, 19 Sep 2025 06:48:14 GMT
-Received: from bl0pr03cu003.outbound.protection.outlook.com (mail-eastusazon11012027.outbound.protection.outlook.com [52.101.53.27])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 494y2pdcuj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 19 Sep 2025 06:48:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Dr/x8mA++qtmmEkiYsLfgrMXW/uDQTiFsJD/TRVZQc1rssFG0rFQWC2BUf7mRqra4o9QJUSAt/j6fD7tSkIuTVM03TTWcwSvOtFYa4JrRA18NZfgsMzLBZCDstessUHxPBsi2sUQP5nM3KqZcQqs7mvaFrXZA+HZydTC1UfFjw8keHDy20WOk1AmXwW/LnbMYGlX/Y73eD28WgJtUzKr0S4wo1VchHd+7/k3u4RBsZEgyeISf7VS/JKKJLR+FzJuFihvdXX+/kR28yUvPtS60K2FD9UIU8u1dktoW10oX0B03vGAwOccof5ocDyyM2oaDCkElMuVwHrq648BHD4UiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ymKZNhEinJEaX4Th2xN/1gjCho+RRZqwilnCPu+sdAk=;
- b=MknoCQg9NufwniZKljq5ANyO9WFaXkTnAQNa4Wl4FBzP8nu8DamLoiklBEfNwr8bQdsZbfR7pAFrIgOpoczBeanWncWHjFMvN7D7yolB1WWV1qrD5jIHvqGsr9/wQKmNi7r9nSNQS5tRyxe+GcFD2Rdiw1s+oanxvjOQ+O1eWa0lbevFOJgX7TsLjbbfTU3hBp97Nu0ho0tyZ4tcDlP8Jkc8v728Sn0WNWfvBNjqxHX570sUAtKL4qenEaY85X/xRFbo6twBnWDHqBCheiT4kDuu96VL9lJZbcou/qctcIM2Y9KJvQZi86qXRNB5tryHdR2Gy4af+6fRyBDuKLPrVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ymKZNhEinJEaX4Th2xN/1gjCho+RRZqwilnCPu+sdAk=;
- b=rGD8HbT+npPNibthbCbAsRSAQGq1kvSJ1ll1ROW9dlhVbeUn4Ij2kfDyRK4pqKVAPpp7st0vaCS5TCgY9dtlwVoSCBYib7iEWfabzoXHKqPqzgGkWzp0BdeV+UNTIfmRv/ScRk0htiAN0cTSuv7vHm41yhQuLR8FozM9QMEVvy4=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by SA1PR10MB6342.namprd10.prod.outlook.com (2603:10b6:806:255::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.23; Fri, 19 Sep
- 2025 06:47:46 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23%7]) with mapi id 15.20.9137.012; Fri, 19 Sep 2025
- 06:47:45 +0000
-Date: Fri, 19 Sep 2025 15:47:34 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Suren Baghdasaryan <surenb@google.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Christoph Lameter <cl@gentwo.org>,
-        David Rientjes <rientjes@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        maple-tree@lists.infradead.org,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH v8 04/23] slab: add sheaf support for batching
- kfree_rcu() operations
-Message-ID: <aMz8hk3lrWiPQYnw@harry>
-References: <20250910-slub-percpu-caches-v8-4-ca3099d8352c@suse.cz>
- <aMpxnACqmsQl-lp0@hyeyoo>
- <bbda8c25-b575-4e98-b1ae-b103c6598d38@suse.cz>
- <aMqcXyKRlZggLxu_@hyeyoo>
- <6f92eca3-863e-4b77-b2df-dc2752c0ff4e@suse.cz>
- <aMqyn6nenR8V_p1y@hyeyoo>
- <bf8b4741-1025-4cc8-b9ed-5b566bdcb2d7@suse.cz>
- <aMq40h5iOjj8K7cc@hyeyoo>
- <a32bd837-2597-43d0-9da3-1ce5a53b15f4@suse.cz>
- <40461105-a344-444f-834b-9559b6644710@suse.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <40461105-a344-444f-834b-9559b6644710@suse.cz>
-X-ClientProxiedBy: SE2P216CA0164.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2cb::16) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XLOdRlFl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="racs1IQX";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XLOdRlFl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="racs1IQX"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F33C51F7D8;
+	Fri, 19 Sep 2025 07:02:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758265343; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=X+OU5BBTnLHobJcybGck4Ar/gFBtlxoZWMJB7CVL0EI=;
+	b=XLOdRlFl683fRR/ac5pZgpBeqUvCuW92iSHrIhk2hnZo96bhw+Yh59knTnPrpsyXx1uyyg
+	85iV9SYjiD9XMGtXJXIVxSrDKl1+k2QwX3I5sTRfXQ9z4SVUMtI58PZJIXVKXDSoid/1Ly
+	0dlMJ1XOvFQeKtN6S+PoHZ7gMHg1m4g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758265343;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=X+OU5BBTnLHobJcybGck4Ar/gFBtlxoZWMJB7CVL0EI=;
+	b=racs1IQXD7oVub/3XFUW5h2uDmlnc3DAwDRNKDZpNhRdTx6Y82HrUsnGeVAzwmLChKlKOf
+	oK8a2QXRqUuNRMDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758265343; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=X+OU5BBTnLHobJcybGck4Ar/gFBtlxoZWMJB7CVL0EI=;
+	b=XLOdRlFl683fRR/ac5pZgpBeqUvCuW92iSHrIhk2hnZo96bhw+Yh59knTnPrpsyXx1uyyg
+	85iV9SYjiD9XMGtXJXIVxSrDKl1+k2QwX3I5sTRfXQ9z4SVUMtI58PZJIXVKXDSoid/1Ly
+	0dlMJ1XOvFQeKtN6S+PoHZ7gMHg1m4g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758265343;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=X+OU5BBTnLHobJcybGck4Ar/gFBtlxoZWMJB7CVL0EI=;
+	b=racs1IQXD7oVub/3XFUW5h2uDmlnc3DAwDRNKDZpNhRdTx6Y82HrUsnGeVAzwmLChKlKOf
+	oK8a2QXRqUuNRMDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4FC413A39;
+	Fri, 19 Sep 2025 07:02:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id NygcL/7/zGihBwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 19 Sep 2025 07:02:22 +0000
+Message-ID: <a4ca0cf5-b7fa-48cb-abfb-1e1d016c30d0@suse.cz>
+Date: Fri, 19 Sep 2025 09:02:22 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|SA1PR10MB6342:EE_
-X-MS-Office365-Filtering-Correlation-Id: e294e95d-ead0-45dc-abb0-08ddf748707d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?ewxK9HHgcQKqt/+FhRIm/YTUzjUo0lnFFAmA+84u6Px2HJIjPPv4tgbsupUM?=
- =?us-ascii?Q?RxUNTyw6qKEkudsoSaoJwxPhEPrLavlU7+boZmTS8SCu+ntkDHjKb2bLV2If?=
- =?us-ascii?Q?4ENWrqY69nVKuy5Tum39QmBq71nK+QxGswctjJ6goXgGoVHZ5TNm1/9Qq66f?=
- =?us-ascii?Q?599uFuURfcDzQkLkPCS/B0Ly8NPh7GzWFc67FOs0lbctXYPgRcw68OgHfsB3?=
- =?us-ascii?Q?jktvtj2dMfKDvBb8bMPH/51hGcTTMvRPtRWvFu9zuKjZTMAlpgZVh+Rl3eEh?=
- =?us-ascii?Q?GW0TOPPEvBIFkjoJpM8Fo0e+NEVM/L9Shkqk4FrlxDCHYH47Vmtj8HbUZFmR?=
- =?us-ascii?Q?p2V/XkR9G/TrqHLBM8g5NOwQJDWTyaTqNx2ebQwP2x2+Tx/HU4UIxl/wqyKY?=
- =?us-ascii?Q?dWThbls4Qm8ayw0UVt9J7mXice4vkz/1SKPbaJ+kDr2IHSOys3A6KH4FwRX8?=
- =?us-ascii?Q?Vsnm9bef98zwoJRMhGP+rtefptv61xwUHNYfmu3G1v6YiJv/GuwjpbhqMzZV?=
- =?us-ascii?Q?rhvvJbQMiRQ8eEgIq2vnf9QmyGzRsnz1SrbgNSND0NmK8ejwsPCr6L4icX0J?=
- =?us-ascii?Q?iGo3fWLiYpfZiCRAndt1VsJ/Mrk9EwBnk6KLRtV5/qcNME8a9kRcKYCWRn4x?=
- =?us-ascii?Q?eXGQms+2YEKu3TjXVbUpz8vU6/5kmqMEpAFVKZt7oipP7wMgPEz9JqS4aqFz?=
- =?us-ascii?Q?fZEvE4SdcsSVH+o6XTDNFhuHsiH4IceDBcS+wVq5wZJ6gqFrzbh2OzJuTYsr?=
- =?us-ascii?Q?BIsSkPBTkvggPMBb+hc8e+7v9T7plS/j67SqpCB4TyWMW3vQqLWhPx8kNbUm?=
- =?us-ascii?Q?TmhGkHug6DE1jjkuyw/FjNmuQ3EgrWoB9dm8I3YqrNuJZNGZhFzjdoi/gsRb?=
- =?us-ascii?Q?lJwTuHbKcnLTCO5otmd4nQCqyOjUgbIPJUM80WJtJTz8bHguCL2oLGWF5mzN?=
- =?us-ascii?Q?1O5ixrOJuolgxTox/81AdA48x7762xiEsGIpEeMTzeEQkftafJ9Ng2h+ktD+?=
- =?us-ascii?Q?PoRvTwh6O9KjAirsZYmHa55AVviApzftNqsIJQneGFkp8rrTl5OcKFltV7XW?=
- =?us-ascii?Q?W1Yk+vdN7ULImL48k2/3liuYSSFrF5SJcxlHADybdi+phQZBklbxV85oJhSw?=
- =?us-ascii?Q?qKuw48zByjtZ7Db8xQNYTWKbRyhujyeey5czAnZMUO9+HtjFVK8IL0g1BjGQ?=
- =?us-ascii?Q?/alqls6JsabM7uivHGgU20UnHmyM4kh4gCSH7qAUt9MiQEh8Ihz18yjiq/Ph?=
- =?us-ascii?Q?hZo1HJ1dnQdXKLNGJ+Y6yUDfAFe0etcn5rudpPwp1jR1dMRXMYIyjuw5sA2F?=
- =?us-ascii?Q?652mu1yeuVkUydw5qM+28a7PyfxyZ/IC7z7VpoHQTzI0SJvqpZTM+5ZlS+wO?=
- =?us-ascii?Q?L48LjCvlhFV8GCHuMfebra2UNm+3/6u9REEb/3uwiOG7S5g4KUYkbAZSsNqm?=
- =?us-ascii?Q?tEWN1EF0Sa4=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?yuTvh8GSeIK2BaNxTN+73UTo4ZOh6UATWiDP0hVWeXcqF6KKnMy7a9oiwQ8k?=
- =?us-ascii?Q?U+OnMQNgZhP+35iBMIWj8iHNGyeAGrjXcS/g0bGFiL9rkycwQ42YREJKAWeo?=
- =?us-ascii?Q?4mwcI0RQJk7vmsRS0SRnsRRKBzgAQx+sw6maTrXkQlF6ADUpNkQcNh4ztppJ?=
- =?us-ascii?Q?xBKy5oeO9I9AL5JlHRpWqC5VR1KBU+LnVma3xHr4an8uB+SB6ir9KlnsboNa?=
- =?us-ascii?Q?RWOvKkKtPgrYESam83Wl+4PI/PXWiDh2eIJZj70RtxECLHu4P0TaZGYpPp6z?=
- =?us-ascii?Q?RzRTHSU7gidG2KJpJvU4IQd4MeEjqrhwe/8De+BfLDChaaAaZuvJlCwJCqrf?=
- =?us-ascii?Q?EklX8M39idz2IAnqWSmL6foZjiESRMe8TQvAiSBOR9jBVXvhJiHfFtBvFyeb?=
- =?us-ascii?Q?DfAaJlpFarTNLg5k7aZD0UziMFJ4oVr+BIbsJtwbGElDNK4ezdU7dIkYbrYr?=
- =?us-ascii?Q?0xdMc0DZt0UyJnX0f5wsOfMAWKfj//cTSaCwro2P59ur1kzFgle4t+ttOE3K?=
- =?us-ascii?Q?OFzkAMwiWq4g3uviq7ulpBUOu3FBTg3F2t7mjEKh+8728D9aq8uRmynuVwAZ?=
- =?us-ascii?Q?PW8Dxk7OwyLZpkmdYBeMuIFSA4YawR9WBt6RMWnQeej9a7wfO9W0LjM0s2hJ?=
- =?us-ascii?Q?QJM6y8a+SJ4E9TG5eLEiggLkalAknFBE4XWH41Ew8Ls6LieQN/qZFLT8WSN9?=
- =?us-ascii?Q?3trhMMm2F1DwzoLWUh3bhlArKRvkTE/YI2c7Sbav8l1FJzLosrSNlcmSBp4A?=
- =?us-ascii?Q?267Dp9OSWC8CQcEstdd90II7hDwj2pHHwx8ouR7cRHaIJE4HW5vrS0/2gKis?=
- =?us-ascii?Q?ApV3wz5zh2oJ+TiBg54TwlsCTPMBSC6pSFDlhNfBkMWruzhnm4S3bVSlxTaU?=
- =?us-ascii?Q?jdd4n4TpT2GQOtt/EojzNSYfPVhir8+2bt6xa880Nm9mCACht4rRCYENBdf/?=
- =?us-ascii?Q?9PJrkEA8JqpfHu+Q7h/TOoV8CdQHn+GTa+WDfzj0igOrW4gJQN/CR/FXKBdU?=
- =?us-ascii?Q?POwDDRYuOvL8ux+EQNC0SB/TPaLHQ7bm7XD+f+SoeizOI8WoaBte/0t6SlpD?=
- =?us-ascii?Q?Y8Zgtj1FK+08uyCxKkZjK1vrCBEjlLe7/mpZ9tYTI7HaXBrLESuSngLP5t0e?=
- =?us-ascii?Q?rrxYv4cDHWyn3tCOQd/7jjxqCy3E0bsg8BrOkear7YLzg/Omhj/lG+rtTu40?=
- =?us-ascii?Q?V568Yz8LAoYWKRLou6BHEOsDWrZ5TMcPFYgIJHVA9syY6P1r+1sHuC6dOA9F?=
- =?us-ascii?Q?ATR9EDbHJnPJYKGCTPNK72LfmuAEhlY3OXgETMdcdYHJPsBt3x1Dt4CK5Jk2?=
- =?us-ascii?Q?VfZksGyhI6Cnx2Spo8Zd7QnzRDgRckrlqLAYdLZb47amHlBVZoUGKYWzRkYy?=
- =?us-ascii?Q?naIZUGNlp1IYgVIC2H/hRZkBMBG5kO0SP7KwES4t4ZIjlumnurmotyCGoT1Z?=
- =?us-ascii?Q?81AssVEqkCsfCJ+9J54WOTtAJmDE7QsgXQlc05HrNnKAUOAiFoSmw9N9YCdy?=
- =?us-ascii?Q?qYugq9iOemhEc6ZkAQG9hU9hax8ggW0KbtFbKsXD+H34vjbv0BQyUoLlE64F?=
- =?us-ascii?Q?5jyynm7F7g4dgz1bAnEYgFoEgkKxlvT8Bnw2Vz+G?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	rY4kEsigKB15Zv3FptbUYtyiMETa2t5Akvf7lTc45wgJIiOAEMj+Z5ze0NCcmQlDckZqoAcXuAMN4pZqRqpPQf1bmLtaUqML+qGY5Pkjs8OLI8f15IIasBS/HDncv5PmPz41DVdkV2eaLZasf5ou7bLd3uD+RqeI8YzlcaIHbSDqqwqFVQlPsukhCat4SYeS394JdIe0ZasKdqXcPEvINn0jcvS2r9HBlT0V4DUryPxYoKdNXliFI6lLMxRHWEJv56B41qHLzICsZ1fWQnvsSWKIrl+E31W87wWH7g9AM2oLMtRvCKaX8M+nyHeuWsqLTfBS/w9QOw8uIZXJBfmGqK45MN5l1IWBw15BxoLPCEM2+ql5pb3b80XFpPa7FOpuX/8+m+OurNPh1edzQ+yj/i1AoTJIZS632acYcAVi6cw/qcme5zL4t4x73RH43lIMEUe5urURUjnvzX07S3s9Jr+iXw6Sl5NEEe3gWIdCh3+taU1x5EJZbJf0dApByx/maSDvpiBIY7LUDkYqK11P/RcldYvPHtqCMuit5PfV8Ehkhdq2/0pcoG8iJN/GeLUoYRJuKbDpJIyTrEiRp0zNRJZJYifVyF2FuUFDunKlbXM=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e294e95d-ead0-45dc-abb0-08ddf748707d
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2025 06:47:45.8122
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ez6+7ly6DQjcZiI+48hUwWpBOYGRQUeuidFQxTA2Dyz+K4c2OiyC+QmuqRANpoFxDqBslVWQvX1/bwqvZZorng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6342
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-18_03,2025-09-19_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
- mlxlogscore=999 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2508110000 definitions=main-2509190060
-X-Authority-Analysis: v=2.4 cv=b9Oy4sGx c=1 sm=1 tr=0 ts=68ccfcaf b=1 cx=c_pps
- a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=yJojWOMRYYMA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=ZkBYrEZaL4WzJX-zIJ4A:9
- a=CjuIK1q_8ugA:10 cc=ntf awl=host:12083
-X-Proofpoint-GUID: S-xrKgo8NQpeCyrYRcmaFQ6srkMY3XiM
-X-Proofpoint-ORIG-GUID: S-xrKgo8NQpeCyrYRcmaFQ6srkMY3XiM
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwMyBTYWx0ZWRfXzIiZHact+kFe
- J2AI7NPaV5rM4qHaN3o2hZ8do2I5jieN2iIxDd+RayJLHaM+QCKTYiE8wHxB/Q5JUmf/2SmbFIT
- WJoAFV4l0L2zr73j8hy/LFNNo5sxDX07t5eFhL9ADRpZfG45Hvm36jG9ehmvUO8n6Ma7AE62HyH
- tA/Bc28awOYA6TKQ2kcx4r83FHukjB6efCzZvDtsJAEWU1dYjwSBJuNeMvnL4N04DIlkY9jM3kS
- 9ckKf2rMueUL0tXmRDMj9bSBEG1bKJCSq3y/pTbF5Czc48uMN0HX7Ez1RwIhfFMVD92DK0zDrIq
- 6XgBEzQdeBt+Cmdm0s/nTqanM84Gmnuc0SXkCcslhOB/vkj47gvE/UCS5CUVhXcG2nNsNpt8GpX
- PZ5/CVjxF+7goeNTDRw2kDuRWPHCJg==
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 04/23] slab: add sheaf support for batching kfree_rcu()
+ operations
+Content-Language: en-US
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Suren Baghdasaryan <surenb@google.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ maple-tree@lists.infradead.org, "Paul E . McKenney" <paulmck@kernel.org>
+References: <20250910-slub-percpu-caches-v8-4-ca3099d8352c@suse.cz>
+ <aMpxnACqmsQl-lp0@hyeyoo> <bbda8c25-b575-4e98-b1ae-b103c6598d38@suse.cz>
+ <aMqcXyKRlZggLxu_@hyeyoo> <6f92eca3-863e-4b77-b2df-dc2752c0ff4e@suse.cz>
+ <aMqyn6nenR8V_p1y@hyeyoo> <bf8b4741-1025-4cc8-b9ed-5b566bdcb2d7@suse.cz>
+ <aMq40h5iOjj8K7cc@hyeyoo> <a32bd837-2597-43d0-9da3-1ce5a53b15f4@suse.cz>
+ <40461105-a344-444f-834b-9559b6644710@suse.cz> <aMz8hk3lrWiPQYnw@harry>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <aMz8hk3lrWiPQYnw@harry>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[google.com,oracle.com,gentwo.org,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org,kernel.org];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo,oracle.com:email]
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
 
-On Thu, Sep 18, 2025 at 10:09:34AM +0200, Vlastimil Babka wrote:
-> On 9/17/25 16:14, Vlastimil Babka wrote:
-> > On 9/17/25 15:34, Harry Yoo wrote:
-> >> On Wed, Sep 17, 2025 at 03:21:31PM +0200, Vlastimil Babka wrote:
-> >>> On 9/17/25 15:07, Harry Yoo wrote:
-> >>> > On Wed, Sep 17, 2025 at 02:05:49PM +0200, Vlastimil Babka wrote:
-> >>> >> On 9/17/25 13:32, Harry Yoo wrote:
-> >>> >> > On Wed, Sep 17, 2025 at 11:55:10AM +0200, Vlastimil Babka wrote:
-> >>> >> >> On 9/17/25 10:30, Harry Yoo wrote:
-> >>> >> >> > On Wed, Sep 10, 2025 at 10:01:06AM +0200, Vlastimil Babka wrote:
-> >>> >> >> >> +				sfw->skip = true;
-> >>> >> >> >> +				continue;
-> >>> >> >> >> +			}
-> >>> >> >> >>
-> >>> >> >> >> +			INIT_WORK(&sfw->work, flush_rcu_sheaf);
-> >>> >> >> >> +			sfw->skip = false;
-> >>> >> >> >> +			sfw->s = s;
-> >>> >> >> >> +			queue_work_on(cpu, flushwq, &sfw->work);
-> >>> >> >> >> +			flushed = true;
-> >>> >> >> >> +		}
-> >>> >> >> >> +
-> >>> >> >> >> +		for_each_online_cpu(cpu) {
-> >>> >> >> >> +			sfw = &per_cpu(slub_flush, cpu);
-> >>> >> >> >> +			if (sfw->skip)
-> >>> >> >> >> +				continue;
-> >>> >> >> >> +			flush_work(&sfw->work);
-> >>> >> >> >> +		}
-> >>> >> >> >> +
-> >>> >> >> >> +		mutex_unlock(&flush_lock);
-> >>> >> >> >> +	}
-> >>> >> >> >> +
-> >>> >> >> >> +	mutex_unlock(&slab_mutex);
-> >>> >> >> >> +	cpus_read_unlock();
-> >>> >> >> >> +
-> >>> >> >> >> +	if (flushed)
-> >>> >> >> >> +		rcu_barrier();
-> >>> >> >> > 
-> >>> >> >> > I think we need to call rcu_barrier() even if flushed == false?
-> >>> >> >> > 
-> >>> >> >> > Maybe a kvfree_rcu()'d object was already waiting for the rcu callback to
-> >>> >> >> > be processed before flush_all_rcu_sheaves() is called, and
-> >>> >> >> > in flush_all_rcu_sheaves() we skipped all (cache, cpu) pairs,
-> >>> >> >> > so flushed == false but the rcu callback isn't processed yet
-> >>> >> >> > by the end of the function?
-> >>> >> >> > 
-> >>> >> >> > That sounds like a very unlikely to happen in a realistic scenario,
-> >>> >> >> > but still possible...
-> >>> >> >> 
-> >>> >> >> Yes also good point, will flush unconditionally.
-> >>> >> >> 
-> >>> >> >> Maybe in __kfree_rcu_sheaf() I should also move the call_rcu(...) before
-> >>> >> >> local_unlock().
-> >>> >> >>
-> >>> >> >> So we don't end up seeing a NULL pcs->rcu_free in
-> >>> >> >> flush_all_rcu_sheaves() because __kfree_rcu_sheaf() already set it to NULL,
-> >>> >> >> but didn't yet do the call_rcu() as it got preempted after local_unlock().
-> >>> >> > 
-> >>> >> > Makes sense to me.
-> >>> > 
-> >>> > Wait, I'm confused.
-> >>> > 
-> >>> > I think the caller of kvfree_rcu_barrier() should make sure that it's invoked
-> >>> > only after a kvfree_rcu(X, rhs) call has returned, if the caller expects
-> >>> > the object X to be freed before kvfree_rcu_barrier() returns?
-> >>> 
-> >>> Hmm, the caller of kvfree_rcu(X, rhs) might have returned without filling up
-> >>> the rcu_sheaf fully and thus without submitting it to call_rcu(), then
-> >>> migrated to another cpu. Then it calls kvfree_rcu_barrier() while another
-> >>> unrelated kvfree_rcu(X, rhs) call on the previous cpu is for the same
-> >>> kmem_cache (kvfree_rcu_barrier() is not only for cache destruction), fills
-> >>> up the rcu_sheaf fully and is about to call_rcu() on it. And since that
-> >>> sheaf also contains the object X, we should make sure that is flushed.
-> >> 
-> >> I was going to say "but we queue and wait for the flushing work to
-> >> complete, so the sheaf containing object X should be flushed?"
-> >> 
-> >> But nah, that's true only if we see pcs->rcu_free != NULL in
-> >> flush_all_rcu_sheaves().
-> >> 
-> >> You are right...
-> >> 
-> >> Hmm, maybe it's simpler to fix this by never skipping queueing the work
-> >> even when pcs->rcu_sheaf == NULL?
-> > 
-> > I guess it's simpler, yeah.
+On 9/19/25 08:47, Harry Yoo wrote:
+> On Thu, Sep 18, 2025 at 10:09:34AM +0200, Vlastimil Babka wrote:
+>> On 9/17/25 16:14, Vlastimil Babka wrote:
+>> > On 9/17/25 15:34, Harry Yoo wrote:
+>> >> On Wed, Sep 17, 2025 at 03:21:31PM +0200, Vlastimil Babka wrote:
+>> >>> On 9/17/25 15:07, Harry Yoo wrote:
+>> >>> > On Wed, Sep 17, 2025 at 02:05:49PM +0200, Vlastimil Babka wrote:
+>> >>> >> On 9/17/25 13:32, Harry Yoo wrote:
+>> >>> >> > On Wed, Sep 17, 2025 at 11:55:10AM +0200, Vlastimil Babka wrote:
+>> >>> >> >> On 9/17/25 10:30, Harry Yoo wrote:
+>> >>> >> >> > On Wed, Sep 10, 2025 at 10:01:06AM +0200, Vlastimil Babka wrote:
+>> >>> >> >> >> +				sfw->skip = true;
+>> >>> >> >> >> +				continue;
+>> >>> >> >> >> +			}
+>> >>> >> >> >>
+>> >>> >> >> >> +			INIT_WORK(&sfw->work, flush_rcu_sheaf);
+>> >>> >> >> >> +			sfw->skip = false;
+>> >>> >> >> >> +			sfw->s = s;
+>> >>> >> >> >> +			queue_work_on(cpu, flushwq, &sfw->work);
+>> >>> >> >> >> +			flushed = true;
+>> >>> >> >> >> +		}
+>> >>> >> >> >> +
+>> >>> >> >> >> +		for_each_online_cpu(cpu) {
+>> >>> >> >> >> +			sfw = &per_cpu(slub_flush, cpu);
+>> >>> >> >> >> +			if (sfw->skip)
+>> >>> >> >> >> +				continue;
+>> >>> >> >> >> +			flush_work(&sfw->work);
+>> >>> >> >> >> +		}
+>> >>> >> >> >> +
+>> >>> >> >> >> +		mutex_unlock(&flush_lock);
+>> >>> >> >> >> +	}
+>> >>> >> >> >> +
+>> >>> >> >> >> +	mutex_unlock(&slab_mutex);
+>> >>> >> >> >> +	cpus_read_unlock();
+>> >>> >> >> >> +
+>> >>> >> >> >> +	if (flushed)
+>> >>> >> >> >> +		rcu_barrier();
+>> >>> >> >> > 
+>> >>> >> >> > I think we need to call rcu_barrier() even if flushed == false?
+>> >>> >> >> > 
+>> >>> >> >> > Maybe a kvfree_rcu()'d object was already waiting for the rcu callback to
+>> >>> >> >> > be processed before flush_all_rcu_sheaves() is called, and
+>> >>> >> >> > in flush_all_rcu_sheaves() we skipped all (cache, cpu) pairs,
+>> >>> >> >> > so flushed == false but the rcu callback isn't processed yet
+>> >>> >> >> > by the end of the function?
+>> >>> >> >> > 
+>> >>> >> >> > That sounds like a very unlikely to happen in a realistic scenario,
+>> >>> >> >> > but still possible...
+>> >>> >> >> 
+>> >>> >> >> Yes also good point, will flush unconditionally.
+>> >>> >> >> 
+>> >>> >> >> Maybe in __kfree_rcu_sheaf() I should also move the call_rcu(...) before
+>> >>> >> >> local_unlock().
+>> >>> >> >>
+>> >>> >> >> So we don't end up seeing a NULL pcs->rcu_free in
+>> >>> >> >> flush_all_rcu_sheaves() because __kfree_rcu_sheaf() already set it to NULL,
+>> >>> >> >> but didn't yet do the call_rcu() as it got preempted after local_unlock().
+>> >>> >> > 
+>> >>> >> > Makes sense to me.
+>> >>> > 
+>> >>> > Wait, I'm confused.
+>> >>> > 
+>> >>> > I think the caller of kvfree_rcu_barrier() should make sure that it's invoked
+>> >>> > only after a kvfree_rcu(X, rhs) call has returned, if the caller expects
+>> >>> > the object X to be freed before kvfree_rcu_barrier() returns?
+>> >>> 
+>> >>> Hmm, the caller of kvfree_rcu(X, rhs) might have returned without filling up
+>> >>> the rcu_sheaf fully and thus without submitting it to call_rcu(), then
+>> >>> migrated to another cpu. Then it calls kvfree_rcu_barrier() while another
+>> >>> unrelated kvfree_rcu(X, rhs) call on the previous cpu is for the same
+>> >>> kmem_cache (kvfree_rcu_barrier() is not only for cache destruction), fills
+>> >>> up the rcu_sheaf fully and is about to call_rcu() on it. And since that
+>> >>> sheaf also contains the object X, we should make sure that is flushed.
+>> >> 
+>> >> I was going to say "but we queue and wait for the flushing work to
+>> >> complete, so the sheaf containing object X should be flushed?"
+>> >> 
+>> >> But nah, that's true only if we see pcs->rcu_free != NULL in
+>> >> flush_all_rcu_sheaves().
+>> >> 
+>> >> You are right...
+>> >> 
+>> >> Hmm, maybe it's simpler to fix this by never skipping queueing the work
+>> >> even when pcs->rcu_sheaf == NULL?
+>> > 
+>> > I guess it's simpler, yeah.
+>> 
+>> So what about this? The unconditional queueing should cover all races with
+>> __kfree_rcu_sheaf() so there's just unconditional rcu_barrier() in the end.
+>> 
+>> From 0722b29fa1625b31c05d659d1d988ec882247b38 Mon Sep 17 00:00:00 2001
+>> From: Vlastimil Babka <vbabka@suse.cz>
+>> Date: Wed, 3 Sep 2025 14:59:46 +0200
+>> Subject: [PATCH] slab: add sheaf support for batching kfree_rcu() operations
+>> 
+>> Extend the sheaf infrastructure for more efficient kfree_rcu() handling.
+>> For caches with sheaves, on each cpu maintain a rcu_free sheaf in
+>> addition to main and spare sheaves.
+>> 
+>> kfree_rcu() operations will try to put objects on this sheaf. Once full,
+>> the sheaf is detached and submitted to call_rcu() with a handler that
+>> will try to put it in the barn, or flush to slab pages using bulk free,
+>> when the barn is full. Then a new empty sheaf must be obtained to put
+>> more objects there.
+>> 
+>> It's possible that no free sheaves are available to use for a new
+>> rcu_free sheaf, and the allocation in kfree_rcu() context can only use
+>> GFP_NOWAIT and thus may fail. In that case, fall back to the existing
+>> kfree_rcu() implementation.
+>> 
+>> Expected advantages:
+>> - batching the kfree_rcu() operations, that could eventually replace the
+>>   existing batching
+>> - sheaves can be reused for allocations via barn instead of being
+>>   flushed to slabs, which is more efficient
+>>   - this includes cases where only some cpus are allowed to process rcu
+>>     callbacks (Android)
+>> 
+>> Possible disadvantage:
+>> - objects might be waiting for more than their grace period (it is
+>>   determined by the last object freed into the sheaf), increasing memory
+>>   usage - but the existing batching does that too.
+>> 
+>> Only implement this for CONFIG_KVFREE_RCU_BATCHED as the tiny
+>> implementation favors smaller memory footprint over performance.
+>> 
+>> Also for now skip the usage of rcu sheaf for CONFIG_PREEMPT_RT as the
+>> contexts where kfree_rcu() is called might not be compatible with taking
+>> a barn spinlock or a GFP_NOWAIT allocation of a new sheaf taking a
+>> spinlock - the current kfree_rcu() implementation avoids doing that.
+>> 
+>> Teach kvfree_rcu_barrier() to flush all rcu_free sheaves from all caches
+>> that have them. This is not a cheap operation, but the barrier usage is
+>> rare - currently kmem_cache_destroy() or on module unload.
+>> 
+>> Add CONFIG_SLUB_STATS counters free_rcu_sheaf and free_rcu_sheaf_fail to
+>> count how many kfree_rcu() used the rcu_free sheaf successfully and how
+>> many had to fall back to the existing implementation.
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> ---
 > 
-> So what about this? The unconditional queueing should cover all races with
-> __kfree_rcu_sheaf() so there's just unconditional rcu_barrier() in the end.
-> 
-> From 0722b29fa1625b31c05d659d1d988ec882247b38 Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Wed, 3 Sep 2025 14:59:46 +0200
-> Subject: [PATCH] slab: add sheaf support for batching kfree_rcu() operations
-> 
-> Extend the sheaf infrastructure for more efficient kfree_rcu() handling.
-> For caches with sheaves, on each cpu maintain a rcu_free sheaf in
-> addition to main and spare sheaves.
-> 
-> kfree_rcu() operations will try to put objects on this sheaf. Once full,
-> the sheaf is detached and submitted to call_rcu() with a handler that
-> will try to put it in the barn, or flush to slab pages using bulk free,
-> when the barn is full. Then a new empty sheaf must be obtained to put
-> more objects there.
-> 
-> It's possible that no free sheaves are available to use for a new
-> rcu_free sheaf, and the allocation in kfree_rcu() context can only use
-> GFP_NOWAIT and thus may fail. In that case, fall back to the existing
-> kfree_rcu() implementation.
-> 
-> Expected advantages:
-> - batching the kfree_rcu() operations, that could eventually replace the
->   existing batching
-> - sheaves can be reused for allocations via barn instead of being
->   flushed to slabs, which is more efficient
->   - this includes cases where only some cpus are allowed to process rcu
->     callbacks (Android)
-> 
-> Possible disadvantage:
-> - objects might be waiting for more than their grace period (it is
->   determined by the last object freed into the sheaf), increasing memory
->   usage - but the existing batching does that too.
-> 
-> Only implement this for CONFIG_KVFREE_RCU_BATCHED as the tiny
-> implementation favors smaller memory footprint over performance.
-> 
-> Also for now skip the usage of rcu sheaf for CONFIG_PREEMPT_RT as the
-> contexts where kfree_rcu() is called might not be compatible with taking
-> a barn spinlock or a GFP_NOWAIT allocation of a new sheaf taking a
-> spinlock - the current kfree_rcu() implementation avoids doing that.
-> 
-> Teach kvfree_rcu_barrier() to flush all rcu_free sheaves from all caches
-> that have them. This is not a cheap operation, but the barrier usage is
-> rare - currently kmem_cache_destroy() or on module unload.
-> 
-> Add CONFIG_SLUB_STATS counters free_rcu_sheaf and free_rcu_sheaf_fail to
-> count how many kfree_rcu() used the rcu_free sheaf successfully and how
-> many had to fall back to the existing implementation.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
+> Looks good to me,
+> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 
-Looks good to me,
-Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
+Thanks.
 
-with a nit:
+>> +do_free:
+>> +
+>> +	rcu_sheaf = pcs->rcu_free;
+>> +
+>> +	rcu_sheaf->objects[rcu_sheaf->size++] = obj;
+>> +
+>> +	if (likely(rcu_sheaf->size < s->sheaf_capacity))
+>> +		rcu_sheaf = NULL;
+>> +	else
+>> +		pcs->rcu_free = NULL;
+>> +
+>> +	/*
+>> +	 * we flush before local_unlock to make sure a racing
+>> +	 * flush_all_rcu_sheaves() doesn't miss this sheaf
+>> +	 */
+>> +	if (rcu_sheaf)
+>> +		call_rcu(&rcu_sheaf->rcu_head, rcu_free_sheaf);
+> 
+> nit: now we don't have to put this inside local_lock()~local_unlock()?
 
-> +bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
-> +{
-> +	struct slub_percpu_sheaves *pcs;
-> +	struct slab_sheaf *rcu_sheaf;
-> +
-> +	if (!local_trylock(&s->cpu_sheaves->lock))
-> +		goto fail;
-> +
-> +	pcs = this_cpu_ptr(s->cpu_sheaves);
-> +
-> +	if (unlikely(!pcs->rcu_free)) {
-> +
-> +		struct slab_sheaf *empty;
-> +		struct node_barn *barn;
-> +
-> +		if (pcs->spare && pcs->spare->size == 0) {
-> +			pcs->rcu_free = pcs->spare;
-> +			pcs->spare = NULL;
-> +			goto do_free;
-> +		}
-> +
-> +		barn = get_barn(s);
-> +
-> +		empty = barn_get_empty_sheaf(barn);
-> +
-> +		if (empty) {
-> +			pcs->rcu_free = empty;
-> +			goto do_free;
-> +		}
-> +
-> +		local_unlock(&s->cpu_sheaves->lock);
-> +
-> +		empty = alloc_empty_sheaf(s, GFP_NOWAIT);
-> +
-> +		if (!empty)
-> +			goto fail;
-> +
-> +		if (!local_trylock(&s->cpu_sheaves->lock)) {
-> +			barn_put_empty_sheaf(barn, empty);
-> +			goto fail;
-> +		}
-> +
-> +		pcs = this_cpu_ptr(s->cpu_sheaves);
-> +
-> +		if (unlikely(pcs->rcu_free))
-> +			barn_put_empty_sheaf(barn, empty);
-> +		else
-> +			pcs->rcu_free = empty;
-> +	}
-> +
-> +do_free:
-> +
-> +	rcu_sheaf = pcs->rcu_free;
-> +
-> +	rcu_sheaf->objects[rcu_sheaf->size++] = obj;
-> +
-> +	if (likely(rcu_sheaf->size < s->sheaf_capacity))
-> +		rcu_sheaf = NULL;
-> +	else
-> +		pcs->rcu_free = NULL;
-> +
-> +	/*
-> +	 * we flush before local_unlock to make sure a racing
-> +	 * flush_all_rcu_sheaves() doesn't miss this sheaf
-> +	 */
-> +	if (rcu_sheaf)
-> +		call_rcu(&rcu_sheaf->rcu_head, rcu_free_sheaf);
+I think we still need to? AFAICS I wrote before is still true:
 
-nit: now we don't have to put this inside local_lock()~local_unlock()?
+The caller of kvfree_rcu(X, rhs) might have returned without filling up
+the rcu_sheaf fully and thus without submitting it to call_rcu(), then
+migrated to another cpu. Then it calls kvfree_rcu_barrier() while another
+unrelated kvfree_rcu(X, rhs) call on the previous cpu is for the same
+kmem_cache (kvfree_rcu_barrier() is not only for cache destruction), fills
+up the rcu_sheaf fully and is about to call_rcu() on it.
 
--- 
-Cheers,
-Harry / Hyeonggon
+If it can local_unlock() before doing the call_rcu(), it can local_unlock(),
+get preempted, and our flush worqueue handler will only see there's no
+rcu_free sheaf and do nothing.
 
-> +	local_unlock(&s->cpu_sheaves->lock);
-> +
-> +	stat(s, FREE_RCU_SHEAF);
-> +	return true;
-> +
-> +fail:
-> +	stat(s, FREE_RCU_SHEAF_FAIL);
-> +	return false;
-> +}
+If if must call_rcu() before local_unlock(), our flush workqueue handler
+will not execute on the cpu until it performs the call_rcu() and
+local_unlock(), because it can't preempt that section (!RT) or will have to
+wait doing local_lock() in flush_rcu_sheaf() (RT) - here it's important it
+takes the lock unconditionally.
+
+Or am I missing something?
