@@ -1,120 +1,122 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C629A237707;
-	Fri, 19 Sep 2025 13:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7478E2FE56B;
+	Fri, 19 Sep 2025 14:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758288747; cv=none; b=N04r+iTIVb5xM1hJqMLg/SLtoeuj/LSaUX5QN1nDHnZNwRp8cz1Efc3pC93AfKWFwW9EdONib5Wka5GhjfE5WXAZ59vOvdwseJFxhETh+SXS0spLycs8y8TwldWrEDNax+rKENLH9niXS/AA4gM9aFGn79vZj/aavFwMJhYJvKY=
+	t=1758290901; cv=none; b=YQIIZ7n7nYmnvarCYHUvG8czj7M0Vsud6ppuT1IIfKIAZG3rxmoBUZmwdOSJ9bC0XGyx/qAJe8vG7qRryHK+u0vYK7iRAkNnY8qEJVJnESkJaLuSXpVThc123yuEQ25krp2f5+Do9x3qqBwB9bdNB0tXvv+0l0Q+BgIcIVNGCYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758288747; c=relaxed/simple;
-	bh=FmizBsDFUFSEab9WKBpHkLsCxOgOeoIn8dPl+YHJ+zI=;
+	s=arc-20240116; t=1758290901; c=relaxed/simple;
+	bh=NUPh0JtwrHiUi7p6EEg2cxsqqXnH3TPGQmlGZJXCRYA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PuumVaNoHUNOSu5YxWFx/njRiaZa7Iu/aRgZfPdeMI2/G4jFNMvRU92S5pqMC7LSPz4K4lgFqwnzI74nZV8H0I321IPZRXee4/s0Zt/Va9GPaaf/Aiq9rS7XuYyP2NRvuMFiTMMHFLcgjl/UvJXZI8KhJecEpxI5F/Pb55qCnDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KHkM9dM3; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KHkM9dM3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 071FDC4CEF0;
-	Fri, 19 Sep 2025 13:32:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758288747;
-	bh=FmizBsDFUFSEab9WKBpHkLsCxOgOeoIn8dPl+YHJ+zI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KHkM9dM3IksAHaJFyYGr2XAI3+2PZfE+/HbvuHd2ROp6mXWroSS5o0z1VBqM0q+Xr
-	 8Gz7RD8ERaOp5aUdLWdxKJ2QakhRJxUWKIxWVRN7AiPW/ATp6WLkaeS+olDCGqTQvI
-	 5TU6Ov67ejSV95nU3I9l7KRA6csWwq7T5EBRgOfUACY6OGEPRXIhCJBg1y0VtUJPGa
-	 xN02AQxR7PieZ4XrEQWqbhxbesu1H6STee4ZPKS43p0c0Ju7M68ObomYWo9v853Oxe
-	 mmdNRMghta4oNWnP/Lk0s09xOs3EO+nNxVRt0YaGnHBfEQU7xyqJI92l2M5wwFr0nF
-	 f9e7cWnmnhd8w==
-Date: Fri, 19 Sep 2025 15:32:24 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Marco Crivellari <marco.crivellari@suse.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 5/5] rcu: WQ_PERCPU added to alloc_workqueue users
-Message-ID: <aM1baMg5MDOQ37lp@localhost.localdomain>
-References: <3773a6e3-8ec8-48c5-9277-264cd8ccbb10@paulmck-laptop>
- <20250918101752.2592512-5-paulmck@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=g8xt6yAVl6ZemyHdBe/xI3dYblYQu+qpECPFJdDPmcwT1n1zRmMYzr4shzyNAAGwQgCHT4qFAD4UhH1qQCCUXVXf1WzrVpxHmxz30WuaTe7g5lni97jd9k6O80jvQTMyeSU7bBk0vwTMto5vn3LJD+M0GiShfci98QrxmwwA2zY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id BBAB368AA6; Fri, 19 Sep 2025 16:08:03 +0200 (CEST)
+Date: Fri, 19 Sep 2025 16:08:03 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Marco Elver <elver@google.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Alexander Potapenko <glider@google.com>,
+	Arnd Bergmann <arnd@arndb.de>, Bart Van Assche <bvanassche@acm.org>,
+	Bill Wendling <morbo@google.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Ian Rogers <irogers@google.com>, Jann Horn <jannh@google.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Waiman Long <longman@redhat.com>, kasan-dev@googlegroups.com,
+	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+	linux-sparse@vger.kernel.org, llvm@lists.linux.dev,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH v3 00/35] Compiler-Based Capability- and
+ Locking-Analysis
+Message-ID: <20250919140803.GA23745@lst.de>
+References: <20250918140451.1289454-1-elver@google.com> <20250918141511.GA30263@lst.de> <20250918174555.GA3366400@ax162>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250918101752.2592512-5-paulmck@kernel.org>
+In-Reply-To: <20250918174555.GA3366400@ax162>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Le Thu, Sep 18, 2025 at 03:17:52AM -0700, Paul E. McKenney a écrit :
-> From: Marco Crivellari <marco.crivellari@suse.com>
+On Thu, Sep 18, 2025 at 10:45:55AM -0700, Nathan Chancellor wrote:
+> On Thu, Sep 18, 2025 at 04:15:11PM +0200, Christoph Hellwig wrote:
+> > On Thu, Sep 18, 2025 at 03:59:11PM +0200, Marco Elver wrote:
+> > > A Clang version that supports `-Wthread-safety-pointer` and the new
+> > > alias-analysis of capability pointers is required (from this version
+> > > onwards):
+> > > 
+> > > 	https://github.com/llvm/llvm-project/commit/b4c98fcbe1504841203e610c351a3227f36c92a4 [3]
+> > 
+> > There's no chance to make say x86 pre-built binaries for that available?
 > 
-> Currently if a user enqueue a work item using schedule_delayed_work() the
-> used wq is "system_wq" (per-cpu wq) while queue_delayed_work() use
-> WORK_CPU_UNBOUND (used when a cpu is not specified). The same applies to
-> schedule_work() that is using system_wq and queue_work(), that makes use
-> again of WORK_CPU_UNBOUND.
-> This lack of consistentcy cannot be addressed without refactoring the API.
-> 
-> alloc_workqueue() treats all queues as per-CPU by default, while unbound
-> workqueues must opt-in via WQ_UNBOUND.
-> 
-> This default is suboptimal: most workloads benefit from unbound queues,
-> allowing the scheduler to place worker threads where they’re needed and
-> reducing noise when CPUs are isolated.
-> 
-> This default is suboptimal: most workloads benefit from unbound queues,
-> allowing the scheduler to place worker threads where they’re needed and
-> reducing noise when CPUs are isolated.
-> 
-> This patch adds a new WQ_PERCPU flag to explicitly request the use of
-> the per-CPU behavior. Both flags coexist for one release cycle to allow
-> callers to transition their calls.
-> 
-> Once migration is complete, WQ_UNBOUND can be removed and unbound will
-> become the implicit default.
-> 
-> With the introduction of the WQ_PERCPU flag (equivalent to !WQ_UNBOUND),
-> any alloc_workqueue() caller that doesn’t explicitly specify WQ_UNBOUND
-> must now use WQ_PERCPU.
-> 
-> All existing users have been updated accordingly.
-> 
-> Suggested-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  kernel/rcu/tree.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 1291e0761d70ab..c51c4a0af6aa5e 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4890,10 +4890,10 @@ void __init rcu_init(void)
->  	rcutree_online_cpu(cpu);
->  
->  	/* Create workqueue for Tree SRCU and for expedited GPs. */
-> -	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
-> +	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM | WQ_PERCPU, 0);
->  	WARN_ON(!rcu_gp_wq);
->  
-> -	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM, 0);
-> +	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM | WQ_PERCPU, 0);
->  	WARN_ON(!sync_wq);
+> I can use my existing kernel.org LLVM [1] build infrastructure to
+> generate prebuilt x86 binaries. Just give me a bit to build and upload
+> them. You may not be the only developer or maintainer who may want to
+> play with this.
 
-sync_wq could be unbound as it's not dealing with per-cpu data.
+That did work, thanks.
 
-Thanks.
+I started to play around with that.  For the nvme code adding the
+annotations was very simply, and I also started adding trivial
+__guarded_by which instantly found issues.
 
->  
->  	/* Respect if explicitly disabled via a boot parameter. */
-> -- 
-> 2.40.1
-> 
-> 
+For XFS it was a lot more work and I still see tons of compiler
+warnings, which I'm not entirely sure how to address.  Right now I
+see three major classes:
 
--- 
-Frederic Weisbecker
-SUSE Labs
+1) locks held over loop iterations like:
+
+fs/xfs/xfs_extent_busy.c:573:26: warning: expecting spinlock 'xfs_group_hold(busyp->group)..xg_busy_extents->eb_lock' to be held at start of each loop [-Wthread-safety-analysis]
+  573 |                 struct xfs_group        *xg = xfs_group_hold(busyp->group);
+      |                                               ^
+fs/xfs/xfs_extent_busy.c:577:3: note: spinlock acquired here
+  577 |                 spin_lock(&eb->eb_lock);
+      |                 ^
+
+This is perfectly find code and needs some annotations, but I can't find
+any good example.
+
+2) Locks on returned objects, which can be NULL.  I.e., something
+like crossover of __acquire_ret and __cond_acquires
+
+3) Wrappers that take multiple locks conditionally
+
+We have helpers that take different locks in the same object based on the
+arguments like xfs_ilock() or those that take the same lock and a variable
+number of objects like xfs_dqlockn based on input and sorting.  The
+first are just historic and we might want to kill them, but the
+sorting of objects to acquire locks in order thing is a pattern in
+various places including the VFS, so we'll need some way to annotate it.
