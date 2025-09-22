@@ -1,94 +1,99 @@
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D21B1D5AD4
-	for <rcu@vger.kernel.org>; Mon, 22 Sep 2025 14:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBC931329B;
+	Mon, 22 Sep 2025 17:11:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758551436; cv=none; b=q+4kVGVdh2Zc+aRJ0MJyp8hmwtsyhocmdvP5s0ByHJBuzeoIVft2qhhFW1paAzR/qjv0ndByLMXXuQC0CGUsB0sH6aWaFBaSXPsDz1XECZ3Q6miMrNS1qH4Q0Vr0BjmlmIj7KLysp3PWqL+eN65upNKTgY6+37ftia1qVZUwBP8=
+	t=1758561108; cv=none; b=twFB3jIehBJALsA6EwPBl5OKqG3DoJD8+K5H2bwT5WAvPwMIZqTRSgmEWUYb05uRDZL4KCvseMz58ZYIrcVXTUyrLKOlmHWyERDncnk9zY+AMqn74j4YCPQewC9H98q43M9DLVbaCdI2FttKKS7vCpjPLF6NHAizSq3xB8hEfIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758551436; c=relaxed/simple;
-	bh=eiNsGceEGVlgJiEkBCDzw9gODtxe4yqUjFX20CRK3r0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lldnFm9GIoWf5nQAVPK48mmnNjMHMtjMLMMCD0se/miJgYkEwoaLTqulLVN3PbRjqQ976mb9Z/9vu+GpRHhsupLrwlKcJ7SpbCKXapL6OLSD4f3ud+3/jhuVRyqCfJv39cPEPFrRI2xMOzG+FNtO5nIr5zhEavXq1Q3O1kG1fVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=D/dME9wQ; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="D/dME9wQ"
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-57cfe6656dcso1485658e87.1
-        for <rcu@vger.kernel.org>; Mon, 22 Sep 2025 07:30:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1758551432; x=1759156232; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eiNsGceEGVlgJiEkBCDzw9gODtxe4yqUjFX20CRK3r0=;
-        b=D/dME9wQbi7L9KFtGxo5qFhFE6pqH7pi9/i5EudwtbFZ8DnGxXZhv2Y96zAZbCe55R
-         qgHHHerWXNO3Jw2daUcsYsDrqPvj5Ghn795yPlsHlKM1ylQvDLFd0RUsocn0CR9TQA0e
-         PHgCGwmZ0lVSca8eti8Fmq/vOAnKF6D8jujMUVnSk0BdPzwG75yStZ8ndqDmdVH/DrLr
-         ZRw5Ja/XXF0RBbjcsBZItXWgIPp2gDFoJZWHzbFh7ifsZS+oV3mZ5qeO9hb2rIe3cVil
-         yiO08ktGCH3eUeHL/mgfBwO9Jvv5VW1+mLHxIYbK/66JTCrA8y/qM33mgC3DKnNhf/Fu
-         3M8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758551432; x=1759156232;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eiNsGceEGVlgJiEkBCDzw9gODtxe4yqUjFX20CRK3r0=;
-        b=dKgaJgLJnrcvmove+0Ys6EaUcKA+A3FTyirkvALoNSw085etQ7ENzTXHQHAprpEXu8
-         awtr52kiExyMgs9bgzrkXx3FLmM5P0uPXPjTtk0LYrISPkQEntUN2e7NjXLSBxnbnmyv
-         GpOa1uguJTXccWszc3GXEQDMyLDWtwk0CsWjerAwa0JHlqIvNdjdMjIrDAyIwk7dqHjT
-         t1ttFy7OzQs5/QDh9c1YVNQ/Rm3/+olZwNH5haMAQOTxueoZMf3UonNoeb4N5AjkLsx0
-         ycO1iekmfkJvSnZlOJ78C7f862Tr2iYDEiqgAoBk4fcdcQOKIk3IpmC4M8bhFu2HOC4G
-         ZTPA==
-X-Forwarded-Encrypted: i=1; AJvYcCX29Cu85k8PMx9vhFX/ye45ONBWh1D6/F9JyTBdukzHGJMBq7r8ovOKHWOhID3sDZoDDYw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4M8dDU4D2lypE1LvdA4pzAe/iiIJFkPJj9GDeYZCdyqCYtDMz
-	3m9y7uMWb6fnVGA20ogawNM3iJrpNbDr0eCnjVWCq8qo4EIr6wtgasDvYIP0kemFa+unJGNjBmp
-	8P1ffZrKK1Hq7SmUJSnlj38dFY4Tvs3mv1PUNURkijw==
-X-Gm-Gg: ASbGnctOLojzHXtIXfielb5bW3RQ5wxV80Q5G4UJ4LiTSVk6HVP1Ocm+ep4GJ/suoAU
-	AQVSvEfVNfLDx20otyXBYfboL05EGScTVuiQHxWjvibN/7ejnJYMJQuCUNeuTLPsQiYP/AspAyx
-	UcFmbrwJKGPWr7UfVJWbTDqpW7BRlwt5M15RUlKFLH6MRoURkId5eBSvZT3zUt4D3cSLxxbZRgb
-	U78dSq5i2EXxACze5RzD9uwOFul9SzR+B7Gztrw
-X-Google-Smtp-Source: AGHT+IHnljy6MP1njBU2u6c+KrnvxWSTFUDgkOJM540hMZjQHZVDbhSTXqE4U0kGHkmVjewhciQ3zOA1yfPO/vG96Fo=
-X-Received: by 2002:a05:6512:12c6:b0:572:f47:d10e with SMTP id
- 2adb3069b0e04-579df8cede4mr4364273e87.3.1758551432236; Mon, 22 Sep 2025
- 07:30:32 -0700 (PDT)
+	s=arc-20240116; t=1758561108; c=relaxed/simple;
+	bh=Bj75Vx85XbPqZ/5PV/l+4NF+GOXzs9jU1MZVBigLThQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lqq+sE8Vf7Ji/nZiiTy/YK5AwSmKxusX9yo1gUc5P9RXaRmXYWzZySispIBv/q1nvfB7tRaKUAFpKcnAQWmLyhpnY9cbXNSsDnqwDIwsSRPwRlAdGOlDrR8ar8YWfHcxqQVX9WNUukmXdVqtfHK5nViGV9s4bFall77zuVlMTCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 11211227AAF; Mon, 22 Sep 2025 19:11:37 +0200 (CEST)
+Date: Mon, 22 Sep 2025 19:11:36 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Marco Elver <elver@google.com>
+Cc: Christoph Hellwig <hch@lst.de>, Nathan Chancellor <nathan@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Alexander Potapenko <glider@google.com>,
+	Arnd Bergmann <arnd@arndb.de>, Bart Van Assche <bvanassche@acm.org>,
+	Bill Wendling <morbo@google.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Ian Rogers <irogers@google.com>, Jann Horn <jannh@google.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Waiman Long <longman@redhat.com>, kasan-dev@googlegroups.com,
+	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+	linux-sparse@vger.kernel.org, llvm@lists.linux.dev,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH v3 00/35] Compiler-Based Capability- and
+ Locking-Analysis
+Message-ID: <20250922171136.GA12668@lst.de>
+References: <20250918140451.1289454-1-elver@google.com> <20250918141511.GA30263@lst.de> <20250918174555.GA3366400@ax162> <20250919140803.GA23745@lst.de> <20250919140954.GA24160@lst.de> <aNEX46WJh2IWhVUc@elver.google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250919145040.290214-1-marco.crivellari@suse.com>
- <20250919145040.290214-4-marco.crivellari@suse.com> <aNFZ1huhgmMkaIWH@2a01cb069018a81087c6c9b3bf9471d3.ipv6.abo.wanadoo.fr>
- <a2b31164-2175-4fa5-b003-c0be8301bc9a@paulmck-laptop>
-In-Reply-To: <a2b31164-2175-4fa5-b003-c0be8301bc9a@paulmck-laptop>
-From: Marco Crivellari <marco.crivellari@suse.com>
-Date: Mon, 22 Sep 2025 16:30:21 +0200
-X-Gm-Features: AS18NWBzdelpp73CqEkT85EM-0gvDu1qtbxRp7JXunoUtqCYIa9fidb3-H7hIxs
-Message-ID: <CAAofZF7DURjSwN3sRMDd44eq2d7zgDBSHtnY-UdXaG7pQac06g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] rcu: WQ_UNBOUND added to sync_wq workqueue
-To: paulmck@kernel.org
-Cc: Frederic Weisbecker <frederic@kernel.org>, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Michal Hocko <mhocko@suse.com>, Jens Axboe <axboe@kernel.dk>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
-	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Uladzislau Rezki <urezki@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aNEX46WJh2IWhVUc@elver.google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Mon, Sep 22, 2025 at 4:27=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
-> Applied, thank you both!
->
-> I will push these out on my next rebase.
+On Mon, Sep 22, 2025 at 11:33:23AM +0200, Marco Elver wrote:
+> I gave this a try, and with the below patch and the Clang fix [1],
+> fs/xfs compiles cleanly. I think the fundamental limitation are the
+> conditional locking wrappers. I suspect it's possible to do better than
+> disabling the analysis here, by overapproximating the lock set taken
+> (like you did elsewhere), so that at least the callers are checked, but
+> when I tried it showed lots of callers need annotating as well, so I
+> gave up at that point. Still, it might be better than no checking at
+> all.
 
-Many thanks, Paul!
+I guess this at least allows us to work with the analysis, even if it 
+drops coverage for one of the most important locks.  I guess you also
+have CONFIG_XFS_QUOTA disabled as that would lead to similar warnings,
+and also currently has the lock the object on return if it's not a
+NULL return case?  I now have a local series to remove that instance,
+but I've seen that pattern elsewhere in the kernel code.
 
---=20
+Besides the conditional locking these two also do another thing that
+is nasty to the analysis, the locked state can be attached to a
+transaction and unlocked at transaction commit.  Not sure how to best
+model that.
 
-Marco Crivellari
+> [1] https://github.com/llvm/llvm-project/pull/159921
 
-L3 Support Engineer, Technology & Product
+Thanks for all the work!
+
