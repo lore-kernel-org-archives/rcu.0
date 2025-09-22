@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A2A19C54F;
-	Mon, 22 Sep 2025 14:10:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72CD21DA23;
+	Mon, 22 Sep 2025 14:14:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758550214; cv=none; b=q6h0p05LTc+KX6dtvRbcKphaaTSoUhCLDypWlHEKR2ozKez8b6YnKZdF+FeCbJ3TYsCC0E/cuXWzGCoBggcvhXdMzeZ1wfZTaZDd7LWEIgTh5GRckfIw2vhefmXT+1sbfMFn8VpierI3ydM/p5unOSdbQ1YIqx9PJY21pmkvDZY=
+	t=1758550490; cv=none; b=ifjYdObGKCSKumyY3yO+DZY9Ua0Pr5ljVY46HONFGwqUvLiN65NS4uESGTeUQIAY+t06idxrHuVmKehSQmR/SCzt1tKP9+TlcJs4hsMgq83J9HYRfwd/8eS6pgq7BirS4aNVEmT9wGj+RVD8ciIbhsfB6AOZytdbALmSKvwhFiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758550214; c=relaxed/simple;
-	bh=lNY8IOlQ0ucdOhyfAW96EhiJUA7raagfOpQ0kY3BnFM=;
+	s=arc-20240116; t=1758550490; c=relaxed/simple;
+	bh=1Um/7eW64s8ZlVqQRHouhXRbAmqR4c08KCIXT6us7L8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kqdOgF9N8RWJwu7FdUpbH3mKS0RYyf4du830Adl5omWC3tOngJYhbdICJRuRcKKLk9GRSvE4KC6SXy5IaSk38/8Ezvj4Frg4ccapu1bEWT0VJramprrGJNxk2HKKWqnvk6Q7upwz8/vi0jzTk8lzbEoT93Jxhw75eOJPYSfZKG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cKdA/9Ej; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=kdrtavuV3FIUqZX85IbRVx1DCLEzPMpdIn7gqud4ZdoZYaNvG2TvFpfyUjc0KAELwQ+D4i1m8bl3idpxHxcRJ8PGWF3BdOMkCjIiyyYkAu8kDw5eFDnuStRfhvsJ8lmf1KzfNv3aNAVcwc2nCMfGiOLwcG4cj+2VcJTpLcu9Ixo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dRC/YkZ2; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cKdA/9Ej"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7BF0C4CEF0;
-	Mon, 22 Sep 2025 14:10:13 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dRC/YkZ2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93D6AC4CEF0;
+	Mon, 22 Sep 2025 14:14:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758550214;
-	bh=lNY8IOlQ0ucdOhyfAW96EhiJUA7raagfOpQ0kY3BnFM=;
+	s=k20201202; t=1758550490;
+	bh=1Um/7eW64s8ZlVqQRHouhXRbAmqR4c08KCIXT6us7L8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cKdA/9EjN7vHg6vIcXFBnOibLpvCnux/8R4zvG2QI8MBqW23s/t5SJ4w2xxY3qEok
-	 LVWKp5bVyf3WMHC6EaWeCvmMxJDqZnCVhSyhKBtBnnKhfrINPtv8TZvYbnHhHnZ80/
-	 FmdRXHlxdOIqYpZkywaYxXaaes5Om17NBZE1PtaSA04SX6ANgi26HSz6Q9PnQefZr8
-	 seThyijlFiGI5Ah5XR9x6P+Uw28fexUPplJaZdw0+d3GXoeKwxZ5QHzac3EokTrcLl
-	 vu3hyq63AjBTR4QSGdyhzleoQIvcuFoHSowmnyku9chr7fj6xolAdj4yVKYIK8rywh
-	 xMuWdyhIDYoZw==
-Date: Mon, 22 Sep 2025 16:10:10 +0200
+	b=dRC/YkZ2hEwdyJaKfspnZczuFMlvTMM9zy+ISaXcxCwnjSGZlW7YaX79yYEabwks0
+	 SvD8vQW+W//0qgVAgBoKDD3EaPE9x0uSQj4jNRWn+SLkeQObrn1LuDOPpx/cNOTIp4
+	 s8nfNg2ZF+XiP0FaEg7VOe3f6CzBoRYQ0BCrB1rJXYsHj90US3lWl2X0T9Z+NJAhtA
+	 bieQ0+vXuH4oclle5VokbneVxbwWc514btvmxPlEIrFDT7VGzeFXs/waZgNYBFWQAT
+	 xw8T0b/Y5UDcBXWw3R0p9b4HV/eGTrmwrNle7qLpP4zJuxsBkfQCaeNYx/p21f8Pc7
+	 J/CiMkcS4PpqA==
+Date: Mon, 22 Sep 2025 16:14:46 +0200
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Marco Crivellari <marco.crivellari@suse.com>
 Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
@@ -39,10 +39,10 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
 	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH v2 2/3] rcu: WQ_PERCPU added to alloc_workqueue users
-Message-ID: <aNFYwpNHTjXvHUVX@2a01cb069018a81087c6c9b3bf9471d3.ipv6.abo.wanadoo.fr>
+Subject: Re: [PATCH v2 3/3] rcu: WQ_UNBOUND added to sync_wq workqueue
+Message-ID: <aNFZ1huhgmMkaIWH@2a01cb069018a81087c6c9b3bf9471d3.ipv6.abo.wanadoo.fr>
 References: <20250919145040.290214-1-marco.crivellari@suse.com>
- <20250919145040.290214-3-marco.crivellari@suse.com>
+ <20250919145040.290214-4-marco.crivellari@suse.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,9 +52,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250919145040.290214-3-marco.crivellari@suse.com>
+In-Reply-To: <20250919145040.290214-4-marco.crivellari@suse.com>
 
-Le Fri, Sep 19, 2025 at 04:50:38PM +0200, Marco Crivellari a écrit :
+Le Fri, Sep 19, 2025 at 04:50:39PM +0200, Marco Crivellari a écrit :
 > Currently if a user enqueue a work item using schedule_delayed_work() the
 > used wq is "system_wq" (per-cpu wq) while queue_delayed_work() use
 > WORK_CPU_UNBOUND (used when a cpu is not specified). The same applies to
@@ -69,9 +69,8 @@ Le Fri, Sep 19, 2025 at 04:50:38PM +0200, Marco Crivellari a écrit :
 > allowing the scheduler to place worker threads where they’re needed and
 > reducing noise when CPUs are isolated.
 > 
-> This patch adds a new WQ_PERCPU flag to explicitly request the use of
-> the per-CPU behavior. Both flags coexist for one release cycle to allow
-> callers to transition their calls.
+> This change add the WQ_UNBOUND flag to sync_wq, to make explicit this
+> workqueue can be unbound and that it does not benefit from per-cpu work.
 > 
 > Once migration is complete, WQ_UNBOUND can be removed and unbound will
 > become the implicit default.
@@ -79,8 +78,6 @@ Le Fri, Sep 19, 2025 at 04:50:38PM +0200, Marco Crivellari a écrit :
 > With the introduction of the WQ_PERCPU flag (equivalent to !WQ_UNBOUND),
 > any alloc_workqueue() caller that doesn’t explicitly specify WQ_UNBOUND
 > must now use WQ_PERCPU.
-> 
-> All existing users have been updated accordingly.
 > 
 > Suggested-by: Tejun Heo <tj@kernel.org>
 > Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
@@ -93,21 +90,20 @@ Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 8eff357b0436..4f3175df5999 100644
+> index 4f3175df5999..7137723f8f95 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -4885,7 +4885,7 @@ void __init rcu_init(void)
->  	rcutree_online_cpu(cpu);
->  
->  	/* Create workqueue for Tree SRCU and for expedited GPs. */
-> -	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
-> +	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM | WQ_PERCPU, 0);
+> @@ -4888,7 +4888,7 @@ void __init rcu_init(void)
+>  	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM | WQ_PERCPU, 0);
 >  	WARN_ON(!rcu_gp_wq);
 >  
->  	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM, 0);
+> -	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM, 0);
+> +	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
+>  	WARN_ON(!sync_wq);
+>  
+>  	/* Respect if explicitly disabled via a boot parameter. */
 > -- 
 > 2.51.0
-> 
 > 
 
 -- 
