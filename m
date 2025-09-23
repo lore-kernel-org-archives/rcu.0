@@ -1,124 +1,181 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80CD83294FD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B308132951D;
 	Tue, 23 Sep 2025 14:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758637316; cv=none; b=XgKPSTAi7NXbaLnmTrGzie8g9MZqrexuYaEoj09Ejvyn0VVtJhWWvfS4snCzPmY38QSbbf4qoTrvDyUDoq/xKz83s2sZrECgftET0HHg2h1dqLYnGS5CrgDyqt+pU/Aiorajq/RZupN2gCnbFdc75SGqwdgxB48uawMYG9GSjsI=
+	t=1758637316; cv=none; b=tiwFvqqHoDmZVga82SfOE0YVPeuuOSggiLLvoiwh5Mjtj8D49jFpH5WO7tx9gc/5uasvLUCybgOkHPgb67e++jT6ih1uvCpOwd5AxSTaeabf7ZCaDVlNsXmOs39feNP6wbulAL4OFIdTUZfeQHZSKZol0bgxBmOfcGY3Ogv+t+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758637316; c=relaxed/simple;
-	bh=IOkf+dURDETQ7kOjDcCR/fZHWRdctmeYkirYqvh5ji4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=levz+FXWX91ant2d6rhzn+v9pQ9GupuSrU+hL5zo1KXtN80Shu25LZHnHPGERBviDo6Fpq2WT/xMvpYavxXwFnzzODZ7ilTngBnnKSpVoKtb3NoqDxxk9V+ABhng58GfvmlTutYki82BCNFTFBhFGW8d8NH/iX8kEqUMHaZvxnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NGZCLjZG; arc=none smtp.client-ip=10.30.226.201
+	bh=yoqbhMjTVIhFKUY7WHtA9XbOwGqrdzO6YdCd2MFIJdw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=erT+UL3906FBESm8NW09dLc4YvUQq0v96pBt12Mb0+0s6RVELXVmSaGmpShCYx4ut8PrUEHgZQqwtUBGdAL7HxHQ8Zs3YxTanpSeW6Im62naAy/FUxFmp30+O72+U8kqb6zPNDV6ZN6qHVTZhOmystqZCJFEw3bM4NFt2KKuaZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ENRh2Xt9; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NGZCLjZG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6A47C113D0;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ENRh2Xt9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EED77C113CF;
 	Tue, 23 Sep 2025 14:21:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1758637316;
-	bh=IOkf+dURDETQ7kOjDcCR/fZHWRdctmeYkirYqvh5ji4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NGZCLjZGPRJdy7hRXo0SkUkOrj3qXYCsSsoPE0c8CMJjLywd3xkRtQscNzjTItTAn
-	 X8iGFhF5ZvoSk9g33xQiY+1ZIXcEX9tw46jezZZCiTWTTqcUVrtOrW60DGLNwzJQ3L
-	 4DrKU2l2P6CZYgv/Qif18Fc7Y6rqZKG+mA3mHoUdN7ulXss/aLhhoMCZXnSvOyj7/f
-	 l/Q3igSoQNK/w6hgFpIYzl12hGlkUrfKKKzitQvNHhAOrPX6hIv6PDogMH+6MJ3tU3
-	 jfiZ7ldroLqvomvb1EMMbHYiXe8SaAMUXNv0vi9MxeDSAE3jxS4g0gcEE/42fyQjwa
-	 B3MI5Xp7XNblQ==
+	bh=yoqbhMjTVIhFKUY7WHtA9XbOwGqrdzO6YdCd2MFIJdw=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=ENRh2Xt9+rk8cIOOyaMtdkdQqRR9Owy32/W64hPfCbA6AjctbqOoI0d7M4NJeR3q6
+	 vktioI/cmW+XhZOQ7Zurs31PGoPgR59Hwsmp8Ef3T9ADdlBF8WzmqZ8kVs+APYFIec
+	 c7e+FtcU9kU8TFTTHfwUqmGigRSxQy0g8YTfiTg+qj2Hnjnq0oJgrV7LWWgiI1/iua
+	 bdhdjXddlOiRaj4lsTO3ExmQ93RWN4UaaqH4nGSHVUSkBU+NfAQd+jLNSfX479w4Z9
+	 1HN7aK3IQY4+295eoXFQjbkarLRP9fuDJUPeai+2OfY1x+AYCCt8fTVgrTAH5YE0mf
+	 rXjx+87R/rtJA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id DCC45CE1437; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
+	id 44229CE0E40; Tue, 23 Sep 2025 07:20:27 -0700 (PDT)
+Date: Tue, 23 Sep 2025 07:20:27 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
+	andrii@kernel.org, ast@kernel.org, peterz@infradead.org,
 	bpf@vger.kernel.org
-Subject: [PATCH 15/34] rcu: Add noinstr-fast rcu_read_{,un}lock_tasks_trace() APIs
-Date: Tue, 23 Sep 2025 07:20:17 -0700
-Message-Id: <20250923142036.112290-15-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
-References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
+Subject: [PATCH 0/34] Implement RCU Tasks Trace in terms of SRCU-fast and
+ optimize
+Message-ID: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-When expressing RCU Tasks Trace in terms of SRCU-fast, it was
-necessary to keep a nesting count and per-CPU srcu_ctr structure
-pointer in the task_struct structure, which is slow to access.
-But an alternative is to instead make rcu_read_lock_tasks_trace() and
-rcu_read_unlock_tasks_trace(), which match the underlying SRCU-fast
-semantics, avoiding the task_struct accesses.
+Hello!
 
-When all callers have switched to the new API, the previous
-rcu_read_lock_trace() and rcu_read_unlock_trace() APIs will be removed.
+This series re-implements RCU Tasks Trace in terms of SRCU-fast,
+reducing the size of the Linux-kernel RCU implementation by several
+hundred lines of code.  It also removes a conditional branch from the
+srcu_read_lock_fast() implementation in order to make SRCU-fast a
+bit more fastpath-friendly.  The patches are as follows:
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: <bpf@vger.kernel.org>
----
- include/linux/rcupdate_trace.h | 37 ++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+1.	Re-implement RCU Tasks Trace in terms of SRCU-fast.
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index 0bd47f12ecd17b..b87151e6b23881 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -34,6 +34,43 @@ static inline int rcu_read_lock_trace_held(void)
- 
- #ifdef CONFIG_TASKS_TRACE_RCU
- 
-+/**
-+ * rcu_read_lock_tasks_trace - mark beginning of RCU-trace read-side critical section
-+ *
-+ * When synchronize_rcu_tasks_trace() is invoked by one task, then that
-+ * task is guaranteed to block until all other tasks exit their read-side
-+ * critical sections.  Similarly, if call_rcu_trace() is invoked on one
-+ * task while other tasks are within RCU read-side critical sections,
-+ * invocation of the corresponding RCU callback is deferred until after
-+ * the all the other tasks exit their critical sections.
-+ *
-+ * For more details, please see the documentation for srcu_read_lock_fast().
-+ */
-+static inline struct srcu_ctr __percpu *rcu_read_lock_tasks_trace(void)
-+{
-+	struct srcu_ctr __percpu *ret = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
-+
-+	if (IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR))
-+		smp_mb();
-+	return ret;
-+}
-+
-+/**
-+ * rcu_read_unlock_tasks_trace - mark end of RCU-trace read-side critical section
-+ * @scp: return value from corresponding rcu_read_lock_tasks_trace().
-+ *
-+ * Pairs with the preceding call to rcu_read_lock_tasks_trace() that
-+ * returned the value passed in via scp.
-+ *
-+ * For more details, please see the documentation for rcu_read_unlock().
-+ */
-+static inline void rcu_read_unlock_tasks_trace(struct srcu_ctr __percpu *scp)
-+{
-+	if (!IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR))
-+		smp_mb();
-+	srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
-+}
-+
- /**
-  * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
-  *
--- 
-2.40.1
+2.	Remove unused ->trc_ipi_to_cpu and ->trc_blkd_cpu from
+	task_struct.
 
+3.	Remove ->trc_blkd_node from task_struct.
+
+4.	Remove ->trc_holdout_list from task_struct.
+
+5.	Remove rcu_tasks_trace_qs() and the functions that it calls.
+
+6.	context_tracking: Remove
+	rcu_task_trace_heavyweight_{enter,exit}().
+
+7.	Remove ->trc_reader_special from task_struct.
+
+8.	Remove now-empty RCU Tasks Trace functions and calls to them.
+
+9.	Remove unused rcu_tasks_trace_lazy_ms and trc_stall_chk_rdr
+	struct.
+
+10.	Remove now-empty show_rcu_tasks_trace_gp_kthread() function.
+
+11.	Remove now-empty rcu_tasks_trace_get_gp_data() function.
+
+12.	Remove now-empty rcu_tasks_trace_torture_stats_print() function.
+
+13.	Remove now-empty get_rcu_tasks_trace_gp_kthread() function.
+
+14.	Move rcu_tasks_trace_srcu_struct out of #ifdef
+	CONFIG_TASKS_RCU_GENERIC.
+
+15.	Add noinstr-fast rcu_read_{,un}lock_tasks_trace() APIs.
+
+16.	Remove now-unused rcu_task_ipi_delay and TASKS_TRACE_RCU_READ_MB.
+
+17.	Create a DEFINE_SRCU_FAST().
+
+18.	Use smp_mb() only when necessary in RCU Tasks Trace readers.
+
+19.	Update Requirements.rst for RCU Tasks Trace.
+
+20.	Deprecate rcu_read_{,un}lock_trace().
+
+21.	Mark diagnostic functions as notrace.
+
+22.	Guard __DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast.
+
+23.	Create an srcu_expedite_current() function.
+
+24.	Test srcu_expedite_current().
+
+25.	Create an rcu_tasks_trace_expedite_current() function.
+
+26.	Test rcu_tasks_trace_expedite_current().
+
+27.	Make DEFINE_SRCU_FAST() available to modules.
+
+28.	Make SRCU-fast available to heap srcu_struct structures.
+
+29.	Make grace-period determination use ssp->srcu_reader_flavor.
+
+30.	Exercise DEFINE_STATIC_SRCU_FAST() and init_srcu_struct_fast().
+
+31.	Exercise DEFINE_STATIC_SRCU_FAST() and init_srcu_struct_fast().
+
+32.	Require special srcu_struct define/init for SRCU-fast readers.
+
+33.	Make SRCU-fast readers enforce use of SRCU-fast definition/init.
+
+34.	Update for SRCU-fast definitions and initialization.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/RCU/Design/Requirements/Requirements.rst   |   33 
+ Documentation/admin-guide/kernel-parameters.txt          |    7 
+ b/Documentation/RCU/Design/Requirements/Requirements.rst |   12 
+ b/Documentation/RCU/checklist.rst                        |   12 
+ b/Documentation/RCU/whatisRCU.rst                        |    3 
+ b/Documentation/admin-guide/kernel-parameters.txt        |    8 
+ b/include/linux/notifier.h                               |    2 
+ b/include/linux/rcupdate.h                               |   26 
+ b/include/linux/rcupdate_trace.h                         |  107 +-
+ b/include/linux/sched.h                                  |    1 
+ b/include/linux/srcu.h                                   |   16 
+ b/include/linux/srcutiny.h                               |    1 
+ b/include/linux/srcutree.h                               |   20 
+ b/include/linux/tracepoint.h                             |   45 -
+ b/include/trace/perf.h                                   |    4 
+ b/include/trace/trace_events.h                           |    4 
+ b/init/init_task.c                                       |    1 
+ b/kernel/context_tracking.c                              |   20 
+ b/kernel/fork.c                                          |    1 
+ b/kernel/rcu/Kconfig                                     |    2 
+ b/kernel/rcu/rcu.h                                       |    5 
+ b/kernel/rcu/rcuscale.c                                  |    6 
+ b/kernel/rcu/rcutorture.c                                |    1 
+ b/kernel/rcu/refscale.c                                  |    9 
+ b/kernel/rcu/srcutiny.c                                  |   13 
+ b/kernel/rcu/srcutree.c                                  |   58 +
+ b/kernel/rcu/tasks.h                                     |  617 ---------------
+ b/kernel/rcu/tree.c                                      |    2 
+ b/kernel/rcu/update.c                                    |    8 
+ b/kernel/tracepoint.c                                    |   21 
+ b/scripts/checkpatch.pl                                  |    2 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01 |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02 |    1 
+ include/linux/rcupdate.h                                 |    5 
+ include/linux/rcupdate_trace.h                           |   85 +-
+ include/linux/sched.h                                    |    5 
+ include/linux/srcu.h                                     |   40 
+ include/linux/srcutiny.h                                 |   16 
+ include/linux/srcutree.h                                 |   48 -
+ init/init_task.c                                         |    2 
+ kernel/fork.c                                            |    2 
+ kernel/rcu/Kconfig                                       |   41 
+ kernel/rcu/rcu.h                                         |    4 
+ kernel/rcu/rcuscale.c                                    |    1 
+ kernel/rcu/rcutorture.c                                  |   33 
+ kernel/rcu/srcutree.c                                    |   39 
+ kernel/rcu/tasks.h                                       |  129 ---
+ 47 files changed, 529 insertions(+), 990 deletions(-)
