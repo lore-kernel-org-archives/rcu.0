@@ -1,46 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492BB328563;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FCDB328980;
 	Tue, 23 Sep 2025 14:21:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758637315; cv=none; b=mIlwIfzMj6956eXG1XA1ov9jNCv70+ezbXGVMP8jQ2CVbt2H/DGigrUqOA0IoksbL+ev7yE1ZR+EfqrU1Rd//zkTpqjLQH/4LFqaAOvsuDSV3eh0/nbZX/xrDAjLUmaJ8t2Z5glhG9o6xWipHn+lir+CNxFfFt6Vgl9pHbayq7M=
+	t=1758637316; cv=none; b=cCOGp7nxJxeECjEFWpZcrveINr1V4A1zFMBiU7aOYmd2Gm+C1LdrhAijYuLDpbwjNaVhlF7xCpJoVf7SXWLMvUmSVnKOCKxArEPeXiSFGipvb2xk74qRztPkFT8qWXvsS42K6oYzh03UoagOlJf5enXjTSytALCxjhWpoR3F4ME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758637315; c=relaxed/simple;
-	bh=zPxFwXtYgPLDmkgZ+C7PtVRQ3LVvyGVKpWPncscteiI=;
+	s=arc-20240116; t=1758637316; c=relaxed/simple;
+	bh=5+6cap8BHuj7LD+F6jHOG4xWIftMKuTGrdQG1g1VuNA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OF8WpTptipjvjYRRB9QldIhTFxEbfTzLOrL8462IIlhUdObV5vX8Wnu3P16sEebupmwBHn1LC+qsJXh2zQ4bGxt7dOBA7JcvlWrAt4/KxKvvaDxZoeTZcZui+l5LioBvJYgT3oWnh1Xu+4tiCP4QnbvKmeV0c/pEZEXN+mfksec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CFgL6W0X; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=JoF6jZ6ZtFi0lkOXMBUj4FYCiLtcfHuoD216t7pQJN5q3wrM/AHZRqLj0xDIKcOdNNNSl86Y6uxiaF8T5FITq4lfqjlljDnAMY7IWjhbJU5dsqxD9wELKGj5KnkvCSEgdWLfi8l1kKcOlEomoYddAFFCW2mWNu3R7QC7kYfv/k8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H2jd3S49; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CFgL6W0X"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77AA0C19423;
-	Tue, 23 Sep 2025 14:21:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H2jd3S49"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AF92C19425;
+	Tue, 23 Sep 2025 14:21:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758637314;
-	bh=zPxFwXtYgPLDmkgZ+C7PtVRQ3LVvyGVKpWPncscteiI=;
+	s=k20201202; t=1758637315;
+	bh=5+6cap8BHuj7LD+F6jHOG4xWIftMKuTGrdQG1g1VuNA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CFgL6W0X9TD7itXUCA79zfHAMgsDv/F5ZjscgtnZe2i+axXkbeDke8n6lkPlH2Rvb
-	 J0dOPDolpyRr9ODVcAPyii5ZUSIc3NecjkdxrjpKoGK9PxkUjTga/rNCyKfXNDccwt
-	 euFWwYsRXqJ1RrE0ktNztksZjKsMjQgKCnRdz5HOUc+u6iu7XRQJ/CClDr2nwFoNNJ
-	 OBC7zbx4oJ/pADdOHTZd7sdREWWx+Zm3SKQF01WdNLmvvLAcffNc2cZt5aKK8UFirW
-	 nFf89dNlRCTzjudGzHVB+l1kHVwWL/q/qI8++OL4Je1wo8Kg+LcSyI/a0LJqvnZrjA
-	 THcqpEPX/A9aw==
+	b=H2jd3S491QmBDmq9L8to24wB3YThSK2EAkQSyg4uPIF0zDugc6D9vS9MioJZDH4oP
+	 mGyzNGJEeTcAr2m/Q897xpXiH//1kZZ7bDJ6OZ5/R+UYwmDGzOAlaW1Ks42FE57sBk
+	 g93tBLJssCeeHcXUfQHqXziHJ5Fg3dLPSDdLwSiuPQRq4lDy618j8mAT6u8OoGSKEb
+	 RzMRlMUMWT4IpIG2aNwt1WWPYZFiazBP7psKDck+Rxdwv/BmL4cmsHIYb3tKclkIKw
+	 d7ZiHHOgfCGmo/4ih77MVs7/sez1nQwoFOEfQMlHWSV8y3X0tseQF84U7e0VzpQoea
+	 0KU5l0jkAyhqg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id CF24CCE1385; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
+	id ED820CE161F; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH 10/34] rcu: Remove now-empty show_rcu_tasks_trace_gp_kthread() function
-Date: Tue, 23 Sep 2025 07:20:12 -0700
-Message-Id: <20250923142036.112290-10-paulmck@kernel.org>
+	Leon Hwang <leon.hwang@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: [PATCH 21/34] rcu: Mark diagnostic functions as notrace
+Date: Tue, 23 Sep 2025 07:20:23 -0700
+Message-Id: <20250923142036.112290-21-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
 References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
@@ -52,72 +50,72 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The show_rcu_tasks_trace_gp_kthread() is used by rcutorture to diagnose
-bugs involving the RCU Tasks Trace grace-period kthread, which now no
-longer exists.  This commit therefore removes this function.
+The rcu_lockdep_current_cpu_online(), rcu_read_lock_sched_held(),
+rcu_read_lock_held(), rcu_read_lock_bh_held(), rcu_read_lock_any_held()
+are used by tracing-related code paths, so putting traces on them is
+unlikely to make anyone happy.  This commit therefore marks them all
+"notrace".
 
+Reported-by: Leon Hwang <leon.hwang@linux.dev>
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: <bpf@vger.kernel.org>
 ---
- kernel/rcu/rcu.h        | 5 -----
- kernel/rcu/rcutorture.c | 1 -
- kernel/rcu/tasks.h      | 6 ------
- 3 files changed, 12 deletions(-)
+ kernel/rcu/tree.c   | 2 +-
+ kernel/rcu/update.c | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 9cf01832a6c3d1..b397572b4a5331 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -673,11 +673,6 @@ void show_rcu_tasks_rude_gp_kthread(void);
- #else
- static inline void show_rcu_tasks_rude_gp_kthread(void) {}
- #endif
--#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_TRACE_RCU)
--void show_rcu_tasks_trace_gp_kthread(void);
--#else
--static inline void show_rcu_tasks_trace_gp_kthread(void) {}
--#endif
- 
- #ifdef CONFIG_TINY_RCU
- static inline bool rcu_cpu_beenfullyonline(int cpu) { return true; }
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 72619e5e8549dc..5120e1ce811413 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1130,7 +1130,6 @@ static struct rcu_torture_ops tasks_tracing_ops = {
- 	.exp_sync	= synchronize_rcu_tasks_trace,
- 	.call		= call_rcu_tasks_trace,
- 	.cb_barrier	= rcu_barrier_tasks_trace,
--	.gp_kthread_dbg	= show_rcu_tasks_trace_gp_kthread,
- 	.get_gp_data    = rcu_tasks_trace_get_gp_data,
- 	.cbflood_max	= 50000,
- 	.irq_capable	= 1,
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 50f5c483e0e15a..6e2530fe23e620 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1468,11 +1468,6 @@ void __init rcu_tasks_trace_suppress_unused(void)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 31690ffa452afe..8ddd07fed36334 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4021,7 +4021,7 @@ bool rcu_cpu_online(int cpu)
+  * RCU on an offline processor during initial boot, hence the check for
+  * rcu_scheduler_fully_active.
+  */
+-bool rcu_lockdep_current_cpu_online(void)
++bool notrace rcu_lockdep_current_cpu_online(void)
+ {
+ 	struct rcu_data *rdp;
+ 	bool ret = false;
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index c912b594ba987f..dfeba9b3539508 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -117,7 +117,7 @@ static bool rcu_read_lock_held_common(bool *ret)
+ 	return false;
  }
  
- #if !defined(CONFIG_TINY_RCU)
--void show_rcu_tasks_trace_gp_kthread(void)
--{
--}
--EXPORT_SYMBOL_GPL(show_rcu_tasks_trace_gp_kthread);
--
- void rcu_tasks_trace_torture_stats_print(char *tt, char *tf)
+-int rcu_read_lock_sched_held(void)
++int notrace rcu_read_lock_sched_held(void)
  {
- }
-@@ -1497,7 +1492,6 @@ void show_rcu_tasks_gp_kthreads(void)
+ 	bool ret;
+ 
+@@ -342,7 +342,7 @@ EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
+  * Note that rcu_read_lock() is disallowed if the CPU is either idle or
+  * offline from an RCU perspective, so check for those as well.
+  */
+-int rcu_read_lock_held(void)
++int notrace rcu_read_lock_held(void)
  {
- 	show_rcu_tasks_classic_gp_kthread();
- 	show_rcu_tasks_rude_gp_kthread();
--	show_rcu_tasks_trace_gp_kthread();
+ 	bool ret;
+ 
+@@ -367,7 +367,7 @@ EXPORT_SYMBOL_GPL(rcu_read_lock_held);
+  * Note that rcu_read_lock_bh() is disallowed if the CPU is either idle or
+  * offline from an RCU perspective, so check for those as well.
+  */
+-int rcu_read_lock_bh_held(void)
++int notrace rcu_read_lock_bh_held(void)
+ {
+ 	bool ret;
+ 
+@@ -377,7 +377,7 @@ int rcu_read_lock_bh_held(void)
  }
- #endif /* #ifndef CONFIG_TINY_RCU */
+ EXPORT_SYMBOL_GPL(rcu_read_lock_bh_held);
+ 
+-int rcu_read_lock_any_held(void)
++int notrace rcu_read_lock_any_held(void)
+ {
+ 	bool ret;
  
 -- 
 2.40.1
