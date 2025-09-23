@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2B921B9CD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A926A22A7F1;
 	Tue, 23 Sep 2025 14:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758637302; cv=none; b=c53iYkyfVQIB9swAlS9UnDL8wZOV3o7TjKeMSCstUCy+0hHDcWcG6+5h85zPKao2aezm9/upktXVufo5bFtw973Lv8GZRhb9qz+0qfHuvrsjWD+MaGU7lQlm0cDYR++vZzgajbH5YXpO1AH2MPaywKe5Njwd93XBJtvu8ZSBwvM=
+	t=1758637302; cv=none; b=r/YLGEYnHofrgsQLyM5TlIMYKOjFSToIAiZjFgqNFRoiAhhkvcjY2LOPvh8Qk9VsL6lNpOBg7WHA4kyOLWD2/W6eiLULVi4+SyxR+P0A8TxvbmoARpgirn9o0VIhylZUnUet6b0oT281EqYSDyFtbegmwgHYA1w13vbvTlq4vlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758637302; c=relaxed/simple;
-	bh=XNmsZMoAIYYD/q9UvCMskFAVtHocTahtlj2a9AJbvFU=;
+	bh=xsMVIazrHCxbo8kiV/02R0kxVkmtf66xKO9RsbF5hME=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ByV1J3V3u3zqJFZnqCQ+UPNYJ9G8nmNUwlO2rhh/9yzxT2R/6p29RWO5RjI6EcsDcI1uQDfV+SgzYnYX59F0wxLRsxQVGKR6+HFa5cGyL75MH3WPPb2PADk5rTZH2WErGX0vWOufjU/ohLF9JaAT7W3blMF8r/z/9BfFyQLC9j8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RXkTPm51; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=b2r2fHYTi+IBDAOn2OHdzkzNx9Y8F9y1vQJabXU8fty4cJrI1r9bZF0Q348uZ11OodDPfHH9qt3iZTzoEICVEwf8wke04aGl3D15L9fk1hQXgK6EQ46F6dHofrMuI5F43HOZb8MZrrMnz5KjdUlDB5ipXar+M+7Gc9P5CM5vGVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kA0ivHQN; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RXkTPm51"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC177C113D0;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kA0ivHQN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFCCBC116D0;
 	Tue, 23 Sep 2025 14:21:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1758637302;
-	bh=XNmsZMoAIYYD/q9UvCMskFAVtHocTahtlj2a9AJbvFU=;
+	bh=xsMVIazrHCxbo8kiV/02R0kxVkmtf66xKO9RsbF5hME=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RXkTPm51Q0u1KO26bxn9O6W+5DJZubvIwqRQ81/rkxtkRS+yDPKVm6MNJOZMRSjkQ
-	 DJ1yUtBNMjAMADSTaeqC4uLQGfvUrI4N+dxKSODKGAP/1bwn1hlVhBbVohMfZxb4Cs
-	 6dSfaZeVhZCLC3ByJiGz7AmwyhNtAkWfalQiV4Dl7tD6sDLh8sVUJjQw/eBD9wylOJ
-	 kuP+hkoXPkgSltxQo0SqGziXOs2NEUwXmduLuzM6TxLr4znjf9SdeuqT2y5sNsVGv2
-	 lj2aAQFWHuqBjovwJpajFzWG7ZX1vZNO0qaOS1iXt01AFGcxQRzN0MOGbzvchEnrdo
-	 CJNevCpDCrOZA==
+	b=kA0ivHQNN+qep6DSP67RPLXjz/jEtlKdCPLlxaD6viNJUK68p6t45r78aSrTs97pH
+	 R6NU/YnAMBNjhb0C3vydjuGb+/Du7zOFF68ywSOs8XllVQs9bDNHbw4dJRxREMIYf5
+	 vCzfMBeexuz+5uagaJT8Pobh05vp7XRiuF+MKzrsh7iRSRai4Elx7trxZeyzKU/hKm
+	 g7eD7FplcufHfRwvOhn+TXvSqYp1/tvsbANIFIaE7qdARjdGn6yvtYg2Eq0YugrkJn
+	 WIXu1KqwDkRwBQ6J/WooW2xSh16bD+YQrAT5qx9TC+D7l/c12UTu2ruyN0gh/CGOJh
+	 DKG4daNytfSsw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D1F50CE1389; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
+	id BC08ECE0F21; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -38,9 +38,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 11/34] rcu: Remove now-empty rcu_tasks_trace_get_gp_data() function
-Date: Tue, 23 Sep 2025 07:20:13 -0700
-Message-Id: <20250923142036.112290-11-paulmck@kernel.org>
+Subject: [PATCH 03/34] rcu: Remove ->trc_blkd_node from task_struct
+Date: Tue, 23 Sep 2025 07:20:05 -0700
+Message-Id: <20250923142036.112290-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
 References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
@@ -52,9 +52,9 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The rcu_tasks_trace_get_gp_data() is used by rcutorture to diagnose
-bugs involving the RCU Tasks Trace grace-period kthread, which now no
-longer exists.  This commit therefore removes this function.
+Now that RCU Tasks Trace has been re-implemented in terms of SRCU-fast,
+the ->trc_blkd_node task_struct field is only initialized, and never
+actually used.  This commit therefore removes it.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
@@ -62,67 +62,47 @@ Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/rcupdate_trace.h | 1 -
- kernel/rcu/rcu.h               | 4 ----
- kernel/rcu/rcutorture.c        | 1 -
- kernel/rcu/tasks.h             | 5 -----
- 4 files changed, 11 deletions(-)
+ include/linux/sched.h | 1 -
+ init/init_task.c      | 1 -
+ kernel/fork.c         | 1 -
+ 3 files changed, 3 deletions(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index 3f46cbe6700038..ffd4dcd6339ae4 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -136,7 +136,6 @@ static inline void rcu_barrier_tasks_trace(void)
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 47bd062b21c2bc..3f840cfa941132 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -942,7 +942,6 @@ struct task_struct {
+ 	struct srcu_ctr __percpu	*trc_reader_scp;
+ 	union rcu_special		trc_reader_special;
+ 	struct list_head		trc_holdout_list;
+-	struct list_head		trc_blkd_node;
+ #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+ 
+ 	struct sched_info		sched_info;
+diff --git a/init/init_task.c b/init/init_task.c
+index e557f622bd9061..dd6226251689c8 100644
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -167,7 +167,6 @@ struct task_struct init_task __aligned(L1_CACHE_BYTES) = {
+ 	.trc_reader_nesting = 0,
+ 	.trc_reader_special.s = 0,
+ 	.trc_holdout_list = LIST_HEAD_INIT(init_task.trc_holdout_list),
+-	.trc_blkd_node = LIST_HEAD_INIT(init_task.trc_blkd_node),
+ #endif
+ #ifdef CONFIG_CPUSETS
+ 	.mems_allowed_seq = SEQCNT_SPINLOCK_ZERO(init_task.mems_allowed_seq,
+diff --git a/kernel/fork.c b/kernel/fork.c
+index af673856499dca..69d34c123b9e5f 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1782,7 +1782,6 @@ static inline void rcu_copy_process(struct task_struct *p)
+ 	p->trc_reader_nesting = 0;
+ 	p->trc_reader_special.s = 0;
+ 	INIT_LIST_HEAD(&p->trc_holdout_list);
+-	INIT_LIST_HEAD(&p->trc_blkd_node);
+ #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
  }
  
- // Placeholders to enable stepwise transition.
--void rcu_tasks_trace_get_gp_data(int *flags, unsigned long *gp_seq);
- void __init rcu_tasks_trace_suppress_unused(void);
- struct task_struct *get_rcu_tasks_trace_gp_kthread(void);
- 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index b397572b4a5331..dc5d614b372c1e 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -544,10 +544,6 @@ struct task_struct *get_rcu_tasks_rude_gp_kthread(void);
- void rcu_tasks_rude_get_gp_data(int *flags, unsigned long *gp_seq);
- #endif // # ifdef CONFIG_TASKS_RUDE_RCU
- 
--#ifdef CONFIG_TASKS_TRACE_RCU
--void rcu_tasks_trace_get_gp_data(int *flags, unsigned long *gp_seq);
--#endif
--
- #ifdef CONFIG_TASKS_RCU_GENERIC
- void tasks_cblist_init_generic(void);
- #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 5120e1ce811413..485fa822b6a753 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1130,7 +1130,6 @@ static struct rcu_torture_ops tasks_tracing_ops = {
- 	.exp_sync	= synchronize_rcu_tasks_trace,
- 	.call		= call_rcu_tasks_trace,
- 	.cb_barrier	= rcu_barrier_tasks_trace,
--	.get_gp_data    = rcu_tasks_trace_get_gp_data,
- 	.cbflood_max	= 50000,
- 	.irq_capable	= 1,
- 	.slow_gps	= 1,
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 6e2530fe23e620..7a8c1fd9addb7a 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1480,11 +1480,6 @@ struct task_struct *get_rcu_tasks_trace_gp_kthread(void)
- }
- EXPORT_SYMBOL_GPL(get_rcu_tasks_trace_gp_kthread);
- 
--void rcu_tasks_trace_get_gp_data(int *flags, unsigned long *gp_seq)
--{
--}
--EXPORT_SYMBOL_GPL(rcu_tasks_trace_get_gp_data);
--
- #endif /* #else #ifdef CONFIG_TASKS_TRACE_RCU */
- 
- #ifndef CONFIG_TINY_RCU
 -- 
 2.40.1
 
