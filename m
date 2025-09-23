@@ -1,87 +1,97 @@
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C1726563B;
-	Tue, 23 Sep 2025 15:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C3C1D5ABF;
+	Tue, 23 Sep 2025 17:01:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758642447; cv=none; b=MvZzdCv6AOMNsOidCosszJpuxfsmJieNEbtuIyRm4Slfvm08iK50AsaswokChjixivVj55lOYB03HmhxSWVF7CN/en3L9Y1t3kyZWH+RTpZuT4FiRRNcKwePKJO+EDym1oZM/zgiYgSaVHxWeZYtHZ8+hAQk7RYvRNvGrbcHJf8=
+	t=1758646870; cv=none; b=It2YQH4CC8k0SElaIJ92orL4f3JFu4roC+VmDYbSDrkTtpxjdRZ3oHVtkLJ6lCM5vB1G84r7CoFANsQ7a4hkvQMeWOV/L+YN+1Y/xjmT/H8p5hQkUVJ/3kCJmNlO19OEOQ2qZcZTnzutAc/Hve1ALkoaM4xavA16jwq5dOWLBo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758642447; c=relaxed/simple;
-	bh=7HziM51fokJHC3jC9oA36jkC79HdJut8P+XATs1vbWg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=J7EpWIYBQO/FkPOfxmWvfbfpTyftiznoySmYmcVvWjBkFkW6VRq+J7ct5u31ldtn+teoUgA62Ke+odLUs3TSLCMNic0dl0HtemlVzTwVRcaP1AYFhyzl4M9+IrqdNQOFTJzY+a9xbnvQlDiSK/zn+1OgdWgnHB+EJ48+Dzpvvew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
-Received: from omf05.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay03.hostedemail.com (Postfix) with ESMTP id 556FAB9B6F;
-	Tue, 23 Sep 2025 15:47:18 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id C805A2000E;
-	Tue, 23 Sep 2025 15:47:14 +0000 (UTC)
-Message-ID: <a54094681531e526c7e055cc5f58d0f6d480c119.camel@perches.com>
+	s=arc-20240116; t=1758646870; c=relaxed/simple;
+	bh=lmrO4EM0uSIgPvRyMTakRDy6DZ3TQz0ccaeq5VlOVp8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ssdxl7wFyKRghR9w+79V6w1l8N2B6GZka2DowxWj/NAWjTkTy+KJYI8gswYV/LNlVBUPHsazwcXQpfppTi0kGyDmv3piR/EQnElpMghCO1dAYNpq3/TmQG4ZbxtHBi+XZFjE5YySx0kPp6NwnKkgcbXXaFprqxKde5k1B9FfOuo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dXFVUQ2n; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dXFVUQ2n"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73489C4CEF7;
+	Tue, 23 Sep 2025 17:01:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758646869;
+	bh=lmrO4EM0uSIgPvRyMTakRDy6DZ3TQz0ccaeq5VlOVp8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=dXFVUQ2nvAULYrLl1erVJHzt+/3VPF5bm8tjFdQaHFtlXdyvjqNPjfjqjPbsD0xOx
+	 Ra/ERhP0xu1FBw/uN1q2Dfe81Pcw3V507dCarYrFetUaPBJVfn4Sy06mmXxLwytW6O
+	 Vs4dlUsCBD4V9m32ZQ4ammA2R1WCPug7md1czUx9TVS066f7ycS/LstSRpp3ehHgt6
+	 MebbwiG5Lt7C0bXj8j0bl7PUHijlVwEg1vYzq/vNdj/KRWVQ6/c63FUmxr3pBwwqG8
+	 2avkQZDJqZxQb1fBDBFSzDoshmpUfy/fBPgbv6vQxB11ronQCiIUVCLLEr241BGjVl
+	 D5vyDoBJF4tzw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D3C9ECE0857; Tue, 23 Sep 2025 10:01:06 -0700 (PDT)
+Date: Tue, 23 Sep 2025 10:01:06 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joe Perches <joe@perches.com>
+Cc: rcu@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Andy Whitcroft <apw@canonical.com>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
 Subject: Re: [PATCH 20/34] checkpatch: Deprecate rcu_read_{,un}lock_trace()
-From: Joe Perches <joe@perches.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org, Andrew
- Morton	 <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
-  Andy Whitcroft <apw@canonical.com>, Dwaipayan Ray
- <dwaipayanray1@gmail.com>, Lukas Bulwahn	 <lukas.bulwahn@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Date: Tue, 23 Sep 2025 08:47:13 -0700
-In-Reply-To: <20250923142036.112290-20-paulmck@kernel.org>
+Message-ID: <6777d949-e1f7-454d-8c10-247dcbf8c6fa@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
-	 <20250923142036.112290-20-paulmck@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+ <20250923142036.112290-20-paulmck@kernel.org>
+ <a54094681531e526c7e055cc5f58d0f6d480c119.camel@perches.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: C805A2000E
-X-Stat-Signature: xyhh66ziobi3gt9nhn481wgoykujxgp9
-X-Rspamd-Server: rspamout06
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19zGYIWzQffe4MRCC7e4CCIFAD8auaCiSk=
-X-HE-Tag: 1758642434-818505
-X-HE-Meta: U2FsdGVkX1/xO5shmau56dp57ipcWIiBFvH+NXf0PoWoiEpKQHyCrp552WPbVra/f93h++X01J5fyAsz324EKPppFjaovdpkDqlMLyS9hvcdFVuH1ljbUAie8MgXUeMS3Ikqj0W3mL6QoKRY79EUEiv7K/8lqHEQGhA1OWJYQTzbWpDDc5ccYo/CUNkyeFKV1Au4c2RyNmiWIvJemq7yAoyiSO8h6TVMnGoGYPPX3jnpfYlsOdMPzjTYBP6rfO6mrOfMxumVGfLr+IQGr62mcYb2kCqc3sCrJDDYjlskwr2ZDyUqTjZOTUnwUL4QeuKJPSsNvvxlaf0dkeco9LtdPVZttRCM6H7/0RXDrfxXM+VaI97lQtOU/+rtcbYpS+IwhyTf2SjMmXT4SgRirOlgOMIGpWWSkDzrl+A0Nl7cnmsCBifrvPDqlYgY7EAkohXt4F1bt+LPn0rd7d4gEOrlR3SGWyQ7sT+YRWgEHZr+2SQrZdEO8aPuiLv6qQFBUkG73TUyzIu1S1mznK10yoAWkizN5xf+yzy+4vODWYNOasI=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a54094681531e526c7e055cc5f58d0f6d480c119.camel@perches.com>
 
-On Tue, 2025-09-23 at 07:20 -0700, Paul E. McKenney wrote:
-> Uses of rcu_read_lock_trace() and rcu_read_unlock_trace()
-> are better served by the new rcu_read_lock_tasks_trace() and
-> rcu_read_unlock_tasks_trace() APIs.  Therefore, mark the old APIs as
-> deprecated.
->=20
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On Tue, Sep 23, 2025 at 08:47:13AM -0700, Joe Perches wrote:
+> On Tue, 2025-09-23 at 07:20 -0700, Paul E. McKenney wrote:
+> > Uses of rcu_read_lock_trace() and rcu_read_unlock_trace()
+> > are better served by the new rcu_read_lock_tasks_trace() and
+> > rcu_read_unlock_tasks_trace() APIs.  Therefore, mark the old APIs as
+> > deprecated.
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> Acked-by: Joe Perches <joe@perches.com>
 
-Acked-by: Joe Perches <joe@perches.com>
+Thank you, and I will apply on my next rebase.
 
-> Cc: Andy Whitcroft <apw@canonical.com>
-> Cc: Joe Perches <joe@perches.com>
-> Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: <bpf@vger.kernel.org>
-> ---
->  scripts/checkpatch.pl | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index e722dd6fa8ef3d..3bb7d35a5cfcba 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -860,6 +860,8 @@ our %deprecated_apis =3D (
->  	"kunmap"				=3D> "kunmap_local",
->  	"kmap_atomic"				=3D> "kmap_local_page",
->  	"kunmap_atomic"				=3D> "kunmap_local",
-> +	"rcu_read_lock_trace"			=3D> "rcu_read_lock_tasks_trace",
-> +	"rcu_read_unlock_trace"			=3D> "rcu_read_unlock_tasks_trace",
->  );
-> =20
->  #Create a search pattern for all these strings to speed up a loop below
+							Thanx, Paul
+
+> > Cc: Andy Whitcroft <apw@canonical.com>
+> > Cc: Joe Perches <joe@perches.com>
+> > Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> > Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: <bpf@vger.kernel.org>
+> > ---
+> >  scripts/checkpatch.pl | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > index e722dd6fa8ef3d..3bb7d35a5cfcba 100755
+> > --- a/scripts/checkpatch.pl
+> > +++ b/scripts/checkpatch.pl
+> > @@ -860,6 +860,8 @@ our %deprecated_apis = (
+> >  	"kunmap"				=> "kunmap_local",
+> >  	"kmap_atomic"				=> "kmap_local_page",
+> >  	"kunmap_atomic"				=> "kunmap_local",
+> > +	"rcu_read_lock_trace"			=> "rcu_read_lock_tasks_trace",
+> > +	"rcu_read_unlock_trace"			=> "rcu_read_unlock_tasks_trace",
+> >  );
+> >  
+> >  #Create a search pattern for all these strings to speed up a loop below
