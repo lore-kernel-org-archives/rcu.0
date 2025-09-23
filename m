@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52C7327A17;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B2123A98E;
 	Tue, 23 Sep 2025 14:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758637314; cv=none; b=IpUIQz5AhLI040GhK+kcYMITGhCLbK6Ycx+G10RfPebjhBYaI97jfwEfW9U58SAn5SNV8arpCXPJnEZuvGy9BszT2unvZaUv2w3fzG4DxkETshzOikyIcj39BICQuJ/0xZDJeAEsngk9Umt6aPIgUbWeMDsnI+Z/asKXZu5cQC4=
+	t=1758637314; cv=none; b=trfyfwJpc+3XYddGjOpiANMfvjcTNh7z/87Up3822qjwerJYkeuvDtIoLsHhm7JITBiLDDAMxeD2cQWKgR3cCOvMFQNRNiVp+3FdpGd38Ut/Cl/hTCsue2MHM8lUV6Ju1XOJk3b/qW372Y2KtuFxbd1M3m6HU67gkKc3WTIkIUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758637314; c=relaxed/simple;
-	bh=BRVx7fQjFG64Qiug5K5umKC5WWCM8o4bRG4z4HvlEEQ=;
+	bh=FM7Dhz9Lrv6Pm3hueBcDMymUaOI0qleJ0d7VFIxSBSU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bcgK5FImLL0dhGpk3GNwtwqiszMebHGQK1UaQ8yJoule3zp1Eri0D4KOzKMUJXFePXgAvLfidkjkbUqxRtcfjpVX0d25yrZloPxtoj2ELSkNvdfhiVD7rT7dpkhKqRDthN/qBa1nCTgN5NsRxMrIIr42PtB418ELXBDPL0kBpww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OApka8aa; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=op8e436IPL30GcLsmHZmM6A37MVi/3+jQ0lbJ3djCXyfdT087pLPkn9+gG+nsQGLkWVgyGLwobprO8cBGJjF0zUAz9+l8c8hc7zQZeh9DupKthbOgSkxCK8uTd1WGceFDwRdEQ1RNdmqAm2ul3XpBC5Pu1UkfU/2qXw7rPLq0X4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EcSg25hh; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OApka8aa"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68E3CC113D0;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EcSg25hh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70B9CC116D0;
 	Tue, 23 Sep 2025 14:21:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1758637314;
-	bh=BRVx7fQjFG64Qiug5K5umKC5WWCM8o4bRG4z4HvlEEQ=;
+	bh=FM7Dhz9Lrv6Pm3hueBcDMymUaOI0qleJ0d7VFIxSBSU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OApka8aalsFuqOpnme+RbDp7WChtnhdTjYyBgRE2zvyTWJ6IZiPLjICSoWiQARijg
-	 H96sIbe7E7FRvaoYXORN1vX3CSy+J/13+drt/c/9TYi8ydnd6XYCW6S3JtaUm/mZWN
-	 S4unj1Zg1c7tDTNxoRIjk1WCnEjImBHz77zizHFd2hz0N1aaLrrMXd00u4PfhzYZD1
-	 k8SkCjaI6FiBDvo8utS/PhWuXivizSoC+TZhbY95q2qB4hrzFi7XUQtfc/k37lb3Ro
-	 rleizDmIKCoMF/NNt4jp7c66ayD0WghxHeyYeHBnXz247jqMZYpuSEI8loD6+n+V2m
-	 IAOKHf3GFuxHg==
+	b=EcSg25hhBf6d8CkJJ7um9/Xmz9fJUx/RrHo97Sv7dyPX6Jzm88CzbzeL9xWYQ3XXt
+	 GMx5KVyQUptFLPWFcvaXBiGQsa35TghWpzIdw95uyVmD2q/3WNn0dJxA/ChFAYbjxx
+	 q84ostRBrhSBDI+FRMkIY42l4jW/tKRQk0Q51QkASM+3zXs/RdFob9QRCofGsrtv/E
+	 +Vy2BsqqxpGBnj7rqunChvIbfCJ10Odu3ODrsG2wiFdm4q6HA2mhcChOow2mtSSChf
+	 O/UTi2Ego0gOV+AKR2Mn4FovtzhQUsyymNajbrJ43fGqY7MJXQTeqhpw2oRbj3BKSz
+	 p0FFQU3Cx0eqw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E5447CE1538; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
+	id CC131CE130C; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -38,9 +38,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 18/34] rcu: Use smp_mb() only when necessary in RCU Tasks Trace readers
-Date: Tue, 23 Sep 2025 07:20:20 -0700
-Message-Id: <20250923142036.112290-18-paulmck@kernel.org>
+Subject: [PATCH 09/34] rcu: Remove unused rcu_tasks_trace_lazy_ms and trc_stall_chk_rdr struct
+Date: Tue, 23 Sep 2025 07:20:11 -0700
+Message-Id: <20250923142036.112290-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
 References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
@@ -52,24 +52,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The rcu_read_{,un}lock_{,tasks_}trace() functions need to use smp_mb()
-only if invoked where RCU is not watching, that is, from locations where
-a call to rcu_is_watching() would return false.  In architectures that
-define the ARCH_WANTS_NO_INSTR Kconfig option, use of noinstr and friends
-ensures that tracing happens only where RCU is watching, so those
-architectures can dispense entirely with the read-side calls to smp_mb().
-
-Other architectures include these read-side calls by default, but in many
-installations there might be either larger than average tolerance for
-risk, prohibition of removing tracing on a running system, or careful
-review and approval of removing of tracing.  Such installations can
-build their kernels with CONFIG_TASKS_TRACE_RCU_NO_MB=y to avoid those
-read-side calls to smp_mb(), thus accepting responsibility for run-time
-removal of tracing from code regions that RCU is not watching.
-
-Those wishing to disable read-side memory barriers for an entire
-architecture can select this TASKS_TRACE_RCU_NO_MB Kconfig option,
-hence the polarity.
+The rcupdate.rcu_tasks_trace_lazy_ms and trc_stall_chk_rdr structure
+are no longer used, so this commit removes them.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
@@ -77,136 +61,50 @@ Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/rcupdate_trace.h | 32 ++++++++++++++++++--------------
- kernel/rcu/Kconfig             | 23 +++++++++++++++++++++++
- kernel/rcu/tasks.h             |  7 ++++++-
- 3 files changed, 47 insertions(+), 15 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt |  8 --------
+ kernel/rcu/tasks.h                              | 10 ----------
+ 2 files changed, 18 deletions(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index b87151e6b23881..7f7977fb56aca5 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -48,10 +48,11 @@ static inline int rcu_read_lock_trace_held(void)
-  */
- static inline struct srcu_ctr __percpu *rcu_read_lock_tasks_trace(void)
- {
--	struct srcu_ctr __percpu *ret = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
-+	struct srcu_ctr __percpu *ret = __srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 747a55abf4946b..54d31a5e46e1cf 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6128,14 +6128,6 @@
+ 			of zero will disable batching.	Batching is
+ 			always disabled for synchronize_rcu_tasks().
  
--	if (IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR))
--		smp_mb();
-+	rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
-+	if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
-+		smp_mb(); // Provide ordering on noinstr-incomplete architectures.
- 	return ret;
- }
+-	rcupdate.rcu_tasks_trace_lazy_ms= [KNL]
+-			Set timeout in milliseconds RCU Tasks
+-			Trace asynchronous callback batching for
+-			call_rcu_tasks_trace().  A negative value
+-			will take the default.	A value of zero will
+-			disable batching.  Batching is always disabled
+-			for synchronize_rcu_tasks_trace().
+-
+ 	rcupdate.rcu_self_test= [KNL]
+ 			Run the RCU early boot self tests
  
-@@ -66,9 +67,10 @@ static inline struct srcu_ctr __percpu *rcu_read_lock_tasks_trace(void)
-  */
- static inline void rcu_read_unlock_tasks_trace(struct srcu_ctr __percpu *scp)
- {
--	if (!IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR))
--		smp_mb();
--	srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
-+	if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
-+		smp_mb(); // Provide ordering on noinstr-incomplete architectures.
-+	__srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
-+	srcu_lock_release(&rcu_tasks_trace_srcu_struct.dep_map);
- }
- 
- /**
-@@ -87,14 +89,15 @@ static inline void rcu_read_lock_trace(void)
- {
- 	struct task_struct *t = current;
- 
-+	rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
- 	if (t->trc_reader_nesting++) {
- 		// In case we interrupted a Tasks Trace RCU reader.
--		rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
- 		return;
- 	}
- 	barrier();  // nesting before scp to protect against interrupt handler.
--	t->trc_reader_scp = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
--	smp_mb(); // Placeholder for more selective ordering
-+	t->trc_reader_scp = __srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
-+	if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
-+		smp_mb(); // Placeholder for more selective ordering
- }
- 
- /**
-@@ -111,13 +114,14 @@ static inline void rcu_read_unlock_trace(void)
- 	struct srcu_ctr __percpu *scp;
- 	struct task_struct *t = current;
- 
--	smp_mb(); // Placeholder for more selective ordering
- 	scp = t->trc_reader_scp;
- 	barrier();  // scp before nesting to protect against interrupt handler.
--	if (!--t->trc_reader_nesting)
--		srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
--	else
--		srcu_lock_release(&rcu_tasks_trace_srcu_struct.dep_map);
-+	if (!--t->trc_reader_nesting) {
-+		if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
-+			smp_mb(); // Placeholder for more selective ordering
-+		__srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
-+	}
-+	srcu_lock_release(&rcu_tasks_trace_srcu_struct.dep_map);
- }
- 
- /**
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index 73a6cc364628b5..6a319e2926589f 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -142,6 +142,29 @@ config TASKS_TRACE_RCU
- 	default n
- 	select IRQ_WORK
- 
-+config TASKS_TRACE_RCU_NO_MB
-+	bool "Override RCU Tasks Trace inclusion of read-side memory barriers"
-+	depends on RCU_EXPERT && TASKS_TRACE_RCU
-+	default ARCH_WANTS_NO_INSTR
-+	help
-+	  This option prevents the use of read-side memory barriers in
-+	  rcu_read_lock_tasks_trace() and rcu_read_unlock_tasks_trace()
-+	  even in kernels built with CONFIG_ARCH_WANTS_NO_INSTR=n, that is,
-+	  in kernels that do not have noinstr set up in entry/exit code.
-+	  By setting this option, you are promising to carefully review
-+	  use of ftrace, BPF, and friends to ensure that no tracing
-+	  operation is attached to a function that runs in that portion
-+	  of the entry/exit code that RCU does not watch, that is,
-+	  where rcu_is_watching() returns false.  Alternatively, you
-+	  might choose to never remove traces except by rebooting.
-+
-+	  Those wishing to disable read-side memory barriers for an entire
-+	  architecture can select this Kconfig option, hence the polarity.
-+
-+	  Say Y here if you need speed and will review use of tracing.
-+	  Say N here for certain esoteric testing of RCU itself.
-+	  Take the default if you are unsure.
-+
- config RCU_STALL_COMMON
- 	def_bool TREE_RCU
- 	help
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 833e180db744f2..bf1226834c9423 100644
+index 25dc49ebad251d..50f5c483e0e15a 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -1600,8 +1600,13 @@ static inline void rcu_tasks_bootup_oddness(void) {}
- // Tracing variant of Tasks RCU.  This variant is designed to be used
- // to protect tracing hooks, including those of BPF.  This variant
- // is implemented via a straightforward mapping onto SRCU-fast.
-+// DEFINE_SRCU_FAST() is required because rcu_read_lock_trace() must
-+// use __srcu_read_lock_fast() in order to bypass the rcu_is_watching()
-+// checks in kernels built with CONFIG_TASKS_TRACE_RCU_NO_MB=n, which also
-+// bypasses the srcu_check_read_flavor_force() that would otherwise mark
-+// rcu_tasks_trace_srcu_struct as needing SRCU-fast readers.
+@@ -1467,16 +1467,6 @@ void __init rcu_tasks_trace_suppress_unused(void)
+ 	rcu_tasks_torture_stats_print_generic(NULL, NULL, NULL, NULL);
+ }
  
--DEFINE_SRCU(rcu_tasks_trace_srcu_struct);
-+DEFINE_SRCU_FAST(rcu_tasks_trace_srcu_struct);
- EXPORT_SYMBOL_GPL(rcu_tasks_trace_srcu_struct);
- 
- #endif /* #else #ifdef CONFIG_TASKS_TRACE_RCU */
+-/* Communicate task state back to the RCU tasks trace stall warning request. */
+-struct trc_stall_chk_rdr {
+-	int nesting;
+-	int ipi_to_cpu;
+-	u8 needqs;
+-};
+-
+-int rcu_tasks_trace_lazy_ms = -1;
+-module_param(rcu_tasks_trace_lazy_ms, int, 0444);
+-
+ #if !defined(CONFIG_TINY_RCU)
+ void show_rcu_tasks_trace_gp_kthread(void)
+ {
 -- 
 2.40.1
 
