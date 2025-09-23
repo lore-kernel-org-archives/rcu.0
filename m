@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B9B22DFA4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485222C187;
 	Tue, 23 Sep 2025 14:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758637296; cv=none; b=skpTZbqZLUIUosztpggXtByvG4WDnjVEUyvRNnRfp53kp6Tzlhq538uUIDzOl1UROTb5HFo3CMdEuCFmdHhBioYm7LWhWtoKGdejvac6m9hHWPCJ9KSq702gb9bLZWzRCb2rmrkyNLUlrqx1lFLHT5dJ2SZVLMnYnC1zE6IKyNY=
+	t=1758637296; cv=none; b=WtI62079Sn0jz/55q/6FmC5Tsrg8NnijTarOD3ekRgWpPUk7hpaEqEiFhDuU8lw+uSGXGGplvy7EsHXG4aO70Or1teJXzEZ2rB7o/xgHYXNdHLb9IIGKEF58mdQK4GXP+q1kRAdjzjKNV7PQ4gB9Dj/gWGdm+f6r3vkxUF0oss4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758637296; c=relaxed/simple;
-	bh=qnaBMWA94ufanssrOAqRkiBTs8H62VLm1Z5ULAg5fZ0=;
+	bh=4c507eqy0EGwafCH6pxIpf/X1KtAub6CGBV9RmYtNM0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RO1pf4xdgenkjpSqiWyfv2uNztmBIjN/uERwwDJEkRuL3UjRCHpsZkYkd3sfTEFbCH8WsL27ly+3mUo2525i6LD/NunJGJIxng/WGVSBq8+aiw981hZYN/YwAlaWvWgbF3WlQnE6IGXav4/d8pQjW9bEsItuhNaC0EOchsYgpLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZmSJei00; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=a+tBG6m3uSj67Sf+lX0SwcB2KKXKxVfhcvTujKjNOlyUpK4EskE12hL2pJulhRoWnBhCeoDb1fnZgSy4eQBkwk/DYzedT+2Yd4KzXvnfynkI9CDD/Mb3vHzX24iKiK+FNPSbnxg7DHZ+ViCTUfDackk5SQtmBlBuxnCCykJTR3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXVcsyO0; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZmSJei00"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD978C113D0;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GXVcsyO0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB8D5C4CEF5;
 	Tue, 23 Sep 2025 14:21:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1758637295;
-	bh=qnaBMWA94ufanssrOAqRkiBTs8H62VLm1Z5ULAg5fZ0=;
+	bh=4c507eqy0EGwafCH6pxIpf/X1KtAub6CGBV9RmYtNM0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZmSJei00IJME6ljBHGfRq6vFRO1zny7h5HcG9np//bWh5BsdA0YjbsvAIeab/hDb7
-	 ywF7Q8uD63Idrf3xx+GQnJo27ng1MxN0jQk52GWlOBa8wIvEyJ0pnvHshIvYkM2DeT
-	 97zwSrCgE8aKM4zNHOF5/dW+2v6Qs4yXye7lX8rkzVNkgTQ7myA2SwgEJ9fKQqllF0
-	 oS4mW1D/g05OWWBax9Uf/CzPiyMJMvjqjCNjEBQcbmARsynA6vMJ+tp0M+lqDbdtZ5
-	 uZ+eTts8OkH74l4R0FUcbTYy2X19MbwszvsLKoTEe1WyZqy70JNE5Fzh//6pHw+tOR
-	 f5t3B/QJEhRSQ==
+	b=GXVcsyO0I+bJsahDDW5Mxc+Xl69wA3fjUGhiSQoEI/cPVHJ0W3WB3r8FegxcwE1Jp
+	 BygEFEtZZ0IecTwd2MDGPAuItQ4h9b5HN/zxw2JRU/wzeaqTeSId5Dz69hwZCj3U1K
+	 sWFEjbETExrm/55EsP3BuRsfgpGyE4umrlf4WvgeAan7xIwpMEa1Qdx+p38BEGmJA0
+	 AnT4bzq3YP6dK/DurTGso0sn9ah67mqD/G/Fd2DYFRn0q/rKkp5aT60XHyEDR0yF7s
+	 bDNsaqfzj84SrFRk23fpZ7vNgY4sgQFynMp5AEbeMCjHwmqVDAORNz0UHsxms/5jmr
+	 huZQ0KyOXYAIg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E2384CE14F7; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
+	id 0CE8ECE1763; Tue, 23 Sep 2025 07:20:38 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -37,9 +37,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	bpf@vger.kernel.org
-Subject: [PATCH 17/34] srcu: Create a DEFINE_SRCU_FAST()
-Date: Tue, 23 Sep 2025 07:20:19 -0700
-Message-Id: <20250923142036.112290-17-paulmck@kernel.org>
+Subject: [PATCH 28/34] srcu: Make SRCU-fast available to heap srcu_struct structures
+Date: Tue, 23 Sep 2025 07:20:30 -0700
+Message-Id: <20250923142036.112290-28-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
 References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
@@ -51,10 +51,9 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit creates a DEFINE_SRCU_FAST() that is similar to DEFINE_SRCU(),
-but which creates an srcu_struct that is usable only by readers initiated
-by srcu_read_lock_fast() and friends.  Note that DEFINE_SRCU_FAST() is
-usable only by built-in code, not from loadable modules.
+This commit defines a new init_srcu_struct_fast() function that marks
+the specified srcu_struct structure for use by srcu_read_lock_fast()
+and friends.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
@@ -62,65 +61,127 @@ Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/srcutiny.h |  1 +
- include/linux/srcutree.h | 20 +++++++++++++++-----
- 2 files changed, 16 insertions(+), 5 deletions(-)
+ include/linux/srcu.h     | 16 ++++++++++++++--
+ include/linux/srcutiny.h |  4 ++++
+ kernel/rcu/srcutree.c    | 33 +++++++++++++++++++++++++++++++--
+ 3 files changed, 49 insertions(+), 4 deletions(-)
 
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index ada65b58bc4c5f..26de47820c58cd 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -25,8 +25,10 @@ struct srcu_struct;
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 
+-int __init_srcu_struct(struct srcu_struct *ssp, const char *name,
+-		       struct lock_class_key *key);
++int __init_srcu_struct(struct srcu_struct *ssp, const char *name, struct lock_class_key *key);
++#ifndef CONFIG_TINY_SRCU
++int __init_srcu_struct_fast(struct srcu_struct *ssp, const char *name, struct lock_class_key *key);
++#endif // #ifndef CONFIG_TINY_SRCU
+ 
+ #define init_srcu_struct(ssp) \
+ ({ \
+@@ -35,10 +37,20 @@ int __init_srcu_struct(struct srcu_struct *ssp, const char *name,
+ 	__init_srcu_struct((ssp), #ssp, &__srcu_key); \
+ })
+ 
++#define init_srcu_struct_fast(ssp) \
++({ \
++	static struct lock_class_key __srcu_key; \
++	\
++	__init_srcu_struct_fast((ssp), #ssp, &__srcu_key); \
++})
++
+ #define __SRCU_DEP_MAP_INIT(srcu_name)	.dep_map = { .name = #srcu_name },
+ #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+ 
+ int init_srcu_struct(struct srcu_struct *ssp);
++#ifndef CONFIG_TINY_SRCU
++int init_srcu_struct_fast(struct srcu_struct *ssp);
++#endif // #ifndef CONFIG_TINY_SRCU
+ 
+ #define __SRCU_DEP_MAP_INIT(srcu_name)
+ #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
 diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-index 51ce25f07930ee..00e5f05288d5e7 100644
+index b5f62259d56fb1..92e6ab53398fc0 100644
 --- a/include/linux/srcutiny.h
 +++ b/include/linux/srcutiny.h
-@@ -45,6 +45,7 @@ void srcu_drive_gp(struct work_struct *wp);
-  */
- #define DEFINE_SRCU(name) \
- 	struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name)
-+#define DEFINE_SRCU_FAST(name) DEFINE_SRCU(name)
- #define DEFINE_STATIC_SRCU(name) \
- 	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name)
+@@ -54,6 +54,10 @@ void srcu_drive_gp(struct work_struct *wp);
+ // Dummy structure for srcu_notifier_head.
+ struct srcu_usage { };
+ #define __SRCU_USAGE_INIT(name) { }
++#define __init_srcu_struct_fast __init_srcu_struct
++#ifndef CONFIG_DEBUG_LOCK_ALLOC
++#define init_srcu_struct_fast init_srcu_struct
++#endif // #ifndef CONFIG_DEBUG_LOCK_ALLOC
  
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 42098e0fa0b7dd..1adc58d2ab6425 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -189,23 +189,33 @@ struct srcu_struct {
-  *	init_srcu_struct(&my_srcu);
-  *
-  * See include/linux/percpu-defs.h for the rules on per-CPU variables.
+ void synchronize_srcu(struct srcu_struct *ssp);
+ 
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 7c8b39d4dd3162..177f9ec1f926e1 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -286,16 +286,29 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 
+-int __init_srcu_struct(struct srcu_struct *ssp, const char *name,
+-		       struct lock_class_key *key)
++static int
++__init_srcu_struct_common(struct srcu_struct *ssp, const char *name, struct lock_class_key *key)
+ {
+ 	/* Don't re-initialize a lock while it is held. */
+ 	debug_check_no_locks_freed((void *)ssp, sizeof(*ssp));
+ 	lockdep_init_map(&ssp->dep_map, name, key, 0);
+ 	return init_srcu_struct_fields(ssp, false);
+ }
++
++int __init_srcu_struct(struct srcu_struct *ssp, const char *name, struct lock_class_key *key)
++{
++	ssp->srcu_reader_flavor = 0;
++	return __init_srcu_struct_common(ssp, name, key);
++}
+ EXPORT_SYMBOL_GPL(__init_srcu_struct);
+ 
++int __init_srcu_struct_fast(struct srcu_struct *ssp, const char *name, struct lock_class_key *key)
++{
++	ssp->srcu_reader_flavor = SRCU_READ_FLAVOR_FAST;
++	return __init_srcu_struct_common(ssp, name, key);
++}
++EXPORT_SYMBOL_GPL(__init_srcu_struct_fast);
++
+ #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+ 
+ /**
+@@ -308,10 +321,26 @@ EXPORT_SYMBOL_GPL(__init_srcu_struct);
+  */
+ int init_srcu_struct(struct srcu_struct *ssp)
+ {
++	ssp->srcu_reader_flavor = 0;
+ 	return init_srcu_struct_fields(ssp, false);
+ }
+ EXPORT_SYMBOL_GPL(init_srcu_struct);
+ 
++/**
++ * init_srcu_struct_fast - initialize a fast-reader sleep-RCU structure
++ * @ssp: structure to initialize.
 + *
-+ * DEFINE_SRCU_FAST() creates an srcu_struct and associated structures
-+ * whose readers must be of the SRCU-fast variety.  DEFINE_SRCU_FAST()
-+ * cannot be used within modules due to there being no place to
-+ * put the desired ->srcu_reader_flavor value.  If in-module use of
-+ * DEFINE_SRCU_FAST() becomes necessary, the srcu_struct structure will
-+ * need to grow in order to store this value.
-  */
- #ifdef MODULE
--# define __DEFINE_SRCU(name, is_static)								\
-+# define __DEFINE_SRCU(name, fast, is_static)							\
- 	static struct srcu_usage name##_srcu_usage = __SRCU_USAGE_INIT(name##_srcu_usage);	\
- 	is_static struct srcu_struct name = __SRCU_STRUCT_INIT_MODULE(name, name##_srcu_usage);	\
- 	extern struct srcu_struct * const __srcu_struct_##name;					\
- 	struct srcu_struct * const __srcu_struct_##name						\
- 		__section("___srcu_struct_ptrs") = &name
- #else
--# define __DEFINE_SRCU(name, is_static)								\
--	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);				\
-+# define __DEFINE_SRCU(name, fast, is_static)							\
-+	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data) = {				\
-+		.srcu_reader_flavor = fast,							\
-+	};											\
- 	static struct srcu_usage name##_srcu_usage = __SRCU_USAGE_INIT(name##_srcu_usage);	\
- 	is_static struct srcu_struct name =							\
- 		__SRCU_STRUCT_INIT(name, name##_srcu_usage, name##_srcu_data)
-+#define DEFINE_SRCU_FAST(name)		__DEFINE_SRCU(name, SRCU_READ_FLAVOR_FAST, /* not static */)
- #endif
--#define DEFINE_SRCU(name)		__DEFINE_SRCU(name, /* not static */)
--#define DEFINE_STATIC_SRCU(name)	__DEFINE_SRCU(name, static)
-+#define DEFINE_SRCU(name)		__DEFINE_SRCU(name, 0, /* not static */)
-+#define DEFINE_STATIC_SRCU(name)	__DEFINE_SRCU(name, 0, static)
++ * Must invoke this on a given srcu_struct before passing that srcu_struct
++ * to any other function.  Each srcu_struct represents a separate domain
++ * of SRCU protection.
++ */
++int init_srcu_struct_fast(struct srcu_struct *ssp)
++{
++	ssp->srcu_reader_flavor = SRCU_READ_FLAVOR_FAST;
++	return init_srcu_struct_fields(ssp, false);
++}
++EXPORT_SYMBOL_GPL(init_srcu_struct_fast);
++
+ #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
  
- int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
- void synchronize_srcu_expedited(struct srcu_struct *ssp);
+ /*
 -- 
 2.40.1
 
