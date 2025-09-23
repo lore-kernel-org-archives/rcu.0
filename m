@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDDAE23D7E0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F092652AF;
 	Tue, 23 Sep 2025 14:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758637302; cv=none; b=Lof9QmSBuljSHODx94l+kMCNvkTAtjVcmKFHkCDG/7ztQOq0cqsJmfKHSTsbgEGn+jmXpsAiR4mRS95wdRfxcwVuVa93KJDG9NkO8v5gIMkKPKt1cxPgzfJ6Da+6wkc4vNVoZ0su206dhm+hQq1bpyVC3DdrNrYkL381LsJyWs8=
+	t=1758637302; cv=none; b=trCmbb8Z0owHqSvdRtHRj7JN+EmbgJeWoP4w5C3biXoWRHRYyw8EOyNQ7hs0do+tkKNUjhHxgpJZQZsNBHYA7Qv4k+oy1OSp2Q/OQHWclKwUU/p0ArKrw7bGVTgu+1Ocw+v2oatcYsQevakBrXGbc9QLMvL2/1brHE//o9/k++Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758637302; c=relaxed/simple;
-	bh=voJ4b6wMLOYakegASPWhkeR8X8Tsr/P1l+3ILgsYDF4=;
+	bh=ywaNuK6aAoHek5VbjiDHoWBoyJGmii7APxujsObI1Hw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pMu6JdsXFsICf41Gbb1qt5ok9dLs0GN8dAEHVSruv3nAY2ZT7ktq5XLSL0g/PN4+oeSDaprn0djXC9PBBI9Z2+fy3SAQojZzfQiKxlWB3vjNCOt4RDfACtTXdpcvQHwaHGg/M3Qj0nQ6V/+edJDN7/sQBDkm0EiS/1LWJM+3HTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tCS9U0Lh; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=R59ll+h1qupbJrgWNLD8m4vZhp972Vp0xtWwnSIiuOMrpnjGePqxDI75Ca0aEb5VLAJf5rKICaJLVhDBotpKJvfMArNGvcLq5KRyieh6jiT6cRoVXottxyOF/CcIDcepBf5WKlkUSqjcuNggjWQaCYCu1QFNUF3NV97pn2sUC00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mAWfk/tc; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tCS9U0Lh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2B28C19423;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mAWfk/tc"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEBE7C113CF;
 	Tue, 23 Sep 2025 14:21:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1758637302;
-	bh=voJ4b6wMLOYakegASPWhkeR8X8Tsr/P1l+3ILgsYDF4=;
+	bh=ywaNuK6aAoHek5VbjiDHoWBoyJGmii7APxujsObI1Hw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tCS9U0Lhi+elUXnefbj5rnsXjSzaHvGHocOzcXCFwTfuRQNVAlrl8woqLjEHd/zPc
-	 VXM0CwQQtVbkB7B0sghWV07t6XXCkZFinn8xqMSaQK5v0qicAEQLY0uPcd6jmqdlvj
-	 ou02Om4Jfpd2jyy1doGS3UpNHF4sFWxIxhOWkbH/Rok58Lq/koO8eMVJAf+z6MEnzG
-	 WmwPjB09dHeXSlQbSXgkBatd6lgm3Yrr7p/CHkkIKP9vpFpGcWSdRjSYNqiLgbg3SA
-	 wjGhIcH83gk8QA1Humouh2j8Hxj4j6fhnoPYzaXn55/FpYQNTlX/KZvHpqIPfGpvft
-	 hjjk68iBHuhAw==
+	b=mAWfk/tcqGU2ZN9qQKIuvRLU0ExfB40CI1/8bxmGjEBXZFJggmySHlRiFHU3UMbQ1
+	 HTrQNF2gBijNApZ/q+bF9A9X6EzRGIrEIplMIpbI1upvoE8Pa2FdHtsgsRKUXCF17w
+	 AydEhEu0CxFHj+dRc0wid4MxrP7QQtNStIwtOwlfQSBuwnlOheWmyyyuaZMUVq7b8j
+	 ROkH2hzMd7O+TtC34LIMEyEuK5CYQpvefsVW2hUqw4tqw6Cte09XaMvG/ryqJf/CuE
+	 dMzV6gO6vnysPvpkgo5UF5vJI1UeG14K570Jo7BSKwdHdHaFB2kjpBWLtX4XhpOV4T
+	 TeThG3uKEmisA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 075D1CE16CE; Tue, 23 Sep 2025 07:20:38 -0700 (PDT)
+	id C1435CE11D4; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -38,9 +38,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 26/34] rcutorture: Test rcu_tasks_trace_expedite_current()
-Date: Tue, 23 Sep 2025 07:20:28 -0700
-Message-Id: <20250923142036.112290-26-paulmck@kernel.org>
+Subject: [PATCH 05/34] rcu: Remove rcu_tasks_trace_qs() and the functions that it calls
+Date: Tue, 23 Sep 2025 07:20:07 -0700
+Message-Id: <20250923142036.112290-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
 References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
@@ -52,8 +52,9 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds a ->exp_current member to the tasks_tracing_ops structure
-to test the rcu_tasks_trace_expedite_current() function.
+Because SRCU-fast does not need quiescent-state helpers, this commit
+removes rcu_tasks_trace_qs() and those things that only it uses, including
+rcu_trc_cmpxchg_need_qs(), TRC_NEED_QS, and TRC_NEED_QS_CHECKED.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
@@ -61,21 +62,74 @@ Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- kernel/rcu/rcutorture.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/rcupdate.h | 26 +-------------------------
+ kernel/rcu/tasks.h       | 12 ------------
+ 2 files changed, 1 insertion(+), 37 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 64803d09fc733a..2e3806b996a80a 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1136,6 +1136,7 @@ static struct rcu_torture_ops tasks_tracing_ops = {
- 	.deferred_free	= rcu_tasks_tracing_torture_deferred_free,
- 	.sync		= synchronize_rcu_tasks_trace,
- 	.exp_sync	= synchronize_rcu_tasks_trace,
-+	.exp_current	= rcu_tasks_trace_expedite_current,
- 	.call		= call_rcu_tasks_trace,
- 	.cb_barrier	= rcu_barrier_tasks_trace,
- 	.cbflood_max	= 50000,
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 120536f4c6eb1d..879525c5764a0c 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -176,35 +176,11 @@ void rcu_tasks_torture_stats_print(char *tt, char *tf);
+ # endif
+ 
+ # ifdef CONFIG_TASKS_TRACE_RCU
+-// Bits for ->trc_reader_special.b.need_qs field.
+-#define TRC_NEED_QS		0x1  // Task needs a quiescent state.
+-#define TRC_NEED_QS_CHECKED	0x2  // Task has been checked for needing quiescent state.
+-
+-u8 rcu_trc_cmpxchg_need_qs(struct task_struct *t, u8 old, u8 new);
+ void rcu_tasks_trace_qs_blkd(struct task_struct *t);
+-
+-# define rcu_tasks_trace_qs(t)							\
+-	do {									\
+-		int ___rttq_nesting = READ_ONCE((t)->trc_reader_nesting);	\
+-										\
+-		if (unlikely(READ_ONCE((t)->trc_reader_special.b.need_qs) == TRC_NEED_QS) &&	\
+-		    likely(!___rttq_nesting)) {					\
+-			rcu_trc_cmpxchg_need_qs((t), TRC_NEED_QS, TRC_NEED_QS_CHECKED);	\
+-		} else if (___rttq_nesting && ___rttq_nesting != INT_MIN &&	\
+-			   !READ_ONCE((t)->trc_reader_special.b.blocked)) {	\
+-			rcu_tasks_trace_qs_blkd(t);				\
+-		}								\
+-	} while (0)
+ void rcu_tasks_trace_torture_stats_print(char *tt, char *tf);
+-# else
+-# define rcu_tasks_trace_qs(t) do { } while (0)
+ # endif
+ 
+-#define rcu_tasks_qs(t, preempt)					\
+-do {									\
+-	rcu_tasks_classic_qs((t), (preempt));				\
+-	rcu_tasks_trace_qs(t);						\
+-} while (0)
++#define rcu_tasks_qs(t, preempt) do { rcu_tasks_classic_qs((t), (preempt)); } while (0)
+ 
+ # ifdef CONFIG_TASKS_RUDE_RCU
+ void synchronize_rcu_tasks_rude(void);
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 418fa242cf0288..967c43b1937bae 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1471,18 +1471,6 @@ void __init rcu_tasks_trace_suppress_unused(void)
+ 	rcu_tasks_torture_stats_print_generic(NULL, NULL, NULL, NULL);
+ }
+ 
+-/*
+- * Do a cmpxchg() on ->trc_reader_special.b.need_qs, allowing for
+- * the four-byte operand-size restriction of some platforms.
+- *
+- * Returns the old value, which is often ignored.
+- */
+-u8 rcu_trc_cmpxchg_need_qs(struct task_struct *t, u8 old, u8 new)
+-{
+-	return cmpxchg(&t->trc_reader_special.b.need_qs, old, new);
+-}
+-EXPORT_SYMBOL_GPL(rcu_trc_cmpxchg_need_qs);
+-
+ /* Add a newly blocked reader task to its CPU's list. */
+ void rcu_tasks_trace_qs_blkd(struct task_struct *t)
+ {
 -- 
 2.40.1
 
