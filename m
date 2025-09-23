@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55822328995;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B6D328997;
 	Tue, 23 Sep 2025 14:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758637316; cv=none; b=RkYgyi07e4mLtMHImiXzuhD5asQZu8aZb6ou0Fyhl4w2gx8dQx45VqXsubPmr9RnaUbOGoIOxy1x5NsoAGsfup5ysU4+BSD2eZD345c7+C+qH0OA7DBtZ3wByTpMN8xiIM/WsBtDO3u0skpBRWpmlxfq6rcvVEaF6/QoQND5iYg=
+	t=1758637316; cv=none; b=aJK+FEH3W7s5/EJRZ7l4n+tgSKdE5uG4MpHiSy2cdZgXdI/rNNspxiMB7Wz+DTCJQS3Kr79aD02CR3/MHnQs2AyTTTwivgn6UhmOhmJhGzuY5wyhCslpz5L3HCh5UAO/7IIrKfsnE1jSb0zjOgs4PNN9NQYshe13udXgtXKagPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758637316; c=relaxed/simple;
-	bh=dnfn0DMyZqHCyXyDBX7gMCl/aLGTGuiQmNJ7YTCoJDk=;
+	bh=vhENAcGeT3O7mnVVnjo6mRyfATWkOODJWG3NzL/dFHc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oDpH6GrVeLyjPnXM8vtGGZDme181ZFh6hNTw9kZje6dmCcCcjqefrpcP1KvLrWvIqqedbWNzWbuuOzpFJojravS8/Aa/foYKD0JBxxVlS4/rPPXMR4Fmb3wyKw3U7B8ssRHnutS0wBsrvlcj5vp4jVfufCQjzllYigrx4JrWowY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ParMViib; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=jJrfoE4/AnJ90JyjAHgpGo4LylV9URCZ8d7mYTACq6iQXVRAPEoBEiJ4xexlQ1R/n0VuVkmidamyKqxu1gebX6fSw1RLIllk809f55fFag3fG14Q7Iog0vwwe7U7EUOgtfKpurCtEgBAiMArM1ZsfrtFMyhQ8zUTm1TvOCyVcvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MZ4jcmzv; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ParMViib"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A49DAC2BCB2;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MZ4jcmzv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADC26C2BCB1;
 	Tue, 23 Sep 2025 14:21:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1758637316;
-	bh=dnfn0DMyZqHCyXyDBX7gMCl/aLGTGuiQmNJ7YTCoJDk=;
+	bh=vhENAcGeT3O7mnVVnjo6mRyfATWkOODJWG3NzL/dFHc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ParMViibAmTiqgmB/IaxzQprSDe/SSYbMrxjZuNxLy6Idjo9dZ7kQRw5NzLellG2E
-	 hdKH2/297Ey+6gSGkBjDXb4/ZDFRBrQzOY9vXUK2yxKxg+3gPPSMIo2x8xbxFuQ/5v
-	 r0fp5fj4bGXlHXxTf7x14SxjGtQlO7ghIBG6/YSqqC8Ogg1UE3CBQNuPi+t83qCLgE
-	 tkxOWoIDWawKIiXakty6VpJhY74sIQ6ZwH1dJ84lgAFTg/Bs87rdGGqOuo39B8shU0
-	 mckXAWK0ZLywViwmRrPaYRUZ8xDOFZyypZDu+y7phQ29h+HW+aOFoArhKjmm5GNt7J
-	 Rzili71TsYQQg==
+	b=MZ4jcmzvu5yPLh3dT7MSC3uGwk/CYGXuTJQfC2gJ6RgKoSUYZTDPYMvzwgvAMotSu
+	 kvtFmDOyUr+ktFKfRDn8v4xuabNCvyGzshX3SnNDz2a/TK/R7SzKaNeoXK7+5dETKp
+	 3Z3jTUVW8e/QWvdV3DRz//yCmavtBj/xFk1EdPfJ3GBfs545H4o889SSO+bpjSOUfY
+	 ysSy1e74b0+0opa43vAvxuXquMo+cUL5cforS6IpZfXDp6dKjViGAIUgBoaFALeaKb
+	 wj+ACOeiuTEVP3mVN4dkLNg1aOQt7lLorqflLFoT+I6BeY9FL2sMcJDUlrPfxTKTIo
+	 bIu26RmNhQKCA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D7442CE1418; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
+	id C68A3CE12A5; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -38,9 +38,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 13/34] rcu: Remove now-empty get_rcu_tasks_trace_gp_kthread() function
-Date: Tue, 23 Sep 2025 07:20:15 -0700
-Message-Id: <20250923142036.112290-13-paulmck@kernel.org>
+Subject: [PATCH 07/34] rcu: Remove ->trc_reader_special from task_struct
+Date: Tue, 23 Sep 2025 07:20:09 -0700
+Message-Id: <20250923142036.112290-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
 References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
@@ -52,9 +52,10 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The get_rcu_tasks_trace_gp_kthread() is used by rcuscale to diagnose
-bugs involving the RCU Tasks Trace grace-period kthread, which now no
-longer exists.  This commit therefore removes this function.
+Now that RCU Tasks Trace has been re-implemented in terms of SRCU-fast,
+and no-longer-needed quiescent-state functions have been removed, the
+->trc_reader_special task_struct field is only initialized, and never
+actually used.  This commit therefore removes it.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
@@ -62,52 +63,47 @@ Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/rcupdate_trace.h | 1 -
- kernel/rcu/rcuscale.c          | 1 -
- kernel/rcu/tasks.h             | 6 ------
- 3 files changed, 8 deletions(-)
+ include/linux/sched.h | 1 -
+ init/init_task.c      | 1 -
+ kernel/fork.c         | 1 -
+ 3 files changed, 3 deletions(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index ffd4dcd6339ae4..0bd47f12ecd17b 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -137,7 +137,6 @@ static inline void rcu_barrier_tasks_trace(void)
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index e62c99e44a5502..577fafd22a0e6f 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -940,7 +940,6 @@ struct task_struct {
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 	int				trc_reader_nesting;
+ 	struct srcu_ctr __percpu	*trc_reader_scp;
+-	union rcu_special		trc_reader_special;
+ #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
  
- // Placeholders to enable stepwise transition.
- void __init rcu_tasks_trace_suppress_unused(void);
--struct task_struct *get_rcu_tasks_trace_gp_kthread(void);
- 
- #else
- /*
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 16ba9050dab66b..17d038e26b65de 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -411,7 +411,6 @@ static struct rcu_scale_ops tasks_tracing_ops = {
- 	.gp_barrier	= rcu_barrier_tasks_trace,
- 	.sync		= synchronize_rcu_tasks_trace,
- 	.exp_sync	= synchronize_rcu_tasks_trace,
--	.rso_gp_kthread	= get_rcu_tasks_trace_gp_kthread,
- 	.name		= "tasks-tracing"
- };
- 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 4fb61b3c78283d..e70609c85ece5d 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1467,12 +1467,6 @@ void __init rcu_tasks_trace_suppress_unused(void)
- 	rcu_tasks_torture_stats_print_generic(NULL, NULL, NULL, NULL);
+ 	struct sched_info		sched_info;
+diff --git a/init/init_task.c b/init/init_task.c
+index 91c37f66ec8e9a..0c075f3cc8fc5a 100644
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -165,7 +165,6 @@ struct task_struct init_task __aligned(L1_CACHE_BYTES) = {
+ #endif
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 	.trc_reader_nesting = 0,
+-	.trc_reader_special.s = 0,
+ #endif
+ #ifdef CONFIG_CPUSETS
+ 	.mems_allowed_seq = SEQCNT_SPINLOCK_ZERO(init_task.mems_allowed_seq,
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 12388e895d2955..5686d50b62cfaf 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1780,7 +1780,6 @@ static inline void rcu_copy_process(struct task_struct *p)
+ #endif /* #ifdef CONFIG_TASKS_RCU */
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 	p->trc_reader_nesting = 0;
+-	p->trc_reader_special.s = 0;
+ #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
  }
  
--struct task_struct *get_rcu_tasks_trace_gp_kthread(void)
--{
--	return NULL;
--}
--EXPORT_SYMBOL_GPL(get_rcu_tasks_trace_gp_kthread);
--
- #endif /* #else #ifdef CONFIG_TASKS_TRACE_RCU */
- 
- #ifndef CONFIG_TINY_RCU
 -- 
 2.40.1
 
