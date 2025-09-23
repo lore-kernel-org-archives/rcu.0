@@ -1,81 +1,126 @@
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 571623128CC;
-	Mon, 22 Sep 2025 17:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B9B22DFA4;
+	Tue, 23 Sep 2025 14:21:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758561153; cv=none; b=GWVPHH7VpwIc2YiAhlVwZOwXWas47UKl87CJYrbFeuaOXXGe0diwsruwprZ1wGimyz55hI/aZwXTisPIZ9E4sVJnMlclWYPJmJh7PYJZ3A4/R783SK3UKea7vBEKDyjEVGoXEQd0e/PyRWyutKdSpxl9BjfrPVps+jGddAp1Oh8=
+	t=1758637296; cv=none; b=skpTZbqZLUIUosztpggXtByvG4WDnjVEUyvRNnRfp53kp6Tzlhq538uUIDzOl1UROTb5HFo3CMdEuCFmdHhBioYm7LWhWtoKGdejvac6m9hHWPCJ9KSq702gb9bLZWzRCb2rmrkyNLUlrqx1lFLHT5dJ2SZVLMnYnC1zE6IKyNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758561153; c=relaxed/simple;
-	bh=8oIaUjkf1ZLoWcfViyJ+ASS1wRwmeYlliRHc+XNJKBU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BXa6gg4eHn8PBiaT9Far/1n6x9CEVirjcmqbOon8aQ5OWUiW6ySDlG2/dQh8rY3EbvQIF+sRfWM5pqWqfXJoEpYnVlxTziQPg+KI5aqWAvpm9UAaMAqAskJ3EJL1Msdz+slXwgBW3kovj+xGiiEA5c/aQYO9avgcUfQj2WKPxPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 6B6BB227AAF; Mon, 22 Sep 2025 19:12:27 +0200 (CEST)
-Date: Mon, 22 Sep 2025 19:12:27 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: Christoph Hellwig <hch@lst.de>, Nathan Chancellor <nathan@kernel.org>,
-	Marco Elver <elver@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+	s=arc-20240116; t=1758637296; c=relaxed/simple;
+	bh=qnaBMWA94ufanssrOAqRkiBTs8H62VLm1Z5ULAg5fZ0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=RO1pf4xdgenkjpSqiWyfv2uNztmBIjN/uERwwDJEkRuL3UjRCHpsZkYkd3sfTEFbCH8WsL27ly+3mUo2525i6LD/NunJGJIxng/WGVSBq8+aiw981hZYN/YwAlaWvWgbF3WlQnE6IGXav4/d8pQjW9bEsItuhNaC0EOchsYgpLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZmSJei00; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZmSJei00"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD978C113D0;
+	Tue, 23 Sep 2025 14:21:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758637295;
+	bh=qnaBMWA94ufanssrOAqRkiBTs8H62VLm1Z5ULAg5fZ0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ZmSJei00IJME6ljBHGfRq6vFRO1zny7h5HcG9np//bWh5BsdA0YjbsvAIeab/hDb7
+	 ywF7Q8uD63Idrf3xx+GQnJo27ng1MxN0jQk52GWlOBa8wIvEyJ0pnvHshIvYkM2DeT
+	 97zwSrCgE8aKM4zNHOF5/dW+2v6Qs4yXye7lX8rkzVNkgTQ7myA2SwgEJ9fKQqllF0
+	 oS4mW1D/g05OWWBax9Uf/CzPiyMJMvjqjCNjEBQcbmARsynA6vMJ+tp0M+lqDbdtZ5
+	 uZ+eTts8OkH74l4R0FUcbTYy2X19MbwszvsLKoTEe1WyZqy70JNE5Fzh//6pHw+tOR
+	 f5t3B/QJEhRSQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E2384CE14F7; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexander Potapenko <glider@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Bill Wendling <morbo@google.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Ian Rogers <irogers@google.com>, Jann Horn <jannh@google.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
-	Kentaro Takeda <takedakn@nttdata.co.jp>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Waiman Long <longman@redhat.com>, kasan-dev@googlegroups.com,
-	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-	linux-sparse@vger.kernel.org, llvm@lists.linux.dev,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Compiler-Based Capability- and
- Locking-Analysis
-Message-ID: <20250922171227.GB12668@lst.de>
-References: <20250918140451.1289454-1-elver@google.com> <20250918141511.GA30263@lst.de> <20250918174555.GA3366400@ax162> <20250919140803.GA23745@lst.de> <a75f7b70-2b72-4bb0-a940-52835f290502@acm.org>
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	bpf@vger.kernel.org
+Subject: [PATCH 17/34] srcu: Create a DEFINE_SRCU_FAST()
+Date: Tue, 23 Sep 2025 07:20:19 -0700
+Message-Id: <20250923142036.112290-17-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
+References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a75f7b70-2b72-4bb0-a940-52835f290502@acm.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 19, 2025 at 10:20:37AM -0700, Bart Van Assche wrote:
-> locking annotations to kernel code. I ended up annotating multiple XFS
-> functions with NO_THREAD_SAFETY_ANALYSIS. Maybe the locking patterns in
-> XFS are too complex for compile-time analysis?
+This commit creates a DEFINE_SRCU_FAST() that is similar to DEFINE_SRCU(),
+but which creates an srcu_struct that is usable only by readers initiated
+by srcu_read_lock_fast() and friends.  Note that DEFINE_SRCU_FAST() is
+usable only by built-in code, not from loadable modules.
 
-If our locking patterns are too complex for analysis, either the code or
-the analysis has problems that need addressing.  Potentially both.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: <bpf@vger.kernel.org>
+---
+ include/linux/srcutiny.h |  1 +
+ include/linux/srcutree.h | 20 +++++++++++++++-----
+ 2 files changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 51ce25f07930ee..00e5f05288d5e7 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -45,6 +45,7 @@ void srcu_drive_gp(struct work_struct *wp);
+  */
+ #define DEFINE_SRCU(name) \
+ 	struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name)
++#define DEFINE_SRCU_FAST(name) DEFINE_SRCU(name)
+ #define DEFINE_STATIC_SRCU(name) \
+ 	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name)
+ 
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 42098e0fa0b7dd..1adc58d2ab6425 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -189,23 +189,33 @@ struct srcu_struct {
+  *	init_srcu_struct(&my_srcu);
+  *
+  * See include/linux/percpu-defs.h for the rules on per-CPU variables.
++ *
++ * DEFINE_SRCU_FAST() creates an srcu_struct and associated structures
++ * whose readers must be of the SRCU-fast variety.  DEFINE_SRCU_FAST()
++ * cannot be used within modules due to there being no place to
++ * put the desired ->srcu_reader_flavor value.  If in-module use of
++ * DEFINE_SRCU_FAST() becomes necessary, the srcu_struct structure will
++ * need to grow in order to store this value.
+  */
+ #ifdef MODULE
+-# define __DEFINE_SRCU(name, is_static)								\
++# define __DEFINE_SRCU(name, fast, is_static)							\
+ 	static struct srcu_usage name##_srcu_usage = __SRCU_USAGE_INIT(name##_srcu_usage);	\
+ 	is_static struct srcu_struct name = __SRCU_STRUCT_INIT_MODULE(name, name##_srcu_usage);	\
+ 	extern struct srcu_struct * const __srcu_struct_##name;					\
+ 	struct srcu_struct * const __srcu_struct_##name						\
+ 		__section("___srcu_struct_ptrs") = &name
+ #else
+-# define __DEFINE_SRCU(name, is_static)								\
+-	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);				\
++# define __DEFINE_SRCU(name, fast, is_static)							\
++	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data) = {				\
++		.srcu_reader_flavor = fast,							\
++	};											\
+ 	static struct srcu_usage name##_srcu_usage = __SRCU_USAGE_INIT(name##_srcu_usage);	\
+ 	is_static struct srcu_struct name =							\
+ 		__SRCU_STRUCT_INIT(name, name##_srcu_usage, name##_srcu_data)
++#define DEFINE_SRCU_FAST(name)		__DEFINE_SRCU(name, SRCU_READ_FLAVOR_FAST, /* not static */)
+ #endif
+-#define DEFINE_SRCU(name)		__DEFINE_SRCU(name, /* not static */)
+-#define DEFINE_STATIC_SRCU(name)	__DEFINE_SRCU(name, static)
++#define DEFINE_SRCU(name)		__DEFINE_SRCU(name, 0, /* not static */)
++#define DEFINE_STATIC_SRCU(name)	__DEFINE_SRCU(name, 0, static)
+ 
+ int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
+ void synchronize_srcu_expedited(struct srcu_struct *ssp);
+-- 
+2.40.1
 
