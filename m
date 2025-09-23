@@ -1,47 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D92327A20;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF57327A28;
 	Tue, 23 Sep 2025 14:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758637315; cv=none; b=hHApeDu4Ko6eL6RJ853mGlwt/i2B7jImbHtmbXjiAGxnUljfa9aVQ6fqlbfP7W/XLvxW8zBMlrb9UXNFBBW15Udl2njN6BpJI0sHoQE70ome8iqEExoBzL/jtWVAa8LPs5r1mgjb/BhTE5e3qK37odRQ/ceedQUTWIttIoBxiAw=
+	t=1758637315; cv=none; b=mkj8ds2pNHmRG1sEBtUxWvJkzy+EpD6lwJ1VxtJiO2IrMC5FkOvNyHFZurqN6Mb4Ei2+sCiIzxBmUVj/wGJJ9LADjpoebzaaMcN0ClQFOY1NkZ6qxzF2uGlMpQFL592mqS/G7zmVzG4hxPJ08cj0l9XVB0MuXKn8r78Z3bzVTJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758637315; c=relaxed/simple;
-	bh=gORzw/K5miRE/rNReHV1tjj65oo9eOSliJxhQHUaXtc=;
+	bh=NiuHAgAJpC2TRweVL4XTZuEsRPP/Cvyb13DBOTQHKg8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tHi9ls/20ybVNKqlYW+1a/mML9siYBMz9FpZRpRd9QrFZkzOsg42vhiPUDZfh5q2WyY5oGkUoCU5y6CQngN9AZAa6AghPBMfxYtRkMZ85WtNVmj8m/HyiVnNnyo6NCYhLGphjUFdUz3hq7O9ge4FyXVk7See3l3Ofrc7KnSFz2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QwSootcX; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=UqgRiVf2CPw8S8ujgXKqvNBuEGgZR7/1imXdiDi5IeAp/S1BdPh5vGz0sRh/39aw4OSmAZTZNuVxlpIf9YupiNH598PlrNSP3Oynh7JlCJQFmIZfhBkvTHWRECPqRw9lsqB4GUJ66TR8zeEp1nQ+nHcBAO21KC1w4D67DleGsh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ra0kNFvw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QwSootcX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 722A2C19421;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ra0kNFvw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F9B0C116C6;
 	Tue, 23 Sep 2025 14:21:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1758637314;
-	bh=gORzw/K5miRE/rNReHV1tjj65oo9eOSliJxhQHUaXtc=;
+	bh=NiuHAgAJpC2TRweVL4XTZuEsRPP/Cvyb13DBOTQHKg8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QwSootcX+hMz03OhUwZFvSEPmGOuAvoPBUqXbKeY+1HBzAKWcbk3vf8SYzkTIVI58
-	 63B6udTAqRiPYP9xcnZSZvS5lyIp7dnsTk088VwtyzlihPrg/XW02yAiXYFewnAIps
-	 67TKJO3GP3d6Mo5OwLcnF/L/gy2sGg9CUBG4RbpIXCE1aCXMvOZw1qLcBLudvqxaua
-	 8PfH5Yy0ARtAZZPdon28prIgi+9JdstTRmWAuqGb5fzyKxhIEuUh/ipTzhMUM/j0uY
-	 0VQDe2j0VN1yQJK42PG66b3aRnBVQMwblXjBwm0NKO74FHFIvMBBFN7Z0ujPuUAjqS
-	 NBwKcqUvCjOdQ==
+	b=Ra0kNFvw9LCjAKbmIOhztBvXixxP6dWztSS9jYD3y72qb9CiNmGz1U5bB/DWZcJAS
+	 kQTSsSWkUSqgRGrnUPc323f94AuU4F/hBQwd/Cc0QXgE+56xvNxXIfUCHqUNqKertl
+	 5GRBm/f18z0cJwH+flPGrtO6WS7sG8Pgl84IS+RAOAlTtPTmXvBPtACGq5APvrTAck
+	 r5pFGq77/gW0Q4vo6L0tzT+US/sZqkCwIhNEhzxt5ksOddCzKufs5V4lFE0RtVYu3v
+	 ekJR19lyktl+qU78SY63MwbiiH87VrWucn+I/DthLSHnOBeCpvYYsyYQBFCL1XwYjB
+	 OZDO0hnMUE3Gw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C413ACE127E; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
+	id 04BE4CE168F; Tue, 23 Sep 2025 07:20:38 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 06/34] context_tracking: Remove rcu_task_trace_heavyweight_{enter,exit}()
-Date: Tue, 23 Sep 2025 07:20:08 -0700
-Message-Id: <20250923142036.112290-6-paulmck@kernel.org>
+Subject: [PATCH 25/34] srcu: Create an rcu_tasks_trace_expedite_current() function
+Date: Tue, 23 Sep 2025 07:20:27 -0700
+Message-Id: <20250923142036.112290-25-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
 References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
@@ -53,65 +52,47 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Because SRCU-fast does not use IPIs for its grace periods, there is
-no need for real-time workloads to switch to an IPI-free mode, and
-there is in turn no need for either rcu_task_trace_heavyweight_enter()
-or rcu_task_trace_heavyweight_exit().  This commit therefore removes them.
+This commit creates an rcu_tasks_trace_expedite_current() function
+that expedites the current (and possibly the next) RCU Tasks Trace
+grace period.
+
+If the current RCU Tasks Trace grace period is already waiting, that wait
+will complete before the expediting takes effect.  If there is no RCU
+Tasks Trace  grace period in flight, this function might well create one.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- kernel/context_tracking.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+ include/linux/rcupdate_trace.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-index fb5be6e9b423f2..a743e7ffa6c00f 100644
---- a/kernel/context_tracking.c
-+++ b/kernel/context_tracking.c
-@@ -54,24 +54,6 @@ static __always_inline void rcu_task_enter(void)
- #endif /* #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL) */
+diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+index 7f7977fb56aca5..70231f95cd5e71 100644
+--- a/include/linux/rcupdate_trace.h
++++ b/include/linux/rcupdate_trace.h
+@@ -176,6 +176,20 @@ static inline void rcu_barrier_tasks_trace(void)
+ 	srcu_barrier(&rcu_tasks_trace_srcu_struct);
  }
  
--/* Turn on heavyweight RCU tasks trace readers on kernel exit. */
--static __always_inline void rcu_task_trace_heavyweight_enter(void)
--{
--#ifdef CONFIG_TASKS_TRACE_RCU
--	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
--		current->trc_reader_special.b.need_mb = true;
--#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
--}
--
--/* Turn off heavyweight RCU tasks trace readers on kernel entry. */
--static __always_inline void rcu_task_trace_heavyweight_exit(void)
--{
--#ifdef CONFIG_TASKS_TRACE_RCU
--	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
--		current->trc_reader_special.b.need_mb = false;
--#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
--}
--
- /*
-  * Record entry into an extended quiescent state.  This is only to be
-  * called when not already in an extended quiescent state, that is,
-@@ -85,7 +67,6 @@ static noinstr void ct_kernel_exit_state(int offset)
- 	 * critical sections, and we also must force ordering with the
- 	 * next idle sojourn.
- 	 */
--	rcu_task_trace_heavyweight_enter();  // Before CT state update!
- 	// RCU is still watching.  Better not be in extended quiescent state!
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !rcu_is_watching_curr_cpu());
- 	(void)ct_state_inc(offset);
-@@ -108,7 +89,6 @@ static noinstr void ct_kernel_enter_state(int offset)
- 	 */
- 	seq = ct_state_inc(offset);
- 	// RCU is now watching.  Better not be in an extended quiescent state!
--	rcu_task_trace_heavyweight_exit();  // After CT state update!
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & CT_RCU_WATCHING));
- }
++/**
++ * rcu_tasks_trace_expedite_current - Expedite the current Tasks Trace RCU grace period
++ *
++ * Cause the current Tasks Trace RCU grace period to become expedited.
++ * The grace period following the current one might also be expedited.
++ * If there is no current grace period, one might be created.  If the
++ * current grace period is currently sleeping, that sleep will complete
++ * before expediting will take effect.
++ */
++static inline void rcu_tasks_trace_expedite_current(void)
++{
++	srcu_expedite_current(&rcu_tasks_trace_srcu_struct);
++}
++
+ // Placeholders to enable stepwise transition.
+ void __init rcu_tasks_trace_suppress_unused(void);
  
 -- 
 2.40.1
