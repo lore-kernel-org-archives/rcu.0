@@ -1,118 +1,249 @@
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C61306D26
-	for <rcu@vger.kernel.org>; Thu, 25 Sep 2025 16:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8811B31A07F
+	for <rcu@vger.kernel.org>; Thu, 25 Sep 2025 18:39:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758818343; cv=none; b=diFV+Lv0IV3qrg7SovJ6tkpI3Q8OufppK+Qj2++nMUXNpBzdNLI/pQUThiz+2Bpz8XqPfEl5nXQDAxg8eMi0B4uVhRahPsXkT5Wll4oIf1ytBOnIL82JWaSfeHVJG4s0lsn7LHD12Qp0TDt+3SA9t/9TAF2d+qEZ5Hhgz+i5PY4=
+	t=1758825576; cv=none; b=kIBCVgKsFv6dEiTnC77zZvb5azE6IbOli7fR3XjgoNBqpSyJYRexTJAq1JXswOspayzr+HYb/s8Hem3qx+Qmvf9ijHELVs4SXqt/aU1gcsjmqYFS+moC14ZQohin58fbJTT9jAHjsLDdXGY1sn+0iJsB47/JZcta+27QeTZZbT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758818343; c=relaxed/simple;
-	bh=nL6ICthj42DJqbCHvO3LpEi9VZrUNi4EZoXpYsh0G8E=;
+	s=arc-20240116; t=1758825576; c=relaxed/simple;
+	bh=i7GLpPjPBvVQWjuEK/nlyhoW5qJe/Sfaozh+wuUpN6g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mtui2mY5IVR0CcvNyQgeSgwQuOtqRKtnmxqJ9hfny3XLHzddxD+WwPIqu20QGlvLw3aoJfU6Urnj7X2vSz95D6JOXwszUauyTHt9ZCfae5e56+KnaoOAVBfJ4cTdIwPj9ZyhtWQZrtAfm/ftbWn2DiJHVVeHeNp6FEgBTvF+2iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TmALX1aD; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	 To:Cc:Content-Type; b=U3OmQr6tFEfgxf79DX/WMaly/TtABrHWo5IdxyGmYbxUod4NvXu3U0XFqUrqq82xb35r6OaudwUmHp65ASXltaR0FtMXt88Ky4jMZz6WXVjtAb8d3mW2x6EmhTt6gM/uZmkSteZpJOvbUDcFrn4Gbwh4w8WVIZvZsJ/VdORj2TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KhzdCY0o; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TmALX1aD"
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4cb6fea963dso5011cf.0
-        for <rcu@vger.kernel.org>; Thu, 25 Sep 2025 09:39:01 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KhzdCY0o"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-267f0fe72a1so10889505ad.2
+        for <rcu@vger.kernel.org>; Thu, 25 Sep 2025 11:39:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758818340; x=1759423140; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758825574; x=1759430374; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=d1tpDO1KihUvNWJ7xp6+J59rCTu8XzBpZg/SYZWoRWo=;
-        b=TmALX1aDFCpmF8eklX4/po3bYY8bIgGcTN/o6hKhtB74ySTLFqtAy70R73G1aW2goc
-         Tt3+PhdjQbTLUPOmUDz7j/LemEduaPd3XIiYXj7bcdo5nH6AFErlAWigj9LjInJqitHq
-         j8ix7Jqzs1TxvDApKN1epi/Tq2Pndxor5LRKXL22Ka0J5J0IaBdrGo7SeTEQODHOe6tZ
-         sMK9PRAy5Tbc0vJ2stPtRfjTbxW5GbUd0NgGVMmWFZ0qtAvFHCxe9Kh2QtV6WThDL4Yo
-         d3Ik8L8Xj/Icb7S0XJRSZZsMbnpAqbCLi0Mqj8S908fOl+o0N3xd8b6ykY/z9UyiGJP2
-         2PtA==
+        bh=/aOtjyDHmsqCIz7rR6q+jApNpJ0ke3+flpbgYL/MfZI=;
+        b=KhzdCY0oOuERhtOJDkwLOsj6knxCdsSQrM7zubpL9RNVJ8YHu8ZukmccrvTi6RPnPT
+         SLk63+P3bf42P3kx2jFQktdF/WHbJZhxv5/IuQr9IDOXv/DTomk/KykLbt7KFZz5dZm4
+         qoLNF1i9iE+7ZbGFBQltSS0R0AvgvjpPYvuwwrPNGjLL72D286oXITqzeKRyCSAB8Sp3
+         O26TtOxb3zkfw/Zp1pV52pQUn2eTFIg2Zm52YOmWk48iiNEbh5ueTjpXBQaJqWF+aQo3
+         tBz9ZjtTXOH53GWfuuP2E3fOurLr+ZAHgscNyw1NTVYH/fIm20B971F7X1GfI5/pcaY4
+         D+Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758818340; x=1759423140;
+        d=1e100.net; s=20230601; t=1758825574; x=1759430374;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=d1tpDO1KihUvNWJ7xp6+J59rCTu8XzBpZg/SYZWoRWo=;
-        b=GK3r/5vxYYyFHUpgYgEUSgSw0zyNKgiqEXG+DWneRpubc+hLzyKz48RTmJqfBiAzMy
-         HIU7SlyxBahj1Kcco45O1ghsO4ER6mQI3oJE5lbm8CDMcRFnaL3HtTCyp5q2fKiXKky1
-         igOP7CTPFv5t+8H+o8AbgxPg8TOOk6Uy7nLqU2KBKZ15yqgja2lEGloNaW15vqLClYyr
-         Xaq2G+P7rIu9lboraYyNK6DNuluV3n5eMpOoIjyMfJ1rI9CnQaRclSsInJcei5Z/4lFV
-         NM9SXpjBgYfiSarE4ymQ1pjlUsSi6D1SxG/ayg2KHuQLqSjBKySfqgwJ/vxRQ9w2XLZZ
-         swQA==
-X-Forwarded-Encrypted: i=1; AJvYcCVjpDMAyigWv6YOJLk1bkMz0OlzbAcbExceIHMkwIFxKreC2M6DP3Ne40BO7rDxnYU3chs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyzaxL3e3JhLiTTfTq5nuK4hIQg4awUfilZL/dRrBrQg9ogzs7Z
-	RVJyixwfu26yqeQtE9ujdhOb+iOEjhXMJdkiaiyVU4WhEWp+PMfHg/BVJ87hqz+2haIytYAoBos
-	H4qQcRk5vu8GxedSldlEcoXHkoU7SocFwtPUPAQlQ
-X-Gm-Gg: ASbGncsewZjLBoVEHwlQ/RVJczQYlBgv+lA3k96/4X3BBOxcpmx/EqC4sirGPjn9XYn
-	7BtZS/Ht7xK+rjMXgj2WVOf2EQ0EnkD6BeJIf43FcB5nS52Mnpg3OynCjqjaCVGKUpt4VWn7JPX
-	hXV7W55vtC5oZBSMgnQO8FE8rjknCwk3JmyJZsJsupJI1Vqa9SWh3ITGKokx0L20XFF8EIrOXuA
-	bnzA6eGFywE9l8PM1LdH7SCqtxs3mwj+ug4LJaXM47+
-X-Google-Smtp-Source: AGHT+IHN7bIpZke19K7BOxCOIWISYi7OX+eXxA5ZK0cmFRBomq6+GbhbpYzJ7A5wdxY+p0kNQDC8WuWf9zaB9hJF3X0=
-X-Received: by 2002:a05:622a:453:b0:4b7:9e3a:3804 with SMTP id
- d75a77b69052e-4da2ffaac77mr7812101cf.16.1758818340040; Thu, 25 Sep 2025
- 09:39:00 -0700 (PDT)
+        bh=/aOtjyDHmsqCIz7rR6q+jApNpJ0ke3+flpbgYL/MfZI=;
+        b=txo6gNEt4XbsXHOzgleoDOZDPhFZO5FcrJ8ZEq5ftvZig3oQJAT6ixQAHBaPiMuLiW
+         hiXM99HCnB6UkT9r40S9TuJWzTgQ1reuQgPXQvzT575tWYOnbKy3Ul1kLApOarA840h3
+         wvJsDkatHGhJ0c3tLKsVK/73EvgpLglfB/oEn1F8ixaz/NFRxI9c8/MGb2vuyNLHGQ+r
+         fm/107gE4ybi629vApTbXHDCC18U3RU0uw6/LJef9HZprYX2UqhWNVnS2tUisHO5Y1mN
+         c/hNGMzaj2yYY5bgyRGIXegMZXoZS7bfN8RfNyQAg880F3F+hmvr8oHDiOunRKzPrplq
+         R1dw==
+X-Gm-Message-State: AOJu0Yw3ac54FNOezCtOHM2LTYM76kknvBfHZHh69Qc9FtUZoCXkq5/n
+	oNbNe/q6c2fqdg3/pvHDGCBF3dAKInj5rovHO5uXUeCZHMSBEfSaTBoQlRLnD67FuTpCSjzXGA5
+	iZkUhGAA/UP/IS/I4XLtmJ0ot95vfMZk=
+X-Gm-Gg: ASbGncvkG2Y+rl7ZN2z8FimROnpcbJ6KXK3GMLZr694aHvgKULMsGLGnYbIGIKjNEnI
+	CC1t5IPviBMAd35Wo1nBbkSeAhsMdxFaB3XSH9wk9DfKwdsNKskSsolHsk5TKQkWA0dfTPzyHmb
+	aaNzRopcQEHizCye/rW7RWpeLJgreC0rB683ifwIUPbRQe1huQNYPa1P0ATNpm0Drut26LB/JdJ
+	j34r+qTEao+OSsJ64YzZ7jBWsiRGRfZYQ==
+X-Google-Smtp-Source: AGHT+IERsujXswi5CQpVX+uwrI/EOY0gASLqeRQdQ8nQLXP6JNzAU+nJhK+3EmsbHE1U2CitbY4z5HqDwZmyGAehnro=
+X-Received: by 2002:a17:903:fa4:b0:26e:146e:7692 with SMTP id
+ d9443c01a7336-27ed49d0931mr53365205ad.17.1758825573656; Thu, 25 Sep 2025
+ 11:39:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250910-slub-percpu-caches-v8-0-ca3099d8352c@suse.cz> <20250910-slub-percpu-caches-v8-12-ca3099d8352c@suse.cz>
-In-Reply-To: <20250910-slub-percpu-caches-v8-12-ca3099d8352c@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 25 Sep 2025 09:38:47 -0700
-X-Gm-Features: AS18NWBHP_MMQH7-p6dMrlfyKmSei4xK0QXxGzDSsvJq1qMX-xqE7wUlwvZ9tvY
-Message-ID: <CAJuCfpEBOAGN+hLssuAma473B5-m-cA4CN3xEyjoM8WXcQv-6Q@mail.gmail.com>
-Subject: Re: [PATCH v8 12/23] tools/testing/vma: Implement vm_refcnt reset
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter <cl@gentwo.org>, 
-	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, 
-	Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	maple-tree@lists.infradead.org
+References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop> <20250923142036.112290-1-paulmck@kernel.org>
+In-Reply-To: <20250923142036.112290-1-paulmck@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 25 Sep 2025 11:39:18 -0700
+X-Gm-Features: AS18NWCKjC5vc6d6hJ8nJpmgoTLBlPcTgAy1h98sL0EUChh4svSRk8DVvw0VrRQ
+Message-ID: <CAEf4Bzan+yAzKcBG8VWFWOwR6PigRAjmQB8KrcRwheZnRaTEyQ@mail.gmail.com>
+Subject: Re: [PATCH 01/34] rcu: Re-implement RCU Tasks Trace in terms of SRCU-fast
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
+	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 10, 2025 at 1:01=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
+On Tue, Sep 23, 2025 at 7:22=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
 >
-> From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+> This commit saves more than 500 lines of RCU code by re-implementing
+> RCU Tasks Trace in terms of SRCU-fast.  Follow-up work will remove
+> more code that does not cause problems by its presence, but that is no
+> longer required.
 >
-> Add the reset of the ref count in vma_lock_init().  This is needed if
-> the vma memory is not zeroed on allocation.
+> This variant places smp_mb() in rcu_read_{,un}lock_trace(), which will
+> be removed on common-case architectures in a later commit.
 >
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-
-
-
+> [ paulmck: Apply kernel test robot, Boqun Feng, and Zqiang feedback. ]
+>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Tested-by: kernel test robot <oliver.sang@intel.com>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: <bpf@vger.kernel.org>
 > ---
->  tools/testing/vma/vma_internal.h | 2 ++
->  1 file changed, 2 insertions(+)
+>  include/linux/rcupdate_trace.h | 107 ++++--
+>  include/linux/sched.h          |   1 +
+>  kernel/rcu/srcutiny.c          |  13 +-
+>  kernel/rcu/tasks.h             | 617 +--------------------------------
+>  4 files changed, 104 insertions(+), 634 deletions(-)
 >
-> diff --git a/tools/testing/vma/vma_internal.h b/tools/testing/vma/vma_int=
-ernal.h
-> index f8cf5b184d5b51dd627ff440943a7af3c549f482..6b6e2b05918c9f95b537f26e2=
-0a943b34082825a 100644
-> --- a/tools/testing/vma/vma_internal.h
-> +++ b/tools/testing/vma/vma_internal.h
-> @@ -1373,6 +1373,8 @@ static inline void ksm_exit(struct mm_struct *mm)
+
+makes sense to me overall, but I had a few questions below
+
+> diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trac=
+e.h
+> index e6c44eb428ab63..3f46cbe6700038 100644
+> --- a/include/linux/rcupdate_trace.h
+> +++ b/include/linux/rcupdate_trace.h
+> @@ -12,28 +12,28 @@
+>  #include <linux/rcupdate.h>
+>  #include <linux/cleanup.h>
 >
->  static inline void vma_lock_init(struct vm_area_struct *vma, bool reset_=
-refcnt)
+> -extern struct lockdep_map rcu_trace_lock_map;
+> +#ifdef CONFIG_TASKS_TRACE_RCU
+> +extern struct srcu_struct rcu_tasks_trace_srcu_struct;
+> +#endif // #ifdef CONFIG_TASKS_TRACE_RCU
+>
+> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> +#if defined(CONFIG_DEBUG_LOCK_ALLOC) && defined(CONFIG_TASKS_TRACE_RCU)
+>
+>  static inline int rcu_read_lock_trace_held(void)
 >  {
-> +       if (reset_refcnt)
-> +               refcount_set(&vma->vm_refcnt, 0);
+> -       return lock_is_held(&rcu_trace_lock_map);
+> +       return srcu_read_lock_held(&rcu_tasks_trace_srcu_struct);
 >  }
 >
->  static inline void vma_numab_state_init(struct vm_area_struct *vma)
+> -#else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+> +#else // #if defined(CONFIG_DEBUG_LOCK_ALLOC) && defined(CONFIG_TASKS_TR=
+ACE_RCU)
 >
-> --
-> 2.51.0
+>  static inline int rcu_read_lock_trace_held(void)
+>  {
+>         return 1;
+>  }
 >
+> -#endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+> +#endif // #else // #if defined(CONFIG_DEBUG_LOCK_ALLOC) && defined(CONFI=
+G_TASKS_TRACE_RCU)
+
+nit: // #else // #if... looks very unconventional
+
+>
+>  #ifdef CONFIG_TASKS_TRACE_RCU
+>
+> -void rcu_read_unlock_trace_special(struct task_struct *t);
+> -
+>  /**
+>   * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical =
+section
+>   *
+> @@ -50,12 +50,14 @@ static inline void rcu_read_lock_trace(void)
+>  {
+>         struct task_struct *t =3D current;
+>
+> -       WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting=
+) + 1);
+> -       barrier();
+> -       if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
+> -           t->trc_reader_special.b.need_mb)
+> -               smp_mb(); // Pairs with update-side barriers
+> -       rcu_lock_acquire(&rcu_trace_lock_map);
+> +       if (t->trc_reader_nesting++) {
+> +               // In case we interrupted a Tasks Trace RCU reader.
+> +               rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map=
+);
+
+why is this a "try_lock" variant instead of a no-try "lock_acquire"
+one? Some lockdep special treatment for nested locking?
+
+> +               return;
+> +       }
+> +       barrier();  // nesting before scp to protect against interrupt ha=
+ndler.
+> +       t->trc_reader_scp =3D srcu_read_lock_fast(&rcu_tasks_trace_srcu_s=
+truct);
+> +       smp_mb(); // Placeholder for more selective ordering
+>  }
+>
+>  /**
+
+[...]
+
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 2b272382673d62..89d3646155525f 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -939,6 +939,7 @@ struct task_struct {
+>
+>  #ifdef CONFIG_TASKS_TRACE_RCU
+>         int                             trc_reader_nesting;
+> +       struct srcu_ctr __percpu        *trc_reader_scp;
+>         int                             trc_ipi_to_cpu;
+>         union rcu_special               trc_reader_special;
+>         struct list_head                trc_holdout_list;
+> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> index e3b64a5e0ec7e1..3450c3751ef7ad 100644
+> --- a/kernel/rcu/srcutiny.c
+> +++ b/kernel/rcu/srcutiny.c
+> @@ -106,15 +106,15 @@ void __srcu_read_unlock(struct srcu_struct *ssp, in=
+t idx)
+>         newval =3D READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
+>         WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
+>         preempt_enable();
+> -       if (!newval && READ_ONCE(ssp->srcu_gp_waiting) && in_task())
+> +       if (!newval && READ_ONCE(ssp->srcu_gp_waiting) && in_task() && !i=
+rqs_disabled())
+
+this seems like something that probably should be done in a separate
+patch with an explanation on why?
+
+>                 swake_up_one(&ssp->srcu_wq);
+>  }
+>  EXPORT_SYMBOL_GPL(__srcu_read_unlock);
+>
+>  /*
+>   * Workqueue handler to drive one grace period and invoke any callbacks
+> - * that become ready as a result.  Single-CPU and !PREEMPTION operation
+> - * means that we get away with murder on synchronization.  ;-)
+> + * that become ready as a result.  Single-CPU operation and preemption
+> + * disabling mean that we get away with murder on synchronization.  ;-)
+>   */
+>  void srcu_drive_gp(struct work_struct *wp)
+>  {
+> @@ -141,7 +141,12 @@ void srcu_drive_gp(struct work_struct *wp)
+>         WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+>         WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wa=
+kes! */
+>         preempt_enable();
+> -       swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nes=
+ting[idx]));
+> +       do {
+> +               // Deadlock issues prevent __srcu_read_unlock() from
+> +               // doing an unconditional wakeup, so polling is required.
+> +               swait_event_timeout_exclusive(ssp->srcu_wq,
+> +                                             !READ_ONCE(ssp->srcu_lock_n=
+esting[idx]), HZ / 10);
+> +       } while (READ_ONCE(ssp->srcu_lock_nesting[idx]));
+
+ditto, generic srcu change, driven by RCU Tasks Trace transformation,
+but probably worth calling it out separately?
+
+>         preempt_disable();  // Needed for PREEMPT_LAZY
+>         WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() ch=
+eap. */
+>         WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+
+[...]
