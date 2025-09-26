@@ -1,131 +1,153 @@
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1380A1D63D3
-	for <rcu@vger.kernel.org>; Fri, 26 Sep 2025 23:45:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 595DD22689C
+	for <rcu@vger.kernel.org>; Fri, 26 Sep 2025 23:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758930344; cv=none; b=ui/t2czr6vgvIIRb40/cZtfAKMYd6Xm1P3rrr7cCYNlpuS3uwLYQRiR5pLthM23TcCjq72562Nt3z79YlYQ0usZ6rQBeSphpElX65P+NKW76KLppMc9xUrQJ+YAdbk3U7Rx/qQelYkV13nAhP5s8rIwWgaxjYrlXsCBJJhB1/kw=
+	t=1758930837; cv=none; b=qCItaYCuj1NJvn9Vz1gH5z2ic+XKQA9p5LxQmqaIY23bpw+1w3CUjUABJKBTCzvRcF5ELJPYJaXY/HcGeZZw71nPfH2VrkLN34g43LmhQGkZFh6UuJZ+xDw1J8U/jLDmIv3Ao0686DtxLVoa+/FHDqLA8PyLKW24ImcChKoaWnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758930344; c=relaxed/simple;
-	bh=L/vIybsN3LeKF+j6ObWJ3KQFN6JCwMXCVroUvbrCQ9k=;
+	s=arc-20240116; t=1758930837; c=relaxed/simple;
+	bh=eGOPQyhS//CpiaVSXTf4VK9njCtZlAtjX3j2YVkKjd4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uQmQbNrNlc1I59rS0R+Qj2GMUBFceME/JllXbM89bc8xr4gh/OMZBT9+7IfpWJo6GyAznmByhKSJFZpPrTuPTnjKFGudIDHy93QWMtH6h3pWSihBkNXfgTsw2WlRCUMV+1+gEFwQX6M5gBvJZDTMC4BUiO2TwZN3y9yI5dg1aPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YSvdm7Gh; arc=none smtp.client-ip=209.85.160.177
+	 To:Cc:Content-Type; b=F2+7weVmUURJZitB3uQ10CEYetc7nJDZOWxQ0f6Utxw5VBNMpma5odDmKHbhLsz1yUjgGHcKEJP0fhiWdM545hcd3tNRLC+e3+EyonwCZ/8krUs+ww46d+3E4BXdCNdfYUDWwVReRsG35T7MbLIt5QMszujaf0cSp/VuHlAC968=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QSDT09HF; arc=none smtp.client-ip=209.85.160.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YSvdm7Gh"
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4dcc9cebfdfso68801cf.1
-        for <rcu@vger.kernel.org>; Fri, 26 Sep 2025 16:45:42 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QSDT09HF"
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4df3fabe9c2so2591cf.1
+        for <rcu@vger.kernel.org>; Fri, 26 Sep 2025 16:53:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758930342; x=1759535142; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1758930835; x=1759535635; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2v6l/fjiZwwbxRv7L9dB6Gm8kHK4dyhIGUYaK+C169s=;
-        b=YSvdm7Ghwz1ZbHcyT8ubhE6WSgtfx3yaUBsRhKmCuG5Rxh2JPnBlias8siDA4aArtk
-         iRFmGi+/INGAgKw8w/xap/M45Admda4AueUoiwHhRtbdSjxFVVZ3T8ejuvvteurjbMse
-         9mKf5Hps1MnvcSua6bFmfMAg0ktYN/39UU8VNwHVBh6dFobylE40a3NtD0TrOvj+USLV
-         HaPxwSajVK+VWCdzZXxRM016y22a5/5DSqGP/Z5njRCf/SuDtIotSIqnJeIJz8HcNJMq
-         MK2DEbWoehYQKH+pLHiaGggCmHNiGQxH9NftZQRkgSqlUv1XJ509rD+LEgueiJ4pHcTF
-         0xog==
+        bh=yTTfzN21DB87uS849xyD/v280VXLHTvOWoRCskFIjR4=;
+        b=QSDT09HFQg8pzuiGra9buER5/eRom45GkDPeSMaCPlq9mI2WezbZ5W4S3HJqVSaq/g
+         OC+RT/ErJsK+OsLr0AWdaCxVf9VTYaSP6dP/xtYbATrcZYbyD7zyeSCCEuEkMaQox/es
+         i/1cfRnMeFyjItMDOIbfvOiGwzcVGJ2eSeGfdBctoAyi/xFcwGsrrJhFcUalevr3AxgB
+         DlrUvhTgbDEaHU1v/zFm/qA9zWLux2uopxHWw1OiNvkL4OAyH5g5E6GAPheEidEESNtX
+         Aqpn39QBIAbVK822G9T7n2XJOU5OAQe74qG33C2cKO638L2FUmsTGMwAoCr+6f6uWIto
+         grKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758930342; x=1759535142;
+        d=1e100.net; s=20230601; t=1758930835; x=1759535635;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2v6l/fjiZwwbxRv7L9dB6Gm8kHK4dyhIGUYaK+C169s=;
-        b=AdT/IPSHf3qQcF6PbbpmC/eBhGIvaGcyhOOCNiVu4whCwuH+//742mdMjSbY7azdgQ
-         Rh3cT4F+g1jeRkcw8Wi0ljIJDqHc9PJJXBGb+9lnntKteEvcfQNcpUsoEjV0KPMwkFxw
-         H9XSEbaQDhv/n6nM8GdejRsfsxmmG1Yv+TQsmMGi6DsmvSQIMzk4Bzmt1U5Mdkq4UFSU
-         cf8MjY/F1Uo63S3eIDvDDiXP2gsFFW2SamNVHZ8D3socXGy1zyI5EGyqr9lvSLpHbiWE
-         GpfVISTfeuAjEbM7yJKZPRgd2/pqsDw/Jvnv3ujdqPBbwnqlrN26Ao746mqTuJO7bHyQ
-         pK2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVQYhjnfLBqfNVSEzdYE4EOiqiaNQ+6CxCauNCABgS7i4e6/nMThc297cFACL7kmvFaFMU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZjJErRHdF/srIgteFyg5zZU4AOLgwivmX5Tz4/1FP1fLpVkSj
-	hjwijQuJ3Gr5jKzlPPfsLI6cu836maOFmAUknpJPEy7A2hHiLu1uPgn0sG3VQwSjpSQdUGcKpHY
-	x+0fLYK5WwLG3R6Bet4aI13WKrq+hX50JuOJdhzRx
-X-Gm-Gg: ASbGncsS8uOBgFvCxOP2qJ+qSzyXe8iYL3CjzRz0ufmQYjG6nNd6YCU1nbjMU46lGKd
-	go4KzWHIzqSg8GIA1oLrwJHJB5Xf4VAdu6aGMcseXxNclSlSqPlbmZBFWfjh9+K0FhVaBuIWZ0c
-	zS990SEyX5GCdmmb1UA6Evim78W0fNxqE5PYNT9ziDRU2BYKH4SEMB+EuPwImVJWltPcAmL3Mka
-	NiobdKPYZSb
-X-Google-Smtp-Source: AGHT+IFXlGPNT84MM6UDMyxHqowIC+dEanCYd/TyBPjybtAKnhlvS2IM+5MVQP+4ScKwabi2zbY1N6OMYsUijzd9Dt4=
-X-Received: by 2002:a05:622a:5286:b0:4b7:a72f:55d9 with SMTP id
- d75a77b69052e-4dec710b632mr2671331cf.13.1758930341409; Fri, 26 Sep 2025
- 16:45:41 -0700 (PDT)
+        bh=yTTfzN21DB87uS849xyD/v280VXLHTvOWoRCskFIjR4=;
+        b=JhYdbd2ZPbVI5RsyM5eVeQw4l+p97dMC+9+2iMtNPiHqMYQWClVACsZmQwI2Xtl39G
+         lqUIAM6qdmiKTVIhHwqo8MYeVLIYz4jrLS8Xe9AmOq3wIIeM86lDL4KnomhJvT8GmJEb
+         EZONo9vMrk2CduWEoJaFOGeq4t9jXkKsGEZXlF5ApWh/Lzzn96L70fI3WgIWAzKKHDz/
+         pF+WyOyLrl1r/Ug3u9EGGE1GsaKz6XIlPWcBm7l1wqAUt3ljE9Bswg177f4o/2YPX6oD
+         3laANeHtltLZWlcPcza4JIq5ZmaTLpfCZV07eCjRUYvems9zgmNwxLC+b0GTJeNGElKB
+         EEmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV2/eqyR5u+DXGwl29PHr+QOZg8ppIEm6bPUgeUr7LRIjJ/Vd5YBbgq0Jxnp01KcWfU23I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzhMsIT7RmV/nXBjIJD1f2xy91J0WDx1MLXukeQfedOzdPuHa0W
+	MH3ZfR7xDPXBfL9pgLKB0JDu2++ZQk/HbxlBdkiLz1oBuTpkjhX0AC+Lz11oRLm/zo8SJnB7pt9
+	pY/tNTJLasmyukrabePw1J/Buk6Oy9RWH2bt6eoeu
+X-Gm-Gg: ASbGnctqyGnuDBD8Fw+xiMNi/lRjjaY9LOO+BMX7OuFUJsWuPoJMTTp0R0n3TeKA9nJ
+	C3KEm9q4+dWVCYlJEEVkcfYKK2tqCBissvueNbVd7BkAMw1/4QMb4Uu/8KSTYGPtD73tDzRHCjo
+	3Vjc4HtQM8Cuhv6BSY+2DIiREUkl5qvhIjp7azZZkJ7gXXsSBQKx1jo8SlaiZBG8VVdsr7zmc2z
+	hCM1siMdRX4
+X-Google-Smtp-Source: AGHT+IG+CDxpZDq7cerRivG168/JBuGbhBn4m2N2beYMkKs8KBXjG99FU+kZal1/3nty/278PwQXV7HRqzkoe16OSKU=
+X-Received: by 2002:ac8:5d88:0:b0:4d0:dff9:9518 with SMTP id
+ d75a77b69052e-4dd1c1e99camr9522481cf.12.1758930834670; Fri, 26 Sep 2025
+ 16:53:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250910-slub-percpu-caches-v8-0-ca3099d8352c@suse.cz> <20250910-slub-percpu-caches-v8-16-ca3099d8352c@suse.cz>
-In-Reply-To: <20250910-slub-percpu-caches-v8-16-ca3099d8352c@suse.cz>
+References: <20250910-slub-percpu-caches-v8-0-ca3099d8352c@suse.cz> <20250910-slub-percpu-caches-v8-17-ca3099d8352c@suse.cz>
+In-Reply-To: <20250910-slub-percpu-caches-v8-17-ca3099d8352c@suse.cz>
 From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 26 Sep 2025 16:45:30 -0700
-X-Gm-Features: AS18NWDlkUCiWuVTsoik1lE1b7RxpxL96KRj-TH3et2oYHZB4-tROqStc3p33LE
-Message-ID: <CAJuCfpF8TDS0bjksssRJyvxnr1Rbb2SpgRfRAxJmPS5oQz88dg@mail.gmail.com>
-Subject: Re: [PATCH v8 16/23] tools/testing: include maple-shim.c in maple.c
+Date: Fri, 26 Sep 2025 16:53:43 -0700
+X-Gm-Features: AS18NWAdMKYxmKVYaznnVjN0ZRmLOyAT5xqSY6fx4SVJ-14lr5cKqrxUTfebiPo
+Message-ID: <CAJuCfpFrFn01Dx88vYaDnByRraE3qPvO4rfMaortgwYyVsybZg@mail.gmail.com>
+Subject: Re: [PATCH v8 17/23] testing/radix-tree/maple: Hack around kfree_rcu
+ not existing
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter <cl@gentwo.org>, 
 	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
 	Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, 
 	Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org, 
 	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	maple-tree@lists.infradead.org
+	maple-tree@lists.infradead.org, Pedro Falcato <pfalcato@suse.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Wed, Sep 10, 2025 at 1:01=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
 ote:
 >
-> There's some duplicated code and we are about to add more functionality
-> in maple-shared.h that we will need in the userspace maple test to be
-> available, so include it via maple-shim.c
+> From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
 >
-> Co-developed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+> liburcu doesn't have kfree_rcu (or anything similar). Despite that, we
+> can hack around it in a trivial fashion, by adding a wrapper.
+>
+> The wrapper only works for maple_nodes because we cannot get the
+> kmem_cache pointer any other way in the test code.
+>
+> Link: https://lore.kernel.org/all/20250812162124.59417-1-pfalcato@suse.de=
+/
+> Suggested-by: Pedro Falcato <pfalcato@suse.de>
 > Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
 Reviewed-by: Suren Baghdasaryan <surenb@google.com>
 
+With one nit below:
+
 > ---
->  tools/testing/radix-tree/maple.c | 12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
+>  tools/testing/shared/maple-shared.h | 11 +++++++++++
+>  tools/testing/shared/maple-shim.c   |  6 ++++++
+>  2 files changed, 17 insertions(+)
 >
-> diff --git a/tools/testing/radix-tree/maple.c b/tools/testing/radix-tree/=
-maple.c
-> index c0543060dae2510477963331fb0ccdffd78ea965..4a35e1e7c64b7ce347cbd1693=
-beeaacb0c4c330e 100644
-> --- a/tools/testing/radix-tree/maple.c
-> +++ b/tools/testing/radix-tree/maple.c
-> @@ -8,14 +8,6 @@
->   * difficult to handle in kernel tests.
->   */
+> diff --git a/tools/testing/shared/maple-shared.h b/tools/testing/shared/m=
+aple-shared.h
+> index dc4d30f3860b9bd23b4177c7d7926ac686887815..2a1e9a8594a2834326cd93747=
+38b2a2c7c3f9f7c 100644
+> --- a/tools/testing/shared/maple-shared.h
+> +++ b/tools/testing/shared/maple-shared.h
+> @@ -10,4 +10,15 @@
+>  #include <time.h>
+>  #include "linux/init.h"
 >
-> -#define CONFIG_DEBUG_MAPLE_TREE
-> -#define CONFIG_MAPLE_SEARCH
-> -#define MAPLE_32BIT (MAPLE_NODE_SLOTS > 31)
-> -#include "test.h"
-> -#include <stdlib.h>
-> -#include <time.h>
-> -#include <linux/init.h>
-> -
->  #define module_init(x)
->  #define module_exit(x)
->  #define MODULE_AUTHOR(x)
-> @@ -23,7 +15,9 @@
->  #define MODULE_LICENSE(x)
->  #define dump_stack()   assert(0)
->
-> -#include "../../../lib/maple_tree.c"
-> +#include "test.h"
+> +void maple_rcu_cb(struct rcu_head *head);
+> +#define rcu_cb         maple_rcu_cb
 > +
-> +#include "../shared/maple-shim.c"
->  #include "../../../lib/test_maple_tree.c"
+> +#define kfree_rcu(_struct, _memb)              \
+> +do {                                            \
+> +    typeof(_struct) _p_struct =3D (_struct);      \
+
+Maybe add an assertion that (typeof(_struct) =3D=3D typeof(struct
+maple_node)) to make sure kfree_rcu() is not used for anything else in
+the tests?
+
+> +                                                \
+> +    call_rcu(&((_p_struct)->_memb), rcu_cb);    \
+> +} while(0);
+> +
+> +
+>  #endif /* __MAPLE_SHARED_H__ */
+> diff --git a/tools/testing/shared/maple-shim.c b/tools/testing/shared/map=
+le-shim.c
+> index 9d7b743415660305416e972fa75b56824211b0eb..16252ee616c0489c80490ff25=
+b8d255427bf9fdc 100644
+> --- a/tools/testing/shared/maple-shim.c
+> +++ b/tools/testing/shared/maple-shim.c
+> @@ -6,3 +6,9 @@
+>  #include <linux/slab.h>
 >
->  #define RCU_RANGE_COUNT 1000
+>  #include "../../../lib/maple_tree.c"
+> +
+> +void maple_rcu_cb(struct rcu_head *head) {
+> +       struct maple_node *node =3D container_of(head, struct maple_node,=
+ rcu);
+> +
+> +       kmem_cache_free(maple_node_cache, node);
+> +}
 >
 > --
 > 2.51.0
