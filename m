@@ -1,81 +1,80 @@
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F0482110E
-	for <rcu@vger.kernel.org>; Mon, 29 Sep 2025 07:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFAA2BEFF8
+	for <rcu@vger.kernel.org>; Mon, 29 Sep 2025 07:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759131038; cv=none; b=ZMVp1s5V6rI8cSiXSX2Z86XDGWCnSETE5GkG/h5H8qgF+Po0sXEVeY76v+xkuMDD7FX0wjlb7/Rxt7ONCHCQMVsCONXz2j9duekxNd6jJHEuJo8ECLdRb8UA053CXt9PFOgC4cUnhtLewuvGrZrI5Ip0Bqy2gLISmGqv2X07VRA=
+	t=1759131601; cv=none; b=euffQdSZQHZq1WmTG56gF3xnaJpfu1BDlbpMx/R52TahYDCCDnxj5rotb9gnmk9TDW6qKvIkgYdE1kdAsoEdkxJ6X6Ir4C3rkVWivv/dgS5l4hPCxEo34XC2hgRNfvCWlGlGiTSt6HuGqruDB6yMXFupLSQXHxNUFCH9kdR/STs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759131038; c=relaxed/simple;
-	bh=85/GZ7QczLm6DR5gJkXWuhVqaw8HBo5xL3HV749OSlA=;
+	s=arc-20240116; t=1759131601; c=relaxed/simple;
+	bh=gWPSrLMklUENykb261wWOa4rWAK936dhgjajT34L4cs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VdDw67/JU1uhVMx9FFDrLuz+spftxnwFP7WFi2e1kG+CxkF3dFP4iw1juT3cGZbNh8kuZT4om3IUKWGWM3V/A+gX0UjSCqiXWKxel5itQP7p/pZU2qhCij/P5DUrqMvPc91/RsFv4qxRdSh/u4ncz4NVXeHGKIKZrskHghzsIGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BkvYITie; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YGkrDeXE; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SNSLGGAW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=R1v9Sb5k; arc=none smtp.client-ip=195.135.223.131
+	 In-Reply-To:Content-Type; b=J4ekHXa7jnp3WlsOWpIMo1Foy9lcATZwavGW7DP8cWNExK5OfSLQkbgYTV1fHUtT/15WkL4ev+yrSlL1MqKuPmvt9jBOAvErxxL+9iZuIQkzHOrupLul7ObJ4qyl8W+6gzjexZr0712HO5ETS48h9m2gJ0D5DA35ZV65KKAwVJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d08bKf5K; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8XqAyLhG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d08bKf5K; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8XqAyLhG; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BkvYITie";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YGkrDeXE";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SNSLGGAW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="R1v9Sb5k"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d08bKf5K";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8XqAyLhG";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d08bKf5K";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8XqAyLhG"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 40F092FA26;
-	Mon, 29 Sep 2025 07:30:31 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 992072FBAE;
+	Mon, 29 Sep 2025 07:39:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759131032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1759131597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ivinBsRltrvjUvAHlfXzBwXeEkNCvnM2QUHS0Pud2rI=;
-	b=BkvYITiejp/KTvqq8OaoMcNss7s+sSMOTeu0xhYGmzzWoGPLKJn4eh4uEaOnAbY+ACrowT
-	oVcE8O5HcIN/uwyVfx7slhbC/qU//PgfAwLuC6XwoHYl24I9rzTGRzqbOeebK2SFUWjC00
-	yolZK8MO1vFs1SgWVBWp/ohREXCBtIM=
+	bh=CnuzYQyeI474K9J3eTWh0Tkb4PmD5Tuf9JSGvZpl+hs=;
+	b=d08bKf5KA8e3u1m1+sDxSP0BIrxpGGIS/q1U/fAPf1zukM8r9uodTgZcA/kDqdwoWXObcQ
+	p0iCnzQfxWW4B0DGm9Xl3Kd1XtG73kvWvDJ4dTOFHbLKWFQc+iN3iiZwlBK8WKXlopAq++
+	tIIbbvXCHXEK0ft0v85/6/0nBehu7F8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759131032;
+	s=susede2_ed25519; t=1759131597;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ivinBsRltrvjUvAHlfXzBwXeEkNCvnM2QUHS0Pud2rI=;
-	b=YGkrDeXEg91wpN7KQGKAaW5vO6kucY/BDkCoDw7pTe110Mrcq8E028kw9ppdAoMaKMJLFl
-	AAQRkInYzF6icSBQ==
+	bh=CnuzYQyeI474K9J3eTWh0Tkb4PmD5Tuf9JSGvZpl+hs=;
+	b=8XqAyLhG8KNXnho5VzRetB2eVKfU0TaYYjFX8zfUHsphTWaWqBjw7NX4Fa7FoDm7FEojVN
+	FnIaemOTjBymETAg==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SNSLGGAW;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=R1v9Sb5k
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759131031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1759131597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ivinBsRltrvjUvAHlfXzBwXeEkNCvnM2QUHS0Pud2rI=;
-	b=SNSLGGAWN8MYg1X6dHwaRj7S9N85CLFH91L3qRaVbIJ2ykqnKr3QGKZcl6nuWML0DZ+Cu9
-	PjjbcrkIYpHx9H9IHMidfcwbiUKdCjqbfR3KSpMDjrJkP1AG0Nh7hU0TPX/wF5n4ZEFEt/
-	eiux/hZk62Mxrw7ExNTUQp23/BAmUuc=
+	bh=CnuzYQyeI474K9J3eTWh0Tkb4PmD5Tuf9JSGvZpl+hs=;
+	b=d08bKf5KA8e3u1m1+sDxSP0BIrxpGGIS/q1U/fAPf1zukM8r9uodTgZcA/kDqdwoWXObcQ
+	p0iCnzQfxWW4B0DGm9Xl3Kd1XtG73kvWvDJ4dTOFHbLKWFQc+iN3iiZwlBK8WKXlopAq++
+	tIIbbvXCHXEK0ft0v85/6/0nBehu7F8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759131031;
+	s=susede2_ed25519; t=1759131597;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ivinBsRltrvjUvAHlfXzBwXeEkNCvnM2QUHS0Pud2rI=;
-	b=R1v9Sb5k4RHKMcYp3Gxdhi6aNphndmKrCe6poouH127P/iVmO96mIFKJqWy3/Le01aAKOM
-	YyZMCjVom9FFMdBw==
+	bh=CnuzYQyeI474K9J3eTWh0Tkb4PmD5Tuf9JSGvZpl+hs=;
+	b=8XqAyLhG8KNXnho5VzRetB2eVKfU0TaYYjFX8zfUHsphTWaWqBjw7NX4Fa7FoDm7FEojVN
+	FnIaemOTjBymETAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2923113782;
-	Mon, 29 Sep 2025 07:30:31 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7B18B13782;
+	Mon, 29 Sep 2025 07:39:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yIy+CZc12mgCHgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 29 Sep 2025 07:30:31 +0000
-Message-ID: <e8735d27-2917-402a-86fa-7446b1acbfcc@suse.cz>
-Date: Mon, 29 Sep 2025 09:30:30 +0200
+	id LYSyHc032mhaIQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 29 Sep 2025 07:39:57 +0000
+Message-ID: <6b983596-e521-4714-8a5b-758da76eb1c7@suse.cz>
+Date: Mon, 29 Sep 2025 09:39:57 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -83,8 +82,8 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 21/23] maple_tree: Prefilled sheaf conversion and
- testing
+Subject: Re: [PATCH v8 22/23] maple_tree: Add single node allocation support
+ to maple state
 Content-Language: en-US
 To: Suren Baghdasaryan <surenb@google.com>
 Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
@@ -95,8 +94,8 @@ Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
  linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
  maple-tree@lists.infradead.org
 References: <20250910-slub-percpu-caches-v8-0-ca3099d8352c@suse.cz>
- <20250910-slub-percpu-caches-v8-21-ca3099d8352c@suse.cz>
- <CAJuCfpGBg7xO6-swzvk3vLhMxO+F=C6udEiNmAAC6LEA7vA9=Q@mail.gmail.com>
+ <20250910-slub-percpu-caches-v8-22-ca3099d8352c@suse.cz>
+ <CAJuCfpGhv15YLyAm7X63t5gT9hkw+6PK3GZbWmOTng+AG7rEsg@mail.gmail.com>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -137,85 +136,83 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
  dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
  m6M14QORSWTLRg==
-In-Reply-To: <CAJuCfpGBg7xO6-swzvk3vLhMxO+F=C6udEiNmAAC6LEA7vA9=Q@mail.gmail.com>
+In-Reply-To: <CAJuCfpGhv15YLyAm7X63t5gT9hkw+6PK3GZbWmOTng+AG7rEsg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-4.51 / 50.00];
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[oracle.com,gentwo.org,google.com,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,oracle.com:email,suse.cz:mid,suse.cz:dkim,suse.cz:email]
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[oracle.com,gentwo.org,google.com,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[]
 X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 40F092FA26
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.51
+X-Spam-Score: -4.30
 
-On 9/27/25 03:08, Suren Baghdasaryan wrote:
+On 9/27/25 03:17, Suren Baghdasaryan wrote:
 > On Wed, Sep 10, 2025 at 1:01 AM Vlastimil Babka <vbabka@suse.cz> wrote:
 >>
->> From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+>> From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 >>
->> Use prefilled sheaves instead of bulk allocations. This should speed up
->> the allocations and the return path of unused allocations.
+>> The fast path through a write will require replacing a single node in
+>> the tree.  Using a sheaf (32 nodes) is too heavy for the fast path, so
+>> special case the node store operation by just allocating one node in the
+>> maple state.
 >>
->> Remove the push and pop of nodes from the maple state as this is now
->> handled by the slab layer with sheaves.
->>
->> Testing has been removed as necessary since the features of the tree
->> have been reduced.
->>
->> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+>> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 >> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> Couple nits but otherwise looks great!
-> 
-> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-> 
 >> ---
->>  include/linux/maple_tree.h       |   6 +-
->>  lib/maple_tree.c                 | 326 ++++++---------------------
->>  tools/testing/radix-tree/maple.c | 461 ++-------------------------------------
->>  tools/testing/shared/linux.c     |   5 +-
->>  4 files changed, 88 insertions(+), 710 deletions(-)
+>>  include/linux/maple_tree.h       |  4 +++-
+>>  lib/maple_tree.c                 | 47 +++++++++++++++++++++++++++++++++++-----
+>>  tools/testing/radix-tree/maple.c |  9 ++++++--
+>>  3 files changed, 51 insertions(+), 9 deletions(-)
 >>
 >> diff --git a/include/linux/maple_tree.h b/include/linux/maple_tree.h
->> index bafe143b1f783202e27b32567fffee4149e8e266..166fd67e00d882b1e6de1f80c1b590bba7497cd3 100644
+>> index 166fd67e00d882b1e6de1f80c1b590bba7497cd3..562a1e9e5132b5b1fa8f8402a7cadd8abb65e323 100644
 >> --- a/include/linux/maple_tree.h
 >> +++ b/include/linux/maple_tree.h
->> @@ -442,7 +442,8 @@ struct ma_state {
->>         struct maple_enode *node;       /* The node containing this entry */
+>> @@ -443,6 +443,7 @@ struct ma_state {
 >>         unsigned long min;              /* The minimum index of this node - implied pivot min */
 >>         unsigned long max;              /* The maximum index of this node - implied pivot max */
->> -       struct maple_alloc *alloc;      /* Allocated nodes for this operation */
->> +       struct slab_sheaf *sheaf;       /* Allocated nodes for this operation */
->> +       unsigned long node_request;
+>>         struct slab_sheaf *sheaf;       /* Allocated nodes for this operation */
+>> +       struct maple_node *alloc;       /* allocated nodes */
+
+Replacing with: /* A single allocated node for fast path writes */
+
+since I'm touching it anyway due to previous patch fixup.
+
+>>
+>> @@ -1093,9 +1100,34 @@ static inline struct maple_node *mas_pop_node(struct ma_state *mas)
+>>   */
+>>  static inline void mas_alloc_nodes(struct ma_state *mas, gfp_t gfp)
+>>  {
+>> -       if (unlikely(mas->sheaf)) {
+>> -               unsigned long refill = mas->node_request;
+>> +       if (!mas->node_request)
+>> +               return;
+>> +
+>> +       if (mas->node_request == 1) {
+>> +               if (mas->sheaf)
+>> +                       goto use_sheaf;
 > 
-> No comment for this poor fella?
+> Hmm, I don't get the above logic. One node is requested and instead of
+> using possibly available mas->alloc, we jump to using mas->sheaf and
+> freeing mas->alloc... That does not sound efficient. What am I
+> missing?
 
-adding: /* The number of nodes to allocate for this operation */
-
+I'm not changing it now due to merge window, only cosmetic changes and r-b
+tags. Can leave it to a follow-up optimization.
