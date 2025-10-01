@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57B9303A21;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58BF303A24;
 	Wed,  1 Oct 2025 14:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759330119; cv=none; b=MVNP40sLZgVTTC/s6muF/TcnBqetVQPEu2rVEC8eusREzh8BJG7qy8GcrO4wezZtk23mRJsN0zzdWejZJ7I6S/ruARjjAzd8fBvYAOAatRYJUihy5Eru2AhcGzq1Sqaey88eVep8UBJeet8Gn17rrY9xrUp4urnIlYaBHdXpM2g=
+	t=1759330119; cv=none; b=MYFJca6n4XXdDRclYler1zcxuMf2lZl2AogGPFS9qJ4+xnKZZTqxNfhFsAQBbPigLN4h8Wr/+XIdpIyy2sRAIUJDna4mRAxr6M+53CtkjR6jbzuEq/5735sEeyxEw92E8uURAyqP2DtBS+8bVd8NSgVpGgviIOgc/QHlAtJz39U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1759330119; c=relaxed/simple;
-	bh=MKbdfKwt7gETlTpQcusETrFaTqFUQmuaJ62gW5Sy6jg=;
+	bh=iKeiZMJ0ulhBekBtlRCePhWmJOVL8l8/TB0NfJOhkCE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pS+Qm/6szNEVDIBVoMvR0xxpwoiba8pKZ/nWECk1Pz0WofeJnwY8mktDTdNMMfkK8TY32t/3uNsIsB/NTP4qbYmkAWfJBhBlnqN8UepeSKg7FqGQwYv0wa8TQTcwlXHfxx/i8U6OxIQPJjSadz2O0Q4qNavkVqMKXjYjqIyMDdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RJ2bspef; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=RH23mOK0qQBLWm+zT/3Qs9J/RQgY/JU3yeTKj/VF6JlgoLAiuFs+F4XDH5pPMd046nzAVF7uvzyIAGrFJuNWrHzmibWLD8ev18gPy72tBcFy80kuGt4xPACuk29exq6G4IzDXqyJnxCvxQg3O8d6/nfZwCmBFjPdnevuz6kRp60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qrC+zIU2; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RJ2bspef"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52C7BC4CEF5;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qrC+zIU2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FE56C4CEFA;
 	Wed,  1 Oct 2025 14:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1759330119;
-	bh=MKbdfKwt7gETlTpQcusETrFaTqFUQmuaJ62gW5Sy6jg=;
+	bh=iKeiZMJ0ulhBekBtlRCePhWmJOVL8l8/TB0NfJOhkCE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RJ2bspefEOoYwaLOhz3VsRwtSg17mm5cx1VGVIVZwh+9T+JW8vY+CHTpvzIyJgCLY
-	 NjbjoDdFaN3acRpjF8dTMH0jFZ49dINaNrR1tpT1O89GSwxlMNqqaLsW20+2H2VIX0
-	 mJjQN+3VGdOMAc6b0WIz2Njblhij4gug9zp2dQORwZt8+c9vTDHfmQO6CpfmUn+pkr
-	 S8aa/+SXpgEy2GHmgclekOOX8Q0snV0xiCAaPbpM5JzbpETTGGLthR5k3HPpnqGvjO
-	 g0abQWr1iPK/SJw/QFr0/ymsdTEK02sbV1sYAgelvSplrVVotbUnt5U9QqcWK01+j1
-	 EvQPOYwqlBjHw==
+	b=qrC+zIU2Xv1YYDU5cBFWUDH8QhtVwbSpaiuWqdIQb/UY9gDUKVRANLQh+RS9W/W+I
+	 LJj4gYRh/0C4K47ggkRe3/lmL9wzmvZbz5JiM1hMOoIsgOHc846r04W7oMQb3n84MS
+	 aAWjhzntL/bO5QJo1mG9BwKR84pQ2KCfRL/1/h6ehmNwu6j5fpl44loIrWiKI6E1b3
+	 z2nV74NMIFt4wL8ocFJa1B9eM3gtAriawI0QKE4Kb61P1OPrUILTBwzwOwlmo5pZUt
+	 sudLKucfZYa5aiT2plZrEqPwANn7myo35b1Io1QEo5/CiNu0TEw4pW0BurWF28auKA
+	 a1LwvYQ66tTzA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 75647CE125B; Wed,  1 Oct 2025 07:48:34 -0700 (PDT)
+	id 6FD28CE1160; Wed,  1 Oct 2025 07:48:34 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -38,9 +38,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH v2 08/21] rcu: Add noinstr-fast rcu_read_{,un}lock_tasks_trace() APIs
-Date: Wed,  1 Oct 2025 07:48:19 -0700
-Message-Id: <20251001144832.631770-8-paulmck@kernel.org>
+Subject: [PATCH v2 06/21] srcu: Create an srcu_expedite_current() function
+Date: Wed,  1 Oct 2025 07:48:17 -0700
+Message-Id: <20251001144832.631770-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <7fa58961-2dce-4e08-8174-1d1cc592210f@paulmck-laptop>
 References: <7fa58961-2dce-4e08-8174-1d1cc592210f@paulmck-laptop>
@@ -52,36 +52,16 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When expressing RCU Tasks Trace in terms of SRCU-fast, it was
-necessary to keep a nesting count and per-CPU srcu_ctr structure
-pointer in the task_struct structure, which is slow to access.
-But an alternative is to instead make rcu_read_lock_tasks_trace() and
-rcu_read_unlock_tasks_trace(), which match the underlying SRCU-fast
-semantics, avoiding the task_struct accesses.
+This commit creates an srcu_expedite_current() function that expedites
+the current (and possibly the next) SRCU grace period for the specified
+srcu_struct structure.  This functionality will be inherited by RCU
+Tasks Trace courtesy of its mapping to SRCU fast.
 
-When all callers have switched to the new API, the previous
-rcu_read_lock_trace() and rcu_read_unlock_trace() APIs will be removed.
+If the current SRCU grace period is already waiting, that wait will
+complete before the expediting takes effect.  If there is no SRCU grace
+period in flight, this function might well create one.
 
-The rcu_read_{,un}lock_{,tasks_}trace() functions need to use smp_mb()
-only if invoked where RCU is not watching, that is, from locations where
-a call to rcu_is_watching() would return false.  In architectures that
-define the ARCH_WANTS_NO_INSTR Kconfig option, use of noinstr and friends
-ensures that tracing happens only where RCU is watching, so those
-architectures can dispense entirely with the read-side calls to smp_mb().
-
-Other architectures include these read-side calls by default, but in many
-installations there might be either larger than average tolerance for
-risk, prohibition of removing tracing on a running system, or careful
-review and approval of removing of tracing.  Such installations can
-build their kernels with CONFIG_TASKS_TRACE_RCU_NO_MB=y to avoid those
-read-side calls to smp_mb(), thus accepting responsibility for run-time
-removal of tracing from code regions that RCU is not watching.
-
-Those wishing to disable read-side memory barriers for an entire
-architecture can select this TASKS_TRACE_RCU_NO_MB Kconfig option,
-hence the polarity.
-
-[ paulmck: Apply Peter Zijlstra feedback. ]
+[ paulmck: Apply Zqiang feedback for PREEMPT_RT use. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
@@ -89,161 +69,125 @@ Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/rcupdate_trace.h | 65 +++++++++++++++++++++++++++++-----
- kernel/rcu/Kconfig             | 23 ++++++++++++
- kernel/rcu/tasks.h             |  7 +++-
- 3 files changed, 86 insertions(+), 9 deletions(-)
+ include/linux/srcutiny.h |  1 +
+ include/linux/srcutree.h |  8 ++++++
+ kernel/rcu/srcutree.c    | 58 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 67 insertions(+)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index 0bd47f12ecd17b..f47ba9c074601c 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -34,6 +34,53 @@ static inline int rcu_read_lock_trace_held(void)
- 
- #ifdef CONFIG_TASKS_TRACE_RCU
- 
-+/**
-+ * rcu_read_lock_tasks_trace - mark beginning of RCU-trace read-side critical section
-+ *
-+ * When synchronize_rcu_tasks_trace() is invoked by one task, then that
-+ * task is guaranteed to block until all other tasks exit their read-side
-+ * critical sections.  Similarly, if call_rcu_trace() is invoked on one
-+ * task while other tasks are within RCU read-side critical sections,
-+ * invocation of the corresponding RCU callback is deferred until after
-+ * the all the other tasks exit their critical sections.
-+ *
-+ * For more details, please see the documentation for
-+ * srcu_read_lock_fast().  For a description of how implicit RCU
-+ * readers provide the needed ordering for architectures defining the
-+ * ARCH_WANTS_NO_INSTR Kconfig option (and thus promising never to trace
-+ * code where RCU is not watching), please see the __srcu_read_lock_fast()
-+ * (non-kerneldoc) header comment.  Otherwise, the smp_mb() below provided
-+ * the needed ordering.
-+ */
-+static inline struct srcu_ctr __percpu *rcu_read_lock_tasks_trace(void)
-+{
-+	struct srcu_ctr __percpu *ret = __srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
-+
-+	rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
-+	if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
-+		smp_mb(); // Provide ordering on noinstr-incomplete architectures.
-+	return ret;
-+}
-+
-+/**
-+ * rcu_read_unlock_tasks_trace - mark end of RCU-trace read-side critical section
-+ * @scp: return value from corresponding rcu_read_lock_tasks_trace().
-+ *
-+ * Pairs with the preceding call to rcu_read_lock_tasks_trace() that
-+ * returned the value passed in via scp.
-+ *
-+ * For more details, please see the documentation for rcu_read_unlock().
-+ * For memory-ordering information, please see the header comment for the
-+ * rcu_read_lock_tasks_trace() function.
-+ */
-+static inline void rcu_read_unlock_tasks_trace(struct srcu_ctr __percpu *scp)
-+{
-+	if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
-+		smp_mb(); // Provide ordering on noinstr-incomplete architectures.
-+	__srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
-+	srcu_lock_release(&rcu_tasks_trace_srcu_struct.dep_map);
-+}
-+
- /**
-  * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
-  *
-@@ -50,14 +97,15 @@ static inline void rcu_read_lock_trace(void)
- {
- 	struct task_struct *t = current;
- 
-+	rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
- 	if (t->trc_reader_nesting++) {
- 		// In case we interrupted a Tasks Trace RCU reader.
--		rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
- 		return;
- 	}
- 	barrier();  // nesting before scp to protect against interrupt handler.
--	t->trc_reader_scp = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
--	smp_mb(); // Placeholder for more selective ordering
-+	t->trc_reader_scp = __srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
-+	if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
-+		smp_mb(); // Placeholder for more selective ordering
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 51ce25f07930ee..3bfbd44cb1b37d 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -103,6 +103,7 @@ static inline void srcu_barrier(struct srcu_struct *ssp)
+ 	synchronize_srcu(ssp);
  }
  
- /**
-@@ -74,13 +122,14 @@ static inline void rcu_read_unlock_trace(void)
- 	struct srcu_ctr __percpu *scp;
- 	struct task_struct *t = current;
++static inline void srcu_expedite_current(struct srcu_struct *ssp) { }
+ #define srcu_check_read_flavor(ssp, read_flavor) do { } while (0)
+ #define srcu_check_read_flavor_force(ssp, read_flavor) do { } while (0)
  
--	smp_mb(); // Placeholder for more selective ordering
- 	scp = t->trc_reader_scp;
- 	barrier();  // scp before nesting to protect against interrupt handler.
--	if (!--t->trc_reader_nesting)
--		srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
--	else
--		srcu_lock_release(&rcu_tasks_trace_srcu_struct.dep_map);
-+	if (!--t->trc_reader_nesting) {
-+		if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
-+			smp_mb(); // Placeholder for more selective ordering
-+		__srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 42098e0fa0b7dd..93ad18acd6d02d 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -42,6 +42,8 @@ struct srcu_data {
+ 	struct timer_list delay_work;		/* Delay for CB invoking */
+ 	struct work_struct work;		/* Context for CB invoking. */
+ 	struct rcu_head srcu_barrier_head;	/* For srcu_barrier() use. */
++	struct rcu_head srcu_ec_head;		/* For srcu_expedite_current() use. */
++	int srcu_ec_state;			/*  State for srcu_expedite_current(). */
+ 	struct srcu_node *mynode;		/* Leaf srcu_node. */
+ 	unsigned long grpmask;			/* Mask for leaf srcu_node */
+ 						/*  ->srcu_data_have_cbs[]. */
+@@ -135,6 +137,11 @@ struct srcu_struct {
+ #define SRCU_STATE_SCAN1	1
+ #define SRCU_STATE_SCAN2	2
+ 
++/* Values for srcu_expedite_current() state (->srcu_ec_state). */
++#define SRCU_EC_IDLE		0
++#define SRCU_EC_PENDING		1
++#define SRCU_EC_REPOST		2
++
+ /*
+  * Values for initializing gp sequence fields. Higher values allow wrap arounds to
+  * occur earlier.
+@@ -210,6 +217,7 @@ struct srcu_struct {
+ int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
+ void synchronize_srcu_expedited(struct srcu_struct *ssp);
+ void srcu_barrier(struct srcu_struct *ssp);
++void srcu_expedite_current(struct srcu_struct *ssp);
+ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf);
+ 
+ // Converts a per-CPU pointer to an ->srcu_ctrs[] array element to that
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 1ff94b76d91f15..38b440b0b0c80b 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1688,6 +1688,64 @@ void srcu_barrier(struct srcu_struct *ssp)
+ }
+ EXPORT_SYMBOL_GPL(srcu_barrier);
+ 
++/* Callback for srcu_expedite_current() usage. */
++static void srcu_expedite_current_cb(struct rcu_head *rhp)
++{
++	unsigned long flags;
++	bool needcb = false;
++	struct srcu_data *sdp = container_of(rhp, struct srcu_data, srcu_ec_head);
++
++	spin_lock_irqsave_sdp_contention(sdp, &flags);
++	if (sdp->srcu_ec_state == SRCU_EC_IDLE) {
++		WARN_ON_ONCE(1);
++	} else if (sdp->srcu_ec_state == SRCU_EC_PENDING) {
++		sdp->srcu_ec_state = SRCU_EC_IDLE;
++	} else {
++		WARN_ON_ONCE(sdp->srcu_ec_state != SRCU_EC_REPOST);
++		sdp->srcu_ec_state = SRCU_EC_PENDING;
++		needcb = true;
 +	}
-+	srcu_lock_release(&rcu_tasks_trace_srcu_struct.dep_map);
- }
- 
++	spin_unlock_irqrestore_rcu_node(sdp, flags);
++	// If needed, requeue ourselves as an expedited SRCU callback.
++	if (needcb)
++		__call_srcu(sdp->ssp, &sdp->srcu_ec_head, srcu_expedite_current_cb, false);
++}
++
++/**
++ * srcu_expedite_current - Expedite the current SRCU grace period
++ * @ssp: srcu_struct to expedite.
++ *
++ * Cause the current SRCU grace period to become expedited.  The grace
++ * period following the current one might also be expedited.  If there is
++ * no current grace period, one might be created.  If the current grace
++ * period is currently sleeping, that sleep will complete before expediting
++ * will take effect.
++ */
++void srcu_expedite_current(struct srcu_struct *ssp)
++{
++	unsigned long flags;
++	bool needcb = false;
++	struct srcu_data *sdp;
++
++	migrate_disable();
++	sdp = this_cpu_ptr(ssp->sda);
++	spin_lock_irqsave_sdp_contention(sdp, &flags);
++	if (sdp->srcu_ec_state == SRCU_EC_IDLE) {
++		sdp->srcu_ec_state = SRCU_EC_PENDING;
++		needcb = true;
++	} else if (sdp->srcu_ec_state == SRCU_EC_PENDING) {
++		sdp->srcu_ec_state = SRCU_EC_REPOST;
++	} else {
++		WARN_ON_ONCE(sdp->srcu_ec_state != SRCU_EC_REPOST);
++	}
++	spin_unlock_irqrestore_rcu_node(sdp, flags);
++	// If needed, queue an expedited SRCU callback.
++	if (needcb)
++		__call_srcu(ssp, &sdp->srcu_ec_head, srcu_expedite_current_cb, false);
++	migrate_enable();
++}
++EXPORT_SYMBOL_GPL(srcu_expedite_current);
++
  /**
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index 73a6cc364628b5..6a319e2926589f 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -142,6 +142,29 @@ config TASKS_TRACE_RCU
- 	default n
- 	select IRQ_WORK
- 
-+config TASKS_TRACE_RCU_NO_MB
-+	bool "Override RCU Tasks Trace inclusion of read-side memory barriers"
-+	depends on RCU_EXPERT && TASKS_TRACE_RCU
-+	default ARCH_WANTS_NO_INSTR
-+	help
-+	  This option prevents the use of read-side memory barriers in
-+	  rcu_read_lock_tasks_trace() and rcu_read_unlock_tasks_trace()
-+	  even in kernels built with CONFIG_ARCH_WANTS_NO_INSTR=n, that is,
-+	  in kernels that do not have noinstr set up in entry/exit code.
-+	  By setting this option, you are promising to carefully review
-+	  use of ftrace, BPF, and friends to ensure that no tracing
-+	  operation is attached to a function that runs in that portion
-+	  of the entry/exit code that RCU does not watch, that is,
-+	  where rcu_is_watching() returns false.  Alternatively, you
-+	  might choose to never remove traces except by rebooting.
-+
-+	  Those wishing to disable read-side memory barriers for an entire
-+	  architecture can select this Kconfig option, hence the polarity.
-+
-+	  Say Y here if you need speed and will review use of tracing.
-+	  Say N here for certain esoteric testing of RCU itself.
-+	  Take the default if you are unsure.
-+
- config RCU_STALL_COMMON
- 	def_bool TREE_RCU
- 	help
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 833e180db744f2..bf1226834c9423 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1600,8 +1600,13 @@ static inline void rcu_tasks_bootup_oddness(void) {}
- // Tracing variant of Tasks RCU.  This variant is designed to be used
- // to protect tracing hooks, including those of BPF.  This variant
- // is implemented via a straightforward mapping onto SRCU-fast.
-+// DEFINE_SRCU_FAST() is required because rcu_read_lock_trace() must
-+// use __srcu_read_lock_fast() in order to bypass the rcu_is_watching()
-+// checks in kernels built with CONFIG_TASKS_TRACE_RCU_NO_MB=n, which also
-+// bypasses the srcu_check_read_flavor_force() that would otherwise mark
-+// rcu_tasks_trace_srcu_struct as needing SRCU-fast readers.
- 
--DEFINE_SRCU(rcu_tasks_trace_srcu_struct);
-+DEFINE_SRCU_FAST(rcu_tasks_trace_srcu_struct);
- EXPORT_SYMBOL_GPL(rcu_tasks_trace_srcu_struct);
- 
- #endif /* #else #ifdef CONFIG_TASKS_TRACE_RCU */
+  * srcu_batches_completed - return batches completed.
+  * @ssp: srcu_struct on which to report batch completion.
 -- 
 2.40.1
 
