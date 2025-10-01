@@ -1,47 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D0232550D4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D09C255E53;
 	Wed,  1 Oct 2025 14:48:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759330117; cv=none; b=ezpM+OzqX+Qv/Kwz4NHzis3SRaRVUovudGP/grPxE85mDCUQi/KtlhBVNdd2v8tvy8vkQsD86hRr4QfFAKJox7s6DR31rLsyBqMDFbUfNOSf9Fi8hc9hPMUti+LKcg9yegeSGsMiarXXWvbsUPLpJgljhZ020A0ACQ90gAebPtU=
+	t=1759330117; cv=none; b=Jm9rN4H+W5/wRAZ/UyWixcDA+LeAAkFpH691D0PSRjLX6Xte+93bFT5ZA5AK4xzycDKizrRdVUZUe/3EKxj23cHCcb8rBmhNVsKZDlGE3xGx8H1fi1puW7kffZWNH4w760ZNkMnFJRIsUab9/tAYeSR85IYFgkooxzOyz815rqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1759330117; c=relaxed/simple;
-	bh=gORzw/K5miRE/rNReHV1tjj65oo9eOSliJxhQHUaXtc=;
+	bh=yBaOC5W3nSd5obx3kTATstlLARGhR3bToCH6Ph5k7XI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=m8ogYNaBFCWfeq8RdEdTVEKjsFXgO5HfK+B8HdnHJcTwIrEY7LzXkW/DteGC+eq89/UdpqwMjLom9VqLMw+YJeiY8DpuAq8jJmZY2aWUIWwn9qGghsR4HkW7igb3INlvRVl37O4Ycs2E17+GPK5UGTgMvYeIu7Otg9me2ixoAXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TAjk6kgo; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=WsQkFSUXIc9AC2arXn2caTFBy0KqLnB1Do0c5poTIVDT7AsmMgQHZIspxawzCwUcA02+BoBIaPT11oUEN8wVkW00O90m7uSMJBZKwlBAChYnKS++QS3ENcRwiIJVixprsRFNNPKQX6dlODm3tAkVAtj1iurEg3u8Bmb8l6dLZWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aF2moIKC; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TAjk6kgo"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBA60C4CEF1;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aF2moIKC"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3CFEC4AF09;
 	Wed,  1 Oct 2025 14:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1759330117;
-	bh=gORzw/K5miRE/rNReHV1tjj65oo9eOSliJxhQHUaXtc=;
+	bh=yBaOC5W3nSd5obx3kTATstlLARGhR3bToCH6Ph5k7XI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TAjk6kgoN0vOc2F0MkIZtzNr7hH4kTxjfAyN/4fVnEOvFSXXNfHvbBtn1rXkw5DjZ
-	 YXNsEI/ph4XsHnjkmHjPryT3fASSsNefGPzmPJ1EHwqrWrpm82yhlUB8lKMGlZIIXN
-	 kQsF8svNELpG7AUexB8v1tTConjdElRG9zjdyJ3j7TUZ7YhUK1gVKh0mFS+qYoqXU6
-	 lEJM58sgpLQZBoEs3/kaZwYHDbCFMguvdHZ2LCeVAnApaW1uC4U32eJRzcXGbHv6bO
-	 dL2iI7gfjXo4EFMMfaSkiYZEiAj0ozo/qDJOeooxunJ9bzaexSDHVxR+867XQC1p1R
-	 zALpxcOb3+CNQ==
+	b=aF2moIKCka1hqUOXop3oQvxhAKe/BXCPx97xVp/mE9ItMG3K/h+i/ghzX318Kp6As
+	 f2AY2VJN/xjcCd8BG5j9zp+GZURLFUj51FIOU1RYuxvMFIzFF3WbL63/8GqIBKM3Zb
+	 hCGXUech9tW2fVynOHA9Arn1KlJi9wWTpk2yypz5GIpeTiY9oXPBRjpm2iJJy+OQIZ
+	 dag7ZwMkLsbF3dh1nGH7dRmurEzY1AxARUl4NViJUNs3yb/wshRGm/4BdIXed3B8Er
+	 FGx//8qafCnETh0L00oT3Z+gZdprXDdFm+2SPeeF/e1rS/1KhnwXfwYMODCvSwha/x
+	 Twe7h2badvVeA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 677A3CE10DB; Wed,  1 Oct 2025 07:48:34 -0700 (PDT)
+	id 5FDC8CE0F80; Wed,  1 Oct 2025 07:48:34 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH v2 03/21] context_tracking: Remove rcu_task_trace_heavyweight_{enter,exit}()
-Date: Wed,  1 Oct 2025 07:48:14 -0700
-Message-Id: <20251001144832.631770-3-paulmck@kernel.org>
+	kernel test robot <oliver.sang@intel.com>,
+	Zqiang <qiang.zhang@linux.dev>
+Subject: [PATCH v2 01/21] srcu: Permit Tiny SRCU srcu_read_unlock() with interrupts disabled
+Date: Wed,  1 Oct 2025 07:48:12 -0700
+Message-Id: <20251001144832.631770-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <7fa58961-2dce-4e08-8174-1d1cc592210f@paulmck-laptop>
 References: <7fa58961-2dce-4e08-8174-1d1cc592210f@paulmck-laptop>
@@ -53,66 +50,59 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Because SRCU-fast does not use IPIs for its grace periods, there is
-no need for real-time workloads to switch to an IPI-free mode, and
-there is in turn no need for either rcu_task_trace_heavyweight_enter()
-or rcu_task_trace_heavyweight_exit().  This commit therefore removes them.
+The current Tiny SRCU implementation of srcu_read_unlock() awakens
+the grace-period processing when exiting the outermost SRCU read-side
+critical section.  However, not all Linux-kernel configurations and
+contexts permit swake_up_one() to be invoked while interrupts are
+disabled, and this can result in indefinitely extended SRCU grace periods.
+This commit therefore only invokes swake_up_one() when interrupts are
+enabled, and introduces polling to the grace-period workqueue handler.
 
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Reported-by: Zqiang <qiang.zhang@linux.dev>
+Closes: https://lore.kernel.org/oe-lkp/202508261642.b15eefbb-lkp@intel.com
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: <bpf@vger.kernel.org>
 ---
- kernel/context_tracking.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+ kernel/rcu/srcutiny.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-index fb5be6e9b423f2..a743e7ffa6c00f 100644
---- a/kernel/context_tracking.c
-+++ b/kernel/context_tracking.c
-@@ -54,24 +54,6 @@ static __always_inline void rcu_task_enter(void)
- #endif /* #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL) */
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index e3b64a5e0ec7e1..3450c3751ef7ad 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -106,15 +106,15 @@ void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
+ 	newval = READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
+ 	WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
+ 	preempt_enable();
+-	if (!newval && READ_ONCE(ssp->srcu_gp_waiting) && in_task())
++	if (!newval && READ_ONCE(ssp->srcu_gp_waiting) && in_task() && !irqs_disabled())
+ 		swake_up_one(&ssp->srcu_wq);
  }
+ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
  
--/* Turn on heavyweight RCU tasks trace readers on kernel exit. */
--static __always_inline void rcu_task_trace_heavyweight_enter(void)
--{
--#ifdef CONFIG_TASKS_TRACE_RCU
--	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
--		current->trc_reader_special.b.need_mb = true;
--#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
--}
--
--/* Turn off heavyweight RCU tasks trace readers on kernel entry. */
--static __always_inline void rcu_task_trace_heavyweight_exit(void)
--{
--#ifdef CONFIG_TASKS_TRACE_RCU
--	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
--		current->trc_reader_special.b.need_mb = false;
--#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
--}
--
  /*
-  * Record entry into an extended quiescent state.  This is only to be
-  * called when not already in an extended quiescent state, that is,
-@@ -85,7 +67,6 @@ static noinstr void ct_kernel_exit_state(int offset)
- 	 * critical sections, and we also must force ordering with the
- 	 * next idle sojourn.
- 	 */
--	rcu_task_trace_heavyweight_enter();  // Before CT state update!
- 	// RCU is still watching.  Better not be in extended quiescent state!
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !rcu_is_watching_curr_cpu());
- 	(void)ct_state_inc(offset);
-@@ -108,7 +89,6 @@ static noinstr void ct_kernel_enter_state(int offset)
- 	 */
- 	seq = ct_state_inc(offset);
- 	// RCU is now watching.  Better not be in an extended quiescent state!
--	rcu_task_trace_heavyweight_exit();  // After CT state update!
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & CT_RCU_WATCHING));
- }
- 
+  * Workqueue handler to drive one grace period and invoke any callbacks
+- * that become ready as a result.  Single-CPU and !PREEMPTION operation
+- * means that we get away with murder on synchronization.  ;-)
++ * that become ready as a result.  Single-CPU operation and preemption
++ * disabling mean that we get away with murder on synchronization.  ;-)
+  */
+ void srcu_drive_gp(struct work_struct *wp)
+ {
+@@ -141,7 +141,12 @@ void srcu_drive_gp(struct work_struct *wp)
+ 	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+ 	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
+ 	preempt_enable();
+-	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
++	do {
++		// Deadlock issues prevent __srcu_read_unlock() from
++		// doing an unconditional wakeup, so polling is required.
++		swait_event_timeout_exclusive(ssp->srcu_wq,
++					      !READ_ONCE(ssp->srcu_lock_nesting[idx]), HZ / 10);
++	} while (READ_ONCE(ssp->srcu_lock_nesting[idx]));
+ 	preempt_disable();  // Needed for PREEMPT_LAZY
+ 	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
+ 	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
 -- 
 2.40.1
 
