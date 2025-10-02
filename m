@@ -1,164 +1,188 @@
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4235224B04
-	for <rcu@vger.kernel.org>; Thu,  2 Oct 2025 15:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34719245006;
+	Thu,  2 Oct 2025 16:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759420578; cv=none; b=nbrrNGyijqAyZRROiBZZ2V2jc7OiBRhXoadbkDJ0vNAHFvKv4ekcWJZjoSihnWrLQ3cSDhgKslIjlcyOg0NIYMccgiogw6Ya9N6QHXUq7EwNm9AEhGexCc3wPcClA8HJCTQjfrAklaK+9XbOdz5mrBPCMPcziP++o6PWSTC/X9w=
+	t=1759421732; cv=none; b=WY07cqnfov/ScfDxgelvK3SWI83YjNWMUV0HYgjX4Xlpfeu0CcT40K1VUmY8oZGIw+xl5SOBV36+fSH8j4FGIPnply2YDqxyznNFy6OpQhFLxAaOxDBg2amTl4IOIy7tN2Ur/XjBJLIk5bSofXt3Rzd+QyjXOCgaDkhFEeVNELA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759420578; c=relaxed/simple;
-	bh=KUfcYUbu/muEbj74ERfxLXABYKawkKI307LZWTNHAgI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JmUhwHw9fMpnxFtn06slZN9GBfwNfflCI90hqBbKyDniwWLhVCUKSZTUj1GmjWtkNH5yWX237AWtT4yyCMLGoV+TQJtn2H+CExB8pjCD3ewl8brxTgrTX0twyRrVBygwptk+lbBqQ8agHUOxGs7HKT4hA29f+6ldRWKur6oBBn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g5dyak8T; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1759421732; c=relaxed/simple;
+	bh=buMaABYKeuu7EzStngN7lRoHldJv3zzZqBJVbXiTgh4=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=mAk4R1NSPOeF7q5oGc1hbJYqnlfTELRCwO1oGIeetULD+6AqWXARVhU2hw/VwssXL3Hibv6KjcXRHRGpaaqZxr73Qjdry7bWe2BdS0s7+fMIqfJbqFi8z8CqP5ZFwVx6HVtUk+CF6HHIlWvPfYjSv3Zjiu31dOeaUwB5aP2sqL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lVAzF5Rv; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g5dyak8T"
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-414f48bd5a7so901177f8f.2
-        for <rcu@vger.kernel.org>; Thu, 02 Oct 2025 08:56:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759420574; x=1760025374; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jdyh4wmb5V8pyfrkTTwZj4YHUfqOyJgCfii0PZkBZ5U=;
-        b=g5dyak8TxrOycf8cXivhyyhMRfB7ouYvhmWrxfIFIv12zxMl3Rn2jWqLwG3grLY6k6
-         4f1AHz8hT3+hWkSVyEkJ83MWugpnl5FUFTB5JQemMp5O1ghUBDL014/gEkhMNyqIFiD0
-         xQCEbBZSUUBxnSwhW4pW6XP4dwXEJil2gFUMmO2Gw4tuAljbA9zmTziQ7pTT3h3LlJSP
-         3CtXg9joNv45RvKoBrPSimJi+95GL/KRRIaROct/5I2ROLj4K7wIdpsNkn8Qrg+YNVoR
-         Po9qUKPd+yppxQcSjoD9pF1URU/B9sNfdrv/1gmzRQ5Jt/y62lJfQxFeGNHwJt4YnybB
-         tSoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759420574; x=1760025374;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jdyh4wmb5V8pyfrkTTwZj4YHUfqOyJgCfii0PZkBZ5U=;
-        b=Ep/9YH0c/wB70XWxTJXQdZuHYw8uaMgo+StAs2glQDSnYLT36jONsY3AfBNJN3RXWn
-         PSrohYWYj43u6/+eAmiE6nOGi4k/cGVFk8e5128Q8H+iwV42humpdnM3Cb2gFmQC7Qko
-         VNSBBvQMG0CNt4zbqyLM+OpukuJs2bvORYkhx7+L3ARSvrxQXGAiabR8cqMtoJYGXmSA
-         oFYII+9yg8wRZSC1QZDX9pBWcHrXBYoQpfEMNnNEx4CLWSBTZbXUclKygXnj73rFsk+D
-         N40TvDptgsh0L8vAoIY1+oWxPMw6FKB0N5OPuSlNDDij28I0jBFuuZg+jcEs8Iyy+D7l
-         vSxw==
-X-Gm-Message-State: AOJu0YwRBWUYc+gvLeG0qidUCoQ1hDLlhsZGTCib9/+FDbGi9He+/+r2
-	HbF9cpvH1VuVPDwBzJ0SEg6wICYZfmu2GvWowhytABO9qOduHeQc10/mUwMrd8lzzm9a9kX9QZL
-	ULPS0UZplVii3youMpV0vnt5/jk/SJik=
-X-Gm-Gg: ASbGnct8cKULtKtzmz0uZp9FYxOcrMxVgrOpqehSep1tkulrj3dfc/PQ1SR0u9hgW12
-	ae+E4KoPBBUCO+c+WXYkKJueIa5kA8qZ8iT5/GzYNjUu4bNOGFS6mW+hChrn7zB9GRdI7NJGJf8
-	DKeORyoU30FJu1G93Z3/meSSL1ZgwdWCywug9vGhUGC2dNJoMB9H1udlZsrbixYUn4Ns9vogM4v
-	yHimsEkR4gsCjIrNH7aBdAvULA2ZEoX6h2ChSO59Y7O1Sk=
-X-Google-Smtp-Source: AGHT+IEDMwvbUr2B4eb1eZb0+PAIl/xbEYkOoOwsMQQFC4JmRupQckAhNbPcsupE4KDmrFw5eVL6bDr5gQLcnqvrPLY=
-X-Received: by 2002:a05:6000:430d:b0:3ee:141a:ede5 with SMTP id
- ffacd0b85a97d-4255781eba6mr6016604f8f.57.1759420573740; Thu, 02 Oct 2025
- 08:56:13 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lVAzF5Rv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 988E0C4CEF9;
+	Thu,  2 Oct 2025 16:15:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759421731;
+	bh=buMaABYKeuu7EzStngN7lRoHldJv3zzZqBJVbXiTgh4=;
+	h=Date:From:To:Subject:Reply-To:From;
+	b=lVAzF5RvhCqNZ/Pe69dP110soGl9guHPtde4ge1OG06E/BhEi/g9e1ujuCHprmt4z
+	 qqMgD46GVy82R8YtbpP95SrW30adxBMY1lavLIJkdkLdK6vXPNsy6UNTuaR5W2akbG
+	 RGONQK5fOIJtznBNCNa93DhiHXqQUAcjEHBXVBz2b+4ONNrGlNjiGbyucfELOVa2be
+	 N4EFYRpMrUI+e/FatgCDYPDFjDCtDcFuPO1cl6jTbdjltTZF4y3w9gQvSTKQXFIn61
+	 OKssn4VSCxxtGk2d0iMJGWG0KVeOxbFBcxjbdelDolnVmJeuFL7/lconHbVQovChH/
+	 Xt1NO7OFN4DSw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 3D4C7CE0F80; Thu,  2 Oct 2025 09:15:29 -0700 (PDT)
+Date: Thu, 2 Oct 2025 09:15:29 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: torvalds@linux-foundation.org, -c@paulmck-thinkpad-p17-gen-1,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rcu@vger.kernel.org
+Subject: [GIT PULL] RCU changes for v6.18
+Message-ID: <54b61526-1b94-4dd5-a339-27ba75fb52f3@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7fa58961-2dce-4e08-8174-1d1cc592210f@paulmck-laptop>
- <20251001144832.631770-8-paulmck@kernel.org> <CAADnVQLozKuSPMe4qUDxCV6pCSQ=rQNKy524K7R=uM5yTpLV0Q@mail.gmail.com>
- <5e9b7d89-fbd9-48f2-a538-a3aeaab5d9ec@paulmck-laptop>
-In-Reply-To: <5e9b7d89-fbd9-48f2-a538-a3aeaab5d9ec@paulmck-laptop>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 2 Oct 2025 08:56:01 -0700
-X-Gm-Features: AS18NWAStqe9dfpAB3Avy46hxPEr4IQu2RChUx_xDCBuWYq7ABMx1dXRJ73yh-I
-Message-ID: <CAADnVQJQCA-PCnaCVP8QE8W-S_8PsX8W=L7AUjo2Q10ekYndUA@mail.gmail.com>
-Subject: Re: [PATCH v2 08/21] rcu: Add noinstr-fast rcu_read_{,un}lock_tasks_trace()
- APIs
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	Kernel Team <kernel-team@meta.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, Oct 2, 2025 at 6:38=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
->
-> On Wed, Oct 01, 2025 at 06:37:33PM -0700, Alexei Starovoitov wrote:
-> > On Wed, Oct 1, 2025 at 7:48=E2=80=AFAM Paul E. McKenney <paulmck@kernel=
-.org> wrote:
-> > >
-> > > +static inline struct srcu_ctr __percpu *rcu_read_lock_tasks_trace(vo=
-id)
-> > > +{
-> > > +       struct srcu_ctr __percpu *ret =3D __srcu_read_lock_fast(&rcu_=
-tasks_trace_srcu_struct);
-> > > +
-> > > +       rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
-> > > +       if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
-> > > +               smp_mb(); // Provide ordering on noinstr-incomplete a=
-rchitectures.
-> > > +       return ret;
-> > > +}
-> >
-> > ...
-> >
-> > > @@ -50,14 +97,15 @@ static inline void rcu_read_lock_trace(void)
-> > >  {
-> > >         struct task_struct *t =3D current;
-> > >
-> > > +       rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
-> > >         if (t->trc_reader_nesting++) {
-> > >                 // In case we interrupted a Tasks Trace RCU reader.
-> > > -               rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep=
-_map);
-> > >                 return;
-> > >         }
-> > >         barrier();  // nesting before scp to protect against interrup=
-t handler.
-> > > -       t->trc_reader_scp =3D srcu_read_lock_fast(&rcu_tasks_trace_sr=
-cu_struct);
-> > > -       smp_mb(); // Placeholder for more selective ordering
-> > > +       t->trc_reader_scp =3D __srcu_read_lock_fast(&rcu_tasks_trace_=
-srcu_struct);
-> > > +       if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
-> > > +               smp_mb(); // Placeholder for more selective ordering
-> > >  }
-> >
-> > Since srcu_fast() __percpu pointers must be incremented/decremented
-> > within the same task, should we expose "raw" rcu_read_lock_tasks_trace(=
-)
-> > at all?
-> > rcu_read_lock_trace() stashes that pointer within a task,
-> > so implementation guarantees that unlock will happen within the same ta=
-sk,
-> > while _tasks_trace() requires the user not to do stupid things.
-> >
-> > I guess it's fine to have both versions and the amount of copy paste
-> > seems justified, but I keep wondering.
-> > Especially since _tasks_trace() needs more work on bpf trampoline
-> > side to pass this pointer around from lock to unlock.
-> > We can add extra 8 bytes to struct bpf_tramp_run_ctx and save it there,
-> > but set/reset run_ctx operates on current anyway, so it's not clear
-> > which version will be faster. I suspect _trace() will be good enough.
-> > Especially since trc_reader_nesting is kinda an optimization.
->
-> The idea is to convert callers and get rid of rcu_read_lock_trace()
-> in favor of rcu_read_lock_tasks_trace(), the reason being the slow
-> task_struct access on x86.  But if the extra storage is an issue for
-> some use cases, we can keep both.  In that case, I would of course reduce
-> the copy-pasta in a future patch.
+Hello, Linus,
 
-slow task_struct access on x86? That's news to me.
-Why is it slow?
-static __always_inline struct task_struct *get_current(void)
-{
-        if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
-                return this_cpu_read_const(const_current_task);
+Please pull this RCU update into the v6.18 merge window:
 
-        return this_cpu_read_stable(current_task);
-}
+  git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux tags/rcu.2025.09.26a
+  # HEAD: 1d289fc5691c7a970a285bc53292bac9e37c89a6: Merge branch 'torture.2025.08.14a' into HEAD (2025-09-23 02:10:51 -0700)
 
+----------------------------------------------------------------
+RCU pull request for v6.18
 
-The former is used with gcc 14+ while later is with clang.
-I don't understand the difference between the two.
-I'm guessing gcc14+ can be optimized better within the function,
-but both look plenty fast.
+This pull request contains the following branches, non-octopus merged:
 
-We need current access anyway for run_ctx.
+Documentation updates:
+
+  - Update whatisRCU.rst and checklist.rst for recent RCU API additions.
+
+  - Fix RCU documentation formatting and typos.
+
+  - Replace dead Ottawa Linux Symposium links in RTFP.txt.
+
+Miscellaneous RCU updates:
+
+  - Document that rcu_barrier() hurries RCU_LAZY callbacks.
+
+  - Remove redundant interrupt disabling from
+    rcu_preempt_deferred_qs_handler().
+
+  - Move list_for_each_rcu from list.h to rculist.h, and adjust the
+    include directive in kernel/cgroup/dmem.c accordingly.
+
+  - Make initial set of changes to accommodate upcoming system_percpu_wq
+    changes.
+
+SRCU updates:
+
+  - Create an srcu_read_lock_fast_notrace() for eventual use in tracing,
+    including adding guards.
+
+  - Document the reliance on per-CPU operations as implicit RCU readers
+    in __srcu_read_{,un}lock_fast().
+
+  - Document the srcu_flip() function's memory-barrier D's relationship
+    to SRCU-fast readers.
+
+  - Remove a redundant preempt_disable() and preempt_enable() pair from
+    srcu_gp_start_if_needed().
+
+Torture-test updates:
+
+  - Fix jitter.sh spin time so that it actually varies as advertised.
+    It is still quite coarse-grained, but at least it does now vary.
+
+  - Update torture.sh help text to include the not-so-new --do-normal
+    parameter, which permits (for example) testing KCSAN kernels without
+    doing non-debug kernels.
+
+  - Fix a number of false-positive diagnostics that were being triggered
+    by rcutorture starting before boot completed.  Running multiple
+    near-CPU-bound rcutorture processes when there is only the boot CPU
+    is after all a bit excessive.
+
+  - Substitute kcalloc() for kzalloc().
+
+  - Remove a redundant kfree() and NULL out kfree()ed objects.
+
+----------------------------------------------------------------
+Akira Yokosawa (1):
+      rcu: docs: Requirements.rst: Abide by conventions of kernel documentation
+
+Andy Shevchenko (1):
+      rculist: move list_for_each_rcu() to where it belongs
+
+Bagas Sanjaya (3):
+      Documentation: RCU: Wrap kvm-remote.sh rerun snippet in literal code block
+      Documentation: RCU: Reduce toctree depth
+      Documentation: RCU: Retitle toctree index
+
+Kaushlendra Kumar (2):
+      refperf: Remove redundant kfree() after torture_stop_kthread()
+      refperf: Set reader_tasks to NULL after kfree()
+
+Marco Crivellari (3):
+      rcu: replace use of system_wq with system_percpu_wq
+      rcu: WQ_PERCPU added to alloc_workqueue users
+      rcu: WQ_UNBOUND added to sync_wq workqueue
+
+Nikil Paul S (1):
+      docs: rcu: Replace multiple dead OLS links in RTFP.txt
+
+Paul E. McKenney (20):
+      rcu: Document that rcu_barrier() hurries lazy callbacks
+      srcu: Move rcu_is_watching() checks to srcu_read_{,un}lock_fast()
+      srcu: Add srcu_read_lock_fast_notrace() and srcu_read_unlock_fast_notrace()
+      srcu: Add guards for notrace variants of SRCU-fast readers
+      rcutorture: Fix jitter.sh spin time
+      torture: Add --do-normal parameter to torture.sh help text
+      torture: Announce kernel boot status at torture-test startup
+      rcutorture: Suppress "Writer stall state" reports during boot
+      rcutorture: Delay rcutorture readers and writers until boot completes
+      torture: Delay CPU-hotplug operations until boot completes
+      rcutorture: Delay forward-progress testing until boot completes
+      doc: Update whatisRCU.rst for recent RCU API additions
+      doc: Add RCU guards to checklist.rst
+      doc: Fix typo in RCU's torture.rst documentation
+      Merge branch 'doc.2025.08.20a' into HEAD
+      srcu: Document __srcu_read_{,un}lock_fast() implicit RCU readers
+      srcu: Document srcu_flip() memory-barrier D relation to SRCU-fast
+      Merge branch 'rcu.2025.09.23a' into HEAD
+      Merge branch 'srcu-next.2025.08.21a' into HEAD
+      Merge branch 'torture.2025.08.14a' into HEAD
+
+Qianfeng Rong (2):
+      rcutorture: Use kcalloc() instead of kzalloc()
+      refscale: Use kcalloc() instead of kzalloc()
+
+Zqiang (2):
+      rcu: Remove local_irq_save/restore() in rcu_preempt_deferred_qs_handler()
+      srcu/tiny: Remove preempt_disable/enable() in srcu_gp_start_if_needed()
+
+ .../RCU/Design/Requirements/Requirements.rst       |  52 ++++---
+ Documentation/RCU/RTFP.txt                         |   6 +-
+ Documentation/RCU/checklist.rst                    |  27 ++--
+ Documentation/RCU/index.rst                        |   6 +-
+ Documentation/RCU/torture.rst                      |   4 +-
+ Documentation/RCU/whatisRCU.rst                    | 150 ++++++++++++++++-----
+ include/linux/list.h                               |  10 --
+ include/linux/rculist.h                            |  10 ++
+ include/linux/srcu.h                               |  34 +++++
+ include/linux/srcutree.h                           |  49 ++++---
+ kernel/cgroup/dmem.c                               |   1 +
+ kernel/rcu/rcutorture.c                            |  27 +++-
+ kernel/rcu/refscale.c                              |   4 +-
+ kernel/rcu/srcutiny.c                              |   4 +-
+ kernel/rcu/srcutree.c                              |  10 ++
+ kernel/rcu/tasks.h                                 |   4 +-
+ kernel/rcu/tree.c                                  |   9 +-
+ kernel/rcu/tree_plugin.h                           |   5 +-
+ kernel/torture.c                                   |   7 +-
+ tools/testing/selftests/rcutorture/bin/jitter.sh   |  27 +++-
+ tools/testing/selftests/rcutorture/bin/torture.sh  |   1 +
+ 21 files changed, 317 insertions(+), 130 deletions(-)
