@@ -1,17 +1,17 @@
 Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE08130EF80
-	for <rcu@vger.kernel.org>; Thu,  2 Oct 2025 08:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1F630EF84;
+	Thu,  2 Oct 2025 08:14:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759392844; cv=none; b=TynlGhAMiYyn06Lo+HYIdKVkskfjmylzCxCnqfRbzqY/fquLN9JGQPDptb1qla7MkbVxWJyXGtFnqrPQZa/DLgDHSMJOo1WfwDaVRcssrn/AxsrHn8c/M7ooMW2R868qCcT3/pd21shMeiluLZ14BTHDf2KXJjWbGUesXcKPja8=
+	t=1759392845; cv=none; b=R/xPXa1UrWladPapA/vASY5EOBZYMLEi02BFC03KccCRqpWQYZyw4uIWffhJpXD06KL3lW7RUdsB3DQwfScQUqM7QMaHtwapzoPXYPvscWwTzxVCGYxXh+ol5PJhwGV4mpfP0RA9NLqjmHM+wMrpA3nrB+0dZqzGK4urOFJPypI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759392844; c=relaxed/simple;
-	bh=t/a2F6GZSNvQrCbJOX44B+87G/E7zTUSJIUyOFpTJ80=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=f4Varfzn2u4K9p4whncHFBFby4Mc5ZzGl6WuYiO7qNyAMUIZadtoHXJ6UUu03U2fMU89As/+Ax4lOzzGNoJrg8z6TwO/zA0eIcpXKVHWQoVkpSGFo+WKX1iJxFcQ3fkN5yRR5Hw22ANdhjqBd3WDWVaI2R2D9vCvntBzDiGerL8=
+	s=arc-20240116; t=1759392845; c=relaxed/simple;
+	bh=HQb+FieD5UTtfcyEdgT0lo4GMUWAEhmBX2C4Cisefmo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=EtnR8ckZC9APCQL2aFYHg/IN3Y1G+O1NHTjwW4RFdeVsnexJXwQMa5AM2wjZlo5h9YZ9r+JXg7ENLs4nSXAkwaWBWbAjW0/IPe/yH78+910hQpMllbqphdfnYRPNenPSNPq6GbjKTrqWFFJgDxLy1jxTfYbeP/I6sbbLCP9xu5E=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c45ff70000001609-04-68de34117d0f
+X-AuditID: a67dfc5b-c45ff70000001609-48-68de341288e5
 From: Byungchul Park <byungchul@sk.com>
 To: linux-kernel@vger.kernel.org
 Cc: kernel_team@skhynix.com,
@@ -162,43 +162,43 @@ Cc: kernel_team@skhynix.com,
 	rcu@vger.kernel.org,
 	linux-nfs@vger.kernel.org,
 	linux-rt-devel@lists.linux.dev
-Subject: [PATCH v17 29/47] cpu/hotplug: use a weaker annotation in AP thread
-Date: Thu,  2 Oct 2025 17:12:29 +0900
-Message-Id: <20251002081247.51255-30-byungchul@sk.com>
+Subject: [PATCH v17 31/47] dept: assign dept map to mmu notifier invalidation synchronization
+Date: Thu,  2 Oct 2025 17:12:31 +0900
+Message-Id: <20251002081247.51255-32-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20251002081247.51255-1-byungchul@sk.com>
 References: <20251002081247.51255-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzXSe0hTcRQH8H73tTtpcJmiN3sysOihaVmcIqI/+uP+0YsCoxLyppc2m7Nm
-	aWqWlpI9NN+SU5tFuqaVuEhNrWVq6lCmE9OYmSHDMi11OU3LNqX/Ppzz5Xv+OTQuvU160wrV
-	RUGt4pUyyo1wG1te4use+EnuP9bgCb1JRgJ+2VMJKHxeQUFq1X0SzM/KEaTULhCw0NCCIK8r
-	C4epyr8UjL6bRFBg04igdPgvBiVDAziMdRViUKTJQjBYaiPAlPEQA03+DQxyn9ZhMFuqF4Gm
-	w0LCF12BCOaHAmDUlkWBvWcIg4q7NhwaPm4Gy6tCChI1Dudpo4mEtoInBGSP2xB0G7UY6Cby
-	SWjRekKHppOEnv46BO9+fccgu1tLwe+BGhJ6sx5Q0P67HYPUpmkcKifKKEiaGkQwN+MsLrIH
-	gL1cT+3z5xwp6QSnN7zEuIriCsTZH9/AuWRDDNcwrSW4zA5frrZgQMRpqy5xyU1jJGfQbeIe
-	1X/FuCr9LYormRvBOWtvPcWNd3aKjqw+6bYnTFAqogX11r0hbvLiEf/zn8WX0wy1KBHNi24j
-	Mc0ygWzG45vkf8/8yaZcppgNbF/fLO6yB7OONaTZFjM4Y1rF9nZtcdmdOcC+nGxBLhOMD5uU
-	o3dmaFrC7GRn7rkvVa5lyyuNizVi59gyZCJcljI72JQfydhSpkzManLRklewb3V9RAaSaNEy
-	PZIqVNERvEIZ6CePVSku+4VGRlQh54eUJsyfqkGT5mONiKGRbLnE7DMgl5J8dFRsRCNiaVzm
-	IQnRWeVSSRgfGyeoI0+rLymFqEa0kiZkXpJt0zFhUuYsf1E4JwjnBfX/LUaLvRPR9sOhGd18
-	oTnpns9uozW0P1spa1r7Q7oj/Ft164u48P3pjoVEr4Mbxy2ht96u2ZXQFr0nIrlWfuH4G6vj
-	ijWw9fqf9tkg0YfR4GtzJ99Xnji+LsjkUGXGNw/vjv2ct0uRcOfMtvVTX5qPTry2BHuMXP3p
-	bWYhKDP+UFk8n5OJ12HVMiJKzgdswtVR/D9DXS5PHQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSfUhTexjH+53z2zlnw9VpSR6sSBbjgmRvVDy9YP4RdIreKKG4l2ijTm05
-	p21mLgp8G9mLL62m5LTMclfUajkbLbErxt29taTWSqNcyzCzcgnpKl+mbUX/PHye5/vly/eP
-	hyFlLaJ4RqPLEvQ6lVZOSbBk65qCpJnLX6uXlHQsg668dgyhkSIMVTebKChqviiCJzcaEQRC
-	RQi+jVtJMLmmMITNbhpGRl/RMNXmRlDuNZPQ1JJHwLB9koJP978gsPT2UVDxIQ/DkO0sgsp+
-	Kw0f/t0AwUCrCKb87wno/jqIwNY3SUBf+0kE4fI0uFzroGC88zEJFZYnCK70+kkYsEfEFvdr
-	BG31+RS8K7tNgq9vOjwLDVHwwHKGgqC3ioDPdgpq8ttEUG01Iyi4epOC8upmDK43d2nwfpog
-	oKfcTEBj8xYI2PoxeMpqiUi/iOtWHFgrCojIGCDAcr2VgFFbAw2PrvZgsOUqwNrpE8Hb+koa
-	JnqXwlRNBrgb39PgL7VguBF8LEqxIP6bqQTzDQ4nwZuehim+6VIT4sfHzIgfqSsgeVNZZL0/
-	OETyhY6jfJ1nkOLHQs8pvu1rDeYf1nL8uc4k3lXpp/nCey/p7av/lKzdL2g12YJ+cbJSor40
-	sCTzjTin2OFCuWiCPo3EDMcu576Hz1NRptg/uBcvRskox7IJnKO4XxRlkvXM5bq8C6M8i93M
-	Ob+4UZQxq+DyLjREPAwjZVdy30tn/YqczzXa23/GiCNnX68HR1nGruBMQ4VEGZLUoGkNKFaj
-	y05XabQrFhnS1EadJmfRvoz0ZhT5JduJiXN30IhvQwdiGSSPkXoVfrVMpMo2GNM7EMeQ8lip
-	sr5HLZPuVxmPCfqMvfojWsHQgeYwWB4n3bRLUMrYg6osIU0QMgX9b5VgxPG5qHpP91hiSfBC
-	aBynTMbYD/8/L9npyNmekprxvLLu7OzEoHZd17XhLeLuUafiP29qwj+BAx5uTWZCy47wqUNK
-	Z9KJGUhITg3MXKU8HHMx/9Bw1SvZgs8f2c3+uJ2rNyYcT15falwwGDbuznrqUuC7M1z1yta/
-	HcR6z1/bdMWZvtJ4OTaoVUsTSb1B9QMgdJtnRwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSbUhTYRTHe+7uvZvDxW2aXjUo1osgqRVah6zog9TzwaD3oNBceW3DqTHN
+	l6CycKmBZkaSmm46W8us1hb4ktrUTMz3sjVlajUzrSzSzBSzpuW3H7/z53/OhyPgiVMpT4E8
+	Jp5TxkgVElpICseci31dAgZkG/SNq8Fy0UzC4GQ6AlXVHxImDHM0jDbthrHBJxTohuYIGDKn
+	IVCXmGgYMTioVn+JhldDS0FzqZaCwoIcBLmFRkeHbpiE3EfuMK0r40Ob1kbCH00sPBjrpGCw
+	+TIFxt4mBEa7hYK8IhsNzyvfE9CSf5eEzur7FJja23hgzf6A4P7XEhp0k9/48NKsIeC5xg2a
+	M80EtBd0UGDL+kRCXfpbAozlFhosOWoaXsy8IGC8cI6Ce90k3JhNpyH92U8epNoC4ZfBTu30
+	x1OqLBKrXv6mcXlROcK3W7/Q+Fq7L67K7+fj1Lo+PjbpfbC2ZpTAfZ+3Y2NZBo1tlhoaF7Xs
+	w6bSC1ibdZ3C3z/0kXuXHxVui+AU8gRO6b8jXCjrKDOj02+2JDXb1HQKGvC9gpwELBPAVpfW
+	EYvcr++k5plmvFmrdZo3z67MKtaUObzgeUzrCtbSvX6eXZhQ9nVdxoInmbVsfVvXQl7EbGYr
+	GtX8f50r2XsG84J3cvhX71rJeRYzgazqW6pjr9CRKXBif5Qb/h/hwdbrrWQ2EmnQkjIklsck
+	REvligA/WXKMPMnvZGy0ETl+Q3du9lglGu860IAYAZI4i7rW9svElDQhLjm6AbECnsRVFK63
+	ycSiCGnyWU4Ze1x5RsHFNSAvASlxF236mRghZk5J47kojjvNKRenhMDJMwUF7+qZsm51iyLs
+	xYnCq2yP3evhHaxu8VJjibOp2zvSwIYsz6ydnBnSzMKJwcTZda6HUE/SNpc1QZejjp6v77k1
+	PXNrXe+5JPepm0EVYR4fQ576ZS87mxPmblEdnHjsIeDtsY84B6dsyfvckFZyJHJ/oXa4L1Kt
+	9QpUhBoObwqLl5BxMulGH54yTvoXAfXoHxcDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSeUiTcRjH+73nHC1eptGLFtXI7LL7eOgigvAtqPwjsAPJVW9teLaVR6em
+	SzvVwZSc5jIaMs3ZZqs1jKW1DjOdq+zYPGJpoSaUM7yyafTPw+f5fB8enj8eAS62kMECecIJ
+	XpEgjZNQQkK4a0NmuHh1m2z5JWsgvM+wE+AbyCGg2FhJQY7pBgnNVRUI2n05CH6PaHFQWccJ
+	GFM7aBgY+kzDeK0DQYFTjUNlTQYGv6r/UNBT/xOBptNLQeH3DAL69VcRFHVpafj+LAL62m0k
+	jHu6MWgd7EWg9/7BwGvPRjBWEAulZWYKRhqbcCjUNCO41enB4Vu1P6xxtCGoLb9Awde8+zi4
+	vNPgra+fgpeaKxT0OYsx+FFNge5CLQklWjWCzNtGCgpKTARYOx7R4OwZxcBdoMagwrQT2vVd
+	BDTklWH++/xT92aAtjAT85dvGGju2jAY0htoeH3bTYA+PRS0jS4SvpQX0TDauQLGdYngqOim
+	wZOrIaCqr4ncokHcb9V1gjOYLRinahmjuMqblYgbGVYjbuBOJs6p8vxtfW8/zmWZU7g7Db0U
+	N+x7R3G1gzqCe1XGcvmN4Zy1yENzWY8/0ZHr9ws3HuHj5Mm8YtnmGKHsjcGOklrXpT53l1Lp
+	qC38MgoQsMxq1lPeRE4wxYSxHz4M4RMcxMxhzde6Jj3ONMxk3zuXTHAgE82+e3xp0hNMKPvk
+	dfPkvIhZyz6oL6X/7ZzNVlTbJ32A37s6G4gJFjNrWFV/FpaHhDo0xYCC5AnJ8VJ53JqlylhZ
+	WoI8denhxHgT8n+T/uxo/kM04IqoQ4wASaaKnKEemZiUJivT4usQK8AlQaKYcrdMLDoiTTvF
+	KxIPKk7G8co6FCIgJDNEO6L4GDFzTHqCj+X5JF7xP8UEAcHpaFaJ/VhSyPytTuJwGDR3sDZL
+	7qbwQ1ZPYLbF1hI0+HHevp5I80JjVNjui4Gti1uCu3Sy0W0j2Wlf9p6hUlOYHwbLhpXH64/X
+	RESdXOmaPW3VMDw94z0dct2tNW1P2WNzFK76SB7NzVd8HjzPRYcuOJBz1djdMb343NxnVb4X
+	0cadEkIpk65YhCuU0r+So2tVSQMAAA==
 X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -206,42 +206,217 @@ List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 
-cb92173d1f0 ("locking/lockdep, cpu/hotplug: Annotate AP thread") was
-introduced to make lockdep_assert_cpus_held() work in AP thread.
+Resolved the following false positive by introducing explicit dept map
+and annotations for dealing with this case:
 
-However, the annotation is too strong for that purpose.  We don't have
-to use more than try lock annotation for that.
+   *** DEADLOCK ***
+   context A
+       [S] (unknown)(<sched>:0)
+       [W] lock(&mm->mmap_lock:0)
+       [E] try_to_wake_up(<sched>:0)
 
-rwsem_acquire() implies:
+   context B
+       [S] lock(&mm->mmap_lock:0)
+       [W] mmu_interval_read_begin(<sched>:0)
+       [E] unlock(&mm->mmap_lock:0)
 
-   1. might be a waiter on contention of the lock.
-   2. enter to the critical section of the lock.
+   [S]: start of the event context
+   [W]: the wait blocked
+   [E]: the event not reachable
 
-All we need in here is to act 2, not 1.  So trylock version of
-annotation is sufficient for that purpose.  Now that dept partially
-relies on lockdep annotaions, dept interpets rwsem_acquire() as a
-potential wait and might report a deadlock by the wait.
+dept already tracks dependencies between scheduler sleep and ttwu based
+on internal timestamp called wgen.  However, in case that more than one
+event contexts are overwrapped, dept has chance to wrongly guess the
+start of the event context like the following:
 
-Replace it with trylock version of annotation.
+   <before this patch>
+
+   context A: lock L
+   context A: mmu_notifier_invalidate_range_start()
+
+   context B: lock L'
+   context B: mmu_interval_read_begin() : wait
+   <- here is the start of the event context of C.
+   context B: unlock L'
+
+   context C: lock L''
+   context C: mmu_notifier_invalidate_range_start()
+
+   context A: mmu_notifier_invalidate_range_end()
+   context A: unlock L
+
+   context C: mmu_notifier_invalidate_range_end() : ttwu
+   <- here is the end of the event context of C.  dept observes a wait,
+      lock L'' within the event context of C.  Which causes a false
+      positive dept report.
+
+   context C: unlock L''
+
+By explicitly annotating the interesting event context range, make dept
+work with more precise information like:
+
+   <after this patch>
+
+   context A: lock L
+   context A: mmu_notifier_invalidate_range_start()
+
+   context B: lock L'
+   context B: mmu_interval_read_begin() : wait
+   context B: unlock L'
+
+   context C: lock L''
+   context C: mmu_notifier_invalidate_range_start()
+   <- here is the start of the event context of C.
+
+   context A: mmu_notifier_invalidate_range_end()
+   context A: unlock L
+
+   context C: mmu_notifier_invalidate_range_end() : ttwu
+   <- here is the end of the event context of C.  dept doesn't observe
+      the wait, lock L'' within the event context of C.  context C is
+      responsible only for the range delimited by
+      mmu_notifier_invalidate_range_{start,end}().
+
+   context C: unlock L''
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
- kernel/cpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mmu_notifier.h | 26 ++++++++++++++++++++++++++
+ mm/mmu_notifier.c            | 31 +++++++++++++++++++++++++++++--
+ 2 files changed, 55 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index db9f6c539b28..285d7fa55523 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -538,7 +538,7 @@ int lockdep_is_cpus_held(void)
- 
- static void lockdep_acquire_cpus_lock(void)
- {
--	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 0, _THIS_IP_);
-+	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 1, _THIS_IP_);
+diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+index d1094c2d5fb6..2b70dce149f0 100644
+--- a/include/linux/mmu_notifier.h
++++ b/include/linux/mmu_notifier.h
+@@ -428,6 +428,14 @@ static inline int mmu_notifier_test_young(struct mm_struct *mm,
+ 	return 0;
  }
  
- static void lockdep_release_cpus_lock(void)
++#ifdef CONFIG_DEPT
++void mmu_notifier_invalidate_dept_ecxt_start(struct mmu_notifier_range *range);
++void mmu_notifier_invalidate_dept_ecxt_end(struct mmu_notifier_range *range);
++#else
++static inline void mmu_notifier_invalidate_dept_ecxt_start(struct mmu_notifier_range *range) {}
++static inline void mmu_notifier_invalidate_dept_ecxt_end(struct mmu_notifier_range *range) {}
++#endif
++
+ static inline void
+ mmu_notifier_invalidate_range_start(struct mmu_notifier_range *range)
+ {
+@@ -439,6 +447,12 @@ mmu_notifier_invalidate_range_start(struct mmu_notifier_range *range)
+ 		__mmu_notifier_invalidate_range_start(range);
+ 	}
+ 	lock_map_release(&__mmu_notifier_invalidate_range_start_map);
++
++	/*
++	 * From now on, waiters could be there by this start until
++	 * mmu_notifier_invalidate_range_end().
++	 */
++	mmu_notifier_invalidate_dept_ecxt_start(range);
+ }
+ 
+ /*
+@@ -459,6 +473,12 @@ mmu_notifier_invalidate_range_start_nonblock(struct mmu_notifier_range *range)
+ 		ret = __mmu_notifier_invalidate_range_start(range);
+ 	}
+ 	lock_map_release(&__mmu_notifier_invalidate_range_start_map);
++
++	/*
++	 * From now on, waiters could be there by this start until
++	 * mmu_notifier_invalidate_range_end().
++	 */
++	mmu_notifier_invalidate_dept_ecxt_start(range);
+ 	return ret;
+ }
+ 
+@@ -470,6 +490,12 @@ mmu_notifier_invalidate_range_end(struct mmu_notifier_range *range)
+ 
+ 	if (mm_has_notifiers(range->mm))
+ 		__mmu_notifier_invalidate_range_end(range);
++
++	/*
++	 * The event context that has been started by
++	 * mmu_notifier_invalidate_range_start() ends.
++	 */
++	mmu_notifier_invalidate_dept_ecxt_end(range);
+ }
+ 
+ static inline void mmu_notifier_arch_invalidate_secondary_tlbs(struct mm_struct *mm,
+diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
+index 8e0125dc0522..31af5ea54a0c 100644
+--- a/mm/mmu_notifier.c
++++ b/mm/mmu_notifier.c
+@@ -46,6 +46,7 @@ struct mmu_notifier_subscriptions {
+ 	unsigned long active_invalidate_ranges;
+ 	struct rb_root_cached itree;
+ 	wait_queue_head_t wq;
++	struct dept_map dmap;
+ 	struct hlist_head deferred_list;
+ };
+ 
+@@ -165,6 +166,25 @@ static void mn_itree_inv_end(struct mmu_notifier_subscriptions *subscriptions)
+ 	wake_up_all(&subscriptions->wq);
+ }
+ 
++#ifdef CONFIG_DEPT
++void mmu_notifier_invalidate_dept_ecxt_start(struct mmu_notifier_range *range)
++{
++	struct mmu_notifier_subscriptions *subscriptions =
++		range->mm->notifier_subscriptions;
++
++	if (subscriptions)
++		sdt_ecxt_enter(&subscriptions->dmap);
++}
++void mmu_notifier_invalidate_dept_ecxt_end(struct mmu_notifier_range *range)
++{
++	struct mmu_notifier_subscriptions *subscriptions =
++		range->mm->notifier_subscriptions;
++
++	if (subscriptions)
++		sdt_ecxt_exit(&subscriptions->dmap);
++}
++#endif
++
+ /**
+  * mmu_interval_read_begin - Begin a read side critical section against a VA
+  *                           range
+@@ -246,9 +266,12 @@ mmu_interval_read_begin(struct mmu_interval_notifier *interval_sub)
+ 	 */
+ 	lock_map_acquire(&__mmu_notifier_invalidate_range_start_map);
+ 	lock_map_release(&__mmu_notifier_invalidate_range_start_map);
+-	if (is_invalidating)
++	if (is_invalidating) {
++		sdt_might_sleep_start(&subscriptions->dmap);
+ 		wait_event(subscriptions->wq,
+ 			   READ_ONCE(subscriptions->invalidate_seq) != seq);
++		sdt_might_sleep_end();
++	}
+ 
+ 	/*
+ 	 * Notice that mmu_interval_read_retry() can already be true at this
+@@ -625,6 +648,7 @@ int __mmu_notifier_register(struct mmu_notifier *subscription,
+ 
+ 		INIT_HLIST_HEAD(&subscriptions->list);
+ 		spin_lock_init(&subscriptions->lock);
++		sdt_map_init(&subscriptions->dmap);
+ 		subscriptions->invalidate_seq = 2;
+ 		subscriptions->itree = RB_ROOT_CACHED;
+ 		init_waitqueue_head(&subscriptions->wq);
+@@ -1070,9 +1094,12 @@ void mmu_interval_notifier_remove(struct mmu_interval_notifier *interval_sub)
+ 	 */
+ 	lock_map_acquire(&__mmu_notifier_invalidate_range_start_map);
+ 	lock_map_release(&__mmu_notifier_invalidate_range_start_map);
+-	if (seq)
++	if (seq) {
++		sdt_might_sleep_start(&subscriptions->dmap);
+ 		wait_event(subscriptions->wq,
+ 			   mmu_interval_seq_released(subscriptions, seq));
++		sdt_might_sleep_end();
++	}
+ 
+ 	/* pairs with mmgrab in mmu_interval_notifier_insert() */
+ 	mmdrop(mm);
 -- 
 2.17.1
 
