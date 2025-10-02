@@ -1,17 +1,17 @@
 Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2C430EF86
-	for <rcu@vger.kernel.org>; Thu,  2 Oct 2025 08:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C77230C351;
+	Thu,  2 Oct 2025 08:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759392843; cv=none; b=XUMy2k6ih9dRS4hGB6GJITIzoBy9CT0d4cYdfkQdB9ZeMdC9dJ3/Z4YMp2RjS2Puwy1HanTxKixltsrt7PKNKMgYeZF7cgu8hQDIhjyw55wZzfDXlo/cU/BLskIhZp8TyFJEfcOT48bGjKu9ls7usNtdCwUL5VgL2buPcXs8ubM=
+	t=1759392843; cv=none; b=gyfTTVLHyNa6LTU4ukdnmBEEgq/l+qgO1OjucKmpRSgOlSWMHs1bTjRAdMTi/pwEsJRrSRP2P1+6qz3EIXZcvKGySiTi+u2J6x5+KfoDWNS7HbZRj7661ASiGm3YREPX/IG5ka99ujNN/4h2ccJ3b2saS0Pvuel0UkzTqM/w7pI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1759392843; c=relaxed/simple;
-	bh=51wXDfJ/geJNTOX9kWjDa7gjFY+JiMiLA1OUeeWv4bs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=mGJ/gvyNDC6/t7DCq3a/G6IRskHEsUjechgL0N3FXd2cy1YiIqNaf+CPi4EHJVglWyOg4cb/hHk/IPqqibffyBTk16Tt5G3waljC2hxZXuqqZ6UUJd6hKPtnozFCmGCJljxBEiQo7P+OO7f8WiXlbs6rq/tLCSse3GUI+K4Gu1I=
+	bh=uxA2pKVGO15yL5SVbzphFFQl8yPZJWX0XsMIhvQNHQY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=i4hc0lKVY851ASW3q4dPBk/EbU6yoOyZC5wL5reS6x6KgQk9ri6pNUnlEmQBfG3cDYk5M4RceSx3oYeXLgZvR+EpAMY6tA1D/46I4hS139/yBQ2ed5sgs3R3Qoqr+N9zEtt5u79coRPFrz8m7gU0uQNT7Rmoh7wvxQBaPM6dt8s=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c45ff70000001609-2a-68de34124c87
+X-AuditID: a67dfc5b-c2dff70000001609-b2-68de34112b76
 From: Byungchul Park <byungchul@sk.com>
 To: linux-kernel@vger.kernel.org
 Cc: kernel_team@skhynix.com,
@@ -162,43 +162,44 @@ Cc: kernel_team@skhynix.com,
 	rcu@vger.kernel.org,
 	linux-nfs@vger.kernel.org,
 	linux-rt-devel@lists.linux.dev
-Subject: [PATCH v17 30/47] fs/jbd2: use a weaker annotation in journal handling
-Date: Thu,  2 Oct 2025 17:12:30 +0900
-Message-Id: <20251002081247.51255-31-byungchul@sk.com>
+Subject: [PATCH v17 27/47] locking/lockdep: prevent various lockdep assertions when lockdep_off()'ed
+Date: Thu,  2 Oct 2025 17:12:27 +0900
+Message-Id: <20251002081247.51255-28-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20251002081247.51255-1-byungchul@sk.com>
 References: <20251002081247.51255-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzXSa0hTYRgH8N5z3vPubLk4TMFjdmMkQRezsHo+RPQleAuiKKKoDzb10FbT
-	ZEvNqFjSzHQtG80uhs20WGqpWxfLotLoQjQV11q0mYZZlmtRTisr2rp8+/F/bl8enlVZuMm8
-	LneXZMjV6NVEgRWhuJp58em92rRrlcngO3AXQ2SkFEOp6xQHXZcbEPy0PZDBl+ZfBD50fEYQ
-	vmBBcHqwSgbPR4ej1codcPacm0BNf5CFnoFJ4I2ECTy2lxNwFN/moMG1Gk4MEahsSYTgUTuG
-	y6FODh73+jj4MGgjMOLtZ6D0ZgRDTUkdhlPVAQKW5qscmKrGOGh662eg8+YlDkatyeCveIPg
-	6h0zgkPv2gg8rfJwELC+x1BS18LAeWeIA1ejj0BHZJgBt8vOwmtrSAZmyzcZ2H+UEhj/eobA
-	x4oRbnkaHTNbMW2sbkR0/LsN0Y7hMEsPugvp7VEHpjdOB2XU4cqnbudsWntriKGu+sOEloW8
-	DP3o8cjoo5PjmA54TzC0xmRn1yZtVizNlvS6Askwf9lWhdbSWk7yvk7c7flUi01oTF6G5Lwo
-	pIvm+j72v4+Zy5iYiTBL9Pu//ckThBmi+8ggFzMrPJki+rrnxhwvrBE739XJYsZCinhuqJXE
-	rBQWi4G26n87p4sNzXf/WB7Ne/qf4JhVwiLRHD4YvaWI9tTKxcb2S8zfgSTxntOPK5DSgSbU
-	I5UutyBHo9Onp2qLcnW7U7N25rhQ9Ecu7PuxpRV97lrfjgQeqeOUXSlBrYrTFBiLctqRyLPq
-	BOVWZ0CrUmZrivZIhp0Zhny9ZGxHyTxWJyoXjhZmq4Rtml3SDknKkwz/qwwvn2xCqVkztie4
-	J1z3He/urs7fcIZ/ubJp4pX9A4t7p61IK4wj+2ZmbMwM267lvSxfV3VL/9B7cb9iJRRuLo5M
-	tc1Lw299GXsHV2X+9Fjd/IB/07G+irYpiSmvy40lvS9eOILzl8RrU5ZOX55VnNqXdHLOr0zP
-	fRp4Jt57FViV3AP3D5icamzUahbMZg1GzW9sirINHwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAAzXSa0xTdxQAcP/3/vu/paN6c0W5Qea0k5ksImpQj6ib/cSNiY99mtEP0uiN
-	rdCivcgsyQwFGomvQZeWjSoiaEOASaXqQEQZKolghVpFo1TEVB4BLFGQ8RJbjV9OfueRk/Ph
-	yGnuuixGrjNkiEaDJk1FFFixfWNuPJf4UrvKfhxDp7kJw9hoPoazNdUE8mv/lkHH5SoE3WP5
-	CManHDRY6mcxzFhbGBideMHAbGMLArvXSkP1VTMF710fCQzeeYfA1hMgUDRgxhB0nkJQ3Otg
-	YOBeMgx3N8hg1t9HwdMPQwicgY8UBJqOI5ixp8L5MjeBKU87DUW2DgQXevw09LtCzastLxE0
-	VuQQeFNwjQZfYC48HgsSuG87SWDYe5aCty4CpTmNMjjnsCLILa8hYD9Xi6H+1Q0GvIPTFHTZ
-	rRRU1W6DbmcvhraCMip0X2jqSjQ4inKpUOinwPZPAwUTzkoGHpR3YXBmx4HD45PB64piBqZ7
-	VsNsaTq0VPUx4P/DhuHycLtsiw0J45YzWKh0X6cEy6MZIlSXVCNhatKKhNFLubRgKQild4aC
-	tJDn/k241DZEhMmxJ0Ro/FCKhdYyXij0xAv1xX5GyLv1nNmZtFuxab+YpssUjQk/pSi0p+pO
-	kkP/f3P04Ug5zkbjESdQhJxnE/lCywkqbMIu5589m6DDjmKX8O7TvbKwabYtlu/0rgh7PruD
-	b++/yISN2Ti+bKCOhK1k1/FdDSX0l53f8VWups+OCNV9PW04bI5dy1uCeVQBUpSiOZUoSmfI
-	1Gt0aWtXSqlak0F3dOW+dH0tCn2T8/fpwjo06ktuRqwcqSKV3ji/lpNpMiWTvhnxcloVpUyp
-	6NJyyv0aU5ZoTN9rPJImSs1okRyropVbfxVTOPaAJkNMFcVDovFrl5JHxGSjJJ/58MGSxUZ1
-	xWLOpH6apfd0mmd2zb/3vfoH9cWRxEDrv4uIXTc4fT6HO3CsW/rv7pqdtGbiYcy3HfP2Jph6
-	I2/fGLd6FLH+IL0vWbvZ8Ocv6qWujPV7FNGTN9/U1P2VP9L3c4JbSnqxIFbHxetb/VKkQa3e
-	sEyK3JIV7U5ceESFJa1m9Y+0UdJ8AmP23a1JAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSfVDLcRzH+/6etnaNn8X5kcPtPIbIhc8fOOfO+f3jjnOO4w/Gfmc7tdxi
+	lYcTNaLJiuVqclPXT9piNo89XXJNSSx1WWnNyNT1dOhBLNnCf6/7fN6v9+efjxCXuMjZQqXq
+	GKdWyWKllIgQ9YfdWiGJ6VSs+qSbD61nqwkYHkon4MY9CwXptlwSnHfNCDzD6QhGfxlxGBp7
+	L4CJSgeCnKZsHL5bf1Ng8HZRMMjrEPTUboV+TzkJE+4vGLwb6UPAd/3G4LrBiaDbegHBA0cn
+	guauKdAyPEhBvSGDgv6mGxgMWCkwnaskISffRkBHTjYGHt5HQIO+IKD3UJBzfyYYr3djMMaX
+	COBVYQcBxsZmEj4W5wnA742GCVM8OMxfBOC+YiCgvrOVhF5fNgWeF+dJsLXVIsi92UFBRWU9
+	AenjQwgcTz5ioLM+JKHTMkFCinGUhLdmZ+Cmo46AN2WlJBS9a8LA+8FFgr3xFQ4jmRHgzLpM
+	gkv/GUHpQAEFVwd8aJOcHdVmEmyJ/RHGat+OU6zlpgWxQ0WpOKvVByjNnsgWNfRR7MsChn2a
+	5xawaVXtAtZkO87aiyPZwooejG3v3cDaSi5S25fsFa2Xc7FKDadeufGASHFW208cbZuW9LK6
+	F6UgfuolFCpk6Bjmh6NM8J+dvtdYkCl6MeNyjeFBnk7PZ+yXfWSQcbphDtPatDzI4bScqcro
+	ncwT9ELG4C+f7BHTa5mqlNJ/nfMYs7V6sic0MG/2NhBBltBrGO1gWsAVBTLGUMaZ2YP9FWYx
+	z4pdhB6JTSikBEmUKk2cTBkbE6VIVimTog7Fx9lQ4N/40/59T9A3584aRAuRNEzsXOhWSEiZ
+	JiE5rgYxQlw6XXyguEMhEctlySc4dfx+9fFYLqEGRQgJ6Uzx6pFEuYQ+LDvGHeG4o5z6/xYT
+	hs5OQScP/7ry+DUdddGqz1p0KsJWa0g8UacNn/W8fbMqdbfxgrCvMLJSvOa2eG4b6DR+95Y8
+	jXzsIJ/USP+0VodnTC073fJzBp+6bkGWudykXGnzVVg0uSGru8ajPao9C7jh/O/blnZvavTn
+	z2O+puqutWQ+PBMSsuzgjjveXfz5uiNhUiJBIYuOxNUJsj+jVpGvawMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0iTcRTG+7/XuZq9LcmXipLhEsSy6MLJIqovvZVdqA9BRDnzbVtOra1M
+	A8HbSOw2F5vlLM1qiFrazMhEEyMhbeWy7Lapq6WFs6Fuijm1rejL4XfO8/DwfDgCXPyYXCxQ
+	pp7h1akylYQSEsK9m/JWLljXq1g9+WQR9OS0EuDzFhBQWltDQYHlBgldD6oR9PkKEExMmXDQ
+	Ns4SMK1vp8E7+YWG2eZ2BEabHoeaRzkYjNXNUDD0fBSBwemioPhnDgEe8yUEJQMmGn6+2AHD
+	fU0kzDoGMfgw7kZgds1g4Gq9gGDamAxlFfUUTFnf4FBs6EJw2+nA4UddQHzU3ouguTKXgu+6
+	Bhy6XaHwzueh4KXhIgXDtlIMftVRUJ7bTMJNkx5B3p1aCow3LQQ09j+lwTbkx8Bu1GNQbdkD
+	feYBAjp1FVigX8D1MBxMxXlYYPzAwHC/CYNJcxUNr+7YCTBnS8Fk7Sbha2UJDX7nGpgtT4P2
+	6kEaHFcNBDwYfkNuNSBuQnuF4KrqH2Oc9u00xdXcqkHc1G894rz38nBOqwusz90enMuvP8fd
+	63RT3G/fe4prHi8nuI4KliuyruQaSxw0l9/ymd4fd1i4OYlXKdN5deyWBKEiRztMnPq0IKOj
+	dQhlI/P8QhQiYJl1bNfAayzIFBPFfvw4iQc5jIlg6y8PkEHGmc6lbI8tJsgLmSS25eLQXz/B
+	SFmDv4kOsojZwLZk36f/ZS5nq+ta/+aEBO7dzk4iyGJmPav15GM6JCxHc6pQmDI1PUWmVK1f
+	pUlWZKYqM1YdT0uxoMA3mbP8RU+Qt3tHG2IESDJPZJM6FGJSlq7JTGlDrACXhIkSKu0KsShJ
+	lnmeV6cdU59V8Zo2tERASMJFuw7xCWJGLjvDJ/P8KV79X8UEIYuz0dr+I0cfbrX74z06edhI
+	TOiYceO4PDdKXjg6o9cXvhYljpSmOYWVB2pN8e4G6bLrDd7Efct2WkczX13LkL7YHjehEj77
+	5iuMihTFDmqje8LfFmfN9Z8Yc9uLxLBaXpa+7aQg3rXb6rWsOHj6nHhXmTA69C552JL1LjLi
+	Q4SkbUZCaBSyNdG4WiP7A0laOYtJAwAA
 X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -206,43 +207,60 @@ List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 
-jbd2 journal handling code doesn't want jbd2_might_wait_for_commit()
-to be placed between start_this_handle() and stop_this_handle().  So it
-marks the region with rwsem_acquire_read() and rwsem_release().
+lockdep provides APIs for assertion only if lockdep is enabled at the
+moment asserting to avoid unnecessary confusion, using the following
+condition, debug_locks && !this_cpu_read(lockdep_recursion).
 
-However, the annotation is too strong for that purpose.  We don't have
-to use more than try lock annotation for that.
-
-rwsem_acquire_read() implies:
-
-   1. might be a waiter on contention of the lock.
-   2. enter to the critical section of the lock.
-
-All we need in here is to act 2, not 1.  So trylock version of
-annotation is sufficient for that purpose.  Now that dept partially
-relies on lockdep annotaions, dept interpets rwsem_acquire_read() as a
-potential wait and might report a deadlock by the wait.
-
-Replace it with trylock version of annotation.
+However, lockdep_{off,on}() are also used for disabling and enabling
+lockdep for a simular purpose.  Add !lockdep_recursing(current) that is
+updated by lockdep_{off,on}() to the condition so that the assertions
+are aware of !__lockdep_enabled if lockdep_off()'ed.
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
- fs/jbd2/transaction.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/lockdep.h  |  3 ++-
+ kernel/locking/lockdep.c | 10 ++++++++++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index c7867139af69..b4e65f51bf5e 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -441,7 +441,7 @@ static int start_this_handle(journal_t *journal, handle_t *handle,
- 	read_unlock(&journal->j_state_lock);
- 	current->journal_info = handle;
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index ef03d8808c10..c83fe95199db 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -303,6 +303,7 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
+ 	lockdep_assert_once(!current->lockdep_depth)
  
--	rwsem_acquire_read(&journal->j_trans_commit_map, 0, 0, _THIS_IP_);
-+	rwsem_acquire_read(&journal->j_trans_commit_map, 0, 1, _THIS_IP_);
- 	jbd2_journal_free_transaction(new_transaction);
- 	/*
- 	 * Ensure that no allocations done while the transaction is open are
+ #define lockdep_recursing(tsk)	((tsk)->lockdep_recursion)
++extern bool lockdep_recursing_current(void);
+ 
+ #define lockdep_pin_lock(l)	lock_pin_lock(&(l)->dep_map)
+ #define lockdep_repin_lock(l,c)	lock_repin_lock(&(l)->dep_map, (c))
+@@ -630,7 +631,7 @@ DECLARE_PER_CPU(int, hardirqs_enabled);
+ DECLARE_PER_CPU(int, hardirq_context);
+ DECLARE_PER_CPU(unsigned int, lockdep_recursion);
+ 
+-#define __lockdep_enabled	(debug_locks && !this_cpu_read(lockdep_recursion))
++#define __lockdep_enabled	(debug_locks && !this_cpu_read(lockdep_recursion) && !lockdep_recursing_current())
+ 
+ #define lockdep_assert_irqs_enabled()					\
+ do {									\
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index dc97f2753ef8..39b9e3e27c0b 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -6900,3 +6900,13 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
+ 	warn_rcu_exit(rcu);
+ }
+ EXPORT_SYMBOL_GPL(lockdep_rcu_suspicious);
++
++/*
++ * For avoiding header dependency when using (struct task_struct *)current
++ * and lockdep_recursing() at the same time.
++ */
++noinstr bool lockdep_recursing_current(void)
++{
++	return lockdep_recursing(current);
++}
++EXPORT_SYMBOL_GPL(lockdep_recursing_current);
 -- 
 2.17.1
 
