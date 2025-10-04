@@ -1,156 +1,167 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8396139E;
-	Fri,  3 Oct 2025 14:37:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0CF2157A6B;
+	Sat,  4 Oct 2025 09:47:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759502235; cv=none; b=D25l0+KTvICCJwZbCyV10c5Guqp9obZqZxtoAUTm32L3Fc6cPiY7wUspKmW8nRXHssjNpZVrs8+d86fPEo7KYY07ioRQa8UkJ6bnEoWG9tofdcUdWcHotaZ2WfDfxbcG4FA22Bbfo4eb9p7DcGdK0Yi5LBjjdd75CfNwjIFNXCs=
+	t=1759571233; cv=none; b=gY47rIbgSvWqgpZq32GAUze+sDCbsFw8UaP3hUIUErbP+Up6KjaXJbH1QxTjCTwASiYeX6qlwUyW8wsrB9IHOFJ1AckhCNDL152Ql/hmnXhEmlxjHnO4rLJ9BtX6VcNg0FDlWJovVOhvjw4BT1e65/aBnemGKH/omEiiiiCj8Y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759502235; c=relaxed/simple;
-	bh=ify0TfiFKa3Hes8KZtJjaG2GeXYqffaYoF8Y5oCDXXg=;
+	s=arc-20240116; t=1759571233; c=relaxed/simple;
+	bh=8Z58r/lUJzR4nNBETqyf17v4ZDZhpa1ENzKinXNi7qY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U6cE2diKRDWdmOgbZp5W0Q018xpyzLFAzYyIbMQ/ZEyxi2OrmtuIgrcpmDS1WC4dIZ0EcSNlZhka4rqrK/hq8gdn21NR1WGbNKUeXG6kAXxetZi8vqANffhmh6hqZZA5Of4sQnEwaQT26qoqUf1ika7R7wrW2QvHdd6TilZUPwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09D741A9A;
-	Fri,  3 Oct 2025 07:37:04 -0700 (PDT)
-Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8693C3F5A1;
-	Fri,  3 Oct 2025 07:36:47 -0700 (PDT)
-Date: Fri, 3 Oct 2025 15:36:42 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Byungchul Park <byungchul@sk.com>
-Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-	linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-	will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-	joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-	duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-	tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
-	amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
-	linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-	minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-	sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-	ngupta@vflare.org, linux-block@vger.kernel.org,
-	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
-	jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
-	djwong@kernel.org, dri-devel@lists.freedesktop.org,
-	rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-	hamohammed.sa@gmail.com, harry.yoo@oracle.com,
-	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
-	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
-	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com,
-	yeoreum.yun@arm.com, netdev@vger.kernel.org,
-	matthew.brost@intel.com, her0gyugyu@gmail.com, corbet@lwn.net,
-	catalin.marinas@arm.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-	sumit.semwal@linaro.org, gustavo@padovan.org,
-	christian.koenig@amd.com, andi.shyti@kernel.org, arnd@arndb.de,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
-	rppt@kernel.org, surenb@google.com, mcgrof@kernel.org,
-	petr.pavlu@suse.com, da.gomez@kernel.org, samitolvanen@google.com,
-	paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com, josh@joshtriplett.org, urezki@gmail.com,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
-	chuck.lever@oracle.com, neil@brown.name, okorniev@redhat.com,
-	Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org,
-	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
-	clrkwllms@kernel.org, ada.coupriediaz@arm.com,
-	kristina.martsenko@arm.com, wangkefeng.wang@huawei.com,
-	broonie@kernel.org, kevin.brodsky@arm.com, dwmw@amazon.co.uk,
-	shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com,
-	yuzhao@google.com, baolin.wang@linux.alibaba.com,
-	usamaarif642@gmail.com, joel.granados@kernel.org,
-	richard.weiyang@gmail.com, geert+renesas@glider.be,
-	tim.c.chen@linux.intel.com, linux@treblig.org,
-	alexander.shishkin@linux.intel.com, lillian@star-ark.net,
-	chenhuacai@kernel.org, francesco@valla.it,
-	guoweikang.kernel@gmail.com, link@vivo.com, jpoimboe@kernel.org,
-	masahiroy@kernel.org, brauner@kernel.org,
-	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com,
-	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org,
-	rcu@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH v17 09/47] arm64, dept: add support
- CONFIG_ARCH_HAS_DEPT_SUPPORT to arm64
-Message-ID: <aN_fel4Rpqz6TPsD@J2N7QTR9R3>
-References: <20251002081247.51255-1-byungchul@sk.com>
- <20251002081247.51255-10-byungchul@sk.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qtd6mP6MMjA3Xgt0kjj5NfFUX8kVnP6m7AFWScBbgY0SKgMwXqfpgSUZCk6Fjq2YiDFQ6/+Ty2aYdARm3YccsyxRmmjnLSxlR6B8UkpjDN3Yn7jxvrSoJGmpF5+Nugizv/zo7x/XHHAJAuHP0U2s6pPVUhCqsCuR9B+zEzPyrHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FTYsfwb6; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FTYsfwb6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE5BFC4CEF1;
+	Sat,  4 Oct 2025 09:47:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759571231;
+	bh=8Z58r/lUJzR4nNBETqyf17v4ZDZhpa1ENzKinXNi7qY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=FTYsfwb6WZuYXqI1zLQPguxDOLQQ6mG7D9bZCgc99AHzD5BiR5KTwqoX/hsQn0UON
+	 5JMujNUfq5w+kWbUvGUUA21TmmB/t+m/3JZbwwYkIdQXBfc3ZeqNxw8QoOh5IbEHm5
+	 kht9558spz+O0vYPWYXrOw0EF1qk81YkE331ReqxqyLBB5Nb7nSGY0e3RQoNY332a3
+	 yzuKzZjCmz+yvaAtN/waOg5f1Z0Ws9MeUYC3CEM0cdoXr9wCZLLOn69Dgu4IF66nSN
+	 JP3cZ/Mq8J51HMkJ6Ft06fZANE/7IKGIRMot7oYbUS+SvfwkN2/lKgqkcCBIT1ZB/M
+	 xv+qb2UafWdzw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B432ECE0CA6; Sat,  4 Oct 2025 02:47:08 -0700 (PDT)
+Date: Sat, 4 Oct 2025 02:47:08 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 02/21] rcu: Re-implement RCU Tasks Trace in terms of
+ SRCU-fast
+Message-ID: <d24f3987-48de-43e3-a841-2a116ac6d5c7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <7fa58961-2dce-4e08-8174-1d1cc592210f@paulmck-laptop>
+ <20251001144832.631770-2-paulmck@kernel.org>
+ <aN6eQuTbdwAAhxIj@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20251002081247.51255-10-byungchul@sk.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aN6eQuTbdwAAhxIj@localhost.localdomain>
 
-On Thu, Oct 02, 2025 at 05:12:09PM +0900, Byungchul Park wrote:
-> dept needs to notice every entrance from user to kernel mode to treat
-> every kernel context independently when tracking wait-event dependencies.
-> Roughly, system call and user oriented fault are the cases.
+On Thu, Oct 02, 2025 at 05:46:10PM +0200, Frederic Weisbecker wrote:
+> Le Wed, Oct 01, 2025 at 07:48:13AM -0700, Paul E. McKenney a écrit :
+> > This commit saves more than 500 lines of RCU code by re-implementing
+> > RCU Tasks Trace in terms of SRCU-fast.  Follow-up work will remove
+> > more code that does not cause problems by its presence, but that is no
+> > longer required.
+> > 
+> > This variant places smp_mb() in rcu_read_{,un}lock_trace(), which will
+> > be removed on common-case architectures in a later commit.
 > 
-> Make dept aware of the entrances of arm64 and add support
-> CONFIG_ARCH_HAS_DEPT_SUPPORT to arm64.
+> The changelog doesn't mention what this is ordering :-)
+
+"The ordering that dare not be named"?  ;-)
+
+How about like this for that second paragraph?
+
+	This variant places smp_mb() in rcu_read_{,un}lock_trace(),
+	which will be removed on common-case architectures in a
+	later commit.  In the meantime, it serves to enforce ordering
+	between the underlying srcu_read_{,un}lock_fast() markers and
+	the intervening critical section, even on architectures that
+	permit attaching tracepoints on regions of code not watched
+	by RCU.  Such architectures defeat SRCU-fast's use of implicit
+	single-instruction, interrupts-disabled, and atomic-operation
+	RCU read-side critical sections, which have no effect when RCU is
+	not watching.  The aforementioned later commit will insert these
+	smp_mb() calls only on architectures that have not used noinstr to
+	prevent attaching tracepoints to code where RCU is not watching.
+
+> > [ paulmck: Apply kernel test robot, Boqun Feng, and Zqiang feedback. ]
+> > [ paulmck: Split out Tiny SRCU fixes per Andrii Nakryiko feedback. ]
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Tested-by: kernel test robot <oliver.sang@intel.com>
+> > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: <bpf@vger.kernel.org>
+> > ---
+> [...]
+> > @@ -50,12 +50,14 @@ static inline void rcu_read_lock_trace(void)
+> >  {
+> >  	struct task_struct *t = current;
+> >  
+> > -	WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
+> > -	barrier();
+> > -	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
+> > -	    t->trc_reader_special.b.need_mb)
+> > -		smp_mb(); // Pairs with update-side barriers
+> > -	rcu_lock_acquire(&rcu_trace_lock_map);
+> > +	if (t->trc_reader_nesting++) {
+> > +		// In case we interrupted a Tasks Trace RCU reader.
+> > +		rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
+> > +		return;
+> > +	}
+> > +	barrier();  // nesting before scp to protect against interrupt handler.
+> > +	t->trc_reader_scp = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
+> > +	smp_mb(); // Placeholder for more selective ordering
 > 
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> ---
->  arch/arm64/Kconfig          | 1 +
->  arch/arm64/kernel/syscall.c | 7 +++++++
->  arch/arm64/mm/fault.c       | 7 +++++++
->  3 files changed, 15 insertions(+)
+> Mysterious :-)
+
+Does the reworked commit-log paragraph help clear up this mystery?
+
+> >  }
+> >  
+> >  /**
+> > @@ -69,26 +71,75 @@ static inline void rcu_read_lock_trace(void)
+> >   */
+> >  static inline void rcu_read_unlock_trace(void)
+> >  {
+> > -	int nesting;
+> > +	struct srcu_ctr __percpu *scp;
+> >  	struct task_struct *t = current;
+> >  
+> > -	rcu_lock_release(&rcu_trace_lock_map);
+> > -	nesting = READ_ONCE(t->trc_reader_nesting) - 1;
+> > -	barrier(); // Critical section before disabling.
+> > -	// Disable IPI-based setting of .need_qs.
+> > -	WRITE_ONCE(t->trc_reader_nesting, INT_MIN + nesting);
+> > -	if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
+> > -		WRITE_ONCE(t->trc_reader_nesting, nesting);
+> > -		return;  // We assume shallow reader nesting.
+> > -	}
+> > -	WARN_ON_ONCE(nesting != 0);
+> > -	rcu_read_unlock_trace_special(t);
+> > +	smp_mb(); // Placeholder for more selective ordering
 > 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index e9bbfacc35a6..a8fab2c052dc 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -281,6 +281,7 @@ config ARM64
->  	select USER_STACKTRACE_SUPPORT
->  	select VDSO_GETRANDOM
->  	select VMAP_STACK
-> +	select ARCH_HAS_DEPT_SUPPORT
->  	help
->  	  ARM 64-bit (AArch64) Linux support.
->  
-> diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-> index c442fcec6b9e..bbd306335179 100644
-> --- a/arch/arm64/kernel/syscall.c
-> +++ b/arch/arm64/kernel/syscall.c
-> @@ -7,6 +7,7 @@
->  #include <linux/ptrace.h>
->  #include <linux/randomize_kstack.h>
->  #include <linux/syscalls.h>
-> +#include <linux/dept.h>
->  
->  #include <asm/debug-monitors.h>
->  #include <asm/exception.h>
-> @@ -96,6 +97,12 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
->  	 * (Similarly for HVC and SMC elsewhere.)
->  	 */
->  
-> +	/*
-> +	 * This is a system call from user mode.  Make dept work with a
-> +	 * new kernel mode context.
-> +	 */
-> +	dept_update_cxt();
+> Bizarre :-)
 
-As Mark Brown pointed out in his replies, this patch is missing a whole
-bunch of cases and does not work correctly as-is.
+And this bizarreness?  ;-)
 
-As Dave Hansen pointed out on the x86 patch, you shouldn't do this
-piecemeal in architecture code, and should instead work with the
-existing context tracking, e.g. by adding logic to
-enter_from_user_mode() and exit_to_user_mode(), or by reusing some
-existing context tracking logic that's called there.
+> > +	scp = t->trc_reader_scp;
+> > +	barrier();  // scp before nesting to protect against interrupt handler.
+> 
+> What is it protecting against interrupt?
 
-Mark.
+The incrementing of ->trc_reader_nesting vs the fetch of ->trc_reader_scp.
+
+							Thanx, Paul
+
+> > +	if (!--t->trc_reader_nesting)
+> > +		srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
+> > +	else
+> > +		srcu_lock_release(&rcu_tasks_trace_srcu_struct.dep_map);
+> > +}
+> 
+> Thanks (very happy to see all the rest of the code going away!)
+> 
+> -- 
+> Frederic Weisbecker
+> SUSE Labs
