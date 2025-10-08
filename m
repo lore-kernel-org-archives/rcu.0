@@ -1,105 +1,81 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9267EACD;
-	Tue,  7 Oct 2025 13:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53368296BD6;
+	Wed,  8 Oct 2025 06:04:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759844850; cv=none; b=A/dSIlxS3Ek63SS9CwQxQhylbSu+mEMYnpPJtmViQidwRwZ1tEz4ccSxYsidttqDf/Sp6hv6PTKM239iukygvTsvTfnsM7pW8gDNuTS+Zho60sUFAerQWQlu2fi225892PYkL3YWOQAthZ3xU2b55Y8ZPJCCdPu0GjBLZrQo4xQ=
+	t=1759903481; cv=none; b=U4/Ib4l2S+4Xd73lHR7u4J3PzAMUSZaVHfbGpUjwqolhVcJlMklp3xHR05BVngp7s6tb8ao5JeXTCKSTf2SDr0h4G7jP3eftN5grHbz97xwkX4sAJI7ldTXHPH0j4uiqyrDfFoFd7Y1jCsTuq2v20aiMIiFjrheH/hXcsiwsZAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759844850; c=relaxed/simple;
-	bh=2wEizn1o5izN1HzrY1dxD7uNG+1kNE6aE6MWZ6KYfKI=;
+	s=arc-20240116; t=1759903481; c=relaxed/simple;
+	bh=9gBVmTr4OaFBiSGVa5HGdTny9W/pM69XwMzDwk/g0u4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JV93+uo3Dsj6dbXwXoRByfsYaeOxI1L5widd8wR+2Rwq7Tp0Q6LwZWTBaOWn8mK0oaT8h1pToyJ/jImicgzaMchoU6qUs+p1UYOKpwz2/HnKYmiFf2vF+deX7cHI6IwVG76RZxOo5RHmt0ANC0BJ4JmimlBNckzWVdYI5XBCs4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kgdcGkRd; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=XiEG76unIlBD3hI/sG2k5LKR5hi2fAVOPYWuAZMyjd9ogywPDVpm6hFsDUxnh/Dr2svL6etAhOhGdcEJvNLSD3i4X5rhraXQoXsi/Zmx9vQtZ8TNDz4ur+dGgiK+HgpOOPRaud7B1V+9yGKKctq+2/e4GKxqbfxQjmAKC9ECaSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=xIXq2OjG; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kgdcGkRd"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7786CC4CEF1;
-	Tue,  7 Oct 2025 13:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759844849;
-	bh=2wEizn1o5izN1HzrY1dxD7uNG+1kNE6aE6MWZ6KYfKI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=kgdcGkRdLcJfs299lC/wEmiNcvnrsNlGSHlm0JxnxkkmYUVdlwAVqS5LPNHm4G00/
-	 s1f5MRwNVam5FMGmgYshalbdUpVcdrszKi2ND753BqedusYylI5F3R63lOotIt1kpX
-	 XsZJf2T5VkgvuGDntO7kuq9/bQvdMIEsfXGjwO4pNBqLcayNE0tPWqQ5LrgIyd0cQ1
-	 z697XJ6g9G+6PIuQA8LHxTx/XyYHo+KEjm6cebHzDXWOoV/0lONWmFq3TRDjeyqKgt
-	 y2nKU6asZIkvVFJxoigNPTLFu4fEUHL/fLJtc4lKMJ0qRhfYuV66UBvzySbw52/Pi9
-	 C6rt+02YytHyg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 174A0CE0B20; Tue,  7 Oct 2025 06:47:29 -0700 (PDT)
-Date: Tue, 7 Oct 2025 06:47:29 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 02/21] rcu: Re-implement RCU Tasks Trace in terms of
- SRCU-fast
-Message-ID: <79baf0a4-dae2-4748-a1a8-112ce1d5fa94@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <7fa58961-2dce-4e08-8174-1d1cc592210f@paulmck-laptop>
- <20251001144832.631770-2-paulmck@kernel.org>
- <aN6eQuTbdwAAhxIj@localhost.localdomain>
- <d24f3987-48de-43e3-a841-2a116ac6d5c7@paulmck-laptop>
- <aOUDQeLtfeoBEPng@localhost.localdomain>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="xIXq2OjG"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=9i/hW2gsNIwvxGPBjR3UaQnJZD5u1DTKjwq3K7Rz45A=; b=xIXq2OjG57P+Qt2gk0FH0OvWkK
+	Vd+ovtPhdeofYhBwG6boyowN0XgTdPjAZkmLA2CHdgmhSwYQ1e8LrpkUjOXt63w888HO2idXPbUjv
+	gBFqaY7J7u2OP7puYZ3zvwJLi2fvAEj5w49jTK2iCAZGo20X1snDjfrARFJK0uMI1eo8VkAL3U2iu
+	5GT1x06quwBEdppdk4fHQGr74EY5fP7bqoICxMgBrISd9jWPTGbQV1105mgcetFA7F0NlekJXo4p1
+	r07Mk9iSassaNZu6epxkVWDPk2pukrHx2T3EE4odUIXfTvDZeBbu+sz9zi6Y5UVXXqZ6iDFGvJNuk
+	CpBxUrqQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v6NHv-00000003GA6-11Tx;
+	Wed, 08 Oct 2025 06:04:35 +0000
+Date: Tue, 7 Oct 2025 23:04:35 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Harry Yoo <harry.yoo@oracle.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	maple-tree@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Venkat Rao Bagalkote <venkat88@linux.ibm.com>,
+	Qianfeng Rong <rongqianfeng@vivo.com>,
+	Wei Yang <richard.weiyang@gmail.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	WangYuli <wangyuli@uniontech.com>, Jann Horn <jannh@google.com>,
+	Pedro Falcato <pfalcato@suse.de>
+Subject: Re: [PATCH v8 00/23] SLUB percpu sheaves
+Message-ID: <aOX-87tPdtuPb9Uh@infradead.org>
+References: <20250910-slub-percpu-caches-v8-0-ca3099d8352c@suse.cz>
+ <aOS0Z5N4HaBNeb_J@infradead.org>
+ <c750ab62-a3d4-422e-ac5b-c531dfcc749d@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aOUDQeLtfeoBEPng@localhost.localdomain>
+In-Reply-To: <c750ab62-a3d4-422e-ac5b-c531dfcc749d@suse.cz>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Tue, Oct 07, 2025 at 02:10:41PM +0200, Frederic Weisbecker wrote:
-> Le Sat, Oct 04, 2025 at 02:47:08AM -0700, Paul E. McKenney a écrit :
-> > On Thu, Oct 02, 2025 at 05:46:10PM +0200, Frederic Weisbecker wrote:
-> > > Le Wed, Oct 01, 2025 at 07:48:13AM -0700, Paul E. McKenney a écrit :
-> > > > This commit saves more than 500 lines of RCU code by re-implementing
-> > > > RCU Tasks Trace in terms of SRCU-fast.  Follow-up work will remove
-> > > > more code that does not cause problems by its presence, but that is no
-> > > > longer required.
-> > > > 
-> > > > This variant places smp_mb() in rcu_read_{,un}lock_trace(), which will
-> > > > be removed on common-case architectures in a later commit.
-> > > 
-> > > The changelog doesn't mention what this is ordering :-)
-> > 
-> > "The ordering that dare not be named"?  ;-)
-> > 
-> > How about like this for that second paragraph?
-> > 
-> > 	This variant places smp_mb() in rcu_read_{,un}lock_trace(),
-> > 	which will be removed on common-case architectures in a
-> > 	later commit.  In the meantime, it serves to enforce ordering
-> > 	between the underlying srcu_read_{,un}lock_fast() markers and
-> > 	the intervening critical section, even on architectures that
-> > 	permit attaching tracepoints on regions of code not watched
-> > 	by RCU.  Such architectures defeat SRCU-fast's use of implicit
-> > 	single-instruction, interrupts-disabled, and atomic-operation
-> > 	RCU read-side critical sections, which have no effect when RCU is
-> > 	not watching.  The aforementioned later commit will insert these
-> > 	smp_mb() calls only on architectures that have not used noinstr to
-> > 	prevent attaching tracepoints to code where RCU is not watching.
-> 
-> Oh I see now. So basically this forces the SRCU-slow behaviour by
-> restoring the full barriers that are within SRCU-slow's srcu_read_[un]lock()
-> (can we add a word about that?) for those architectures due to unwatched
-> RCU sections that can escape the vigilance of the synchronize_rcu() on
-> the write side.
+On Tue, Oct 07, 2025 at 10:03:04AM +0200, Vlastimil Babka wrote:
+> Basically it's for situations where you have an upper bound on the objects
+> you might need to allocate in some restricted context where you can't fail
+> but also can't reclaim etc. The steps are:
 
-You got it!  I will add the connection to old-school srcu_read_[un]lock()
-on my next rebase.
+Ok, so you still need a step where you reserve, which can fail and
+only after that guarantee you can allocate up to the reservation?  I.e.
+not a replacement for mempools?  Just asking because I recently had
+to implement a mempool_alloc_batch to allow grabbing multiple objects
+out of a mempool safely for something I'm working on.
 
-							Thanx, Paul
-
-> Thanks.
-> 
-> -- 
-> Frederic Weisbecker
-> SUSE Labs
