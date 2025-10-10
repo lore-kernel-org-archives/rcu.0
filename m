@@ -1,47 +1,47 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABAAE2FB0A4
-	for <rcu@vger.kernel.org>; Fri, 10 Oct 2025 15:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD1C2FB093
+	for <rcu@vger.kernel.org>; Fri, 10 Oct 2025 15:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760111028; cv=none; b=uUTVC0A5zx974RlM3RfV4jDfvE4BZG0x/cYkU/qejMdMylLYzcp8VDe7qPDZc5yOAXM6SFlCvGs2mIYiJ525Mb6DxsydX3TdbjJhFM1ioM6MuBuJLPmrxKg7jNZE44FOK2u72g+nWKPbssZ78Ilz2LpeeFcfDEciVvz7TaXM7WE=
+	t=1760111043; cv=none; b=f2dKeYtOgwVHEsyEWhmhexYds5GUdcv4gLWAecb1xCGG3UqVQSSuglWUh03ipKhprcGgS19STgP00O9j0sS7zjO3/fF2I6FSbOHPXZJyWvIA1p4kVNs4sXw0AP/yqo/TUQHuIOw2Ui0mO3Wt/++ofESSDxDLQM4Sppc2NHZ+TH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760111028; c=relaxed/simple;
-	bh=Z/EAI9hFh4H6XJt0ufOWcsWMChKRCUqaHJ27tZfIUEw=;
+	s=arc-20240116; t=1760111043; c=relaxed/simple;
+	bh=ZUjlxRLvH+5h1yuAL0L16LTOqROZN6tqZs92aFf/GoA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YBfsRgH8BwnoTS8cHofpQ1GdklmDELeKt1G3eXAnk2AcbYGqv8Sjv1d+T3Yxx94CgilUK0pMD/bnUuQ2SBaWwVsaN7KT6dkCPn72Rxp30xsA9AGBuDCA4hzmbpbHvWd2ItQSAwPiLDyjywcNfrtlBw9itAuWUSjpSCjHhmjrLyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GeDAW29C; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=OTQnxmWAxoYuuKnx0mfhLac3Y8bvnv2FlsBLFObPDaRVsYSJPaHMwvDbwzndrZhZVe9iJiIbx2G65haaN4lOyzfYYsw8wCpYFjDVEh23M21m+Foi+i5oWpDJSjyPDix/8ToVZ3MMSP/+QHrJrPkXDsvtKwc0IFCWGKExKJlgWG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g636/hGL; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GeDAW29C"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g636/hGL"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760111025;
+	s=mimecast20190719; t=1760111041;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=q5MmuDhyyCRvim2U70KrPJRnnsespTvM3TjOrkj7aIY=;
-	b=GeDAW29CIU3hEw2LWAn+5lb+THlxQJPN0FWQIbB2ZZ8mzysJKM6WdvZbvd/Ksj3ltRW2oW
-	4kqbB7zUFsepJZWep7NjD9Ok9yX1Fx59XtEcw4YoCcPX3lTfqlDaR5CIWXstPjnUy9S62n
-	jk0UnlV7/N9yO7S3SkkWXEN31qlNy5w=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+	bh=mYsxd3auPHrfEyiSRiw1uwn1LfepSkxHHrao83gvKCM=;
+	b=g636/hGLqJ+CH2dyTESWMmoNkHP9rQfL9UsUtqsa3TJTx8QDuGlA2dTibzsbTTeGalMRJV
+	knKoX/5km/wl3n2lRyss6jNA27s5Cp8//nkP69SKmgJ950LHG7Ty0h6yeqOfgCts8Fo1Lp
+	Ewp1Pu5L3fzkzM03kjkRGolD/LKDOm4=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-33-G9k2o7cPOD6yyJc_TP2uNg-1; Fri,
- 10 Oct 2025 11:43:42 -0400
-X-MC-Unique: G9k2o7cPOD6yyJc_TP2uNg-1
-X-Mimecast-MFC-AGG-ID: G9k2o7cPOD6yyJc_TP2uNg_1760111018
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-546-jOxiEszlMYa4ZFIRiJxqvw-1; Fri,
+ 10 Oct 2025 11:43:57 -0400
+X-MC-Unique: jOxiEszlMYa4ZFIRiJxqvw-1
+X-Mimecast-MFC-AGG-ID: jOxiEszlMYa4ZFIRiJxqvw_1760111033
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D9C4518002C8;
-	Fri, 10 Oct 2025 15:43:37 +0000 (UTC)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D7B1719560A2;
+	Fri, 10 Oct 2025 15:43:52 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.45.224.29])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9BC4218004D8;
-	Fri, 10 Oct 2025 15:43:22 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 635F018004D8;
+	Fri, 10 Oct 2025 15:43:38 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -90,9 +90,9 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Marcelo Tosatti <mtosatti@redhat.com>,
 	Daniel Wagner <dwagner@suse.de>,
 	Petr Tesarik <ptesarik@suse.com>
-Subject: [PATCH v6 11/29] loongarch/paravirt: Mark pv_steal_clock static call as __ro_after_init
-Date: Fri, 10 Oct 2025 17:38:21 +0200
-Message-ID: <20251010153839.151763-12-vschneid@redhat.com>
+Subject: [PATCH v6 12/29] arm64/paravirt: Mark pv_steal_clock static call as __ro_after_init
+Date: Fri, 10 Oct 2025 17:38:22 +0200
+Message-ID: <20251010153839.151763-13-vschneid@redhat.com>
 In-Reply-To: <20251010153839.151763-1-vschneid@redhat.com>
 References: <20251010153839.151763-1-vschneid@redhat.com>
 Precedence: bulk
@@ -113,22 +113,22 @@ so mark it appropriately as __ro_after_init.
 
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- arch/loongarch/kernel/paravirt.c | 2 +-
+ arch/arm64/kernel/paravirt.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/paravirt.c
-index b1b51f920b231..9ec3f5c31fdab 100644
---- a/arch/loongarch/kernel/paravirt.c
-+++ b/arch/loongarch/kernel/paravirt.c
-@@ -19,7 +19,7 @@ static u64 native_steal_clock(int cpu)
+diff --git a/arch/arm64/kernel/paravirt.c b/arch/arm64/kernel/paravirt.c
+index aa718d6a9274a..ad28fa23c9228 100644
+--- a/arch/arm64/kernel/paravirt.c
++++ b/arch/arm64/kernel/paravirt.c
+@@ -32,7 +32,7 @@ static u64 native_steal_clock(int cpu)
  	return 0;
  }
  
 -DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
 +DEFINE_STATIC_CALL_RO(pv_steal_clock, native_steal_clock);
  
- static bool steal_acc = true;
- 
+ struct pv_time_stolen_time_region {
+ 	struct pvclock_vcpu_stolen_time __rcu *kaddr;
 -- 
 2.51.0
 
