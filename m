@@ -1,276 +1,151 @@
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10E52727E3;
-	Tue, 14 Oct 2025 06:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF202F5A1B
+	for <rcu@vger.kernel.org>; Tue, 14 Oct 2025 11:02:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760423931; cv=none; b=mQsu87H+umdhY8u1XR6gKMW8/3BaxCA1WaeCYLdu5TT2sIuDJ51f91ydZP4KYMAsrUoT2WUWwM5Lezt1CAcgQ5EaF4W6ZeprASAz44rvjmyKjOVF4Zx2gcxYF6t2ct8dpQ1/OhSupJjzLUePBkmKKzLWlEBpO2qVIK9PO8au1ZM=
+	t=1760439779; cv=none; b=UAZUpeC+NmZ7LKrXZM2L5xCBEmQ+I3g2ojCiKkUBvRsT6enL0R3cuVkrK01jp6eqxhNmVb88AwwWTGRFedxplJxyMwDyESYVcKkjO13JWfyQ7DAmA977Hy0eT+9tnoNDPWyupC1XOc1kiAgHyVKM5cft3pANWRi0CjkEb0pYhsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760423931; c=relaxed/simple;
-	bh=WTdEIPVnTjVYFmBVT010VFa83HYwQgS+DTRMlHzMHzE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p5NON7mG02PUiozuowqNgZh9FH7kVLZv6HuM6ccoEfHtUwX55Eq2l7PfPKN8X+BgheOJ7pPbZRiFTP7ZwufAuahqiVp2cPLVMaUi/Tt/fmSajVLmEABmWnw3guYKK6P7gZhF4c5//owAkpUzRZdVds/UwOJCaA4bpUGZEvVqJ0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c2dff70000001609-2b-68edefef43b4
-Date: Tue, 14 Oct 2025 15:38:33 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: NeilBrown <neil@brown.name>
-Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-	linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-	will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-	joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-	duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-	tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
-	amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
-	linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-	minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-	sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-	ngupta@vflare.org, linux-block@vger.kernel.org,
-	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
-	jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
-	djwong@kernel.org, dri-devel@lists.freedesktop.org,
-	rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-	hamohammed.sa@gmail.com, harry.yoo@oracle.com,
-	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
-	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
-	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com,
-	yeoreum.yun@arm.com, netdev@vger.kernel.org,
-	matthew.brost@intel.com, her0gyugyu@gmail.com, corbet@lwn.net,
-	catalin.marinas@arm.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-	sumit.semwal@linaro.org, gustavo@padovan.org,
-	christian.koenig@amd.com, andi.shyti@kernel.org, arnd@arndb.de,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
-	rppt@kernel.org, surenb@google.com, mcgrof@kernel.org,
-	petr.pavlu@suse.com, da.gomez@kernel.org, samitolvanen@google.com,
-	paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com, josh@joshtriplett.org, urezki@gmail.com,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
-	chuck.lever@oracle.com, okorniev@redhat.com, Dai.Ngo@oracle.com,
-	tom@talpey.com, trondmy@kernel.org, anna@kernel.org,
-	kees@kernel.org, bigeasy@linutronix.de, clrkwllms@kernel.org,
-	mark.rutland@arm.com, ada.coupriediaz@arm.com,
-	kristina.martsenko@arm.com, wangkefeng.wang@huawei.com,
-	broonie@kernel.org, kevin.brodsky@arm.com, dwmw@amazon.co.uk,
-	shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com,
-	yuzhao@google.com, baolin.wang@linux.alibaba.com,
-	usamaarif642@gmail.com, joel.granados@kernel.org,
-	richard.weiyang@gmail.com, geert+renesas@glider.be,
-	tim.c.chen@linux.intel.com, linux@treblig.org,
-	alexander.shishkin@linux.intel.com, lillian@star-ark.net,
-	chenhuacai@kernel.org, francesco@valla.it,
-	guoweikang.kernel@gmail.com, link@vivo.com, jpoimboe@kernel.org,
-	masahiroy@kernel.org, brauner@kernel.org,
-	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com,
-	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org,
-	rcu@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH v17 28/47] dept: add documentation for dept
-Message-ID: <20251014063833.GA58074@system.software.com>
-References: <20251002081247.51255-1-byungchul@sk.com>
- <20251002081247.51255-29-byungchul@sk.com>
- <175947451487.247319.6809470356431942803@noble.neil.brown.name>
- <20251013052354.GA75512@system.software.com>
- <176042183810.1793333.13639772065939276568@noble.neil.brown.name>
+	s=arc-20240116; t=1760439779; c=relaxed/simple;
+	bh=/u5e/qJ2sRdwo1224SVU8XP3U/yMMEn1jbJARlu70Tk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ig+9/DZ61ar0D7bxUdrEY6QBkOUgOBmN9Z12rdrreE40s11sxbliHBthxd5sdXxdjyi7nKvn4laxE4IKkuRmSAnarLfPCB3dvL+cHMv7wpZ++ePNS8R3wttBNztHZrWxLPdzmwbm0dDjOfJt83qRQD6kyJEqe4Zas98vt+xYTfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e83mDdrq; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e83mDdrq"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1760439777;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s2r/L8/q4C9e2I164NDxUGdYhK/0nvlG6dMGzaNBqVg=;
+	b=e83mDdrqUjDTuwZOBUhrBr3TEQ/TkIV8qTEniGUfnpBREMz0qkkI/uMbWOP4Dgm+hIdaNX
+	3moPEZQkkSVDIOsXJulDC95g9GeF0uOMCE/NtlX2T1xrFCJhz6UsRK8B9MFTOQy6Nw9qvD
+	X4lXGxiqvUIynZmtSwM0Hy9XFEWA4EI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-576-Ux6hsmVxMuaVY3qZJ95P_g-1; Tue, 14 Oct 2025 07:02:56 -0400
+X-MC-Unique: Ux6hsmVxMuaVY3qZJ95P_g-1
+X-Mimecast-MFC-AGG-ID: Ux6hsmVxMuaVY3qZJ95P_g_1760439775
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-46e2c11b94cso38997205e9.3
+        for <rcu@vger.kernel.org>; Tue, 14 Oct 2025 04:02:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760439774; x=1761044574;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s2r/L8/q4C9e2I164NDxUGdYhK/0nvlG6dMGzaNBqVg=;
+        b=KpqYNDix+7Jy8aatRcitKMYT6Rr72WJtJhHbhcQVJGsbeXYvlt3jgYerebnbpPLH0Y
+         6AcGvOU92c9xfervrWavWNqNPYDlFLvaR0QpEgWI0HkQ0Oc3y1ibLwlfIFnphyfmV3Ui
+         +CEErpvM3OxK8lqU+5yUJC1hjWkCJgvyYhLGqGwhQ7/RehF4dBvZSeCYxBqOpHbSSq6R
+         wQJzz1l05k0TdWOP62qdBntVaN8qgCJ3UqkvW+Tkd7obWhWfaHXLDVNGbGPwgIjG13Uw
+         YLZz1dWa3UqJ1bAIEWrf+yTqlqj03v2iETUI0Cb2Cx1KI6r6teMMpzMCR/PydMSpKKKg
+         ntRw==
+X-Forwarded-Encrypted: i=1; AJvYcCWtrFKoO7wrfSo1PFikQDiGsReO7Dx+dcQCo0Pddld0QANMzfEaYb3O6BXgpr2mHDaLDgc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxkHPy5MdAaB0UhklvizzBLNm4rzydCSBix9YEsJE2W8sBBQ8R/
+	BfgVy3w1jwhpEXBCBz9+GLW7XuF2dOkkNniiC3MguLRby0XczxJ36IyehmCVo/3a/gsymHohcqw
+	HmeWpfDJhFEYwif6RKh8NzKouQbJeyAeXyhmhiI9gtEdrJZrBGf3igw==
+X-Gm-Gg: ASbGnculVVI3hp2uQEjE0zWz+j06nWyqORu8tR/L5n38RKdwnaGH52CSGnrqIqZxxfK
+	hSIYDb4hMKzAyja6Z/O/9LyOtzDpcxyR9wg9UhgpHBA6ZOwJI8fY8oAX5fZQVDd5UNwWu9qRFGK
+	aUFASJX+1p10GnrtNAFRj0UvF+97LmZQV5BdrHVdjEZEY0dFOkrJ6wLLXrfGTGaHI0iWxT++2Pd
+	HdwSlZxsAvUq4zqTGz40ISDuFHgiA7KfpDIV8o7aRcPz9B2XTx0QZMcGMjQVC4jP8aaeJSnK69l
+	LvzLyHJydkUVIvXPrC0/LOUAkV+p06LSweL9QeSoMcI2sp9OP/2I3r2IDAOeobJuaFbSSuwU2SI
+	1ovq3Lp3dwMVUtQ51LcJBjBelkA==
+X-Received: by 2002:a05:600c:4752:b0:46e:3dad:31ea with SMTP id 5b1f17b1804b1-46fa9af8fb0mr181929395e9.17.1760439774565;
+        Tue, 14 Oct 2025 04:02:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGCodl08uTX0ubswP5nTiGxebtIpD1Qw4JnrqS3e+W7M5qhx4w6eQs0AuIjitoXX5t0l6/vwQ==
+X-Received: by 2002:a05:600c:4752:b0:46e:3dad:31ea with SMTP id 5b1f17b1804b1-46fa9af8fb0mr181928825e9.17.1760439774097;
+        Tue, 14 Oct 2025 04:02:54 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-135-146.abo.bbox.fr. [213.44.135.146])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426f2f72e18sm1737515f8f.0.2025.10.14.04.02.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Oct 2025 04:02:52 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org,
+ x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+ linux-arch@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Josh
+ Poimboeuf <jpoimboe@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Paolo Bonzini
+ <pbonzini@redhat.com>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
+ Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
+ Biesheuvel <ardb@kernel.org>, Sami Tolvanen <samitolvanen@google.com>,
+ "David S. Miller" <davem@davemloft.net>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
+ Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Mel Gorman <mgorman@suse.de>, Andrew
+ Morton <akpm@linux-foundation.org>, Masahiro Yamada
+ <masahiroy@kernel.org>, Han Shen <shenhan@google.com>, Rik van Riel
+ <riel@surriel.com>, Jann Horn <jannh@google.com>, Dan Carpenter
+ <dan.carpenter@linaro.org>, Oleg Nesterov <oleg@redhat.com>, Juri Lelli
+ <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>, Yair
+ Podemsky <ypodemsk@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
+ Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
+Subject: Re: [PATCH v6 19/29] KVM: VMX: Mark vmx_l1d_should flush and
+ vmx_l1d_flush_cond keys as allowed in .noinstr
+In-Reply-To: <aO2S3oZwOW_UgAci@google.com>
+References: <20251010153839.151763-1-vschneid@redhat.com>
+ <20251010153839.151763-20-vschneid@redhat.com>
+ <aO2S3oZwOW_UgAci@google.com>
+Date: Tue, 14 Oct 2025 13:02:50 +0200
+Message-ID: <xhsmhwm4xpwyt.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <176042183810.1793333.13639772065939276568@noble.neil.brown.name>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0zTZxTG8/5v/bex5l112asYF0uMkQS8RLaTZZs188P7ySiYLNOIVPnH
-	NnJbi2hnttAIisyB0UC1FddyKdLWW0FdnUaGMKOMTukGdVLRKSAqoLTUqFhGMWZ+OXnye3Ke
-	53w4IqsK8HNFfW6BZMjVZqsFBacYnuFIHh0d1i11/7UcxiOlHNw85UbQN16KwNNsZiB8JibA
-	qPMAguG+X3mYDA0y8HNNkwCvO/9kwXE/xELz73cRBB7OBN+9izLocw5wYLPsYabGIwZeOl0y
-	cBYtBFtngIcnA4cE8N5uR+B90M1D4OIxAYpsL3i4bm3koL7nFgP37wV5iJYnwOGRAQRPok4W
-	ulrsDOwNx3i49lMLA/WRERY6bX4eessfc7C37iwDbacvMDBorWbgRigsgyZvJQuVE6UC2Mzl
-	CH4sqeLgzPMGAYp7UyHidgmapfRFSTlHS7reCNRz3INopH4PS4ubdtLLUTtHb9QQ6rOGZNTu
-	3UGbTiTR2ktDDHWMjfPU69ovUMfrRyzt7b4k0BG/X7Z23gbF51lStr5QMiz5MlOhq6uwy/J9
-	ybuar7ahIlQ9vwzJRYJXkPYKl+ydPnL5MVuGRJHDC0m7TxPHAl5EgsGXbFzPxh+Ts823mTKk
-	EFnsTCBBS3TamIVXEv/fHhTXSgyky316OlOFLQzZ17HuLf+AXD/6kItrFieRYGyIiXexOIE0
-	xMQ4luM1pOeuZXr1Q5xIWs5fm+4i+F85aSx+g97eOYf8diLIHUTY+l6s9b1Y6/+xdsS6kEqf
-	W5ij1WevSNGZcvW7Urbm5XjR1Ks5v5/Y+Asau5neirCI1DOUwdhTnYrXFhpNOa2IiKx6tvLT
-	3VNImaU1fScZ8jYbdmRLxlaUIHLqj5TLozuzVHibtkDaLkn5kuGdy4jyuUUo7duNkOf550rd
-	1ydv6X5I6U9Knxcd7d+/pLARpWZuObhY/mxmA6pIpibVnZBZsX6T0WzUaCyDn41980kG1lUF
-	HpyThdXWsMaTmu67MJlRd0S3MqPKVLu7bbJ96FVmgSuSuHrZRFpl/xdfrVrt2BbyL0h7ZUxZ
-	/Lz+6h8dbq0qYlZzRp12WRJrMGr/A5Tox9ZmAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTZxTHfe7z9N5LQ8214riRRLMaozFBZZnbyTCIH6ZXjUSJk8TEaKN3
-	tuHNtYKiMSkCgzCHpVlbaUUrjmpKFaQV7bCGgWVzDBWY2k2RQQqKgE2Ul/BWbF0W/XLyP7//
-	+eecD4fF8hnJYladdUTUZCkzFLSUSFMSC+KDwRHVWl+DBB7nNxEYGy0hcK7WSUNJfYUEHl6r
-	QdAzVoJgYtqKocgzR2DW0MrA6ORTBua8rQhMHQYMTnc+BW/rQjQMtbxBYOwN0GAezCcQtJ9G
-	YBmwMjDo2wwjPY0SmOt+QcGT8WEE9kCIgkBTMYJZUzpcqHLRMN3+AIPZ+BDBxd5uDC/rwqa7
-	9TkC75VTNPTrb2DoCsyHv8aCNNwz/kDDSMc5Cl7X0WA75ZVApdWAoOBSLQ2mynoCnn9/YaBj
-	aIaCZyYDBTX126HHPkCgTV9Fhe8LT12PBau5gAqXlxQYrzZSMGl3MPDnpWcE7LrlYG3vkkDf
-	FQsDM70JMGfLhtaaFwx0nzESuDbyQJJsRMJEURkRHK4GSijqnKUF53knEqanDEgYrS7AQpE+
-	3LYMB7FQ6DoqVLcN08LU2CNa8I7biPBHFS+Ut8cLHks3IxTe+YfZ8dUe6fqDYoY6V9SsSdov
-	Vf18xsYc9sQfc7fcRTpUuaQURbE89zl/1vsKlyKWJdxy3udJjmCaW8H7/ZM4omO4pfx1999U
-	KZKymLPH8X7z+HtjIbeBv//IiSJaxgHfWVPLRLScM1N8cdvO//gC/l5FgEQ05lbx/tAgFdmF
-	uTj+coiN4CguhX/y3Pw+uohbxjc1/EbpkczyUdryUdryIW1D2IFi1Fm5mUp1xrrV2nRVXpb6
-	2OoD2Zn1KPyT9pMz5bfQaNfmZsSxSBEt84eGVXKJMlebl9mMeBYrYmRfnggj2UFl3nFRk71P
-	k5MhaptRHEsUsbKtaeJ+OXdIeURMF8XDouZ/l2KjFutQ2cUV61y/uivcKYGeNbFJ3wf2vDLn
-	7N7Y79uk/2kfKf4s9VP/tOO2+2uTvR2/1e9NNva5BjatNMlzEnVeotmSoPnE7LtZ2VDtOKna
-	GN3YyS76duj+0vjTE0l76Xmvb32TFv208HHfiV3zE1MHf79bNlWecuDHAd0Xk9/1b9uWtrb/
-	0FEF0aqUCauwRqt8B4xzrPqPAwAA
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 
-On Tue, Oct 14, 2025 at 05:03:58PM +1100, NeilBrown wrote:
-> On Mon, 13 Oct 2025, Byungchul Park wrote:
-> > On Fri, Oct 03, 2025 at 04:55:14PM +1000, NeilBrown wrote:
-> > > On Thu, 02 Oct 2025, Byungchul Park wrote:
-> > > > This document describes the concept and APIs of dept.
-> > > >
-> > >
-> > > Thanks for the documentation.  I've been trying to understand it.
-> >
-> > You're welcome.  Feel free to ask me if you have any questions.
-> >
-> > > > +How DEPT works
-> > > > +--------------
-> > > > +
-> > > > +Let's take a look how DEPT works with the 1st example in the section
-> > > > +'Limitation of lockdep'.
-> > > > +
-> > > > +   context X    context Y       context Z
-> > > > +
-> > > > +                mutex_lock A
-> > > > +   folio_lock B
-> > > > +                folio_lock B <- DEADLOCK
-> > > > +                                mutex_lock A <- DEADLOCK
-> > > > +                                folio_unlock B
-> > > > +                folio_unlock B
-> > > > +                mutex_unlock A
-> > > > +                                mutex_unlock A
-> > > > +
-> > > > +Adding comments to describe DEPT's view in terms of wait and event:
-> > > > +
-> > > > +   context X    context Y       context Z
-> > > > +
-> > > > +                mutex_lock A
-> > > > +                /* wait for A */
-> > > > +   folio_lock B
-> > > > +   /* wait for A */
-> > > > +   /* start event A context */
-> > > > +
-> > > > +                folio_lock B
-> > > > +                /* wait for B */ <- DEADLOCK
-> > > > +                /* start event B context */
-> > > > +
-> > > > +                                mutex_lock A
-> > > > +                                /* wait for A */ <- DEADLOCK
-> > > > +                                /* start event A context */
-> > > > +
-> > > > +                                folio_unlock B
-> > > > +                                /* event B */
-> > > > +                folio_unlock B
-> > > > +                /* event B */
-> > > > +
-> > > > +                mutex_unlock A
-> > > > +                /* event A */
-> > > > +                                mutex_unlock A
-> > > > +                                /* event A */
-> > > > +
-> > >
-> > > I can't see the value of the above section.
-> > > The first section with no comments is useful as it is easy to see the
-> > > deadlock being investigate.  The section below is useful as it add
-> > > comments to explain how DEPT sees the situation.  But the above section,
-> > > with some but not all of the comments, does seem (to me) to add anything
-> > > useful.
-> >
-> > I just wanted to convert 'locking terms' to 'wait and event terms' by
-> > one step.  However, I can remove the section you pointed out that you
-> > thought was useless.
-> 
-> But it seems you did it in two steps???
-> 
-> If you think the middle section with some but not all of the comments
-> adds value (And maybe it does - maybe I just haven't seen it yet), the
-> please explain what value is being added at each step.
-> 
-> It is currently documented as:
-> 
->  +Adding comments to describe DEPT's view in terms of wait and event:
-> 
-> then
-> 
->  +Adding more supplementary comments to describe DEPT's view in detail:
-> 
-> Maybe if you said more DEPT's view so at this point so that when we see
-> the supplementary comments, we can understand how they relate to DEPT's
-> view.
+On 13/10/25 17:01, Sean Christopherson wrote:
+> On Fri, Oct 10, 2025, Valentin Schneider wrote:
+>> Later commits will cause objtool to warn about static keys being used in
+>> .noinstr sections in order to safely defer instruction patching IPIs
+>> targeted at NOHZ_FULL CPUs.
+>>
+>> These keys are used in .noinstr code, and can be modified at runtime
+>> (/proc/kernel/vmx* write). However it is not expected that they will be
+>> flipped during latency-sensitive operations, and thus shouldn't be a source
+>> of interference wrt the text patching IPI.
+>>
+>> Mark it to let objtool know not to warn about it.
+>
+> Can you elaborate in the changelog on what will happen if the key is toggle?
+> IIUC, smp_text_poke_batch_finish() will force IPIs if noinstr code is being
+> patched.
 
-As you pointed out, I'd better remove the middle part so as to simplify
-it.  It doesn't give much information I also think.
+Right!
 
-> > > > +
-> > > > +   context X    context Y       context Z
-> > > > +
-> > > > +                mutex_lock A
-> > > > +                /* might wait for A */
-> > > > +                /* start to take into account event A's context */
-> > >
-> > > What do you mean precisely by "context".
-> >
-> > That means one of task context, irq context, wq worker context (even
-> > though it can also be considered as task context), or something.
-> 
-> OK, that makes sense.  If you provide this definition for "context"
-> before you use the term, I think that will help the reader.
+> Even just a small footnote like this:
+>
+>   Note, smp_text_poke_batch_finish() never defers IPIs if noinstr code is
+>   being patched, i.e. this is purely about silencing objtool warnings.
+>
+> to make it clear that there's no bug/race being introduced.
 
-Thank you.  I will add it.
+Good point. How about:
 
-> > > If the examples that follow It seems that the "context" for event A
-> > > starts at "mutex lock A" when it (possibly) waits for a mutex and ends
-> > > at "mutex unlock A" - which are both in the same process.  Clearly
-> > > various other events that happen between these two points in the same
-> > > process could be seen as the "context" for event A.
-> > >
-> > > However event B starts in "context X" with "folio_lock B" and ends in
-> > > "context Z" or "context Y" with "folio_unlock B".  Is that right?
-> >
-> > Right.
-> >
-> > > My question then is: how do you decide which, of all the event in all
-> > > the processes in all the system, between the start[S] and the end[E] are
-> > > considered to be part of the "context" of event A.
-> >
-> > DEPT can identify the "context" of event A only *once* the event A is
-> > actually executed, and builds dependencies between the event and the
-> > recorded waits in the "context" of event A since [S].
-> 
-> So a dependency is an ordered set of pairs of "context" and "wait" or
+"""
+Later commits will cause objtool to warn about static keys being used in
+.noinstr sections in order to safely defer instruction patching IPIs
+targeted at NOHZ_FULL CPUs.
 
-I don't get what you were trying to tell here.  FWIW, DEPT focuses on
-*event* contexts and, within each event context, it tracks pairs of
-waits that appears since [S] and the interesting event that identifies
-the event context.
+The VMX keys are used in .noinstr code, and can be modified at runtime
+(/proc/kernel/vmx* write). However it is not expected that they will be
+flipped during latency-sensitive operations, and thus shouldn't be a source
+of interference for NOHZ_FULL CPUs wrt the text patching IPI.
 
-> "context" and "event".  "wait"s and "event"s are linked by some abstract
-> identifier for the event (like lockdep's lock classes).
+Note, smp_text_poke_batch_finish() never defers IPIs if noinstr code is
+being patched, i.e. this is purely to tell objtool we're okay with updates
+to that key causing IPIs and to silence the associated objtool warning.
+"""
 
-Yeah, kind of.
-
-> How are the contexts abstracted. Is it just "same" or "different"
-
-I don't get this.  Can you explain in more detail?
-
-	Byungchul
-
-> I'll try reading the document again and see how much further I get.
-> 
-> Thanks,
-> NeilBrown
