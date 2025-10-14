@@ -1,79 +1,79 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF202F5A1B
-	for <rcu@vger.kernel.org>; Tue, 14 Oct 2025 11:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B2A302759
+	for <rcu@vger.kernel.org>; Tue, 14 Oct 2025 11:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760439779; cv=none; b=UAZUpeC+NmZ7LKrXZM2L5xCBEmQ+I3g2ojCiKkUBvRsT6enL0R3cuVkrK01jp6eqxhNmVb88AwwWTGRFedxplJxyMwDyESYVcKkjO13JWfyQ7DAmA977Hy0eT+9tnoNDPWyupC1XOc1kiAgHyVKM5cft3pANWRi0CjkEb0pYhsI=
+	t=1760440815; cv=none; b=fKIYS/FrdPSCyU+gKCFnmg31xrgIZr6Tq2xxJBPWxXO0XF2CvAZDqZrXI7u2EFm0k3+df1k6lC0sUUkhEsT7FT0ujouB0IowD80swkL9opkdiYC5ezgJhz1n27TEsdmasbYECzfYLqZ/ogWA0i5rILk7LSvkwo4iy3OC8CgQYM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760439779; c=relaxed/simple;
-	bh=/u5e/qJ2sRdwo1224SVU8XP3U/yMMEn1jbJARlu70Tk=;
+	s=arc-20240116; t=1760440815; c=relaxed/simple;
+	bh=yX5dyBuNEa2OXACHjn8fnbGsDn2mXnkquyRkiu3aCD8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ig+9/DZ61ar0D7bxUdrEY6QBkOUgOBmN9Z12rdrreE40s11sxbliHBthxd5sdXxdjyi7nKvn4laxE4IKkuRmSAnarLfPCB3dvL+cHMv7wpZ++ePNS8R3wttBNztHZrWxLPdzmwbm0dDjOfJt83qRQD6kyJEqe4Zas98vt+xYTfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e83mDdrq; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=TBNsfGlOGUqeFCl9ifZHmEfD7+vzxiCYe358edEosUYXjj5Y4tvoiB3U0y5a34QN0Go16iQtth5LywfdNp+bu8A5aawPUco0p8m5EMusZ+LXSX+Gf8PbHn6kYzFmw8KOsr359A2GBjAtPerbPF/p6b1dQ2FTtc9lBaYuM+OHKxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JLtaCswH; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e83mDdrq"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JLtaCswH"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760439777;
+	s=mimecast20190719; t=1760440811;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s2r/L8/q4C9e2I164NDxUGdYhK/0nvlG6dMGzaNBqVg=;
-	b=e83mDdrqUjDTuwZOBUhrBr3TEQ/TkIV8qTEniGUfnpBREMz0qkkI/uMbWOP4Dgm+hIdaNX
-	3moPEZQkkSVDIOsXJulDC95g9GeF0uOMCE/NtlX2T1xrFCJhz6UsRK8B9MFTOQy6Nw9qvD
-	X4lXGxiqvUIynZmtSwM0Hy9XFEWA4EI=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Imuve1iPcSxB4uVU/yFQsIzQ6zKzpq/61jJo3KbkM2Y=;
+	b=JLtaCswHk/AW7ow1AFK8jpTTCTDmRdtWf4uRPQp+yJ+Cxgn9K2tK3EJ3EGx3Yxyuv5VOvW
+	8MeIBKkAvdUbrmjYWsS33vur/yPGKfntdccd+N0/n4Jaz5s7kZS2eR6PLLvt3t0j3RlMxC
+	JICyHnc66knRbsr4oO8lRpKs7rDX7So=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-576-Ux6hsmVxMuaVY3qZJ95P_g-1; Tue, 14 Oct 2025 07:02:56 -0400
-X-MC-Unique: Ux6hsmVxMuaVY3qZJ95P_g-1
-X-Mimecast-MFC-AGG-ID: Ux6hsmVxMuaVY3qZJ95P_g_1760439775
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-46e2c11b94cso38997205e9.3
-        for <rcu@vger.kernel.org>; Tue, 14 Oct 2025 04:02:55 -0700 (PDT)
+ us-mta-442-CcUy5S1AMpGXuHsZZK95lQ-1; Tue, 14 Oct 2025 07:20:10 -0400
+X-MC-Unique: CcUy5S1AMpGXuHsZZK95lQ-1
+X-Mimecast-MFC-AGG-ID: CcUy5S1AMpGXuHsZZK95lQ_1760440808
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-46e47d14dceso29915045e9.2
+        for <rcu@vger.kernel.org>; Tue, 14 Oct 2025 04:20:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760439774; x=1761044574;
+        d=1e100.net; s=20230601; t=1760440808; x=1761045608;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s2r/L8/q4C9e2I164NDxUGdYhK/0nvlG6dMGzaNBqVg=;
-        b=KpqYNDix+7Jy8aatRcitKMYT6Rr72WJtJhHbhcQVJGsbeXYvlt3jgYerebnbpPLH0Y
-         6AcGvOU92c9xfervrWavWNqNPYDlFLvaR0QpEgWI0HkQ0Oc3y1ibLwlfIFnphyfmV3Ui
-         +CEErpvM3OxK8lqU+5yUJC1hjWkCJgvyYhLGqGwhQ7/RehF4dBvZSeCYxBqOpHbSSq6R
-         wQJzz1l05k0TdWOP62qdBntVaN8qgCJ3UqkvW+Tkd7obWhWfaHXLDVNGbGPwgIjG13Uw
-         YLZz1dWa3UqJ1bAIEWrf+yTqlqj03v2iETUI0Cb2Cx1KI6r6teMMpzMCR/PydMSpKKKg
-         ntRw==
-X-Forwarded-Encrypted: i=1; AJvYcCWtrFKoO7wrfSo1PFikQDiGsReO7Dx+dcQCo0Pddld0QANMzfEaYb3O6BXgpr2mHDaLDgc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxkHPy5MdAaB0UhklvizzBLNm4rzydCSBix9YEsJE2W8sBBQ8R/
-	BfgVy3w1jwhpEXBCBz9+GLW7XuF2dOkkNniiC3MguLRby0XczxJ36IyehmCVo/3a/gsymHohcqw
-	HmeWpfDJhFEYwif6RKh8NzKouQbJeyAeXyhmhiI9gtEdrJZrBGf3igw==
-X-Gm-Gg: ASbGnculVVI3hp2uQEjE0zWz+j06nWyqORu8tR/L5n38RKdwnaGH52CSGnrqIqZxxfK
-	hSIYDb4hMKzAyja6Z/O/9LyOtzDpcxyR9wg9UhgpHBA6ZOwJI8fY8oAX5fZQVDd5UNwWu9qRFGK
-	aUFASJX+1p10GnrtNAFRj0UvF+97LmZQV5BdrHVdjEZEY0dFOkrJ6wLLXrfGTGaHI0iWxT++2Pd
-	HdwSlZxsAvUq4zqTGz40ISDuFHgiA7KfpDIV8o7aRcPz9B2XTx0QZMcGMjQVC4jP8aaeJSnK69l
-	LvzLyHJydkUVIvXPrC0/LOUAkV+p06LSweL9QeSoMcI2sp9OP/2I3r2IDAOeobJuaFbSSuwU2SI
-	1ovq3Lp3dwMVUtQ51LcJBjBelkA==
-X-Received: by 2002:a05:600c:4752:b0:46e:3dad:31ea with SMTP id 5b1f17b1804b1-46fa9af8fb0mr181929395e9.17.1760439774565;
-        Tue, 14 Oct 2025 04:02:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGCodl08uTX0ubswP5nTiGxebtIpD1Qw4JnrqS3e+W7M5qhx4w6eQs0AuIjitoXX5t0l6/vwQ==
-X-Received: by 2002:a05:600c:4752:b0:46e:3dad:31ea with SMTP id 5b1f17b1804b1-46fa9af8fb0mr181928825e9.17.1760439774097;
-        Tue, 14 Oct 2025 04:02:54 -0700 (PDT)
+        bh=Imuve1iPcSxB4uVU/yFQsIzQ6zKzpq/61jJo3KbkM2Y=;
+        b=E/j7PgV8Ap7jlACEaDKXSYk62WnzC6vbjcwLqdT076Z+7fkB0dKxg/zPNb05X0ct4A
+         q3WKxtR6FocZ7DBV3HSO3ftOXbyxDvxg5GR4Des83bRJ0iNNyhKGVw2s0QXrdjn/D8Y3
+         MEvNn121sDaTinV24XM+eQWweegIh+h6nzznB9WdaH+vnMn0ml2xVrXvbiIOWX6z8rb8
+         JlTNNZB6Q//WJ0Qi/BtsPzpORF9/fBlS9CyXUUkEuKzmQ5Xo9TzPfd2KPdQVa7qcbQXE
+         wgVIIafZslCIKmg8FbO4FRBAUek1RMoP9nn4porH+hemBKgaZCAVQgvnL0WBZfZQ6mki
+         yWhg==
+X-Forwarded-Encrypted: i=1; AJvYcCWWjp4u8OPZwSkuV7viCUotG1MthmGlII8suxzXHKQ+kOJC/Y9nStld6MwS3EGCuht0GOM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdRIx5TNIMG/t6GYA7OW5oH3EweNz38d6LcwymwDY+lI6lFkXl
+	QowCk6d/owwcYTbeRiQIEda/gaKTmEVQdH90Qzje/5rslImMyWSOlbTOKX5Hjn73mp5xxAm3u2l
+	Fls3Gwdoqa6RXb2N+l01hqLTsZMS6sAN/bR/cgr8KxNol+oJ7Jm4Kuw==
+X-Gm-Gg: ASbGnctWr6omaRzzh9aQ6cDwgLjHmW65RBcOtnxWXk7OatPgn3Jglvssiet7MqG+GVG
+	Nqvuuo3bAZjznwFshSxGUmjf5mSzfMxhgTjLnRzRfglZ9HiANsUoFQVhdmiGAH0kFkI4Tq+d9fN
+	7yL9SDQwmrC3W6+unD+6SmQpdv8HdkLPvdw/zJuFXFBE+QsqdDruSUWwNzAT6zQnfypnKDEhZiQ
+	eUgo2m1GMdD2w4N5qGrUBgs6xoWFD/+rkyJVfKYs2BxjSYMmaJYI6ZC/OhLCV05vGPlQZftcpUv
+	N7VvZrmuE36m24cCMNPl95AjY50NXGim2pyZMNN76QZgL0yCo2z3FgJ6MyrVclIqlUK9If4k7T6
+	quuhGBeK1Z/HEyc8OKvRzfyqpCw==
+X-Received: by 2002:a05:600c:37c9:b0:46e:477a:f3dd with SMTP id 5b1f17b1804b1-46fa9b1b18emr175576725e9.36.1760440808240;
+        Tue, 14 Oct 2025 04:20:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGPNHhJVacE21hOu+c1s40cKBm99NOdKTbqBsl6lzaW/V++U98Y1cwp6CoRkBLGlZny7BSyXQ==
+X-Received: by 2002:a05:600c:37c9:b0:46e:477a:f3dd with SMTP id 5b1f17b1804b1-46fa9b1b18emr175576075e9.36.1760440807708;
+        Tue, 14 Oct 2025 04:20:07 -0700 (PDT)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-135-146.abo.bbox.fr. [213.44.135.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426f2f72e18sm1737515f8f.0.2025.10.14.04.02.51
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fb492e6ddsm265506695e9.0.2025.10.14.04.20.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Oct 2025 04:02:52 -0700 (PDT)
+        Tue, 14 Oct 2025 04:20:07 -0700 (PDT)
 From: Valentin Schneider <vschneid@redhat.com>
 To: Sean Christopherson <seanjc@google.com>
 Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org,
  x86@kernel.org, linux-arm-kernel@lists.infradead.org,
  loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
- linux-arch@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Josh
- Poimboeuf <jpoimboe@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Paolo Bonzini
+ linux-arch@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Thomas
+ Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
+ Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H.
+ Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
+ <acme@kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, Paolo Bonzini
  <pbonzini@redhat.com>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
  <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
  Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
@@ -90,14 +90,14 @@ Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org,
  <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>, Yair
  Podemsky <ypodemsk@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
  Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [PATCH v6 19/29] KVM: VMX: Mark vmx_l1d_should flush and
- vmx_l1d_flush_cond keys as allowed in .noinstr
-In-Reply-To: <aO2S3oZwOW_UgAci@google.com>
+Subject: Re: [PATCH v6 16/29] KVM: VMX: Mark __kvm_is_using_evmcs static key
+ as __ro_after_init
+In-Reply-To: <aO2TKOY5JV9OoRUg@google.com>
 References: <20251010153839.151763-1-vschneid@redhat.com>
- <20251010153839.151763-20-vschneid@redhat.com>
- <aO2S3oZwOW_UgAci@google.com>
-Date: Tue, 14 Oct 2025 13:02:50 +0200
-Message-ID: <xhsmhwm4xpwyt.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <20251010153839.151763-17-vschneid@redhat.com>
+ <aO2TKOY5JV9OoRUg@google.com>
+Date: Tue, 14 Oct 2025 13:20:05 +0200
+Message-ID: <xhsmhtt01pw62.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -106,46 +106,23 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-On 13/10/25 17:01, Sean Christopherson wrote:
+On 13/10/25 17:02, Sean Christopherson wrote:
 > On Fri, Oct 10, 2025, Valentin Schneider wrote:
->> Later commits will cause objtool to warn about static keys being used in
->> .noinstr sections in order to safely defer instruction patching IPIs
->> targeted at NOHZ_FULL CPUs.
+>> The static key is only ever enabled in
 >>
->> These keys are used in .noinstr code, and can be modified at runtime
->> (/proc/kernel/vmx* write). However it is not expected that they will be
->> flipped during latency-sensitive operations, and thus shouldn't be a source
->> of interference wrt the text patching IPI.
+>>   __init hv_init_evmcs()
 >>
->> Mark it to let objtool know not to warn about it.
+>> so mark it appropriately as __ro_after_init.
+>>
+>> Reported-by: Sean Christopherson <seanjc@google.com>
+>> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+>> ---
 >
-> Can you elaborate in the changelog on what will happen if the key is toggle?
-> IIUC, smp_text_poke_batch_finish() will force IPIs if noinstr code is being
-> patched.
-
-Right!
-
-> Even just a small footnote like this:
+> Acked-by: Sean Christopherson <seanjc@google.com>
 >
->   Note, smp_text_poke_batch_finish() never defers IPIs if noinstr code is
->   being patched, i.e. this is purely about silencing objtool warnings.
->
-> to make it clear that there's no bug/race being introduced.
+> Holler if you want me to grab this for 6.19.  I assume the plan is to try and
+> take the whole series through tip?
 
-Good point. How about:
-
-"""
-Later commits will cause objtool to warn about static keys being used in
-.noinstr sections in order to safely defer instruction patching IPIs
-targeted at NOHZ_FULL CPUs.
-
-The VMX keys are used in .noinstr code, and can be modified at runtime
-(/proc/kernel/vmx* write). However it is not expected that they will be
-flipped during latency-sensitive operations, and thus shouldn't be a source
-of interference for NOHZ_FULL CPUs wrt the text patching IPI.
-
-Note, smp_text_poke_batch_finish() never defers IPIs if noinstr code is
-being patched, i.e. this is purely to tell objtool we're okay with updates
-to that key causing IPIs and to silence the associated objtool warning.
-"""
+Thanks! At the very least getting all the __ro_after_init patches in would
+be good since they're standalone, I'll wait a bit to see how this goes :)
 
