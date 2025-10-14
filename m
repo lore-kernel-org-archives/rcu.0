@@ -1,152 +1,140 @@
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D322D12F3;
-	Mon, 13 Oct 2025 05:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79988C1F
+	for <rcu@vger.kernel.org>; Tue, 14 Oct 2025 00:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760333254; cv=none; b=ipYCUmYbOI87Q5gWA5fXtd8GlDagmNqhOO5Cz5rY+ddUkb4+nC5+28B8AMuItzZ5yzMUkIMkknjULjIQkhrhX13qB7Mnog8L0tFKcY35OZGtPWIvNjD/JGwC+r7pEqltaRA8vZlD7+K3MBETtVvCAX2FStiW1iyl3Cb/Xj0Itfg=
+	t=1760400098; cv=none; b=kQEnXujvTPvgrtd4leMT2yq+ZOY3olju7oI3YSnF+JscQgyaC7rhRSYYl/A2+akTAkyYN7ueVeUCsuXBHSgzXFCWC0znQaOA1saXe5d2bGPP55HZE1+BgI7l1JhyzBsaxY5LpNeWGFaPRNPnjWSQgjFg6DBvtwkh0EGrpdbTuPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760333254; c=relaxed/simple;
-	bh=ndYgSHNbLnvyYLEcoIN3mUPNVlCWqqRkCrrregrceHU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QSoCN5bu9Q9sohdNSGFeRMpqBGlJiJVL6aVKZJoaEvwc3hXiPfIai9/91MgkZnQRIqoxIz+7h0L8GetNG0V5tu2LiycvOHOAbdaA3Nb5l3IMzQ3amatlSmRjys69o4+kexIt307PFQy894gO9cQWrAfyKthENAyGSBQDODI0LZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c2dff70000001609-4e-68ec8dc17dc6
-Date: Mon, 13 Oct 2025 14:27:24 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-	linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-	will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-	joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-	duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-	tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
-	amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
-	linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-	minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-	sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-	ngupta@vflare.org, linux-block@vger.kernel.org,
-	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
-	jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
-	djwong@kernel.org, dri-devel@lists.freedesktop.org,
-	rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-	hamohammed.sa@gmail.com, harry.yoo@oracle.com,
-	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
-	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
-	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com,
-	yeoreum.yun@arm.com, netdev@vger.kernel.org,
-	matthew.brost@intel.com, her0gyugyu@gmail.com, corbet@lwn.net,
-	catalin.marinas@arm.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-	sumit.semwal@linaro.org, gustavo@padovan.org,
-	christian.koenig@amd.com, andi.shyti@kernel.org, arnd@arndb.de,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
-	rppt@kernel.org, surenb@google.com, mcgrof@kernel.org,
-	petr.pavlu@suse.com, da.gomez@kernel.org, samitolvanen@google.com,
-	paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com, josh@joshtriplett.org, urezki@gmail.com,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
-	chuck.lever@oracle.com, neil@brown.name, okorniev@redhat.com,
-	Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org,
-	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
-	clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
-	kristina.martsenko@arm.com, wangkefeng.wang@huawei.com,
-	broonie@kernel.org, kevin.brodsky@arm.com, dwmw@amazon.co.uk,
-	shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com,
-	yuzhao@google.com, baolin.wang@linux.alibaba.com,
-	usamaarif642@gmail.com, joel.granados@kernel.org,
-	richard.weiyang@gmail.com, geert+renesas@glider.be,
-	tim.c.chen@linux.intel.com, linux@treblig.org,
-	alexander.shishkin@linux.intel.com, lillian@star-ark.net,
-	chenhuacai@kernel.org, francesco@valla.it,
-	guoweikang.kernel@gmail.com, link@vivo.com, jpoimboe@kernel.org,
-	masahiroy@kernel.org, brauner@kernel.org,
-	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com,
-	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org,
-	rcu@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH v17 35/47] i2c: rename wait_for_completion callback to
- wait_for_completion_cb
-Message-ID: <20251013052724.GA9169@system.software.com>
-References: <20251002081247.51255-1-byungchul@sk.com>
- <20251002081247.51255-36-byungchul@sk.com>
- <aOFNz2mKXCXUImwO@shikoro>
+	s=arc-20240116; t=1760400098; c=relaxed/simple;
+	bh=30EZppTfWymzd62I2Q/lqosIjvmCAwH24sBiTejyFlw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=pN3T6EWyaPBIYoqoA7g43pODY+R7iOCq0O3ni3wLH7pHhvlH4QM2lGLg61LmFBM0OASRLS8w2FnaNAd6bMSPv13Gi+wORHB+f4z+5Ek4ixGOdPzamEYp+WnG+CioVoBaIbQyNXXyoGb2nuQieQMI9vqfowNyeu2+feWPltMtvX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NFSvjMUq; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NFSvjMUq"
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-336b646768eso11232274a91.1
+        for <rcu@vger.kernel.org>; Mon, 13 Oct 2025 17:01:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1760400096; x=1761004896; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=60W7dGApFCGXHKlXBRGDaLpu3YLgl4WyK3JcN6QaedU=;
+        b=NFSvjMUq2klOBCTmti7DH4DcdNC7CMOJwlSo1RjpkXxF3R9H69Ct/dTvIZwFVQR2Xf
+         Whf+5fsmbl0P/2Ko+cWUas9w/xZNychL9Ym3NMchbnNtiycj3rh23wYzvURitxbU+DvA
+         1rcm65Iu341qU2bQ+gPG1BqmbbCyWc+a2/bn8LPA6JeVxRLWCJdwSBTJbK8qluUXjCk0
+         jh5r1YJEpu4ReFUtYHiaKdrkxvn2ppxU6Ws5tRRmX58ukcrReJ3NbCa04Wegu45U+1GP
+         0ZXRnOtkDweU4ipy7pGneBjobiANtQ8wLPP0ls3FmwPm2tQ8af0nE4dqKEhXCIPoUzTN
+         YOVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760400096; x=1761004896;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=60W7dGApFCGXHKlXBRGDaLpu3YLgl4WyK3JcN6QaedU=;
+        b=rbietMU4mVw03XiPu+ld6uNoUo/4LBsa5P7Z3SWUS299X8/9Cy8lANb1hEzr3PCjii
+         DFcGgq3uDp0FxxZlOtpqBh8uzzfc2VlQ71Hzue5n2Zx+Gv5GLaU38Re5u3oV4dQtYfve
+         3MOi7XVnO8lbLulhtx0OS2UnFLD4WnnbpYzwPXx2VmIajvg2jAZFpYph/OcU+bZ2+CMs
+         7jJtd5AVHkkXjptuozpFJIAWhXGSXyCQ09PMDKVKrlP8nxkX1Ak4/PFdgz+uhbBsyWCS
+         mBUXcWwiLOZlJZFkbPjBAZBMtX9So7Y59lJu1ioNCJfbEXe1w5RLyioL74eUwQvpLoTA
+         fpfA==
+X-Forwarded-Encrypted: i=1; AJvYcCW7jUbDiPcHjErmyX1YuoZ0arlqUZASUctAcgH4wOI5t/PQpuCrU9/LG522sfKFlDn3580=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2F8LzHHgkLqGQ8obfDBk9JiUccm+wgtU9WGwlWkONSA/BZ+M7
+	YlZF+JDeukpBZ9xJodOhQdhzOsKQCUIFVb4dVGq7bBZgGsENk8QfgWVKaLZvNJMMB5+1QRa4WAN
+	vLXwTCQ==
+X-Google-Smtp-Source: AGHT+IHFYfnmFjxjbFQp7BMqqD83h/lwfyE6WGt5bwyArJ6H0ox9P/tbWn8NIGRGgabEk9PVFSZMkd4SLvs=
+X-Received: from pjbbk16.prod.google.com ([2002:a17:90b:810:b0:339:dc19:ae5d])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:38d2:b0:335:2eee:19dc
+ with SMTP id 98e67ed59e1d1-33b5138401amr31287086a91.28.1760400096074; Mon, 13
+ Oct 2025 17:01:36 -0700 (PDT)
+Date: Mon, 13 Oct 2025 17:01:34 -0700
+In-Reply-To: <20251010153839.151763-20-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aOFNz2mKXCXUImwO@shikoro>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0xTdxjG8z93KiVnHYsHSObSjS3CdDcy3uxC2BLnyZLFLVuMww+usWc7
-	DZeSokzmHIVOIE4d69KqLWq5FYQKtWUIYpNSR5UhsbVOu621EgpK1obEgJsXYD0sy/z2y/s+
-	z/M+H14GV7RQ2YymYpegq1CVKSkZIUumt23wHUqILxvd6+B6nZeAln4HBYG+XgSxxSYES0Y/
-	DSsePwJz0IiDY6AOA9NUnIJ5+0EEllkrDXNjmyEZGyFhJXobA3t8GYO4tzFlNZfCyTY3BQ8n
-	r+BwxBRA0DoVxeGOM7Uc8N9E4Omup2Cm+SccQvEMGDd9R0Ey2IKBrd5DwnGrEYGhvZ8C83EX
-	AcO3ztEQMRsx6HV9AOYza8F6xJDqcnoEg/v2Hhout0cIsOtzwToZSnWxacHfe5uG6PcmAvqS
-	V0iIXWwg4az+Fg2u38YQLFybwsBxcBaHpnOLBHh+z4fWhg4Cjp2IUHDeM05A09ICAr31LxIC
-	3gkSJvyXCBi3nCKg80YQA/fkZRzCzTOoWM33uAcxfv/VJYp3nHAg/uEDI+IXOg04fyExj/Od
-	EwmKf7D4K8V77tkI/pc2jv9hcgM/bInSvM21m3d35/Ht5+cwvvXuIvlhfonsLbVQpqkWdC8V
-	fSYTTV25lQlqT0ekhdajYfIASmM4toDTt4ZSzKxy/dUsaUywuVyj14kkptgXuHD4Pi5xJvsa
-	5zBY6QNIxuDs2RwuODCNS94n2Z1c/7fPSShnC7lLoU2SXMHWcvM+26pVzj7BjR+LExLjbB4X
-	Xp7DJDnO5nBdy4w0TktdejRzeLXYU+yznHfwIiZd4tibadyNyDT1b+MsbrQ7TDQj1vJYrOWx
-	WMv/sTaE9yCFpqK6XKUpK9go1lRo9mzcqS13odTP2vc92j6E7gY+9iGWQcp0uTjyp6ggVdVV
-	NeU+xDG4MlNeuDchKuRqVc1Xgk67Q7e7TKjyoRyGUK6Vv3rvS7WC/UK1SygVhEpB998WY9Ky
-	9ah4bN03/cqC9w4XfRrrQxf+2LTlZM9pcfro0WtDSFQF3in+eqU5GXt9c3Ar8ebTzzjmMobw
-	bV2fvLumoQTedv64Xxtqn21M3/bGmp8/qswYfT7TIA58vtdZV7tefNHaa3j/1J2/neFDwSxd
-	4ai6dCsDWktUN7WvdLAjv+S6o7YoG6xKokpUvZKH66pU/wDSCxH1rwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTZxTH89znvtGs89JBeJTsS5FoNKAGDWdDDXGZ3G3ZwjeWfZmd3tgG
-	KNpKJy7bgFJguDmoaYktzgpaGK3Q8aIWU9ZhYAISBWQjG8iYRSWWNZmgqbytd8kyv5z8zjn/
-	X87z4eGxKsps4nX6E5JBrylQswpa8UGWOe2nb8Lanb7O7fBLWZCGpcVqGhravSxUd5xj4G6b
-	B8HMUjWC58tODBb/Og2r1gEOFqO/c7AeGEBgH7Vi8HaVUfDUt8bCk5t/I7DNhliony+jIeL+
-	GoHjoZOD+f4cWJi5wcD69CMKfn0WRuAOrVEQClYhWLXnw4XGThaWR+5gqLfdRXBxdhrDY19s
-	2TVwH0GgpZyFudpuDOOhV+HeUoSFQdtpFhZGGyj4y8eCqzzAwHmnFYG5qZ0F+/kOGvx/9HAw
-	+mSFgim7lQJPx/sw435Iw3BtIxV7Xyz1QxI4681UrDymwHblBgVRdysHt5umaHCXpoJzZJyB
-	P1scHKzM7oJ1VxEMeB5xMP2tjYa2hTtMth2Jzy1naLG18yolWsZWWdH7nReJyy+sSFy8bMai
-	pTbW3gxHsFjR+al4eTjMii+WJlgx8MxFi0ONRKwbSRP9jmlOrOj9jcvN+kix94hUoDNJhh37
-	Dym0tubUY2H25KWpBq4U+ZkaxPNE2E3KxzbWoDieFlJJVdCHZGaFLWRyMoplThAyiNfs5GqQ
-	gsfCtWQy2vUAy+5rwmHSXrFZRqWQSW6Nvy3HVcKXJNLn+ldVCvFk8FyIlhkL28jk2jwlx7GQ
-	TJrXeHkcF7u0MneGkTlRSCHBqz9TtUjpeMl2vGQ7/rddCLeiBJ3eVKjRFexJN+ZrS/S6k+mH
-	iwo7UOxDuj9fqbuOFsdz+pDAI/UrytyqsFbFaEzGksI+RHisTlBmfhYbKY9oSk5JhqKPDcUF
-	krEPJfO0Okn5bp50SCUc1ZyQ8iXpmGT4b0vxcZtKkSQMx4ey2lN+zNqcGRlqPb0n+72pW/2J
-	xWQuafmTia3piYO2poPJxyubo13dljfeDGrKh/QT+9LrXw9kzHyP83pRWPB9mLHwjidt0BPd
-	kNvWk6ItrlN9sXMj17/Bn5BUme09W7y1J4dqOdv9YP9YnektYpltO8D64xsOMr2myq/UtFGr
-	2bUNG4yafwCIKJ+/jAMAAA==
-X-CFilter-Loop: Reflected
+Mime-Version: 1.0
+References: <20251010153839.151763-1-vschneid@redhat.com> <20251010153839.151763-20-vschneid@redhat.com>
+Message-ID: <aO2S3oZwOW_UgAci@google.com>
+Subject: Re: [PATCH v6 19/29] KVM: VMX: Mark vmx_l1d_should flush and
+ vmx_l1d_flush_cond keys as allowed in .noinstr
+From: Sean Christopherson <seanjc@google.com>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org, 
+	x86@kernel.org, linux-arm-kernel@lists.infradead.org, 
+	loongarch@lists.linux.dev, linux-riscv@lists.infradead.org, 
+	linux-arch@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ard Biesheuvel <ardb@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
+	"David S. Miller" <davem@davemloft.net>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mel Gorman <mgorman@suse.de>, 
+	Andrew Morton <akpm@linux-foundation.org>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Han Shen <shenhan@google.com>, Rik van Riel <riel@surriel.com>, Jann Horn <jannh@google.com>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Juri Lelli <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>, 
+	Yair Podemsky <ypodemsk@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>, 
+	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Sat, Oct 04, 2025 at 06:39:43PM +0200, Wolfram Sang wrote:
-> On Thu, Oct 02, 2025 at 05:12:35PM +0900, Byungchul Park wrote:
-> > Functionally no change.  This patch is a preparation for DEPT(DEPendency
-> > Tracker) to track dependencies related to a scheduler API,
-> > wait_for_completion().
-> >
-> > Unfortunately, struct i2c_algo_pca_data has a callback member named
-> > wait_for_completion, that is the same as the scheduler API, which makes
-> > it hard to change the scheduler API to a macro form because of the
-> > ambiguity.
-> >
-> > Add a postfix _cb to the callback member to remove the ambiguity.
-> >
-> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+On Fri, Oct 10, 2025, Valentin Schneider wrote:
+> Later commits will cause objtool to warn about static keys being used in
+> .noinstr sections in order to safely defer instruction patching IPIs
+> targeted at NOHZ_FULL CPUs.
 > 
-> This patch seems reasonable in any case. I'll pick it, so you have one
-> dependency less. Good luck with the series!
+> These keys are used in .noinstr code, and can be modified at runtime
+> (/proc/kernel/vmx* write). However it is not expected that they will be
+> flipped during latency-sensitive operations, and thus shouldn't be a source
+> of interference wrt the text patching IPI.
+>
+> Mark it to let objtool know not to warn about it.
 
-Thanks, Wolfram Sang!
+Can you elaborate in the changelog on what will happen if the key is toggle?
+IIUC, smp_text_poke_batch_finish() will force IPIs if noinstr code is being
+patched.  Even just a small footnote like this:
 
-	Byungchul
+  Note, smp_text_poke_batch_finish() never defers IPIs if noinstr code is
+  being patched, i.e. this is purely about silencing objtool warnings.
 
-> Applied to for-next, thanks!
+to make it clear that there's no bug/race being introduced.
+
+> Reported-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index aa157fe5b7b31..dce2bd7375ec8 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -204,8 +204,15 @@ module_param(pt_mode, int, S_IRUGO);
+>  
+>  struct x86_pmu_lbr __ro_after_init vmx_lbr_caps;
+>  
+> -static DEFINE_STATIC_KEY_FALSE(vmx_l1d_should_flush);
+> -static DEFINE_STATIC_KEY_FALSE(vmx_l1d_flush_cond);
+> +/*
+> + * Both of these static keys end up being used in .noinstr sections, however
+> + * they are only modified:
+> + * - at init
+> + * - from a /proc/kernel/vmx* write
+> + * thus during latency-sensitive operations they should remain stable.
+> + */
+> +static DEFINE_STATIC_KEY_FALSE_NOINSTR(vmx_l1d_should_flush);
+> +static DEFINE_STATIC_KEY_FALSE_NOINSTR(vmx_l1d_flush_cond);
+>  static DEFINE_MUTEX(vmx_l1d_flush_mutex);
+>  
+>  /* Storage for pre module init parameter parsing */
+> -- 
+> 2.51.0
+> 
