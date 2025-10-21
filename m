@@ -1,105 +1,80 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from air.basealt.ru (air.basealt.ru [193.43.8.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E701EF39E
-	for <rcu@vger.kernel.org>; Mon, 20 Oct 2025 21:54:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6BC228504F;
+	Tue, 21 Oct 2025 21:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.43.8.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760997284; cv=none; b=Tr2ftXWNnrv/478vW0eh6a4ztWI7/WdWkMMy/qdo2zj0w+3losATEGLqtYJ/Yhn36p372dGLf/8UOVuH0hdiGbvxTR8reYXeNjdiPycBH/SvDjcx5X8Zfc67x0pgXAtoLIbjPgsDC6VoZhZjcSzF72K8hZjDSI4bMQlUzCoJ6Z4=
+	t=1761081011; cv=none; b=aaQB3H/O0Tg/k0W3GozGMj66ILfwtVRuXzm8xcv/TOG01EWrKpsk1Ey3V8vpWpsyUiM2CGtqeIJY46B77DXFNS18wv6jYCk6i+xcwO/sB+A5AyIcpzOfEP0EbeMba0Icg10B8mtmn5L9Z4Wi4CLGQWJoJn67a4Y/dFygxhj/nAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760997284; c=relaxed/simple;
-	bh=L13Rp7FhzKpBFltNbzLezvMDSbl8kgBMApeX6pbQwtA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fBY6fxkSo8mzJgcOrCWH/eA49ZRT7WGB/VQ35VESJwFCj6ea7E1qinnxQPy60Y8qjodIb5866xAmJeFPxrqVXU4Wtj6dExCSKi8rUjeEKstd/tCk/0C5Sbtn0mV/8MIks0JRgjG3BWuzRx7gQ69a2MJt8OS8Z5gtMbGM3j+RHno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T6YlbAQf; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T6YlbAQf"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2765C4CEFB;
-	Mon, 20 Oct 2025 21:54:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760997284;
-	bh=L13Rp7FhzKpBFltNbzLezvMDSbl8kgBMApeX6pbQwtA=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=T6YlbAQfzArRwA6uQyn6c7h6nIJJ8oasMOuT1x5+P9atqZfQkWM0C01sgsQoLmZMP
-	 X1LPemA3R2lfoVv3M3gcRlma1mt+RjD74nT898AiuYcNl/4xqNb+Y8oHXWbQoefxSk
-	 +zQlQrNr7kZCCQkta4lbASexxXmmfSPswD351MAA5Hcx5Y7WjEeQlAUxrJ1Afv+4nj
-	 YHlU59CmFMImM87p4E/m9SuIVAJMT1ULpLmSKdthsvf1nQMa0qC2KZFZxNqqhbBXcP
-	 bkXJ2wTIiJY6JEMtSM4cWxw66QCqS9Ijvxf6g2XISuf5aY/fxPDc2OGsK0mooXbxyF
-	 zigE93k7X/wMA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 735A0CE0C4A; Mon, 20 Oct 2025 14:54:43 -0700 (PDT)
-Date: Mon, 20 Oct 2025 14:54:43 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: xuanqiang.luo@linux.dev
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
-	josh@joshtriplett.org, boqun.feng@gmail.com, rcu@vger.kernel.org,
-	edumazet@google.com, mmpgouride@gmail.com, fw@strlen.de,
-	Xuanqiang Luo <luoxuanqiang@kylinos.cn>
-Subject: Re: [PATCH v1] rcu: use WRITE_ONCE() for ->next and ->pprev of
- hlist_nulls
-Message-ID: <7d4d2a48-1bba-4a47-8cdf-45d3d492e79e@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20251010064910.605653-1-xuanqiang.luo@linux.dev>
+	s=arc-20240116; t=1761081011; c=relaxed/simple;
+	bh=HEt6WD06oYzuqeSOXwxyNbgmB4LKiDDTAoQolw9CRwc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YCGLUWGqCXvj9AjQ0Sjl/zqonUohGo6qx+gE1yokXRruquyJUN0jpbHHJ+k4qwZszFsf6HesYpduALNWoAYip05GDKaXu6qq5/gjEp/M3ysCV3qPxq//9HhaLTzkOx49LUfVYWCWZrvo9j58AsIn4+rJa6T5SK4AEa4xMcQ3Zbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=193.43.8.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: from altlinux.ipa.basealt.ru (unknown [178.76.204.78])
+	(Authenticated sender: kovalevvv)
+	by air.basealt.ru (Postfix) with ESMTPSA id 078792337D;
+	Wed, 22 Oct 2025 00:00:16 +0300 (MSK)
+From: Vasiliy Kovalev <kovalev@altlinux.org>
+To: stable@vger.kernel.org
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	rcu@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	kovalev@altlinux.org
+Subject: [PATCH 5.10/5.15] srcu: Tighten cleanup_srcu_struct() GP checks
+Date: Wed, 22 Oct 2025 00:00:16 +0300
+Message-Id: <20251021210016.181003-1-kovalev@altlinux.org>
+X-Mailer: git-send-email 2.33.8
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251010064910.605653-1-xuanqiang.luo@linux.dev>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 10, 2025 at 02:49:10PM +0800, xuanqiang.luo@linux.dev wrote:
-> From: Xuanqiang Luo <luoxuanqiang@kylinos.cn>
-> 
-> In rculist_nulls.h we can still see ordinary assignments to ->pprev and
-> ->next of hlist_nulls.
-> 
-> As noted in the two patches below:
-> commit efd04f8a8b45 ("rcu: Use WRITE_ONCE() for assignments to ->next for
-> rculist_nulls")
-> commit 860c8802ace1 ("rcu: Use WRITE_ONCE() for assignments to ->pprev for
-> hlist_nulls")
-> 
-> We should use WRITE_ONCE().
-> 
-> Signed-off-by: Xuanqiang Luo <luoxuanqiang@kylinos.cn>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Hearing no objections, I have pulled this in for further review and
-testing.
+commit 8ed00760203d8018bee042fbfe8e076579be2c2b upstream.
 
-							Thanx, Paul
+Currently, cleanup_srcu_struct() checks for a grace period in progress,
+but it does not check for a grace period that has not yet started but
+which might start at any time.  Such a situation could result in a
+use-after-free bug, so this commit adds a check for a grace period that
+is needed but not yet started to cleanup_srcu_struct().
 
-> ---
->  include/linux/rculist_nulls.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-> index 89186c499dd4..d5a656cc4c6a 100644
-> --- a/include/linux/rculist_nulls.h
-> +++ b/include/linux/rculist_nulls.h
-> @@ -138,7 +138,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
->  
->  	if (last) {
->  		WRITE_ONCE(n->next, last->next);
-> -		n->pprev = &last->next;
-> +		WRITE_ONCE(n->pprev, &last->next);
->  		rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
->  	} else {
->  		hlist_nulls_add_head_rcu(n, h);
-> @@ -148,8 +148,8 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
->  /* after that hlist_nulls_del will work */
->  static inline void hlist_nulls_add_fake(struct hlist_nulls_node *n)
->  {
-> -	n->pprev = &n->next;
-> -	n->next = (struct hlist_nulls_node *)NULLS_MARKER(NULL);
-> +	WRITE_ONCE(n->pprev, &n->next);
-> +	WRITE_ONCE(n->next, (struct hlist_nulls_node *)NULLS_MARKER(NULL));
->  }
->  
->  /**
-> -- 
-> 2.25.1
-> 
-> 
+Fixes: da915ad5cf25 ("srcu: Parallelize callback handling")
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+[ kovalev: backport to fix CVE-2022-49651; added Fixes tag for commit
+  da915ad5cf25 that introduced the srcu_gp_seq_needed field and the
+  race condition between grace period requests and cleanup ]
+Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
+---
+ kernel/rcu/srcutree.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index b8821665c435..5d89d941280f 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -388,9 +388,11 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+ 			return; /* Forgot srcu_barrier(), so just leak it! */
+ 	}
+ 	if (WARN_ON(rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)) != SRCU_STATE_IDLE) ||
++	    WARN_ON(rcu_seq_current(&ssp->srcu_gp_seq) != ssp->srcu_gp_seq_needed) ||
+ 	    WARN_ON(srcu_readers_active(ssp))) {
+-		pr_info("%s: Active srcu_struct %p state: %d\n",
+-			__func__, ssp, rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)));
++		pr_info("%s: Active srcu_struct %p read state: %d gp state: %lu/%lu\n",
++			__func__, ssp, rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)),
++			rcu_seq_current(&ssp->srcu_gp_seq), ssp->srcu_gp_seq_needed);
+ 		return; /* Caller forgot to stop doing call_srcu()? */
+ 	}
+ 	free_percpu(ssp->sda);
+-- 
+2.50.1
+
