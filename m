@@ -1,222 +1,452 @@
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525E318A6A7;
-	Fri, 24 Oct 2025 02:21:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E293418626;
+	Tue, 28 Oct 2025 14:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761272487; cv=none; b=b2Qi1LSgTpLyJeZVU0EadOkPlJ+ALvW9IU7/Fv/9zd0Bi97Zw+AY9lMZVWlNdZUZSwn0yr2pKw6z8XGhWa0vGtADdvSAfI9S4OtNreRY7/mfLoO1qzYKprceEJz+NzBbQ+xc1VKAS+yybF2HeJkL9Wxsm62CZGD6+oxFOsNFrRU=
+	t=1761660034; cv=none; b=mKn4eQjOKBlDdr3oaUcsowb2LbIIy/mXhpclss/qYE/fktgK2eSDUIR7v+8CC69enkMLtKuRC5xZa2Tul3XUAeoqcdGPyGjxR0meKl+PrmPbpdY/KtZM2Zx8pIAcHUe+GNyGjkS7xhIwXBVp9mRLDKDfeTVhmL4FLqucUiTRLf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761272487; c=relaxed/simple;
-	bh=9r2koSF36jE9MkgN6kFyte8dlM8nq3azJeHpl2qxQBQ=;
+	s=arc-20240116; t=1761660034; c=relaxed/simple;
+	bh=MF/2zsZwtCVjQVdBsn7UVVx9xBhDIK+KrSqUNMSbxwQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NFGu/tZp3+q1ndwYRC7SDW+QGtVdTXzgt8OZE0cpXQXbbH07g3Kp/0PGHJn9k+5r2EBLS70KR9ijizO4KiTFVyEGnUMDL3xYfRyVFHd5OgljbKmAGo3lxHkMUvLQPLh//Xh9NCN3/bhT3PJqXhq5kj4s4h0OjmElFEh3XCANQeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=JYe3+kr4; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=YnszsC+RP47NG5/ONHgfgqgDuyZmMaFUDRUC/x5XahgFYjMLpoY4GRLTrSy1TmEWTYvb1sx08EIpHvNWPA8aZWc2LspgTOdVIqz0dCHL/UqQ2qKPwEkKmtTAv4WUoMcmHxhzqV0rle1AfoiREI3KfxhfDHu60M2/RH87hyk3Ubw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NBRPGeiy; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="JYe3+kr4"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1761272475; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=vegTbyzQwgetuNbwLhZjZCKV0EXnxbZxEznM1T+Yfmk=;
-	b=JYe3+kr40Au1wJYObuHv0uDlAI9B+RPMAOxEvDZIt6Yn/vKJ9P2zGwlEoORpxDYfgdwDnwj34gvbHojqwTgmUkgHfG876GhcpDAUdso8/RFw5nwqGULzy+Pc9RTJ9uWiddYJKf0QaJnfWXtzlZbjpmfTKQgqQSdtzzKGHZ8bStg=
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0WqshndM_1761272474 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 24 Oct 2025 10:21:14 +0800
-Date: Fri, 24 Oct 2025 10:21:14 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: Julian Anastasov <ja@ssi.bg>, Simon Horman <horms@verge.net.au>
-Cc: lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	Jiejian Wu <jiejian@linux.alibaba.com>, rcu@vger.kernel.org
-Subject: Re: [PATCHv6 net-next 03/14] ipvs: some service readers can use RCU
-Message-ID: <aPrimkqc9leCCZQf@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20251019155711.67609-1-ja@ssi.bg>
- <20251019155711.67609-4-ja@ssi.bg>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NBRPGeiy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9390C116C6;
+	Tue, 28 Oct 2025 14:00:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761660033;
+	bh=MF/2zsZwtCVjQVdBsn7UVVx9xBhDIK+KrSqUNMSbxwQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NBRPGeiy1Xn7eADQ9yFvkjIS2p83OMRe4k2CO4ITc0ALWFN0ZWRqZGjvsq0KHLGHX
+	 9cLYR4EEJw7n2OOILsuLBxlnyUxNKQ48TBEmQOfsOJWlMu7MQczs8PAvuoeQ7dv4ga
+	 VOOh+zSbwQI9UVXLYMTTaAF8VC5Qe0AH08UMx6o59oif+TOluzOhoNUJlPqWrkWdWa
+	 F3YMSrmA8q04Tc3o7V5G0rOnVvXrSlmYuCHYUdaC1/9bEi1kSPQjNs6B/CMP7UMuA7
+	 kBZG8J5QQqHSS4JWOSkiN2pZrTn7EOaJWqEI8O7YB913GvijwyU/Jjvqzu6dZc0XeA
+	 6pjFmq9Y38R2g==
+Date: Tue, 28 Oct 2025 15:00:30 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org,
+	x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+	loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+	linux-arch@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Paolo Bonzini <pbonzini@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Jason Baron <jbaron@akamai.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Han Shen <shenhan@google.com>, Rik van Riel <riel@surriel.com>,
+	Jann Horn <jannh@google.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Oleg Nesterov <oleg@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+	Clark Williams <williams@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
+Subject: Re: [PATCH v6 23/29] context-tracking: Introduce work deferral
+ infrastructure
+Message-ID: <aQDMfu0tzecFzoGr@localhost.localdomain>
+References: <20251010153839.151763-1-vschneid@redhat.com>
+ <20251010153839.151763-24-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20251019155711.67609-4-ja@ssi.bg>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251010153839.151763-24-vschneid@redhat.com>
 
-On 2025-10-19 18:57:00, Julian Anastasov wrote:
->Some places walk the services under mutex but they can just use RCU:
->
->* ip_vs_dst_event() uses ip_vs_forget_dev() which uses its own lock
->  to modify dest
->* ip_vs_genl_dump_services(): ip_vs_genl_fill_service() just fills skb
->* ip_vs_genl_parse_service(): move RCU lock to callers
->  ip_vs_genl_set_cmd(), ip_vs_genl_dump_dests() and ip_vs_genl_get_cmd()
->* ip_vs_genl_dump_dests(): just fill skb
->
->Signed-off-by: Julian Anastasov <ja@ssi.bg>
+Le Fri, Oct 10, 2025 at 05:38:33PM +0200, Valentin Schneider a écrit :
+> smp_call_function() & friends have the unfortunate habit of sending IPIs to
+> isolated, NOHZ_FULL, in-userspace CPUs, as they blindly target all online
+> CPUs.
+> 
+> Some callsites can be bent into doing the right, such as done by commit:
+> 
+>   cc9e303c91f5 ("x86/cpu: Disable frequency requests via aperfmperf IPI for nohz_full CPUs")
+> 
+> Unfortunately, not all SMP callbacks can be omitted in this
+> fashion. However, some of them only affect execution in kernelspace, which
+> means they don't have to be executed *immediately* if the target CPU is in
+> userspace: stashing the callback and executing it upon the next kernel entry
+> would suffice. x86 kernel instruction patching or kernel TLB invalidation
+> are prime examples of it.
+> 
+> Reduce the RCU dynticks counter width to free up some bits to be used as a
+> deferred callback bitmask. Add some build-time checks to validate that
+> setup.
+> 
+> Presence of CT_RCU_WATCHING in the ct_state prevents queuing deferred work.
+> 
+> Later commits introduce the bit:callback mappings.
+> 
+> Link: https://lore.kernel.org/all/20210929151723.162004989@infradead.org/
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+> ---
+>  arch/Kconfig                                 |  9 +++
+>  arch/x86/Kconfig                             |  1 +
+>  arch/x86/include/asm/context_tracking_work.h | 16 +++++
+>  include/linux/context_tracking.h             | 21 ++++++
+>  include/linux/context_tracking_state.h       | 30 ++++++---
+>  include/linux/context_tracking_work.h        | 26 ++++++++
+>  kernel/context_tracking.c                    | 69 +++++++++++++++++++-
+>  kernel/time/Kconfig                          |  5 ++
+>  8 files changed, 165 insertions(+), 12 deletions(-)
+>  create mode 100644 arch/x86/include/asm/context_tracking_work.h
+>  create mode 100644 include/linux/context_tracking_work.h
+> 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index d1b4ffd6e0856..a33229e017467 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -968,6 +968,15 @@ config HAVE_CONTEXT_TRACKING_USER_OFFSTACK
+>  	  - No use of instrumentation, unless instrumentation_begin() got
+>  	    called.
+>  
+> +config HAVE_CONTEXT_TRACKING_WORK
+> +	bool
+> +	help
+> +	  Architecture supports deferring work while not in kernel context.
+> +	  This is especially useful on setups with isolated CPUs that might
+> +	  want to avoid being interrupted to perform housekeeping tasks (for
+> +	  ex. TLB invalidation or icache invalidation). The housekeeping
+> +	  operations are performed upon re-entering the kernel.
+> +
+>  config HAVE_TIF_NOHZ
+>  	bool
+>  	help
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 05880301212e3..3f1557b7acd8f 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -222,6 +222,7 @@ config X86
+>  	select HAVE_CMPXCHG_LOCAL
+>  	select HAVE_CONTEXT_TRACKING_USER		if X86_64
+>  	select HAVE_CONTEXT_TRACKING_USER_OFFSTACK	if HAVE_CONTEXT_TRACKING_USER
+> +	select HAVE_CONTEXT_TRACKING_WORK		if X86_64
+>  	select HAVE_C_RECORDMCOUNT
+>  	select HAVE_OBJTOOL_MCOUNT		if HAVE_OBJTOOL
+>  	select HAVE_OBJTOOL_NOP_MCOUNT		if HAVE_OBJTOOL_MCOUNT
+> diff --git a/arch/x86/include/asm/context_tracking_work.h b/arch/x86/include/asm/context_tracking_work.h
+> new file mode 100644
+> index 0000000000000..5f3b2d0977235
+> --- /dev/null
+> +++ b/arch/x86/include/asm/context_tracking_work.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_X86_CONTEXT_TRACKING_WORK_H
+> +#define _ASM_X86_CONTEXT_TRACKING_WORK_H
+> +
+> +static __always_inline void arch_context_tracking_work(enum ct_work work)
+> +{
+> +	switch (work) {
+> +	case CT_WORK_n:
+> +		// Do work...
+> +		break;
+> +	case CT_WORK_MAX:
+> +		WARN_ON_ONCE(true);
+> +	}
+> +}
+> +
+> +#endif
+> diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
+> index af9fe87a09225..0b0faa040e9b5 100644
+> --- a/include/linux/context_tracking.h
+> +++ b/include/linux/context_tracking.h
+> @@ -5,6 +5,7 @@
+>  #include <linux/sched.h>
+>  #include <linux/vtime.h>
+>  #include <linux/context_tracking_state.h>
+> +#include <linux/context_tracking_work.h>
+>  #include <linux/instrumentation.h>
+>  
+>  #include <asm/ptrace.h>
+> @@ -137,6 +138,26 @@ static __always_inline unsigned long ct_state_inc(int incby)
+>  	return raw_atomic_add_return(incby, this_cpu_ptr(&context_tracking.state));
+>  }
+>  
+> +#ifdef CONFIG_CONTEXT_TRACKING_WORK
+> +static __always_inline unsigned long ct_state_inc_clear_work(int incby)
+> +{
+> +	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
+> +	unsigned long new, old, state;
+> +
+> +	state = arch_atomic_read(&ct->state);
+> +	do {
+> +		old = state;
+> +		new = old & ~CT_WORK_MASK;
+> +		new += incby;
+> +		state = arch_atomic_cmpxchg(&ct->state, old, new);
+> +	} while (old != state);
+> +
+> +	return new;
+> +}
+> +#else
+> +#define ct_state_inc_clear_work(x) ct_state_inc(x)
+> +#endif
+> +
+>  static __always_inline bool warn_rcu_enter(void)
+>  {
+>  	bool ret = false;
+> diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
+> index 0b81248aa03e2..d2c302133672f 100644
+> --- a/include/linux/context_tracking_state.h
+> +++ b/include/linux/context_tracking_state.h
+> @@ -5,6 +5,7 @@
+>  #include <linux/percpu.h>
+>  #include <linux/static_key.h>
+>  #include <linux/context_tracking_irq.h>
+> +#include <linux/context_tracking_work.h>
+>  
+>  /* Offset to allow distinguishing irq vs. task-based idle entry/exit. */
+>  #define CT_NESTING_IRQ_NONIDLE	((LONG_MAX / 2) + 1)
+> @@ -39,16 +40,19 @@ struct context_tracking {
+>  };
+>  
+>  /*
+> - * We cram two different things within the same atomic variable:
+> + * We cram up to three different things within the same atomic variable:
+>   *
+> - *                     CT_RCU_WATCHING_START  CT_STATE_START
+> - *                                |                |
+> - *                                v                v
+> - *     MSB [ RCU watching counter ][ context_state ] LSB
+> - *         ^                       ^
+> - *         |                       |
+> - * CT_RCU_WATCHING_END        CT_STATE_END
+> + *                     CT_RCU_WATCHING_START                  CT_STATE_START
+> + *                                |         CT_WORK_START          |
+> + *                                |               |                |
+> + *                                v               v                v
+> + *     MSB [ RCU watching counter ][ context work ][ context_state ] LSB
+> + *         ^                       ^               ^
+> + *         |                       |               |
+> + *         |                  CT_WORK_END          |
+> + * CT_RCU_WATCHING_END                        CT_STATE_END
+>   *
+> + * The [ context work ] region spans 0 bits if CONFIG_CONTEXT_WORK=n
+>   * Bits are used from the LSB upwards, so unused bits (if any) will always be in
+>   * upper bits of the variable.
+>   */
+> @@ -59,18 +63,24 @@ struct context_tracking {
+>  #define CT_STATE_START 0
+>  #define CT_STATE_END   (CT_STATE_START + CT_STATE_WIDTH - 1)
+>  
+> -#define CT_RCU_WATCHING_MAX_WIDTH (CT_SIZE - CT_STATE_WIDTH)
+> +#define CT_WORK_WIDTH (IS_ENABLED(CONFIG_CONTEXT_TRACKING_WORK) ? CT_WORK_MAX_OFFSET : 0)
+> +#define	CT_WORK_START (CT_STATE_END + 1)
+> +#define CT_WORK_END   (CT_WORK_START + CT_WORK_WIDTH - 1)
+> +
+> +#define CT_RCU_WATCHING_MAX_WIDTH (CT_SIZE - CT_WORK_WIDTH - CT_STATE_WIDTH)
+>  #define CT_RCU_WATCHING_WIDTH     (IS_ENABLED(CONFIG_RCU_DYNTICKS_TORTURE) ? 2 : CT_RCU_WATCHING_MAX_WIDTH)
+> -#define CT_RCU_WATCHING_START     (CT_STATE_END + 1)
+> +#define CT_RCU_WATCHING_START     (CT_WORK_END + 1)
+>  #define CT_RCU_WATCHING_END       (CT_RCU_WATCHING_START + CT_RCU_WATCHING_WIDTH - 1)
+>  #define CT_RCU_WATCHING           BIT(CT_RCU_WATCHING_START)
+>  
+>  #define CT_STATE_MASK        GENMASK(CT_STATE_END,        CT_STATE_START)
+> +#define CT_WORK_MASK         GENMASK(CT_WORK_END,         CT_WORK_START)
+>  #define CT_RCU_WATCHING_MASK GENMASK(CT_RCU_WATCHING_END, CT_RCU_WATCHING_START)
+>  
+>  #define CT_UNUSED_WIDTH (CT_RCU_WATCHING_MAX_WIDTH - CT_RCU_WATCHING_WIDTH)
+>  
+>  static_assert(CT_STATE_WIDTH        +
+> +	      CT_WORK_WIDTH         +
+>  	      CT_RCU_WATCHING_WIDTH +
+>  	      CT_UNUSED_WIDTH       ==
+>  	      CT_SIZE);
+> diff --git a/include/linux/context_tracking_work.h b/include/linux/context_tracking_work.h
+> new file mode 100644
+> index 0000000000000..c68245f8d77c5
+> --- /dev/null
+> +++ b/include/linux/context_tracking_work.h
+> @@ -0,0 +1,26 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_CONTEXT_TRACKING_WORK_H
+> +#define _LINUX_CONTEXT_TRACKING_WORK_H
+> +
+> +#include <linux/bitops.h>
+> +
+> +enum {
+> +	CT_WORK_n_OFFSET,
+> +	CT_WORK_MAX_OFFSET
+> +};
+> +
+> +enum ct_work {
+> +	CT_WORK_n        = BIT(CT_WORK_n_OFFSET),
+> +	CT_WORK_MAX      = BIT(CT_WORK_MAX_OFFSET)
+> +};
+> +
+> +#include <asm/context_tracking_work.h>
+> +
+> +#ifdef CONFIG_CONTEXT_TRACKING_WORK
+> +extern bool ct_set_cpu_work(unsigned int cpu, enum ct_work work);
+> +#else
+> +static inline bool
+> +ct_set_cpu_work(unsigned int cpu, unsigned int work) { return false; }
+> +#endif
+> +
+> +#endif
+> diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+> index fb5be6e9b423f..3238bb1f41ff4 100644
+> --- a/kernel/context_tracking.c
+> +++ b/kernel/context_tracking.c
+> @@ -72,6 +72,70 @@ static __always_inline void rcu_task_trace_heavyweight_exit(void)
+>  #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+>  }
+>  
+> +#ifdef CONFIG_CONTEXT_TRACKING_WORK
+> +static noinstr void ct_work_flush(unsigned long seq)
+> +{
+> +	int bit;
+> +
+> +	seq = (seq & CT_WORK_MASK) >> CT_WORK_START;
+> +
+> +	/*
+> +	 * arch_context_tracking_work() must be noinstr, non-blocking,
+> +	 * and NMI safe.
+> +	 */
+> +	for_each_set_bit(bit, &seq, CT_WORK_MAX)
+> +		arch_context_tracking_work(BIT(bit));
+> +}
+> +
+> +/**
+> + * ct_set_cpu_work - set work to be run at next kernel context entry
+> + *
+> + * If @cpu is not currently executing in kernelspace, it will execute the
+> + * callback mapped to @work (see arch_context_tracking_work()) at its next
+> + * entry into ct_kernel_enter_state().
+> + *
+> + * If it is already executing in kernelspace, this will be a no-op.
+> + */
+> +bool ct_set_cpu_work(unsigned int cpu, enum ct_work work)
+> +{
+> +	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
+> +	unsigned int old;
+> +	bool ret = false;
+> +
+> +	if (!ct->active)
+> +		return false;
+> +
+> +	preempt_disable();
+> +
+> +	old = atomic_read(&ct->state);
+> +
+> +	/*
+> +	 * The work bit must only be set if the target CPU is not executing
+> +	 * in kernelspace.
+> +	 * CT_RCU_WATCHING is used as a proxy for that - if the bit is set, we
+> +	 * know for sure the CPU is executing in the kernel whether that be in
+> +	 * NMI, IRQ or process context.
+> +	 * Set CT_RCU_WATCHING here and let the cmpxchg do the check for us;
+> +	 * the state could change between the atomic_read() and the cmpxchg().
+> +	 */
+> +	old |= CT_RCU_WATCHING;
 
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+Most of the time, the task should be either idle or in userspace. I'm still not
+sure why you start with a bet that the CPU is in the kernel with RCU watching.
 
-Best regards,
-Dust
+> +	/*
+> +	 * Try setting the work until either
+> +	 * - the target CPU has entered kernelspace
+> +	 * - the work has been set
+> +	 */
+> +	do {
+> +		ret = atomic_try_cmpxchg(&ct->state, &old, old | (work << CT_WORK_START));
+> +	} while (!ret && !(old & CT_RCU_WATCHING));
+
+So this applies blindly to idle as well, right? It should work but note that
+idle entry code before RCU watches is also fragile.
+
+The rest looks good.
+
+Thanks!
 
 
->---
-> net/netfilter/ipvs/ip_vs_ctl.c | 47 +++++++++++++++++-----------------
-> 1 file changed, 23 insertions(+), 24 deletions(-)
->
->diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
->index 2fb9034b4f53..b18d08d79bcb 100644
->--- a/net/netfilter/ipvs/ip_vs_ctl.c
->+++ b/net/netfilter/ipvs/ip_vs_ctl.c
->@@ -1759,23 +1759,21 @@ static int ip_vs_dst_event(struct notifier_block *this, unsigned long event,
-> 	if (event != NETDEV_DOWN || !ipvs)
-> 		return NOTIFY_DONE;
-> 	IP_VS_DBG(3, "%s() dev=%s\n", __func__, dev->name);
->-	mutex_lock(&ipvs->service_mutex);
->+	rcu_read_lock();
-> 	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
->-		hlist_for_each_entry(svc, &ipvs->svc_table[idx], s_list) {
->-			list_for_each_entry(dest, &svc->destinations,
->-					    n_list) {
->+		hlist_for_each_entry_rcu(svc, &ipvs->svc_table[idx], s_list)
->+			list_for_each_entry_rcu(dest, &svc->destinations,
->+						n_list)
-> 				ip_vs_forget_dev(dest, dev);
->-			}
->-		}
+> +
+> +	preempt_enable();
+> +	return ret;
+> +}
+> +#else
+> +static __always_inline void ct_work_flush(unsigned long work) { }
+> +static __always_inline void ct_work_clear(struct context_tracking *ct) { }
+> +#endif
+> +
+>  /*
+>   * Record entry into an extended quiescent state.  This is only to be
+>   * called when not already in an extended quiescent state, that is,
+> @@ -88,7 +152,7 @@ static noinstr void ct_kernel_exit_state(int offset)
+>  	rcu_task_trace_heavyweight_enter();  // Before CT state update!
+>  	// RCU is still watching.  Better not be in extended quiescent state!
+>  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !rcu_is_watching_curr_cpu());
+> -	(void)ct_state_inc(offset);
+> +	(void)ct_state_inc_clear_work(offset);
+>  	// RCU is no longer watching.
+>  }
+>  
+> @@ -99,7 +163,7 @@ static noinstr void ct_kernel_exit_state(int offset)
+>   */
+>  static noinstr void ct_kernel_enter_state(int offset)
+>  {
+> -	int seq;
+> +	unsigned long seq;
+>  
+>  	/*
+>  	 * CPUs seeing atomic_add_return() must see prior idle sojourns,
+> @@ -107,6 +171,7 @@ static noinstr void ct_kernel_enter_state(int offset)
+>  	 * critical section.
+>  	 */
+>  	seq = ct_state_inc(offset);
+> +	ct_work_flush(seq);
+>  	// RCU is now watching.  Better not be in an extended quiescent state!
+>  	rcu_task_trace_heavyweight_exit();  // After CT state update!
+>  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & CT_RCU_WATCHING));
+> diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
+> index 7c6a52f7836ce..1a0c027aad141 100644
+> --- a/kernel/time/Kconfig
+> +++ b/kernel/time/Kconfig
+> @@ -181,6 +181,11 @@ config CONTEXT_TRACKING_USER_FORCE
+>  	  Say N otherwise, this option brings an overhead that you
+>  	  don't want in production.
+>  
+> +config CONTEXT_TRACKING_WORK
+> +	bool
+> +	depends on HAVE_CONTEXT_TRACKING_WORK && CONTEXT_TRACKING_USER
+> +	default y
+> +
+>  config NO_HZ
+>  	bool "Old Idle dynticks config"
+>  	help
+> -- 
+> 2.51.0
 > 
->-		hlist_for_each_entry(svc, &ipvs->svc_fwm_table[idx], f_list) {
->-			list_for_each_entry(dest, &svc->destinations,
->-					    n_list) {
->+		hlist_for_each_entry_rcu(svc, &ipvs->svc_fwm_table[idx], f_list)
->+			list_for_each_entry_rcu(dest, &svc->destinations,
->+						n_list)
-> 				ip_vs_forget_dev(dest, dev);
->-			}
->-		}
-> 	}
->+	rcu_read_unlock();
-> 
->+	mutex_lock(&ipvs->service_mutex);
-> 	spin_lock_bh(&ipvs->dest_trash_lock);
-> 	list_for_each_entry(dest, &ipvs->dest_trash, t_list) {
-> 		ip_vs_forget_dev(dest, dev);
->@@ -3318,9 +3316,9 @@ static int ip_vs_genl_fill_service(struct sk_buff *skb,
-> 			goto nla_put_failure;
-> 	}
-> 
->-	sched = rcu_dereference_protected(svc->scheduler, 1);
->+	sched = rcu_dereference(svc->scheduler);
-> 	sched_name = sched ? sched->name : "none";
->-	pe = rcu_dereference_protected(svc->pe, 1);
->+	pe = rcu_dereference(svc->pe);
-> 	if (nla_put_string(skb, IPVS_SVC_ATTR_SCHED_NAME, sched_name) ||
-> 	    (pe && nla_put_string(skb, IPVS_SVC_ATTR_PE_NAME, pe->name)) ||
-> 	    nla_put(skb, IPVS_SVC_ATTR_FLAGS, sizeof(flags), &flags) ||
->@@ -3374,9 +3372,9 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
-> 	struct net *net = sock_net(skb->sk);
-> 	struct netns_ipvs *ipvs = net_ipvs(net);
-> 
->-	mutex_lock(&ipvs->service_mutex);
->+	rcu_read_lock();
-> 	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
->-		hlist_for_each_entry(svc, &ipvs->svc_table[i], s_list) {
->+		hlist_for_each_entry_rcu(svc, &ipvs->svc_table[i], s_list) {
-> 			if (++idx <= start)
-> 				continue;
-> 			if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
->@@ -3387,7 +3385,7 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
-> 	}
-> 
-> 	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
->-		hlist_for_each_entry(svc, &ipvs->svc_fwm_table[i], f_list) {
->+		hlist_for_each_entry_rcu(svc, &ipvs->svc_fwm_table[i], f_list) {
-> 			if (++idx <= start)
-> 				continue;
-> 			if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
->@@ -3398,7 +3396,7 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
-> 	}
-> 
-> nla_put_failure:
->-	mutex_unlock(&ipvs->service_mutex);
->+	rcu_read_unlock();
-> 	cb->args[0] = idx;
-> 
-> 	return skb->len;
->@@ -3454,13 +3452,11 @@ static int ip_vs_genl_parse_service(struct netns_ipvs *ipvs,
-> 		usvc->fwmark = 0;
-> 	}
-> 
->-	rcu_read_lock();
-> 	if (usvc->fwmark)
-> 		svc = __ip_vs_svc_fwm_find(ipvs, usvc->af, usvc->fwmark);
-> 	else
-> 		svc = __ip_vs_service_find(ipvs, usvc->af, usvc->protocol,
-> 					   &usvc->addr, usvc->port);
->-	rcu_read_unlock();
-> 	*ret_svc = svc;
-> 
-> 	/* If a full entry was requested, check for the additional fields */
->@@ -3587,7 +3583,7 @@ static int ip_vs_genl_dump_dests(struct sk_buff *skb,
-> 	struct net *net = sock_net(skb->sk);
-> 	struct netns_ipvs *ipvs = net_ipvs(net);
-> 
->-	mutex_lock(&ipvs->service_mutex);
->+	rcu_read_lock();
-> 
-> 	/* Try to find the service for which to dump destinations */
-> 	if (nlmsg_parse_deprecated(cb->nlh, GENL_HDRLEN, attrs, IPVS_CMD_ATTR_MAX, ip_vs_cmd_policy, cb->extack))
->@@ -3599,7 +3595,7 @@ static int ip_vs_genl_dump_dests(struct sk_buff *skb,
-> 		goto out_err;
-> 
-> 	/* Dump the destinations */
->-	list_for_each_entry(dest, &svc->destinations, n_list) {
->+	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
-> 		if (++idx <= start)
-> 			continue;
-> 		if (ip_vs_genl_dump_dest(skb, dest, cb) < 0) {
->@@ -3612,7 +3608,7 @@ static int ip_vs_genl_dump_dests(struct sk_buff *skb,
-> 	cb->args[0] = idx;
-> 
-> out_err:
->-	mutex_unlock(&ipvs->service_mutex);
->+	rcu_read_unlock();
-> 
-> 	return skb->len;
-> }
->@@ -3915,9 +3911,12 @@ static int ip_vs_genl_set_cmd(struct sk_buff *skb, struct genl_info *info)
-> 	if (cmd == IPVS_CMD_NEW_SERVICE || cmd == IPVS_CMD_SET_SERVICE)
-> 		need_full_svc = true;
-> 
->+	/* We use function that requires RCU lock */
->+	rcu_read_lock();
-> 	ret = ip_vs_genl_parse_service(ipvs, &usvc,
-> 				       info->attrs[IPVS_CMD_ATTR_SERVICE],
-> 				       need_full_svc, &svc);
->+	rcu_read_unlock();
-> 	if (ret)
-> 		goto out;
-> 
->@@ -4037,7 +4036,7 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
-> 	if (!msg)
-> 		return -ENOMEM;
-> 
->-	mutex_lock(&ipvs->service_mutex);
->+	rcu_read_lock();
-> 
-> 	reply = genlmsg_put_reply(msg, info, &ip_vs_genl_family, 0, reply_cmd);
-> 	if (reply == NULL)
->@@ -4105,7 +4104,7 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
-> out_err:
-> 	nlmsg_free(msg);
-> out:
->-	mutex_unlock(&ipvs->service_mutex);
->+	rcu_read_unlock();
-> 
-> 	return ret;
-> }
->-- 
->2.51.0
->
+
+-- 
+Frederic Weisbecker
+SUSE Labs
