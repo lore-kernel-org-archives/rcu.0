@@ -1,34 +1,34 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AADC02D5924;
-	Tue, 28 Oct 2025 15:59:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FCB27B4E1;
+	Tue, 28 Oct 2025 16:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761667159; cv=none; b=A3hkZvIaIE5rDyaXGLk1XsOvICspbnGFOv2ohQWfB8ezwe3LgD9Xds/NtG9o7f3aajZ1F+CxiI9+pA9xhKgX1kthGeIvK3hEup1A/xCsFzAAovbdAEtFrxiLMSgjbAETW5Omg58t+2tLY2XlAtFz/F3J1/83KNjX7MN2F6Zbyjo=
+	t=1761668713; cv=none; b=YFM1QDdwfBxFSZDhaJtUEzD24qYuRVU4GiEAX+gsU2HJZY7e1KdZEFUR6AAHJhB15FzOXUecytFSvxTFP/tm479JhaGhSJIQpG+cbiYPp4jjm2xt0Jhtp5t8J0oCV8ureVHAgYzipa0KtYoDts5jPuGcCr1yybUU0w5AWyC+Kl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761667159; c=relaxed/simple;
-	bh=SDRIuqWM2TI7GYT8HdCkn7TBcJvTMa+nGGBd4kxLWaU=;
+	s=arc-20240116; t=1761668713; c=relaxed/simple;
+	bh=g+HYr74fOIJBF8//IeX1u6hGkpfR/MyO8jpC8AyplAs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LM8wB4FvWv6t0ONt4DiNcJ2pxHO15xcGD581IJGcMHq89GYl0GK7ejvzemNscQurTzSjWd7LzOfNCyaXcSZOhPdOEvnxKSZyXspQN2VifDUZ9tbLFmsjZqPVgqhUr+JH/AP0tBnRtELAfyhDeP3uGFG+6YU2+hbdT0mXz6LT/dk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h0Rjdky4; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=O2D2fUGFBAk5AyDSjceTQvtH6vrBhia2jZIq3qc8XVJdL09x04qU2tNpsVXrUhZMnbKPgaDZsJUKPo1dlMA+TB1pQ3bQVOs0pZGcY1R0ReratD875aLst3NlXV0bpJfwX6gs03tiF0Ggir7uKa0fv2B2TrW1bKkL8gluQj/iUK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gT6/ILOP; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h0Rjdky4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C55CEC4CEE7;
-	Tue, 28 Oct 2025 15:59:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gT6/ILOP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDDAFC4CEE7;
+	Tue, 28 Oct 2025 16:25:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761667159;
-	bh=SDRIuqWM2TI7GYT8HdCkn7TBcJvTMa+nGGBd4kxLWaU=;
+	s=k20201202; t=1761668710;
+	bh=g+HYr74fOIJBF8//IeX1u6hGkpfR/MyO8jpC8AyplAs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h0Rjdky40XtCVRjoUUWv5rLiJ9ZMpCagJKFXeyfzHOGEHTGw9bKgoBDki9igeNVWF
-	 hxxzLvARw99/t5f4Lqs+Dj5fZyVuN3fZZCRfCFM55ZeACJS/rijOr6rAqCQE7Hwid1
-	 QyXcKn0xMZDkHD1ajCbuYBSCn+ENYdvO5PJWUuqfmfteG28nQwGE4UO2KHjBeLwl2c
-	 hE32PRBdNnuYpqH0YyIEEpoBXAGIkGRuRSDfPq/9QdewsKj3LtsQ6g4eJFxD5TaKJO
-	 HpEpDWwMqwcXSfnux9kuKahgFba9EgaGpASx7PAIM38ag+Pw/+fgAan6RlnvKpPKM4
-	 jLUxM6PBiYL0w==
-Date: Tue, 28 Oct 2025 16:59:16 +0100
+	b=gT6/ILOPpDox4LIC0P6mrQkn27cKKS8sqA59JphgtIkj6muwgaA3Fo1qkj+3hwr0x
+	 Lec8ctwO62yUgf5b+f8NOys9+imyW63Awoi+zjDc6vUMX7ItNvFhAbXVixsle20+AM
+	 DCYjg9wWsW+BmN8WmVOnXKeoK7KRXl7UfDuM55FDXrP20wubQGruqEIuyl7uN1vem3
+	 z1RjIXGmQ+jItDnSIQZ94NMGu9r4D1Cc2Yx7w4rRGmNHf87sUEhnNQJTnZxj1eJJBt
+	 Bp2v2DXxUkTbIAPy+fj+FmsmIlW78U0n3bUpKvn+IC4BArPQhxPUJb7TwK5EWFOiU5
+	 OFSj9z0ZySqFA==
+Date: Tue, 28 Oct 2025 17:25:07 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
+To: Valentin Schneider <vschneid@redhat.com>, Phil Auld <pauld@redhat.com>
 Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org,
 	x86@kernel.org, linux-arm-kernel@lists.infradead.org,
 	loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
@@ -64,11 +64,10 @@ Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org,
 	Yair Podemsky <ypodemsk@redhat.com>,
 	Marcelo Tosatti <mtosatti@redhat.com>,
 	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v6 27/29] x86/mm/pti: Implement a TLB flush
- immediately after a switch to kernel CR3
-Message-ID: <aQDoVAs5UZwQo-ds@localhost.localdomain>
+Subject: Re: [PATCH v6 00/29] context_tracking,x86: Defer some IPIs until a
+ user->kernel transition
+Message-ID: <aQDuY3rgOK-L8D04@localhost.localdomain>
 References: <20251010153839.151763-1-vschneid@redhat.com>
- <20251010153839.151763-28-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -78,53 +77,55 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251010153839.151763-28-vschneid@redhat.com>
+In-Reply-To: <20251010153839.151763-1-vschneid@redhat.com>
 
-Le Fri, Oct 10, 2025 at 05:38:37PM +0200, Valentin Schneider a écrit :
-> Deferring kernel range TLB flushes requires the guarantee that upon
-> entering the kernel, no stale entry may be accessed. The simplest way to
-> provide such a guarantee is to issue an unconditional flush upon switching
-> to the kernel CR3, as this is the pivoting point where such stale entries
-> may be accessed.
-> 
-> As this is only relevant to NOHZ_FULL, restrict the mechanism to NOHZ_FULL
-> CPUs.
-> 
-> Note that the COALESCE_TLBI config option is introduced in a later commit,
-> when the whole feature is implemented.
-> 
-> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-> ---
->  arch/x86/entry/calling.h      | 26 +++++++++++++++++++++++---
->  arch/x86/kernel/asm-offsets.c |  1 +
->  2 files changed, 24 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-> index 813451b1ddecc..19fb6de276eac 100644
-> --- a/arch/x86/entry/calling.h
-> +++ b/arch/x86/entry/calling.h
-> @@ -9,6 +9,7 @@
->  #include <asm/ptrace-abi.h>
->  #include <asm/msr.h>
->  #include <asm/nospec-branch.h>
-> +#include <asm/invpcid.h>
-> 
->  /*
-> 
-> @@ -171,8 +172,27 @@ For 32-bit we have the following conventions - kernel is built with
-> 	andq    $(~PTI_USER_PGTABLE_AND_PCID_MASK), \reg
->  .endm
-> 
-> -.macro COALESCE_TLBI
-> +.macro COALESCE_TLBI scratch_reg:req
->  #ifdef CONFIG_COALESCE_TLBI
-> +	/* No point in doing this for housekeeping CPUs */
-> +	movslq  PER_CPU_VAR(cpu_number), \scratch_reg
-> +	bt	\scratch_reg, tick_nohz_full_mask(%rip)
-> +	jnc	.Lend_tlbi_\@
++Cc Phil Auld
 
-I assume it's not possible to have a static call/branch to
-take care of all this ?
+Le Fri, Oct 10, 2025 at 05:38:10PM +0200, Valentin Schneider a écrit :
+> Patches
+> =======
+> 
+> o Patches 1-2 are standalone objtool cleanups.
+
+Would be nice to get these merged.
+
+> o Patches 3-4 add an RCU testing feature.
+
+I'm taking this one.
+
+> 
+> o Patches 5-6 add infrastructure for annotating static keys and static calls
+>   that may be used in noinstr code (courtesy of Josh).
+> o Patches 7-20 use said annotations on relevant keys / calls.
+> o Patch 21 enforces proper usage of said annotations (courtesy of Josh).
+> 
+> o Patch 22 deals with detecting NOINSTR text in modules
+
+Not sure how to route those. If we wait for each individual subsystem,
+this may take a while.
+
+> o Patches 23-24 deal with kernel text sync IPIs
+
+I would be fine taking those (the concerns I had are just details)
+but they depend on all the annotations. Alternatively I can take the whole
+thing but then we'll need some acks.
+ 
+> o Patches 25-29 deal with kernel range TLB flush IPIs
+
+I'll leave these more time for now ;o)
+And if they ever go somewhere, it should be through x86 tree.
+
+Also, here is another candidate usecase for this deferral thing.
+I remember Phil Auld complaining that stop_machine() on CPU offlining was
+a big problem for nohz_full. Especially while we are working on
+a cpuset interface to toggle nohz_full but this will require the CPUs
+to be offline.
+
+So my point is that when a CPU goes offline, stop_machine() puts all
+CPUs into a loop with IRQs disabled. CPUs in userspace could possibly
+escape that since they don't touch the kernel anyway. But as soon as
+they enter the kernel, they should either acquire the final state of
+stop_machine if completed or join the global loop if in the middle.
 
 Thanks.
 
