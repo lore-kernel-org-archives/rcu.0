@@ -1,271 +1,74 @@
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7681EACD;
-	Mon,  3 Nov 2025 03:18:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762139937; cv=fail; b=XJaTjY7h455KUAvOzFU3PfMGOH0mzPiGVafej8AhBbc6QhEAwziHqAi5P73ZV5X2zuAYuzHpljnH5NgQTFBDNm4+5QcXhO8zSUtKYH3/J+3NReuDtQBzJYrHIUeqN9g6FCT52Kk/IERvfFXv66oA/bASF3h3iKQbDs1QnOvrE+0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762139937; c=relaxed/simple;
-	bh=Ox3NuxFVYHVqVLiFp7X7oq9ya6bWnHbkfUCVgYUs6zU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=pK4nXGTM+39wCisa+ZHfNtrmI3GHTABylxVxW2CKBGUM0Lw9XBff525iaWtpSzl3eJ5M8CcHvlIvZhxm+65hJiKNKYPUqRXjPqh57kiTQg7ELQZaJyUiCVsUmQeqXFYTaZcLwM2kFVgBTbygg6KDa0LlwNkxYiVA478u96OFxCk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=XPXWEIib; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Pxnz0lN6; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 933252505A5;
+	Mon,  3 Nov 2025 07:19:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762154352; cv=none; b=XeQWl3fJVNOsagftPDFeCKRt0pIjqC51MeDFMLYPVfDxlcJiyquUHjqRAHJLLToAzZ76PlPxfKoTzkGSTK1ED9VpSOwxbK51TzSgYtFlNakkRiwvch+wSz+/fv3hWWtTslI8lYgT4o4atZ2zttvbpLd9wpe7utjxpXdd/09oC0M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762154352; c=relaxed/simple;
+	bh=o3FPsu9oFmCNzOIxp8CepOafB2L7gYII4K494ei8Kbk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=lON2XIzIDkU7v1V3d9ulp7KNUNkBlpq13ZUs59X7N15Ou8f71W8WpdaT34CTlp9JD7JTeHXtRz7EQrsbZJPQFs11ya4+0iraldgpLsSSfk0NWYhfTVdKTOzNUXWwnl7ghbPGRuigTgwdCjikXXR/ymu8fOFJo83RP2P4OshId3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bloD1Jui; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="XPXWEIib";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Pxnz0lN6"
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A33EGdd019903;
-	Mon, 3 Nov 2025 03:18:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=DRWdXbzAfA2tGfUUDC
-	2BaxyIXl+NK1Brz1xL/g3lIkc=; b=XPXWEIibekMohMCSxeU52JcB+zkGdu/kf1
-	z3BRfDnC5iZO52iw17QtS8ATuLRJyNBYTb5+JVjL3ZQZooU+hlnpQpLyohENWlwW
-	tCsLp9xscITl8QkmpJEwxqYSII+8W0yi48cgKwVML81c7JDezyFSIckUhmkfGu0w
-	8MLxDfNkzNwptk5ALsXX7zhY0yltQ8fEXQFMi2KmlFKMwPixN1CyR0dOY1yudxS8
-	DFOZTgMzGrnmOZnbPIzlJhwduhSb1m7KCEP+2npogSTqzF/tSyiY9jv5OCN/1EI/
-	7iZeWpqU35O0feao641x7NstoI2G865f9oZK2IAsMRQGR46Zuvrw==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4a6mah806f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 03 Nov 2025 03:18:27 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5A30AJPU016019;
-	Mon, 3 Nov 2025 03:18:27 GMT
-Received: from bl0pr03cu003.outbound.protection.outlook.com (mail-eastusazon11012043.outbound.protection.outlook.com [52.101.53.43])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4a58n7b03e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 03 Nov 2025 03:18:26 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=vdQTfvq/aeWCJIz7xGHopuUbPNjpl2AWtikFkygoEudFHybNgnBod/RSQtnt3U61dGxpMs80QPPes88WDlcimO49LbZCEC0vCpiRH0oysZwgTqJUW/t1jTcioZLLU4v2FxA3S+A1VT/yIe+6oicFGv2lTeCTeqp/99JEOy0H80WhmzuqyNh52GWO18lMVDhMk4E2ieodUGUf/VMZ6/kOCc9c0d+TtgiG1l2Q70sQ3fSrMTGziFPtvOqzgyCX/hb7ln8+DtyWSwBvPnDQzybcjNBpT6zP706G/yc2p5+x6IL3kieb6ItDYUJSp+R3PPfro163/ewH00gyoZVVFvYNHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DRWdXbzAfA2tGfUUDC2BaxyIXl+NK1Brz1xL/g3lIkc=;
- b=WAMbeX1biAZMbpXHqriN/xpYCjPfVhL59Lpkx0/ksF+FAKzUtgb3s9tgIR15/6ztCOvF/0mZWNvOTIycRZAKxEctbNJtKQMXnGoLCec1RynV2lG0wi+H2ANh1I07HoNHnyt//M55dl9oalwxnMl+uyoVB1eDTA8OI23heWF6mI+pPJKnZzSERE09362pAEEojwttcrzvAC6sqTrJuw4dixMTpJiqHpl33Nx0U2xpgDx8LdtZ1bW+OkxupAVx1u7ZyBapoKxRVvkASe0drsgwhbd5bId/5F5jctpNpd9NS6NqvTn6b/cPgC4/sbyZSZuGFrjeAxjKYzIJdDfZMBCypw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DRWdXbzAfA2tGfUUDC2BaxyIXl+NK1Brz1xL/g3lIkc=;
- b=Pxnz0lN6k3ZCrX0w49niph9jdo9ntgIwvQH7tPcOuGMqXuSUtbif67Lm+yFS3garFwM2N4/90naF6GtK8pctGVyy4uPrVFBcwil1ucgr+NQZUMh5CecU1ML73rIoX34mx6PS89BpVuQAnvq5BzVwORzavefa3uEcp8+25jwaoDQ=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by CY8PR10MB6907.namprd10.prod.outlook.com (2603:10b6:930:86::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.13; Mon, 3 Nov
- 2025 03:18:00 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23%5]) with mapi id 15.20.9275.015; Mon, 3 Nov 2025
- 03:17:59 +0000
-Date: Mon, 3 Nov 2025 12:17:46 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Daniel Gomez <da.gomez@kernel.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Christoph Lameter <cl@gentwo.org>,
-        David Rientjes <rientjes@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        maple-tree@lists.infradead.org, linux-modules@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Aaron Tomlin <atomlin@atomlin.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>
-Subject: Re: [PATCH v8 04/23] slab: add sheaf support for batching
- kfree_rcu() operations
-Message-ID: <aQge2rmgRvd1JKxc@harry>
-References: <20250910-slub-percpu-caches-v8-0-ca3099d8352c@suse.cz>
- <20250910-slub-percpu-caches-v8-4-ca3099d8352c@suse.cz>
- <0406562e-2066-4cf8-9902-b2b0616dd742@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0406562e-2066-4cf8-9902-b2b0616dd742@kernel.org>
-X-ClientProxiedBy: SL2P216CA0194.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:1a::19) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bloD1Jui"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C768C116B1;
+	Mon,  3 Nov 2025 07:19:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762154352;
+	bh=o3FPsu9oFmCNzOIxp8CepOafB2L7gYII4K494ei8Kbk=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=bloD1JuiJ4RWYYCeSGaq5VoU8fshB/tZZ5bCLsf4u7vjoqqGHFem1+Y+wOriRxUu0
+	 qlIuxr6xB/9YLzgYxatpxqwuXpdAf5jxo7ySqhz6giTOIc6SAMTwSFQpieyCIsPI3d
+	 U5Qnla7yNQEj4F6XrFe+ZJ5686lbPOnJkOCwgzujfnAiLRJ62Wmi3GR4FaTw7F6n+T
+	 jlsDm2gkHdh2wtP8fx7AhIRZLFOoy819CgjmEkoSLeEfK2s+bJ7mI+elLRDUPby2oI
+	 Bk21g9XcJ9q5LboBEqOsWqdO5mEJDa23j3lClBWCy1WugB9uhn5oePZne/5mAyFIGS
+	 Xm3AwIG4A9xDw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 7CB5BCE0F4C; Sun,  2 Nov 2025 14:49:34 -0800 (PST)
+Date: Sun, 2 Nov 2025 14:49:34 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH 0/8] refscale updates for v6.19
+Message-ID: <19fae851-0c49-43d2-9bbf-913424641ff4@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|CY8PR10MB6907:EE_
-X-MS-Office365-Filtering-Correlation-Id: bcc61d76-afc1-457e-6322-08de1a8796f3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|1800799024|10070799003|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Oz+gixBRSujsMaggMk/YjdAL2+9aiRgqS7lNgD4ZwqI3FMmVGjsH3up2i82x?=
- =?us-ascii?Q?LrXGbZuN4ye0Gyw7A0KIGjyz+4ZC+X1dHQsdTXiQLubtAncy9NPY0GxUMDxA?=
- =?us-ascii?Q?Q/EwS/wYBQBUZcUDM5GekvG4snpXyEXtxkrSRy2x9TTpJSpOg9uHGoIat3l6?=
- =?us-ascii?Q?jYsir+tiOyiWz5N2pFu46OjS8KS38WSNPN/Wqxxt3zu5bf5P5VfndfhPqXEw?=
- =?us-ascii?Q?4rgF3UWPoCNYL3M4OvrotpMX9ik0b2TQWuPxtEaS6MCetr3PXaewG7scVL7J?=
- =?us-ascii?Q?w0TJ4WasshYfazRK+HjG1e1qNvPghzKkEDUDr9fRCEtUP/q4sDdR4zP9wlLf?=
- =?us-ascii?Q?C8h9D/ONQwrHW9vkvf+i+P9cDHCtlTZKRqwHnqmVsT3mKHxC01DmlPTat9hl?=
- =?us-ascii?Q?92gQXh5I5ZSxbqU02J19JwdfBJ3cTx7APgQzyNEZ3Ocm9m25BYytPxrpZy2Q?=
- =?us-ascii?Q?h2fehQzXPYk3Yhn7yvSDTieblPO7g/mCPbV/cshHNy0sM0MrEP+07hBLsZHv?=
- =?us-ascii?Q?MQpqLYRp4Ei9klRGF9c+0bg/rhLqIqk8vtY71WL63WegYPEzT7ZX7kxyskry?=
- =?us-ascii?Q?vjc/1DwEuz7IZCz6Wuw54wuio3N1UpflgXyT2DYeWs9/Sy9dFQFraUYZhNj3?=
- =?us-ascii?Q?DvGFvoHJZR4Ue7Ec3VM+0ZufhNUydJeF5rSloZdDkDI972/DpciUET5J9ksu?=
- =?us-ascii?Q?4np2/PKBVdYpQfSOyXnR/iCwBkVKaXrDTWlOaOhBBqnHY7guwHnfXiQs/8qu?=
- =?us-ascii?Q?5qefxyOLgAUdW+U2dYvUN2eYQxUJ0zis9vTgxs3kAVMOV7vjNg9mpbUy90Fb?=
- =?us-ascii?Q?zRo0UA9H/qavkxTVyIniakJbPl4D9ZSmM46nBOt/u4E3yz3zW88M1WO3tF53?=
- =?us-ascii?Q?fsu/QElqNOfxft9uSR4udF/c84mZdBc6Nc9yJpzj8rELElcksLYeg3lU0h6D?=
- =?us-ascii?Q?XmXO9t2gcpgI8LqcjkxRg5mgjqIDVjx4eh0v0VwFl+zCd9b4apLOSHc6saFN?=
- =?us-ascii?Q?AKV37j87SInUdorj8TybWcrvcXTJyRRkqTS9NfPgoLYsJBFYXLw3FLCrv4Da?=
- =?us-ascii?Q?oZjn394dSHv/7KGHeu9BkUVLi6VVZHr2VLAep+4PJVlLUzcWxgNO79vp/qyO?=
- =?us-ascii?Q?oSUkFHJMo3uJMXafD6SeSjGhbTI7AgVYcRa7pbOjJD5VbHYarD3moEObXkZE?=
- =?us-ascii?Q?zC5isqn/JKWq4quEyHKkoVzBUsBnxP1Fv1EDucebz1LHVMo/hFIiMWl/grBF?=
- =?us-ascii?Q?jfEbxJCmX6XDkIP6vMAtx2A9zXM54gQ46S6ieJ8K1MZKNUykeuxYbid+BAto?=
- =?us-ascii?Q?dVQ+TkFlWwT9bEu9+cFqr5GuHEN8AxzRc8tlidxIUzMZVCuKNcOqpNy/A7bE?=
- =?us-ascii?Q?hy8TIUp9T8CwUTQusreZfSGwqamlYzIoPTgENEVRhfesUofTv10XcneYwD/F?=
- =?us-ascii?Q?leuFkleegLS439j81RecCbpwQmvDmj2Y?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(10070799003)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?dgXvDwDjbUWFQd5+tysDTE4l/l9BNVmDdWS8ErKAPD0GEEWtEqZJ3je93dMs?=
- =?us-ascii?Q?QQES+DLlqHEW3odlJyq6N4nLbiYRGmgfTrhuduYT1evQyjZKZHxtYwbx0gWn?=
- =?us-ascii?Q?EdiYdISUeCICP/r1IHlRP4PZGXhrmdPwPIQujfXyUJtwFW1SKwVU1VYy3Zoz?=
- =?us-ascii?Q?SYqDxGBqwSUNjF7PCZ9QZj4p/3yQqKYYRdfJE5xyHvfFb3+rHui6sO/Y7SvY?=
- =?us-ascii?Q?Ycada7ICvpKt3M+SRUKOBj7dYLsDPgX5gu4pwkkjTMoOLmnegcDyvqrNPak7?=
- =?us-ascii?Q?nr6aufZFdYPlN/Aajxtk5ZQVJquwBxceoIooXtmKFGaOPgGArKp/Ot9owu1r?=
- =?us-ascii?Q?Njqp8HL/ieP5RHkeCZiGKUfNJ+zoMa8I/b0QMDqXFo+RGhcPXx2tg4FWpRFy?=
- =?us-ascii?Q?Duo03E+dCAfpUCDb/Nap2s9umqtPaCKWZ7fJl4S4cW53I1mSe8kfeLaIawCf?=
- =?us-ascii?Q?4L8irOU2Jj+mJA/G9Lg6yhzTA4wc+DqRxzU5ya79cBvQiFJqiYIFQctz6nI4?=
- =?us-ascii?Q?DwWvKv3jYtUIBBv4ylbS1o4uBSNmaeE96VvqR07W4dlxMgdwHwxrw4hgfOmG?=
- =?us-ascii?Q?UMkHeOk8A3kcsI+TFoEDR0rJttSnaobtX26J5AZMP+xpJ12jJcnVT+E81+B4?=
- =?us-ascii?Q?oYG+d3aH2D8bpMFraV6NBxJXldrg2AZ7tjjCsI/kYDL8CcMPPMV1qswkeFzT?=
- =?us-ascii?Q?Wz9ZGcSoxW0MzSogQSKcE5x73C4pccmyGCDCN83ms+0m1nja2qwZdHl9QgYY?=
- =?us-ascii?Q?LliZZdXPCH+76k4ysLTD4wTuuCsVO+d22q+YtyKPymjsJNEOla0KMGeY6r+4?=
- =?us-ascii?Q?866JOjdG/3gBlPFMVKubvPmhZ9V3OTL7chv3LGPvUKjMm0VK/L48QGCZLnbW?=
- =?us-ascii?Q?3idlehi+M3YPV2f78LgR5Nr3PiU4CVLnF3KZ0wLbUofmAcBnOQNogOzOp6mC?=
- =?us-ascii?Q?zgKhmk3xgTqiuXnHn3LxHyRLkGnf0XlsK8ICypzuRbD4jcm7hWN7vv8Ocsur?=
- =?us-ascii?Q?zXIvSiYRCp/xh7QARStsgZoron0Bt5AwUN26UJHJGxZqhNqomXQ+vsJ28Pc8?=
- =?us-ascii?Q?oge9GDTNqzhp7oKyhFnWKDcJ/1rXfUCAjyXp2ltUKGipnQugmcYmkBXiZQq6?=
- =?us-ascii?Q?sTOtZ8O27SDkVdkr6F5x6pbz8j16XqQDWr1dMiogDrFNYmCweaCpvDisGEI+?=
- =?us-ascii?Q?rl3SWCMVv0i3d3UyDLcHk4qSn4YxnBy2SKiBiFyknMf0iklDh6oAk/g94qw9?=
- =?us-ascii?Q?nsKlnxwBFpePMfla/UihiUZajSjrrvxjFZUExSvhIZc/Bz3mRMV4OgbTgsM+?=
- =?us-ascii?Q?gFCIM6f5tAUIuhHBis7qDOldmRCRqya08Qo5mS2v9o7cpRBRUSMRhd2ftJpr?=
- =?us-ascii?Q?a/ttaOcdU3Q4d+x1TYkydUtcNWchEg4ATkgnLFFqLxmoHSb/X3QHWeuIgAXi?=
- =?us-ascii?Q?3gNCoUNBCXwaEGcnozvppgz0WdjWpIck7A76dLquHiYeAFMGq2yyWl93eQfW?=
- =?us-ascii?Q?RIr6353NDLulRkmKcclASUGIFBbbofMexkRSD36LjS8zNT6L0fDEj5RxFGh8?=
- =?us-ascii?Q?/zlC5nO2nWQoNpsKL/F20Jw+REVU88dwpGZvMTX1cD4lCcwNT6/lggNCTzsI?=
- =?us-ascii?Q?JzSLsZBmGq9RcU/5SPPJUQaskw/KveCYgt06x9x7O9/b?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	n3OWrt5aji/flKkt8XKeqZyXwjbyF+30AqzgUvVD1Gz+FiUMS6s5+E5lcup4Ckn3D2Aa4baOIm/JB6DGITy5EJXNp7ouSxKnDu2RbzsRlLwWFHBmn1bXi0BF3JS66PLfKfTx7SbdDKDiDhjAtVt1blasmUkFmIzjRIhQlWJESQfDxjbQWvXUUSNahq235X1aWbG1GpItfUPp7hN1dGsQpPHIMewYhJFlSdID450E2v96aVI28P+0k+aQOj5Px13t9VaSVJz2/ySgfts2pzhEYFOtuHSMW6FdryIyeUL7CYqTb0WfuuFQ+qWZb+nY1/vVcWGlWsaGeNHzA5ujgTt43WijzZU7212ipsTQb9Mmk6OyX8DUDYR6tUxYis9zznpGpHaH+mQNQV90zdjqvJL4oYhFBJELx27yq/ENxvthnDaB4Hf6jKE0f4DzzBiC8Cq6SY7Cwp8V66VezACNCt6/JXZAmF8FJOfLD8NCc+ZuKLWRi8gYx4fQU8WYbMQ0uIkL4PsFldU5Lu0bSPA2VLvZugIV8jo8A9/hXCVSJP9KY6brkUiNY250ulD6xRwdPofu9TEQI+NgpHUuCnpjLyTqR2EAx53z1CF5K12VxypYOWY=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bcc61d76-afc1-457e-6322-08de1a8796f3
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2025 03:17:59.3413
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A0r4UOk2GOSumH7JVTRTOTQuibFAKxCsw394yjjXuxOHNql48FTv7Z0JBKp1gXuDzeb4UIgxrzXsHvRk/374qw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6907
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-02_02,2025-10-29_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- adultscore=0 phishscore=0 malwarescore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
- definitions=main-2511030028
-X-Authority-Analysis: v=2.4 cv=UJfQ3Sfy c=1 sm=1 tr=0 ts=69081f03 b=1 cx=c_pps
- a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=6UeiqGixMTsA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=auTrCeKoL-_gxoL8Z8sA:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTAzMDAyOCBTYWx0ZWRfX4aXkffui2sNA
- tp6ZrxEjAk1+txcO3KcMPsngmi9gFjoi0Y359UYhOrtPs9DQoahqkvT/ZcePcoyKwgoEkMopTdd
- oGwGlDGUWks6RP748Wi++rpK7KZs5aowwDhzpVGi1vpN9Y3D2tN0+2Pdr0UbEni3H/JKk5ssEq8
- DLZZ14EA5GMxk7igKFf6N/5SHvIH4CQab0AHIQ6uQXzIpLNg91zwCUgd1Em5ukMfQWaijjNmpJL
- 5eko23U3fKTnRalXt3vIULpbqKx/6CsE80XDIXvckmFREDfiBrDZf2cFJ7ygusPuYGpCc7Lx4Sc
- KdMEzFdYS5Z87BxmwZCqI8iyycuEfOq0zArxMgwYcdw6jlBUFtQJYWU4TDtk2QjqA2AiwV6thuF
- B8JIFyWIeY/5BvXryHyV5IRz8geBaA==
-X-Proofpoint-ORIG-GUID: DbeBeOXKNV8aPmQl_4wPw6CCBvccSXJU
-X-Proofpoint-GUID: DbeBeOXKNV8aPmQl_4wPw6CCBvccSXJU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri, Oct 31, 2025 at 10:32:54PM +0100, Daniel Gomez wrote:
-> 
-> 
-> On 10/09/2025 10.01, Vlastimil Babka wrote:
-> > Extend the sheaf infrastructure for more efficient kfree_rcu() handling.
-> > For caches with sheaves, on each cpu maintain a rcu_free sheaf in
-> > addition to main and spare sheaves.
-> > 
-> > kfree_rcu() operations will try to put objects on this sheaf. Once full,
-> > the sheaf is detached and submitted to call_rcu() with a handler that
-> > will try to put it in the barn, or flush to slab pages using bulk free,
-> > when the barn is full. Then a new empty sheaf must be obtained to put
-> > more objects there.
-> > 
-> > It's possible that no free sheaves are available to use for a new
-> > rcu_free sheaf, and the allocation in kfree_rcu() context can only use
-> > GFP_NOWAIT and thus may fail. In that case, fall back to the existing
-> > kfree_rcu() implementation.
-> > 
-> > Expected advantages:
-> > - batching the kfree_rcu() operations, that could eventually replace the
-> >   existing batching
-> > - sheaves can be reused for allocations via barn instead of being
-> >   flushed to slabs, which is more efficient
-> >   - this includes cases where only some cpus are allowed to process rcu
-> >     callbacks (Android)
-> > 
-> > Possible disadvantage:
-> > - objects might be waiting for more than their grace period (it is
-> >   determined by the last object freed into the sheaf), increasing memory
-> >   usage - but the existing batching does that too.
-> > 
-> > Only implement this for CONFIG_KVFREE_RCU_BATCHED as the tiny
-> > implementation favors smaller memory footprint over performance.
-> > 
-> > Also for now skip the usage of rcu sheaf for CONFIG_PREEMPT_RT as the
-> > contexts where kfree_rcu() is called might not be compatible with taking
-> > a barn spinlock or a GFP_NOWAIT allocation of a new sheaf taking a
-> > spinlock - the current kfree_rcu() implementation avoids doing that.
-> > 
-> > Teach kvfree_rcu_barrier() to flush all rcu_free sheaves from all caches
-> > that have them. This is not a cheap operation, but the barrier usage is
-> > rare - currently kmem_cache_destroy() or on module unload.
-> > 
-> > Add CONFIG_SLUB_STATS counters free_rcu_sheaf and free_rcu_sheaf_fail to
-> > count how many kfree_rcu() used the rcu_free sheaf successfully and how
-> > many had to fall back to the existing implementation.
-> > 
-> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> Hi Vlastimil,
-> 
-> This patch increases kmod selftest (stress module loader) runtime by about
-> ~50-60%, from ~200s to ~300s total execution time. My tested kernel has
-> CONFIG_KVFREE_RCU_BATCHED enabled. Any idea or suggestions on what might be
-> causing this, or how to address it?
+Hello!
 
-This is likely due to increased kvfree_rcu_barrier() during module unload.
+This series contains additions of microbenchmarks to the refscale suite,
+and depends on the SRCU series.
 
-It currently iterates over all CPUs x slab caches (that enabled sheaves,
-there should be only a few now) pair to make sure rcu sheaf is flushed
-by the time kvfree_rcu_barrier() returns.
+1.	Exercise DEFINE_STATIC_SRCU_FAST() and init_srcu_struct_fast().
 
-Just being curious, do you have any serious workload that depends on
-the performance of module unload?
+2.	Add local_irq_disable() and local_irq_save() readers.
 
--- 
-Cheers,
-Harry / Hyeonggon
+3.	Add local_bh_disable() readers.
+
+4.	Add preempt_disable() readers.
+
+5.	Add this_cpu_inc() readers.
+
+6.	Add non-atomic per-CPU increment readers.
+
+7.	Do not diable interrupts for tests involving local_bh_enable().
+
+8.	Add SRCU-fast-updown readers.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/kernel/rcu/refscale.c |    9 +
+ kernel/rcu/refscale.c   |  378 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 372 insertions(+), 15 deletions(-)
