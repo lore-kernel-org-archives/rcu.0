@@ -1,48 +1,49 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFE72BEFF9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12362BEFFE;
 	Mon,  3 Nov 2025 07:19:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762154354; cv=none; b=tqtGZI9/Y+17C9RWZqbyOlfgnuRSRL8iNkaEqLqN9S4aS8efEnyWMR0zGNCn5kD5XU9f4LMZru/azRF97D4bmc01OTxmUiWyfroa5Gm/LCLsFinTMezcTBt5He02gy636OdrxCdxlSqJqm3e80ZbAONKAUFqBxRP0TJRN7uapVU=
+	t=1762154354; cv=none; b=AV97PT4HYWN2UNVVsyT94uz91//DzlRh1a43cj5bnNh8clHbKMpzEfC+05ZYyGJgbyw/5bKevMMzoROJxi40sz7g6mxomilf84ln6Fb+Zk9VJw50WpIR35diEWKVL6isGu2IlkeDmzvGxW6PJL0DYjyEgs03DNPkdY7K3Zi+tJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762154354; c=relaxed/simple;
-	bh=8ZCRNXXqmbiShzfe05dmFtCIZXEOypE5e1dE70Rypfo=;
+	bh=Ga33FyuA/Xuk9qvyQLLFmM7o/uPEU/PVyo1IisR6tc8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SrmVUqewK4ae0LS7nEjq073MUdqDYkpOxWnzeNQFs/PECsUQTd0dqllCMB0uCJ3aRNvqdUYm/dsZVhGlFM1iKkvIG5ERC3jXEaJgFecwR+sNmfu8aTfcBUKMHFFDyYKuheTs+buL6FnCRs2fMKAPUGR62a4+72yp6MWvnYeN10U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uWSg0cJ3; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=oIXCKWlFiOSxq+wv/ugQoDkLutBEtD87K1opPipm/k96VeNwyQlJ2DpAD4PYM+Yi5Sxx1DfXoIRgpVoS1uLHA91VTvRa4HVpw0Z3j8lJdX6vXAPJ4ho3CKG/CvN/hGQq2b8zAqL1WMnZYajpCy0UBFbFCCicZgSSBletHmDxLAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EFoHqJmz; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uWSg0cJ3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78A66C19423;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EFoHqJmz"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33C98C4AF11;
 	Mon,  3 Nov 2025 07:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1762154354;
-	bh=8ZCRNXXqmbiShzfe05dmFtCIZXEOypE5e1dE70Rypfo=;
+	bh=Ga33FyuA/Xuk9qvyQLLFmM7o/uPEU/PVyo1IisR6tc8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uWSg0cJ31rkYVJyjqhuAnue/g4l4rIK0s8Konh5jLRD36uxNAaFltUbqKR/ocyvNj
-	 u8UV+2QAWAWSbnKTrQrkCyu4LD+3DPPVdnsVB9CToWPEJyg6MOcvieckyqoS88BgMy
-	 1nWfYssSxzanfQRhtW4G/QSIDtPlfbn1W3tToDx0yrZ6//SJuYMTICHXoCu4plIemz
-	 pH7d/8Ls52k3Cw7gVJl1sa0AaJgwO18qXv0RDuW/lYMsHFHRQWtkn13n9qAoOeVRWx
-	 iSnouZb7vALblJe7Txv0uGeCtBuFE4TvReUz1SKKu1HolxAAOdU82xSS5g9YXb0//y
-	 Qw3HJjINaeTqQ==
+	b=EFoHqJmzax/JtrsDPUvyl5cHn3bZubnEPoo+T2qmujknnYNMtusuUFYyB/krzqTV/
+	 wYeUjIoF3FRpv+bJjZnW167c1SZAZIeGLN0e5XF/DkUQ/NlAFGsNvHknt3+G8F+iSy
+	 oaFwr/taZ/5X2b5wF7CItdwS+hUap3CB0BRkoTniF5yDsJJQiupY2IR2YQitcmN4la
+	 e8p6g5VUJy6Yg7Rs+NvdByg3p3r44UYBLn949MFVkcZX4NJRwBj3OGwve6/FKlxzFS
+	 fc4sqvhexW4mf6QsLW49F/nSCoRkYBbOwmP9EPeHLcEIL+7D86rs4nJ98WWSbHlKD8
+	 18vGYfjjHs3jQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 04793CE160B; Sun,  2 Nov 2025 14:49:50 -0800 (PST)
+	id CB6B3CE19FB; Sun,  2 Nov 2025 15:07:01 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 8/8] refscale: Add SRCU-fast-updown readers
-Date: Sun,  2 Nov 2025 14:49:48 -0800
-Message-Id: <20251102224948.3906224-8-paulmck@kernel.org>
+Subject: [PATCH 9/9] rcutorture: Test rcu_tasks_trace_expedite_current()
+Date: Sun,  2 Nov 2025 15:06:59 -0800
+Message-Id: <20251102230659.3906740-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <19fae851-0c49-43d2-9bbf-913424641ff4@paulmck-laptop>
-References: <19fae851-0c49-43d2-9bbf-913424641ff4@paulmck-laptop>
+In-Reply-To: <a1e505e4-931b-45cf-8ca7-337442aa598e@paulmck-laptop>
+References: <a1e505e4-931b-45cf-8ca7-337442aa598e@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -51,84 +52,32 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds refscale readers based on srcu_read_lock_fast_updown()
-and srcu_read_lock_fast_updown() ("refscale.scale_type=srcu-fast-updown").
-On my x86 laptop, these are about 2.2ns per pair.
+This commit adds a ->exp_current member to the tasks_tracing_ops structure
+to test the rcu_tasks_trace_expedite_current() function.
+
+[ paulmck: Apply kernel test robot feedback. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- kernel/rcu/refscale.c | 40 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+ kernel/rcu/rcutorture.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 7429ec9f0092..07a313782dfd 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -186,6 +186,7 @@ static const struct ref_scale_ops rcu_ops = {
- // Definitions for SRCU ref scale testing.
- DEFINE_STATIC_SRCU(srcu_refctl_scale);
- DEFINE_STATIC_SRCU_FAST(srcu_fast_refctl_scale);
-+DEFINE_STATIC_SRCU_FAST_UPDOWN(srcu_fast_updown_refctl_scale);
- static struct srcu_struct *srcu_ctlp = &srcu_refctl_scale;
- 
- static void srcu_ref_scale_read_section(const int nloops)
-@@ -254,6 +255,42 @@ static const struct ref_scale_ops srcu_fast_ops = {
- 	.name		= "srcu-fast"
- };
- 
-+static bool srcu_fast_updown_sync_scale_init(void)
-+{
-+	srcu_ctlp = &srcu_fast_updown_refctl_scale;
-+	return true;
-+}
-+
-+static void srcu_fast_updown_ref_scale_read_section(const int nloops)
-+{
-+	int i;
-+	struct srcu_ctr __percpu *scp;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		scp = srcu_read_lock_fast_updown(srcu_ctlp);
-+		srcu_read_unlock_fast_updown(srcu_ctlp, scp);
-+	}
-+}
-+
-+static void srcu_fast_updown_ref_scale_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+	struct srcu_ctr __percpu *scp;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		scp = srcu_read_lock_fast_updown(srcu_ctlp);
-+		un_delay(udl, ndl);
-+		srcu_read_unlock_fast_updown(srcu_ctlp, scp);
-+	}
-+}
-+
-+static const struct ref_scale_ops srcu_fast_updown_ops = {
-+	.init		= srcu_fast_updown_sync_scale_init,
-+	.readsection	= srcu_fast_updown_ref_scale_read_section,
-+	.delaysection	= srcu_fast_updown_ref_scale_delay_section,
-+	.name		= "srcu-fast-updown"
-+};
-+
- #ifdef CONFIG_TASKS_RCU
- 
- // Definitions for RCU Tasks ref scale testing: Empty read markers.
-@@ -1479,7 +1516,8 @@ ref_scale_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static const struct ref_scale_ops *scale_ops[] = {
--		&rcu_ops, &srcu_ops, &srcu_fast_ops, RCU_TRACE_OPS RCU_TASKS_OPS
-+		&rcu_ops, &srcu_ops, &srcu_fast_ops, &srcu_fast_updown_ops,
-+		RCU_TRACE_OPS RCU_TASKS_OPS
- 		&refcnt_ops, &percpuinc_ops, &incpercpu_ops, &incpercpupreempt_ops,
- 		&incpercpubh_ops, &incpercpuirqsave_ops,
- 		&rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops,
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 647af81e0b21..f651b1dc2c97 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1180,6 +1180,7 @@ static struct rcu_torture_ops tasks_tracing_ops = {
+ 	.deferred_free	= rcu_tasks_tracing_torture_deferred_free,
+ 	.sync		= synchronize_rcu_tasks_trace,
+ 	.exp_sync	= synchronize_rcu_tasks_trace,
++	.exp_current	= rcu_tasks_trace_expedite_current,
+ 	.call		= call_rcu_tasks_trace,
+ 	.cb_barrier	= rcu_barrier_tasks_trace,
+ 	.cbflood_max	= 50000,
 -- 
 2.40.1
 
