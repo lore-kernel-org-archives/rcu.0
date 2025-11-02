@@ -1,49 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BDBA29E11D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16E92BCF54;
 	Mon,  3 Nov 2025 07:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762154353; cv=none; b=cHj/c6DVojjPITIhxoeKA7ajRIgN9xFustT4FQt0V37IE/Hsnd7tSG3gNTTiSCVCLk64LUjnKOMBW9seS0pnDhfVvAc6UiA8AAQVNR5MnMIfrR7ofZQVgsJ5tsjbiIGTQwNZgeZmfBYOsU0YnAMbBTu+i5Mva3rMxubLNMe1Jq4=
+	t=1762154353; cv=none; b=TpYBgFzsLUEgKIdbiGUDJRBbnKdLmpwjMddF53KE+ynwzVXsoK+cfdLJK4myw7wg61Wrvw/MtuWFdHdkHiPYQKPhf6xSSRmFo6AjPDS5l2827YpOGfpvc2RQJaj8MUWpv5aUiBcp3QNF7QFntgERJ2Th9JhNLIc0AvRRAB5Dpfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762154353; c=relaxed/simple;
-	bh=aydO2EhRnpEhX554P/jNNt/MVcgcdriGe2FZRVAojYA=;
+	bh=9BQtYTW3cHMDKjYUKt5ajghnwRdt9/BJ0CAqZSRRKGY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oIff+N6wx2hbzEVYA+unE5d9jODzgSIHQI25Sj0DN2VKnAATBSk9wb1AA0PEm7/LCJ9g6qVDgl8RfP2NJQ/6PsGrkvgDNkYZ3wXvcvghI9BoskqGleVrnWIowf4KLw/kMJUCNGoq3iAVBba38z1dzPg8nmohJUywLcPx/nmlxls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F6s7tB/L; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=kOiRRKSpeG/K8ZRwecIc6epnd2ft1C91xjnARGv8W5CaAsbO8/Rq6n7BkpuYPdR81KCZT1fsxJeqO4y7aargbXNSsbRqYSEbp++HJhp7FRpCwBsq+uObjhAtYySLMNHgnWjvZ6YCOmB79dR6I7aKqZaKyT8pjoVvT+6Cnjc3qgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f15oXOG0; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F6s7tB/L"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 356E3C116D0;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f15oXOG0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43F5AC4AF09;
 	Mon,  3 Nov 2025 07:19:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1762154353;
-	bh=aydO2EhRnpEhX554P/jNNt/MVcgcdriGe2FZRVAojYA=;
+	bh=9BQtYTW3cHMDKjYUKt5ajghnwRdt9/BJ0CAqZSRRKGY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=F6s7tB/LZ7/744EIHVe37Q9UmM+FEa5vb/Tb06xPS1G5qodkTWnuTf21k+jXqQEAU
-	 PGcUBtMUAiefrDAhdiativnUP4nQHMU+H3SjIwI3SaW8Cg7OcrjeeiFujR1Jcc/FZT
-	 ZjzxW/c6N49rhLYy1LGSdJKfKV+bs5wqFPDHk4ipF2IOpwrtmTc/OtA+mtLY7UDgC/
-	 o0nHGicL8+UhTwE98GJw92rhBTb48wM5TyaT76xHML91moIojjTK1+jWeriJQxCTMA
-	 PxfBGfIw0elHvRdIOh8ihxNVCLIxJ8VAuyP8T956qoa2Bki5bHfcnMrwtcf2mWY6i+
-	 ClTJbBARxSjjQ==
+	b=f15oXOG0GdvLlDZXnXqDvwKiR7A6FLAhGnxcZeY9f7xArdDA3sGf4w8rlr7/ZVHQV
+	 DRhuap1Z/g1aTt+u/IlZcIV8VjDEjW0kI2mT3W+r1LgNepPmhN4ExMc7qUu1AmBMle
+	 lu2jJQ/Oss+vXIU0va80yTmR5iA+tPgQOzR8blMp1oGGqejpEV62kbPKdNqgadtIsM
+	 vSOY9wWuO6u6fWnewLbCJ5nCZkk4vfwfAb8YGWn+MR3l3qeGVQAuEIiDomFqM6vVHB
+	 4vGDR5+Pz2vq9A8wa72jjiN9IX2R2+dzVKBvN6ZjuRLbOhNfx+SEZMslggLXhxhice
+	 NpIQcrWHI6EvA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C33A9CE191D; Sun,  2 Nov 2025 15:07:01 -0800 (PST)
+	id EB6F5CE1104; Sun,  2 Nov 2025 14:49:49 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH 6/9] rcu: Update Requirements.rst for RCU Tasks Trace
-Date: Sun,  2 Nov 2025 15:06:56 -0800
-Message-Id: <20251102230659.3906740-6-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 3/8] refscale: Add local_bh_disable() readers
+Date: Sun,  2 Nov 2025 14:49:43 -0800
+Message-Id: <20251102224948.3906224-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <a1e505e4-931b-45cf-8ca7-337442aa598e@paulmck-laptop>
-References: <a1e505e4-931b-45cf-8ca7-337442aa598e@paulmck-laptop>
+In-Reply-To: <19fae851-0c49-43d2-9bbf-913424641ff4@paulmck-laptop>
+References: <19fae851-0c49-43d2-9bbf-913424641ff4@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,41 +48,67 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit updates the documentation to declare that RCU Tasks Trace
-is implemented as a thin wrapper around SRCU-fast.
+This commit adds refscale readers based on local_bh_disable() and
+local_bh_enable() ("refscale.scale_type=bh").  On my x86 laptop, these
+are about 4.9ns.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: <bpf@vger.kernel.org>
 ---
- .../RCU/Design/Requirements/Requirements.rst         | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/rcu/refscale.c | 34 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index ba417a08b93d..b5cdbba3ec2e 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -2780,12 +2780,12 @@ Tasks Trace RCU
- ~~~~~~~~~~~~~~~
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 266a3fa94b54..1faed90231ab 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -636,6 +636,37 @@ static const struct ref_scale_ops jiffies_ops = {
+ 	.name		= "jiffies"
+ };
  
- Some forms of tracing need to sleep in readers, but cannot tolerate
--SRCU's read-side overhead, which includes a full memory barrier in both
--srcu_read_lock() and srcu_read_unlock().  This need is handled by a
--Tasks Trace RCU that uses scheduler locking and IPIs to synchronize with
--readers.  Real-time systems that cannot tolerate IPIs may build their
--kernels with ``CONFIG_TASKS_TRACE_RCU_READ_MB=y``, which avoids the IPIs at
--the expense of adding full memory barriers to the read-side primitives.
-+SRCU's read-side overhead, which includes a full memory barrier in
-+both srcu_read_lock() and srcu_read_unlock().  This need is handled by
-+a Tasks Trace RCU API implemented as thin wrappers around SRCU-fast,
-+which avoids the read-side memory barriers, at least for architectures
-+that apply noinstr to kernel entry/exit code (or that build with
-+``CONFIG_TASKS_TRACE_RCU_NO_MB=y``.
++static void ref_bh_section(const int nloops)
++{
++	int i;
++
++	preempt_disable();
++	for (i = nloops; i >= 0; i--) {
++		local_bh_disable();
++		local_bh_enable();
++	}
++	preempt_enable();
++}
++
++static void ref_bh_delay_section(const int nloops, const int udl, const int ndl)
++{
++	int i;
++
++	preempt_disable();
++	for (i = nloops; i >= 0; i--) {
++		local_bh_disable();
++		un_delay(udl, ndl);
++		local_bh_enable();
++	}
++	preempt_enable();
++}
++
++static const struct ref_scale_ops bh_ops = {
++	.readsection	= ref_bh_section,
++	.delaysection	= ref_bh_delay_section,
++	.name		= "bh"
++};
++
+ static void ref_irq_section(const int nloops)
+ {
+ 	int i;
+@@ -1236,7 +1267,8 @@ ref_scale_init(void)
+ 	static const struct ref_scale_ops *scale_ops[] = {
+ 		&rcu_ops, &srcu_ops, &srcu_fast_ops, RCU_TRACE_OPS RCU_TASKS_OPS
+ 		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops,
+-		&acqrel_ops, &sched_clock_ops, &clock_ops, &jiffies_ops, &irq_ops, &irqsave_ops,
++		&acqrel_ops, &sched_clock_ops, &clock_ops, &jiffies_ops,
++		&bh_ops, &irq_ops, &irqsave_ops,
+ 		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
+ 	};
  
- The tasks-trace-RCU API is also reasonably compact,
- consisting of rcu_read_lock_trace(), rcu_read_unlock_trace(),
 -- 
 2.40.1
 
