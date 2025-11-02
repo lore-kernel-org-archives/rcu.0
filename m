@@ -1,48 +1,53 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932B2153BED;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF953299A8C;
 	Mon,  3 Nov 2025 07:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762154352; cv=none; b=WbgU0fBj7qvCM9zZLRGz4dIyG8nMWi7fQpSgCvxbkIa5KTVq5qt/Ns/3aujIGR9xhSJB0OHeesTphRC8ShjbUQVtc7JN+YbhKowu0MMn0uvOBSyVSt0xFF1tMGIMFNFFoRPLwGl3c8DjSXTOMt/8U5dH+hQzsXCI3yLnoPozeKY=
+	t=1762154352; cv=none; b=DFbPcNnZZ0W99K2uTkdsmddKUfzzU37WLiuJWPG39110Wc2NkcpzLeb2RmKSLgD1rn4koQDalnVRpThrCck9fPGkqsiJdwAWlOjR5mdz1kVN0Vt0JpkvgWzHydKk6yr7hlfJoYwWsUbWBV8Zqhd93nP3fhwSl8PIhjY0dPpILqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762154352; c=relaxed/simple;
-	bh=Q0AKERJDbUSfsvDf4x7Le3CWRCQuSmTY0wgl6K/Nz6M=;
+	bh=updO0Qt60cves0NEScBOtRbVWMjNNxOri0JDFrV2Fxs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=osSOK/cWXFSH6GA1HXq8yobNLc7HHjwWl6+CDCi8HQbq+Xxwvk8Phb7299HBKZrHRd4gQheDu5YY6H8r5/6iUxUDl49SikGgN/jDwdYJf4FWgJflLPMp+ssp5Q2XOELgka8rTdu0XZF8mV8N9O58rbezJWOPDu5GrekSPYxrT9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jnBM3d/E; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=KbRIAbhVzTvdpapmGcYRnaq9qRG8WSPgj8Nq+N8bdkd/J/jfkyDn0sLGEiufmW/mtKi5MKQLPRddB/1BXN87opHd7kaXILVz9fRW9X2QEzC8jhgqnAWeHqM2ha5ypVQ1ULNBTYB93fB722pI91SpR3xbhEkM1x91VqLKSYDpTD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pIVZl0oM; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jnBM3d/E"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 382EBC4AF0B;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pIVZl0oM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A3EBC116C6;
 	Mon,  3 Nov 2025 07:19:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1762154352;
-	bh=Q0AKERJDbUSfsvDf4x7Le3CWRCQuSmTY0wgl6K/Nz6M=;
+	bh=updO0Qt60cves0NEScBOtRbVWMjNNxOri0JDFrV2Fxs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jnBM3d/E+ybQzkcBC9iT6IUwRUfd3ufuyVxc8Fl/nEFWDPKw5MGD2U9mumDTjbuL+
-	 xSsCTxgqlHeH+1tAy98A17kJgirQ/bMgYUTzWldFY+dzypYu3+IpNHADmPW87XwZ0u
-	 EzZ/wA8a1h4HRdVcoIp/lRW6vNwHgiJXu5ru/ojh/3gp63fDNK/d7v6ml0pg37vOeP
-	 HLIGWXyg2ZmxfN69zi2K65i1OoskCrL+6PY2Qv9NJlcMJyJM7XhzbCPWgV/eKGHzj0
-	 GJprz6KUBoUPCyPDbk0c5qsmpT8dKZk5k4NGhFe09KomwZmYkUzoM/sbdaQE/082Z+
-	 BiLd3EwBVRNMA==
+	b=pIVZl0oMMdIyNWJE59R29h1WVUaMv79Jf4uFwY/len7oVj60uaEmMRQFH0SE7G2CU
+	 g7p+h8yN/7CsJkBlYx/nAqapTxUEnyDNsYzwW16EpF6FXcZuxAVx1XKwHDGTjuOxZx
+	 FfozfNZY6E1CXHc6LOSIRpWh2QyERP/xZb1s1F9UrY04kS+0SMbfzHljd4bxIA5Hbx
+	 VjqX3LRfL315O8LdJfcUJ5kcozW17U4T2k8v0i0lWU8KhIOAfk4zaunPg/Rkufqp7D
+	 3RAsv5IZa36pfSRHOM334SgqL3p5M3t0Ch4JibNPID4NS1rPe0JVhQaFHfyVtkdYKM
+	 +DOGKSDJVt74A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 84200CE0FF9; Sun,  2 Nov 2025 13:44:37 -0800 (PST)
+	id C5F53CE19AC; Sun,  2 Nov 2025 15:07:01 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Joe Perches <joe@perches.com>,
+	Andy Whitcroft <apw@canonical.com>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 05/19] srcu: Make grace-period determination use ssp->srcu_reader_flavor
-Date: Sun,  2 Nov 2025 13:44:22 -0800
-Message-Id: <20251102214436.3905633-5-paulmck@kernel.org>
+Subject: [PATCH 7/9] checkpatch: Deprecate rcu_read_{,un}lock_trace()
+Date: Sun,  2 Nov 2025 15:06:57 -0800
+Message-Id: <20251102230659.3906740-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
-References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
+In-Reply-To: <a1e505e4-931b-45cf-8ca7-337442aa598e@paulmck-laptop>
+References: <a1e505e4-931b-45cf-8ca7-337442aa598e@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -51,35 +56,37 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit causes the srcu_readers_unlock_idx() function to take the
-srcu_struct structure's ->srcu_reader_flavor field into account.  This
-ensures that structures defined via DEFINE_SRCU_FAST( or initialized via
-init_srcu_struct_fast() have their grace periods use synchronize_srcu()
-or synchronize_srcu_expedited() instead of smp_mb(), even before the
-first SRCU reader has been entered.
+Uses of rcu_read_lock_trace() and rcu_read_unlock_trace()
+are better served by the new rcu_read_lock_tasks_trace() and
+rcu_read_unlock_tasks_trace() APIs.  Therefore, mark the old APIs as
+deprecated.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Joe Perches <joe@perches.com>
+Cc: Andy Whitcroft <apw@canonical.com>
+Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- kernel/rcu/srcutree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/checkpatch.pl | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 9869a13b8763..c29203b23d1a 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -490,7 +490,7 @@ static bool srcu_readers_lock_idx(struct srcu_struct *ssp, int idx, bool gp, uns
- static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx, unsigned long *rdm)
- {
- 	int cpu;
--	unsigned long mask = 0;
-+	unsigned long mask = ssp->srcu_reader_flavor;
- 	unsigned long sum = 0;
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index e722dd6fa8ef..3bb7d35a5cfc 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -860,6 +860,8 @@ our %deprecated_apis = (
+ 	"kunmap"				=> "kunmap_local",
+ 	"kmap_atomic"				=> "kmap_local_page",
+ 	"kunmap_atomic"				=> "kunmap_local",
++	"rcu_read_lock_trace"			=> "rcu_read_lock_tasks_trace",
++	"rcu_read_unlock_trace"			=> "rcu_read_unlock_tasks_trace",
+ );
  
- 	for_each_possible_cpu(cpu) {
+ #Create a search pattern for all these strings to speed up a loop below
 -- 
 2.40.1
 
