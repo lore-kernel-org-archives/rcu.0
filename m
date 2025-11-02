@@ -1,42 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5929A24E01D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5937F24E4A1;
 	Sun,  2 Nov 2025 21:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762119879; cv=none; b=U0quv92Kge+5odlygCt+179ZD2+qalgY04KZoWXm+DQtdT4rkdXQuoam+kY/VxUa9Z8N6SkvdaIStC1FLcKGzMVSeHZRBgORpzKClpwyy2SQno9lhDWchQ3Qi915SRxBGyDBS3kxfqWTjPOY8f3Nnao7mhM/xd2JMwx5IdL+BBQ=
+	t=1762119879; cv=none; b=uAme7bwPnmBojJ+6hdGWZbCnQKyvVRPp+h7nOeF80eiC5U70z/QpnO+rijWD1ZkqBY3yP0eQpHNBIS5g5k3Ha/TRhYUWUfiKeTDRFGjy0BZEWE+jhy12/vlbZmvAhwwMBnjxR+FozfNGcrxvap+3O7lC5Y7l959JDGSkFgxxPwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762119879; c=relaxed/simple;
-	bh=bdRaLOeGRlaNeOitkkHmPDSe++KDC1F2xKdPiknDIIg=;
+	bh=BK4yD7eyeQ0mHbL7KbeZ8Mx12t+bQxDXJ6lt6IBpXBE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sJltZwqr/Br24WD2WuhstTGGdMGftLtCrlVoKVGzcO4qGGoTlwJuC7SH2dOqfMFT5HciXC6ZwgSDoNAB+q16mZvzigO45Hu2uHDfNgFwTLKi25auxtO8s1LIurl1eVL77gogeu62q7WQV3hvj0MI3z6RbL56v/e3EjSQDP6IhfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aGROng2V; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=gks+wKfDjIGRyTs+/OZ54PsGdh8XfH5s7oL2dNFrlgoBLIfRu4KL+SB2eNTmLYSohlua/v3HmkMO03/6PHZZT3AoHVY+RA3aiwdVrcPDVQBlb45RF+m5fdahPZdBTjrJbK1iHNvF0kP1lrSrlekq5agGenju15/cdIbqnVoZiY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b0S5LSTA; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aGROng2V"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38E93C16AAE;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b0S5LSTA"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39DB6C19424;
 	Sun,  2 Nov 2025 21:44:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1762119879;
-	bh=bdRaLOeGRlaNeOitkkHmPDSe++KDC1F2xKdPiknDIIg=;
+	bh=BK4yD7eyeQ0mHbL7KbeZ8Mx12t+bQxDXJ6lt6IBpXBE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aGROng2Vrwr7izBe1JMo0rTtk/LECrRXPoseahtv9nErOznfGE5Xvlp0yFprbemi8
-	 AAZWbrKf76/4O4Y1sXXQZIHyp+RzljtpYC6tOVU4pPgmJ8ieX5A/AYc6zk2tcjswFw
-	 nSqzJeyiuZ/WAyIFG83ufr32gH9gIpKLxXgpdta4VAJFmP4q2vJ/bQHzZtp7c+/7Kv
-	 vqkVD2tfKFW9eO3puAEvnhHfDWf70CsL4ROx/OsQ5XlaGe00mkoS9khBx95BsrCWSk
-	 hKl7y4wT4E3zLofx6Q8HfKaBfrIXr25kD8dpCZ8Z/espWEkNgRCMaPG2U21b0pifu+
-	 ibfESU8CBhx2A==
+	b=b0S5LSTAGO2TwFeFUsEWC5bltZQV08z5eZBbq0JSE1PLO53LHTTobxVp2hvPWZG1A
+	 EvMxeHiI++c8lmiIVA222nmLMyu+DGL2csoE8G3XLzEZe54T9zt+h0K5t6sJQAo2Vb
+	 bQBtNju+CnCSWA8v9cK6jE+2I2K2hsV6bxxoyUkAH6yqDwAvlc8cH8CcM/WiYJYsUq
+	 y8bhT+eL9rw7zr06cLZhMqEshXeMkqoqVf+8887PzsKmEhrnvLbzr7Er32+827AzqZ
+	 aRZtQznE0AIKx8bRbPNeTuvaMgKPUqYheztex5D4GXqTp60T7lzS99/U/bnjyj78OV
+	 XpsxPSkKHaDGQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 96CDECE15C3; Sun,  2 Nov 2025 13:44:37 -0800 (PST)
+	id 94712CE15AA; Sun,  2 Nov 2025 13:44:37 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 12/19] rcutorture: Permit kvm-again.sh to re-use the build directory
-Date: Sun,  2 Nov 2025 13:44:29 -0800
-Message-Id: <20251102214436.3905633-12-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Leon Hwang <leon.hwang@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: [PATCH 11/19] rcu: Mark diagnostic functions as notrace
+Date: Sun,  2 Nov 2025 13:44:28 -0800
+Message-Id: <20251102214436.3905633-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
 References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
@@ -48,117 +50,73 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds "inplace" and "inplace-force" values to the kvm-again.sh
-"--link" argument, which causes the run's output to be placed into the
-build directory.  This could be used to save build time if the machine
-went down partway into a run, but it can also be used to do a large
-number of builds, and run the resulting kernels concurrently even if the
-builds are based on different commits.  A later commit will add this
-latter capability to kvm-series.sh in order to produce large speedups
-for branch-checking operations.
+The rcu_lockdep_current_cpu_online(), rcu_read_lock_sched_held(),
+rcu_read_lock_held(), rcu_read_lock_bh_held(), rcu_read_lock_any_held()
+are used by tracing-related code paths, so putting traces on them is
+unlikely to make anyone happy.  This commit therefore marks them all
+"notrace".
 
+Reported-by: Leon Hwang <leon.hwang@linux.dev>
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-again.sh     | 56 +++++++++++++------
- 1 file changed, 40 insertions(+), 16 deletions(-)
+ kernel/rcu/tree.c   | 2 +-
+ kernel/rcu/update.c | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-index 88ca4e368489..b5239b52cb5d 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-@@ -31,7 +31,7 @@ fi
- if ! cp "$oldrun/scenarios" $T/scenarios.oldrun
- then
- 	# Later on, can reconstitute this from console.log files.
--	echo Prior run batches file does not exist: $oldrun/batches
-+	echo Prior run scenarios file does not exist: $oldrun/scenarios
- 	exit 1
- fi
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 31690ffa452a..8ddd07fed363 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4021,7 +4021,7 @@ bool rcu_cpu_online(int cpu)
+  * RCU on an offline processor during initial boot, hence the check for
+  * rcu_scheduler_fully_active.
+  */
+-bool rcu_lockdep_current_cpu_online(void)
++bool notrace rcu_lockdep_current_cpu_online(void)
+ {
+ 	struct rcu_data *rdp;
+ 	bool ret = false;
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index c912b594ba98..dfeba9b35395 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -117,7 +117,7 @@ static bool rcu_read_lock_held_common(bool *ret)
+ 	return false;
+ }
  
-@@ -68,7 +68,7 @@ usage () {
- 	echo "       --datestamp string"
- 	echo "       --dryrun"
- 	echo "       --duration minutes | <seconds>s | <hours>h | <days>d"
--	echo "       --link hard|soft|copy"
-+	echo "       --link hard|soft|copy|inplace|inplace-force"
- 	echo "       --remote"
- 	echo "       --rundir /new/res/path"
- 	echo "Command line: $scriptname $args"
-@@ -121,7 +121,7 @@ do
- 		shift
- 		;;
- 	--link)
--		checkarg --link "hard|soft|copy" "$#" "$2" 'hard\|soft\|copy' '^--'
-+		checkarg --link "hard|soft|copy|inplace|inplace-force" "$#" "$2" 'hard\|soft\|copy\|inplace\|inplace-force' '^--'
- 		case "$2" in
- 		copy)
- 			arg_link="cp -R"
-@@ -132,6 +132,14 @@ do
- 		soft)
- 			arg_link="cp -Rs"
- 			;;
-+		inplace)
-+			arg_link="inplace"
-+			rundir="$oldrun"
-+			;;
-+		inplace-force)
-+			arg_link="inplace-force"
-+			rundir="$oldrun"
-+			;;
- 		esac
- 		shift
- 		;;
-@@ -172,21 +180,37 @@ fi
+-int rcu_read_lock_sched_held(void)
++int notrace rcu_read_lock_sched_held(void)
+ {
+ 	bool ret;
  
- echo ---- Re-run results directory: $rundir
+@@ -342,7 +342,7 @@ EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
+  * Note that rcu_read_lock() is disallowed if the CPU is either idle or
+  * offline from an RCU perspective, so check for those as well.
+  */
+-int rcu_read_lock_held(void)
++int notrace rcu_read_lock_held(void)
+ {
+ 	bool ret;
  
--# Copy old run directory tree over and adjust.
--mkdir -p "`dirname "$rundir"`"
--if ! $arg_link "$oldrun" "$rundir"
--then
--	echo "Cannot copy from $oldrun to $rundir."
--	usage
--fi
--rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
--touch "$rundir/log"
--echo $scriptname $args | tee -a "$rundir/log"
--echo $oldrun > "$rundir/re-run"
--if ! test -d "$rundir/../../bin"
-+if test "$oldrun" != "$rundir"
- then
--	$arg_link "$oldrun/../../bin" "$rundir/../.."
-+	# Copy old run directory tree over and adjust.
-+	mkdir -p "`dirname "$rundir"`"
-+	if ! $arg_link "$oldrun" "$rundir"
-+	then
-+		echo "Cannot copy from $oldrun to $rundir."
-+		usage
-+	fi
-+	rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
-+	touch "$rundir/log"
-+	echo $scriptname $args | tee -a "$rundir/log"
-+	echo $oldrun > "$rundir/re-run"
-+	if ! test -d "$rundir/../../bin"
-+	then
-+		$arg_link "$oldrun/../../bin" "$rundir/../.."
-+	fi
-+else
-+	# Check for a run having already happened.
-+	find "$rundir" -name console.log -print > $T/oldrun-console.log
-+	if test -s $T/oldrun-console.log
-+	then
-+		echo Run already took place in $rundir
-+		if test "$arg_link" = inplace
-+		then
-+			usage
-+		fi
-+	fi
- fi
-+
-+# Find runs to be done based on their qemu-cmd files.
- for i in $rundir/*/qemu-cmd
- do
- 	cp "$i" $T
+@@ -367,7 +367,7 @@ EXPORT_SYMBOL_GPL(rcu_read_lock_held);
+  * Note that rcu_read_lock_bh() is disallowed if the CPU is either idle or
+  * offline from an RCU perspective, so check for those as well.
+  */
+-int rcu_read_lock_bh_held(void)
++int notrace rcu_read_lock_bh_held(void)
+ {
+ 	bool ret;
+ 
+@@ -377,7 +377,7 @@ int rcu_read_lock_bh_held(void)
+ }
+ EXPORT_SYMBOL_GPL(rcu_read_lock_bh_held);
+ 
+-int rcu_read_lock_any_held(void)
++int notrace rcu_read_lock_any_held(void)
+ {
+ 	bool ret;
+ 
 -- 
 2.40.1
 
