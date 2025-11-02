@@ -1,44 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5937F24E4A1;
-	Sun,  2 Nov 2025 21:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77405253957;
+	Sun,  2 Nov 2025 21:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762119879; cv=none; b=uAme7bwPnmBojJ+6hdGWZbCnQKyvVRPp+h7nOeF80eiC5U70z/QpnO+rijWD1ZkqBY3yP0eQpHNBIS5g5k3Ha/TRhYUWUfiKeTDRFGjy0BZEWE+jhy12/vlbZmvAhwwMBnjxR+FozfNGcrxvap+3O7lC5Y7l959JDGSkFgxxPwM=
+	t=1762119879; cv=none; b=Zzp7DbZVuoBS1fRSTNVSsYpCS4Gg1XDC93aUK1K4rei6Hi0y0DWFaSkj/OLeCzJbhE/aDTsnlU6xdYNF4zLXi1R//rfY6RWxso31kiyoAHxZwNGDjCK/erLeUlJPx2rTO2gPZx7KaZEj5esshfRN1mYABGL6ZIdkms6aKP+4+mE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762119879; c=relaxed/simple;
-	bh=BK4yD7eyeQ0mHbL7KbeZ8Mx12t+bQxDXJ6lt6IBpXBE=;
+	bh=7uPrv4irYTmEwJ2B3VG3qdNupsgZm8tMakjud6mO6xs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gks+wKfDjIGRyTs+/OZ54PsGdh8XfH5s7oL2dNFrlgoBLIfRu4KL+SB2eNTmLYSohlua/v3HmkMO03/6PHZZT3AoHVY+RA3aiwdVrcPDVQBlb45RF+m5fdahPZdBTjrJbK1iHNvF0kP1lrSrlekq5agGenju15/cdIbqnVoZiY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b0S5LSTA; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=PHilXZ9UmbKm4XhzyheU8JzgE02A3eiXdYGn7aU9IFyNVkVNqdOUs/XmMOH4NMM4C5eGPwxiJPGTnvbqG4WmvMVWl4dMCHBt7QMCRSqVRc5mD8bWYc+azk3JkTScJ6LCGbLWN/GuEF8hP16aPqREe75mjtSJDkhL8gz4IIx+jI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qhUfumK2; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b0S5LSTA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39DB6C19424;
-	Sun,  2 Nov 2025 21:44:39 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qhUfumK2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2697C116B1;
+	Sun,  2 Nov 2025 21:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762119879;
-	bh=BK4yD7eyeQ0mHbL7KbeZ8Mx12t+bQxDXJ6lt6IBpXBE=;
+	s=k20201202; t=1762119878;
+	bh=7uPrv4irYTmEwJ2B3VG3qdNupsgZm8tMakjud6mO6xs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b0S5LSTAGO2TwFeFUsEWC5bltZQV08z5eZBbq0JSE1PLO53LHTTobxVp2hvPWZG1A
-	 EvMxeHiI++c8lmiIVA222nmLMyu+DGL2csoE8G3XLzEZe54T9zt+h0K5t6sJQAo2Vb
-	 bQBtNju+CnCSWA8v9cK6jE+2I2K2hsV6bxxoyUkAH6yqDwAvlc8cH8CcM/WiYJYsUq
-	 y8bhT+eL9rw7zr06cLZhMqEshXeMkqoqVf+8887PzsKmEhrnvLbzr7Er32+827AzqZ
-	 aRZtQznE0AIKx8bRbPNeTuvaMgKPUqYheztex5D4GXqTp60T7lzS99/U/bnjyj78OV
-	 XpsxPSkKHaDGQ==
+	b=qhUfumK2Q0jsURsB6qQleXPeuWhfqHw87RyLsYPgjb38axzSGzX83DeBqMpcB0PUP
+	 NsUP6ZL5Jv/4ExFMSEqulzBQyxx/JbL21O/Z6T0jMEA+DIMlkZ+SU8Kan2TVEFPW9h
+	 eP6VRjPNTUDIrv0IXIUFdI6HLYY0FqxBwVjldOK7cIUxf/C3V4Y8oZjHpjuUvl+JEQ
+	 mGYou++w5hXnzJombP1kVshtuWnYCNRS+UKpoxOOBVUJrau03zp9A6jX1/R83peNYD
+	 O6sn0riM0To7GnfGMUjy+e0Of8mJLPRd2pwQUhTEgdW4Ag04AOpShGS4C3ULcENhxx
+	 wBBFRvFgJJl9Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 94712CE15AA; Sun,  2 Nov 2025 13:44:37 -0800 (PST)
+	id 8F271CE12A7; Sun,  2 Nov 2025 13:44:37 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Leon Hwang <leon.hwang@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [PATCH 11/19] rcu: Mark diagnostic functions as notrace
-Date: Sun,  2 Nov 2025 13:44:28 -0800
-Message-Id: <20251102214436.3905633-11-paulmck@kernel.org>
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	bpf@vger.kernel.org
+Subject: [PATCH 09/19] doc: Update for SRCU-fast definitions and initialization
+Date: Sun,  2 Nov 2025 13:44:26 -0800
+Message-Id: <20251102214436.3905633-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
 References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
@@ -50,72 +51,110 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The rcu_lockdep_current_cpu_online(), rcu_read_lock_sched_held(),
-rcu_read_lock_held(), rcu_read_lock_bh_held(), rcu_read_lock_any_held()
-are used by tracing-related code paths, so putting traces on them is
-unlikely to make anyone happy.  This commit therefore marks them all
-"notrace".
+This commit documents the DEFINE_SRCU_FAST(), DEFINE_STATIC_SRCU_FAST(),
+and init_srcu_struct_fast() API members.
 
-Reported-by: Leon Hwang <leon.hwang@linux.dev>
-Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: <bpf@vger.kernel.org>
 ---
- kernel/rcu/tree.c   | 2 +-
- kernel/rcu/update.c | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ .../RCU/Design/Requirements/Requirements.rst  | 33 ++++++++++---------
+ Documentation/RCU/checklist.rst               | 12 ++++---
+ Documentation/RCU/whatisRCU.rst               |  3 ++
+ 3 files changed, 27 insertions(+), 21 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 31690ffa452a..8ddd07fed363 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4021,7 +4021,7 @@ bool rcu_cpu_online(int cpu)
-  * RCU on an offline processor during initial boot, hence the check for
-  * rcu_scheduler_fully_active.
-  */
--bool rcu_lockdep_current_cpu_online(void)
-+bool notrace rcu_lockdep_current_cpu_online(void)
- {
- 	struct rcu_data *rdp;
- 	bool ret = false;
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index c912b594ba98..dfeba9b35395 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -117,7 +117,7 @@ static bool rcu_read_lock_held_common(bool *ret)
- 	return false;
- }
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+index f24b3c0b9b0d..ba417a08b93d 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -2637,15 +2637,16 @@ synchronize_srcu() for some other domain ``ss1``, and if an
+ that was held across as ``ss``-domain synchronize_srcu(), deadlock
+ would again be possible. Such a deadlock cycle could extend across an
+ arbitrarily large number of different SRCU domains. Again, with great
+-power comes great responsibility.
++power comes great responsibility, though lockdep is now able to detect
++this sort of deadlock.
  
--int rcu_read_lock_sched_held(void)
-+int notrace rcu_read_lock_sched_held(void)
- {
- 	bool ret;
+-Unlike the other RCU flavors, SRCU read-side critical sections can run
+-on idle and even offline CPUs. This ability requires that
+-srcu_read_lock() and srcu_read_unlock() contain memory barriers,
+-which means that SRCU readers will run a bit slower than would RCU
+-readers. It also motivates the smp_mb__after_srcu_read_unlock() API,
+-which, in combination with srcu_read_unlock(), guarantees a full
+-memory barrier.
++Unlike the other RCU flavors, SRCU read-side critical sections can run on
++idle and even offline CPUs, with the exception of srcu_read_lock_fast()
++and friends.  This ability requires that srcu_read_lock() and
++srcu_read_unlock() contain memory barriers, which means that SRCU
++readers will run a bit slower than would RCU readers. It also motivates
++the smp_mb__after_srcu_read_unlock() API, which, in combination with
++srcu_read_unlock(), guarantees a full memory barrier.
  
-@@ -342,7 +342,7 @@ EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
-  * Note that rcu_read_lock() is disallowed if the CPU is either idle or
-  * offline from an RCU perspective, so check for those as well.
-  */
--int rcu_read_lock_held(void)
-+int notrace rcu_read_lock_held(void)
- {
- 	bool ret;
+ Also unlike other RCU flavors, synchronize_srcu() may **not** be
+ invoked from CPU-hotplug notifiers, due to the fact that SRCU grace
+@@ -2681,15 +2682,15 @@ run some tests first. SRCU just might need a few adjustment to deal with
+ that sort of load. Of course, your mileage may vary based on the speed
+ of your CPUs and the size of your memory.
  
-@@ -367,7 +367,7 @@ EXPORT_SYMBOL_GPL(rcu_read_lock_held);
-  * Note that rcu_read_lock_bh() is disallowed if the CPU is either idle or
-  * offline from an RCU perspective, so check for those as well.
-  */
--int rcu_read_lock_bh_held(void)
-+int notrace rcu_read_lock_bh_held(void)
- {
- 	bool ret;
+-The `SRCU
+-API <https://lwn.net/Articles/609973/#RCU%20Per-Flavor%20API%20Table>`__
++The `SRCU API
++<https://lwn.net/Articles/609973/#RCU%20Per-Flavor%20API%20Table>`__
+ includes srcu_read_lock(), srcu_read_unlock(),
+-srcu_dereference(), srcu_dereference_check(),
+-synchronize_srcu(), synchronize_srcu_expedited(),
+-call_srcu(), srcu_barrier(), and srcu_read_lock_held(). It
+-also includes DEFINE_SRCU(), DEFINE_STATIC_SRCU(), and
+-init_srcu_struct() APIs for defining and initializing
+-``srcu_struct`` structures.
++srcu_dereference(), srcu_dereference_check(), synchronize_srcu(),
++synchronize_srcu_expedited(), call_srcu(), srcu_barrier(),
++and srcu_read_lock_held(). It also includes DEFINE_SRCU(),
++DEFINE_STATIC_SRCU(), DEFINE_SRCU_FAST(), DEFINE_STATIC_SRCU_FAST(),
++init_srcu_struct(), and init_srcu_struct_fast() APIs for defining and
++initializing ``srcu_struct`` structures.
  
-@@ -377,7 +377,7 @@ int rcu_read_lock_bh_held(void)
- }
- EXPORT_SYMBOL_GPL(rcu_read_lock_bh_held);
+ More recently, the SRCU API has added polling interfaces:
  
--int rcu_read_lock_any_held(void)
-+int notrace rcu_read_lock_any_held(void)
- {
- 	bool ret;
+diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+index c9bfb2b218e5..4b30f701225f 100644
+--- a/Documentation/RCU/checklist.rst
++++ b/Documentation/RCU/checklist.rst
+@@ -417,11 +417,13 @@ over a rather long period of time, but improvements are always welcome!
+ 	you should be using RCU rather than SRCU, because RCU is almost
+ 	always faster and easier to use than is SRCU.
+ 
+-	Also unlike other forms of RCU, explicit initialization and
+-	cleanup is required either at build time via DEFINE_SRCU()
+-	or DEFINE_STATIC_SRCU() or at runtime via init_srcu_struct()
+-	and cleanup_srcu_struct().  These last two are passed a
+-	"struct srcu_struct" that defines the scope of a given
++	Also unlike other forms of RCU, explicit initialization
++	and cleanup is required either at build time via
++	DEFINE_SRCU(), DEFINE_STATIC_SRCU(), DEFINE_SRCU_FAST(),
++	or DEFINE_STATIC_SRCU_FAST() or at runtime via either
++	init_srcu_struct() or init_srcu_struct_fast() and
++	cleanup_srcu_struct().	These last three are passed a
++	`struct srcu_struct` that defines the scope of a given
+ 	SRCU domain.  Once initialized, the srcu_struct is passed
+ 	to srcu_read_lock(), srcu_read_unlock() synchronize_srcu(),
+ 	synchronize_srcu_expedited(), and call_srcu().	A given
+diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+index cf0b0ac9f463..a1582bd653d1 100644
+--- a/Documentation/RCU/whatisRCU.rst
++++ b/Documentation/RCU/whatisRCU.rst
+@@ -1227,7 +1227,10 @@ SRCU: Initialization/cleanup/ordering::
+ 
+ 	DEFINE_SRCU
+ 	DEFINE_STATIC_SRCU
++	DEFINE_SRCU_FAST        // for srcu_read_lock_fast() and friends
++	DEFINE_STATIC_SRCU_FAST // for srcu_read_lock_fast() and friends
+ 	init_srcu_struct
++	init_srcu_struct_fast
+ 	cleanup_srcu_struct
+ 	smp_mb__after_srcu_read_unlock
  
 -- 
 2.40.1
