@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE5A2BCF41;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD2929E116;
 	Mon,  3 Nov 2025 07:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762154353; cv=none; b=tAwYnIRv9ova56bkuoMT32btlvoNhALZex/lCcbTSKB1LQdrjmU9u//QD/GRX7WGOtLbSXVa7Uk83W/QHGNtvfubDQv1mwEDDfbGYrHpoLoVCSvFslqibpHhw9Mssq4vHtW+oVZlOL4hvgcac1G8/9gSVzSSuOwj3JRwMqd62Yo=
+	t=1762154353; cv=none; b=jUWtVrF6RoiTxYt/zBzk8Tmp290FSWa0B/lGmRnaxO6smsvX0i0yOKNelwMvK/jGr9jgUFa/eTSUTgDehHfjssDJ7koVQHa3D7vvgLIJ/58bWqjCAum6L3B7LmBBEy3nQHnizOyrlDllm4s5f+0DFqtxk5wzvltwvr8fyFi1Xj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762154353; c=relaxed/simple;
-	bh=X/UrXsAEcy/6Jq6orEZM/DCRoejr5WUe52D6c7d8s1I=;
+	bh=UEUOz1qlBX8iOB8+YDcYnYkXsE6RqMBj2Rs+ohRJ0Ao=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Auh6qXguk9/WXz5Vi3EHyRXB+jK8hGYm+9yNRrYMX/4U50MYFH0pmEzIvaw7NGSL0a7RPzjGx54cft2V9KN39VowCZ/bdcAj7WJ1DUH99F8z8F4qu9ReIjO54kHGq6CYNfpweKLDgfAc4OCWbHH3B/QsaDloUFlMgHB83oXJ0C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OIr60mz6; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=HShZEvWMqXOoM7/g7z7AizQKpd2+XyZsDwgO/oVLzQEl07sQK1Zd7s/K8/BI7WunMCUzv+lNFXV5vUeY5n7nGuouKBVZZsKcUCBBHjrN3wTSk10pNAD5w7Th8pwdirvNMkaM1SBmBY3MlLJKpjD2euPtE0FPoaDw3rUabxYVnA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RHVgj5zF; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OIr60mz6"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33114C4CEFD;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RHVgj5zF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35510C19421;
 	Mon,  3 Nov 2025 07:19:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1762154353;
-	bh=X/UrXsAEcy/6Jq6orEZM/DCRoejr5WUe52D6c7d8s1I=;
+	bh=UEUOz1qlBX8iOB8+YDcYnYkXsE6RqMBj2Rs+ohRJ0Ao=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OIr60mz6bAhZFdm2yABqAOUPAildyG6g+uY9gJEZ9XLnVWaTK8c9U9sd7n0kC/AjD
-	 jjpaMK/JO3YNWYS+b6W9rDPJTTy7fKr/Wi/ytfUzLi7sX2K8yivdIwzc91WPgWyeeU
-	 /2QYcW272I/f1ldHnTHnlTG3cruMhyORVTOfYcQZdy8niOwQ0mqYnTkyMlGFQCYhFA
-	 p5p/b6hbvSQvaEBC56sW9aibHUpJ+1kf4YyGUrHAlJNbZW8nWdKO8l3Kozui1JYJk+
-	 D9f/8CseVE3frboiXYLJ2uaVxVo2x694wmb1170EKF1ciHoY0yovVW/+EO3J1Mn8W8
-	 yjLOotddGp1Aw==
+	b=RHVgj5zFzGhIwrBwdO8BYfK/Eoq9w18zMZr+chDWUlt59NC66bsbbbQ75kuKifJBM
+	 kzaEfm9LfBNU90C1fcJRQNzaVbvTcmnrDAHdPhu161u9jLUfyaYiwC5wSceRUlJ+oN
+	 p2NzL9ukhiuyu9G1TQFtcLSNyoC92ZbcpMx3O7hJ4rHqEfAYsw914dFUB3q0I+8gq/
+	 NHDi8l4nUksIZRN4yb0Mkg2aMpN1kNC5Wze27isKs23KPeNL2xnwITXJfUO2lLT/vq
+	 Fe6BDOkswuIV955qDNFWdMGEqbmvE73I/qfl7bPAjM+zPDCDISGqdTiMYPWOjvzykF
+	 reVgSsyh0sXFA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C89D3CE19F9; Sun,  2 Nov 2025 15:07:01 -0800 (PST)
+	id BD25ACE176D; Sun,  2 Nov 2025 15:07:01 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -38,9 +38,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 8/9] srcu: Create an rcu_tasks_trace_expedite_current() function
-Date: Sun,  2 Nov 2025 15:06:58 -0800
-Message-Id: <20251102230659.3906740-8-paulmck@kernel.org>
+Subject: [PATCH 4/9] rcu: Move rcu_tasks_trace_srcu_struct out of #ifdef CONFIG_TASKS_RCU_GENERIC
+Date: Sun,  2 Nov 2025 15:06:54 -0800
+Message-Id: <20251102230659.3906740-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <a1e505e4-931b-45cf-8ca7-337442aa598e@paulmck-laptop>
 References: <a1e505e4-931b-45cf-8ca7-337442aa598e@paulmck-laptop>
@@ -52,13 +52,11 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit creates an rcu_tasks_trace_expedite_current() function
-that expedites the current (and possibly the next) RCU Tasks Trace
-grace period.
-
-If the current RCU Tasks Trace grace period is already waiting, that wait
-will complete before the expediting takes effect.  If there is no RCU
-Tasks Trace  grace period in flight, this function might well create one.
+Moving the rcu_tasks_trace_srcu_struct structure instance out
+from under the CONFIG_TASKS_RCU_GENERIC Kconfig option permits
+the CONFIG_TASKS_TRACE_RCU Kconfig option to stop enabling this
+CONFIG_TASKS_RCU_GENERIC Kconfig option.  This commit also therefore
+makes it so.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
@@ -66,34 +64,80 @@ Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/rcupdate_trace.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ kernel/rcu/Kconfig |  2 +-
+ kernel/rcu/tasks.h | 42 +++++++++++++-----------------------------
+ 2 files changed, 14 insertions(+), 30 deletions(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index f47ba9c07460..cee89e51e45c 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -184,6 +184,20 @@ static inline void rcu_barrier_tasks_trace(void)
- 	srcu_barrier(&rcu_tasks_trace_srcu_struct);
- }
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 54b4c4aa553a..73a6cc364628 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -82,7 +82,7 @@ config NEED_SRCU_NMI_SAFE
+ 	def_bool HAVE_NMI && !ARCH_HAS_NMI_SAFE_THIS_CPU_OPS && !TINY_SRCU
  
-+/**
-+ * rcu_tasks_trace_expedite_current - Expedite the current Tasks Trace RCU grace period
-+ *
-+ * Cause the current Tasks Trace RCU grace period to become expedited.
-+ * The grace period following the current one might also be expedited.
-+ * If there is no current grace period, one might be created.  If the
-+ * current grace period is currently sleeping, that sleep will complete
-+ * before expediting will take effect.
-+ */
-+static inline void rcu_tasks_trace_expedite_current(void)
-+{
-+	srcu_expedite_current(&rcu_tasks_trace_srcu_struct);
-+}
+ config TASKS_RCU_GENERIC
+-	def_bool TASKS_RCU || TASKS_RUDE_RCU || TASKS_TRACE_RCU
++	def_bool TASKS_RCU || TASKS_RUDE_RCU
+ 	help
+ 	  This option enables generic infrastructure code supporting
+ 	  task-based RCU implementations.  Not for manual selection.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 1249b47f0a8d..76f952196a29 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1439,35 +1439,6 @@ EXPORT_SYMBOL_GPL(rcu_tasks_rude_get_gp_data);
+ 
+ #endif /* #ifdef CONFIG_TASKS_RUDE_RCU */
+ 
+-////////////////////////////////////////////////////////////////////////
+-//
+-// Tracing variant of Tasks RCU.  This variant is designed to be used
+-// to protect tracing hooks, including those of BPF.  This variant
+-// is implemented via a straightforward mapping onto SRCU-fast.
+-
+-#ifdef CONFIG_TASKS_TRACE_RCU
+-
+-DEFINE_SRCU_FAST(rcu_tasks_trace_srcu_struct);
+-EXPORT_SYMBOL_GPL(rcu_tasks_trace_srcu_struct);
+-
+-// Placeholder to suppress build errors through transition period.
+-void __init rcu_tasks_trace_suppress_unused(void)
+-{
+-#ifndef CONFIG_TINY_RCU
+-	show_rcu_tasks_generic_gp_kthread(NULL, NULL);
+-#endif // #ifndef CONFIG_TINY_RCU
+-	rcu_spawn_tasks_kthread_generic(NULL);
+-	synchronize_rcu_tasks_generic(NULL);
+-	call_rcu_tasks_generic(NULL, NULL, NULL);
+-	call_rcu_tasks_iw_wakeup(NULL);
+-	cblist_init_generic(NULL);
+-#ifndef CONFIG_TINY_RCU
+-	rcu_tasks_torture_stats_print_generic(NULL, NULL, NULL, NULL);
+-#endif // #ifndef CONFIG_TINY_RCU
+-}
+-
+-#endif /* #else #ifdef CONFIG_TASKS_TRACE_RCU */
+-
+ #ifndef CONFIG_TINY_RCU
+ void show_rcu_tasks_gp_kthreads(void)
+ {
+@@ -1621,3 +1592,16 @@ core_initcall(rcu_init_tasks_generic);
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ static inline void rcu_tasks_bootup_oddness(void) {}
+ #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
 +
- // Placeholders to enable stepwise transition.
- void __init rcu_tasks_trace_suppress_unused(void);
- 
++#ifdef CONFIG_TASKS_TRACE_RCU
++
++////////////////////////////////////////////////////////////////////////
++//
++// Tracing variant of Tasks RCU.  This variant is designed to be used
++// to protect tracing hooks, including those of BPF.  This variant
++// is implemented via a straightforward mapping onto SRCU-fast.
++
++DEFINE_SRCU_FAST(rcu_tasks_trace_srcu_struct);
++EXPORT_SYMBOL_GPL(rcu_tasks_trace_srcu_struct);
++
++#endif /* #else #ifdef CONFIG_TASKS_TRACE_RCU */
 -- 
 2.40.1
 
