@@ -1,45 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77405253957;
-	Sun,  2 Nov 2025 21:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77484253B5C;
+	Sun,  2 Nov 2025 21:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762119879; cv=none; b=Zzp7DbZVuoBS1fRSTNVSsYpCS4Gg1XDC93aUK1K4rei6Hi0y0DWFaSkj/OLeCzJbhE/aDTsnlU6xdYNF4zLXi1R//rfY6RWxso31kiyoAHxZwNGDjCK/erLeUlJPx2rTO2gPZx7KaZEj5esshfRN1mYABGL6ZIdkms6aKP+4+mE=
+	t=1762119879; cv=none; b=F++xHgP+ZVncwpbjvHtMX/Z64jElmquaJgyiwtgBJqtqBQtdfCJts5P+Cx6XfkL7k2O5ST81QU/M7IwIhH319BYbCfTC6g47HgSLXXuO/Exeb25nz0ZAfAqhy6TSRlcz9P54Z2V53pvOvhmtKQDWooqMicoQPr1xDkR1gd0NHb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762119879; c=relaxed/simple;
-	bh=7uPrv4irYTmEwJ2B3VG3qdNupsgZm8tMakjud6mO6xs=;
+	bh=nCGLsD7q2HOJPiSlnIStGPVemKa7l7hTEsNDv1pJevc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PHilXZ9UmbKm4XhzyheU8JzgE02A3eiXdYGn7aU9IFyNVkVNqdOUs/XmMOH4NMM4C5eGPwxiJPGTnvbqG4WmvMVWl4dMCHBt7QMCRSqVRc5mD8bWYc+azk3JkTScJ6LCGbLWN/GuEF8hP16aPqREe75mjtSJDkhL8gz4IIx+jI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qhUfumK2; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=T6/KDLwGk6BAQjtvK73Kif/PNT6LHsXEzbVq/Nuv9YqhFZXabT5oaUbgpRhD1YqMNYTj+cXgdXUqMwZBRmMm9H1QfPa2ikH/stnO2/mbhTjW/9ojckU79GzqNmc4Muplr7b0n0S8RqHSqi2+6Tf57mGVIu533EkEt4mgjJpM/Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y59alB+C; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qhUfumK2"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2697C116B1;
-	Sun,  2 Nov 2025 21:44:38 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y59alB+C"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 050D9C19421;
+	Sun,  2 Nov 2025 21:44:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762119878;
-	bh=7uPrv4irYTmEwJ2B3VG3qdNupsgZm8tMakjud6mO6xs=;
+	s=k20201202; t=1762119879;
+	bh=nCGLsD7q2HOJPiSlnIStGPVemKa7l7hTEsNDv1pJevc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qhUfumK2Q0jsURsB6qQleXPeuWhfqHw87RyLsYPgjb38axzSGzX83DeBqMpcB0PUP
-	 NsUP6ZL5Jv/4ExFMSEqulzBQyxx/JbL21O/Z6T0jMEA+DIMlkZ+SU8Kan2TVEFPW9h
-	 eP6VRjPNTUDIrv0IXIUFdI6HLYY0FqxBwVjldOK7cIUxf/C3V4Y8oZjHpjuUvl+JEQ
-	 mGYou++w5hXnzJombP1kVshtuWnYCNRS+UKpoxOOBVUJrau03zp9A6jX1/R83peNYD
-	 O6sn0riM0To7GnfGMUjy+e0Of8mJLPRd2pwQUhTEgdW4Ag04AOpShGS4C3ULcENhxx
-	 wBBFRvFgJJl9Q==
+	b=Y59alB+CHMcEw0H2sjInl49oEyk3z0Ql/twC/hBSNaLA4pedhttOz/dPuiwUAkXpg
+	 C3OnLaa9OZA+B9CjBl7H5M4FN7CHJFEY+OZN6QULo4MH5yXBJluZoNz6DMuvRkH3RB
+	 2PUV5OW/MTnXEEXrIKNjGwEI3zY1CdLzmtJblSeKsw4bGs2q240URRZO7uHI6UPYsj
+	 T/DUuPWVYGE8mH+rISnFt65i78JSbUq21or5iP3cGexS4AqXlBeNqHGdxLUbjAoC+t
+	 LwL7Ib/gZlVij6UYfulGK0BTY6+bVC4X58oqiQ7zb5U+Tfx21QDd8pKBNgGLQALKnS
+	 xfxW94zd4fvnQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8F271CE12A7; Sun,  2 Nov 2025 13:44:37 -0800 (PST)
+	id 7BD65CE0F65; Sun,  2 Nov 2025 13:44:37 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 09/19] doc: Update for SRCU-fast definitions and initialization
-Date: Sun,  2 Nov 2025 13:44:26 -0800
-Message-Id: <20251102214436.3905633-9-paulmck@kernel.org>
+Subject: [PATCH 02/19] srcu: Create an srcu_expedite_current() function
+Date: Sun,  2 Nov 2025 13:44:19 -0800
+Message-Id: <20251102214436.3905633-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
 References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
@@ -51,111 +52,142 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit documents the DEFINE_SRCU_FAST(), DEFINE_STATIC_SRCU_FAST(),
-and init_srcu_struct_fast() API members.
+This commit creates an srcu_expedite_current() function that expedites
+the current (and possibly the next) SRCU grace period for the specified
+srcu_struct structure.  This functionality will be inherited by RCU
+Tasks Trace courtesy of its mapping to SRCU fast.
+
+If the current SRCU grace period is already waiting, that wait will
+complete before the expediting takes effect.  If there is no SRCU grace
+period in flight, this function might well create one.
+
+[ paulmck: Apply Zqiang feedback for PREEMPT_RT use. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- .../RCU/Design/Requirements/Requirements.rst  | 33 ++++++++++---------
- Documentation/RCU/checklist.rst               | 12 ++++---
- Documentation/RCU/whatisRCU.rst               |  3 ++
- 3 files changed, 27 insertions(+), 21 deletions(-)
+ include/linux/srcutiny.h |  1 +
+ include/linux/srcutree.h |  8 ++++++
+ kernel/rcu/srcutree.c    | 58 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 67 insertions(+)
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index f24b3c0b9b0d..ba417a08b93d 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -2637,15 +2637,16 @@ synchronize_srcu() for some other domain ``ss1``, and if an
- that was held across as ``ss``-domain synchronize_srcu(), deadlock
- would again be possible. Such a deadlock cycle could extend across an
- arbitrarily large number of different SRCU domains. Again, with great
--power comes great responsibility.
-+power comes great responsibility, though lockdep is now able to detect
-+this sort of deadlock.
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 51ce25f07930..3bfbd44cb1b3 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -103,6 +103,7 @@ static inline void srcu_barrier(struct srcu_struct *ssp)
+ 	synchronize_srcu(ssp);
+ }
  
--Unlike the other RCU flavors, SRCU read-side critical sections can run
--on idle and even offline CPUs. This ability requires that
--srcu_read_lock() and srcu_read_unlock() contain memory barriers,
--which means that SRCU readers will run a bit slower than would RCU
--readers. It also motivates the smp_mb__after_srcu_read_unlock() API,
--which, in combination with srcu_read_unlock(), guarantees a full
--memory barrier.
-+Unlike the other RCU flavors, SRCU read-side critical sections can run on
-+idle and even offline CPUs, with the exception of srcu_read_lock_fast()
-+and friends.  This ability requires that srcu_read_lock() and
-+srcu_read_unlock() contain memory barriers, which means that SRCU
-+readers will run a bit slower than would RCU readers. It also motivates
-+the smp_mb__after_srcu_read_unlock() API, which, in combination with
-+srcu_read_unlock(), guarantees a full memory barrier.
++static inline void srcu_expedite_current(struct srcu_struct *ssp) { }
+ #define srcu_check_read_flavor(ssp, read_flavor) do { } while (0)
+ #define srcu_check_read_flavor_force(ssp, read_flavor) do { } while (0)
  
- Also unlike other RCU flavors, synchronize_srcu() may **not** be
- invoked from CPU-hotplug notifiers, due to the fact that SRCU grace
-@@ -2681,15 +2682,15 @@ run some tests first. SRCU just might need a few adjustment to deal with
- that sort of load. Of course, your mileage may vary based on the speed
- of your CPUs and the size of your memory.
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 42098e0fa0b7..93ad18acd6d0 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -42,6 +42,8 @@ struct srcu_data {
+ 	struct timer_list delay_work;		/* Delay for CB invoking */
+ 	struct work_struct work;		/* Context for CB invoking. */
+ 	struct rcu_head srcu_barrier_head;	/* For srcu_barrier() use. */
++	struct rcu_head srcu_ec_head;		/* For srcu_expedite_current() use. */
++	int srcu_ec_state;			/*  State for srcu_expedite_current(). */
+ 	struct srcu_node *mynode;		/* Leaf srcu_node. */
+ 	unsigned long grpmask;			/* Mask for leaf srcu_node */
+ 						/*  ->srcu_data_have_cbs[]. */
+@@ -135,6 +137,11 @@ struct srcu_struct {
+ #define SRCU_STATE_SCAN1	1
+ #define SRCU_STATE_SCAN2	2
  
--The `SRCU
--API <https://lwn.net/Articles/609973/#RCU%20Per-Flavor%20API%20Table>`__
-+The `SRCU API
-+<https://lwn.net/Articles/609973/#RCU%20Per-Flavor%20API%20Table>`__
- includes srcu_read_lock(), srcu_read_unlock(),
--srcu_dereference(), srcu_dereference_check(),
--synchronize_srcu(), synchronize_srcu_expedited(),
--call_srcu(), srcu_barrier(), and srcu_read_lock_held(). It
--also includes DEFINE_SRCU(), DEFINE_STATIC_SRCU(), and
--init_srcu_struct() APIs for defining and initializing
--``srcu_struct`` structures.
-+srcu_dereference(), srcu_dereference_check(), synchronize_srcu(),
-+synchronize_srcu_expedited(), call_srcu(), srcu_barrier(),
-+and srcu_read_lock_held(). It also includes DEFINE_SRCU(),
-+DEFINE_STATIC_SRCU(), DEFINE_SRCU_FAST(), DEFINE_STATIC_SRCU_FAST(),
-+init_srcu_struct(), and init_srcu_struct_fast() APIs for defining and
-+initializing ``srcu_struct`` structures.
++/* Values for srcu_expedite_current() state (->srcu_ec_state). */
++#define SRCU_EC_IDLE		0
++#define SRCU_EC_PENDING		1
++#define SRCU_EC_REPOST		2
++
+ /*
+  * Values for initializing gp sequence fields. Higher values allow wrap arounds to
+  * occur earlier.
+@@ -210,6 +217,7 @@ struct srcu_struct {
+ int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
+ void synchronize_srcu_expedited(struct srcu_struct *ssp);
+ void srcu_barrier(struct srcu_struct *ssp);
++void srcu_expedite_current(struct srcu_struct *ssp);
+ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf);
  
- More recently, the SRCU API has added polling interfaces:
+ // Converts a per-CPU pointer to an ->srcu_ctrs[] array element to that
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 1ff94b76d91f..38b440b0b0c8 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1688,6 +1688,64 @@ void srcu_barrier(struct srcu_struct *ssp)
+ }
+ EXPORT_SYMBOL_GPL(srcu_barrier);
  
-diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
-index c9bfb2b218e5..4b30f701225f 100644
---- a/Documentation/RCU/checklist.rst
-+++ b/Documentation/RCU/checklist.rst
-@@ -417,11 +417,13 @@ over a rather long period of time, but improvements are always welcome!
- 	you should be using RCU rather than SRCU, because RCU is almost
- 	always faster and easier to use than is SRCU.
- 
--	Also unlike other forms of RCU, explicit initialization and
--	cleanup is required either at build time via DEFINE_SRCU()
--	or DEFINE_STATIC_SRCU() or at runtime via init_srcu_struct()
--	and cleanup_srcu_struct().  These last two are passed a
--	"struct srcu_struct" that defines the scope of a given
-+	Also unlike other forms of RCU, explicit initialization
-+	and cleanup is required either at build time via
-+	DEFINE_SRCU(), DEFINE_STATIC_SRCU(), DEFINE_SRCU_FAST(),
-+	or DEFINE_STATIC_SRCU_FAST() or at runtime via either
-+	init_srcu_struct() or init_srcu_struct_fast() and
-+	cleanup_srcu_struct().	These last three are passed a
-+	`struct srcu_struct` that defines the scope of a given
- 	SRCU domain.  Once initialized, the srcu_struct is passed
- 	to srcu_read_lock(), srcu_read_unlock() synchronize_srcu(),
- 	synchronize_srcu_expedited(), and call_srcu().	A given
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index cf0b0ac9f463..a1582bd653d1 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -1227,7 +1227,10 @@ SRCU: Initialization/cleanup/ordering::
- 
- 	DEFINE_SRCU
- 	DEFINE_STATIC_SRCU
-+	DEFINE_SRCU_FAST        // for srcu_read_lock_fast() and friends
-+	DEFINE_STATIC_SRCU_FAST // for srcu_read_lock_fast() and friends
- 	init_srcu_struct
-+	init_srcu_struct_fast
- 	cleanup_srcu_struct
- 	smp_mb__after_srcu_read_unlock
- 
++/* Callback for srcu_expedite_current() usage. */
++static void srcu_expedite_current_cb(struct rcu_head *rhp)
++{
++	unsigned long flags;
++	bool needcb = false;
++	struct srcu_data *sdp = container_of(rhp, struct srcu_data, srcu_ec_head);
++
++	spin_lock_irqsave_sdp_contention(sdp, &flags);
++	if (sdp->srcu_ec_state == SRCU_EC_IDLE) {
++		WARN_ON_ONCE(1);
++	} else if (sdp->srcu_ec_state == SRCU_EC_PENDING) {
++		sdp->srcu_ec_state = SRCU_EC_IDLE;
++	} else {
++		WARN_ON_ONCE(sdp->srcu_ec_state != SRCU_EC_REPOST);
++		sdp->srcu_ec_state = SRCU_EC_PENDING;
++		needcb = true;
++	}
++	spin_unlock_irqrestore_rcu_node(sdp, flags);
++	// If needed, requeue ourselves as an expedited SRCU callback.
++	if (needcb)
++		__call_srcu(sdp->ssp, &sdp->srcu_ec_head, srcu_expedite_current_cb, false);
++}
++
++/**
++ * srcu_expedite_current - Expedite the current SRCU grace period
++ * @ssp: srcu_struct to expedite.
++ *
++ * Cause the current SRCU grace period to become expedited.  The grace
++ * period following the current one might also be expedited.  If there is
++ * no current grace period, one might be created.  If the current grace
++ * period is currently sleeping, that sleep will complete before expediting
++ * will take effect.
++ */
++void srcu_expedite_current(struct srcu_struct *ssp)
++{
++	unsigned long flags;
++	bool needcb = false;
++	struct srcu_data *sdp;
++
++	migrate_disable();
++	sdp = this_cpu_ptr(ssp->sda);
++	spin_lock_irqsave_sdp_contention(sdp, &flags);
++	if (sdp->srcu_ec_state == SRCU_EC_IDLE) {
++		sdp->srcu_ec_state = SRCU_EC_PENDING;
++		needcb = true;
++	} else if (sdp->srcu_ec_state == SRCU_EC_PENDING) {
++		sdp->srcu_ec_state = SRCU_EC_REPOST;
++	} else {
++		WARN_ON_ONCE(sdp->srcu_ec_state != SRCU_EC_REPOST);
++	}
++	spin_unlock_irqrestore_rcu_node(sdp, flags);
++	// If needed, queue an expedited SRCU callback.
++	if (needcb)
++		__call_srcu(ssp, &sdp->srcu_ec_head, srcu_expedite_current_cb, false);
++	migrate_enable();
++}
++EXPORT_SYMBOL_GPL(srcu_expedite_current);
++
+ /**
+  * srcu_batches_completed - return batches completed.
+  * @ssp: srcu_struct on which to report batch completion.
 -- 
 2.40.1
 
