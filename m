@@ -1,53 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF953299A8C;
-	Mon,  3 Nov 2025 07:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCAB29E113;
+	Mon,  3 Nov 2025 07:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762154352; cv=none; b=DFbPcNnZZ0W99K2uTkdsmddKUfzzU37WLiuJWPG39110Wc2NkcpzLeb2RmKSLgD1rn4koQDalnVRpThrCck9fPGkqsiJdwAWlOjR5mdz1kVN0Vt0JpkvgWzHydKk6yr7hlfJoYwWsUbWBV8Zqhd93nP3fhwSl8PIhjY0dPpILqg=
+	t=1762154353; cv=none; b=q/Ug7UKUK+bsHMr+MyaFKGSPgvakJ5UrZ2QPPmoGih0Kaep+P2dJ4S2re/cEjaH8SK/BU3dsHABi1BHLpYGPgia2rRCMoC+81hb04maKRukBBdklidWaI9lJrJkSLHOgdT8UlWk/ireMOoUfSu9YMcVSMMA+Xrbp4Qtp/dMDsBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762154352; c=relaxed/simple;
-	bh=updO0Qt60cves0NEScBOtRbVWMjNNxOri0JDFrV2Fxs=;
+	s=arc-20240116; t=1762154353; c=relaxed/simple;
+	bh=rAn+D1aKec9450avC0ni1vP7cPV1yyUFx1owntShnrM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KbRIAbhVzTvdpapmGcYRnaq9qRG8WSPgj8Nq+N8bdkd/J/jfkyDn0sLGEiufmW/mtKi5MKQLPRddB/1BXN87opHd7kaXILVz9fRW9X2QEzC8jhgqnAWeHqM2ha5ypVQ1ULNBTYB93fB722pI91SpR3xbhEkM1x91VqLKSYDpTD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pIVZl0oM; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=NNn+mBNOwu/ejc2nQ+mgqzb88Xnl+J7l3xo2bHhfjSv7znNowJgHngiZYiuyHaModkbSBoopIYT9bXB+V3+Z9g3LPK1rsPWBfc7I/GxLXTs1icK/Q335nKj2BR4mj2Mcl5Ce0r7CIhKQBt8G6HQHcOIsqMuW3G8qD3xs3ENS5Oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XCWh5bCo; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pIVZl0oM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A3EBC116C6;
-	Mon,  3 Nov 2025 07:19:12 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XCWh5bCo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35C6BC19423;
+	Mon,  3 Nov 2025 07:19:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762154352;
-	bh=updO0Qt60cves0NEScBOtRbVWMjNNxOri0JDFrV2Fxs=;
+	s=k20201202; t=1762154353;
+	bh=rAn+D1aKec9450avC0ni1vP7cPV1yyUFx1owntShnrM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pIVZl0oMMdIyNWJE59R29h1WVUaMv79Jf4uFwY/len7oVj60uaEmMRQFH0SE7G2CU
-	 g7p+h8yN/7CsJkBlYx/nAqapTxUEnyDNsYzwW16EpF6FXcZuxAVx1XKwHDGTjuOxZx
-	 FfozfNZY6E1CXHc6LOSIRpWh2QyERP/xZb1s1F9UrY04kS+0SMbfzHljd4bxIA5Hbx
-	 VjqX3LRfL315O8LdJfcUJ5kcozW17U4T2k8v0i0lWU8KhIOAfk4zaunPg/Rkufqp7D
-	 3RAsv5IZa36pfSRHOM334SgqL3p5M3t0Ch4JibNPID4NS1rPe0JVhQaFHfyVtkdYKM
-	 +DOGKSDJVt74A==
+	b=XCWh5bCooV/BYDOiUgheIY7JAnyKGdfFKWJCw+z5Jz2LxF41Duczb2nhMfaHBjFX5
+	 R33EGyxiiY6RRSYF02QTwnAvXuJF606g3wxJR05l5yO3zjiZVzTNqm/ATCEzuCFXz2
+	 YF2d7vjgAAaHbWIXtL3j0wilbmwtG0RM0mAgOpMUAPxdgzn4fJqfIfZSbV4kNq+AnU
+	 jJYfLoGNzQGPPnisai7w/rIe8uPbrfgTNFV+hrPEoYwaO+4cX5uM2oNGVoYeTpJBCg
+	 yQSnrhTCXeKV3T42sslsIyRIQTc3Q7YFvTRCCiqx3Abe12LyjRCkXd/Ufrb6PrGlgP
+	 0gLDHv0HCzaUg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C5F53CE19AC; Sun,  2 Nov 2025 15:07:01 -0800 (PST)
+	id F33F4CE12A7; Sun,  2 Nov 2025 14:49:49 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Joe Perches <joe@perches.com>,
-	Andy Whitcroft <apw@canonical.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH 7/9] checkpatch: Deprecate rcu_read_{,un}lock_trace()
-Date: Sun,  2 Nov 2025 15:06:57 -0800
-Message-Id: <20251102230659.3906740-7-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 6/8] refscale: Add non-atomic per-CPU increment readers
+Date: Sun,  2 Nov 2025 14:49:46 -0800
+Message-Id: <20251102224948.3906224-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <a1e505e4-931b-45cf-8ca7-337442aa598e@paulmck-laptop>
-References: <a1e505e4-931b-45cf-8ca7-337442aa598e@paulmck-laptop>
+In-Reply-To: <19fae851-0c49-43d2-9bbf-913424641ff4@paulmck-laptop>
+References: <19fae851-0c49-43d2-9bbf-913424641ff4@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -56,37 +48,191 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Uses of rcu_read_lock_trace() and rcu_read_unlock_trace()
-are better served by the new rcu_read_lock_tasks_trace() and
-rcu_read_unlock_tasks_trace() APIs.  Therefore, mark the old APIs as
-deprecated.
+This commit adds refscale readers based on READ_ONCE() and WRITE_ONCE()
+that are unprotected (can lose counts, "refscale.scale_type=incpercpu"),
+preempt-disabled ("refscale.scale_type=incpercpupreempt"),
+bh-disabled ("refscale.scale_type=incpercpubh"), and irq-disabled
+("refscale.scale_type=incpercpuirqsave").  On my x86 laptop, these are
+about 4.3ns, 3.8ns, and 7.3ns per pair, respectively.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Joe Perches <joe@perches.com>
-Cc: Andy Whitcroft <apw@canonical.com>
-Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: <bpf@vger.kernel.org>
 ---
- scripts/checkpatch.pl | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/rcu/refscale.c | 155 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 153 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index e722dd6fa8ef..3bb7d35a5cfc 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -860,6 +860,8 @@ our %deprecated_apis = (
- 	"kunmap"				=> "kunmap_local",
- 	"kmap_atomic"				=> "kmap_local_page",
- 	"kunmap_atomic"				=> "kunmap_local",
-+	"rcu_read_lock_trace"			=> "rcu_read_lock_tasks_trace",
-+	"rcu_read_unlock_trace"			=> "rcu_read_unlock_tasks_trace",
- );
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 479d86cad652..2b247355de40 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -389,6 +389,155 @@ static const struct ref_scale_ops percpuinc_ops = {
+ 	.name		= "percpuinc"
+ };
  
- #Create a search pattern for all these strings to speed up a loop below
++// Note that this can lose counts in preemptible kernels.
++static void ref_incpercpu_section(const int nloops)
++{
++	int i;
++
++	for (i = nloops; i >= 0; i--) {
++		unsigned long *tap = this_cpu_ptr(&test_acqrel);
++
++		WRITE_ONCE(*tap, READ_ONCE(*tap) + 1);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) - 1);
++	}
++}
++
++static void ref_incpercpu_delay_section(const int nloops, const int udl, const int ndl)
++{
++	int i;
++
++	for (i = nloops; i >= 0; i--) {
++		unsigned long *tap = this_cpu_ptr(&test_acqrel);
++
++		WRITE_ONCE(*tap, READ_ONCE(*tap) + 1);
++		un_delay(udl, ndl);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) - 1);
++	}
++}
++
++static const struct ref_scale_ops incpercpu_ops = {
++	.init		= rcu_sync_scale_init,
++	.readsection	= ref_incpercpu_section,
++	.delaysection	= ref_incpercpu_delay_section,
++	.name		= "incpercpu"
++};
++
++static void ref_incpercpupreempt_section(const int nloops)
++{
++	int i;
++
++	for (i = nloops; i >= 0; i--) {
++		unsigned long *tap;
++
++		preempt_disable();
++		tap = this_cpu_ptr(&test_acqrel);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) + 1);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) - 1);
++		preempt_enable();
++	}
++}
++
++static void ref_incpercpupreempt_delay_section(const int nloops, const int udl, const int ndl)
++{
++	int i;
++
++	for (i = nloops; i >= 0; i--) {
++		unsigned long *tap;
++
++		preempt_disable();
++		tap = this_cpu_ptr(&test_acqrel);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) + 1);
++		un_delay(udl, ndl);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) - 1);
++		preempt_enable();
++	}
++}
++
++static const struct ref_scale_ops incpercpupreempt_ops = {
++	.init		= rcu_sync_scale_init,
++	.readsection	= ref_incpercpupreempt_section,
++	.delaysection	= ref_incpercpupreempt_delay_section,
++	.name		= "incpercpupreempt"
++};
++
++static void ref_incpercpubh_section(const int nloops)
++{
++	int i;
++
++	for (i = nloops; i >= 0; i--) {
++		unsigned long *tap;
++
++		local_bh_disable();
++		tap = this_cpu_ptr(&test_acqrel);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) + 1);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) - 1);
++		local_bh_enable();
++	}
++}
++
++static void ref_incpercpubh_delay_section(const int nloops, const int udl, const int ndl)
++{
++	int i;
++
++	for (i = nloops; i >= 0; i--) {
++		unsigned long *tap;
++
++		local_bh_disable();
++		tap = this_cpu_ptr(&test_acqrel);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) + 1);
++		un_delay(udl, ndl);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) - 1);
++		local_bh_enable();
++	}
++}
++
++static const struct ref_scale_ops incpercpubh_ops = {
++	.init		= rcu_sync_scale_init,
++	.readsection	= ref_incpercpubh_section,
++	.delaysection	= ref_incpercpubh_delay_section,
++	.name		= "incpercpubh"
++};
++
++static void ref_incpercpuirqsave_section(const int nloops)
++{
++	int i;
++	unsigned long flags;
++
++	for (i = nloops; i >= 0; i--) {
++		unsigned long *tap;
++
++		local_irq_save(flags);
++		tap = this_cpu_ptr(&test_acqrel);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) + 1);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) - 1);
++		local_irq_restore(flags);
++	}
++}
++
++static void ref_incpercpuirqsave_delay_section(const int nloops, const int udl, const int ndl)
++{
++	int i;
++	unsigned long flags;
++
++	for (i = nloops; i >= 0; i--) {
++		unsigned long *tap;
++
++		local_irq_save(flags);
++		tap = this_cpu_ptr(&test_acqrel);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) + 1);
++		un_delay(udl, ndl);
++		WRITE_ONCE(*tap, READ_ONCE(*tap) - 1);
++		local_irq_restore(flags);
++	}
++}
++
++static const struct ref_scale_ops incpercpuirqsave_ops = {
++	.init		= rcu_sync_scale_init,
++	.readsection	= ref_incpercpuirqsave_section,
++	.delaysection	= ref_incpercpuirqsave_delay_section,
++	.name		= "incpercpuirqsave"
++};
++
+ // Definitions for rwlock
+ static rwlock_t test_rwlock;
+ 
+@@ -1325,8 +1474,10 @@ ref_scale_init(void)
+ 	int firsterr = 0;
+ 	static const struct ref_scale_ops *scale_ops[] = {
+ 		&rcu_ops, &srcu_ops, &srcu_fast_ops, RCU_TRACE_OPS RCU_TASKS_OPS
+-		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops,
+-		&percpuinc_ops, &acqrel_ops, &sched_clock_ops, &clock_ops, &jiffies_ops,
++		&refcnt_ops, &percpuinc_ops, &incpercpu_ops, &incpercpupreempt_ops,
++		&incpercpubh_ops, &incpercpuirqsave_ops,
++		&rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops,
++		&sched_clock_ops, &clock_ops, &jiffies_ops,
+ 		&preempt_ops, &bh_ops, &irq_ops, &irqsave_ops,
+ 		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
+ 	};
 -- 
 2.40.1
 
