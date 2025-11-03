@@ -1,30 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092D826F2B3;
-	Mon,  3 Nov 2025 14:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC38C31A81D;
+	Mon,  3 Nov 2025 17:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762178841; cv=none; b=htDefGYR3hTkCwZj9ILfxaT1X61Ne3CjVjNe+mUV6bv3yCKoqnIYLCaTHaH3c9KG99u+ZVfU8cVTwNGyYY2MpTqK3s3PEaFp8Uou7bVHLqAD4oBPeF5EchRQbLBiiqPj49Y1NEgUnNYB43Db0w0Wxx8o7uTEhtwTaHAzVSicPgg=
+	t=1762189326; cv=none; b=B9UYYF9jRT81esnQV/X9xfUoNtXYygTSHmo+4lJYvqaTsSbjhIjHbHmMjiuh5YaOv9zR+ZflPNof7eXU/KhX7CKnw57EBpJeVXLLd+etRYny4s/myL4mNbLr6rsjxy5NXsyDSyPeEekKBLU3jtz8xdoPrdN8vYHrSUaIUDE9P54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762178841; c=relaxed/simple;
-	bh=8+XPYRjgyHWE/MdJWQFQT+2lG/J1s36k8W7o5bf1Z5g=;
+	s=arc-20240116; t=1762189326; c=relaxed/simple;
+	bh=z4bhIkeLe61YGtNnfKtyj+dwQB2OwI+pXpuaZfbsQts=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PiOPsX007VSHBD6WGFaA2fBmReX9O9uUGTQa75/ND+M33+g732tBNIWcp+r3itSG8c6eXWCdXlqfS1gLVq5gBtnEsNTaMGxQJX/P/7zVsmuy4rSSDEKvd21MptEGsZjBxT0Rn4Qe4FXx1vc2N3paDp4ALL9AFUMOrLisZH8Ot0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 666F7C4CEE7;
-	Mon,  3 Nov 2025 14:07:18 +0000 (UTC)
-Date: Mon, 3 Nov 2025 14:07:15 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=F/NU6i/LNmUNQMmJctPtBPiLaxN3TOT7WmCeJH2BlzM9ucrNdrn+rOSfeUzQxaX2HOp2Y0YL70KBnRIJWgw8bmnnl/vHe+wX4u/PLXzsKM7mpw/DmJPt7UWK3+y1pjxC1rVTYr1kTXsvvXwCAkkY7niNZlA/EtGI+dv5YZHSG98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YIB6Mk+z; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YIB6Mk+z"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44EC1C4CEE7;
+	Mon,  3 Nov 2025 17:02:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762189324;
+	bh=z4bhIkeLe61YGtNnfKtyj+dwQB2OwI+pXpuaZfbsQts=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=YIB6Mk+zbB+GuDbJ0vWKv4vitziT/ejEWmFLfRUmfVLCbHkCc1NoXbUQ8oUDIISbW
+	 OXJnzt8GUPCdEfPwgjFVlp+q3Ey0IuWRWLoZ4jKpoqkVAkJYB7wkZVirI+P/T0gs1D
+	 zczVjmrjN0XRrX1f0wHJcVNwPt5QBOk27UDLUfG52wRylaTiBLO+EVJGtAaZuiuoBz
+	 x1xc4vd2DbaCB4HK2AweVplZg6GowNF6DcS1HSuCkioX7pDEJStFfU5wvE3vHPwrnl
+	 xbCVvjZl4YCUbCIrIwQqVaAF7zn3C5GQBxFCXVdx5HheXwY2ZHhQDUnt4iWqfo4g94
+	 +Mqb1OQrjIztQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 44EABCE0B94; Mon,  3 Nov 2025 09:02:02 -0800 (PST)
+Date: Mon, 3 Nov 2025 09:02:02 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Will Deacon <will@kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Mark Rutland <mark.rutland@arm.com>,
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
 Subject: Re: [PATCH 17/19] srcu: Optimize SRCU-fast-updown for arm64
-Message-ID: <aQi3E-3hoNWYocOl@arm.com>
+Message-ID: <c598e85a-4008-4ca7-a424-80c324523bbb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
  <20251102214436.3905633-17-paulmck@kernel.org>
  <aQilZAXQv2P-b2eI@willie-the-truck>
@@ -39,6 +54,8 @@ Content-Disposition: inline
 In-Reply-To: <aQilZAXQv2P-b2eI@willie-the-truck>
 
 On Mon, Nov 03, 2025 at 12:51:48PM +0000, Will Deacon wrote:
+> Hi Paul,
+> 
 > On Sun, Nov 02, 2025 at 01:44:34PM -0800, Paul E. McKenney wrote:
 > > Some arm64 platforms have slow per-CPU atomic operations, for example,
 > > the Neoverse V2.  This commit therefore moves SRCU-fast from per-CPU
@@ -100,9 +117,8 @@ On Mon, Nov 03, 2025 at 12:51:48PM +0000, Will Deacon wrote:
 > all very SoC-specific and on a mobile part (especially with pseudo-NMI),
 > the relative costs could easily be the other way around.
 
-My preference would be to go for the percpu atomic prefetch but we'd
-need to do a bit of benchmarking to see we don't break other platforms
-(unlikely though).
+In my testing Catalin's patch wins by at least 10% on microbenchmarks.
+So I am holding this one in my back pocket just in case, but yes, you
+should ignore it, hopefully forever.  ;-)
 
--- 
-Catalin
+							Thanx, Paul
