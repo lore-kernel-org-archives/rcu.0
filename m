@@ -1,193 +1,115 @@
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52FE28B4E2
-	for <rcu@vger.kernel.org>; Mon,  3 Nov 2025 08:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D923830ACEA;
+	Mon,  3 Nov 2025 12:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762159060; cv=none; b=XPMWso8qxtse8XriwGsXSD+OCmbIljLV7KbG8aHmHnuDTeVLgwrTQBZA2IG1IlqGCkQD+IYVHYD33NGzUK3/cuNeBGYbFpgf+HDlOy62qzPDcdeTaAQEqwsxUAVBsZRivofj6MwpL3fY11aTpVhAY11kfegzFCUAsaUIWSi71UI=
+	t=1762174315; cv=none; b=gjXfCp/7WBxz97cMzDlbZh1N6HaD6r+wwOU93x5TTRatTHszKBrTVhCsV6HONDJHIKsO0fPDoEm/1UXIj7YNpoD6t+3MLT9mVxftPyFC0sT1dzAkasr1m8FK0OUnN10jBRHLgHD/MPsnNvG8itkw4GLli7JrfJvQsxbYH+Fa3iY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762159060; c=relaxed/simple;
-	bh=VPQocaf6gUl8BS3pejlUrKCB/3VeiYl/8q6ahm5+LvI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=N/6M4qidvd5iMqmdGwtkWV4iCz+CH1rl3c7opVRlFb0RQVXzezP9k/ijHzpvIP3kqI/9+IE3k0c0LjPDMjWzSLD5Md7IlcAffr2Ow3MHJlOmGBZRV7g7zp9yt9OsuLJzKahXbf9NBQgh8g2Fpvjd/Lv3dwnK0TL8kLZUILAnZqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Mnf5ROZP; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	s=arc-20240116; t=1762174315; c=relaxed/simple;
+	bh=qaatkfcleskF5A5nvzlK4r/WGYzHFYOBVI4ibhGc4fY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dNawz8Rt06waK8KG5rD+YTTeQtKKnj3YXi5FAAy3GtOirupRuyLvNpUENAs35TwKaT+DfbRPHmCGqLg+WIC418qqrkIkP13H/uKHq0tFvetWNlEFp8qRwjNb+NtP2ekyfgE06v+05OEFMX4UD6aOyCI9voXon7KeLW8WnDiWyT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RTVvodky; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Mnf5ROZP"
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-633b4861b79so952853a12.1
-        for <rcu@vger.kernel.org>; Mon, 03 Nov 2025 00:37:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762159057; x=1762763857; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/6+8IBdXCcTU6eZ4JMuY2we8/fQYN6+oBue210uWprk=;
-        b=Mnf5ROZPFeEGjQSTjLFS78Z4bYSK7xLjDs/P/VGFnqiJ8Qdu1iKEE4VBPyh5IansPP
-         atAMh0tHLmBey2Pja9dgn9J6wHuOJo88+eBrZuyzmcpDa5Ab1lhGl4FFmVf1mBvwIuEK
-         ngoK2Rooxz3Bx2hoOsmaOjExYVs18lLjzvwOPL7kJ+Frc+MKmJNZ5Gfcu4mk7zr3b0QB
-         SGt1n+1Pv0lejRv1kmnwo9icAZpKLf0wtKrn8Mbu1qE7JqnPLPsMYNjhJF74mk7BZ0nO
-         Zvy+68ys66H2zy0xJLl5iuw6/u3MTtW1G2lJu6G3vzjXDwvgYGbokGRlDrdvO8qygvF6
-         oTrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762159057; x=1762763857;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/6+8IBdXCcTU6eZ4JMuY2we8/fQYN6+oBue210uWprk=;
-        b=cVWtRdq5uMpF9vARzzE66gLMp4q80DlzNyYt4NcdLznHuU2w1pOLmuH9q1UE8bjS/Q
-         c5JERnjbjear0nmNy/zBqcnuo3k9d/oYXOCmyZIu93vnLt7drlAmU9hkEcaJEohSoS/U
-         q+EzQkUDuGRbWN8P45hLNnwVs5OKd//N8oH2VwAkFTeTYf6IJtS/jdjOeJ0MtmjUnRqR
-         dmB2jMdugTHiicItZ/mIwEHagWqEpDx/0v26Wee9hCFXgMSGoBQJvavpuU+C34gwkL4e
-         Xom6mFN1BF2+IfeqaVZHtOf1BEqMzgj3kAMmHVlHGni+l59/IkPflE6JyJr6H9+6n+0k
-         8qGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWc0LWFXu8jThCBGl73/bC4pVFeYamPQQVixB2e/FOPihShTqWbxuTYW1EswV/y1CjBGRc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlMpAPjAvJrVHtOYJsdGaf5qL2Yh6LlvcSQlkFBK5NmHUD0Zrf
-	Xmr7coSKdb4jeMxqtTY2QJN8PFbvRUKnvY5Yt/AQWJI4jxCNO2BnCzP2N6U2nJVrCZw=
-X-Gm-Gg: ASbGnctxcSG1DMSAcSqwb42KKW0ZRlYmk6ZK8fbMSA7YM98pBC+Z1scUbb3jGtyPUja
-	uyOIOLq/J0HQNnqSNvZQhu9SqGJRrv5/ihCdJaogTUoZjVBNchpkXKwFG8Ztvf1xufdQm7JxMeh
-	V01rucmvpKFmFSuhjdQ5HHkTk8kuu/HAidiQBx2BGnT+vaNsTaA5SfnlK3IGqV1MbPN973VSw+R
-	UVCi5+TAKrLRuhgawWh5UNTvPxh2nx1CiYrJG63DEiT1XBzIjHgOtsYEyTGsDv+7nv3ZJufVpDv
-	1T3Xq6ErIOXeMFKDfMitezVjO9XBEKzdadZpPvDCdGl7f6lr8M5ed4w7TvJqrUZlf+9EIDa1LSx
-	6CbYmNNN1vumDkLsp0S/eu17Omrnnbs16SIm3ey1mCNAhm0y1FmyG/xWmBy7nnTE3zUV1PDvd/P
-	3Po1STW2cci5zJaiUI/bjWmdqd1E//QkKrx2dxD+lAZqiFkjKj9ehVHzxwtQmJ0oCF6Cb9+uSYf
-	Jq8
-X-Google-Smtp-Source: AGHT+IEXAMzB4Q3iZseWqc5EI+3z01yD/lkzyZQiHdGqXZRiWGSYaalZ7FPGcsDnEnqBbvKYbK1akQ==
-X-Received: by 2002:a05:6402:27d3:b0:640:9eb3:3683 with SMTP id 4fb4d7f45d1cf-6409eb34460mr3244974a12.1.1762159057100;
-        Mon, 03 Nov 2025 00:37:37 -0800 (PST)
-Received: from mordecai (dynamic-2a00-1028-83b8-1e7a-3010-3bd6-8521-caf1.ipv6.o2.cz. [2a00:1028:83b8:1e7a:3010:3bd6:8521:caf1])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6407b428119sm9012005a12.24.2025.11.03.00.37.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Nov 2025 00:37:36 -0800 (PST)
-Date: Mon, 3 Nov 2025 09:37:28 +0100
-From: Petr Tesarik <ptesarik@suse.com>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org,
- x86@kernel.org, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
- linux-arch@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Josh
- Poimboeuf <jpoimboe@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo
- Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, Andy
- Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Paolo Bonzini
- <pbonzini@redhat.com>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason Baron
- <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard Biesheuvel
- <ardb@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, "David S.
- Miller" <davem@davemloft.net>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
- Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Mel Gorman <mgorman@suse.de>, Andrew
- Morton <akpm@linux-foundation.org>, Masahiro Yamada <masahiroy@kernel.org>,
- Han Shen <shenhan@google.com>, Rik van Riel <riel@surriel.com>, Jann Horn
- <jannh@google.com>, Dan Carpenter <dan.carpenter@linaro.org>, Oleg Nesterov
- <oleg@redhat.com>, Juri Lelli <juri.lelli@redhat.com>, Clark Williams
- <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, Marcelo Tosatti
- <mtosatti@redhat.com>, Daniel Wagner <dwagner@suse.de>
-Subject: Re: [PATCH v6 06/29] static_call: Add read-only-after-init static
- calls
-Message-ID: <20251103093728.031042d0@mordecai>
-In-Reply-To: <xhsmhqzujp9t3.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-References: <20251010153839.151763-1-vschneid@redhat.com>
-	<20251010153839.151763-7-vschneid@redhat.com>
-	<20251030112251.5afcf9ed@mordecai>
-	<xhsmhqzujp9t3.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.50; x86_64-suse-linux-gnu)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RTVvodky"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 216FCC4CEFD;
+	Mon,  3 Nov 2025 12:51:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762174314;
+	bh=qaatkfcleskF5A5nvzlK4r/WGYzHFYOBVI4ibhGc4fY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RTVvodkydVGO/qZA9Kt85/9qV3NeZSbaxJPXmaYb7Du8/VrHlMY9VEBCP54vUMk7P
+	 gYZktn+jvkLtNAPMD9Z3nmUjMftDyLytWc1t301sNoJkj2Gi8G+BEJ023CM/NgzKMd
+	 3J0+FSCY6r/cVQ+DiPDoe1gI/aJRbsSTAa5gjgu90sVjih1bY7Um8jikMRY/jH9Qkw
+	 0lXbHpLzCr9Eu2TlgzDThERnXxxdLaJBwxnjCdphLpmM1h8wKFhtKiVIRATxNCNjIE
+	 BIJqZteaUJ84yylMSt/tFrY27ukojXlyKS4ywH2Ws4a7dH6l0AoDnJW9D+ispoOY4g
+	 fzmQCrMnWHyEw==
+Date: Mon, 3 Nov 2025 12:51:48 +0000
+From: Will Deacon <will@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 17/19] srcu: Optimize SRCU-fast-updown for arm64
+Message-ID: <aQilZAXQv2P-b2eI@willie-the-truck>
+References: <082fb8ba-91b8-448e-a472-195eb7b282fd@paulmck-laptop>
+ <20251102214436.3905633-17-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251102214436.3905633-17-paulmck@kernel.org>
 
-On Fri, 31 Oct 2025 12:52:56 +0100
-Valentin Schneider <vschneid@redhat.com> wrote:
+Hi Paul,
 
-> On 30/10/25 11:25, Petr Tesarik wrote:
-> > On Fri, 10 Oct 2025 17:38:16 +0200
-> > Valentin Schneider <vschneid@redhat.com> wrote:
-> >  
-> >> From: Josh Poimboeuf <jpoimboe@kernel.org>
-> >>
-> >> Deferring a code patching IPI is unsafe if the patched code is in a
-> >> noinstr region.  In that case the text poke code must trigger an
-> >> immediate IPI to all CPUs, which can rudely interrupt an isolated NO_HZ
-> >> CPU running in userspace.
-> >>
-> >> If a noinstr static call only needs to be patched during boot, its key
-> >> can be made ro-after-init to ensure it will never be patched at runtime.
-> >>
-> >> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> >> ---
-> >>  include/linux/static_call.h | 16 ++++++++++++++++
-> >>  1 file changed, 16 insertions(+)
-> >>
-> >> diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-> >> index 78a77a4ae0ea8..ea6ca57e2a829 100644
-> >> --- a/include/linux/static_call.h
-> >> +++ b/include/linux/static_call.h
-> >> @@ -192,6 +192,14 @@ extern long __static_call_return0(void);
-> >>      };								\
-> >>      ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
-> >>
-> >> +#define DEFINE_STATIC_CALL_RO(name, _func)				\
-> >> +	DECLARE_STATIC_CALL(name, _func);				\
-> >> +	struct static_call_key __ro_after_init STATIC_CALL_KEY(name) = {\
-> >> +		.func = _func,						\
-> >> +		.type = 1,						\
-> >> +	};								\
-> >> +	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
-> >> +
-> >>  #define DEFINE_STATIC_CALL_NULL(name, _func)				\
-> >>      DECLARE_STATIC_CALL(name, _func);				\
-> >>      struct static_call_key STATIC_CALL_KEY(name) = {		\
-> >> @@ -200,6 +208,14 @@ extern long __static_call_return0(void);
-> >>      };								\
-> >>      ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
-> >>
-> >> +#define DEFINE_STATIC_CALL_NULL_RO(name, _func)				\
-> >> +	DECLARE_STATIC_CALL(name, _func);				\
-> >> +	struct static_call_key __ro_after_init STATIC_CALL_KEY(name) = {\
-> >> +		.func = NULL,						\
-> >> +		.type = 1,						\
-> >> +	};								\
-> >> +	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
-> >> +  
-> >
-> > I think it would be a good idea to add a comment describing when these
-> > macros are supposed to be used, similar to the explanation you wrote for
-> > the _NOINSTR variants. Just to provide a clue for people adding a new
-> > static key in the future, because the commit message may become a bit
-> > hard to find if there are a few cleanup patches on top.
-> >  
+On Sun, Nov 02, 2025 at 01:44:34PM -0800, Paul E. McKenney wrote:
+> Some arm64 platforms have slow per-CPU atomic operations, for example,
+> the Neoverse V2.  This commit therefore moves SRCU-fast from per-CPU
+> atomic operations to interrupt-disabled non-read-modify-write-atomic
+> atomic_read()/atomic_set() operations.  This works because
+> SRCU-fast-updown is not invoked from read-side primitives, which
+> means that if srcu_read_unlock_fast() NMI handlers.  This means that
+> srcu_read_lock_fast_updown() and srcu_read_unlock_fast_updown() can
+> exclude themselves and each other
 > 
-> I was about to write such a comment but I had another take; The _NOINSTR
-> static key helpers are special and only relevant to IPI deferral; whereas
-> the _RO helpers actually change the backing storage for the keys and as a
-> bonus are used by the IPI deferral instrumentation.
+> This reduces the overhead of calls to srcu_read_lock_fast_updown() and
+> srcu_read_unlock_fast_updown() from about 100ns to about 12ns on an ARM
+> Neoverse V2.  Although this is not excellent compared to about 2ns on x86,
+> it sure beats 100ns.
 > 
-> IMO it's the same here for the static calls, it makes sense to mark the
-> relevant ones as _RO regardless of IPI deferral.
+> This command was used to measure the overhead:
 > 
-> I could however add a comment to ANNOTATE_NOINSTR_ALLOWED() itself,
-> something like:
+> tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs NOPREEMPT --kconfig "CONFIG_NR_CPUS=64 CONFIG_TASKS_TRACE_RCU=y" --bootargs "refscale.loops=100000 refscale.guest_os_delay=5 refscale.nreaders=64 refscale.holdoff=30 torture.disable_onoff_at_boot refscale.scale_type=srcu-fast-updown refscale.verbose_batched=8 torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=8 refscale.nruns=100" --trust-make
 > 
-> ```
-> /*
->  * This is used to tell objtool that a given static key is safe to be used
->  * within .noinstr code, and it doesn't need to generate a warning about it.
->  *
->  * For more information, see tools/objtool/Documentation/objtool.txt,
->  * "non-RO static key usage in noinstr code"
->  */
-> #define ANNOTATE_NOINSTR_ALLOWED(key) __ANNOTATE_NOINSTR_ALLOWED(key)
-> ```
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> Cc: <bpf@vger.kernel.org>
+> ---
+>  include/linux/srcutree.h | 56 ++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 51 insertions(+), 5 deletions(-)
 
-I agree, this makes more sense. Thank you!
+[...]
 
-Petr T
+> @@ -327,12 +355,23 @@ __srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ctr __percpu *scp)
+>  static inline
+>  struct srcu_ctr __percpu notrace *__srcu_read_lock_fast_updown(struct srcu_struct *ssp)
+>  {
+> -	struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
+> +	struct srcu_ctr __percpu *scp;
+>  
+> -	if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
+> +	if (IS_ENABLED(CONFIG_ARM64) && IS_ENABLED(CONFIG_ARM64_USE_LSE_PERCPU_ATOMICS)) {
+> +		unsigned long flags;
+> +
+> +		local_irq_save(flags);
+> +		scp = __srcu_read_lock_fast_na(ssp);
+> +		local_irq_restore(flags); /* Avoids leaking the critical section. */
+> +		return scp;
+> +	}
+
+Do we still need to pursue this after Catalin's prefetch suggestion for the
+per-cpu atomics?
+
+https://lore.kernel.org/r/aQU7l-qMKJTx4znJ@arm.com
+
+Although disabling/enabling interrupts on your system seems to be
+significantly faster than an atomic instruction, I'm worried that it's
+all very SoC-specific and on a mobile part (especially with pseudo-NMI),
+the relative costs could easily be the other way around.
+
+Will
