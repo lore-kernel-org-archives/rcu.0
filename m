@@ -1,187 +1,188 @@
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5CF52FE572
-	for <rcu@vger.kernel.org>; Tue,  4 Nov 2025 07:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D0E2C11D1
+	for <rcu@vger.kernel.org>; Tue,  4 Nov 2025 13:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762239636; cv=none; b=ZvhOStb1OaMc3/OauUWtmE4FNZP+0yuCLwtu7h4de+bTq2WQ8f5hNARiwWYhU6QjDBqUDTGlm8/dtffaIc2/Ed761gU+5ZxT2vmwfPR0eZxtStN1k+St3SEYBJM9T40vdbeWHVJgAn63t428zppEPQpC+eCuTcyuH4nHTUUIf9w=
+	t=1762263965; cv=none; b=NFYEPrj1VsNYRKLixPFU0P6SYaXGNzJOOg9w7y4gXcG+QP1WyA9MhsB7tDF0PkorpK/jID6VsKubjcVbM3594/q73ee3bSVZjQJ8hFvebU1jEDnnRHnutdmEHQt+UkWuqYULQJZNlaNtjJPCfPdiboHTZaUT7cJVBd8Y7CgcjIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762239636; c=relaxed/simple;
-	bh=Lmg3dsZX5sBPU+87vVUFPw6v+4JP4m4mRIzteONc3xY=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=NS9Sk9ToL7eD9g94ExxXJQYDsB0TaZVvwc/e17M/GphId5j+neC62PCGg6qc8/Wb0ngzJu18ABclDzmZyCNsQBAHi2Mwj/QICPxM+R7l11U0iewup8qiCA9FeF6aC5lcQF2mu+OckMypDuuoGN8vL0Uac2qFe5Vz2I1PJaruK4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XzgbiKld; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1762263965; c=relaxed/simple;
+	bh=6ox1zLtoIs3WHKjGHBqzO0nCO9DbDq7atxZ/hCyqdAU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=UW05j5LjxE3WzWzfgGt7fW4nZWYcKPxSdjHXBVKWC8tmOKVHIpZELV61Zj6e2eCFHMlYqYwgrr7e9MVge8+6de5xyrFUFU14Clm96BKkG1y/kMk0yROvXC3KIyIExS8P+qC60Q4k8whrH/0RVLz5JE3xzNo1hdCn+MJ3wW/rMG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZtxIfP8O; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=NMHt/x+V; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XzgbiKld"
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-34077439166so4534648a91.2
-        for <rcu@vger.kernel.org>; Mon, 03 Nov 2025 23:00:34 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZtxIfP8O";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="NMHt/x+V"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762263962;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qBb4JYjcOHMwFtnHDJyHLJFdY3oY5dMhkeGhI5Dhsqo=;
+	b=ZtxIfP8OxR2qKPS62sHuMJsx9psPsSPwgIOqjuInzzGFIGdoOUp3a766upCpkD1jNFSTx9
+	JxPug4bUSeS81NC0Xp/VZwZN8SK7liM3pgDNdS6DqAkoUuAyNOBkIryw2UzkNLEWmVj4MR
+	kChaJtVrLxtdvLYf8U/le0fS0YGJdeU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-519-yFVasC9NOQeJXSj-1KwEpw-1; Tue, 04 Nov 2025 08:46:01 -0500
+X-MC-Unique: yFVasC9NOQeJXSj-1KwEpw-1
+X-Mimecast-MFC-AGG-ID: yFVasC9NOQeJXSj-1KwEpw_1762263960
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-429cdb0706aso2420520f8f.0
+        for <rcu@vger.kernel.org>; Tue, 04 Nov 2025 05:46:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762239634; x=1762844434; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language:subject
-         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jYJY/CCyWXdpODdd8/1XVppqC3rVXb5NLy8uDvNpLnk=;
-        b=XzgbiKld6aAZbyiee1/3OB6fFR3hss/nAJiWE6kjzpIlhlCrYhVdghLvL4Z3CdTRUA
-         ZGGj98s2TBeK00khw9UVUgKUI4xTXIO2sCW+qTA0W3c3RPBww/x/HPsBabni0Hmagog2
-         t7pFF2NTRBObztrutPKnc1yy3Sk1ZGvJhhsJODZTnRPk3BbOI+d5GfnRlp5dw3Z6jXQE
-         eQu1I/3PVuApYuVmPyQV5tlgTETtRrwfkEFyJebcx6JAsWhkkjpoojEsAUU8lY4XM68t
-         +/+JSJimvLpjL1NIk0RNlF9R0IUdRo7ka0FEtgKPTmM0/91lWSK01FWtQz4cKNT6NEBJ
-         J83g==
+        d=redhat.com; s=google; t=1762263960; x=1762868760; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qBb4JYjcOHMwFtnHDJyHLJFdY3oY5dMhkeGhI5Dhsqo=;
+        b=NMHt/x+VCxgooirjQLCDYJGfq8eGEc+jKFlWyvmdixqj96mNwWuU4Omudek9PMSfdE
+         tV4V1t799ZzjfSAgaIwzl4L34z3/dUL5Wb0Z3U9vifro98PyB3buEXmKMgqci9aZzBiK
+         PePyAZ6mTZU1uAgenNEPT1bpOp6lYZTXrBvN58KrDF1n6vytzFIHN70Pmj5U4ESIVg8a
+         94TRVqT6L4ar/Y/7euFJDAoXZxmJtLdOBdDO6xNAUng+3PjwwBCPLrUsHPWgGSFQDs1e
+         WeHAUBAxR9BGWj26DV75bCuu2KGI/PYpGhbRbawb6cl9j8o2lxWtIyniVd9ntxLNVr+R
+         AW1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762239634; x=1762844434;
-        h=content-transfer-encoding:in-reply-to:from:content-language:subject
-         :references:cc:to:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jYJY/CCyWXdpODdd8/1XVppqC3rVXb5NLy8uDvNpLnk=;
-        b=vRclEiJPRgNdoOKItcmhgDMtlTNDun6tT9Nf5eLWS9Za0dnP+iiO1BTLhd6pGG3KSn
-         4yOw7LIn5YXuRQrCkQX+YiFB+UAQ0pAtDSGgblZLvcSP/fW7Uf6ekBDMRVr53f9scHpO
-         cIoPUwN2jhyb3J435jBH3cJXjQ6CF2rdpMlVeEtEvsqttbuBq9ju4/5CzF/OASYxIMGn
-         Cqhf6xBLsnB6s1F4B605EUgtf5Dv1942esHpivc2NlgIG7xJCgp2hzp5OcI5lSbwdftw
-         H2Z5PRTmHwyzFVHiFk5nvWtnycorzg1GnIvr7tnJ2blFMLC0UX6SIICL31yoOTuDB+mf
-         0cNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/vNy5vLHnErOwm0h4oJn+NlB9Wb0P3zYLFPkKtemGG8ioYFYI0/Aynu/QUKI7dvBGeIk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWKzcgNREM1Iyyfx55xW76jkB6/uJK3Zo0j6XSY6CHWPy8g2pA
-	DFYU/mm4OV+9FFlqxo8lMnqDOFSQB4UOwEoTE3hdKAblCUQ/MFNmdZZJ
-X-Gm-Gg: ASbGncvA+R9rIekXOxWjk/voOvTXMlJ+/XNoHUzsB7u/sPGjjS1enOIsbxRY+YBhFiE
-	PSsUrIOSayMcwTbC9S5YRDsevwPG6q05SYF7/AFBfAt3iz7bmiCIlabPsypTd0yBAiqGtPEgMTU
-	+twfzJmgdpUppQnnG1djQGHNWJxKEf8yaf7lrB4Glkg1IhhM5mjIcPWYE1SynuDGvDaPnA9LBf+
-	tTEbV6AnXXP1dOL6/sIK5p3oXgZTkiAguex9Yf2BbmLI3s8AHUjbHp5Ee5eCJzcCLtirCtx9F3O
-	2scg3SDbd0J/+0/fyJDNxtvaAvVmhx/ky/1lt3rrWF8WlvX/AS/mFwY8UsDA+acTBsJcn4AV5BP
-	c7TVyS7in4o/MhnugsEkr1zn3fzaC8vL2qeQWpkWyOlifs3ju7f2ESKIv8hSdYm19uewVNZNYfr
-	ymONfxdTN/GvZN+ZhIyl36nXs4bTF8cHrl8zbzSigA/BnmSg==
-X-Google-Smtp-Source: AGHT+IFuippdkSZdZbM/zbViKxiB1sV+P3foKWTH4k7vkaZ/0vpIhwnIYOp4owTWQeoz9RLgVonuMQ==
-X-Received: by 2002:a17:90b:2886:b0:340:73a2:c840 with SMTP id 98e67ed59e1d1-3408308b4f8mr18356520a91.30.1762239633674;
-        Mon, 03 Nov 2025 23:00:33 -0800 (PST)
-Received: from [10.0.2.15] (KD106167137155.ppp-bb.dion.ne.jp. [106.167.137.155])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3417bc8e9b7sm649825a91.2.2025.11.03.23.00.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Nov 2025 23:00:33 -0800 (PST)
-Message-ID: <e951d365-27ec-427c-ba29-8b6925342463@gmail.com>
-Date: Tue, 4 Nov 2025 16:00:27 +0900
+        d=1e100.net; s=20230601; t=1762263960; x=1762868760;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qBb4JYjcOHMwFtnHDJyHLJFdY3oY5dMhkeGhI5Dhsqo=;
+        b=XkKJoLX8ybZ3sm/JPyIS+LVC8akEn7swMUPKoQJvC24Yjm8uQnGZYA51NZweHj3m+h
+         3EvENuwh3kYEkhp8+rBr1S6I6LQEyTKVe9/OKMon61USp35kOnWmys5slaK+rttvooJj
+         5R/Tz9dd6wCNDErHFzrjFVPBR4Hpvnc7V1SmaYOoUvcDpjQYDnPYPTb99ZtZkHJMj/wf
+         PivyIyg4An4NyzhHFjP30BGd3dFcRZvY2qa5FPz1JsKI2rjSR57gYP7iv1mzLBy4GB9P
+         C8G/Zha6hHPE3NZ57R+WcGJZKlooyHTuNSgRpCNqn/SGkL8TAWj2IOOc7Ccsnj1F/ikK
+         raYw==
+X-Forwarded-Encrypted: i=1; AJvYcCVb886+94McmKCmJ+fy6Yrq/OBMqKC6+2AJc8AayyUzLwnnS9uMVFSZ/ReOgGkwQJBP+FA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzgrwD4AN/6OiVeRwTdPGZxfVTyjPeOR4vhYAqsgB0PLwULCHyu
+	Zja0AlQkkC6suIOH9GV+vKbcy2PE1D+A6+PKGGPnJ0np83fQihXViiyep8h31ADmBmqryjAXG8W
+	29Zk+Gv+Aq2L1o95ewd2K0kCAv/ODzOcot7oIKqoOeB30vMavGzn0uQ==
+X-Gm-Gg: ASbGncsmjfDI6YCiVUuLHGiwA85UwhDsVFO8aMD3AabSg46Gv1syL3k22CcruMuB7H5
+	n9ielHbA4meUNyAHMr7l6tL5k3316uLYbnO0SrCVGsZrffXfMJI20Cfj1MMvmR21MTveSbWH8EY
+	yyBb485WH3qFO66gY/EoX62MyhkePATh39pnRY4J5x57kOn7yaL0yoZaEjHjrfB8vF5Bhs1WjoQ
+	muJhV6UK7Tpg/v77cbTVqyPX5zB9db8tJdrDIzCSal6i6HA+bJ7CTvDwIKeZ3MyzIlZoWTuf/Xv
+	Fybv8XANnPsujgxGdMs2SiaAUZph2+/o+9uzJD5tsqBzb9eBB0F7sdOk5GWepn7OMiX2l2BHqVb
+	28FG3ORpGgfz8tletBVg4am6OiOYXBmgOebg=
+X-Received: by 2002:a05:6000:22c9:b0:429:d11b:9ec4 with SMTP id ffacd0b85a97d-429d11ba360mr6284604f8f.41.1762263959573;
+        Tue, 04 Nov 2025 05:45:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGRnKz3y+r5XoY3ls/nBZPt8sht5PzwdeS+jf9m1q52xASXswgB53muxrTyL7Mvrv/sZwgkKw==
+X-Received: by 2002:a05:6000:22c9:b0:429:d11b:9ec4 with SMTP id ffacd0b85a97d-429d11ba360mr6284574f8f.41.1762263959010;
+        Tue, 04 Nov 2025 05:45:59 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb ([2a01:e0a:36d:2b80:e937:44f0:a96a:94f2])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429dc1a8528sm4959089f8f.21.2025.11.04.05.45.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Nov 2025 05:45:58 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: Nicolas Saenz Julienne <nsaenzju@redhat.com>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter
+ Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Josh
+ Poimboeuf <jpoimboe@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, Arnd
+ Bergmann <arnd@arndb.de>, Frederic Weisbecker <frederic@kernel.org>, "Paul
+ E. McKenney" <paulmck@kernel.org>, Jason Baron <jbaron@akamai.com>, Steven
+ Rostedt <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>, Sami
+ Tolvanen <samitolvanen@google.com>, "David S. Miller"
+ <davem@davemloft.net>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel
+ Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>,
+ Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mel Gorman
+ <mgorman@suse.de>, Andrew Morton <akpm@linux-foundation.org>, Masahiro
+ Yamada <masahiroy@kernel.org>, Han Shen <shenhan@google.com>, Rik van Riel
+ <riel@surriel.com>, Jann Horn <jannh@google.com>, Dan Carpenter
+ <dan.carpenter@linaro.org>, Oleg Nesterov <oleg@redhat.com>, Juri Lelli
+ <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>, Yair
+ Podemsky <ypodemsk@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
+ Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org,
+ x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+ linux-arch@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 23/29] context-tracking: Introduce work deferral
+ infrastructure
+In-Reply-To: <dee4dc13-b187-42df-93ce-f738cfab32ea@linux.ibm.com>
+References: <20251010153839.151763-1-vschneid@redhat.com>
+ <20251010153839.151763-24-vschneid@redhat.com>
+ <dee4dc13-b187-42df-93ce-f738cfab32ea@linux.ibm.com>
+Date: Tue, 04 Nov 2025 14:45:56 +0100
+Message-ID: <xhsmhjz05ud0r.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: paulmck@kernel.org
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- kernel-team@meta.com, linux-kernel@vger.kernel.org, peterz@infradead.org,
- rcu@vger.kernel.org, rostedt@goodmis.org
-References: <20251102214436.3905633-15-paulmck@kernel.org>
-Subject: Re: [PATCH 15/19] srcu: Create an SRCU-fast-updown API
-Content-Language: en-US
-From: Akira Yokosawa <akiyks@gmail.com>
-In-Reply-To: <20251102214436.3905633-15-paulmck@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-Hi Paul,
+On 03/11/25 14:02, Shrikanth Hegde wrote:
+> Hi Valentin.
+>
+> On 10/10/25 9:08 PM, Valentin Schneider wrote:
+>> +++ b/include/linux/context_tracking_work.h
+>> @@ -0,0 +1,26 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _LINUX_CONTEXT_TRACKING_WORK_H
+>> +#define _LINUX_CONTEXT_TRACKING_WORK_H
+>> +
+>> +#include <linux/bitops.h>
+>> +
+>> +enum {
+>> +	CT_WORK_n_OFFSET,
+>> +	CT_WORK_MAX_OFFSET
+>> +};
+>> +
+>> +enum ct_work {
+>> +	CT_WORK_n        = BIT(CT_WORK_n_OFFSET),
+>> +	CT_WORK_MAX      = BIT(CT_WORK_MAX_OFFSET)
+>> +};
+>> +
+>> +#include <asm/context_tracking_work.h>
+>> +
+>
+> It fails to compile on powerpc (likey any arch other than x86)
+>
 
-Minor nitpicks in kernel-doc comment of srcu_read_lock_fast_updown().
+Woops, thanks for testing!
 
-On Sun,  2 Nov 2025 13:44:32 -0800, Paul E. McKenney wrote:
-> This commit creates an SRCU-fast-updown API, including
-> DEFINE_SRCU_FAST_UPDOWN(), DEFINE_STATIC_SRCU_FAST_UPDOWN(),
-> __init_srcu_struct_fast_updown(), init_srcu_struct_fast_updown(),
-> srcu_read_lock_fast_updown(), srcu_read_unlock_fast_updown(),
-> __srcu_read_lock_fast_updown(), and __srcu_read_unlock_fast_updown().
-> 
-> These are initially identical to their SRCU-fast counterparts, but both
-> SRCU-fast and SRCU-fast-updown will be optimized in different directions
-> by later commits.  SRCU-fast will lack any sort of srcu_down_read() and
-> srcu_up_read() APIs, which will enable extremely efficient NMI safety.
-> For its part, SRCU-fast-updown will not be NMI safe, which will enable
-> reasonably efficient implementations of srcu_down_read_fast() and
-> srcu_up_read_fast().
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: <bpf@vger.kernel.org>
-> ---
->  include/linux/srcu.h     | 77 +++++++++++++++++++++++++++++++++++++---
->  include/linux/srcutiny.h | 16 +++++++++
->  include/linux/srcutree.h | 55 ++++++++++++++++++++++++++--
->  kernel/rcu/srcutree.c    | 39 +++++++++++++++++---
->  4 files changed, 176 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> index 1dd6812aabe7..1fbf475eae5e 100644
-> --- a/include/linux/srcu.h
-> +++ b/include/linux/srcu.h
+> In file included from ./include/linux/context_tracking_state.h:8,
+>                   from ./include/linux/hardirq.h:5,
+>                   from ./include/linux/interrupt.h:11,
+>                   from ./include/linux/kernel_stat.h:8,
+>                   from ./include/linux/cgroup.h:27,
+>                   from ./include/linux/memcontrol.h:13,
+>                   from ./include/linux/swap.h:9,
+>                   from ./include/linux/suspend.h:5,
+>                   from arch/powerpc/kernel/asm-offsets.c:21:
+> ./include/linux/context_tracking_work.h:17:10: fatal error:
+> asm/context_tracking_work.h: No such file or directory
+>     17 | #include <asm/context_tracking_work.h>
+>        |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+>
+> Gating works for compile, but no benefit of the series.
+>
+> +#ifdef HAVE_CONTEXT_TRACKING_WORK
+>   #include <asm/context_tracking_work.h>
+> +#endif
+>
 
-[...]
+Huh, looking at this I wonder why I shoved that here. That include belongs
+in context_tracking.c itself; I'll fix that.
 
-> @@ -305,6 +315,46 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
->  	return retval;
->  }
->  
-> +/**
-> + * srcu_read_lock_fast_updown - register a new reader for an SRCU-fast-updown structure.
-> + * @ssp: srcu_struct in which to register the new reader.
-> + *
-> + * Enter an SRCU read-side critical section, but for a light-weight
-> + * smp_mb()-free reader.  See srcu_read_lock() for more information.
-> + * This function is compatible with srcu_down_read_fast(), but is not
-> + * NMI-safe.
-> + *
-> + * For srcu_read_lock_fast_updown() to be used on an srcu_struct
-> + * structure, that structure must have been defined using either
-> + * DEFINE_SRCU_FAST_UPDOWN() or DEFINE_STATIC_SRCU_FAST_UPDOWN() on the one
-> + * hand or initialized with init_srcu_struct_fast_updown() on the other.
-> + * Such an srcu_struct structure cannot be passed to any non-fast-updown
-> + * variant of srcu_read_{,un}lock() or srcu_{down,up}_read().  In kernels
-> + * built with CONFIG_PROVE_RCU=y, () will complain bitterly if you ignore
-> + * this * restriction.
+>
+> I have been trying to debug/understand the issue seen with isolcpus= and
+> nohz_full=. system is idle, even then it occasionally woken up to do
+> some work. So I was interesting if this series can help.
 
-Probably,
+Is there some ongoing thread for this particular issue or is this just
+something you're experimenting with?
 
- * built with CONFIG_PROVE_RCU=y, __srcu_check_read_flavor() will complain
- * bitterly if you ignore this restriction.
+If you suspect stray IPIs hitting isolated CPUs I'd recommend tracing with
+these events enabled:
+  ipi_send_cpu
+  ipi_send_cpumask
 
-??
-
-> + *
-> + * Grace-period auto-expediting is disabled for SRCU-fast-updown
-> + * srcu_struct structures because SRCU-fast-updown expedited grace periods
-> + * invoke synchronize_rcu_expedited(), IPIs and all.  If you need expedited
-> + * SRCU-fast-updown grace periods, use synchronize_srcu_expedited().
-> + *
-> + * The srcu_read_lock_fast_updown() function can be invoked only from
-> + those contexts where RCU is watching, that is, from contexts where
-> + it would be legal to invoke rcu_read_lock().  Otherwise, lockdep will
-> + complain.
-
-kernel-doc (script) complains:
-
-Warning: include/linux/srcu.h:341 bad line:  those contexts where RCU is watching, that is, from contexts where
-Warning: include/linux/srcu.h:342 bad line:  it would be legal to invoke rcu_read_lock().  Otherwise, lockdep will
-Warning: include/linux/srcu.h:343 bad line:  complain.
-
-Leading "* "s are missing.
-
-        Thanks, Akira
-
-> + */
-> +static inline struct srcu_ctr __percpu *srcu_read_lock_fast_updown(struct srcu_struct *ssp)
-> +__acquires(ssp)
-> +{
-> +	struct srcu_ctr __percpu *retval;
-> +
-> +	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_fast_updown().");
-> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST_UPDOWN);
-> +	retval = __srcu_read_lock_fast_updown(ssp);
-> +	rcu_try_lock_acquire(&ssp->dep_map);
-> +	return retval;
-> +}
-> +
->  /*
->   * Used by tracing, cannot be traced and cannot call lockdep.
->   * See srcu_read_lock_fast() for more information.
-[...]
