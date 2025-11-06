@@ -1,36 +1,34 @@
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C8B3314CB;
-	Thu,  6 Nov 2025 16:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C576E35771F;
+	Thu,  6 Nov 2025 16:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762444963; cv=none; b=Npud1A8PzTLDa3l0DjSvtX+rEML4E0ZatGSYJyuwgkSM1fS16/RA6TSAEVUSMY30hd9F3wcvJXVNOgK3gjC55Owu+VZI1Ti1AGFJ2gCOe89iuDMHlU80AXkaFQfBzMRmzrFCWus9OwKnq51yjgpbDNjI4d99fq9yYfi6qFFEuls=
+	t=1762445530; cv=none; b=kV+fcfKamTQ5wfsy9D8YA/w4WJqe+qIfvNVyV0zTFEuEuDNaaV11MNaNGi/dqZJe2fcJWBkjBIKNDETAZpgy0leAuIB+wO8/qvTmjp1OVq0mjx4tfYNDGaLIrP8M8ohSdk5j9bY1elhkymwh42Mt0e12z3zmncxNpJRSvXCBmuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762444963; c=relaxed/simple;
-	bh=H+shqCH+Wu91YwAHohrcMFif/PuJQzNKSWZc3R7gQDY=;
+	s=arc-20240116; t=1762445530; c=relaxed/simple;
+	bh=M2KCArV3HvYwfX337pg6kX1OdzBZi+Y56Dkt4B+xpvs=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JFfbl1Vddo38SldNbaSxEN1UMXRuUybeMxSZqMs+uMHhjBJqsOQq+k+B/4bzaQUeAbJpKvRGLs2hYLoOOErClEF6/XCBFYsQLyxsYiRccrIV18ovnjnEzTJHRQ+oDK6ZmHm02jYAkoQ8Nfov3dCx5l6ixmU+z8sFhnSbpEdgKgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
+	 MIME-Version:Content-Type; b=BoWb2yEDWFl79sZITYXd0PMcxjT2PW3tM9pssTi1O5oFydkmQvQJgYsnn3C0tFSYdPiA6u5vRVHirHtxgLM4VhlzSXQB+etPJctyOk8tTl8FTHPdOFl1LkvKxsU68oLE7NtxDPBt3TiJjr+4vMxBGb2+uJwnsIJxivUR7viQ4GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id 505681401AC;
-	Thu,  6 Nov 2025 16:02:33 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id 63B0520018;
-	Thu,  6 Nov 2025 16:02:31 +0000 (UTC)
-Date: Thu, 6 Nov 2025 11:02:30 -0500
+Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 99A3012B846;
+	Thu,  6 Nov 2025 16:06:13 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf11.hostedemail.com (Postfix) with ESMTPA id EE09F20031;
+	Thu,  6 Nov 2025 16:06:11 +0000 (UTC)
+Date: Thu, 6 Nov 2025 11:06:10 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sebastian Andrzej
- Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 10/16] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-Message-ID: <20251106110230.08e877ff@batman.local.home>
-In-Reply-To: <20251105203216.2701005-10-paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v2 0/16] SRCU updates for v6.19
+Message-ID: <20251106110610.44599177@batman.local.home>
+In-Reply-To: <aQvXA3A5XHn-Tjhh@pavilion.home>
 References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
-	<20251105203216.2701005-10-paulmck@kernel.org>
+	<aQvXA3A5XHn-Tjhh@pavilion.home>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -40,174 +38,19 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: fmkt714m1m4c6ehxka6831mtzforau8e
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 63B0520018
+X-Stat-Signature: z5axpn7mxewozj3399h19brbjbym3jdk
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: EE09F20031
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19iaTKyFCI0tGtmoCLTDsC8g5M4bk6js8o=
-X-HE-Tag: 1762444951-168403
-X-HE-Meta: U2FsdGVkX1+3moqzzczi8f0rQKt2e3epFUYYRV6jSfaWDCASsq5r4G1RK7MJifKYHjovT+JyKwH8ChPK+7RU67eNBv6Bu8r4z8pgIl9HuANgMN2IBsIoIXsUwZ6WbWDcYZ4/s1SP36ppyeKkTiib4tOzIwA5z5RJ34eoGuRyeqGHY7prfSdShDK+mqGrA0zEJ+LoKS/lcZbAogkHGOXWAg8EsRWy2SifDVUS+ZZo3qAJLQNe49McGcUjZtVRR5SGinnFib8xTQUrTw4mcJbLTqzy/3iBE2eNxlUIEW2HXSGj6E0lIs3OFPgcjRLzZyU0wzHt4TnaMEClDCnG6M6z3eUh531J3eu/
+X-Session-ID: U2FsdGVkX1/gKla3s1j1a1wwuMYU5lmINDisNJWHUHY=
+X-HE-Tag: 1762445171-146636
+X-HE-Meta: U2FsdGVkX18ZJE5NlgpXfPEuEqsP3Yu3n3Ldvm6ld2CCOrA9ditZj4Jr0sQs9TknEUWrYBLriAdHyyy83mN9zO7fLZcww7RgOjnKhQw69BYx3bTWHLmnSGObStRW4ht46Ni9NUY5z715YaKh4HK9y5N/LJecexfUVR0P//T11bJyzgqZQPQN4vn9P7BTk+cDu+GEgTl+FPtEP78lTvAyFSaPhrmxIByA11SxjNyVADH4Bps5MpsbtmTm/fA28GDXYgqzgNseaeR6YQYqxe6pp2yWPJVEt3sl9VxGSzvFSDlV0Iq0D+LlSdPJbPgD7QrU/uHxxNm3fKKhsPEiW6CprDuKhqYB6jWLWegoxaity6NQgYcsKZzrIw==
 
-On Wed,  5 Nov 2025 12:32:10 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> The current commit can be thought of as an approximate revert of that
-> commit, with some compensating additions of preemption disabling pointed
-> out by Steven Rostedt (thank you, Steven!).  This preemption disabling
+On Thu, 6 Nov 2025 00:00:19 +0100
+Frederic Weisbecker <frederic@kernel.org> wrote:
 
-> uses guard(preempt_notrace)(), and while in the area a couple of other
-> use cases were also converted to guards.
+> Applied to rcu/srcu, thanks!
 
-Actually, please don't do any conversions. That code is unrelated to
-this work and I may be touching it. I don't need unneeded conflicts.
-
-> ---
->  include/linux/tracepoint.h   | 45 ++++++++++++++++++++++--------------
->  include/trace/perf.h         |  4 ++--
->  include/trace/trace_events.h |  4 ++--
->  kernel/tracepoint.c          | 21 ++++++++++++++++-
->  4 files changed, 52 insertions(+), 22 deletions(-)
-> 
-> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-> index 826ce3f8e1f8..9f8b19cd303a 100644
-> --- a/include/linux/tracepoint.h
-> +++ b/include/linux/tracepoint.h
-> @@ -33,6 +33,8 @@ struct trace_eval_map {
->  
->  #define TRACEPOINT_DEFAULT_PRIO	10
->  
-> +extern struct srcu_struct tracepoint_srcu;
-> +
->  extern int
->  tracepoint_probe_register(struct tracepoint *tp, void *probe, void *data);
->  extern int
-> @@ -115,7 +117,10 @@ void for_each_tracepoint_in_module(struct module *mod,
->  static inline void tracepoint_synchronize_unregister(void)
->  {
->  	synchronize_rcu_tasks_trace();
-> -	synchronize_rcu();
-> +	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> +		synchronize_srcu(&tracepoint_srcu);
-> +	else
-> +		synchronize_rcu();
->  }
-
-Instead of using the IS_ENABLED(CONFIG_PREEMPT_RT) I think it would be
-somewhat cleaner to add macros (all of this is untested):
-
-#ifdef CONFIG_PREEMPT_RT
-extern struct srcu_struct tracepoint_srcu;
-# define tracepoint_sync() synchronizes_srcu(&tracepoint_srcu)
-# define tracepoint_guard() \
-     guard(srcu_fast_notrace)(&tracepoint_srcu); \
-     guard(migrate)()
-#else
-# define tracepoint_sync() synchronize_rcu();
-# define tracepoint_guard() guard(preempt_notrace)
-#endif
-
-And then the above can be:
-
-static inline void tracepoint_synchronize_unregister(void)
-{
- 	synchronize_rcu_tasks_trace();
-	tracepoint_sync();
-}
-
-and the below:
-
-	static inline void __do_trace_##name(proto)			\
-	{								\
-		if (cond) {						\
-			tracepoint_guard();				\
-			__DO_TRACE_CALL(name, TP_ARGS(args));		\
-		}							\
-	}								\
-
-And not have to duplicate all that code.
-
->  static inline bool tracepoint_is_faultable(struct tracepoint *tp)
->  {
-> @@ -266,23 +271,29 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->  		return static_branch_unlikely(&__tracepoint_##name.key);\
->  	}
->  
-> -#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
-> +#define __DECLARE_TRACE(name, proto, args, cond, data_proto)			\
->  	__DECLARE_TRACE_COMMON(name, PARAMS(proto), PARAMS(args), PARAMS(data_proto)) \
-> -	static inline void __do_trace_##name(proto)			\
-> -	{								\
-> -		if (cond) {						\
-> -			guard(preempt_notrace)();			\
-> -			__DO_TRACE_CALL(name, TP_ARGS(args));		\
-> -		}							\
-> -	}								\
-> -	static inline void trace_##name(proto)				\
-> -	{								\
-> -		if (static_branch_unlikely(&__tracepoint_##name.key))	\
-> -			__do_trace_##name(args);			\
-> -		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {		\
-> -			WARN_ONCE(!rcu_is_watching(),			\
-> -				  "RCU not watching for tracepoint");	\
-> -		}							\
-> +	static inline void __do_trace_##name(proto)				\
-> +	{									\
-> +		if (cond) {							\
-> +			if (IS_ENABLED(CONFIG_PREEMPT_RT) && preemptible()) {	\
-> +				guard(srcu_fast_notrace)(&tracepoint_srcu);	\
-> +				guard(migrate)();				\
-> +				__DO_TRACE_CALL(name, TP_ARGS(args));		\
-> +			} else {						\
-> +				guard(preempt_notrace)();			\
-> +				__DO_TRACE_CALL(name, TP_ARGS(args));		\
-> +			}							\
-> +		}								\
-> +	}									\
-> +	static inline void trace_##name(proto)					\
-> +	{									\
-> +		if (static_branch_unlikely(&__tracepoint_##name.key))		\
-> +			__do_trace_##name(args);				\
-> +		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {			\
-> +			WARN_ONCE(!rcu_is_watching(),				\
-> +				  "RCU not watching for tracepoint");		\
-> +		}								\
->  	
->  
-
->  /*
-> diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-> index 4f22136fd465..fbc07d353be6 100644
-> --- a/include/trace/trace_events.h
-> +++ b/include/trace/trace_events.h
-> @@ -436,6 +436,7 @@ __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
->  static notrace void							\
->  trace_event_raw_event_##call(void *__data, proto)			\
->  {									\
-> +	guard(preempt_notrace)();					\
-
-Note, the tracepoint code expects that there's only one level of
-preemption done, as it records the preempt_count and needs to subtract
-what tracing added. Just calling preempt_notrace here if it had already
-disabled preemption will break that code.
-
-It should only disable preemption if it hasn't already done that (when
-PREEMPT_RT is enabled).
-
->  	do_trace_event_raw_event_##call(__data, args);			\
->  }
->  
-> @@ -447,9 +448,8 @@ static notrace void							\
->  trace_event_raw_event_##call(void *__data, proto)			\
->  {									\
->  	might_fault();							\
-> -	preempt_disable_notrace();					\
-> +	guard(preempt_notrace)();					\
->  	do_trace_event_raw_event_##call(__data, args);			\
-> -	preempt_enable_notrace();					\
-
-I may be modifying the above, so I would leave it alone.
-
-Thanks,
+I have issues with patch 10, so please do not apply it.
 
 -- Steve
-
