@@ -1,67 +1,93 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABBC926E6F9;
-	Fri,  7 Nov 2025 16:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41BE34D3A9;
+	Sat,  8 Nov 2025 13:07:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762534635; cv=none; b=upQyVKNt3wKfcrFOc2nxBRX7jZltGUIv/Na6hY0ymmKxl+If00kJABRoBAwUEYsr2UNSIZnkhiOh+EFTa/nFDUUA/wp6CDs3LF+EiTLvh8JeMDZIdEgRXLi/50DPtwf7JP5VvQ0YVYhwWV2wVrjdEkh82Yn9RrqVjlXU7TzDNOM=
+	t=1762607271; cv=none; b=uujAV4pFV5nmTPYyqI3zLyPMJkl4g3FyBDMm9xGZ9/k5riJO5JFei87r04MS7PudtPV0XQmRc16tlOAa5xNrmBSxQf5XMwU+VYNrBPP3y21DXBa6Ck9TPkgor0aCgYL79kS0xwI3V/j5VYSYe04i8nWd25eFl/GzhXjqLzPNIxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762534635; c=relaxed/simple;
-	bh=FC7BBrTdY+EiZ9gICXhEg1UmVOH+HVKMUlJ3F6NHaJ8=;
+	s=arc-20240116; t=1762607271; c=relaxed/simple;
+	bh=i7HXPTYeK+e+Jl5vz+u8MqxdLo1lCA/B25zaKUgWUkY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qPeslnl/GIy0sIUfa0aV1z4mLZjgp0RoSYDvS96hqf+7Qmw2p0RqcTuOUb4yWoeQw/4y7HZvtX/b7C0RZd5uZ0h49a6IJIIwW286ebGHneqAfyxvWnpOkKJeHfMdFwRY2TBADTG9flrI4pUhhf80K1hF5lTaryenWCJwvkt86Ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k0+y0n4T; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=EH7GbVMa7n6FAlqs9FAvGBQfs9GNwQf5g/qQQZts3B38BMdozkDnSGFT1zPTIpy4btR8OUyqiZiSbXLCLmfKpU1SyH7mQIEK4HKwoSPfW32HLYihWhBNo1flsdhu3TX9Aw1Uc+cfE61K3npx2dj0a+TPHUGQ8p1FeYBtX4Ii4bQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B7D+tM5k; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k0+y0n4T"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15F93C4CEF7;
-	Fri,  7 Nov 2025 16:57:15 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B7D+tM5k"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E95EC4CEF7;
+	Sat,  8 Nov 2025 13:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762534635;
-	bh=FC7BBrTdY+EiZ9gICXhEg1UmVOH+HVKMUlJ3F6NHaJ8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=k0+y0n4Tal798IkvWqzhtQXPUlR0rZdYQgr2H4ncu/EvEskZFFGRjBGKhuNh7pRhW
-	 UmiPVXIXJPzLb+7TsT17kYX7ALVyuwzpcb25g7dqKV6Bn59sFsl+bUvofQns6AD9Ge
-	 G2dFWrQAXZWIlxzveP3GJzlsnW4cHUuQSQlK0HAU8MDNl5uH82EJnl7FrmlbQq1tgL
-	 yXRYeB1xqoQAGbmgSdZQ3aJzcxIjQH32tVZZZhDDIOO8d7hsul4Wvr5wG2U4TWddyG
-	 TjqdwrTf9STwGSZymawPrsGHj3nv1QTf30xokyxH/0j1KA7Y+p1vNDuTH7zDEg48I9
-	 4F7xFg0Vl27+w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9C3A5CE0D38; Fri,  7 Nov 2025 08:57:11 -0800 (PST)
-Date: Fri, 7 Nov 2025 08:57:11 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v2 0/16] SRCU updates for v6.19
-Message-ID: <793fa040-edb3-47d1-8958-d40dcaacc960@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+	s=k20201202; t=1762607271;
+	bh=i7HXPTYeK+e+Jl5vz+u8MqxdLo1lCA/B25zaKUgWUkY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B7D+tM5kRH+NjazgLU1QcpEGK3MSiun+xEIGRss4cHMEJkPH+dAAG9aWL0+Ni/kzp
+	 tdgB8qNQ/5v8GCWh/yvzGxkmtXcLRIZPeEurA0js5LUFoZR/s/5Ql1kIfFWoAFIXVa
+	 7xLE/8CefNRlBnOVhFRWSP5mkIpzN3q4JwW7x6qPwc216NOTGhKbv1gs9U492MMFl+
+	 UCXxdzRBNa+58S/xIxPrtUkKQK8lKxoE467ijgeeYg/uJItdpy0C+EzqiY7umw00zf
+	 L7lketTeGJhxeWsBRGZjEYkqlMumv2nPYEWkrMiQTtzV98m6hmshhuMkN38ko+wC/O
+	 jEl8eGclEP93w==
+Date: Sat, 8 Nov 2025 13:07:45 +0000
+From: Will Deacon <will@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 15/16] srcu: Optimize SRCU-fast-updown for arm64
+Message-ID: <aQ9AoauJKLYeYvrn@willie-the-truck>
 References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
- <aQvXA3A5XHn-Tjhh@pavilion.home>
- <20251106110610.44599177@batman.local.home>
- <aQ3qmdoxktGZRUiL@localhost.localdomain>
+ <20251105203216.2701005-15-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aQ3qmdoxktGZRUiL@localhost.localdomain>
+In-Reply-To: <20251105203216.2701005-15-paulmck@kernel.org>
 
-On Fri, Nov 07, 2025 at 01:48:25PM +0100, Frederic Weisbecker wrote:
-> Le Thu, Nov 06, 2025 at 11:06:10AM -0500, Steven Rostedt a écrit :
-> > On Thu, 6 Nov 2025 00:00:19 +0100
-> > Frederic Weisbecker <frederic@kernel.org> wrote:
-> > 
-> > > Applied to rcu/srcu, thanks!
-> > 
-> > I have issues with patch 10, so please do not apply it.
+Hi Paul,
+
+On Wed, Nov 05, 2025 at 12:32:15PM -0800, Paul E. McKenney wrote:
+> Some arm64 platforms have slow per-CPU atomic operations, for example,
+> the Neoverse V2.  This commit therefore moves SRCU-fast from per-CPU
+> atomic operations to interrupt-disabled non-read-modify-write-atomic
+> atomic_read()/atomic_set() operations.  This works because
+> SRCU-fast-updown is not invoked from read-side primitives, which
+> means that if srcu_read_unlock_fast() NMI handlers.  This means that
+> srcu_read_lock_fast_updown() and srcu_read_unlock_fast_updown() can
+> exclude themselves and each other
 > 
-> Ok, dropping it, thanks!
+> This reduces the overhead of calls to srcu_read_lock_fast_updown() and
+> srcu_read_unlock_fast_updown() from about 100ns to about 12ns on an ARM
+> Neoverse V2.  Although this is not excellent compared to about 2ns on x86,
+> it sure beats 100ns.
+> 
+> This command was used to measure the overhead:
+> 
+> tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs NOPREEMPT --kconfig "CONFIG_NR_CPUS=64 CONFIG_TASKS_TRACE_RCU=y" --bootargs "refscale.loops=100000 refscale.guest_os_delay=5 refscale.nreaders=64 refscale.holdoff=30 torture.disable_onoff_at_boot refscale.scale_type=srcu-fast-updown refscale.verbose_batched=8 torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=8 refscale.nruns=100" --trust-make
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> Cc: <bpf@vger.kernel.org>
+> ---
+>  include/linux/srcutree.h | 51 +++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 48 insertions(+), 3 deletions(-)
 
-Thank you, Frederic, and apologies for both the delay and the hassle!
+I've queued the per-cpu tweak from Catalin in the arm64 fixes tree [1]
+for 6.18, so please can you drop this SRCU commit from your tree?
 
-							Thanx, Paul
+Cheers,
+
+Will
+
+[1] https://git.kernel.org/arm64/c/535fdfc5a228
