@@ -1,55 +1,55 @@
-Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
+Received: from mail-ed1-f74.google.com (mail-ed1-f74.google.com [209.85.208.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93ECB34A78C
-	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:02:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D0734B402
+	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763650987; cv=none; b=cFikHL1JI+KhQuyRJli3BPcwRvJUGyZ26JFs1qYqKoFafB3g5yPkF/f7hdVLkX8mtYsFnKGWcIbDtSvG6NkitR0fdrG5paCidTFSZ0PYzUSvzHUE1Hu6hNIeXZe8MRtyKyI44CBqQCJLc5zmN4P0dfo4C1xzuL+91mbuoRwC8+g=
+	t=1763651004; cv=none; b=GqK4foxgrvnKhegIERW2lFmhzHyKHxuPKK8l1N2HfOqOLdr+4IVB10FIFz9o5C+YC/5xb/xRvHL+kffMNk/etTau+CelmewVWIwAnp31clesP7KNgwT618g/75fHBdP2AINqBJYFQTE5w2z7oJU0n0EgsU9xJaDlbGklpxfGfGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763650987; c=relaxed/simple;
-	bh=eBDUdyy/+hf0zNW0yP0X5FX5kRPqZGLn6VJLXyEfqFo=;
+	s=arc-20240116; t=1763651004; c=relaxed/simple;
+	bh=tTGjUHrfXR5isY+lSEFNNwASkyVwRARVzePML9vCCTo=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=lVvDnzQBgp11f06/6jI8tTxaLHdeJHW98ODu7vNv1V932c2db6UF4uG2nl/UMXsmDHUfO2cqzHpI+jr9lLWQQlFLvnoV/suXMHR8TeYWHP5aui9qpMwoNINdC01nMTReKT5PO69CT1nEUNeTmbfh8cNZIrEf3fbwzLhM8Klhh8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Us7Hk1RS; arc=none smtp.client-ip=209.85.128.74
+	 To:Cc:Content-Type; b=rpnsbaO/LxZBeMt622ZghN2QINrlDv2atJ1O0w2nOn4H+lUo4J7+mg4/aHZ887FOg99B87pkoAMfC57pinEasg54adFSXCk9aTYkj8bZmXglIxWnLn4YLGrWanqnV1yrcu9mu+/d3Om11BBvb31Lnbo7/igys9fb48FBcVGlA98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pRDQkdoJ; arc=none smtp.client-ip=209.85.208.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Us7Hk1RS"
-Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-4775fcf67d8so10369925e9.0
-        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:02:56 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pRDQkdoJ"
+Received: by mail-ed1-f74.google.com with SMTP id 4fb4d7f45d1cf-64091bef2ecso1298449a12.3
+        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:03:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1763650973; x=1764255773; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1763650979; x=1764255779; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lIkqaT4GZQQ8I2xtRoztfiZr8q25ife+cBqIcslh3gQ=;
-        b=Us7Hk1RShmc30uTXgR3INbaySaUA9KT4NJoXfduOpGY5/u6z9cFYcnISLbRnpNGSoQ
-         ukqj/IdxlwM3BH1e9bRcTdHml126/z8CSQz0dBIoMvPIndNOXza7ixlzGoLVU/lu65DP
-         +S9QkcHuNDE/jFRymy726C7ppg2/z/8OZkLsUdIqwWZW5gredZsdEl6FArODeVX0UKEF
-         94mtGLrEpzVssD8/VuNbqjIbAjESlJkNKruoDlQpTOC+eFJFsRyNyOqtynus0EIWaBIo
-         ur6w8p+4BW6lMDP10IFNwMtgF0YMNLP+nJjqg0UmdstSiSiIOfrDG2ZHNnmoWgMhWDLK
-         Ug+g==
+        bh=QTNBohfvQLfYyJiWHtGyLx9FZqAAISthRH9eXaAWBIw=;
+        b=pRDQkdoJOB8BfljkDcQrj/uje2IXL2T/x5eZ/wk8Uc4x/XefY5p5EFYXDGT51MXa7A
+         I9l55vHaC9zE4/cxhD6UmVf6gV7TpKWoE8cGMDsCdDbQnDkewx6hrqthpt4o94TtQL/u
+         MjbcVlir4o3Ji4GPc4Epv0fpq/JlTGllQX22aOwxrTB0zUpmz3DAEXUZAceGwEEaBHb5
+         lvxujEoCa4QrSLs6V+CUcQRu2XDzktl3P9vyuulCEbS3jrwzJgkkFTVq1OoRAkt1J6aW
+         ekIDBh2nsF6UpK2cJB/ae6naY0w2EbbMIvM2xruXokam9a5643ErVpY8TmJS9Kj3i8CB
+         WEwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763650973; x=1764255773;
+        d=1e100.net; s=20230601; t=1763650979; x=1764255779;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lIkqaT4GZQQ8I2xtRoztfiZr8q25ife+cBqIcslh3gQ=;
-        b=Q5I1vmigPkes9MqJGVnpfm5qmtUnLro9TLHfIVEjpcDbw5YdRceHCyJhEY0AZt7jOo
-         GbLNXqX6p1wc/j9+gRm8GupqbKPfTvdYRpSqI29s4up4eY3kvPvmFj6p40z9ILzXhjkK
-         5xE90UazPJsHo0LwuycSNEXr0Lf68rBhyxYSWyruOBiR5Zq7inDDbXbOSqf80I6tN5z0
-         nvVlUmeaupv5Wagj4ybLJixD3X5Am+evmH6fYpYPS+rcUj2lFKwvEXYFPQRN9fWJKzvi
-         AIoO4NJ3dplUSd3unUy9XM5rX5/R2+okO2gSqcb5K+15vOoXZeLLH4wKulu7PzwnGnti
-         4nSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX3OoNurYt0hsRZBR58L/rmII6CzGsF2qLn3rXkchdSzUExGyFKISc1SZTttOKKuIbM13k=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/k0yQaphOD90w7h0ovy9yuvSwxL/k4YRkhjAyCyY0FDV3RSjJ
-	O//f+u9GjkW52EBiK34KPtguAXIuEcVhzEqxp+4Y1V7MSR6LZFYLQd9hPLUvnd2NOQZ1rgxVo3m
-	glg==
-X-Google-Smtp-Source: AGHT+IE7SKgiCw/02hArGI9zujP0xPyrpw65qFKPWhHBeestq9lQVOSID1Bw6HemoDi2xS2ktBePcnke9A==
-X-Received: from wmrm14.prod.google.com ([2002:a05:600c:37ce:b0:46e:4c7c:5162])
- (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:600c:470d:b0:477:9cdb:e32e
- with SMTP id 5b1f17b1804b1-477b8a50e80mr28447795e9.9.1763650973180; Thu, 20
- Nov 2025 07:02:53 -0800 (PST)
-Date: Thu, 20 Nov 2025 15:49:05 +0100
+        bh=QTNBohfvQLfYyJiWHtGyLx9FZqAAISthRH9eXaAWBIw=;
+        b=iqSGOv/jy2qzZca1FMeqFA7V/z6wmGV01rVlCEKSZNORaAr07I7f+n/yjZTEiukJcQ
+         JEQTTJmgyTXs5PPBkCUY+Z8rIbEWISiuRNVTMqUfB4HeF+Iq1HySxl20DDMasaloV6qp
+         km3BtB18MJ/WpWGbJumkYk1knNuW0v1TW6E3VdLjNFghke7t9Tu+A5t0q+6p/tLNryWm
+         lE9IxcShWhGavgpUQ5XWGHtjP/Tt5rphnrjlZti2FFCLIaFXiDmecJeFawdJJu4CRhOy
+         LSnRV4Fc3b+Wy62F2rii+SGPPFmB5w9NA9wB/EzbVp3nkNEPtwmaahB4O46KnKRNwfcA
+         U8hw==
+X-Forwarded-Encrypted: i=1; AJvYcCUiOc+d2zndPYW8y+uI7g1vrVl8ET1vrgJhoySlh3QMSQuw839H2NfnGHunTymUf1JTW4E=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3XziTDZGBisiCYLccTml9O34AgdMIcoT6EclyID75cgqZE2t/
+	0RAdL4MZC+vkJ1wiNur1g4IefBAmpI+f6eFAKTGOgZKKGFNLNC3SFq7wwQR+II0BmNHrxzmqIgc
+	JYw==
+X-Google-Smtp-Source: AGHT+IF9OaX/QGeSo05eKeUEdCvjlZVpqfgwLf4/MHL/rv8J5uT/4osVo9PFxwafA3Q6L9NfftMIvUQ5OA==
+X-Received: from edb10.prod.google.com ([2002:a05:6402:238a:b0:643:5f58:caa7])
+ (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6402:268d:b0:640:b1cf:f800
+ with SMTP id 4fb4d7f45d1cf-6453d084770mr1885049a12.4.1763650978915; Thu, 20
+ Nov 2025 07:02:58 -0800 (PST)
+Date: Thu, 20 Nov 2025 15:49:07 +0100
 In-Reply-To: <20251120145835.3833031-2-elver@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -59,8 +59,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251120145835.3833031-2-elver@google.com>
 X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
-Message-ID: <20251120145835.3833031-5-elver@google.com>
-Subject: [PATCH v4 03/35] compiler-context-analysis: Add test stub
+Message-ID: <20251120145835.3833031-7-elver@google.com>
+Subject: [PATCH v4 05/35] checkpatch: Warn about context_unsafe() without comment
 From: Marco Elver <elver@google.com>
 To: elver@google.com, Peter Zijlstra <peterz@infradead.org>, 
 	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
@@ -87,81 +87,36 @@ Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenry
 	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Add a simple test stub where we will add common supported patterns that
-should not generate false positive of each new supported context guard.
+Warn about applications of context_unsafe() without a comment, to
+encourage documenting the reasoning behind why it was deemed safe.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
 v4:
 * Rename capability -> context analysis.
+* Avoid nested if.
 ---
- lib/Kconfig.debug           | 14 ++++++++++++++
- lib/Makefile                |  3 +++
- lib/test_context-analysis.c | 18 ++++++++++++++++++
- 3 files changed, 35 insertions(+)
- create mode 100644 lib/test_context-analysis.c
+ scripts/checkpatch.pl | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 696e2a148a15..0c499d22407c 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2833,6 +2833,20 @@ config LINEAR_RANGES_TEST
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 92669904eecc..a5db6b583b88 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6722,6 +6722,13 @@ sub process {
+ 			}
+ 		}
  
- 	  If unsure, say N.
- 
-+config CONTEXT_ANALYSIS_TEST
-+	bool "Compiler context-analysis warnings test"
-+	depends on EXPERT
-+	help
-+	  This builds the test for compiler-based context analysis. The test
-+	  does not add executable code to the kernel, but is meant to test that
-+	  common patterns supported by the analysis do not result in false
-+	  positive warnings.
++# check for context_unsafe without a comment.
++		if ($line =~ /\bcontext_unsafe\b/ &&
++		    !ctx_has_comment($first_line, $linenr)) {
++			WARN("CONTEXT_UNSAFE",
++			     "context_unsafe without comment\n" . $herecurr);
++		}
 +
-+	  When adding support for new context guards, it is strongly recommended
-+	  to add supported patterns to this test.
-+
-+	  If unsure, say N.
-+
- config CMDLINE_KUNIT_TEST
- 	tristate "KUnit test for cmdline API" if !KUNIT_ALL_TESTS
- 	depends on KUNIT
-diff --git a/lib/Makefile b/lib/Makefile
-index 1ab2c4be3b66..59ed5f881bcb 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -329,4 +329,7 @@ obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) += devmem_is_allowed.o
- 
- obj-$(CONFIG_FIRMWARE_TABLE) += fw_table.o
- 
-+CONTEXT_ANALYSIS_test_context-analysis.o := y
-+obj-$(CONFIG_CONTEXT_ANALYSIS_TEST) += test_context-analysis.o
-+
- subdir-$(CONFIG_FORTIFY_SOURCE) += test_fortify
-diff --git a/lib/test_context-analysis.c b/lib/test_context-analysis.c
-new file mode 100644
-index 000000000000..68f075dec0e0
---- /dev/null
-+++ b/lib/test_context-analysis.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Compile-only tests for common patterns that should not generate false
-+ * positive errors when compiled with Clang's context analysis.
-+ */
-+
-+#include <linux/build_bug.h>
-+
-+/*
-+ * Test that helper macros work as expected.
-+ */
-+static void __used test_common_helpers(void)
-+{
-+	BUILD_BUG_ON(context_unsafe(3) != 3); /* plain expression */
-+	BUILD_BUG_ON(context_unsafe((void)2; 3) != 3); /* does not swallow semi-colon */
-+	BUILD_BUG_ON(context_unsafe((void)2, 3) != 3); /* does not swallow commas */
-+	context_unsafe(do { } while (0)); /* works with void statements */
-+}
+ # check of hardware specific defines
+ 		if ($line =~ m@^.\s*\#\s*if.*\b(__i386__|__powerpc64__|__sun__|__s390x__)\b@ && $realfile !~ m@include/asm-@) {
+ 			CHK("ARCH_DEFINES",
 -- 
 2.52.0.rc1.455.g30608eb744-goog
 
