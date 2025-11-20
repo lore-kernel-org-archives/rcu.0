@@ -1,55 +1,55 @@
-Received: from mail-ed1-f74.google.com (mail-ed1-f74.google.com [209.85.208.74])
+Received: from mail-ej1-f74.google.com (mail-ej1-f74.google.com [209.85.218.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D0734B402
-	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:03:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B2F357732
+	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:11:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763651004; cv=none; b=GqK4foxgrvnKhegIERW2lFmhzHyKHxuPKK8l1N2HfOqOLdr+4IVB10FIFz9o5C+YC/5xb/xRvHL+kffMNk/etTau+CelmewVWIwAnp31clesP7KNgwT618g/75fHBdP2AINqBJYFQTE5w2z7oJU0n0EgsU9xJaDlbGklpxfGfGY=
+	t=1763651506; cv=none; b=u6g8n4df/0I9iJH8/LWRVfrY0v5bd/3KhH+EoSFU9tXei1TDTalVvXxskqZ0SPhhHOim1NMBddmGX64pdythNoIIbCKT9OgrXU6AL8fHN+Qdq+JyWzzhG0zqGrvfSkEcvmWsnUsWfoIi6H6mBMGGH/E2mkJiTdJ2ayGQAMm4gMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763651004; c=relaxed/simple;
-	bh=tTGjUHrfXR5isY+lSEFNNwASkyVwRARVzePML9vCCTo=;
+	s=arc-20240116; t=1763651506; c=relaxed/simple;
+	bh=kPQ7Y4ibZ70noLRvRuj0t3W6aiDQGYUeUC0Oe4+OJBw=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=rpnsbaO/LxZBeMt622ZghN2QINrlDv2atJ1O0w2nOn4H+lUo4J7+mg4/aHZ887FOg99B87pkoAMfC57pinEasg54adFSXCk9aTYkj8bZmXglIxWnLn4YLGrWanqnV1yrcu9mu+/d3Om11BBvb31Lnbo7/igys9fb48FBcVGlA98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pRDQkdoJ; arc=none smtp.client-ip=209.85.208.74
+	 To:Cc:Content-Type; b=cidH5cZttjyRWrUGL/5Fd/4hFFvaEOmbAOodGYJMpBk+GQofIcpMHCPDj39Yhq2flNnY4LFN906Kjgzhu60dmsvMY5ibwWKQsjOyFT+64vc7buC8fo+f2yJO5nDYA+QJvFlZH7ALpR77efek+CPjWe+P4AWYUgisAFf2fTHi8hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ir7czem0; arc=none smtp.client-ip=209.85.218.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pRDQkdoJ"
-Received: by mail-ed1-f74.google.com with SMTP id 4fb4d7f45d1cf-64091bef2ecso1298449a12.3
-        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:03:05 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ir7czem0"
+Received: by mail-ej1-f74.google.com with SMTP id a640c23a62f3a-b73533b84eeso86431066b.3
+        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:11:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1763650979; x=1764255779; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1763651496; x=1764256296; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QTNBohfvQLfYyJiWHtGyLx9FZqAAISthRH9eXaAWBIw=;
-        b=pRDQkdoJOB8BfljkDcQrj/uje2IXL2T/x5eZ/wk8Uc4x/XefY5p5EFYXDGT51MXa7A
-         I9l55vHaC9zE4/cxhD6UmVf6gV7TpKWoE8cGMDsCdDbQnDkewx6hrqthpt4o94TtQL/u
-         MjbcVlir4o3Ji4GPc4Epv0fpq/JlTGllQX22aOwxrTB0zUpmz3DAEXUZAceGwEEaBHb5
-         lvxujEoCa4QrSLs6V+CUcQRu2XDzktl3P9vyuulCEbS3jrwzJgkkFTVq1OoRAkt1J6aW
-         ekIDBh2nsF6UpK2cJB/ae6naY0w2EbbMIvM2xruXokam9a5643ErVpY8TmJS9Kj3i8CB
-         WEwQ==
+        bh=aQzgcISd2vbQZXtJWGq+JJNhDcvZ3ay3Xv8naW52gEo=;
+        b=ir7czem0K3vlPcb4xvsiwV2+DrZ9W/oijEcCVhwVZY2g6uKhHBtoUZtDAvkGL1mkCz
+         sAn16GeHjDtMdAl4ArEvjSqCqoyuh0I1Fs1wf+7x0cKZF0fveIRG2jRH3MQuJkDuglmw
+         iS4h7NlmtMUjgnJXL2XCo7VZAkqskg2mK55bmQyGePw4xrRMHnJaWT5/daxZer5jY2ej
+         TurRxdNu/CTWVwWcqShJsgFwFjTezTkqV3pM/YvpCkA6vGg0WsArTCzCTibM/1q+WNSC
+         oOJKLk54aWGK67kzteOqdvjCROIvG9ain5nRUN9HCABrAX0wTK3AvIAF2RHBoAZAzwDD
+         dyRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763650979; x=1764255779;
+        d=1e100.net; s=20230601; t=1763651496; x=1764256296;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QTNBohfvQLfYyJiWHtGyLx9FZqAAISthRH9eXaAWBIw=;
-        b=iqSGOv/jy2qzZca1FMeqFA7V/z6wmGV01rVlCEKSZNORaAr07I7f+n/yjZTEiukJcQ
-         JEQTTJmgyTXs5PPBkCUY+Z8rIbEWISiuRNVTMqUfB4HeF+Iq1HySxl20DDMasaloV6qp
-         km3BtB18MJ/WpWGbJumkYk1knNuW0v1TW6E3VdLjNFghke7t9Tu+A5t0q+6p/tLNryWm
-         lE9IxcShWhGavgpUQ5XWGHtjP/Tt5rphnrjlZti2FFCLIaFXiDmecJeFawdJJu4CRhOy
-         LSnRV4Fc3b+Wy62F2rii+SGPPFmB5w9NA9wB/EzbVp3nkNEPtwmaahB4O46KnKRNwfcA
-         U8hw==
-X-Forwarded-Encrypted: i=1; AJvYcCUiOc+d2zndPYW8y+uI7g1vrVl8ET1vrgJhoySlh3QMSQuw839H2NfnGHunTymUf1JTW4E=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3XziTDZGBisiCYLccTml9O34AgdMIcoT6EclyID75cgqZE2t/
-	0RAdL4MZC+vkJ1wiNur1g4IefBAmpI+f6eFAKTGOgZKKGFNLNC3SFq7wwQR+II0BmNHrxzmqIgc
-	JYw==
-X-Google-Smtp-Source: AGHT+IF9OaX/QGeSo05eKeUEdCvjlZVpqfgwLf4/MHL/rv8J5uT/4osVo9PFxwafA3Q6L9NfftMIvUQ5OA==
-X-Received: from edb10.prod.google.com ([2002:a05:6402:238a:b0:643:5f58:caa7])
- (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6402:268d:b0:640:b1cf:f800
- with SMTP id 4fb4d7f45d1cf-6453d084770mr1885049a12.4.1763650978915; Thu, 20
- Nov 2025 07:02:58 -0800 (PST)
-Date: Thu, 20 Nov 2025 15:49:07 +0100
+        bh=aQzgcISd2vbQZXtJWGq+JJNhDcvZ3ay3Xv8naW52gEo=;
+        b=nC6StrmXPYh3r87MOihlR7BlOKnXaLD9IVLgDNXPduNN21KNyGDOySq5PNC9MZXT1L
+         S3YjHElW2Sc+PLePCx4unOaTIpRDa0znyQRWtLQcBOU6wMf0EhJXSyCI9GFUUOAn0DZq
+         WhsJEDco0TJn4oR+u7IWymJKM8G6gDnJV+tLcyWbmsWUh7Zq8VJyhpRyBJq+ZgaWDraK
+         yDinSK/T1mgFCbsZMVDjXXs+IiQWJ5gTVFKUa08beeseg9AYxsTC+cROrLQ8CKaFvb5t
+         b90k9/we9JyzP0hS2zrIR63sNNl3MJrVbc4sNiMsq9GCKnY+fbFJKQhfbTcrTKQhWy09
+         0C4w==
+X-Forwarded-Encrypted: i=1; AJvYcCX+PEjAbENJPb0XN/oVvGugFEF0PAav1b3cMY+/R3ixQ4EEiU+siSk51QPjv0FJtbe4+2k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzmC2ejT5wplx/rGj/O+gzB93/SLhoWdrpsTxPmFwFqYp+uu/U
+	T93pc0byY8UYhyBA9qgoJhVsaErgOgcUOAk3gzfb3IlcB6OhVCAU0M1A1wKk7cP4/7zlzLL3E/e
+	a1A==
+X-Google-Smtp-Source: AGHT+IHtFDUbBCcz68B5yl4+E7U+1inKytiJmjNdpXX9LnNqAnRdSUSbK1o8WJIs9ZzP1T0fmeAlZls5iQ==
+X-Received: from ejbrp28.prod.google.com ([2002:a17:906:d97c:b0:b72:41e4:7558])
+ (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a17:907:9812:b0:b6d:5b4d:7277
+ with SMTP id a640c23a62f3a-b76550b65a3mr361991766b.0.1763651495821; Thu, 20
+ Nov 2025 07:11:35 -0800 (PST)
+Date: Thu, 20 Nov 2025 16:09:31 +0100
 In-Reply-To: <20251120145835.3833031-2-elver@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -59,8 +59,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251120145835.3833031-2-elver@google.com>
 X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
-Message-ID: <20251120145835.3833031-7-elver@google.com>
-Subject: [PATCH v4 05/35] checkpatch: Warn about context_unsafe() without comment
+Message-ID: <20251120151033.3840508-7-elver@google.com>
+Subject: [PATCH v4 06/35] cleanup: Basic compatibility with context analysis
 From: Marco Elver <elver@google.com>
 To: elver@google.com, Peter Zijlstra <peterz@infradead.org>, 
 	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
@@ -87,36 +87,122 @@ Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenry
 	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Warn about applications of context_unsafe() without a comment, to
-encourage documenting the reasoning behind why it was deemed safe.
+Introduce basic compatibility with cleanup.h infrastructure: introduce
+DECLARE_LOCK_GUARD_*_ATTRS() helpers to add attributes to constructors
+and destructors respectively.
+
+Note: Due to the scoped cleanup helpers used for lock guards wrapping
+acquire and release around their own constructors/destructors that store
+pointers to the passed locks in a separate struct, we currently cannot
+accurately annotate *destructors* which lock was released. While it's
+possible to annotate the constructor to say which lock was acquired,
+that alone would result in false positives claiming the lock was not
+released on function return.
+
+Instead, to avoid false positives, we can claim that the constructor
+"assumes" that the taken lock is held via __assumes_ctx_guard().
+
+This will ensure we can still benefit from the analysis where scoped
+guards are used to protect access to guarded variables, while avoiding
+false positives. The only downside are false negatives where we might
+accidentally lock the same lock again:
+
+	raw_spin_lock(&my_lock);
+	...
+	guard(raw_spinlock)(&my_lock);  // no warning
+
+Arguably, lockdep will immediately catch issues like this.
+
+While Clang's analysis supports scoped guards in C++ [1], there's no way
+to apply this to C right now. Better support for Linux's scoped guard
+design could be added in future if deemed critical.
+
+[1] https://clang.llvm.org/docs/ThreadSafetyAnalysis.html#scoped-context
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
 v4:
 * Rename capability -> context analysis.
-* Avoid nested if.
----
- scripts/checkpatch.pl | 7 +++++++
- 1 file changed, 7 insertions(+)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 92669904eecc..a5db6b583b88 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6722,6 +6722,13 @@ sub process {
- 			}
- 		}
+v3:
+* Add *_ATTRS helpers instead of implicit __assumes_cap (suggested by Peter)
+* __assert -> __assume rename
+---
+ include/linux/cleanup.h | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index 2573585b7f06..4f5e9ea02f54 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -274,16 +274,21 @@ const volatile void * __must_check_fn(const volatile void *val)
  
-+# check for context_unsafe without a comment.
-+		if ($line =~ /\bcontext_unsafe\b/ &&
-+		    !ctx_has_comment($first_line, $linenr)) {
-+			WARN("CONTEXT_UNSAFE",
-+			     "context_unsafe without comment\n" . $herecurr);
-+		}
+ #define DEFINE_CLASS(_name, _type, _exit, _init, _init_args...)		\
+ typedef _type class_##_name##_t;					\
++typedef _type lock_##_name##_t;						\
+ static inline void class_##_name##_destructor(_type *p)			\
++	__no_context_analysis						\
+ { _type _T = *p; _exit; }						\
+ static inline _type class_##_name##_constructor(_init_args)		\
++	__no_context_analysis						\
+ { _type t = _init; return t; }
+ 
+ #define EXTEND_CLASS(_name, ext, _init, _init_args...)			\
++typedef lock_##_name##_t lock_##_name##ext##_t;			\
+ typedef class_##_name##_t class_##_name##ext##_t;			\
+ static inline void class_##_name##ext##_destructor(class_##_name##_t *p)\
+ { class_##_name##_destructor(p); }					\
+ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
++	__no_context_analysis \
+ { class_##_name##_t t = _init; return t; }
+ 
+ #define CLASS(_name, var)						\
+@@ -461,12 +466,14 @@ _label:									\
+  */
+ 
+ #define __DEFINE_UNLOCK_GUARD(_name, _type, _unlock, ...)		\
++typedef _type lock_##_name##_t;						\
+ typedef struct {							\
+ 	_type *lock;							\
+ 	__VA_ARGS__;							\
+ } class_##_name##_t;							\
+ 									\
+ static inline void class_##_name##_destructor(class_##_name##_t *_T)	\
++	__no_context_analysis						\
+ {									\
+ 	if (!__GUARD_IS_ERR(_T->lock)) { _unlock; }			\
+ }									\
+@@ -475,6 +482,7 @@ __DEFINE_GUARD_LOCK_PTR(_name, &_T->lock)
+ 
+ #define __DEFINE_LOCK_GUARD_1(_name, _type, _lock)			\
+ static inline class_##_name##_t class_##_name##_constructor(_type *l)	\
++	__no_context_analysis 						\
+ {									\
+ 	class_##_name##_t _t = { .lock = l }, *_T = &_t;		\
+ 	_lock;								\
+@@ -483,6 +491,7 @@ static inline class_##_name##_t class_##_name##_constructor(_type *l)	\
+ 
+ #define __DEFINE_LOCK_GUARD_0(_name, _lock)				\
+ static inline class_##_name##_t class_##_name##_constructor(void)	\
++	__no_context_analysis						\
+ {									\
+ 	class_##_name##_t _t = { .lock = (void*)1 },			\
+ 			 *_T __maybe_unused = &_t;			\
+@@ -490,6 +499,14 @@ static inline class_##_name##_t class_##_name##_constructor(void)	\
+ 	return _t;							\
+ }
+ 
++#define DECLARE_LOCK_GUARD_0_ATTRS(_name, _lock, _unlock)		\
++static inline class_##_name##_t class_##_name##_constructor(void) _lock;\
++static inline void class_##_name##_destructor(class_##_name##_t *_T) _unlock;
 +
- # check of hardware specific defines
- 		if ($line =~ m@^.\s*\#\s*if.*\b(__i386__|__powerpc64__|__sun__|__s390x__)\b@ && $realfile !~ m@include/asm-@) {
- 			CHK("ARCH_DEFINES",
++#define DECLARE_LOCK_GUARD_1_ATTRS(_name, _lock, _unlock)		\
++static inline class_##_name##_t class_##_name##_constructor(lock_##_name##_t *_T) _lock;\
++static inline void class_##_name##_destructor(class_##_name##_t *_T) _unlock;
++
+ #define DEFINE_LOCK_GUARD_1(_name, _type, _lock, _unlock, ...)		\
+ __DEFINE_CLASS_IS_CONDITIONAL(_name, false);				\
+ __DEFINE_UNLOCK_GUARD(_name, _type, _unlock, __VA_ARGS__)		\
 -- 
 2.52.0.rc1.455.g30608eb744-goog
 
