@@ -1,70 +1,87 @@
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9118358D25
-	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE67F2FE57B
+	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 18:22:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763651700; cv=none; b=U3lwP2mG4W662dzm7awfr+FY/jIB91wp6IYaddEJISWTCOCAMwChzQTYTXUXQYvybWCunMtu6U818BiAINK/WiPzrMx5jxu3OofxHJMJOgk1Q9I6dlVL9x2VprdgHalUSfexc4y84dAvfT3qbSt8zuh4pTJ2j3qfioKjWTAqSWc=
+	t=1763662925; cv=none; b=jIooRHn7GuND/6B3gW2KnailwCH7tN/CRxemuh2nERRryOqw5nKsbIFfqTPSCjCmpgVidpIGUdmmmsa1+l4ymALMd3ivA1cswk775z0UT38Yc1SYM8ng/iuXVR7NS+Zo3H8K1xgRR7PYQE79C5QhPAWhSvJKZcCIDgxF/yfm3Fs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763651700; c=relaxed/simple;
-	bh=JghkiwHvBvL6JcsywiEEh15XJk0LP4WSUGT+cTqq5kc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=J9Ip+Kqed9B75qNQvlOIcF6wUZXqsMbQDJrZSsoSLon4vhNd0V4XxtIbE7rZOIf++J49432iTIl0hZIEWaALBM3Bepj0moQCpH2fvn2oN9U4rLqT3BhN3C5eanN0Ah1B7HpAAMTjzjoyeZmTeqqT+BFzbzJ441aUp0xGeUhIQu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CJHAYRpj; arc=none smtp.client-ip=209.85.128.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
+	s=arc-20240116; t=1763662925; c=relaxed/simple;
+	bh=wecZEUleM2pVH/ldG6VyoxAP3Tx+t9JIJBh2fst1eeo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NLvGqqvxtEYj1rUz9tBKaA55zftJkzbYIv1cCUBjuaG4dwKxo18Cb4GfqWNWFBp57ZUrJK1uM/2/OnVWd3zBe6ZlKUcDZqHgI9p+T33vrZiuzKdVksC9o0Bmf8M4AlhiQcXkmrK71gWD1Ode0wk32araLVQBIIDFOEXPh/tdecE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=DsPPEzzh; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CJHAYRpj"
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-4775d8428e8so7791765e9.0
-        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:14:00 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="DsPPEzzh"
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5945510fd7aso973263e87.0
+        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 10:22:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1763651635; x=1764256435; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Im5hsj1DltxV90KwIidFCTn0DS8FZncDFP7kTqaMpC0=;
-        b=CJHAYRpj8OdyNZb9AA1JEkkGxogTxd4rLTjbLE2ImVrpUNP7iruS7fNrJbcEcbFDmR
-         S4R0OuQRmnqP1zeN+epjN/RUXQcciANAC/S+LWnHaii0RAyiiT02phA5POdjnHUaMeDw
-         wp1XhYYHnkB8BWvNIwB9MM2D7GO0wERdk6U53yuEk2HVRbKTSQ3dE4PBA47tye4tNUBc
-         G6QqCwUs0XGMY53xRTBVYJnFcYzzcUZe1DsVIDWkTe5jl0Q21Nug0wQyG9AMTsGHD4P5
-         p3HwB23RqXXJD9VgamMqIW4abFlWzPcir+ji95zxTIsUttAENUCrTRjy0LI6SxOEQ7Ig
-         qejg==
+        d=linux-foundation.org; s=google; t=1763662921; x=1764267721; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+BPfdnrOHpw/8tC+sL0oorkp9gKYtrunKdRWYzTn+GA=;
+        b=DsPPEzzhi4C2gslYfFn+5cYxvLt+5MraE9h9QFK9d38zYf/2T5Uf6XfhmkL/l7bxvk
+         b/oaTjawR7sZEt0ohrKP5oMQRM+zrWkevB8Eo3dtPgE968513eqMb+zXAzqYzGQyaflR
+         LOUzA3lM8uRXfJ/48onTcIXe76eyQvuvkbOIg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763651635; x=1764256435;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Im5hsj1DltxV90KwIidFCTn0DS8FZncDFP7kTqaMpC0=;
-        b=Wt3o444rbOiPbY4l+E59TvSgNTMCgNY9uErqGP4DK7Ld3Su1vE2DmS3VX0VJTVyTYM
-         /8ALN2RISAGWouo7cK959GzYu7YYf/2gqVdcn4xih4LsmeojxzDWocP1US4ZKBFHH+K/
-         +kOgo/jFzLQDaFubxpd9eEGWffKbUn7FkrZdW/Q/+S1TuS5PlL8iX3sxnrYmrqI2C7Rz
-         w/FsD67JpKtLkJ9axIH8aedu+zAFkXDqvvKg+sCbaYaFJnpIaMUNvwAjYbWP3yc79Wb2
-         xgb7mryAJbDzy4vEynSCgHcCJYzInqOYdQZGTfOyHvM2LtBdZzZCknK7jJuzspnzIC6o
-         XSgg==
-X-Forwarded-Encrypted: i=1; AJvYcCUIprlVViEjZQ3ss3cP4sbihnLToW0jBql29r31TNvhKPTg81X3LWobsom+ZTWQhudXZys=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZ0fWm/oMIJGFlDcv4CBrh1Zq+qcnpKhCGRjDo45c1PpK27O36
-	CWXt/0wj/loBaCPfpzMA54fx9ixNYH24nRmGoTUswyb3nl48WvUJkzwLxB2+c488qIR1fPL3I6H
-	8pw==
-X-Google-Smtp-Source: AGHT+IE0txFyfqWr7t8p06ZvcBdzNhQeJVfQ06tB7yPqhvYYx4yW0lw4v6t9Cn2mD+Uk9FOLbPP2gAnnVA==
-X-Received: from wmd10.prod.google.com ([2002:a05:600c:604a:b0:477:9c68:bd6])
- (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:600c:1c1b:b0:471:c72:c7f8
- with SMTP id 5b1f17b1804b1-477b9e1cbfbmr31262875e9.21.1763651635197; Thu, 20
- Nov 2025 07:13:55 -0800 (PST)
-Date: Thu, 20 Nov 2025 16:09:57 +0100
-In-Reply-To: <20251120151033.3840508-7-elver@google.com>
+        d=1e100.net; s=20230601; t=1763662921; x=1764267721;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+BPfdnrOHpw/8tC+sL0oorkp9gKYtrunKdRWYzTn+GA=;
+        b=lU/f7pFCFZZnmh5Gz6nd/HyD39FsKFS5S/o7aQoJBpvL12YFL1/6kqnKXOGNH2V95D
+         UIDRsVa3xmlZs8jInXDiCccSs+4bGX6cJ62vHLVycHTnASpNwIG9xx87Wb+G0QbOE43G
+         UVfF6GKCgPmViMhaVeQzUdApbBc+fAnDk/R//FT1gT1RKUmj1PcEmvsgeCmR6Z/zXD4c
+         wz9onhwfOj2N0zT/Z7g0xKSZA7/SsGuZhMcmsACV8CFvyBI3iQI0msiNEb2w6cQder9o
+         lxBHWnz9AoofU/J/EghsAA6+85B890n7s3JYkIAFC9ns9q0bWrJCHsRQ8QQ1hghBvNpk
+         3tjw==
+X-Forwarded-Encrypted: i=1; AJvYcCWmbFA21KLC3jylfVlgUjnSzYmvx7i53I/GkdPb+i3IBOwnJPzy0WlWlul0MAZHytS4IPg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yze1e3hBdt3tVP+vcMfjidgvYH4AsrtMJAb2hspqd8HKoLcM99n
+	jDRD9v6XcH1oUi2SrtaIxfOw3zBAbnhuxePhXrQb4qx9QZMoqA2nnnMJ2qMjEP2FwvNaFGmukJY
+	8Uw5usR5kvQ==
+X-Gm-Gg: ASbGncsIizvUWytuZLcl2skZhKrjVQInOYpjdSTmAaEfHQx6WKDcLU9c6T9/9I1Y7cM
+	vjMJkDflO0506DvRcNeRKtbDhtv3VJ0fQk6g50uy5SMsR0aCOC/LOhsSxWY0Ms0FBhwp8oddqzM
+	xNxHLi4ATJfj2Pd16OcPcG/GSzT1PRR5mzjMq0YByQQQ5/R9I7jI9LEqRj3UGIgibqVhnB5Nvkv
+	Rof8lva3BC6DUepGfgBlESt/t5rP0RkQrYp30TQiEDRw5E3KPxSL46/hw4hNqRla+SAjBzPyyHD
+	Yt8GzkKFm0IFA3/vTC/t112TkohlNrg/xMNplhrGaS7Gh00BnYwLjygbbnwjJXRv8w/3Lz26hFh
+	+fU9aE/wjl6HFnI1CAo6Fd71F/jYx3/hPFqUQIBTbss5+UBzwtVH30YkmcXzKQ5eVOHm6I18rSw
+	UCsHFXTsYRgaiJBy2EYKkpoIkT24GRD+FZuuQyuIWHZ5Va4T28b1RcOaq/8xbp
+X-Google-Smtp-Source: AGHT+IE7ouPN3dP79JVyARFuT5NPafPAZAP0o3uMX5JZKFRx3ezqFpkSjT14p57vRuCvIQ7bnZBhyg==
+X-Received: by 2002:a05:6512:3d0c:b0:595:831d:2308 with SMTP id 2adb3069b0e04-5969e2ae98amr1348443e87.1.1763662920797;
+        Thu, 20 Nov 2025 10:22:00 -0800 (PST)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5969db881cbsm900403e87.33.2025.11.20.10.22.00
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Nov 2025 10:22:00 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5945510fd7aso973239e87.0
+        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 10:22:00 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUmkEyPAiQpwDhdMmjYS3ZekoOL/MMTSVaZ4pLT2jbw3dKruXxRq362Jm8RLCWiiOqO49M=@vger.kernel.org
+X-Received: by 2002:a17:907:7f0a:b0:b70:b71a:a5ae with SMTP id
+ a640c23a62f3a-b7654fe9b97mr482177966b.44.1763662490181; Thu, 20 Nov 2025
+ 10:14:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20251120145835.3833031-2-elver@google.com> <20251120151033.3840508-7-elver@google.com>
-X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
-Message-ID: <20251120151033.3840508-33-elver@google.com>
-Subject: [PATCH v4 32/35] printk: Move locking annotation to printk.c
-From: Marco Elver <elver@google.com>
-To: elver@google.com, Peter Zijlstra <peterz@infradead.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
+MIME-Version: 1.0
+References: <20251120145835.3833031-2-elver@google.com> <20251120145835.3833031-4-elver@google.com>
+In-Reply-To: <20251120145835.3833031-4-elver@google.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 20 Nov 2025 10:14:34 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whyKteNtcLON-gScv6tu8ssvKWdNw-k371ufDrjOv374g@mail.gmail.com>
+X-Gm-Features: AWmQ_bk-my8wSL6P8yRhTUREdDraem8VrQQmjD7uS2S9oN6T2mRX46ftlS1ytQU
+Message-ID: <CAHk-=whyKteNtcLON-gScv6tu8ssvKWdNw-k371ufDrjOv374g@mail.gmail.com>
+Subject: Re: [PATCH v4 02/35] compiler-context-analysis: Add infrastructure
+ for Context Analysis with Clang
+To: Marco Elver <elver@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
 	Chris Li <sparse@chrisli.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
 	Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>, Bart Van Assche <bvanassche@acm.org>, 
 	Christoph Hellwig <hch@lst.de>, Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>, 
@@ -78,7 +95,7 @@ Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenry
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Miguel Ojeda <ojeda@kernel.org>, 
 	Nathan Chancellor <nathan@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
 	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, Thomas Gleixner <tglx@linutronix.de>, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, Thomas Gleixner <tglx@linutronix.de>, 
 	Thomas Graf <tgraf@suug.ch>, Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, 
 	kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org, 
 	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
@@ -87,62 +104,77 @@ Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenry
 	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-With Sparse support gone, Clang is a bit more strict and warns:
+On Thu, 20 Nov 2025 at 07:13, Marco Elver <elver@google.com> wrote:
+>
+> --- a/include/linux/compiler-context-analysis.h
+> +++ b/include/linux/compiler-context-analysis.h
+> @@ -6,27 +6,465 @@
+>  #ifndef _LINUX_COMPILER_CONTEXT_ANALYSIS_H
+>  #define _LINUX_COMPILER_CONTEXT_ANALYSIS_H
+>
+> +#if defined(WARN_CONTEXT_ANALYSIS)
 
-./include/linux/console.h:492:50: error: use of undeclared identifier 'console_mutex'
-  492 | extern void console_list_unlock(void) __releases(console_mutex);
+Note the 400+ added lines to this header...
 
-Since it does not make sense to make console_mutex itself global, move
-the annotation to printk.c. Context analysis remains disabled for
-printk.c.
+And then note how the header gets used:
 
-This is needed to enable context analysis for modules that include
-<linux/console.h>.
+> +++ b/scripts/Makefile.context-analysis
+> @@ -0,0 +1,7 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +context-analysis-cflags := -DWARN_CONTEXT_ANALYSIS             \
+> +       -fexperimental-late-parse-attributes -Wthread-safety    \
+> +       -Wthread-safety-pointer -Wthread-safety-beta
+> +
+> +export CFLAGS_CONTEXT_ANALYSIS := $(context-analysis-cflags)
 
-Signed-off-by: Marco Elver <elver@google.com>
----
-v2:
-* New patch.
----
- include/linux/console.h | 4 ++--
- kernel/printk/printk.c  | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+Please let's *not* do it this way, where the header contents basically
+get enabled or not based on a compiler flag, but then everybody
+includes this 400+ line file whether they need it or not.
 
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 031a58dc2b91..1eb3c9d9d6ae 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -488,8 +488,8 @@ static inline bool console_srcu_read_lock_is_held(void)
- extern int console_srcu_read_lock(void);
- extern void console_srcu_read_unlock(int cookie);
- 
--extern void console_list_lock(void) __acquires(console_mutex);
--extern void console_list_unlock(void) __releases(console_mutex);
-+extern void console_list_lock(void);
-+extern void console_list_unlock(void);
- 
- extern struct hlist_head console_list;
- 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 5aee9ffb16b9..7646952a92f1 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -245,6 +245,7 @@ int devkmsg_sysctl_set_loglvl(const struct ctl_table *table, int write,
-  * For console list or console->flags updates
-  */
- void console_list_lock(void)
-+	__acquires(&console_mutex)
- {
- 	/*
- 	 * In unregister_console() and console_force_preferred_locked(),
-@@ -269,6 +270,7 @@ EXPORT_SYMBOL(console_list_lock);
-  * Counterpart to console_list_lock()
-  */
- void console_list_unlock(void)
-+	__releases(&console_mutex)
- {
- 	mutex_unlock(&console_mutex);
- }
--- 
-2.52.0.rc1.455.g30608eb744-goog
+Can we please just make the header file *itself* not have any
+conditionals, and what happens is that the header file is included (or
+not) using a pattern something like
 
+   -include $(srctree)/include/linux/$(context-analysis-header)
+
+instead.
+
+IOW, we'd have three different header files entirely: the "no context
+analysis", the "sparse" and the "clang context analysis" header, and
+instead of having a "-DWARN_CONTEXT_ANALYSIS" define, we'd just
+include the appropriate header automatically.
+
+We already use that "-include" pattern for <linux/kconfig.h> and
+<linux/compiler-version.h>. It's probably what we should have done for
+<linux/compiler.h> and friends too.
+
+The reason I react to things like this is that I've actually seen just
+the parsing of header files being a surprisingly big cost in build
+times. People think that optimizations are expensive, and yes, some of
+them really are, but when a lot of the code we parse is never actually
+*used*, but just hangs out in header files that gets included by
+everybody, the parsing overhead tends to be noticeable. There's a
+reason why most C compilers end up integrating the C pre-processor: it
+avoids parsing and tokenizing things multiple times.
+
+The other reason is that I often use "git grep" for looking up
+definitions of things, and when there are multiple definitions of the
+same thing, I actually find it much more informative when they are in
+two different files than when I see two different definitions (or
+declarations) in the same file and then I have to go look at what the
+#ifdef condition is. In contrast, when it's something where there are
+per-architecture definitions, you *see* that, because the grep results
+come from different header files.
+
+I dunno. This is not a huge deal, but I do think that it would seem to
+be much simpler and more straightforward to treat this as a kind of "N
+different baseline header files" than as "include this one header file
+in everything, and then we'll have #ifdef's for the configuration".
+
+Particularly when that config is not even a global config, but a per-file one.
+
+Hmm? Maybe there's some reason why this suggestion is very
+inconvenient, but please at least consider it.
+
+              Linus
