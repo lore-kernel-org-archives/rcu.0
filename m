@@ -1,55 +1,55 @@
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23E23624D7
-	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F13235A954
+	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763651632; cv=none; b=TWNF37+JMwvxzr44j3butjYkuuDEZNdrV/SyF3I5okxbjGwr9KAqBck1U5eXhC3+DLnA64tATQxfw1aukfPOaVTQLAlpUZGgcWuuuiiCdb3vUANUZFJfnAro2wq14pTlTETA96m1DL93jbA3ZHuw9lLejQhUaShbiFf8FSsoKAg=
+	t=1763651639; cv=none; b=r+hw1535K/EJy09iemOUw3KvrYT1zxI1nGY6v/PlnlywT8niWkJ/W0EgJDwVBrcvy7hrofzLCdkNtZbbXq0L1myEBOrLCq8JdJrWMQlr07lJ28CIW/CRv3STv6r1BrezKLGQCc6fOEqZfJCjgDPk8VBzmydbAM14cHZ8JkAUU34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763651632; c=relaxed/simple;
-	bh=sAXWpweCk1HKaMB/YWFmccYNlA1uAb5802MTkRNhnIk=;
+	s=arc-20240116; t=1763651639; c=relaxed/simple;
+	bh=JSFE6OXplsVQRasUjLyJp87wPLoBhJo5boc6e5TlRPY=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ihSKK39a1iafyBxwjR7aEaQH6P/PlTx7OV98AOevc3Q740e32z/ic/+RDisXkCRxSbF2TvvljZK6GJ6NwSNHrfU3/t0r2XAm7SW3MeSbWCdd+m7H9PUFiDxN1mcGQLNmNeHhafPM40LohHOWBEHEsQWvT5iXeF/n172pvR145BY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GMcirOcn; arc=none smtp.client-ip=209.85.128.73
+	 To:Cc:Content-Type; b=XNuJFYbjk68qeqN3JYY9flbx611p6jhX2krUHFJyFeLsjf+ZwtGHCPRavXE85VIyouTXu8DEzdk/VTYTI55rTvUYwsheIkA9u/ppRQ3ayWqWXCObR30pzrixIIEHu71rnGolBwlGVVCO/OBc9eGMwV2rkrWx1iospbZz2jH4SEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iCLMPfCc; arc=none smtp.client-ip=209.85.128.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GMcirOcn"
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-4775e00b16fso6917725e9.2
-        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:13:14 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iCLMPfCc"
+Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-4776b0ada3dso14302655e9.0
+        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:13:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1763651592; x=1764256392; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1763651613; x=1764256413; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P8aLbx9Sl47RYxftyEseQjhVT7SfF+KyN6wsDyYV/tA=;
-        b=GMcirOcnN8Q6oR1juYEex76iiuJDNbiKmN1Hn0kxUO2mfs6cbhlugXyApA/+10Yekq
-         hk+kv5a5al/6mjwGt3PIwcEXipdkTGFJjnNKRX+9hYrk86srMswh8cNnJ0vlK1nyUh3E
-         IP8oUH1WiZrqot6k0VsOxKbohrbe4HsPYl1wJziBWaLSO1ALLFe5hwj3W8kx+FSRslMr
-         tYpi5a+4nOUU+s3onUjF+VN8D9f/1vLhl7qB3xTj72zd/kP6+RE8U3pfRQJ/YrQtDcN/
-         m+67LZcTtWhUPLtUgvGlNT8vqp/BdoMsCgzrFu930G/B/z29qt+zbuDNeVJgeOQ/BERu
-         rHbQ==
+        bh=xNvl5AadBnBbkNqIZ5ePr/ep+DGb1qTLi02EcnmaTpQ=;
+        b=iCLMPfCc7jWhEpnYhobvI2CKA2SElpM9LR0+higIlNVPix1drSCs++UbXykawgetXH
+         UiK2Mlropxx9wOJeRRbYAassEHRQmIuimGssASlfFCMIHugwhSwj3b/fCzNmiq9VN+nt
+         nfzqFiywxCAnOPudXpRx+zUking//m8pTDAm28RHuO9pbcxIIYZA7l9QX4pAUeSVZbPP
+         eh6Nz4aythN+TVoBhg44bsA9fQEmI3pG42o6MSQ0gaXXDnwhtpTIkNZOQZ7qHP+DY1pe
+         pc31FewAdejDaVASt7E7NmYup1vOHoofrZHC3welUeiAxyB3/Q+FX0BPWg8UOt8wyTVB
+         +5Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763651592; x=1764256392;
+        d=1e100.net; s=20230601; t=1763651613; x=1764256413;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P8aLbx9Sl47RYxftyEseQjhVT7SfF+KyN6wsDyYV/tA=;
-        b=r6+YQ++/GeYRi1tdSdwgHc1g+DdivjrnlbiyFJm07kBvny2+yzm/nn7L0B0Y4cozfB
-         oU727gHUsNGq/I2YBXBK2KcrV/LoS8dtNtVTZs6qkNqwh05DEJ1jREj2vOoiD19xXTpa
-         iABmJhJHVclJ8QT83ra+gxUPVmQ87TPzUueJWS4MZkM2+GbAU2x8aKaVraw0nz6+RDJd
-         qYWncacgRMw81YbVE/w/mpjzEvA4PhPN0ZbQQXfr/mojdLDjGRoHtgUSaIX4bu3Afze6
-         phKzG1t+ESiYxgSW2ucANs8hK/nh7+7Y2ImqiPsgmI5HpTzRjdsVi9UGFc06hPrkrTot
-         5WjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXllyY3D2GvUw9qtJIq4/1+iN9lS04UMP8l3O0wgs/efYQtm1+srMwq9051AWIJ3HqR048=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz56wVcFolWsieMYz55oqOgogr9sLn2Q8ltM1rdgLV2YYHqBRqr
-	hiHe7r7IRA5y9bjcqeN3cbzXOujJ70tKGV44JbwYIb1bsUIIpAZwltSfl6Y4uTINyGzy1WFrbfU
-	dlw==
-X-Google-Smtp-Source: AGHT+IFjAbTy0j0ap6YuUuYLwX6mC93Q/ee200zfIzNbmIifUkyrBIOtI3LFwq1L7M4ens6voO/IZCXXTQ==
-X-Received: from wmco22.prod.google.com ([2002:a05:600c:a316:b0:477:b15:2ccc])
- (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:600c:1987:b0:45d:d97c:236c
- with SMTP id 5b1f17b1804b1-477b8a8a5damr33384125e9.21.1763651592065; Thu, 20
- Nov 2025 07:13:12 -0800 (PST)
-Date: Thu, 20 Nov 2025 16:09:46 +0100
+        bh=xNvl5AadBnBbkNqIZ5ePr/ep+DGb1qTLi02EcnmaTpQ=;
+        b=oQ/Bo7ltUJThGGpzjsvWz2U1ntuivj3SV3o65aaT5YxvimcIv7xG6lrIRVUW8mcouW
+         kR5Zyu+Y8qhrKU+rnsJOfSkuI7QejsZubbRUPOIa5YR8TTHTEiaB3d/KA28xQc+aUxJ6
+         mMuTKlTh07pTlkefZCb35ONncnIneAA58Yl1CUpADGEtzVAjU9kvBj5dC4RzmQz8dNfs
+         U38TiywS52cGZAhyj4BU2x6KktAF/lAWfx9XP1eVOkaggKQBP1EGk8/1iaGD8fThLXo8
+         FOfInSkvFbH6rMpjlH9MluvU+4DxVKx8kskCMYdzVzrVjIu1mCMEt2ssFsl4tZHMtKHN
+         XB1A==
+X-Forwarded-Encrypted: i=1; AJvYcCW7i6jMgLYewlYskyd5lyeMqLa3/shwDM7DKXpgH0o/sUe92rAyeeDV/elDYi9sIY3c9zI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUoZJy862ghT5LsQc+nDaVYu+jrdJO4AIdQE3ckJQaf723JI1k
+	NqDcOGsgO9euKKEa8cDyqTb0r13W85cN1xhb8YhWWdj8neLbazvLgrqjOiO6E9aTNakVdvoDIWe
+	drg==
+X-Google-Smtp-Source: AGHT+IF9W56E3BCf4ycfyNzV0Jbt7zmYcg646z2GlS6yDnrRg6LpKFxf4hnN1dp2GqjQ6ITkpBqUZJJJqw==
+X-Received: from wmbbd8.prod.google.com ([2002:a05:600c:1f08:b0:470:fd92:351d])
+ (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:600c:1516:b0:477:14ba:28da
+ with SMTP id 5b1f17b1804b1-477b9ea8f78mr18741385e9.5.1763651612613; Thu, 20
+ Nov 2025 07:13:32 -0800 (PST)
+Date: Thu, 20 Nov 2025 16:09:51 +0100
 In-Reply-To: <20251120151033.3840508-7-elver@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -59,8 +59,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251120145835.3833031-2-elver@google.com> <20251120151033.3840508-7-elver@google.com>
 X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
-Message-ID: <20251120151033.3840508-22-elver@google.com>
-Subject: [PATCH v4 21/35] debugfs: Make debugfs_cancellation a context guard struct
+Message-ID: <20251120151033.3840508-27-elver@google.com>
+Subject: [PATCH v4 26/35] MAINTAINERS: Add entry for Context Analysis
 From: Marco Elver <elver@google.com>
 To: elver@google.com, Peter Zijlstra <peterz@infradead.org>, 
 	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
@@ -87,53 +87,39 @@ Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenry
 	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-When compiling include/linux/debugfs.h with CONTEXT_ANALYSIS enabled, we
-can see this error:
-
-./include/linux/debugfs.h:239:17: error: use of undeclared identifier 'cancellation'
-  239 | void __acquires(cancellation)
-
-Move the __acquires(..) attribute after the declaration, so that the
-compiler can see the cancellation function argument, as well as making
-struct debugfs_cancellation a real context guard to benefit from Clang's
-context analysis.
+Add entry for all new files added for Clang's context analysis.
 
 Signed-off-by: Marco Elver <elver@google.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 ---
 v4:
 * Rename capability -> context analysis.
 ---
- include/linux/debugfs.h | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ MAINTAINERS | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/include/linux/debugfs.h b/include/linux/debugfs.h
-index 7cecda29447e..43f49bfc9e25 100644
---- a/include/linux/debugfs.h
-+++ b/include/linux/debugfs.h
-@@ -239,18 +239,16 @@ ssize_t debugfs_read_file_str(struct file *file, char __user *user_buf,
-  * @cancel: callback to call
-  * @cancel_data: extra data for the callback to call
-  */
--struct debugfs_cancellation {
-+context_guard_struct(debugfs_cancellation) {
- 	struct list_head list;
- 	void (*cancel)(struct dentry *, void *);
- 	void *cancel_data;
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e64b94e6b5a9..0445478f74c7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6029,6 +6029,17 @@ M:	Nelson Escobar <neescoba@cisco.com>
+ S:	Supported
+ F:	drivers/infiniband/hw/usnic/
  
--void __acquires(cancellation)
--debugfs_enter_cancellation(struct file *file,
--			   struct debugfs_cancellation *cancellation);
--void __releases(cancellation)
--debugfs_leave_cancellation(struct file *file,
--			   struct debugfs_cancellation *cancellation);
-+void debugfs_enter_cancellation(struct file *file,
-+				struct debugfs_cancellation *cancellation) __acquires(cancellation);
-+void debugfs_leave_cancellation(struct file *file,
-+				struct debugfs_cancellation *cancellation) __releases(cancellation);
- 
- #else
- 
++CLANG CONTEXT ANALYSIS
++M:	Marco Elver <elver@google.com>
++R:	Bart Van Assche <bvanassche@acm.org>
++L:	llvm@lists.linux.dev
++S:	Maintained
++F:	Documentation/dev-tools/context-analysis.rst
++F:	include/linux/compiler-context-analysis.h
++F:	lib/test_context-analysis.c
++F:	scripts/Makefile.context-analysis
++F:	scripts/context-analysis-suppression.txt
++
+ CLANG CONTROL FLOW INTEGRITY SUPPORT
+ M:	Sami Tolvanen <samitolvanen@google.com>
+ M:	Kees Cook <kees@kernel.org>
 -- 
 2.52.0.rc1.455.g30608eb744-goog
 
