@@ -1,55 +1,55 @@
-Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
+Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA631359FAE
-	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:12:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745853587AC
+	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:12:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763651557; cv=none; b=HyzATw9N3NLfz8zr2DLj5+RaAlFQwj4ijwilBSdn+Yv+5sMV11QDDKp1uo/7UHyze0mamz7NR2Gp6lMGvaOEX9VQ8R83/dtsGlDmlFJsu2eYKdtelred/0R1wMGIZ5efY5X+ajYQsKUl1EGzuiuLiddOLujQWBlBQUoh168LzZs=
+	t=1763651574; cv=none; b=ADmYKfv/u9aL1XW5fuaQUYOdzBy0sSYiLg4OZXoXPJw/g4jB+dskx5YX20gRGC6Sy2W9eU8pwZQxxt2gSLysFZ9gqmy4aRVz/p1dIan6NBrOI/E46h/r3SXU/fx0MdFOFF0wPOgypMUbj4koNdACONvUgs57yyur6FPFL0xvass=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763651557; c=relaxed/simple;
-	bh=kxFRVTFhBpdkAJPPAvjA33uY3sxge16MbJ+cvADLyIM=;
+	s=arc-20240116; t=1763651574; c=relaxed/simple;
+	bh=7UPhXVoQzb0nHVZ/E5WnJmrxexsYTFwM9dm+H6EnW5w=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=NgIjP2ROxrmsCJ2FKlM91q3DyPaAjp8ncuRwXRQB/KmXtmSxLuM/cw4Y6ndebX2Sx9uF4d4feVYYCe6RPtmBi507H6QPiNozCOZkHUQFRr6IV9vl1bgpFksIAsBQafcGDCBBi9e8lwlUKg+Xb6IoKrUmx/t7iEaCr6tVQwMVPeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xPJNNQtS; arc=none smtp.client-ip=209.85.221.74
+	 To:Cc:Content-Type; b=p8eaW3E8cCPl9tKdVEAshRFXEUu/ZWRawkgeTkiU6SYMJvPnBxQTpNBlAWKde5+ZgXgIozNfzIb/MbiMHk1MDzSxoYBHzY0HAVrpVlgIqe+8mOSfvGvidxD2aehAmv9WoAL3DYZ60iIyUaOPdI5oWAa/Nqi+QD1IsooOZliyC8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1RwWWr/Q; arc=none smtp.client-ip=209.85.128.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xPJNNQtS"
-Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-42b30184be7so504538f8f.2
-        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:12:21 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1RwWWr/Q"
+Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-477212937eeso6076895e9.2
+        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:12:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1763651538; x=1764256338; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1763651552; x=1764256352; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hosCU2YAM4wmLhG6gCEf4XqbMRgXsIjIUxIgZVPv95A=;
-        b=xPJNNQtSgTtD6mSJ1HnWZK2MgqtmqhSG0geiu4JKIJo4391Ch6ZbVs+yz5FMVM/22a
-         XF1WYB2Oi16th54HAb6AxLkuDCdOwrfz/KlPgUC8BQcOpay60O5N8D7BQfiR47fyBm1V
-         TWIkazFyxkA/y7IIZdiDLwa5+zp2Z+DAeR+FtI0DM3P/d7ADUxsHm0K2IkI1lprs8DPA
-         Gzvui5zOlh08MUyEFk4wL3Y7PEmh/i1slKyUcPAV8hfMAD5TXpCklQORh21QtQi9vCQl
-         9oBiVtJjtATPjDSASTzab6HVhK/oVVRZD4aKFHSMcl7lWQLxk1CmiPbVASYYfVIg/nA3
-         Uqlw==
+        bh=Ln7UVfCWiCp9IlXxOO2xIWRuRprEYh3pWr1qQfgYpRY=;
+        b=1RwWWr/Qfq1G6JZvGTWJHe4b87taklfazXzJeIlP+wauW/0p/hlMi/fEQdTtDaZbC5
+         FvWqDicG7qQIASIdfLKy/nq+j2cLMCap3P3sPoEtlfNtgiPZq5Wp2pWX/MAmxzsGPHiz
+         bRDd3TAaava0bknRxPr98IE6PFfviznYKQG3ZNdNSFMe8gaTNMJ3s7XTVRPfXjoBZK2C
+         9lfYM+ioGG06WXLJk1cz0GvbMQJZ2FuDG/yxCd7IOSWqcwibI6L4bTW3xmhWzlT/RJLC
+         8M9VTxp6WpsXfHBwaKYD2taHFw6ezIVTXIuwZ9yt21enez9xlO2YDTzv7i1FB9FoPk11
+         ZAfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763651538; x=1764256338;
+        d=1e100.net; s=20230601; t=1763651552; x=1764256352;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hosCU2YAM4wmLhG6gCEf4XqbMRgXsIjIUxIgZVPv95A=;
-        b=h2BxMq0Dc7T4UB5xPfXcXcDHm/risyqS9+LQfMt80byKWykFmEONrcZ8CaEUOmAWdn
-         zDKx9+kXvaPiH96l+GfStyA/BENjOiWn94K10W5Wpx+ko5ciktDsPQlB5bpTXhwL7AEP
-         JwxxF+x8kpr3Ig2F2CM0A/mlwQT26qFMjdMXpGNtwCwankL58+UWvRCO0yyb7NzQGV/T
-         lXypxDRn7IMwPgzMoeqtJuN3BDxLMvHVByuckeT4e50dEiLWo+GQIQLjwSaMay/Jye2h
-         TpCmTPBv0nUXxXqTE3uvE4UF6LxG99jp5owKjN3VKVNgislTyw+1flli9d8lYasDdAoD
-         XD9g==
-X-Forwarded-Encrypted: i=1; AJvYcCWhAYmh490v1p1b5C07rEscvzaZTZ+0vQeiTWFMKJNEY7C1YZo45eSgvz+dGiS7tkfY84Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKd6kivdJcsz05gECb6VjhwMmqdT8/1uL3N6uj6IoNF/0meAdW
-	CsXEM1JjZMUp8hj7jB+577g/V0zEV9js3iY/NRYnAp1JIL/WmZRFicS/FdXMF8BpvE4sHqckVOq
-	mPw==
-X-Google-Smtp-Source: AGHT+IGqdP+1ULXZ13/bvPdwqw8yuJ8l0jo0RTsoVAwzy0DYBXw9hGmu0iT83h/ma3EfKmKjOC5LfRBvFQ==
-X-Received: from wraj7.prod.google.com ([2002:a5d:4527:0:b0:42b:2aa2:e459])
- (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6000:2505:b0:42b:3ed2:c08b
- with SMTP id ffacd0b85a97d-42cbb2b1a6emr2638286f8f.51.1763651537400; Thu, 20
- Nov 2025 07:12:17 -0800 (PST)
-Date: Thu, 20 Nov 2025 16:09:36 +0100
+        bh=Ln7UVfCWiCp9IlXxOO2xIWRuRprEYh3pWr1qQfgYpRY=;
+        b=Gse58aCiU+Jezo9o2SUZ+ZiX8gSPJH6Qp/KmUmlnQFr2qmrNqcCsA9PWz4gI1whrA+
+         GDbWIdf2OfwLhIDGI9TS/JkEGtqqfFL5E2cwQ/9msi4F2o2ZMtN5FhV0LCxTS6djZZyl
+         XI9PH7MrZ0oPrF+gGsrkSxt4cybDtrDsV+VRmGq+VnBdYNg3xoJsXyQlz7wMcZFROjWw
+         8CfyOrk9N4otyvhuYcld/Ur7KQUTTMeWKAtQVn8/oyiPqGBhsAsaS7BvKeQxpj0F+y9I
+         AowGUQExfx510q07P26zKomRGfgnOtWx4C66qheWoPhDd4u+iWGQvgpJ2e42hbmuOr2G
+         2Pmg==
+X-Forwarded-Encrypted: i=1; AJvYcCWuVN4upaadUDFbn4VHM6FKpXG+XG8R+kshP8sdDhjHdwaFL0qmcigQha2Cu04hb1v7kJM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJEwev18ROvatuxfdJHmYoE/Pe9tPjwfx8uD1lpmZx1X8WZpwS
+	USNvdGmpmz0N87sUG5TJ7qSuqRX6voL8iN4Zd2tsfRxXb7qIJShgAPAjJeC5UfFiJJHG0oUVEeG
+	JSA==
+X-Google-Smtp-Source: AGHT+IGEIThrt25p8iFaAeOhASluQ3+/NjEt1IOMSXAcPjrVxIIVxtBuFT8+DlrUkxM3iN/ogjkjO7OQog==
+X-Received: from wrs17.prod.google.com ([2002:a05:6000:651:b0:42b:328d:1994])
+ (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6000:2c05:b0:42b:4267:83d5
+ with SMTP id ffacd0b85a97d-42cb9a11c12mr2935283f8f.8.1763651552168; Thu, 20
+ Nov 2025 07:12:32 -0800 (PST)
+Date: Thu, 20 Nov 2025 16:09:39 +0100
 In-Reply-To: <20251120151033.3840508-7-elver@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -59,8 +59,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251120145835.3833031-2-elver@google.com> <20251120151033.3840508-7-elver@google.com>
 X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
-Message-ID: <20251120151033.3840508-12-elver@google.com>
-Subject: [PATCH v4 11/35] locking/seqlock: Support Clang's context analysis
+Message-ID: <20251120151033.3840508-15-elver@google.com>
+Subject: [PATCH v4 14/35] rcu: Support Clang's context analysis
 From: Marco Elver <elver@google.com>
 To: elver@google.com, Peter Zijlstra <peterz@infradead.org>, 
 	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
@@ -87,303 +87,406 @@ Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenry
 	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Add support for Clang's context analysis for seqlock_t.
+Improve the existing annotations to properly support Clang's context
+analysis.
+
+The old annotations distinguished between RCU, RCU_BH, and RCU_SCHED;
+however, to more easily be able to express that "hold the RCU read lock"
+without caring if the normal, _bh(), or _sched() variant was used we'd
+have to remove the distinction of the latter variants: change the _bh()
+and _sched() variants to also acquire "RCU".
+
+When (and if) we introduce context guards to denote more generally that
+"IRQ", "BH", "PREEMPT" contexts are disabled, it would make sense to
+acquire these instead of RCU_BH and RCU_SCHED respectively.
+
+The above change also simplified introducing __guarded_by support, where
+only the "RCU" context guard needs to be held: introduce __rcu_guarded,
+where Clang's context analysis warns if a pointer is dereferenced
+without any of the RCU locks held, or updated without the appropriate
+helpers.
+
+The primitives rcu_assign_pointer() and friends are wrapped with
+context_unsafe(), which enforces using them to update RCU-protected
+pointers marked with __rcu_guarded.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
 v3:
-* __assert -> __assume rename
+* Properly support reentrancy via new compiler support.
+
+v2:
+* Reword commit message and point out reentrancy caveat.
 ---
  Documentation/dev-tools/context-analysis.rst |  2 +-
- include/linux/seqlock.h                      | 24 +++++++++++
- include/linux/seqlock_types.h                |  5 ++-
- lib/test_context-analysis.c                  | 43 ++++++++++++++++++++
- 4 files changed, 71 insertions(+), 3 deletions(-)
+ include/linux/rcupdate.h                     | 77 ++++++++++++------
+ lib/test_context-analysis.c                  | 85 ++++++++++++++++++++
+ 3 files changed, 139 insertions(+), 25 deletions(-)
 
 diff --git a/Documentation/dev-tools/context-analysis.rst b/Documentation/dev-tools/context-analysis.rst
-index 1f5d7c758219..598962f6cb40 100644
+index a3d925ce2df4..05164804a92a 100644
 --- a/Documentation/dev-tools/context-analysis.rst
 +++ b/Documentation/dev-tools/context-analysis.rst
-@@ -80,7 +80,7 @@ Supported Kernel Primitives
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -81,7 +81,7 @@ Supported Kernel Primitives
  
  Currently the following synchronization primitives are supported:
--`raw_spinlock_t`, `spinlock_t`, `rwlock_t`, `mutex`.
-+`raw_spinlock_t`, `spinlock_t`, `rwlock_t`, `mutex`, `seqlock_t`.
+ `raw_spinlock_t`, `spinlock_t`, `rwlock_t`, `mutex`, `seqlock_t`,
+-`bit_spinlock`.
++`bit_spinlock`, RCU.
  
  For context guards with an initialization function (e.g., `spin_lock_init()`),
  calling this function before initializing any guarded members or globals
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 5ce48eab7a2a..c79210d369ef 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -816,6 +816,7 @@ static __always_inline void write_seqcount_latch_end(seqcount_latch_t *s)
- 	do {								\
- 		spin_lock_init(&(sl)->lock);				\
- 		seqcount_spinlock_init(&(sl)->seqcount, &(sl)->lock);	\
-+		__assume_ctx_guard(sl);					\
- 	} while (0)
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index c5b30054cd01..5cddb9019a99 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -31,6 +31,16 @@
+ #include <asm/processor.h>
+ #include <linux/context_tracking_irq.h>
+ 
++token_context_guard(RCU, __reentrant_ctx_guard);
++token_context_guard_instance(RCU, RCU_SCHED);
++token_context_guard_instance(RCU, RCU_BH);
++
++/*
++ * A convenience macro that can be used for RCU-protected globals or struct
++ * members; adds type qualifier __rcu, and also enforces __guarded_by(RCU).
++ */
++#define __rcu_guarded __rcu __guarded_by(RCU)
++
+ #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
+ #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
+ 
+@@ -425,7 +435,8 @@ static inline void rcu_preempt_sleep_check(void) { }
+ 
+ // See RCU_LOCKDEP_WARN() for an explanation of the double call to
+ // debug_lockdep_rcu_enabled().
+-static inline bool lockdep_assert_rcu_helper(bool c)
++static inline bool lockdep_assert_rcu_helper(bool c, const struct __ctx_guard_RCU *ctx)
++	__assumes_shared_ctx_guard(RCU) __assumes_shared_ctx_guard(ctx)
+ {
+ 	return debug_lockdep_rcu_enabled() &&
+ 	       (c || !rcu_is_watching() || !rcu_lockdep_current_cpu_online()) &&
+@@ -438,7 +449,7 @@ static inline bool lockdep_assert_rcu_helper(bool c)
+  * Splats if lockdep is enabled and there is no rcu_read_lock() in effect.
+  */
+ #define lockdep_assert_in_rcu_read_lock() \
+-	WARN_ON_ONCE(lockdep_assert_rcu_helper(!lock_is_held(&rcu_lock_map)))
++	WARN_ON_ONCE(lockdep_assert_rcu_helper(!lock_is_held(&rcu_lock_map), RCU))
  
  /**
-@@ -832,6 +833,7 @@ static __always_inline void write_seqcount_latch_end(seqcount_latch_t *s)
-  * Return: count, to be passed to read_seqretry()
+  * lockdep_assert_in_rcu_read_lock_bh - WARN if not protected by rcu_read_lock_bh()
+@@ -448,7 +459,7 @@ static inline bool lockdep_assert_rcu_helper(bool c)
+  * actual rcu_read_lock_bh() is required.
   */
- static inline unsigned read_seqbegin(const seqlock_t *sl)
-+	__acquires_shared(sl) __no_context_analysis
- {
- 	return read_seqcount_begin(&sl->seqcount);
- }
-@@ -848,6 +850,7 @@ static inline unsigned read_seqbegin(const seqlock_t *sl)
-  * Return: true if a read section retry is required, else false
+ #define lockdep_assert_in_rcu_read_lock_bh() \
+-	WARN_ON_ONCE(lockdep_assert_rcu_helper(!lock_is_held(&rcu_bh_lock_map)))
++	WARN_ON_ONCE(lockdep_assert_rcu_helper(!lock_is_held(&rcu_bh_lock_map), RCU_BH))
+ 
+ /**
+  * lockdep_assert_in_rcu_read_lock_sched - WARN if not protected by rcu_read_lock_sched()
+@@ -458,7 +469,7 @@ static inline bool lockdep_assert_rcu_helper(bool c)
+  * instead an actual rcu_read_lock_sched() is required.
   */
- static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
-+	__releases_shared(sl) __no_context_analysis
- {
- 	return read_seqcount_retry(&sl->seqcount, start);
- }
-@@ -872,6 +875,7 @@ static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
-  * _irqsave or _bh variants of this function instead.
+ #define lockdep_assert_in_rcu_read_lock_sched() \
+-	WARN_ON_ONCE(lockdep_assert_rcu_helper(!lock_is_held(&rcu_sched_lock_map)))
++	WARN_ON_ONCE(lockdep_assert_rcu_helper(!lock_is_held(&rcu_sched_lock_map), RCU_SCHED))
+ 
+ /**
+  * lockdep_assert_in_rcu_reader - WARN if not within some type of RCU reader
+@@ -476,17 +487,17 @@ static inline bool lockdep_assert_rcu_helper(bool c)
+ 	WARN_ON_ONCE(lockdep_assert_rcu_helper(!lock_is_held(&rcu_lock_map) &&			\
+ 					       !lock_is_held(&rcu_bh_lock_map) &&		\
+ 					       !lock_is_held(&rcu_sched_lock_map) &&		\
+-					       preemptible()))
++					       preemptible(), RCU))
+ 
+ #else /* #ifdef CONFIG_PROVE_RCU */
+ 
+ #define RCU_LOCKDEP_WARN(c, s) do { } while (0 && (c))
+ #define rcu_sleep_check() do { } while (0)
+ 
+-#define lockdep_assert_in_rcu_read_lock() do { } while (0)
+-#define lockdep_assert_in_rcu_read_lock_bh() do { } while (0)
+-#define lockdep_assert_in_rcu_read_lock_sched() do { } while (0)
+-#define lockdep_assert_in_rcu_reader() do { } while (0)
++#define lockdep_assert_in_rcu_read_lock() __assume_shared_ctx_guard(RCU)
++#define lockdep_assert_in_rcu_read_lock_bh() __assume_shared_ctx_guard(RCU_BH)
++#define lockdep_assert_in_rcu_read_lock_sched() __assume_shared_ctx_guard(RCU_SCHED)
++#define lockdep_assert_in_rcu_reader() __assume_shared_ctx_guard(RCU)
+ 
+ #endif /* #else #ifdef CONFIG_PROVE_RCU */
+ 
+@@ -506,11 +517,11 @@ static inline bool lockdep_assert_rcu_helper(bool c)
+ #endif /* #else #ifdef __CHECKER__ */
+ 
+ #define __unrcu_pointer(p, local)					\
+-({									\
++context_unsafe(								\
+ 	typeof(*p) *local = (typeof(*p) *__force)(p);			\
+ 	rcu_check_sparse(p, __rcu);					\
+-	((typeof(*p) __force __kernel *)(local)); 			\
+-})
++	((typeof(*p) __force __kernel *)(local)) 			\
++)
+ /**
+  * unrcu_pointer - mark a pointer as not being RCU protected
+  * @p: pointer needing to lose its __rcu property
+@@ -586,7 +597,7 @@ static inline bool lockdep_assert_rcu_helper(bool c)
+  * other macros that it invokes.
   */
- static inline void write_seqlock(seqlock_t *sl)
-+	__acquires(sl) __no_context_analysis
- {
- 	spin_lock(&sl->lock);
- 	do_write_seqcount_begin(&sl->seqcount.seqcount);
-@@ -885,6 +889,7 @@ static inline void write_seqlock(seqlock_t *sl)
-  * critical section of given seqlock_t.
+ #define rcu_assign_pointer(p, v)					      \
+-do {									      \
++context_unsafe(							      \
+ 	uintptr_t _r_a_p__v = (uintptr_t)(v);				      \
+ 	rcu_check_sparse(p, __rcu);					      \
+ 									      \
+@@ -594,7 +605,7 @@ do {									      \
+ 		WRITE_ONCE((p), (typeof(p))(_r_a_p__v));		      \
+ 	else								      \
+ 		smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
+-} while (0)
++)
+ 
+ /**
+  * rcu_replace_pointer() - replace an RCU pointer, returning its old value
+@@ -861,9 +872,10 @@ do {									      \
+  * only when acquiring spinlocks that are subject to priority inheritance.
   */
- static inline void write_sequnlock(seqlock_t *sl)
-+	__releases(sl) __no_context_analysis
+ static __always_inline void rcu_read_lock(void)
++	__acquires_shared(RCU)
  {
- 	do_write_seqcount_end(&sl->seqcount.seqcount);
- 	spin_unlock(&sl->lock);
-@@ -898,6 +903,7 @@ static inline void write_sequnlock(seqlock_t *sl)
-  * other write side sections, can be invoked from softirq contexts.
+ 	__rcu_read_lock();
+-	__acquire(RCU);
++	__acquire_shared(RCU);
+ 	rcu_lock_acquire(&rcu_lock_map);
+ 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
+ 			 "rcu_read_lock() used illegally while idle");
+@@ -891,11 +903,12 @@ static __always_inline void rcu_read_lock(void)
+  * See rcu_read_lock() for more information.
   */
- static inline void write_seqlock_bh(seqlock_t *sl)
-+	__acquires(sl) __no_context_analysis
+ static inline void rcu_read_unlock(void)
++	__releases_shared(RCU)
  {
- 	spin_lock_bh(&sl->lock);
- 	do_write_seqcount_begin(&sl->seqcount.seqcount);
-@@ -912,6 +918,7 @@ static inline void write_seqlock_bh(seqlock_t *sl)
-  * write_seqlock_bh().
-  */
- static inline void write_sequnlock_bh(seqlock_t *sl)
-+	__releases(sl) __no_context_analysis
- {
- 	do_write_seqcount_end(&sl->seqcount.seqcount);
- 	spin_unlock_bh(&sl->lock);
-@@ -925,6 +932,7 @@ static inline void write_sequnlock_bh(seqlock_t *sl)
-  * other write sections, can be invoked from hardirq contexts.
-  */
- static inline void write_seqlock_irq(seqlock_t *sl)
-+	__acquires(sl) __no_context_analysis
- {
- 	spin_lock_irq(&sl->lock);
- 	do_write_seqcount_begin(&sl->seqcount.seqcount);
-@@ -938,12 +946,14 @@ static inline void write_seqlock_irq(seqlock_t *sl)
-  * seqlock_t write side section opened with write_seqlock_irq().
-  */
- static inline void write_sequnlock_irq(seqlock_t *sl)
-+	__releases(sl) __no_context_analysis
- {
- 	do_write_seqcount_end(&sl->seqcount.seqcount);
- 	spin_unlock_irq(&sl->lock);
+ 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
+ 			 "rcu_read_unlock() used illegally while idle");
+ 	rcu_lock_release(&rcu_lock_map); /* Keep acq info for rls diags. */
+-	__release(RCU);
++	__release_shared(RCU);
+ 	__rcu_read_unlock();
  }
  
- static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
-+	__acquires(sl) __no_context_analysis
- {
- 	unsigned long flags;
- 
-@@ -976,6 +986,7 @@ static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
+@@ -914,9 +927,11 @@ static inline void rcu_read_unlock(void)
+  * was invoked from some other task.
   */
- static inline void
- write_sequnlock_irqrestore(seqlock_t *sl, unsigned long flags)
-+	__releases(sl) __no_context_analysis
+ static inline void rcu_read_lock_bh(void)
++	__acquires_shared(RCU) __acquires_shared(RCU_BH)
  {
- 	do_write_seqcount_end(&sl->seqcount.seqcount);
- 	spin_unlock_irqrestore(&sl->lock, flags);
-@@ -998,6 +1009,7 @@ write_sequnlock_irqrestore(seqlock_t *sl, unsigned long flags)
-  * The opened read section must be closed with read_sequnlock_excl().
+ 	local_bh_disable();
+-	__acquire(RCU_BH);
++	__acquire_shared(RCU);
++	__acquire_shared(RCU_BH);
+ 	rcu_lock_acquire(&rcu_bh_lock_map);
+ 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
+ 			 "rcu_read_lock_bh() used illegally while idle");
+@@ -928,11 +943,13 @@ static inline void rcu_read_lock_bh(void)
+  * See rcu_read_lock_bh() for more information.
   */
- static inline void read_seqlock_excl(seqlock_t *sl)
-+	__acquires_shared(sl) __no_context_analysis
+ static inline void rcu_read_unlock_bh(void)
++	__releases_shared(RCU) __releases_shared(RCU_BH)
  {
- 	spin_lock(&sl->lock);
- }
-@@ -1007,6 +1019,7 @@ static inline void read_seqlock_excl(seqlock_t *sl)
-  * @sl: Pointer to seqlock_t
-  */
- static inline void read_sequnlock_excl(seqlock_t *sl)
-+	__releases_shared(sl) __no_context_analysis
- {
- 	spin_unlock(&sl->lock);
- }
-@@ -1021,6 +1034,7 @@ static inline void read_sequnlock_excl(seqlock_t *sl)
-  * from softirq contexts.
-  */
- static inline void read_seqlock_excl_bh(seqlock_t *sl)
-+	__acquires_shared(sl) __no_context_analysis
- {
- 	spin_lock_bh(&sl->lock);
- }
-@@ -1031,6 +1045,7 @@ static inline void read_seqlock_excl_bh(seqlock_t *sl)
-  * @sl: Pointer to seqlock_t
-  */
- static inline void read_sequnlock_excl_bh(seqlock_t *sl)
-+	__releases_shared(sl) __no_context_analysis
- {
- 	spin_unlock_bh(&sl->lock);
- }
-@@ -1045,6 +1060,7 @@ static inline void read_sequnlock_excl_bh(seqlock_t *sl)
-  * hardirq context.
-  */
- static inline void read_seqlock_excl_irq(seqlock_t *sl)
-+	__acquires_shared(sl) __no_context_analysis
- {
- 	spin_lock_irq(&sl->lock);
- }
-@@ -1055,11 +1071,13 @@ static inline void read_seqlock_excl_irq(seqlock_t *sl)
-  * @sl: Pointer to seqlock_t
-  */
- static inline void read_sequnlock_excl_irq(seqlock_t *sl)
-+	__releases_shared(sl) __no_context_analysis
- {
- 	spin_unlock_irq(&sl->lock);
+ 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
+ 			 "rcu_read_unlock_bh() used illegally while idle");
+ 	rcu_lock_release(&rcu_bh_lock_map);
+-	__release(RCU_BH);
++	__release_shared(RCU_BH);
++	__release_shared(RCU);
+ 	local_bh_enable();
  }
  
- static inline unsigned long __read_seqlock_excl_irqsave(seqlock_t *sl)
-+	__acquires_shared(sl) __no_context_analysis
- {
- 	unsigned long flags;
- 
-@@ -1089,6 +1107,7 @@ static inline unsigned long __read_seqlock_excl_irqsave(seqlock_t *sl)
+@@ -952,9 +969,11 @@ static inline void rcu_read_unlock_bh(void)
+  * rcu_read_lock_sched() was invoked from an NMI handler.
   */
- static inline void
- read_sequnlock_excl_irqrestore(seqlock_t *sl, unsigned long flags)
-+	__releases_shared(sl) __no_context_analysis
+ static inline void rcu_read_lock_sched(void)
++	__acquires_shared(RCU) __acquires_shared(RCU_SCHED)
  {
- 	spin_unlock_irqrestore(&sl->lock, flags);
+ 	preempt_disable();
+-	__acquire(RCU_SCHED);
++	__acquire_shared(RCU);
++	__acquire_shared(RCU_SCHED);
+ 	rcu_lock_acquire(&rcu_sched_lock_map);
+ 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
+ 			 "rcu_read_lock_sched() used illegally while idle");
+@@ -962,9 +981,11 @@ static inline void rcu_read_lock_sched(void)
+ 
+ /* Used by lockdep and tracing: cannot be traced, cannot call lockdep. */
+ static inline notrace void rcu_read_lock_sched_notrace(void)
++	__acquires_shared(RCU) __acquires_shared(RCU_SCHED)
+ {
+ 	preempt_disable_notrace();
+-	__acquire(RCU_SCHED);
++	__acquire_shared(RCU);
++	__acquire_shared(RCU_SCHED);
  }
-@@ -1125,6 +1144,7 @@ read_sequnlock_excl_irqrestore(seqlock_t *sl, unsigned long flags)
-  * parameter of the next read_seqbegin_or_lock() iteration.
+ 
+ /**
+@@ -973,22 +994,27 @@ static inline notrace void rcu_read_lock_sched_notrace(void)
+  * See rcu_read_lock_sched() for more information.
   */
- static inline void read_seqbegin_or_lock(seqlock_t *lock, int *seq)
-+	__acquires_shared(lock) __no_context_analysis
+ static inline void rcu_read_unlock_sched(void)
++	__releases_shared(RCU) __releases_shared(RCU_SCHED)
  {
- 	if (!(*seq & 1))	/* Even */
- 		*seq = read_seqbegin(lock);
-@@ -1140,6 +1160,7 @@ static inline void read_seqbegin_or_lock(seqlock_t *lock, int *seq)
-  * Return: true if a read section retry is required, false otherwise
-  */
- static inline int need_seqretry(seqlock_t *lock, int seq)
-+	__releases_shared(lock) __no_context_analysis
- {
- 	return !(seq & 1) && read_seqretry(lock, seq);
+ 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
+ 			 "rcu_read_unlock_sched() used illegally while idle");
+ 	rcu_lock_release(&rcu_sched_lock_map);
+-	__release(RCU_SCHED);
++	__release_shared(RCU_SCHED);
++	__release_shared(RCU);
+ 	preempt_enable();
  }
-@@ -1153,6 +1174,7 @@ static inline int need_seqretry(seqlock_t *lock, int seq)
-  * with read_seqbegin_or_lock() and validated by need_seqretry().
-  */
- static inline void done_seqretry(seqlock_t *lock, int seq)
-+	__no_context_analysis
- {
- 	if (seq & 1)
- 		read_sequnlock_excl(lock);
-@@ -1180,6 +1202,7 @@ static inline void done_seqretry(seqlock_t *lock, int seq)
-  */
- static inline unsigned long
- read_seqbegin_or_lock_irqsave(seqlock_t *lock, int *seq)
-+	__acquires_shared(lock) __no_context_analysis
- {
- 	unsigned long flags = 0;
  
-@@ -1205,6 +1228,7 @@ read_seqbegin_or_lock_irqsave(seqlock_t *lock, int *seq)
-  */
- static inline void
- done_seqretry_irqrestore(seqlock_t *lock, int seq, unsigned long flags)
-+	__no_context_analysis
+ /* Used by lockdep and tracing: cannot be traced, cannot call lockdep. */
+ static inline notrace void rcu_read_unlock_sched_notrace(void)
++	__releases_shared(RCU) __releases_shared(RCU_SCHED)
  {
- 	if (seq & 1)
- 		read_sequnlock_excl_irqrestore(lock, flags);
-diff --git a/include/linux/seqlock_types.h b/include/linux/seqlock_types.h
-index dfdf43e3fa3d..7b195368e654 100644
---- a/include/linux/seqlock_types.h
-+++ b/include/linux/seqlock_types.h
-@@ -81,13 +81,14 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
-  *    - Comments on top of seqcount_t
-  *    - Documentation/locking/seqlock.rst
-  */
--typedef struct {
-+context_guard_struct(seqlock) {
- 	/*
- 	 * Make sure that readers don't starve writers on PREEMPT_RT: use
- 	 * seqcount_spinlock_t instead of seqcount_t. Check __SEQ_LOCK().
- 	 */
- 	seqcount_spinlock_t seqcount;
- 	spinlock_t lock;
--} seqlock_t;
-+};
-+typedef struct seqlock seqlock_t;
+-	__release(RCU_SCHED);
++	__release_shared(RCU_SCHED);
++	__release_shared(RCU);
+ 	preempt_enable_notrace();
+ }
  
- #endif /* __LINUX_SEQLOCK_TYPES_H */
+ static __always_inline void rcu_read_lock_dont_migrate(void)
++	__acquires_shared(RCU)
+ {
+ 	if (IS_ENABLED(CONFIG_PREEMPT_RCU))
+ 		migrate_disable();
+@@ -996,6 +1022,7 @@ static __always_inline void rcu_read_lock_dont_migrate(void)
+ }
+ 
+ static inline void rcu_read_unlock_migrate(void)
++	__releases_shared(RCU)
+ {
+ 	rcu_read_unlock();
+ 	if (IS_ENABLED(CONFIG_PREEMPT_RCU))
+@@ -1041,10 +1068,10 @@ static inline void rcu_read_unlock_migrate(void)
+  * ordering guarantees for either the CPU or the compiler.
+  */
+ #define RCU_INIT_POINTER(p, v) \
+-	do { \
++	context_unsafe( \
+ 		rcu_check_sparse(p, __rcu); \
+ 		WRITE_ONCE(p, RCU_INITIALIZER(v)); \
+-	} while (0)
++	)
+ 
+ /**
+  * RCU_POINTER_INITIALIZER() - statically initialize an RCU protected pointer
+@@ -1206,4 +1233,6 @@ DEFINE_LOCK_GUARD_0(rcu,
+ 	} while (0),
+ 	rcu_read_unlock())
+ 
++DECLARE_LOCK_GUARD_0_ATTRS(rcu, __acquires_shared(RCU), __releases_shared(RCU))
++
+ #endif /* __LINUX_RCUPDATE_H */
 diff --git a/lib/test_context-analysis.c b/lib/test_context-analysis.c
-index 2b28d20c5f51..59c6642c582e 100644
+index 77e599a9281b..f18b7252646d 100644
 --- a/lib/test_context-analysis.c
 +++ b/lib/test_context-analysis.c
-@@ -6,6 +6,7 @@
- 
+@@ -7,6 +7,7 @@
+ #include <linux/bit_spinlock.h>
  #include <linux/build_bug.h>
  #include <linux/mutex.h>
-+#include <linux/seqlock.h>
++#include <linux/rcupdate.h>
+ #include <linux/seqlock.h>
  #include <linux/spinlock.h>
  
- /*
-@@ -208,3 +209,45 @@ static void __used test_mutex_cond_guard(struct test_mutex_data *d)
- 		d->counter++;
+@@ -277,3 +278,87 @@ static void __used test_bit_spin_lock(struct test_bit_spinlock_data *d)
+ 		bit_spin_unlock(3, &d->bits);
  	}
  }
 +
-+struct test_seqlock_data {
-+	seqlock_t sl;
-+	int counter __guarded_by(&sl);
++/*
++ * Test that we can mark a variable guarded by RCU, and we can dereference and
++ * write to the pointer with RCU's primitives.
++ */
++struct test_rcu_data {
++	long __rcu_guarded *data;
 +};
 +
-+static void __used test_seqlock_init(struct test_seqlock_data *d)
++static void __used test_rcu_guarded_reader(struct test_rcu_data *d)
 +{
-+	seqlock_init(&d->sl);
-+	d->counter = 0;
++	rcu_read_lock();
++	(void)rcu_dereference(d->data);
++	rcu_read_unlock();
++
++	rcu_read_lock_bh();
++	(void)rcu_dereference(d->data);
++	rcu_read_unlock_bh();
++
++	rcu_read_lock_sched();
++	(void)rcu_dereference(d->data);
++	rcu_read_unlock_sched();
 +}
 +
-+static void __used test_seqlock_reader(struct test_seqlock_data *d)
++static void __used test_rcu_guard(struct test_rcu_data *d)
 +{
-+	unsigned int seq;
-+
-+	do {
-+		seq = read_seqbegin(&d->sl);
-+		(void)d->counter;
-+	} while (read_seqretry(&d->sl, seq));
++	guard(rcu)();
++	(void)rcu_dereference(d->data);
 +}
 +
-+static void __used test_seqlock_writer(struct test_seqlock_data *d)
++static void __used test_rcu_guarded_updater(struct test_rcu_data *d)
 +{
-+	unsigned long flags;
++	rcu_assign_pointer(d->data, NULL);
++	RCU_INIT_POINTER(d->data, NULL);
++	(void)unrcu_pointer(d->data);
++}
 +
-+	write_seqlock(&d->sl);
-+	d->counter++;
-+	write_sequnlock(&d->sl);
++static void wants_rcu_held(void)	__must_hold_shared(RCU)       { }
++static void wants_rcu_held_bh(void)	__must_hold_shared(RCU_BH)    { }
++static void wants_rcu_held_sched(void)	__must_hold_shared(RCU_SCHED) { }
 +
-+	write_seqlock_irq(&d->sl);
-+	d->counter++;
-+	write_sequnlock_irq(&d->sl);
++static void __used test_rcu_lock_variants(void)
++{
++	rcu_read_lock();
++	wants_rcu_held();
++	rcu_read_unlock();
 +
-+	write_seqlock_bh(&d->sl);
-+	d->counter++;
-+	write_sequnlock_bh(&d->sl);
++	rcu_read_lock_bh();
++	wants_rcu_held_bh();
++	rcu_read_unlock_bh();
 +
-+	write_seqlock_irqsave(&d->sl, flags);
-+	d->counter++;
-+	write_sequnlock_irqrestore(&d->sl, flags);
++	rcu_read_lock_sched();
++	wants_rcu_held_sched();
++	rcu_read_unlock_sched();
++}
++
++static void __used test_rcu_lock_reentrant(void)
++{
++	rcu_read_lock();
++	rcu_read_lock();
++	rcu_read_lock_bh();
++	rcu_read_lock_bh();
++	rcu_read_lock_sched();
++	rcu_read_lock_sched();
++
++	rcu_read_unlock_sched();
++	rcu_read_unlock_sched();
++	rcu_read_unlock_bh();
++	rcu_read_unlock_bh();
++	rcu_read_unlock();
++	rcu_read_unlock();
++}
++
++static void __used test_rcu_assert_variants(void)
++{
++	lockdep_assert_in_rcu_read_lock();
++	wants_rcu_held();
++
++	lockdep_assert_in_rcu_read_lock_bh();
++	wants_rcu_held_bh();
++
++	lockdep_assert_in_rcu_read_lock_sched();
++	wants_rcu_held_sched();
 +}
 -- 
 2.52.0.rc1.455.g30608eb744-goog
