@@ -1,57 +1,55 @@
-Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
+Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA9C35B152
-	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:13:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2553612EC
+	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763651602; cv=none; b=cJGiDWVQ8FikrLFNy93xHmq37iYEYPbteDQdLCLaZ9tN3P2KjZmLCdBqYR35ShPS19tcyo6gzPvk2dZYHQIAAloIvy8IjaJ4XNRvz3qjbBkvBjTf7w0YmLCr6oL42uan3LqS001U9I18PvbqJV/RienM9OYS+PqIIbP1ERijKR0=
+	t=1763651614; cv=none; b=W/OnU6JyPNvB+ArTn6g4X30JGLSAlFCnFkT7IoaXTN7UHvl0TckVCeCJ5P7bNXLXXh0Lgw3kFDqLbUeGvZ0TdfNJQ/kc48Tr2OU/9LC/n0bF5WWZlLTFsDS2cjav1rvuwxZLhQebywtkdCJgfWKvioSuYRb/XUGoRRdOwHP4uZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763651602; c=relaxed/simple;
-	bh=07zfwwibr87pzthwGbH+0Y0kGO/abbdb5ZEhTTNkhyA=;
+	s=arc-20240116; t=1763651614; c=relaxed/simple;
+	bh=JCnKk5smTgE5T0ItBQ90SmrKCWmUzu/R/X44B8ZE77w=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=mER9Zps/Ze5Z+MqLEMJe0KF6+zytgE+/JVncpQQlXQFsSBJ3dFOsaancUhaH9PBU0S25Id10cop7Z8cSZyQ5HbBIp+KfH7dpsk0TnE/L1Fy2cDzwbNo6X2FGvqkVS+okEncNgCja57/I1oBH+n+FghPXmjZYwZCtV/CmuEe8lfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ltyF7FvA; arc=none smtp.client-ip=209.85.128.74
+	 To:Cc:Content-Type; b=Ye1yZAGJxEDMNZB31/V4BCyjXOeFHgy0Kpbo2kDWKqsk/a5o/1n4I1/nfqfxIRvubBVPlLoCraDnIdElNDPH9mCizhP2eoMonhkc2MCB7aQYJogt8m/Pt1l4dJW/B6g++CRPXWPNQ4Hk5M0zzpldiggyEZMKEwRuJNq6dr6gQ9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gRE8Kjm0; arc=none smtp.client-ip=209.85.221.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ltyF7FvA"
-Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-4779b3749a8so8950735e9.1
-        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:13:03 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gRE8Kjm0"
+Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-429c7b0ae36so658573f8f.0
+        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:13:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1763651580; x=1764256380; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LTo30xRtk3dNAYk+WcMlGzrXIDi8Fd3AcvMY0oMy4/o=;
-        b=ltyF7FvAG6OgN0LcS78W84ax541CxFrE8utJs/0/ke8m5aqrP3352ZUx86FV0kzR7V
-         fw1zF84Bl+Svig7h1nusl1SdfpLU8dcT+sRfvUGgdusSVeBhup9jElD6ai63ieXyS/n6
-         OLNtDua3PdYcVbaGxA3XV/RfRMPjGWoeGj8Pyh5p3WcHL7kU0g2WigB1evg/biaKQURV
-         58WrJ+g7zffVX05xtUxITBZgThTY3tQeyFl3E+XlBQMfjPCOUw5SbPfxuduIMD2JITqn
-         5g3M5vRFEXx5FZABV6HGefW8grmNTWyoV11BAaOHracqUN4DkX2/tEwrEzMlAJocRn8b
-         JyYg==
+        d=google.com; s=20230601; t=1763651604; x=1764256404; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=e0QY5sCjABQs82s4Ju3ZdPJK85+Pyg+eamRrTOstnfs=;
+        b=gRE8Kjm0kvEWnd7CL1VSLZiere2y7G5PwxdfKH7gBgU2P/MnepxcHKnQFRPBK8tw6q
+         caP9AvS0bzdestKcrXTzhn0XyY1zAz18kNlJ7H8xlZsVack1pc0rWSVc5Zv0gLpJ7Gn0
+         CDQROf//bEeLJhCFStvJ+2TamjtNbiE+FWpl5ZYWTuxfOtgn3quywyNx5pIIOgeHnyqf
+         TH1R5nrDpNKiq8r+lLnsbKRgJ93ncO++H2oRsWdG+l2oLj9rJB2sGtnozA67S9oc7dbi
+         YSTRYR01Atfu2JyT37RKjd4Jp1v6gvQMEv5D04BOAf69OmDOlwr87l/eroueEmtULPw5
+         KoEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763651580; x=1764256380;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LTo30xRtk3dNAYk+WcMlGzrXIDi8Fd3AcvMY0oMy4/o=;
-        b=dTlYj7xm/SpWLr+UUkUIGDkCozMuMM1nhtMZTBUFB0XjZr+Rmhetc2edcg30Dkpvrj
-         6zRznKShEuNnaInxzWVIkW/P+ghjoXu+LgteBRo2ISruXmMr+gDCz+vqs10cuJy4pB3N
-         4odzef/CANo8sXyf12wSwYfZtD9GQPA1rzS9BrtkUmfIFfr55Q8D+JnExP0c9+uAlL6x
-         ExraGu/0Rdfir2ve1NAF9Prn4FYnKkQtOaaQVwjA5rOra6Qhh/NduB2ZjpkwALyUjOIG
-         r0Blf30teCzIurGdU9rvqnqbq70Ke9xNh3BGB9QIoTTENcMNAghfXANFzCHRyCvVIH+y
-         vo8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWn+oqUzg4+A4YnxQ3pFKhmvFFDkflOWbXLnTwzWvaI8xJaNB7kTnNYjDKHmG0ddt/REzw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDOpFygrN9/3vHl8/XVUpTfqihp27XMYuqFfp69YRF1gStDgNx
-	djjGUt81DYFAHrdGXnl5xaidGsUzbIEmfg8NmvkhcNvJKP3uvmFiqba/H6r7wJibOk9oI6XPMGk
-	zIw==
-X-Google-Smtp-Source: AGHT+IFrGgNPktKG3H23bhC9w6XQyJEAaYXs0SazZ2yQkYIVJL1b09kjJ5fLN+jez2xgS5LZ8SbpXS+XSg==
-X-Received: from wmqo14.prod.google.com ([2002:a05:600c:4fce:b0:46e:1e57:dbd6])
- (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:600c:4ec6:b0:46e:32dd:1b1a
- with SMTP id 5b1f17b1804b1-477babc1fcfmr26767175e9.7.1763651580311; Thu, 20
- Nov 2025 07:13:00 -0800 (PST)
-Date: Thu, 20 Nov 2025 16:09:43 +0100
+        d=1e100.net; s=20230601; t=1763651604; x=1764256404;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e0QY5sCjABQs82s4Ju3ZdPJK85+Pyg+eamRrTOstnfs=;
+        b=ssEGKadpDA0hitSCnrgF0EbvuU2koCsv31+shGGSf5df6N/Gr1aiiUNFFEDOoLca0s
+         1Fk3j8BO8n13+eTEUxESTYfyOX2pKE80JZMNup+PHtcs2kWWNNAOWepk+Z6ujnERVreC
+         x2KhXIqIkP/dPvCU8WmO6PZcNopTsWYuI1etkzLkBn2SMx8ScCdFIvgQ0k7eq2lINf6+
+         ml3HuSCyjGfyfhGiNNgNW070j6RfqFZmosULYkH6TGjRAggm+kcs8SJmrIESMpaiwuKT
+         lX+MOY7yrqaN+B9aCBad//l9cbRxUuL0w4Mw42fEWQCG0WE9D83LmeYUqzMvjcf4hXVH
+         jWvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVKnaxOEs50abCb1hYeqPhYmDBavHz+vycqhYOuVEQ46U112OygSFJMoFd6gbbo4MjwH6s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJ/Qit2wzX4xuK8/SvACX1gGM5ZOq1xuTuERePpmiHA5lMPek4
+	49tATIR/ioxcRKcv/89TAEcC7pJYGyO93fLdeyuq/1+CwX5VHlt1psDifAaYwa5n0ZQ2Lug9him
+	bLw==
+X-Google-Smtp-Source: AGHT+IEwTiVA/c7ivK4PcZYzQTIU6yfpqSY2nHpvc3eMP1mZxx+HGAMnAzVRYoTvuPwgEuO1vhoD29fTuQ==
+X-Received: from wrbfq12.prod.google.com ([2002:a05:6000:2a0c:b0:425:6f4f:8f67])
+ (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:adf:f8cc:0:b0:429:b8c7:1848
+ with SMTP id ffacd0b85a97d-42cba767dd8mr2702228f8f.19.1763651604278; Thu, 20
+ Nov 2025 07:13:24 -0800 (PST)
+Date: Thu, 20 Nov 2025 16:09:49 +0100
 In-Reply-To: <20251120151033.3840508-7-elver@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -61,8 +59,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251120145835.3833031-2-elver@google.com> <20251120151033.3840508-7-elver@google.com>
 X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
-Message-ID: <20251120151033.3840508-19-elver@google.com>
-Subject: [PATCH v4 18/35] locking/local_lock: Include missing headers
+Message-ID: <20251120151033.3840508-25-elver@google.com>
+Subject: [PATCH v4 24/35] compiler-context-analysis: Introduce header suppressions
 From: Marco Elver <elver@google.com>
 To: elver@google.com, Peter Zijlstra <peterz@infradead.org>, 
 	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
@@ -88,49 +86,88 @@ Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenry
 	linux-security-module@vger.kernel.org, linux-sparse@vger.kernel.org, 
 	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Including <linux/local_lock.h> into an empty TU will result in the
-compiler complaining:
+While we can opt in individual subsystems which add the required
+annotations, such subsystems inevitably include headers from other
+subsystems which may not yet have the right annotations, which then
+result in false positive warnings.
 
-./include/linux/local_lock.h: In function =E2=80=98class_local_lock_irqsave=
-_constructor=E2=80=99:
-./include/linux/local_lock_internal.h:95:17: error: implicit declaration of=
- function =E2=80=98local_irq_save=E2=80=99; <...>
-   95 |                 local_irq_save(flags);                          \
-      |                 ^~~~~~~~~~~~~~
+Making compatible by adding annotations across all common headers
+currently requires an excessive number of __no_context_analysis
+annotations, or carefully analyzing non-trivial cases to add the correct
+annotations. While this is desirable long-term, providing an incremental
+path causes less churn and headaches for maintainers not yet interested
+in dealing with such warnings.
 
-As well as (some architectures only, such as 'sh'):
+Rather than clutter headers unnecessary and mandate all subsystem
+maintainers to keep their headers working with context analysis,
+suppress all -Wthread-safety warnings in headers. Explicitly opt in
+headers with context-enabled primitives.
 
-./include/linux/local_lock_internal.h: In function =E2=80=98local_lock_acqu=
-ire=E2=80=99:
-./include/linux/local_lock_internal.h:33:20: error: =E2=80=98current=E2=80=
-=99 undeclared (first use in this function)
-   33 |         l->owner =3D current;
-
-Include missing headers to allow including local_lock.h where the
-required headers are not otherwise included.
+With this in place, we can start enabling the analysis on more complex
+subsystems in subsequent changes.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- include/linux/local_lock_internal.h | 2 ++
- 1 file changed, 2 insertions(+)
+v4:
+* Rename capability -> context analysis.
+---
+ scripts/Makefile.context-analysis        |  4 +++
+ scripts/context-analysis-suppression.txt | 32 ++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
+ create mode 100644 scripts/context-analysis-suppression.txt
 
-diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock=
-_internal.h
-index a4dc479157b5..9f6cb32f04b0 100644
---- a/include/linux/local_lock_internal.h
-+++ b/include/linux/local_lock_internal.h
-@@ -4,7 +4,9 @@
- #endif
-=20
- #include <linux/percpu-defs.h>
-+#include <linux/irqflags.h>
- #include <linux/lockdep.h>
-+#include <asm/current.h>
-=20
- #ifndef CONFIG_PREEMPT_RT
-=20
---=20
+diff --git a/scripts/Makefile.context-analysis b/scripts/Makefile.context-analysis
+index 70549f7fae1a..cd3bb49d3f09 100644
+--- a/scripts/Makefile.context-analysis
++++ b/scripts/Makefile.context-analysis
+@@ -4,4 +4,8 @@ context-analysis-cflags := -DWARN_CONTEXT_ANALYSIS		\
+ 	-fexperimental-late-parse-attributes -Wthread-safety	\
+ 	-Wthread-safety-pointer -Wthread-safety-beta
+ 
++ifndef CONFIG_WARN_CONTEXT_ANALYSIS_ALL
++context-analysis-cflags += --warning-suppression-mappings=$(srctree)/scripts/context-analysis-suppression.txt
++endif
++
+ export CFLAGS_CONTEXT_ANALYSIS := $(context-analysis-cflags)
+diff --git a/scripts/context-analysis-suppression.txt b/scripts/context-analysis-suppression.txt
+new file mode 100644
+index 000000000000..df25c3d07a5b
+--- /dev/null
++++ b/scripts/context-analysis-suppression.txt
+@@ -0,0 +1,32 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# The suppressions file should only match common paths such as header files.
++# For individual subsytems use Makefile directive CONTEXT_ANALYSIS := [yn].
++#
++# The suppressions are ignored when CONFIG_WARN_CONTEXT_ANALYSIS_ALL is
++# selected.
++
++[thread-safety]
++src:*arch/*/include/*
++src:*include/acpi/*
++src:*include/asm-generic/*
++src:*include/linux/*
++src:*include/net/*
++
++# Opt-in headers:
++src:*include/linux/bit_spinlock.h=emit
++src:*include/linux/cleanup.h=emit
++src:*include/linux/kref.h=emit
++src:*include/linux/list*.h=emit
++src:*include/linux/local_lock*.h=emit
++src:*include/linux/lockdep.h=emit
++src:*include/linux/mutex*.h=emit
++src:*include/linux/rcupdate.h=emit
++src:*include/linux/refcount.h=emit
++src:*include/linux/rhashtable.h=emit
++src:*include/linux/rwlock*.h=emit
++src:*include/linux/rwsem.h=emit
++src:*include/linux/seqlock*.h=emit
++src:*include/linux/spinlock*.h=emit
++src:*include/linux/srcu*.h=emit
++src:*include/linux/ww_mutex.h=emit
+-- 
 2.52.0.rc1.455.g30608eb744-goog
 
