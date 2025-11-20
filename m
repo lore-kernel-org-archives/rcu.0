@@ -1,55 +1,55 @@
-Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
+Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2553612EC
-	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD094364E87
+	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763651614; cv=none; b=W/OnU6JyPNvB+ArTn6g4X30JGLSAlFCnFkT7IoaXTN7UHvl0TckVCeCJ5P7bNXLXXh0Lgw3kFDqLbUeGvZ0TdfNJQ/kc48Tr2OU/9LC/n0bF5WWZlLTFsDS2cjav1rvuwxZLhQebywtkdCJgfWKvioSuYRb/XUGoRRdOwHP4uZQ=
+	t=1763651618; cv=none; b=ioFBThM67a2IZmIu1WXDHQW5rMwBpJlNkb6MqZO8qL1qwRxMHXUlt6MsbjoWmT51YBBakdHl4YqYkjrAS+TqVH1Pp3iimfNbxv/BKFhprVA+8k7f6ZCFgp9T25wqY0zBJkU92QDmdOryrf6pilts8GuLW28MbvOs+Shya/rOWGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763651614; c=relaxed/simple;
-	bh=JCnKk5smTgE5T0ItBQ90SmrKCWmUzu/R/X44B8ZE77w=;
+	s=arc-20240116; t=1763651618; c=relaxed/simple;
+	bh=3Y89mJHosRaENaLb5tk2xkCy/Hd7qH1R9BEoKf0fV0w=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Ye1yZAGJxEDMNZB31/V4BCyjXOeFHgy0Kpbo2kDWKqsk/a5o/1n4I1/nfqfxIRvubBVPlLoCraDnIdElNDPH9mCizhP2eoMonhkc2MCB7aQYJogt8m/Pt1l4dJW/B6g++CRPXWPNQ4Hk5M0zzpldiggyEZMKEwRuJNq6dr6gQ9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gRE8Kjm0; arc=none smtp.client-ip=209.85.221.74
+	 To:Cc:Content-Type; b=Izei/7E55b3uYm6l9i5WxVu/EOx7cPthx7Yv5UEziYUQlty3ibLrjQ5QkjKj7xyVoKBTz0uVLajDuU4jVMEIxzwrZyH3NYqN51ZiJgjs49c70gRSQU6ZlsPcCpZYFqKhDrqlzd9nUWAremX/DkVkjbgCLznxJDXhPLhKZ1pDSZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ekSHrE5z; arc=none smtp.client-ip=209.85.218.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gRE8Kjm0"
-Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-429c7b0ae36so658573f8f.0
-        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:13:27 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ekSHrE5z"
+Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-b736eca894fso79415566b.1
+        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:13:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1763651604; x=1764256404; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1763651609; x=1764256409; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=e0QY5sCjABQs82s4Ju3ZdPJK85+Pyg+eamRrTOstnfs=;
-        b=gRE8Kjm0kvEWnd7CL1VSLZiere2y7G5PwxdfKH7gBgU2P/MnepxcHKnQFRPBK8tw6q
-         caP9AvS0bzdestKcrXTzhn0XyY1zAz18kNlJ7H8xlZsVack1pc0rWSVc5Zv0gLpJ7Gn0
-         CDQROf//bEeLJhCFStvJ+2TamjtNbiE+FWpl5ZYWTuxfOtgn3quywyNx5pIIOgeHnyqf
-         TH1R5nrDpNKiq8r+lLnsbKRgJ93ncO++H2oRsWdG+l2oLj9rJB2sGtnozA67S9oc7dbi
-         YSTRYR01Atfu2JyT37RKjd4Jp1v6gvQMEv5D04BOAf69OmDOlwr87l/eroueEmtULPw5
-         KoEA==
+        bh=kN628sGqwThlti0A3ZPE5fg7KLj/Ov6I/vXTKugeedg=;
+        b=ekSHrE5zybqJTGQ6PputajlArki3ecYjV6YbSd28O7uoxhpgNG71RAqFQStJYMZikS
+         jgHJ1a3WUcu8xi6qNBis5i9CC5W8KJwF4TFLQqYNQy/VO1arXQoE1Rwq6Z1XU2aNn9J5
+         Tx8IH9fEqiV9nPZPERqKks6fzr2ysC5FjxS7ugt+7ikp9RiK20XzPodS7N8Q2ZqQsCT+
+         OzAluTJmnfngm0ZQN1+76+zPg/cvrxLuFwFk8ubI7m28RrFPdaL5dU1N1KEBA28UiFMn
+         ITO1qqNUxTJl7VTHWL+Nt81FmuMMFVGU4EdPVZ8VMLn5xQs6l7mAr9JpTwtPsguVFQ0A
+         faxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763651604; x=1764256404;
+        d=1e100.net; s=20230601; t=1763651609; x=1764256409;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e0QY5sCjABQs82s4Ju3ZdPJK85+Pyg+eamRrTOstnfs=;
-        b=ssEGKadpDA0hitSCnrgF0EbvuU2koCsv31+shGGSf5df6N/Gr1aiiUNFFEDOoLca0s
-         1Fk3j8BO8n13+eTEUxESTYfyOX2pKE80JZMNup+PHtcs2kWWNNAOWepk+Z6ujnERVreC
-         x2KhXIqIkP/dPvCU8WmO6PZcNopTsWYuI1etkzLkBn2SMx8ScCdFIvgQ0k7eq2lINf6+
-         ml3HuSCyjGfyfhGiNNgNW070j6RfqFZmosULYkH6TGjRAggm+kcs8SJmrIESMpaiwuKT
-         lX+MOY7yrqaN+B9aCBad//l9cbRxUuL0w4Mw42fEWQCG0WE9D83LmeYUqzMvjcf4hXVH
-         jWvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVKnaxOEs50abCb1hYeqPhYmDBavHz+vycqhYOuVEQ46U112OygSFJMoFd6gbbo4MjwH6s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJ/Qit2wzX4xuK8/SvACX1gGM5ZOq1xuTuERePpmiHA5lMPek4
-	49tATIR/ioxcRKcv/89TAEcC7pJYGyO93fLdeyuq/1+CwX5VHlt1psDifAaYwa5n0ZQ2Lug9him
-	bLw==
-X-Google-Smtp-Source: AGHT+IEwTiVA/c7ivK4PcZYzQTIU6yfpqSY2nHpvc3eMP1mZxx+HGAMnAzVRYoTvuPwgEuO1vhoD29fTuQ==
-X-Received: from wrbfq12.prod.google.com ([2002:a05:6000:2a0c:b0:425:6f4f:8f67])
- (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:adf:f8cc:0:b0:429:b8c7:1848
- with SMTP id ffacd0b85a97d-42cba767dd8mr2702228f8f.19.1763651604278; Thu, 20
- Nov 2025 07:13:24 -0800 (PST)
-Date: Thu, 20 Nov 2025 16:09:49 +0100
+        bh=kN628sGqwThlti0A3ZPE5fg7KLj/Ov6I/vXTKugeedg=;
+        b=k9U3W3xvZ6w5InxaFLsfas/Vqd5LkVwzOd+KJs3WmZuW4d1mAv5V7NDh6Drl+eJkb0
+         G7K4W6KrlGXXJeNAzL6vxAJ6rG2KBkiS5W++B6jrmM+NKeYoZBza/pBURytoI2OTZ3lD
+         yhmHCrXxUOXq+svAh0yuN5U0j0rFVdBwvTwDlt+8vABmuJx/cgNRqyqY4hDhCMlCM+za
+         +04NBUoqeZzuk++GdT61mrPs6fOvf6LpdC9FeTuEy5S52zuFODQ/zzz/HrmLzt+NdK9F
+         oTnoa60W1t/Rxyd5VNotgBPT0oPF/hFJyxYt2N9DzWjEdyfUCwsNBEzJCPdSq/5RoVK9
+         BUQA==
+X-Forwarded-Encrypted: i=1; AJvYcCUPjYIskQj+91tO+2VgB4iqXagNnL62rSGSLyBi7QrP7dNE54ayfxFEWrnRvqPJYg3/2s0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywk6EZED0clPCs5TyWhDrFzP5znGEiJUkT7vc/LLacRqYwJfkLc
+	JQxi+6hEFGL2d4sAFLpaBYnbdpn5MNULzTg005zbT5yTP4ljEvwAdcC7Ytsu1XXRZWF0FP1dwY+
+	1Sg==
+X-Google-Smtp-Source: AGHT+IGPQ40L++aTOvA8JIRy1kdoYShFPO1YhmYJSO3OkON5NZw8EMACaSNJB6l90jTWpiXg4l2yJf3kSw==
+X-Received: from ejcwe11.prod.google.com ([2002:a17:907:d64b:b0:b72:63c8:2878])
+ (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a17:906:6a0d:b0:b76:23b0:7d6f
+ with SMTP id a640c23a62f3a-b76554a515bmr362722666b.56.1763651608428; Thu, 20
+ Nov 2025 07:13:28 -0800 (PST)
+Date: Thu, 20 Nov 2025 16:09:50 +0100
 In-Reply-To: <20251120151033.3840508-7-elver@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -59,8 +59,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251120145835.3833031-2-elver@google.com> <20251120151033.3840508-7-elver@google.com>
 X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
-Message-ID: <20251120151033.3840508-25-elver@google.com>
-Subject: [PATCH v4 24/35] compiler-context-analysis: Introduce header suppressions
+Message-ID: <20251120151033.3840508-26-elver@google.com>
+Subject: [PATCH v4 25/35] compiler: Let data_race() imply disabled context analysis
 From: Marco Elver <elver@google.com>
 To: elver@google.com, Peter Zijlstra <peterz@infradead.org>, 
 	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
@@ -87,87 +87,54 @@ Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenry
 	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-While we can opt in individual subsystems which add the required
-annotations, such subsystems inevitably include headers from other
-subsystems which may not yet have the right annotations, which then
-result in false positive warnings.
+Many patterns that involve data-racy accesses often deliberately ignore
+normal synchronization rules to avoid taking a lock.
 
-Making compatible by adding annotations across all common headers
-currently requires an excessive number of __no_context_analysis
-annotations, or carefully analyzing non-trivial cases to add the correct
-annotations. While this is desirable long-term, providing an incremental
-path causes less churn and headaches for maintainers not yet interested
-in dealing with such warnings.
-
-Rather than clutter headers unnecessary and mandate all subsystem
-maintainers to keep their headers working with context analysis,
-suppress all -Wthread-safety warnings in headers. Explicitly opt in
-headers with context-enabled primitives.
-
-With this in place, we can start enabling the analysis on more complex
-subsystems in subsequent changes.
+If we have a lock-guarded variable on which we do a lock-less data-racy
+access, rather than having to write context_unsafe(data_race(..)),
+simply make the data_race(..) macro imply context-unsafety. The
+data_race() macro already denotes the intent that something subtly
+unsafe is about to happen, so it should be clear enough as-is.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
 v4:
 * Rename capability -> context analysis.
----
- scripts/Makefile.context-analysis        |  4 +++
- scripts/context-analysis-suppression.txt | 32 ++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
- create mode 100644 scripts/context-analysis-suppression.txt
 
-diff --git a/scripts/Makefile.context-analysis b/scripts/Makefile.context-analysis
-index 70549f7fae1a..cd3bb49d3f09 100644
---- a/scripts/Makefile.context-analysis
-+++ b/scripts/Makefile.context-analysis
-@@ -4,4 +4,8 @@ context-analysis-cflags := -DWARN_CONTEXT_ANALYSIS		\
- 	-fexperimental-late-parse-attributes -Wthread-safety	\
- 	-Wthread-safety-pointer -Wthread-safety-beta
+v2:
+* New patch.
+---
+ include/linux/compiler.h    | 2 ++
+ lib/test_context-analysis.c | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index 5b45ea7dff3e..8ad1d4fd14e3 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -186,7 +186,9 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+ #define data_race(expr)							\
+ ({									\
+ 	__kcsan_disable_current();					\
++	disable_context_analysis();					\
+ 	__auto_type __v = (expr);					\
++	enable_context_analysis();					\
+ 	__kcsan_enable_current();					\
+ 	__v;								\
+ })
+diff --git a/lib/test_context-analysis.c b/lib/test_context-analysis.c
+index 522769c9586d..4612025a1065 100644
+--- a/lib/test_context-analysis.c
++++ b/lib/test_context-analysis.c
+@@ -92,6 +92,8 @@ static void __used test_raw_spinlock_trylock_extra(struct test_raw_spinlock_data
+ {
+ 	unsigned long flags;
  
-+ifndef CONFIG_WARN_CONTEXT_ANALYSIS_ALL
-+context-analysis-cflags += --warning-suppression-mappings=$(srctree)/scripts/context-analysis-suppression.txt
-+endif
++	data_race(d->counter++); /* no warning */
 +
- export CFLAGS_CONTEXT_ANALYSIS := $(context-analysis-cflags)
-diff --git a/scripts/context-analysis-suppression.txt b/scripts/context-analysis-suppression.txt
-new file mode 100644
-index 000000000000..df25c3d07a5b
---- /dev/null
-+++ b/scripts/context-analysis-suppression.txt
-@@ -0,0 +1,32 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# The suppressions file should only match common paths such as header files.
-+# For individual subsytems use Makefile directive CONTEXT_ANALYSIS := [yn].
-+#
-+# The suppressions are ignored when CONFIG_WARN_CONTEXT_ANALYSIS_ALL is
-+# selected.
-+
-+[thread-safety]
-+src:*arch/*/include/*
-+src:*include/acpi/*
-+src:*include/asm-generic/*
-+src:*include/linux/*
-+src:*include/net/*
-+
-+# Opt-in headers:
-+src:*include/linux/bit_spinlock.h=emit
-+src:*include/linux/cleanup.h=emit
-+src:*include/linux/kref.h=emit
-+src:*include/linux/list*.h=emit
-+src:*include/linux/local_lock*.h=emit
-+src:*include/linux/lockdep.h=emit
-+src:*include/linux/mutex*.h=emit
-+src:*include/linux/rcupdate.h=emit
-+src:*include/linux/refcount.h=emit
-+src:*include/linux/rhashtable.h=emit
-+src:*include/linux/rwlock*.h=emit
-+src:*include/linux/rwsem.h=emit
-+src:*include/linux/seqlock*.h=emit
-+src:*include/linux/spinlock*.h=emit
-+src:*include/linux/srcu*.h=emit
-+src:*include/linux/ww_mutex.h=emit
+ 	if (raw_spin_trylock_irq(&d->lock)) {
+ 		d->counter++;
+ 		raw_spin_unlock_irq(&d->lock);
 -- 
 2.52.0.rc1.455.g30608eb744-goog
 
