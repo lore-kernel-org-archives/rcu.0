@@ -1,55 +1,55 @@
-Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
+Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA19357A25
-	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B543A3587CC
+	for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 15:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763651548; cv=none; b=QxB/WPbRwszHvLCbgoANXKb8GUCyn4RDKXoJ1bTxyx/9C85G8zkdOfZ1796z1+f+9RXty6pHSRgfpoXY7gG3MOG/LgncwcCieO+Kq8/HOLXinG29O6dGhODXMkaAqkMlB49Zyy95ajtZ4BRTLKhE3TVlRuzyyyXBIbL1iX8a950=
+	t=1763651553; cv=none; b=DQwp81oy0tizt45g9wBKALh33w3m3OB+dH9XfyiV9eohbLOFx8dCqpiLecs4xyfrzn27wRaLdJkJWZ4cIOUQMRZBxZwv6xMNuUrCvVTSoYMkMop6M6TWAvnjtUi+9pHqmf1nF5dbKFMELX3v5NwPPGQkmAZRdeb1RLIzXnPry3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763651548; c=relaxed/simple;
-	bh=iTCExOn5I2g0QyRdTPZbzOcX9eognAB5x4hvp3AUKYU=;
+	s=arc-20240116; t=1763651553; c=relaxed/simple;
+	bh=JsRVhDxMTESFNC0k9j5iAV1EVftZ5NwIrNhmhZrLX5Q=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=NHVrLxPGlwynae8pQUUdMg+a8sGAPBKMv9ZLRAyyqfkW/QJNbu5p+1wiUzfH8jouT09OJ298Dy/gbLLKccPZVkL9ji42MfQCwM6xgLPwpJLWnaWEmA3XYUzveaadxxkl5Z1yEew4Q+LPpOfGlepswexbGXADcz36aWex2dKXG78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WGW7Ahyv; arc=none smtp.client-ip=209.85.128.74
+	 To:Cc:Content-Type; b=YhfwyPce8HPFTN5EwsyNu+EEzaePIVSAlpfTDGyusNlao/3SbGiFPWgFfz2KC53gbld/cXPd0AMb7oD9y+N+VfxiWo3NX/vU8y8GkgZ2q8Rg2cuKEu4WNYQX6hyS0iN1JDknrOVTYu2jtO/1oV1aG5d0QLz3C6cCDshlQxQbQ+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fVfukvmr; arc=none smtp.client-ip=209.85.221.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WGW7Ahyv"
-Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-477939321e6so5988405e9.0
-        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:12:14 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fVfukvmr"
+Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-42b2f79759bso1100770f8f.2
+        for <rcu@vger.kernel.org>; Thu, 20 Nov 2025 07:12:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1763651529; x=1764256329; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1763651543; x=1764256343; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2auqzFTNru84Mc/h4FPy5CTt8CBssizo13Uye4GopmU=;
-        b=WGW7AhyvGqOrcaNsbyecF1H3dBnupsjZnHEWYcE9mzuS3msFmtbQWMAL1bliz+S/R/
-         De9W2qsRsnlqnytVwZsDRCn51jewWFSKJ7zKa4txakeu0vmkJpm94cznWbnrhhSjdJJu
-         xJ0Ti3SLsfVFHBbUhMRHR/Y3p3QhGwp0xzjtrUBYVzYxvEQEY0wpcDYAzf9W4TT1loqn
-         aGdL3RF5XU3H49pAu/clEZICaMkoif5YjVPZA43oOuYJfCmjCNHMkYL8y8siqkmEMCot
-         I242W8a+1rGTX2PYDOxP/q+Q9NjZA1CS1qNiaFim6idsQccUGvdv1ohaQZLf75bhG2x/
-         7kTQ==
+        bh=YhzmKujL7bNVWf02jAjaSOrp3urplpV1YekSTYKrBiM=;
+        b=fVfukvmrtlZIh4E5wGUGJEuC5vPOv7dihBhfAbI5aQz5c3kDA3luttWFvQ20epfX4R
+         sy1L2NGUzJJ9E4CLFA8moK9/63iPtg72D+v2+iSQVM/gO83xXzliQ9xRKx1EXiWf83Vb
+         dFWHRV8xlFwnw3Mj0HYNrmAszRt2pUknH5pk/eVLqXcfCzNw2hgSNrwt+M8k0STZ98P7
+         4bpchl8Skgut/02et0r3gtweQK6mORjU+BY7YP3iNqtVpEX81Kjxl7cUgHQZo6mA5ClF
+         r9rN2f7Hz5iV/DC1MqYQAj/CMg6VrtkKXpVCxbioheE0Y69YMnLLBew1kCErdSAuFMSz
+         F3QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763651529; x=1764256329;
+        d=1e100.net; s=20230601; t=1763651543; x=1764256343;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2auqzFTNru84Mc/h4FPy5CTt8CBssizo13Uye4GopmU=;
-        b=UQ69cZFYdHP4HgKh96r+J6gDz2QlMVDlADrAAhNYtNzW8Qi6/CMmy+9OY6iS9cxp1n
-         3/In457Q9RWk2qHwYXu5hMxsvNIZMdpljzBUcpBRS/MlV+ZCrjgKSOOAyk8qWyReQeRf
-         d2zmfJwq8ZHUPiTOiaAKYeNJbAP+QXEPMNb+ZiHvVQkfaouf1mVw1pa7Wc9Wpfwb6cb/
-         SrfsraiAFBJp4LVgQNwingzSBgGoXUQJPCUuTG6cX/91ni+xX0OUNpeJGDtB6fuTGLaE
-         qNgv/Qe/oIYIQuBJTZui8T+qynuNkekPRoo8ren6vivMUcViMGjNei4vjL8E6cZWXTII
-         VwUA==
-X-Forwarded-Encrypted: i=1; AJvYcCVgfPV0oRFBccoOrmwHPxb7tlefBmylTIf8vv6+QAzrJbSbU7cS9z0xqSD40FFndsT6U/Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+RQciCc4JNHINBdAkPfSTVloofcO/1B1RKMqi8bTqOYbIcaP1
-	0sOwBN7rrdVRPhZgeVtFG5SNr401MbmWT/kMFrbpfWkTpu90ENx4MZ2kRt300l4nlXIweDihTiY
-	pYw==
-X-Google-Smtp-Source: AGHT+IGNF877xZIMkrqSG9e8HXfdE4iPehoBLINvx7tcm99gYUdknonGEyIpqxIrFW9MWM+3ZSJklS+Bgg==
-X-Received: from wmoy21.prod.google.com ([2002:a05:600c:17d5:b0:477:a7d1:fd12])
- (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:600c:1f0f:b0:46e:53cb:9e7f
- with SMTP id 5b1f17b1804b1-477b8a8bd4fmr35618325e9.18.1763651529324; Thu, 20
- Nov 2025 07:12:09 -0800 (PST)
-Date: Thu, 20 Nov 2025 16:09:34 +0100
+        bh=YhzmKujL7bNVWf02jAjaSOrp3urplpV1YekSTYKrBiM=;
+        b=a25X+awLiED3FIE9Q0DeptNnku+/yYH4Di8chU6c4x90MFqFx+aJfDTGreJ22sS4Fk
+         A/UoDH39qbE2RtF8KFpUdVLQj3c5gYi2sy6wpaMyGcNUhxQplzZbAVrJBXOmFf+ASsjX
+         SJiAb15/c4KUuqoOytrzzBXpzJ95Swzqjd3ozKZkZT+P2MVVwZaf11HQNoRwBNpxkk1M
+         Xt7Bw8GQvo69JE6g1H2jXsZCZaFHSLM3RL8NYeCa3Eb0uqSvtzyMvPktQMttBMPZ09+W
+         X4FFow6Sz1VdmDvIRxZ/Z5C/rKBkbdUxjY7MmhzzYtXc7gKy2EcKMv8SFAYnubrXNOdH
+         aSng==
+X-Forwarded-Encrypted: i=1; AJvYcCVRcZXxSoynEw1lykmlXkmosoDCOYSwtAODENcUOp5GZa57UgSjXFf2dXaljSiFRyazkxs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwhmeMAUYz04KBqDET0VDJMFsNsY07WjPiZtUDNhQ/gnRzcavdG
+	tzDg85flLPZa1ip1V3hkN7Cv2V4lHsB00certSHL7/ueMqY7TSfieF9jjmOjEzLslxTk6/dGQEX
+	EZQ==
+X-Google-Smtp-Source: AGHT+IFL0EI2FVZUMy6GZbaXFPeZWxMdszC7G+QJPxJYJ5Tt54juOMlly5lP2pxtgOuHE3Qi1fA/jEG3bQ==
+X-Received: from wrs17.prod.google.com ([2002:a05:6000:651:b0:42b:328d:1994])
+ (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6000:2287:b0:42b:3bd2:b2f8
+ with SMTP id ffacd0b85a97d-42cb9a603f4mr3376737f8f.46.1763651542984; Thu, 20
+ Nov 2025 07:12:22 -0800 (PST)
+Date: Thu, 20 Nov 2025 16:09:37 +0100
 In-Reply-To: <20251120151033.3840508-7-elver@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -59,9 +59,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251120145835.3833031-2-elver@google.com> <20251120151033.3840508-7-elver@google.com>
 X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
-Message-ID: <20251120151033.3840508-10-elver@google.com>
-Subject: [PATCH v4 09/35] compiler-context-analysis: Change __cond_acquires to
- take return value
+Message-ID: <20251120151033.3840508-13-elver@google.com>
+Subject: [PATCH v4 12/35] bit_spinlock: Include missing <asm/processor.h>
 From: Marco Elver <elver@google.com>
 To: elver@google.com, Peter Zijlstra <peterz@infradead.org>, 
 	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
@@ -88,210 +87,35 @@ Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenry
 	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-While Sparse is oblivious to the return value of conditional acquire
-functions, Clang's context analysis needs to know the return value
-which indicates successful acquisition.
+Including <linux/bit_spinlock.h> into an empty TU will result in the
+compiler complaining:
 
-Add the additional argument, and convert existing uses.
+./include/linux/bit_spinlock.h:34:4: error: call to undeclared function 'cpu_relax'; <...>
+   34 |                         cpu_relax();
+      |                         ^
+1 error generated.
 
-Notably, Clang's interpretation of the value merely relates to the use
-in a later conditional branch, i.e. 1 ==> context guard acquired in
-branch taken if condition non-zero, and 0 ==> context guard acquired in
-branch taken if condition is zero. Given the precise value does not
-matter, introduce symbolic variants to use instead of either 0 or 1,
-which should be more intuitive.
-
-No functional change intended.
+Include <asm/processor.h> to allow including bit_spinlock.h where
+<asm/processor.h> is not otherwise included.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
-v4:
-* Rename capability -> context analysis.
+ include/linux/bit_spinlock.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-v2:
-* Use symbolic values for __cond_acquires() and __cond_acquires_shared()
-  (suggested by Bart).
----
- fs/dlm/lock.c                             |  2 +-
- include/linux/compiler-context-analysis.h | 31 +++++++++++++++++++----
- include/linux/refcount.h                  |  6 ++---
- include/linux/spinlock.h                  |  6 ++---
- include/linux/spinlock_api_smp.h          |  8 +++---
- net/ipv4/tcp_sigpool.c                    |  2 +-
- 6 files changed, 38 insertions(+), 17 deletions(-)
-
-diff --git a/fs/dlm/lock.c b/fs/dlm/lock.c
-index be938fdf17d9..0ce04be0d3de 100644
---- a/fs/dlm/lock.c
-+++ b/fs/dlm/lock.c
-@@ -343,7 +343,7 @@ void dlm_hold_rsb(struct dlm_rsb *r)
- /* TODO move this to lib/refcount.c */
- static __must_check bool
- dlm_refcount_dec_and_write_lock_bh(refcount_t *r, rwlock_t *lock)
--__cond_acquires(lock)
-+      __cond_acquires(true, lock)
- {
- 	if (refcount_dec_not_one(r))
- 		return false;
-diff --git a/include/linux/compiler-context-analysis.h b/include/linux/compiler-context-analysis.h
-index 8c75e1d0034a..935e59089d75 100644
---- a/include/linux/compiler-context-analysis.h
-+++ b/include/linux/compiler-context-analysis.h
-@@ -259,7 +259,7 @@ static inline void _context_unsafe_alias(void **p) { }
- # define __must_hold(x)		__attribute__((context(x,1,1)))
- # define __must_not_hold(x)
- # define __acquires(x)		__attribute__((context(x,0,1)))
--# define __cond_acquires(x)	__attribute__((context(x,0,-1)))
-+# define __cond_acquires(ret, x) __attribute__((context(x,0,-1)))
- # define __releases(x)		__attribute__((context(x,1,0)))
- # define __acquire(x)		__context__(x,1)
- # define __release(x)		__context__(x,-1)
-@@ -302,15 +302,32 @@ static inline void _context_unsafe_alias(void **p) { }
-  */
- # define __acquires(x)		__acquires_ctx_guard(x)
+diff --git a/include/linux/bit_spinlock.h b/include/linux/bit_spinlock.h
+index c0989b5b0407..59e345f74b0e 100644
+--- a/include/linux/bit_spinlock.h
++++ b/include/linux/bit_spinlock.h
+@@ -7,6 +7,8 @@
+ #include <linux/atomic.h>
+ #include <linux/bug.h>
  
-+/*
-+ * Clang's analysis does not care precisely about the value, only that it is
-+ * either zero or non-zero. So the __cond_acquires() interface might be
-+ * misleading if we say that @ret is the value returned if acquired. Instead,
-+ * provide symbolic variants which we translate.
-+ */
-+#define __cond_acquires_impl_true(x, ...)     __try_acquires##__VA_ARGS__##_ctx_guard(1, x)
-+#define __cond_acquires_impl_false(x, ...)    __try_acquires##__VA_ARGS__##_ctx_guard(0, x)
-+#define __cond_acquires_impl_nonzero(x, ...)  __try_acquires##__VA_ARGS__##_ctx_guard(1, x)
-+#define __cond_acquires_impl_0(x, ...)        __try_acquires##__VA_ARGS__##_ctx_guard(0, x)
-+#define __cond_acquires_impl_nonnull(x, ...)  __try_acquires##__VA_ARGS__##_ctx_guard(1, x)
-+#define __cond_acquires_impl_NULL(x, ...)     __try_acquires##__VA_ARGS__##_ctx_guard(0, x)
++#include <asm/processor.h>  /* for cpu_relax() */
 +
- /**
-  * __cond_acquires() - function attribute, function conditionally
-  *                     acquires a context guard exclusively
-+ * @ret: abstract value returned by function if context guard acquired
-  * @x: context guard instance pointer
+ /*
+  *  bit-based spin_lock()
   *
-  * Function attribute declaring that the function conditionally acquires the
-- * given context guard instance @x exclusively, but does not release it.
-+ * given context guard instance @x exclusively, but does not release it. The
-+ * function return value @ret denotes when the context guard is acquired.
-+ *
-+ * @ret may be one of: true, false, nonzero, 0, nonnull, NULL.
-  */
--# define __cond_acquires(x)	__try_acquires_ctx_guard(1, x)
-+# define __cond_acquires(ret, x) __cond_acquires_impl_##ret(x)
- 
- /**
-  * __releases() - function attribute, function releases a context guard exclusively
-@@ -377,12 +394,16 @@ static inline void _context_unsafe_alias(void **p) { }
- /**
-  * __cond_acquires_shared() - function attribute, function conditionally
-  *                            acquires a context guard shared
-+ * @ret: abstract value returned by function if context guard acquired
-  * @x: context guard instance pointer
-  *
-  * Function attribute declaring that the function conditionally acquires the
-- * given context guard instance @x with shared access, but does not release it.
-+ * given context guard instance @x with shared access, but does not release it. The
-+ * function return value @ret denotes when the context guard is acquired.
-+ *
-+ * @ret may be one of: true, false, nonzero, 0, nonnull, NULL.
-  */
--# define __cond_acquires_shared(x) __try_acquires_shared_ctx_guard(1, x)
-+# define __cond_acquires_shared(ret, x) __cond_acquires_impl_##ret(x, _shared)
- 
- /**
-  * __releases_shared() - function attribute, function releases a
-diff --git a/include/linux/refcount.h b/include/linux/refcount.h
-index 80dc023ac2bf..3da377ffb0c2 100644
---- a/include/linux/refcount.h
-+++ b/include/linux/refcount.h
-@@ -478,9 +478,9 @@ static inline void refcount_dec(refcount_t *r)
- 
- extern __must_check bool refcount_dec_if_one(refcount_t *r);
- extern __must_check bool refcount_dec_not_one(refcount_t *r);
--extern __must_check bool refcount_dec_and_mutex_lock(refcount_t *r, struct mutex *lock) __cond_acquires(lock);
--extern __must_check bool refcount_dec_and_lock(refcount_t *r, spinlock_t *lock) __cond_acquires(lock);
-+extern __must_check bool refcount_dec_and_mutex_lock(refcount_t *r, struct mutex *lock) __cond_acquires(true, lock);
-+extern __must_check bool refcount_dec_and_lock(refcount_t *r, spinlock_t *lock) __cond_acquires(true, lock);
- extern __must_check bool refcount_dec_and_lock_irqsave(refcount_t *r,
- 						       spinlock_t *lock,
--						       unsigned long *flags) __cond_acquires(lock);
-+						       unsigned long *flags) __cond_acquires(true, lock);
- #endif /* _LINUX_REFCOUNT_H */
-diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
-index 2bcb3f0bf00e..274d866a0be3 100644
---- a/include/linux/spinlock.h
-+++ b/include/linux/spinlock.h
-@@ -362,7 +362,7 @@ static __always_inline void spin_lock_bh(spinlock_t *lock)
- }
- 
- static __always_inline int spin_trylock(spinlock_t *lock)
--	__cond_acquires(lock) __no_context_analysis
-+	__cond_acquires(true, lock) __no_context_analysis
- {
- 	return raw_spin_trylock(&lock->rlock);
- }
-@@ -422,13 +422,13 @@ static __always_inline void spin_unlock_irqrestore(spinlock_t *lock, unsigned lo
- }
- 
- static __always_inline int spin_trylock_bh(spinlock_t *lock)
--	__cond_acquires(lock) __no_context_analysis
-+	__cond_acquires(true, lock) __no_context_analysis
- {
- 	return raw_spin_trylock_bh(&lock->rlock);
- }
- 
- static __always_inline int spin_trylock_irq(spinlock_t *lock)
--	__cond_acquires(lock) __no_context_analysis
-+	__cond_acquires(true, lock) __no_context_analysis
- {
- 	return raw_spin_trylock_irq(&lock->rlock);
- }
-diff --git a/include/linux/spinlock_api_smp.h b/include/linux/spinlock_api_smp.h
-index d19327e04df9..7e7d7d373213 100644
---- a/include/linux/spinlock_api_smp.h
-+++ b/include/linux/spinlock_api_smp.h
-@@ -34,8 +34,8 @@ unsigned long __lockfunc _raw_spin_lock_irqsave(raw_spinlock_t *lock)
- unsigned long __lockfunc
- _raw_spin_lock_irqsave_nested(raw_spinlock_t *lock, int subclass)
- 								__acquires(lock);
--int __lockfunc _raw_spin_trylock(raw_spinlock_t *lock)		__cond_acquires(lock);
--int __lockfunc _raw_spin_trylock_bh(raw_spinlock_t *lock)	__cond_acquires(lock);
-+int __lockfunc _raw_spin_trylock(raw_spinlock_t *lock)		__cond_acquires(true, lock);
-+int __lockfunc _raw_spin_trylock_bh(raw_spinlock_t *lock)	__cond_acquires(true, lock);
- void __lockfunc _raw_spin_unlock(raw_spinlock_t *lock)		__releases(lock);
- void __lockfunc _raw_spin_unlock_bh(raw_spinlock_t *lock)	__releases(lock);
- void __lockfunc _raw_spin_unlock_irq(raw_spinlock_t *lock)	__releases(lock);
-@@ -84,7 +84,7 @@ _raw_spin_unlock_irqrestore(raw_spinlock_t *lock, unsigned long flags)
- #endif
- 
- static inline int __raw_spin_trylock(raw_spinlock_t *lock)
--	__cond_acquires(lock)
-+	__cond_acquires(true, lock)
- {
- 	preempt_disable();
- 	if (do_raw_spin_trylock(lock)) {
-@@ -177,7 +177,7 @@ static inline void __raw_spin_unlock_bh(raw_spinlock_t *lock)
- }
- 
- static inline int __raw_spin_trylock_bh(raw_spinlock_t *lock)
--	__cond_acquires(lock)
-+	__cond_acquires(true, lock)
- {
- 	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_LOCK_OFFSET);
- 	if (do_raw_spin_trylock(lock)) {
-diff --git a/net/ipv4/tcp_sigpool.c b/net/ipv4/tcp_sigpool.c
-index d8a4f192873a..10b2e5970c40 100644
---- a/net/ipv4/tcp_sigpool.c
-+++ b/net/ipv4/tcp_sigpool.c
-@@ -257,7 +257,7 @@ void tcp_sigpool_get(unsigned int id)
- }
- EXPORT_SYMBOL_GPL(tcp_sigpool_get);
- 
--int tcp_sigpool_start(unsigned int id, struct tcp_sigpool *c) __cond_acquires(RCU_BH)
-+int tcp_sigpool_start(unsigned int id, struct tcp_sigpool *c) __cond_acquires(0, RCU_BH)
- {
- 	struct crypto_ahash *hash;
- 
 -- 
 2.52.0.rc1.455.g30608eb744-goog
 
