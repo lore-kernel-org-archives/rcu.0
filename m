@@ -1,200 +1,115 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CC282D5C86;
-	Fri, 21 Nov 2025 17:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01B003043BD;
+	Mon, 24 Nov 2025 13:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763747418; cv=none; b=TvbqGd76mDLtC04BEfTe9kI/lrVG46puMfj2WD54KzzUVZ/KArIwHeeCk2h47vZxeO16YXxhwgjm9tfhGLIZZbHWeIAba0h6nv0z+G4JCRFHDJJHc5V3SxKsNIq/f6fvjf1xqRa74yhxAnvHUNz54zbE5EKGGOkl2x1hCKqULtg=
+	t=1763989467; cv=none; b=Ab7N1PVC0y/0e7XmHCGCuRG4EtGvYRsj3nuv/d2For5dxFtylvDx6nNfKIyvIfd8IXBbnrkfxerGiWNJYD8hCrV0/YcstbhCJH1Hz4sq3GZynp6MSIu53Z9+9/k/mOpuMb2qJq9MMoKBLlmHOaIUDo2p9Eh0JkMOZ1JK/+Tlw5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763747418; c=relaxed/simple;
-	bh=YckklQG/5FwUbczH+x3i0icUWdCO2DJMQNFuo3RKWck=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FuSOX3LKVmrcbMm3UtYd+7tWM+4FiqfDmhsQjMkyWPcWAKmu29PG6kTVC4BJJIeM8I45XdBWjs2xNEOV2SqGCLMlxEwmzyw/e41gLgWh6AS0yuRK/1Tk3wlw3buPST+zsc8JIK+onIdmZ5T+gq3ZtWQzhX6/K4TDv/ES84Bcuxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CxEoigRI; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1763989467; c=relaxed/simple;
+	bh=fAfc3sL0diFNluXrWqpuffMm2lvEFvjiMeiZ1ZMqRqQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vAxX0G8TgWtOT3VBFYc9+15B/UWB/24pDcXS7vf/xsfkxHg8NqhgsH4covMK8ilhy8+xUmqXvN7Q+jHh/VfPQrIR1wQNZU/lg79xJQN3F6wMapUQlXQSeuLE2r2I/MAwtci4ArMtgoat6aHHq5/BbY1cujUzBUBCsaInxdlmaPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=onaHc4e+; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CxEoigRI"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1763747418; x=1795283418;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=YckklQG/5FwUbczH+x3i0icUWdCO2DJMQNFuo3RKWck=;
-  b=CxEoigRIfvFQT+OgznmOEVgay7cSukJC0IKVY3RhsRCP2zcatrFqO22Z
-   DuJIr9BBVa2id4rlsgT1UBqzV1dhSd0rg5Okh3X25tGx0V+Bv8dkuT7vz
-   o+1Ua044vVSEHZP8++J+pJqOZVh0aEOnirvgS3xdf8dx5AIuM9LhixJjt
-   uh37Dr2GDKufK7IIO40tpK32d6zYjCLOmsCDss3bFAkccSPuURLuN8VFy
-   QR5et+flPuQZuRseQUWd+jUV9zorirhI588OjDEzWWYJk3ZxDGsP2GYuN
-   VHeEU9Ju+aWu10Cfc8jZ0Ke7nLMTTFNdowgfxDlQW/eEfL6ghQlox0ti6
-   w==;
-X-CSE-ConnectionGUID: VfMU84oKQ5SbK5faldnbLQ==
-X-CSE-MsgGUID: K71gMso3TIWvNJuQQCEOhg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11620"; a="69465904"
-X-IronPort-AV: E=Sophos;i="6.20,216,1758610800"; 
-   d="scan'208";a="69465904"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2025 09:50:17 -0800
-X-CSE-ConnectionGUID: TALVmW4IQoSpoxqsJrQTWg==
-X-CSE-MsgGUID: pw0Ufr6DT1ewmiN2aWhOIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.20,216,1758610800"; 
-   d="scan'208";a="222378181"
-Received: from schen9-mobl4.amr.corp.intel.com (HELO [10.125.110.60]) ([10.125.110.60])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2025 09:50:15 -0800
-Message-ID: <2837ea3e-c0b8-46b0-b8da-bf06906d124d@intel.com>
-Date: Fri, 21 Nov 2025 09:50:14 -0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="onaHc4e+"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED719C116D0;
+	Mon, 24 Nov 2025 13:04:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763989466;
+	bh=fAfc3sL0diFNluXrWqpuffMm2lvEFvjiMeiZ1ZMqRqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=onaHc4e+nPqx6N3KKvXLKn4LAfyd5Td/wwSAkmoq+r1qOcptY3fw8RL6ke/dQRowc
+	 poZimQo4ZnxSz1Lo0FUNFGgQC/8PLLxgtc6CdnrF8ZpVYk8Ytv73Ok/cBETV06sU80
+	 luRGJzyfHaUYFFqtfpF0MXXoN+uJaH8WYkwE7xdnZRMTffuWNTm44bbMVTs/rGkOmC
+	 EHub9CRKcZwVVJJZCszdy/APSwbcvyEooLgwEhX1aa//MjlrfIcPw+wywzFWO0FZXO
+	 DyIUWyVtT6Xlennrxl250MfN0td6V6ep5pNa5kf/TOSefPUv6+8ELimCq8CLQf+Efw
+	 wrxIJImt5E5sA==
+Date: Mon, 24 Nov 2025 13:04:20 +0000
+From: Will Deacon <will@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
+	frederic@kernel.org
+Subject: Re: [PATCH v2 15/16] srcu: Optimize SRCU-fast-updown for arm64
+Message-ID: <aSRX1HKNdks5pHsd@willie-the-truck>
+References: <bb177afd-eea8-4a2a-9600-e36ada26a500@paulmck-laptop>
+ <20251105203216.2701005-15-paulmck@kernel.org>
+ <aQ9AoauJKLYeYvrn@willie-the-truck>
+ <d53a5852-f84a-4dae-9bf4-312751880452@paulmck-laptop>
+ <aRHLV8lLX0fxQICR@willie-the-truck>
+ <ab6cd1c2-39c5-4b39-9585-6123835a6229@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v7 30/31] x86/mm, mm/vmalloc: Defer kernel TLB flush
- IPIs under CONFIG_COALESCE_TLBI=y
-To: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, rcu@vger.kernel.org, x86@kernel.org,
- linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
- linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
- Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker <frederic@kernel.org>,
- "Paul E. McKenney" <paulmck@kernel.org>, Jason Baron <jbaron@akamai.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>,
- Sami Tolvanen <samitolvanen@google.com>,
- "David S. Miller" <davem@davemloft.net>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Mel Gorman <mgorman@suse.de>, Andrew Morton <akpm@linux-foundation.org>,
- Masahiro Yamada <masahiroy@kernel.org>, Han Shen <shenhan@google.com>,
- Rik van Riel <riel@surriel.com>, Jann Horn <jannh@google.com>,
- Dan Carpenter <dan.carpenter@linaro.org>, Oleg Nesterov <oleg@redhat.com>,
- Juri Lelli <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>,
- Yair Podemsky <ypodemsk@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
- Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>,
- Shrikanth Hegde <sshegde@linux.ibm.com>
-References: <20251114150133.1056710-1-vschneid@redhat.com>
- <20251114151428.1064524-10-vschneid@redhat.com>
- <bad9eaaa-561a-498a-90d1-fe3a3ab8ba37@intel.com>
- <xhsmh5xb3thh6.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-Content-Language: en-US
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <xhsmh5xb3thh6.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab6cd1c2-39c5-4b39-9585-6123835a6229@paulmck-laptop>
 
-On 11/21/25 09:37, Valentin Schneider wrote:
-> On 19/11/25 10:31, Dave Hansen wrote:
->> On 11/14/25 07:14, Valentin Schneider wrote:
->>> +static bool flush_tlb_kernel_cond(int cpu, void *info)
->>> +{
->>> +	return housekeeping_cpu(cpu, HK_TYPE_KERNEL_NOISE) ||
->>> +	       per_cpu(kernel_cr3_loaded, cpu);
->>> +}
->>
->> Is it OK that 'kernel_cr3_loaded' can be be stale? Since it's not part
->> of the instruction that actually sets CR3, there's a window between when
->> 'kernel_cr3_loaded' is set (or cleared) and CR3 is actually written.
->>
->> Is that OK?
->>
->> It seems like it could lead to both unnecessary IPIs being sent and for
->> IPIs to be missed.
->>
+On Mon, Nov 10, 2025 at 09:29:43AM -0800, Paul E. McKenney wrote:
+> On Mon, Nov 10, 2025 at 11:24:07AM +0000, Will Deacon wrote:
+> > On Sat, Nov 08, 2025 at 10:38:32AM -0800, Paul E. McKenney wrote:
+> > > On Sat, Nov 08, 2025 at 01:07:45PM +0000, Will Deacon wrote:
+> > > > On Wed, Nov 05, 2025 at 12:32:15PM -0800, Paul E. McKenney wrote:
+> > > > > Some arm64 platforms have slow per-CPU atomic operations, for example,
+> > > > > the Neoverse V2.  This commit therefore moves SRCU-fast from per-CPU
+> > > > > atomic operations to interrupt-disabled non-read-modify-write-atomic
+> > > > > atomic_read()/atomic_set() operations.  This works because
+> > > > > SRCU-fast-updown is not invoked from read-side primitives, which
+> > > > > means that if srcu_read_unlock_fast() NMI handlers.  This means that
+> > > > > srcu_read_lock_fast_updown() and srcu_read_unlock_fast_updown() can
+> > > > > exclude themselves and each other
+> > > > > 
+> > > > > This reduces the overhead of calls to srcu_read_lock_fast_updown() and
+> > > > > srcu_read_unlock_fast_updown() from about 100ns to about 12ns on an ARM
+> > > > > Neoverse V2.  Although this is not excellent compared to about 2ns on x86,
+> > > > > it sure beats 100ns.
+> > > > > 
+> > > > > This command was used to measure the overhead:
+> > > > > 
+> > > > > tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs NOPREEMPT --kconfig "CONFIG_NR_CPUS=64 CONFIG_TASKS_TRACE_RCU=y" --bootargs "refscale.loops=100000 refscale.guest_os_delay=5 refscale.nreaders=64 refscale.holdoff=30 torture.disable_onoff_at_boot refscale.scale_type=srcu-fast-updown refscale.verbose_batched=8 torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=8 refscale.nruns=100" --trust-make
+> > > > > 
+> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > > > Cc: Will Deacon <will@kernel.org>
+> > > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > > > > Cc: <linux-arm-kernel@lists.infradead.org>
+> > > > > Cc: <bpf@vger.kernel.org>
+> > > > > ---
+> > > > >  include/linux/srcutree.h | 51 +++++++++++++++++++++++++++++++++++++---
+> > > > >  1 file changed, 48 insertions(+), 3 deletions(-)
+> > > > 
+> > > > I've queued the per-cpu tweak from Catalin in the arm64 fixes tree [1]
+> > > > for 6.18, so please can you drop this SRCU commit from your tree?
+> > > 
+> > > Very good!  Adding Frederic on CC since he is doing the pull request
+> > > for the upcoming merge window.
+> > > 
+> > > But if this doesn't show up in -rc1, we reserve the right to put it
+> > > back in.
+> > > 
+> > > Sorry, couldn't resist!   ;-)
+> > 
+> > I've merged it as a fix, so hopefully it will show up in v6.18-rc6.
 > 
-> So the pattern is
-> 
->   SWITCH_TO_KERNEL_CR3
->   FLUSH
->   KERNEL_CR3_LOADED := 1
-> 
->   KERNEL_CR3_LOADED := 0
->   SWITCH_TO_USER_CR3
-> 
-> 
-> The 0 -> 1 transition has a window between the unconditional flush and the
-> write to 1 where a remote flush IPI may be omitted. Given that the write is
-> immediately following the unconditional flush, that would really be just
-> two flushes racing with each other,
+> Even better, thank you!!!
 
-Let me fix that for you. When you wrote "a remote flush IPI may be
-omitted" you meant to write: "there's a bug." ;)
+It landed in Linus' tree here:
 
-In the end, KERNEL_CR3_LOADED==0 means, "you don't need to send this CPU
-flushing IPIs because it will flush the TLB itself before touching
-memory that needs a flush".
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/arm64?id=535fdfc5a228524552ee8810c9175e877e127c27
 
-   SWITCH_TO_KERNEL_CR3
-   FLUSH
-   // On kernel CR3, *AND* not getting IPIs
-   KERNEL_CR3_LOADED := 1
+Please can you drop the SRCU change from -next? It still shows up in
+20251121.
 
-> but I could punt the kernel_cr3_loaded
-> write above the unconditional flush.
-
-Yes, that would eliminate the window, as long as the memory ordering is
-right. You not only need to have the KERNEL_CR3_LOADED:=1 CPU set that
-variable, you need to ensure that it has seen the page table update.
-
-> The 1 -> 0 transition is less problematic, worst case a remote flush races
-> with the CPU returning to userspace and it'll get interrupted back to
-> kernelspace.
-
-It's also not just "returning to userspace". It could well be *in*
-userspace by the point the IPI shows up. It's not the end of the world,
-and the window isn't infinitely long. But there certainly is still a
-possibility of getting spurious interrupts for the precious NOHZ_FULL
-task while it's in userspace.
+Will
