@@ -1,117 +1,226 @@
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59ED2FD671
-	for <rcu@vger.kernel.org>; Tue,  2 Dec 2025 19:38:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5481AA1D2
+	for <rcu@vger.kernel.org>; Wed,  3 Dec 2025 01:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764704313; cv=none; b=RGkq5kBnQQ0t2Cgk7f5SYwFUUG7MRXmiPAIDJSFHbWEaLwELfFi7F+OTR+UjUiMmvDLnzGzFtcCKXcGu/oz/BuEzByVtFogdKHfTRD+VoysBPEt1XJfUT//Ku2H1RzuEkphmPiVEys3De28PPxiswmo9f6xMcsBxYODnMaDbauo=
+	t=1764726430; cv=none; b=AM9RjDxkc6ulDe6zbOih8t1tGux5uFzBBcB+LVism5xdcEaqFWo5KHpAUTQ6l0uHnsRSYVwKvQqs62pC4+SoyNeKOSon/6u9ifevWDO3/fvJSV7eJIi0XPO189iFfX208lIpL6MS/L389W/SmQql8L05Dc7ICsRQKWhNwJIjdpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764704313; c=relaxed/simple;
-	bh=KfA0aYktAmVEQNOHs/gAJiG3wUVa/u69tlizsxjAJZ4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=qhs1D5P1iEibJXCfxKXZ0/QAN2oeiM4Oe6s/7FakZDlL6zxi9fvVWRw0GZ5MiYK4fVVHcpoZF5pHPouDEoiJDoHLEbbyHImgQcsloeiJavus9D/xBpVOJJRWPO31psHejhQ0KYHQcUraUJs70inki5GBd/CMiu5TkeYMpH7RI0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=imfkV4aE; arc=none smtp.client-ip=209.85.128.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+	s=arc-20240116; t=1764726430; c=relaxed/simple;
+	bh=3nO+YcV9+oE4XpniiLIyxdEaMIE8lYstD85AACwuLDo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rC926p+GupvtH1+3fgF0ty+3qAcRUxfWxVLOEBzlU2wvbCjYuiqgV4zqNee2dXXtp1vvoRVoMvVQt4UxTKNP6kaffT6S9oaN36tBIO7yHl6gNcab7PORWWXzjVlKxpgB3isBuitUWNm3l6S0BoNzgFI5QWDT8mQUV4nbkCOPQ4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZLpulbdH; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="imfkV4aE"
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-47904cdb9bbso1154175e9.1
-        for <rcu@vger.kernel.org>; Tue, 02 Dec 2025 11:38:31 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZLpulbdH"
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-882475d8851so64644576d6.2
+        for <rcu@vger.kernel.org>; Tue, 02 Dec 2025 17:47:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1764704310; x=1765309110; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pRI/D7GSmJeHvPRj/LS4GLskzfvRR4C+zfs7kuwZ/dY=;
-        b=imfkV4aE6TY0w3w5buzfapGBBmDGXPMPAw2JoHnc1UVpWfKyOS6HUYtje1c03vSeJT
-         TzBkFX33asmmm5VX1Ch1F3xSCeA7y2Xj1d7IfYSY78ptnJAulsfhXkKZgegbB6pMbl5r
-         7v/6M6MG0dDOGTmwkFzfVbrXbe1/LugC+b0WHOJyClvVmluDR6igyZkxtYYNOuV2Hwwp
-         GGbMgN8V4YTwXgellDNFxv+k5SttOtcgwhrqqhMjohMiBihfqesjFFevBdZHmdhaTMpV
-         Do6h74HNxxr19c+pD8RTjN5YPJI971KgEgkZWeqGHmeqtXOpK7kd3p0rCi+2/qIQtT+j
-         51WQ==
+        d=gmail.com; s=20230601; t=1764726426; x=1765331226; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OtH1a85NzPXIElQyhEPKVrfDvnNRb+rvBUgIUrut7Kw=;
+        b=ZLpulbdHFBuz7J52MuyOIQ1Y3U8SB9lTC6264JsyNnqSRuJj7m0PZ8y7eKvMPM3Sol
+         rLVKMu1G7YfuxL5shNUWpOdxFn47imeoQ6KUY0AX9rlMudYEQsYNJo0X760eiWPXsFmp
+         jXbJuWOc+QKgkXBDBPJKuAHezVJEyIL0mC/AgQ/1SXp5PTfThL8Dvh8S/GiBYGibeUZy
+         KQJczWyAAovaz4St/568241YXbC56ygndDWzni8BqfwZZkY1JRsUwgNXrj9AtGdF1m1v
+         JAbaR73Joqe1miRLsL0NbyzJl/zgU1deueDJNhf4b5XJ2+AziBjqymuQhQuZcXHN/GE0
+         aoZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764704310; x=1765309110;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pRI/D7GSmJeHvPRj/LS4GLskzfvRR4C+zfs7kuwZ/dY=;
-        b=mPUPuZogy3GiD+jqSbsk4PgVSxBAnUuxEe5lO+mbv49dpWa4S701C5T0WR9uyVC/gD
-         X7wOvWrAuyGFHNvywcR/pnfCde3ae8Ala7+Qe4JGdNgkUAObdpXy/8ZaGqX6/7VgeJJx
-         UN3DBaUGpYmyxipi0RRMc4qA0tmwy4BlXbScoyimDD7/zsL46seoiGvk4FVcbTHoKPV0
-         7Nv+jCwr8dN+7qG5ND6U0n8v08C7KZuXt1+yftPS6q9xQsvcKUZbS39p1ixZ9CuuK2Hi
-         8Tfd3zuQoBYv+46WT2eXyubM6hMDCX1KPjUvmxOWcbii9g1mrdpZU6Y6PKUlnqYhMmBX
-         enZw==
-X-Forwarded-Encrypted: i=1; AJvYcCUPl3PaFONKlh5tAQOHDBHO5KtJMv1ld8YdWSAtFAXmEARXKeMkTiVDLxv57LHxxmFI5Cc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzyLXbcJUwNyhH6+xheFc3y8YDqUEAAEkCz7ZhLb05bYdmbxRh6
-	3SPhoDskovnarA/Hjw8Ey/hQPlGu3HBUqVWOEr9zIEA9MGzFrwpbSpRx/Eo6MLx7C0aH3qJkxwY
-	PQbqM2/CEzQbvCW9WoA==
-X-Google-Smtp-Source: AGHT+IHKwYwldcWP9HsSDKqCx/7sgEqR5Z+VgtB3rIj+E1+fJg+WDt6u52ebxKppoPkC56kc9KTd+Woi9K5cvBQ=
-X-Received: from wmbjw18.prod.google.com ([2002:a05:600c:5752:b0:477:d21:4a92])
- (user=aliceryhl job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:358e:b0:477:a219:cdc3 with SMTP id 5b1f17b1804b1-47926f9a96amr48689665e9.12.1764704310043;
- Tue, 02 Dec 2025 11:38:30 -0800 (PST)
-Date: Tue, 02 Dec 2025 19:37:57 +0000
-In-Reply-To: <20251202-define-rust-helper-v1-0-a2e13cbc17a6@google.com>
+        d=1e100.net; s=20230601; t=1764726426; x=1765331226;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=OtH1a85NzPXIElQyhEPKVrfDvnNRb+rvBUgIUrut7Kw=;
+        b=s67ioTTryUkmsa8g3Jhk6ouEGVI9vdxZsvHMwv0Yx5o0wKIXl1clXCi7LsbDqCtzNR
+         q1vKuJKyjWrKW6O6jqPmwbo5MAVw+q1XA6gGohti+8FykyRB8lnv1VVlFN9myrJZz4KV
+         BcR9YcEjk+W+imX1KTtFKAPwrJKcFYZimCR/kkmY0JXccY26qxTVVbgwUz9Iu4gTLC8b
+         xmbpQse8yKO00qE3IzpNPUrn896Twn15S93Dq12bU+8cm6E/ukMZ7aNfYv7APIljqSwo
+         qpQ+LEZU5NnoMAxnTsM9+Ulb5CUBHuNJavwYOyTyR2aIuwpH6eRQ6iag9XcNSqQSSyTb
+         Nm1A==
+X-Forwarded-Encrypted: i=1; AJvYcCWh5iuzmYaJJIXzB9IQDq99gUUtLUGlVsoYtoRKQGf8+mmfOfRdTSg/kTSVRUdRsJka5sA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxgfyVcqXsqAxwi7glQ27iGQnad4v1xz/77EkvbYDL0Y1tHpbqJ
+	fDeFqGaFLtOmSee3MKruJXkzBRhz/gMrp+lZvKTIx+AongODiVI3Cdhn
+X-Gm-Gg: ASbGncvaq2lEP+z7pVTY2z3K3FBLtWxBMYse4ayaqeScLIR+g9nLOcLkMUq4O6ro+iR
+	QCqDvNILiNykceU9pUw2vi2+fqeL8IlvIrHfr5zys8AxfFEoAGlZW3LCj+S8sWw9rr0T9/XdrG5
+	0JQYEy1EAHkNb7PlKG9/tGqwT9HqcNrkZPZ8upHIg4Mj3yURDP7TfqXp1k5MjKOKISFB30LoIJs
+	+CaynMsTTK1c+957FS6+hOO+zkSlo3JYnq+JTA30xrqK9lweU7Tlttw+7ZOrKNH22KqhaHGXsz+
+	6FUQpPCu65HkG3Fw/+ETRIx0I/dswyjWGMHY8g3Tc28ToqCCKswmrPgqnUPNl9dwehWNIHhO02e
+	eWPfIdHTo9aLvgyDifMyzLBINhmFgHU3FI9gJ3pO8KoZl0KTL26pK3KYZV+faF53KrAarHHGurj
+	DPhmrEsD/pKBCdStkw/zYG4egbYV2Sd76YYe48vVSNYg8hfGCd9Ptwxf8wzRN/Ayd9GnaEfFA/W
+	v45gJyad5yZ3qyYpafOz025Ew==
+X-Google-Smtp-Source: AGHT+IFeMR+oSVn09EJ3IDZOwhh2uiS4UVZ0hp1HU+YMpxzfU9ogbzDHH3W62a3tJUAdySWBH37uAw==
+X-Received: by 2002:a05:620a:2805:b0:8b2:d56a:f2f1 with SMTP id af79cd13be357-8b5e47cfdaamr99382185a.12.1764726426099;
+        Tue, 02 Dec 2025 17:47:06 -0800 (PST)
+Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-886524b1aa6sm119441246d6.8.2025.12.02.17.47.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Dec 2025 17:47:05 -0800 (PST)
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfauth.phl.internal (Postfix) with ESMTP id ACD9EF40079;
+	Tue,  2 Dec 2025 20:47:04 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-02.internal (MEProxy); Tue, 02 Dec 2025 20:47:04 -0500
+X-ME-Sender: <xms:mJYvaaDmnK-eQoA_EF5dIKBTmJFKJG6JnnoegiOnZKVT8CNUG_YZFg>
+    <xme:mJYvadSJ45vWYeQ9F5mL5h1nMVY-8bU-OaEP6MA5NELkAMhxMnC3oTCpPE77lCBHK
+    7T7DCcgyxDTJotNCxAXaXhpptJ3QWP-MaGb6ZrIeVNqxosuK0JF82c>
+X-ME-Received: <xmr:mJYvafxcm6YlRM-vftTxYa0HsgC9YSewKe3-7hU6gkHJFIR9j-dqDET8mDz9W_yI4jfLTFLmfy4EJaHEsee2Ieq8FtBpB-e8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
+    epfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcuhfgv
+    nhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtthgvrh
+    hnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueevieduffeivden
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquh
+    hnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudej
+    jeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrd
+    hnrghmvgdpnhgspghrtghpthhtohepkedupdhmohguvgepshhmthhpohhuthdprhgtphht
+    thhopegrlhhitggvrhihhhhlsehgohhoghhlvgdrtghomhdprhgtphhtthhopehruhhsth
+    dqfhhorhdqlhhinhhugiesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehl
+    ihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhope
+    hgrhgvghhkhheslhhinhhugihfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopegu
+    rghvihgurdhmrdgvrhhtmhgrnhesihhnthgvlhdrtghomhdprhgtphhtthhopehirhgrrd
+    ifvghinhihsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhgvohhnsehkvghrnhgvlhdr
+    ohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprhgtph
+    htthhopegvlhhlvgesfigvrghthhgvrhgvugdqshhtvggvlhdruggvvh
+X-ME-Proxy: <xmx:mJYvafm1w4VDhZtfL-vbtABRjhTNIcFLz8_RoOmFJXiaSOHOJFRUsA>
+    <xmx:mJYvaTW4xPwqaL8AsLZ0eWuclQx3vE9Zqhyto1-mcNhBpI554zsuvg>
+    <xmx:mJYvaXX2hT3SDveYJ-poTdQsJ8M2nsxtzyvAAaEGn-Ah6ycumKDy0w>
+    <xmx:mJYvaS9D9MkMxArS_FuKXUpeU0lMFKOAD8JwuBHAD4qUAR-XYoc_nw>
+    <xmx:mJYvaaBq2FcntQ00GFur5OcCdB2TqHkbOovvZlruCm-nWJGwWixyD_zx>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 2 Dec 2025 20:47:03 -0500 (EST)
+Date: Tue, 2 Dec 2025 17:47:03 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Dave Ertman <david.m.ertman@intel.com>,	Ira Weiny <ira.weiny@intel.com>,
+ Leon Romanovsky <leon@kernel.org>,	Peter Zijlstra <peterz@infradead.org>,
+	Elle Rhumsaa <elle@weathered-steel.dev>,
+	Carlos Llamas <cmllamas@google.com>,	Yury Norov <yury.norov@gmail.com>,
+	Andreas Hindborg <a.hindborg@kernel.org>,	linux-block@vger.kernel.org,
+	FUJITA Tomonori <fujita.tomonori@gmail.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+	Benno Lossin <lossin@kernel.org>,	Danilo Krummrich <dakr@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+	Paul Moore <paul@paul-moore.com>, Serge Hallyn <sergeh@kernel.org>,
+	linux-security-module@vger.kernel.org,
+	Daniel Almeida <daniel.almeida@collabora.com>,
+	Abdiel Janulgue <abdiel.janulgue@gmail.com>,
+	Robin Murphy <robin.murphy@arm.com>, Lyude Paul <lyude@redhat.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jason Baron <jbaron@akamai.com>,	Steven Rostedt <rostedt@goodmis.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
+	linux-kselftest@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Andrew Ballance <andrewjballance@gmail.com>,
+	maple-tree@lists.infradead.org, linux-mm@kvack.org,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vitaly Wool <vitaly.wool@konsulko.se>,	Rob Herring <robh@kernel.org>,
+	Saravana Kannan <saravanak@google.com>, devicetree@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof =?iso-8859-1?Q?Wilczy=B4nski?= <kwilczynski@kernel.org>,
+	linux-pci@vger.kernel.org, Remo Senekowitsch <remo@buenzli.dev>,
+	"Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+	Will Deacon <will@kernel.org>, Fiona Behrens <me@kloenk.dev>,
+	Gary Guo <gary@garyguo.net>, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,	Alexandre Courbot <acourbot@nvidia.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,	Ingo Molnar <mingo@redhat.com>,
+ Waiman Long <longman@redhat.com>,
+	Mitchell Levy <levymitchell0@gmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	John Stultz <jstultz@google.com>, linux-usb@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Tamir Duberstein <tamird@gmail.com>
+Subject: Re: [PATCH 00/46] Allow inlining C helpers into Rust when using LTO
+Message-ID: <aS-WlwsvGrbGYIYs@tardis.local>
+References: <20251202-define-rust-helper-v1-0-a2e13cbc17a6@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20251202-define-rust-helper-v1-0-a2e13cbc17a6@google.com>
-X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=852; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=KfA0aYktAmVEQNOHs/gAJiG3wUVa/u69tlizsxjAJZ4=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBpL0AKA2Xf96afgiGb6emGi3PKdj8u6PTmzfkjC
- oednJNtBMOJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCaS9ACgAKCRAEWL7uWMY5
- RumdD/9UzACEB4Q3wy9lLxRO9OjlxBFaWAUGdJuXJ+P2Zsl3+vQE/SP6caC/06J06Emqt1fOShh
- 2T9R/yFvIpYuk7w1iZ8QQ3CzjPAiWbk78MrpzKkekGEtTr8i5sCta18KSztsHsJ8WK2kKsXfG5V
- 4CUvuu6vQGtsX5teagvNKJzY8ySrNGdp81ODE1a4Bh9m1fznGhSHY92nrGZzW5r344N+6rjcwpi
- 847FeNCkOIwoESXEb8uKCyCg1YHgVsFM6Q0tgKEt7qE0y3B0dMVNgQuUWI8GSykwP6sQUKuBTwC
- K7RroWqRBFYjC2zYDd6UV4eF6oSfI4Im4SLAupfAMmaLLVIpNcjOUBlMl8lFnFwEygykjFcUjRq
- cpejU64nBRWB1jZV9qNwdF9gOANOs9migVRrT+VMTqk7RSo6LNcxPpB3CuwMmdoyBKhIEfjH/Nk
- rWU/G2h6LacefsErKzpuZIXkJc79eXwX6s3QGph1BIFm/anEW9UxEgqjp7Zm1V9HR8fiQrQdwRu
- KMh5smLzD4Ecq0q7cX7kk3XiG3QFxzOuvzaM1/QhdD/aUIJUXEXqDe5eXlIeDG1odfs8P7n1nAI
- gOGdI5WclrywEDLp0o0iUoFbFpZwIszZbv3V5EJq6Z4NWIlTXFztEls8D7jl2oco2osyUqUQTGi rkhzCQiudX/negQ==
-X-Mailer: b4 0.14.2
-Message-ID: <20251202-define-rust-helper-v1-33-a2e13cbc17a6@google.com>
-Subject: [PATCH 33/46] rust: rcu: add __rust_helper to helpers
-From: Alice Ryhl <aliceryhl@google.com>
-To: rust-for-linux@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251202-define-rust-helper-v1-0-a2e13cbc17a6@google.com>
 
-This is needed to inline these helpers into Rust code.
+On Tue, Dec 02, 2025 at 07:37:24PM +0000, Alice Ryhl wrote:
+> This patch series adds __rust_helper to every single rust helper. The
+> patches do not depend on each other, so maintainers please go ahead and
+> pick up any patches relevant to your subsystem! Or provide your Acked-by
+> so that Miguel can pick them up.
+> 
+> These changes were generated by adding __rust_helper and running
+> ClangFormat. Unrelated formatting changes were removed manually.
+> 
+> Why is __rust_helper needed?
+> ============================
+> 
+> Currently, C helpers cannot be inlined into Rust even when using LTO
+> because LLVM detects slightly different options on the codegen units.
+> 
+> * LLVM doesn't want to inline functions compiled with
+>   `-fno-delete-null-pointer-checks` with code compiled without. The C
+>   CGUs all have this enabled and Rust CGUs don't. Inlining is okay since
+>   this is one of the hardening features that does not change the ABI,
+>   and we shouldn't have null pointer dereferences in these helpers.
+> 
+> * LLVM doesn't want to inline functions with different list of builtins. C
+>   side has `-fno-builtin-wcslen`; `wcslen` is not a Rust builtin, so
+>   they should be compatible, but LLVM does not perform inlining due to
+>   attributes mismatch.
+> 
+> * clang and Rust doesn't have the exact target string. Clang generates
+>   `+cmov,+cx8,+fxsr` but Rust doesn't enable them (in fact, Rust will
+>   complain if `-Ctarget-feature=+cmov,+cx8,+fxsr` is used). x86-64
+>   always enable these features, so they are in fact the same target
+>   string, but LLVM doesn't understand this and so inlining is inhibited.
+>   This can be bypassed with `--ignore-tti-inline-compatible`, but this
+>   is a hidden option.
+> 
+> (This analysis was written by Gary Guo.)
+> 
+> How is this fixed?
+> ==================
+> 
+> To fix this we need to add __always_inline to all helpers when compiling
+> with LTO. However, it should not be added when running bindgen as
+> bindgen will ignore functions marked inline. To achieve this, we are
+> using a #define called __rust_helper that is defined differently
+> depending on whether bindgen is running or not.
+> 
+> Note that __rust_helper is currently always #defined to nothing.
+> Changing it to __always_inline will happen separately in another patch
+> series.
+> 
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
----
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: rcu@vger.kernel.org
----
- rust/helpers/rcu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+For the whole series:
 
-diff --git a/rust/helpers/rcu.c b/rust/helpers/rcu.c
-index f1cec6583513497e996f74835ca2c6c3f4a8c954..481274c058577276e20093a1014fc49f4a40421b 100644
---- a/rust/helpers/rcu.c
-+++ b/rust/helpers/rcu.c
-@@ -2,12 +2,12 @@
- 
- #include <linux/rcupdate.h>
- 
--void rust_helper_rcu_read_lock(void)
-+__rust_helper void rust_helper_rcu_read_lock(void)
- {
- 	rcu_read_lock();
- }
- 
--void rust_helper_rcu_read_unlock(void)
-+__rust_helper void rust_helper_rcu_read_unlock(void)
- {
- 	rcu_read_unlock();
- }
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
--- 
-2.52.0.158.g65b55ccf14-goog
+Regards,
+Boqun
 
+> ---
+[...]
