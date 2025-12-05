@@ -1,17 +1,17 @@
 Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C0DD3254B8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23E2328B47;
 	Fri,  5 Dec 2025 07:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764919274; cv=none; b=SEPtGjutbT2aa4H+NE/9P9qZRRNSzDVNoVezCMq7LA2sm3412s5RAXL5lbMfAGmS9ufNT/3MTi8cp+vghLhAWH+SmfSiXseomiC+oU7RleS9QOmZqRUhDLhoZnHL0znk284cv6LjQCtLwyVJ8WCISD3OS7m7qRTWtYqm2szxcFk=
+	t=1764919278; cv=none; b=ieUIZPH21pNxWLYNpExNNmSIw0ahnrsEwmeec8NYwtfJopE1bLVcKTvLKbwhGpNAeq2aYpbyqPIqBaJ8P6l60RgPQpGBwpFFfE/0zIiuPNpFZbWmju+LIzbUxUfzgdU1zL5frfeuMxD2Nt5nK4uc9LptPLEeGaD0epNbO0HJmn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764919274; c=relaxed/simple;
-	bh=314TpUAkZxMvbV2pk3wlciVKMbaC2tgJL1bvCZ48Y0A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=iuUyznXv1mt1y32gTpKZVCQXXBgCgLsGA130Gm4kIiRSkeniPReF4U/bbBZsNRIzHnF+pB3yyPt0xyMLdHlqaqNqvfgMk0vk4BuJ5KEncM4lzqA6dwiDPbMP+esasTHYvE8nCdRb0LgJ3FXzhWPSXolk+VyDF4tnmsLN5B6YWGI=
+	s=arc-20240116; t=1764919278; c=relaxed/simple;
+	bh=3Y5WjXAVqFBbgNUdLO4Qpu6CxaI1rV8QHBa3XuJFo4g=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=qd6ESLRuQ+MUIQbFOJreE3kT64WqMERVMbgK7oCJnH4adRqy/7bfTHCeNvgc3OEtGe3N++eKDZPI1rLjJx2w8eiDnWxgwzsg0tCvu3n2t+0w5c+v+QSUHm2GbJsLPibqNNwOeRhXCU73Q5RsmA4SylAzzVkrkbqJ96Gi0GyYv7Y=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c2dff70000001609-c7-69328772b7b8
+X-AuditID: a67dfc5b-c45ff70000001609-4d-693287712395
 From: Byungchul Park <byungchul@sk.com>
 To: linux-kernel@vger.kernel.org
 Cc: kernel_team@skhynix.com,
@@ -178,45 +178,44 @@ Cc: kernel_team@skhynix.com,
 	aliceryhl@google.com,
 	tmgross@umich.edu,
 	rust-for-linux@vger.kernel.org
-Subject: [PATCH v18 32/42] completion, dept: introduce init_completion_dmap() API
-Date: Fri,  5 Dec 2025 16:18:45 +0900
-Message-Id: <20251205071855.72743-33-byungchul@sk.com>
+Subject: [PATCH v18 28/42] dept: assign unique dept_key to each distinct dma fence caller
+Date: Fri,  5 Dec 2025 16:18:41 +0900
+Message-Id: <20251205071855.72743-29-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20251205071855.72743-1-byungchul@sk.com>
 References: <20251205071855.72743-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSe0xTdxTH/d3H7942drl2Gq+PBVOjZiaoJbCcBET+Qa4xJrgtS3yOBq5y
-	QwFTlIcJyni1lqcaIKEwOh20UonQLuMxShCLbxzIRCQgskB9AYsUUBseQsn+OfnknPP95Pxx
-	WFLZR29kpYSzoi5Bo1VhOSWfWP2bv04fIO2Z/xQChpyLMDg8SkNO8yIFnvoFDOVuEwNvOyNg
-	ceg1AfOlcVB1zYHBac3E0Dv6Ffwz8x+GByV5GCZ6KggwZzppqDRdQeAecBIwXOOmoLRhPZjK
-	soil8oaAx9cHKTB19dIwN6KGRXMi3LW9ZmD4Xi4NjRmvGDC0zFBgmJ9G0NtSgeGprZuCv1vq
-	aKh+3kOAo+sxCd2XC2joLx5D8KJsnAHrhzIa6rPLGbhRZUFwxT3FwL2CdgL0b/7C0GV6QkPu
-	7w0EtBleEeC61UjAnZlxAh4OeRi4+tSMwTvURIPX0olgqnKBBlsPBSVzBgx5OaVLp7hmSaj/
-	YMHwi2cYQeGTCKicVkPdfB8CU+dLJixM+JhTSAm1jj8J4eavN5EwXZ1FCtWPxrHgnXmGhctd
-	/kJz+RAjZLcNMILZfk7Idk3QgsO6U7je+pYQBt7vFey1l7Aw2NeKI/2OykNiRK2ULOp2h0bJ
-	Y6tvmfAZ57epLk8xykBePyNiWZ4L5CeLtxmRzIcjj6bQMmNuB9/f/5lc5rXcFt5R4KaNSM6S
-	XK8fr/9cSC5nv+YO8++KgpZ3KG4bXzZS48squO/42XwXteL042317T6PbKlf8tzrYyUXxFcZ
-	P/qcPGeR8W3mP9BKYAN/29pPFSOFGa2qRUopITleI2kDd8WmJUipu6IT4+1o6dtq0ueONaGp
-	7h86EMci1WpFe4paUtKa5KS0+A7Es6RqrWJcu0dSKmI0aedFXeLPunNaMakDbWIp1XpFwGxK
-	jJI7rTkrxoniGVH3/5RgZRszUPTxcGmsYFXM4nGLzTMZEJ1+UB1sDH3ZcO1BndO6z7/oRvgB
-	/Xn7utNbjwSe0EdFhaV6D4R4276JSrTbUjP3GwzdUmHlfe20vTbkQuTIhc2Hg06lMFl38vIb
-	09lTzYY4zDlOtjYdqpCtC4vM3OoO/und2JpNeQ9/DA3+ntg+GfevqKKSYjXqnaQuSfMFNrUj
-	iWkDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAAzVSbUxTZxT2vV+9NFZuKgl3LgtLE2NmgoKh5sw5Hf4Yb7bMaMziNBqp80Yu
-	lI+0CpQELWADotParK1aFWTSGKiCrQ5QG7Boo2MEGCr4gUDSsVVAFmhLWqisYPxz8pzzfOT5
-	cVhS3kKvYsW8I4ImT6VWMFJKuv2rimRN5QYxpdX4GVQZjsPrYR8Nz8s6KAgGqii41ORgIGpr
-	kUCV8wINjwfKKei92YhgOFiFYHbORoKhbYGCqMkrgUD4lQTMZQgW3F4Elj4TCYO97SQ4bpcR
-	MNP8noHxzmkE5lEfA1Z/GQVT9tMILo7ZJOB/lAGTw/doWBj6h4CB0AQCu+89Ab6OSgRRSw7U
-	1Llidst/DMx195BgNfciuDo6RMK0fwTBbe8bBO7r5Qz8bbxDQr9vBTwNTjHwxHyKgcm+SwS8
-	a2agttxNQ9+f4wgu20wIxl66Caj4rYkBy2UnBW0jdyXQNz5PwGuLiYBG5w8wbB+joMtYR8Tq
-	xlS3EsFmrSBi418CzDfuERC2N0i+qUd41nCGwg2u3wls+CvKYMcVB8JzERPCgfoKEhuMsbVz
-	YorEJ1xFuL5rgsGR4DMGu0O1FP6jjsfXTkYIfK47GbddHJLsSN8r3XxIUIuFgmb9lkxpVn2T
-	jSlwf1H8cMaI9CiSVI3iWJ5L40e7ptEiZrg1/OBgmFzECdznvOuXMboaSVmS60/iK8NnYgTL
-	ruR28m/PKhc1FLeat47al7wybiMfOv2Q+pCZxDc2dyzlxMXu5oHIEpZzSr6mepY2ImktWtaA
-	EsS8wlyVqFau0+Zk6fLE4nU/5+c6Ueyd7KXz51pRoD/DgzgWKZbLOopSRTmtKtTqcj2IZ0lF
-	gmxCnSLKZYdUuhJBk39Ac1QtaD3oU5ZSJMq+2y1kyrnDqiNCjiAUCJqPLMHGrdKj4/md0/s3
-	WnhdyX1vaFw4tvqqN/vr3LMuPx0OvTp/YVt556Zfv9WXlkhd4OH2rHek1/I9p5KzD2ZHrDjJ
-	v4tVzswlNBpbdJOYOJ8RMKS074j/XnTqg/a0lfplax37hn5892Bhq3JXfOikhyh6Ef3kJ++X
-	baU1L05sl8TTTYZMBaXNUqWuJTVa1f8LVNtlSgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAzXSfUhTexgH8H7n5bc53OXcJXRSwVhEYGlaGU9Q94pwbycouFD9UUG3Ux7a
+	oU1tmi9BZOVwmXnNmN3rqtksGWq5tiK1TLNaWa6tN11lzsy3lS9grmFpu7rovw/P9/k+fz1S
+	UvGajpSKaVmCNo1XK7GMko2Gm+O0hSvFhIeWSNDrjkDn0VYK/JN6Cs7V12GYMd6UgPtqLQKv
+	X48g8M1Igq4xSMHk1FsJGI4iCDY7EHjcLSR8tn7H8OneBALD+34M49XFCCoGjRLwPdgAo95b
+	NATfDRFQ3f+dgP7WQgQmsx3DN6eLhLMGN4Lrjh4EzZZjGAZKb5Dw0j+Ood1wEsOYFcN5YxmC
+	41X1GMrP2yho7G2SQHd5GQG1ts3grR6kwHh2mICOqu5ZOV/Q0GepkECwMh2ujrpoaO/ppOFm
+	fq8EbB9m9d+Fbgz6mUkEjoY+AoqtN2joqQvSUD/kIeCJ4xEFrqYrNFzuekbA+14PDXZnBwlf
+	SqLAffoUDZ7SAQRXxswYzowNouRULqAroTjd8xnM1V2oQ9y9kXGSK7DncJefjGDuq/8V5h6b
+	We60M45rrHgn4SptB7mC+6M0Z7fEclW3fQT35tN6zlZzAv8Vt0O2LlVQi9mCdsVvu2WqsjtF
+	dEbf2lyXb0iSjxrji1CYlGVWs03+f6mf1hlriDljZinr8UyRc45gFrH2U4N0EZJJSeZFDFs4
+	VRIK5jPb2WvDplCZYpawAWcHnrOcWcMet7cRP47GsLXW1tB+2Ozc0PU1ZAWTxJqKAqGjLGMK
+	Y1va2/GPwkL2rsVDlSJ5JZpXgxRiWraGF9Wr41V5aWJu/N50jQ3NPlz14emdDWjCvaUNMVKk
+	DJe35iSKCprPzszTtCFWSioj5CPqBFEhT+XzDgna9L+1B9VCZhuKklLKBfKVX3JSFcw+PkvY
+	LwgZgvZnSkjDIvPRn8oC9NCRvE217uPaV+W/R/Bmbdle78aYVSkbjG7bxnkpnYunc/YlvhSL
+	Ta8Lcxcca3h6P6klqeGfAsMv/clKuSM6unlPYE3WsviEVRcPtdjm+4q7zJMVKc826fRbfQOi
+	Zljj0uT3pFi9B7Iyti7v/EO5K6rb+Dl60/5w1fQEf+lXJZWp4hNjSW0m/z+YVYC2bAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0iTcRTG+7+3zdHkZRm9WVCMLhBlKl1OFJFf8o9g9CGK+pIzX/LFOWsz
+	SyNqruVaF3S0SXszzXSV01JnpdVSlOympK3ULqbFsoaaZepwpjaNvhx+5zzPeTgfjpRU1NLh
+	UkGTzms1KrWSkVGyHZsNaw7nRAuRP3sXgsl4Ej72eGno0DdQMDpiouDKnXIGJsX7EjBVX6bh
+	WWc2BW23nQh6Rk0I/BMiCca6aQomLc0SGBn/IAGrHsG0uxmBrd1CQldbPQnlNXoCfldOMdDf
+	NIzA+tnLQL5PT8GQ4zwCe58oAd+TWBjseUjDdPc3AjrHBhA4vFMEeBtyEEzaUqCw2BVct/1k
+	YKL1FQn51jYE1z53kzDs60VQ0/wJgftmNgNfc++S4PGGwpvRIQaeW88xMNh+hYAflQwUZbtp
+	aG/pR1AgWhD0vXcTYLh+hwFbQTUFdb0PJNDe/4eAjzYLAc7qeOhx9FHwMreYCJ4bdFUtADHf
+	QATLdwKsFQ8JGHeUSbaVIuw3XqRwmesegY2vJxlcfrUc4YmABeGRUgOJjbnBtmlgiMSnXUdx
+	6csBBgdG3zLYPVZE4RfFHC45GyBwXusaXGfvluyM2SfbksSrhQxeu3ZrgizZ8thMH/qy6dgr
+	3zfJKVQXYUYhUo5dxxnFMmKGGXYl19U1Ts5wGLuUc13oo81IJiVZzxIuZ/zirDCP3ctVfS+k
+	Zphil3P+1hZmhuXsBs7gaiT+hS7hnJUNs/6Q4NzaGZhlBbueKzT76VwkK0JzylCYoMlIVQnq
+	9RG6lORMjXAs4kBaajUK/pPjxJ+8WjTiiW1ErBQp58objkYJClqVoctMbUSclFSGyQfUkYJC
+	nqTKzOK1afu1R9S8rhEtklLKBfK4PXyCgj2oSudTeP4Qr/2vEtKQ8FNoRY0u/tYt14V5VOz8
+	wK/E+DT75po4W3LJjY2mqIgVOPQ+Tszj02sLOnaeGdtzoinag/M7B7dUxeigUJEYWn/Jt53f
+	WLFacM8RF2tUYn9M2HExZJHeHKc5s3rpo6QE++5d4RV2jbM1MPSgw+l/+sNT4ihKSF9oyTK+
+	w1lTy4aVlC5ZFbWK1OpUfwEB28b5SwMAAA==
 X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -224,157 +223,209 @@ List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 
-Currently, dept uses dept's map embedded in task_struct to track
-dependencies related to wait_for_completion() and its family.  So it
-doesn't need an explicit map basically.
+dma fence can be used at various points in the code and it's very hard
+to distinguish dma fences between different usages.  Using a single
+dept_key for all the dma fences could trigger false positive reports.
 
-However, for those who want to set the maps with customized class or
-key, introduce a new API to use external maps.
+Assign unique dept_key to each distinct dma fence wait to avoid false
+positive reports.
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
- include/linux/completion.h | 40 +++++++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 18 deletions(-)
+ drivers/dma-buf/dma-fence.c | 18 ++++-----
+ include/linux/dma-fence.h   | 74 +++++++++++++++++++++++++++++--------
+ 2 files changed, 68 insertions(+), 24 deletions(-)
 
-diff --git a/include/linux/completion.h b/include/linux/completion.h
-index 4d8fb1d95c0a..e50f7d9b4b97 100644
---- a/include/linux/completion.h
-+++ b/include/linux/completion.h
-@@ -27,17 +27,15 @@
- struct completion {
- 	unsigned int done;
- 	struct swait_queue_head wait;
-+	struct dept_map *dmap;
- };
- 
--#define init_completion(x)				\
--do {							\
--	__init_completion(x);				\
--} while (0)
-+#define init_completion(x) init_completion_dmap(x, NULL)
- 
- /*
-- * XXX: No use cases for now. Fill the body when needed.
-+ * XXX: This usage using lockdep's map should be deprecated.
-  */
--#define init_completion_map(x, m) init_completion(x)
-+#define init_completion_map(x, m) init_completion_dmap(x, NULL)
- 
- static inline void complete_acquire(struct completion *x, long timeout)
- {
-@@ -48,8 +46,11 @@ static inline void complete_release(struct completion *x)
- }
- 
- #define COMPLETION_INITIALIZER(work) \
--	{ 0, __SWAIT_QUEUE_HEAD_INITIALIZER((work).wait), }
-+	{ 0, __SWAIT_QUEUE_HEAD_INITIALIZER((work).wait), .dmap = NULL, }
- 
-+/*
-+ * XXX: This usage using lockdep's map should be deprecated.
-+ */
- #define COMPLETION_INITIALIZER_ONSTACK_MAP(work, map) \
- 	(*({ init_completion_map(&(work), &(map)); &(work); }))
- 
-@@ -90,15 +91,18 @@ static inline void complete_release(struct completion *x)
- #endif
+diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
+index f2cc7068af65..ca0ff298859b 100644
+--- a/drivers/dma-buf/dma-fence.c
++++ b/drivers/dma-buf/dma-fence.c
+@@ -479,7 +479,7 @@ int dma_fence_signal(struct dma_fence *fence)
+ EXPORT_SYMBOL(dma_fence_signal);
  
  /**
-- * __init_completion - Initialize a dynamically allocated completion
-+ * init_completion_dmap - Initialize a dynamically allocated completion
-  * @x:  pointer to completion structure that is to be initialized
-+ * @dmap:  pointer to external dept's map to be used as a separated map
-  *
-  * This inline function will initialize a dynamically created completion
-  * structure.
+- * dma_fence_wait_timeout - sleep until the fence gets signaled
++ * __dma_fence_wait_timeout - sleep until the fence gets signaled
+  * or until timeout elapses
+  * @fence: the fence to wait on
+  * @intr: if true, do an interruptible wait
+@@ -497,7 +497,7 @@ EXPORT_SYMBOL(dma_fence_signal);
+  * See also dma_fence_wait() and dma_fence_wait_any_timeout().
   */
--static inline void __init_completion(struct completion *x)
-+static inline void init_completion_dmap(struct completion *x,
-+		struct dept_map *dmap)
+ signed long
+-dma_fence_wait_timeout(struct dma_fence *fence, bool intr, signed long timeout)
++__dma_fence_wait_timeout(struct dma_fence *fence, bool intr, signed long timeout)
  {
- 	x->done = 0;
-+	x->dmap = dmap;
- 	init_swait_queue_head(&x->wait);
+ 	signed long ret;
+ 
+@@ -526,7 +526,7 @@ dma_fence_wait_timeout(struct dma_fence *fence, bool intr, signed long timeout)
+ 	}
+ 	return ret;
+ }
+-EXPORT_SYMBOL(dma_fence_wait_timeout);
++EXPORT_SYMBOL(__dma_fence_wait_timeout);
+ 
+ /**
+  * dma_fence_release - default release function for fences
+@@ -762,7 +762,7 @@ dma_fence_default_wait_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
  }
  
-@@ -136,13 +140,13 @@ extern void complete_all(struct completion *);
+ /**
+- * dma_fence_default_wait - default sleep until the fence gets signaled
++ * __dma_fence_default_wait - default sleep until the fence gets signaled
+  * or until timeout elapses
+  * @fence: the fence to wait on
+  * @intr: if true, do an interruptible wait
+@@ -774,7 +774,7 @@ dma_fence_default_wait_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
+  * functions taking a jiffies timeout.
+  */
+ signed long
+-dma_fence_default_wait(struct dma_fence *fence, bool intr, signed long timeout)
++__dma_fence_default_wait(struct dma_fence *fence, bool intr, signed long timeout)
+ {
+ 	struct default_wait_cb cb;
+ 	unsigned long flags;
+@@ -823,7 +823,7 @@ dma_fence_default_wait(struct dma_fence *fence, bool intr, signed long timeout)
+ 	spin_unlock_irqrestore(fence->lock, flags);
+ 	return ret;
+ }
+-EXPORT_SYMBOL(dma_fence_default_wait);
++EXPORT_SYMBOL(__dma_fence_default_wait);
  
- #define wait_for_completion(x)						\
- ({									\
--	sdt_might_sleep_start_timeout(NULL, -1L);			\
-+	sdt_might_sleep_start_timeout((x)->dmap, -1L);			\
- 	__wait_for_completion(x);					\
- 	sdt_might_sleep_end();						\
- })
- #define wait_for_completion_io(x)					\
- ({									\
--	sdt_might_sleep_start_timeout(NULL, -1L);			\
-+	sdt_might_sleep_start_timeout((x)->dmap, -1L);			\
- 	__wait_for_completion_io(x);					\
- 	sdt_might_sleep_end();						\
- })
-@@ -150,7 +154,7 @@ extern void complete_all(struct completion *);
- ({									\
- 	int __ret;							\
- 									\
--	sdt_might_sleep_start_timeout(NULL, -1L);			\
-+	sdt_might_sleep_start_timeout((x)->dmap, -1L);			\
- 	__ret = __wait_for_completion_interruptible(x);			\
- 	sdt_might_sleep_end();						\
- 	__ret;								\
-@@ -159,7 +163,7 @@ extern void complete_all(struct completion *);
- ({									\
- 	int __ret;							\
- 									\
--	sdt_might_sleep_start_timeout(NULL, -1L);			\
-+	sdt_might_sleep_start_timeout((x)->dmap, -1L);			\
- 	__ret = __wait_for_completion_killable(x);			\
- 	sdt_might_sleep_end();						\
- 	__ret;								\
-@@ -168,7 +172,7 @@ extern void complete_all(struct completion *);
- ({									\
- 	int __ret;							\
- 									\
--	sdt_might_sleep_start_timeout(NULL, -1L);			\
-+	sdt_might_sleep_start_timeout((x)->dmap, -1L);			\
- 	__ret = __wait_for_completion_state(x, s);			\
- 	sdt_might_sleep_end();						\
- 	__ret;								\
-@@ -177,7 +181,7 @@ extern void complete_all(struct completion *);
- ({									\
- 	unsigned long __ret;						\
- 									\
--	sdt_might_sleep_start_timeout(NULL, t);				\
-+	sdt_might_sleep_start_timeout((x)->dmap, t);			\
- 	__ret = __wait_for_completion_timeout(x, t);			\
- 	sdt_might_sleep_end();						\
- 	__ret;								\
-@@ -186,7 +190,7 @@ extern void complete_all(struct completion *);
- ({									\
- 	unsigned long __ret;						\
- 									\
--	sdt_might_sleep_start_timeout(NULL, t);				\
-+	sdt_might_sleep_start_timeout((x)->dmap, t);			\
- 	__ret = __wait_for_completion_io_timeout(x, t);			\
- 	sdt_might_sleep_end();						\
- 	__ret;								\
-@@ -195,7 +199,7 @@ extern void complete_all(struct completion *);
- ({									\
- 	long __ret;							\
- 									\
--	sdt_might_sleep_start_timeout(NULL, t);				\
-+	sdt_might_sleep_start_timeout((x)->dmap, t);			\
- 	__ret = __wait_for_completion_interruptible_timeout(x, t);	\
- 	sdt_might_sleep_end();						\
- 	__ret;								\
-@@ -204,7 +208,7 @@ extern void complete_all(struct completion *);
- ({									\
- 	long __ret;							\
- 									\
--	sdt_might_sleep_start_timeout(NULL, t);				\
-+	sdt_might_sleep_start_timeout((x)->dmap, t);			\
- 	__ret = __wait_for_completion_killable_timeout(x, t);		\
- 	sdt_might_sleep_end();						\
- 	__ret;								\
+ static bool
+ dma_fence_test_signaled_any(struct dma_fence **fences, uint32_t count,
+@@ -843,7 +843,7 @@ dma_fence_test_signaled_any(struct dma_fence **fences, uint32_t count,
+ }
+ 
+ /**
+- * dma_fence_wait_any_timeout - sleep until any fence gets signaled
++ * __dma_fence_wait_any_timeout - sleep until any fence gets signaled
+  * or until timeout elapses
+  * @fences: array of fences to wait on
+  * @count: number of fences to wait on
+@@ -863,7 +863,7 @@ dma_fence_test_signaled_any(struct dma_fence **fences, uint32_t count,
+  * See also dma_fence_wait() and dma_fence_wait_timeout().
+  */
+ signed long
+-dma_fence_wait_any_timeout(struct dma_fence **fences, uint32_t count,
++__dma_fence_wait_any_timeout(struct dma_fence **fences, uint32_t count,
+ 			   bool intr, signed long timeout, uint32_t *idx)
+ {
+ 	struct default_wait_cb *cb;
+@@ -931,7 +931,7 @@ dma_fence_wait_any_timeout(struct dma_fence **fences, uint32_t count,
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL(dma_fence_wait_any_timeout);
++EXPORT_SYMBOL(__dma_fence_wait_any_timeout);
+ 
+ /**
+  * DOC: deadline hints
+diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+index 64639e104110..1062fbb637e5 100644
+--- a/include/linux/dma-fence.h
++++ b/include/linux/dma-fence.h
+@@ -369,8 +369,22 @@ int dma_fence_signal_locked(struct dma_fence *fence);
+ int dma_fence_signal_timestamp(struct dma_fence *fence, ktime_t timestamp);
+ int dma_fence_signal_timestamp_locked(struct dma_fence *fence,
+ 				      ktime_t timestamp);
+-signed long dma_fence_default_wait(struct dma_fence *fence,
++signed long __dma_fence_default_wait(struct dma_fence *fence,
+ 				   bool intr, signed long timeout);
++
++/*
++ * Associate every caller with its own dept map.
++ */
++#define dma_fence_default_wait(f, intr, t)				\
++({									\
++	signed long __ret;						\
++									\
++	sdt_might_sleep_start_timeout(NULL, t);				\
++	__ret = __dma_fence_default_wait(f, intr, t);			\
++	sdt_might_sleep_end();						\
++	__ret;								\
++})
++
+ int dma_fence_add_callback(struct dma_fence *fence,
+ 			   struct dma_fence_cb *cb,
+ 			   dma_fence_func_t func);
+@@ -607,12 +621,37 @@ static inline ktime_t dma_fence_timestamp(struct dma_fence *fence)
+ 	return fence->timestamp;
+ }
+ 
+-signed long dma_fence_wait_timeout(struct dma_fence *,
++signed long __dma_fence_wait_timeout(struct dma_fence *,
+ 				   bool intr, signed long timeout);
+-signed long dma_fence_wait_any_timeout(struct dma_fence **fences,
++signed long __dma_fence_wait_any_timeout(struct dma_fence **fences,
+ 				       uint32_t count,
+ 				       bool intr, signed long timeout,
+ 				       uint32_t *idx);
++/*
++ * Associate every caller with its own dept map.
++ */
++#define dma_fence_wait_timeout(f, intr, t)				\
++({									\
++	signed long __ret;						\
++									\
++	sdt_might_sleep_start_timeout(NULL, t);				\
++	__ret = __dma_fence_wait_timeout(f, intr, t);			\
++	sdt_might_sleep_end();						\
++	__ret;								\
++})
++
++/*
++ * Associate every caller with its own dept map.
++ */
++#define dma_fence_wait_any_timeout(fpp, count, intr, t, idx)		\
++({									\
++	signed long __ret;						\
++									\
++	sdt_might_sleep_start_timeout(NULL, t);				\
++	__ret = __dma_fence_wait_any_timeout(fpp, count, intr, t, idx);	\
++	sdt_might_sleep_end();						\
++	__ret;								\
++})
+ 
+ /**
+  * dma_fence_wait - sleep until the fence gets signaled
+@@ -628,19 +667,24 @@ signed long dma_fence_wait_any_timeout(struct dma_fence **fences,
+  * fence might be freed before return, resulting in undefined behavior.
+  *
+  * See also dma_fence_wait_timeout() and dma_fence_wait_any_timeout().
++ *
++ * Associate every caller with its own dept map.
+  */
+-static inline signed long dma_fence_wait(struct dma_fence *fence, bool intr)
+-{
+-	signed long ret;
+-
+-	/* Since dma_fence_wait_timeout cannot timeout with
+-	 * MAX_SCHEDULE_TIMEOUT, only valid return values are
+-	 * -ERESTARTSYS and MAX_SCHEDULE_TIMEOUT.
+-	 */
+-	ret = dma_fence_wait_timeout(fence, intr, MAX_SCHEDULE_TIMEOUT);
+-
+-	return ret < 0 ? ret : 0;
+-}
++#define dma_fence_wait(f, intr)						\
++({									\
++	signed long __ret;						\
++									\
++	sdt_might_sleep_start_timeout(NULL, MAX_SCHEDULE_TIMEOUT);	\
++	__ret = __dma_fence_wait_timeout(f, intr, MAX_SCHEDULE_TIMEOUT);\
++	sdt_might_sleep_end();						\
++									\
++	/*								\
++	 * Since dma_fence_wait_timeout cannot timeout with		\
++	 * MAX_SCHEDULE_TIMEOUT, only valid return values are		\
++	 * -ERESTARTSYS and MAX_SCHEDULE_TIMEOUT.			\
++	 */								\
++	__ret < 0 ? __ret : 0;						\
++})
+ 
+ void dma_fence_set_deadline(struct dma_fence *fence, ktime_t deadline);
+ 
 -- 
 2.17.1
 
