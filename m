@@ -1,111 +1,537 @@
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f194.google.com (mail-qt1-f194.google.com [209.85.160.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A25C342CB6
-	for <rcu@vger.kernel.org>; Fri,  5 Dec 2025 15:04:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98A88946C
+	for <rcu@vger.kernel.org>; Sat,  6 Dec 2025 02:32:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764947078; cv=none; b=KdyT4rMLInGB7AyDoiEwkqHflIhRCBK39YBW9VbUeE4g+xNcXJ40FqkakI4vyGIhlQWQ946TKilAw5OGgOvrhsVoohmOi8QqUYlVuVhjWfUcoEoIFTQTBdJsBiKLSkDVpwFkXg6DWp+5i4GIrNqUU8xeaMNmCqrK8UzuPpgLtOU=
+	t=1764988380; cv=none; b=YnVzO5C8z455rJkOX6ncE1nHLy7pgVAZCJ/k19pEwgLDCD8gHDe2kjobcvXorFg8YGjWm/+u3pQzwN0DEAAA/e21Uc93eUKSd4mbDj6J0eM1YyRCQph9mrPmVrWjTRJX5TXowaAl9LgsmzvXE9cQufZCF6EPIG/f/YO42FrAjMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764947078; c=relaxed/simple;
-	bh=nYT7isDKY+85JOut7iFZMlCCqtn2hqYU80NfGHcx+nc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Syi6dIt6Tml2qW1VxvU+yvFtG7o7eg3P1C+ETIWuZbFvk0e2V+8CXwZIwSlp5pWQZiB1WeXwAoxaNVtddG2g3aeLljvsBziNlIGjrPIC5CIiOZkpjPCtH5KlSR4uIvUKpo25EcHNI8Ls182gG95Rw/+OUxWmwd+kqX8HUh4FbOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g7NWUtmz; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1764988380; c=relaxed/simple;
+	bh=Iy/dC9DMvwJJmRWZMLpi4XZSdwVA9s5IWC+8sP211f4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ReS6KPxdHLAkN164Bi5ry5/eHbVp7Daos21fgiA1RcWv8nLli6UI+fDJeduV83VeWRiFcL40ZA9C0V0Ws40tgpm2IB5rhIPFM2Vc0sRfZ9vjbFhZZRTLGDOmjpXtIQWhtYtY6WOYyLztKEAJzTAYmrkVQ17o1ioWfL41YH78UYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QHAfvwIr; arc=none smtp.client-ip=209.85.160.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g7NWUtmz"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764947071;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bfjsCfDepFkRsERBSNdNVFzU0a98Vk8eoknXHBcn6wg=;
-	b=g7NWUtmzuJtJ4ooH8QKth4n0o5/HF4FFMqOfsSsH7OwoBBpOj0rYTRlBzEqoPRyNrs0fJe
-	igPdNAyvRkbuA95FojuPxbKAHg9vJFRXTncbasmIa8cSQEkXY6bX++qgIBs3NqJ4yTDfYW
-	9hHtq+q37Ey7oOS3ay7nQ9L/meICoIg=
-From: Kunwu Chan <kunwu.chan@linux.dev>
-To: paulmck@kernel.org
-Cc: frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com,
-	josh@joshtriplett.org,
-	boqun.feng@gmail.com,
-	urezki@gmail.com,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH v2] rcu: Improve comments for RCU_FANOUT and RCU_FANOUT_LEAF
-Date: Fri,  5 Dec 2025 23:03:35 +0800
-Message-Id: <20251205150335.1681196-1-kunwu.chan@linux.dev>
-In-Reply-To: <f2ca1650-0bbc-48fb-a6d9-6c4313325a1a@paulmck-laptop>
-References: <f2ca1650-0bbc-48fb-a6d9-6c4313325a1a@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QHAfvwIr"
+Received: by mail-qt1-f194.google.com with SMTP id d75a77b69052e-4ed82ee9e57so31774351cf.0
+        for <rcu@vger.kernel.org>; Fri, 05 Dec 2025 18:32:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764988377; x=1765593177; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ikbW0KTFV2Hrw3Ofr3+X6/ogNZDuDLj9J6B0i4MyxZI=;
+        b=QHAfvwIrVUT/zZ3Rc8sbnUYucjhXyPylAxgB9mTrKELwD+PBmhUJw/Mhk5C9Q18yl7
+         joZtg6f5dtIQ+sPXLQKv61FsE7Xkc/O4trN+t5XRYZzPXE9zK9eYnSO3q6lD4AIA5ltq
+         cHBFXfc9MOwRmXvt2WRCUKoxxmXxTK9U16XAN/+Qos2uTKm8JGDD/XLLcHGyvcytn9Xe
+         wnFUU6kxseoBhB3IpHWYBYPVRh9LqemNkpB9XpkNGIMOl52c55Vu11INp1pnnfUUYT2+
+         DU2jlW6qaGDQkRqDXwowE1ebbCALHEJPDSjeRxl+nQiRTkj/dqdfV9I1GNIqpNvZ444R
+         mOYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764988377; x=1765593177;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ikbW0KTFV2Hrw3Ofr3+X6/ogNZDuDLj9J6B0i4MyxZI=;
+        b=DTxgDrI/ac3exRrIzoVPN6rppDa//STS4VIGooqY5wEny+LrV9ElVS5kJ/tkq/PG0I
+         rRldBBp2r59vsc8WaNO9jrsOz/Wi9bkQcXErr6+MsTLJMkvXGJ7fjrWsxJjrAoXL6qci
+         YkE3Ra0iNSXMsN3y/Bjj3pu2arr52pR7feW2CZIw5W05uzJdEVPRVOFIbRRRYfs4Mx4i
+         Y5DTDShGPlTCPMPL96W58N3z6r/wM5KFbc2AMd3wSXgawK2RFuVSj16qUya02iOFNl5n
+         zQWEZ+1hg5ZUnYI1VPYb0ye4qlvyj0U7ZrgweEZTpBYcrwbdVcwouv5hC9DhE+Z0PWCo
+         f1rg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQriSAk5ZrgUirzSXJHN1CHfbH/1tk7zaSd+g76ESJcdLZqI7+620f5tJCgIKgooRiTiE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVoUd1b76KtNPuD1ogaqrxaJae7QvuWpI48HUmscJcGpdWZrOT
+	5GskGeNImVpmD0YAKlL7gN8vuAPswT+otEvtocH/9u7PFP3A7L76GtMt
+X-Gm-Gg: ASbGnctPEZThs9N4B+g/q4VNgyiijsLH547YWC7Tb1eVgfBwgvdctzQU5dMGQzBjCqj
+	NoNgtfes7IL/dONOIyVwwNnU7EzhYt7sH2cXN8aWS787Nveds2PmfRJtJ52JctJQsFG/MQFRBr6
+	k/TikIOFqvqaXA5wR8RnwnSCXxs9BsNd1U3Y6ueDZyFHyKLyGq0yF6zjL5vJ6XAdpsJVRsi/hXU
+	FdltvWeiOeJAUrs2zFxrMtH/1RTsFGk9xnCiqU8ByS0ci+HeoaLPINWhGeLV5flcOY+HR1Hr2tE
+	luTJUXucPRsS6LsPkn5ynAALW6lc4pKk1C4grx+ADq2bcyfCMWs/G13stqCpeNrRlFzUDfr9BME
+	9/XkuDNPmbuKC1bkhduQEXovr1rafLtPulq0++IEQSCtCmOlMGDH424dG90VU+DKHa1e7UmYaBS
+	PlPuanKGrksc0=
+X-Google-Smtp-Source: AGHT+IGd3Tx8h9j/d0f8+PnHkykV+pzsZzFX2hwgHqZ6hwE3sdFyB+hNtRyQiVIKUkdCjbb/9/d8ZQ==
+X-Received: by 2002:a17:902:d4ce:b0:295:557e:746a with SMTP id d9443c01a7336-29df556fa3cmr5536155ad.13.1764980727315;
+        Fri, 05 Dec 2025 16:25:27 -0800 (PST)
+Received: from archie.me ([210.87.74.117])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29dae49cbdfsm59025545ad.1.2025.12.05.16.25.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Dec 2025 16:25:26 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id C8B35421860F; Sat, 06 Dec 2025 07:25:22 +0700 (WIB)
+Date: Sat, 6 Dec 2025 07:25:22 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org
+Cc: kernel_team@skhynix.com, torvalds@linux-foundation.org,
+	damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	mingo@redhat.com, peterz@infradead.org, will@kernel.org,
+	tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
+	sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
+	johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+	willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+	gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
+	akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
+	hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
+	jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+	ngupta@vflare.org, linux-block@vger.kernel.org,
+	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
+	djwong@kernel.org, dri-devel@lists.freedesktop.org,
+	rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+	hamohammed.sa@gmail.com, harry.yoo@oracle.com,
+	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
+	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
+	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com,
+	yeoreum.yun@arm.com, netdev@vger.kernel.org,
+	matthew.brost@intel.com, her0gyugyu@gmail.com, corbet@lwn.net,
+	catalin.marinas@arm.com, bp@alien8.de, x86@kernel.org,
+	hpa@zytor.com, luto@kernel.org, sumit.semwal@linaro.org,
+	gustavo@padovan.org, christian.koenig@amd.com,
+	andi.shyti@kernel.org, arnd@arndb.de, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, rppt@kernel.org, surenb@google.com,
+	mcgrof@kernel.org, petr.pavlu@suse.com, da.gomez@kernel.org,
+	samitolvanen@google.com, paulmck@kernel.org, frederic@kernel.org,
+	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+	josh@joshtriplett.org, urezki@gmail.com,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
+	chuck.lever@oracle.com, neil@brown.name, okorniev@redhat.com,
+	Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org,
+	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
+	clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
+	kristina.martsenko@arm.com, wangkefeng.wang@huawei.com,
+	broonie@kernel.org, kevin.brodsky@arm.com, dwmw@amazon.co.uk,
+	shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com,
+	yuzhao@google.com, baolin.wang@linux.alibaba.com,
+	usamaarif642@gmail.com, joel.granados@kernel.org,
+	richard.weiyang@gmail.com, geert+renesas@glider.be,
+	tim.c.chen@linux.intel.com, linux@treblig.org,
+	alexander.shishkin@linux.intel.com, lillian@star-ark.net,
+	chenhuacai@kernel.org, francesco@valla.it,
+	guoweikang.kernel@gmail.com, link@vivo.com, jpoimboe@kernel.org,
+	masahiroy@kernel.org, brauner@kernel.org,
+	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com,
+	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org,
+	rcu@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-rt-devel@lists.linux.dev, 2407018371@qq.com, dakr@kernel.org,
+	miguel.ojeda.sandonis@gmail.com, neilb@ownmail.net,
+	wsa+renesas@sang-engineering.com, dave.hansen@intel.com,
+	geert@linux-m68k.org, ojeda@kernel.org, alex.gaynor@gmail.com,
+	gary@garyguo.net, bjorn3_gh@protonmail.com, lossin@kernel.org,
+	a.hindborg@kernel.org, aliceryhl@google.com, tmgross@umich.edu,
+	rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH v18 25/42] dept: add documents for dept
+Message-ID: <aTN38kJjBftxnjm9@archie.me>
+References: <20251205071855.72743-1-byungchul@sk.com>
+ <20251205071855.72743-26-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tsFx90K4YzyOMDd5"
+Content-Disposition: inline
+In-Reply-To: <20251205071855.72743-26-byungchul@sk.com>
 
-From: Kunwu Chan <chentao@kylinos.cn>
 
-Add explicit explanations of the overall purpose of RCU_FANOUT and
-RCU_FANOUT_LEAF parameters: defining middle/leaf fan-out parameters,
-their relation to Kconfig, and how they shape the RCU hierarchy based
-on CPU count.
+--tsFx90K4YzyOMDd5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This makes the hierarchical configuration logic of the RCU easier to
-understand.
+On Fri, Dec 05, 2025 at 04:18:38PM +0900, Byungchul Park wrote:
+> Add documents describing the concept and APIs of dept.
+>=20
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> ---
+>  Documentation/dev-tools/dept.rst     | 778 +++++++++++++++++++++++++++
+>  Documentation/dev-tools/dept_api.rst | 125 +++++
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
-Changes in v2:
-- Restores the original #else #endif comment format
-- Reword commit msg
----
- include/linux/rcu_node_tree.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+You forget to add toctree entries:
 
-diff --git a/include/linux/rcu_node_tree.h b/include/linux/rcu_node_tree.h
-index 78feb8ba7358..a87ca215de4b 100644
---- a/include/linux/rcu_node_tree.h
-+++ b/include/linux/rcu_node_tree.h
-@@ -25,11 +25,18 @@
- /*
-  * Define shape of hierarchy based on NR_CPUS, CONFIG_RCU_FANOUT, and
-  * CONFIG_RCU_FANOUT_LEAF.
-+ * - RCU_FANOUT: Controls fan-out of middle levels in the RCU hierarchy.
-+ * - RCU_FANOUT_LEAF: Controls fan-out of the leaf level (directly managing CPUs).
-+ *
-+ * These parameters are determined by Kconfig options if configured; otherwise,
-+ * they use sensible defaults based on system architecture (for RCU_FANOUT)
-+ * or a fixed default (for RCU_FANOUT_LEAF).
-  * In theory, it should be possible to add more levels straightforwardly.
-  * In practice, this did work well going from three levels to four.
-  * Of course, your mileage may vary.
-  */
- 
-+/* Define RCU_FANOUT: middle-level fan-out parameter */
- #ifdef CONFIG_RCU_FANOUT
- #define RCU_FANOUT CONFIG_RCU_FANOUT
- #else /* #ifdef CONFIG_RCU_FANOUT */
-@@ -40,6 +47,7 @@
- # endif
- #endif /* #else #ifdef CONFIG_RCU_FANOUT */
- 
-+/* Define RCU_FANOUT_LEAF: leaf-level fan-out parameter (manages CPUs directly) */
- #ifdef CONFIG_RCU_FANOUT_LEAF
- #define RCU_FANOUT_LEAF CONFIG_RCU_FANOUT_LEAF
- #else /* #ifdef CONFIG_RCU_FANOUT_LEAF */
--- 
-2.25.1
+---- >8 ----
+diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/in=
+dex.rst
+index 4b8425e348abd1..02c858f5ed1fa2 100644
+--- a/Documentation/dev-tools/index.rst
++++ b/Documentation/dev-tools/index.rst
+@@ -22,6 +22,8 @@ Documentation/process/debugging/index.rst
+    clang-format
+    coccinelle
+    sparse
++   dept
++   dept_api
+    kcov
+    gcov
+    kasan
 
+> +Lockdep detects a deadlock by checking lock acquisition order.  For
+> +example, a graph to track acquisition order built by lockdep might look
+> +like:
+> +
+> +.. literal::
+> +
+> +   A -> B -
+> +           \
+> +            -> E
+> +           /
+> +   C -> D -
+> +
+> +   where 'A -> B' means that acquisition A is prior to acquisition B
+> +   with A still held.
+
+Use code-block directive for literal code blocks:
+
+---- >8 ----
+diff --git a/Documentation/dev-tools/dept.rst b/Documentation/dev-tools/dep=
+t.rst
+index 333166464543d7..8394c4ea81bc2a 100644
+--- a/Documentation/dev-tools/dept.rst
++++ b/Documentation/dev-tools/dept.rst
+@@ -10,7 +10,7 @@ Lockdep detects a deadlock by checking lock acquisition o=
+rder.  For
+ example, a graph to track acquisition order built by lockdep might look
+ like:
+=20
+-.. literal::
++.. code-block::
+=20
+    A -> B -
+            \
+@@ -25,7 +25,7 @@ Lockdep keeps adding each new acquisition order into the =
+graph at
+ runtime.  For example, 'E -> C' will be added when the two locks have
+ been acquired in the order, E and then C.  The graph will look like:
+=20
+-.. literal::
++.. code-block::
+=20
+        A -> B -
+                \
+@@ -41,7 +41,7 @@ been acquired in the order, E and then C.  The graph will=
+ look like:
+=20
+ This graph contains a subgraph that demonstrates a loop like:
+=20
+-.. literal::
++.. code-block::
+=20
+                 -> E -
+                /      \
+@@ -76,7 +76,7 @@ e.g. irq context, normal process context, wq worker conte=
+xt, or so on.
+=20
+ Can lockdep detect the following deadlock?
+=20
+-.. literal::
++.. code-block::
+=20
+    context X	   context Y	   context Z
+=20
+@@ -91,7 +91,7 @@ Can lockdep detect the following deadlock?
+=20
+ No.  What about the following?
+=20
+-.. literal::
++.. code-block::
+=20
+    context X		   context Y
+=20
+@@ -116,7 +116,7 @@ What leads a deadlock
+ A deadlock occurs when one or multi contexts are waiting for events that
+ will never happen.  For example:
+=20
+-.. literal::
++.. code-block::
+=20
+    context X	   context Y	   context Z
+=20
+@@ -148,7 +148,7 @@ In terms of dependency:
+=20
+ Dependency graph reflecting this example will look like:
+=20
+-.. literal::
++.. code-block::
+=20
+     -> C -> A -> B -
+    /                \
+@@ -171,7 +171,7 @@ Introduce DEPT
+ DEPT(DEPendency Tracker) tracks wait and event instead of lock
+ acquisition order so as to recognize the following situation:
+=20
+-.. literal::
++.. code-block::
+=20
+    context X	   context Y	   context Z
+=20
+@@ -186,7 +186,7 @@ acquisition order so as to recognize the following situ=
+ation:
+ and builds up a dependency graph at runtime that is similar to lockdep.
+ The graph might look like:
+=20
+-.. literal::
++.. code-block::
+=20
+     -> C -> A -> B -
+    /                \
+@@ -199,7 +199,7 @@ DEPT keeps adding each new dependency into the graph at=
+ runtime.  For
+ example, 'B -> D' will be added when event D occurrence is a
+ prerequisite to reaching event B like:
+=20
+-.. literal::
++.. code-block::
+=20
+    context W
+=20
+@@ -211,7 +211,7 @@ prerequisite to reaching event B like:
+=20
+ After the addition, the graph will look like:
+=20
+-.. literal::
++.. code-block::
+=20
+                      -> D
+                     /
+@@ -236,7 +236,7 @@ How DEPT works
+ Let's take a look how DEPT works with the 1st example in the section
+ 'Limitation of lockdep'.
+=20
+-.. literal::
++.. code-block::
+=20
+    context X	   context Y	   context Z
+=20
+@@ -256,7 +256,7 @@ event.
+=20
+ Adding comments to describe DEPT's view in detail:
+=20
+-.. literal::
++.. code-block::
+=20
+    context X	   context Y	   context Z
+=20
+@@ -293,7 +293,7 @@ Adding comments to describe DEPT's view in detail:
+=20
+ Let's build up dependency graph with this example.  Firstly, context X:
+=20
+-.. literal::
++.. code-block::
+=20
+    context X
+=20
+@@ -304,7 +304,7 @@ Let's build up dependency graph with this example.  Fir=
+stly, context X:
+=20
+ There are no events to create dependency.  Next, context Y:
+=20
+-.. literal::
++.. code-block::
+=20
+    context Y
+=20
+@@ -332,7 +332,7 @@ event A cannot be triggered if wait B cannot be awakene=
+d by event B.
+ Therefore, we can say event A depends on event B, say, 'A -> B'.  The
+ graph will look like after adding the dependency:
+=20
+-.. literal::
++.. code-block::
+=20
+    A -> B
+=20
+@@ -340,7 +340,7 @@ graph will look like after adding the dependency:
+=20
+ Lastly, context Z:
+=20
+-.. literal::
++.. code-block::
+=20
+    context Z
+=20
+@@ -362,7 +362,7 @@ triggered if wait A cannot be awakened by event A.  The=
+refore, we can
+ say event B depends on event A, say, 'B -> A'.  The graph will look like
+ after adding the dependency:
+=20
+-.. literal::
++.. code-block::
+=20
+     -> A -> B -
+    /           \
+@@ -386,7 +386,7 @@ Interpret DEPT report
+=20
+ The following is the same example in the section 'How DEPT works'.
+=20
+-.. literal::
++.. code-block::
+=20
+    context X	   context Y	   context Z
+=20
+@@ -425,7 +425,7 @@ We can simplify this by labeling each waiting point wit=
+h [W], each
+ point where its event's context starts with [S] and each event with [E].
+ This example will look like after the labeling:
+=20
+-.. literal::
++.. code-block::
+=20
+    context X	   context Y	   context Z
+=20
+@@ -443,7 +443,7 @@ DEPT uses the symbols [W], [S] and [E] in its report as=
+ described above.
+ The following is an example reported by DEPT for a real problem in
+ practice.
+=20
+-.. literal::
++.. code-block::
+=20
+    Link: https://lore.kernel.org/lkml/6383cde5-cf4b-facf-6e07-1378a485657d=
+@I-love.SAKURA.ne.jp/#t
+    Link: https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-by=
+ungchul.park@lge.com/
+@@ -646,7 +646,7 @@ practice.
+=20
+ Let's take a look at the summary that is the most important part.
+=20
+-.. literal::
++.. code-block::
+=20
+    ---------------------------------------------------
+    summary
+@@ -669,7 +669,7 @@ Let's take a look at the summary that is the most impor=
+tant part.
+=20
+ The summary shows the following scenario:
+=20
+-.. literal::
++.. code-block::
+=20
+    context A	   context B	   context ?(unknown)
+=20
+@@ -684,7 +684,7 @@ The summary shows the following scenario:
+=20
+ Adding comments to describe DEPT's view in detail:
+=20
+-.. literal::
++.. code-block::
+=20
+    context A	   context B	   context ?(unknown)
+=20
+@@ -711,7 +711,7 @@ Adding comments to describe DEPT's view in detail:
+=20
+ Let's build up dependency graph with this report. Firstly, context A:
+=20
+-.. literal::
++.. code-block::
+=20
+    context A
+=20
+@@ -735,7 +735,7 @@ unlock(&ni->ni_lock:0) depends on folio_unlock(&f1), sa=
+y,
+=20
+ The graph will look like after adding the dependency:
+=20
+-.. literal::
++.. code-block::
+=20
+    unlock(&ni->ni_lock:0) -> folio_unlock(&f1)
+=20
+@@ -743,7 +743,7 @@ The graph will look like after adding the dependency:
+=20
+ Secondly, context B:
+=20
+-.. literal::
++.. code-block::
+=20
+    context B
+=20
+@@ -762,7 +762,7 @@ folio_unlock(&f1) depends on unlock(&ni->ni_lock:0), sa=
+y,
+=20
+ The graph will look like after adding the dependency:
+=20
+-.. literal::
++.. code-block::
+=20
+     -> unlock(&ni->ni_lock:0) -> folio_unlock(&f1) -
+    /                                                \
+
+> +Limitation of lockdep
+> +---------------------
+> +
+> +Lockdep deals with a deadlock by typical lock e.g. spinlock and mutex,
+> +that are supposed to be released within the acquisition context.
+> +However, when it comes to a deadlock by folio lock that is not supposed
+> +to be released within the acquisition context or other general
+> +synchronization mechanisms, lockdep doesn't work.
+> +
+> +NOTE:  In this document, 'context' refers to any type of unique context
+> +e.g. irq context, normal process context, wq worker context, or so on.
+> +
+> +Can lockdep detect the following deadlock?
+> +
+> +.. literal::
+> +
+> +   context X	   context Y	   context Z
+> +
+> +		   mutex_lock A
+> +   folio_lock B
+> +		   folio_lock B <- DEADLOCK
+> +				   mutex_lock A <- DEADLOCK
+> +				   folio_unlock B
+> +		   folio_unlock B
+> +		   mutex_unlock A
+> +				   mutex_unlock A
+> +
+> +No.  What about the following?
+> +
+> +.. literal::
+> +
+> +   context X		   context Y
+> +
+> +			   mutex_lock A
+> +   mutex_lock A <- DEADLOCK
+> +			   wait_for_complete B <- DEADLOCK
+> +   complete B
+> +			   mutex_unlock A
+> +   mutex_unlock A
+> +
+> +No.
+
+One unanswered question from my v17 review [1]: You explain in "How DEPT wo=
+rks"
+section how DEPT detects deadlock in the first example (the former with thr=
+ee
+contexts). Can you do the same on the second example (the latter with two
+contexts)?
+
+Thanks.
+
+[1]: https://lore.kernel.org/linux-doc/aN84jKyrE1BumpLj@archie.me/
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--tsFx90K4YzyOMDd5
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaTN37QAKCRD2uYlJVVFO
+o40gAP9yWQe507aOQ9xG+y3WznUbz9K0gxVdcJgmBzyPkuLdOAD/SjStuxrT6yQi
+Wd1X9MlzPBf7sPwdNC1xXihj1C/n6go=
+=b9ga
+-----END PGP SIGNATURE-----
+
+--tsFx90K4YzyOMDd5--
