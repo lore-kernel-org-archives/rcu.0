@@ -1,297 +1,355 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFF12D0C9C
-	for <rcu@vger.kernel.org>; Mon,  8 Dec 2025 18:51:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765219906; cv=none; b=r2t82y2uNZOwPare6xdpd4i2t05/FNnXj/+3r5OuZMxaqtH1+us97hXg2Ld3vGK2IZfzfHNc6/rWaOv8HdaOBhVZ9A1TjnVzBfc7hs5bVXX1V38fjVE+QKPe6DW7RjqP4+kE18ncldWdRreeJhSUUGzNcXmhKss4Yf/q/aisv3k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765219906; c=relaxed/simple;
-	bh=9+WjJTyydZVqcja//nLSETNwDSz9bOpoRhHRXv6mu0U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RjCtl2QlHdfCbqthsTYKP9mqhhCU7JVBmMnt9N9U2sRyQueEPFOTvT9C0nHT60EYHUbeFmo7bPZ9Jyw7VA1OLaqdj6IVaR9cTPFHzYFE4+x7wFLICJF37I7Z8nJLHCzvK0yiunQutkN6HFqkdeUH5bX9RAx6erZM847YsHacwwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yxThk8gk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wf5ui1/J; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rHjnvjZV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SFv1yVid; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2996B17D2;
+	Tue,  9 Dec 2025 02:39:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765247981; cv=fail; b=DK9zhgGSUD2mKLzEHFlMi+03jfXkvqYOVposgYtOn0mbrkbTsXj5Uc2kl1ldaT3pvh3Zvb3nAcj3P7UqxeK+NzfF5C/eERf6V/nryZvgXoolHHk4V3eG9FN7cWaqPzXoUa2a1eImfz+URrjLXr681HtCRxPqoob4P3GpsMaOS4Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765247981; c=relaxed/simple;
+	bh=Cip6rJLiWQ6/dTiph3AANH74ekbPnM/Rt2VbLP7Daqw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=miB/BgSCdKDjRd/IFZymDLQRmzs3Fhh8Dzz5VyNRX0CgB+rcMgCajSPiAeLtg5l1HVi2hgMLBLG5cRMlzaZ077pamaMK9WLaZMwez3vABHWZLIU2QMs6wmHHvVR34HdusI8DLqS2kV/pyaqaXmlxEQ60AMgCINgBPhtrmte+PkY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=TTcpJTgu; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=SHy58dTY; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yxThk8gk";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wf5ui1/J";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rHjnvjZV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SFv1yVid"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 53B8B336EB;
-	Mon,  8 Dec 2025 18:51:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765219902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=OT9U1O6MPkV0s0UVcm6zY8yzl1v0YkCWdNdw5gdDNjA=;
-	b=yxThk8gk86zoC2di0Dcp8fc3VFWI0MSyY5X/RnqgfqRDw5iRJ2ngr5Lp9GipVHl/MCjW/T
-	DMxk6QGm1Bcs4DH6ZjBdIA+/jkiuABGbzoKKFHbvULUjL6PF5z7B7OFXWgOvnZmL1t6aAu
-	DsnC5WIrx9a4LqSzbUKe0T7LEPwQqwg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765219902;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=OT9U1O6MPkV0s0UVcm6zY8yzl1v0YkCWdNdw5gdDNjA=;
-	b=wf5ui1/JpFhjQZztBZ8gmw+3PWJgrsZa+7eh+dHU1tDDeGR7yaZCBYySS/ankKCU5W/bF2
-	BpyqOx0LZMIhgvDA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=rHjnvjZV;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SFv1yVid
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765219901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=OT9U1O6MPkV0s0UVcm6zY8yzl1v0YkCWdNdw5gdDNjA=;
-	b=rHjnvjZVrGZZ++G4kf7VxLK0u0+AwezkVg64andcftrMzAQk2Y8aRXU4Ix7w7Fn1t8gJqT
-	khYC7Zg7bs6L/ku4fwKbeLYhAYkT514y7gvKgXf/7JN271W4cht9SxWBYtf5Dlj04VvXgC
-	Ll1UPSfMe/oQoENX1FZuorFFY/S/ZII=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765219901;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=OT9U1O6MPkV0s0UVcm6zY8yzl1v0YkCWdNdw5gdDNjA=;
-	b=SFv1yVid4EKrbgMbA9lUsRFzf1v2IaL3O2UcUzSEZOCQQ+TFfSRs4RHvZs64pSEZo2BRqV
-	ry1B/a7ZKI+z1WAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37D8B3EA63;
-	Mon,  8 Dec 2025 18:51:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LLRDDT0eN2nxKgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 08 Dec 2025 18:51:41 +0000
-Message-ID: <8bbbaa65-2783-4006-97b4-a1628525e7c7@suse.cz>
-Date: Mon, 8 Dec 2025 19:51:40 +0100
-Precedence: bulk
-X-Mailing-List: rcu@vger.kernel.org
-List-Id: <rcu.vger.kernel.org>
-List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="TTcpJTgu";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="SHy58dTY"
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5B91hK6G4052201;
+	Tue, 9 Dec 2025 02:39:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=46EHUEYso3D0AsWv2Gj6GoWgnJpjLuoB4BEdGnulKug=; b=
+	TTcpJTgujI0pRLjA+CvdvvApU81056dic39ySUz7MiECdxrvVeGHDm8/nYMX/naD
+	jgXaI9igRbbmxgSdlPP5iKw1DuVB0QEWK1bKrmjGckiDIFiRZSOfeiTxuRo3bQXL
+	SvboU3Voc9xUbxsn3R54UJdJ5nC3qf0sRnfRIj1K08h8tJRsMYTTDopLsYP/szr2
+	jbwVR1QGbIbhN0dtCc8ptngNYKUaRI9tYC7QLFPJ0I1NswvdSjr7TiMyYQ5LqWkV
+	BIi6zYn6EmDu1FPH2Qhs/4ufE2WIxQ8/T8piz39km++Hydh30k7raoHzeG56ZT4A
+	mVUJJcNmTBGD9gMWVpFN1w==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4ax93604qu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 09 Dec 2025 02:39:22 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5B92Lkkw039849;
+	Tue, 9 Dec 2025 02:39:21 GMT
+Received: from bl2pr02cu003.outbound.protection.outlook.com (mail-eastusazon11011039.outbound.protection.outlook.com [52.101.52.39])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4avaxja6g9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 09 Dec 2025 02:39:21 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=i4YfAsqfU/pszCDqH8S9rMepa2y2ovWq3uvY/MqAbDGrph12yyPJBSaBw6B7uwRDgT5aqLu7KwJBLy7W88YCkunJpGoPz61Qz5qHSB3U8vKHAXw61uSAoGVxAK1p9NizPSAlOFkPBaBMQLhvGsEATvqjYm+Lxg9bjLAsGs0cJJG7mH/HVomOqyXK5iTW/lcAhf3pltDP0V0xqza295Pw9eZBvT+3ysdeqPzUZ+YanvAECghIKo7FC0+oX9OchQf3b/qJP10li0yFvq3Pvz1HQVTdkjP2ahwOUgZrGlCq0AwgfnQzKAbN+Aa9QBkxMsZH2u1EcZtyV7lMIIHlgDjFhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=46EHUEYso3D0AsWv2Gj6GoWgnJpjLuoB4BEdGnulKug=;
+ b=H+WH16qwIDmVqEPAMf9t1apiktBv3XtFyZedAeJg04yalf4q6cEW4KB4euoyWlCARurtDy7sL1F1BfF/4lZE5MYXKF1agKAwCiL9sPBED/wTpn/xL/hwk6V8PWwk89h+ga+maqq1X7yS8UPi3H5jWP1JWs6LBGe0gknKkS9HuRorEFlWIC2kS/eRr7Xl26IiV0L+aXaC9+G6m3jMHZHhNkzljxP6Cfqz4VUGOFy8+a6eskW1nPhe8pDN6yalqIPMw6ZP3vV534YbWBJ8KwlEW1qDvWHiqzy70nHfR6xi6KpzIVYE34B7CSi/Ddnn9TyFRrPtsDZ2zCxycfP6cbHjNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=46EHUEYso3D0AsWv2Gj6GoWgnJpjLuoB4BEdGnulKug=;
+ b=SHy58dTYBvE2cOvaAD3WH82PJ7cy8MXLxuOCTtC5/BcGk73yotbHKtvujYVqHPIxCvsj82YuqxqLvpsaCmRk2wrgWm0orTKpwGIq8jQntyd8WR/cNqA1qcz3c9Sw+PoNngTA+5nchboljfxFIBFgMIwHHfcOi2/MPFQRn6mpOb8=
+Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
+ by BL3PR10MB6091.namprd10.prod.outlook.com (2603:10b6:208:3b7::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9388.14; Tue, 9 Dec
+ 2025 02:39:19 +0000
+Received: from CH3PR10MB7329.namprd10.prod.outlook.com
+ ([fe80::c2a4:fdda:f0c2:6f71]) by CH3PR10MB7329.namprd10.prod.outlook.com
+ ([fe80::c2a4:fdda:f0c2:6f71%7]) with mapi id 15.20.9388.013; Tue, 9 Dec 2025
+ 02:39:19 +0000
+Date: Tue, 9 Dec 2025 11:39:08 +0900
+From: Harry Yoo <harry.yoo@oracle.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Hao Li <haoli.tcs@gmail.com>, Suren Baghdasaryan <surenb@google.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Christoph Lameter <cl@gentwo.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        maple-tree@lists.infradead.org,
+        Venkat Rao Bagalkote <venkat88@linux.ibm.com>
 Subject: Re: slub: add barn_get_full_sheaf() and refine empty-main sheaf
  replacement
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>, Hao Li <haoli.tcs@gmail.com>
-Cc: Suren Baghdasaryan <surenb@google.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Uladzislau Rezki <urezki@gmail.com>,
- Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- maple-tree@lists.infradead.org, Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Message-ID: <aTeLzFrc6EA2yTzk@hyeyoo>
 References: <20250910-slub-percpu-caches-v8-0-ca3099d8352c@suse.cz>
  <20250910-slub-percpu-caches-v8-3-ca3099d8352c@suse.cz>
  <lvagftdnxgpyafafl2ish6x6phno6xstd6r3zxffs652lyxzyc@2pbngufu7wro>
  <aS_OrvHmgyhQzQIj@hyeyoo>
  <dq67tbm6bbvm7opvuq5vwtjjrcnrponmhfv7xwnvpv6vp3u2lv@bkruq4dtx3rd>
  <aTWIQ0s3EbOa0azX@hyeyoo>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <aTWIQ0s3EbOa0azX@hyeyoo>
-Content-Type: text/plain; charset=UTF-8
+ <8bbbaa65-2783-4006-97b4-a1628525e7c7@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	URIBL_BLOCKED(0.00)[suse.cz:dkim,suse.cz:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[oracle.com,gmail.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[google.com,oracle.com,gentwo.org,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org,linux.ibm.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:mid]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 53B8B336EB
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
+In-Reply-To: <8bbbaa65-2783-4006-97b4-a1628525e7c7@suse.cz>
+X-ClientProxiedBy: SEWP216CA0069.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:101:2ba::15) To CH3PR10MB7329.namprd10.prod.outlook.com
+ (2603:10b6:610:12c::16)
+Precedence: bulk
+X-Mailing-List: rcu@vger.kernel.org
+List-Id: <rcu.vger.kernel.org>
+List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|BL3PR10MB6091:EE_
+X-MS-Office365-Filtering-Correlation-Id: 54ad079a-fa20-42bc-ad04-08de36cc26d7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?ejlXNWVzRUxOQ1dMeW5UV1gzUFBKTWEySkNNYlhzOUhkSEVEaWpZeGlEWG1P?=
+ =?utf-8?B?dFF2Y0ZtUm0rbWZ0SndmM2NJVzBTVGNWdTlndkMvdHB6a25aZ0FFWU1HVFd0?=
+ =?utf-8?B?UjRCNmJjWnhBc0hPSWZ2SmdGNFVaQ3h1OERIbndHUGtWRHNzK0FTMjV2Mzcz?=
+ =?utf-8?B?bU9tWDYwL2laQUkwY1dyemdQdTJaMS9lL1loQ0ZzcGMxUVVMY2dOK0lWSnZr?=
+ =?utf-8?B?ODJ0NElkdFhxY1pwOUdqdHlpSm1tQmpWb0dJMFZ5UFpmUVJSbmp1SnVBRjBt?=
+ =?utf-8?B?UnhkbVpqNU85RFowRk5tUEV5UGpyYWhqNExmbEhKOXBOdXloMSs2SG9qS1dP?=
+ =?utf-8?B?K0JIVURmSUJPb0ZYWDk1bkwvamNkNDFzY0FTbjZqa1IxOGhHNlVZYWxmdDR0?=
+ =?utf-8?B?aGFtWWZYaEI3QkpUeVlwZWg4d2lJTTd4T2tXNFBmVjk3TThqMm5LQTNKQ0Fp?=
+ =?utf-8?B?OHl4aWxFNGtna3AvNmpidlN1SmxFNGk4RUFzVDh6ZFVpMytDcld1SGdScFdY?=
+ =?utf-8?B?alJzZE9NSG82SFp1WWQzVUFxOTZmdkF0aER0NjY2MitRakhML0xWVnE0aXUw?=
+ =?utf-8?B?dWVQU0dLRHBnY1Nab25kaU5Wei9RNHY3N1lIYXdOQWRySmM2dFA0dzg0eVdq?=
+ =?utf-8?B?VFltOERidWlyZnpVR250QlU2eEFsemluc3c3TTIwMFpFSXQ1TkJGV3Fzc0I2?=
+ =?utf-8?B?ZDdKYXN2bG15aWtwaTV6bm1LRWxLVGZnenk2Q2ZoamRHdWNhM3UyYnM5cnMr?=
+ =?utf-8?B?SHJUbTZ2dlArZjhYWEszK0hpcTBHbktUWnIvQitGY1hVYndXSjF4dWhWdHU2?=
+ =?utf-8?B?aUFQanlEK3kyWDdpYjJtNHdXclAycjVmc3ozTVh2cUxscHM1RldRVjdhOWxh?=
+ =?utf-8?B?Nk40TVIzOTNhQmhBdUsxMnVqRjFOWnBBdHVkaXdLRU84N0F1ZlcwbVU3TEpw?=
+ =?utf-8?B?eU5zZFdKVmIveWxwN2dQZDZGTFhYaWZQZ24vWVhMNG5uOEwydUJhSUluWjYr?=
+ =?utf-8?B?WlJrVVJDMTk1aDBmTVkyY25HYzBBNFZTakM4UXlsWW5GSjdhQU9ZU3FrTnpD?=
+ =?utf-8?B?T3U3aDQxMFBCU3hyb0dQWklwSStyZUZZcmY5MGJjcWlaa0dCNHhYa0VZTXc1?=
+ =?utf-8?B?enRiRTBzNy9wQ21ybEZzcTZNbEFrT2xCZXVKSTFvcUFUcHZBRitTdkNLWkd5?=
+ =?utf-8?B?TUllQXNBR1o5RGhGS2l4ZUIzd0ozWE1uS2VsMlZCeEVjaEdsd0ZBOE1ScmNy?=
+ =?utf-8?B?NWNQM3JtakprUUs3cGdtN1kvcXFqMThROTlCRVhCUHdFSEVyWFhYNENKTCtU?=
+ =?utf-8?B?c2dpeitXOWtjZkJWUDU3blhDZnpJZGhaNFZvYUdzN3ZMT05aMlhEaGRmam53?=
+ =?utf-8?B?VGlaSGllSi9zTkJLMWJ5NHJlNW8zNkVENHdwbDFmcjVlQ3pzZmcxd0FnV2JI?=
+ =?utf-8?B?Q3hqclJmbnZacTNmcmlOWGhTMDVYZTNMeW5RT2VhV1J4VzlKTGVJeU93aFk3?=
+ =?utf-8?B?VXB5eHNGNEFxbDFRRzRkc3dyVzJjVGU1WDNidENGclIvSEc4V1JVd1Q2MlJM?=
+ =?utf-8?B?ZXpqb1JlNTNTYXR1NHZ2dEdvK3gzR0RRSUhleHRDTVFSb2ZyR1dkT3J1ZHd4?=
+ =?utf-8?B?QnczYXdtbXZyQVo2cXNCTW1jZFdjcFNQTE5sKzlpNXlXM1Q0azk4N2l5aU1L?=
+ =?utf-8?B?anV1akxrcHh3TnRCTWZCV2x5M2kvSzlFUjRSeXlqOWFTMXd3MFYvZVc3dHAy?=
+ =?utf-8?B?VGkwU09pNnNlK1Yzc2JjZG1ZazRBaWllWXNETW1RLy9sUUJMTWpnOExRQnpk?=
+ =?utf-8?B?UlEvZm1Rck42VEVJdEZnU2ZFU3RRR3BCdDdFbTNDRmpRVkxqbkhxZ0lqcTFY?=
+ =?utf-8?B?VjFlVERvTVVmUmVyZyt1NTdHRTJldjJ2V05odUhqVHNMK3dHb1ZsZCs5SE5w?=
+ =?utf-8?Q?N8xGYn7Z3t5px8jvXwPjgn0+SThUhr+F?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SGVSVXRVU3VDbmZXQVdIVjIzamc2dmwzK1JwRWhqSHpveW53c2RqMTNwL3Vz?=
+ =?utf-8?B?dzNkNlJ2YkhQWGRHUmdBQzgvbDhMcWZCdWxyMmQyV3hTakhNTTF5V2ZUUWNr?=
+ =?utf-8?B?VU5HU0hrY01vWWpXalFlY0U3aUVmUFJXRnA0S3dPMm5ya3FQQjl0NGRaMzRP?=
+ =?utf-8?B?TXgwU252cXpEb2tHdFRLeStmVVUyZlVFZTAxakJCSDNKc3BVclpDclFZTmxs?=
+ =?utf-8?B?MkxFMkVCM3NGWXZBZEVmUzc3N2tKM0d6WW9sbEtzMW1lS0VpVXl6c1VKT3pE?=
+ =?utf-8?B?T1lRUWNIV1U4L0drdjAvOFdLUDd1Qm80UXM2RmZlNStHR3RPSEQzcHFCMkIx?=
+ =?utf-8?B?UGRsenFTVnk5cVVNYVBveUZHYmhDKzcxL2pPMWpVWTVIQUVMbG5kOXRoSFNm?=
+ =?utf-8?B?YlBITFB3Q044UkRyVHdTZWV1a0RFUjR3dmQ0SC9DcGxkQTdudkNOdkh2OFZh?=
+ =?utf-8?B?NzFBM2Y0bUo1Tzdzcjl4cU5FcEl5VzBjMHVvUWx6aUpKMDAzYmJxSDJoODNJ?=
+ =?utf-8?B?dG5nL0lyK1loaFEyOGljK1RJYmhSRXBlWW1zbnl6bHpKTFZubVJyQUFONWdU?=
+ =?utf-8?B?QS9pSWFBQ3hvVU9IM3NFV2FmY1dTTWxsTllDeEx3R29KamtYR1NUNDF5WUdL?=
+ =?utf-8?B?d3pDWk9PNjFXOGdNOXBHMHB2d0ErSVU0bTMwMjI3aHF6SUZ6TGpkek5Vd2gz?=
+ =?utf-8?B?ckFtVUFqS3BLc01ITW9SVGc1b0IwL29ubXZIeGQ4U3hpVjQwaUp2cDkzUW4w?=
+ =?utf-8?B?bDkzbmxuclZUeXN1MGlJSkdiYWV6Rm5UcnhtQ0FhQzlqcUpqSkFlKzFEV1dh?=
+ =?utf-8?B?dlpJeG1Mb0o5UjZ1bHdlMVFBWE84R2Y2bmVQRWR3cWEyWDlXblNhNEdmb250?=
+ =?utf-8?B?ejJ1WDEyR2lHTSt2WUZWa1dTbDJpSTJKdG95d1dBcWNrdHZKL2hJZ2gyWTJo?=
+ =?utf-8?B?UWlYN2pqb3o4S3pJQzgybGNSMDBCaXpnWXpiRDFFZVpOc2lkQ0p2TFhPZFdm?=
+ =?utf-8?B?WkM5S2R4bm9kVEo3UlhxLzFHallCc3IyNlQxNGJ6UGxnSWlaL2VEdjAxVzV2?=
+ =?utf-8?B?MFFQajM4RDlUSzZsY040L2pWOFVQbSs2R2NSQUJ3cFpSc1g2aElyWloxTGJL?=
+ =?utf-8?B?UlRzd3NsNnBuMm5mNFRzT1EzUW8vLzdUejJQWS9RK0luQURQVnQzQW55R0My?=
+ =?utf-8?B?YW5LUC9QUWlnT0N0dlFLRXhlazErUUhmY0JNLzdWQURER1JoK1dUdVRlNUJq?=
+ =?utf-8?B?RWk4Y1hBWVJwME5oTDlMVGFvemVoRVlnOEhlRWZFcEttVDdUMmZFdnh6Si9N?=
+ =?utf-8?B?SzlQNmxXaDcxanphRk8zUFVjdXNmbU1WbkdqYXBZVWRnOVdkYUhvd3VjZWw5?=
+ =?utf-8?B?MWNsVlgrSVRVK3h6V1lFaEN5cGZFNzNTNkJNZEhYaWVHTEk3NFpjRHJDKzFQ?=
+ =?utf-8?B?T0R2NHFxajdpa3dQdnZDNGdxRGk2enRaZzlqSWluTEpIdDRqLzFhUWN6UFdY?=
+ =?utf-8?B?MkZJVmRjU2hvSGhnRjZPUUdIc3kzM01aZ0pXL2lUZzJFc0t2MFNzUXdKK1h6?=
+ =?utf-8?B?VWZlMnk0bys0a2QrbFZ5UlBCUUVHa2c0eTNKT2twTFpjb0VtNmszQVlidEl5?=
+ =?utf-8?B?RzNaMlJKRmdNSDMvZ3B2cEo4cG9LYXkxeXc2UEhIRE1NUzQ3OUVqVStSYk9Z?=
+ =?utf-8?B?WENsc1o5NFhQVlk1azk1bGZ1NVpaNXBNamhQNTQ1bUUyNkpHMGVxVXh0S0tz?=
+ =?utf-8?B?aXJ5eFcvdkZJQ25yd2hkdzJCamlDdVY0NFVoYktVRUZHNkhsWmxxcFN6Y2Jq?=
+ =?utf-8?B?anRtRmNqUUYxeUFkcVRET3UvRmFXTHgzZ0p0emJyUzloTHhDV3dqckJCSmxP?=
+ =?utf-8?B?emliQ2JLMlFzS1A5ajErUEpXcXZPRHJMSFNsQzJMSTVtVlYvU0c3cjk5RGZs?=
+ =?utf-8?B?RW9Ucm5TS3BENzl5VVgxWXhxeE1FYkxKcTV1M1Q2QTlVK0NGeVNqZFdIN3ZI?=
+ =?utf-8?B?dXg0UlFVaER1L2x4OWI2TXlpbExuTFZjWjFFZjlrZy9LbU5pckplQ0VlWnpy?=
+ =?utf-8?B?MkVXZDNMOUNPZ1ptUnNQUXdBMVMrbjRZNEphQVhXS0ttc3gyd1FoRWp1aFhD?=
+ =?utf-8?Q?zjbhiJUiMaLcHKXDDrcW5Snza?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	JrLFuzCV9p05pPH5F5oh8ji3qdKWVPA+nZ6R1zATiAcvm+dI2DuLgPu2E490zpVZX6dTzz8YVwQjYaarowWApETG7Ful7FVWzr90lvfczrVQMszqms0VuhFORqsoj7y2luGzqE4dIoqC1NqEhpbIS5QQLaJ76U3VUqW9JW+xvPUAyyGbQ3D8HkGqbVOs5k3J1JIQfLbRdE/cX3ReNrIRf7adat1H9wNawnwPWyr1fBFD5PKppmy9LB63T+yIbWetjW9FqBfnIIZMaz2wGDNm+TFNDHsl9OHO2V4UewUHROp3wHW5Vp2dGjNZGGH90+ROKb94hSwAwClG/Ztmu9TrUKT1zSFGCluTLX4FLv7ojKhbZbkvGe+ep+2BatcCT6fx+B8U4USKMt/NvADogvxEtwDIFGQ4dFQHvrmjkjaPih9FMeF5ab0QZwAXabSgEACXHdahIl7l+QacwW2v5E9gXAJsqxcu6kG40yD69/fOL1u5d/9JwIrIxoSEyp2VwiSwjZ4nzMXeOTnMz47rQW+QZRn59BAbGT5J1p777YFEhH1oiSDZ+8uNLbZ3zue9GF94GyM1xsacX2ILY6VEHtftxnceQ/FORCWQ7I6oRF3EtWs=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54ad079a-fa20-42bc-ad04-08de36cc26d7
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2025 02:39:18.9185
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1E4kwTXDn+45DkWF8uI7A9R0Q5wIqnlBrHDD3bqP4AH9/iL7qD6heG+IK/lxJlwqVKxiKHsUaXKXi8v37r/x+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR10MB6091
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-12-08_07,2025-12-04_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
+ mlxlogscore=999 malwarescore=0 spamscore=0 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
+ definitions=main-2512090018
+X-Proofpoint-ORIG-GUID: 1TqymQFpv3lACJgtGujUR59zG8FmdFxS
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjA5MDAxOCBTYWx0ZWRfX3Lx9NzvLHPeK
+ 5CSXNT0Hkke1Y+y4/CNSIcWjQaMK6FNRDvAAgjesWRUFq44XAEgsNWVnhZ2LcvCJOIqsBw2Y9XH
+ cVPFOlGCKbsHoEykluN0ZNKhSSdMDLmIwIM9RizdeCWGz3TkYXLmKVGzxOVOLv4CB1hQS1RjH4h
+ p7xfwks8LrTJnBDHC6oLMmu7LfJCyrMkDg1aI8DEYmkvEe+NdOrCBbTUdNK5dq/cnlONiVCJnRP
+ hEV1bQwMsLGc6vjoquifXT4Qru5V17VtO1h5ydLaMyMWcYo2dizHuoBsII7InE0J1+2GriG9iqd
+ ERg/zyAcHsVgZc0PcsvJodIyawCpczaNfprmQ54VMsVGqLFiJm+XDqcBgSHyOeLJFwi40MrEdpR
+ qjnyaW8FtabLm7FyPu0u1+sjhjnUGiG6ftyIkhWbG2iSADuW0wY=
+X-Proofpoint-GUID: 1TqymQFpv3lACJgtGujUR59zG8FmdFxS
+X-Authority-Analysis: v=2.4 cv=Gq1PO01C c=1 sm=1 tr=0 ts=69378bda b=1 cx=c_pps
+ a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
+ a=wP3pNCr1ah4A:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=pGLkceISAAAA:8 a=LdfRBEMZlZnxmEkB0W4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ cc=ntf awl=host:13642
 
-On 12/7/25 14:59, Harry Yoo wrote:
-> On Wed, Dec 03, 2025 at 07:15:12PM +0800, Hao Li wrote:
->> On Wed, Dec 03, 2025 at 02:46:22PM +0900, Harry Yoo wrote:
->> > On Tue, Dec 02, 2025 at 05:00:08PM +0800, Hao Li wrote:
->> > > Introduce barn_get_full_sheaf(), a helper that detaches a full sheaf from
->> > > the per-node barn without requiring an empty sheaf in exchange.
->> > > 
->> > > Use this helper in __pcs_replace_empty_main() to change how an empty main
->> > > per-CPU sheaf is handled:
->> > > 
->> > >   - If pcs->spare is NULL and pcs->main is empty, first try to obtain a
->> > >     full sheaf from the barn via barn_get_full_sheaf(). On success, park
->> > >     the empty main sheaf in pcs->spare and install the full sheaf as the
->> > >     new pcs->main.
->> > > 
->> > >   - If pcs->spare already exists and has objects, keep the existing
->> > >     behavior of simply swapping pcs->main and pcs->spare.
->> > > 
->> > >   - Only when both pcs->main and pcs->spare are empty do we fall back to
->> > >     barn_replace_empty_sheaf() and trade the empty main sheaf into the
->> > >     barn in exchange for a full one.
->> > 
->> > Hi Hao,
->> > 
->> > Yeah this is a very subtle difference between __pcs_replace_full_main()
->> > and __pcs_replace_empty_main(), that the former installs the full main
->> > sheaf in pcs->spare, while the latter replaces the empty main sheaf with
->> > a full sheaf from the barn without populating pcs->spare.
->> 
->> Exactly.
->> 
->> > Is it intentional, Vlastimil?
+On Mon, Dec 08, 2025 at 07:51:40PM +0100, Vlastimil Babka wrote:
+> On 12/7/25 14:59, Harry Yoo wrote:
+> > On Wed, Dec 03, 2025 at 07:15:12PM +0800, Hao Li wrote:
+> >> On Wed, Dec 03, 2025 at 02:46:22PM +0900, Harry Yoo wrote:
+> >> > On Tue, Dec 02, 2025 at 05:00:08PM +0800, Hao Li wrote:
+> >> > > Introduce barn_get_full_sheaf(), a helper that detaches a full sheaf from
+> >> > > the per-node barn without requiring an empty sheaf in exchange.
+> >> > > 
+> >> > > Use this helper in __pcs_replace_empty_main() to change how an empty main
+> >> > > per-CPU sheaf is handled:
+> >> > > 
+> >> > >   - If pcs->spare is NULL and pcs->main is empty, first try to obtain a
+> >> > >     full sheaf from the barn via barn_get_full_sheaf(). On success, park
+> >> > >     the empty main sheaf in pcs->spare and install the full sheaf as the
+> >> > >     new pcs->main.
+> >> > > 
+> >> > >   - If pcs->spare already exists and has objects, keep the existing
+> >> > >     behavior of simply swapping pcs->main and pcs->spare.
+> >> > > 
+> >> > >   - Only when both pcs->main and pcs->spare are empty do we fall back to
+> >> > >     barn_replace_empty_sheaf() and trade the empty main sheaf into the
+> >> > >     barn in exchange for a full one.
+> >> > 
+> >> > Hi Hao,
+> >> > 
+> >> > Yeah this is a very subtle difference between __pcs_replace_full_main()
+> >> > and __pcs_replace_empty_main(), that the former installs the full main
+> >> > sheaf in pcs->spare, while the latter replaces the empty main sheaf with
+> >> > a full sheaf from the barn without populating pcs->spare.
+> >> 
+> >> Exactly.
+> >> 
+> >> > Is it intentional, Vlastimil?
+> > 
+> > Let's first see if Vlastimil had an intention, and...
 > 
-> Let's first see if Vlastimil had an intention, and...
-
-Hm I don't think I aimed to make this difference on purpose, but I didn't
-also aim to make the alloc/free paths completely symmetric. Rather the goal
-was just to do what seemed the best option in each situation. And probably
-getting a full sheaf and populating spare never seemed to be an important
-case to warrant the extra code for a situation that's only transient after
-boot (see below).
-
->> > > This makes the empty-main path more symmetric with __pcs_replace_full_main(),
->> > > which for a full main sheaf parks the full sheaf in pcs->spare and pulls an
->> > > empty sheaf from the barn. It also matches the documented design more closely:
->> > > 
->> > >   "When both percpu sheaves are found empty during an allocation, an empty
->> > >    sheaf may be replaced with a full one from the per-node barn."
->> > 
->> > I'm not convinced that this change is worthwhile by adding more code;
->> > you probably need to make a stronger argument for why it should be done.
->> 
->> Hi Harry,
->> 
->> Let me explain my intuition in more detail.
->> 
->> Previously, when pcs->main was empty and pcs->spare was NULL, we used
->> barn_replace_empty_sheaf() to trade the empty main sheaf into the barn
->> in exchange for a full one. As a result, pcs->main became full, but
->> pcs->spare remained NULL. Later, when frees filled pcs->main again,
->> __pcs_replace_full_main() had to call into the barn to obtain an empty
->> sheaf, because there was still no local spare to use.
-
-As Harry suggests, that assumes a specific pattern where we exhaust main
-sheaf first and then we fill it fully back. But even then this can only
-happen once per cpu and then we have populated the spare and are very
-unlikely to run into this situation again.
-
-Also it's unlikely that full sheaves even exist in the barn during this
-early stage when we would request them. That assumes cpus behave differently
-and some have returned full sheaves to the barn before other cpus have
-consumed their first full sheaf and request another.
-
-More likely both barn_replace_empty_sheaf() and barn_get_empty_sheaf() will
-fail and we do alloc_full_sheaf(). And then... I think I can see an issue in
-__pcs_replace_empty_main() that's more likely to be suboptimal than the lack
-of symmetry you point out. When we reach the last part below "we can reach
-here only when gfpflags_allow_blocking..." and we have empty pcs->main, a
-full sheaf from alloc_full_sheaf() and no spare, we should be doing
-"pcs->spare = pcs->main" and not barn_put_empty_sheaf(). Right? This is what
-can delay populating the spare more likely I think.
-
->> With this patch, when pcs->main is empty and pcs->spare is NULL,
->> __pcs_replace_empty_main() instead uses barn_get_full_sheaf() to pull a
->> full sheaf from the barn while keeping the now‑empty main sheaf locally
->> as pcs->spare. The next time pcs->main becomes full,
->> __pcs_replace_full_main() can simply swap main and spare, with no barn
->> operations and no need to allocate a new empty sheaf.
+> Hm I don't think I aimed to make this difference on purpose, but I didn't
+> also aim to make the alloc/free paths completely symmetric. Rather the goal
+> was just to do what seemed the best option in each situation. And probably
+> getting a full sheaf and populating spare never seemed to be an important
+> case to warrant the extra code for a situation that's only transient after
+> boot (see below).
 > 
-> I'm not still sure that either way is superior, as it really depends on
-> the alloc/free pattern. If the CPU keeps allocating more objects, keeping
-> the empty sheaf is unnecessary, but we don't know what the alloc/free
-> pattern will be.
-
-Yeah.
-
-> So strong opinion from me, but I think it'd be better make
-> __pcs_replace_{full,empty}_main() handle it consistently,
-> if there is no special intention.
-
-I'd rather see some numbers. But the suboptimality pointed out above is more
-obvious to me. Do you agree and want to send a patch? :)
-
->> In other words, although we still need one barn operation when main
->> first becomes empty in __pcs_replace_empty_main(), we avoid a future
->> barn operation on the subsequent “main full” path in
->> __pcs_replace_full_main.
->> 
->> Thanks.
->> 
->> > 
->> > > Signed-off-by: Hao Li <haoli.tcs@gmail.com>
+> >> > > This makes the empty-main path more symmetric with __pcs_replace_full_main(),
+> >> > > which for a full main sheaf parks the full sheaf in pcs->spare and pulls an
+> >> > > empty sheaf from the barn. It also matches the documented design more closely:
+> >> > > 
+> >> > >   "When both percpu sheaves are found empty during an allocation, an empty
+> >> > >    sheaf may be replaced with a full one from the per-node barn."
+> >> > 
+> >> > I'm not convinced that this change is worthwhile by adding more code;
+> >> > you probably need to make a stronger argument for why it should be done.
+> >> 
+> >> Hi Harry,
+> >> 
+> >> Let me explain my intuition in more detail.
+> >> 
+> >> Previously, when pcs->main was empty and pcs->spare was NULL, we used
+> >> barn_replace_empty_sheaf() to trade the empty main sheaf into the barn
+> >> in exchange for a full one. As a result, pcs->main became full, but
+> >> pcs->spare remained NULL. Later, when frees filled pcs->main again,
+> >> __pcs_replace_full_main() had to call into the barn to obtain an empty
+> >> sheaf, because there was still no local spare to use.
 > 
+> As Harry suggests, that assumes a specific pattern where we exhaust main
+> sheaf first and then we fill it fully back.
 
+Right.
+
+> But even then this can only
+> happen once per cpu and then we have populated the spare and are very
+> unlikely to run into this situation again.
+
+Good point!
+
+> Also it's unlikely that full sheaves even exist in the barn during this
+> early stage when we would request them. That assumes cpus behave differently
+> and some have returned full sheaves to the barn before other cpus have
+> consumed their first full sheaf and request another.
+
+Right.
+
+> More likely both barn_replace_empty_sheaf() and barn_get_empty_sheaf() will
+> fail and we do alloc_full_sheaf().
+>
+> And then... I think I can see an issue in
+> __pcs_replace_empty_main() that's more likely to be suboptimal than the lack
+> of symmetry you point out.
+
+> When we reach the last part below "we can reach
+> here only when gfpflags_allow_blocking..." and we have empty pcs->main, a
+> full sheaf from alloc_full_sheaf() and no spare, we should be doing
+> "pcs->spare = pcs->main" and not barn_put_empty_sheaf(). Right? This is what
+> can delay populating the spare more likely I think.
+
+That makes sense to me.
+
+> >> With this patch, when pcs->main is empty and pcs->spare is NULL,
+> >> __pcs_replace_empty_main() instead uses barn_get_full_sheaf() to pull a
+> >> full sheaf from the barn while keeping the now‑empty main sheaf locally
+> >> as pcs->spare. The next time pcs->main becomes full,
+> >> __pcs_replace_full_main() can simply swap main and spare, with no barn
+> >> operations and no need to allocate a new empty sheaf.
+> > 
+> > I'm not still sure that either way is superior, as it really depends on
+> > the alloc/free pattern. If the CPU keeps allocating more objects, keeping
+> > the empty sheaf is unnecessary, but we don't know what the alloc/free
+> > pattern will be.
+> 
+> Yeah.
+> 
+> > So strong opinion from me, but I think it'd be better make
+> > __pcs_replace_{full,empty}_main() handle it consistently,
+> > if there is no special intention.
+> 
+> I'd rather see some numbers. But the suboptimality pointed out above is more
+> obvious to me. Do you agree and want to send a patch? :)
+
+I agree and would like Hao Li to try this path as he raised this topic,
+if he's interested ;)
+
+> >> In other words, although we still need one barn operation when main
+> >> first becomes empty in __pcs_replace_empty_main(), we avoid a future
+> >> barn operation on the subsequent “main full” path in
+> >> __pcs_replace_full_main.
+> >> 
+> >> Thanks.
+> >> 
+> >> > 
+> >> > > Signed-off-by: Hao Li <haoli.tcs@gmail.com>
+
+-- 
+Cheers,
+Harry / Hyeonggon
