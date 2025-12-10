@@ -1,261 +1,202 @@
-Received: from mail-ot1-f68.google.com (mail-ot1-f68.google.com [209.85.210.68])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 367E328DF07
-	for <rcu@vger.kernel.org>; Tue,  9 Dec 2025 09:43:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1A0305046
+	for <rcu@vger.kernel.org>; Wed, 10 Dec 2025 16:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765273432; cv=none; b=LmlVtB9RuC/htgPmTGwVz1QlFwJhMbsSA0s0gMbWZoAGmjKMvTOJvDTuhNmNjdA/wVHGImqqAq7XnK/gqCDUZZ3Itk99YhT1asgbnMBdg9bWb+DVGe6Zi7+YyJ3gze/93hTdrh52uqJM27HNYI6y6vBg6wnfiI9dFhWv4wJAs7E=
+	t=1765383509; cv=none; b=Dxw19/fuJyRhU1S5kybAJhanPKhyuK3Cm6mCbGQEyeg7c3N74ljl6yEk7CuZgou8GzasZL1yOAceCj0sfvWL5a9fzH/jM7te0IoKLNJX6dAbV+Byn4ILLgO6qu3eKIq2YK+4XmsaKeTlxNQB8OhvEEZwS7zabPfw1drpGCEn8Qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765273432; c=relaxed/simple;
-	bh=GXeFfsg6aDnwkDC+YGYjpSF8fRge0qX3w/eLIiAlsB0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GlnrHKpjezKObCbzmz4k7dgIJIQdJQLkMAtJxzLnfZ8wcFQtRjv515WjrWWDaAc2SH/m6VWmmDm1j+qCf3poeRjWM7MnDrAwDpfxttsAsC2vYs42FDqpw3uXvn6iswir5ixGOHfIFKICJNJ5pctWO4ZGax33G+17VZjcmta7t/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hv19qi4k; arc=none smtp.client-ip=209.85.210.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1765383509; c=relaxed/simple;
+	bh=8fukvFVHvNsSJut9kyMPtVjty3xkgDR42FqSOIyq0Vs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mB+gD7v3IZSVIeXZTTx12yWSvtjp9FeAmd22vS6ToL0kAlsukozsd5CQPKsKXhPRAaWiY1W7GUN6YLLhNZcEBt6owpkJJ/nIkMXoWeX1HKxu26Z3lR4CfWDwSQ6xE0yHwZHT2lXO6dYjjpESFwzIpSXzqQXpF820S/BahkiFtZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4Knpx6Ys; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hv19qi4k"
-Received: by mail-ot1-f68.google.com with SMTP id 46e09a7af769-7c75a5cb752so3947946a34.2
-        for <rcu@vger.kernel.org>; Tue, 09 Dec 2025 01:43:50 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4Knpx6Ys"
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-477b91680f8so77529035e9.0
+        for <rcu@vger.kernel.org>; Wed, 10 Dec 2025 08:18:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765273429; x=1765878229; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1765383506; x=1765988306; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MUmGYBiGWNpLts2NDyHiFgi5lTJLsPjA/UugWflgesU=;
-        b=Hv19qi4k1RuG6oBve6Is8GEJW0E/bWrfk9jNotmSu3XVQTOkxmnz0NaWJvXu9n224M
-         OrA7n5N3aktPM9yjVsFxmQYihY1c8IqvRP3E5R/T5HLxg3FjPPlVrbWts7RwnQqZu6rW
-         p9fsMHpZh4awPSBCv1wIwKxxo7EjB1pPKnhAeG6bDXKsjXkO066ZVoeDezB/RpJJk6tE
-         LhKdbBqJcoY6KHTgPchJk2zO70g/h22uiFYajNn5/jtSY06T3Mzv8dItGD8QLxYPJHWj
-         +S6Y/WIoqZlryQQvfL6No2q7QEt1AwSsNTokbNBe2+cYZmCEURw+Zy/G7PDrGt0YGLte
-         hxlQ==
+        bh=5R7EEgKhSIj0MssK61oG5hvlzLQojw/c9iQ7wtMJnfU=;
+        b=4Knpx6Ys5jZM/3xzn4TkUlQ5MOn07tNXFGzWuQHetRSxVoOxFT3OFL1dI6aUzMhyEu
+         xnYtbM7h+xr7oTrp7lflQAsqfG0dB83aJPa0N0Lzyw30KdGksmfQW3kYujbtnt3DkuVA
+         fwmEmugctaKD9pNusDQNeXd1UfmY+fHvGPOWDw8BAfKfkIxSgy+w8UbI4YYUCqj4I6jX
+         aI8c6m7cRh6B35onFu9uYiBhaBJoI1i9z8h4Mkeyxj9du9M621C5tHRNfX5XJmAb/f0q
+         TuIXXyB2cjbM17BbTAqn37phQDIzp91gAiU1SG6JW6826VDNB+PT3RdVCI3rvFZjl/bg
+         gWLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765273429; x=1765878229;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1765383506; x=1765988306;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=MUmGYBiGWNpLts2NDyHiFgi5lTJLsPjA/UugWflgesU=;
-        b=NFkUwqVkl7ea/l0dximaHeUj7MmjVSP0iDAPhMCjMNqEiB8fuvjCQnHtwODerJBzmt
-         znutIrPMv26fcj37rpitCjjxpnc8MXNKR7T7QAXwDlQS+/BJEoNxwvfUzTHQdMtbUKKn
-         otf/fAEMxDnXR+nPcXVS2S4OcJ07ZJP8QXDA6N6l5TblDWJmpwnSBNnS+LsGCFl0GOSI
-         MMDQ6v8WgPlGwsYoJl2utCPCsxDek0eQm5/SPsik7T+JaUAU38gAJhcm9SmmU5axIjbZ
-         ftklQDAzp70b3QNgwFx7dKRMTHvV/xKszDXZRipdEPrh7UQAO20KCRRcwkebr+d+hEu0
-         x+HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU4la2Ek9+J9b8OvWS4O5c8Bc1u9n6DDbB5llxlBFJXRxPu2R/8tFra9g+TG/p/sEEmnSQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzE9Px/XmLee/Srk+x7FsUspSDXIuq4bM74YnN/RDrV+y3IL6dI
-	9V04HDVKzHrytHnK4ndjhEJlkX9y3rlqYYFKiYmnPUyLVwgZl6ZRk50cwnamdr2+dRNyk5UvMG1
-	V6ESL4qIypvQlvK5V6pnO2sJEJ16LsTY=
-X-Gm-Gg: ASbGnctO/uFYVLfx0AN2vPE8sjirzRUDmqBAFiGkr7PG4scANGsr81L+CSpI65wViLV
-	6bWIi6k27P21eP464EgL9qIWnUjJCiSz9wDmLZyLA1nL7D8eoVVOo7C1iH6OFytkoW4ctam69HG
-	wCFb5JO+6snPWV+/p9FB/NvOZQOT7KYjHcOiRWL8F0GzoNaG6NNfCE2o2fF23hL6OtW0Ko05xbV
-	Ic65LV7A1AxGc2W+c35yjT7f2krBhG9PWACEivcwTNe4whP5Rzt4tRBdUvRQpMgII+f5VZq6w==
-X-Google-Smtp-Source: AGHT+IFv9IpaqkBeUd86Nr3OuDzklG3yFLqBXbMjhf/Mnoiu1eFqfKKJ8fJymN964DrgEiph0Yx66JMNRrgic7biNC4=
-X-Received: by 2002:a05:6830:2115:b0:7b2:aba7:f4e with SMTP id
- 46e09a7af769-7c970752562mr5668508a34.10.1765273429418; Tue, 09 Dec 2025
- 01:43:49 -0800 (PST)
+        bh=5R7EEgKhSIj0MssK61oG5hvlzLQojw/c9iQ7wtMJnfU=;
+        b=iwmzti3MmoM9ttKztj/+pYrowWVzQ5eIaTEOIZjRzvO0YwD8RkTqcpwXi6bDTowCxT
+         jpbCYFIElu3XrlDDzv4raID1bYajovaGFHEYDVHzzRGLdkrxlzLPpkvJyRs8u/S6qkWI
+         tlFgYTL4njv/Wj6QsNvvwezFrcl5NcW9n7n8UREigWrXPCZ9jn0VjGAJYzDCbeK2DIS6
+         E/2XAcxMjfRzF6783SWoyxC/GuwFuQ0k5l7Tm587a8ZLsxAK1OyCVqmgwKn1Am6m1IJv
+         D8UCgwyocNIjobfLwdJhshb8A/cuq7QnAqTxY+FQnOcb+cqARyef2J0FqCwyM4zB7dlC
+         wrYw==
+X-Forwarded-Encrypted: i=1; AJvYcCVW2lKtRper6LRaYFsK4aJ9en2P4Nbiy4wM6E3l6rT8RmEDlQPUqPDXDhMPswmMJ7r6i04=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywt8bMPDKCOB4HBRDAkiBwm8fUXndxRoMzHUIV5/kDDoKZYTP/C
+	DgDzTeym6/cPamCSQg5SEKjJQyZX6453se4Nm7AijhGHl4FD1wYKh3zLbIa0Dee+uQ==
+X-Gm-Gg: ASbGncv89ge2DM08KyKiFA1WU8M7J16FAs+f2YYFOGJ+1b6Oi3ZAIUjxl+SLjyQmEmv
+	NWhhlY3iMUBcTbK60eB3MP56TPCkHpgvpLXGmqIOhny9iXLu692V1N1ahw14vS9Y71VFuwJM7+n
+	9uZ56LnSuc0Md+ZcjFrC3O7OLo4qXPDN82wy2q3xnc9d1st10nBdR81oCCpD8PDn+1TahhLJmRf
+	1Di1cAlEPjE8j3rdUCLzIP/uwMSCxQ1+Z2ZfKop843I+Kk7NQrd0EKsh5Kw8avZ42dYVn/MqT8j
+	rKokxjePrX4I9RLWclXmh2SClytn8S8B+XrSY9FMSx7zBJhIKvy0sxv0S6kEA3MNgfx/9Ysyjf7
+	+F7/muxwJRUBwNblVEiky4BJni7/cN5DhFG0oG2TB5jtTeiktd7b0rd5pjmtAfkhx1HxmNAnYct
+	neDYzTUezMA8d1U3+N6Z3TLqHdO3xe4FPlJO1+t1K6TIOk/SM=
+X-Google-Smtp-Source: AGHT+IE5gG+0fezF5tzXHFusF2dBV52zxvrbxnDDqwGYfilnFo0IcpTyJU4lWfuQsZFtfQAM3eL7LQ==
+X-Received: by 2002:a05:600c:687:b0:46e:59bd:f7d3 with SMTP id 5b1f17b1804b1-47a83cc5528mr15763325e9.20.1765383505415;
+        Wed, 10 Dec 2025 08:18:25 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:2834:9:edfc:ec3:194e:c3b3])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47a7d3a75a3sm45109085e9.6.2025.12.10.08.18.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Dec 2025 08:18:24 -0800 (PST)
+Date: Wed, 10 Dec 2025 17:18:16 +0100
+From: Marco Elver <elver@google.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+	Chris Li <sparse@chrisli.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Alexander Potapenko <glider@google.com>,
+	Arnd Bergmann <arnd@arndb.de>, Bart Van Assche <bvanassche@acm.org>,
+	Christoph Hellwig <hch@lst.de>, Dmitry Vyukov <dvyukov@google.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Ian Rogers <irogers@google.com>, Jann Horn <jannh@google.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Waiman Long <longman@redhat.com>, kasan-dev@googlegroups.com,
+	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+	linux-sparse@vger.kernel.org, linux-wireless@vger.kernel.org,
+	llvm@lists.linux.dev, rcu@vger.kernel.org
+Subject: Re: [PATCH v4 00/35] Compiler-Based Context- and Locking-Analysis
+Message-ID: <aTmdSMuP0LUAdfO_@elver.google.com>
+References: <20251120145835.3833031-2-elver@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250910-slub-percpu-caches-v8-0-ca3099d8352c@suse.cz>
- <20250910-slub-percpu-caches-v8-3-ca3099d8352c@suse.cz> <lvagftdnxgpyafafl2ish6x6phno6xstd6r3zxffs652lyxzyc@2pbngufu7wro>
- <aS_OrvHmgyhQzQIj@hyeyoo> <dq67tbm6bbvm7opvuq5vwtjjrcnrponmhfv7xwnvpv6vp3u2lv@bkruq4dtx3rd>
- <aTWIQ0s3EbOa0azX@hyeyoo> <8bbbaa65-2783-4006-97b4-a1628525e7c7@suse.cz> <aTeLzFrc6EA2yTzk@hyeyoo>
-In-Reply-To: <aTeLzFrc6EA2yTzk@hyeyoo>
-From: Hao Li <haoli.tcs@gmail.com>
-Date: Tue, 9 Dec 2025 17:43:38 +0800
-X-Gm-Features: AQt7F2qOPq2FORbgnnaGiFBv2DPLqnw1zxgZR0HoDLae5rm3U726fF5yoLqzoqQ
-Message-ID: <CAAXMevqBFNO70N9+-ZGSEVmvs3fiF27g9WzP2W4uaXHhDkFFUQ@mail.gmail.com>
-Subject: Re: slub: add barn_get_full_sheaf() and refine empty-main sheaf replacement
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter <cl@gentwo.org>, 
-	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Uladzislau Rezki <urezki@gmail.com>, Sidhartha Kumar <sidhartha.kumar@oracle.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	maple-tree@lists.infradead.org, Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251120145835.3833031-2-elver@google.com>
+User-Agent: Mutt/2.2.13 (2024-03-09)
 
-On Tue, Dec 9, 2025 at 10:39=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com> wr=
-ote:
->
-> On Mon, Dec 08, 2025 at 07:51:40PM +0100, Vlastimil Babka wrote:
-> > On 12/7/25 14:59, Harry Yoo wrote:
-> > > On Wed, Dec 03, 2025 at 07:15:12PM +0800, Hao Li wrote:
-> > >> On Wed, Dec 03, 2025 at 02:46:22PM +0900, Harry Yoo wrote:
-> > >> > On Tue, Dec 02, 2025 at 05:00:08PM +0800, Hao Li wrote:
-> > >> > > Introduce barn_get_full_sheaf(), a helper that detaches a full s=
-heaf from
-> > >> > > the per-node barn without requiring an empty sheaf in exchange.
-> > >> > >
-> > >> > > Use this helper in __pcs_replace_empty_main() to change how an e=
-mpty main
-> > >> > > per-CPU sheaf is handled:
-> > >> > >
-> > >> > >   - If pcs->spare is NULL and pcs->main is empty, first try to o=
-btain a
-> > >> > >     full sheaf from the barn via barn_get_full_sheaf(). On succe=
-ss, park
-> > >> > >     the empty main sheaf in pcs->spare and install the full shea=
-f as the
-> > >> > >     new pcs->main.
-> > >> > >
-> > >> > >   - If pcs->spare already exists and has objects, keep the exist=
-ing
-> > >> > >     behavior of simply swapping pcs->main and pcs->spare.
-> > >> > >
-> > >> > >   - Only when both pcs->main and pcs->spare are empty do we fall=
- back to
-> > >> > >     barn_replace_empty_sheaf() and trade the empty main sheaf in=
-to the
-> > >> > >     barn in exchange for a full one.
-> > >> >
-> > >> > Hi Hao,
-> > >> >
-> > >> > Yeah this is a very subtle difference between __pcs_replace_full_m=
-ain()
-> > >> > and __pcs_replace_empty_main(), that the former installs the full =
-main
-> > >> > sheaf in pcs->spare, while the latter replaces the empty main shea=
-f with
-> > >> > a full sheaf from the barn without populating pcs->spare.
-> > >>
-> > >> Exactly.
-> > >>
-> > >> > Is it intentional, Vlastimil?
-> > >
-> > > Let's first see if Vlastimil had an intention, and...
-> >
-> > Hm I don't think I aimed to make this difference on purpose, but I didn=
-'t
-> > also aim to make the alloc/free paths completely symmetric. Rather the =
-goal
-> > was just to do what seemed the best option in each situation. And proba=
-bly
-> > getting a full sheaf and populating spare never seemed to be an importa=
-nt
-> > case to warrant the extra code for a situation that's only transient af=
-ter
-> > boot (see below).
-> >
-> > >> > > This makes the empty-main path more symmetric with __pcs_replace=
-_full_main(),
-> > >> > > which for a full main sheaf parks the full sheaf in pcs->spare a=
-nd pulls an
-> > >> > > empty sheaf from the barn. It also matches the documented design=
- more closely:
-> > >> > >
-> > >> > >   "When both percpu sheaves are found empty during an allocation=
-, an empty
-> > >> > >    sheaf may be replaced with a full one from the per-node barn.=
-"
-> > >> >
-> > >> > I'm not convinced that this change is worthwhile by adding more co=
-de;
-> > >> > you probably need to make a stronger argument for why it should be=
- done.
-> > >>
-> > >> Hi Harry,
-> > >>
-> > >> Let me explain my intuition in more detail.
-> > >>
-> > >> Previously, when pcs->main was empty and pcs->spare was NULL, we use=
-d
-> > >> barn_replace_empty_sheaf() to trade the empty main sheaf into the ba=
-rn
-> > >> in exchange for a full one. As a result, pcs->main became full, but
-> > >> pcs->spare remained NULL. Later, when frees filled pcs->main again,
-> > >> __pcs_replace_full_main() had to call into the barn to obtain an emp=
-ty
-> > >> sheaf, because there was still no local spare to use.
-> >
-> > As Harry suggests, that assumes a specific pattern where we exhaust mai=
-n
-> > sheaf first and then we fill it fully back.
->
-> Right.
->
-> > But even then this can only
-> > happen once per cpu and then we have populated the spare and are very
-> > unlikely to run into this situation again.
->
-> Good point!
->
-> > Also it's unlikely that full sheaves even exist in the barn during this
-> > early stage when we would request them. That assumes cpus behave differ=
-ently
-> > and some have returned full sheaves to the barn before other cpus have
-> > consumed their first full sheaf and request another.
->
-> Right.
->
-> > More likely both barn_replace_empty_sheaf() and barn_get_empty_sheaf() =
-will
-> > fail and we do alloc_full_sheaf().
-> >
-> > And then... I think I can see an issue in
-> > __pcs_replace_empty_main() that's more likely to be suboptimal than the=
- lack
-> > of symmetry you point out.
->
-> > When we reach the last part below "we can reach
-> > here only when gfpflags_allow_blocking..." and we have empty pcs->main,=
- a
-> > full sheaf from alloc_full_sheaf() and no spare, we should be doing
-> > "pcs->spare =3D pcs->main" and not barn_put_empty_sheaf(). Right? This =
-is what
-> > can delay populating the spare more likely I think.
->
-> That makes sense to me.
->
-> > >> With this patch, when pcs->main is empty and pcs->spare is NULL,
-> > >> __pcs_replace_empty_main() instead uses barn_get_full_sheaf() to pul=
-l a
-> > >> full sheaf from the barn while keeping the now=E2=80=91empty main sh=
-eaf locally
-> > >> as pcs->spare. The next time pcs->main becomes full,
-> > >> __pcs_replace_full_main() can simply swap main and spare, with no ba=
-rn
-> > >> operations and no need to allocate a new empty sheaf.
-> > >
-> > > I'm not still sure that either way is superior, as it really depends =
-on
-> > > the alloc/free pattern. If the CPU keeps allocating more objects, kee=
-ping
-> > > the empty sheaf is unnecessary, but we don't know what the alloc/free
-> > > pattern will be.
-> >
-> > Yeah.
-> >
-> > > So strong opinion from me, but I think it'd be better make
-> > > __pcs_replace_{full,empty}_main() handle it consistently,
-> > > if there is no special intention.
-> >
-> > I'd rather see some numbers. But the suboptimality pointed out above is=
- more
-> > obvious to me. Do you agree and want to send a patch? :)
->
-> I agree and would like Hao Li to try this path as he raised this topic,
-> if he's interested ;)
+All,
 
-Thanks Harry for reviewing and letting me work on this as a newcomer to SLU=
-B.
+On Thu, Nov 20, 2025 at 03:49PM +0100, Marco Elver wrote:
+> Context Analysis is a language extension, which enables statically
+> checking that required contexts are active (or inactive) by acquiring
+> and releasing user-definable "context guards". An obvious application is
+> lock-safety checking for the kernel's various synchronization primitives
+> (each of which represents a "context guard"), and checking that locking
+> rules are not violated.
+[...] 
+> A Clang version that supports `-Wthread-safety-pointer` and the new
+> alias-analysis of context-guard pointers is required (from this version
+> onwards):
+> 
+> 	https://github.com/llvm/llvm-project/commit/7ccb5c08f0685d4787f12c3224a72f0650c5865e
+> 
+> The minimum required release version will be Clang 22.
+> 
+> This series is also available at this Git tree:
+> 
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/melver/linux.git/log/?h=ctx-analysis/dev
+[...] 
 
->
-> > >> In other words, although we still need one barn operation when main
-> > >> first becomes empty in __pcs_replace_empty_main(), we avoid a future
-> > >> barn operation on the subsequent =E2=80=9Cmain full=E2=80=9D path in
-> > >> __pcs_replace_full_main.
-> > >>
-> > >> Thanks.
-> > >>
-> > >> >
-> > >> > > Signed-off-by: Hao Li <haoli.tcs@gmail.com>
->
-> --
-> Cheers,
-> Harry / Hyeonggon
+I realize that I sent this series at the end of the last release cycle,
+and now we're in the merge window, along with LPC going on -- so it
+wasn't the best timing (however, it might be something to discuss at
+LPC, too :-) .. I'm attending virtually, however :-/).
+
+How to proceed?
+
+I'll be preparing a rebased and retested version of all this when
+v6.19-rc1 is out. One outstanding recommendation from Linus was to
+investigate compile-times, but as-is, it's unclear there's any notable
+overhead per brief investigation: https://lore.kernel.org/all/aR-plHrWDMqRRlcI@elver.google.com/
+
+From what I can tell most of this has to go through the locking tree,
+given the potential for conflict there. However, it is possible to split
+this up as follows:
+
+Batch 1:
+
+>   compiler_types: Move lock checking attributes to
+>     compiler-context-analysis.h
+>   compiler-context-analysis: Add infrastructure for Context Analysis
+>     with Clang
+>   compiler-context-analysis: Add test stub
+>   Documentation: Add documentation for Compiler-Based Context Analysis
+>   checkpatch: Warn about context_unsafe() without comment
+>   cleanup: Basic compatibility with context analysis
+>   lockdep: Annotate lockdep assertions for context analysis
+>   locking/rwlock, spinlock: Support Clang's context analysis
+>   compiler-context-analysis: Change __cond_acquires to take return value
+>   locking/mutex: Support Clang's context analysis
+>   locking/seqlock: Support Clang's context analysis
+>   bit_spinlock: Include missing <asm/processor.h>
+>   bit_spinlock: Support Clang's context analysis
+>   rcu: Support Clang's context analysis
+>   srcu: Support Clang's context analysis
+>   kref: Add context-analysis annotations
+>   locking/rwsem: Support Clang's context analysis
+>   locking/local_lock: Include missing headers
+>   locking/local_lock: Support Clang's context analysis
+>   locking/ww_mutex: Support Clang's context analysis
+>   debugfs: Make debugfs_cancellation a context guard struct
+>   compiler-context-analysis: Remove Sparse support
+>   compiler-context-analysis: Remove __cond_lock() function-like helper
+>   compiler-context-analysis: Introduce header suppressions
+>   compiler: Let data_race() imply disabled context analysis
+>   MAINTAINERS: Add entry for Context Analysis
+
+Batch 2: Everything below this can wait for the initial support in
+mainline, at which point subsystem maintainers can pick them up if
+deemed appropriate.
+
+>   kfence: Enable context analysis
+>   kcov: Enable context analysis
+>   kcsan: Enable context analysis
+>   stackdepot: Enable context analysis
+>   rhashtable: Enable context analysis
+>   printk: Move locking annotation to printk.c
+>   security/tomoyo: Enable context analysis
+>   crypto: Enable context analysis
+>   sched: Enable context analysis for core.c and fair.c
+
+Thanks,
+	-- Marco
