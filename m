@@ -1,250 +1,134 @@
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10524331A45
-	for <rcu@vger.kernel.org>; Mon, 15 Dec 2025 13:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF51C2DFA5B;
+	Mon, 15 Dec 2025 13:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765805945; cv=none; b=ZEcGlTgLk92qR4CwM2AJ6LCA59r9WLxw1bJ1RrAAxTyvOO2ufzb0sDY497tIZomZXUPxA/gIcreMCHElyE7NqZOITOAR5Dchcd+N6oLrzwCM0AUY4m56dHsqhPPcoiC35pJEDyOWwPEARvE72F7whfESi4sLuOQ4Rex8YytxeIg=
+	t=1765807154; cv=none; b=FmSeeKOoG031+F3RbQ55OVWHTBfdYY1tNbi/oQSoCwn71+rptDdZfqMBjFOrK5jsBk3/3q/xKBSvKqto77B/FLcAx2pg3dhO/lp+FGwByc+evEwR0XBHj9NX7EE64woz8ASB/b1B3kmG3lU2Ab4PNN4OewuF3QC9EXzULHTOjW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765805945; c=relaxed/simple;
-	bh=0RJ8hn5UA+jBMKgL2vexCP4P2w3UyioHPbHfmWoCqpY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jJjiJ516mVNJNCWSXON2wCIySApmi60ETSumIkZJQTrE0iwJuaSykD6a3oAGbnRSthddMwXjQyAsLVRre+OPBfHhmnUQW6pF+FQCxNu6Z6kJWbXi+m/S+Bkkb7R/JiAbcX7yaGqNntGcYjwGy3jG1tEDC3iHKT/oHEbZ34VJ95U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EuTucd9g; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1765807154; c=relaxed/simple;
+	bh=YQ0YmiEKTBiByyCk2XIiAXJahBqdOSyVHDmgyhFstuo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=XzPmMP3YiU3w/pPj9bVYZNR37Ocfcegxmehd7SN8cNL4BDQb4jYt7QkT869spT7vDT6GvDOeML/Yzc7UevPoWIcAYHvWEyQqsVCzyc/mzihy8SaXhMAZoOdTjupu7zfNtXXM30piaX1Js/QMCOjB6e5EEKIo4C+ue3oA1QLym1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K0ZSvqo9; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EuTucd9g"
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-42e2d5e119fso1567724f8f.2
-        for <rcu@vger.kernel.org>; Mon, 15 Dec 2025 05:39:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1765805940; x=1766410740; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HP7wXZoAxj3YG64MFXhffqc9TkW1sld9ucKsb/6ZFh4=;
-        b=EuTucd9gZXbKS7k60S0O8+xmk6dWUzB6AJNJfJNSq4hCCI494y+YN2Qq1M2nPeZ7g5
-         LuU9h8ECct3c3zuO/9QgMVnrnXkzRJgRH9odpRxmaXJoMbbzxmLzBsdBkzCWalcMs8O0
-         +pwkeU2qKXOJUaNXpoOP02zQ1tVD8s9wko/KZIUVdb/UfaM7zYH212hBjrcuW4FJgH1J
-         hgW7iydeQCYKyq0iu2CmX9VQvEb5jf024NaEH6kA/hPoU5u67Btd0n6K9BJ3Wwyep1ZS
-         JZOqh1SL51X9kUXVjf42jy+x53KVKkGyUDYet3sxooMjnwhSTE0cGLmWT8n+j33oro1t
-         wdDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765805940; x=1766410740;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=HP7wXZoAxj3YG64MFXhffqc9TkW1sld9ucKsb/6ZFh4=;
-        b=DRHrLNbALlo2MIcrVXpWgfVJ7AQvszVegV5gL06ecBUkthlz2Ydq7ubjkP2ZAsp3l7
-         fKEl8bxrBIAd4WRucuq487SicfIn2pnE8KWrvveGcpxrD4QyGAqMwY+4ABugSmHgBxMh
-         zdcuUVa32ooNeAArhQjNZNQujFzI6Dnd0Tnf738JNpNiyrh1ywedvifc+2BLlw7kCdIT
-         JUo3QtMjwMdJUrKwdflnGMgpvn/XzFRmjCtBsw00j7igcD9Fob3QAYqwSdCX0iSop56L
-         kp2OLe9t3Imn0h/xSdGJDbgkEdTt89lrFjLir18CdLdogb9bTuB3MhJFdR0PV44tBDKm
-         p+5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXmF7iZv0oxRupqAs1i8K65QSiU2DyKzK83aLnD0Nh8BFOV98P4qssjGIbRNtByI8fJs68=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyinEVVQaNLAeyJAVCynV5ddOnHYtGduyYOJ72l40flPO/lb4xP
-	2MlNt3Cp/xyk/0Toh/eX7NM9cRGfeEm5tmSpi1uKxGxjbhA4xNyjIos4dexhAnYvgA==
-X-Gm-Gg: AY/fxX49NNkxYC13DMEXwVavk4txRbzUQkqAfFxKFB7vACPuUhKW9PSNTBwmjhIbYMX
-	clFKy0Q5eFTxbeBdTM5VEIOkMSku8N4aa8ORqB5VCtS4XPd8TKLF1noqPUoZRFPgCY2AwlPOiMy
-	89pN+3PhG17uRce9XyR2J+h8Y0HTiMnJipg9Xw2AktAn4KuLlb5S6s7ebN+bXuHHYEuiCf3+QAP
-	8I/+RCoBVIO0VYeH1ksu720NBFRvCprJB4ZNbKg+LUMZQQNtbRIJXDFse4Gc6DTEkIYQqVdUwuz
-	s42Kls2+tfVVjywNd9PxCEFgoLe+LGDKeF+Yf9bLZZgECV2sD/5T8H1lxr8SiKpE4SCDtLaXeOz
-	jR6am7XaLtSy+bUBMsGwpkybBvikNceJrgAJkDMVbWRD7XKcWlPyaW5umHUYCNs1qmuYV4K9hwQ
-	2SXX8P72zwBfiPADmO+N+duOuAYE+kUYrA49QwI9raSq0SEK24
-X-Google-Smtp-Source: AGHT+IH6RRE6qce8+BKlIh2iGfXIIE/0drfAuueOfe5s5dH/DcFdShyJ99GxaUFmEfIgshY9jhag6g==
-X-Received: by 2002:a05:6000:310f:b0:430:f7dc:7e8e with SMTP id ffacd0b85a97d-430f7dc809cmr4594614f8f.34.1765805939977;
-        Mon, 15 Dec 2025 05:38:59 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:2834:9:5741:4422:4d1d:b335])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42fb68866f3sm21319081f8f.36.2025.12.15.05.38.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Dec 2025 05:38:59 -0800 (PST)
-Date: Mon, 15 Dec 2025 14:38:52 +0100
-From: Marco Elver <elver@google.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-	Chris Li <sparse@chrisli.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexander Potapenko <glider@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Bart Van Assche <bvanassche@acm.org>,
-	Christoph Hellwig <hch@lst.de>, Dmitry Vyukov <dvyukov@google.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Ian Rogers <irogers@google.com>, Jann Horn <jannh@google.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
-	Kentaro Takeda <takedakn@nttdata.co.jp>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Waiman Long <longman@redhat.com>, kasan-dev@googlegroups.com,
-	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-	linux-sparse@vger.kernel.org, linux-wireless@vger.kernel.org,
-	llvm@lists.linux.dev, rcu@vger.kernel.org
-Subject: Re: [PATCH v4 06/35] cleanup: Basic compatibility with context
- analysis
-Message-ID: <aUAPbFJSv0alh_ix@elver.google.com>
-References: <20251120145835.3833031-2-elver@google.com>
- <20251120151033.3840508-7-elver@google.com>
- <20251211121659.GH3911114@noisy.programming.kicks-ass.net>
- <CANpmjNOmAYFj518rH0FdPp=cqK8EeKEgh1ok_zFUwHU5Fu92=w@mail.gmail.com>
- <20251212094352.GL3911114@noisy.programming.kicks-ass.net>
- <CANpmjNP=s33L6LgYWHygEuLtWTq-s2n4yFDvvGcF3HjbGH+hqw@mail.gmail.com>
- <20251212110928.GP3911114@noisy.programming.kicks-ass.net>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K0ZSvqo9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84039C4CEF5;
+	Mon, 15 Dec 2025 13:59:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765807153;
+	bh=YQ0YmiEKTBiByyCk2XIiAXJahBqdOSyVHDmgyhFstuo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=K0ZSvqo9FNH+vPZrOVLOU5ZraIN5/Hx4lzXEVk8deQoFTzZrfVB3Sn8wUVb8UaBDT
+	 IPKJL1FeYjBc4++kymDagnMFo+aO6gmHV+UWQO7cqHTOD6VMMtizrJjRFLGRY7Ee7L
+	 w4mP9rPOGGMbKthLu+r5v9Ru7rhk3vDAc1XCmmrB5wHkqvV8acOQhuC1BVzlP5ME/H
+	 H7EzKs7+bvfSkQA41DZXMI2/LRypKRi0eSe24U8EkDVDNspUAYXac7itmfYbMOTmxv
+	 x+MHyD8AednEYtbIisGEt5V/tIfQDU8l0ImBMScwR5yt2mJk+grnKjhIaLlaCyGSER
+	 QNwLC455/HDNw==
+From: Mark Brown <broonie@kernel.org>
+To: rust-for-linux@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>
+Cc: linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Dave Ertman <david.m.ertman@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
+ Leon Romanovsky <leon@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+ Boqun Feng <boqun.feng@gmail.com>, Elle Rhumsaa <elle@weathered-steel.dev>, 
+ Carlos Llamas <cmllamas@google.com>, Yury Norov <yury.norov@gmail.com>, 
+ Andreas Hindborg <a.hindborg@kernel.org>, linux-block@vger.kernel.org, 
+ FUJITA Tomonori <fujita.tomonori@gmail.com>, 
+ Miguel Ojeda <ojeda@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org, 
+ Benno Lossin <lossin@kernel.org>, Danilo Krummrich <dakr@kernel.org>, 
+ Thomas Gleixner <tglx@linutronix.de>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org, 
+ Paul Moore <paul@paul-moore.com>, Serge Hallyn <sergeh@kernel.org>, 
+ linux-security-module@vger.kernel.org, 
+ Daniel Almeida <daniel.almeida@collabora.com>, 
+ Abdiel Janulgue <abdiel.janulgue@gmail.com>, 
+ Robin Murphy <robin.murphy@arm.com>, Lyude Paul <lyude@redhat.com>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+ linux-fsdevel@vger.kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>, 
+ Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, 
+ Ard Biesheuvel <ardb@kernel.org>, 
+ Brendan Higgins <brendan.higgins@linux.dev>, 
+ David Gow <davidgow@google.com>, linux-kselftest@vger.kernel.org, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+ Andrew Ballance <andrewjballance@gmail.com>, maple-tree@lists.infradead.org, 
+ linux-mm@kvack.org, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
+ Uladzislau Rezki <urezki@gmail.com>, Vitaly Wool <vitaly.wool@konsulko.se>, 
+ Rob Herring <robh@kernel.org>, Saravana Kannan <saravanak@google.com>, 
+ devicetree@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kwilczynski@kernel.org>, 
+ linux-pci@vger.kernel.org, Remo Senekowitsch <remo@buenzli.dev>, 
+ "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org, 
+ Will Deacon <will@kernel.org>, Fiona Behrens <me@kloenk.dev>, 
+ Gary Guo <gary@garyguo.net>, Liam Girdwood <lgirdwood@gmail.com>, 
+ Alexandre Courbot <acourbot@nvidia.com>, Vlastimil Babka <vbabka@suse.cz>, 
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+ Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>, 
+ Mitchell Levy <levymitchell0@gmail.com>, 
+ Frederic Weisbecker <frederic@kernel.org>, 
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, 
+ John Stultz <jstultz@google.com>, linux-usb@vger.kernel.org, 
+ Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+ Matthew Wilcox <willy@infradead.org>, Tamir Duberstein <tamird@gmail.com>, 
+ Rae Moar <raemoar63@gmail.com>
+In-Reply-To: <20251202-define-rust-helper-v1-0-a2e13cbc17a6@google.com>
+References: <20251202-define-rust-helper-v1-0-a2e13cbc17a6@google.com>
+Subject: Re: (subset) [PATCH 00/46] Allow inlining C helpers into Rust when
+ using LTO
+Message-Id: <176580714194.161338.1959594276727103368.b4-ty@kernel.org>
+Date: Mon, 15 Dec 2025 22:59:01 +0900
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251212110928.GP3911114@noisy.programming.kicks-ass.net>
-User-Agent: Mutt/2.2.13 (2024-03-09)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-47773
 
-On Fri, Dec 12, 2025 at 12:09PM +0100, Peter Zijlstra wrote:
-> On Fri, Dec 12, 2025 at 11:15:29AM +0100, Marco Elver wrote:
-> > On Fri, 12 Dec 2025 at 10:43, Peter Zijlstra <peterz@infradead.org> wrote:
-> > [..]
-> > > > Correct. We're trading false negatives over false positives at this
-> > > > point, just to get things to compile cleanly.
-> > >
-> > > Right, and this all 'works' right up to the point someone sticks a
-> > > must_not_hold somewhere.
-> > >
-> > > > > > Better support for Linux's scoped guard design could be added in
-> > > > > > future if deemed critical.
-> > > > >
-> > > > > I would think so, per the above I don't think this is 'right'.
-> > > >
-> > > > It's not sound, but we'll avoid false positives for the time being.
-> > > > Maybe we can wrangle the jigsaw of macros to let it correctly acquire
-> > > > and then release (via a 2nd cleanup function), it might be as simple
-> > > > as marking the 'constructor' with the right __acquires(..), and then
-> > > > have a 2nd __attribute__((cleanup)) variable that just does a no-op
-> > > > release via __release(..) so we get the already supported pattern
-> > > > above.
-> > >
-> > > Right, like I mentioned in my previous email; it would be lovely if at
-> > > the very least __always_inline would get a *very* early pass such that
-> > > the above could be resolved without inter-procedural bits. I really
-> > > don't consider an __always_inline as another procedure.
-> > >
-> > > Because as I already noted yesterday, cleanup is now all
-> > > __always_inline, and as such *should* all end up in the one function.
-> > >
-> > > But yes, if we can get a magical mash-up of __cleanup and __release (let
-> > > it be knows as __release_on_cleanup ?) that might also work I suppose.
-> > > But I vastly prefer __always_inline actually 'working' ;-)
-> > 
-> > The truth is that __always_inline working in this way is currently
-> > infeasible. Clang and LLVM's architecture simply disallow this today:
-> > the semantic analysis that -Wthread-safety does happens over the AST,
-> > whereas always_inline is processed by early passes in the middle-end
-> > already within LLVM's pipeline, well after semantic analysis. There's
-> > a complexity budget limit for semantic analysis (type checking,
-> > warnings, assorted other errors), and path-sensitive &
-> > intra-procedural analysis over the plain AST is outside that budget.
-> > Which is why tools like clang-analyzer exist (symbolic execution),
-> > where it's possible to afford that complexity since that's not
-> > something that runs for a normal compile.
-> > 
-> > I think I've pushed the current version of Clang's -Wthread-safety
-> > already far beyond what folks were thinking is possible (a variant of
-> > alias analysis), but even my healthy disregard for the impossible
-> > tells me that making path-sensitive intra-procedural analysis even if
-> > just for __always_inline functions is quite possibly a fool's errand.
+On Tue, 02 Dec 2025 19:37:24 +0000, Alice Ryhl wrote:
+> This patch series adds __rust_helper to every single rust helper. The
+> patches do not depend on each other, so maintainers please go ahead and
+> pick up any patches relevant to your subsystem! Or provide your Acked-by
+> so that Miguel can pick them up.
 > 
-> Well, I had to propose it. Gotta push the envelope :-)
+> These changes were generated by adding __rust_helper and running
+> ClangFormat. Unrelated formatting changes were removed manually.
 > 
-> > So either we get it to work with what we have, or give up.
-> 
-> So I think as is, we can start. But I really do want the cleanup thing
-> sorted, even if just with that __release_on_cleanup mashup or so.
+> [...]
 
-Working on rebasing this to v6.19-rc1 and saw this new scoped seqlock
-abstraction. For that one I was able to make it work like I thought we
-could (below). Some awkwardness is required to make it work in
-for-loops, which only let you define variables with the same type.
+Applied to
 
-For <linux/cleanup.h> it needs some more thought due to extra levels of
-indirection.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
------- >8 ------
+Thanks!
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index b5563dc83aba..5162962b4b26 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -1249,6 +1249,7 @@ struct ss_tmp {
- };
- 
- static __always_inline void __scoped_seqlock_cleanup(struct ss_tmp *sst)
-+	__no_context_analysis
- {
- 	if (sst->lock)
- 		spin_unlock(sst->lock);
-@@ -1278,6 +1279,7 @@ extern void __scoped_seqlock_bug(void);
- 
- static __always_inline void
- __scoped_seqlock_next(struct ss_tmp *sst, seqlock_t *lock, enum ss_state target)
-+	__no_context_analysis
- {
- 	switch (sst->state) {
- 	case ss_done:
-@@ -1320,9 +1322,18 @@ __scoped_seqlock_next(struct ss_tmp *sst, seqlock_t *lock, enum ss_state target)
- 	}
- }
- 
-+/*
-+ * Context analysis helper to release seqlock at the end of the for-scope; the
-+ * alias analysis of the compiler will recognize that the pointer @s is is an
-+ * alias to @_seqlock passed to read_seqbegin(_seqlock) below.
-+ */
-+static __always_inline void __scoped_seqlock_cleanup_ctx(struct ss_tmp **s)
-+	__releases_shared(*((seqlock_t **)s)) __no_context_analysis {}
-+
- #define __scoped_seqlock_read(_seqlock, _target, _s)			\
- 	for (struct ss_tmp _s __cleanup(__scoped_seqlock_cleanup) =	\
--	     { .state = ss_lockless, .data = read_seqbegin(_seqlock) };	\
-+	     { .state = ss_lockless, .data = read_seqbegin(_seqlock) }, \
-+	     *__UNIQUE_ID(ctx) __cleanup(__scoped_seqlock_cleanup_ctx) = (struct ss_tmp *)_seqlock; \
- 	     _s.state != ss_done;					\
- 	     __scoped_seqlock_next(&_s, _seqlock, _target))
- 
-diff --git a/lib/test_context-analysis.c b/lib/test_context-analysis.c
-index 4612025a1065..3f72b1ab2300 100644
---- a/lib/test_context-analysis.c
-+++ b/lib/test_context-analysis.c
-@@ -261,6 +261,13 @@ static void __used test_seqlock_writer(struct test_seqlock_data *d)
- 	write_sequnlock_irqrestore(&d->sl, flags);
- }
- 
-+static void __used test_seqlock_scoped(struct test_seqlock_data *d)
-+{
-+	scoped_seqlock_read (&d->sl, ss_lockless) {
-+		(void)d->counter;
-+	}
-+}
-+
- struct test_rwsem_data {
- 	struct rw_semaphore sem;
- 	int counter __guarded_by(&sem);
+[35/46] rust: regulator: add __rust_helper to helpers
+        commit: 03d281f384768610bf90697bce9e35d3d596de77
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
