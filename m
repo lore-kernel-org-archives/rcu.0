@@ -1,376 +1,330 @@
-Received: from YT5PR01CU002.outbound.protection.outlook.com (mail-canadacentralazon11021079.outbound.protection.outlook.com [40.107.192.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57022D9EFF;
-	Thu, 18 Dec 2025 17:54:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.192.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766080454; cv=fail; b=S65GiRnrliXvDkf+MVds3x+LBvo5BsRJJ5Tn+83VuSV6LIsBK6RNiW6sdb6GcEFBGdBTDpXiBb4RWd2CbQBHOWpcT7n+qwOp3vguuAjEHpB9pYHwWUiR/GYPmB3+3KNQwk90ge4VrTv8Bx7Xrcpe45G78w+gIIT/g5/fLEWq1u4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766080454; c=relaxed/simple;
-	bh=7ZvCDoxLmwIXDVZBdyDkVuL61S7c8xGW+h+hY4tnZN8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=kLKP/gIRq5m6qDKR/Jw7WStk6/WGRHmeCke0xtqRNV/ikKvNVqaATx6jEMwaCUOQqLAcuEBjWcvnaJgqsTwaCwZqbZyzScP+GJKFhS6DJ1zvfsy6XJPNqbquYTj2mPPjoCxeejXWF1Q9L2wYr2FdoEkxjIZQkVMwuH9Vl9ywAys=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=ADLToAb6; arc=fail smtp.client-ip=40.107.192.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D00922A1E1
+	for <rcu@vger.kernel.org>; Thu, 18 Dec 2025 22:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766096206; cv=none; b=AuTjjVh6oGqSIODDsFLUyqnwSFkNCClHGolRpm38Hdy3rym7b+xQxwoes3EObAc4OJ5uIbr6DWk5PDxeLI10VYtjNBUe38R5e/UKZ+jSfbVTS8Nv+SC9TgXPbqzGD23oD1SbSKB2hhAMzU6LfuPtmOi5AAgIEwq/p1sNnVT2EMM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766096206; c=relaxed/simple;
+	bh=0xd5VQJphUdTkSt449psxow9J9WCcxUvSivv8VMNdlw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oGBJz/TefY86yuiAO3cZ93Lx7YzKeFCNFxAgz8PC4njLEHZ95PU9PUtJaegnMess/roklgkFyWfaea38u/Jak+dfmoE2h6V+uPSvaIDdoDx7DeIagL3ftiY3+j9ZieJQS0E+l0eTulqwDCK6UdohIlRcX1WhH2qMKCEHn2j6CEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PEaxzYGb; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ADLToAb6"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=TcAKdcPJRTU7ErAX3lEqjv4dYeCPzTr21juoZe0isNHSmvz8hrMJUfeYX0eaXd7Qy7WNL0PfGoHCdOCNX00n6+edmKPR9E5MZs0y6E2bTsR1oezdXXZnuGBf+PZy4MgCnCGhreGMRwZNXbYxOO53kQBHdSDhCvsrzQIN/929upp/Y9IYLXkk3l2DxkUwbvBFVRJ6ptPCKhRNQ/dChgU2GhhvUKcHgY2pvDrxkygvnCWKOO5vojw4ZUsX30SMWLmOHPu1RHgSpSfUInzYWmyjJ//r7HDWv4wK0L4XFcWN+aNSA7u0Zxfbj1q6qgdRXG2zYYkdccwhBFC7Ou23aTWsEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pKEP/rhlhIAzj8GUfe1dbOwqvomiqpqCMHsP+TxyDn0=;
- b=F67SS4kcTHyUTGctRuK+jFrzFsslwO0chFk4LOmBmdrmobJkS+dbEYmj3/z+rf5XxGZfETNadVv6QaQS+e420B+iAjKFKQaM5CcBXT6D+4TYeen9U6yPHu/YeWlOPlQgrBhc1z1npNXb8S5qxeKlZmZzn6akZu+qBd51jf0CJEkYBlAJmuzlIyNYUYu4LmqswEGEFMgeHUn5/DFixmtMHdIuck9if5f1HPngEZidnuEVuhUGo1QqoWx7sUOQZiy5wAh9mKdeOXQg32GOK18wcHMrQ3GJudmNoIHPdzUIa5EddJqckqnQ4JVxvnxKtvXTihRQvq3UgzrLYjjQZlc/xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
- dkim=pass header.d=efficios.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pKEP/rhlhIAzj8GUfe1dbOwqvomiqpqCMHsP+TxyDn0=;
- b=ADLToAb60gl4LgT1B1jHNpVCceZD+A/t0vy6f+ycghISx14Wfy7/H3buWnjvg2OkK1+VNQS2HGlBRFcNCA/9vKq70KxZUkmRsHVidqBiLIZ4WwRD9+ryMjnNactYH21bJeKwDAN45cDP1GFvS3RpEq2l3lDs+f8PZtsNL8CAMDDFw3NgMVVci0TngCFWrO9On0X0RSUjJmVepy6XLi0cbjCG65JDALe1IkkU2cSvdNqcWLFyO408Y4/uIR5QIiCOuQvizW4T3oiGC2ALNHAld7tmC/nnEgJDvno1siYxrEgSxYDfEBlHjBWbpsfyg6CbqhL5krAnyEXYTiCPy4LTlw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=efficios.com;
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:be::5)
- by YT2PR01MB8693.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:b5::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9434.8; Thu, 18 Dec
- 2025 17:54:08 +0000
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::6004:a862:d45d:90c1]) by YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::6004:a862:d45d:90c1%5]) with mapi id 15.20.9434.001; Thu, 18 Dec 2025
- 17:54:08 +0000
-Message-ID: <67bbeac3-4158-4eab-b42c-ca31adefef70@efficios.com>
-Date: Thu, 18 Dec 2025 12:54:05 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v4 0/4] Hazard Pointers
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, linux-kernel@vger.kernel.org,
- Nicholas Piggin <npiggin@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Alan Stern <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
- Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
- Mateusz Guzik <mjguzik@gmail.com>,
- Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>, rcu@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PEaxzYGb"
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-88888d80590so14731896d6.3
+        for <rcu@vger.kernel.org>; Thu, 18 Dec 2025 14:16:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766096202; x=1766701002; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3sXHinIvqqn4NKYj3YLqEcLxxqdNblij/w/+MvNbYRQ=;
+        b=PEaxzYGbB2hvC1O6TovmlaRJjq3RyJPYJS7TFbM1kCZM7cA3Msg/eu4VqVybqfT3rw
+         bHsoh63pAhnnGcFzrBZHVJEG6qZs5CIE3DQReUEr7KWrroP7s2X0qpC1/1ucz2at38vb
+         H7GVd1BSGhYGzM5cScVJt9NhAs/J+XiW/H8jfSSeBSdHpFnN/3qbjVsPHllW2Ai73teA
+         xKKdPaQjpPtd6aAr/19IseFmM3zA2qWVPFS1c962pnG+iUXNZzWPtPc7BEAEb3VjL97r
+         +qCNjlDW3GHDlkCQrrgZC0lWts0CGUkCT1cjZJpCOeXiz20Wdi/X/sbitDGl3xc0lUPs
+         1VOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766096202; x=1766701002;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=3sXHinIvqqn4NKYj3YLqEcLxxqdNblij/w/+MvNbYRQ=;
+        b=r5r+ttRHQ2W4wEBHU6RK7omYiUdch5UwBaryPBcNoVtnIgR5jIYapv9RfgzwqHQaG4
+         MbpZ2uQciry62YBWKEjAU90V8/G5xftQ6Bfs0amzmslER/mCUSLuLmedzR8HXUwebOoK
+         Im899Vb5t0AZRSxd5kg+w/Jk3x2puF2kue4wtaziFES/7d1cSrOSrIKdInpQ3MoXugHS
+         e/QpIOVJozXqVJmS2074AJIc8hL+zpxymw8o+EMC+FS8BArme8olT6s3S6OrbMTyEY33
+         uVKYcphimPtgLmOgk5E+HYv1kgwa55QIlrX5rbIWDxUOXo9yEFC6Lv+RmjeTfW/XI7uT
+         5JTg==
+X-Forwarded-Encrypted: i=1; AJvYcCVWwhjKg55vPQav3uMO+gK3eM/9LQS2Cl+OjJgGwtBMQpfaW1GSY9KGOZ3KjE0ZT6p4UjM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwFkaPHrcxvb03SErLgMF4gbgPiGW4Kt9xQk4cH38rOCzDSdeJN
+	RmBeTlvdgjA6IK9q6Z9r9NtARipPOya8B0NG5lLMoo/iqKJRLX43npAS
+X-Gm-Gg: AY/fxX6ANOo29gUIX2oreHmZ2Ud3uPbdr1jyG5qKLomLCbp6L4iMxorIxPdGN8bfHE7
+	XVZPCbzfVSJ2n1U1jU42ngrqELFVXUQw/IRnsfL1TZkl0PefcB27GV6IkOhejGR59dw53nd9kjp
+	BxnRBwmQW9TFW+jdMS4HPTyGnB5tgU5YoBRo1/mN20PNYA0quEvqvDewyKDJ/AlADPmCm9ENo4Z
+	JijhcoGupHrOrq6vdifh4Y4kjrKCakHj/Wpr/jaPNBhJrEUOPUEQROdW7APTfPZ6ikUveMx5GAM
+	lxC/EhxCs0Ta82zhtjgYJekWSstgbRnevl6vNKE1zBhIopx+pwRGT8olVUg2Fk1K+PFHabYgj1U
+	UAYM7hHF8WlHHUBGYdCI5psUacIQPnoNb0bO5zj9jUyU4ppVBz+4xGikx4GsXu6OndKkFecGxcc
+	EtaAt1qKb6slD2vszsHAYe9AtCuvrQRLzFbJWUR3lVgCKxd6wqUtqdXrevDobnCHGmSp0C1Orjw
+	xH+u+N/7/CttT4=
+X-Google-Smtp-Source: AGHT+IH9dlus8CLBnccpPwM7k0azGKuifjOTEiDe/F0ZElbIptxHmkvJntfFb5aH3wD+BBl6lym7+A==
+X-Received: by 2002:ad4:55e6:0:b0:888:58e9:fda1 with SMTP id 6a1803df08f44-88d851fd95cmr13819516d6.14.1766096202075;
+        Thu, 18 Dec 2025 14:16:42 -0800 (PST)
+Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88d997aeef5sm5249626d6.27.2025.12.18.14.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Dec 2025 14:16:41 -0800 (PST)
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfauth.phl.internal (Postfix) with ESMTP id AA726F4006D;
+	Thu, 18 Dec 2025 17:16:40 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Thu, 18 Dec 2025 17:16:40 -0500
+X-ME-Sender: <xms:SH1EaZcr4nosz5Z_u80KXr3YTuBVa1KzutlGezTRHSDZs3vGJkkjOA>
+    <xme:SH1EaUVPH7FAjWPnxjlkT6SOQdM1MN3G4pmjPM7rEFGVXaj797cdyQ5pHlryNlzxO
+    VVPAdSNKmeWi9A_l2pblsDmpQTl9iH-oyauJMf2dWNjj8KWqT1ByQ>
+X-ME-Received: <xmr:SH1EaS-mmRPmfNgvg_LETVK0X3GxPc8Ju8gr-cxm8qbpQU35_qsy-_unMKTt>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdegieeitdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfh
+    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
+    hrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudffiedv
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqh
+    hunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddu
+    jeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvg
+    drnhgrmhgvpdhnsggprhgtphhtthhopeeffedpmhhouggvpehsmhhtphhouhhtpdhrtghp
+    thhtohepmhgrthhhihgvuhdruggvshhnohihvghrshesvghffhhitghiohhsrdgtohhmpd
+    hrtghpthhtohepjhhovghlsehjohgvlhhfvghrnhgrnhguvghsrdhorhhgpdhrtghpthht
+    ohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkh
+    gvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhhpihhgghhi
+    nhesghhmrghilhdrtghomhdprhgtphhtthhopehmphgvsegvlhhlvghrmhgrnhdrihgurd
+    gruhdprhgtphhtthhopehgrhgvghhkhheslhhinhhugihfohhunhgurghtihhonhdrohhr
+    ghdprhgtphhtthhopegsihhgvggrshihsehlihhnuhhtrhhonhhigidruggvpdhrtghpth
+    htohepfihilhhlsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:SH1EaT995_TeAJ4-63c4V7xKFasqvDak3J-igt9puhk5brWv5ylc_A>
+    <xmx:SH1EadWoyqZsWXiMN5K-uDQ0qYQ1TUjy-3UEAJTDVukr5CuxkvA59g>
+    <xmx:SH1EaYbSjUFJ67X-225Ef0HegXoCvjFb2nSB95hz5Zynp6lYavMa3A>
+    <xmx:SH1EaXrTNm6EN-1Jchzt4W1vY9_BIcCtY-RjJ8xXdv0SKAXGMxtvYw>
+    <xmx:SH1Eaf5et_nD7VWPecEOioNTVhm-onsV73utDC78UeHLz4tMAvn8XfBk>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Dec 2025 17:16:39 -0500 (EST)
+Date: Fri, 19 Dec 2025 07:16:37 +0900
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,	linux-kernel@vger.kernel.org,
+ Nicholas Piggin <npiggin@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Will Deacon <will@kernel.org>,	Peter Zijlstra <peterz@infradead.org>,
+	Alan Stern <stern@rowland.harvard.edu>,	John Stultz <jstultz@google.com>,
+	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+	Waiman Long <longman@redhat.com>,	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,	Vlastimil Babka <vbabka@suse.cz>,
+ maged.michael@gmail.com,	Mateusz Guzik <mjguzik@gmail.com>,
+	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,	rcu@vger.kernel.org,
  linux-mm@kvack.org, lkmm@lists.linux.dev
+Subject: Re: [RFC PATCH v4 4/4] hazptr: Migrate per-CPU slots to backup slot
+ on context switch
+Message-ID: <aUR9RfVChdcDncwX@tardis-2.local>
 References: <20251218014531.3793471-1-mathieu.desnoyers@efficios.com>
- <54E94704-92C0-4F10-AED9-46DFCA61233B@joelfernandes.org>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <54E94704-92C0-4F10-AED9-46DFCA61233B@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YT4PR01CA0384.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:fd::13) To YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:be::5)
+ <20251218014531.3793471-5-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: YT2PR01MB9175:EE_|YT2PR01MB8693:EE_
-X-MS-Office365-Filtering-Correlation-Id: f6fdae99-bf8d-49cb-46a9-08de3e5e70e1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?bTJCRVdick1DblNOQlZMY0JVVkxaYVhZdzB4ZWdGVkF1ZVJDMmN0Vnc5Q2tZ?=
- =?utf-8?B?S2tId0tRUE92cFJ1b2o3aTE2dk43eUlzZTdPVFdqcldMZDZIck9RM1VGeHhm?=
- =?utf-8?B?Q0hWZEtaTThnU3ZETDUvWmlXTkEvSTFIdHk4aUxOWFdweFpkWGcrVzBYa0I2?=
- =?utf-8?B?WnpNQmY5MTJNRFFqQ0kzQUN6dm12Wmp3K3pzM2ZIUDE4VVpEVXlvRmErZWhv?=
- =?utf-8?B?RnZzcGxpaG1ZU3pMb2ozQVpUZzJKN2hCaGllOUpCM1BwTVJmb3dCbXluUmZw?=
- =?utf-8?B?T3dLcnN2TmhCRm16YkV5aEIxNzNabmxNOThtN2pZenlTUU1PRVdVb0FpbXZ1?=
- =?utf-8?B?TXBSa0pnVWJ2S0tSWWdOOVJ4eEhlRjBpU1dyOXE1Nkd4czB4aVlqOEtjUHdX?=
- =?utf-8?B?Y0V2RldHcmVld24wSHEwck5LRnAxUVNrcUM1VjlNK1NpbmdlcnZIQ3hkN3My?=
- =?utf-8?B?L1FoeUJ3ZnZINm51Q0hqb3ZPbElxUGlrdXpxZGs4dlIxSXUwcU1Fb3BkSndS?=
- =?utf-8?B?Rzh1ZFFFWGIwSDhtSWx5STI5bkVhaVFqS0JpV1hVVTBZUi9vQ0VSRlhwN05P?=
- =?utf-8?B?cTFZYjAvYWpvM0V2bTBtK2hna0RkUEQxRkY0YnkzWlpSeEdUVVZjUjcyUjlV?=
- =?utf-8?B?b2hGSDhUeS9SRm9Da2NoM2NKWWQxUWNLajl1cjd4MmhXTm0xb3Vab2p4a1Rq?=
- =?utf-8?B?MVppLy9ob1k0SWZobnFFb3Bma1hSbTlaNTRPT0g5dVI0RTFSaUZ0V0s4a3dI?=
- =?utf-8?B?SVI0VVNwRkZFamZWd0NxRDgwZnp0aURPQ0J3WFp6S3gwOUdWdFFGR0JpeG43?=
- =?utf-8?B?REVJcXBsK1JEUUVMZStyWDl6aDRqRVVUYk4wZmsyOGlJSXl3dHdiWWViQkp3?=
- =?utf-8?B?dkJXWkdvMEY5NjRNZTl1MlFLRkU4d0lmVEtqNnI4V29qVGxadHQ4YnNZdi82?=
- =?utf-8?B?U1k4T0VIVHY4dHFMSkVSdVBURW9XMmlwb1BSc3o5Kzk5K3drZUZHaUx6VU8y?=
- =?utf-8?B?WmFJb1F5WFExNlBjWGd0S1ptMFpxREl2U0pQZ01PcjczMmVFdVBUVElkLzQv?=
- =?utf-8?B?Y3pKT3Yzc2tNRW5EbGlCdytXbVd3aUxqZi9mekxNZkw3YXJHVkQycU1USFhD?=
- =?utf-8?B?WGdLSlYwWGdlTEhlR2VxQjRDN3cyVWx4QlZsdEVPYlN1elZQbmpjT0xUbEt3?=
- =?utf-8?B?Q3duQ1d1RG9ncCtZRENkUzlORks0RGQrd05FeTVzQk9OVUtYbEtUODhpVEs0?=
- =?utf-8?B?bVJjUXJaNGlnM2h6clpmWUxnTms1UXNGZ2QyTzFxWTZweGlpTVBtdnJDclVK?=
- =?utf-8?B?aHZybC9DWDhaL2hYclA5VDlUeGxHYWpLU3JKVGErVmlncERFZm1EY21ZbVVO?=
- =?utf-8?B?MkxCR1h2aU9TeEc0c1BoeE9EQk9SMG9UNEVEMkJiQW5mTWNSQ0o1TitTVjRs?=
- =?utf-8?B?cGpqdk9HbWZjUTZBWDBrR3IwM0J6OHhMYllZR2lNaHVxeGF4Smg2cGs4akd0?=
- =?utf-8?B?U1JOK3NnRDFCVDFRZWUvMFpGSzJaZVcwMXRSUk9DNlJDYjZmTDlPWDRUQ1V6?=
- =?utf-8?B?d2tPcFdYbjFTTEtiRWtkL1dWbXpray9VcWhrN0ZrOG5NL0x0N1o2bzBBaGZv?=
- =?utf-8?B?WTlnSERCU1lmZ0VOWE5iL1J1YnpjdlFMaXB5RExUbFk2Z3Nmcms1bkNrQTFY?=
- =?utf-8?B?bXc2MmhTaHFOU1pJYW9NbDIzYWV2dUZMeVROQXdIWGZuK25OSGdQVHVmZVBq?=
- =?utf-8?B?ZWsxblA0UUlWaTBuTUVEU2pDMUl6NDB6cTRVYWlhbE0rYmxnek1wSlJWZG84?=
- =?utf-8?B?TmdnZzU2VDViVDRaaSt0S1QvY0RHaXFXVU5sbjlRcG0zNDMxMVREdzlBcXc4?=
- =?utf-8?B?RS9kSkVkMU1pbWxtMzBDdkUrd21qS0tNRXNNTHl4dyt0K0E9PQ==?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?M1U2T3dqWlFDcTdaWldYa0I1cm1RTjhjN1Z0SDRQTzVSSE1aV1pJQ2RjMmN5?=
- =?utf-8?B?ZGxPdzQ2VSt5S3lNNzZnNzBMRFhCd3JkVWRWSXdlNUNKT2IvVFhoYW5zZUI5?=
- =?utf-8?B?dDdrcVloNExsY29FMWlnZWlNd1FtbTI3UlpFSGdDb1FDbEJMV0tYZ0R5eHdX?=
- =?utf-8?B?S05ucHN3VzJLUnptSjFYaTlzaXUxZHhEQmh5dEg3RFQzb0czM2taaGVtRVFD?=
- =?utf-8?B?OW12U1VHK2VGNHJZYTV4eENnSUhlNU1aVkdtQUt3VVJkRWNoUDRENUN4Szkw?=
- =?utf-8?B?RTBuVE1EZVcxemtlb29zYUcxWGN0d1FiMUl3a0lMd0dkV2kzclZSUm5pUTUz?=
- =?utf-8?B?WUJVK1RvSE9QaWJNWXhmRFNvTm9LVGpNdFJpYUR5eVpOL1k0OHFnNlJBR2JS?=
- =?utf-8?B?V0VlNTA1TGplYkxndFEwUzQreHRsV2RybGpIaFNWWStGeHNNRnkxUzROYUo1?=
- =?utf-8?B?RU9iSk9ES2dDWWpIbWxRSmZFa3JueXh4NjYydTRzT1FORmk5dC85RVpSR2dW?=
- =?utf-8?B?QitNWWZtc1QvcW9ta1R5enM4ZUR0eHFzNU93VDVCUzZMT25kbWIrUEp6RXFO?=
- =?utf-8?B?V2ZyU0xnaExtVkhsZ1V4NFZOeVJ6K3l2QmpYOWJTNDVDeTZQVlpRdEMxd0lr?=
- =?utf-8?B?SWdwbjNWWmpxT0pxVHdJVGliZi91T1VVQ1dlTGZpNXlWRjNjOWZnWVlmRXFC?=
- =?utf-8?B?ZmZ3RHdpdnBBdVpzUEp2alI3dW5OMDhSNyt0MUdyT3VENkRWaWZYb0ZESjlP?=
- =?utf-8?B?YmhVcTVNTGNhVk80ZFRGWGJ6UWxxSEpzSEJXRkx0RTdLZG9UUGIyakcwYnJq?=
- =?utf-8?B?aDJCb2VjbGZGOU5TY1lDcmdVMVF5OTIrYzdhMWRRUmFReThMNGVyL1BlM0Fa?=
- =?utf-8?B?Ky9MWDhTVnh0Nit2UGJwOUNaOXkvQmY5Rmx2Zm16ZlBXa1hlTWpnWk5pQjlx?=
- =?utf-8?B?MVZkUFhTSi9mODlTZDBuaWUyOFZZbWxMMVh3ejJFNTZ3Z3R1eC82VzAxOVhF?=
- =?utf-8?B?eVBST1dwdTh2RG5BNjROTHRmQzUrUlNyS2p6SmR4Vk4vcW9UeTRybVY3eWVq?=
- =?utf-8?B?UVBGYjdqTkpMdjRleXdNVnJ3SXJEZVBPK2dQaUVBay9yVzBQV2Z2ZG5rZ0JJ?=
- =?utf-8?B?K0dCS0U0cUJnMnd6dzEzY0hZNVAzbGdsVEFFOHE2S0xwNGhmczJCTWg0T05S?=
- =?utf-8?B?WFBGMHNXVUVPUDBJV0lYWGtCWHhQTldzbzBXUm1nL1pQSm5wL0plSUM3R0dI?=
- =?utf-8?B?Q3gzT3kvZUh6c0hYcEJXUU9MOURINXBCZWxxK2xyTytqUjB4ZHZuMDI0RzBF?=
- =?utf-8?B?ZGt4RVJsU2w1TUdlUUpMN3BNeXcvUDRLSFhtd1dUWThjbG1za1p1Zk81MVJh?=
- =?utf-8?B?dm5OVHFqbEpLWnFVekkrMGM3MThoNWNIVTN5ZkVZc2V5M1htZlQ3aDc4cGRa?=
- =?utf-8?B?M1hqVFFvL3NYUjg3TlYxRDNuZzN2SS9YcWFvcGc4RWtGbkZ6ZlV1R0JOa2Fv?=
- =?utf-8?B?KzJXd1BQZks3TzgzK3FJN1piU0RVdS85d3E1OEF1OE5VaTMwN2hOSlRhdDVp?=
- =?utf-8?B?UkU0djFjZlRuTXRzTC9SVFNtNXFzeEN1MnZ3Q216WTJsRTR2NG0zNHpoSkpW?=
- =?utf-8?B?SytJdm4yekhhKzZUZm52ZTlIL2VHWkUzakY5NEcvT1ZLRitDalZXRGdXYTdY?=
- =?utf-8?B?b3JEZXpwM093NXdwQmhkYUV3SFVPMEhIaUNxK2JhaGtpWVYzYXBWT1dNYnRF?=
- =?utf-8?B?RStWb3duaTcwcUtZcjA1NzB3anBIWmtTTm1LbDh5TFpOUGJQVVliNDBaMTdU?=
- =?utf-8?B?aWRQbWRBdTA0N2tONzNMbFFGZllGNG1ZYTBxMGJHQlBFclFLcnhXSjZMUTA2?=
- =?utf-8?B?QUtQb3RYbGkvQUtHSlduRVRCU2ZvczAvZTROWWRJckFNeElLQnhGbFhjQmZy?=
- =?utf-8?B?aUlpUnFEa3UyMWVTeEQxWFRQOG1GTy9SVktKMWQ3Ylk3RmxpNVRpRUgxZG1j?=
- =?utf-8?B?a1pWWFFSZEk1THZLUEJTTHRRZ0g1QTZaSWVsck8wVmI1VXdURTcxZDdjek9z?=
- =?utf-8?B?bVdvSWhzTEFQZTZCK1c4am5VSTBUeG81WkI5MXF2dUl0VGZ5QVJSRk5XUXRz?=
- =?utf-8?B?dUgzOHNvRTNLRlFFcy9jbVB1KzJyQnpXYkhieExZTTB5UHhxMG1QUHBmeFJr?=
- =?utf-8?Q?x3Wr1C8c/s8kBUsJhLlKmqw=3D?=
-X-OriginatorOrg: efficios.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6fdae99-bf8d-49cb-46a9-08de3e5e70e1
-X-MS-Exchange-CrossTenant-AuthSource: YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2025 17:54:07.9094
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sBS6VlaP1f8nFe0KTM/CkHsKz0xF2C1UfsO6i6b/3AsReTGQXgXhGwv4xX3g7DoERFpfFApmmVsi9zBAZbDUFqWi1X31yzV6kpeaEL6lXM4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT2PR01MB8693
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251218014531.3793471-5-mathieu.desnoyers@efficios.com>
 
-On 2025-12-18 05:33, Joel Fernandes wrote:
-> Hi Mathieu,
-> Thanks for posting this.
+On Wed, Dec 17, 2025 at 08:45:31PM -0500, Mathieu Desnoyers wrote:
+> Integrate with the scheduler to migrate per-CPU slots to the backup slot
+> on context switch. This ensures that the per-CPU slots won't be used by
+> blocked or preempted tasks holding on hazard pointers for a long time.
 > 
->> On Dec 17, 2025, at 8:45 PM, Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
->>
->> ﻿Hi,
->>
->> Here is a revisited version of my Hazard Pointers series. Boqun, Joel,
->> if you guys have time to try it out with your use-cases it would be
->> great!
->>
->> This new version does the following:
->>
->> - It has 8 preallocated hazard pointer slots per CPU (one cache line),
->> - The hazard pointer user allocates a hazard pointer context variable
->>   (typically on the stack), which contains the pointer to the slot *and*
->>   a backup slot,
->> - When all the per-CPU slots are in use, fallback to the backup slot.
->>   Chain the backup slot into per-CPU lists, each protected by a raw
->>   spinlock.
->> - The hazard pointer synchronize does a piecewise iteration on the
->>   per-CPU overflow slots lists, releasing the raw spinlock between
->>   each list item. It uses a 64-bit generation counter to check for
->>   concurrent list changes, and restart the traversal on generation
->>   counter mismatch.
->> - There is a new CONFIG_PREEMPT_HAZPTR config option. When enabled,
->>   the hazard pointer acquire/release adds and then removes the hazard
->>   pointer context from a per-task linked list. On context switch, the
->>   scheduler migrates the per-CPU slots used by the task to the backup
->>   per-context slots, thus making sure the per-CPU slots are not used
->>   by preempted and blocked tasks.
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Alan Stern <stern@rowland.harvard.edu>
+> Cc: John Stultz <jstultz@google.com>
+> Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Uladzislau Rezki <urezki@gmail.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Zqiang <qiang.zhang1211@gmail.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: maged.michael@gmail.com
+> Cc: Mateusz Guzik <mjguzik@gmail.com>
+> Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+> Cc: rcu@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: lkmm@lists.linux.dev
+> ---
+>  include/linux/hazptr.h | 63 ++++++++++++++++++++++++++++++++++++++++--
+>  include/linux/sched.h  |  4 +++
+>  init/init_task.c       |  3 ++
+>  kernel/Kconfig.preempt | 10 +++++++
+>  kernel/fork.c          |  3 ++
+>  kernel/sched/core.c    |  2 ++
+>  6 files changed, 83 insertions(+), 2 deletions(-)
 > 
-> This last point is another reason why I want the slots to be per task instead of per CPU. It becomes very natural because the hazard pointer is always associated with a task only anyway, not with the CPU (at usecase level). By putting the slot in the task struct, we allow these requirements to flow naturally without requiring any locking or list management.. Did I miss something about the use cases?
+> diff --git a/include/linux/hazptr.h b/include/linux/hazptr.h
+> index 70c066ddb0f5..10ac53a42a7a 100644
+> --- a/include/linux/hazptr.h
+> +++ b/include/linux/hazptr.h
+> @@ -24,6 +24,7 @@
+>  #include <linux/percpu.h>
+>  #include <linux/types.h>
+>  #include <linux/cleanup.h>
+> +#include <linux/sched.h>
+>  
+>  /* 8 slots (each sizeof(void *)) fit in a single cache line. */
+>  #define NR_HAZPTR_PERCPU_SLOTS	8
+> @@ -46,6 +47,9 @@ struct hazptr_ctx {
+>  	struct hazptr_slot *slot;
+>  	/* Backup slot in case all per-CPU slots are used. */
+>  	struct hazptr_backup_slot backup_slot;
+> +#ifdef CONFIG_PREEMPT_HAZPTR
 
-I start from the hypothesis that scanning all tasks at synchronize
-is likely too slow for a general purpose synchronization algo.
+I would suggest we make CONFIG_PREEMPT_HAZPTR always enabled hence no
+need for a config, do we have the measurement of the additional cost?
 
-This is why we have RCU (general purpose) tracking hierarchical per-cpu
-state, and specialized RCU flavors (for tracing and other use-cases)
-using iteration on all tasks.
+> +	struct list_head preempt_node;
+> +#endif
+>  };
+>  
+>  struct hazptr_percpu_slots {
+> @@ -98,6 +102,50 @@ bool hazptr_slot_is_backup(struct hazptr_ctx *ctx, struct hazptr_slot *slot)
+>  	return slot == &ctx->backup_slot.slot;
+>  }
+>  
+> +#ifdef CONFIG_PREEMPT_HAZPTR
+> +static inline
+> +void hazptr_chain_task_ctx(struct hazptr_ctx *ctx)
+> +{
+> +	list_add(&ctx->preempt_node, &current->hazptr_ctx_list);
+> +}
+> +
+> +static inline
+> +void hazptr_unchain_task_ctx(struct hazptr_ctx *ctx)
+> +{
+> +	list_del(&ctx->preempt_node);
+> +}
+> +
 
-One of the highlights of hazard pointers over RCU is its ability to
-know about quiescence of a pointer without waiting for a whole grace
-period. Therefore I went down the route of scanning per-CPU state rather
-than per-task.
+I think you need to add interrupt disabling for chain/unchain because of
+the potential readers in interrupt and then you can avoid the preempt
+disabling in hazptr_release() I think. Let's aim for supporting readers
+in interrupt handler, because at least lockdep needs that.
 
-> 
-> I did some measurements about the task-scanning issue, and it is fast in my testing (~1ms/10000 tasks). Any input from you or anyone on what the typical task count distribution is that we are addressing? I also made a rough prototype, and it appears to be simpler with fewer lines of code because I do not need to handle preemption. It just happens naturally.
+Regards,
+Boqun
 
-It really depends on the access pattern here. If you want to replace
-refcount decrement and test with hazard pointer synchronize, a delay of
-1ms on each hazptr synchronize is a *lot*.
-
-Of course perhaps this can be batched with a worker thread, but then
-you are back to using more memory due to delayed reclaim, and thus
-closer to RCU.
-
-> 
-> First of all, we can have a per-task counter that tracks how many hazard pointers are active. If this is zero, then we can simply skip the task instead of wasting cycles scanning all the task slot.
-> Further, we can have a retire list that reuses a single scan to scan all the objects in the retire list, thus reusing the scan cost. This can also assist in asynchronously implementing object retiring via a dedicated thread perhaps with the tasks RCU infrastructure. We can also make this per-task counter a bitmap to speed up scanning potentially.
-> 
-> I am okay with the concept of an overflow list, but if we keep the overflow list at the per-task level instead of the per-CPU level, it is highly unlikely IMO that such an overflow list will be used unless more than, say, eight hazard pointers per task are active at any given time.
-
-The PREEMPT_HAZPTR scheme achieves this as well, with per-CPU scan
-rather than per-task.
-
-> So its lock contention would be rarer than, say, having a per-CPU overflow list. I would say that contention would be incredibly rare because typically hazard pointers are used by multiple tasks, each of which will have its own unique set of slots. Whereas in a per-CPU overflow  approach, we have a higher chance of lock contention, especially when the number of CPUs is low.
-
-Contention on the per-CPU spinlocks would only happen if threads are
-migrated between chaining of their backup slot (either if 8 hazptr
-are in use by the thread, or on context switch), and release. Do
-you expect this type of migration to happen so often as to increase
-contention ?
-
-> 
-> Other than the task-scanning performance issue, what am I missing?
-
-Task-scan performance is the key issue. Also you have to set a limit
-of per-task slots. How would you handle the scenario where a user
-needs more slots than the limit ?
-
-> 
-> Another nice benefit of using per-task hazard pointers is that we can also implement sleeping in hazard pointer sections because we will be scanning for sleeping tasks as well.
-
-The PREEMPT_HAZPTR scheme takes care of this as well. Sleeping with a
-hazptr held will trigger the context switch, and the scheduler will
-simply move the hazard pointer from the per-CPU slot to the backup
-slot. End of story.
-
-> 
-> By contrast, the other approaches I have seen with per-CPU hazard pointers forbid sleeping, since after sleeping a task is no longer associated with its CPU. The other approaches also have a higher likelihood of locking Due to running out of slots.
-
-Except for PREEMPT_HAZPTR. :)
-
-> 
-> Of course I am missing a use case, but I suspect we can find a per-CPU ref-count use case that benefits from this. I am researching use cases when I get time. I think my next task is to find a solid use case for this 
-before doing further development of a solution..
-
-Let me know what you find, I'm very interested!
-
-> 
-> By the way, feedback on the scanning patch:
-> 
-> Can you consider using a per-CPU counter to track the number of active slots per CPU? That way you can ignore CPU slots for CPUs that are not using hazard pointers. Another idea is to skip idle CPUs as well.
-
-I had this in a userspace prototype: a counter of used per-cpu slots.
-But I finally decided against it because it requires extra instructions
-on the fast path, *and* scanning 8 pointers within a single cache line
-on synchronize is really cheap. So I'd need benchmarks to justify adding
-back the counter.
-
-> 
-> Have you also considered any asynchronous use case where maintaining a retired list would assist in RCU-style deferred reclaim of hazard-pointer objects?
-
-This would be a logical next step indeed. I'll have to think
-about this some more.
-
-Thanks,
-
-Mathieu
-
-> 
-> thanks,
-> 
->   - Joel
-> 
->>
->> It is based on v6.18.1.
->>
->> Review is very welcome,
->>
->> Thanks,
->>
->> Mathieu
->>
->> Cc: Nicholas Piggin <npiggin@gmail.com>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> Cc: "Paul E. McKenney" <paulmck@kernel.org>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Boqun Feng <boqun.feng@gmail.com>
->> Cc: Alan Stern <stern@rowland.harvard.edu>
->> Cc: John Stultz <jstultz@google.com>
->> Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
->> Cc: Linus Torvalds <torvalds@linux-foundation.org>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Boqun Feng <boqun.feng@gmail.com>
->> Cc: Frederic Weisbecker <frederic@kernel.org>
->> Cc: Joel Fernandes <joel@joelfernandes.org>
->> Cc: Josh Triplett <josh@joshtriplett.org>
->> Cc: Uladzislau Rezki <urezki@gmail.com>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
->> Cc: Zqiang <qiang.zhang1211@gmail.com>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Waiman Long <longman@redhat.com>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Vlastimil Babka <vbabka@suse.cz>
->> Cc: maged.michael@gmail.com
->> Cc: Mateusz Guzik <mjguzik@gmail.com>
->> Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
->> Cc: rcu@vger.kernel.org
->> Cc: linux-mm@kvack.org
->> Cc: lkmm@lists.linux.dev
->>
->> Mathieu Desnoyers (4):
->>   compiler.h: Introduce ptr_eq() to preserve address dependency
->>   Documentation: RCU: Refer to ptr_eq()
->>   hazptr: Implement Hazard Pointers
->>   hazptr: Migrate per-CPU slots to backup slot on context switch
->>
->> Documentation/RCU/rcu_dereference.rst |  38 +++-
->> include/linux/compiler.h              |  63 +++++++
->> include/linux/hazptr.h                | 241 ++++++++++++++++++++++++++
->> include/linux/sched.h                 |   4 +
->> init/init_task.c                      |   3 +
->> init/main.c                           |   2 +
->> kernel/Kconfig.preempt                |  10 ++
->> kernel/Makefile                       |   2 +-
->> kernel/fork.c                         |   3 +
->> kernel/hazptr.c                       | 150 ++++++++++++++++
->> kernel/sched/core.c                   |   2 +
->> 11 files changed, 512 insertions(+), 6 deletions(-)
->> create mode 100644 include/linux/hazptr.h
->> create mode 100644 kernel/hazptr.c
->>
->> --
->> 2.39.5
->>
-
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+> +static inline
+> +void hazptr_note_context_switch(void)
+> +{
+> +	struct hazptr_ctx *ctx;
+> +
+> +	list_for_each_entry(ctx, &current->hazptr_ctx_list, preempt_node) {
+> +		struct hazptr_slot *slot;
+> +
+> +		if (hazptr_slot_is_backup(ctx, ctx->slot))
+> +			continue;
+> +		slot = hazptr_chain_backup_slot(ctx);
+> +		/*
+> +		 * Move hazard pointer from per-CPU slot to backup slot.
+> +		 * This requires hazard pointer synchronize to iterate
+> +		 * on per-CPU slots with load-acquire before iterating
+> +		 * on the overflow list.
+> +		 */
+> +		WRITE_ONCE(slot->addr, ctx->slot->addr);
+> +		/*
+> +		 * store-release orders store to backup slot addr before
+> +		 * store to per-CPU slot addr.
+> +		 */
+> +		smp_store_release(&ctx->slot->addr, NULL);
+> +	}
+> +}
+> +#else
+> +static inline void hazptr_chain_task_ctx(struct hazptr_ctx *ctx) { }
+> +static inline void hazptr_unchain_task_ctx(struct hazptr_ctx *ctx) { }
+> +static inline void hazptr_note_context_switch(void) { }
+> +#endif
+> +
+>  /*
+>   * hazptr_acquire: Load pointer at address and protect with hazard pointer.
+>   *
+> @@ -114,6 +162,7 @@ void *hazptr_acquire(struct hazptr_ctx *ctx, void * const * addr_p)
+>  	struct hazptr_slot *slot = NULL;
+>  	void *addr, *addr2;
+>  
+> +	ctx->slot = NULL;
+>  	/*
+>  	 * Load @addr_p to know which address should be protected.
+>  	 */
+> @@ -121,7 +170,9 @@ void *hazptr_acquire(struct hazptr_ctx *ctx, void * const * addr_p)
+>  	for (;;) {
+>  		if (!addr)
+>  			return NULL;
+> +
+>  		guard(preempt)();
+> +		hazptr_chain_task_ctx(ctx);
+>  		if (likely(!hazptr_slot_is_backup(ctx, slot))) {
+>  			slot = hazptr_get_free_percpu_slot();
+>  			/*
+> @@ -140,8 +191,11 @@ void *hazptr_acquire(struct hazptr_ctx *ctx, void * const * addr_p)
+>  		 * Re-load @addr_p after storing it to the hazard pointer slot.
+>  		 */
+>  		addr2 = READ_ONCE(*addr_p);	/* Load A */
+> -		if (likely(ptr_eq(addr2, addr)))
+> +		if (likely(ptr_eq(addr2, addr))) {
+> +			ctx->slot = slot;
+> +			/* Success. Break loop, enable preemption and return. */
+>  			break;
+> +		}
+>  		/*
+>  		 * If @addr_p content has changed since the first load,
+>  		 * release the hazard pointer and try again.
+> @@ -150,11 +204,14 @@ void *hazptr_acquire(struct hazptr_ctx *ctx, void * const * addr_p)
+>  		if (!addr2) {
+>  			if (hazptr_slot_is_backup(ctx, slot))
+>  				hazptr_unchain_backup_slot(ctx);
+> +			hazptr_unchain_task_ctx(ctx);
+> +			/* Loaded NULL. Enable preemption and return NULL. */
+>  			return NULL;
+>  		}
+>  		addr = addr2;
+> +		hazptr_unchain_task_ctx(ctx);
+> +		/* Enable preemption and retry. */
+>  	}
+> -	ctx->slot = slot;
+>  	/*
+>  	 * Use addr2 loaded from the second READ_ONCE() to preserve
+>  	 * address dependency ordering.
+> @@ -170,11 +227,13 @@ void hazptr_release(struct hazptr_ctx *ctx, void *addr)
+>  
+>  	if (!addr)
+>  		return;
+> +	guard(preempt)();
+>  	slot = ctx->slot;
+>  	WARN_ON_ONCE(slot->addr != addr);
+>  	smp_store_release(&slot->addr, NULL);
+>  	if (unlikely(hazptr_slot_is_backup(ctx, slot)))
+>  		hazptr_unchain_backup_slot(ctx);
+> +	hazptr_unchain_task_ctx(ctx);
+>  }
+[...]
