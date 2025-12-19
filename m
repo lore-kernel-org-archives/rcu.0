@@ -1,69 +1,69 @@
-Received: from mail-pj1-f68.google.com (mail-pj1-f68.google.com [209.85.216.68])
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34922D948A
-	for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 21:38:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3731F28134F
+	for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 21:42:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766180299; cv=none; b=WlhD8bU3DWJvC+d6YzvOEqydTL/sxl7+06ngv4mKOJi//gh8tfp4LzdVftYyIknw0JuyiCGeegF2E3xtn1mXV66TQCAFmXRCd1vekSEfoiO+lgH/r4nzgALO6ao+isYxKj0OC3FtoflDphsFzzpMGECwM7YmosbMUMaBmEXl6ug=
+	t=1766180565; cv=none; b=eIRjgE6rxiIjGyWl8m/eimeGfEjhtwzvtKFnTD7ZH1bzUCzdLPmeHey1SH+rE1t6CGsUfDJa1HjhjiEmHGNrfayoz14ieSE/e3G6MnRteUG4xX/7Z38OOyDm2IWF+uos8l83BAB6Uznsa1K3cUbEYVTEj2ij49s0ZSd3He73CHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766180299; c=relaxed/simple;
-	bh=SBHXkRgMesGUJGSlI+YkckhHJhyJOUbeeY6s/H5FeUc=;
+	s=arc-20240116; t=1766180565; c=relaxed/simple;
+	bh=XXvUIRo6jJ9ogO2QQaUCxttK8WosB2XGObI8UYH72+M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r7HgIs7EHU1emPMsDMuz6qHeUfHbTlAlhQVn35K61XyqzH4JoMc3jSo0dsdO7pG8ayLOYKCgLRZJRCsi2t8Oxk+vvuELgqvs18VJFghhaSlIil2D1XuKAJOIpLRZlPtprfBINX7A7gpCNab7t7TVB60c7p3KddAitk9xdwNhwn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PZXXDITX; arc=none smtp.client-ip=209.85.216.68
+	 In-Reply-To:Content-Type; b=mQ7MF5OYarzT3bGesjhYmooTZMRFwU7FJOkH8o2F1TX+DZmDAj2e7byNL2m+OAKVii5rRYJdbJ2v8BMARCcmglG73wPNUBe7f4YEBs1X/BqJHPP7w3dihbZHy0ZJJmrgRsR6sB1/ct84/iyyNe7V1M6N8UnTXDVrtTg9uq8qPQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AOj/rZpt; arc=none smtp.client-ip=209.85.214.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PZXXDITX"
-Received: by mail-pj1-f68.google.com with SMTP id 98e67ed59e1d1-34c21417781so2201147a91.3
-        for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 13:38:16 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AOj/rZpt"
+Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-2a0b4320665so33213805ad.1
+        for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 13:42:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766180296; x=1766785096; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766180561; x=1766785361; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=SBHXkRgMesGUJGSlI+YkckhHJhyJOUbeeY6s/H5FeUc=;
-        b=PZXXDITX8O2pITtu53MVdLOAN8xLa+E4T8O59SLKUmlhw5IGVuOVSaPVKr3RLgyRi9
-         FFkrGh/mG35OypARILyigj6YN0GxLJ3X3MOyK+Jvg6PjLDf3Dq2LmoZ2Sj9s/vukVIFq
-         LzzBAqPmENgXRvU7eSOKxVcijftEUHTO1jAq7CC7D0kpCfHRoPh2jBjS30aoCTlf+rtk
-         nw9MA21zYZJBvVw3CEwwUHEc5WUM5bMNKamyH44/Jthx3UNRJwNqNDyGqhB/ZUDiPjj8
-         /SJ5Mj3VpKOHOujtfOTulYT13laYJWXVJsjSmabdQezKKZkPMS3oWx9RPm6XWm7dEXsO
-         n3+w==
+        bh=xhB1Fco/aAscGV7BUmHv+KRyMsa6iylEkhRycjuIJTw=;
+        b=AOj/rZptNUFI/4UnRqR9fG5FQ29cGUrYlcJJx2lflJCke/Y/I28A5KMi4N1CfFrm3L
+         ow86AIq0BJG9HpLBXdf0gflqQQC5t8cN2KiV3kkBODaly4qmcOX5yvk80RVXbtRifmoH
+         9sjvd9xJZDmyRyDGilORjblWWQMJNU6Agw7WMpFLYUaBksDg/a+fjRiH+L1qrHNgzxee
+         Jc50o4OHuJWtqRFIa+GTKNf7qG/gwNOG10jYe9HOjwMv4hpHQfmChvlC+4bxyS64Zx7D
+         8j1dm92dY/SjzI8eCA0tkgzlHwdV1ZCIC92qmEFfsCZGLieEWuaYI8kDGDZ5baKWEVWa
+         OFaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766180296; x=1766785096;
+        d=1e100.net; s=20230601; t=1766180561; x=1766785361;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SBHXkRgMesGUJGSlI+YkckhHJhyJOUbeeY6s/H5FeUc=;
-        b=vIrEB48yOn1I0K03UzVrhSWNDtvGuxuQJ+EUHQe1CYFoPk4KUXDjVaeOXZx5DKHtXE
-         fw63fbzGNnrm3ENsfHzxvUvs8rGmAcILArEgZJq4Rr+7pIfLvBazf68iqCra19bhQV+T
-         3bqyUVTCMUtQvRf5ZhIT+AZbRWd2mlLWWPKU949X2QjfJlAasG48mU0yfcE/nNqVTheH
-         sKEMKT/vtcSNRLZxhPnmd863ldhgGDCUpSNbzr9f1xYzZx1C/jmfO9vKnTNzOmEAOxtI
-         k0lWBiE6qW0XsvfofygMiKVbuPqlP91A/I7M82QWt2jLqHDA4qk1l2AeuSpSEwDlniyW
-         2SGg==
-X-Forwarded-Encrypted: i=1; AJvYcCUJxU1VqwOMW6bSA+VXaAUDYMCQhUwrC4NLyG0M1CxeC/uOaYc6rKL6fqLVp9Op5vAgjEc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxN/ddxH5nV5nN+ZXeLyxgXsnxE7s77IKM9gG7hlNar/tyJXyhZ
-	lGyBSzhyy6NSsBEog2KiU5VNho56tNVwwmdJXTJSazuBfD9S0ywF4BBJ
-X-Gm-Gg: AY/fxX6t+U2E5DfWLG4jElKs8J90gpq+cDNtzHiDdmDZQlxbeHCWUq3YuKHtExbXQwT
-	jSA9PBn8HBCdecI2KhVmBBt2QNEMq5tgO3+6+oxQ/OTgPzh8kz4uGCkDDA73KRjs/XwNOtmeIyC
-	ns0Pj2Ij0ccz3p/yLLbCeo8fJEpzrjMpEhR5pnpjPPcWa3ovlPvgxQjmO1xmZIzcjvXcVQ7Gxzs
-	nJBNMbTWFBjz6d8xciU1EQhK28ayr8mErwFndpF0hadN54YBDhCWHFAbexGh8Ntq5dn+h2b5SgE
-	tc+EucaNneoE/i7lgWIgnVTzfLM8vdmAV1zQ31yZKVRzMHcnqSeSygIZnELDtSbI+CXA1RlpHoK
-	+2TsHGa7E9ovbInCBPQaYWvRFj9I4DcL7vH5j4WdRDBqonI/vw+7yoTSmI0xSaSigJGsMZRhm4t
-	kCuukeVn7+HGQJLQvw2Tt25Zq/gfcZk81R4CIBin9LW+R7CmMn317BtLw1n5bmhPaiyssZe6sC4
-	rMNWiMzq6umoC0AcNq9XEKqXtGrjIcA6WaWeEIkXVMxeGBw+fPiyV5dQpL7wEOouCatylLZumu7
-	Z0Y=
-X-Google-Smtp-Source: AGHT+IGivulZwqOvq9TkwT/0JBobQprm3JRJ6VtJUw4ydSXEmlT/iKTWxEeMw8/Q4ZWRYLdEwZEKQQ==
-X-Received: by 2002:a05:7022:e0c:b0:11a:f5e0:dc8 with SMTP id a92af1059eb24-121722f462emr3455845c88.28.1766180295388;
-        Fri, 19 Dec 2025 13:38:15 -0800 (PST)
+        bh=xhB1Fco/aAscGV7BUmHv+KRyMsa6iylEkhRycjuIJTw=;
+        b=MprvZ+FEsnfUEp+ed4MFqLtjZpM3ZXic4LDotuL5Svae6dPV47/bzbp0FcPzrWJDNA
+         oDrsDDQ2fvYfkALbvppRljhJZCG8cubqoTTQO9UuBKx+h9imgP9a5q+vFtqiwH7U/Yyf
+         Txxi753gBPxNGeTsieHvR/F96tju5/DDt9eZzmGJPngvYi8AdF9nqJQC8OXpDYQulFLQ
+         8z9EPSx4LGnF4G0DbPERYHJEsB0J2BYrs1gO6c6YRM/IweQAOjaJGpSE+PDkYPDNJ+V6
+         f/jy587DCICbBzEZoYGmm7a2Dbea5PB9mZ/40kgqHEWAoInKLgGTeLdut/hj7dYNNgce
+         mYuA==
+X-Forwarded-Encrypted: i=1; AJvYcCXkG/7sI4NKkHNsMfLHYWPvepiN7BftOFRKMRsaEL8mSbmSqzLRPktoot9QFZzsbJfo04E=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx13ZDHMgorO2Wps2THINdAYwPyrHRm+1Sf9xp/3jKYoZh5vvPW
+	a39JTdKbdKyAraA5Iv9fRCO3MHWEaP6gFEUMmhtlr2CdDdtYUv+w0HMn
+X-Gm-Gg: AY/fxX6cx6owYrpi0R7V8H0Wyd+VRK63wnTZhYmQxrBpRivL8FzZ/wAHo12kcpyFKWk
+	Y7OAqskhIHZ7y/ygAc9pN3jZMhxXBuVI1FShqFOWvHZXP1innUmGGInc6IsBl+6Q3Ao3H6AZ7Mz
+	+gobUsFqfFcRIwqkNcJUOL/l2WBhoVWDsoMozl3OI/OmTQfskE3kswJ1LKERkqT2rnqLrCwP/Tc
+	pyeVUkBBEV//9CWN/pycr4GtLiJG3H7+FmYO2RJ1c5dSeIusQeTMaNtamxcJ7vwUi3mf+8CPiDg
+	5Wz7o9y8S6noo1ehiqbDpOXtMGKFLRBZEP3H2o9B2Nvbj8Ml/ng9spPlchLMHtSw0rdHe5p9Nl+
+	KuBwxl8LF1PSkuUS5NuSmb22dLJRnVL0wBoTK7AXGDYobBbmJRhqs1WimXjRZrgd6rfYJ64b+rs
+	NtcgdD8kyf59pGF0pDv2ss+bOmHf+t4lOghUCnkmcVZAjwZgCrpKqFrlrMs2U033lnOxT7CfxKJ
+	w0ETRQJ1nct+nybA9vaBQcLakevNbiXtimmJu8xz7FFGg4xeSpb+o6k2fp60r9q9aRDP0Vmdr0i
+	CAM=
+X-Google-Smtp-Source: AGHT+IGTM6mjPPfNhqA9HPe48U2bDECheHzAzGuJpcTxojW/wC3VfdWLu4jNEE4Msq7vw7t+QoPUtw==
+X-Received: by 2002:a05:7022:62a9:b0:11b:78e6:8323 with SMTP id a92af1059eb24-121722fd212mr4438541c88.37.1766180561251;
+        Fri, 19 Dec 2025 13:42:41 -0800 (PST)
 Received: from ?IPV6:2a00:79e0:2e7c:8:5874:79f3:80da:a7a3? ([2a00:79e0:2e7c:8:5874:79f3:80da:a7a3])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121724cfd95sm12051531c88.1.2025.12.19.13.38.13
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1217254c734sm11636083c88.13.2025.12.19.13.42.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Dec 2025 13:38:14 -0800 (PST)
-Message-ID: <34cda24f-acdc-4049-9869-b666b08897d9@gmail.com>
-Date: Fri, 19 Dec 2025 14:38:12 -0700
+        Fri, 19 Dec 2025 13:42:40 -0800 (PST)
+Message-ID: <9af0d949-45f5-45cd-b49d-d45d53f5d8f6@gmail.com>
+Date: Fri, 19 Dec 2025 14:42:38 -0700
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -71,7 +71,8 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 23/36] compiler-context-analysis: Remove Sparse support
+Subject: Re: [PATCH v5 24/36] compiler-context-analysis: Remove __cond_lock()
+ function-like helper
 To: Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>,
  Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>,
  Will Deacon <will@kernel.org>
@@ -103,19 +104,47 @@ Cc: "David S. Miller" <davem@davemloft.net>,
  linux-security-module@vger.kernel.org, linux-sparse@vger.kernel.org,
  linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
 References: <20251219154418.3592607-1-elver@google.com>
- <20251219154418.3592607-24-elver@google.com>
+ <20251219154418.3592607-25-elver@google.com>
 Content-Language: en-US
 From: Bart Van Assche <bart.vanassche@gmail.com>
-In-Reply-To: <20251219154418.3592607-24-elver@google.com>
+In-Reply-To: <20251219154418.3592607-25-elver@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 12/19/25 8:40 AM, Marco Elver wrote:
-> Remove Sparse support as discussed at [1].
+>   Documentation/dev-tools/context-analysis.rst  |  2 -
+>   Documentation/mm/process_addrs.rst            |  6 +-
+>   .../net/wireless/intel/iwlwifi/iwl-trans.c    |  4 +-
+>   .../net/wireless/intel/iwlwifi/iwl-trans.h    |  6 +-
+>   .../intel/iwlwifi/pcie/gen1_2/internal.h      |  5 +-
+>   .../intel/iwlwifi/pcie/gen1_2/trans.c         |  4 +-
+>   include/linux/compiler-context-analysis.h     | 31 ----------
+>   include/linux/lockref.h                       |  4 +-
+>   include/linux/mm.h                            | 33 ++--------
+>   include/linux/rwlock.h                        | 11 +---
+>   include/linux/rwlock_api_smp.h                | 14 ++++-
+>   include/linux/rwlock_rt.h                     | 21 ++++---
+>   include/linux/sched/signal.h                  | 14 +----
+>   include/linux/spinlock.h                      | 45 +++++---------
+>   include/linux/spinlock_api_smp.h              | 20 ++++++
+>   include/linux/spinlock_api_up.h               | 61 ++++++++++++++++---
+>   include/linux/spinlock_rt.h                   | 26 ++++----
+>   kernel/signal.c                               |  4 +-
+>   kernel/time/posix-timers.c                    | 13 +---
+>   lib/dec_and_lock.c                            |  8 +--
+>   lib/lockref.c                                 |  1 -
+>   mm/memory.c                                   |  4 +-
+>   mm/pgtable-generic.c                          | 19 +++---
+>   tools/include/linux/compiler_types.h          |  2 -
 
-Kernel patch descriptions should be self-contained. In other words, the
-conclusion from [1] should be summarized in the patch description
-instead of only referring to that discussion with a hyperlink.
+This patch should be split into one patch per subsystem or driver.
+E.g. one patch for the iwlwifi driver, another patch for the mm
+subsystem, one patch for the rwlock primitive, one patch for the
+spinlock primitive, etc.
+
+The tools/include/linux/compiler_types.h change probably should be
+left out because it is user space code instead of kernel code and
+the rest of the series applies to kernel code only.
 
 Thanks,
 
