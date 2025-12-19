@@ -1,282 +1,478 @@
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013068.outbound.protection.outlook.com [40.93.196.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231DD1D5CDE;
-	Fri, 19 Dec 2025 15:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.68
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766159094; cv=fail; b=QzRJKsJ7yUmpovl7CALxBLYNDFYqUaqiZUgdkRTRRYLagjUBxRAJTxCzuArcy7Pda3W9AEX9vj08bx0w0A1i3OGX7pET9L3C67evPgD0tFG16/uTtaJgbIMlbzDsf1T9EhxNl6HMBrN7QPyy05YimsVnL7d6WNwKNlZ8VguA71U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766159094; c=relaxed/simple;
-	bh=mefzDoQfPX5wxnHvK+c9hPLFOnDE5Kr3MoijPyt4I1U=;
-	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=f7AdbzYOFqBi5l0NEVdLlMVAJNxzuXdSYSFoehLFmPQoBW1pTUub8ZVsIhmH8zn1CQCL3o5bmLfJEOsZ+pn/FYY+Hzw+Lxv0XaSugohjENiBpWBef8/VIDrxdofRZBGdheFM8aLFT7wwPccwyrK9DouyEanOfqHWeuDAMp/2u6c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=pfkNnm6K; arc=fail smtp.client-ip=40.93.196.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DEA01E5B60
+	for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 15:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.73
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766159114; cv=none; b=bOu93OQPOZ6dqZXFj0FyjAhjxqTbcP8eM05v51PQ4T3x9eMqu0D9kmrYg7OZXaVVzHVPw595uYWSSxJs7Heq6QePqAkUVyKZxXG+ACZ6bL82Mn3E660j96If9hNFK4C9xrbtNpZCXao6cyL1MpZM3wNNzSNOKTSzXaHn3l9gO0I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766159114; c=relaxed/simple;
+	bh=jxRVFkcZ/dQRiG15u55eeTK008jHW8Kue4PgzUH7FSw=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=JDQMd6Nt/SFP2WvCUQsWCxug82B5LxJmQTbJpHNO59L5mNJ370xn30IAD1acsnDlEy+Hr32j7uQxfYSRMioSJebzSBI4W0V4mlSRwZLiwySspfXfVn4pWcMgN+xgYXZl0G+8D9vaNJxAt35Vt3dzfKO5Ny9cObYn1lcaS04+qDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4iYQ7wzQ; arc=none smtp.client-ip=209.85.218.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="pfkNnm6K"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=IJAEXFyp5YanVOHr7/jaNQvy5oPGfwCy6rKf65HkJs/d/fhT1E+VhKJSHkDVaY2ppGqNFBP16W9Sud9DWanevF6fSrotYO0EOczEan5v7uaPveGwXwSjnYxA1eplaHFDdLR2IMIs5wLRxTEhpcM3v6l/aVi2fTFmrp0+NtLrdWj71eihV8xk2jEFg4Q+GpWncZLFbXPXJv+gX03EfEBhu/Y8NvItOOLizpG2Q79nt1ppqwCF++HqRNXaRyIdZfdrcI/ecRPAh9av23r00R30YnzUXs22nYzTvetWLw5jLoGk46TNCTr6tU8ZEOVEuY75p6gwEZbyYDC/2yXElR2Mfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jlE+38LXfFcl/R4e1QiJQXv61ouj0BBIevvxbue9VBs=;
- b=uVK9SmE0KHWviDoJAdCzhllvO/UNswdfWPKSchMHtvED5NA2e36KA4w1N8ngaJDPK0muPxENy8lH8QecgPg7FJFeguEuD559uHD9uJsGeWiFgk+jgXg4zAzoUEmuZgSxe5mSP7lwOMpQvu/T2wN+RPJlT65N3APZiFKu47aVn2zsanB6RZUOi922o1mF11za74v9pzjF0SKtbCbwvRwynXD0DwoWKDQWSEeZHcD+r38jMgUAHthuiV8DKGsKrGHFW9HhlfCsMFdsLZFD1z16D56NGAUXuDUGmQncFwgHCapXI2Ea6aEZaBoPgOj12IPPAdJNOEpMDfH8Xhyq8t0JYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jlE+38LXfFcl/R4e1QiJQXv61ouj0BBIevvxbue9VBs=;
- b=pfkNnm6Kx4YLD3324ym37Dg2Cyxj/cC5YLQGQb2LIfRtKWSS6eOQ6DCfCZ/fRMtfYUaYxZz3GYNVxl9BYWajZQAG0BwfQMoyM7Y78HiT+6TDSgmcvI9cKAlFnYW9J9CJ6D96/53oKYysSP6cvUobYArZuetQ1IauAy+HEhx7LMHjRtTBveop/ElaViInfaA/AwIpPNl/chxbQrDriqSWIy+dF5JaB7api2NAETo9wm6Z2bvCKbipZr33FaH/zmlvuxfY1wIzPJH2bw88RhWVN9w9ohC/tfIoK1pyG+zfy6LzusURRQhwDHXo4tgUe10V4XJmLF0dRByJRM3VOZyMxA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by DM4PR12MB6496.namprd12.prod.outlook.com (2603:10b6:8:bd::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.7; Fri, 19 Dec
- 2025 15:44:50 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%2]) with mapi id 15.20.9434.009; Fri, 19 Dec 2025
- 15:44:50 +0000
-Message-ID: <a32ad653-1bcb-44d4-9802-bcfc2725d712@nvidia.com>
-Date: Fri, 19 Dec 2025 10:44:48 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rcu: Fix rcu_read_unlock() deadloop due to softirq
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Yao Kai <yaokai34@huawei.com>
-Cc: rcu@vger.kernel.org, liuyongqiang13@huawei.com, paulmck@kernel.org,
- frederic@kernel.org, neeraj.upadhyay@kernel.org, josh@joshtriplett.org,
- boqun.feng@gmail.com, urezki@gmail.com, rostedt@goodmis.org,
- mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
- qiang.zhang@linux.dev, linux-kernel@vger.kernel.org, yujiacheng3@huawei.com
-References: <20251218074950.1936014-1-yaokai34@huawei.com>
- <20251219151400.GA820904@joelbox2>
- <16e20d68-8d19-45bd-b4a1-f2c067ca44a6@nvidia.com>
-Content-Language: en-US
-In-Reply-To: <16e20d68-8d19-45bd-b4a1-f2c067ca44a6@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0298.namprd13.prod.outlook.com
- (2603:10b6:208:2bc::33) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4iYQ7wzQ"
+Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-b771bfe9802so179910866b.1
+        for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 07:45:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1766159107; x=1766763907; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DevBKjiUQ1DYWG4NWpg0hsHH+Nds87DWeoh34BFlORw=;
+        b=4iYQ7wzQ7qhG0V5MEgF9zHw2vOjSm/te1265sEKuaLrm9aqPHlpWPTyqmv9NEaHBhm
+         eVaRusb3LZdpcmWsC4sQkMLtBVrdLOG+Q2UKeHyaPqqxQpkkze26xxtC7UaEXVWgji8u
+         DLLUNwUf+BP+JALIprY68FdjxEImBNCzChTEnedax95kM7gMSsymwDNocEH7g9OsarSy
+         Inj9EJMcJABNTJhoPJDsdUyG44y6iKvhqPFJIz4SoSezVVf6qiyrAZYoLmLKmSMM/QrI
+         NaHV6R0RNTbqtAp0aEDpCCwtdGOorBUFgwYcAnt64S+NZlrLZhm/I2bsQoFdI9XQYswa
+         QqEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766159107; x=1766763907;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DevBKjiUQ1DYWG4NWpg0hsHH+Nds87DWeoh34BFlORw=;
+        b=mhPUthf310pVawKSbXrgK76xJHGpvP3LD8XXwWZFqyxQnns8JUyIhftIKdLHxrI5GU
+         EdTWjKfZF3GUrpCklnQpvRjmsxoK2NNGKx7swwE2x0BWAOjo6t8cV0lB4sC0XsZDIiYD
+         Qu+vCYf0MIFzyDEP2gXrYfJ/VKkTcC9GQE9WeRX5zVGj1ZtJMMnH7pX+0Xr+wOZv4BJm
+         ceQW6ScXTRfDwe9YcW2MPFdUGxMt6yqhn4dga4YfekaxUryniG42GD61PpTFJiKa/GRb
+         4tubHTpV8GoIt4YnpfKwIOOWDfexfWYhHGfRkYoh9PJfM4grYcOlcksFiM+fNnirtv/7
+         PvAw==
+X-Forwarded-Encrypted: i=1; AJvYcCUwuOreVVciM2r+EItXBMt1buGKqsP8/sQKvNhM3LnWTPXqMqa/WeYDXptGUCHTNapZqEw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwddcM1xYBFN7HhFKFGzXrk6TZ7ySy0lK2EdcxX7XFDGvI7hdTG
+	qwCwvsqkget/nffT2iU95TeYefbIBLEuMqph62F9eadh9hCNBhib4qMH1Hm5SN1tHWzIpmPd0bx
+	sIA==
+X-Google-Smtp-Source: AGHT+IHtV88uBWdFWDpxHAn+aJGoZ7Ne2Qv7ftKEp6v1rUUmlYkJyqA6HCtPYVARKi6mxF17jdhYcvZpxA==
+X-Received: from edya2.prod.google.com ([2002:aa7:cf02:0:b0:64b:a037:21b4])
+ (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a17:907:2d08:b0:b72:af1f:af7d
+ with SMTP id a640c23a62f3a-b8036f608aemr336350066b.29.1766159106427; Fri, 19
+ Dec 2025 07:45:06 -0800 (PST)
+Date: Fri, 19 Dec 2025 16:39:49 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|DM4PR12MB6496:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1f989296-335a-47e5-f0ef-08de3f158b92
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?NmZTZkN2bXNmZU14T1dmWFRzSTNNWDlDM0FiTzlxaU5XKytZM0RFZDRZZDJu?=
- =?utf-8?B?Rm9uWkdiYVRsL1hFcE1IZlcrV3ZpU0dOamExVmJSVGVkOWlBem9MTU5kNHVa?=
- =?utf-8?B?T3FlbWhkaEhmZkl6OWpQOUlCT1hTZHlXVlBhcHZtSnJRV0RJYmdFWEpCbkha?=
- =?utf-8?B?YnpTc0x2Wjh3M1JpZFRFVUFhN2JFRy9EVjFvZmxSTHBJangzWGFnSTh0U2tC?=
- =?utf-8?B?Y1J6TllvUEZJK0d3MVpHZHRKL0VMVkc0SjhSalpUSzFHZk5NUHVuOGR4T2Jw?=
- =?utf-8?B?UmZZaVdSSmZnRjRjdFJQYzlPK1h1SlBKbWNkMmUxa0RBckNFdkVkQ1VyaDcr?=
- =?utf-8?B?RnlQWHBYL0RxbzFPazZ5eG5lN3Z1Y0hxYzB3UmlrNjBDQXZydjl4cllTNUtM?=
- =?utf-8?B?UVUwcjVHWlVUMDJFOEUzWk8yQUdXZzFGeGRDRlJPSDEzU083MWVraXN3SkxS?=
- =?utf-8?B?YU9CVitVaUsybHd3dUJiQUowSUx0K3cyK2NuZjYwcHBRMzFrdXphVVFSV0NX?=
- =?utf-8?B?ZkRSSGZacUZOSEdvV3NUYWtXNlBxSWVBTXdKT1NNc1BkS2VPWERVaitSTUl5?=
- =?utf-8?B?WjNSMUpQc016LzdpYU5rUUpheGNWalUwQ0h4cVVqc3g2N1FXQk01N20yNWY0?=
- =?utf-8?B?ZW9EakZyTUE3VDM3dk1JT1FWc3g2dzhhRlVPQUpXNUVkTlhad1hoQm9talYx?=
- =?utf-8?B?NS9EMDRuY2hPMlBvck83M21lNG4vbkM1WjdkN1pEYUN2N1V2Z3crWGg0anY2?=
- =?utf-8?B?cSt2NTByU0dIZXZHTFV2bFVZbk9kZlpzcFF6cStTaE82QTFvdGFGUUlEaUNu?=
- =?utf-8?B?QXZSZzliVUd2YkF6dWpvZWNrTHJteWZrUUxWWDNWeXFqeHRDaUsxUlNCZWJ4?=
- =?utf-8?B?QjRiaG1Ba1NVR0MwUnA5Z01pMjU2ZVcrclhpc2lzUzkxUC9nSHpkVStXZHo4?=
- =?utf-8?B?Y0ZsMEhNMGx6dndZSTB1eFNiZmEzRUtmYUpYQ2Npb2JHaUNldjBRUTJmZ3Q1?=
- =?utf-8?B?WVhuR0xOQ2R3Q2F1S0dGSmVTTXhjaHFLdjVpYjZQckJOQmt0TW1GaHpQUC9u?=
- =?utf-8?B?SE9RcHA2My9sZDdpS0kzWUp0dHhYQS9odjdxdU9TUVVmWU1xVXcwNCszOEph?=
- =?utf-8?B?Y3lNR2xzcXhZaGtZakpleDBtb3FIYlRuOVVaalA5N2dydE1BeDlod3VnNnJS?=
- =?utf-8?B?Z3V5RTh0UGpZTGxYZFF3RVEzTGk5RkI3c1pCaTZaRzVNVGp5VU1lbzlyVzBu?=
- =?utf-8?B?MEplSDlwZGhvejFCOXNkUjhWQjBnMmN4MXNJc2FoNG5zSExFS2lJN3ZTUm1p?=
- =?utf-8?B?eTdkMVA0Z1NRQjVmRGtScVgwcWN6VkF1Q1VTb3pyTW5ET3cxSExmNldGd2hk?=
- =?utf-8?B?U3VoWnYraExocldHVlBTTG5sVEozc1JxTzhOdVhXUnpoMHUzbllpN0xIOUFw?=
- =?utf-8?B?UUptVmI3SkVCOXZ3VE15dFU0anJrcDJCMG1VYlhsQkIySkNGOVpMVnJhWGZO?=
- =?utf-8?B?dmNKaHI1UEZxM0Yrc3UvZE9tczhwTDFUQ0RzdmFMcGUwZEZrY0Fpd1REWDBu?=
- =?utf-8?B?b3ROUGRENWxlMncxaGMzU0d1c2t4SDhMVTM2Y0FxUlJYWkpCOEZDZ3pCNStw?=
- =?utf-8?B?eUVNZHNmTnVnam5LK3c5WU1yTUdvR0xmYXpjL3dRMFRiZ2Z6TDYrYXZWUVds?=
- =?utf-8?B?Z0svQWVuMCtkZ1g3M2xVcitPcnU4bk1WdnpFZjJXa1ZpRzBGdmpidlZKTnIy?=
- =?utf-8?B?a25yaTR4VmlUdUhDcnNoc2lpZ1k0K1I2K0l5S21iSnllZlRMRWdqWFl5N1RQ?=
- =?utf-8?B?UkkzY2Y1VHE3c3lzdlJmRWRFUllXWS9ISkt2NVluSk9wK0xMdU1HUG9GZFFl?=
- =?utf-8?B?Z0p0ejNjeFVSUXo4TC9Yend4R0Y2d1k2bjM4cDFTTkROR2J3OUdsejQrS2lh?=
- =?utf-8?Q?icbfh7BikNhV3CzsawN1pATtGvr8KHk2?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?d0Y2OWcybElqd29CQzk4M1lDSmdKR3N0K3ZTeG9Sd291V3JMQUpNTm05QThN?=
- =?utf-8?B?WWdaT1pLL3NlRy9rMHN2dVBXWGVxSHFTcW1zY3h4Z1NKaUZWVnludGpDSWpI?=
- =?utf-8?B?ZXBzQVpEaGEvTWdFK0JEOXEyUnNaYTVMNkRZd2MySDN2YjB3TmhrWkRxSlJP?=
- =?utf-8?B?cWVtWTViSTNjT1pJazlCaE9IMzM2WEphbVlYS2N6TWNuTTM2MzNFdVZ5d0Rk?=
- =?utf-8?B?TitOU2RxZ2xteU5PaG5HWU5GS2FXNmcrckFVaVkvVi9laE1HbFV5cC9wS0xV?=
- =?utf-8?B?aXNMdmJUaW5tRGx3UDhCRWdhOTFaTUpoTGJBM2tZMWt5MGI1QVBTTUh1YW5S?=
- =?utf-8?B?N1AxODBQQUpFRW1tS3FJVmxzN2gyRjNHaE9TcjExNG9DQ1RhNXFrVDRWR1ds?=
- =?utf-8?B?R2xWRE1tbTZ5aDEybk8waVdZMkt4eXlyaEFYRVVxc3FBSm5VUHF3eVVEak9W?=
- =?utf-8?B?aGtCNk9EYWMrbTJmdWVtaEVHR040RmNaVGFneEFNaUM2UTNaQkw1eUNTdWVJ?=
- =?utf-8?B?V2dkWlU0RGtkU0daQXFZaE5jTU4reFpPZXZNODN1TEp0ZG1sdTlDY21sdnhH?=
- =?utf-8?B?N3lBZzI3d3NKLzdFVXJIQ1dqanpNUFEwTzRKL3dUc2ExVlU0b2xDQ0krRnQw?=
- =?utf-8?B?OFNXRjB6LzZzV09HVk1uSVZJbGhUUEVRM2grL2JCSkFyaTR1TVloQ0dLTHZG?=
- =?utf-8?B?Tk1MZ3BOdjdwT0hBNjhhcG1JbHpwcnk4aUVlR0U2ZTZCWlpEZTY0QjNSdGE2?=
- =?utf-8?B?M0Z4ekZVa2lNTGhmMVNDNSthT1ZORUYvRTFsTS9iWjd0cnU2RkFzZHNxM09u?=
- =?utf-8?B?N2VzRUc5Nk9sWHVMOGFWSmJEUnIxS2prMytRWE1TczQxUGc3VzVPb0VTR0pk?=
- =?utf-8?B?ejFTTkRKdWJiNTZNRCtvcDEyNlJwQnl4QmFKN2QxeFJWME81STY3b1dqY0hT?=
- =?utf-8?B?RzZESmxUMFRSWHU0RE5TdjhiTUw5WFNIQ0QrbVpSclBsSVN1eXBabHdhTVlm?=
- =?utf-8?B?YkdFY0RnYjl5QkFzNG9PclhnTWVHTm9uczM5S3NOWWdIYTdTU1FkaWRoQlBI?=
- =?utf-8?B?MlYvUmM5TGE5cWoyL2dKd0FJTU5yWHRCU3gvd05maXFIMjhrRU9XV3hoVCtp?=
- =?utf-8?B?Rnh0TFVyaXRrQy9wQmFaTmpEVG54bGkydGN3Vm9WSVdkd1cwTVB4MmxYcGw5?=
- =?utf-8?B?TUVsU1RpeDZIL3FPVmJCanBqdExnSmYrOXlqTFp1VEwwV2NCRFoyYzRBTysx?=
- =?utf-8?B?Q3pSS1RCYWJ3Zk9PVEVUeDhSMzZXclJpN0pMM2lrQ1B6L2FNL1pOc2E3NllK?=
- =?utf-8?B?Y3prdWlhUDBlRmhSZEdhR0NEcmY2NEpLRTc0aDZCZTVSMkc1VklyQ2ROYmxx?=
- =?utf-8?B?VVB1aE56c1MxdnVHa1JSc3M0b0k3MlVVNytHQVgwSmlucnV0dXJPODlGamxU?=
- =?utf-8?B?WEdKVXNNNkxJUUpGUVNIOEhya0ZQc0l2bjl3YkFiaEsxcENLVmdVWHhyYmxx?=
- =?utf-8?B?WnMvc3pKZWpKVHlodUxuU1dKeGEyUmVFL2lVOTNORm44bzlDTFk3UXpWejk3?=
- =?utf-8?B?My9Bc2ZZR1R0NndxbDJ4K1hoYXlZNkpmSWREejBZeGxZM1NIMWNBY1Ntc0lP?=
- =?utf-8?B?Nms5a1FMYkthZ3RKN3FNanpqL2JUQzJjQlRPZS9rYnFNbE9Hbm92Y0Jpc3VY?=
- =?utf-8?B?V2FuRk5kK3JURktMaHdYa1M0ZmRqbDM0VjlUNUpZQWZLZDVYSVlzK2IyMDZD?=
- =?utf-8?B?bnBiOWN6TWJlZlM2Zks0VHlrQTMyM1RQSHZOYlo0a3ZreEsyYWl3cjdRNUhL?=
- =?utf-8?B?b0ZUNnZuQkFEVXA3TlNWZHVSRC83LzV6ckVrZDFsOFdEdTV2SXJRR29YdllC?=
- =?utf-8?B?b3pEeVlCT3hLbGZVUm5vbklLeWNnTkhuTmEwWHUyZG9seFZhVkxEd3E1Vm5w?=
- =?utf-8?B?dCt0S3grTEtHTE51elp5ckpOYjFENHozNElNQTZpY2pNaDlkZ1BlM1hpbzIy?=
- =?utf-8?B?QUNlU3BBWndnSjBGUTJET1NFdGFIdTFsVGs2Q0NMbnYwVHZpNmlGajJyUSto?=
- =?utf-8?B?R0RCdk5QbHpqNVh6Y3QramJNejR4bE5MdTBXR2wwTHFrdWlVU0xiUjBnalBj?=
- =?utf-8?B?SEdaeEpwM1c1a3VFUXpIbGZUY0ZDWk9UUnNWM1lDRzFiRmFqeWh0RGhaZUlX?=
- =?utf-8?B?WkUvZ3BCM0lLcEZMNDJBWDFuRE9lamJJNXNHYjk0ZFJ3aXRLSTRhOHNmMU9N?=
- =?utf-8?B?bm80NkNMT09zMVdkMWNPWkNsZ3BIWWxmR1dhOWc1bzBwekNEbkZESWp1VDJs?=
- =?utf-8?B?L0NTZkY1M1hlSlVNbEpnWlh3Ulg5RHZVT3VsdzJaaDR1L0l0YnBtZz09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f989296-335a-47e5-f0ef-08de3f158b92
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2025 15:44:50.2622
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d51Lf8VSWk0oRRcnHwhDtOJHC9b7IIGcqeUw8tIKZ5Ki/owEDsGx21mKVG4W+6ZztFZuGdFUujHsJnHsWmNpbQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6496
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.52.0.322.g1dd061c0dc-goog
+Message-ID: <20251219154418.3592607-1-elver@google.com>
+Subject: [PATCH v5 00/36] Compiler-Based Context- and Locking-Analysis
+From: Marco Elver <elver@google.com>
+To: elver@google.com, Peter Zijlstra <peterz@infradead.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
+	Chris Li <sparse@chrisli.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>, Bart Van Assche <bvanassche@acm.org>, 
+	Christoph Hellwig <hch@lst.de>, Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>, 
+	Frederic Weisbecker <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, Ian Rogers <irogers@google.com>, 
+	Jann Horn <jannh@google.com>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	Johannes Berg <johannes.berg@intel.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Josh Triplett <josh@joshtriplett.org>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <kees@kernel.org>, Kentaro Takeda <takedakn@nttdata.co.jp>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, Thomas Gleixner <tglx@linutronix.de>, 
+	Thomas Graf <tgraf@suug.ch>, Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, 
+	kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, linux-sparse@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Context Analysis is a language extension, which enables statically
+checking that required contexts are active (or inactive) by acquiring
+and releasing user-definable "context locks". An obvious application is
+lock-safety checking for the kernel's various synchronization primitives
+(each of which represents a "context lock"), and checking that locking
+rules are not violated.
 
+The feature requires Clang 22 (unreleased) or later. Clang originally
+called the feature "Thread Safety Analysis" [1]. This was later changed
+and the feature became more flexible, gaining the ability to define
+custom "capabilities". Its foundations can be found in "Capability
+Systems" [2], used to specify the permissibility of operations to depend
+on some "capability" being held (or not held).
 
-On 12/19/2025 10:38 AM, Joel Fernandes wrote:
-> 
-> 
-> On 12/19/2025 10:14 AM, Joel Fernandes wrote:
->> On Thu, Dec 18, 2025 at 03:49:50PM +0800, Yao Kai wrote:
->>> Commit 5f5fa7ea89dc ("rcu: Don't use negative nesting depth in
->>> __rcu_read_unlock()") removes the recursion-protection code from
->>> __rcu_read_unlock(). Therefore, we could invoke the deadloop in
->>> raise_softirq_irqoff() with ftrace enabled as follows:
->>>
->>> WARNING: CPU: 0 PID: 0 at kernel/trace/trace.c:3021 __ftrace_trace_stack.constprop.0+0x172/0x180
->>> Modules linked in: my_irq_work(O)
->>> CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Tainted: G O 6.18.0-rc7-dirty #23 PREEMPT(full)
->>> Tainted: [O]=OOT_MODULE
->>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
->>> RIP: 0010:__ftrace_trace_stack.constprop.0+0x172/0x180
->>> RSP: 0018:ffffc900000034a8 EFLAGS: 00010002
->>> RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000000000
->>> RDX: 0000000000000003 RSI: ffffffff826d7b87 RDI: ffffffff826e9329
->>> RBP: 0000000000090009 R08: 0000000000000005 R09: ffffffff82afbc4c
->>> R10: 0000000000000008 R11: 0000000000011d7a R12: 0000000000000000
->>> R13: ffff888003874100 R14: 0000000000000003 R15: ffff8880038c1054
->>> FS:  0000000000000000(0000) GS:ffff8880fa8ea000(0000) knlGS:0000000000000000
->>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> CR2: 000055b31fa7f540 CR3: 00000000078f4005 CR4: 0000000000770ef0
->>> PKRU: 55555554
->>> Call Trace:
->>>  <IRQ>
->>>  trace_buffer_unlock_commit_regs+0x6d/0x220
->>>  trace_event_buffer_commit+0x5c/0x260
->>>  trace_event_raw_event_softirq+0x47/0x80
->>>  raise_softirq_irqoff+0x6e/0xa0
->>>  rcu_read_unlock_special+0xb1/0x160
->>>  unwind_next_frame+0x203/0x9b0
->>>  __unwind_start+0x15d/0x1c0
->>>  arch_stack_walk+0x62/0xf0
->>>  stack_trace_save+0x48/0x70
->>>  __ftrace_trace_stack.constprop.0+0x144/0x180
->>>  trace_buffer_unlock_commit_regs+0x6d/0x220
->>>  trace_event_buffer_commit+0x5c/0x260
->>>  trace_event_raw_event_softirq+0x47/0x80
->>>  raise_softirq_irqoff+0x6e/0xa0
->>>  rcu_read_unlock_special+0xb1/0x160
->>>  unwind_next_frame+0x203/0x9b0
->>>  __unwind_start+0x15d/0x1c0
->>>  arch_stack_walk+0x62/0xf0
->>>  stack_trace_save+0x48/0x70
->>>  __ftrace_trace_stack.constprop.0+0x144/0x180
->>>  trace_buffer_unlock_commit_regs+0x6d/0x220
->>>  trace_event_buffer_commit+0x5c/0x260
->>>  trace_event_raw_event_softirq+0x47/0x80
->>>  raise_softirq_irqoff+0x6e/0xa0
->>>  rcu_read_unlock_special+0xb1/0x160
->>>  unwind_next_frame+0x203/0x9b0
->>>  __unwind_start+0x15d/0x1c0
->>>  arch_stack_walk+0x62/0xf0
->>>  stack_trace_save+0x48/0x70
->>>  __ftrace_trace_stack.constprop.0+0x144/0x180
->>>  trace_buffer_unlock_commit_regs+0x6d/0x220
->>>  trace_event_buffer_commit+0x5c/0x260
->>>  trace_event_raw_event_softirq+0x47/0x80
->>>  raise_softirq_irqoff+0x6e/0xa0
->>>  rcu_read_unlock_special+0xb1/0x160
->>>  __is_insn_slot_addr+0x54/0x70
->>>  kernel_text_address+0x48/0xc0
->>>  __kernel_text_address+0xd/0x40
->>>  unwind_get_return_address+0x1e/0x40
->>>  arch_stack_walk+0x9c/0xf0
->>>  stack_trace_save+0x48/0x70
->>>  __ftrace_trace_stack.constprop.0+0x144/0x180
->>>  trace_buffer_unlock_commit_regs+0x6d/0x220
->>>  trace_event_buffer_commit+0x5c/0x260
->>>  trace_event_raw_event_softirq+0x47/0x80
->>>  __raise_softirq_irqoff+0x61/0x80
->>>  __flush_smp_call_function_queue+0x115/0x420
->>>  __sysvec_call_function_single+0x17/0xb0
->>>  sysvec_call_function_single+0x8c/0xc0
->>>  </IRQ>
->>>
->>> Commit b41642c87716 ("rcu: Fix rcu_read_unlock() deadloop due to IRQ work")
->>> fixed the infinite loop in rcu_read_unlock_special() for IRQ work by
->>> setting a flag before calling irq_work_queue_on(). We fix this issue by
->>> setting the same flag before calling raise_softirq_irqoff() and rename the
->>> flag to defer_qs_pending for more common.
->>>
->>> Fixes: 5f5fa7ea89dc ("rcu: Don't use negative nesting depth in __rcu_read_unlock()")
->>> Reported-by: Tengda Wu <wutengda2@huawei.com>
->>> Signed-off-by: Yao Kai <yaokai34@huawei.com>
->>
->> Good change! It is the exact same pattern and both IRQ work and softirq
->> raising are for deferred QS purposes.
->>
->> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
-> Could you please update the following comment in tree.h to say "An IRQ work or
-> softirq":
-> 
-> /*
->  * An IRQ work (deferred_qs_iw) is used by RCU to get the scheduler's attention.
->  * to report quiescent states at the soonest possible time.
->  * The request can be in one of the following states:
->  * - DEFER_QS_IDLE: An IRQ work is yet to be scheduled.
->  * - DEFER_QS_PENDING: An IRQ work was scheduled but either not yet run, or it
->  *                     ran and we still haven't reported a quiescent state.
->  */
-> #define DEFER_QS_IDLE           0
-> #define DEFER_QS_PENDING        1
-> 
-> And resend the patch with my Review tag?
+Because the feature is not just able to express "capabilities" related
+to synchronization primitives, and "capability" is already overloaded in
+the kernel, the naming chosen for the kernel departs from Clang's
+"Thread Safety" and "capability" nomenclature; we refer to the feature
+as "Context Analysis" to avoid confusion. The internal implementation
+still makes references to Clang's terminology in a few places, such as
+`-Wthread-safety` being the warning option that also still appears in
+diagnostic messages.
 
-Oh, and update the variable name in the comment too (deferred_qs_iw) :) and all
-the occurences of "IRQ work" to "IRQ work or softirq".
+Additional details can be found in the added kernel-doc documentation.
+An LWN article covered v2 of the series: https://lwn.net/Articles/1012990/
 
- - Joel
+ [1] https://clang.llvm.org/docs/ThreadSafetyAnalysis.html
+ [2] https://www.cs.cornell.edu/talc/papers/capabilities.pdf
 
+=== Design ===
+
+Prior art exists in the form of Sparse's Context Tracking. Locking
+annotations on functions already exist sparsely, so the concept of
+analyzing locking rules is not foreign to the kernel's codebase.
+
+However, Clang's analysis is more complete vs. Sparse's, with the
+typical trade-offs in static analysis: improved completeness is
+sacrificed for more possible false positives or additional annotations
+required by the programmer. Numerous options exist to disable or opt out
+certain code from analysis.
+
+This series initially aimed to retain compatibility with Sparse, which
+can provide tree-wide analysis of a subset of the context analysis
+introduced, but it was later decided to drop Sparse compatibility. For
+the most part, the new (and old) keywords used for annotations remain
+the same, and many of the pre-existing annotations remain valid.
+
+One big question is how to enable this feature, given we end up with a
+new dialect of C; two approaches have been considered:
+
+  A. Tree-wide all-or-nothing approach. This approach requires tree-wide
+     changes, adding annotations or selective opt-outs. Making more
+     primitives context-analysis aware increases churn where maintainers
+     are unfamiliar with the feature and the analysis is unable to deal
+     with complex code patterns as-is.
+
+Because we can't change the programming language (even if from one C
+dialect to another) of the kernel overnight, a different approach might
+cause less friction.
+
+  B. A selective, incremental, and much less intrusive approach.
+     Maintainers of subsystems opt in their modules or directories into
+     context analysis (via Makefile):
+
+       CONTEXT_ANALYSIS_foo.o := y	# foo.o only
+       CONTEXT_ANALYSIS := y  		# all TUs
+
+     Most (eventually all) synchronization primitives, and more
+     context locks including ones that track "irq disabled",
+     "preemption" disabled, etc. could be supported.
+
+The approach taken by this series is B. This ensures that only
+subsystems where maintainers are willing to deal with any warnings are
+opted-in. Introducing the feature can be done incrementally, without
+large tree-wide changes and adding numerous opt-outs and annotations to
+the majority of code.
+
+  Note: Bart Van Assche concurrently worked on enabling -Wthread-safety:
+  https://lore.kernel.org/all/20250206175114.1974171-1-bvanassche@acm.org/
+  Bart's work has shown what it might take to go with approach A
+  (tree-wide, restricted to 'mutex' usage). This has shown that the
+  analysis finds real issues when applied to enough subsystems!  We hope
+  this serves as motivation to eventually enable the analysis in as many
+  subsystems as possible, particularly subsystems that are not as easily
+  tested by CI systems and test robots.
+
+=== Initial Uses ===
+
+With this initial series, the following synchronization primitives are
+supported: `raw_spinlock_t`, `spinlock_t`, `rwlock_t`, `mutex`,
+`seqlock_t`, `bit_spinlock`, RCU, SRCU (`srcu_struct`), `rw_semaphore`,
+`local_lock_t`, `ww_mutex`.
+
+To demonstrate use of the feature on real kernel code, the series also
+enables context analysis for the following subsystems:
+
+	* kernel/kcov
+	* kernel/kcsan
+	* kernel/sched/
+	* lib/rhashtable
+	* lib/stackdepot
+	* mm/kfence
+	* security/tomoyo
+    	* crypto/
+
+The initial benefits are static detection of violations of locking
+rules. As more context locks are supported, we would see more static
+checking beyond what regular C can provide, all while remaining easy
+(and quick) to use via the Clang compiler.
+
+  Note: The kernel already provides dynamic analysis tools Lockdep and
+  KCSAN for lock-safety checking and data-race detection respectively.
+  Unlike those, Clang's context analysis is a compile-time static
+  analysis with no runtime impact. The static analysis complements
+  existing dynamic analysis tools, as it may catch some issues before
+  even getting into a running kernel, but is *not* a replacement for
+  whole-kernel testing with the dynamic analysis tools enabled!
+
+=== Appendix ===
+
+A Clang version that supports `-Wthread-safety-pointer` and the new
+alias-analysis of context lock pointers is required (from this version
+onwards):
+
+	https://github.com/llvm/llvm-project/commit/7ccb5c08f0685d4787f12c3224a72f0650c5865e
+
+The minimum required release version will be Clang 22.
+
+This series is also available at this Git tree:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/melver/linux.git/log/?h=ctx-analysis/dev
+
+The feature itself is usable when all patches up to the "MAINTAINERS"
+patch are applied; the subsequent "enablement" patches are optional and
+could be applied by the respective maintainers to their own tree after
+the context analysis infrastructure is available.
+
+=== Changelog ===
+
+v5:
+
+  - Rename "context guard" -> "context lock".
+
+  - Rework cleanup.h support to properly release at scope guard end.
+
+  - Use new cleanup.h helpers to properly support scoped lock guards.
+
+  - Support new scoped_seqlock_read().
+
+  - Also remove include/linux/lockref.h's deprecated use of __cond_lock().
+
+  - Fix invalid __releases/__acquires in um skas/mm_id.h header
+    (transitively included through mm_types.h which is included by
+    subsystems that may want to enable context analysis).
+
+  - Better document Clang's `assert_capability` attribute.
+
+  - Rebase on v6.19-rc1.
+
+v4: https://lore.kernel.org/all/20251120145835.3833031-2-elver@google.com/
+
+  - Rename capability -> context analysis, per Linus's suggestion:
+    https://lore.kernel.org/all/CAHk-=wgd-Wcp0GpYaQnU7S9ci+FvFmaNw1gm75mzf0ZWdNLxvw@mail.gmail.com/
+
+  - Minor fixes.
+
+v3: https://lore.kernel.org/all/20250918140451.1289454-1-elver@google.com/
+
+  - Bump min. Clang version to 22+ (unreleased), which now supports:
+
+	* re-entrancy via __attribute__((reentrant_capability));
+	* basic form of capability alias analysis - which is the
+	  biggest improvement since v2.
+
+    This was the result of conclusions from this discussion:
+    https://lore.kernel.org/all/CANpmjNPquO=W1JAh1FNQb8pMQjgeZAKCPQUAd7qUg=5pjJ6x=Q@mail.gmail.com/
+
+  - Rename __asserts_cap/__assert_cap to __assumes_cap/__assume_cap.
+
+  - Switch to DECLARE_LOCK_GUARD_1_ATTRS().
+
+  - Add __acquire_ret and __acquire_shared_ret helper macros - can be
+    used to define function-like macros that return objects which
+    contains a held capabilities. Works now because of capability alias
+    analysis.
+
+  - Add capability_unsafe_alias() helper, where the analysis rightfully
+    points out we're doing strange things with aliases but we don't
+    care.
+
+  - Support multi-argument attributes.
+
+  - Enable for kernel/sched/{core,fair}.c, kernel/kcsan.
+  - Drop drivers/tty changes (revisit later).
+
+v2: https://lore.kernel.org/all/20250304092417.2873893-1-elver@google.com/
+
+  - Remove Sparse context tracking support - after the introduction of
+    Clang support, so that backports can skip removal of Sparse support.
+
+  - Remove __cond_lock() function-like helper.
+
+  - ww_mutex support.
+
+  - -Wthread-safety-addressof was reworked and committed in upstream
+    Clang as -Wthread-safety-pointer.
+
+  - Make __cond_acquires() and __cond_acquires_shared() take abstract
+    value, since compiler only cares about zero and non-zero.
+
+  - Rename __var_guarded_by to simply __guarded_by. Initially the idea
+    was to be explicit about if the variable itself or the pointed-to
+    data is guarded, but in the long-term, making this shorter might be
+    better.
+
+  - Likewise rename __ref_guarded_by to __pt_guarded_by.
+
+  - Introduce common header warning suppressions - this is a better
+    solution than guarding header inclusions with disable_ +
+    enable_capability_analysis(). Header suppressions are disabled when
+    selecting CONFIG_WARN_CAPABILITY_ANALYSIS_ALL=y. This bumps the
+    minimum Clang version required to 20+.
+
+  - Make the data_race() macro imply disabled capability analysis.
+    Writing capability_unsafe(data_race(..)) is unnecessarily verbose
+    and data_race() on its own already indicates something subtly unsafe
+    is happening.  This change was made after analysis of a finding in
+    security/tomoyo.
+
+  - Enable analysis in the following subsystems as additional examples
+    of larger subsystem. Where it was obvious, the __guarded_by
+    attribute was added to lock-guarded variables to improve coverage.
+
+    	* drivers/tty
+	* security/tomoyo
+    	* crypto/
+
+RFC v1: https://lore.kernel.org/lkml/20250206181711.1902989-1-elver@google.com
+
+Marco Elver (36):
+  compiler_types: Move lock checking attributes to
+    compiler-context-analysis.h
+  compiler-context-analysis: Add infrastructure for Context Analysis
+    with Clang
+  compiler-context-analysis: Add test stub
+  Documentation: Add documentation for Compiler-Based Context Analysis
+  checkpatch: Warn about context_unsafe() without comment
+  cleanup: Basic compatibility with context analysis
+  lockdep: Annotate lockdep assertions for context analysis
+  locking/rwlock, spinlock: Support Clang's context analysis
+  compiler-context-analysis: Change __cond_acquires to take return value
+  locking/mutex: Support Clang's context analysis
+  locking/seqlock: Support Clang's context analysis
+  bit_spinlock: Include missing <asm/processor.h>
+  bit_spinlock: Support Clang's context analysis
+  rcu: Support Clang's context analysis
+  srcu: Support Clang's context analysis
+  kref: Add context-analysis annotations
+  locking/rwsem: Support Clang's context analysis
+  locking/local_lock: Include missing headers
+  locking/local_lock: Support Clang's context analysis
+  locking/ww_mutex: Support Clang's context analysis
+  debugfs: Make debugfs_cancellation a context lock struct
+  um: Fix incorrect __acquires/__releases annotations
+  compiler-context-analysis: Remove Sparse support
+  compiler-context-analysis: Remove __cond_lock() function-like helper
+  compiler-context-analysis: Introduce header suppressions
+  compiler: Let data_race() imply disabled context analysis
+  MAINTAINERS: Add entry for Context Analysis
+  kfence: Enable context analysis
+  kcov: Enable context analysis
+  kcsan: Enable context analysis
+  stackdepot: Enable context analysis
+  rhashtable: Enable context analysis
+  printk: Move locking annotation to printk.c
+  security/tomoyo: Enable context analysis
+  crypto: Enable context analysis
+  sched: Enable context analysis for core.c and fair.c
+
+ Documentation/dev-tools/context-analysis.rst  | 145 +++++
+ Documentation/dev-tools/index.rst             |   1 +
+ Documentation/dev-tools/sparse.rst            |  19 -
+ Documentation/mm/process_addrs.rst            |   6 +-
+ MAINTAINERS                                   |  11 +
+ Makefile                                      |   1 +
+ arch/um/include/shared/skas/mm_id.h           |   5 +-
+ arch/um/kernel/skas/mmu.c                     |  13 +-
+ crypto/Makefile                               |   2 +
+ crypto/acompress.c                            |   6 +-
+ crypto/algapi.c                               |   2 +
+ crypto/api.c                                  |   1 +
+ crypto/crypto_engine.c                        |   2 +-
+ crypto/drbg.c                                 |   5 +
+ crypto/internal.h                             |   2 +-
+ crypto/proc.c                                 |   3 +
+ crypto/scompress.c                            |  24 +-
+ .../net/wireless/intel/iwlwifi/iwl-trans.c    |   4 +-
+ .../net/wireless/intel/iwlwifi/iwl-trans.h    |   6 +-
+ .../intel/iwlwifi/pcie/gen1_2/internal.h      |   5 +-
+ .../intel/iwlwifi/pcie/gen1_2/trans.c         |   4 +-
+ fs/dlm/lock.c                                 |   2 +-
+ include/crypto/internal/acompress.h           |   7 +-
+ include/crypto/internal/engine.h              |   2 +-
+ include/linux/bit_spinlock.h                  |  24 +-
+ include/linux/cleanup.h                       |  50 ++
+ include/linux/compiler-context-analysis.h     | 441 +++++++++++++
+ include/linux/compiler.h                      |   2 +
+ include/linux/compiler_types.h                |  18 +-
+ include/linux/console.h                       |   4 +-
+ include/linux/debugfs.h                       |  12 +-
+ include/linux/kref.h                          |   2 +
+ include/linux/list_bl.h                       |   2 +
+ include/linux/local_lock.h                    |  51 +-
+ include/linux/local_lock_internal.h           |  73 ++-
+ include/linux/lockdep.h                       |  12 +-
+ include/linux/lockref.h                       |   4 +-
+ include/linux/mm.h                            |  33 +-
+ include/linux/mutex.h                         |  38 +-
+ include/linux/mutex_types.h                   |   4 +-
+ include/linux/rcupdate.h                      |  90 +--
+ include/linux/refcount.h                      |   6 +-
+ include/linux/rhashtable.h                    |  16 +-
+ include/linux/rwlock.h                        |  22 +-
+ include/linux/rwlock_api_smp.h                |  43 +-
+ include/linux/rwlock_rt.h                     |  44 +-
+ include/linux/rwlock_types.h                  |  10 +-
+ include/linux/rwsem.h                         |  76 ++-
+ include/linux/sched.h                         |   6 +-
+ include/linux/sched/signal.h                  |  16 +-
+ include/linux/sched/task.h                    |   6 +-
+ include/linux/sched/wake_q.h                  |   3 +
+ include/linux/seqlock.h                       |  38 +-
+ include/linux/seqlock_types.h                 |   5 +-
+ include/linux/spinlock.h                      | 112 +++-
+ include/linux/spinlock_api_smp.h              |  34 +-
+ include/linux/spinlock_api_up.h               | 112 +++-
+ include/linux/spinlock_rt.h                   |  37 +-
+ include/linux/spinlock_types.h                |  10 +-
+ include/linux/spinlock_types_raw.h            |   5 +-
+ include/linux/srcu.h                          |  73 ++-
+ include/linux/srcutiny.h                      |   6 +
+ include/linux/srcutree.h                      |  10 +-
+ include/linux/ww_mutex.h                      |  22 +-
+ kernel/Makefile                               |   2 +
+ kernel/kcov.c                                 |  36 +-
+ kernel/kcsan/Makefile                         |   2 +
+ kernel/kcsan/report.c                         |  11 +-
+ kernel/printk/printk.c                        |   2 +
+ kernel/sched/Makefile                         |   3 +
+ kernel/sched/core.c                           |  89 ++-
+ kernel/sched/fair.c                           |   7 +-
+ kernel/sched/sched.h                          | 126 +++-
+ kernel/signal.c                               |   4 +-
+ kernel/time/posix-timers.c                    |  13 +-
+ lib/Kconfig.debug                             |  44 ++
+ lib/Makefile                                  |   6 +
+ lib/dec_and_lock.c                            |   8 +-
+ lib/lockref.c                                 |   1 -
+ lib/rhashtable.c                              |   5 +-
+ lib/stackdepot.c                              |  20 +-
+ lib/test_context-analysis.c                   | 604 ++++++++++++++++++
+ mm/kfence/Makefile                            |   2 +
+ mm/kfence/core.c                              |  20 +-
+ mm/kfence/kfence.h                            |  14 +-
+ mm/kfence/report.c                            |   4 +-
+ mm/memory.c                                   |   4 +-
+ mm/pgtable-generic.c                          |  19 +-
+ net/ipv4/tcp_sigpool.c                        |   2 +-
+ scripts/Makefile.context-analysis             |  11 +
+ scripts/Makefile.lib                          |  10 +
+ scripts/checkpatch.pl                         |   7 +
+ scripts/context-analysis-suppression.txt      |  33 +
+ security/tomoyo/Makefile                      |   2 +
+ security/tomoyo/common.c                      |  52 +-
+ security/tomoyo/common.h                      |  77 +--
+ security/tomoyo/domain.c                      |   1 +
+ security/tomoyo/environ.c                     |   1 +
+ security/tomoyo/file.c                        |   5 +
+ security/tomoyo/gc.c                          |  28 +-
+ security/tomoyo/mount.c                       |   2 +
+ security/tomoyo/network.c                     |   3 +
+ tools/include/linux/compiler_types.h          |   2 -
+ 103 files changed, 2523 insertions(+), 609 deletions(-)
+ create mode 100644 Documentation/dev-tools/context-analysis.rst
+ create mode 100644 include/linux/compiler-context-analysis.h
+ create mode 100644 lib/test_context-analysis.c
+ create mode 100644 scripts/Makefile.context-analysis
+ create mode 100644 scripts/context-analysis-suppression.txt
+
+-- 
+2.52.0.322.g1dd061c0dc-goog
