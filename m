@@ -1,272 +1,152 @@
-Received: from mail-dl1-f65.google.com (mail-dl1-f65.google.com [74.125.82.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D21C29994B
-	for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 06:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8507D2ECD2A;
+	Fri, 19 Dec 2025 08:13:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766124391; cv=none; b=VC66HWQoi+uD0UFbK6GesElqhUeogTWiP4W4NPchNINmACGMLmfEIwqAEQdWebKYvGgfyFgxkV5MY0L+y1FfkgBiuCCb6FWyRB7p1P0vg/PXbY5ukl33xtpKx3zSJupR/wgUtldIKgeG7tRtFhdCejFaLeh8TcdqToet0PO0gxk=
+	t=1766132000; cv=none; b=T2usEQbVEkNk7Gs2HflVXlAmyQkSMAWQa0fC2Zybh1BOflClonfH1EXJdBBoYudFrh/yd+IsiqhGZpC917uooOx42RHyRcVpM7sZwlXgQloujavYVj+ArLTZOBlNDizJpSc40+R1QmRDHP26NIEYAE4f2eYWvEYf9IdBP6TzmMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766124391; c=relaxed/simple;
-	bh=7u8hnCfa5QgERO4V42EUXwsuYhCoJ8wvN176FpuH0rM=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=I+neRTuWhRuB1zyGTZRdqL0Hg3E/tG4/XbOrVVG4g9MSqbSFK6LvKzV89mvLR18qhG1b/kv9l9UohXe5NFed+2MbMaRXyiyLvIw+dBwSyK9PUnB89iFVLzefPR+RjRkbMD40jol/7I9oZAxDpGm8w22kHJi3TzZJ4OsEfuW2h/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=xtvW+uWT; arc=none smtp.client-ip=74.125.82.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1766132000; c=relaxed/simple;
+	bh=c8UdFBb7F8dmejdnU77Se4Vh0A297D7YwvyeUjSzvGs=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=GnvKy6UkEc7gJVNe9wJTI2U7d8Wj/RkHX2oweCoF4St5h/IwXw+PusydnnvI6gALE3Iw+ZUJv+e5a3js7wwkau12xH1Litnd/fxiT9+lnU/GytiftCqr8rGTl5zLhoG4PV9ZCFEP8l53jbRzDihnJV+2aAVH6zs0/wGkMnEsReM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bvV56RgS; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="xtvW+uWT"
-Received: by mail-dl1-f65.google.com with SMTP id a92af1059eb24-11b6bc976d6so3756158c88.0
-        for <rcu@vger.kernel.org>; Thu, 18 Dec 2025 22:06:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1766124389; x=1766729189; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t4ASvqOPK+wdtj+DunJ4RuJFwNDx19O3Ghp3000vvXE=;
-        b=xtvW+uWTSPiiDuq3vEOBRjqkuVaRvsh0Zqq+hbkXVC672qAiPCgldQrLwTuvN9YLfB
-         q4907Ui/bxzBPnRX1DvmBbim0GwHhoTCVUlatsOWPZsVcvPUQVP90IPjT8VKk+GWYXFh
-         3OZ0A6zXeWwmwsNfqyh4kLLGH38tRSUVAiRww=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766124389; x=1766729189;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=t4ASvqOPK+wdtj+DunJ4RuJFwNDx19O3Ghp3000vvXE=;
-        b=R6GmFXL5f9TB5yHCKQSgCaIK8Sfo08kMuk216ig4TQpL/+7iYzhQg1GeniMvkix5gU
-         bjuNoW1+Kf8smX0ssP403c2VmpodH4blbXTRBmLMUReGbSML7lw3O0btmV3BLLZH2ro2
-         8vZFptIIIMrHDSvb4Ag6+xnDHbeMPSAhVYhn860t6HaQDwTg6hJZlTs3K7Zvq75Fh45m
-         3T74EUNzn00mf+9ZsAA3ThCbWnJIi/1lmedqpEwh10FZs4Pln+tHLr/oyWT2gZZHgVcD
-         ghb5mFHxsT2GXrwHwiWhZlTUrw+WGNiXy0YZLn9mLx9z/v7q9Zzp/uvx6SPYRJq5PKsa
-         AASQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ/fcPYv9CCpOJoCBFWBZoOv5Qslethb9BcjeotQALD7hcRoZGJB0jhvizCMECaqRDUpc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFWc+3mYzyoAb9cbIqT5tBUSlaU+yi8LCa/q6iuhA+u7FuLqaP
-	qPxUHs1l19skZwlzkwqzEXojkisQKaerxSyeQ2FkCfda8OOlv3gY+IbT/ehcHp7nl4w=
-X-Gm-Gg: AY/fxX61IwchL0Q5pjr38oaCIzorblbAh8IGDvESrlSHgJsacHcjYj5xf3Ti+DzSYbK
-	SjqJWgyBqEyDbhHql3gyJk/sLHxsPbv1oP0EUp2tOJ7HIPIB/lSjqiM1aWHb4XCQwDyP1rNvdbv
-	ORCymZeqBqeXhXjl+COmVMUd+g0Eqk8uuZb1mkg4pZdbSsUusVlHHuTaTIvjqz83Fw0Opw5QYPY
-	8hFzVl6WNI0ar1Fe+o/ID2nSM9yPvQPdVdnhQuXuI5tOh07sQIc7jklxjbj3WzqqDK1cpZJ/Bg4
-	CuXbQcgss7iXYGMIq7rDEIk2q7F8UBCvf5zN2hH5QzmK+CmV4jeu/GWNKPNl9FhOWw2Y3C+LYKS
-	E1h52sL4Yf+SaHv8Nz+ByLzojE7zcv1DbtQxEFa99J7lmJyHhhwVcd+mfpRjO6FmtcHcpmZCdfa
-	PxhC9QxF72UkU01tUZ+ARyKuVtcSgGiiJxiw==
-X-Google-Smtp-Source: AGHT+IGwMAZNN8AD5qW4BbAhXwX1eHbt0owrDB1h0dBh3YezG4fRDCPDgmTWlW9rY3wcM+7oOchshg==
-X-Received: by 2002:a05:7022:698b:b0:11b:9386:a38f with SMTP id a92af1059eb24-12061991877mr5710079c88.22.1766124388926;
-        Thu, 18 Dec 2025 22:06:28 -0800 (PST)
-Received: from smtpclient.apple ([71.219.3.177])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121724dd7f5sm5150094c88.5.2025.12.18.22.06.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Dec 2025 22:06:28 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Joel Fernandes <joel@joelfernandes.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bvV56RgS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90C38C116B1;
+	Fri, 19 Dec 2025 08:13:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766131999;
+	bh=c8UdFBb7F8dmejdnU77Se4Vh0A297D7YwvyeUjSzvGs=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=bvV56RgSwPdWBOuOtUPVcXSmtsttDdT6myfmjpB+QZDRMIVyr7unLn+z+isWBP0Wy
+	 Ny2hKlhPpLoymTC6JQ0DzSc0lTtu4IdOjoxflDk5ls0qr9rZjX4H6YN/PUpzbnQdAP
+	 YpBOlDFBUmVl0ocWFf3MbPKhlUbei8L4bQwXt0Rf0W+fKMNrpn0yKASpPBE+phUtE+
+	 eS0MjQp6QSCCa4q9q8ZjhuUYyTNuM7t+D6ja4QPtH8eUDpUit5SxogEKu15rseJwgW
+	 mLfXoM8WdWG/4ZWUCIaOk3MfOwvaMmfztq3vshIPQCpKqjoQqXVEii+dxxDbG6AI8Q
+	 Q/PUXYGj8Kqgg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B5B5D380AA50;
+	Fri, 19 Dec 2025 08:10:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC PATCH v4 3/4] hazptr: Implement Hazard Pointers
-Date: Fri, 19 Dec 2025 01:06:16 -0500
-Message-Id: <BEBCE6F9-F76A-4443-AEF7-9E0D80039F41@joelfernandes.org>
-References: <aUSbhiMgluudbVEG@tardis-2.local>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- "Paul E. McKenney" <paulmck@kernel.org>, linux-kernel@vger.kernel.org,
- Nicholas Piggin <npiggin@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Alan Stern <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
- Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
- Mateusz Guzik <mjguzik@gmail.com>,
- Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>, rcu@vger.kernel.org,
- linux-mm@kvack.org, lkmm@lists.linux.dev
-In-Reply-To: <aUSbhiMgluudbVEG@tardis-2.local>
-To: Boqun Feng <boqun.feng@gmail.com>
-X-Mailer: iPhone Mail (23B85)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v7 00/31] context_tracking,x86: Defer some IPIs until a
+ user->kernel transition
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: 
+ <176613180853.3684357.18339473690014642605.git-patchwork-notify@kernel.org>
+Date: Fri, 19 Dec 2025 08:10:08 +0000
+References: <20251114150133.1056710-1-vschneid@redhat.com>
+In-Reply-To: <20251114150133.1056710-1-vschneid@redhat.com>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, rcu@vger.kernel.org, x86@kernel.org,
+ linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+ linux-arch@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
+ peterz@infradead.org, acme@kernel.org, jpoimboe@kernel.org,
+ pbonzini@redhat.com, arnd@arndb.de, frederic@kernel.org, paulmck@kernel.org,
+ jbaron@akamai.com, rostedt@goodmis.org, ardb@kernel.org,
+ samitolvanen@google.com, davem@davemloft.net, neeraj.upadhyay@kernel.org,
+ joelagnelf@nvidia.com, josh@joshtriplett.org, boqun.feng@gmail.com,
+ urezki@gmail.com, mathieu.desnoyers@efficios.com, mgorman@suse.de,
+ akpm@linux-foundation.org, masahiroy@kernel.org, shenhan@google.com,
+ riel@surriel.com, jannh@google.com, dan.carpenter@linaro.org,
+ oleg@redhat.com, juri.lelli@redhat.com, williams@redhat.com,
+ ypodemsk@redhat.com, mtosatti@redhat.com, dwagner@suse.de, ptesarik@suse.com,
+ sshegde@linux.ibm.com
 
-Hi Boqun,
+Hello:
 
-> On Dec 18, 2025, at 9:07=E2=80=AFPM, Boqun Feng <boqun.feng@gmail.com> wro=
-te:
->=20
-> =EF=BB=BFOn Thu, Dec 18, 2025 at 06:36:00PM -0500, Mathieu Desnoyers wrote=
-:
->> On 2025-12-18 15:22, Boqun Feng wrote:
->> [...]
->>>>> Could you utilize this[1] to see a
->>>>> comparison of the reader-side performance against RCU/SRCU?
->>>>=20
->>>> Good point ! Let's see.
->>>>=20
->>>> On a AMD 2x EPYC 9654 96-Core Processor with 192 cores,
->>>> hyperthreading disabled,
->>>> CONFIG_PREEMPT=3Dy,
->>>> CONFIG_PREEMPT_RCU=3Dy,
->>>> CONFIG_PREEMPT_HAZPTR=3Dy.
->>>>=20
->>>> scale_type                 ns
->>>> -----------------------
->>>> hazptr-smp-mb             13.1   <- this implementation
->>>> hazptr-barrier            11.5   <- replace smp_mb() on acquire with ba=
-rrier(), requires IPIs on synchronize.
->>>> hazptr-smp-mb-hlist       12.7   <- replace per-task hp context and per=
--cpu overflow lists by hlist.
->>>> rcu                       17.0
->>>> srcu                      20.0
->>>> srcu-fast                  1.5
->>>> rcu-tasks                  0.0
->>>> rcu-trace                  1.7
->>>> refcnt                  1148.0
->>>> rwlock                  1190.0
->>>> rwsem                   4199.3
->>>> lock                   41070.6
->>>> lock-irq               46176.3
->>>> acqrel                     1.1
->>>>=20
->>>> So only srcu-fast, rcu-tasks, rcu-trace and a plain acqrel
->>>> appear to beat hazptr read-side performance.
->>>>=20
->>>=20
->>> Could you also see the reader-side performance impact when the percpu
->>> hazard pointer slots are used up? I.e. the worst case.
->>=20
->> I've modified the code to populate "(void *)1UL" in the 7 first slots
->> at bootup, here is the result:
->>=20
->> hazptr-smp-mb-7-fail    16.3 ns
->>=20
->> So we go from 13.1 ns to 16.3 ns when all but one slots are used.
->>=20
->> And if we pre-populate the 8 slots for each cpu, and thus force
->> fallback to overflow list:
->>=20
->> hazptr-smp-mb-8-fail    67.1 ns
->>=20
->=20
-> Thank you! So involving locking seems to hurt performance more than
-> per-CPU/per-task operations. This may suggest that enabling
-> PREEMPT_HAZPTR by default has an acceptable performance.
+This series was applied to riscv/linux.git (fixes)
+by Frederic Weisbecker <frederic@kernel.org>:
 
-My impression is we do other locking on preemption anyway, such as the block=
- list for preempted RCU critical sections. So maybe that's okay. As you said=
-, it is an acceptable performance.
+On Fri, 14 Nov 2025 16:01:02 +0100 you wrote:
+> Context
+> =======
+> 
+> We've observed within Red Hat that isolated, NOHZ_FULL CPUs running a
+> pure-userspace application get regularly interrupted by IPIs sent from
+> housekeeping CPUs. Those IPIs are caused by activity on the housekeeping CPUs
+> leading to various on_each_cpu() calls, e.g.:
+> 
+> [...]
 
->>>=20
->>>> [...]
->>>>=20
->>>>>> +/*
->>>>>> + * Perform piecewise iteration on overflow list waiting until "addr"=
- is
->>>>>> + * not present. Raw spinlock is released and taken between each list=
+Here is the summary with links:
+  - [v7,01/31] objtool: Make validate_call() recognize indirect calls to pv_ops[]
+    (no matching commit)
+  - [v7,02/31] objtool: Flesh out warning related to pv_ops[] calls
+    (no matching commit)
+  - [v7,03/31] rcu: Add a small-width RCU watching counter debug option
+    https://git.kernel.org/riscv/c/d1e6d2773898
+  - [v7,04/31] rcutorture: Make TREE04 use CONFIG_RCU_DYNTICKS_TORTURE
+    https://git.kernel.org/riscv/c/82a224498005
+  - [v7,05/31] jump_label: Add annotations for validating noinstr usage
+    (no matching commit)
+  - [v7,06/31] static_call: Add read-only-after-init static calls
+    (no matching commit)
+  - [v7,07/31] x86/paravirt: Mark pv_sched_clock static call as __ro_after_init
+    (no matching commit)
+  - [v7,08/31] x86/idle: Mark x86_idle static call as __ro_after_init
+    (no matching commit)
+  - [v7,09/31] x86/paravirt: Mark pv_steal_clock static call as __ro_after_init
+    (no matching commit)
+  - [v7,10/31] riscv/paravirt: Mark pv_steal_clock static call as __ro_after_init
+    (no matching commit)
+  - [v7,11/31] loongarch/paravirt: Mark pv_steal_clock static call as __ro_after_init
+    (no matching commit)
+  - [v7,12/31] arm64/paravirt: Mark pv_steal_clock static call as __ro_after_init
+    (no matching commit)
+  - [v7,13/31] arm/paravirt: Mark pv_steal_clock static call as __ro_after_init
+    (no matching commit)
+  - [v7,14/31] perf/x86/amd: Mark perf_lopwr_cb static call as __ro_after_init
+    (no matching commit)
+  - [v7,15/31] sched/clock: Mark sched_clock_running key as __ro_after_init
+    (no matching commit)
+  - [v7,16/31] KVM: VMX: Mark __kvm_is_using_evmcs static key as __ro_after_init
+    (no matching commit)
+  - [v7,17/31] x86/bugs: Mark cpu_buf_vm_clear key as allowed in .noinstr
+    (no matching commit)
+  - [v7,18/31] x86/speculation/mds: Mark cpu_buf_idle_clear key as allowed in .noinstr
+    (no matching commit)
+  - [v7,19/31] sched/clock, x86: Mark __sched_clock_stable key as allowed in .noinstr
+    (no matching commit)
+  - [v7,20/31] KVM: VMX: Mark vmx_l1d_should flush and vmx_l1d_flush_cond keys as allowed in .noinstr
+    (no matching commit)
+  - [v7,21/31] stackleack: Mark stack_erasing_bypass key as allowed in .noinstr
+    (no matching commit)
+  - [v7,22/31] objtool: Add noinstr validation for static branches/calls
+    (no matching commit)
+  - [v7,23/31] module: Add MOD_NOINSTR_TEXT mem_type
+    (no matching commit)
+  - [v7,24/31] context-tracking: Introduce work deferral infrastructure
+    (no matching commit)
+  - [v7,25/31] context_tracking,x86: Defer kernel text patching IPIs
+    (no matching commit)
+  - [v7,26/31] x86/jump_label: Add ASM support for static_branch_likely()
+    (no matching commit)
+  - [v7,27/31] x86/mm: Make INVPCID type macros available to assembly
+    (no matching commit)
+  - [RFC,v7,28/31] x86/mm/pti: Introduce a kernel/user CR3 software signal
+    (no matching commit)
+  - [RFC,v7,29/31] x86/mm/pti: Implement a TLB flush immediately after a switch to kernel CR3
+    (no matching commit)
+  - [RFC,v7,30/31] x86/mm, mm/vmalloc: Defer kernel TLB flush IPIs under CONFIG_COALESCE_TLBI=y
+    (no matching commit)
+  - [RFC,v7,31/31] x86/entry: Add an option to coalesce TLB flushes
+    (no matching commit)
 
->>>>>> + * item and busy loop iteration. The overflow list generation is che=
-cked
->>>>>> + * each time the lock is taken to validate that the list has not cha=
-nged
->>>>>> + * before resuming iteration or busy wait. If the generation has
->>>>>> + * changed, retry the entire list traversal.
->>>>>> + */
->>>>>> +static
->>>>>> +void hazptr_synchronize_overflow_list(struct overflow_list *overflow=
-_list, void *addr)
->>>>>> +{
->>>>>> +    struct hazptr_backup_slot *backup_slot;
->>>>>> +    uint64_t snapshot_gen;
->>>>>> +
->>>>>> +    raw_spin_lock(&overflow_list->lock);
->>>>>> +retry:
->>>>>> +    snapshot_gen =3D overflow_list->gen;
->>>>>> +    list_for_each_entry(backup_slot, &overflow_list->head, node) {
->>>>>> +        /* Busy-wait if node is found. */
->>>>>> +        while (smp_load_acquire(&backup_slot->slot.addr) =3D=3D addr=
-) { /* Load B */
->>>>>> +            raw_spin_unlock(&overflow_list->lock);
->>>>>> +            cpu_relax();
->>>>>=20
->>>>> I think we should prioritize the scan thread solution [2] instead of
->>>>> busy waiting hazrd pointer updaters, because when we have multiple
->>>>> hazard pointer usages we would want to consolidate the scans from
->>>>> updater side.
-
-Yeah the scan thread idea also fixes the scan cost issue with per-task slots=
- if we batch. If we implement a separate hazard pointer flavor along those l=
-ines, then maybe we should definitely do a worker thread.
-
->>>> I agree that batching scans with a worker thread is a logical next step=
-.
->>>>=20
->>>>> If so, the whole ->gen can be avoided.
->>>>=20
->>>> How would it allow removing the generation trick without causing long
->>>> raw spinlock latencies ?
->>>>=20
->>>=20
->>> Because we won't need to busy-wait for the readers to go away, we can
->>> check whether they are still there in the next scan.
->>>=20
->>> so:
->>>=20
->>>    list_for_each_entry(backup_slot, &overflow_list->head, node) {
->>>        /* Busy-wait if node is found. */
->>>        if (smp_load_acquire(&backup_slot->slot.addr) =3D=3D addr) { /* L=
-oad B */
->>>            <mark addr as unable to free and move on>
->>=20
->> But then you still iterate on a possibly large list of overflow nodes,
->> with a raw spinlock held. That raw spinlock is taken by the scheduler
->> on context switch. This can cause very long scheduler latency.
->>=20
->=20
-> That's fair.
-
-What about combining both approaches? =20
-Can we do the generation trick along with worker thread scanning? I feel tha=
-t should be doable.
-
->=20
->> So breaking up the iteration into pieces is not just to handle
->> busy-waiting, but also to make sure we don't increase the
->> system latency by holding a raw spinlock (taken with rq lock
->> held) for more than the little time needed to iterate to the next
->> node.
->>=20
->=20
-> I agree that it helps reduce the latency, but I feel like with a scan
-> thread in the picture (and we don't need to busy-wait), we should use
-> a forward-progress-guaranteed way in the updater side scan, which means
-> we may need to explore other solutions for the latency (e.g.
-> fine-grained locking hashlist for the overflow list) than the generation
-> counter.
-
-Hmm.. That only works I guess if there is no interference between the finger=
- grained list being iterated and the list being overflowed into. Otherwise, I=
- think it might run into the same issue, but I could be missing something ab=
-out the idea.
-
-thanks,
-
- - Joel
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
->=20
-> Regards,
-> Boqun
->=20
->> Thanks,
->>=20
->> Mathieu
->>=20
->> --
->> Mathieu Desnoyers
->> EfficiOS Inc.
->> https://www.efficios.com
->=20
