@@ -1,392 +1,277 @@
-Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012002.outbound.protection.outlook.com [52.101.48.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C121DE3B7;
-	Fri, 19 Dec 2025 01:22:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.2
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766107334; cv=fail; b=FJov7rHx//WDu3ehLa+lfnccL0cN+DqIHGis5AH4d/bXoqwomL2BxzUyW+ACkIYh14WTQTrt2hbY+nJa08gYrciMhnUpS5OKzcYus7hJy9RE7lyLNXM09jf+VQDqSKKvoY5WDVRC/vFw//2P2tnQWBGZr1BOjNzJ6Z3A14o1ht8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766107334; c=relaxed/simple;
-	bh=rULzLudPYrkGttaDc8e0QOen70wsSiiN4M/Y6Y5e5wA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=NctAceTInli82f5Fye3usotWm336kRZBhDdC1/U3sLj9CKRM/rQN2+rErzjATmNkAHQdFfcZB+50DnQ5muMhkvdZbIlI0631nKWchH+9BZjhQAQ2inSpfTQZuNfQnvlGtR1ZEb9IYtj5IUk7B6e3o27UfScnQPd/WWAZ+ykaOcc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=sZ2nYLry; arc=fail smtp.client-ip=52.101.48.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7359223EA82
+	for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 02:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766110012; cv=none; b=NmiqETgzlPmoMbLWu+5EAXt23W9qwlJ3zhE09LABfMWRSsSRhz4ljrVb3sUq44/3nSfZoBDhGSFJc9z769YlrUdn5XrPP/3Wjvm19dfUOymmTTBQthhzxgrvkbYmSA7cVangqIWkXkktRiDQcc2QjnFKDwbsO5Mdvc8JVHRPBHQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766110012; c=relaxed/simple;
+	bh=is9YxCrTIYETTKLl2H7AGTPR3Ds83Cfd0CZETLRxHhA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eEpesMLCQgu6BiDhsE9xf180eJZMV7NcDl/EzdgfXvfRRF/gCIk6f1TFVXZ1iNvkp4jCqKdl2+DEjG76bb92Ja3WVJe7DqDVkyQ8HbGltVQxHuPhcw7oW66Lata2mPVTE/8CtZAEArGfl7D5DXypV0kLWe5DzS8Znu7bWtgoJLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cMbg3ZN4; arc=none smtp.client-ip=209.85.160.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="sZ2nYLry"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=UBPCd4TKaTOyiY36zfWDVP8ENZLd/KIIDqWLBvsaEWjdYWvBqv3oqd1KKjv/lAWpHo6rHQUVjlNE8KjJ+oD+TG8w1FUVeObdhRvF9kRiwfpQEHX12lXJccUtR5Tc3NhGgMKPbrIoN5zaHoU6RApbBCS9nawYu1pdII7Ty+LCxTy3o2Fb3SNadYbJZdKbbCnVZJ9hfFyoXPVKoUE7OQph8cKa7QyVTs15lrkFxyAU1V97LTLHw+TiqJ3BdHpuTBzOxModfAJBohJyZdNSNoPNIvOIkP8Rh/JZY28SBsZIdPV89bHAQDPii7q+zv7cqOHMF3XrxZKPMXku0Vk7v4YXNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Dct/EvUQPPx31Df+Pv+35vuARECsJYIvpaim9JfYX38=;
- b=yI/mOgRCWWV7j3hUpex5mR2SvsKBytKZmmx8P0vVWrXx9y61/FfzypR5pi1BA8fbLoqjD/+ayzmWqQLH4vxMqcAjoLwdVZVaEIF0+3hciRN02rO95WsYHQqM24hyTBynHvk5bXHHMSOwicgO/ZS4CX8WYGGAL0Ifj0oW97x8RkDYhxZna8MeMZwJaT6ebEOFd/xDsqEZP/uMT8ZEi1XZcvxiIzpqzgNexzBy8VPG6UOawUfwQB7V/rJ5DJaN8giZFMie8l5+g+0xSr8D6HPvkSm5AR1tCdnyTNVtcqnpu1ok0QrpNPbuYb9+rFZh7y64EDQopYJH8j4GjWYsXl9gzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dct/EvUQPPx31Df+Pv+35vuARECsJYIvpaim9JfYX38=;
- b=sZ2nYLryNseEsRwiYTJa2xOHkaSidlsuq00RuY+ih17pBqRMzBCN9RdV1uuJCjoBJLszB0U8W4N+b48F6COUcYkk4wCMAFzITrYBZRyOIGM0U7r1/TuAxPhTcTmod17QdxO03LEvlzyPlEn/Ry1PLGiu3qgZ9Isci0fLjSk9tYwlF7R/q24Yo5yIio9AnYvcfMhmusbC9bpEKKF1vgjYK2MDjIZtnGdxYKYWGBicM2i9ve28mPYz5+D9C0MPEKsFdCN/tuoHgUNauVkjStoO423W0YSG2/tgKCRRSL8wJ3x2V2vwnCoMFMgaP1/v33cEpsn37pNkhEunkWXAr51O6A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from PH7PR12MB8056.namprd12.prod.outlook.com (2603:10b6:510:269::21)
- by DM4PR12MB6111.namprd12.prod.outlook.com (2603:10b6:8:ac::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9434.9; Fri, 19 Dec
- 2025 01:22:07 +0000
-Received: from PH7PR12MB8056.namprd12.prod.outlook.com
- ([fe80::5682:7bec:7be0:cbd6]) by PH7PR12MB8056.namprd12.prod.outlook.com
- ([fe80::5682:7bec:7be0:cbd6%4]) with mapi id 15.20.9434.001; Fri, 19 Dec 2025
- 01:22:07 +0000
-Message-ID: <6cbba525-3bcd-4673-a6a5-1fe16330868f@nvidia.com>
-Date: Thu, 18 Dec 2025 20:22:04 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v4 3/4] hazptr: Implement Hazard Pointers
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Boqun Feng <boqun.feng@gmail.com>, Joel Fernandes <joel@joelfernandes.org>,
- "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Alan Stern <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
- Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
- Mateusz Guzik <mjguzik@gmail.com>,
- Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>, rcu@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cMbg3ZN4"
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-3ec5df386acso1005073fac.1
+        for <rcu@vger.kernel.org>; Thu, 18 Dec 2025 18:06:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766110008; x=1766714808; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l8X/mpvTeafKM3nH85dScPT9I6f8OgbfxSkwYBazOi0=;
+        b=cMbg3ZN4iRUDoyRuCbxbBYUk/Q12IZomMsSoMhfthFw1vwsQdPN8sdL5PGrdpJCBi5
+         QrPuPbbAATdV9dJaYWRiovNaEMymuBtduH27XeZRkQWezcym35nq552V5AOjGXZqhV1p
+         /o2exAbW9kYS/M09/3j4khg519f2fwht4jASbUkYlgDXhjJwxOeWCCklXEcJBbhasv3e
+         WVLkABYr2wrvn+WeO59N67C4Lp7gf33O8VOARodKpBH2M5Wcex0I9Hit+p8Rf/XgdsRy
+         UVaTJMvYPkoKA6HfVS4xztGEuC8x+XZAxbH2ndRrMlST/cluSfwu7rc/KQtpJhqh5xVa
+         P66A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766110008; x=1766714808;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=l8X/mpvTeafKM3nH85dScPT9I6f8OgbfxSkwYBazOi0=;
+        b=XjYSb8c/zsDbveDLKcRuzWqN1HN1l1bN50h2YwdPcnj6enTCQSb8xXL7/dp+ZRN0mi
+         0ddUEmIZ7WsM4rh4vsnjN1DayRMaAKA5A9/hg2lozcnXqiTOFKiyGfq9OiGAJ2lOCO+U
+         ufp5fWA+46rXanGyAPfzBvyvpfQDiOnm58ZcycCpw7eXjzVsmwxau/3eTf4LJYTzlXzC
+         LBXjtn9Pyjqeaoh+EI1yt5QaReMVkc/ln50tOxjGBlMskX1brYyO1uXND4OWcDbRCeEP
+         tulOIMtN+YIduDBVk+pDVZocR7zk5aE/uuzU8o8wNtG3FEn63/USauI8UXDIbCX6cCPZ
+         ruLA==
+X-Forwarded-Encrypted: i=1; AJvYcCWLzeynXgU/2cPhzVYas+YZLscsg/sA0A98vFpwfoWOzObReZ1MbBxghrZ/671ye7uhUpc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxomyPCcNvC0PXfao7F69LkrrZwdf2zvU+jfwceaRaUeq+ilcQd
+	HpEQE46/xOXf8iuJAtD+RTpP+zq6+nd2UVkspGydzFzztIk0egl0VEfIYfUTifj4XQE=
+X-Gm-Gg: AY/fxX6ec55FCGTI8ejxbTbG0/Reu70M+jNCijcUUGIKb14/dOHYLMf+UsxPMtlV//V
+	vOUJyNoKu9k/ItMKilLDjbRMgJRtQJZKgLWr5QSB8QiXPw/PiXwe8AarI5jlUdUVuQaknD4qFAV
+	bMyPMHFl7uSQgwYFuA5Rj4yeATzaUuSFK5UPvHTr+/q0G0+JSQ8asFLCOdfB2rntsuMJ3QQcm1N
+	itIXWJ3o3L88vIpJ6i2vrRUo0quuCTB686TRVtfBW/Da/3Byi6TISF/e9X4xZ73G5GNEdyBGcuU
+	FS0chL28sp93MRnrwxtnIxeR/ijRUQT3FIdv6SJh9occZ8hL5c3kkL7FKLYHGQjn3a5MbsQ3U9u
+	qjMK1v/iEz0nXUUEE5kfoojDxojPsn2VmTPnJ/yDriQNpmnb7QM3JGWm9SPPHu5xtZBdeehkKbb
+	mtAJUPXtbhCkWsjcdOqdMSFB6sQGrzn4kFB/rz87ZiL+k2Z3kY8AQYAHZimopUJBql8rOFFqguG
+	lD+KCFeh4BMnOQ=
+X-Google-Smtp-Source: AGHT+IFPk9sbtY0UjBkjpQV6F8R4ziD5cSSxeHmFqbLe73zBnLmXKITpnuraJGxLeqMdGtMo3KFVAQ==
+X-Received: by 2002:a05:620a:31a3:b0:8b2:271e:a560 with SMTP id af79cd13be357-8c08ff218ebmr212306185a.72.1766103947460;
+        Thu, 18 Dec 2025 16:25:47 -0800 (PST)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c09689153asm61478885a.17.2025.12.18.16.25.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Dec 2025 16:25:47 -0800 (PST)
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 25E38F4007E;
+	Thu, 18 Dec 2025 19:25:46 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-03.internal (MEProxy); Thu, 18 Dec 2025 19:25:46 -0500
+X-ME-Sender: <xms:iptEacwmTiy5gQQDNHuqeFNw1UMehNPtLtPloS2FK4zw_T7IuP0pEQ>
+    <xme:iptEadbipso_0Eka7yXzgAi6XJaz-jPcJN-iFI_ptZl04YyVa32BWqYUVfkO2a-kK
+    yeiDB9dIixeZUAo6UnQfl7MFBX4daeiTxJROZxPbMCrsTMK_4ZdeQ>
+X-ME-Received: <xmr:iptEaezAk4hsYhJKhx6Bo4jiyentomcKy0hFx6cJFcHUVAVZkAxuKKDtwos>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdegieekiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpeeuohhquhhnucfh
+    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
+    hrnheptdetvdfgueetkedutdegudegfeekffevgeetleehvdektedvteeggfegtdevtdeh
+    necuffhomhgrihhnpegvfhhfihgtihhoshdrtghomhenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
+    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
+    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthht
+    ohepfeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehmrghthhhivghurdguvg
+    hsnhhohigvrhhssegvfhhfihgtihhoshdrtghomhdprhgtphhtthhopehjohgvlhesjhho
+    vghlfhgvrhhnrghnuggvshdrohhrghdprhgtphhtthhopehprghulhhmtghksehkvghrnh
+    gvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghr
+    nhgvlhdrohhrghdprhgtphhtthhopehnphhighhgihhnsehgmhgrihhlrdgtohhmpdhrtg
+    hpthhtohepmhhpvgesvghllhgvrhhmrghnrdhiugdrrghupdhrtghpthhtohepghhrvghg
+    khhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohepsghighgvrg
+    hshieslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopeifihhllheskhgvrhhnvghl
+    rdhorhhg
+X-ME-Proxy: <xmx:iptEabitpgOdV036twsKZU0Fycl6cCkXbK3vjIo9wd515Tt2oE3SAA>
+    <xmx:iptEaVoCS1HUuq-KUwu_2zsbMjT78TRhDzSL8FhFhZFtj5MppTtBuA>
+    <xmx:iptEaSduPQd_Dp2na-hNNi9IVyVg2TOBkNp-qUAeD-G8wjy8CxuDfA>
+    <xmx:iptEaQe9OnalWj9VorkrxBoBwI_xfWdXjz_dytDxw6x-9WH21ksy5A>
+    <xmx:iptEaQd-Mnv1xhGkxUloFwEZrVKuaPvqUfZB7mcrRZgFvzSolvJbzRgh>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Dec 2025 19:25:45 -0500 (EST)
+Date: Fri, 19 Dec 2025 09:25:42 +0900
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,	linux-kernel@vger.kernel.org,
+ Nicholas Piggin <npiggin@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Will Deacon <will@kernel.org>,	Peter Zijlstra <peterz@infradead.org>,
+	Alan Stern <stern@rowland.harvard.edu>,	John Stultz <jstultz@google.com>,
+	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+	Waiman Long <longman@redhat.com>,	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,	Vlastimil Babka <vbabka@suse.cz>,
+ maged.michael@gmail.com,	Mateusz Guzik <mjguzik@gmail.com>,
+	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,	rcu@vger.kernel.org,
  linux-mm@kvack.org, lkmm@lists.linux.dev
+Subject: Re: [RFC PATCH v4 3/4] hazptr: Implement Hazard Pointers
+Message-ID: <aUSbhiMgluudbVEG@tardis-2.local>
 References: <20251218014531.3793471-1-mathieu.desnoyers@efficios.com>
  <20251218014531.3793471-4-mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <20251218014531.3793471-4-mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: IA4P221CA0008.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:208:559::6) To PH7PR12MB8056.namprd12.prod.outlook.com
- (2603:10b6:510:269::21)
+ <aUO9KRaP0FXpm_l9@tardis-2.local>
+ <fcbc99d0-b7c7-45f7-9cf8-f5d3bfad966e@efficios.com>
+ <aURihbmjsKi8m7MO@tardis-2.local>
+ <42607ed5-f543-41bd-94da-aa0ee7ec71cd@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB8056:EE_|DM4PR12MB6111:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9912051b-ebe4-4074-66d0-08de3e9d069a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?L2U0NElnd0Q1YWNqaTFhUTM3by9oNlorcnltMDlNeXRmaEFtdmtZMzdMcG8y?=
- =?utf-8?B?R0crYVJUMi9jNXFtbUlGcFhNY1NROVUyWjRBYmViSHFxMGJjbVlSa256cWla?=
- =?utf-8?B?VHpGWHl3aHBFWE8xdGNLZXdFOWNJSFBFbUdUT01yeTI1WE1kY1N4S0V3MGpw?=
- =?utf-8?B?NVAxQWt1RUVrUStLKytDcmJEK3J6dXFkNWMwbVpZWnZGYkltS1hkRUUySitD?=
- =?utf-8?B?NlFrZnBxMjRqSUtldVhVTmw3bUFxbWhOYXY0YzBUQ3pWSzJWR1JNTThTVGJX?=
- =?utf-8?B?NnB6VDFma29ncWFiZDduOHA3NHVCdXFyK2lUcS9LQ1VVL1FmZ1ZHcTg4SWZ0?=
- =?utf-8?B?b01Md3F0Qmc4Sjl6aXp0RWpsMlZwSm16dEdBZ2UvcUp0VEhiekJyVy9hTk1x?=
- =?utf-8?B?T0NkbkFSTElNWG9DWE1yT01JY1U0Q00ralBUSlc5aHVqL0xLM3B5cTRMN3cx?=
- =?utf-8?B?UVBITDNPbnowNEswZjlyTlNMdjlqbnlXTU1Mc0thUjJzeE1RZGpTaHd3Zi9w?=
- =?utf-8?B?SWVZYXh3aWgyUUhlRXRuUkpWNzY0SUVzQi9BWmROV0ZjQ2dtdjZaaEluSjdo?=
- =?utf-8?B?TkJCRVpFeHhSb0JQQkRlNmI1Q3puNm5uc2ZnNTFOSlhGUXhLUnIrMzdyZGMw?=
- =?utf-8?B?ZzU3YlJxZEFvcmc5ZmNDZGY1NklrRy96WFUxQW5UMFNlay9pVENhRFpRU3pv?=
- =?utf-8?B?cHoyYlRIa25rTktqT1BtYkFGOExGR1J3VE51RkdJMlJYb2dwYXFldE9TaDB0?=
- =?utf-8?B?TklXTkY1eCtDS0dvU2l6L0liVHJBVGtTTy90SHZ3b25zQyt6bVlmeXRBdDl2?=
- =?utf-8?B?bkRPWm13ejdBVXZkYmNQRkpkNXFBSjNYRGpJV2RNUHpyMUxPVG9qcU9hdllG?=
- =?utf-8?B?Kzd3UmRZdHFxV2xSQ0xOS3NEVS96SVNZTDhBelRSL1d5M0F2aisxaXhQd2Nw?=
- =?utf-8?B?azlFaTQ4bExGRGlGa0FlSFZJUlA1UG5EU3JCYUxydzVWTTd0c2dteVc2RENj?=
- =?utf-8?B?QjRucVkzZm5XcU96ZWFkMklDeGJ5a2VYbUN0dmpMcWJQL2x2ZGlQNWJya1N4?=
- =?utf-8?B?U3BPTzIrMlBFa0RVcHpJdDlvY0dPWm1zQnYvMTd3dkJWcVBmY3dud1VYSkFR?=
- =?utf-8?B?NkxoZzl0VzFYaXFSb09lc3NHZTlmTjZxbjJJWTNSN0lpcExYNUd0RmdZTVNV?=
- =?utf-8?B?SVVGK1dPME02Q2ZrMlc5Z1VqZTMxQ3lvTUlNaFNuRlViUzJqb2U3RHovQzFF?=
- =?utf-8?B?UW93Y0J6K1V3MnlGUVdSSmwwZGtqdlBDdFUrM3ZOVHVBOXdaTTAySGdQaXJB?=
- =?utf-8?B?dXZ1WERYdXc3a0M2YzlramhqVm5OWVBuQ3c4RS9zQnByN2xtQlVvTUNSWUtB?=
- =?utf-8?B?NnFkWWxnR1JWMFo2WkJYeUdEZXpuS3J6RTA4YWpHYWJyQmhzdUVGTVlTVldF?=
- =?utf-8?B?WEJMb2VPNE9CODJLcjZnakkrOTJnKzdWTURZUGtRUzZ0SXVqcHVsY0Fyam96?=
- =?utf-8?B?S2JTcTM5MFRpMnZCaUVjSXpaSTcrd0ZQWWJZRWVTOHdHd2I2cDBmb2sxVWVp?=
- =?utf-8?B?MHpjL0JoeHUwQUFvZUxCWEtaSFpNOGwxSFpDTVZEeENHK2l5U2p2TTJ6VEFv?=
- =?utf-8?B?ZUhqU3dndEZFTVBmNGwwYzJXcExmTTNIeEliaGFDY1NSWUY5R2xiaEFZQ3k1?=
- =?utf-8?B?TDVEUFdxeW5tUjBZN3lxMlpDWVlZdk5qVmVKUmFqN2FvNCtBaUxZakxHK2Qv?=
- =?utf-8?B?ekgzOW1hZ1BObncyWjJBSVZaQzVjVHVtM3lPYXdyNWd6TjhaemltcWE0UGgz?=
- =?utf-8?B?RU9kWkJtazdSY2FJeXpKdnVOSXNYNmdnZmZ6ZUhldmY5ZEVZQzQxeXdCT2U4?=
- =?utf-8?B?T0pyc01tRllSTjgwVTM3eEdEYzhad2xSU2tycWlFTi91WlBIWDdrajZCMlkx?=
- =?utf-8?Q?V3omLGTD8PEsBc69X6TFAy/c6JGi9jIn?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB8056.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MXlMakxPODlMMjdMbmlLWlJRY3dqRExMQS9GRDEwblRPeE9vaXV5aDBWcGRE?=
- =?utf-8?B?UnBNRHNHOFV3aFlHRjgxV0VyWXdWSWNaR0JDazlZMTFuOERPWW45WGRJVE9V?=
- =?utf-8?B?d1pJN084OG9PWExRMjkwSUlBcUdCRllIcVk0ckpjb2h4S2NQVTBtOS9sRjNM?=
- =?utf-8?B?d0FhZ1k1SWtacXZpR0Z0WEJ1Wm1mS3RHZ3NaRU1pWTgrTVNRb3o5N2lNZEx1?=
- =?utf-8?B?dXNNNnBUTFNEbzUzUVJVeTJZWHFkcXMvaWJZY29KQmg3ZUJpQ3owYmR3aFFp?=
- =?utf-8?B?a0hOdkVOelZUMEV1OXpXb2VrY3NDTUFOQVJZdmt1Qy9pMmhyaHdSNDQzY1hT?=
- =?utf-8?B?S3g1THhBUVlBSFFmVHlDNmFGVkppWFFkRE9UbUNFSkN4OHJRRW1lcEJiUm5j?=
- =?utf-8?B?aGZveGpWUlhqc2duYU41NXN5RndScEw3V3lVcHpzazNOMyt4R1lNUFFlUk5k?=
- =?utf-8?B?NXJIYXdxNEpPUGF0eUtlNlppcE9XRWQ1Umo0SVI2ZXNBRWNQVCtaSG9qZTNP?=
- =?utf-8?B?ck1FYU1SNVYrcHFQVzlsTVREOC9ESHlqVFlMVG9GZjNPWndnclR3MTJjNUJ6?=
- =?utf-8?B?UWtPd2NZY1FhV3hQQTE5d3MxenN2R3pGMWl6VVQ0SklmbWNma1VNV0lwd1Jx?=
- =?utf-8?B?N2lnQ2tTbWFmcDdkWHRuM2N5NEdEV1F6dVV2bEw2eGZyeEZzcjJXalFTeVg0?=
- =?utf-8?B?SS9lRWtFRjNlRTFNNFNVZjU2djcwcWpKSjNrOGR6QW1oUEloTXRLWUIxVXVN?=
- =?utf-8?B?WWFlcURvZUlGdUpJQXBVQ0lpVHpvVDNhZyt4OU1sNXBxSGlra215U2QwaHFG?=
- =?utf-8?B?NUtxRWxoa0VZaHBrcnNrcDlvcG5la1A1VUhockc2VGdDQTBvUXI5Rjh3ajMr?=
- =?utf-8?B?eVdrSTZhYW5UK085bTdLTjVOekMwTVFkT1g2anJYNmVFSmRENzV2eFRSbEZn?=
- =?utf-8?B?Sm5BOThmc1I3UXZPSlNpRWdPRHJ2a0hUWUV3cm5PcHRKWm96Y0poUVBuS0gv?=
- =?utf-8?B?M2g1UGFHa2VTK2FVUGpvRzl2Z09XeFZFMFBmVUhONEtkREpuUUREMXhVVVR1?=
- =?utf-8?B?K3g3REh1MjRDd202RVIyWEg1a1d5alFZMzJ2UXk1ejQyWUVKS0k2MnFBZElK?=
- =?utf-8?B?VTRXWUp4VmphcEl5RUcwZVpmL3pLTVpTVFlYdVpURU5zS1NtWXVoV2dMeGNO?=
- =?utf-8?B?bkl0WXJKMGlreklzUkl6NzZoZmhTMDZWVW8wSWwreHBOYjNiME9saVRueUZG?=
- =?utf-8?B?Y0RvSlViSnVOSGFiQStGczNvbTlFMHNtbmpYaU10aVpVcGtkcDh3RU9wcldU?=
- =?utf-8?B?VFlSOVExSEx5N0FqZUZ6Y1J4U21DZVZyOHdYVEVzc3ZjbDRWMEFQaTVPcll1?=
- =?utf-8?B?OTc5eEFDL2UwYVk4dTl2TDdpcStpMTB3ZWhKTFQwTVhQb2UwelBNaXB0ek5C?=
- =?utf-8?B?ZGREU1RrelRGQ1FFTzVxZUNRZDdDOHFIVnZYcE56d3dqRmNwWjNRRkNIZVFD?=
- =?utf-8?B?d1V0c1R2M0NBaWI4MWVPdVNMT1pFS004czhrOVUzS0dFUTB6WTk5OEp5U1pD?=
- =?utf-8?B?RDZ0ampUelZodFYvajdRQmM2NExhN004RXZRZTlPSzYxeFg3MFRjbW1PV3Iw?=
- =?utf-8?B?Y3ozeE81TlVXUVFoRmFDRDM1MHRkUDVRdTIycmhGSlBXVFl5ZXZFRWtaUjdl?=
- =?utf-8?B?Y25VL3AyUjlJREw4NmFWNWFVdFlqL3V6T1VFMGo2NkpkUkVyYkVRcmhpS0lY?=
- =?utf-8?B?VlFvdmZyNEtFd3ZoK1FBZStyNHRhRk41YUJFODZ5SjV4WHlVejJhSGM2aEhD?=
- =?utf-8?B?Uy9td3djM3VmbnpxaGFJVytRVUNOQm8yWnYrb3puWVFIaWhPdmV3OHBlemtx?=
- =?utf-8?B?dmlkaTFIRkx3cHdnVysxcDR6S0VoL1RZVjZFVVJYb09JUVZKS29DcExpcUcy?=
- =?utf-8?B?TXdvZ1E1Mi91K3FzcUNCcGdVRmdUYzRnZmJNcGFIcmg5ZHlpcG1sbkJOMHVQ?=
- =?utf-8?B?Vm5pTTM5Y2hKckZGQ25rNHJwdk85eml0WlhnNWxTbVNOdGVwL002VDJKRHJR?=
- =?utf-8?B?WnNYaWRKTGQzYzIxQUVVUFBQNEhGdVY1UnJVRHFMOFppL1BuTmt5VGEwcGdx?=
- =?utf-8?Q?C8lBGpxp6w/f0MPH6XVqelspR?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9912051b-ebe4-4074-66d0-08de3e9d069a
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB8056.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2025 01:22:07.5734
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eg+qWSm+0k0ZpV5JSTySNOmtKBNmvpDBy0nPq+zegi4SsDk7ghsyQe8ncoxbV3QFgnFz5Y5ESjhNTBni4PKwqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6111
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42607ed5-f543-41bd-94da-aa0ee7ec71cd@efficios.com>
 
-On 12/18/2025 12:54 PM, Mathieu Desnoyers wrote:
-[..]
->>> <mathieu.desnoyers@efficios.com> wrote:
-[..]
->>> Here is a revisited version of my Hazard Pointers series. Boqun, Joel,
->>> if you guys have time to try it out with your use-cases it would be
->>> great!
->>>
->>> This new version does the following:
->>>
->>> - It has 8 preallocated hazard pointer slots per CPU (one cache line),
->>> - The hazard pointer user allocates a hazard pointer context variable
->>>   (typically on the stack), which contains the pointer to the slot *and*
->>>   a backup slot,
->>> - When all the per-CPU slots are in use, fallback to the backup slot.
->>>   Chain the backup slot into per-CPU lists, each protected by a raw
->>>   spinlock.
->>> - The hazard pointer synchronize does a piecewise iteration on the
->>>   per-CPU overflow slots lists, releasing the raw spinlock between
->>>   each list item. It uses a 64-bit generation counter to check for
->>>   concurrent list changes, and restart the traversal on generation
->>>   counter mismatch.
->>> - There is a new CONFIG_PREEMPT_HAZPTR config option. When enabled,
->>>   the hazard pointer acquire/release adds and then removes the hazard
->>>   pointer context from a per-task linked list. On context switch, the
->>>   scheduler migrates the per-CPU slots used by the task to the backup
->>>   per-context slots, thus making sure the per-CPU slots are not used
->>>   by preempted and blocked tasks.
->>
->> This last point is another reason why I want the slots to be per task instead
->> of per CPU. It becomes very natural because the hazard pointer is always
->> associated with a task only anyway, not with the CPU (at usecase level). By
->> putting the slot in the task struct, we allow these requirements to flow
->> naturally without requiring any locking or list management.. Did I miss
->> something about the use cases?
->
-> I start from the hypothesis that scanning all tasks at synchronize
-> is likely too slow for a general purpose synchronization algo.
->
-> This is why we have RCU (general purpose) tracking hierarchical per-cpu
-> state, and specialized RCU flavors (for tracing and other use-cases)
-> using iteration on all tasks.
->
+On Thu, Dec 18, 2025 at 06:36:00PM -0500, Mathieu Desnoyers wrote:
+> On 2025-12-18 15:22, Boqun Feng wrote:
+> [...]
+> > > > Could you utilize this[1] to see a
+> > > > comparison of the reader-side performance against RCU/SRCU?
+> > > 
+> > > Good point ! Let's see.
+> > > 
+> > > On a AMD 2x EPYC 9654 96-Core Processor with 192 cores,
+> > > hyperthreading disabled,
+> > > CONFIG_PREEMPT=y,
+> > > CONFIG_PREEMPT_RCU=y,
+> > > CONFIG_PREEMPT_HAZPTR=y.
+> > > 
+> > > scale_type                 ns
+> > > -----------------------
+> > > hazptr-smp-mb             13.1   <- this implementation
+> > > hazptr-barrier            11.5   <- replace smp_mb() on acquire with barrier(), requires IPIs on synchronize.
+> > > hazptr-smp-mb-hlist       12.7   <- replace per-task hp context and per-cpu overflow lists by hlist.
+> > > rcu                       17.0
+> > > srcu                      20.0
+> > > srcu-fast                  1.5
+> > > rcu-tasks                  0.0
+> > > rcu-trace                  1.7
+> > > refcnt                  1148.0
+> > > rwlock                  1190.0
+> > > rwsem                   4199.3
+> > > lock                   41070.6
+> > > lock-irq               46176.3
+> > > acqrel                     1.1
+> > > 
+> > > So only srcu-fast, rcu-tasks, rcu-trace and a plain acqrel
+> > > appear to beat hazptr read-side performance.
+> > > 
+> > 
+> > Could you also see the reader-side performance impact when the percpu
+> > hazard pointer slots are used up? I.e. the worst case.
+> 
+> I've modified the code to populate "(void *)1UL" in the 7 first slots
+> at bootup, here is the result:
+> 
+> hazptr-smp-mb-7-fail    16.3 ns
+> 
+> So we go from 13.1 ns to 16.3 ns when all but one slots are used.
+> 
+> And if we pre-populate the 8 slots for each cpu, and thus force
+> fallback to overflow list:
+> 
+> hazptr-smp-mb-8-fail    67.1 ns
+> 
 
-I wouldn't call HP as "general" personally, it could be (should be?) usecase
-specific. That's why I am not opposed to the per-cpu approach, but I am not
-convinced that there is no room for a per-task slot approach which is simpler
-in many respects in the code.
+Thank you! So involving locking seems to hurt performance more than
+per-CPU/per-task operations. This may suggest that enabling
+PREEMPT_HAZPTR by default has an acceptable performance.
 
-If usecase has 1000s of CPUs but few tasks running, then per-task would be way
-faster. It would be even cheaper than per-cpu slots on the read-side:
-1. Unlikely to overflow relatively speaking, since plenty of slots distributed
-to tasks, thus avoiding locking.
-2. Preemption also doesn't require saving/restoring and locking.
+> > 
+> > > [...]
+> > > 
+> > > > > +/*
+> > > > > + * Perform piecewise iteration on overflow list waiting until "addr" is
+> > > > > + * not present. Raw spinlock is released and taken between each list
+> > > > > + * item and busy loop iteration. The overflow list generation is checked
+> > > > > + * each time the lock is taken to validate that the list has not changed
+> > > > > + * before resuming iteration or busy wait. If the generation has
+> > > > > + * changed, retry the entire list traversal.
+> > > > > + */
+> > > > > +static
+> > > > > +void hazptr_synchronize_overflow_list(struct overflow_list *overflow_list, void *addr)
+> > > > > +{
+> > > > > +	struct hazptr_backup_slot *backup_slot;
+> > > > > +	uint64_t snapshot_gen;
+> > > > > +
+> > > > > +	raw_spin_lock(&overflow_list->lock);
+> > > > > +retry:
+> > > > > +	snapshot_gen = overflow_list->gen;
+> > > > > +	list_for_each_entry(backup_slot, &overflow_list->head, node) {
+> > > > > +		/* Busy-wait if node is found. */
+> > > > > +		while (smp_load_acquire(&backup_slot->slot.addr) == addr) { /* Load B */
+> > > > > +			raw_spin_unlock(&overflow_list->lock);
+> > > > > +			cpu_relax();
+> > > > 
+> > > > I think we should prioritize the scan thread solution [2] instead of
+> > > > busy waiting hazrd pointer updaters, because when we have multiple
+> > > > hazard pointer usages we would want to consolidate the scans from
+> > > > updater side.
+> > > 
+> > > I agree that batching scans with a worker thread is a logical next step.
+> > > 
+> > > > If so, the whole ->gen can be avoided.
+> > > 
+> > > How would it allow removing the generation trick without causing long
+> > > raw spinlock latencies ?
+> > > 
+> > 
+> > Because we won't need to busy-wait for the readers to go away, we can
+> > check whether they are still there in the next scan.
+> > 
+> > so:
+> > 
+> > 	list_for_each_entry(backup_slot, &overflow_list->head, node) {
+> > 		/* Busy-wait if node is found. */
+> > 		if (smp_load_acquire(&backup_slot->slot.addr) == addr) { /* Load B */
+> > 			<mark addr as unable to free and move on>
+> 
+> But then you still iterate on a possibly large list of overflow nodes,
+> with a raw spinlock held. That raw spinlock is taken by the scheduler
+> on context switch. This can cause very long scheduler latency.
+> 
 
-I would look at per-task HP as a more specific HP implementation if you will and
-per-cpu as more leaning towards "general". There's tradeoffs of course.
+That's fair.
 
-> One of the highlights of hazard pointers over RCU is its ability to
-> know about quiescence of a pointer without waiting for a whole grace
-> period. Therefore I went down the route of scanning per-CPU state rather
-> than per-task.
+> So breaking up the iteration into pieces is not just to handle
+> busy-waiting, but also to make sure we don't increase the
+> system latency by holding a raw spinlock (taken with rq lock
+> held) for more than the little time needed to iterate to the next
+> node.
+> 
 
-Sure, but there could be room for both flavors, no?
+I agree that it helps reduce the latency, but I feel like with a scan
+thread in the picture (and we don't need to busy-wait), we should use
+a forward-progress-guaranteed way in the updater side scan, which means
+we may need to explore other solutions for the latency (e.g.
+fine-grained locking hashlist for the overflow list) than the generation
+counter.
 
->> I did some measurements about the task-scanning issue, and it is fast in my
->> testing (~1ms/10000 tasks). Any input from you or anyone on what the typical
->> task count distribution is that we are addressing? I also made a rough
->> prototype, and it appears to be simpler with fewer lines of code because I do
->> not need to handle preemption. It just happens naturally.
->
-> It really depends on the access pattern here. If you want to replace
-> refcount decrement and test with hazard pointer synchronize, a delay of
-> 1ms on each hazptr synchronize is a *lot*.
+Regards,
+Boqun
 
-Yeah true but I don't think *that* is a fair comparison. The slow path is always
-going to be slower than an atomic refcount no matter which HP approach we talk.
-
-I think percpu_ref_kill is a better comparison which triggers a GP:
-
-  percpu_ref_kill()
-    - percpu_ref_kill_and_confirm()
-       ...
-       - call_rcu_hurry(&ref->data->rcu, percpu_ref_switch_to_atomic_rcu)
-
-> Of course perhaps this can be batched with a worker thread, but then
-> you are back to using more memory due to delayed reclaim, and thus
-> closer to RCU.
-
-If you have millions of objects with per-cpu ref count, that can go into the
-megabytes. With HP, you can negate that. So even with batched worker thread,
-there can be space savings and fast read-side (at the expense of slightly more
-overhead on write side). Sure lockdep usecase does not benefit since Boqun wants
-to speed up the write side in that case (synchronize_rcu_expedited) but we
-probably don't want to discount other potential HP usecases which want faster
-simpler read side while having preemptability, small structures etc and don't
-care about update side performance..
-
->> First of all, we can have a per-task counter that tracks how many hazard
->> pointers are active. If this is zero, then we can simply skip the taskinstead
->> of wasting cycles scanning all the task slot.
->> Further, we can have a retire list that reuses a single scan to scan all the
->> objects in the retire list, thus reusing the scan cost. This can also assist
->> in asynchronously implementing object retiring via a dedicated thread perhaps
->> with the tasks RCU infrastructure. We can also make this per-task counter a
->> bitmap to speed up scanning potentially.
->>
->> I am okay with the concept of an overflow list, but if we keep the overflow
->> list at the per-task level instead of the per-CPU level, it is highlyunlikely
->> IMO that such an overflow list will be used unless more than, say, eight
->> hazard pointers per task are active at any given time.
->
-> The PREEMPT_HAZPTR scheme achieves this as well, with per-CPU scan
-> rather than per-task.
-
-Sure, but with additional complexity and locking that per-task slot does not at
-all have.
-
->
->> So its lock contention would be rarer than, say, having a per-CPU overflow
->> list. I would say that contention would be incredibly rare because typically
->> hazard pointers are used by multiple tasks, each of which will have its own
->> unique set of slots. Whereas in a per-CPU overflow  approach, we have ahigher
->> chance of lock contention, especially when the number of CPUs is low.
->
-> Contention on the per-CPU spinlocks would only happen if threads are
-> migrated between chaining of their backup slot (either if 8 hazptr
-> are in use by the thread, or on context switch), and release. Do
-> you expect this type of migration to happen so often as to increase
-> contention ?
-
-Is that really true? You have contention also when you exhaust all per-cpu slots
-not just on migration:
-
-+			/*
-+			 * If all the per-CPU slots are already in use, fallback
-+			 * to the backup slot.
-+			 */
-+			if (unlikely(!slot))
-+				slot = hazptr_chain_backup_slot(ctx);
-
->
->>
->> Other than the task-scanning performance issue, what am I missing?
->
-> Task-scan performance is the key issue. Also you have to set a limit
-> of per-task slots. How would you handle the scenario where a user
-> needs more slots than the limit ?
-
-Sure there is a limit but I wager that this limit is harder to hit than with the
-per-cpu case. If you have smaller number of CPUs, you might be hitting this all
-the time with per-cpu approach. I'd have a overflow node in task_struct to
-handle this. Billions of Linux systems have 8-16 CPUs.
-
->> Another nice benefit of using per-task hazard pointers is that we can also
->> implement sleeping in hazard pointer sections because we will be scanning for
->> sleeping tasks as well.
->
-> The PREEMPT_HAZPTR scheme takes care of this as well. Sleeping with a
-> hazptr held will trigger the context switch, and the scheduler will
-> simply move the hazard pointer from the per-CPU slot to the backup
-> slot. End of story.
-
-Yeah, but the per-task approach does not need that at all. In fact the hazard
-pointer context structure is smaller.
-
->> By contrast, the other approaches I have seen with per-CPU hazard pointers
->> forbid sleeping, since after sleeping a task is no longer associated with its
->> CPU. The other approaches also have a higher likelihood of locking Due to
->> running out of slots.
->
-> Except for PREEMPT_HAZPTR. :)
-
-Ah you mean, because you make a copy of the slots into the task. But why not
-just keep it in the task to begin with :-D (your points on task scan latency is
-valid though..).
-
->> Of course I am missing a use case, but I suspect we can find a per-CPU ref-
->> count use case that benefits from this. I am researching use cases when I get
->> time. I think my next task is to find a solid use case for this
-> before doing further development of a solution..
->
-> Let me know what you find, I'm very interested!
-
-Sure :) will do, thanks.
-
->> By the way, feedback on the scanning patch:
->>
->> Can you consider using a per-CPU counter to track the number of active slots
->> per CPU? That way you can ignore CPU slots for CPUs that are not using hazard
->> pointers. Another idea is to skip idle CPUs as well.
->
-> I had this in a userspace prototype: a counter of used per-cpu slots.
-> But I finally decided against it because it requires extra instructions
-> on the fast path, *and* scanning 8 pointers within a single cache line
-> on synchronize is really cheap. So I'd need benchmarks to justify adding
-> back the counter.
-
-Interesting, makes sense.
-
->> Have you also considered any asynchronous use case where maintaining a
->> retired  list would assist in RCU-style deferred reclaim of hazard-pointer
-objects?
->
-> This would be a logical next step indeed. I'll have to think
-> about this some more.
->
-
-You might be able to re-use some of the RCU async processing machinery for that.
-Or maybe using timers/workqueues.
-
-Thanks.
-
+> Thanks,
+> 
+> Mathieu
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
