@@ -1,73 +1,73 @@
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90DE4340A5A
-	for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 21:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106212F7468
+	for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 21:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766178602; cv=none; b=V/ip8pxRE8YZhHxoK1uFsgBgCA0c0tgpzPy1CPp3PdWHqBU/51L1RhS4co8u92IrcdGH2r67nwbBzPz35w6RqlWv/JXddxzvJrJCEZsVX+p133crVOZTwSDzdDdgCqnhFZfoPwF/iFOENv5oHGVJpVPwXKqH/TSoTSWsVBxe3Fo=
+	t=1766179035; cv=none; b=TrvZkgLd5zwfYHmB91XAnNYm5pGI61tXYuzmBF3IjA3QRQNPuqAkd2BwZoI63p5DbSQXxrTM+oW/UrWe1yPoZxPtohssqa0pCi1HfOOKLs5BFz6irOjt0ioSqhHmWjgoy4mSuqLu7KPqzHpo5B3I8+KfmjFzW+rNMUMgtFFYht0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766178602; c=relaxed/simple;
-	bh=iqhEYrpWgm5Yfz8pxMwX3Z8XLhEcxpfARdS1KcSLhis=;
+	s=arc-20240116; t=1766179035; c=relaxed/simple;
+	bh=LLpGwIKkDXp5hVROlTCKeGGUdVbJKYXE3k+8i7znnho=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YkiWWJM/GgwD7PgDh5+wLUC4lGInl8e8Uh+gTVVyjfLGADkr+QAS6V+RVjE2Fr70sF7batYt+kTUQ+iSp0tLPG0uguV+CcVqG6HP7u2mkDQhW3VF7FDYVK31mya+HH5oIAyfd8f7MAjg2f8rMYLSO6oPYf1zSY9Vz0IbzKtq0S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PwDuScq5; arc=none smtp.client-ip=209.85.214.175
+	 To:Cc:Content-Type; b=OcS/J758L5lMh9Sv6O6G1Vhv+Ep5o1w9qAWYhUsYI26mit1FABrpfbrHkLgdZbYdEEhBYupmMoaGxPhtbI8CXCUkzN1KX2Sm1yKkpzD88bCzhJjKLl5sqpBbNZWxn+OCjh5BdNwMZ86doBfZpm9/yhW8H2TGv4Thu2HM+5DyU4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V4YzBbXd; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PwDuScq5"
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-29f1bc40b35so38715585ad.2
-        for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 13:10:00 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V4YzBbXd"
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-7e1651ae0d5so1777987b3a.1
+        for <rcu@vger.kernel.org>; Fri, 19 Dec 2025 13:17:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1766178600; x=1766783400; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1766179033; x=1766783833; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iqhEYrpWgm5Yfz8pxMwX3Z8XLhEcxpfARdS1KcSLhis=;
-        b=PwDuScq5uKrCO6abf4MvGNoS2mKDzBjKYJ0bmhTBciEbsfEZPL8W1fZ5ueco+n190+
-         qC1SNl5YEtS1IdQ/tG+2hrFXMcLWkoZNRGb7WSoFCc3nf3uyQ0oYiWaIk9rZT3MVChUE
-         76yw3iWuODcst7Rk/h8qgT9xHw66X0aJxXevk9+1fAOZCe4xf+4eA/c8FafVYwoKBlU5
-         KUvXkGaunNgrVUUi3o22zWzLA1Uke1H2puCSY69VY/PPYf9W/kL2ph8YcbNGmF8Nyw98
-         uf17JPqE8ARf2s05s+jtQV6IPGBqoEcmOsvlG3wXi4bjlQhVclB4y6KQ7Zl/NZVJ+D+O
-         cKBg==
+        bh=0rK9w1Snx+IiOS1yyTvDXywJSRfl2rZ6jIui6kPmEaA=;
+        b=V4YzBbXdfQIieJZp0VnJGt7qtfMwAH5MdmJkO310lDFFybaA8U60ZNjsxN6/IZSzS7
+         0e2qn2Z+fBWU5xP3BM7w5n3pXYSwgSMZDqeKAOy1/Ieq3osXSfFZicc/cjmRAJm5hgcY
+         WwxXyWb10AlioOt0yEp97HC5f+8qPDZZMXNQZdAUfOatV07/4XN2TWT3GxvERX+75qNc
+         AnV/axgAmieubX9aFeSXXMKKyHDX2aCGdOAGa9IRQH9vgxqylvXBRNf8TPwD1JcBhix3
+         XHIDvHxoR4rnPovp7zplMG8xmY8peZwSt4QqRH3RLGBQMGvFLUvz3PNMPSAkSRg+IIpE
+         CgiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766178600; x=1766783400;
+        d=1e100.net; s=20230601; t=1766179033; x=1766783833;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iqhEYrpWgm5Yfz8pxMwX3Z8XLhEcxpfARdS1KcSLhis=;
-        b=p0zsU6Xr7kI4CeF//l8oBlI1i11L7D2DaQLEybvE1+tajARj0mC/PgXPosh4Oj/Sfw
-         0BS3vQwmCwOzC+KYXKePCPXogDozlAWCp+fgWJ7S8oFOZpb1drMPQRUB9es6m2Gxw+h+
-         R87sbk4vDdjb6We6/lQkuR70ahv7ETGKoGNYj28UQCMpP2tAETxiQPbfEerRs1stVeJJ
-         kdl9hLaUqq28Irk0o/llMSYS3Jw53cCcv/ZBmAQ/6V2SjmNPv8zpiO9qrMmULcQudwgg
-         NfeBoTC3h+xx1/TU3qEFiqPST8c5+g1/CW4kGJr03fubOtZI7XOcO/XzFZ0hBk9f75oT
-         DZog==
-X-Forwarded-Encrypted: i=1; AJvYcCWGFTuQAPuF/P1Vuug3lk36vOLc4uXZq4cnhir7CckSbFz0U2PiXJjrGQ9cWB3fF5hc9ew=@vger.kernel.org
-X-Gm-Message-State: AOJu0YycnpITi/9sp4bBOyzOBRUh44UzJeKT2x5XPO8NimgoqIlL69Zo
-	hTLmuzsXGHgUaPn5vGA+0AqIT24G2mjDyq+bB3YzM8fy89W8yUGaFwg1Xqc+pVwjdV7CpPqFSKs
-	KFfkDXrIcHyvVSbEgbA3IysGaQtWV1pGHbsYXVU4m
-X-Gm-Gg: AY/fxX4tOI9DjNUYB4VO9DjWz5WZioImoRuFrnHb4KkW4rr8prnFUADG0r0d9zMR5rV
-	REaG5RJKNh5hRGNT56BBWZ6nSsf6ClhK8o+8LnP1syz3ZtcBFWXRvLK2pru3x6qSSvmR2hD8NjA
-	Sxac5lGQUpd5ZjjixbPzkxIO+prm/mDY/7sxGfH6JbyCNn8iIZAxVsk/SpOzCrTNS2CX0VvJTa6
-	n3EhGlZiItNQABBRuzS6VK4XaoS90YtU1oT2UGeai4pdDnB0yC3cgFCUdf+LdbZeP9Uggd6URW6
-	QkeYZROC7xXgvyq8SIKmQpIttyY=
-X-Google-Smtp-Source: AGHT+IGdr0jH8cGEaDB7eA0QDwFP/5Ve8WscN7cZkV8XMcvDcmhs6BtuLqrVUM3kTfn7w87OZJ/+kODUMJAxXUcmHFc=
-X-Received: by 2002:a05:7022:ef0b:b0:11b:9386:7ece with SMTP id
- a92af1059eb24-12172309509mr4284248c88.43.1766178599422; Fri, 19 Dec 2025
- 13:09:59 -0800 (PST)
+        bh=0rK9w1Snx+IiOS1yyTvDXywJSRfl2rZ6jIui6kPmEaA=;
+        b=MWIvKGtxaZ5q5My53sd5YZaP4ZA6CMWL+YDR4T/Kb4B2XjLQfa2VnZsaDvl6CJPMvz
+         L3M7N4Myhte0piiL/G7iMgLCbq/bp5BAOau5osWXSAFuzqjkhpOCF8sVQO1thXstJQNq
+         lX8CyVxXpmQe/gwx29oCJJlKaxY2BrzTz1xxptlapYK8pAyg/uIjAwf6lexOPt4XglSL
+         e23bOUBHHy1hHyky89BqDe32gMDDUT9UYMVDrbYfbuX3LhKfrf2c3bSlTpUMyL0hToqQ
+         HzB5OXgwM1cuAs/AW5gLP4I7epz+pWTsTV78F4ELzJylypDJVSRkNfXUaWtrBLeTXLg/
+         q3cA==
+X-Forwarded-Encrypted: i=1; AJvYcCUMiPoPO7NpmxSLC27CiZhiv5xx79mczf6grYcxDFOVrnGrcjsYrjKwxqhpxnoVTSreXxs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDAsnbuw9Z+WsCA3+bF446j8BAkCSgmpgPrIJqZ1cFJfnGSSVk
+	+KcnfmkepqQxlJ4iYtea/hPzp8/Bp4rOm8jeCAgTs4CpylN0P24rgM+kDXwViCNptk3LTfqIQgM
+	/e5SudAvJLBifWl7s+4kKOWw+OSmWzZXXOdH1MlgL
+X-Gm-Gg: AY/fxX4Nkp0WTzsRGmmmePSv1ta/Zk/b7OCfU33csOOwZLIXfi2D7fzX44/+gZdClpR
+	Zm+xXtMz60JOPst/YF2HbzPTYS15gyCBTts4IJ9WDQDrNQLmLd3eBKHjNTw9DVcvdmi+4V6IxMt
+	CS5r4QlfPA0igBfPra0tx7rpqQKz+BixrE0y/Uz9Q68XMUW+LgC4OHzwB4SbjcFoc6RwrJmJxKb
+	L0E0At+9t1vn0tpURRsnEQEzVJCEfC9NVpWFYwi4CM6MS67A3DMK57mayKQu/k6xfjCBoBg1ohs
+	fAnaqwqxMSbWp8kM9LSrZqHeKbrKi5ua9xSOSg==
+X-Google-Smtp-Source: AGHT+IHpiDrn99m7x0uN4estdHNLC96nljKxP9R6JbsteT8HXtfNtk+xeDdUnA0onYdjgh5ezU9+Po7MHQlADcjwb9o=
+X-Received: by 2002:a05:7022:2586:b0:11d:f037:891c with SMTP id
+ a92af1059eb24-12172311ffamr3088830c88.44.1766179032817; Fri, 19 Dec 2025
+ 13:17:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251219154418.3592607-1-elver@google.com> <20251219154418.3592607-14-elver@google.com>
- <3b070057-5fda-410e-a047-d9061d56a82f@acm.org>
-In-Reply-To: <3b070057-5fda-410e-a047-d9061d56a82f@acm.org>
+References: <20251219154418.3592607-1-elver@google.com> <20251219154418.3592607-8-elver@google.com>
+ <cdde6c60-7f6f-4715-a249-5aab39438b57@acm.org>
+In-Reply-To: <cdde6c60-7f6f-4715-a249-5aab39438b57@acm.org>
 From: Marco Elver <elver@google.com>
-Date: Fri, 19 Dec 2025 22:09:23 +0100
-X-Gm-Features: AQt7F2racRCVQBtX1XHCEqHFLvRozCqLgqx9fCp_0Wp28A2qceHYZ0Bj23R_eEk
-Message-ID: <CANpmjNN6QrxwUUkpAopTfxLwUqGfB53J96dwOWHNcoYrOrEocQ@mail.gmail.com>
-Subject: Re: [PATCH v5 13/36] bit_spinlock: Support Clang's context analysis
+Date: Fri, 19 Dec 2025 22:16:36 +0100
+X-Gm-Features: AQt7F2oJirW61gdd7JR_kO6v8Pm8LYFzp_d0WJmR_my_E34K94emt-YaA94Rukg
+Message-ID: <CANpmjNPJXVtZgT96PP--eNAkHNOvw1MrYzWt5f2aA0LUeK8iGA@mail.gmail.com>
+Subject: Re: [PATCH v5 07/36] lockdep: Annotate lockdep assertions for context analysis
 To: Bart Van Assche <bvanassche@acm.org>
 Cc: Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, 
 	Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>, 
@@ -94,27 +94,71 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>,
 	linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 19 Dec 2025 at 21:48, 'Bart Van Assche' via kasan-dev
+On Fri, 19 Dec 2025 at 21:54, 'Bart Van Assche' via kasan-dev
 <kasan-dev@googlegroups.com> wrote:
 >
-> On 12/19/25 7:40 AM, Marco Elver wrote:
-> > +/*
-> > + * For static context analysis, we need a unique token for each possible bit
-> > + * that can be used as a bit_spinlock. The easiest way to do that is to create a
-> > + * fake context that we can cast to with the __bitlock(bitnum, addr) macro
-> > + * below, which will give us unique instances for each (bit, addr) pair that the
-> > + * static analysis can use.
-> > + */
-> > +context_lock_struct(__context_bitlock) { };
-> > +#define __bitlock(bitnum, addr) (struct __context_bitlock *)(bitnum + (addr))
+> On 12/19/25 7:39 AM, Marco Elver wrote:
+> > diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> > index dd634103b014..621566345406 100644
+> > --- a/include/linux/lockdep.h
+> > +++ b/include/linux/lockdep.h
+> > @@ -282,16 +282,16 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
+> >       do { WARN_ON_ONCE(debug_locks && !(cond)); } while (0)
+> >
+> >   #define lockdep_assert_held(l)              \
+> > -     lockdep_assert(lockdep_is_held(l) != LOCK_STATE_NOT_HELD)
+> > +     do { lockdep_assert(lockdep_is_held(l) != LOCK_STATE_NOT_HELD); __assume_ctx_lock(l); } while (0)
+> >
+> >   #define lockdep_assert_not_held(l)  \
+> >       lockdep_assert(lockdep_is_held(l) != LOCK_STATE_HELD)
+> >
+> >   #define lockdep_assert_held_write(l)        \
+> > -     lockdep_assert(lockdep_is_held_type(l, 0))
+> > +     do { lockdep_assert(lockdep_is_held_type(l, 0)); __assume_ctx_lock(l); } while (0)
+> >
+> >   #define lockdep_assert_held_read(l) \
+> > -     lockdep_assert(lockdep_is_held_type(l, 1))
+> > +     do { lockdep_assert(lockdep_is_held_type(l, 1)); __assume_shared_ctx_lock(l); } while (0)
+> >
+> >   #define lockdep_assert_held_once(l)         \
+> >       lockdep_assert_once(lockdep_is_held(l) != LOCK_STATE_NOT_HELD)
+> > @@ -389,10 +389,10 @@ extern int lockdep_is_held(const void *);
+> >   #define lockdep_assert(c)                   do { } while (0)
+> >   #define lockdep_assert_once(c)                      do { } while (0)
+> >
+> > -#define lockdep_assert_held(l)                       do { (void)(l); } while (0)
+> > +#define lockdep_assert_held(l)                       __assume_ctx_lock(l)
+> >   #define lockdep_assert_not_held(l)          do { (void)(l); } while (0)
+> > -#define lockdep_assert_held_write(l)         do { (void)(l); } while (0)
+> > -#define lockdep_assert_held_read(l)          do { (void)(l); } while (0)
+> > +#define lockdep_assert_held_write(l)         __assume_ctx_lock(l)
+> > +#define lockdep_assert_held_read(l)          __assume_shared_ctx_lock(l)
+> >   #define lockdep_assert_held_once(l)         do { (void)(l); } while (0)
+> >   #define lockdep_assert_none_held_once()     do { } while (0)
 >
-> Will this cause static analyzers to complain about out-of-bounds
-> accesses for (bitnum + (addr)), which is equivalent to &(addr)[bitnum]?
+> I think these macros should use __must_hold() instead of __assume...().
+> lockdep_assert_held() emits a runtime warning if 'l' is not held. Hence,
+> I think that code where lockdep_assert_held() is used should not compile
+> if it cannot be verified at compile time that 'l' is held.
 
-Only if they decide to interpret never-executed code (i think the
-kernel has various dead code that's optimized out that might trigger
-static analyzers if they analyzed it).
-But this could probably be improved by using a different idiom, and
-using an empty inline function that takes bitnum, addr as args, and
-Clang simply takes the call to that function as the context lock
-identity.
+That's not the purpose of this - if a function or variable should have
+a lock held, we mark them explicitly with __must_hold() or
+__guarded_by(), and we don't really need to use lockdep_assert,
+because the compiler helped us out. In an ideal world, every function
+or variable that requires a lock held is annotated, and we don't need
+to ever worry about explicitly checking if a lock is held (but we'll
+be far from that for a while).
+
+The purpose is described in the commit message:
+
+> Presence of these annotations causes the analysis to assume the context
+> lock is held after calls to the annotated function, and avoid false
+> positives with complex control-flow; [...]
+
+It's basically an escape hatch to defer to dynamic analysis where the
+limits of the static analysis are reached. This is also the original
+purpose of the "assert"/"assume" attributes:
+https://clang.llvm.org/docs/ThreadSafetyAnalysis.html#assert-capability-and-assert-shared-capability
+
+Without this escape hatch, and deferral to dynamic analysis, we'd be
+stuck in some cases.
