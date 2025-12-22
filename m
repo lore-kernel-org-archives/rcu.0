@@ -1,199 +1,188 @@
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD01F42050
-	for <rcu@vger.kernel.org>; Sun, 21 Dec 2025 09:59:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6423043C8;
+	Mon, 22 Dec 2025 07:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766311156; cv=none; b=aIYhFycA9Z0owFgITkaoPZ6pqliT+mzyzawLxFNbRSPeEm35/f06qM+g+uVcUcVeI5h/M3u7+Jhk/XEp3o86IldTHgeJx9UlWyxuJbE4p9jnTAEeZuUNm/480IDuwRxy3vd2lklW2+U6LphO7q48jqg+INNoDeeNGLM9vtRvMsI=
+	t=1766387532; cv=none; b=Pjedt4qwY594E3pP7zAWCkjeKR/evCf0SJEZMDIVh/EfqtZWoXHb5S7ch/5e92b0JX4JdNK4xveRZRIk6ulg4LDCbNHMawJgoxlKdqd56S9s+Yd+Wcf/FqP852unuc4qvgt9JnuY/akEW9pT4I1nylWq24Isx8DISxy37vH1qOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766311156; c=relaxed/simple;
-	bh=xwKCdQhBtY7sdy8Zz446mEtEqk90qmGnWtG0zOgftIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SSSmJSntO5PIRHVQrHOQy9ToxsGPRMyFwi5sWkU8jhVTju3rE6rc5HfQGEao1FhWzeaYhoM2K1UHLTHGcJDyAevc/f6VwtA4GL4HTbMrxwgVJkKt9mpUrgC570y3kLraFab1TsvWQ93xRlEzNYo9rgmnBqUA5QBd4Giyf+15tSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CwpdrKp0; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1766387532; c=relaxed/simple;
+	bh=aUNIWiozwaKGPbZ7we6g9cMR6WPhGKJa26i9/Y5kZg0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=pWZgsf28vbxTAJOnuVQCtRjYdI7+cdBnbj4Fbrvczc8oQfSb2pqYNfo+wRHLeGG12wAQCV5nMXsIqFFhpeFVFqat/CL4pH6y7RvNjbr/Dc1EQckqIzYtICEWyQ+KMfRhYwe2lWICpQOLHYRi4NPz7i8Fw3SwujXs6niBJsukd9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=3cPYQPNt; arc=none smtp.client-ip=113.46.200.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CwpdrKp0"
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4f4c89f8cc6so2806991cf.1
-        for <rcu@vger.kernel.org>; Sun, 21 Dec 2025 01:59:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766311153; x=1766915953; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fjHwQCJ+WLLRT0TZamL7R6ZEjyOxsMVMPGjCn4Gr/2c=;
-        b=CwpdrKp09xpRGbzH4Jv5EF8oQWpU7QngCBfwOhRxFVzv61X6VXGTwnjr9c0U3iRI3m
-         wKmMvefPRORHajYyFoUJfkGMkCKmCJJzVYiHj0SVfGbtS1rgLZMNn1lIZiBFovOq348X
-         dS1dan1yftJh2T5Gy6RaE+dlvruxZrmfRHNKKuDgQXEhJbb2TSpnDcnio65NfnnIsERJ
-         L8scSrPEhybCRwA+RGLhmuYLh5GlQEeBVUq9IVEy7sQxV8/HxfpnIP98TI/UKzUG/yYw
-         mJnwDKgL4Sn2I0I1JcXyrhnnsel1t3Ax/f9YUvwsn2sml/KI1qhk5pHUJ6MqeyaLSe/P
-         92Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766311153; x=1766915953;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=fjHwQCJ+WLLRT0TZamL7R6ZEjyOxsMVMPGjCn4Gr/2c=;
-        b=PMTxcZygu4FO1Ua1xr4r0sATPXkVIl7AGhaZrnK7MKronLiUzWpK7Fp6fdzGF23VGy
-         6kJo0yMQNo+wdsSvCypvv3XQjJI/03RIzoB3BvZW/aHnEQeq97D0ssuIT96WhP5VYpJQ
-         IfwA8zfDhDeCzxJtqsj22m+QVnV0fXn65531lY088xgUOH/iZ0Q+tuEs0B/xvqIKN3Io
-         JsiJQf0IzyOw6ABWGuhytw/NwEY8j3WkiKUVLHGrK6NAYx4XnBXzsfHHIELT1Kt7rAvf
-         rQtd6ldmtUpegcAaNzdPIDi5zjprOBdOWHXxbdG3KEBO3TedwiXjmqjG0M0iwRthfOQm
-         l2Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCWQLlLfjBdKIjgIu17PUi5djwZvxnGezH7m4br59/fllMna+H4LzCPILJq7xpAD2JC1IG0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwNEpG5ElTMwknJbTxtyBsrcxvKj1Ng6hQwWJ7W/BmnFyfdEGJF
-	WiXG84e4j1GhHWoOQMXnnZxu5FqyG4QUJMaeSq/hrXq1OgLUO0jj4x86
-X-Gm-Gg: AY/fxX5Sqy8081ZSQ8nZTvKJFi4mKdz9t1LqE63budjBv3cEbL0z++R8F5kopXA3PUH
-	csi3cJ10/GDDiVhOsmU4VIBS63DfknFrLokf4bEKi6xp8xjgxp8lfrDoD+lH0UWO/elxNnMZgjV
-	rF/98nmYd8xa7Caa7yel750QbLXJSYRUrHCkaJF+uvnQ4qTpww9F7RwPT229pjR2ry+XQoJGLgq
-	wHqTi9fBzIFvoiTCzlIo+IRUxARFnqBFfsIShp3sb3sqO0c/es9THYjkmWjVHJARmG/lR8h7CeH
-	42VuTdJPH2UjMuPdexMFLW6m3SMOg3c+uZmZhQ/tI5WZcPXSj4ZC6cwykPVPf2vtExtRzuiAjMi
-	mnlb8CUfXF6uUQnPTiLV6CptUFuWcYZJcr2m6qxqE4DLQ/+JTD21iOZ9B/hYcdPDBYcS3Z30ukF
-	CmPC9SBlEtG31S3IN3q/TBe0aCuPjPU5gK550EJBYhZvZYsHDrVN8LeAKzaqajyGgzOSYW7VsBT
-	VVKad1ghNTXFOY=
-X-Google-Smtp-Source: AGHT+IGkZ7YmQ4iCIVP39dS3Dspfdfd6jXXAiK+b4cBzlfzo3Zgdyb/boYNxk+mCnLQREZ4Jn+Teag==
-X-Received: by 2002:a05:622a:250:b0:4f3:5346:5d54 with SMTP id d75a77b69052e-4f4abd78d8fmr113519801cf.50.1766311152615;
-        Sun, 21 Dec 2025 01:59:12 -0800 (PST)
-Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4f4ac64e43asm54346251cf.26.2025.12.21.01.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Dec 2025 01:59:12 -0800 (PST)
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 06446F40068;
-	Sun, 21 Dec 2025 04:59:11 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Sun, 21 Dec 2025 04:59:11 -0500
-X-ME-Sender: <xms:7sRHaR2N2v5QV0zS7rTjGaMTxsDxXqevcMfxDYvckKrndiHr9nNznw>
-    <xme:7sRHabBBkyoml_p8QsCSVUISTOCodrotwwrFVf2B7-gdeQo-11qe60ozt8uJk-u0T
-    HNU-gARi0H5n7K7phSZiFSuAiofuMLm0OKicd7-IEHjM0akskKMcw>
-X-ME-Received: <xmr:7sRHaaFsv_hcs8DZVZClK1YuwwoTNd4iBxKqdxkoSNNA8ZJmsbqidfjit9pE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdehfeejiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfh
-    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
-    hrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudffiedv
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqh
-    hunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddu
-    jeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvg
-    drnhgrmhgvpdhnsggprhgtphhtthhopeefvddpmhhouggvpehsmhhtphhouhhtpdhrtghp
-    thhtohepjhhovghlrghgnhgvlhhfsehnvhhiughirgdrtghomhdprhgtphhtthhopehmrg
-    hthhhivghurdguvghsnhhohigvrhhssegvfhhfihgtihhoshdrtghomhdprhgtphhtthho
-    pehjohgvlhesjhhovghlfhgvrhhnrghnuggvshdrohhrghdprhgtphhtthhopehprghulh
-    hmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhes
-    vhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehnphhighhgihhnsehgmhgrih
-    hlrdgtohhmpdhrtghpthhtohepmhhpvgesvghllhgvrhhmrghnrdhiugdrrghupdhrtghp
-    thhtohepghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpth
-    htohepsghighgvrghshieslhhinhhuthhrohhnihigrdguvg
-X-ME-Proxy: <xmx:7sRHadqKf0RTS3nOePlAQvUozbdkH1E35MAQvZyfuG_bq4zKpklFew>
-    <xmx:7sRHaS1Y2epauX9OBV-y9l-R-Zk5Fbd6FmY3INiJFgdckMvEcL9nFg>
-    <xmx:7sRHaRAPbAze_26JzP05OzQKeAn06Zg5nMbyWgmetanI2Ftb88lQ_w>
-    <xmx:7sRHad_m279CbYEdXqv4sqfsQSdM2Z_3F2PEOvAtMVxacM33U0ReiQ>
-    <xmx:78RHafNWcaktLFSnepHDt1H0rFJluyVrCqzHdfbKcufE0b2QeG9VpLXk>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 21 Dec 2025 04:59:09 -0500 (EST)
-Date: Sun, 21 Dec 2025 18:59:07 +0900
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,	linux-kernel@vger.kernel.org,
- Nicholas Piggin <npiggin@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Will Deacon <will@kernel.org>,	Peter Zijlstra <peterz@infradead.org>,
-	Alan Stern <stern@rowland.harvard.edu>,	John Stultz <jstultz@google.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Waiman Long <longman@redhat.com>,	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,	Vlastimil Babka <vbabka@suse.cz>,
- maged.michael@gmail.com,	Mateusz Guzik <mjguzik@gmail.com>,
- rcu@vger.kernel.org,	linux-mm@kvack.org, lkmm@lists.linux.dev
-Subject: Re: [RFC PATCH v4 3/4] hazptr: Implement Hazard Pointers
-Message-ID: <aUfE61t5cITwolX7@tardis-2.local>
-References: <20251218014531.3793471-4-mathieu.desnoyers@efficios.com>
- <aUO9KRaP0FXpm_l9@tardis-2.local>
- <fcbc99d0-b7c7-45f7-9cf8-f5d3bfad966e@efficios.com>
- <aURihbmjsKi8m7MO@tardis-2.local>
- <42607ed5-f543-41bd-94da-aa0ee7ec71cd@efficios.com>
- <aUSbhiMgluudbVEG@tardis-2.local>
- <edbe45b3-0f85-48d2-8d4f-784781a8dee5@efficios.com>
- <6353feeb-c2ab-4ff6-9ea6-04ae5102641d@nvidia.com>
- <6b27f3c3-47f7-402f-aa6c-b564e3db1d6a@efficios.com>
- <38d05c17-c28e-4ec1-be30-e77fd7015b5a@nvidia.com>
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="3cPYQPNt"
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=ztb9+3n+GCcK2m5Ba62kPS3wLNEwIpgkFPKdZJKVyaU=;
+	b=3cPYQPNtrXs76shTgfJzQEZ5A/8Iyb/JOHVAymP21fUFzHnurhqUI5HJAh734tIEbPvcfPg+o
+	/EDU3CwB7WNJON+BpJ8T5S/u19oLgX6DxzzVw1iaYVePcIJOQe2gpLvmfp+X7K6APDw63Tx4QHd
+	eWn/jvEwIdlGfG2ABvpphr4=
+Received: from mail.maildlp.com (unknown [172.19.162.197])
+	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4dZTlQ0hvxzpT0h;
+	Mon, 22 Dec 2025 15:09:06 +0800 (CST)
+Received: from dggpemr500006.china.huawei.com (unknown [7.185.36.185])
+	by mail.maildlp.com (Postfix) with ESMTPS id E315740363;
+	Mon, 22 Dec 2025 15:11:58 +0800 (CST)
+Received: from [100.103.109.15] (100.103.109.15) by
+ dggpemr500006.china.huawei.com (7.185.36.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 22 Dec 2025 15:11:57 +0800
+Message-ID: <597d8f33-106d-45bf-a6da-637ab05604e4@huawei.com>
+Date: Mon, 22 Dec 2025 15:11:57 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <38d05c17-c28e-4ec1-be30-e77fd7015b5a@nvidia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcu: Fix rcu_read_unlock() deadloop due to softirq
+To: Joel Fernandes <joelagnelf@nvidia.com>
+CC: <rcu@vger.kernel.org>, <liuyongqiang13@huawei.com>, <paulmck@kernel.org>,
+	<frederic@kernel.org>, <neeraj.upadhyay@kernel.org>, <josh@joshtriplett.org>,
+	<boqun.feng@gmail.com>, <urezki@gmail.com>, <rostedt@goodmis.org>,
+	<mathieu.desnoyers@efficios.com>, <jiangshanlai@gmail.com>,
+	<qiang.zhang@linux.dev>, <linux-kernel@vger.kernel.org>,
+	<yujiacheng3@huawei.com>
+References: <20251218074950.1936014-1-yaokai34@huawei.com>
+ <20251219151400.GA820904@joelbox2>
+ <16e20d68-8d19-45bd-b4a1-f2c067ca44a6@nvidia.com>
+ <a32ad653-1bcb-44d4-9802-bcfc2725d712@nvidia.com>
+Content-Language: en-US
+From: Yao Kai <yaokai34@huawei.com>
+In-Reply-To: <a32ad653-1bcb-44d4-9802-bcfc2725d712@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ dggpemr500006.china.huawei.com (7.185.36.185)
 
-On Fri, Dec 19, 2025 at 05:39:00PM -0500, Joel Fernandes wrote:
+
+
+On 12/19/2025 11:44 PM, Joel Fernandes wrote:
 > 
 > 
-> On 12/19/2025 5:19 PM, Mathieu Desnoyers wrote:
-> > On 2025-12-19 10:42, Joel Fernandes wrote:
-> >>
-> >> IMHO the overflow case is "special" and should not happen often, otherwise
-> >> things are "bad" anyway. I am not sure if this kind of complexity will be worth
-> >> it unless we know HP forward-progress is a real problem. Also, since HP acquire
-> >> will be short lived, are we that likely to not get past a temporary shortage of
-> >> slots?
-> > 
-> > Given that we have context switch integration which moves the active
-> > per-cpu slots to the overflow list, I can see that even not-so-special
-> > users which get preempted or block regularly with active per-cpu slots
-> > could theoretically end up preventing HP scan progress.
+> On 12/19/2025 10:38 AM, Joel Fernandes wrote:
+>>
+>>
+>> On 12/19/2025 10:14 AM, Joel Fernandes wrote:
+>>> On Thu, Dec 18, 2025 at 03:49:50PM +0800, Yao Kai wrote:
+>>>> Commit 5f5fa7ea89dc ("rcu: Don't use negative nesting depth in
+>>>> __rcu_read_unlock()") removes the recursion-protection code from
+>>>> __rcu_read_unlock(). Therefore, we could invoke the deadloop in
+>>>> raise_softirq_irqoff() with ftrace enabled as follows:
+>>>>
+>>>> WARNING: CPU: 0 PID: 0 at kernel/trace/trace.c:3021 __ftrace_trace_stack.constprop.0+0x172/0x180
+>>>> Modules linked in: my_irq_work(O)
+>>>> CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Tainted: G O 6.18.0-rc7-dirty #23 PREEMPT(full)
+>>>> Tainted: [O]=OOT_MODULE
+>>>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+>>>> RIP: 0010:__ftrace_trace_stack.constprop.0+0x172/0x180
+>>>> RSP: 0018:ffffc900000034a8 EFLAGS: 00010002
+>>>> RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000000000
+>>>> RDX: 0000000000000003 RSI: ffffffff826d7b87 RDI: ffffffff826e9329
+>>>> RBP: 0000000000090009 R08: 0000000000000005 R09: ffffffff82afbc4c
+>>>> R10: 0000000000000008 R11: 0000000000011d7a R12: 0000000000000000
+>>>> R13: ffff888003874100 R14: 0000000000000003 R15: ffff8880038c1054
+>>>> FS:  0000000000000000(0000) GS:ffff8880fa8ea000(0000) knlGS:0000000000000000
+>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>> CR2: 000055b31fa7f540 CR3: 00000000078f4005 CR4: 0000000000770ef0
+>>>> PKRU: 55555554
+>>>> Call Trace:
+>>>>   <IRQ>
+>>>>   trace_buffer_unlock_commit_regs+0x6d/0x220
+>>>>   trace_event_buffer_commit+0x5c/0x260
+>>>>   trace_event_raw_event_softirq+0x47/0x80
+>>>>   raise_softirq_irqoff+0x6e/0xa0
+>>>>   rcu_read_unlock_special+0xb1/0x160
+>>>>   unwind_next_frame+0x203/0x9b0
+>>>>   __unwind_start+0x15d/0x1c0
+>>>>   arch_stack_walk+0x62/0xf0
+>>>>   stack_trace_save+0x48/0x70
+>>>>   __ftrace_trace_stack.constprop.0+0x144/0x180
+>>>>   trace_buffer_unlock_commit_regs+0x6d/0x220
+>>>>   trace_event_buffer_commit+0x5c/0x260
+>>>>   trace_event_raw_event_softirq+0x47/0x80
+>>>>   raise_softirq_irqoff+0x6e/0xa0
+>>>>   rcu_read_unlock_special+0xb1/0x160
+>>>>   unwind_next_frame+0x203/0x9b0
+>>>>   __unwind_start+0x15d/0x1c0
+>>>>   arch_stack_walk+0x62/0xf0
+>>>>   stack_trace_save+0x48/0x70
+>>>>   __ftrace_trace_stack.constprop.0+0x144/0x180
+>>>>   trace_buffer_unlock_commit_regs+0x6d/0x220
+>>>>   trace_event_buffer_commit+0x5c/0x260
+>>>>   trace_event_raw_event_softirq+0x47/0x80
+>>>>   raise_softirq_irqoff+0x6e/0xa0
+>>>>   rcu_read_unlock_special+0xb1/0x160
+>>>>   unwind_next_frame+0x203/0x9b0
+>>>>   __unwind_start+0x15d/0x1c0
+>>>>   arch_stack_walk+0x62/0xf0
+>>>>   stack_trace_save+0x48/0x70
+>>>>   __ftrace_trace_stack.constprop.0+0x144/0x180
+>>>>   trace_buffer_unlock_commit_regs+0x6d/0x220
+>>>>   trace_event_buffer_commit+0x5c/0x260
+>>>>   trace_event_raw_event_softirq+0x47/0x80
+>>>>   raise_softirq_irqoff+0x6e/0xa0
+>>>>   rcu_read_unlock_special+0xb1/0x160
+>>>>   __is_insn_slot_addr+0x54/0x70
+>>>>   kernel_text_address+0x48/0xc0
+>>>>   __kernel_text_address+0xd/0x40
+>>>>   unwind_get_return_address+0x1e/0x40
+>>>>   arch_stack_walk+0x9c/0xf0
+>>>>   stack_trace_save+0x48/0x70
+>>>>   __ftrace_trace_stack.constprop.0+0x144/0x180
+>>>>   trace_buffer_unlock_commit_regs+0x6d/0x220
+>>>>   trace_event_buffer_commit+0x5c/0x260
+>>>>   trace_event_raw_event_softirq+0x47/0x80
+>>>>   __raise_softirq_irqoff+0x61/0x80
+>>>>   __flush_smp_call_function_queue+0x115/0x420
+>>>>   __sysvec_call_function_single+0x17/0xb0
+>>>>   sysvec_call_function_single+0x8c/0xc0
+>>>>   </IRQ>
+>>>>
+>>>> Commit b41642c87716 ("rcu: Fix rcu_read_unlock() deadloop due to IRQ work")
+>>>> fixed the infinite loop in rcu_read_unlock_special() for IRQ work by
+>>>> setting a flag before calling irq_work_queue_on(). We fix this issue by
+>>>> setting the same flag before calling raise_softirq_irqoff() and rename the
+>>>> flag to defer_qs_pending for more common.
+>>>>
+>>>> Fixes: 5f5fa7ea89dc ("rcu: Don't use negative nesting depth in __rcu_read_unlock()")
+>>>> Reported-by: Tengda Wu <wutengda2@huawei.com>
+>>>> Signed-off-by: Yao Kai <yaokai34@huawei.com>
+>>>
+>>> Good change! It is the exact same pattern and both IRQ work and softirq
+>>> raising are for deferred QS purposes.
+>>>
+>>> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+>> Could you please update the following comment in tree.h to say "An IRQ work or
+>> softirq":
+>>
+>> /*
+>>   * An IRQ work (deferred_qs_iw) is used by RCU to get the scheduler's attention.
+>>   * to report quiescent states at the soonest possible time.
+>>   * The request can be in one of the following states:
+>>   * - DEFER_QS_IDLE: An IRQ work is yet to be scheduled.
+>>   * - DEFER_QS_PENDING: An IRQ work was scheduled but either not yet run, or it
+>>   *                     ran and we still haven't reported a quiescent state.
+>>   */
+>> #define DEFER_QS_IDLE           0
+>> #define DEFER_QS_PENDING        1
+>>
+>> And resend the patch with my Review tag?
 > 
-> Yeah, I see. That's the 'problem' with the preemption design of this patchset.
-> You always have to move it in and out of overflow list on preemption even when
-> there is no overflow AFAICS. My idea (which has its own issues) does not require
-> that on preemption.
+> Oh, and update the variable name in the comment too (deferred_qs_iw) :) and all
+> the occurences of "IRQ work" to "IRQ work or softirq".
 > 
-> > Providing HP scan progress guarantees is IMO an important aspect to
-> > consider if we want to ensure the implementation does not cause subtle
-> > HP scan stall when its amount of use will scale up.
+>   - Joel
 > 
-> Sure. But if you didn't have to deal with a list in the 'normal' case (not over
-> saturated slots case), then it wouldn't be that big a deal.
 > 
 
-With PREEPT_HAZPTR, the overflow list will be used if a task gets
-preempted while using hazptrs, without PREEPT_HAZPTR, the overflow list
-will be used if there are more than 8 slots used on the CPU (most likely
-due to task being preempted with a hazptr slot being used). Therefore,
-if this hazptr design it to have a few users and we want to support that
-preemptible hazard pointer read-side section, soon or later we need to
-resolve this scanning racing with readers (in context switches) on
-overflow list issue.
+Thanks for review. I will send a new patch later.
 
-Surely we don't need to have something perfect in day 1, but planning a
-bit ahead won't hurt ;-)
-
-Regards,
-Boqun
-
-> >> Perhaps the forward-progress problem should be rephrased to the following?: If a
-> >> reader hit an overflow slot, it should probably be able to get a non-overflow
-> >> slot soon, even if hazard pointer slots are over-subscribed.
-> > 
-> > Those are two distinct forward progress guarantees, and I think both are
-> > important:
-> > 
-> > * Forward progress of HP readers,
-> > * Forward progress of HP scan.
-> 
-[..]
+  - Kai
