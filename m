@@ -1,87 +1,141 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486872417C2;
-	Thu, 25 Dec 2025 18:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0AE23C8C7;
+	Thu, 25 Dec 2025 22:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766689076; cv=none; b=t8S5SNtfewZupNbPIsqOE2sGWVsuu9W0BOiQHOnmAn5VPEL/EkQjmRJsrKIxtZWUIfpkBclGFP8jc9BRt1Xs+3+9FrehYDDe9OCbCHiZp59ss0RudNMfWJCKOrn3iV1fZt7LasMQKqTIzIfKN8IDOJSq2IRt7RZL7V7dFz1zUz0=
+	t=1766701227; cv=none; b=IJBJVIKTE5mu2cvVrDoNU0dMEax30mN8elaV5lI10XgRbOPR3KJY7xeYq4I33OOrSDTO6is1Zj7HRpQjhA68lKBmnWeQu5nE9fcITBFiSh+4+CiWPZzG8qrsFr/6HxMUIon3C2KwJgtrSGUM4nU6Fh9yvsIpBbl4CmfJv/Ex6aA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766689076; c=relaxed/simple;
-	bh=HiNSBchRdB4wQM3PDRqJnnrN23fjPx9zrCRsl0su7ec=;
+	s=arc-20240116; t=1766701227; c=relaxed/simple;
+	bh=Gc7xLt5DvCtIzvP4Rt3W3ITMFXQnqwMtjc3FuMfIMi0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GLzAWpMWJC4c12EBzzoTuInRxsMeRRMrJLIyrpANPhvNb8Pa280FgBbnt/cmcJj3x16OTrcOWaFdcFE5F5e1KJ3MvtMJNJ0r6JFlAIhrx72BGXmisL9n1r0ALfLPgGrmL7xMoDUIZz/1JGOSrdjJglydqumAeavTOIgODgkwfbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FGJ4iZyD; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=oynQ7UIBjsNorPbKzQy/lEMKEA1dIeMfsFV4wtH0pZhjK+7Q3VvBA5e+ESFzgKIsEs8hA3gOOnQvP59Y7kX1qrrv/gv0vVVd1mW/tDV5AKHiVEslTb3wTykapi2bO7pEXKRzucvGCPjWQdhM0cDLOdSGWOsFDb8D5xEQjFtIpIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QdBCudla; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FGJ4iZyD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CED5DC4CEF1;
-	Thu, 25 Dec 2025 18:57:55 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QdBCudla"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 489D8C4CEF1;
+	Thu, 25 Dec 2025 22:20:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766689075;
-	bh=HiNSBchRdB4wQM3PDRqJnnrN23fjPx9zrCRsl0su7ec=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=FGJ4iZyDGP6a04h6Rg863J/9+xdwe22+GZ6cEm4c7Z92PrSbhnp0tXGxfLoIKPogV
-	 R+QQt6809u1MSrVkT4lffqOd4I0pS05Ep91uwNoyDi1uZb5A+ayxiVzfuRQPSYCzjP
-	 loiW4IEGNIHs8/gMQ9GHYVWdYjbvCsv3Rddj996vUkDGPzMrD/DsvSC8qheS6EO+Vr
-	 3qBWfegWHXjw8V5qDTwdo0soUIqgyhsFzA9QkcXtOL6WzMoac/qF25s7jFyJmwUQxN
-	 sVlGUo+ilGTS6arF4GIrORg//Mwdl49RfAASjRpSS3SW5Ge+bEsB4F2J65e5nHUHFq
-	 mdNPITqKD4PMQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3B41FCE0D19; Thu, 25 Dec 2025 10:57:55 -0800 (PST)
-Date: Thu, 25 Dec 2025 10:57:55 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zqiang <qiang.zhang@linux.dev>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Remove unnecessary smp_store operations in
- the cblist_init_generic()
-Message-ID: <b8cae37a-65c9-4380-9290-8494c854373e@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20251214024904.121128-1-qiang.zhang@linux.dev>
+	s=k20201202; t=1766701226;
+	bh=Gc7xLt5DvCtIzvP4Rt3W3ITMFXQnqwMtjc3FuMfIMi0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QdBCudla65A3LTNQDs1ozTy4YG7W4jiml84QmuiNFSJaQGb6sBsJ5xAlD0ozWZSjL
+	 mkIZnlaEQ1xJWvuyl8Jm2xG1Znxk2D1qmXEjyFNTQ+P3ClrOst05Jy/NSSUFNwvLEN
+	 H6EhhWvtremt6fk6J9mBZq/R8/vxhfhc3ZmWCrYwKPvgP/iyGJAsceJcewECWascDA
+	 vc42+d5wc4nqL34aE/aTTua0a86yU39tCLA96h/EIwjTW/+UZN7zZgs8b5kSq845jC
+	 XU16+Mbyvl0gKD56peDlVcL15dcttpenBGKtzZUaEQikOWuyvursPhSeqiLAhYvlI6
+	 Ec13I1UHKzsOw==
+Date: Thu, 25 Dec 2025 23:20:23 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC] rcu/nocb: Remove unnecessary WakeOvfIsDeferred wake
+ path
+Message-ID: <aU24p7he1T63Qeke@pavilion.home>
+References: <20251225074451.2405584-1-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20251214024904.121128-1-qiang.zhang@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251225074451.2405584-1-joelagnelf@nvidia.com>
 
-On Sun, Dec 14, 2025 at 10:49:04AM +0800, Zqiang wrote:
-> The cblist_init_generic() is executed during the CPU early boot
-> phase due to commit:30ef09635b9e ("rcu-tasks: Initialize callback
-> lists at rcu_init() time"), at this time, only one boot CPU is
-> online. this commit therefore use WRITE_ONCE() to replace the
-> smp_store_release() to assigning rtp->percpu_enqueue_lim in the
-> cblist_init_generic().
+Le Thu, Dec 25, 2025 at 02:44:50AM -0500, Joel Fernandes a écrit :
+> The WakeOvfIsDeferred code path in __call_rcu_nocb_wake() attempts to
+> wake rcuog when the callback count exceeds qhimark and callbacks aren't
+> done with their GP (newly queued or awaiting GP). However, a lot of
+> testing proves this wake is always redundant or useless.
 > 
-> Signed-off-by: Zqiang <qiang.zhang@linux.dev>
-
-Good eyes, thank you!
-
-But in that case, we are running on a single CPU with interrupts disables,
-so do we even need WRITE_ONCE()?
-
-							Thanx, Paul
-
-> ---
->  kernel/rcu/tasks.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> In the flooding case, rcuog is always waiting for a GP to finish. So
+> waking up the rcuog thread is pointless. The timer wakeup adds overhead,
+> rcuog simply wakes up and goes back to sleep achieving nothing.
 > 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 76f952196a29..f763f60d5e50 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -292,7 +292,7 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
->  		shift++;
->  	WRITE_ONCE(rtp->percpu_enqueue_shift, shift);
->  	WRITE_ONCE(rtp->percpu_dequeue_lim, lim);
-> -	smp_store_release(&rtp->percpu_enqueue_lim, lim);
-> +	WRITE_ONCE(rtp->percpu_enqueue_lim, lim);
->  
->  	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d rcu_task_cpu_ids=%d.\n",
->  			rtp->name, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim),
-> -- 
-> 2.48.1
+> This path also adds a full memory barrier, and additional timer expiry
+> modifications unnecessarily.
 > 
+> The root cause is that WakeOvfIsDeferred fires when
+> !rcu_segcblist_ready_cbs() (GP not complete), but waking rcuog cannot
+> accelerate GP completion.
+> 
+> This commit therefore removes this path, which also adding some rdp
+> counters to ensure we don't have lost wake ups.
+
+There should be two patches: one that removes the useless path and the
+other that adds the debugging.
+
+> 
+> Tested with rcutorture scenarios: TREE01, TREE05, TREE08 (all NOCB
+> configurations) - all pass. Also stress tested using a kernel module
+> that floods call_rcu() to trigger the overload conditions and made the
+> observations confirming the findings.
+> 
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+
+Cool! Just a few comments:
+
+> @@ -549,24 +546,26 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+>  	lazy_len = READ_ONCE(rdp->lazy_len);
+>  	if (was_alldone) {
+>  		rdp->qlen_last_fqs_check = len;
+> +		rdp->nocb_gp_wake_attempt = true;
+> +		rcu_nocb_unlock(rdp);
+>  		// Only lazy CBs in bypass list
+>  		if (lazy_len && bypass_len == lazy_len) {
+> -			rcu_nocb_unlock(rdp);
+>  			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY,
+>  					   TPS("WakeLazy"));
+>  		} else if (!irqs_disabled_flags(flags)) {
+>  			/* ... if queue was empty ... */
+> -			rcu_nocb_unlock(rdp);
+>  			wake_nocb_gp(rdp, false);
+>  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+>  					    TPS("WakeEmpty"));
+>  		} else {
+> -			rcu_nocb_unlock(rdp);
+>  			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE,
+>  					   TPS("WakeEmptyIsDeferred"));
+>  		}
+> +
+> +		return;
+>  	} else if (len > rdp->qlen_last_fqs_check + qhimark) {
+> -		/* ... or if many callbacks queued. */
+> +		/* Callback overload condition. */
+> +		WARN_ON_ONCE(!rdp->nocb_gp_wake_attempt && !rdp->nocb_gp_serving);
+
+With this test, the point of ->nocb_gp_serving is unclear given that both
+states are cleared in the same place but ->nocb_gp_serving is set later by
+the gp kthread. ->nocb_gp_serving implies ->nocb_gp_wake_attempt so the above
+test is the same as WARN_ON_ONCE(!rdp->nocb_gp_wake_attempt).
+
+In fact ->nocb_gp_wake_attempt alone probably makes sense?
+
+>  		rdp->qlen_last_fqs_check = len;
+>  		j = jiffies;
+>  		if (j != rdp->nocb_gp_adv_time &&
+> @@ -575,21 +574,10 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+>  			rcu_advance_cbs_nowake(rdp->mynode, rdp);
+>  			rdp->nocb_gp_adv_time = j;
+>  		}
+> -		smp_mb(); /* Enqueue before timer_pending(). */
+
+You need to remove the pairing smp_mb__after_spin_lock() in
+do_nocb_deferred_wakeup_timer().
+
+Thanks.
+
+-- 
+Frederic Weisbecker
+SUSE Labs
