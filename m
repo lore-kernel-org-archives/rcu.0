@@ -1,52 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006AC34CDD;
-	Thu, 25 Dec 2025 18:54:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486872417C2;
+	Thu, 25 Dec 2025 18:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766688861; cv=none; b=Y5TMnJQGLDlYgY9rCteElGS43QRsM24iLWOcMpBkdBY8UhAvUCj66wl6tgP6qNUN9KZQsd3lkB2mPbnDOtl77NIvI+ku+l8MD4UMRNqIlZP2zca3k4xB7SUDfYm8Kwo9VUERwWuFLCilkB8z3pMPR+8miQXwumBxdq0rpmzWyeA=
+	t=1766689076; cv=none; b=t8S5SNtfewZupNbPIsqOE2sGWVsuu9W0BOiQHOnmAn5VPEL/EkQjmRJsrKIxtZWUIfpkBclGFP8jc9BRt1Xs+3+9FrehYDDe9OCbCHiZp59ss0RudNMfWJCKOrn3iV1fZt7LasMQKqTIzIfKN8IDOJSq2IRt7RZL7V7dFz1zUz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766688861; c=relaxed/simple;
-	bh=j4fdIbNqqZP70fpS0lFVa3+jcXcWJtm3hj1eDwwJNKM=;
+	s=arc-20240116; t=1766689076; c=relaxed/simple;
+	bh=HiNSBchRdB4wQM3PDRqJnnrN23fjPx9zrCRsl0su7ec=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cF29faZj1iUuh/pGM0+Wlp6+NaS5acjphIKhRPCu/A66fv6lbE1HxYrFqKhTwU6+d9ghUPogiCvjrQWAq/9yFPZ0rKHgz4l4yphb1io3OxiDUxyDbC60DmhSXVfJtM1+7cuxzgr/8L6fVFBEy8sr7kbKm7220ulAUPj1I110gmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MuQ+g3xe; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=GLzAWpMWJC4c12EBzzoTuInRxsMeRRMrJLIyrpANPhvNb8Pa280FgBbnt/cmcJj3x16OTrcOWaFdcFE5F5e1KJ3MvtMJNJ0r6JFlAIhrx72BGXmisL9n1r0ALfLPgGrmL7xMoDUIZz/1JGOSrdjJglydqumAeavTOIgODgkwfbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FGJ4iZyD; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MuQ+g3xe"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77FD0C4CEF1;
-	Thu, 25 Dec 2025 18:54:20 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FGJ4iZyD"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CED5DC4CEF1;
+	Thu, 25 Dec 2025 18:57:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766688860;
-	bh=j4fdIbNqqZP70fpS0lFVa3+jcXcWJtm3hj1eDwwJNKM=;
+	s=k20201202; t=1766689075;
+	bh=HiNSBchRdB4wQM3PDRqJnnrN23fjPx9zrCRsl0su7ec=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=MuQ+g3xe7EP0Jc/CgywMZ2Kgv9Xl+ehMdTAzD5ySQ+uXyYbSJ6Hx8uYedonJiwGHh
-	 ftzWnEEI05+E6rDLoNAVoUyh5OBkW/8JQjVIww9sr4J+y2/mguFR+EZo+TZWd4WbB9
-	 omkUODYHHggYgsiziO3CLhLsD+uo2nS1VP++GAOwpyg6RmEKhMKsWEwrcQOXhezSuL
-	 wfBt69XGiwrwe0E1QaTccuTQuGOt8cYhtiV4Va6DJ2aLJ+AIPz81kaEYVtPemBEtTS
-	 LQm/U6AZ6ZTyIMtOZten0RJuyOOwImVNeHKm9jfGDNPHPbzdtiL7XieKCnft7gpW1h
-	 PJZebHKw6TCGA==
+	b=FGJ4iZyDGP6a04h6Rg863J/9+xdwe22+GZ6cEm4c7Z92PrSbhnp0tXGxfLoIKPogV
+	 R+QQt6809u1MSrVkT4lffqOd4I0pS05Ep91uwNoyDi1uZb5A+ayxiVzfuRQPSYCzjP
+	 loiW4IEGNIHs8/gMQ9GHYVWdYjbvCsv3Rddj996vUkDGPzMrD/DsvSC8qheS6EO+Vr
+	 3qBWfegWHXjw8V5qDTwdo0soUIqgyhsFzA9QkcXtOL6WzMoac/qF25s7jFyJmwUQxN
+	 sVlGUo+ilGTS6arF4GIrORg//Mwdl49RfAASjRpSS3SW5Ge+bEsB4F2J65e5nHUHFq
+	 mdNPITqKD4PMQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 190D8CE0D19; Thu, 25 Dec 2025 10:54:20 -0800 (PST)
-Date: Thu, 25 Dec 2025 10:54:20 -0800
+	id 3B41FCE0D19; Thu, 25 Dec 2025 10:57:55 -0800 (PST)
+Date: Thu, 25 Dec 2025 10:57:55 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-	linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>
-Subject: Re: [RFC] jiffies_till_first_fqs off by 1
-Message-ID: <b6bd973d-3cc6-4174-aaae-f3d67d8ccca1@paulmck-laptop>
+To: Zqiang <qiang.zhang@linux.dev>
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu-tasks: Remove unnecessary smp_store operations in
+ the cblist_init_generic()
+Message-ID: <b8cae37a-65c9-4380-9290-8494c854373e@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <1efce983-639b-430d-a613-03baef81c416@nvidia.com>
- <2f95e414-7d0e-4e2a-9656-25abf84c27ec@paulmck-laptop>
- <20251224020619.GA1297269@joelbox2>
+References: <20251214024904.121128-1-qiang.zhang@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -55,42 +46,42 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251224020619.GA1297269@joelbox2>
+In-Reply-To: <20251214024904.121128-1-qiang.zhang@linux.dev>
 
-On Tue, Dec 23, 2025 at 09:06:19PM -0500, Joel Fernandes wrote:
-> Hi Paul,
+On Sun, Dec 14, 2025 at 10:49:04AM +0800, Zqiang wrote:
+> The cblist_init_generic() is executed during the CPU early boot
+> phase due to commit:30ef09635b9e ("rcu-tasks: Initialize callback
+> lists at rcu_init() time"), at this time, only one boot CPU is
+> online. this commit therefore use WRITE_ONCE() to replace the
+> smp_store_release() to assigning rtp->percpu_enqueue_lim in the
+> cblist_init_generic().
 > 
-> On Tue, Dec 23, 2025 at 03:53:23PM -0800, Paul E. McKenney wrote:
-> > On Tue, Dec 23, 2025 at 12:38:19PM -0500, Joel Fernandes wrote:
-> > > During studying some synchronize_rcu() latencies, I found that the
-> > > jiffies_till_first_fqs value passed to the timer tick subsystem does is always
-> > > off by one. This is natural due to calc_index() rounding up.
-> > > 
-> > > For example, jiffies_till_first_fqs=3 means the "Jiffies till first FQS" delay
-> > > is actually 4ms. And same for the next FQS. In fact, in testing it shows it can
-> > > never ever be 3ms for HZ=1000. And in rare cases, it will go to 5ms probably due
-> > > to interrupts.
-> > > 
-> > > Considering this, I think it is better to reduce the jiffies_till_first_fqs by 1
-> > > before passing it to the wait APIs.
-> > > 
-> > > But before I wanted to send a patch, I wanted to get everyone's thoughts.
-> > > Considering this the RFC.
-> > 
-> > Inadvertent passing of the value zero?
-> 
-> This should not be an issue because at the moment, even a value of
-> jiffies_till_first_fqs == 0 waits for ~1 jiffie due to schedule_timeout(0).
-> 
-> But you raise a good point, we should cap the minimum allowed jiffie value
-> for the fqs parameters to 1 so that we don't pass schedule_timeout() with
-> negative values when/if we do the reduce-by-one approach.
+> Signed-off-by: Zqiang <qiang.zhang@linux.dev>
 
-There is a potential use case for jiffies_till_first_fqs=0 and no wait,
-which would be systems that want to scan for idle CPUs immediately after
-the grace period has been initialized.  Note the word "potential".  ;-)
+Good eyes, thank you!
 
-If we want to support this, then perhaps we would need to avoid that
-schedule_timeout(0).  Or rcu_gp_fqs_check_wake(), as the case may be.
+But in that case, we are running on a single CPU with interrupts disables,
+so do we even need WRITE_ONCE()?
 
 							Thanx, Paul
+
+> ---
+>  kernel/rcu/tasks.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 76f952196a29..f763f60d5e50 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -292,7 +292,7 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+>  		shift++;
+>  	WRITE_ONCE(rtp->percpu_enqueue_shift, shift);
+>  	WRITE_ONCE(rtp->percpu_dequeue_lim, lim);
+> -	smp_store_release(&rtp->percpu_enqueue_lim, lim);
+> +	WRITE_ONCE(rtp->percpu_enqueue_lim, lim);
+>  
+>  	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d rcu_task_cpu_ids=%d.\n",
+>  			rtp->name, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim),
+> -- 
+> 2.48.1
+> 
