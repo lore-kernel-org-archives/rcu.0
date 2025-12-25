@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3273D1EB5E1;
-	Thu, 25 Dec 2025 18:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006AC34CDD;
+	Thu, 25 Dec 2025 18:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766688217; cv=none; b=oYs/OzERpxBu0HDmUURyuHmd5qyq4Sbk383YLiFA4ZyjzbDrWAqOVTYBEOow6nRgISbUVJFOOIql/pB8qt13OBFzhxuGtlgQPo9a7qo5C6IkSxZj4t4+vGt+u/ORDoJzg3rLVEXwVonkc5RIXi2bx61kjiyNZFQ/aVmx824CR0s=
+	t=1766688861; cv=none; b=Y5TMnJQGLDlYgY9rCteElGS43QRsM24iLWOcMpBkdBY8UhAvUCj66wl6tgP6qNUN9KZQsd3lkB2mPbnDOtl77NIvI+ku+l8MD4UMRNqIlZP2zca3k4xB7SUDfYm8Kwo9VUERwWuFLCilkB8z3pMPR+8miQXwumBxdq0rpmzWyeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766688217; c=relaxed/simple;
-	bh=l6NyDJxFdwzzsWCthL7bQTxYgaDejW4PTFo9MkFg0jk=;
+	s=arc-20240116; t=1766688861; c=relaxed/simple;
+	bh=j4fdIbNqqZP70fpS0lFVa3+jcXcWJtm3hj1eDwwJNKM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=akSc/dEdOAtfBh/B8QOQXBhegYxXQWaJJ3YfeHYvXynbBbqrcXveMZv02L3g6kMr2smOc4A9EwY769Aw27F/95YGbM+80UbiLwQahax7z7Oxs/PtV3GzLEeDlFb4YPuRMA04bbW+P+u+zJtCp4Y4HSv3bLeKc+gHPw+F4J0MlXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J8wDEsWI; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=cF29faZj1iUuh/pGM0+Wlp6+NaS5acjphIKhRPCu/A66fv6lbE1HxYrFqKhTwU6+d9ghUPogiCvjrQWAq/9yFPZ0rKHgz4l4yphb1io3OxiDUxyDbC60DmhSXVfJtM1+7cuxzgr/8L6fVFBEy8sr7kbKm7220ulAUPj1I110gmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MuQ+g3xe; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J8wDEsWI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A443DC4CEF1;
-	Thu, 25 Dec 2025 18:43:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MuQ+g3xe"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77FD0C4CEF1;
+	Thu, 25 Dec 2025 18:54:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766688216;
-	bh=l6NyDJxFdwzzsWCthL7bQTxYgaDejW4PTFo9MkFg0jk=;
+	s=k20201202; t=1766688860;
+	bh=j4fdIbNqqZP70fpS0lFVa3+jcXcWJtm3hj1eDwwJNKM=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=J8wDEsWIY7swhuUbouJleTLeRFPRHyT73K3H28llQSXgIC6R291CXy5Cca2o7JSf3
-	 B/guUbuM4QN6eOwVmczHN83l4yGuzOTE0iU9Di2S93/rCNDe9G/UGN317AbsN/XHE+
-	 w32/0lluOSKxkFUUfMNoFY5Q0cHofAFANehiHv6Eas5j61g0AmCCpAudzv4w4KZ68e
-	 oYu6d7tkndMOHuVb54UGr3ioOHvO6Yh49vD39+5043J6r05D2zQ6FTJF/iFG9h/inq
-	 DNqJ6VelbIZtjWtD/Gqy1hqP3vqDwGMLOlSA6YpwSAZAfR2OUD+qRLV9YAF8PzmbaP
-	 bZeSjL9nu0A+A==
+	b=MuQ+g3xe7EP0Jc/CgywMZ2Kgv9Xl+ehMdTAzD5ySQ+uXyYbSJ6Hx8uYedonJiwGHh
+	 ftzWnEEI05+E6rDLoNAVoUyh5OBkW/8JQjVIww9sr4J+y2/mguFR+EZo+TZWd4WbB9
+	 omkUODYHHggYgsiziO3CLhLsD+uo2nS1VP++GAOwpyg6RmEKhMKsWEwrcQOXhezSuL
+	 wfBt69XGiwrwe0E1QaTccuTQuGOt8cYhtiV4Va6DJ2aLJ+AIPz81kaEYVtPemBEtTS
+	 LQm/U6AZ6ZTyIMtOZten0RJuyOOwImVNeHKm9jfGDNPHPbzdtiL7XieKCnft7gpW1h
+	 PJZebHKw6TCGA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 264E5CE0D19; Thu, 25 Dec 2025 10:43:36 -0800 (PST)
-Date: Thu, 25 Dec 2025 10:43:36 -0800
+	id 190D8CE0D19; Thu, 25 Dec 2025 10:54:20 -0800 (PST)
+Date: Thu, 25 Dec 2025 10:54:20 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, linux-kernel@vger.kernel.org,
-	Davidlohr Bueso <dave@stgolabs.net>,
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+	linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
@@ -40,21 +40,13 @@ Cc: Joel Fernandes <joelagnelf@nvidia.com>, linux-kernel@vger.kernel.org,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org, clm@meta.com
-Subject: Re: [PATCH] rcutorture: Fix operator precedence bug in exp_current()
- invocation
-Message-ID: <fc23d447-51c1-4916-bab6-ebd547bbfd2c@paulmck-laptop>
+	Zqiang <qiang.zhang@linux.dev>
+Subject: Re: [RFC] jiffies_till_first_fqs off by 1
+Message-ID: <b6bd973d-3cc6-4174-aaae-f3d67d8ccca1@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20251223004407.61147-1-joelagnelf@nvidia.com>
- <4bbae00e-f078-4f1e-a1e0-b1cdc72981de@paulmck-laptop>
- <20251223113758.2c6bb15d@gandalf.local.home>
- <f99bbb2e-62bd-47fb-8cee-07716766c087@nvidia.com>
- <52bda0a7-5311-4e62-89c5-287c731548e4@paulmck-laptop>
- <086174f6-8bc9-4417-a878-ef665c0b0f10@nvidia.com>
- <fa889e55-19f6-417b-9a25-676ecfcd39a7@paulmck-laptop>
- <20251223155443.7165adf9@gandalf.local.home>
- <511ba78b-06f9-4f4e-b27b-e83428d81217@paulmck-laptop>
- <20251224091450.6ef76142@gandalf.local.home>
+References: <1efce983-639b-430d-a613-03baef81c416@nvidia.com>
+ <2f95e414-7d0e-4e2a-9656-25abf84c27ec@paulmck-laptop>
+ <20251224020619.GA1297269@joelbox2>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -63,28 +55,42 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251224091450.6ef76142@gandalf.local.home>
+In-Reply-To: <20251224020619.GA1297269@joelbox2>
 
-On Wed, Dec 24, 2025 at 09:14:50AM -0500, Steven Rostedt wrote:
-> On Tue, 23 Dec 2025 15:50:18 -0800
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Tue, Dec 23, 2025 at 09:06:19PM -0500, Joel Fernandes wrote:
+> Hi Paul,
 > 
-> > Does that mean that my intelligence is artificial?
+> On Tue, Dec 23, 2025 at 03:53:23PM -0800, Paul E. McKenney wrote:
+> > On Tue, Dec 23, 2025 at 12:38:19PM -0500, Joel Fernandes wrote:
+> > > During studying some synchronize_rcu() latencies, I found that the
+> > > jiffies_till_first_fqs value passed to the timer tick subsystem does is always
+> > > off by one. This is natural due to calc_index() rounding up.
+> > > 
+> > > For example, jiffies_till_first_fqs=3 means the "Jiffies till first FQS" delay
+> > > is actually 4ms. And same for the next FQS. In fact, in testing it shows it can
+> > > never ever be 3ms for HZ=1000. And in rare cases, it will go to 5ms probably due
+> > > to interrupts.
+> > > 
+> > > Considering this, I think it is better to reduce the jiffies_till_first_fqs by 1
+> > > before passing it to the wait APIs.
+> > > 
+> > > But before I wanted to send a patch, I wanted to get everyone's thoughts.
+> > > Considering this the RFC.
 > > 
-> > Choose your answer carefully.  But don't worry about my reaction to it.
-> > After all, more than six decades of being incessantly targeted by
-> > advertising has made me quite good at ignoring things.  ;-)
+> > Inadvertent passing of the value zero?
 > 
-> Paul, I don't think your intelligence is artificial. Heck I usually tell
-> people the two most intelligent kernel developers are you and Al Viro.
+> This should not be an issue because at the moment, even a value of
+> jiffies_till_first_fqs == 0 waits for ~1 jiffie due to schedule_timeout(0).
+> 
+> But you raise a good point, we should cap the minimum allowed jiffie value
+> for the fqs parameters to 1 so that we don't pass schedule_timeout() with
+> negative values when/if we do the reduce-by-one approach.
 
-Thank you for that high praise, but I fear that you might be selling
-Al short.  His ability to dive into random code and find issues is
-truly impressive.  Maybe we need him to teach the LLMs a thing or two?
+There is a potential use case for jiffies_till_first_fqs=0 and no wait,
+which would be systems that want to scan for idle CPUs immediately after
+the grace period has been initialized.  Note the word "potential".  ;-)
 
-> Although, maybe all intelligence is artificial? Who knows?
-
-We each can choose our definitions to get whatever answer we want.
-What could go wrong?  ;-)
+If we want to support this, then perhaps we would need to avoid that
+schedule_timeout(0).  Or rcu_gp_fqs_check_wake(), as the case may be.
 
 							Thanx, Paul
