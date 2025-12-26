@@ -1,51 +1,51 @@
-Received: from CY7PR03CU001.outbound.protection.outlook.com (mail-westcentralusazon11010063.outbound.protection.outlook.com [40.93.198.63])
+Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11010046.outbound.protection.outlook.com [52.101.201.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06061237713;
-	Fri, 26 Dec 2025 02:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.198.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF54313266;
+	Fri, 26 Dec 2025 02:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.201.46
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766715581; cv=fail; b=O9mV0zP+FjyApK8opz2iOhBgR2Pg9Vnc7iJhGLdG6AZCsllpDu3JyNp9chc/7heW/VnsKiH5rbpKdE0R29m4sJpRJpy5RNK6zBOLvrWeQ1BiSmu7UhK1nr75WCnnsMGxcTSJeDDk6k3KW9eNsSrre6VQ04JyJC1cUpQzIwJ+F9c=
+	t=1766716424; cv=fail; b=oAJWW4BWFZHI5sikTbn3zh8Lzf1Li23Qfx5g2P++DN5nsS92dIeOelvOAhUoeYg84Eg8F39OwIphGbTQJlUPoWHQQHB/NTsWgsHTRU2xzUksw2pnMjaLGp8DU3NyA9vTHAvALfY6+Hl4DpSkbxPpNDe4YwTpol+fXwAyc3W8gJc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766715581; c=relaxed/simple;
-	bh=/sEnWb0JoR+NElPsKNniD0NvS085s28ZxkIgkb78C+Q=;
+	s=arc-20240116; t=1766716424; c=relaxed/simple;
+	bh=fYXxT/g1iwz0VnMqdVnNBVKRbvaPn23ibYwYVjid8bs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=J8+Sy4pkMSJHz4JsK8PaphX25aPqMaGuA1iNkkg8AE8y6hk+r6vVlT+G8Pe2GpKQSmJey87FuhcQ8B5I9ivMwSHHeTxwJdrwWaNXwj+gXBJ6AKqXXBAaI9mplB/dw3cLwnzZaG6+4uH13Ahq7MKieq5/QwVT2/WAfK9efTe/0T4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=fail (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=hK4aMLFf reason="signature verification failed"; arc=fail smtp.client-ip=40.93.198.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=nvidia.com
+	 Content-Disposition:In-Reply-To:MIME-Version; b=OB2Nf6k6v2fX9dtOoDtX6zGisLJyRrSYc49WkKAXVeUvyf5UqKSPY825x8bJCJA05O3gFpc9TbOyLmCtSODvd+WfnD+43G7UeUmlzSfWa2n6/9lTF8f1ETNbg92TN7hi+D3Ahf3AlKkwUPiitS4PfITVdPhqiCDmkxG2DRugzrA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Jt+JkY+0; arc=fail smtp.client-ip=52.101.201.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="hK4aMLFf"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Jt+JkY+0"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=LwntU8r36fvAkgPpYLbRT3wOIAOKY8S2dlewt6296QMar2igR2/NTxNXghpZDvB2vzetBn3c64yE5aNcup/RWxf0NxU9h0OUNUvsJEmNO40xjwVCpx31fRePhYE8eyZo5+XCqKyFN0Q+eavcsYvbfPDy3LpchV3plcw2aBq84FF+MX11jBbtoAHR+BaNxxH12N2b5gF8Cn1Gbt8T8B76+vLbh40PlrMPcGxWgfoMRi4JFV4E0lIjX/++1UPvmfUvRnNl7wNBzhoozyiXGr51SgwFF08FoNqWTu+Qzwco+jJuYg559M4scXyRdgdYhxzhGDhWpRmSfom2Ss/zOQ9yjQ==
+ b=Fzz3UOLCDlC2VIWaDjMdslBrLUV6G/4oH402BYH8sbOeM6hIwLBcGXCqbC6wtH6NBnYiuOzMV9fG3TSUbU8SEkvhyK5+OpXo8JJ/EMIvDlWdXqDqZCWJsTNFZyvh/3gPvmw7JZUoaZsQqWdQwe2ao5Y0R6S90ELbdsMHAbijfKQutyXHXHMQ9tga5uirRl+0H6QcD9Xp9+DI7/KKFtCq+ovIflbR/Ig4MnFJzJakQKNn7fbwD6aQuKDoEH7rBHFk89rcYeSJEdYwkn5Gvx6MeCPID2SIWL3t0LFjceEYyzxzrLPxRSKSro71Ylqkj0DOwzxa+pQMCvXqR7urZblm/A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JtrE52wgvy/55xzaACxjgOpQ0BUJK4qtd8+lfVnn3gU=;
- b=KOI5lpA75/kOa1t+y009WCuLNNx5kV7Es5QbaHRwZ9h3BEgG7/xQpuLcCPqbqwIqFYiuoh5CJ/FsFR4M68+X8cmH/OEcKrzUvQyzsu7a9nf846HfxpdFT39UDo8uYUL8mCahL2hSrR+NOPOOFpKU6vr5Vl/pbY+33vWcR2zGHf6KTS8t8RhMQIu+Kjsg5RyB1xnx8MS+cz+jpwR3V6u5IHewGjvPmzUHcTMa5nSb2r3o5QMJ4+yVtYuUSZHMRqicStmAJdBUKiq85rKDiq2dVRggynEqJNkLy2kRK8FUanBYnFh0N+rQHft/IM69BIraSZ6gVnzcKoFESU8pRpX3KQ==
+ bh=UMiXY4vjqATPtEyZWAM7Mz7zdvU27qK9rMUzrobB938=;
+ b=JCIWGioHS/B4ByIJWEeeR2Hu8ur/VwMGDqwRfcamISPnrL6W3dPVX4NO1FD7eBMrxuzd7ZA8He5Ap50r+6C9vDHuyi9MK9CFIukRpzbZFb4PU6JWEQ6ip6Xiq6D2CYPrZZb6VnJ3mCQKopxmiTaJkVV0M8hHpfpovyAiw6y9qRBg0giVjedTImFawacK/LcIP0aA6G/R9/rO3FWAfL1xPwwq0ETRucTh4Q1MIb47D/Rz7U4FTkqVyyzlAug4FegzteF/osc3qPjWs9QsKYR0ook8/h0SlhNO/DCM4fjY5gbFnEzIeFatue8jPPZCDuXBfKkZQvziiJ4xdGywZJaR7g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JtrE52wgvy/55xzaACxjgOpQ0BUJK4qtd8+lfVnn3gU=;
- b=hK4aMLFfrdfPWB0CMN6Ji5ycyt7Zc5vqJYMjDGTPEmqGlYPrtzfojxIsUGihyEq2tr/KAnkhdNrE0C6eSZYxP9NHlIq6qIjdrymbV/cYXA1QKV//5BFXB+C4BDH+9Mjxk0k01eCQYFw3RoUiJrH+9ncB84zJh7/XFPjPQxyOgfPVhI4wA6SyYXUmUukWL9bj/AmsqgewAhk5Nqa9TWqzBhsOPbCxoDz7DJQKd6IvzIwZa5F6SkfwvyhU+x48nZdNhsCpjTFRT9UB9hOsKOk6EhVsaa7Y0H8lUToZgiT7z+JOrRuoajZOtA8i/CADkDFE8CQD0GapYJMHvktEsv8Sow==
+ bh=UMiXY4vjqATPtEyZWAM7Mz7zdvU27qK9rMUzrobB938=;
+ b=Jt+JkY+0YGgVuvd397R3uE4pgxadffMprrP+y3x2QipJtShKq2r2brqlEDjPCwa7LPYGdmFrejok79BfibKgbWlvTU+wQ2zHQZvmiFFWXKjmXMyKsFXHg4Cs7JwfQGx0N4GqkiGN3Q9HUxypTOI5cYF/7g5cWQ3ldrvp9vebwsfBU+LwDWyYn99JUPhKDAyJEee6CK3lp3WQDb1Mwtf48ASif+dYa9xmT0zegYYWwwCM9Wc/+rSt4EUybM+KTqTp3FekFAnUUr3HgtT53ZKOZzQFbE0xtBjtWEbQyCiV+0ymDlJKSLeLjYn15p801MRM3pSZIqUC5L8zZ7cT9yy40g==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by SJ2PR12MB7823.namprd12.prod.outlook.com (2603:10b6:a03:4c9::17) with
+ by SJ5PPF0170DF9F2.namprd12.prod.outlook.com (2603:10b6:a0f:fc02::985) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9456.12; Fri, 26 Dec
- 2025 02:19:37 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9456.11; Fri, 26 Dec
+ 2025 02:33:40 +0000
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91%2]) with mapi id 15.20.9456.008; Fri, 26 Dec 2025
- 02:19:37 +0000
-Date: Thu, 25 Dec 2025 21:19:36 -0500
+ 02:33:40 +0000
+Date: Thu, 25 Dec 2025 21:33:39 -0500
 From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
@@ -54,17 +54,16 @@ Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org
-Subject: Re: [PATCH RFC] rcu/nocb: Remove unnecessary WakeOvfIsDeferred wake
- path
-Message-ID: <20251226021936.GA739018@joelbox2>
-References: <20251225074451.2405584-1-joelagnelf@nvidia.com>
- <aU24p7he1T63Qeke@pavilion.home>
-Content-Type: text/plain; charset=iso-8859-1
+Subject: Re: [PATCH v2] rcu: Reduce synchronize_rcu() latency by reporting GP
+ kthread's CPU QS early
+Message-ID: <20251226023339.GB739018@joelbox2>
+References: <20251223034630.1092719-1-joelagnelf@nvidia.com>
+ <b355f3ed-3916-4419-951b-33e3788427f4@paulmck-laptop>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aU24p7he1T63Qeke@pavilion.home>
-X-ClientProxiedBy: MN2PR22CA0002.namprd22.prod.outlook.com
- (2603:10b6:208:238::7) To SN7PR12MB8059.namprd12.prod.outlook.com
+In-Reply-To: <b355f3ed-3916-4419-951b-33e3788427f4@paulmck-laptop>
+X-ClientProxiedBy: BL1P221CA0029.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c5::25) To SN7PR12MB8059.namprd12.prod.outlook.com
  (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -73,177 +72,173 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|SJ2PR12MB7823:EE_
-X-MS-Office365-Filtering-Correlation-Id: b026c49e-8d7e-4852-0541-08de442537e5
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|SJ5PPF0170DF9F2:EE_
+X-MS-Office365-Filtering-Correlation-Id: 50cdb233-41dd-41ae-b9e5-08de44272e23
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?iso-8859-1?Q?QW8yV3yjQ/iQOAFj5J6Jup1DVT9it5oNOgJn55UszvT+tvvScIFx+20Hnq?=
- =?iso-8859-1?Q?xhDIg7SEoI4RtfFvP7AzNwehWe29jTL8YD8iGFDIPZB4zWopVdpyADwBse?=
- =?iso-8859-1?Q?YqdOhXpv70nyPcQOTSsUCcxYm32mTO9sXKhH5pEdpMLP6ba3hXOQ0/+O/k?=
- =?iso-8859-1?Q?kKPk73V+UN8mAuxWdbvHbrq9T5MoAeAow3YQswDU8VFOPpuUTX6hec6YbR?=
- =?iso-8859-1?Q?CeiY2HivinUxlVurD5zmZIHURK+SOPtiZHUmUNpA9xDlyljL7lkvnzzAyo?=
- =?iso-8859-1?Q?jMT/ewCmsCkXSphDGHVhQrqIdMfBr4YX63PEFUChOCicmoOfspchlhvIF5?=
- =?iso-8859-1?Q?lEL3VMocep926o5AJ9TRLiLoFhKPDcOkkdjAZFnMUTnWdsX5bX7JeErl/9?=
- =?iso-8859-1?Q?ZDhmw2i454ySkHwClYgEmndJN1QUCJiZi2/9IyLV6QwuRE/XvbuifUAohi?=
- =?iso-8859-1?Q?C+qGibewPixvLfLFFdXTPPOQof1ewOGjOwxX5vFsT868j0cq3fpMv/sQNg?=
- =?iso-8859-1?Q?WLFvAdh2e2rDy+HTjnj2hYtiXBypD2bh8T7DPdCVYeYVrldiCz63AtWiIg?=
- =?iso-8859-1?Q?QAdzPrPGjMEOIg071izJCGtBMFymAgvSb5nzbmPAZvOBYst+j9rTslrlgZ?=
- =?iso-8859-1?Q?XCGUs6fvj+kqTwnHDoNaQT80SY+cxnPN5XjTq4sY3U09WcvxD2UhfTeoW4?=
- =?iso-8859-1?Q?UvzWJc2xg1MBtatMVhB8/kdteVNZX2rkqdRVaybCH8kmucQj5WrC3WVe6b?=
- =?iso-8859-1?Q?MTodpk5t5ZoKNzuzecUepn+1Rtu/5GzjKAEm6cSY3M8La68O2mVZHLhBmF?=
- =?iso-8859-1?Q?oFknI5Uo5yvEg5mTzB/WtqogEIJsgQK1Kh6h3PcVsFxvhFnqaviKK+6+Ni?=
- =?iso-8859-1?Q?8vs9VvqUrPNJ6yhF/N9fTMs+0+5fhcNr71ibXWv6cabei71Nb2MTKJXOaF?=
- =?iso-8859-1?Q?9Fmj+6FCBlhdDdHO7WXa+XDiy9Py8tUPRg8PLp6AKfVvvaAUbmZXnKskIZ?=
- =?iso-8859-1?Q?p++o6Td6R+eo2sUUAYA4U2WweNinvECBbvaMYQ4V8vbxjJo5tEJgzqu6Us?=
- =?iso-8859-1?Q?O8v+9XoOTnGDTHo8cJTJ8q+Paax3OrVT49wV0fJ0cOrRbvSTXdXbfvh+RH?=
- =?iso-8859-1?Q?tS9ukc7ndOooW9QTWQNM/GDKNa+5u2+4YXDf6IzT1F3t7cO3dqK6RarC1E?=
- =?iso-8859-1?Q?6W+c2Yvn/E6Jm515HbxlEak76peTDr/Ok2uKIsfOsfSISV8NrxX9kjLGdD?=
- =?iso-8859-1?Q?8Ravaw8DUU5B3+ZrBtSeORl3eHWL9zE9+sglhI8RBRP0YbHkzUvg79ElWf?=
- =?iso-8859-1?Q?bbJZWGFJzweqe+mtogDqHAB+B+nCUaXpsCpWpYWuyNPoXPip0caWCheXkU?=
- =?iso-8859-1?Q?fJaNIIxO9tj61BOokn0sOvsWYZgqAMMFXr5DKLivycJ+O7cH2FPjvjTwEL?=
- =?iso-8859-1?Q?xZRIZ6M7IY/BvoUnkck9aqoMJP+XunsltK3af60OxrTmfBzZmHKBh24CEP?=
- =?iso-8859-1?Q?xVmrDIlDxgH6FpxwO1+BQW?=
+	=?us-ascii?Q?2syClVssxecHXFvGpvi7bnAKehBuGNgZ7M3Eyi1DEYyjiEKlSRm2bvv4JKZC?=
+ =?us-ascii?Q?YIHMOsvH56VtSVcoz8fPnruI6skh0iVK8LUucsVbZ8m9mQMAykRaMXru3jGu?=
+ =?us-ascii?Q?62s15VQmknrd/xROvFqBP4P5JEu4pZWEHuMFGVqNZC7uRidY3/8jGCsriOe3?=
+ =?us-ascii?Q?r0eXmgcwGD00KW3I55t2QlZcNs1GPUS8WeuseiIAUvEdwsPk9I8cXVn5fy8b?=
+ =?us-ascii?Q?4bdFIB5b5JNam2NQH4ilRt5My5R20xc7yv3U7SLp5q+duZGt5Dhw8K7g1Izc?=
+ =?us-ascii?Q?EmzF8ly8Ec979tYmChiDez8OOsgBXDLst4rMghtF15dofJHx8Rtc/onhSLa1?=
+ =?us-ascii?Q?JDMvw+G3jcpMoKATaApNpIGHmWx4OuREa+ocw+fBJicEclsUugSacZ+SU48Z?=
+ =?us-ascii?Q?zJZGluoh3b24KXwbagk4DrwKgaqWQULaLSOM3YI5U/uXCoI7jaOz12IhNz7E?=
+ =?us-ascii?Q?tgBwzGlGH8klmO1EASTSH5CzRfYC8aVwSaoZ+74Puz7yVK/4xkgNrXqrByZv?=
+ =?us-ascii?Q?YxWWz5cAGiV9av45sVbGxvM/TgM8JnsHOv1DF5C2rN+iV57HW2u7h9paJ/wA?=
+ =?us-ascii?Q?z+r9JePyv8R3GKGzPwcuJcOzZ+96I7+qslaa2z/LPmi+SsswQATHOavU/hDq?=
+ =?us-ascii?Q?t8l/3Lc78RTgT8MI6lp3K8T0t4f3L8Ktv5qGwI80ssXjMHyD3a534hvyVhWz?=
+ =?us-ascii?Q?Pj96TMbzJihL7mUxXPm1/cTStrGZNCU+ciU8v7rh0SR9Y8tLroIc4zaImjzN?=
+ =?us-ascii?Q?IR9/oRO973wDQ+hC2TW0aCy/UqkBUJ03hhladXr63AkxuE68eyOwG6Q5FHpw?=
+ =?us-ascii?Q?MvQE6WOOYm6LeWX5v8MxOy6hQBnKjyFMqa8IUmtGLp8OOizhLs8Mk/1FCioW?=
+ =?us-ascii?Q?wnXTdT/v1vLgHhVXUanTim1HWKnOkui10c+PTcpOjQLEZK4HzsX0PlmrjVYd?=
+ =?us-ascii?Q?hUkg3ABGIjaG/WzvqwVRHnfd468Rv+FYGeHvXjVC830HWuAOeWvvRnK6yU0x?=
+ =?us-ascii?Q?r7pi82cVKZflqSHwFIEpXN44FbBTxYS5rwz8xtuJlp2PwXp+9xN0U8fftImA?=
+ =?us-ascii?Q?Taj72KhIDuhCig0+a69jKECXW1N+SUb2yklZcIgE73FZi04XlriGuU2O/nbF?=
+ =?us-ascii?Q?CfhX0nAKamLGqwNRynIhRVB/mYtYwnCpzrewstZB4TWsKABnA6peFuV+n9UN?=
+ =?us-ascii?Q?TWSYpfPqcLfmqL3te0ojRYR1qG0GOxOA48cCiFKE8+yj+t6O+Vfv24/0FSF3?=
+ =?us-ascii?Q?cZ5UGYWjgwEyvCWFGam2zEy5zXh6SS19PG6d+4Qi+SmwrlfVU8RRsmnqC7Lu?=
+ =?us-ascii?Q?CmnG+wbe9FJQyCC/ssVd/Z/KCJQPOlOEfOzfKYcysT2lTv+7dAdC8r7UlOon?=
+ =?us-ascii?Q?V0b+/dJ/oUVf7zSMR3ik7bcaaksAixJz1mfe1ARCK/LmaFId4uX7P8WXA8Lc?=
+ =?us-ascii?Q?j0Ak21x3QGA7cACD4s/loLCAf8+QPQoW?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?iso-8859-1?Q?i6ZgWpBcks1oMsEpukPPl3zViqAQyidrnOPcUqyVMciB9TLGydzFnH3noU?=
- =?iso-8859-1?Q?zqNYYZJst46Jy0tGLdu2toACe3BX6Iwu/SUnGudy04Se5CAlZLLy6lsKEV?=
- =?iso-8859-1?Q?96B1FrqFcYJ/62pOBUwqhras/JTXdpVzk6Gy3aQWstK9fT+YW3dAfW21kr?=
- =?iso-8859-1?Q?Tu6I5xymR5YyQ7WP2BTvz+h2HjnPdXLHmRMx7WpmOUUch1Jy/oujfYSVJK?=
- =?iso-8859-1?Q?n+bifszYQj8bSqwMo1kfjHzyohlNVMxNl6IjvtVHCkpxGiXS8v2p1F57P3?=
- =?iso-8859-1?Q?SazilAGBAIFK4J1mFnzGL3fXWmwBc6SZAxM6GYIUGBGEMD8qga8CVjO95J?=
- =?iso-8859-1?Q?hr4qiVosMrQ9ZTEUQ2fVKO79M7pnl57XDhTa9FPWUYVLwjRJz3zFLP1utZ?=
- =?iso-8859-1?Q?FaH7emgFlpFdzNrcIw6Bodp2cRc5p8WhlaF9ExVfJKzvN/hbzRfPsVNXm0?=
- =?iso-8859-1?Q?FtgyejVSoul1E/RA7AHvJre6zLz2XDO3eo+aCAFvWkGc09dkwQxIGQVPL7?=
- =?iso-8859-1?Q?gGkKc1I/1Nmm6Lr4veqNj4ghypJoHwRHMb2MHRRXDLQRYznkkLpvo1iW4b?=
- =?iso-8859-1?Q?nQjDvHNq3sRvKgbDtaQr3UjigxG93KD4XIDzlx38wfeHkbjOjvscsTPbcT?=
- =?iso-8859-1?Q?GQVTKHU3rvQiWtSCYAvl9VyskRj54Gwff0kquhkBR9K4Rl9Rg3FIcibiLE?=
- =?iso-8859-1?Q?4IulEgRu/RQe7Jw6o67lFrH7gmu+5RnaVl4/yLjEMRRrJbRAPj2cvnlJdw?=
- =?iso-8859-1?Q?E1s0+lZDSSr7Zx7V2Kr8thcYd//hDFcQ9RqNFZ0wycHAkt1myPwB5Y/VgH?=
- =?iso-8859-1?Q?sOyBLyyHiSwQPnYSZWDJOIUP2WonUi/q1sifuaHwuImRAEh/A5X1m0oIr0?=
- =?iso-8859-1?Q?ASaHGpycrWMHA3x2D6vJfUY5Ct0SR7B88dfwHmKqs6ZU96z+ImEwUVlXd7?=
- =?iso-8859-1?Q?nmQgczNj13Tr2w1isubeRGcJD15OiL9ZQfImtg1v6sDIKuQe7kW2cC9NLi?=
- =?iso-8859-1?Q?IMHLRoPGBb0yObh8WlrQlkCMo3OfjIZMtIurUaC5wbiAPZC8WoGNCHpItz?=
- =?iso-8859-1?Q?l1AJvA5wKVhBy7A2b/LgIYI2ecVEx0HYnHQeAWqOehlvdND+Xh+nBDihgw?=
- =?iso-8859-1?Q?ji9+ZUS+QlXTWIAnQhVtSI0ixnK6eecp7td1ouMDIggF7Pzy56l4TwzYVv?=
- =?iso-8859-1?Q?to/5V/Nu77WuzlSinovRHHr5VX/Cj/RN835rADH4TtkM2YQfMDqaoCPgtm?=
- =?iso-8859-1?Q?CY42oILbk3v34D6wqBTHoEMDr8YgpsLrEmofFVHyc62RQA95FL2MY1tSCB?=
- =?iso-8859-1?Q?1MWbj/BaJZJDkk1uI9SlBbWIgxpQKjaXoIdvcpZFrLw/5yBXCggcriVo+6?=
- =?iso-8859-1?Q?g7MHFvdjeLWAs0C0hw/a8tLmqdT/A3rGzrL0DatU5Ij0RZbZOHfaBfKiE+?=
- =?iso-8859-1?Q?JZoP/O4IUAqfS2bAEsjaEt/9aOJJIuD5IA4thn6WVv9QY1+yWCKZprPTYp?=
- =?iso-8859-1?Q?fMoBVm/8CykbBDemWKUyjI9dWCkUjN1AfRMuRQ1MVAeEwrZXabZxriwI5I?=
- =?iso-8859-1?Q?lfREAoRHqJUzNV7GhOazWOR3Z9uUN3DoHP96LkARbThyL7qXfShoEQpF2Y?=
- =?iso-8859-1?Q?6GBWLsrPyyN+sbvWBljCRZsrZuEz5qLDDSkPFvzBgMvxK4OrjpFJGcLs0g?=
- =?iso-8859-1?Q?OjtXFOynXZ9bPcfRG74xmnVmFUeMZXcrj6RfA24cc8SO9iVvD8DkcMysDL?=
- =?iso-8859-1?Q?GB7SyGcqjDY+ttsg2wu5MoAQdAbiwOQDsX6z0XRLUMkRU8ijuS3RWEn0i8?=
- =?iso-8859-1?Q?9mQdyQCKTg=3D=3D?=
+	=?us-ascii?Q?IIXbVIsPh2mUS1WhsIH2Km7inVl1tSW6kmdvn0fiSduUofAPjb1CidD6veUe?=
+ =?us-ascii?Q?yRGVtXXj5JfEfg7S3sNlIVok7rfSt6moJUmbC4q0CSctAizjv20xZcbHKRXs?=
+ =?us-ascii?Q?flc9l1SVW6cjJRa3hWdVUbAJm+/g/uQBSDceElnLYKVwd8yDbLuWDQy2zzzO?=
+ =?us-ascii?Q?SHJV6IFKY9QMtcnryioHHBIOD+MyRceG5rKJ/6Sb3MNCH9rtYHPRI7/I67TH?=
+ =?us-ascii?Q?VdGhrfudOx2eVeKwpydGMmBDzAzk9WGSCAOehorH03Cbx6QqltDE7mBGDWth?=
+ =?us-ascii?Q?vXTOua7Atg5KzEHV4dUyuMBGGvI6Hx+cMZYi+xxaZ53pjmoV+Cf79H49QcQY?=
+ =?us-ascii?Q?kNUpQIpSyyVouDL3CYFIAnWN1+iQazANmT0BgQznxYDQOMkj4ERIbDyAd5kY?=
+ =?us-ascii?Q?pOkFAplM2fn6vYMdF9jli/+pv3ai8VLPxD5NGDo0bt/3gClLYEoodHer3hd2?=
+ =?us-ascii?Q?Ja414fSzr0hkx1hZqaO05hJi3iiyHKVkk16Rtf+mYzDLFhdAtufPQNADTl1d?=
+ =?us-ascii?Q?FVGRTQNufA/y/otjUjNNUty5Kd5emGUP4QSi2+5TjNDI39Vh46pWh+C1dvOt?=
+ =?us-ascii?Q?pIkkeFK8rLPgu6Bk6NyTcddfAypgLoCCvGqBQbiv0TyajBFpBtIs2joZY+Sv?=
+ =?us-ascii?Q?rFX5Tyc2Qy713B/U8cvJU/PSPZNnxwFC8xhcrPGdc6FTjf/vanYrtPp9Jo55?=
+ =?us-ascii?Q?Kq8XBeXLs1rPuFamyVI/uMmFnEqtCdL9sHuK6bp5kBHGDTxgIqmFb6VTXmnJ?=
+ =?us-ascii?Q?da59ClEQh2Y9amokYTKVP6laJNtKnRzJqrBYMu/w3oJ+fhomoMC4DebwKHi6?=
+ =?us-ascii?Q?ohdQAwatrmoBng3DGNKgeKt1Oq35y3kNpyTaCdbRK8wZAVOszcgp2O/MIQSd?=
+ =?us-ascii?Q?lcSzMNMBTZ+OgP1urgRdfFlSuzhKmHLMm+F3gR2/MmxVakkE7kfkAUprVfWp?=
+ =?us-ascii?Q?8/emPY/nYc4MMjXH0F9M3DL4xQT4mdcwQcq2gUuA7xH/BbjtX2uTgEJWS1Rv?=
+ =?us-ascii?Q?ezL+5AU8JM/nwKcvF1TofDkCKspk0Xl6JIwR2mYXpPCSDNg3mQwsjRckPW2v?=
+ =?us-ascii?Q?QhiLmVQueeJ6/OiwmKCFnSTx8P2fCzTsDGIEo23dnacWKHg97QdCGiS67sSP?=
+ =?us-ascii?Q?GSNt373qSpDQXpTYB9a2YPhbw+lTLVazbmwstVghVlYVbqqYd//ys9JWtHP9?=
+ =?us-ascii?Q?CP55r7sJyuia+FXrVYLQNGH2A6uEAyV0xak+pEXP3whJNKZ3sk6AYF24kMWa?=
+ =?us-ascii?Q?shlA77JgiOMWM3W7/72JRK/52x9KNVn2dhMEKyPgqpl4V2SeBJMoa0A5wqMn?=
+ =?us-ascii?Q?HXqjZuFQbjaH3vu6TRDSHQkbBUjDmqfw3XNI0y59+hF80ud9vJDQAsGwR2+h?=
+ =?us-ascii?Q?GYAs3yRFSHtBDwB0Ewu8EFyW7J7sHT0lKaSWhUG6r7rdWCMjq7e4H7pWOGIc?=
+ =?us-ascii?Q?jtEldviuisypYGWzZ+HY1ZJ54+XVKy1DKqdRLxk4VY5VMjXp1/T+AND/UfsK?=
+ =?us-ascii?Q?1uqMaffkUG5W9x+1RmscoSk97k8KL4S0OvRi2M1BVrWegNS6GYYjGf+X/pNO?=
+ =?us-ascii?Q?lPMotHhyo8fq0LVy449KErm9a1OYPYaWN1U/a4I6S1BSP0agq1jIMIcQuO7v?=
+ =?us-ascii?Q?mO5e3nW/Sg/WjYtB/otKzmel95b2xmnx6zEthUwI6ztsSabdrZEqSLhVddC0?=
+ =?us-ascii?Q?HgGojV5/h0ddS15tWeH8pegYjgxKvftOC1dfsz/uG1gZnInxxpVvOnUrW19/?=
+ =?us-ascii?Q?51VtC1Gbew=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b026c49e-8d7e-4852-0541-08de442537e5
+X-MS-Exchange-CrossTenant-Network-Message-Id: 50cdb233-41dd-41ae-b9e5-08de44272e23
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Dec 2025 02:19:37.6711
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Dec 2025 02:33:40.2964
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kvc1QluEBr6mnKrsHCtzynIRgJIyXnFfr1PWnDPhxcrxqLHKMCVL+aAW8MQ1O5PvWPNjCHYqQiS7s1cdRIaUAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7823
+X-MS-Exchange-CrossTenant-UserPrincipalName: rkOVOHN5NB0FYPQWjsOyj6yw/GnnlhJ/T5w/PCHqRMeWUETTx8BuhtOqGukCT5ZeyaTWOob5P6RzgVzpO/2LVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ5PPF0170DF9F2
 
-Hi Frederic,
-
-On Thu, Dec 25, 2025 at 11:20:23PM +0100, Frederic Weisbecker wrote:
-> Le Thu, Dec 25, 2025 at 02:44:50AM -0500, Joel Fernandes a écrit :
-> > The WakeOvfIsDeferred code path in __call_rcu_nocb_wake() attempts to
-> > wake rcuog when the callback count exceeds qhimark and callbacks aren't
-> > done with their GP (newly queued or awaiting GP). However, a lot of
-> > testing proves this wake is always redundant or useless.
+On Thu, Dec 25, 2025 at 10:35:44AM -0800, Paul E. McKenney wrote:
+> On Mon, Dec 22, 2025 at 10:46:29PM -0500, Joel Fernandes wrote:
+> > The RCU grace period mechanism uses a two-phase FQS (Force Quiescent
+> > State) design where the first FQS saves dyntick-idle snapshots and
+> > the second FQS compares them. This results in long and unnecessary latency
+> > for synchronize_rcu() on idle systems (two FQS waits of ~3ms each with
+> > 1000HZ) whenever one FQS wait sufficed.
 > > 
-> > In the flooding case, rcuog is always waiting for a GP to finish. So
-> > waking up the rcuog thread is pointless. The timer wakeup adds overhead,
-> > rcuog simply wakes up and goes back to sleep achieving nothing.
+> > Some investigations showed that the GP kthread's CPU is the holdout CPU
+> > a lot of times after the first FQS as - it cannot be detected as "idle"
+> > because it's actively running the FQS scan in the GP kthread.
 > > 
-> > This path also adds a full memory barrier, and additional timer expiry
-> > modifications unnecessarily.
+> > Therefore, at the end of rcu_gp_init(), immediately report a quiescent
+> > state for the GP kthread's CPU using rcu_qs() + rcu_report_qs_rdp(). The
+> > GP kthread cannot be in an RCU read-side critical section while running
+> > GP initialization, so this is safe and results in significant latency
+> > improvements.
 > > 
-> > The root cause is that WakeOvfIsDeferred fires when
-> > !rcu_segcblist_ready_cbs() (GP not complete), but waking rcuog cannot
-> > accelerate GP completion.
+> > I benchmarked 100 synchronize_rcu() calls with 32 CPUs, 10 runs each
+> > showing significant latency improvements (default settings for fqs jiffies):
 > > 
-> > This commit therefore removes this path, which also adding some rdp
-> > counters to ensure we don't have lost wake ups.
-> 
-> There should be two patches: one that removes the useless path and the
-> other that adds the debugging.
-
-Sure, will split.
-
-> > Tested with rcutorture scenarios: TREE01, TREE05, TREE08 (all NOCB
-> > configurations) - all pass. Also stress tested using a kernel module
-> > that floods call_rcu() to trigger the overload conditions and made the
-> > observations confirming the findings.
+> > Baseline (without fix):
+> > | Run | Mean      | Min      | Max       |
+> > |-----|-----------|----------|-----------|
+> > | 1   | 10.088 ms | 9.989 ms | 18.848 ms |
+> > | 2   | 10.064 ms | 9.982 ms | 16.470 ms |
+> > | 3   | 10.051 ms | 9.988 ms | 15.113 ms |
+> > | 4   | 10.125 ms | 9.929 ms | 22.411 ms |
+> > | 5   |  8.695 ms | 5.996 ms | 15.471 ms |
+> > | 6   | 10.157 ms | 9.977 ms | 25.723 ms |
+> > | 7   | 10.102 ms | 9.990 ms | 20.224 ms |
+> > | 8   |  8.050 ms | 5.985 ms | 10.007 ms |
+> > | 9   | 10.059 ms | 9.978 ms | 15.934 ms |
+> > | 10  | 10.077 ms | 9.984 ms | 17.703 ms |
 > > 
-> > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> > With fix:
+> > | Run | Mean     | Min      | Max       |
+> > |-----|----------|----------|-----------|
+> > | 1   | 6.027 ms | 5.915 ms |  8.589 ms |
+> > | 2   | 6.032 ms | 5.984 ms |  9.241 ms |
+> > | 3   | 6.010 ms | 5.986 ms |  7.004 ms |
+> > | 4   | 6.076 ms | 5.993 ms | 10.001 ms |
+> > | 5   | 6.084 ms | 5.893 ms | 10.250 ms |
+> > | 6   | 6.034 ms | 5.908 ms |  9.456 ms |
+> > | 7   | 6.051 ms | 5.993 ms | 10.000 ms |
+> > | 8   | 6.057 ms | 5.941 ms | 10.001 ms |
+> > | 9   | 6.016 ms | 5.927 ms |  7.540 ms |
+> > | 10  | 6.036 ms | 5.993 ms |  9.579 ms |
+> > 
+> > Summary:
+> > - Mean latency: 9.75 ms -> 6.04 ms (38% improvement)
+> > - Max latency:  25.72 ms -> 10.25 ms (60% improvement)
+> > 
+> > Tested rcutorture TREE and SRCU configurations.
+> > 
+> > [apply paulmck feedack on moving logic to rcu_gp_init()]
 > 
-> Cool! Just a few comments:
-> 
-> > @@ -549,24 +546,26 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
-> >  	lazy_len = READ_ONCE(rdp->lazy_len);
-> >  	if (was_alldone) {
-> >  		rdp->qlen_last_fqs_check = len;
-> > +		rdp->nocb_gp_wake_attempt = true;
-> > +		rcu_nocb_unlock(rdp);
-> >  		// Only lazy CBs in bypass list
-> >  		if (lazy_len && bypass_len == lazy_len) {
-> > -			rcu_nocb_unlock(rdp);
-> >  			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY,
-> >  					   TPS("WakeLazy"));
-> >  		} else if (!irqs_disabled_flags(flags)) {
-> >  			/* ... if queue was empty ... */
-> > -			rcu_nocb_unlock(rdp);
-> >  			wake_nocb_gp(rdp, false);
-> >  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
-> >  					    TPS("WakeEmpty"));
-> >  		} else {
-> > -			rcu_nocb_unlock(rdp);
-> >  			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE,
-> >  					   TPS("WakeEmptyIsDeferred"));
-> >  		}
-> > +
-> > +		return;
-> >  	} else if (len > rdp->qlen_last_fqs_check + qhimark) {
-> > -		/* ... or if many callbacks queued. */
-> > +		/* Callback overload condition. */
-> > +		WARN_ON_ONCE(!rdp->nocb_gp_wake_attempt && !rdp->nocb_gp_serving);
-> 
-> With this test, the point of ->nocb_gp_serving is unclear given that both
-> states are cleared in the same place but ->nocb_gp_serving is set later by
-> the gp kthread. ->nocb_gp_serving implies ->nocb_gp_wake_attempt so the above
-> test is the same as WARN_ON_ONCE(!rdp->nocb_gp_wake_attempt).
-> 
-> In fact ->nocb_gp_wake_attempt alone probably makes sense?
+> If anything, these numbers look better, so good show!!!
 
-Ah true, I got a bit paranoid about false positive warnings hence I added the
-extra variable, however on further analysis I realized the nocb lock takes
-care of preventing potential false positive warnings. So yes, I will just use
-the single variable. Thanks.
+Thanks, I ended up collecting more samples in the v2 to further confirm the
+improvements.
 
-> 
-> >  		rdp->qlen_last_fqs_check = len;
-> >  		j = jiffies;
-> >  		if (j != rdp->nocb_gp_adv_time &&
-> > @@ -575,21 +574,10 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
-> >  			rcu_advance_cbs_nowake(rdp->mynode, rdp);
-> >  			rdp->nocb_gp_adv_time = j;
-> >  		}
-> > -		smp_mb(); /* Enqueue before timer_pending(). */
-> 
-> You need to remove the pairing smp_mb__after_spin_lock() in
-> do_nocb_deferred_wakeup_timer().
+> Are there workloads that might be hurt by some side effect such
+> as increased CPU utilization by the RCU grace-period kthread?  One
+> non-mainstream hypothetical situation that comes to mind is a kernel
+> built with SMP=y but running on a single-CPU system with a high-frequence
+> periodic interrupt that does call_rcu().  Might that result in the RCU
+> grace-period kthread chewing up the entire CPU?
 
-Ah, will do. Thanks!
+There are still GP delays due to FQS, even with this change, so it could not
+chew up the entire CPU I believe. The GP cycle should still insert delays
+into the GP kthread. I did not notice in my testing that synchronize_rcu()
+latency dropping to sub millisecond, it was still limited by the timer wheel
+delays and the FQS delays.
+
+> For a non-hypothetical case, could you please see if one of the
+> battery-powered embedded guys would be willing to test this?
+
+My suspicion is the battery-powered folks are already running RCU_LAZY to
+reduce RCU activity, so they wouldn't be effected. call_rcu() during idleness
+will be going to the bypass. Last I checked, Android and ChromeOS were both
+enabling RCU_LAZY everywhere (back when I was at Google).
+
+Uladzislau works on embedded (or at least till recently) and had recently
+checked this area for improvements so I think he can help quantify too
+perhaps. He is on CC. I personally don't directly work on embedded at the
+moment, just big compute hungry machines. ;-) Uladzislau, would you have some
+time to test on your Android devices?
+
+thanks,
 
  - Joel
 
