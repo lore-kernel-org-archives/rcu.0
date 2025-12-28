@@ -1,49 +1,67 @@
-Received: from CY7PR03CU001.outbound.protection.outlook.com (mail-westcentralusazon11010022.outbound.protection.outlook.com [40.93.198.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4C819E839;
-	Sat, 27 Dec 2025 00:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.198.22
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766794380; cv=fail; b=h0NY3AUA7pirNHqfCUNTgbB3WiF7Au5DWFhU6PERwc9t5EOZmAYLJWDCVJGYlGM31faXOPIIP1/jCL+rZF6QW/V5u5xR/yjGWYv+MsM56Jezgt3BUREgcXFCddoCXnn2+O2nNQd0+w2rYp4EUf59HdjDbkcgVG4QBkYDwQjB7C4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766794380; c=relaxed/simple;
-	bh=KyF0xXKvBwAN+yiv1dgAfGAxaYaLnKvQedIJO5nqKRU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WDyeFLaieB6lnJSwsfBdNyQLhN4L6ZcYzumjKWEh5+KoMkZRDg+Ul5fDVAZlYnVe4bSZCnMmd6MC1/4WG0AiHj5uAfj1btiuJYI/17MlvHFlDFqA9x9T/Ay6mE/l8I7gMz1g2iSYSXdtxQo6A7pWg6eYh6IVRj/Hd+YikuJLklA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YB3isls9; arc=fail smtp.client-ip=40.93.198.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA5C20C477
+	for <rcu@vger.kernel.org>; Sun, 28 Dec 2025 17:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766944685; cv=none; b=pWFp1tnAYLPx8BaPyAWRK4MicgC3ThvRL3BjTvS/3U2T0aMbzJBvpj2eOJt/V63jjzrL67a5StiSRQWrPXv3o5PeqTWtaWxqwKN0os+x7i1ZRekadP1Uf9fJb1r3G9ccKSpY5bEOzpl62dyRh5+cRRcuIzVReMJb/ExfNF+v0t4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766944685; c=relaxed/simple;
+	bh=Aldvd7A5y4MV+HJjmYCViMUqWpaOlcCfUbSup6qEAOw=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VQNCTASiGiepOJwZEpSWqa5/0vwBgNqD5tOmHg0VOxZ4d7yBfq1CKpQbHCa+TydJnpPdAj3wqTXzCuzdrn9adMbKFDxAmiLl2T2q69eqTcMReYfUUtwVPEdNaXYYr9Fmxj5lekblQA85j3oomJd+oPwIczBo4UM3xsNvKCVisas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P+erRx5j; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YB3isls9"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VzGqmcjmcH3EvJw0Rk3E6Hq6OF98MrBOkp9S5K5xnQZ62RjEABz7NlbmDEYYrkNDjfDqJ1FO/xZT3ODvvwEyPqEH+x4uv3LLYGF5pd6prBAvpjXp1QXugNbe/E9m5N2FpnnNAtaoqrinhWBh+atP9p6rhK/WThQ76ZA+b0o2lsjhTwFcW9mG+xDhC4INPIdGo0z8QrbtmLcaZPbLjFWfmLQf45YyNDwOHjRJzClndorIylW9KaiXopfY6aVMY0eBcD7FDsj3InvYhQnnY2Q+k9Rwmkp6oOKy3tkL5MieEikzP+h2WE86GaF+wb0SQBX0kUBPufsKI+JejH/t7l+hfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=//zyC2NyEe7TuAV4RkC3qdrK/3/JJhsjQUiqoQdogJ8=;
- b=NbvUFfydQhxGO5rAnB8/rspWF3FHPclntywu172pHouDuJ0fND9GovOiX8TShI+jdEH5Di9zRwK6+hwhA2XI7jKPT/PAhdArHn6FWalp84Fua2Dh0oqjlGsHiYK5hYGSo1bWyiWIJtn3/2OZZxBMKGJ/v2hcc/7vmSt8ORX0wY8WyYs/zOBuufdScXK9gKZpHo97/IbdB2IQs5iBY8QR7+FQLawiqOgr5jbSx3HjmSQLKaXS8XuqftEwYKci6XHtkQ3/cbFKFcjddNQo0xWyMmhUD5QTgmCSIR3vukyAgKjq6m38EFc6Dn79H7xVzQpxvfnfMMZQZ5xnB6prRt81wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=//zyC2NyEe7TuAV4RkC3qdrK/3/JJhsjQUiqoQdogJ8=;
- b=YB3isls9SSrcXaGAbqFY76ewI1cf3FR1UFpJKorpiPGIpI+z+zRAhp6vFtOV1JHQ9L5H6K3zXGmvwSILFunTC2NGkylJQA+JwGh1H8TiaqVh1xJBmoSpKFujP9wo8W7eL7ZYUBF8NFFZZ7B8bqRvfujC/rLtq3LmNRxF6L1pQjfpB0VpjlO+NpeQGNDJO9ba1ODjxxoxmkiXiOaXjo4RdP9sOauS5oX1Ds2PhUmNbqcTLYb+U2Xu+aJxMK3tqBm2kbZacp3dZlL31uRsDErUU3ZL3aEJb4fsOnb/3eIpt0EAb//rWQvc9yqhSVipw5L6PVceIiGweJ4ONSvZo1tOow==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by MN6PR12MB8543.namprd12.prod.outlook.com (2603:10b6:208:47b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9456.11; Sat, 27 Dec
- 2025 00:12:53 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%2]) with mapi id 15.20.9456.008; Sat, 27 Dec 2025
- 00:12:53 +0000
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: "Paul E . McKenney" <paulmck@kernel.org>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P+erRx5j"
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-37fd6e91990so65996131fa.3
+        for <rcu@vger.kernel.org>; Sun, 28 Dec 2025 09:58:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766944682; x=1767549482; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SAFmivjsQTgERIVGyEMEyxcJB51e29aR+8Wf6D6WKzQ=;
+        b=P+erRx5jADAvJGv5GGx+QsNfrpr7P5XYcNhduruNFSkt47hamlhNCu4QBHDhp6GOiJ
+         fzr88kSwzxFnR7aPy1XyB6CSLLiND8n1nQOU21/qtLUkdo+VgNOLB535iUffTCjy+O+g
+         0prGeEk0c9CzjT6BiY8oAwwBZ9yG7cTHc6A7+cNwsAvSC+5akf2GbfAHNMMLX3+cfTSD
+         E1mjfnQKVR/Tx+iUlHW0pS0ZAW+a3ZlVirNFVSlrqZS8B6N9irBjYGF93c61liVTS74c
+         0o9M5uzA7X3r8NB0pI2XQXXZwK+qvDRIT+dcnbJMf46IABn02P3WVh0n/js6tCu01cDY
+         gAow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766944682; x=1767549482;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SAFmivjsQTgERIVGyEMEyxcJB51e29aR+8Wf6D6WKzQ=;
+        b=QCeY+ne5cGuJu0fqc7c7fG9WgImlrAPsxobEJJPZkyTzdL/MiOo0ffxOfYHTzrXF+D
+         3FC+0KKAegz6pyDSXMpSbtaLVvrUCUZCnKVfD1UUJBiBCFUoBOu/8rJrajSZuAhA8nw2
+         FEgiXoTBMpFo+BIZJZ3yCX+us0uIcYxO8mMjMq4RsONz0ukRVG64yz2+CDXUSDGO2iEW
+         bN7Y/+BgH+Uff2Dl/6AGMNAgh7IxI3v1tmLZwi6y6pHumb/cbTfksi48CS40A4EusMEJ
+         vMxAQBjCE9X+P4JlyByhEPMq5U1nTjkgJg9bZMsK/MUqjuGsGPbCJuuTOhKDzi3MgY8I
+         Dfaw==
+X-Forwarded-Encrypted: i=1; AJvYcCXW/OdFXB03WUQJ1XpdfR2yi7yCzZJOQPz/wi3qrCa5BcWVnSUlGyeeXlt/xzAPsmHmAGI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+BRMDgJhWnYiyOQAKvY7jm/4+h4N/rbs54u8/083gXBRvQwR8
+	Sy3laEDuc7nR7e4HMID3qjtcRph2OgG0R1yHszkyjBXSAeYYmEg3Z6Zd
+X-Gm-Gg: AY/fxX70XJ7EUDkf1maQPgo2gW1oFZrWnaF9jzE2zUWh1reE47ILQ2SgihaC/swNeQQ
+	yl+N/ZEGHRIZxN8rqoyfRzaRPxj0xMfFNQ1+iHHF8RAEiLukgmeZ96aWqW7PcXGplfMSiR+Yd58
+	KxTw0+QNYjh2+n/STcPQgt7JzKlN/HkxgU4ieX35olJOACaaN4B0FAndA5xXBzAJv82I1O3CpcZ
+	vU8oU5Dp76DAvDkgB5DQaHwuVNN425sH7Hvs3J3KVWMhCe9MwUbibSJlJUeTVXCsxY6RLBTJV3h
+	HUTMeMk9xEco01SW+mOBDCg4MH1ErAHZ0VufhDTn5ZtmqoJaFyow83UC87Suvumm4ylw+C+wvYp
+	jlVr3SoHE5+stdwIaKMf9ZcSMlRBKUtrcy8YX4EwuYjB+lJE1A4kH
+X-Google-Smtp-Source: AGHT+IHYXN3oVgd6jMbxvqn4l7j/XsJvb+MP5m5mhQgaF1h0f0io0mWv7X+vSo6SQJr2bzS2CTWfGw==
+X-Received: by 2002:a05:651c:a0a:b0:382:8844:2080 with SMTP id 38308e7fff4ca-382884420e0mr4398141fa.25.1766944681800;
+        Sun, 28 Dec 2025 09:58:01 -0800 (PST)
+Received: from milan ([2001:9b1:d5a0:a500::24b])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-381224de70asm73625811fa.4.2025.12.28.09.58.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Dec 2025 09:58:00 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@milan>
+Date: Sun, 28 Dec 2025 18:57:58 +0100
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, linux-kernel@vger.kernel.org,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
@@ -52,163 +70,118 @@ To: "Paul E . McKenney" <paulmck@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>
-Cc: rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Joel Fernandes <joelagnelf@nvidia.com>
-Subject: [PATCH v2 3/3] rcu/nocb: Add warning to detect if overload advancement is ever useful
-Date: Fri, 26 Dec 2025 19:12:39 -0500
-Message-Id: <20251227001239.405644-4-joelagnelf@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20251227001239.405644-1-joelagnelf@nvidia.com>
-References: <20251227001239.405644-1-joelagnelf@nvidia.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BL0PR02CA0076.namprd02.prod.outlook.com
- (2603:10b6:208:51::17) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Reduce synchronize_rcu() latency by reporting GP
+ kthread's CPU QS early
+Message-ID: <aVFvppCjx26yn6Wx@milan>
+References: <20251223034630.1092719-1-joelagnelf@nvidia.com>
+ <b355f3ed-3916-4419-951b-33e3788427f4@paulmck-laptop>
+ <20251226023339.GB739018@joelbox2>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|MN6PR12MB8543:EE_
-X-MS-Office365-Filtering-Correlation-Id: d885fcc4-7dd8-4303-2913-08de44dcae0c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?VIbPiRupKpnV8LMYMBx6rWutROR0E7gLtDt+tgopbbA4b7Lp9w7vosq2oyyl?=
- =?us-ascii?Q?fFcHJxaxLIQdKtDastxl+ry/Xk6m2AJZhRFd+Bm2cAKk9zx3XEPCruQnHGCE?=
- =?us-ascii?Q?EgITKJbfxghdMQPQYg4Shy3zx8ldleSOU1S7UHfjZ8md8Fy2GopAdyllsVzB?=
- =?us-ascii?Q?I/MKHGC5zSZdcarPaKIDoVoSMI4nIH8zSk67SA5RA9ISIwLpuTstHIMwAOiI?=
- =?us-ascii?Q?a59HabHKOP8GiNr57F04kZCviw+gGktILJnIcI8yIAoWDpxgWJitVkuuPHGT?=
- =?us-ascii?Q?9tw9lBUqIBI7lxuHezNOKzKwDsEOjv7JBw/NQZiTK8o6657G0IPRlb8BLcUW?=
- =?us-ascii?Q?LH48M8E8SPKuFrLejcK4gCzCcahJQiE8lDhSlqgTPSX+/S33ItjvySDgAR3U?=
- =?us-ascii?Q?NbAgRGVm2sLlRmWPsGEW8SkaprHwdmUl/SQqUBUUDcw12PeaZkhWHI4vI8J2?=
- =?us-ascii?Q?qPWo48zEx03//l/3bPejGu22z+AYt6ooYib5txnLzGCrnx1ZPy9yAuKB/Ejf?=
- =?us-ascii?Q?WbeOUV3mGE8GsYisHmW7k2DbV8VAHIvT4KeelBczRYFkfpCktoUM2v479dFw?=
- =?us-ascii?Q?/X3BDje0wqGHtBByDEHWuhYr8XaoYq5RQtG1jQJw2QpyMKfPllTyb451DZqC?=
- =?us-ascii?Q?kGpmnysQaf8TJsoRC34Luv4VFHER3kIk/4CTJ8pBJ/0NDdndemWmjAVwguIG?=
- =?us-ascii?Q?uj5M+Vs9bp4QPAEbMFOi5tlFHpmfjSc+3mGWHZqgnKGPzI+/LVefr2JWPqTU?=
- =?us-ascii?Q?35XfwziAmiXm2Yjalaeo1v1ybf/nM6BqALmppCi2WWMl/epimPgMnxUT2FpO?=
- =?us-ascii?Q?nUeFK97FZkf1eXBqayTP5o3qC3PmdIbypUlBl6GM5Loafta53idAFOLQTn6b?=
- =?us-ascii?Q?Jh8F6sM8QExDp414v129DLadUxT/kKSRA2sgRf8yN2RLA6UNmBQafxkOFpAV?=
- =?us-ascii?Q?9GnG+oUcvKfTGZ20QF8ZndYccfp60Sr6DpgZ/Ca9P7+aS6Jr4TBkvwK+JAxt?=
- =?us-ascii?Q?MQBbvIx5eHpZTMtsYvguBfM3hMgrbH9NRxyfxsZk18wR2RrNm6jonlfekQX6?=
- =?us-ascii?Q?M3YeucidZjbAg/V3GQkNXE+Ad5gO1nTIK7UpqvQGjQ++zlPFzDQRvvclhJq/?=
- =?us-ascii?Q?vYWSktIOI9It7G/+6SD9rtGoIdkJzCZpkiPFF9nl0EI9Tj/zjOTeHTkW0bGf?=
- =?us-ascii?Q?YgKiBy2s+7PVxORqCzT5xPFdhkKNodf3BxL5T7uxiL7nn2b6NkiLEDRrGW1n?=
- =?us-ascii?Q?ECsj88JkiUcL3H/lio21DrZbZFgEYyk+854Rtf6wZdaIAIibHBlP8Z6HL5EK?=
- =?us-ascii?Q?Qgopary4JGOToCPJQWtAYK5fE8SD8DTmhMPyR9VQdcEy/Ik8Q9s5NDQQY0Yo?=
- =?us-ascii?Q?QM09U3bH0/7Yb5VxAUWRR/kOyEKkf3+C7OStULwf2FV/oxsE9PdaPw24UFvx?=
- =?us-ascii?Q?yXrCG8IAASEGo4VED9gERk8iKgNn9f7vUbaVmMkrEnjirCR6QwkFwGAYeRN+?=
- =?us-ascii?Q?IGsDuYhXs1Em6Ag=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?PAD5y6H32BcR4o7VJm7UTWziENA7hIlTUyabyKAmrOkUSEgfLBWoZTnS1Lo0?=
- =?us-ascii?Q?BWqTNHpcbMBOqWycXxXxGHW6n9u8YbKnnu/Y4IZfRKxyppVT1VSJhuu9h6Qw?=
- =?us-ascii?Q?cGE7MMKzyhOjrAbDgGY6WPItvHENF5/M3giDp3YQAgVn5TaUQEaqnfGRWf1S?=
- =?us-ascii?Q?XDsADURoSZZDTnElnS/aTDHcbYmF6Ab3hcu9aYvCmbrkhp68C8xb1ZbB6ObC?=
- =?us-ascii?Q?hz65gr9qGTaXfj+wXYBo/ZREZ8rii2XdgPpdF6nygOg2zUgfvTtxhIDb5V5i?=
- =?us-ascii?Q?+H0CfbN3kiTR6lccEMmYpXWiO+KPFa6gbE8wnx8gK87e9hlRQLCPwNEwdGwa?=
- =?us-ascii?Q?SZ6d7ujI4pyr+UGJHmTZDdkDAsdM7osiF0udvADHP+Crs2Mof9eEXmekH04P?=
- =?us-ascii?Q?wTueqC9g3kU4WvRfBRm6qByvDsFBBgdK2J/O1b8FYU+XOAXAA3fA55VabFLW?=
- =?us-ascii?Q?gNvAK/sWvdr+nsW1JomQBcFESzOhRDqTlxbRBwD3tp8EAxqBon81b7Kv7Cr5?=
- =?us-ascii?Q?jHC04MLYYzHj+hRUMRtu7zxOa3QSK2gIAEPzbl4KvWTfm/R4fFbzVi9H9Gkl?=
- =?us-ascii?Q?G0K+HPeau6nOy1kKx5fdyFD8Rm4J4y6o0qvp5xM7dl8EZfq/BDGugBQCw1ho?=
- =?us-ascii?Q?nYbUvIEIyEjZ/1J9ZAgvWbSufA4bT+2B9pHklB0m+e8s20EYBR8aebAPqn7Z?=
- =?us-ascii?Q?VoBPl2+ufE/IXYwqFcnt+wLvawtT7LJZqqLTZS12FHIgXS9Y+cGbETrRZeLE?=
- =?us-ascii?Q?CRh9oi0dGeGbWoufjmkVOh9zzm+lShmT2hBDS/Jeq+pDZyvrgizOK0/hJfQ/?=
- =?us-ascii?Q?YQj0itzNRcaqvJTZ2GifD6DKZszgtBp7geZmj3D5vfGu7zU9wiBRBQKbzdxe?=
- =?us-ascii?Q?5g+anN3whI3dbhB+Yq2VtYLVsuM2YaxLG1QwvBjv9yBDnEesYzzm858G+EfE?=
- =?us-ascii?Q?El/li+0NCTTdjE6yUtFuUz6J/q6CS/FE+KsDlHZu1BOucixDtxeku5Plkx/b?=
- =?us-ascii?Q?DnDZ6r1DJYYsQIPyb6J91pf5xSRIUyGjq6CvAc1NPwdrcIDj8yd1wo1ic/oF?=
- =?us-ascii?Q?4FHf8gAP9O/XCFx9MidY1Ex30TldqiYCJG3f5Lb0bpxAgAMcJHNebth0sej4?=
- =?us-ascii?Q?4EMH66DKkn3jOg+pmoHPj54EeIHsiNZTOXSECZTkeLpSD8ehxGN+dt0XAoxh?=
- =?us-ascii?Q?Y6esKVqKnVEjcXSX2bId52UobMM5GYOijVD6BfJLifQsNxNwRqPKezt/R0qY?=
- =?us-ascii?Q?P2NBiGPRnC37ydQCKn/Hq+RWPHMTZE1YQQfeh0Tl+81lQbPHxgoURTxIAbqY?=
- =?us-ascii?Q?DM7nCQkxPw0oUlEpqVNLI+FUiZZqVClq79ekgyH1RoD1m+LKb5Lw1MgRDYxc?=
- =?us-ascii?Q?PBNJshuy9RNu0Xsu60NjIsfmCnXLGaWQ7FvjdkxZXUIv4ZRT+WwUyMOzaZ98?=
- =?us-ascii?Q?31BzULTQzTqYXp9uHqXkVhBcsrBsiy0i/SGYRTeQ4dOYSIV/YJWiCNEZzdYV?=
- =?us-ascii?Q?foybQKw1OvR670jWCSI2uOkdYi3EQFh7TQCIyJ9O8Fvq9cvFF+2MYyYU/cdm?=
- =?us-ascii?Q?/CD23PAysxAwd5qx8xcUB9oRC1a5fMwRVSScam9+wBJi30O8B+EmrV/O9TdX?=
- =?us-ascii?Q?7GJvICe2AtIDtSSkqA8adB8UCBCSmE8q38BDml0+IUtwvBS+jthfU480qvY0?=
- =?us-ascii?Q?kijRMnj/G1G65imfelkmmaPEwyam7VX/Eg+6YePGwq6ZJyW3SVifh2MqcGYf?=
- =?us-ascii?Q?NubrGdN0Gg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d885fcc4-7dd8-4303-2913-08de44dcae0c
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2025 00:12:53.7658
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Fn7m2oWD/21AZpK3nkGC3xjpkGipRQ047RVGWI+Wbub7yFfAqLraRgT3nAGN9dyMGCOb4PPIpJ3jMYLWqNB+Eg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8543
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251226023339.GB739018@joelbox2>
 
-During callback overload, the NOCB code attempts an opportunistic
-advancement via rcu_advance_cbs_nowake().
+On Thu, Dec 25, 2025 at 09:33:39PM -0500, Joel Fernandes wrote:
+> On Thu, Dec 25, 2025 at 10:35:44AM -0800, Paul E. McKenney wrote:
+> > On Mon, Dec 22, 2025 at 10:46:29PM -0500, Joel Fernandes wrote:
+> > > The RCU grace period mechanism uses a two-phase FQS (Force Quiescent
+> > > State) design where the first FQS saves dyntick-idle snapshots and
+> > > the second FQS compares them. This results in long and unnecessary latency
+> > > for synchronize_rcu() on idle systems (two FQS waits of ~3ms each with
+> > > 1000HZ) whenever one FQS wait sufficed.
+> > > 
+> > > Some investigations showed that the GP kthread's CPU is the holdout CPU
+> > > a lot of times after the first FQS as - it cannot be detected as "idle"
+> > > because it's actively running the FQS scan in the GP kthread.
+> > > 
+> > > Therefore, at the end of rcu_gp_init(), immediately report a quiescent
+> > > state for the GP kthread's CPU using rcu_qs() + rcu_report_qs_rdp(). The
+> > > GP kthread cannot be in an RCU read-side critical section while running
+> > > GP initialization, so this is safe and results in significant latency
+> > > improvements.
+> > > 
+> > > I benchmarked 100 synchronize_rcu() calls with 32 CPUs, 10 runs each
+> > > showing significant latency improvements (default settings for fqs jiffies):
+> > > 
+> > > Baseline (without fix):
+> > > | Run | Mean      | Min      | Max       |
+> > > |-----|-----------|----------|-----------|
+> > > | 1   | 10.088 ms | 9.989 ms | 18.848 ms |
+> > > | 2   | 10.064 ms | 9.982 ms | 16.470 ms |
+> > > | 3   | 10.051 ms | 9.988 ms | 15.113 ms |
+> > > | 4   | 10.125 ms | 9.929 ms | 22.411 ms |
+> > > | 5   |  8.695 ms | 5.996 ms | 15.471 ms |
+> > > | 6   | 10.157 ms | 9.977 ms | 25.723 ms |
+> > > | 7   | 10.102 ms | 9.990 ms | 20.224 ms |
+> > > | 8   |  8.050 ms | 5.985 ms | 10.007 ms |
+> > > | 9   | 10.059 ms | 9.978 ms | 15.934 ms |
+> > > | 10  | 10.077 ms | 9.984 ms | 17.703 ms |
+> > > 
+> > > With fix:
+> > > | Run | Mean     | Min      | Max       |
+> > > |-----|----------|----------|-----------|
+> > > | 1   | 6.027 ms | 5.915 ms |  8.589 ms |
+> > > | 2   | 6.032 ms | 5.984 ms |  9.241 ms |
+> > > | 3   | 6.010 ms | 5.986 ms |  7.004 ms |
+> > > | 4   | 6.076 ms | 5.993 ms | 10.001 ms |
+> > > | 5   | 6.084 ms | 5.893 ms | 10.250 ms |
+> > > | 6   | 6.034 ms | 5.908 ms |  9.456 ms |
+> > > | 7   | 6.051 ms | 5.993 ms | 10.000 ms |
+> > > | 8   | 6.057 ms | 5.941 ms | 10.001 ms |
+> > > | 9   | 6.016 ms | 5.927 ms |  7.540 ms |
+> > > | 10  | 6.036 ms | 5.993 ms |  9.579 ms |
+> > > 
+> > > Summary:
+> > > - Mean latency: 9.75 ms -> 6.04 ms (38% improvement)
+> > > - Max latency:  25.72 ms -> 10.25 ms (60% improvement)
+> > > 
+> > > Tested rcutorture TREE and SRCU configurations.
+> > > 
+> > > [apply paulmck feedack on moving logic to rcu_gp_init()]
+> > 
+> > If anything, these numbers look better, so good show!!!
+> 
+> Thanks, I ended up collecting more samples in the v2 to further confirm the
+> improvements.
+> 
+> > Are there workloads that might be hurt by some side effect such
+> > as increased CPU utilization by the RCU grace-period kthread?  One
+> > non-mainstream hypothetical situation that comes to mind is a kernel
+> > built with SMP=y but running on a single-CPU system with a high-frequence
+> > periodic interrupt that does call_rcu().  Might that result in the RCU
+> > grace-period kthread chewing up the entire CPU?
+> 
+> There are still GP delays due to FQS, even with this change, so it could not
+> chew up the entire CPU I believe. The GP cycle should still insert delays
+> into the GP kthread. I did not notice in my testing that synchronize_rcu()
+> latency dropping to sub millisecond, it was still limited by the timer wheel
+> delays and the FQS delays.
+> 
+> > For a non-hypothetical case, could you please see if one of the
+> > battery-powered embedded guys would be willing to test this?
+> 
+> My suspicion is the battery-powered folks are already running RCU_LAZY to
+> reduce RCU activity, so they wouldn't be effected. call_rcu() during idleness
+> will be going to the bypass. Last I checked, Android and ChromeOS were both
+> enabling RCU_LAZY everywhere (back when I was at Google).
+> 
+> Uladzislau works on embedded (or at least till recently) and had recently
+> checked this area for improvements so I think he can help quantify too
+> perhaps. He is on CC. I personally don't directly work on embedded at the
+> moment, just big compute hungry machines. ;-) Uladzislau, would you have some
+> time to test on your Android devices?
+> 
+I will check the patch on my home based systems, big machines also :)
+I do not work with mobile area any more thus do not have access to our
+mobile devices. In fact i am glad that i have switched to something new.
+I was a bit tired by the applied Google restrictions when it comes to
+changes to the kernel and other Android layers.
 
-Analysis via tracing with 300,000 callbacks flooded shows this
-optimization is likely dead code:
-- 30 overload conditions triggered
-- 0 advancements actually occurred
-- 100% of time no advancement due to current GP not done.
-
-I also ran TREE05 and TREE08 for 2 hours and cannot trigger it.
-
-When callbacks overflow (exceed qhimark), they are waiting for a grace
-period that hasn't completed yet. The optimization requires the GP to be
-complete to advance callbacks, but the overload condition itself is
-caused by callbacks piling up faster than GPs can complete. This creates
-a logical contradiction where the advancement cannot happen.
-
-In *theory* this might be possible, the GP completed just in the nick of
-time as we hit the overload, but this is just so rare that it can be
-considered impossible when we cannot even hit it with synthetic callback
-flooding even, it is a waste of cycles to even try to advance, let alone
-be useful and is a maintenance burden complexity we don't need.
-
-I suggest deletion. However, add a WARN_ON_ONCE for a merge window or 2
-and delete it after out of extreme caution.
-
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
----
- kernel/rcu/tree_nocb.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 7e9d465c8ab1..d3e6a0e77210 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -571,8 +571,20 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 		if (j != rdp->nocb_gp_adv_time &&
- 		    rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
- 		    rcu_seq_done(&rdp->mynode->gp_seq, cur_gp_seq)) {
-+			long done_before = rcu_segcblist_get_seglen(&rdp->cblist, RCU_DONE_TAIL);
-+
- 			rcu_advance_cbs_nowake(rdp->mynode, rdp);
- 			rdp->nocb_gp_adv_time = j;
-+
-+			/*
-+			 * The advance_cbs call above is not useful. Under an
-+			 * overload condition, nocb_gp_wait() is always waiting
-+			 * for GP completion, due to this nothing can be moved
-+			 * from WAIT to DONE, in the list. WARN if an
-+			 * advancement happened (next step is deletion of advance).
-+			 */
-+			WARN_ON_ONCE(rcu_segcblist_get_seglen(&rdp->cblist,
-+				     RCU_DONE_TAIL) > done_before);
- 		}
- 	}
- 
--- 
-2.34.1
-
+--
+Uladzislau Rezki
