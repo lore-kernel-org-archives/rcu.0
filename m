@@ -1,244 +1,163 @@
-Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012045.outbound.protection.outlook.com [40.107.200.45])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F98194098;
-	Sun, 28 Dec 2025 22:37:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766961458; cv=fail; b=aABzDGHKzeZ3SWbrH+iInm41AJVjWLV9OERaW63/VDX6lsxu67pwnjSSLLcJK52whYH6Z30lVZlRPaqwYsuamfCj/AYO2RLcvjTC5vlHtKp8n+UgtLhsoucKX1Uq1uBs4G12/LsJSUbbP8Gtl0fkAAFPwnujt+mYjIvKJuCObVU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766961458; c=relaxed/simple;
-	bh=bupBAHl1v/DGVOxVnpgYAeLq1q/tbWkvNmNpsvuwSp4=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=G5oH2Q0BDoqwp9xAr+sxoEn612CmeQMmBhUgnbdatVmv1fpM/8q5lHY8mMu+5IYLImwoEY89M8XMxMVrSe65+5RM88zQwrBSRAZkYWto8q+BI4RXA9/NTOb6OwTsfpoA8XuyHWoMj65ITVUlFBOXsQzNK4A2r0VtRKMcpyTKZTU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Yv/pnFcx; arc=fail smtp.client-ip=40.107.200.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A31417555;
+	Mon, 29 Dec 2025 00:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766966690; cv=none; b=O/BIJ/NsrUPg83t/zAZt1HRAp6vyojpqlFJ8LqZ/3LNeQwcj0v5UyfiG7IbShz7qzqoOU5gQgfQFTmF0ggKzYgW/KBSkzqgAuWSIdlyRg6X0CrEeDFugkEkSJhfzGTpiVjexlCBGrE30AHD+L7SB3JGOTOit80LRay3MPg//+YQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766966690; c=relaxed/simple;
+	bh=I3Dsbj67fT8sasD6BoulMP1x7oOXbk6a9SMaPZPQHnA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mYPhaDqtrWAD/GKK2RAZdW9fLdpcFzy/UDp0ha4pB6V8aQTbRlUtbNyxjcUIBaZs49fzlXa6QP7mve0AKa5+IncTcGe5uWzfq1bFOkkKd3sqaASEX4jPZfqTBIAS7GmShg4QGSl6EtXnL2WWbya+BkL+tlALfmRa9jfzArJqdCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hmFdNpxS; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Yv/pnFcx"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xyHEgqIcHEsW54bec+NhTVfms2eteezw7c5bkUUt0+A1CcLRJLGbUB5rzq10HOkDmvEDFvFHZ7pyIRq+ojrKxKylHyTzvW74wZG3wlVfUYnlNZfSChpIAlovEzonVvHi1yjZuTz+uWBe39fgcMf8D1ZSCaHcHiwM0FceprF3sTDXPWSjFRw80ED6IaXKqfO57VHUVtIZ6YdG3dT4Ms9HdgggjPsGuxVZHRHDzVweE6FLVfodv6RwU3s0zHGeVI/UXI/1F/RYZGCk5d6V6cAjo9JXkaklTYz/R5ZwI+BLIsqa9ZhHdqaMZzojxVltpsvnL3GBZGc8pcXaTKkMiqTZWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CoSD9hCxkTBtlbcPpOU4SAO6N0H6PKsSvz64CR57a00=;
- b=FKHkd7m6YardbctGxtNq9dOTZV2d8qnxVx72cNAwsYMmvfma4zyGSDOExVcbApWZKyUEhWRDhp907JKtFZmNXIUhPpLUDQQ4zfQGSs0YFq47C7Ykh7baCg5FXYr5+rH+Zoy1BIV2hO4/NSxcOX+ZaCS7hX8HEuMooI90BH9vGSX0FC4Cj6zW0iRgKsSnXc3FGEXSwS8eVfAItPDyHFzJsyA1UD4ngvPMNdTms9T+/EsBpa+JOaNjaMNrEYtLBbrPVt6J+FP+nJIjr5l0fGMSKaHVTq88fsM08To26phefNJzmc8wb0BEgUtgOh4MpPPhnfgGi9UqY5FQXFA0fN1meg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CoSD9hCxkTBtlbcPpOU4SAO6N0H6PKsSvz64CR57a00=;
- b=Yv/pnFcx5qiOuf3PIlwEYxG+iKQ3LtZITTGqX2V8OGrtkmVnpZpulZKp4bYU0ZVpjFj92e4tXv7G/DJ2QNkOKHTWm4SJzJqss9djF7T8UdQOHck0IqaPg5GmVmARLqFh7GZ5iKOtzxHlcr3BBXX1AS9V/7y59DW16TVOw4PHGsAkbmirVBwQejpW9IkeWpmU8KKLfP6ghHXZM1SV7950DmE5zg5xZJRz9ocrGFxcC4PTqNf++kWyhYKCghOC1Sp5EAxpGcJHoLs4xl02qGzIqg+qO1JqCgdh2hki582c+0isH/58skJGQy6aVQ3ITBggOWHKbnUVE0KHO9ppH0KC0A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by PH0PR12MB999113.namprd12.prod.outlook.com (2603:10b6:510:38f::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9456.14; Sun, 28 Dec
- 2025 22:37:35 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%2]) with mapi id 15.20.9456.008; Sun, 28 Dec 2025
- 22:37:35 +0000
-Message-ID: <3a6bfd87-570d-49fa-854f-8d5802549f6a@nvidia.com>
-Date: Sun, 28 Dec 2025 17:37:33 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 1/2] rcutorture: Prevent concurrent kvm.sh runs on
- same source tree
-To: Randy Dunlap <rdunlap@infradead.org>,
- "Paul E . McKenney" <paulmck@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Shuah Khan <shuah@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20251228220519.150179-1-joelagnelf@nvidia.com>
- <24f4df13-0875-49bd-95d1-4bf1a400ff15@infradead.org>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <24f4df13-0875-49bd-95d1-4bf1a400ff15@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BLAPR03CA0077.namprd03.prod.outlook.com
- (2603:10b6:208:329::22) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hmFdNpxS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 216C8C4CEFB;
+	Mon, 29 Dec 2025 00:04:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766966690;
+	bh=I3Dsbj67fT8sasD6BoulMP1x7oOXbk6a9SMaPZPQHnA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=hmFdNpxSaxO2idSr97tWxsJVfd7eOT/mGabC33rSPoK9MI6VM+hggPtzzZ+eCyYPQ
+	 yYo2mk6XNLRORbAcC1Wrfpk2zF4kCcB54tSpQCDoz4usM7eR9UVTa860FJ5YC5fdKG
+	 VfSj9PzQcOZ5dExZhHRdRKO2Gq0rTCuTas598us5gf2BKxEh5WlV+Q/vCOB1uwxVqT
+	 9BJ6YlTgOG9WME6EInVSWsbRN0xOdW/wKiF6UsPlLN3ap5AGnbBEArlQ6jSBV9r0Mo
+	 uYy65kcPP99KBBWwwld3YmiZg+YJIlVa14JxPuYYaE4x/ubwIPvytTXkpQoW0PcXxr
+	 6RSM5dNzKeULw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id A931ACE0C98; Sun, 28 Dec 2025 16:04:49 -0800 (PST)
+Date: Sun, 28 Dec 2025 16:04:49 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, linux-kernel@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Reduce synchronize_rcu() latency by reporting GP
+ kthread's CPU QS early
+Message-ID: <1033a68f-c17b-4847-819d-7fb4e9e45016@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20251223034630.1092719-1-joelagnelf@nvidia.com>
+ <b355f3ed-3916-4419-951b-33e3788427f4@paulmck-laptop>
+ <20251226023339.GB739018@joelbox2>
+ <aVFvppCjx26yn6Wx@milan>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|PH0PR12MB999113:EE_
-X-MS-Office365-Filtering-Correlation-Id: aa9fca5c-2ded-4ad0-e65b-08de4661b23e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?emRVTVphUEt1Q0M3N2JkTERmV2FISHh3d2pENThMVXNNbjJYdFRUWEQ1R0RI?=
- =?utf-8?B?UVRQVTd0WlhGbUdaTnNMcTA5ZXNHYkRNOTlHRUFPOVhzNEtKWVNFbVNtR0pn?=
- =?utf-8?B?N1BxaDBEN2M4SE5ZT1g3dmMvRCsyYmR1VlUwbVlQNXhrbkFOSlBUUlprOGc3?=
- =?utf-8?B?T0lnUzFwY29FeFVxQ1V1aFl3WHZPUGNqRG5rN01hQmlUQlc5R3VpVzc5ZzhI?=
- =?utf-8?B?elRudFluc2h2YlJoT25JMzR4NmduTlRid2ZINVlRUFEzY1gyV3Q5RkVqMkEr?=
- =?utf-8?B?OFFLTDFTN3U4dmdMN0ZSMXhIcGMxZGxEbUE5ZFgzTHlNS1ZnZ1BYVWV5cDN3?=
- =?utf-8?B?R05KNXZtak5idzVwOU1MNk9Qa3JYR01ZYmQ0d1BhakhmTGtJdUFUNU5KQzVu?=
- =?utf-8?B?dHczZXUyYnRKQWdTRE1UNHpEeXppbHE0Rm9QTmhXNlVSZHNNM2lJNzN3c1hw?=
- =?utf-8?B?VGhZNnZtV0Zib1JmaWswY0xXdW8vd205WFlpZ013aEZIYUgrZTQzTFdOVGpt?=
- =?utf-8?B?RWtwZVYwYzR6VUJKSkJpUGJQMm5yaTVzanVyT01JNmZndUl2ZHJWWlZONC8v?=
- =?utf-8?B?aGxzQVpIVUNobk5xZ3pXZTVoalNXOWVaRUVaR1ljNzhhVXVFLzc1QWVXUXBU?=
- =?utf-8?B?ZkZDMzdYWVgvc0RiVVNJTXk1Yk1UTk80cFJEeW5nd1NUUFJkdC9LUzlHSWZp?=
- =?utf-8?B?SndVQnpBeWEwa0xsYmFwcU5qTHJWUGNVUjBwcGdWMlUwREs5UTR0b1BNekZY?=
- =?utf-8?B?anNiUDlocHFab1JqSHlQajd2bWpiRUczdkJ5VTZFbllsZFdvVHMwaHVRS0NQ?=
- =?utf-8?B?TllsWTFOaS8zdnkyWVp0cTVnbVp2bzJvaXR1ZkJVTU9NakM2SDJSYnRoRy96?=
- =?utf-8?B?TlFLQXlTQWpmOWVGY2V6NC95cXpXcHMxL2VPL2VSaC9DaDBZQWIwOXVudVJ3?=
- =?utf-8?B?UUpUbWZ5ZVc1ZERFTlUvSTJwanV0YytKcjNSeGtYd3lXMFNkcldsYU1oUXJy?=
- =?utf-8?B?QURvRG1FN2pjR1JJSXZIeC9OTWthOGVSY0ZGamZaMm5oenJwVGhWbmtWclNJ?=
- =?utf-8?B?UloyOUl6bnFMN2ZpT01VY1BUN2VWdEZkRVBjWi9RTHdvTHRHMHlyM3VHKzFt?=
- =?utf-8?B?czNEWHdvZWVHZjdUQWl3Q2xSb0h2QldtYzhHY2dHTVFINHB0TkhnQUdMTnBR?=
- =?utf-8?B?N05lZ1VuMTljeGoyZUg4REsrMnltQzZqajBPVHA2OWlKeWNIcStGN3YyaUJ6?=
- =?utf-8?B?QjRiOERSeEFpdmpJclI0Zi9LamRCamNhV1owRUQxYnVQWGpLN2h1NnJVdmVZ?=
- =?utf-8?B?Sk56dGo4a2hjaEJoM0RGbDh1bVphWU5heGdIZjg3SEs4WFN1MTh6dEVRVnp3?=
- =?utf-8?B?WWoxNjdYZE1GT1N0bXJYYWFDdkg2MDU5V2o1ekxnU1dtYWZXYlJVdlBDYnFU?=
- =?utf-8?B?em1lTW1rSnUyRjRtRXpVUmxJWXJoSTM0b1QzVStDNWhiUFgzS2taQnhvbHVH?=
- =?utf-8?B?Y1hNTCt0T1J5djVteTlLekZnSXduc0k3TDlmQ2tBS2hlaThYVjNma0tScnpH?=
- =?utf-8?B?VjlFVCtDUGZDc0lvQTBSUEtqd0JGSDA2akM3RzJJWTluRC9kd01paGthY3V3?=
- =?utf-8?B?aWkrd3NTVXhTcENxbHFLMDRUQkpyc0ZDVXlZSGMydzIzc0xwVEl0OHJWUTJh?=
- =?utf-8?B?ejJ4dVJTbWJicUNURVVlQkVoRDhEbm1ibkM5NVZpSzBTWlNmYVpTcTVoblpP?=
- =?utf-8?B?cWVrS3dLRCswM3NRcXRSbkgvSjlCZzBFd1VjSmw1dFlRc2Y0bE5oV3JPZndu?=
- =?utf-8?B?TjhVR0tHQ2hsdTZYNVZEVkVVMkl1eWxxTUVrWVQ3YUprQng2VVc1UE9CbmtV?=
- =?utf-8?B?K1hEVWxuVWhqYS9VYmFocTV2YmRCUko0NFd4cU9vdERsMTJ4RlprUkhRRUxX?=
- =?utf-8?Q?kS5PEGPtkXjBKw21fi1Y5pq503y3qbeo?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dHlWbjFwZFhROG5LQVBjZ1RvbGNnK3VUb1l5aHNrNFBCd2hVOEhBeWFzVGQ4?=
- =?utf-8?B?U0Y0QXhPelJOVjBQSisyM1MvcTMwVXphWUlzK280cWYyUHA3MThuUThrUHpY?=
- =?utf-8?B?MWJLeFFKUVdJVWhIdUE2eE9ocVpJdTNySGtnWnpMaUFRdDJJWXN1ZUVBWFN1?=
- =?utf-8?B?TllHQ0dCcUM4ZE04MVR6QU1naEtvTEZ5N3F0bVpqdUt2Z1hqL2ovdmxGMUxt?=
- =?utf-8?B?Z2R6TzFMaFZMTmNENHBDSDNmM3NTZWZSR0pib0c2T1luTkpmME9iVUp1b1dV?=
- =?utf-8?B?bnRXNy9LQjJrVUUrSk9lNm5ZTzI2THNOYVY0aDhmaWhFdXg1QWtGZzZFSEpo?=
- =?utf-8?B?ZHhRYlNGWVhNdUtGVi96MEdVSjBqZld5TTZ0VlR4WWxrcVVLNE9aVXV0T1Zm?=
- =?utf-8?B?aVp2QTFIUXhxWXBuQ2oyN1NBem9IWm8yL3JrWXkzb3Qvc0RhQmREVEE5THk4?=
- =?utf-8?B?eTBscmJpM1QvRHVRcFQxeWVvYkk4Z2ROdlNoU09ERmhWZmdRbzBGcmsvL0xG?=
- =?utf-8?B?R3JPTjZ1OTEyU1lzUDZNS2JWRUQvRXRyN2F5MnFldkM2WnZQY0YrVW1QVzlT?=
- =?utf-8?B?eGhaTis5aFhrQ0c1TDJMUFJBVFlRY3F0VHdHUUJQZXZuVTRqcDdYYXpiQTQw?=
- =?utf-8?B?L1RTWTZnZGNjSDZ6dWFaeDE3SUt4K1AzY216YnVFZmJRM2FMeTJUZzZma21E?=
- =?utf-8?B?dndsTFp6cHN2WlJvMU5taHRmM2lla2F5M3M0VXJ4eUtTdFRFaTMvMGt0UWU3?=
- =?utf-8?B?bjRqcVRJbVE1MlB0Y0VjM3NTZ2lGbVZpNWNPK3lQNUl6eTdObzN4ajVPSHdC?=
- =?utf-8?B?dk5IMFYxOXVvMkR5RUh3bmI0UDB5ZFQvV2thVE1uQ0FPQTRmY2lmbmNwVkVs?=
- =?utf-8?B?NllHeUZwNFZlSXI1Rk1VOWVCS1A2Qy9nMkZwaStjbE9jazMzaWdGTE05NE90?=
- =?utf-8?B?QUh0dHE0cnFjeHo5TmN4ZFIyZlIzQkRlWE1LbFpqL29LYmJNOHp5VVJZL0xH?=
- =?utf-8?B?eW00RCttMWg0dllOZk9nM29ueEZOVGxnWmliTjhMZy9rRm5hc2FrL1ljcExj?=
- =?utf-8?B?QnB6ZzQ5bGJKZ2MxR1pzRWExT3FiLzZiamJjblRha3RrV0Q1ODliY29mUDg4?=
- =?utf-8?B?d0VtMGEya0N3dllTN2l3d0VLdmJxaDRJRXRQSWZKOVZ5RUduQWMyZVVaWXUx?=
- =?utf-8?B?cTU0ODdBU1E4TlBjZklROWMvVWhELzN2REFZeHVoRlNWa0ozSlYxbk5hZkJK?=
- =?utf-8?B?SDF1U1I3Rkh0bU1CTXV5dmFZVGJZOUE0eTFWSWJZR2VBYi9yNFBmV3lqVGU5?=
- =?utf-8?B?UnN6SjQ0clgxV2ZQRExETTJkLy9UVlcyMTA3VWdEeHFraDZRYW5YZ0lmNFJE?=
- =?utf-8?B?Q1VMKzBVL1FBS1hEY21uRXcydVQwbUZkbEQvOUFUM01qMHVpZHV0YVdnMVk4?=
- =?utf-8?B?a0xwZmhWWHBzVDRKYklUbHFuTXVSQXVTbzVmZTgremxkZ0tHaTNHL3NadU9C?=
- =?utf-8?B?L3ZVcDVBT0tENE5CTHo1MUNuVW1VbWdjL3IxVXRmRE5lTzFSVk9NOWVQS0pl?=
- =?utf-8?B?WnUrVmdua05wWm1kM3lFNWxSRE0xeXU3VXozWnhXQVo4NkFEY1pRNCtPb1J3?=
- =?utf-8?B?WWtCL25rVCtsNHh2TXJrZXc1THJBektIei9uK1FBTW9wVys5R04wWDAwWVVP?=
- =?utf-8?B?Q1Z2UnlKbUQzRHMzQkd1VTV1WmowK0x5bVA1NTVPY2ozMWU3U1g4NjZwRWpP?=
- =?utf-8?B?UGx2QXFmOXBob1hQSEJQUVhTdzFVc25PVWRrTEVURGY0RDNxOThGeEVPY3hE?=
- =?utf-8?B?M1VPeGRlL3pDMWFTSDdWNElNK0xmTVE1anJXTHhKY3pBREpWZ0hWV25WS05o?=
- =?utf-8?B?TzlZUE1xT0l6eTgwWjk2d2lWK1dIVCs1WkU4cW9rNlZQTW9BQXNIUVFvdm1K?=
- =?utf-8?B?dW0ydXhjNjVLTHlWcDY0N3U5b0dLV1B5aVdjK0hrcUFJKzM5SGl6bGpzcnpF?=
- =?utf-8?B?QmNxSjNzdDBlOTJ1T2htdVQvcXBhaHR2STQvRVpEdTNLUk1MRkdpcmZFSDda?=
- =?utf-8?B?bXFzWVQrRXpEcDJQbjN3cnBJQXFWcTVkLzFRa1pPcWtaN0xVd1k2OUhRd2Er?=
- =?utf-8?B?NWovenp5UlNjNkVNdmlBRlluNkVadmQrTjVzL0NFR3cyQU45WmFNL1BNRjNC?=
- =?utf-8?B?ZlJXNzJSaDZKamR1V0xpZUtpbWU2dUxlVm1DRXlXSDdKK0ZVbGNIOG9qWldQ?=
- =?utf-8?B?dWphNHhzZnRjZmZjMzVCOFNrcnMrQ09Yd3NDek5Ya0dqWXhtMitHVWNkQzNw?=
- =?utf-8?B?OU1lVFZPZVRQM05Lb1BKTjNXQWZKbVRoT05BbGVmcVZiUStCSUowdz09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa9fca5c-2ded-4ad0-e65b-08de4661b23e
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Dec 2025 22:37:35.0600
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: M6oQW1ykuWrtb43O2dPZopEuQoBfv3vI04nZoc7kqXfsJbnq8hLiSJKHgmTCezetwGVjX6LI+sh49GClyeGsHw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB999113
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aVFvppCjx26yn6Wx@milan>
 
+On Sun, Dec 28, 2025 at 06:57:58PM +0100, Uladzislau Rezki wrote:
+> On Thu, Dec 25, 2025 at 09:33:39PM -0500, Joel Fernandes wrote:
+> > On Thu, Dec 25, 2025 at 10:35:44AM -0800, Paul E. McKenney wrote:
+> > > On Mon, Dec 22, 2025 at 10:46:29PM -0500, Joel Fernandes wrote:
+> > > > The RCU grace period mechanism uses a two-phase FQS (Force Quiescent
+> > > > State) design where the first FQS saves dyntick-idle snapshots and
+> > > > the second FQS compares them. This results in long and unnecessary latency
+> > > > for synchronize_rcu() on idle systems (two FQS waits of ~3ms each with
+> > > > 1000HZ) whenever one FQS wait sufficed.
+> > > > 
+> > > > Some investigations showed that the GP kthread's CPU is the holdout CPU
+> > > > a lot of times after the first FQS as - it cannot be detected as "idle"
+> > > > because it's actively running the FQS scan in the GP kthread.
+> > > > 
+> > > > Therefore, at the end of rcu_gp_init(), immediately report a quiescent
+> > > > state for the GP kthread's CPU using rcu_qs() + rcu_report_qs_rdp(). The
+> > > > GP kthread cannot be in an RCU read-side critical section while running
+> > > > GP initialization, so this is safe and results in significant latency
+> > > > improvements.
+> > > > 
+> > > > I benchmarked 100 synchronize_rcu() calls with 32 CPUs, 10 runs each
+> > > > showing significant latency improvements (default settings for fqs jiffies):
+> > > > 
+> > > > Baseline (without fix):
+> > > > | Run | Mean      | Min      | Max       |
+> > > > |-----|-----------|----------|-----------|
+> > > > | 1   | 10.088 ms | 9.989 ms | 18.848 ms |
+> > > > | 2   | 10.064 ms | 9.982 ms | 16.470 ms |
+> > > > | 3   | 10.051 ms | 9.988 ms | 15.113 ms |
+> > > > | 4   | 10.125 ms | 9.929 ms | 22.411 ms |
+> > > > | 5   |  8.695 ms | 5.996 ms | 15.471 ms |
+> > > > | 6   | 10.157 ms | 9.977 ms | 25.723 ms |
+> > > > | 7   | 10.102 ms | 9.990 ms | 20.224 ms |
+> > > > | 8   |  8.050 ms | 5.985 ms | 10.007 ms |
+> > > > | 9   | 10.059 ms | 9.978 ms | 15.934 ms |
+> > > > | 10  | 10.077 ms | 9.984 ms | 17.703 ms |
+> > > > 
+> > > > With fix:
+> > > > | Run | Mean     | Min      | Max       |
+> > > > |-----|----------|----------|-----------|
+> > > > | 1   | 6.027 ms | 5.915 ms |  8.589 ms |
+> > > > | 2   | 6.032 ms | 5.984 ms |  9.241 ms |
+> > > > | 3   | 6.010 ms | 5.986 ms |  7.004 ms |
+> > > > | 4   | 6.076 ms | 5.993 ms | 10.001 ms |
+> > > > | 5   | 6.084 ms | 5.893 ms | 10.250 ms |
+> > > > | 6   | 6.034 ms | 5.908 ms |  9.456 ms |
+> > > > | 7   | 6.051 ms | 5.993 ms | 10.000 ms |
+> > > > | 8   | 6.057 ms | 5.941 ms | 10.001 ms |
+> > > > | 9   | 6.016 ms | 5.927 ms |  7.540 ms |
+> > > > | 10  | 6.036 ms | 5.993 ms |  9.579 ms |
+> > > > 
+> > > > Summary:
+> > > > - Mean latency: 9.75 ms -> 6.04 ms (38% improvement)
+> > > > - Max latency:  25.72 ms -> 10.25 ms (60% improvement)
+> > > > 
+> > > > Tested rcutorture TREE and SRCU configurations.
+> > > > 
+> > > > [apply paulmck feedack on moving logic to rcu_gp_init()]
+> > > 
+> > > If anything, these numbers look better, so good show!!!
+> > 
+> > Thanks, I ended up collecting more samples in the v2 to further confirm the
+> > improvements.
+> > 
+> > > Are there workloads that might be hurt by some side effect such
+> > > as increased CPU utilization by the RCU grace-period kthread?  One
+> > > non-mainstream hypothetical situation that comes to mind is a kernel
+> > > built with SMP=y but running on a single-CPU system with a high-frequence
+> > > periodic interrupt that does call_rcu().  Might that result in the RCU
+> > > grace-period kthread chewing up the entire CPU?
+> > 
+> > There are still GP delays due to FQS, even with this change, so it could not
+> > chew up the entire CPU I believe. The GP cycle should still insert delays
+> > into the GP kthread. I did not notice in my testing that synchronize_rcu()
+> > latency dropping to sub millisecond, it was still limited by the timer wheel
+> > delays and the FQS delays.
+> > 
+> > > For a non-hypothetical case, could you please see if one of the
+> > > battery-powered embedded guys would be willing to test this?
+> > 
+> > My suspicion is the battery-powered folks are already running RCU_LAZY to
+> > reduce RCU activity, so they wouldn't be effected. call_rcu() during idleness
+> > will be going to the bypass. Last I checked, Android and ChromeOS were both
+> > enabling RCU_LAZY everywhere (back when I was at Google).
+> > 
+> > Uladzislau works on embedded (or at least till recently) and had recently
+> > checked this area for improvements so I think he can help quantify too
+> > perhaps. He is on CC. I personally don't directly work on embedded at the
+> > moment, just big compute hungry machines. ;-) Uladzislau, would you have some
+> > time to test on your Android devices?
+> > 
+> I will check the patch on my home based systems, big machines also :)
+> I do not work with mobile area any more thus do not have access to our
+> mobile devices. In fact i am glad that i have switched to something new.
+> I was a bit tired by the applied Google restrictions when it comes to
+> changes to the kernel and other Android layers.
 
+How quickly I forget!  ;-)
 
-On 12/28/2025 5:34 PM, Randy Dunlap wrote:
-> 
-> 
-> On 12/28/25 2:05 PM, Joel Fernandes wrote:
->> Add flock-based locking to kvm.sh to prevent multiple instances from
->> running concurrently on the same source tree. This prevents build
->> failures caused by one instance's "make clean" deleting generated files
->> while another instance is building causing build failures.
->>
->> The lock file is placed in the rcutorture directory and added to
->> .gitignore.
->>
->> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
->> ---
->>  tools/testing/selftests/rcutorture/.gitignore |  1 +
->>  tools/testing/selftests/rcutorture/bin/kvm.sh | 17 +++++++++++++++++
->>  2 files changed, 18 insertions(+)
->>
->> diff --git a/tools/testing/selftests/rcutorture/.gitignore b/tools/testing/selftests/rcutorture/.gitignore
->> index f6cbce77460b..b8fd42547a6e 100644
->> --- a/tools/testing/selftests/rcutorture/.gitignore
->> +++ b/tools/testing/selftests/rcutorture/.gitignore
->> @@ -3,3 +3,4 @@ initrd
->>  b[0-9]*
->>  res
->>  *.swp
->> +.kvm.sh.lock
->> diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
->> index fff15821c44c..d1fbd092e22a 100755
->> --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
->> +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
->> @@ -275,6 +275,23 @@ do
->>  	shift
->>  done
->>  
->> +# Prevent concurrent kvm.sh runs on the same source tree.  The flock
->> +# is automatically released when the script exits, even if killed.
->> +TORTURE_LOCK="$RCUTORTURE/.kvm.sh.lock"
->> +if test -z "$dryrun"
->> +then
->> +	# Create a file descriptor and flock it, so that when kvm.sh (and its
->> +	# children) exit, the flock is released by the kernel automatically.
->> +	exec 9>"$TORTURE_LOCK"
->> +	if ! flock -n 9
->> +	then
->> +		echo "ERROR: Another kvm.sh instance is already running on this tree."
->> +		echo "       Lock file: $TORTURE_LOCK"
->> +		echo "       To run kvm.sh, kill all existing kvm.sh runs first."
->> +		exit 1
->> +	fi
->> +fi
->> +
->>  if test -n "$dryrun" || test -z "$TORTURE_INITRD" || tools/testing/selftests/rcutorture/bin/mkinitrd.sh
->>  then
->>  	:
->>
->> base-commit: 0ff41df1cb268fc69e703a08a57ee14ae967d0ca
->> prerequisite-patch-id: 912adecf969d167ddd35b26844249c809a2d4664
->> prerequisite-patch-id: 95ca224b0870cebb545ddaf313691fd18dfd04e1
->> prerequisite-patch-id: 68a218b9aaada53aa85cf33fcf4afe1592fe160f
->> prerequisite-patch-id: e40912ee9655a8abef17413a1bb9b05d2d4520de
->> prerequisite-patch-id: c0511755626728abcbed2f76e9a0b1d2f15e7c9e
->> prerequisite-patch-id: 0a8814cf3965ce3d5fb30d18db3daf2b96c3db74
->> prerequisite-patch-id: 450827b1f88e4ab714a63a24a66bd209f8c332af
-> 
-> Are all 54K of these required?
+Any thoughts on who would be a good person to ask about testing Joel's
+patch on mobile platforms?
 
-Ouch, this looks like a case of git format-patch scripting gone bad. Anyway, the
-patches applies cleanly to Linus's master branch. I'll go look into the
-scripting issue.
-
-Thanks!
-
- - Joel
-
+							Thanx, Paul
