@@ -1,82 +1,61 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD1229DB99;
-	Mon, 29 Dec 2025 19:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EEB23C17;
+	Mon, 29 Dec 2025 19:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767035640; cv=none; b=FMeol7Vm0c2xLvVotaXUv1LrqR4+Xp4xcT0mipXT4razr2ldwEhJ6PcWhRVwSiAYFtzd7NjOwfNzmSbBKEKLuU1C7jDJMzzIyv74gmxpz2fTwlxIREO25yNRVkfRVu2+jfTx/vv6bOXRWUN3ODrE7ah2EKKAjLD+1t/k8zunCwU=
+	t=1767035774; cv=none; b=fD+wZj4x/ARlEB4IYlEdFn6XeJPC22dwTpp2iO4YFixS7RtuBB4KugIIUQ9VUXiND/vQOJjq7FWsgXABHYmn9q3bVbhIiELhn9AhSFUe33uBYtrHthWzb1J4rgnuv/KXYSdx1YTAvAOnnO/R6HPkbfpENzi7ag2rQsVEy7BvWwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767035640; c=relaxed/simple;
-	bh=EvhGlhlfv9Y3ZizK23Gd9rpD3qZ8iEJIkdoyNj7aKmQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZlPm+bba2EE5INQ6y84B5Km5Xu3fnUPqcHBvvoT8b3YPqft5ziLDp5RYLdfZ9hRH2qXCmLeKYkj/rwDMqqqT1YEgvOEg9oCpwa6kheYIsrWJZl0tor2yWTYgFiKXOW0zVX+6nG6H/2BEOth7XEnGfcSl7To4BF50e9d84rbHgww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kn0lANO/; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1767035774; c=relaxed/simple;
+	bh=7IT9cQkyUyfQY/rb4ZlzobvRDIJIpvyb5gmGp08jRXM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=OnPuUxBzaFzqGUptwbcm0qewH5RsPAEAuXbLP/xPv3tP3Cmv+aBS2PrqASjtY9HQ9KssUcVEnIvzsvMQoR22IwJkmD6AR/IpEXPwsaFpRl6Wtfcfd04VmO97281dKKV5mWtJQSFctmM+Vwoyug1jcAmNmBSRbk9MvwMXnGuLiss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f60xR7OQ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kn0lANO/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45763C19422;
-	Mon, 29 Dec 2025 19:14:00 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f60xR7OQ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D9B3C4CEF7;
+	Mon, 29 Dec 2025 19:16:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767035640;
-	bh=EvhGlhlfv9Y3ZizK23Gd9rpD3qZ8iEJIkdoyNj7aKmQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Kn0lANO/IDRNVRx97vZMYFo6eYVUZ+DJxn60k6nuntES59adowMy5PkMZeZ/2YsE7
-	 k6qe5D+vuGQ8Rhh6zBMEj1X/KBtNHH8gNPIrfLfZvju0NgHC5RBo8/TNx0qXyFh1y4
-	 URCyiVxDZZMkqBF+sTNB5qvUrpDTJmv38zrAXr+bhXxmqXHEASRrxgt+9Cr6CR6LuF
-	 9nE65CTN269vjxiPmNcFlg/1yy0YLPCxwMfzmAzvn3mIcOmLM0P0lzgjnOanfKrkew
-	 9nw03WSHMwksG6oQ0yll/ECOvhFoV2PLkyLVMYSoFynOzRJAOi26NGXxGaPX7SezLw
-	 NFTTm6GijJXxA==
+	s=k20201202; t=1767035774;
+	bh=7IT9cQkyUyfQY/rb4ZlzobvRDIJIpvyb5gmGp08jRXM=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=f60xR7OQpuIiR1ain4ZZIB7clOoSUlE8OFBRNbRmQFCfT/N9GVX71ANtgC6uoGumP
+	 /XA+t4mJFNXXv/1rNP5GyRA1ouJjm+FX52n48koWg+yw4oOaDsuqEB0HXGtpQvPO3q
+	 M+Oh8VwGpNGhQlAEZMDBDKz/mGcMKyPTS5KnQorPYFBVqvVhz77xpVzlbQbi6S/EkD
+	 4hxG9c3wtM3glw4GiLyNEo5e8sgtKNjM9BUH/uokotfsFlnFAFE0rehkn9a0IHXmnv
+	 ph7nq0aqx3zuJ9b+u6nbFI/r9jWztWdlpkn6HU1X7hVscnjYmhgBIWk+VKO7YN89UX
+	 sFsdn2qRn532A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9A7D5CE10F4; Mon, 29 Dec 2025 11:13:59 -0800 (PST)
+	id B7720CE0C97; Mon, 29 Dec 2025 11:16:13 -0800 (PST)
+Date: Mon, 29 Dec 2025 11:16:13 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v4 6/6] torture: Include commit discription in testid.txt
-Date: Mon, 29 Dec 2025 11:13:58 -0800
-Message-Id: <20251229191358.693753-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <eb69cddd-2e89-43a5-ba61-95af1d820dc0@paulmck-laptop>
-References: <eb69cddd-2e89-43a5-ba61-95af1d820dc0@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH 0/2] Miscellaneous fixes for post-v4.19
+Message-ID: <2ca142cc-0487-45e2-830e-8ece0fcd72cb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Currently, the testid.txt file in the top-level directory of the
-rcutorture results contains the output of "git rev-parse HEAD", which
-just gives the full SHA-1 of the current commit.  This is followed by
-the output of "git status", which is further followed by the output of
-"git diff".  This works, but is less than helpful to human readers
-scanning a list of commits.
+Hello!
 
-This commit therefore instead uses "git show --oneline --no-patch HEAD",
-which provides a short SHA-1, but also the names of any branches and
-the commit's title.
+This series contains miscellaneous fixes:
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- tools/testing/selftests/rcutorture/bin/mktestid.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1.	Make expedited RCU CPU stall warnings detect stall-end races.
 
-diff --git a/tools/testing/selftests/rcutorture/bin/mktestid.sh b/tools/testing/selftests/rcutorture/bin/mktestid.sh
-index 16f9907a4dae0..24f6261dab6ab 100755
---- a/tools/testing/selftests/rcutorture/bin/mktestid.sh
-+++ b/tools/testing/selftests/rcutorture/bin/mktestid.sh
-@@ -18,7 +18,7 @@ fi
- echo Build directory: `pwd` > ${resdir}/testid.txt
- if test -d .git
- then
--	echo Current commit: `git rev-parse HEAD` >> ${resdir}/testid.txt
-+	echo Current commit: `git show --oneline --no-patch HEAD` >> ${resdir}/testid.txt
- 	echo >> ${resdir}/testid.txt
- 	echo ' ---' Output of "'"git status"'": >> ${resdir}/testid.txt
- 	git status >> ${resdir}/testid.txt
--- 
-2.40.1
+2.	Correctly compute probability to invoke ->exp_current().
 
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ rcutorture.c |    4 ++--
+ tree_exp.h   |    7 ++++++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
