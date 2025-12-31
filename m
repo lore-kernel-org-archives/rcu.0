@@ -1,108 +1,101 @@
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E672E1722
-	for <rcu@vger.kernel.org>; Wed, 31 Dec 2025 07:55:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584712798F3;
+	Wed, 31 Dec 2025 17:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767167717; cv=none; b=o/t+No33uTVu3lPdbkUXxsp/Lp7tWa/T+z9x6AjLm0tS3pEbAX0NrTEQL5o02C2l8vFXTfdd2vxtUg7uDD1i0TPVmfdCcXBIrd/wUzB/smc7H/CtjmpoUvSb8bFv6gOc3j82f0y/39B+kZAP3X2TYePQ4197n6rUOY/+ayGL58M=
+	t=1767201227; cv=none; b=ASJ3rU1qc6L26hy8T6ldTF2UZEmIXuMNpQdgosnJFaF/2Z2VNNy/V3loBgM5IbnkcdRP+Ea74f1ikgCL44JJvmG0zu5tK1dXPbw7MXkeDwG5oEVMzExRFapB+/VRMgbq13cvCmGGZZbQTC+3xcr/BQHbMeAVQoZRn6FZoAdrxRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767167717; c=relaxed/simple;
-	bh=rWOszggxjJjpncGJmiFkk4N4MH9eYsYtfbMMHhWRgJY=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=CjarWlsGw/ruXZi4ie5HZnvKW1JWBMyD/7SuXaU4d1Dokm8wf4gxHaSDO3CFR/zSHu/GUPYJOWmCSzxAH07Kk1gj2VnGYbtNl0fnzzALDx5XBPq+AvKJNfqLes8mVOfv+28nOjiqMaybNS1kOnE4WQ7irEdXf3WSJosEXnoLvzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qy7Gcw2W; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1767201227; c=relaxed/simple;
+	bh=1XadhEuR2VsJTbFXegv14gLCVxhAt6I2wZoD9qp9GuE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bWdrTd5C8eQYIyTkqepEbs+fo8E9mpuUU7QhypxIvF6FhiV+5EKNlKZAORYieKGKaDUS4e/L5Twzz/2zF4DIuzLoGk91wo+ZU77Pfju0U1zkDgVX7jK3Ak+FSH55hIIYp5ZQHutHqnRyOMgjrlIN9T7LukQwLVBg6x/j4O35znc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=hv6eelmS; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qy7Gcw2W"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="hv6eelmS"
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6D31A40E0173;
+	Wed, 31 Dec 2025 17:13:35 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id n-OA-mU1FlqT; Wed, 31 Dec 2025 17:13:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1767201209; bh=RyfAaYuEEZrJ3H82B74fcLS7Oxet/UVYoW8ry1R4raI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hv6eelmSn4fj4di7jcYxpEiNKeOknQZO/tCbP0uASSzwoe45dxolscBYGNl7qp6y/
+	 yK8gji4m+ah9scUMNKdND7Mp5k7U7/eqAmQLgjH+yW4K0axSQzK3N/sKrhZEYT/42T
+	 nua5yFeXZdBp2FkN7WNVKnR0EyGatV7EunYotwO4iZjaMmxHU2cGKdJaUBVoNexlLd
+	 x5d4UdRo/RzveNoluEC1vu0IJ0IxlZNibCb9chAYE/gbTcqa2y7dqLZgNNNff5/vlm
+	 EuuKbjE9Nzyy0RNSNO+zdAzPqP2cfVuN9NPT9LlMpRo7r5FrCr7bZNaXJWBuM7z8U/
+	 V60t16pAQnHEhiAx7geRhxWU6E1Rtf5YDx7mN/5fb4T3L6vz6+0uxzy0CcunUewl+i
+	 8llfIKkDNxQR46hT83pyZ0ueXmBVMa2+PTth479Dr+24M8IA2Fo5jXrVk+6APv7AaH
+	 iBA3GtLeG/mCMqYdEUHp/r5P5nRwIf6vj3nmPCfilLZvO2nMrb+yCOAAdiJSPYwjW8
+	 m4zQOmi9jRJZAaHngesuoZPaXaUswXGQDEXWPALWC4/6h8l2hNbkVTNtoESQMLSh9f
+	 zy6TL+njNq6MIBRuP4piHL1sZQHoDJ1vrTq1O73t8PLTtRnEbGicf4wIvwQFqlPLZ9
+	 KFVOdS+SU/AL4gP348BsHVnw=
+Received: from zn.tnic (pd953023b.dip0.t-ipconnect.de [217.83.2.59])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with UTF8SMTPSA id B468740E01A9;
+	Wed, 31 Dec 2025 17:13:24 +0000 (UTC)
+Date: Wed, 31 Dec 2025 18:13:17 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org
+Subject: Re: [PATCH v4 1/2] rcu: Make expedited RCU CPU stall warnings detect
+ stall-end races
+Message-ID: <20251231171317.GBaVVZreLiknrb8zWT@fat_crate.local>
+References: <2ca142cc-0487-45e2-830e-8ece0fcd72cb@paulmck-laptop>
+ <20251229191616.693898-1-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767167703;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PzuMiu6c93+7tR3MBDwHo6wwFpJ1ILdR+zPuQ7Q2CTU=;
-	b=qy7Gcw2WRtjhA6649YMOoE7gPU3elTajFGr5Xl6XEq9fnrG0CkTT6MP4tBmZNZpZKFKrqS
-	ZkhByUuJlkpG9U+LbCksfRxatTlp4mIotRha3hkZ6XxCQL/9eVy91Dm3iNQfQzL2OTJ75n
-	vvRWoillalyJGT+1AJAkHCFqjg124+Y=
-Date: Wed, 31 Dec 2025 07:55:00 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Zqiang" <qiang.zhang@linux.dev>
-Message-ID: <9254e0cfc06f9820d77113a4be5d3f6d6edd28cd@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH] rcu-tasks: Remove unnecessary smp_store operations in
- the cblist_init_generic()
-To: paulmck@kernel.org
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
- rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <b8cae37a-65c9-4380-9290-8494c854373e@paulmck-laptop>
-References: <20251214024904.121128-1-qiang.zhang@linux.dev>
- <b8cae37a-65c9-4380-9290-8494c854373e@paulmck-laptop>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20251229191616.693898-1-paulmck@kernel.org>
 
->=20
->=20On Sun, Dec 14, 2025 at 10:49:04AM +0800, Zqiang wrote:
->=20
->=20>=20
->=20> The cblist_init_generic() is executed during the CPU early boot
-> >  phase due to commit:30ef09635b9e ("rcu-tasks: Initialize callback
-> >  lists at rcu_init() time"), at this time, only one boot CPU is
-> >  online. this commit therefore use WRITE_ONCE() to replace the
-> >  smp_store_release() to assigning rtp->percpu_enqueue_lim in the
-> >  cblist_init_generic().
-> >=20=20
->=20>  Signed-off-by: Zqiang <qiang.zhang@linux.dev>
-> >=20
->=20Good eyes, thank you!
->=20
->=20But in that case, we are running on a single CPU with interrupts disa=
-bles,
-> so do we even need WRITE_ONCE()?
+On Mon, Dec 29, 2025 at 11:16:15AM -0800, Paul E. McKenney wrote:
+> If an expedited RCU CPU stall ends just at the stall-warning timeout,
+> the current code will print an expedited stall-warning message, but one
+> that doesn't identify any CPUs or tasks causing the stall.  This is most
+> likely to happen for short-timeout stalls, for example, the 20-millisecond
+> timeouts that are sometimes used for small embedded devices.  Needless to
+> say, these semi-empty stall-warning messages can be rather confusing.
+> 
+> One option would be to suppress the stall-warning message entirely in
+> this case, but the near-miss information can be quite valuable.
+> 
+> This commit therefore detects this race condition and emits a "INFO:
 
-I missed the interrupts disabled, It seems like there are no need use WRI=
-TE_ONCE()
-and include above, I will update and resend.
+s/This commit therefore detects this/Detect this/
 
-Thanks
-Zqiang
+> Expedited stall ended before state dump start" message to clarify matters.
+> 
+> Reported-by: Borislav Petkov <bp@alien8.de>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  kernel/rcu/tree_exp.h | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 
+But yeah, makes sense.
 
+Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
 
+Thx.
 
->=20
->=20 Thanx, Paul
->=20
->=20>=20
->=20> ---
-> >  kernel/rcu/tasks.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20=20
->=20>  diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> >  index 76f952196a29..f763f60d5e50 100644
-> >  --- a/kernel/rcu/tasks.h
-> >  +++ b/kernel/rcu/tasks.h
-> >  @@ -292,7 +292,7 @@ static void cblist_init_generic(struct rcu_tasks=
- *rtp)
-> >  shift++;
-> >  WRITE_ONCE(rtp->percpu_enqueue_shift, shift);
-> >  WRITE_ONCE(rtp->percpu_dequeue_lim, lim);
-> >  - smp_store_release(&rtp->percpu_enqueue_lim, lim);
-> >  + WRITE_ONCE(rtp->percpu_enqueue_lim, lim);
-> >=20=20
->=20>  pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=
-=3D%d rcu_task_cpu_ids=3D%d.\n",
-> >  rtp->name, data_race(rtp->percpu_enqueue_shift), data_race(rtp->perc=
-pu_enqueue_lim),
-> >  --=20
->=20>  2.48.1
-> >
->
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
