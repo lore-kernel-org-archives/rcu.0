@@ -1,54 +1,52 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6036FBF0;
-	Thu,  1 Jan 2026 22:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26CCB1EE7B9;
+	Thu,  1 Jan 2026 22:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767306272; cv=none; b=oIHff77WeljzrMug8OpkTwXR2Rk3fCivaHEGEaGU9/q2t9YasBw2pCq6JzaxPvt1rSR2vnHwYKqSaAKQlM/gm9PM21etMcINnWt15Z1F7bzJYXB1A2BqRwux/nUuPyxGY6CqS+t8PLxm2BYqzw5WQpWkdpa6Yf4Vpa8A7+8Ga2E=
+	t=1767307687; cv=none; b=LLCVPXHcfrVw4OVnVTpfdTu9Mwj+ey42fXLcE/QQfm5lFBAB/7svspdXOIusACpR1f1KaU5LpC8jGq2zXnJQ/Xr1RmUPq1vegpwI0ivosDSIDZJlDJXovO+eBhjerrrvj2s2TQJwU22stKfx0I1NKa/MtyDfMdwGCm9qUPjnOeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767306272; c=relaxed/simple;
-	bh=UiU2fwnXYRMUM1eGkiC827OHdPHtYSVxsMZhdqQBvGY=;
+	s=arc-20240116; t=1767307687; c=relaxed/simple;
+	bh=tptO1M75uAITg/xEG4wkC/11aCQhVh6vPc1jHQqyomI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lmQ8rXGWF06qvCSo0HrUtUOe5RnkZFKNYnoQCihLNyUzp94NtHVF5ToiLqfqqrjhCguxOBSmfKganTaGjMt08HCurCjNKxH3J3VqewQCVULYEI+ZxtnDi+dge/mspEcX/TvH/X0NMpxxBDaqDlFrMHW6PkHmvnYUYwMGLkG0i9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pheZQhX5; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=PAZTNJgoQ5zxNXIEv2o5oTEg9KbfoDKPRopokPfJ/Jx4RpnUxgNB9zeHtRuylmyNpURyWVz4CBH7syHyvabjh6oEGta2u5/BBtNBv7ghwqemZBzECdGJqkZjZDUjT3xE74BmEr2GeR34p3xhQOvN1+RnbGr1IiHfhBj0WPcoj9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IpRHWOmq; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pheZQhX5"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 206CCC4CEF7;
-	Thu,  1 Jan 2026 22:24:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IpRHWOmq"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7D92C4CEF7;
+	Thu,  1 Jan 2026 22:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767306272;
-	bh=UiU2fwnXYRMUM1eGkiC827OHdPHtYSVxsMZhdqQBvGY=;
+	s=k20201202; t=1767307687;
+	bh=tptO1M75uAITg/xEG4wkC/11aCQhVh6vPc1jHQqyomI=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=pheZQhX5/IPyEJMS7GMa9YME9GLgB7KfaxgiK5zdHjUtUYGdIpAlGUaLLjLqb3A0p
-	 mRMwwEdwFl3cOWLmuM0LhgpI+FEiegXM24K/M/nDzNmn35pD+nqAlzJmK+7wcBVMg/
-	 b1oXMdZSytm5ho/lNIHki4YtS3zmE1DF/Fws8fM82xe6C+TacE3fX1P5PiQScRGcYY
-	 Fy7gR9YsNxmmr3jnLDT7OPGNx0lLJ2PJpMl0nH3e10mHJhpOgU+6L7FiSjKqar255S
-	 /EMbEKBO9ot4k49nRsC61Q1sbArmA7YusmL7vszgq7BN6R03OfiYG8pRAHqu9rNRwT
-	 4PU3t8JV9syyw==
+	b=IpRHWOmqGaMhubw2iqYMNYbuIa18uupX7jEWCtYGno8s05s7tzTlLNi7oDIkMrNX/
+	 Nyb+ye23fYbZ2ulfJ9TQyIP8jq9ithq45csF0cvnzh5jQXOXftHn3UzfOo/+j1HMsM
+	 V102japFRpOKW6whZ7CokKAysRPctmywmTYyyfBkN1Wi/fYYnxe2Y9t/b340M40Cl+
+	 GK+iuG0RPH27szUMbAjmKgVCDnnGZ9+WUlxeHTepW57v0b+XCscWb5hV/5uohjI8lM
+	 W/N36/4FQcBC+IlT6c3UdMhUYAgjE53ZVNV8V4YTfxglgT51rGQ9Jw0qQo1sdsZBLH
+	 Ppq0C+Y2Eou0Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 92D4DCE11A4; Thu,  1 Jan 2026 14:24:31 -0800 (PST)
-Date: Thu, 1 Jan 2026 14:24:31 -0800
+	id 8175ECE11A4; Thu,  1 Jan 2026 14:48:06 -0800 (PST)
+Date: Thu, 1 Jan 2026 14:48:06 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-	linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-	Josh Triplett <josh@joshtriplett.org>,
+Cc: Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
+	Josh Triplett <josh@joshtriplett.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>
-Subject: Re: [RFC] jiffies_till_first_fqs off by 1
-Message-ID: <cc710326-1b49-4892-9805-a197d48d202f@paulmck-laptop>
+	Zqiang <qiang.zhang@linux.dev>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH -next 8/8] rcutorture: Add --kill-previous option to
+ terminate previous kvm.sh runs
+Message-ID: <0fb9fa43-9e64-4ada-9bb2-c15102dab482@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <1efce983-639b-430d-a613-03baef81c416@nvidia.com>
- <2f95e414-7d0e-4e2a-9656-25abf84c27ec@paulmck-laptop>
- <20251224020619.GA1297269@joelbox2>
- <b6bd973d-3cc6-4174-aaae-f3d67d8ccca1@paulmck-laptop>
- <20251226021559.GA949635@joelbox2>
+References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
+ <20260101163417.1065705-9-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -57,68 +55,90 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251226021559.GA949635@joelbox2>
+In-Reply-To: <20260101163417.1065705-9-joelagnelf@nvidia.com>
 
-On Thu, Dec 25, 2025 at 09:15:59PM -0500, Joel Fernandes wrote:
-> On Thu, Dec 25, 2025 at 10:54:20AM -0800, Paul E. McKenney wrote:
-> > On Tue, Dec 23, 2025 at 09:06:19PM -0500, Joel Fernandes wrote:
-> > > Hi Paul,
-> > > 
-> > > On Tue, Dec 23, 2025 at 03:53:23PM -0800, Paul E. McKenney wrote:
-> > > > On Tue, Dec 23, 2025 at 12:38:19PM -0500, Joel Fernandes wrote:
-> > > > > During studying some synchronize_rcu() latencies, I found that the
-> > > > > jiffies_till_first_fqs value passed to the timer tick subsystem does is always
-> > > > > off by one. This is natural due to calc_index() rounding up.
-> > > > > 
-> > > > > For example, jiffies_till_first_fqs=3 means the "Jiffies till first FQS" delay
-> > > > > is actually 4ms. And same for the next FQS. In fact, in testing it shows it can
-> > > > > never ever be 3ms for HZ=1000. And in rare cases, it will go to 5ms probably due
-> > > > > to interrupts.
-> > > > > 
-> > > > > Considering this, I think it is better to reduce the jiffies_till_first_fqs by 1
-> > > > > before passing it to the wait APIs.
-> > > > > 
-> > > > > But before I wanted to send a patch, I wanted to get everyone's thoughts.
-> > > > > Considering this the RFC.
-> > > > 
-> > > > Inadvertent passing of the value zero?
-> > > 
-> > > This should not be an issue because at the moment, even a value of
-> > > jiffies_till_first_fqs == 0 waits for ~1 jiffie due to schedule_timeout(0).
-> > > 
-> > > But you raise a good point, we should cap the minimum allowed jiffie value
-> > > for the fqs parameters to 1 so that we don't pass schedule_timeout() with
-> > > negative values when/if we do the reduce-by-one approach.
-> > 
-> > There is a potential use case for jiffies_till_first_fqs=0 and no wait,
-> > which would be systems that want to scan for idle CPUs immediately after
-> > the grace period has been initialized.  Note the word "potential".  ;-)
+On Thu, Jan 01, 2026 at 11:34:17AM -0500, Joel Fernandes wrote:
+> When kvm.sh is killed, its child processes (make, gcc, qemu, etc.) may
+> continue running. This prevents new kvm.sh instances from starting even
+> though the parent is gone.
 > 
-> Sure, we could add support for that but that would be new behavior that is
-> not in the existing code.
+> Add a --kill-previous option that uses fuser(1) to terminate all
+> processes holding the flock file before attempting to acquire it. This
+> provides a clean way to recover from stale/zombie kvm.sh runs which
+> sometimes may have lots of qemu and compiler processes still disturbing.
 > 
-> So jiffies_till_first_fqs=0 today, I think it is not 'working as intended'
-> because it will never not wait I think.
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 
-Agreed.
+For #7 and #8:
 
-> So we should fix that too? Or maybe it can be a patch separate from this
-> (that I can work on). I think no harming in allowing that mode, at least it
-> will be more in line with the expected outcome.
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
 
-Makes sense!  However, given that no one has complained, care is required.
-Someone might be relying on the old behavior.  (In which case an easy
-fix would be to make -1 be no waiting, though one might hope for a
-better fix.)
+One way to kill the current/previous run without starting a new one is
+to use the --dryrun argument.
 
 							Thanx, Paul
 
-> > If we want to support this, then perhaps we would need to avoid that
-> > schedule_timeout(0).  Or rcu_gp_fqs_check_wake(), as the case may be.
+> ---
+>  tools/testing/selftests/rcutorture/bin/kvm.sh | 25 ++++++++++++++++++-
+>  1 file changed, 24 insertions(+), 1 deletion(-)
 > 
-> True.
-> 
-> thanks,
-> 
->  - Joel
+> diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+> index d1fbd092e22a..65b04b832733 100755
+> --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
+> +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+> @@ -80,6 +80,7 @@ usage () {
+>  	echo "       --kasan"
+>  	echo "       --kconfig Kconfig-options"
+>  	echo "       --kcsan"
+> +	echo "       --kill-previous"
+>  	echo "       --kmake-arg kernel-make-arguments"
+>  	echo "       --mac nn:nn:nn:nn:nn:nn"
+>  	echo "       --memory megabytes|nnnG"
+> @@ -206,6 +207,9 @@ do
+>  	--kcsan)
+>  		TORTURE_KCONFIG_KCSAN_ARG="$debuginfo CONFIG_KCSAN=y CONFIG_KCSAN_STRICT=y CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000 CONFIG_KCSAN_VERBOSE=y CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y"; export TORTURE_KCONFIG_KCSAN_ARG
+>  		;;
+> +	--kill-previous)
+> +		TORTURE_KILL_PREVIOUS=1
+> +		;;
+>  	--kmake-arg|--kmake-args)
+>  		checkarg --kmake-arg "(kernel make arguments)" $# "$2" '.*' '^error$'
+>  		TORTURE_KMAKE_ARG="`echo "$TORTURE_KMAKE_ARG $2" | sed -e 's/^ *//' -e 's/ *$//'`"
+> @@ -278,6 +282,25 @@ done
+>  # Prevent concurrent kvm.sh runs on the same source tree.  The flock
+>  # is automatically released when the script exits, even if killed.
+>  TORTURE_LOCK="$RCUTORTURE/.kvm.sh.lock"
+> +
+> +# Terminate any processes holding the lock file, if requested.
+> +if test -n "$TORTURE_KILL_PREVIOUS"
+> +then
+> +	if test -e "$TORTURE_LOCK"
+> +	then
+> +		echo "Killing processes holding $TORTURE_LOCK..."
+> +		if fuser -k "$TORTURE_LOCK" >/dev/null 2>&1
+> +		then
+> +			sleep 2
+> +			echo "Previous kvm.sh processes killed."
+> +		else
+> +			echo "No processes were holding the lock."
+> +		fi
+> +	else
+> +		echo "No lock file exists, nothing to kill."
+> +	fi
+> +fi
+> +
+>  if test -z "$dryrun"
+>  then
+>  	# Create a file descriptor and flock it, so that when kvm.sh (and its
+> @@ -287,7 +310,7 @@ then
+>  	then
+>  		echo "ERROR: Another kvm.sh instance is already running on this tree."
+>  		echo "       Lock file: $TORTURE_LOCK"
+> -		echo "       To run kvm.sh, kill all existing kvm.sh runs first."
+> +		echo "       To run kvm.sh, kill all existing kvm.sh runs first (--kill-previous)."
+>  		exit 1
+>  	fi
+>  fi
+> -- 
+> 2.34.1
 > 
