@@ -1,139 +1,137 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31626165F16;
-	Fri,  2 Jan 2026 03:41:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32845273D6F;
+	Fri,  2 Jan 2026 17:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767325270; cv=none; b=b2NghzvIy+W4LrW+d4EHrbOsYKRtnpji3vVMEM2J9IFZhsRhzTLZd9NzeCu8xABLTzRB0DXA52xmeF15SERsWYHqFvt0gNCIo+jeJNidSIWSrrEl/d60+sQ6MTCKEBMeayHfzsmMjWJ9k2DUCYawFMg/RofTwoV/Q1TOMoXVW9U=
+	t=1767374886; cv=none; b=cqGUCrlu14aY9SqyToPrcY/TgzKuNz/igt0k2lV1QsE2S1x53shg/Nog5Zij6iFC4NV0MtC3B5PMzGAji58CAEOEJIImaxwqK0T8SmDl8oLNi9V5ifD/6XBIjg4o1WZ6AXvlWGvO3xztCZVtTfr7WL+WLUm254m6EKP8VGTjqCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767325270; c=relaxed/simple;
-	bh=Dyw2bX75jEiH69DFswvja06krh66QHHpDnI4nPgeE74=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HfFFDLrJgW/y1YL39kctDixyJLB73cpUZ2elwTMD+j7vI01A+a8C1KcpwtuGKD2lvFiChJe7rkzJno7/zpOYQpHQUpOVqMQmimv8N5/Mo0zKOUz7SMCV+Onudp7TU1z/qLMKQsKXbnglMRoDlILkQ5hA7c8jDC++W693gKj93g8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gZN9tDTx; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gZN9tDTx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94B6DC4CEF7;
-	Fri,  2 Jan 2026 03:41:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767325269;
-	bh=Dyw2bX75jEiH69DFswvja06krh66QHHpDnI4nPgeE74=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=gZN9tDTx6REBThYmN/mQ/VtkjZ4fW8A92Df10LZpWcxxKOmszDBbJ5S5QEJCtuOjg
-	 ZLQ4senY4ITQXrO3dKzB7spA0PdPQka73j8vLBocgH4yMPAdnwclvEERw70+dqAlwJ
-	 +JDfiI453f3EcWDHfaCv2bMJEl2q7BK08tKRT1mUclXyIF+BPZfFDoMm04lgGaoHSt
-	 L68ZBsR9llWa3ZCEz1O2LRuIk3ckt4Ru6vrpXK4PK8+sHan/TUKyDVeQAj+dvlhLAf
-	 x3+Egoh6r6NnI4OAzXkcfGOCckxFeZ7tOIA3dkDs+w5ZOaCZRUSV/VtZJqcAEfhB7u
-	 1JSJ7leccE8DA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 065F2CE0D38; Thu,  1 Jan 2026 19:41:09 -0800 (PST)
-Date: Thu, 1 Jan 2026 19:41:09 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
+	s=arc-20240116; t=1767374886; c=relaxed/simple;
+	bh=HDEklz74cJKP0YY9u1fWzB2J8PLNmG1ItYrspOZ6ZxI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ByERN3E7o29Meh4S/wAhwGCldv1YeT9d5LzU2mMSIeNsP0yp6r/652cqXfsgrKpyiaLcGXn6HMiKIKqiOIA4Fc7RSgl3OrydzcQpc8vkKpitSjJ8adULKOVqY0tf8772ajSpangj5QoKdE706cDZjsLgdrsvVElOc/yKIIkrCD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 252D01A9BFD;
+	Fri,  2 Jan 2026 17:27:56 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id EF31720028;
+	Fri,  2 Jan 2026 17:27:52 +0000 (UTC)
+Date: Fri, 2 Jan 2026 12:28:07 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
 To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-	linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>
-Subject: Re: [RFC] jiffies_till_first_fqs off by 1
-Message-ID: <e6ec0a2e-aadd-43fc-b54c-063926c39734@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <1efce983-639b-430d-a613-03baef81c416@nvidia.com>
- <2f95e414-7d0e-4e2a-9656-25abf84c27ec@paulmck-laptop>
- <20251224020619.GA1297269@joelbox2>
- <b6bd973d-3cc6-4174-aaae-f3d67d8ccca1@paulmck-laptop>
- <20251226021559.GA949635@joelbox2>
- <cc710326-1b49-4892-9805-a197d48d202f@paulmck-laptop>
- <e7db3fd5-9c2d-4d63-850d-dbbc1900d13c@nvidia.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>, Boqun Feng
+ <boqun.feng@gmail.com>, rcu@vger.kernel.org, Frederic Weisbecker
+ <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh
+ Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, Shuah Khan
+ <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Yao Kai <yaokai34@huawei.com>, Tengda Wu
+ <wutengda2@huawei.com>
+Subject: Re: [PATCH -next 1/8] rcu: Fix rcu_read_unlock() deadloop due to
+ softirq
+Message-ID: <20260102122807.7025fc87@gandalf.local.home>
+In-Reply-To: <20260101163417.1065705-2-joelagnelf@nvidia.com>
+References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
+	<20260101163417.1065705-2-joelagnelf@nvidia.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7db3fd5-9c2d-4d63-850d-dbbc1900d13c@nvidia.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: 3z3xpmc55fu1sjw9ux1rkbxsqr71aou4
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: EF31720028
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19/w2ihao5rEYRKvtDq4SdcUQAszhtzHoM=
+X-HE-Tag: 1767374872-670284
+X-HE-Meta: U2FsdGVkX1/KNvOP6mOPw13hEiOdLPG5nsP9wrAUotaqvMB5tyOkUGnYnQ1y+LtArulRKlCvXkSIOgFHO3MqIk5WhrRXnFubNYIKZjmYx+SDb7NKAJS77xzlOfyJivDO/z8Gf7+PeIMOtOFiHqPvjwEbAFgo0/GBw+T01WU8SKuG3YQgqPJEGvQ0qqgnT7xZzewy3TAcQE2GDM6TC6grWERV3f2VQoFmEdHUqZr6m/Zg+dUjwaqic15BmleWnUxrZBnu9Yx+LnbhHyBXDqWQzZDJ0pbpplg3NgYP1p1ULQnd/PnaAoh7I/jw8mycnOaqJPTW3eoKXNgWxnCT1BAjntglY5x6OhBG
 
-On Thu, Jan 01, 2026 at 09:59:27PM -0500, Joel Fernandes wrote:
-> 
-> 
-> On 1/1/2026 5:24 PM, Paul E. McKenney wrote:
-> > On Thu, Dec 25, 2025 at 09:15:59PM -0500, Joel Fernandes wrote:
-> >> On Thu, Dec 25, 2025 at 10:54:20AM -0800, Paul E. McKenney wrote:
-> >>> On Tue, Dec 23, 2025 at 09:06:19PM -0500, Joel Fernandes wrote:
-> >>>> Hi Paul,
-> >>>>
-> >>>> On Tue, Dec 23, 2025 at 03:53:23PM -0800, Paul E. McKenney wrote:
-> >>>>> On Tue, Dec 23, 2025 at 12:38:19PM -0500, Joel Fernandes wrote:
-> >>>>>> During studying some synchronize_rcu() latencies, I found that the
-> >>>>>> jiffies_till_first_fqs value passed to the timer tick subsystem does is always
-> >>>>>> off by one. This is natural due to calc_index() rounding up.
-> >>>>>>
-> >>>>>> For example, jiffies_till_first_fqs=3 means the "Jiffies till first FQS" delay
-> >>>>>> is actually 4ms. And same for the next FQS. In fact, in testing it shows it can
-> >>>>>> never ever be 3ms for HZ=1000. And in rare cases, it will go to 5ms probably due
-> >>>>>> to interrupts.
-> >>>>>>
-> >>>>>> Considering this, I think it is better to reduce the jiffies_till_first_fqs by 1
-> >>>>>> before passing it to the wait APIs.
-> >>>>>>
-> >>>>>> But before I wanted to send a patch, I wanted to get everyone's thoughts.
-> >>>>>> Considering this the RFC.
-> >>>>>
-> >>>>> Inadvertent passing of the value zero?
-> >>>>
-> >>>> This should not be an issue because at the moment, even a value of
-> >>>> jiffies_till_first_fqs == 0 waits for ~1 jiffie due to schedule_timeout(0).
-> >>>>
-> >>>> But you raise a good point, we should cap the minimum allowed jiffie value
-> >>>> for the fqs parameters to 1 so that we don't pass schedule_timeout() with
-> >>>> negative values when/if we do the reduce-by-one approach.
-> >>>
-> >>> There is a potential use case for jiffies_till_first_fqs=0 and no wait,
-> >>> which would be systems that want to scan for idle CPUs immediately after
-> >>> the grace period has been initialized.  Note the word "potential".  ;-)
-> >>
-> >> Sure, we could add support for that but that would be new behavior that is
-> >> not in the existing code.
-> >>
-> >> So jiffies_till_first_fqs=0 today, I think it is not 'working as intended'
-> >> because it will never not wait I think.
-> > 
-> > Agreed.
-> > >> So we should fix that too? Or maybe it can be a patch separate from this
-> >> (that I can work on). I think no harming in allowing that mode, at least it
-> >> will be more in line with the expected outcome.
-> > 
-> > Makes sense!  However, given that no one has complained, care is required.
-> > Someone might be relying on the old behavior.  (In which case an easy
-> > fix would be to make -1 be no waiting, though one might hope for a
-> > better fix.)
-> Some further investigations revealed that the "1 jiffie error" is actually worst
-> case. In the best case, it could still be closer to a jiffie. It is just the
-> nature of the timer wheel, since it snaps to numerical TICK_NS boundary, the
-> rounding error is intentionally added depending on how far along in the boundary
-> was the timer for the wait enqueued. If we took probability distributions, we
-> should be landing with a 1/2 jiffie error, though in practice I've seen it to be
-> 3/4 jiffie error on average.
-> 
-> Given this, it would probably not make sense for us to do the -1 to adjust for
-> the error (since we don't clearly have bounds on the minimum error). We just
-> have to accept that we'd lose 1-2 extra jiffie per FQS loop iteration wait,
-> which is amplified if a grace period is already in progress. I've seen this add
-> upto 4 jiffies to back-to-back synchronize_rcu() latency even when there are no
-> readers in progress.
-. 
-> But I had to go down the rabbit hole and check... ;-)
+On Thu,  1 Jan 2026 11:34:10 -0500
+Joel Fernandes <joelagnelf@nvidia.com> wrote:
 
-I was thinking in terms of special-casing -1 to skip the sleep, but I
-guess that there are as many ways to skin a rabbit as a cat.  ;-)
+>  trace_buffer_unlock_commit_regs+0x6d/0x220
+>  trace_event_buffer_commit+0x5c/0x260
+>  trace_event_raw_event_softirq+0x47/0x80
+>  raise_softirq_irqoff+0x6e/0xa0
+>  rcu_read_unlock_special+0xb1/0x160
+>  unwind_next_frame+0x203/0x9b0
+>  __unwind_start+0x15d/0x1c0
+>  arch_stack_walk+0x62/0xf0
+>  stack_trace_save+0x48/0x70
+>  __ftrace_trace_stack.constprop.0+0x144/0x180
+>  trace_buffer_unlock_commit_regs+0x6d/0x220
+>  trace_event_buffer_commit+0x5c/0x260
+>  trace_event_raw_event_softirq+0x47/0x80
+>  raise_softirq_irqoff+0x6e/0xa0
+>  rcu_read_unlock_special+0xb1/0x160
+>  unwind_next_frame+0x203/0x9b0
+>  __unwind_start+0x15d/0x1c0
+>  arch_stack_walk+0x62/0xf0
+>  stack_trace_save+0x48/0x70
+>  __ftrace_trace_stack.constprop.0+0x144/0x180
 
-							Thanx, Paul
+Stacktrace should have recursion protection too.
 
+Can you try this patch to see if it would have fixed the problem too?
+
+-- Steve
+
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index ae04054a1be3..e6ca052b2a85 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -34,6 +34,13 @@ enum {
+ 	TRACE_INTERNAL_SIRQ_BIT,
+ 	TRACE_INTERNAL_TRANSITION_BIT,
+ 
++	/* Internal event use recursion bits */
++	TRACE_INTERNAL_EVENT_BIT,
++	TRACE_INTERNAL_EVENT_NMI_BIT,
++	TRACE_INTERNAL_EVENT_IRQ_BIT,
++	TRACE_INTERNAL_EVENT_SIRQ_BIT,
++	TRACE_INTERNAL_EVENT_TRANSITION_BIT,
++
+ 	TRACE_BRANCH_BIT,
+ /*
+  * Abuse of the trace_recursion.
+@@ -58,6 +65,8 @@ enum {
+ 
+ #define TRACE_LIST_START	TRACE_INTERNAL_BIT
+ 
++#define TRACE_EVENT_START	TRACE_INTERNAL_EVENT_BIT
++
+ #define TRACE_CONTEXT_MASK	((1 << (TRACE_LIST_START + TRACE_CONTEXT_BITS)) - 1)
+ 
+ /*
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 2d387d56dcd4..e145d1c7f604 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3013,6 +3013,11 @@ static void __ftrace_trace_stack(struct trace_array *tr,
+ 	struct ftrace_stack *fstack;
+ 	struct stack_entry *entry;
+ 	int stackidx;
++	int bit;
++
++	bit = trace_test_and_set_recursion(_THIS_IP_, _RET_IP_, TRACE_EVENT_START);
++	if (bit < 0)
++		return;
+ 
+ 	/*
+ 	 * Add one, for this function and the call to save_stack_trace()
+@@ -3081,6 +3086,7 @@ static void __ftrace_trace_stack(struct trace_array *tr,
+ 	/* Again, don't let gcc optimize things here */
+ 	barrier();
+ 	__this_cpu_dec(ftrace_stack_reserve);
++	trace_clear_recursion(bit);
+ }
+ 
+ static inline void ftrace_trace_stack(struct trace_array *tr,
