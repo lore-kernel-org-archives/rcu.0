@@ -1,46 +1,47 @@
 Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012047.outbound.protection.outlook.com [52.101.43.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5FC27470;
-	Sat,  3 Jan 2026 00:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 221CB1F12F8;
+	Sat,  3 Jan 2026 00:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.47
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767399837; cv=fail; b=XZ4CgS0jGZj+7oCkST6+1I0rc3pB7yJiu8zsaS2T5Vtn56OT54OL8g8Q1RmqM9zOzrkxfLWEY8FTJ0biZCPVvCBDyf7C9NnuWielI7TrwGWA6VmEBylTOMtiPAdS8cGyHhB+5zrVn/Z98I051IgtiihMK/etyOPMoG9Oc501H5Q=
+	t=1767399838; cv=fail; b=QeH6qJNDQigkniRPTB0do6l2tBIVt9spMKV4dLlw1MDTosHkPLraXi8LLno7cZsOnyOkJnhxgyK70Ln6y2KOu/W7aAu3tGJxQXXKJ8SBCa/iALA6tMWdWGmDNJWTravnZXR7j88XOQqygVUC3GKYoQjof78t0RVgyKxIYFTkC60=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767399837; c=relaxed/simple;
-	bh=Pzj4yF6yx5BAQEEk8xdy9gvf3iqQZqOBNBCAdgSJW/s=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=G1onOwbLx5WyN48MevMs93MjFAjjWjoVmpnb8w/hsLYIntGFHRN/aChM3nQdidPw6XM9egWZMQTbwWhtLF74OofwHVtv8uMKSHFTZbGEYoSP8cqEYTtAZLqWJZozeNg+zWHYnm53+WhFWPmux03P7nZwGZjE2jg4icXhuszug88=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=JBJz9E8B; arc=fail smtp.client-ip=52.101.43.47
+	s=arc-20240116; t=1767399838; c=relaxed/simple;
+	bh=ExcAwuJ2csLNXiS13QHqPi/N+MxLxiKs+x9M5EunpfA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Dt8Teg67CxJymC6oVXy2LcOXsgTOwHfbldrRBJD0q9v1p9lpby7Gnj1BQ7xtehGyvX/bAH+WUgfkSm3IvOLeolzKyiHvNr16fklq9/eihYZsCVrbBDAFBjXt85u/W1RtWJPW/+x0U6bNpktG1Qb92fIaF0kEBqMR42f3wl7xlnk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aYOqufjb; arc=fail smtp.client-ip=52.101.43.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="JBJz9E8B"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aYOqufjb"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=vKif8b+HoViSGcx3KZ4TtoRrWVRIKJSOsOlh7ssC2/4yJ67Af3pN6Iz10qhc9KfRzFJ2TdC4eRHfoJRrGOHQUc9/JghUwLHYKqNa5avxl833pj/o+piALx5R7g3zN23iB2Sob1Fd/8P93kWymNougW0AbV2n3S2mhbobVexQxNObnap9vVeh7Gfzy/gVvdc7At654HUEQLF1KJ+xmCYipYvkh/rD0Zjo309r9ipxVsTyW86yc4l0vCYtK+cL7+EsJYBVgFDBvOqDa6cGuhwMgZwhZNdYHSjxmA6kRNXvElJsP1yMGOmkk6HfsZs1+PMByuWGYVf8TTtVG9Sk/FU5mw==
+ b=Ebb5JgUACX4+tXuPtZZtEsZekF3bFSszWtCZAqTesXD12vCQ0hCIw29g8edjcyrauv5NKdgnrCzGbp0/6mblQevahS0E26x/23gPSq602L/V97F0hPaZlXtjDgWFkhkQElaDbHOxrt06LVpsdrQRRCnwVqZzlNncgZUF1WtEqavD55XCKvQkrCLTwn7hnHsaUKssFsBzs9mqmURdvX9jp3+Nnat9tDrs1zu2xesyzhKXKVWAgq0iQDLHv0axXcFoGiKKdLTJ1rA2VBTg3DZGYQyogZd0X1fQjxmGk+o73ZnPnGCBcuIR4ZvU4c/Onjinr/1OwDfZxGAq2gZ8yu7TCA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nYCu8YVtOxyEwnOy8SjXxK7VnKQ7k3l3mEI5uGWlzNQ=;
- b=W4FVW+CBF5PYiYe5IGsn+p4oM61AJNktJjukwlBoaIXCoc/zoYjDE7SPXCL5lxE3BMBVEAnmnCt0ACc4E21g8BYxowzIKzZCojZzPhMjKOK/kz72otPqtO3Z068LZYIjG3/dk58vBBZDCjA4un+tM5uQsgIaFHWAuptFz3G5TMotPAbI3lb7EiR+CqEoZUkzGp0/OnoKd3G4lgf1T9V9znS6g9sXwQ3h7drMUnItB42/3uRGH4AHnpvzwTsVJS6b5rP6wTy7lIVF1em2HX5eMd13oq6nE76lgZRMP8dpH17vCvBlPSJZa5bp3Q8IiDkyUYvNS0mE7JdodQUejGQRcg==
+ bh=90vscRQZ/II7DHa0WnbCqijbVsbgy9+W9TxBcfWWipc=;
+ b=tCd/Z0ykjLHhuXM1qwZJ87uz4Og9vhR3ulzQluqry1OxgOZubpdzmSItc5YUcYkPy4+8+HIIbCumfHwEjUl4d9YIBsWe50UWM/9y6Wt/EkYvauIZcA6nF6rn3fSTqb2/8HIg8oKUGp5tZUQCJx9f2MjanRf1Wq5UKgOUIWd74NbeZCWs3BXhyOx8g3enzNvAFzMFFa9vcDL+ezUDg0tVAcxCz4GmKJ6h5HSmhJEIn7R77vmcwMi45OiDo/wyTAljCeiazeqkEDaTaaAmcugDWtW+bGCSDN+JJx1SVHYfUGnWAtazRvz8s2//QrytYlthBxTdNOxDB6cTn+6Prki8fw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nYCu8YVtOxyEwnOy8SjXxK7VnKQ7k3l3mEI5uGWlzNQ=;
- b=JBJz9E8BcNmG8YJ7ME9UjOK4JS7UV9tDX3HVeii6vOtkzoJ/XMQCB6lJLwd0NpS1UVWBg/5Lp6S5WxLtIBCTXJ1h07xlfU7CLCduYO8eGtwAg1wnkv1J5N1VGME6BfcXsnXquoAnn7W9vfOpedSrHR7PhvB4+tY8xfiKFz4w/JCLVzpwNueVdWj13Z+nZGbgj+oupUPfEeXXBIn8Adc5AxXV9F9Twxlwc8G/ToWpc8fA8YNK5+XAL83pnAiyrWgQuZj9Kp/6i/0loQ4NcC32XciRhCUua4Ea3Cf+29S9SOl+1940r4xyMjgczOPci7ArkUF59q6gmtzQbM7kkz/bhA==
+ bh=90vscRQZ/II7DHa0WnbCqijbVsbgy9+W9TxBcfWWipc=;
+ b=aYOqufjbcwwWel7RjvArXlTwM7mZwVU7D5l9gM5ypgKdV6dVGp/kxGZ9HahECJr7Ye0p6r+jqeV4j4WlPYzkadYOBSRbysKz9QTRBXoT5mjpo7Vtg/0HQcO23Q2WU+1Nsu0MFOFycJ44xTKChN6Vg6zKBmQ7FGdt4JAIzreshyzIu6eObzg0LL72/ciAcENScDFbaESASUbA9HKs6gp+BFXgPHQrIsy7+gGGLivy0o0H832hPJqzi5Bqd20uvYrQ1uPpziqGL8fOm98wBoWhvZxGoePQpvW0m8Y7Q2jBLjLOUO54r5NFwa74TDNww/X/rmgYfsVIgwowTlDx+5bXyQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
  by CYYPR12MB8872.namprd12.prod.outlook.com (2603:10b6:930:c8::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9478.4; Sat, 3 Jan
- 2026 00:23:51 +0000
+ 2026 00:23:53 +0000
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91%2]) with mapi id 15.20.9478.004; Sat, 3 Jan 2026
- 00:23:50 +0000
+ 00:23:52 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
 To: linux-kernel@vger.kernel.org
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -56,14 +57,16 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	joel@joelfernandes.org,
 	rcu@vger.kernel.org
-Subject: [PATCH RFC 00/14] rcu: Reduce rnp->lock contention with per-CPU blocked task lists
-Date: Fri,  2 Jan 2026 19:23:29 -0500
-Message-Id: <20260103002343.6599-1-joelagnelf@nvidia.com>
+Subject: [PATCH RFC 01/14] rcu: Add WARN_ON_ONCE for blocked flag invariant in exit_rcu()
+Date: Fri,  2 Jan 2026 19:23:30 -0500
+Message-Id: <20260103002343.6599-2-joelagnelf@nvidia.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260103002343.6599-1-joelagnelf@nvidia.com>
+References: <20260103002343.6599-1-joelagnelf@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MN0P220CA0004.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:208:52e::15) To SN7PR12MB8059.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0178.namprd13.prod.outlook.com
+ (2603:10b6:208:2bd::33) To SN7PR12MB8059.namprd12.prod.outlook.com
  (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -73,176 +76,108 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|CYYPR12MB8872:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8b2f7a7d-54fd-4cc7-ba60-08de4a5e5e93
+X-MS-Office365-Filtering-Correlation-Id: 2869a382-d6cf-4b0b-eb0f-08de4a5e5fd4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?IDZ0A15WsZk+bPr5nKeGjW5cW1L+m9V6JLVXomhVxIBXOIdBxE/ufOfbJws2?=
- =?us-ascii?Q?99uF6sBt5ZHY+91ObmFEwW5ynyGBW2EA7U5lUxMVvt2db9q2VTOOK0C4P/2k?=
- =?us-ascii?Q?uvONdzhJ48xbEvqlC8skDlEO92+VZ/rbifH1SdPSfwNZBnm3JXivFOh9NEty?=
- =?us-ascii?Q?rqLOTueodr0I4QLVH5PRDLU3ZmUQx9IEFMJuxldGycUmgwyQIIw5EZ59L2HJ?=
- =?us-ascii?Q?fKkEbZPJGVxTSrO0PgxywgsA/cONObpa1auUsznvDbgbzhMK0NRFVpQE0vCJ?=
- =?us-ascii?Q?VflwpmyByjUV/ToGid0EZydOei9wGt3B/J5sCJDcSBLr46Ix5lodp/OTyrKP?=
- =?us-ascii?Q?aTU7lR5DOOcQL1wAg6VG7MIktNFXAXhVh8ggL5HR0TJIwpeLuf1m2M2Cp13y?=
- =?us-ascii?Q?jSb9a4DVQLrAbD5ui4flsFo/aDqv+f1IWIGO5cGu5am7QHCT22CcMo7kNvWL?=
- =?us-ascii?Q?xEwCrnNPMtpze37AEw11TCGJyJBRJAjeZa0hapy0XCXXO2AKuhvayA4SEMeU?=
- =?us-ascii?Q?/diDAL2Daf1MVeVHfktQl+Dc7EsfBt4GAr5kcgmcyik9FtgFi27U8MOoaP06?=
- =?us-ascii?Q?IOlyDSDHj56S/FGfKMJnfW6og8SpTS4pw5XMREDUnAVLNgJYrK7v76Coa5/U?=
- =?us-ascii?Q?heyNRv9DHsPibb1s6HaAscniMa71PxILM0wo/TvhMJNNwjBhVh+ucK83moSv?=
- =?us-ascii?Q?TeNjzrnji1JKDLVc8hwwl4WK5cxwBUKxVC0hzksn9x++IszW4gtwyRth0Nxw?=
- =?us-ascii?Q?ZhgkIyvv3glni68xza1DRJU9iDrh/uiV4p16TbNrezceAwqYtwRSvCD/Jqz0?=
- =?us-ascii?Q?Zt5NzpqGovz/vhktRH4OV7Od3rUi1Sc2c0+zupUoqoIsVA+UIlWraCc5buBU?=
- =?us-ascii?Q?Hcsw4H2Yue3GIVd+bkzgzLBZ2kImlXKX1iejXY32mEVcB6hopcavC1ivGFOS?=
- =?us-ascii?Q?+gRAhoaWENF8jiMWjJgimcXki68LOLgilGRv86PslYaeYTAi06kWMoN0z5/u?=
- =?us-ascii?Q?i9EZcrTCK3jxV3q4HFovefujuebxvIwHkr7f9FFAsPl9UOw9W1Hy3SrZYf8d?=
- =?us-ascii?Q?+MFvPKlm/DQLYiMciC/51IU/K93QtiWqFq8rCMoWXJMtTgTEKZT+ABR9pMYb?=
- =?us-ascii?Q?98pe8YNFMZAjrKkFqdYkOObREE3Ev5V+GFcctrPEn25GSWDF/Ye1Qadwc3fA?=
- =?us-ascii?Q?sVWgK9YfkAeuxH+Za/+vGEM/kleLc+6FoFPt03BQUbXQuPIetqmCLA8FhLOK?=
- =?us-ascii?Q?Pm033MEFsYn6Mip5EE0e8y736YZV3Olrf5g/QoxEuuzik/pBoL7kwBU8b/l6?=
- =?us-ascii?Q?2G6X33jNNOO76YUhFwFv6sWqkBrtnHoSpleWieHOgO2HESe1imL9rYbnesKL?=
- =?us-ascii?Q?TGLMz0vN7OBaZgixh9dLOJSo2uu5Y0ySqSJx5YMd+GIBcPgoaG2xIILp5h4V?=
- =?us-ascii?Q?8MquPilPHPmC/k3UAzzsVFIkkCqcIBUIXUs9rsz4ERPlDafSFsVXqw=3D=3D?=
+	=?us-ascii?Q?ElHraaGc1cCgAbcaEuTjkqzghLX/c5Hu0I1EbXNnHNmhy66Ml2bqjiMYhihU?=
+ =?us-ascii?Q?2UczMflupsDzcEXvRnIeOOMllFStPizhVKg5BrMlUsmHaOQnc/D1ATIChNBQ?=
+ =?us-ascii?Q?8EdxSeyGG3DG0bnd8wSxt8KVp5jYdcjKAKqX2N6m2K0LMWC4+3+AOkdhOsud?=
+ =?us-ascii?Q?qgwnBaQFzXLnHNxZYfATPMXqxkcU2muzqMl9ipwIW6B4p/ZYU2bSn+azB4Ru?=
+ =?us-ascii?Q?nT1JF8W8IA4D71K6tjihk4z2AIrwwNtgJFRHBQVDvzQcS+vCZsdVUsahCOwN?=
+ =?us-ascii?Q?lzCtAI6xWn1dWMxbUIbomjOKai7F+D5c8WkswssgwZmBLTlUb5olKD7jZBhy?=
+ =?us-ascii?Q?EL2iH8aj96x2oaByRLuM8hpR0qJDfDnb9Y/YZZoHrgLVyGAwphbOa1VCaH6H?=
+ =?us-ascii?Q?P/pi9xTDtz+wdeIb0U5btNnOdUQuoUra/YRjQ9irAFdBY5rkazpFOVlUQy/n?=
+ =?us-ascii?Q?h6CShsigJYoPMiEYPVBHnC+/e1tEThFBrJkxNTfZqj4pVW7QXyOJIs4qExe5?=
+ =?us-ascii?Q?zbCHTI38Hxyr9I01udyw9bpidDlomDObJvougmYU4cMBtKtTx9Qu51ouA9f2?=
+ =?us-ascii?Q?Jjo8J5HM9mdZ8iq3O+vCD0okm6OKGqbrUDZlueXL7UI4MG3biIPM6KFW19Jy?=
+ =?us-ascii?Q?urCj8U6aqOuAAolFC1HrAPIh0kLi39EahGFR/oeA4j35aOpcgIZ05lWIWvAJ?=
+ =?us-ascii?Q?XAdK2wA9dQ7jD0Z89oSBTFKnxfgvaJMMi9SzHu1PhWvYJTfk0xRrola2Dtax?=
+ =?us-ascii?Q?6HTvCWtTmWpNpb1fcBAaP5PAfxjSVWZd4Zc88zLEE14sdX+F0iz5RTsxPe8V?=
+ =?us-ascii?Q?riDrsMB0m1/4M+vn6h/8oxoVFmLHUjZep4dGXNl54sGUDpk5RBm0UCVnq+lS?=
+ =?us-ascii?Q?NwlN8ybr6U9G+pxFoE3bLeLOuiSefeN+o1zm3lQDuMge7lkl/YSo999OYcun?=
+ =?us-ascii?Q?MjBis/n5ac1uRHypOg1FIx4odgZAZPz42g2018RHcHaVj4AJOFK2ma5bZ5Hi?=
+ =?us-ascii?Q?zuJpqmic6ptm7BsuCfLWgymM9wtynTtYqaCzU7Vbrr7RspioQk8ahK82MiPO?=
+ =?us-ascii?Q?vpScLPgE/fNM0UJXBEbD/wsbZN3N7bH8K8D/RvQbPHGFsPPje06I5TqX/CGX?=
+ =?us-ascii?Q?YKHcwqZuyUECiS/TT4hphIBCh4hpHuVK5erzH1rE2qbAvDGWiomBB/gjdYrR?=
+ =?us-ascii?Q?AO/mb9dS816Mtf5YQw09YYTiim4/RYGhQJf64GHrFYE27LqDc8IXTeClEKDT?=
+ =?us-ascii?Q?AXWIpysi9ajmYKcgxrdoy5F0cNnWcLMhhj7clz6jvvJY/HU3lcypbn1RobHO?=
+ =?us-ascii?Q?7+j9mH8FLQPFAQF9CWjSl819stAfBCtrzA0zVcR9E8vEObtt0CMy+GZvOsGn?=
+ =?us-ascii?Q?wc81NjA/rYwR/VfqRq5neX07H46cQczlAWIaJNb46sSfeDGRwcGJLz4BOM9E?=
+ =?us-ascii?Q?6TFUyXsGQ1WQAXQyIb9+ZYFBuBSoSABH?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?KzDMD9vV5phCG5wQH8uXVS7O7V2Z8DbJvKiCsKIJl7y8gVYdbryqP3CDsZKg?=
- =?us-ascii?Q?ZgyfKtYfs4y23PaI3wdr+8IcfpX14RfjKhfpGTpkp60FlMECGdSlsOtLcksf?=
- =?us-ascii?Q?yDJm1YNpdU4j9xDzjuN6L/3a8BKdvoQqukqqWdqdXSWEKbrf9/PvoAluNfgw?=
- =?us-ascii?Q?SnTMTUnl2BONi63QCh3rUHP7nopSyMunG0llT0ith8G2UEfubLi5iLShetzb?=
- =?us-ascii?Q?Itf7S/8cE2zEuggmvnUvOj5Axh0ZCD+iTN8+1felKlr5UVpoN+Wx5EenYw9G?=
- =?us-ascii?Q?TwcXOTTlLDxOfwL4mz9saDxiV5D0Xg1XvTws9hnVzTOW9f6f+KAnvGrxs0Ks?=
- =?us-ascii?Q?RQ857Q/H7F8lnw6tU9DuiE0fmwFI2/LaL2JGOdmIdnXDK6TwmMqB/tgaeQnK?=
- =?us-ascii?Q?xppaLJA6kvW+F0b9HBBHcDsPbcZ1S4jeiac0RIOoCbwpCiQPwvOmKGoUMNRV?=
- =?us-ascii?Q?V7GdW/jOMA7cE1Hg+5rqmIyR+oPR7+5IMp1Md4dbX2x/Ggcx5Mm4Ycggm6dV?=
- =?us-ascii?Q?+b0UDtiQPospBITu3VL1K05qEujY0XLdn5DbK3CYKmMhtbKN1gjE5jtStG0I?=
- =?us-ascii?Q?WKz7sUVYvN6SuL3U1lATUwy6OVxVCMsrzbJCcy4Lp7i6AyjFe8lo7wlnGxnX?=
- =?us-ascii?Q?Qeh0FNVjOjOCVdmIY+t88tZjhXVhLik568Wqx6iP/VKKoTLHxMKr7HfY5uvA?=
- =?us-ascii?Q?GQACpE2TRj7W7bZBZK0TEKqOnkpEdkZSAvDmVXtFiiaFtSnh8BkgPWUSVUrW?=
- =?us-ascii?Q?kDu+k0yzeAQ+oCUnro/IDeQ3MA3T2M7anafLC6gNtSKhKLHJ76AAA5IPvL4D?=
- =?us-ascii?Q?EMMOUpIvCt8dkJpxxbEpz/ER2BrhMAuyLARCiXck/SZTuwEOaYgfQ34bu1xo?=
- =?us-ascii?Q?PcJvV5DbysNskSGc9E2muE5vphHa4gyjv7IXwW1xaMEf3PYl9E0DWwJQlYsj?=
- =?us-ascii?Q?iQA1/je5riRqkYAUFIhlGJZZTjZuyaIByIaL7wIDA2AI9n3qc472fNSi56Eu?=
- =?us-ascii?Q?KHeNTrHZj2hQs9kiZzkNQQaPEpmKN77JFyAVgcZszRfTl0vs7ydaOFO7RUpr?=
- =?us-ascii?Q?xOSJ4Lsv1wUU2e8TKePLW0Aj9fSkV7LBFvfEiHLKMtIdKa6IdV/ASFIevUic?=
- =?us-ascii?Q?Sq/tMhS5UwH/018eaQXhGvGYHmyR5W90SJHKDH3BMDS6jQPlIEtDFDRoiNeV?=
- =?us-ascii?Q?0vQkPyN6ria4UI7nQx83jT9bQ3D42F7nvjJJ2aZJzMM5iz+v8f+WyyJFdi9d?=
- =?us-ascii?Q?8Fe3/Cr5cdpWLblB1Hg3AQdPCCWyPWWYbnRkdQcuKxJA1ECAv8NVNVWkAe+Y?=
- =?us-ascii?Q?YJIDGSSUnjBGzY7wizSifgMYo38ovzQED64ult3Hk5JszuBLa201t/2NK2mW?=
- =?us-ascii?Q?xAbHBByBeeoAMYrsXeVX2AoRBPdnvrqCM4Z0zzgxB7j+7LAY4m+gqDrm16We?=
- =?us-ascii?Q?xsCxUWI/yASasOSNbmTBmJVgbrlwRqSyngSGteXEMC+bEYuaag9yvyK7dNPr?=
- =?us-ascii?Q?r75mUXVtqtyGl/BzPbu8WlV6AgsEl+PxB63GHFuWp8cp/cijW9RbVhP3XLkB?=
- =?us-ascii?Q?4/6aKWqeyqAAYgIoDtw80trOo31Go/vLATVXHWw4WGEP6G9e1KQkBa2ArcvA?=
- =?us-ascii?Q?G3dGtdxdemNcMSY/BUwpilwYsoQZIjY4gVqBN9eGWhm4xDIUKq/TCdiEyyEb?=
- =?us-ascii?Q?ImSlL0Or+y7FJ6B+mCd/wOaYk9OIovKJash1lAE2RP4hi4xb9Ud0ebzKUCJA?=
- =?us-ascii?Q?s/xHcU+3pw=3D=3D?=
+	=?us-ascii?Q?QsjgvLbl4bLv87AjjKOq8LRAlC2gVgYbk5GU1a+e2iWk44sguIerCF2zzycj?=
+ =?us-ascii?Q?pseWfyfo0e6NZGbz+tWcZ4OhbhxlWNgkQoihNlY4cHYtbNfJ1H9D+m03S/wp?=
+ =?us-ascii?Q?lTQbwS3IuB8SEI9mdhCc1kQXqL3BueoQT0cCbZMs5upIq3ZenbIs2rXi/qFc?=
+ =?us-ascii?Q?tERIlSrPvqY9n3bTFIazWljf7WtKojeT5sk3hJeKcr6eIEOE7htDhuikovm/?=
+ =?us-ascii?Q?raK2FJ53umzC3TPRESg1G2jQy/YVwFIWQramCQYCaLBzTfu97POTUH8kL/Z+?=
+ =?us-ascii?Q?bvBTl5PUGlhgul3qqe5lLKx1FxPhqZcoAspFldm5Ycmjbe1FLqHULWgYk5n7?=
+ =?us-ascii?Q?arwImGiPW6R5LOysLh8/6rlUuPUq5O83YhOulJBVNlPVqC8H0gip5ZVVUgoE?=
+ =?us-ascii?Q?WZE3tg12DfAenuj9r8MOAxCzrpZkWH3eQb84tSugWdYdiyR1F8MGIdej/f1O?=
+ =?us-ascii?Q?rJ05+IAtaHAPS7qqIEMuJSz+L6Omz6Ps3UgBaBCpceaioZu/ZHAXqGu6yEIa?=
+ =?us-ascii?Q?YpIL6ZsA0Te1nrtKkIBBj9oBrjzKemVlnUMYHiT4UlICdr2ko8VdoC2EQCL7?=
+ =?us-ascii?Q?9LxKEI4UyDm4Iq2zB6YMWujRld4zOwFm3TPrTHW0apoXRmv9xSqCyan/3e+K?=
+ =?us-ascii?Q?6d27y0zTtAhSeKe/myTlPQr7n6uhToqnq4xR00SX0jvjGudM3+c+EULToEsF?=
+ =?us-ascii?Q?AVCRBZzaXhXiGTwG/CTI7Bt2d+E8CXGxXbWGUrDDYeaOCR4V555wtz5DlZKv?=
+ =?us-ascii?Q?qDm2/iOLJfx9dr48HNbn0d3GTEj8uppxZQRiOpwiyqf1S2bytHsW9MdIulMn?=
+ =?us-ascii?Q?xj/0JetIfMuQrvJggPFdcXAU+rpnd299i4keZedHP2+K/dvqmq3cmiT2ECPy?=
+ =?us-ascii?Q?xRvGc98o5MzynTsKBJV1NmKTZR5T9qAHBx3sfoSZb+k6rUoPPQP2iBL2RXzg?=
+ =?us-ascii?Q?DuS6mFrfVZC2Gv42HUcUcyIesIoY2OMjyN3ANN3qwNCC5A4BFfDeEb2xSWjZ?=
+ =?us-ascii?Q?Cpc1DiLtgG5fheK6P8N/SkOLsVombWmO3sb6Ah/nslCD2Z7uaN9b0FmCCWLm?=
+ =?us-ascii?Q?rdKIvqkURg0SKgSpHZUWEzuEtHv/PIIN2bgKLuw9AK+MR3wIzXePya37PXOW?=
+ =?us-ascii?Q?xdDkOhPz2lL9esqBntd/8fLvHmBvtq2hDAKS9g9VCC8a0600lmQBAYmAjMNr?=
+ =?us-ascii?Q?H12QOzw6L/fzBljbGEnt9jm0IiNxZx6SbixqVzhum885Pa9vNnhQdbQAwG5A?=
+ =?us-ascii?Q?Rfm6zTNUNDE5C22i7yiaYBIz9NKm3DfD8jA3JWxq3EeKu8gx0SXFzVlhwJhU?=
+ =?us-ascii?Q?5G2ejVfuuMl53Mpsck4z+7gnZIgGQTMpMys1Y3Xuk9/xEneoAUJYm2XU+VvP?=
+ =?us-ascii?Q?JGKae0EAPGV7SeO/rCkdwgKtp+oji2rLoHLuUr+eLDArP6xhV8vb0qlRatz8?=
+ =?us-ascii?Q?13n8Dv62k8hyyCecJ+dqxcC+dGeVvKvndr6fC/qNVGMlztZChvvpZQe6+WXp?=
+ =?us-ascii?Q?XAcFLpYT5NZsj4aKBHZoNe9+8hQknr+2HJ+6FROo+aBplXKvBLEPdo7hGatw?=
+ =?us-ascii?Q?f7Ow2awXTE29/lwJ85+Cr4OLSNsZo29RaKWRvYqtdqr2h5qaBRde6QGbiKUg?=
+ =?us-ascii?Q?acW+nHSR5FWJWXgSUqnplgItsa7eh5BrXYFZjxGn61oTG7oVZI9xQ97Ti1Kp?=
+ =?us-ascii?Q?1SVCI24pdHxV7NpYRdaXh677qqUvLK+KRp5j87OM+zAjfDytokW6vlivZ5jj?=
+ =?us-ascii?Q?o52vd41NSw=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8b2f7a7d-54fd-4cc7-ba60-08de4a5e5e93
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2869a382-d6cf-4b0b-eb0f-08de4a5e5fd4
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2026 00:23:50.8727
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2026 00:23:52.8935
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Zq2CIoxLoBheBzonOrTNgns3WjM2UIxBD1lPmD9edOwfS4yu1gsLyLiWMKPeB7HLci4tqhia/UTQdS21CgZSng==
+X-MS-Exchange-CrossTenant-UserPrincipalName: H7pgCF5kee7ldy1ptrVtVO0xOe8W12FNwuZMe9KLZgATQQBbiWWHiGmNCh53RDmJQ7rvjG+qmLThL8XoV/5U/Q==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8872
 
-When a task is preempted while holding an RCU read-side lock, the kernel
-must track it on the rcu_node's blocked task list. This requires acquiring
-rnp->lock shared by all CPUs in that node's subtree.
+If a task is on the rcu_node_entry list, its blocked flag should
+already be set (it's set before adding to any list in
+rcu_note_context_switch()). The current code silently re-sets it,
+which could mask bugs.
 
-Posting this as RFC for early feedback. There could be bugs lurking,
-especially related to expedited GPs which I have not yet taken a close
-look at. Several TODOs are added. It passed light TREE03 rcutorture
-testing.
+Add a WARN_ON_ONCE to detect this invariant violation. If this
+warning ever fires, it indicates a bug where a task was added to
+a blocked list without properly setting the blocked flag first.
 
-On systems with 16 or fewer CPUs, the RCU hierarchy often has just a single
-rcu_node, making rnp->lock effectively a global lock for all blocked task
-operations. Every context switch where a task holds an RCU read-side lock
-contends on this single lock.
+Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+---
+ kernel/rcu/tree_plugin.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Enter Virtualization
---------------------
-In virtualized environments, the problem becomes dramatically worse due to vCPU
-preemption. Research from USENIX ATC'17 ("The RCU-Reader Preemption Problem in
-VMs" by Gopinath and Paul McKenney) [1] explores the issue that RCU
-reader preemption in VMs causes multi-second latency spikes and huge increases
-in grace period duration.
-
-When a vCPU is preempted by the hypervisor while holding rnp->lock, other
-vCPUs spin waiting for a lock holder that isn't even running. In testing
-with host RT preemptors to inject vCPU preemption, lock hold times extended
-from ~4us to over 4000us - a 1000x increase.
-
-The Solution
-------------
-This series introduces per-CPU lists for tracking blocked RCU readers. The
-key insight is that when no grace period is active, blocked tasks complete
-their critical sections before really requiring any rnp locking.
-
-1. Fast path: At context switch, Add the task only to the
-   per-CPU list - no rnp->lock needed.
-
-2. Promotion on demand: When a grace period starts, promote tasks from
-   per-CPU lists to the rcu_node list.
-
-3. Normal path: If a grace period is already waiting, tasks go directly
-   to the rcu_node list as before.
-
-Results
--------
-Testing with 64 reader threads under vCPU preemption from 32 host SCHED_FIFO
-preemptors), 100 runs each. Throughput measured of read lock/unlock iterations
-per second.
-
-                        Baseline        Optimized
-Mean throughput         66,980 iter/s   97,719 iter/s   (+46%)
-Lock hold time (mean)   1,069 us        ~0 us
-
-The optimized version maintains stable performance with essentially close to
-zero rnp->lock overhead.
-
-rcutorture Testing
-------------------
-TREE03 Testing with rcutorture without RCU or hotplug errors. More testing is
-in progress.
-
-Note: I have added a CONFIG_RCU_PER_CPU_BLOCKED_LISTS to guard the feature but
-the plan is to eventually turn this on all the time.
-
-[1] https://www.usenix.org/conference/atc17/technical-sessions/presentation/prasad
-
-Joel Fernandes (14):
-  rcu: Add WARN_ON_ONCE for blocked flag invariant in exit_rcu()
-  rcu: Add per-CPU blocked task lists for PREEMPT_RCU
-  rcu: Early return during unlock for tasks only on per-CPU blocked list
-  rcu: Promote blocked tasks from per-CPU to rnp lists
-  rcu: Promote blocked tasks for expedited GPs
-  rcu: Promote per-CPU blocked tasks before checking for blocked readers
-  rcu: Promote late-arriving blocked tasks before reporting QS
-  rcu: Promote blocked tasks before QS report in force_qs_rnp()
-  rcu: Promote blocked tasks before QS report in
-    rcutree_report_cpu_dead()
-  rcu: Promote blocked tasks before QS report in rcu_gp_init()
-  rcu: Add per-CPU blocked list check in exit_rcu()
-  rcu: Skip per-CPU list addition when GP already started
-  rcu: Skip rnp addition when no grace period waiting
-  rcu: Remove checking of per-cpu blocked list against the node list
-
- include/linux/sched.h    |   4 +
- kernel/fork.c            |   4 +
- kernel/rcu/Kconfig       |  12 +++
- kernel/rcu/tree.c        |  60 +++++++++--
- kernel/rcu/tree.h        |  11 +-
- kernel/rcu/tree_exp.h    |   5 +
- kernel/rcu/tree_plugin.h | 211 +++++++++++++++++++++++++++++++++++----
- kernel/rcu/tree_stall.h  |   4 +-
- 8 files changed, 279 insertions(+), 32 deletions(-)
-
-
-base-commit: f8f9c1f4d0c7a64600e2ca312dec824a0bc2f1da
---
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index dbe2d02be824..73ba5f4a968d 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -846,6 +846,7 @@ void exit_rcu(void)
+ 	if (unlikely(!list_empty(&current->rcu_node_entry))) {
+ 		rcu_preempt_depth_set(1);
+ 		barrier();
++		WARN_ON_ONCE(!t->rcu_read_unlock_special.b.blocked);
+ 		WRITE_ONCE(t->rcu_read_unlock_special.b.blocked, true);
+ 	} else if (unlikely(rcu_preempt_depth())) {
+ 		rcu_preempt_depth_set(1);
+-- 
 2.34.1
 
