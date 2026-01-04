@@ -1,113 +1,207 @@
-Received: from canpmsgout06.his.huawei.com (canpmsgout06.his.huawei.com [113.46.200.221])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169094207A;
-	Sun,  4 Jan 2026 03:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.221
+Received: from zg8tmja5ljk3lje4ms43mwaa.icoremail.net (zg8tmja5ljk3lje4ms43mwaa.icoremail.net [209.97.181.73])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2658410785;
+	Sun,  4 Jan 2026 03:39:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.97.181.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767496822; cv=none; b=UvSYCZARILBxuJY2kUrYRTZiBIZPjtTI7YQ2lRM/lUyBO1vE2FzDIP1+10QVA5AcXg+RL+cGP0B3XapiSWb+qNcbTZvaqqaOV0ZY92/WGgjcc8vKN8MMyOK0kxDShd0KQf5rdPhJ9wRoLl3DtNJ4lwnhLJLM6BBzbWNvVkyXUKg=
+	t=1767497950; cv=none; b=tRORkcwMomke4KrNy/CxBe+M0vx9dzE9QPmetVraZmCAHLsSnDSUXSiF7obICmTMzSOI6Ck8QAPGwNXbrMJzMGb6cB3Y75xrUhGgZXtUsVs4ivgfJA/U2oXlBsHPlDODBJ9T5o0orQAdmt8qP5dMT3OlTnnB+4R9G8xug7Uhyow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767496822; c=relaxed/simple;
-	bh=deB/+QbuRhSdxPDzkCIe+IHLh6zQpP07rAYmgj93QXo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=kStiI/3yvJGtTItNtGhszp+v5+apFwThBVI05YCS8fsHfXaJcKJC2ICJwWSyog89jlvL2X6sOVbBEjsGWeXOKsYTOi0NM80gn+7hDBPwTGV5e2EXO20GEgokRSOnDSXJuLBCv4VOrjyoUAebgBBq2UmjyJAEzxCYuKmnT+gWW2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=2DxekCI6; arc=none smtp.client-ip=113.46.200.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1767497950; c=relaxed/simple;
+	bh=LehYewI4CwbsbfNN89ytlZJNrmLykUDfCnsyAmyrKgA=;
+	h=Date:From:To:Cc:Subject:Content-Type:MIME-Version:Message-ID; b=UxLZO1dya9hzKMzck90lXH0HiVqrbeWEGyxngRa8yY30rHAdpoA/B9L8IwVmOqL8uVTiqSs7waOLzAJvrUgBJMVxODNvasJgGu1NwtyiM3kHPefrdgUY6dvYBMWzcUowSM2RvLlBcd6rxk9l5i+65ZkZBAEzhlkvUP1DHmcOMIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=stu.xidian.edu.cn; spf=pass smtp.mailfrom=stu.xidian.edu.cn; dkim=fail (0-bit key) header.d=stu.xidian.edu.cn header.i=@stu.xidian.edu.cn header.b=Va5vqffl reason="key not found in DNS"; arc=none smtp.client-ip=209.97.181.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=stu.xidian.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stu.xidian.edu.cn
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="2DxekCI6"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=QLL7bjv1BrNnYVbdl19Xciy9EaxpvUqn9pTDGtvKwFY=;
-	b=2DxekCI6xA0svzyz06lFYaIP0F3CctLtkVXsnWH6ooDabtuqxsGIBaIPCWzXVv+EB1633oOg8
-	y105HtpnGbgh7uL9vS0IV2c1GOlayzYBUu3OYYEuI3YPmvNi9xyXNWZFYLzFt9cKClQr6TcLoWM
-	Lrm0hxuDflZv2LqEviIf/vg=
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4dkMzX15HfzRhRF;
-	Sun,  4 Jan 2026 11:16:56 +0800 (CST)
-Received: from dggpemr500006.china.huawei.com (unknown [7.185.36.185])
-	by mail.maildlp.com (Postfix) with ESMTPS id DCC674056E;
-	Sun,  4 Jan 2026 11:20:09 +0800 (CST)
-Received: from [100.103.109.15] (100.103.109.15) by
- dggpemr500006.china.huawei.com (7.185.36.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sun, 4 Jan 2026 11:20:08 +0800
-Message-ID: <34ff0ff6-217e-4574-a3b1-af74b2f40937@huawei.com>
-Date: Sun, 4 Jan 2026 11:20:07 +0800
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=stu.xidian.edu.cn header.i=@stu.xidian.edu.cn header.b="Va5vqffl"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=stu.xidian.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID;
+	bh=WHfpi7kCRwWQ3ex5nuRBN+YveecklVk9UEU2ksnFWo0=; b=Va5vqfflO0b9H
+	9Ne4ZAYxJnD3Ft3sCsmPSOGq6mLqdYZEIhKoxIccDxpvL2U5QHHDi6Ro5/ZHmrq6
+	eaqxyNowcaUAJE/oG1eWQsr8fOc20b5VInAtDdwEH8moQfMFpuFAAxyDkGmtYcR6
+	VA8xrLoo/cDekeqQibgvz8PslZQ/zM=
+Received: from wangzhi_xd$stu.xidian.edu.cn ( [113.200.174.102] ) by
+ ajax-webmail-hzbj-edu-front-4.icoremail.net (Coremail) ; Sun, 4 Jan 2026
+ 11:38:52 +0800 (GMT+08:00)
+Date: Sun, 4 Jan 2026 11:38:52 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: =?UTF-8?B?546L5b+X?= <wangzhi_xd@stu.xidian.edu.cn>
+To: linux-wireless@vger.kernel.org
+Cc: paulmck@kernel.org, johannes@sipsolutions.net,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: [BUG] RCU stall in mac80211_hwsim during clone() syscall on 6.18.0
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2024.3-cmXT6 build
+ 20250410(2f5ccd7f) Copyright (c) 2002-2026 www.mailtech.cn
+ mispb-8dfce572-2f24-404d-b59d-0dd2e304114c-icoremail.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 1/8] rcu: Fix rcu_read_unlock() deadloop due to
- softirq
-To: Joel Fernandes <joelagnelf@nvidia.com>, <paulmck@kernel.org>, Steven
- Rostedt <rostedt@goodmis.org>
-CC: Boqun Feng <boqun.feng@gmail.com>, <rcu@vger.kernel.org>, Frederic
- Weisbecker <frederic@kernel.org>, Neeraj Upadhyay
-	<neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
-	<mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Shuah Khan <shuah@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>, Tengda Wu
-	<wutengda2@huawei.com>, <liuyongqiang13@huawei.com>, <yujiacheng3@huawei.com>
-References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
- <20260101163417.1065705-2-joelagnelf@nvidia.com>
- <20260102122807.7025fc87@gandalf.local.home>
- <20260102123009.453dfb90@gandalf.local.home>
- <68b5b122-036b-475a-85bb-e39830f99fbe@paulmck-laptop>
- <252063db-ec72-42df-b9e0-b8dc0aa6bef9@nvidia.com>
-Content-Language: en-US
-From: Yao Kai <yaokai34@huawei.com>
-In-Reply-To: <252063db-ec72-42df-b9e0-b8dc0aa6bef9@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
- dggpemr500006.china.huawei.com (7.185.36.185)
+Message-ID: <37b368f9.92b3.19b87161d5b.Coremail.wangzhi_xd@stu.xidian.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:BrQMCkBmx9rN4FlpEt3qAA--.12338W
+X-CM-SenderInfo: qstqimqsqqliuu6v33wo0lvxldqovvfxof0/1tbiAQUDCGlZJUs2g
+	QAAsm
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-
-
-On 1/3/2026 8:41 AM, Joel Fernandes wrote:
-> 
-> 
-> On 1/2/2026 2:51 PM, Paul E. McKenney wrote:
->> On Fri, Jan 02, 2026 at 12:30:09PM -0500, Steven Rostedt wrote:
->>> On Fri, 2 Jan 2026 12:28:07 -0500
->>> Steven Rostedt <rostedt@goodmis.org> wrote:
->>>
->>>> Stacktrace should have recursion protection too.
->>>>
->>>> Can you try this patch to see if it would have fixed the problem too?
->>>
->>> As I believe the recursion protection should be in the tracing
->>> infrastructure more than in RCU. As RCU is used as an active participant in
->>> the kernel whereas tracing is supposed to be only an observer.
->>>
->>> If tracing is the culprit, it should be the one that is fixed.
->>
->> Makes sense to me!  But then it would...  ;-)
->>
-> Could we fix it in both? (RCU and tracing). The patch just adds 3 more net lines
-> to RCU code. It'd be good to have a guard rail against softirq recursion in RCU
-> read unlock path, as much as the existing guard rail we already have with
-> irq_work? After all, both paths attempt to do deferred work when it is safer to
-> do so.
-> 
-> Yao, if you could test Steve's patch and reply whether it fixes it too?
-> 
-> thanks,
-> 
->   - Joel
-> 
-> 
-> 
-> 
-
-Yes, I tested Steve's patch. It fixes the issue too.
-
-Tested-by: Yao Kai <yaokai34@huawei.com>
-
-  - Yao
+RGVhciBEZXZlbG9wZXJzLApJIGFtIHJlcG9ydGluZyBhbiBSQ1UgQ1BVIHN0YWxsIGRldGVjdGVk
+IGR1cmluZyBmdXp6aW5nIHdpdGggU3l6a2FsbGVyIG9uIExpbnV4IDYuMTguMC1yYy4gCgpUZWNo
+bmljYWwgU3VtbWFyeTogVGhlIHN0YWxsIG9jY3VycyBvbiBDUFUgMCB3aGlsZSBleGVjdXRpbmcg
+YSBjbG9uZSBzeXNjYWxsLiBUaGUgdGFzayB3YXMgaW50ZXJydXB0ZWQgYnkgYSB0aW1lciBzb2Z0
+aXJxIHdoaWNoIHRoZW4gaW52b2tlZCBtYWM4MDIxMV9od3NpbV9iZWFjb24uIFRoZSB0cmFjZSBz
+aG93cyBpdCBpcyBzdHVjayB3YWl0aW5nIGZvciBhIHNwaW5sb2NrIGluIG1hYzgwMjExX2h3c2lt
+X3R4X2ZyYW1lX25vX25sLiAKCktleSBMb2dzOgpSQ1UgR1AgU3RhcnZhdGlvbjogMTA1MDkgamlm
+ZmllcwpDYWxsIFRyYWNlOiBuYXRpdmVfcXVldWVkX3NwaW5fbG9ja19zbG93cGF0aCA8LSBtYWM4
+MDIxMV9od3NpbV90eF9mcmFtZV9ub19ubCA8LSBocnRpbWVyX3J1bl9zb2Z0aXJxCkVudmlyb25t
+ZW50OgpLZXJuZWw6IDYuMTguMCAjMSBQUkVFTVBUKGZ1bGwpCkFyY2g6IHg4Nl82NCAoUUVNVSkK
+UGxlYXNlIGZpbmQgdGhlIGZ1bGwgZG1lc2cgb3V0cHV0IGJlbG93LgpzY2hlZDogREwgcmVwbGVu
+aXNoIGxhZ2dlZCB0b28gbXVjaApyY3U6IElORk86IHJjdV9wcmVlbXB0IGRldGVjdGVkIHN0YWxs
+cyBvbiBDUFVzL3Rhc2tzOgpyY3U6IAkwLS4uLiE6ICgxIEdQcyBiZWhpbmQpIGlkbGU9ZTc0NC8x
+LzB4NDAwMDAwMDAwMDAwMDAwMCBzb2Z0aXJxPTc1NTkzLzc1NTk0IGZxcz0wCnJjdTogCShkZXRl
+Y3RlZCBieSAxLCB0PTEwNTA0IGppZmZpZXMsIGc9OTg4MTcsIHE9NTMxIG5jcHVzPTQpClNlbmRp
+bmcgTk1JIGZyb20gQ1BVIDEgdG8gQ1BVcyAwOgpOTUkgYmFja3RyYWNlIGZvciBjcHUgMApDUFU6
+IDAgVUlEOiAwIFBJRDogMzMzMTkgQ29tbTogc3l6LWV4ZWN1dG9yIE5vdCB0YWludGVkIDYuMTgu
+MCAjMSBQUkVFTVBUKGZ1bGwpIApIYXJkd2FyZSBuYW1lOiBRRU1VIFN0YW5kYXJkIFBDIChpNDQw
+RlggKyBQSUlYLCAxOTk2KSwgQklPUyByZWwtMS4xNi4zLTAtZ2E2ZWQ2YjcwMWYwYS1wcmVidWls
+dC5xZW11Lm9yZyAwNC8wMS8yMDE0ClJJUDogMDAxMDptZW1vcnlfaXNfbm9uemVybyBob21lL3dt
+eS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L21tL2thc2FuL2dlbmVyaWMuYzoxMTQgW2lu
+bGluZV0KUklQOiAwMDEwOm1lbW9yeV9pc19wb2lzb25lZF9uIGhvbWUvd215L0Z1enplci90aGly
+ZF90b29sL2xpbnV4LTYuMTgvbW0va2FzYW4vZ2VuZXJpYy5jOjE0MCBbaW5saW5lXQpSSVA6IDAw
+MTA6bWVtb3J5X2lzX3BvaXNvbmVkIGhvbWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYu
+MTgvbW0va2FzYW4vZ2VuZXJpYy5jOjE3MiBbaW5saW5lXQpSSVA6IDAwMTA6Y2hlY2tfcmVnaW9u
+X2lubGluZSBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L21tL2thc2FuL2dl
+bmVyaWMuYzoxOTEgW2lubGluZV0KUklQOiAwMDEwOmthc2FuX2NoZWNrX3JhbmdlKzB4N2UvMHgx
+YzAgaG9tZS93bXkvRnV6emVyL3RoaXJkX3Rvb2wvbGludXgtNi4xOC9tbS9rYXNhbi9nZW5lcmlj
+LmM6MjAwCkNvZGU6IDRjIDhkIDU0IDM3IGZmIDQ4IDg5IGZkIDQ4IGI4IDAwIDAwIDAwIDAwIDAw
+IGZjIGZmIGRmIDRkIDg5IGQxIDQ4IGMxIGVkIDAzIDQ5IGMxIGU5IDAzIDQ4IDAxIGM1IDQ5IDAx
+IGMxIDQ4IDg5IGU4IDQ5IDhkIDU5IDAxIDw0OD4gODkgZGEgNDggMjkgZWEgNDggODMgZmEgMTAg
+MGYgOGUgYzAgMDAgMDAgMDAgNDEgODkgZWIgNDEgODMgZTMKUlNQOiAwMDE4OmZmZmZjOTAwMDAw
+MDc5YjggRUZMQUdTOiAwMDAwMDI4NgpSQVg6IGZmZmZmYmZmZjFlODVmNTAgUkJYOiBmZmZmZmJm
+ZmYxZTg1ZjUxIFJDWDogZmZmZmZmZmY4YjQzZjMyZQpSRFg6IDAwMDAwMDAwMDAwMDAwMDAgUlNJ
+OiAwMDAwMDAwMDAwMDAwMDA0IFJESTogZmZmZmZmZmY4ZjQyZmE4MApSQlA6IGZmZmZmYmZmZjFl
+ODVmNTAgUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogZmZmZmZiZmZmMWU4NWY1MApSMTA6IGZm
+ZmZmZmZmOGY0MmZhODMgUjExOiAwMDAwMDAwMDAwMDAwMDAxIFIxMjogMWZmZmY5MjAwMDAwMGYz
+ZApSMTM6IDAwMDAwMDAwMDAwMDAwMDMgUjE0OiBmZmZmZmJmZmYxZTg1ZjUwIFIxNTogZmZmZmM5
+MDAwMDAwN2ExOApGUzogIDAwMDA1NTU1NzJlNmQ1MDAoMDAwMCkgR1M6ZmZmZjg4ODBjZjAwMTAw
+MCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwCkNTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAw
+MCBDUjA6IDAwMDAwMDAwODAwNTAwMzMKQ1IyOiAwMDAwN2YwMDY1NzU1NmMwIENSMzogMDAwMDAw
+MDA1OGQ3NDAwMCBDUjQ6IDAwMDAwMDAwMDAwMDA2ZjAKQ2FsbCBUcmFjZToKIDxJUlE+CiBuYXRp
+dmVfcXVldWVkX3NwaW5fbG9ja19zbG93cGF0aCsweGFlLzB4OWMwCiBkZWJ1Z19zcGluX2xvY2tf
+YmVmb3JlIGhvbWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYuMTgva2VybmVsL2xvY2tp
+bmcvc3BpbmxvY2tfZGVidWcuYzo4NyBbaW5saW5lXQogZG9fcmF3X3NwaW5fbG9jaysweDIwZC8w
+eDJiMCBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L2tlcm5lbC9sb2NraW5n
+L3NwaW5sb2NrX2RlYnVnLmM6MTE1CiBtYWM4MDIxMV9od3NpbV90eF9mcmFtZV9ub19ubC5pc3Jh
+LjArMHg2ZjEvMHgxMmMwCiBtYWM4MDIxMV9od3NpbV90eF9mcmFtZSsweDFlZC8weDJhMAogbWFj
+ODAyMTFfaHdzaW1fYmVhY29uX3R4KzB4NTZkLzB4OWUwCiBfX2l0ZXJhdGVfaW50ZXJmYWNlcysw
+eDJlMC8weDY1MCBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L25ldC9tYWM4
+MDIxMS91dGlsLmM6NzYxCiBpZWVlODAyMTFfaXRlcmF0ZV9hY3RpdmVfaW50ZXJmYWNlc19hdG9t
+aWMrMHg3MS8weDFiMCBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L25ldC9t
+YWM4MDIxMS91dGlsLmM6Nzk3CiBtYWM4MDIxMV9od3NpbV9iZWFjb24rMHgxMDUvMHgxYjAKIF9f
+cnVuX2hydGltZXIgaG9tZS93bXkvRnV6emVyL3RoaXJkX3Rvb2wvbGludXgtNi4xOC9rZXJuZWwv
+dGltZS9ocnRpbWVyLmM6MTc3OSBbaW5saW5lXQogX19ocnRpbWVyX3J1bl9xdWV1ZXMrMHgxZjUv
+MHhiMzAgaG9tZS93bXkvRnV6emVyL3RoaXJkX3Rvb2wvbGludXgtNi4xOC9rZXJuZWwvdGltZS9o
+cnRpbWVyLmM6MTg0MQogX19ocnRpbWVyX2dldF9uZXh0X2V2ZW50IGhvbWUvd215L0Z1enplci90
+aGlyZF90b29sL2xpbnV4LTYuMTgva2VybmVsL3RpbWUvaHJ0aW1lci5jOjU3OCBbaW5saW5lXQog
+aHJ0aW1lcl91cGRhdGVfc29mdGlycV90aW1lciBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9s
+aW51eC02LjE4L2tlcm5lbC90aW1lL2hydGltZXIuYzoxMTkzIFtpbmxpbmVdCiBocnRpbWVyX3J1
+bl9zb2Z0aXJxKzB4MTdmLzB4MzUwIGhvbWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYu
+MTgva2VybmVsL3RpbWUvaHJ0aW1lci5jOjE4NjEKIF90ZXN0X2JpdCBob21lL3dteS9GdXp6ZXIv
+dGhpcmRfdG9vbC9saW51eC02LjE4L2luY2x1ZGUvYXNtLWdlbmVyaWMvYml0b3BzL2luc3RydW1l
+bnRlZC1ub24tYXRvbWljLmg6MTQxIFtpbmxpbmVdCiBjcHVtYXNrX3Rlc3RfY3B1IGhvbWUvd215
+L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYuMTgvaW5jbHVkZS9saW51eC9jcHVtYXNrLmg6NjQ2
+IFtpbmxpbmVdCiBjcHVfb25saW5lIGhvbWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYu
+MTgvaW5jbHVkZS9saW51eC9jcHVtYXNrLmg6MTIwNSBbaW5saW5lXQogdHJhY2Vfc29mdGlycV9l
+eGl0IGhvbWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYuMTgvaW5jbHVkZS90cmFjZS9l
+dmVudHMvaXJxLmg6MTQyIFtpbmxpbmVdCiBoYW5kbGVfc29mdGlycXMrMHgxZDQvMHg4NzAgaG9t
+ZS93bXkvRnV6emVyL3RoaXJkX3Rvb2wvbGludXgtNi4xOC9rZXJuZWwvc29mdGlycS5jOjYyMwog
+X19pcnFfZXhpdF9yY3UrMHgxMDkvMHgxNzAgaG9tZS93bXkvRnV6emVyL3RoaXJkX3Rvb2wvbGlu
+dXgtNi4xOC9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9iaXRvcHMuaDoyMDIKIGlycV9leGl0X3JjdSsw
+eDkvMHgzMCBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L2tlcm5lbC9zb2Z0
+aXJxLmM6NzM4CiBzeXN2ZWNfYXBpY190aW1lcl9pbnRlcnJ1cHQrMHhhOC8weGMwIGhvbWUvd215
+L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYuMTgvYXJjaC94ODYva2VybmVsL2FwaWMvYXBpYy5j
+OjIxNDUKIDwvSVJRPgogPFRBU0s+CiBhc21fc3lzdmVjX2FwaWNfdGltZXJfaW50ZXJydXB0KzB4
+MWEvMHgyMCBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L2FyY2gveDg2L2lu
+Y2x1ZGUvYXNtL2lkdGVudHJ5Lmg6Njk3ClJJUDogMDAxMDpfX3Nhbml0aXplcl9jb3ZfdHJhY2Vf
+cGMrMHg0Yi8weDgwIGhvbWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYuMTgva2VybmVs
+L2tjb3YuYzoyMTcKQ29kZTogNzQgMWQgYTkgMDAgMDAgMGYgMDAgNzUgMTYgYTkgMDAgMDAgZjAg
+MDAgNzQgMDUgYzMgY2MgY2MgY2MgY2MgOGIgODIgN2MgMTYgMDAgMDAgODUgYzAgNzUgMDUgZTkg
+NWIgZGMgODkgMDkgOGIgODIgNTggMTYgMDAgMDAgPDgzPiBmOCAwMiA3NSBmMCA0OCA4YiA4YSA2
+MCAxNiAwMCAwMCA4YiA5MiA1YyAxNiAwMCAwMCA0OCA4YiAwMSA0OApSU1A6IDAwMTg6ZmZmZmM5
+MDAwMmQ0NzY5OCBFRkxBR1M6IDAwMDAwMjQ2ClJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IDAw
+MDAwMDAwMDAwMDAwMDAgUkNYOiBmZmZmZmZmZjgyMDc1ZWQ5ClJEWDogZmZmZjg4ODAyYTc1ODAw
+MCBSU0k6IGZmZmZmZmZmODIwNzVlZTcgUkRJOiAwMDAwMDAwMDAwMDAwMDA3ClJCUDogZGZmZmZj
+MDAwMDAwMDAwMCBSMDg6IDAwMDAwMDAwMDAwMDAwMDEgUjA5OiBmZmZmZjk0MDAwMmE5MmM2ClIx
+MDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAwMDAgUjEyOiBmZmZmZWEwMDAx
+NTQ5NjMwClIxMzogZmZmZmVhMDAwMTU0OTYwMCBSMTQ6IGZmZmZlYTAwMDE1NDk2MTggUjE1OiBm
+ZmZmZWEwMDAxNTQ5NjAwCiBjb3B5X3B0ZV9yYW5nZSBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9v
+bC9saW51eC02LjE4L21tL21lbW9yeS5jOjEyODQgW2lubGluZV0KIGNvcHlfcG1kX3JhbmdlIGhv
+bWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYuMTgvbW0vbWVtb3J5LmM6MTM5MCBbaW5s
+aW5lXQogY29weV9wdWRfcmFuZ2UgaG9tZS93bXkvRnV6emVyL3RoaXJkX3Rvb2wvbGludXgtNi4x
+OC9tbS9tZW1vcnkuYzoxNDI3IFtpbmxpbmVdCiBjb3B5X3A0ZF9yYW5nZSBob21lL3dteS9GdXp6
+ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L21tL21lbW9yeS5jOjE0NTEgW2lubGluZV0KIGNvcHlf
+cGFnZV9yYW5nZSsweDFjNjcvMHg2M2EwIGhvbWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4
+LTYuMTgvbW0vbWVtb3J5LmM6MTUzOQogcndzZW1fYXNzZXJ0X2hlbGRfd3JpdGUgaG9tZS93bXkv
+RnV6emVyL3RoaXJkX3Rvb2wvbGludXgtNi4xOC9pbmNsdWRlL2xpbnV4L3J3c2VtLmg6MjE1IFtp
+bmxpbmVdCiBtbWFwX2Fzc2VydF93cml0ZV9sb2NrZWQgaG9tZS93bXkvRnV6emVyL3RoaXJkX3Rv
+b2wvbGludXgtNi4xOC9pbmNsdWRlL2xpbnV4L21tYXBfbG9jay5oOjc2IFtpbmxpbmVdCiB2bWFf
+ZW5kX3dyaXRlX2FsbCBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L2luY2x1
+ZGUvbGludXgvbW1hcF9sb2NrLmg6MzQ3IFtpbmxpbmVdCiBtbWFwX3dyaXRlX3VubG9jayBob21l
+L3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L2luY2x1ZGUvbGludXgvbW1hcF9sb2Nr
+Lmg6MzU0IFtpbmxpbmVdCiBkdXBfbW1hcCsweGQ5ZS8weDIwZDAgaG9tZS93bXkvRnV6emVyL3Ro
+aXJkX3Rvb2wvbGludXgtNi4xOC9tbS9tbWFwLmM6MTg3MgogZnV0ZXhfaW5pdF90YXNrIGhvbWUv
+d215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYuMTgvaW5jbHVkZS9saW51eC9mdXRleC5oOjcz
+IFtpbmxpbmVdCiBjb3B5X3Byb2Nlc3MrMHgzNmJhLzB4NzZjMCBob21lL3dteS9GdXp6ZXIvdGhp
+cmRfdG9vbC9saW51eC02LjE4L2tlcm5lbC9mb3JrLmM6MjIzMAoga2VybmVsX2Nsb25lKzB4ZWEv
+MHg4YjAgaG9tZS93bXkvRnV6emVyL3RoaXJkX3Rvb2wvbGludXgtNi4xOC9rZXJuZWwvZm9yay5j
+OjI2MDkKIF9fZG9fc3lzX2Nsb25lKzB4Y2UvMHgxMjAgaG9tZS93bXkvRnV6emVyL3RoaXJkX3Rv
+b2wvbGludXgtNi4xOC9rZXJuZWwvZm9yay5jOjI3NTAKIGRvX3N5c2NhbGxfNjQrMHhjYi8weGZh
+MCBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L2FyY2gveDg2L2VudHJ5L3N5
+c2NhbGxfNjQuYzo5OQogZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NzcvMHg3ZgpS
+SVA6IDAwMzM6MHg3ZjAwNjQ5YTZkMDcKQ29kZTogMDAgMDAgOTAgZjMgMGYgMWUgZmEgNjQgNDgg
+OGIgMDQgMjUgMTAgMDAgMDAgMDAgNDUgMzEgYzAgMzEgZDIgMzEgZjYgYmYgMTEgMDAgMjAgMDEg
+NGMgOGQgOTAgZDAgMDIgMDAgMDAgYjggMzggMDAgMDAgMDAgMGYgMDUgPDQ4PiAzZCAwMCBmMCBm
+ZiBmZiA3NyA0MSA0MSA4OSBjMCA4NSBjMCA3NSAyYyA2NCA0OCA4YiAwNCAyNSAxMCAwMApSU1A6
+IDAwMmI6MDAwMDdmZmUyZDBhMmI5OCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdfUkFYOiAwMDAwMDAw
+MDAwMDAwMDM4ClJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDA3ZjAwNjU3NWQ2ODAgUkNY
+OiAwMDAwN2YwMDY0OWE2ZDA3ClJEWDogMDAwMDAwMDAwMDAwMDAwMCBSU0k6IDAwMDAwMDAwMDAw
+MDAwMDAgUkRJOiAwMDAwMDAwMDAxMjAwMDExClJCUDogMDAwMDAwMDAwMDAwMDAwMSBSMDg6IDAw
+MDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwMDAwMDAwMDAwMDAxClIxMDogMDAwMDU1NTU3MmU2ZDdk
+MCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAwMDAwMDAwMDAwMDAwClIxMzogMDAwMDAw
+MDAwMDAwMDAzMiBSMTQ6IDAwMDA3ZmZlMmQwYTJkODAgUjE1OiAwMDAwMDAwMDAwMGU3MTdlCiA8
+L1RBU0s+CnJjdTogcmN1X3ByZWVtcHQga3RocmVhZCBzdGFydmVkIGZvciAxMDUwOSBqaWZmaWVz
+ISBnOTg4MTcgZjB4MCBSQ1VfR1BfV0FJVF9GUVMoNSkgLT5zdGF0ZT0weDAgLT5jcHU9MApyY3U6
+IAlVbmxlc3MgcmN1X3ByZWVtcHQga3RocmVhZCBnZXRzIHN1ZmZpY2llbnQgQ1BVIHRpbWUsIE9P
+TSBpcyBub3cgZXhwZWN0ZWQgYmVoYXZpb3IuCnJjdTogUkNVIGdyYWNlLXBlcmlvZCBrdGhyZWFk
+IHN0YWNrIGR1bXA6CnRhc2s6cmN1X3ByZWVtcHQgICAgIHN0YXRlOlIgIHJ1bm5pbmcgdGFzayAg
+ICAgc3RhY2s6Mjg1MjAgcGlkOjE2ICAgIHRnaWQ6MTYgICAgcHBpZDoyICAgICAgdGFza19mbGFn
+czoweDIwODA0MCBmbGFnczoweDAwMDgwMDAwCkNhbGwgVHJhY2U6CiA8VEFTSz4KIHNjaGVkX2lu
+Zm9fYXJyaXZlIGhvbWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYuMTgva2VybmVsL3Nj
+aGVkL3N0YXRzLmg6MjY3IFtpbmxpbmVdCiBzY2hlZF9pbmZvX3N3aXRjaCBob21lL3dteS9GdXp6
+ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L2tlcm5lbC9zY2hlZC9zdGF0cy5oOjMzMCBbaW5saW5l
+XQogcHJlcGFyZV90YXNrX3N3aXRjaCBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02
+LjE4L2tlcm5lbC9zY2hlZC9jb3JlLmM6NTEyMiBbaW5saW5lXQogY29udGV4dF9zd2l0Y2ggaG9t
+ZS93bXkvRnV6emVyL3RoaXJkX3Rvb2wvbGludXgtNi4xOC9rZXJuZWwvc2NoZWQvY29yZS5jOjUy
+NzIgW2lubGluZV0KIF9fc2NoZWR1bGUrMHgxMDQ0LzB4NWJiMCBob21lL3dteS9GdXp6ZXIvdGhp
+cmRfdG9vbC9saW51eC02LjE4L2tlcm5lbC9zY2hlZC9jb3JlLmM6NjkyOQogX19zY2hlZHVsZV9s
+b29wIGhvbWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYuMTgva2VybmVsL3NjaGVkL2Nv
+cmUuYzo3MDExIFtpbmxpbmVdCiBzY2hlZHVsZSsweGU3LzB4M2EwIGhvbWUvd215L0Z1enplci90
+aGlyZF90b29sL2xpbnV4LTYuMTgva2VybmVsL3NjaGVkL2NvcmUuYzo3MDI2CiBzY2hlZHVsZV90
+aW1lb3V0KzB4MTEzLzB4MjgwIGhvbWUvd215L0Z1enplci90aGlyZF90b29sL2xpbnV4LTYuMTgv
+a2VybmVsL3RpbWUvc2xlZXBfdGltZW91dC5jOjk4CiByY3VfZ3BfZnFzX2NoZWNrX3dha2UgaG9t
+ZS93bXkvRnV6emVyL3RoaXJkX3Rvb2wvbGludXgtNi4xOC9rZXJuZWwvcmN1L3RyZWUuYzoyMDA3
+IFtpbmxpbmVdCiByY3VfZ3BfZnFzX2xvb3ArMHgxOGMvMHhhMDAgaG9tZS93bXkvRnV6emVyL3Ro
+aXJkX3Rvb2wvbGludXgtNi4xOC9rZXJuZWwvcmN1L3RyZWUuYzoyMDgzCiByY3VfZ3Bfa3RocmVh
+ZCsweDI2Zi8weDM3MCBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L2tlcm5l
+bC9yY3UvdHJlZS5jOjIyODAKIGt0aHJlYWQrMHgzZDAvMHg3ODAgaG9tZS93bXkvRnV6emVyL3Ro
+aXJkX3Rvb2wvbGludXgtNi4xOC9rZXJuZWwva3RocmVhZC5jOjQ2MwogcmV0X2Zyb21fZm9yaysw
+eDY3Ni8weDdkMCBob21lL3dteS9GdXp6ZXIvdGhpcmRfdG9vbC9saW51eC02LjE4L2FyY2gveDg2
+L2tlcm5lbC9wcm9jZXNzLmM6MTk1CiByZXRfZnJvbV9mb3JrX2FzbSsweDFhLzB4MzAgaG9tZS93
+bXkvRnV6emVyL3RoaXJkX3Rvb2wvbGludXgtNi4xOC9hcmNoL3g4Ni9lbnRyeS9lbnRyeV82NC5T
+OjI0NQogPC9UQVNLPgoKQmVzdCByZWdhcmRzLApaaGkgV2FuZwoKCg==
