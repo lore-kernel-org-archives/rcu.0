@@ -1,122 +1,116 @@
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E561C16DEB0
-	for <rcu@vger.kernel.org>; Sun,  4 Jan 2026 10:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3FE26A09B
+	for <rcu@vger.kernel.org>; Sun,  4 Jan 2026 10:55:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767520828; cv=none; b=rRSCEqIkTfXF0CHhxJmjPUsGiHLOsp4ToJMaGPCqMd2/OgJ+2hXJQkHK19oopS7RI3jAEZUDAIxmas3sjBkCrGZ15f3sDu0+QyEVu0txWv4o+Mov/gxu2Fk6TWwZJ0eZs/8XRA7etvUCqxC1b6KLBqaOeoklSfNEJZxzzEIpQjQ=
+	t=1767524115; cv=none; b=jACC2IFVPnbpITpXd/Nsao2OMQMFHjw4ZVRCrLxTvn4gpIPqSU5KxJjk88kImqFetXqgAwOLTx85KYMLQHOHpXZujkEdJ5sFOsdMYtK8/HJbSfAeumCjWyfJ+BZNCHNEr30wL32lyHZ9DTJBDpIpvFzUnTWEDO80hOd4v5IAdo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767520828; c=relaxed/simple;
-	bh=hm2Vu6mwK8ose4vlTQrhJAECyIb3UrX+nklaehpSdnQ=;
+	s=arc-20240116; t=1767524115; c=relaxed/simple;
+	bh=N2NFBJBc+fcjC7P3jRiEoizwCrgAlI+5FVrpTi06HnI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AJUSNlpDYZQpRmVkT/EGACPxi6YTzR5zVgmyr9pJaWM0VqQQxNZyMfUun+apBe+qluXMCkpRm4084Z2fIMLovo+vjf024xEAZ+PoBsKvMsik4HCitxXFkH4532w+QI/0mmYH5I9CjLmbWUHBUNV3PgfMp22JHynzoSZ4DCsnuvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hVS7uaJZ; arc=none smtp.client-ip=209.85.219.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=p9+Ysq2+9f0yIYp5xx4JNkb3PXH6OV05xoTvMb0dK8tgm1rqZ4aCvGvZVWPx117LSyo2CclCzrlyMh03nC9XMeIPisrfd3W01apGy16aURCALFZl1LCKkLKU0ZHQS2GA6sRj9AgZlNmwKUbM9IevMVmfK9/LB9ljn/XoFu+oJ2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WSaH8jDt; arc=none smtp.client-ip=209.85.160.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hVS7uaJZ"
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-888310b91c5so8707026d6.1
-        for <rcu@vger.kernel.org>; Sun, 04 Jan 2026 02:00:26 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WSaH8jDt"
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4ee1fca7a16so114195611cf.3
+        for <rcu@vger.kernel.org>; Sun, 04 Jan 2026 02:55:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767520826; x=1768125626; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767524113; x=1768128913; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TXIS1FlRa7m6sjrl4aOMyrl1r1tGaaVPP5A/N8Whrjs=;
-        b=hVS7uaJZIbvIPhwEl2A8/DedVWlZyX5bTjAXmnnZhXc2/6NzURnh0qESW1bpdTq4d3
-         gK/v4a7+xBC/nNssx8MvbGJgrIWBbypzc4gi6Ngjw7nMl9TGGDkSnDjzELPMlRnBPQon
-         tfU2ujCTIrQ3E6J8rQfEJ2ZDvCagqHaKekgUwr+r6njq9KzKPKVBIIkbOIDTUUrFtEH5
-         4sEdbr/pX/NsCYSVtjD3KaLJg1mclOmsUoBiTYrjxC0GV8hrISnWEV0O8Grp2/48Z3S2
-         1wS6t7CW4vQ1m5SOPwgPvB+ZbQLwMGJNCKoZEJ2rfAwYtQW/k/yQt0KGq4pS7qSQBHg4
-         d5/w==
+        bh=7KbfO1i69mPL+mrubhr+uxnSp4Z/WqGGTqSL3K9pfVA=;
+        b=WSaH8jDtyFssphex8IjFN8RUIj3BM7mNc8Z5CzL65SSPLjaK9CanVbnzfNEWflWXRk
+         TVW1NcNvAbYluqkysN71FCtjFaqcNq1i2JBZ8apreTnr4r+LBJKhnRv5TNC3WMphy2XM
+         9GbwTFi03WEe/mFzbUI5+ntAc07GImvlyPOxpz5mEN7qb/D+fsJuCIuO2eiM+PlumW4Q
+         JhKXnQ8tt9KTV8INbYXkWxbmDGcKyZ3UJtv3lVZaewYzSa4w+7Qxkglrl6Um0aeW0wBh
+         i39hlqEnwOYQFobnRkjBeAL2v+Qwq+11nCxDHcLskJf4/7gKK1qQ9qM4U8PYMLcYO6YW
+         YrTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767520826; x=1768125626;
+        d=1e100.net; s=20230601; t=1767524113; x=1768128913;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=TXIS1FlRa7m6sjrl4aOMyrl1r1tGaaVPP5A/N8Whrjs=;
-        b=AVUzDmXD6GI2mNi1ULa+NX7jcATzR743V43eLwZSVUqohnaqNssogKyAMIzm9/P2XO
-         30TfdErbUXPL4AKswpMEfkUerrzdasK4h8J9EjjYUGT5M4YdI9zNsrRRrK5ezklRuQsM
-         I7jOB/jRgPCUKA4zCWZmGS7wCcIQCkyiqhjojtquy1OEYGFa3yKrgDSCL2mc4pU2WnDV
-         Lj9Zf6j9BjQIXxfkpCwytTIldoNx4Y0GV2sXIQTJnhyH/jATclXaB+K9GVXV5/DweJru
-         u4tN041CBksgPv5LPYRJ/RNixkyivNlGdznq/Ao7cJfInUaxmrQeByjLlvJSHAe89rgI
-         BXWg==
-X-Forwarded-Encrypted: i=1; AJvYcCXfxekEGK1P7lW2geesZM19J9g6XCcp5SnhgMgche+6NspjOG0TG+s/9T0JIYSKhZUAozQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWapp0OeeqgxiuPlOQ3QtqKHR6hnW/gfrn7o8WXLkILjpQqy5Z
-	7JhlHqIb1EN4dd1IrZZL7vpqs63vjyhN/WUgzFv3CdMj4PJm7WHDOQZD
-X-Gm-Gg: AY/fxX7lcOndY8czwgREQqGyaVOU9+lIC1pjUPfBMNuBkJXtmB1ziBlsdD+DQzDKmDP
-	Mf1qJW8L8O1/IFkuhQvglzQoe4Vlr+yQDK2eBDKI7MpHznCzmb14EWq/jIKEEkKX5BkePHogBcZ
-	FGat/OvkQ8Dt/zLkmH23ohuQTTjMczfK9BzIe+ENgslPN8ZGIbHFDi+ZUClLWhX+aj7Bc5tJrEd
-	BEe2hA5Vj0nSpnKw85xsPWhPT5aMSnV2C8I1hbeaKIdmYDCtus+jo1H3Uzk7e7sWzVgw+Sgy/Zj
-	sk2mwIqIZkgMLyYBA/0oXXyJ04hqdYDjGq1k2nO21Rn5b5SJ73bUHjXh7ZY9UHwUkGnwXBknKyN
-	I9hoD85ZkbvBkH4GduGcnseeBVfMPvTKdf8Z/CUQCv6A1SUisRNjx37mGwHkMsmlUXeEICXUp5G
-	dCul+1z3ox7GAOuCnX2BeDwd0ItSjfoyWlUtoP8XKPIb6ahiW2nWxfxjAfb/3NqgFlB5eErAdmb
-	rzFSgHazBA7tpk=
-X-Google-Smtp-Source: AGHT+IHJXK2R3WeiJJDevqNrbsHSETT3xDVTi+xQ7Wr58QUWUx24qWhAB1reKUvIp+0KiJ3U34Vsew==
-X-Received: by 2002:a05:6214:d0a:b0:88a:2867:981f with SMTP id 6a1803df08f44-890594fd07emr68826226d6.13.1767520825735;
-        Sun, 04 Jan 2026 02:00:25 -0800 (PST)
+        bh=7KbfO1i69mPL+mrubhr+uxnSp4Z/WqGGTqSL3K9pfVA=;
+        b=AaS23pr3HzF1iG4cnjhxcRYN59lqR4A+eMQj7pfxQw9EYelOSJmRsLRwwPEQa8j7gD
+         rNwlfcBCn7d/+P9GJsbW1chld5w5WgC1W4bxtrbHySMf7ZCqj5wZ0pgoUFWJalGinQYw
+         0/R2JjZdidi8Wr0edRPTD3JOkxDpAUk5U9t86RiaDFH5hWo1zeiUtMLfNh20g/Eal1/K
+         wxR6S+nEn4Gkl9LLd9d8FC2E2QrkMjwJGdX+tr7NDCJllm2VT5LLonhXsF3dO1q+1zjO
+         C1aiq84NGSOJAGT6cpRrf+mb1vg/+2eem6QjXf8XfVsNDkyO7vSAD4jrooLXv5eqAdzY
+         hDWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgfDyJ0NEY0kcsx/IATBPPTWOGTLifECRZnPJRIs4PBeqp3Z7tatKT1ALoYoCybBCtQR0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVop106m+S+8v4wXhSSrukFQ85fU+FV/NvaN7NJRVex6Id6Tt2
+	oCjyT0E7VVoFC9CdaLZwePkPjUAhnz8UOnEdSgnZJ6I8PAr+COlT+5Tl
+X-Gm-Gg: AY/fxX5N9J4PQPIJxXFzKP53llAgQEZdDnmcb1KamKQj0fgXMMLl6gZjl86KcIl2iyA
+	Y+NMLdRQ6RnQfWnwyJ2lTfFq7o3B6jNv+GhD6LHNmRvzuqghxfLERUOC9voYxZ+d6u3z1V6jsmK
+	XoczF2/6kpOXsixhEmNFdigFIIYQGOfx0loEdrnAD0vRKTagJBMXfPzzEXyZPB9AlYlv7V9H9kv
+	Shoeyji3Xed2fiQwUBtCeKJ7AMII3a5MPcKVhoqukbmQ0Dfi52g702xBSMBmZL0JKiafTikAMJu
+	PYMV7xOO9hXuJdfwKmU8t7hVPeVoanerv2UIoqKWbqX/HO9jzG78GSMtgUMfEB09O0uzDCFTA8z
+	kLsLpD2jVLyIeNIQyCuJa9Zt3jVsmLNeE/hSpd5+pK60HkgWuXY6tydAVDHh1qMO8wv4UFUf9F6
+	2XjeW44opPoIZ2phrTkkHiu4N44JNI317OzgOno9VyulogDXmCLLPfmbcOGa7xwzGjwq/T1d6AL
+	9AuD8msR+cyXlw=
+X-Google-Smtp-Source: AGHT+IE+qwfHcvZu7g88+7aXL9FHzacq6d3LEZhX6euRl5AyR5Pc+4qPOQQsxUfq1v6m7ClnOJ6rtA==
+X-Received: by 2002:ac8:6f11:0:b0:4f1:aba0:9329 with SMTP id d75a77b69052e-4f4abd15f01mr790228741cf.33.1767524113133;
+        Sun, 04 Jan 2026 02:55:13 -0800 (PST)
 Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88d9aa363e3sm329190836d6.57.2026.01.04.02.00.24
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4f4ac563f66sm320455761cf.15.2026.01.04.02.55.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jan 2026 02:00:24 -0800 (PST)
-Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
-	by mailfauth.phl.internal (Postfix) with ESMTP id C6FCCF4006A;
-	Sun,  4 Jan 2026 05:00:23 -0500 (EST)
+        Sun, 04 Jan 2026 02:55:12 -0800 (PST)
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfauth.phl.internal (Postfix) with ESMTP id EAF20F40068;
+	Sun,  4 Jan 2026 05:55:11 -0500 (EST)
 Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-11.internal (MEProxy); Sun, 04 Jan 2026 05:00:23 -0500
-X-ME-Sender: <xms:NzpaafCsE4OSVqTp0gAwqxPrnR2Y0EgXSaB77iVC2eoZCSPktsgMuw>
-    <xme:NzpaaWfAOEZ_Be3GyqqWz0ipj9WXKOVeG6ZePmaGceIPPk_PzFSWXlRhGuVDaEdLZ
-    D3SGZd1Bb4J-hxgH9iuno7gT8Bk1-sXQi_l8aeKB86URvJrhAjeZg>
-X-ME-Received: <xmr:Nzpaaa57p3LVRZm8ilDTBDVFEcEfYVE1cvLWC8_ZflP6CqO9VZnS-bSS>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdelgedufecutefuodetggdotefrod
+  by phl-compute-02.internal (MEProxy); Sun, 04 Jan 2026 05:55:11 -0500
+X-ME-Sender: <xms:D0daaZIERhJn8aaRjBZo5bo1jhie88tt-eaVp3V30TUvnVzBVsSWSQ>
+    <xme:D0daaUlC6p1FjltqbYLOoZ1bhNJXQvHt5oU1QU6gmryamk3byUzS-JsBo24KgpkXI
+    942nNYgB5PqVXIpW_6ayYCeEwzAGJC55HlnK2PBSIbA7ymTTDfCgg>
+X-ME-Received: <xmr:D0daaSzUwrHxYhLG6pjx32HKs4moT8sQujJyilhCpEINflN0il_x4uU8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdelgedvfecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
     ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
     hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfh
     vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
-    hrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudffiedv
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqh
-    hunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddu
-    jeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvg
-    drnhgrmhgvpdhnsggprhgtphhtthhopedujedpmhhouggvpehsmhhtphhouhhtpdhrtghp
-    thhtohepjhhovghlrghgnhgvlhhfsehnvhhiughirgdrtghomhdprhgtphhtthhopehprg
-    hulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehrohhsthgvughtsehgohho
-    ughmihhsrdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-    dprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
-    nhgvvghrrghjrdhuphgrughhhigrhieskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjh
-    hoshhhsehjohhshhhtrhhiphhlvghtthdrohhrghdprhgtphhtthhopehurhgviihkihes
-    ghhmrghilhdrtghomhdprhgtphhtthhopehmrghthhhivghurdguvghsnhhohigvrhhsse
-    gvfhhfihgtihhoshdrtghomh
-X-ME-Proxy: <xmx:NzpaaQPHV-DEIWPJbRFcA3LfJNZ_JVixhfUFM3iyWJSj8CmKaLw3RA>
-    <xmx:NzpaabEQ5ixKJrC9oiUV5mwMNca-T1fwZ1nm2KcbACfsJtOKutlJrA>
-    <xmx:NzpaaUTgZPtN68zdx1eNT9g0kH6Wo-6n9epLQpJf_vjqeo23ev4QPw>
-    <xmx:NzpaaTQxAiUw7uKpbqpm2Tcq7jOVaQOEjvY4mNz9aqVkM4lFW1NHmw>
-    <xmx:NzpaafeDuVCrHAyCG47hrAWmVKuHyyL3wyPBroe6eJkpvefHuEV5Em79>
+    hrnhephfetvdfgtdeukedvkeeiteeiteejieehvdetheduudejvdektdekfeegvddvhedt
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghr
+    shhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvg
+    hngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohep
+    udehpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehjohgvlhgrghhnvghlfhesnh
+    hvihguihgrrdgtohhmpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhg
+    pdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhope
+    hfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvvghrrghjrdhu
+    phgrughhhigrhieskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhoshhhsehjohhshh
+    htrhhiphhlvghtthdrohhrghdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtgho
+    mhdprhgtphhtthhopehrohhsthgvughtsehgohhoughmihhsrdhorhhgpdhrtghpthhtoh
+    epmhgrthhhihgvuhdruggvshhnohihvghrshesvghffhhitghiohhsrdgtohhm
+X-ME-Proxy: <xmx:D0daaetRzq7P0MTTgEgo4pY9Jb00LEjevEin4sK22TaQCdzlw9i_Ew>
+    <xmx:D0daaUFz-XqgDF1gtdVgCaEm4GMaavgVzPzIB68S98n-hA2BqC_dNg>
+    <xmx:D0daaU5IQG4D_BIwQ-AS6fAxxmFpR3CKG8qA-FFgHoFUhgrPY5x8XQ>
+    <xmx:D0daadzn5xiHLKo5aozws4kIlEdyPFdOwnUU2s9Th9mOhiQll4cYpw>
+    <xmx:D0daaS3AkC-7G6i1pZ4FylF_eeHBH3gkwoN-3vShFve9TB_6IYQ6pl7q>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 4 Jan 2026 05:00:23 -0500 (EST)
-Date: Sun, 4 Jan 2026 18:00:21 +0800
+ 4 Jan 2026 05:55:11 -0500 (EST)
+Date: Sun, 4 Jan 2026 18:55:09 +0800
 From: Boqun Feng <boqun.feng@gmail.com>
 To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: paulmck@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-	rcu@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+Cc: "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Yao Kai <yaokai34@huawei.com>, Tengda Wu <wutengda2@huawei.com>
-Subject: Re: [PATCH -next 1/8] rcu: Fix rcu_read_unlock() deadloop due to
- softirq
-Message-ID: <aVo6NRYDhxlMUANZ@tardis-2.local>
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH -next 0/8] RCU updates from me for next merge window
+Message-ID: <aVpHDWWiL1huoSBT@tardis-2.local>
 References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
- <20260101163417.1065705-2-joelagnelf@nvidia.com>
- <20260102122807.7025fc87@gandalf.local.home>
- <20260102123009.453dfb90@gandalf.local.home>
- <68b5b122-036b-475a-85bb-e39830f99fbe@paulmck-laptop>
- <252063db-ec72-42df-b9e0-b8dc0aa6bef9@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -125,69 +119,27 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <252063db-ec72-42df-b9e0-b8dc0aa6bef9@nvidia.com>
+In-Reply-To: <20260101163417.1065705-1-joelagnelf@nvidia.com>
 
-On Fri, Jan 02, 2026 at 07:41:38PM -0500, Joel Fernandes wrote:
-> 
-> 
-> On 1/2/2026 2:51 PM, Paul E. McKenney wrote:
-> > On Fri, Jan 02, 2026 at 12:30:09PM -0500, Steven Rostedt wrote:
-> >> On Fri, 2 Jan 2026 12:28:07 -0500
-> >> Steven Rostedt <rostedt@goodmis.org> wrote:
-> >>
-> >>> Stacktrace should have recursion protection too.
-> >>>
-> >>> Can you try this patch to see if it would have fixed the problem too?
-> >>
-> >> As I believe the recursion protection should be in the tracing
-> >> infrastructure more than in RCU. As RCU is used as an active participant in
-> >> the kernel whereas tracing is supposed to be only an observer.
-> >>
-> >> If tracing is the culprit, it should be the one that is fixed.
-> > 
-> > Makes sense to me!  But then it would...  ;-)
-> > 
-> Could we fix it in both? (RCU and tracing). The patch just adds 3 more net lines
-> to RCU code. It'd be good to have a guard rail against softirq recursion in RCU
-> read unlock path, as much as the existing guard rail we already have with
-> irq_work? After all, both paths attempt to do deferred work when it is safer to
-> do so.
+On Thu, Jan 01, 2026 at 11:34:09AM -0500, Joel Fernandes wrote:
+> This series contains RCU fixes and improvements intended for the next
+> merge window. The nocb patches have had one round of review but still
+> need review tags.
 > 
 
-Agreed. First it's crucial that RCU itself can prevent indefinitely
-entering rcu_read_unlock_special(), because although unlikely, any RCU
-reader in raise_softirq_irqoff() would cause a similar infinite loop.
-Second, with solely the tracing fix, there still exists a call chain:
-
-	rcu_read_unlock_special():
-	  raise_softirq_irqoff():
-	    trace_softirq_raise():
-	      rcu_read_unlock_special():
-	        raise_softirq_irqoff():
-		  trace_softirq_raise(); // <- recursion ends here
-
-while with the RCU fix added, the call chain ends at the second
-rcu_read_unlock_special():
-
-	rcu_read_unlock_special():
-	  raise_softirq_irqoff():
-	    trace_softirq_raise():
-	      rcu_read_unlock_special(); // <- recursion ends here
-
-which would slightly improve the performance becasue of fewer calls.
-
-I'm going to include this into the RCU PR for 7.0 if no one objects.
-Thanks!
+Queued for more tests and reviews, thanks!
 
 Regards,
 Boqun
 
-> Yao, if you could test Steve's patch and reply whether it fixes it too?
+> - Updated commit messages for clarity based on review feedback
 > 
-> thanks,
+> - Testing:
+>  All rcutorture scenarios tested successfully for 2 hours on:
+>   144-core ARM64 NVIDIA Grace (aarch64)
+>   128-core AMD EPYC (x86_64)
 > 
->  - Joel
+> Link to tag:
+> https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/tag/?h=rcu-next-v1-20260101
 > 
-> 
-> 
-> 
+[...]
