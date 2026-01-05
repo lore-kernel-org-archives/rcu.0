@@ -1,134 +1,132 @@
-Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A8230DEAA
-	for <rcu@vger.kernel.org>; Mon,  5 Jan 2026 03:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A0621CC51;
+	Mon,  5 Jan 2026 04:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767583279; cv=none; b=KnJJY+4+l8zPEHzYlQ3B0vTCgkkNF4l2bazsXwS+hdR+aaSFnqBqDuNAxtCufHerpKdk58Ini1fUqE95hSD00NmAEILKBx5fYDCqw+zKMccRP3gxuj+13IoxTjralrWPcQuFzN8jZEcLEq7su9VDinagoXgjbDpGnTHCstx3pAg=
+	t=1767588395; cv=none; b=U4PBQLLUflNW3HvMsfmmvFWCzg5OQCU+8EWjTv9Ijig7i1d+TUAXFVVvkStsDO7qbyGWZG7x1VFsOc1D9faRGqkd8q6sfqEcXwYIedrhg2g9sVgc1oJpy4LiKfTnWonUKgLpy4dZfo0YDaUng3isu1CRleSv4vviYiTrjsb0RXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767583279; c=relaxed/simple;
-	bh=2yVqUrAH/rAV3CFEQtEB1zHKuYftuWks5gMh0PYY0bA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jQgSGcMVW7fWSH485QgqIPUO8RnatwrVknI3PalxPOR/mLLb8dlWL/QooQn42vNyrUWaxPa1hiiP3DUTiWA2yu4WY7ma6CnbeB+OakhCthlyMFg0pPIq96F5oLMOT2rbah+hFFcoCcqu3kGnQfeySisYJKMRUa74YEN2VGJshHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=drPHTw+E; arc=none smtp.client-ip=209.85.210.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1767588395; c=relaxed/simple;
+	bh=cUXBO2uTCJbjKo3AqJ7+AEMuom5qjVUwDbH5rB3ImrU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nydWrLPmHIMp0w+FmhEi+IsiS8G+4AwrCdYqc6ARC/YiB1z+7s9wsp4NdbBrewPxaw6QGm4Oj1stXpIt/J/egm6DPjNO9BKMLzEVuWgirIe6qnJL+A8U5c7AeJf4ovGeZberNkKepv2YvxJXstCyr+KwSgecYnMx4pHszLPXZH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y5r1Ic3A; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="drPHTw+E"
-Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-7b80fed1505so13318917b3a.3
-        for <rcu@vger.kernel.org>; Sun, 04 Jan 2026 19:21:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767583277; x=1768188077; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nP3qC9T00rl9JbXEVxwHQu5KUyBQJJofS5UcrCiyeJU=;
-        b=drPHTw+EAFM81qVVnxN7+mwQmviud3S8P/nRua6ly5Q4w7NwOkBREwzW5ByssPeVNI
-         e4byB2SRYFXQ/yUkJNC0cyKx0C25Be/ToWGov0JXTeuJCyIUo7rlrViRASJWV9wPONFl
-         /gD3Vbh5Ovzlfsu8P1jRyxV1G88LBE0CAr8aPtNQGTpesVX2pEzHFQyL/4QR6iyD3pW4
-         eMDtcLjoPUS8Bbasl5mJQpb2raSrRCgxt8C215Hr4HLgq7hOyYXGcAV1PQTypcxOcl8t
-         3DS80bgFPXgDf08fH3Uza9NLdEwAgzkb7Mwt4W4KnJbnxyEbYxB7RfJ4Vm7j7lygDVqh
-         vMNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767583277; x=1768188077;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nP3qC9T00rl9JbXEVxwHQu5KUyBQJJofS5UcrCiyeJU=;
-        b=KAn6QmEYl6oCO9+fhh4WclR1ocPn/3QSHt6VliqYwKNpY6hxsllwM82NutQJJm5Puo
-         CcsW1+Ym5hmpdibk/lnCjHcf922C3NWtrfoiy2ckGbrsG9o3m5c8w7O6gwzh61JggU65
-         CuZm+3Aph5OF3c5wdq4Rpcfl95Jb28BWsK1KpzHN/x8MZkh4rKl5bEWTztlKFfPRGoJE
-         Uv53YYD6xDuwGDmT3Ao4KGCPo0yFwqULPlRP+jZzKE666aeT33ipvGs34IWvaDpiqSrP
-         cFHM2CE7S1KCMTTfhcdnZt/yjI+Z/LQCnX1ahDCm/lalOL8QYm23n15uNkyissPaQbvz
-         Axmg==
-X-Forwarded-Encrypted: i=1; AJvYcCUkzzzl6r5pgov7Op1UzaTCwMQhawamc6fEaaNQCbgEQGXnKQc8QJT+GhmdiZ/BYc0cU5Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzw/fbOuOK7vTRIJGZ/OC6mJ6DKRzCRm9pyJdLVuLAP5jVqz1iP
-	frDBbpD67v0J22YPBVuDe+eatAH9dTwBQj0De1XEISgU9FHDsJGh33gQ
-X-Gm-Gg: AY/fxX64fx13Gl9YZVHKRteb8/oU4t8K47Q0qilQHNdlJZsnO9+3iFQWh6kkVSOTs9O
-	QoKAgOQrU5foGhOl8GvJx403P6V7pEbqo+LvjNEgXVI9l1CYWLie1jBGiOqrZKaoFpB36WeoiCm
-	eDZmTtalFUayqM87hUwyr3ulqpTjylM56fBNsbaZTFRNo5kQPme2hc1Kw+5nChZGGIiDRvmMBhI
-	fATZ3ER6oTQdQnE0C+dBbTXcoZLv4bsrGVghq8fhTUML3/RfDtiZM2G40AvN5Wp57EV98Sd1CmN
-	6G1HGV67oox6XK2xkhXVg9S6fy22/x6OhLVJTngVOBjBYPuv2MdSNfmvqD6dInlSiAXKaAnWxIZ
-	TPW6vSon5bPvDITjsN7oYqBI6gHmeOzsdagWSk7sPmu0oBk5tY1i6t79LDnIg0nUvg4jpatUHbE
-	J+o2DvuYiYAjxZwxFsr6ByDYK3akM=
-X-Google-Smtp-Source: AGHT+IFbs+o5yKIznB+pkFkpmwW+HUV98k22TQ6APUvUWR/GyQ8u08zMV5eXgcFE9HSlhVMYAlKceQ==
-X-Received: by 2002:a05:6a00:4307:b0:7e8:4398:b35c with SMTP id d2e1a72fcca58-7ff66672928mr38546276b3a.47.1767583277310;
-        Sun, 04 Jan 2026 19:21:17 -0800 (PST)
-Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ff7b127b00sm46565337b3a.21.2026.01.04.19.21.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jan 2026 19:21:16 -0800 (PST)
-From: Donglin Peng <dolinux.peng@gmail.com>
-To: paulmck@kernel.org
-Cc: frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com,
-	qiang.zhang@linux.dev,
-	rostedt@goodmis.org,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Donglin Peng <pengdonglin@xiaomi.com>
-Subject: [PATCH v2] rcu: Align stall warning 'idle=' output with documentation
-Date: Mon,  5 Jan 2026 11:21:12 +0800
-Message-Id: <20260105032112.1156359-1-dolinux.peng@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y5r1Ic3A"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 666ABC16AAE;
+	Mon,  5 Jan 2026 04:46:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767588394;
+	bh=cUXBO2uTCJbjKo3AqJ7+AEMuom5qjVUwDbH5rB3ImrU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Y5r1Ic3ALe6JvBQ5+u+hkbeTUg77bslbKHKeCavFP/uoZf6757hjc70Xb0+lpKJJU
+	 SfReFey9bFSNunnhregLsi+8H47mrMLXEeyqOKKz9b59oTqaXa4BncpnSMKhudyWsn
+	 anuvrGBwoUKN9/gZ6AIqFZ0Fby8+8DwenI5ab7L8Z+kqhCONJw8ywj/1vHJyxe23Lz
+	 u+zxFWgRLwZb5nD2krgKzBiikwdUMsxw3uXTzSeOD1marY691C6sJTw+rBhReqpt27
+	 zHcqVwtl/tjbnAxBuXuAbs0o8ePWM+vz78tIpnXNIfLPDm6Trq4f/1LfspGAvJwq5x
+	 lxZkUwwtn+IHQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E7663CE0CFD; Sun,  4 Jan 2026 20:46:33 -0800 (PST)
+Date: Sun, 4 Jan 2026 20:46:33 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: rcu@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Reset stall detection after ftrace dump
+Message-ID: <f1e35209-7f31-44f8-afd1-6f7ea974002a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260104203642.3171854-1-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260104203642.3171854-1-joelagnelf@nvidia.com>
 
-From: Donglin Peng <pengdonglin@xiaomi.com>
+On Sun, Jan 04, 2026 at 03:36:42PM -0500, Joel Fernandes wrote:
+> During some recent expedited RCU testing with rcutorture, I noticed RCU
+> stalls when using ftrace_dump() to analyze traces. The issue that since
+> ftrace_dump() can take a long time, any accumulated issue can show up
+> just after the stall is unsupressed.  Due to this a stall can be
+> detected and reported.
+> 
+> The problem is something like this:
+> 
+>   1. rcu_ftrace_dump_stall_suppress() sets suppression value.
+> 
+>   2. ftrace_dump() runs for a long time.
+> 
+>   3. rcu_ftrace_dump_stall_unsuppress() clears suppression.
+> 
+>   4. Immediately later, stall is detected.
+> 
+> Fix this by calling rcu_cpu_stall_reset() when clearing suppression.
+> This resets jiffies_stall to ULONG_MAX, preventing the issue.
+> 
+> Tested with gp_exp=true enabled with rcutorture and ftrace_dump() and no
+> stall is reported, with only clean traces in the output.
+> 
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 
-The RCU stall warning message includes an "idle=" field to indicate
-the dyntick-idle state of a CPU. According to Documentation/RCU/stallwarn.rst,
-the hexadecimal number before the first '/' represents the low-order 16
-bits of the dynticks counter. An even value denotes that the CPU is in
-dyntick-idle mode, while an odd value indicates otherwise.
+Good catch!
 
-This was valid until commit 171476775d32 ("context_tracking: Convert state to atomic_t"),
-which merged the context-tracking state and dynticks counter into a
-single atomic variable. In the new layout, the dynticks counter occupies
-the higher bits starting from CT_RCU_WATCHING_START.
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-However, the current stall warning code prints the value from
-`ct_rcu_watching_cpu()`, which returns `atomic_read(&ct->state) &
-CT_RCU_WATCHING_MASK`. This masks out (clears) the lower state bits,
-resulting in a value that is always even. This obscures the CPU's true
-idle state and makes the output inconsistent with the documentation.
-
-To restore consistency between the code's output and the documentation,
-shift the atomic value right by CT_RCU_WATCHING_START bits before printing.
-This extracts and displays only the relevant dynticks counter portion,
-allowing the parity (even/odd) to correctly reflect the CPU's dyntick-idle
-state.
-
-Fixes: 171476775d32 ("context_tracking: Convert state to atomic_t")
-Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
-Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
----
-v2:
- - Use CT_RCU_WATCHING_START to replace ilog2(CT_RCU_WATCHING) to clean
-   up the code, thanks to Zqiang.
- - Clarify the commit message.
----
- kernel/rcu/tree_stall.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index b67532cb8770..fd9d7fd6e17c 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -555,7 +555,7 @@ static void print_cpu_stall_info(int cpu)
- 			rdp->rcu_iw_pending ? (int)min(delta, 9UL) + '0' :
- 				"!."[!delta],
- 	       ticks_value, ticks_title,
--	       ct_rcu_watching_cpu(cpu) & 0xffff,
-+	       (ct_rcu_watching_cpu(cpu) >> CT_RCU_WATCHING_START) & 0xffff,
- 	       ct_nesting_cpu(cpu), ct_nmi_nesting_cpu(cpu),
- 	       rdp->softirq_snap, kstat_softirqs_cpu(RCU_SOFTIRQ, cpu),
- 	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
--- 
-2.34.1
-
+> ---
+> This is a non-urgent fix and could go in either this or the next merge
+> window (Boqun's call).
+> 
+>  kernel/rcu/rcu.h        | 5 ++++-
+>  kernel/rcu/tree_stall.h | 1 +
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index 9cf01832a6c3..87fcf528b9ac 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -288,6 +288,7 @@ extern int rcu_cpu_stall_cputime;
+>  extern bool rcu_exp_stall_task_details __read_mostly;
+>  int rcu_jiffies_till_stall_check(void);
+>  int rcu_exp_jiffies_till_stall_check(void);
+> +void rcu_cpu_stall_reset(void);
+>  
+>  static inline bool rcu_stall_is_suppressed(void)
+>  {
+> @@ -302,8 +303,10 @@ do { \
+>  
+>  #define rcu_ftrace_dump_stall_unsuppress() \
+>  do { \
+> -	if (rcu_cpu_stall_suppress == 3) \
+> +	if (rcu_cpu_stall_suppress == 3) { \
+>  		rcu_cpu_stall_suppress = 0; \
+> +		rcu_cpu_stall_reset(); \
+> +	} \
+>  } while (0)
+>  
+>  #else /* #endif #ifdef CONFIG_RCU_STALL_COMMON */
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index b67532cb8770..9a036fc27fed 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -192,6 +192,7 @@ void rcu_cpu_stall_reset(void)
+>  	WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, 3);
+>  	WRITE_ONCE(rcu_state.jiffies_stall, ULONG_MAX);
+>  }
+> +EXPORT_SYMBOL_GPL(rcu_cpu_stall_reset);
+>  
+>  //////////////////////////////////////////////////////////////////////////////
+>  //
+> -- 
+> 2.34.1
+> 
