@@ -1,73 +1,89 @@
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A43F3358D2;
-	Mon,  5 Jan 2026 17:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4229131E49;
+	Mon,  5 Jan 2026 21:34:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767633370; cv=none; b=tj0NTHQTEAiR3zpYaj3Q7+ibFoDkXPoZEHsNP1i3qXz/SQQIOwhaWlgo+NhiRb1YNHRvq0Bqx1SzmHxcKI9WYo7ampOlQKfGehVJZ1baMNdIc27sYDkCXZOO3ib1rZ4Kyb9IXpdM3ULZGXXdlF9tNApqDniyypVs5hqX159t4oc=
+	t=1767648846; cv=none; b=eYWF3G9GbOZoW/F6nFMf5F9dyCNNuM3JOR5HNmcsGPnNX+zda61E7Kx/R8jPadCQ2UcV3N7lGIerBHYBARSSPeTRkQoRQE5wiP6KdR4XjBk9tg4y4knL6xwunkDVpYZ9Q3gzD8FmIn/1zizhbYaVWwT9LrdvRGGXKtKTQ3I7eHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767633370; c=relaxed/simple;
-	bh=N34XKakxs6/O9rPTyYFJNREr00hdJWQFIAVMU1fqeZk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KLIKn8vGQO0fD5wlaM87J0askfMuGAwd14IiQ7MDMrsLIOUmqpWlIV18xaol5A8uHgQU6uorU9ZotH7l74KH/x8XD8OQS2klKmV9TBmHp2jqEfzC7c/pp10A6VgT1qCILk70x+xhha//WZZyqv4hpzYEWPYUtarvvzlmIzZj5+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf19.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id 32B71140220;
-	Mon,  5 Jan 2026 17:15:53 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf19.hostedemail.com (Postfix) with ESMTPA id 7A54F20027;
-	Mon,  5 Jan 2026 17:15:49 +0000 (UTC)
-Date: Mon, 5 Jan 2026 12:16:11 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Yao Kai <yaokai34@huawei.com>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, <paulmck@kernel.org>, Boqun Feng
- <boqun.feng@gmail.com>, <rcu@vger.kernel.org>, Frederic Weisbecker
- <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh
- Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, Shuah Khan
- <shuah@kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-kselftest@vger.kernel.org>, Tengda Wu <wutengda2@huawei.com>,
- <liuyongqiang13@huawei.com>, <yujiacheng3@huawei.com>
-Subject: Re: [PATCH -next 1/8] rcu: Fix rcu_read_unlock() deadloop due to
- softirq
-Message-ID: <20260105121611.470294d3@gandalf.local.home>
-In-Reply-To: <34ff0ff6-217e-4574-a3b1-af74b2f40937@huawei.com>
-References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
-	<20260101163417.1065705-2-joelagnelf@nvidia.com>
-	<20260102122807.7025fc87@gandalf.local.home>
-	<20260102123009.453dfb90@gandalf.local.home>
-	<68b5b122-036b-475a-85bb-e39830f99fbe@paulmck-laptop>
-	<252063db-ec72-42df-b9e0-b8dc0aa6bef9@nvidia.com>
-	<34ff0ff6-217e-4574-a3b1-af74b2f40937@huawei.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1767648846; c=relaxed/simple;
+	bh=WpB988ZXfEnPrIyGAfIoa1859xMRPptZMhpU+ljnsbc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ucuLIQy5OQxKbZlRRZa2OokIm7B5od2gP+5dC64mQo9Czf5EO1Tke2j6ETpuJLqvJ+TLM8ng6KiOMiif6Q1FTUyUEDXBDgVwR1XGjP7LD8bqZIsKtRScjuJD5oigNh6OZBCWfPLeg2Jlt/k4vmC5xz0c/JYf5fO9NdVqqh9BnUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qg/5DtDq; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qg/5DtDq"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C990C116D0;
+	Mon,  5 Jan 2026 21:34:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767648846;
+	bh=WpB988ZXfEnPrIyGAfIoa1859xMRPptZMhpU+ljnsbc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Qg/5DtDqq1qAebNp6tCmhtczXWCUllMuzxPR3mEDmAnZi9eDiU9aiT5co645YFylO
+	 nmQ+SiM20v7qk5p4c+sUyISSaxu+0kHFEvLBviKTJ9AY0n7vhJsi0xxtje9EdvbW87
+	 uu8rzXfejUJ5mzJ3a4dFJCh8+Y67auP7Q9AeCcEVu6uEuCM7kT62lnIsfOO6mSrV5y
+	 c6WbYTGxwdwxDCZyGmkClARtEbbv3GbHPW7+t8q60v7pu7Olih5wIXLz3vKHKMknli
+	 yiZYULx82O6hE8pB7De9uVCBJyKfhuEr+Zh3mDbraQBuTEl+sXZ8kj3mS7zx9rDM51
+	 uE2w6lclklEoQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 37F98CE0BB3; Mon,  5 Jan 2026 13:34:06 -0800 (PST)
+Date: Mon, 5 Jan 2026 13:34:06 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Zqiang <qiang.zhang@linux.dev>
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+	boqun.feng@gmail.com, urezki@gmail.com, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rcu-tasks: Remove unnecessary smp_store_release() in
+ cblist_init_generic()
+Message-ID: <784b10f0-45c4-4038-97b1-e20cacd3709b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260105011951.72850-1-qiang.zhang@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: bojkfu6sef3sp1fn4ce1uayiebrkwyxn
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: 7A54F20027
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19fzIDrlSXVZ9QJZI5xu53yQ0GLhBXbUuw=
-X-HE-Tag: 1767633349-836369
-X-HE-Meta: U2FsdGVkX18IrKdZUeho2SOfke+R7g8EzvppcaKgp3oK21dmdorGJ939vVTAXb22/1UqSNTPYvftzQHeigSk1HLeGtPthSq9CXtIPiUMliELrwpDssomD8A1/H6Bq5Oy00V5CKHSfkfpzUOPXP4on2P3IcUy40ioCRiNIwTnaYKuFyXca7qeZMuXorKymLL2B0fP1B8QZUUh/QpOUI5WCc5U0wQVU8p922IxhUNrZw7g8tr4kodcKe7XK/VzKBlcf4sZ0iESM3bIviFElY5NSBBzqnDdJtC2ZdzSHbly5xonnXnxcCUyjH2smBz3rBHXpAnYlh958yQBQ6ILfJMwHTcq8EzK+mIz8O3vUkfhlP7l2kLTMXVenw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260105011951.72850-1-qiang.zhang@linux.dev>
 
-On Sun, 4 Jan 2026 11:20:07 +0800
-Yao Kai <yaokai34@huawei.com> wrote:
-
-> Yes, I tested Steve's patch. It fixes the issue too.
+On Mon, Jan 05, 2026 at 09:19:51AM +0800, Zqiang wrote:
+> The cblist_init_generic() is executed during the CPU early boot
+> phase due to commit:30ef09635b9e ("rcu-tasks: Initialize callback
+> lists at rcu_init() time"), at this time, only one boot CPU is
+> online and the irq is disabled. this commit therefore use routine
+> assignment replace of smp_store_release() and WRITE_ONCE() in the
+> cblist_init_generic().
 > 
-> Tested-by: Yao Kai <yaokai34@huawei.com>
+> Signed-off-by: Zqiang <qiang.zhang@linux.dev>
 
-Thanks for testing. I'll send out a formal patch.
+Very good!
 
-And yes, I agree we should do both.
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
--- Steve
+> ---
+>  kernel/rcu/tasks.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 76f952196a29..c736900317cd 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -290,9 +290,9 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+>  	shift = ilog2(rcu_task_cpu_ids / lim);
+>  	if (((rcu_task_cpu_ids - 1) >> shift) >= lim)
+>  		shift++;
+> -	WRITE_ONCE(rtp->percpu_enqueue_shift, shift);
+> -	WRITE_ONCE(rtp->percpu_dequeue_lim, lim);
+> -	smp_store_release(&rtp->percpu_enqueue_lim, lim);
+> +	rtp->percpu_enqueue_shift = shift;
+> +	rtp->percpu_dequeue_lim = lim;
+> +	rtp->percpu_enqueue_lim = lim;
+>  
+>  	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d rcu_task_cpu_ids=%d.\n",
+>  			rtp->name, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim),
+> -- 
+> 2.48.1
+> 
