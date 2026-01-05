@@ -1,125 +1,118 @@
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9228F23770A
-	for <rcu@vger.kernel.org>; Mon,  5 Jan 2026 00:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B24DB25A62E
+	for <rcu@vger.kernel.org>; Mon,  5 Jan 2026 00:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767573060; cv=none; b=bqtueXxY1eDelaw6oWvVWFO7eNGU/JDGcKVKAT29RPj6lVDRPTzmNX9nAfW0UnCndhELJPzm+2GsCdVe7v/0Pbq3U+Iq4+yl2WdOvaEohPGYXlW4YffHvpM+1v8IEkCv4HciosLeQYw7K/IU/48jwKZlXwQmSOlD79SuowFNNs8=
+	t=1767573291; cv=none; b=YKsDjOpCAaPHVhc+Xw9gyoeJlAiomCFSchjxzNUXW9zGEQbG+WVDnbW9aWTJ7u/eta3xEITQCQ1RQv4Mkr68j/ShEz/U1VdP96fnO2LbOfvQOUyRtUBxLp0grMOATR3CUNVevpw9WVcat9SBL/7f5TVvmYKovf3Crpv77PYJB1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767573060; c=relaxed/simple;
-	bh=4VtYblT4HVRoWu4jaDLopVPALPaC+zSFUE4twq/MOW0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G922FgyoZvr6jVWXdeYlFQZlI2lNz1q5E6mhzV7JbwBxMbHnZSgdahdpbCp3pM/Zd0lBiB9JkiJ8um2xYwnuls+ZWy/IrMy+BPrNxGZoIMlbOukZOSEq2dRrLGlzUQRV0IKzcGtydWNZCTWp/+/urNlJTAeAI6rXQnp8Ek/Ic5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=X3pwuzL8; arc=none smtp.client-ip=209.85.215.170
+	s=arc-20240116; t=1767573291; c=relaxed/simple;
+	bh=K3RIqHgJQT1xGi52w9CHLG4nVH1N4w3wDSR+UgLt7hc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=is3Vj7ouxY24iMWuTWFdVWH/LoySv6s7bsZadyEJ7oaf6l5ZnGqvpQD1aLyCu/YNU5anVjEGBUGvCDpD1JRQTNngCgS+LCby+iFzFDk9W5evQRRHbdXGqR/wzeZdbABqTW2qJyB/OfUkt8RhuXxffbPx/AL+qRTb6buQ4juhZGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=riTOKJj9; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="X3pwuzL8"
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b6ce6d1d3dcso12926950a12.3
-        for <rcu@vger.kernel.org>; Sun, 04 Jan 2026 16:30:58 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="riTOKJj9"
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-47d3ba3a4deso44156045e9.2
+        for <rcu@vger.kernel.org>; Sun, 04 Jan 2026 16:34:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1767573058; x=1768177858; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XCOUHvaAPVBQlsZFB5UXzqWiXysSXr09nQwBmvYSu6k=;
-        b=X3pwuzL8pfXYi10MKc3OzSZ0hzqxt84gp78LfQhXkVnYnqAO1x8ArggCzeQ0EB2JA5
-         jzZSy95Jnxnz5m1jBXG3vRTIgvwvcDN2Vv58j47Hjtbfi8LeWV0rD6W9kSPft/ivbZt7
-         9+t2R/Jr2ZNxOqe9GKF5Kb9qcdzN5qSEFsUQU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767573058; x=1768177858;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=joelfernandes.org; s=google; t=1767573287; x=1768178087; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XCOUHvaAPVBQlsZFB5UXzqWiXysSXr09nQwBmvYSu6k=;
-        b=uvOgJLwpsneQAERV/kpB0LlPvj3iSEadJuCsqpLi27P2pn+5oJmktAvBlAY4kYqejA
-         wMAvLGGibD01z+Cg76zvTa0Agk2Qob82jSM7Oa78jfz+qE6/sRO61j7PvrfKOl1PFVon
-         GTEg9bbIel7K0zeLYeFEELEJFgV6+V2VZ0M7rpwoE9vUawRC8t1O05FI+Bg8GNOep8Xu
-         ag8rg+ahitRBJdiKBRqAMJs5DfSq/Q9anMzUKjp2B7WfdJoZCGRxspR63vOXde/X109a
-         ys4PasJ/UiYhGdD6E9s4qwGeGope4uqQY3FWtEBWK5uWkHWpTQHKvo8/CiYzeALitul3
-         Bv5g==
-X-Gm-Message-State: AOJu0Yy4LwU0NtIdyI/49OYmtJg9eKL3V0sjSKDOa9VzBbC3hAcPIpLq
-	vq6hzm8KeY1fWr8CMRjfBS03KfUPVNLckVVyiWyD6pAMdtV6nIkF02Gr2QMJPIn79xc=
-X-Gm-Gg: AY/fxX5Fbc5KRcRa5tmWWVfP0E3Gg6oGsDiGpN9QmtliJzPYn4xFE25TGyYWWEjIZ+4
-	/1F/ql2QqtgK4grgW5u5g1kFaL6A+TZ2QSg2S8BJJQyxcSvlyv17siIVyRFcQa+zVv+/yjOsTmt
-	s8lLXPw07hVVnXDbbVaCtGQjeZjeNPEs2gD5UmH0ukB6Yn9SwSZN3Ux0J6EBcXUvLZFUwRw5hXU
-	sIyz/WvQ9dLiFCt4mMr5waJMAKY1grnkk1LWjj6q/0HN/86sApSFYpcGXazOr8Sn/gSa+fe2oDe
-	8IOHOIYA5CPjhp+lbqq9KoaNqxBpOiFfa6PKJJ6SHGrGooey22qTliQsP4KILNrEqRxNpsEpjFf
-	ANkY+ev9FPgIYBFLOQ8d5p9w9DpvskpS3kZphUMM+hFzSLDf6envmLTk1a4sx8TvHMcCeUmlnRL
-	/9VzIIkM6L
-X-Google-Smtp-Source: AGHT+IE9449FQ7FOHazIKXgDJtnuRLaIjG3nv4UMuI5rLRSQ8cHnSvTHqKM2sCHKw//28dbTJ7gQJA==
-X-Received: by 2002:a05:7300:fb0f:b0:2b0:5b8f:1c5a with SMTP id 5a478bee46e88-2b05eca8ba2mr37694992eec.31.1767573057787;
-        Sun, 04 Jan 2026 16:30:57 -0800 (PST)
-Received: from localhost ([71.219.3.177])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b140c42d9esm9551321eec.11.2026.01.04.16.30.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jan 2026 16:30:57 -0800 (PST)
-From: Joel Fernandes <joel@joelfernandes.org>
-To: linux-kernel@vger.kernel.org
-Cc: rcu@vger.kernel.org,
-	rust-for-linux <rust-for-linux@vger.kernel.org>,
-	"nouveau @ lists . freedesktop . org" <nouveau@lists.freedesktop.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH] MAINTAINERS: Update email address for Joel Fernandes
-Date: Sun,  4 Jan 2026 19:30:51 -0500
-Message-Id: <20260105003051.122076-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.34.1
+        bh=DNKNM4sReKEQaK5afRI4aaqhQ67bX9x7T1VNmZfqt6s=;
+        b=riTOKJj9588tSCqMzcBpTralosutHFq8vNUxJoE31qDpUR1BOTMQc8xowgM8jwSiLl
+         QQQOjd+NilmlmzSj4UoffEPze2PcPqjkNWzmIio255nob0JdO5MYhwzGtKny1DBmQCGy
+         ODb1VIFC6FVu/tcQGoe9q3McACnlyzB5TcMAQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767573287; x=1768178087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=DNKNM4sReKEQaK5afRI4aaqhQ67bX9x7T1VNmZfqt6s=;
+        b=MUOdrtDdcZYVlEq/lITDdGNEdeLc4/mzfsc/0x6qMHT5l/7ZQb+p63hicDK0FYM2QS
+         q3/puYykMgMllfBozSYHZ1h05pk/5DkKShR4K3Y63zQG8V+01+v0svh9O1m1SBqhKL/v
+         qUYbu2lsUDzQaFPQpfAL+kWHPq/sPJ+KDXsQzRrfblHgqijMAgJpGf6nhwCc/WtxCJZd
+         r4qUM7KlJOEuJ9/MxEvy/EbE4Dlt6QwRAVeQBzONJnD7UQRfCrpdbVY5qsSpqpg/PKj3
+         hGBPBLgRi8KCM/mqWw9s4fxbZ8Rww3Ln+68cJxVcHK8YW/++44+HDX+/+0Z4i75QVLQM
+         mnZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX4VaT8gDzik3i4RzxnMpge+z+txJRrKjPZ/tfee252ojVomYIpEym4felS3F8Mge1VNc8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxsUVUuG4q3EC9XI4dkBHV8V7aER7kXAnPLnOMxsCDdLFRIGPe7
+	qb9VvUo3UE40p1/hwFL4OTc54Su4n0HxYfu59iUcjiQ8R0GJh/rq9TKwh3xEzazHz7RKV+hc40o
+	0aH/al4qC7LBq16EEgePEKuhonI8UaoG5HV4fb+RcGw==
+X-Gm-Gg: AY/fxX6PnYd/eZgaIZj/Iog0Nd/Z0JNMooYWuKrpNaTc/6pTGO4c8Kt5o3f6VGabuk7
+	MFCeO36vI5HAazWiJTmQI5Wx0AhJHu2TIZ7r6749N24/km9l1pJUfdJH9w945rgqzys17x7vkmv
+	2UyvRp41qQjIxBboaOtlKJ29pyntkXcGFq4zw/u0lDNmZ7yOSYojm/S0xNNG1LNihNO1pb+5c/f
+	8EN4nALei5vFE6ET9a4Lp3cQHM0dScgMYOw6qYAOAfD9ZSMTKSRk0RNXXUD2OeT4lkmhw==
+X-Google-Smtp-Source: AGHT+IFDoeswL7nuj50Me0VWVhAO/qPFvQmWaODUfmmFE08RqdsNXGSlzIxloRxgtDaDBQG9r8DoEOPoVmU0KI7sO/Q=
+X-Received: by 2002:a05:600c:4e90:b0:45d:f81d:eae7 with SMTP id
+ 5b1f17b1804b1-47d19593896mr586727965e9.28.1767573286818; Sun, 04 Jan 2026
+ 16:34:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260104081027.189234-1-dolinux.peng@gmail.com>
+ <20260104194534.GA2247470@joelbox2> <3188cbf5bcbe5799c77a6cc870ad0ee85b58d255@linux.dev>
+In-Reply-To: <3188cbf5bcbe5799c77a6cc870ad0ee85b58d255@linux.dev>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Sun, 4 Jan 2026 19:34:34 -0500
+X-Gm-Features: AQt7F2rCSdgkl7PoRhEE5SScyWalYAF4fji0rzQOU5nK8sbEZ3eI7Kfw3uGMla4
+Message-ID: <CAEXW_YSxHnUxNXNiwBZRiVF9i5OBv7bV73e_k_RFJ3Osnrr18Q@mail.gmail.com>
+Subject: Re: [PATCH] rcu: Align stall warning 'idle=' output with documentation
+To: Zqiang <qiang.zhang@linux.dev>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, Donglin Peng <dolinux.peng@gmail.com>, paulmck@kernel.org, 
+	frederic@kernel.org, neeraj.upadhyay@kernel.org, rostedt@goodmis.org, 
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Donglin Peng <pengdonglin@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Joel Fernandes (NVIDIA) <joel@joelfernandes.org>
+On Sun, Jan 4, 2026 at 7:32=E2=80=AFPM Zqiang <qiang.zhang@linux.dev> wrote=
+:
+>
+> >
+> > On Sun, Jan 04, 2026 at 04:10:27PM +0800, Donglin Peng wrote:
+> >
+> > >
+> > > From: Donglin Peng <pengdonglin@xiaomi.com>
+> > >
+> > >  The RCU stall warning message includes an "idle=3D" field to indicat=
+e
+> > >  the dyntick-idle state of a CPU. According to Documentation/RCU/stal=
+lwarn.rst,
+> > >  the hexadecimal number before the first '/' represents the low-order=
+ 16
+> > >  bits of the dynticks counter. An even value denotes that the CPU is =
+in
+> > >  dyntick-idle mode, while an odd value indicates otherwise.
+[...]
+> > >  kernel/rcu/tree_stall.h | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > >  diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > >  index b67532cb8770..d25cc826d77a 100644
+> > >  --- a/kernel/rcu/tree_stall.h
+> > >  +++ b/kernel/rcu/tree_stall.h
+> > >  @@ -555,7 +555,7 @@ static void print_cpu_stall_info(int cpu)
+> > >  rdp->rcu_iw_pending ? (int)min(delta, 9UL) + '0' :
+> > >  "!."[!delta],
+> > >  ticks_value, ticks_title,
+> > >  - ct_rcu_watching_cpu(cpu) & 0xffff,
+> > >  + (ct_rcu_watching_cpu(cpu) >> ilog2(CT_RCU_WATCHING)) & 0xffff,
+>
+>
+>
+> May be also use CT_RCU_WATCHING_START to
+> replace ilog2(CT_RCU_WATCHING) operations? (I didn't actually test it)
 
-Update my email address from joelagnelf@nvidia.com to joel@joelfernandes.org,
-which I will be using for community email going forward.
+It should compile down to the same thing, but either is fine with me.
 
-Signed-off-by: Joel Fernandes (NVIDIA) <joel@joelfernandes.org>
----
-Boqun, could we take it through the RCU tree for 7.0? Thanks!
+thanks,
 
- .mailmap    | 1 +
- MAINTAINERS | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/.mailmap b/.mailmap
-index 84309a39d329..279f8fb223e2 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -389,6 +389,7 @@ Jiri Slaby <jirislaby@kernel.org> <xslaby@fi.muni.cz>
- Jisheng Zhang <jszhang@kernel.org> <jszhang@marvell.com>
- Jisheng Zhang <jszhang@kernel.org> <Jisheng.Zhang@synaptics.com>
- Jishnu Prakash <quic_jprakash@quicinc.com> <jprakash@codeaurora.org>
-+Joel Fernandes <joel@joelfernandes.org> <joelagnelf@nvidia.com>
- Joel Granados <joel.granados@kernel.org> <j.granados@samsung.com>
- Johan Hovold <johan@kernel.org> <jhovold@gmail.com>
- Johan Hovold <johan@kernel.org> <johan@hovoldconsulting.com>
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 12f49de7fe03..43bbf12e2c80 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14558,7 +14558,7 @@ M:	Luc Maranget <luc.maranget@inria.fr>
- M:	"Paul E. McKenney" <paulmck@kernel.org>
- R:	Akira Yokosawa <akiyks@gmail.com>
- R:	Daniel Lustig <dlustig@nvidia.com>
--R:	Joel Fernandes <joelagnelf@nvidia.com>
-+R:	Joel Fernandes (NVIDIA) <joel@joelfernandes.org>
- L:	linux-kernel@vger.kernel.org
- L:	linux-arch@vger.kernel.org
- L:	lkmm@lists.linux.dev
-@@ -21895,7 +21895,7 @@ READ-COPY UPDATE (RCU)
- M:	"Paul E. McKenney" <paulmck@kernel.org>
- M:	Frederic Weisbecker <frederic@kernel.org> (kernel/rcu/tree_nocb.h)
- M:	Neeraj Upadhyay <neeraj.upadhyay@kernel.org> (kernel/rcu/tasks.h)
--M:	Joel Fernandes <joelagnelf@nvidia.com>
-+M:	Joel Fernandes (NVIDIA) <joel@joelfernandes.org>
- M:	Josh Triplett <josh@joshtriplett.org>
- M:	Boqun Feng <boqun.feng@gmail.com>
- M:	Uladzislau Rezki <urezki@gmail.com>
--- 
-2.34.1
-
+ - Joel
