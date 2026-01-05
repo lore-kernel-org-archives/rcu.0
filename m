@@ -1,209 +1,229 @@
-Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011071.outbound.protection.outlook.com [40.107.208.71])
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C252A27B347;
-	Mon,  5 Jan 2026 15:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767627865; cv=fail; b=mQoFFHWjCYBswsKjrmeRq35ZOW0LsG9RzS2RBLuxmuT2jHYLSPHpzziG+HDgFDMUFNSMvs1IBkuf32lh+CZuoa2dNWCClj5cQf0j6zaDaKl9PZF3CJpGSWfV/lz8mUetXfrzt2Glde5VKZgYyMVHT05RHwIof5CDzqlgQwPD0ws=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767627865; c=relaxed/simple;
-	bh=g8TXG6j+r5LZhceXWpmfBFss8+MXCUHY68e4xUlSdo0=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=pMCQJUMwp8tz+WxEMXn0/VeryxN8+Ly2gAY6tslY1/Z1jxNeXO8h4w4HHDll05pFz4scusAaZVqggs/j4MRIBR2wsKnMYjX1KdzrjLZFS3GvOWALcH0JimoE4xRdbsIqvo3DxR37vRCrTP/DoR056WUTUqSvqlG60+FzUowQJcA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=VDu/l3zl; arc=fail smtp.client-ip=40.107.208.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="VDu/l3zl"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=BD1gaK7LBtaGiCVb4jgLJjgIHPOFJV6SJkK93DZwVcJ3TtfCCTKp6gk4UIJFFP8zZ/pqcVX3CINla2uoJTGnhRQjDTXRXJUDKLvW7YaseQTapN49zGQUuK3nAQXOOi/8Sb/wU+mWggSLwFlrFmbieiNmyird/axuvrOCm490tsRAxgqg6Cn3W0BsjwFLp47fyGojHrLh/pszjnkY2yykxLC23Akfv2XekqMGLQiyqrZrZJa+eN11bRH6j5vx//dW5kOZdglHg1Jf4s4KqHl+oHLqPjqTTvrU8bfZPXUFwYekp0yrpflTHZj4lFvnAlN4aVR/5dZJKuJUThnlyjPz3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ns0Z+wMKGEmXh4XYR7inOcIGdpoMxafdrfcGejO6acU=;
- b=R1neR/0HL2D/m3nKvfkoAVyu7BYN0xrP0auPt8XhkzP7EZdTvH/binow8+9mx1e0au8NIf7AK+ueHEjHRFkgsUPXmQceJ/KWta7IfjSqpUPWK/K1Klk09paoY5eQx/hZfxwNTDz6iAwY3de4apq4Mk+0tOMkXiSBe/VrGkVvCiASIFfyELDED3eMRyPKMd+hI6AnXyYwZ8lvS0wrW1LTKG36hRhwbAKz0Op+s36srOBZ7eY8hAC5evJwuFvvvZOK6Sj7n2/GcJ89YwCQ/pDLEfpgh4sGsjus4gNfIv/d6oFa5P272T/TbwZXZMsF5vz6vRANxGwtwsOJG47wQmtjhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ns0Z+wMKGEmXh4XYR7inOcIGdpoMxafdrfcGejO6acU=;
- b=VDu/l3zl6oXAD78FLeAscyu1f3t2rrrpKcnUcv7D8hvbf1VvPl8m/dHiyRc38q95Oe8iAPcjN1NCYdzeX6CY9dLNgo9SOMwYXhjgRYPOGbQ4Bti/ff30NcvIgstUo8xtwsF9g1G/rgCG07zWq1KGyvsxoArwb2lWrvD3kytqaHDw9FW2rZtaYDurSxIITirfb3fEdi67W0Qj5AUFenILbDRNt0VEOWsPaXc/hkvyQK1rjIo36K1s7sc8Uey8ePL8inyfI9XExcw7NBFpKBSrQm6+MAjcklyrEej5iivTq2JedR4rw6/vhqHJo+0NWHJWxvaNacTQ182JaePAWoNb/A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by IA1PR12MB8286.namprd12.prod.outlook.com (2603:10b6:208:3f8::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9478.4; Mon, 5 Jan
- 2026 15:44:20 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%2]) with mapi id 15.20.9478.004; Mon, 5 Jan 2026
- 15:44:19 +0000
-Message-ID: <73d2561b-a36a-4578-b68e-bb8e7a7585be@nvidia.com>
-Date: Mon, 5 Jan 2026 10:44:17 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 01/14] rcu: Add WARN_ON_ONCE for blocked flag
- invariant in exit_rcu()
-To: Steven Rostedt <rostedt@goodmis.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDE6734107F;
+	Mon,  5 Jan 2026 15:48:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767628116; cv=none; b=kjsZuqdYZED/jqAcZVlOgWhf9wPWaxZdYWZWxjuiFPeHwR3AWOS4MyPNTJVa9JViygL36YDktQsIzbYPnGBZbYqxcUEbg66RR7xBJBc4/1KdikfKJUImr81G7axk1uUgg381yjvSj9sBhx/H+RZCbGr53X1F1vyts/onrgEQnrQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767628116; c=relaxed/simple;
+	bh=OucqBVGqgb1hbLp9tLWFpIB81+/FvjY5AVXM0nwpN3o=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CLkvDtv+mBL72nItekoMRxdxKQhcO88KNc5iuKuJoQUt5kp/PimffZIF1sc3uI3SItSBwYJkl0tPxwGkUv70CONeI4++EhPn8BdRQC4GVqPpITHGryG4Oze6FpivnSi4U8AdEqrvJp93a/xqOKVwZl91yqOi9ueiFGfrHofF3sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf08.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay01.hostedemail.com (Postfix) with ESMTP id DD9821AB6C;
+	Mon,  5 Jan 2026 15:48:31 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf08.hostedemail.com (Postfix) with ESMTPA id 6886520025;
+	Mon,  5 Jan 2026 15:48:28 +0000 (UTC)
+Date: Mon, 5 Jan 2026 10:48:49 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
 Cc: linux-kernel@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Uladzislau Rezki <urezki@gmail.com>, joel@joelfernandes.org,
- rcu@vger.kernel.org
+ Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
+ Feng <boqun.feng@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
+ joel@joelfernandes.org, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC 02/14] rcu: Add per-CPU blocked task lists for
+ PREEMPT_RCU
+Message-ID: <20260105104849.752efb04@gandalf.local.home>
+In-Reply-To: <20260103002343.6599-3-joelagnelf@nvidia.com>
 References: <20260103002343.6599-1-joelagnelf@nvidia.com>
- <20260103002343.6599-2-joelagnelf@nvidia.com>
- <20260105103145.5b3eaaf5@gandalf.local.home>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <20260105103145.5b3eaaf5@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR18CA0028.namprd18.prod.outlook.com
- (2603:10b6:208:23c::33) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	<20260103002343.6599-3-joelagnelf@nvidia.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|IA1PR12MB8286:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad1e3d65-a9fe-46c4-0b9f-08de4c714a5a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?YlgrODRJT3BCS2k4V3dQOHdBNS9uOGN5dXdsNVFUck5EMmkweExlcHB4WjV5?=
- =?utf-8?B?cmtCOEI1STdMUHpmWllFWThxQUxpTXJFaVBBOEhSbXVNdnE1QUV4MXRWSlR1?=
- =?utf-8?B?WE4yb3FtTERKWkNpbC9sdk00MVdueXdYSXMxQlBSSytrMXJYUFpYVUhtZURG?=
- =?utf-8?B?THpldkg0M3dGbjkxY3pRWFBXVGQvbDFJY3pzaWw4WUJMS24ySnJSdTlJSlpZ?=
- =?utf-8?B?Nk1JSmk3RlJVQzZkREJ3MDVTc1RTL3JRVFpuVWhNS1c4L2ZwMDE3OHluVXgz?=
- =?utf-8?B?eDRzd1pVYm0zK3FleFMrWFA3dU1ld1Zvd3dRTWRDV043U2thdEc4K3ZOSUlB?=
- =?utf-8?B?d245ZXJ6MlkxSVp2bGJtYmdMVkduVWoxOENUMUozalRDY1dyWS94ZDN6dG10?=
- =?utf-8?B?OHpqUTBzbjI2RXY0bEZHVmdNL2w2cGM5YjF1eFJ4TVlXSU5aZkhidkNSL2xy?=
- =?utf-8?B?MlFnOGE1V0NkUENnSUE1MkN3Vnk5d0JJSmpWZVdLL29LMlRmWHozZ3dlbC9N?=
- =?utf-8?B?S2xHRmRROXJ4Q0RlSjR4QUUxVkFXSFZtckh1NHRzUzJVeEhQR2tCckN3bnR4?=
- =?utf-8?B?MldrOEhRM0tFSGdPRjJFOHF5R0FiOEVkbVZRYlZldkN3R3dDNXVIc3BLTnQy?=
- =?utf-8?B?UFFyWG5VRjd5b2JUb0owTTNQSS9YQjh4Z0hBU2RsRFgwaXpNc3JWWE1maWVT?=
- =?utf-8?B?RVVHZkpVT3BQdG45SG9aRHBqU3p3Q3ViVzdTRkhjamZDZkRXajcvRE44clNQ?=
- =?utf-8?B?ZkE0UUR1UE9ZUjFhTmJrSWU4dVgrdFRNVU5UV2JuOGg2ekpIWk5wZDlJeVVm?=
- =?utf-8?B?eEpJMVBoTi9ndiszYmNab3pTck9EZnEwb0YzVU9UcDdGYTdNR0JBZ01wMmkr?=
- =?utf-8?B?WDNrbXhlTDdSZ2xTVkh0Nzd6UUwxaFkvVk93bFlvb2EvTzNsSWhBSXhXUjN1?=
- =?utf-8?B?YWZ3cUttWkZkVjlaUFBHLzNsendScllyNlVOd0VzS0ljbGVxcjNiYXIxY1p0?=
- =?utf-8?B?bmNKYnpYMEVYV2RQNGJuZjg3Q2MxSmF6R1hPZGlZK0V4YTJSczBabHRHbWdG?=
- =?utf-8?B?ZUc3amVPR2YvWFUwelgxRjNFUWlTNnVlclhnV1h6L1JTenpMMmJyc1VIL09W?=
- =?utf-8?B?RzJScnJsMElJN0JYZmFEc2pJcm1YTlYvaENwZGZWYWF5SXNCdnVsbmkvQUhi?=
- =?utf-8?B?M2Y5ekYzZHNPK0JvdURFM05hSVBRT1pCTTl6R2N4L3ltUjdXV0hSTTJLR3FM?=
- =?utf-8?B?R3ZNUEZqYWZKQWhLOUhJZS9tWTRVeFY5SUxuYVRUN1FTNWtlWW9iWFJESk9n?=
- =?utf-8?B?aVkwS3lWei9oQVVNb094ZkYwNDFackFTQ0xiTUI5WlhhQ0t1aVNTZDh3U2hU?=
- =?utf-8?B?ZTVjZS83bVZrbU1iaHdoL3AvSHB0ZStVVU5MNzJxL0hGUHpBMExneVkwT2la?=
- =?utf-8?B?aW9DMUI0eERnM05TcnJpbXYwK2pkK2kzME5RT2hSQjZ2TmJWYnFyUXNmTDV3?=
- =?utf-8?B?V3FVVTdnUDdUS0x2QTcyazBRNnlsVXBndXd5T1c3MDJHeHR2REVsa1F5MVly?=
- =?utf-8?B?ZVVQeFB6WXJob3gzUm9xQUhGNW9XK1JNT3dHeVI5Njg5KzNjZ3NNRjd1YjdT?=
- =?utf-8?B?RUVZR1FRZjcwNXVuZ0NmQitEa2VCWGN1ZnNMWmppWDFMd29YZXJrODVsNDlJ?=
- =?utf-8?B?M2tqQXZlMTdWQW92eURteHRjYkNQYkpVSW9vWG0xRnk1aE9ESGtOK1J3MVhk?=
- =?utf-8?B?WDZUZ3FMd0haOHJrUTFnQUl4RVBRVVBaYzlGY2RpeWNPeXlQdm00RGNmWThi?=
- =?utf-8?B?QVRNbFFIU1IvZ0daZjJOWjY2aDlQM3U3WHY0VHEvTW5yKzQ4MnpvNm52VFlZ?=
- =?utf-8?B?KzgvcHJ4WHRISFdWV1pBV01FdmFTU1M5cFV2UkNXbkdoaHJ0cnNzbWRvRG1J?=
- =?utf-8?Q?s0UO/MkBJ5/9nRlpXJv3PuJNEhmztBPz?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MHB4Vk4xRGg1V3h3MDdsQXRPRnNwVTcxRU5sOTJHbEVpUklGUzVKaFcyL3Nl?=
- =?utf-8?B?V2FUcGFKcVgrYy92RUg3RlJrYjNKb3BsM0lzRUVHUDkzcTZRdmRkZzkrUG93?=
- =?utf-8?B?ZjcwdVRHeDN2RXV0YXY4MXNxVkVXUXZLdFdBMlpac3h2NzRUblZiS3NuQjFt?=
- =?utf-8?B?ZXNta1d6ZVFFV2dpQTc1QlQrT3VVc29PTzlwbmYwc3RBWnpCck4ybDhYNzlT?=
- =?utf-8?B?Q3pWVTRJWDFIZzhJeXZZUjdtUDRFYWZqRDAycjNBYnlpcG12TjdkRHVub2VH?=
- =?utf-8?B?U1BZK1VwTWpEU2RvQWd4L05wdDNCaFQxZzBKeEVQN2VBTDNkOTVJVDN3bW9z?=
- =?utf-8?B?VWxoaW1vOUh6K2F2d0ZqMXBQUjBGZ2c1WStWajNPNDVxdlpVL3B2L0Y5MTcz?=
- =?utf-8?B?RTJNUDN5TlVVWk00WExuNjBXSHljeFFyQkJCejJVSURyTC9sdmM5NXFPb0Nx?=
- =?utf-8?B?MkVGYTJlaFk4cFIxTGxRWkowZm8zaHdUZmtNaUVObkowMzduVTB4WjZnTSs4?=
- =?utf-8?B?UUdjS3c1cFUvMmswSGIxQko4YnZWQzVBY1RxaWYvb0RpdmR4YWlna2RscU9m?=
- =?utf-8?B?alV5QmxFc3BsQ1JCMC9pV0JqQXFaN01xUlZNY0FTc2wyeVRnVEtIR2xIZUh0?=
- =?utf-8?B?a2xZdm4ybTBaZDcrUE84N2I1WDNxYTVHODlyUUJ1Q1U0d29aMUg5R0VCTmhv?=
- =?utf-8?B?S000a1Ara1JiS2lrSnY3UVRRVitSdEVaY29hRlR2TGVjVGlkcUdYNXgyb1My?=
- =?utf-8?B?cHpUeldzQWJmMzlZNVNiWkdTQy82d1ZyaVBoWTZqczVlUzkxU2l4SlNBMDZL?=
- =?utf-8?B?UndjYS9aMzR0cDlGT1VIOWpnSG9SaTNDbmJXZ2xweDFyZkFsUDdSeEdxaU5V?=
- =?utf-8?B?UThaRkx5K3dtMnY2L29CZFJiUG9NQVlxUC9GMWJEbFZYVmFnZ3hxWVFNZzVY?=
- =?utf-8?B?anlJb1hyZWRyM1BBZWpMOERHeHdJUjk5UjJGbmoxSHpGK1g0bWFYZ3l2Z1pP?=
- =?utf-8?B?RkZyUWxjNCtzcnNOVVFURU51SE5zS2RHeGwveFdXWExweU1yZ3g0bUphNXFW?=
- =?utf-8?B?ZE5BYUdGL3RUWkhqN2RMM3BmSWg3QzhFRG5qOGc4VzhsMGdLSUthQzhKUWJZ?=
- =?utf-8?B?STZjMHZsYjMwczZlQmVPVVd2NkVCVU9DNFRvT1JFOUs1dnRsQXhxWVEzcnVu?=
- =?utf-8?B?YXA4NjBJbXAwUUJvNER6ak1Zb3JyZFpBTVdPU2JOaDVnTCtBZEF4R3NpdzR6?=
- =?utf-8?B?akRuYlRoVS9TY3BFOEpUa2JaYzQydjFJS2ZWblo0OVpLTmRiTUdvTE5Uaitt?=
- =?utf-8?B?TWtjU0ZlY2oyT2VHclF5TFF3RkFGUlNkd1RBSDU2SGkrUnl4RjVtY1RaYjdB?=
- =?utf-8?B?ZFZyMkMxRW44ZW8xa0pZMHg5VVFOaUtVQzRUMTRtVFBPY1h6WWJ1WjNTMFFJ?=
- =?utf-8?B?SjE4TlNNV00weTMrWlNTeExKRUd5eEZlWnY5ME12V0dIQVlGZXNjMnVwOTFB?=
- =?utf-8?B?NStQQ0NoaXRPQjdlYk1zWEYwOVcwOFUyV0VjWlZVZGRQZU56azlZUEswdGR4?=
- =?utf-8?B?UzMyZFhaaGpNV3d4b0RQelBxWEdVSHJ5M29TVVFhVU5GUVJlR1lXVEJmMU0w?=
- =?utf-8?B?SWtnaUpnYUhsSWVjeHlHQVY1WS9ER1JZTldkU3BDVzJkb294dlNwaHByQ2I0?=
- =?utf-8?B?MVNVVU9BU09mN1ZGR09BMkFWVE5DWWdnUGVMSDZyV1dTVlV5dUpjK0FMdW1G?=
- =?utf-8?B?WnFRcHRQSjdWVU4xY2xudGt4NnlZMDQxTThnSlRuSHhOWDd2a3NMUjVvRUhF?=
- =?utf-8?B?RVlGQTh6aThuaXJ3QldmVXV1d2RmOVNHVjZJamg0aE51RWFXSkppbzQvOTZp?=
- =?utf-8?B?MjJ2TXE1WTVmSmNZMU1TdW1MTTkrL0tkMjdVMXhWK3BQbHZ4S3VVRFdKalJ2?=
- =?utf-8?B?bUlaWVRUb01Tc09iVEVxUDl1bnJheU8wK0hoZ2pzTjVwMXpBTnR2dy9YOWFD?=
- =?utf-8?B?YVNZWmVEMC9MZWxCeWl1S1lNR0NyVldCdmFkQzZXaGkyb3JkS1lyb0wveDlj?=
- =?utf-8?B?K2k1MGpEbS9YSzdXTUpvME44S3plYkVob3lvMGk4S2hkMGdJQUFxSzljSjdi?=
- =?utf-8?B?dk4xYXhKaFZQaWtVZFE4VkxOaXlweUJPdzdsMWRCcmRGUUlVMExxdkVvbUZM?=
- =?utf-8?B?a1RYMHZPUmFiZjVCNEx3ZjRVb2ZxN05JUHZHcmJ3djJ4Q0l0QS9KT3BMcExh?=
- =?utf-8?B?YllId0hEYjJKMkJzcWhxakpKZGtRdHJwMVdwTVJmc3RjQVY4emRGemN1VEJJ?=
- =?utf-8?B?N2k1dDg3d2toQlZBb0dFY1U1TmRNODdIbHRoNWNGWmJJdHFGTWVKUT09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad1e3d65-a9fe-46c4-0b9f-08de4c714a5a
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2026 15:44:19.7927
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wpe/0RPCdB+dZyAXdCM8uA1UjeL4J2fFcWsdTmEQHlciOAIO5xNcFhrQSsDA05gsY+slCaYW+C5Bomt5c+m19A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8286
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: dszoeoh7i7g5d8w7o48t1xdymhc3t54c
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 6886520025
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19rOGnLA+w8iTuiBQY4EKl4E4O4mHP4D+s=
+X-HE-Tag: 1767628108-330019
+X-HE-Meta: U2FsdGVkX18bkDMYICk2fU/lpajAz11gExQhFFWI8iJ+QE1RBNHPqHtpfKIfS2sotul61RbZL/mFXBr/utWltxrw3NJdz0ihtKlI9FDTVBZfsCFgvDsupj9mjGtpeF7hG91zwEzg7Ew4HSler7DWeHrVZ5qyNByKF6kzzx95EgGns3aFtJezt+UuxJK1UU0TJ4ri76L8kXh2li8Qm99IOo7VS6z2g4Oj+LA11R4i0Z9PoXqW9vahaIQeXYELv150FLpbcmHdNMecodsrlPV3GwbAHP2j9WT3wGdZaMacJCHOL7jO4TREdaAD1kvcPU9k6r06OIJ6mGy0BnBjNHY4HwTGt+MqZxKxjWSJB8kwmoVol/HrR9aYlHnYL3wWusF7
+
+On Fri,  2 Jan 2026 19:23:31 -0500
+Joel Fernandes <joelagnelf@nvidia.com> wrote:
+
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -248,6 +248,18 @@ config RCU_EXP_KTHREAD
+>  
+>  	  Accept the default if unsure.
+>  
+> +config RCU_PER_CPU_BLOCKED_LISTS
+> +	bool "Use per-CPU blocked task lists in PREEMPT_RCU"
+> +	depends on PREEMPT_RCU
+
+> +	default n
+
+nit, you don't need "default n". The default for options without defining a
+default setting is "n".
+
+> +	help
+> +	  Enable per-CPU tracking of tasks blocked in RCU read-side
+> +	  critical sections. This allows to quickly toggle the feature.
+> +	  Eventually the config will be removed, in favor of always keeping
+> +	  the optimization enabled.
+> +
+> +	  Accept the default if unsure.
+
+Hmm, RCU is the only place that says "Accept the default". That would
+usually be for non boolean values (for numbers). But it should say either
+"Say N if unsure" or "Say Y if unsure".
+
+> +
+>  config RCU_NOCB_CPU
+>  	bool "Offload RCU callback processing from boot-selected CPUs"
+>  	depends on TREE_RCU
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 293bbd9ac3f4..e2b6a4579086 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1809,6 +1809,14 @@ static noinline_for_stack bool rcu_gp_init(void)
+>  	struct rcu_node *rnp = rcu_get_root();
+>  	bool start_new_poll;
+>  	unsigned long old_gp_seq;
+> +#ifdef CONFIG_RCU_PER_CPU_BLOCKED_LISTS
+> +	struct task_struct *t_verify;
+> +	int cpu_verify;
+> +	int rnp_count;
+> +	int rdp_total;
+> +	struct rcu_data *rdp_cpu;
+> +	struct task_struct *t_rdp;
+> +#endif
+>  
+>  	WRITE_ONCE(rcu_state.gp_activity, jiffies);
+>  	raw_spin_lock_irq_rcu_node(rnp);
+> @@ -1891,6 +1899,26 @@ static noinline_for_stack bool rcu_gp_init(void)
+>  		 */
+>  		arch_spin_lock(&rcu_state.ofl_lock);
+>  		raw_spin_lock_rcu_node(rnp);
+> +#ifdef CONFIG_RCU_PER_CPU_BLOCKED_LISTS
+> +		/*
+> +		 * Verify rdp lists consistent with rnp list. Since the unlock
+> +		 * path removes from rdp before rnp, we can have tasks that are
+> +		 * on rnp but not on rdp (in the middle of being removed).
+> +		 * Therefore rnp_count >= rdp_total is the expected invariant.
+> +		 */
+> +		rnp_count = 0;
+> +		rdp_total = 0;
+> +		list_for_each_entry(t_verify, &rnp->blkd_tasks, rcu_node_entry)
+> +			rnp_count++;
+> +		for (cpu_verify = rnp->grplo; cpu_verify <= rnp->grphi; cpu_verify++) {
+> +			rdp_cpu = per_cpu_ptr(&rcu_data, cpu_verify);
+> +			raw_spin_lock(&rdp_cpu->blkd_lock);
+> +			list_for_each_entry(t_rdp, &rdp_cpu->blkd_list, rcu_rdp_entry)
+> +				rdp_total++;
+> +			raw_spin_unlock(&rdp_cpu->blkd_lock);
+> +		}
+> +		WARN_ON_ONCE(rnp_count < rdp_total);
+
+This only happens at boot right? This isn't something that executes at
+normal run time right? Otherwise I would be worried about loops like this
+under raw spin locks that could affect RT.
+
+> +#endif
+>  		if (rnp->qsmaskinit == rnp->qsmaskinitnext &&
+>  		    !rnp->wait_blkd_tasks) {
+>  			/* Nothing to do on this leaf rcu_node structure. */
+> @@ -4143,6 +4171,10 @@ rcu_boot_init_percpu_data(int cpu)
+>  	rdp->rcu_onl_gp_state = RCU_GP_CLEANED;
+>  	rdp->last_sched_clock = jiffies;
+>  	rdp->cpu = cpu;
+> +#ifdef CONFIG_RCU_PER_CPU_BLOCKED_LISTS
+> +	raw_spin_lock_init(&rdp->blkd_lock);
+> +	INIT_LIST_HEAD(&rdp->blkd_list);
+> +#endif
+>  	rcu_boot_init_nocb_percpu_data(rdp);
+>  }
+>  
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index b8bbe7960cda..13d5649a80fb 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -294,6 +294,12 @@ struct rcu_data {
+>  
+>  	long lazy_len;			/* Length of buffered lazy callbacks. */
+>  	int cpu;
+> +
+> +#ifdef CONFIG_RCU_PER_CPU_BLOCKED_LISTS
+> +	/* 8) Per-CPU blocked task tracking. */
+> +	raw_spinlock_t blkd_lock;	/* Protects blkd_list. */
+> +	struct list_head blkd_list;	/* Tasks blocked on this CPU. */
+> +#endif
+>  };
+>  
+>  /* Values for nocb_defer_wakeup field in struct rcu_data. */
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 73ba5f4a968d..5d2bde19131a 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -338,6 +338,12 @@ void rcu_note_context_switch(bool preempt)
+>  		raw_spin_lock_rcu_node(rnp);
+>  		t->rcu_read_unlock_special.b.blocked = true;
+>  		t->rcu_blocked_node = rnp;
+> +#ifdef CONFIG_RCU_PER_CPU_BLOCKED_LISTS
+> +		t->rcu_blocked_cpu = rdp->cpu;
+> +		raw_spin_lock(&rdp->blkd_lock);
+> +		list_add(&t->rcu_rdp_entry, &rdp->blkd_list);
+> +		raw_spin_unlock(&rdp->blkd_lock);
+
+Should we use scoped_guard?
+
+		scoped_guard(raw_spinlock, &rdp->blkd_lock) {
+			list_add(&t->rcu_rdp_entry, &rdp->blkd_list);
+		}
+
+> +#endif
+>  
+>  		/*
+>  		 * Verify the CPU's sanity, trace the preemption, and
+> @@ -485,6 +491,10 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+>  	struct rcu_data *rdp;
+>  	struct rcu_node *rnp;
+>  	union rcu_special special;
+> +#ifdef CONFIG_RCU_PER_CPU_BLOCKED_LISTS
+> +	int blocked_cpu;
+> +	struct rcu_data *blocked_rdp;
+> +#endif
+>  
+>  	rdp = this_cpu_ptr(&rcu_data);
+>  	if (rdp->defer_qs_iw_pending == DEFER_QS_PENDING)
+> @@ -530,6 +540,17 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+>  		 * to loop.  Retain a WARN_ON_ONCE() out of sheer paranoia.
+>  		 */
+>  		rnp = t->rcu_blocked_node;
+> +#ifdef CONFIG_RCU_PER_CPU_BLOCKED_LISTS
+> +		/* Remove from per-CPU list if task was added to it. */
+> +		blocked_cpu = t->rcu_blocked_cpu;
 
 
+And use guard here?
 
-On 1/5/2026 10:31 AM, Steven Rostedt wrote:
-> On Fri,  2 Jan 2026 19:23:30 -0500
-> Joel Fernandes <joelagnelf@nvidia.com> wrote:
-> 
->> Add a WARN_ON_ONCE to detect this invariant violation. If this
->> warning ever fires, it indicates a bug where a task was added to
->> a blocked list without properly setting the blocked flag first.
->>
->> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
->> ---
->>  kernel/rcu/tree_plugin.h | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
->> index dbe2d02be824..73ba5f4a968d 100644
->> --- a/kernel/rcu/tree_plugin.h
->> +++ b/kernel/rcu/tree_plugin.h
->> @@ -846,6 +846,7 @@ void exit_rcu(void)
->>  	if (unlikely(!list_empty(&current->rcu_node_entry))) {
->>  		rcu_preempt_depth_set(1);
->>  		barrier();
->> +		WARN_ON_ONCE(!t->rcu_read_unlock_special.b.blocked);
->>  		WRITE_ONCE(t->rcu_read_unlock_special.b.blocked, true);
+		if (blocked_cpu != -1) {
+			blocked_rdp = per_cpu_ptr(&rcu_data, blocked_cpu);
+			guard(raw_spin_lock)(&blocked_rdp->blkd_lock);
+			list_del_init(&t->rcu_rdp_entry);
+			t->rcu_blocked_cpu = -1;
+		}
 
-Right, so it is ever not set then we are trying to "right" a "wrong", so..
+-- Steve
 
-> 
-> If we warn when it is not set, could we just remove setting it?
-> Or do:
-> 
-> 		if (WARN_ON_ONCE(!t->rcu_read_unlock_special.b.blocked))
-> 	 		WRITE_ONCE(t->rcu_read_unlock_special.b.blocked, true);
 
-.. we could just do this. I'll apply the suggestion, thanks!
-
- - Joel
+> +		}
+> +#endif
+>  		raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
+>  		WARN_ON_ONCE(rnp != t->rcu_blocked_node);
+>  		WARN_ON_ONCE(!rcu_is_leaf_node(rnp));
 
