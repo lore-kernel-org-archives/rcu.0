@@ -1,89 +1,180 @@
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B37D275AF5;
-	Mon,  5 Jan 2026 15:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD0921FF47
+	for <rcu@vger.kernel.org>; Mon,  5 Jan 2026 15:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767627096; cv=none; b=q3Znce0t2XjMWd6MkGaDzMeXS1qGyo9duQEppt89HBkfcNIeoHd/wDL4h7tkk42GXQhSYaZ1l6Hn1KPGJsfPHYrPGt9ShPxUxExmDeA3CsJM7qqm6DaIlpZNK2xOjokbSTlMbf+xKghTN338vrs/OEur84WtczYN8nuc2anyy88=
+	t=1767627676; cv=none; b=ZPII49HK5MQWhfIQMgoh/Pm+cI36JEt9E2riXzYhMBuwvbNylTm7v40mLHCcEgOBqWAZa0U4ivGdCExgRzAyFKOdKqxWi44PFVBhbO+KoYVpQFtZhdokCVs5XhFEoTxJpnsXSX0xaZdimwXFmLUJrofBDQNSj93qFE6V2IJxYUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767627096; c=relaxed/simple;
-	bh=fhbS21r0DEYIF4aR+XvrROnenWGn+ZEo2jFpNN4D15s=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tRW6INyZqlKe6GOtXonMq3rHzOFkwBZWJVcDiq1HLzXAOrzqGR0Esgm/Tn+XR9tDdc4aPAPORWSl7WabYoFVLj86Pl4vQMOefZPy9k6P/2HwBwfXo+iLfz4aqCXivmliViAuH4DYCmgQOEtrv6FDGVKaEQ5Hzr0JE4fyyD6b0rM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay03.hostedemail.com (Postfix) with ESMTP id CE720B661A;
-	Mon,  5 Jan 2026 15:31:25 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id 1AFA630;
-	Mon,  5 Jan 2026 15:31:23 +0000 (UTC)
-Date: Mon, 5 Jan 2026 10:31:45 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
- Feng <boqun.feng@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
- joel@joelfernandes.org, rcu@vger.kernel.org
-Subject: Re: [PATCH RFC 01/14] rcu: Add WARN_ON_ONCE for blocked flag
- invariant in exit_rcu()
-Message-ID: <20260105103145.5b3eaaf5@gandalf.local.home>
-In-Reply-To: <20260103002343.6599-2-joelagnelf@nvidia.com>
-References: <20260103002343.6599-1-joelagnelf@nvidia.com>
-	<20260103002343.6599-2-joelagnelf@nvidia.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1767627676; c=relaxed/simple;
+	bh=7XOckaOqG/PMRqT76fU8qmeyL4hEz8+C+ksukJDZjK4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lxvzQ4Hnr6XTmLOAluWvtTwuMOrLX+WDwS0QBrY7umPET//dE/oXmlNGgx+6KPmnwhz1yOQl4z8E5RXOadhx/U5WrxcakecJZcJPg6uZHoWPK/p/gJ3nGND/ExsOSSuEk0DSCgm2zK+QsCZaiqDZjr/4YnonT0PbIJ3dFE0OP6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RUBiqiVx; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RUBiqiVx"
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-88a347c424aso1396d6.0
+        for <rcu@vger.kernel.org>; Mon, 05 Jan 2026 07:41:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767627672; x=1768232472; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r6BA1g1a3pdykyjLkvUREMTVpM7/WCPoUOv36P4M2nY=;
+        b=RUBiqiVx/t7vGe/RuVzxTndk5myDZoEYkfhTue9om2uBkHmkh6wNYFMeygSKfoG57i
+         g4rocB+BZkVWJDBF7aG5eK98iD/gtEoPszHnHmGmpL+7ZCWkvaMX9L5UKFDteiHD8EeS
+         l7UHrIFRjibO8zrknZ7cgchU9IdVmyS2x9PsbihAp3V7VnZzIdR27daG66XcrUu+p/hc
+         kmb0YHtx/4U2mjfU8CLYz1IKFKPfHw3hMBTu/8Fp/fRZeSmFdwkh/nhiCu6gxmqohHT+
+         WFO/Gce068TXQuHwMpO/73nAGE7zUo8xE9+WRcSk/fWGkW7IHuvTxVEXWmk4HcteKsL4
+         GMIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767627672; x=1768232472;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=r6BA1g1a3pdykyjLkvUREMTVpM7/WCPoUOv36P4M2nY=;
+        b=r2J5RBMi+93/8CRHdJ4KFGzLdnclPnYv0hvJUdkzc9Zjmk/W/AY8S3EumlMW+uhjMl
+         bHvLSgT/cYHxa5DbQOXXf1M7PU8c1diXn0KQPZEpsLfJ7/aKFQaLm/6Y4xQGOngCX1xr
+         EZg3cvvCzWCVKlRIhnUdCF+0YVvbJRu1RddkRlXcCWE6Pvv3SHj2D4/6uF/q8WcuGMPg
+         PBtKDv3MxSPxPz8YCvEZmrVbz/uR6XwndID/goCQVPTtnDn2n5hxELJ4NIti7uYzoqWy
+         AXV4NFXDLTConBh9VvD8e7fctqlsd2uvRAJMTWlCyrKfWAa5dyJeqr2Bj/0RFlCmFt1Z
+         4Ovg==
+X-Forwarded-Encrypted: i=1; AJvYcCWHUuxWMp10hT9fWSSHoWZS5QJpAkclH/0OzqNJipW7BQ43BKDz4oI5ds8P7ogycIIdOsI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyC5lTFXFm5HgrI5vcL36F7DhdjXcVMl8EG8UbuqeU7S/gz2S3B
+	a0PEEyjCPSYLfiRiI6QtGa69cAkBj7Q06el5gP/l8igzjkJV1vlsAQJA
+X-Gm-Gg: AY/fxX5cajw5jmaj0KrAM07BY90ZyovIo5CCe6x5SpyrsIXpOQ5NbI07LwpY/Min1YS
+	e9Yk3uTcPv7IPCBRP3GBat8slvHSr5do3n1MHRcjQt1aUbJpMUzBZTd3x55/MB3NlVYoxyySs/K
+	QW9jh3LLLdK1LcHryYqPU3WVjRM8w5+rueyrwlFZJUq4niHf1kywJeyapmw54dydDnYlBbHigD9
+	hzU0Fcny/qYmmdpAEssEfpwG3hRotQCss6l9tKb8ZRtiJ9sXzMimbRmo2dCZ3MeEs7yGI+U8muW
+	E+TneHk1tjQDvjmcrKS1IHepDLV5GP+GU1qE6VG+ylCyaRaUBRMnlmHbSFyK3WqzlQoTBonh3E0
+	vUPHA8e5JKkbuJemrEuVFPGxcAV3Wf7je3cwMDbvGtvOEnMVBPuHRWpxmW8axYUDb/PdBYtKkpF
+	l7MqEWTLXtxb5tGmGbpqfaXWqDcgbHuIlxKfPLVG+snfh/RR3uKWulfreeDKeNeqeKsK8bl3ou6
+	8MyIymvTx3NVjo=
+X-Google-Smtp-Source: AGHT+IHeeyt4Xeum2e3H4UlfOCeEPZyOgjULTv/XI4YZg24EjWSSkO3V7ao10G0yIxqhA1gkrd4grw==
+X-Received: by 2002:ad4:5250:0:b0:88a:4ab2:5f52 with SMTP id 6a1803df08f44-88d83d65360mr521106156d6.51.1767627672608;
+        Mon, 05 Jan 2026 07:41:12 -0800 (PST)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-89075557d23sm1207046d6.41.2026.01.05.07.41.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jan 2026 07:41:12 -0800 (PST)
+Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 8F0F5F40068;
+	Mon,  5 Jan 2026 10:41:11 -0500 (EST)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Mon, 05 Jan 2026 10:41:11 -0500
+X-ME-Sender: <xms:l9tbaQl8adq_q8oemVdp9py9aCB5rEYMUXGPUHOfxSENDh0M6SOSiw>
+    <xme:l9tbaVrCyG7LEDf5sozj9kkhyLQ0sPqK87jUAC_qJfbekq6ICe_xe5QMuMoTjEKUA
+    tB0zjAhiqSBWufmhb_KP365bDbxKmKQ-BUeRDG7AXs90zPIyqpX-w>
+X-ME-Received: <xmr:l9tbaTuvJMNXCwyVLLEQxwAkDuZHya194bV4WrOdHwOVBYRN60UCxK-j>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeljeeilecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfh
+    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
+    hrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudffiedv
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqh
+    hunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddu
+    jeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvg
+    drnhgrmhgvpdhnsggprhgtphhtthhopeehkedpmhhouggvpehsmhhtphhouhhtpdhrtghp
+    thhtoheprghlihgtvghrhihhlhesghhoohhglhgvrdgtohhmpdhrtghpthhtoheprhhush
+    htqdhfohhrqdhlihhnuhigsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    lhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
+    epghgrrhihsehgrghrhihguhhordhnvghtpdhrtghpthhtohepphgvthgvrhiisehinhhf
+    rhgruggvrggurdhorhhgpdhrtghpthhtohepvghllhgvseifvggrthhhvghrvgguqdhsth
+    gvvghlrdguvghvpdhrtghpthhtoheprgdrhhhinhgusghorhhgsehkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehlihhnuhigqdgslhhotghksehvghgvrhdrkhgvrhhnvghlrdhorh
+    hgpdhrtghpthhtohepfhhujhhithgrrdhtohhmohhnohhrihesghhmrghilhdrtghomh
+X-ME-Proxy: <xmx:l9tbabmkDu5goAML_Vw6wQks5sr1-oqWVGEVyl7SpncPG41qLq8PqQ>
+    <xmx:l9tbaZEvXpCwph3gfl5iq-kHa4fsrJ-e6g21CjltgBbR441YOY405w>
+    <xmx:l9tbaa8pxEfCJ2_idKerH3733Rocx35rGJlDBn4X7HlKs2MkaFUX5A>
+    <xmx:l9tbaW7nR-qjUaIEByc4-kPNbC8tpKXp-OM_EvS1h_evQ7bx_68mJA>
+    <xmx:l9tbaS4UkZJm3L0Tu3phQb3ItLU_OD6WXZGJ8xIIxpleNVBlr6HjnmTP>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 5 Jan 2026 10:41:10 -0500 (EST)
+Date: Mon, 5 Jan 2026 23:41:08 +0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Gary Guo <gary@garyguo.net>, Peter Zijlstra <peterz@infradead.org>,
+	Elle Rhumsaa <elle@weathered-steel.dev>,
+	Andreas Hindborg <a.hindborg@kernel.org>,	linux-block@vger.kernel.org,
+	FUJITA Tomonori <fujita.tomonori@gmail.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+	Benno Lossin <lossin@kernel.org>,	Danilo Krummrich <dakr@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,	Paul Moore <paul@paul-moore.com>,
+ Serge Hallyn <sergeh@kernel.org>,	linux-security-module@vger.kernel.org,
+	Josh Poimboeuf <jpoimboe@kernel.org>,	Jason Baron <jbaron@akamai.com>,
+	Steven Rostedt <rostedt@goodmis.org>,	Ard Biesheuvel <ardb@kernel.org>,
+	Andrew Ballance <andrewjballance@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	maple-tree@lists.infradead.org, linux-mm@kvack.org,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vitaly Wool <vitaly.wool@konsulko.se>,	Rob Herring <robh@kernel.org>,
+ devicetree@vger.kernel.org,
+	Daniel Almeida <daniel.almeida@collabora.com>,
+	Michal Wilczynski <m.wilczynski@samsung.com>,	linux-pwm@vger.kernel.org,
+ "Paul E. McKenney" <paulmck@kernel.org>,	rcu@vger.kernel.org,
+ Will Deacon <will@kernel.org>,	Fiona Behrens <me@kloenk.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,	Ingo Molnar <mingo@redhat.com>,
+ Waiman Long <longman@redhat.com>,
+	Mitchell Levy <levymitchell0@gmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,	Lyude Paul <lyude@redhat.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	John Stultz <jstultz@google.com>, linux-usb@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Tamir Duberstein <tamird@gmail.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 00/27] Allow inlining C helpers into Rust when using
+ LTO
+Message-ID: <aVvblLp8sjFB7JvB@tardis-2.local>
+References: <20260105-define-rust-helper-v2-0-51da5f454a67@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 1AFA630
-X-Stat-Signature: 8c9djftkjbouqo131ctw7h5hgccj3qn5
-X-Rspamd-Server: rspamout08
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19Qy7KqdzUBPUoxr6Yu1sldc6piq+CDu0g=
-X-HE-Tag: 1767627083-56495
-X-HE-Meta: U2FsdGVkX1/CMwVPDyPftzUIYBbvh4MYuTuRcK/jpkNkUUEavkCE/eoXfgpS6lybvaCGAlaD72wzQX4SXw83NT+o+BFMM/dJS8NKmoZ9DwF9ejOVGtq82VyzBuynDZyconYeJst4RFQ4Xt4uEACQfZ4M9AxFT/x6kZ2Gzaw2sPcJONdSFsckyZx/6uBdPGU2epza0nfum8JJv3DwflzujhESe9q1JpZn0/nAUTKdm8REpMXpQjYZPJUTWiWRtfp2UCUP3rquZGMkgBPu+VGCweozu/8GoguK9cj6bVFQgOMev6Dk71u3iWHtaL0SRMl1KCurJErOFpuEWQbeKkfqDtKPXBEQ09l2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260105-define-rust-helper-v2-0-51da5f454a67@google.com>
 
-On Fri,  2 Jan 2026 19:23:30 -0500
-Joel Fernandes <joelagnelf@nvidia.com> wrote:
-
-> Add a WARN_ON_ONCE to detect this invariant violation. If this
-> warning ever fires, it indicates a bug where a task was added to
-> a blocked list without properly setting the blocked flag first.
+On Mon, Jan 05, 2026 at 12:42:13PM +0000, Alice Ryhl wrote:
+> This patch series adds __rust_helper to every single rust helper. The
+> patches do not depend on each other, so maintainers please go ahead and
+> pick up any patches relevant to your subsystem! Or provide your Acked-by
+> so that Miguel can pick them up.
 > 
-> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
-> ---
->  kernel/rcu/tree_plugin.h | 1 +
->  1 file changed, 1 insertion(+)
+
+I queued the following into rust-sync:
+
+       rust: barrier: add __rust_helper to helpers
+       rust: blk: add __rust_helper to helpers
+       rust: completion: add __rust_helper to helpers
+       rust: cpu: add __rust_helper to helpers
+       rust: processor: add __rust_helper to helpers
+       rust: rcu: add __rust_helper to helpers
+       rust: refcount: add __rust_helper to helpers
+       rust: sync: add __rust_helper to helpers
+       rust: task: add __rust_helper to helpers
+       rust: time: add __rust_helper to helpers
+       rust: wait: add __rust_helper to helpers
+
+Thanks!
+
+Regards,
+Boqun
+
+> These changes were generated by adding __rust_helper and running
+> ClangFormat. Unrelated formatting changes were removed manually.
 > 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index dbe2d02be824..73ba5f4a968d 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -846,6 +846,7 @@ void exit_rcu(void)
->  	if (unlikely(!list_empty(&current->rcu_node_entry))) {
->  		rcu_preempt_depth_set(1);
->  		barrier();
-> +		WARN_ON_ONCE(!t->rcu_read_unlock_special.b.blocked);
->  		WRITE_ONCE(t->rcu_read_unlock_special.b.blocked, true);
-
-If we warn when it is not set, could we just remove setting it?
-Or do:
-
-		if (WARN_ON_ONCE(!t->rcu_read_unlock_special.b.blocked))
-	 		WRITE_ONCE(t->rcu_read_unlock_special.b.blocked, true);
-
--- Steve
-
-
->  	} else if (unlikely(rcu_preempt_depth())) {
->  		rcu_preempt_depth_set(1);
-> -- 
+[...]
