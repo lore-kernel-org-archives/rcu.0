@@ -1,79 +1,57 @@
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010070.outbound.protection.outlook.com [52.101.46.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E7D3358AF
-	for <rcu@vger.kernel.org>; Tue,  6 Jan 2026 20:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767732010; cv=none; b=WExvV9n96xYoCfsrEF7W+BMIMpELjst2TpoqKUHO08HgwnBeCUPI93joa5/jYKHW2/QSUwDvFFomUj/RaqPuexTSyXx9eNaTBRmEEXZAGjC2Ky/k08n1xUiH7p/+B9dM/U0Ee2pBo+0pTc5xpWb6WaqdJUJtzSUFrlGd3F8CK24=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767732010; c=relaxed/simple;
-	bh=Fd9r5s3Uo7/NEFTM80WuDzG1z2OPJkYyVSmo6UzvLy8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rm/BCesbtx3fY+1q6FzYi804mBwjSNcKJHP5sjuR6fIWbM8QHocix3rzehLwmzJ4JuxOJfNw58tCtmHt/aKhNlh/Azkyt6bqNYoppeG2/G4x+GOjGqqdINJ6C11gwxCbOFavDgLnrQlRCG/MR81MEZbCS0p7o5dwRDN0ZlRrlEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=qWxmCSCv; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5A41CDFD5;
+	Tue,  6 Jan 2026 20:49:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.70
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767732556; cv=fail; b=NeTrZDeri0ynX0454OvO2vsvVp5N65rzCIQObUCq3HkiWzI96gyvcyL79tM0Ij9PfcFjbtwPu2jOfaUObA8psTBvjhbiokGUfqjLuHw5YB2DtQekhtFGEB4EMx4o2JMd+7MWrP922TYdtDlu4M4Tylcpa4ATWnX/kV2sJ1EzUI4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767732556; c=relaxed/simple;
+	bh=eJ+ja4HVQJmL/4ulHDWEGtTOTel6hGWdX7SV953UXWg=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ncEhDaqU62jXdh7Xu1VUf8TGn+BhJk3ms5UtcJj78qw4B7tlWxBJw322UIaNplV7eD7M7378oN6dwMP0n6jwhJwXmlkMgCQFxMpTR8Ge/SLIObfMG2ZLyAEbp8X9mxz46MI3JKG29YMJYxUcbNQE7jNPRE1KouiusiNFl+/U0Oc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=V9yzp6IE; arc=fail smtp.client-ip=52.101.46.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="qWxmCSCv"
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-8b2148ca40eso185318285a.1
-        for <rcu@vger.kernel.org>; Tue, 06 Jan 2026 12:40:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1767732007; x=1768336807; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZeeQFWxcKymtkVYB5RA0pHHQMP4nx/JDC9n+qBdaSHg=;
-        b=qWxmCSCv6fqPyDNcLmIjKOxx5WBWE9TZacqRiDgNW8kMbBfYf7ek2PKs7FHmG7l9CD
-         MBRjC5S98w4ZTJ/mx02Ws30ynDavriqPSiz0hqxBE8gITm15bNB9XD43AbOqLdxjN8h3
-         ZXJgbE1ZsvZusxlWI7HdIPMQeay29DW2Cvv9s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767732007; x=1768336807;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZeeQFWxcKymtkVYB5RA0pHHQMP4nx/JDC9n+qBdaSHg=;
-        b=dAd44M/egJ0QGlfQp4DrYI0GCOZZ0mimy2CVWqAqX3XLGsO/zAHgwhZ7M0eeMRXxSg
-         LASes/GkO1dJXwKBYjLiBPRY/JHjpGG4j8Wug5mEE8Kngr0GadDvrhogyi9fcOniVfUQ
-         0bl8uTlYGSozbd34xMLxoQflUlasB7o4TxScFmXTovlk+wP/2aSBYf5J7gIHpITPVeFU
-         IduUhHiYb1/vu25/gN4wPe79RhugG3OxWbrjsAOocYT+GvspTYUuG7G5Xe4CdgZ0uEXy
-         O3nfrdWUfIzkCpOKSCrAfgB4JYYDWIqaZNyC82aUEBhdQA7Jw5VX3yFi3VCwXPKoHCGH
-         BFKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWZfjCin0QKtB9q7nRbzsseZD8958sQWkipvNf5xSvprgu6l3uwyC+dAS94LiQBq8AML4E=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1WM37Q62lNnegiaY4JYQ1bDe140nvnhv7N57Zw3OC6gDRiXhv
-	njSPlTF/NRkkeF3P7klS4bXEoDeskzh9lvBhy7Rl2U85z30L3jitk9j4W7WC4Mh2tgA=
-X-Gm-Gg: AY/fxX6VF0dc0CGM+fQCY5jb2UzgH6CUz7ea48j/vsIzVp+UY6FfQ/Li5c7H8lngB3k
-	gFolvpdW5CW+eK5TjZbgtR9LYGzeo65Pc96cTr7PRkutkr4+r5mqxQI833XCRsstn2SNSclkop+
-	cQOymH212765BWjHmHnlsDMp7MHHaaxJA1LrBF0crLu0sb1Ewj/zfkEFrpg5jYl3Jmowylwu6vE
-	ErzrH5TnPlOG895XXNjM2UvMlEccuiivEafuXVTDdFQuXa2ZoBv0yZboi9lf00OaD5+L1wPpdnb
-	b07LYSWICxj4WHRmolm1pODOM0i/tAuDWA731vw+jfjJBYsXhWSrH8NSX2l0HmCPwq5HWhKYeV+
-	lNIbDlcnTrtemDtwSO1HgCqCACBbBSSh9MgefjVLvRRvCjQ1VDjUZiYjYw96Do4EVPoxOQ7INqO
-	cFx8zRO38H90ZrspR2vecY0nW/kqp4TNrBN+Pj
-X-Google-Smtp-Source: AGHT+IGPCzku8f59rMs2LGDA9VGzBc4eUYYIR4pc16ABPmhFZBvvSpu5dTBFZQ6jnweSq+6KkJgOPQ==
-X-Received: by 2002:a05:620a:1a89:b0:8b2:7331:28e6 with SMTP id af79cd13be357-8c3894280ffmr16635185a.86.1767732007059;
-        Tue, 06 Jan 2026 12:40:07 -0800 (PST)
-Received: from [192.168.0.99] ([71.219.3.177])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f4b917dsm240782285a.17.2026.01.06.12.40.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jan 2026 12:40:06 -0800 (PST)
-Message-ID: <9acfe215-5a14-428f-a398-e6a0b3dc18b4@joelfernandes.org>
-Date: Tue, 6 Jan 2026 15:40:04 -0500
-Precedence: bulk
-X-Mailing-List: rcu@vger.kernel.org
-List-Id: <rcu.vger.kernel.org>
-List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="V9yzp6IE"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=fqocuaXmKcXBESiTakXGEDinrljSpOrBKQ/6DwaCyxGy1Sx7bWQOedxkv7lWnrr23jjJNIT1ron7cxRtWP5F0zLxYnUY3vlecNERqKoadmi4jSH8/3MRjFyV30Gfr11nSdxLiB4B7r4BYiac5k8qDUhWk0y13HDdeV0lKb9ywXrqN7sx+ZSWAYyNNbnUgdRUGkor8xXlHe53g1k/Q/EJjuh9fi+m2UzblG6f9xGKS/vYUHjXHPpH2MZtMzl19AOTbG/ySeksR5wwOSAtF1K9AR6ZFMYiZKHQ2QS8azWgQHLN+g2QH/xnHK+LQSsoADbILpSx6OJkUv1uwbJjLkQJww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hiemqEKYri+2pNHEKAp72ZZqZg2zMTmrT2OhlbvXu5E=;
+ b=ozAGwBANtJzqV0v7TobwWtN6C45Q46Sd+eaJ/2mXUT6NLblE4UjBfREOkUiY4EL7pPpoQFHLvWi2pkzeP/6XCYKxAzfhTXqxUTYZJJozZ7Xar8VFPaa1I2aXTOcHHweqEc8fo8ls2UDSV/gSzbVpxHrZR/h7zTe3daeChXkaFT983gO0J/ptuScxtoewM0lu8rbfqUX1QC3GTaHyUmIL+mYOuwvwrc1y/0DfcseizxGYk5xHaFNMJrhTF2a2PE6l2P6GiKrsySkR4qYUwsrXd7IJ3EOvn2rLl1rPX3IjQsEEvo3t4V+AEB5se6K9Ap3zCE93HZJ+ZmLdd01T5Dp//Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hiemqEKYri+2pNHEKAp72ZZqZg2zMTmrT2OhlbvXu5E=;
+ b=V9yzp6IEsXluEBnXeXiePQ+KhZgxF8x3SbPLjAP8RBsPD2SYzj44qUs5Fa50GO8d4mZz+zcMm9jzNR0+s+doq91/7nyGuCdwEi0NNaPjOKWcOYtoDtzIHBBRq6NN2DEM+wRfzmQ3RLS9G68c81AFryfZegD5mZviRo6hiwtDPt+Lii2jpot8/uL9elPEhfx6bTkaGxnqpaOPPpuM+K9yYNtzjPZLfgoqUAvVDyG2d8KcYvunJs/JSG25Iug7mdCCbGSG3AOr0wugC9NQu7mc3NpNo+8WPHWVp5JTxQcjTkeAoLsHSySqwbIrWdE6g49coVkQIWQU0AI9l8Qytt8eKw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by LV8PR12MB9644.namprd12.prod.outlook.com (2603:10b6:408:296::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9478.4; Tue, 6 Jan
+ 2026 20:49:10 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%2]) with mapi id 15.20.9478.004; Tue, 6 Jan 2026
+ 20:49:09 +0000
+Message-ID: <8d7b1107-ec1e-4c1d-989c-20c73af9c43c@nvidia.com>
+Date: Tue, 6 Jan 2026 15:49:07 -0500
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH RFC 00/14] rcu: Reduce rnp->lock contention with per-CPU
  blocked task lists
-To: paulmck@kernel.org
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, linux-kernel@vger.kernel.org,
+To: paulmck@kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>, linux-kernel@vger.kernel.org,
  Frederic Weisbecker <frederic@kernel.org>,
  Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
  Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
  Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org
@@ -81,182 +59,146 @@ References: <20260103002343.6599-1-joelagnelf@nvidia.com>
  <658b114e-b362-47e1-9dc8-9271cbcf2c4d@paulmck-laptop>
  <f679698b-3fc3-4bcc-834a-97c670e6ffe1@joelfernandes.org>
  <9a6016f5-3051-4055-9fd2-05a01c0c9171@paulmck-laptop>
+ <20260106151924.7acd74a4@gandalf.local.home>
+ <7c860b04-5ef4-4ab7-8e73-283b5260b78c@paulmck-laptop>
 Content-Language: en-US
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <9a6016f5-3051-4055-9fd2-05a01c0c9171@paulmck-laptop>
+From: Joel Fernandes <joelagnelf@nvidia.com>
+In-Reply-To: <7c860b04-5ef4-4ab7-8e73-283b5260b78c@paulmck-laptop>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL1PR13CA0221.namprd13.prod.outlook.com
+ (2603:10b6:208:2bf::16) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
+Precedence: bulk
+X-Mailing-List: rcu@vger.kernel.org
+List-Id: <rcu.vger.kernel.org>
+List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|LV8PR12MB9644:EE_
+X-MS-Office365-Filtering-Correlation-Id: 63cae143-c051-4ad8-f71d-08de4d650a89
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?dFJiRGowMHFMRDNzcW5NOEJHUHJjU3BMYXNwMS9CQXVhVWNTUEJqaTJzclNl?=
+ =?utf-8?B?b2xVMHR3TFZsQ3F0ZXVXVHJEZ3E0WUhhR1hvSHVvVkFldk1QcDJkTDMvVDdY?=
+ =?utf-8?B?ZG02UE5qVG5qTVhLWnlmd0dGQ1ByV1hCYWJCZkk1WEpwTld6VUtQWXpONVB0?=
+ =?utf-8?B?aVpzMDhwSnJ5N1JXdGFRUjNmQ1dYUUpBL0I5V3BVOVNGRy90YisxY2I0WkxM?=
+ =?utf-8?B?dmVEOFVETllQUkc1eWd6Qk8waHZ2QjRIUnBUTWJvNGJSQWRLVkxISmQwTjBh?=
+ =?utf-8?B?dnJZTjJ5ZSsvNE5LL2F0Q25tZ3dxQ21TMityemVDbXZUU1lHVk1PK1lEOG1o?=
+ =?utf-8?B?b24ydnF6ZENXMDdhT1N6VlRWVkRZaG1UZzY3VnlobUc5SXg1VlljSVFrVjRU?=
+ =?utf-8?B?bzVFWHJmRzlRL1NKT2ZHNnhOWlMzY21TZ0Q2WlhSMUVrdFpMK1FpZ25oM0Q2?=
+ =?utf-8?B?SzdEN2R4Q1huaGljaFZWZC93aHlQNElnUEpVVm4za2twQ0JsNVZkVUdyMko5?=
+ =?utf-8?B?YzB1RzlBY3BXM2JqWHgweFEwMytkTGF2L3cvOUVFS3ZyaFRsK2lDQ2IrQ3pl?=
+ =?utf-8?B?WWNZQlB4dG9ETXRhb3V3RndnaHhsaXVCN3dBODZPNERTRnRCN2dvdDY2Wkxh?=
+ =?utf-8?B?MWJxNFdLR2YyUXRyZHRESWk1S3hnWlNwM0ZLU2NkSVcxb0ZTZlg3ZEttUDJU?=
+ =?utf-8?B?OVdROFVEYXZsd2JkOElNK1FiMUZrVDh3Q3N5WTc5Z0cwWHo3Y2trVmx0ZExT?=
+ =?utf-8?B?YjVyckJkZ0lFNDhpVlE1UXBXak1vTlpCV0VONHBsZTI5Q1U0M0xXM1J1eDNR?=
+ =?utf-8?B?RWtQY3ZqS09hYXQxajZnaDdQWTlSZGUxNE1sUWROMDZYNGY0RWhBZmgvQ1pt?=
+ =?utf-8?B?eGpickxxSU1nc3ZnRFR1WWozaDQ2SmErY3kyMlNFRWVTa1kxZlU3OHh2UkFI?=
+ =?utf-8?B?L0JiU3lJZDdqMmZPbnZKM1pHSEI1eHUzVy9NQjAzT0ZJaWM3WmMxT09EZWZp?=
+ =?utf-8?B?TTNYbkIremhEZXVFdzY5dng1blhtRG45UlFEWkdMSzVHdEhJWTNHR1o5Y2hp?=
+ =?utf-8?B?cWQwQ21sTTNNNCs4UUxObml0R28rejNSdVY3U2dWc3hGTWY4ZVlYUWppdVpj?=
+ =?utf-8?B?UVdNcytrZUZRTVR3MFoyNEtpd2R2VDFNV1hBSSt2aXc4UHNDQkU0OW0rU2dY?=
+ =?utf-8?B?Nkh5OEdYRGJLQkRBc1NSNkpUMC9YRnR3U3p2OW5MUi91Zzk2MGFKMk9sRWxX?=
+ =?utf-8?B?eHNOOVZsNjBoeG5lN0RmNmg1VFFHZXEzSDhoKzhwaG95NWZSNzNlWTNDSHpz?=
+ =?utf-8?B?Sm8vZ1d2NDZuS01Hajh6UzNNOW9QdUZYMGZCQ2NwV1ljRHVIWm1uNk4wcGkx?=
+ =?utf-8?B?N3lpbWxEMUZZYnJjekJPVTVKclNNRWxuWTI4dGl2eEhNMXh3Qktxc1JQbzNP?=
+ =?utf-8?B?WUFCVEJDVVAyNEFNV1hBRHhPaWtQZ2NBamtRVjN3Q0IzTDZqWHQySU40b3RM?=
+ =?utf-8?B?RmNvZXRGYjY2ekdBOExoQldZRTNINUw1cC80bklZSmdkVlNaSFZ4M1pENjFT?=
+ =?utf-8?B?bzlCb3VHT0l1bTV2VzV2ME05dWdnMlJlL0pOUXhKUlRJUFVnVWNndkQwK3pK?=
+ =?utf-8?B?UllxNjNZU0tnZmtCVlRFWWo2YXpNa2JwS3F5VElnOGFHa3hpNG4vYTQydlRa?=
+ =?utf-8?B?WUQwOGJUUUhZbU1KWDlUMDBsWUhhU3NwZUQ1L0xrN1lDQWtoNk5CUDdLMGd6?=
+ =?utf-8?B?VmlUb1JPUW1nbnorbmxic2IwdFBJMS81RE1oZlQybitzVGcwdzZLY0g3Zk83?=
+ =?utf-8?B?UzByMjN6YTJnbnBwU0l2UHdQZ0lLYURyMWhuUEVMQmNaa3pWbU9FbzFNNkwr?=
+ =?utf-8?B?c1ZmblJMN1VJaDBUM3l2d0RRYlNROG5sbjBlTFpRaFNzSXB0UVZZdFN4SDFv?=
+ =?utf-8?Q?2ojXJ2yZ/50WWaNoMnebIyYSIR9Xz0Te?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?b3RJeGI5bXJSdWE3YTdZc2o3NFZYYmV6RzBNU0twZUZUQlJJZW1aS2pvMU44?=
+ =?utf-8?B?aUNwbE5WUnRmQTFNTEVMc2N5djl1NjNKK2xZZzJxdEVCdmpIaDBwVWtMNFlD?=
+ =?utf-8?B?aXpyQkUrZDdoK0lSZ0J2a29SQVpGc2xaK2JKYUt5TVNWTk5GT3RTa0ZxS0lW?=
+ =?utf-8?B?dU1sbEtKY0IzUWN1cmNteHZmQVpGSWFkUlFhczdtNHdoOEJhL0ZMRm1RRTV3?=
+ =?utf-8?B?bWN4WWhZU00rYkhtRU1UNkVjRU9tZ1NUNkhEU1ZqbnQzU21IRnpwaTRvTW1B?=
+ =?utf-8?B?M0NwejlsZk0zUzhwL3gvWTV3QzE0aXE3U3ltbGVjM1dnM1pxTDMrVjc4c3ZG?=
+ =?utf-8?B?aXc4aW1hOVRDK3JqelB3TnVnbXFtQnZSeVY5M1IvenNlVkQzU0NNa2Frek1h?=
+ =?utf-8?B?NWlXQkhVc094d2pzOVlNY25Ya3NFbjZubzF6Nld4eExQV1dXZVZ3NUY1UVNq?=
+ =?utf-8?B?Zk5qWDVhUnhSR0g0cytqRmVlYXVoZjJLamp3d0pDL1BsZ1cxRVRJcFJleFBE?=
+ =?utf-8?B?UGNRalUvdFRJLzBwTHFNZi9KL2tacXBIcWo5UTM5Ump4S0NvV3BaVmtrZkhD?=
+ =?utf-8?B?byt6d2x1UUFVZE45R1R6ZDFHMEFHZEZxMlQxZEU2QmpZUk9DOG05NDJkcHRP?=
+ =?utf-8?B?Z0YxMWFhS25IQ2taVmdHcXpLcGtGRmY0YnpoMHF0Q1AyMTR6U1B4NFgzWmho?=
+ =?utf-8?B?MHNESFNoZTVwOGhPdkt2VnM4c01uK1JSLzBSNEFUay9DWnNkMkhSRmdMRTla?=
+ =?utf-8?B?b0h3SWFoYnJkblRSN0RaUVhzK0tHMUR2b2dvU1Noa0VuZ0xHc0VuM2UyT01Q?=
+ =?utf-8?B?T0tWZ1ptNzBmZ2RZQXhTNERHTS9wb2taY2ZNOG00ZENIcnBvKzlLRVFaUTMw?=
+ =?utf-8?B?WXJOa3pmMENRQ0UveTFIUllvT0ZVWGRRa0xHN0xmdzgwdGhhanVTeGlGdkV0?=
+ =?utf-8?B?d1BWSWc0Q3hLOStHTlNUWTRmZDZ4VlRWZFlXdytzVEova0xGZnhVc05UUGN0?=
+ =?utf-8?B?WENIbWFJN1FHYXpoVWtkRk91bE5FSUg0NkhuWnlzSXNrWXQ2Sk4zSmhrVkh3?=
+ =?utf-8?B?OXFsdDAzWUluM1JENVZyNFR2Z3UvaVJuS0xmakNza0NPK0dzZzRaY1pqUUUw?=
+ =?utf-8?B?RGd2UENVRHk4em1IWmZIVVdtZXVlMThpMzhOViticXpvRmJpczNGRXA2MGRq?=
+ =?utf-8?B?Z0t5bE1NaHBEOVZtTVFKbHRBOGd4dmlsS1l3alpYYitMUUhuUmJHVVpkYW14?=
+ =?utf-8?B?UDljM3h3V1ZXUUFvM21MZkl2bDlxZWF6Rk1IcjlkUkp1bUtmWDcwMEdvWTJL?=
+ =?utf-8?B?NjlXSGsyOURWem0zNEozenlCNmF3UDZ4UmlzZ25ESGdoUzdNQlV2VUZHSmR4?=
+ =?utf-8?B?OXdIODc4ZEJ6VHl2MURQemE0VjBkUDJKaDliQU1YQXRZR2FOcjk1bDhHR0JJ?=
+ =?utf-8?B?cTVUTnVtM21YeVI2ZGQvVFpQRnZqRDJqOUUrSHROM1JiZnQzcDVsZXRTU09Y?=
+ =?utf-8?B?SjY1cGI0bUp0RkJCZTg2L3AwMnQvMXMwSjZKeVJLOXNqNGpkcmRiSGROcjNr?=
+ =?utf-8?B?eHR5Mm02d2RyY05TS0ZUOWZZb3dOeG9sT2ExMVh6ckxnZ0gvRU9rQ1VmVS9F?=
+ =?utf-8?B?S0lJSDZYeXR2Q29UL3JIYkIrMFB3WWpnd21XdzF5anhkZE5BWHhENjNSVEh2?=
+ =?utf-8?B?YlY5Lyt2R1o5OTRnVnpucUZ4U1dGejJnR3JzeTRuMWRiWDZld2srQkxCZjEz?=
+ =?utf-8?B?SWMxeHFwNEdFbmp6T0R2bTN4VU1PNUNEMlYrdWYxRkM0Z2NxSXN1UlJ2S0pO?=
+ =?utf-8?B?ZTZSN1l0M1NaTEYxZUZ4Q1RLMXdLKzhoU2IySXNwTUJRaDNFV2djMFpqNnVC?=
+ =?utf-8?B?eTAwWnJaWXNOWldZN1FNNzVVS3Bwa0dFaWY3dHNxbFdWeFNvcmZtc3JyVnZF?=
+ =?utf-8?B?SUNRNVhPcW53WWhDc1oxSWhNTXRYRlEvc0ZmZUNmU3FFNGJTQ1VVRUI1ZVN4?=
+ =?utf-8?B?ZzdBdFhyb29iY1F4ZEVTY0ZyYTJOWTJKWWduQkxwS2VweUdSQWZPN1FaK3pN?=
+ =?utf-8?B?cE1vU21CVTNHTTVnWm1ZbXhCSXZ1U0tvMkU2dkJGSUoxVXl0dStFRWFLZGF0?=
+ =?utf-8?B?QmdzdU1kZjQ4SHhBNDR4YzMvQTRDN0xQS0VRMGU2anMyN3hTS2t4VGx5Q3cv?=
+ =?utf-8?B?QldJc29qRVViU3gwVzFMRDROYndRdkpQblhxWVZRdmxBWkRkZzgwL2QrUVVs?=
+ =?utf-8?B?ZVU1ZnBzZVJmcUcyVWNVNW9PTGhjOVBBRGNIVXZFWXgyZC80YkZ1VUVtUUIv?=
+ =?utf-8?B?eXVQZnp6WXhWa3hrZlAySWpJZ3YxaXJWM09uVm04L2EvanpaY29mZz09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63cae143-c051-4ad8-f71d-08de4d650a89
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2026 20:49:09.8324
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Uz/EIrhgPEzKpyzzmua03wtDrJ654ayTF1HWGSWkJpbrqln+A5A3jcNCY+iCyFlOq1PQBzB4BHgCUaxz21y0fw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9644
 
-On 1/6/2026 2:17 PM, Paul E. McKenney wrote:
-> On Mon, Jan 05, 2026 at 07:55:18PM -0500, Joel Fernandes wrote:
-[..]
->>>> The optimized version maintains stable performance with essentially close to
->>>> zero rnp->lock overhead.
->>>>
->>>> rcutorture Testing
->>>> ------------------
->>>> TREE03 Testing with rcutorture without RCU or hotplug errors. More testing is
->>>> in progress.
->>>>
->>>> Note: I have added a CONFIG_RCU_PER_CPU_BLOCKED_LISTS to guard the feature but
->>>> the plan is to eventually turn this on all the time.
->>>
->>> Yes, Aravinda, Gopinath, and I did publish that paper back in the day
->>> (with Aravinda having done almost all the work), but it was an artificial
->>> workload.  Which is OK given that it was an academic effort.  It has also
->>> provided some entertainment, for example, an audience member asking me
->>> if I was aware of this work in a linguistic-kill-shot manner.  ;-)
->>>
->>> So are we finally seeing this effect in the wild?
->>
->> This patch set is also targeting a synthetic test I wrote to see if I could
->> reproduce a preemption problem. I know several instances over the years where my
->> teams (mainly at Google) were trying to resolve spin lock preemption inside
->> virtual machines by boosting vCPU threads. In the spirit of RCU performance and
->> VMs, we should probably optimize node locking IMO, but I do see your point of
->> view about optimizing real-world use cases as well.
-> 
-> Also taking care of all spinlocks instead of doing large numbers of
-> per-spinlock workarounds would be good.  There are a *lot* of spinlocks
-> in the Linux kernel!
 
-I wouldn't call it a workaround yet. Avoiding lock contention by using per CPU
-list is an optimization we have done before right? (Example the synthetic RCU
-callback-flooding use case where we used a per-cpu list). We can call it
-defensive programming, if you will. ;-) Especially in the scheduler hot path
-where we are blocking/preempting. Again, I'm not saying we should do it for this
-case since we are still studying the issue, but just on the fact that we are
-optimizing a spin lock we acquire *a lot* shouldn't be categorized as a
-workaround in my opinion.
 
-This blocking is even more likely on preempt RT in read-side critical sections.
-Again, I'm not saying that we should do this optimization, but I don't think we
-can ignore it. At least not based on the data I have so far.
->> What bothers me about the current state of affairs is that even without any
->> grace period in progress, any task blocking in an RCU Read Side critical section
->> will take a (almost-)global lock that is shared by other CPUs who might also be
->> preempting/blocking RCU readers. Further, if this happens to be a vCPU that was
->> preempted while holding the node lock, then every other vCPU thread that blocks
->> in an RCU critical section will also block and end up slowing preemption down in
->> the vCPU. My preference would be to keep the readers fast while moving the
->> overhead to the slow path (the overhead being promoting tasks at the right time
->> that were blocked). In fact, in these patches, I'm directly going to the node
->> list if there is a grace period in progress.
-> 
-> Not "(almost-)global"!
-> 
-> That lock replicates itself automatically with increasing numbers of CPUs.
-> That 16 used to be the full (at the time) 32-bit cpumask, but we decreased
-> it to 16 based on performance feedback from Andi Kleen back in the day.
-> If we are seeing real-world contention on that lock in real-world
-> workloads on real-world systems, further adjustments could be made,
-> either reducing CONFIG_RCU_FANOUT_LEAF further or offloading the lock,
-> where your series is one example of the latter.
+On 1/6/2026 3:35 PM, Paul E. McKenney wrote:
+>>>> About the deferred-preemption, I believe Steven Rostedt at one point was looking
+>>>> at that for VMs, but that effort stalled as Peter is concerned about doing that
+>>>> would mess up the scheduler. The idea (AFAIU) is to use the rseq page to
+>>>> communicate locking information between vCPU threads and the host and then let
+>>>> the host avoid vCPU preemption - but the scheduler needs to do something with
+>>>> that information. Otherwise, it's no use.  
+>>> Has deferred preemption for userspace locking also stalled?  If not,
+>>> then the scheduler's support for userspace should apply directly to
+>>> guest OSes, right?
+>> No, the user space deferred preemption is still moving along nicely (I
+>> believe Thomas has completed most of it). The issue here is that the
+>> deferred happens before going back to user space. That's a different
+>> location than going back to the guest. The logic needs to be in that path
+>> too.
+>
+> OK, got it, thank you!
 
-I meant it is global or almost global depending on the number of CPUs. So for
-example on an 8 CPU system with the default fanout, it is a global lock, correct?
+There's also the challenge of sharing the locking information with the guest
+even when there is *no contention*. KVM being unaware of lock critical sections
+in the VM-exit path. Then after that wiring it up with the deffered preemption
+infra and moving beyond the 50 micro second limits. If we VM exited and then
+made a decision, I think we are easily going to blow past 50 micro seconds anyway.
 
-> I could easily believe that the vCPU preemption problem needs to be
-> addressed, but doing so on a per-spinlock basis would lead to greatly
-> increased complexity throughout the kernel, not just RCU.
-
-I agree with this. I was not intending to solve this for the entire kernel, at
-first at least.
-
->> About the deferred-preemption, I believe Steven Rostedt at one point was looking
->> at that for VMs, but that effort stalled as Peter is concerned about doing that
->> would mess up the scheduler. The idea (AFAIU) is to use the rseq page to
->> communicate locking information between vCPU threads and the host and then let
->> the host avoid vCPU preemption - but the scheduler needs to do something with
->> that information. Otherwise, it's no use.
-> 
-> Has deferred preemption for userspace locking also stalled?  If not,
-> then the scheduler's support for userspace should apply directly to
-> guest OSes, right?
-
-I don't think there have been any user space locking optimizations for
-preemption that has made it upstream (AFAIK). I know there were efforts, but I
-could be out of date there. I think the devil is in the details as well because
-user space optimizations cannot always be applied to guests in my experience.
-The VM exit path and the syscall entry/exit paths are quite different, including
-the API boundary.
-
->>> Also if so, would the following rather simpler patch do the same trick,
->>> if accompanied by CONFIG_RCU_FANOUT_LEAF=1?
->>>
->>> ------------------------------------------------------------------------
->>>
->>> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
->>> index 6a319e2926589..04dbee983b37d 100644
->>> --- a/kernel/rcu/Kconfig
->>> +++ b/kernel/rcu/Kconfig
->>> @@ -198,9 +198,9 @@ config RCU_FANOUT
->>>  
->>>  config RCU_FANOUT_LEAF
->>>  	int "Tree-based hierarchical RCU leaf-level fanout value"
->>> -	range 2 64 if 64BIT && !RCU_STRICT_GRACE_PERIOD
->>> -	range 2 32 if !64BIT && !RCU_STRICT_GRACE_PERIOD
->>> -	range 2 3 if RCU_STRICT_GRACE_PERIOD
->>> +	range 1 64 if 64BIT && !RCU_STRICT_GRACE_PERIOD
->>> +	range 1 32 if !64BIT && !RCU_STRICT_GRACE_PERIOD
->>> +	range 1 3 if RCU_STRICT_GRACE_PERIOD
->>>  	depends on TREE_RCU && RCU_EXPERT>  	default 16 if !RCU_STRICT_GRACE_PERIOD
->>>  	default 2 if RCU_STRICT_GRACE_PERIOD
->>>
->>> ------------------------------------------------------------------------
->>>
->>> This passes a quick 20-minute rcutorture smoke test.  Does it provide
->>> similar performance benefits?
->>
->> I tried this out, and it also brings down the contention and solves the problem
->> I saw (in testing so far).
->>
->> Would this work also if the test had grace periods init/cleanup racing with
->> preempted RCU read-side critical sections? I'm doing longer tests now to see how
->> this performs under GP-stress, versus my solution. I am also seeing that with
->> just the node lists, not per-cpu list, I see a dramatic throughput drop after
->> some amount of time, but I can't explain it. And I do not see this with the
->> per-cpu list solution (I'm currently testing if I see the same throughput drop
->> with the fan-out solution you proposed).
-> 
-> Might the throughput drop be due to increased load on the host?
-
-The load is constant with the benchmark, and the data is repeatable and
-consistent. So random load on the host is unlikely.
-
-> Another possibility is that tasks/vCPUs got shuffled so as to increase
-> the probability of preemption.
-> 
-> Also, doesn't your patch also cause the grace-period kthread to acquire
-> that per-CPU lock, thus also possibly resulting in contention, vCPU
-> preemption, and so on?
-
-Yes, I'm tracing it more. Even with baseline (without these patches), I see this
-throughput drop so it is worth investigating. I think it's something possibly
-like a lock convoy forming, but the fact that if I don't use RNP locking, the
-lock convoy disappears, and the throughput is completely stable. That tells me
-that that has something to do with that or something related. I also measured
-the exact RNP lock time and counted the number of contentions, so I am not
-really guessing here. The RNP lock is contended consistently. I think it's a
-great idea for me to extend this lock contention measurement to the run queue
-locks as well, for me to measure how they are doing (or even extending it to all
-locks, as you mentioned) - at least for me to confirm the theory that the same
-test severely contends other locks as well.
-
->> I'm also wondering whether relying on the user to set FANOUT_LEAF to 1 is
->> reasonable, considering this is not a default. Are you suggesting defaulting to
->> this for small systems? If not, then I guess the optimization will not be
->> enabled by default. Eventually, with this patch set, if we are moving forward
->> with this approach, I will remove the config option for per-CPU block list
->> altogether so that it is enabled by default. That's kind of my plan if we agreed
->> on this, but it is just an RFC stage :).
-> 
-> Right now, we are experimenting, so the usability issue is less pressing.
-> Once we find out what is really going on for real-world systems, we
-> can make adjustments if and as appropriate, said adjustments including
-> usability.
-
-Sure, thanks.
+But again to clarify, I didn't mean to use vCPU preemption as the driving
+usecase for this.. but I ran into it when I wrote a benchmark to see how RCU
+behaves in a VM.
 
  - Joel
 
