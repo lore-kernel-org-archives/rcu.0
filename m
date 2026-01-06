@@ -1,158 +1,127 @@
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1704340D92
-	for <rcu@vger.kernel.org>; Tue,  6 Jan 2026 15:08:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CEA220F29
+	for <rcu@vger.kernel.org>; Tue,  6 Jan 2026 15:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767712137; cv=none; b=oZYaBk24ej6RxvRkCKBVRBzT24DkXVpfZ/+7FGqedELazsvIB5GuuFcV2gj1Dnlp/xlfW0ExDLNNypfE3FGHnS44yMm9X5lWeziWwOJTyK8f2Z6DGp+OnWu3udvyHvrRbnDg8Xdh21B90/qwIZKEIwnSdYLef1sEMfDxckGU7IY=
+	t=1767714984; cv=none; b=nfifKVKjsZzHrc0QVSocuHy2cH2unRty6boj8ZmzLCB7UmfgpXtpCstzLYmpNSbnCiVTD9kw8dU1B44EO7hzf064zvt+sFQZH7SsZtpnk4nEqRcxCOLjcivtzs72g+UWoZh30y3UvD+40AVSqRro8vSkekiDSsojKgeAw99UJfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767712137; c=relaxed/simple;
-	bh=bQ7PerAuumNq1cYt6dYXzmQmSQmB8lD+lq8loKUkXPQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZpfYWeq9RCHBSqc4//IJsr2UxZycQiFg7ujMod+ggO5BVxa+eYGdEDX3ZF2vSru4LdHN7FPgee0SZa6Rh1qUt7UFc8W1l7UcdNA7AZLZslYadpTdM/tbwJp0k48s+uv664eAORtjYtT1dZM4NzpO+zJ7Zc/wGb0Xn21+ldynDvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=oNVlxYGd; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1767714984; c=relaxed/simple;
+	bh=pWFdblXxzUvChQRDYfOX7Xlk17SBWTpHs1hgmVkrMMg=;
+	h=Date:From:To:cc:Subject:Message-ID:MIME-Version:Content-Type; b=N8NaWIScY0kitg5D0cdhGOy6uK2qyFqrjfQfcqEJFo5TzI/eKvlHI6WvnMM84LcAl8Sk81+q41TpwBMOCL58Eb6cfOOLJbZl3QoKFodNeTcTSwRbqocFvZYgAGwRedaMCVD4CWERaz2ySlBOXqoOo4QuKw0SZPdWOMYQmZwL1kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U+LrPajv; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="oNVlxYGd"
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-8b1e54aefc5so83687885a.1
-        for <rcu@vger.kernel.org>; Tue, 06 Jan 2026 07:08:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1767712133; x=1768316933; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WEWMJLerlQ3gz/pd09BaonTBmRINa+XgbCZWTwhJG20=;
-        b=oNVlxYGdyhpdLP+Kr0o4xXS7WGF0F5lMoBPssfyMxLXbg2Ao75YGJSBeL7HAKqbc7N
-         uShI4H89mZRLvyXIK76DvMkpgw3pZOiCk/bSujw5uKYpUZn5RecIllawiueaaPKWPwjb
-         2J4IbcqsSjf/GH6PoOcNokNAXL4GdSFxuPATU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767712133; x=1768316933;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WEWMJLerlQ3gz/pd09BaonTBmRINa+XgbCZWTwhJG20=;
-        b=HMWyLm2e/W8/d8Rvw1sAJ8xMv+sJtTZR39LsfPJXIi88BdDtBraUlNaoRRSWiHjV1G
-         pYMwVLfTun6p0yqVD74fMOi/df/hRvRR9O723gpmcTEsJvSVXH/WMn6CXEgggPBKXjRp
-         4o+0Kf8BDdNIUtZR6W5d83EIZgti12N2ubpugMRwvKrJDVI35FAOdrja+CPneNci/ZVt
-         gcYH3boxSXqaZ0GrlSBF0sxEe2Ik0Y48Rpw+ery2tnCiVQaytxgUYA+2O8DBETE0VmJU
-         fAoFyhp5LwFjQg54YXFC9Vc9FP34ZhjZ9ZxXxjBBzmNYzs8QpsHt4oJ/2oOVsGWabvfj
-         VksQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWfW61bLRWuxFBEIxOU8hUSwIdgk5bCOn6XER7YUFfD6mQGV53w8VcXRRwLhTTO2r+aXGQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAZSHFjnzLHF71zA76RwQNXbC3H/HnTyIEF+zXTexE4nmSoakV
-	UBEJ6aiP4J4SV+0bgQoN+8qO9YI/QUa0c54DBqXmNB94OaIM8vG3qzbYfyY77Mq7c6I=
-X-Gm-Gg: AY/fxX4Iz9FqC90w4l8396sv2R6e7+RnI1YAiEn/L+wAgac8MzhSd3/GzbNkbR59st4
-	V0oYkPzeDIZlzRE/VcnJGpqtwpzxiSokKze9JC61sBPkVCaaoQzQtwz048OPjzOyNEmz+lOQhQf
-	2cfJWKVWfAi6qiVgKGEvniYYWFN9wjRNQi+Fp0tuZaBkMh1Ds8V6aDy2fj4Mhh8WnR+WzMc9YjP
-	BCOrkmp28eg8vpFU+5LBepfxbbOoFMNrR8x1wXJlK7a5MHPXPtbfnhwT44A1LIKZjOTzngkBnJI
-	mPbxQbkdlroW9FFp0uiaqoxeisAcFq6CGTI9sTaZ8fMYBMbZIIBlaPto+SN5Qvr62E37b9J7hV/
-	IIt06tKbllD6RmEb1nRwxY3qveOzizoBvu01LVycsy5BS2/0kn/z3wVZsTNcm6CuV80HLcc4hhn
-	V05MS+C6cuUbs0eSCQfZzgtB13Sw==
-X-Google-Smtp-Source: AGHT+IG6VC9jnBCAl5Swnro55Pv+Hq6OeFbeU4hwv/+W3mm9xEWDeR8Cc8sbrG9MlJyORRrtZQcHAg==
-X-Received: by 2002:ac8:7f54:0:b0:4ee:739:149 with SMTP id d75a77b69052e-4ffa77a8585mr47629461cf.46.1767712133477;
-        Tue, 06 Jan 2026 07:08:53 -0800 (PST)
-Received: from [192.168.0.99] ([71.219.3.177])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4ffa8d38e12sm12745761cf.3.2026.01.06.07.08.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jan 2026 07:08:52 -0800 (PST)
-Message-ID: <936afbad-226f-4209-b347-c87b30b4a7f3@joelfernandes.org>
-Date: Tue, 6 Jan 2026 10:08:51 -0500
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U+LrPajv"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1767714981;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=CURtiT1vEb9MQLm7OwN0Og1vpduG1I0ZINayEJgwQSU=;
+	b=U+LrPajvu3WUL3DSBnt1hqFIHgMMh0fhJRt86FS3HZuT9nCvv+uDw1Ttmi7f9FpKIyQoxI
+	oEZpT8VSKFZMZ7GIDVk32mBctLzXXkrmYaoz0QPoIfKKYhprnjNRSD+PiWXbaMo+UmcXTk
+	yIhYsR3bbQka/Ahd6Pd/yGU4DPeztZs=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-345-7iwD3ll_Px2a9trUDuMyjw-1; Tue,
+ 06 Jan 2026 10:56:18 -0500
+X-MC-Unique: 7iwD3ll_Px2a9trUDuMyjw-1
+X-Mimecast-MFC-AGG-ID: 7iwD3ll_Px2a9trUDuMyjw_1767714976
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id ACAA818002ED;
+	Tue,  6 Jan 2026 15:56:15 +0000 (UTC)
+Received: from [10.44.33.27] (unknown [10.44.33.27])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 51A0919560AB;
+	Tue,  6 Jan 2026 15:56:12 +0000 (UTC)
+Date: Tue, 6 Jan 2026 16:56:07 +0100 (CET)
+From: Mikulas Patocka <mpatocka@redhat.com>
+To: Fengnan Chang <fengnanchang@gmail.com>, Yu Kuai <yukuai3@huawei.com>, 
+    Fengnan Chang <changfengnan@bytedance.com>, Jens Axboe <axboe@kernel.dk>, 
+    "Paul E. McKenney" <paulmck@kernel.org>, 
+    Frederic Weisbecker <frederic@kernel.org>, 
+    Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+    Joel Fernandes <joelagnelf@nvidia.com>, 
+    Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+    Uladzislau Rezki <urezki@gmail.com>
+cc: rcu@vger.kernel.org, linux-block@vger.kernel.org
+Subject: [PATCH] blk-mq: avoid stall during boot due to
+ synchronize_rcu_expedited
+Message-ID: <8e5d6c26-4854-74f8-9f44-fdb1b74cf3c4@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 00/14] rcu: Reduce rnp->lock contention with per-CPU
- blocked task lists
-To: Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org
-Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
- Joel Fernandes <joelagnelf@nvidia.com>
-References: <20260103002343.6599-1-joelagnelf@nvidia.com>
- <658b114e-b362-47e1-9dc8-9271cbcf2c4d@paulmck-laptop>
- <f679698b-3fc3-4bcc-834a-97c670e6ffe1@joelfernandes.org>
-Content-Language: en-US
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <f679698b-3fc3-4bcc-834a-97c670e6ffe1@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
+On the kernel 6.19-rc, I am experiencing 15-second boot stall in a
+virtual machine when probing a virtio-scsi disk:
+[    1.011641] SCSI subsystem initialized
+[    1.013972] virtio_scsi virtio6: 16/0/0 default/read/poll queues
+[    1.015983] scsi host0: Virtio SCSI HBA
+[    1.019578] ACPI: \_SB_.GSIA: Enabled at IRQ 16
+[    1.020225] ahci 0000:00:1f.2: AHCI vers 0001.0000, 32 command slots, 1.5 Gbps, SATA mode
+[    1.020228] ahci 0000:00:1f.2: 6/6 ports implemented (port mask 0x3f)
+[    1.020230] ahci 0000:00:1f.2: flags: 64bit ncq only
+[    1.024688] scsi host1: ahci
+[    1.025432] scsi host2: ahci
+[    1.025966] scsi host3: ahci
+[    1.026511] scsi host4: ahci
+[    1.028371] scsi host5: ahci
+[    1.028918] scsi host6: ahci
+[    1.029266] ata1: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23100 irq 16 lpm-pol 1
+[    1.029305] ata2: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23180 irq 16 lpm-pol 1
+[    1.029316] ata3: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23200 irq 16 lpm-pol 1
+[    1.029327] ata4: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23280 irq 16 lpm-pol 1
+[    1.029341] ata5: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23300 irq 16 lpm-pol 1
+[    1.029356] ata6: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23380 irq 16 lpm-pol 1
+[    1.118111] scsi 0:0:0:0: Direct-Access     QEMU     QEMU HARDDISK 2.5+ PQ: 0 ANSI: 5
+[    1.348916] ata1: SATA link down (SStatus 0 SControl 300)
+[    1.350713] ata2: SATA link down (SStatus 0 SControl 300)
+[    1.351025] ata6: SATA link down (SStatus 0 SControl 300)
+[    1.351160] ata5: SATA link down (SStatus 0 SControl 300)
+[    1.351326] ata3: SATA link down (SStatus 0 SControl 300)
+[    1.351536] ata4: SATA link down (SStatus 0 SControl 300)
+[    1.449153] input: ImExPS/2 Generic Explorer Mouse as /devices/platform/i8042/serio1/input/input2
+[   16.483477] sd 0:0:0:0: Power-on or device reset occurred
+[   16.483691] sd 0:0:0:0: [sda] 2097152 512-byte logical blocks: (1.07 GB/1.00 GiB)
+[   16.483762] sd 0:0:0:0: [sda] Write Protect is off
+[   16.483877] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[   16.569225] sd 0:0:0:0: [sda] Attached SCSI disk
 
+I bisected it and it is caused by the commit 89e1fb7ceffd which
+introduces calls to synchronize_rcu_expedited.
 
-On 1/5/2026 7:55 PM, Joel Fernandes wrote:
->> Also if so, would the following rather simpler patch do the same trick,
->> if accompanied by CONFIG_RCU_FANOUT_LEAF=1?
->>
->> ------------------------------------------------------------------------
->>
->> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
->> index 6a319e2926589..04dbee983b37d 100644
->> --- a/kernel/rcu/Kconfig
->> +++ b/kernel/rcu/Kconfig
->> @@ -198,9 +198,9 @@ config RCU_FANOUT
->>  
->>  config RCU_FANOUT_LEAF
->>  	int "Tree-based hierarchical RCU leaf-level fanout value"
->> -	range 2 64 if 64BIT && !RCU_STRICT_GRACE_PERIOD
->> -	range 2 32 if !64BIT && !RCU_STRICT_GRACE_PERIOD
->> -	range 2 3 if RCU_STRICT_GRACE_PERIOD
->> +	range 1 64 if 64BIT && !RCU_STRICT_GRACE_PERIOD
->> +	range 1 32 if !64BIT && !RCU_STRICT_GRACE_PERIOD
->> +	range 1 3 if RCU_STRICT_GRACE_PERIOD
->>  	depends on TREE_RCU && RCU_EXPERT>  	default 16 if !RCU_STRICT_GRACE_PERIOD
->>  	default 2 if RCU_STRICT_GRACE_PERIOD
->>
->> ------------------------------------------------------------------------
->>
->> This passes a quick 20-minute rcutorture smoke test.  Does it provide
->> similar performance benefits?
->
-> I tried this out, and it also brings down the contention and solves the problem
-> I saw (in testing so far).
-> 
-> Would this work also if the test had grace periods init/cleanup racing with
-> preempted RCU read-side critical sections? I'm doing longer tests now to see how
-> this performs under GP-stress, versus my solution. I am also seeing that with
-> just the node lists, not per-cpu list, I see a dramatic throughput drop after
-> some amount of time, but I can't explain it. And I do not see this with the
-> per-cpu list solution (I'm currently testing if I see the same throughput drop
-> with the fan-out solution you proposed).
-> 
-> I'm also wondering whether relying on the user to set FANOUT_LEAF to 1 is
-> reasonable, considering this is not a default. Are you suggesting defaulting to
-> this for small systems? If not, then I guess the optimization will not be
-> enabled by default. Eventually, with this patch set, if we are moving forward
-> with this approach, I will remove the config option for per-CPU block list
-> altogether so that it is enabled by default. That's kind of my plan if we agreed
-> on this, but it is just an RFC stage 🙂.
+This commit replaces synchronize_rcu_expedited and kfree with a call to 
+kfree_rcu_mightsleep, avoiding the 15-second delay.
 
-So the fanout solution works great when there are grace periods in progress. I
-see no throughput drop, and consistent performance with read site critical
-sections. However, if we switch to having no grace periods continuously
-happening in progress, I can see the throughput dropping quite a bit here
-(-30%). I can't explain that, but I do not see that issue with per-CPU lists.
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Fixes: 89e1fb7ceffd ("blk-mq: fix potential uaf for 'queue_hw_ctx'")
 
-With the per-cpu list scheme, blocking does not involve the node at all, as long
-as there is no grace period in progress. So, in that sense, per-CPU blocked list
-is completely detached from RCU - it is a bit like lazy RCU in the sense instead
-of a callback, it is the blocking task in a per-cpu list, relieving RCU of the
-burden.
+---
+ block/blk-mq.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Maybe the extra layer of the node tree (with fanout == 1) somehow adds
-unnecessary overhead that does not exist with Per CPU lists? Even though there
-is this throughput drop, it still does better than baseline with a common RCU node.
-
-Based on this, I would say per-cpu blocked list is still worth doing. Thoughts?
-
- - Joel
-
+Index: linux-2.6/block/blk-mq.c
+===================================================================
+--- linux-2.6.orig/block/blk-mq.c	2026-01-06 16:45:11.000000000 +0100
++++ linux-2.6/block/blk-mq.c	2026-01-06 16:48:00.000000000 +0100
+@@ -4553,8 +4553,7 @@ static void __blk_mq_realloc_hw_ctxs(str
+ 		 * Make sure reading the old queue_hw_ctx from other
+ 		 * context concurrently won't trigger uaf.
+ 		 */
+-		synchronize_rcu_expedited();
+-		kfree(hctxs);
++		kfree_rcu_mightsleep(hctxs);
+ 		hctxs = new_hctxs;
+ 	}
+ 
 
