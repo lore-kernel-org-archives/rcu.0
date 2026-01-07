@@ -1,156 +1,112 @@
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-dl1-f44.google.com (mail-dl1-f44.google.com [74.125.82.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 959D83164DB
-	for <rcu@vger.kernel.org>; Wed,  7 Jan 2026 12:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767788602; cv=none; b=S3kONTaNNTPk1EINV52WoWIPGNExnFod1e1/1bmSktuKFmA+LmBbs/onptkg453vJZyDvTsi8pcxa3fbSEV7qQJCjZhRje4S/yYU5XxpuKKbw9J+EfIvIZevWlEul/anxgDdBk5zvlMrH9bQyLyy1u5D4Beef+x+4wEOxhuFfss=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767788602; c=relaxed/simple;
-	bh=wMfV4DLmov5We8ex8vSzzWzBFTiHt4q0yCuToQVoHwc=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vFjZ/0O4hTKXEpsAwkpbdiNy2LQ42Ibng6sUWp8gJOd365EaMnO22fVv8CRdlRnLrOEMtYWRBUsY397ynksfMiYuJ5yGwtD5IgkeO2BXMKxpMlfg53CTZMndYRSG77dTrhzdQDrqvFV7dqiviNbRaHTMFuKzlDVQsxCoZpU+jac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ESmsqT1t; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A45F5315772
+	for <rcu@vger.kernel.org>; Wed,  7 Jan 2026 12:46:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767789993; cv=pass; b=JTcNopehGXmbDGdCTU7Eppzc4eUmZLHCffYwzplAc0h7wZ1pD33QDCq9sL4uz8YbikBnMJfNXQmpfcP5ezOU5LFjSz7mX44KNJA/a8usCg5bYGvX8/YguwRNByXbBrICBu1jUecQayWtvmn7i3KpxE0mO7D0XLa8CDupwd/pas4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767789993; c=relaxed/simple;
+	bh=diRXR2Re1+OHdUMzqSTY3/4W/RblejFu9jTBjKLGYAo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hAQ34ReZZnTNLdY0xFDPhS74rrMLYRYb1c3N3BM/t+CXyLGutX3fOqXleMcTCDKwKaiNuyM0Up6mq4sxIHdvB3vwHVm7sctnGJwfSI2tbGzUWduyI6NkBug2Oja0CCe+UPdbmGjqgZDwlIqeGT1On8JNCHgeaXx6zmWig53RPJQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TUg7YZRS; arc=pass smtp.client-ip=74.125.82.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ESmsqT1t"
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-37b9d8122fdso15407611fa.3
-        for <rcu@vger.kernel.org>; Wed, 07 Jan 2026 04:23:20 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TUg7YZRS"
+Received: by mail-dl1-f44.google.com with SMTP id a92af1059eb24-11f42eaff60so134545c88.3
+        for <rcu@vger.kernel.org>; Wed, 07 Jan 2026 04:46:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1767789991; cv=none;
+        d=google.com; s=arc-20240605;
+        b=dL1NgRwkL8cEi42MIT5OkKDcNR9cTP1xh3+3Xr+VHZEaRrXx7tF4O1ywNDjRk+v7Wm
+         PT6rlYZ4j80nMNFGU9by++ddqu4iFH4tPMIBnIsHSeTttzAQY+g7nj2B573PxDPCU6BS
+         oInPbHd71zXVYFARFl/+zUQQWu3wVyAgERJAKFUYk2IVp5VyNkTwpSzEDKb8BTQxbwIL
+         SV5IGOe8GD+TcidUFKG2/NjUooD+85nSAfdihmEQHtuZANFJG061q7adADzDt88+yTh2
+         WsbW6gmiRPNLcGUrVxxnyJQ6eHzj3KEdXzwCzvU9sI0Blx0G/nCio/W3UG5tSFcqkdiA
+         RafQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=diRXR2Re1+OHdUMzqSTY3/4W/RblejFu9jTBjKLGYAo=;
+        fh=pUUVUbFH7KynhAVh2UzUqWy3ZWkhYN2C8r3a9A2bwag=;
+        b=ZfzQVtwT8Ou5hLVElr/BdO91zMbzbXk5qxJ0Fb8adAlwf9XK1e+uIDBJYOPUZP+wYU
+         EHzyqpFVuVCmmdRkUmWJEtjo8XiH1NIngYicTkRcL7GcYCSX2W3tnIinbSauUxys9Szw
+         PRIV/KPJSQscse52k7R0itWt2Nvk/HH1LevGO4xst1oUuUXnVwmAdlkxp4ipeetSDDcI
+         Cv5YSOVQ02wzmQO7BU8M51y7Hh4WDkKRkDYKKZHIDvnnYI5CkCU8DdNuq4MIsCBKjm6z
+         3QIveKfrN8E59jH8jJTXRUr8VHdduCOYWTOpsdiTtZ2xgsIyhfPsCfOptrvw+raJwCGz
+         +l7w==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767788599; x=1768393399; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/cpAmgGcR/Yz8Fc5Id4B+s0tq7OgiXK7JplsVqgBRMI=;
-        b=ESmsqT1tbaNEI3Xi3v9w+/eIN9P/r1B0MIZwsJwWXHoRUiCG/fS6vYE8v0978kYVHI
-         v5OTHTXC0G/eVng1Qn5MsVQoivk5uYPI+vh35Ik3k8KXylOpUx4iniObEO+31Xgr+gnb
-         RnUopAeLmUUPb9rs9kDBhNTzIaztek0LTV36HQnED7SME/h+exhN5qa5bY+9xgTBBQ1z
-         9EyBKgS665DzIPxX7vSAGxrRQMIdgcDpsfuaAxH7QfQX98UZOySlzejx7X5o/KapUH0k
-         7YJaUIHY8V2lNCkxJidEnKyN8+Tita16FsYxhrrHGflDxIAsKxchzc7AIoguYiRIs/JN
-         2knw==
+        d=gmail.com; s=20230601; t=1767789991; x=1768394791; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=diRXR2Re1+OHdUMzqSTY3/4W/RblejFu9jTBjKLGYAo=;
+        b=TUg7YZRSLBYwBtmyyyih02fLI1qyky3/MpMAu57IzXkhrhgAmGQXZesxA4OlU+TGJz
+         Q33tvU0kF7I4Yv7vzrtBDtOKPGGandesFPRcn4KRIy39F/9SoQ75MJ410t+GG4BOOMIK
+         7HFVoViM1u5DT878uY1FzLmDr77tsx52bqefT8y7LZT6vA1FEr3ykUvLlixNngF8PVq+
+         PM4V9TIp2nYRr6ASLxFF3zOpr9ZamHlCQOJ7pzqIsgHNMQRlF7tFByzmmhSLRi3IQKU8
+         U+A0weVqV1hYLHJ5vTEcdmufGqLkpHNWHGS+FnLriN5uMtYOLZtgAyjl2HBsuiBXhcxn
+         Wefg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767788599; x=1768393399;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/cpAmgGcR/Yz8Fc5Id4B+s0tq7OgiXK7JplsVqgBRMI=;
-        b=dWJwOCF9EIj2rTMxy7kc1vZ3xCvJD7c0qEtslJv3+S0POi4yKpEvwD12qCF67a9Qt9
-         r/OKehWrcEunguV/mHoqCMPsF8hiC0lHhikiOM/AjuAByI0EErCOOfwmYPR16kk744kc
-         MWEeiWzQCKe4zrmrw0xG+Yu90hd8A4D6gOUvY28gJvt/It15wmvpYiy10BlZlMKC6swL
-         vHvccURLA0BnbVI+3DFVdSo7wMUP2eh/ssQ9hivoGUzSy7KXUwMJhygbuXUbyHTTl342
-         9GqmMm9zjZpkoyb33uWQp0nyyHUHuvmg3RkMpfDkkiroPH6w4iZvTE5GLdpYDYrPzQu2
-         hTeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVM+fYFGlz90JKOzNeAjCCViUzp+7AVaug/T0DyO8L1sDbnwgiKD2k49UlxSbXgfij4gdo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSYGmqdONpIc2bwisRYUonmfNeAWZjf7mIHr2dfVSJLe37U/PX
-	mnzvZbvfHbqYi+MCgH03mlpyI5vcWeZBAvw9UkOdCEXl59VsplNFA69Z
-X-Gm-Gg: AY/fxX6DSJYX/t0OLt6+GIQqJQhDRw1mbwBBsYszYEUajNSrQPJofZSSARbPpjnBEey
-	QD53wNJO1nCSGvMeyH7aJ/n1ns+a8s19Jf9cCx4Zf/d5sNnJI840LqiwgGXuOmGcC/TccBKxEY6
-	vpZgWFowazoc1WhYpI2iTU13AhikybcUf9MVaEf1Inj5S5+C3Yja+aqkE1BcIKLnGwV2aKXNwrk
-	qr7WlwkxYxdvHm77O7JBl+5UQMAsnb6k24k6qbnkkjEoOo7A0rLDwmwcPzBGx5pyVWjUUD4O/H4
-	nTrNBm6tOxGt2QKp/Af8u008BroSdaMMRWBmYTumDoG/DAS3B84k+0R3yir9XX1d2MmfTpsDnmz
-	Mj3WxROwz8w/s+9Og84wuAGUEqYvjNNtnmJRyU6R5gEcG0JbFlYvn+/wpLmmGn3Q=
-X-Google-Smtp-Source: AGHT+IGlIrisT4dG6ePjDdICGlJq9XxGoZMsfTO24oeTRKP23j82CCHzliHm9ok9Jknny6FgemwAFA==
-X-Received: by 2002:a2e:a7cf:0:b0:383:b3:77d8 with SMTP id 38308e7fff4ca-38300b37af9mr6741381fa.45.1767788597966;
-        Wed, 07 Jan 2026 04:23:17 -0800 (PST)
-Received: from milan ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-38302bd92fbsm2759361fa.3.2026.01.07.04.23.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 04:23:17 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@milan>
-Date: Wed, 7 Jan 2026 13:23:15 +0100
-To: Mikulas Patocka <mpatocka@redhat.com>
-Cc: Fengnan Chang <fengnanchang@gmail.com>, Yu Kuai <yukuai3@huawei.com>,
-	Fengnan Chang <changfengnan@bytedance.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-	linux-block@vger.kernel.org
-Subject: Re: [PATCH] blk-mq: avoid stall during boot due to
- synchronize_rcu_expedited
-Message-ID: <aV5QM_N3OHBh3Tvt@milan>
-References: <8e5d6c26-4854-74f8-9f44-fdb1b74cf3c4@redhat.com>
+        d=1e100.net; s=20230601; t=1767789991; x=1768394791;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=diRXR2Re1+OHdUMzqSTY3/4W/RblejFu9jTBjKLGYAo=;
+        b=cMWYZmom4eclxucZNfNg7+myj2umDEPaj/poaafIvup9Z5uZ87rF4D/UqGHdohNXFP
+         TIMEN4laL2GgtRgIFDBpV4mVaQp8VfWM6HHkl+rlEQLxvl2jDVcwKB4BxrwC57ss1TQr
+         KG3FXfmzGWI9mNEFAboym4Ii07FbzjB02LUdHXVy9PmDTrtBXW3zUDNdollsGLsjksP6
+         ApzdTsXl0D+x2xl+ZO76sQDsnIkKP2D5CQ6sveQMfMI5VMVD1aU3x/WtPSvWtwqGjkJK
+         C6A1mQYEs5M8xPUMj+wsI6Kzor+uFLSBBg43qxoixzgaOwgMRDfcuAhbVDoYTL4Ut3SQ
+         AtoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXfyJjSB0kqQV8BrOy1EZ9eZDk5CJnQmaxxXfg8yLmjqV+pwqHmv5AS+lz/DS21LV+q0c0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyY9f94fGWy0bcPu+lYcfdEcWlauBY0PfkURIq0PbT1Z9DDhcvY
+	LrhOaqtGhFzcykEWI2zbNxLeh8a9cqTUhj8Q1NM5whu4BmIsgsvsbnzwLLkNVYoEd95pmj9gEJ0
+	YfZbQ7piWAcjLsdq3fvWdItAaoYCiAbE=
+X-Gm-Gg: AY/fxX4Tg3sLknFgE9FH42Z0KukebHahR42NWpz/EJOEX6evfaRXTgZ1T+9rDIuhQ8g
+	fUQM6ANVtSbA43w4w1giZZbs2XLORThtGJozDlIevHTjTUAi8IFLFunU8ircXT5/EEEp8hJbY7c
+	8x3PKbFMgz40cvRrKytYhTwvCX3u9WdELJNvYJfkst9FzrZwB5HeP9GNfAntqIxFebjRrh/UQ4S
+	mX464XA01Piu1vUWdaKXz1PlkE1HCMTTlHvEtg56f8xGjqNvDUwTzvwhaiptfH7fwW2hRbyW4G4
+	tmas3AHEGG52t0TBCMaevMgypJZOhUfhVr9qF1MgsI48k3c9rzYK8vLr0Hlqc+s8MN3rPXZWI34
+	htjq3h4FeVyRrQ/sS5KHHiMk=
+X-Google-Smtp-Source: AGHT+IHBFO+bAPP6V9b03rrjN1+f1r7uZEP39oWoXoE9m/s7w6G4H7XkX2N2kHMKJjrXVBAD8G3GKTzc0IzPpMR3ns0=
+X-Received: by 2002:a05:7300:ad08:b0:2ae:593b:2163 with SMTP id
+ 5a478bee46e88-2b17d2b80d2mr977198eec.4.1767789990606; Wed, 07 Jan 2026
+ 04:46:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e5d6c26-4854-74f8-9f44-fdb1b74cf3c4@redhat.com>
+References: <c5c5c0a4-249f-41b0-b5f1-87a58514b120@nvidia.com> <8822A0A5-CD4C-403A-A001-F4E7A351D81B@joelfernandes.org>
+In-Reply-To: <8822A0A5-CD4C-403A-A001-F4E7A351D81B@joelfernandes.org>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Wed, 7 Jan 2026 13:46:18 +0100
+X-Gm-Features: AQt7F2oY3rJVLUAzPCfQNldNx5mLoh9iddgjtwFpYIBSLt204r2ybXXsoi4kwrU
+Message-ID: <CANiq72mUCGL3f=GAYSZfMV1=NXpOjz4vsV7B3Pd-=EG8tmWC_A@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Update email address for Joel Fernandes
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
+	rust-for-linux <rust-for-linux@vger.kernel.org>, nouveau@lists.freedesktop.org, 
+	Boqun Feng <boqun.feng@gmail.com>, Paul E McKenney <paulmck@kernel.org>, 
+	Jason Gunthorpe <jgg@nvidia.com>, Steven Rostedt <rostedt@goodmis.org>, rostedt@google.com, 
+	Yury Norov <yury.norov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 06, 2026 at 04:56:07PM +0100, Mikulas Patocka wrote:
-> On the kernel 6.19-rc, I am experiencing 15-second boot stall in a
-> virtual machine when probing a virtio-scsi disk:
-> [    1.011641] SCSI subsystem initialized
-> [    1.013972] virtio_scsi virtio6: 16/0/0 default/read/poll queues
-> [    1.015983] scsi host0: Virtio SCSI HBA
-> [    1.019578] ACPI: \_SB_.GSIA: Enabled at IRQ 16
-> [    1.020225] ahci 0000:00:1f.2: AHCI vers 0001.0000, 32 command slots, 1.5 Gbps, SATA mode
-> [    1.020228] ahci 0000:00:1f.2: 6/6 ports implemented (port mask 0x3f)
-> [    1.020230] ahci 0000:00:1f.2: flags: 64bit ncq only
-> [    1.024688] scsi host1: ahci
-> [    1.025432] scsi host2: ahci
-> [    1.025966] scsi host3: ahci
-> [    1.026511] scsi host4: ahci
-> [    1.028371] scsi host5: ahci
-> [    1.028918] scsi host6: ahci
-> [    1.029266] ata1: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23100 irq 16 lpm-pol 1
-> [    1.029305] ata2: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23180 irq 16 lpm-pol 1
-> [    1.029316] ata3: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23200 irq 16 lpm-pol 1
-> [    1.029327] ata4: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23280 irq 16 lpm-pol 1
-> [    1.029341] ata5: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23300 irq 16 lpm-pol 1
-> [    1.029356] ata6: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23380 irq 16 lpm-pol 1
-> [    1.118111] scsi 0:0:0:0: Direct-Access     QEMU     QEMU HARDDISK 2.5+ PQ: 0 ANSI: 5
-> [    1.348916] ata1: SATA link down (SStatus 0 SControl 300)
-> [    1.350713] ata2: SATA link down (SStatus 0 SControl 300)
-> [    1.351025] ata6: SATA link down (SStatus 0 SControl 300)
-> [    1.351160] ata5: SATA link down (SStatus 0 SControl 300)
-> [    1.351326] ata3: SATA link down (SStatus 0 SControl 300)
-> [    1.351536] ata4: SATA link down (SStatus 0 SControl 300)
-> [    1.449153] input: ImExPS/2 Generic Explorer Mouse as /devices/platform/i8042/serio1/input/input2
-> [   16.483477] sd 0:0:0:0: Power-on or device reset occurred
-> [   16.483691] sd 0:0:0:0: [sda] 2097152 512-byte logical blocks: (1.07 GB/1.00 GiB)
-> [   16.483762] sd 0:0:0:0: [sda] Write Protect is off
-> [   16.483877] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-> [   16.569225] sd 0:0:0:0: [sda] Attached SCSI disk
-> 
-> I bisected it and it is caused by the commit 89e1fb7ceffd which
-> introduces calls to synchronize_rcu_expedited.
-> 
-> This commit replaces synchronize_rcu_expedited and kfree with a call to 
-> kfree_rcu_mightsleep, avoiding the 15-second delay.
-> 
-> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-> Fixes: 89e1fb7ceffd ("blk-mq: fix potential uaf for 'queue_hw_ctx'")
-> 
-> ---
->  block/blk-mq.c |    3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> Index: linux-2.6/block/blk-mq.c
-> ===================================================================
-> --- linux-2.6.orig/block/blk-mq.c	2026-01-06 16:45:11.000000000 +0100
-> +++ linux-2.6/block/blk-mq.c	2026-01-06 16:48:00.000000000 +0100
-> @@ -4553,8 +4553,7 @@ static void __blk_mq_realloc_hw_ctxs(str
->  		 * Make sure reading the old queue_hw_ctx from other
->  		 * context concurrently won't trigger uaf.
->  		 */
-> -		synchronize_rcu_expedited();
-> -		kfree(hctxs);
-> +		kfree_rcu_mightsleep(hctxs);
->  		hctxs = new_hctxs;
->  	}
->  
-> 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Tue, Jan 6, 2026 at 11:56=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
+org> wrote:
+>
+> It is more important that mailing list traffic does not have issues which=
+ unfortunately us and other company domains have experienced. I have been u=
+sing my domain for a long time without incident.
 
---
-Uladzislau Rezki
+You could consider a kernel.org one too!
+
+Cheers,
+Miguel
