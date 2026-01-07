@@ -1,281 +1,490 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977272E62B5
-	for <rcu@vger.kernel.org>; Wed,  7 Jan 2026 12:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B95CC30FC34
+	for <rcu@vger.kernel.org>; Wed,  7 Jan 2026 12:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767787531; cv=none; b=ZSy4tsOBxMk7xq8kD2JhH/LudNZxWHswpcvrqjDt2Um8NT70ixOxI2ahrS15Qy4RB7LDlatqehxsmhWmJtj0mggEOaj0V9B0x6KPbzSk/iHlQGkP3+7obYXaq5fdZoBbIAXDBmpxAEAjqVgVPgejvB2SfXSS1GPQ2KAZkUghlrM=
+	t=1767788349; cv=none; b=S18viAOXf0QkIqlCI1PCSTCg9oYDKUA5AUwPUhQpWIYwdCxcR/sSONzP6DoCjlvOZ/7ywLbFHbYV3WorcgnIyLWPok+GPiPIe6TKBKTW4NSkzYyO6Pzx0L/lM1V7/P3WmWsEu9jvliDqsuRJhR9w8kHS+SOyBJyj3POMPT7+hT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767787531; c=relaxed/simple;
-	bh=xN8pHM5kNcZ6y0080kGSvKYv7KTT4H5M5KBC8OjadUI=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=EfiKPkroyFnCgU9ClDnypeGVx43zFfi3pKl98wzlry0ouA6ZyF9jU2SM4v62Cfa0hfHptcW93XnVxs/U5ieodirVRB1KqFmS/Qtjb/tFoLob72jhN+D8L8dSqUW20FI7+OlGZCQgt2elCVKXOHzYKw+impyI13gMgi/CHHHcqQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gh8Hrg9q; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1767788349; c=relaxed/simple;
+	bh=sTLeg0ybqfF1wLs66ayDecTEEDhJwRX25f1F6Ysfh+o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ncpwoN0rZxqTl9T3NYQktxIFT/e4flvTvhwFD9SLsV88pzDmIjzi6tQaLJ5UVLYD4jXAhdlhkiupjmCg7rVpOMaxVbplbWHFzOODx0UuqzDbjGYq3z9emzMZHh0tD1LNzqBrUiEJf/mxl7KZLSxV4WRD1e99IBXc9rj1hFySppg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WbN1bj2N; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WbN1bj2N; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gh8Hrg9q"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767787527;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o7u1BHe7909yZCSbC8AWqxu2f66pN2MilcTmAvzIvWg=;
-	b=Gh8Hrg9qaWP1yzYkkwwUq89B1FPswbO8T7QTfR1GaXdDeE27TQQ4b2fEi9XbP+FBor+vf0
-	EAvrg1lsVrnX8xHFizlwSatlUPAp7htd2OOdfLHaeFOEmHFvJ6alC+tzH3E2cod0/Iqvt6
-	Jw1IrUD1UDQe3gFPETkgsxtFVCEX/hs=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-615-IXSpPmyQOuSIQWbODEvGhw-1; Wed,
- 07 Jan 2026 07:05:25 -0500
-X-MC-Unique: IXSpPmyQOuSIQWbODEvGhw-1
-X-Mimecast-MFC-AGG-ID: IXSpPmyQOuSIQWbODEvGhw_1767787524
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WbN1bj2N";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WbN1bj2N"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 85C17195605B;
-	Wed,  7 Jan 2026 12:05:23 +0000 (UTC)
-Received: from [10.44.33.27] (unknown [10.44.33.27])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EB32818007D2;
-	Wed,  7 Jan 2026 12:05:19 +0000 (UTC)
-Date: Wed, 7 Jan 2026 13:05:14 +0100 (CET)
-From: Mikulas Patocka <mpatocka@redhat.com>
-To: Uladzislau Rezki <urezki@gmail.com>
-cc: Fengnan Chang <fengnanchang@gmail.com>, Yu Kuai <yukuai3@huawei.com>, 
-    Fengnan Chang <changfengnan@bytedance.com>, Jens Axboe <axboe@kernel.dk>, 
-    "Paul E. McKenney" <paulmck@kernel.org>, 
-    Frederic Weisbecker <frederic@kernel.org>, 
-    Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-    Joel Fernandes <joelagnelf@nvidia.com>, 
-    Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
-    rcu@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH] blk-mq: avoid stall during boot due to
- synchronize_rcu_expedited
-In-Reply-To: <aV49En4-qub5af-C@milan>
-Message-ID: <7f873eba-7f74-6e74-10c8-dfc178cc2a72@redhat.com>
-References: <8e5d6c26-4854-74f8-9f44-fdb1b74cf3c4@redhat.com> <aV04Vp3nmCg41YZD@pc636> <2720e388-9341-34af-21c5-0e5e1a822960@redhat.com> <aV49En4-qub5af-C@milan>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 68B9E33D86;
+	Wed,  7 Jan 2026 12:19:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1767788342; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1InH04BUhqu6lMlLWmyVtPrVr0o1jtu64a/MC1vmWxY=;
+	b=WbN1bj2NvmY+V7Jbi20SxuPQ/UHWer8r4OTn44HlYNZmRxL49sd5CkaVo8uYo4gmuSSJ0J
+	BbG+fRPzp1IReqgI6ZW/1fIGwbhzwQBSSzSEChftWtxrh9efKEwtUAeT4Yl3KXbLVAQYtU
+	i+p23blbGZYpxaaQSFnTz0TZ5Vu09JQ=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=WbN1bj2N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1767788342; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1InH04BUhqu6lMlLWmyVtPrVr0o1jtu64a/MC1vmWxY=;
+	b=WbN1bj2NvmY+V7Jbi20SxuPQ/UHWer8r4OTn44HlYNZmRxL49sd5CkaVo8uYo4gmuSSJ0J
+	BbG+fRPzp1IReqgI6ZW/1fIGwbhzwQBSSzSEChftWtxrh9efKEwtUAeT4Yl3KXbLVAQYtU
+	i+p23blbGZYpxaaQSFnTz0TZ5Vu09JQ=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F2AF53EA63;
+	Wed,  7 Jan 2026 12:19:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id auvPOjRPXmnfRAAAD6G6ig
+	(envelope-from <petr.pavlu@suse.com>); Wed, 07 Jan 2026 12:19:00 +0000
+Message-ID: <7afb6666-43b6-4d17-b875-e585c7a5ac99@suse.com>
+Date: Wed, 7 Jan 2026 13:19:00 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 34/42] dept: add module support for struct
+ dept_event_site and dept_event_site_dep
+To: Byungchul Park <byungchul@sk.com>
+Cc: kernel_team@skhynix.com, torvalds@linux-foundation.org,
+ damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+ adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, mingo@redhat.com,
+ peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+ rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
+ daniel.vetter@ffwll.ch, duyuyang@gmail.com, johannes.berg@intel.com,
+ tj@kernel.org, tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+ amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
+ linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+ minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+ sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+ penberg@kernel.org, rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
+ linux-block@vger.kernel.org, josef@toxicpanda.com,
+ linux-fsdevel@vger.kernel.org, jack@suse.cz, jlayton@kernel.org,
+ dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+ dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+ melissa.srw@gmail.com, hamohammed.sa@gmail.com, harry.yoo@oracle.com,
+ chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
+ max.byungchul.park@gmail.com, boqun.feng@gmail.com, longman@redhat.com,
+ yunseong.kim@ericsson.com, ysk@kzalloc.com, yeoreum.yun@arm.com,
+ netdev@vger.kernel.org, matthew.brost@intel.com, her0gyugyu@gmail.com,
+ corbet@lwn.net, catalin.marinas@arm.com, bp@alien8.de, x86@kernel.org,
+ hpa@zytor.com, luto@kernel.org, sumit.semwal@linaro.org,
+ gustavo@padovan.org, christian.koenig@amd.com, andi.shyti@kernel.org,
+ arnd@arndb.de, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ rppt@kernel.org, surenb@google.com, mcgrof@kernel.org, da.gomez@kernel.org,
+ samitolvanen@google.com, paulmck@kernel.org, frederic@kernel.org,
+ neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, josh@joshtriplett.org,
+ urezki@gmail.com, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+ qiang.zhang@linux.dev, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+ vschneid@redhat.com, chuck.lever@oracle.com, neil@brown.name,
+ okorniev@redhat.com, Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org,
+ anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
+ clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
+ kristina.martsenko@arm.com, wangkefeng.wang@huawei.com, broonie@kernel.org,
+ kevin.brodsky@arm.com, dwmw@amazon.co.uk, shakeel.butt@linux.dev,
+ ast@kernel.org, ziy@nvidia.com, yuzhao@google.com,
+ baolin.wang@linux.alibaba.com, usamaarif642@gmail.com,
+ joel.granados@kernel.org, richard.weiyang@gmail.com,
+ geert+renesas@glider.be, tim.c.chen@linux.intel.com, linux@treblig.org,
+ alexander.shishkin@linux.intel.com, lillian@star-ark.net,
+ chenhuacai@kernel.org, francesco@valla.it, guoweikang.kernel@gmail.com,
+ link@vivo.com, jpoimboe@kernel.org, masahiroy@kernel.org,
+ brauner@kernel.org, thomas.weissschuh@linutronix.de, oleg@redhat.com,
+ mjguzik@gmail.com, andrii@kernel.org, wangfushuai@baidu.com,
+ linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+ linux-i2c@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-modules@vger.kernel.org, rcu@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ 2407018371@qq.com, dakr@kernel.org, miguel.ojeda.sandonis@gmail.com,
+ neilb@ownmail.net, bagasdotme@gmail.com, wsa+renesas@sang-engineering.com,
+ dave.hansen@intel.com, geert@linux-m68k.org, ojeda@kernel.org,
+ alex.gaynor@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
+ lossin@kernel.org, a.hindborg@kernel.org, aliceryhl@google.com,
+ tmgross@umich.edu, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20251205071855.72743-1-byungchul@sk.com>
+ <20251205071855.72743-35-byungchul@sk.com>
+Content-Language: en-US
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20251205071855.72743-35-byungchul@sk.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-1.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	FORGED_RECIPIENTS(2.00)[m:byungchul@sk.com,m:kernel_team@skhynix.com,m:torvalds@linux-foundation.org,m:damien.lemoal@opensource.wdc.com,m:adilger.kernel@dilger.ca,m:mingo@redhat.com,m:peterz@infradead.org,m:will@kernel.org,m:tglx@linutronix.de,m:rostedt@goodmis.org,m:joel@joelfernandes.org,m:sashal@kernel.org,m:daniel.vetter@ffwll.ch,m:duyuyang@gmail.com,m:johannes.berg@intel.com,m:tj@kernel.org,m:tytso@mit.edu,m:willy@infradead.org,m:david@fromorbit.com,m:amir73il@gmail.com,m:gregkh@linuxfoundation.org,m:kernel-team@lge.com,m:linux-mm@kvack.org,m:akpm@linux-foundation.org,m:mhocko@kernel.org,m:minchan@kernel.org,m:hannes@cmpxchg.org,m:vdavydov.dev@gmail.com,m:sj@kernel.org,m:jglisse@redhat.com,m:dennis@kernel.org,m:cl@linux.com,m:penberg@kernel.org,m:rientjes@google.com,m:vbabka@suse.cz,m:ngupta@vflare.org,m:josef@toxicpanda.com,m:jack@suse.cz,m:jlayton@kernel.org,m:dan.j.williams@intel.com,m:hch@infradead.org,m:djwong@kernel.org,m:dri-devel@lists.freedesktop.org,m:rodrigosiqueiram
+ elo@gmail.com,m:melissa.srw@gmail.com,m:hamohammed.sa@gmail.com,m:harry.yoo@oracle.com,m:chris.p.wilson@intel.com,m:gwan-gyeong.mun@intel.com,m:max.byungchul.park@gmail.com,m:boqun.feng@gmail.com,m:longman@redhat.com,m:yunseong.kim@ericsson.com,m:ysk@kzalloc.com,m:yeoreum.yun@arm.com,m:matthew.brost@intel.com,m:her0gyugyu@gmail.com,m:corbet@lwn.net,m:catalin.marinas@arm.com,m:bp@alien8.de,m:x86@kernel.org,m:luto@kernel.org,m:sumit.semwal@linaro.org,m:gustavo@padovan.org,m:christian.koenig@amd.com,m:andi.shyti@kernel.org,m:arnd@arndb.de,m:lorenzo.stoakes@oracle.com,m:Liam.Howlett@oracle.com,m:rppt@kernel.org,m:surenb@google.com,m:mcgrof@kernel.org,m:da.gomez@kernel.org,m:samitolvanen@google.com,m:paulmck@kernel.org,m:frederic@kernel.org,m:neeraj.upadhyay@kernel.org,m:joelagnelf@nvidia.com,m:josh@joshtriplett.org,m:urezki@gmail.com,m:mathieu.desnoyers@efficios.com,m:jiangshanlai@gmail.com,m:qiang.zhang@linux.dev,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@a
+ rm.com,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:chuck.lever@oracle.com,m:neil@brown.name,m:okorniev@redhat.com,m:Dai.Ngo@oracle.com,s:linux-doc@vger.kernel.org,s:linux-i2c@vger.kernel.org,s:linux-kernel@vger.kernel.org,s:linux-media@vger.kernel.org,s:linux-modules@vger.kernel.org,s:linux-nfs@vger.kernel.org,s:rcu@vger.kernel.org,s:rust-for-linux@vger.kernel.org,s:link@vivo.com];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[165];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FREEMAIL_CC(0.00)[skhynix.com,linux-foundation.org,opensource.wdc.com,vger.kernel.org,dilger.ca,redhat.com,infradead.org,kernel.org,linutronix.de,goodmis.org,joelfernandes.org,ffwll.ch,gmail.com,intel.com,mit.edu,fromorbit.com,linuxfoundation.org,lge.com,kvack.org,cmpxchg.org,linux.com,google.com,suse.cz,vflare.org,toxicpanda.com,lists.freedesktop.org,oracle.com,ericsson.com,kzalloc.com,arm.com,lwn.net,alien8.de,zytor.com,linaro.org,padovan.org,amd.com,arndb.de,nvidia.com,joshtriplett.org,efficios.com,linux.dev,suse.de,brown.name,talpey.com,huawei.com,amazon.co.uk,linux.alibaba.com,glider.be,linux.intel.com,treblig.org,star-ark.net,valla.it,vivo.com,baidu.com,lists.infradead.org,lists.linaro.org,lists.linux.dev,qq.com,ownmail.net,sang-engineering.com,linux-m68k.org,garyguo.net,protonmail.com,umich.edu];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[renesas];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,sk.com:email,suse.com:dkim,suse.com:mid]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 68B9E33D86
+X-Spam-Flag: NO
+X-Spam-Score: -1.01
 
-
-
-On Wed, 7 Jan 2026, Uladzislau Rezki wrote:
-
-> On Tue, Jan 06, 2026 at 05:59:16PM +0100, Mikulas Patocka wrote:
-> > 
-> > 
-> > On Tue, 6 Jan 2026, Uladzislau Rezki wrote:
-> > 
-> > > On Tue, Jan 06, 2026 at 04:56:07PM +0100, Mikulas Patocka wrote:
-> > > > On the kernel 6.19-rc, I am experiencing 15-second boot stall in a
-> > > > virtual machine when probing a virtio-scsi disk:
-> > > > [    1.011641] SCSI subsystem initialized
-> > > > [    1.013972] virtio_scsi virtio6: 16/0/0 default/read/poll queues
-> > > > [    1.015983] scsi host0: Virtio SCSI HBA
-> > > > [    1.019578] ACPI: \_SB_.GSIA: Enabled at IRQ 16
-> > > > [    1.020225] ahci 0000:00:1f.2: AHCI vers 0001.0000, 32 command slots, 1.5 Gbps, SATA mode
-> > > > [    1.020228] ahci 0000:00:1f.2: 6/6 ports implemented (port mask 0x3f)
-> > > > [    1.020230] ahci 0000:00:1f.2: flags: 64bit ncq only
-> > > > [    1.024688] scsi host1: ahci
-> > > > [    1.025432] scsi host2: ahci
-> > > > [    1.025966] scsi host3: ahci
-> > > > [    1.026511] scsi host4: ahci
-> > > > [    1.028371] scsi host5: ahci
-> > > > [    1.028918] scsi host6: ahci
-> > > > [    1.029266] ata1: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23100 irq 16 lpm-pol 1
-> > > > [    1.029305] ata2: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23180 irq 16 lpm-pol 1
-> > > > [    1.029316] ata3: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23200 irq 16 lpm-pol 1
-> > > > [    1.029327] ata4: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23280 irq 16 lpm-pol 1
-> > > > [    1.029341] ata5: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23300 irq 16 lpm-pol 1
-> > > > [    1.029356] ata6: SATA max UDMA/133 abar m4096@0xfea23000 port 0xfea23380 irq 16 lpm-pol 1
-> > > > [    1.118111] scsi 0:0:0:0: Direct-Access     QEMU     QEMU HARDDISK 2.5+ PQ: 0 ANSI: 5
-> > > > [    1.348916] ata1: SATA link down (SStatus 0 SControl 300)
-> > > > [    1.350713] ata2: SATA link down (SStatus 0 SControl 300)
-> > > > [    1.351025] ata6: SATA link down (SStatus 0 SControl 300)
-> > > > [    1.351160] ata5: SATA link down (SStatus 0 SControl 300)
-> > > > [    1.351326] ata3: SATA link down (SStatus 0 SControl 300)
-> > > > [    1.351536] ata4: SATA link down (SStatus 0 SControl 300)
-> > > > [    1.449153] input: ImExPS/2 Generic Explorer Mouse as /devices/platform/i8042/serio1/input/input2
-> > > > [   16.483477] sd 0:0:0:0: Power-on or device reset occurred
-> > > > [   16.483691] sd 0:0:0:0: [sda] 2097152 512-byte logical blocks: (1.07 GB/1.00 GiB)
-> > > > [   16.483762] sd 0:0:0:0: [sda] Write Protect is off
-> > > > [   16.483877] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-> > > > [   16.569225] sd 0:0:0:0: [sda] Attached SCSI disk
-> > > > 
-> > > > I bisected it and it is caused by the commit 89e1fb7ceffd which
-> > > > introduces calls to synchronize_rcu_expedited.
-> > > > 
-> > > > This commit replaces synchronize_rcu_expedited and kfree with a call to 
-> > > > kfree_rcu_mightsleep, avoiding the 15-second delay.
-> > > > 
-> > > > Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-> > > > Fixes: 89e1fb7ceffd ("blk-mq: fix potential uaf for 'queue_hw_ctx'")
-> > > > 
-> > > > ---
-> > > >  block/blk-mq.c |    3 +--
-> > > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > > > 
-> > > > Index: linux-2.6/block/blk-mq.c
-> > > > ===================================================================
-> > > > --- linux-2.6.orig/block/blk-mq.c	2026-01-06 16:45:11.000000000 +0100
-> > > > +++ linux-2.6/block/blk-mq.c	2026-01-06 16:48:00.000000000 +0100
-> > > > @@ -4553,8 +4553,7 @@ static void __blk_mq_realloc_hw_ctxs(str
-> > > >  		 * Make sure reading the old queue_hw_ctx from other
-> > > >  		 * context concurrently won't trigger uaf.
-> > > >  		 */
-> > > > -		synchronize_rcu_expedited();
-> > > > -		kfree(hctxs);
-> > > > +		kfree_rcu_mightsleep(hctxs);
-> > > >
-> > > I agree, doing freeing that way is not optimal. But kfree_rcu_mightsleep()
-> > > also might not work. It has a fallback, if we can not place an object into
-> > > "page" due to memory allocation failure, it inlines freeing:
-> > > 
-> > > <snip>
-> > > synchronize_rcu();
-> > > free().
-> > > <snip>
-> > > 
-> > > Please note, synchronize_rcu() can easily be converted into expedited
-> > > version. See rcu_gp_is_expedited().
-> > > 
-> > > --
-> > > Uladzislau Rezki
-> > 
-> > Would this patch be better? It does GFP_KERNEL allocation which dones't 
-> > fail in practice.
-> > 
-> > > Inlining is a corner case but it can happen. The best way is to add
-> > > rcu_head to the blk_mq_hw_ctx structure and use kfree_rcu(). It never
-> > > blocks.
-> > 
-> > We are not protecting the blk_mq_hw_ctx structure with RCU, we are 
-> > protecting the q->queue_hw_ctx array. So, rcu_head cannot be added to an 
-> > array. We could cast the array to rcu_head (and make sure that the initial 
-> > allocation is at least sizeof(struct rcu_head)), but that is hacky.
-> > 
-> > Mikulas
-> > 
-> > ---
-> >  block/blk-mq.c |   23 +++++++++++++++++++++--
-> >  1 file changed, 21 insertions(+), 2 deletions(-)
-> > 
-> > Index: linux-2.6/block/blk-mq.c
-> > ===================================================================
-> > --- linux-2.6.orig/block/blk-mq.c	2026-01-06 15:55:41.000000000 +0100
-> > +++ linux-2.6/block/blk-mq.c	2026-01-06 16:22:40.000000000 +0100
-> > @@ -4531,6 +4531,18 @@ static struct blk_mq_hw_ctx *blk_mq_allo
-> >  	return NULL;
-> >  }
-> >  
-> > +struct rcu_free_hctxs {
-> > +	struct rcu_head head;
-> > +	struct blk_mq_hw_ctx **hctxs;
-> > +};
-> > +
-> > +static void rcu_free_hctxs(struct rcu_head *head)
-> > +{
-> > +	struct rcu_free_hctxs *r = container_of(head, struct rcu_free_hctxs, head);
-> > +	kfree(r->hctxs);
-> > +	kfree(r);
-> > +}
-> > +
-> >  static void __blk_mq_realloc_hw_ctxs(struct blk_mq_tag_set *set,
-> >  				     struct request_queue *q)
-> >  {
-> > @@ -4539,6 +4551,7 @@ static void __blk_mq_realloc_hw_ctxs(str
-> >  
-> >  	if (q->nr_hw_queues < set->nr_hw_queues) {
-> >  		struct blk_mq_hw_ctx **new_hctxs;
-> > +		struct rcu_free_hctxs *r;
-> >  
-> >  		new_hctxs = kcalloc_node(set->nr_hw_queues,
-> >  				       sizeof(*new_hctxs), GFP_KERNEL,
-> > @@ -4553,8 +4566,14 @@ static void __blk_mq_realloc_hw_ctxs(str
-> >  		 * Make sure reading the old queue_hw_ctx from other
-> >  		 * context concurrently won't trigger uaf.
-> >  		 */
-> > -		synchronize_rcu_expedited();
-> > -		kfree(hctxs);
-> > +		r = kmalloc(sizeof(struct rcu_free_hctxs), GFP_KERNEL);
-> > +		if (!r) {
-> > +			synchronize_rcu_expedited();
-> > +			kfree(hctxs);
-> > +		} else {
-> > +			r->hctxs = hctxs;
-> > +			call_rcu(&r->head, rcu_free_hctxs);
-> > +		}
-> >  		hctxs = new_hctxs;
-> >  	}
-> >  
-> > > 
-> > 
-> I see. That will work but this looks like a temporary fix. It would be
-> great to understand why synchronize_rcu_expedited() is blocked for so long.
-> 16 seconds is a way too long.
-
-synchronize_rcu_expedited is called 257 times from the block layer. One 
-call is approximately 50ms.
-
-This is one of the stacktraces:
-[    3.087639] CPU: 12 UID: 0 PID: 260 Comm: (udev-worker) Not tainted 6.19.0-rc4 #26 PREEMPT_{RT,(full)}
-[    3.087642] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[    3.087643] Call Trace:
-[    3.087644]  <TASK>
-[    3.087644]  dump_stack_lvl+0x47/0x60
-[    3.087649]  __blk_mq_realloc_hw_ctxs+0x14e/0x170
-[    3.087652]  blk_mq_init_allocated_queue+0xf5/0x3b0
-[    3.087654]  blk_mq_alloc_queue+0x62/0xa0
-[    3.087655]  scsi_alloc_sdev+0x1e2/0x300 [scsi_mod]
-[    3.087658]  scsi_probe_and_add_lun+0x1de/0x280 [scsi_mod]
-[    3.087660]  ? preempt_count_add+0x48/0xc0
-[    3.087663]  ? rt_spin_unlock+0x47/0xa0
-[    3.087665]  ? rt_spin_unlock+0x2d/0xa0
-[    3.087666]  __scsi_scan_target+0xd3/0x1d0 [scsi_mod]
-[    3.087667]  scsi_scan_channel+0x4f/0x80 [scsi_mod]
-[    3.087668]  scsi_scan_host_selected+0xc0/0xf0 [scsi_mod]
-[    3.087670]  scsi_scan_host+0x181/0x1a0 [scsi_mod]
-[    3.087671]  virtscsi_probe+0x333/0x341 [virtio_scsi]
-[    3.087674]  virtio_dev_probe+0x1e5/0x300
-[    3.087676]  really_probe+0xb9/0x240
-[    3.087678]  __driver_probe_device+0x6e/0x100
-[    3.087679]  driver_probe_device+0x1a/0x70
-[    3.087680]  ? __device_attach_driver+0xa0/0xa0
-[    3.087681]  __driver_attach+0x84/0x140
-[    3.087682]  bus_for_each_dev+0x5e/0xa0
-[    3.087683]  bus_add_driver+0xd8/0x1c0
-[    3.087684]  ? libata_transport_exit+0x930/0x930 [libata]
-[    3.087686]  driver_register+0x6c/0xd0
-[    3.087687]  virtio_scsi_init+0xa1/0x1000 [virtio_scsi]
-[    3.087688]  do_one_initcall+0x35/0x160
-[    3.087690]  ? do_init_module+0x1f/0x250
-[    3.087691]  ? __kmalloc_cache_noprof+0x183/0x330
-[    3.087694]  do_init_module+0x5d/0x250
-[    3.087695]  ? init_module_from_file+0x9e/0xc0
-[    3.087695]  init_module_from_file+0x9e/0xc0
-[    3.087696]  idempotent_init_module+0xee/0x2d0
-[    3.087697]  __x64_sys_finit_module+0x56/0xa0
-[    3.087698]  do_syscall_64+0x31e/0x370
-[    3.087701]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-
-
-> Is that easy to reproduce?
-
-I uploaded my config here:
-http://www.jikos.cz/~mikulas/testcases/config/.config-6.19-rc4
-
-Mikulas
-
-> --
-> Uladzislau Rezki
+On 12/5/25 8:18 AM, Byungchul Park wrote:
+> struct dept_event_site and struct dept_event_site_dep have been
+> introduced to track dependencies between multi event sites for a single
+> wait, that will be loaded to data segment.  Plus, a custom section,
+> '.dept.event_sites', also has been introduced to keep pointers to the
+> objects to make sure all the event sites defined exist in code.
 > 
+> dept should work with the section and segment of module.  Add the
+> support to handle the section and segment properly whenever modules are
+> loaded and unloaded.
+> 
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
 
+Below are a few comments from the module loader perspective.
+
+> ---
+>  include/linux/dept.h     | 14 +++++++
+>  include/linux/module.h   |  5 +++
+>  kernel/dependency/dept.c | 79 +++++++++++++++++++++++++++++++++++-----
+>  kernel/module/main.c     | 15 ++++++++
+>  4 files changed, 103 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/dept.h b/include/linux/dept.h
+> index 44083e6651ab..c796cdceb04e 100644
+> --- a/include/linux/dept.h
+> +++ b/include/linux/dept.h
+> @@ -166,6 +166,11 @@ struct dept_event_site {
+>  	struct dept_event_site		*bfs_parent;
+>  	struct list_head		bfs_node;
+>  
+> +	/*
+> +	 * for linking all dept_event_site's
+> +	 */
+> +	struct list_head		all_node;
+> +
+>  	/*
+>  	 * flag indicating the event is not only declared but also
+>  	 * actually used in code
+> @@ -182,6 +187,11 @@ struct dept_event_site_dep {
+>  	 */
+>  	struct list_head		dep_node;
+>  	struct list_head		dep_rev_node;
+> +
+> +	/*
+> +	 * for linking all dept_event_site_dep's
+> +	 */
+> +	struct list_head		all_node;
+>  };
+>  
+>  #define DEPT_EVENT_SITE_INITIALIZER(es)					\
+> @@ -193,6 +203,7 @@ struct dept_event_site_dep {
+>  	.bfs_gen = 0,							\
+>  	.bfs_parent = NULL,						\
+>  	.bfs_node = LIST_HEAD_INIT((es).bfs_node),			\
+> +	.all_node = LIST_HEAD_INIT((es).all_node),			\
+>  	.used = false,							\
+>  }
+>  
+> @@ -202,6 +213,7 @@ struct dept_event_site_dep {
+>  	.recover_site = NULL,						\
+>  	.dep_node = LIST_HEAD_INIT((esd).dep_node),			\
+>  	.dep_rev_node = LIST_HEAD_INIT((esd).dep_rev_node),		\
+> +	.all_node = LIST_HEAD_INIT((esd).all_node),			\
+>  }
+>  
+>  struct dept_event_site_init {
+> @@ -225,6 +237,7 @@ extern void dept_init(void);
+>  extern void dept_task_init(struct task_struct *t);
+>  extern void dept_task_exit(struct task_struct *t);
+>  extern void dept_free_range(void *start, unsigned int sz);
+> +extern void dept_mark_event_site_used(void *start, void *end);
+
+Nit: The coding style recommends not using the extern keyword with
+function declarations.
+
+https://www.kernel.org/doc/html/v6.19-rc4/process/coding-style.html#function-prototypes
+
+>  
+>  extern void dept_map_init(struct dept_map *m, struct dept_key *k, int sub_u, const char *n);
+>  extern void dept_map_reinit(struct dept_map *m, struct dept_key *k, int sub_u, const char *n);
+> @@ -288,6 +301,7 @@ struct dept_event_site { };
+>  #define dept_task_init(t)				do { } while (0)
+>  #define dept_task_exit(t)				do { } while (0)
+>  #define dept_free_range(s, sz)				do { } while (0)
+> +#define dept_mark_event_site_used(s, e)			do { } while (0)
+>  
+>  #define dept_map_init(m, k, su, n)			do { (void)(n); (void)(k); } while (0)
+>  #define dept_map_reinit(m, k, su, n)			do { (void)(n); (void)(k); } while (0)
+> diff --git a/include/linux/module.h b/include/linux/module.h
+> index d80c3ea57472..29885ba91951 100644
+> --- a/include/linux/module.h
+> +++ b/include/linux/module.h
+> @@ -29,6 +29,7 @@
+>  #include <linux/srcu.h>
+>  #include <linux/static_call_types.h>
+>  #include <linux/dynamic_debug.h>
+> +#include <linux/dept.h>
+>  
+>  #include <linux/percpu.h>
+>  #include <asm/module.h>
+> @@ -588,6 +589,10 @@ struct module {
+>  #ifdef CONFIG_DYNAMIC_DEBUG_CORE
+>  	struct _ddebug_info dyndbg_info;
+>  #endif
+> +#ifdef CONFIG_DEPT
+> +	struct dept_event_site **dept_event_sites;
+> +	unsigned int num_dept_event_sites;
+> +#endif
+>  } ____cacheline_aligned __randomize_layout;
+>  #ifndef MODULE_ARCH_INIT
+>  #define MODULE_ARCH_INIT {}
+
+My understanding is that entries in the .dept.event_sites section are
+added by the dept_event_site_used() macro and they are pointers to the
+dept_event_site_init struct, not dept_event_site.
+
+> diff --git a/kernel/dependency/dept.c b/kernel/dependency/dept.c
+> index b14400c4f83b..07d883579269 100644
+> --- a/kernel/dependency/dept.c
+> +++ b/kernel/dependency/dept.c
+> @@ -984,6 +984,9 @@ static void bfs(void *root, struct bfs_ops *ops, void *in, void **out)
+>   * event sites.
+>   */
+>  
+> +static LIST_HEAD(dept_event_sites);
+> +static LIST_HEAD(dept_event_site_deps);
+> +
+>  /*
+>   * Print all events in the circle.
+>   */
+> @@ -2043,6 +2046,33 @@ static void del_dep_rcu(struct rcu_head *rh)
+>  	preempt_enable();
+>  }
+>  
+> +/*
+> + * NOTE: Must be called with dept_lock held.
+> + */
+> +static void disconnect_event_site_dep(struct dept_event_site_dep *esd)
+> +{
+> +	list_del_rcu(&esd->dep_node);
+> +	list_del_rcu(&esd->dep_rev_node);
+> +}
+> +
+> +/*
+> + * NOTE: Must be called with dept_lock held.
+> + */
+> +static void disconnect_event_site(struct dept_event_site *es)
+> +{
+> +	struct dept_event_site_dep *esd, *next_esd;
+> +
+> +	list_for_each_entry_safe(esd, next_esd, &es->dep_head, dep_node) {
+> +		list_del_rcu(&esd->dep_node);
+> +		list_del_rcu(&esd->dep_rev_node);
+> +	}
+> +
+> +	list_for_each_entry_safe(esd, next_esd, &es->dep_rev_head, dep_rev_node) {
+> +		list_del_rcu(&esd->dep_node);
+> +		list_del_rcu(&esd->dep_rev_node);
+> +	}
+> +}
+> +
+>  /*
+>   * NOTE: Must be called with dept_lock held.
+>   */
+> @@ -2384,6 +2414,8 @@ void dept_free_range(void *start, unsigned int sz)
+>  {
+>  	struct dept_task *dt = dept_task();
+>  	struct dept_class *c, *n;
+> +	struct dept_event_site_dep *esd, *next_esd;
+> +	struct dept_event_site *es, *next_es;
+>  	unsigned long flags;
+>  
+>  	if (unlikely(!dept_working()))
+> @@ -2405,6 +2437,24 @@ void dept_free_range(void *start, unsigned int sz)
+>  	while (unlikely(!dept_lock()))
+>  		cpu_relax();
+>  
+> +	list_for_each_entry_safe(esd, next_esd, &dept_event_site_deps, all_node) {
+> +		if (!within((void *)esd, start, sz))
+> +			continue;
+> +
+> +		disconnect_event_site_dep(esd);
+> +		list_del(&esd->all_node);
+> +	}
+> +
+> +	list_for_each_entry_safe(es, next_es, &dept_event_sites, all_node) {
+> +		if (!within((void *)es, start, sz) &&
+> +		    !within(es->name, start, sz) &&
+> +		    !within(es->func_name, start, sz))
+> +			continue;
+> +
+> +		disconnect_event_site(es);
+> +		list_del(&es->all_node);
+> +	}
+> +
+>  	list_for_each_entry_safe(c, n, &dept_classes, all_node) {
+>  		if (!within((void *)c->key, start, sz) &&
+>  		    !within(c->name, start, sz))
+> @@ -3337,6 +3387,7 @@ void __dept_recover_event(struct dept_event_site_dep *esd,
+>  
+>  	list_add(&esd->dep_node, &es->dep_head);
+>  	list_add(&esd->dep_rev_node, &rs->dep_rev_head);
+> +	list_add(&esd->all_node, &dept_event_site_deps);
+>  	check_recover_dl_bfs(esd);
+>  unlock:
+>  	dept_unlock();
+> @@ -3347,6 +3398,23 @@ EXPORT_SYMBOL_GPL(__dept_recover_event);
+>  
+>  #define B2KB(B) ((B) / 1024)
+>  
+> +void dept_mark_event_site_used(void *start, void *end)
+
+Nit: I suggest that dept_mark_event_site_used() take pointers to
+dept_event_site_init, which would catch the type mismatch with
+module::dept_event_sites.
+
+> +{
+> +	struct dept_event_site_init **evtinitpp;
+> +
+> +	for (evtinitpp = (struct dept_event_site_init **)start;
+> +	     evtinitpp < (struct dept_event_site_init **)end;
+> +	     evtinitpp++) {
+> +		(*evtinitpp)->evt_site->used = true;
+> +		(*evtinitpp)->evt_site->func_name = (*evtinitpp)->func_name;
+> +		list_add(&(*evtinitpp)->evt_site->all_node, &dept_event_sites);
+> +
+> +		pr_info("dept_event_site %s@%s is initialized.\n",
+> +				(*evtinitpp)->evt_site->name,
+> +				(*evtinitpp)->evt_site->func_name);
+> +	}
+> +}
+> +
+>  extern char __dept_event_sites_start[], __dept_event_sites_end[];
+
+Related to the above, __dept_event_sites_start and
+__dept_event_sites_end can already be properly typed here.
+
+>  
+>  /*
+> @@ -3356,20 +3424,11 @@ extern char __dept_event_sites_start[], __dept_event_sites_end[];
+>  void __init dept_init(void)
+>  {
+>  	size_t mem_total = 0;
+> -	struct dept_event_site_init **evtinitpp;
+>  
+>  	/*
+>  	 * dept recover dependency tracking works from now on.
+>  	 */
+> -	for (evtinitpp = (struct dept_event_site_init **)__dept_event_sites_start;
+> -	     evtinitpp < (struct dept_event_site_init **)__dept_event_sites_end;
+> -	     evtinitpp++) {
+> -		(*evtinitpp)->evt_site->used = true;
+> -		(*evtinitpp)->evt_site->func_name = (*evtinitpp)->func_name;
+> -		pr_info("dept_event %s@%s is initialized.\n",
+> -				(*evtinitpp)->evt_site->name,
+> -				(*evtinitpp)->evt_site->func_name);
+> -	}
+> +	dept_mark_event_site_used(__dept_event_sites_start, __dept_event_sites_end);
+>  	dept_recover_ready = true;
+>  
+>  	local_irq_disable();
+> diff --git a/kernel/module/main.c b/kernel/module/main.c
+> index 03ed63f2adf0..82448cdb8ed7 100644
+> --- a/kernel/module/main.c
+> +++ b/kernel/module/main.c
+> @@ -2720,6 +2720,11 @@ static int find_module_sections(struct module *mod, struct load_info *info)
+>  						&mod->dyndbg_info.num_classes);
+>  #endif
+>  
+> +#ifdef CONFIG_DEPT
+> +	mod->dept_event_sites = section_objs(info, ".dept.event_sites",
+> +					sizeof(*mod->dept_event_sites),
+> +					&mod->num_dept_event_sites);
+> +#endif
+>  	return 0;
+>  }
+>  
+> @@ -3346,6 +3351,14 @@ static int early_mod_check(struct load_info *info, int flags)
+>  	return err;
+>  }
+>  
+> +static void dept_mark_event_site_used_module(struct module *mod)
+> +{
+> +#ifdef CONFIG_DEPT
+> +	dept_mark_event_site_used(mod->dept_event_sites,
+> +			     mod->dept_event_sites + mod->num_dept_event_sites);
+> +#endif
+> +}
+> +
+
+It seems to me that the .dept.event_sites section can be discarded after
+the module is initialized. In this case, the section should be prefixed
+by ".init" and its address can be obtained at the point of use in
+dept_mark_event_site_used_module(), without needing to store it inside
+the module struct.
+
+Additionally, what is the reason that the dept_event_site_init data is
+not stored in the .dept.event_sites section directly and it requires
+a level of indirection?
+
+In general, for my own understanding, I also wonder whether the check to
+determine that a dept_event_site is used needs to be done at runtime, or
+if it could be done at build time by objtool/modpost.
+
+>  /*
+>   * Allocate and load the module: note that size of section 0 is always
+>   * zero, and we rely on this for optional sections.
+> @@ -3508,6 +3521,8 @@ static int load_module(struct load_info *info, const char __user *uargs,
+>  	/* Done! */
+>  	trace_module_load(mod);
+>  
+> +	dept_mark_event_site_used_module(mod);
+> +
+>  	return do_init_module(mod);
+>  
+>   sysfs_cleanup:
+
+-- 
+Thanks,
+Petr
