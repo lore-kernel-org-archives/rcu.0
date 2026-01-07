@@ -1,68 +1,48 @@
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from 011.lax.mailroute.net (011.lax.mailroute.net [199.89.1.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6DA364EBF
-	for <rcu@vger.kernel.org>; Wed,  7 Jan 2026 15:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FBF33570C6;
+	Wed,  7 Jan 2026 16:49:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767798622; cv=none; b=gyhtYo86QNk5E8Jcgs/EtlsXWCEBx7py4wcidADaUhOsL3BkQqFasRZ8TG17D7ZObG2ZitfYVvzN5cQ2VYb5j/HDzSAAAqw66DXsb5xXUztXAkB5zurRFcjJvORW8dnN9uzWG92WUSG/BLI+YQ54x9DZDCICTmlwer5944mG0BI=
+	t=1767804576; cv=none; b=F7L7ag0SN9kvmyrqlfUa0q5GbP/BpY2DqXADYyqalpLkPwucJpHPv1XwJHeVZlj7Lh26u622K3TAhEr8VyiQDW2PGPKoTJGU4AqQL0QQ3Ke3x0LSbvMbg++JlWKiX2spKPXetkO6/wDm6JW2WvNLQgSgYfK/yU2/VJGFJzLcgmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767798622; c=relaxed/simple;
-	bh=WubH+O1/8hBTAxWCztE9WKkBJcmFAadkVRd98AR3Ut8=;
+	s=arc-20240116; t=1767804576; c=relaxed/simple;
+	bh=VKdu3bx/VTWb9k/XWm+Md+EFeUh250TyGemxa3DN+XU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LXMY4JiWa2ezssprG7cQXMIiSjrPSW/0hYgIGlR7QdVJgAMs9YTtOynxoaD+e/iH8xXq/W33e3yTNMCCvbYADdh4s2K3AlHEvtmTQSqSkKDTLltmT/z28i28Sm2/DeJ9Y0dUwpIH4xPmKBQxm4Ak9xQfFapO/wei35TYsjCBVB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=AX6FlKkW; arc=none smtp.client-ip=209.85.210.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+	 In-Reply-To:Content-Type; b=mG38vihnO5EtoYfNbfvdBCfQL+pQd9E3RmWx8+bq4aRLh9UaBTICO75NXFoctsIqfcsv3eNScXf+oIPzzkHxUl5cIQTDZxnbgp7XUBG88AFDdqZl84DEW+Vr878ujqX3UVJ9EbG15olU+LnjFY2XA2ySqYviu9c8pE+83I/IrJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=frb0QsNy; arc=none smtp.client-ip=199.89.1.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="AX6FlKkW"
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-7c75b829eb6so1383860a34.1
-        for <rcu@vger.kernel.org>; Wed, 07 Jan 2026 07:10:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1767798619; x=1768403419; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k0bHtr3XrySAFjiImEQ7o1sCcWtYIi2aFyl2Uu893iE=;
-        b=AX6FlKkWXwCF117h0wwAy0zW4+jBKKisWVx1earKNhcoh0bovCLaCLrqIh4VXkC35H
-         fbneaMg4YC88VcMcYCK0pCiL/JJ+tZSIxENyJcpuBHcIPB1WMUN/yMAyZvt4wFO1vAC/
-         QsE4L4wPG1vRuO4NyWTIcD376fmu0MnjPDDl/uit2o/WfP/9rzFjRSTgudf/iZ1g358I
-         9denddbZwtqK3pJoFSDi1OmG3dNmGw9fGgfOTBfhHkjSuqLVUL/IOxMNcU8kQGP5q8Cs
-         TFzf/Lwh4myayuUerL9QK0KXLNdn1vAZalk4g13lCkWqAAKN4l9ELfGn7HBQ139Dzjql
-         zt0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767798619; x=1768403419;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k0bHtr3XrySAFjiImEQ7o1sCcWtYIi2aFyl2Uu893iE=;
-        b=M7YiLymERghVDphSNGCxzQB4xUljHUOsK3BSrS8P2X5D8WxhlAclg9GBf6Pj5gPx/7
-         9TSyGdqxT6puFg4scS/2nGE6amnlCYS+dVbiZAAMzSuLEd2uBbIlSgkaASW95gDvghq1
-         AUOzFHrMp9ZYBxVZKj561GVV3DdEQJvuIYfD9KB72wa32aptKBG9mCRf47vZeovNqjwE
-         eF1NB+XH2dLz/elR5ApUwdf/eHedvBm2qGrmCzm/m0JwNa78XKN4Q+fI6gasA0czfieg
-         Fs5gDsE4pvXoFBM+Eeo9WiySGQQDLYd9Uz7p6/CErTPDzNjWhOTm0JwUjL32+Qma5Ng6
-         G1wg==
-X-Forwarded-Encrypted: i=1; AJvYcCVIIgEwIjuylU/QR/Y23F3NXqesUsmONGMLLekOSnrHolN4INf7RJ/TAGjsSq0jynQ8IZs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGl1HU8q8NsxqXT2sg/nv/G4zlKlckiwqVcSP35n/asPFPdYKl
-	um3iEYyObOsOH2PgnqMnVMOpoAbf8gNPacYpR2RFwIzqZA5SDJN98s/yLtbnlPSATZkmUHsLJ9A
-	PbfxM
-X-Gm-Gg: AY/fxX7b6h9kSpo1H1k9Yrz7n5XY9a+V9w9P02kcv5PvdZp8nPRaf0aIwJyaMinyiBD
-	FASArEORWSsZAeDPybQUe7T+MxgmDo0Xajvjjw5k+tzTKYvxOjduVKPsraXUzwnqVcNmIkm+Hw8
-	2guQkPX7msl2BTHx+l1l+xdnRyak+M5lpXWIl7/O1zRSIztVOBmPWH1QSfuET1IVqCzuXegDGMH
-	CX7MxDBTHAEW+L2M6h2feDQJRFA6FbqALZOY/zlS1tZaBbYxKVeJ5DGlTfAbS/WI5GWF00e3VqI
-	Urqiq8YtpPzX1zAEWNbXR8D+7mTPx4a0xE1BStOULub+GKPWcMEZrf4YLcckDY2TwXB/HkXgqrp
-	/8CIb4zpRJXxHXinXyOfG8QR6dOwILUKiFOCPkQ/RitOBPv3hbz0pk1Cg3+eSXqfVeG2Z6JJSRn
-	IrkMAqOE0=
-X-Google-Smtp-Source: AGHT+IGj0/K418ShDqcpkHparrMPXls8h5YWHeYgRgBCKWD0/FEozHczhl59mfKwy194ChwkeK4zzQ==
-X-Received: by 2002:a05:6830:2b22:b0:7c7:591a:7e91 with SMTP id 46e09a7af769-7ce508a5f84mr1808668a34.7.1767798618749;
-        Wed, 07 Jan 2026 07:10:18 -0800 (PST)
-Received: from [192.168.1.102] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7ce47801d4dsm3485794a34.5.2026.01.07.07.10.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jan 2026 07:10:18 -0800 (PST)
-Message-ID: <6fe15c1b-2990-4cd1-80f2-a9f37a67166f@kernel.dk>
-Date: Wed, 7 Jan 2026 08:10:16 -0700
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="frb0QsNy"
+Received: from localhost (localhost [127.0.0.1])
+	by 011.lax.mailroute.net (Postfix) with ESMTP id 4dmYsX4WKnz1XMG5X;
+	Wed,  7 Jan 2026 16:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1767804557; x=1770396558; bh=bitR6agTQW/31+L3e0E7bwA3
+	h7hVrWoInNy8lX/7CJA=; b=frb0QsNyahNylgR6b5GxZftVX0CDZRJ2bpnDHLuS
+	l5ylc7XZsh+fxmyrVTrTeaAQBkpYK1epHQbvFSmrFdTHIcyTgj6joNzZHbWqp5Hf
+	yxR1E0tQla+NABPfEfmdzahOYR0WVnWF+PedDhrR+g4vY7uUYU9uHchmN07Cw3u/
+	PdFN79z38W2XzExY+pS8IsLXq3tOMNCwXRr0lhcEEmiNYOcpCql/vP531ApzwY8n
+	pxoG2xog0Hy7hYLIVkcx7Ux2ftHeSXT9Np3ZDQ/BJdoI6TgDVvpjyxXy6YZbafgT
+	X0kiszrVuhFUAzcwwtdZajKm5IQMzVdD7u9GCJtN5+CGhw==
+X-Virus-Scanned: by MailRoute
+Received: from 011.lax.mailroute.net ([127.0.0.1])
+ by localhost (011.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id vVThanmLKq2i; Wed,  7 Jan 2026 16:49:17 +0000 (UTC)
+Received: from [100.119.48.131] (unknown [104.135.180.219])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 011.lax.mailroute.net (Postfix) with ESMTPSA id 4dmYsQ3Y15z1XM6Ht;
+	Wed,  7 Jan 2026 16:49:14 +0000 (UTC)
+Message-ID: <96794e1b-d733-4b3b-a6ea-0193a9833efe@acm.org>
+Date: Wed, 7 Jan 2026 08:49:13 -0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -72,49 +52,33 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] blk-mq: avoid stall during boot due to
  synchronize_rcu_expedited
-To: Mikulas Patocka <mpatocka@redhat.com>, Uladzislau Rezki <urezki@gmail.com>
-Cc: Fengnan Chang <fengnanchang@gmail.com>, Yu Kuai <yukuai3@huawei.com>,
- Fengnan Chang <changfengnan@bytedance.com>,
+To: Mikulas Patocka <mpatocka@redhat.com>,
+ Fengnan Chang <fengnanchang@gmail.com>, Yu Kuai <yukuai3@huawei.com>,
+ Fengnan Chang <changfengnan@bytedance.com>, Jens Axboe <axboe@kernel.dk>,
  "Paul E. McKenney" <paulmck@kernel.org>,
  Frederic Weisbecker <frederic@kernel.org>,
  Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
  Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
  <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- rcu@vger.kernel.org, linux-block@vger.kernel.org
+ Uladzislau Rezki <urezki@gmail.com>
+Cc: rcu@vger.kernel.org, linux-block@vger.kernel.org
 References: <8e5d6c26-4854-74f8-9f44-fdb1b74cf3c4@redhat.com>
- <aV04Vp3nmCg41YZD@pc636> <2720e388-9341-34af-21c5-0e5e1a822960@redhat.com>
 Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <2720e388-9341-34af-21c5-0e5e1a822960@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <8e5d6c26-4854-74f8-9f44-fdb1b74cf3c4@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/6/26 9:59 AM, Mikulas Patocka wrote:
-> @@ -4553,8 +4566,14 @@ static void __blk_mq_realloc_hw_ctxs(str
->  		 * Make sure reading the old queue_hw_ctx from other
->  		 * context concurrently won't trigger uaf.
->  		 */
+On 1/6/26 8:56 AM, Mikulas Patocka wrote:
+> --- linux-2.6.orig/block/blk-mq.c	2026-01-06 16:45:11.000000000 +0100
+> +++ linux-2.6/block/blk-mq.c	2026-01-06 16:48:00.000000000 +0100
+> @@ -4553,8 +4553,7 @@ static void __blk_mq_realloc_hw_ctxs(str
+>   		 * Make sure reading the old queue_hw_ctx from other
+>   		 * context concurrently won't trigger uaf.
+>   		 */
 > -		synchronize_rcu_expedited();
 > -		kfree(hctxs);
-> +		r = kmalloc(sizeof(struct rcu_free_hctxs), GFP_KERNEL);
-> +		if (!r) {
-> +			synchronize_rcu_expedited();
-> +			kfree(hctxs);
-> +		} else {
-> +			r->hctxs = hctxs;
-> +			call_rcu(&r->head, rcu_free_hctxs);
-> +		}
->  		hctxs = new_hctxs;
->  	}
-
-This is worse in every conceivable way, imho. The proper way to do this
-would be to embed the rcu_head in whatever is allocated for the hctxs at
-alloc time, if youre doing an alloc here you may as well just use
-kfree_rcu_mightsleep() in the first place. There's nothing gained from
-open coding that.
-
-Since kfree_rcu_mightsleep() will only run into trouble under strained
-conditions anyway, I think the original patch is fine for this.
-
--- 
-Jens Axboe
+> +		kfree_rcu_mightsleep(hctxs);
+>   		hctxs = new_hctxs;
+>   	}
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
