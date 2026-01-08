@@ -1,238 +1,290 @@
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013069.outbound.protection.outlook.com [40.93.196.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDD333D4F5
-	for <rcu@vger.kernel.org>; Thu,  8 Jan 2026 23:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767914827; cv=none; b=goAJ4E4j0Zk2BjMF+SFm5PWa7G+lubIJMj1mvtEHllaS1jraRBHHjU1qwU+3xCg+ICtvbe81YMBKclo1aUpc6H2BPe/tZE7rBr72PqfhFXrBEkwc5hQEvlVquc8m3Aid97gGjvx5y+1nRgsao+KjL6S+I8+QfXUMzp4gOX2WoHk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767914827; c=relaxed/simple;
-	bh=q/w2OHcDBmglSw3DmZWycMkP40pwy6rwq9Ljdbui14k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HpHTd3aYl8cMotcbRPEGkUK3woyjqzUSToeqCLulznk887uCrdTw14cLAuWyKI3LlEfSye33Cf7YDKP17yHVlT9jkJ3zpRNla2JSxJBR31RPli5Trv4LUegJ8c9piGNzBVG9CeJEADv70kE3cphnuCe65m/k/BMw8zOB54J50oY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GiYbvqxv; arc=none smtp.client-ip=209.85.128.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555AF221FB6;
+	Thu,  8 Jan 2026 23:34:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.69
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767915297; cv=fail; b=c9rWSS3KydmMxUhx+tVHAh3y4SXluAw81KDHHQT4Lf0xpjlBTV3n/kCTXub1wwm1/GnsXZnAbgH9+7YKrTOpvN3quCXwHiyCzn6CIy/TxdjLTFQHi8m1jBN8U9zYLf3Np1lI3nBDlknSNbegJflzPgDHhX5sElJpXiBjH0P+s4w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767915297; c=relaxed/simple;
+	bh=2zLNAgXU8UI/75UWWnoGuWmz/vRQuh+RQvI0D1xRxtQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=bMCzNYfsJJY/RJzspaVrZUO/k4ZaTS9RKV6XEbMsDOsRZ6T9xQCziqWdjaZEniBfiL2+5Qs7RptlDpPFGVrkXgf8fgW/iVrAvXWikRMe8DzRBDyq5bIl1wjTZSA0639iDpQjnWdn/Q4ApGK15puD9fGdnovvWVOqeqhhIURQo+s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DOpKYf2c; arc=fail smtp.client-ip=40.93.196.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GiYbvqxv"
-Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-4775ae77516so40876155e9.1
-        for <rcu@vger.kernel.org>; Thu, 08 Jan 2026 15:27:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1767914824; x=1768519624; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VJVnWCv1er1yEKW3Zzjqu5S3R8api15dEl8a9iGdG3k=;
-        b=GiYbvqxveXHimZB0cY0IPQGwtddGMXUFMQUq4vFCoukkq7vITxdgRtEVA1LjOdhDlb
-         EBQBGkY1rMMkjm+FSUmKwkAh5KnO21QhLSlgv2J0nPv55u6niA1zqm4U4Uo8WDI4XdKq
-         /6dsit2B4hHHyJrjVQA6IRBvVafZo1fwswK4gRdLEe1tcqpy/lH89/u4+LxJ91TccgZB
-         WC4ZnwLsgsY4DEYJQvCg+twqXCOAVkpieIZE0R+e5H2UiaAL+h6T/OteGJcfPXsUUe2z
-         YAhekXP47hmDWItii+2w7hUcyn56P3vWU5skC7b8UAu2sTNGTZcgl3rT5j1sVJIux09t
-         aS7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767914824; x=1768519624;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=VJVnWCv1er1yEKW3Zzjqu5S3R8api15dEl8a9iGdG3k=;
-        b=Gd/Ccl4Fuoi5SCwYPdjkQ22rshI7oUjHH3yx19ix97aYp9sFqJKbTCoPNCYuxAHRu7
-         o3Jhthr2o/1pVXs8N/mkhn0OROq6zyDFUIPLXh4y2PUggvZ735CGRLFRC76mZ4Fx+0e5
-         EM1NIFwz1aVpetZaP8raiYU7A2gi3mcLJw9xpTC2h8+67xtCuLmofjJBbf/e8RZW/4PE
-         BaoqHiEhroBvB/aqE6bKo6kK37dE4xHQpUFVxzvfKKnFqodVIzwYIgu2tJsDPvGG60+E
-         Ov1rOjX8l+24pLHbVYpI/eR6qNGaMF2iAQQRD7J4b0mHLzgl1T6QojZEq2nkHVCHq1aB
-         4jew==
-X-Forwarded-Encrypted: i=1; AJvYcCW6nubTmXsL0i6jWIF2xql6pGQ9fIfaI+AQHmAWOnrnVhC54OgL4G4W3gVuIKfn7bicvUw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwWDTuWIYBOzGib56NhDnNrvRxCZSk4a3gfHCvy7C+xcUctXAmD
-	VMi078C3YLw4mSCzQgW9VWaToTkvHM+I58kAQ28TWH/Ou6Op0/pnMb/i3JTsIUOj6Q==
-X-Gm-Gg: AY/fxX40j185ZmgBpbUHKPANtBuG3gtcEj7JCalss9qMv+r/QiJtTsNK4dKd+QZBORr
-	QJMAtHYHkTYxh96EC3rF72R1NYp0heaw95DT3hU4ZXXVoUvOz1PEL2RBiYGC7VZWxOfGihVZxuQ
-	EN552RARMJ+1KssALpxS5g4pIE34hVY7sIb7l/t8HaJL2cjZbxhtDMg0m+64gJEfCToRxB8Ldfl
-	eraTgrRo0JWLL554MamTEBvTwVYXymOU7NHfOYskLeg3kQY6X2dIxpL9MObTeN3K/UcN1d4gh5H
-	InLevb243NekWTWWKV0tgnSFdb2fSdiBtr5kpgU7b5xrpK/yBJ2R740WDmFAe3RIfH+5B/oo69x
-	U8O2GFLUPdb1DgQE9ARTW9cgBaIOnAEZUYmNkFTf9j0++JeKIoBdk54PYUIO0QM+RscemmvwsY7
-	B0PBxLUaU9dnbuhZeId7LuELd9iE3tjlPkku3TABWIhyw3VeJg
-X-Google-Smtp-Source: AGHT+IHhn5oqqXEXdXppHSooBMMRAzilyWn+PndcRbByujPILqHWwWxt63fu3OjbgMJmLJjeeFi/pw==
-X-Received: by 2002:a05:600c:4ed4:b0:471:14f5:126f with SMTP id 5b1f17b1804b1-47d84b41181mr100523185e9.33.1767914823835;
-        Thu, 08 Jan 2026 15:27:03 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:2834:9:384b:578b:5b8e:a6f3])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d871a1e11sm46386595e9.19.2026.01.08.15.27.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jan 2026 15:27:03 -0800 (PST)
-Date: Fri, 9 Jan 2026 00:26:55 +0100
-From: Marco Elver <elver@google.com>
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-	Chris Li <sparse@chrisli.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexander Potapenko <glider@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Ian Rogers <irogers@google.com>, Jann Horn <jannh@google.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
-	Kentaro Takeda <takedakn@nttdata.co.jp>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Waiman Long <longman@redhat.com>, kasan-dev@googlegroups.com,
-	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-	linux-sparse@vger.kernel.org, linux-wireless@vger.kernel.org,
-	llvm@lists.linux.dev, rcu@vger.kernel.org
-Subject: Re: [PATCH v5 10/36] locking/mutex: Support Clang's context analysis
-Message-ID: <aWA9P3_oI7JFTdkC@elver.google.com>
-References: <20251219154418.3592607-1-elver@google.com>
- <20251219154418.3592607-11-elver@google.com>
- <57062131-e79e-42c2-aa0b-8f931cb8cac2@acm.org>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="DOpKYf2c"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=fvMWmaiPZDz7fjiUkFHE7uXcME8AL81eJZQQ8eafqcR+GbGd7SAvhKTinoCyhs0qfut8IxcsC4yQhKdya3i26xI/SeCIADtL+tf36vn9P8SXKjEg+F7kHE11kb9bj62zy0UahrZyaAYmC2aGh5VexgZV3U4fmyFBIKT0A5k7jPELmaz62buMBHjBk1OXUiALu11FMNk/GUpzNK7/SWlklyeSon+33wfG1O+0MBI18Tm8637fmiErm6i2ZVTelSJvu1NkAsHCJ0TQugbf2kj1XBwg9HY1JRj6DF38jIiLwtPjuGXjs66pI8Qyn8KC87ahqIqKwnWD/XzKbJ5W9yANKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=M9TBFatjTadnqSnBQ2PX8Et4Costh/J3XbG/UICXrfU=;
+ b=sJ53857N6DKeBRUtdM8eSYBvsFOFNgudDb8DF08+xJf27GoCBkPEDWW3eRBm0HzvPJxwVQ9ShNvrZqBlT4ZysV/YMYPUBeOUrIEJaoOkQV4Zi/aZLkX3OmMghR7z0GMSQo4dpZhcBtrNFkGaQ5wmAEkq1dXFuK3PQwxPoraoYihvC+QyiA44dzrm30v5yCsiY+kPT/DbH53BQ0o5PPW8+K1zSqdGCZg+vLf3MuM5Xy//UFhMn6i92De21Einubyghi6Gyw3o6JuIR5eWj5VCVIr79i4sCLlDsNmuyTf8ByMYLDaixvNHjFlORFo+ApqK4uASDbrw3EzMeNadty2tMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M9TBFatjTadnqSnBQ2PX8Et4Costh/J3XbG/UICXrfU=;
+ b=DOpKYf2cMTleXddtzHaChfTZjmrmzM0qTQPPzgZAls/2rZUlnIPJcASfFsOwHzgIvYyQ17EymUbFqmEyUciCsm7B4gH5eP+LUF51NFaQoIrEmmpdmIR/3qXUCmLidM1bsMcuLNAD7b2H783pI/6siWW33e/TS3PRm4bkc77XCzcfirT3rwtsvu/4GvdDYs/rKK6SwhEh03YklMp1muQhLt+6tFIqnaAD4VlMAHc3XacRPvWKYqcg+4MyP/oTVoJ/ccrQ/xRVNfstRaq7NjZJSzrxkTe2zZx2L9JlpVGWhzV94ga8eyASxmfyd/0Pq1pDhXMuzWEOF5HcLXHDPOGp2A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by CY5PR12MB6647.namprd12.prod.outlook.com (2603:10b6:930:40::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9456.14; Thu, 8 Jan
+ 2026 23:34:53 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%2]) with mapi id 15.20.9499.003; Thu, 8 Jan 2026
+ 23:34:53 +0000
+Message-ID: <b045dc42-233f-4bb9-8619-6a688c05b7ae@nvidia.com>
+Date: Thu, 8 Jan 2026 18:34:49 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v4 3/4] hazptr: Implement Hazard Pointers
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Frederic Weisbecker <frederic@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Joel Fernandes
+ <joel@joelfernandes.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Alan Stern <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
+ Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+ Mateusz Guzik <mjguzik@gmail.com>,
+ Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>, rcu@vger.kernel.org,
+ linux-mm@kvack.org, lkmm@lists.linux.dev
+References: <20251218014531.3793471-1-mathieu.desnoyers@efficios.com>
+ <20251218014531.3793471-4-mathieu.desnoyers@efficios.com>
+ <aUO9KRaP0FXpm_l9@tardis-2.local>
+ <fcbc99d0-b7c7-45f7-9cf8-f5d3bfad966e@efficios.com>
+ <aUSfu4V9mrD7BQGl@tardis-2.local>
+ <6c96dbb5-bffc-423f-bb6a-3072abb5f711@efficios.com>
+ <aV_cms1mCPYq6jah@localhost.localdomain>
+ <fc0eaac9-930f-4692-b913-80e48dcdd301@efficios.com>
+Content-Language: en-US
+From: Joel Fernandes <joelagnelf@nvidia.com>
+In-Reply-To: <fc0eaac9-930f-4692-b913-80e48dcdd301@efficios.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BL1P221CA0015.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c5::34) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57062131-e79e-42c2-aa0b-8f931cb8cac2@acm.org>
-User-Agent: Mutt/2.2.13 (2024-03-09)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|CY5PR12MB6647:EE_
+X-MS-Office365-Filtering-Correlation-Id: 89cc9f6a-a6b4-498e-4352-08de4f0e8609
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?OW16RWpFbnBsWHFEclBheGhGODhKb0wwS1BFMTFrS1c5RmdhdGxLeHJYbldm?=
+ =?utf-8?B?Z0tJQjErR0dWajhMazBRRXZwaDlXQ1RtOWkzQXlnN09RenJFSVRXQUxXTXNG?=
+ =?utf-8?B?OXJiRHF6NjBTVWEyN3NlZkhYeW5wc04zWjdJMWhiUC9GRUl4SXhFczh5WWhn?=
+ =?utf-8?B?WFc3K0w5Nkc0TTcrSXJ0enFjTGtZK0NlWndwMzNaN0wvZEZhSDFWUGR0TG04?=
+ =?utf-8?B?b0ZBMThYakg4U2tQN0MwSWdTa2J5L2xvY0JlUGdoSDNJOTh2Wnh0bjlBYXJn?=
+ =?utf-8?B?V1pVNElESUlMZzY3YzZnb1QzUno4RzZSS2N6U3hJSGN0ZklnOGtKTnI1YmFT?=
+ =?utf-8?B?bmhSUit4bTFnMFhoVDRXbG5kK1hRby95QXFkVjdyejhFamtkZVh3N252L1dB?=
+ =?utf-8?B?UDUzdGFJZXJXWG1HQTdIaVNkckd2Z3h3WjdPSWJIaEZocGtTQTUxS1BqYmF5?=
+ =?utf-8?B?NlJuRURsd05QK0k2S0lnR2M4Tzl2QnlZaHVxN1FuTjJ5UnRzbGFESTlKWXNE?=
+ =?utf-8?B?NnZYM0trT1ZTemZyQThPeXJlYWZLbEgvRGlWZW9OMG1PVFJQeCtIaEVNNVBH?=
+ =?utf-8?B?dlBGS0ZwcGNjVy94K0NJdW5wb3RLd1FTU3RwMndTYjQwL09CTmZuSWs1T1lx?=
+ =?utf-8?B?NFBhY1FqeXJZMFlxaDN3akpsSHRLTjFHVFYvTHdHUmptRWtuaHV6L0xjcEFV?=
+ =?utf-8?B?MzM5VXFUdGtuOXh2Y1loTGFMOWpQWFBBT2RBamk5cElEQ1QrY3N2aTJ0ZUxr?=
+ =?utf-8?B?dTNlc05mckY4MjBVRXh4L2VMcVhpV2grYVNKcVVSSlRrU0Z5UTBsSFRxRith?=
+ =?utf-8?B?c1cvbjhRYkk3MWN5Sm96djZBZmdydGR0b3I2V2VkL1lldWRpazJxNmlqd0k0?=
+ =?utf-8?B?d1pscjJxTnJ4SWM4S0JSaHlmZ1dscTZGRWhhV0h0UlBrcXI1NTYxTFhMdncy?=
+ =?utf-8?B?ZFZrbGF3SXF3dW9CNXVBejNMTnR2WlE2TitvdEhDYlFuNXdTZ281RXE1d2RV?=
+ =?utf-8?B?blA0SWhsTVozYmhaWUl3UEtGS05ZeWJ6N2NmWG9pREVFbng5TkNMN2xteDk5?=
+ =?utf-8?B?UURPeDF0VlV2QnNBQkpxeTcvYkJhN2RkREoyVXZBblErb2JvTCt1RzVWKy9Q?=
+ =?utf-8?B?WHpjNmtjUzZpL0xLRkIxT1JTZUJ5WlNmWnQ0cVJHN3RHK1JRaWUvaE9rZWk3?=
+ =?utf-8?B?VTkxakZjUmVuM3V4Y0Yyd1YydHNEMzFzRmtiV0pTTVFSYTQzNFB0cjlvOXA3?=
+ =?utf-8?B?YXJuZ3RUeWxMYUR5RWNmYUxuazhtc3ViWWhDRERQNVRVN2IrYWxyM2NBWE9I?=
+ =?utf-8?B?YWh1SU9EKytlVitRVlRPdXdua0hBSFlvRCtZSXg1RGtQeXp5UXh3UGxJUWxn?=
+ =?utf-8?B?RWVXVG82eHUrdVlTM0kxNXJFVEQrVG5RWDNqL1JsZTZ4TDJVbkpSWmhCT0U3?=
+ =?utf-8?B?eU40SmFoY3p3blQ4WlBlZTJ4ZndxZXdRRlEvclAwUS9qYU96MU5pdUorS1M5?=
+ =?utf-8?B?bzMrM3NHamxqaWthbm1qeU13WmROamlDRG9mZUVTSjJab05NMFVoUWFmYm81?=
+ =?utf-8?B?a3RQWVo3T3ZTR2dvdEhlVWxxeUhnU202NzZXdytHR01Mc05vZElzVE5jUWxD?=
+ =?utf-8?B?eUwxQzhxcjd1bGorc2swT0UrdGJNVGZtT3hXenZtYlVJMHB6dVRCSTVPRjNR?=
+ =?utf-8?B?ZC9rYTRGYW9YMXJybnRGclkwQ0lpeWttclYxNm5LbXFPQmZ4NW1CV091TjNE?=
+ =?utf-8?B?eTU5bThNZXZyVUF0MHJsNGtESjBycFF4M2hNTGVHY3FLZ2l0YXhVUFUwempF?=
+ =?utf-8?B?c050U1AvbEV3OU9RMHU1RkFCTmFBYVVUK0MvTUgrNmgzSldjcWt4bkVWcy9y?=
+ =?utf-8?B?d3MxQXA1MFF4NEdXM2YySWhWZEdWUCtyUi8xVmZGUXFyMkVmRHFDZTdBZ3BO?=
+ =?utf-8?Q?cYTgG47VuX/xE6O/J3m5odimuMIElwXC?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?YzhxT2FpL2p1RmI5UlloOE1RTlVDeXJkcEUwU29MS2M4SzdzWXMxeTRGQ2dL?=
+ =?utf-8?B?aGtlVy80OVkyOHBaeG1YMjY1TTdUbCt4UGlTanAvMzRUbWZvMXQ0N3dmemk5?=
+ =?utf-8?B?RlBpaHlROGVCZklDR0JlTCtzKzFTeGhTY0tXT3JpdGZvZFFzNTg1bStZYnd1?=
+ =?utf-8?B?Wlc4M0ZUYVpqYndseG5TTFNzejRQQjIyZW1tSWxwRFNmZkhETW02ZUpwTm5r?=
+ =?utf-8?B?WG9yNEJQcFVFTHZQNGFsc2FuL2ZnTTBrYk9MQ2FZSkZtcWZaVCt1eUJUWXJn?=
+ =?utf-8?B?bW90bHZlMWg0eGx2RmlmeE9HNlljQnpIcFhGVk5IbEY5Nml1YzFMOWZxSkYz?=
+ =?utf-8?B?T1NuVXZubzVHVWhkTFFwcmNuVU1nYWIyQVVDczExQVFrczFKQVdXV2QyaGhp?=
+ =?utf-8?B?bXJIVi81ZWxqSkd6SU4wTER4MkoxcVQybjVkbUpuTSsra29XZm0xVkdlb3dV?=
+ =?utf-8?B?RmxreUZPenBrMXNKTDlGenpxUVpYaGtQYmxnYzhTcmVleEZqZVN4bGx5WkVx?=
+ =?utf-8?B?S3FzZWFQa3k0OHkrNWlVUFVHK1YzekdHN2I5alo3R253V3UyVVo3dHZYVmEy?=
+ =?utf-8?B?cEp5bzJoVVNKRis3RzJHTldIQkNGM1NQeVA1YVZRMUdsTjhQemhMVHRnbWZt?=
+ =?utf-8?B?Q2V3dDByZGYvSi9YQ01mSW9jd0tZTWp2dzVpNFB5Lzk3Y2V3dVBaM212MmpJ?=
+ =?utf-8?B?M2xjVWM2am53RmQyMXpHekI4WEVOOHhUNXc5TkdSVVZVUUZnTWw3Q3RxS0JD?=
+ =?utf-8?B?RmI3VFhiVTdjWk55cUFqNDRZN0VDR2xJUWlwenFDUDkveWV0ekxRRWxhU3FB?=
+ =?utf-8?B?b2F3RVZ1MzcvazF6TVNxODYrWjdtZlpBa0Q2NXgxZXRoUVo4RnBpSE85RHNp?=
+ =?utf-8?B?TFplTzVXNjk5QkNIMktsbmc1ci85dE1zNEZpMzhzaVVsUURnLzhrT0NnMFVT?=
+ =?utf-8?B?eHRwZE9UdHVNVkZ1TDRMeExCRkFBblUvZnQwMlBNN25mbDJhM0dnNEFVbWlq?=
+ =?utf-8?B?THdvUHIvRXhIOWFiMDJlcWZXNkxWaGFvbGFSWTVPN2hmQlR1a0pZOEZBMkR6?=
+ =?utf-8?B?aDBNZ3pIbWloUTNyYXppcnhURnRaQVNieVdjYVRHY09Nc1BzVmNxWXNDVTFP?=
+ =?utf-8?B?am80VjB2V0VyMnI5STIwVlFZWmxQbVBMclNmQVRKYTB4L2dCOXovOVJjTWhr?=
+ =?utf-8?B?T0hIcGd0eE1qdDU2WXJUQUJaTWgvazQwbVBJbkhYdGtpK2gyc1hNbGFKWWxW?=
+ =?utf-8?B?WktPMDc1QkdRQUd5aTJscTlVMi9LZG5sZWs4YUpKNnVkUTR6VzJYRE9WZ293?=
+ =?utf-8?B?WlJjZXp3MzQ5YnpwU29sWGFBdWpOT3V1UllvK1IzMVNhU1E2V1oyamFTSWJn?=
+ =?utf-8?B?ZjBQU3BpSGpWaElOZ0lWcWZCMWtKTy9oQWxJYjRldFEwVkRjL3dmWlBTKzdH?=
+ =?utf-8?B?UkFkMmkyM0I4T05NenJnNmhDa0RvNldTOFE2ZkZiRURjUnk0dHhmUnpTVkpm?=
+ =?utf-8?B?cjdGZlVmVUdZczZTVWw5ZFhlQ0FwcDl4RUJ2cklBQjRPSjVaYXpiVE4weGxE?=
+ =?utf-8?B?QVRDdHlpdktjeU5WSklRV25TdTN5ckRhOUlkaWdNNnpNTTU5c1NUU0MwakNR?=
+ =?utf-8?B?SXZta3I1eWQzQklrcXpqMnBMZmpJQ0NHSmExVGhjR3AvZG1VVGxOOGZ6ZW1B?=
+ =?utf-8?B?dnRYcDRyam1SRG9CNFBVdXhVc1A0a1Nrb3c5UDB2dGJ5c01mSnNNZWJQMmdF?=
+ =?utf-8?B?U1FZbWFIcGZEVlk2OHNlTjZaTHhpVkRPTjFjZ0N6TmZ0SFphaHgvOEUvbDl1?=
+ =?utf-8?B?WTJkTWJHYmpDWWRublllalY4KzgvQm82OGRvK1dzamlONFcyVHNRaTJKZW4v?=
+ =?utf-8?B?c082SVdmMkRSQW9DQll3ZjMvWmFtOGxiL1RSQjFYcjg0V3M4T21nVmlBREdW?=
+ =?utf-8?B?K042N2w0T2gvREF2SVdnUmhDR3lMeXRCbzIyL1YxMk9RdS9mcmhNQWh5ZWVM?=
+ =?utf-8?B?ei82aThHalZFaGs2RWZMUDFNWWRMU2VhTEw4UERCbmwzTFo0eUJtSk12SWhz?=
+ =?utf-8?B?VHdOcGZDUnlMN3VLZnM3bGlGTEFuWno3d3RSUXM0MG51UnkzVjdaY0JoVk54?=
+ =?utf-8?B?UlBCRG0rM0hYM1J4Mm1uUjVFRTRIWEVMd2JOQVFvUHJydGFaajlYcUVNRUhS?=
+ =?utf-8?B?OGhWbFlONlZqVkJzc0h2QnFZbkdISnVBMmN1WUFXbU9yRGNaL0Jla01hNzZT?=
+ =?utf-8?B?WFdWajRHL3ZHQ29xN3IwbzJhNno4OVhpSEpPc3Exa3RWNGRrSTNtZisyY3E4?=
+ =?utf-8?B?bEt6YTlxb3Awd1pTUC9nSzZIK0Z6VDFPSVcxNkkyTE5BaTRLRXlzZz09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89cc9f6a-a6b4-498e-4352-08de4f0e8609
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2026 23:34:53.2543
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ry+pBiW3ZhIlc7G/hDZfkOlQE6gR+vm8IY+oLZC58Ad56m0o++Y1aGXUSnQuXR2nGAY/GIYjLTSHjDYUR7keug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6647
 
-On Thu, Jan 08, 2026 at 02:10PM -0800, 'Bart Van Assche' via kasan-dev wrote:
-> On 12/19/25 8:39 AM, Marco Elver wrote:
-> > diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-> > index bf535f0118bb..89977c215cbd 100644
-> > --- a/include/linux/mutex.h
-> > +++ b/include/linux/mutex.h
-> > @@ -62,6 +62,7 @@ do {									\
-> >   	static struct lock_class_key __key;				\
-> >   									\
-> >   	__mutex_init((mutex), #mutex, &__key);				\
-> > +	__assume_ctx_lock(mutex);					\
-> >   } while (0)
+
+
+On 1/8/2026 11:45 AM, Mathieu Desnoyers wrote:
+> On 2026-01-08 11:34, Frederic Weisbecker wrote:
+>> Le Fri, Dec 19, 2025 at 09:22:19AM -0500, Mathieu Desnoyers a écrit :
+>>> On 2025-12-18 19:43, Boqun Feng wrote:
+>>>> On Thu, Dec 18, 2025 at 12:35:18PM -0500, Mathieu Desnoyers wrote:
+>>>> [...]
+>>>>>> Could you utilize this[1] to see a
+>>>>>> comparison of the reader-side performance against RCU/SRCU?
+>>>>>
+>>>>> Good point ! Let's see.
+>>>>>
+>>>>> On a AMD 2x EPYC 9654 96-Core Processor with 192 cores,
+>>>>> hyperthreading disabled,
+>>>>> CONFIG_PREEMPT=y,
+>>>>> CONFIG_PREEMPT_RCU=y,
+>>>>> CONFIG_PREEMPT_HAZPTR=y.
+>>>>>
+>>>>> scale_type                 ns
+>>>>> -----------------------
+>>>>> hazptr-smp-mb             13.1   <- this implementation
+>>>>> hazptr-barrier            11.5   <- replace smp_mb() on acquire with
+>>>>> barrier(), requires IPIs on synchronize.
+>>>>> hazptr-smp-mb-hlist       12.7   <- replace per-task hp context and per-cpu
+>>>>> overflow lists by hlist.
+>>>>> rcu                       17.0
+>>>>
+>>>> Hmm.. now looking back, how is it possible that hazptr is faster than
+>>>> RCU on the reader-side? Because a grace period was happening and
+>>>> triggered rcu_read_unlock_special()? This is actualy more interesting.
+>>> So I could be entirely misreading the code, but, we have:
+>>>
+>>> rcu_flavor_sched_clock_irq():
+>>> [...]
+>>>          /* If GP is oldish, ask for help from rcu_read_unlock_special(). */
+>>>          if (rcu_preempt_depth() > 0 &&
+>>>              __this_cpu_read(rcu_data.core_needs_qs) &&
+>>>              __this_cpu_read(rcu_data.cpu_no_qs.b.norm) &&
+>>>              !t->rcu_read_unlock_special.b.need_qs &&
+>>>              time_after(jiffies, rcu_state.gp_start + HZ))
+>>>                  t->rcu_read_unlock_special.b.need_qs = true;
+>>>
+>>> which means we set need_qs = true as a result from observing
+>>> cpu_no_qs.b.norm == true.
+>>>
+>>> This is sufficient to trigger calls (plural) to rcu_read_unlock_special()
+>>> from __rcu_read_unlock.
+>>>
+>>> But then if we look at rcu_preempt_deferred_qs_irqrestore()
+>>> which we would expect to clear the rcu_read_unlock_special.b.need_qs
+>>> state, we have this:
+>>>
+>>>          special = t->rcu_read_unlock_special;
+>>>          if (!special.s && !rdp->cpu_no_qs.b.exp) {
+>>>                  local_irq_restore(flags);
+>>>                  return;
+>>>          }
+>>>          t->rcu_read_unlock_special.s = 0;
+>>>
+>>> which skips over clearing the state unless there is an expedited
+>>> grace period required.
+>>>
+>>> So unless I'm missing something, we should _also_ clear that state
+>>> when it's invoked after rcu_flavor_sched_clock_irq, so the next
+>>> __rcu_read_unlock won't all call into rcu_read_unlock_special().
+>>>
+>>> I'm adding a big warning about sleep deprivation and possibly
+>>> misunderstanding the whole thing. What am I missing ?
+>>
+>> As far as I can tell, this skips clearing the state if the state is
+>> already cleared. Or am I even more sleep deprived than you? :o)
 > 
-> The above type of change probably will have to be reverted. If I enable
-> context analysis for the entire kernel tree, drivers/base/devcoredump.c
-> doesn't build. The following error is reported:
+> No, you are right. The (!x && !y) pattern confused me, but the
+> code is correct. Good thing I've put a warning about sleep
+> deprivation. ;-)
 > 
-> drivers/base/devcoredump.c:406:2: error: acquiring mutex '_res->mutex' that
-> is already held [-Werror,-Wthread-safety-analysis]
->   406 |         mutex_lock(&devcd->mutex);
->       |         ^
-> 
-> dev_coredumpm_timeout() calls mutex_init() and mutex_lock() from the same
-> function. The above type of change breaks compilation of all code
-> that initializes and locks a synchronization object from the same
-> function. My understanding of dev_coredumpm_timeout() is that there is a
-> good reason for calling both mutex_init() and mutex_lock() from that
-> function. Possible solutions are disabling context analysis for that
-> function or removing __assume_ctx_lock() again from mutex_init(). Does
-> anyone want to share their opinion about this?
+> Sorry for the noise.
 
-Probably the most idiomatic option is to just factor out construction.
-Clearly separating complex object construction from use also helps
-readability regardless, esp. where concurrency is involved. We could
-document such advice somewhere.
+Right, I think this can happen when after a rcu_flavor_sched_clock_irq() set
+special.b.need_qs, then another upcoming rcu_flavor_sched_clock_irq() raced with
+reader's rcu_read_unlock() and interrupted rcu_read_unlock_special() before it
+could disable interrupts.
 
-For the above case, this seems cleanest and also clearer to me:
+rcu_read_unlock()
+ -> rcu_read_lock_nesting--;
+  -> nesting == 0 and special is set.
 
-diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
-index 55bdc7f5e59d..56ac8aa41608 100644
---- a/drivers/base/devcoredump.c
-+++ b/drivers/base/devcoredump.c
-@@ -339,6 +339,40 @@ void dev_coredump_put(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(dev_coredump_put);
- 
-+static struct devcd_entry *
-+dev_coredumpm_init(struct device *dev, struct module *owner, void *data,
-+		   size_t datalen, gfp_t gfp,
-+		   ssize_t (*read)(char *buffer, loff_t offset, size_t count,
-+				   void *data, size_t datalen),
-+		   void (*free)(void *data))
-+{
-+	static atomic_t devcd_count = ATOMIC_INIT(0);
-+	struct devcd_entry *devcd;
-+
-+	devcd = kzalloc(sizeof(*devcd), gfp);
-+	if (!devcd)
-+		return NULL;
-+
-+	devcd->owner = owner;
-+	devcd->data = data;
-+	devcd->datalen = datalen;
-+	devcd->read = read;
-+	devcd->free = free;
-+	devcd->failing_dev = get_device(dev);
-+	devcd->deleted = false;
-+
-+	mutex_init(&devcd->mutex);
-+	device_initialize(&devcd->devcd_dev);
-+
-+	dev_set_name(&devcd->devcd_dev, "devcd%d",
-+		     atomic_inc_return(&devcd_count));
-+	devcd->devcd_dev.class = &devcd_class;
-+
-+	dev_set_uevent_suppress(&devcd->devcd_dev, true);
-+
-+	return devcd;
-+}
-+
- /**
-  * dev_coredumpm_timeout - create device coredump with read/free methods with a
-  * custom timeout.
-@@ -364,7 +398,6 @@ void dev_coredumpm_timeout(struct device *dev, struct module *owner,
- 			   void (*free)(void *data),
- 			   unsigned long timeout)
- {
--	static atomic_t devcd_count = ATOMIC_INIT(0);
- 	struct devcd_entry *devcd;
- 	struct device *existing;
- 
-@@ -381,27 +414,10 @@ void dev_coredumpm_timeout(struct device *dev, struct module *owner,
- 	if (!try_module_get(owner))
- 		goto free;
- 
--	devcd = kzalloc(sizeof(*devcd), gfp);
-+	devcd = dev_coredumpm_init(dev, owner, data, datalen, gfp, read, free);
- 	if (!devcd)
- 		goto put_module;
- 
--	devcd->owner = owner;
--	devcd->data = data;
--	devcd->datalen = datalen;
--	devcd->read = read;
--	devcd->free = free;
--	devcd->failing_dev = get_device(dev);
--	devcd->deleted = false;
--
--	mutex_init(&devcd->mutex);
--	device_initialize(&devcd->devcd_dev);
--
--	dev_set_name(&devcd->devcd_dev, "devcd%d",
--		     atomic_inc_return(&devcd_count));
--	devcd->devcd_dev.class = &devcd_class;
--
--	dev_set_uevent_suppress(&devcd->devcd_dev, true);
--
- 	/* devcd->mutex prevents devcd_del() completing until init finishes */
- 	mutex_lock(&devcd->mutex);
- 	devcd->init_completed = false;
+   <interrupted by sched clock>
+      -> rcu_flavor_sched_clock_irq()
+         -> rcu_preempt_deferred_qs_irqrestore
+            -> clear b.special
+   <interrupt returned>
+
+     -> rcu_read_unlock_special()
+       -> local_irq_save(flags);  // too late
+          -> rcu_preempt_deferred_qs_irqrestore
+             -> Early return.
+
+thanks,
+
+ - Joel
+
