@@ -1,36 +1,35 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA4A4414;
-	Thu,  8 Jan 2026 15:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25CE5625;
+	Thu,  8 Jan 2026 15:57:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767886762; cv=none; b=OButrIScaJybWSZPDZ7TKru1tolZmE7jvF1JbSJjoZxe2HrmfazQqybFtOpwJGmWQ1WHAE1hOxsfuyPbGkzLIJurflJRnZBMWZ9qFocyctBENcEzawhTyrTMIj+EvG4gV38QPQoJO/A/8kIGWhoDhogK9CZUhUS1ea1A1nVR25U=
+	t=1767887850; cv=none; b=ED/Gc/5pXPU88anic5HA+CvO07y7YXEJWIJ2/gjUOqB8/5Zq972PQ7QDCI9THfHo0k5lRJGnPZ4A9NZxjnCGmPbgrSigGmPK4uKOC1zwYq/UuTIwF0EpWP//PZ/OeXCWhH2+z+4GCvcaZtcc5k92g+iBkTVTYVqDTatJjxzrc+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767886762; c=relaxed/simple;
-	bh=Hi7vs1cUJYiT9la3vecJJWq3lFQhzg7SJsm+svPYA4M=;
+	s=arc-20240116; t=1767887850; c=relaxed/simple;
+	bh=ugz8wdo/6BEOG+khFJF1hZdX/nRQsHinmOapoZfspvI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SB6gKEVYEB6kqsgPWrVJ7L6Xp9Kir/Hi//yYAK/eEYUDkK1ztXSNfCBl5Gp9P/9Q23grR4a4l4jmOuZwiV4d/fH6joD8Wb4L/IZBoF2P0UdsUuITTBusJJUvmNj2OCh/xYGBjWMew3ccAsBMbSb63fT5VHFAGmpWL0VlTCMvTB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PDGsb9Jb; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=E8SCvPg+rh3KYQ0zBwBkVFjc9r/mQIz+h+1uJgtD20AT9S8UmrrNzlTeQf1AG+7L25RTzHzt43dPqgMO2Ckhp8waFlwd/1utBm2ieqTayfGZVhdRRFnGBxcy+2hztz17e1hfyoTaxP5awKQzlq7YiML0IySYVFbwgTVSCF6x2ZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nmJzzqIE; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PDGsb9Jb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BED15C116C6;
-	Thu,  8 Jan 2026 15:39:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nmJzzqIE"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 576DBC116D0;
+	Thu,  8 Jan 2026 15:57:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767886762;
-	bh=Hi7vs1cUJYiT9la3vecJJWq3lFQhzg7SJsm+svPYA4M=;
+	s=k20201202; t=1767887849;
+	bh=ugz8wdo/6BEOG+khFJF1hZdX/nRQsHinmOapoZfspvI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PDGsb9JbMj0qv/TN5BPGZEWPOv4AFVm3WeS1ra4btcS56c0+tGVgkUkN4TrfQPHwp
-	 qTIui4UBaVzaZ8gHiu9KnRMYGanTwNgff+d0E3XuJr2SCTrx2seJPfdE+z234o6IJh
-	 1GfbzRxx8ERTfw454TifjdGgdXpwpkfw/PvfAWXRVylzION6vl6q9fsrtrW7786qzR
-	 6Gs5uKEkoR/WN8q65Um2KcLOjmh8g3kEuJJ/NawC59R2ECSAsG8qMb2MDqJXApJa36
-	 aK15RtngQ3SZijVYiD5QwYuNirCERLrR3Qh4os00h39rYMC+R90iMlt56lQ1oM88rV
-	 m5hShqqSE7wCw==
-Date: Thu, 8 Jan 2026 16:39:19 +0100
+	b=nmJzzqIE4IxZRUNZpaA82BmsxC6pFmAomFHBeykBct/d2m/d6EbfBpIozT3vIEt58
+	 NPWis4JayhrDP14cvBx9K8rB776JY4suj79SVX3Uv0TLnZJZkoFWmotc4SstZzN0rd
+	 hWMEIa39s1FZI0i9x7FT3+u1TbXbB1M42rE+jY7bAIdg+zYaqh89rOi+oMCBZpHajZ
+	 fbaS30dbcCz8wOucxN7jD5sN0Mqy2qKvv2OcIvGBhqWuQ92ZWH26oOS1NyzIBk7YYN
+	 X9Trl1zAt440AJ1mCv2RFbAADwxaBOVgy67pQk/jhY2QWMuwBUo5iC9VNtk3AzRLnL
+	 NoiGLjYLF+ocA==
+Date: Thu, 8 Jan 2026 16:57:26 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>,
-	Paul E McKenney <paulmck@kernel.org>,
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
@@ -39,13 +38,12 @@ Cc: Joel Fernandes <joelagnelf@nvidia.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Kai Yao <yaokai34@huawei.com>, Tengda Wu <wutengda2@huawei.com>
-Subject: Re: [PATCH -next 1/8] rcu: Fix rcu_read_unlock() deadloop due to
- softirq
-Message-ID: <aV_Pp5BUxB9dwp1S@localhost.localdomain>
-References: <B952AB3F-16CC-4D28-8038-23DD052D6DDC@joelfernandes.org>
- <9086EA4F-0393-4E01-AE74-1B428904BFCE@joelfernandes.org>
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH -next 3/8] rcu/nocb: Remove unnecessary WakeOvfIsDeferred
+ wake path
+Message-ID: <aV_T5kLzX2qMpxpt@localhost.localdomain>
+References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
+ <20260101163417.1065705-4-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -55,25 +53,22 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9086EA4F-0393-4E01-AE74-1B428904BFCE@joelfernandes.org>
+In-Reply-To: <20260101163417.1065705-4-joelagnelf@nvidia.com>
 
-Le Wed, Jan 07, 2026 at 10:35:44PM -0500, Joel Fernandes a écrit :
-> > 
-> > By the way, when I last tried to do it from rcu_qs, it was not fixing the original bug with the IRQ work recursion.
-> > 
-> > I found that it was always resetting the flag. But probably it is not even the right place to do it in the first place.
-> 
-> I think we need to reset the flag in rcu_report_exp_rdp() as well if exp_hint
-> is set and we reported exp qs.
+Le Thu, Jan 01, 2026 at 11:34:12AM -0500, Joel Fernandes a écrit :
+> @@ -974,8 +959,7 @@ static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp_gp,
+>  		return false;
+>  	}
+>  
+> -	ndw = rdp_gp->nocb_defer_wakeup;
+> -	ret = __wake_nocb_gp(rdp_gp, rdp, ndw == RCU_NOCB_WAKE_FORCE, flags);
+> +	ret = __wake_nocb_gp(rdp_gp, rdp, false, flags);
 
-To avoid needlessly reaching the rcu_read_unlock() slowpath whenever the exp QS has
-already been reported, yes indeed.
+The force parameter can now be removed, right? (same applies to wake_nocb_gp()).
 
->  I am working on a series to cover all cases and will send RFC soon. However this patch we are 
-> reviewing can go in for this merge window and the rest I am preparing (for
-> further improvement) for the next merge window, if that sounds good.
+Other than that:
 
-Ok.
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
 -- 
 Frederic Weisbecker
