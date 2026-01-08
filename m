@@ -1,152 +1,124 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from 011.lax.mailroute.net (011.lax.mailroute.net [199.89.1.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CCFE78F29;
-	Thu,  8 Jan 2026 19:01:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69FDD2F39B5;
+	Thu,  8 Jan 2026 22:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767898877; cv=none; b=R1lROyDJAsmBIaoL3DZ7LAQ81kVcpXCZH35MdMS5owOM8OxQo4IjfnbVmcYv9E4yoZ46jGp/nZSCSPWQKeOh2elBLT4Na9LaPyBn6aUi0xQ1qe+RILTgu9lvLGyoyJo7IXuD02oG8UUjOiAEf8GV4Jzh647DA5yMAP23fb2o7YM=
+	t=1767910254; cv=none; b=eIjfP4fuQlK47m4pGdvOrFJNWmLKHkqjTAS9ZUfygYbPxgTE9x/N69MkA4P9dlzFCu1zxK6VLL+3d7MDrHQQAlnRR4TkTaaRAb7qKQNJycwkW9OOmPRhxsOrCVfk5mWW2vCt0LSZ53jNDFi5LYqSIIxzQWGwpForbymN9R/VEUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767898877; c=relaxed/simple;
-	bh=85lqoq+CQJ2HM2BHYhQM6KPWo3GQyLWoKEtp5vriauY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oNKwvGqYu6FsgxaHZ13k6zq4Kz/RiBCOsv1vd1ouSZFo/zVrh9GBj6C+Tub1hbAlx6wulQjwhup/4fLekBWHYopUoOXnEaAc4JojkG7H24trBh88LeragaE+tspCU0t4eCYdaafafmVmuAE0lZsGqPRB58PMwWe72l+mxwPz2uw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CnAkSC6a; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1767910254; c=relaxed/simple;
+	bh=Zrh6g3iqQucP/rJuVPvG/r1wbhapoAMvUjp8oSDN/3U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZGxoPMA4sgdkuxU2OlMaha98jEK/GGGw9tbduEwb1fVYq+Jy7o7aaUSx9ezZ3XtxxGexGNALlqAiGwVHC9k5YQOviddeW+O11yiFgTCHrLPc014sNo1Vu3QLdp12VmkvJMvUkRk5x3V3N5QuYgS6d/1/QPdggZaFxotPPEmlQng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=y3DnIpMC; arc=none smtp.client-ip=199.89.1.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CnAkSC6a"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A4B1C116C6;
-	Thu,  8 Jan 2026 19:01:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767898877;
-	bh=85lqoq+CQJ2HM2BHYhQM6KPWo3GQyLWoKEtp5vriauY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=CnAkSC6aCYPXrZfTNFoYj/UrHem2yIZRvLMEuBErPVex8IVONGzWUYHqfK20BUS1n
-	 uJcTwvY/iTb0C7SvSMi99I4unqgPDoRDt5U1AktB+91vOfCRQMH3vN1+Gj+rqn67xs
-	 Hzy5TmEqccfXdqjswjDJpbbD6OnvjpNt0KKB4RV0LvAsWBy8dU6YvAC0zZh4OHbBvN
-	 x9Lnt5OoppRhno5FMHaF+Rw/Vpsd2DtG59Np0gFbK7FEIv7fpaWoWbeUThmXWU4zwW
-	 uQCq8dlVWc9JDBrwWW9ZsTsOEbTb0lFG732B//kc1A+lk1R4NfY1NguDBr5x7n386a
-	 YhxfZwLlBinLg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 7F7BDCE0CB8; Thu,  8 Jan 2026 11:01:16 -0800 (PST)
-Date: Thu, 8 Jan 2026 11:01:16 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	John Stultz <jstultz@google.com>,
-	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Waiman Long <longman@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	rcu@vger.kernel.org, linux-mm@kvack.org, lkmm@lists.linux.dev
-Subject: Re: [RFC PATCH v4 3/4] hazptr: Implement Hazard Pointers
-Message-ID: <4f6fe051-b686-4ec4-8aff-4237b3007f33@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20251218014531.3793471-1-mathieu.desnoyers@efficios.com>
- <20251218014531.3793471-4-mathieu.desnoyers@efficios.com>
- <aUO9KRaP0FXpm_l9@tardis-2.local>
- <fcbc99d0-b7c7-45f7-9cf8-f5d3bfad966e@efficios.com>
- <aUSfu4V9mrD7BQGl@tardis-2.local>
- <6c96dbb5-bffc-423f-bb6a-3072abb5f711@efficios.com>
- <aV_cms1mCPYq6jah@localhost.localdomain>
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="y3DnIpMC"
+Received: from localhost (localhost [127.0.0.1])
+	by 011.lax.mailroute.net (Postfix) with ESMTP id 4dnJxx5cFFz1XT1Z9;
+	Thu,  8 Jan 2026 22:10:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1767910237; x=1770502238; bh=9wcZSTi8w0Set4rh18vUE4zP
+	r/D6QOeIA+Se4D2Yz7E=; b=y3DnIpMCSQnKfEQcNUdJmBRbcLno92oeKfo+WMYi
+	GH7blNKN0irLymfpBF3Hg2QDn+bUOND9Ph7+2f+3JOuxuWVyZeHsX/eUX6nr4u42
+	Xo2+GsL+38yL5abFm2PTOhHHNbpFxaViFrEYePNdHtMs7t66UhI3rEcsqAbQ0git
+	yvIzwW2Puf3sh2g2Yh6ypqckaBLqa3pUBV8iuttx96qnQS6WndngwpK8KdYd2a1p
+	gWKipnbDHZpiaajmh8SgTT8KCPLDjeAtbIOlGRsmWTvjAkHdDpnNsQrr3OZChyg8
+	yuKl6RyxlRCmlJ0VSvSzQ99QFu2RTNvj4T9gnBxHCvPCnw==
+X-Virus-Scanned: by MailRoute
+Received: from 011.lax.mailroute.net ([127.0.0.1])
+ by localhost (011.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id 2VIQQt_5Aq81; Thu,  8 Jan 2026 22:10:37 +0000 (UTC)
+Received: from [100.119.48.131] (unknown [104.135.180.219])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 011.lax.mailroute.net (Postfix) with ESMTPSA id 4dnJxZ1xlYz1XZYyy;
+	Thu,  8 Jan 2026 22:10:26 +0000 (UTC)
+Message-ID: <57062131-e79e-42c2-aa0b-8f931cb8cac2@acm.org>
+Date: Thu, 8 Jan 2026 14:10:25 -0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aV_cms1mCPYq6jah@localhost.localdomain>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 10/36] locking/mutex: Support Clang's context analysis
+To: Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>,
+ Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+ Will Deacon <will@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+ Chris Li <sparse@chrisli.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>,
+ Christoph Hellwig <hch@lst.de>, Dmitry Vyukov <dvyukov@google.com>,
+ Eric Dumazet <edumazet@google.com>, Frederic Weisbecker
+ <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Ian Rogers <irogers@google.com>,
+ Jann Horn <jannh@google.com>, Joel Fernandes <joelagnelf@nvidia.com>,
+ Johannes Berg <johannes.berg@intel.com>, Jonathan Corbet <corbet@lwn.net>,
+ Josh Triplett <josh@joshtriplett.org>, Justin Stitt
+ <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
+ Kentaro Takeda <takedakn@nttdata.co.jp>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+ Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
+ Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>,
+ kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-security-module@vger.kernel.org, linux-sparse@vger.kernel.org,
+ linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
+References: <20251219154418.3592607-1-elver@google.com>
+ <20251219154418.3592607-11-elver@google.com>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20251219154418.3592607-11-elver@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 08, 2026 at 05:34:34PM +0100, Frederic Weisbecker wrote:
-> Le Fri, Dec 19, 2025 at 09:22:19AM -0500, Mathieu Desnoyers a écrit :
-> > On 2025-12-18 19:43, Boqun Feng wrote:
-> > > On Thu, Dec 18, 2025 at 12:35:18PM -0500, Mathieu Desnoyers wrote:
-> > > [...]
-> > > > > Could you utilize this[1] to see a
-> > > > > comparison of the reader-side performance against RCU/SRCU?
-> > > > 
-> > > > Good point ! Let's see.
-> > > > 
-> > > > On a AMD 2x EPYC 9654 96-Core Processor with 192 cores,
-> > > > hyperthreading disabled,
-> > > > CONFIG_PREEMPT=y,
-> > > > CONFIG_PREEMPT_RCU=y,
-> > > > CONFIG_PREEMPT_HAZPTR=y.
-> > > > 
-> > > > scale_type                 ns
-> > > > -----------------------
-> > > > hazptr-smp-mb             13.1   <- this implementation
-> > > > hazptr-barrier            11.5   <- replace smp_mb() on acquire with barrier(), requires IPIs on synchronize.
-> > > > hazptr-smp-mb-hlist       12.7   <- replace per-task hp context and per-cpu overflow lists by hlist.
-> > > > rcu                       17.0
-> > > 
-> > > Hmm.. now looking back, how is it possible that hazptr is faster than
-> > > RCU on the reader-side? Because a grace period was happening and
-> > > triggered rcu_read_unlock_special()? This is actualy more interesting.
-> > So I could be entirely misreading the code, but, we have:
-> > 
-> > rcu_flavor_sched_clock_irq():
-> > [...]
-> >         /* If GP is oldish, ask for help from rcu_read_unlock_special(). */
-> >         if (rcu_preempt_depth() > 0 &&
-> >             __this_cpu_read(rcu_data.core_needs_qs) &&
-> >             __this_cpu_read(rcu_data.cpu_no_qs.b.norm) &&
-> >             !t->rcu_read_unlock_special.b.need_qs &&
-> >             time_after(jiffies, rcu_state.gp_start + HZ))
-> >                 t->rcu_read_unlock_special.b.need_qs = true;
-> > 
-> > which means we set need_qs = true as a result from observing
-> > cpu_no_qs.b.norm == true.
-> > 
-> > This is sufficient to trigger calls (plural) to rcu_read_unlock_special()
-> > from __rcu_read_unlock.
-> > 
-> > But then if we look at rcu_preempt_deferred_qs_irqrestore()
-> > which we would expect to clear the rcu_read_unlock_special.b.need_qs
-> > state, we have this:
-> > 
-> >         special = t->rcu_read_unlock_special;
-> >         if (!special.s && !rdp->cpu_no_qs.b.exp) {
-> >                 local_irq_restore(flags);
-> >                 return;
-> >         }
-> >         t->rcu_read_unlock_special.s = 0;
-> > 
-> > which skips over clearing the state unless there is an expedited
-> > grace period required.
-> > 
-> > So unless I'm missing something, we should _also_ clear that state
-> > when it's invoked after rcu_flavor_sched_clock_irq, so the next
-> > __rcu_read_unlock won't all call into rcu_read_unlock_special().
-> > 
-> > I'm adding a big warning about sleep deprivation and possibly
-> > misunderstanding the whole thing. What am I missing ?
-> 
-> As far as I can tell, this skips clearing the state if the state is
-> already cleared. Or am I even more sleep deprived than you? :o)
+On 12/19/25 8:39 AM, Marco Elver wrote:
+> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+> index bf535f0118bb..89977c215cbd 100644
+> --- a/include/linux/mutex.h
+> +++ b/include/linux/mutex.h
+> @@ -62,6 +62,7 @@ do {									\
+>   	static struct lock_class_key __key;				\
+>   									\
+>   	__mutex_init((mutex), #mutex, &__key);				\
+> +	__assume_ctx_lock(mutex);					\
+>   } while (0)
 
-Get some sleep!  A good night's sleep is one of the best debugging aids
-available, even in this brave new world of LLMs.  ;-)
+The above type of change probably will have to be reverted. If I enable
+context analysis for the entire kernel tree, drivers/base/devcoredump.c
+doesn't build. The following error is reported:
 
-							Thanx, Paul
+drivers/base/devcoredump.c:406:2: error: acquiring mutex '_res->mutex' 
+that is already held [-Werror,-Wthread-safety-analysis]
+   406 |         mutex_lock(&devcd->mutex);
+       |         ^
+
+dev_coredumpm_timeout() calls mutex_init() and mutex_lock() from the 
+same function. The above type of change breaks compilation of all code
+that initializes and locks a synchronization object from the same
+function. My understanding of dev_coredumpm_timeout() is that there is a
+good reason for calling both mutex_init() and mutex_lock() from that
+function. Possible solutions are disabling context analysis for that
+function or removing __assume_ctx_lock() again from mutex_init(). Does
+anyone want to share their opinion about this?
+
+Thanks,
+
+Bart.
