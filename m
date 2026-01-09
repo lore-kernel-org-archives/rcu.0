@@ -1,227 +1,123 @@
-Received: from mail-dl1-f47.google.com (mail-dl1-f47.google.com [74.125.82.47])
+Received: from mail-dy1-f171.google.com (mail-dy1-f171.google.com [74.125.82.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336F91925BC
-	for <rcu@vger.kernel.org>; Fri,  9 Jan 2026 03:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A042309B2
+	for <rcu@vger.kernel.org>; Fri,  9 Jan 2026 03:52:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767930574; cv=none; b=RIAdi+2OJTx+HF9woH7lN3pF4U42hjfmPS2GEEdMrcFQsxdTCwFvnEZ5PusIOH7DABGal+rQuGaxBctVks23cWggf+b0Tbr+fvPz61v0km3ITW/+AdGersAmfVC80AKwvQtofMfqhar+1yjMFNyen14hrAUMsSWL/bFRagXS3Pw=
+	t=1767930733; cv=none; b=ReOihkhKdnreVSLcsebnqJhaNX9La84uyMFzdLZTV3a2xpz/kYGK9jUjndDIJMkfwBuGn10aCneT2YHI/rivINv3rhYki/g0gj4A3aPgh9m8LzXDZybrl8DDjAzRf+bSZ+NkUwdo20xjfnQk8zBTl9sGLi7p+soL9nC3vs0SV1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767930574; c=relaxed/simple;
-	bh=WqjIeqfxxdOwGGBQU2Vq/NX3htvkOb9AMu6JKL9HebM=;
+	s=arc-20240116; t=1767930733; c=relaxed/simple;
+	bh=AVdEwSE8gOa5qwWATy7QUuW4oJvgE53RfI3DgwFz6E8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZaXUFEYhLOunRUZLT4SuuDVaYErbI/Y5wqSrU5opr4JpAUOgjrJTm6zoPbw8MANSv+6VcipkCpubp5Kn6tTrVl7P6cuZNI/vbOw8ldk+OBdlePTvTIcR4/IjdxU7lZjeZjpzmSAdpPvb508e9r3vVHWzsLaeSvh090laLS7rXMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Bm2dJA/u; arc=none smtp.client-ip=74.125.82.47
+	 Content-Type:Content-Disposition:In-Reply-To; b=oyB6hGmeMPQjBhzVnkMzPwgCjKOxBbjZyq3lQvNrxYlwWHiRLO4rlvnMqEqnEnJN5ru77vlx1955cp+6UVZ20MDt9H1P+9Tu35VXlQmyyYA2yYbi3ls9rhZkKp3dLSWcPjVg5ToyEaviZfqxp9ZdcpecXerFQpqlOURcMbUh+b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=x/C04q+/; arc=none smtp.client-ip=74.125.82.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Bm2dJA/u"
-Received: by mail-dl1-f47.google.com with SMTP id a92af1059eb24-11f42e971d6so1467202c88.0
-        for <rcu@vger.kernel.org>; Thu, 08 Jan 2026 19:49:33 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="x/C04q+/"
+Received: by mail-dy1-f171.google.com with SMTP id 5a478bee46e88-2ae2eb49b4bso1968475eec.0
+        for <rcu@vger.kernel.org>; Thu, 08 Jan 2026 19:52:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1767930572; x=1768535372; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LgxIDNzMCkT6nuPsnzcI0VN0T0IcJAOxVXPXNsPeV88=;
-        b=Bm2dJA/uZKmDJdDuIcduvbtHJ23a9Al2cp7XnHtpr02krc6Os3/gUQEQurqmLYdXFh
-         K6uV1YSbY694LiI88k6NZDvalaRTTTsBQmLigOqS4AmY4VaE1Vy6+aqI0wie9hYhbvWs
-         aigFRtFZU96nc4AGwMGMgBynHEe8pfY2YxmAo=
+        d=joelfernandes.org; s=google; t=1767930732; x=1768535532; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B+f1SsIZDMbxwTaTJ4GgOnkEVRMn7oML218Sxv/HWTw=;
+        b=x/C04q+/PhoiZqgbtsFKQXvRKJRLAKNPsxjHMrgEJgGZUlm69NjXwUTkuE4vGPSKKa
+         96iBdM+OIiN2L4wQKBiYdJgmaVGUZ+e7vctTQPJwORZHwWBKo+x2Mci3E2ML9JB3deg9
+         4xJI+hhJleAKEXEvdkv+yvmooiOxeEo13ydZM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767930572; x=1768535372;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LgxIDNzMCkT6nuPsnzcI0VN0T0IcJAOxVXPXNsPeV88=;
-        b=f065Jubdt/EGrTl901eEzC5cElLCNdt/KDTac4wAkcQ4BRi0gjlwqzbZ7wM9Tb/Npz
-         MGiVI/9BP9cuc8yzCOx//JL8xYrJ5OLaeKrm5LQqV9MrywkShy8tBQv1XgIgNEZZXWMx
-         EejcULsDg7KZf8AaazM4Db5B1iOvhwMinz7QuZA3Vm+06THW0mV/eoOoc8IUeIPv2une
-         J2yYH0JgOnnTZwyKhHkW30QAWXShkf/htHQ0xEA0jJ1qTc+f0c1nZLDFp+4PQtmHc3l7
-         UWCnWKe/IuXiA/QCwgtSddWjhMccYEv/RaP57kuLp71IVArVZfSXuJj5D3UT09fGSl6v
-         O2tg==
-X-Forwarded-Encrypted: i=1; AJvYcCUeBJtOdaUwt0GcZKah4+vDZYRhF2Bmu2QBm2c9tLsITKdLk9SDHLe/NOfgaVhLuFuR4Qw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyzUTA6fRLV2fQPPANoyWIKGIWCEZm8d3/HtAprNcwOF4OYXjgN
-	5GCsHnhK+0DRn2nbU+62txDwnW5Rrh4mveT/iws1BuToHAQt+/qlyt9yorYkWTN8K+k=
-X-Gm-Gg: AY/fxX4rTEXsng9vkhzsTzPiC/KOzQd/KA8ukD5rHYZXJOygSIUCL831Igi1SMwTqsq
-	J5NuvioAjl60q5+PtaeHij+peXj6EiUhF/7RHMTCocjX5x18NYA6K78Weyj67BCpI2LaFZI4lk0
-	lFHpdMcADXUGfuvE4bR9msulMFwSA/baicJ3SEP5kcy964bf4fKY3CDesFsFLrNLCT+1GuIU1Qz
-	rxKiwqxV7BTDhfOC9iDiNHfvVeCX6BFQk8D4XsidP8tg+YJe1siQadKHPtdIwu39cXSddUJmcel
-	DmX71BwdkOgXaP/lGXFUh7UyhOU/xVYm7/17yjG1xIFZKUeJzwLM7hd6/WYXqm3a8NNgAoJt+s1
-	Qa9AUOeRmvV/MEo0geKKFO18zTXhD45G9vGNIPG5jzY21fhej/tZKU0i85YhfFXcKWdxy9lyEg9
-	7P2fxhHeHk
-X-Google-Smtp-Source: AGHT+IElB8Jt+Z6/1ysTbos44lwylRdVNby64t69ncnwELksl8rtSDTCEav0CcBtayPCmoNDg5Jdgw==
-X-Received: by 2002:a05:7022:eaca:b0:11e:163:be60 with SMTP id a92af1059eb24-121f8b41272mr8257701c88.31.1767930572134;
-        Thu, 08 Jan 2026 19:49:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1767930732; x=1768535532;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B+f1SsIZDMbxwTaTJ4GgOnkEVRMn7oML218Sxv/HWTw=;
+        b=Zjau1aLr6lOFgvFEIW3MJI5nmD9xAF8+6DFeaZVaS9CzPf/w2ZFbISnQVkXpvXiBHw
+         Mhl2CDj9qA+qfwiESURL77WpYIYyz/8TGcqyoVKLpJlAxWDfgAPUAJh2AJhxoQ9IAqBd
+         KGx0foz5Iy02Ax060E8Ll6abGZRlJ51Z7AaRaDyelxGkRrDjgm4LT7Fy0eA88TzxdVFY
+         h1WSy4AUCRV9rLBXMPObt3Gg3b+q4vpSis7xvRBPYHG7OoIrnBWPfqJA3dW0OMiaFCzx
+         /Ylrj0xG2OihD/x3LKL+reJSbopJ7I1D2xoIYKcYnU4NttI4XFWREpQNvgI+wWH35aJx
+         /78g==
+X-Forwarded-Encrypted: i=1; AJvYcCWvKd56p9Pt8FEoth3NiRAc6USkDaHNp3IbhRk68Veexy0H7J+UHO7eDGfXKC2lewpLooQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGGgfVMH8XGlt2x+yq6TyLRmzi0AOoSkIEcbTfHEJN7+qK2F3W
+	ASsRqOk5VYWUDJkyX3xrkrEUHaE1A+daY6WOJxXxDfsLTVjAmycg4nG+jNHWo9naajE=
+X-Gm-Gg: AY/fxX5r4X33uRDV9Xjy3R6XAQNnPneBNB0s9wzmanT/Tyu0Mab3aOua9DBcXQkENlt
+	Or/a2JKBVHdopDO36Zmi1SYBrtev2HV7KlcjLn7t55eJr0NkkYgA0MOfTfYeYUF5MHE22N8u5BO
+	gUexHHgDDLV5SbCMSU3HUJbKkRIlkR3aC0xdlrvZFQhw4gP0ohWQpqNg+jbyiH9ci7y8BJ6He58
+	Qbe1qX+kyXll4cPqAw0s1t7Xn/dwvRO6CF8n2ZBNmJXiga791xltN6PD9dFdVcc0sydzaSIcUdM
+	/IwXMCRlmOv75ge8afBmbvg8Ewkr8/QDhLDK8f+P0rgD3ZQTuvMKkvJDqh/GarMZDjUAVI4gcA5
+	UaSMA15AvrCYdtHc8ks8/jGhPhPCqp52cJnBcX3GGC2wlnfMp+7LbRxndx8irI3Tkkeosd0aKZD
+	wJKfneBBaD3WXmR/C1WS4=
+X-Google-Smtp-Source: AGHT+IFUnmiXEo6GuJuz12uG0x/He17042vNl2YTT0DzjVTvwy+ECgj1J0TXa0FY4T5MjgHpppCmCw==
+X-Received: by 2002:a05:7300:6ca7:b0:2ae:5d27:ff49 with SMTP id 5a478bee46e88-2b17d1e4b87mr8253247eec.7.1767930731537;
+        Thu, 08 Jan 2026 19:52:11 -0800 (PST)
 Received: from localhost ([71.219.3.177])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121f243ed62sm16638242c88.5.2026.01.08.19.49.31
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b175bee31dsm8426249eec.32.2026.01.08.19.52.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jan 2026 19:49:31 -0800 (PST)
-Date: Thu, 8 Jan 2026 22:49:30 -0500
+        Thu, 08 Jan 2026 19:52:10 -0800 (PST)
+Date: Thu, 8 Jan 2026 22:52:09 -0500
 From: Joel Fernandes <joel@joelfernandes.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>,
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, linux-kernel@vger.kernel.org,
 	"Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH -next 4/8] rcu/nocb: Add warning if no rcuog wake up
- attempt happened during overload
-Message-ID: <20260109034930.GA1105379@joelbox2>
-References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
- <20260101163417.1065705-5-joelagnelf@nvidia.com>
- <aV_n5RqNbikyN90u@localhost.localdomain>
+	Zqiang <qiang.zhang@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH RFC 04/14] rcu: Promote blocked tasks from per-CPU to rnp
+ lists
+Message-ID: <20260109035209.GB1105379@joelbox2>
+References: <20260103002343.6599-1-joelagnelf@nvidia.com>
+ <20260103002343.6599-5-joelagnelf@nvidia.com>
+ <20260105105931.141eb6f0@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aV_n5RqNbikyN90u@localhost.localdomain>
+In-Reply-To: <20260105105931.141eb6f0@gandalf.local.home>
 
-Hi Frederic,
-
-On Thu, Jan 08, 2026 at 06:22:45PM +0100, Frederic Weisbecker wrote:
-> Le Thu, Jan 01, 2026 at 11:34:13AM -0500, Joel Fernandes a écrit :
-> > To be sure we have no rcog wake ups that were lost, add a warning
-> > to cover the case where the rdp is overloaded with callbacks but
-> > no wake up was attempted.
-> > 
-> > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
-> > ---
-> >  kernel/rcu/tree.c      | 4 ++++
-> >  kernel/rcu/tree.h      | 1 +
-> >  kernel/rcu/tree_nocb.h | 6 +++++-
-> >  3 files changed, 10 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 293bbd9ac3f4..78c045a5ef03 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3767,6 +3767,10 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
-> >  		debug_rcu_head_unqueue(&rdp->barrier_head);
-> >  		rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
-> >  	}
-> > +#ifdef CONFIG_RCU_NOCB_CPU
-> > +	if (wake_nocb)
-> > +		rdp->nocb_gp_wake_attempt = true;
-> > +#endif
+On Mon, Jan 05, 2026 at 10:59:31AM -0500, Steven Rostedt wrote:
+> On Fri,  2 Jan 2026 19:23:33 -0500
+> Joel Fernandes <joelagnelf@nvidia.com> wrote:
 > 
-> entrain only queues a callback if the list is non-empty. And if it's
-> non-empty, rdp->nocb_gp_wake_attempt should be true already.
-
-This is true, we don't need to track this wake up. I will replace it with a
-WARN.
-
-> >  	rcu_nocb_unlock(rdp);
-> >  	if (wake_nocb)
-> >  		wake_nocb_gp(rdp, false);
-> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> > index 653fb4ba5852..74bd6a2a2f84 100644
-> > --- a/kernel/rcu/tree.h
-> > +++ b/kernel/rcu/tree.h
-> > @@ -257,6 +257,7 @@ struct rcu_data {
-> >  	unsigned long nocb_gp_loops;	/* # passes through wait code. */
-> >  	struct swait_queue_head nocb_gp_wq; /* For nocb kthreads to sleep on. */
-> >  	bool nocb_cb_sleep;		/* Is the nocb CB thread asleep? */
-> > +	bool nocb_gp_wake_attempt;	/* Was a rcuog wakeup attempted? */
+> > +#ifdef CONFIG_RCU_PER_CPU_BLOCKED_LISTS
+> > +/*
+> > + * Promote blocked tasks from a single CPU's per-CPU list to the rnp list.
+> > + *
+> > + * If there are no tracked blockers (gp_tasks NULL) and this CPU
+> > + * is still blocking the corresponding GP (bit set in qsmask), set
+> > + * the pointer to ensure the GP machinery knows about the blocking task.
+> > + * This handles late promotion during QS reporting, where tasks may have
+> > + * blocked after rcu_gp_init() or sync_exp_reset_tree() ran their scans.
+> > + */
+> > +static void rcu_promote_blocked_tasks_rdp(struct rcu_data *rdp,
+> > +					  struct rcu_node *rnp)
+> > +{
+> > +	struct task_struct *t, *tmp;
+> > +
+> > +	raw_lockdep_assert_held_rcu_node(rnp);
+> > +
+> > +	raw_spin_lock(&rdp->blkd_lock);
+> > +	list_for_each_entry_safe(t, tmp, &rdp->blkd_list, rcu_rdp_entry) {
 > 
-> How about nocb_gp_handling ?
+> How big can this list be? This would be considered an unbounded latency for
+> PREEMPT_RT. If this is needed, then we need to disable this when PREEMPT_RT
+> is enabled.
 
-This is a better name indeed, considering that we also track this for
-deferred wakeups of the GP thread.
+Steve, thanks. This is still quite a bit in the experimental/RFC phase, but
+if we ever were to do this, we could splice the list of tasks into O(1)
+instead of O(N) I am doing here. Great point.
 
-> >  	struct task_struct *nocb_cb_kthread;
-> >  	struct list_head nocb_head_rdp; /*
-> >  					 * Head of rcu_data list in wakeup chain,
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index daff2756cd90..7e9d465c8ab1 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -546,6 +546,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
-> >  	lazy_len = READ_ONCE(rdp->lazy_len);
-> >  	if (was_alldone) {
-> >  		rdp->qlen_last_fqs_check = len;
-> > +		rdp->nocb_gp_wake_attempt = true;
-> >  		rcu_nocb_unlock(rdp);
-> >  		// Only lazy CBs in bypass list
-> >  		if (lazy_len && bypass_len == lazy_len) {
-> > @@ -563,7 +564,8 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
-> >  
-> >  		return;
-> >  	} else if (len > rdp->qlen_last_fqs_check + qhimark) {
-> > -		/* ... or if many callbacks queued. */
-> > +		/* Callback overload condition. */
-> > +		WARN_ON_ONCE(!rdp->nocb_gp_wake_attempt);
-> >  		rdp->qlen_last_fqs_check = len;
-> >  		j = jiffies;
-> >  		if (j != rdp->nocb_gp_adv_time &&
-> > @@ -688,6 +690,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
-> >  		     bypass_ncbs > 2 * qhimark)) {
-> >  			flush_bypass = true;
-> >  		} else if (!bypass_ncbs && rcu_segcblist_empty(&rdp->cblist)) {
-> > +			rdp->nocb_gp_wake_attempt = false;
-> 
-> This is when nocb_cb_wait() is done with callbacks but nocb_gp_wait() is done
-> with them sooner, when the grace period is done for all pending callbacks.
-> 
-> Something like this would perhaps be more accurate:
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index e6cd56603cad..52010cbeaa76 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -746,6 +746,8 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
->  			needwait_gp = true;
->  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
->  					    TPS("NeedWaitGP"));
-> +		} else if (!rcu_cblist_n_cbs(&rdp->nocb_bypass)) {
-> +			rdp->nocb_gp_wake_attempt = false;
->  		}
-
-Hmm, I am trying to understand why this suggestion is better than what I
-already have. It is one extra line and adds another conditional.
-
-Also shouldn't it be:
-
-  } else if (!rcu_cblist_n_cbs(&rdp->nocb_bypass) &&
-             rcu_segcblist_empty(&rdp->cblist)) {
-      rdp->nocb_gp_wake_attempt = false;
-  }
-
-  ?
-
-My goal was to mark wake_attempt as false when ALL callbacks on the rdp were
-drained. IOW, the GP thread is done with the rdp.
-
->  		if (rcu_segcblist_ready_cbs(&rdp->cblist)) {
->  			needwake = rdp->nocb_cb_sleep;
-> 
-> 
-> >  			rcu_nocb_unlock_irqrestore(rdp, flags);
-> >  			continue; /* No callbacks here, try next. */
-> >  		}
-> > @@ -1254,6 +1257,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> >  			continue;
-> >  		}
-> >  		rcu_nocb_try_flush_bypass(rdp, jiffies);
-> > +		rdp->nocb_gp_wake_attempt = true;
-> 
-> Same here, we should expect rdp->nocb_gp_wake_attempt to be already on since
-> there are lazy callbacks. That's a good opportunity to test the related assertion
-> though.
-
-Good point! I will turn it into a WARN.
-
-Btw, I have more patches coming to simplify nocb_gp_wait()... it is quite long :)
+Thanks for the suggestions about the guards as well on the other patch, I
+shall use that where possible in any of my new code.
 
 thanks,
 
