@@ -1,81 +1,125 @@
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+Received: from 011.lax.mailroute.net (011.lax.mailroute.net [199.89.1.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20680363C52;
-	Fri,  9 Jan 2026 16:38:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1CD1366DD6;
+	Fri,  9 Jan 2026 20:16:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767976712; cv=none; b=tvQri8J1QYESujJYksvCLpncmhwbuFPIcOPpjsAvpLale7JTAX8DdvGyCUdJJk3316t3kvGm/v84LWmII9Q+hyU3k4HX4v7bH3rqQfp/A/qVP8ZQKGbymRyP112L2eubBgbgt7d4o+SmSc5bjMWY1b/2Q2Shop91L3RWox+Njjs=
+	t=1767989817; cv=none; b=TtQxWF0dTnHoXATSEMDJLBiZUyTBb9z7pf7oz9+7okSKowb9IXo49H7SGET3Ktn1ICtVBMQW8ZGrA01AUQXj2pLNX63ZFx8PbparcVOyZ5BQBmYVb2yxP3kuiQ2x3ZzzYZuiOnK1VuIXDvUOEXSarNgfGNQp7lRpk5pGQvBreAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767976712; c=relaxed/simple;
-	bh=dmKFEIvTIANp3SO/CLS13O5Zvtx8lCjW/ri81Wr0ex4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gvdSdiKPJNrRWdnAFbswqzezQLGRrnVnp7FCDaYQ54MZKSPfvZHIp7eDkRLfhRyWGtpnEWRpth1/Bj3q557itvLW9fzrJGu3cU2xta0Oe3q4r1WVBa5AEmOv2dgh/PwW+guFo5F4lsDjkc9tL6nBUuO768ns6zheLuqyofeItUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay01.hostedemail.com (Postfix) with ESMTP id 20B28D0367;
-	Fri,  9 Jan 2026 16:38:23 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id 721892E;
-	Fri,  9 Jan 2026 16:38:19 +0000 (UTC)
-Date: Fri, 9 Jan 2026 11:38:50 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Yao Kai <yaokai34@huawei.com>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, <paulmck@kernel.org>, Boqun Feng
- <boqun.feng@gmail.com>, <rcu@vger.kernel.org>, Frederic Weisbecker
- <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh
- Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, Shuah Khan
- <shuah@kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-kselftest@vger.kernel.org>, Tengda Wu <wutengda2@huawei.com>,
- <liuyongqiang13@huawei.com>, <yujiacheng3@huawei.com>
-Subject: Re: [PATCH -next 1/8] rcu: Fix rcu_read_unlock() deadloop due to
- softirq
-Message-ID: <20260109113850.2133c5ff@gandalf.local.home>
-In-Reply-To: <20260105121611.470294d3@gandalf.local.home>
-References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
-	<20260101163417.1065705-2-joelagnelf@nvidia.com>
-	<20260102122807.7025fc87@gandalf.local.home>
-	<20260102123009.453dfb90@gandalf.local.home>
-	<68b5b122-036b-475a-85bb-e39830f99fbe@paulmck-laptop>
-	<252063db-ec72-42df-b9e0-b8dc0aa6bef9@nvidia.com>
-	<34ff0ff6-217e-4574-a3b1-af74b2f40937@huawei.com>
-	<20260105121611.470294d3@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1767989817; c=relaxed/simple;
+	bh=ADaYwFS3kKhM5xXVlApjjoRfDaP+xucJXVcKN8R+3xU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Fge9O7k51LaQUobXhpyUldTjEH8GkE262e2jssE3pWokm88FHFeEnPqfQBzLUWQnlCycOp72mrqHmZ6m6HcGxym3jXWJhpGP+WJfs3JW0qjC0jDIl04WgT9m6eXsKIUHcI6MmDD2uHox0tMbC0/0aSWsXneh9OGKidrYri32FEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=RjLtkJa1; arc=none smtp.client-ip=199.89.1.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="RjLtkJa1"
+Received: from localhost (localhost [127.0.0.1])
+	by 011.lax.mailroute.net (Postfix) with ESMTP id 4dntN66qC7z1XSVtL;
+	Fri,  9 Jan 2026 20:16:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1767989807; x=1770581808; bh=MWWlok8ve6te0Z1LFT3tDlJ2
+	/NkqaoxHzzfJCelUW48=; b=RjLtkJa1D0QD6TAtBF7G2Jt4AHXQc+brZdc/5Tt3
+	jLo0eDAvbJmHIgNEXvLWEKHxTHRyVyb8D/Q06Ur+0T8jENUFddkat1ZKTy3z3SCC
+	yDf86qyZn7Mw6O42JTSazct3a+5P6OhdLUxYoG2N+K1nLDa+zdW6XgfbDJXsR7ng
+	jwo0GO2ay6yXtRwcQHBbI2rYmhtkOiawoqZQXc3Ti/WgrYqhAEUZOdNAs9KC7uUn
+	Qq0xxt6q5wZuMIdq5Cl7pFCXgskRMzaEvQTOGgVF3O1ctVoejnnjZWNZJ35Ht4/9
+	VhXFXR50Omzjcooxo8ojFKm5X7x9JePv61sq2YtntHteEg==
+X-Virus-Scanned: by MailRoute
+Received: from 011.lax.mailroute.net ([127.0.0.1])
+ by localhost (011.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id JY_Dc9oQqhZL; Fri,  9 Jan 2026 20:16:47 +0000 (UTC)
+Received: from [100.119.48.131] (unknown [104.135.180.219])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 011.lax.mailroute.net (Postfix) with ESMTPSA id 4dntMk3WPZz1XT1Zk;
+	Fri,  9 Jan 2026 20:16:33 +0000 (UTC)
+Message-ID: <05c77ca1-7618-43c5-b259-d89741808479@acm.org>
+Date: Fri, 9 Jan 2026 12:16:33 -0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 20/36] locking/ww_mutex: Support Clang's context
+ analysis
+To: Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>,
+ Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+ Will Deacon <will@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+ Chris Li <sparse@chrisli.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>,
+ Christoph Hellwig <hch@lst.de>, Dmitry Vyukov <dvyukov@google.com>,
+ Eric Dumazet <edumazet@google.com>, Frederic Weisbecker
+ <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Ian Rogers <irogers@google.com>,
+ Jann Horn <jannh@google.com>, Joel Fernandes <joelagnelf@nvidia.com>,
+ Johannes Berg <johannes.berg@intel.com>, Jonathan Corbet <corbet@lwn.net>,
+ Josh Triplett <josh@joshtriplett.org>, Justin Stitt
+ <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
+ Kentaro Takeda <takedakn@nttdata.co.jp>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+ Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
+ Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>,
+ kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-security-module@vger.kernel.org, linux-sparse@vger.kernel.org,
+ linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
+References: <20251219154418.3592607-1-elver@google.com>
+ <20251219154418.3592607-21-elver@google.com>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20251219154418.3592607-21-elver@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 7r5dcagmgp9pjb66ukftmfitb6wi5zya
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 721892E
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+Glua9WT8dBeoRtPcuIs5T4MXmiGY1yII=
-X-HE-Tag: 1767976699-987882
-X-HE-Meta: U2FsdGVkX18fspqHkNQr67C4mhoZ9mX3Mj1qszS6VqDDUIcbrLPTTTNH3YwPb5dUNnv4rWpvx8Yr+E2MdrkZclDss5GuE/Uus3x2kRn4W5swl4X+Yn9H0DOL1zPQ9UreTRVTP5v2QFuv3M83d6pRSItxEl8YwMasKMpRQbIaCz3hO4xww96mBWrDg8iynWhHdoIRrLXMbY9rQSGoc8jbcpvjldmImAx1IHkmcoPFwOG7adUaI8h4UyL4Houmgqjyq0NDn2WQ3gVqNFCsoQqc9BbZKaUuQzi5hvCIPYNqt6xTrA0rOoXYOVyzH9uV7Vptpelsu3C2l3aRtn5kt+lJe0H6vUeIhWApycbhb9ItRIcUWlxcaZgVxcSqazgkdzcbh8IGcWXRpVZ8h40H7DOignbGkIx5ny/0II7rc4XZnTI=
 
-On Mon, 5 Jan 2026 12:16:11 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Sun, 4 Jan 2026 11:20:07 +0800
-> Yao Kai <yaokai34@huawei.com> wrote:
+On 12/19/25 8:40 AM, Marco Elver wrote:
+> Add support for Clang's context analysis for ww_mutex.
 > 
-> > Yes, I tested Steve's patch. It fixes the issue too.
-> > 
-> > Tested-by: Yao Kai <yaokai34@huawei.com>  
-> 
-> Thanks for testing. I'll send out a formal patch.
-> 
-> And yes, I agree we should do both.
+> The programming model for ww_mutex is subtly more complex than other
+> locking primitives when using ww_acquire_ctx. Encoding the respective
+> pre-conditions for ww_mutex lock/unlock based on ww_acquire_ctx state
+> using Clang's context analysis makes incorrect use of the API harder.
 
-FYI, the tracing recursion protection made it to mainline:
+That's a very short description. It should have been explained in the
+patch description how the ww_acquire_ctx changes affect callers of the
+ww_acquire_{init,done,fini}() functions.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5f1ef0dfcb5b7f4a91a9b0e0ba533efd9f7e2cdb
+>   static inline void ww_acquire_init(struct ww_acquire_ctx *ctx,
+>   				   struct ww_class *ww_class)
+> +	__acquires(ctx) __no_context_analysis
+> [ ... ]
+>   static inline void ww_acquire_done(struct ww_acquire_ctx *ctx)
+> +	__releases(ctx) __acquires_shared(ctx) __no_context_analysis
+>   {
+> [ ... ]
+>   static inline void ww_acquire_fini(struct ww_acquire_ctx *ctx)
+> +	__releases_shared(ctx) __no_context_analysis
 
--- Steve
+The above changes make it mandatory to call ww_acquire_done() before
+calling ww_acquire_fini(). In Documentation/locking/ww-mutex-design.rst
+there is an example where there is no ww_acquire_done() call between
+ww_acquire_init() and ww_acquire_fini() (see also line 202). The
+function dma_resv_lockdep() in drivers/dma-buf/dma-resv.c doesn't call
+ww_acquire_done() at all. Does this mean that the above annotations are
+wrong? Is there a better solution than removing the __acquire() and
+__release() annotations from the above three functions?
+
+Bart.
