@@ -1,126 +1,81 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 565EB35FF5C;
-	Fri,  9 Jan 2026 14:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20680363C52;
+	Fri,  9 Jan 2026 16:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767969415; cv=none; b=C2uWUbyk1Q16/fzimt5F+DwxF4Jxl77Ar/U+P5YH47HWnSlbS8LWcrdDUBL4CpRfqSMz6UkCvKXFGqexBbaJCjdPzTyhIHl/QJJmvTro1ndS+/ipZIeZOlNENkaAAxmuzbZHC3E6GJEVQRMXCGYmjVMgbBOANEfJvR76y5bS6Cs=
+	t=1767976712; cv=none; b=tvQri8J1QYESujJYksvCLpncmhwbuFPIcOPpjsAvpLale7JTAX8DdvGyCUdJJk3316t3kvGm/v84LWmII9Q+hyU3k4HX4v7bH3rqQfp/A/qVP8ZQKGbymRyP112L2eubBgbgt7d4o+SmSc5bjMWY1b/2Q2Shop91L3RWox+Njjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767969415; c=relaxed/simple;
-	bh=82tEv9SG7gSK/LrzCEIL2spKzNdelM3NvqXeiRK8STE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KJN9LOuDzy6riYhcBM18HKIfjhG+TXbHlTLohQEZn+AtxJ3fcrhcpHRkx90FQ4vLXzV0SUA5aGe0lnmM3OJEoX6Y012xPbHb7OIj3E1bDWO3ejNA4K/dcHx63EE7erudAPs5KlBpShaxX1oKMVEsGtuzo2VviMW5mTm5eY7iPlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MhtLiJ2J; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MhtLiJ2J"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9195EC4CEF1;
-	Fri,  9 Jan 2026 14:36:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767969414;
-	bh=82tEv9SG7gSK/LrzCEIL2spKzNdelM3NvqXeiRK8STE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MhtLiJ2Jw1Ie2N6+7M9wBYZaSgPjKd03jZ3UvNzNT3dfPx2iHn1o2NgPPZ3l3mFz3
-	 erAuDYxtYRxAWXtVQK0l4k+xIflevKP7HnuV+tlZcmyEAzib8+MHHx9FPGw21q2bfx
-	 ah++xxqbs1eF2vzFrM+sPfz+2HdoKLeERkgTJwV4/CF5WRX5HY0MKdGtLIfBHnWh6v
-	 QPcKq8shsSTkd2tbw6Bs/2lOFokQ31YJxtvpJ6vaZe1g43Z+KSyfGiJx18fcXOP1Gu
-	 hobaiA2rSCs8nAlRz6j6MNHPuYKnZr0MlaQOAnYfFU/X13suUuJaZMpVJrVLY95jsX
-	 fbsD/u04KMFTg==
-Date: Fri, 9 Jan 2026 15:36:52 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH -next 4/8] rcu/nocb: Add warning if no rcuog wake up
- attempt happened during overload
-Message-ID: <aWEShKdoEAG0PiPM@localhost.localdomain>
+	s=arc-20240116; t=1767976712; c=relaxed/simple;
+	bh=dmKFEIvTIANp3SO/CLS13O5Zvtx8lCjW/ri81Wr0ex4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gvdSdiKPJNrRWdnAFbswqzezQLGRrnVnp7FCDaYQ54MZKSPfvZHIp7eDkRLfhRyWGtpnEWRpth1/Bj3q557itvLW9fzrJGu3cU2xta0Oe3q4r1WVBa5AEmOv2dgh/PwW+guFo5F4lsDjkc9tL6nBUuO768ns6zheLuqyofeItUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay01.hostedemail.com (Postfix) with ESMTP id 20B28D0367;
+	Fri,  9 Jan 2026 16:38:23 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id 721892E;
+	Fri,  9 Jan 2026 16:38:19 +0000 (UTC)
+Date: Fri, 9 Jan 2026 11:38:50 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Yao Kai <yaokai34@huawei.com>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, <paulmck@kernel.org>, Boqun Feng
+ <boqun.feng@gmail.com>, <rcu@vger.kernel.org>, Frederic Weisbecker
+ <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh
+ Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, Shuah Khan
+ <shuah@kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-kselftest@vger.kernel.org>, Tengda Wu <wutengda2@huawei.com>,
+ <liuyongqiang13@huawei.com>, <yujiacheng3@huawei.com>
+Subject: Re: [PATCH -next 1/8] rcu: Fix rcu_read_unlock() deadloop due to
+ softirq
+Message-ID: <20260109113850.2133c5ff@gandalf.local.home>
+In-Reply-To: <20260105121611.470294d3@gandalf.local.home>
 References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
- <20260101163417.1065705-5-joelagnelf@nvidia.com>
- <aV_n5RqNbikyN90u@localhost.localdomain>
- <20260109034930.GA1105379@joelbox2>
+	<20260101163417.1065705-2-joelagnelf@nvidia.com>
+	<20260102122807.7025fc87@gandalf.local.home>
+	<20260102123009.453dfb90@gandalf.local.home>
+	<68b5b122-036b-475a-85bb-e39830f99fbe@paulmck-laptop>
+	<252063db-ec72-42df-b9e0-b8dc0aa6bef9@nvidia.com>
+	<34ff0ff6-217e-4574-a3b1-af74b2f40937@huawei.com>
+	<20260105121611.470294d3@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260109034930.GA1105379@joelbox2>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: 7r5dcagmgp9pjb66ukftmfitb6wi5zya
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 721892E
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+Glua9WT8dBeoRtPcuIs5T4MXmiGY1yII=
+X-HE-Tag: 1767976699-987882
+X-HE-Meta: U2FsdGVkX18fspqHkNQr67C4mhoZ9mX3Mj1qszS6VqDDUIcbrLPTTTNH3YwPb5dUNnv4rWpvx8Yr+E2MdrkZclDss5GuE/Uus3x2kRn4W5swl4X+Yn9H0DOL1zPQ9UreTRVTP5v2QFuv3M83d6pRSItxEl8YwMasKMpRQbIaCz3hO4xww96mBWrDg8iynWhHdoIRrLXMbY9rQSGoc8jbcpvjldmImAx1IHkmcoPFwOG7adUaI8h4UyL4Houmgqjyq0NDn2WQ3gVqNFCsoQqc9BbZKaUuQzi5hvCIPYNqt6xTrA0rOoXYOVyzH9uV7Vptpelsu3C2l3aRtn5kt+lJe0H6vUeIhWApycbhb9ItRIcUWlxcaZgVxcSqazgkdzcbh8IGcWXRpVZ8h40H7DOignbGkIx5ny/0II7rc4XZnTI=
 
-Le Thu, Jan 08, 2026 at 10:49:30PM -0500, Joel Fernandes a écrit :
-> > > @@ -688,6 +690,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
-> > >  		     bypass_ncbs > 2 * qhimark)) {
-> > >  			flush_bypass = true;
-> > >  		} else if (!bypass_ncbs && rcu_segcblist_empty(&rdp->cblist)) {
-> > > +			rdp->nocb_gp_wake_attempt = false;
+On Mon, 5 Jan 2026 12:16:11 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Sun, 4 Jan 2026 11:20:07 +0800
+> Yao Kai <yaokai34@huawei.com> wrote:
+> 
+> > Yes, I tested Steve's patch. It fixes the issue too.
 > > 
-> > This is when nocb_cb_wait() is done with callbacks but nocb_gp_wait() is done
-> > with them sooner, when the grace period is done for all pending callbacks.
-> > 
-> > Something like this would perhaps be more accurate:
-> > 
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index e6cd56603cad..52010cbeaa76 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -746,6 +746,8 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
-> >  			needwait_gp = true;
-> >  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
-> >  					    TPS("NeedWaitGP"));
-> > +		} else if (!rcu_cblist_n_cbs(&rdp->nocb_bypass)) {
-> > +			rdp->nocb_gp_wake_attempt = false;
-> >  		}
+> > Tested-by: Yao Kai <yaokai34@huawei.com>  
 > 
-> Hmm, I am trying to understand why this suggestion is better than what I
-> already have. It is one extra line and adds another conditional.
+> Thanks for testing. I'll send out a formal patch.
 > 
-> Also shouldn't it be:
-> 
->   } else if (!rcu_cblist_n_cbs(&rdp->nocb_bypass) &&
->              rcu_segcblist_empty(&rdp->cblist)) {
->       rdp->nocb_gp_wake_attempt = false;
->   }
-> 
->   ?
+> And yes, I agree we should do both.
 
-This else already means that rcu_segcblist_nextgp() returned false because there
-is no pending callbacks. rcu_segcblist_empty() is different because it also test
-done callbacks.
+FYI, the tracing recursion protection made it to mainline:
 
-> 
-> My goal was to mark wake_attempt as false when ALL callbacks on the rdp were
-> drained. IOW, the GP thread is done with the rdp.
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5f1ef0dfcb5b7f4a91a9b0e0ba533efd9f7e2cdb
 
-So nocb_gp_wait (the rcuog kthreads) handle the pending callbacks, advancing
-them throughout grace periods until they are moved to the done state.
-
-But once they are moved as done, the callbacks are the responsibility of
-nocb_cb_wait() (the rcuo kthreads) and nocb_gp_wait() stops paying attention
-to that rdp if there are no more pending callbacks.
-
-So with your initial patch, you still have rdp->nocb_gp_wake_attempt == true
-even when there are only done callbacks. But without an appropriate wake-up
-after subsequent enqueue, nocb_gp_wait() may ignore new callbacks, event though
-rdp->nocb_gp_wake_attempt == true suggests otherwise.
-
-> Btw, I have more patches coming to simplify nocb_gp_wait()... it is quite long
-> :)
-
-Cool :)
-
-Thanks.
-
--- 
-Frederic Weisbecker
-SUSE Labs
+-- Steve
