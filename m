@@ -1,186 +1,229 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dl1-f47.google.com (mail-dl1-f47.google.com [74.125.82.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6312D238C0A;
-	Fri,  9 Jan 2026 02:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336F91925BC
+	for <rcu@vger.kernel.org>; Fri,  9 Jan 2026 03:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767924006; cv=none; b=Z27jPW7fU4hGc07E+oj0VCBXiYt2ij9EU20vTbH/FJ5TLjUv4Rjx97bV4+HKGCDHBk3EOozpi9I/M8GM5ZITzi8DpDRADEXrzN7KJmr1QbBMUUS64ATc0NhmnHVTNPCv9EVyKr83D+FSN1KikfKI+6MXJsLGr2M3XeWHNiqnfT8=
+	t=1767930574; cv=none; b=RIAdi+2OJTx+HF9woH7lN3pF4U42hjfmPS2GEEdMrcFQsxdTCwFvnEZ5PusIOH7DABGal+rQuGaxBctVks23cWggf+b0Tbr+fvPz61v0km3ITW/+AdGersAmfVC80AKwvQtofMfqhar+1yjMFNyen14hrAUMsSWL/bFRagXS3Pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767924006; c=relaxed/simple;
-	bh=FRHq1Izxb9rrtUAPiyCl80ykD6veFgHnPeczchO+SS4=;
+	s=arc-20240116; t=1767930574; c=relaxed/simple;
+	bh=WqjIeqfxxdOwGGBQU2Vq/NX3htvkOb9AMu6JKL9HebM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=isscqUs8LfqPm/5p0PnlCwHqiTT/H/6X+up4ncX6EQyfz8L+L1o6SBQM4IVo5na7a2ohL18Xh8BIx8jnzGqRiAJYLTJYoYtNwftCBjIYZRdxLn3hhUpFZjjnMemKOS1WeTaWNoiPW9BC2w5JUAgek8wd5GR6Hi933/6QPqfuF6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SvIc85Iw; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZaXUFEYhLOunRUZLT4SuuDVaYErbI/Y5wqSrU5opr4JpAUOgjrJTm6zoPbw8MANSv+6VcipkCpubp5Kn6tTrVl7P6cuZNI/vbOw8ldk+OBdlePTvTIcR4/IjdxU7lZjeZjpzmSAdpPvb508e9r3vVHWzsLaeSvh090laLS7rXMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Bm2dJA/u; arc=none smtp.client-ip=74.125.82.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SvIc85Iw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70CA1C116C6;
-	Fri,  9 Jan 2026 02:00:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767924005;
-	bh=FRHq1Izxb9rrtUAPiyCl80ykD6veFgHnPeczchO+SS4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=SvIc85Iw5saEhyguFPEZEPYaEoMYhb251CpHFADvlMv8+ilTDo2dSoAZRBhtJNIFf
-	 cx8sG3DVz3fSX96T7oAjiiDn18fDSpKpJfY6MpOTLVViI+8rabYdqZddI6zpktfxOq
-	 nkCqTmH8H+VTUvgWE1Nh3XqOtTQB5i4ZBvT4+K4TyANInYAKOp6bWLPzKLydByGdMN
-	 nIYwFvdE+wwNm8x6aQuMDs2y6DNutrx64JXNCCar3dRADv3nfVG39a8PpwBglLvIWa
-	 T565E9hpC74KfhGfg5zVB/3iYhvgVttsVEpplTVnoHk/qm1mYd/KtA9qJ4M/IR8f1J
-	 iKhzZhls6Pgcg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D3BBECE1690; Thu,  8 Jan 2026 18:00:03 -0800 (PST)
-Date: Thu, 8 Jan 2026 18:00:03 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>, linux-kernel@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>,
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Bm2dJA/u"
+Received: by mail-dl1-f47.google.com with SMTP id a92af1059eb24-11f42e971d6so1467202c88.0
+        for <rcu@vger.kernel.org>; Thu, 08 Jan 2026 19:49:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1767930572; x=1768535372; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=LgxIDNzMCkT6nuPsnzcI0VN0T0IcJAOxVXPXNsPeV88=;
+        b=Bm2dJA/uZKmDJdDuIcduvbtHJ23a9Al2cp7XnHtpr02krc6Os3/gUQEQurqmLYdXFh
+         K6uV1YSbY694LiI88k6NZDvalaRTTTsBQmLigOqS4AmY4VaE1Vy6+aqI0wie9hYhbvWs
+         aigFRtFZU96nc4AGwMGMgBynHEe8pfY2YxmAo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767930572; x=1768535372;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LgxIDNzMCkT6nuPsnzcI0VN0T0IcJAOxVXPXNsPeV88=;
+        b=f065Jubdt/EGrTl901eEzC5cElLCNdt/KDTac4wAkcQ4BRi0gjlwqzbZ7wM9Tb/Npz
+         MGiVI/9BP9cuc8yzCOx//JL8xYrJ5OLaeKrm5LQqV9MrywkShy8tBQv1XgIgNEZZXWMx
+         EejcULsDg7KZf8AaazM4Db5B1iOvhwMinz7QuZA3Vm+06THW0mV/eoOoc8IUeIPv2une
+         J2yYH0JgOnnTZwyKhHkW30QAWXShkf/htHQ0xEA0jJ1qTc+f0c1nZLDFp+4PQtmHc3l7
+         UWCnWKe/IuXiA/QCwgtSddWjhMccYEv/RaP57kuLp71IVArVZfSXuJj5D3UT09fGSl6v
+         O2tg==
+X-Forwarded-Encrypted: i=1; AJvYcCUeBJtOdaUwt0GcZKah4+vDZYRhF2Bmu2QBm2c9tLsITKdLk9SDHLe/NOfgaVhLuFuR4Qw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyzUTA6fRLV2fQPPANoyWIKGIWCEZm8d3/HtAprNcwOF4OYXjgN
+	5GCsHnhK+0DRn2nbU+62txDwnW5Rrh4mveT/iws1BuToHAQt+/qlyt9yorYkWTN8K+k=
+X-Gm-Gg: AY/fxX4rTEXsng9vkhzsTzPiC/KOzQd/KA8ukD5rHYZXJOygSIUCL831Igi1SMwTqsq
+	J5NuvioAjl60q5+PtaeHij+peXj6EiUhF/7RHMTCocjX5x18NYA6K78Weyj67BCpI2LaFZI4lk0
+	lFHpdMcADXUGfuvE4bR9msulMFwSA/baicJ3SEP5kcy964bf4fKY3CDesFsFLrNLCT+1GuIU1Qz
+	rxKiwqxV7BTDhfOC9iDiNHfvVeCX6BFQk8D4XsidP8tg+YJe1siQadKHPtdIwu39cXSddUJmcel
+	DmX71BwdkOgXaP/lGXFUh7UyhOU/xVYm7/17yjG1xIFZKUeJzwLM7hd6/WYXqm3a8NNgAoJt+s1
+	Qa9AUOeRmvV/MEo0geKKFO18zTXhD45G9vGNIPG5jzY21fhej/tZKU0i85YhfFXcKWdxy9lyEg9
+	7P2fxhHeHk
+X-Google-Smtp-Source: AGHT+IElB8Jt+Z6/1ysTbos44lwylRdVNby64t69ncnwELksl8rtSDTCEav0CcBtayPCmoNDg5Jdgw==
+X-Received: by 2002:a05:7022:eaca:b0:11e:163:be60 with SMTP id a92af1059eb24-121f8b41272mr8257701c88.31.1767930572134;
+        Thu, 08 Jan 2026 19:49:32 -0800 (PST)
+Received: from localhost ([71.219.3.177])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121f243ed62sm16638242c88.5.2026.01.08.19.49.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jan 2026 19:49:31 -0800 (PST)
+Date: Thu, 8 Jan 2026 22:49:30 -0500
+From: Joel Fernandes <joel@joelfernandes.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH RFC 00/14] rcu: Reduce rnp->lock contention with per-CPU
- blocked task lists
-Message-ID: <d8830d24-06a8-4565-9f60-694bb926f4b6@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260103002343.6599-1-joelagnelf@nvidia.com>
- <658b114e-b362-47e1-9dc8-9271cbcf2c4d@paulmck-laptop>
- <f679698b-3fc3-4bcc-834a-97c670e6ffe1@joelfernandes.org>
- <936afbad-226f-4209-b347-c87b30b4a7f3@joelfernandes.org>
- <a40f5831-ae62-4d16-8a7b-b6adb2a59aa8@paulmck-laptop>
- <fa4d2f13-2fc1-4f2a-983d-66414b8ebb2d@nvidia.com>
+	Zqiang <qiang.zhang@linux.dev>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH -next 4/8] rcu/nocb: Add warning if no rcuog wake up
+ attempt happened during overload
+Message-ID: <20260109034930.GA1105379@joelbox2>
+References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
+ <20260101163417.1065705-5-joelagnelf@nvidia.com>
+ <aV_n5RqNbikyN90u@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <fa4d2f13-2fc1-4f2a-983d-66414b8ebb2d@nvidia.com>
+In-Reply-To: <aV_n5RqNbikyN90u@localhost.localdomain>
 
-On Tue, Jan 06, 2026 at 04:24:07PM -0500, Joel Fernandes wrote:
-> 
-> 
-> On 1/6/2026 2:24 PM, Paul E. McKenney wrote:
-> > On Tue, Jan 06, 2026 at 10:08:51AM -0500, Joel Fernandes wrote:
-> >>
-> >>
-> >> On 1/5/2026 7:55 PM, Joel Fernandes wrote:
-> >>>> Also if so, would the following rather simpler patch do the same trick,
-> >>>> if accompanied by CONFIG_RCU_FANOUT_LEAF=1?
-> >>>>
-> >>>> ------------------------------------------------------------------------
-> >>>>
-> >>>> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> >>>> index 6a319e2926589..04dbee983b37d 100644
-> >>>> --- a/kernel/rcu/Kconfig
-> >>>> +++ b/kernel/rcu/Kconfig
-> >>>> @@ -198,9 +198,9 @@ config RCU_FANOUT
-> >>>>  
-> >>>>  config RCU_FANOUT_LEAF
-> >>>>  	int "Tree-based hierarchical RCU leaf-level fanout value"
-> >>>> -	range 2 64 if 64BIT && !RCU_STRICT_GRACE_PERIOD
-> >>>> -	range 2 32 if !64BIT && !RCU_STRICT_GRACE_PERIOD
-> >>>> -	range 2 3 if RCU_STRICT_GRACE_PERIOD
-> >>>> +	range 1 64 if 64BIT && !RCU_STRICT_GRACE_PERIOD
-> >>>> +	range 1 32 if !64BIT && !RCU_STRICT_GRACE_PERIOD
-> >>>> +	range 1 3 if RCU_STRICT_GRACE_PERIOD
-> >>>>  	depends on TREE_RCU && RCU_EXPERT>  	default 16 if !RCU_STRICT_GRACE_PERIOD
-> >>>>  	default 2 if RCU_STRICT_GRACE_PERIOD
-> >>>>
-> >>>> ------------------------------------------------------------------------
-> >>>>
-> >>>> This passes a quick 20-minute rcutorture smoke test.  Does it provide
-> >>>> similar performance benefits?
-> >>>
-> >>> I tried this out, and it also brings down the contention and solves the problem
-> >>> I saw (in testing so far).
-> >>>
-> >>> Would this work also if the test had grace periods init/cleanup racing with
-> >>> preempted RCU read-side critical sections? I'm doing longer tests now to see how
-> >>> this performs under GP-stress, versus my solution. I am also seeing that with
-> >>> just the node lists, not per-cpu list, I see a dramatic throughput drop after
-> >>> some amount of time, but I can't explain it. And I do not see this with the
-> >>> per-cpu list solution (I'm currently testing if I see the same throughput drop
-> >>> with the fan-out solution you proposed).
-> >>>
-> >>> I'm also wondering whether relying on the user to set FANOUT_LEAF to 1 is
-> >>> reasonable, considering this is not a default. Are you suggesting defaulting to
-> >>> this for small systems? If not, then I guess the optimization will not be
-> >>> enabled by default. Eventually, with this patch set, if we are moving forward
-> >>> with this approach, I will remove the config option for per-CPU block list
-> >>> altogether so that it is enabled by default. That's kind of my plan if we agreed
-> >>> on this, but it is just an RFC stage ðŸ™‚.
-> >>
-> >> So the fanout solution works great when there are grace periods in progress. I
-> >> see no throughput drop, and consistent performance with read site critical
-> >> sections. However, if we switch to having no grace periods continuously
-> >> happening in progress, I can see the throughput dropping quite a bit here
-> >> (-30%). I can't explain that, but I do not see that issue with per-CPU lists.
+Hi Frederic,
+
+On Thu, Jan 08, 2026 at 06:22:45PM +0100, Frederic Weisbecker wrote:
+> Le Thu, Jan 01, 2026 at 11:34:13AM -0500, Joel Fernandes a écrit :
+> > To be sure we have no rcog wake ups that were lost, add a warning
+> > to cover the case where the rdp is overloaded with callbacks but
+> > no wake up was attempted.
 > > 
-> > Might this be due to the change in number of tasks?  Not having the
-> > thread that continuously runs grace periods might be affecting scheduling
-> > decisions, and with CPU overcommit, those scheduling decisions can cause
-> > large changes in throughput.  Plus there are other spinlocks that might
-> > be subject to vCPU preemption, including the various scheduler spinlocks.
-> 
-> Yeah these are all possible, currently studying it more :)
-
-Looking forward to seeing what you find!
-
-> >> With the per-cpu list scheme, blocking does not involve the node at all, as long
-> >> as there is no grace period in progress. So, in that sense, per-CPU blocked list
-> >> is completely detached from RCU - it is a bit like lazy RCU in the sense instead
-> >> of a callback, it is the blocking task in a per-cpu list, relieving RCU of the
-> >> burden.
+> > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> > ---
+> >  kernel/rcu/tree.c      | 4 ++++
+> >  kernel/rcu/tree.h      | 1 +
+> >  kernel/rcu/tree_nocb.h | 6 +++++-
+> >  3 files changed, 10 insertions(+), 1 deletion(-)
 > > 
-> > Unless I am seriously misreading your patch, the grace-period kthread still
-> > acquires your per-CPU locks.
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 293bbd9ac3f4..78c045a5ef03 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3767,6 +3767,10 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
+> >  		debug_rcu_head_unqueue(&rdp->barrier_head);
+> >  		rcu_barrier_trace(TPS("IRQNQ"), -1, rcu_state.barrier_sequence);
+> >  	}
+> > +#ifdef CONFIG_RCU_NOCB_CPU
+> > +	if (wake_nocb)
+> > +		rdp->nocb_gp_wake_attempt = true;
+> > +#endif
 > 
-> Yes, but I am not triggering grace periods (in the tests where I am expecting an
-> improvement). It is in those tests that I am seeing the throughput drop with
-> FANOUT, but let me confirm that again. I did run it 200 times and notice this.
-> I'm not sure what else a fanout of one for leaves does, but this is my chance to
-> learn about it :).
+> entrain only queues a callback if the list is non-empty. And if it's
+> non-empty, rdp->nocb_gp_wake_attempt should be true already.
 
-Well, TREE09 has tested at least one aspect of this configuration quite
-thoroughly over the years.  ;-)
+This is true, we don't need to track this wake up. I will replace it with a
+WARN.
 
-> I am saying when there is no GPs active (that is when the optimization in these
-> patches is active). In one of the patches, if grace period is in progress or
-> already started, I do not trigger the optimization. The optimization is only
-> when grace periods are not active. This is similar to lazy RCU, where, if we
-> have active grace periods in progress, we don't really make new RCU callbacks
-> lazy since it is pointless.
-
-Interesting.  When there is no grace period is also when it is least
-harmful to acquire the rcu_node structure's ->lock.
-
-> > Also, reducing the number of grace periods> should *reduce* contention on the
-> rcu_node ->lock.
-> > 
-> >> Maybe the extra layer of the node tree (with fanout == 1) somehow adds
-> >> unnecessary overhead that does not exist with Per CPU lists? Even though there
-> >> is this throughput drop, it still does better than baseline with a common RCU node.
-> >>
-> >> Based on this, I would say per-cpu blocked list is still worth doing. Thoughts?
-> > 
-> > I think that we need to understand the differences before jumping
-> > to conclusions.  There are a lot of possible reasons for changes in
-> > throughput, especially given the CPU overload.  After all, queuing
-> > theory suggests high variance in that case, possibly even on exactly
-> > the same setup.
+> >  	rcu_nocb_unlock(rdp);
+> >  	if (wake_nocb)
+> >  		wake_nocb_gp(rdp, false);
+> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> > index 653fb4ba5852..74bd6a2a2f84 100644
+> > --- a/kernel/rcu/tree.h
+> > +++ b/kernel/rcu/tree.h
+> > @@ -257,6 +257,7 @@ struct rcu_data {
+> >  	unsigned long nocb_gp_loops;	/* # passes through wait code. */
+> >  	struct swait_queue_head nocb_gp_wq; /* For nocb kthreads to sleep on. */
+> >  	bool nocb_cb_sleep;		/* Is the nocb CB thread asleep? */
+> > +	bool nocb_gp_wake_attempt;	/* Was a rcuog wakeup attempted? */
 > 
-> Sure, that's why I'm doing hundreds of runs to get repetitive results and cut
-> back on the outliers. But it is quite challenging to study all possibilities
-> given the time constraints. I'm trying to collect traces as much as I can and
-> study them. The synchronize RCU latency that I just improved, for instance, came
-> from one of such exercises.
+> How about nocb_gp_handling ?
 
-There is absolutely nothing wrong with experiments!
+This is a better name indeed, considering that we also track this for
+deferred wakeups of the GP thread.
 
-							Thanx, Paul
+> >  	struct task_struct *nocb_cb_kthread;
+> >  	struct list_head nocb_head_rdp; /*
+> >  					 * Head of rcu_data list in wakeup chain,
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index daff2756cd90..7e9d465c8ab1 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -546,6 +546,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> >  	lazy_len = READ_ONCE(rdp->lazy_len);
+> >  	if (was_alldone) {
+> >  		rdp->qlen_last_fqs_check = len;
+> > +		rdp->nocb_gp_wake_attempt = true;
+> >  		rcu_nocb_unlock(rdp);
+> >  		// Only lazy CBs in bypass list
+> >  		if (lazy_len && bypass_len == lazy_len) {
+> > @@ -563,7 +564,8 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> >  
+> >  		return;
+> >  	} else if (len > rdp->qlen_last_fqs_check + qhimark) {
+> > -		/* ... or if many callbacks queued. */
+> > +		/* Callback overload condition. */
+> > +		WARN_ON_ONCE(!rdp->nocb_gp_wake_attempt);
+> >  		rdp->qlen_last_fqs_check = len;
+> >  		j = jiffies;
+> >  		if (j != rdp->nocb_gp_adv_time &&
+> > @@ -688,6 +690,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+> >  		     bypass_ncbs > 2 * qhimark)) {
+> >  			flush_bypass = true;
+> >  		} else if (!bypass_ncbs && rcu_segcblist_empty(&rdp->cblist)) {
+> > +			rdp->nocb_gp_wake_attempt = false;
+> 
+> This is when nocb_cb_wait() is done with callbacks but nocb_gp_wait() is done
+> with them sooner, when the grace period is done for all pending callbacks.
+> 
+> Something like this would perhaps be more accurate:
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index e6cd56603cad..52010cbeaa76 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -746,6 +746,8 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+>  			needwait_gp = true;
+>  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+>  					    TPS("NeedWaitGP"));
+> +		} else if (!rcu_cblist_n_cbs(&rdp->nocb_bypass)) {
+> +			rdp->nocb_gp_wake_attempt = false;
+>  		}
+
+Hmm, I am trying to understand why this suggestion is better than what I
+already have. It is one extra line and adds another conditional.
+
+Also shouldn't it be:
+
+  } else if (!rcu_cblist_n_cbs(&rdp->nocb_bypass) &&
+             rcu_segcblist_empty(&rdp->cblist)) {
+      rdp->nocb_gp_wake_attempt = false;
+  }
+
+  ?
+
+My goal was to mark wake_attempt as false when ALL callbacks on the rdp were
+drained. IOW, the GP thread is done with the rdp.
+
+>  		if (rcu_segcblist_ready_cbs(&rdp->cblist)) {
+>  			needwake = rdp->nocb_cb_sleep;
+> 
+> 
+> >  			rcu_nocb_unlock_irqrestore(rdp, flags);
+> >  			continue; /* No callbacks here, try next. */
+> >  		}
+> > @@ -1254,6 +1257,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+> >  			continue;
+> >  		}
+> >  		rcu_nocb_try_flush_bypass(rdp, jiffies);
+> > +		rdp->nocb_gp_wake_attempt = true;
+> 
+> Same here, we should expect rdp->nocb_gp_wake_attempt to be already on since
+> there are lazy callbacks. That's a good opportunity to test the related assertion
+> though.
+
+Good point! I will turn it into a WARN.
+
+Btw, I have more patches coming to simplify nocb_gp_wait()... it is quite long :)
+
+thanks,
+
+ - Joel
+
