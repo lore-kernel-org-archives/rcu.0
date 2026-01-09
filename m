@@ -1,216 +1,267 @@
-Received: from mail-dy1-f182.google.com (mail-dy1-f182.google.com [74.125.82.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9234E228CB0
-	for <rcu@vger.kernel.org>; Fri,  9 Jan 2026 01:39:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5D71B4223;
+	Fri,  9 Jan 2026 01:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767922757; cv=none; b=JWNuWUvbLnF5tiRHZxPqgTDhpM1GgPy2qHJgjaP4sYYMOocG0yu2g/JpG9g0vYWKYNMhHve7R6G2mdketZJ+Yenjuv3I7ykQNbxnIGhCUPzBcRc3wRVx0W5hOBD6Ylmvnm5vS69VXUDmKwTlrjyjmSCk39K9RSYn8e/7AnQ4ep0=
+	t=1767923551; cv=none; b=oU2bVxPuMfdLL2xvo2UHqtKGbpC91lZHzDRuQqHIsLxliBNDDWzTp8EHplzc+i7Tm+OEOzviraEgXWWuKDv0xgyvg5vQpjpEcOC7aFeo1Fp43WFsAGppL/h7/+q60FHfIOVRkTee6uPsVttBfTYbJVG78WplfbHGN5jng140kM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767922757; c=relaxed/simple;
-	bh=PPC7NX2ky94z97LL+o2Dliiog79NuXV9wEsI2rx2Zcw=;
+	s=arc-20240116; t=1767923551; c=relaxed/simple;
+	bh=jptyz8Z4ZD52vuiGgjq7IqwbJ3HDwRfF6JN2oeBy1Po=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a1Hb6I6QJU5QwuCp2XzIZHToU9uN1QXVTpmTkV5XzaUJaeUvt4Zf1qW5nUlSTSgJ9ywCHyLVE0d9X+0yG9+qD2Ip1SwDYj7xj3LODsa9cHy2a/z9k1lau9JNZBFoc3qqJQdMNSkZ7/tmhRjXPhRtsO8/TQhN6ppvdbYsWNm1JGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=C5dN/yp6; arc=none smtp.client-ip=74.125.82.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=ACn0PRFFhs2WBKR/yJ7RRkAua85wm0HuPkUQR8yH/bFbiyRYGYHMdw7eqETq7EC5f5o0MmMHAECWQBDyQql49rWiCzzlUoDXk5nRkyyoMJwyJBk8JitjRHmUH6EWGBxwC4N0ecNbDn7ObLH0F0j5dwHC42hhpgj6qlkSVjm1jck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KpXGRgho; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="C5dN/yp6"
-Received: by mail-dy1-f182.google.com with SMTP id 5a478bee46e88-2ae24015dc0so1363811eec.1
-        for <rcu@vger.kernel.org>; Thu, 08 Jan 2026 17:39:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1767922754; x=1768527554; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dJvo7ueweLLuRHlCgBfnBfMmqli0qvfiVgRtcT1/2SE=;
-        b=C5dN/yp68GIuTBRhA7mH80jsHJEDqW6yg+mN1ZGpOpyjujAqFYmsxy4CYKr7oQQv/A
-         rguT144/zBCIPO8pppGllnJTyXlzGLGP6aWDZSZMpO2dSZkBEMIBnl0P+UW4TVWY+5JM
-         2EvR52HzZ3yR5rhC6NlyjPk8B37iMm5aFWrVA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767922754; x=1768527554;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dJvo7ueweLLuRHlCgBfnBfMmqli0qvfiVgRtcT1/2SE=;
-        b=ID3NywLCwU+dl2x/k2PSVqbFfswpHnFPIE0cf3bHyIhduKU1rn72sjKQ0IoMtZ7M5P
-         tbzp16HU2iXsU6zsRBqngRkeNRN9HSgtB7bED5icQWQOI5n6fCuyGmYrCJLfHSQqtUUQ
-         E4c8yskPhKps14bTYFBd01A+vjkGTUQyGXSTxQClujnrC39NJp9mMxf4ubzzW5QVTJka
-         JShFXsay0JwxFfVBr5UjWRGnl1uFSKSvp40uFtgQfzgLsQFW1xozKTTmSXvLiS2S5qoH
-         VaN1qL4CWJ7wi4tJ5Kz90kyhhF8kGZyuovR+Pre3kgciQVpHh9EvSooj2fhvFUJPevTJ
-         3CNA==
-X-Forwarded-Encrypted: i=1; AJvYcCV8//dKaCxfnYptFrDTJa22WrqwJS/XbSZhpnjxxdWVEyyOdNsFdpk+t8HKKIyJo8HBba4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy3tMXhowsbgfUzzjB6b6FcfOWPuOG7BKjFI0e5Vh3aTkk6beet
-	V3g7KtRtaX7Ng/xmnF5iOsBjSEWAvFMUFyZOdBhkI3kQHo+iYCQaDrX28q19qP010lI=
-X-Gm-Gg: AY/fxX5kalgEKHUc7hLIOgjNxLwEbhRBXc0qHW/ELxLp3gDBurlvMQYyEvAa1RSHK1g
-	tPu6RGZKIO0Nwr8sSwiu/iWdMV80n5A9/huXhGvrvXyFSkaiq4NqBCqEydjUYy9bf6H95vtSpLQ
-	I3TnFxs0HUY7niYavyOn3lZxOu0mLaj/GT3ySQ6Rv1ewscj4bbwst0yzRUUR3qb4m5AjMpU40A/
-	wv5Z1rl0gGtqHUCJKsDHCU2ACj434tX6ttjhO1wAxxXNNBOLAeNLt0vQssUrfWrMhAcjJlOLM/e
-	/7qXMH7KY1jGHpdmu9N6cMbNCUKepGtZNB+GDrjD3zAlMY83mrYFt9LukTPyZ1nBnzYiGKHQchh
-	cHbb4GltyPLCg2dEi6ZSKBzNU+o44z3+GNXrWk3JpCrt6LHAjy6f/nJ7C0QuYeVg66XEQosvr1Q
-	BsgiRI+rlv
-X-Google-Smtp-Source: AGHT+IHoUVHypybcTgdklE8/ULnSnVrNSakulYa/6M6TJUePbDMMkN93P2CjKbVcyXpJbfsc0ucH0w==
-X-Received: by 2002:a05:7022:fa04:b0:11a:fb0a:ceca with SMTP id a92af1059eb24-121f1b1f568mr8380710c88.16.1767922753532;
-        Thu, 08 Jan 2026 17:39:13 -0800 (PST)
-Received: from localhost ([71.219.3.177])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121f248bb6esm15223052c88.12.2026.01.08.17.39.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jan 2026 17:39:12 -0800 (PST)
-Date: Thu, 8 Jan 2026 20:39:11 -0500
-From: Joel Fernandes <joel@joelfernandes.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KpXGRgho"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E30A9C116C6;
+	Fri,  9 Jan 2026 01:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767923551;
+	bh=jptyz8Z4ZD52vuiGgjq7IqwbJ3HDwRfF6JN2oeBy1Po=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=KpXGRghoFNZW4SZr4lGPF3aDYD/X/WIfEQxUlM4iNuAAMZCErnJH66LEseegR+gAM
+	 lvaaXXQw4OHEzcTeQtTKrmLdVGPg6VGH8DPTUXBuEk12bsqZRSf2ajZubMVv6OawIV
+	 qgGm3NDpFVY6Gbj9pQp6b9ev5nxq9p4TNmpMdODBc/CZ3o2za+rSlN5DTmoy/nywon
+	 Lqxc/FeS3956/wZORrsuybcewsoM4lO0yuDp8WYogljzQAcJaWkoogt2wcs6hRJjH5
+	 W9sb//2V4mvViZDZwiYN97H40h2axKGa/klgzoEC1dqpFJRiFTy811esa22j2km1IS
+	 KUVEu4jm/B8jQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 505D2CE1690; Thu,  8 Jan 2026 17:52:30 -0800 (PST)
+Date: Thu, 8 Jan 2026 17:52:30 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, linux-kernel@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH -next 3/8] rcu/nocb: Remove unnecessary WakeOvfIsDeferred
- wake path
-Message-ID: <20260109013911.GA1102915@joelbox2>
-References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
- <20260101163417.1065705-4-joelagnelf@nvidia.com>
- <aV_T5kLzX2qMpxpt@localhost.localdomain>
+	Zqiang <qiang.zhang@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH RFC 00/14] rcu: Reduce rnp->lock contention with per-CPU
+ blocked task lists
+Message-ID: <90da4d88-e429-4b3b-bcb4-a8512daf3599@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260103002343.6599-1-joelagnelf@nvidia.com>
+ <658b114e-b362-47e1-9dc8-9271cbcf2c4d@paulmck-laptop>
+ <f679698b-3fc3-4bcc-834a-97c670e6ffe1@joelfernandes.org>
+ <9a6016f5-3051-4055-9fd2-05a01c0c9171@paulmck-laptop>
+ <9acfe215-5a14-428f-a398-e6a0b3dc18b4@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aV_T5kLzX2qMpxpt@localhost.localdomain>
+In-Reply-To: <9acfe215-5a14-428f-a398-e6a0b3dc18b4@joelfernandes.org>
 
-On Thu, Jan 08, 2026 at 04:57:26PM +0100, Frederic Weisbecker wrote:
-> Le Thu, Jan 01, 2026 at 11:34:12AM -0500, Joel Fernandes a écrit :
-> > @@ -974,8 +959,7 @@ static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp_gp,
-> >  		return false;
-> >  	}
-> >  
-> > -	ndw = rdp_gp->nocb_defer_wakeup;
-> > -	ret = __wake_nocb_gp(rdp_gp, rdp, ndw == RCU_NOCB_WAKE_FORCE, flags);
-> > +	ret = __wake_nocb_gp(rdp_gp, rdp, false, flags);
+On Tue, Jan 06, 2026 at 03:40:04PM -0500, Joel Fernandes wrote:
+> On 1/6/2026 2:17 PM, Paul E. McKenney wrote:
+> > On Mon, Jan 05, 2026 at 07:55:18PM -0500, Joel Fernandes wrote:
+> [..]
+> >>>> The optimized version maintains stable performance with essentially close to
+> >>>> zero rnp->lock overhead.
+> >>>>
+> >>>> rcutorture Testing
+> >>>> ------------------
+> >>>> TREE03 Testing with rcutorture without RCU or hotplug errors. More testing is
+> >>>> in progress.
+> >>>>
+> >>>> Note: I have added a CONFIG_RCU_PER_CPU_BLOCKED_LISTS to guard the feature but
+> >>>> the plan is to eventually turn this on all the time.
+> >>>
+> >>> Yes, Aravinda, Gopinath, and I did publish that paper back in the day
+> >>> (with Aravinda having done almost all the work), but it was an artificial
+> >>> workload.  Which is OK given that it was an academic effort.  It has also
+> >>> provided some entertainment, for example, an audience member asking me
+> >>> if I was aware of this work in a linguistic-kill-shot manner.  ;-)
+> >>>
+> >>> So are we finally seeing this effect in the wild?
+> >>
+> >> This patch set is also targeting a synthetic test I wrote to see if I could
+> >> reproduce a preemption problem. I know several instances over the years where my
+> >> teams (mainly at Google) were trying to resolve spin lock preemption inside
+> >> virtual machines by boosting vCPU threads. In the spirit of RCU performance and
+> >> VMs, we should probably optimize node locking IMO, but I do see your point of
+> >> view about optimizing real-world use cases as well.
+> > 
+> > Also taking care of all spinlocks instead of doing large numbers of
+> > per-spinlock workarounds would be good.  There are a *lot* of spinlocks
+> > in the Linux kernel!
 > 
-> The force parameter can now be removed, right? (same applies to wake_nocb_gp()).
+> I wouldn't call it a workaround yet. Avoiding lock contention by using per CPU
+> list is an optimization we have done before right? (Example the synthetic RCU
+> callback-flooding use case where we used a per-cpu list). We can call it
+> defensive programming, if you will. ;-) Especially in the scheduler hot path
+> where we are blocking/preempting. Again, I'm not saying we should do it for this
+> case since we are still studying the issue, but just on the fact that we are
+> optimizing a spin lock we acquire *a lot* shouldn't be categorized as a
+> workaround in my opinion.
 > 
-> Other than that:
+> This blocking is even more likely on preempt RT in read-side critical sections.
+> Again, I'm not saying that we should do this optimization, but I don't think we
+> can ignore it. At least not based on the data I have so far.
+
+If the main motivation is vCPU preemption, I consider this to be a
+workaround for the lack of awareness of guest-OS locks by the host OS.
+If there is some other reasonable way of generating contention on
+this lock, then per-CPU locking is one specific way of addressing that
+contention.  As is reducing the value of CONFIG_RCU_FANOUT_LEAF and who
+knows what all else.
+
+> >> What bothers me about the current state of affairs is that even without any
+> >> grace period in progress, any task blocking in an RCU Read Side critical section
+> >> will take a (almost-)global lock that is shared by other CPUs who might also be
+> >> preempting/blocking RCU readers. Further, if this happens to be a vCPU that was
+> >> preempted while holding the node lock, then every other vCPU thread that blocks
+> >> in an RCU critical section will also block and end up slowing preemption down in
+> >> the vCPU. My preference would be to keep the readers fast while moving the
+> >> overhead to the slow path (the overhead being promoting tasks at the right time
+> >> that were blocked). In fact, in these patches, I'm directly going to the node
+> >> list if there is a grace period in progress.
+> > 
+> > Not "(almost-)global"!
+> > 
+> > That lock replicates itself automatically with increasing numbers of CPUs.
+> > That 16 used to be the full (at the time) 32-bit cpumask, but we decreased
+> > it to 16 based on performance feedback from Andi Kleen back in the day.
+> > If we are seeing real-world contention on that lock in real-world
+> > workloads on real-world systems, further adjustments could be made,
+> > either reducing CONFIG_RCU_FANOUT_LEAF further or offloading the lock,
+> > where your series is one example of the latter.
 > 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> I meant it is global or almost global depending on the number of CPUs. So for
+> example on an 8 CPU system with the default fanout, it is a global lock, correct?
 
-Ah true! Thanks, so the following hunk needs to be squashed into the patch
-then, with the review tag. Boqun, if you want to do that please do, or I can
-send it again for the next merge window.
+Yes, but only assuming the default CONFIG_RCU_FANOUT_LEAF value of
+16, or some other value of 8 or larger.  But in that case, there are
+only 8 CPUs contending for that lock, so is there really a problem?
+(In the absence of vCPU contention, that is.)  And the default value
+can be changed if needed.
 
----8<-----------------------
+> > I could easily believe that the vCPU preemption problem needs to be
+> > addressed, but doing so on a per-spinlock basis would lead to greatly
+> > increased complexity throughout the kernel, not just RCU.
+> 
+> I agree with this. I was not intending to solve this for the entire kernel, at
+> first at least.
 
-From: "Joel Fernandes" <joelagnelf@nvidia.com>
-Subject: [PATCH] fixup! rcu/nocb: Remove unnecessary WakeOvfIsDeferred wake
- path
+If addressing vCPU contention is the goal, how many locks are individually
+adjusted before solving it for the whole kernel becomes easier and
+less complex?
 
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
----
- kernel/rcu/tree.c      |  2 +-
- kernel/rcu/tree.h      |  2 +-
- kernel/rcu/tree_nocb.h | 14 +++++++-------
- 3 files changed, 9 insertions(+), 9 deletions(-)
+> >> About the deferred-preemption, I believe Steven Rostedt at one point was looking
+> >> at that for VMs, but that effort stalled as Peter is concerned about doing that
+> >> would mess up the scheduler. The idea (AFAIU) is to use the rseq page to
+> >> communicate locking information between vCPU threads and the host and then let
+> >> the host avoid vCPU preemption - but the scheduler needs to do something with
+> >> that information. Otherwise, it's no use.
+> > 
+> > Has deferred preemption for userspace locking also stalled?  If not,
+> > then the scheduler's support for userspace should apply directly to
+> > guest OSes, right?
+> 
+> I don't think there have been any user space locking optimizations for
+> preemption that has made it upstream (AFAIK). I know there were efforts, but I
+> could be out of date there. I think the devil is in the details as well because
+> user space optimizations cannot always be applied to guests in my experience.
+> The VM exit path and the syscall entry/exit paths are quite different, including
+> the API boundary.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 293bbd9ac3f4..2921ffb19939 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3769,7 +3769,7 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
- 	}
- 	rcu_nocb_unlock(rdp);
- 	if (wake_nocb)
--		wake_nocb_gp(rdp, false);
-+		wake_nocb_gp(rdp);
- 	smp_store_release(&rdp->barrier_seq_snap, gseq);
- }
- 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 653fb4ba5852..7dfc57e9adb1 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -499,7 +499,7 @@ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
- static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
- static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
- static void rcu_init_one_nocb(struct rcu_node *rnp);
--static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
-+static bool wake_nocb_gp(struct rcu_data *rdp);
- static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 				  unsigned long j, bool lazy);
- static void call_rcu_nocb(struct rcu_data *rdp, struct rcu_head *head,
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index daff2756cd90..c6f1ddecc2d8 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -192,7 +192,7 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
- 
- static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
- 			   struct rcu_data *rdp,
--			   bool force, unsigned long flags)
-+			   unsigned long flags)
- 	__releases(rdp_gp->nocb_gp_lock)
- {
- 	bool needwake = false;
-@@ -225,13 +225,13 @@ static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
- /*
-  * Kick the GP kthread for this NOCB group.
-  */
--static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
-+static bool wake_nocb_gp(struct rcu_data *rdp)
- {
- 	unsigned long flags;
- 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
- 
- 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
--	return __wake_nocb_gp(rdp_gp, rdp, force, flags);
-+	return __wake_nocb_gp(rdp_gp, rdp, flags);
- }
- 
- #ifdef CONFIG_RCU_LAZY
-@@ -553,7 +553,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 					   TPS("WakeLazy"));
- 		} else if (!irqs_disabled_flags(flags)) {
- 			/* ... if queue was empty ... */
--			wake_nocb_gp(rdp, false);
-+			wake_nocb_gp(rdp);
- 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
- 					    TPS("WakeEmpty"));
- 		} else {
-@@ -959,7 +959,7 @@ static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp_gp,
- 		return false;
- 	}
- 
--	ret = __wake_nocb_gp(rdp_gp, rdp, false, flags);
-+	ret = __wake_nocb_gp(rdp_gp, rdp, flags);
- 	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("DeferredWake"));
- 
- 	return ret;
-@@ -1255,7 +1255,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 		}
- 		rcu_nocb_try_flush_bypass(rdp, jiffies);
- 		rcu_nocb_unlock_irqrestore(rdp, flags);
--		wake_nocb_gp(rdp, false);
-+		wake_nocb_gp(rdp);
- 		sc->nr_to_scan -= _count;
- 		count += _count;
- 		if (sc->nr_to_scan <= 0)
-@@ -1640,7 +1640,7 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
- {
- }
- 
--static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
-+static bool wake_nocb_gp(struct rcu_data *rdp)
- {
- 	return false;
- }
--- 
-2.34.1
+Thomas and Steve are having another go at the userspace portion of
+this problem.  Should that make it in, the guest-OS portion might not
+be that big an ask.
 
+> >>> Also if so, would the following rather simpler patch do the same trick,
+> >>> if accompanied by CONFIG_RCU_FANOUT_LEAF=1?
+> >>>
+> >>> ------------------------------------------------------------------------
+> >>>
+> >>> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> >>> index 6a319e2926589..04dbee983b37d 100644
+> >>> --- a/kernel/rcu/Kconfig
+> >>> +++ b/kernel/rcu/Kconfig
+> >>> @@ -198,9 +198,9 @@ config RCU_FANOUT
+> >>>  
+> >>>  config RCU_FANOUT_LEAF
+> >>>  	int "Tree-based hierarchical RCU leaf-level fanout value"
+> >>> -	range 2 64 if 64BIT && !RCU_STRICT_GRACE_PERIOD
+> >>> -	range 2 32 if !64BIT && !RCU_STRICT_GRACE_PERIOD
+> >>> -	range 2 3 if RCU_STRICT_GRACE_PERIOD
+> >>> +	range 1 64 if 64BIT && !RCU_STRICT_GRACE_PERIOD
+> >>> +	range 1 32 if !64BIT && !RCU_STRICT_GRACE_PERIOD
+> >>> +	range 1 3 if RCU_STRICT_GRACE_PERIOD
+> >>>  	depends on TREE_RCU && RCU_EXPERT>  	default 16 if !RCU_STRICT_GRACE_PERIOD
+> >>>  	default 2 if RCU_STRICT_GRACE_PERIOD
+> >>>
+> >>> ------------------------------------------------------------------------
+> >>>
+> >>> This passes a quick 20-minute rcutorture smoke test.  Does it provide
+> >>> similar performance benefits?
+> >>
+> >> I tried this out, and it also brings down the contention and solves the problem
+> >> I saw (in testing so far).
+> >>
+> >> Would this work also if the test had grace periods init/cleanup racing with
+> >> preempted RCU read-side critical sections? I'm doing longer tests now to see how
+> >> this performs under GP-stress, versus my solution. I am also seeing that with
+> >> just the node lists, not per-cpu list, I see a dramatic throughput drop after
+> >> some amount of time, but I can't explain it. And I do not see this with the
+> >> per-cpu list solution (I'm currently testing if I see the same throughput drop
+> >> with the fan-out solution you proposed).
+> > 
+> > Might the throughput drop be due to increased load on the host?
+> 
+> The load is constant with the benchmark, and the data is repeatable and
+> consistent. So random load on the host is unlikely.
+
+So you have a system with the various background threads corralled or
+disabled?
+
+> > Another possibility is that tasks/vCPUs got shuffled so as to increase
+> > the probability of preemption.
+> > 
+> > Also, doesn't your patch also cause the grace-period kthread to acquire
+> > that per-CPU lock, thus also possibly resulting in contention, vCPU
+> > preemption, and so on?
+> 
+> Yes, I'm tracing it more. Even with baseline (without these patches), I see this
+> throughput drop so it is worth investigating. I think it's something possibly
+> like a lock convoy forming, but the fact that if I don't use RNP locking, the
+> lock convoy disappears, and the throughput is completely stable. That tells me
+> that that has something to do with that or something related. I also measured
+> the exact RNP lock time and counted the number of contentions, so I am not
+> really guessing here. The RNP lock is contended consistently. I think it's a
+> great idea for me to extend this lock contention measurement to the run queue
+> locks as well, for me to measure how they are doing (or even extending it to all
+> locks, as you mentioned) - at least for me to confirm the theory that the same
+> test severely contends other locks as well.
+
+Is the RNP lock contended under non-overload conditions?  If I remember
+correctly, you were running 2x CPU overload.  Is the RNP lock contended
+in bare-metal kernels?
+
+							Thanx, Paul
+
+> >> I'm also wondering whether relying on the user to set FANOUT_LEAF to 1 is
+> >> reasonable, considering this is not a default. Are you suggesting defaulting to
+> >> this for small systems? If not, then I guess the optimization will not be
+> >> enabled by default. Eventually, with this patch set, if we are moving forward
+> >> with this approach, I will remove the config option for per-CPU block list
+> >> altogether so that it is enabled by default. That's kind of my plan if we agreed
+> >> on this, but it is just an RFC stage :).
+> > 
+> > Right now, we are experimenting, so the usability issue is less pressing.
+> > Once we find out what is really going on for real-world systems, we
+> > can make adjustments if and as appropriate, said adjustments including
+> > usability.
+> 
+> Sure, thanks.
+> 
+>  - Joel
+> 
