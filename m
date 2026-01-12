@@ -1,191 +1,134 @@
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD3F1E4AF;
-	Mon, 12 Jan 2026 12:21:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D488614BF92
+	for <rcu@vger.kernel.org>; Mon, 12 Jan 2026 12:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768220489; cv=none; b=CYPkefK9f+91mez+lt9cqAaWsyU0XukDL0qCy0MAozEO3UlsZe42frF3vMFcw7csmAlvJY3XD6twmlmqHRfqXNPh0zMdGlDsknph6BcLPSMD47Q6dyBzA4E/VRyoFSPkkWFh4Gvsz3KRN+JyWC1DuiX5yPZ2dyby62w48Fmm6g0=
+	t=1768221842; cv=none; b=VcJu4EbRxk+EJSbidKRl7cBCVDvF1rD/4JhmyHe+EwWkaA1OANL43DuQ+Khbj6MPPVELHkXqYhLCNcHKOU3axJ8roNKhTf31Eklp5spEkMm73Imnf3Ayvcbujp+Bp8VW+G4ttxD3WdULzMTJvUbxmpnI8khPg4P04trTprXDasI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768220489; c=relaxed/simple;
-	bh=FtH1Ht+976pIc2CMgm4kAhNt7aUueSWvyEw210G+NWg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sHVdr8NOFhq5U0wqsa4I3nEmWkz7PXLqdpS/MNm3JC8q1XVKnoBmC2zwX4BjdLnQZEKbvAOKsG5OoeY6FFYi4xEyzpMx7R7jgxaHy4TbKBhjj3h638Zi23ynkjfwrHQwFy0ykVvDklCkvuD3xzf9yQTtNSu4/Qtr9NA7M7X29pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=JcOvWPcD; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	s=arc-20240116; t=1768221842; c=relaxed/simple;
+	bh=IcDqJuUmSBDzlojdE+eJG3ZOB8F+UQZw/LVJhaSW0SI=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MFqeTk6wdjPn0NnbqsmLBaJYKOxUtS8cV9KpqJXpNBTZ/8kLCwy6UWUc5J41/noqqEVsHGDZOS6IYnpv/HPSSGcxC/Nb9V25MDFecMONUAKI/06NSsqBzZ9BVG2PaSgd3/3V1peUjK65m11L2Eb1/7kS9iIBpBuTfFfuJtOVu20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GK61K5Cm; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JcOvWPcD"
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60BMkMLf023089;
-	Mon, 12 Jan 2026 12:21:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=TcOkFq
-	BqzTUlqCfv5BH84nNdSsKLVeceT6jpmtpZE70=; b=JcOvWPcDuIUegqtKadDQr0
-	uOnY18NA5YmJAJVBi0wqpYA7LdZ6/5VEo0WzCRtgOyG9xjJ/oEurg69RNkbeGmez
-	6MzmIBgdkVqhUf+weTqP6k7yXfZFkNeb9J3Zd9f7S9tXnw3oR3F8G/U/mqt0FD6z
-	oz7HfWAXYYL+8HNg75w/gntRnr/gfWdh934oveT4BL8aT7mGGidSzZ6x4vTfPtGq
-	qHgtBU7HLZno4ibTJDqibsNHmjc6SEKtwevN4hvdCcpC9kfvCYypj51MmiDMEmqS
-	0PBm0cbKlHnvkugGCr2+9G1H21r9B/1k4k/l5EHOH7DmpSUF42jFrP1gHmBSzKiQ
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkd6dxsba-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Jan 2026 12:21:14 +0000 (GMT)
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60CCLENt002926;
-	Mon, 12 Jan 2026 12:21:14 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkd6dxsb9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Jan 2026 12:21:14 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60CAJcaG025838;
-	Mon, 12 Jan 2026 12:21:13 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4bm2kk5ry8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Jan 2026 12:21:13 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60CCL9wg28967598
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 Jan 2026 12:21:09 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6B87A20040;
-	Mon, 12 Jan 2026 12:21:09 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8B5E920043;
-	Mon, 12 Jan 2026 12:21:06 +0000 (GMT)
-Received: from [9.124.219.252] (unknown [9.124.219.252])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 12 Jan 2026 12:21:06 +0000 (GMT)
-Message-ID: <595f2ecd-020c-44f2-ba51-39a54c0e656f@linux.ibm.com>
-Date: Mon, 12 Jan 2026 17:51:05 +0530
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GK61K5Cm"
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-38320cd563aso32325841fa.0
+        for <rcu@vger.kernel.org>; Mon, 12 Jan 2026 04:44:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768221838; x=1768826638; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QMOr+8bzxaH8uH2WYMzUxbrZH7pO9zkA38LUqDoqkyA=;
+        b=GK61K5CmJKZ5E94dsrS+Mzmkof7rjjsvOvoNMeFJkXeANN76+07CcRnYxHJn8VLduy
+         UitPaaIBRMl2RgJzpxTFUwEd00vzl5KfalLsuj1WwrHXKouE1PlqRkOnSg7169xN6T71
+         Cl75spJ8BWwhrk8/IrLqXBrLandJoovGR+nUV+Es0scqLufq3zYy9amkgUzQr016kQ3U
+         35EQJ/bmOrvuQ6godp4SaiuniJm6DcxgUvi6K09rF9DAgQZCwlrCqevQYATDajUPstbm
+         RT2c3GT9+8KdhBGn3NxpyMopHEBrxHvWfvejKJPAtbWBDnwQL0AXdMSHNCL+keAYvy6F
+         VrqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768221838; x=1768826638;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QMOr+8bzxaH8uH2WYMzUxbrZH7pO9zkA38LUqDoqkyA=;
+        b=RukiF1Kubkie5tFnj8N2D4A4YHuGYpB6vy6ljk7DMImK5JR/sbcCN4g6jSuY07TQC0
+         iAeU0xIYfw/fTMdf807CBAz6VbWYUpuBIiT0FQMLQBauqF1H9CqScZTATVZmO4CcvE+m
+         kGkx1etXgm0WXWo2mWfVbpLmGoxrdG1EBwGN8AIBqWLG1an3Sb8eCBOCkLx32/todCNo
+         7vEkenQfC1AGq/2AqAcpgoiClqtEHP64EZADx32ddJ3gRCoTa42v8ozzIDkcJIPZW9SG
+         /8NNgx74zkivy3Si3cOIwAGkOgv7cEoXm5ZnMQLLp6stXNNan22AkKZoFwTMUcxdiDX/
+         x6Ag==
+X-Forwarded-Encrypted: i=1; AJvYcCUpEZVZ1oMzO33LINgDwWxrDDUmpwsgXBJ3at4NkC8j8k2A+gr/yafpGeZSIyA8SKMNfuU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAW/MI8h0gyprzuXQUT+Po/nQtGuvutMOlBfIoKTfW+iP3E4Ge
+	oo/mh/tF1FV0WoJ4V2ZUgqcKOQps6f2w867RdvCxj7y0QF0slpW1ZdjddWcm7o+3
+X-Gm-Gg: AY/fxX4mYe+EEnTP4mrcn9+JhfamA3QoANoU3l9wo7/oBkAn8aP54IhWpl8pZN3mqg0
+	Q0qWpTDf+ZTGxbFipu3wg7yZLlgg0+rIPwvRsHNXwrnEt/fJXIZl3xH1w8AgfcsY7ae4/s+643/
+	X9p19oySlfIyNc6ajwk1M22HsB7ZeoNzi934isJYYOkr3heh0EwTlVW3kytKSvtX/HD3oYmkkF5
+	S+60h80GNpTy0+aNChBGeaEhymz9dRf0gjoaIimW3sLR51Yqd8v1eggTH1QWz/PMbEEZCzvuuQG
+	DHcPnEKBpyfqAi5gPGrEVXTpKXQJ9d1OD7xFM5Z6HagLDi2/zI9dKI3e6klboVyehHVTq1/OSZL
+	VckzImLmQuXAg0v8eRJ47faKFim1uQnl0uevE7W9jGJtYVayM8dWxuVJpLOwW1rwcYRPlVOGBN7
+	wSYmY+6eGrAVOm2UWxqFbx7SoIamJ3bj4uLB2cbA==
+X-Google-Smtp-Source: AGHT+IGWn30SbT8NVHW3r8NR9FUU74ZnolIQmUT+SttfPjV0xySAAhvq74uh2qsybsJfClqjWhfpVg==
+X-Received: by 2002:a05:6512:1084:b0:593:83c:b5f4 with SMTP id 2adb3069b0e04-59b6f04d64emr5539379e87.41.1768216053824;
+        Mon, 12 Jan 2026 03:07:33 -0800 (PST)
+Received: from pc636 (host-95-203-18-139.mobileonline.telia.com. [95.203.18.139])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59b6c1792a2sm4250608e87.25.2026.01.12.03.07.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jan 2026 03:07:33 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Mon, 12 Jan 2026 12:07:31 +0100
+To: Vishal Chourasia <vishalc@linux.ibm.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, paulmck@kernel.org,
+	frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com, josh@joshtriplett.org, boqun.feng@gmail.com,
+	rostedt@goodmis.org, tglx@linutronix.de, peterz@infradead.org,
+	sshegde@linux.ibm.com, srikar@linux.ibm.com, aboorvad@linux.ibm.com
+Subject: Re: [PATCH] cpuhp: Expedite synchronize_rcu during CPU hotplug
+ operations
+Message-ID: <aWTV86ji-uZZwzhh@pc636>
+References: <20260112094332.66006-2-vishalc@linux.ibm.com>
+ <aWTIDGQ1_NYeO4iU@pc636>
+ <e6efda46-2f47-4a6e-8352-4794479e4a1f@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cpuhp: Expedite synchronize_rcu during CPU hotplug
- operations
-To: Vishal Chourasia <vishalc@linux.ibm.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-        joelagnelf@nvidia.com, josh@joshtriplett.org, boqun.feng@gmail.com,
-        urezki@gmail.com, rostedt@goodmis.org, tglx@linutronix.de,
-        peterz@infradead.org, srikar@linux.ibm.com
-References: <20260112094332.66006-2-vishalc@linux.ibm.com>
-Content-Language: en-US
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <20260112094332.66006-2-vishalc@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: F1AuUaqSRYwScsBe-G1tSlaxYB5Wi6E-
-X-Authority-Analysis: v=2.4 cv=LLxrgZW9 c=1 sm=1 tr=0 ts=6964e73a cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=3PIjFlzdpYnZ60iAWMMA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTEyMDA5OCBTYWx0ZWRfXzb6qnokQ2huv
- tON0BkFPiXl5KlIEZ0DtZ+7+tCT1PWo0xqRGdiHQb6bYYWUb1Lw24wKnLenI0R2kXleDWWrE3Bf
- pBs5gr6bgExDH876Gmvweq6+JYjA6rNHAweUKEhjTm4ijIYpEW7lC1tLfZDQIYZrbfCGVbns6fl
- lGZ/MbQ6uDc0yosBrW0PX3jOYlMMZgnvFC+QeLiWueXbpAC6QDrt8pvYU5MSpJCSe2fbEuxBUYE
- MpSsSrm7QWg2UbDKK6JX/vpAmP0SO/zyza8m1mw4P28SGZVf2cJyPDSJ1khyIMdiQuc3fpzMKJU
- qZzDWbSEypD8WZ1ZQZCkq90G97k3P0WDAXGCfG+kULpjDr0G2Yx18mEFBPMKlC4Qkbx/62f+BXN
- hMlxRhs+3nVvGcT4rR33sk8s+pVYnfARi2GrTlhIC2J135uyZu0iwxaKx7q8Su5Lrbe5YNBPRcF
- UqM4gW6mXKzmGSMHZuw==
-X-Proofpoint-ORIG-GUID: IGFioE-0YPMVREHmMGzghMk3y_-tMaYL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-12_03,2026-01-09_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 suspectscore=0 clxscore=1015 spamscore=0 impostorscore=0
- malwarescore=0 phishscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2512120000 definitions=main-2601120098
+In-Reply-To: <e6efda46-2f47-4a6e-8352-4794479e4a1f@linux.ibm.com>
 
+Hello, Vishalc!
 
-
-On 1/12/26 3:13 PM, Vishal Chourasia wrote:
-> Bulk CPU hotplug operations—such as switching SMT modes across all
-> cores—require hotplugging multiple CPUs in rapid succession. On large
-> systems, this process takes significant time, increasing as the number
-> of CPUs grows, leading to substantial delays on high-core-count
-> machines. Analysis [1] reveals that the majority of this time is spent
-> waiting for synchronize_rcu().
+> Hi Uladzislau,
 > 
-> Expedite synchronize_rcu() during the hotplug path to accelerate the
-> operation. Since CPU hotplug is a user-initiated administrative task,
-> it should complete as quickly as possible.
+> On 12/01/26 15:38, Uladzislau Rezki wrote:
+> > On Mon, Jan 12, 2026 at 03:13:33PM +0530, Vishal Chourasia wrote:
+> > > Performance data on a PPC64 system with 400 CPUs:
+> > > 
+> > > + ppc64_cpu --smt=1 (SMT8 to SMT1)
+> > > Before: real 1m14.792s
+> > > After:  real 0m03.205s  # ~23x improvement
+> > > 
+> > > + ppc64_cpu --smt=8 (SMT1 to SMT8)
+> > > Before: real 2m27.695s
+> > > After:  real 0m02.510s  # ~58x improvement
+> > > 
+> > > Above numbers were collected on Linux 6.19.0-rc4-00310-g755bc1335e3b
+> > > 
+> > > [1] https://lore.kernel.org/all/5f2ab8a44d685701fe36cdaa8042a1aef215d10d.camel@linux.vnet.ibm.com
+> > > 
+> > Also you can try: echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> > to speedup regular synchronize_rcu() call. But i am not saying that it would beat
+> > your "expedited switch" improvement.
 > 
-> Performance data on a PPC64 system with 400 CPUs:
+> # echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
 > 
-> + ppc64_cpu --smt=1 (SMT8 to SMT1)
-> Before: real 1m14.792s
-> After:  real 0m03.205s  # ~23x improvement
+> After setting,
 > 
-> + ppc64_cpu --smt=8 (SMT1 to SMT8)
-> Before: real 2m27.695s
-> After:  real 0m02.510s  # ~58x improvement
+> # time ppc64_cpu --smt=1;
+> real    1m10.726s          # Run 1
+> real    1m12.530s          # Run 2
 > 
-> Above numbers were collected on Linux 6.19.0-rc4-00310-g755bc1335e3b
+> # time ppc64_cpu --smt=8
+> real    0m36.661s          # Run 1
+> real    0m41.401s          # Run 2
 > 
+Thanks.
 
-Hi Vishal,
+"ppc64_cpu --smt=1" is the same, i assume it is offlining.
+"ppc64_cpu --smt=8", whereas, onlining, sees the differences(~5x).
 
-I tried on tip/master at 315f416d3e26.
-It fails to apply. is rcu tree updated?
+But your real "0m02.510s" is hard to beat event by activating the
+"rcu_normal_wake_from_gp" option.
 
-
-> [1] https://lore.kernel.org/all/5f2ab8a44d685701fe36cdaa8042a1aef215d10d.camel@linux.vnet.ibm.com
-> 
-> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
-> ---
->   include/linux/rcupdate.h | 3 +++
->   kernel/cpu.c             | 2 ++
->   2 files changed, 5 insertions(+)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index c5b30054cd01..03c06cfb2b6d 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -1192,6 +1192,9 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
->   extern int rcu_expedited;
->   extern int rcu_normal;
->   
-> +extern void rcu_expedite_gp(void);
-> +extern void rcu_unexpedite_gp(void);
-> +
-
-Why extern is needed? All it needs is declarations no?
-
-
->   DEFINE_LOCK_GUARD_0(rcu,
->   	do {
->   		rcu_read_lock();
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index 8df2d773fe3b..6b0d491d73f4 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -506,12 +506,14 @@ EXPORT_SYMBOL_GPL(cpus_read_unlock);
->   
->   void cpus_write_lock(void)
->   {
-> +	rcu_expedite_gp();
->   	percpu_down_write(&cpu_hotplug_lock);
->   }
->   
->   void cpus_write_unlock(void)
->   {
->   	percpu_up_write(&cpu_hotplug_lock);
-> +	rcu_unexpedite_gp();
->   }
->   
->   void lockdep_assert_cpus_held(void)
-
-Have you tested kexec path or suspend/resume path?
-Seems like the counter can nest, but would be good to verify.
+--
+Uladzislau Rezki
