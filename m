@@ -1,50 +1,67 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18CA52D2481;
-	Mon, 12 Jan 2026 10:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5E22773D3;
+	Mon, 12 Jan 2026 10:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768214001; cv=none; b=EGzy6pVrJCWYQq0LW5lNVtfjc5Ubk1ZidVLFrgzHcEDnQYzRaPNUo7Jh0nPPZjnnOVqRLCGsP2f9Zdjq1+9KoNwMPg6o8RSfKejK4/+IDfbrXT0DuWhFxnQfWj6ogbR9bZRScOunW/RIzgz870lHLMVkeQRUqYf0dNUIpECBoN4=
+	t=1768214633; cv=none; b=W9VVjdk6KTDnyXDl1/9m75g8mhJp60vChImsENQ6nbSeqwGFfYSEu7trWL1yzYsb1d3kk6J7BepY9xX/ppfnydNCt6fua2nI0CrScety4AoxY2j+S/Tgo/lxhz/QMt4WDVFMTq6879Kj+W5hcBbIyjn5D2XY2H9gnMyhmUnDa0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768214001; c=relaxed/simple;
-	bh=3WvoLxWPBX/nvNBdAet0EG4DRqalXwTIWl2WlwowKOE=;
+	s=arc-20240116; t=1768214633; c=relaxed/simple;
+	bh=nJWP2xZ8cO6H1j/gW6UDIJtlOmsPkD9ksp4B4x7vjEk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Xylum5bs/JG8rntzj3XYXCkX2gQvuA9nBM44LFnij4DKpUbzkM62aU9ZclbAv8wBdvA2D4WOjuw6g0LTyamFYeZA1dETpEwCVPVzW0KzI8oOZewe8o8tP2Fcq+dy0vynmhsIsrXeS5Hgr4XHGZmxYOnRvoRI2/Ymdh9uOSSktj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HPd93T2C; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	 In-Reply-To:Content-Type; b=Fb6iQbmU0K6lxg9AwZqijd/i5Ny1eqNCdDEs491w9UNU+1q/PjWKgywBdVS4qcSE1JX2Gjd2CKa3dplmV+SydtM6ovjK2L0jViCLJRRfACG120QS1venVjyiGbRfMj7vtBINxaHTibfJ5danevVxeHamHPv6g5Wi76F9lR9Z/bM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tMTvXMXi; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HPd93T2C"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768214000; x=1799750000;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3WvoLxWPBX/nvNBdAet0EG4DRqalXwTIWl2WlwowKOE=;
-  b=HPd93T2Cje9vVucJkaUuwtO2R9nSXSGGb7Czteg2Mpt2VA0e+H6w4Wm0
-   2WOZevI4pMou1Eaizea/iLOnE9uLYmMDqpY0nVQOiEG9KIFhal6DZSroi
-   /jStJ1zmcRfF7wOg8ihT4xQVyUbIOomDnJU5CCKx30OJqKcbEqzvUoAFm
-   Hs3/mL/i+6p/RVarAQ4pGk1F/7DxtNvggrw/aSTRQhVoxIJwL0mwFiF0K
-   4PK8vU3vmnJaHcOmVtXi/I+BocHUU/moTYV6UvrPo+g9u4rmS7eMgu4vc
-   UsonMKsKJbWWd3rNJ9LP2we5U9X7pr1MvYzTydMSyo//A+0NiziBlSJmv
-   A==;
-X-CSE-ConnectionGUID: iGmtH3+TSDqYP+qWK3cczw==
-X-CSE-MsgGUID: JaSF/uxrRXS4q1E1oIpKTw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11668"; a="80939936"
-X-IronPort-AV: E=Sophos;i="6.21,219,1763452800"; 
-   d="scan'208";a="80939936"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2026 02:32:39 -0800
-X-CSE-ConnectionGUID: KeVRm3ThTIyu/02WLS2Cvw==
-X-CSE-MsgGUID: T5zF6Dw6TdejExXJJsJSFw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,219,1763452800"; 
-   d="scan'208";a="241588226"
-Received: from fpallare-mobl4.ger.corp.intel.com (HELO [10.245.245.90]) ([10.245.245.90])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2026 02:32:28 -0800
-Message-ID: <1502e5eb-0ac7-4581-85ce-2f0c390bd7db@linux.intel.com>
-Date: Mon, 12 Jan 2026 11:32:25 +0100
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tMTvXMXi"
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60BBeeCI029311;
+	Mon, 12 Jan 2026 10:43:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=uMi4Wm
+	D7qstMpOjw7dVRyv98Cqyi/dYTVI+DHbesTl4=; b=tMTvXMXiPX+oP0igD+5ugY
+	QVC40mREXXHR02/uc1sIwa/4Q8rETxXDByq8See6t35y/vx5+sDcg68dbcqRiDxK
+	gjgSA3/x4qmE9CNGnWiDoNtkiVFOVZpMLpVmol1j20SInBxbwfT6XBVgo6ReImQu
+	HyKO3I8ax/dq8NNTFoY8jMaBppAV68MuuARJJRz2ifWA6VG/ccdkVWSiPePkCpEw
+	RtlXlCQf1jjlHkNU6+w9dNBcIYhusYMx3nj7gDWKZQtqPsTGE89TPOWd6H1Q152l
+	IOfpFim1XwNiw+yA9YVccP1oWIlhyfrEnAgj9dUkZzHMoRv66ep/7qoKlwuPdCvw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkeeppjww-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jan 2026 10:43:38 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60CAgBr1019726;
+	Mon, 12 Jan 2026 10:43:37 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkeeppjwv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jan 2026 10:43:37 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60CAChFt025552;
+	Mon, 12 Jan 2026 10:43:36 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4bm23mwd1e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jan 2026 10:43:36 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60CAhW5X56295884
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Jan 2026 10:43:32 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8E3CF20043;
+	Mon, 12 Jan 2026 10:43:32 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EB94720040;
+	Mon, 12 Jan 2026 10:43:27 +0000 (GMT)
+Received: from [9.39.17.9] (unknown [9.39.17.9])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 12 Jan 2026 10:43:27 +0000 (GMT)
+Message-ID: <e6efda46-2f47-4a6e-8352-4794479e4a1f@linux.ibm.com>
+Date: Mon, 12 Jan 2026 16:13:26 +0530
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,107 +69,81 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 20/36] locking/ww_mutex: Support Clang's context
- analysis
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>,
- Boqun Feng <boqun.feng@gmail.com>, Ingo Molnar <mingo@kernel.org>,
- Will Deacon <will@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
- Chris Li <sparse@chrisli.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>,
- Christoph Hellwig <hch@lst.de>, Dmitry Vyukov <dvyukov@google.com>,
- Eric Dumazet <edumazet@google.com>, Frederic Weisbecker
- <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Herbert Xu <herbert@gondor.apana.org.au>, Ian Rogers <irogers@google.com>,
- Jann Horn <jannh@google.com>, Joel Fernandes <joelagnelf@nvidia.com>,
- Johannes Berg <johannes.berg@intel.com>, Jonathan Corbet <corbet@lwn.net>,
- Josh Triplett <josh@joshtriplett.org>, Justin Stitt
- <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
- Kentaro Takeda <takedakn@nttdata.co.jp>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
- Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
- Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>,
- kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-security-module@vger.kernel.org, linux-sparse@vger.kernel.org,
- linux-wireless@vger.kernel.org, llvm@lists.linux.dev, rcu@vger.kernel.org
-References: <20251219154418.3592607-1-elver@google.com>
- <20251219154418.3592607-21-elver@google.com>
- <05c77ca1-7618-43c5-b259-d89741808479@acm.org>
- <aWFt6hcLaCjQQu2c@elver.google.com>
- <8143ab09-fd9b-4615-8afb-7ee10e073c51@acm.org>
-Content-Language: en-US
-From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <8143ab09-fd9b-4615-8afb-7ee10e073c51@acm.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] cpuhp: Expedite synchronize_rcu during CPU hotplug
+ operations
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, paulmck@kernel.org,
+        frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+        josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
+        tglx@linutronix.de, peterz@infradead.org, sshegde@linux.ibm.com,
+        srikar@linux.ibm.com, aboorvad@linux.ibm.com
+References: <20260112094332.66006-2-vishalc@linux.ibm.com>
+ <aWTIDGQ1_NYeO4iU@pc636>
+Content-Language: en-US, en-IN
+From: Vishal Chourasia <vishalc@linux.ibm.com>
+In-Reply-To: <aWTIDGQ1_NYeO4iU@pc636>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=DI6CIiNb c=1 sm=1 tr=0 ts=6964d05a cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=A0Y-CKpzo18HiFePqPcA:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: m0x9YtXBEyb4lRbYIAY8EgySoP54zzBL
+X-Proofpoint-ORIG-GUID: 1SOZL7YqZRdHro_5ephMvGGHPczMAhry
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTEyMDA4MSBTYWx0ZWRfX6tabbbvpaXsx
+ YTOer3oLikHQRd4dT/War0IlN166qe4U1Gps29Xcv01P3G9oLySXL/oFvV/BFFzl79RN0KL5kqG
+ zPN2ehq5JScAH2VEcV+0Gdi5VE8/tvSOaeUyQ2mD0K57h6k1qwcD6zqvHsuo2KF2k1YxvivW0Bz
+ Y/BCgVxflVv2B/yUsmbvm826+mh19r8kF3yLOldjZbQxJI+Emlrjyx/dtQNq7GL6ZNAABT0IdPi
+ A94FJ/QpZ8q2R4ZRpKF84Zkz99lmas8Rh+54BGg1NXd4Jl0fIJ6h7pdPgml/h61Cam2QFJa06L5
+ Wy/dKeDswYIi61wvir3nhRES1I2yRrAQRfia8uXiYFgnfY3bESjYcWkmiciFbLYJymG88xBa5hy
+ FtB4g3aqQn3O8VXXU++w2oyCERKE4pKuwV06m/Usaniie7qxQteFdzuzA9H4XTjGJ+3Y6e8Fm2c
+ UDc6dF+dQlDvwOvFAPA==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-12_03,2026-01-09_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 phishscore=0 impostorscore=0
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2512120000
+ definitions=main-2601120081
 
-Hey,
+Hi Uladzislau,
 
-The acquire_done() call was always optional. It's meant to indicate that after this point,
-ww_acquire_lock may no longer be called and backoff can no longer occur.
+On 12/01/26 15:38, Uladzislau Rezki wrote:
+> On Mon, Jan 12, 2026 at 03:13:33PM +0530, Vishal Chourasia wrote:
+>> Performance data on a PPC64 system with 400 CPUs:
+>>
+>> + ppc64_cpu --smt=1 (SMT8 to SMT1)
+>> Before: real 1m14.792s
+>> After:  real 0m03.205s  # ~23x improvement
+>>
+>> + ppc64_cpu --smt=8 (SMT1 to SMT8)
+>> Before: real 2m27.695s
+>> After:  real 0m02.510s  # ~58x improvement
+>>
+>> Above numbers were collected on Linux 6.19.0-rc4-00310-g755bc1335e3b
+>>
+>> [1] https://lore.kernel.org/all/5f2ab8a44d685701fe36cdaa8042a1aef215d10d.camel@linux.vnet.ibm.com
+>>
+> Also you can try: echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> to speedup regular synchronize_rcu() call. But i am not saying that it would beat
+> your "expedited switch" improvement.
 
-It's allowed to call ww_acquire_fini() without ww_acquire_done()
+# echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
 
-Think of this case:
-ww_acquire_init()
+After setting,
 
-ww_acquire_lock_interruptible() -> -ERESTARTSYS
+# time ppc64_cpu --smt=1;
+real    1m10.726s          # Run 1
+real    1m12.530s          # Run 2
 
-ww_acquire_fini()
+# time ppc64_cpu --smt=8
+real    0m36.661s          # Run 1
+real    0m41.401s          # Run 2
 
-Here it wouldn't make sense to call ww_acquire_done().
-
-It's mostly to facilitate this case:
-
-ww_acquire_init()
-
-ww_acquire_lock() a bunch.
-
-/* Got all locks, do the work as no more backoff occurs */
-ww_acquire_done()
-
-...
-
-unlock_all()
-ww_acquire_fini()
-
-If you call ww_acquire_lock after done, a warning should occur as this should no longer happen.
-
-Kind regards,
-~Maarten Lankhorst
-
-Den 2026-01-09 kl. 22:26, skrev Bart Van Assche:
-> (+Maarten)
-> 
-> On 1/9/26 2:06 PM, Marco Elver wrote:
->> If there's 1 out of N ww_mutex users that missed ww_acquire_done()
->> there's a good chance that 1 case is wrong.
-> 
-> $ git grep -w ww_acquire_done '**c'|wc -l
-> 11
-> $ git grep -w ww_acquire_fini '**c'|wc -l
-> 33
-> 
-> The above statistics show that there are more cases where
-> ww_acquire_done() is not called rather than cases where
-> ww_acquire_done() is called.
-> 
-> Maarten, since you introduced the ww_mutex code, do you perhaps prefer
-> that calling ww_acquire_done() is optional or rather that all users that
-> do not call ww_acquire_done() are modified such that they call
-> ww_acquire_done()? The full email conversation is available here:
-> https://lore.kernel.org/all/20251219154418.3592607-1-elver@google.com/
-> 
-> Thanks,
-> 
-> Bart.
+Regards,
+vishalc
 
