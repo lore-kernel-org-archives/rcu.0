@@ -1,167 +1,246 @@
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012031.outbound.protection.outlook.com [40.107.209.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14B60154425
-	for <rcu@vger.kernel.org>; Tue, 13 Jan 2026 18:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768328238; cv=none; b=E58ZbAO4uayh1FF04/uJCGt3AR1PsQ18SdPQKVpOx42iEgT6QLgbuLrHSZhA38TbNqbO/5kVPht12WpICDobzPYsAu3cdgJGGUMUJ1kZUrftUbpjdIMHYwQ15frb8q35vYICdmZ+CFOh2dH0qTr8Qffa6GMyMxGU4ZFjjbi2Ykc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768328238; c=relaxed/simple;
-	bh=rBLDpfbxP8dBnQqdE1HcfFp5xfLcKMYrH6d7Mn0ZCMs=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SzrG65z/Mnmor0odwYeFlYAnuNbUZp+EZmjXAP48s/AsHBFQjxSFgWmXBf3TgBCaLpFYIWgAqAdnxfRNLLPrmDrmuQctTuPCdYI03702ZpbazNQZiSFcSSaEWmphgFqi2Kk2wkNoA3izR7aN3up6qz0qz3mGiiKtKufCLbP1+vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UUQmgsv9; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688FA1B6527;
+	Wed, 14 Jan 2026 01:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.31
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768352981; cv=fail; b=FEXuteKp88BPXo6nlwVyxN8QIz14HLMWsngqc/S6iQdyULVhJ5au2y5DKheUvBTxuxx4vPZGgaA7YhmpFqoKCpsal5T7cY8BPVFQramEMGi8FH1g5WeDffIRhdk/QC/eH3nNh3id/XMxRVFkO8d2R7wApXDgDgIScO2VHlMOZ/A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768352981; c=relaxed/simple;
+	bh=+Tfpqd6g2W0UiKEGq7roRaW7BGFnWssupsI2SlQREJ4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=YOKzwQUSC7QX0pfnYtXxrrjLT4ehzMNdWkCCRnmpxfZ0gCuLGEw9ZlXB5vkT0QosgyxP37RM9OBBf52H1ZC3mIIyrtGXzHaQP1ho4ZaJKzcnv28JbN098IfI04z2qf/vSaHGTUXi9Xa3c34Khwx9nJ5tv0zRrjqvKsMtuShPEUU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dR4I7KGe; arc=fail smtp.client-ip=40.107.209.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UUQmgsv9"
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-59b6f04cae6so6533178e87.2
-        for <rcu@vger.kernel.org>; Tue, 13 Jan 2026 10:17:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768328235; x=1768933035; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HbC4gM3NijuXYimgCveWveeQh9WcJZZ4E8rmyHc9+jI=;
-        b=UUQmgsv9SoUzlNybaIA3lYVi/pwDhHBQNqo7vePkEIvVHw9Ce9EWTnxM0A1j99iltp
-         ypxlnCUnn1pAbMsPUqBLB8TEssLQ3MGL1E0ak3YpYY9YIlRWT2wBk/HDpAXcyDwDrDMz
-         /pqzNQta/IztW7WY9zRgdxQ9KaCdiw+FbuF8L5pYfoZAheqjlXIjfub1SS2p68bEo3Ai
-         ipgyOBCuUr1apGLlRHtnFXFUjPWWSIXV+bkStrKzw2RZGANeWPYNzLZmE+6KTTgcpbQR
-         KZ+PSLVBcJktlUwFTQ3aNyg2l008FYqbUoAN141OOZDYEz4/jgSzUzQuZtFtMlG3iQnD
-         ZSNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768328235; x=1768933035;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HbC4gM3NijuXYimgCveWveeQh9WcJZZ4E8rmyHc9+jI=;
-        b=KWtPC2zS3O4hFNAYmIMmPj8FNkqpsbc3geQ8oAh4WHK+PRV5mVvXBpxeGPPeUjq3Hh
-         bCKAq7QfhEVEaaauFAkcUoOD1BCvsvLlmjCT/CUTJ6tdYayuDwD+NPB5SfYXWZHPmZFb
-         OHrWn35Z6cQzsie7E8FA0ew8IaKcEKuMbl3GjZbEEWzp3/iuSKUir7Jzv9F7YHcCMVgD
-         sb6gKs8/hfGt/RGwTc1IJ/0zw4wPyickedQzILkwZ/TJNzSk7nON6BqpbEAH/tKDwH04
-         ssqzT7Hcf5Did6VrIsykWHub/dSUT0iUSg1sSZ/5GW+GqcMaPcYtddW0HR1FlQijfFVp
-         GoVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWAjXehYGoGMYmXYdkT5UDnB2jR3IoiugHAAtCT8uJ3/fXzH+ux+lhiw+QhjPOCuKJj7IE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyijTuwiEhQH2eMTPdsWo9U00pDyhp8+AEQkoaJiCokE79HQ0RS
-	o5MxcBg49ixYM7XmLJx1WgnnXi0CdcHCuwKeMa9vF1BuykAPnU28dH7N
-X-Gm-Gg: AY/fxX7wF7uyBHe6nKuWRY/3ZO+hmhI0BuyBJdp6nicDm5tN91h5PiyP2No2foDYuze
-	2uASfcm4ugvE3g0BOu2hMYAb8W+OabGPs9UXg2DwEz25B1UOlt07+aquriczJS1KPEX3K+Su95Q
-	BvNMWuBWwadlQL9J/oh4Syn+GWM7TPfRimOeO5/7jqh4fjVx+U95iZmY94pyZYQx+qCdXwMg0uC
-	1SswsWmZaYDQ9MrLRm8jxdH/Nikaf4c9cL1e9DyvGhqQFRiffzLBYQrcsaYoo6zvgthj1unrU8X
-	rOMiNjflVhfrqiH+ZwArK+HzyR3wnjaMB87BpBRk71M0jFDus3ZRPoVCzCUzAtpZHqh76ogvMFs
-	USeSFRb/4NQ5HYvNXs/V/O/B8tKmJCoMWmHkPncqUd37o8cOt/fA5
-X-Google-Smtp-Source: AGHT+IF+n5iLMBZWhEQWVJQdZbJecbDSuAWt8j5wM2R/3cg9CfJ5JfAKMMsnLirF1xQdLiI7d5M3Rg==
-X-Received: by 2002:a05:6512:3a83:b0:598:ee60:8af1 with SMTP id 2adb3069b0e04-59b6ef04a41mr7229668e87.15.1768328234781;
-        Tue, 13 Jan 2026 10:17:14 -0800 (PST)
-Received: from milan ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59b71b7eaacsm4785758e87.40.2026.01.13.10.17.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 10:17:14 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@milan>
-Date: Tue, 13 Jan 2026 19:17:12 +0100
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vishal Chourasia <vishalc@linux.ibm.com>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"paulmck@kernel.org" <paulmck@kernel.org>,
-	"frederic@kernel.org" <frederic@kernel.org>,
-	"neeraj.upadhyay@kernel.org" <neeraj.upadhyay@kernel.org>,
-	"josh@joshtriplett.org" <josh@joshtriplett.org>,
-	"boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"srikar@linux.ibm.com" <srikar@linux.ibm.com>
-Subject: Re: [PATCH] cpuhp: Expedite synchronize_rcu during CPU hotplug
- operations
-Message-ID: <aWaMKCTR1sw-V93G@milan>
-References: <5a2b00f2-5e73-4c89-89b5-1a69cb8a7fa2@linux.ibm.com>
- <aWTvtVGe8un5xtTn@milan>
- <91138C31-EF47-4CA6-BD9F-A41981F543EE@nvidia.com>
- <aWUqtX2PGDOZUaDW@milan>
- <D5086AE0-7158-49C4-8511-47F99021B2AE@nvidia.com>
- <aWY4LQZrudJ4SB8G@pc636>
- <B077EC99-57EC-48B8-9B71-237A7A95DFE2@nvidia.com>
- <aWZUAhbMV_BHamr_@milan>
- <6d05f9ea-fc4f-4115-a416-8e779f17e0fb@nvidia.com>
- <a746ab66-79ac-4cdc-91e8-07814e172a8b@linux.ibm.com>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dR4I7KGe"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=XomNnSjVL4bPewhkYcSUNrQDFRUMZwuD7OuX1B5cUUqUUNZ8JqVUSJX01JYJ2Rv1YrkVP1RKYMufjlyUM06Vaz/sexHRksE0uGBTQkGbVHcsk4FzToHmt0R5y9VIUe/RIwH21CvrRgfB3GG5RwMK+3XSicrnrv4kc817eNOAH4l1Yj4LPXkaQf6q5fp9e4TWeZTi3Ilctoc1fEmhTiGYHGGWyiAhqwU8PvfsPCICiksNCO6JXLdfkYDUcPP9necbDCKR3lDBPwKFFYReQSU2xBu8Ib4E4cBFX3ik5/9qwpOp+N2TWM++g34TGDZUcsvVDmWI/MtQJlPz1KFR7KDDHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZrJnir8apQCgMu+ZqY/2i81zD9O28k8bJV9RR/44wQc=;
+ b=YTMNu1h5CmA5wNcxuUjHmUk13/SZTRIo0336DNf0WfMirbV+ML8vx6E3FAqulWDuj2z0lUnJGQ+t0AngkGB5U5s0y9OtdIy6DDFrXtHQ/9Sba8x+NQNBrnM9+lPyj33/MA/Dr7KS3wgHJe695FPB3fUVXlT+jl5HYmCkTY3iv0vkjYBwj9R7NwYeCxf7rKibBZBVNFCPMNCH5VJbe/Ts5vnkTMhIeGCpMrodK0GfVBBnQoMwzxKJcrrz3M6V0sE6tW+y0gqXCHCz1sLcoYiLytCY8V09axSQxde1JRi1WPvZypR8z8rX6fRySZhTLeA8i2MHyWrQlpkS+1vyNHeAaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZrJnir8apQCgMu+ZqY/2i81zD9O28k8bJV9RR/44wQc=;
+ b=dR4I7KGevAe6oPQ2sJniued7vDtvhnPaapDTsSWCRShfL5BRravVOiJtxe0WwJywjeR9+r8JLS4WJAWSsTPLIQNyzfzyIZxRzR3dbolJEtVRwTCEgOlb5KbMutlzMNIxTGgrH+IBW2g+xvmkepcP/t2KJ2Wh4GFe4+287RxKJPYD7rlpCeFpPmkdcZx6bQuHnD2xTOPo09Ux+5kwUp12U2z1gswp29e+56RtY/bRSxI8tMIlijCiVhgEQVlyyqKaIn50tXN7tVH9ICd8Hq9VuKDpbb/PReHbVAq/TRZP9Gj7V+0UBbuRjGQ4+FXmOEi6+D2f2Pu4mRu1KRTtuSVl4g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by CH3PR12MB8657.namprd12.prod.outlook.com (2603:10b6:610:172::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Wed, 14 Jan
+ 2026 01:09:37 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%2]) with mapi id 15.20.9499.005; Wed, 14 Jan 2026
+ 01:09:37 +0000
+Message-ID: <654e3bde-764b-49ae-8faa-bab8199b1f15@nvidia.com>
+Date: Tue, 13 Jan 2026 20:09:35 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 5/8] rcu/nocb: Add warning to detect if overload
+ advancement is ever useful
+To: "Paul E . McKenney" <paulmck@kernel.org>,
+ Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20260101163417.1065705-1-joelagnelf@nvidia.com>
+ <20260101163417.1065705-6-joelagnelf@nvidia.com>
+Content-Language: en-US
+From: Joel Fernandes <joelagnelf@nvidia.com>
+In-Reply-To: <20260101163417.1065705-6-joelagnelf@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR08CA0016.namprd08.prod.outlook.com
+ (2603:10b6:208:239::21) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a746ab66-79ac-4cdc-91e8-07814e172a8b@linux.ibm.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|CH3PR12MB8657:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4dbdfb9f-8c81-431c-919d-08de53099623
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?NkZDcnZ1bDQyN1BndmtGU3E5L0IyWlk4Q05ENFcwKzNXWUFJdXY3ZytZRHFD?=
+ =?utf-8?B?c1dMeURuWkQrekxjbmhDNHI0d2ZmeEpoWFNFTEMwNHIrWTRpS01qcy9KV2xZ?=
+ =?utf-8?B?T0s3MUdZejFvdTZ3b2xvRVdXM3FUSVg1blpPQ2c1TEZyU2dNOFB0RERVQ3Jn?=
+ =?utf-8?B?L3ltbndJNjdzUXZ2OVdrQndKTUx2VmkyYmJkUFRiczc3L0VGczRqZGpQY1BB?=
+ =?utf-8?B?TnVkeEhqMFhKZ1dKZXcycjBqbUczUk9QQUo5L2FyYVdtRzlnSEg4d3hTeTl1?=
+ =?utf-8?B?MmZnKzhTQ2ZaQ0QrWUpYZjJGNGJOVzhlOE5FanhSSUVXVlhFeTZwUExMRkZk?=
+ =?utf-8?B?RHM4c2oyVENsWEg0R1ptTUJBTnMwR2owVmFRS1p4SkZrN1hYV3g5QjhpUFFl?=
+ =?utf-8?B?ZFdFRjdVbFRrd3pGQzF6anJMcGlZc0czdGltanl1SkF6RHZXZk9EQ1dHMk1P?=
+ =?utf-8?B?NFMxZkNoYVQ1cWlyNVNsUW1laEs3c2lFczllbXZ1VExEVlVtRHgrUmtOSlZ1?=
+ =?utf-8?B?VU5CM2V1S1E0TUo2ZzFwbjZJUnZqYnMyY1pwMjZ6MktxaGFMU0dVM2lxMC90?=
+ =?utf-8?B?UDlqWHkyaG1BcTc1NU0zYnJITnFZenpYS3Q5ZExROTN4WTJLeW1SNm5iZFhz?=
+ =?utf-8?B?TU1nM0pSYm5DUW9RVXpEZVRyNTRMWHVpelpGRTMxYWJTQkc2dms1NHFiQVRw?=
+ =?utf-8?B?MjBqd1ZTMWY2UHcyZ0xQSUFMeWtUSm5pbGNqbG1jU25JR3NDbm1vbjNGNStz?=
+ =?utf-8?B?Y3hnVjZJRDhSVkFDS2F2UHR5aVphYTd3RlZlaUM1MGhoVGxiWEszQVVaUTI1?=
+ =?utf-8?B?bkF6aXF3d25ERkhlTkIreVg2Vjh6Rlg2Uno4ZWxtQk5ZeWVkemNXYjM2TVZW?=
+ =?utf-8?B?VUZBYXhpa2NIRGZlQURpSVRZdkMxU0pXa2lEM3Bhb1czVXVMWHNTNzdkSWVs?=
+ =?utf-8?B?RVRGaVRzQmxGdGtXdWExNTNpK215MysxUHRBaEQyQnlqS1lIWUQ2NTZnYnZo?=
+ =?utf-8?B?UmlFZ2VJajh6MGJoRll2Q3Q5RzRFQSs0QTMrU3hmcElyTFA0cDJOaVN0bDE2?=
+ =?utf-8?B?cnB6TmxsNEd5Vm52NkF6Q2tZeGN2OWdaeGVIaEJNalZzWW41RWFTVlpoZ2ha?=
+ =?utf-8?B?K1BQYytod2ZvbjhzMkNTZ2hKbXFrQ1ZFYVE5cHdlYUZiNExHcDJ5R1VWTmxo?=
+ =?utf-8?B?UDc2M2pUMCtTQXJVWGU0SmdULzkzVDcrSUkxd3RDM2JDK3VSRzV6cHQ3TG5x?=
+ =?utf-8?B?R21Zdit1RGN1Vjd1bzIxSTRQUzdBNHBKeTBCdWJlL1JoY01TT3hJUU5Jb3Ar?=
+ =?utf-8?B?WVFYbmJaRTdWSFRYMGJWbUo5UUtJREhTRkVLV3lXRDI2Zi9NZ0dWMHdHNmcv?=
+ =?utf-8?B?SVhDZzlpQ3pNR0xGNzFCRVgraU41ODJDblNtaFVoZU4zbTBYSjI3bGZpQitE?=
+ =?utf-8?B?SzZlZk1mNyt3RjJlR3N3NlBsSE41R25JUk9CT3FLUTEwZnRGb1A0dXVOczBE?=
+ =?utf-8?B?T0RjN0Y3NkRTRzk5TXhCcW8vczdZWGFCbHVodTBrSFFJdWtQTHhyTW1XN3hY?=
+ =?utf-8?B?S1VXeTV0cjRjeVZrakxmdTNvZWlURTJZN1h1R1R2bTJxcEFRSW9MVlQxQmd0?=
+ =?utf-8?B?UnpoWktRUXFRWmxqWUpFR3BYYTdDL3ZXN01tNkVVbXlWaEs1UFhPRDZCUmYw?=
+ =?utf-8?B?d3lMWFY5Q0F3NXdvVCtHRjRDRmQ3aGhpOEgrTUJPd1F4UjhBNkF6SGV4TFR6?=
+ =?utf-8?B?RXBSNjBDM1pBbVRaay9RU0lSQkIzKzR6dkFuUGZRN1pHUkptNGNiV2puWVFn?=
+ =?utf-8?B?WkxPZHltbmI2Vm5rZWNOMkV1KzVBREpZTWFjTjUxQ0FlaFk4Vm9nbmxIeDd2?=
+ =?utf-8?B?MnZFeE5zcDYzd0UwR1FmZWFxTEN1RmlhaVJ2cEV5ZFhKU0xva3NQOWRWNEhN?=
+ =?utf-8?B?cmFQVHM1dVNkYWdlKzJxc3JPTkxKQjRmNkZVcFl5bTNRV1dwR3NseUo3R00v?=
+ =?utf-8?B?QkkyZnRZTDRBPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?YXRWNVVzMkNTRzVqRVJaMDhyay8vQ3NiYUIvZjRncjRUVkt2YkVaNlkvQWEw?=
+ =?utf-8?B?bmxLN2xuVDRJS1FKN2N4dGJsRmJ0akJSMDRmTm5GM1VqT0tyNE1McDBmVWYr?=
+ =?utf-8?B?UStpK0RpWVA2OEtzVituYWVkdWMzTkhjYmhGL1VyNWFDeTA0VlhnM2NyWVNB?=
+ =?utf-8?B?SmU0TnRIZEtqV2VvRHYvSk5GTVQxVXZqMEtNb0JMSnl0aHpBRWNwdG9zdmth?=
+ =?utf-8?B?T3F3cVNhbThIaFFrYmxxRWVUbjhReFkyU0NDdzJkdlZNUFVudGxnN1F2bWg5?=
+ =?utf-8?B?d0hROC9WNkdQdVc2QkxYck9CKy80d2JZYnpoci8rZ1o1WDEyalZqVjFyODZr?=
+ =?utf-8?B?VG5hUi9XSHcvQzlMb0dDa0M3RUdPWFRyY1dJaHNwbjBvUTFJTi9TYVFRbnJG?=
+ =?utf-8?B?MHRUUlJEa3dDUXFjTWZyN1oyKzRRQVY0YVJuR21pdDhJY2FybmZabTF2UUR5?=
+ =?utf-8?B?bjRVRnY0KzV3czhKWGpQQUhvQU5XV1B3cjI0YVBjSGlCS2NocjFLOUlSUHZU?=
+ =?utf-8?B?ZW5MVVpEaFZNeWJHVHZ5LzhpeUF5d3E1RTNOb3BBaGovN1NKK251elp1bjlv?=
+ =?utf-8?B?UEpqYXgrcGc4U25Lc0xWeWNHbmdXYVZqRGV2aGFtaGtqSnRBeFNJMTF1NEZK?=
+ =?utf-8?B?cjI3WUowdmx6OVk2RjVCRk1tY2VsQmM5elVBS25nbWRSY2YzT3puTWJuMW16?=
+ =?utf-8?B?S0xKT0ZJUkxkUFV0N2o3MTAyT0wyd014REtMRlpQL0hYV2ZBck0wR3JrUjlV?=
+ =?utf-8?B?dVEwcjJNYWRKMno4Z1g0bWtYR0o2QnZHSGtPcDY2WkF3TVVZOHJ6SEpleGl0?=
+ =?utf-8?B?ckRKeWgxcEtHQjhnRURPQkpySDRieEZiUk1DaGZSN1hOeTh6SFFZK3dpVFZX?=
+ =?utf-8?B?bHExOUh2RWRZS3c5dG0yYXFWV3BFWEVoR0RUNTN2b1RDRGRaRHpOSFl2UTNT?=
+ =?utf-8?B?M1ZOV1JpSTNMNGZ4eUFNam9RWGswMXA1V1lLOVQrZENPNnJFQ2J0UDBlaFlT?=
+ =?utf-8?B?dGh0aUQvNXk2N2dkb1p3Z1VkcHhZTDVmY2RMR2xuNjdzTEtPUGFrQ081dlBy?=
+ =?utf-8?B?UEYvbmdkOEdYbEVlWURFSFdVaEpubGVQSUZJVGxlcDhoZ0xSSWNhTkMzd2k4?=
+ =?utf-8?B?VU9oVDZBUXVEVFExS0RBNC9BV0NBTkxwNDJXNG14K1ltMlpyK09URnlzcVNO?=
+ =?utf-8?B?ZW8wc3p2MTdsaFEvUVFhWlhkVmRVeGRWS0ZybWpVOG1Oam0xejhLWGduTHRU?=
+ =?utf-8?B?OVo0cGUvV3psdnhJWHozdytNRGtMM2ZpZy83RW9BREVQRXZCMEI0dUVGTmQr?=
+ =?utf-8?B?OVd6aUNhTWN6MER2Q1VsOUZPNmNnWkFGYkVuNXRqVzMvdE52bWcxZWM1TkR0?=
+ =?utf-8?B?bk5JN0h2K1pvaUswWFU0RXBmZkhsL3VyU0tHSXBucGRvbkMvbTlRRGQ4VkRp?=
+ =?utf-8?B?OGJkdXhsN2ZHQnZFZ2NFNVJLUTBoZ3JLSXBBTlBwV1JBWXV1YmlvQjFEQy9Q?=
+ =?utf-8?B?bzZvbkxuN1R2Q0NBNHBxeFQ5SHRxb0ZDNXZzSUs3cGpHbkdjWVViV1dObEU0?=
+ =?utf-8?B?Ym1oQ3NGNWtHblc0ZjRnTWRBbzhiSFFyNkxUUGNQTmVSc1FIbWZoVUlRSk5z?=
+ =?utf-8?B?VnBKanFDR2dDOU9hT1BNanNUT0Q0VDRTSEpwTThzSGVvVEd1QnR1RzVxQ1lE?=
+ =?utf-8?B?UUNGMTk1UmkxUElQTFdhZ3FRNy9jTHNZcGU1cjR2aHFPQVNSbU1yRS9OK2Nj?=
+ =?utf-8?B?cTJXLzI2dXJaMHJOaGpFNEx6ZDdVbjNXV3BDMmhFM1BuRG80d0tvakRhK2xJ?=
+ =?utf-8?B?QlE0WUtNSDY1VWpCYkV6U29SbVNhK0drZG80ZStNbEJzWDlQMFkvd0h3ZGdr?=
+ =?utf-8?B?MnhlV0lVMFNhUGlxdTNlRjZyeW01TU9NN0FyYis3S1E1aGR1dFZiL2ttcWRt?=
+ =?utf-8?B?ckxkVm5QY2k2b2RKZWcrNXYranRjSXRHeW0ydWxydFVseWF3VDVwZFB6UHVh?=
+ =?utf-8?B?VEFzM2RZV1l1ZGxsTXNncG5VaS81bUtXaXdMNC9rbnJsbDM1SkdiRlFCSURK?=
+ =?utf-8?B?SXVaOGlOZmlmdlhpczNjMFVYZ2lwU2RMRExkMXpQaW5TS0wyNG9HV21lKzJm?=
+ =?utf-8?B?ajdKYlpPNGdnODRrRHRGdk8xOThuUWNSUHRTQ3NLTFBTdEpTZzZyRDZUcmpz?=
+ =?utf-8?B?YjFEdnJzNDJIRWV1OXhoMWdWUmg5Ukl0MHU1UE44R29nQkc0Mm0vU3djVFRv?=
+ =?utf-8?B?R3Z6SCtUMUd1bERjN1lFWVpXT2x2ais3Ukwvc1k5emsyNk5DbVJrS3Bob0Rt?=
+ =?utf-8?B?cU5KS29xN1prcW5SVW0ybitXMlVmN00vVFM0a0FFajFJYWNmWGFIQT09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4dbdfb9f-8c81-431c-919d-08de53099623
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2026 01:09:37.3441
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fpv0Iv6njxeL8N2v11iJHn4zbg66oyge1s2YcSofwVAzmHTTu1j8A58P7LAo6zSJGLLr7EAVqkVYDOSRymM3Nw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8657
 
-On Tue, Jan 13, 2026 at 08:23:29PM +0530, Shrikanth Hegde wrote:
-> Hi.
-> 
-> On 1/13/26 8:02 PM, Joel Fernandes wrote:
-> > 
-> > 
-> 
-> > > > > > > > Another way to make it in-kernel would be to make the RCU normal wake from GP optimization enabled for > 16 CPUs by default.
-> > > > > > > > 
-> > > > > > > > I was considering this, but I did not bring it up because I did not know that there are large systems that might benefit from it until now.
-> > > > > > > > 
-> > > > > > > IMO, we can increase that threshold. 512/1024 is not a problem at all.
-> > > > > > > But as Paul mentioned, we should consider scalability enhancement. From
-> > > > > > > the other hand it is also probably worth to get into the state when we
-> > > > > > > really see them :)
-> > > > > > 
-> > > > > > Instead of pegging to number of CPUs, perhaps the optimization should be dynamic? That is, default to it unless synchronize_rcu load is high, default to the sr_normal wake-up optimization. Of course carefully considering all corner cases, adequate testing and all that ;-)
-> > > > > > 
-> > > > > Honestly i do not see use cases when we are not up to speed to process
-> > > > > all callbacks in time keeping in mind that it is blocking context call.
-> > > > > 
-> > > > > How many of them should be in flight(blocked contexts) to make it starve... :)
-> > > > > According to my last evaluation it was ~64K.
-> > > > > 
-> > > > > Note i do not say that it should not be scaled.
-> > > > 
-> > > > But you did not test that on large system with 1000s of CPUs right?
-> > > > 
-> > > No, no. I do not have access to such systems.
-> > > 
-> > > > 
-> > > > So the options I see are: either default to always using the optimization,
-> > > > not just for less than 17 CPUs (what you are saying above). Or, do what I said
-> > > > above (safer for system with 1000s of CPUs and less risky).
-> > > > 
-> > > You mean introduce threshold and count how many nodes are in queue?
-> > 
-> > Yes.
-> > 
-> > > To me it sounds not optimal and looks like a temporary solution.
-> > 
-> > Not more sub-optimal than the existing 16 CPU hard-coded solution I suppose.
-> > 
-> > > 
-> > > Long term wise, it is better to split it, i mean to scale.
-> > 
-> > But the scalable solution is already there: the !synchronize_rcu_normal path,
-> > right? And splitting the list won't help this use case anyway.
-> > 
-> > > 
-> > > Do you know who can test it on ~1000 CPUs system? So we have some figures.
-> > 
-> > I don't have such systems either. The most I can go is ~200+ CPUs. Perhaps the
-> > folks on this thread have such systems as they mentioned 1900+ CPU systems. They
-> > should be happy to test.
-> > 
-> 
-> Do you have a patch to try out? We can test it on these systems.
-> 
-> 
-> Note: Might take a while to test it, as those systems are bit tricky to
-> get.
-> 
-Let me prepare something. I will come back.
+Since I am resubmitting the nocb patches in this series (3 of them from this
+series) for the next merge window, I thought I'll replace this particular patch
+with just a deletion of the rcu_advance_cbs_nowake() call itself instead of
+bloating the code path with warnings and comments.
 
---
-Uladzislau Rezki
+linux-next and many days of testing on my side are also looking good.
+
+Thoughts?  Once I get any opinions, I'll change this patch to do the deletion.
+Also I am adding one other (trivial) patch to this series:
+https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=nocb-7.0&id=84669d678b9cb28ff8774a3b6457186a4a187c75
+
+Running overnight tests on all 4 patches now...
+
+thanks,
+
+ - Joel
+
+On 1/1/2026 11:34 AM, Joel Fernandes wrote:
+> During callback overload, the NOCB code attempts an opportunistic
+> advancement via rcu_advance_cbs_nowake().
+> 
+> Analysis via tracing with 300,000 callbacks flooded shows this
+> optimization is likely dead code:
+> - 30 overload conditions triggered
+> - 0 advancements actually occurred
+> - 100% of time no advancement due to current GP not done.
+> 
+> I also ran TREE05 and TREE08 for 2 hours and cannot trigger it.
+> 
+> When callbacks overflow (exceed qhimark), they are waiting for a grace
+> period that hasn't completed yet. The optimization requires the GP to be
+> complete to advance callbacks, but the overload condition itself is
+> caused by callbacks piling up faster than GPs can complete. This creates
+> a logical contradiction where the advancement cannot happen.
+> 
+> In *theory* this might be possible, the GP completed just in the nick of
+> time as we hit the overload, but this is just so rare that it can be
+> considered impossible when we cannot even hit it with synthetic callback
+> flooding even, it is a waste of cycles to even try to advance, let alone
+> be useful and is a maintenance burden complexity we don't need.
+> 
+> I suggest deletion. However, add a WARN_ON_ONCE for a merge window or 2
+> and delete it after out of extreme caution.
+> 
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> ---
+>  kernel/rcu/tree_nocb.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 7e9d465c8ab1..d3e6a0e77210 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -571,8 +571,20 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+>  		if (j != rdp->nocb_gp_adv_time &&
+>  		    rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
+>  		    rcu_seq_done(&rdp->mynode->gp_seq, cur_gp_seq)) {
+> +			long done_before = rcu_segcblist_get_seglen(&rdp->cblist, RCU_DONE_TAIL);
+> +
+>  			rcu_advance_cbs_nowake(rdp->mynode, rdp);
+>  			rdp->nocb_gp_adv_time = j;
+> +
+> +			/*
+> +			 * The advance_cbs call above is not useful. Under an
+> +			 * overload condition, nocb_gp_wait() is always waiting
+> +			 * for GP completion, due to this nothing can be moved
+> +			 * from WAIT to DONE, in the list. WARN if an
+> +			 * advancement happened (next step is deletion of advance).
+> +			 */
+> +			WARN_ON_ONCE(rcu_segcblist_get_seglen(&rdp->cblist,
+> +				     RCU_DONE_TAIL) > done_before);
+>  		}
+>  	}
+>  
+
