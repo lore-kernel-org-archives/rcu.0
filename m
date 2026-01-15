@@ -1,192 +1,238 @@
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 559A9329377
-	for <rcu@vger.kernel.org>; Wed, 14 Jan 2026 18:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296E239E199;
+	Thu, 15 Jan 2026 17:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768415662; cv=none; b=SisobSi9M0ZLkGcdtPaFb7d1kOvytcnjrlGG5b6+hiXzyalM7dAcVP2lx/OqzQQNG+clGolNf88gSYlUJSJVyl0lEEFjtzWOY/MD28X69/5K9GDy7lyRk3PkPxmZKOF6SbjfHN90/9KsztnVI3g3lK5UCpP2Mm1s3ye/ao5+p0A=
+	t=1768497841; cv=none; b=XnP5Zunni+IRCkkLH4/7+WDWlSh85BSrXrnuLOeYaReC7mVRqzCF8pcLa0dyRI5VaxMP497Q8Kkghu0NHbQ2SLuW60v6qp9GnrnDsRQTN2ql3Hiw3iJZYSHg22lmXIruR14X3uvRN25o0qGyWlSio3hHcoNHZpUWkCFPkXoIaC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768415662; c=relaxed/simple;
-	bh=KZ6jA9OgWKzFSS9WndGq9wCP7OCFnoFubnkro8EsDTg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nbBI8fyPZPsww56iAoDqByqVH1kYtgeOl4Sl2dfVJni6dOsI80O4VcGBap0UUfM6dV5DRILH33GPT3lvT67c68HM/J+rIqyNcS4DftGVmbAtmZdR24PollRJDPPkzSuSc+d9HWQwXgXQtsiG32olip4yoRzU4WOYZ8GmxGETwas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zgyp4/8p; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1768497841; c=relaxed/simple;
+	bh=66etxKRvxNvn3ET7c3iGJMDT/K63hJo5EWSo3U9elms=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hakHAvUk3mjbL0s7YAeNJySrZ8rGEXA+AsaGZIqPA4nP6BxJNQQhZWVONDE9/F3gww8w105rCDdVOPmN6Pw/v+lCK5yYrWUNZtIOKzktH2SkmjxcRqXQohsZf2GVTOTLXNBwTL23AeF01eIMGdKSp7VeBolUtLDj0h8UY8Lxslw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nF0RvZQy; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zgyp4/8p"
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-59b76c092acso111658e87.2
-        for <rcu@vger.kernel.org>; Wed, 14 Jan 2026 10:34:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768415658; x=1769020458; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CUPAgkqqJq6WozfacWaQbbhzVEXuv7nVNXJfVf9PrLw=;
-        b=Zgyp4/8pRu835dOm9qPJBBCWGvOXvmJEpBonkBYboLFOafdiVVvOkDpJxgClgss4is
-         YkwpYNC5nEvyc/erF9dD9upOxN403dMI+ots66OTaJDVsJ+Nk3B42Pf/jvYU49g69wKe
-         OASIQbyNMdbrKWrznZXY2BY69X+XuHpZMby/JzgEXWvm8jpDF2CZiyIhS5WER+sI9ggx
-         YhiappHyES8snkut7VteFjedLGG8XlCte77Xr+ztG7yGUZFZFJ22Zvt78mLE6Bn8RDI8
-         tloTAL7IaJLYFpilawhffOCK2V0TLNoWJyB4POhgoVXIpjDbKbzOiA6o7LYqpZQja3XA
-         Fvxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768415658; x=1769020458;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CUPAgkqqJq6WozfacWaQbbhzVEXuv7nVNXJfVf9PrLw=;
-        b=OT2yBfeAWlIQLx2AIDJIXRZcvoXGinpTe7KGMaUDzfQMPY/rBqQAsQWJCjYZgL13fv
-         lbblcQrGaUKiFmYpk+SYUpo52SFRIfTbRcoHLkdFSGG2PgN4hXQLIxRQAH6QpPw1V1g9
-         WwXzeaU4TDCBytbZSanrYRXRna1itaNO+zIclaGxr9vgjQZxvppFHnisyI9lM3n06Rbo
-         l6tVC9kyNPl0vbPswIkainl6kgKSWM7zQmqqyDQmti8+ocXGJGEgpDhKk372x7UFCThe
-         OO2wxQcEkYYSxyCIzLXMFNgQgP3cXFYiGtDqprCiP173LanCeg3fvacz4qmNwvNI8uxI
-         Vljw==
-X-Forwarded-Encrypted: i=1; AJvYcCVqMxYQTAzKJyi+Qxl7Gn1XegMYq+cM77HgDLbah08gXrjt2ALTL8xmmKxlN4ai1THFIkg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzqTtwbkGfBLNsd4XoewgCDd0whVdbM/NLAx2OWPGrEjRtraW5x
-	L/XvO/9iAcuDbNJlOlsRTp72L5/WuCzx3P7IjATOqAXO3pk5HrW5ITmz
-X-Gm-Gg: AY/fxX5gDujXxNXYdU1dpWBTd+krAHtU1SHTPq21nJ6JkCKaW/BD8bvUET94uHh1eey
-	9geMP8HL8VRp++N95QFeZFtJflLnEzjcpBumeFxdY9r2p21X126Q56lu26TTEtC30EaS5hfkTrF
-	jnZG0HXR1P1FFTU/zALlTZWfg+Z4WIGxXZnDcdPUdqlGUXiSTq/J6d4bZJEHsuTInsWc3Are10k
-	NQzwuffssOOCwDVL6v0tSIsj7YllbLTYkS9suiMwLmvekC67qE9uR1pk5CjJdqW23cX0J71aTK1
-	d86LBSS4TN9nrBV1iMH0HZD/DH1d6masPG1bthG60OdJ4WSjlJBx74NkkYo+5lgK8lYvYkaI5D5
-	5CddlWw4haM0H/UfdyfgOFOiNDd0CHcra5egco7q1g+h7+TkbhjKZCZtaBXYaesJB2AkCCAl7lV
-	dThIw=
-X-Received: by 2002:a05:6512:ad6:b0:598:eed6:4975 with SMTP id 2adb3069b0e04-59ba1752d33mr999594e87.48.1768415657414;
-        Wed, 14 Jan 2026 10:34:17 -0800 (PST)
-Received: from localhost.localdomain ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59ba1045bbdsm917730e87.78.2026.01.14.10.34.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 10:34:16 -0800 (PST)
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To: "Paul E . McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Vishal Chourasia <vishalc@linux.ibm.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>
-Subject: [PATCH] rcu: Latch normal synchronize_rcu() path on flood
-Date: Wed, 14 Jan 2026 19:34:15 +0100
-Message-ID: <20260114183415.286489-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.47.3
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nF0RvZQy"
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60FF6SBI019683;
+	Thu, 15 Jan 2026 17:23:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=+MG2uv
+	NuGtt+P6RPKwJUgABSvjOlAjkmli0DsIAbPF0=; b=nF0RvZQyUbM/Bi9OElNaNF
+	+jHVb1R3rjlNJoUPQdjzu0AvY3ZsdzXsOOh89jYcsJuZgDYi5aDJheBUeFp/PdSg
+	ZDDE0x6/Qn/fCLn9K+qzRMfSJcvBrMJOmifXVGhw7akLKwz4nn3Qwwxe9GTZ2qr5
+	TPUjvQZtommaPHfV3O9DC+EXf50WkA59p1YY8r/BAYTBrs/JpkL2jlJf2urMWUIF
+	u0JDBEwvoX+fbcE/zWJU9lD1m0WIbTKRo4r6r7bh57pPSFsx+zTov5gWWaCY7DFb
+	TpavIKAGHvqCXSrmlPa2S+oNl1iwcqX7tcynPD506ZOiNICpY5791hx0PDHxeWeg
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkc6hfh8k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Jan 2026 17:23:55 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60FHNsNg024760;
+	Thu, 15 Jan 2026 17:23:54 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkc6hfh8h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Jan 2026 17:23:54 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60FFnxRQ030153;
+	Thu, 15 Jan 2026 17:23:53 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bm3ak15rn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Jan 2026 17:23:53 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60FHNnr130933756
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Jan 2026 17:23:49 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A6DEC20043;
+	Thu, 15 Jan 2026 17:23:49 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E874320040;
+	Thu, 15 Jan 2026 17:23:47 +0000 (GMT)
+Received: from [9.124.218.20] (unknown [9.124.218.20])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 15 Jan 2026 17:23:47 +0000 (GMT)
+Message-ID: <f83b53da-7812-4285-a1db-2fa0fb8d611a@linux.ibm.com>
+Date: Thu, 15 Jan 2026 22:53:47 +0530
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcu: Latch normal synchronize_rcu() path on flood
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Vishal Chourasia <vishalc@linux.ibm.com>, samir@linux.ibm.com
+Cc: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, RCU <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joelagnelf@nvidia.com>
+References: <20260114183415.286489-1-urezki@gmail.com>
+Content-Language: en-US
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+In-Reply-To: <20260114183415.286489-1-urezki@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GuUHrssUNCWRsQFe-dB7KVlUOT3cEnOf
+X-Proofpoint-ORIG-GUID: FCxUpRQTA7kC5804mrP6jDJkMyVb0iaO
+X-Authority-Analysis: v=2.4 cv=TaibdBQh c=1 sm=1 tr=0 ts=696922ab cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=Ikd4Dj_1AAAA:8 a=pGLkceISAAAA:8 a=-__R_ZiZeJJP44i4oVMA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE1MDEzMiBTYWx0ZWRfXyZbFcilgBJtW
+ +6+/WCyHyUV6fdoFLhFZ/yuJaYfomna8/vOUjEEbCA4QtOHpfEKSlj1zr58QT6jyQth3ucJu4sV
+ 5FP2XrtxvfX7Jgq20XLCaJnGTQYa9aPLAJ6nF/SVg3Wg/0Z7JhJEUHkziUmIij9xPKlQ2HPY6Uf
+ 7Q/xNp9X7bODo4DOyjQQz4+79oiW6eSlMqdB3QtTF8hKgktXrnCRpcRvp3Nrcro6CFeG5N97Jh4
+ EQG8GhtXf5peuoR4X9YbqeKpBLmc4EMR2mcUZpePC7uQMJQ360cxyO8qG6rvIkMKsAwZhaCt3qG
+ SQvaM9lnGnj9SL8i9ggDW2Xv2j4PolTt7kOllNgfdv+0ogq3RUgFuEDwOxObCTheMByJDVMnFwk
+ WwEtxynKHqJe54DYeWfkjiivRVmNPIrWAfEaLpIICOJ8OAEe6dKuvpuaKMRlmIUCHHDzT6EIQeg
+ tGWG8IEhsYueR2zROGA==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-15_05,2026-01-15_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 phishscore=0 impostorscore=0 bulkscore=0 clxscore=1011
+ suspectscore=0 priorityscore=1501 malwarescore=0 lowpriorityscore=0
+ spamscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2512120000
+ definitions=main-2601150132
 
-Currently, rcu_normal_wake_from_gp is only enabled by default
-on small systems(<= 16 CPUs) or when a user explicitly set it
-enabled.
++samir
 
-This patch introduces an adaptive latching mechanism:
- * Tracks the number of in-flight synchronize_rcu() requests
-   using a new atomic_t counter(rcu_sr_normal_count);
+On 1/15/26 12:04 AM, Uladzislau Rezki (Sony) wrote:
+> Currently, rcu_normal_wake_from_gp is only enabled by default
+> on small systems(<= 16 CPUs) or when a user explicitly set it
+> enabled.
+> 
+> This patch introduces an adaptive latching mechanism:
+>   * Tracks the number of in-flight synchronize_rcu() requests
+>     using a new atomic_t counter(rcu_sr_normal_count);
+> 
 
- * If the count exceeds RCU_SR_NORMAL_LATCH_THR(64), it sets
-   the rcu_sr_normal_latched, reverting new requests onto the
-   scaled wait_rcu_gp() path;
+is this atomic variable getting updated by multiple CPUs at the
+same time? We had seen in past such updates tend to be very costly.
 
- * The latch is cleared only when the pending requests are fully
-   drained(nr == 0);
+>   * If the count exceeds RCU_SR_NORMAL_LATCH_THR(64), it sets
+>     the rcu_sr_normal_latched, reverting new requests onto the
+>     scaled wait_rcu_gp() path;
+> 
+>   * The latch is cleared only when the pending requests are fully
+>     drained(nr == 0);
+> 
+>   * Enables rcu_normal_wake_from_gp by default for all systems,
+>     relying on this dynamic throttling instead of static CPU
+>     limits.
+> 
+> Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>   kernel/rcu/tree.c | 37 ++++++++++++++++++++++++++-----------
+>   1 file changed, 26 insertions(+), 11 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 293bbd9ac3f4..c42d480d6e0b 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1631,17 +1631,21 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
+>   	atomic_set_release(&sr_wn->inuse, 0);
+>   }
+>   
+> -/* Enable rcu_normal_wake_from_gp automatically on small systems. */
+> -#define WAKE_FROM_GP_CPU_THRESHOLD 16
+> -
+> -static int rcu_normal_wake_from_gp = -1;
+> +static int rcu_normal_wake_from_gp = 1;
+>   module_param(rcu_normal_wake_from_gp, int, 0644);
+>   static struct workqueue_struct *sync_wq;
+>   
+> +#define RCU_SR_NORMAL_LATCH_THR 64
+> +
+> +/* Number of in-flight synchronize_rcu() calls queued on srs_next. */
+> +static atomic_long_t rcu_sr_normal_count;
+> +static atomic_t rcu_sr_normal_latched;
+> +
+>   static void rcu_sr_normal_complete(struct llist_node *node)
+>   {
+>   	struct rcu_synchronize *rs = container_of(
+>   		(struct rcu_head *) node, struct rcu_synchronize, head);
+> +	long nr;
+>   
+>   	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+>   		!poll_state_synchronize_rcu_full(&rs->oldstate),
+> @@ -1649,6 +1653,15 @@ static void rcu_sr_normal_complete(struct llist_node *node)
+>   
+>   	/* Finally. */
+>   	complete(&rs->completion);
+> +	nr = atomic_long_dec_return(&rcu_sr_normal_count);
+> +	WARN_ON_ONCE(nr < 0);
+> +
+> +	/*
+> +	 * Unlatch: switch back to normal path when fully
+> +	 * drained and if it has been latched.
+> +	 */
+> +	if (nr == 0)
+> +		(void)atomic_cmpxchg(&rcu_sr_normal_latched, 1, 0);
+>   }
+>   
+>   static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> @@ -1794,7 +1807,14 @@ static bool rcu_sr_normal_gp_init(void)
+>   
+>   static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+>   {
+> +	long nr;
+> +
+>   	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
+> +	nr = atomic_long_inc_return(&rcu_sr_normal_count);
+> +
+> +	/* Latch: only when flooded and if unlatched. */
+> +	if (nr >= RCU_SR_NORMAL_LATCH_THR)
+> +		(void)atomic_cmpxchg(&rcu_sr_normal_latched, 0, 1);
+>   }
+>   
+>   /*
+> @@ -3268,7 +3288,8 @@ static void synchronize_rcu_normal(void)
+>   
+>   	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
+>   
+> -	if (READ_ONCE(rcu_normal_wake_from_gp) < 1) {
+> +	if (READ_ONCE(rcu_normal_wake_from_gp) < 1 ||
+> +			atomic_read(&rcu_sr_normal_latched)) {
+>   		wait_rcu_gp(call_rcu_hurry);
+>   		goto trace_complete_out;
+>   	}
+> @@ -4892,12 +4913,6 @@ void __init rcu_init(void)
+>   	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
+>   	WARN_ON(!sync_wq);
+>   
+> -	/* Respect if explicitly disabled via a boot parameter. */
+> -	if (rcu_normal_wake_from_gp < 0) {
+> -		if (num_possible_cpus() <= WAKE_FROM_GP_CPU_THRESHOLD)
+> -			rcu_normal_wake_from_gp = 1;
+> -	}
+> -
+>   	/* Fill in default value for rcutree.qovld boot parameter. */
+>   	/* -After- the rcu_node ->lock fields are initialized! */
+>   	if (qovld < 0)
 
- * Enables rcu_normal_wake_from_gp by default for all systems,
-   relying on this dynamic throttling instead of static CPU
-   limits.
 
-Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 37 ++++++++++++++++++++++++++-----------
- 1 file changed, 26 insertions(+), 11 deletions(-)
+Samir,
+Could you please give this patch a try on 1000+ cpu system?
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 293bbd9ac3f4..c42d480d6e0b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1631,17 +1631,21 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
- 	atomic_set_release(&sr_wn->inuse, 0);
- }
- 
--/* Enable rcu_normal_wake_from_gp automatically on small systems. */
--#define WAKE_FROM_GP_CPU_THRESHOLD 16
--
--static int rcu_normal_wake_from_gp = -1;
-+static int rcu_normal_wake_from_gp = 1;
- module_param(rcu_normal_wake_from_gp, int, 0644);
- static struct workqueue_struct *sync_wq;
- 
-+#define RCU_SR_NORMAL_LATCH_THR 64
-+
-+/* Number of in-flight synchronize_rcu() calls queued on srs_next. */
-+static atomic_long_t rcu_sr_normal_count;
-+static atomic_t rcu_sr_normal_latched;
-+
- static void rcu_sr_normal_complete(struct llist_node *node)
- {
- 	struct rcu_synchronize *rs = container_of(
- 		(struct rcu_head *) node, struct rcu_synchronize, head);
-+	long nr;
- 
- 	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
- 		!poll_state_synchronize_rcu_full(&rs->oldstate),
-@@ -1649,6 +1653,15 @@ static void rcu_sr_normal_complete(struct llist_node *node)
- 
- 	/* Finally. */
- 	complete(&rs->completion);
-+	nr = atomic_long_dec_return(&rcu_sr_normal_count);
-+	WARN_ON_ONCE(nr < 0);
-+
-+	/*
-+	 * Unlatch: switch back to normal path when fully
-+	 * drained and if it has been latched.
-+	 */
-+	if (nr == 0)
-+		(void)atomic_cmpxchg(&rcu_sr_normal_latched, 1, 0);
- }
- 
- static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-@@ -1794,7 +1807,14 @@ static bool rcu_sr_normal_gp_init(void)
- 
- static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
- {
-+	long nr;
-+
- 	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
-+	nr = atomic_long_inc_return(&rcu_sr_normal_count);
-+
-+	/* Latch: only when flooded and if unlatched. */
-+	if (nr >= RCU_SR_NORMAL_LATCH_THR)
-+		(void)atomic_cmpxchg(&rcu_sr_normal_latched, 0, 1);
- }
- 
- /*
-@@ -3268,7 +3288,8 @@ static void synchronize_rcu_normal(void)
- 
- 	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
- 
--	if (READ_ONCE(rcu_normal_wake_from_gp) < 1) {
-+	if (READ_ONCE(rcu_normal_wake_from_gp) < 1 ||
-+			atomic_read(&rcu_sr_normal_latched)) {
- 		wait_rcu_gp(call_rcu_hurry);
- 		goto trace_complete_out;
- 	}
-@@ -4892,12 +4913,6 @@ void __init rcu_init(void)
- 	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
- 	WARN_ON(!sync_wq);
- 
--	/* Respect if explicitly disabled via a boot parameter. */
--	if (rcu_normal_wake_from_gp < 0) {
--		if (num_possible_cpus() <= WAKE_FROM_GP_CPU_THRESHOLD)
--			rcu_normal_wake_from_gp = 1;
--	}
--
- 	/* Fill in default value for rcutree.qovld boot parameter. */
- 	/* -After- the rcu_node ->lock fields are initialized! */
- 	if (qovld < 0)
--- 
-2.47.3
+Specifically test time taken for SMT1 to SMT8 and SMT8 to SMT1 switching
+time.
+
+
+Uladzislau, Is there any specific testing(other than above) you are looking for?
+
 
