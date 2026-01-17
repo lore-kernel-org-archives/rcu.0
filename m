@@ -1,205 +1,265 @@
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCECF2FDC3C
-	for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 12:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B6219AD5C;
+	Sat, 17 Jan 2026 12:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768651884; cv=none; b=an47k0zGeuaABdT1VLVV7bTmdFPuCzSkA7CUdyUIxp1sxOOma+kZBpVz+5eEzG82FkMP2mQhcKSvEQrt38Oa0uqhZ/2N+22vkqbOWzJLVv3b5PlLgaX2M8VPWKAlh7bSI5R1/8bDABZhDtqNPb/+CWWao/76UKVf3QBRPER+f+Q=
+	t=1768652355; cv=none; b=NTZEyHb9JWTEcCHMB29vphsaKvws5gsMDIJt/BC0qrM99rH5tLpsW1J11DayDVBdeKanjsAdDr0hz85UZqsE099fXGz/bJcs6zANNyexmtuUe9qR1XjqvkREOxEbLLDAwSM2hD8vjvfbjFBRAMWkk020ewqLkAFIuxsnTFC24+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768651884; c=relaxed/simple;
-	bh=RWYdE6hY3yf2AhImiXGF8DIAKPG7t4UOIfyeA/D4M7s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s9oHT2EU/54YC5Or0p1eXh9KJaU9bs8OZO0LgbHv4kAnF07HCtslD6l3OwL5c6CeNqA0OFWYbHkUAcVhfkqUuoZHJdrPZ41aIqr7Axa008fUAroy3ydYjPtnA25iAbfcmMEcwOPu1f3PM8eCsjivO6ym6yCx8/Nr0Tj3OhGlisQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OyduGkaT; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1768652355; c=relaxed/simple;
+	bh=lUtDE7G+o+yg5gTMC5yu0v0IXP/lPo62j+tZSonLD48=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m4Wj3zuPoe70q0wobaCR4MPRHz0355AgFmbJf97d68BRXp4mCi09yYM9WC6MnW+VYnfNWzDStS4YxcVJpginhIkm/FzPmJuqX9zHACRirDCUstOIh6oC0btuf25oRQFfFABHoNTC6zNdvgiEebfeAaatkZkAHhZVNUTxW6BUlS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=odi1HpSW; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OyduGkaT"
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-8c530866cf0so290135685a.1
-        for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 04:11:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768651882; x=1769256682; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Lq+qQrczeBcVzR4njvZgDFILo49g4HfX34hwBUDSmQ=;
-        b=OyduGkaTlmUSlB4Zv51qgKkrxcvtTMm85paZ6t9f5M9yN9c7UNyvAFf3wMShL1TO2T
-         CQgyQinJBZCUZMPGUEz+aoSaI4glSwAGgVBYXyKZqfsb7fDHYQbtZZ7B67qc7aRJPe0q
-         /SFa01ai3002gOR35Kw6WrLhWwlN4fKUbsYOJlq1k3UkS+H3qtWFrb3GIEOGqTrI8xj7
-         rHixjc5XdwBjRThjqF4Tm7Tgxt6Qkd81wY7csc9tUzQF1tEsGepdBKKaFo91mU7nf3Cg
-         lQrJKrTBEum5kaC4jTdZCBRvg5DSBTTZksUJcO1EFmJWLZ2HOblRgSjZssJUfNfvq1hJ
-         LcyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768651882; x=1769256682;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=/Lq+qQrczeBcVzR4njvZgDFILo49g4HfX34hwBUDSmQ=;
-        b=eP2yok0aTxCLPKAFg73RS2xfTJJ9EG32GlkVa/L4FlaV/kJiq6sKxTcKx1EV6rdmP0
-         dbpjZclfM5d4XnU97IVvq+AXVMiydc3kXVtOi/hnuBS0aFIKZY88B+y0kYi18DdGld1m
-         dE3VAW7S4cDWnkmU6EL9yH43QXG/ZuDGAbXhRgXPIukH0WWQr06IAASVZWEwj2zi/EqO
-         NUsI8keyMzswJi0ovNvJiIh/fntuA9VVwJa4sooD9SKHuQ+xNYRSC0fTY6VK1Jn0K9nJ
-         2yQBQwkFy20f9a5lJmT65qMlz69bSWB7GaL6kIfqMW9MKSTsxQPC0cwidfB2pYwjBJ9g
-         cBng==
-X-Forwarded-Encrypted: i=1; AJvYcCXXHWrlmtM2GyS5wX1ciVXuAZwsIY2WQtplfVcsoXGy7MaRqO+3prlY714r9w+wHe+ABzc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9kKH17f3cNX2Exw6xRY0+DQWcZ8t5ZpQnDFtqF/qPbUZ+1gyI
-	V6GbnaST33MXw0ufskWAfbQtixysEpTJzKiHP9NvSp/gvoh4MPf0ej/U
-X-Gm-Gg: AY/fxX7Lc/mpAUa6nUVU3SzxgSPxFeB8qGZo3WUT9Mv/z2UGVo3f63TcozDFC7pnb0h
-	2JVYJ40QE+BlSGJBc+p9/CbkZ/OQjQoGfZHhu9VK7r6TbUHC/lYji3bUIZmujhme4GHX0jltnXx
-	WMtFr/H3mhQQfgf2G8BLu9ZVR7hpHiBbQw6WkbHB8DWWU5LsAlq1xNJddGNPyQ9NwvPsfe1QQ+t
-	gLUIUUJ+GDJbyDDixH5lzDRgEkr8/5DFFY6p5HsG40Xqa19n0kdIzUI/bqD4d3G1XcLvxOK1zE0
-	j2xNeTMevD5ntWAyw0hnerYUPa9sEY2Qiu+39xScyZP5pniyUdQpu2/XWoMUGIbuw3LqvomwT2r
-	ASRVrj4vH9WjofpFE3zWaJCojq/lz78aU2Q6BopOFSEPY0fAFWTfz1sqfDj1gaOjf8FfmQ9RMDG
-	VHS7YNrCUf74rwDs3Iq2VhNkj/TC7myZQZFwNWqM55UEVaJcjm/08kkS/jwMabnqcI3RwZWd8Rt
-	R3Bk7PAldGyXgk=
-X-Received: by 2002:a05:620a:bc4:b0:8c6:a487:6ad0 with SMTP id af79cd13be357-8c6a67b1172mr836990185a.85.1768651881581;
-        Sat, 17 Jan 2026 04:11:21 -0800 (PST)
-Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8942e602d53sm45788716d6.14.2026.01.17.04.11.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jan 2026 04:11:20 -0800 (PST)
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id F243BF4006D;
-	Sat, 17 Jan 2026 07:11:19 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Sat, 17 Jan 2026 07:11:20 -0500
-X-ME-Sender: <xms:Z3xraV1gi4XU5VZ1UdjEbRVJ-K-d5SHO9v_4YpmgA5WAGR2q87Va-w>
-    <xme:Z3xrab8UirGoX8qQwGlC4CYRO3Sr7Q0NBm6b8B1jy4BBgQ6Rgh_8VBGYVKdZgo0_A
-    -rucuAxTMTJ-flcMfh62BUz_MUncuAFm75s0Y8rweC11oeCReLU>
-X-ME-Received: <xmr:Z3xraTN2Wr9QQrdssbyktUFdGt5XsTeFI6P5TyzhLTQ5TpajgFEqNCZe>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufedujeekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueevieduffei
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvgdpnhgspghrtghpthhtohepvdeipdhmohguvgepshhmthhpohhuthdprhgt
-    phhtthhopegrlhhitggvrhihhhhlsehgohhoghhlvgdrtghomhdprhgtphhtthhopehprg
-    hulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihgrmhdrhhhofihlvght
-    thesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepghgrrhihsehgrghrhihguhhordhnvg
-    htpdhrtghpthhtohepohhjvggurgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghj
-    ohhrnhefpghghhesphhrohhtohhnmhgrihhlrdgtohhmpdhrtghpthhtoheplhhoshhsih
-    hnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrdhhihhnuggsohhrgheskhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtohepthhmghhrohhsshesuhhmihgthhdrvgguuh
-X-ME-Proxy: <xmx:Z3xrafDcatiCph0lMQVUj4zOc4zOzsB34irsF9JfFkt071C6GsXT3A>
-    <xmx:Z3xraVOHxyvt0GpG3yd-gksjK6aDB_BOTtUFP0JRn9z8oWrfRIJwuA>
-    <xmx:Z3xraVZ25_TK82Gggvd5cjFZw-kP92E04W0c5br9ghCtUhREsUbEyA>
-    <xmx:Z3xraUNidwRe1bkgl5eTY9XDC82OcVstuGUMoEnsNVS4IkhwY0lPmg>
-    <xmx:Z3xraTWhJUMRrpoTUMZ2v3SzqRItCe_sOUx2nK_4QC_urcV4i8uekD8o>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 17 Jan 2026 07:11:19 -0500 (EST)
-Date: Sat, 17 Jan 2026 20:11:17 +0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Gary Guo <gary@garyguo.net>, Miguel Ojeda <ojeda@kernel.org>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <lossin@kernel.org>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	Trevor Gross <tmgross@umich.edu>,
-	Danilo Krummrich <dakr@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Andrew Ballance <andrewjballance@gmail.com>,
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	rcu@vger.kernel.org, maple-tree@lists.infradead.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH RFC 0/2] rcu box container for Rust + maple tree load_rcu
-Message-ID: <aWt8Ze-otTkexNIe@tardis-2.local>
-References: <20260116-rcu-box-v1-0-38ebfbcd53f0@google.com>
- <aWrSkAPFkdH_tvtN@tardis-2.local>
- <aWt4muGXbe7lBmXt@google.com>
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="odi1HpSW"
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60H4wimw024657;
+	Sat, 17 Jan 2026 12:19:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=sRNfiT
+	9AZHbvku7XXddktnPcFtdkHPLA0D5ppUwG/W4=; b=odi1HpSW+IusbKDxhcRnXc
+	U/Nu0h/ilvSplw9l7rm3V0swz0/AmkMeJrSV33JCqDaH/YWzUhZWQbemboMcupD3
+	WppvfZtE05HUWpm+GuYXFJ973d1KHUiMjiTmgcKrVFxzFy3lw94k05vgQ9mwx1Lv
+	Eoj1qqKIdF/Ttxp4GkxhBUeSCW0cnehwGp1xCSaMa7GnDs726eaLqG0RhDtWn3Lc
+	17WRs9NlTnBW3FTwCbdqlpBP7L1h3AijnMBEgV8kFpOzNmcGzt3B3KPX9Yb81TIT
+	3Ub5ohnHuCazc3H4PxXpN4X/JETLWgCjBNBI7Bb9MYgbe9Cy8x8uIX2q7AgPhZoA
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4br23rh68b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Jan 2026 12:19:04 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60HCJ4HK019224;
+	Sat, 17 Jan 2026 12:19:04 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4br23rh688-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Jan 2026 12:19:04 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60HASd4q014010;
+	Sat, 17 Jan 2026 12:19:03 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bqv8utw2g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Jan 2026 12:19:03 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60HCIxLY56295850
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 17 Jan 2026 12:18:59 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 49DAA20043;
+	Sat, 17 Jan 2026 12:18:59 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7DC6220040;
+	Sat, 17 Jan 2026 12:18:57 +0000 (GMT)
+Received: from [9.39.20.22] (unknown [9.39.20.22])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Sat, 17 Jan 2026 12:18:57 +0000 (GMT)
+Message-ID: <00e91ebc-0783-4519-9727-53dd3a625298@linux.ibm.com>
+Date: Sat, 17 Jan 2026 17:48:56 +0530
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aWt4muGXbe7lBmXt@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcu: Latch normal synchronize_rcu() path on flood
+To: Joel Fernandes <joelagnelf@nvidia.com>, Samir M <samir@linux.ibm.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>, Paul E McKenney
+ <paulmck@kernel.org>,
+        Vishal Chourasia <vishalc@linux.ibm.com>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, RCU <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+References: <20260114183415.286489-1-urezki@gmail.com>
+ <1c6b741e-acfd-432b-bd04-4534c2e2511a@linux.ibm.com>
+ <B7C99D22-0544-4177-A299-E3D458EA55F6@nvidia.com>
+Content-Language: en-US
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+In-Reply-To: <B7C99D22-0544-4177-A299-E3D458EA55F6@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: LduQfPOYC426AD_BLQSoYo_x9yVBxdqI
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE3MDEwMSBTYWx0ZWRfX40hPwgHyEvHA
+ RK2ND5xSoZTC2SZZX43n5hOXHFxYyHPpqRHaUgwiqmP5DS0p2FQvgIEp8kmACKNccwJHOd3ffl9
+ FSiMQlVL2SrPodJmFL+9Js40D61Sn21dULqUoZHbuK7tbgAK1XXAZi57v2DCpAojUaH+hwnCXAy
+ ZNzcsB7R4yRxzs7WLIw3uKiw7d8Sr8e0d/xbS935k/mok83wktEwgw2ed336Pa6MKuoV+ReiYLU
+ /rk8TL5zohfbd73y0WujYXz1+Wh8SC5Q6OXd8NCM/ajxEkFTCCXg/yZ9xna3OTjnqcNJFounh6N
+ s3HxlLGRpdXcIEJZqI8hmRMpkkIvQ8bdePYTt/2M7GajcdNOxQFGRFcCst5dKgr+5hrSEdAVUGq
+ YqqokT2LMRlTW2CuskD+/3Ej4KcNWEY/W8i7POUoy9k8Q9qhjz1I3wgXjW6nyphO1BrmMnvnjh9
+ DqqDX5+uZJx+5KIZwwQ==
+X-Authority-Analysis: v=2.4 cv=J9SnLQnS c=1 sm=1 tr=0 ts=696b7e38 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VnNF1IyMAAAA:8 a=Ikd4Dj_1AAAA:8 a=pGLkceISAAAA:8 a=DiE8bJjBprXz9EmmcpMA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: 01AzHJlL39lPlsmTZgzEAgoiX7aUWt8D
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-17_01,2026-01-15_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 bulkscore=0 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2601150000 definitions=main-2601170101
 
-On Sat, Jan 17, 2026 at 11:55:06AM +0000, Alice Ryhl wrote:
-> On Sat, Jan 17, 2026 at 08:06:40AM +0800, Boqun Feng wrote:
-> > On Fri, Jan 16, 2026 at 03:46:35PM +0000, Alice Ryhl wrote:
-> > > I'm sending this RFC to share an experiment I'm looking at. This may let
-> > > us replace the range allocator in Rust Binder with a maple tree.
-> > > 
-> > 
-> > Thank you, Alice.
-> > 
-> > > An RcuBox is like a Box except that it lets you obtain a &T that
-> > > outlives the box by a grace period. It does not allow mutable access to
-> > 
-> > I think the `RcuBox` can be folded into the more generic RCU pointer api
-> > [1], e.g. Rcu<Box<RcuBoxInner<T>>> where RcuBoxInner<T>: HasRcuHead. The
-> > benefits are at least 1) we use relaxed atomic read for RCU readers
-> > which guarantees address dependency that RCU needs under LKMM (while in
-> > the RcuBox here, we just use plain reads), 2) we also support mutable
-> > access as well.
+
+
+On 1/17/26 2:18 PM, Joel Fernandes wrote:
 > 
-> 1) But mtree_load() does use rcu_dereference() to obtain the pointer?
-> 1) "relaxed atomic" does not sound like something that provides an
->    address dependency to me.
-
-If you look at rcu_dereference(), it's a READ_ONCE(), which is the same
-as a relaxed atomic load, and yes in LKMM, relaxed atomic load provides
-address dependency (Please see the DEPENDENCY part in
-tools/memory-model/Documentation/explanation.txt).
-
-> 2) How do you intend to provide mutable access? By waiting a grace
->    period?
-
-Please see the {read_}copy_update() in the RCU patches that I linked.
-In short, you don't wait a grace for mutable access, since in RCU,
-readers don't block updaters, but instead updater will copy the object,
-atomically update the pointer and then get an `RcuOld`,
-which you can either synchronize_rcu() or {call,kfree}_rcu().
- 
-> > As for the progress of that effort, the Rcu atomic pointer is almost
-> > ready [2], I will likely send it early next week. For the `HasRcuHead`
-> > part, as you may be aware, I'm working on a generic `HasField` approach
-> > to avoid duplication of `Has*` trait and macros [3], that requires some
-> > syn adjustments from Gary and Benno, but they should be available next
-> > cycle. I will probably send the patches for reviews before that. Once we
-> > have that `HasRcuHead` should be easily to add.
-> > 
-> > Given the WIP code I have, I *think* we are not that far from providing
-> > what you need for binder.
 > 
-> Hmm, so I looked over [2], and I think my RcuBox is an RcuOld<_> rather
-> than an Rcu<_> under this model. Though I can't afford to pay
-
-I don't think so, `RcuOld` represents an unpublished object while `Rcu`
-represents a published object, you can update an `Rcu` pointer to
-another object, which is normally how you update with RCU. But maybe
-it's easy to discuss this with updater side code in picture.
-
-> synchronize_rcu() for cleanup - I need kfree_rcu().
+>> On Jan 17, 2026, at 1:17 AM, Samir M <samir@linux.ibm.com> wrote:
+>>
+>> ﻿
+>>> On 15/01/26 12:04 am, Uladzislau Rezki (Sony) wrote:
+>>> Currently, rcu_normal_wake_from_gp is only enabled by default
+>>> on small systems(<= 16 CPUs) or when a user explicitly set it
+>>> enabled.
+>>>
+>>> This patch introduces an adaptive latching mechanism:
+>>>   * Tracks the number of in-flight synchronize_rcu() requests
+>>>     using a new atomic_t counter(rcu_sr_normal_count);
+>>>
+>>>   * If the count exceeds RCU_SR_NORMAL_LATCH_THR(64), it sets
+>>>     the rcu_sr_normal_latched, reverting new requests onto the
+>>>     scaled wait_rcu_gp() path;
+>>>
+>>>   * The latch is cleared only when the pending requests are fully
+>>>     drained(nr == 0);
+>>>
+>>>   * Enables rcu_normal_wake_from_gp by default for all systems,
+>>>     relying on this dynamic throttling instead of static CPU
+>>>     limits.
+>>>
+>>> Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
+>>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+>>> ---
+>>>   kernel/rcu/tree.c | 37 ++++++++++++++++++++++++++-----------
+>>>   1 file changed, 26 insertions(+), 11 deletions(-)
+>>>
+>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>> index 293bbd9ac3f4..c42d480d6e0b 100644
+>>> --- a/kernel/rcu/tree.c
+>>> +++ b/kernel/rcu/tree.c
+>>> @@ -1631,17 +1631,21 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
+>>>       atomic_set_release(&sr_wn->inuse, 0);
+>>>   }
+>>>   -/* Enable rcu_normal_wake_from_gp automatically on small systems. */
+>>> -#define WAKE_FROM_GP_CPU_THRESHOLD 16
+>>> -
+>>> -static int rcu_normal_wake_from_gp = -1;
+>>> +static int rcu_normal_wake_from_gp = 1;
+>>>   module_param(rcu_normal_wake_from_gp, int, 0644);
+>>>   static struct workqueue_struct *sync_wq;
+>>>   +#define RCU_SR_NORMAL_LATCH_THR 64
+>>> +
+>>> +/* Number of in-flight synchronize_rcu() calls queued on srs_next. */
+>>> +static atomic_long_t rcu_sr_normal_count;
+>>> +static atomic_t rcu_sr_normal_latched;
+>>> +
+>>>   static void rcu_sr_normal_complete(struct llist_node *node)
+>>>   {
+>>>       struct rcu_synchronize *rs = container_of(
+>>>           (struct rcu_head *) node, struct rcu_synchronize, head);
+>>> +    long nr;
+>>>         WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+>>>           !poll_state_synchronize_rcu_full(&rs->oldstate),
+>>> @@ -1649,6 +1653,15 @@ static void rcu_sr_normal_complete(struct llist_node *node)
+>>>         /* Finally. */
+>>>       complete(&rs->completion);
+>>> +    nr = atomic_long_dec_return(&rcu_sr_normal_count);
+>>> +    WARN_ON_ONCE(nr < 0);
+>>> +
+>>> +    /*
+>>> +     * Unlatch: switch back to normal path when fully
+>>> +     * drained and if it has been latched.
+>>> +     */
+>>> +    if (nr == 0)
+>>> +        (void)atomic_cmpxchg(&rcu_sr_normal_latched, 1, 0);
+>>>   }
+>>>     static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+>>> @@ -1794,7 +1807,14 @@ static bool rcu_sr_normal_gp_init(void)
+>>>     static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+>>>   {
+>>> +    long nr;
+>>> +
+>>>       llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
+>>> +    nr = atomic_long_inc_return(&rcu_sr_normal_count);
+>>> +
+>>> +    /* Latch: only when flooded and if unlatched. */
+>>> +    if (nr >= RCU_SR_NORMAL_LATCH_THR)
+>>> +        (void)atomic_cmpxchg(&rcu_sr_normal_latched, 0, 1);
+>>>   }
+>>>     /*
+>>> @@ -3268,7 +3288,8 @@ static void synchronize_rcu_normal(void)
+>>>         trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
+>>>   -    if (READ_ONCE(rcu_normal_wake_from_gp) < 1) {
+>>> +    if (READ_ONCE(rcu_normal_wake_from_gp) < 1 ||
+>>> +            atomic_read(&rcu_sr_normal_latched)) {
+>>>           wait_rcu_gp(call_rcu_hurry);
+>>>           goto trace_complete_out;
+>>>       }
+>>> @@ -4892,12 +4913,6 @@ void __init rcu_init(void)
+>>>       sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
+>>>       WARN_ON(!sync_wq);
+>>>   -    /* Respect if explicitly disabled via a boot parameter. */
+>>> -    if (rcu_normal_wake_from_gp < 0) {
+>>> -        if (num_possible_cpus() <= WAKE_FROM_GP_CPU_THRESHOLD)
+>>> -            rcu_normal_wake_from_gp = 1;
+>>> -    }
+>>> -
+>>>       /* Fill in default value for rcutree.qovld boot parameter. */
+>>>       /* -After- the rcu_node ->lock fields are initialized! */
+>>>       if (qovld < 0)
+>>
+>>
+>> Hi Uladzislau,
+>>
+>> I verified this patch using the configuration described below.
+>> Configuration:
+>>      •    Kernel version: 6.19.0-rc5
+>>      •    Number of CPUs: 2048
+>>
+>> Using this setup, I evaluated the patch with both SMT enabled and SMT disabled. The results indicate that when SMT is enabled, the system time is noticeably higher. In contrast, with SMT disabled, no significant increase in system time is observed.
+>>
+>> SMT=ON  -> sys 31m22.922s
+>> SMT=OFF -> sys 0m0.046s
+>>
+>>
+>> SMT Mode    | Without Patch    | With Patch   | % Improvement    |
+>> ------------------------------------------------------------------
+>> SMT=off     | 30m 53.194s      | 26m 24.009s  | +14.53%          |
+>> SMT=on      | 49m 5.920s       | 47m 5.513s   | +4.09%
 > 
+> So it takes you 47 minutes to offline CPUs and you are Ok with that?
+> 
+> - Joel
+>
 
-That's something we can add later, for example, we can give `Rcu` (we
-can add the similar thing to `RcuOld`) a generic const like:
 
-    struct Rcu<P, const ASYNC: u64 = 0>(..)
+This is certainly quite long. IMO not worth the added complexity
+of atomic inc/dec reads happening(even though till 64 CPUs)
 
-where Rcu<P, 0> use synchronize_rcu() and Rcu<P, 1> use kfree_rcu() or
-call_rcu() (once we have HasRcuHead support).
+Samir,
+can you post number's with vishal's patch of using rcu expedited?
 
-Regards,
-Boqun
 
-> Alice
+> 
+> 
+>>         |
+>>
+>>
+>> Please add below tag: Tested-by: Samir M <samir@linux.ibm.com>
+>>
+>> Regards,
+>> Samir
+>>
+>>
+
