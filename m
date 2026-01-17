@@ -1,156 +1,148 @@
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F79514A4F9
-	for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 14:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE3789475;
+	Sat, 17 Jan 2026 15:16:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768658724; cv=none; b=ay+JgjFBiVQ4HYU73dLjhNMQ8qSHeHhiIiY0xBODFjJIdqevoyiFsCo1hOz2CCOgUokpYJDgJhWIbLxqUDbXEllWjFmZE/0hdTGpl0+IkGvO2oHflL9x5VfbOwPEADWsYrxtb8lGl9f5XHxbL1ZoY6W/1uzS0pvGXhI9o7tDmxI=
+	t=1768663022; cv=none; b=JtschMnJO0OVPy9m8gucV4E7RNdtMDzpBNUfEmovfE0UUaeDs+vzWpKvlF+g0HH5OBZpN+YdtI9FqmWAbp0PRe7cJbXi38QkHOnYKCj4rc2uBLJE4lmPUGrwe+OZvl4Ol0xhF5usP4cGrrQn3ybJvKvWdDW4WEhNI2Du8Zk7rd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768658724; c=relaxed/simple;
-	bh=7MdMVUO0EO6V79fSSuCpKyithykK+f/vpPoOhgXQ58A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LzmLB32ilG17FO/dsk9NsMsFGdUH0MjQnw4IcIaG4u4YfYdyElGbuMxHL5J3e9z+DKyCc0EXp8xaqewdXhBSjaqufpqR+2R6bx/khl9LI0nUaAFxOBdIy58Rm1aUFGmEWs0Y6mZdsJoxipOzxHQuSWnc9vOIW5nw7Cs4WRUF1Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LaylbKrY; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1768663022; c=relaxed/simple;
+	bh=4Eo9rL5VezG91QH7IFGeFhyF/UQyKRq41t4Vf31FAiw=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=VhZKA+ZaMajks33kJ1t54nGiQZsGzKDIPWAamHiuN1TBfLM3MoX7B/RIHhPLUIaap1TA0sLgL2TVxke0wSkHmm07xFHXbBkm1ZppDd3HFWRe/fImcNrqoPY7LPcoBNgRA9dVZUHFVV8r4miIOPyqeBNiEKbqcbgLCPpKLV2GiKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=FdXV6ll5; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LaylbKrY"
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-5014d4ddb54so32224181cf.1
-        for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 06:05:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768658723; x=1769263523; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tVIBuJm40ZFRv182tq23WWphNrxzPrOdcziw4l4EFIg=;
-        b=LaylbKrYmh6XPrIZ2cnsVucP2kHgYJ42OZa4i34HjZHl74VE7+UtbtraEHmSJ6RYbt
-         tcaeZs3HLx9YPfC+skgy3tR4tHc+gqW4HNFqvt04L5WSljZQdItE0VEDsafFb1VVeFbb
-         MYIKwNcVWcue/0VNqh0cFcOlyqv4nim779DTse9EBu0+Ft5w37X6E+9iDtFjaHYuScSF
-         K+filhb/psFn/cfdBVBmqrTR1i756zFcGYWlzGM+q5PEnBtMbqIKfvBGfhdlYaEBVofM
-         baQoExz5OTsU5AdYwrw1hsaEkC4x3h8BPYD1qsIUUuQwz/s3iPvcqTGu6EbUqBmuCVQp
-         K4Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768658723; x=1769263523;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=tVIBuJm40ZFRv182tq23WWphNrxzPrOdcziw4l4EFIg=;
-        b=bPRAsnfhUrkEqYqmTGsIf/69jVnA97gCN8b2DHIfGFdmhB1Ua0bUTpUtQRG1K3fbRL
-         R7UTEAAViiDStLkMJjyPt7mAnTNVbGP2xIiROhyxDEyMb6P2B7srIsAVhs2fReuS96tA
-         Y5wha9yCjJA6K4k+SaykcCt/6wi7ZJepQvFxeCc9QKFVRbDodVNg9tA9OLfrzXzDba9m
-         UMtzIX8P8aewJ/7PHiMPgN2j1TLxccRgp+CiCc0uvypSjA8R9qsZ4oPP0tLMJTbAU9ck
-         l6fXGSHzQOc/jIvCmteJUn6lyzg7UBZvN83P2I9iiwEdvQtEFAPGEeWSV5l7UzuOeW/2
-         iwXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUI7dgxAi3cebqmwk1ibRMTLaNV/z/WFaEPEyS4DllXrqbbsjfdOtwNvZDZVEZEF6MmZB8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz1UwM+XIhhGi3plv11gYuPKCuX/4r5lDno1URIeqLE/XVjFLPv
-	2TW3gUzCRJ/xbsS7g+EHvngHnVk17i9cY+3rPwQtOVmSwggstCh3QZB/
-X-Gm-Gg: AY/fxX58kn13VdxPj+JTVwsrVuGCYBg1/RKurx37xJk5W7GxaMrXQkrkJQ05lk81WAX
-	y8Tuv8tivlk6CrnPD9GC2BD4KOBg9xA1IleiQKPjREo2sW9bYyCc5OJUw6pKHhWMS1OAAwLHYqS
-	JPdslxRA1/KeefQfrsQN1QzjeYeMFJ671AgKfrWQ1pawxBloWIKYKlU3Cyf+DBWd47Qe2drGxcW
-	aLlMeOWeiP2OilhVNIiIdBnoSfM7bOhPlf2ppH4kt5T1qBHQhvi9f/rWYAuDNXlZEDa8BOfWFvI
-	zNWZltSk+Zpb8/nkS2PBtKVHTptvywet2mWBwGPhWzUqY+cbLVRjJf1eWhm9nHDqedg4H0pheWQ
-	xNc/T6oIUto+z1nvIQRDzPvunNjb+8oQKwp4ZnY7ubP0NEIP1ou6VQb16FdZLeCfMqoOj+pbbn3
-	de1SNqMZB1XiJG/OdMCpdd4J/pEkFEw83eUcU22cAWMojxAlz/Au1czSt8w7nLKAh70VPHlMWCB
-	X+ClIt1cE2rv3loHHcqyiCObQ==
-X-Received: by 2002:a05:622a:11ce:b0:501:4419:8abe with SMTP id d75a77b69052e-502a179c6f7mr98087771cf.64.1768658722461;
-        Sat, 17 Jan 2026 06:05:22 -0800 (PST)
-Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8942e5e535dsm47367086d6.4.2026.01.17.06.05.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jan 2026 06:05:22 -0800 (PST)
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 4C7BEF4006E;
-	Sat, 17 Jan 2026 09:05:21 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-10.internal (MEProxy); Sat, 17 Jan 2026 09:05:21 -0500
-X-ME-Sender: <xms:IZdrafiAFgNQQd9pfYdiNAn_YIRfMuyFBrjGkPup0owLwDDTlulhng>
-    <xme:IZdrab449p3ca_-XRopq3IB8PjQVXe28Z977_lahBtkuWt9pRnOoIxjGkLGOOKPdA
-    AARiSPGoZcS60fhBCrismBz7L1N8QwJQqwcHHsUbkMyuITrX30ESQ>
-X-ME-Received: <xmr:IZdracbj0OI1aOsMiyu0gfOxX1nxsE_E3Kth2nLfNTSunZ6QFR--5G-B>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufedvtdduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueevieduffei
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvgdpnhgspghrtghpthhtohepvdeipdhmohguvgepshhmthhpohhuthdprhgt
-    phhtthhopegrlhhitggvrhihhhhlsehgohhoghhlvgdrtghomhdprhgtphhtthhopehprg
-    hulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihgrmhdrhhhofihlvght
-    thesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepghgrrhihsehgrghrhihguhhordhnvg
-    htpdhrtghpthhtohepohhjvggurgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghj
-    ohhrnhefpghghhesphhrohhtohhnmhgrihhlrdgtohhmpdhrtghpthhtoheplhhoshhsih
-    hnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrdhhihhnuggsohhrgheskhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtohepthhmghhrohhsshesuhhmihgthhdrvgguuh
-X-ME-Proxy: <xmx:IZdraYeWzdXBE9kPyssInmWLbGA8iwajfVCx2oxQUM6U-hIMLDcGig>
-    <xmx:IZdraZ42wspFqZGpXQUnVbheX2LO_6XSurzvC9TpAhWSxvpUEC-o-Q>
-    <xmx:IZdraUV7RYKVtpHoF-AFz1HCozvEgqj6oinCJyqlrMJySPG3-4eecQ>
-    <xmx:IZdraQY2Qny_odfRhMRMNKCg8lyLzt8VE5w2aFVGt4S3tZLeAjQRcg>
-    <xmx:IZdraTz9htCnQ2MPeXJYz1qzKH63G2DuJZh3MtunPCOeHfzhUO2DmGIl>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 17 Jan 2026 09:05:20 -0500 (EST)
-Date: Sat, 17 Jan 2026 22:05:18 +0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Gary Guo <gary@garyguo.net>, Miguel Ojeda <ojeda@kernel.org>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <lossin@kernel.org>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	Trevor Gross <tmgross@umich.edu>,
-	Danilo Krummrich <dakr@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Andrew Ballance <andrewjballance@gmail.com>,
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	rcu@vger.kernel.org, maple-tree@lists.infradead.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH RFC 0/2] rcu box container for Rust + maple tree load_rcu
-Message-ID: <aWuXHkGZlMvr0uxD@tardis-2.local>
-References: <20260116-rcu-box-v1-0-38ebfbcd53f0@google.com>
- <aWrSkAPFkdH_tvtN@tardis-2.local>
- <aWt4muGXbe7lBmXt@google.com>
- <aWt8Ze-otTkexNIe@tardis-2.local>
- <aWuKlR4a-VJhBeWj@tardis-2.local>
- <aWuOtUa0mPDrnbke@google.com>
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="FdXV6ll5"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1768663007; x=1769267807; i=markus.elfring@web.de;
+	bh=4Eo9rL5VezG91QH7IFGeFhyF/UQyKRq41t4Vf31FAiw=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=FdXV6ll5MitmK0l7bnj9DINYb9k1az+9tq86B8wm1sIkTMj1wPvCir8QJOdC5POE
+	 Ezeph5G40QeEDwCl98S7pyLvWaxueaeuHMIpWGQOfBqaldcrtBiGPosaNxf1sSkYK
+	 Xf5D8I72BmKmGenO4BO7CmvdHjZMayoc94rcf9W+Fg5dWzFyMgWbAQ1hI0jyTbOmC
+	 NmGM+MjZDsEZnb9wsizlZUVKagGU54tZFjyt5A0ZRjKQfUlb9Nh9zuJZJyQPCZwjN
+	 wJ57PwZSjT276N6WtyR4nrMlGpYwzYNmtP1ehsGMwAdGdjtqWh4URfvSIo9loQ+fV
+	 FmAMJ50LszyG6Nurcg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.69.177]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M5QqN-1vhwr428rV-001Nxd; Sat, 17
+ Jan 2026 16:16:47 +0100
+Message-ID: <623303af-71b9-421f-b694-32807e541a5b@web.de>
+Date: Sat, 17 Jan 2026 16:16:45 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aWuOtUa0mPDrnbke@google.com>
+User-Agent: Mozilla Thunderbird
+To: Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>,
+ Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Shrikanth Hegde <sshegde@linux.ibm.com>,
+ Vishal Chourasia <vishalc@linux.ibm.com>
+References: <20260114183415.286489-1-urezki@gmail.com>
+Subject: Re: [PATCH] rcu: Latch normal synchronize_rcu() path on flood
+Content-Language: en-GB, de-DE
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20260114183415.286489-1-urezki@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:LMkwJQkJ1qRGqSgBTzgk+sbqbERBNYHwJiIVdxGN87NT7CfjbOI
+ lg3R3A09eWshuaiG8t3OWV3i8mcCf5j34Pj2gOBas/+CitdDaBfztnmnE7Z0l/ComKkIhWl
+ NuCvAVxYA9WcURDvA14qY2w+FiA1HCUr9BhHP6tog5Lal8l1mYFh7+dNWWKI6TO5zTtIss/
+ OvsJ1eqP3BrurungGkYnw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:BFK0v6uMWDc=;bixKjJpPrkcoF6KT3CnyiMxpAuj
+ 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
+ 0Ue+1b+s=
 
-On Sat, Jan 17, 2026 at 01:29:25PM +0000, Alice Ryhl wrote:
-> On Sat, Jan 17, 2026 at 09:11:49PM +0800, Boqun Feng wrote:
-> > In Rcu + RcuOld design, RcuBox is just a Box
-> > because these two pointer types handle reclaim + accesses.
-> 
-> How would that work? Dropping my RcuBox<_> must use kfree_rcu() or
-> synchronize_rcu() or it is unsound. So it can't just be a Box.
-> 
+=E2=80=A6
+> This patch introduces =E2=80=A6
 
-RcuOld<P: ForeignOwnable> will call synchronize_rcu() before dropping
-`P`. And I think we can have an asynchronous drop pointer type like
-`RcuOld<P, Async>` that requires `P` is a type like `Box<HasRcuHead>`,
-and the drop of `RcuOld<Box<HasRcuHead>, Async>` would be `call_rcu()`
-or `kfree_rcu()`.
+See also once more:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?h=3Dv6.19-rc5#n94
 
 Regards,
-Boqun
-
-> Alice
+Markus
