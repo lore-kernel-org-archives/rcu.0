@@ -1,165 +1,215 @@
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CWXP265CU009.outbound.protection.outlook.com (mail-ukwestazon11021100.outbound.protection.outlook.com [52.101.100.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80DB62222D2
-	for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 15:39:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768664392; cv=none; b=slzGOon7NdtdjMmrCQzYpmP3NltR1k7dAwllj9fGl82gFD5hV3xK4WQreMOVUOQfF84L/SdkUaqZLxpyBZX/dnc0kT/wMr3CnoIJBWwUb2sEA4BOHIcGueXBSs5Nx4a7jMZmKbAJ38ypwRHJP6BurFwA9zRSvHM3HE1rifP9ZbM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768664392; c=relaxed/simple;
-	bh=c5ukZxvOx3XxqLMLZ0Qq3WedxhGaSgozV+pTMWZLD8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nqUTlhiUyVNtS6Fvi4hPPubi0H5kCgPOf6eBlzlJw4RD4q543JweCFmCDKNFYWy5b5pMPiaBbT1z5TbVsgQl48bb68VsEBp9//GZpGgbZ+1KV1s/4VTH9JzRqKREY3eaHF2MVaHvHDgrbB1fyM7qtSIQve2TWg680KjCaMVBzco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nz2LLOFK; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEB559475;
+	Sat, 17 Jan 2026 16:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.100.100
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768668379; cv=fail; b=ZTwGuDGAxpvLGHmtPPjEjIWfgs/D9uzyZMkVIcm1nkTKe208Qy0OMP6sUrU/3zY6frUzzorJoladYWjhNDrTVQmqkFBPkbazSov7+wPrNffkw2wzQXmyRgLCU8VlUalu2lJfrMIU3u9YtGB9Prnmo9ePPELN4IIURTadMq7kANA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768668379; c=relaxed/simple;
+	bh=n7K0YOXFUe74K6GPiwQjgEghOXx/3mYSsyIYf7AX85I=;
+	h=Content-Type:Date:Message-Id:From:To:Cc:Subject:References:
+	 In-Reply-To:MIME-Version; b=cFAYSjN+SnCq1fbCxzK8KxrEaUGfc99QMzScCAGHn8j2vprguok90xU2Nw5s50B3lBOnrT4yPm9t19qNXEETfOuHk36kTyXIkwdxwpTo4d+ddy7ItP4MVZKkKDjJ/hv2JUk7N4el4omTlcQjCqhBnPxI+OBAERMOa0ycoBfi8ls=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net; spf=pass smtp.mailfrom=garyguo.net; dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b=AMEHoirg; arc=fail smtp.client-ip=52.101.100.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nz2LLOFK"
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-8c69ffb226eso356726385a.1
-        for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 07:39:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768664390; x=1769269190; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MsFwJU0uorXcDejUHSz8mT5Xd1nNN5P7vGbzkPiWNoc=;
-        b=Nz2LLOFKWxMLty6p6md1zG72q5To12QNClOU5AbzDry1rdX2WKl6JxdMhMJ2ut5sLO
-         jchrgckLaNK2YoRUIjA9z7VG/33R0Qx3tzJlEE3YrDQNmQeG8EjV4wNzc4/UIWpHwDVC
-         uOnAvrBEnW1wePra1VQAA+5ordBaxHI49v+EU8w6A89rT4f4JLck8QTZBkMtS73GybrV
-         cYwj14GnwTlLi/bb+a68hjBDWHouPnUX/FjENEUScOZ8vrDN3yoeBkTG/sza2lpvGK4s
-         KSD4HGlkHscgpFSPRy5PYoQpUHoRqHLaIbQs+590bXEk+gcz/rSxkw32Wta2XN6o/EQT
-         NrOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768664390; x=1769269190;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=MsFwJU0uorXcDejUHSz8mT5Xd1nNN5P7vGbzkPiWNoc=;
-        b=o2c2nxLHM++a6IXzp3NxEx5db02f7yiLOKpLSqgwFS1NRaCy5/weD93dnJReFxeW2Y
-         FLLjYHC523yqqPX25jHODxLeYSAbfNq3/wHbnHEl4qh87/6b+WOpXGtyckbethxAs268
-         ZetxBj4gQZa+hjpn+Zt325lMTJ4/wNqkym4La9W8WsXc2DORUYrGbBt4OzjYJaAa383H
-         kXYKnMsNHhSrrL18Ahqv+S7YW0c3X/9RWRr+2mWl1XTbiu0NQX8qLsFpzugxUzy2Vr8+
-         52dP9nLNYXjtygImp0BWLgA23yUYSST7n5tHMyD0eZnCwXrLP7yP+SqgFkjEr96v7Ymy
-         SK7A==
-X-Forwarded-Encrypted: i=1; AJvYcCUUpxaS79Awyg3P4qgX4alENiYP/N32lwg0mq2CNL76sNEz/pWMAF8C/mqMxMG/oLLhTDY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwlHdc+t3ZTjJacQFnS2ggvegG0Qy7g+j+clfieH44OqtoNqsbY
-	SGbrdF1MlOCpsco3raF1HQVdRW2ryqnHdwKOha74dJuw/a592KnxIGvo
-X-Gm-Gg: AY/fxX7XcyQSBjaoht2LaFEWxY57k+XxlxKPsLX4gmpl0lWxmpAVDw2+e5Ntkf0l7xa
-	nMcgbu/4qseeoxuFRq+EJY6rri7zrUYZLsqfjJv7jd154omVnrrbzg8bBMhd0vgYtBU1h10ujTf
-	KMul1F5U7R7xPNBbbVyu9mxw84k2cidYMU1pgzEFjzKEWGISd2TEIL8IsGB+5JWECIkx+7+EaGx
-	2LnSdmh0qM1erJFDznapgA0G1cftOWtKeKJStSH8/9SbZyd0UUyEcOC4NEYikp4mGSnL9DHEOtX
-	avQN8UxUg87xGP/kGYpiwtNImMa4covTMw1cZAydL60ecPOubUCK/qzB7P2xaJiO+TdeFM4e9Xs
-	iu7Em52rxYgB4qoLKX2I87PbDXjEv3EjZbYQK04sZf5kz2iE5b2JC+sN31kxPwxzuSm9as1HRZM
-	viup9IDcqyogtICYG5KcyJxD6CPGYGgeL75pbqL8DoI0D2NkMbi75PKr/iz2ch60BB7nugIadd+
-	7zqUhZo2kHKDBI=
-X-Received: by 2002:a05:620a:128a:b0:8c6:a84e:2a2d with SMTP id af79cd13be357-8c6a84e2ee8mr540589085a.31.1768664390250;
-        Sat, 17 Jan 2026 07:39:50 -0800 (PST)
-Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c6a70f1fe1sm448624185a.0.2026.01.17.07.39.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jan 2026 07:39:49 -0800 (PST)
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfauth.phl.internal (Postfix) with ESMTP id E79BEF40076;
-	Sat, 17 Jan 2026 10:39:48 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Sat, 17 Jan 2026 10:39:48 -0500
-X-ME-Sender: <xms:RK1rab7rMRnYmsuxO2M1OdMHbLRJ20HzxQGGz1hSxMBvL3L2kKxgXg>
-    <xme:RK1raQyTGMwWDE-CnPIbW4LvN47vOtGrZw5YPszRdp09rnr04-lKWyypz0OfxziFm
-    h8sTsqbwxqJAunQsRoo1wmXXgA4Uo2a_BTBE3yCIRm41oDwmcW9>
-X-ME-Received: <xmr:RK1rafxqe0j0nt1CDDmhNxFXOsqrVhhr9viUfCa1T363Z3G6Z80GHbkt>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufedvudelucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueevieduffei
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvgdpnhgspghrtghpthhtohepvdeipdhmohguvgepshhmthhpohhuthdprhgt
-    phhtthhopegrlhhitggvrhihhhhlsehgohhoghhlvgdrtghomhdprhgtphhtthhopehprg
-    hulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihgrmhdrhhhofihlvght
-    thesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepghgrrhihsehgrghrhihguhhordhnvg
-    htpdhrtghpthhtohepohhjvggurgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghj
-    ohhrnhefpghghhesphhrohhtohhnmhgrihhlrdgtohhmpdhrtghpthhtoheplhhoshhsih
-    hnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrdhhihhnuggsohhrgheskhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtohepthhmghhrohhsshesuhhmihgthhdrvgguuh
-X-ME-Proxy: <xmx:RK1raYWsq87pmfvRbXi5JFYKA_KCUBH5rc8-Mh499582NEFspw52aQ>
-    <xmx:RK1racTHO9OTXGWTd7Wnhwlih0XeJmAB1RGE3NlLFjGVsnwaNSHX6g>
-    <xmx:RK1raXNseBlDOCe-yq54TrACSTafu1k1JEYQ2xxtYpx1H86yRv8lQQ>
-    <xmx:RK1raZw6CtwWC6dWv9737pBYAt5rbNe75kHWG8wKFyHucpyyabEaKg>
-    <xmx:RK1raRq1F5u7Sb-JBFPV5Zyr8y0nl5XkLXjd6h2Kjb2wBYoAbWbfzQfi>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 17 Jan 2026 10:39:48 -0500 (EST)
-Date: Sat, 17 Jan 2026 23:39:46 +0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Gary Guo <gary@garyguo.net>, Miguel Ojeda <ojeda@kernel.org>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <lossin@kernel.org>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	Trevor Gross <tmgross@umich.edu>,
-	Danilo Krummrich <dakr@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Andrew Ballance <andrewjballance@gmail.com>,
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	rcu@vger.kernel.org, maple-tree@lists.infradead.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH RFC 0/2] rcu box container for Rust + maple tree load_rcu
-Message-ID: <aWutQuJAaBXG2JY1@tardis-2.local>
+	dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b="AMEHoirg"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=OXZLiSuhSy1YwC2tVAWxv5haW6DF/Zs8HxhoIHZqF6AfeTtNyUPVxTgYPJNuAskLaHsPm1Q0ogr68WxlmYQDWc9fDK65KgRs1x2ug0Hs8WvCY4RhuI9n0SWDYGocpUcx68KcsloAIDrvYLXvHZvlll0Dax6Pb9qoT7adDhqRNhkT1i29wZWwuEqbZjKtui0+RDiCuE4dfh4muPHO15HJT4aZLZXd/CCziJyfbLTkIILiLQuMUmkp6u3taW2gdwme/zygKEn7r+OwyEclOLTjIsci2+1xzQ3d/0SMnIrTGQFhNcRDKWxVjwKaj02oQy127PMOQ4mTHNE3R4+sL1BlUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hq5s/LOsqIE1ks8m7CEkkgpeMm+ZX7wXRfUhr62MMk8=;
+ b=LP0LgZMdIYcuKRNFvNBdJebw5CsWFkUi0pIzI6w5XOmDkkiHAqWixK8FEnJgAwiafo8tECuzAHfI9LTih9T87rxWmaOsezGeSneeNRWCP38GwbItpkWx/rpYldMIYRG9pbApSLJxTkmc9h8lHjl8uYbB7uUu2BjjTTwegbsxzAO/JG7rL6THuIyRR9kQTNJ7kxAWzbV0cGFVxJ9xCN+QJgaqURhV/UeEMrMoSqGWttifN3QgDjqiruV2gYHfFmtfWmNUF2hU09uKoTgYOa9GmvUa9+y7poF1nPORqN2CFSPJltxap9GF6keb+29EsuzPOd8ac7SMWt+RIeMUgXnlvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hq5s/LOsqIE1ks8m7CEkkgpeMm+ZX7wXRfUhr62MMk8=;
+ b=AMEHoirgQ6WTMOQwrGt7ry1obVkSEpJk/1QHb1qcKLmhKBGCfqX18/miHmCutIiePqM7qyYVRebg+LQJvfcmjjojK/MJHX5uI7x4k9bqHruquhL6mdD+DVB3cnWd9G4pGt++1684noEIaxHHi6IHbsM6nHyKza/7Pw0wm4Kjw2U=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=garyguo.net;
+Received: from LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:488::16)
+ by LO4P265MB6350.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:2e5::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.10; Sat, 17 Jan
+ 2026 16:46:14 +0000
+Received: from LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::1c3:ceba:21b4:9986]) by LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::1c3:ceba:21b4:9986%5]) with mapi id 15.20.9520.009; Sat, 17 Jan 2026
+ 16:46:14 +0000
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Sat, 17 Jan 2026 16:46:12 +0000
+Message-Id: <DFR0M1EO7KHO.2SQJO7S2NXC3P@garyguo.net>
+From: "Gary Guo" <gary@garyguo.net>
+To: "Boqun Feng" <boqun.feng@gmail.com>, "Alice Ryhl" <aliceryhl@google.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, "Liam R. Howlett"
+ <Liam.Howlett@oracle.com>, "Gary Guo" <gary@garyguo.net>, "Miguel Ojeda"
+ <ojeda@kernel.org>, =?utf-8?q?Bj=C3=B6rn_Roy_Baron?=
+ <bjorn3_gh@protonmail.com>, "Benno Lossin" <lossin@kernel.org>, "Andreas
+ Hindborg" <a.hindborg@kernel.org>, "Trevor Gross" <tmgross@umich.edu>,
+ "Danilo Krummrich" <dakr@kernel.org>, "Frederic Weisbecker"
+ <frederic@kernel.org>, "Neeraj Upadhyay" <neeraj.upadhyay@kernel.org>,
+ "Joel Fernandes" <joelagnelf@nvidia.com>, "Josh Triplett"
+ <josh@joshtriplett.org>, "Uladzislau Rezki" <urezki@gmail.com>, "Steven
+ Rostedt" <rostedt@goodmis.org>, "Mathieu Desnoyers"
+ <mathieu.desnoyers@efficios.com>, "Lai Jiangshan" <jiangshanlai@gmail.com>,
+ "Zqiang" <qiang.zhang@linux.dev>, "Andrew Ballance"
+ <andrewjballance@gmail.com>, <linux-kernel@vger.kernel.org>,
+ <rust-for-linux@vger.kernel.org>, <rcu@vger.kernel.org>,
+ <maple-tree@lists.infradead.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH RFC 0/2] rcu box container for Rust + maple tree
+ load_rcu
+X-Mailer: aerc 0.21.0
 References: <20260116-rcu-box-v1-0-38ebfbcd53f0@google.com>
- <aWrSkAPFkdH_tvtN@tardis-2.local>
- <aWt4muGXbe7lBmXt@google.com>
- <aWt8Ze-otTkexNIe@tardis-2.local>
- <aWuKlR4a-VJhBeWj@tardis-2.local>
- <aWuOtUa0mPDrnbke@google.com>
- <aWuXHkGZlMvr0uxD@tardis-2.local>
+ <aWrSkAPFkdH_tvtN@tardis-2.local> <aWt4muGXbe7lBmXt@google.com>
+ <aWt8Ze-otTkexNIe@tardis-2.local> <aWuKlR4a-VJhBeWj@tardis-2.local>
+ <aWuOtUa0mPDrnbke@google.com> <aWuXHkGZlMvr0uxD@tardis-2.local>
+ <aWutQuJAaBXG2JY1@tardis-2.local>
+In-Reply-To: <aWutQuJAaBXG2JY1@tardis-2.local>
+X-ClientProxiedBy: LO4P123CA0108.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:191::23) To LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:488::16)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aWuXHkGZlMvr0uxD@tardis-2.local>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LOVP265MB8871:EE_|LO4P265MB6350:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2ab56a88-1da6-497a-1656-08de55e7ed47
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|366016|10070799003|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?cW9LN2o2eGFsYU9aOHhiOE9qelJLSi8yN2syendNV0hNNTFlNG1WMG1tRnV3?=
+ =?utf-8?B?U1dLSmV0YmhkQTNESnFHRWRhYkZFS1FBN1RUNUpIV2RvWTN4cSsvOGkyUzlB?=
+ =?utf-8?B?bEhuU2xXMlJMSk9yTG5NMWJJbEdac3p3TG1BelFhenhjYS9CYVc2Yk52VnI1?=
+ =?utf-8?B?ZmxWRTFhbjZvYndYTFhQM2hZK25OQU5kOWRnREtHL3QrZUUvRDhMVVVBcnVx?=
+ =?utf-8?B?cW8xbkhEanlBYWlZRml4SmJGQXNnRWVDMnZ5bEZXSWdLaTZKRW4xTmErcldH?=
+ =?utf-8?B?ZnZOVUI1emxwbVZheTdNcjdnaTAwbkRYend1NTR6M09DZlZTcU9LSG8yVFgw?=
+ =?utf-8?B?dXU4RzJWL0Z3MFF6WFJaSTJKeEU1eFJSQndLSSs0TVM2OFQwbTlzcGtlczFD?=
+ =?utf-8?B?NzV5TmJKYTNmODQ2cFBBdDZFK3FEODcyei84a3M2eDFJTFY1b3dnV1c1QUli?=
+ =?utf-8?B?KzM5Um9DMGNsTGQ5NzBISGhaYlh1bWhmeWdsM1RSYU1kdDh5TFFsL2NETVZK?=
+ =?utf-8?B?Qk5OK2N2a1lMNS81SXhHem1Rd1BBTGtlZDdHTS9pMmtvbDNYQXNLc1hFMEpa?=
+ =?utf-8?B?cEx5WFFLSWovZWtqczkzL1dZY2gzaHU3NTJDR3Jma2ZCU2RYNU1Ybks3SlpC?=
+ =?utf-8?B?d2hjdmVlRU9vTndHRXM1MVRIUU1YNmJaUFZtTFR4UkE1ZVNpZlFhQ1RMSVda?=
+ =?utf-8?B?U2JGemVaQnJzTWlVeHZoU3lLbWVac3hncUdsMnJNQTc0Q1k4SHZIMEFaWUp0?=
+ =?utf-8?B?V29pdHh1djBXL1BpZHRUeFBlaDhiZHhza0IxQWdpT1hpSWltcDA2UGZ6ZXpo?=
+ =?utf-8?B?b1dQMDJ3NU9HNk8zUjFrRDhKT3N3blppYzVSUFUxaXppclRoNHErSG9sOCtx?=
+ =?utf-8?B?Nys0aWh4U2ViVU9ieHI1UnJxNitaUkxvcCszS3dhZmVnY2k1Y05TczR6OE8w?=
+ =?utf-8?B?dHliT0l4azgxcjJydnVBYjU5TVp3YzVIL3FWQmZwOHpFRVNlb2xrYmc2S1Nk?=
+ =?utf-8?B?dmI3dFJ4YzMxcHpxaUViTzRHajlFbVNFODZ3SXhaVXRSZDVRQTJNZE9RYmdZ?=
+ =?utf-8?B?R09uNmhDR0VSY0pBaXVlTmYxQzMwUmoxU1dKYjd1RUxrbldrM2FrTmRPWVlN?=
+ =?utf-8?B?REQ4Zmp1Vk1ldERROHZMMWtMb3ZUR0pUVVdJOHhiZThhVHlPYnlGbXlvTm05?=
+ =?utf-8?B?ODdYRTZ2Yzg4b2pWdjkyZWRaV1RZZzRGVXFuZEdrek5zcUZYSGViWUZwRmph?=
+ =?utf-8?B?U1QzYUNXQnE0RlNmTWdBdnljS2J5QmFyTlNHN0ZnblhpciswTTN4djIxNzV4?=
+ =?utf-8?B?YjJQSkkzT0RlVkZxdXdJVnBqeWh4Y2owWWt1a09YYUUzVDVISHJ5N1lhbEFJ?=
+ =?utf-8?B?NGhWRy9LeTNKNzE5ZkQ0YXcrSkJ2NEN3ZCtTU2lRNnZ5cEpTRXk0Qmd4MjVU?=
+ =?utf-8?B?N0ZvUmY4Q2hoMXhBLzVlOEJMUmozcVlvSjlvMUZuOWlscy94QjNyU3NoWmYv?=
+ =?utf-8?B?dkVyYUlKVVM4VE1ZSDdkditLYXRxU0FuL1RNSEVIbDVQbm03ZkxWNmdNRlJs?=
+ =?utf-8?B?TlZxUmVVZUVUc056YzZkUHBDZjZzYTZBQmN2QWNSaGxOMzB3MnVjZHQvam8v?=
+ =?utf-8?B?OWxJcnowc09FOHBJTzMwZjdOWEhPc2EvYVVDYWd6cVFmMWJvU0s4ZDB6MUxB?=
+ =?utf-8?B?Snd4WjZkNGpDNTQwSEczUDFpQlh0UjQrUXFrRW14Nm5LNjY3QTlGdkhrMlZs?=
+ =?utf-8?B?d1hyNzZybXpYZlMzemE3b1NTWE90ajQvU0FUSFB5MXNqVFhzM2M4YnVoSmls?=
+ =?utf-8?B?VXJLQ2ZJeEdPekFkSWZTREJ2d0orRnBBYkk0Z1hpTGlyaU5NcDgzYkorWHBJ?=
+ =?utf-8?B?V2szSTlNcFVCck5tNlN5Q0ppZHVjM1UveFVGUGVGSllJMmdka2pTMnQ1SkVE?=
+ =?utf-8?B?VG1hZUhINDB0OC83clo0NzE0TkpaUUNLcmVrUUVjanhtb0NtSXVpNk1qZmdI?=
+ =?utf-8?B?OUFTTEZETVlrUGF1V3BHU3lrbDhWTElOa3djYVkwYmlndzhhSDNMMWFIbzdD?=
+ =?utf-8?B?b1hwYzVuSjBmKzlhdzczcWVWSTRzbXREaFNSL3VYdGNoZnJDVXB0YXFmbUxB?=
+ =?utf-8?Q?CQNE=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(10070799003)(1800799024);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QVM4aWFZeGxaQUdySHpROEQ4Q1FvT041R0VXMVdNM0RldW9FQWI4MnVMT3RP?=
+ =?utf-8?B?b3dCenNlNFVJSjEwNHF6cFdBNkFNUWJiQlQ1UGNXTmprMzNPNEtuOWc2cFV1?=
+ =?utf-8?B?VklkT0hLb3Vha1k0dW0zaVVhcER1YmVlOS9WcHcvN1lCcFNYNFkzL2ExblB5?=
+ =?utf-8?B?cE4vVkZBZHdlWFFqc1ZCeVZROVNGQm1La2pTczVYWFlKS0hBVHhNY0h0S0g5?=
+ =?utf-8?B?a2hwSDZtaDhlakJoa0RVRjV6SzJZY1N6bWJRbHl2aDN2L0gzNGlPbUpYdlRO?=
+ =?utf-8?B?VktOVTJuMENoWHVsTmxQYzBJbnFyOVZlbmIwR1dYek5WVGlDdnhwUzl1d3ZW?=
+ =?utf-8?B?WWJtaVFqL2ZUdUIyanNpMThWN2tpVVFqbUdpMng2Z1pUSHRldmpRSUlVTWx1?=
+ =?utf-8?B?Sm1Rd1UvYnRnemdYRi9XRi9qMlVpc1JpM0Z3a3hEQWF3SWxNeVVkeVJuN0pE?=
+ =?utf-8?B?cDVtQWVjdEFYZHpyeU1hczhDUmViS05wam1CSGFTQnRUdEN3NThtZFFTbHRn?=
+ =?utf-8?B?MXdTT09mU1g2M055blRtMnUrME9iRCsxS2FnNlpIQlo0c2R6VWRHSDVUcDVs?=
+ =?utf-8?B?T0hWdFFLZWhnZE9LU0ZUVXQ1MzlZVzc1Y1dnVi9iVkJrS3h3WWtmQVR2Q0Q4?=
+ =?utf-8?B?MXoxYkkzclRuOXNuVmxSSjYzckN6YnVQSGk5SmtiTCtYa2cwM3BIK1p5SFdj?=
+ =?utf-8?B?dmI2aEs0cWM4VWpMNUJkLzRkRHpsZHhvd0t2clF5Q0h5RG9VZS9vMWxkYmwy?=
+ =?utf-8?B?UEN1RnVMWk9sVzkwLzNlSEFtSllyYlpHdzFoVVVBVVZ3RmVzLytFZG1jYTJl?=
+ =?utf-8?B?U1NubDZ0T09IOEVJU1ovekZMMm1oMVdYNEZEcEkvc2RqWDdROGJEalFsaUpz?=
+ =?utf-8?B?QkxpK3ROeWg5NTJ4M3RDaTRmamJsUWVYRWxRemdsVFdHUXNRdlBPSXFsb01P?=
+ =?utf-8?B?dVdnVER6MHZqdXBXKzI2REF2UHBpYmhqbEMybWMvbnNWT1JhVmVBZTRkcjM5?=
+ =?utf-8?B?aEVIbERjaG9UMHlFUmpDTGlnN0NhcU1XRWdBS1FwY284aHpscDl3UGNEa0Vj?=
+ =?utf-8?B?bzhxSWF5b3BHamNiOGRiWUhWMkpaanl5UThDTXhiSGhtMHpXdjNrU2ttb2RQ?=
+ =?utf-8?B?RzlBelppYzlFQXlxSDU3REQ1aFg4UlJud1ljdTBIVzM2RzZRY2pTWTJRM2Ey?=
+ =?utf-8?B?TXI2Uk9ON2dMck5hZXlVZ1pNZ1l2Wm5rQitnNWN6dThTRDlyeEg2QnZwbVJB?=
+ =?utf-8?B?YnIwcWZXNVFYK0lSUldtVWpBeXpiSWJVeTRqNC82OHJDTXA4NGpqZGxkOFFr?=
+ =?utf-8?B?T3FjSzNtdXpUT0hnWStGUlRzMDlTMVZSYlNvNUliQXNLQUJSOHBJTzczcWJs?=
+ =?utf-8?B?cVFWV1ZzWkpoRHNVY2dXUmxtU3J1bmJxdXJCbkoyUlMwTFR5T2hKdnYwQ1Bt?=
+ =?utf-8?B?QXhFVlU3azFlenRkY1IzazNtOUgya013WlVEUlNlK2FOczhCUlF3WExnb0lQ?=
+ =?utf-8?B?WnQrMWxsM3VxdHZIQ25WU2Y5ajk5NlVpeWhUR00zL2Jtd3ZPU29lQXpIRlJG?=
+ =?utf-8?B?Qk5ya0FrTmlmaFBSQi9WL0lreXdqdHY2NWJrRFZHVEZWZGQxdDBjOTYwWWRw?=
+ =?utf-8?B?VUJnbmtOcmNMZUJ4MitBT2Z3QkhEem5UTkZQQUZoUjJXZTNGeWtNSm5ybUFp?=
+ =?utf-8?B?c3FSQ0VNVDAyUmZRSlRDSjduekZORlpFY3NSai9RZ2IwbGV2TGllUmM3WUR0?=
+ =?utf-8?B?eFJVWld6aGFFTTN6dEh3QVNRK2NEV1R3Z3lVcndTS0EwZjJJcEIvbmFvUncr?=
+ =?utf-8?B?UGRSU3JnM0ZEZ1o5V3lGNjhHVnI5UXN0S0pPZkdQTHVWWm1GdXF0UWV2UzU1?=
+ =?utf-8?B?dWJQcHh4SVdCSW9GVHBNYTVxQU84RThsM2dpT1VtM2hKK2hDSUg5Y2lsK0hV?=
+ =?utf-8?B?bDViR2djZXpaN0RQUzNubkNDdmVZaXFLUDBuYjU2YVNDNmZhTUM1cWFhUkpq?=
+ =?utf-8?B?Z3NVMDExNndSd2NhS2Nid0IwYW1OVndxQy8zNlpUNXZmMjNCcUVDeUNDOGFl?=
+ =?utf-8?B?cDNHUUZtaGRCOVlJbkVZcm9vZForS2RRcTMvMSs2aW9KSzhHaEVOVDNCckIv?=
+ =?utf-8?B?MG9QT054aGNMSWRxa0ZDZVRyektQcjN6Y3MyRzFUYTl6Q2l0RDM0R0JCalhy?=
+ =?utf-8?B?RjZLUHZSVUJiLzhDTHp3WGJMcTdlYVNRSjhhWlJRbG1JVThudTBsUTFmazFF?=
+ =?utf-8?B?cCtKNkM2d01uSmltZkZaTTZrUHV5V0g4QUlWVkdxdzBlQThJOWlidnk3UFJ5?=
+ =?utf-8?B?QXJGd25kcWlaTjJsaUZ1M3hYdHNqNk1QTklwZm43UUszOFdGZXJyMXI4c2pF?=
+ =?utf-8?Q?bo9XPejP0eZmSXo2Ld1RzT8Adk68RliWKWMyU?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ab56a88-1da6-497a-1656-08de55e7ed47
+X-MS-Exchange-CrossTenant-AuthSource: LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2026 16:46:14.0807
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yDpkXvXfqf6fQhVIx8XsD2N6+AB2NpG1Uof2VGO9CTzQ9q4fminIRtwQN6JupSQk3E7xAWB+njX3DBKjQH04MQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO4P265MB6350
 
-On Sat, Jan 17, 2026 at 10:05:18PM +0800, Boqun Feng wrote:
-> On Sat, Jan 17, 2026 at 01:29:25PM +0000, Alice Ryhl wrote:
-> > On Sat, Jan 17, 2026 at 09:11:49PM +0800, Boqun Feng wrote:
-> > > In Rcu + RcuOld design, RcuBox is just a Box
-> > > because these two pointer types handle reclaim + accesses.
-> > 
-> > How would that work? Dropping my RcuBox<_> must use kfree_rcu() or
-> > synchronize_rcu() or it is unsound. So it can't just be a Box.
-> > 
-> 
-> RcuOld<P: ForeignOwnable> will call synchronize_rcu() before dropping
-> `P`. And I think we can have an asynchronous drop pointer type like
-> `RcuOld<P, Async>` that requires `P` is a type like `Box<HasRcuHead>`,
+On Sat Jan 17, 2026 at 3:39 PM GMT, Boqun Feng wrote:
+> On Sat, Jan 17, 2026 at 10:05:18PM +0800, Boqun Feng wrote:
+>> On Sat, Jan 17, 2026 at 01:29:25PM +0000, Alice Ryhl wrote:
+>> > On Sat, Jan 17, 2026 at 09:11:49PM +0800, Boqun Feng wrote:
+>> > > In Rcu + RcuOld design, RcuBox is just a Box
+>> > > because these two pointer types handle reclaim + accesses.
+>> >=20
+>> > How would that work? Dropping my RcuBox<_> must use kfree_rcu() or
+>> > synchronize_rcu() or it is unsound. So it can't just be a Box.
+>> >=20
+>>=20
+>> RcuOld<P: ForeignOwnable> will call synchronize_rcu() before dropping
+>> `P`. And I think we can have an asynchronous drop pointer type like
+>> `RcuOld<P, Async>` that requires `P` is a type like `Box<HasRcuHead>`,
+>
+> One blocker on that is Drop impls cannot be specialized. We probably
+> need a different pointer type like RcuOldAsync...
 
-One blocker on that is Drop impls cannot be specialized. We probably
-need a different pointer type like RcuOldAsync...
+I won't be too worried on this apsect, you could just branch on a const in =
+the
+drop function.
 
-Regards,
-Boqun
+Alternatively, we can have a method like this
 
-> and the drop of `RcuOld<Box<HasRcuHead>, Async>` would be `call_rcu()`
-> or `kfree_rcu()`.
-> 
-> Regards,
-> Boqun
-> 
-> > Alice
+impl<T: HasRcuHead> RcuOld<Box<T>> {
+    fn drop_async(self) {
+        // do call_rcu
+    }
+}
+
+Best,
+Gary
