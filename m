@@ -1,73 +1,73 @@
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37DB1314D34
-	for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 12:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C30530F805
+	for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 12:23:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768652584; cv=none; b=ElBzo/5owOgvZWcCAt8bWZfsSNuwAJj7/dBAh3md169oCdv/L8S+Y42vOqr+mbBNxVXdJQ34o5BW4u7f7AIuIbQ5geCuDQG2mmwJlWTntpah5JSNWM0+XpC3bSBydKX1FQltQUAfK96owVLVGHu6ksseyNAbTVV+b/5SQBmPb4A=
+	t=1768652585; cv=none; b=r2uafdCnTweNcnCLQ+FNGVaRWKFq25IZ1W1fkv/y7qaNAqkerZT1Nt1HkbSlYXIokcMcjIZRwEXKbcdLgGIcdEDKt1Mq13kJhExVC+1yFLk4t5217+BZlnkM556g81SL89pmVlxNjulCpuGK4lNdxwbyZ/dd9PNiu7wSgRHMibY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768652584; c=relaxed/simple;
-	bh=4NIKpxlbSunL+Z4N22NpquT4aJ22jfPSx7k1kPWckZw=;
+	s=arc-20240116; t=1768652585; c=relaxed/simple;
+	bh=ypW5mDR1pdpYmnFGvy1k5garryQ20NH8PB64bMKaoRM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p86XtUo0B2rE129dGQwRo976lfU+3F83/rlDlZyxrUXydgBSVtKeZYR14uSuWJnxV9bFQT9NjMRYe+jei+0NlhmXnocsh1KtfPhCJqE2oKn8MA4TgwISIRyCnu99OjxHQasfibul0VOmPXD7ZDit0vr84kHmn2/CURbH4TxaGp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TODDNEXj; arc=none smtp.client-ip=209.85.222.174
+	 MIME-Version; b=OLqmZhbJklUS0LwFt6J7oJemcKZTTRHf6gjNDOt0zW/pV7SGRfrBc6ryrXYPGEqT3k6gtkUGYHMBWUCco2o13G03XFTEtleF/48JZBzHSk9PIuivfRg7orSWewtH7hpSeALZfsC84I0YYGbY3YqitNR5dejeOiyxCnj04GrqdYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mRGoRTfl; arc=none smtp.client-ip=209.85.160.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TODDNEXj"
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-8c6a508a595so231162685a.2
-        for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 04:23:03 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mRGoRTfl"
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-501488a12cbso31352301cf.3
+        for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 04:23:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768652582; x=1769257382; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768652579; x=1769257379; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=gkWeTN6oy/OKIhfGiOTDWYHCdlEF4RUeCy+vRBjzbJU=;
-        b=TODDNEXjJHh+4tOP4Xyod0JUm4eSjO2uxblJkZRvubat8/MWLRFQiHSBfaOuwEYMse
-         BoOgdo5a0nbQI9ud88+JNAy2fqXofzJmg+iMpODvxhYrTnTWQXZ4C1ZRzSUCO7thVlGd
-         1jp3pHB4Mkidmv4fxQyHzTb8gX3cRf+8KyjVDkKqNYQBNNhvIKMeYEt7lSiMB/puOZwy
-         J5T+4b+zh9g27AWlR+GLiaTk7eF1wPiEMFigy999LPoJhO468TfJLx7TCM9PwFyBeg5F
-         6AAb36c+eJMAFcvxgB/I6OBOPSNqQieyVwZuJUh5d9pW5njVROgtLuvkO/rcG5rdoB43
-         l2pA==
+        bh=ezYTTB2Yi2q5O6hjbHNxnHEWCgaRA8NSsABtQ4Dr/Zk=;
+        b=mRGoRTfl4oRa/my4bPocutX0w00DTkp3x4Mf/ICdMOiMuuMGHFsaQEeoWPlF3gEY8W
+         zcBGRm7HJvRA3/KTCYpJ6ey72SHn12YKH0PVXNo6n8hdRjybMKarHu1aHqrUV1p+cSyT
+         f+LRkuisoKB6XHItIUPBfJQAryYW22Oz9ddP1FbTlhV8RIQPB9uki6xsuEpWFLQTy4XL
+         S79TUfV87Qto1sckxwoa7ba1c1tqoCv+cUQ1Fadt9q3RJcsI3teZJk7W6Ct3Bfj6klMC
+         E6jkA4NWs9XYLXVVGHJGUw0LHtD6JfQnasj8m/ZH66U+R8Po8uDYvhHVuOVeKMCEdz8r
+         aC9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768652582; x=1769257382;
+        d=1e100.net; s=20230601; t=1768652579; x=1769257379;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gkWeTN6oy/OKIhfGiOTDWYHCdlEF4RUeCy+vRBjzbJU=;
-        b=AohqhvVMj9MDCb6/cYP3tLmxjJ2usPZni8nghIJM4qn7TLCLNs61DdQ5cCTGv4bzFe
-         leku8wPli3x/fLviKn7FafzAJw8a5biKjq1Shb9ea+TZx09m9QsCWxJmFBgQlQ6Bv9N6
-         QkKZM+ulZnLruq2OuA69Q4Ap1hgWWkfhxe6IZNZ6FQ4h8MdbIEBasoDMJJtVkVlH8esP
-         nVEOEGjbpaCUbFl3EqSMFmzz8MvHbm+ST5niW7Qaqq1gQzyCMIb9yIpCU+6dq26IgsVD
-         n5W2Vr/JX57FbNe6c18zqGLy1zcTeURmOkfB8VKlTPVLsRyEd9cRto4L3gvyAE77OAUG
-         wfWA==
-X-Forwarded-Encrypted: i=1; AJvYcCVZZGG2a2Tmq2sSGZn9mxGjb+u5qQztze7ZBDGo7JZYWjHNYGtc7TNta7PI8nbimdGneLo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHjED6b/A98N50RT0uDTlWckFpNLVtBCZmIyEOQY+iSHE2PJyy
-	MmfAToDDP2OFvKsaRdLQlE4oF98s+7afICQIuFecoNqrRc8Lnzg1qVgl
-X-Gm-Gg: AY/fxX42kAGZZa5SmUGg21FtMlu+uqTMT5WqOctCFXja18OjvaMJKVKnr63I+Eb8lHt
-	Z+Xq8AwmYRUXfP98scCNaxQL9TU8o9799fQ5aYimqWjPJbWj2ZqbWQNQFdvvKm8lIoUTvauv9iS
-	zEwSEXku3YHNHK/gNwoMvVAeTCXZ/Dhi+92+7i2iaL6MlmPEdvX72/Uhqpl29kdClJvXy1MHBv8
-	NCdGRQlnWLDqXqOpppZI7mtiStUIrl4wkKbP0W9KCnoIGsO+SBhDnTDUrcw7v4yweEWoLeE510u
-	bJxrqp6Nj5clRv3/tw9V6CVqVYUz6zZYqr2QLlBDy2pgFCgSexJp5tXkJXWY2P2llKvbNARSnYW
-	ByqPh/GbK67Gzj4Qn/FpbYohevOVYevG5QkTOzc+SXyXPCUQhjMzFlBjo+1EjCkA7eO6FMN15RE
-	412egrkPhg3i1nRRdQDQZTRtUqlRw3MGduCyR8jKJwAuiGbAkO9agpXX6zYA3BMuNYBIEktARQz
-	Tue8xRYDW/0yo2Th1s9C7+zRg==
-X-Received: by 2002:a05:620a:7009:b0:8b2:dd0a:8809 with SMTP id af79cd13be357-8c6b1628dabmr318598085a.89.1768652582099;
-        Sat, 17 Jan 2026 04:23:02 -0800 (PST)
+        bh=ezYTTB2Yi2q5O6hjbHNxnHEWCgaRA8NSsABtQ4Dr/Zk=;
+        b=VlEk7ZEmFL71eYRT4PrbOvDPIo1NfEP4qpLwd09D2eiLeg53jDbk+nO6Xmmz8hLYZH
+         HCfGHHjiii/jks9SSK6KReho1WMKEHGzVzMn32NxYwThk2LjX7jFl4NGcjS5wRLSjRSu
+         TPCgMdgPeYSUsRfFeQZ0FGvZgxhXXrJLqchFeA688QWU7mdO+tA/qD19qo5al0gzpUYm
+         K+tgPhg0S9bMKSV+gaV4Q/R9x8AE1Uckb3iuthqEHPkgezsyrtmfOs7rgydNztYyoe8M
+         nwLnSuA3FYIbVGmXq7gGL3gHImsF8SHZnBlRefzlG2QwlNJzMKg2orZxO/iGv9Q7XBS6
+         miEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNQeAKt4KQZAIiRtKTGKT3bJZwnyhJW7e5uADTLwTo6W85E/1S/gHgMwfOZNiBFw4fZSE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8oiHTme6I6EtFeRx5bjaNbbk8VIMdhCuIHhi67yYqYVVPLiR4
+	OtLs5iZ0Qs3iLpFg1C3QdD23Rze1rfuNDBmqzl+Ghnd2XON7zanT57eq
+X-Gm-Gg: AY/fxX6wVX3+hDQK/dKwn308X3kud0gRleik0PJ1eO55Dt1W7aIdSXom/1fmz3hODJD
+	1qGHFkZaoz9cUE/4y6nOFtmZiooVD0vwfe8QKJgrKJLBnO/Z7r1Goq4+vnh2L9bOwow7bSNFQot
+	5ug+e69E7ngynhlg637poK+uCdXbIMF/gLcqNbCFkc0XG61f359bEANmCr+VozPOwRwIJtAg64t
+	z1WMMOp9809h6HlWYQqtNv4Cts/xLopK0JYov2SQyb9N+KmKRjeFrn9A/kznn+P9HKhkCPHER4o
+	18Z/FYBiZAH78Vm1n0oyZJspmoAx109/KT04dj60bpviZX5WZ+kyNd7aUu8rBYVG+Dj9e4dlEtN
+	NmrVSNAp8v87CD34Kjcx7htVv0nGNwkyIvo9MMjvIPL4wfSiMTW03mgHYxY7nulK3Ny/Hw0cqw8
+	yckKHu9rxr2uHMvwWzjKbKBxW2V0vaBg8Xi5U7SLSsxNXqfhxhyOx+lHmcmugDKGggCDpxBI4Py
+	OEVNZz2jbaEXSE=
+X-Received: by 2002:a05:622a:c9:b0:4f0:131f:66fe with SMTP id d75a77b69052e-502a1779249mr70449511cf.59.1768652579264;
+        Sat, 17 Jan 2026 04:22:59 -0800 (PST)
 Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c6a71c0469sm422247385a.13.2026.01.17.04.23.01
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-502a1d9ee19sm37969421cf.14.2026.01.17.04.22.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jan 2026 04:23:01 -0800 (PST)
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 02268F4007E;
-	Sat, 17 Jan 2026 07:23:01 -0500 (EST)
+        Sat, 17 Jan 2026 04:22:58 -0800 (PST)
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 3FCEDF4007E;
+	Sat, 17 Jan 2026 07:22:58 -0500 (EST)
 Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Sat, 17 Jan 2026 07:23:01 -0500
-X-ME-Sender: <xms:JH9rac7-_VVs8248fKebhYyrWDkWL8iVI6W0Ukqrtkz33wnOJGFbFA>
-    <xme:JH9raW-HabOpBPfdB3-K0iKv8jVZBlLvaGrnLzClzXZY5NnXOAjWd5EpENPR7Dj7s
-    QofvdGsNjFAFTlj5jq8dyGUNq4QgItlrdfs3nDCnDeto6PWMj4Q>
-X-ME-Received: <xmr:JH9raUjBXFRpArbbPLSRMVP9OdxzXmiMyqksW_ezftqDXRlkbLdVq5oG>
+  by phl-compute-04.internal (MEProxy); Sat, 17 Jan 2026 07:22:58 -0500
+X-ME-Sender: <xms:In9rabZ9dOm0Z4eCmfyNKaQntHppzTu-ZCKhJHLvr9ptELKtGfIK_Q>
+    <xme:In9raTcAwiBc6_naCJoyNhI-1dUoan1s0wa3gl0OLhnRnkhauMa0O-3u55zjHcRcC
+    ZKXW1eByyvfvHVC-QSQ8eCdT3NhMR5GtjlBSmOyXkMKAZP98DVg>
+X-ME-Received: <xmr:In9raXDe6yczg7TYRaW2Imz3mXrFQ13pfaDPKzHMicQH9JkAoR_Z6lne>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufedukedtucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
@@ -86,14 +86,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufedukedtucetufdote
     hrtghpthhtohepsghjohhrnhefpghghhesphhrohhtohhnmhgrihhlrdgtohhmpdhrtghp
     thhtoheplhhoshhsihhnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrdhhihhnug
     gsohhrgheskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:JH9rac56ZwBTkpHwXvSofNjXAuC06ZEmfB4Zado2uzUKGvL7s4sWHA>
-    <xmx:JH9raZZkJFUGIhx24O4BcR0sZpuBAVysyUHJoSdnT3AKc3y60r_ELA>
-    <xmx:JH9raRdP1qiccP5fAWoEZRxh-x91JF1e-_9CnQcoxBCcwKrRgu_5Ig>
-    <xmx:JH9rae4rCoDGl_uMNomP74U3f2BV3XShgA3mZROI-SIXragJC0Vyzw>
-    <xmx:JX9raVXODt5yJwHqcYwOuqIXKB7RxYa68n0mT33ptfNJeqcT2z_qLInq>
+X-ME-Proxy: <xmx:In9radbUaDnHVdFyaLOnuHy152xjUGK1QWq2aSfh7B72LIdtLxKM1g>
+    <xmx:In9raf7p-sC2gWtYaUjsQ337JRBe5MQm7nFqTRhw511bQZhA2efEEg>
+    <xmx:In9raV-M6HojjeW4MdA0pfU8g8CzOXqU_RjPxSsqOE78LRC_Nf_7uw>
+    <xmx:In9raZbzPEP4R5ngF8mNMLlPIy2zkABeUYPkKG_tenrlHyer26QlfQ>
+    <xmx:In9rad3A7liurkWlHPANh_-kX3q6ogLOB3iPrjH3oS2q65IRSkMvAlqn>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 17 Jan 2026 07:23:00 -0500 (EST)
+ 17 Jan 2026 07:22:57 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: rust-for-linux@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -121,9 +121,9 @@ Cc: Miguel Ojeda <ojeda@kernel.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>,
 	FUJITA Tomonori <fujita.tomonori@gmail.com>
-Subject: [PATCH 3/5] rust: helpers: Generify the definitions of rust_helper_*_cmpxchg*
-Date: Sat, 17 Jan 2026 20:22:41 +0800
-Message-ID: <20260117122243.24404-4-boqun.feng@gmail.com>
+Subject: [PATCH 2/5] rust: helpers: Generify the definitions of rust_helper_*_xchg*
+Date: Sat, 17 Jan 2026 20:22:40 +0800
+Message-ID: <20260117122243.24404-3-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260117122243.24404-1-boqun.feng@gmail.com>
 References: <20260117122243.24404-1-boqun.feng@gmail.com>
@@ -135,9 +135,9 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-To support atomic pointers, more cmpxchg helpers will be introduced,
-hence define macros to generate these helpers to ease the introduction
-of the future helpers.
+To support atomic pointers, more xchg helpers will be introduced, hence
+define macros to generate these helpers to ease the introduction of the
+future helpers.
 
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
@@ -145,64 +145,67 @@ Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
  1 file changed, 12 insertions(+), 36 deletions(-)
 
 diff --git a/rust/helpers/atomic_ext.c b/rust/helpers/atomic_ext.c
-index c5f665bbe785..240218e2e708 100644
+index f471c1ff123d..c5f665bbe785 100644
 --- a/rust/helpers/atomic_ext.c
 +++ b/rust/helpers/atomic_ext.c
-@@ -67,42 +67,18 @@ GEN_XCHG_HELPERS(i16, s16)
+@@ -44,45 +44,21 @@ GEN_READ_SET_HELPERS(i16, s16)
   * The architectures that currently support Rust (x86_64, armv7,
   * arm64, riscv, and loongarch) satisfy these requirements.
   */
--__rust_helper bool rust_helper_atomic_i8_try_cmpxchg(s8 *ptr, s8 *old, s8 new)
+-__rust_helper s8 rust_helper_atomic_i8_xchg(s8 *ptr, s8 new)
 -{
--	return try_cmpxchg(ptr, old, new);
+-	return xchg(ptr, new);
 -}
 -
--__rust_helper bool rust_helper_atomic_i16_try_cmpxchg(s16 *ptr, s16 *old, s16 new)
+-__rust_helper s16 rust_helper_atomic_i16_xchg(s16 *ptr, s16 new)
 -{
--	return try_cmpxchg(ptr, old, new);
+-	return xchg(ptr, new);
 -}
 -
--__rust_helper bool rust_helper_atomic_i8_try_cmpxchg_acquire(s8 *ptr, s8 *old, s8 new)
+-__rust_helper s8 rust_helper_atomic_i8_xchg_acquire(s8 *ptr, s8 new)
 -{
--	return try_cmpxchg_acquire(ptr, old, new);
+-	return xchg_acquire(ptr, new);
 -}
 -
--__rust_helper bool rust_helper_atomic_i16_try_cmpxchg_acquire(s16 *ptr, s16 *old, s16 new)
+-__rust_helper s16 rust_helper_atomic_i16_xchg_acquire(s16 *ptr, s16 new)
 -{
--	return try_cmpxchg_acquire(ptr, old, new);
+-	return xchg_acquire(ptr, new);
 -}
 -
--__rust_helper bool rust_helper_atomic_i8_try_cmpxchg_release(s8 *ptr, s8 *old, s8 new)
+-__rust_helper s8 rust_helper_atomic_i8_xchg_release(s8 *ptr, s8 new)
 -{
--	return try_cmpxchg_release(ptr, old, new);
+-	return xchg_release(ptr, new);
 -}
 -
--__rust_helper bool rust_helper_atomic_i16_try_cmpxchg_release(s16 *ptr, s16 *old, s16 new)
+-__rust_helper s16 rust_helper_atomic_i16_xchg_release(s16 *ptr, s16 new)
 -{
--	return try_cmpxchg_release(ptr, old, new);
-+#define GEN_TRY_CMPXCHG_HELPER(tname, type, suffix)				\
-+__rust_helper bool								\
-+rust_helper_atomic_##tname##_try_cmpxchg##suffix(type *ptr, type *old, type new)\
+-	return xchg_release(ptr, new);
++#define GEN_XCHG_HELPER(tname, type, suffix)					\
++__rust_helper type								\
++rust_helper_atomic_##tname##_xchg##suffix(type *ptr, type new)			\
 +{										\
-+	return try_cmpxchg##suffix(ptr, old, new);				\
++	return xchg##suffix(ptr, new);					\
  }
  
--__rust_helper bool rust_helper_atomic_i8_try_cmpxchg_relaxed(s8 *ptr, s8 *old, s8 new)
+-__rust_helper s8 rust_helper_atomic_i8_xchg_relaxed(s8 *ptr, s8 new)
 -{
--	return try_cmpxchg_relaxed(ptr, old, new);
+-	return xchg_relaxed(ptr, new);
 -}
-+#define GEN_TRY_CMPXCHG_HELPERS(tname, type)					\
-+	GEN_TRY_CMPXCHG_HELPER(tname, type, )					\
-+	GEN_TRY_CMPXCHG_HELPER(tname, type, _acquire)				\
-+	GEN_TRY_CMPXCHG_HELPER(tname, type, _release)				\
-+	GEN_TRY_CMPXCHG_HELPER(tname, type, _relaxed)				\
++#define GEN_XCHG_HELPERS(tname, type)						\
++	GEN_XCHG_HELPER(tname, type, )						\
++	GEN_XCHG_HELPER(tname, type, _acquire)					\
++	GEN_XCHG_HELPER(tname, type, _release)					\
++	GEN_XCHG_HELPER(tname, type, _relaxed)					\
  
--__rust_helper bool rust_helper_atomic_i16_try_cmpxchg_relaxed(s16 *ptr, s16 *old, s16 new)
+-__rust_helper s16 rust_helper_atomic_i16_xchg_relaxed(s16 *ptr, s16 new)
 -{
--	return try_cmpxchg_relaxed(ptr, old, new);
+-	return xchg_relaxed(ptr, new);
 -}
-+GEN_TRY_CMPXCHG_HELPERS(i8, s8)
-+GEN_TRY_CMPXCHG_HELPERS(i16, s16)
++GEN_XCHG_HELPERS(i8, s8)
++GEN_XCHG_HELPERS(i16, s16)
+ 
+ /*
+  * try_cmpxchg helpers depend on ARCH_SUPPORTS_ATOMIC_RMW and on the
 -- 
 2.51.0
 
