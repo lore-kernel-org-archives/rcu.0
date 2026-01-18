@@ -1,264 +1,516 @@
-Received: from mail-dl1-f46.google.com (mail-dl1-f46.google.com [74.125.82.46])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E752200C2
-	for <rcu@vger.kernel.org>; Sun, 18 Jan 2026 06:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100B8274B5C
+	for <rcu@vger.kernel.org>; Sun, 18 Jan 2026 08:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768716091; cv=none; b=k69iZlnGyZT3jQMy6lbVUR6/SP+r2lyYSOU5iKX2Wuy/wrrOkXQDf0hyqZdJyLStgpTKDuvEtwJNKVqz+9L6IGTdU4+y31rsWeKGGKs6+cGPKFjs+A+Fe3+Tw3CbXcVz93LvG2oXRZ09D9d322azC8OmXunB8WpP4vIHdQF4nHQ=
+	t=1768724922; cv=none; b=AWIppoPOgtfrDqlunJ0XqOigXf7ZAM6pDQfKkawt65pVbhx5GmM9GveDqNoRKOJejnFOWoD6i9GYsGXqWFFUCxkIXGr7rgwHhaHaZtdo5e4Tn11cJ6G+L5XJaCykWzAfQ/LvREr0PnMqAZjC+N/PN2w9fhkNFDXnxkbhU4g7Hfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768716091; c=relaxed/simple;
-	bh=DIXu1xJBWswCmGBRxFXgpv7cNPr9e4eOhTTy17+c9Oc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AmB2iucWGJKFmMMIAYoHyrx7Y+cuvpgZLTjmrHsSpG+NRd+kuu8UCTvE2U2z3+oZO+65CZcLvRw7DddQ3/Av0w8T7s5mIY2VBTdR7DQr3vecRngL0Iefy4afChqD8sG4tI7cRkCuFLiJjaE7sI1/QKvaPzhLe3pDl/ClwSo8WLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DJ4ZecMx; arc=none smtp.client-ip=74.125.82.46
+	s=arc-20240116; t=1768724922; c=relaxed/simple;
+	bh=p6vo0grsA0IdxXr5PCpxk2UhpoPLss9zx/mtb2+dCC8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F+RrKKwU2IB7u+GOLniiEMkziRK4LP0/AA5tzFp66RZNMRhsnDLMmWWM+ewEBCazsBTaQLu60z1N13Jj8+gSK5rlNUod9rlzXwOgo4/85vwXjKKSF8zatdhmvSFp1+jskuoRJ06pPjWVJikHmCBn0cnz+WLiiccp/nNGduAMcHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eFeH4wBO; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DJ4ZecMx"
-Received: by mail-dl1-f46.google.com with SMTP id a92af1059eb24-12332910300so3312955c88.0
-        for <rcu@vger.kernel.org>; Sat, 17 Jan 2026 22:01:29 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFeH4wBO"
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-47fedb7c68dso21730035e9.2
+        for <rcu@vger.kernel.org>; Sun, 18 Jan 2026 00:28:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768716089; x=1769320889; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sOiV0D+CNI6UsixBopTqJbDRkz4TgZfrfHbV+iHjkxE=;
-        b=DJ4ZecMxd9JBwSwjASkpX7zXm0cdyXIFoGL09auSvI7KNRRGJgXVnBGBBsoHKdnBgd
-         fvimwNJs4rIktNV3WIDjm9JXdxMyPwWhGmr+cEnRbjVFukLGsQRfPtOAgmV8LBYO9VX+
-         GbC0g+V5SKH2jaXQ7xJ+P59fpxKJW6rl/8qPy4+AgFmI7eJ/Kl4zBJ0MsCUjmoP6L1iY
-         cXI7q4VgcaECYPnrAXM9foDJlUylhIBjhc7xU/VbP4HqDBkQEYtf0eGJyRetDCzEDo7b
-         a9TMZtBFqYEGkhTnaFg2rI+9XC1ewQ6sAvjIptj0FNENcQwpAGnH7vOClKet959v4gjI
-         qlnw==
+        d=gmail.com; s=20230601; t=1768724918; x=1769329718; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pUlsxyTcRs1rItG8NGkJreAcIeCMhnXiVnqEAkHu1nw=;
+        b=eFeH4wBOyHcXKpx/780I1lHwezr65fBEDJkb3hBImP2s81dRCDTEHEAqAmUCs8OqrH
+         IQ9xrvh+557QBhfRLrkVOXM8Bhfma3qaHTG3naN+FXWBtOxyqGaRYTJD38xnYFJjRyWt
+         BZyLBZVi0UC9IUTxuW5CB07uTUo5W1M+2vogzIhJOlOW5ugxx3jf0zfFjagLEVkrMQGA
+         ve62itccMl8yrrOj91/d36Ovc276dFU8NZn7ufGFyUyjJZk+vS7d0rLupueVPSSMmQkW
+         +BtWYWBc7Eh6nKaf2+9JQt0eAM8DjDEP8E9n5AIW4Hdx9vLMOsenFjY1XFDUCmDARiJk
+         HU7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768716089; x=1769320889;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=sOiV0D+CNI6UsixBopTqJbDRkz4TgZfrfHbV+iHjkxE=;
-        b=SkorG/WGJYDJnzkzdKZt4upUUZhf9jQFthNUgdLqOouDpCEJgfxlJqPczOCXVVxlTt
-         6/uXTYY5NG7L5VeAHBzeJN9KTOH8wDmHCwWChMugBtDz7DfWkpEtrVHoBb8jUlknLYNg
-         /G1F8QF/IOe6SvPiVIQtrj1P9OtFYjOzLc1GATAU93c9WPhoaJ8hV8ol/LDl/t3lVwqQ
-         r1v6SoveGtXZ36NmRKqlF0c0C+Qvi/2xx7wViSoeAZUAMJI5aUnvRLHcw2V4w4wRq/Ii
-         I1MYWLUDuZrR96xNQvdhSBFMDUUWyA7rYJTWnqFpLtmVuXJ3DCqkwke4J+280oQffmYz
-         ZYbg==
-X-Forwarded-Encrypted: i=1; AJvYcCWtYKs3dgZWzJiQ9EroFUqpwWvx6bP66J7eJZ0gtQH/Ygzwb8vW06I6lp/deYD9SDj/Jzw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYmmcGacFdSsLhltUQvw5NWdF9CGGj7hgx8xh7Ml8hoHz9I0KV
-	iFyXNSiHG9GWEDyBSI9X9fEes/3Kkp6Y5UHXWZnuCWB8JrNmDhOhX1yiz7f40Q==
-X-Gm-Gg: AY/fxX5hKmgSSGjJyw9068hVWe4PmVPyMPkW1cooOwlT5KALHYNu9KudR97m8Mn5ZDq
-	+DdLO3No7suUwZGCs3JJyJot4yie4qUOzmD9HFq0BQLAMQBHtRpSEHx/TT8J+MZ+0TAjGjWgNAm
-	/eOg2BlUcYP8bckYpIPArUEShJPLefSQtYW86S91IfB7H3wu2H5xTHzIlMSqOceAt3IlTjt/oKY
-	8hd4RebUm1LfN2+bPx+/jz/Ze2OANDlopLyx27lVvYXg9ngfrntZAG4idRoVkKAI2NVfHywXuDb
-	qB+CgB+BCbpNSHCUbDCcTxEjdYA7IO8eSn63F2ZUlVD5hnWTPZp4ywOGkauA2T4N1hhQcAdqhVZ
-	PxulwC8gnnkjH7ei2YCRFxKbIS0vHYgqDDmFBuXbmcfwaTl7gDphaUO/n/IsUr5iPHuJabF/sNv
-	vJ7PI8rPQY1cYBNAbT34xLwt0NB36C6yNxJJo5my/lK4RczqkwJEfGP+bnadssVhO0QQxMrjhkg
-	QQ5a+imnT49wh38e1Tmq8jLcQ==
-X-Received: by 2002:a05:622a:14cb:b0:501:4b22:b9c0 with SMTP id d75a77b69052e-502a175e37dmr104860631cf.79.1768709979829;
-        Sat, 17 Jan 2026 20:19:39 -0800 (PST)
-Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8942e6214c5sm54662016d6.25.2026.01.17.20.19.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jan 2026 20:19:39 -0800 (PST)
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 5F538F4007B;
-	Sat, 17 Jan 2026 23:19:38 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Sat, 17 Jan 2026 23:19:38 -0500
-X-ME-Sender: <xms:Wl9saajb0DH3KIV8b33TqfrgR5j4k10izHdb2sqmhk9TFfWcktvEhA>
-    <xme:Wl9saUFslWPPVLFMNQYNwRty1L8Zh1R2xOGYAI1NctpwvWFotCONqubeb_YgLJ5lQ
-    lYV_nnSHx6pgnXDplRFPqVg-Y_jk6vLDBdDlIh-S6qmNm1R49aVKA>
-X-ME-Received: <xmr:Wl9sabLaOdSVrjVtl-DFjDPjqxdGBfypElxy89kXs2285BO1LH5MSO9J>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufeefjeduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueevieduffei
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvgdpnhgspghrtghpthhtohepvdeipdhmohguvgepshhmthhpohhuthdprhgt
-    phhtthhopehgrghrhiesghgrrhihghhuohdrnhgvthdprhgtphhtthhopehruhhsthdqfh
-    horhdqlhhinhhugiesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
-    uhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrtg
-    husehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepohhjvggurgeskhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtohepsghjohhrnhefpghghhesphhrohhtohhnmhgrihhlrd
-    gtohhmpdhrtghpthhtoheplhhoshhsihhnsehkvghrnhgvlhdrohhrghdprhgtphhtthho
-    pegrrdhhihhnuggsohhrgheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghlihgtvg
-    hrhihhlhesghhoohhglhgvrdgtohhm
-X-ME-Proxy: <xmx:Wl9safCIGHBhENOWy5WUjh1Bh9zd3-Y8log6Y52dZw16mxAqqYJGTg>
-    <xmx:Wl9saRD1kXkA1n3u-JxGcvUDiP4LWh6MBRACLR_26PAyfaMbcsI4MA>
-    <xmx:Wl9saQlvwpcdVNe5xNSpWUZuAmfFi74eBCgHCzXi7fdPsJ82d-2Fjw>
-    <xmx:Wl9safgxX65m4fwY9ZAYk8pXI1S45l8DlnBw5au2XceaeoBltcqsWQ>
-    <xmx:Wl9saZdc5zghvgxioK2PiaVpuo_cMMPeyLVS0IYzovuz24pULWBCMM19>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 17 Jan 2026 23:19:37 -0500 (EST)
-Date: Sun, 18 Jan 2026 12:19:35 +0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Gary Guo <gary@garyguo.net>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <lossin@kernel.org>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
-	Danilo Krummrich <dakr@kernel.org>, Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	FUJITA Tomonori <fujita.tomonori@gmail.com>
-Subject: Re: [PATCH 4/5] rust: sync: atomic: Add Atomic<*mut T> support
-Message-ID: <aWxfV4Y3fnNR0Kje@tardis-2.local>
-References: <20260117122243.24404-1-boqun.feng@gmail.com>
- <20260117122243.24404-5-boqun.feng@gmail.com>
- <DFR0Z3KHYS62.37Y0R286DPTUQ@garyguo.net>
+        d=1e100.net; s=20230601; t=1768724918; x=1769329718;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pUlsxyTcRs1rItG8NGkJreAcIeCMhnXiVnqEAkHu1nw=;
+        b=nLis33CmDtz7chftyq0o14PL4jPmtBtTivf9tEQjPM0DUdgrHmHwAvivO82J7z2nr0
+         l9wITJm7zhDL3o2vgtGwM/xsMqbrIZzD5OL6e9+Xkw3vAABaJs+ZK6ta6H+viafEYp4F
+         oYo35lTwYJNz+59YkLVOu2LCg+xhFFBkCVfE9iTwV2bQXUr+pTj/datJhsudFDO4aFuy
+         HZQuk1blWd3U5zXEWSqE9setBjLTYlMbnh7T+Aaa83ZU3NZc8SZxnKFckF3b4cxpYPMg
+         Y4REw+x4W0M1kXce7qWOFQACmGTnGXo9ybQQavxSiDiQPNooqDqeUagoOXrmYiE3vSmw
+         vb7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXDASIeRyVjDUMFrZ1msFDnx0gjrJlzXxVZC16COWFPlldleEn9LDTMIwFrqj5WB4HROLE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsSMO33kHDd3IKhbcR7HHoLHDT6jq1wnz7igDK9wWZByFTVDjT
+	rII/xUHX3jUmsi1j5ttvVW/b7YCoRJ8v1cQWQYN8Kq9Sty06XIaOH+p3
+X-Gm-Gg: AY/fxX6OqLkSmntnIqMQlnj3b33tzNHYLx37eBOIn9XJS8/Rx7C7INC+7pUODI+6rqr
+	BXxbIJvAXQCFBGB5r+aU2e5OcJZUFYDB+vIBeJI7Knbwxzx/yAMMotlffLZTjI9Mor9nK4ZdA5D
+	FrkZnvrgIl2YjHXFg8y5SptaGthF3qJDKiweMj/bmuUbs8U4ixI87LqOh05bRzzFUa2+dVxB4Uu
+	VpvpYfLxQhWDdIO79xjavpCjFpf0zDbKW0Gzs11dKYsR3WQ4MOqXyZG9v0Z+uruUcBEn/6oB6vm
+	ivGehBTcG6x9TTZWltEIJ+AJ2fBlRinrgBqtpXvYP9JdZUu97kqy2lCU8NusoJ0N63Pjj71N/JU
+	3JJX/hmk/uqHyPk8Op/Zjzj6pnvLJwDVIz8P0PpYasdoID32vh9MNuwhG2nHdWbiNJLiXmBU03a
+	p5Tq/Spu/L/rHY6SPuInCwSBMO0W5GNGtcffCu68yrf0S4zGGfyMRPlsyZMwcQXvHpTPyZd0m8j
+	PRPRt5I4DEWJ96IJ9jN1gNNmwuaZj/s/yGrB7GYcT8jKc0yIwqsqzLF
+X-Received: by 2002:a05:600c:4ec7:b0:47e:e2eb:bc22 with SMTP id 5b1f17b1804b1-4801e30a126mr82540695e9.5.1768724918023;
+        Sun, 18 Jan 2026 00:28:38 -0800 (PST)
+Received: from ?IPV6:2003:df:bf2d:e300:8193:226f:9765:711d? (p200300dfbf2de3008193226f9765711d.dip0.t-ipconnect.de. [2003:df:bf2d:e300:8193:226f:9765:711d])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4801e86c197sm132430585e9.1.2026.01.18.00.28.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Jan 2026 00:28:37 -0800 (PST)
+Message-ID: <56d1cc0e-df60-4e2b-bfa9-b29ec48a76b6@gmail.com>
+Date: Sun, 18 Jan 2026 09:28:35 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DFR0Z3KHYS62.37Y0R286DPTUQ@garyguo.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/5] rust: sync: rcu: Add RCU protected pointer
+To: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Cc: Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>,
+ Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
+ Danilo Krummrich <dakr@kernel.org>, Will Deacon <will@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ FUJITA Tomonori <fujita.tomonori@gmail.com>
+References: <20260117122243.24404-1-boqun.feng@gmail.com>
+ <20260117122243.24404-6-boqun.feng@gmail.com>
+Content-Language: de-AT-frami
+From: Dirk Behme <dirk.behme@gmail.com>
+In-Reply-To: <20260117122243.24404-6-boqun.feng@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Jan 17, 2026 at 05:03:15PM +0000, Gary Guo wrote:
-> On Sat Jan 17, 2026 at 12:22 PM GMT, Boqun Feng wrote:
-> > Atomic pointer support is an important piece of synchronization
-> > algorithm, e.g. RCU, hence provide the support for that.
-> >
-> > Note that instead of relying on atomic_long or the implementation of
-> > `Atomic<usize>`, a new set of helpers (atomic_ptr_*) is introduced for
-> > atomic pointer specifically, this is because ptr2int casting would
-> > lose the provenance of a pointer and even though in theory there are a
-> > few tricks the provenance can be restored, it'll still be a simpler
-> > implementation if C could provide atomic pointers directly. The side
-> > effects of this approach are: we don't have the arithmetic and logical
-> > operations for pointers yet and the current implementation only works
-> > on ARCH_SUPPORTS_ATOMIC_RMW architectures, but these are implementation
-> > issues and can be added later.
-> >
-> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+On 17.01.26 13:22, Boqun Feng wrote:
+> RCU protected pointers are an atomic pointer that can be loaded and
+> dereferenced by mulitple RCU readers, but only one updater/writer can
+> change the value (following a read-copy-update pattern usually).
 > 
-> I am happy that this is now using dedicated helpers for pointers, and not going
-> through an intermediate integer which can lose provenance.
+> This is useful in the case where data is read-mostly. The rationale of
+> this patch is to provide a proof of concept on how RCU should be exposed
+> to the Rust world, and it also serves as an example for atomic usage.
 > 
-> Some feedbacks below, but in general LGTM.
+> Similar mechanisms like ArcSwap [1] are already widely used.
 > 
-> Reviewed-by: Gary Guo <gary@garyguo.net>
+> Provide a `Rcu<P>` type with an atomic pointer implementation. `P` has
+> to be a `ForeignOwnable`, which means the ownership of a object can be
+> represented by a pointer-size value.
 > 
-
-Thanks!
-
-> > ---
-> > diff --git a/rust/kernel/sync/atomic.rs b/rust/kernel/sync/atomic.rs
-[...]
-> > index 4aebeacb961a..4d2a5228c2e4 100644
-> > --- a/rust/kernel/sync/atomic.rs
-> > +++ b/rust/kernel/sync/atomic.rs
-> > @@ -51,6 +51,10 @@
-> >  #[repr(transparent)]
-> >  pub struct Atomic<T: AtomicType>(AtomicRepr<T::Repr>);
-> >  
-> > +// SAFETY: `Atomic<T>` is safe to transfer between execution contexts because of the safety
-> > +// requirement of `AtomicType`.
-> > +unsafe impl<T: AtomicType> Send for Atomic<T> {}
-> > +
-> >  // SAFETY: `Atomic<T>` is safe to share among execution contexts because all accesses are atomic.
-> >  unsafe impl<T: AtomicType> Sync for Atomic<T> {}
-> >  
-> > @@ -68,6 +72,11 @@ unsafe impl<T: AtomicType> Sync for Atomic<T> {}
-> >  ///
-> >  /// - [`Self`] must have the same size and alignment as [`Self::Repr`].
-> >  /// - [`Self`] must be [round-trip transmutable] to  [`Self::Repr`].
-> > +/// - [`Self`] must be safe to transfer between execution contexts, if it's [`Send`], this is
-> > +///   automatically satisfied. The exception is pointer types that are even though marked as
-> > +///   `!Send` (e.g. raw pointers and [`NonNull<T>`]) but requiring `unsafe` to do anything
-> > +///   meaningful on them. This is because transferring pointer values between execution contexts is
-> > +///   safe as long as the actual `unsafe` dereferencing is justified.
+> `Rcu::dereference()` requires a RCU Guard, which means dereferencing is
+> only valid under RCU read lock protection.
 > 
-> I think the discussion about `Send` on pointers should be moved to the `impl<T>
-> AtomicType for *mut T` side.
+> `Rcu::copy_update()` is the operation for updaters, it requries a
+> `Pin<&mut Self>` for exclusive accesses, since RCU updaters are normally
+> exclusive with each other.
 > 
-
-The reason I put something here was to answer the potential question
-"why don't you require AtomicType being a subtrait of Send?", that's
-more of a question for people who read about `AtomicType`, so I figured
-we need some explanation. But I'm fine if you think we should move some
-of the comments to the impl block, or we duplicate some. Although I
-don't think the current version is worse. Considering we do:
-
-    /// - [`Self`] must have the same size and alignment as [`Self::Repr`].
-    /// - [`Self`] must be [round-trip transmutable] to  [`Self::Repr`].
-    /// - [`Self`] must be safe to transfer between execution contexts, if it's [`Send`], this is
-    ///   automatically satisfied.
-
-for AtomicType, I'm not sure someone read about `AtomicType` could have
-everything they need to understand why it's not `: Send`.
-
-[...]
-> > +// SAFETY:
-> > +//
-> > +// - `*mut T` has the same size and alignment with `*const c_void`, and is round-trip
-> > +//   transmutable to `*const c_void`.
-> > +// - `*mut T` is safe to transfer between execution contexts. See the safety requirement of
-> > +//   [`AtomicType`].
-> > +unsafe impl<T: Sized> super::AtomicType for *mut T {
-> > +    type Repr = *const c_void;
-> > +}
+> A lot of RCU functionalities including asynchronously free (call_rcu()
+> and kfree_rcu()) are still missing, and will be the future work.
 > 
-> How about *const T?
+> Also, we still need language changes like field projection [2] to
+> provide better ergonomic.
 > 
-
-In general I want to avoid const raw pointers since it provides very
-little extra compared to mut raw pointers. For compiler optimization,
-provenenace is more important than "const vs mut" modifier, for
-dereference, it's unsafe anyway and users need to provide reasoning
-(including knowing the provenance and other accesses may happen to the
-same address), so I feel the type difference of "*const T" vs "*mut T"
-doesn't do anything extra either.
-
-Think about it, in Rust std, there are two pointer types only maps to
-"*mut T": NonNull<T> (as_ptr() returns a `*mut T`) and AtomicPtr<T>
-(as_ptr() returns a `*mut *mut T`). And there is no type like
-NonNullConst<T> and AtomicConstPtr<T>. This is a lint to me that we may
-not need to support `*const T` in most cases.
-
-But maybe I'm missing something? If you have a good reason, we can
-obviously add the support for `*const T`.
-
-Regards,
-Boqun
-
-> > +
-> >  // SAFETY: `i32` has the same size and alignment with itself, and is round-trip transmutable to
-> >  // itself.
-> >  unsafe impl super::AtomicType for i32 {
-> > @@ -215,4 +226,16 @@ fn atomic_bool_tests() {
-> >          assert_eq!(false, x.load(Relaxed));
-> >          assert_eq!(Ok(false), x.cmpxchg(false, true, Full));
-> >      }
-> > +
-> > +    #[test]
-> > +    fn atomic_ptr_tests() {
-> > +        let mut v = 42;
-> > +        let mut u = 43;
-> > +        let x = Atomic::new(&raw mut v);
-> > +
-> > +        assert_eq!(x.load(Acquire), &raw mut v);
-> > +        assert_eq!(x.cmpxchg(&raw mut u, &raw mut u, Relaxed), Err(&raw mut v));
-> > +        assert_eq!(x.cmpxchg(&raw mut v, &raw mut u, Relaxed), Ok(&raw mut v));
-> > +        assert_eq!(x.load(Relaxed), &raw mut u);
-> > +    }
-> >  }
+> Acknowledgment: this work is based on a lot of productive discussions
+> and hard work from others, these are the ones I can remember (sorry if I
+> forgot your contribution):
 > 
+> * Wedson started the work on RCU field projection and Benno followed it
+>   up and had been working on it as a more general language feature.
+>   Also, Gary's field-projection repo [3] has been used as an example for
+>   related discussions.
+> 
+> * During Kangrejos 2023 [4], Gary, Benno and Alice provided a lot of
+>   feedbacks on the talk from Paul and me: "If you want to use RCU in
+>   Rust for Linux kernel..."
+> 
+> * During a recent discussion among Benno, Paul and me, Benno suggested
+>   using `Pin<&mut>` to guarantee the exclusive access on updater
+>   operations.
+> 
+> Link: https://crates.io/crates/arc-swap [1]
+> Link: https://rust-lang.zulipchat.com/#narrow/channel/213817-t-lang/topic/Field.20Projections/near/474648059 [2]
+> Link: https://github.com/nbdd0121/field-projection [3]
+> Link: https://kangrejos.com/2023 [4]
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  rust/kernel/sync/rcu.rs | 326 +++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 325 insertions(+), 1 deletion(-)
+> 
+> diff --git a/rust/kernel/sync/rcu.rs b/rust/kernel/sync/rcu.rs
+> index a32bef6e490b..28bbccaa2e5e 100644
+> --- a/rust/kernel/sync/rcu.rs
+> +++ b/rust/kernel/sync/rcu.rs
+> @@ -4,7 +4,23 @@
+>  //!
+>  //! C header: [`include/linux/rcupdate.h`](srctree/include/linux/rcupdate.h)
+>  
+> -use crate::{bindings, types::NotThreadSafe};
+> +use crate::bindings;
+> +use crate::{
+> +    sync::atomic::{
+> +        Atomic,
+> +        Relaxed,
+> +        Release, //
+> +    },
+> +    types::{
+> +        ForeignOwnable,
+> +        NotThreadSafe, //
+> +    },
+> +};
+> +use core::{
+> +    marker::PhantomData,
+> +    pin::Pin,
+> +    ptr::NonNull, //
+> +};
+>  
+>  /// Evidence that the RCU read side lock is held on the current thread/CPU.
+>  ///
+> @@ -50,3 +66,311 @@ fn drop(&mut self) {
+>  pub fn read_lock() -> Guard {
+>      Guard::new()
+>  }
+> +
+> +use crate::types::Opaque;
+> +
+> +/// A temporary `UnsafePinned` [1] that provides a way to opt-out typical alias rules for mutable
+> +/// references.
+> +///
+> +/// # Invariants
+> +///
+> +/// `self.0` is always properly initialized.
+> +///
+> +/// [1]: https://doc.rust-lang.org/std/pin/struct.UnsafePinned.html
+> +struct UnsafePinned<T>(Opaque<T>);
+> +
+> +impl<T> UnsafePinned<T> {
+> +    const fn new(value: T) -> Self {
+> +        // INVARIANTS: `value` is initialized.
+> +        Self(Opaque::new(value))
+> +    }
+> +
+> +    const fn get(&self) -> *mut T {
+> +        self.0.get()
+> +    }
+> +}
+> +
+> +// SAFETY: `UnsafePinned` is safe to transfer between execution contexts as long as `T` is `Send`.
+> +unsafe impl<T: Send> Send for UnsafePinned<T> {}
+> +// SAFETY: `UnsafePinned` is safe to shared between execution contexts as long as `T` is `Sync`.
+> +unsafe impl<T: Sync> Sync for UnsafePinned<T> {}
+> +
+> +/// An RCU protected pointer, the pointed object is protected by RCU.
+> +///
+> +/// # Invariants
+> +///
+> +/// Either the pointer is null, or it points to a return value of
+> +/// [`ForeignOwnable::into_foreign()`] and the atomic variable exclusively owns the pointer.
+> +pub struct Rcu<P: ForeignOwnable>(
+> +    UnsafePinned<Atomic<*mut crate::ffi::c_void>>,
+> +    PhantomData<P>,
+> +);
+> +
+> +/// A pointer that has been unpublished, but hasn't waited for a grace period yet.
+> +///
+> +/// The pointed object may still have an existing RCU reader. Therefore a grace period is needed to
+> +/// free the object.
+> +///
+> +/// # Invariants
+> +///
+> +/// The pointer has to be a return value of [`ForeignOwnable::into_foreign`] and [`Self`]
+> +/// exclusively owns the pointer.
+> +pub struct RcuOld<P: ForeignOwnable>(NonNull<crate::ffi::c_void>, PhantomData<P>);
+> +
+> +impl<P: ForeignOwnable> Drop for RcuOld<P> {
+> +    fn drop(&mut self) {
+> +        // SAFETY: As long as called in a sleepable context, which should be checked by klint,
+> +        // `synchronize_rcu()` is safe to call.
+> +        unsafe {
+> +            bindings::synchronize_rcu();
+> +        }
+> +
+> +        // SAFETY: `self.0` is a return value of `P::into_foreign()`, so it's safe to call
+> +        // `from_foreign()` on it. Plus, the above `synchronize_rcu()` guarantees no existing
+> +        // `ForeignOwnable::borrow()` anymore.
+> +        let p: P = unsafe { P::from_foreign(self.0.as_ptr()) };
+> +        drop(p);
+> +    }
+> +}
+> +
+> +impl<P: ForeignOwnable> Rcu<P> {
+> +    /// Creates a new RCU pointer.
+> +    pub fn new(p: P) -> Self {
+> +        // INVARIANTS: The return value of `p.into_foreign()` is directly stored in the atomic
+> +        // variable.
+> +        Self(
+> +            UnsafePinned::new(Atomic::new(p.into_foreign())),
+> +            PhantomData,
+> +        )
+> +    }
+> +
+> +    fn as_atomic(&self) -> &Atomic<*mut crate::ffi::c_void> {
+> +        // SAFETY: Per type invariants of `UnsafePinned`, `self.0.get()` points to an initialized
+> +        // `&Atomic`.
+> +        unsafe { &*self.0.get() }
+> +    }
+> +
+> +    fn as_atomic_mut_pinned(self: Pin<&mut Self>) -> &Atomic<*mut crate::ffi::c_void> {
+> +        self.into_ref().get_ref().as_atomic()
+> +    }
+> +
+> +    /// Dereferences the protected object.
+> +    ///
+> +    /// Returns `Some(b)`, where `b` is a reference-like borrowed type, if the pointer is not null,
+> +    /// otherwise returns `None`.
+> +    ///
+> +    /// # Examples
+> +    ///
+> +    /// ```rust
+> +    /// # use kernel::alloc::{flags, KBox};
+> +    /// use kernel::sync::rcu::{self, Rcu};
+> +    ///
+> +    /// let x = Rcu::new(KBox::new(100i32, flags::GFP_KERNEL)?);
+> +    ///
+> +    /// let g = rcu::read_lock();
+> +    /// // Read in under RCU read lock protection.
+> +    /// let v = x.dereference(&g);
+> +    ///
+> +    /// assert_eq!(v, Some(&100i32));
+> +    ///
+> +    /// # Ok::<(), Error>(())
+> +    /// ```
+> +    ///
+> +    /// Note the borrowed access can outlive the reference of the [`Rcu<P>`], this is because as
+> +    /// long as the RCU read lock is held, the pointed object should remain valid.
+> +    ///
+> +    /// In the following case, the main thread is responsible for the ownership of `shared`, i.e. it
+> +    /// will drop it eventually, and a work item can temporarily access the `shared` via `cloned`,
+> +    /// but the use of the dereferenced object doesn't depend on `cloned`'s existence.
+> +    ///
+> +    /// ```rust
+> +    /// # use kernel::alloc::{flags, KBox};
+> +    /// # use kernel::workqueue::system;
+> +    /// # use kernel::sync::{Arc, atomic::{Atomic, Acquire, Release}};
+> +    /// use kernel::sync::rcu::{self, Rcu};
+> +    ///
+> +    /// struct Config {
+> +    ///     a: i32,
+> +    ///     b: i32,
+> +    ///     c: i32,
+> +    /// }
+> +    ///
+> +    /// let config = KBox::new(Config { a: 1, b: 2, c: 3 }, flags::GFP_KERNEL)?;
+> +    ///
+> +    /// let shared = Arc::new(Rcu::new(config), flags::GFP_KERNEL)?;
+> +    /// let cloned = shared.clone();
+> +    ///
+> +    /// // Use atomic to simulate a special refcounting.
+> +    /// static FLAG: Atomic<i32> = Atomic::new(0);
+> +    ///
+> +    /// system().try_spawn(flags::GFP_KERNEL, move || {
+> +    ///     let g = rcu::read_lock();
+> +    ///     let v = cloned.dereference(&g).unwrap();
+> +    ///     drop(cloned); // release reference to `shared`.
+> +    ///     FLAG.store(1, Release);
+> +    ///
+> +    ///     // but still need to access `v`.
+> +    ///     assert_eq!(v.a, 1);
+> +    ///     drop(g);
+> +    /// });
+> +    ///
+> +    /// // Wait until `cloned` dropped.
+> +    /// while FLAG.load(Acquire) == 0 {
+> +    ///     // SAFETY: Sleep should be safe.
+> +    ///     unsafe { kernel::bindings::schedule(); }
+> +    /// }
+> +    ///
+> +    /// drop(shared);
+> +    ///
+> +    /// # Ok::<(), Error>(())
+> +    /// ```
+> +    pub fn dereference<'rcu>(&self, _rcu_guard: &'rcu Guard) -> Option<P::Borrowed<'rcu>> {
+> +        // Ordering: Address dependency pairs with the `store(Release)` in copy_update().
+> +        let ptr = self.as_atomic().load(Relaxed);
+> +
+> +        if !ptr.is_null() {
+> +            // SAFETY:
+
+
+Would it be an option to take an early return here and with this drop
+one indentation level of the larger `SAFETY` comment?
+
+if ptr.is_null() {
+   return None;
+}
+
+// SAFETY:
+...
+Some(unsafe { P::borrow(ptr) })
+
+Same for `Drop for Rcu<P>` below.
+
+
+> +            // - Since `ptr` is not null, so it has to be a return value of `P::into_foreign()`.
+> +            // - The returned `Borrowed<'rcu>` cannot outlive the RCU Guar, this guarantees the
+
+Guar -> Guard
+
+> +            //   return value will only be used under RCU read lock, and the RCU read lock prevents
+> +            //   the pass of a grace period that the drop of `RcuOld` or `Rcu` is waiting for,
+> +            //   therefore no `from_foreign()` will be called for `ptr` as long as `Borrowed` exists.
+> +            //
+> +            //      CPU 0                                       CPU 1
+> +            //      =====                                       =====
+> +            //      { `x` is a reference to Rcu<Box<i32>> }
+> +            //      let g = rcu::read_lock();
+> +            //
+> +            //      if let Some(b) = x.dereference(&g) {
+> +            //      // drop(g); cannot be done, since `b` is still alive.
+> +            //
+> +            //                                              if let Some(old) = x.replace(...) {
+> +            //                                                  // `x` is null now.
+> +            //          println!("{}", b);
+> +            //      }
+> +            //                                                  drop(old):
+> +            //                                                    synchronize_rcu();
+> +            //      drop(g);
+> +            //                                                    // a grace period passed.
+> +            //                                                    // No `Borrowed` exists now.
+> +            //                                                    from_foreign(...);
+> +            //                                              }
+> +            Some(unsafe { P::borrow(ptr) })
+> +        } else {
+> +            None
+> +        }
+> +    }
+> +
+> +    /// Read, copy and update the pointer with new value.
+> +    ///
+> +    /// Returns `None` if the pointer's old value is null, otherwise returns `Some(old)`, where old
+> +    /// is a [`RcuOld`] which can be used to free the old object eventually.
+> +    ///
+> +    /// The `Pin<&mut Self>` is needed because this function needs the exclusive access to
+> +    /// [`Rcu<P>`], otherwise two `copy_update()`s may get the same old object and double free.
+> +    /// Using `Pin<&mut Self>` provides the exclusive access that C side requires with the type
+> +    /// system checking.
+> +    ///
+> +    /// Also this has to be `Pin` because a `&mut Self` may allow users to `swap()` safely, that
+> +    /// will break the atomicity. A [`Rcu<P>`] should be structurally pinned in the struct that
+> +    /// contains it.
+> +    ///
+> +    /// Note that `Pin<&mut Self>` cannot assume noalias on `self.0` here because of `self.0` is an
+> +    /// [`UnsafePinned`].
+> +    ///
+> +    /// [`UnsafePinned`]: https://doc.rust-lang.org/std/pin/struct.UnsafePinned.html
+> +    pub fn copy_update<F>(self: Pin<&mut Self>, f: F) -> Option<RcuOld<P>>
+> +    where
+> +        F: FnOnce(Option<P::Borrowed<'_>>) -> Option<P>,
+> +    {
+> +        let inner = self.as_atomic_mut_pinned();
+> +
+> +        // step 1: COPY, or more generally, initializing `new` based on `old`.
+> +        // Ordering: Address dependency pairs with the `store(Release)` in copy_update().
+> +        let old_ptr = NonNull::new(inner.load(Relaxed));
+> +
+> +        let old = old_ptr.map(|nonnull| {
+> +            // SAFETY: Per type invariants `old_ptr` has to be a value return by a previous
+> +            // `into_foreign()`, and the exclusive reference `self` guarantees that `from_foreign()`
+> +            // has not been called.
+> +            unsafe { P::borrow(nonnull.as_ptr()) }
+> +        });
+> +
+> +        let new = f(old);
+> +
+> +        // step 2: UPDATE.
+> +        if let Some(new) = new {
+> +            let new_ptr = new.into_foreign();
+> +            // Ordering: Pairs with the address dependency in `dereference()` and
+> +            // `copy_update()`.
+> +            // INVARIANTS: `new.into_foreign()` is directly store into the atomic variable.
+> +            inner.store(new_ptr, Release);
+> +        } else {
+> +            // Ordering: Setting to a null pointer doesn't need to be Release.
+> +            // INVARIANTS: The atomic variable is set to be null.
+> +            inner.store(core::ptr::null_mut(), Relaxed);
+> +        }
+> +
+> +        // INVARIANTS: The exclusive reference guarantess that the ownership of a previous
+> +        // `into_foreign()` transferred to the `RcuOld`.
+> +        Some(RcuOld(old_ptr?, PhantomData))
+> +    }
+> +
+> +    /// Replaces the pointer with new value.
+> +    ///
+> +    /// Returns `None` if the pointer's old value is null, otherwise returns `Some(old)`, where old
+> +    /// is a [`RcuOld`] which can be used to free the old object eventually.
+> +    ///
+> +    /// # Examples
+> +    ///
+> +    /// ```rust
+> +    /// use core::pin::pin;
+> +    /// # use kernel::alloc::{flags, KBox};
+> +    /// use kernel::sync::rcu::{self, Rcu};
+> +    ///
+> +    /// let mut x = pin!(Rcu::new(KBox::new(100i32, flags::GFP_KERNEL)?));
+> +    /// let q = KBox::new(101i32, flags::GFP_KERNEL)?;
+> +    ///
+> +    /// // Read in under RCU read lock protection.
+> +    /// let g = rcu::read_lock();
+> +    /// let v = x.dereference(&g);
+> +    ///
+> +    /// // Replace with a new object.
+> +    /// let old = x.as_mut().replace(q);
+> +    ///
+> +    /// assert!(old.is_some());
+> +    ///
+> +    /// // `v` should still read the old value.
+> +    /// assert_eq!(v, Some(&100i32));
+> +    ///
+> +    /// // New readers should get the new value.
+> +    /// assert_eq!(x.dereference(&g), Some(&101i32));
+> +    ///
+> +    /// drop(g);
+> +    ///
+> +    /// // Can free the object outside the read-side critical section.
+> +    /// drop(old);
+> +    /// # Ok::<(), Error>(())
+> +    /// ```
+> +    pub fn replace(self: Pin<&mut Self>, new: P) -> Option<RcuOld<P>> {
+> +        self.copy_update(|_| Some(new))
+> +    }
+> +}
+> +
+> +impl<P: ForeignOwnable> Drop for Rcu<P> {
+> +    fn drop(&mut self) {
+> +        let ptr = self.as_atomic().load(Relaxed);
+> +        if !ptr.is_null() {
+> +            // SAFETY: As long as called in a sleepable context, which should be checked by klint,
+> +            // `synchronize_rcu()` is safe to call.
+> +            unsafe {
+> +                bindings::synchronize_rcu();
+> +            }
+> +
+> +            // SAFETY: `self.0` is a return value of `P::into_foreign()`, so it's safe to call
+> +            // `from_foreign()` on it. Plus, the above `synchronize_rcu()` guarantees no existing
+> +            // `ForeignOwnable::borrow()` anymore.
+> +            drop(unsafe { P::from_foreign(ptr) });
+> +        }
+> +    }
+> +}
+
+
+Best regards
+
+Dirk
