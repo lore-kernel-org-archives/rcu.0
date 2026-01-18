@@ -1,67 +1,67 @@
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213E721FF33
-	for <rcu@vger.kernel.org>; Sun, 18 Jan 2026 10:20:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46369500967;
+	Sun, 18 Jan 2026 11:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768731613; cv=none; b=RgsL/dnKTi+K6CNxXTufqxwaozq/1CbFOBuJngHTATV11DOG9bzzRjbmhX5+SisuAb1CanKoC2xVaqvRd8tK7CWLlnp3KyygW5JpT8ZbIJMwoX+JawIN+7M+dhgWy7tNbbMgZ15cc2juHkvg2lFLL0u9wry0h5NdlZK+5TL1VRk=
+	t=1768735502; cv=none; b=NB0Hxyxn+rKYkUIhe0+92yeuiDHzc+0WzoMeuSWCuLu/QbOyLxgF/M0acxlpaDA4/WspV16sPG4WeVsJs7qRBN8bgu4ChH04B4tsqZT1mA4T5kT0mDjwB4eu2BB6pbfiH7CsBVK3D6tM/AUusiu1zfXIB4/6jvyYCiGoVYVF+Nk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768731613; c=relaxed/simple;
-	bh=likXx3lsQApM6JONVukVE/Mpr53YqrYKc4J3h53njsY=;
+	s=arc-20240116; t=1768735502; c=relaxed/simple;
+	bh=rRmNHUGPqRMm/3JopDjPqtCwlL5E/rEJsFwo32qsDt0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oqm6tOrdeg8Qefxr1r8hWzlAgWpcyvh+b2Fw011iiEJbfmchrnNRUPgiFeGz0i6yyPYyV6wKJCV9t5zPRfHFneSNs/6gLeAT40saCjx6+JJGh8UR0l0q8zmIWYbdEOM/Fx9BYrkPXZqpMMA1ajcCYTZNSeOS6ezBLCkaVy0xPtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D9ldKYOx; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 In-Reply-To:Content-Type; b=gTdqI98VMURxyrhTng2zuVhMj1TgIt3BDzMCBRnUoWVM7YP4XNlrBYgiAHuvDTxCfuLGvqjn7gB35s/lysb23nVA/DRHOnGq5utwJY1g7ryaKMatGjQhb+QI7fr4gbZ/Sm54MU/TaHWebBk0eXB576jhTfZBfbiHS7lNdDQxoGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bZ6uXaCy; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D9ldKYOx"
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-59b8466b4a8so2840625e87.1
-        for <rcu@vger.kernel.org>; Sun, 18 Jan 2026 02:20:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768731610; x=1769336410; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=do81nvqxnQsd+JF7gNbhz4jmsUyXkHo3tqbXNTfxmZ8=;
-        b=D9ldKYOxrDSx2DjAXqGLepwD5U7swFXzWrC++XJW75cgdtdxCRaVonYTZMYNXykuLm
-         rGF1ry+Pft72FCPjiFQ731Goom82QjMwGRkQQEKMrEAO9ygOAm+JFqvd8tlSiK36U+hQ
-         fkRsj3Wsh446WQLIeHt5huCFtihrXsDoG/1p8EciO+dlUp2IAnaBtaV9LMaVNayKkgJJ
-         gm4oCeKMrt0cQfqCbnH+GbRDVXNtv1sXvET0UyrvXmqK9ENUvVbNV80vdkS61MdDCs/D
-         LPNelLWPJj+GK8gsCqtmAMhXamHAbinYWPRH75+NfZdW4BjODXUx/AVysjO+vMF+rpcN
-         1V2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768731610; x=1769336410;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=do81nvqxnQsd+JF7gNbhz4jmsUyXkHo3tqbXNTfxmZ8=;
-        b=Zq/RQc8qX4uwuca4Yqw93mwuHIXyXQfUFK1LnAtq6J577s79QXM6C1xFTPbR5YP8d0
-         yng+ZjR9NrULqb6Gi3SLgC72kr7jFi9VTMu4ATsobljqLi95+44vwvvDHiYkRbPfukX2
-         ehzw7ykO631ZTmABavTE36VctXtS4947BNd2zOKbzoq9b1m4dST5IoilACPznnnkw/Fw
-         O/s1OPkl6rwPMeWUwi+KssmNRZ1dRx53m3JXSNXkmDM8lmZUCgHbX12WrWgiczfqvyQV
-         287knh1TqZIkl6R/NHEXZhCu1Zr4nnHx/1eKHXZsSZc2v1zpCjn3KsMKtigmPszo2C0E
-         Qy6A==
-X-Forwarded-Encrypted: i=1; AJvYcCVOghAmKtdijKQcLUV6iMmwVK12FCHVdRqUF2rt0bUZKix2O1XywfZEWB1PXTR6rRub8a4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbCU3oSI9TL+VRupPXMs0bC2w31xSNuEFHBmOuIk4L/MnoQLWH
-	p39Es/uu7Tdt+H8ztI2sPe8hmw9ss+11rQiTBIFi6Wzl5QPKSix+aOHtqTjjiA==
-X-Gm-Gg: AY/fxX5durar6x/JA7Lcho3Eu4dn10euYxsD7/5QnAvncx3h6HG7K7yX3YUqzFNE4Ic
-	u3yYmZEwZMfHIfQg6etux6jkasb0HDGlC3f8M+s3w7ETELxtml9EOwdyaB+hdqoiyvCuAavyU9b
-	kuTwZR+Ge+zxgQj4EFUDuc7J2Pos03r83ivUNgqW+lVItC9F8zh7DtIxRU/5sKCzwOTSxwOXfk8
-	kAWu08UvVks+CCsSqlILq5en809v+aApX5Gl0ZSM7QV2C7UABeh1LMSLvSB3dsmlBkVjWk2R/Oo
-	9ka8qwWwkUNDDu6O8UhiG+d1Wgs+izIdv2zGCSpdpKx3yC2mEVjoYXigVLF6A+yCFV93UeZuN6r
-	Jmhv0mZ/I45isWPecbzk/CexXqqxqw1KYP4kwriiK8NUMFhFUXMe5eViTu1vYoHJq9YFTqaokqF
-	MTIbogjqS9eEpzxJINK982XRwDoKIBLs4SB3CGaM2Uofrm+40RV0VMlxpDggWlgo95viKUByJTv
-	R6CMF8PJOZv7vBlCpo2p3yK2FyH9wVPGbMS6ZMVxLtNI4OXNNnv09PB
-X-Received: by 2002:a05:6402:5114:b0:64b:93f4:bf85 with SMTP id 4fb4d7f45d1cf-654b955ce0dmr6185816a12.10.1768725520910;
-        Sun, 18 Jan 2026 00:38:40 -0800 (PST)
-Received: from ?IPV6:2003:df:bf2d:e300:8193:226f:9765:711d? (p200300dfbf2de3008193226f9765711d.dip0.t-ipconnect.de. [2003:df:bf2d:e300:8193:226f:9765:711d])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-654533cc5d6sm7155488a12.22.2026.01.18.00.38.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Jan 2026 00:38:39 -0800 (PST)
-Message-ID: <67e5482b-93ed-4b5f-8375-f7e68c50a436@gmail.com>
-Date: Sun, 18 Jan 2026 09:38:36 +0100
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bZ6uXaCy"
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60IANojX011442;
+	Sun, 18 Jan 2026 11:24:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=224k99
+	1wunepNTMjBvoXK0Z8BMo+9M6kNaO6+6ya/a8=; b=bZ6uXaCyKT7wdGJ4upZrkw
+	9Jn8Nk9BNfzRZI+XzDQZI5pM1Igv3hIxEpuEjukV0up/RI2DqDirr4KWrJ8z2c0C
+	n42UNqK5cVB42EOxYTxKE1CqevewXVLO7jaUU9EttNIruxfJRidNlk08WbCCWUiF
+	aUGXkfKhPO6eRy51ieBjZeP/BizbotG+HcPhuXGld7CdJQEXu/HEPLf8ownRYdiP
+	QMsbIgjfeIvKSQvIenUw/laBgYaOpZ4H4wryzWOWWWVVguTALdVeeUyGXJJc/rzN
+	nTQ+vqIuhsWsimEy6VHIL/wdohNRYRAJG/XRuvsimfz8NQgWKTzNg1ws8Y9EFPtA
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bqyujuw3e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 18 Jan 2026 11:24:55 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60IBOtlY018151;
+	Sun, 18 Jan 2026 11:24:55 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bqyujuw3c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 18 Jan 2026 11:24:55 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60IB4599024610;
+	Sun, 18 Jan 2026 11:24:54 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4brxar81xm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 18 Jan 2026 11:24:54 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60IBOqwa23200344
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 18 Jan 2026 11:24:53 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BBCDF58058;
+	Sun, 18 Jan 2026 11:24:52 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 665945805B;
+	Sun, 18 Jan 2026 11:24:48 +0000 (GMT)
+Received: from [9.39.20.96] (unknown [9.39.20.96])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Sun, 18 Jan 2026 11:24:47 +0000 (GMT)
+Message-ID: <9c544560-1448-42a4-b16d-000f06733d0b@linux.ibm.com>
+Date: Sun, 18 Jan 2026 16:54:46 +0530
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -69,178 +69,231 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] rust: sync: atomic: Add Atomic<*mut T> support
-To: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Cc: Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Benno Lossin <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
- Danilo Krummrich <dakr@kernel.org>, Will Deacon <will@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- FUJITA Tomonori <fujita.tomonori@gmail.com>
-References: <20260117122243.24404-1-boqun.feng@gmail.com>
- <20260117122243.24404-5-boqun.feng@gmail.com>
-Content-Language: de-AT-frami
-From: Dirk Behme <dirk.behme@gmail.com>
-In-Reply-To: <20260117122243.24404-5-boqun.feng@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-On 17.01.26 13:22, Boqun Feng wrote:
-> Atomic pointer support is an important piece of synchronization
-> algorithm, e.g. RCU, hence provide the support for that.
-> 
-> Note that instead of relying on atomic_long or the implementation of
-> `Atomic<usize>`, a new set of helpers (atomic_ptr_*) is introduced for
-> atomic pointer specifically, this is because ptr2int casting would
-> lose the provenance of a pointer and even though in theory there are a
-> few tricks the provenance can be restored, it'll still be a simpler
-> implementation if C could provide atomic pointers directly. The side
-> effects of this approach are: we don't have the arithmetic and logical
-> operations for pointers yet and the current implementation only works
-> on ARCH_SUPPORTS_ATOMIC_RMW architectures, but these are implementation
-> issues and can be added later.
-> 
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
->  rust/helpers/atomic_ext.c            |  3 +++
->  rust/kernel/sync/atomic.rs           | 12 +++++++++++-
->  rust/kernel/sync/atomic/internal.rs  | 21 +++++++++++++++------
->  rust/kernel/sync/atomic/predefine.rs | 23 +++++++++++++++++++++++
->  4 files changed, 52 insertions(+), 7 deletions(-)
-> 
-> diff --git a/rust/helpers/atomic_ext.c b/rust/helpers/atomic_ext.c
-> index 240218e2e708..c267d5190529 100644
-> --- a/rust/helpers/atomic_ext.c
-> +++ b/rust/helpers/atomic_ext.c
-> @@ -36,6 +36,7 @@ __rust_helper void rust_helper_atomic_##tname##_set_release(type *ptr, type val)
->  
->  GEN_READ_SET_HELPERS(i8, s8)
->  GEN_READ_SET_HELPERS(i16, s16)
-> +GEN_READ_SET_HELPERS(ptr, const void *)
->  
->  /*
->   * xchg helpers depend on ARCH_SUPPORTS_ATOMIC_RMW and on the
-> @@ -59,6 +60,7 @@ rust_helper_atomic_##tname##_xchg##suffix(type *ptr, type new)			\
->  
->  GEN_XCHG_HELPERS(i8, s8)
->  GEN_XCHG_HELPERS(i16, s16)
-> +GEN_XCHG_HELPERS(ptr, const void *)
->  
->  /*
->   * try_cmpxchg helpers depend on ARCH_SUPPORTS_ATOMIC_RMW and on the
-> @@ -82,3 +84,4 @@ rust_helper_atomic_##tname##_try_cmpxchg##suffix(type *ptr, type *old, type new)
->  
->  GEN_TRY_CMPXCHG_HELPERS(i8, s8)
->  GEN_TRY_CMPXCHG_HELPERS(i16, s16)
-> +GEN_TRY_CMPXCHG_HELPERS(ptr, const void *)
-> diff --git a/rust/kernel/sync/atomic.rs b/rust/kernel/sync/atomic.rs
-> index 4aebeacb961a..4d2a5228c2e4 100644
-> --- a/rust/kernel/sync/atomic.rs
-> +++ b/rust/kernel/sync/atomic.rs
-> @@ -51,6 +51,10 @@
->  #[repr(transparent)]
->  pub struct Atomic<T: AtomicType>(AtomicRepr<T::Repr>);
->  
-> +// SAFETY: `Atomic<T>` is safe to transfer between execution contexts because of the safety
-> +// requirement of `AtomicType`.
-> +unsafe impl<T: AtomicType> Send for Atomic<T> {}
-> +
->  // SAFETY: `Atomic<T>` is safe to share among execution contexts because all accesses are atomic.
->  unsafe impl<T: AtomicType> Sync for Atomic<T> {}
->  
-> @@ -68,6 +72,11 @@ unsafe impl<T: AtomicType> Sync for Atomic<T> {}
->  ///
->  /// - [`Self`] must have the same size and alignment as [`Self::Repr`].
->  /// - [`Self`] must be [round-trip transmutable] to  [`Self::Repr`].
-> +/// - [`Self`] must be safe to transfer between execution contexts, if it's [`Send`], this is
-> +///   automatically satisfied. The exception is pointer types that are even though marked as
-> +///   `!Send` (e.g. raw pointers and [`NonNull<T>`]) but requiring `unsafe` to do anything
-> +///   meaningful on them. This is because transferring pointer values between execution contexts is
-> +///   safe as long as the actual `unsafe` dereferencing is justified.
->  ///
->  /// Note that this is more relaxed than requiring the bi-directional transmutability (i.e.
->  /// [`transmute()`] is always sound between `U` and `T`) because of the support for atomic
-> @@ -108,7 +117,8 @@ unsafe impl<T: AtomicType> Sync for Atomic<T> {}
->  /// [`transmute()`]: core::mem::transmute
->  /// [round-trip transmutable]: AtomicType#round-trip-transmutability
->  /// [Examples]: AtomicType#examples
-> -pub unsafe trait AtomicType: Sized + Send + Copy {
-> +/// [`NonNull<T>`]: core::ptr::NonNull
-> +pub unsafe trait AtomicType: Sized + Copy {
->      /// The backing atomic implementation type.
->      type Repr: AtomicImpl;
->  }
-> diff --git a/rust/kernel/sync/atomic/internal.rs b/rust/kernel/sync/atomic/internal.rs
-> index 0dac58bca2b3..93f5a7846645 100644
-> --- a/rust/kernel/sync/atomic/internal.rs
-> +++ b/rust/kernel/sync/atomic/internal.rs
-> @@ -7,6 +7,7 @@
->  use crate::bindings;
->  use crate::macros::paste;
->  use core::cell::UnsafeCell;
-> +use ffi::c_void;
->  
->  mod private {
->      /// Sealed trait marker to disable customized impls on atomic implementation traits.
-> @@ -14,10 +15,11 @@ pub trait Sealed {}
->  }
->  
->  // The C side supports atomic primitives only for `i32` and `i64` (`atomic_t` and `atomic64_t`),
-> -// while the Rust side also layers provides atomic support for `i8` and `i16`
-> -// on top of lower-level C primitives.
-> +// while the Rust side also provides atomic support for `i8`, `i16` and `*const c_void` on top of
-> +// lower-level C primitives.
->  impl private::Sealed for i8 {}
->  impl private::Sealed for i16 {}
-> +impl private::Sealed for *const c_void {}
->  impl private::Sealed for i32 {}
->  impl private::Sealed for i64 {}
->  
-> @@ -26,10 +28,10 @@ impl private::Sealed for i64 {}
->  /// This trait is sealed, and only types that map directly to the C side atomics
->  /// or can be implemented with lower-level C primitives are allowed to implement this:
->  ///
-> -/// - `i8` and `i16` are implemented with lower-level C primitives.
-> +/// - `i8`, `i16` and `*const c_void` are implemented with lower-level C primitives.
->  /// - `i32` map to `atomic_t`
->  /// - `i64` map to `atomic64_t`
-> -pub trait AtomicImpl: Sized + Send + Copy + private::Sealed {
-> +pub trait AtomicImpl: Sized + Copy + private::Sealed {
->      /// The type of the delta in arithmetic or logical operations.
->      ///
->      /// For example, in `atomic_add(ptr, v)`, it's the type of `v`. Usually it's the same type of
-> @@ -51,6 +53,13 @@ impl AtomicImpl for i16 {
->      type Delta = Self;
->  }
->  
-> +// The current helpers of load/store uses `{WRITE,READ}_ONCE()` hence the atomicity is only
-
-uses -> use ?
-
-> +// guaranteed against read-modify-write operations if the architecture supports native atomic RmW.
-> +#[cfg(CONFIG_ARCH_SUPPORTS_ATOMIC_RMW)]
-> +impl AtomicImpl for *const c_void {
-> +    type Delta = isize;
-> +}
-
-Are all users of this guarded with CONFIG_ARCH_SUPPORTS_ATOMIC_RMW as
-well? Or do we want (need?) to cover the
-non-CONFIG_ARCH_SUPPORTS_ATOMIC_RMW cases where someone tries to use
-this as well?
-
-Best regards
-
-Dirk
+Subject: Re: [PATCH] rcu: Latch normal synchronize_rcu() path on flood
+To: Shrikanth Hegde <sshegde@linux.ibm.com>,
+        Joel Fernandes <joelagnelf@nvidia.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>, Paul E McKenney
+ <paulmck@kernel.org>,
+        Vishal Chourasia <vishalc@linux.ibm.com>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, RCU <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+References: <20260114183415.286489-1-urezki@gmail.com>
+ <1c6b741e-acfd-432b-bd04-4534c2e2511a@linux.ibm.com>
+ <B7C99D22-0544-4177-A299-E3D458EA55F6@nvidia.com>
+ <00e91ebc-0783-4519-9727-53dd3a625298@linux.ibm.com>
+Content-Language: en-US
+From: Samir M <samir@linux.ibm.com>
+In-Reply-To: <00e91ebc-0783-4519-9727-53dd3a625298@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE4MDA5OCBTYWx0ZWRfX10hqgQSP9/tX
+ eClE+kZ3F1vf86xQLtGXRhkbmL35piWCZx+CNviU4HPQ+QAICsEaQ7QAvHwrqTnSpVWycv8P7wk
+ RPwkFIlL5w2DlXeBcLrqa2BUnimhLnlM2WGG4skxjmL/EO1Y7Wdkp48vshZp/rVJtb/ntrQ03a9
+ 5/4aS8YNrDNR3dvtA7g/kOWvTPvcuCnQbONFXvYOPPsTXwo2Q07Y+TGC1q0Fa2l6K05aYaWz5cK
+ z3AjfCGnww+CfiBmq3ySMefKffevwOCINqe/YjRzSRyZJ7uNeZo0roev/2UvrjZSqcrud+01ceL
+ iM02446PoUmiwHrsJaUm8nP6ndk8F1bWOINx5E7AgGPdH39Tmhn4bH3A3zTdIw0//zWp5YTs9v9
+ b72RBukN7YNkQ+o/vUo1aHDz/DT/Sox8j/7ogVlR5rd4ZeI7sghzhv6m4Urn9JgcqKFqgyBw2MW
+ HZbvAMbWDxBW7Wl2K7A==
+X-Authority-Analysis: v=2.4 cv=bsBBxUai c=1 sm=1 tr=0 ts=696cc307 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=Ikd4Dj_1AAAA:8 a=pGLkceISAAAA:8
+ a=DFK25qOm3bQXS9wycRcA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: m0z6rcqgcoQlqd9Ii-90Szgcn3v17K5C
+X-Proofpoint-GUID: 5xu4arF_7DyWOaOhVYZMZ5N9gE9Rn8Ul
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-17_03,2026-01-15_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 suspectscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0
+ impostorscore=0 malwarescore=0 clxscore=1015 adultscore=0 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2601150000 definitions=main-2601180098
 
 
+On 17/01/26 5:48 pm, Shrikanth Hegde wrote:
+>
+>
+> On 1/17/26 2:18 PM, Joel Fernandes wrote:
+>>
+>>
+>>> On Jan 17, 2026, at 1:17 AM, Samir M <samir@linux.ibm.com> wrote:
+>>>
+>>> ﻿
+>>>> On 15/01/26 12:04 am, Uladzislau Rezki (Sony) wrote:
+>>>> Currently, rcu_normal_wake_from_gp is only enabled by default
+>>>> on small systems(<= 16 CPUs) or when a user explicitly set it
+>>>> enabled.
+>>>>
+>>>> This patch introduces an adaptive latching mechanism:
+>>>>   * Tracks the number of in-flight synchronize_rcu() requests
+>>>>     using a new atomic_t counter(rcu_sr_normal_count);
+>>>>
+>>>>   * If the count exceeds RCU_SR_NORMAL_LATCH_THR(64), it sets
+>>>>     the rcu_sr_normal_latched, reverting new requests onto the
+>>>>     scaled wait_rcu_gp() path;
+>>>>
+>>>>   * The latch is cleared only when the pending requests are fully
+>>>>     drained(nr == 0);
+>>>>
+>>>>   * Enables rcu_normal_wake_from_gp by default for all systems,
+>>>>     relying on this dynamic throttling instead of static CPU
+>>>>     limits.
+>>>>
+>>>> Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
+>>>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+>>>> ---
+>>>>   kernel/rcu/tree.c | 37 ++++++++++++++++++++++++++-----------
+>>>>   1 file changed, 26 insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>>> index 293bbd9ac3f4..c42d480d6e0b 100644
+>>>> --- a/kernel/rcu/tree.c
+>>>> +++ b/kernel/rcu/tree.c
+>>>> @@ -1631,17 +1631,21 @@ static void rcu_sr_put_wait_head(struct 
+>>>> llist_node *node)
+>>>>       atomic_set_release(&sr_wn->inuse, 0);
+>>>>   }
+>>>>   -/* Enable rcu_normal_wake_from_gp automatically on small 
+>>>> systems. */
+>>>> -#define WAKE_FROM_GP_CPU_THRESHOLD 16
+>>>> -
+>>>> -static int rcu_normal_wake_from_gp = -1;
+>>>> +static int rcu_normal_wake_from_gp = 1;
+>>>>   module_param(rcu_normal_wake_from_gp, int, 0644);
+>>>>   static struct workqueue_struct *sync_wq;
+>>>>   +#define RCU_SR_NORMAL_LATCH_THR 64
+>>>> +
+>>>> +/* Number of in-flight synchronize_rcu() calls queued on srs_next. */
+>>>> +static atomic_long_t rcu_sr_normal_count;
+>>>> +static atomic_t rcu_sr_normal_latched;
+>>>> +
+>>>>   static void rcu_sr_normal_complete(struct llist_node *node)
+>>>>   {
+>>>>       struct rcu_synchronize *rs = container_of(
+>>>>           (struct rcu_head *) node, struct rcu_synchronize, head);
+>>>> +    long nr;
+>>>>         WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+>>>> !poll_state_synchronize_rcu_full(&rs->oldstate),
+>>>> @@ -1649,6 +1653,15 @@ static void rcu_sr_normal_complete(struct 
+>>>> llist_node *node)
+>>>>         /* Finally. */
+>>>>       complete(&rs->completion);
+>>>> +    nr = atomic_long_dec_return(&rcu_sr_normal_count);
+>>>> +    WARN_ON_ONCE(nr < 0);
+>>>> +
+>>>> +    /*
+>>>> +     * Unlatch: switch back to normal path when fully
+>>>> +     * drained and if it has been latched.
+>>>> +     */
+>>>> +    if (nr == 0)
+>>>> +        (void)atomic_cmpxchg(&rcu_sr_normal_latched, 1, 0);
+>>>>   }
+>>>>     static void rcu_sr_normal_gp_cleanup_work(struct work_struct 
+>>>> *work)
+>>>> @@ -1794,7 +1807,14 @@ static bool rcu_sr_normal_gp_init(void)
+>>>>     static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+>>>>   {
+>>>> +    long nr;
+>>>> +
+>>>>       llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
+>>>> +    nr = atomic_long_inc_return(&rcu_sr_normal_count);
+>>>> +
+>>>> +    /* Latch: only when flooded and if unlatched. */
+>>>> +    if (nr >= RCU_SR_NORMAL_LATCH_THR)
+>>>> +        (void)atomic_cmpxchg(&rcu_sr_normal_latched, 0, 1);
+>>>>   }
+>>>>     /*
+>>>> @@ -3268,7 +3288,8 @@ static void synchronize_rcu_normal(void)
+>>>>         trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
+>>>>   -    if (READ_ONCE(rcu_normal_wake_from_gp) < 1) {
+>>>> +    if (READ_ONCE(rcu_normal_wake_from_gp) < 1 ||
+>>>> +            atomic_read(&rcu_sr_normal_latched)) {
+>>>>           wait_rcu_gp(call_rcu_hurry);
+>>>>           goto trace_complete_out;
+>>>>       }
+>>>> @@ -4892,12 +4913,6 @@ void __init rcu_init(void)
+>>>>       sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM | 
+>>>> WQ_UNBOUND, 0);
+>>>>       WARN_ON(!sync_wq);
+>>>>   -    /* Respect if explicitly disabled via a boot parameter. */
+>>>> -    if (rcu_normal_wake_from_gp < 0) {
+>>>> -        if (num_possible_cpus() <= WAKE_FROM_GP_CPU_THRESHOLD)
+>>>> -            rcu_normal_wake_from_gp = 1;
+>>>> -    }
+>>>> -
+>>>>       /* Fill in default value for rcutree.qovld boot parameter. */
+>>>>       /* -After- the rcu_node ->lock fields are initialized! */
+>>>>       if (qovld < 0)
+>>>
+>>>
+>>> Hi Uladzislau,
+>>>
+>>> I verified this patch using the configuration described below.
+>>> Configuration:
+>>>      •    Kernel version: 6.19.0-rc5
+>>>      •    Number of CPUs: 2048
+>>>
+>>> Using this setup, I evaluated the patch with both SMT enabled and 
+>>> SMT disabled. The results indicate that when SMT is enabled, the 
+>>> system time is noticeably higher. In contrast, with SMT disabled, no 
+>>> significant increase in system time is observed.
+>>>
+>>> SMT=ON  -> sys 31m22.922s
+>>> SMT=OFF -> sys 0m0.046s
+>>>
+>>>
+>>> SMT Mode    | Without Patch    | With Patch   | % Improvement    |
+>>> ------------------------------------------------------------------
+>>> SMT=off     | 30m 53.194s      | 26m 24.009s  | +14.53%          |
+>>> SMT=on      | 49m 5.920s       | 47m 5.513s   | +4.09%
+>>
+>> So it takes you 47 minutes to offline CPUs and you are Ok with that?
+>>
+>> - Joel
+>>
+>
+>
+> This is certainly quite long. IMO not worth the added complexity
+> of atomic inc/dec reads happening(even though till 64 CPUs)
+>
+> Samir,
+> can you post number's with vishal's patch of using rcu expedited?
+>
+>
+>>
+>>
+>>>         |
+>>>
+>>>
+>>> Please add below tag: Tested-by: Samir M <samir@linux.ibm.com>
+>>>
+>>> Regards,
+>>> Samir
+>>>
+>>>
+>
+Shrikanth,
+
+I verified Vishal’s patch as described below, using the following 
+configuration.
+Configuration:
+     •    Kernel version: 6.19.0-rc5
+     •    Number of CPUs: 2048
+
+Vishal's patch link: 
+https://lore.kernel.org/all/20260112094332.66006-2-vishalc@linux.ibm.com/
+Verification of Vishal’s patch shows a significant improvement in the 
+*SMT=off* case and a measurable improvement in the *SMT=on* case.
+
+SMT Mode    | Without Patch    | With Patch | % Improvement    |
+------------------------------------------------------------------
+SMT=off     | 30m 53.194s      |  6m 4.250s  | +80.40%          |
+SMT=on      | 49m 5.920s       | 36m 50.386s | +25.01%          |
+
+
+Regards,
+Samir
 
