@@ -1,58 +1,59 @@
-Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012049.outbound.protection.outlook.com [52.101.48.49])
+Received: from BYAPR05CU005.outbound.protection.outlook.com (mail-westusazon11010042.outbound.protection.outlook.com [52.101.85.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91A32F745E;
-	Mon, 19 Jan 2026 21:13:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91CF9500960;
+	Mon, 19 Jan 2026 21:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.42
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768857235; cv=fail; b=JJCBdd7ho+3R7M/GBhZJVFp1dHrLmsrAULoEgDhATlsLx1I/1CK3Uoq8c1Hexka5ipbshs9q8o4Dokza5PhZg1x2KhiJ7O3GR7jxn12GDjImpysjtwFmNMluK8cjLI/SlxwBiR7N3Xs824WaBY+BgyOAZ0hc7TdKYjzy7OoI0Vg=
+	t=1768858474; cv=fail; b=X0yvM9svtO/Ll+E1t02QNyOlZztJQ+N/LDMLvGKV2wq5aBk8qsMMzKdITEByQPFqL6snFn//3U3xkJPCd0IU50l/ot2B5nkMQnia55HiPpRWxYhpCe4Uq2qt6rdQOLfkmPzvTuTf/piG09aEieehGlRlJ0wqKqkF+ME+VH9t7Y0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768857235; c=relaxed/simple;
-	bh=eVTY8zed6tgUm7RSynGT+/TBKi/nd6hwncH17nKxnUk=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Message-ID:Date:
-	 Content-Type:MIME-Version; b=npStG9CpfM0J2tVkYL9dvlmRcK1vZZUb810/rmEJ0bclyd4oUM7IgFf0+sZjrRMGcn76vVto1J19gXC9b+GfNX7rLqXqrwAzTg4+zxioOUWe15U0C+8qlZtKPzWiqk0k6CgL2oWhvfXhRyH2RkmBInJuJF0WCDkPH1Hj4ymSRmg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DHJ6kasE; arc=fail smtp.client-ip=52.101.48.49
+	s=arc-20240116; t=1768858474; c=relaxed/simple;
+	bh=RVCp59DoQXrtVmEodn0XjD0PG9OUsOmdVLWo4Djlc4w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 Message-ID:MIME-Version; b=cTOSMIZp0adTuwi1iRWlS1VV5s2Tyffy4vvCZr/lJUFscp2HKbL4G6RA6vcsrJGPC5stKSG4HivoDtQzyNH42+jkIVhFFBszjxK9Z7N7/DgZn3nrh8Gm44h96F/GRZFcgOAP38PcZMppOHjIh7S8wVH68xQQzDHpVYMZ3fUKGcQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=qhZeEtUl; arc=fail smtp.client-ip=52.101.85.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="DHJ6kasE"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="qhZeEtUl"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=J15qFFm0Gg03AN0iazvHD5ZT/zQQxHZ7foEtJagLvii906dmEOaFXEZkQEca4+zo8qPtZ55dsv/abTVXoQ2lXBEZikUCjVfRAcudkmhF7wM9IabDFkWp3+57PAXT2lr2UzyqFaQ6+fgzh8/BC3E+bOBfOlNKWNAhjxBkFzFONQnbWlnrUP/HNQuXJeOFquDi/VdDLYxA9GoE7zPLNCrkSQgQygBk6yNAiEExd6zVAynl/wNuqR6YYLAH54kgVYAo2CUMJq2zCVQL0Q1Rq/pbkmzQSDq4813MCUCx8KPEhnOTSDlTukAMAu3s26z4ixbNWgMz4WH+RP0uAvFYomolTg==
+ b=EWALe0etn6r7SQaA811bRLqQ/mAEqkcHx+T+2D48yP0Uo6J2FXvYz45UCnkzq2W0s0CF5Oqhyj5HeGUt76YlhXuPRSng/8uuKrHshYCTqniX5FOw385LxJNnPDBQ0HtvwIOonFH8KatSHLNdVQE4gb6xPq4mjP459fGTxK1y32htAJaztvk8G/F+64RDRPXdPXvcQy4iP6HInDRQf+nXUsz9bHMUun8QbR6v4GIYQCmfo0FZ3T/CWcKVNeFIezLey0yiH68bU76H3NmJWp9doLF2sH/4xYv/osubZBs2bAgEg5MFii0Iv6Rpk+xF0jlLSFe8oHR+e2cEZgYmFZZeIg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Dv4pDiaxzO9TQFJyo8Ca+fsxdP9nj4nlIQG7Fv77+/w=;
- b=iTviOIzvASyMiU/jedXy71PD+rQXJxjA3fbmunHPBFRPh3xt0L58N5THK7tlgrENnAxutMb5+WCgdWOV4XRjtCC2MbrZkEjY9ZQ+lAkOLEnOTgG57uraml6vNcA2TfDups/cJtm2+nYXpPI2oq6X/mImlWobYzG5uZA8NZnNhi/Dj8ftLgtvp3vT33/TvnSg9pkxswmDw6zLpYnzaNQNX4x1M0Dy0c9q32EwdqZ46ZQ1tlnMW01s7KZsH0oXkhcxer1pJLxfogU2h8bVKlfOP+fdB+1+vVVQCMTLUdhaxtKrfQRFTktVlZjYviZDc2289nRDAWnr8Bka9q3PsUr4bA==
+ bh=KLDfvz/RGzUE7KWOiJRs3+E2vFuveq6cfduizpYEFAk=;
+ b=adWHoHhhHYBjoq9vpvmRHsMruXzEcHkZkUwOwtEXdlamrnVnuiHfkf+ceHt+h8luSQvnQDaZt9fd2ALARQx3y+yIk/0j2BHo1h1Cxa+UJ5fGs45inVKHo7ClNmbglDUI+RCWuUhitLa5Cap6gyQJIDXbOPldvZc2EyxNfedb0bBfEuprmpCCe7U5Q9J6ITvHxlyKZOTe8gtHfe77gbSKLutw4MH026w7XsSUgSaydxW2MCAER4zenOqZRLEmF6gODtBhuyLULeLHi0SoWan9ufCrQdKVhQHbBkTCbKRVpnzOFtVBZO+vXm/ZVrb4OGRBiYI/DDnO12l+yeukgAz9bg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dv4pDiaxzO9TQFJyo8Ca+fsxdP9nj4nlIQG7Fv77+/w=;
- b=DHJ6kasE4l1UCCJFL/VHomSqY3kHYgHtigTFSRLtKAiYRXeHL0gB3svRf849uMs7Jf1YRJKfs0gJAbjmWfwJGsf/kLsZaXJA8n1EgV3QWkedkB+hq2/t9YrqlqiRj/qbL4R8/IdDVkLSK9LEBgMqdBrx1kOTRVzMJtyXav/igjepPsfG9h1x2IDitBopMtYGvswJCuL4N/Qfi4H3p1YKigRpVe9pI3OFscMw4kAz0KCSiFXF0R72ossO8NEaR3ZGx6t8bHTvnlwAEM6glGNKF0Lj2HTHVNh9js5T8PC+sJK7BbpkDU9n4K5LF/VVgqkvqa6+nlyJwm1/EtbH8/7uww==
+ bh=KLDfvz/RGzUE7KWOiJRs3+E2vFuveq6cfduizpYEFAk=;
+ b=qhZeEtUlZlhcF0nXd4Sh6+ozUesEewTZwwK8ZGhmGDFlmQBIR0EVd3rnJq9RZTYUCHxyKr2x82f+hotIPPela+ysPPG8xuL1c+GB/n/onRP0LlOgEysA/BMusJPf9xCQV0yj/hq1IWlpLfurJ2tYj/XaGe2c1V8rL1oAeh8ZJyOQhp3c81/fd835KtrpYudUaAnqGbOozkwkd39a2fkI6WuslEqzSQk9OOUqYah1MLP1iSh2RwXK+qP4eRV1rItwiWIw36EosPn5tkWF2IzNSPqHOp4DtXOnemLvenSC22U03EiuqN0dilxU5k2Q1Gxu5GZM4tlkNl040EX+Do9bcw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- CY5PR12MB6226.namprd12.prod.outlook.com (2603:10b6:930:22::5) with Microsoft
+ DS0PR12MB6535.namprd12.prod.outlook.com (2603:10b6:8:c0::16) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9520.11; Mon, 19 Jan 2026 21:13:50 +0000
+ 15.20.9520.11; Mon, 19 Jan 2026 21:34:29 +0000
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33%4]) with mapi id 15.20.9520.010; Mon, 19 Jan 2026
- 21:13:49 +0000
-Subject: Re: [PATCH] cpuhp: Expedite synchronize_rcu during CPU hotplug operations
-From: <joelagnelf@nvidia.com>
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: <paulmck@kernel.org>, <frederic@kernel.org>, <neeraj.upadhyay@kernel.org>, <josh@joshtriplett.org>, <boqun.feng@gmail.com>, <urezki@gmail.com>, <rostedt@goodmis.org>, <tglx@linutronix.de>, <peterz@infradead.org>, <srikar@linux.ibm.com>, Samir M <samir@linux.ibm.com>, Vishal Chourasia <vishalc@linux.ibm.com>, <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <90ff4c0e-bef7-46e5-b183-54b2ded3b00e@linux.ibm.com>
-References: <90ff4c0e-bef7-46e5-b183-54b2ded3b00e@linux.ibm.com>
-Message-ID: <0299355F-E474-4892-AFC1-11C63B6F4FCC@nvidia.com>
-Date: Mon, 19 Jan 2026 16:10:48 -0500
+ 21:34:29 +0000
+Date: Mon, 19 Jan 2026 16:34:28 -0500
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>
+Subject: Re: [PATCH -next v2 3/4] rcu/nocb: Add warning to detect if overload advancement is ever useful
+In-Reply-To: <aWq-1IXhOeisfKC3@pavilion.home>
+References: <20260114173154.1701056-1-joelagnelf@nvidia.com> <20260114173154.1701056-4-joelagnelf@nvidia.com> <aWq-1IXhOeisfKC3@pavilion.home>
 Content-Type: text/plain
-X-ClientProxiedBy: BLAPR03CA0155.namprd03.prod.outlook.com
- (2603:10b6:208:32f::13) To DS0PR12MB6486.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0128.namprd13.prod.outlook.com
+ (2603:10b6:208:2bb::13) To DS0PR12MB6486.namprd12.prod.outlook.com
  (2603:10b6:8:c5::21)
+Message-ID:
+ <DS0PR12MB64868AAAC59AE4298DF0E0E8A388A@DS0PR12MB6486.namprd12.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -60,247 +61,146 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|CY5PR12MB6226:EE_
-X-MS-Office365-Filtering-Correlation-Id: 53f814f0-3e3a-4060-0528-08de579fa407
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|DS0PR12MB6535:EE_
+X-MS-Office365-Filtering-Correlation-Id: cad022f7-c951-47c5-8efe-08de57a286c4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?6RQIQceWmPUjw+KpDblLVX2srzOTfvM2AgeHexR7sM08yR/zzcLufxfQ6+wN?=
- =?us-ascii?Q?S88f/TJz+ygCn/nc+tjpbIaji5WSk0B62SBYkp2MS4fUXTA2i1JhalOoE/hc?=
- =?us-ascii?Q?G8Q1+g698l4rnmQUjoKFRI/A8YzasucAxRIz12xgs6xvXmKNc/B3LmyqRrgl?=
- =?us-ascii?Q?7hn02miIJM0dcJKwew/NDP/efS20JGdOoLkhrs/+OazK8NMHp8a/7zLJzWQM?=
- =?us-ascii?Q?o7dcY3etqUHQmxQSydDN2qHEAj1dWMEb7DmYfpy55Y8L/PxPoCpzIjb418T4?=
- =?us-ascii?Q?r5ipNM440graS+3SPiIrPjY5uO0FAZKHRQrx2yPBhSLCaB59Lgdoy9+numKk?=
- =?us-ascii?Q?snQgRycBnYEcN4zt2taSa3KW+BmF0u6AwQ5bx55gLMed6+gDcESfDUpbgpjs?=
- =?us-ascii?Q?l9K2fYxWeAozcGESHTuHvNM98pXBMRbXbat/t+sstzHN/qLpP0OfMt2Q0OlK?=
- =?us-ascii?Q?KBVOxN9+MMxazDzw7zd9/PBy2nIs3+hqjgVg12IfA+qAl9y0YROHIi6hkUny?=
- =?us-ascii?Q?aFBB+VaHxdV5phjg5/6Mm4UvLVnz3LFOPJ5pXjx8rpkSIIBQHrztaHBV17ky?=
- =?us-ascii?Q?YARy5TxLVlWbYVyNUQGneekGMT/3Uw+jaKTj3+YmoMAmAAEnxNfTJmZJxB4l?=
- =?us-ascii?Q?bhdzsGlayzHhUaRC6iL6eT20SIhCHlEOJ0Vztjd4ffnZbUVu9rz1ZdmK5Mx9?=
- =?us-ascii?Q?HU1irvnE8y1LUvmtgiqelXKwHGf2YpnDeAxFVzQqFEsBsPyrDQwSBcNx4fof?=
- =?us-ascii?Q?tHtIFi5wR/CykNbkLllU/UqFTZ+Tc4WJ/CydTLAOYn+7UKl137xNhONJGMyB?=
- =?us-ascii?Q?jbmehe7e3nHexqNxCttLZvGGWmE19cd+zx82sP9JTpk4tsoZ9+RVa3u09Ifu?=
- =?us-ascii?Q?yeXuqFCCZLUlRyOYKKjCXtIuN6gk19HtanTJjl9DGDv/5uTC1w7LVZEJRgHI?=
- =?us-ascii?Q?CwLKCkb0/ipmYZJBBolCT1c9ma1Ot5pNFoSn712rDvSUYBc65lk4Ht3csKFn?=
- =?us-ascii?Q?JXxMFe12W1uyGAze7pGaesKf+Q93O36Z1BLk96K2KihAqvmC1tjI0Q7kUxc2?=
- =?us-ascii?Q?XjrCJF8Mn2hV8tqygbXGOu4xmxRWGO+VjmOJusMYMyCKy1Djija6UsOI++Tc?=
- =?us-ascii?Q?MROxBHKDwCYu0fsxZ5ZfSVIQcnXq+3IWKhQsxc+1PVzYhqbKmunOTaOpCOAo?=
- =?us-ascii?Q?xCf8GV7JvxgFhVAmQzV32g50vy+NxgI9qtj+KvUnGhvHYiD8EvPvUHp4CPK9?=
- =?us-ascii?Q?3/rpZSr3fpGaOGDTjpy0Ikl2cMGWu41OcXrajVKxg5A5AQSqEBAK9vZCjad2?=
- =?us-ascii?Q?xFpM0/eOH9dHyqmUT71pKJ+gkFhoGnvKlbPf8/ofdFcP0/2J9dfqsePaE8oC?=
- =?us-ascii?Q?eni+jge/0HM+fzBKoDQMypV1ndH4sYeMYulAtJipBYfU6PM9Unckdpcuk9UV?=
- =?us-ascii?Q?IdKNtNnvJzHuo7iqFZ2Te9Nf4+cjZU7jvbeAOqNSsr4l8t0pkjlxd1HcPEND?=
- =?us-ascii?Q?bpG3I9U9wO5QYuQGSQmwB6MAMm0HNCq10AxMXdXXHAa1zjzPR2FPyGTDyvXn?=
- =?us-ascii?Q?dh+aEFFnzk/5eapT5w4=3D?=
+	=?us-ascii?Q?xTig3Du54xpiIFpSIoKusMZKE8mWgJUQaBHa5K/mLzZH///9u90fVW4i8cxF?=
+ =?us-ascii?Q?U/YGQ86WryrmwWvPjDAxmvOiA3ZFY1ul2/5yC71QVOABCyYb7xZw8nX4y1mj?=
+ =?us-ascii?Q?fjsuJ2gxRnpqDoinvPKjP65FFXC+cOmYgVdS+bhxT97vVtpmJ1HHDaJx+kJa?=
+ =?us-ascii?Q?n3SgZXWQkBEvksKmk8TbH4zP+BJssse/WRI1VODPm5puihOfsvnQXQKqFJIC?=
+ =?us-ascii?Q?oqkllpQEcY55LBq/9ciNU1qtvot9Bvrr/hle0794phVdAR3+WJ+RSQa6rtFI?=
+ =?us-ascii?Q?Cr75HSJTqKFPPvOTUo+XViV0jzQ/h+OB3kjJlDiZ/3AsDO2BxxHdHNgr6we4?=
+ =?us-ascii?Q?p2x173fgLNzcSRAxS7kW7CTnBWc3HX/ZPE5DB9DeNwQcxvB/5v0fk8WrMp2k?=
+ =?us-ascii?Q?ty2WomlRv1s08SUoIvpiuw2a7kFkjwHRiKo1y5KpBuYpeg7CtZYf45yJku/d?=
+ =?us-ascii?Q?uBFv907rKcHr9x2Fy+LndR3tug0R20MlJyanQyFy4RT47ISGEI8NVKeRDRWn?=
+ =?us-ascii?Q?qmKn910BmOXW/+JemBEGprN/+XdC5NT42+4gYb3XHAFJCH3ez97bu1VPxmMt?=
+ =?us-ascii?Q?6r3aEqfBlSUasVJdtj4D6DHS1eZHg84lVEWYfj3rbUwRFM0AQaXSlNnn3J3w?=
+ =?us-ascii?Q?JVy0o4V1d6ty2b5eLvufaaZiWSXNufKN1bwIdJx+e1zCivsvPb1/fOLOuTjt?=
+ =?us-ascii?Q?dE7XGxNuNhhjEHQAiSZlRdqybmLFfFwhEaPwN9gt2xAyN7SIlwR5Tkb0gt4p?=
+ =?us-ascii?Q?r9VRXFaMK+Bt6iDU44bVivrY+vW0zl4aDenAk3H+TAvD3ALtLADmoAeGWa2a?=
+ =?us-ascii?Q?oGtMPAI+zyqwqNoUWWGosUsf1d3Lz+jtt4e8oMcWkpngnqTY49R91PyS49Ht?=
+ =?us-ascii?Q?MS0mtn+UC9w3AqZfoGdtY+8RJEyJLj5rkZB518CZZtQpJCups/3obIdJZkfF?=
+ =?us-ascii?Q?SAE0mT3hEGT6URZk7Vux+giOEhsaldMM3n3Wfc/VuD07/S17lJpt4vULOuOM?=
+ =?us-ascii?Q?a4mPbqxK04KS7dRfptivDOOpsi9ZNPH49eTJgko08p3XMQCn6z6rIqz8DSSs?=
+ =?us-ascii?Q?X1CSOqPXFVUwH+bzufr1T8sskfz8jA9TBkzDESRzYj/822hGiQ18fqNU0Bio?=
+ =?us-ascii?Q?mJkUVOL2yO5uWmW6hxuKsgdUfjZsJoEExw8oYPLc6PGWjHIpqT8qYtbmlHTI?=
+ =?us-ascii?Q?L+9brxFNfEc2kj+sIGAHAS+rx8VnUeYk6Y/Yp296XS7yOA2QLK5180P1wdIT?=
+ =?us-ascii?Q?Ot6T9br3wDNAZSpsID7237mg07WsPYy48N0gZC8xRlehy6RAhFFJRCIAMyOY?=
+ =?us-ascii?Q?2RuuVbV0r1dx0KH9EBq0ogBHKfj3xJbQouOYccHEePLuJNnUfRpnIwYC+0lT?=
+ =?us-ascii?Q?wRKLOKWqpd7hGQkTxs7JV8JPOHxxT7hYNbypIp6b0pivW0+ihdSlMBhsgjy2?=
+ =?us-ascii?Q?GrFebybdXx+YwwX6pthdUKxQgf4FNrHd400YMFQlHQdpTGdtMCuYqlIYK0vc?=
+ =?us-ascii?Q?A19HUi1X2zh0tYdjruuh51AGMM8PUnJVWTN6UN4/z5CXUhjSzXbQEedLKhj2?=
+ =?us-ascii?Q?DhmLK2IvS2k2Wer1hO8=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?xpBk+c99JzP/bNQDZ3WhaLK+Q4V/7McWLgntY7dIG5GegKVijZO95lu3vgw+?=
- =?us-ascii?Q?rna5joVp8OTX0VLo06eHupH4ERR/84ljomX3Avc8g2AmQWOyvpM7YGVdiGOe?=
- =?us-ascii?Q?a6+XLdZ1XCXz3mnusx3Wq2daxMsQ4M1deEhJ2/5jPupNoM+uJ0jE/tfB0tfD?=
- =?us-ascii?Q?pjZpqHRYZE5fveQU1lj9pKvll19Fon4maiOFX5xN0qRn0k70y7jFnQf4AexL?=
- =?us-ascii?Q?qCUxKeCgkkFIbgvdtWGrv8VknowQzUka6KhIckmeqE0gBeT8MwlKysamFVNF?=
- =?us-ascii?Q?Uo/OvTrclKudP2DS/dVH0EyqNSfiJtrRrqmBlfR+Cgvtd08jCC+OoEBINx/G?=
- =?us-ascii?Q?W3p3n1CZc1CvS8HfZG/YhvDeWmWYbn8HkRAk1W450IXwy57hcf65QY5HiY0L?=
- =?us-ascii?Q?UAIdrN7+gj+JVsrB0727IEBnEYy69XJEMKOcLAnXP+GCUX2+6FOtQ8kP29yB?=
- =?us-ascii?Q?1/rAhflhVG2zAn7MUrFN3IarwVXsHxDtGhuUdQ9sZ+PFjyJlUF8mWAvfccey?=
- =?us-ascii?Q?HX2fDih9GihKaZD23IRVk43bgiyqK7qFEn3heHqEBPJxCr4wUbGqsDfPYEQv?=
- =?us-ascii?Q?r8ZAPvJ5lUooqEoXW44jDkbXV3a4+kUuBir7Edd1CFoeSP8eBT1LmfgtAWhd?=
- =?us-ascii?Q?Of4cyx1T6sTTJuknx3FzIKtMnOINraLc9+JkGAKX24DtVyvOWg+HJplK89eX?=
- =?us-ascii?Q?WhaOher7fuR1dAVGJBgl6ob3+1dowTxff42tBzKZ3j/Cxa0OYpMK7bggGMRX?=
- =?us-ascii?Q?D5qYJE4j1TI9pLEJRdwi59g/uQRTDvapETr/J8Mv9D4PUsn3glAp932dtkPO?=
- =?us-ascii?Q?w6Tm2AddW3nWyzd+4/4Lz1Vp+5pj2fgyMLOBU+JsaE+XSavTNjh+EtZ81By4?=
- =?us-ascii?Q?/vJ7OZeRo2PUp3CfmN4Cr7ECCvOeQEMKYey+W0yIMpLYmLLFeUhlEQEO1fua?=
- =?us-ascii?Q?CNWRgXAoN94RetivxW1dYf71YLvkoAjrTIbJDWYmGlQKxoDzd2Qzfvh2zNVH?=
- =?us-ascii?Q?q8LusFTWDN8X8Xj/dD+jfAqHtrOzv0/7AsmuDVQ3W2buT56MmAMzLwIN8Ezg?=
- =?us-ascii?Q?7gRhrPHSlDWJteYNahWYcYFALWB+2hyKu0VCvM8eDUfR8xZjV2hPqisPCRzF?=
- =?us-ascii?Q?jcScEnBHRCpthTjTdtJ9tX8ekNzgvy/EqaBGlegRANGKnatLqCuyC6WzeQnd?=
- =?us-ascii?Q?JwsF8Iae8njDK48czsvBO8Yf6Tev5Ein3W9FdGqV1GJHhpJEa5oAyrJ6V4jS?=
- =?us-ascii?Q?LBQQlpC6Pw/OcQNzt3wAd3xWgsqKEX0XgYlC00UUT+Qi4CiqgEhcYumZijNs?=
- =?us-ascii?Q?A+SMIiDW0YZqfvAj4c2IV1vVLHaKW97GBFk8Xp3hzdAfquNrfROFZ0qocXXg?=
- =?us-ascii?Q?NKx5RsQ0of+jWnKweQQmDQ5zr2ya/w0wy/UrdVTaRZ4WuP+KVlcT2EFMXmSu?=
- =?us-ascii?Q?7KolPPMRIlvvPmdSru8khPmaYeZ4VyqNkrhk1koIO39YJSbzqk69fwEAgsQv?=
- =?us-ascii?Q?0BEWfliE3Zb5hpeDDh2m8VBS2RClz0xrDg7t1lRsvk/HfDV+MT7gprN6zt7m?=
- =?us-ascii?Q?cJNnGnMSnb9RVDwILlM5sCPfOTdDXGhJJHE68ihFu3wxW5FmxZyIU41uGiVR?=
- =?us-ascii?Q?Ri7LMGajEGz4yD3axTHOBQnMjM1Cu6q31sa/Gl6LYv3of2v0Aps68+2qDD7Q?=
- =?us-ascii?Q?j4l2xiytSV1POhTbErAvuQmCRy+UdCZg+SI635ISU1OcRTAxwnOBsXh3JdHN?=
- =?us-ascii?Q?WRBtiisRWw=3D=3D?=
+	=?us-ascii?Q?0/Vih5NJGnC3U9YTMy1OnLm4WT/+bJuZJ2FPETL3O1ZvIgCKwiF2CM+SE1zy?=
+ =?us-ascii?Q?Wgd3P2JIaYiqZazyidudWBGGynnbWO5VG2eVlyMJwpaPHAvNnSwkg0qqt6gD?=
+ =?us-ascii?Q?EXVq89Uv3RrVDZPQzlC70RNtpasyCy2fKV1AIRlp3T8+TtL895Qcz1/0w8Wj?=
+ =?us-ascii?Q?ECYyYrZwuapIuJVgeVCgB3SzzQk4Ur+uzjXKB7fI2fA3tNMdZ7t8f/E7WQgD?=
+ =?us-ascii?Q?Tpsao42jN3TjEaiWnOFKAO/Au+9Z91dXXzz/tfo6R+BBfPNfYgslu5nXnP2A?=
+ =?us-ascii?Q?1tJhaNB9OAvKXXVN91zb9aYFEgDvbsz4x5quniXZiuFe3d1T9Lj3oAPPxXGv?=
+ =?us-ascii?Q?aW9oISxE+PQtbGGoqySSltDT4SRtlp/vKn2GsRxnQzLDTfzcxSozX4k8zyZq?=
+ =?us-ascii?Q?6BGhgprparNs3HrQe1AyOVZLvF0pIvIyN3zoTEvCsBx30d1PmeHaqWtkucgr?=
+ =?us-ascii?Q?Yp0uWviZX3XgRBY+zPjQ/IyvrJWEHMsTo6FG8nVnudqnpYiPNt0nx22i0Le/?=
+ =?us-ascii?Q?T8IBmUjUd+fz5wye7Wa0TKPl7Ju425z3GLs7NBWpIVzPNoY8CntpX8z1/B+I?=
+ =?us-ascii?Q?RfC2BZoqsLfYaP1UZIvWTAlYWN2Vv4vnfdIAWZxrIys7fPvTay0Gpv2msNLb?=
+ =?us-ascii?Q?piN3TTQUM6BBVitCYDHkOX1rwzdnRnk1vzZeJlf6CWh3lSxEK0V+NwE1i5Sb?=
+ =?us-ascii?Q?iYC1kQ9CyFqlBcsoAAMe/zdqFy6tug/XG247uoO3rBjiwmsbYpU11fV+ll2f?=
+ =?us-ascii?Q?Gd/iDkPMzRz+OI5pXP1DdJ1SI/IItgSqa8vuSS5b+TvAv8onJYQzXoFC3lHl?=
+ =?us-ascii?Q?kTNy50nfotPW9oSPYUK+S0rsjmPj05Lr6rPqb/TSzm6uKKBMlpueumpRiDPO?=
+ =?us-ascii?Q?6CmKuC/q5YXbJmAc/bBHRqPBi3Ok3c5CUUewR/3X7WITGQww9F/bUuA23Dkc?=
+ =?us-ascii?Q?9qj8CKzHc7PnGh7LtVxPKyOhVGryJnjnhxwstVX18XXQQ+cGw3lwPa60rII6?=
+ =?us-ascii?Q?H5kXiAm5Kxr7gp2rECqgB01MLsMntHzVHDePwuI8WMZ5xuIm2DyzbeKsUcVk?=
+ =?us-ascii?Q?VImnk82GTPG0G5KcL1gnZ83Lxpu0lF6o/yR1cUfAe+9Qz0lntFYUcHoFWAKz?=
+ =?us-ascii?Q?l0RsOnKOu37hkLORQNihYi/dtIUN1MFSR4Q8DhT3IJqKaHylP/8lDoCtUOY1?=
+ =?us-ascii?Q?QT5rKbXtnLSdhO3ic23iTR0LXJt39b23LED77MgqfZD7GBhm9p9CmUtuBHeK?=
+ =?us-ascii?Q?+nil6Eg7wEcrm2xymlbVnBIE9s62Pqr3LXu9yTO2VBNTIYC6sd7/9eukwOW0?=
+ =?us-ascii?Q?mUYYZU5/Cw07LYmXZsmkPA5D+WcyjIKcw+9cMbEiTRbdKxYvIlGMguMJye81?=
+ =?us-ascii?Q?MlMsG+5Dw8lyin0Ob5MVm9EWwdtB5MiIsyqXLRStSVeyXw+HPnbdR9Ft36E7?=
+ =?us-ascii?Q?qIF6qK6/LnlKogaCWn1UixrkTwBaXWWwTPk3691YnY4j++zSKpFWcK69AIFp?=
+ =?us-ascii?Q?uYPsjfU9OJRfGIyty0dxLgnJuZ6Ig0HUevCNuXkU9uGOhpQLZ7PcDe3Iwk9f?=
+ =?us-ascii?Q?1FJQ/tYWx3HuRr1QH5MgdC57l1iXgEYWfSDEHSxxpHE/oCbAvNqBlK3lN+sZ?=
+ =?us-ascii?Q?eNskMqJyXu3bhbgij3RYF/6Jo6MvlIMvz8ZBzLFaoN8grRMCrr3MtuhvGvTA?=
+ =?us-ascii?Q?Pwk7+0VVyri8QWM9k8DbKsWB0fcHdypp0Esg6CNUHiuTA/GcNJFfWg3lza3O?=
+ =?us-ascii?Q?O32/ZxsumA=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53f814f0-3e3a-4060-0528-08de579fa407
+X-MS-Exchange-CrossTenant-Network-Message-Id: cad022f7-c951-47c5-8efe-08de57a286c4
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2026 21:13:49.8241
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2026 21:34:29.1716
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e9v0D2Dzqheuof7TB2q1/JhyM70sEZdDqu4qwAtOtr4VEMtEOeGoAyV1MBODjMiNcUTe0x7/Q6fRofgwUDl/vQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6226
+X-MS-Exchange-CrossTenant-UserPrincipalName: huE1dSDp3jie1fvnRpJ3XiZsRzPSBXokurmBYhc+HXxTRoT1l3F9Fm23WID8Bf2AG4VXkoScR6SuVeLfnJanfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6535
 
-
-
-> On Jan 19, 2026, at 8:54 AM, Shrikanth Hegde  wrote:
+On Fri, Jan 16, 2026 at 11:42:28PM +0100, Frederic Weisbecker wrote:
+> Le Wed, Jan 14, 2026 at 12:31:53PM -0500, Joel Fernandes a écrit :
+> > During callback overload, the NOCB code attempts an opportunistic
+> > advancement via rcu_advance_cbs_nowake().
+> > 
+> > Analysis via tracing with 300,000 callbacks flooded shows this
+> > optimization is likely dead code:
+> > - 30 overload conditions triggered
+> > - 0 advancements actually occurred
+> > - 100% of time no advancement due to current GP not done.
+> > 
+> > I also ran TREE05 and TREE08 for 2 hours and cannot trigger it.
+> > 
+> > When callbacks overflow (exceed qhimark), they are waiting for a grace
+> > period that hasn't completed yet. The optimization requires the GP to be
+> > complete to advance callbacks, but the overload condition itself is
+> > caused by callbacks piling up faster than GPs can complete. This creates
+> > a logical contradiction where the advancement cannot happen.
+> > 
+> > In *theory* this might be possible, the GP completed just in the nick of
+> > time as we hit the overload, but this is just so rare that it can be
+> > considered impossible when we cannot even hit it with synthetic callback
+> > flooding even, it is a waste of cycles to even try to advance, let alone
+> > be useful and is a maintenance burden complexity we don't need.
 > 
-> ﻿
+> Rare is far from impossible with billions of android devices living out there.
 > 
->> On 1/19/26 10:48 AM, Joel Fernandes wrote:
->>> On Sun, Jan 18, 2026 at 05:08:44PM +0530, Samir M wrote:
->>>> On 12/01/26 3:13 pm, Vishal Chourasia wrote:
->>> > Bulk CPU hotplug operations--such as switching SMT modes across all
->>> > cores--require hotplugging multiple CPUs in rapid succession. On large
->>> > systems, this process takes significant time, increasing as the number
->>> > of CPUs grows, leading to substantial delays on high-core-count
->>> > machines. Analysis [1] reveals that the majority of this time is spent
->>> > waiting for synchronize_rcu().
->>> >
->>> > Expedite synchronize_rcu() during the hotplug path to accelerate the
->>> > operation. Since CPU hotplug is a user-initiated administrative task,
->>> > it should complete as quickly as possible.
->>> 
->>> Hi Vishal,
->>> 
->>> I verified this patch using the configuration described below.
->>> Configuration:
->>>      *    Kernel version: 6.19.0-rc5
->>>      *    Number of CPUs: 2048
->>> 
->>> SMT Mode    | Without Patch    | With Patch | % Improvement    |
->>> ------------------------------------------------------------------
->>> SMT=off     | 30m 53.194s      |  6m 4.250s  | +80.40%          |
->>> SMT=on      | 49m 5.920s       | 36m 50.386s | +25.01%          |
->> Hi Vishal, Samir,
->> Thanks for the testing on your large CPU count system.
->> Considering the SMT=on performance is still terrible, before we expedite RCU, could we try the approach Peter suggested (avoiding repeated
->> lock/unlock)? I wrote a patch below.
->>   git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git
->>   tag: cpuhp-bulk-optimize-rfc-v1
->> I tested it lightly on rcutorture hotplug test and it passes. Please share
->> any performance results, thanks.
->> Also I'd like to use expediting of RCU as a last resort TBH, we should
->> optimize the outer operations that require RCU in the first place such as
->> Peter's suggestion since that will improve the overall efficiency of the
->> code. And if/when expediting RCU, Peter's other suggestion to not do it in
->> cpus_write_lock() and instead do it from cpuhp_smt_enable() also makes sense
->> to me.
->> ---8<-----------------------
->> From: Joel Fernandes 
->> Subject: [PATCH] cpuhp: Optimize batch SMT enable by reducing lock acquiring
->> Bulk CPU hotplug operations such as enabling SMT across all cores
->> require hotplugging multiple CPUs. The current implementation takes
->> cpus_write_lock() for each individual CPU causing multiple slow grace
->> period requests.
->> Therefore introduce cpu_up_locked() that assumes the caller already
->> holds cpus_write_lock(). The cpuhp_smt_enable() function is updated to
->> hold the lock once around the entire loop rather than for each CPU.
->> Link: https://lore.kernel.org/ all/20260113090153.GS830755@noisy.programming.kicks-ass.net/
->> Suggested-by: Peter Zijlstra 
->> Signed-off-by: Joel Fernandes 
->> ---
->>  kernel/cpu.c | 40 +++++++++++++++++++++++++---------------
->>  1 file changed, 25 insertions(+), 15 deletions(-)
->> diff --git a/kernel/cpu.c b/kernel/cpu.c
->> index 8df2d773fe3b..4ce7deb236d7 100644
->> --- a/kernel/cpu.c
->> +++ b/kernel/cpu.c
->> @@ -1623,34 +1623,31 @@ void cpuhp_online_idle(enum cpuhp_state state)
->>      complete_ap_thread(st, true);
->>  }
->> -/* Requires cpu_add_remove_lock to be held */
->> -static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
->> +/* Requires cpu_add_remove_lock and cpus_write_lock to be held. */
->> +static int cpu_up_locked(unsigned int cpu, int tasks_frozen,
->> +             enum cpuhp_state target)
->>  {
->>      struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
->>      struct task_struct *idle;
->>      int ret = 0;
->> -    cpus_write_lock();
->> +    lockdep_assert_cpus_held();
->> -    if (!cpu_present(cpu)) {
->> -        ret = -EINVAL;
->> -        goto out;
->> -    }
->> +    if (!cpu_present(cpu))
->> +        return -EINVAL;
->>      /*
->>       * The caller of cpu_up() might have raced with another
->>       * caller. Nothing to do.
->>       */
->>      if (st->state >= target)
->> -        goto out;
->> +        return 0;
->>      if (st->state == CPUHP_OFFLINE) {
->>          /* Let it fail before we try to bring the cpu up */
->>          idle = idle_thread_get(cpu);
->> -        if (IS_ERR(idle)) {
->> -            ret = PTR_ERR(idle);
->> -            goto out;
->> -        }
->> +        if (IS_ERR(idle))
->> +            return PTR_ERR(idle);
->>          /*
->>           * Reset stale stack state from the last time this CPU was online.
->> @@ -1673,7 +1670,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
->>           * return the error code..
->>           */
->>          if (ret)
->> -            goto out;
->> +            return ret;
->>      }
->>      /*
->> @@ -1683,7 +1680,16 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
->>       */
->>      target = min((int)target, CPUHP_BRINGUP_CPU);
->>      ret = cpuhp_up_callbacks(cpu, st, target);
->> -out:
->> +    return ret;
->> +}
->> +
->> +/* Requires cpu_add_remove_lock to be held */
->> +static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
->> +{
->> +    int ret;
->> +
->> +    cpus_write_lock();
->> +    ret = cpu_up_locked(cpu, tasks_frozen, target);
->>      cpus_write_unlock();
->>      arch_smt_update();
->>      return ret;
->> @@ -2715,6 +2721,8 @@ int cpuhp_smt_enable(void)
->>      int cpu, ret = 0;
->>      cpu_maps_update_begin();
->> +    /* Hold cpus_write_lock() for entire batch operation. */
->> +    cpus_write_lock();
->>      cpu_smt_control = CPU_SMT_ENABLED;
->>      for_each_present_cpu(cpu) {
->>          /* Skip online CPUs and CPUs on offline nodes */
->> @@ -2722,12 +2730,14 @@ int cpuhp_smt_enable(void)
->>              continue;
->>          if (!cpu_smt_thread_allowed(cpu) || ! topology_is_core_online(cpu))
->>              continue;
->> -        ret = _cpu_up(cpu, 0, CPUHP_ONLINE);
->> +        ret = cpu_up_locked(cpu, 0, CPUHP_ONLINE);
->>          if (ret)
->>              break;
->>          /* See comment in cpuhp_smt_disable() */
->>          cpuhp_online_cpu_device(cpu);
->>      }
->> +    cpus_write_unlock();
->> +    arch_smt_update();
->>      cpu_maps_update_done();
->>      return ret;
->>  }
+> I can imagine the warning to just hit if the flooding callback enqueuer happen
+> to hit the qhimark right after the GP has completed but before nocb_gp_wait()
+> managed yet to advance the callbacks.
 > 
-> What about cpuhp_smt_disable?
+> But what would that prove then?
 
-Doing this is not that easy on disable path, AFAICS. Considering that the enable
-path in the performance tests was much worse, I wanted to contain it to that.
+I agree with you. I think the original goal of this code path was to help
+nocb_gp_wait() by doing some of the advancement work early when we already
+know we're in an overload situation. But in all my testing, the cblist is
+already advanced by the time we get here - making this path pointless as
+you noted.
 
-This does not have to be the only fix though, but one of the cures to get there.
+> > I suggest deletion. However, add a WARN_ON_ONCE for a merge window or 2
+> > and delete it after out of extreme caution.
+> 
+> 2 merge windows is the least of time for that warning to ever land on the billions
+> machines. My phone still runs a v5.4 kernel :-)
+> 
+> And the patch doesn't quite qualify for a stable backport.
+> 
+> Anyway, consider an unpleasant case where nocb_gp_wait() is starving for
+> example. How would just advancing the callbacks help? We still need
+> nocb_gp_wait() to run its round to eventually wake up nocb_cb_wait()
+> so that the done callbacks are executed. And before doing that, it needs
+> to advance the callbacks anyway...
+> 
+> I'm personally in favour of removing this right away instead, unless Paul
+> has a good reason that I missed?
 
-Thanks.
+Agreed. Unless I hear otherwise from others, I will delete it in my respin.
+I also agree that it is better to delete it sooner rather than later -
+waiting for a merge window or two buys us very little given the latency of
+kernel release ending in product.
 
+Thanks,
 
-
+ - Joel
