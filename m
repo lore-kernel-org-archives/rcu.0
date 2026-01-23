@@ -1,47 +1,47 @@
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012019.outbound.protection.outlook.com [52.101.43.19])
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011016.outbound.protection.outlook.com [52.101.62.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C142E22A4FC;
-	Fri, 23 Jan 2026 15:19:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C69C2848A7;
+	Fri, 23 Jan 2026 15:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.16
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769181604; cv=fail; b=jCkJUd4oQlS/YkNPIC8bp+Lytp8nXE+1krnAfo4jPRyhGXZGaPH8UtsZ2VIsDJrOr1hxONwUDle0REl4gVZbAxZoWa8/HcsjYD5rh1j3vRSJjsrSX1zR2vFOMxL9AnKX6ZwW84EDXA9dtcE9bqWbWM/hxacwHiHlhkbht34dQAY=
+	t=1769181611; cv=fail; b=CPF0BnZpWI3niHky7dKR3maD1XWLiD2ONGnjdcgd8OzyKqkgiqUd5wI0dkr+mt4NJu9oztEDDR1ERoOFHMEvNDrhqjMlWd7YQ9R0HPCbmu1XQduA3+q0ND2Z0JHwIXkBqZlZVPPb4JBdvIgQ3UFjd6Fj+QxmTBRk6uUAhcPCnGo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769181604; c=relaxed/simple;
-	bh=zaCpDx4G6ulk15+wtV9nAPv/MYOnZd8av08c9mzpJOI=;
+	s=arc-20240116; t=1769181611; c=relaxed/simple;
+	bh=O1jUijz5yuMHHOdhmwhbzH8BYlfzxUen4fCdiK5DA7w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=mvRJrqyNdNj7h3HxbF7xKCgpjZkXBR2FbYn7j022FVWxvfUenb2j8BiQhkR/8jsZL2jh8VLSK0ALilsGcCyaIP5JgC0grJ8CiGrLk3yuuEYZnmqUgnXbl/lRWEOEvuxjbldUQEVkLYfThObSEUo1yAcqdZQ54OaKMbO9cjYF9MM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=XYL975/9; arc=fail smtp.client-ip=52.101.43.19
+	 Content-Type:MIME-Version; b=NWHqcd2Fbyr9VhFqLKT8ngcu56+3FAyZ3Gwo1Yu3LotaGmoivC7ugdbCc6aNXUGvRFuI7J6pEUfwRDGlFfSy5mTcBO0KuYRcsvFIYVucUVVkR5CVYgR9N84QtWSwcK4cxSiVNARq64Wl/C4liNK9qHcFNRiLufSrvwjLRhFdb5I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=JMWuR00L; arc=fail smtp.client-ip=52.101.62.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="XYL975/9"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="JMWuR00L"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=MApo/FQ72jznwCyi/L7S8XrB0sFysCyVwvp9o/LtoGDsQuUZ7jfZW3yZjiMaTzUbQRZuedLlDjhBjHcQSBcty/sfwb3j2WIjywd1zbCshhkf5Hgho7LbWlxeaOXGYKtjYzgGFXN6ftIoG7vt2ZceDnIxQjgY7I4baXiwFFBE8cAoT9sRhHN9J/5JsHvalKpWWe0TgaE8kgVfukSZKTIJApQM+UJuhOZPi1ZTyxmA+TamxozSOkxVyg+jwaAwC8iI5Ki2ntbkySTrpznci/4sQWDmmZLhxOrMFzxXeEpYqCYsOhyld5vGcsR4Viay+Mf3fYBYNCdSLoKivUHazBxRgQ==
+ b=rk1ZNp8XJNUF4jW3WFWlogoOFehJz4gXd/qTqUQK9Qo487QYJXcB6i8D2+DXkcslbirRA/pdxTyz8vXwHoVuXMXJyWI6/zkN3jO120Ep6fos6ppOcv3DB+IsHKRn2FWuPIH1pIsSMisaqN43XRFIB89E792Bp24XUiNlcRKi/pIDs+zKp8d1Lv+eHMIA3zeqWTBH0gMYrpz0AfCaUpvhA7RJ1CmQkq5DqfXEfi0II71TO6wUpW/AdXZXyFxFVDODBoTA6oTCqkPvqHZMYWQCxbSOv5Ow+rNk+a9nRZ9pcaCY+nrldAokNlzdoFl8EjWpVHTMMiGlSImwC5QA33ehpQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7UxD9amRro51Dr18WHYaMQth3BCK7JdwX8CHXe3kEQo=;
- b=VtM69gwqE2JTWXnTd7js1x4lSG8xySxo31sMAvn5ME8ku85XMv7f6ohV1Yz+fOwLl+QQNxBnq+Jlr+tigQfUpBshQqOpxH3b5+MYhaWkdU/vUoxXJuYQptYcV1nyu1ldH6IMrpCVWdVl42qrz8YFIy3MD7V5xtBRnhc3BBlCQQiHED3a6dfFIz/8RihYCQVHoOAPw9eOwStY3MM7sHewxHxXf/E02UlDhZJ2iSgOsVxjmAWTVDdfGPiu1oR/jOpPaVBx61CqQSJbSZk4DxHOeFvJu9RSfLQ1Rwgy5p/shmNYJf8x4Bw06a2sdLNXCwoGCx13R7HO+lcyVdkGZGhRLQ==
+ bh=yf3y0qg0nC7t4T+yYRsBsewFbR8+bn5MFGCiHORZLSE=;
+ b=YD8AGWCPW7t83+RSn+H/luCa7bdn7TqrxdFLP0TnSU4xOLXu63M11XFYscMl3JnYQxbSBhLDXTzwzpJTOhELANVX0CQ2gfNRt+Ou8oUkcquLAQ7mP0NYj40Qk4kJU3HeQHQ/UQmysfoSuVzB7YC7HLyzrl4G0ExC8sX8OoNQmLZPb8UXTGyxY/yFqAJxuK+j/wPfJvc9G+I2SdwRNLsayc27ZbnjZhyDBfR6frrQz6QhC3lr2hvRi/bd9w/pYz8KC2fkvO2tk2vkAQuRRYzZtGyQToEuYtbWMEmlnXfKqY04S50NjaP16H7CnoAmBASPKsQQHV/jKfW1fg87J0tjzQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7UxD9amRro51Dr18WHYaMQth3BCK7JdwX8CHXe3kEQo=;
- b=XYL975/9Mwo9mCKq3HHlyZbTOr4TLqVvlYT164IEjfkN7cuJ3J9dMJ9kTvFfd89LLtfhUv6SwYjj+6zrv6D2/mhkmnokTPk5krG8qLJQtutDd5LBJx+mtr86H0HIPU0hy9yfGOeZsuLBZ7X7FAjK3Qu1jgxvVZxhAZRfP6g4JZyCLvxdhSWI5mGXok/Xy3QKiJ1RXi6QmNsX8UHipcW80+uv8EXGG1gSu93wYhsfC7Kl8ErV1kkSom0Qv1TAttIvgCS2qasjR6B6sCeR7sZ81QoNuxhrXHUtfbxFlG3drGIBM/P8uH+1I+/dDQ2yJMxzvDNoXtd0GnxlC+NMyu5arg==
+ bh=yf3y0qg0nC7t4T+yYRsBsewFbR8+bn5MFGCiHORZLSE=;
+ b=JMWuR00LuL0SVTtSOQnRephW6TgcfE0hLn+BYYtzamxfujoohtwcBEtHHIhgoHAR92ERVaEHswAry7cvSvlmmvS7JH0RsMrNnLxg24e7c7CAbe10fH9ANn9VveYEFi5oQQLARdyV6QjzMENjEd5MaC16dGf28EtaU1XMIil474jzAPTgYSsx9tgmacJ5foXNwP31eaRIM8ivgcB08YvLA56pXG6u0eVS8IDj7gkv7Gbs1LINNKH2kiqeDJjfW5nXwADeaKy+Y4Q9wTDtkJvgPXG10BBfwKXcbCoNUtxzYtn4tPrCA8N1o75lemzodn0JLH3kbzJA1X2YTdmz1x2FzQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- CH3PR12MB9217.namprd12.prod.outlook.com (2603:10b6:610:195::10) with
+ IA1PR12MB9524.namprd12.prod.outlook.com (2603:10b6:208:596::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9542.12; Fri, 23 Jan
- 2026 15:19:50 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9542.11; Fri, 23 Jan
+ 2026 15:19:53 +0000
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33%4]) with mapi id 15.20.9542.010; Fri, 23 Jan 2026
- 15:19:50 +0000
+ 15:19:53 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
 To: linux-kernel@vger.kernel.org
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -56,16 +56,16 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>,
 	Joel Fernandes <joelagnelf@nvidia.com>
-Subject: [PATCH -next v4 1/3] rcu/nocb: Remove unnecessary WakeOvfIsDeferred wake path
-Date: Fri, 23 Jan 2026 10:19:42 -0500
-Message-Id: <20260123151944.732328-2-joelagnelf@nvidia.com>
+Subject: [PATCH -next v4 3/3] rcu/nocb: Extract nocb_defer_wakeup_cancel() helper
+Date: Fri, 23 Jan 2026 10:19:44 -0500
+Message-Id: <20260123151944.732328-4-joelagnelf@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260123151944.732328-1-joelagnelf@nvidia.com>
 References: <20260123151944.732328-1-joelagnelf@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MN0PR05CA0010.namprd05.prod.outlook.com
- (2603:10b6:208:52c::19) To DS0PR12MB6486.namprd12.prod.outlook.com
+X-ClientProxiedBy: MN0PR04CA0011.namprd04.prod.outlook.com
+ (2603:10b6:208:52d::7) To DS0PR12MB6486.namprd12.prod.outlook.com
  (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -74,306 +74,142 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|CH3PR12MB9217:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4d2af01f-89bb-4625-994d-08de5a92da16
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|IA1PR12MB9524:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0d3da2a2-1386-4b5c-72cd-08de5a92dbcb
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?3RKgQ6mAyX2d8ABnTVvW54K7FYQj3SQboaqrqjs9JvCfsEP2Uvb4JzKZwk0T?=
- =?us-ascii?Q?2YmQldjdgcEf0YnRSADQ2JgGB0LP+sW4T12oVndQaVHoSHoS3zMH+ZQKxHqX?=
- =?us-ascii?Q?RqdBEUI8/qxRt1vDmI2+vaMXMBYwjiRGxpLvB26ZrU+0MrsxWNTtRITvzvOg?=
- =?us-ascii?Q?DZm1ITtz5HjFoHg7FnShOGypKY96sJTApShYlRmvnK2ziT+1yEBBF21swbNh?=
- =?us-ascii?Q?3ZP1pRyVVsS8yIq6jwHs4no7riV3IyDJ6SWVQoBL6BJbaxlqMyIXxAS5hkbZ?=
- =?us-ascii?Q?YjMJiLE549ubpfzo37R8uaW0IQ2j+2xeO7Q7pwriSTtu39rQ/rceLuuVzwdI?=
- =?us-ascii?Q?feHwPimPYu7/6n6aMzO2KAq6olI4NtZBPZojGYfKSc7idphgct6tC6wC91Hw?=
- =?us-ascii?Q?daO2obnY+u3J3tJbtwyCplWG+tMBzJ9HyIm10wiBtvKJoLXYU+u0efw/zqWL?=
- =?us-ascii?Q?uIJJ2++mN95CGkFI4XJBjSfrrcOsj5iTbUwJn4pRpxdWCkdGiUrpbPdK68MJ?=
- =?us-ascii?Q?h+Nc6CNqdpxkNnOAZVuMXsav45rQxjhbSjPYV365coL/HIXCUuuCRI85+Stq?=
- =?us-ascii?Q?rdPwchmeOiZluULwJZ9br/VvjxnOsr/oADjewzLGJOXNwsuTotDPVgMYpm7+?=
- =?us-ascii?Q?q0qiUXsLqesSHAPQOEbKNVkSMq3PUZ2d+ag/H6kF4uS+FHjC9ltl3mRNbMjb?=
- =?us-ascii?Q?Hv9WY9F2vQZIOCHrrdjlpJrKpA0WOZ1+P41Rp8ioARQiZx1AXiRbJ5+u9M+5?=
- =?us-ascii?Q?Y6YboO4mqgnzywUmtzdkkq47/bR/Rl1N8Y9VRMJCwRyuQhJ2fCz4D4S+3H+E?=
- =?us-ascii?Q?44KCDLH3McmSEXXWU2eK9SAoD0PvEzgNQvuUZAuKDfeunWFSN8244f1M3Cg2?=
- =?us-ascii?Q?0qeezaYYi2x2qBcyn5EuBcqdKSoL3RxX5sKTAp4uoNGe3KLNHN7BtnSwQ9t5?=
- =?us-ascii?Q?jZUzmxZGbgjs+Hz+T9IOT3iCY+zS0qdB/chs0EMK46uEnv/357+wm6BKI/Ju?=
- =?us-ascii?Q?/FP32KHwEjbPR7IIj+n6hFLuD4X2RFJ1IZpUzkYDBeaR83XNblLRnJkbOc/K?=
- =?us-ascii?Q?1fYIWH/ckhuYZtS3+9CxIqCD1EaKY0514p5nybKnByJMeaYLJ6fpsO7QgZZE?=
- =?us-ascii?Q?eH5aixEDqZEKqNoVaoUIAMcaluOFSLgE+V/GrAZRLXgGAQMGY/+DYDKoz8o+?=
- =?us-ascii?Q?CwG6fKP5VM7GM4zh1vWaYRHsrmHArFsqMkSuoZmK9kmaBKcS6UsnthtNxgo7?=
- =?us-ascii?Q?fznpyQWT30hPuStRERw3gBZZsrZIZ5k81HUGLhq9q+DAf2MEWHSr5tVL0ZBR?=
- =?us-ascii?Q?2FgTBgoGwfh+Q4Bq8di5LC7QGCPO6kTjIPcLGCRKm6uyVM5kLJ53G/Y+Ptvq?=
- =?us-ascii?Q?/s3ZDR5koeo+BRx/T6Q2+J4aUY/p9p5Suw1uQZrMuqYbzBLYeOK2OzIngloP?=
- =?us-ascii?Q?a7tOQBw4KYoeagiBexCfwqkYhaXJ6N6D8+xGB8Wrad+LBh8vSJRcIX/JK1r9?=
- =?us-ascii?Q?i7+O/eh+ExDIYhWmvsOLD9xC6K+fF3bVNczUbQkfxmOVurF1zDBcqWUTe8D/?=
- =?us-ascii?Q?LW5bMQi/zhM9tpi6COQ=3D?=
+	=?us-ascii?Q?9zXBwasxkR8ElNZrSr9J02tqZ1NaPtZXjGBONcLkRDE9Ny+B82SORDbhZZTT?=
+ =?us-ascii?Q?A1G/zS7CTICpxGgZeLI2xWyzDmylPYHvm4OsMJqfbCsUGYxU+Rg4RBZkLeUr?=
+ =?us-ascii?Q?XJGYyBsKJxVE+nisHX9grZhxHuqB7Aj1Fz610VxwDTOEw3iGUjjUG2zTNhi8?=
+ =?us-ascii?Q?KdiiRY8AJQRG2EqqVATrQWMzAN+10u5ahVb3Q6DAv1BVfB6iFE+2OKQBlVdm?=
+ =?us-ascii?Q?qyg56hoeMC9SuPaIVzuhOSvdIP5SOp4rCoton7rf++RrsJmloXHLNS0gg/X1?=
+ =?us-ascii?Q?OYAQx93Av3fxk848lpJopE+CGu1hPYgw6xj/dtGflGnxiY8GYwyzXYw1rE6i?=
+ =?us-ascii?Q?UAOJlXiAZPXzVNzVhYkn52ATuGKbkmiuF6S3UM4nTCK2pbmUUKXw4grFCv2x?=
+ =?us-ascii?Q?qYxrIDR3emJMCmWuFsWXy2J3lK9wZb/0Fr2ea5Yjj29xbewIaBJQC42Rp6nP?=
+ =?us-ascii?Q?FcZO2LEp7SFsmAg6KSWVMJk5ZmW5bk5n7yBRoBY5PagpZglEy7pZoM8gpj1z?=
+ =?us-ascii?Q?A0jEbxDj8n0sZKb5r5E89R01n3FeMsSpUxkOEWZwOjRz+hHuytI75v1k6g2Q?=
+ =?us-ascii?Q?1yutDJuLwVbU5aFp5q4yE7U9nKUOMM5R8grtVMLTkaCA6FCPmnrrk0qa0JuM?=
+ =?us-ascii?Q?gFOBFx+q9czhdYTAwKhHbpyJxEpvr54HeTIdbv+HGR4gZVEHUDafsZXYZvOO?=
+ =?us-ascii?Q?y9U4DecjsX05JIANJkD1Bj15CAQBgcXxciX0SW5hMxGgzKqx3a6nemOVF1oO?=
+ =?us-ascii?Q?4sq6yo5awNKOEHUxAA2dvu/gk7s222oqetCXG1U1THqfLIHUb6ykoLx4PFOO?=
+ =?us-ascii?Q?SUAU+j4s461E9tum2B1aEaCSFGPO7VdG1HoSiLkHxLCzE+nU4TxC7sCt6gmn?=
+ =?us-ascii?Q?jqGHnbu0HURaRfCIx+15u90GFuoOVlM7kebqxGezj3SPXzjXfHyiRP4tSXaN?=
+ =?us-ascii?Q?ViYzK2ObkeC2Ua0n3F7FT1QrMrn20mEZsmmDfEu1QAcbAtRRD2ItxgmGD4i0?=
+ =?us-ascii?Q?UJZMypgJXq7H+VX3JBItH7gUrloXOjXh8+2LzTP5jgLZuFXffSyVAF9rBu5h?=
+ =?us-ascii?Q?EokjOiy5gShWI9TZOyKmvYG8UhNMgdo4N84e5Epoo3LMIjL9ie/7Wk5NYX4i?=
+ =?us-ascii?Q?j9EwSsPqKo5wxZWDuZZBJT1PEJ/JZxSWlkUq9uweOPNHbBW+q4mcgHA+kOOH?=
+ =?us-ascii?Q?jyFGbcywFZDjYgZvjHLyy5kgmN5UbGp+Cj/VHCUawCWyUE0dRHNhPhtumJdU?=
+ =?us-ascii?Q?Kg6tqf1a6+I20uUHpguwLfFewfAAh5qkArvmkDE9A0odCF+z7AKREwSrYqCt?=
+ =?us-ascii?Q?x97is6RmeXFJjwV+w7/o/+PztFmgaht41XFWLPwOYtH4QfsAAv3VKrrPxLaT?=
+ =?us-ascii?Q?83VyD6LLNsW66p+oRdRJDl7WyQL7fHEDq+U7m5UGBOm6CK5kTsy1JSbD+R4u?=
+ =?us-ascii?Q?qZsZDb/wKxXKyeiaGafDPVnryErW6TQmX2Q68kM0XULuHxTMJUuSaJe0seDT?=
+ =?us-ascii?Q?8qbkouDoP+mMv342UdRhg7v4iIsMOxbPkYmzq0HN075wYdAZVV/Zj7xocReJ?=
+ =?us-ascii?Q?XG1qC1+EkCtApNrYF5Y=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?a/WYQXVMXBXU/c+xQyxRvEXfcLZZ93sgmK4lkEYbQgG5INQ2QwdrN5eUgqFX?=
- =?us-ascii?Q?wb1gAX6iK7E/iykus0qf9rBgF74sTY1ntBEXg+M+V8QW6il/LzsddirDp+y9?=
- =?us-ascii?Q?2PBjpPfOheTCfdLzGupVcV+VYMNo8IH1wO3uwuzTdgEN8tHsZGaB5bnxMGQR?=
- =?us-ascii?Q?mLmkXLf2/dyNIu2XmrHPy0x14NUgJRs+OMIoGcQp6F6EQo50Hd/nLEz0IdGQ?=
- =?us-ascii?Q?ae2VfcsZrT9Sn5YcHuHThPXNVa9KdN6GerukeM7fPPNbsGQsXZqqo0Lwi4Mg?=
- =?us-ascii?Q?qRMEWboM7PnDU81anTP3HCVJL+uBpWw9c7Tj3Gofs0EF197kJmosYBajAM98?=
- =?us-ascii?Q?ZIe0PvUkICE7w7SA69v8RM/Y+rRv4XEm13RlcXpfdDgVHoZ8Xjwb1uOugc5j?=
- =?us-ascii?Q?TQpWfYKb3yh/RAcD+ytTKv79TfvKSSfl3TDXS9CUYVo+KFz9pW2hfIYPGoV6?=
- =?us-ascii?Q?83DfISuVKs0J/z+BGM4cignQ5+kjCKdLXB5lRsVod26ToIIoKyFAOYNBKzM4?=
- =?us-ascii?Q?2CzobCz2x3qPTOXhqE9E4Fd3NVhg4Jaap17qpoMQAOZXq5grDSqkrKsYiKcu?=
- =?us-ascii?Q?oawkohw9BUhxcJOQrtQBYs4EEyTBnGMXg++AhuHL57CMtoYYEaQc3wSwZdEm?=
- =?us-ascii?Q?0iDmCzb8tEERKL6pbwYnx41U3s2kMA06TB+eVKatH8ve8JPGllWV2sgBKyvg?=
- =?us-ascii?Q?hBIVeqfCojJAOfAeM4KOOCGijS2odxUZCBk2l23GSx5c6Gg5PaDTe1/P58qc?=
- =?us-ascii?Q?WNz5V373/BEu+elj8SO/OWTGHir0jOlv+IxelA/LYSrNY6X5Pd9OXr/Z+0R9?=
- =?us-ascii?Q?Mall0VyKFSkVpRUVEZ19rXGyguNrUst1pzX7osRaxyRQ4rD+c3BwL3tLZkQC?=
- =?us-ascii?Q?5MmXyNITBfHQCiiSdt/ZyJTwKTz9C+IXg3VGfekCA+CMz1vVDDoZYrRpVb1b?=
- =?us-ascii?Q?TNrnT8PayajGPJ7EV3GOp3/ZTzdMTzvBH4IideUjOsCou/SCBhVUZeZhvW/h?=
- =?us-ascii?Q?mSHz0XZp/TUBbCAmwux9FvMhIBfJf45E8DGdYy5FQTQPHxyTS25akHr723zV?=
- =?us-ascii?Q?+K7Adi7VbNHLjCmnXyMPuyfMAfD6ICftN+iuFsRJPX/NHzUeAiRlWb5oZXbc?=
- =?us-ascii?Q?kXUmhqEqLkAgxeSaYwbMzJvcsVZvo6Ge6j2O+Va0imMIcYJiB3fPV6Cc91fy?=
- =?us-ascii?Q?9CbRge3BUXI8sDmhVvgmwrubt7j/2QtvPpVPJ0jOF+lOqx4Cyo5O+Esk4SjJ?=
- =?us-ascii?Q?jukPoJS6F12d6itoNTxpH3yrEeYHW7cHcFNTwga/SYd92QA/nCs8KDS4ysHE?=
- =?us-ascii?Q?e7yYztSJeIKmsyaFiPh8AUg1q7xoEmUXrrfWKOKE0juVpF6sVL7q9MNmEq8h?=
- =?us-ascii?Q?lxnYzehS2hfmrZvgylND1hK3H1A0ImlbWSPzoWFHIWsGFcNOnbJUBtLSb+uA?=
- =?us-ascii?Q?7dJWsalShQrGtOayX0ItZMSpfY+/ks9R3/7AM0kqB5ktFqwMn+TI++yzOxRE?=
- =?us-ascii?Q?zucvHx0XIZsYTxDI4z+TFTJgcoUjOSzUzzqbuoTBlkHPlhOjMoz6Ja/SegdC?=
- =?us-ascii?Q?WwPWk8pyVDEvoHpsSHc2aJrpJPkjyBFbd393JaqDhcguHvg8Z4qzIwLxTaBx?=
- =?us-ascii?Q?qFPmi/rLyq8nKLNSC7SFGKC+42GZL8lZw+hQcfQo8nqYbDxy1Gqy+Yw4p76Y?=
- =?us-ascii?Q?7o1WAwVbTXqs0XnUfOIaQY/XaLYqgE47rNHo6NYoW9In01ZsdRsflsgBX7eN?=
- =?us-ascii?Q?dqITJiqJBA=3D=3D?=
+	=?us-ascii?Q?VdzSM73EAyVQD0eqCw/HRYicYMKZ0ltiXbavHBIGpxOxqfsSf8cMPPWTlNXs?=
+ =?us-ascii?Q?t86xKaTlHMSr3fePwenAA7AHMTuJZLa+4azLPiLEcDYxE4uH4R/st6aEOymb?=
+ =?us-ascii?Q?fPqz+I7wjpoJBWMifmSM7Y/o47tu1GNXQ+brfUo60wkjnUw14wcPaMW+prqf?=
+ =?us-ascii?Q?tLLpkxCnDjJhT+4qrtA0V0JgXscHwioZoRNrjq4vapWkxcMOyPnWDGmlobVY?=
+ =?us-ascii?Q?FYbw4lS787oM1tb9OomCUInAjovZusGivQKIx9tRUGTHsXe4e0R9cE+8pxco?=
+ =?us-ascii?Q?U6HQ6VpRnCWQF6k/psF4URF+rVfg5la4Nvx5Gh1Sn6GByaPFZ1IV2FOuC43a?=
+ =?us-ascii?Q?YD1nkxTRoGQKKA4Se9QOMTdsTe1RBoHyy30lfWlu8vGKjCUc2eeNWxQSdO9p?=
+ =?us-ascii?Q?QhblzZv0csSAOX89RB6HkiyJnqatStz/RdQJM7b1SxIoIVtRDI72Z1hSsF9L?=
+ =?us-ascii?Q?ndgi+9yB9gqqQaL8eMo422+l7rWBN9SyzANIqg+9X5F6gRPFUaZ03EfV1t9b?=
+ =?us-ascii?Q?Oe5A1HmVdg1X8VRLE3MqCUQrhUaPZqmfSyzwOY+itAmBlzD4JKNZEk3VRWFT?=
+ =?us-ascii?Q?wSO7P6qfKAjJapkYkY4agdLObqDCg0plaDiQRdoq4XULfd81l7kgODadZ5a3?=
+ =?us-ascii?Q?IfLZRgdpI2n9MPoBtimbuHVLnHb9H21fn4ik0uBIvuBn5C//lL1MxgRXJE7S?=
+ =?us-ascii?Q?Kj8r8QD2eyAmpCUUB4pcETRsE7yNAvhaq0qWU0bpIpOlEfEu5/xg7yxNYbPo?=
+ =?us-ascii?Q?KrELjHNmQPYgjXL+NN25zOcdiJHAkcsSZk/gmH+9Q6SZlnTg0J4TBqxXsaIK?=
+ =?us-ascii?Q?WUqeLyz+x0bmFlYnf6rYNH+ZM6EASqYnBFU0i4Zs4RFHwuEHKBweQ86NW/dy?=
+ =?us-ascii?Q?PAynuB7eFd3a5z4V3FR+VnE53088SoMr7qyk3qqUfjKtDNm5rU+3bCiRvxNC?=
+ =?us-ascii?Q?qw6Xweu0GB/TTjJJWDcFs353zG9V35sGrrp6ra00/Zsd8RNE9Uuk4TANm30C?=
+ =?us-ascii?Q?9luPZDTgNyf+2Mn0sUsAHfkCtmjcXR8CW6KrBOYs8HQtGsDc8RrrhxuzCul0?=
+ =?us-ascii?Q?h9ndFw14MUF6G6z/2MqTBGqWlhRuQhyZEH4/eiIekcswLotwOMpsmo4R7LrX?=
+ =?us-ascii?Q?9LS+g4cQFM7yq/gG+9j5GtwqOsuOTD+RSUjzuAB3gydFXs8ZyiI0UESHIPvX?=
+ =?us-ascii?Q?j8G2kt/RIrbiNhPFDIhnr7Sa8C0rlztJ7bJHRGfFJQaIP1Fw/61/xN0LWDMv?=
+ =?us-ascii?Q?Y3PER3MweEL4S6WUPVQl7rQn8ARamSPXlfdPsGSFS10ouJSHs3Vz28pd5nTl?=
+ =?us-ascii?Q?5a4FzZ34c72rMlbe+clDD/5H6y0GjIewukgdqeMLzSY0DWitqoYiwPhZv2nV?=
+ =?us-ascii?Q?8P0ZEwbu3DU2zaFFGTRb99MTjz9CqjWu3gI069zIm50YHgf26S0yKLAmyEHn?=
+ =?us-ascii?Q?f5qERtBlgJlXY+8PPTzJm704g+Usr/Q/9E39/dhSf6bCPoZraSpURQiwbXKV?=
+ =?us-ascii?Q?fv/oSNKAb0ptsZCxBS2wsxIwOjpGf78sfzFPBmeyvf6E5k7LwDvJU2BbYfyk?=
+ =?us-ascii?Q?u87KN2+gVDF0uUKkkXaiuLpQKARDdd3k5xKKpZfHauePnvKHC1ORAbdGlB8B?=
+ =?us-ascii?Q?5rbe1EYe8cj+Ndhd5YkXxPMxE5kz+N+s9xl8kxbbT1Id9w8I+NxGg9b30IIe?=
+ =?us-ascii?Q?cCr1Lms0qkUISLn5DoDoZvMDqAcQEcfakSi+2awACZ2rTTWwhWPZo+GiKLYj?=
+ =?us-ascii?Q?e7rNh5E2dw=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d2af01f-89bb-4625-994d-08de5a92da16
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d3da2a2-1386-4b5c-72cd-08de5a92dbcb
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2026 15:19:50.5065
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2026 15:19:53.3637
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WhFhsjsmsLg8ghptTsFJ9VeT4zoOd5uot2It22fTnFImW441sOnJoBdId7k0bRiYv2c8yYEqVyciaivi9lrxzw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9217
+X-MS-Exchange-CrossTenant-UserPrincipalName: xYgLNvJdv3dzdEcvp51mre1Ws5gqTk5AZGE23Da2E00Zy/KPw0VEpJTivBN2OrWi76dbTEcRdPvFL8Nw6zEf8Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB9524
 
-The WakeOvfIsDeferred code path in __call_rcu_nocb_wake() attempts to
-wake rcuog when the callback count exceeds qhimark and callbacks aren't
-done with their GP (newly queued or awaiting GP). However, a lot of
-testing proves this wake is always redundant or useless.
+The pattern of checking nocb_defer_wakeup and deleting the timer is
+duplicated in __wake_nocb_gp() and nocb_gp_wait(). Extract this into a
+common helper function nocb_defer_wakeup_cancel().
 
-In the flooding case, rcuog is always waiting for a GP to finish. So
-waking up the rcuog thread is pointless. The timer wakeup adds overhead,
-rcuog simply wakes up and goes back to sleep achieving nothing.
-
-This path also adds a full memory barrier, and additional timer expiry
-modifications unnecessarily.
-
-The root cause is that WakeOvfIsDeferred fires when
-!rcu_segcblist_ready_cbs() (GP not complete), but waking rcuog cannot
-accelerate GP completion.
-
-This commit therefore removes this path.
-
-Tested with rcutorture scenarios: TREE01, TREE05, TREE08 (all NOCB
-configurations) - all pass. Also stress tested using a kernel module
-that floods call_rcu() to trigger the overload conditions and made the
-observations confirming the findings.
+This removes code duplication and makes it easier to maintain.
 
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 ---
- kernel/rcu/tree.c      |  2 +-
- kernel/rcu/tree.h      |  3 +--
- kernel/rcu/tree_nocb.h | 49 ++++++++++++++----------------------------
- 3 files changed, 18 insertions(+), 36 deletions(-)
+ kernel/rcu/tree_nocb.h | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 293bbd9ac3f4..2921ffb19939 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3769,7 +3769,7 @@ static void rcu_barrier_entrain(struct rcu_data *rdp)
- 	}
- 	rcu_nocb_unlock(rdp);
- 	if (wake_nocb)
--		wake_nocb_gp(rdp, false);
-+		wake_nocb_gp(rdp);
- 	smp_store_release(&rdp->barrier_seq_snap, gseq);
- }
- 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 2265b9c2906e..7dfc57e9adb1 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -301,7 +301,6 @@ struct rcu_data {
- #define RCU_NOCB_WAKE_BYPASS	1
- #define RCU_NOCB_WAKE_LAZY	2
- #define RCU_NOCB_WAKE		3
--#define RCU_NOCB_WAKE_FORCE	4
- 
- #define RCU_JIFFIES_TILL_FORCE_QS (1 + (HZ > 250) + (HZ > 500))
- 					/* For jiffies_till_first_fqs and */
-@@ -500,7 +499,7 @@ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
- static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
- static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
- static void rcu_init_one_nocb(struct rcu_node *rnp);
--static bool wake_nocb_gp(struct rcu_data *rdp, bool force);
-+static bool wake_nocb_gp(struct rcu_data *rdp);
- static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 				  unsigned long j, bool lazy);
- static void call_rcu_nocb(struct rcu_data *rdp, struct rcu_head *head,
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index e6cd56603cad..f525e4f7985b 100644
+index 64a8ff350f92..b3337c7231cc 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -192,7 +192,7 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
+@@ -190,6 +190,15 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
+ 	init_swait_queue_head(&rnp->nocb_gp_wq[1]);
+ }
  
++/* Clear any pending deferred wakeup timer (nocb_gp_lock must be held). */
++static void nocb_defer_wakeup_cancel(struct rcu_data *rdp_gp)
++{
++	if (rdp_gp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
++		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
++		timer_delete(&rdp_gp->nocb_timer);
++	}
++}
++
  static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
  			   struct rcu_data *rdp,
--			   bool force, unsigned long flags)
-+			   unsigned long flags)
- 	__releases(rdp_gp->nocb_gp_lock)
- {
- 	bool needwake = false;
-@@ -209,7 +209,7 @@ static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
- 		timer_delete(&rdp_gp->nocb_timer);
- 	}
- 
--	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
-+	if (READ_ONCE(rdp_gp->nocb_gp_sleep)) {
- 		WRITE_ONCE(rdp_gp->nocb_gp_sleep, false);
- 		needwake = true;
- 	}
-@@ -225,13 +225,13 @@ static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
- /*
-  * Kick the GP kthread for this NOCB group.
-  */
--static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
-+static bool wake_nocb_gp(struct rcu_data *rdp)
- {
- 	unsigned long flags;
- 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
- 
- 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
--	return __wake_nocb_gp(rdp_gp, rdp, force, flags);
-+	return __wake_nocb_gp(rdp_gp, rdp, flags);
- }
- 
- #ifdef CONFIG_RCU_LAZY
-@@ -518,10 +518,8 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- }
- 
- /*
-- * Awaken the no-CBs grace-period kthread if needed, either due to it
-- * legitimately being asleep or due to overload conditions.
-- *
-- * If warranted, also wake up the kthread servicing this CPUs queues.
-+ * Awaken the no-CBs grace-period kthread if needed due to it legitimately
-+ * being asleep.
-  */
- static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 				 unsigned long flags)
-@@ -533,7 +531,6 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 	long lazy_len;
- 	long len;
- 	struct task_struct *t;
--	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
- 
- 	// If we are being polled or there is no kthread, just leave.
- 	t = READ_ONCE(rdp->nocb_gp_kthread);
-@@ -549,22 +546,22 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 	lazy_len = READ_ONCE(rdp->lazy_len);
- 	if (was_alldone) {
- 		rdp->qlen_last_fqs_check = len;
-+		rcu_nocb_unlock(rdp);
- 		// Only lazy CBs in bypass list
- 		if (lazy_len && bypass_len == lazy_len) {
--			rcu_nocb_unlock(rdp);
- 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY,
- 					   TPS("WakeLazy"));
- 		} else if (!irqs_disabled_flags(flags)) {
- 			/* ... if queue was empty ... */
--			rcu_nocb_unlock(rdp);
--			wake_nocb_gp(rdp, false);
-+			wake_nocb_gp(rdp);
- 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
- 					    TPS("WakeEmpty"));
- 		} else {
--			rcu_nocb_unlock(rdp);
- 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE,
- 					   TPS("WakeEmptyIsDeferred"));
- 		}
-+
-+		return;
- 	} else if (len > rdp->qlen_last_fqs_check + qhimark) {
- 		/* ... or if many callbacks queued. */
- 		rdp->qlen_last_fqs_check = len;
-@@ -575,21 +572,10 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 			rcu_advance_cbs_nowake(rdp->mynode, rdp);
- 			rdp->nocb_gp_adv_time = j;
- 		}
--		smp_mb(); /* Enqueue before timer_pending(). */
--		if ((rdp->nocb_cb_sleep ||
--		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
--		    !timer_pending(&rdp_gp->nocb_timer)) {
--			rcu_nocb_unlock(rdp);
--			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_FORCE,
--					   TPS("WakeOvfIsDeferred"));
--		} else {
--			rcu_nocb_unlock(rdp);
--			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WakeNot"));
--		}
--	} else {
--		rcu_nocb_unlock(rdp);
--		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WakeNot"));
- 	}
-+
-+	rcu_nocb_unlock(rdp);
-+	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WakeNot"));
- }
- 
- static void call_rcu_nocb(struct rcu_data *rdp, struct rcu_head *head,
-@@ -966,7 +952,6 @@ static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp_gp,
- 					   unsigned long flags)
- 	__releases(rdp_gp->nocb_gp_lock)
- {
--	int ndw;
- 	int ret;
- 
- 	if (!rcu_nocb_need_deferred_wakeup(rdp_gp, level)) {
-@@ -974,8 +959,7 @@ static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp_gp,
+ 			   unsigned long flags)
+@@ -204,10 +213,7 @@ static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
  		return false;
  	}
  
--	ndw = rdp_gp->nocb_defer_wakeup;
--	ret = __wake_nocb_gp(rdp_gp, rdp, ndw == RCU_NOCB_WAKE_FORCE, flags);
-+	ret = __wake_nocb_gp(rdp_gp, rdp, flags);
- 	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("DeferredWake"));
+-	if (rdp_gp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
+-		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+-		timer_delete(&rdp_gp->nocb_timer);
+-	}
++	nocb_defer_wakeup_cancel(rdp_gp);
  
- 	return ret;
-@@ -991,7 +975,6 @@ static void do_nocb_deferred_wakeup_timer(struct timer_list *t)
- 	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Timer"));
+ 	if (READ_ONCE(rdp_gp->nocb_gp_sleep)) {
+ 		WRITE_ONCE(rdp_gp->nocb_gp_sleep, false);
+@@ -788,10 +794,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 		if (rdp_toggling)
+ 			my_rdp->nocb_toggling_rdp = NULL;
  
- 	raw_spin_lock_irqsave(&rdp->nocb_gp_lock, flags);
--	smp_mb__after_spinlock(); /* Timer expire before wakeup. */
- 	do_nocb_deferred_wakeup_common(rdp, rdp, RCU_NOCB_WAKE_BYPASS, flags);
- }
- 
-@@ -1272,7 +1255,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 		}
- 		rcu_nocb_try_flush_bypass(rdp, jiffies);
- 		rcu_nocb_unlock_irqrestore(rdp, flags);
--		wake_nocb_gp(rdp, false);
-+		wake_nocb_gp(rdp);
- 		sc->nr_to_scan -= _count;
- 		count += _count;
- 		if (sc->nr_to_scan <= 0)
-@@ -1657,7 +1640,7 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
- {
- }
- 
--static bool wake_nocb_gp(struct rcu_data *rdp, bool force)
-+static bool wake_nocb_gp(struct rcu_data *rdp)
- {
- 	return false;
- }
+-		if (my_rdp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
+-			WRITE_ONCE(my_rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+-			timer_delete(&my_rdp->nocb_timer);
+-		}
++		nocb_defer_wakeup_cancel(my_rdp);
+ 		WRITE_ONCE(my_rdp->nocb_gp_sleep, true);
+ 		raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
+ 	} else {
 -- 
 2.34.1
 
