@@ -1,51 +1,126 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1CEC360736;
-	Fri, 23 Jan 2026 05:47:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15CED18787A
+	for <rcu@vger.kernel.org>; Fri, 23 Jan 2026 07:28:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769147220; cv=none; b=Ez0XiEo+nNu5o4baxuxUz+oFvcxf17x6GUucByKpm/rTejtvgE6LZJ+JIEu9UL+LI9tiPm8z7nOjjsm+2JWydJQBJfLyDZS15Wb+/QQGk7P68ikfDC/hk+1AhjMzcJDcSMeDfyFV4sPsotGnTKP7hp7XLJYFBtjj1WnAn5o7qBo=
+	t=1769153323; cv=none; b=kLURrEsZY+EY1dS2vSy9Tze7XKkApmxgzwgnCYinFXUULCB3JrOgoPzpfFd+RuZqcw2oGW4g+FQgsCL7UPuYQgr73sM3w1i1w9UC/FEE8qMBjpVCKlDjSEHCUcwFwFnm72Kd8Jer8gwj0APExDrhwOBpBL+A8lXyIMfkQWV1wg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769147220; c=relaxed/simple;
-	bh=iHu2VygHmjMmsl/tRNIyGfC8yO/yWtfKayzXHneWk3o=;
+	s=arc-20240116; t=1769153323; c=relaxed/simple;
+	bh=0+XcF/DKpKJlNk6gvVQ80r03ERq08zSyXtZRvvv3D2Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FOQkNcRQ5edPs74j6N337tz66AAskOSf2aMogBHLq1BLn4mzvhP2t7I8JtC+qq0U/fkaXiNjyb6UCRxDGukk0mOvQ6C9NW6ZAHeXyL+BqDMCcCAC4+FBJbnnDxkVyudenaJ0KvT9WMEUr6O7SjgN1Duv9jkR8huis8MXZCSjr8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=umRmKM9F; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=qBAupKcaFNUUxBpB1NWzt3SKc05e8UuuuKfFS7p9+RUVx9mfvwttGWELkRI96/xDq6XQn28eNB3a020t0pyc6XZ6O0xMAglAZfdN7yi9w34oMiPtLrCYx3YNCPUHxcZgxBaUmssIICFwq9tTwY2vOgjUBq3WO9cwb0yiUU5qURM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=il7zCkMZ; arc=none smtp.client-ip=209.85.222.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="umRmKM9F"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D77F3C4CEF1;
-	Fri, 23 Jan 2026 05:46:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769147218;
-	bh=iHu2VygHmjMmsl/tRNIyGfC8yO/yWtfKayzXHneWk3o=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=umRmKM9FvjcjjxbqVZAe1W40X8wPTd9xewDW7i4ih0OzCzYzMfa2kRNC/a4N9jwRL
-	 YF3EjqjgrBaqGwG+qRn++uay+2NDUZJeAvwd9A+equ2qnubfni5EQF3cZxLPPuLFKw
-	 zYQZnSXbDIhiI2nB+z6DE7H+xcUFiWJ9rLcMvvoUxAnZlevX+wjKB++Mv+6WjocyUy
-	 To2eESMBNKjvQ5IXiBDFUM17hci9cBLcDlzTy5tQEucZm+XLJUzDOKIi17PzEenzd2
-	 WWDH08weIv/15Xu+VuYIRlQ/V/CTB2BCyepNIIBGWzZRXI6WsdpNoPIJOOobFrPY57
-	 7TFw5+jepC1HA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 46E90CE0B94; Thu, 22 Jan 2026 21:46:58 -0800 (PST)
-Date: Thu, 22 Jan 2026 21:46:58 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
-	rcu@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="il7zCkMZ"
+Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-93f5761e09aso1557021241.1
+        for <rcu@vger.kernel.org>; Thu, 22 Jan 2026 23:28:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1769153321; x=1769758121; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cpNcbqq3QKYz3lgJbaD3XSigUERyy/+zoCPLiX3NuWs=;
+        b=il7zCkMZRkcWlSng3sV9se7U21Q43+xSQTXQPeHszoPfZqUDmdkosylsvQZB3yx0v7
+         StcsT34p804B3lDOIQ1CtVQiSMEQjuqe3Os0LCbo5Dor2RmpsIpK2AHdL1nrWCMDYQ8G
+         ozlesF+AzCewUG+I4HX1QBENSNuM7Jz6ZTMQN/uw3t05cZ3M8N6sEBrsXBR5xVVqeiNp
+         4LwZCHQimpu7TdhNfwwpjbTJKClmWb+7cAv0G5ZwY2DKN/wWwsD6IBoGS0lIAWG5ylmm
+         KEjkKUfKyicRE/QiRnujORXPkaprwzGOXJ/eAKe8ZhcNd46RVh5dcXohyqinhiPEVB0K
+         c1aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769153321; x=1769758121;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=cpNcbqq3QKYz3lgJbaD3XSigUERyy/+zoCPLiX3NuWs=;
+        b=sOq03p4FGsYR+UbExyFpAlXSbqo21YU5dGBPsDU2pj7DtTrEFlRCHOajcA4j2PRrgy
+         +EyB30IpKQujXGsx4KMQ3KOYv4QszqMlWpelzB1iafN+nbwwf4kVX01wKeNyiRF4wTNB
+         VScYipt8SeIXzEbnXQUlY/JDLz8A/kvZPiDi2JWxaFvMqVULu+V2N4d/kjgOc0Bn/6eC
+         uJC8bYzXXeID3DE4XDkMZpvouhlJyQ+DAzO0WTHroJm75/4a2iiZMUL6keTiO8S7deZW
+         t2k7HBLull+7w1GlXCQZqueVpiCrEXqARoeqDOUKFlGi7zhw0jFdTsyP/FeuiV7BHSTX
+         5VZg==
+X-Forwarded-Encrypted: i=1; AJvYcCUeII5XOh/E9PyY4BzM3nvrwWPX7jxaGmzYuZTnb+iZF5oOJxARarAyXaKxSxD99AxpVyY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx0obR7J/rtazFpCLGNE9otbau5IeK7EzRaKE4m/CO/un+shC+L
+	C1DM971Xfj0y3mrBuHVcuRXbM1iqKKKUrlx9KJOmFizww71Jymu/lUOIVJHUMw==
+X-Gm-Gg: AZuq6aLWOypVGgywRVj/01i1Utildi9aYLonVnf11Y8klgMx056KCVVjX49pw/9bNry
+	/JSd1JxT5PqSMxBgUCHb1bhRHZDhl4W3BusqtLwdqLPY9YyCPOtNd8xsFXrsd4gY/Tre8BlPGAL
+	xjxUdQjOJUQpoj2Ktbh3pVX8c5/2iHyswPhFhl2opu9V+dQFKL7+xlOZ9NGmNeWZe4+PzQ9+yN/
+	xOih43gm1vxXcGLnpvHrgWjd0DYmjdEI5IOxQejLRK7K/xl3Ecq4ugCT1UrZcocHF7zedukcKRV
+	4w7tYMA1dGWQz8jFFFCelTHhIxz6AGn7AbWfwjvkYvB19eT4SNuANoW010BZht6xI2LJ16625s7
+	/+DiGzZ66WbXHuqjY/MY6pJTlYCyYTtNkANxYethHmfCePAb4zf5LKP6Kluzm2j/lNkbJj8+z2m
+	3JmPWMHypiRqQswkYxFn62X7thQLR87VAwMEvIc8tbylqV/qwnVUwNfBaikHyrrABTvyAhyYwoP
+	eC/R1juaYmfIP4=
+X-Received: by 2002:ac8:5a8a:0:b0:4f1:ab28:d9f6 with SMTP id d75a77b69052e-502f7725200mr27683781cf.26.1769147688575;
+        Thu, 22 Jan 2026 21:54:48 -0800 (PST)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-502f7f8702fsm9798031cf.28.2026.01.22.21.54.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jan 2026 21:54:48 -0800 (PST)
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 6D9CDF40068;
+	Fri, 23 Jan 2026 00:54:47 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Fri, 23 Jan 2026 00:54:47 -0500
+X-ME-Sender: <xms:Jw1zacNSv72845-XjhCUDb8XV4_xqsR2qDrAqR8lviRFlk3rhJLTxg>
+    <xme:Jw1zabUH2n7wnD9HJMJi-sVbpZ1wUOXlR5UmflwV8DbcwOIRF1lWt1qofGE764FW7
+    UZE-C8uffzMeohQTrqQANlVVQenNf4_3g3zMAhOz0x8jI0vpGUU7kA>
+X-ME-Received: <xmr:Jw1zaVc-YiHrgUiSUFQ3yxt_KkWPQqyd8WIdtUhEnpj_mgcmmtwtlur1uIkPkIn_p1xjIzdujJw-ioxixHI_rc2i0PjV8pew>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddugeekvdehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpefhtedvgfdtueekvdekieetieetjeeihedvteehuddujedvkedtkeefgedvvdeh
+    tdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
+    rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
+    gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthho
+    pedvjedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprhhushhtqdhfohhrqdhlih
+    hnuhigsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgv
+    rhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvg
+    hrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehojhgvuggrsehkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehgrghrhiesghgrrhihghhuohdrnhgvthdprhgtphhtthhopegsjh
+    horhhnfegpghhhsehprhhothhonhhmrghilhdrtghomhdprhgtphhtthhopehlohhsshhi
+    nheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprgdrhhhinhgusghorhhgsehkvghrnh
+    gvlhdrohhrghdprhgtphhtthhopegrlhhitggvrhihhhhlsehgohhoghhlvgdrtghomh
+X-ME-Proxy: <xmx:Jw1zacjmaFYKlPW7RL2Oa2zEZHphkSwkL15DTycEfst7U3kjSGpM-g>
+    <xmx:Jw1zaWhcM4TsUj_WSAW3mRGJ_o-Z08crbA3Yv5b30xgZZ7x2qsVcDg>
+    <xmx:Jw1zaYon0xKAeeaPvuGl3EYpsb5W-d-GTc3_1-I5FTxBXrDpYBMm5A>
+    <xmx:Jw1zacx7l3wGN-ztfuAGbiSZji7LtbLDayvno7oRVhdR98BctZdDaw>
+    <xmx:Jw1zaXxVwOXUOrAh_HWeI5BLNv59v6fKGC_yclLw11OMOf3Vb5J1BFEL>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 23 Jan 2026 00:54:46 -0500 (EST)
+Date: Thu, 22 Jan 2026 21:54:45 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Cc: Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <lossin@kernel.org>,
+	Andreas Hindborg <a.hindborg@kernel.org>,
+	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
+	Danilo Krummrich <dakr@kernel.org>, Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>
-Subject: Re: [PATCH -next v3 2/3] rcu/nocb: Remove dead callback overload
- handling
-Message-ID: <68fd874e-ac9b-4d91-ab05-903bf45856fa@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <EBEF016B-721C-4A54-98E3-4B8BE6AA4C21@nvidia.com>
- <013102c7-a1c8-4f13-8dd9-5803e4d69aaf@nvidia.com>
+	Zqiang <qiang.zhang@linux.dev>,
+	FUJITA Tomonori <fujita.tomonori@gmail.com>,
+	Dirk Behme <dirk.behme@de.bosch.com>
+Subject: Re: [PATCH v2 0/2] rust: sync: Atomic pointer
+Message-ID: <aXMNJZv8H2OQl37t@tardis.local>
+References: <20260120140503.62804-1-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -54,118 +129,44 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <013102c7-a1c8-4f13-8dd9-5803e4d69aaf@nvidia.com>
+In-Reply-To: <20260120140503.62804-1-boqun.feng@gmail.com>
 
-On Thu, Jan 22, 2026 at 08:29:41PM -0500, Joel Fernandes wrote:
-> On Jan 22, 2026, at 7:18 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > On Thu, Jan 22, 2026 at 06:43:31PM -0500, Joel Fernandes wrote:
-> > > On Thu, Jan 22, 2026 at 01:55:11PM -0800, Paul E. McKenney wrote:
-> > > > On Mon, Jan 19, 2026 at 06:12:22PM -0500, Joel Fernandes wrote:
-> > > > > -    } else if (len > rdp->qlen_last_fqs_check + qhimark) {
-> > > > > -        /* ... or if many callbacks queued. */
-> > > > > -        rdp->qlen_last_fqs_check = len;
-> > > > > -        j = jiffies;
-> > > > > -        if (j != rdp->nocb_gp_adv_time &&
-> > > > > -            rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
-> > > > This places in cur_gp_seq not the grace period for the current callback
-> > > > (which would be unlikely to have finished), but rather the grace period
-> > > > for the oldest callback that has not yet been marked as done.  And that
-> > > > callback started some time ago, and thus might well have finished.
-> > > > So while this code might not have been executed in your tests, it is
-> > > > definitely not a logical contradiction.
-> > > > Or am I missing something subtle here?
-> > > 
-> > > You're right that it's not a logical contradiction - I was imprecise.
-> > > rcu_segcblist_nextgp() returns the GP for the oldest pending callback,
-> > > which could indeed have completed.
-> > > 
-> > > However, the question becomes: under what scenario do we need to advance
-> > > here? If that GP completed, rcuog should have already advanced those
-> > > callbacks. The only way this code path can execute is if rcuog is starved
-> > > and not running to advance them, right?
-> > 
-> > That is one way.  The other way is if the RCU grace-period gets delayed
-> > (perhaps by vCPU preemption) between the time that it updates the
-> > leaf rcu_node structure's ->gp_seq field and the time that it invokes
-> > rcu_nocb_gp_cleanup().
+On Tue, Jan 20, 2026 at 10:05:01PM +0800, Boqun Feng wrote:
+> I've already queued the first 3 patches in v1, but comments on them are
+> welcome as well. The RCU pointer patch is not included in this v2 since
+> there is not much update and I'm still hoping to get some reviews on
+> that for another respin.
 > 
-> I see the window you're describing. In rcu_gp_cleanup(), for each leaf node:
+> Changes since v1:
 > 
->     WRITE_ONCE(rnp->gp_seq, new_gp_seq);   // GP appears complete
->     ...
->     raw_spin_unlock_irq_rcu_node(rnp);
+> * Add a clarification patch of CONFIG_ARCH_SUPPORTS_ATOMIC_RMW as
+>   suggested by Dirk and Benno.
 > 
->     /* vCPU preemption  */
->     rcu_nocb_gp_cleanup(sq);               // wakes rcuog
+> * Add support for Atomic<*const T>.
 > 
-> So yes, in this window, the call_rcu() CPU could see the updated gp_seq and
-> have rcu_seq_done() return true for the now-completed GP.
+> v1: https://lore.kernel.org/rust-for-linux/20260117122243.24404-1-boqun.feng@gmail.com/
 > 
-> However, even in this window, advancing callbacks doesn't help:
-> 
-> 1. We advance callbacks from WAIT to DONE state
-> 2. But rcuog is still sleeping, waiting for GP kthread to wake it
-> 3. rcuoc is still sleeping, waiting for rcuog to wake it
-> 4. Callbacks sit in DONE state but nobody invokes them
-> 
-> So the critical path is unchanged:
->    swake_up_all() -> rcuog -> rcuoc -> invoke.
-> 
-> I guess this is the redundancy argument - the window exists, but
-> exploiting it provides no meaningful benefit AFAICS.
 
-I gave you a Reviewed-by for this one and reaffirm my Reviewed-by for
-the other two.  But you break it, you buy it!  ;-)
+Queued for v7.1, thanks you all!
 
-> > > But as Frederic pointed out, even if rcuog is starved, advancing here
-> > > doesn't help - rcuog must still run anyway to wake the callback thread.
-> > > We're just duplicating work it will do when it finally gets to run.
-> > 
-> > So maybe we don't want that first patch after all?  ;-)
+Regards,
+Boqun
+
+> Regards,
+> Boqun
 > 
-> Do you mean we want the first patch so that it can remove the code that we
-> don't want?
-
-It would wake up the rcuog kthread if the RCU grace-period kthread was
-slow to do so.  But I agree with simplifying it and working out how to
-make it more robust as a separate effort.
-
-> > > The extensive testing (300K callback floods, hours of rcutorture) showing
-> > > zero hits confirms this window is practically unreachable. I can update the
-> > > commit message to remove the "logical contradiction" claim and focus on the
-> > > redundancy argument instead.
-> > 
-> > That would definitely be good!
 > 
-> Thanks. I will focus on this argument, then. I will resend with a better
-> patch description in the morning.
-
-And my Reviewed-by does assume that change, so go ahead and send the
-improved commit log with my Reviewed-by appended.
-
-> > > Would that address your concern?
-> > 
-> > Your point about the rcuoc kthread needing to be awakened is a good one.
-> > I am still concerned about flooding on busy systems, especially if the
-> > busy component is an underlying hypervisor, but we might need a more
-> > principled approach for that situation.
+> Boqun Feng (2):
+>   rust: sync: atomic: Clarify the need of
+>     CONFIG_ARCH_SUPPORTS_ATOMIC_RMW
+>   rust: sync: atomic: Add Atomic<*{mut,const} T> support
 > 
-> Hmm true. There is also the case that any of the kthreads in the way of the
-> callback getting preempted by the hypervisor could also be problematic, to
-> your point of requiring a more principled approach. I guess we did not want
-> the reader side vCPU preemption workarounds either for similar reason.
-
-Well, principles only get you so far.  We need both the principles and the
-pragmatism to know when to depart from those principles when warranted.
-
-> One trick I found irrespective of virtualization, is, rcu_nocb_poll can
-> result in grace periods completing faster. I think this could help overload
-> situations by retiring callbacks sooner than later. I can experiment with
-> this idea in future. Was considering a dynamic trigger to enable polling
-> mode in overload. I guess there is one way to find out how well this will
-> work, but initial testing does look promising. :-D.
-
-Careful of the effect on power consumption, especially for the world of
-battery-powered embedded systems!  ;-)
-
-							Thanx, Paul
+>  rust/helpers/atomic_ext.c            |  3 ++
+>  rust/kernel/sync/atomic.rs           | 12 +++++++-
+>  rust/kernel/sync/atomic/internal.rs  | 37 ++++++++++++++--------
+>  rust/kernel/sync/atomic/predefine.rs | 46 ++++++++++++++++++++++++++++
+>  4 files changed, 85 insertions(+), 13 deletions(-)
+> 
+> -- 
+> 2.51.0
+> 
