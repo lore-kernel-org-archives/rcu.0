@@ -1,84 +1,75 @@
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD822777EA;
-	Mon, 26 Jan 2026 21:36:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F0A26299
+	for <rcu@vger.kernel.org>; Mon, 26 Jan 2026 23:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769463381; cv=none; b=nDHjsjv2RNvPWvCFX1VjdAU2PrezOZ3FCBaLqxKAJp4xd1r88BY+/g8z06Z+aP3pH5SZ62xzFyoXJYg5ZVk0P3Vkk5p8+p1mvVRlVLJLy66kn/wiXWBhcPxHn/bOFw3jgIerL5e9d8H4idOzNFOydKXNj6j8ZC6HuR1QH/eEuq4=
+	t=1769468731; cv=none; b=i+nhQ5/+nBqit9+rcjiZbOGD4XCSaVUAHd9C04+KQ42putGO0M9rdVNMQUSu7AGICp0y7nTr9aI0numnxzDmOdHur0uvN8S3OOCgO5ArtN6w15Pdj08DaAPg2e0o4mX1/nPJFKWIUAwKEZnMyhj9gITmXsmMKOxKOxe4etE2UFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769463381; c=relaxed/simple;
-	bh=0RodAB8oLx7+8GpYTVBTyvE4SVADV1YdcMRUy25UdUM=;
+	s=arc-20240116; t=1769468731; c=relaxed/simple;
+	bh=mT2BeWiw9kYkT94ehH+6RGyKnQvJ4GqAP08tkE6v3Q4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IpVQStJcjvkPiTl9I+u4znw56yrHjediztwr8JCSSKkV90g/Xjh4l2gT8Oe+BAEq4q+BPoLocrfGmvKLkQ09ZQWWAUe2mjEUbuVu6o98hGmY0xTvBhOZsTGwnqrJ6Q47qqOOZFnK/riaLibMnH6RQhHLldrrveXx8uCLWjuiQJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=J6iAAvmt; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=gOhNrzFDY+cBHAMuUFItYo+iL0SVSXZsuN0ikP590z9Vve8WGVBHjYUXBYBzyn+7WPYiu39hXxAhp49faYyPG1wstwfGRFtWprgA/mzeF/G5BPoP8LTW8WaJVbKO2SpNdXp/81CTtZZQUbB4LUlnjdVigM5oGFXPPC0SFwBfTuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=KOempiZa; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="J6iAAvmt"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=IDX9AjD0dwjrQefXov9k2MtCld60dtQxGUUAV2j1WjI=; b=J6iAAvmtrgFJs9ze2z/3mvNozn
-	PZeYeQkBMpOoy6bARHpR02WAfbtaa7iTf6HiFwZskZHm4oN6foztXD1WXqeuhwHMSXWyJAFJbhTD5
-	qQ1+R5XWwGM3j+QSkNI1Q+zMTANXKoioCJJ8PtGwpUGGIcze5nZNWEXu1YR5X4maU7pfNt0Anyji+
-	GXAcVEho74qSXcSeKj2Ko+V9+LTubj1o43do861nH82B/ld1Fn3lt07jwKJr3drbI6UK0q+LPwinM
-	WYBkEgblZCF12DZiFoTwjzgiGipNv2h33OJAsRML39oXnwDKn1Bq0tULsElknva+RF0gidO6QOh3u
-	4kZob4og==;
-Received: from 2001-1c00-8d85-5700-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:5700:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkUFZ-00000005tyU-07kL;
-	Mon, 26 Jan 2026 21:35:57 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 41718300756; Mon, 26 Jan 2026 22:35:56 +0100 (CET)
-Date: Mon, 26 Jan 2026 22:35:56 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: Marco Elver <elver@google.com>, Boqun Feng <boqun.feng@gmail.com>,
-	Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-	Chris Li <sparse@chrisli.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexander Potapenko <glider@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Ian Rogers <irogers@google.com>, Jann Horn <jannh@google.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
-	Kentaro Takeda <takedakn@nttdata.co.jp>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Waiman Long <longman@redhat.com>, kasan-dev@googlegroups.com,
-	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-	linux-sparse@vger.kernel.org, linux-wireless@vger.kernel.org,
-	llvm@lists.linux.dev, rcu@vger.kernel.org
-Subject: Re: [PATCH v5 15/36] srcu: Support Clang's context analysis
-Message-ID: <20260126213556.GQ171111@noisy.programming.kicks-ass.net>
-References: <20251219154418.3592607-1-elver@google.com>
- <20251219154418.3592607-16-elver@google.com>
- <dd65bb7b-0dac-437a-a370-38efeb4737ba@acm.org>
- <aXez9fSxdfu5-Boo@elver.google.com>
- <8c1bbab4-4615-4518-b773-a006d1402b8b@acm.org>
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="KOempiZa"
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-82318702afbso3748517b3a.1
+        for <rcu@vger.kernel.org>; Mon, 26 Jan 2026 15:05:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1769468729; x=1770073529; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=K79P9yEEOhjx+zO5nMMghB4fcEf+uSORL+5ZaRYOorU=;
+        b=KOempiZa3Kq1mOC2IeeivJCxr6apeoOS72MjW7oBtp0R6gZM2g8rUZSxCcSpftoxjr
+         MWbqp8629J3AX+k44xP777A2XDTSMgCDqZ5T6yO/CYiJt2vtAx7ozvrIws10L65eVCrP
+         JqWmGR1UxrmQjV94EMbdY6KYBcUUfnypy2sbSvn4deoqdPfgfga8CMYn2Mf59F+Pulnb
+         /7mtloLXddE6fxN1yeOlwDWNp7o1xukba36L7zTT25Yh6dMIz1Y5MyrzRG6/Kx3+CXkB
+         8MDRl1qm02Vp1HxAgJVb3NjhIuoa8+qW04Wch+ekTIvjqaK2KTqrziYOAGXytdEFXtzr
+         Cn4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769468729; x=1770073529;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K79P9yEEOhjx+zO5nMMghB4fcEf+uSORL+5ZaRYOorU=;
+        b=ZGKTyjAhMInuaJ4WcZ6FZnBQD0GeqT4czUAabomD1plkZCWAV5Q+6E4C8OKPV05Vvu
+         myX5WWLKlPFdDj4D0ulVPEOqYib/xUCFFrP1E8cwAQJcIsh9OyhAggGd5lhhlyXnCH78
+         war+YkbRn9p4FIZHpay7qCqwaiVqnV0Z+Bhd5D4mETws3bp5uA0iIzSReUwvE+01jV+R
+         0nMa5sFl/x6Hqzo4IjsWeogWzuujaXIuSNhR6j3jdfkvNz6mq1QVNcNj/m8MGN/Ovmcq
+         2egECfQAs6JQ11yd6p6I6C5XicI4TTjaJi6CZYymxaruSQwwUi3feOG8ylpSSNq85w2W
+         y/7w==
+X-Gm-Message-State: AOJu0YzdiXqmbsSi2EHT3k2W5vqgNK1BpCtE/2PlMqxSEJ/PY9Yxr360
+	X4Jo7bR9tj1oflNuRe0kvkKlL6d9ljpHGOstzfQB0dN8EfyUD9MNe+QQxcAiuqP15B0=
+X-Gm-Gg: AZuq6aIFvu4hpiR9ujOfuQqcUDY6zylRWkc2cGUjeIAkolt9lzXua/s3BOSiRxlZAaK
+	ftUO5H32ZEI+Lg3kCGABwNZojDgJgiuffjQRNt9Kkzl5UFk9A80j/Owp26XVJ1YH8h+Bs/u0Yqv
+	bxBj8FswqapdN9CUPQyfb0ce3b9df4jdjUnY4rgMAmEZvdtxQGP8YL55nvyJwedAQyzloNoX9Bf
+	NT7/t0jZZsmBSZv2+oxR7rQqpxd8Ofhp7khtHApzNQk7b4Vgl8u2X/q6fCs/Kk2P0Jvisfi9S9W
+	cDC3CGx4s/dla0WiUN+cTPaf0YwtrPcj/uo8YQA+PZ8/cAj5EntG0+/mH5p0I99mD+dkCGhYxO5
+	wd9JLhq3D2+sf8UaE9OGZPg3ssDuTgQbBi9mpxtqqLTCHFNfdSPZT/Yic+7hetC2appj6GG+OnN
+	PjWN29hS9Ac6d33b8e37F2TfVqhA1IDcv3sK3iKoTz478eYEhfZ0YX2HbprLmYYBHXGCUTUtNMk
+	A==
+X-Received: by 2002:a05:6a00:808f:b0:81f:38f4:d774 with SMTP id d2e1a72fcca58-82341219750mr5263349b3a.27.1769468729066;
+        Mon, 26 Jan 2026 15:05:29 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-164-75.pa.nsw.optusnet.com.au. [49.180.164.75])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82318671e1csm10235041b3a.27.2026.01.26.15.05.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jan 2026 15:05:28 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.99.1)
+	(envelope-from <david@fromorbit.com>)
+	id 1vkVe9-00000008v0M-1zNf;
+	Tue, 27 Jan 2026 10:05:25 +1100
+Date: Tue, 27 Jan 2026 10:05:25 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc: "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	"linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+	hch <hch@lst.de>
+Subject: Re: rcu stalls during fstests runs for xfs
+Message-ID: <aXfzNW7cf2ReVDA4@dread.disaster.area>
+References: <aXdO52wh2rqTUi1E@shinmob>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -87,25 +78,120 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8c1bbab4-4615-4518-b773-a006d1402b8b@acm.org>
+In-Reply-To: <aXdO52wh2rqTUi1E@shinmob>
 
-On Mon, Jan 26, 2026 at 10:54:56AM -0800, Bart Van Assche wrote:
+On Mon, Jan 26, 2026 at 11:30:17AM +0000, Shinichiro Kawasaki wrote:
+> Hello all,
+> 
+> I regularly run fstests with the kernel at xfs/for-next branch tip to validate
+> the capability of zoned block device capability of xfs. Recently, I started
+> observing hangs of the test runs with the message:
+> 
+>   "rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:"
+> 
+> The hangs occurred in different test cases, and simply rerunning the test cases
+> does not reproduce the hang. When I ran the whole fstests test cases, it also
+> fails to reproduce the hang. However, when the whole fstests is repeated the
+> hang is recreated. The hang looks rare, takes very long time to recreate and is
+> tough to chase down.
+> 
+> To tackle this problem, I would like to seek the expertise of rcu developers. I
+> have attached kernel message logs captured at the hangs for analysis [1][2][3].
+> Any insights or guidance on how to debug this problem will be appreciated.
+> 
 
-> Has it ever been considered to add support in the clang compiler for a
-> variant of __must_hold() that expresses that one of two capabilities
-> must be held by the caller? I think that would remove the need to
-> annotate SRCU update-side code with __acquire_shared(ssp) and
-> __release_shared(ssp).
+Nothing XFS related in these. All the XFS traces are waiting on IO
+submission - the block layer below XFS is typically sleeping waiting
+for tags to be allocated.
 
-Right, I think I've asked for logical operators like that. Although I
-think it was in the __guarded_by() clause rather than the __must_hold().
-Both || and && would be nice to have ;-)
+> [1] hang observed on Jan/23/2026
+> 
+>      dmesg log file attached: generic_005_hang
+>      hanged test case: generic/005
+>      kernel: xfs/for-next, 51aba4ca399, v6.19-rc5+
+>      block device: dm-linear on HDD (non-zoned)
+>      xfs: zoned
 
-Specifically, I think I asked for something like:
+The block device has an expired rq so the timeout work is trying to
+run synchronise_rcu():
 
-        cpumask_t       cpus_allowed __guarded_by(pi_lock && rq->__lock)
-                                     __guarded_shared_by(pi_lock || rq->__lock);
+> [272416.203262][  T167]  wait_for_completion_state+0x21/0x40
+> [272416.203719][  T167]  __wait_rcu_gp+0x1cd/0x410
+> [272416.204487][  T167]  synchronize_rcu_normal+0x4a8/0x510
+> [272416.207632][  T167]  blk_mq_timeout_work+0x4aa/0x5d0
+> [272416.209324][  T167]  process_one_work+0x86b/0x1490
 
+So that's possibly why IO is stuck. i.e. the block device is waiting
+on the RCU grace period to expire, and RCU processing has stalled
+for some reason. Hence the block device appears to be a victim of
+the issue, not the cause.
 
-I think Marco's suggestion was to use 'fake' locks to mimic those
-semantics.
+> [2] hang observed on Jan/18/2026
+> 
+>      dmesg log file attached: xfs_598_hang
+>      hanged test case: xfs/598
+>      kernel: Christophs' xfs branch, ec6aea2a5 v6.19-rc1+
+>      block device: TCMU (non-zoned)
+>      xfs: non-zoned
+
+Looks like some kind of scheduler/static-key livelock or deadlock.
+There are a bunch of tasks all doing stuff like:
+
+> [164582.112175][   C10]  on_each_cpu_cond_mask+0x24/0x40
+> [164582.112179][   C10]  smp_text_poke_batch_finish+0x45c/0xd20
+> [164582.112218][   C10]  arch_jump_label_transform_apply+0x1c/0x30
+> [164582.112224][   C10]  static_key_enable_cpuslocked+0x16c/0x230
+> [164582.112230][   C10]  static_key_enable+0x1f/0x30
+> [164582.112235][   C10]  process_one_work+0x86b/0x1490
+
+Along with the rcu_preempt thread apparently spinning trying to
+reschedule:
+
+> [164661.054667][   C12] RIP: 0010:__pv_queued_spin_lock_slowpath+0x232/0xdc0
+> [164661.054745][   C12]  do_raw_spin_lock+0x1d9/0x270
+> [164661.054768][   C12]  raw_spin_rq_lock_nested+0x24/0x170
+> [164661.054774][   C12]  _raw_spin_rq_lock_irqsave+0x41/0x50
+> [164661.054778][   C12]  resched_cpu+0x62/0xf0
+> [164661.054783][   C12]  force_qs_rnp+0x67d/0xaa0
+> [164661.054799][   C12]  rcu_gp_fqs_loop+0x948/0x11b0
+> [164661.054841][   C12]  rcu_gp_kthread+0x4f2/0x660
+> [164661.054876][   C12]  kthread+0x3a4/0x760
+
+I can't find anything obvious in the block layer waiting on RCU.
+However, XFS is waiting in the block layer on mq tag allocation for
+submission (like the 005 hang above) or waiting on journal write IO
+completion, so the block may may well be hung on RCU again.
+
+> [3] hang observed on Jan/14/2026
+> 
+>      dmesg log file attached: generic_417_hang
+>      hanged test case: generic/417
+>      kernel: xfs/for-next, ea44380376c, v6.19-rc1+
+>      block device: null_blk (non-zoned)
+>      xfs: zoned
+
+Same static key pattern in on_each_cpu_cond_mask(), there's also a
+bunch of tlb flushes stcuk in on_each_cpu_cond_mask(). rcu_preempt
+thread is not waking from:
+
+> [74627.121083][    C2]  schedule+0xd1/0x250
+> [74627.121959][    C2]  schedule_timeout+0x103/0x260
+> [74627.128027][    C2]  rcu_gp_fqs_loop+0x208/0x11b0
+> [74627.135240][    C2]  rcu_gp_kthread+0x4f2/0x660
+
+There is nothing XFS or block related in the hung task traces
+at all.
+
+IOWs, this looks like some kind of RCU/static key/scheduler
+interaction which may propagate into the block layer if it needs RCU
+synchronisation. Hence it does not appear to have anything to do
+with the filesystem layers, and it is possible the block layer is
+colateral damage, too.
+
+Probably best to hand this over to the core kernel ppl.
+
+-Dave.
+
+-- 
+Dave Chinner
+david@fromorbit.com
