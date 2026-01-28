@@ -1,73 +1,73 @@
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47CC01531C1
-	for <rcu@vger.kernel.org>; Wed, 28 Jan 2026 23:33:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53C82EA75E
+	for <rcu@vger.kernel.org>; Wed, 28 Jan 2026 23:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769643225; cv=none; b=OqvJUca5SuN5qtZS5HBdzPC1Cm8E/oHZZ7bkefrl4nNYwMYpE7jUoiPatRH8M802S8DHGO4sdhvy9k0g2HDEXS6/MfJqLuLU1I+6x4qrof2COt8jvS2VYK27XymIPl3d5t+RjdE4EPBrqvrPKguy3lbxuB2UyGdQEyBvQ3hkhfs=
+	t=1769643581; cv=none; b=YwdsOAaCknf3/5UKrabgdm2lO8Hi3Qoi3+4JiX+6qL97WRoqmNkN0jR8kSSNBnKy0393nhf+pUwmqkGPT/iAGDFVAB52PH9gjs+aH69eKbY36tPqc2qUsGsToGxEqIUqy31UzJJpO3ROoZKiWVMAj06Zn5uefCuPFqApZuWXlXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769643225; c=relaxed/simple;
-	bh=1d8hvFb5TqW+gQq4qtYvC+fv837UPEdBxL2Hk07VcJE=;
+	s=arc-20240116; t=1769643581; c=relaxed/simple;
+	bh=D8IHOpzdpv4jpNHqY+5RxyIP01Gxc9I18RznU79aOOY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bTFOlGS1FeWjyB0D0OzAteLR72l+07HIf6g1V8zCz2T0rZF6yLhzOVUW2yJpU0fDwO/qHd5XkGEKqxNYdehVsvBwvWqSkG9qwOPS/R3B+Xw+JPB3oco6aIKwPqv3gvPscyRr925wEfKG4RItvhjS1cMo2TKYuMz0vav65W0MSug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g2qZ/vNL; arc=none smtp.client-ip=209.85.160.42
+	 MIME-Version; b=WHx3auVB18E9W9sMzEIonkheaJ9W2z5KdaKYfyHBuP22v4f9HwlBA25hMcRzXDwPXwHe/JCs3pjd3oDkLgrhDVlvxs6JAP4O/VFaieWoIPdppFxL8zvDQx6/LBf0d7ga4wwt11iLk6ZctPAiTfcT/AxXntKgBNfTRxFaiT3VDho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PenX5zZ7; arc=none smtp.client-ip=209.85.222.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g2qZ/vNL"
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-4096aab5521so270354fac.3
-        for <rcu@vger.kernel.org>; Wed, 28 Jan 2026 15:33:44 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PenX5zZ7"
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-94130b88642so229791241.3
+        for <rcu@vger.kernel.org>; Wed, 28 Jan 2026 15:39:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769643223; x=1770248023; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1769643579; x=1770248379; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=+paZfars3KKP1JZVhG7KRu0fZBv7UeCEE9k0P4oMOM4=;
-        b=g2qZ/vNLOKelNtFkmMBQkDsmIziyOKnp45FPtn4K6TUnPlBp4+FlAkfwqgdXB4g+Qk
-         mTrTsStrXlEiv7smqbwxMBFG18QSa9zbfjoMgD0lGCmwKxcvVKIlLzfscHfTaCerbkDR
-         m2TZtIcqWtuPEjRUI25ZmYV5/Ezaoq/e63TCU6mFIT7ZxznvDwdglxzFPPQQHTW+mV5B
-         cJvFnu2bk/DDUZX1fqLo/X/yb1lVnFV0L4/ZUPjzu/prIrX+mzbH9wRPT8MqRZAdIUjz
-         gJ5q3ebD/IuDzHabpaKBXwclGRctJfgR1PHU9Qu3zPg9f7RRjNTMYwNFNRqpFDxSAYhV
-         IN4g==
+        bh=5K4fiuuxH7TZZ5P2nOc2at3WjKzG7Xg5l87CzajWOME=;
+        b=PenX5zZ797SswiN1updnUZ2P1VDfhhc/dnpZRdmo8xpeWvNoIVvAZ6/I7GxYQKhb4B
+         4SJpURB2UITSQNNDcJHk1YajYPUvWJt4IKJ3x8oMvG9shHMlffaQkKoUIpsKgtSS9lMs
+         YkVcQegbbMBDrDe5UcfVqynWOhGPLrI9ZG6KWtr9APKMsQnpwbetYAC/xQRT4VP7PbW/
+         vtLFZpYrKanuzNT8Ks7mroPhdDrH+GROISMP+6NnIDGyhHHYQM2Y9nyfI0ZdtPtq3gyj
+         dAhiOBK6L9gN3TaUjvIiLcdDBOnhHfsWT9KAUFobLKSBbAeDqWSS9X71AiGOcqCNpQVL
+         m+6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769643223; x=1770248023;
+        d=1e100.net; s=20230601; t=1769643579; x=1770248379;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+paZfars3KKP1JZVhG7KRu0fZBv7UeCEE9k0P4oMOM4=;
-        b=B6b53KBWNJeyvcW9r9p29cWCN+7K6lWAPFDLJ4kZgml4IVUV56Xfrn+B8emwDAG610
-         tynCt3uVbodkC5edhCbmpbIKSMZzwDCFZXuyWFACRu1W4BxhZX+4jDQLGc6/Zc5KBWqG
-         3lEAH0M6DIE0Ib/NNWF3QkJLf5sTYLyCsIMzs8tO8tFb+p43uaYydqEJ9lEMpmd3XioB
-         cy+th4TWNx1pDowtsBTRb2ge6ycdhjh/bZt1anpWdE/io4z3HaZ22SXW7M67lCwO4EsO
-         VVwSDiA43AznMnLbgm+Sgd6I9LvjAGgNsjDMraw3h6unlzGUvqkX3LqwR0J/dIQwhlOi
-         wDtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUU3N8TwXsebPkc/+VHyPr5LryuQcUXNhpa1YsCo8kHlh1aqblmM9MRKUNcjjzRJgd/Dkk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSPupXwWAo9o2xH5oIYbP6XWlmx5CxY7y1lsEsH7J9Uv54m5px
-	at/ukMmxyJr1lMc2oaQOTfb8mYtrs9qPzbfBJfOzmkES1dHvxkOsEsMcD/MKXQ==
-X-Gm-Gg: AZuq6aIYVdoPPdpqVacRXhUWWVyxRv1vwJXCghR5GpSNwd3MCejUZfk0sijcZKV5h9u
-	n9MWvnsoMLQvezIJcw2MRUhl7LSIGkK7K/Wke097SxreE49m4axnchXlui2IgraR0s63jV7F6By
-	yaphEZcSl8PTz32C3c8fP2SwFjQFcDoBNu8XQrANSxfdfBzKKHpkXKqCZUaxrA/4RaNPo9ou9w+
-	adl8phaMJfBiP0Evr5AvlUNgJVWA2IYTDhaxi2xgo8EwAUPqZxF2h5fGObZmmy5Y9YKxeI6XSC4
-	0RRkO+CCbyCsyDlFtxBqo5lmkUSarrIWZ71fJkqlq0AHutKkhU5Dgukz/0lie5uTJYSx/KMVlAd
-	x6D9C/89OjyFo9WhGF9ZVfDj6xnjrh07vNBHGzcQ5u5Xx0Zn1eNgWpnANJ07KGNefkZGR6ZEA1N
-	6Q18zShXyCdhbvnmnttZtfaEV7RkVHk6IW8blvbzQzWRYx4fR1GgeB083agOi4gVEjMpVNXndRO
-	vPZ3KwTNx5NN30=
-X-Received: by 2002:ad4:5cea:0:b0:894:7e6f:f92c with SMTP id 6a1803df08f44-894cc94b68cmr93585776d6.58.1769637220835;
-        Wed, 28 Jan 2026 13:53:40 -0800 (PST)
+        bh=5K4fiuuxH7TZZ5P2nOc2at3WjKzG7Xg5l87CzajWOME=;
+        b=LHnyXwiyz3xxxHl0aiVxFWnM73AOFOyM4bNKVLDJmLfAMvzA4B+i9s51PM8rA+y+OE
+         7jU69aElM9clYMet9X2YyE0SoTd7narKzPVtSNQm26Tuh6JqgEiBHzJ0UPm1mfh/Se5F
+         DcaPEGwkT05KoCi7R4l4yRTL8J2FutgoPtCx4hkJBep7mWrm7ON7KaBGOv3KTU6PTHKK
+         AIkFAuIBEYF9AwNwxfZnmfAhVVgOrUqskavBDxdUomRDsIFgaKyu4JGOZ2d8h+CC4nCV
+         3cz3AHvAr50FRnXE88ABkkinoVSx2T5p7YlM3Te+teK2ImnZC4JvTuYMNdQRAc+RLTby
+         cVmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVWogxqbHAxX2d1gllczlrKLGFsHXME3MoHbplHouFkuGfp/vm/bCoG5cyIBrGVRJapPJc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzSfygMZbuRJH6HVFE4SZveSwRLswFD2M3lrrFTxfcsPHnkzHJL
+	1ktwF5/J73WYuyvMk+uJ80V+2HOPZvUsm9KiobvwnKBE6/B9B1SVh1VT0nz+hA==
+X-Gm-Gg: AZuq6aK76nQch7uswuXU7eVTMuvx2r3teTOzYM51hU+uYiPlr+c6sis3R+D0s0Z9D8W
+	5LfZq7ibAp7SafqEomXKCxotTE6h1Fkpxxp/sRzrNPJbTpl9TgyhPJyTOZ9nTxRVd5omcRYxNEI
+	CkN9PrAjUMjJoZvEepadD4K3HzsdZFAuAguPl1NG47QnPZqpiIyUxxcijToskL78QOeL63uoAsX
+	bhVHlTftIp2NjILN1XAMv6gj1MX8Sl8Lj2mMvlIt149lwmTx3v8etJ3gkBi9oTlYK/Va6JWoXWD
+	BAw4K0tO1E1vQy9hNJfEedqxCK0PUpqj2IL2u35nJD2f4ynhYFRDQary2WqxKAIMbjQ6lz7nyya
+	JSRLR/6jCChGxMutLKzwzpnsHM1q0pJIsiBohqARgcnOxzuCLHnMpQBHBHHxYAFdMRugeptex28
+	sDgWESn5VWgPbnea2shMat6iZC8YQUIEl2SadpuRRiI1Z2YiUNNvJnUalfloDxpYBVbnzP9v9YK
+	rD0p7ZwFtvHLfw=
+X-Received: by 2002:a05:620a:1a9d:b0:8b2:ea2b:923c with SMTP id af79cd13be357-8c70b84a575mr922371985a.14.1769637222303;
+        Wed, 28 Jan 2026 13:53:42 -0800 (PST)
 Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c711d40139sm259339985a.37.2026.01.28.13.53.39
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c711b7ba79sm256119785a.11.2026.01.28.13.53.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jan 2026 13:53:40 -0800 (PST)
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 86AD0F4006D;
-	Wed, 28 Jan 2026 16:53:39 -0500 (EST)
+        Wed, 28 Jan 2026 13:53:41 -0800 (PST)
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfauth.phl.internal (Postfix) with ESMTP id F1F6CF4006C;
+	Wed, 28 Jan 2026 16:53:40 -0500 (EST)
 Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Wed, 28 Jan 2026 16:53:39 -0500
-X-ME-Sender: <xms:Y4V6aRWeCI0545xWhVYC0QgKyXzbKjvWE1I1YD2FIIqZq_MGCjG33Q>
-    <xme:Y4V6aXDCpoxRqfrFdHE-iQshoxUaPhl53sOmzf6PiObqsrOe5k7TnX7_fNwcdGFkn
-    FNxFUEqQ3B6SBimHsoQhlmxadVkDHhXi7Jebh7trj0F3tXs6Ard>
-X-ME-Received: <xmr:Y4V6aSKJ-OcEbtooGX_Z8XUV-DdD06DZ6JSe8SY8NMDxX0xbhywPOpgCBsVRJFBtSyaLFAWS0xVvsJi5EsqwuVje2OjHIVyv>
+  by phl-compute-05.internal (MEProxy); Wed, 28 Jan 2026 16:53:40 -0500
+X-ME-Sender: <xms:ZIV6aTDN3a_kIhhZ2H1nxH6f1S4IEsaoD7jvSaxwzd8rl6LSb-51mQ>
+    <xme:ZIV6ae8SosD5jve8mF2--YJpnqUosLSGl-UqrYYHL5uMtJwOax37zhE4LbLEByHC5
+    5q6uPagmqo4og9SFtjesT3BdNHUZyL40IUwzGLfnpQ0ZD1XY-kJIQ>
+X-ME-Received: <xmr:ZIV6aTXpXyuhOlbUt0kOqjc76SyB2CDqB4X_313KDtQ-9HGBSphHTqdf3S6nO0shk8Hffe0N65GYW8hB-haBf91-IlD-Fjwe>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduieeggeehucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
@@ -86,14 +86,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduieeggeehucetufdote
     hiugdrtghomhdprhgtphhtthhopegsrhgruhhnvghrsehkvghrnhgvlhdrohhrghdprhgt
     phhtthhopegtmhhllhgrmhgrshesghhoohhglhgvrdgtohhmpdhrtghpthhtoheprghlih
     gtvghrhihhlhesghhoohhglhgvrdgtohhm
-X-ME-Proxy: <xmx:Y4V6aVRY0js76Ab9iL-NAj3Dfa1r7hjlbos2qnRLH7T0VmNEHVmjJA>
-    <xmx:Y4V6aZG6CEzclz06rKczw3viDjSe-W3PBTb0hCEgQCb5yTSVjUOIpg>
-    <xmx:Y4V6aSWmlDWEyrZ-ahv2PYB3imIEuL2qZLFuTgEHL37M0RMzw5gsQA>
-    <xmx:Y4V6abwwXHEnFm0HoBi71xxD-GDCpawyO-UhYtElFFZt-pL1IXPFyA>
-    <xmx:Y4V6ae_1XKKeLD42DLKV3RMY_T8nxl5ttewqSvFjJjH0TtnJXTlJD9Zc>
+X-ME-Proxy: <xmx:ZIV6aWtSq9qpHrQQCLvMPW4tXsR5-IUpcyz34pT40M6ooIQlQzinsw>
+    <xmx:ZIV6aVzgT15Ft9tGPhtPB9RPB3-O2jEcLd8mw1a8J94NYFkJlRhxCg>
+    <xmx:ZIV6aZQf-MrcPbQmQCtRNOHpqgTiVUXgSjOrz_ajV5t_gipytjSxKQ>
+    <xmx:ZIV6af-eJKAoKYj_3zRswIp9N1j5joWZkNGg4ZIHbXysKfMiHTKuDA>
+    <xmx:ZIV6aXYaiGDuao_kQDt-XU_ZwwaVQZB_etcPSULeJAtBgaPK8LO6zA90>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 28 Jan 2026 16:53:38 -0500 (EST)
+ 28 Jan 2026 16:53:40 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	rust-for-linux@vger.kernel.org,
@@ -129,9 +129,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Mitchell Levy <levymitchell0@gmail.com>,	David Gow <davidgow@google.com>,
 	Peter Novak <seimun018r@gmail.com>,
 	=?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-Subject: [RFC PATCH 4/7] drivers: android: binder: Replace `impl_has_work!` with `#[derive(HasField)]`
-Date: Wed, 28 Jan 2026 13:53:27 -0800
-Message-ID: <20260128215330.58410-5-boqun.feng@gmail.com>
+Subject: [RFC PATCH 5/7] rust: sync: Completion: Replace `impl_has_work!` with `#[derive(HasField)]`
+Date: Wed, 28 Jan 2026 13:53:28 -0800
+Message-ID: <20260128215330.58410-6-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20260128215330.58410-1-boqun.feng@gmail.com>
 References: <20260128215330.58410-1-boqun.feng@gmail.com>
@@ -143,46 +143,43 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-`#[derive(HasField)]` offers less code and better ergonomic for defining
+`#[derive(HasField)]` offers less code and better ergnomic for defining
 a struct with a Work in it. Hence replace the current usage of
 `impl_has_work!()`.
 
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- drivers/android/binder/process.rs | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ rust/kernel/sync/completion.rs | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/android/binder/process.rs b/drivers/android/binder/process.rs
-index 132055b4790f..2a2510e3a0cb 100644
---- a/drivers/android/binder/process.rs
-+++ b/drivers/android/binder/process.rs
-@@ -423,6 +423,7 @@ fn new() -> Self {
- /// Strictly speaking, there can be multiple of these per process. There is one for each binder fd
- /// that a process has opened, so processes using several binder contexts have several `Process`
- /// objects. This ensures that the contexts are fully separated.
-+#[derive(HasField)]
- #[pin_data]
- pub(crate) struct Process {
-     pub(crate) ctx: Arc<Context>,
-@@ -451,6 +452,7 @@ pub(crate) struct Process {
- 
-     // Work node for deferred work item.
-     #[pin]
-+    #[field]
-     defer_work: Work<Process>,
- 
-     // Links for process list in Context.
-@@ -460,10 +462,6 @@ pub(crate) struct Process {
-     pub(crate) stats: BinderStats,
- }
- 
--kernel::impl_has_work! {
--    impl HasWork<Process> for Process { self.defer_work }
--}
--
- kernel::list::impl_list_arc_safe! {
-     impl ListArcSafe<0> for Process { untracked; }
- }
+diff --git a/rust/kernel/sync/completion.rs b/rust/kernel/sync/completion.rs
+index c50012a940a3..c4af58924fe3 100644
+--- a/rust/kernel/sync/completion.rs
++++ b/rust/kernel/sync/completion.rs
+@@ -17,20 +17,18 @@
+ ///
+ /// ```
+ /// use kernel::sync::{Arc, Completion};
+-/// use kernel::workqueue::{self, impl_has_work, new_work, Work, WorkItem};
++/// use kernel::workqueue::{self, new_work, Work, WorkItem};
+ ///
++/// #[derive(HasField)]
+ /// #[pin_data]
+ /// struct MyTask {
+ ///     #[pin]
++///     #[field]
+ ///     work: Work<MyTask>,
+ ///     #[pin]
+ ///     done: Completion,
+ /// }
+ ///
+-/// impl_has_work! {
+-///     impl HasWork<Self> for MyTask { self.work }
+-/// }
+-///
+ /// impl MyTask {
+ ///     fn new() -> Result<Arc<Self>> {
+ ///         let this = Arc::pin_init(pin_init!(MyTask {
 -- 
 2.50.1 (Apple Git-155)
 
