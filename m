@@ -1,97 +1,99 @@
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com [209.85.217.46])
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A203338584
-	for <rcu@vger.kernel.org>; Wed, 28 Jan 2026 23:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A7C299923
+	for <rcu@vger.kernel.org>; Wed, 28 Jan 2026 23:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769643731; cv=none; b=Pra9Er6VsbkSj/+D/vCLQFctXMdMW5VrLMQuAobX20ogDh4SmtWUhaCAFjTSOFrXoMgWH/GcgSj/7H7yOH96NGRuKHTqTxKjxpX5uiDwuZuq74mh1FWrjjUeec//Khn2ehEOep1RQhgFJdiF7upeVmNVaXff6/DrHl6yEJgGzNc=
+	t=1769643958; cv=none; b=hCTmu55prK7xXEGRBQ2RhVsZETgHldsu1i4mFykGopyorBi3uom7FSz30JLZ4EdMk3du51DcpECeP6VAd/5NSwKTOT2mQxxhJBYBRWqSGI39CndIP47vRSFuiFdW3/w7cBch1D5k8pIuV4wp8Lc0YqWz5IyOkDK9uRvuoHa00Lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769643731; c=relaxed/simple;
-	bh=sxpbpWKTZvxcwwFtu3C/YF5qkG3yECiILa4gEgaG3GA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qb1DqOeHIumnpXpU4E6tpbaPhRUlq8GSsYKKgZDej/+kvYQN+6c66BEsO0x9VfCFqA29t4HlmBm8Sac6gZBZox39ZH2NDmn58LcYFUgvVIt+euOg05la/a9Bt/+AYVKaB166k12W1r4yRBVbd/wx/Hg03s/ZITi2xdAg59DiDoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ksb7lx9D; arc=none smtp.client-ip=209.85.217.46
+	s=arc-20240116; t=1769643958; c=relaxed/simple;
+	bh=OWcfZiYWS0H6ctpWcE+xkPHvQjej9ptDYntcK8zIjcw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cdbejGKrsqRiDIp110dbWClrJ0w83gzcW7MP0YUKIWFY42uIgnamSFpKHXF8PF2iu8/ryy1lI6CI5NexDPDF6CwIdu0FBHlyBespVYan6FklHJUqHoG6Oco8xeP9wKdleoHMw9gcVCuTTXFzBLncAUtReCmEmqVGIew+Hvu0nGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gMaf0urK; arc=none smtp.client-ip=209.85.161.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ksb7lx9D"
-Received: by mail-vs1-f46.google.com with SMTP id ada2fe7eead31-5f52e500e89so373067137.0
-        for <rcu@vger.kernel.org>; Wed, 28 Jan 2026 15:42:09 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gMaf0urK"
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-662f485e58aso222613eaf.0
+        for <rcu@vger.kernel.org>; Wed, 28 Jan 2026 15:45:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769643728; x=1770248528; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=9rsltUJYSM7HaaCYyAzd6NhR6FQ1Y8lMhd5oHE/Kxmw=;
-        b=Ksb7lx9DNkViK5rzUK4kYq7dfmnCd395riquXnv56ZUuB/tXwRF1y1MSbjMbm/FbfY
-         woGT0WMlyEdBz08DnNPI5rq50z0xmknjCGoJkWGYo4EzXx116CTx74tsWqc0s/27L57v
-         0W8tUkeG38658QJmHQIl9ibfFDvkrGmRsmTBDmAUFG4MZPMoSU4vHOtgS3ruiRe/7lKx
-         U87BZNR5xBfo9mG04rVqGFttZjG98DPEdNYtOBpredO3RrENEu0f/UuXTxmY/MK3cc/q
-         ZX9acxp5AekZgpT6i1hf9e9fniLuYpCaZEvnRc0oKGSsxzZfAzg/o1kY2IAX1iPGfZVd
-         at1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769643728; x=1770248528;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:feedback-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+        d=gmail.com; s=20230601; t=1769643956; x=1770248756; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=9rsltUJYSM7HaaCYyAzd6NhR6FQ1Y8lMhd5oHE/Kxmw=;
-        b=jELptrcnEyvuY8+El4dQXHXROKB8ewtArY1fyHvTAqCWNuCybXLAP5aXgdVml4y4Cq
-         SRmI8g71EKi71mrv0uawpWPzPGX880a7U48VRPNc0MVSaJmpVM/Z7x6Ry79jxYf3z0cm
-         y1ir7Afx4i1zJ8FVeG7BZUI2iDN5DxGAhfw+8ZRYZMruaGNA11erlbkHduCTEXVDqjsM
-         p4cc+QPokhkn3cbl2lnw8mjlIJOY32HTW1DCyc1UPL5JQMS/Kk1qaX4Y4WlWWJZj4GsJ
-         cETHDofkwend2oxKLsFIZTZ9apZdeJvK7y9ZF9QZVqDxrAdoGnXOQFMGtJJI405lsn2E
-         VxeA==
-X-Forwarded-Encrypted: i=1; AJvYcCWiFtjnz3erc1b7dMTb7/N6123LvgbV/NoH2JNxkYswelzoJpd9cJPEwzw3pslfKq9DLbk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3rZx/BxI2fiNJ0tkRMqV5QNzchOuRBewPfbZli4O9HE+nS22W
-	w55VYdJADxsSzuKPmYtCXHix3x8cWFt2HaxHcNH3fo3GfJf1yY8Pv9KlTmzNcw==
-X-Gm-Gg: AZuq6aLKZ1I80LcDhbu+sGg15/zUj35QHGFeCWRUFRwPpJ7wxphof+44K4cofUGF1tC
-	LFo2Gp2sQfJagr0KyzXd/y0ittCEErgqsoBQdsKz+Qq5oL48jntlT89Kxh8LtFvtmbeMVVBfJlK
-	z+R5TrK5wTea+gS0G6dYxNTYzCAkLUKkcTUjj3XiIa1ioI4/oHx+7OuP3p/e0M2IRiHJ03kulci
-	gUErCo39Vo/1hKk4mOl1uktGVjvL4yXuFNxKA3gV1tHGH2Mc02k+/jeSL4xh05UGjG/x+Uq+Kel
-	B7zuWBXqTnNKPO5PT7r8DYf3uNR74kvNZldfoIgVINM4xQHqr5aUK/1TT0ML1Uv7u4oE1sDLE4L
-	hPGq2u6BiyRjhNGn7Tt/fRPMelS5AMOH3hucWtykUUxctCOCN10pRbklWiypNm397SUmfMMOec6
-	+CbhnFMufUlHIfVGvDfsr2Ml3b6zVhHFRojI/OZFbFOgLn4WpmCG0ffoxL/EHxHuqASH7BvphNq
-	sN/tGwQOZv8WJs=
-X-Received: by 2002:a05:6214:1247:b0:880:5867:45b4 with SMTP id 6a1803df08f44-894cc7b9952mr92925456d6.13.1769637214740;
-        Wed, 28 Jan 2026 13:53:34 -0800 (PST)
+        bh=HK2cJpoHs1cW08tNlDAhBYjQE8db82PEiBJhgotTdb4=;
+        b=gMaf0urKj94ZtsTL27O25S1X8ra2yP5iYeLz842/2StxmildJimwwrUoGlT47/2FwA
+         hM5rj6MfkqAQAimsrRKyOQ//5Mded9WdAsBK1AtxhjXYbjrGXFh1JHpE3aoCFhLabQGx
+         aV09auAckWeEVNUmvIn8vOrFow1KIi3MUnuYUDHH1yZmbN+6gKcEJpm57TtbH4ExBklU
+         XXITQutJLTtWmfNtiGHctn9oKVFvn1mEkKPTVrQ++hmTiVrAsTXYHz0NZ76DF/4ac0uQ
+         ZlA89N2zBSi5MZdxqtLD82YOlJnUCS132tJLh6X9bTlkIF971YBHG5GJaam6zHvkR3+Q
+         MzhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769643956; x=1770248756;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:feedback-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HK2cJpoHs1cW08tNlDAhBYjQE8db82PEiBJhgotTdb4=;
+        b=oix5b9QIs0a04dMzt6IrBstUOTll9ivp89mT3h4GXA7uFNzv3kAQgL3DUV/XCH46fT
+         OeXh4cZSwujJ022Z8v/HUcCtF88RgjUV6+oMfc8MXOe45KrparFl0gSNX2hdAzXuamsR
+         ScnAakQGnadZrP8g5m+nxTiIRF439xa8iyGc3o9C5KLW+gBLM9nEj2Ba5PLHKoDByd99
+         ERTcp5tdeScEiOvZDlTgYDscD0bE6VG6M7EWzar0xrs5rkKnMM+3/JV7OFu+GPV/M0I9
+         6lkfXQJbMIr7Wxq881OyhHx8OwBBOTPIgsjSaN56rpCaXLvlg2zuhTBi4PUSFqWJXcFY
+         WkuA==
+X-Forwarded-Encrypted: i=1; AJvYcCVdHwnMVXXaIDwSP7a1+KiOpgWWPp0DTmL/znKR28a2LPDHi1iDgvMouQ1bePe3XNgPJr0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YziXMA0VWzxaglz+T2RPss3TYooEclCzQ49m/HZQ6Efu6QvzeXh
+	kx+CZN/no+0dgJWm54jr7RRULkBNdIQyfQoq2Q8K8pqqwvs50FhzbS+vwqq13g==
+X-Gm-Gg: AZuq6aJ/FeMHfRgC5casKq9nmZDrvBBjmKvVqNWV06hXafyfDk6eT6OFIui0Q+58kn/
+	ZmMceksYckbn/ECbzAj0fQfNu1SnjIal42A5x5CEmte233Y/p59C7JfXoDVTqn4S/pjZDHkBfQQ
+	Jt//vHphVpJjYhkR2Q5+DWdAkSUi5cXjYk+CNxilJzkG37p9b7X9AyIs5gTniIHxlTb2L96rOkW
+	4x4zvqOCBEMHDLpQrf2Cwo2d4Qov7raMI1jKJuQ/klS1zJG6CptU4dv/vz6pzKtxDwawruDD4lX
+	BwMNiPj5uMhA/bECkQFntSr0tACHt97VIjUZW09qrjZwbV7MbFTYhE+xVeIRgLmNSvW9/CNSlRN
+	Ie8X7FPxpsrYGssjbZGdLdtsDG2ipThLqQv09WaMoclMiBfXrO9hab8RbrVXu4D7yH+uhf6c1Ko
+	n1BFtdO7mAfC0rvjbJTe7JsnaF2HR7xf3/aLZDqD3dxCzl2QpSfokaK/wsjSE9RvAJJ5ixr67p6
+	sQgO7uy7hcwIoQ=
+X-Received: by 2002:a05:620a:4447:b0:8c7:13b8:8b55 with SMTP id af79cd13be357-8c713b8905cmr517714785a.46.1769637223840;
+        Wed, 28 Jan 2026 13:53:43 -0800 (PST)
 Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c711d2889asm258472585a.27.2026.01.28.13.53.33
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c713580985sm237855085a.8.2026.01.28.13.53.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jan 2026 13:53:34 -0800 (PST)
+        Wed, 28 Jan 2026 13:53:43 -0800 (PST)
 Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 1652AF4006C;
-	Wed, 28 Jan 2026 16:53:33 -0500 (EST)
+	by mailfauth.phl.internal (Postfix) with ESMTP id 7918BF4006C;
+	Wed, 28 Jan 2026 16:53:42 -0500 (EST)
 Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Wed, 28 Jan 2026 16:53:33 -0500
-X-ME-Sender: <xms:XYV6aZ9z-QUvAGSHezMUHaFgptqOz8p1VjxHqW0DaB8Ff7R71d70cw>
-    <xme:XYV6aTKqQ_J1Hvv4jkECTXfoBQLi0D7zHtroaelPik_EH1R1RN6t_x8EEryopcewD
-    myJLUDdkPKjkf9X-uDk0PqRYXnNVbhp9SY7rG_rrQksmRnyPdjjrg>
-X-ME-Received: <xmr:XYV6abyC1wZTJsOsYAivmPfFMdOpTePOUSi78KjN4kgnEhLJA-756fntmj6cLlLGqTKn8Rkw-ZhchELTp9S_mVAMATkrwfuQ>
+  by phl-compute-05.internal (MEProxy); Wed, 28 Jan 2026 16:53:42 -0500
+X-ME-Sender: <xms:ZoV6aeFVYNlY6JZOeUsAI2HEcEDhbH7enQkHWg-TSjlEBT8Ol0bgXg>
+    <xme:ZoV6aUxMMTUp9w1Thy-VOM9WqW0cE4EOqvpvF93TkVJFiA76zlA9Dp5I9JXqxwe_U
+    hVwHlgatWJvP7cN-I9wme8VivxHvF4wo_CVMQN9iKy8OTQ3wOajHkY>
+X-ME-Received: <xmr:ZoV6ac7joAFn2VhRmwc6qXOrYh1IjW0Vy2OkUJ8b4Dc6YaZPYjFn58XB6w4kh0Isb563K3D8VxLzbgcTaUX9iJrKt4GZWZL_>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduieeggeehucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepuehoqhhunhcuhfgv
-    nhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtthgvrh
-    hnpefgteffhfehjeegtdduieffudetfeehgfegudejudfhieefgfeigfevueduleduffen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquh
-    hnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudej
-    jeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrd
-    hnrghmvgdpnhgspghrtghpthhtohepgedvpdhmohguvgepshhmthhpohhuthdprhgtphht
-    thhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtph
-    htthhopehruhhsthdqfhhorhdqlhhinhhugiesvhhgvghrrdhkvghrnhgvlhdrohhrghdp
-    rhgtphhtthhopehrtghusehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepgh
-    hrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheprghr
-    vhgvsegrnhgurhhoihgurdgtohhmpdhrtghpthhtohepthhkjhhoshesrghnughrohhiug
-    drtghomhdprhgtphhtthhopegsrhgruhhnvghrsehkvghrnhgvlhdrohhrghdprhgtphht
-    thhopegtmhhllhgrmhgrshesghhoohhglhgvrdgtohhmpdhrtghpthhtoheprghlihgtvg
-    hrhihhlhesghhoohhglhgvrdgtohhm
-X-ME-Proxy: <xmx:XYV6aeb6-lpxe5BmItSQ8TGwxwL3-m_BKM4W1H3Y-3cq0Mnn1AMx4g>
-    <xmx:XYV6abse_Yxb9vsUFZBwhDupYtyUPOlCxBOaD1gVfEi9MRz6glZA8Q>
-    <xmx:XYV6aQcIWTK4QFeE7DAYpbYjMW8gknH7DTvAtLJnamxd_XK-EUJTSw>
-    <xmx:XYV6afbpQrkGgIIKfvZWuQ3WJziSIJzo_jziv4carR1ymlHvOg-Fdg>
-    <xmx:XYV6aaHve5ck36TkQ4APwW2GO5o_n4kEHHShlf08OOo17DeEytfrbJd3>
+    gurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpeegleejiedthedvheeggfejveefjeejkefgveffieeujefhueeigfegueehgeeg
+    gfenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvgdpnhgspghrtghpthhtohepgedvpdhmohguvgepshhmthhpohhuthdprhgt
+    phhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprh
+    gtphhtthhopehruhhsthdqfhhorhdqlhhinhhugiesvhhgvghrrdhkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehrtghusehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
+    epghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohep
+    rghrvhgvsegrnhgurhhoihgurdgtohhmpdhrtghpthhtohepthhkjhhoshesrghnughroh
+    hiugdrtghomhdprhgtphhtthhopegsrhgruhhnvghrsehkvghrnhgvlhdrohhrghdprhgt
+    phhtthhopegtmhhllhgrmhgrshesghhoohhglhgvrdgtohhmpdhrtghpthhtoheprghlih
+    gtvghrhihhlhesghhoohhglhgvrdgtohhm
+X-ME-Proxy: <xmx:ZoV6aZB7hyhCwc1ejSFD8OKjnpoYoi1MBQu3CrjP9P_z56Nk4yOMLA>
+    <xmx:ZoV6aR2jIFafD6KfaKotGIGwjiFlkrJPM-qaTv3VAogHX2QZPsjiwA>
+    <xmx:ZoV6acFxwMU4l_0otaO7K8jn8XfZAR3W6IO6WjQ_JbPZ-4WlCsfTKg>
+    <xmx:ZoV6aSgKwChdCbDLYtURt_RpUDJL1NpmsHz4MUs4kx2Mzd6W0BSgcA>
+    <xmx:ZoV6aeuQx4Qdu4ZQsrOISY_tsoAGO88IyVyB1kOZGz7E53ymMh760lBj>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 28 Jan 2026 16:53:32 -0500 (EST)
+ 28 Jan 2026 16:53:41 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	rust-for-linux@vger.kernel.org,
@@ -127,10 +129,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Mitchell Levy <levymitchell0@gmail.com>,	David Gow <davidgow@google.com>,
 	Peter Novak <seimun018r@gmail.com>,
 	=?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-Subject: [RFC PATCH 0/7] Introduce HasField infrastructure
-Date: Wed, 28 Jan 2026 13:53:23 -0800
-Message-ID: <20260128215330.58410-1-boqun.feng@gmail.com>
+Subject: [RFC PATCH 6/7] rust: work: Remove `impl_has_work!`
+Date: Wed, 28 Jan 2026 13:53:29 -0800
+Message-ID: <20260128215330.58410-7-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20260128215330.58410-1-boqun.feng@gmail.com>
+References: <20260128215330.58410-1-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -139,75 +143,85 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently we have a few similar places where we use a `Has*` trait to
-describe that a data structure has some types of field in it so that the
-containing type can do something with it. There are also a `impl_has_*!`
-macro to help implement the trait. While it's working, but it's less
-ergonomic to me, especially considering the amount of the work we need
-to do for something new (e.g. rcu_head).
+Now all in-tree users of `impl_has_work!()` are converted to use
+`#[derive(HasField)]`, hence remove it.
 
-Therefore here is the effort to unify them into a proc-macro based
-solution. `Field` and `HasField` traits are introduced to generify the
-"Has A" relationship, and a derive macro `#[derive(HasField)]` is also
-added to support automatically implementing `HasField` trait.
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+---
+ rust/kernel/workqueue.rs | 53 ++--------------------------------------
+ 1 file changed, 2 insertions(+), 51 deletions(-)
 
-This series convert a few users (Work, HrTimer) and introduce a new
-`Field` type `RcuHead`. These improvements demonstrate how this
-infrastructure can be used.
-
-Some future work is still needed: using `HasField` for `DelayedWork` and
-`ListLink` is still missing. Also it's possible to clean up `HasWork`
-trait as well.
-
-One known issue is that `#[derive(HasField)]` doesn't play alone with
-`#[pin_data]` at the moment, for example:
-
-    #[derive(HasField)]
-    #[pin_data]
-    struct Foo { .. }
-
-works, but 
-
-    #[pin_data]
-    #[derive(HasField)]
-    struct Foo { .. }
-
-doesn't. Maybe it's by design or maybe something could be improved by
-pin-init.
-
-
-The patchset is based on today's rust/rust-next, top commit is:
-
-	a7c013f77953 ('Merge patch series "refactor Rust proc macros with `syn`"')
-
-Regards,
-Boqun
-
-Boqun Feng (7):
-  rust: types: Introduce HasField trait and derive macro
-  rust: time: hrtimer: Make `HasField` a super-trait of `HasHrTimer`
-  rust: workqueue: Add HasField support for Work
-  drivers: android: binder: Replace `impl_has_work!` with
-    `#[derive(HasField)]`
-  rust: sync: Completion: Replace `impl_has_work!` with
-    `#[derive(HasField)]`
-  rust: work: Remove `impl_has_work!`
-  rust: sync: rcu: Introduce RcuHead
-
- drivers/android/binder/process.rs |   6 +-
- rust/kernel/field.rs              |  73 ++++++++++++++++++++
- rust/kernel/lib.rs                |   1 +
- rust/kernel/prelude.rs            |   4 +-
- rust/kernel/sync/completion.rs    |   8 +--
- rust/kernel/sync/rcu.rs           |  69 ++++++++++++++++++-
- rust/kernel/time/hrtimer.rs       |  70 ++++---------------
- rust/kernel/workqueue.rs          | 109 +++++++++++-------------------
- rust/macros/field.rs              |  85 +++++++++++++++++++++++
- rust/macros/lib.rs                |  11 +++
- 10 files changed, 299 insertions(+), 137 deletions(-)
- create mode 100644 rust/kernel/field.rs
- create mode 100644 rust/macros/field.rs
-
+diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+index 2dcfd3eace39..37fbf348c760 100644
+--- a/rust/kernel/workqueue.rs
++++ b/rust/kernel/workqueue.rs
+@@ -578,55 +578,6 @@ pub unsafe trait HasWork<T, const ID: u64 = 0> {
+     unsafe fn work_container_of(ptr: *mut Work<T, ID>) -> *mut Self;
+ }
+ 
+-/// Used to safely implement the [`HasWork<T, ID>`] trait.
+-///
+-/// # Examples
+-///
+-/// ```
+-/// use kernel::sync::Arc;
+-/// use kernel::workqueue::{self, impl_has_work, Work};
+-///
+-/// struct MyStruct<'a, T, const N: usize> {
+-///     work_field: Work<MyStruct<'a, T, N>, 17>,
+-///     f: fn(&'a [T; N]),
+-/// }
+-///
+-/// impl_has_work! {
+-///     impl{'a, T, const N: usize} HasWork<MyStruct<'a, T, N>, 17>
+-///     for MyStruct<'a, T, N> { self.work_field }
+-/// }
+-/// ```
+-#[macro_export]
+-macro_rules! impl_has_work {
+-    ($(impl$({$($generics:tt)*})?
+-       HasWork<$work_type:ty $(, $id:tt)?>
+-       for $self:ty
+-       { self.$field:ident }
+-    )*) => {$(
+-        // SAFETY: The implementation of `raw_get_work` only compiles if the field has the right
+-        // type.
+-        unsafe impl$(<$($generics)+>)? $crate::workqueue::HasWork<$work_type $(, $id)?> for $self {
+-            #[inline]
+-            unsafe fn raw_get_work(ptr: *mut Self) -> *mut $crate::workqueue::Work<$work_type $(, $id)?> {
+-                // SAFETY: The caller promises that the pointer is not dangling.
+-                unsafe {
+-                    ::core::ptr::addr_of_mut!((*ptr).$field)
+-                }
+-            }
+-
+-            #[inline]
+-            unsafe fn work_container_of(
+-                ptr: *mut $crate::workqueue::Work<$work_type $(, $id)?>,
+-            ) -> *mut Self {
+-                // SAFETY: The caller promises that the pointer points at a field of the right type
+-                // in the right kind of struct.
+-                unsafe { $crate::container_of!(ptr, Self, $field) }
+-            }
+-        }
+-    )*};
+-}
+-pub use impl_has_work;
+-
+ impl<T, const ID: u64> Field<T> for Work<T, ID> {}
+ 
+ /// SAFETY: Per the safety requirement of `HasField`, `raw_get_field()` and `field_container_of()`
+@@ -746,8 +697,8 @@ pub unsafe trait HasDelayedWork<T, const ID: u64 = 0>: HasWork<T, ID> {}
+ 
+ /// Used to safely implement the [`HasDelayedWork<T, ID>`] trait.
+ ///
+-/// This macro also implements the [`HasWork`] trait, so you do not need to use [`impl_has_work!`]
+-/// when using this macro.
++/// This macro also implements the [`HasWork`] trait, so you do not need to use `#[has_field]` when
++/// using this macro.
+ ///
+ /// # Examples
+ ///
 -- 
 2.50.1 (Apple Git-155)
 
