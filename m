@@ -1,99 +1,47 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C785C30B50F;
-	Thu, 29 Jan 2026 15:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A89B735503D;
+	Thu, 29 Jan 2026 17:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769700529; cv=none; b=EsOVlhsLYz5exoY7De9hu+eM9le8TNuboarnzWhwf9qzU/C3RwNqDtUK0B8IrrghK9ysR/lmQCK40BCNxbcVDUtio/rrXzNf30tFINht4jVTS6Q8znvZsKHbaG++SJT8vVbeEBUwNSCYrxP0WoMMrl+LIkVkqr0mq3mStJuIfiE=
+	t=1769708772; cv=none; b=RTZiwURQJxyIFYulNhCAn0HdpHq/7K0XGqycs9RGg+gas/2t2GfinPTBVQWzujLdoFQoz607FgQ7HMm7dU3qWI7nr+xTeI9GDZUzLHrystNYgiNtXSKu3rTj5on5u6MYu8ceRN+V8xdki2ZugWrvLeCUGjIyizB0Qp0kNDqVuIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769700529; c=relaxed/simple;
-	bh=N3lQmcQvjkYcHfDYb2g9UzctjgJ00wHSg6Rc5NuB8ao=;
+	s=arc-20240116; t=1769708772; c=relaxed/simple;
+	bh=DYYrQBJ6UjuWz2802Ozqo2cKwlvUysnujXA1Vy/5oco=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HBhoVye5U0fFuClerNY/nFwE4f2IeybJnVIc+D+daHJeu3VeYmeqMUswlhPnoFcc8BzU65mSnJkaL31F8dzLmKZCm5lN8MkdiQ30EHZo4fjGYN4PXMiv7c1o5SeUP0TtExNiuRKtdz6yBlGUzaSxoFGaJVityOS9IzYERKZNQvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q3O2+Jif; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ETRqk+h5vi16XtQM9s7eGq9SYbpO99mWrx4AnszdSlSMtKhGmDtlQjYRSLWwuxIpgWH986ymtqHMsSVANMdtqyWh8GodBl8ssKkO4nHaGjYmtZ5BDAHATS/O2J1kXcO+wksAdvsHI7cNW0ZcA/1D8DutUZDa5AlqRoDVZbY0SjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XwENo6yT; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q3O2+Jif"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72722C4AF09;
-	Thu, 29 Jan 2026 15:28:48 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XwENo6yT"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84BACC4CEF7;
+	Thu, 29 Jan 2026 17:46:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769700529;
-	bh=N3lQmcQvjkYcHfDYb2g9UzctjgJ00wHSg6Rc5NuB8ao=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=q3O2+Jif9qFZ/32nid2+i7mmWCJh9i5Za/4hMISGfyJZzD7A2VZb8/GpUFm7GTub5
-	 fnAn6O5YwpqhQI3tnBsMZZyYBqYf/Acmi0tWthYGoy6kdnzjKSb2XWhFYEa7saNBgG
-	 aRwBlfUBC+6zU1tf5x8IPWPTWgCGm8IJEKUF0hVE9HMLh/EdQd8o7fF441B34VYgCj
-	 HoNtokP/QCIKqiwMeUFwmnhPUVgzf9XFDUMAPBG7hreO8ZgNdFNLKUPielTbGNf1C/
-	 Ixl8HyuxXokV3XmZuc1EAl+xPc7oh6PWdiVopjddNpZgcBlVU6+ElNWW+h6jOLBbBX
-	 76CPIyL1AJwRQ==
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 79CFBF40090;
-	Thu, 29 Jan 2026 10:28:47 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Thu, 29 Jan 2026 10:28:47 -0500
-X-ME-Sender: <xms:r3x7addvFwGxtTKGW8nrJgrpX-m54fqG8s2WYt8WyUr4vv5rdVF3UQ>
-    <xme:r3x7aW4WraYxs-pNnm8coMEmOoplkC6-_P1d0ZKBtI7MVquNNIgjojmiBxb_PddZt
-    3TllvaoskwL9fKHfFIgQYL24xBsUbds2TxRNAy9xcdTGG8qQbinew>
-X-ME-Received: <xmr:r3x7aaL-fEVJxtpNu3z-LMa8TcTPYTONV90LCg8Icd-KUaRpqtc9p6Cl8x2IiQyq1QTam6HcchtoDsHRn15Ic_f2ATG0ZEkd>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduieeiheeiucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnsehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnh
-    epgfdvtdefieetieefueetudehffevieffkeejvdetleffledvveetgfeufeethfeinecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunh
-    domhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudeijedtleekgeejuddqudej
-    jeekheehhedvqdgsohhquhhnpeepkhgvrhhnvghlrdhorhhgsehfihigmhgvrdhnrghmvg
-    dpnhgspghrtghpthhtohepgedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehm
-    ihhguhgvlhdrohhjvggurgdrshgrnhguohhnihhssehgmhgrihhlrdgtohhmpdhrtghpth
-    htoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
-    thhtoheprhhushhtqdhfohhrqdhlihhnuhigsehvghgvrhdrkhgvrhhnvghlrdhorhhgpd
-    hrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehl
-    khhmmheslhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopeifihhllheskhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhg
-    pdhrtghpthhtohepmhgrrhhkrdhruhhtlhgrnhgusegrrhhmrdgtohhmpdhrtghpthhtoh
-    epghgrrhihsehgrghrhihguhhordhnvght
-X-ME-Proxy: <xmx:r3x7aXPFVwkZWFqc4e4mcAxvTLvAo5irRafig6zLnC0uYNyMWtqUQQ>
-    <xmx:r3x7aXup7oAguf94O8pM_Hy16vvdzGHkH7tkVpYEE3q2VN092OuXIQ>
-    <xmx:r3x7adFMda4QXLLjp2HYFFBeFZDrUHTvS3tx2MVUJLpqzbak5dBmWQ>
-    <xmx:r3x7aS4SMnVUrG46vHScs6ooVRE9Ne3UJKZfeN6XborAkSSNDO2Ujw>
-    <xmx:r3x7aQUg7NyV9V_x8SrlR8xIpXRUJVX2QX7yN7fFOXljvEosxvNE5jR3>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Jan 2026 10:28:46 -0500 (EST)
-Date: Thu, 29 Jan 2026 07:28:45 -0800
-From: Boqun Feng <boqun@kernel.org>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	rcu@vger.kernel.org, lkmm@lists.linux.dev,	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Mark Rutland <mark.rutland@arm.com>, Gary Guo <gary@garyguo.net>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	FUJITA Tomonori <fujita.tomonori@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,	Lyude Paul <lyude@redhat.com>,
- Thomas Gleixner <tglx@linutronix.de>,	John Stultz <jstultz@google.com>,
- Stephen Boyd <sboyd@kernel.org>,	Alan Stern <stern@rowland.harvard.edu>,
-	Andrea Parri <parri.andrea@gmail.com>,
-	Nicholas Piggin <npiggin@gmail.com>,	David Howells <dhowells@redhat.com>,
-	Jade Alglave <j.alglave@ucl.ac.uk>,	Luc Maranget <luc.maranget@inria.fr>,
-	Akira Yokosawa <akiyks@gmail.com>,	Daniel Lustig <dlustig@nvidia.com>,
- Ingo Molnar <mingo@redhat.com>,	Waiman Long <longman@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,	Zqiang <qiang.zhang@linux.dev>,
- Miguel Ojeda <ojeda@kernel.org>,	Benno Lossin <lossin@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>,	Trevor Gross <tmgross@umich.edu>,
-	Danilo Krummrich <dakr@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] MAINTAINERS: Update my email address to @kernel.org
-Message-ID: <aXt8rRabQVTei7y2@tardis.local>
-References: <20260129004520.62697-1-boqun@kernel.org>
- <CANiq72=p9ZY2GWgnu=wYbNUQE3mxRsa3KMfkEnJV++X=mhTcXw@mail.gmail.com>
+	s=k20201202; t=1769708772;
+	bh=DYYrQBJ6UjuWz2802Ozqo2cKwlvUysnujXA1Vy/5oco=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=XwENo6yTqu0LZZtmtkrvLHpCc/1ykWMQjQNNY9Kn9xJOt+cwHWEA/zna2zpg/r7mo
+	 rG2JYClPGPW/ghxyo2yf8/9crERy8eWhSSIiNm6vueVl12Qn7DQeRS6jpxkYgdCHQy
+	 1H+1glyGCI0xjwwPTGu8YPHc4zue3/SzkbskzV1/SNXRY04SE+HUI84vA/OoyTozhR
+	 Kxslvx58M8GWgh/9TaU7Nnn0jqOFqbOk0Fxr4HwswiPq41EXQXyp/vVDCTsaMZbBW+
+	 3vIAVRIV1zmdm5j6/0PmHXchhgRxtIY1JalLRSG2Ae6MHGbJjww+iaunV43yZVpUci
+	 g1lOLUrmrGp2w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 1D202CE0D17; Thu, 29 Jan 2026 09:46:12 -0800 (PST)
+Date: Thu, 29 Jan 2026 09:46:12 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc: Kunwu Chan <kunwu.chan@hotmail.com>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	"linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+	hch <hch@lst.de>
+Subject: Re: rcu stalls during fstests runs for xfs
+Message-ID: <13b25e07-d7b8-4b4e-a249-b6826b2eea39@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <aXdO52wh2rqTUi1E@shinmob>
+ <IA1PR14MB565903564F4AA105AF6A21099791A@IA1PR14MB5659.namprd14.prod.outlook.com>
+ <fc611e8e-0da9-4b88-83ef-092d300307e3@paulmck-laptop>
+ <aXrl46PxeHQSpYbX@shinmob>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -103,27 +51,46 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72=p9ZY2GWgnu=wYbNUQE3mxRsa3KMfkEnJV++X=mhTcXw@mail.gmail.com>
+In-Reply-To: <aXrl46PxeHQSpYbX@shinmob>
 
-On Thu, Jan 29, 2026 at 12:26:32PM +0100, Miguel Ojeda wrote:
-> On Thu, Jan 29, 2026 at 1:45 AM Boqun Feng <boqun@kernel.org> wrote:
-> >
-> > I had issues using my gmail account multiple times this week, hence
-> > switch to @kernel.org.
+On Thu, Jan 29, 2026 at 05:27:04AM +0000, Shinichiro Kawasaki wrote:
+> On Jan 28, 2026 / 08:42, Paul E. McKenney wrote:
+> > On Wed, Jan 28, 2026 at 05:55:01PM +0800, Kunwu Chan wrote:
+> > > On 1/26/26 19:30, Shinichiro Kawasaki wrote:
+> > > >  kernel: xfs/for-next, 51aba4ca399, v6.19-rc5+
+> > > >      block device: dm-linear on HDD (non-zoned)
+> > > >      xfs: zoned
+> > > 
+> > > I had a quick look at the attached logs. Across the different runs, the
+> > > stall traces consistently show CPUs spending extended time in
+> > > |mm_get_cid()|along the mm/sched context switch path.
+> > > 
+> > > This doesn’t seem to indicate an immediate RCU issue by itself, but it
+> > > raises the question of whether context switch completion can be delayed
+> > > for unusually long periods under these test configurations.
+> > 
+> > Thank you all!
+> > 
+> > Us RCU guys looked at this and it also looks to us that at least one
+> > part of this issue is that mm_get_cid() is spinning.  This is being
+> > investigated over here:
+> > 
+> > https://lore.kernel.org/all/877bt29cgv.ffs@tglx/
+> > https://lore.kernel.org/all/bdfea828-4585-40e8-8835-247c6a8a76b0@linux.ibm.com/
+> > https://lore.kernel.org/all/87y0lh96xo.ffs@tglx/
 > 
-> I will apply the patch unless you or someone else wants to route it differently.
+> Knuwu, Paul and RCU experts, thank you very much. It's good to know that the
+> similar issue is already under investigation. I hope that a fix gets available
+> in timely manner.
 > 
-
-Please do! Thanks for the offering ;-)
-
-> Gmail is definitely giving pain to a few people this January...
+> > I have seen the static-key pattern called out by Dave Chinner when running
+> > KASAN on large systems.  We worked around this by disabling KASAN's use
+> > of static keys.  In case you were running KASAN in these tests.
 > 
+> As to KASAN, yes, I enable it in my test runs. I find three static-keys under
+> mm/kasan/*. I will think if they can be disabled in my test runs. Thanks.
 
-Yeah, but maybe in their defense, probably that's the best service I
-could get for free ;-)
+There is a set of Kconfig options that disables static branches.  If you
+cannot find them quickly, please let me know and I can look them up.
 
-Regards,
-Boqun
-
-> Cheers,
-> Miguel
+							Thanx, Paul
