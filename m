@@ -1,221 +1,279 @@
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECBFB24729A;
-	Fri, 30 Jan 2026 11:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.141
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769771790; cv=fail; b=DitaCadmiZ1jIGTWmbsjDN8+HmvR/25zhQrf3ynIn4sn6Yf3u6QUjLChcMCo4osl+AYkoqpvIuVXVNfH2wv6R3r3sNVMCpCXhGSo3Fo+BaGLD3SUOtw+WWQQ/z7Q9zBAvHpu6NZFApjPvz2RSuvdxFrk9RwbHBnL8cBC59BrA5M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769771790; c=relaxed/simple;
-	bh=/icSJdaQKpwfJTql8FDtmf+FQkS+m6azBirfN07tRdA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=M5KnwTSny/YMjsdLZDeAHY/ZMBuiDqrHlK/PwnbTKjtdSqiLwngx/GEnSgZVBUyiH6ALbG8mPQnmCuxYq/3jnpjmhvW0yy6Ve1H/Qdj7WEEYHOCWGxOfSGzLahuuc+eH5FE9oS+uXlaq2YXomKzx5n/TZKJDd8vagqwzmQ4IPJs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=YemESs68; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=ZRKHnuZF; arc=fail smtp.client-ip=216.71.153.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EA8D286D5E;
+	Mon,  2 Feb 2026 08:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770022061; cv=none; b=ksfuJqtCy7bBn+3ztdV92NiK0utNomrPd5zCYf6PQvsD6p6TKPjGrOJE9q+px2/jje7G5um4e8lHsN+qe/U2yQkiRQ2pm/dhe++XMb3xHsWcr7A+y1nW4WfxXtANcdMo8xWAQ1ckt2hc1HUM3HwEz7W9iBHOxbJNPwkT8Mo/t7s=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770022061; c=relaxed/simple;
+	bh=KAvoBnIeG0u4QwfD94o9lb5Z/uUHfyFNsV9Fc9EoJvs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vu/+e31oHMPDo8UjAAU22Z8UUD9h9FHVCns7J6tpizydHJW1mmGM8PHBIfZQVKcGJk5DNNX6HdXdkEhm4hYhmyXVNDe3iQVEXXnj0fC62rslIitn9k/szJdUqGDmWfNumZn5Frt2fxLbjT9RHDrhH1hwJ8Vc2vXSs6/ylNAf7M8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WoWuqQKm; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="YemESs68";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="ZRKHnuZF"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1769771789; x=1801307789;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=/icSJdaQKpwfJTql8FDtmf+FQkS+m6azBirfN07tRdA=;
-  b=YemESs68PEELwwfcTFJlbEeYJdpYFBVlYOZZ7Z7JFrDRCizshQewoQU3
-   uukeBVc8q6klkiawdL4iVFU49lwu2EhR39hQoMJusgPrcaeThuAcbLTg8
-   ZNyr2zg7eVeprE+kZOGsVPupiTWBkRtH/9agg5ITkfYwfcMvmASn0EtfX
-   1JqGjytW6AbmrQdkkcHzL8hzTDGSrnRmSD2hzeWkeBoePqPycw0UEqjGI
-   zL2CRk/yGp+R8cMiK/Cv64m5cRbl4DUwxWu6tQ1hfnkDBptLYxpnWdir3
-   RMc9QXeJHqgATtOU/aFv2AWndtWbhlWQqiEq9GB3xlFKeEU7z2zCDkedi
-   A==;
-X-CSE-ConnectionGUID: aRFpugo3TLWN1cQaFv6sIA==
-X-CSE-MsgGUID: yvuW9YBURw+XiGGTm4fXKQ==
-X-IronPort-AV: E=Sophos;i="6.21,262,1763395200"; 
-   d="scan'208";a="140424865"
-Received: from mail-eastusazon11011064.outbound.protection.outlook.com (HELO BL2PR02CU003.outbound.protection.outlook.com) ([52.101.52.64])
-  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 30 Jan 2026 19:16:27 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=vln+9faoDFGNDjfM0GjjxD24LswplWeMAAtvuLpiXtDcF4xKTolwku4cUc6qcMopXwOrig+xr5Feib2xICqUYGEw4FQTpQA/2Jfo9Sik7+uQf3w+UXIqpkmtl6HUDAhxsz3yPfFTzktLYEQhYGOXar/Dv1hW8ZRNPDVBkApApcVCqFbbVR7BWEyuhARj91FscWB6FqNbz04BYoncecbIKdYYrevfOARF2sBFlIW6bqxK++LtxEzYK/lNrtET4uOyIoAY1voCacZxQlxDkNqAUb0+uqE99yQgqihLKCEfnQOsT2WvSYJvC1P4rTrhduY5PYZSPvdnJ01dixo6M9QpoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IxkNSrtmLgmxBY3cj/n/CgAOJKkA3JcVz++mQW6iOMw=;
- b=w7KPvcxUiM6F3f616FsKWxn0lTIKAPMZqUd9OL+B0g9hJr85iY4HD0DAomo6jBXZZQzBVbFnpXxgXts/izMmGhagFvNWYXAlo/cU73x5Y/foG7OKjImOZeSApc4E7Ipg4d7wOS6A/IFGnZT0bBkLb4IlNn6cka0Pe/mBxWqE4bno1xsV5IjNjvsJiP9SW0Y4oqCi4yYliXuLHM0cVMMcOK76/7IrNda5O/eMtesX7eFfYrC89UO0c5jfY7iWOwy2O7wVV+Pj1feefbgMrKeQ19zS7RKlIyAJtpkzYMrtqVpA51uEHOuQDnipkW4HKEDlCxm32QEH0Jk0TUXT+Arshg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IxkNSrtmLgmxBY3cj/n/CgAOJKkA3JcVz++mQW6iOMw=;
- b=ZRKHnuZFtDrxA+RgaTtUJmr+rKZ6SWhRHrVZLW+z70pkGQoKvwJsYeM7NGtjFJdfl+RYqAfWyBzjiK2HVD4jWtTGXOspeh3N4tA6stXeehXCXnkVZaV4XeNmJ6UfeVmHIB7IFmINGKCzJtyynYISaocYAbQcLw9dYtOKiQ0TMI0=
-Received: from SJ2PR04MB8536.namprd04.prod.outlook.com (2603:10b6:a03:4f9::11)
- by DS2PR04MB9726.namprd04.prod.outlook.com (2603:10b6:8:27a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9564.7; Fri, 30 Jan
- 2026 11:16:24 +0000
-Received: from SJ2PR04MB8536.namprd04.prod.outlook.com
- ([fe80::8820:e830:536b:b29a]) by SJ2PR04MB8536.namprd04.prod.outlook.com
- ([fe80::8820:e830:536b:b29a%3]) with mapi id 15.20.9564.008; Fri, 30 Jan 2026
- 11:16:24 +0000
-From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-CC: Kunwu Chan <kunwu.chan@hotmail.com>, "rcu@vger.kernel.org"
-	<rcu@vger.kernel.org>, "linux-xfs@vger.kernel.org"
-	<linux-xfs@vger.kernel.org>, hch <hch@lst.de>
-Subject: Re: rcu stalls during fstests runs for xfs
-Thread-Topic: rcu stalls during fstests runs for xfs
-Thread-Index:
- AQHcjrclowh1moKuUEq8Mwy02Ri3kbVnWueAgABxzACAANWrgIAAzoQAgABdO4CAAMgvAA==
-Date: Fri, 30 Jan 2026 11:16:23 +0000
-Message-ID: <aXyRRaOBkvENTlBE@shinmob>
-References: <aXdO52wh2rqTUi1E@shinmob>
- <IA1PR14MB565903564F4AA105AF6A21099791A@IA1PR14MB5659.namprd14.prod.outlook.com>
- <fc611e8e-0da9-4b88-83ef-092d300307e3@paulmck-laptop>
- <aXrl46PxeHQSpYbX@shinmob>
- <13b25e07-d7b8-4b4e-a249-b6826b2eea39@paulmck-laptop>
- <c33c3d3e-a59c-4f5a-a562-13e2cabc2faf@paulmck-laptop>
-In-Reply-To: <c33c3d3e-a59c-4f5a-a562-13e2cabc2faf@paulmck-laptop>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ2PR04MB8536:EE_|DS2PR04MB9726:EE_
-x-ms-office365-filtering-correlation-id: bb988c41-5f1e-4d45-6d84-08de5ff100e1
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|19092799006|376014|1800799024|366016|38070700021;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?en/2DOWawyCRka8uLRP8agtP04r3bcdrFdQ4kCzCzrCVBt/hAGhrZmWhjWJx?=
- =?us-ascii?Q?wgNuITxA5yBHQMF6lWG5Pnub2l7Qvvr5KcCTfP+MYtKrBcMWGzZFraQ9Ndmk?=
- =?us-ascii?Q?a5kNrpRtMK5UFbDYE9OG0FGO4Nt1/Tp4WRIUBR9EH8ftv8S+ZI+A5Jude19v?=
- =?us-ascii?Q?/gD6g9PMAX7sFYpZHToftCMkA/OE2ks+1honUtPwm42scLvWjaS0R9pn/UIb?=
- =?us-ascii?Q?Pz3tuQtio0IQ41GjVzX8/ckiSSl/AK3fWN5gpSAKHDu0vPfcRPql7cM3LPaE?=
- =?us-ascii?Q?o9gwVfltN7wfUUBJmg2RtVdccXmiJ8vlTSA+hq/aXL+SrMpHqLXiy4qxlkFM?=
- =?us-ascii?Q?yhzcsWC1S6Bd31IR2qAmT+9RoOlzt+uF88HF9uHYcWjxrQ0ZwXTCJZ3GrFwW?=
- =?us-ascii?Q?oGWEJJQ0zqvcbpQ1A7CDCoCNfQEuFk5x1+HjIFWOGwYyiTkyg0isRvcvWgAI?=
- =?us-ascii?Q?2064eI0vyZzdJJ4q6GC2eei5iv0IT69vNnwbkX7kvW3oWGBGZvkiG6eaIeSU?=
- =?us-ascii?Q?AfX/AFS7Cl9FgqmZviQifNCH82NemQO0YMDv/J39uCJJ80P3eDH2OBC7xUwk?=
- =?us-ascii?Q?BkgKrGpB44a197SDmcTHcMt8gCOh0Xll4HFA4N28ZgczXDc2WnVbcaL3kxQg?=
- =?us-ascii?Q?mGkbyb9MZHtqVJtSu26mg04Hzx5w2/N2+6O3woRm3Pyt3r0b8/wmNviCFnVP?=
- =?us-ascii?Q?TCyz2NuOdZRA9OiBBaQjv8Qvf+SLsEH4Uw1Gn8uazZBbL9/TYCS0TSFh5tml?=
- =?us-ascii?Q?eriuJoBmtAVRc5YzqV0mPbRx5xN+MQqmvsh+Qo+bgdx7/yH7tN9aaCwiynLH?=
- =?us-ascii?Q?hz6i6AW5wffK9LvGXusIwUsB2fWPZzOzqLCj7sZ/0fqVrJTCRUYvvixjl6ii?=
- =?us-ascii?Q?Suv6Pn1cAJfWk81Z/CC1t2ereoi0DjJUFu/rnivwq0LKmQN+Ks4jefZfBdSg?=
- =?us-ascii?Q?wKrfoHTZJOIYeaYq3/u2OxkQdsu+1zBF+L64lX4pjKWhE49j2gRQQE8/uori?=
- =?us-ascii?Q?ddh4K6PKUDiu59+aTMSdQIW6Qn4bapvw0DtKZL07cXGHA8fyOSEJz0JgXHa1?=
- =?us-ascii?Q?Wee1xwvmWC/DBxAKbGU+6yRj4aDoqx96y0F31T3L1U2mNXwsKcp7J5Gf43RF?=
- =?us-ascii?Q?L++VxHsSNVp75iAb4AZtqjQPy1JMhrvqQm5urBdITxHk1QcZ1fBeM3e7mc7v?=
- =?us-ascii?Q?36rosuGLDgMcYDlfrh/q9s86RezatRWYWKVYftWOmMDDRtZtUsIonVGWYqry?=
- =?us-ascii?Q?if7uC+BHyrVo6BQivj+MFObXZP5d5ZMVXyK07OxXSAkvL786gADZtEjOrL1d?=
- =?us-ascii?Q?a8Oo4+QsJCUasnT6eJsL4IIkguRCufY3UvlUppIh3NtrAFyTNwKEyPkTD9Nc?=
- =?us-ascii?Q?hhmb45UAMGvstYnAIcE2nEk843xzsjgHZ9msl10YKASmA7WaNwKqcP+wEH2r?=
- =?us-ascii?Q?3kE/7bzR+s3xa5Z6CzHY/YCCMCvIhQeGKkFCxXk5e/RD+7ycMcsgp91t6uBJ?=
- =?us-ascii?Q?SXFpnTCr3zZS4b0x4VU3ZWzMUFqOQTUcSfZuZeCmcZNErNgzdQ3h4P7n5Lwj?=
- =?us-ascii?Q?RtmlV7cHybT3kz6zFarw4mk1+K1M2HwzNfmfXezGEmGwIHxRxLC5Og+TXt6m?=
- =?us-ascii?Q?urFAwukN7r6tGIqoUUo8JUA=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR04MB8536.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(376014)(1800799024)(366016)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?BHh+iB/iiVGwSdsheVKH24MpbqoMkhG2Ll3G9c6S56cTf3CQ4Q/Rq+h66/MA?=
- =?us-ascii?Q?hH1PXE7BPVtzr5lrT2CyAYY5v1FYhU0kTJYvCpmXl4WM3TZt7YJ6dSnqLnZk?=
- =?us-ascii?Q?QtxpMVG921iO/Q+iRdk1M4L87DgrkADZ28VE+iXOUDtrgv4fiW5+Bz2cP+A7?=
- =?us-ascii?Q?ZOGU308rZQUDyZsQPDOUfO3i00n6SyVUuNf5Z7xXkobCIycAl1gCgRam/uRy?=
- =?us-ascii?Q?YPRQU5Kg+W39vwuhx6wlrnT75tBnZudmDpmJBvR7D1I3lAOV4XXOMUqb0sTW?=
- =?us-ascii?Q?b6yhw9Q9qNoRFPbgUE/3QqoJiHbEx+2EcDWAtOvYwcPVapHm5AASkfGkB188?=
- =?us-ascii?Q?dt1xzGaHCY+N1IE4DguL6X6LDCNW2HwIw1wrfbt0dCrx2qbcwEOc/ML2FlJH?=
- =?us-ascii?Q?LchSCFkXz7ib8Of7c9euoemxdNHSBuENRk047wENsDSauD5LkGP84Tb/p90n?=
- =?us-ascii?Q?WO6HHVsi1YzO8m/Ij3ya+a6XreKZtYKlPUqowEl+3E44tmgrI5ENhtZS/r1h?=
- =?us-ascii?Q?MFqyFWa+U/1A2exzRcTJvJ0gONo2prFjX1Oayh3B8skahqutZ632tZ9+QDy0?=
- =?us-ascii?Q?HJeyZ69JO+vTweapPsOJjl/nlf0811dYTh7avol8kXwfj6lcztbpuDPVXVoL?=
- =?us-ascii?Q?+A9EBQwVzUjWoenUsKLrl9UTZOnPVQqk+aMWldW7THk/HJIY8d1TCjE2POFJ?=
- =?us-ascii?Q?FggNycjaSISJ5l/6V4aLb9QwvU4aqco2HpWNRr725lw/bTHntD+MqT5SHbc1?=
- =?us-ascii?Q?8KzUusduRnfzpBb88D4vkCRTtg9otM3qM3wTvTP0m7XxtELFFiMA+iUrwl6k?=
- =?us-ascii?Q?qF364FSeuHVkNqjazgudXHQ2sZ1iXqga1dKsYJAUYfdUmVIzB95RD+Dxa4ba?=
- =?us-ascii?Q?ych/eCht2lk62OPrCtkbgJlz1WDHUHA6non0MvteFCX4aL1kya81AhqqWJfI?=
- =?us-ascii?Q?sxetytWYuMSTEXFzv3kIcboQzb9XCg6HVoo/cTQ3E22o7rsvK0oWmtjQpb4F?=
- =?us-ascii?Q?UXOM6ExkTZ+5ZQNUFbqGPZA1LoHX+qH5coa1vezUccEgqrm9UNJjwL39I2sL?=
- =?us-ascii?Q?iQSb7zEMsoDEX2xlPvT9yYqFMK7ZDFV39s6gQVb1vfsvrl6on7+5sPJ5BcZs?=
- =?us-ascii?Q?e4T2VaUZJzRU+YPEQdJe1vOF+JFCA1Ulkcd4YGNngJayh+Pg81OBQgdfKQrW?=
- =?us-ascii?Q?9na/8ilbU54E/Xe6o0D3n7Lgo+q/vWDW7GhR4PNQnr/fETUGzOx2D2aaOBYk?=
- =?us-ascii?Q?hznglGxsgOs2cqUBcJ+iqOdn9UqquzAgyG3n1tw5slIZs8yOdetC1I+QaYYp?=
- =?us-ascii?Q?Ey14gGbRdU/UbOMTOPEVie9+mRSnO2Do6qD68BRu+iKFOZjxLrGVZiWecHLl?=
- =?us-ascii?Q?9eAN4b4H58uknv7CN2oBll72VanEy3NR2gsfbn8QS9Czx8tlnbf6l5kJcE5Z?=
- =?us-ascii?Q?0WTAC871+4y+MmVGYcBURuONDiLZ/uqtRQH6f7JuaQ8a3FIxRrGvRBwYkrxB?=
- =?us-ascii?Q?enWE3yHt/DWXDTlaaPl01qJiFLCmPzMUVq3/BA4HPUG/hBloQ9gD7v0RraiU?=
- =?us-ascii?Q?seI0AYq3kQeTus1gF/vD9prpRlSvKk+rSHbAx0744CfoPXH5kNdymrgvT1jX?=
- =?us-ascii?Q?epgXR2EZJB+PcvDtxs7nIAwUTfLBOPqhljsRPZxznsr+ZBvZmTPrnH/2wndG?=
- =?us-ascii?Q?CG3e3SzkeXaQazP5H/mnIO7h9/xouzEOBewtu6tqoPockuJJRYegf1gW2YoM?=
- =?us-ascii?Q?vEP6yflGWVJ63Xa+i95+XjlnTELd37g=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8822CAAAF4D8224C879F4D20664ABA83@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WoWuqQKm"
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 6121ssgA019976;
+	Mon, 2 Feb 2026 08:47:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=eUmmrP/lACeLPLowXo/tF1TltBLVBR
+	sDv43qh+4QmU0=; b=WoWuqQKmHFktQpFQ7i5AQZdjhvdRoBjmEuxV7k9tZIm83F
+	+6/+76IUhEBq73zM9yEwDDAkBr9ruRAfCKnWQRnmqIMfG1SC9Mwg1/+4BDSIMc+i
+	bbKC9tZCde0xSrrtdfFAWRreRbM9BUtXo+CWI3g+tLEnHy0/wweDQZ8FhWDLpxh6
+	PwllJ+4WY+b8dftlwJjFzyvZ25yXXG/RF/DIjnKhwODCJcfUGDcfoVn+MBvrxgpY
+	XRhTSC3jM7T4sZoxcQYj07dFnaWWP3aiVHoDTmOCHJ2MFdmb0mLlsBFf4jnTwm2I
+	pf8xzVrEDLCXrSjMzQgec2A6lNBR4za5pEZiGTxw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4c185gp5kq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 02 Feb 2026 08:47:07 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 6128l65k022473;
+	Mon, 2 Feb 2026 08:47:06 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4c185gp5kn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 02 Feb 2026 08:47:06 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 6124DF96004466;
+	Mon, 2 Feb 2026 08:47:05 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4c1wjjm7sa-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 02 Feb 2026 08:47:05 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6128l1lp39846218
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 2 Feb 2026 08:47:01 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 76E8320040;
+	Mon,  2 Feb 2026 08:47:01 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E097420043;
+	Mon,  2 Feb 2026 08:46:56 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.39.20.97])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon,  2 Feb 2026 08:46:56 +0000 (GMT)
+Date: Mon, 2 Feb 2026 14:16:53 +0530
+From: Vishal Chourasia <vishalc@linux.ibm.com>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: Samir M <samir@linux.ibm.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paulmck@kernel.org, frederic@kernel.org,
+        neeraj.upadhyay@kernel.org, josh@joshtriplett.org,
+        boqun.feng@gmail.com, urezki@gmail.com, rostedt@goodmis.org,
+        tglx@linutronix.de, peterz@infradead.org, sshegde@linux.ibm.com,
+        srikar@linux.ibm.com
+Subject: Re: [PATCH] cpuhp: Expedite synchronize_rcu during CPU hotplug
+ operations
+Message-ID: <aYBkfZnP6zmWCaTX@linux.ibm.com>
+References: <20260112094332.66006-2-vishalc@linux.ibm.com>
+ <9e57a091-2f34-402a-972a-31dd9a10664b@linux.ibm.com>
+ <20260119051835.GA696111@joelbox2>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	uEeAd2cTHZUNwEbwQfDIDcsesAfzuLwaVUzAG8wT4KkE5vaQIKS4Tak4VQWjzBISEYrrXU3BlRNm2HQjZLS0/j88zFMMVRD5UGFizR4OFFe2BLlL8ZJ1JTWlIwd7wfe3HC7p7Rbh1mh475QC0tUu1u3fOTHBpyPMxlcoOBhHSujg3xmb1XoT/hH52ZNvXAO/4Uu2MdzJYUdXRtM1SA8kfxTHNrxkjNaWeJ/Rk7fVGnOD0GVNLjondfVDHh0OQDxiMCGC3fDKu8cuJjzx3QJRN6SdaxjdQ8DNxyZnOsYPjjOAg+vE4q2ka1XNDlcBiBZiXAjSPCtmDKp8O273zo5lKc/Gc1pUxtLUVTCxt9OYPuX5nEXj7w3YJ2CI1VAbQjO1PXF0oUbf8wCv5sS5dRvKH5o1Biy+j0iyyun9TbbUe4K+84owe6rNR4HRbKusbf4vWlKgGVRtqFiebES/sz6AP6dOrVQQOizMTwfi7slX6HLMr+04qmlfeColK3EO+Lrh1+eogCW+tuN+zSHV5uPyX6B9N3UjbVroPWAHgUWKaBzAc3qRR2rwfo1hDSHqDQZiDw4ec10AxzrT2K74IDPTJFVfx7UzfA8hN7dKGnvNue8047yDHUhSvQgbSj2N8MOk
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR04MB8536.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb988c41-5f1e-4d45-6d84-08de5ff100e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2026 11:16:23.9382
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: L47wFwgGrjnv+9Ddj+YkK2YbzDQbaeOyq364qYgpx4P+PuYJ5EIyfK6q3blcI1WYF8lMey6Ni/9bVcWtKgkYFWM8kpgE1R2gmi81plO8huI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS2PR04MB9726
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260119051835.GA696111@joelbox2>
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=UdxciaSN c=1 sm=1 tr=0 ts=6980648b cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=kj9zAlcOel0A:10 a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VwQbUJbxAAAA:8 a=WsHKUha7AAAA:8 a=Ikd4Dj_1AAAA:8 a=JfrnYn6hAAAA:8
+ a=wyJNnMxBMtNC30dW1EAA:9 a=CjuIK1q_8ugA:10 a=H4LAKuo8djmI0KOkngUh:22
+ a=1CNFftbPRP8L7MoqJWF3:22
+X-Proofpoint-GUID: UDQsHu8C4d1knV8RVi6l1-FltSHG_Vdt
+X-Proofpoint-ORIG-GUID: zsotYwV3u_GoeaZOkVCep4xw725zfPcA
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjAyMDA3MSBTYWx0ZWRfX5YYXxuSrL+AZ
+ RrEVNXYsZEmVDRG12ogGGpx8/Sh93LDO7emVnvrfg8nhb52TMCm2AWiNaBGCQC/3X1JJy1ToMxu
+ gmSIiQmUbSTZDwgvr8JHhaxcXnynznBygt7aaLt1FKBg7cEtpywZxdY/WzAYftiCJKHngu1SY+I
+ YrL2/lcDoxWW89LletT0StiyeIFo5M3DoG9D+NoQs8NUz480sgQa7DwsLnNVuY1bA6OyBlpspz6
+ 5wTiKdgtuWjzSQn4MFNqmiC/whqAD95bQaZecwRygEUzX9WNjkkxHtyw0RY1YAGuohDaG/7C3p6
+ J9mYX2etDDAjcGXyCm4TbwcUUm+WuLyvTXAwTkav9d5xhCXKWK7rPj00/Qj2NbvfAGge/z+Ua+V
+ t8eyvn1ze5uLrQyaxEq/lL/YK5guylUjlCANH+AysMFlU2KXHyySW+T4Ddm3yke8d0QNlyPZ/pp
+ esP53v1czoW3XeuE4gA==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-02_03,2026-01-30_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1015 bulkscore=0 spamscore=0 phishscore=0
+ adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2601150000
+ definitions=main-2602020071
 
-On Jan 29, 2026 / 15:19, Paul E. McKenney wrote:
-[...]
-> > > > I have seen the static-key pattern called out by Dave Chinner when =
-running
-> > > > KASAN on large systems.  We worked around this by disabling KASAN's=
- use
-> > > > of static keys.  In case you were running KASAN in these tests.
-> > >=20
-> > > As to KASAN, yes, I enable it in my test runs. I find three static-ke=
-ys under
-> > > mm/kasan/*. I will think if they can be disabled in my test runs. Tha=
-nks.
-> >=20
-> > There is a set of Kconfig options that disables static branches.  If yo=
-u
-> > cannot find them quickly, please let me know and I can look them up.
+On Mon, Jan 12, 2026 at 03:13:33PM +0530, Vishal Chourasia wrote:
+> Performance data on a PPC64 system with 400 CPUs:
+> 
+>+ ppc64_cpu --smt=1 (SMT8 to SMT1)
+>Before: real 1m14.792s
+>After:  real 0m03.205s  # ~23x improvement
+>
+>+ ppc64_cpu --smt=8 (SMT1 to SMT8)
+>Before: real 2m27.695s
+>After:  real 0m02.510s  # ~58x improvement
+>
+>Above numbers were collected on Linux 6.19.0-rc4-00310-g755bc1335e3b
 
-Thank you. But now I know the fix series by Thomas is available. I prioriti=
-ze
-the evaluation of the fix series. Later on, I will try disabling the static=
--keys
-if it is required.
+On Mon, Jan 19, 2026 at 12:18:35AM -0500, Joel Fernandes wrote:
+> Hi Vishal, Samir,
+> 
+> Thanks for the testing on your large CPU count system.
+> 
+> Considering the SMT=on performance is still terrible, before we expedite
+> RCU, could we try the approach Peter suggested (avoiding repeated
+> lock/unlock)? I wrote a patch below.
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git
+>   tag: cpuhp-bulk-optimize-rfc-v1
+> 
+> I tested it lightly on rcutorture hotplug test and it passes. Please share
+> any performance results, thanks.
+> 
+> Also I'd like to use expediting of RCU as a last resort TBH, we should
+> optimize the outer operations that require RCU in the first place such as
+> Peter's suggestion since that will improve the overall efficiency of the
+> code. And if/when expediting RCU, Peter's other suggestion to not do it in
+> cpus_write_lock() and instead do it from cpuhp_smt_enable() also makes sense
+> to me.
+> 
+> ---8<-----------------------
+> 
+> From: Joel Fernandes <joelagnelf@nvidia.com>
+> Subject: [PATCH] cpuhp: Optimize batch SMT enable by reducing lock acquiring
+> 
+> Bulk CPU hotplug operations such as enabling SMT across all cores
+> require hotplugging multiple CPUs. The current implementation takes
+> cpus_write_lock() for each individual CPU causing multiple slow grace
+> period requests.
+> 
+> Therefore introduce cpu_up_locked() that assumes the caller already
+> holds cpus_write_lock(). The cpuhp_smt_enable() function is updated to
+> hold the lock once around the entire loop rather than for each CPU.
+> 
+> Link: https://lore.kernel.org/all/20260113090153.GS830755@noisy.programming.kicks-ass.net/
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> ---
+>  kernel/cpu.c | 40 +++++++++++++++++++++++++---------------
+>  1 file changed, 25 insertions(+), 15 deletions(-)
+> 
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 8df2d773fe3b..4ce7deb236d7 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -1623,34 +1623,31 @@ void cpuhp_online_idle(enum cpuhp_state state)
+>  	complete_ap_thread(st, true);
+>  }
+> -/* Requires cpu_add_remove_lock to be held */
+> -static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
+> +/* Requires cpu_add_remove_lock and cpus_write_lock to be held. */
+> +static int cpu_up_locked(unsigned int cpu, int tasks_frozen,
+> +			 enum cpuhp_state target)
+>  {
+>  	struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
+>  	struct task_struct *idle;
+>  	int ret = 0;
+> -	cpus_write_lock();
+> +	lockdep_assert_cpus_held();
+> -	if (!cpu_present(cpu)) {
+> -		ret = -EINVAL;
+> -		goto out;
+> -	}
+> +	if (!cpu_present(cpu))
+> +		return -EINVAL;
+>  	/*
+>  	 * The caller of cpu_up() might have raced with another
+>  	 * caller. Nothing to do.
+>  	 */
+>  	if (st->state >= target)
+> -		goto out;
+> +		return 0;
+>  	if (st->state == CPUHP_OFFLINE) {
+>  		/* Let it fail before we try to bring the cpu up */
+>  		idle = idle_thread_get(cpu);
+> -		if (IS_ERR(idle)) {
+> -			ret = PTR_ERR(idle);
+> -			goto out;
+> -		}
+> +		if (IS_ERR(idle))
+> +			return PTR_ERR(idle);
+>  		/*
+>  		 * Reset stale stack state from the last time this CPU was online.
+> @@ -1673,7 +1670,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
+>  		 * return the error code..
+>  		 */
+>  		if (ret)
+> -			goto out;
+> +			return ret;
+>  	}
+>  	/*
+> @@ -1683,7 +1680,16 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
+>  	 */
+>  	target = min((int)target, CPUHP_BRINGUP_CPU);
+>  	ret = cpuhp_up_callbacks(cpu, st, target);
+> -out:
+> +	return ret;
+> +}
+> +
+> +/* Requires cpu_add_remove_lock to be held */
+> +static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
+> +{
+> +	int ret;
+> +
+> +	cpus_write_lock();
+> +	ret = cpu_up_locked(cpu, tasks_frozen, target);
+>  	cpus_write_unlock();
+>  	arch_smt_update();
+>  	return ret;
+> @@ -2715,6 +2721,8 @@ int cpuhp_smt_enable(void)
+>  	int cpu, ret = 0;
+>  	cpu_maps_update_begin();
+> +	/* Hold cpus_write_lock() for entire batch operation. */
+> +	cpus_write_lock();
+>  	cpu_smt_control = CPU_SMT_ENABLED;
+>  	for_each_present_cpu(cpu) {
+>  		/* Skip online CPUs and CPUs on offline nodes */
+> @@ -2722,12 +2730,14 @@ int cpuhp_smt_enable(void)
+>  			continue;
+>  		if (!cpu_smt_thread_allowed(cpu) || !topology_is_core_online(cpu))
+>  			continue;
+> -		ret = _cpu_up(cpu, 0, CPUHP_ONLINE);
+> +		ret = cpu_up_locked(cpu, 0, CPUHP_ONLINE);
+>  		if (ret)
+>  			break;
+>  		/* See comment in cpuhp_smt_disable() */
+>  		cpuhp_online_cpu_device(cpu);
+>  	}
+> +	cpus_write_unlock();
+> +	arch_smt_update();
+>  	cpu_maps_update_done();
+>  	return ret;
+>  }
+> -- 
+> 2.34.1
+> 
 
->=20
-> And Thomas Gleixner posted an alleged fix to the CID issue here:
->=20
-> https://lore.kernel.org/lkml/20260129210219.452851594@kernel.org/
->=20
-> Please let him know whether or not it helps.
 
-Good to see this fix candidate series, thanks :) I have set up the patches =
-and
-started my regular test runs. So far, the hangs have been observed once or =
-twice
-a week. To confirm the effect of the fix series, I think two weeks runs wil=
-l be
-required. Once I get the result, will share it on this thread and with Thom=
-as.=
+Hi Joel,
+
+I tested above patch on 400 CPU machine that I had originally posted the
+numbers for.
+
+# time echo 1 > /sys/devices/system/cpu/smt/control
+real    1m27.133s # Base 
+real    1m25.859s # With patch
+
+# time echo 8 > /sys/devices/system/cpu/smt/control
+real    1m0.682s  # Base           
+real    1m3.423s  # With patch
+
+
