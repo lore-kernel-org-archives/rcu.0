@@ -1,70 +1,70 @@
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EF1330656;
-	Fri,  6 Feb 2026 09:36:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4956635EDC8;
+	Fri,  6 Feb 2026 09:36:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770370567; cv=fail; b=atHzlG+9F6mpmx5sskbSN24kQBmsFRFgjM8s7+ZvhqxOmIGTMEkG0vSsBd3YP2J1Vhe9QL2dPta7ojpSOG4IZu4qtuZn2izrPMELy2lZXJFVxtlsI0VfUpdzav1/rhQqyqT9iuqtQI2jPvKZNw7K7EYkuPXFymHD/679rQDtaeY=
+	t=1770370597; cv=fail; b=oVFoSGp6et4Rh+J8vfN0JHVH/tIz+9lArB66d0FgExLNwRPUr4nRd71fFTFtzIq0oTM8wqlHn1st3SpsK9ooepcbVpk7CMIuNyKq13Via0jyCiy+D668DV1UwRYF4mxgLACuqs4htVQRcfSjnL/ediIm1bin/O4/X+ueT5on0YI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770370567; c=relaxed/simple;
-	bh=GFoUy5acSD4RuLsw5gk00WVQeYyeK5rxslhKciYHZp0=;
+	s=arc-20240116; t=1770370597; c=relaxed/simple;
+	bh=iyAfQRJSTRTD3rEl1pkYwDBndhHYeJDDhNJwLm57vHM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XRfKJsNCaN4z7Z107crtH/MoI6VGbuHFbGVkYWCcEDPbtyh0rwIpNrP8I1kjblDBlSaaf9o9mzhbDF1qPee0CKabvMmJEbvfgiDkRJzDuMIDHOI8OdoMMI+QaycqPYbg/uFV1CSFJ7IriD4pCRXiAPpx1PzAqP6+cIy/FbcoLFE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=muP352OX; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=zS1Y7Y3l; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=M2MQqEMglfZGVPaGac3c0znx4pj6SVtGHT4N916bMRN4UOOu8yEhtvfHI6acpmUvfh+GN6TQHJRNZnbOyNeMzsk7NborMjLtJt+gLpalroiJ7AS6+qlMOW+Q5FyLG5f8+SK6m49QFaRB9pcdsvmnPRSO0G82/Y++wS9LqdRbrQY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=bkf2zLM/; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=PdU10YH6; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="muP352OX";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="zS1Y7Y3l"
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 615IKrn31076776;
-	Fri, 6 Feb 2026 09:35:06 GMT
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="bkf2zLM/";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="PdU10YH6"
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6165Piew482359;
+	Fri, 6 Feb 2026 09:35:04 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=O68ZAwrU/DVBYV1jhqNTcK6XWL/38NRj9eKpvb3jlmQ=; b=
-	muP352OXvOWzh3cCoOYPmMfv6rmTQ/9b+igTk5KEyC4RA8C+UmV2KupL85KMwUL+
-	5DSsZBqB+nD5t0ROp328xvAV1+EbgQA5cfHWhNecH5BY8m/7os4J/VwSxtBZ2iXJ
-	HpsRyc3UAxhX1757xACNYe3XzvruMNS1/rt3UgAwwsrUV+LDOmN7ptBvNeX4eunY
-	64py76p07Wepgx4nlSGHm7U/49pJIOrTxrYUMLtp2oguLvgX/LQtailzhQ4w5gwK
-	7ftaxQkcXhaMQAsrkLz3Oqu0o3mC4VkcAz+r90jr3jvZCpohsJMMpldjgkAqoKbB
-	eC7FLIraZig1nmqpXMNgQQ==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4c50ddgwu1-1
+	corp-2025-04-25; bh=UG29MvHNcn8aQcHmKzZMH2qnxCkEwIJa8UP/cW8BGZ8=; b=
+	bkf2zLM/y5JNC08c8uy1Aa/EMbWHFmuewIORC9xy03ylnj4g4pntu8GbN3/g6BZ8
+	pRCqR5KZGPwI30ESk5vmOrdsoIAMkIEfIv3O3LiP8h8l64vhOn+1VQaKSN38YUgj
+	jHElt3inqIw0D+ift38na/Cno6QG6hvr4cU0y4LZBVusuyPHcRaHGqKXHPuMjJqO
+	wq6jG7qczAeWVEQotU2vznSzkLJaC1RDOdNHl49FpilxcpsEo3ul50v8+UDBpVW1
+	AHRozuZ6+fWnAp0jbhB22wxH04ZYXSchRatxClPHrMYaKWcu7vV9aKw4jW+oAtl3
+	TktWKo+2EInGEqnquGRsMw==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4c3jhb5602-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 06 Feb 2026 09:35:06 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 6167OVe2040230;
-	Fri, 6 Feb 2026 09:35:05 GMT
-Received: from ph8pr06cu001.outbound.protection.outlook.com (mail-westus3azon11012008.outbound.protection.outlook.com [40.107.209.8])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4c55gbx3rf-1
+	Fri, 06 Feb 2026 09:35:04 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 61686Av5006455;
+	Fri, 6 Feb 2026 09:35:03 GMT
+Received: from ph8pr06cu001.outbound.protection.outlook.com (mail-westus3azon11012056.outbound.protection.outlook.com [40.107.209.56])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4c257d0rgt-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 06 Feb 2026 09:35:05 +0000
+	Fri, 06 Feb 2026 09:35:03 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=vinwp+ts+NwO//k3R8P/6STw0yNL7ThtWY87mmfU6+jdB7UgIlx28YvonyIoKdWB08hGjDsLr0I602zXpX0D7DELyfniLEXczdducwbx5+qgk8qFcupSPqpjOWOmEI35ijwpfeYciCi4+H46R7HXM9/1A0DZVCHoLG9wWyZoRc5SixNg5eYQsOWVZFilOexWXy94UURRKCC0BIWzzIjB++Vk6L10ci4IkPYNQ05Zml5eULeWhkVXiZ1/p95DojkyubY3wcGwkl5x1jKEKTb76H8oHmTPLTawwlZVIDGChXksjYkp0aZThDlLKJ5sS8Ev35ioYV0C5egm0aWx3lWR/g==
+ b=JQzszfiyE5CLTxFETKnsk+f90iAIhfXRvXN0jB2zq4QM3t3DZpJ4YX10sRfXW0w47YSd8rMLy8tVjdTuFIbMeuZXdOqMKB9Pd50gFKY3es0Z9z5L1mNz67fc6L81gIq0HqP5VI4rTL0tlbgnp3WfS5uwPoBHu6mNd98ZRxW3Xc1bCeNE17aYP36sFxB8MVoiAYbQ2SsYmhDU9gILqyOe3FU6fIcjfFvzUAzZgKaJd+0F2T2MRutUAMib3wC8JmvO6P7TMEbWHGKzFbbG88PyLmu5owhazWCa/4bBNSNj5tpS7K56z75DB5uQ1VRyVDfh0CPnijrPQBYX2VXyFvflJQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O68ZAwrU/DVBYV1jhqNTcK6XWL/38NRj9eKpvb3jlmQ=;
- b=lnQKOGE5/xzpBuYBqh03XANf3IYKyPUxELAMTcvEuY4g60j9iRU5g2NgFCZK7VNLBgixLTViotdorFYK395xYYSoAD215hBPDqhCDyoYGtDpWug7ALyIhpmVYTkGpitP+nIkFriycdonFbH7CzsO0yJBwzghrcMspDhbcHOqxF9x2lN9LOM2+I3b5oWnQmukQYnBGOHNPuzfWK4STyF9SYOrw4csSHXEIcdV3ua4Dc2l2AMz6v/VLQ5TXfI7xgGr5VR0rIhEUpa+NzmVwMJgLIKBKs5ClF3MjAq1rvATDJN25ZAgRED3jLGaOZdEQ9huXfNErmfYpWuzdqEre+qIcA==
+ bh=UG29MvHNcn8aQcHmKzZMH2qnxCkEwIJa8UP/cW8BGZ8=;
+ b=tKmRjq8+G3urHEdnYvAFSuukZaJS5WdnWLjvA7nP0m56Sfv5FKr+FvKGg7MmK+q6gxtjGA1F30NjrPh0EQlJwpPTk+HrfIsV2D9m4GjVEMVwIFhDEKHW68VbnIk67PwIhi5y6xRSpi3QZREqHsbqygWwyEqEHU8MGAAK45RVps6jMn0cFfBVYxo6+zdd4rjK6wIsx2Ae7ibGC2mneJTANVRgjfSejlBLvDoZE+4zfhDxtbHc28d0/rcy5toG/84836nMACITr/x16yEw1hbKXLvmXrQkZ79RCjUvD9MZ6QuoSIIz0zq/2LCy7/Dp9+pzzssEtx1jXhZJGjfrhbBbqQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O68ZAwrU/DVBYV1jhqNTcK6XWL/38NRj9eKpvb3jlmQ=;
- b=zS1Y7Y3lpz5vEhpIrdTGGKSa4CWG1E52bV5ztkBxX+dTuNgy90JZKuSuPWl/qHHFat+yUX3izhjf4BwNZigN0iIMTpAMAp410w9/w/ufQ4KJgaFlqWRMNBrVl06byXIwpXN5e94bY7EjLhlHmu0hlGtrxoStsGw/CnHtxscpnQE=
+ bh=UG29MvHNcn8aQcHmKzZMH2qnxCkEwIJa8UP/cW8BGZ8=;
+ b=PdU10YH6JB0l/PuZ5Ltyde/NTnhQUaDSBKaBNv9GlyCbjEi9Y62HWgQEqsi3tmTJUHqR/ng3kQr866+nou6Jv97hI82Ss1PL48mwdzqV+3xOW6nK2zh6HkeNkIT8jXA298BmF97TF6dVBNb9ffHj26vZrG+LV/hhmd3u1Y9Pll0=
 Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
  by DS7PR10MB5086.namprd10.prod.outlook.com (2603:10b6:5:3a6::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9587.15; Fri, 6 Feb
- 2026 09:35:01 +0000
+ 2026 09:34:58 +0000
 Received: from CH3PR10MB7329.namprd10.prod.outlook.com
  ([fe80::c2a4:fdda:f0c2:6f71]) by CH3PR10MB7329.namprd10.prod.outlook.com
  ([fe80::c2a4:fdda:f0c2:6f71%7]) with mapi id 15.20.9587.013; Fri, 6 Feb 2026
- 09:35:01 +0000
+ 09:34:57 +0000
 From: Harry Yoo <harry.yoo@oracle.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
         Vlastimil Babka <vbabka@suse.cz>
@@ -90,17 +90,16 @@ Cc: Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
         Qi Zheng <zhengqi.arch@bytedance.com>,
         Muchun Song <muchun.song@linux.dev>, rcu@vger.kernel.org,
         linux-mm@kvack.org, bpf@vger.kernel.org
-Subject: [RFC PATCH 6/7] mm/slab: introduce kfree_rcu_nolock()
-Date: Fri,  6 Feb 2026 18:34:09 +0900
-Message-ID: <20260206093410.160622-7-harry.yoo@oracle.com>
+Subject: [RFC PATCH 5/7] mm/slab: move kfree_rcu_cpu[_work] definitions
+Date: Fri,  6 Feb 2026 18:34:08 +0900
+Message-ID: <20260206093410.160622-6-harry.yoo@oracle.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260206093410.160622-1-harry.yoo@oracle.com>
 References: <20260206093410.160622-1-harry.yoo@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SE2P216CA0207.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2c3::13) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+X-ClientProxiedBy: SL2P216CA0092.KORP216.PROD.OUTLOOK.COM (2603:1096:101:3::7)
+ To CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -109,479 +108,283 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|DS7PR10MB5086:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b1e1e3f-a42c-47af-b453-08de6563003e
+X-MS-Office365-Filtering-Correlation-Id: 8288fb01-bdc8-4c15-c467-08de6562fe16
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?b+o09tQV9H+gmBn9nExzcdUJqdZXWnuTGDoHIjuAVNEtsmaC1PsAIYNsBSkG?=
- =?us-ascii?Q?L3il7daV7Q7HnO7SZiriVt+DRUqgUHr6Vj4IxnwwJJnzcewU2Fj7grcYdfmL?=
- =?us-ascii?Q?I7iTYSTVdA2WzRR4+BWJvza6nRAYQOlLDHDGwsDJSAk9cb7xf544Ms60oD2q?=
- =?us-ascii?Q?Zia43lbZyfQiFXanxCCjwYXemLCEHCZdnZ0oaoTRggiYppIORu5HsS912cWX?=
- =?us-ascii?Q?qbncfBMad035FsyZEhVYvShYrM9CBcUL23vfbWn7BJY0Xzkl4kX/MwkiPtEI?=
- =?us-ascii?Q?ZdchO7vyUGIKUuEndIkm7p6fZ0pavbdOwXLfwgOjsOmGxd+W5UmATFMRO+Fy?=
- =?us-ascii?Q?L25kEX0jwMB+oZKC7nwwkzv48rGzlN8VEx/T3FWw8s3QLmvbwaa8shoydmNw?=
- =?us-ascii?Q?LBfU18N0p2H3srQie1V8Z52SPWs+AgquG5SNuO4tt0l8nH3c9QglpMcAEr+j?=
- =?us-ascii?Q?XY5YYvmvAobzSjuVo6FShelXayfVTCrTILRThi7s6Rsg09YHLsuPA14b4hvZ?=
- =?us-ascii?Q?FQoPztrAtpmk+Nl3JH8VJb8TdgzUkaQdjBtLCA+i+2acxWoFoEcuNJtd3btQ?=
- =?us-ascii?Q?wOoJc5M3Ewu8pYk5QMgY2hHrdI/6dqnVxSZSykp7IbSzNNMyp49HtTeR87ZT?=
- =?us-ascii?Q?+xsFBO6dwE+pY27nA3GR0scVSbntcM9GAywOo+NRsqQ+VLejwNw4mQwUlGoO?=
- =?us-ascii?Q?Uq+50van6ciCnGrnuqASv3Fm4wXe5xh/lPpQV8KjSAy4DN5d2VNPmp+Exh37?=
- =?us-ascii?Q?PpwFV9HGDDShfsmIYPylalFR9vG6T3wTIU7wucVrGgUIV7nl4Sqy2W8pKKIq?=
- =?us-ascii?Q?FzNUxsn/fdOxGwvY/pT5dn+VgbToeniEvqFHgs6ZayFvTaF1S7BXFDA1JWDn?=
- =?us-ascii?Q?1tz3DW24vM/6++TkmO0S7uk2kItUIj3csNS5yJVheMVMIvYpeWdhv//IyQy8?=
- =?us-ascii?Q?5YCX0sJ6o/APtTbmTYTznmXCk1V2ZrAm0lFQJTuxlJq5C/zfdZTquFC56P0F?=
- =?us-ascii?Q?Cid2M/h6VEjhH0m3pz+fiUkLPL67Ro5Y1AMWpzQQ/Lm7MfuMcXsK+tAiCMnd?=
- =?us-ascii?Q?o3XFPbW9pRrHAr6+yh2Ny9s4i1JqZI7Q3MlHOYxPd6VXRlc/92YnErBfJwZN?=
- =?us-ascii?Q?68GetrOipELZBBam2OHNGr7nuWKbMnWEBlEzRY5FMsu/QqJLc4jT/Ws6Obuo?=
- =?us-ascii?Q?14E5D0hBoxpBlxaM87ZPP38Fm71W+d/tWKfswBCG/gAFJeiAhuxw8KSgPMmH?=
- =?us-ascii?Q?F4FgkM2JSykZYGuT5fQzlbBrw0Oy9wrXEbXsxU2ELHoW/yXmTuRYVLrlbLV1?=
- =?us-ascii?Q?6Gfn3vlIN5PM2VCOhpJCOjyFPlbAyXtdk/32puZAmomoqVjjpgmW07OUCENb?=
- =?us-ascii?Q?6RPGoDzfnJ61uM9J3peuald2RK/Q1Yq2lfpFmraCbJfw8XcdZpHZt+RyNwXn?=
- =?us-ascii?Q?/rtBOrU05jvo3ewBIaePz6kNzksGznX9wz8ETjVMB4cD8Y8LTGsZj1K/XaOh?=
- =?us-ascii?Q?vSdFaaBcLfbdzv7IVp178xUutdf2Wy08QtujYC3poAS8vmA6BgTF+RwGjlO8?=
- =?us-ascii?Q?fVrnuFw88V4aysOfkTE=3D?=
+	=?us-ascii?Q?fYVaSxOqccoeJDpbrNYvvrd7Vr9eJKFmoedEC2VOdGMxdzssKl0N2HxV6Gqr?=
+ =?us-ascii?Q?flpYG8Z2cL9bvnqgrtFyc9l1GYU0CKb67RMnUHENeyUpm8hdO3hyF0E6vg2K?=
+ =?us-ascii?Q?Xo7RgNmnzRjVESyYYQJjsw3OPfi4UPMJAGFNKngtBTDUJsh066KJUrvTxuX0?=
+ =?us-ascii?Q?zyIAY7Sv0vdUMbTk/eMyaiZ6N3PQOlYJMi976dvxxSZaI4wxIDzvnHnP1ncF?=
+ =?us-ascii?Q?Eff8il+Md0dBOPtPBOL3lEh2tO3tbjo+zjMHTkQSN6+05kJaTf5oBUPHpQwf?=
+ =?us-ascii?Q?bwz9Fk8Kj9M+c7u/Do2g/yQwlu9nL9Ad9fOPBWF7CRaZ7VaA64eUuHrg1qjO?=
+ =?us-ascii?Q?S3De+XCY3rTM4p8AhyvLnnqCYTJL0r/8EwPb/HWHg/gVn3WU2svBRZXxcAv2?=
+ =?us-ascii?Q?fFPA5f2MxWmB+HkdXOxvhOzAsWdINCcKvH0s/2u9R0iNupq6bbPBrnyLRKXm?=
+ =?us-ascii?Q?+cFgoHVLO8qkZAq7GLJHf5/RkYXSCId7Xs9KlFOl/NCsm/d1RJ46tiLUMTEk?=
+ =?us-ascii?Q?RO2ct/AsjUUkDB7Mz8VmM8pPxGJwweH8tCSEg/XiPM4m1pNbpydNl2OvV3MU?=
+ =?us-ascii?Q?xHhi9Kl4PPKI3XFj6AplS44vIntwBN3XLjmpJ3LhTIQasXul9ecvdY7y5emU?=
+ =?us-ascii?Q?msYF7CrBD7ngB3y9aWQSFFict6e3czrHObODnTlkBEnPMoLEjT9d44zs0AaX?=
+ =?us-ascii?Q?oo1N6hhgyG/c6yQxqvsJBynz8hI+lwuKdXkZs6kZlt3DG+mcGBJshgWsLx+8?=
+ =?us-ascii?Q?Gl3dd4kdQNHuKhEAwNwHPIAsHM49KtQc0CGvS3tb1e6yM7jHbmorQ3I1vQe9?=
+ =?us-ascii?Q?UmV22OJEMmbuIRXaqwGkee3BV6CDzP0R9kZbUMA0ormIOBZiN1YTtY1eZAli?=
+ =?us-ascii?Q?ASxKNMW6hcaWYFKa4DK/zPj9oSkhmSJjU37ahGbPK5JQWk4W5+ORSuDS93bL?=
+ =?us-ascii?Q?dokYRvIbAWiucalsfBk6yJKFq+INYsr6Gha+SQ7MQaLkK0JFHq3j3YJlrI3q?=
+ =?us-ascii?Q?qRIL5SJeS5y8R14JrTRbvlmKwYANzYY3LU6Vhljt5hNOGh7JbZDlYYWMyDgL?=
+ =?us-ascii?Q?vUyUcKY7kzsSIC/GLQxcMfJ5mP7W29LpisaiBwPq/v7/nH76JEsOwWLzY9k4?=
+ =?us-ascii?Q?3qaVafuSVKsIxW2KkWdpR5gXpJXvp7f6iRNiTg5B4xTSs6NpMEPql/mkxzeR?=
+ =?us-ascii?Q?KHCQTokjqVYvw6EtpIzyUyPd3WYiwpgWoJvvH3Nc4PHbzB2VOXTEnDOPOCez?=
+ =?us-ascii?Q?S5WFmTk6mKAC8Dux1MxIrkxD2jAJxqMzRPUHgePa9Ag8cWELrPouPcToMtV6?=
+ =?us-ascii?Q?GwFjbaD9rHnCqnhlfHmM0gLwmSJxlw7gQqipeUUnljvKlag91Lpdf6lDKA34?=
+ =?us-ascii?Q?v+z3SovslIVSHMwBSKE73epNIQqYaBlFpV6Ln9Oq94okM536nSHqLLi48Q9Z?=
+ =?us-ascii?Q?RxstPs1iuTQavGcQMqWgRq0St6yG9UxJJl6SQMOuEWfjp7wnDmYQTdWXKMAr?=
+ =?us-ascii?Q?TyMOTNaoyXAy1ywJd99anxkgFmDpMfUfc7KTSqih25jaOY5qds9E6u/NxouN?=
+ =?us-ascii?Q?pZOB1QB6D8mxqwUx6WE=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?iA/tb79bCHrHS6iCaZ8FSEfg3NclmvmW8VehfT9X+dildACW15RyZgdrfukq?=
- =?us-ascii?Q?uxLraVyDOMcwu2IPiqyLSE1fGpL0+nfEVWoq5awItAiAeeGUA1TJGFohLyjs?=
- =?us-ascii?Q?eJikdhKs49uZXqYv0rwZxWSbciuDlSQT/+27Avf+FcZFsgR1RsThCH226HYM?=
- =?us-ascii?Q?j6y4TaQ/ttnHe8hDQueOwwzxVi1fLuoJ9I2KMA7NB2oQkwcKzLJiwsirXd10?=
- =?us-ascii?Q?pL6aGMopBcaip8c1NGOoCOtfQVx6L6f4aID7cRC7Nx5Me319v/NIdGdDfU3K?=
- =?us-ascii?Q?IPa+K8jyyr49yAqeCyzaT8ZRDzJQ8E7yo9CrkYwp3HJZh5IH9BZT6QXJ+Fb5?=
- =?us-ascii?Q?+/ttOapMQqyQqS5sQNfcjKUrCWj4r29AtQeZd+jJ/FoexmL+7EWK1tNPfDik?=
- =?us-ascii?Q?a1IHGOwT/AHOA+oIcu1Cq3MEzrHOG22Sm3/3+Xf7SOs3UnWNrzqr46er6q8J?=
- =?us-ascii?Q?N1yQyu/tlISw27Gb+LF7B/83AJAwJ6+zoc7foKY8WbyfL6Zm6MdsAKGxia+R?=
- =?us-ascii?Q?+h4TTTIbdxOtMDs9ZBGVG4ua+zOq8KXDpt2BL3vN7WRgjAgKtgfmAA407zHX?=
- =?us-ascii?Q?TuUmajnPKK8xL766EDS8ef5PNSfeQbt1ZS0EU9Bl/MELqw9zZUtbTVslIQ44?=
- =?us-ascii?Q?mgvZR08rqfnbhZPpDLQs3PZu3uHMjXOpV4u5k1zqNCmayLq4drbX/IM8JBFb?=
- =?us-ascii?Q?eAbxFStyoVqSUEOg/0eJ8Ny1uwCQ+V00zoONfjBu0DvKSsJyROyO5rMDPFaq?=
- =?us-ascii?Q?rk6T4V/m8QIveiwfAFyBBnxm7GKFbdgZQ0/tOvRu9f3plePsIUN4j2vOwaf8?=
- =?us-ascii?Q?t4wgJIxSmBsGZGoClkvay42xXc5F7y8lo/rHt27nAjwJh32VAPPJv5mamwjC?=
- =?us-ascii?Q?WpURGQr/YqtPuYlItSKiGfAo4zi3TVI+nWmkllPQQOjyL0e11SWQ9eLLmfRF?=
- =?us-ascii?Q?58QNO5OvlFGVr6/q0OACuLGEhK0QtH8g444qe1aCvsx/KNxo2QBxDJSIZDIU?=
- =?us-ascii?Q?p4J4jzXPYx+VwF9z0C6pvZ6gYdEueT02Meuvr2UpBYZtejSPhIvpPBNWC9bX?=
- =?us-ascii?Q?4ZLpJDfZm8kpANM2tWXWaLD4A6qHPCiPnS2biCYGL8ije1bdXICOwYl7Hshk?=
- =?us-ascii?Q?lkgqGFgCIb27K7mw2hrfT2vK2NhfHqh8roXDSwbVXrkIl3NMYVm6VdsQDrzc?=
- =?us-ascii?Q?K60j0YpR4A31N8Cs7m85TyyBAcEFn3pVmwklLYg4zQH3pGA75Lwq5PInHjFC?=
- =?us-ascii?Q?okV2G8Q3U13Hpt83ddqlgtLTxGmpNLtIa8kllONm6I6l0BKkUc39NX0EZisP?=
- =?us-ascii?Q?HR/joAa4ctfk56lOwMxGMf21i+N4uKeIjfFh5ETgRBdn4VogMfukaXL7rXnZ?=
- =?us-ascii?Q?IR4C5Vvk3dCxLVR5Gs9zcTkbD9a3km8luXaYUB5/ferRj8+xoiDEF/u6zDmy?=
- =?us-ascii?Q?iUQ9n9Iy9hPxAyu/r0mcASK8/m7ovyuxvC8smeCIGAigPv0+ZTLrGWpegrFz?=
- =?us-ascii?Q?vOSHurb/cG2nwqfthPnKLjeCDyzCZmbXEvZ4uGnmBXaMYDaI+aF1wAepoJnn?=
- =?us-ascii?Q?rPaIKxwxsmoXwalgYGlv9baHMScDfdy4s48BxtI+Bu+V9DAQBUhTp6WVURf2?=
- =?us-ascii?Q?+szBCD/7/ZoXzPbedIHTtE1R8Y7ZkRt/W4f5l8tH/HUqrPYi5e1GWGlmLhJX?=
- =?us-ascii?Q?W+Pbmr4gTagqvMSGep2UFET0CThSYtWNz5jc85MJfG6Ezp7EFVzQ71thOcdC?=
- =?us-ascii?Q?IEqQPnYDoQ=3D=3D?=
+	=?us-ascii?Q?fFSRRb3fNv093e5ACOYFTGKm6UKd3wiAQHkyM6IhbxJOFYMuEG/V1uVuwvrW?=
+ =?us-ascii?Q?CW7Qey2zvm0bbk2qouzO6VNTWtoWMDknHscDcjvruZVG0ZBr51A12E5BSQFb?=
+ =?us-ascii?Q?Onsg/EXMWzfXF5KEu81Kfj5xtxFNrJ6IiS+3Ty9jLNizdaLFM9Fa76OX2ROZ?=
+ =?us-ascii?Q?de1UiEJlaC3kPxgJfJgKvzdBTr0i7AzJXftniCy1wRieeNgZyd40iABLzNDt?=
+ =?us-ascii?Q?Os6D6mO2bebOkFAzwW6Zl3gtiRR2J1i7OTTMpxX94sOL1v6D2uSz8Anlbg7T?=
+ =?us-ascii?Q?VJ6ijCPpVOWVkStlr3Bu2N0vtD8D4ad6DxDKpx6vJKbqY+yZ7+vbWt/VGJno?=
+ =?us-ascii?Q?80JWO2WPEZrLgpH99iAGnXZpnQpaTczB8RObMsUQsgmxEmMxeP7AKClRBmZb?=
+ =?us-ascii?Q?jcT9ATErCoJp5IwpDP4B58c01ye7x37JIYrrMnAulC0l1esNNpFL+tS+wOxw?=
+ =?us-ascii?Q?zKQ+p42LMroVDOeMsw3oL9IAJAk9vlFrT/oNV1NqKjCPNnHQp6c08ibDe/Co?=
+ =?us-ascii?Q?wLDRmaA0aYWpde3Dkti4CjJV68h+O+K0pi1lDtsF4QwpYfGoY+yFJBzV5HTt?=
+ =?us-ascii?Q?k87fBAhwGBrOMcOlUCohHO64pTkIShX0eeog3DHhRRBJiqJv4pgT3MMRPYSQ?=
+ =?us-ascii?Q?9/Bs8BW7PwSoQMg9cVH47U+ssxlMXFozVSUKTmBxcKBf1slLa9HNETKq7HUo?=
+ =?us-ascii?Q?3PetROJOLuoYMxNSIbRZ1SdmhC7m4JcJ4Y7Hs93r2ezLuAKAIxNrEE2A3TBU?=
+ =?us-ascii?Q?vFk2MKxzROkitvsx5DO4kzNoLPWxXq1azmVqlZTkgt6ueO9ZvvocLc/KvD8u?=
+ =?us-ascii?Q?kXO3R6T629YZok9GpByizdBkYkmuuKbA6Js3BpRL44J64X4VywIbqqLL4+w7?=
+ =?us-ascii?Q?JNUupo/lO7xL90Hf5rZcEQPxBQ1hx7len5YlNkfLWY4FWEFT8bgRc3CmjCkV?=
+ =?us-ascii?Q?GogNZXjJ29qnInAArrdJxLvPTc9lt40uNnM4Vi3PfG0Dxk4O9BhGtIYcDyn6?=
+ =?us-ascii?Q?1cjyRSxUt2yGaNphhbs5y18p/k5wn3xkMOmmtBlivN4PpYPONMz4TnhqBS7L?=
+ =?us-ascii?Q?n9LBLdVs/eTM4H6Tli0KYay6p/o7jsyw7XQ4eHg8tNDQI9kEVaCSujvhs2Ap?=
+ =?us-ascii?Q?IrpKQAze6TJD+992vvtIh/QtFTPjZerE8nVV3Vp4PhvnyjFWxSBdR0Bxq5j8?=
+ =?us-ascii?Q?ZhFgBRC8pEmghU4+8tLvAIEHMtAyRhi+c6JwWQk+c9vXZqHK5KrIJW4CYem1?=
+ =?us-ascii?Q?edYpQDEHNGGe/kf+NNRIjTpxD70O0avrEOijIIKqdnO8R7joaljPKOGVzlaj?=
+ =?us-ascii?Q?kjf+a3AmiRxxEmQq+YdUHVcQOVKP1NKrKD66c3jaKd4j71CReakMlk5M8b/D?=
+ =?us-ascii?Q?2blxBDCGA4p5N5qrkli59uSw2xvrYLaWWFBdLs8cMXdH32DCbyR3Wl8GDenn?=
+ =?us-ascii?Q?xVhO35coF05205Syfy9ipFjd1svo9WibOzJIiS1RZEz42UlpbztHhmDna+1k?=
+ =?us-ascii?Q?GNfn2vsUFiCdX2qCO+7MJpI1bjMtL6CFmo0Ed/sXSua3r2SIxZQ+lbstEraS?=
+ =?us-ascii?Q?PleUp3zm8P/q8F0y+YJG0am1ZXenmTwgcMBwJ/JT4RrhMVOjf5/tZQqPqHiy?=
+ =?us-ascii?Q?I7ryy+6wl0ohv36XZ0iGAChTY0rRofJ8MjyZxITofKhgejNAfU5+nIoXx7Om?=
+ =?us-ascii?Q?oAH+YW5C2UANLvrXR77F7cnq4nGgF2DJrm9q3e9KOKdXXWp8FX+jRTk1Cebp?=
+ =?us-ascii?Q?pk3WW3QOdQ=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	lscqtI2eyZ1hkHH3hIiHiKhax3FvBoFGF4WgLP6j/y6jAiInjATX/7i7iMf/vKMia4U/hKHHTbJk9PjqFWQ5Afz25m+j9w/vc2c12kVu6NkOrqTjMDdvjQmpKiZjFQSaxqJxvd8U4QRwS7iAeJ6dGQZX1fm7A8QWNKyzqZngS2tWpUaxrV86wDT22NYuz/dfYwRmtN0L/rZWwltkQwYp940sRudckkRidqWtlui2/l9M9mG2KoHB+a+ABn7hjusMoLxuBNe272iDihUrW5swyzqVAe7Jj8+Np9oOPjRvU94IdArpb1upls4fMxUPHByYFry8va/AXqMQAlEaQvexwBxX9j1wsHVN40eNWqks0IToXuJA1/80kt8KUZFCWBRUltnJYRq6zBl9oMMUYY+c2ts+zC0RyPaZmXw9B+lz+tzwuT7bNWl7wRNPTDofsxTf56qe2yOvyDOjDw5z+EZ0mG5HoSQSrq1Lz/npGmi78ZQElxjAcZPAL41++mufSF+Uddu7hTOuK4FY1LQ1Oo9fbkeVk2i8xs8UCLp1wnZLDZHoxKWA/3lTrOjIzMBjR2GEimHVZSK0WohACO5a0RdNeCvDySKlaCgndvb8iMbraXo=
+	I+ZmLF5ac3Wfh4ONvRf5uo6Hj6QTPEwpJO1pnXBcOVYCuLboKnKcss0M7KaF90sV3oDKuq1jm1FeBs3UILpQ350E3wIcfQLmd1i7Pb7Y0CY2sTWtgasqXFPMmSTxadMbrk6MNUuZbPsjhvJYpWx0r1EGhgnxerue7QQd4duaG3cABT53/4giGq/St3yGHcMRoQGLuDTeYdvuqQgd/1gqG1gZSifFeUP4ff25B41A1+l7uQ6+8Ubml1rJX895TPP0qxz3Ojb4qFv88o3uyT/86TW0SccxM/AQDFNWtQNHYPaXW1VlJsVIqU4UyqIhM+zhzqbxVdzQyDFr4qy32NNNhaz8G3tsutnw/urJuVLEDX5bcL9Eu+wisDUf/NGGOc/NGPjalT7S50Bi7GBQhya23Wsm1VFDeogcsMfIF4Ddlech2b0P8i3K3w/3chnefCW2Pz8TTH+STcA3ZaXoyidCibJv9AEnlYGCotG49P+np7l6WhuMlWT4AsanExRJUj0j42xuACJTvAI0dcZ6lq2hhaG3l5uwMKKUpI6twaKS5SayMcKPzPwobTyoH1SY09TQbmiBfqob35/d2aDpz9IwqNFN9yXU8+xPjSIHR86eoOo=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b1e1e3f-a42c-47af-b453-08de6563003e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8288fb01-bdc8-4c15-c467-08de6562fe16
 X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2026 09:35:01.4715
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2026 09:34:57.9062
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A3robA48wVKc9u8CcMoaojkrzUbZbhZVzaKnxkOBMfU8GUdzx+xOuNSYOx8R2ofcUZwwvqJRLc7ZmKoyyW0KwA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: +dEBGwHX2yDx8pdQQZP/LJVLWbYZYASXu5SvjKgqMhXl0HaGOemeA4R/9+z5s6zpr2xFyaQeFk6gnl/Wyt3kPA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5086
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-02-06_02,2026-02-05_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 phishscore=0
- malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2601150000
  definitions=main-2602060063
-X-Authority-Analysis: v=2.4 cv=TvvrRTXh c=1 sm=1 tr=0 ts=6985b5ca cx=c_pps
- a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjA2MDA2MyBTYWx0ZWRfX0mjDOdmGXSA1
+ H7somqHmVSaLFj9jJFwz1ui/A99+uwPpdKmBz62LFVL8IxAACLsj3QPhPzg543gNkKKE3h3KYJu
+ mhnmmWYDhayr+XNLRivU5LkVKtOWrQEAnXNoN9S8KfmPlw3w1++5RyT3brUlSkgDyB7oao+LTcS
+ 2TMA3AjXF9yrLW9EeK6oDG9FKc0p78EdE6vptch2yxuAoEcgNJt9tQAA3BSImMk1A0xwn2nDwUW
+ KFtdIUY7skO2wlV9+1c1if3hiflYjAqFdBtlMOAZFAzbg7VCElPyOJVK3h7g4dCRb21fPZcRnFQ
+ 23I2nFR7OwGY8/nOfChfSHt7ZZbKPioJrNuz5BVGzlpBxeYW5yLuCL7msqLhXvNAbgxvB6NMv4/
+ MoznwV9zBif/GKe97yzkVvaw/AYT510oc2bDYsr4th+bQkCdwDMQ0ZSuu7HFBprimN38MOQrniV
+ rVw36PZALka9lCPHekkdgS7xQAb8lzKwWHSmB8xY=
+X-Proofpoint-ORIG-GUID: MKzr9tQfqUWsZiYyay9zqa-tslzKofuI
+X-Proofpoint-GUID: MKzr9tQfqUWsZiYyay9zqa-tslzKofuI
+X-Authority-Analysis: v=2.4 cv=CaYFJbrl c=1 sm=1 tr=0 ts=6985b5c8 b=1 cx=c_pps
+ a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
  a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
  a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=HzLeVaNsDn8A:10
  a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22 a=Mpw57Om8IfrbqaoTuvik:22
- a=GgsMoib0sEa3-_RKJdDe:22 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8
- a=giRrVTgzqWd79vnxbhIA:9
-X-Proofpoint-GUID: TWOs1ZGz2eA00wIwWfMIjmj28AwKodtC
-X-Proofpoint-ORIG-GUID: TWOs1ZGz2eA00wIwWfMIjmj28AwKodtC
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjA2MDA2MyBTYWx0ZWRfX/LxFwTH93wrd
- qdYNkGdbHjjyJFRm8StM6MNhKqEe+NkYMcdcu9MIsvN8dn3IqsZkmfQsen4AGxAViWogAoO9UoY
- rTXCraSnSuxm1TMMT9SP5Iw7UDhNnw7ciS5jdb51j0KRXUmWNR5FDosm5AJzAGG+ve7CPDFl7TX
- lEtjSnabipsjzhXwRQgbvletQ7mlGls50gsGouPHHp0FvHrWrN6rz3qBM5E0L/Oc2vpM8L1LlVI
- fsz8GsNEHEujb3oYStDXwH702gdTygeO2+Q2/sUBo3uO/DxR9kHyu1GrKqxMpzm4/2JE++OGzNb
- 10w7SFkrOGXSJAA1Qcx7+Aq0pw4SD/Ar2eK7y7w8vkD2EuF7hKBISO+cN1mrrWFd3oEnG/XF0g2
- pnmbPO15u/Q1fFlsYYU0P2AlMi29bwdCw79xo9Lefgkv+8urCAm+WNe0R+8WxbkkLvKjcQvTVrb
- igeMpQW5WjwioA9eFPQ==
+ a=GgsMoib0sEa3-_RKJdDe:22 a=yPCof4ZbAAAA:8 a=wSXzSQS1JhNKc0FCJe0A:9 cc=ntf
+ awl=host:13644
 
-Currently, kfree_rcu() cannot be called in an NMI context.
-In such a context, even calling call_rcu() is not legal,
-forcing users to implement deferred freeing.
+In preparation for defining kfree_rcu_cpu under
+CONFIG_KVFREE_RCU_BATCHED=n and adding a new function common to both
+configurations, move the existing kfree_rcu_cpu[_work] definitions to
+just before the beginning of the kfree_rcu batching infrastructure.
 
-Make users' lives easier by introducing kfree_rcu_nolock() variant.
-Unlike kfree_rcu(), kfree_rcu_nolock() only supports a 2-argument
-variant, because, in the worst case where memory allocation fails,
-the caller cannot synchronously wait for the grace period to finish.
-
-Similar to kfree_nolock() implementation, try to acquire kfree_rcu_cpu
-spinlock, and if that fails, insert the object to per-cpu lockless list
-and delay freeing using irq_work that calls kvfree_call_rcu() later.
-In case kmemleak or debugobjects is enabled, always defer freeing as
-those debug features don't support NMI contexts.
-
-When trylock succeeds, avoid consuming bnode and run_page_cache_worker()
-altogether. Instead, insert objects into struct kfree_rcu_cpu.head
-without consuming additional memory.
-
-For now, the sheaves layer is bypassed if spinning is not allowed.
-
-Scheduling delayed monitor work in an NMI context is tricky; use
-irq_work to schedule, but use lazy irq_work to avoid raising self-IPIs.
-That means scheduling delayed monitor work can be delayed up to the
-length of a time slice.
-
-Without CONFIG_KVFREE_RCU_BATCHED, all frees in the !allow_spin case are
-delayed using irq_work.
-
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
 ---
- include/linux/rcupdate.h |  23 ++++---
- mm/slab_common.c         | 140 +++++++++++++++++++++++++++++++++------
- 2 files changed, 133 insertions(+), 30 deletions(-)
+ mm/slab_common.c | 142 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 72 insertions(+), 70 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index db5053a7b0cb..18bb7378b23d 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -1092,8 +1092,9 @@ static inline void rcu_read_unlock_migrate(void)
-  * The BUILD_BUG_ON check must not involve any function calls, hence the
-  * checks are done in macros here.
-  */
--#define kfree_rcu(ptr, rf) kvfree_rcu_arg_2(ptr, rf)
--#define kvfree_rcu(ptr, rf) kvfree_rcu_arg_2(ptr, rf)
-+#define kfree_rcu(ptr, rf) kvfree_rcu_arg_2(ptr, rf, true)
-+#define kfree_rcu_nolock(ptr, rf) kvfree_rcu_arg_2(ptr, rf, false)
-+#define kvfree_rcu(ptr, rf) kvfree_rcu_arg_2(ptr, rf, true)
- 
- /**
-  * kfree_rcu_mightsleep() - kfree an object after a grace period.
-@@ -1117,35 +1118,35 @@ static inline void rcu_read_unlock_migrate(void)
- 
- 
- #ifdef CONFIG_KVFREE_RCU_BATCHED
--void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr);
--#define kvfree_call_rcu(head, ptr) \
-+void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr, bool allow_spin);
-+#define kvfree_call_rcu(head, ptr, spin) \
- 	_Generic((head), \
- 		struct rcu_head *: kvfree_call_rcu_ptr,		\
- 		struct rcu_ptr *: kvfree_call_rcu_ptr,		\
- 		void *: kvfree_call_rcu_ptr			\
--	)((struct rcu_ptr *)(head), (ptr))
-+	)((struct rcu_ptr *)(head), (ptr), spin)
- #else
--void kvfree_call_rcu_head(struct rcu_head *head, void *ptr);
-+void kvfree_call_rcu_head(struct rcu_head *head, void *ptr, bool allow_spin);
- static_assert(sizeof(struct rcu_head) == sizeof(struct rcu_ptr));
--#define kvfree_call_rcu(head, ptr) \
-+#define kvfree_call_rcu(head, ptr, spin) \
- 	_Generic((head), \
- 		struct rcu_head *: kvfree_call_rcu_head,	\
- 		struct rcu_ptr *: kvfree_call_rcu_head,		\
- 		void *: kvfree_call_rcu_head			\
--	)((struct rcu_head *)(head), (ptr))
-+	)((struct rcu_head *)(head), (ptr), spin)
- #endif
- 
- /*
-  * The BUILD_BUG_ON() makes sure the rcu_head offset can be handled. See the
-  * comment of kfree_rcu() for details.
-  */
--#define kvfree_rcu_arg_2(ptr, rf)					\
-+#define kvfree_rcu_arg_2(ptr, rf, spin)					\
- do {									\
- 	typeof (ptr) ___p = (ptr);					\
- 									\
- 	if (___p) {							\
- 		BUILD_BUG_ON(offsetof(typeof(*(ptr)), rf) >= 4096);	\
--		kvfree_call_rcu(&((___p)->rf), (void *) (___p));	\
-+		kvfree_call_rcu(&((___p)->rf), (void *) (___p), spin);	\
- 	}								\
- } while (0)
- 
-@@ -1154,7 +1155,7 @@ do {								\
- 	typeof(ptr) ___p = (ptr);				\
- 								\
- 	if (___p)						\
--		kvfree_call_rcu(NULL, (void *) (___p));		\
-+		kvfree_call_rcu(NULL, (void *) (___p), true);	\
- } while (0)
- 
- /*
 diff --git a/mm/slab_common.c b/mm/slab_common.c
-index d232b99a4b52..9d7801e5cb73 100644
+index 3ec99a5463d3..d232b99a4b52 100644
 --- a/mm/slab_common.c
 +++ b/mm/slab_common.c
-@@ -1311,6 +1311,12 @@ struct kfree_rcu_cpu_work {
-  * the interactions with the slab allocators.
-  */
- struct kfree_rcu_cpu {
-+	// Objects queued on a lockless linked list, not protected by the lock.
-+	// This allows freeing objects in NMI context, where trylock may fail.
-+	struct llist_head llist_head;
-+	struct irq_work irq_work;
-+	struct irq_work sched_monitor_irq_work;
-+
- 	// Objects queued on a linked list
- 	struct rcu_ptr *head;
- 	unsigned long head_gp_snap;
-@@ -1333,12 +1339,61 @@ struct kfree_rcu_cpu {
+@@ -1263,78 +1263,9 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
+ EXPORT_TRACEPOINT_SYMBOL(kfree);
+ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
+ 
+-#ifndef CONFIG_KVFREE_RCU_BATCHED
+-
+-void kvfree_call_rcu_head(struct rcu_head *head, void *ptr)
+-{
+-	if (head) {
+-		kasan_record_aux_stack(ptr);
+-		call_rcu(head, kvfree_rcu_cb);
+-		return;
+-	}
+-
+-	// kvfree_rcu(one_arg) call.
+-	might_sleep();
+-	synchronize_rcu();
+-	kvfree(ptr);
+-}
+-EXPORT_SYMBOL_GPL(kvfree_call_rcu_head);
+-
+-void __init kvfree_rcu_init(void)
+-{
+-}
+-
+-#else /* CONFIG_KVFREE_RCU_BATCHED */
+-
+-/*
+- * This rcu parameter is runtime-read-only. It reflects
+- * a minimum allowed number of objects which can be cached
+- * per-CPU. Object size is equal to one page. This value
+- * can be changed at boot time.
+- */
+-static int rcu_min_cached_objs = 5;
+-module_param(rcu_min_cached_objs, int, 0444);
+-
+-// A page shrinker can ask for pages to be freed to make them
+-// available for other parts of the system. This usually happens
+-// under low memory conditions, and in that case we should also
+-// defer page-cache filling for a short time period.
+-//
+-// The default value is 5 seconds, which is long enough to reduce
+-// interference with the shrinker while it asks other systems to
+-// drain their caches.
+-static int rcu_delay_page_cache_fill_msec = 5000;
+-module_param(rcu_delay_page_cache_fill_msec, int, 0444);
+-
+-static struct workqueue_struct *rcu_reclaim_wq;
+-
+-/* Maximum number of jiffies to wait before draining a batch. */
+-#define KFREE_DRAIN_JIFFIES (5 * HZ)
++#ifdef CONFIG_KVFREE_RCU_BATCHED
+ #define KFREE_N_BATCHES 2
+ #define FREE_N_CHANNELS 2
+-
+-/**
+- * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
+- * @list: List node. All blocks are linked between each other
+- * @gp_snap: Snapshot of RCU state for objects placed to this bulk
+- * @nr_records: Number of active pointers in the array
+- * @records: Array of the kvfree_rcu() pointers
+- */
+-struct kvfree_rcu_bulk_data {
+-	struct list_head list;
+-	struct rcu_gp_oldstate gp_snap;
+-	unsigned long nr_records;
+-	void *records[] __counted_by(nr_records);
+-};
+-
+-/*
+- * This macro defines how many entries the "records" array
+- * will contain. It is based on the fact that the size of
+- * kvfree_rcu_bulk_data structure becomes exactly one page.
+- */
+-#define KVFREE_BULK_MAX_ENTR \
+-	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
+-
+ /**
+  * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
+  * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
+@@ -1402,6 +1333,77 @@ struct kfree_rcu_cpu {
  	struct llist_head bkvcache;
  	int nr_bkv_objs;
  };
-+#else
-+struct kfree_rcu_cpu {
-+	struct llist_head llist_head;
-+	struct irq_work irq_work;
-+};
- #endif
- 
-+/* Universial implementation regardless of CONFIG_KVFREE_RCU_BATCHED */
-+static void defer_kfree_rcu(struct irq_work *work)
++#endif
++
++#ifndef CONFIG_KVFREE_RCU_BATCHED
++
++void kvfree_call_rcu_head(struct rcu_head *head, void *ptr)
 +{
-+	struct kfree_rcu_cpu *krcp;
-+	struct llist_head *head;
-+	struct llist_node *llnode, *pos, *t;
-+
-+	krcp = container_of(work, struct kfree_rcu_cpu, irq_work);
-+	head = &krcp->llist_head;
-+
-+	if (llist_empty(head))
-+		return;
-+
-+	llnode = llist_del_all(head);
-+	llist_for_each_safe(pos, t, llnode) {
-+		struct slab *slab;
-+		void *objp;
-+		struct rcu_ptr *rcup = (struct rcu_ptr *)pos;
-+
-+		slab = virt_to_slab(pos);
-+		if (is_vmalloc_addr(pos) || !slab)
-+			objp = (void *)PAGE_ALIGN_DOWN((unsigned long)pos);
-+		else
-+			objp = nearest_obj(slab->slab_cache, slab, pos);
-+
-+		kvfree_call_rcu(rcup, objp, true);
-+	}
-+}
-+
- #ifndef CONFIG_KVFREE_RCU_BATCHED
-+static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
-+	.llist_head = LLIST_HEAD_INIT(llist_head),
-+	.irq_work = IRQ_WORK_INIT(defer_kfree_rcu),
-+};
- 
--void kvfree_call_rcu_head(struct rcu_head *head, void *ptr)
-+void kvfree_call_rcu_head(struct rcu_head *head, void *ptr, bool allow_spin)
- {
-+	if (!allow_spin) {
-+		struct kfree_rcu_cpu *krcp;
-+
-+		guard(preempt)();
-+
-+		krcp = this_cpu_ptr(&krc);
-+		if (llist_add((struct llist_node *)head, &krcp->llist_head))
-+			irq_work_queue(&krcp->irq_work);
++	if (head) {
++		kasan_record_aux_stack(ptr);
++		call_rcu(head, kvfree_rcu_cb);
 +		return;
 +	}
 +
- 	if (head) {
- 		kasan_record_aux_stack(ptr);
- 		call_rcu(head, kvfree_rcu_cb);
-@@ -1405,8 +1460,21 @@ struct kvfree_rcu_bulk_data {
- #define KVFREE_BULK_MAX_ENTR \
- 	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
- 
-+static void schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp);
++	// kvfree_rcu(one_arg) call.
++	might_sleep();
++	synchronize_rcu();
++	kvfree(ptr);
++}
++EXPORT_SYMBOL_GPL(kvfree_call_rcu_head);
 +
-+static void sched_monitor_irq_work(struct irq_work *work)
++void __init kvfree_rcu_init(void)
 +{
-+	struct kfree_rcu_cpu *krcp;
-+
-+	krcp = container_of(work, struct kfree_rcu_cpu, sched_monitor_irq_work);
-+	schedule_delayed_monitor_work(krcp);
 +}
 +
++#else /* CONFIG_KVFREE_RCU_BATCHED */
++
++/*
++ * This rcu parameter is runtime-read-only. It reflects
++ * a minimum allowed number of objects which can be cached
++ * per-CPU. Object size is equal to one page. This value
++ * can be changed at boot time.
++ */
++static int rcu_min_cached_objs = 5;
++module_param(rcu_min_cached_objs, int, 0444);
++
++// A page shrinker can ask for pages to be freed to make them
++// available for other parts of the system. This usually happens
++// under low memory conditions, and in that case we should also
++// defer page-cache filling for a short time period.
++//
++// The default value is 5 seconds, which is long enough to reduce
++// interference with the shrinker while it asks other systems to
++// drain their caches.
++static int rcu_delay_page_cache_fill_msec = 5000;
++module_param(rcu_delay_page_cache_fill_msec, int, 0444);
++
++static struct workqueue_struct *rcu_reclaim_wq;
++
++/* Maximum number of jiffies to wait before draining a batch. */
++#define KFREE_DRAIN_JIFFIES (5 * HZ)
++
++/**
++ * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
++ * @list: List node. All blocks are linked between each other
++ * @gp_snap: Snapshot of RCU state for objects placed to this bulk
++ * @nr_records: Number of active pointers in the array
++ * @records: Array of the kvfree_rcu() pointers
++ */
++struct kvfree_rcu_bulk_data {
++	struct list_head list;
++	struct rcu_gp_oldstate gp_snap;
++	unsigned long nr_records;
++	void *records[] __counted_by(nr_records);
++};
++
++/*
++ * This macro defines how many entries the "records" array
++ * will contain. It is based on the fact that the size of
++ * kvfree_rcu_bulk_data structure becomes exactly one page.
++ */
++#define KVFREE_BULK_MAX_ENTR \
++	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
+ 
  static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
  	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
-+	.irq_work = IRQ_WORK_INIT(defer_kfree_rcu),
-+	.sched_monitor_irq_work =
-+		IRQ_WORK_INIT_LAZY(sched_monitor_irq_work),
- };
- 
- static __always_inline void
-@@ -1421,13 +1489,18 @@ debug_rcu_bhead_unqueue(struct kvfree_rcu_bulk_data *bhead)
- }
- 
- static inline struct kfree_rcu_cpu *
--krc_this_cpu_lock(unsigned long *flags)
-+krc_this_cpu_lock(unsigned long *flags, bool allow_spin)
- {
- 	struct kfree_rcu_cpu *krcp;
- 
- 	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
- 	krcp = this_cpu_ptr(&krc);
--	raw_spin_lock(&krcp->lock);
-+	if (allow_spin) {
-+		raw_spin_lock(&krcp->lock);
-+	} else if (!raw_spin_trylock(&krcp->lock)) {
-+		local_irq_restore(*flags);
-+		return NULL;
-+	}
- 
- 	return krcp;
- }
-@@ -1841,25 +1914,27 @@ static void fill_page_cache_func(struct work_struct *work)
- // Returns true if ptr was successfully recorded, else the caller must
- // use a fallback.
- static inline bool
--add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
--	unsigned long *flags, void *ptr, bool can_alloc)
-+add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu *krcp,
-+	unsigned long *flags, void *ptr, bool can_alloc, bool allow_spin)
- {
- 	struct kvfree_rcu_bulk_data *bnode;
- 	int idx;
- 
--	*krcp = krc_this_cpu_lock(flags);
--	if (unlikely(!(*krcp)->initialized))
-+	if (unlikely(!krcp->initialized))
-+		return false;
-+
-+	if (!allow_spin)
- 		return false;
- 
- 	idx = !!is_vmalloc_addr(ptr);
--	bnode = list_first_entry_or_null(&(*krcp)->bulk_head[idx],
-+	bnode = list_first_entry_or_null(&krcp->bulk_head[idx],
- 		struct kvfree_rcu_bulk_data, list);
- 
- 	/* Check if a new block is required. */
- 	if (!bnode || bnode->nr_records == KVFREE_BULK_MAX_ENTR) {
--		bnode = get_cached_bnode(*krcp);
-+		bnode = get_cached_bnode(krcp);
- 		if (!bnode && can_alloc) {
--			krc_this_cpu_unlock(*krcp, *flags);
-+			krc_this_cpu_unlock(krcp, *flags);
- 
- 			// __GFP_NORETRY - allows a light-weight direct reclaim
- 			// what is OK from minimizing of fallback hitting point of
-@@ -1874,7 +1949,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 			// scenarios.
- 			bnode = (struct kvfree_rcu_bulk_data *)
- 				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
--			raw_spin_lock_irqsave(&(*krcp)->lock, *flags);
-+			raw_spin_lock_irqsave(&krcp->lock, *flags);
- 		}
- 
- 		if (!bnode)
-@@ -1882,14 +1957,14 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 
- 		// Initialize the new block and attach it.
- 		bnode->nr_records = 0;
--		list_add(&bnode->list, &(*krcp)->bulk_head[idx]);
-+		list_add(&bnode->list, &krcp->bulk_head[idx]);
- 	}
- 
- 	// Finally insert and update the GP for this page.
- 	bnode->nr_records++;
- 	bnode->records[bnode->nr_records - 1] = ptr;
- 	get_state_synchronize_rcu_full(&bnode->gp_snap);
--	atomic_inc(&(*krcp)->bulk_count[idx]);
-+	atomic_inc(&krcp->bulk_count[idx]);
- 
- 	return true;
- }
-@@ -1949,7 +2024,7 @@ void __init kfree_rcu_scheduler_running(void)
-  * be free'd in workqueue context. This allows us to: batch requests together to
-  * reduce the number of grace periods during heavy kfree_rcu()/kvfree_rcu() load.
-  */
--void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr)
-+void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr, bool allow_spin)
- {
- 	unsigned long flags;
- 	struct kfree_rcu_cpu *krcp;
-@@ -1965,7 +2040,12 @@ void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr)
- 	if (!head)
- 		might_sleep();
- 
--	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && kfree_rcu_sheaf(ptr))
-+	if (!allow_spin && (IS_ENABLED(CONFIG_DEBUG_OBJECTS_RCU_HEAD) ||
-+				IS_ENABLED(CONFIG_DEBUG_KMEMLEAK)))
-+		goto defer_free;
-+
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
-+			(allow_spin && kfree_rcu_sheaf(ptr)))
- 		return;
- 
- 	// Queue the object but don't yet schedule the batch.
-@@ -1979,9 +2059,15 @@ void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr)
- 	}
- 
- 	kasan_record_aux_stack(ptr);
--	success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
-+
-+	krcp = krc_this_cpu_lock(&flags, allow_spin);
-+	if (!krcp)
-+		goto defer_free;
-+
-+	success = add_ptr_to_bulk_krc_lock(krcp, &flags, ptr, !head, allow_spin);
- 	if (!success) {
--		run_page_cache_worker(krcp);
-+		if (allow_spin)
-+			run_page_cache_worker(krcp);
- 
- 		if (head == NULL)
- 			// Inline if kvfree_rcu(one_arg) call.
-@@ -2005,8 +2091,12 @@ void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr)
- 	kmemleak_ignore(ptr);
- 
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
--	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
--		__schedule_delayed_monitor_work(krcp);
-+	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING) {
-+		if (allow_spin)
-+			__schedule_delayed_monitor_work(krcp);
-+		else
-+			irq_work_queue(&krcp->sched_monitor_irq_work);
-+	}
- 
- unlock_return:
- 	krc_this_cpu_unlock(krcp, flags);
-@@ -2017,10 +2107,22 @@ void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr)
- 	 * CPU can pass the QS state.
- 	 */
- 	if (!success) {
-+		VM_WARN_ON_ONCE(!allow_spin);
- 		debug_rcu_head_unqueue((struct rcu_head *) ptr);
- 		synchronize_rcu();
- 		kvfree(ptr);
- 	}
-+	return;
-+
-+defer_free:
-+	VM_WARN_ON_ONCE(allow_spin);
-+	guard(preempt)();
-+
-+	krcp = this_cpu_ptr(&krc);
-+	if (llist_add((struct llist_node *)head, &krcp->llist_head))
-+		irq_work_queue(&krcp->irq_work);
-+	return;
-+
- }
- EXPORT_SYMBOL_GPL(kvfree_call_rcu_ptr);
- 
 -- 
 2.43.0
 
