@@ -1,216 +1,189 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dl1-f47.google.com (mail-dl1-f47.google.com [74.125.82.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4377D32ED4C;
-	Thu,  5 Feb 2026 20:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F1E30AACF
+	for <rcu@vger.kernel.org>; Fri,  6 Feb 2026 07:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770324455; cv=none; b=ETtJJ0+pnm4x3D4hFSxR/ete1ZFuf3JU04mD8Gz8jN9b/LJxf1xkPufctM4cgAQmesUgt6EtONkUlFukfHZQmlZzMj3l75ZR1fBwqEWP/oXURxuVDh4vdJqTrz6nyI6pe34+lXRzdG0yC+sS7GHAzXHs4jkLrDupqrZqwuQ31Zs=
+	t=1770361501; cv=none; b=lCsUHQBa0N6dDTLkiEjs0jJ0AxghJzXQrrvYvDJDQolm/YrRCRYk/mNk3N7nI0kBq2c0w2P8Mxt5quJZ4r2KfjIVdx6vOW9YjBoJxl7HzKpA4msN8WEZvR2tyU2H+i9Yzn3siwbe+RZs2tSd7Z5CNHbQujnkPXxCyhsU+NjSKbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770324455; c=relaxed/simple;
-	bh=pO1+JThAn5iZkSDpLqtojlcBZvNK+oO5Xc60Wz/ZvII=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O4GSAz3g7OXP5C5QCS7Ro/ZAdTEXC8FdSnrKXxwqdsCrU4OgrprST2M8M9KI7u1wCo00F3AsEjSgyA/1NxMvlAgXOQc9gqN/nM3kAPuMb8H7msFYo2C87SNolJqMKHti38na8bi69X9UmRNOgoQ4RpZ9O/xohp1Srgq40iORDow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TIIwdsxz; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1770361501; c=relaxed/simple;
+	bh=DYab+KFb/uzWGFtM+ObAePP6orjpMR6zjSsqn+3bWo8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=g3eRilmkn5hXm6XkTqsKFeG4acvQrdXFz5nrwKP4TGb1NfjtiHRSU2FTKEaL78T07Dh6lBljedEJIt959cvircHXkzifsIlrN0DbTLxjYPS/avD1FnWZ3tqQQpo6aBRbDE76wWrXss2EJUA8cdF/LD3buVFZFwyZ+uXoTGwqmMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cYYmc0eN; arc=none smtp.client-ip=74.125.82.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TIIwdsxz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91B57C4AF0B;
-	Thu,  5 Feb 2026 20:47:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770324454;
-	bh=pO1+JThAn5iZkSDpLqtojlcBZvNK+oO5Xc60Wz/ZvII=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TIIwdsxzUtgsI1d+VsTVCrdregqbbmiH3Z2TO/SK7CZrSF3Ca/qrcNSegs0uUoAVc
-	 cf5QnPCkA3N6uBsqK+PpxqvH9WqabTqzJpu00bEPf011/qLvpysuVPHQhnEH5sjdMp
-	 ymXPJu5KUSGE/NxoXzYK8kIrVPDdE51A68a5nnj8jjzbkaY2TUK2WcICgCUVAdFsmy
-	 jpaJOs6Bq7JVbdI5GxWhst5GUj1Qb6fOap+Fl7G/EvcZhTyBBCC4wgR2eAXHdGEjjt
-	 M8oxoW3DsnjxCmyLQVDMeaQytF9Q9DLGsmoSF9IzPISovAGtpTFgnXWxwa7Ivjljbr
-	 HUlK5zwnDvy0Q==
-Received: from phl-compute-08.internal (phl-compute-08.internal [10.202.2.48])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 78F8EF40068;
-	Thu,  5 Feb 2026 15:47:32 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-08.internal (MEProxy); Thu, 05 Feb 2026 15:47:32 -0500
-X-ME-Sender: <xms:5AGFaaKGxBWFW_gebcxuac2XW6TtvgVohe-e2YvIFqzoovv1AFew6Q>
-    <xme:5AGFad0s_gOHrxbl1WXd8H1LisrKXvC6kD6XjCwA0cgK4EFvb5Q6oFD7iJzZA7v0H
-    lEeQkcNE10sKnguiwCvicAn0b-v9jcfl7W4f_A_Lc1_RRDPo_LqkEo>
-X-ME-Received: <xmr:5AGFaeVFf8tBpjeEcPZmjsqOIJO5FaGwwIzJeVN71SYrXDBKJ-EHb-4vx8Ajn1HkpUb12M9rMlfgJ66riZ7bUIN4BOv8rD4Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddukeeifedtucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    efleejffeiteejteevffdtudelieffieeileekvedvhefhgeeftdefvddvieeludenucff
-    ohhmrghinhepughotghsrdhrshdpghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghu
-    thhhphgvrhhsohhnrghlihhthidqudeijedtleekgeejuddqudejjeekheehhedvqdgsoh
-    hquhhnpeepkhgvrhhnvghlrdhorhhgsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthht
-    ohepgeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehgrghrhiesghgrrhihgh
-    huohdrnhgvthdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtghomhdp
-    rhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-    dprhgtphhtthhopehruhhsthdqfhhorhdqlhhinhhugiesvhhgvghrrdhkvghrnhgvlhdr
-    ohhrghdprhgtphhtthhopehrtghusehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpth
-    htohepghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthht
-    oheprghrvhgvsegrnhgurhhoihgurdgtohhmpdhrtghpthhtohepthhkjhhoshesrghnug
-    hrohhiugdrtghomhdprhgtphhtthhopegsrhgruhhnvghrsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:5AGFafpOGvAC95R6nCwdOiGvz7tqqtJ--321dJ4QV2mrEzX0LyWrkQ>
-    <xmx:5AGFafaBxmOzLTxOLIpMNfM3Boy-JqC4otn8OafmIzQszbw8cqiIiQ>
-    <xmx:5AGFaTD7PmztY09p4WtNWM6SNmqd9-CwKDV69NS1lm7omI6dB8FxEg>
-    <xmx:5AGFaaGqTpg40RyFkN-09O9mFL6NX2wAC0EEVOfZ8k7QupEzS_fieA>
-    <xmx:5AGFafxaFMXTgamJwFJAOvFrA5KhMB81KDdqA0JSaJyuVJ4BPG_M9vaO>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Feb 2026 15:47:31 -0500 (EST)
-Date: Thu, 5 Feb 2026 12:47:29 -0800
-From: Boqun Feng <boqun@kernel.org>
-To: Gary Guo <gary@garyguo.net>
-Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-	rust-for-linux@vger.kernel.org, rcu@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>,	Christian Brauner <brauner@kernel.org>,
-	Carlos Llamas <cmllamas@google.com>,	Alice Ryhl <aliceryhl@google.com>,
- Miguel Ojeda <ojeda@kernel.org>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <lossin@kernel.org>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	Trevor Gross <tmgross@umich.edu>,	Danilo Krummrich <dakr@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,	Zqiang <qiang.zhang@linux.dev>,
-	FUJITA Tomonori <fujita.tomonori@gmail.com>,
-	Lyude Paul <lyude@redhat.com>, Thomas Gleixner <tglx@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
-	"Yury Norov (NVIDIA)" <yury.norov@gmail.com>,
-	Vitaly Wool <vitaly.wool@konsulko.se>,
-	Tamir Duberstein <tamird@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Daniel Almeida <daniel.almeida@collabora.com>,
-	Mitchell Levy <levymitchell0@gmail.com>,	David Gow <davidgow@google.com>,
- Peter Novak <seimun018r@gmail.com>,
-	=?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>
-Subject: Re: [RFC PATCH 0/7] Introduce HasField infrastructure
-Message-ID: <aYUB4VcsSDyQxSt1@tardis.local>
-References: <20260128215330.58410-1-boqun.feng@gmail.com>
- <DG68S0UN78BE.QUG4A0Y08XKN@garyguo.net>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cYYmc0eN"
+Received: by mail-dl1-f47.google.com with SMTP id a92af1059eb24-126ea4b77adso2105626c88.1
+        for <rcu@vger.kernel.org>; Thu, 05 Feb 2026 23:05:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1770361501; x=1770966301; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vRf3cjvlRbAntghErCuqDOleUjIWBU7CCGgFHUeg8Rg=;
+        b=cYYmc0eNu+10CvcUSxaILwdXh1J9mnekmAgY19syyQBSvqBL2bDRRfYGDw1ECsOhT/
+         K40jInMeY6t6zNnpTUbouiDNUIZC0sEHFvLPtSnHxI0sN3ZAAEeYfw1irQQvnBIhFX2u
+         +H5UFOXP3jbpQa/bty6pP0kKeTsNWcGOSiStxV3QZaOFCahMtTdeE7RIXpUPzHO0H1wl
+         TW7t+Gto3mD9tEmLT/c7/pAIrs8KmEuCq4XhZCqrWHrdUVm69mdiVakL9Yz4c/wjvUFM
+         9WugNp73MVfTZAR2Aco9Gzmoq4rkGogRhZNwSc1OJU3gPH6s9Dbo1AUERkTirM+wqnqm
+         HDHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770361501; x=1770966301;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vRf3cjvlRbAntghErCuqDOleUjIWBU7CCGgFHUeg8Rg=;
+        b=pSgQ534DzfBbu7YomR98mka2Z1youiIt6f27CEC00aT9sqUgET413YMJCZi1PxNCXt
+         2qJiM8MQrZpcmDbivVBWk7YaAVYaU2dyEBH33uCjlyYM1lVcoVHiD6V3x7wDeKbCYNEf
+         BKp8dNdJnMZ1RPB1JPqaqhVQhNWLniMzSnQKq3hinAjpelfdPkzc8Vy33pzA6MSNOPXV
+         CW/ZzzJ6Y5Fsy/bk2Xb/OeJJN/v8y00nMUxrEMPfBZDGsK1HNwchGlyEQHPX/Xm4R96m
+         3I48eC13/y/KPIcrjB3Odt5oleqGhWyJSHmZyUhaLB4ASMx01Y3r7BMCLf5XgOsEdAEJ
+         wFUw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/DMQLVBDhnSrj57iUfBzOgproF9dTXewWci3XfwTxI5xaLOgDD3nkufNoVI301LMK+bI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YymGvowYK5/OgctLlIcDNkLWba3CBmSGon9oH0tdsm2XxLhVLrd
+	tPn6F0fDTofbs0mRVEbWGZxhOpEEqwo+1lEPWP8W89wuSbVcY33zOShL
+X-Gm-Gg: AZuq6aKhjUj9Kq4shongsQirZGF2uzOh2looWJIQh0vnbFZF8klK+YLikpVjFlIKTl+
+	xAtA2lVZNNTOKrZpKu3ujL2liFLGg5MMIy/EIKfm65N6PzfU05Q7/bc2RWMWfLninQ0QzWJpMjM
+	t4fJdKtjqFyQXbvnDRIulVOtM74FQAE/6UIRnQMrBhHlCBzs/w+H59zu0nl5CIviiR+CQyoYvSv
+	Ry78DRp9XEVipdHFmQ4GdZ/exW0yt1hlwoe8mizFBHSwf0kLq4IBnZmdxZ+vtcJejeo53USMFGd
+	Gr2HHZM0drdpvDSf1nPhknOb2xK/owJPjB9vXaPlc1ChbZBtCDpUbw+kEKAAHVb3gyGb0TOH6eJ
+	GwIYF9n1ENtJqwm8vXRO1F69JYHevecUpu2hq2yl7grpyB+chQLLpl5c1932hAhOu3xOCnitbfa
+	yPpWmRaJaYaQ==
+X-Received: by 2002:a05:7022:6b90:b0:11a:126f:ee78 with SMTP id a92af1059eb24-12704010cbemr892190c88.34.1770361500545;
+        Thu, 05 Feb 2026 23:05:00 -0800 (PST)
+Received: from [127.0.1.1] ([74.48.213.230])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-127041e61b9sm1592601c88.8.2026.02.05.23.04.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Feb 2026 23:04:59 -0800 (PST)
+From: Qiliang Yuan <realwujing@gmail.com>
+Subject: [PATCH RFC 00/12] Implementation of Dynamic Housekeeping &
+ Enhanced Isolation (DHEI)
+Date: Fri, 06 Feb 2026 02:04:21 -0500
+Message-Id: <20260206-feature-dynamic_isolcpus_dhei-v1-0-00a711eb0c74@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DG68S0UN78BE.QUG4A0Y08XKN@garyguo.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHeShWkC/x3MQQqDMBAF0KvIrBtIo0TottADdCsiafLVgTZKR
+ qVFvHuDy7d5OwkSQ+hW7JSwsfAUM66Xgvzo4gDFIZuMNlYbbVUPt6wJKvyi+7DvWKa3n1fpwgh
+ WQGVfFqWr6pryMSf0/D3/hp6PO7XH8QdgPdvjdAAAAA==
+X-Change-ID: 20260206-feature-dynamic_isolcpus_dhei-ee46b6e3a477
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+ Juri Lelli <juri.lelli@redhat.com>, 
+ Vincent Guittot <vincent.guittot@linaro.org>, 
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, 
+ Thomas Gleixner <tglx@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+ Frederic Weisbecker <frederic@kernel.org>, 
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+ Joel Fernandes <joelagnelf@nvidia.com>, 
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+ Uladzislau Rezki <urezki@gmail.com>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+ Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+ Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>, 
+ Michal Hocko <mhocko@suse.com>, Brendan Jackman <jackmanb@google.com>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>, 
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, 
+ Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org, 
+ Qiliang Yuan <realwujing@gmail.com>, Qiliang Yuan <yuanql9@chinatelecom.cn>
+X-Mailer: b4 0.14.3
 
-On Wed, Feb 04, 2026 at 02:20:09PM +0000, Gary Guo wrote:
-> On Wed Jan 28, 2026 at 9:53 PM GMT, Boqun Feng wrote:
-> > Currently we have a few similar places where we use a `Has*` trait to
-> > describe that a data structure has some types of field in it so that the
-> > containing type can do something with it. There are also a `impl_has_*!`
-> > macro to help implement the trait. While it's working, but it's less
-> > ergonomic to me, especially considering the amount of the work we need
-> > to do for something new (e.g. rcu_head).
-> >
-> > Therefore here is the effort to unify them into a proc-macro based
-> > solution. `Field` and `HasField` traits are introduced to generify the
-> > "Has A" relationship, and a derive macro `#[derive(HasField)]` is also
-> > added to support automatically implementing `HasField` trait.
-> >
-> > This series convert a few users (Work, HrTimer) and introduce a new
-> > `Field` type `RcuHead`. These improvements demonstrate how this
-> > infrastructure can be used.
-> >
-> > Some future work is still needed: using `HasField` for `DelayedWork` and
-> > `ListLink` is still missing. Also it's possible to clean up `HasWork`
-> > trait as well.
-> >
-> > One known issue is that `#[derive(HasField)]` doesn't play alone with
-> > `#[pin_data]` at the moment, for example:
-> >
-> >     #[derive(HasField)]
-> >     #[pin_data]
-> >     struct Foo { .. }
-> >
-> > works, but 
-> >
-> >     #[pin_data]
-> >     #[derive(HasField)]
-> >     struct Foo { .. }
-> >
-> > doesn't. Maybe it's by design or maybe something could be improved by
-> > pin-init.
-> >
-> >
-> > The patchset is based on today's rust/rust-next, top commit is:
-> >
-> > 	a7c013f77953 ('Merge patch series "refactor Rust proc macros with `syn`"')
-> >
-> > Regards,
-> > Boqun
-> 
-> Hi Boqun,
-> 
-> Thanks for working on this.
-> 
-> You currently divide things into two traits, `Field<T>` which doesn't seem to be
-> doing anything (actually, why does this need to exist at all?) and
-> `HasField<T, F>` which defines all the field projection.
-> 
+The Linux kernel provides mechanisms like 'isolcpus' and 'nohz_full' to
+reduce interference for latency-sensitive workloads. However, these are
+locked behind the "Reboot Wall" - they can only be configured via boot
+parameters and require a system restart to change.
 
-Oh, you're right, I don't need `Field<T>` right now. In a certain point,
-it was used to constrain all "field types" must be generic over their
-container type. But it's not the case now (see RcuHead).
+*** THIS IS AN RFC ***
+This series is being submitted as an Request For Comments to discuss the
+architectural changes required to support dynamic reconfiguration of
+housekeeping boundaries. Key points for discussion:
+- The use of a blocking notifier chain for cross-subsystem synchronization.
+- Compatibility with existing boot-time isolcpus and nohz_full parameters.
+- User-space sysfs interface design for granular isolation control.
 
-> For some prior art that attempts to have fields, e.g. my field-projection
-> experiemnt crate
-> 
->     https://docs.rs/field-projection
-> 
-> and Benno's work on field-representing-types in the Rust language, we opt to
-> have a type to represent each field instead.
-> 
-> I think we should have a unified projection infrastructure in the kernel, for
-> both intrusive data structure and I/O projection and others, so I think it's
-> useful to have types representing fields (and projection in general, this could
-> also extend to the `register!` macro). For clarity, let me refer to this as
-> `field_of!(Base, foo)` and the trait is `Projection`.
-> 
+While cgroup2 (cpuset) provides task-centric resource partitioning (including
+unbound kthreads), it lacks the infrastructure to reconfigure core kernel
+subsystems or manage per-CPU kernel activities. Specifically, cgroups cannot:
+- Managed interrupt (IRQ) migration.
+- RCU callback offloading and grace-period kthread placement.
+- Per-CPU kernel threads (e.g., watchdog/n) and global subsystem logic (e.g., kcompactd).
+- Subsystem-level masks for unbound workqueues.
+- Dynamic toggling of full dynticks (NOHZ_FULL) mode.
 
-Yep, I actually have an example PR integrating that into workqueue:
+This patch series introduces Dynamic Housekeeping & Enhanced Isolation
+(DHEI). DHEI allows administrators to reconfigure the kernel's
+housekeeping boundaries at runtime via a new sysfs interface at
+/sys/kernel/housekeeping/.
 
-	https://github.com/Rust-for-Linux/field-projection/pull/2
+Core Architecture:
+1. Notifier-Driven Synchronization: A new blocking notifier chain
+   (HK_UPDATE_MASK) allows isolation.c to signal all participating
+   subsystems (IRQ, RCU, Sched, Watchdog, Workqueue, kcompactd, Tick)
+   whenever a housekeeping mask is modified.
+2. Decoupled Memory Management: Replaced boot-time memory allocators
+   with runtime-safe variants, allowing masks to be allocated or resized
+   after the system is running.
+3. Subsystem Handlers: Each critical subsystem implements a reconfiguration
+   handler to migrate pending work, re-affine kthreads, or re-route
+   interrupts dynamically.
 
-(of course `Work` in that case should be generic over the containing
-type, but that's easy to fix)
+Key Features:
+- Fine-grained control: Separate sysfs nodes for timer, rcu, tick,
+  workqueue, kthread, etc.
+- Dynamic NOHZ_FULL: Supports enabling/disabling full dynticks mode
+  on-the-fly by re-kicking CPUs to evaluate tick dependencies.
+- SMT Awareness: An optional 'smt_aware_mode' ensures that all SMT
+  siblings of a physical core stay in the same isolation state.
+- Safety Guard: Prevents the isolation of all CPUs, ensuring at least
+  one online CPU is always available for housekeeping tasks.
 
-I guess the next question is: will you and Benno be willing to port
-field-projection into kernel source (and keep it aligned with the
-language feature), so we can switch to that?
+This series provides the necessary infrastructure for cloud-native
+orchestrators and high-frequency trading platforms to dynamically
+re-partition CPU resources without incurring the downtime of a reboot.
 
-Regards,
-Boqun
+Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
+---
+Qiliang Yuan (12):
+      sched/isolation: Remove __init restriction from housekeeping cores
+      sched/isolation: Introduce reconfiguration notifier chain
+      genirq: Implement dynamic migration for Managed IRQs
+      rcu: Sync RCU housekeeping mask on notification
+      sched/core: Dynamic update housekeeping_cpumask(HK_TYPE_DOMAIN)
+      watchdog: Allow runtime toggle of hardlockup detector on CPUs
+      workqueue: Dynamic housekeeping mask update support
+      kcompactd: Add housekeeping notifier for dynamic mask update
+      sched/isolation: Separate housekeeping types and add sysfs interface
+      tick/nohz: Implement dynamic nohz_full state update
+      sched/isolation: Implement SMT sibling auto-isolation and safety check
+      sched/isolation: Bridge isolcpus and support runtime tick offload init
 
-> With this infra, the `HasField` trait would simply looks like this:
-> 
->     trait HasField<Base, FieldType> {
->         type Field: Projection<Base = Base, Type = FieldType>;
->     }
-> 
-> and the macro derive would generate something like
-> 
->     impl HasField<MyStruct, Work<MyStruct>> {
->         type Field = field_of!(MyStruct, name_of_work_field);
->     }
-> 
-> Best,
-> Gary
-> 
-[..]
+ include/linux/sched/isolation.h |  40 +++++--
+ include/linux/tick.h            |   2 +-
+ kernel/irq/manage.c             |  52 +++++++++
+ kernel/rcu/tree.c               |  43 +++++++
+ kernel/sched/core.c             |   5 +-
+ kernel/sched/isolation.c        | 252 ++++++++++++++++++++++++++++++++++++++--
+ kernel/sched/sched.h            |   2 +-
+ kernel/sched/topology.c         |  26 +++++
+ kernel/time/tick-sched.c        |  63 +++++++++-
+ kernel/watchdog.c               |  24 ++++
+ kernel/workqueue.c              |  39 +++++++
+ mm/compaction.c                 |  26 +++++
+ 12 files changed, 547 insertions(+), 27 deletions(-)
+---
+base-commit: 1f97d9dcf53649c41c33227b345a36902cbb08ad
+change-id: 20260206-feature-dynamic_isolcpus_dhei-ee46b6e3a477
+
+Best regards,
+-- 
+Qiliang Yuan <realwujing@gmail.com>
+
