@@ -1,67 +1,67 @@
 Received: from mail-dl1-f50.google.com (mail-dl1-f50.google.com [74.125.82.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85041302756
-	for <rcu@vger.kernel.org>; Fri,  6 Feb 2026 07:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3288C30AD06
+	for <rcu@vger.kernel.org>; Fri,  6 Feb 2026 07:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770361565; cv=none; b=HCvTuRhDRGQFHCkG3sZI2kivRNonhhKSpWxHEaK9wD7hXcTk5uFh7IJKNXw8yK0tzJ2+Xbw+Zj+63OhC3yPwMXFTJaIRIJnaej1jIBw43J7urq4LLLOgPR5uIMLc7jqHLiQnGsWY2T9Cu1ALpk21BfX4nl4hfL4Btu+9duFv/uA=
+	t=1770361574; cv=none; b=aNxXtCHa3qLsKlZf0J12wgTvPbKyhAiOOoBhQsWRjerTnruYFQCrPydgLzzOkRi8KuPZrA/v7JSNiMIHd9mWfJEi+eYdbhRNuDirvbswELYPuwiZhPO56iEGnrQ1dXDtS3i83asfqGvrmq+HjBBlnigu1J5S4PUPV14bW8s1EjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770361565; c=relaxed/simple;
-	bh=tKwD7qZPuORYanqCCrKMgXQf9MbzZVnLfxvUTl58kmQ=;
+	s=arc-20240116; t=1770361574; c=relaxed/simple;
+	bh=6a04V02JrKq+UtMy+kud93gsZRYKV/Lla4DLD0k2cqg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=iD+4cv+BVq+jMRnYg5wt2o7OXXnlwm1QEATDKNLeQGQNu3IiLO2gGml0aj7za6GBF44iFvEaRkQlN60tavSCobKAW06OIegZclEcWj5S1/ChuoBS6U3aEljx9cM2xL7RrlxnJgCqatnACl1iNS61ooYVawb+RTZWvWCj6AVKDFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PkkVhdfk; arc=none smtp.client-ip=74.125.82.50
+	 In-Reply-To:To:Cc; b=akstIIUiNDXHwybPWMspayFiNxYDMeM7OzEprv4xL5W2PKgHDKYzoB2jo/6HNG7SSThpqAwjQUMsRsvRg6Wk5uuMZRMIR5oi9cT5abgoCAjHdwR3eAjVPhdSD0ss4vjnSdTUXLnH8x+uCLE07Ducgv1+/tCFZG3n1rsgrqtpVag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LSkBqR2e; arc=none smtp.client-ip=74.125.82.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PkkVhdfk"
-Received: by mail-dl1-f50.google.com with SMTP id a92af1059eb24-11f1fb91996so722196c88.1
-        for <rcu@vger.kernel.org>; Thu, 05 Feb 2026 23:06:05 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LSkBqR2e"
+Received: by mail-dl1-f50.google.com with SMTP id a92af1059eb24-124afd03fd1so480789c88.0
+        for <rcu@vger.kernel.org>; Thu, 05 Feb 2026 23:06:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770361565; x=1770966365; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1770361573; x=1770966373; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=BX9sMLwwZBpxhdeadTLxD2L+ATZYvXDyrtJH+GXz33A=;
-        b=PkkVhdfkETCDWRf5XDCJsQLAHWp7ttHONZsKz90x1XM12xlxSYsRKEEReePcfqV7WV
-         1X8/t0eJ8bmIJaDm3yGFjjc2lyLveetZM43z0qufNerLPhH07gf46ZCyuuWqlcd4wWxv
-         cisMFoOsoHeBtPlj72Z2HiLfWX6wZ2kd7NwpInWR2MyKqA8T8Ejrdplro7l1KAbt6ti+
-         yS3l/uiOhTyIIc+k+V1Hew9PixsbfWGiO/NY+3mKH1spStzp586c+u8hReHrWeAFnGf+
-         uS2T1cfWgZ6G0JZXcJukgqDRwmfEIb0fS9z/31B/KVB+J2qCObvS3Fbdyorjm4unCloP
-         lZBg==
+        bh=cvBmHx7kwJLfpYkQiDz3mWD0AMOGml1PQig1PAVjUmk=;
+        b=LSkBqR2eL6UR5nwMRZBndcbURMFJdOjUd/7LtrdCVNaxoiZI9TTnSNToU8SmWi+nF8
+         m3dZITaCsmObraDFxNiM9H12rXoZMHWiddHcfIKALFHb7bSZ3ag6ui/cfQJIRZgSsTDo
+         +s1YV90hyKpxBxYx5S+RHGiQVEFVIvkqd/4bo6r1gIt3/UqSHXLWg59ZZPoAt6iMN0BH
+         Qb+0bJtH01Ffmaq53tPnznlrmOxmHSk9qndRyAPNNUxd8lJ5DkwmZj9Kzuphg0R2eswS
+         MIbxkCxH3hRb2K6ipttH4gmcGSR2cEk+ICmGxsa2uGUfjAJz4c5gu9g7v38gRqbAY5JQ
+         X5Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770361565; x=1770966365;
+        d=1e100.net; s=20230601; t=1770361573; x=1770966373;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=BX9sMLwwZBpxhdeadTLxD2L+ATZYvXDyrtJH+GXz33A=;
-        b=vhH8ROxyzfkqVdnTvJUUEiYujXHHeFeKgPNkREJ9x1MZ1Ox3wAjDVXL39EeO4asWOr
-         c+md5KtLbspgFsa0lW8sg/cjmE/BW5erLBp38EHUowM7HWkcS5QLDNLiNaF8ZJeSwDRe
-         dFjio9DToG13KoLOlhZHMM/8W6ewmk1rCO4dOpY/OR4IaY7ytEPsaswGfiMUc/fRIzZG
-         s1bXIsEFlAG/vSxm6zE0ZPrgmYTh0zszMla3WOQ5E/OzDxbF+BI1FZYK8xL7rXGfWoq5
-         vTwg9QSxIhfg6eZf7FKyZ6xqD3vtf/UpRHyGSDSDbNYsdsj5N9HUkF7yvssCzCm82W4L
-         Z11w==
-X-Forwarded-Encrypted: i=1; AJvYcCXERhR9s5m4O5XeNIVB7TFjxSbVDAvCXAPs4DPRSvANiro9W05gHal+jJGvE2egzsDfyss=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx7R8uWXFKCyaC1jOKZjvDILfQOVcZ1iSkvvZVurFF3GYxB3Ye8
-	K/PjAn9DLvrQIp/jQRcKnlz1XXQE8pFm5jIIY5pqgCVa5FcwloAs4NXw
-X-Gm-Gg: AZuq6aIrcEUWBOJguhYGf3m55bpJSsKhPTe+bn3dhXRVQsnMsKJwMimGLE3dM35Vo73
-	Dx3n2fPCKBPDGJpgkOjB/U5eC/TpORjqu+Vc6eTW46B4r9aa/N8QPuizIe1fTYtJC+nY+NC0cEn
-	LEn773Cg/p5j4ox0HtHl/SFXWIPf4K80jDoYChdHWE4regfCp8BPSCYDhmZSrjWAXdz22zgDj8T
-	12CW0xU1EW1DffDfz6n/gCA8PUVws59MdN5UC2hFRtdIGiCrASYyBlL259wW63YxnbrMbtuALp7
-	aGuO37ORq4eT4oE0fhB1JusUiJeTu5HKCrucUyld244gcrxsWOMCyBxTjfUcZiYZmWFDunD1Idg
-	IXq/syc/qE/ztx/ApP3htG0w4XRz/3mIJ63l4y1sV1Y+gNKnh6vA6gigd+aMiZ1p5RkVJkzDWGP
-	GzMppMf4nVGg==
-X-Received: by 2002:a05:7022:619e:b0:11d:f890:6751 with SMTP id a92af1059eb24-12703fd8b47mr1055311c88.10.1770361564656;
-        Thu, 05 Feb 2026 23:06:04 -0800 (PST)
+        bh=cvBmHx7kwJLfpYkQiDz3mWD0AMOGml1PQig1PAVjUmk=;
+        b=jTaj8nhhYlcP/MuGUDddFhdcbG6qypC7wz0HbdO6WSGOcM4hBguDNECjDr8tQfWfsd
+         GLEM2tQfhoCgPm2pvRPhSTuFhN3WKLNZEcsjTFiaSqIzUmWqr2OJdtlAI6LPqJPOwlN6
+         o08ShoTL4FiVx087anT7NjHNqOXA7i73Sm6XLahi2dnl9YiU/8F6yPjs48Qc5mGbtW2u
+         gI6qt0am4EAJe3HX9uJojIyOKxPqJpz6/clJTgd3nFj66uTo+YEMG65HJg1hdK8/gcF5
+         E/VOAIy/z1/IVMLU/N8WALnJsJg+aRoYqUi4/Zbpy39JfOAJp0GV5lE2mDEq9A6Pi61u
+         oubg==
+X-Forwarded-Encrypted: i=1; AJvYcCXfocrwTcSUakSkK69qebddpRKx3rvMmj9BuW8YDGt58xCpYFq4KghPtAYEBzALLIBD6js=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzm/1mU7QsfYDpjUVCd+iWgUPMekkUfq7aZpPAXKEOGv0M/CQqx
+	W/mEmi0HCGtaFGOHZ25TYY2Vnkk4P4GnHSEqt/j0B4ufTny3Ukl3Fjgx
+X-Gm-Gg: AZuq6aLf8VHpnXpd7Q+AoOpEaG9z9R2K2VLwPF3VKhECD0ZrE1sNNRVs1+wX2oWeTCD
+	CzB1LkTaylRaNSgp8RG6a7w2sSOeg5kdZpK3bM5x9jjkCXxNghZKdbPutlqtFJAcStvtzLTBhgl
+	Z90a/2rY/cG4ybJXQQwCjUbsYlkHIkAY7FnDo3XJbyCd0k5uN1ypXVDM0fzPpvTDs4rx/uABch3
+	a0jdcbLS3UzzXXqlmPLKFFRv1i+NqolbJP6gnuh/iHS2uJ/vyIS7KVWvn8Sd3mcBZR1VKbtE0CJ
+	REccQCk6tD7KBz8Mqafoq1pttPceHdYuHTKHMU96ASjegasXl1vlEcLXfjplOTpSXYSWIXRcwR4
+	woBLO0Cy9gPp3viuPd5L25hhMH60qRKYdg/l2bs6OlAo2ur1pzefrm//bP3A1h2FQCZOS0TjXNv
+	aTF+Z5N59Amw==
+X-Received: by 2002:a05:7022:b81:b0:11a:e610:ee32 with SMTP id a92af1059eb24-12703ff4ba5mr818049c88.25.1770361573224;
+        Thu, 05 Feb 2026 23:06:13 -0800 (PST)
 Received: from [127.0.1.1] ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-127041e61b9sm1592601c88.8.2026.02.05.23.05.56
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-127041e61b9sm1592601c88.8.2026.02.05.23.06.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Feb 2026 23:06:04 -0800 (PST)
+        Thu, 05 Feb 2026 23:06:12 -0800 (PST)
 From: Qiliang Yuan <realwujing@gmail.com>
-Date: Fri, 06 Feb 2026 02:04:27 -0500
-Subject: [PATCH RFC 06/12] watchdog: Allow runtime toggle of hardlockup
- detector on CPUs
+Date: Fri, 06 Feb 2026 02:04:28 -0500
+Subject: [PATCH RFC 07/12] workqueue: Dynamic housekeeping mask update
+ support
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260206-feature-dynamic_isolcpus_dhei-v1-6-00a711eb0c74@gmail.com>
+Message-Id: <20260206-feature-dynamic_isolcpus_dhei-v1-7-00a711eb0c74@gmail.com>
 References: <20260206-feature-dynamic_isolcpus_dhei-v1-0-00a711eb0c74@gmail.com>
 In-Reply-To: <20260206-feature-dynamic_isolcpus_dhei-v1-0-00a711eb0c74@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -97,68 +97,79 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
  Qiliang Yuan <realwujing@gmail.com>, Qiliang Yuan <yuanql9@chinatelecom.cn>
 X-Mailer: b4 0.14.3
 
-The lockup detector (watchdog) affinity is initially set based on the
-HK_TYPE_TIMER housekeeping mask. However, if this mask is updated at
-runtime, the watchdog threads remain on their original CPUs.
+Workqueues use housekeeping masks (HK_TYPE_WQ and HK_TYPE_DOMAIN) to
+determine the default affinity for unbound workqueues. Currently,
+these masks are only applied during early boot.
 
-Register a housekeeping notifier to update watchdog_cpumask and trigger
-a reconfiguration via proc_watchdog_update() when the HK_TYPE_TIMER
-housekeeping mask changes. This ensures that watchdog threads are
-synchronized with the new isolation boundaries.
+Register a housekeeping notifier to dynamically update the workqueue
+unbound cpumask when these housekeeping masks are changed at runtime.
+This ensures that unbound workqueues are re-affined to the new
+housekeeping CPUs. Also update wq_isolated_cpumask to reflect the
+changes in HK_TYPE_DOMAIN.
 
 Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
 Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
 ---
- kernel/watchdog.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ kernel/workqueue.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 366122f4a0f8..2922d7f93d61 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -26,6 +26,7 @@
- #include <linux/sysctl.h>
- #include <linux/tick.h>
- #include <linux/sys_info.h>
-+#include <linux/sched/isolation.h>
- 
- #include <linux/sched/clock.h>
- #include <linux/sched/debug.h>
-@@ -1359,6 +1360,28 @@ static int __init lockup_detector_check(void)
- }
- late_initcall_sync(lockup_detector_check);
- 
-+static int watchdog_housekeeping_reconfigure(struct notifier_block *nb,
-+					    unsigned long action, void *data)
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 253311af47c6..b8913935d5e8 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -7913,6 +7913,44 @@ static void __init wq_cpu_intensive_thresh_init(void)
+  * executing the work items yet. Populate the worker pools with the initial
+  * workers and enable future kworker creations.
+  */
++static int wq_housekeeping_reconfigure(struct notifier_block *nb,
++				      unsigned long action, void *data)
 +{
 +	if (action == HK_UPDATE_MASK) {
 +		unsigned int type = (unsigned long)data;
 +
-+		if (type == HK_TYPE_TIMER) {
-+			mutex_lock(&watchdog_mutex);
-+			cpumask_copy(&watchdog_cpumask,
-+				     housekeeping_cpumask(HK_TYPE_TIMER));
-+			proc_watchdog_update(false);
-+			mutex_unlock(&watchdog_mutex);
++		if (type == HK_TYPE_WQ || type == HK_TYPE_DOMAIN) {
++			cpumask_var_t cpumask;
++
++			if (!alloc_cpumask_var(&cpumask, GFP_KERNEL))
++				return NOTIFY_BAD;
++
++			cpumask_copy(cpumask, cpu_possible_mask);
++			if (!cpumask_empty(housekeeping_cpumask(HK_TYPE_WQ)))
++				cpumask_and(cpumask, cpumask, housekeeping_cpumask(HK_TYPE_WQ));
++			if (!cpumask_empty(housekeeping_cpumask(HK_TYPE_DOMAIN)))
++				cpumask_and(cpumask, cpumask, housekeeping_cpumask(HK_TYPE_DOMAIN));
++
++			workqueue_set_unbound_cpumask(cpumask);
++
++			if (type == HK_TYPE_DOMAIN) {
++				apply_wqattrs_lock();
++				cpumask_andnot(wq_isolated_cpumask, cpu_possible_mask,
++						housekeeping_cpumask(HK_TYPE_DOMAIN));
++				apply_wqattrs_unlock();
++			}
++
++			free_cpumask_var(cpumask);
 +		}
 +	}
 +
 +	return NOTIFY_OK;
 +}
 +
-+static struct notifier_block watchdog_housekeeping_nb = {
-+	.notifier_call = watchdog_housekeeping_reconfigure,
++static struct notifier_block wq_housekeeping_nb = {
++	.notifier_call = wq_housekeeping_reconfigure,
 +};
 +
- void __init lockup_detector_init(void)
+ void __init workqueue_init(void)
  {
- 	if (tick_nohz_full_enabled())
-@@ -1373,4 +1396,5 @@ void __init lockup_detector_init(void)
- 		allow_lockup_detector_init_retry = true;
+ 	struct workqueue_struct *wq;
+@@ -7964,6 +8002,7 @@ void __init workqueue_init(void)
  
- 	lockup_detector_setup();
-+	housekeeping_register_notifier(&watchdog_housekeeping_nb);
+ 	wq_online = true;
+ 	wq_watchdog_init();
++	housekeeping_register_notifier(&wq_housekeeping_nb);
  }
+ 
+ /*
 
 -- 
 2.51.0
