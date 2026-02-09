@@ -1,152 +1,158 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532AC36BCE2;
-	Mon,  9 Feb 2026 16:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770655254; cv=none; b=joVRHYuWgTaib8Vu0VI6mqEJHwVZBDyyB37frd6K6J73y3zXP7QamByRFtkvG6dPawl11vK+oYAGJKCTA4/j25eMQ6325M2OkYjwgyUhzpb6u9n2F8JvAnR0rDg+lAdDiIf/qmbZvvBYrxhTdvgrWTPGq30UNOMayVEpZ2457Eo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770655254; c=relaxed/simple;
-	bh=lARbkbntWGtDhEXk7qoEkyADOxVnx/IfWT0MwbUrRfg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LTd7k+T9XnddTwhVtOHLfWCNNiRyFsgoWMy818Dhconn7LfsTzBaNc44tKNFhg7CGPd2anF7e3eOzml5ZCwdQSF7SPqptcJerOnPxtry1xJNUMBIWBiVgEnFbAV8BXOcilMdKToa0f2F5Nwg2oAlBhHhGQuhcJWxbBckOWNjrkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KU8YatN0; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3468238A70F
+	for <rcu@vger.kernel.org>; Mon,  9 Feb 2026 18:45:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770662711; cv=pass; b=J7vSmSZcYdxVAmdvFOtbMQD5FAaTv/frHsl21hb9DX6V2Z7vieBnm6ZVqZCx4nCWNVDijQdi/CLgOj9OCo254b6zzEFkFL8a/TO9c73JTUFb0KqAmCDc2+GqHpHu4v9K6pecB+7VblrRUKpr85wfclA4dD2zm8G/zh5ZPkkVEgI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770662711; c=relaxed/simple;
+	bh=sqMmVYyUYpGstje1wz4BDAufr1v680Vkae44YBH6/xk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r8yhLUFWSEeeYkcGO3ym4nrz5vN0DGqjEYfTBdeMDo+Zzmsdob1lR2ia3fvZlkHCuKTZSR1ruZp5Q9NvTu238RYF5Z0moxWob2Q5xiwmX1w4ZIQdmhYyr+nYHx/2rd1PhEAVLvvviJJFRFeEd1yxa7QuD3TiJ5T107gHFDoVqZU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LSXQtycm; arc=pass smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KU8YatN0"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D61B5C116C6;
-	Mon,  9 Feb 2026 16:40:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770655253;
-	bh=lARbkbntWGtDhEXk7qoEkyADOxVnx/IfWT0MwbUrRfg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=KU8YatN0GgoQMo7vohVj2AM0aYLcVLS/YXu4d+X/qih4Q0bXpBGmIdAQGhd52fL0m
-	 AvSZ3CV69yKen1Ps18FYU9lFPKRqYD3TQkCV+jfOmlZJWLpGcu6oaJ+ZMmwHNeDFTb
-	 42QL5pAXF9rECbSelJ8TvZ/yvgISxF0oWlekqTNvxZZKtyQQ4HyyG0eqbf+2pWbUnx
-	 c3pIlN1X0ZHIwcRvpDDd7P5I9Yh7wabs+2uH/wf7i7xL1qH5PNokxUj5hGvpxiFbz3
-	 AKnvuGfyO2wvuXq5cMWa1GhpP4XKSJRqnqtE68gHOzU0heiqQE0Ik6f8E1K1RH/VpK
-	 pcTPZqbL46OUw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5AFA1CE1105; Mon,  9 Feb 2026 08:40:53 -0800 (PST)
-Date: Mon, 9 Feb 2026 08:40:53 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Michal Hocko <mhocko@kernel.org>, Hao Li <hao.li@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Amery Hung <ameryhung@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Dave Chinner <david@fromorbit.com>,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Muchun Song <muchun.song@linux.dev>, rcu@vger.kernel.org,
-	linux-mm@kvack.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 0/7] k[v]free_rcu() improvements
-Message-ID: <14281c04-a14d-43ef-8433-a780230838c2@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260206093410.160622-1-harry.yoo@oracle.com>
- <3069e76d-5c7a-4c3f-9b83-43ed1700b95f@paulmck-laptop>
- <aYaTluYIbqt7xSC5@hyeyoo>
- <a49009d1-a0f7-4111-a148-c94fc6e506b9@paulmck-laptop>
- <aYmivqZKklspsa_8@hyeyoo>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LSXQtycm"
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-436263e31abso3299282f8f.1
+        for <rcu@vger.kernel.org>; Mon, 09 Feb 2026 10:45:10 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1770662709; cv=none;
+        d=google.com; s=arc-20240605;
+        b=g7ZA+8XEPtl7K50qVHpEUAI7jw5+TYSXVV0UQInsPZY9G1Nmc8EFUehFiMrSGiTzBI
+         w9SrJ5++NFAYN47cs2DeXJb9lyv3PlaO28BXit+k8o4dJHWkBnvFTGzc6mmjU73hEWln
+         W65/wsuVsjxis1hocbjfavsvIJaqast/REAwyP3qVDcMMb710IOdYRzoN+TcC5xdB/go
+         fQR9d4QOmW8+TIr5EMVEJ6gEE7vxSHdoBtfWXzyo5U5oNPXYtmQiXfoF4+yEtSDpWq9v
+         F4C5aAA1FTARGoTFuO4cs9rC+WfNWsOGMWtpP7EhrP6Chl87rR39EjGGZ+BdenulRj78
+         iPgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=sqMmVYyUYpGstje1wz4BDAufr1v680Vkae44YBH6/xk=;
+        fh=H7uomwcc+/NZAyF7nkLxE9ddI9q2Sw8HEXYzeaxtCSk=;
+        b=PvF/nmKW6gtb89vj97j+toIMj46Y1JvxInuyCMleRC8FuRNfpBu6iLejf3fzQ+w9U0
+         7Kgd7RYfPXma+TwxjxrYJ92sYU6HPiBJPYxUfANl1M7Ta+uz+xMBKi0HQiHW3vvLtbtj
+         4tEgiNN883j4Isf70AHXXcCRsNU1NbmCwq/17OI3YzZzFCGDm6lH3vlKNEmgUdIDJJ6A
+         QsfM9sGrWRJeHYmJY9gCoYuXIanuUWy7V4WNAfCF5tXU9gxzKQ7HLsBBOyOPDKn8VFo3
+         PEHJBsGoenfK8a3a+GQv3e+L2dmU62yfl52keOnzVjHctD85Or9qEPT+8Ay7GxbBcf3j
+         cxJQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1770662709; x=1771267509; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sqMmVYyUYpGstje1wz4BDAufr1v680Vkae44YBH6/xk=;
+        b=LSXQtycmfmH1+2BCwo+kK1vOtMr0AbFNbYR0G518XT49Hk9usOWDH6MR1QcBK3QVjZ
+         gUnzpUJRsiks6wnWYUigoGGA4pi27cQmoM7L60DIpMUoDubOnoEFmdLHvbNYAwgUobUN
+         vqmUKsdnHCHfFLoh15g6mz0MQ38Z0nrAWCLJFp5HkzdbEDGlqrD27c5XNkc2PjYk3K1a
+         aeVN2M9Hq77LHdGmJuqxa4OUBcYIjtHFFBtsMhBlXAZBDv/6lKgDXBhOGWPiW8Mf34Fl
+         kpa2WVe1BjdaDwWI8AUR+n3D/qSKMwiUsyE9cs9jvP9BedO9ropUNEteGdSHZG4GvrqZ
+         Dc6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770662709; x=1771267509;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=sqMmVYyUYpGstje1wz4BDAufr1v680Vkae44YBH6/xk=;
+        b=F01dX0VpWvMMgNaVllMXaUbFr2rNBOb/Nyr6WzAYF4PSoKbEN2nbashUwDnJ3XfvPm
+         QXZV7ZrxAmlOPPkJLxpPFHvlGxFFC091a+yzEM5/eaxwDUMc9TqSe8MY4ZAtUHGKZebg
+         OXkpprYHuV/5xGWJ4KL9KA1R2SR3PQ0z1aMy64OazVYU9looJ1kHKSScSqRcgDL6C2+j
+         g1wl1Sb0oHR3ds2F9a9A9u57WJXZdQAT5S4fllbf3aBbZTP9k5r3uqeEaNzC/ovSZIFl
+         gXkr9mDWCBbuh+/YvUevlSXa1/KvUKgsmpAoHKzxEt+r0A2djAxCTFvaX43ij7ax6FMM
+         9Ajg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdqEQ9BOv+eazAbcrFMpa+U954GqHJVFDGhP7FJg1AiHz2CWGlBctRqqxVhuYBlzpr/0s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxrBCYYc9sjL+jjSKgVGPWImYQNXM5wI5JZA206dRpp7oSlKiQ2
+	HFffBqa9RgDaa0yuAmEh2m9YW+459hNJA52jhC6n524jHdR0KQ4P3p2NrkEcNT57yetJRUOV5bf
+	76c7QlW84PxpFXPqIslC+XZVb9S03mq0=
+X-Gm-Gg: AZuq6aKqsve/cKAKV1Y4lgjTDD7Tvv3e1dnNtUyMVcJsgqXsfdTsTH/qVAmPppovoN5
+	TS5SdjmoF3bh0tr5HQgqGGNmFtd4SSjyp2NgTU1VXq7TAtj5PYoVHDq0hPOWCKe68f90Px3ciVE
+	E/MMfAiP/u/UNOzjz3dW0g1/47ujkzeHy8ztJEZkJlU3RILl+++u53WWsm7DlXyVOAP+9Q0wCO+
+	AZUihgMptTFie4Pf5w7sMzOgdHG+FUCQdoliYUiT3/K96n6dDVRMBscvm0rRsPrcTMJGdC64OlN
+	s/vapzXJRkyMeJcGXxtHgRL0CRgLJVaZlRnrmtAK8s9b/tIeiXzO3BTaPEzmoIFF2XZt784qjCZ
+	7D6XDiNQA5Z3VAg==
+X-Received: by 2002:a05:6000:2285:b0:435:a0ca:bdce with SMTP id
+ ffacd0b85a97d-436293b6d91mr19720428f8f.63.1770662709254; Mon, 09 Feb 2026
+ 10:45:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aYmivqZKklspsa_8@hyeyoo>
+References: <20260206093410.160622-1-harry.yoo@oracle.com> <20260206093410.160622-5-harry.yoo@oracle.com>
+ <CAADnVQ+rNYeb5Pu2aHRVc+hYDeAF5t19MVwzXsyn2HkOuLPNLg@mail.gmail.com> <ebc2eb77-722d-4966-8376-f11607de53c2@suse.cz>
+In-Reply-To: <ebc2eb77-722d-4966-8376-f11607de53c2@suse.cz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 9 Feb 2026 10:44:57 -0800
+X-Gm-Features: AZwV_QhH5LLE8iIvDB7Twan7nOo9YGILnwQ7hrloMARMGnUSRQtlNRKOCRmQfK8
+Message-ID: <CAADnVQ+q3QPqNdV3MuysQJQgxSS4g6CV+VzN2=UqCPHw7xq=SQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/7] mm/slab: free a bit in enum objexts_flags
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Harry Yoo <harry.yoo@oracle.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@kernel.org>, Hao Li <hao.li@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Amery Hung <ameryhung@gmail.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+	Dave Chinner <david@fromorbit.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
+	Muchun Song <muchun.song@linux.dev>, rcu@vger.kernel.org, linux-mm <linux-mm@kvack.org>, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 09, 2026 at 06:02:54PM +0900, Harry Yoo wrote:
-> On Fri, Feb 06, 2026 at 05:33:52PM -0800, Paul E. McKenney wrote:
-> > On Sat, Feb 07, 2026 at 10:21:26AM +0900, Harry Yoo wrote:
-> > > On Fri, Feb 06, 2026 at 04:16:46PM -0800, Paul E. McKenney wrote:
-> > > > On Fri, Feb 06, 2026 at 06:34:03PM +0900, Harry Yoo wrote:
-> > > > > These are a few improvements for k[v]free_rcu() API, which were suggested
-> > > > > by Alexei Starovoitov.
-> > > > > 
-> > > > > [ To kmemleak folks: I'm going to teach delete_object_full() and
-> > > > >   paint_ptr() to ignore cases when the object does not exist.
-> > > > >   Could you please let me know if the way it's done in patch 3
-> > > > >   looks good? Only part 2 is relevant to you. ]
-> > > > 
-> > > > On what commit should I apply this series?
-> > > 
-> > > It's based on Vlastimil's slab/for-next:
-> > > 
-> > > bc33906024eb Merge branch 'slab/for-7.0/sheaves' into slab/for-next
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/log/?h=slab/for-next
-> > > 
-> > > > I get conflicts on top of -rcu
-> > > > (no surprise there) and build errors on top of next-20260205.
-> > > 
-> > > Interesting, I don't get build errors when applied it on top of next-20260205.
-> > 
-> > Here you go!
-> > 
-> > Here is my repeat-by for these build errors, perhaps a .config issue
-> > or difference:
-> > 
-> > tools/testing/selftests/rcutorture/bin/torture.sh --do-none --do-kvfree --do-kasan
-> 
-> Haha, thanks! The kernel test robot reported the same issue on the
-> weekend. It seems I forgot to include <linux/irq_work.h> and it's
-> accidentally included on my environment.
-> 
-> Adding #include <linux/irq_work.h> in mm/slab_common.c fixes this.
-> Will adjust next time I post it, thanks!
+On Mon, Feb 9, 2026 at 1:38=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wro=
+te:
+>
+> On 2/6/26 21:09, Alexei Starovoitov wrote:
+> > On Fri, Feb 6, 2026 at 1:35=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com>=
+ wrote:
+> >>
+> >> Since kfree() now supports freeing objects allocated with
+> >> kmalloc_nolock(), free one bit in enum object_flags.
+> >>
+> >> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+> >
+> > For patches 3 and 4:
+> >
+> > Acked-by: Alexei Starovoitov <ast@kernel.org>
+> >
+> > I think patches 3 and 4 are ready.
+> > Would be great to land them for this merge window
+> > (if Vlastimil agrees).
+>
+> We should have an ack from Catalin for kmemleak. Also better take them ou=
+t
+> of the RFC and send as 2 non-rfc patches first, with cc list reduced
+> accordingly etc.
+>
+> Then I can put them to -next and try sending second merge window PR next
+> week. Can you also point to any bug reports that would be fixed? (that yo=
+u
+> had to work around or delay merging or something) that would help the
+> argument to not wait a cycle.
 
-Very good, and I will give the update another spin.
+Here is one example:
+https://lore.kernel.org/all/20251114201329.3275875-1-ameryhung@gmail.com/
 
-							Thanx, Paul
+"
+RFC v1 tried to switch to kmalloc_nolock() unconditionally. However,
+as there is substantial performance loss in socket local storage due to
+1) defer_free() in kfree_nolock() and 2) no kfree_rcu() batching,
+replacing kzalloc() is postponed until necessary improvements in mm
+land.
+"
 
-> -- 
-> Cheers,
-> Harry / Hyeonggon
-> 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > mm/slab_common.c:1475:21: error: implicit declaration of function ‘IRQ_WORK_INIT’; did you mean ‘IRQ_WORK_VECTOR’? [-Werror=implicit-function-declaration]
-> >  1475 |         .irq_work = IRQ_WORK_INIT(defer_kfree_rcu),
-> >       |                     ^~~~~~~~~~~~~
-> >       |                     IRQ_WORK_VECTOR
-> > mm/slab_common.c:1475:21: error: initialization of ‘struct llist_node *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
-> > mm/slab_common.c:1475:21: note: (near initialization for ‘krc.irq_work.node.llist.next’)
-> > mm/slab_common.c:1475:21: error: initializer element is not constant
-> > mm/slab_common.c:1475:21: note: (near initialization for ‘krc.irq_work.node.llist.next’)
-> >   CC      drivers/tty/pty.o
-> > mm/slab_common.c:1477:17: error: implicit declaration of function ‘IRQ_WORK_INIT_LAZY’ [-Werror=implicit-function-declaration]
-> >  1477 |                 IRQ_WORK_INIT_LAZY(sched_monitor_irq_work),
-> >       |                 ^~~~~~~~~~~~~~~~~~
-> > mm/slab_common.c:1477:17: error: initialization of ‘struct llist_node *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
-> > mm/slab_common.c:1477:17: note: (near initialization for ‘krc.sched_monitor_irq_work.node.llist.next’)
-> > mm/slab_common.c:1477:17: error: initializer element is not constant
-> > mm/slab_common.c:1477:17: note: (near initialization for ‘krc.sched_monitor_irq_work.node.llist.next’)
-> >   CC      drivers/tty/tty_audit.o
-> >   CC      net/ethtool/eee.o
-> > mm/slab_common.c: In function ‘kvfree_call_rcu_ptr’:
-> > mm/slab_common.c:2097:25: error: implicit declaration of function ‘irq_work_queue’; did you mean ‘drain_workqueue’? [-Werror=implicit-function-declaration]
-> >  2097 |                         irq_work_queue(&krcp->sched_monitor_irq_work);
-> >       |                         ^~~~~~~~~~~~~~
-> >       |                         drain_workqueue
-> > 
+This patch addresses both 1 and 2. The freeing is done in a good context.
+The only reason we use kfree_nolock() and suffer from defer_free and
+lack of batching is due to kmalloc_nolock()->kfree_nolock() matching
+requirement. So this small patch is a big deal.
+We will be able to use kmalloc_nolock() -> kfree_rcu().
