@@ -1,400 +1,248 @@
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E2DD2DF130
-	for <rcu@vger.kernel.org>; Wed, 11 Feb 2026 10:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770805019; cv=none; b=tZ1ynha7gvJz9drKHeg2A+pWUrHxwUcSRA+k7oXnZUXkENmXZoe5Wio0zMQOagwFifnIL5kseaNG3ng+uAug4knmx/UdotSFGNzeEGgc8PZuqwZj30eG3oAwGXB1Kb4SyiQjwFtat/QMyLQ4e3ib9Sa5K1yk/V7QDWwy9RbIsFQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770805019; c=relaxed/simple;
-	bh=f9T/vTqYrhfenx3QQeCmgFCY6qkXEsi9qXftduN0ey4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B1ibWf5sNIdE40769QVsxPRnx6Pb9T7CevBJbZajjB6VAx5Q2H2p1hKf67svL+htVysISUz+czkt6/wNOQdmfHSkikIy7XPibuvishgBjLoHWV61MKOU8G38s9SKPUFYQj4KBdg/oXNaeId2UncI8cdNBSx+IJxAABzcz9rnAFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VWtKqGP3; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B55DD2DC781;
+	Wed, 11 Feb 2026 10:46:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770806762; cv=fail; b=RRHNyajOQByrKe/mLJ7cVQFIyjPh8/twUZblln/anJgWeUs3rMbkvbSYr5Bzz83qA2z2KUysnUESwQQcXCZl4rb+aWpr8Gyh6nBkfmdUGN2MEANi259rhcYNrA74rLwV+D08YuLhoo5dTAAaLhdntWrhq5pVqUedVkOZ/EUCpi4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770806762; c=relaxed/simple;
+	bh=Ytycuo+4WTeqp5IrNCGCe4yRzxVz8lPzvEE3awuaio4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=qaN1Co3gMvpi2JRb951zJlgGoYrvhmaar6tXiO1qvV3FxkMmruT88W1uEXg3d8HjqIlB1gNvbwiUdNebYGRWp7uvaTjSsRzdabLJYY5nsbpO6lJC78SGLMj58TFYCyMUzSAiymzj1JVq55f+YYzqfGkXw70IvjMi623rUART9ZU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=XBlfOWne; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=SO01Nhnu; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VWtKqGP3"
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-59e4993e00aso1789373e87.3
-        for <rcu@vger.kernel.org>; Wed, 11 Feb 2026 02:16:56 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="XBlfOWne";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="SO01Nhnu"
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61B9uori2124780;
+	Wed, 11 Feb 2026 10:45:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=corp-2025-04-25; bh=vPFRCMI8keKlNL3y8M
+	wOSZzNwbHM/045SJJGxx8NlKY=; b=XBlfOWneddaeEhyRHdY4be767OFkgrfpGL
+	jb935iIjjQO3do9JgAr5uYyLfUPBLJadn9BCzQo4q2EhmhUgpIbyreF+Etmx7KY1
+	J9mb7z49EKyxzpz9znG9bwXtmVoB3TYH1pFiVjsSHF2TV9bhWwYanBKWBfwedNjv
+	1G5o1hNwteIqYyP/XBufNr34oL+XxdQ5QBgAPVSuxVRXf0yhtQG4snOCCPSnpqfj
+	Ky8uZgzxZzTCO3DU8zAIw+60FJAYf7rmQGnR1Vg9s1TbTsE/OCsgv2x8SVvE6lOh
+	ad1rL0oMHZ26ZnsoP1jyfnBGj9tcYLtLnnuzfbVKLH0b/LvzWCcA==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4c7rxu2qwj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 11 Feb 2026 10:45:18 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 61B8DeKV030039;
+	Wed, 11 Feb 2026 10:45:17 GMT
+Received: from ph8pr06cu001.outbound.protection.outlook.com (mail-westus3azon11012006.outbound.protection.outlook.com [40.107.209.6])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4c8229dg8e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 11 Feb 2026 10:45:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=F6gzfBYmM+MmOP/uljhyJzRP45Zdg2FpHJ+3zhKdrLyXeFHaKCqwZjyBO26NnZtRuoSyVcWKr4Du3ED5t19KVy550xRss3Bgb/6GjCqOp3rLwumVRj6VaOYY55RiAXQZ+cAJy7Z9nQLiJpZm1CFWzzBD4J770MJ4x7YGruLJ30Z9F+reyOyGSiboMawkX1GcnU5ELJqY8yx3ihXABTvJCUIzoQqrCtlOobsemLfPQcPYA6ThyK5HPXGDLwL+YF1nr5negQWDlKRAnnJiMBOon7JjOuIV+sETYXYXdK5P1OZ3DsDlGMawANAreL/NoX04Gx5SstOpWfbmSHvQZ5y33Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vPFRCMI8keKlNL3y8MwOSZzNwbHM/045SJJGxx8NlKY=;
+ b=ISSzSK64GdH5Wvx6GBQaW/uWajmROVLm5gQ0G18dCylDz0+1p/8EOgadsPMqASCO9zF00yPwHcwZTvKsDJ9zmfE+DoWLAfMLeA3nBFwgS/Y61HvoYiRH9XeK3MeGKrgj2gVQtsz+0rWqifIqsYSNWvCyBBMEeBysCcSQDNkxJgw7G4/1bQFyJAh+kL2MXt1hKtPgmppXxavWL6XrpjAHeTFluELPQduKTmRrMG8iqlxpdr8t5WGXoNApjUEtgZw/XLlw1X9cEamg7/Fz+b+xgrbSd4SdF4fyHufh/ZLsiv3ClhhzpA84OTJOR9q46FaBE2vpDCyCiTqZuz84EjnocA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770805014; x=1771409814; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/bpz+fockC+/IFBLnG8M7+Uj5fbJveug8L/H6uDYPmc=;
-        b=VWtKqGP3tknm+cuHufk5ufd8UBykkcT+Wjb4XC1G5AD30RocQX2KQ+sbnCNY5P6WTu
-         hzkDMUGkPRlpopwYxcVpFjhlCIEciYkvrgfem8S5ISv75kP8bvb+Gcr40sCHzTU0yZpR
-         ZK02LWSEzprc59Ld5zwCcBWB/zT81N3zwP5/QD2z/9k40qqntnPGZ/hH8Nytu7bF2w+3
-         NiGbhrPwZu6k+C1SnDxFFuE8n33yyKlhQMUJ2A9UBvagI3/qNDPi+u6VraRz6TRu2xo/
-         0AdnNIR6uqvjjYq1rLFy8zb9mpznNn4LjXlzl1ZU57KohvTZqAAaf8DFXkPtfkNfHuF5
-         Hu5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770805014; x=1771409814;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/bpz+fockC+/IFBLnG8M7+Uj5fbJveug8L/H6uDYPmc=;
-        b=J59kH0b+NbemTgrmbRQqzD5dkkPFoYbfR/QVvFOhroCl3hfgc66gLoM/h4OI+W0tGN
-         W9tiPhyo5ZNNrS0dovrHW0XqEMkQeNEB0BXMNp6JhUMgmLy96x8Plb3MIbMyWUmR/QIF
-         EjgZAkMw0tEFM3WGMUu6tuOsobaFY7oWxf2WEqxiKM6Y4IL2jx5mIz8WwkC9gy0NnHHm
-         0IUnD3aoFnULR0Z85RFqqUeE03kym0RdFKOZPBrlGyTdpFDZd7K02dkuWJa0o5UxUkZG
-         fIgkHnEj7UddKp354F8/L5XHnvUfLdYCcusJeQXI3HrrPqyra4B2NLzYeDxjd2lMNN9k
-         /qoA==
-X-Forwarded-Encrypted: i=1; AJvYcCX9DSTfH+nWpfpTtjzpk+FuwkaRkC0ICz2yTaVutJT9IO4C7KlTuVA4eadERTTj0TdVAEA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzquOG8l+CL6ks+EbnURi92AXCb3SDeuX34UA1GQlHPQGPFl5q3
-	u04EWZmCk7HAfrYe+nkRPbJkM+M4WLJbeHJTrdUHNief6hapLIdU5oAn
-X-Gm-Gg: AZuq6aKFmUHBBevxjo1vqClH5ZMNh9vmk1NGubJHcOmC9CR1nCcrj/BYT493+vsxDWY
-	tY3DoSzkMmC8hpKQfOD0JXcivCyJu3asn2RU0RBlHZDlLmbbs5RZPl5Ny9SgXQaQnr1elbePQvy
-	CM17yWnv9WXxol5jhaiiia2Yvt7COyUCiWtWHVUU7G1nSZsfjXKcoC0akQoALRofinZxOFH+BFx
-	X1zHMsHUPXxCq+3zcGeWa3CUGNB8Ok0zlrbJ/SmMvwdkkbeYu5ZHzv0FR40tfa1+z8ewcbhtywF
-	MaEDJ/YFZIo3VBiQOQt5yGyXy0b8AM/3x+/vyyKyoWY+SZUHKUAQEHUWwtPeXymeYcEXhlnNBOy
-	MoMEXu73+xeQPKwRWjfwFpdOgstPKej0ooYlsgZ32FmdGXfZeOCqq1L1U6fWdBcDq
-X-Received: by 2002:a05:6512:b1b:b0:59b:7185:757d with SMTP id 2adb3069b0e04-59e4516eaffmr5943215e87.50.1770805014074;
-        Wed, 11 Feb 2026 02:16:54 -0800 (PST)
-Received: from milan ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59e5f56312csm254910e87.6.2026.02.11.02.16.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Feb 2026 02:16:53 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@milan>
-Date: Wed, 11 Feb 2026 11:16:51 +0100
-To: Harry Yoo <harry.yoo@oracle.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vPFRCMI8keKlNL3y8MwOSZzNwbHM/045SJJGxx8NlKY=;
+ b=SO01NhnuBm3hDGLyEXe6TcBC7cwhmmhmTRSfZsJ3RQIKXBl7HJg0N/7WhMDo/PpkaKyOh1QcF1SxH2aUEZf7QlfeKVknoR6katR6Lr9CdloofFnOV4c7CPpvH1a+kr0eVRWzUnhSo6CeCxrj5EXibTMvh0Orh4jyu1qbYVFzvZc=
+Received: from DS0PR10MB7341.namprd10.prod.outlook.com (2603:10b6:8:f8::22) by
+ DS7PR10MB7155.namprd10.prod.outlook.com (2603:10b6:8:e0::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9611.10; Wed, 11 Feb 2026 10:45:14 +0000
+Received: from DS0PR10MB7341.namprd10.prod.outlook.com
+ ([fe80::81bc:4372:aeda:f71d]) by DS0PR10MB7341.namprd10.prod.outlook.com
+ ([fe80::81bc:4372:aeda:f71d%5]) with mapi id 15.20.9611.008; Wed, 11 Feb 2026
+ 10:45:14 +0000
+Date: Wed, 11 Feb 2026 19:44:37 +0900
+From: Harry Yoo <harry.yoo@oracle.com>
+To: Uladzislau Rezki <urezki@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Michal Hocko <mhocko@kernel.org>, Hao Li <hao.li@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Amery Hung <ameryhung@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Dave Chinner <david@fromorbit.com>,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Muchun Song <muchun.song@linux.dev>, rcu@vger.kernel.org,
-	linux-mm@kvack.org, bpf@vger.kernel.org
+        Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@gentwo.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeel.butt@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>, Hao Li <hao.li@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Puranjay Mohan <puranjay@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+        Joel Fernandes <joelagnelf@nvidia.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+        Dave Chinner <david@fromorbit.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Muchun Song <muchun.song@linux.dev>, rcu@vger.kernel.org,
+        linux-mm@kvack.org, bpf@vger.kernel.org
 Subject: Re: [RFC PATCH 1/7] mm/slab: introduce k[v]free_rcu() with struct
  rcu_ptr
-Message-ID: <aYxXE6CC0XQr1KNK@milan>
+Message-ID: <aYxdleYc7_TWj9To@hyeyoo>
 References: <20260206093410.160622-1-harry.yoo@oracle.com>
  <20260206093410.160622-2-harry.yoo@oracle.com>
+ <aYxXE6CC0XQr1KNK@milan>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aYxXE6CC0XQr1KNK@milan>
+X-ClientProxiedBy: SL2PR03CA0007.apcprd03.prod.outlook.com
+ (2603:1096:100:55::19) To CH3PR10MB7329.namprd10.prod.outlook.com
+ (2603:10b6:610:12c::16)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260206093410.160622-2-harry.yoo@oracle.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR10MB7341:EE_|DS7PR10MB7155:EE_
+X-MS-Office365-Filtering-Correlation-Id: e6639333-c10b-4c56-0fa0-08de695a9b3b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?f1IVNsGApxag8bNKA2poc09AxV2SCWSwmZGae6p4SzKqq+cx5FEvRe9wyIaw?=
+ =?us-ascii?Q?L20u2NAx/jE9u+NGi2r3PzOMTVWUWJEDw5XQzukbWBJ1b0gwR3SlnWdQsiSL?=
+ =?us-ascii?Q?/5X1HaQaug+yBRYWWC0kbZBF3ir8stC2fGfv71KzOfykyEkB2CxN1HCtZ8P7?=
+ =?us-ascii?Q?Wu+y4K0ItLrIUURSnWcONycB/oK41qDoQ7v+xqUDQOVCKbyGUpS2SbpMcMIS?=
+ =?us-ascii?Q?V0Jr4um6CMWvnnL/j9hLDfwp0I2jE1gE5eRWaJaY4vrlocaIbWJ+VYvNeYfM?=
+ =?us-ascii?Q?fb7FzM27x8XYNb41p4QKROJN+sRlIlpfdKC4xq64a3m9mExjNjigA5Pi0Plk?=
+ =?us-ascii?Q?azMA5rXexXaCX5g9Xb6YguqE3lS54W85youuvOnb9CyJom96Cu3Ozi0mPZ64?=
+ =?us-ascii?Q?VRUsMm/ZGGDnYROgfijW5j6e3XFQvcUQZVM0SmfgIbvftfa1PUloVRDtQG0g?=
+ =?us-ascii?Q?ZEHQfRErdWBC7+Esoge2eM++ilFZZjx3lEzsElDPitVk3MnDYPiM5wGk/o/x?=
+ =?us-ascii?Q?nO48nbjQE/1zrW4stWK9w+Ov/8bXYjEMHsRkoznTU5X7JSnP5x/b/Xo0iwJb?=
+ =?us-ascii?Q?Kqdgxm0iVhT2RyUm0sf6i+0McY5f69tQf8R/zezcoVYKSU5qaZICfw5poZiO?=
+ =?us-ascii?Q?gQA3Y2WtnLzEBPHrxOFYlTXG+qU+dmQgZNi9mu1jHnNUQ70lavFMbKVineWr?=
+ =?us-ascii?Q?U9T41QO5C+JYugpPamrmnbu/dCbj5Po9JCUpRLL34i6NHHG/sBJMDEs8hHzf?=
+ =?us-ascii?Q?Ghwi/FtNcNXg5Obf0k4zOXCrZJJluQhXaq1qqiZPh6fg9+33+xE70QxknxZ4?=
+ =?us-ascii?Q?QAiAccut68qUzC+G3imEl8bGkC95pSaYFaMyNQUW8NZkIcxVs/gmdRM4edcM?=
+ =?us-ascii?Q?qdvAKJXBl9jYLrNf3Vsl+H/MccycxNlqtD4wFGhWleoWteVTWvxo4/frRgzX?=
+ =?us-ascii?Q?b5n7lJv7riTZXXxAuKM6keR7ayutyyvlMa3lMHKKQXK/5HSRAc76wDU0BsXv?=
+ =?us-ascii?Q?xmijABYTSzVgo6P9+dpifnUeTYxPCu+AG3oVz/cLIqrTCXoJ3XrYUyvOgLBI?=
+ =?us-ascii?Q?C6kofxLsivHLkLfb2AjymAiFTBmKZHtVQjzlJs3reHCTcqOFTzV2JVBHPuj1?=
+ =?us-ascii?Q?dzifdfT8KqgMNed5z1WpL89PFCU0rtTTCLriXjLLygRMPcyI8C6cgJ06K247?=
+ =?us-ascii?Q?yOo8r/F3wjlE+Nek+28NRbwNZmlox+AnMyn6CFErvL50LYv+fn8ZUQ58HEFU?=
+ =?us-ascii?Q?cgKI9B6P6X2dBqZJA+2sf7/wbYVsPAOzdYoBLf0xhILcr9wWVyQHbvZpfoy4?=
+ =?us-ascii?Q?vQGtUJrjPtyKqrMHWeKRo/tuXhe0FNxafg21eD6emFbCPCqlBvQaiZYO91az?=
+ =?us-ascii?Q?cHHkQA9cPzNaUuT9xOd2BY+okj+0bifCvQ2VPL0i23QuyCe9AChnPFghOati?=
+ =?us-ascii?Q?iIPc1F1Tp1jGMnOUe/THrPaykxIzGCqgqfjzg4APTNrDzYIR48c+ZWRZguYP?=
+ =?us-ascii?Q?jondaOaFeanQjQQztTwdyEaorQfND/98m2AuxhNYu4rG/o9elsOzEgbxFwS1?=
+ =?us-ascii?Q?1SS8oefD5jGPWxosNeQ=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7341.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Sh5WDXFgWARJFE/oQmmEdISUpxULUe7HZaoilG5V2wnhKVwD4pw/BwRuabbi?=
+ =?us-ascii?Q?4JEkxkTs9k3Gu3Mj6zNFpS5e2IYdVxrMaE1pPlVVh9gFxinXhZ9I2rzi+yOb?=
+ =?us-ascii?Q?l6RxXSZJ3HYvy9FPXWjIZ6S/g6W1yKIVjVG3xbjmyDMTJYge97AJR2QpfMbu?=
+ =?us-ascii?Q?71lfE93j5VTXTUAQ3H867PbaijchwxL6dEE6xxKvbKu5JJgSA9uLDxFqPZxL?=
+ =?us-ascii?Q?yjqobRwy8IqeZNGDrGLsen6NqphfAEZDQ24Zx5idfYpzZkujEGrPtHRHYYsq?=
+ =?us-ascii?Q?JpL9arIglGcap7/ipy0BWpS88FLfq7vU4JvEGBxPpQCSn+GRp6FyaFLDJyoU?=
+ =?us-ascii?Q?qFE8XPSGTyBjFAVBXRKZzNYm0LDvmxNmGVQdWrTd8rTaR4mWxNfHzKwAwyzt?=
+ =?us-ascii?Q?Bn01f6PSx+c12MbYZdSAUucPwOvATjdIYE9JhSFelZrEwXhbGbE4lhZmJwa4?=
+ =?us-ascii?Q?klxTAgn4Hxm5mGxRxz/dE6bmxTIjwrbHaVTuV7LhfXCL+yFUcHTmD5TUJOmt?=
+ =?us-ascii?Q?nQsg7cWmJ+w5XhGjpaSngdu060BHfAtOhS/9tHTgVKyWdedu1DVNehpIplIV?=
+ =?us-ascii?Q?5N7lVf0CRJ6vZqjoie4hFmhazAiFtjfi8w8o++W3T9QUz+YVHIVxigSSWwqe?=
+ =?us-ascii?Q?S/2DO8cHACMebcr+as3Tn1Dw/tSiRa+uZTLvqqn65vAqZiaUKdHLNvVmI0HM?=
+ =?us-ascii?Q?2BEJ9ctAi7Cd8oR+pJ25gq56U+9GuWuz6j9zxa4TpOlf4mutjWka8MUVvh2C?=
+ =?us-ascii?Q?3HXcHLOW7hRG/2dMg9uEanAt4dZ62Goc6E5roSgef2jG50zZCJtRiKWcAt3x?=
+ =?us-ascii?Q?8mhk2MMkwIuRKkJG9JQYf4inJIeeC5a/ojoSQHk/SUpkt5rUsA72krBwooHa?=
+ =?us-ascii?Q?2+68n3C+/vJw76AWjblb/hCcTE+1ZBX1ZMkTqQKZ1e/GEqQemOdV3aLz3TYY?=
+ =?us-ascii?Q?Lvs/b6GUdz9Tpb1z49+OnNrngz990tCUwtEajNgtcXQ+sUqD5L2aqJ5rDfVX?=
+ =?us-ascii?Q?E92VMPbNZPC1xQjl5NaXou+oAnLZ0AO9e6YArFjCc1/lp+UHw8C9oMwt8sqd?=
+ =?us-ascii?Q?RwE9PEEfN8r1WpHFit8Xc4z18lXaD56p8OgTh/VxH+0Hq+AtHuosBup0pB6x?=
+ =?us-ascii?Q?JQsw7ILhai9uHKsM50YtSh8/QYtw0lnJRODhsaNdIBUUBY1WqOJwLrNY+WoW?=
+ =?us-ascii?Q?a7qY5URkWPHRjB1WSHVlgxV8sMqd967FLQcWpHNEQsec6f3ecgNRZn7ev1dr?=
+ =?us-ascii?Q?FH7om1WPKR7qlG44NsDOWeAU92n/p8Aw58SRwZTlt08WaP2bRtDISmpv3oTd?=
+ =?us-ascii?Q?Rtbd7JLZdlppvw9ns6BX/kh7GQdx/939OBcrDQo/tWnZJHHrqDRPhXvdDQtc?=
+ =?us-ascii?Q?ua9GaahaUZ3fUVbXTuxC0d/uixBgnvjBwLJGDG0a3+MMUFBnt+oZWV2ou42v?=
+ =?us-ascii?Q?sLG66NJLfXrAQa6fxuAZUPyfBFgHqwyhFmLV0JAfqj1i7WWkIhZup77KWcHG?=
+ =?us-ascii?Q?l+1/KM3nNgG+ApNWTHFY20gd5Bgaytrh7PPNs0OqjZ9tMBm44rJNqeLT4AL0?=
+ =?us-ascii?Q?CnEfMIn4XNX6G5mBj/TOK8jNx2KiLQSsfGVDFt/XQY4TSC96vSf0wlPWV+Ws?=
+ =?us-ascii?Q?1zVzbwxeXU+O2ydO/9xPQ1iqwWKloNZUQ9Ixt2gjYbIuuBessW1RHbHve6RI?=
+ =?us-ascii?Q?D5eAtWvZPTcBGbSv/jqDKWXH0AkUWEin7FxD/GPiQawHdz0r2Gxtt9lxQSyl?=
+ =?us-ascii?Q?OcSrjrbc1w=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	Zx3Y/SLWBZxxFknxKERDLY51MZdmF6nwvAUnwC329V3/kVBCQdwqOIJ9qwBd+fcnI29itkzUkxeVqGsPsQvKC49KsX/ZNy1VExp9chPjNXJj1ROGyU9t16JqdvouSxJ7OTfDdprkp0x29ujY3mpNBFdlcAQpEJnVTG+p0lDXHU+ftGQEsBPeLvD83vGtzHRL0zCH/Uw3rnoggiqF2/oqI6gUSFrA1wKQWoaZO2Jyb62V/ZzNFFey+ISOvF6DzeemxaLWhT4X4taZ68Qi44cFVHY2wXozewPKaLe1TYFV69I1PYsVQsrjq+IEgZJf1YnhenhXLaEco06wcD6bQaYJmYrVHOn5/zgIItjGKpO2F2rJM5WN4Oqyt7y1b7WFf1QJH2xZqP+BRHy488SCai94n/eKRrvbHGnjXq9YP5oaB6/hnweeaFJCuAbDx8HVFdZsy/t6qoLRKnK+mxE+lEbRs8/eh/K4YReg4MKy1ay78OKcav1SspOHpmz2ax8bSnvTkYz5UVUrku8sQMgJdOL1xslAKLSewg587M76ffWkku3k7t1Bt6gyQ7zzWyoQxZl7TTVERwYM46fXwJIN6Mw3ySLH6rlMIyLwG8Zks7TQxRc=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6639333-c10b-4c56-0fa0-08de695a9b3b
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2026 10:45:14.1895
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EZxQQdbkNR3my6IjRSWRXYcCfofl/RGJNfknB0RiF0jLmAAMt4QN9FmvRoWQEz5iqkPkUxkWUvRQ89f75MyQ8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB7155
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-10_03,2026-02-10_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ mlxlogscore=790 malwarescore=0 phishscore=0 suspectscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2601150000 definitions=main-2602110088
+X-Proofpoint-GUID: 3k-hAd2sTjcTcsjMJpd4BjSUtdBJSCTP
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjExMDA4OCBTYWx0ZWRfX7akFBcK3wikC
+ u3nt83UWcXj6KvT506677tSq6HHv6mHSbKqKgYb+v+vg9uIZvFenOgF6arP9Ux3k/S4Aapif3RR
+ 7CpMya8RItywhG9wZ0wAAY4qlvMlHwN9K59N+KkNpbUuQb0L9koC0hP/xhpxfJmulirmWshl+2l
+ v1EP8YZg3VZwfxVlKGbSE9f72TPoCKoG2p40GrLjtrNQOb8NIiHtPPayZN15DOckWssNlGmV9B8
+ CNt382KCihm3Vlsel3cLx8LBoKL70GwpWXUKEikQYQnTG9hTFGIGxguFICeAuJRhoWrpxMqyRaJ
+ ZgXH0r+8Ad8/UZl4KVsaaLNISZltpiw9E8+msAG/emLZejAsLOWXgbVkazyWajEsLzO1+uWenVH
+ 5d/fuVSfeZYCwdND4EO22iTtXXmL0E7SyhXNN/zgSbql+WG+Q/TVBOMA/qcHjlCtWohNw9nyS5w
+ U6vqP8Lf1EX8cygYX3g==
+X-Proofpoint-ORIG-GUID: 3k-hAd2sTjcTcsjMJpd4BjSUtdBJSCTP
+X-Authority-Analysis: v=2.4 cv=Y6f1cxeN c=1 sm=1 tr=0 ts=698c5dbe cx=c_pps
+ a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
+ a=HzLeVaNsDn8A:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=MO3VOf5dGC1ijp0DBRYA:9
+ a=CjuIK1q_8ugA:10
 
-On Fri, Feb 06, 2026 at 06:34:04PM +0900, Harry Yoo wrote:
-> k[v]free_rcu() repurposes two fields of struct rcu_head: 'func' to store
-> the start address of the object, and 'next' to link objects.
-> 
-> However, using 'func' to store the start address is unnecessary:
-> 
->   1. slab can get the start address from the address of struct rcu_head
->      field via nearest_obj(), and
-> 
->   2. vmalloc and large kmalloc can get the start address by aligning
->      down the address of the struct rcu_head field to the page boundary.
-> 
-> Therefore, allow an 8-byte (on 64-bit) field (of a new type called
-> struct rcu_ptr) to be used with k[v]free_rcu() with two arguments.
-> 
-> Some users use both call_rcu() and k[v]free_rcu() to process callbacks
-> (e.g., maple tree), so it makes sense to have struct rcu_head field
-> to handle both cases. However, many users that simply free objects via
-> kvfree_rcu() can save one pointer by using struct rcu_ptr instead of
-> struct rcu_head.
-> 
-> Note that struct rcu_ptr is a single pointer only when
-> CONFIG_KVFREE_RCU_BATCHED=y. To keep kvfree_rcu() implementation minimal
-> when CONFIG_KVFREE_RCU_BATCHED is disabled, struct rcu_ptr is the size
-> as struct rcu_head, and the implementation of kvfree_rcu() remains
-> unchanged in that configuration.
-> 
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
-> ---
->  include/linux/rcupdate.h | 61 +++++++++++++++++++++++++++-------------
->  include/linux/types.h    |  9 ++++++
->  mm/slab_common.c         | 40 +++++++++++++++-----------
->  3 files changed, 75 insertions(+), 35 deletions(-)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index c5b30054cd01..8924edf7e8c1 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -1059,22 +1059,30 @@ static inline void rcu_read_unlock_migrate(void)
->  /**
->   * kfree_rcu() - kfree an object after a grace period.
->   * @ptr: pointer to kfree for double-argument invocations.
-> - * @rhf: the name of the struct rcu_head within the type of @ptr.
-> + * @rf: the name of the struct rcu_head or struct rcu_ptr within the type of @ptr.
->   *
->   * Many rcu callbacks functions just call kfree() on the base structure.
->   * These functions are trivial, but their size adds up, and furthermore
->   * when they are used in a kernel module, that module must invoke the
->   * high-latency rcu_barrier() function at module-unload time.
-> + * The kfree_rcu() function handles this issue by batching.
->   *
-> - * The kfree_rcu() function handles this issue. In order to have a universal
-> - * callback function handling different offsets of rcu_head, the callback needs
-> - * to determine the starting address of the freed object, which can be a large
-> - * kmalloc or vmalloc allocation. To allow simply aligning the pointer down to
-> - * page boundary for those, only offsets up to 4095 bytes can be accommodated.
-> - * If the offset is larger than 4095 bytes, a compile-time error will
-> - * be generated in kvfree_rcu_arg_2(). If this error is triggered, you can
-> - * either fall back to use of call_rcu() or rearrange the structure to
-> - * position the rcu_head structure into the first 4096 bytes.
-> + * Typically, struct rcu_head is used to process RCU callbacks, but it requires
-> + * two pointers. However, since kfree_rcu() uses kfree() as the callback
-> + * function, it can process callbacks with struct rcu_ptr, which is only
-> + * one pointer in size (unless !CONFIG_KVFREE_RCU_BATCHED).
-> + *
-> + * The type of @rf can be either struct rcu_head or struct rcu_ptr, and when
-> + * possible, it is recommended to use struct rcu_ptr due to its smaller size.
-> + *
-> + * In order to have a universal callback function handling different offsets
-> + * of @rf, the callback needs to determine the starting address of the freed
-> + * object, which can be a large kmalloc or vmalloc allocation. To allow simply
-> + * aligning the pointer down to page boundary for those, only offsets up to
-> + * 4095 bytes can be accommodated. If the offset is larger than 4095 bytes,
-> + * a compile-time error will be generated in kvfree_rcu_arg_2().
-> + * If this error is triggered, you can either fall back to use of call_rcu()
-> + * or rearrange the structure to position @rf into the first 4096 bytes.
->   *
->   * The object to be freed can be allocated either by kmalloc() or
->   * kmem_cache_alloc().
-> @@ -1084,8 +1092,8 @@ static inline void rcu_read_unlock_migrate(void)
->   * The BUILD_BUG_ON check must not involve any function calls, hence the
->   * checks are done in macros here.
->   */
-> -#define kfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
-> -#define kvfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
-> +#define kfree_rcu(ptr, rf) kvfree_rcu_arg_2(ptr, rf)
-> +#define kvfree_rcu(ptr, rf) kvfree_rcu_arg_2(ptr, rf)
->  
->  /**
->   * kfree_rcu_mightsleep() - kfree an object after a grace period.
-> @@ -1107,22 +1115,37 @@ static inline void rcu_read_unlock_migrate(void)
->  #define kfree_rcu_mightsleep(ptr) kvfree_rcu_arg_1(ptr)
->  #define kvfree_rcu_mightsleep(ptr) kvfree_rcu_arg_1(ptr)
->  
-> -/*
-> - * In mm/slab_common.c, no suitable header to include here.
-> - */
-> -void kvfree_call_rcu(struct rcu_head *head, void *ptr);
-> +
-> +#ifdef CONFIG_KVFREE_RCU_BATCHED
-> +void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr);
-> +#define kvfree_call_rcu(head, ptr) \
-> +	_Generic((head), \
-> +		struct rcu_head *: kvfree_call_rcu_ptr,		\
-> +		struct rcu_ptr *: kvfree_call_rcu_ptr,		\
-> +		void *: kvfree_call_rcu_ptr			\
-> +	)((struct rcu_ptr *)(head), (ptr))
-> +#else
-> +void kvfree_call_rcu_head(struct rcu_head *head, void *ptr);
-> +static_assert(sizeof(struct rcu_head) == sizeof(struct rcu_ptr));
-> +#define kvfree_call_rcu(head, ptr) \
-> +	_Generic((head), \
-> +		struct rcu_head *: kvfree_call_rcu_head,	\
-> +		struct rcu_ptr *: kvfree_call_rcu_head,		\
-> +		void *: kvfree_call_rcu_head			\
-> +	)((struct rcu_head *)(head), (ptr))
-> +#endif
->  
->  /*
->   * The BUILD_BUG_ON() makes sure the rcu_head offset can be handled. See the
->   * comment of kfree_rcu() for details.
->   */
-> -#define kvfree_rcu_arg_2(ptr, rhf)					\
-> +#define kvfree_rcu_arg_2(ptr, rf)					\
->  do {									\
->  	typeof (ptr) ___p = (ptr);					\
->  									\
->  	if (___p) {							\
-> -		BUILD_BUG_ON(offsetof(typeof(*(ptr)), rhf) >= 4096);	\
-> -		kvfree_call_rcu(&((___p)->rhf), (void *) (___p));	\
-> +		BUILD_BUG_ON(offsetof(typeof(*(ptr)), rf) >= 4096);	\
-> +		kvfree_call_rcu(&((___p)->rf), (void *) (___p));	\
->  	}								\
->  } while (0)
->  
-> diff --git a/include/linux/types.h b/include/linux/types.h
-> index d4437e9c452c..e5596ebab29c 100644
-> --- a/include/linux/types.h
-> +++ b/include/linux/types.h
-> @@ -245,6 +245,15 @@ struct callback_head {
->  } __attribute__((aligned(sizeof(void *))));
->  #define rcu_head callback_head
->  
-> +
-> +struct rcu_ptr {
-> +#ifdef CONFIG_KVFREE_RCU_BATCHED
-> +	struct rcu_ptr *next;
-> +#else
-> +	struct callback_head;
-> +#endif
-> +} __attribute__((aligned(sizeof(void *))));
-> +
->  typedef void (*rcu_callback_t)(struct rcu_head *head);
->  typedef void (*call_rcu_func_t)(struct rcu_head *head, rcu_callback_t func);
->  
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index d5a70a831a2a..3ec99a5463d3 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1265,7 +1265,7 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
->  
->  #ifndef CONFIG_KVFREE_RCU_BATCHED
->  
-> -void kvfree_call_rcu(struct rcu_head *head, void *ptr)
-> +void kvfree_call_rcu_head(struct rcu_head *head, void *ptr)
->  {
->  	if (head) {
->  		kasan_record_aux_stack(ptr);
-> @@ -1278,7 +1278,7 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
->  	synchronize_rcu();
->  	kvfree(ptr);
->  }
-> -EXPORT_SYMBOL_GPL(kvfree_call_rcu);
-> +EXPORT_SYMBOL_GPL(kvfree_call_rcu_head);
->  
->  void __init kvfree_rcu_init(void)
->  {
-> @@ -1346,7 +1346,7 @@ struct kvfree_rcu_bulk_data {
->  
->  struct kfree_rcu_cpu_work {
->  	struct rcu_work rcu_work;
-> -	struct rcu_head *head_free;
-> +	struct rcu_ptr *head_free;
->  	struct rcu_gp_oldstate head_free_gp_snap;
->  	struct list_head bulk_head_free[FREE_N_CHANNELS];
->  	struct kfree_rcu_cpu *krcp;
-> @@ -1381,8 +1381,7 @@ struct kfree_rcu_cpu_work {
->   */
->  struct kfree_rcu_cpu {
->  	// Objects queued on a linked list
-> -	// through their rcu_head structures.
-> -	struct rcu_head *head;
-> +	struct rcu_ptr *head;
->  	unsigned long head_gp_snap;
->  	atomic_t head_count;
->  
-> @@ -1523,18 +1522,28 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
->  }
->  
->  static void
-> -kvfree_rcu_list(struct rcu_head *head)
-> +kvfree_rcu_list(struct rcu_ptr *head)
->  {
-> -	struct rcu_head *next;
-> +	struct rcu_ptr *next;
->  
->  	for (; head; head = next) {
-> -		void *ptr = (void *) head->func;
-> -		unsigned long offset = (void *) head - ptr;
-> +		void *ptr;
-> +		unsigned long offset;
-> +		struct slab *slab;
-> +
-> +		slab = virt_to_slab(head);
-> +		if (is_vmalloc_addr(head) || !slab)
-> +			ptr = (void *)PAGE_ALIGN_DOWN((unsigned long)head);
-> +		else
-> +			ptr = nearest_obj(slab->slab_cache, slab, head);
-> +		offset = (void *)head - ptr;
->  
->  		next = head->next;
->  		debug_rcu_head_unqueue((struct rcu_head *)ptr);
->  		rcu_lock_acquire(&rcu_callback_map);
-> -		trace_rcu_invoke_kvfree_callback("slab", head, offset);
-> +		trace_rcu_invoke_kvfree_callback("slab",
-> +						(struct rcu_head *)head,
-> +						offset);
->  
->  		kvfree(ptr);
->  
-> @@ -1552,7 +1561,7 @@ static void kfree_rcu_work(struct work_struct *work)
->  	unsigned long flags;
->  	struct kvfree_rcu_bulk_data *bnode, *n;
->  	struct list_head bulk_head[FREE_N_CHANNELS];
-> -	struct rcu_head *head;
-> +	struct rcu_ptr *head;
->  	struct kfree_rcu_cpu *krcp;
->  	struct kfree_rcu_cpu_work *krwp;
->  	struct rcu_gp_oldstate head_gp_snap;
-> @@ -1675,7 +1684,7 @@ kvfree_rcu_drain_ready(struct kfree_rcu_cpu *krcp)
->  {
->  	struct list_head bulk_ready[FREE_N_CHANNELS];
->  	struct kvfree_rcu_bulk_data *bnode, *n;
-> -	struct rcu_head *head_ready = NULL;
-> +	struct rcu_ptr *head_ready = NULL;
->  	unsigned long flags;
->  	int i;
->  
-> @@ -1938,7 +1947,7 @@ void __init kfree_rcu_scheduler_running(void)
->   * be free'd in workqueue context. This allows us to: batch requests together to
->   * reduce the number of grace periods during heavy kfree_rcu()/kvfree_rcu() load.
->   */
-> -void kvfree_call_rcu(struct rcu_head *head, void *ptr)
-> +void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr)
->  {
->  	unsigned long flags;
->  	struct kfree_rcu_cpu *krcp;
-> @@ -1960,7 +1969,7 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
->  	// Queue the object but don't yet schedule the batch.
->  	if (debug_rcu_head_queue(ptr)) {
->  		// Probable double kfree_rcu(), just leak.
-> -		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
-> +		WARN_ONCE(1, "%s(): Double-freed call. rcu_ptr %p\n",
->  			  __func__, head);
->  
->  		// Mark as success and leave.
-> @@ -1976,7 +1985,6 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
->  			// Inline if kvfree_rcu(one_arg) call.
->  			goto unlock_return;
->  
-> -		head->func = ptr;
->  		head->next = krcp->head;
->  		WRITE_ONCE(krcp->head, head);
->  		atomic_inc(&krcp->head_count);
-> @@ -2012,7 +2020,7 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
->  		kvfree(ptr);
->  	}
->  }
-> -EXPORT_SYMBOL_GPL(kvfree_call_rcu);
-> +EXPORT_SYMBOL_GPL(kvfree_call_rcu_ptr);
->  
->  static inline void __kvfree_rcu_barrier(void)
->  {
-> -- 
-> 2.43.0
-> 
-If this is supposed to be invoked from NMI, should we better just detect
-such context in the kvfree_call_rcu()? There are lot of "allow_spin" checks
-which make it easy to get lost.
+On Wed, Feb 11, 2026 at 11:16:51AM +0100, Uladzislau Rezki wrote:
+> If this is supposed to be invoked from NMI, should we better just detect
+> such context in the kvfree_call_rcu()? There are lot of "allow_spin" checks
+> which make it easy to get lost.
 
-As i see you maintain llist and the idea is simply to re-enter to the
-kvfree_rcu() again with allow-spin=true, since then it will be "normal"
-context.
+Detecting if it's NMI might be okay, but IIUC re-entrancy requirement
+not only comes from NMI but also from attaching bpf programs to
+kernel functions, something like:
 
---
-Uladzislau Rezki
+"Run a BPF program whenever queue_delayed_work() is called,
+ ... and the BPF program somehow frees memory via kfree_rcu_nolock()".
+
+Then, by the time the kernel calls queue_delayed_work() while holding
+krcp->lock, it run the BPF program and calls kfree_rcu_nolock(),
+it is not allowed to spin on krcp->lock.
+
+It is hard to detect if it can spin in this case.
+
+> As i see you maintain llist and the idea is simply to re-enter to the
+> kvfree_rcu() again with allow-spin=true, since then it will be "normal"
+> context.
+
+It tries to acquire the lock and add it to krcp->head, but if somebody
+is already holding the lock, it re-runs kvfree_rcu() with irq work.
+
+> --
+> Uladzislau Rezki
+
+-- 
+Cheers,
+Harry / Hyeonggon
