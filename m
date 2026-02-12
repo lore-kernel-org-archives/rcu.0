@@ -1,249 +1,222 @@
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F7414A8E;
-	Thu, 12 Feb 2026 03:04:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770865483; cv=fail; b=kFeiSykuW7yAXMIRQqCvduDrZqvlHylpPQPlXs5X6vJVqm6kwm8lW8EkvMTYJ3KmWQ0ls6+UT5ynkbNLEHltBffW0J7Jh3ctAKlwULPX01tZAvGlw1vYrK3yKmtvsdtPR4Qa2MSpmNxQDmfvdKWnKWzO4gxYlpC3kKDruCrPgdo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770865483; c=relaxed/simple;
-	bh=3uCLPOIqnyK9BhdFkDfMbkB5HykOwwBwLNq/frl/Qp0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=MYCuYEbS4BlYIhsup1yEfrlOaX+bmlSE7gm0imXKrItPNJTzRzpdSZgHTZjTHW1X6jnxhNQ4hkFbiSVGG1QMMKrM2TFriMVZXxuer414eGSQSxo9wbFmoXGkaFs+fwo3iu1YW4r3CulC9lUjcSJB6rtL9guy8pc3CIokAyGTbgI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Ra5XWimd; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=aWMdPqaN; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BDF296BD2
+	for <rcu@vger.kernel.org>; Thu, 12 Feb 2026 11:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770897170; cv=none; b=qG2dhSXmYbP/c+OxaEvzqDvfySOiHm3tLmOUKCOiCyrGZAWHUvKkw21qUok1fwkHmxRl4YvI7X3YO+NTy8yB396IwIUczuDtPpfvb8EdvtqFaTtCVoGwjkiLRtGrl5vzTtH6yedk3MjsGPs96IZ8aYPcha4QLoIYkNPWydBCzyY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770897170; c=relaxed/simple;
+	bh=oZCwxZFbPyOmZfBu3WIYhoEi/x2pOksv8HVb1Vi5CUQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=puDtc+GT/YgahvVycbgfLJJwb1g9X0sDQjAqCSs+m7qd28R4hnBFcyvViYyybYIC5rsD+rqr7Q4LmS5nHFdaptQZMuEPwswu8ZBoUpz3HsJI+giY+AdbVyIRsxmAeLTAPaGy6/naB10j6F0uLZPCpV0lOMqS8I04Paid2wwigmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dOJDguNi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FETaJrdp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dOJDguNi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FETaJrdp; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Ra5XWimd";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="aWMdPqaN"
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61C2Ckbi3840221;
-	Thu, 12 Feb 2026 02:59:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=CwOuyNXzTpfl6wU3T0
-	pjeqZtVBKQtZvgL4jdgT8MR/Q=; b=Ra5XWimd9tURFtTeovRDzZtHG9nvr5YQjn
-	lxmg4Y5BS3utTOw4jYDdZwO/3JCcKm/HkeexMaRxHSZZMcGoL0ydoxf6Nh00w86/
-	Hn42PoUhW7a+1gRSHBcEK53XBUHASmFA5tW4YZtxj6sO9ZtnJdO6nRT2Vv1vxQOW
-	K5FQwedpFk6cQMlIObZlL3lQZ9nI/MPLF6haQthwQfNiF8WvtqcH4+UCPiTW4JZm
-	Cxwl3JAmF2gv0Syc4sGQyG8SAbxE3z20cAWDEQuF7z3fHWFRdHHWpPxMEIOHFnod
-	aTnKPBBKOHIJ2kBQp7lXZm6v0eF7U7K3NKnG056FfY6XEszRGN8w==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4c5xfp75u0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 12 Feb 2026 02:59:04 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 61C0UEg0030032;
-	Thu, 12 Feb 2026 02:59:03 GMT
-Received: from sn4pr2101cu001.outbound.protection.outlook.com (mail-southcentralusazon11012026.outbound.protection.outlook.com [40.93.195.26])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4c822acc1p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 12 Feb 2026 02:59:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ANEKMNHpUdIuiH4AzERfh/MoJb0QqAnhudNfIjI5xiMnxsSaveBisNRJ2vj1udAJn1AXG8y2k9eJs0cAJD5EyRHNY6wc16AL1RVLi8y1tJQm/f2WnI57dTwEwTmLkKzr6249bJfEFDfHqmctBzcDg4ka7hk0+jdh3Se4eJ+nw+5PnOLblIEsNpzPmZW0RjZKDRS7TeciRvJxqYMBbX56hpxX4WuRHC+Umoz3M3+X/Z7WymiCIpn0LkOxjn7hL/nfkCKOALcvhqUkQMX7B8eFulTE5arr9DxEOSoY17CKZNlQHEXjiLmHeRV4Q+ISLpVUvHrWxRCDXMYuFB6QVeb2nQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CwOuyNXzTpfl6wU3T0pjeqZtVBKQtZvgL4jdgT8MR/Q=;
- b=VYm8fNURcRh1XRObObq6RLJ3Lq+gJUT29XDiUme3H72sfHYNteO5iLYNoAm/FGmPTBdHovcJp344/iFVVd2Bv8s8Rf2iavycDJj8Theh5tH+kpvSOC8cSVTqFhwU4vUwjHbC91Sw7dVB/H81KRjAW6NISkBZW4BVqxeXZ3S3efSxKdlqYo0rAPCpscHVUyLafYQlZ6XfkMF7KoBT2iqWCCOzE+j7VFUs799ZWx1gs+Mz+EsMGP4We97F1HqkLSLvqDHiWurVmIvwJjzMJUxyHVBBA50gdXZJS+WL98bihhro1tmiZWGE1Lk7qmkDQ3uqfmBZ/Xjkh9PSx359EYGi9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CwOuyNXzTpfl6wU3T0pjeqZtVBKQtZvgL4jdgT8MR/Q=;
- b=aWMdPqaNGCll/9Prj4y90D/om6KQRNaXcyJ9gGMqBNciHuzCWppgVcOlcVvtlo8wEjSQkTw/xR2iU/Ya8q89Xga+xmEuQLxGUYMxXUWprSCl+CgHcUpzp3iKYvheYMdUBtltAB5wGRy6Hbtc2IZgYH+ZTJusE4VTN0JXvEd4eRQ=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by IA0PR10MB7133.namprd10.prod.outlook.com (2603:10b6:208:400::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9611.10; Thu, 12 Feb
- 2026 02:59:00 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71%7]) with mapi id 15.20.9611.008; Thu, 12 Feb 2026
- 02:59:00 +0000
-Date: Thu, 12 Feb 2026 11:58:46 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc: Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeel.butt@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>, Hao Li <hao.li@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Puranjay Mohan <puranjay@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, Amery Hung <ameryhung@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-        Joel Fernandes <joelagnelf@nvidia.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
-        Dave Chinner <david@fromorbit.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Muchun Song <muchun.song@linux.dev>, rcu@vger.kernel.org,
-        linux-mm@kvack.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 6/7] mm/slab: introduce kfree_rcu_nolock()
-Message-ID: <aY1B5l-_sSyIEP0J@hyeyoo>
-References: <20260206093410.160622-1-harry.yoo@oracle.com>
- <20260206093410.160622-7-harry.yoo@oracle.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260206093410.160622-7-harry.yoo@oracle.com>
-X-ClientProxiedBy: SL2P216CA0222.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:18::7) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dOJDguNi";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FETaJrdp";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dOJDguNi";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FETaJrdp"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2B9A03E715;
+	Thu, 12 Feb 2026 11:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1770897167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=6BtatYL7qZoefALqhfawiID8QpBEFM7BqhWoHgJI9ME=;
+	b=dOJDguNibBHlqGRcY8iRFHO340/vZF8fnbpv2bhnqIkJgrrUQ1MPeHZ07/XsSFT22W31d5
+	JKL3dCBtsXQtwopquZOnVu7QkOivS7a7UzjqBI0ND1KwZTM1gVtUbHtYQgHjKaDnzuev+9
+	e/9NgW8oamDL0JCaU+tVnoBdEDOp4GY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1770897167;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=6BtatYL7qZoefALqhfawiID8QpBEFM7BqhWoHgJI9ME=;
+	b=FETaJrdpoHbblRB0eKOdfzPBy31/chvwhDnf4qq8rGIiiMhGnZungNWbbypJAiponZLASB
+	+sopEjeSDTnX9yDA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dOJDguNi;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FETaJrdp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1770897167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=6BtatYL7qZoefALqhfawiID8QpBEFM7BqhWoHgJI9ME=;
+	b=dOJDguNibBHlqGRcY8iRFHO340/vZF8fnbpv2bhnqIkJgrrUQ1MPeHZ07/XsSFT22W31d5
+	JKL3dCBtsXQtwopquZOnVu7QkOivS7a7UzjqBI0ND1KwZTM1gVtUbHtYQgHjKaDnzuev+9
+	e/9NgW8oamDL0JCaU+tVnoBdEDOp4GY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1770897167;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=6BtatYL7qZoefALqhfawiID8QpBEFM7BqhWoHgJI9ME=;
+	b=FETaJrdpoHbblRB0eKOdfzPBy31/chvwhDnf4qq8rGIiiMhGnZungNWbbypJAiponZLASB
+	+sopEjeSDTnX9yDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DF6C53EA62;
+	Thu, 12 Feb 2026 11:52:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 9+vXNA6/jWlXcwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 12 Feb 2026 11:52:46 +0000
+Message-ID: <3b9be1ce-ef00-481e-b36d-5b843be55d10@suse.cz>
+Date: Thu, 12 Feb 2026 12:52:46 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|IA0PR10MB7133:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4bea8530-38c6-473d-f87e-08de69e2aaf6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?M7YItHznbIqESipZH6eR2wb212sOP8xhDrlxets+2V0vNLD/NfhhvE6ENhzB?=
- =?us-ascii?Q?9sVj9ORZAOwraSS/Fq8KvdRLbnLVXcZqUvEX9QYOPGkG4EF86pK9DRDQvnGn?=
- =?us-ascii?Q?khyz89hA1VOnh9/WPcXoigjuBQ6VqvkzZgxi6vD/oRU0cK34z6Z42xyR4LTl?=
- =?us-ascii?Q?0nHFicvusDNazdpaHIIxtZMleAPKoJG8WwFssdNmhTIvLeNUC4Nfx6mcSIDP?=
- =?us-ascii?Q?FxYH9yOgAZ9DjPMx5dRlwVSujw8an30r7Lxdv00bdv7YKNAEdZnbYzepmdpt?=
- =?us-ascii?Q?Jz8vv89ObqsxAKH+IrVxFJKwAyKR06a7/W9azKqixrzVHsf1R2yOzuqDYM3C?=
- =?us-ascii?Q?0qE25SsaE2KLXC+v+Ulg/45aS/Hurd8BcJIAGFlQfx+j0sx50aHfy38Q/ZIH?=
- =?us-ascii?Q?I+llgtvDJn/OWzgixkY8myiiUE+iU3ZW7ZxOxRCAOuFTbiS0T5kHDN4RSdWR?=
- =?us-ascii?Q?3nkg7rRgOUkbd/ez6PjD+h6lhTPxDbi49XtxYFV55tMW2tJo7q+eHqIcb+1r?=
- =?us-ascii?Q?9c0jY8FywiPx/b8BrXQTcyS0YOLihgGFXRtWYVeZXvVD/0lsWET+Z6S2BnEm?=
- =?us-ascii?Q?S3gr9GMNbbiKZyzpdBpcyf4gJfF+dZfK//BeJcEUNjBvkhWwCKWdgOV5ZBWj?=
- =?us-ascii?Q?5pjcvyt92yPZmmGU/DvrE1lLgdX07nxY24+CNMk6ESQRYsHPjOfPrkNfH9eT?=
- =?us-ascii?Q?jClTSgEYC6o6bKYDFblw5Bvt5+bCi9ZNr1uS8veYem3/OkenD2RICdVTev5P?=
- =?us-ascii?Q?STibFcTSd50W0B0kIf/uSRzhvWzCdM5IFfMZqEw9mj81HRZc7mZFSIvRw7hc?=
- =?us-ascii?Q?jI7XRICXSoFtQDz9Rn74r4euy3eRg9atNKkRZhmw+bRJYKvss1iiZvYAa7DO?=
- =?us-ascii?Q?6VHC2nJs2npWQV3klP0w53283v04rpgUPDaSJqnCoLO/7gwtJ3uCG6eHKPTp?=
- =?us-ascii?Q?GK0eWCiKmr3B8WS/+SYPGIr3iSJXyLvkyecK55auqc1yYyTH705Nis+Z84Dz?=
- =?us-ascii?Q?EjXihULS8XLJi6VQbTaAY/5WCnkPPQ5bAu8R2q5D7sxA1b91R6ET0Vdiw2Dd?=
- =?us-ascii?Q?7wUKb2hf1A92uEX5I2pMbhrTSb2DaCrrshJgAWFz9g7q3FrmpGA/xKCm+2rn?=
- =?us-ascii?Q?HTGwwMY8j4YiFTys836R96My2/rbR6iFugDJdGjRiSwvC+xhXtQFifecFbiQ?=
- =?us-ascii?Q?dBVWl7fLt28McPYBmv5eyYM8irQUn9l42ireQ3Y+ez7PA3N0m00ijXt1hC5j?=
- =?us-ascii?Q?FzLA5mvpzPYOx/jKzNOAT0poRSvmUUrHVewv22dX5FlESnl6netnfjlI8ERg?=
- =?us-ascii?Q?7o+noUzgfycCVUYBsg/C0alV3r1OLNs248GqFvfCqrl/LAquD4OlS4QOoUYy?=
- =?us-ascii?Q?YtDL/9qxTpxq6UxBOQCnY+YsrOi8ZDzxEwiUfJId9OqbYgnpCO/VsLzwQ7Tu?=
- =?us-ascii?Q?w7HfK6HWVUA8AolUpGmFnBqGLEguUk1gS1mfKk8k70ePmhUWH7xdR3FhmRLt?=
- =?us-ascii?Q?05JCV4nf0KGYTaJz9RQrrUyxHqC3VPu3z+Xj2c4lvdq6JUhZdvwueMW434OI?=
- =?us-ascii?Q?u7htaKd/DUGFFttulf4=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?lTeZeQg7UTngB0ic/3nHrtG/AsG8Jgu7LEBoxEe4wjcOTta23JnZhXq+7z11?=
- =?us-ascii?Q?BULuEhV3+eDXIwKR1oMygofs0Gk7dc23k+qM4mhh5TfvxszQSRaq0qAEQr13?=
- =?us-ascii?Q?ZlI0ZZGpoZzPThYOJAMeTW1Sa3rGuqoSCNsgoJBltY571NGnVEDL3nj0pNJJ?=
- =?us-ascii?Q?qIik/+CHtNKVKiYa3abzUe7Bp0SNS/WqpuRzSvTEktvbWE69qZF2SL62ihI4?=
- =?us-ascii?Q?frCI2n9jOY2SQRMqTOhENMUJSiGfwpHC+QJnqOvSJ+7A8AO67/QQFbR4jloj?=
- =?us-ascii?Q?o0Tw1dtmPwxllF0kYw0XbCGZOWvODl6PGxqCLuBaM2SEr0O7chNRxv8R9Ugr?=
- =?us-ascii?Q?Qa+hdVsCN+D6kSXN7Lph75OPzu8PGfJNIMggTFKBhzWtLZBgyKASdXuyJ4rP?=
- =?us-ascii?Q?as1oVVof8WoD2JgLJeMInulYEE8yf2Qo2hiSBGTgjLvOOLsmZUrE8HEfoGEU?=
- =?us-ascii?Q?J5RiMT6/bqIcwQAiOcbfeneFAF9WwbIcq91eBtcsIz8uRMsMYdkioAm1Hwy1?=
- =?us-ascii?Q?BsjifjjZskNyNKapXndeOidDhCI06d4lgF5zxbEQC1taZrFeTL+NcdA2vs2t?=
- =?us-ascii?Q?eNwRhGMwHXbnGFf2VH8F9+zKniUDUHwbztgfHgz+jFuFA8Ib0PL89rnipROF?=
- =?us-ascii?Q?er8LWn4RcKhHPDGemK70tE5t7s+VrpvdV0RBMrDiXEV2xNUTcIeKmjl73X/Q?=
- =?us-ascii?Q?2J2/VX8vJWQ2/9R2Zy1s3Mnh333MfYAeuh9PKBpDRf7OvVWCHnVLHRz0FMCZ?=
- =?us-ascii?Q?VNKhNYJHWBLlYUuVYxgPwCB92kGN9VewrnEigma7dOzMunhtumRSKODAnRvo?=
- =?us-ascii?Q?inY1DN9Rh8cqI5g9nUkMUozt/l6RaSia5LZmwHMCZ8jaWPPNAA9nhB52Nbkw?=
- =?us-ascii?Q?xdD3xZbpiPei6z+B26JHX/RC8noDv/EDCB31GCd5kXLy+0iVbOW9AQwgTP8M?=
- =?us-ascii?Q?ntPCmTyqiffLcjkIG/RJtki4oc1mnF9LoDdiuGFzJiGHeBg3nYh/PKpmV5tM?=
- =?us-ascii?Q?E8vFfcxlQCNZySLK+xJNi0eO+WRtWT+UPXpo/bDFFW/jMRTRglJB1dtXDkxC?=
- =?us-ascii?Q?Pft0AMwAZvoFtJrEul0Iopkz9lXZIWq3Psh5R1lfgH7GpIEnOEgc+j8gK3Tm?=
- =?us-ascii?Q?YH4+CMsZK+gYKVhL1+nVHuX5QVkjiE0/Rj26Wa/WpEvY/spxMzu9HuNnO27+?=
- =?us-ascii?Q?BbDFM9MYP8gM2aZN8YI02YKmotZ7+fYvoA7od8uoXfOCIDLW5NDW1ONYgzQY?=
- =?us-ascii?Q?YQwsAsy6m2l1b5GNGaHfc1U4dm2YBObvEqCeswc35b7/S3hseOxKD+nTZMUY?=
- =?us-ascii?Q?XZg9iNUXzggYDzGfpQfL22NfoUsVhaNIOiqX05RQ6Kvkcz5w1JEI3tlpa9zf?=
- =?us-ascii?Q?l6kkQ1JiMpYLq0NFyjYpXEm5369PuWYONl2vTiewmeyT4hfNRqbrvxlcFRlG?=
- =?us-ascii?Q?phZkeXvnAO4/01PHVzeo3vIaMKx6UHL8pLd0n8QnmK/RsVjNJZmNDOAOnMF1?=
- =?us-ascii?Q?TGOr8AiqWLqm24tueAUU1RdIFOSTJdwLhVvefBOt8R9oB6xKITYDYADC7f2r?=
- =?us-ascii?Q?Pm4E4HDsjt9CkcSqQ8kXkyLIQ4GUtFdrEO+5S70+Qo13y7AQlLR5ufAmChc8?=
- =?us-ascii?Q?j3dz5DzS2oDWCvMYETN4F3L1O3q8CzMrIP06iFVKBgjSg3a4X4q1C0WRCQiA?=
- =?us-ascii?Q?yTEIISgaJ1NT5EcieyllgihBWxhPNEjrp6cpT+k5gpj506kfipE1rAzsLdun?=
- =?us-ascii?Q?5VEp+wjF6Q=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	b1otpTH+gJdL/T5k2hDDwUd0xdpMLeecn0iYbELCG3hj4NwLyQCbQnlO7arg/X00cCnknFyP9fBDiGgSk2aBMkCk+plqGRG3mV4nO/NlZiIlij41F8YWr8Kk9GePbauLFzu4y1HfB/Czf12bpGTV9yEYJL6siAxzVM8JSi7eeAfvxoXC+RXuqMbKzaBTihzlICoHsHL6iApkjMsPg9lEXJ1JuTBVJbVW1qYYvSA+XHzu6wVCOxMZHPcQgRFTPS9wz2S+Q+3kuMfMGLyZ2KBmxIeegSH4aJhyaFzPtgKsQg7sGCRBtPw/T4qe7XEHfRZMCQ69QZRawfyS1l7VJEFpLebjEHGhaAOvdXIPRUsKOpjsh4E2XlMjdYOrMd4P3ywo05Uj8S1WE+JlI72HQVRGsaOEgC6+Ut9GW47hyw98Lfu7TVpEU2jX5Zxd1IeRWLVMiFtM9Q6AP2KCjGcAF+nkWHwEfpW8v0kdD8EidiC+f3SjpjSciZBKr5hGxfmNYw0YmQ0mu439PvBdtaBUj4fB3JCuyeedZo2X6tAWj//8V5xJ8CG070l1o591rEtAcGbYluaNP7MU3m7gZduacT2Jj0THsdbijznmoljVyIPj/uA=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4bea8530-38c6-473d-f87e-08de69e2aaf6
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2026 02:58:59.0153
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NLPoSELGQboXHlX6inJXcVygO6jWLeLNxCOHXNSYZnxZWuWA8ADq419tAE6bQCnwH2cQubKpk+42CVv9J78Jmg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB7133
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-02-12_01,2026-02-11_04,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 suspectscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2601150000 definitions=main-2602120019
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjEyMDAxOSBTYWx0ZWRfX8yTaDYFojV9D
- m2nneoJu/WdSoHQ7JBRGWEsXh5m7JzvyuQon9UrVd54dwhdG/utn9U1rhiXyfg4+vnFoBAyQALm
- U1dNVjXxgioRcihDxDL2Md3Jxc18SdVb7I5MO1lCBD4UYQZUtCwLv72XyPRvS2W6k0jUuMKz9uv
- M1mCkuRrIKKVH19/6jg3569qq4VKHd1F22Ysr4MehVeMpd/POVF2bmz1ndSNwdEhLe2PcG4K9TJ
- rgVnQ2NjFt6XDY/Vc7wU+HAWECcnZasRGE1DO5kmHawixJUYQbSf4JLBgXYkfFSvPTf6JSjCmyu
- knWseYHRyxUhR4y2waCa97rp4IYw0CBVbzCm1hN7Z93/Tw4ahCXGzG1MgXu4RT+/mDQtoTC64Q9
- VBiCAtou5f+lLljotj3w5lqQSxfWrKbMlOyPPM5o0aWkNXqiqKsBy/Pnk/0NKlAlrLYnmC1+bdt
- O3lxDmslolRmMMYhsxg==
-X-Proofpoint-GUID: XJLiuhrsfqfTEid2kDfSH7aw4WztEAlV
-X-Authority-Analysis: v=2.4 cv=V8xwEOni c=1 sm=1 tr=0 ts=698d41f8 cx=c_pps
- a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=HzLeVaNsDn8A:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=wwfd6SD11FlJw8uR8qAA:9
- a=CjuIK1q_8ugA:10
-X-Proofpoint-ORIG-GUID: XJLiuhrsfqfTEid2kDfSH7aw4WztEAlV
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/7] mm/slab: introduce k[v]free_rcu() with struct
+ rcu_ptr
+Content-Language: en-US
+To: Uladzislau Rezki <urezki@gmail.com>, Harry Yoo <harry.yoo@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Johannes Weiner <hannes@cmpxchg.org>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Michal Hocko <mhocko@kernel.org>, Hao Li <hao.li@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Puranjay Mohan <puranjay@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Dave Chinner <david@fromorbit.com>, Qi Zheng <zhengqi.arch@bytedance.com>,
+ Muchun Song <muchun.song@linux.dev>, rcu@vger.kernel.org,
+ linux-mm@kvack.org, bpf@vger.kernel.org
+References: <20260206093410.160622-1-harry.yoo@oracle.com>
+ <20260206093410.160622-2-harry.yoo@oracle.com> <aYxXE6CC0XQr1KNK@milan>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <aYxXE6CC0XQr1KNK@milan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_TO(0.00)[gmail.com,oracle.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[31];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[linux-foundation.org,gentwo.org,google.com,linux.dev,cmpxchg.org,kernel.org,gmail.com,arm.com,nvidia.com,joshtriplett.org,goodmis.org,efficios.com,fromorbit.com,bytedance.com,vger.kernel.org,kvack.org];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	R_RATELIMIT(0.00)[to_ip_from(RLo39o19myzc71a6h1g6fiybuc)];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Rspamd-Queue-Id: 2B9A03E715
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
 
-On Fri, Feb 06, 2026 at 06:34:09PM +0900, Harry Yoo wrote:
-> Currently, kfree_rcu() cannot be called in an NMI context.
-> In such a context, even calling call_rcu() is not legal,
-> forcing users to implement deferred freeing.
-> 
-> Make users' lives easier by introducing kfree_rcu_nolock() variant.
-> Unlike kfree_rcu(), kfree_rcu_nolock() only supports a 2-argument
-> variant, because, in the worst case where memory allocation fails,
-> the caller cannot synchronously wait for the grace period to finish.
-> 
-> Similar to kfree_nolock() implementation, try to acquire kfree_rcu_cpu
-> spinlock, and if that fails, insert the object to per-cpu lockless list
-> and delay freeing using irq_work that calls kvfree_call_rcu() later.
-> In case kmemleak or debugobjects is enabled, always defer freeing as
-> those debug features don't support NMI contexts.
-> 
-> When trylock succeeds, avoid consuming bnode and run_page_cache_worker()
-> altogether. Instead, insert objects into struct kfree_rcu_cpu.head
-> without consuming additional memory.
-> 
-> For now, the sheaves layer is bypassed if spinning is not allowed.
-> 
-> Scheduling delayed monitor work in an NMI context is tricky; use
-> irq_work to schedule, but use lazy irq_work to avoid raising self-IPIs.
-> That means scheduling delayed monitor work can be delayed up to the
-> length of a time slice.
+On 2/11/26 11:16, Uladzislau Rezki wrote:
+> On Fri, Feb 06, 2026 at 06:34:04PM +0900, Harry Yoo wrote:
+>> k[v]free_rcu() repurposes two fields of struct rcu_head: 'func' to store
+>> the start address of the object, and 'next' to link objects.
+>> 
+>> However, using 'func' to store the start address is unnecessary:
+>> 
+>>   1. slab can get the start address from the address of struct rcu_head
+>>      field via nearest_obj(), and
+>> 
+>>   2. vmalloc and large kmalloc can get the start address by aligning
+>>      down the address of the struct rcu_head field to the page boundary.
+>> 
+>> Therefore, allow an 8-byte (on 64-bit) field (of a new type called
+>> struct rcu_ptr) to be used with k[v]free_rcu() with two arguments.
+>> 
+>> Some users use both call_rcu() and k[v]free_rcu() to process callbacks
+>> (e.g., maple tree), so it makes sense to have struct rcu_head field
+>> to handle both cases. However, many users that simply free objects via
+>> kvfree_rcu() can save one pointer by using struct rcu_ptr instead of
+>> struct rcu_head.
+>> 
+>> Note that struct rcu_ptr is a single pointer only when
+>> CONFIG_KVFREE_RCU_BATCHED=y. To keep kvfree_rcu() implementation minimal
+>> when CONFIG_KVFREE_RCU_BATCHED is disabled, struct rcu_ptr is the size
+>> as struct rcu_head, and the implementation of kvfree_rcu() remains
+>> unchanged in that configuration.
 
-By the way, this part is still not optimal. Unfortunately we can't use
-workqueues in NMI. Need a trick to avoid irq_work (when possible) while
-avoiding forgetting to drain batches later.
+Won't that be too limiting, if we can't shrink structures (e.g. BPF)
+unconditionally? Or acceptable because CONFIG_KVFREE_RCU_BATCHED=n is uncommon?
 
--- 
-Cheers,
-Harry / Hyeonggon
