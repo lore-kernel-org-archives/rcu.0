@@ -1,179 +1,158 @@
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B0730CD82;
-	Mon, 16 Feb 2026 13:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0433328E0;
+	Mon, 16 Feb 2026 16:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771248508; cv=none; b=VL0C7JiSO4nszKPyVrHl1IbmTnZLgx1MI5Uu9HN17Z057T1CGPJBrpuoL63pwQkqYqDgBW0z/dwn7AkQM2RAR8uSWWFt0YjzYonbt8Pjdi3/c6ChzY8OdY9lYz7UIG+zbNbHhBWf/maJsrjqwd9MEZwctaImWH5I0/K8T4wUS4E=
+	t=1771257922; cv=none; b=n2jzBmV+tzEBuLHgEFtZi5rv7PI2y7Eszcy0BQ8uDWHjiUs+9OO2H6DwTFbAL8tM/bxvmCh+8vsqgZoWZipS+U5vrvzbJ8IG9jmR1v8TJvAXYT6vYxhXX/PIsGIwf7+u+/I0P47kUXVVaaqb5hUBG4AqVuCF963aWBb/oQg/o+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771248508; c=relaxed/simple;
-	bh=L3Zzrt/ZXDR3Yng6+HkQ/OpXJIemo7a+P7SkqV+uu+g=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=eKXvbU5tlLSUc8ADAIkFpRLGN7crDAGTj4i6yBYSPKTyoxgPjTNJ/Civ8NmKmFN1jmAmThYw3n1V3SF1WzuhI29ZnDLCJiAAGUNYCVEehmBiwhnbxnPdQ/nwnVKfdDce5V/6ZVXq93FTUP1r/VZ1IK9KSHr6ucMkk0PdLFZ8vmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=N3dIuZGW; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	s=arc-20240116; t=1771257922; c=relaxed/simple;
+	bh=qHCNQtUiB/qHwVXwQ/1FkPzBFdSV2PDmtD0JKx8v0ao=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pDBxWvQIc+oDG53ZVu6XuntyVD/LdtKZEg6NHmeJxgSvrjt1C2QXjBw7vsxq/AiN6sdVXXsdnY8LDI6C+Gn8glM0EMGUD02ehVEiI66L1QtArBRDbWZwfSA2JXHoZ6UCxCE0fDI9zJdinyJWUPTy/4igk1/XScET+1GEv+bOATA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NB+ZVSJJ; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="N3dIuZGW"
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61FNjK433723169;
-	Mon, 16 Feb 2026 13:28:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=0ht8e4
-	BfusQZlB/YM/QHjf2Q15H/aquQ7NM5nxL1H6A=; b=N3dIuZGWnakAuXoF2l53zv
-	uoXBkc8oNqiSVWdBM8gFDuzjatQrbA4dt3oMf3LfGLcyIGFbTcMqNyZnmpBEj5zz
-	GrFQJEtNMlnGt2zF20n0pq5/4H8GhTtNHj9RGlWHuB5j5OxSzQZUEgh7AdwRbnQK
-	orgTOltD3KqXecb4gPdYqfL9IeRODoNpDw6LBprEdJzfOpqb9yyiP2T7J/H7zCyS
-	y05tFaIevb0RuJFrmq7WqkMjhmMVsPOsKC/R0yJq5JTVIrtiq6Lc7L/y+h4EfOu3
-	N31gIdl9PquUhUJzrrpQk0xkH3IAZLpzl04KDp8m+7J3FydrQo+ABCqSaW2upAxg
-	==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4caj6rqr1c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 16 Feb 2026 13:28:13 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61GBVrU5025024;
-	Mon, 16 Feb 2026 13:28:12 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cb3rxnm5r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 16 Feb 2026 13:28:12 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 61GDS8Vt47186274
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 16 Feb 2026 13:28:08 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6CB872004E;
-	Mon, 16 Feb 2026 13:28:08 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4E5DA2004B;
-	Mon, 16 Feb 2026 13:28:03 +0000 (GMT)
-Received: from [9.111.89.117] (unknown [9.111.89.117])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 16 Feb 2026 13:28:02 +0000 (GMT)
-Message-ID: <8a13e96a-101e-42bd-97d3-dd1682d40a3a@linux.ibm.com>
-Date: Mon, 16 Feb 2026 18:58:02 +0530
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NB+ZVSJJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1771257921; x=1802793921;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qHCNQtUiB/qHwVXwQ/1FkPzBFdSV2PDmtD0JKx8v0ao=;
+  b=NB+ZVSJJPW1Kx9ow+G2Kuf/B2Ot2ofxdqg5xl6ArMptM4BRezZOej4KT
+   ZhJZ+UrB8hmGcljohBDbEU/g+WushgP9ZfjhIYbLxHnqEx/G4w3ZbbKqt
+   4AN7jw3XrcykN3JEAJU8JWoNuOK0iZhO35t/k9S1HXyK6UHOMUuSsndPB
+   fbH44vt6X9pmlSurloUu6L/K5JCoulrwG5+gVyGocp7GT2/W3zL3glMUl
+   Bevk/1zH+WE6ZdBhBn23MiFpBxF5JSqvFVx2BtKbhqtKhQ+wspkHSki8E
+   qjDagc9xLpKq+443Lti3WNuIPBOhN9wows1D8CqLGXRiUVjz2DQiWQFwy
+   A==;
+X-CSE-ConnectionGUID: /r+6XMtMQ+OJllmtAR2ZgQ==
+X-CSE-MsgGUID: NBBYcPWkQka9mIGOHoetNw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11703"; a="75959905"
+X-IronPort-AV: E=Sophos;i="6.21,294,1763452800"; 
+   d="scan'208";a="75959905"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2026 08:05:18 -0800
+X-CSE-ConnectionGUID: CYt7VqExSk+BAVZ5rauWow==
+X-CSE-MsgGUID: R/d9wrytRNqHyVM5DtILAg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,294,1763452800"; 
+   d="scan'208";a="251318402"
+Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 16 Feb 2026 08:05:14 -0800
+Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vs160-00000001032-0Qdo;
+	Mon, 16 Feb 2026 16:05:12 +0000
+Date: Tue, 17 Feb 2026 00:05:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Vishal Chourasia <vishalc@linux.ibm.com>, peterz@infradead.org,
+	aboorvad@linux.ibm.com
+Cc: oe-kbuild-all@lists.linux.dev, boqun.feng@gmail.com,
+	frederic@kernel.org, joelagnelf@nvidia.com, josh@joshtriplett.org,
+	linux-kernel@vger.kernel.org, neeraj.upadhyay@kernel.org,
+	paulmck@kernel.org, rcu@vger.kernel.org, rostedt@goodmis.org,
+	srikar@linux.ibm.com, sshegde@linux.ibm.com, tglx@linutronix.de,
+	urezki@gmail.com, samir@linux.ibm.com, vishalc@linux.ibm.com
+Subject: Re: [PATCH v2 2/2] cpuhp: Expedite RCU grace periods during SMT
+ operations
+Message-ID: <202602170042.5jdtaQeu-lkp@intel.com>
+References: <20260216121927.489062-6-vishalc@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] cpuhp: Optimize SMT switch operation by batching
- lock acquisition
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-To: Vishal Chourasia <vishalc@linux.ibm.com>
-Cc: boqun.feng@gmail.com, frederic@kernel.org, joelagnelf@nvidia.com,
-        josh@joshtriplett.org, linux-kernel@vger.kernel.org,
-        neeraj.upadhyay@kernel.org, paulmck@kernel.org, rcu@vger.kernel.org,
-        rostedt@goodmis.org, srikar@linux.ibm.com, tglx@linutronix.de,
-        urezki@gmail.com, samir@linux.ibm.com, aboorvad@linux.ibm.com,
-        peterz@infradead.org
-References: <20260216121927.489062-2-vishalc@linux.ibm.com>
- <20260216121927.489062-4-vishalc@linux.ibm.com>
- <e90f73b8-744f-4522-a9b5-55b924671072@linux.ibm.com>
-Content-Language: en-US
-In-Reply-To: <e90f73b8-744f-4522-a9b5-55b924671072@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Authority-Analysis: v=2.4 cv=dvvWylg4 c=1 sm=1 tr=0 ts=69931b6e cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22
- a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=fK6Ux09ZcTRJb3aLEdYA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: IwAXk8uUI5EzmL7I53AiGt5eUAh4dtwm
-X-Proofpoint-ORIG-GUID: GlLlqTMFVRDXULyS68EwfS-_byIQOlv1
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjE2MDExMiBTYWx0ZWRfX1UNfk5cqr3BU
- GeTg1jBUlrGgdzLWB2tOF1vJ14m68QiRnI4EiwObxGBCqNBj2mbhTws8A8HGibCFvJiTqLDEWWF
- tV4oghfe4sLM5qJeFOAYzRPORdh4CgRLstoNUDc6U2I4jeKt/A/uUYlerKfZ+xRBM4DQcz0Y/BI
- 4Dhq2wy+Y6wqHwy4NGBhhszy/iNN3KlSvE0EI1s57sqQJSpjfFLqKL8xpR0Qnn11zyx0Dm1f3Cb
- BZzOFO3AiqsmArPrh9pguq913oAVDYo1ZJnyek8nd2TkvkzHzyr0Ppu5tfzzQ/WFmtI2PG/6GPt
- +hZH2Uf1f/ae8BFTvvXcGZuI7iCTzs7I/OMYD+dEQduZN9i8uF41SLBG0Q0stp9Iu7tKwc2n9EF
- ivYDHUB2DduWtFYiH+opsVC4d5rpz1DEEtoHlbmnfJLflDOAUYJAx+eVxpMcGtTJcDDf2l1CZ3r
- mDXbbLOdXdPf8+U/32Q==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-02-16_04,2026-02-16_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 lowpriorityscore=0 impostorscore=0 adultscore=0
- priorityscore=1501 clxscore=1015 malwarescore=0 phishscore=0 suspectscore=0
- bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.22.0-2601150000
- definitions=main-2602160112
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260216121927.489062-6-vishalc@linux.ibm.com>
+
+Hi Vishal,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on next-20260213]
+[also build test ERROR on linus/master]
+[cannot apply to tip/smp/core rcu/rcu/dev v6.19 v6.19-rc8 v6.19-rc7 v6.19]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Chourasia/cpuhp-Optimize-SMT-switch-operation-by-batching-lock-acquisition/20260216-202247
+base:   next-20260213
+patch link:    https://lore.kernel.org/r/20260216121927.489062-6-vishalc%40linux.ibm.com
+patch subject: [PATCH v2 2/2] cpuhp: Expedite RCU grace periods during SMT operations
+config: alpha-allnoconfig (https://download.01.org/0day-ci/archive/20260217/202602170042.5jdtaQeu-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 15.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260217/202602170042.5jdtaQeu-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202602170042.5jdtaQeu-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from kernel/rcu/update.c:50:
+>> kernel/rcu/rcu.h:515:20: error: static declaration of 'rcu_expedite_gp' follows non-static declaration
+     515 | static inline void rcu_expedite_gp(void) { }
+         |                    ^~~~~~~~~~~~~~~
+   In file included from include/linux/rbtree.h:24,
+                    from include/linux/mm_types.h:11,
+                    from include/linux/mmzone.h:22,
+                    from include/linux/topology.h:34,
+                    from include/linux/irq.h:19,
+                    from include/asm-generic/hardirq.h:17,
+                    from arch/alpha/include/asm/hardirq.h:8,
+                    from include/linux/hardirq.h:11,
+                    from include/linux/interrupt.h:11,
+                    from kernel/rcu/update.c:25:
+   include/linux/rcupdate.h:1193:13: note: previous declaration of 'rcu_expedite_gp' with type 'void(void)'
+    1193 | extern void rcu_expedite_gp(void);
+         |             ^~~~~~~~~~~~~~~
+>> kernel/rcu/rcu.h:516:20: error: static declaration of 'rcu_unexpedite_gp' follows non-static declaration
+     516 | static inline void rcu_unexpedite_gp(void) { }
+         |                    ^~~~~~~~~~~~~~~~~
+   include/linux/rcupdate.h:1194:13: note: previous declaration of 'rcu_unexpedite_gp' with type 'void(void)'
+    1194 | extern void rcu_unexpedite_gp(void);
+         |             ^~~~~~~~~~~~~~~~~
 
 
+vim +/rcu_expedite_gp +515 kernel/rcu/rcu.h
 
-On 2/16/26 6:27 PM, Shrikanth Hegde wrote:
-> 
+2b34c43cc1671c Paul E. McKenney        2017-03-14  509  
+25c36329a30c8c Paul E. McKenney        2017-05-03  510  #ifdef CONFIG_TINY_RCU
+25c36329a30c8c Paul E. McKenney        2017-05-03  511  /* Tiny RCU doesn't expedite, as its purpose in life is instead to be tiny. */
+7414fac050d5e0 Paul E. McKenney        2017-06-12  512  static inline bool rcu_gp_is_normal(void) { return true; }
+7414fac050d5e0 Paul E. McKenney        2017-06-12  513  static inline bool rcu_gp_is_expedited(void) { return false; }
+6efdda8bec2900 Joel Fernandes (Google  2023-01-12  514) static inline bool rcu_async_should_hurry(void) { return false; }
+7414fac050d5e0 Paul E. McKenney        2017-06-12 @515  static inline void rcu_expedite_gp(void) { }
+7414fac050d5e0 Paul E. McKenney        2017-06-12 @516  static inline void rcu_unexpedite_gp(void) { }
+6efdda8bec2900 Joel Fernandes (Google  2023-01-12  517) static inline void rcu_async_hurry(void) { }
+6efdda8bec2900 Joel Fernandes (Google  2023-01-12  518) static inline void rcu_async_relax(void) { }
+2be4686d866ad5 Frederic Weisbecker     2023-10-27  519  static inline bool rcu_cpu_online(int cpu) { return true; }
+25c36329a30c8c Paul E. McKenney        2017-05-03  520  #else /* #ifdef CONFIG_TINY_RCU */
+25c36329a30c8c Paul E. McKenney        2017-05-03  521  bool rcu_gp_is_normal(void);     /* Internal RCU use. */
+25c36329a30c8c Paul E. McKenney        2017-05-03  522  bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
+6efdda8bec2900 Joel Fernandes (Google  2023-01-12  523) bool rcu_async_should_hurry(void);  /* Internal RCU use. */
+25c36329a30c8c Paul E. McKenney        2017-05-03  524  void rcu_expedite_gp(void);
+25c36329a30c8c Paul E. McKenney        2017-05-03  525  void rcu_unexpedite_gp(void);
+6efdda8bec2900 Joel Fernandes (Google  2023-01-12  526) void rcu_async_hurry(void);
+6efdda8bec2900 Joel Fernandes (Google  2023-01-12  527) void rcu_async_relax(void);
+25c36329a30c8c Paul E. McKenney        2017-05-03  528  void rcupdate_announce_bootup_oddness(void);
+2be4686d866ad5 Frederic Weisbecker     2023-10-27  529  bool rcu_cpu_online(int cpu);
+474d0997361c07 Paul E. McKenney        2021-04-20  530  #ifdef CONFIG_TASKS_RCU_GENERIC
+e21408ceec2de5 Paul E. McKenney        2020-03-16  531  void show_rcu_tasks_gp_kthreads(void);
+e0a34641eb551e Arnd Bergmann           2023-06-09  532  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+e0a34641eb551e Arnd Bergmann           2023-06-09  533  static inline void show_rcu_tasks_gp_kthreads(void) {}
+e0a34641eb551e Arnd Bergmann           2023-06-09  534  #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+e0a34641eb551e Arnd Bergmann           2023-06-09  535  #endif /* #else #ifdef CONFIG_TINY_RCU */
+e0a34641eb551e Arnd Bergmann           2023-06-09  536  
 
->>            */
->>           if (ctrlval == CPU_SMT_ENABLED && cpu_smt_thread_allowed(cpu))
->>               continue;
->> -        ret = cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
-> 
-> If you see comment in cpu_down_maps_locked, It says.
-> 
->           * Ensure that the control task does not run on the to be offlined
->           * CPU to prevent a deadlock against cfs_b->period_timer.
->           * Also keep at least one housekeeping cpu onlined to avoid 
-> generating
->           * an empty sched_domain span
-> 
-> Now, instead of running on the online_CPU you are now doing the _cpu_down
-> functionality in the cpu which is going offline.
-> 
-> How are you preventing that deadlock?
-
-Ok. I should have looked at updated code. My bad.
-
-This is no longer true after below commit.
-de715325cc47 cpu: Revert "cpu/hotplug: Prevent self deadlock on CPU hot-unplug"
-
-> 
->> +        ret = cpu_down_locked(cpu, 0, CPUHP_OFFLINE);
->>           if (ret)
->>               break;
->>           /*
->> @@ -2688,6 +2714,9 @@ int cpuhp_smt_disable(enum cpuhp_smt_control 
->> ctrlval)
->>       }
->>       if (!ret)
->>           cpu_smt_control = ctrlval;
->> +    cpus_write_unlock();
->> +    arch_smt_update();
->> +out:
->>       cpu_maps_update_done();
->>       return ret;
->>   }
->> @@ -2705,6 +2734,8 @@ int cpuhp_smt_enable(void)
->>       int cpu, ret = 0;
->>       cpu_maps_update_begin();
->> +    /* Hold cpus_write_lock() for entire batch operation. */
->> +    cpus_write_lock();
->>       cpu_smt_control = CPU_SMT_ENABLED;
->>       for_each_present_cpu(cpu) {
->>           /* Skip online CPUs and CPUs on offline nodes */
->> @@ -2712,12 +2743,14 @@ int cpuhp_smt_enable(void)
->>               continue;
->>           if (!cpu_smt_thread_allowed(cpu) || ! 
->> topology_is_core_online(cpu))
->>               continue;
->> -        ret = _cpu_up(cpu, 0, CPUHP_ONLINE);
->> +        ret = cpu_up_locked(cpu, 0, CPUHP_ONLINE);
->>           if (ret)
->>               break;
->>           /* See comment in cpuhp_smt_disable() */
->>           cpuhp_online_cpu_device(cpu);
->>       }
->> +    cpus_write_unlock();
->> +    arch_smt_update();
->>       cpu_maps_update_done();
->>       return ret;
->>   }
-> 
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
