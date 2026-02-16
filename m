@@ -1,57 +1,57 @@
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 614D92D0C9C;
-	Mon, 16 Feb 2026 12:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C606930DD30;
+	Mon, 16 Feb 2026 12:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771244436; cv=none; b=gqvup5f/kKTZvBppjx4+o0XMMpdtJpbmotSlg//sQXtnit211JIrA+9SBC4nmPSFBpXt3ntPWif8RzmoL/AQY9ksssn/UTuaU1sZoRklh4uhb8YRLboHIXmrmoI5Na8YLZKBT83/e6dMvZH4Oy9rOJNbDtSU+qXIC/q8f+av0uQ=
+	t=1771244438; cv=none; b=r44UBFW0Sy3ics9Wssj0Nf6NXp2V1TJ3HbnvnxJE3bbbETW/6+c3lir3CiTDk+8SZDFJOROcqtpoo3gn72DO+u5nsxp0uquZmNE633iGy44gXh+eLwJHd4PM5WouOu0LQ5/kyyZebVb8SaHI5NkddDdvN3PYaQ31/F9MAJDWilU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771244436; c=relaxed/simple;
-	bh=QUlArS1PvREJtB73nK99k/+uhCSr+QIYrcpwlvOlhzA=;
+	s=arc-20240116; t=1771244438; c=relaxed/simple;
+	bh=wmW21vC8zXi9EyVLbDRmK2ycBDUsW7be6o/W1oiyyIA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=V8y8u1dOXuJbJW7fg9WK/L35Jr+xBjKU67kVX3tpiPFmxbMzC7MuS/3H7oP02YDtsdeR7TCKt85gM6RJyjB+IkmZFjptk+v+Fv1/ppGj5/qi3gcf/kIq0IumHCdMdjWo8MxgWDa+m3NHF7rfNBxgohyWU8kyHM7OxK8mjDoSFM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AD71OmgX; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=BtDIYRe3E6Kp9aY21AJvPBiLdFa8IsVwJPpduStXpUpw1RyoHMCmJJLhTs9l9lbZIJlhNQF33dqMOw0qN+sCrVKDToEkCdS9c3NONPvbPH9D3KREK+S+h+iIr5HDDXCPHRJ+nWzAnOVZLVQ5ETlD8w01FyuwVkQnOKeV9QxJKD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CkwpB2bs; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AD71OmgX"
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61FJsALR3436479;
-	Mon, 16 Feb 2026 12:20:22 GMT
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CkwpB2bs"
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61G4kCmC1693542;
+	Mon, 16 Feb 2026 12:20:11 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=Gw8lzl0IOSPLNR1sh
-	uSRN0DyJJbx7KxlCd96hl1idpY=; b=AD71OmgXpWZ2c2SfKuEsgloHmmkqyoC7M
-	iy5ycnN2CTwJ7PvAgn9xyT9xSIoCX6ZZSL2M0eBJYFoBNnyGlV9WQEjVvv2kOZHD
-	hEo+Pw9pfW63CNcXfd+vsH36V1mf6StpHtbJgyken7CNA/XHVuZBoBqDXs5HhqYG
-	FxILGv/RxRa8ZUZxGO0jKiplIT7A5OIRhzszpdEibDlBQIve3V6UAZ61gdDgc/E6
-	2hVk5/Ac5TmUW/lACEJIAo7n6q0BWJpmpz2n7XBhCg8Orok7nvifDrxkwpS24mfh
-	Wvhq3DPk/goOsZDQ/GnwpaR1ISfBbQWnxmm6kx1fRQ0ohysLlrZVw==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cajcj7354-1
+	:mime-version:references:subject:to; s=pp1; bh=bBo3PMdz53p6HXP85
+	roSVd3An23eLxmaRub3fQiatvs=; b=CkwpB2bsBA3HOMN9g+Ug1kWzjoRrff5+5
+	tKeAUdZiZAxBqjQ30gTchrSlXRp7ckpNLBjQKOSVehLv0G4VoRUHwtDCd94nx0ml
+	HF5HLlNYavsuQqVjs2yUdgogtCSHCa+bpczGmxtRxozSEmoKPySqUwmOhJOMgsS1
+	PmES5ZQw3GFqrkcER7xaFqUUyrYTTCXq8F4qRAL8axSTMpuM82gUnZpWCqB/usgo
+	9HOceyG9E09zm6z2Rs7PYC1xnEt1QMl/2SjRoRegj3PUg7wSzBvGxM8e7aAO1iul
+	FtZ7p7e+vOjdvHHJwCs1MfoZJu60/mo+NIhgfxWEwqX3cxTfluG/A==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4caj6ufh5g-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 16 Feb 2026 12:20:21 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61GCHMYu032483;
-	Mon, 16 Feb 2026 12:20:21 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cb4vjw82m-1
+	Mon, 16 Feb 2026 12:20:10 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61GBJ1JD025224;
+	Mon, 16 Feb 2026 12:20:09 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cb3rxndhg-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 16 Feb 2026 12:20:21 +0000
+	Mon, 16 Feb 2026 12:20:09 +0000
 Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 61GCKHvW58720578
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 61GCK52K50463034
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 16 Feb 2026 12:20:17 GMT
+	Mon, 16 Feb 2026 12:20:05 GMT
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 428672004B;
-	Mon, 16 Feb 2026 12:20:17 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 0823E2004B;
+	Mon, 16 Feb 2026 12:20:05 +0000 (GMT)
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id ECBE120040;
-	Mon, 16 Feb 2026 12:20:11 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 1965F20040;
+	Mon, 16 Feb 2026 12:20:01 +0000 (GMT)
 Received: from vishalc-ibm.ibm.com (unknown [9.124.220.239])
 	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 16 Feb 2026 12:20:11 +0000 (GMT)
+	Mon, 16 Feb 2026 12:20:00 +0000 (GMT)
 From: Vishal Chourasia <vishalc@linux.ibm.com>
 To: peterz@infradead.org, aboorvad@linux.ibm.com
 Cc: boqun.feng@gmail.com, frederic@kernel.org, joelagnelf@nvidia.com,
@@ -60,9 +60,9 @@ Cc: boqun.feng@gmail.com, frederic@kernel.org, joelagnelf@nvidia.com,
         rostedt@goodmis.org, srikar@linux.ibm.com, sshegde@linux.ibm.com,
         tglx@linutronix.de, urezki@gmail.com, samir@linux.ibm.com,
         vishalc@linux.ibm.com
-Subject: [PATCH v2 2/2] cpuhp: Expedite RCU grace periods during SMT operations
-Date: Mon, 16 Feb 2026 17:49:30 +0530
-Message-ID: <20260216121927.489062-6-vishalc@linux.ibm.com>
+Subject: [PATCH v2 1/2] cpuhp: Optimize SMT switch operation by batching lock acquisition
+Date: Mon, 16 Feb 2026 17:49:28 +0530
+Message-ID: <20260216121927.489062-4-vishalc@linux.ibm.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260216121927.489062-2-vishalc@linux.ibm.com>
 References: <20260216121927.489062-2-vishalc@linux.ibm.com>
@@ -75,126 +75,245 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-ORIG-GUID: O35YA_QkrtAgHi-SE6NXwCTLz6Usq1B8
-X-Authority-Analysis: v=2.4 cv=Md9hep/f c=1 sm=1 tr=0 ts=69930b86 cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+X-Authority-Analysis: v=2.4 cv=E+/AZKdl c=1 sm=1 tr=0 ts=69930b7a cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
  a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22 a=Mpw57Om8IfrbqaoTuvik:22
- a=GgsMoib0sEa3-_RKJdDe:22 a=VnNF1IyMAAAA:8 a=l3qGZ9BfJl2m4va5N0YA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjE2MDEwMyBTYWx0ZWRfX2w7qLQENPDLL
- cMFgC89eFTT/BqrO77b7xx94Nm+yk1sFg32dAqeZYicUWRJwDCXV/6eZkTWX/wrhvdD2zOSlnHy
- hRFxxjdtGkN67z3gbeKFFRESe18dfstfnelv2rOMjw0KWwr8gPRqQVONa32kAFmqtVrvrCnozKz
- ttBWzQbvbGJUAbnYbMt2Ljn+qUf2fhiouVSffybiTjptvZkFW0Jfs/8yOFqqv61W/z1wUpWLa48
- YYIGQNRGq9zDmkRtv3mFiDPrYGdw1Gb3SncxCNkHGA3Fy+AVciUp4TORYWbHZumfUCrDaDJ91A6
- 7o3LtztOQHrz8g+3tTdwZc3fus2rUgrYHuaDznESIoD5tmK0YX2F82R3/kb9iXCTrB4CEm9DEUJ
- HUIXGkKzDKtgVpr/KtAZilG+u+/r/6vV3O/5eqN5ukfasFcsz/cqvtQrpsPwOYGu7LULQwcNQ/+
- 2BsMr4KAb/NvPvg0QNw==
-X-Proofpoint-GUID: dJXJNAGr0HSLnKLWPHEP19TDxXPkjJ4S
+ a=GgsMoib0sEa3-_RKJdDe:22 a=JfrnYn6hAAAA:8 a=VnNF1IyMAAAA:8
+ a=KN9s3eCRc324pKJoVuoA:9 a=1CNFftbPRP8L7MoqJWF3:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjE2MDEwMyBTYWx0ZWRfXxDxvC9R1N3Xy
+ Bhf6VGrD5Nmlk94ov1Li5N7W6YBMKQeB/fmwwuWag0Aqni/cP56zXdEqfcJMHFNp41GrMZFPjpv
+ nxOHzn9IX4OX9bSvpz8rfCx/iZjl2OF5ClwYdPsmqzVF7LlS+HV2jOLfyVhQS18At6Exouz+kAF
+ rI6Nbi56TYDSm+JDF02UHTm2YEolfS70cplVHrU9MvvM3f0X4D445evvFTzIZxIrmO8Ugqv4NtX
+ hjWo8bDMU9swOR05YxqpcvD+TJKEwf3bThBj2oxEvV83/BtWDpyPEmYO7IGyZgrU7NlCY+QIYxK
+ UPMeTO6wK3iyaG/9heHxrlk+B0P54WreQOQkpUUxpRD4e4RxuO4fJ2NFC9Bqib4H3U9lciv96c1
+ S/KOQiebgLwlrNdTaFmaK4euM+q9S8J4p+XOhx1zCBnHCuuD+S0FxYFvp/VJJZho6zX50uphsxY
+ val7/n0ehLItrvvvw7A==
+X-Proofpoint-ORIG-GUID: y7xrOflilL9oUfdUQvqCddqTiUef2uth
+X-Proofpoint-GUID: Pr0w0x6UzmPJvGdqrLgnzsMbQgiicx7j
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-02-16_04,2026-02-16_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 impostorscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
- priorityscore=1501 suspectscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 malwarescore=0 phishscore=0 bulkscore=0
+ suspectscore=0 spamscore=0 clxscore=1015 impostorscore=0 adultscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2601150000 definitions=main-2602160103
 
-Expedite synchronize_rcu during the SMT mode switch operation when
-initiated via /sys/devices/system/cpu/smt/control interface
+Bulk CPU hotplug operations, such as an SMT switch operation, requires
+hotplugging multiple CPUs. The current implementation takes
+cpus_write_lock() for each individual CPU, causing multiple slow grace
+period requests.
 
-SMT mode switch operation i.e. between SMT 8 to SMT 1 or vice versa and
-others, are user driven operations and therefore should complete as soon
-as possible. Switching SMT states involves iterating over a list of CPUs
-and performing hotplug operations. It was found these transitions took
-significantly large amount of time to complete particularly on
-high-core-count systems because system was blocked on synchronize_rcu
-calls.
+Introduce cpu_up_locked() and cpu_down_locked() that assume the caller
+already holds cpus_write_lock(). The cpuhp_smt_enable() and
+cpuhp_smt_disable() functions are updated to hold the lock once around
+the entire loop, rather than for each individual CPU.
 
-Below is one of the call-stacks that accounted for most of the blocking
-time overhead as reported by offcputime bcc script for CPU offline
-operation,
-
-    finish_task_switch
-    __schedule
-    schedule
-    schedule_timeout
-    wait_for_completion
-    __wait_rcu_gp
-    synchronize_rcu
-    cpuidle_uninstall_idle_handler
-    powernv_cpuidle_cpu_dead
-    cpuhp_invoke_callback
-    __cpuhp_invoke_callback_range
-    _cpu_down
-    cpu_device_down
-    cpu_subsys_offline
-    device_offline
-    online_store
-    dev_attr_store
-    sysfs_kf_write
-    kernfs_fop_write_iter
-    vfs_write
-    ksys_write
-    system_call_exception
-    system_call_common
-   -                bash (29705)
-        5771569  ------------------------>  Duration (us)
-
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
 ---
- include/linux/rcupdate.h | 3 +++
- kernel/cpu.c             | 4 ++++
- 2 files changed, 7 insertions(+)
+ kernel/cpu.c | 73 ++++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 53 insertions(+), 20 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 7729fef249e1..f12d0d0f008d 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -1190,6 +1190,9 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
- extern int rcu_expedited;
- extern int rcu_normal;
- 
-+extern void rcu_expedite_gp(void);
-+extern void rcu_unexpedite_gp(void);
-+
- DEFINE_LOCK_GUARD_0(rcu, rcu_read_lock(), rcu_read_unlock())
- DECLARE_LOCK_GUARD_0_ATTRS(rcu, __acquires_shared(RCU), __releases_shared(RCU))
- 
 diff --git a/kernel/cpu.c b/kernel/cpu.c
-index edaa37419036..f5517d64d3f3 100644
+index 01968a5c4a16..edaa37419036 100644
 --- a/kernel/cpu.c
 +++ b/kernel/cpu.c
-@@ -2683,6 +2683,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
- 		ret = -EBUSY;
- 		goto out;
+@@ -1400,8 +1400,8 @@ static int cpuhp_down_callbacks(unsigned int cpu, struct cpuhp_cpu_state *st,
+ 	return ret;
+ }
+ 
+-/* Requires cpu_add_remove_lock to be held */
+-static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
++/* Requires cpu_add_remove_lock and cpus_write_lock to be held */
++static int __ref cpu_down_locked(unsigned int cpu, int tasks_frozen,
+ 			   enum cpuhp_state target)
+ {
+ 	struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
+@@ -1413,7 +1413,7 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
+ 	if (!cpu_present(cpu))
+ 		return -EINVAL;
+ 
+-	cpus_write_lock();
++	lockdep_assert_cpus_held();
+ 
+ 	/*
+ 	 * Keep at least one housekeeping cpu onlined to avoid generating
+@@ -1421,8 +1421,7 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
+ 	 */
+ 	if (cpumask_any_and(cpu_online_mask,
+ 			    housekeeping_cpumask(HK_TYPE_DOMAIN)) >= nr_cpu_ids) {
+-		ret = -EBUSY;
+-		goto out;
++		return -EBUSY;
  	}
-+	rcu_expedite_gp();
- 	/* Hold cpus_write_lock() for entire batch operation. */
- 	cpus_write_lock();
- 	for_each_online_cpu(cpu) {
-@@ -2715,6 +2716,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
- 	if (!ret)
- 		cpu_smt_control = ctrlval;
+ 
+ 	cpuhp_tasks_frozen = tasks_frozen;
+@@ -1440,14 +1439,14 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
+ 		 * return the error code..
+ 		 */
+ 		if (ret)
+-			goto out;
++			return ret;
+ 
+ 		/*
+ 		 * We might have stopped still in the range of the AP hotplug
+ 		 * thread. Nothing to do anymore.
+ 		 */
+ 		if (st->state > CPUHP_TEARDOWN_CPU)
+-			goto out;
++			return 0;
+ 
+ 		st->target = target;
+ 	}
+@@ -1464,8 +1463,17 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
+ 			WARN(1, "DEAD callback error for CPU%d", cpu);
+ 		}
+ 	}
++	return ret;
++}
+ 
+-out:
++static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
++			   enum cpuhp_state target)
++{
++
++	int ret;
++
++	cpus_write_lock();
++	ret = cpu_down_locked(cpu, tasks_frozen, target);
  	cpus_write_unlock();
-+	rcu_unexpedite_gp();
  	arch_smt_update();
- out:
- 	cpu_maps_update_done();
-@@ -2734,6 +2736,7 @@ int cpuhp_smt_enable(void)
+ 	return ret;
+@@ -1613,18 +1621,18 @@ void cpuhp_online_idle(enum cpuhp_state state)
+ 	complete_ap_thread(st, true);
+ }
+ 
+-/* Requires cpu_add_remove_lock to be held */
+-static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
++/* Requires cpu_add_remove_lock and cpus_write_lock to be held. */
++static int cpu_up_locked(unsigned int cpu, int tasks_frozen,
++			 enum cpuhp_state target)
+ {
+ 	struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
+ 	struct task_struct *idle;
+ 	int ret = 0;
+ 
+-	cpus_write_lock();
++	lockdep_assert_cpus_held();
+ 
+ 	if (!cpu_present(cpu)) {
+-		ret = -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
+ 
+ 	/*
+@@ -1632,14 +1640,13 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
+ 	 * caller. Nothing to do.
+ 	 */
+ 	if (st->state >= target)
+-		goto out;
++		return 0;
+ 
+ 	if (st->state == CPUHP_OFFLINE) {
+ 		/* Let it fail before we try to bring the cpu up */
+ 		idle = idle_thread_get(cpu);
+ 		if (IS_ERR(idle)) {
+-			ret = PTR_ERR(idle);
+-			goto out;
++			return PTR_ERR(idle);
+ 		}
+ 
+ 		/*
+@@ -1663,7 +1670,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
+ 		 * return the error code..
+ 		 */
+ 		if (ret)
+-			goto out;
++			return ret;
+ 	}
+ 
+ 	/*
+@@ -1673,7 +1680,16 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
+ 	 */
+ 	target = min((int)target, CPUHP_BRINGUP_CPU);
+ 	ret = cpuhp_up_callbacks(cpu, st, target);
+-out:
++	return ret;
++}
++
++/* Requires cpu_add_remove_lock to be held */
++static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
++{
++	int ret;
++
++	cpus_write_lock();
++	ret = cpu_up_locked(cpu, tasks_frozen, target);
+ 	cpus_write_unlock();
+ 	arch_smt_update();
+ 	return ret;
+@@ -2659,6 +2675,16 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
  	int cpu, ret = 0;
  
  	cpu_maps_update_begin();
-+	rcu_expedite_gp();
- 	/* Hold cpus_write_lock() for entire batch operation. */
- 	cpus_write_lock();
- 	cpu_smt_control = CPU_SMT_ENABLED;
-@@ -2750,6 +2753,7 @@ int cpuhp_smt_enable(void)
- 		cpuhp_online_cpu_device(cpu);
++	if (cpu_hotplug_offline_disabled) {
++		ret = -EOPNOTSUPP;
++		goto out;
++	}
++	if (cpu_hotplug_disabled) {
++		ret = -EBUSY;
++		goto out;
++	}
++	/* Hold cpus_write_lock() for entire batch operation. */
++	cpus_write_lock();
+ 	for_each_online_cpu(cpu) {
+ 		if (topology_is_primary_thread(cpu))
+ 			continue;
+@@ -2668,7 +2694,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+ 		 */
+ 		if (ctrlval == CPU_SMT_ENABLED && cpu_smt_thread_allowed(cpu))
+ 			continue;
+-		ret = cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
++		ret = cpu_down_locked(cpu, 0, CPUHP_OFFLINE);
+ 		if (ret)
+ 			break;
+ 		/*
+@@ -2688,6 +2714,9 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
  	}
- 	cpus_write_unlock();
-+	rcu_unexpedite_gp();
- 	arch_smt_update();
+ 	if (!ret)
+ 		cpu_smt_control = ctrlval;
++	cpus_write_unlock();
++	arch_smt_update();
++out:
  	cpu_maps_update_done();
  	return ret;
+ }
+@@ -2705,6 +2734,8 @@ int cpuhp_smt_enable(void)
+ 	int cpu, ret = 0;
+ 
+ 	cpu_maps_update_begin();
++	/* Hold cpus_write_lock() for entire batch operation. */
++	cpus_write_lock();
+ 	cpu_smt_control = CPU_SMT_ENABLED;
+ 	for_each_present_cpu(cpu) {
+ 		/* Skip online CPUs and CPUs on offline nodes */
+@@ -2712,12 +2743,14 @@ int cpuhp_smt_enable(void)
+ 			continue;
+ 		if (!cpu_smt_thread_allowed(cpu) || !topology_is_core_online(cpu))
+ 			continue;
+-		ret = _cpu_up(cpu, 0, CPUHP_ONLINE);
++		ret = cpu_up_locked(cpu, 0, CPUHP_ONLINE);
+ 		if (ret)
+ 			break;
+ 		/* See comment in cpuhp_smt_disable() */
+ 		cpuhp_online_cpu_device(cpu);
+ 	}
++	cpus_write_unlock();
++	arch_smt_update();
+ 	cpu_maps_update_done();
+ 	return ret;
+ }
 -- 
 2.53.0
 
