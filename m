@@ -1,186 +1,148 @@
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011028.outbound.protection.outlook.com [52.101.62.28])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45476EEC0;
-	Tue, 17 Feb 2026 01:21:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.28
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771291275; cv=fail; b=p0PU8tYt5jRuac2p0yi94ZWxetYhoogx5O5Ubk985ItmzuR2Y6jzLQSTaWgRa2Pe2pKDdE1KyPFcRUgqMEcyq5XE/gz2rgZKCJJDf6iKbO6x7Js8PKr2GfMumXpnHbt+8gdcpvbgKadUw4lSAMkOIqRnvSa5RwqtBMSyqGKW/is=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771291275; c=relaxed/simple;
-	bh=F1TtQlQa2ozNzIGopJ/SQbSg3IzP75qfIjxPY64EDLw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=jxr+3oWD8W8GR3AgTt5QGflOoGR9xKWv4cm0Z458+VtdwdcWDczMqw2MgfILDW1QthCSHvw+cOIsyZj2LEQYcWn1+hw0L5k3H/OPlL8qsi2+p4KiDUojdJLI4lYbG6j28ZAs5DPvbS9C213kJ9QyozaZaWTtVmayFzAPF1xwhBE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ckTvuxwR; arc=fail smtp.client-ip=52.101.62.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 129072D9EE4;
+	Wed, 18 Feb 2026 08:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771404035; cv=none; b=Y/uWk+Kf9KhE6hbV3H8Uasf0EKWM78/8XH/fvBwvjDhO9o1vlwVN0sa9RSsEgah9BhNksfcz7iuw1EotoVYIpZfdSENNrjNd2MX54mElvIr0OuAdQF6kjKErFZcTvtptt4xyg5o/yiPFjF/EGF693Q3t53FJytNBQakgYC52C+Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771404035; c=relaxed/simple;
+	bh=r8kq09KVs06A//18jR37nuYdAGxqv/sE6izGhlDD0SQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JgkPmBdd3aw7sWCtFbgUdow7vcqMbgKv60JIIIvaABEVQ2GzQFhDU/FksJEm8NKr/SU4e7oRbvnMRjbDW0clukxkPxshU3JrjR1W9LEj5SqPZpEpqIO/NqZTW9DkZ0KB6Wdhmvs6ZO+c+6D0xxR2ik0DYcllT6d4NXVHOIpyah4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Qm/zMHzT; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ckTvuxwR"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=d2VjCXyLIyqLlmfEzTAvFLzz3fLRsmeOHjgril1VcPU30IW9HZSqq0ZxVOnzYCDITZGew2T+wLDcsREZGiyCPN330mY7yU6SZst0eyj1ClklN8S67THqwC9HVbnAzkl8+Iz7wkZO/LpRkwaQLa1nd29ia+kvoXqLeCLXCqVyaZ67RR0KfSovxaz42u71VEqv6FGwy+mY0qRqdFhy1McDM9YVuCEMderZ1oNew8duPbRk1fNNAqkhLjrgGvQtzsyBs9hZKTzsgYF/3gSTtYHv/xBYn9Z7ugJsbBlbqMUAoqrrKiuk65Eool1PmsGQ4oT++jUxH1ypov8AqTUg5FCBYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e4SL+4w11ib8T2NH+ci73iDQvaM5GTyekIaHgb+6V3c=;
- b=H9/f1kYDn4hd2laE+/0SNm+TEg8ySLo/e3I+FYfOlm1WLqtQECQV9Hao2HM7mJSOf4/c1RaDF6XYY91SsEjNk/Kvfs7EqVv3J6aOvQhQLyLn8PsBxhtPR8zLUFBS60dg3otqZkrKr+QDFGLphBEybDRuES1Ap+Nu7PS2k98j1s/sUvyIJeJX/6C8OAaxf3oghswQgaMp/iLryiGt7ST+GfEqnjx7+GQaTIUw3oKVhtyETyz+WKs3/F+uwh/X7Mu1n/XcjwNRiMKDR6afpNNCFVkA2BtrBP2XccXXPIqMexoLaDH4bQU7mrPS4zfTMqmLuu7jKyL8Lwi//aYMvGpsQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e4SL+4w11ib8T2NH+ci73iDQvaM5GTyekIaHgb+6V3c=;
- b=ckTvuxwRBzAkHEs97SIQwRFCBc3USPnZcLAg3bpSVpmrYtRhwAkvnfrvDL6R65oAl+kvT2o25rVfXjqIgzxiw9bpu3BQ05RLi9Aih9DyEPODzoyuJzi/2MY/T0qU6Yj0ESgG9MbKn+FS4Wn44/++khgV+CZmd+jCIUOlFZ/NmuYAlldZ/nDZ315/fnrymBb5aSPUd4oA+9lWbNLy1ll0raKBnuWkwUoGX2uNTVYa7OZnIpDXC4XhpnCvDQBGgMSMg7w9ZI65NtyBTtTy6cEoUpg9edkJCL1YLOYgAeE+LjpZynp6FQl1KlmSCUgAk9TE29C4AgQ7BqiA+JqYLWu+FA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- DM6PR12MB4338.namprd12.prod.outlook.com (2603:10b6:5:2a2::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9611.16; Tue, 17 Feb 2026 01:21:07 +0000
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33%4]) with mapi id 15.20.9611.013; Tue, 17 Feb 2026
- 01:21:06 +0000
-Date: Mon, 16 Feb 2026 20:21:05 -0500
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	rcu@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
-	Gary Guo <gary@garyguo.net>, Benno Lossin <lossin@kernel.org>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	Trevor Gross <tmgross@umich.edu>,
-	Danilo Krummrich <dakr@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Tamir Duberstein <tamird@kernel.org>
-Subject: Re: [RFC PATCH 0/7] Introduce HasField infrastructure
-Message-ID: <7400643A-02A9-4FF4-92D4-3F94F868B789@nvidia.com>
-References: <20260128215330.58410-1-boqun.feng@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260128215330.58410-1-boqun.feng@gmail.com>
-X-ClientProxiedBy: MN2PR16CA0052.namprd16.prod.outlook.com
- (2603:10b6:208:234::21) To DS0PR12MB6486.namprd12.prod.outlook.com
- (2603:10b6:8:c5::21)
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Qm/zMHzT"
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61I3tAfh2392296;
+	Wed, 18 Feb 2026 08:40:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=wv+r1i1tXzJ2sEDlFhnRqYnVAzdDnFRCkdeWe+Nzv
+	rA=; b=Qm/zMHzTCW4RfDXFCUzjeZtFoz32WdPWKpfDIaHhCyjEUFTC1vwH+qcTf
+	i1VpBWD5a9ZgdlfPk1tQrKdgT2XX39J7DpExDTpOkeP21CivpjutNcorH3FCLAVx
+	NtPEfXHXH3GPZJimFuCskpPW6V53SqWaTl/Nfep5lbYQzPbFI+qjSGBCekqu1I6T
+	Kuvd0BcinniDVH9HqkbwhS2oPEkHu2lq5ZAp14hpHW2BOj+Ami/Sqy5+93bGFjw2
+	8wboSjyvCiILnyLFPU0j2X2BF9Kx6lLud0zO8FfJxI93LmpLKGzrAssPmpokiDe5
+	HFWqShTLaJtVg2TrHHawS12OAqZtg==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4caj6s0au0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 18 Feb 2026 08:40:02 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61I8Ohw4011916;
+	Wed, 18 Feb 2026 08:40:01 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4ccb26y455-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 18 Feb 2026 08:40:01 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 61I8duiW13828448
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 18 Feb 2026 08:39:57 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DE90220040;
+	Wed, 18 Feb 2026 08:39:56 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 18A8220043;
+	Wed, 18 Feb 2026 08:39:52 +0000 (GMT)
+Received: from vishalc-ibm.ibm.com (unknown [9.124.221.53])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 18 Feb 2026 08:39:51 +0000 (GMT)
+From: Vishal Chourasia <vishalc@linux.ibm.com>
+To: peterz@infradead.org, aboorvad@linux.ibm.com
+Cc: boqun.feng@gmail.com, frederic@kernel.org, joelagnelf@nvidia.com,
+        josh@joshtriplett.org, linux-kernel@vger.kernel.org,
+        neeraj.upadhyay@kernel.org, paulmck@kernel.org, rcu@vger.kernel.org,
+        rostedt@goodmis.org, srikar@linux.ibm.com, sshegde@linux.ibm.com,
+        tglx@linutronix.de, urezki@gmail.com, samir@linux.ibm.com,
+        vishalc@linux.ibm.com
+Subject: [PATCH v3 0/2] cpuhp: Improve SMT switch time via lock batching and RCU expedition
+Date: Wed, 18 Feb 2026 14:09:14 +0530
+Message-ID: <20260218083915.660252-2-vishalc@linux.ibm.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|DM6PR12MB4338:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2ea7e399-b716-4323-4fd1-08de6dc2d310
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?sqQffU5O6jGROYvDt5uzvKmXexvMlE7KYppOn0CDUGMYfYEhvDWEO2pD+6Yo?=
- =?us-ascii?Q?HuFdVwXH2ygOIYQxK5q1DfGRSV/c3X5PS5syRCfQ/swXF70wEYKkekfmJRXQ?=
- =?us-ascii?Q?iDF9uByDZ8CzbrqMpNoNfSAZvTt++EKu7lCd6kq++HHvpSDPz97N0SQ9WOXs?=
- =?us-ascii?Q?XUnVUs0cJmwQxlcbOqAg5SbBlTbR3ghtOK8ikAa64OrF7NNmB+NflCxo3JuC?=
- =?us-ascii?Q?TQeUlAYoY9W49uL92yR8Bvc/5q2pt53c9x3OV2TZ/IWL0aItOtxcSzu103Ey?=
- =?us-ascii?Q?UkW8jD2GN0t2648MytZv/XHlHUAIOoBU5SmpRG1KMjDoP8LU9lIeQm86uP9P?=
- =?us-ascii?Q?zOpAUwHJNFLqxBl+s+R/vzBm/rVnmt9rMMtkfeylQWqPz4vXpfNkCLDFmZdx?=
- =?us-ascii?Q?wQE6igY9hrXrw/BOSeI7+PwfZ6RSZVq+nyS0FCYXsGtPdDp0eWpLpdGmasIF?=
- =?us-ascii?Q?iPdcwyLVfC/fjdjDDPSqSGrEHsWDEp8yfdOPcVo+uaz4gRHJAQAk+wxrF7gY?=
- =?us-ascii?Q?HBy0pLlGZAZ5QwUo4cziTbOVMJzSRd6SwMf9X4Scar3Lg1XS/u43FKq24tqd?=
- =?us-ascii?Q?rb5dvmIm3NGw1OKel+NCffHGTBmoD7B4JTy3IqnnmaSlI5+db5Un5XpKPZxO?=
- =?us-ascii?Q?y8m1+GE4Gtzk6K6f9pETA/BqWJxy0LKF5PrUnwxPV7AbfTieiJCn/ECsgIZ2?=
- =?us-ascii?Q?/n7vkPKq1G3QIcD0RVVVxdeTEQYUBhyTpG0RTOMyDBLJQONO54IjT69zt8Bx?=
- =?us-ascii?Q?LGcBly0vasGejyCSElKj6ZGCI9OcNfbaMcAhLtaQJ2v/oeSoTJug8rKNSOoW?=
- =?us-ascii?Q?iVanfed9AyABlQIdEWFMSEjf3O1JNkpu0gWb+S8uHZcoe9qhaQWdzcOx/1qh?=
- =?us-ascii?Q?6Hy5WCvj1WPSEx7fL/2Ba3gDjGAU63ZtucntbNTpLr9lqD0bPqwNjXfqQkHS?=
- =?us-ascii?Q?amPZhlQvwgK/iXsSWoc1HuxNKtCkHrOaiMdUzAsWKexaLC7WCVQd1yrduvel?=
- =?us-ascii?Q?MLSl+f4hr8i3yaaIb1YZQoYKy6T6enEP0eWJsjC+3fz5U0JAy8OSMoy4n82D?=
- =?us-ascii?Q?KFX2czWeggLLWUT0y2QDz62AXTctIE8CHVsrD0RHVZd9bglhOreXhrdvCfAs?=
- =?us-ascii?Q?vKRR5blX15fB5k/anSerFqLByX9Rok+btDyW92eYPxsnu9WfKuiQRfxw9zEk?=
- =?us-ascii?Q?hP4m2wQZ4yUhi02VZihbIxm/6lYA04/+7mY+ZjKRRXqjbxcvtFVaqLrLOwN3?=
- =?us-ascii?Q?Q2b/w6N6GXB7wH3mpmWBIpF+qxHJvD8ip9TvHYab83rcF5KPzvGbxtag/jqF?=
- =?us-ascii?Q?VPxWnwAulgFMzyMz9CHRRfLIyIzf20yxfdmmzcpQH8kedRnAKy22qq3I0jfa?=
- =?us-ascii?Q?edI3LhK/EqRHnP1y4teWbdi56QkyuKoIFbix1YyMcWPguHo52HJ5m7o6Oa1w?=
- =?us-ascii?Q?mKKw+6C0jQZ8yG6NzBUOV+U2ffxfhQ2aveC9d1Wfga9g+9fmzlZ2Jzk9Uzag?=
- =?us-ascii?Q?GVJwngTu2qRNr+984LJgZBFdH5VZQJkpPCSodGvPp0uXuj/saudPZkKb1CxZ?=
- =?us-ascii?Q?ZbQy0Qq7QsQ/k9tu6Ms=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?VdfwJlqxfd06buHpTZUFo/wTrqoSE4JwcpA6oHR4O48K0n4R9gKgPYWqk+TS?=
- =?us-ascii?Q?YOgT5/s+bMfu8FAFd0XE292mc9ZQTuYLHUYVK2XUVqQ9SbF7+syJPBvz8iBV?=
- =?us-ascii?Q?YSpFy0YxITHaZjpa9dr1EXEcELxWxPl3DdllPSwWLCewQMeHy+YMi/4uscS1?=
- =?us-ascii?Q?wLbUxIeAxRs397ShBgdQFVnd+cwmouqqH6c2cfdqOy5FxeC2WSKG1OkbAHC2?=
- =?us-ascii?Q?pmnMK5J0oXpIqR1Qbv+srhWIo9kZqMTdSWxuZrqFbG5WtSmrAd0rHS1LTqY/?=
- =?us-ascii?Q?rGjjyTnXFCVlaEsqxdnJRxa+7egBNYUNpTXVC1Mg5pyQsRhTnkkxNq3zCg5m?=
- =?us-ascii?Q?sEdbXbSzHog8H0+6IzLhrh7Os3yCbtOUBw8QXP5YOmv6HvYaYBaoo1mG+p84?=
- =?us-ascii?Q?2MYo4iyF7mRnNYKVFCegzSg5IKE2A2n//fBuCNj8mFmih1yGubokwz10fuBi?=
- =?us-ascii?Q?j0256EK9NBQ6Hpl0QcijOvd15faDJcme2ZAbRl/0ah3qNEKUX9gXKAM9BEME?=
- =?us-ascii?Q?EpHLWf8luFzb68opwtkK/VUG5NzGhRY0tEtHhyNrp/Vw+Tt/sKZCX4Rkq6eD?=
- =?us-ascii?Q?6GyJCuv4sUpnAg6Lw7FgyuElZILuPb8g8AhxgelDkYvzJ2xLecImbJO388yB?=
- =?us-ascii?Q?6/s89byYniHXH5wttz5nOboyO/zIzyxs/MP9LmCOyZO32CsdMdhTrKSEYs8s?=
- =?us-ascii?Q?Iurlst+hLlQabODYuCKhqsz1Z+LHYPUO254eN9zEhlVgsKQGEKn8w2EqIiHT?=
- =?us-ascii?Q?RUTktk9xm9Y2OHZ09LcYdQXFcVAF3DYt3LBsJEA02DyE27dcA33ZQKTm88GV?=
- =?us-ascii?Q?E5sSSu2WZxoPqSY8WhtetaBUgKEdIzSX1Qps+zUXVlCPI2AY7s8oQdBybVSj?=
- =?us-ascii?Q?iz7+0sAR9K9k9KFdn6N9Z3fp61PpS4JLmd9WUWeLYSfO7ACTA3w5P0g68yTT?=
- =?us-ascii?Q?/rsNuSTx+6Ndr8XLwdebpx3+StRFLiliTsJIHZ9zvOqOfr966yIczdcNrBgY?=
- =?us-ascii?Q?5mMlilnC9PX95TJyBQkD8QJe3U2ut4okZLUjxwOvykyh7UfZl2a9KyzbYz/F?=
- =?us-ascii?Q?gTlI7pyCTA93I6NwaBUV3Omo+OCsPfaGAMkZ/yokO6rxs6L7m1OcGrdBXJPp?=
- =?us-ascii?Q?mrbVcjFtPjZ141FTfPqUW+M05noN9itszm8hE3VSD0feQGysC/7fdt1B7dTy?=
- =?us-ascii?Q?gbwfBfiwTlpnNRRM4iYZcD+2depuRo7IGncHQdXhDaokPeU14paIh4fzO2df?=
- =?us-ascii?Q?cwFvZfkPQb7cJdKafsv8NyhXaGh9Z9SxY7HfPWumi153uDxo1OfwkhM/FoVs?=
- =?us-ascii?Q?VsWA2BrYV9uWnmml75v5UhGU4P7APWLtupbTuxQY2tEFYIp35fBA+x8ReYFi?=
- =?us-ascii?Q?wzlyart6NUzvqw6S7ykrejO0f5aMvD0kp3DIi5r7MoWsA71pAjjkVYh8TF9L?=
- =?us-ascii?Q?gVETLvC8iBjdGol9WayWJk4hL3qt7wMGFYmq8xcanSRKQdJz68E5TMjx/Zb/?=
- =?us-ascii?Q?UvR5LC7RuzNr3b2l9b3yub//vyOgv6VVZk++HKePKypiIbcuFn4FFI5wn9MY?=
- =?us-ascii?Q?Yda+XIprULX7EN7fECKccHUjmP08stA8ppLSrUSlEXvr+Ye1+CpSAO5aAxr6?=
- =?us-ascii?Q?3fjTyoEpb6S7+2g5rq38SziuCwXipgokqwl5W7tg+w8s0UPlg0LkcLVjuatL?=
- =?us-ascii?Q?shzQwUXn2dTVelH7JxRbM6NunhBmleq6HeCQaFYYaaWgJ11DhYcmG9AKxm4Q?=
- =?us-ascii?Q?VKhhHkTJiA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ea7e399-b716-4323-4fd1-08de6dc2d310
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2026 01:21:06.7154
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2+3U7P/+pXHJQ9o2XjJ60p/MwjcfU6plKNRgsw8UHA93ngw7lIaFZT8Yo4HlYEX9qB2Z9mwj0dCRJdlTI96jZA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4338
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Authority-Analysis: v=2.4 cv=dvvWylg4 c=1 sm=1 tr=0 ts=69957ae2 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22 a=Mpw57Om8IfrbqaoTuvik:22
+ a=GgsMoib0sEa3-_RKJdDe:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=WsHKUha7AAAA:8
+ a=QyXUC8HyAAAA:8 a=ROf8l5uNrF41CHCozSMA:9 a=H4LAKuo8djmI0KOkngUh:22
+X-Proofpoint-GUID: LseL6TkbRDoQghZybbZZVXQgnVzR9-Mk
+X-Proofpoint-ORIG-GUID: gaflu6Eqs74Dn7kNO3Ep8BbnzbNOKmQb
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjE4MDA3NSBTYWx0ZWRfX+Pu1aMWI4QS9
+ 2lv/OLsu0w9slBiaZomZN52PvchyIUhIBZixZ0HHg+MbOeL6FG7hZj/h0IGUzoYTZLjW9WWBse/
+ GTrFmvpykJRARSaDnHpnEKuj4yYwGPnhSYGhDWtq1b4InHbz0XN2NraEJeOV3LU8b9NhQZl53hJ
+ SKIN2vok0B0NORkBLgKmkDIIP6R6bf2jnMG45DKovxZQ5hHFdC/qpVnS+axgOrJhT1nF5A9nk/e
+ 6pltQ7glgyOtuBXOX9zBptZSW+4u9QWEh1CS6wrkByDAqA1U6P3vOU6Q8Ysq5x6hBl661C6DIiW
+ tgQFC/XQPMIvH8YkhTVs2W0gy8iD2JACMaG5VsW1pzwTmfE3PkPipU8EBLsE1/usQQP2xbVOuTb
+ 0Cobt+++W9gOTuYURHg+n/XtzNjqhPaMBIbUrM8mqAYtzIwkAQh1H349rFl6ZMMbUCZ2ihd9QyX
+ MYueG1X34Ft9+vAceiQ==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-17_04,2026-02-16_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 lowpriorityscore=0 impostorscore=0 adultscore=0
+ priorityscore=1501 clxscore=1015 malwarescore=0 phishscore=0 suspectscore=0
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2601150000
+ definitions=main-2602180075
 
-On Wed, 28 Jan 2026 13:53:23 -0800, Boqun Feng wrote:
-> Therefore here is the effort to unify them into a proc-macro based
-> solution. Field and HasField traits are introduced to generify the
-> "Has A" relationship, and a derive macro #[derive(HasField)] is also
-> added to support automatically implementing HasField trait.
+On large systems with high core counts, toggling SMT modes via sysfs
+(/sys/devices/system/cpu/smt/control) incurs significant latency. For
+instance, on ~2000 CPUs, switching SMT modes can take close to an hour
+as the system hotplugs each hardware thread individually. This series
+reduces this time to minutes.
 
-Hi Boqun,
+Analysis of the hotplug path [1] identifies synchronize_rcu() as the
+primary bottleneck. During a bulk SMT switch, the kernel repeatedly
+enters RCU grace periods for each CPU being brought online or offline.
 
-One naming concern: the #[field] attribute feels ambiguous since in
-Rust every struct member is already called a "field." When reading:
+This series optimizes the SMT transition in two ways:
 
-   #[derive(HasField)]
-   struct MyStruct {
-       value: i32,
-       #[field]
-       work: Work<MyStruct>,
-   }
+1. Lock Batching [1]: Instead of repeatedly acquiring and releasing the CPU
+hotplug write lock for every individual CPU, we now hold cpus_write_lock
+across the entire SMT toggle operation.
 
-it's not immediately obvious why "work" gets #[field] but "value"
-does not, as both are struct fields.
+2. Expedite RCU grace period [2]: It utilizes rcu_expedite_gp() to force
+expedite grace periods specifically for the duration of the SMT switch.
+The trade-off is justified here to prevent the administrative task of
+SMT switching from stalling for an unacceptable duration on large
+systems. 
 
-Would something like #[project] be clearer?
+Changes since v1
+Link: https://lore.kernel.org/all/20260112094332.66006-2-vishalc@linux.ibm.com/
+Expedite system-wide synchronize_rcu only when SMT switch operation are
+triggered via /sys/devices/system/cpu/smt/control interface.
 
-Similarly, HasField could become HasProjection or ProjectField to
-better distinguish the trait's purpose from the general concept of fields.
+Changes since v2
+Link: https://lore.kernel.org/all/20260216121927.489062-2-vishalc@linux.ibm.com/
+Move the declaration of rcu_[un]expedite_gp() to
+include/linux/rcupdate.h. Thanks Shrikanth for sharing the fix and
+kernel test robot for finding the issue. [3]
+
+[1] https://lore.kernel.org/all/5f2ab8a44d685701fe36cdaa8042a1aef215d10d.camel@linux.vnet.ibm.com
+[2] https://lore.kernel.org/all/20260113090153.GS830755@noisy.programming.kicks-ass.net/
+[3] https://lore.kernel.org/all/202602170049.WQD7Wcuj-lkp@intel.com/
+
+Vishal Chourasia (2):
+  cpuhp: Optimize SMT switch operation by batching lock acquisition
+  cpuhp: Expedite RCU grace periods during SMT operations
+
+ include/linux/rcupdate.h |  8 +++++
+ kernel/cpu.c             | 76 +++++++++++++++++++++++++++++-----------
+ kernel/rcu/rcu.h         |  4 ---
+ 3 files changed, 64 insertions(+), 24 deletions(-)
 
 -- 
-Joel Fernandes
+2.53.0
+
