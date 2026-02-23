@@ -1,240 +1,316 @@
-Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011006.outbound.protection.outlook.com [40.107.208.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9284823C4F2;
-	Fri, 20 Feb 2026 19:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.6
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771614435; cv=fail; b=mkssRXWccS6BFWq2c1wLdnQPOxnZuh0dQDmUSVNzI1NLYMWI8j1a3fsJoBBCvLnI6fYpgwx+xgsng/84KpD42gGspIH8nvuGmGNhijKfnXP7eAKRRJgRkR5ANF9QNe/aj24rJISX8odDCc9AIM7g3qamUK+pjXQSSBexKiV06V4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771614435; c=relaxed/simple;
-	bh=+4fmW3PJE5CKupJdzXaoqSI+JvjKSzsQ6bLP0sEX7gM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=em1akiVe+wuhTClemJmT2D7ufD++yQcd2lQFa3VFLd7WeAs76ouHYVOTtDE5dwQDsaqFa/it0CATWYSC69JqHcbrIjqAyjpd5Fz8AcV0ZQw2totBDd3nRGm5y6ExP1l+/UOQIKRiMDntmcTPjCF3+zGgT99RTmiZkr2aSo9Vrrc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=E4HOKUbe; arc=fail smtp.client-ip=40.107.208.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="E4HOKUbe"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DcDbtSTTFmZpuiC+xIzDkSx04tXNagQ5U/0UI70Le1x7SxkU+4R4EHbksNH+YlA9ud3Vj3amubUJ2cnDjboC7lL7qQy2tWJZSDOUX0ck5ahVAwsSvaCUD3HCoXA3ajmuBBFIh3yqWohDDaTqnOtWU9WbJ3aHqY9ZOgj1jzcsoX3DsbMrahLKidznGHJMZ6AEsmc90naRWvxDNUVbuurhd90wjIQq/87HnQCekDr2gCEZIj0vTCMu5sujm9e3z8gMegj2XihKv8SaHSwb/v7+hsLhSYjBkWGdkdXatbNCEZ4gPf/Xh09sI39ZbUR6BVZPa1hhvb5Fs6SwkmKgDgDiDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AFltgCTj6TDV6jSQm12qejvORCR7YA6nrTK7BdXV9v0=;
- b=Q8Upxp4TbNdZ1pLYU+fCusqHZ6Pfw0xt15G7RnVSYl0k/Yyl14j9sOAEbaMMMPsGaYE4XDeF6FqqA24vxPQ3dF6Y55p2szrlNhPxnd7awsqxPcjqrPn4O8VgY02VLUVfT+9+xwKlxhXX3SFwFKo0DkFq/JVlAXi3oFm/CrsEczNwunBfF1vCVQVZRTcbzEnoz2YXlQ7cppBOPy5IRD26VwdCLQ2Aon8fdMmwSvJpggGH/AZcLDGvkNou3dNEsrnf2iJtOm2+OQlon/lHp9M8l5kE4azuZ6xDFm/iG9vNiEW2iKohfO3OeY6GGRMHH+7EOc6mBo7ClmB1dkbahljKnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AFltgCTj6TDV6jSQm12qejvORCR7YA6nrTK7BdXV9v0=;
- b=E4HOKUbeAzpYNyvfyNfeLOzHZuVzppuMShCWvNK8izpjybpAQ5wGtqDLnHiIzVMv42pkRuGxivs9wgkV4o7j+D+8i3nVEUjWIXixxFy7/kDrtr1eXP0CM+NxZenhnH+BYKena9J+48/3LHvWdgj37YHs4/7hjzFKsvS+enRJNdnW6LOjJt+AqurJ0FKZO0mSFRZAL8Aq4EIHb0PJertNN3l8wEH/bjKah4GA3eL3TneRawUBRho556DpypIx8Cd2kaSmbSkOJR1zSdw4gra+c+RORMXFNQfH6Q48mtQH5u9HnKExDDRQHRqDNDSFAoOqdd+pl+KcoLsXXHBUGJPC2A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- LV8PR12MB9418.namprd12.prod.outlook.com (2603:10b6:408:202::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9632.16; Fri, 20 Feb
- 2026 19:07:09 +0000
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33%4]) with mapi id 15.20.9632.015; Fri, 20 Feb 2026
- 19:07:08 +0000
-Date: Fri, 20 Feb 2026 14:07:06 -0500
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Qiliang Yuan <realwujing@gmail.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Thomas Gleixner <tglx@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Tejun Heo <tj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Brendan Jackman <jackmanb@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, linux-mm@kvack.org,
-	Qiliang Yuan <yuanql9@chinatelecom.cn>
-Subject: Re: [PATCH RFC 00/12] Implementation of Dynamic Housekeeping &
- Enhanced Isolation (DHEI)
-Message-ID: <20260220190706.GA2173704@joelbox2>
-References: <20260206-feature-dynamic_isolcpus_dhei-v1-0-00a711eb0c74@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260206-feature-dynamic_isolcpus_dhei-v1-0-00a711eb0c74@gmail.com>
-X-ClientProxiedBy: MN2PR19CA0058.namprd19.prod.outlook.com
- (2603:10b6:208:19b::35) To DS0PR12MB6486.namprd12.prod.outlook.com
- (2603:10b6:8:c5::21)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFBB83EBF3F;
+	Mon, 23 Feb 2026 00:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771806822; cv=none; b=Stdu0LZmTHJcZENjT96CPOZyQSX4YfstYE5puGXLsRcVMaYIttRb/+Qk2vw1tbNSIkaW06XagWkV8OQ4X+KE8RD4sgGFIaGOaajLWQZOc5yquDh0WPxYQR9sKQWiFu3nAcpQuwNSd2GkE+4h71XUGhzgrbV7uj0QaE6HJ3Py9u8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771806822; c=relaxed/simple;
+	bh=Empke4UdsPxxKAiOLj2ALTMJhcJk2XqsTNT04XmtesE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VvNkNuZbuEGiNc6nkb9aEp4+gqwcjh4vI+ZJhqA+5Bm3WlQxmNpSKUKqH0daTHkeojrArwPjubmLPtwcVX5JbrPESfPT1DQEgBMvc+jbDiJmzYpDDWGSca98jO0vqpKooWGVZne+NkHVZ5Zf+oqqbq26xTYi/kTIwkkuZv216kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c2dff70000001609-4b-699ba05fae7c
+Date: Mon, 23 Feb 2026 09:33:30 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Petr Pavlu <petr.pavlu@suse.com>
+Cc: kernel_team@skhynix.com, torvalds@linux-foundation.org,
+	damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	mingo@redhat.com, peterz@infradead.org, will@kernel.org,
+	tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
+	sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
+	johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+	willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+	gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
+	akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
+	hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
+	jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+	ngupta@vflare.org, linux-block@vger.kernel.org,
+	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
+	djwong@kernel.org, dri-devel@lists.freedesktop.org,
+	rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+	hamohammed.sa@gmail.com, harry.yoo@oracle.com,
+	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
+	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
+	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com,
+	yeoreum.yun@arm.com, netdev@vger.kernel.org,
+	matthew.brost@intel.com, her0gyugyu@gmail.com, corbet@lwn.net,
+	catalin.marinas@arm.com, bp@alien8.de, x86@kernel.org,
+	hpa@zytor.com, luto@kernel.org, sumit.semwal@linaro.org,
+	gustavo@padovan.org, christian.koenig@amd.com,
+	andi.shyti@kernel.org, arnd@arndb.de, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, rppt@kernel.org, surenb@google.com,
+	mcgrof@kernel.org, da.gomez@kernel.org, samitolvanen@google.com,
+	paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com, josh@joshtriplett.org, urezki@gmail.com,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
+	chuck.lever@oracle.com, neil@brown.name, okorniev@redhat.com,
+	Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org,
+	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
+	clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
+	kristina.martsenko@arm.com, wangkefeng.wang@huawei.com,
+	broonie@kernel.org, kevin.brodsky@arm.com, dwmw@amazon.co.uk,
+	shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com,
+	yuzhao@google.com, baolin.wang@linux.alibaba.com,
+	usamaarif642@gmail.com, joel.granados@kernel.org,
+	richard.weiyang@gmail.com, geert+renesas@glider.be,
+	tim.c.chen@linux.intel.com, linux@treblig.org,
+	alexander.shishkin@linux.intel.com, lillian@star-ark.net,
+	chenhuacai@kernel.org, francesco@valla.it,
+	guoweikang.kernel@gmail.com, link@vivo.com, jpoimboe@kernel.org,
+	masahiroy@kernel.org, brauner@kernel.org,
+	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com,
+	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org,
+	rcu@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-rt-devel@lists.linux.dev, 2407018371@qq.com, dakr@kernel.org,
+	miguel.ojeda.sandonis@gmail.com, neilb@ownmail.net,
+	bagasdotme@gmail.com, wsa+renesas@sang-engineering.com,
+	dave.hansen@intel.com, geert@linux-m68k.org, ojeda@kernel.org,
+	alex.gaynor@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
+	lossin@kernel.org, a.hindborg@kernel.org, aliceryhl@google.com,
+	tmgross@umich.edu, rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v18 34/42] dept: add module support for struct
+ dept_event_site and dept_event_site_dep
+Message-ID: <20260223003330.GB44876@system.software.com>
+References: <20251205071855.72743-1-byungchul@sk.com>
+ <20251205071855.72743-35-byungchul@sk.com>
+ <7afb6666-43b6-4d17-b875-e585c7a5ac99@suse.com>
+ <20260213055006.GA55430@system.software.com>
+ <7765df86-b08a-4f70-900d-4b4d85c07d49@suse.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|LV8PR12MB9418:EE_
-X-MS-Office365-Filtering-Correlation-Id: 15d65b31-f667-4d65-e97c-08de70b33e2c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|1800799024|366016|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?MHGNhKDwCPqNUuWU1LMsnBuM09/EKwtruRkAbXB0E9fEQgBZvCE3wo4u4TPQ?=
- =?us-ascii?Q?lnGytX/6FSTqv7xO4HV2r1Yb6t72FDpLq//ZBRToBkGYvAifw+sn+hg7v/fr?=
- =?us-ascii?Q?AsVl/UcDNAqZmbJbeLyYhy6Z+wXmY5n5CnU9ZO6D0wt5YZDeHA8sVlJDbnDb?=
- =?us-ascii?Q?PI+a1Y5iWBBku8Sa7JLX9xr90NCd9YA/0YyvmuSp5dhMQGBhrOi1Piv24B1o?=
- =?us-ascii?Q?o+VRAl258F2fgxCh1qgSd1IFfNWVdH74SHsyFkRMr729uqMedY9e+xgunGGS?=
- =?us-ascii?Q?XrKAMQn50DW6MLH1CCvOaPjATA4hsXRjBUkF6hAeF7wTPfNMFsr0rpcVMZ+b?=
- =?us-ascii?Q?KIXbqUaweh+f1sk8DLbrDQFYuyfxY6flNQiPZwNPQ6Ht+9d1fPKUWYVbjbko?=
- =?us-ascii?Q?JVVgiJem2OVbGEUpxhCzzrCisbTbZ5l2evTQFeUPpsglVuB/AbGrFeL4V3Ar?=
- =?us-ascii?Q?26TZcZdygXMmtbePU9D4Ybj6ULrq0MrMaGpiwgoh+O9SjY51nVderMBtXysw?=
- =?us-ascii?Q?68vGT46NrtKx0MW2jJNmJxlmbbZd149zdekBKAymyR47Gv7n6IoD2/MPxgrx?=
- =?us-ascii?Q?mfdigKMUfEGjvhcxORNRkKxGS06+ZMs+owE1OM7OISPXmNUn1i8upehJJ0Ix?=
- =?us-ascii?Q?/AizRzzqsg2ce8hIOnBX16U6VU4F112JCd/4G5mM7onmJJttaNYnL9Kfe/4Q?=
- =?us-ascii?Q?1Fr9guO/BgH6EaI2kVpi1c9vv6RrgEUILqxW07kFnhT/YlHTzhS/c9cJ1F5q?=
- =?us-ascii?Q?b7UvW1FqWkWCfOJwJoGpYHtsgIzlAcPfAIjfM4WIoTbZzJrMlp04ylBmgrRs?=
- =?us-ascii?Q?4rYDj2quaAiP3q3h7N9n/MReovbpGsNFMxuM2EqSOMHNyq5pUSpIn5UI76oN?=
- =?us-ascii?Q?I5c5VQODhqUNUDgu/2AXBMgFQq+JtUxsKsF4BqwSjEiVrTcreKp29mm6ubEy?=
- =?us-ascii?Q?GrsCf20v1SHoE8nB/mgBBNax4QoY5l9P0Ar8nftkgablticMzNZQeZym6ZnD?=
- =?us-ascii?Q?4zujipf5iHzgQ9c002PRu+kGRrIwnAm6GfHjYkWHBD+UoMVjVEIbGX5H9IfC?=
- =?us-ascii?Q?1waMc+knhx2123qWWKzah+XQC+lEoT8Tzq7gwni4idCum7kDBhop3cpTrcZc?=
- =?us-ascii?Q?g8l6b38QDWxbpa43s28NNrX4C2ysnMplQ52m12U9BxXRDofZedgqvOiDUYzP?=
- =?us-ascii?Q?EZhuGxyWtwcaf4k2vahsAT3G/3GpAt5mQNUCm4eTR9sATOZLQLzt3XS7nXAb?=
- =?us-ascii?Q?TKiK1rlaVDL9vr5O/v4gkYPb2SJtJ3ValmoLeRGK2wK+vGpscshjlj26spoN?=
- =?us-ascii?Q?7OkaD41SPbCnyeOV/HIv01gO3mCwx6sLqvrYXeTAFh26XBekjy2j2ytDJ2jI?=
- =?us-ascii?Q?zwRAvJTM16AoIMsT8tZPynRq1K9FmZuqLXMKlNRlm2Ung4kfXvFRRiZxEgXM?=
- =?us-ascii?Q?HGnRSc37okL/ZD+EfQFekg5dCAVFC+eyAVi58oxNW7foXycU1dFHXq9atM9b?=
- =?us-ascii?Q?ItuI6cGyo5zvPAQ1Qxu+6AqEslI3Xn3fTsIbZRW6SeWNHZz7z7Qt8yeysf03?=
- =?us-ascii?Q?BpaXPAfrjoPVigA41jA=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?T7RN68dYT1odAfPzujS2QkbU8U4IqAeLrv2150g7R1zZCje0iuleXzBw2Hgo?=
- =?us-ascii?Q?5R03GrU9NvPs25Xqb5Ii2E9HOCrs7r8vgERR7k+qfWba22epF/wGIj8bmjHs?=
- =?us-ascii?Q?kNduDibHOYAyUrGrt02Q5921KxjDhkIw269n1EHNIN50FjQTfc2RHp5n5G4f?=
- =?us-ascii?Q?suZVL1ARe80utNxhixPRY1W+AdOKfJWbHIADLohbjODAUiVxQ/zsrpHW9ryV?=
- =?us-ascii?Q?Qh6uhSdIF5lvBFyKPpGQ8oFTFP0itdCJxnpnv6J+R8xpgpi0hF9/tZU9N4Z9?=
- =?us-ascii?Q?Wy152DX2tYDpJg9of9PVCQ7ZL8a1jcIucx76K2K1XjoG+cBj03CV6nGYgt6Z?=
- =?us-ascii?Q?z2Iw9J7MtsvJsYL6aJd/KrfLCSNxh1nvKVpfBgnuJVJTlql00axrtN4PiuFv?=
- =?us-ascii?Q?gPtO2EDDVIwHJyclAXjyCxmvwlx4YMXlUIwSknhXx0BHS5SCCMVe1kgUC1MA?=
- =?us-ascii?Q?dHxIexVmAziHm57gcXfzYIb8RpWFdJKS2fjuaGcrqNco3dVuClvV3PL47brd?=
- =?us-ascii?Q?Zu/HAW+WCtvls0opVyDC/AC8IY2VfCwedFLsFttzh/f68ovOcxl4exOQuzlT?=
- =?us-ascii?Q?Esng7qtlxdQvGtW4mhvi2/SyXg9//XiVy7x2o3u1Yvh7jRiWCRKzKYnyknS3?=
- =?us-ascii?Q?dONIipURNxvgpOLzXKHPZPP67W3hBGpV8m5jLSQdeSjDDotvRH9mcE7fKhnk?=
- =?us-ascii?Q?Sx/h4xg1h5VNebtQ538smhMODfZe/3LEzXItMkBwVCn/NfEU+ZXQDebQ542G?=
- =?us-ascii?Q?UvIn+Py5041TtXgAdYICVj0HeHXLEzEyWiEOss5yHIlCf7Hu5/dSN4PKiRHw?=
- =?us-ascii?Q?Q8QyohyFFwWGIB9rkkcY5Da5buOIVm1QPwe+c1CKa1yeMOGLVqrQ4o7TJ0o1?=
- =?us-ascii?Q?eTUYLyaLKpzAiQ5mx3n9lfsH51mpYZO/NcCG49iXLYBByWMCoP32rLihHOrh?=
- =?us-ascii?Q?5q904JUDkwdwtk+q607kCVw3sGzqkobHvCLk4voyuTHiB9tRXEo62U69zAmO?=
- =?us-ascii?Q?uSOnzSCVeMvbzGUi+f+6Vx1KWCSGeAPNJ0/0gHtZXcBFmh4+m9P+7/wz6UO5?=
- =?us-ascii?Q?mkgEr7s16LDsBrekoT7ekFRzsvInGqZ+e33ddvI6mHxj8Aq/SMk44ttjv/CT?=
- =?us-ascii?Q?97GSxgnIIIb55uofEPTztH0huoEQM/S6Y1916R0+gloeYoVeXhTqYocCxALx?=
- =?us-ascii?Q?Vc5+y3NbBXO+9qtDryYXnFk/yCaTXhI+A7k64J5LANq/UxbtrNtfTckzOhwT?=
- =?us-ascii?Q?WlAbttEDQ1RF0jG8rv0OHX6gBU0mCLc0Na/sqD86iLakRWdLWJgQ4JuqXhUn?=
- =?us-ascii?Q?of8Ol9uASERvsqox1fo/Qp9dwprHChhMdTM65idTfFHUGL7mUpUynd3jghhq?=
- =?us-ascii?Q?7j9sTt5bGx9AKEeQRWxhB4dFDdqfV/3t/i93aqT+ukHbSNiuP7bwDxwe1CIh?=
- =?us-ascii?Q?NtUqOzaTQW5VJFsW66HGHR3iZdVA8gf5wE7+/IvED0GuAGaJDLWE18TJEIoX?=
- =?us-ascii?Q?Ew42bMPLPwrA9vr7DqYVHuUt/RTHxOz//kPFwGSSvBKkmQouU5SC+C22SdQt?=
- =?us-ascii?Q?QVW8EMh2rMSO0F2t/KX3ZukFboOhX8D58QpjAZFqBIqEGduaDevj0OddUON0?=
- =?us-ascii?Q?QltjO34ZVWigY05RT5jOKib1qS7FrTo3xzEjBNvZyg9rXn8/0kYnlnFwHxsh?=
- =?us-ascii?Q?FJSNQ4NokiQJXHh0LZy17aspychMECkst//ZGvT3MUl0T5nRToAfUK3D2yzr?=
- =?us-ascii?Q?ZimKFtpdJQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15d65b31-f667-4d65-e97c-08de70b33e2c
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2026 19:07:08.2359
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9LD8l5Ut5n2greO66x/8xANQN/9eGX4B3c5jkJCRAOu7lg/0llz+t40HR3VGYAG9dxXqlNleKRNcyFWoGv/VsA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9418
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7765df86-b08a-4f70-900d-4b4d85c07d49@suse.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf1DTZRzH7/n+3s51TxPzUa5fS8/DzH4ccZ/ukOjqj++dd4aXd3napSu+
+	xa5t6KYgdRlzYINqER0S3xk3BZFgiQxR80IWg6UJBRa46bBEWBEsYm4zITC+dl3+87nXvZ/X
+	vT+fPx6B1srccsFg3iVZzHqjjlMz6uiiw49td7sMTwT9y8BR+h4M2XwMJOIOBuZcp3hweGtY
+	OHdpHwP9x5oRzFUGeKiyIbjdEUDgOWGjoOraKAdyxMXDpeQkglHf+wgOXRum4UTgKoKfElMc
+	RAcOUjDQO4EgcrmDAntdCwcHPvcyUD2+AK1LwVVtpxbGbxT01oUZaCheCSONMg+33fkQaP6V
+	h+GPqxg4Fv2BBc+HERq814dYqKkNc+CYiyModt1kod93gYULgXMMJJ2p0P/JRywEK8YQhKon
+	eWicrmYh4L4P2jtLEcTqkwz0ub5nIez8nYH99a0UdLecoqAl4qfBn5ikYMQZ5cFlcyJwdCdp
+	aO+5ycPx6aMc2G78jKAk/DT8dfw6C1/ODaHsbLGp7SQlemo9SJydqURi/IidFkvaCsWZxCAn
+	diTdjPjdYSLWl81Q4lfyMC+6vbvFku4oK9Z9PU6Jh2IJVrw8sU70NpVxOQ9tUWfmSkZDgWR5
+	PGu7Oi/ibKV3hDL2nA7nFKPP0sqRSiA4nVwdvMKVI+EO9/oFJWbwStJ81okU5vAqEgzeohUl
+	Ba8gF0eeK0dqgcYHHiDn2xys4izGRuL/dJpSHA0G4oktUWItTiDSF3pRYQ2+l5yvGWUUpvFq
+	Epwfv6PTOJUcnRcUVOFMEu15UDGW4EeI7+S3lLKJ4IiKjNXE0L8HLyPfNAaZCoTlu1rlu1rl
+	/1vdiG5CWoO5wKQ3GNPX5hWZDXvWvp5v8qKFH9vw7t9bT6NY/0tdCAtIt0jjm5INWlZfYC0y
+	dSEi0LoUzezsQqTJ1Re9LVnyt1l2GyVrF0oVGN1SzVPJwlwtflO/S3pLknZIlv9eKUG1vBi9
+	sP9s+x8b3LOqLTilMuQo+3Fb9v23dk6/Zn1Uv/nPK1kZe+9ZXy6nb/xlcc8X6x8u3bgmfmbN
+	cGfnjZ21vn3PdttfWRE3M4kjTWmN1oh5LGed/9WChl7TpirLhsGLhW8YZzIqhMwzaVl7nwm9
+	k7Xq5anR5x3z9XUTH1g39U3aTfRALDNDx1jz9E+upi1W/T8wE0YKrQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUwbdRjHfe53vR6NZ86ubOeImnU2TsxejM48iXNxxrhzZnPinHFZ3Kq7
+	SEMpWzvZGDECtVrREKhpGe3QilIXqG5rGY4tVUIdAweRDiegvGym1hFgnUBZoJTaMzHunyff
+	53k+n+T542GJel6xkjWYDktmk96oZVS0asdT1rX7vB7Dhrn4/Wi3vYfDY1EF/lreTmNi1k7j
+	iVN+BlOe75RoD9QpsGuggsa+b5sBxxJ2wNtJD0FbW5rGlKNTibPzvyvRWQ6YDnUCuiIOgoN9
+	PxD0t5RTOHN6icGJ8DSg83qUwdrxchrjvk8A3TGPEscvbsWpsQsKTI/8ReHA3CSgL7pEYbT9
+	Q8CUqwA/bwhmdNctBpO9PxOsdfYBfnF9hOD0+DXAls5RwNDJCgb/rD5LsD96D/6SiDPY7fyY
+	wanICQpvnmbQWxFSYKRnArDe4wCM/Rai0PrlKQZd9QEa266dV2JkYpHCYZeDwubAdhzzxWi8
+	XN1AZc7NUGdWoKfWSmXKDQqd31ygcN7XpHymEcTbtipabAq2UqLtSooR/Z/5QUwuOECcbbQS
+	0VadacOTcSK+HzwiNl6eZMSFxFVGDM15afGnBkH86qMFSqzpXSu2uUeUO7fsUW06IBkNxZJ5
+	/eb9qvxY1RlycOjJo+eGd5bB8UcqgWUF/gmhJ8xWQhZL8zqh+fsqkDPDPywMDs4TGdHwDwlX
+	/thSCSqW8K4HhO6gXSEzy3ijEP70b0pmOB4F/3S2PFbzCRB6h16SM8ffK3TXRWk5Ez5XGFwa
+	/xcnfI7w9RIrxyx+kzB18UGZyOZXC+2tl6hq4Nx3yO47ZPf/shdIE2gMpuJCvcG4cZ2lIL/E
+	ZDi67q2iwgBkHtL37mLNOZjt39oBPAvau7lb93kMaoW+2FJS2AECS7QaLpl0G9TcAX3JMclc
+	tM/8jlGydEAOS2tXcNtek/ar+bf1h6UCSToomf/bUmzWyjJ481i6LLZo1nj7D63GILf8lR6z
+	LlTwslN/12R6d9zZ0jXQym6eXnboyO6hIrixUTHzqu+F0tIPXr/KWbcnt+19uk633vNjIO/x
+	Ndl5nGn5s6N7F3TdeaZHzz9X6grtmtmVU3Pp+eNrVrV0rdqjC2t6TcWjG07mvng2MpBqrLe9
+	kU7f1NKWfP1jucRs0f8DOc5IfIwDAAA=
+X-CFilter-Loop: Reflected
 
-On Fri, Feb 06, 2026 at 02:04:21AM -0500, Qiliang Yuan wrote:
-> The Linux kernel provides mechanisms like 'isolcpus' and 'nohz_full' to
-> reduce interference for latency-sensitive workloads. However, these are
-> locked behind the "Reboot Wall" - they can only be configured via boot
-> parameters and require a system restart to change.
+On Wed, Feb 18, 2026 at 04:08:19PM +0100, Petr Pavlu wrote:
+> On 2/13/26 6:50 AM, Byungchul Park wrote:
+> > On Wed, Jan 07, 2026 at 01:19:00PM +0100, Petr Pavlu wrote:
+> >> On 12/5/25 8:18 AM, Byungchul Park wrote:
+> >>> struct dept_event_site and struct dept_event_site_dep have been
+> >>> introduced to track dependencies between multi event sites for a single
+> >>> wait, that will be loaded to data segment.  Plus, a custom section,
+> >>> '.dept.event_sites', also has been introduced to keep pointers to the
+> >>> objects to make sure all the event sites defined exist in code.
+> >>>
+> >>> dept should work with the section and segment of module.  Add the
+> >>> support to handle the section and segment properly whenever modules are
+> >>> loaded and unloaded.
+> >>>
+> >>> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> >>
+> >> Below are a few comments from the module loader perspective.
+> >
+> > Sorry about the late reply.  I've been going through some major life
+> > changes lately. :(
+> >
+> > Thank you sooooo~ much for your helpful feedback.  I will leave my
+> > opinion below.
+> >
+> [...]
+> >>> diff --git a/kernel/dependency/dept.c b/kernel/dependency/dept.c
+> >>> index b14400c4f83b..07d883579269 100644
+> >>> --- a/kernel/dependency/dept.c
+> >>> +++ b/kernel/dependency/dept.c
+> >>> @@ -984,6 +984,9 @@ static void bfs(void *root, struct bfs_ops *ops, void *in, void **out)
+> >>>   * event sites.
+> >>>   */
+> >>>
+> >>> +static LIST_HEAD(dept_event_sites);
+> >>> +static LIST_HEAD(dept_event_site_deps);
+> >>> +
+> >>>  /*
+> >>>   * Print all events in the circle.
+> >>>   */
+> >>> @@ -2043,6 +2046,33 @@ static void del_dep_rcu(struct rcu_head *rh)
+> >>>       preempt_enable();
+> >>>  }
+> >>>
+> >>> +/*
+> >>> + * NOTE: Must be called with dept_lock held.
+> >>> + */
+> >>> +static void disconnect_event_site_dep(struct dept_event_site_dep *esd)
+> >>> +{
+> >>> +     list_del_rcu(&esd->dep_node);
+> >>> +     list_del_rcu(&esd->dep_rev_node);
+> >>> +}
+> >>> +
+> >>> +/*
+> >>> + * NOTE: Must be called with dept_lock held.
+> >>> + */
+> >>> +static void disconnect_event_site(struct dept_event_site *es)
+> >>> +{
+> >>> +     struct dept_event_site_dep *esd, *next_esd;
+> >>> +
+> >>> +     list_for_each_entry_safe(esd, next_esd, &es->dep_head, dep_node) {
+> >>> +             list_del_rcu(&esd->dep_node);
+> >>> +             list_del_rcu(&esd->dep_rev_node);
+> >>> +     }
+> >>> +
+> >>> +     list_for_each_entry_safe(esd, next_esd, &es->dep_rev_head, dep_rev_node) {
+> >>> +             list_del_rcu(&esd->dep_node);
+> >>> +             list_del_rcu(&esd->dep_rev_node);
+> >>> +     }
+> >>> +}
+> >>> +
+> >>>  /*
+> >>>   * NOTE: Must be called with dept_lock held.
+> >>>   */
+> >>> @@ -2384,6 +2414,8 @@ void dept_free_range(void *start, unsigned int sz)
+> >>>  {
+> >>>       struct dept_task *dt = dept_task();
+> >>>       struct dept_class *c, *n;
+> >>> +     struct dept_event_site_dep *esd, *next_esd;
+> >>> +     struct dept_event_site *es, *next_es;
+> >>>       unsigned long flags;
+> >>>
+> >>>       if (unlikely(!dept_working()))
+> >>> @@ -2405,6 +2437,24 @@ void dept_free_range(void *start, unsigned int sz)
+> >>>       while (unlikely(!dept_lock()))
+> >>>               cpu_relax();
+> >>>
+> >>> +     list_for_each_entry_safe(esd, next_esd, &dept_event_site_deps, all_node) {
+> >>> +             if (!within((void *)esd, start, sz))
+> >>> +                     continue;
+> >>> +
+> >>> +             disconnect_event_site_dep(esd);
+> >>> +             list_del(&esd->all_node);
+> >>> +     }
+> >>> +
+> >>> +     list_for_each_entry_safe(es, next_es, &dept_event_sites, all_node) {
+> >>> +             if (!within((void *)es, start, sz) &&
+> >>> +                 !within(es->name, start, sz) &&
+> >>> +                 !within(es->func_name, start, sz))
+> >>> +                     continue;
+> >>> +
+> >>> +             disconnect_event_site(es);
+> >>> +             list_del(&es->all_node);
+> >>> +     }
+> >>> +
+> >>>       list_for_each_entry_safe(c, n, &dept_classes, all_node) {
+> >>>               if (!within((void *)c->key, start, sz) &&
+> >>>                   !within(c->name, start, sz))
+> >>> @@ -3337,6 +3387,7 @@ void __dept_recover_event(struct dept_event_site_dep *esd,
+> >>>
+> >>>       list_add(&esd->dep_node, &es->dep_head);
+> >>>       list_add(&esd->dep_rev_node, &rs->dep_rev_head);
+> >>> +     list_add(&esd->all_node, &dept_event_site_deps);
+> >>>       check_recover_dl_bfs(esd);
+> >>>  unlock:
+> >>>       dept_unlock();
+> >>> @@ -3347,6 +3398,23 @@ EXPORT_SYMBOL_GPL(__dept_recover_event);
+> >>>
+> >>>  #define B2KB(B) ((B) / 1024)
+> >>>
+> >>> +void dept_mark_event_site_used(void *start, void *end)
+> >>
+> >> Nit: I suggest that dept_mark_event_site_used() take pointers to
+> >> dept_event_site_init, which would catch the type mismatch with
+> >
+> > IMO, this is the easiest way to get all the pointers from start to the
+> > end, or I can't get the number of the pointers.  It's similar to the
+> > initcalls section for device drivers.
 > 
-> *** THIS IS AN RFC ***
-> This series is being submitted as an Request For Comments to discuss the
-> architectural changes required to support dynamic reconfiguration of
-> housekeeping boundaries. Key points for discussion:
-[...]
-> This series provides the necessary infrastructure for cloud-native
-> orchestrators and high-frequency trading platforms to dynamically
-> re-partition CPU resources without incurring the downtime of a reboot.
-
-Could you provide more details of the usecase and hardware / CPU topology? In
-which situations does a boot time isolation boundary not work? I think
-knowing that will help discuss the need for this.
-
-These systems typically have a lot of cores, and only a few of them need to
-be isolated I believe (that's my usecase anyway at my day job).
-
-thanks,
-
---
-Joel Fernandes
-
-
-
-
-
+> This was a minor suggestion.. The idea is to simply change the function
+> signature to:
 > 
-> Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
-> ---
-> Qiliang Yuan (12):
->       sched/isolation: Remove __init restriction from housekeeping cores
->       sched/isolation: Introduce reconfiguration notifier chain
->       genirq: Implement dynamic migration for Managed IRQs
->       rcu: Sync RCU housekeeping mask on notification
->       sched/core: Dynamic update housekeeping_cpumask(HK_TYPE_DOMAIN)
->       watchdog: Allow runtime toggle of hardlockup detector on CPUs
->       workqueue: Dynamic housekeeping mask update support
->       kcompactd: Add housekeeping notifier for dynamic mask update
->       sched/isolation: Separate housekeeping types and add sysfs interface
->       tick/nohz: Implement dynamic nohz_full state update
->       sched/isolation: Implement SMT sibling auto-isolation and safety check
->       sched/isolation: Bridge isolcpus and support runtime tick offload init
+> void dept_mark_event_site_used(struct dept_event_site_init **start,
+>                                struct dept_event_site_init **end))
+
+I got what you meant.  I will.  Thanks.
+
+	Byungchul
+
+> This way, the compiler can provide proper type checking to ensure that
+> correct pointers are passed to dept_mark_event_site_used(). It would
+> catch the type mismatch with module::dept_event_sites.
 > 
->  include/linux/sched/isolation.h |  40 +++++--
->  include/linux/tick.h            |   2 +-
->  kernel/irq/manage.c             |  52 +++++++++
->  kernel/rcu/tree.c               |  43 +++++++
->  kernel/sched/core.c             |   5 +-
->  kernel/sched/isolation.c        | 252 ++++++++++++++++++++++++++++++++++++++--
->  kernel/sched/sched.h            |   2 +-
->  kernel/sched/topology.c         |  26 +++++
->  kernel/time/tick-sched.c        |  63 +++++++++-
->  kernel/watchdog.c               |  24 ++++
->  kernel/workqueue.c              |  39 +++++++
->  mm/compaction.c                 |  26 +++++
->  12 files changed, 547 insertions(+), 27 deletions(-)
-> ---
-> base-commit: 1f97d9dcf53649c41c33227b345a36902cbb08ad
-> change-id: 20260206-feature-dynamic_isolcpus_dhei-ee46b6e3a477
+> >
+> >> module::dept_event_sites.
+> >>
+> >>> +{
+> >>> +     struct dept_event_site_init **evtinitpp;
+> >>> +
+> >>> +     for (evtinitpp = (struct dept_event_site_init **)start;
+> >>> +          evtinitpp < (struct dept_event_site_init **)end;
+> >>> +          evtinitpp++) {
+> >>> +             (*evtinitpp)->evt_site->used = true;
+> >>> +             (*evtinitpp)->evt_site->func_name = (*evtinitpp)->func_name;
+> >>> +             list_add(&(*evtinitpp)->evt_site->all_node, &dept_event_sites);
+> >>> +
+> >>> +             pr_info("dept_event_site %s@%s is initialized.\n",
+> >>> +                             (*evtinitpp)->evt_site->name,
+> >>> +                             (*evtinitpp)->evt_site->func_name);
+> >>> +     }
+> >>> +}
+> >>> +
+> >>>  extern char __dept_event_sites_start[], __dept_event_sites_end[];
+> >>
+> >> Related to the above, __dept_event_sites_start and
+> >> __dept_event_sites_end can already be properly typed here.
+> >
+> > How can I get the number of the pointers?
 > 
-> Best regards,
-> -- 
-> Qiliang Yuan <realwujing@gmail.com>
+> Similarly here, changing the code to:
 > 
+> extern struct dept_event_site_init *__dept_event_sites_start[], *__dept_event_sites_end[];
+> 
+> It is the same for the initcalls you mentioned. The declarations of
+> their start/end symbols are also already properly typed as
+> initcall_entry_t[] in include/linux/init.h.
+> 
+> --
+> Thanks,
+> Petr
