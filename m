@@ -1,262 +1,152 @@
-Received: from YT6PR01CU002.outbound.protection.outlook.com (mail-canadacentralazon11022104.outbound.protection.outlook.com [40.107.193.104])
+Received: from smtpout.efficios.com (smtpout.efficios.com [158.69.130.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FB723AB8D;
-	Mon, 23 Feb 2026 19:41:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.193.104
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771875668; cv=fail; b=eBvNszbBNN0SaPIz/Yr447y+yJbEzO7PHJNzgxJq8S4GPGqffg1bkVdqhAhyJlXzoyVm4cS6v5LOHeCpQw3jPyZX7hxi8ufK8wBMmWRuQx3oPTHKwtF1kehIClgHZmDiFAtpgxS8M18KYCbBBrz1CnLtX7l5iCZPyv30CgACm2A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771875668; c=relaxed/simple;
-	bh=+EW+GuV8iHTpYsyN9snZHxJaxA5kBx/1+SlbxiYYNdM=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Lqbc7Wzy1bcwtixZ3BSgVZ+zme26EmJGhb4qpwDPZo5/wI3vsRjl83mEI7CNuDhy8hAxS28rES/0igI/O+nYBO2/mVzvyNbLPYUF90Cx4OY8DCkrfK3i0vNDJ2ZvmphkpE5cWo1kj4To2v5+Sh/P2ESSObIP6mK3/hfg5429uOE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=DvhcWny+; arc=fail smtp.client-ip=40.107.193.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 322843793CD;
+	Mon, 23 Feb 2026 20:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=158.69.130.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771879471; cv=none; b=u8Hrs1HVvwWsfoKyX1LanS2LP/rcvzGJ6xjVliwb00ZO27w99EB3DizjGfYyCwno4vqCVpVhUuJL1ytCE5OJM345JyhC0ZtU0868atFxBxYlPiT5XkqtvQNm8UxL5ytcwy8hZD4qkyBTApn+TAKsZ6UUxeZOrAia81EP2p+q8jQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771879471; c=relaxed/simple;
+	bh=g+FaGF4g9w6n1f27Rf1cUEUGTAf2ELZ5LZvlfDFrTtk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t0qpKpBP/vXQXPgX6KN1YHYqGjBatKdrbMfC8pv8uzlOxAbb13MJinmVPB/zchhHZk59Xnuis1bMUn0N24Snj/CzYcv6UClNkVFDptRWtSZCPwsb+RG0d2uTZwAX/mbaaZ13RLbBvZYB+81Pyum1uUXzehQGcjvKBGhLDRL8MwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=g58SLHS1; arc=none smtp.client-ip=158.69.130.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="DvhcWny+"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Z71FIw6oAt9IcEmSKLLWOs5xssogYkXQJ6zBMbnS2IeBA+eA/52cFapkESb0bdfDVjVc0ULCbkg7hl9vQj+9ZQumoEZ++8i1Ce+HuicR5qLCEN+XWlmNY/JrRvnskYeBwxzGNWwPa/7LBk9XwQ1k68QHMsYoU0h71q3mLWlkBxNWl/4OgaKbSH94kEgWolt6Lz+AglkLqsTEFi3rwxiliruJ2SBkGUjvGFxvqZjUJ19pYvE0EwO+ve+0jhpqa2hYsI1360suMArv0XICSU3VxTKFpd7nOYv6vzmCGGnNh5CkbgdUroMRU7rcqdyxvyPQeUMULpicWs1NkZGGpWjkfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Oz+act2cg97xQHdoFBHvSMUlBGG/nF/WW9S/pfiNNqE=;
- b=Zvk/Z7r2JTa4dk+NUWJFVtia45vPPYVw5SPRYbY6Vq8oPiFo/dOUoVaglJVXUN5ef2B6JYBt9asvHCxJBvdMOISwtQN8Ev+YaguXF15tKdd/TSdCkvyf/8fyLrr0HZKdYg513SInJC6piuC/wjTM04gdLPum3EIpmTJHrPYe0XBLETbG+aKaywoWCiHICiiASC1hTCIlTqb0MsOui9c7zKR3tbo0MP/K9/L+pRFpVHupgxACW7UQ4m87UU+eatKzWNCfyXQR3K9CMjbK0A+BZSi7KaTXEANRY37NRX9aq1Lj40cnopf9jI5Y51kOte7QSXOkbRY9wjYox5fPlHLEPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
- dkim=pass header.d=efficios.com; arc=none
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="g58SLHS1"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oz+act2cg97xQHdoFBHvSMUlBGG/nF/WW9S/pfiNNqE=;
- b=DvhcWny+d2TB1oS4xwFEPAGSc3PreEeNBrjZ0NLEuN/z4jNdw4LSAI+pr5QozCh1wvke6Y/XDIcrpmW2oELIR4Gh9CD+VKaPg3qi8c/DfRPXyT0+evGM0jmpRH0YJn/+RkUvYaXfzTOAvEslXUnIcz503TPqZwYn+cNQZHarMq+ZUMGHnivPA68Y1MCVgQ3esQaUuaJO26ZNtNMcgNlXRv4yP9o1xgkgpXUvJYUNcnci6MW28MSnli5DrDiDxQ3iG8yx6DfOORBhWP4O9vDhxa2m0iqRI0d7FRjTQRkl48YEFCahbJOUTVIkpCn9mlhhm7cvGXCbzPccm8WEt33b9Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=efficios.com;
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:be::5)
- by YT3PR01MB8964.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:a0::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9632.20; Mon, 23 Feb
- 2026 19:41:03 +0000
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::6004:a862:d45d:90c1]) by YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::6004:a862:d45d:90c1%3]) with mapi id 15.20.9632.017; Mon, 23 Feb 2026
- 19:41:02 +0000
-Message-ID: <ea95a6ac-65a5-4d19-b670-d19b4e0ff7d2@efficios.com>
-Date: Mon, 23 Feb 2026 14:40:59 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v4 4/4] hazptr: Migrate per-CPU slots to backup slot
- on context switch
-To: Boqun Feng <boqun@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, Joel Fernandes
- <joel@joelfernandes.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Alan Stern <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
- Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
- Mateusz Guzik <mjguzik@gmail.com>,
- Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>, rcu@vger.kernel.org,
- linux-mm@kvack.org, lkmm@lists.linux.dev
-References: <20251218014531.3793471-1-mathieu.desnoyers@efficios.com>
- <20251218014531.3793471-5-mathieu.desnoyers@efficios.com>
- <aUR9RfVChdcDncwX@tardis-2.local>
- <bd86f598-97f9-4fc7-b426-01f08974b945@efficios.com>
- <aZyGMp7JbXPfp8Kd@tardis.local>
+	s=smtpout1; t=1771879461;
+	bh=LzrTBUBA9Xan0G/6dErkCnhzk9YByLdnZjMaMmM4OD0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=g58SLHS1WmcC/+tCAn/vwRtUYUR4EZ2G+eGA0Mm7zzs/IussNdmSyMeyLoFZ8Kn5F
+	 XUB8ixuMvQDjZaYpxqzzezrqkImKDTttx9YQoKIjKaKPjnGjs5uzSDK+YAQkiC71GY
+	 BmOkvqpJ3JwovwqCqCS2uQv3mEuylEA9nRYly6n8Bmnes8Tvn8rDlkdNhws98NBd1A
+	 RTiIB4o0E7k8/t1nxbZRt3EbxASXbrj5kyNFLitbO/fv0kggeeqvHQUSvk4hXXoRI8
+	 1UbdHbXT1gXNPgJS7Q6xvrSwmo9FU/uz2qS4XZRnF1HL2GRcQJeGbT7pKzYWa/yEl+
+	 T1yceLaLrW/jA==
+Received: from thinkos.internal.efficios.com (mtl.efficios.com [216.120.195.104])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4fKXs10WhhzGXN;
+	Mon, 23 Feb 2026 15:44:21 -0500 (EST)
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <aZyGMp7JbXPfp8Kd@tardis.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBPR0101CA0350.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:6b::24) To YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:be::5)
+To: Boqun Feng <boqun@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	John Stultz <jstultz@google.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Waiman Long <longman@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	maged.michael@gmail.com,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+	rcu@vger.kernel.org,
+	linux-mm@kvack.org,
+	lkmm@lists.linux.dev
+Subject: [RFC PATCH v5 0/2] Hazard Pointers
+Date: Mon, 23 Feb 2026 15:44:16 -0500
+Message-Id: <20260223204418.1429025-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: YT2PR01MB9175:EE_|YT3PR01MB8964:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5ed06307-6936-47b1-6e05-08de73137a2e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|13003099007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?L0g1NWZFcXdCS202V1VORSs3UG9Pc2NjSDdKUEdtQUlXZDRHdlc3RkJZSVhT?=
- =?utf-8?B?c2dVaDNYMmVWNUdrWkhnMURWSUVzb3FWRnFJVTFQZE1WQ0UzMFlJZlo3cDJk?=
- =?utf-8?B?SEJFaWJsOW5QeHNOODZzamExTkZIemc2ZXNZOCtvemdlVkZMN0hZVGVWeGFq?=
- =?utf-8?B?czlHZFVaUHg1OXI4c3kvYU4ycXBhbHVQL1M4Z0MzRVlva3AzRGpwcVVnUDlP?=
- =?utf-8?B?TXp5VGlkYldsWkQwSVd0ZEtQYzBPMXFsd2lqRlNaMEZWZ3lhS1BQanV4ZXph?=
- =?utf-8?B?dGRlN1k3VmVIanp2Ung0dGRrL0hHeUpXeGI0S2NQTEhaUXZhdm1aM2lYRlNX?=
- =?utf-8?B?ZGorWDlFUTZSWCtseG0vZlVDT1ZMUnhFYlNNRFUxcEVKRlBHYUtVN29abzZl?=
- =?utf-8?B?b0cxNlZXdTM5N3FFbkpoTmdlbW12SXJTYVdTOGVIaVdvV3Uvc0xqeUJtdUQv?=
- =?utf-8?B?bU9aWjZuVE1ISnZPNkp5VmNtcldTYzNsNmQzRWViWXVsNFVDQkx2RHhWKzBq?=
- =?utf-8?B?QTBKRXVDeUp3dC9QNnJqd0ZmTG84NGVVN25nMDlaT2hUUnlkQnA4VnB0dSs2?=
- =?utf-8?B?WkFkSWpKVzNrakRmWDRwclFWYVNEdGk1YTJNSFIvajZ4ZmhPQjUydjhjVUJv?=
- =?utf-8?B?NWJ6cittclRWV0xFNmtqVGd3Z0tRYlB0K2h6b2VKZFFuV2p2M0JGamE0Z0Vl?=
- =?utf-8?B?SEM0R2hhekczcCt1Qys4Skcvb2d2dGtWbk1FNk5ITE1NQmtveG52N3ZNckJ3?=
- =?utf-8?B?d0x5OTg4SVJ4aDJUTjNoM3NFMkUwZVFUazdZWHR0TDB6K1Q5QldaajVsTkhh?=
- =?utf-8?B?U2t2QjhHTnpiK1pTbkgrR3FxTmdiMmVCekZ2WE9neHJTODk0SGFaR2FlWExm?=
- =?utf-8?B?bCtsMjMrRjR4TUo3S3hZMzQvUVNDMXluUHRJNkpzR01wSjVKRjd5czRPYk8y?=
- =?utf-8?B?azl1QklUVmtaV1hVcVRaWWUyT09lR1A5UEY4a05RR0QxU1hCLzVhekhibHlO?=
- =?utf-8?B?S2xCTm95QnhsMnRuUnN4MVdUcmh6K1c2WjhqSXlnMFpyOWpJNXhUSzNpUE8x?=
- =?utf-8?B?QVdpeEgzN0xyRVRnbVVZempaZEtFWWNialMyL1cwcVQwMi9WZWo0UXh4UUJB?=
- =?utf-8?B?bkRyMFdXODBvNjgvMWpWbFdTNjd6SE1rSmN4V2lwWFBaMjZmOUtLUklwdFZ4?=
- =?utf-8?B?ais0NForUDRFR0hZQnlIMmNISnJuTEZmYmpTZzljRGx2blQxRk5IL1B5N3c2?=
- =?utf-8?B?elJ4OGJ4MUhJSmZPV2V0UjcwTGhZQS9GNkJWZHBaRjBjV2x2YmR4Y2hpMElm?=
- =?utf-8?B?UldZUERmZ3ZJVDZvZDJJOTdBZnFNMXFXc2duUGwzaUg2K0NueXh3ei9ObEts?=
- =?utf-8?B?Tjl6WjJmdm0xQ2Q5YS9RbFBzLzNUTmpMdzB2cE9FMVhqWEYwdFBzSUhLRngv?=
- =?utf-8?B?bWUxV2J1SGlTU0laSm0yb1pFenFDRmpjR201QllYQjBUazNSRXh2bWt0cjhK?=
- =?utf-8?B?N2E0TGpvaG93TlRDUEdBNENEd3RiT2UxMWpObjV3NG1vRFNxTDRWRGovK0ND?=
- =?utf-8?B?R0RFcGQwazdNZ1F4MkpCa2VrMlo1T1lYNmEvZjMvdVU3ZHNES2M5UFVvd1BO?=
- =?utf-8?B?b3dJZnRlbEgxcm1EeWlOY2J2bXpEaHp5VmlVdnNJOG52VENZTVJsSWVOeXd1?=
- =?utf-8?B?UVIxWlVIMmttYTU0WDBpZWNzTWNqODBWd0lXVG9sTGRsbEJia09mWE9YSWlm?=
- =?utf-8?B?MllTc0x4dU0wd0VZcU41RnlzUDZPdkdFZ1FJcEgxZ01NYWE2SE04TmJabExI?=
- =?utf-8?B?UTMvMGlSaDFiZ0xFY2J6b3A1MnZMSkN1TnRJYk42TXZwbGhxVFA4VkQyOC9C?=
- =?utf-8?B?TGtYZWJNM1VOYXlJenhwRVBEMk1GTTJLcTJsRzgxNTltb1JzcWN1a0VxNFJR?=
- =?utf-8?B?MEl4NlNwazNzeFZoQ0xpb29MWTRwR2s5dS9GY0dsNGgvTTZVcHdjVDl1YUM1?=
- =?utf-8?Q?GPfpaCbGLCkCycI/EAO3WvHsWDQZRo=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(13003099007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?allaSUhUTDlnVUZsejVlYkZZR05pR1I4ZThPVmpCVEtUUVo0RTBscEppNFha?=
- =?utf-8?B?MU5kRFNXSXcxaCtSMkJ4SkhHT0QxOG5NSVNNdDdKN0MyQzQza1BpdnhiaS9q?=
- =?utf-8?B?M2tCcm5aU1poMXVKL0o4bHVuQ2grNEJKNjEwWXo2QTFYQTZYQW9zRzhobnJD?=
- =?utf-8?B?ZHlOZzRFNUdrRGRnQUZVcElOWWhGQkRtWkN1bzBtNzAycWhrNkNoM1YwRFIv?=
- =?utf-8?B?NEUrRURNNGlYV3VMU1N4RG1tU3FUTWc3V3dpcjNMT0oybEdhRFk0MXZ4S2RG?=
- =?utf-8?B?blUvdkR3b2gzVnZrc3ZoUEFxVDVSeVRWMkwzTDhaTVNvekpjMlhKaUpqWlgv?=
- =?utf-8?B?TWludGJZaW53MnFNRGZVbVNoRWZXZ3g5c2hHbHlId0ZON2hDT2ZIM2NEQ3hV?=
- =?utf-8?B?Qjl4NzErSHVXeUdIZjJwR0dSMStCamREZUhiOHQrRi8vSFNjciswV1g3UjFL?=
- =?utf-8?B?L2dVdzBjZjdKOUFVQVJEbzRwL3Fodng1UkZTanBqU05EKzlXaHprQW5lWnkw?=
- =?utf-8?B?Ulc2eDBKWUo3Njl0N1RUcUVEek1mc3hZNk91cVBNWlQrUzNOWDdyQUpVL1hk?=
- =?utf-8?B?UWJHbzV2OHRQUmRjb3NpVzVuZWJjeXk5OVNvUTI4S201eGMxdm1jV2RlVWF6?=
- =?utf-8?B?L1YwNGl6NGFicHprN2dJMnYveEJPeitaY0tWbGFlZGdtT1RqcGdRVy8zNTBI?=
- =?utf-8?B?QmpzVWVMWFJFQUhsQlFQOTFHMlg0dzhRU0N5N0JrZEJRWGtpc0twWFVPQWlF?=
- =?utf-8?B?S1FNNFdOK0owZ05iNC9rajRHNWY5azlsazB2bHJ2OThGekU0YlZuODJPUTdY?=
- =?utf-8?B?U3VtaUJ5ZVNyajN5Z1Q4R0d4ZVkxZEUxNS9kN0tQZ2tWYm1qNllEWWIrSTdz?=
- =?utf-8?B?WGhzN1IvKzRzNTRkU1dtVVBCM3FnKzRUUGhMTmp3ZkhBN1IxMzdXUnB1UFc1?=
- =?utf-8?B?K0JWQ1FjdUxIUFpHaHJVU3VXRUczWTZvSUZMMkg0dWJBZFB4VldkTjN4eWRC?=
- =?utf-8?B?UldRY0MyS0ZZZ3pmRjdqd05QQXR2TEFnaU4wUitBY1FUZjZNUjhsM0hJZmtx?=
- =?utf-8?B?SlhEdmxOTUlLTFN3dHNiLzRCZWpwRFV6dW5zNXd2SUc2Y0FjMXA1SzAyVW5j?=
- =?utf-8?B?czJ5WEo0S1F2N081dXdlNVA2U05FU1ByaHg2SzE1T1NYYmRHSlBEaVU0NHZp?=
- =?utf-8?B?MWVYbEVVQ0txZTRicUV4eDNtcG5NU1ltNG9FOCttYXJvVE8xYkVzazU4UUZ5?=
- =?utf-8?B?UVM4SStDY3F1TElHRHJodGgrT2k2dkhvdUVMQ2VQVk5xVVVobjVmaktEblFG?=
- =?utf-8?B?b05oZzR2ZkJzbHpiSEMrMHpVUWNXd0pMQm8zMHRYWXNWSlgrS2Fudy9GajFu?=
- =?utf-8?B?MHQ5R1Zmd0Jvb1ovZ3FSbVN4c3RNeTlRTGJnWEo1VTNNTjlLa21qR3VUaUw1?=
- =?utf-8?B?dUZiRUdwcGg0TldMYUN2M1BKajhFZFF1UFhYTDJWRHg4Skx2anpoTzJaUXpu?=
- =?utf-8?B?Y0hlQzdFZEJTYXJkL2ZMYVdibWtaWHNCQUpydFZ3Wk1nOEZoeGNsdEo2OHZZ?=
- =?utf-8?B?UnlTTWM4Umt4SUluTG9neksyTkVKVTFWcEhzQlluQk9mT3prL0JrVExvZDk1?=
- =?utf-8?B?cW53VVpBOGtRNWUvbkN0d3pZV3dzK2dVUWxsVTV4YmhqZzZDaGMrZmVDeUdl?=
- =?utf-8?B?UEhUNWY4TGJIbjFOQ2REMHBJNHU3US9PajVER1BEUm83M0N2QkNQUnA5L0N1?=
- =?utf-8?B?RzhUMUZidk5lN2FNZzQrZlpBK05QMWpUc3dnaGtXQndiN21NKzRJWmZoRnRT?=
- =?utf-8?B?djRkS1ZMOE82eGlmdlVnbGRFODZYS0FTZWRjR2tJK3NTRzk3R09nUWJmNm5O?=
- =?utf-8?B?Z0hmQjhVMEw1Skg1aS9CdVRvMkNlQWFla2h5NXJTUzNkb25zbTFkKy9Ga2M4?=
- =?utf-8?B?S243bUp6YjRHY1A4QnBuK3Z1MTh0SUhnME1ULzdjeFlwVXN3dCtGQ2I1QjhL?=
- =?utf-8?B?cXFjRWJEWVBFLy9rTWNqMEU2MW03d0puUTNZQVhWU2pOa3pWODNzTGVMQzE5?=
- =?utf-8?B?emFRS2N4bDNMUkxWVkx6S2pNVFNNQmQyRU5VVGdvMUpjekYwa1JGZk5EcTBw?=
- =?utf-8?B?ZkVreHE0cElOVEczZGI0NzBaSzkvbDZ0VEJXS1hweGFIUnlQQkkzL2N0TElk?=
- =?utf-8?B?a0RYcUVvNy9LeUd0dEVOVjVKb1hxYVgzWXQ3NlVGd3ltODVxRzRWYkxNQk1N?=
- =?utf-8?B?eW1zVWlJZHlDRXVvQVBZd3daNTFhRllEVEk1MGNhbjU2SCtpaDBtak5iK1RP?=
- =?utf-8?B?WldGNjIvTXhVMmUxU1JQSkljOVJkK3pSeUhDdVMvcnRVN2pubHRlQXhCeXUv?=
- =?utf-8?Q?aIya/tT4Los03q+I=3D?=
-X-OriginatorOrg: efficios.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5ed06307-6936-47b1-6e05-08de73137a2e
-X-MS-Exchange-CrossTenant-AuthSource: YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2026 19:41:02.6413
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fsffcqkdo/rlWy4m5wWpEmJBShC6JUO/6bbH38kJEuvvnmFftKElol3a5LWEByJkUaQl4KYKt2UwVKqm+jGDVw0i6CyliJkHCMmaNbaXVi8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT3PR01MB8964
+Content-Transfer-Encoding: 8bit
 
-On 2026-02-23 11:54, Boqun Feng wrote:
-> Hi Mathieu,
-> 
-> On Thu, Dec 18, 2025 at 07:21:28PM -0500, Mathieu Desnoyers wrote:
->> On 2025-12-18 17:16, Boqun Feng wrote:
->> [...]
->>>
->>> I would suggest we make CONFIG_PREEMPT_HAZPTR always enabled hence no
->>> need for a config, do we have the measurement of the additional cost?
->>
->> Removing the PREEMPT_HAZPTR brings read-side performance
->> from 13.1 down to 5.1 ns. So there is a surprising amount
->> of work that goes into list_add/list_del.
->>
->> I just noticed that I was running a kernel with CONFIG_LIST_HARDENED=y.
->> Reruning refscale for PREEMPT_HAZPTR=y with list hardening disabled
->> goes from 13.1 ns to 12.4ns, so not a huge win.
->>
->> I did not notice much difference in terms of scheduler
->> performance with a quick hackbench run, but I cannot
->> claim it is an extensive benchmark in any way.
->>
->>>
->>> I think you need to add interrupt disabling for chain/unchain because of
->>> the potential readers in interrupt and then you can avoid the preempt
->>> disabling in hazptr_release() I think. Let's aim for supporting readers
->>> in interrupt handler, because at least lockdep needs that.
->>
->> OK, I'll look into it!
->>
-> 
-> Gentle ping on this. I want to make some forward progress on this ;-)
+Here is a v5 of my Hazard Pointers series. I know Boqun has a use case
+for it for lockdep.
 
-Thanks for the ping, I was focused on other things. I do have an updated
-branch to post.
+This new version has those significant changes since v4:
 
-> 
-> I suggest we make PREEMPT_HAZPTR enabled by default and support readers
-> in interrupt handler.
+- Fold scheduler integration.
+- Actually set ctx slot to backup slot on context switch.
+- Remove CONFIG_PREEMPT_HAZPTR config option.
+- Use per-cpu ctx pointers for context switch slot tracking
+  rather than per-task lists. This accelerates the hazptr
+  acquire/release fast-path.
+- Guarantee scan forward progress with two-lists scheme.
+- Reimplement the hazptr acquire with a temporary wildcard
+  to eliminate a dependency on the addr_p load, likely to
+  cause a pipeline stall due to the needed memory barrier.
+  This simplifies the algorithm, removes the need for pointer
+  re-load + comparison, and is expected to be faster on some
+  architectures.
+- Reduce number of percpu slots to 4, introduce a hazptr_slot_item
+  struct to contain both the slot and ctx pointers. Reducing number
+  of slots to 4 makes sure all the slot and ctx pointers fit in a
+  single cache line.
+- Rebased on v7.0-rc1.
 
-Yes, that's what I have in my updated branch.
-
-> The rest missing part is an async thread, we could
-> utilize some code in my previous patchset [1]. Let me know whether you
-> think you have the cycle for this, otherwise I could add this into your
-> series ;-) Thanks!
-
-If that's OK with you, I could post my updated hazptr series for
-feedback, and leave the async thread adaptation to you.
+Feedback is welcome,
 
 Thanks,
 
 Mathieu
 
-> 
-> [1]: https://lore.kernel.org/lkml/20250414060055.341516-1-boqun.feng@gmail.com/
-> 
-> Regards,
-> Boqun
-> 
->> Thanks,
->>
->> Mathieu
->>
->> -- 
->> Mathieu Desnoyers
->> EfficiOS Inc.
->> https://www.efficios.com
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Boqun Feng <boqun@kernel.org>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: John Stultz <jstultz@google.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Zqiang <qiang.zhang1211@gmail.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: maged.michael@gmail.com
+Cc: Mateusz Guzik <mjguzik@gmail.com>
+Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc: rcu@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: lkmm@lists.linux.dev
 
+Mathieu Desnoyers (2):
+  hazptr: Implement Hazard Pointers
+  hazptr: Add refscale test
+
+ include/linux/hazptr.h | 197 +++++++++++++++++++++++++++++++++
+ init/main.c            |   2 +
+ kernel/Makefile        |   2 +-
+ kernel/hazptr.c        | 242 +++++++++++++++++++++++++++++++++++++++++
+ kernel/rcu/refscale.c  |  43 ++++++++
+ kernel/sched/core.c    |   2 +
+ 6 files changed, 487 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/hazptr.h
+ create mode 100644 kernel/hazptr.c
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+2.39.5
