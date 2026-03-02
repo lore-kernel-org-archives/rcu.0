@@ -1,204 +1,313 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6BC175A8B;
-	Mon,  2 Mar 2026 11:46:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1FB3630B9;
+	Mon,  2 Mar 2026 11:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772452009; cv=none; b=qJLhYufMWo9z8nDt8KdhOBhKGzFAqrU0RnXVriJl1z2vqzys+904n/5tYEx48PF12evW7KkbQAmh2k48cnNhG/oBBbWycVqUNP8UUvlekmvmM14A5O9fE+wG83Q1LhPB6z9vB57Tu/XNPxDPIIBLVntF0Mu/3IUr+FtIw+MnBAA=
+	t=1772452081; cv=none; b=hE9B5cym1/NqZcyZzGnxgSCewccwgtufsXiC2BCDvrhjD/sMlqt7733+UgswE4llzq+iOVyEIiyDgTV7JgBhoJ2IZm3PTU9iw5OaG3b0GCMYKDMR2TuTalcNeJDTmcb4IPMtBpZUXv3/KzslCM9vU2CK42YNSvFI1hUX2O3ZBzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772452009; c=relaxed/simple;
-	bh=dZrOA+1QPUYVCXFMovFbCtFNY6xI315tteq+nBYF/HA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZRVdPIZXOSfx1Nfg7uu8imsf7O92u3OnnPxfbnvVyzJ9f1xiGA89mW+3l9ncAkTdo177ueRM7pW2C0W/I16Kmsgzx74exXGwnptXdtWrpD7dq5A0SsqwFdTmo4HGjhB6F8e+zx/9NeZcpc+E4ciQTW2yMNbOyiWlII7AQUwyK5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Kze1Y62c; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1772452081; c=relaxed/simple;
+	bh=WnhUbHQfyQJIDPrp/Y2GjvWsSQVvMy90HVppVYh0lXw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z0KxnH1MoY8D29uWid2GmlEXVU6NchT0AHQVyqdmobbtouPKRT6pKGY5DVBXqMZQh7AMvWQNy/apLnkfWoXGt2V6y/pAW3t3N+tRoEdDvuqibjYcp+tYKKM237iXxsJZiAmdXm5iQsyixce7B/C6HC73jVjprEZw3m5qRF5B0Bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=TgKxA4MW; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Kze1Y62c"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Mee3Fn9fKuTL6HlV7u9HV8PPrdbpMBB1HvOzNZ43Rbw=; b=Kze1Y62c26784z5nuWg/Xdi77E
-	2wYdWPVjwviEZv1JGS5TZQMNiQMgT5dxB9pD1QKcuYuMC8VF8MoWWrPG3xkruJuJ8LHEpBEfO93iI
-	ZDjUThoSflE1iTLxBTeGrL/7XfF9EuI92HfHcz+MNgy68npSDXzet2x4psJhBX0gAi4bt+OnuqFy5
-	pT7ustlANyWPtRO0EQvJkjxvC7XXxQXl0U6amuvUwK0SffpGEys5BrcaZZOQRycJW3H6EnkDpluUa
-	F8E1iAya8jCnpu+NUdQ2taliMbDV1EOleoqtoipj1NroGMJe4yTsID5FzRLjCk+6Z64g+74659Flw
-	d6X2D3yA==;
-Received: from 2001-1c00-8d85-5700-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:5700:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vx1jT-00000009Lim-01SH;
-	Mon, 02 Mar 2026 11:46:39 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id B57B1300B40; Mon, 02 Mar 2026 12:46:36 +0100 (CET)
-Date: Mon, 2 Mar 2026 12:46:36 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Matthieu Baerts <matttbe@kernel.org>,
-	Stefan Hajnoczi <stefanha@redhat.com>,
-	Stefano Garzarella <sgarzare@redhat.com>, kvm@vger.kernel.org,
-	virtualization@lists.linux.dev, Netdev <netdev@vger.kernel.org>,
-	rcu@vger.kernel.org, MPTCP Linux <mptcp@lists.linux.dev>,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <MKoutny@suse.com>,
-	Waiman Long <longman@redhat.com>
-Subject: Re: Stalls when starting a VSOCK listening socket: soft lockups, RCU
- stalls, timeout
-Message-ID: <20260302114636.GL606826@noisy.programming.kicks-ass.net>
-References: <b24ffcb3-09d5-4e48-9070-0b69bc654281@kernel.org>
- <7f3e74d7-67dc-48d7-99d2-0b87f671651b@kernel.org>
- <863a5291-a636-47d0-891c-bb0524d2e134@kernel.org>
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="TgKxA4MW"
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 622BZReh967095;
+	Mon, 2 Mar 2026 11:47:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=VsZVFl
+	zdbS72RyVCs0xyfxyJ5KUyp1s5WmJPWr9w/j0=; b=TgKxA4MWLOw8cJ0djmrUVg
+	56koEF56R+ZGVMY++x/r8O5tXVjH2IDc7EpCeuTySiUVpxma8dBs0PYv2Tkwc2s3
+	FhRNAiXHUVQoWF/dIb1peYX+nZ8rU5BddmnWMk60os9jg/v+ASS+6Y/zJGyvTBlk
+	QSNhZeP+n5UZ+Rsa8RFkP5qsAkorqb3jd6TK7JPjpkULBMq9CxtrYoA70t0Lo2GN
+	CnKmvFs27IJjrZoN99pug6hsmMbXslYtOgOMiMzNh8GX3VL5GLQHyo+mqXcWEpzk
+	GDCa4Rl7YFt0FL+GHTSrkb+AYLBjxq77ef7sJ78kvu+XIcqP9X1usqxnNCsy+zfA
+	==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ckskbp3gj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 02 Mar 2026 11:47:27 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 6229NIrd003275;
+	Mon, 2 Mar 2026 11:47:27 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cmb2xwwsp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 02 Mar 2026 11:47:26 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 622BlPqW15729256
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 2 Mar 2026 11:47:25 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6ABC058063;
+	Mon,  2 Mar 2026 11:47:25 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D18EE58053;
+	Mon,  2 Mar 2026 11:47:17 +0000 (GMT)
+Received: from [9.39.17.112] (unknown [9.39.17.112])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  2 Mar 2026 11:47:17 +0000 (GMT)
+Message-ID: <94b3284b-885d-4263-99ed-728375c1a2b7@linux.ibm.com>
+Date: Mon, 2 Mar 2026 17:17:16 +0530
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <863a5291-a636-47d0-891c-bb0524d2e134@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] cpuhp: Expedite RCU grace periods during SMT
+ operations
+To: Joel Fernandes <joelagnelf@nvidia.com>,
+        Vishal Chourasia <vishalc@linux.ibm.com>
+Cc: peterz@infradead.org, aboorvad@linux.ibm.com, boqun.feng@gmail.com,
+        frederic@kernel.org, josh@joshtriplett.org,
+        linux-kernel@vger.kernel.org, neeraj.upadhyay@kernel.org,
+        paulmck@kernel.org, rcu@vger.kernel.org, rostedt@goodmis.org,
+        srikar@linux.ibm.com, sshegde@linux.ibm.com, tglx@linutronix.de,
+        urezki@gmail.com
+References: <20260218083915.660252-2-vishalc@linux.ibm.com>
+ <20260218083915.660252-6-vishalc@linux.ibm.com>
+ <20260227011352.GA1089964@joelbox2>
+Content-Language: en-US
+From: Samir M <samir@linux.ibm.com>
+In-Reply-To: <20260227011352.GA1089964@joelbox2>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-ORIG-GUID: KvOpgJqZ1zlyzYK-3_Cfbd3EqA70ln14
+X-Authority-Analysis: v=2.4 cv=b66/I9Gx c=1 sm=1 tr=0 ts=69a578cf cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=JfrnYn6hAAAA:8 a=sl4Q1M6oHhL7dvQWE3AA:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10 a=1CNFftbPRP8L7MoqJWF3:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzAyMDA5NyBTYWx0ZWRfX4s5QDiwffLbh
+ wAejgv0dSaotM8mT0VZ8d9RSKWFBgGU52tRr/Fgz4vT50iG1YW9Hhbj3yRSuxWKUaWRYgDmbuXB
+ GSFcVK3/JAnpbycmo5e7Sg6fdeWytQHCbXvpAnL9542SGhR8R+0cMntCWLlj7y8O2BnHeXyv6rN
+ cHKvkhOT/2/5/Z9DXM9mPH2q6rMTYkrUNxPtOa5IVExoJQu7jWWZ2AiKmuG0LggIg4t5yXueh2j
+ L1NumwVzFw/u99DL3gHP9jUvV4nWYFdUauOkGZv7InES6zr+3zuHdMzDysBHLSIca50W9ztzPgM
+ 2k1dxrzEqqpBLXKmysdJpaRNukdZLYisJ539uSYCNqmloRHDoMUS+f2U6vYMCteMRG9GcgGET0Z
+ igxf5+6t3qRuLRArj5TvKhjubP8ZAxQKQ32j7PUhdAWPrYut/s4qJdsWJGOSw38FXjtk3saZvGp
+ +ylmnxYBRxXN3qjQt0A==
+X-Proofpoint-GUID: Mw_V7Jj6Xi8v1BbmJgaQBejTDGqtMq7j
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-02_03,2026-02-27_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015 adultscore=0
+ bulkscore=0 impostorscore=0 malwarescore=0 spamscore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2603020097
 
-On Mon, Mar 02, 2026 at 06:28:38AM +0100, Jiri Slaby wrote:
 
-> The state of the lock:
-> 
-> crash> struct rq.__lock -x ffff8d1a6fd35dc0
->   __lock = {
->     raw_lock = {
->       {
->         val = {
->           counter = 0x40003
->         },
->         {
->           locked = 0x3,
->           pending = 0x0
->         },
->         {
->           locked_pending = 0x3,
->           tail = 0x4
->         }
->       }
->     }
->   },
-> 
+On 27/02/26 6:43 am, Joel Fernandes wrote:
+> On Wed, Feb 18, 2026 at 02:09:18PM +0530, Vishal Chourasia wrote:
+>> Expedite synchronize_rcu during the SMT mode switch operation when
+>> initiated via /sys/devices/system/cpu/smt/control interface
+>>
+>> SMT mode switch operation i.e. between SMT 8 to SMT 1 or vice versa and
+>> others are user driven operations and therefore should complete as soon
+>> as possible. Switching SMT states involves iterating over a list of CPUs
+>> and performing hotplug operations. It was found these transitions took
+>> significantly large amount of time to complete particularly on
+>> high-core-count systems.
+>>
+>> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+>> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
+>> ---
+>>   include/linux/rcupdate.h | 8 ++++++++
+>>   kernel/cpu.c             | 4 ++++
+>>   kernel/rcu/rcu.h         | 4 ----
+>>   3 files changed, 12 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+>> index 7729fef249e1..61b80c29d53b 100644
+>> --- a/include/linux/rcupdate.h
+>> +++ b/include/linux/rcupdate.h
+>> @@ -1190,6 +1190,14 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
+>>   extern int rcu_expedited;
+>>   extern int rcu_normal;
+>>   
+>> +#ifdef CONFIG_TINY_RCU
+>> +static inline void rcu_expedite_gp(void) { }
+>> +static inline void rcu_unexpedite_gp(void) { }
+>> +#else
+>> +void rcu_expedite_gp(void);
+>> +void rcu_unexpedite_gp(void);
+>> +#endif
+>> +
+>>   DEFINE_LOCK_GUARD_0(rcu, rcu_read_lock(), rcu_read_unlock())
+>>   DECLARE_LOCK_GUARD_0_ATTRS(rcu, __acquires_shared(RCU), __releases_shared(RCU))
+>>   
+>> diff --git a/kernel/cpu.c b/kernel/cpu.c
+>> index 62e209eda78c..1377a68d6f47 100644
+>> --- a/kernel/cpu.c
+>> +++ b/kernel/cpu.c
+>> @@ -2682,6 +2682,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+>>   		ret = -EBUSY;
+>>   		goto out;
+>>   	}
+>> +	rcu_expedite_gp();
+> After the locking related changes in patch 1, is expediting still required? I
+> am just a bit concerned that we are papering over the real issue of over
+> usage of synchronize_rcu() (which IIRC we discussed in earlier versions of
+> the patches that reducing the number of lock acquire/release was supposed to
+> help.)
+>
+> Could you provide more justification of why expediting these sections is
+> required if the locking concerns were addressed? It would be great if you can
+> provide performance numbers with only the first patch and without the second
+> patch. That way we can quantify this patch.
+>
+> thanks,
+>
+> --
+> Joel Fernandes
+>
+Hi Vishal/Joel,
 
 
-That had me remember the below patch that never quite made it. I've
-rebased it to something more recent so it applies.
+Configuration:
+     •    Kernel version: 7.0.0-rc1
+     •    Number of CPUs: 1536
 
-If you stick that in, we might get a clue as to who is owning that lock.
-Provided it all wants to reproduce well enough.
+I have verified the below two patches together and observed improvements,
+Patch 1: 
+https://lore.kernel.org/all/20260218083915.660252-4-vishalc@linux.ibm.com/
 
----
-Subject: locking/qspinlock: Save previous node & owner CPU into mcs_spinlock
-From: Waiman Long <longman@redhat.com>
-Date: Fri, 3 May 2024 22:41:06 -0400
+Patch 2: 
+https://lore.kernel.org/all/20260218083915.660252-6-vishalc@linux.ibm.com/
+SMT Mode    | Without Patch(Base) | both patch applied | % Improvement  |
+------------------------------------------------------------------------|
+SMT=off     | 16m 13.956s         |     6m 18.435s     |  +61.14 %      |
+SMT=on      | 12m 0.982s          |     5m 59.576s     |  +50.10 %      |
 
-From: Waiman Long <longman@redhat.com>
+When I tested the below patch independently, I did not observe any 
+improvements for either smt=on or smt=off. However, in the smt=off 
+scenario, I encountered hung task splats (with call traces), where some 
+threads were blocked on cpus_read_lock. Please also refer to the 
+attached call trace below.
+Patch 1: 
+https://lore.kernel.org/all/20260218083915.660252-4-vishalc@linux.ibm.com/
 
-When examining a contended spinlock in a crash dump, we can only find
-out the tail CPU in the MCS wait queue. There is no simple way to find
-out what other CPUs are waiting for the spinlock and which CPU is the
-lock owner.
+SMT Mode    | Without Patch(Base) | just patch 1 applied   | % 
+Improvement  |
+----------------------------------------------------------------------------|
+SMT=off     | 16m 13.956s         |     16m 9.793s         |  +0.43 %    
+    |
+SMT=on      | 12m 0.982s          |     12m 19.494s        |  -2.57 %    
+    |
 
-Make it easier to figure out these information by saving previous node
-data into the mcs_spinlock structure. This will allow us to reconstruct
-the MCS wait queue from tail to head. In order not to expand the size
-of mcs_spinlock, the original count field is split into two 16-bit
-chunks. The first chunk is for count and the second one is the new
-prev_node value.
 
-  bits 0-1 : qnode index
-  bits 2-15: CPU number + 1
+Call traces:
+12377] [  T8746]    Tainted: G      E 7.0.0-rc1-150700.51-default-dirty #1
+[ 1477.612384] [  T8746] "echo 0 > 
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[ 1477.612389] [  T8746] task:systemd     state:D stack:0   pid:1 
+  tgid:1   ppid:0   task_flags:0x400100 flags:0x00040000
+[ 1477.612397] [  T8746] Call Trace:
+[ 1477.612399] [  T8746] [c00000000cc0f4f0] [0000000000100000] 0x100000 
+(unreliable)
+[ 1477.612416] [  T8746] [c00000000cc0f6a0] [c00000000001fe5c] 
+__switch_to+0x1dc/0x290
+[ 1477.612425] [  T8746] [c00000000cc0f6f0] [c0000000012598ac] 
+__schedule+0x40c/0x1a70
+[ 1477.612433] [  T8746] [c00000000cc0f840] [c00000000125af58] 
+schedule+0x48/0x1a0
+[ 1477.612439] [  T8746] [c00000000cc0f870] [c0000000002e27b8] 
+percpu_rwsem_wait+0x198/0x200
+[ 1477.612445] [  T8746] [c00000000cc0f8f0] [c000000001262930] 
+__percpu_down_read+0xb0/0x210
+[ 1477.612449] [  T8746] [c00000000cc0f930] [c00000000022f400] 
+cpus_read_lock+0xc0/0xd0
+[ 1477.612456] [  T8746] [c00000000cc0f950] [c0000000003a6398] 
+cgroup_procs_write_start+0x328/0x410
+[ 1477.612462] [  T8746] [c00000000cc0fa00] [c0000000003a9620] 
+__cgroup_procs_write+0x70/0x2c0
+[ 1477.612468] [  T8746] [c00000000cc0fac0] [c0000000003a98e8] 
+cgroup_procs_write+0x28/0x50
+[ 1477.612473] [  T8746] [c00000000cc0faf0] [c0000000003a1624] 
+cgroup_file_write+0xb4/0x240
+[ 1477.612478] [  T8746] [c00000000cc0fb50] [c000000000853ba8] 
+kernfs_fop_write_iter+0x1a8/0x2a0
+[ 1477.612485] [  T8746] [c00000000cc0fba0] [c000000000733d5c] 
+vfs_write+0x27c/0x540
+[ 1477.612491] [  T8746] [c00000000cc0fc50] [c000000000734350] 
+ksys_write+0x80/0x150
+[ 1477.612495] [  T8746] [c00000000cc0fca0] [c000000000032898] 
+system_call_exception+0x148/0x320
+[ 1477.612500] [  T8746] [c00000000cc0fe50] [c00000000000d6a0] 
+system_call_common+0x160/0x2c4
+[ 1477.612506] [  T8746] ---- interrupt: c00 at 0x7fffa8f73df4
+[ 1477.612509] [  T8746] NIP: 00007fffa8f73df4 LR: 00007fffa8eb6144 CTR: 
+0000000000000000
+[ 1477.612512] [  T8746] REGS: c00000000cc0fe80 TRAP: 0c00 Tainted: G    
+   E    (7.0.0-rc1-150700.51-default-dirty)
+[ 1477.612515] [  T8746] MSR: 800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE> 
+CR: 28002288 XER: 00000000
 
-This prev_node value may be truncated if there are 16k or more CPUs in
-the system.
 
-The locked value in the queue head is also repurposed to hold an encoded
-qspinlock owner CPU number when acquiring the lock in the qspinlock
-slowpath of an contended lock.
 
-This lock owner information will not be available when the lock is
-acquired directly in the fast path or in the pending code path. There
-is no easy way around that.
+Regards,
+Samir
+>>   	/* Hold cpus_write_lock() for entire batch operation. */
+>>   	cpus_write_lock();
+>>   	for_each_online_cpu(cpu) {
+>> @@ -2714,6 +2715,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+>>   	if (!ret)
+>>   		cpu_smt_control = ctrlval;
+>>   	cpus_write_unlock();
+>> +	rcu_unexpedite_gp();
+>>   	arch_smt_update();
+>>   out:
+>>   	cpu_maps_update_done();
+>> @@ -2733,6 +2735,7 @@ int cpuhp_smt_enable(void)
+>>   	int cpu, ret = 0;
+>>   
+>>   	cpu_maps_update_begin();
+>> +	rcu_expedite_gp();
+>>   	/* Hold cpus_write_lock() for entire batch operation. */
+>>   	cpus_write_lock();
+>>   	cpu_smt_control = CPU_SMT_ENABLED;
+>> @@ -2749,6 +2752,7 @@ int cpuhp_smt_enable(void)
+>>   		cpuhp_online_cpu_device(cpu);
+>>   	}
+>>   	cpus_write_unlock();
+>> +	rcu_unexpedite_gp();
+>>   	arch_smt_update();
+>>   	cpu_maps_update_done();
+>>   	return ret;
+>> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+>> index dc5d614b372c..41a0d262e964 100644
+>> --- a/kernel/rcu/rcu.h
+>> +++ b/kernel/rcu/rcu.h
+>> @@ -512,8 +512,6 @@ do {									\
+>>   static inline bool rcu_gp_is_normal(void) { return true; }
+>>   static inline bool rcu_gp_is_expedited(void) { return false; }
+>>   static inline bool rcu_async_should_hurry(void) { return false; }
+>> -static inline void rcu_expedite_gp(void) { }
+>> -static inline void rcu_unexpedite_gp(void) { }
+>>   static inline void rcu_async_hurry(void) { }
+>>   static inline void rcu_async_relax(void) { }
+>>   static inline bool rcu_cpu_online(int cpu) { return true; }
+>> @@ -521,8 +519,6 @@ static inline bool rcu_cpu_online(int cpu) { return true; }
+>>   bool rcu_gp_is_normal(void);     /* Internal RCU use. */
+>>   bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
+>>   bool rcu_async_should_hurry(void);  /* Internal RCU use. */
+>> -void rcu_expedite_gp(void);
+>> -void rcu_unexpedite_gp(void);
+>>   void rcu_async_hurry(void);
+>>   void rcu_async_relax(void);
+>>   void rcupdate_announce_bootup_oddness(void);
+>> -- 
+>> 2.53.0
+>>
 
-These changes should make analysis of a contended spinlock in a crash
-dump easier.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://patch.msgid.link/20240504024106.654319-1-longman@redhat.com
----
- include/asm-generic/mcs_spinlock.h |    5 +++--
- kernel/locking/mcs_spinlock.h      |    8 +++++++-
- kernel/locking/qspinlock.c         |    8 ++++++++
- 3 files changed, 18 insertions(+), 3 deletions(-)
-
---- a/include/asm-generic/mcs_spinlock.h
-+++ b/include/asm-generic/mcs_spinlock.h
-@@ -3,8 +3,9 @@
- 
- struct mcs_spinlock {
- 	struct mcs_spinlock *next;
--	int locked; /* 1 if lock acquired */
--	int count;  /* nesting count, see qspinlock.c */
-+	int locked;	 /* non-zero if lock acquired */
-+	short count;	 /* nesting count, see qspinlock.c */
-+	short prev_node; /* encoded previous node value */
- };
- 
- /*
---- a/kernel/locking/mcs_spinlock.h
-+++ b/kernel/locking/mcs_spinlock.h
-@@ -13,6 +13,12 @@
- #ifndef __LINUX_MCS_SPINLOCK_H
- #define __LINUX_MCS_SPINLOCK_H
- 
-+/*
-+ * Save an encoded version of the current MCS lock owner CPU to the
-+ * mcs_spinlock structure of the next lock owner.
-+ */
-+#define MCS_LOCKED	(smp_processor_id() + 1)
-+
- #include <asm/mcs_spinlock.h>
- 
- #ifndef arch_mcs_spin_lock_contended
-@@ -34,7 +40,7 @@
-  * unlocking.
-  */
- #define arch_mcs_spin_unlock_contended(l)				\
--	smp_store_release((l), 1)
-+	smp_store_release((l), MCS_LOCKED)
- #endif
- 
- /*
---- a/kernel/locking/qspinlock.c
-+++ b/kernel/locking/qspinlock.c
-@@ -250,6 +250,7 @@ void __lockfunc queued_spin_lock_slowpat
- 
- 	node->locked = 0;
- 	node->next = NULL;
-+	node->prev_node = 0;
- 	pv_init_node(node);
- 
- 	/*
-@@ -278,6 +279,13 @@ void __lockfunc queued_spin_lock_slowpat
- 	next = NULL;
- 
- 	/*
-+	 * The prev_node value is saved for crash dump analysis purpose only,
-+	 * it is not used within the qspinlock code. The encoded node value
-+	 * may be truncated if there are 16k or more CPUs in the system.
-+	 */
-+	node->prev_node = old >> _Q_TAIL_IDX_OFFSET;
-+
-+	/*
- 	 * if there was a previous node; link it and wait until reaching the
- 	 * head of the waitqueue.
- 	 */
