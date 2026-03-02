@@ -1,131 +1,76 @@
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC4E62E7657;
-	Mon,  2 Mar 2026 16:25:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8522742F54F;
+	Mon,  2 Mar 2026 17:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772468722; cv=none; b=goGUUbOHdc0ErP1fd6WgfrSzY1jH3zpyeF7YiSO9/M7uzT2K0axdu8X9NLjMZlrUYXEHw0ny/nGEtglC0olPjnDQIcK9pDQkS7eGWfaAkKGqD1AlFoG+O2asPQjVoQGIhJoqX4Jfo5bgTHW8iA0ryRIMrqqeNrPLpgxgLh1lBM4=
+	t=1772473056; cv=none; b=P+2ulbXPojJ4IXjrWyU8EMEGbrUVspFUSXw/Q6SaCwLQfwZKy34HE5ddmebGytbXhW3/yvoek+5C1F2Kd6dEfKIbzesoBuJKbDtrnq5x+iqivoPwZ9Aw3AVGwVpBICkNort5kGshLNuPDrwvNzHJPzXAVkyUXB/V0r/l6M92lt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772468722; c=relaxed/simple;
-	bh=INCh/bpXbRd4qHR3Fkdtyzr6JZ3/Fj5/uDWogmM5+4o=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mqLb+8Ff91PtGcNbgD8YGEQHEeeaKi765bVRpS7lJLu2aFYC6RXeUMNXLNbBLCJnuosj0x6UfmFTvkMcRFv+gaXU4Qgq96Lz423DdYvYR5UOiL5Vcpqe3rRumVEE0qqX33aQb8vM7TmgTMU0o/wB6EPVpSNC/+KOjiyXNmgwnHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id C44B81A01FF;
-	Mon,  2 Mar 2026 16:25:17 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id EE4ED2F;
-	Mon,  2 Mar 2026 16:25:13 +0000 (UTC)
-Date: Mon, 2 Mar 2026 11:25:45 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Sasha Levin <sashal@kernel.org>
+	s=arc-20240116; t=1772473056; c=relaxed/simple;
+	bh=dRB0F4V6ayCiHSRIZ6hMdlNv3etVugXHS4j3fir50pw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mnoBYbvH/nSxNqtHSrsnQxinhSqz1FLmO/tnFCZNCQEFstDc8ZjZr+ywTfIozWyCIdnPLoMWU3sGVKBzIQdRIHAcRT76QPHimmwZv6ThuBfKXQpfRBs9bO4/vpqjjg6yFY2klNoc0Zjk4KIjy0ZKYXHKswdHRww2w4rOVv8HH8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=deygbcZZ; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="deygbcZZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E133BC2BC87;
+	Mon,  2 Mar 2026 17:37:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772473056;
+	bh=dRB0F4V6ayCiHSRIZ6hMdlNv3etVugXHS4j3fir50pw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=deygbcZZHQ0tLbWuge7w1YrRcKUtMT46TzMv0o50uOLUvUgpmjxMJwqEAFaxBrWTW
+	 1t4gqvrfHS0jtvW2bXLtIgz/55hT5BEr9WmWlW6W4cD5naVMpxH1PGRKea3t/oBuZh
+	 WI8jR2cJoGP+tyPEzryvqgSVjWFB564m6KNwYAVrMpvSKlPAQBE0h6aY14tnt3SN/+
+	 7FOzbO0zYuK64JL+AgoQ8GV2OHREkjMxDZQbqcCxqewPfbc0hEs4fh32ixFUbZdKu5
+	 uWJGl4wR6pqj0dfGPwAwbcZHSuiCtzag8pM1PpnoiO3sy79Vjg/hCGNffz8WdPNnV5
+	 gky/6ZMqzUJ6A==
+Date: Mon, 2 Mar 2026 12:37:24 -0500
+From: Sasha Levin <sashal@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
 Cc: Zw Tang <shicenci@gmail.com>, paulmck@kernel.org, peterz@infradead.org,
- mhiramat@kernel.org, jiangshanlai@gmail.com, mingo@redhat.com,
- acme@kernel.org, namhyung@kernel.org, rcu@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- josh@joshtriplett.org, bigeasy@linutronix.de, ast@kernel.org,
- boqun.feng@gmail.com, mark.rutland@arm.com
+	mhiramat@kernel.org, jiangshanlai@gmail.com, mingo@redhat.com,
+	acme@kernel.org, namhyung@kernel.org, rcu@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+	bigeasy@linutronix.de, ast@kernel.org, boqun.feng@gmail.com,
+	mark.rutland@arm.com
 Subject: Re: [BUG] RCU stall / hung rcu_gp: process_srcu blocked in
  synchronize_rcu_normal triggered by perf trace teardown on 7.0.0-rc1
-Message-ID: <20260302112545.51f7e100@gandalf.local.home>
-In-Reply-To: <20260302133615.2304836-1-sashal@kernel.org>
+Message-ID: <aaXK1EV63H6sdG7c@laps>
 References: <CAPHJ_VLUpgBO7VfF4ih2oy2HDCxvxkHRkryFUjHAm8QTNdF6Sg@mail.gmail.com>
-	<20260302133615.2304836-1-sashal@kernel.org>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <20260302133615.2304836-1-sashal@kernel.org>
+ <20260302112545.51f7e100@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: EE4ED2F
-X-Stat-Signature: c9h734z43d18tq3d6taneqa6ehjqt9dn
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+MwzVD54+qlDxdCKOsmvKSIKQh6hT27Ek=
-X-HE-Tag: 1772468713-1784
-X-HE-Meta: U2FsdGVkX1+y5RqaJa5rhFrfyPhu9I6mT8F4SaXsALwimCrOZNItotAb4Pk3fIyUtI8PM4ued8qKJ9hXjpJv3O8roX/GUIfbSyEatVQz5FXClPe29PSbft0GVrnRQMtjmSMjNd/Kj7jXY1hSIpDUWFvAxoAjqVi2mW1FTC5c6BULPmmbpVO1HUMDHA1IhVzIE2bdv2Y8HC6tYlmSxw0s/7Sbn4n3IJ20XcGp4at+6YAtL7sCamLyj2VNwJF7YxTis2oNtLETIkHImz8dc47wgWfXM2SWhqS72IhotnIhUxGR268bc4jZ2Kyc7gZM8CCK2hiH5echU5aq4/9qLmZWWuwXMqLoQJkI
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260302112545.51f7e100@gandalf.local.home>
 
-On Mon,  2 Mar 2026 08:36:13 -0500
-Sasha Levin <sashal@kernel.org> wrote:
+On Mon, Mar 02, 2026 at 11:25:45AM -0500, Steven Rostedt wrote:
+>On Mon,  2 Mar 2026 08:36:13 -0500
+>Sasha Levin <sashal@kernel.org> wrote:
+>
+>> This response was AI-generated by bug-bot. The analysis may contain errors — please verify independently.
+>>
+>> ## Bug Summary
+>>
+>> This is an RCU stall and hung task deadlock on 7.0.0-rc1, triggered by perf trace teardown under perf interrupt storm conditions. The perf subsystem's tracepoint unregistration path now blocks on SRCU (tracepoint_srcu), which in turn blocks on RCU grace period completion, creating a cascading stall when RCU progress is delayed by perf NMI interrupt storms. Severity: system hang (multiple tasks blocked >143s, eventual complete stall).
+>
+>Hmm, this analysis corresponds nicely to what I was thinking when looking
+>at the stack dumps, but it gives a bit more details than I would have.
 
-> This response was AI-generated by bug-bot. The analysis may contain error=
-s =E2=80=94 please verify independently.
->=20
-> ## Bug Summary
->=20
-> This is an RCU stall and hung task deadlock on 7.0.0-rc1, triggered by pe=
-rf trace teardown under perf interrupt storm conditions. The perf subsystem=
-'s tracepoint unregistration path now blocks on SRCU (tracepoint_srcu), whi=
-ch in turn blocks on RCU grace period completion, creating a cascading stal=
-l when RCU progress is delayed by perf NMI interrupt storms. Severity: syst=
-em hang (multiple tasks blocked >143s, eventual complete stall).
+Thanks for the feedback!
 
-Hmm, this analysis corresponds nicely to what I was thinking when looking
-at the stack dumps, but it gives a bit more details than I would have.
+I'll finish fine-tuning this script, and publish it in a day or two :)
 
-> ## Root Cause Analysis
->=20
-> This is a regression introduced by commit a46023d5616ed ("tracing: Guard =
-__DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast"), which switched=
- tracepoint read-side protection from preempt_disable()+RCU to SRCU-fast vi=
-a DEFINE_SRCU_FAST(tracepoint_srcu).
-
-Yes, as soon as I saw the report, I knew it had to do with this commit.
-
->=20
-> The root cause is a new coupling between SRCU grace period processing and=
- RCU grace period completion that did not exist before. The deadlock chain =
-is:
->=20
-> 1. The reproducer creates perf events using tracepoints, then closes them=
- while generating heavy perf interrupt load. The perf NMI interrupt storms =
-("perf: interrupt took too long" messages escalating from 69ms to 336ms) co=
-nsume most CPU time, starving RCU quiescent state detection.
-
-The real bug is the NMI interrupt storms. The commit above only makes it
-more of an issue, but that commit itself is not the bug.
-
-
-> ## Suggested Actions
->=20
-> 1. Confirm the regression by testing with the parent commit a77cb6a867667=
- (immediately before a46023d5616ed). If the issue disappears, this confirms=
- the SRCU-fast tracepoint switch as the cause.
->=20
-> 2. As a quick workaround, reverting a46023d5616ed (and its preparatory co=
-mmits a77cb6a867667, f7d327654b886, 16718274ee75d if needed) should elimina=
-te the deadlock, at the cost of losing preemptible BPF tracepoint support.
-
-That is not the answer, as the above only made the current bug (interrupt
-storms) visible.
-
->=20
-> 3. The fundamental issue is that process_srcu() for SRCU-fast structures =
-calls synchronize_rcu() synchronously from workqueue context. Possible fixe=
-s include:
->    - Using an asynchronous mechanism (e.g., call_rcu() with a callback to=
- resume SRCU GP processing) instead of blocking synchronize_rcu() within th=
-e SRCU state machine.
->    - Having srcu_readers_active_idx_check() use poll_state_synchronize_rc=
-u() and defer retrying instead of blocking.
->    - Bounding the perf interrupt rate escalation to prevent the RCU stall=
- in the first place (though this would only mask the underlying SRCU=E2=86=
-=94RCU coupling issue).
->=20
-> 4. If you can reproduce reliably, adding the following debug options woul=
-d provide more information: CONFIG_RCU_TRACE=3Dy, CONFIG_PROVE_RCU=3Dy, and=
- booting with rcutree.rcu_kick_kthreads=3D1 to see if kicking the RCU threa=
-ds helps break the stall.
-
-
-The real fix is to find a way to disable the perf interrupt storms *before*
-unregistering the tracepoint.
-
--- Steve
+-- 
+Thanks,
+Sasha
