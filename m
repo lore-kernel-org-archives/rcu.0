@@ -1,170 +1,227 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54835368287;
-	Mon,  2 Mar 2026 13:36:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51BB43FFAC9
+	for <rcu@vger.kernel.org>; Mon,  2 Mar 2026 14:30:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772458583; cv=none; b=okR9s18Td/X4htnDbVL/EmoBw10922L/VdGcYl5ihgsH8oGzcuL7oTxj68BvocPZyL5GOS0zhDsttxifjTD6XiGjRlIpuMMS0cog8uHXFHTNRRe7kxNlHVl5JRxG+bSnH7iAaZZ2wicoKSY0AIAld4334mNXYCih/aIZ8LYprTQ=
+	t=1772461832; cv=none; b=bPXTQwjHNKI3mSeR+1JAoqfCcmSIYw1qZWBqzbo35YoGZSIe91TkYSgjjzuyA9oFnFtkCxJPpSxIbKE3E/B70p0oSlXzSvhZeGfLVTTg1rMiTpaG+19LJ8pKBXPt9gAeLxlkd560Dh1E+5yf94XZrOxPhYPqh78FbStNqa1P1L8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772458583; c=relaxed/simple;
-	bh=fMRdF3okAKkyyQekwpy5I+dvZnlkqm7yHgTMP8F6O2A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LsgzL5U/feHZG66L5ezMsGevJ9g+VqNTNu3zcZwooyvIJuqd9B7MQbQMxKLSB3jbYdju1BSCT9FYDFEJbwA5yyne3HI2r9mEQ+ewB2wOb4V2iEj6FkloHtmtD9wjM5vQnDwJhC316FfCIPnXPqlFxXj2dKf7us6jCgnoygGfAsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lyS1fVNX; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1772461832; c=relaxed/simple;
+	bh=go/HfHG2FhJ+w9bQEAGjLmNf1Gd9GlG8R02BB56S9xs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Uofie87GROTqCP50Dy0bCtnf3Ja1/6ocfc3mfKoVkWWD50M/lWH6653C5Xt07PEE8VgU7GfLg1///2/W1NKYQ4zw6O6iZZwOkIKXH9j3qXcab/U3MjLifnO+Wlg4f+mENLDp8idQrD45TwMSjW2YUvnuUX9rWkpFYyCVEPTiQe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AE5ii4C9; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lyS1fVNX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E7AAC19423;
-	Mon,  2 Mar 2026 13:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772458582;
-	bh=fMRdF3okAKkyyQekwpy5I+dvZnlkqm7yHgTMP8F6O2A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lyS1fVNXhbsXt2BOxYUCBDAufPEWO+b7WrP8Nv5lokqe7KrWrvDugsZZvAIVDK7BY
-	 ho4AC7+IITRbUweff1PUwu0+nPADk1yMfXfiuIaDgiOlo8daIrVXqBTs+WEFISxnmr
-	 KBBBqd+I/fQA6a00dlS85FqgT5N5kOkYkvN04SLon8+BB2SGKmBrSQo9CA3iAvemSA
-	 L8k4bsUCyPLzAXtGVb9JypTIPUQppVE0oz23zVYkFquP2aCjY5ULvOKFyI/EoIIoEK
-	 tBnrOpZmeojNTmfdfAD991F0ZolDlN3ORvPid478VlIJrZ9WWpQDV51kQxBIfN0GdH
-	 o/Rd0WG4DYXXw==
-From: Sasha Levin <sashal@kernel.org>
-To: Zw Tang <shicenci@gmail.com>,
-	paulmck@kernel.org,
-	peterz@infradead.org,
-	mhiramat@kernel.org
-Cc: Sasha Levin <sashal@kernel.org>,
-	jiangshanlai@gmail.com,
-	mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	rcu@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	josh@joshtriplett.org,
-	bigeasy@linutronix.de,
-	ast@kernel.org,
-	boqun.feng@gmail.com,
-	mark.rutland@arm.com
-Subject: Re: [BUG] RCU stall / hung rcu_gp: process_srcu blocked in synchronize_rcu_normal triggered by perf trace teardown on 7.0.0-rc1
-Date: Mon,  2 Mar 2026 08:36:13 -0500
-Message-ID: <20260302133615.2304836-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <CAPHJ_VLUpgBO7VfF4ih2oy2HDCxvxkHRkryFUjHAm8QTNdF6Sg@mail.gmail.com>
-References: <CAPHJ_VLUpgBO7VfF4ih2oy2HDCxvxkHRkryFUjHAm8QTNdF6Sg@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AE5ii4C9"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1772461830;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SSIOGuuIrHUJItOjt9CUoocoM/Zq4Wh4orGn8CXzeGs=;
+	b=AE5ii4C97OM+1QJajeRpiIenfmKZAteN/UWQR7pQrLcXXcSsjySiBN4Mg7Nd9AXTDaAFna
+	ueVAr0q0z8X9X97vQgRphgbhV6zjLdt6521x6rjQc8QaP/7jRWSvLm4tdduYSChIVWraSv
+	owxq76C55kTdnZnMraCnxEYXe3LLyxU=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-547-n6LlL0JgN5qdE3OoDNWahA-1; Mon,
+ 02 Mar 2026 09:30:25 -0500
+X-MC-Unique: n6LlL0JgN5qdE3OoDNWahA-1
+X-Mimecast-MFC-AGG-ID: n6LlL0JgN5qdE3OoDNWahA_1772461823
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AB42B1800581;
+	Mon,  2 Mar 2026 14:30:22 +0000 (UTC)
+Received: from [10.22.65.79] (unknown [10.22.65.79])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B784F1800348;
+	Mon,  2 Mar 2026 14:30:19 +0000 (UTC)
+Message-ID: <d828fd84-55f5-4392-8afb-d5b1c539a2ef@redhat.com>
+Date: Mon, 2 Mar 2026 09:30:18 -0500
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: Stalls when starting a VSOCK listening socket: soft lockups, RCU
+ stalls, timeout
+To: Peter Zijlstra <peterz@infradead.org>, Jiri Slaby <jirislaby@kernel.org>
+Cc: Matthieu Baerts <matttbe@kernel.org>,
+ Stefan Hajnoczi <stefanha@redhat.com>,
+ Stefano Garzarella <sgarzare@redhat.com>, kvm@vger.kernel.org,
+ virtualization@lists.linux.dev, Netdev <netdev@vger.kernel.org>,
+ rcu@vger.kernel.org, MPTCP Linux <mptcp@lists.linux.dev>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Thomas Gleixner <tglx@kernel.org>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "luto@kernel.org"
+ <luto@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <MKoutny@suse.com>
+References: <b24ffcb3-09d5-4e48-9070-0b69bc654281@kernel.org>
+ <7f3e74d7-67dc-48d7-99d2-0b87f671651b@kernel.org>
+ <863a5291-a636-47d0-891c-bb0524d2e134@kernel.org>
+ <20260302114636.GL606826@noisy.programming.kicks-ass.net>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20260302114636.GL606826@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-This response was AI-generated by bug-bot. The analysis may contain errors — please verify independently.
+On 3/2/26 6:46 AM, Peter Zijlstra wrote:
+> On Mon, Mar 02, 2026 at 06:28:38AM +0100, Jiri Slaby wrote:
+>
+>> The state of the lock:
+>>
+>> crash> struct rq.__lock -x ffff8d1a6fd35dc0
+>>    __lock = {
+>>      raw_lock = {
+>>        {
+>>          val = {
+>>            counter = 0x40003
+>>          },
+>>          {
+>>            locked = 0x3,
+>>            pending = 0x0
+>>          },
+>>          {
+>>            locked_pending = 0x3,
+>>            tail = 0x4
+>>          }
+>>        }
+>>      }
+>>    },
+>>
+>
+> That had me remember the below patch that never quite made it. I've
+> rebased it to something more recent so it applies.
+>
+> If you stick that in, we might get a clue as to who is owning that lock.
+> Provided it all wants to reproduce well enough.
+>
+> ---
+> Subject: locking/qspinlock: Save previous node & owner CPU into mcs_spinlock
+> From: Waiman Long <longman@redhat.com>
+> Date: Fri, 3 May 2024 22:41:06 -0400
 
-## Bug Summary
+Oh, I forgot about that patch. I should had followed up at that time. 
+BTW, a lock value of 3 means that it is running paravirtual qspinlock. 
+It also means that we may not know exactly what the lock owner is if it 
+was acquired by lock stealing.
 
-This is an RCU stall and hung task deadlock on 7.0.0-rc1, triggered by perf trace teardown under perf interrupt storm conditions. The perf subsystem's tracepoint unregistration path now blocks on SRCU (tracepoint_srcu), which in turn blocks on RCU grace period completion, creating a cascading stall when RCU progress is delayed by perf NMI interrupt storms. Severity: system hang (multiple tasks blocked >143s, eventual complete stall).
+Cheers,
+Longman
 
-## Stack Trace Analysis
-
-The bug involves three interacting blocked entities. Here are the decoded stack traces:
-
-**1. repro2 (pid 4086) - blocked in perf trace teardown (close()):**
-```
-__x64_sys_close
-  fput_close_sync
-    __fput
-      perf_release
-        perf_event_release_kernel
-          put_event
-            __free_event
-              perf_trace_destroy
-                perf_trace_event_unreg         [kernel/trace/trace_event_perf.c:154]
-                  tracepoint_synchronize_unregister [include/linux/tracepoint.h:116]
-                    synchronize_srcu(&tracepoint_srcu)
-                      __synchronize_srcu
-                        wait_for_completion    ← BLOCKED
-```
-
-**2. kworker/0:0 (pid 9) and kworker/0:1 (pid 11) - SRCU grace period workers:**
-```
-Workqueue: rcu_gp process_srcu
-process_srcu                                   [kernel/rcu/srcutree.c:1304]
-  srcu_advance_state                           [kernel/rcu/srcutree.c:1161]
-    try_check_zero                             [kernel/rcu/srcutree.c:1171]
-      srcu_readers_active_idx_check            [kernel/rcu/srcutree.c:544]
-        synchronize_rcu()                      ← SRCU-fast path, line 569
-          synchronize_rcu_normal
-            wait_for_completion                ← BLOCKED
-```
-
-**3. repro2 (pid 4093) - RCU stall source:**
-```
-rcu: Tasks blocked on level-0 rcu_node (CPUs 0-1): P4093
-task:repro2   state:R  running task
-  (running in futex_wake syscall, interrupted by timer IRQ)
-  asm_sysvec_apic_timer_interrupt
-    irqentry_exit → preempt_schedule_irq → __schedule
-      finish_task_switch
-```
-
-The trace shows process context for the hung tasks and interrupt context (timer IRQ) for the RCU stall detection. The kworkers are in D (uninterruptible sleep) state, blocked in wait_for_completion() within the SRCU grace period state machine.
-
-## Root Cause Analysis
-
-This is a regression introduced by commit a46023d5616ed ("tracing: Guard __DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast"), which switched tracepoint read-side protection from preempt_disable()+RCU to SRCU-fast via DEFINE_SRCU_FAST(tracepoint_srcu).
-
-The root cause is a new coupling between SRCU grace period processing and RCU grace period completion that did not exist before. The deadlock chain is:
-
-1. The reproducer creates perf events using tracepoints, then closes them while generating heavy perf interrupt load. The perf NMI interrupt storms ("perf: interrupt took too long" messages escalating from 69ms to 336ms) consume most CPU time, starving RCU quiescent state detection.
-
-2. When the perf fd is closed, perf_trace_event_unreg() (kernel/trace/trace_event_perf.c:154) calls tracepoint_synchronize_unregister() (include/linux/tracepoint.h:116), which now calls synchronize_srcu(&tracepoint_srcu) instead of synchronize_rcu().
-
-3. The SRCU grace period for tracepoint_srcu is processed by process_srcu() running in the rcu_gp workqueue. Because tracepoint_srcu is DEFINE_SRCU_FAST, its srcu_reader_flavor includes SRCU_READ_FLAVOR_FAST, which is part of SRCU_READ_FLAVOR_SLOWGP.
-
-4. In srcu_readers_active_idx_check() (kernel/rcu/srcutree.c:544), when SRCU_READ_FLAVOR_SLOWGP is detected, the function calls synchronize_rcu() (line 569) instead of smp_mb() (line 301 in non-fast path). This is the key design tradeoff of SRCU-fast: faster readers (no smp_mb() on read side) at the cost of slower grace periods (synchronize_rcu() on update side).
-
-5. synchronize_rcu() → synchronize_rcu_normal() → wait_for_completion(), waiting for an RCU grace period to complete. But the RCU grace period is stalled because the perf interrupt storms are preventing CPUs from passing through quiescent states quickly enough.
-
-6. Since process_srcu is blocked waiting for synchronize_rcu(), the tracepoint_srcu SRCU grace period cannot advance, so synchronize_srcu(&tracepoint_srcu) in the perf teardown path also blocks indefinitely.
-
-The pre-existing condition (perf NMI storms causing RCU stalls) was previously tolerable because the perf teardown path used synchronize_rcu() directly (via the old tracepoint_synchronize_unregister()), which would eventually complete once the RCU stall resolved. Now, with SRCU-fast, there is an additional layer of indirection: perf teardown waits on SRCU, SRCU processing waits on RCU, and both the SRCU workqueue threads and the perf teardown task are stuck.
-
-## Affected Versions
-
-This is a regression in v7.0-rc1. The bug was introduced by commit a46023d5616ed ("tracing: Guard __DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast"), which was merged via the trace-v7.0 merge (3c6e577d5ae70). The underlying SRCU-fast infrastructure was added by commit c4020620528e4 ("srcu: Add SRCU-fast readers") and 4d86b1e7e1e98 ("srcu: Add SRCU_READ_FLAVOR_SLOWGP to flag need for synchronize_rcu()"), but the regression became triggerable only when a46023d5616ed applied SRCU-fast to the tracepoint_srcu used in the perf event teardown path.
-
-Kernels before v7.0-rc1 (i.e., v6.x and earlier) are not affected, as they used preempt_disable()+RCU for tracepoint protection, and tracepoint_synchronize_unregister() called synchronize_rcu() directly without SRCU involvement.
-
-## Relevant Commits and Fixes
-
-Key commits in the causal chain:
-
-- a46023d5616ed ("tracing: Guard __DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast") - the commit that introduced the regression by switching tracepoints to SRCU-fast
-- a77cb6a867667 ("srcu: Fix warning to permit SRCU-fast readers in NMI handlers") - immediate predecessor fix
-- c4020620528e4 ("srcu: Add SRCU-fast readers") - added the SRCU-fast reader API
-- 4d86b1e7e1e98 ("srcu: Add SRCU_READ_FLAVOR_SLOWGP to flag need for synchronize_rcu()") - added the synchronize_rcu()-instead-of-smp_mb() logic in SRCU grace period processing
-- 16718274ee75d ("tracing: perf: Have perf tracepoint callbacks always disable preemption") - preparatory commit for the SRCU-fast switch
-
-No fix for this specific issue was found in mainline or in any -next branches as of today.
-
-## Prior Discussions
-
-No prior reports of this specific RCU stall / SRCU deadlock triggered via perf trace teardown with SRCU-fast were found on lore.kernel.org. The original SRCU-fast tracepoint series was posted at https://lore.kernel.org/all/20260126231256.499701982@kernel.org/ (linked from the commit message), motivated by enabling preemptible BPF on tracepoints for RT systems (https://lore.kernel.org/all/20250613152218.1924093-1-bigeasy@linutronix.de/). No discussion of the synchronize_rcu()-from-workqueue stall scenario appears to have taken place in those threads.
-
-## Suggested Actions
-
-1. Confirm the regression by testing with the parent commit a77cb6a867667 (immediately before a46023d5616ed). If the issue disappears, this confirms the SRCU-fast tracepoint switch as the cause.
-
-2. As a quick workaround, reverting a46023d5616ed (and its preparatory commits a77cb6a867667, f7d327654b886, 16718274ee75d if needed) should eliminate the deadlock, at the cost of losing preemptible BPF tracepoint support.
-
-3. The fundamental issue is that process_srcu() for SRCU-fast structures calls synchronize_rcu() synchronously from workqueue context. Possible fixes include:
-   - Using an asynchronous mechanism (e.g., call_rcu() with a callback to resume SRCU GP processing) instead of blocking synchronize_rcu() within the SRCU state machine.
-   - Having srcu_readers_active_idx_check() use poll_state_synchronize_rcu() and defer retrying instead of blocking.
-   - Bounding the perf interrupt rate escalation to prevent the RCU stall in the first place (though this would only mask the underlying SRCU↔RCU coupling issue).
-
-4. If you can reproduce reliably, adding the following debug options would provide more information: CONFIG_RCU_TRACE=y, CONFIG_PROVE_RCU=y, and booting with rcutree.rcu_kick_kthreads=1 to see if kicking the RCU threads helps break the stall.
+>
+> From: Waiman Long <longman@redhat.com>
+>
+> When examining a contended spinlock in a crash dump, we can only find
+> out the tail CPU in the MCS wait queue. There is no simple way to find
+> out what other CPUs are waiting for the spinlock and which CPU is the
+> lock owner.
+>
+> Make it easier to figure out these information by saving previous node
+> data into the mcs_spinlock structure. This will allow us to reconstruct
+> the MCS wait queue from tail to head. In order not to expand the size
+> of mcs_spinlock, the original count field is split into two 16-bit
+> chunks. The first chunk is for count and the second one is the new
+> prev_node value.
+>
+>    bits 0-1 : qnode index
+>    bits 2-15: CPU number + 1
+>
+> This prev_node value may be truncated if there are 16k or more CPUs in
+> the system.
+>
+> The locked value in the queue head is also repurposed to hold an encoded
+> qspinlock owner CPU number when acquiring the lock in the qspinlock
+> slowpath of an contended lock.
+>
+> This lock owner information will not be available when the lock is
+> acquired directly in the fast path or in the pending code path. There
+> is no easy way around that.
+>
+> These changes should make analysis of a contended spinlock in a crash
+> dump easier.
+>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Link: https://patch.msgid.link/20240504024106.654319-1-longman@redhat.com
+> ---
+>   include/asm-generic/mcs_spinlock.h |    5 +++--
+>   kernel/locking/mcs_spinlock.h      |    8 +++++++-
+>   kernel/locking/qspinlock.c         |    8 ++++++++
+>   3 files changed, 18 insertions(+), 3 deletions(-)
+>
+> --- a/include/asm-generic/mcs_spinlock.h
+> +++ b/include/asm-generic/mcs_spinlock.h
+> @@ -3,8 +3,9 @@
+>   
+>   struct mcs_spinlock {
+>   	struct mcs_spinlock *next;
+> -	int locked; /* 1 if lock acquired */
+> -	int count;  /* nesting count, see qspinlock.c */
+> +	int locked;	 /* non-zero if lock acquired */
+> +	short count;	 /* nesting count, see qspinlock.c */
+> +	short prev_node; /* encoded previous node value */
+>   };
+>   
+>   /*
+> --- a/kernel/locking/mcs_spinlock.h
+> +++ b/kernel/locking/mcs_spinlock.h
+> @@ -13,6 +13,12 @@
+>   #ifndef __LINUX_MCS_SPINLOCK_H
+>   #define __LINUX_MCS_SPINLOCK_H
+>   
+> +/*
+> + * Save an encoded version of the current MCS lock owner CPU to the
+> + * mcs_spinlock structure of the next lock owner.
+> + */
+> +#define MCS_LOCKED	(smp_processor_id() + 1)
+> +
+>   #include <asm/mcs_spinlock.h>
+>   
+>   #ifndef arch_mcs_spin_lock_contended
+> @@ -34,7 +40,7 @@
+>    * unlocking.
+>    */
+>   #define arch_mcs_spin_unlock_contended(l)				\
+> -	smp_store_release((l), 1)
+> +	smp_store_release((l), MCS_LOCKED)
+>   #endif
+>   
+>   /*
+> --- a/kernel/locking/qspinlock.c
+> +++ b/kernel/locking/qspinlock.c
+> @@ -250,6 +250,7 @@ void __lockfunc queued_spin_lock_slowpat
+>   
+>   	node->locked = 0;
+>   	node->next = NULL;
+> +	node->prev_node = 0;
+>   	pv_init_node(node);
+>   
+>   	/*
+> @@ -278,6 +279,13 @@ void __lockfunc queued_spin_lock_slowpat
+>   	next = NULL;
+>   
+>   	/*
+> +	 * The prev_node value is saved for crash dump analysis purpose only,
+> +	 * it is not used within the qspinlock code. The encoded node value
+> +	 * may be truncated if there are 16k or more CPUs in the system.
+> +	 */
+> +	node->prev_node = old >> _Q_TAIL_IDX_OFFSET;
+> +
+> +	/*
+>   	 * if there was a previous node; link it and wait until reaching the
+>   	 * head of the waitqueue.
+>   	 */
+>
 
