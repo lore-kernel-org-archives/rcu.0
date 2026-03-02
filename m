@@ -1,276 +1,253 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD5D30DD2A;
-	Mon,  2 Mar 2026 05:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B008129D29F
+	for <rcu@vger.kernel.org>; Mon,  2 Mar 2026 10:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772429324; cv=none; b=gXFkeqRHJ4/Q5H7Df7lVLEcBJMKwwQ2VcDQQT3FJArytBv/pS+czd0e1bSdhgxAYfrZLI8kAPp/G4CjEAG5Y3ffOLzpRl2bcN0ke0htxpGwG8nxOho5URHOKjWDkriMsCUacSmkqS7GonGCGFRTUjGFtmkkRqMVbzaOdQGp6o3c=
+	t=1772445850; cv=none; b=fB3o6ZTZecbnZ0ifkE2USPSuQ08WcgSV5OuGwCZSy3APHn4rjRj0OPp3TJC5fr2EGNDhU2Efk0icyyYT56gdv7Qnva6k3v/uSqopXO5jnJYic55170po8r7LAjfcMCCJcsckB9frw4N4C9e3spPOJoZqrN+yk2qSr2WqPcjIFWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772429324; c=relaxed/simple;
-	bh=ZCT89nZPytlep91Zs1EEAPJcdzZJoMlFmYgtrRCKYcc=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=CrLUF77NGEAnkqATf4zd1bVVfeJbrv4L+ONXTFigENWVN64MCbmvpPZD+PZPf6GffDuP92U8xkehZz1gB41eFGkEQzW/eg7bmxigF5eZ6+HMsnz9AurTgAVOtJ2tKgnpMlPBWaPeOShFMddKdPtG0rkRT4cXW4D9i5S9efo440k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ep7PnoiU; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1772445850; c=relaxed/simple;
+	bh=rismH0zt1KGRZ2cxdyV3viNlzpaLKZWSpbzTLdgus9A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G52ir83l6JuSNvPr/VnMxAJbGv0V41+KuacAA0ZX9YmxXO7s2h86/mK218EyIguo/R88qPxPaqwPkOP531b10TsWSOFnyywRCBahmhtSlQRV1XBfcbQ3jtefCgGeXJToYfO9JxdHMYXEuJt9VfWZqNwyiAOw2R8GVYFnF0b109I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mqu8OlOJ; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ep7PnoiU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72851C19423;
-	Mon,  2 Mar 2026 05:28:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772429323;
-	bh=ZCT89nZPytlep91Zs1EEAPJcdzZJoMlFmYgtrRCKYcc=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=Ep7PnoiUspZc4/Jgkwm3a30OfkVeOUprThRQzgloQhmtv2uWj0rveePhgYnNuPj4U
-	 ZPYyqSzP1yqtLW387FYa58Ruxm+8S6rl0Nqa5i32PRMohiuHdJXMqGYlPqesgcueoX
-	 /CQotlEauRIfYkXITVaNprMjbJLAEWI3Gwqb5SNNZXFR0Kj9VKJJtKf/r8kUnXECZd
-	 0TEU0mmPgUwiA7UZ+zlgob+bVPTFhRz3ID3LTUtfVioYHhhedwTlTCnImpPjxBBosp
-	 r6XwRvpYv1CWS0y8J4wuHeiB6MuKoLsOdZPy+ptOfocBcMBXWdnA7vLm72R8WrqBwL
-	 ENlvGJsyqyymQ==
-Message-ID: <863a5291-a636-47d0-891c-bb0524d2e134@kernel.org>
-Date: Mon, 2 Mar 2026 06:28:38 +0100
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mqu8OlOJ"
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-389fa0d1040so56624341fa.2
+        for <rcu@vger.kernel.org>; Mon, 02 Mar 2026 02:04:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772445847; x=1773050647; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fyTw7sUlt+rTY5vZwdK74vF7EDt3IUIWzn1vHdPOEms=;
+        b=mqu8OlOJT3WLWzNngc8pZxOpRUo/wyScl3J0iKYPLLk/qtcJMMxXECA5z5xFoAY+LT
+         9O8FhxafWnRC45VkYqkvp4KaBJUFz+/FztUFdbgzRLOkD7IHB7uN2uzFNwVzcOQNU3sy
+         ZrJxC8vvLFRR+L+/anNaDhsJTcUmmCqEfaIiK3OvWpI/wOCd7jlYXEZbRg5R8DJvQpUk
+         WuCVUZV2slzKkv5MBZm1JrdMXiHzC43ZLTwNdNWQK99eR8LqgnoZKZLCvTA7Rdl9jaX+
+         wlPrh/alnJEqChUlseNnjiRQgSAGHX6rxC+KedK4J3+jiCG98cPff3Tqx1AS+pM6Uq85
+         /t7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772445847; x=1773050647;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fyTw7sUlt+rTY5vZwdK74vF7EDt3IUIWzn1vHdPOEms=;
+        b=UHZcEndL42HZ4Jh6eosLEz/wIGpuXt+xKCJ+RVotzJE2GcBgWHmwcM+9F1G/z700RE
+         ERC+j35hZkG45/E+CLgqyr1GUOuGtu3sf9hVzfBCaKAjn/M6oXmIm/r1BHi9bww1il+F
+         BmecSEDHNzhW/7hvQ3z2njRMQk6vb2jtgphVVt0AQWYvC0NcjZ2BPAMHgbEI4am/m22S
+         glMzgpNLOzf24meoKvzcfhmcTyrUT+r8g6KjW9x4iWnHfn+WXyaZLcgPhxL5ppafgl4S
+         YKMivXLTOPXkgP0FZEkLZOwfx1XKmI6fHnnLxkNPNCYXuCPyXkz6MpHYtoGI3+0I14hP
+         sVtw==
+X-Forwarded-Encrypted: i=1; AJvYcCWD7XSWnqY6Fm59Y52rBp73pW15O75tECXQnb3vIEu/PHvMRDe7UNi5KoJCWhAI/qDuc4s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwAFsPoPf0ooIWB8MFVzOUOSnc6XDI/R4LohaFl9+qIL2Gx6qsr
+	/enU505AACI+zq8ZPHMxxv5cw9scaHxvfgtgqsluqmg85wy5uyVtw3C1yRc8Pyi2
+X-Gm-Gg: ATEYQzy9reCkawqBDPBm+Va4vJBbP1v5aYCWw3qaQibwsdaaC9Wz1SgEE7TGmIuIaHe
+	ayF0PcCE5V8t5GD3KD/Ea8Sl9p+Ny9AKSbiGTuTRxnIP8EYJd+mtaYUwY3WHn0A9hLIvczEkwmO
+	eee06dXWyL4iPf8JMfYj7crLIibiRC1tfIRsDHeciCjBY9AnSThu0LOsPT3/aNQRgvv4yAzzqJU
+	MrRdsaiWekMHT8IL2qlcH7PsQ8ydbSSxbuFh5B6IMHJ7DmmNmrpSKo9xyGVLidRTWATEY2GvWwy
+	pVzEe9/SetrmMkMgnVNgZe4QnSFUeA4rL0qlRmt00iowtsuRlcsjIRrVeB4IAMWmYT+wQQA3bSs
+	9jbolyMycPxXWxMUIWAFyfkeV1CucRVuDcueP99IRoFCog27pFSzf64Rdll4xZQTLS1bb1pMsP6
+	8GfhVOOEkEgkods1A=
+X-Received: by 2002:a05:651c:2112:b0:38a:34a:7823 with SMTP id 38308e7fff4ca-38a034a7c3dmr81810141fa.21.1772445846530;
+        Mon, 02 Mar 2026 02:04:06 -0800 (PST)
+Received: from localhost.localdomain ([2001:9b1:d5a0:a500::24b])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5a11a12923dsm953371e87.64.2026.03.02.02.04.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Mar 2026 02:04:06 -0800 (PST)
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To: "Paul E . McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>
+Cc: Vishal Chourasia <vishalc@linux.ibm.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Samir M <samir@linux.ibm.com>
+Subject: [PATCH v2] rcu: Latch normal synchronize_rcu() path on flood
+Date: Mon,  2 Mar 2026 11:04:04 +0100
+Message-ID: <20260302100404.2624503-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Stalls when starting a VSOCK listening socket: soft lockups, RCU
- stalls, timeout
-From: Jiri Slaby <jirislaby@kernel.org>
-To: Matthieu Baerts <matttbe@kernel.org>,
- Stefan Hajnoczi <stefanha@redhat.com>,
- Stefano Garzarella <sgarzare@redhat.com>
-Cc: kvm@vger.kernel.org, virtualization@lists.linux.dev,
- Netdev <netdev@vger.kernel.org>, rcu@vger.kernel.org,
- MPTCP Linux <mptcp@lists.linux.dev>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@kernel.org>,
- Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Dave Hansen <dave.hansen@linux.intel.com>, "luto@kernel.org"
- <luto@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <MKoutny@suse.com>
-References: <b24ffcb3-09d5-4e48-9070-0b69bc654281@kernel.org>
- <7f3e74d7-67dc-48d7-99d2-0b87f671651b@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <7f3e74d7-67dc-48d7-99d2-0b87f671651b@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 26. 02. 26, 11:37, Jiri Slaby wrote:
-> On 06. 02. 26, 12:54, Matthieu Baerts wrote:
->> Our CI for the MPTCP subsystem is now regularly hitting various stalls
->> before even starting the MPTCP test suite. These issues are visible on
->> top of the latest net and net-next trees, which have been sync with
->> Linus' tree yesterday. All these issues have been seen on a "public CI"
->> using GitHub-hosted runners with KVM support, where the tested kernel is
->> launched in a nested (I suppose) VM. I can see the issue with or without
->> debug.config. According to the logs, it might have started around
->> v6.19-rc0, but I was unavailable for a few weeks, and I couldn't react
->> quicker, sorry for that. Unfortunately, I cannot reproduce this locally,
->> and the CI doesn't currently have the ability to execute bisections.
-> 
-> Hmm, after the switch of the qemu guest kernels to 6.19, our (opensuse) 
-> build service is stalling in smp_call_function_many_cond() randomly too:
-> https://bugzilla.suse.com/show_bug.cgi?id=1258936
-> 
-> The attachment from there contains sysrq-t logs too:
-> https://bugzilla.suse.com/attachment.cgi?id=888612
+Currently, rcu_normal_wake_from_gp is only enabled by default
+on small systems(<= 16 CPUs) or when a user explicitly set it
+enabled.
 
-A small update. Just in case this rings a bell somewhere.
+Introduce an adaptive latching mechanism:
+ * Track the number of in-flight synchronize_rcu() requests
+   using a new rcu_sr_normal_count counter;
 
-We have a qemu mem dump from the affected kernel. It shows that both 
-CPU0 and CPU1 are waiting for CPU2's rq lock. CPU2 is in userspace.
+ * If the count reaches/exceeds RCU_SR_NORMAL_LATCH_THR(64),
+   it sets the rcu_sr_normal_latched, reverting new requests
+   onto the scaled wait_rcu_gp() path;
 
+ * The latch is cleared only when the pending requests are fully
+   drained(nr == 0);
 
+ * Enables rcu_normal_wake_from_gp by default for all systems,
+   relying on this dynamic throttling instead of static CPU
+   limits.
 
+Testing(synthetic flood workload):
+  * Kernel version: 6.19.0-rc6
+  * Number of CPUs: 1536
+  * 60K concurrent synchronize_rcu() calls
 
-crash> bt -xsc 0
-PID: 6483     TASK: ffff8d1759c20000  CPU: 0    COMMAND: "compile"
-     [exception RIP: native_halt+14]
-     RIP: ffffffffb9d1124e  RSP: ffffcead0696f9a0  RFLAGS: 00000046
-     RAX: 0000000000000003  RBX: 0000000000040000  RCX: 00000000fffffff8
-     RDX: ffff8d1a7ffc5140  RSI: 0000000000000003  RDI: ffff8d1a6fd35dc0
-     RBP: ffff8d1a6fd35dc0   R8: ffff8d1a6fc36dc0   R9: fffffffffffffff8
-     R10: 0000000000000000  R11: 0000000000000004  R12: ffff8d1a6fc36dc0
-     R13: 0000000000000000  R14: ffff8d1a7ffc5140  R15: ffffcead0696fad0
-     CS: 0010  SS: 0018
-  #0 [ffffcead0696f9a0] kvm_wait+0x44 at ffffffffb9d0fe54
-  #1 [ffffcead0696f9a8] __pv_queued_spin_lock_slowpath+0x247 at 
-ffffffffbaafb507
-  #2 [ffffcead0696f9d8] _raw_spin_lock+0x29 at ffffffffbaafadf9
-  #3 [ffffcead0696f9e0] raw_spin_rq_lock_nested+0x1c at ffffffffb9d8c12c
-  #4 [ffffcead0696f9f8] _raw_spin_rq_lock_irqsave+0x17 at ffffffffb9d96ca7
-  #5 [ffffcead0696fa08] sched_balance_rq+0x56d at ffffffffb9da718d
-  #6 [ffffcead0696fb18] pick_next_task_fair+0x240 at ffffffffb9da7e00
-  #7 [ffffcead0696fb88] __schedule+0x19e at ffffffffbaaf00de
-  #8 [ffffcead0696fc40] schedule+0x27 at ffffffffbaaf1697
-  #9 [ffffcead0696fc50] futex_do_wait+0x4a at ffffffffb9e61c5a
-#10 [ffffcead0696fc68] __futex_wait+0x8e at ffffffffb9e6241e
-#11 [ffffcead0696fd30] futex_wait+0x6b at ffffffffb9e624fb
-#12 [ffffcead0696fdc0] do_futex+0xc5 at ffffffffb9e5e305
-#13 [ffffcead0696fdc8] __x64_sys_futex+0x112 at ffffffffb9e5e932
-#14 [ffffcead0696fe38] do_syscall_64+0x81 at ffffffffbaae2a61
-#15 [ffffcead0696ff40] entry_SYSCALL_64_after_hwframe+0x76 at 
-ffffffffb9a0012f
-     RIP: 0000000000495303  RSP: 000000c000073c98  RFLAGS: 00000286
-     RAX: ffffffffffffffda  RBX: 0000000000000000  RCX: 0000000000495303
-     RDX: 0000000000000000  RSI: 0000000000000080  RDI: 000000c000058958
-     RBP: 000000c000073ce0   R8: 0000000000000000   R9: 0000000000000000
-     R10: 0000000000000000  R11: 0000000000000286  R12: 0000000000000024
-     R13: 0000000000000001  R14: 000000c000002c40  R15: 0000000000000001
-     ORIG_RAX: 00000000000000ca  CS: 0033  SS: 002b
+Perf(cycles, system-wide):
+  total cycles: 932020263832
+  rcu_sr_normal_add_req(): 2650282811 cycles(~0.28%)
 
+Perf report excerpt:
+  0.01%  0.01%  sync_test/...  [k] rcu_sr_normal_add_req
 
-crash> bt -xsc 1
-PID: 6481     TASK: ffff8d1759c8b680  CPU: 1    COMMAND: "compile"
-     [exception RIP: __pv_queued_spin_lock_slowpath+190]
-     RIP: ffffffffbaafb37e  RSP: ffffcead000f8b38  RFLAGS: 00000046
-     RAX: 0000000000000001  RBX: 0000000000000000  RCX: 0000000000000001
-     RDX: 0000000000040003  RSI: 0000000000040003  RDI: ffff8d1a6fd35dc0
-     RBP: ffff8d1a6fd35dc0   R8: 0000000000000000   R9: 00000001000c3f60
-     R10: ffffffffbbc75960  R11: ffffcead000f8a48  R12: ffff8d1a6fcb6dc0
-     R13: 0000000000000001  R14: 0000000000000000  R15: ffffffffbbe65940
-     CS: 0010  SS: 0000
-  #0 [ffffcead000f8b60] _raw_spin_lock+0x29 at ffffffffbaafadf9
-  #1 [ffffcead000f8b68] raw_spin_rq_lock_nested+0x1c at ffffffffb9d8c12c
-  #2 [ffffcead000f8b80] _raw_spin_rq_lock_irqsave+0x17 at ffffffffb9dc9cc7
-  #3 [ffffcead000f8b90] print_cfs_rq+0xce at ffffffffb9dd0d8e
-  #4 [ffffcead000f8c98] print_cfs_stats+0x62 at ffffffffb9da9ee2
-  #5 [ffffcead000f8cc8] print_cpu+0x243 at ffffffffb9dcbe73
-  #6 [ffffcead000f8d00] sysrq_sched_debug_show+0x2e at ffffffffb9dd1b7e
-  #7 [ffffcead000f8d18] show_state_filter+0xcd at ffffffffb9d91f4d
-  #8 [ffffcead000f8d40] sysrq_handle_showstate+0x10 at ffffffffba60b750
-  #9 [ffffcead000f8d48] __handle_sysrq.cold+0x9b at ffffffffb9c4f486
-#10 [ffffcead000f8d70] sysrq_filter+0xd7 at ffffffffba60c237
-#11 [ffffcead000f8d98] input_handle_events_filter+0x45 at ffffffffba766c05
-#12 [ffffcead000f8dd0] input_pass_values+0x134 at ffffffffba766ec4
-#13 [ffffcead000f8e00] input_event_dispose+0x156 at ffffffffba767046
-#14 [ffffcead000f8e20] input_event+0x58 at ffffffffba76ac18
-#15 [ffffcead000f8e50] atkbd_receive_byte+0x64d at ffffffffba772e6d
-#16 [ffffcead000f8ea8] ps2_interrupt+0x9d at ffffffffba7665ed
-#17 [ffffcead000f8ed0] serio_interrupt+0x4f at ffffffffba761e0f
-#18 [ffffcead000f8f00] i8042_handle_data+0x11c at ffffffffba76316c
-#19 [ffffcead000f8f40] i8042_interrupt+0x11 at ffffffffba763581
-#20 [ffffcead000f8f50] __handle_irq_event_percpu+0x55 at ffffffffb9df1e15
-#21 [ffffcead000f8f90] handle_irq_event+0x38 at ffffffffb9df2058
-#22 [ffffcead000f8fb0] handle_edge_irq+0xc5 at ffffffffb9df7b95
-#23 [ffffcead000f8fd0] __common_interrupt+0x44 at ffffffffb9cc2354
-#24 [ffffcead000f8ff0] common_interrupt+0x80 at ffffffffbaae6090
---- <IRQ stack> ---
-#25 [ffffcead06bcfb98] asm_common_interrupt+0x26 at ffffffffb9a01566
-     [exception RIP: smp_call_function_many_cond+304]
-     RIP: ffffffffb9e63080  RSP: ffffcead06bcfc40  RFLAGS: 00000202
-     RAX: 0000000000000011  RBX: 0000000000000202  RCX: ffff8d1a6fc3f800
-     RDX: 0000000000000000  RSI: 0000000000000000  RDI: 0000000000000000
-     RBP: 0000000000000001   R8: ffff8d174009cc30   R9: 0000000000000000
-     R10: ffff8d174009c0d8  R11: 0000000000000000  R12: 0000000000000001
-     R13: 0000000000000003  R14: ffff8d1a6fcb7280  R15: 0000000000000001
-     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
-#26 [ffffcead06bcfcb0] on_each_cpu_cond_mask+0x24 at ffffffffb9e634f4
-#27 [ffffcead06bcfcb8] flush_tlb_mm_range+0x1b1 at ffffffffb9d225d1
-#28 [ffffcead06bcfd08] ptep_clear_flush+0x93 at ffffffffba066e13
-#29 [ffffcead06bcfd30] do_wp_page+0x6a2 at ffffffffba04c692
-#30 [ffffcead06bcfdb8] __handle_mm_fault+0xa49 at ffffffffba055c79
-#31 [ffffcead06bcfe98] handle_mm_fault+0xe7 at ffffffffba056297
-#32 [ffffcead06bcfed8] do_user_addr_fault+0x21a at ffffffffb9d1db6a
-#33 [ffffcead06bcff18] exc_page_fault+0x69 at ffffffffbaae99c9
-#34 [ffffcead06bcff40] asm_exc_page_fault+0x26 at ffffffffb9a012a6
-     RIP: 000000000042351c  RSP: 000000c0013aafd0  RFLAGS: 00010246
-     RAX: 0000000000000002  RBX: 00000000017584c0  RCX: 0000000000000000
-     RDX: 0000000000000005  RSI: 000000000163edc0  RDI: 0000000000000003
-     RBP: 000000c0013ab080   R8: 0000000000000001   R9: 00007f0d9853f800
-     R10: 00007f0d98334e00  R11: 00007f0d98afa020  R12: 00007f0d98afa020
-     R13: 0000000000000050  R14: 000000c000002380  R15: 0000000000000001
-     ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
-     RIP: 000000000042351c  RSP: 000000c0013aafd0  RFLAGS: 00010246
-     RAX: 0000000000000002  RBX: 00000000017584c0  RCX: 0000000000000000
-     RDX: 0000000000000005  RSI: 000000000163edc0  RDI: 0000000000000003
-     RBP: 000000c0013ab080   R8: 0000000000000001   R9: 00007f0d9853f800
-     R10: 00007f0d98334e00  R11: 00007f0d98afa020  R12: 00007f0d98afa020
-     R13: 0000000000000050  R14: 000000c000002380  R15: 0000000000000001
-     ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
+Measured overhead of rcu_sr_normal_add_req() remained ~0.28%
+of total CPU cycles in this synthetic stress test.
 
+Tested-by: Samir M <samir@linux.ibm.com>
+Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ .../admin-guide/kernel-parameters.txt         | 10 ++---
+ kernel/rcu/tree.c                             | 41 +++++++++++++------
+ 2 files changed, 33 insertions(+), 18 deletions(-)
 
-
-crash> bt -xsc 2
-PID: 6540     TASK: ffff8d1773ae3680  CPU: 2    COMMAND: "compile"
-     RIP: 0000000000495372  RSP: 000000c00003e000  RFLAGS: 00000206
-     RAX: 0000000000000000  RBX: 0000000000000003  RCX: 0000000000495372
-     RDX: 0000000000000000  RSI: 000000c00003e000  RDI: 00000000000d0f00
-     RBP: 00007ffcf8a71aa8   R8: 000000c00005a090   R9: 000000c000002700
-     R10: 0000000000000000  R11: 0000000000000206  R12: 0000000000491580
-     R13: 000000c00005a008  R14: 00000000017222e0  R15: ffffffffffffffff
-     ORIG_RAX: 0000000000000038  CS: 0033  SS: 002b
-
-
-
-The state of the lock:
-
-crash> struct rq.__lock -x ffff8d1a6fd35dc0
-   __lock = {
-     raw_lock = {
-       {
-         val = {
-           counter = 0x40003
-         },
-         {
-           locked = 0x3,
-           pending = 0x0
-         },
-         {
-           locked_pending = 0x3,
-           tail = 0x4
-         }
-       }
-     }
-   },
-
-
-thanks,
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index cb850e5290c2..d0574a02510d 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5867,13 +5867,13 @@ Kernel parameters
+ 			use a call_rcu[_hurry]() path. Please note, this is for a
+ 			normal grace period.
+ 
+-			How to enable it:
++			How to disable it:
+ 
+-			echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+-			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=1"
++			echo 0 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
++			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=0"
+ 
+-			Default is 1 if num_possible_cpus() <= 16 and it is not explicitly
+-			disabled by the boot parameter passing 0.
++			Default is 1 if it is not explicitly disabled by the boot parameter
++			passing 0.
+ 
+ 	rcuscale.gp_async= [KNL]
+ 			Measure performance of asynchronous
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 55df6d37145e..86dc88a70fd0 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1632,17 +1632,21 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
+ 	atomic_set_release(&sr_wn->inuse, 0);
+ }
+ 
+-/* Enable rcu_normal_wake_from_gp automatically on small systems. */
+-#define WAKE_FROM_GP_CPU_THRESHOLD 16
+-
+-static int rcu_normal_wake_from_gp = -1;
++static int rcu_normal_wake_from_gp = 1;
+ module_param(rcu_normal_wake_from_gp, int, 0644);
+ static struct workqueue_struct *sync_wq;
+ 
++#define RCU_SR_NORMAL_LATCH_THR 64
++
++/* Number of in-flight synchronize_rcu() calls queued on srs_next. */
++static atomic_long_t rcu_sr_normal_count;
++static atomic_t rcu_sr_normal_latched;
++
+ static void rcu_sr_normal_complete(struct llist_node *node)
+ {
+ 	struct rcu_synchronize *rs = container_of(
+ 		(struct rcu_head *) node, struct rcu_synchronize, head);
++	long nr;
+ 
+ 	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+ 		!poll_state_synchronize_rcu_full(&rs->oldstate),
+@@ -1650,6 +1654,15 @@ static void rcu_sr_normal_complete(struct llist_node *node)
+ 
+ 	/* Finally. */
+ 	complete(&rs->completion);
++	nr = atomic_long_dec_return(&rcu_sr_normal_count);
++	WARN_ON_ONCE(nr < 0);
++
++	/*
++	 * Unlatch: switch back to normal path when fully
++	 * drained and if it has been latched.
++	 */
++	if (nr == 0)
++		(void)atomic_cmpxchg(&rcu_sr_normal_latched, 1, 0);
+ }
+ 
+ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+@@ -1795,7 +1808,14 @@ static bool rcu_sr_normal_gp_init(void)
+ 
+ static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+ {
++	long nr;
++
+ 	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
++	nr = atomic_long_inc_return(&rcu_sr_normal_count);
++
++	/* Latch: only when flooded and if unlatched. */
++	if (nr >= RCU_SR_NORMAL_LATCH_THR)
++		(void)atomic_cmpxchg(&rcu_sr_normal_latched, 0, 1);
+ }
+ 
+ /*
+@@ -3278,14 +3298,15 @@ static void synchronize_rcu_normal(void)
+ {
+ 	struct rcu_synchronize rs;
+ 
++	init_rcu_head_on_stack(&rs.head);
+ 	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
+ 
+-	if (READ_ONCE(rcu_normal_wake_from_gp) < 1) {
++	if (READ_ONCE(rcu_normal_wake_from_gp) < 1 ||
++			atomic_read(&rcu_sr_normal_latched)) {
+ 		wait_rcu_gp(call_rcu_hurry);
+ 		goto trace_complete_out;
+ 	}
+ 
+-	init_rcu_head_on_stack(&rs.head);
+ 	init_completion(&rs.completion);
+ 
+ 	/*
+@@ -3302,10 +3323,10 @@ static void synchronize_rcu_normal(void)
+ 
+ 	/* Now we can wait. */
+ 	wait_for_completion(&rs.completion);
+-	destroy_rcu_head_on_stack(&rs.head);
+ 
+ trace_complete_out:
+ 	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("complete"));
++	destroy_rcu_head_on_stack(&rs.head);
+ }
+ 
+ /**
+@@ -4904,12 +4925,6 @@ void __init rcu_init(void)
+ 	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
+ 	WARN_ON(!sync_wq);
+ 
+-	/* Respect if explicitly disabled via a boot parameter. */
+-	if (rcu_normal_wake_from_gp < 0) {
+-		if (num_possible_cpus() <= WAKE_FROM_GP_CPU_THRESHOLD)
+-			rcu_normal_wake_from_gp = 1;
+-	}
+-
+ 	/* Fill in default value for rcutree.qovld boot parameter. */
+ 	/* -After- the rcu_node ->lock fields are initialized! */
+ 	if (qovld < 0)
 -- 
-js
-suse labs
+2.47.3
 
