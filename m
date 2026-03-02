@@ -1,313 +1,170 @@
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1FB3630B9;
-	Mon,  2 Mar 2026 11:47:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54835368287;
+	Mon,  2 Mar 2026 13:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772452081; cv=none; b=hE9B5cym1/NqZcyZzGnxgSCewccwgtufsXiC2BCDvrhjD/sMlqt7733+UgswE4llzq+iOVyEIiyDgTV7JgBhoJ2IZm3PTU9iw5OaG3b0GCMYKDMR2TuTalcNeJDTmcb4IPMtBpZUXv3/KzslCM9vU2CK42YNSvFI1hUX2O3ZBzU=
+	t=1772458583; cv=none; b=okR9s18Td/X4htnDbVL/EmoBw10922L/VdGcYl5ihgsH8oGzcuL7oTxj68BvocPZyL5GOS0zhDsttxifjTD6XiGjRlIpuMMS0cog8uHXFHTNRRe7kxNlHVl5JRxG+bSnH7iAaZZ2wicoKSY0AIAld4334mNXYCih/aIZ8LYprTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772452081; c=relaxed/simple;
-	bh=WnhUbHQfyQJIDPrp/Y2GjvWsSQVvMy90HVppVYh0lXw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z0KxnH1MoY8D29uWid2GmlEXVU6NchT0AHQVyqdmobbtouPKRT6pKGY5DVBXqMZQh7AMvWQNy/apLnkfWoXGt2V6y/pAW3t3N+tRoEdDvuqibjYcp+tYKKM237iXxsJZiAmdXm5iQsyixce7B/C6HC73jVjprEZw3m5qRF5B0Bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=TgKxA4MW; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	s=arc-20240116; t=1772458583; c=relaxed/simple;
+	bh=fMRdF3okAKkyyQekwpy5I+dvZnlkqm7yHgTMP8F6O2A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LsgzL5U/feHZG66L5ezMsGevJ9g+VqNTNu3zcZwooyvIJuqd9B7MQbQMxKLSB3jbYdju1BSCT9FYDFEJbwA5yyne3HI2r9mEQ+ewB2wOb4V2iEj6FkloHtmtD9wjM5vQnDwJhC316FfCIPnXPqlFxXj2dKf7us6jCgnoygGfAsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lyS1fVNX; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="TgKxA4MW"
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 622BZReh967095;
-	Mon, 2 Mar 2026 11:47:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=VsZVFl
-	zdbS72RyVCs0xyfxyJ5KUyp1s5WmJPWr9w/j0=; b=TgKxA4MWLOw8cJ0djmrUVg
-	56koEF56R+ZGVMY++x/r8O5tXVjH2IDc7EpCeuTySiUVpxma8dBs0PYv2Tkwc2s3
-	FhRNAiXHUVQoWF/dIb1peYX+nZ8rU5BddmnWMk60os9jg/v+ASS+6Y/zJGyvTBlk
-	QSNhZeP+n5UZ+Rsa8RFkP5qsAkorqb3jd6TK7JPjpkULBMq9CxtrYoA70t0Lo2GN
-	CnKmvFs27IJjrZoN99pug6hsmMbXslYtOgOMiMzNh8GX3VL5GLQHyo+mqXcWEpzk
-	GDCa4Rl7YFt0FL+GHTSrkb+AYLBjxq77ef7sJ78kvu+XIcqP9X1usqxnNCsy+zfA
-	==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ckskbp3gj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 02 Mar 2026 11:47:27 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 6229NIrd003275;
-	Mon, 2 Mar 2026 11:47:27 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cmb2xwwsp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 02 Mar 2026 11:47:26 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 622BlPqW15729256
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 2 Mar 2026 11:47:25 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6ABC058063;
-	Mon,  2 Mar 2026 11:47:25 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D18EE58053;
-	Mon,  2 Mar 2026 11:47:17 +0000 (GMT)
-Received: from [9.39.17.112] (unknown [9.39.17.112])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  2 Mar 2026 11:47:17 +0000 (GMT)
-Message-ID: <94b3284b-885d-4263-99ed-728375c1a2b7@linux.ibm.com>
-Date: Mon, 2 Mar 2026 17:17:16 +0530
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lyS1fVNX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E7AAC19423;
+	Mon,  2 Mar 2026 13:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772458582;
+	bh=fMRdF3okAKkyyQekwpy5I+dvZnlkqm7yHgTMP8F6O2A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=lyS1fVNXhbsXt2BOxYUCBDAufPEWO+b7WrP8Nv5lokqe7KrWrvDugsZZvAIVDK7BY
+	 ho4AC7+IITRbUweff1PUwu0+nPADk1yMfXfiuIaDgiOlo8daIrVXqBTs+WEFISxnmr
+	 KBBBqd+I/fQA6a00dlS85FqgT5N5kOkYkvN04SLon8+BB2SGKmBrSQo9CA3iAvemSA
+	 L8k4bsUCyPLzAXtGVb9JypTIPUQppVE0oz23zVYkFquP2aCjY5ULvOKFyI/EoIIoEK
+	 tBnrOpZmeojNTmfdfAD991F0ZolDlN3ORvPid478VlIJrZ9WWpQDV51kQxBIfN0GdH
+	 o/Rd0WG4DYXXw==
+From: Sasha Levin <sashal@kernel.org>
+To: Zw Tang <shicenci@gmail.com>,
+	paulmck@kernel.org,
+	peterz@infradead.org,
+	mhiramat@kernel.org
+Cc: Sasha Levin <sashal@kernel.org>,
+	jiangshanlai@gmail.com,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	rcu@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	josh@joshtriplett.org,
+	bigeasy@linutronix.de,
+	ast@kernel.org,
+	boqun.feng@gmail.com,
+	mark.rutland@arm.com
+Subject: Re: [BUG] RCU stall / hung rcu_gp: process_srcu blocked in synchronize_rcu_normal triggered by perf trace teardown on 7.0.0-rc1
+Date: Mon,  2 Mar 2026 08:36:13 -0500
+Message-ID: <20260302133615.2304836-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <CAPHJ_VLUpgBO7VfF4ih2oy2HDCxvxkHRkryFUjHAm8QTNdF6Sg@mail.gmail.com>
+References: <CAPHJ_VLUpgBO7VfF4ih2oy2HDCxvxkHRkryFUjHAm8QTNdF6Sg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] cpuhp: Expedite RCU grace periods during SMT
- operations
-To: Joel Fernandes <joelagnelf@nvidia.com>,
-        Vishal Chourasia <vishalc@linux.ibm.com>
-Cc: peterz@infradead.org, aboorvad@linux.ibm.com, boqun.feng@gmail.com,
-        frederic@kernel.org, josh@joshtriplett.org,
-        linux-kernel@vger.kernel.org, neeraj.upadhyay@kernel.org,
-        paulmck@kernel.org, rcu@vger.kernel.org, rostedt@goodmis.org,
-        srikar@linux.ibm.com, sshegde@linux.ibm.com, tglx@linutronix.de,
-        urezki@gmail.com
-References: <20260218083915.660252-2-vishalc@linux.ibm.com>
- <20260218083915.660252-6-vishalc@linux.ibm.com>
- <20260227011352.GA1089964@joelbox2>
-Content-Language: en-US
-From: Samir M <samir@linux.ibm.com>
-In-Reply-To: <20260227011352.GA1089964@joelbox2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-ORIG-GUID: KvOpgJqZ1zlyzYK-3_Cfbd3EqA70ln14
-X-Authority-Analysis: v=2.4 cv=b66/I9Gx c=1 sm=1 tr=0 ts=69a578cf cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8
- a=VnNF1IyMAAAA:8 a=JfrnYn6hAAAA:8 a=sl4Q1M6oHhL7dvQWE3AA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=1CNFftbPRP8L7MoqJWF3:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzAyMDA5NyBTYWx0ZWRfX4s5QDiwffLbh
- wAejgv0dSaotM8mT0VZ8d9RSKWFBgGU52tRr/Fgz4vT50iG1YW9Hhbj3yRSuxWKUaWRYgDmbuXB
- GSFcVK3/JAnpbycmo5e7Sg6fdeWytQHCbXvpAnL9542SGhR8R+0cMntCWLlj7y8O2BnHeXyv6rN
- cHKvkhOT/2/5/Z9DXM9mPH2q6rMTYkrUNxPtOa5IVExoJQu7jWWZ2AiKmuG0LggIg4t5yXueh2j
- L1NumwVzFw/u99DL3gHP9jUvV4nWYFdUauOkGZv7InES6zr+3zuHdMzDysBHLSIca50W9ztzPgM
- 2k1dxrzEqqpBLXKmysdJpaRNukdZLYisJ539uSYCNqmloRHDoMUS+f2U6vYMCteMRG9GcgGET0Z
- igxf5+6t3qRuLRArj5TvKhjubP8ZAxQKQ32j7PUhdAWPrYut/s4qJdsWJGOSw38FXjtk3saZvGp
- +ylmnxYBRxXN3qjQt0A==
-X-Proofpoint-GUID: Mw_V7Jj6Xi8v1BbmJgaQBejTDGqtMq7j
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-03-02_03,2026-02-27_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015 adultscore=0
- bulkscore=0 impostorscore=0 malwarescore=0 spamscore=0 priorityscore=1501
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2603020097
 
+This response was AI-generated by bug-bot. The analysis may contain errors — please verify independently.
 
-On 27/02/26 6:43 am, Joel Fernandes wrote:
-> On Wed, Feb 18, 2026 at 02:09:18PM +0530, Vishal Chourasia wrote:
->> Expedite synchronize_rcu during the SMT mode switch operation when
->> initiated via /sys/devices/system/cpu/smt/control interface
->>
->> SMT mode switch operation i.e. between SMT 8 to SMT 1 or vice versa and
->> others are user driven operations and therefore should complete as soon
->> as possible. Switching SMT states involves iterating over a list of CPUs
->> and performing hotplug operations. It was found these transitions took
->> significantly large amount of time to complete particularly on
->> high-core-count systems.
->>
->> Suggested-by: Peter Zijlstra <peterz@infradead.org>
->> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
->> ---
->>   include/linux/rcupdate.h | 8 ++++++++
->>   kernel/cpu.c             | 4 ++++
->>   kernel/rcu/rcu.h         | 4 ----
->>   3 files changed, 12 insertions(+), 4 deletions(-)
->>
->> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
->> index 7729fef249e1..61b80c29d53b 100644
->> --- a/include/linux/rcupdate.h
->> +++ b/include/linux/rcupdate.h
->> @@ -1190,6 +1190,14 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
->>   extern int rcu_expedited;
->>   extern int rcu_normal;
->>   
->> +#ifdef CONFIG_TINY_RCU
->> +static inline void rcu_expedite_gp(void) { }
->> +static inline void rcu_unexpedite_gp(void) { }
->> +#else
->> +void rcu_expedite_gp(void);
->> +void rcu_unexpedite_gp(void);
->> +#endif
->> +
->>   DEFINE_LOCK_GUARD_0(rcu, rcu_read_lock(), rcu_read_unlock())
->>   DECLARE_LOCK_GUARD_0_ATTRS(rcu, __acquires_shared(RCU), __releases_shared(RCU))
->>   
->> diff --git a/kernel/cpu.c b/kernel/cpu.c
->> index 62e209eda78c..1377a68d6f47 100644
->> --- a/kernel/cpu.c
->> +++ b/kernel/cpu.c
->> @@ -2682,6 +2682,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
->>   		ret = -EBUSY;
->>   		goto out;
->>   	}
->> +	rcu_expedite_gp();
-> After the locking related changes in patch 1, is expediting still required? I
-> am just a bit concerned that we are papering over the real issue of over
-> usage of synchronize_rcu() (which IIRC we discussed in earlier versions of
-> the patches that reducing the number of lock acquire/release was supposed to
-> help.)
->
-> Could you provide more justification of why expediting these sections is
-> required if the locking concerns were addressed? It would be great if you can
-> provide performance numbers with only the first patch and without the second
-> patch. That way we can quantify this patch.
->
-> thanks,
->
-> --
-> Joel Fernandes
->
-Hi Vishal/Joel,
+## Bug Summary
 
+This is an RCU stall and hung task deadlock on 7.0.0-rc1, triggered by perf trace teardown under perf interrupt storm conditions. The perf subsystem's tracepoint unregistration path now blocks on SRCU (tracepoint_srcu), which in turn blocks on RCU grace period completion, creating a cascading stall when RCU progress is delayed by perf NMI interrupt storms. Severity: system hang (multiple tasks blocked >143s, eventual complete stall).
 
-Configuration:
-     •    Kernel version: 7.0.0-rc1
-     •    Number of CPUs: 1536
+## Stack Trace Analysis
 
-I have verified the below two patches together and observed improvements,
-Patch 1: 
-https://lore.kernel.org/all/20260218083915.660252-4-vishalc@linux.ibm.com/
+The bug involves three interacting blocked entities. Here are the decoded stack traces:
 
-Patch 2: 
-https://lore.kernel.org/all/20260218083915.660252-6-vishalc@linux.ibm.com/
-SMT Mode    | Without Patch(Base) | both patch applied | % Improvement  |
-------------------------------------------------------------------------|
-SMT=off     | 16m 13.956s         |     6m 18.435s     |  +61.14 %      |
-SMT=on      | 12m 0.982s          |     5m 59.576s     |  +50.10 %      |
+**1. repro2 (pid 4086) - blocked in perf trace teardown (close()):**
+```
+__x64_sys_close
+  fput_close_sync
+    __fput
+      perf_release
+        perf_event_release_kernel
+          put_event
+            __free_event
+              perf_trace_destroy
+                perf_trace_event_unreg         [kernel/trace/trace_event_perf.c:154]
+                  tracepoint_synchronize_unregister [include/linux/tracepoint.h:116]
+                    synchronize_srcu(&tracepoint_srcu)
+                      __synchronize_srcu
+                        wait_for_completion    ← BLOCKED
+```
 
-When I tested the below patch independently, I did not observe any 
-improvements for either smt=on or smt=off. However, in the smt=off 
-scenario, I encountered hung task splats (with call traces), where some 
-threads were blocked on cpus_read_lock. Please also refer to the 
-attached call trace below.
-Patch 1: 
-https://lore.kernel.org/all/20260218083915.660252-4-vishalc@linux.ibm.com/
+**2. kworker/0:0 (pid 9) and kworker/0:1 (pid 11) - SRCU grace period workers:**
+```
+Workqueue: rcu_gp process_srcu
+process_srcu                                   [kernel/rcu/srcutree.c:1304]
+  srcu_advance_state                           [kernel/rcu/srcutree.c:1161]
+    try_check_zero                             [kernel/rcu/srcutree.c:1171]
+      srcu_readers_active_idx_check            [kernel/rcu/srcutree.c:544]
+        synchronize_rcu()                      ← SRCU-fast path, line 569
+          synchronize_rcu_normal
+            wait_for_completion                ← BLOCKED
+```
 
-SMT Mode    | Without Patch(Base) | just patch 1 applied   | % 
-Improvement  |
-----------------------------------------------------------------------------|
-SMT=off     | 16m 13.956s         |     16m 9.793s         |  +0.43 %    
-    |
-SMT=on      | 12m 0.982s          |     12m 19.494s        |  -2.57 %    
-    |
+**3. repro2 (pid 4093) - RCU stall source:**
+```
+rcu: Tasks blocked on level-0 rcu_node (CPUs 0-1): P4093
+task:repro2   state:R  running task
+  (running in futex_wake syscall, interrupted by timer IRQ)
+  asm_sysvec_apic_timer_interrupt
+    irqentry_exit → preempt_schedule_irq → __schedule
+      finish_task_switch
+```
 
+The trace shows process context for the hung tasks and interrupt context (timer IRQ) for the RCU stall detection. The kworkers are in D (uninterruptible sleep) state, blocked in wait_for_completion() within the SRCU grace period state machine.
 
-Call traces:
-12377] [  T8746]    Tainted: G      E 7.0.0-rc1-150700.51-default-dirty #1
-[ 1477.612384] [  T8746] "echo 0 > 
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 1477.612389] [  T8746] task:systemd     state:D stack:0   pid:1 
-  tgid:1   ppid:0   task_flags:0x400100 flags:0x00040000
-[ 1477.612397] [  T8746] Call Trace:
-[ 1477.612399] [  T8746] [c00000000cc0f4f0] [0000000000100000] 0x100000 
-(unreliable)
-[ 1477.612416] [  T8746] [c00000000cc0f6a0] [c00000000001fe5c] 
-__switch_to+0x1dc/0x290
-[ 1477.612425] [  T8746] [c00000000cc0f6f0] [c0000000012598ac] 
-__schedule+0x40c/0x1a70
-[ 1477.612433] [  T8746] [c00000000cc0f840] [c00000000125af58] 
-schedule+0x48/0x1a0
-[ 1477.612439] [  T8746] [c00000000cc0f870] [c0000000002e27b8] 
-percpu_rwsem_wait+0x198/0x200
-[ 1477.612445] [  T8746] [c00000000cc0f8f0] [c000000001262930] 
-__percpu_down_read+0xb0/0x210
-[ 1477.612449] [  T8746] [c00000000cc0f930] [c00000000022f400] 
-cpus_read_lock+0xc0/0xd0
-[ 1477.612456] [  T8746] [c00000000cc0f950] [c0000000003a6398] 
-cgroup_procs_write_start+0x328/0x410
-[ 1477.612462] [  T8746] [c00000000cc0fa00] [c0000000003a9620] 
-__cgroup_procs_write+0x70/0x2c0
-[ 1477.612468] [  T8746] [c00000000cc0fac0] [c0000000003a98e8] 
-cgroup_procs_write+0x28/0x50
-[ 1477.612473] [  T8746] [c00000000cc0faf0] [c0000000003a1624] 
-cgroup_file_write+0xb4/0x240
-[ 1477.612478] [  T8746] [c00000000cc0fb50] [c000000000853ba8] 
-kernfs_fop_write_iter+0x1a8/0x2a0
-[ 1477.612485] [  T8746] [c00000000cc0fba0] [c000000000733d5c] 
-vfs_write+0x27c/0x540
-[ 1477.612491] [  T8746] [c00000000cc0fc50] [c000000000734350] 
-ksys_write+0x80/0x150
-[ 1477.612495] [  T8746] [c00000000cc0fca0] [c000000000032898] 
-system_call_exception+0x148/0x320
-[ 1477.612500] [  T8746] [c00000000cc0fe50] [c00000000000d6a0] 
-system_call_common+0x160/0x2c4
-[ 1477.612506] [  T8746] ---- interrupt: c00 at 0x7fffa8f73df4
-[ 1477.612509] [  T8746] NIP: 00007fffa8f73df4 LR: 00007fffa8eb6144 CTR: 
-0000000000000000
-[ 1477.612512] [  T8746] REGS: c00000000cc0fe80 TRAP: 0c00 Tainted: G    
-   E    (7.0.0-rc1-150700.51-default-dirty)
-[ 1477.612515] [  T8746] MSR: 800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE> 
-CR: 28002288 XER: 00000000
+## Root Cause Analysis
 
+This is a regression introduced by commit a46023d5616ed ("tracing: Guard __DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast"), which switched tracepoint read-side protection from preempt_disable()+RCU to SRCU-fast via DEFINE_SRCU_FAST(tracepoint_srcu).
 
+The root cause is a new coupling between SRCU grace period processing and RCU grace period completion that did not exist before. The deadlock chain is:
 
-Regards,
-Samir
->>   	/* Hold cpus_write_lock() for entire batch operation. */
->>   	cpus_write_lock();
->>   	for_each_online_cpu(cpu) {
->> @@ -2714,6 +2715,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
->>   	if (!ret)
->>   		cpu_smt_control = ctrlval;
->>   	cpus_write_unlock();
->> +	rcu_unexpedite_gp();
->>   	arch_smt_update();
->>   out:
->>   	cpu_maps_update_done();
->> @@ -2733,6 +2735,7 @@ int cpuhp_smt_enable(void)
->>   	int cpu, ret = 0;
->>   
->>   	cpu_maps_update_begin();
->> +	rcu_expedite_gp();
->>   	/* Hold cpus_write_lock() for entire batch operation. */
->>   	cpus_write_lock();
->>   	cpu_smt_control = CPU_SMT_ENABLED;
->> @@ -2749,6 +2752,7 @@ int cpuhp_smt_enable(void)
->>   		cpuhp_online_cpu_device(cpu);
->>   	}
->>   	cpus_write_unlock();
->> +	rcu_unexpedite_gp();
->>   	arch_smt_update();
->>   	cpu_maps_update_done();
->>   	return ret;
->> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
->> index dc5d614b372c..41a0d262e964 100644
->> --- a/kernel/rcu/rcu.h
->> +++ b/kernel/rcu/rcu.h
->> @@ -512,8 +512,6 @@ do {									\
->>   static inline bool rcu_gp_is_normal(void) { return true; }
->>   static inline bool rcu_gp_is_expedited(void) { return false; }
->>   static inline bool rcu_async_should_hurry(void) { return false; }
->> -static inline void rcu_expedite_gp(void) { }
->> -static inline void rcu_unexpedite_gp(void) { }
->>   static inline void rcu_async_hurry(void) { }
->>   static inline void rcu_async_relax(void) { }
->>   static inline bool rcu_cpu_online(int cpu) { return true; }
->> @@ -521,8 +519,6 @@ static inline bool rcu_cpu_online(int cpu) { return true; }
->>   bool rcu_gp_is_normal(void);     /* Internal RCU use. */
->>   bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
->>   bool rcu_async_should_hurry(void);  /* Internal RCU use. */
->> -void rcu_expedite_gp(void);
->> -void rcu_unexpedite_gp(void);
->>   void rcu_async_hurry(void);
->>   void rcu_async_relax(void);
->>   void rcupdate_announce_bootup_oddness(void);
->> -- 
->> 2.53.0
->>
+1. The reproducer creates perf events using tracepoints, then closes them while generating heavy perf interrupt load. The perf NMI interrupt storms ("perf: interrupt took too long" messages escalating from 69ms to 336ms) consume most CPU time, starving RCU quiescent state detection.
+
+2. When the perf fd is closed, perf_trace_event_unreg() (kernel/trace/trace_event_perf.c:154) calls tracepoint_synchronize_unregister() (include/linux/tracepoint.h:116), which now calls synchronize_srcu(&tracepoint_srcu) instead of synchronize_rcu().
+
+3. The SRCU grace period for tracepoint_srcu is processed by process_srcu() running in the rcu_gp workqueue. Because tracepoint_srcu is DEFINE_SRCU_FAST, its srcu_reader_flavor includes SRCU_READ_FLAVOR_FAST, which is part of SRCU_READ_FLAVOR_SLOWGP.
+
+4. In srcu_readers_active_idx_check() (kernel/rcu/srcutree.c:544), when SRCU_READ_FLAVOR_SLOWGP is detected, the function calls synchronize_rcu() (line 569) instead of smp_mb() (line 301 in non-fast path). This is the key design tradeoff of SRCU-fast: faster readers (no smp_mb() on read side) at the cost of slower grace periods (synchronize_rcu() on update side).
+
+5. synchronize_rcu() → synchronize_rcu_normal() → wait_for_completion(), waiting for an RCU grace period to complete. But the RCU grace period is stalled because the perf interrupt storms are preventing CPUs from passing through quiescent states quickly enough.
+
+6. Since process_srcu is blocked waiting for synchronize_rcu(), the tracepoint_srcu SRCU grace period cannot advance, so synchronize_srcu(&tracepoint_srcu) in the perf teardown path also blocks indefinitely.
+
+The pre-existing condition (perf NMI storms causing RCU stalls) was previously tolerable because the perf teardown path used synchronize_rcu() directly (via the old tracepoint_synchronize_unregister()), which would eventually complete once the RCU stall resolved. Now, with SRCU-fast, there is an additional layer of indirection: perf teardown waits on SRCU, SRCU processing waits on RCU, and both the SRCU workqueue threads and the perf teardown task are stuck.
+
+## Affected Versions
+
+This is a regression in v7.0-rc1. The bug was introduced by commit a46023d5616ed ("tracing: Guard __DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast"), which was merged via the trace-v7.0 merge (3c6e577d5ae70). The underlying SRCU-fast infrastructure was added by commit c4020620528e4 ("srcu: Add SRCU-fast readers") and 4d86b1e7e1e98 ("srcu: Add SRCU_READ_FLAVOR_SLOWGP to flag need for synchronize_rcu()"), but the regression became triggerable only when a46023d5616ed applied SRCU-fast to the tracepoint_srcu used in the perf event teardown path.
+
+Kernels before v7.0-rc1 (i.e., v6.x and earlier) are not affected, as they used preempt_disable()+RCU for tracepoint protection, and tracepoint_synchronize_unregister() called synchronize_rcu() directly without SRCU involvement.
+
+## Relevant Commits and Fixes
+
+Key commits in the causal chain:
+
+- a46023d5616ed ("tracing: Guard __DECLARE_TRACE() use of __DO_TRACE_CALL() with SRCU-fast") - the commit that introduced the regression by switching tracepoints to SRCU-fast
+- a77cb6a867667 ("srcu: Fix warning to permit SRCU-fast readers in NMI handlers") - immediate predecessor fix
+- c4020620528e4 ("srcu: Add SRCU-fast readers") - added the SRCU-fast reader API
+- 4d86b1e7e1e98 ("srcu: Add SRCU_READ_FLAVOR_SLOWGP to flag need for synchronize_rcu()") - added the synchronize_rcu()-instead-of-smp_mb() logic in SRCU grace period processing
+- 16718274ee75d ("tracing: perf: Have perf tracepoint callbacks always disable preemption") - preparatory commit for the SRCU-fast switch
+
+No fix for this specific issue was found in mainline or in any -next branches as of today.
+
+## Prior Discussions
+
+No prior reports of this specific RCU stall / SRCU deadlock triggered via perf trace teardown with SRCU-fast were found on lore.kernel.org. The original SRCU-fast tracepoint series was posted at https://lore.kernel.org/all/20260126231256.499701982@kernel.org/ (linked from the commit message), motivated by enabling preemptible BPF on tracepoints for RT systems (https://lore.kernel.org/all/20250613152218.1924093-1-bigeasy@linutronix.de/). No discussion of the synchronize_rcu()-from-workqueue stall scenario appears to have taken place in those threads.
+
+## Suggested Actions
+
+1. Confirm the regression by testing with the parent commit a77cb6a867667 (immediately before a46023d5616ed). If the issue disappears, this confirms the SRCU-fast tracepoint switch as the cause.
+
+2. As a quick workaround, reverting a46023d5616ed (and its preparatory commits a77cb6a867667, f7d327654b886, 16718274ee75d if needed) should eliminate the deadlock, at the cost of losing preemptible BPF tracepoint support.
+
+3. The fundamental issue is that process_srcu() for SRCU-fast structures calls synchronize_rcu() synchronously from workqueue context. Possible fixes include:
+   - Using an asynchronous mechanism (e.g., call_rcu() with a callback to resume SRCU GP processing) instead of blocking synchronize_rcu() within the SRCU state machine.
+   - Having srcu_readers_active_idx_check() use poll_state_synchronize_rcu() and defer retrying instead of blocking.
+   - Bounding the perf interrupt rate escalation to prevent the RCU stall in the first place (though this would only mask the underlying SRCU↔RCU coupling issue).
+
+4. If you can reproduce reliably, adding the following debug options would provide more information: CONFIG_RCU_TRACE=y, CONFIG_PROVE_RCU=y, and booting with rcutree.rcu_kick_kthreads=1 to see if kicking the RCU threads helps break the stall.
 
