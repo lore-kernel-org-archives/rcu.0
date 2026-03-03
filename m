@@ -1,155 +1,166 @@
-Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED26B390995;
-	Mon,  2 Mar 2026 22:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274F6345CD3;
+	Tue,  3 Mar 2026 13:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772489946; cv=none; b=lN7Uy18fkKjXPY5CJ+5Y75KmMIse+22hvo4WsOdEPcqft1pNHy5QPZjC8wAy3y8+tVRO0Et6VjaCchE9mfotDltCzQxkhEDWwCIzfIeCnMSW9O+xB9386p5idIh4wW/toEGP4tnMsaq6i1d72ZeVkIuYyAXSNJd0r5A6Qn5xtmk=
+	t=1772544224; cv=none; b=eQHQONCdbku/dIBWMvUxSYgOC2LTupXX8Ij/8Qo55efTAJ9/fyMVpc458aUxB09meYSj+sD0AmqGr/jgpfwYwFKgbQUIBeD5apPL9ruDRin3HxigyBezEFXNsGI2p43KBK3GBy53hBVSod4mfXV7p4sk+Pvz/7gvXpRN7cuExVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772489946; c=relaxed/simple;
-	bh=wrl1B5CtaEn2yLVWSxGWi505RYTBrAT8skDredTeNic=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=WrZVq9KW7cjgHLz7eBGn9L6M2pHEdiXQ9WV9qrJuBxf0BMML3psaKhJTgbd+mgVE2Tpbrfy45dlGkl/XNnizhDQrStA2MMDzEMVtyNfdxFtahSnGHeHSWcTawMpXB/4yBa9j23uiVtSakdeWYFDybRb525+QRcsBpwSO9wRcFX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=TrlFBhfu; arc=none smtp.client-ip=193.238.174.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
+	s=arc-20240116; t=1772544224; c=relaxed/simple;
+	bh=QXKFZaIGCPMx+aACFmMjJlQcbli93BFDeSlduovypIE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oYvFByKF4oBMoOxG2Fuk6yJDlbM2xNVjCXLjge33phcmrdHQLtAKBL1VW6lYO0xw85tymfAdh/G7pLvE8ABx/1CFqwDV01zM/GocT2kaHa3YWr6Y7qkufXcl36gXmOoXnXoAD/M3V0fWdfv2995hgcNm+dvnGfAqoQmPeYb7u7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RUqskrCw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="TrlFBhfu"
-Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 393DF21D41;
-	Tue, 03 Mar 2026 00:18:59 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-type:content-type:date:from:from:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=K2BjrCkn+3/4tdZXjXw5Du9tfAcXbUOI6+MIG9XakAM=; b=TrlFBhfuYihB
-	JHuo1QlOX0ZCeQnbu63mb+8VmDkct0q7QjGwT+Zo1L+WAWCfSdtq+6CvnjctNRCw
-	zHyvQDjKqtgaqI8Qrabz3GWpupvyRR7gGRepTXgTSfr5XKjlbVyFMlh2bEQbJdOe
-	EyD9VXI4jc/wjE3ncvOk9bMH2ANHaaOiPdnQxIVeEhAI5zROloGe6DkLRCnIg9vb
-	/a3lX8bxOuxxdUuFFLgzB2PwxwkwVUqbYq65JaOiWfsW5mXdx+3AA52NTbU80eAl
-	+W5gV2SEEeZc3UZDA3LJdHrN9+IhJQxI8DW36qrecCitoo+MvED460INEKXyHNQt
-	XMJsCgwVtQ3KPkvxp3UDgdXOe32qp2I2q0+Q60zh9P9lkqnvs9diBZCag1Rf3jJd
-	1tfLePheFixRm5Qrod+Q0V2N8Ll7++zVQvbWxoDGDzp1fBsISnu3H8XPy9Okqz0y
-	ZRRk6heakXUqROMmuyhzwuHC0LiHm04q21YYWRmZLQmCGTEDKtaBHbHu0D4iPbC6
-	Fji3MztASbajh1LhC6YSLKvYgpPjIk3UyKymcfWC9OMw6RvvlcMdnMajLx9nA/8g
-	I7UGk8SBO3ERgs7X6XH0oPNk6gHA706/lLGjmKH6TRfDuIyoIvvXwjd1hHInQudZ
-	t0dwkRaUMV3TjsBjvZG8tml9d3cDTJU=
-Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
-	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Tue, 03 Mar 2026 00:18:57 +0200 (EET)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 7C092608AE;
-	Tue,  3 Mar 2026 00:18:56 +0200 (EET)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 622MIq4E100229;
-	Tue, 3 Mar 2026 00:18:52 +0200
-Date: Tue, 3 Mar 2026 00:18:52 +0200 (EET)
-From: Julian Anastasov <ja@ssi.bg>
-To: Florian Westphal <fw@strlen.de>
-cc: Simon Horman <horms@verge.net.au>, Pablo Neira Ayuso <pablo@netfilter.org>,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Jiejian Wu <jiejian@linux.alibaba.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH nf-next 2/5] ipvs: add resizable hash tables
-In-Reply-To: <aaXiPAI5mcHAt385@strlen.de>
-Message-ID: <f1780ae2-5b62-d898-952a-3f779a91ad38@ssi.bg>
-References: <20260226195021.64943-1-ja@ssi.bg> <20260226195021.64943-3-ja@ssi.bg> <aaQ955aj9ONBe695@strlen.de> <8cb40028-50ed-b646-ecd7-9ab47e9ba38f@ssi.bg> <aaXiPAI5mcHAt385@strlen.de>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RUqskrCw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D507C116C6;
+	Tue,  3 Mar 2026 13:23:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772544223;
+	bh=QXKFZaIGCPMx+aACFmMjJlQcbli93BFDeSlduovypIE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RUqskrCwytKCoz7NpxBgmM4C3jhH3crzoSTNxyVDDTwdv8G6ut6sKfUyApTW2XPoX
+	 9WHaPeALwgD1XPhAKHOr8dE5Mmp1hV0mv0icFbbVLyfqOMlB3UFv/NkSMzIy7aazPM
+	 LdTVjsG8/D2BW2Zl/G9fcDN8ulWmHcRG52y8mHgO0MyvHUIjhvPYk2YZ18z0zXPDpj
+	 yuJOHNq8K+qFXpcELSHkihdCXpjX+HOVnTo0OJK69xLWZ/AgFFQfFspe14PlLLfoZJ
+	 NKogQHOeytqZA3J7+vluUG0QdVF0rs6keDsM4BukFNuOL5XGuuFpvWPQbjoNvL4Gc4
+	 iY8vhh/W4qIcw==
+Message-ID: <29d38308-e8ae-42aa-8eeb-1c3b347c284b@kernel.org>
+Date: Tue, 3 Mar 2026 14:23:32 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: Stalls when starting a VSOCK listening socket: soft lockups, RCU
+ stalls, timeout
+Content-Language: en-GB, fr-BE
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: kvm@vger.kernel.org, virtualization@lists.linux.dev,
+ Netdev <netdev@vger.kernel.org>, rcu@vger.kernel.org,
+ MPTCP Linux <mptcp@lists.linux.dev>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@kernel.org>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>, "luto@kernel.org" <luto@kernel.org>,
+ Stefano Garzarella <sgarzare@redhat.com>
+References: <b24ffcb3-09d5-4e48-9070-0b69bc654281@kernel.org>
+ <7f3e74d7-67dc-48d7-99d2-0b87f671651b@kernel.org>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <7f3e74d7-67dc-48d7-99d2-0b87f671651b@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Hi Jiri,
 
-	Hello,
-
-On Mon, 2 Mar 2026, Florian Westphal wrote:
-
-> Julian Anastasov <ja@ssi.bg> wrote:
-> > > Julian Anastasov <ja@ssi.bg> wrote:
-> > > > +/**
-> > > > + * ip_vs_rht_for_bucket_retry() - Retry bucket if entries are moved
-> > > > + * @t:		current table, used as cursor, struct ip_vs_rht *var
-> > > > + * @bucket:	index of current bucket or hash key
-> > > > + * @sc:		temp seqcount_t *var
-> > > > + * @retry:	temp int var
-> > > > + */
-> > > > +#define ip_vs_rht_for_bucket_retry(t, bucket, sc, seq, retry)		\
-> > > 
-> > > This triggers a small kdoc warning:
-> > > 
-> > > Warning: include/net/ip_vs.h:554 function parameter 'seq' not described in 'ip_vs_rht_for_bucket_retry'
-> > 
-> > 	Will fix it, thanks! Just let me know if more comments
-> > are expected before sending next version...
+On 26/02/2026 11:37, Jiri Slaby wrote:
+> On 06. 02. 26, 12:54, Matthieu Baerts wrote:
+>> Our CI for the MPTCP subsystem is now regularly hitting various stalls
+>> before even starting the MPTCP test suite. These issues are visible on
+>> top of the latest net and net-next trees, which have been sync with
+>> Linus' tree yesterday. All these issues have been seen on a "public CI"
+>> using GitHub-hosted runners with KVM support, where the tested kernel is
+>> launched in a nested (I suppose) VM. I can see the issue with or without
+>> debug.config. According to the logs, it might have started around
+>> v6.19-rc0, but I was unavailable for a few weeks, and I couldn't react
+>> quicker, sorry for that. Unfortunately, I cannot reproduce this locally,
+>> and the CI doesn't currently have the ability to execute bisections.
 > 
-> There is some checkpatch noise in patch 1:
+> Hmm, after the switch of the qemu guest kernels to 6.19, our (opensuse)
+> build service is stalling in smp_call_function_many_cond() randomly too:
+> https://bugzilla.suse.com/show_bug.cgi?id=1258936
 > 
-> CHECK: Alignment should match open parenthesis
-> #42: FILE: include/linux/rculist_bl.h:24:
-> +       rcu_assign_pointer(hlist_bl_first_rcu(h),
->                 (struct hlist_bl_node *)((unsigned long)n | LIST_BL_LOCKMASK));
+> The attachment from there contains sysrq-t logs too:
+> https://bugzilla.suse.com/attachment.cgi?id=888612
 
-	I don't change here any alignment and I didn't fixed it
-because I'm not sure how to make it better :)
+I'm glad I'm not the only one with this issue :)
 
-> CHECK: Macro argument 'member' may be better as '(member)' to avoid precedence issues
-> #97: FILE: include/linux/rculist_bl.h:126:
-> +#define hlist_bl_for_each_entry_continue_rcu(tpos, pos, member)                \
-> +       for (pos = rcu_dereference_raw(hlist_bl_next_rcu(&(tpos)->member)); \
-> +            pos &&                                                     \
-> +            ({ tpos = hlist_bl_entry(pos, typeof(*tpos), member); 1; }); \
-> +            pos = rcu_dereference_raw(hlist_bl_next_rcu(pos)))
+In your case, do you also have nested VMs with KVM support?
 
-	I think, this matches how all such macros use the member
-field.
+Are you able to easily reproduce the issue and change the guest kernel
+in your build service?
 
-> And patch 2:
-> ERROR: Macros with complex values should be enclosed in parentheses
-> #147: FILE: include/net/ip_vs.h:583:
-> +#define ip_vs_rht_walk_buckets_rcu(table, head)                                \
-> +       ip_vs_rht_for_each_table_rcu(table, _t, _p)                     \
-> +               ip_vs_rht_for_each_bucket(_t, _bucket, head)            \
-> +                       ip_vs_rht_for_bucket_retry(_t, _bucket, _sc,    \
-> +                                                  _seq, _retry)
+On my side, any debugging steps need to be automated. Lately, it looks
+like the issue is more easily triggered on a stable 6.19 kernel, than on
+the last RC.
 
-	Yep, here we use complex macros to help the callers
-use a loop with their statement/body. In the previous versions
-I checked the checkpatch output and due to the advanced macro
-usage I'm not sure what can be made better...
-
+>> The stalls happen before starting the MPTCP test suite. The init program
+>> creates a VSOCK listening socket via socat [1], and different hangs are
+>> then visible: RCU stalls followed by a soft lockup [2], only a soft
+>> lockup [3], sometimes the soft lockup comes with a delay [4] [5], or
+>> there is no RCU stalls or soft lockups detected after one minute, but VM
+>> is stalled [6]. In the last case, the VM is stopped after having
+>> launched GDB to get more details about what was being executed.
+>>
+>> It feels like the issue is not directly caused by the VSOCK listening
+>> socket, but the stalls always happen after having started the socat
+>> command [1] in the background.
 > 
-> BUT SEE:
-> 
->    do {} while (0) advice is over-stated in a few situations:
-> 
->    The more obvious case is macros, like MODULE_PARM_DESC, invoked at
-> 
-> [ there is more ]
-> 
-> ... but I don't really care, you can handle/ignore it as you see fit.
-> 
-> I only have a question wrt. the hash table choice.
-> 
-> Why are you not re-using rhashtables and instead roll your own?
-> 
-> No requirement, but might make sense to mention the rationale
-> in the commit message.
+> It fails randomly while building random packages (go, libreoffice,
+> bayle, ...). I don't think it is VSOCK related in those cases, but who
+> knows what the builds do...
 
-	I found the rhashtable_remove_fast operation slow by using 
-hashing+lookup. Also, IPVS needs to rehash (move) single entry when
-its key changes (cport in ip_vs_conn_fill_cport) and I don't see
-public method in rht for this. Things get complicated when we add double 
-conn hashing, it needs careful move operation from one/two chains. Also, 
-in part 4 of the changes we allow customizations for the load factor,
-in case the defaults are not suitable for the setup.
+Indeed, unlikely to be VSOCK then.
 
-	May be I can add more info in the commit message about this.
+> I cannot reproduce locally either.
+> 
+> I came across:
+>   614da1d3d4cd x86: make page fault handling disable interrupts properly
+> but I have no idea if it could have impact on this at all.
 
-Regards
+Did it help to revert it?
 
---
-Julian Anastasov <ja@ssi.bg>
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
 
