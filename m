@@ -1,45 +1,58 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail115-24.sinamail.sina.com.cn (mail115-24.sinamail.sina.com.cn [218.30.115.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58056375F86;
-	Tue,  3 Mar 2026 23:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27265351C32
+	for <rcu@vger.kernel.org>; Wed,  4 Mar 2026 02:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772582346; cv=none; b=g15MjqD0+XTdObIab+exdeLMwUnr+KdxwRuLo/Ah3RDXaT35rqNzjVzYJd3784eWwNdLB9eXqIF+NO9Lu2txLJ1ulLCLdS9xU2ZO66cJnqGr5ZfdxG7sQNmnsoe+xObQJtjckze/MVNS6n4TqC/rLkBD3c5Z0aD8aoNhWI+8Wf4=
+	t=1772592592; cv=none; b=so4Jr3+oWYJmmQ54o1btgP6KMj1wZv2zUJm5b2LdGETNX6o3bClAOx92/EXTObblJekMV57GWuS/Gki1IdrjsLm3EJD2BeMwQcg5fqb+2fEu0cwJdHMIOGswrdVsZ3p+LOaQfBvWZIYBHpnPuoytjWlajefS/yjMEOEB6BApcUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772582346; c=relaxed/simple;
-	bh=nO8CYYfzGFAugMvr1scTvmnivZv8/SWZWUO9Q9xFQD0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eN4UFHoFZzbgkW8of+fSikZcD3yNNVPUU6jmOAz2hCn95mt/EMq9X/kK1sDBUV6GsGDCpvd4t2M4bMpc3kCqXJRQj7OGR5iEEsV7Wb8YBk2oj43INMbjuiraiZdzcfEOdKgNZvfydRR9qwF6DuOEUQxxlhmVADzQ7EELyRH5ySU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kS0prf0E; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1772592592; c=relaxed/simple;
+	bh=H70FKmd6xMQBDIFHkrijaB1YoLEtsVUcNOqcqI/LXPg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MDC2SQo48nwaORpLvtXXdf0NVKq2L4S27+lYat1JaMmOnN1PPfm5taRmiZEJ1hG11vXDZetY+NNWKfjr0g1qWkIIkDeHjadNUBg4QYqqlhdG6hgpUIF6nsXkUkyEzw8O7nYBBxe8H62Fg2EdOkgajnTWIc5vSB1hki3FaKelPts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sina.cn; spf=pass smtp.mailfrom=sina.cn; dkim=pass (1024-bit key) header.d=sina.cn header.i=@sina.cn header.b=KPFEeInt; arc=none smtp.client-ip=218.30.115.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sina.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.cn
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kS0prf0E"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC09EC116C6;
-	Tue,  3 Mar 2026 23:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772582346;
-	bh=nO8CYYfzGFAugMvr1scTvmnivZv8/SWZWUO9Q9xFQD0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kS0prf0EhFct9ns7RYZarOPWxSWsIZKWs4EcR1aav/zqEpNV0yOHh3Mx1mqDDXaHf
-	 8jFuhe68HyditVMmPqyC+TPAWCeR9R9uXqakDJ1B2HUwfM/OsHA7D5aPK/T1T9MhYN
-	 vggBi7g4VLIEayFUWGRdNwhbC6u7CW7qDpAE13vlyEUUwBAMuFLGYgC58DjK6vrioi
-	 Qt+eo9qQFwGz71SNgIqyeicI8BiyAPEl/2jVDqy0SLEphlVbO1MWfEyac/cWgIigk3
-	 OVk9v4k/M0ZhmYpP0G5zfMflhSRsiNKDTMbknd6X0aZBqw5xTN3SX2v/rFegegLhzU
-	 ZrN4WjUPcghVw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9FE71CE0D66; Tue,  3 Mar 2026 15:59:05 -0800 (PST)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
+	dkim=pass (1024-bit key) header.d=sina.cn header.i=@sina.cn header.b="KPFEeInt"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sina.cn; s=201208; t=1772592588;
+	bh=pz66RA33n115wePk+1z6PHB25yLmCnUhJIHAE3UThro=;
+	h=From:Subject:Date:Message-Id;
+	b=KPFEeIntlSoa8W20mNzr0p9PGn+f7vZbUgr3AME1SRs5xJw9+z/NHDU3FXpF1QwOs
+	 flAuKWpYPQTrQw76p5AuhYpzpGtnSN1xwBK8mWxWybAwL7ymgztcF2/k6ewjXJ1vBi
+	 pCNSJvqM73t93a28ntbdxo+C438NKUVjF6MUzVJU=
+X-SMAIL-HELO: NTT-kernel-dev
+Received: from unknown (HELO NTT-kernel-dev)([60.247.85.88])
+	by sina.cn (10.185.250.22) with ESMTP
+	id 69A79DBE00005C83; Wed, 4 Mar 2026 10:49:37 +0800 (CST)
+X-Sender: jianqkang@sina.cn
+X-Auth-ID: jianqkang@sina.cn
+Authentication-Results: sina.cn;
+	 spf=none smtp.mailfrom=jianqkang@sina.cn;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=jianqkang@sina.cn
+X-SMAIL-MID: 790547602323
+X-SMAIL-UIID: E1E0329692F345BC87094A53C08E7C58-20260304-104937-1
+From: Jianqiang kang <jianqkang@sina.cn>
+To: gregkh@linuxfoundation.org,
+	stable@vger.kernel.org,
+	qiang.zhang1211@gmail.com
+Cc: patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	paulmck@kernel.org,
+	frederic@kernel.org,
+	quic_neeraju@quicinc.com,
+	josh@joshtriplett.org,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 1/4] rcutorture: Update due to x86 not supporting none/voluntary preemption
-Date: Tue,  3 Mar 2026 15:59:00 -0800
-Message-Id: <20260303235903.1967409-1-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <2011d452-3c72-432a-af77-810238e80e6a@paulmck-laptop>
-References: <2011d452-3c72-432a-af77-810238e80e6a@paulmck-laptop>
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	joel@joelfernandes.org,
+	rcu@vger.kernel.org,
+	neeraj.upadhyay@kernel.org
+Subject: [PATCH 6.1.y] rcu/nocb: Fix possible invalid rdp's->nocb_cb_kthread pointer access
+Date: Wed,  4 Mar 2026 10:49:34 +0800
+Message-Id: <20260304024934.2364383-1-jianqkang@sina.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -48,168 +61,63 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As of v7.0-rc1, architectures that support preemption, including x86 and
-arm64, no longer support CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY.
-Attempting to build kernels with these two Kconfig options results in
-.config errors.  This commit therefore switches such rcutorture scenarios
-to CONFIG_PREEMPT_LAZY.
+From: Zqiang <qiang.zhang1211@gmail.com>
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+[ Upstream commit 1bba3900ca18bdae28d1b9fa10f16a8f8cb2ada1 ]
+
+In the preparation stage of CPU online, if the corresponding
+the rdp's->nocb_cb_kthread does not exist, will be created,
+there is a situation where the rdp's rcuop kthreads creation fails,
+and then de-offload this CPU's rdp, does not assign this CPU's
+rdp->nocb_cb_kthread pointer, but this rdp's->nocb_gp_rdp and
+rdp's->rdp_gp->nocb_gp_kthread is still valid.
+
+This will cause the subsequent re-offload operation of this offline
+CPU, which will pass the conditional check and the kthread_unpark()
+will access invalid rdp's->nocb_cb_kthread pointer.
+
+This commit therefore use rdp's->nocb_gp_kthread instead of
+rdp_gp's->nocb_gp_kthread for safety check.
+
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
+[ Minor conflict resolved. ]
+Signed-off-by: Jianqiang kang <jianqkang@sina.cn>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-N  | 3 ++-
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-T  | 3 ++-
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-U  | 3 ++-
- tools/testing/selftests/rcutorture/configs/rcu/TASKS02 | 3 ++-
- tools/testing/selftests/rcutorture/configs/rcu/TINY01  | 3 ++-
- tools/testing/selftests/rcutorture/configs/rcu/TINY02  | 3 ++-
- tools/testing/selftests/rcutorture/configs/rcu/TRACE01 | 3 ++-
- tools/testing/selftests/rcutorture/configs/rcu/TREE04  | 3 ++-
- tools/testing/selftests/rcutorture/configs/rcu/TREE05  | 3 ++-
- tools/testing/selftests/rcutorture/configs/rcu/TREE06  | 3 ++-
- tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL | 3 ++-
- 11 files changed, 22 insertions(+), 11 deletions(-)
+ kernel/rcu/tree_nocb.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N
-index 07f5e0a70ae70..90797c9e9410e 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N
-@@ -2,7 +2,8 @@ CONFIG_RCU_TRACE=n
- CONFIG_SMP=y
- CONFIG_NR_CPUS=4
- CONFIG_HOTPLUG_CPU=y
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- #CHECK#CONFIG_RCU_EXPERT=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T
-index c70cf0405f248..06e4d1030279c 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T
-@@ -1,5 +1,6 @@
- CONFIG_SMP=n
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U
-index bc9eeabaa1b18..540fa4ee6b1ba 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U
-@@ -1,5 +1,6 @@
- CONFIG_SMP=n
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TASKS02 b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
-index 2f9fcffff5ae3..dd2bd4e08da4e 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
-@@ -1,5 +1,6 @@
- CONFIG_SMP=n
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TINY01 b/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-index bd5ed7b0da5f0..37be5468c9d9f 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-@@ -1,5 +1,6 @@
- CONFIG_SMP=n
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TINY02 b/tools/testing/selftests/rcutorture/configs/rcu/TINY02
-index 30439f6fc20e6..be8860342ef71 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TINY02
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TINY02
-@@ -1,5 +1,6 @@
- CONFIG_SMP=n
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-index 18efab346381a..8fb124c28f283 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-@@ -1,7 +1,8 @@
- CONFIG_SMP=y
- CONFIG_NR_CPUS=5
- CONFIG_HOTPLUG_CPU=y
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE04 b/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-index f49fda1c88811..f9d54ddc73a20 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-@@ -1,7 +1,8 @@
- CONFIG_SMP=y
- CONFIG_NR_CPUS=8
-+CONFIG_PREEMPT_LAZY=y
- CONFIG_PREEMPT_NONE=n
--CONFIG_PREEMPT_VOLUNTARY=y
-+CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
- CONFIG_PREEMPT_LAZY=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE05 b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
-index 0513aa33c32c4..93a17fe050bd4 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE05
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
-@@ -1,6 +1,7 @@
- CONFIG_SMP=y
- CONFIG_NR_CPUS=8
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_LAZY=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE06 b/tools/testing/selftests/rcutorture/configs/rcu/TREE06
-index bfd88c46dbd73..73a8945780abd 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE06
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE06
-@@ -1,6 +1,7 @@
- CONFIG_SMP=y
- CONFIG_NR_CPUS=8
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_LAZY=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL b/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL
-index 5d546efa68e83..d18cfbd606220 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL
-@@ -1,6 +1,7 @@
- CONFIG_SMP=y
- CONFIG_NR_CPUS=8
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_HZ_PERIODIC=n
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 7c28d154b094..2f501de7bec9 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1112,7 +1112,6 @@ static long rcu_nocb_rdp_offload(void *arg)
+ 	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	unsigned long flags;
+ 	int wake_gp;
+-	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+ 
+ 	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
+ 	/*
+@@ -1122,7 +1121,7 @@ static long rcu_nocb_rdp_offload(void *arg)
+ 	if (!rdp->nocb_gp_rdp)
+ 		return -EINVAL;
+ 
+-	if (WARN_ON_ONCE(!rdp_gp->nocb_gp_kthread))
++	if (WARN_ON_ONCE(!rdp->nocb_gp_kthread))
+ 		return -EINVAL;
+ 
+ 	pr_info("Offloading %d\n", rdp->cpu);
+@@ -1151,7 +1150,7 @@ static long rcu_nocb_rdp_offload(void *arg)
+ 	 */
+ 	wake_gp = rdp_offload_toggle(rdp, true, flags);
+ 	if (wake_gp)
+-		wake_up_process(rdp_gp->nocb_gp_kthread);
++		wake_up_process(rdp->nocb_gp_kthread);
+ 	swait_event_exclusive(rdp->nocb_state_wq,
+ 			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB) &&
+ 			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
 -- 
-2.40.1
+2.34.1
 
