@@ -1,123 +1,130 @@
-Received: from mail115-63.sinamail.sina.com.cn (mail115-63.sinamail.sina.com.cn [218.30.115.63])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12473FBA7
-	for <rcu@vger.kernel.org>; Wed,  4 Mar 2026 02:57:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB28347FE2;
+	Wed,  4 Mar 2026 15:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772593057; cv=none; b=ZFIL4HLCZwph2n9cyV4MFXNBtrijx09t0hnoPJAmJuz5Rh8GceYSToPXv7zJ6Yr9pcIRC+hPmm/eacFpq5MtVGZGsWE7WSMr/4wSMGTorBPU6z0BeOZQsOVM9SI575BRNptGnl2UQrlL21CvfHm/VnyzJ8thUHtvn2LvKuXANk8=
+	t=1772638345; cv=none; b=gbvMZz2L4jH/UW/5a/S+ASrGwUg61RtD97egKea5VEv9mRzCVo6+zaISc9Wtj2wNKBPrFfSD52KcOEumSLpAVW+a3FcSy5xtTap5xnOxqUqGRVHehNaGzWcI9YL5btvDKvqNrMYMrVWZe2bRUUft/+5xEsBsvMqMqvTC9Ws7seo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772593057; c=relaxed/simple;
-	bh=qkeRbo78B+2gM+r2nbeXSUfeM0u2W8lSayzGSDjRBRc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jhfsnFoR7TdtYwPxyMcIw4cO52s59/OwjHvggzCmpkTVJ3zwd8ciCgIvfZVR8LfxpypON9bhDT1CDMuFHHOYuObJhoNgR/7JlKuSJJhoIBcMXJ4qC0BKI71NAPLu2CXo6w3mOJDXmteWhrH98kL7yrff8rpZw4QdxmEu/5cQaO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sina.cn; spf=pass smtp.mailfrom=sina.cn; dkim=pass (1024-bit key) header.d=sina.cn header.i=@sina.cn header.b=XKKDSHI8; arc=none smtp.client-ip=218.30.115.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sina.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.cn
+	s=arc-20240116; t=1772638345; c=relaxed/simple;
+	bh=wbApkclXeYtkf94Qp0PCYUvoWqL7GbHXCpYFOESeHRc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lenyTxa8wtNTjou/MKQ4/EdURApo8SqYOSc+FbJctGygPA5MlIPkY5pBpZQVNG077B4s92Af4lSnx2tmMQG6KLVtPwF603JwfzD0Fob1SsFLfVdS+9+HskjtYKGzJvJeKOtIMixFKxhr+d4MmZs2EIX73aTBp5n9HgbvYLxVTSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P1I3Jxwg; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=sina.cn header.i=@sina.cn header.b="XKKDSHI8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sina.cn; s=201208; t=1772593055;
-	bh=DCsWQhNqFPEinGuq6D8087JmXqNHHQaNhOmiVDfpepM=;
-	h=From:Subject:Date:Message-Id;
-	b=XKKDSHI8/IF7wpWU/SCvV+Bh2BQzDiaLo3PCCk2ibHoVsG2jdbJ4dwFZ1C9gAiNs6
-	 hIPTHzNapOiIgFrVuZD86dnVx1d3v4NeaIX/7wy0rx315Zo+sE2Qpt89yCyp/q7ZmC
-	 q9hEn5X1j0uwuMTnH9IlAmREBBIUrLnkpfFlB63g=
-X-SMAIL-HELO: NTT-kernel-dev
-Received: from unknown (HELO NTT-kernel-dev)([60.247.85.88])
-	by sina.cn (10.185.250.22) with ESMTP
-	id 69A79F9400002FF7; Wed, 4 Mar 2026 10:57:26 +0800 (CST)
-X-Sender: jianqkang@sina.cn
-X-Auth-ID: jianqkang@sina.cn
-Authentication-Results: sina.cn;
-	 spf=none smtp.mailfrom=jianqkang@sina.cn;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=jianqkang@sina.cn
-X-SMAIL-MID: 7820897602635
-X-SMAIL-UIID: 7B04746125BA4BD6BB653162830FBA2D-20260304-105726-1
-From: Jianqiang kang <jianqkang@sina.cn>
-To: gregkh@linuxfoundation.org,
-	stable@vger.kernel.org,
-	qiang.zhang1211@gmail.com
-Cc: patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	paulmck@kernel.org,
-	frederic@kernel.org,
-	quic_neeraju@quicinc.com,
-	josh@joshtriplett.org,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	joel@joelfernandes.org,
-	rcu@vger.kernel.org,
-	neeraj.upadhyay@kernel.org
-Subject: [PATCH 6.6.y] rcu/nocb: Fix possible invalid rdp's->nocb_cb_kthread pointer access
-Date: Wed,  4 Mar 2026 10:57:24 +0800
-Message-Id: <20260304025724.2365669-1-jianqkang@sina.cn>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P1I3Jxwg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88584C4CEF7;
+	Wed,  4 Mar 2026 15:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772638345;
+	bh=wbApkclXeYtkf94Qp0PCYUvoWqL7GbHXCpYFOESeHRc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=P1I3Jxwg1nVKFFHThcQzzNSVSYXmTqHmw/nLg6vYvnfyLr3arz2vIzq1SQWp9sKmK
+	 CabT4eEFLGa+YM0+27KL5tWl7ybfNO00frfDNA0GvekIDMOwIv+HaYUcSksX9ydUaQ
+	 bZ8nw4TAs06bPVMa0V2auvkU1lGWs+3rIm1Xf64Fmgeu/zteUUE3jbdW/fp1Ese6Dd
+	 7t0J0UFG9qwgcItUd83ZzS2O891u76TcY2/spqNY/G05oa6+K+0PY91RUXd2awrS+r
+	 Ja022Ey0ZWzh/mDbf/UUf3jfCIlhWRC67gcva6uaqD3F9Jh2DF8jf0w4V+xHQ3ctIe
+	 yScuCc9FwB5fw==
+Date: Wed, 4 Mar 2026 16:32:22 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v1 1/4] rcu/nocb: Consolidate
+ rcu_nocb_cpu_offload/deoffload functions
+Message-ID: <aahQhlPp3Qqm4Bwg@localhost.localdomain>
+References: <20260224230435.3390963-1-joelagnelf@nvidia.com>
+ <20260224230435.3390963-2-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260224230435.3390963-2-joelagnelf@nvidia.com>
 
-From: Zqiang <qiang.zhang1211@gmail.com>
+Le Tue, Feb 24, 2026 at 06:04:32PM -0500, Joel Fernandes a écrit :
+> The rcu_nocb_cpu_offload() and rcu_nocb_cpu_deoffload() functions are
+> nearly duplicates.
+> 
+> Therefore, extract the common logic into rcu_nocb_cpu_toggle_offload()
+> which takes an 'offload' boolean, and make both exported functions
+> simple wrappers.
+> 
+> This eliminates a bunch of duplicate code at the call sites, namely
+> mutex locking, CPU hotplug locking and CPU online checks.
+> 
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> ---
+>  kernel/rcu/tree_nocb.h | 89 ++++++++++++++++++++++--------------------
+>  1 file changed, 46 insertions(+), 43 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index b3337c7231cc..5b041134d6bb 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -1081,30 +1081,6 @@ static int rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+>  	return 0;
+>  }
+>  
+> -int rcu_nocb_cpu_deoffload(int cpu)
+> -{
+> -	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> -	int ret = 0;
+> -
+> -	cpus_read_lock();
+> -	mutex_lock(&rcu_state.nocb_mutex);
+> -	if (rcu_rdp_is_offloaded(rdp)) {
+> -		if (!cpu_online(cpu)) {
+> -			ret = rcu_nocb_rdp_deoffload(rdp);
+> -			if (!ret)
+> -				cpumask_clear_cpu(cpu, rcu_nocb_mask);
+> -		} else {
+> -			pr_info("NOCB: Cannot CB-deoffload online CPU %d\n", rdp->cpu);
+> -			ret = -EINVAL;
+> -		}
+> -	}
+> -	mutex_unlock(&rcu_state.nocb_mutex);
+> -	cpus_read_unlock();
+> -
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL_GPL(rcu_nocb_cpu_deoffload);
+> -
+>  static bool rcu_nocb_rdp_offload_wait_cond(struct rcu_data *rdp)
+>  {
+>  	unsigned long flags;
+> @@ -1149,27 +1125,54 @@ static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
+>  	return 0;
+>  }
+>  
+> +/* Common helper for CPU offload/deoffload operations. */
+> +static int rcu_nocb_cpu_toggle_offload(int cpu, bool offload)
+> +{
+> +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> +	bool currently_offloaded;
+> +	int ret = 0;
+> +
+> +	cpus_read_lock();
+> +	mutex_lock(&rcu_state.nocb_mutex);
+> +
+> +	currently_offloaded = rcu_rdp_is_offloaded(rdp);
 
-[ Upstream commit 1bba3900ca18bdae28d1b9fa10f16a8f8cb2ada1 ]
+Do we really need that extra variable?
 
-In the preparation stage of CPU online, if the corresponding
-the rdp's->nocb_cb_kthread does not exist, will be created,
-there is a situation where the rdp's rcuop kthreads creation fails,
-and then de-offload this CPU's rdp, does not assign this CPU's
-rdp->nocb_cb_kthread pointer, but this rdp's->nocb_gp_rdp and
-rdp's->rdp_gp->nocb_gp_kthread is still valid.
-
-This will cause the subsequent re-offload operation of this offline
-CPU, which will pass the conditional check and the kthread_unpark()
-will access invalid rdp's->nocb_cb_kthread pointer.
-
-This commit therefore use rdp's->nocb_gp_kthread instead of
-rdp_gp's->nocb_gp_kthread for safety check.
-
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
-[ Minor conflict resolved. ]
-Signed-off-by: Jianqiang kang <jianqkang@sina.cn>
----
- kernel/rcu/tree_nocb.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 8993b2322be2..a3d613f063a8 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1221,7 +1221,6 @@ static long rcu_nocb_rdp_offload(void *arg)
- 	struct rcu_segcblist *cblist = &rdp->cblist;
- 	unsigned long flags;
- 	int wake_gp;
--	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
- 
- 	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
- 	/*
-@@ -1231,7 +1230,7 @@ static long rcu_nocb_rdp_offload(void *arg)
- 	if (!rdp->nocb_gp_rdp)
- 		return -EINVAL;
- 
--	if (WARN_ON_ONCE(!rdp_gp->nocb_gp_kthread))
-+	if (WARN_ON_ONCE(!rdp->nocb_gp_kthread))
- 		return -EINVAL;
- 
- 	pr_info("Offloading %d\n", rdp->cpu);
-@@ -1260,7 +1259,7 @@ static long rcu_nocb_rdp_offload(void *arg)
- 	 */
- 	wake_gp = rdp_offload_toggle(rdp, true, flags);
- 	if (wake_gp)
--		wake_up_process(rdp_gp->nocb_gp_kthread);
-+		wake_up_process(rdp->nocb_gp_kthread);
- 	swait_event_exclusive(rdp->nocb_state_wq,
- 			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB) &&
- 			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
 -- 
-2.34.1
-
+Frederic Weisbecker
+SUSE Labs
