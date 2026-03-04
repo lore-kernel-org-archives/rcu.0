@@ -1,38 +1,38 @@
-Received: from mail115-24.sinamail.sina.com.cn (mail115-24.sinamail.sina.com.cn [218.30.115.24])
+Received: from mail115-63.sinamail.sina.com.cn (mail115-63.sinamail.sina.com.cn [218.30.115.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27265351C32
-	for <rcu@vger.kernel.org>; Wed,  4 Mar 2026 02:49:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12473FBA7
+	for <rcu@vger.kernel.org>; Wed,  4 Mar 2026 02:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.63
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772592592; cv=none; b=so4Jr3+oWYJmmQ54o1btgP6KMj1wZv2zUJm5b2LdGETNX6o3bClAOx92/EXTObblJekMV57GWuS/Gki1IdrjsLm3EJD2BeMwQcg5fqb+2fEu0cwJdHMIOGswrdVsZ3p+LOaQfBvWZIYBHpnPuoytjWlajefS/yjMEOEB6BApcUU=
+	t=1772593057; cv=none; b=ZFIL4HLCZwph2n9cyV4MFXNBtrijx09t0hnoPJAmJuz5Rh8GceYSToPXv7zJ6Yr9pcIRC+hPmm/eacFpq5MtVGZGsWE7WSMr/4wSMGTorBPU6z0BeOZQsOVM9SI575BRNptGnl2UQrlL21CvfHm/VnyzJ8thUHtvn2LvKuXANk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772592592; c=relaxed/simple;
-	bh=H70FKmd6xMQBDIFHkrijaB1YoLEtsVUcNOqcqI/LXPg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MDC2SQo48nwaORpLvtXXdf0NVKq2L4S27+lYat1JaMmOnN1PPfm5taRmiZEJ1hG11vXDZetY+NNWKfjr0g1qWkIIkDeHjadNUBg4QYqqlhdG6hgpUIF6nsXkUkyEzw8O7nYBBxe8H62Fg2EdOkgajnTWIc5vSB1hki3FaKelPts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sina.cn; spf=pass smtp.mailfrom=sina.cn; dkim=pass (1024-bit key) header.d=sina.cn header.i=@sina.cn header.b=KPFEeInt; arc=none smtp.client-ip=218.30.115.24
+	s=arc-20240116; t=1772593057; c=relaxed/simple;
+	bh=qkeRbo78B+2gM+r2nbeXSUfeM0u2W8lSayzGSDjRBRc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jhfsnFoR7TdtYwPxyMcIw4cO52s59/OwjHvggzCmpkTVJ3zwd8ciCgIvfZVR8LfxpypON9bhDT1CDMuFHHOYuObJhoNgR/7JlKuSJJhoIBcMXJ4qC0BKI71NAPLu2CXo6w3mOJDXmteWhrH98kL7yrff8rpZw4QdxmEu/5cQaO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sina.cn; spf=pass smtp.mailfrom=sina.cn; dkim=pass (1024-bit key) header.d=sina.cn header.i=@sina.cn header.b=XKKDSHI8; arc=none smtp.client-ip=218.30.115.63
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sina.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.cn
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=sina.cn header.i=@sina.cn header.b="KPFEeInt"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sina.cn; s=201208; t=1772592588;
-	bh=pz66RA33n115wePk+1z6PHB25yLmCnUhJIHAE3UThro=;
+	dkim=pass (1024-bit key) header.d=sina.cn header.i=@sina.cn header.b="XKKDSHI8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sina.cn; s=201208; t=1772593055;
+	bh=DCsWQhNqFPEinGuq6D8087JmXqNHHQaNhOmiVDfpepM=;
 	h=From:Subject:Date:Message-Id;
-	b=KPFEeIntlSoa8W20mNzr0p9PGn+f7vZbUgr3AME1SRs5xJw9+z/NHDU3FXpF1QwOs
-	 flAuKWpYPQTrQw76p5AuhYpzpGtnSN1xwBK8mWxWybAwL7ymgztcF2/k6ewjXJ1vBi
-	 pCNSJvqM73t93a28ntbdxo+C438NKUVjF6MUzVJU=
+	b=XKKDSHI8/IF7wpWU/SCvV+Bh2BQzDiaLo3PCCk2ibHoVsG2jdbJ4dwFZ1C9gAiNs6
+	 hIPTHzNapOiIgFrVuZD86dnVx1d3v4NeaIX/7wy0rx315Zo+sE2Qpt89yCyp/q7ZmC
+	 q9hEn5X1j0uwuMTnH9IlAmREBBIUrLnkpfFlB63g=
 X-SMAIL-HELO: NTT-kernel-dev
 Received: from unknown (HELO NTT-kernel-dev)([60.247.85.88])
 	by sina.cn (10.185.250.22) with ESMTP
-	id 69A79DBE00005C83; Wed, 4 Mar 2026 10:49:37 +0800 (CST)
+	id 69A79F9400002FF7; Wed, 4 Mar 2026 10:57:26 +0800 (CST)
 X-Sender: jianqkang@sina.cn
 X-Auth-ID: jianqkang@sina.cn
 Authentication-Results: sina.cn;
 	 spf=none smtp.mailfrom=jianqkang@sina.cn;
 	 dkim=none header.i=none;
 	 dmarc=none action=none header.from=jianqkang@sina.cn
-X-SMAIL-MID: 790547602323
-X-SMAIL-UIID: E1E0329692F345BC87094A53C08E7C58-20260304-104937-1
+X-SMAIL-MID: 7820897602635
+X-SMAIL-UIID: 7B04746125BA4BD6BB653162830FBA2D-20260304-105726-1
 From: Jianqiang kang <jianqkang@sina.cn>
 To: gregkh@linuxfoundation.org,
 	stable@vger.kernel.org,
@@ -49,9 +49,9 @@ Cc: patches@lists.linux.dev,
 	joel@joelfernandes.org,
 	rcu@vger.kernel.org,
 	neeraj.upadhyay@kernel.org
-Subject: [PATCH 6.1.y] rcu/nocb: Fix possible invalid rdp's->nocb_cb_kthread pointer access
-Date: Wed,  4 Mar 2026 10:49:34 +0800
-Message-Id: <20260304024934.2364383-1-jianqkang@sina.cn>
+Subject: [PATCH 6.6.y] rcu/nocb: Fix possible invalid rdp's->nocb_cb_kthread pointer access
+Date: Wed,  4 Mar 2026 10:57:24 +0800
+Message-Id: <20260304025724.2365669-1-jianqkang@sina.cn>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -89,10 +89,10 @@ Signed-off-by: Jianqiang kang <jianqkang@sina.cn>
  1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 7c28d154b094..2f501de7bec9 100644
+index 8993b2322be2..a3d613f063a8 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -1112,7 +1112,6 @@ static long rcu_nocb_rdp_offload(void *arg)
+@@ -1221,7 +1221,6 @@ static long rcu_nocb_rdp_offload(void *arg)
  	struct rcu_segcblist *cblist = &rdp->cblist;
  	unsigned long flags;
  	int wake_gp;
@@ -100,7 +100,7 @@ index 7c28d154b094..2f501de7bec9 100644
  
  	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
  	/*
-@@ -1122,7 +1121,7 @@ static long rcu_nocb_rdp_offload(void *arg)
+@@ -1231,7 +1230,7 @@ static long rcu_nocb_rdp_offload(void *arg)
  	if (!rdp->nocb_gp_rdp)
  		return -EINVAL;
  
@@ -109,7 +109,7 @@ index 7c28d154b094..2f501de7bec9 100644
  		return -EINVAL;
  
  	pr_info("Offloading %d\n", rdp->cpu);
-@@ -1151,7 +1150,7 @@ static long rcu_nocb_rdp_offload(void *arg)
+@@ -1260,7 +1259,7 @@ static long rcu_nocb_rdp_offload(void *arg)
  	 */
  	wake_gp = rdp_offload_toggle(rdp, true, flags);
  	if (wake_gp)
