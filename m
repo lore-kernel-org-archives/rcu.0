@@ -1,259 +1,170 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3525333EC;
-	Thu,  5 Mar 2026 00:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC06336896;
+	Thu,  5 Mar 2026 06:46:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772668880; cv=none; b=iwA0DayUP9rSp8Hgz7O8EBLvWiFqx9Wq/0KfYOZak2dlFlLhtXHHLm9Gq64t29CHy3esG3mhh1p/VRzpmVPz4oIa+0kn7JBZ8qoZzgmM212RlO/TqzvMaiitRbEmXxd25/CESzLXnTcTEPgqEWmdluTqmjldze8IBpvqwEgIUWM=
+	t=1772693175; cv=none; b=RPUeDA15eJnUPtmA+OeTRzaP5VDChpYdFk4JkenbiTdTU0K3zPwinSygEoqZrmmirDaBzj/bAhX4J8cq5AM1Shlw3Yht0BF1zg7fEABdYq5zUBQ8Bya6kIFx6OwQMAyFDcv1Znoo2c3KF/oYlUQivH7i+TMxO0OYMhqHjRNbPkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772668880; c=relaxed/simple;
-	bh=XTBmwNNVK5jw2hgb/gmbZRHb/v5RrS0Axkig4T0GtB0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iGHBNQlb/dsZeLYwZOwxmtioOR8xT4Ra9a5T+QhZZTJCGw6ntlPPuk2FV2g9AV6JwHmvmjCMXX56IE6BlC14DHInl66t2dBsh+kHd0vG/SS073VcS4aJC5thW2fwzg/WFC8uDUTBDXTXI1DdfkH849MserWRTbuxPlQGExg6yvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=epoyeoCa; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1772693175; c=relaxed/simple;
+	bh=3u19y1LrpGKmC+svD4K+yeZYEeMBLA1yE5PsHeNPx7U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EnGg7AgDvY1/tyQAhMDgildwMq1weU0zQJWWj+DII2Z3li6GWxdmkhRAynGOBrwjL6+6m7pbZAKA3gLvi/4OUrv0t/evKfPHm2iuPsn8LuXHpp9BAd1Gtkcvwb54Dkof3lT4dYDapPSQJX4dXhKRwoeGgY3pAC4W67/nntaUhFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XAM7LS/W; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="epoyeoCa"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CABC9C4CEF7;
-	Thu,  5 Mar 2026 00:01:19 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XAM7LS/W"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FB2AC116C6;
+	Thu,  5 Mar 2026 06:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772668879;
-	bh=XTBmwNNVK5jw2hgb/gmbZRHb/v5RrS0Axkig4T0GtB0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=epoyeoCaI8+jntrnG1wONcsFvf+bGLBK0Bfpyh1cgi+oXLR4IfVc4HOj2OC5guZwy
-	 rOYsI7yUxvcAeXD2HthTFHAdDP5ZwqpS8+wprAo1sIW2n6SI7Plsjjc66Xz7GFNHxM
-	 plhhN3dRu4xW6Sal9UAlqyw6fnDAvu/6HyZMOro/1pH/awRjTVhx7uxI4L7aoZYw/O
-	 lFBBAA9VTYNP95+bSrsGtBSD4UkGKf/KhgB4Xoj2vFbUN9riZyPmpPAOveSWGYd1vT
-	 eoqPy57EtOe3vN01wauRR7AVOtZUPIkr/AG2Z/6zGEsaKxzj2PZZZAAOSpCYgeOyad
-	 QTpen8zZ362Mg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5BF81CE0DFD; Wed,  4 Mar 2026 16:01:19 -0800 (PST)
-Date: Wed, 4 Mar 2026 16:01:19 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH v3 1/4] rcutorture: Update due to x86 not supporting
- none/voluntary preemption
-Message-ID: <bfe89f6c-3b63-40c6-aa6d-5f523e3e9a31@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <2011d452-3c72-432a-af77-810238e80e6a@paulmck-laptop>
- <20260303235903.1967409-1-paulmck@kernel.org>
- <dda12988-2a5c-4549-bdfc-8e429fc0aab1@paulmck-laptop>
+	s=k20201202; t=1772693174;
+	bh=3u19y1LrpGKmC+svD4K+yeZYEeMBLA1yE5PsHeNPx7U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=XAM7LS/WUlquMoixMbwR0XTSL6kZMX6LZHlc5LDWZ9mQCwPxr+nANg3eJAQtw+awH
+	 z4iY+YSxW6OHZLZ8UMn3/8PPfPF4/JChTB5ximymU3jWo3QYuivWRJNIOU9aelrDNd
+	 pspCSSnpEfdv5s3QIYJmDjHpHeAEnvbsXub3pkorkUEEiCa+/crWxbQwnfuqpKdqQ+
+	 8fqsAV1giPwUTG5bfkxfCLHDJ17w6Shprq/Wamxi8kQqR1+kdDoG2MkgjVVr54QImS
+	 0n5/h8YFUp4AzuM9fJrKu8YHM0bK/vPrE9Nw8oZe6fcv1mly+bHLX0cfOjTIHqF6+v
+	 a2xDHkeQIH2cA==
+Message-ID: <0d7cc7d0-defc-40eb-8c0d-78888ff273bc@kernel.org>
+Date: Thu, 5 Mar 2026 07:46:09 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dda12988-2a5c-4549-bdfc-8e429fc0aab1@paulmck-laptop>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Stalls when starting a VSOCK listening socket: soft lockups, RCU
+ stalls, timeout
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: kvm@vger.kernel.org, virtualization@lists.linux.dev,
+ Netdev <netdev@vger.kernel.org>, rcu@vger.kernel.org,
+ MPTCP Linux <mptcp@lists.linux.dev>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@kernel.org>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>, "luto@kernel.org" <luto@kernel.org>,
+ Stefano Garzarella <sgarzare@redhat.com>
+References: <b24ffcb3-09d5-4e48-9070-0b69bc654281@kernel.org>
+ <7f3e74d7-67dc-48d7-99d2-0b87f671651b@kernel.org>
+ <29d38308-e8ae-42aa-8eeb-1c3b347c284b@kernel.org>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
+ rrcDwGs6tFVrAHvdHeIdI07s1iIx5R/ndcHwt4fvI8CL5PzPmn5J+h0WERR5rFprRh6axhOk
+ rSD5CwQl19fm4AJCS6A9GJtOoiLpWn2/IbogPc71jQVrupZYYx51rAaHZ0D2KYK/uhfc6neJ
+ i0WqPlbtIlIrpvWxckucNu6ZwXjFY0f3qIRg3Vqh5QxPkojGsq9tXVFVLEkSVz6FoqCHrUTx
+ wr+aw6qqQVgvT/McQtsI0S66uIkQjzPUrgAEtWUv76rM4ekqL9stHyvTGw0Fjsualwb0Gwdx
+ ReTZzMgheAyoy/umIOKrSEpWouVoBt5FFSZUyjuDdlPPYyPav+hpI6ggmCTld3u2hyiHji2H
+ cDpcLM2LMhlHBipu80s9anNeZhCANDhbC5E+NZmuwgzHBcan8WC7xsPXPaiZSIm7TKaVoOcL
+ 9tE5aN3jQmIlrT7ZUX52Ff/hSdx/JKDP3YMNtt4B0cH6ejIjtqTd+Ge8sSttsnNM0CQUkXps
+ w98jwz+Lxw/bKMr3NSnnFpUZaxwji3BC9vYyxKMAwNelBCHEgS/OAa3EJoTfuYOK6wT6nadm
+ YqYjwYbZE5V/SwzMbpWu7Jwlvuwyfo5mh7w5iMfnZE+vHFwp/wARAQABzSFKaXJpIFNsYWJ5
+ IDxqaXJpc2xhYnlAa2VybmVsLm9yZz7CwXcEEwEIACEFAlW3RUwCGwMFCwkIBwIGFQgJCgsC
+ BBYCAwECHgECF4AACgkQvSWxBAa0cEnVTg//TQpdIAr8Tn0VAeUjdVIH9XCFw+cPSU+zMSCH
+ eCZoA/N6gitEcnvHoFVVM7b3hK2HgoFUNbmYC0RdcSc80pOF5gCnACSP9XWHGWzeKCARRcQR
+ 4s5YD8I4VV5hqXcKo2DFAtIOVbHDW+0okOzcecdasCakUTr7s2fXz97uuoc2gIBB7bmHUGAH
+ XQXHvdnCLjDjR+eJN+zrtbqZKYSfj89s/ZHn5Slug6w8qOPT1sVNGG+eWPlc5s7XYhT9z66E
+ l5C0rG35JE4PhC+tl7BaE5IwjJlBMHf/cMJxNHAYoQ1hWQCKOfMDQ6bsEr++kGUCbHkrEFwD
+ UVA72iLnnnlZCMevwE4hc0zVhseWhPc/KMYObU1sDGqaCesRLkE3tiE7X2cikmj/qH0CoMWe
+ gjnwnQ2qVJcaPSzJ4QITvchEQ+tbuVAyvn9H+9MkdT7b7b2OaqYsUP8rn/2k1Td5zknUz7iF
+ oJ0Z9wPTl6tDfF8phaMIPISYrhceVOIoL+rWfaikhBulZTIT5ihieY9nQOw6vhOfWkYvv0Dl
+ o4GRnb2ybPQpfEs7WtetOsUgiUbfljTgILFw3CsPW8JESOGQc0Pv8ieznIighqPPFz9g+zSu
+ Ss/rpcsqag5n9rQp/H3WW5zKUpeYcKGaPDp/vSUovMcjp8USIhzBBrmI7UWAtuedG9prjqfO
+ wU0ETpLnhgEQAM+cDWLL+Wvc9cLhA2OXZ/gMmu7NbYKjfth1UyOuBd5emIO+d4RfFM02XFTI
+ t4MxwhAryhsKQQcA4iQNldkbyeviYrPKWjLTjRXT5cD2lpWzr+Jx7mX7InV5JOz1Qq+P+nJW
+ YIBjUKhI03ux89p58CYil24Zpyn2F5cX7U+inY8lJIBwLPBnc9Z0An/DVnUOD+0wIcYVnZAK
+ DiIXODkGqTg3fhZwbbi+KAhtHPFM2fGw2VTUf62IHzV+eBSnamzPOBc1XsJYKRo3FHNeLuS8
+ f4wUe7bWb9O66PPFK/RkeqNX6akkFBf9VfrZ1rTEKAyJ2uqf1EI1olYnENk4+00IBa+BavGQ
+ 8UW9dGW3nbPrfuOV5UUvbnsSQwj67pSdrBQqilr5N/5H9z7VCDQ0dhuJNtvDSlTf2iUFBqgk
+ 3smln31PUYiVPrMP0V4ja0i9qtO/TB01rTfTyXTRtqz53qO5dGsYiliJO5aUmh8swVpotgK4
+ /57h3zGsaXO9PGgnnAdqeKVITaFTLY1ISg+Ptb4KoliiOjrBMmQUSJVtkUXMrCMCeuPDGHo7
+ 39Xc75lcHlGuM3yEB//htKjyprbLeLf1y4xPyTeeF5zg/0ztRZNKZicgEmxyUNBHHnBKHQxz
+ 1j+mzH0HjZZtXjGu2KLJ18G07q0fpz2ZPk2D53Ww39VNI/J9ABEBAAHCwV8EGAECAAkFAk6S
+ 54YCGwwACgkQvSWxBAa0cEk3tRAAgO+DFpbyIa4RlnfpcW17AfnpZi9VR5+zr496n2jH/1ld
+ wRO/S+QNSA8qdABqMb9WI4BNaoANgcg0AS429Mq0taaWKkAjkkGAT7mD1Q5PiLr06Y/+Kzdr
+ 90eUVneqM2TUQQbK+Kh7JwmGVrRGNqQrDk+gRNvKnGwFNeTkTKtJ0P8jYd7P1gZb9Fwj9YLx
+ jhn/sVIhNmEBLBoI7PL+9fbILqJPHgAwW35rpnq4f/EYTykbk1sa13Tav6btJ+4QOgbcezWI
+ wZ5w/JVfEJW9JXp3BFAVzRQ5nVrrLDAJZ8Y5ioWcm99JtSIIxXxt9FJaGc1Bgsi5K/+dyTKL
+ wLMJgiBzbVx8G+fCJJ9YtlNOPWhbKPlrQ8+AY52Aagi9WNhe6XfJdh5g6ptiOILm330mkR4g
+ W6nEgZVyIyTq3ekOuruftWL99qpP5zi+eNrMmLRQx9iecDNgFr342R9bTDlb1TLuRb+/tJ98
+ f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
+ DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
+ S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
+In-Reply-To: <29d38308-e8ae-42aa-8eeb-1c3b347c284b@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-As of v7.0-rc1, architectures that support preemption, including x86 and
-arm64, no longer support CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY.
-Attempting to build kernels with these two Kconfig options results in
-.config errors.  This commit therefore switches such rcutorture scenarios
-to CONFIG_PREEMPT_LAZY.
+Hi,
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On 03. 03. 26, 14:23, Matthieu Baerts wrote:
+> On 26/02/2026 11:37, Jiri Slaby wrote:
+>> On 06. 02. 26, 12:54, Matthieu Baerts wrote:
+>>> Our CI for the MPTCP subsystem is now regularly hitting various stalls
+>>> before even starting the MPTCP test suite. These issues are visible on
+>>> top of the latest net and net-next trees, which have been sync with
+>>> Linus' tree yesterday. All these issues have been seen on a "public CI"
+>>> using GitHub-hosted runners with KVM support, where the tested kernel is
+>>> launched in a nested (I suppose) VM. I can see the issue with or without
+>>> debug.config. According to the logs, it might have started around
+>>> v6.19-rc0, but I was unavailable for a few weeks, and I couldn't react
+>>> quicker, sorry for that. Unfortunately, I cannot reproduce this locally,
+>>> and the CI doesn't currently have the ability to execute bisections.
+>>
+>> Hmm, after the switch of the qemu guest kernels to 6.19, our (opensuse)
+>> build service is stalling in smp_call_function_many_cond() randomly too:
+>> https://bugzilla.suse.com/show_bug.cgi?id=1258936
+>>
+>> The attachment from there contains sysrq-t logs too:
+>> https://bugzilla.suse.com/attachment.cgi?id=888612
+> 
+> I'm glad I'm not the only one with this issue :)
+> 
+> In your case, do you also have nested VMs with KVM support?
 
----
+No, it's KVM directly on bare metal.
 
-Changes since v2:
+> Are you able to easily reproduce the issue and change the guest kernel
+> in your build service?
 
-o	Fold in c69ac5693540 ("rcutorture: Adjust scenarios for default
-	lazy preemption")
+Unfortunately no and no.
 
-Changes since v1:
+> On my side, any debugging steps need to be automated. Lately, it looks
+> like the issue is more easily triggered on a stable 6.19 kernel, than on
+> the last RC.
+> 
+>>> The stalls happen before starting the MPTCP test suite. The init program
+>>> creates a VSOCK listening socket via socat [1], and different hangs are
+>>> then visible: RCU stalls followed by a soft lockup [2], only a soft
+>>> lockup [3], sometimes the soft lockup comes with a delay [4] [5], or
+>>> there is no RCU stalls or soft lockups detected after one minute, but VM
+>>> is stalled [6]. In the last case, the VM is stopped after having
+>>> launched GDB to get more details about what was being executed.
+>>>
+>>> It feels like the issue is not directly caused by the VSOCK listening
+>>> socket, but the stalls always happen after having started the socat
+>>> command [1] in the background.
+>>
+>> It fails randomly while building random packages (go, libreoffice,
+>> bayle, ...). I don't think it is VSOCK related in those cases, but who
+>> knows what the builds do...
+> 
+> Indeed, unlikely to be VSOCK then.
+> 
+>> I cannot reproduce locally either.
+>>
+>> I came across:
+>>    614da1d3d4cd x86: make page fault handling disable interrupts properly
+>> but I have no idea if it could have impact on this at all.
+> 
+> Did it help to revert it?
 
-o	Add CONFIG_PREEMPT_DYNAMIC=n in order to test non-preemptible RCU.
+We haven't tried, it is unlikely the cause.
 
-o	Remove CONFIG_PREEMPT_COUNT=n because it conflicts with
-	CONFIG_PREEMPT_LAZY=y.
-
-o	Remove some stray conflicting CONFIG_PREEMPT_LAZY=n instances.
-
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N
-index 07f5e0a70ae70..f943cdfb0a741 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N
-@@ -2,7 +2,9 @@ CONFIG_RCU_TRACE=n
- CONFIG_SMP=y
- CONFIG_NR_CPUS=4
- CONFIG_HOTPLUG_CPU=y
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_DYNAMIC=n
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- #CHECK#CONFIG_RCU_EXPERT=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T
-index c70cf0405f248..06e4d1030279c 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T
-@@ -1,5 +1,6 @@
- CONFIG_SMP=n
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U
-index bc9eeabaa1b18..71da6e3e94886 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U
-@@ -1,5 +1,6 @@
- CONFIG_SMP=n
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-@@ -7,4 +8,3 @@ CONFIG_PREEMPT_DYNAMIC=n
- CONFIG_RCU_TRACE=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
--CONFIG_PREEMPT_COUNT=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TASKS02 b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
-index 2f9fcffff5ae3..dd2bd4e08da4e 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS02
-@@ -1,5 +1,6 @@
- CONFIG_SMP=n
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TINY01 b/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-index bd5ed7b0da5f0..2be53bf60d65b 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-@@ -1,9 +1,9 @@
- CONFIG_SMP=n
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
--CONFIG_PREEMPT_LAZY=n
- #CHECK#CONFIG_TINY_RCU=y
- CONFIG_HZ_PERIODIC=n
- CONFIG_NO_HZ_IDLE=y
-@@ -12,4 +12,3 @@ CONFIG_RCU_TRACE=n
- #CHECK#CONFIG_RCU_STALL_COMMON=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
--CONFIG_PREEMPT_COUNT=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TINY02 b/tools/testing/selftests/rcutorture/configs/rcu/TINY02
-index 30439f6fc20e6..be8860342ef71 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TINY02
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TINY02
-@@ -1,5 +1,6 @@
- CONFIG_SMP=n
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-index 18efab346381a..8fb124c28f283 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-@@ -1,7 +1,8 @@
- CONFIG_SMP=y
- CONFIG_NR_CPUS=5
- CONFIG_HOTPLUG_CPU=y
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE04 b/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-index 34aee1acb8662..ac857d5bcb222 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-@@ -1,11 +1,12 @@
- CONFIG_SMP=y
- CONFIG_NR_CPUS=8
-+CONFIG_PREEMPT_LAZY=y
- CONFIG_PREEMPT_NONE=n
--CONFIG_PREEMPT_VOLUNTARY=y
-+CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
--CONFIG_PREEMPT_LAZY=n
- #CHECK#CONFIG_TREE_RCU=y
-+#CHECK#CONFIG_PREEMPT_RCU=n
- CONFIG_HZ_PERIODIC=n
- CONFIG_NO_HZ_IDLE=n
- CONFIG_NO_HZ_FULL=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE05 b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
-index 0513aa33c32c4..61d15b1b54d16 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE05
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
-@@ -1,9 +1,10 @@
- CONFIG_SMP=y
- CONFIG_NR_CPUS=8
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_DYNAMIC=n
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
--CONFIG_PREEMPT_LAZY=n
- #CHECK#CONFIG_TREE_RCU=y
- CONFIG_HZ_PERIODIC=n
- CONFIG_NO_HZ_IDLE=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE06 b/tools/testing/selftests/rcutorture/configs/rcu/TREE06
-index cc3ea23c76557..0e090bb68a0f6 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE06
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE06
-@@ -1,10 +1,12 @@
- CONFIG_SMP=y
- CONFIG_NR_CPUS=8
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_DYNAMIC=n
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
--CONFIG_PREEMPT_LAZY=n
- #CHECK#CONFIG_TREE_RCU=y
-+#CHECK#CONFIG_PREEMPT_RCU=n
- CONFIG_HZ_PERIODIC=n
- CONFIG_NO_HZ_IDLE=y
- CONFIG_NO_HZ_FULL=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE10 b/tools/testing/selftests/rcutorture/configs/rcu/TREE10
-index 420632b030dc4..b2ce37861e71a 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE10
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE10
-@@ -6,6 +6,7 @@ CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_PREEMPT_DYNAMIC=n
- #CHECK#CONFIG_TREE_RCU=y
-+CONFIG_PREEMPT_RCU=n
- CONFIG_HZ_PERIODIC=n
- CONFIG_NO_HZ_IDLE=y
- CONFIG_NO_HZ_FULL=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL b/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL
-index 5d546efa68e83..696fba9968c60 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL
-@@ -1,6 +1,8 @@
- CONFIG_SMP=y
- CONFIG_NR_CPUS=8
--CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_DYNAMIC=n
-+CONFIG_PREEMPT_LAZY=y
-+CONFIG_PREEMPT_NONE=n
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
- CONFIG_HZ_PERIODIC=n
+-- 
+js
+suse labs
