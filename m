@@ -1,73 +1,51 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF4E34C9AD
-	for <rcu@vger.kernel.org>; Thu,  5 Mar 2026 21:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1820D2BEC43;
+	Thu,  5 Mar 2026 23:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772746147; cv=none; b=uRLpOeuBPf/k7uCFblKq+FxpcWUFmE4hI+JFUKIJMWzJ0SVliHnMCiD10sCvgNMZEoYf/lQuMrLESh23+k8D9SXZUVAed0gBV6uE1Rm7x8or0OkkgMpD3i6OkrnpM7BzOZjLjtRZ4IHYKgaDv/UI5ZZ/vOGCU5UWvLbPv0GWZV4=
+	t=1772753076; cv=none; b=tL86vVhrebwygd9YtIr2rqdzCaKWi0BYA/pxDBL1xoJxUY46EZ4WBdac+QCjPvXeq3S+WIYcDj/669o/JG3t/CGKoVNBPl12R+TCyRHXyqB/IOQkAWfQh1DnaVp1LwrPkciMPo3713RDm5hz8FocH5T77mUyN5S4MKOBi57x3Ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772746147; c=relaxed/simple;
-	bh=CgtChV6Hd8LP+fOJkZAugwAJXwDR8L9bIl2dVA8xn8A=;
+	s=arc-20240116; t=1772753076; c=relaxed/simple;
+	bh=K3jthxMOJxGzXwnAwGdle7uaN0IWWPAjSO1tz8oB7bI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V9+MaGYhgtGfU2lrlFsjNBZbhVHpIoQnJpEQ7/arDYyQDAH2fMQnr/J+9MoQBfgoVRZRfR+H6/Y0QTZrrGTpqaKIrIXzHCa0jyOC2bXgovMcewXTz9tBSI6DBny1ry8RVH3/gCfqG1fa+C1qkMGLHPrw8ar5Fpk8PJ4X3h1laq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ewiCsJ27; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=trrU19aCHRQhCWrO3nt/UKMwtFX86qYQNfnn0zrkdSTrNHF6iezBq66mR0+ib+ypS/HRMddLFIlD990LQz5djPyQWhhDoTa1aZUEcE6wyIz7sLMarCuH5z6iQpCxr7Zn2O60BHDBokCwJdZm5SBYOb8SWvZpWWsmXrfNgy4UKXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rgeFWKxy; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ewiCsJ27"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17740C4AF0B
-	for <rcu@vger.kernel.org>; Thu,  5 Mar 2026 21:29:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rgeFWKxy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E008BC116C6;
+	Thu,  5 Mar 2026 23:24:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772746147;
-	bh=CgtChV6Hd8LP+fOJkZAugwAJXwDR8L9bIl2dVA8xn8A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ewiCsJ27TcHVyYQhBRLgnssRp9shG9MuvMrFIKIE6hiWWaMW6gdNV0EPkVGYRCxC1
-	 MKqDA3C4y7xWDu58DYv8g8PTv5KL/WaQcUhMFD4gRwn0vUNDZlZfP5SuY9b85Luix1
-	 mbXNxrI7F9DWuBBvm8f0UUFsEKwz1sTZ1ECgz2dThjmJfUZu8xrqvDwetzb+BqezkF
-	 44btArYfaXiATAAkgKmaaf4ixLOFiwFUjCgRcI1Bu2kYX56zlr6+i83uVQJkmHvQoo
-	 jjtd0FG/yD83m3gzBck+QRbfWA+2MWD7Vtb0C/L3Ts+/qK2OkVQSTRnmPNvkTriLlM
-	 oAgHSol+Sbf/w==
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 38028F40069;
-	Thu,  5 Mar 2026 16:29:06 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Thu, 05 Mar 2026 16:29:06 -0500
-X-ME-Sender: <xms:ovWpaeBFfo14ZQkyX_Fpi1i5kbkaUK2HaDf_zXq3lChKpyz0I3-jTA>
-    <xme:ovWpaR1w-D-mGXlqp3gIghqZzhvUpf6kO1CsHkEjIOsFHcW4jFLXbbGZVBx1e6_6G
-    _tsktfd_sqmdCc_jUt824peBTX6CU0tyPxGdhDj7rPg8rLIircT>
-X-ME-Received: <xmr:ovWpaY2Zs1gzLpI1-FANLWKb_8iLLX3-nDT78hj-k5J2_BiRGH5UwrxMqQ8dzGBiQp-mB0LuEtHOfQQTn6RXuPDm6xcFK-Rh>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvieejgeejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    elueehtefhtddtgfejvdejueehhfekteevueeuueekgeetieeggeehvdffhefhhfenucff
-    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhn
-    rghlihhthidqudeijedtleekgeejuddqudejjeekheehhedvqdgsohhquhhnpeepkhgvrh
-    hnvghlrdhorhhgsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepiedpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhgpd
-    hrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehl
-    ihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhope
-    hkvghrnhgvlhdqthgvrghmsehmvghtrgdrtghomhdprhgtphhtthhopehrohhsthgvught
-    sehgohhoughmihhsrdhorhhgpdhrtghpthhtohepsghoqhhunhesfhhigihmvgdrnhgrmh
-    gv
-X-ME-Proxy: <xmx:ovWpaeAtmYO5DLzmgO7GNatnPv5mjDXa6un1da3Pmd1_mD_lb3AhxA>
-    <xmx:ovWpaf4--D9xJ29tmuE2ivu-u3ezBvh1eJ5IST1KgTKJqrvN6hGsVw>
-    <xmx:ovWpaXIKQZq3dUKX7mG5VX6sacKLX_M7cz3Apew8ZZg4kBnHSAfS4A>
-    <xmx:ovWpaYu6b4Ui9zjVxj6FDMs4Opk4Ivq9SUPiuqkzGgjvPl1UnNU3dg>
-    <xmx:ovWpaWK9_kL6kUeDtsnDCxygAJ04Sr8Bzye4PNcz6Ni5WsP5oaGbCjnw>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Mar 2026 16:29:05 -0500 (EST)
-Date: Thu, 5 Mar 2026 13:29:04 -0800
-From: Boqun Feng <boqun@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
+	s=k20201202; t=1772753075;
+	bh=K3jthxMOJxGzXwnAwGdle7uaN0IWWPAjSO1tz8oB7bI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=rgeFWKxyv6b4NrQBRHOaaGxwBQqsdKIuiepa7+HicbTI4hVutT7SwwZv2HqHZgDsW
+	 r5OLWJ/kOgdTXihO5gy0iSU4dMb5iEa2PZIoLlIGBjgaPZX76wfx4MLaXyo0W5fwje
+	 tOj3GNALzUBU8kY7oGy9pWLhBIGJZFnwsJKOMAk/7/3PN1A0LZqTr46C0mrdjraXlD
+	 8jsPa31NyqhoqpBpxE1g8fY1ZvYvIRs2s/Wjr3hFTuVww1Cu9JBYcE3NCegvLRuy6d
+	 SyZm47wYZD4k9J7sHR0q5K8/zVngW8j8RBLIljR2SmfgBugHya/q9BapTtnHwut/kg
+	 Bl5T6QJTrmr4g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 69847CE0FF8; Thu,  5 Mar 2026 15:24:35 -0800 (PST)
+Date: Thu, 5 Mar 2026 15:24:35 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Boqun Feng <boqun@kernel.org>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
 	rostedt@goodmis.org
-Subject: Re: [PATCH 0/4] rcu: Fix lazy-preemption regression in torture-test
- suites
-Message-ID: <aan1oNttjGU-uNu_@tardis.local>
+Subject: Re: [PATCH v3 1/4] rcutorture: Update due to x86 not supporting
+ none/voluntary preemption
+Message-ID: <82d66bda-c321-45f1-be67-6589fda2388d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <2011d452-3c72-432a-af77-810238e80e6a@paulmck-laptop>
+ <20260303235903.1967409-1-paulmck@kernel.org>
+ <dda12988-2a5c-4549-bdfc-8e429fc0aab1@paulmck-laptop>
+ <bfe89f6c-3b63-40c6-aa6d-5f523e3e9a31@paulmck-laptop>
+ <aanJ65E2VSJd8ZAl@tardis.local>
+ <58f83c55-51cf-4a77-a5d1-3a5adfe9e4c2@paulmck-laptop>
+ <aangp2xaOayAC8dy@tardis.local>
+ <fc2186ef-f7f6-4a05-b442-95dbc9831884@paulmck-laptop>
+ <aanw37BOGTlzx3AV@tardis.local>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -76,68 +54,241 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2011d452-3c72-432a-af77-810238e80e6a@paulmck-laptop>
+In-Reply-To: <aanw37BOGTlzx3AV@tardis.local>
 
-On Tue, Mar 03, 2026 at 03:58:56PM -0800, Paul E. McKenney wrote:
-> Hello!
+On Thu, Mar 05, 2026 at 01:08:47PM -0800, Boqun Feng wrote:
+> On Thu, Mar 05, 2026 at 12:11:46PM -0800, Paul E. McKenney wrote:
+> > On Thu, Mar 05, 2026 at 11:59:35AM -0800, Boqun Feng wrote:
+> > > On Thu, Mar 05, 2026 at 11:06:25AM -0800, Paul E. McKenney wrote:
+> > > > On Thu, Mar 05, 2026 at 10:22:35AM -0800, Boqun Feng wrote:
+> > > [...]
+> > > > > > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TINY01 b/tools/testing/selftests/rcutorture/configs/rcu/TINY01
+> > > > > > index bd5ed7b0da5f0..2be53bf60d65b 100644
+> > > > > > --- a/tools/testing/selftests/rcutorture/configs/rcu/TINY01
+> > > > > > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TINY01
+> > > > > > @@ -1,9 +1,9 @@
+> > > > > >  CONFIG_SMP=n
+> > > > > > -CONFIG_PREEMPT_NONE=y
+> > > > > > +CONFIG_PREEMPT_LAZY=y
+> > > > > > +CONFIG_PREEMPT_NONE=n
+> > > > > >  CONFIG_PREEMPT_VOLUNTARY=n
+> > > > > >  CONFIG_PREEMPT=n
+> > > > > >  CONFIG_PREEMPT_DYNAMIC=n
+> > > > > > -CONFIG_PREEMPT_LAZY=n
+> > > > > 
+> > > > > This is the line that was introduced by the said commit, hence this
+> > > > > patch is still separate from that commit I think?
+> > > > 
+> > > > I *think* I have them folded/squashed correctly.
+> > > > 
+> > > > I pushed this out to my -rcu "dev" branch.  The relevant commits are,
+> > > > in order of increasing time of commit:
+> > > > 
+> > > > c70ac5693540 ("rcutorture: Adjust scenarios for default lazy preemption")
+> > > 
+> > > It's the commit c69ac5693540 in your "dev" branch, right?
+> > 
+> > Right you are!
+> > 
+> > > > 86126bc6d7ad ("rcutorture: Update due to x86 not supporting none/voluntary preemption")
+> > > > 5631c1565493 ("Revert "rcutorture: Adjust scenarios for default lazy preemption"")
+> > > > 6fd95cee7427 ("Revert "rcutorture: Update due to x86 not supporting none/voluntary preemption"")
+> > > 
+> > > The thing is the combination of the above 4 didn't introduce a clean
+> > > base in rcu/{TINY01, TREE04, TREE05, TREE06}, as shown by:
+> > > 
+> > > 	git diff 'c69ac5693540^..6fd95cee7427' -- tools/testing/selftests/rcutorture/configs/rcu/{TINY01,TREE04,TREE05,TREE06}
+> > > 
+> > > I took a look, it's because commit 86126bc6d7ad ("rcutorture: Update due
+> > > to x86 not supporting none/voluntary preemption") was based on commit
+> > > c69ac5693540, and it moved a few CONFIG_PREEMPT_LAZY configs, and when
+> > > it got reverted in commit 6fd95cee7427, these configs were moved back so
+> > > commit 5631c1565493's revert was partially reverted.
+> > > 
+> > > > 17c52d7b31a1 ("rcutorture: Update due to x86 not supporting none/voluntary preemption")
+> > > > 
+> > > 
+> > > A simple way to verify would be try `cherry-pick` this commit onto
+> > > 7.0-rc1.
+> > 
+> > Like this?
+> > 
+> > $ git reset --hard v7.0-rc1
+> > $ git cherry-pick 17c52d7b31a1fbec84172d279b3ab0149bc71627
+> > Auto-merging tools/testing/selftests/rcutorture/configs/rcu/TINY01
+> > Auto-merging tools/testing/selftests/rcutorture/configs/rcu/TREE04
+> > Auto-merging tools/testing/selftests/rcutorture/configs/rcu/TREE05
+> > Auto-merging tools/testing/selftests/rcutorture/configs/rcu/TREE06
 > 
-> As of v7.0-rc1, architectures that support preemption, including x86 and
-> arm64, no longer support CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY.
-> Attempting to build kernels with these two Kconfig options results in
-> .config errors, which causes torture-test programs such as rcutorture
-> to throw false-positive errors.  This series fixes this v7.0-rc1
-> regression by converting these scanarios from CONFIG_PREEMPT_NONE=y or
-> CONFIG_PREEMPT_VOLUNTARY=y to CONFIG_PREEMPT_LAZY=y.
+> Yeah, the delta is small enough so that 3-way auto-merging can handle
+> it. I will just apply with these resolution. Thanks!
 > 
-> Those maintaining architectures not supporting preemption might wish to
-> run rcutorture with CONFIG_PREEMPT_NONE=y and CONFIG_PREEMPT_VOLUNTARY=y
-> because I no longer have access to any systems supporting these Kconfig
-> choices.
+> > [detached HEAD 551d9b94e2c80] rcutorture: Update due to x86 not supporting none/voluntary preemption
+> >  Date: Tue Mar 3 11:28:02 2026 -0800
+> >  12 files changed, 29 insertions(+), 13 deletions(-)
+> > $ git branch lazy-1
+> > $ git checkout v7.0-rc1
+> > Previous HEAD position was 551d9b94e2c80 rcutorture: Update due to x86 not supporting none/voluntary preemption
+> > HEAD is now at 6de23f81a5e08 Linux 7.0-rc1
+> > $ git cherry-pick c69ac56935401534120ef1e40335090b973a97d2
+> > [detached HEAD da3c99da7a639] rcutorture: Adjust scenarios for default lazy preemption
+> >  Date: Wed Jan 21 10:40:30 2026 -0800
+> >  5 files changed, 7 insertions(+)
+> > 1$ git cherry-pick 86126bc6d7ad5af56c0bf8beeac12f8feaffa866
+> > [detached HEAD 824577abfb3b0] rcutorture: Update due to x86 not supporting none/voluntary preemption
+> >  Date: Tue Mar 3 11:28:02 2026 -0800
+> >  11 files changed, 26 insertions(+), 17 deletions(-)
+> > $ git diff lazy-1
+> > 
+> > Still no diff output.  What am I missing?
 > 
-> With all that said, the patches are as follows:
+> Not important right now, but if you do:
 > 
-> 1.	rcutorture: Update due to x86 not supporting none/voluntary
-> 	preemption.
+> 	git range-diff 'lazy-1^..lazy-1' '17c52d7b31a1^..17c52d7b31a1'
 > 
-> 2.	rcuscale: Update due to x86 not supporting none/voluntary
-> 	preemption.
-> 
-> 3.	refscale: Update due to x86 not supporting none/voluntary
-> 	preemption.
-> 
-> 4.	scftorture: Update due to x86 not supporting none/voluntary
-> 	preemption.
-> 
+> you will see if I applied your v3 onto v7.0-rc1, I wouldn't end up
+> having the exact changes as the v3 has (some auto resolution happened).
 
-I queued this series at:
+Heh!  The TREE05 diffs are different on -rcu than directly on v7.0-rc1,
+but the resulting files compare equal.  Cute!!!
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git/ fixes.v7.0
+							Thanx, Paul
 
-based on v7.0-rc2, and I'm running some test from my end. If everything
-goes well, I will send a fix PR before -rc3. Thank you both!
-
-Regards,
-Boqun
-
-> 						Thanx, Paul
+> Regards,
+> Boqun
 > 
-> ------------------------------------------------------------------------
-> 
->  rcu/SRCU-N         |    3 ++-
->  rcu/SRCU-T         |    3 ++-
->  rcu/SRCU-U         |    3 ++-
->  rcu/TASKS02        |    3 ++-
->  rcu/TINY01         |    3 ++-
->  rcu/TINY02         |    3 ++-
->  rcu/TRACE01        |    3 ++-
->  rcu/TREE04         |    3 ++-
->  rcu/TREE05         |    3 ++-
->  rcu/TREE06         |    3 ++-
->  rcu/TRIVIAL        |    3 ++-
->  rcuscale/TINY      |    3 ++-
->  rcuscale/TRACE01   |    3 ++-
->  refscale/NOPREEMPT |    3 ++-
->  refscale/TINY      |    3 ++-
->  scf/NOPREEMPT      |    3 ++-
->  16 files changed, 32 insertions(+), 16 deletions(-)
-> 
+> > 							Thanx, Paul
+> > 
+> > > Regards,
+> > > Boqun
+> > > 
+> > > > The first was applied by Joel to the shared RCU tree, the second is in my
+> > > > -rcu tree, and the last three are consecutive commits in my -rcu tree.
+> > > > The following command gives no output, which I was interpreting as my
+> > > > having done it correctly.  But please double-check.
+> > > > 
+> > > > git diff 5631c1565493^..17c52d7b31a1
+> > > > 
+> > > > 							Thanx, Paul
+> > > > 
+> > > > > Regards,
+> > > > > Boqun
+> > > > > 
+> > > > > >  #CHECK#CONFIG_TINY_RCU=y
+> > > > > >  CONFIG_HZ_PERIODIC=n
+> > > > > >  CONFIG_NO_HZ_IDLE=y
+> > > > > > @@ -12,4 +12,3 @@ CONFIG_RCU_TRACE=n
+> > > > > >  #CHECK#CONFIG_RCU_STALL_COMMON=n
+> > > > > >  CONFIG_DEBUG_LOCK_ALLOC=n
+> > > > > >  CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
+> > > > > > -CONFIG_PREEMPT_COUNT=n
+> > > > > > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TINY02 b/tools/testing/selftests/rcutorture/configs/rcu/TINY02
+> > > > > > index 30439f6fc20e6..be8860342ef71 100644
+> > > > > > --- a/tools/testing/selftests/rcutorture/configs/rcu/TINY02
+> > > > > > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TINY02
+> > > > > > @@ -1,5 +1,6 @@
+> > > > > >  CONFIG_SMP=n
+> > > > > > -CONFIG_PREEMPT_NONE=y
+> > > > > > +CONFIG_PREEMPT_LAZY=y
+> > > > > > +CONFIG_PREEMPT_NONE=n
+> > > > > >  CONFIG_PREEMPT_VOLUNTARY=n
+> > > > > >  CONFIG_PREEMPT=n
+> > > > > >  CONFIG_PREEMPT_DYNAMIC=n
+> > > > > > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+> > > > > > index 18efab346381a..8fb124c28f283 100644
+> > > > > > --- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+> > > > > > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+> > > > > > @@ -1,7 +1,8 @@
+> > > > > >  CONFIG_SMP=y
+> > > > > >  CONFIG_NR_CPUS=5
+> > > > > >  CONFIG_HOTPLUG_CPU=y
+> > > > > > -CONFIG_PREEMPT_NONE=y
+> > > > > > +CONFIG_PREEMPT_LAZY=y
+> > > > > > +CONFIG_PREEMPT_NONE=n
+> > > > > >  CONFIG_PREEMPT_VOLUNTARY=n
+> > > > > >  CONFIG_PREEMPT=n
+> > > > > >  CONFIG_PREEMPT_DYNAMIC=n
+> > > > > > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE04 b/tools/testing/selftests/rcutorture/configs/rcu/TREE04
+> > > > > > index 34aee1acb8662..ac857d5bcb222 100644
+> > > > > > --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE04
+> > > > > > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE04
+> > > > > > @@ -1,11 +1,12 @@
+> > > > > >  CONFIG_SMP=y
+> > > > > >  CONFIG_NR_CPUS=8
+> > > > > > +CONFIG_PREEMPT_LAZY=y
+> > > > > >  CONFIG_PREEMPT_NONE=n
+> > > > > > -CONFIG_PREEMPT_VOLUNTARY=y
+> > > > > > +CONFIG_PREEMPT_VOLUNTARY=n
+> > > > > >  CONFIG_PREEMPT=n
+> > > > > >  CONFIG_PREEMPT_DYNAMIC=n
+> > > > > > -CONFIG_PREEMPT_LAZY=n
+> > > > > >  #CHECK#CONFIG_TREE_RCU=y
+> > > > > > +#CHECK#CONFIG_PREEMPT_RCU=n
+> > > > > >  CONFIG_HZ_PERIODIC=n
+> > > > > >  CONFIG_NO_HZ_IDLE=n
+> > > > > >  CONFIG_NO_HZ_FULL=y
+> > > > > > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE05 b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
+> > > > > > index 0513aa33c32c4..61d15b1b54d16 100644
+> > > > > > --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE05
+> > > > > > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
+> > > > > > @@ -1,9 +1,10 @@
+> > > > > >  CONFIG_SMP=y
+> > > > > >  CONFIG_NR_CPUS=8
+> > > > > > -CONFIG_PREEMPT_NONE=y
+> > > > > > +CONFIG_PREEMPT_DYNAMIC=n
+> > > > > > +CONFIG_PREEMPT_LAZY=y
+> > > > > > +CONFIG_PREEMPT_NONE=n
+> > > > > >  CONFIG_PREEMPT_VOLUNTARY=n
+> > > > > >  CONFIG_PREEMPT=n
+> > > > > > -CONFIG_PREEMPT_LAZY=n
+> > > > > >  #CHECK#CONFIG_TREE_RCU=y
+> > > > > >  CONFIG_HZ_PERIODIC=n
+> > > > > >  CONFIG_NO_HZ_IDLE=y
+> > > > > > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE06 b/tools/testing/selftests/rcutorture/configs/rcu/TREE06
+> > > > > > index cc3ea23c76557..0e090bb68a0f6 100644
+> > > > > > --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE06
+> > > > > > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE06
+> > > > > > @@ -1,10 +1,12 @@
+> > > > > >  CONFIG_SMP=y
+> > > > > >  CONFIG_NR_CPUS=8
+> > > > > > -CONFIG_PREEMPT_NONE=y
+> > > > > > +CONFIG_PREEMPT_DYNAMIC=n
+> > > > > > +CONFIG_PREEMPT_LAZY=y
+> > > > > > +CONFIG_PREEMPT_NONE=n
+> > > > > >  CONFIG_PREEMPT_VOLUNTARY=n
+> > > > > >  CONFIG_PREEMPT=n
+> > > > > > -CONFIG_PREEMPT_LAZY=n
+> > > > > >  #CHECK#CONFIG_TREE_RCU=y
+> > > > > > +#CHECK#CONFIG_PREEMPT_RCU=n
+> > > > > >  CONFIG_HZ_PERIODIC=n
+> > > > > >  CONFIG_NO_HZ_IDLE=y
+> > > > > >  CONFIG_NO_HZ_FULL=n
+> > > > > > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE10 b/tools/testing/selftests/rcutorture/configs/rcu/TREE10
+> > > > > > index 420632b030dc4..b2ce37861e71a 100644
+> > > > > > --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE10
+> > > > > > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE10
+> > > > > > @@ -6,6 +6,7 @@ CONFIG_PREEMPT_VOLUNTARY=n
+> > > > > >  CONFIG_PREEMPT=n
+> > > > > >  CONFIG_PREEMPT_DYNAMIC=n
+> > > > > >  #CHECK#CONFIG_TREE_RCU=y
+> > > > > > +CONFIG_PREEMPT_RCU=n
+> > > > > >  CONFIG_HZ_PERIODIC=n
+> > > > > >  CONFIG_NO_HZ_IDLE=y
+> > > > > >  CONFIG_NO_HZ_FULL=n
+> > > > > > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL b/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL
+> > > > > > index 5d546efa68e83..696fba9968c60 100644
+> > > > > > --- a/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL
+> > > > > > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL
+> > > > > > @@ -1,6 +1,8 @@
+> > > > > >  CONFIG_SMP=y
+> > > > > >  CONFIG_NR_CPUS=8
+> > > > > > -CONFIG_PREEMPT_NONE=y
+> > > > > > +CONFIG_PREEMPT_DYNAMIC=n
+> > > > > > +CONFIG_PREEMPT_LAZY=y
+> > > > > > +CONFIG_PREEMPT_NONE=n
+> > > > > >  CONFIG_PREEMPT_VOLUNTARY=n
+> > > > > >  CONFIG_PREEMPT=n
+> > > > > >  CONFIG_HZ_PERIODIC=n
+> > > > > > 
+> > > > 
+> > 
