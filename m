@@ -1,131 +1,129 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80FA6262FD0;
-	Thu,  5 Mar 2026 19:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF773148D0;
+	Thu,  5 Mar 2026 19:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772737704; cv=none; b=jCIPuXAUgrCqFK+zm0vTF/oBZXhQ2uAVu36rcTl70QwVa66cv7deA15EjjAmgo9ZscpLq1W/j65YOvy6i3WtT8+3SzAeptn1I8EA/KZBQ9paauMqHfk/35PJq86WyOrPPbtIqNwbpIlbV8ltCc+T+5YzhGd25NLFsVejWSbolP4=
+	t=1772738730; cv=none; b=EuATIRvr0P2ssfc8PesAR9eOwqZ4OhBSuKB8D+5fIpQ/GWS6XvRxX9xoeeKjnF1TvnlYIE0RRJ6pboDLXlChT6vKkB3lEI+Mwfh+ec/G1HCD1F9IVqCXNtScK4LCKB/NlijZreGnjvqgqnnBXsaUdex98AMAkEEVbnh/W5rJNRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772737704; c=relaxed/simple;
-	bh=sIOoDsELdTfX5IMolGGpLTgfUndWqpN5cBTrmzd6yxU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cJOQD1x1p3XR4p5mqJQw+hBsRnfTzav7k8n/iJZpW34+kCM+tAzZNRdFsHeARHvXq6ObsX+KYJLSSTvcC6nzua6dNeAD6oJnifRcoia/kf7c9573LJUaw7CDjrWK8m+jjh3GEKQQJfFwsnISyp+bYXpn1wvIDAJaEpJNYL5IC9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Otzj+l+z; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1772738730; c=relaxed/simple;
+	bh=ln+zmT6dVmCfKEb11g1BjE/cjuoBJVgUvWUSnOfgvmc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YsO7aFuCqY6hE4e2Q7cDYOhUlMUpTwzqijsFOVbfB50tTlIm066Siwj+YtlD+zqxmnfTK9MiiLuOmaMHJ6GALgLgzQAZyaLfL9WKlKhijTC+nL7P84yqv1/+ukqSVZ/CdaeYJU4RLpef/9nX43glBk/B4f0WWccFWgC8XklcQsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dLjeM4LE; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Otzj+l+z"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 327EDC19422;
-	Thu,  5 Mar 2026 19:08:24 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dLjeM4LE"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9412C116C6;
+	Thu,  5 Mar 2026 19:25:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772737704;
-	bh=sIOoDsELdTfX5IMolGGpLTgfUndWqpN5cBTrmzd6yxU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Otzj+l+z4+kcYSYRmTuJheM9UEDcrZmfOFGzNKKr4252blVS+gFnEDmdq4WI2PIr6
-	 sf1rSkHz+4cHbpba4bwB+yh0WbTXEvRomxA5WKRweVWkGq5G2rQjPHno5SPOLA19fo
-	 ThijJemgcRLnVjDbstpmWejhJ6Y+OYEEBtpS1PmJ+/Vk99QOUZ3tz3QqZtrIprWri2
-	 GFPTjUp78AtL15C8HtPQNF9jaybYFkSNtXsLAKh993ho0T6L5VY8Bx/CGBvDnam0YW
-	 xV58rGKtRQaIyYVc/9+jpAlrSIL/sAMqGQXkLdFpeQbBiLnTlD+jGu1Zt0ErGml++N
-	 ZKuns2fv05mKg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A47F2CE10B8; Thu,  5 Mar 2026 11:08:23 -0800 (PST)
-Date: Thu, 5 Mar 2026 11:08:23 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v3 1/4] rcutorture: Update due to x86 not supporting
- none/voluntary preemption
-Message-ID: <e2562191-169d-4d38-bbd9-96ce2cc9b3ca@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <2011d452-3c72-432a-af77-810238e80e6a@paulmck-laptop>
- <20260303235903.1967409-1-paulmck@kernel.org>
- <dda12988-2a5c-4549-bdfc-8e429fc0aab1@paulmck-laptop>
- <bfe89f6c-3b63-40c6-aa6d-5f523e3e9a31@paulmck-laptop>
- <0f6f8cde-ebd6-4f77-8eeb-51c2fcccfbba@nvidia.com>
+	s=k20201202; t=1772738730;
+	bh=ln+zmT6dVmCfKEb11g1BjE/cjuoBJVgUvWUSnOfgvmc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=dLjeM4LE5dXR9m0xHLTdkzFdRU6WH5jM6sBt6bzgqmW/m1pCV1fgnxhtQ2vxfnQms
+	 lIGU1Pgqcrs0hGxEeqFBI2JOIInj1sdmbdDRuBYfadSL9HAfeu44vbjmZxV9XVqxsu
+	 4C7ekz8VQ87LFqLjcf3PWU32/mie8n5MOMtDpoUghFjAp+chM4CkkDwKwSZiFxLNLl
+	 n8u8HRhxDwFJ/qBA55nIwevYUCM+2DEL2RNTGVDIuGZ8NXVJFBE8FpD9HNZk2OAS2d
+	 Pz43CzlW1m78aO0KJB5qYNmiJvoxI7Z+3/LU80vHz0mDONbdHsIRnU3mKCsa8r2KVZ
+	 RNawaEMbOkqcQ==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Jiri Slaby <jirislaby@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: Matthieu Baerts <matttbe@kernel.org>, Stefan Hajnoczi
+ <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>,
+ kvm@vger.kernel.org, virtualization@lists.linux.dev, Netdev
+ <netdev@vger.kernel.org>, rcu@vger.kernel.org, MPTCP Linux
+ <mptcp@lists.linux.dev>, Linux Kernel <linux-kernel@vger.kernel.org>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>, "Paul E. McKenney"
+ <paulmck@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "luto@kernel.org" <luto@kernel.org>, Michal =?utf-8?Q?Koutn=C3=BD?=
+ <MKoutny@suse.com>,
+ Waiman Long <longman@redhat.com>
+Subject: Re: Stalls when starting a VSOCK listening socket: soft lockups,
+ RCU stalls, timeout
+In-Reply-To: <47cba228-bba7-4e58-a69d-ea41f8de6602@kernel.org>
+References: <b24ffcb3-09d5-4e48-9070-0b69bc654281@kernel.org>
+ <7f3e74d7-67dc-48d7-99d2-0b87f671651b@kernel.org>
+ <863a5291-a636-47d0-891c-bb0524d2e134@kernel.org>
+ <20260302114636.GL606826@noisy.programming.kicks-ass.net>
+ <717310d8-6274-4b7f-8a19-561c45f5f565@kernel.org>
+ <a2b573b4-af61-4b84-a7d1-012ed6bb23c9@kernel.org>
+ <ba067933-bf3b-476d-a0bb-53eda56996ca@kernel.org> <87zf4m2qvo.ffs@tglx>
+ <47cba228-bba7-4e58-a69d-ea41f8de6602@kernel.org>
+Date: Thu, 05 Mar 2026 20:25:22 +0100
+Message-ID: <87tsuu2i59.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f6f8cde-ebd6-4f77-8eeb-51c2fcccfbba@nvidia.com>
+Content-Type: text/plain
 
-On Thu, Mar 05, 2026 at 12:53:48PM -0500, Joel Fernandes wrote:
-> 
-> 
-> On 3/4/2026 7:01 PM, Paul E. McKenney wrote:
-> > As of v7.0-rc1, architectures that support preemption, including x86 and
-> > arm64, no longer support CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY.
-> > Attempting to build kernels with these two Kconfig options results in
-> > .config errors.  This commit therefore switches such rcutorture scenarios
-> > to CONFIG_PREEMPT_LAZY.
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > ---
-> > 
-> > Changes since v2:
-> > 
-> > o	Fold in c69ac5693540 ("rcutorture: Adjust scenarios for default
-> > 	lazy preemption")
-> > 
-> > Changes since v1:
-> > 
-> > o	Add CONFIG_PREEMPT_DYNAMIC=n in order to test non-preemptible RCU.
-> > 
-> > o	Remove CONFIG_PREEMPT_COUNT=n because it conflicts with
-> > 	CONFIG_PREEMPT_LAZY=y.
-> > 
-> > o	Remove some stray conflicting CONFIG_PREEMPT_LAZY=n instances.
-> > 
-> [...]
-> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE04 b/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-> > index 34aee1acb8662..ac857d5bcb222 100644
-> > --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-> > @@ -1,11 +1,12 @@
-> >  CONFIG_SMP=y
-> >  CONFIG_NR_CPUS=8
-> > +CONFIG_PREEMPT_LAZY=y
-> >  CONFIG_PREEMPT_NONE=n
-> > -CONFIG_PREEMPT_VOLUNTARY=y
-> > +CONFIG_PREEMPT_VOLUNTARY=n
-> >  CONFIG_PREEMPT=n
-> >  CONFIG_PREEMPT_DYNAMIC=n
-> > -CONFIG_PREEMPT_LAZY=n
-> >  #CHECK#CONFIG_TREE_RCU=y
-> > +#CHECK#CONFIG_PREEMPT_RCU=n
-> 
-> nit: Let us add this #CHECK# to the other configs you changed too? Otherwise it
-> is a bit confusing because it took some digging to clearly see that
-> PREEMPT_DYNAMIC=n and PREEMPT_LAZY=y implies CONFIG_PREEMPT_RCU=n ;-)
+On Thu, Mar 05 2026 at 18:33, Jiri Slaby wrote:
+> On 05. 03. 26, 17:16, Thomas Gleixner wrote:
+>
+> ====== PID 7680 (spinning in mm_get_cid()) ======
+> 4 tasks with
+>    mm = 0xffff8cc406824680
+>      mm_cid.pcpu = 0x66222619df00,
+>
+>
+> crash> task -x -R mm_cid ffff8cc4038525c0 ffff8cc40ad40000 
+> ffff8cc40683cb80 ffff8cc418424b80
+> PID: 7680     TASK: ffff8cc4038525c0  CPU: 1    COMMAND: "asm"
+>    mm_cid = {
+>      active = 0x1,
+>      cid = 0x80000000
+>    },
 
-Tell me about it.  ;-)
+So CID 3 has gone AWOL...
 
-I will add "#CHECK#CONFIG_PREEMPT_RCU=n" as a separate non-urgent commit.
+> PID: 7681     TASK: ffff8cc40ad40000  CPU: 3    COMMAND: "asm"
+>    mm_cid = {
+>      active = 0x1,
+>      cid = 0x40000000
+>    },
+>
+> PID: 7682     TASK: ffff8cc40683cb80  CPU: 0    COMMAND: "asm"
+>    mm_cid = {
+>      active = 0x1,
+>      cid = 0x40000002
+>    },
+>
+> PID: 7684     TASK: ffff8cc418424b80  CPU: 2    COMMAND: "asm"
+>    mm_cid = {
+>      active = 0x1,
+>      cid = 0x40000001
+>    },
+>
+> crash> struct mm_cid_pcpu -x 0xfffff2e9bfc09f00
+> struct mm_cid_pcpu {
+>    cid = 0x40000002
+> }
+> crash> struct mm_cid_pcpu -x 0xfffff2e9bfc89f00
+> struct mm_cid_pcpu {
+>    cid = 0x0
+> }
+> crash> struct mm_cid_pcpu -x 0xfffff2e9bfd09f00
+> struct mm_cid_pcpu {
+>    cid = 0x40000001
+> }
+> crash> struct mm_cid_pcpu -x 0xfffff2e9bfd89f00
+> struct mm_cid_pcpu {
+>    cid = 0x40000000
+> }
 
-> Otherwise, I could not find any other flaws in the approach and it makes sense, so:
-> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
-> 
-> Boqun, you will be taking this through the 7.0-rc tree right? So that 7.0
-> release tests don't fail.
+... as 0, 1, 2 are owned by CPUs 3, 2, 0. 
 
-Unless I hear otherwise, I will assume that Boqun will apply your
-Reviewed-by.  Easy for me to do, just no point in its being done twice.
+The other process is not relevant. That's just fallout and has a
+different CID space, which is consistent.
 
-> Also I will drop the 2 related rcutorture patches for 7.1 and rebase on top of a
-> 7.0-rc fixes branch Boqun might be creating.
+Is there simple way to reproduce?
 
-Sounds good, and thank you both!
+Thanks,
 
-								Thanx, Paul
+        tglx
 
-> Thanks!
-> 
-> --
-> Joel Fernandes
-> 
-> [...]
-> 
+
+
+
