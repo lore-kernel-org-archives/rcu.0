@@ -1,185 +1,556 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996653A9603;
-	Fri,  6 Mar 2026 15:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0D73B8940;
+	Fri,  6 Mar 2026 15:25:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772809925; cv=none; b=IsByUoqmWNgBwd0F2EaNUatAgaebuwikcGmv8ewJXA0rutIKydrDBmXjfrknbFVtC07I/Gs1eRwUNe+JzySjuu7Kym7MPGQsOjTvcf16nEIp6luRHdmRVgqRZcXfLPylU977JoiP6vYHFT5mgLLE257lZMCh2vJIXKf1wS4TZxI=
+	t=1772810708; cv=none; b=pngTZZWegMUlVwLfEm7ufBtlUNgV5aUhnHU0eCcmipF9/UfuuGYhVnR20zlH3MCG4dVNZtDZ/Ikp+25OpsPy5xbqcoijMBS8LJ2msTPcuCQSNUzEVBHtcAB8eSIGTcXvzkSQ/qQKkMRSDiMsJX93NkrFFq09GlX72hjVqEOic+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772809925; c=relaxed/simple;
-	bh=WwutwLYkNqMgYr85DYyu7UXdAyTvO1cCqDjQc1hUNWM=;
+	s=arc-20240116; t=1772810708; c=relaxed/simple;
+	bh=nmsVeIwvkC3xQsg9K74jbgL/9M8xxjjC7uOWPDYn7ew=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZqsxpVhl6kWlf9P946WGo0b0C7atr6HovHCzqMVLA4LsIpMJ8iH33AiWH4shhPwJDU8LcnOPhlM5JI9kHV0P9pPV4xIO1jZU2Vm+UiELBqsVUZFC6fkx5Qfn7m5hqK3xe7+JSFZ/8z8IYweY/IeUzi0O3DTKdTjrYpblwSmJTCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h4yvnZtj; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=WhTa4YDsPfB4Uo5b87iEeW6jWDJKc8M6QWNkZv2lLNXMIMzMt9G93m8x6WQ9J1KiUikj3UQq8DiQ4EZCqnQNPgw2hkVwpTKMdkte+OSs1AopyQiYFi60Vs03xiOUk3WU3pCormc0bnaxjOWqD2ERxaHwNh8UKRKJqk8T9OCJbSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FMeD8+bK; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h4yvnZtj"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D0B6C2BC9E;
-	Fri,  6 Mar 2026 15:12:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772809925;
-	bh=WwutwLYkNqMgYr85DYyu7UXdAyTvO1cCqDjQc1hUNWM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=h4yvnZtjsCZtx0s0O7R/iH8mhJRKZGkRZ/h1iQH7FOmBMGn06eR06iE9EpkJkMcf4
-	 2fxdS1l66Yli83V/D018dNLgjARu3bahibTlFa52g0EkNfYrdf5YedO15wY8Nu7PpX
-	 VSzE0yp3WEuvXuKewiIkfA4U3UFQ1Tn+TkxtQAFC1iv5R8PK8DA0E8qJ4LrGLjlHPt
-	 6QlJCFSsSYaWkSC+HpZW6G/tXRMZNYxOmTApeT5ZfOPtyiMNIML+Zue6e836YT5Rer
-	 xO9vpY6kyAx9WRe4xPKFLaf9J24y2TDlrJg+2yvrjm8+EC06cEHC6VXhXeOEj+dJFI
-	 fHzY2InL9Nbiw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 72379CE0992; Fri,  6 Mar 2026 07:12:04 -0800 (PST)
-Date: Fri, 6 Mar 2026 07:12:04 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Vishal Chourasia <vishalc@linux.ibm.com>
-Cc: Samir M <samir@linux.ibm.com>, Joel Fernandes <joelagnelf@nvidia.com>,
-	peterz@infradead.org, aboorvad@linux.ibm.com, boqun.feng@gmail.com,
-	frederic@kernel.org, josh@joshtriplett.org,
-	linux-kernel@vger.kernel.org, neeraj.upadhyay@kernel.org,
-	rcu@vger.kernel.org, rostedt@goodmis.org, srikar@linux.ibm.com,
-	sshegde@linux.ibm.com, tglx@linutronix.de, urezki@gmail.com
-Subject: Re: [PATCH v3 2/2] cpuhp: Expedite RCU grace periods during SMT
- operations
-Message-ID: <bde1a8b9-7f56-45fb-830c-038fa7b85f0d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260218083915.660252-2-vishalc@linux.ibm.com>
- <20260218083915.660252-6-vishalc@linux.ibm.com>
- <20260227011352.GA1089964@joelbox2>
- <94b3284b-885d-4263-99ed-728375c1a2b7@linux.ibm.com>
- <aapprY-prH0l_WeK@linux.ibm.com>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FMeD8+bK"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=i2DluJ59j3AvknQHCo85rv7wQct3pw9SU3OG6dLCKUA=; b=FMeD8+bKB3LBbsEZWMnuFqlcNM
+	rCtC9QrweiJiKQTjMGGQXtTDe2UGrcuNkOTwyRSKMFlebZFWitc2bgOo6x4nUwn5ZGluxbe+7TXxM
+	yzJ6w0egflQtyw95ELUM3JdifjC3GWCVRppWjTH3tsq9t1Slkaqz+sagw5MIucW/mI/+DmswDBzJN
+	tXIsVIdjJzu1Nqz3F56sZDklTZsvV1xgSW7XuyUAxZlWRjXvmNQktQuZJfVySuwm1UeoRo6+mD5s6
+	9BDIO8iG1s+nEEfvdZ1FPZvYqSRFFl7L7O5Me1bzkQvsF1FCLB54UxKSnb1ErUB3sC0u0H/I9unTD
+	VBvu8PnQ==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vyX2x-0000000Gu9V-3mNp;
+	Fri, 06 Mar 2026 15:25:00 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 9BFB6300462; Fri, 06 Mar 2026 16:24:58 +0100 (CET)
+Date: Fri, 6 Mar 2026 16:24:58 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>, Matthieu Baerts <matttbe@kernel.org>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Stefano Garzarella <sgarzare@redhat.com>, kvm@vger.kernel.org,
+	virtualization@lists.linux.dev, Netdev <netdev@vger.kernel.org>,
+	rcu@vger.kernel.org, MPTCP Linux <mptcp@lists.linux.dev>,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <MKoutny@suse.com>,
+	Waiman Long <longman@redhat.com>, Marco Elver <elver@google.com>
+Subject: Re: Stalls when starting a VSOCK listening socket: soft lockups, RCU
+ stalls, timeout
+Message-ID: <20260306152458.GT606826@noisy.programming.kicks-ass.net>
+References: <863a5291-a636-47d0-891c-bb0524d2e134@kernel.org>
+ <20260302114636.GL606826@noisy.programming.kicks-ass.net>
+ <717310d8-6274-4b7f-8a19-561c45f5f565@kernel.org>
+ <a2b573b4-af61-4b84-a7d1-012ed6bb23c9@kernel.org>
+ <ba067933-bf3b-476d-a0bb-53eda56996ca@kernel.org>
+ <87zf4m2qvo.ffs@tglx>
+ <47cba228-bba7-4e58-a69d-ea41f8de6602@kernel.org>
+ <87tsuu2i59.ffs@tglx>
+ <7efde2b5-3b72-4858-9db0-22493d446301@kernel.org>
+ <87qzpx2sck.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aapprY-prH0l_WeK@linux.ibm.com>
+In-Reply-To: <87qzpx2sck.ffs@tglx>
 
-On Fri, Mar 06, 2026 at 11:14:13AM +0530, Vishal Chourasia wrote:
-> On Mon, Mar 02, 2026 at 05:17:16PM +0530, Samir M wrote:
-> > 
-> > On 27/02/26 6:43 am, Joel Fernandes wrote:
-> > > On Wed, Feb 18, 2026 at 02:09:18PM +0530, Vishal Chourasia wrote:
-> > > > Expedite synchronize_rcu during the SMT mode switch operation when
-> > > > initiated via /sys/devices/system/cpu/smt/control interface
-> > > >
-> > > After the locking related changes in patch 1, is expediting still required? I
-> Yes.
-> > > am just a bit concerned that we are papering over the real issue of over
-> > > usage of synchronize_rcu() (which IIRC we discussed in earlier versions of
-> > > the patches that reducing the number of lock acquire/release was supposed to
-> > > help.)
-> At present, I am not sure about the underlying issue. So far what I have
-> found is when synchronize_rcu() is invoked, it marks the start of a new
-> grace period number, say A. Thread invoking synchronize_rcu() blocks
-> until all CPUs have reported QS for GP "A". There is a rcu grace period
-> kthread that runs periodically looping over a CPU list to figure out all
-> CPUs have reported QS. In the trace, I find some CPUs reporting QS for
-> sequence number way back in the past for ex. A - N where N is > 10.
+On Fri, Mar 06, 2026 at 10:57:15AM +0100, Thomas Gleixner wrote:
 
-This can happen when a CPU goes idle for multiple grace periods, then
-wakes up in the middle of a later grace period.  This is (or at least is
-supposed to be) harmless because a quiescent state was reported on that
-CPU's behalf when RCU noticed that it was idle.  The report is quashed
-when RCU notices that the quiescent state being reported is for a grace
-period that has already completed.  Grace-period counter wrap is handled
-by the infamous ->gpwrap field in the rcu_data structure.
+> I tried with tons of test cases which stress test mmcid with threads and
+> failed.
 
-I have seen N having four digits, with deep embedded devices being most
-likely to have extremely large values of N.
+Are some of those in tools/testing/selftests ?
 
-							Thanx, Paul
+Anyway, I was going over that code, and I noticed that there seems to be
+inconsistent locking for mm_mm_cid::pcpu.
 
-> > > Could you provide more justification of why expediting these sections is
-> > > required if the locking concerns were addressed? It would be great if you can
-> > > provide performance numbers with only the first patch and without the second
-> > > patch. That way we can quantify this patch.
-> > > 
-> > > 
-> > SMT Mode    | Without Patch(Base) | both patch applied | % Improvement  |
-> > ------------------------------------------------------------------------|
-> > SMT=off     | 16m 13.956s         |     6m 18.435s     |  +61.14 %      |
-> > SMT=on      | 12m 0.982s          |     5m 59.576s     |  +50.10 %      |
-> > 
-> > When I tested the below patch independently, I did not observe any
-> > improvements for either smt=on or smt=off. However, in the smt=off scenario,
-> > I encountered hung task splats (with call traces), where some threads were
-> > blocked on cpus_read_lock. Please also refer to the attached call trace
-> > below.
-> > Patch 1:
-> > https://lore.kernel.org/all/20260218083915.660252-4-vishalc@linux.ibm.com/
-> > 
-> > SMT Mode    | Without Patch(Base) | just patch 1 applied   | % Improvement 
-> > |
-> > ----------------------------------------------------------------------------|
-> > SMT=off     | 16m 13.956s         |     16m 9.793s         |  +0.43 %     
-> >  |
-> > SMT=on      | 12m 0.982s          |     12m 19.494s        |  -2.57 %     
-> >  |
-> > 
-> > 
-> > Call traces:
-> > 12377] [  T8746]    Tainted: G      E 7.0.0-rc1-150700.51-default-dirty #1
-> > [ 1477.612384] [  T8746] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> > disables this message.
-> > [ 1477.612389] [  T8746] task:systemd     state:D stack:0   pid:1  tgid:1 
-> >  ppid:0   task_flags:0x400100 flags:0x00040000
-> > [ 1477.612397] [  T8746] Call Trace:
-> > [ 1477.612399] [  T8746] [c00000000cc0f4f0] [0000000000100000] 0x100000
-> > (unreliable)
-> > [ 1477.612416] [  T8746] [c00000000cc0f6a0] [c00000000001fe5c]
-> > __switch_to+0x1dc/0x290
-> > [ 1477.612425] [  T8746] [c00000000cc0f6f0] [c0000000012598ac]
-> > __schedule+0x40c/0x1a70
-> > [ 1477.612433] [  T8746] [c00000000cc0f840] [c00000000125af58]
-> > schedule+0x48/0x1a0
-> > [ 1477.612439] [  T8746] [c00000000cc0f870] [c0000000002e27b8]
-> > percpu_rwsem_wait+0x198/0x200
-> > [ 1477.612445] [  T8746] [c00000000cc0f8f0] [c000000001262930]
-> > __percpu_down_read+0xb0/0x210
-> > [ 1477.612449] [  T8746] [c00000000cc0f930] [c00000000022f400]
-> > cpus_read_lock+0xc0/0xd0
-> > [ 1477.612456] [  T8746] [c00000000cc0f950] [c0000000003a6398]
-> > cgroup_procs_write_start+0x328/0x410
-> > [ 1477.612462] [  T8746] [c00000000cc0fa00] [c0000000003a9620]
-> > __cgroup_procs_write+0x70/0x2c0
-> > [ 1477.612468] [  T8746] [c00000000cc0fac0] [c0000000003a98e8]
-> > cgroup_procs_write+0x28/0x50
-> > [ 1477.612473] [  T8746] [c00000000cc0faf0] [c0000000003a1624]
-> > cgroup_file_write+0xb4/0x240
-> > [ 1477.612478] [  T8746] [c00000000cc0fb50] [c000000000853ba8]
-> > kernfs_fop_write_iter+0x1a8/0x2a0
-> > [ 1477.612485] [  T8746] [c00000000cc0fba0] [c000000000733d5c]
-> > vfs_write+0x27c/0x540
-> > [ 1477.612491] [  T8746] [c00000000cc0fc50] [c000000000734350]
-> > ksys_write+0x80/0x150
-> > [ 1477.612495] [  T8746] [c00000000cc0fca0] [c000000000032898]
-> > system_call_exception+0x148/0x320
-> > [ 1477.612500] [  T8746] [c00000000cc0fe50] [c00000000000d6a0]
-> > system_call_common+0x160/0x2c4
-> > [ 1477.612506] [  T8746] ---- interrupt: c00 at 0x7fffa8f73df4
-> > [ 1477.612509] [  T8746] NIP: 00007fffa8f73df4 LR: 00007fffa8eb6144 CTR:
-> > 0000000000000000
-> > [ 1477.612512] [  T8746] REGS: c00000000cc0fe80 TRAP: 0c00 Tainted: G     
-> > E    (7.0.0-rc1-150700.51-default-dirty)
-> > [ 1477.612515] [  T8746] MSR: 800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE> CR:
-> > 28002288 XER: 00000000
-> > 
-> > 
-> 
-> Default timeout is set to 8 mins.
-> 
-> $ grep . /proc/sys/kernel/hung_task_timeout_secs
-> /proc/sys/kernel/hung_task_timeout_secs:480
-> 
-> Now that cpus_write_lock is taken once, and SMT mode switch can take
-> tens of minutes to complete and relinquish the lock, threads waiting on 
-> cpus_read_lock will be blocked for this entire duration.
-> 
-> Although there were no splats observed for "both patch applied" case
-> the issue still remains.
-> 
-> regards,
-> vishal
+There's a bunch of sites that state we need rq->lock for remote access;
+but then things like sched_mm_cid_fork() and sched_mm_cid_exit() seem to
+think that holding mm_cid->lock is sufficient.
+
+This doesn't make sense to me, but maybe I missed something.
+
+Anyway, I cobbled together the below, and that builds and boots and
+passes everything in tools/testing/selftests/rseq.
+
+
+YMMV
+
+---
+diff --git a/include/linux/rseq_types.h b/include/linux/rseq_types.h
+index da5fa6f40294..df2b4629cbfd 100644
+--- a/include/linux/rseq_types.h
++++ b/include/linux/rseq_types.h
+@@ -2,9 +2,12 @@
+ #ifndef _LINUX_RSEQ_TYPES_H
+ #define _LINUX_RSEQ_TYPES_H
+ 
++#include <linux/compiler_types.h>
+ #include <linux/irq_work_types.h>
+ #include <linux/types.h>
+ #include <linux/workqueue_types.h>
++#include <linux/mutex.h>
++#include <asm/percpu.h>
+ 
+ #ifdef CONFIG_RSEQ
+ struct rseq;
+@@ -145,8 +148,14 @@ struct sched_mm_cid {
+  *		while a task with a CID is running
+  */
+ struct mm_cid_pcpu {
+-	unsigned int	cid;
+-}____cacheline_aligned_in_smp;
++	unsigned int		cid;
++} ____cacheline_aligned_in_smp;
++
++/*
++ * See helpers in kernel/sched/sched.h that convert
++ * from __rq_lockp(rq) to RQ_LOCK.
++ */
++token_context_lock(RQ_LOCK);
+ 
+ /**
+  * struct mm_mm_cid - Storage for per MM CID data
+@@ -167,7 +176,7 @@ struct mm_cid_pcpu {
+  */
+ struct mm_mm_cid {
+ 	/* Hotpath read mostly members */
+-	struct mm_cid_pcpu	__percpu *pcpu;
++	struct mm_cid_pcpu	__percpu *pcpu __guarded_by(RQ_LOCK);
+ 	unsigned int		mode;
+ 	unsigned int		max_cids;
+ 
+@@ -179,11 +188,11 @@ struct mm_mm_cid {
+ 	struct mutex		mutex;
+ 
+ 	/* Low frequency modified */
+-	unsigned int		nr_cpus_allowed;
+-	unsigned int		users;
+-	unsigned int		pcpu_thrs;
+-	unsigned int		update_deferred;
+-}____cacheline_aligned_in_smp;
++	unsigned int		nr_cpus_allowed __guarded_by(&lock);
++	unsigned int		users		__guarded_by(&lock);
++	unsigned int		pcpu_thrs	__guarded_by(&lock);
++	unsigned int		update_deferred __guarded_by(&lock);
++} ____cacheline_aligned_in_smp;
+ #else /* CONFIG_SCHED_MM_CID */
+ struct mm_mm_cid { };
+ struct sched_mm_cid { };
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 2b571e640372..f7c03c9c4fd0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5335,7 +5335,7 @@ context_switch(struct rq *rq, struct task_struct *prev,
+ 		}
+ 	}
+ 
+-	mm_cid_switch_to(prev, next);
++	mm_cid_switch_to(rq, prev, next);
+ 
+ 	/*
+ 	 * Tell rseq that the task was scheduled in. Must be after
+@@ -10511,6 +10511,7 @@ void call_trace_sched_update_nr_running(struct rq *rq, int count)
+  * fork(), exit() and affinity changes
+  */
+ static void __mm_update_max_cids(struct mm_mm_cid *mc)
++	__must_hold(&mc->lock)
+ {
+ 	unsigned int opt_cids, max_cids;
+ 
+@@ -10523,15 +10524,17 @@ static void __mm_update_max_cids(struct mm_mm_cid *mc)
+ }
+ 
+ static inline unsigned int mm_cid_calc_pcpu_thrs(struct mm_mm_cid *mc)
++	__must_hold(&mc->lock)
+ {
+ 	unsigned int opt_cids;
+ 
+ 	opt_cids = min(mc->nr_cpus_allowed, mc->users);
+ 	/* Has to be at least 1 because 0 indicates PCPU mode off */
+-	return max(min(opt_cids - opt_cids / 4, num_possible_cpus() / 2), 1);
++	return max(min(opt_cids - (opt_cids / 4), num_possible_cpus() / 2), 1);
+ }
+ 
+ static bool mm_update_max_cids(struct mm_struct *mm)
++	__must_hold(&mm->mm_cid.lock)
+ {
+ 	struct mm_mm_cid *mc = &mm->mm_cid;
+ 	bool percpu = cid_on_cpu(mc->mode);
+@@ -10558,6 +10561,7 @@ static bool mm_update_max_cids(struct mm_struct *mm)
+ 		return false;
+ 
+ 	/* Flip the mode and set the transition flag to bridge the transfer */
++	WARN_ON_ONCE(mc->mode & MM_CID_TRANSIT);
+ 	WRITE_ONCE(mc->mode, mc->mode ^ (MM_CID_TRANSIT | MM_CID_ONCPU));
+ 	/*
+ 	 * Order the store against the subsequent fixups so that
+@@ -10568,16 +10572,28 @@ static bool mm_update_max_cids(struct mm_struct *mm)
+ 	return true;
+ }
+ 
++/*
++ * Silly helper because we cannot express that mm_mm_cid::users is updated
++ * while holding both mutex and lock and can thus be read while holding
++ * either.
++ */
++static __always_inline unsigned int mm_cid_users(struct mm_struct *mm)
++	__must_hold(&mm->mm_cid.mutex)
++{
++	__assume_ctx_lock(&mm->mm_cid.lock);
++	return mm->mm_cid.users;
++}
++
+ static inline void mm_update_cpus_allowed(struct mm_struct *mm, const struct cpumask *affmsk)
+ {
+ 	struct cpumask *mm_allowed;
+ 	struct mm_mm_cid *mc;
+ 	unsigned int weight;
+ 
+-	if (!mm || !READ_ONCE(mm->mm_cid.users))
++	if (!mm || !data_race(READ_ONCE(mm->mm_cid.users)))
+ 		return;
+ 	/*
+-	 * mm::mm_cid::mm_cpus_allowed is the superset of each threads
++	 * mm::mm_cid::mm_cpus_allowed is the superset of each thread's
+ 	 * allowed CPUs mask which means it can only grow.
+ 	 */
+ 	mc = &mm->mm_cid;
+@@ -10609,6 +10625,7 @@ static inline void mm_update_cpus_allowed(struct mm_struct *mm, const struct cpu
+ 
+ static inline void mm_cid_complete_transit(struct mm_struct *mm, unsigned int mode)
+ {
++	WARN_ON_ONCE(!(mm->mm_cid.mode & MM_CID_TRANSIT));
+ 	/*
+ 	 * Ensure that the store removing the TRANSIT bit cannot be
+ 	 * reordered by the CPU before the fixups have been completed.
+@@ -10633,11 +10650,12 @@ static void mm_cid_fixup_cpus_to_tasks(struct mm_struct *mm)
+ 
+ 	/* Walk the CPUs and fixup all stale CIDs */
+ 	for_each_possible_cpu(cpu) {
+-		struct mm_cid_pcpu *pcp = per_cpu_ptr(mm->mm_cid.pcpu, cpu);
+ 		struct rq *rq = cpu_rq(cpu);
++		struct mm_cid_pcpu *pcp;
+ 
+ 		/* Remote access to mm::mm_cid::pcpu requires rq_lock */
+ 		guard(rq_lock_irq)(rq);
++		pcp = mm_cid_pcpu(&mm->mm_cid, rq);
+ 		/* Is the CID still owned by the CPU? */
+ 		if (cid_on_cpu(pcp->cid)) {
+ 			/*
+@@ -10675,6 +10693,7 @@ static bool mm_cid_fixup_task_to_cpu(struct task_struct *t, struct mm_struct *mm
+ {
+ 	/* Remote access to mm::mm_cid::pcpu requires rq_lock */
+ 	guard(task_rq_lock)(t);
++	__assume_ctx_lock(RQ_LOCK);
+ 	/* If the task is not active it is not in the users count */
+ 	if (!t->mm_cid.active)
+ 		return false;
+@@ -10689,6 +10708,7 @@ static bool mm_cid_fixup_task_to_cpu(struct task_struct *t, struct mm_struct *mm
+ }
+ 
+ static void mm_cid_do_fixup_tasks_to_cpus(struct mm_struct *mm)
++	__must_hold(&mm->mm_cid.mutex)
+ {
+ 	struct task_struct *p, *t;
+ 	unsigned int users;
+@@ -10703,7 +10723,7 @@ static void mm_cid_do_fixup_tasks_to_cpus(struct mm_struct *mm)
+ 	 * The caller has already transferred. The newly incoming task is
+ 	 * already accounted for, but not yet visible.
+ 	 */
+-	users = mm->mm_cid.users - 2;
++	users = mm_cid_users(mm) - 2;
+ 	if (!users)
+ 		return;
+ 
+@@ -10727,18 +10747,19 @@ static void mm_cid_do_fixup_tasks_to_cpus(struct mm_struct *mm)
+ 	}
+ }
+ 
+-static void mm_cid_fixup_tasks_to_cpus(void)
++static void mm_cid_fixup_tasks_to_cpus(struct mm_struct *mm)
++	__must_hold(mm->mm_cid.mutex)
+ {
+-	struct mm_struct *mm = current->mm;
+-
+ 	mm_cid_do_fixup_tasks_to_cpus(mm);
+ 	mm_cid_complete_transit(mm, MM_CID_ONCPU);
+ }
+ 
+ static bool sched_mm_cid_add_user(struct task_struct *t, struct mm_struct *mm)
++	__must_hold(&mm->mm_cid.mutex)
++	__must_hold(&mm->mm_cid.lock)
+ {
+ 	t->mm_cid.active = 1;
+-	mm->mm_cid.users++;
++	mm->mm_cid.users++; /* mutex && lock */
+ 	return mm_update_max_cids(mm);
+ }
+ 
+@@ -10750,8 +10771,9 @@ void sched_mm_cid_fork(struct task_struct *t)
+ 	WARN_ON_ONCE(!mm || t->mm_cid.cid != MM_CID_UNSET);
+ 
+ 	guard(mutex)(&mm->mm_cid.mutex);
+-	scoped_guard(raw_spinlock_irq, &mm->mm_cid.lock) {
+-		struct mm_cid_pcpu *pcp = this_cpu_ptr(mm->mm_cid.pcpu);
++	scoped_guard(rq_lock_irq, this_rq()) {
++		struct mm_cid_pcpu *pcp = mm_cid_pcpu(&mm->mm_cid, this_rq());
++		guard(raw_spinlock)(&mm->mm_cid.lock);
+ 
+ 		/* First user ? */
+ 		if (!mm->mm_cid.users) {
+@@ -10777,7 +10799,7 @@ void sched_mm_cid_fork(struct task_struct *t)
+ 	}
+ 
+ 	if (percpu) {
+-		mm_cid_fixup_tasks_to_cpus();
++		mm_cid_fixup_tasks_to_cpus(mm);
+ 	} else {
+ 		mm_cid_fixup_cpus_to_tasks(mm);
+ 		t->mm_cid.cid = mm_get_cid(mm);
+@@ -10785,6 +10807,8 @@ void sched_mm_cid_fork(struct task_struct *t)
+ }
+ 
+ static bool sched_mm_cid_remove_user(struct task_struct *t)
++	__must_hold(t->mm->mm_cid.mutex)
++	__must_hold(t->mm->mm_cid.lock)
+ {
+ 	t->mm_cid.active = 0;
+ 	scoped_guard(preempt) {
+@@ -10792,11 +10816,13 @@ static bool sched_mm_cid_remove_user(struct task_struct *t)
+ 		t->mm_cid.cid = cid_from_transit_cid(t->mm_cid.cid);
+ 		mm_unset_cid_on_task(t);
+ 	}
+-	t->mm->mm_cid.users--;
++	t->mm->mm_cid.users--; /* mutex && lock */
+ 	return mm_update_max_cids(t->mm);
+ }
+ 
+ static bool __sched_mm_cid_exit(struct task_struct *t)
++	__must_hold(t->mm->mm_cid.mutex)
++	__must_hold(t->mm->mm_cid.lock)
+ {
+ 	struct mm_struct *mm = t->mm;
+ 
+@@ -10837,8 +10863,9 @@ void sched_mm_cid_exit(struct task_struct *t)
+ 	 */
+ 	scoped_guard(mutex, &mm->mm_cid.mutex) {
+ 		/* mm_cid::mutex is sufficient to protect mm_cid::users */
+-		if (likely(mm->mm_cid.users > 1)) {
+-			scoped_guard(raw_spinlock_irq, &mm->mm_cid.lock) {
++		if (likely(mm_cid_users(mm) > 1)) {
++			scoped_guard(rq_lock_irq, this_rq()) {
++				guard(raw_spinlock)(&mm->mm_cid.lock);
+ 				if (!__sched_mm_cid_exit(t))
+ 					return;
+ 				/*
+@@ -10847,16 +10874,17 @@ void sched_mm_cid_exit(struct task_struct *t)
+ 				 * TRANSIT bit. If the CID is owned by the CPU
+ 				 * then drop it.
+ 				 */
+-				mm_drop_cid_on_cpu(mm, this_cpu_ptr(mm->mm_cid.pcpu));
++				mm_drop_cid_on_cpu(mm, mm_cid_pcpu(&mm->mm_cid, this_rq()));
+ 			}
+ 			mm_cid_fixup_cpus_to_tasks(mm);
+ 			return;
+ 		}
+ 		/* Last user */
+-		scoped_guard(raw_spinlock_irq, &mm->mm_cid.lock) {
++		scoped_guard(rq_lock_irq, this_rq()) {
++			guard(raw_spinlock)(&mm->mm_cid.lock);
+ 			/* Required across execve() */
+ 			if (t == current)
+-				mm_cid_transit_to_task(t, this_cpu_ptr(mm->mm_cid.pcpu));
++				mm_cid_transit_to_task(t, mm_cid_pcpu(&mm->mm_cid, this_rq()));
+ 			/* Ignore mode change. There is nothing to do. */
+ 			sched_mm_cid_remove_user(t);
+ 		}
+@@ -10893,7 +10921,7 @@ static void mm_cid_work_fn(struct work_struct *work)
+ 
+ 	guard(mutex)(&mm->mm_cid.mutex);
+ 	/* Did the last user task exit already? */
+-	if (!mm->mm_cid.users)
++	if (!mm_cid_users(mm))
+ 		return;
+ 
+ 	scoped_guard(raw_spinlock_irq, &mm->mm_cid.lock) {
+@@ -10924,13 +10952,14 @@ static void mm_cid_irq_work(struct irq_work *work)
+ 
+ void mm_init_cid(struct mm_struct *mm, struct task_struct *p)
+ {
+-	mm->mm_cid.max_cids = 0;
+ 	mm->mm_cid.mode = 0;
+-	mm->mm_cid.nr_cpus_allowed = p->nr_cpus_allowed;
+-	mm->mm_cid.users = 0;
+-	mm->mm_cid.pcpu_thrs = 0;
+-	mm->mm_cid.update_deferred = 0;
+-	raw_spin_lock_init(&mm->mm_cid.lock);
++	mm->mm_cid.max_cids = 0;
++	scoped_guard (raw_spinlock_init, &mm->mm_cid.lock) {
++		mm->mm_cid.nr_cpus_allowed = p->nr_cpus_allowed;
++		mm->mm_cid.users = 0;
++		mm->mm_cid.pcpu_thrs = 0;
++		mm->mm_cid.update_deferred = 0;
++	}
+ 	mutex_init(&mm->mm_cid.mutex);
+ 	mm->mm_cid.irq_work = IRQ_WORK_INIT_HARD(mm_cid_irq_work);
+ 	INIT_WORK(&mm->mm_cid.work, mm_cid_work_fn);
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index fd36ae390520..8c761822d6b2 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -3870,13 +3870,39 @@ static __always_inline void mm_cid_update_task_cid(struct task_struct *t, unsign
+ 	}
+ }
+ 
+-static __always_inline void mm_cid_update_pcpu_cid(struct mm_struct *mm, unsigned int cid)
++/*
++ * Helpers to convert from __rq_lockp(rq) to RQ_LOCK intermediate.
++ */
++static __always_inline
++void mm_cid_update_pcpu_cid(struct rq *rq, struct mm_struct *mm, unsigned int cid)
++	__must_hold(__rq_lockp(rq))
+ {
++	__assume_ctx_lock(RQ_LOCK);
++	lockdep_assert(rq->cpu == smp_processor_id());
+ 	__this_cpu_write(mm->mm_cid.pcpu->cid, cid);
+ }
+ 
+-static __always_inline void mm_cid_from_cpu(struct task_struct *t, unsigned int cpu_cid,
+-					    unsigned int mode)
++static __always_inline
++unsigned int mm_cid_pcpu_cid(struct rq *rq, struct mm_struct *mm)
++	__must_hold(__rq_lockp(rq))
++{
++	__assume_ctx_lock(RQ_LOCK);
++	lockdep_assert(rq->cpu == smp_processor_id());
++	return __this_cpu_read(mm->mm_cid.pcpu->cid);
++}
++
++static __always_inline
++struct mm_cid_pcpu *mm_cid_pcpu(struct mm_mm_cid *mc, struct rq *rq)
++	__must_hold(__rq_lockp(rq))
++
++{
++	__assume_ctx_lock(RQ_LOCK);
++	return per_cpu_ptr(mc->pcpu, rq->cpu);
++}
++
++static __always_inline void mm_cid_from_cpu(struct rq *rq, struct task_struct *t,
++					    unsigned int cpu_cid, unsigned int mode)
++	__must_hold(__rq_lockp(rq))
+ {
+ 	unsigned int max_cids, tcid = t->mm_cid.cid;
+ 	struct mm_struct *mm = t->mm;
+@@ -3906,12 +3932,13 @@ static __always_inline void mm_cid_from_cpu(struct task_struct *t, unsigned int
+ 		if (mode & MM_CID_TRANSIT)
+ 			cpu_cid = cpu_cid_to_cid(cpu_cid) | MM_CID_TRANSIT;
+ 	}
+-	mm_cid_update_pcpu_cid(mm, cpu_cid);
++	mm_cid_update_pcpu_cid(rq, mm, cpu_cid);
+ 	mm_cid_update_task_cid(t, cpu_cid);
+ }
+ 
+-static __always_inline void mm_cid_from_task(struct task_struct *t, unsigned int cpu_cid,
+-					     unsigned int mode)
++static __always_inline void mm_cid_from_task(struct rq *rq, struct task_struct *t,
++					     unsigned int cpu_cid, unsigned int mode)
++	__must_hold(__rq_lockp(rq))
+ {
+ 	unsigned int max_cids, tcid = t->mm_cid.cid;
+ 	struct mm_struct *mm = t->mm;
+@@ -3920,7 +3947,7 @@ static __always_inline void mm_cid_from_task(struct task_struct *t, unsigned int
+ 	/* Optimize for the common case, where both have the ONCPU bit clear */
+ 	if (likely(cid_on_task(tcid | cpu_cid))) {
+ 		if (likely(tcid < max_cids)) {
+-			mm_cid_update_pcpu_cid(mm, tcid);
++			mm_cid_update_pcpu_cid(rq, mm, tcid);
+ 			return;
+ 		}
+ 		/* Try to converge into the optimal CID space */
+@@ -3929,7 +3956,7 @@ static __always_inline void mm_cid_from_task(struct task_struct *t, unsigned int
+ 		/* Hand over or drop the CPU owned CID */
+ 		if (cid_on_cpu(cpu_cid)) {
+ 			if (cid_on_task(tcid))
+-				mm_drop_cid_on_cpu(mm, this_cpu_ptr(mm->mm_cid.pcpu));
++				mm_drop_cid_on_cpu(mm, mm_cid_pcpu(&mm->mm_cid, rq));
+ 			else
+ 				tcid = cpu_cid_to_cid(cpu_cid);
+ 		}
+@@ -3939,11 +3966,12 @@ static __always_inline void mm_cid_from_task(struct task_struct *t, unsigned int
+ 		/* Set the transition mode flag if required */
+ 		tcid |= mode & MM_CID_TRANSIT;
+ 	}
+-	mm_cid_update_pcpu_cid(mm, tcid);
++	mm_cid_update_pcpu_cid(rq, mm, tcid);
+ 	mm_cid_update_task_cid(t, tcid);
+ }
+ 
+-static __always_inline void mm_cid_schedin(struct task_struct *next)
++static __always_inline void mm_cid_schedin(struct rq *rq, struct task_struct *next)
++	__must_hold(__rq_lockp(rq))
+ {
+ 	struct mm_struct *mm = next->mm;
+ 	unsigned int cpu_cid, mode;
+@@ -3951,15 +3979,16 @@ static __always_inline void mm_cid_schedin(struct task_struct *next)
+ 	if (!next->mm_cid.active)
+ 		return;
+ 
+-	cpu_cid = __this_cpu_read(mm->mm_cid.pcpu->cid);
++	cpu_cid = mm_cid_pcpu_cid(rq, mm);
+ 	mode = READ_ONCE(mm->mm_cid.mode);
+ 	if (likely(!cid_on_cpu(mode)))
+-		mm_cid_from_task(next, cpu_cid, mode);
++		mm_cid_from_task(rq, next, cpu_cid, mode);
+ 	else
+-		mm_cid_from_cpu(next, cpu_cid, mode);
++		mm_cid_from_cpu(rq, next, cpu_cid, mode);
+ }
+ 
+-static __always_inline void mm_cid_schedout(struct task_struct *prev)
++static __always_inline void mm_cid_schedout(struct rq *rq, struct task_struct *prev)
++	__must_hold(__rq_lockp(rq))
+ {
+ 	struct mm_struct *mm = prev->mm;
+ 	unsigned int mode, cid;
+@@ -3980,7 +4009,7 @@ static __always_inline void mm_cid_schedout(struct task_struct *prev)
+ 			cid = cid_to_cpu_cid(cid);
+ 
+ 		/* Update both so that the next schedule in goes into the fast path */
+-		mm_cid_update_pcpu_cid(mm, cid);
++		mm_cid_update_pcpu_cid(rq, mm, cid);
+ 		prev->mm_cid.cid = cid;
+ 	} else {
+ 		mm_drop_cid(mm, cid);
+@@ -3988,10 +4017,12 @@ static __always_inline void mm_cid_schedout(struct task_struct *prev)
+ 	}
+ }
+ 
+-static inline void mm_cid_switch_to(struct task_struct *prev, struct task_struct *next)
++static inline void mm_cid_switch_to(struct rq *rq, struct task_struct *prev,
++				    struct task_struct *next)
++	__must_hold(__rq_lockp(rq))
+ {
+-	mm_cid_schedout(prev);
+-	mm_cid_schedin(next);
++	mm_cid_schedout(rq, prev);
++	mm_cid_schedin(rq, next);
+ }
+ 
+ #else /* !CONFIG_SCHED_MM_CID: */
