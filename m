@@ -1,254 +1,185 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE8E9382F15;
-	Fri,  6 Mar 2026 11:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996653A9603;
+	Fri,  6 Mar 2026 15:12:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772795220; cv=none; b=YDiN+r+9Gw03wrMf0PLCOWHMoaskZonOY2BA4oUDFgsx7kXC5yu2FFlSsA7uJS/dYPa9nfqW/bGU1MlzUloujJlPNrEDpWM5oCaCT0uWyZsMegQP8X7h7aHEKsO/ckXPI8jLuI9YpTDx6WqtB9daHngc6mUV7oYsIZh8MbXsEso=
+	t=1772809925; cv=none; b=IsByUoqmWNgBwd0F2EaNUatAgaebuwikcGmv8ewJXA0rutIKydrDBmXjfrknbFVtC07I/Gs1eRwUNe+JzySjuu7Kym7MPGQsOjTvcf16nEIp6luRHdmRVgqRZcXfLPylU977JoiP6vYHFT5mgLLE257lZMCh2vJIXKf1wS4TZxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772795220; c=relaxed/simple;
-	bh=5JLFleFOGu2yk6q3/LVcwXRgVRIsHMw1XzIURCrmxSs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hdty7cG86xga+EJZI8glT4JGr+EUzrFjAUgnWqyTwla0rZarIj66AtgxXlhh6QnPqrjjQqShUYrEsdjtyZbfsIsm2FlBRlYd7lJWi0Wpse+3Jl6qqM54WadSAty0omABefsbXusRvQsqT5awtDusSHAHynUWgQd21GauBjIAVu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=niRYr2GU; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1772809925; c=relaxed/simple;
+	bh=WwutwLYkNqMgYr85DYyu7UXdAyTvO1cCqDjQc1hUNWM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZqsxpVhl6kWlf9P946WGo0b0C7atr6HovHCzqMVLA4LsIpMJ8iH33AiWH4shhPwJDU8LcnOPhlM5JI9kHV0P9pPV4xIO1jZU2Vm+UiELBqsVUZFC6fkx5Qfn7m5hqK3xe7+JSFZ/8z8IYweY/IeUzi0O3DTKdTjrYpblwSmJTCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h4yvnZtj; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="niRYr2GU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E533C4CEF7;
-	Fri,  6 Mar 2026 11:06:55 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h4yvnZtj"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D0B6C2BC9E;
+	Fri,  6 Mar 2026 15:12:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772795219;
-	bh=5JLFleFOGu2yk6q3/LVcwXRgVRIsHMw1XzIURCrmxSs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=niRYr2GUkeZ2evtY/MvpTINahTL9FeEOM2+S5jIOhI6rTICEN4ErbX/41cP3OcnQk
-	 zhd2aol7vsSHYfqBanZvFiKJcNJc6c4P89P7ym6dPfWZKLhYYMXYar4U8Pdft4PWnT
-	 fygpvXhCsB69JLcRjvP2uqCg8fjYbwpXeM/cE7qNEJfb1msgEIWCQl/tf49x0ZGqn0
-	 mrfXLzAm9K2gKESMGb16yku1dBu7nk1ppJCDfTKLNkWttrSTSXXuNLZaasQnr9ATSW
-	 EFnRv7/BKOZYAfL8DUdTEHwCuhf7KQyUra8DtlOk4TzKJd2blbg/WJLhMHSgfV9Lx7
-	 xvZe13Ywzo6dQ==
-Message-ID: <9798cb27-0f52-42fa-b0da-a7834039da1f@kernel.org>
-Date: Fri, 6 Mar 2026 12:06:51 +0100
+	s=k20201202; t=1772809925;
+	bh=WwutwLYkNqMgYr85DYyu7UXdAyTvO1cCqDjQc1hUNWM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=h4yvnZtjsCZtx0s0O7R/iH8mhJRKZGkRZ/h1iQH7FOmBMGn06eR06iE9EpkJkMcf4
+	 2fxdS1l66Yli83V/D018dNLgjARu3bahibTlFa52g0EkNfYrdf5YedO15wY8Nu7PpX
+	 VSzE0yp3WEuvXuKewiIkfA4U3UFQ1Tn+TkxtQAFC1iv5R8PK8DA0E8qJ4LrGLjlHPt
+	 6QlJCFSsSYaWkSC+HpZW6G/tXRMZNYxOmTApeT5ZfOPtyiMNIML+Zue6e836YT5Rer
+	 xO9vpY6kyAx9WRe4xPKFLaf9J24y2TDlrJg+2yvrjm8+EC06cEHC6VXhXeOEj+dJFI
+	 fHzY2InL9Nbiw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 72379CE0992; Fri,  6 Mar 2026 07:12:04 -0800 (PST)
+Date: Fri, 6 Mar 2026 07:12:04 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Vishal Chourasia <vishalc@linux.ibm.com>
+Cc: Samir M <samir@linux.ibm.com>, Joel Fernandes <joelagnelf@nvidia.com>,
+	peterz@infradead.org, aboorvad@linux.ibm.com, boqun.feng@gmail.com,
+	frederic@kernel.org, josh@joshtriplett.org,
+	linux-kernel@vger.kernel.org, neeraj.upadhyay@kernel.org,
+	rcu@vger.kernel.org, rostedt@goodmis.org, srikar@linux.ibm.com,
+	sshegde@linux.ibm.com, tglx@linutronix.de, urezki@gmail.com
+Subject: Re: [PATCH v3 2/2] cpuhp: Expedite RCU grace periods during SMT
+ operations
+Message-ID: <bde1a8b9-7f56-45fb-830c-038fa7b85f0d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260218083915.660252-2-vishalc@linux.ibm.com>
+ <20260218083915.660252-6-vishalc@linux.ibm.com>
+ <20260227011352.GA1089964@joelbox2>
+ <94b3284b-885d-4263-99ed-728375c1a2b7@linux.ibm.com>
+ <aapprY-prH0l_WeK@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: Stalls when starting a VSOCK listening socket: soft lockups, RCU
- stalls, timeout
-Content-Language: en-GB, fr-BE
-To: Thomas Gleixner <tglx@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>
-Cc: Stefan Hajnoczi <stefanha@redhat.com>,
- Stefano Garzarella <sgarzare@redhat.com>, kvm@vger.kernel.org,
- virtualization@lists.linux.dev, Netdev <netdev@vger.kernel.org>,
- rcu@vger.kernel.org, MPTCP Linux <mptcp@lists.linux.dev>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Dave Hansen <dave.hansen@linux.intel.com>, "luto@kernel.org"
- <luto@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <MKoutny@suse.com>,
- Waiman Long <longman@redhat.com>
-References: <b24ffcb3-09d5-4e48-9070-0b69bc654281@kernel.org>
- <7f3e74d7-67dc-48d7-99d2-0b87f671651b@kernel.org>
- <863a5291-a636-47d0-891c-bb0524d2e134@kernel.org>
- <20260302114636.GL606826@noisy.programming.kicks-ass.net>
- <717310d8-6274-4b7f-8a19-561c45f5f565@kernel.org>
- <a2b573b4-af61-4b84-a7d1-012ed6bb23c9@kernel.org>
- <ba067933-bf3b-476d-a0bb-53eda56996ca@kernel.org> <87zf4m2qvo.ffs@tglx>
- <47cba228-bba7-4e58-a69d-ea41f8de6602@kernel.org> <87tsuu2i59.ffs@tglx>
- <7efde2b5-3b72-4858-9db0-22493d446301@kernel.org> <87qzpx2sck.ffs@tglx>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <87qzpx2sck.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aapprY-prH0l_WeK@linux.ibm.com>
 
-Hi Thomas,
+On Fri, Mar 06, 2026 at 11:14:13AM +0530, Vishal Chourasia wrote:
+> On Mon, Mar 02, 2026 at 05:17:16PM +0530, Samir M wrote:
+> > 
+> > On 27/02/26 6:43 am, Joel Fernandes wrote:
+> > > On Wed, Feb 18, 2026 at 02:09:18PM +0530, Vishal Chourasia wrote:
+> > > > Expedite synchronize_rcu during the SMT mode switch operation when
+> > > > initiated via /sys/devices/system/cpu/smt/control interface
+> > > >
+> > > After the locking related changes in patch 1, is expediting still required? I
+> Yes.
+> > > am just a bit concerned that we are papering over the real issue of over
+> > > usage of synchronize_rcu() (which IIRC we discussed in earlier versions of
+> > > the patches that reducing the number of lock acquire/release was supposed to
+> > > help.)
+> At present, I am not sure about the underlying issue. So far what I have
+> found is when synchronize_rcu() is invoked, it marks the start of a new
+> grace period number, say A. Thread invoking synchronize_rcu() blocks
+> until all CPUs have reported QS for GP "A". There is a rcu grace period
+> kthread that runs periodically looping over a CPU list to figure out all
+> CPUs have reported QS. In the trace, I find some CPUs reporting QS for
+> sequence number way back in the past for ex. A - N where N is > 10.
 
-Thank you for looking into this!
+This can happen when a CPU goes idle for multiple grace periods, then
+wakes up in the middle of a later grace period.  This is (or at least is
+supposed to be) harmless because a quiescent state was reported on that
+CPU's behalf when RCU noticed that it was idle.  The report is quashed
+when RCU notices that the quiescent state being reported is for a grace
+period that has already completed.  Grace-period counter wrap is handled
+by the infamous ->gpwrap field in the rcu_data structure.
 
-On 06/03/2026 10:57, Thomas Gleixner wrote:
-> On Fri, Mar 06 2026 at 06:48, Jiri Slaby wrote:
->> On 05. 03. 26, 20:25, Thomas Gleixner wrote:
->>> Is there simple way to reproduce?
->>
->> Unfortunately not at all. To date, I even cannot reproduce locally, it 
->> reproduces exclusively in opensuse build service (and github CI as per 
->> Matthieu's report). I have a project in there with packages which fail 
->> more often than others:
->>    https://build.opensuse.org/project/monitor/home:jirislaby:softlockup
->> But it's all green ATM.
->>
->> Builds of Go 1.24 and tests of rust 1.90 fail the most. The former even 
->> takes only ~ 8 minutes, so it's not that intensive build at all. So the 
->> reasons are unknown to me. At least, Go apparently uses threads for 
->> building (unlike gcc/clang with forks/processes). Dunno about rust.
+I have seen N having four digits, with deep embedded devices being most
+likely to have extremely large values of N.
+
+							Thanx, Paul
+
+> > > Could you provide more justification of why expediting these sections is
+> > > required if the locking concerns were addressed? It would be great if you can
+> > > provide performance numbers with only the first patch and without the second
+> > > patch. That way we can quantify this patch.
+> > > 
+> > > 
+> > SMT Mode    | Without Patch(Base) | both patch applied | % Improvement  |
+> > ------------------------------------------------------------------------|
+> > SMT=off     | 16m 13.956s         |     6m 18.435s     |  +61.14 %      |
+> > SMT=on      | 12m 0.982s          |     5m 59.576s     |  +50.10 %      |
+> > 
+> > When I tested the below patch independently, I did not observe any
+> > improvements for either smt=on or smt=off. However, in the smt=off scenario,
+> > I encountered hung task splats (with call traces), where some threads were
+> > blocked on cpus_read_lock. Please also refer to the attached call trace
+> > below.
+> > Patch 1:
+> > https://lore.kernel.org/all/20260218083915.660252-4-vishalc@linux.ibm.com/
+> > 
+> > SMT Mode    | Without Patch(Base) | just patch 1 applied   | % Improvement 
+> > |
+> > ----------------------------------------------------------------------------|
+> > SMT=off     | 16m 13.956s         |     16m 9.793s         |  +0.43 %     
+> >  |
+> > SMT=on      | 12m 0.982s          |     12m 19.494s        |  -2.57 %     
+> >  |
+> > 
+> > 
+> > Call traces:
+> > 12377] [  T8746]    Tainted: G      E 7.0.0-rc1-150700.51-default-dirty #1
+> > [ 1477.612384] [  T8746] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> > disables this message.
+> > [ 1477.612389] [  T8746] task:systemd     state:D stack:0   pid:1  tgid:1 
+> >  ppid:0   task_flags:0x400100 flags:0x00040000
+> > [ 1477.612397] [  T8746] Call Trace:
+> > [ 1477.612399] [  T8746] [c00000000cc0f4f0] [0000000000100000] 0x100000
+> > (unreliable)
+> > [ 1477.612416] [  T8746] [c00000000cc0f6a0] [c00000000001fe5c]
+> > __switch_to+0x1dc/0x290
+> > [ 1477.612425] [  T8746] [c00000000cc0f6f0] [c0000000012598ac]
+> > __schedule+0x40c/0x1a70
+> > [ 1477.612433] [  T8746] [c00000000cc0f840] [c00000000125af58]
+> > schedule+0x48/0x1a0
+> > [ 1477.612439] [  T8746] [c00000000cc0f870] [c0000000002e27b8]
+> > percpu_rwsem_wait+0x198/0x200
+> > [ 1477.612445] [  T8746] [c00000000cc0f8f0] [c000000001262930]
+> > __percpu_down_read+0xb0/0x210
+> > [ 1477.612449] [  T8746] [c00000000cc0f930] [c00000000022f400]
+> > cpus_read_lock+0xc0/0xd0
+> > [ 1477.612456] [  T8746] [c00000000cc0f950] [c0000000003a6398]
+> > cgroup_procs_write_start+0x328/0x410
+> > [ 1477.612462] [  T8746] [c00000000cc0fa00] [c0000000003a9620]
+> > __cgroup_procs_write+0x70/0x2c0
+> > [ 1477.612468] [  T8746] [c00000000cc0fac0] [c0000000003a98e8]
+> > cgroup_procs_write+0x28/0x50
+> > [ 1477.612473] [  T8746] [c00000000cc0faf0] [c0000000003a1624]
+> > cgroup_file_write+0xb4/0x240
+> > [ 1477.612478] [  T8746] [c00000000cc0fb50] [c000000000853ba8]
+> > kernfs_fop_write_iter+0x1a8/0x2a0
+> > [ 1477.612485] [  T8746] [c00000000cc0fba0] [c000000000733d5c]
+> > vfs_write+0x27c/0x540
+> > [ 1477.612491] [  T8746] [c00000000cc0fc50] [c000000000734350]
+> > ksys_write+0x80/0x150
+> > [ 1477.612495] [  T8746] [c00000000cc0fca0] [c000000000032898]
+> > system_call_exception+0x148/0x320
+> > [ 1477.612500] [  T8746] [c00000000cc0fe50] [c00000000000d6a0]
+> > system_call_common+0x160/0x2c4
+> > [ 1477.612506] [  T8746] ---- interrupt: c00 at 0x7fffa8f73df4
+> > [ 1477.612509] [  T8746] NIP: 00007fffa8f73df4 LR: 00007fffa8eb6144 CTR:
+> > 0000000000000000
+> > [ 1477.612512] [  T8746] REGS: c00000000cc0fe80 TRAP: 0c00 Tainted: G     
+> > E    (7.0.0-rc1-150700.51-default-dirty)
+> > [ 1477.612515] [  T8746] MSR: 800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE> CR:
+> > 28002288 XER: 00000000
+> > 
+> > 
 > 
-> I tried with tons of test cases which stress test mmcid with threads and
-> failed.
-
-On my side, I didn't manage to reproduce it locally either.
-
-
-> Can you provide me your .config, source version, VM setup (Number of
-> CPUs, memory etc.)?
-
-My CI ran into this issue 2 days ago, with and without a debug kernel
-config. The kernel being tested was on top of 'net-next', which was on
-top of this commit from Linus' tree: fbdfa8da05b6 ("selftests:
-tc-testing: fix list_categories() crash on list type").
-
-- Config without debug:
-
-
-https://github.com/user-attachments/files/25791728/config-run-22657946888-normal-join.gz
-
-- Config with debug:
-
-
-https://github.com/user-attachments/files/25791960/config-run-22657946888-debug-nojoin.gz
-
-- Just in case, stacktraces available there:
-
-  https://github.com/multipath-tcp/mptcp_net-next/actions/runs/22657946888
-
-
-My tests are being executed in VMs I don't control using a kernel v6.14
-on Azure with 4 vCPUs, 16GB of RAM, and KVM nested support. From more
-details about what's in it:
-
-
-https://github.com/actions/runner-images/blob/ubuntu24/20260302.42/images/ubuntu/Ubuntu2404-Readme.md
-
-
-From there, a docker container is started, from which QEMU 10.1.0
-(Debian 1:10.1.0+ds-5ubuntu2.2) is launched with 4 vCPU and 5GB of RAM
-using this command:
-
-
-/usr/bin/qemu-system-x86_64 \
-  -name mptcpdev \
-  -m 5120M \
-  -smp 4 \
-  -chardev socket,id=charvirtfs5,path=/tmp/virtmevrwrzu5k \
-  -device vhost-user-fs-device,chardev=charvirtfs5,tag=ROOTFS \
-  -object memory-backend-memfd,id=mem,size=5120M,share=on \
-  -numa node,memdev=mem \
-  -machine accel=kvm:tcg \
-  -M microvm,accel=kvm,pcie=on,rtc=on \
-  -cpu host,topoext=on \
-  -parallel none \
-  -net none \
-  -echr 1 \
-  -chardev file,path=/proc/self/fd/2,id=dmesg \
-  -device virtio-serial-device \
-  -device virtconsole,chardev=dmesg \
-  -chardev stdio,id=console,signal=off,mux=on \
-  -serial chardev:console \
-  -mon chardev=console \
-  -vga none \
-  -display none \
-  -device vhost-vsock-device,guest-cid=3 \
-  -kernel
-/home/runner/work/mptcp_net-next/mptcp_net-next/.virtme/build/arch/x86/boot/bzImage
-\
-  -append 'virtme_hostname=mptcpdev nr_open=1048576
-virtme_link_mods=/home/runner/work/mptcp_net-next/mptcp_net-next/.virtme/build/.virtme_mods/lib/modules/0.0.0
-virtme_rw_overlay0=/tmp console=hvc0 earlyprintk=serial,ttyS0,115200
-virtme_console=ttyS0 psmouse.proto=exps
-virtme.vsockexec=`/tmp/virtme-console/3.sh`
-virtme_chdir=home/runner/work/mptcp_net-next/mptcp_net-next
-virtme_root_user=1 rootfstype=virtiofs root=ROOTFS raid=noautodetect rw
-debug nokaslr mitigations=off softlockup_panic=1 nmi_watchdog=1
-hung_task_panic=1 panic=-1 oops=panic
-init=/usr/local/lib/python3.13/dist-packages/virtme/guest/bin/virtme-ng-init'
-\
-  -gdb tcp::1234 \
-  -qmp tcp::3636,server,nowait \
-  -no-reboot
-
-
-It is possible to locally launch the same command using the same QEMU
-version (but not the same host kernel) with the help of Docker:
-
-  $ cd <kernel source code>
-  # docker run -v "${PWD}:${PWD}:rw" -w "${PWD}" --rm \
-    -it --privileged mptcp/mptcp-upstream-virtme-docker:latest \
-    manual normal
-
-This will build a new kernel in O=.virtme/build, launch it and give you
-access to a prompt.
-
-
-After that, you can do also use the "auto" mode with the last built
-image to boot the VM, only print "OK", stop and retry if there were no
-errors:
-
-  $ cd <kernel source code>
-  $ echo 'echo OK' > .virtme-exec-run
-  # i=1; \
-    while docker run -v "${PWD}:${PWD}:rw" -w "${PWD}" --rm \
-    -it --privileged mptcp/mptcp-upstream-virtme-docker:latest \
-    vm auto normal; do \
-      echo "== Attempt: $i: OK =="; \
-      i=$((i+1)); \
-    done; \
-    echo "== Failure after $i attempts =="
-
-
-> I tried to find it on that github page Matthiue mentioned but I'm
-> probably too stupid to navigate this clicky interface.
-
-I'm sorry about that, I understand, the interface is not very clear. Do
-not hesitate to tell me if you need anything else from me.
-
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
-
+> Default timeout is set to 8 mins.
+> 
+> $ grep . /proc/sys/kernel/hung_task_timeout_secs
+> /proc/sys/kernel/hung_task_timeout_secs:480
+> 
+> Now that cpus_write_lock is taken once, and SMT mode switch can take
+> tens of minutes to complete and relinquish the lock, threads waiting on 
+> cpus_read_lock will be blocked for this entire duration.
+> 
+> Although there were no splats observed for "both patch applied" case
+> the issue still remains.
+> 
+> regards,
+> vishal
