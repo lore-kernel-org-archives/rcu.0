@@ -1,133 +1,141 @@
-Received: from mail-dy1-f180.google.com (mail-dy1-f180.google.com [74.125.82.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47ED13806C9
-	for <rcu@vger.kernel.org>; Tue, 10 Mar 2026 10:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.180
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773140196; cv=pass; b=HGTQMeC6Z/FxdXu73IlG17F94GOaYjNeUfzPmSpKmeO36Z61wX+115nnMFwoYrvnCw6nBOtWgB8sF3GaEKSwv/W0R0oT0Oq6UXk4VLMcz1LkxRS4/rVyoG2RPgiEwwgDqPS+XSITDSmbhqwR1Zrlp5sMslhGZP20rqACXlgQvBQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773140196; c=relaxed/simple;
-	bh=nL8Tve9qxXBojU4CG3EUAlYMJTfM1E+ZMJp6NeH7Zns=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nzGjjgJttBBQMYUFotb8oqAIzUqRmn7FtaUCJ3bF8EEgLqswXqro7qzdf8X2arrzSQaT2x+6q+UTU7+AYryRoSLJncqtDYHMmP33FEra2Ot3IWPoBUaZN6XhUKjIR2rL6YhmGtn1Btf1QMrhBwCGDSR1JRtKACGED0+W8pNcf38=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MBbGtEBR; arc=pass smtp.client-ip=74.125.82.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFA8387343;
+	Tue, 10 Mar 2026 11:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773141850; cv=none; b=glNg8H3J0CGa1KYYywjEMpBnfB1XhNlPtHjK322Kedquf4M98kfp0NjiJYSc+N3hDcPVqlNvK7Jw47BfDEZhQ2//Ujfx7DS6NJHTFJobz0n6yjflOZrbjtpY8ctmZsJ54x1lyBnSF/PXT91Lc9vEZnCToMKKj0Fuw5nKDBGgrBA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773141850; c=relaxed/simple;
+	bh=U5+O6eb/a/OOX6fvPyffxWd4zi4YXOFBkLe1u2WC2+s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NxKVp9Eg9+OBacfF307yFDTK1LYyLVtUa5koT5pryQmmEyYuq7YZVSc8DutT05EHb75LiUd5jMmR0N/kkOaxsaAQAZ30PAmvMiiElYILt17qhI6XHD1l12XxtRv9JRTSUA6dKqwAMe2eqwRe3MqLYXg145EDiydHBvTK2igHqTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RH9zcyrJ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MBbGtEBR"
-Received: by mail-dy1-f180.google.com with SMTP id 5a478bee46e88-2be0f64a05bso497040eec.3
-        for <rcu@vger.kernel.org>; Tue, 10 Mar 2026 03:56:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1773140194; cv=none;
-        d=google.com; s=arc-20240605;
-        b=kjZ6tnCtRGWtCq3aq+LI5tlQgLquwLd/r8QoeNYOxjl6yixLz55SCM3Uo666Q/fmbU
-         cnYz/D885dseBylqnKe328TNrgxWNp+xutEYtxI8jt4sxdJ2KaZ6Nmv/qtMNAFZUeZnE
-         x8AoD/8z3hYt3GmqcCa1wGJW3e8caDqINp9waOo4yToy+rghUf2VbMhbqYbGRL7SemAR
-         vpEzX4AFfh1r9P/UnpBoo0bqS2j5wUQkp4dC6d1eZa+M5OGRYkRtoxWGKZSxRSJIiGnq
-         +yrL1TaAKbrJ+SU891ENov3FdO/usnrxAxB36JzkhaU1k/TISmQeuJnGZaLy/ya/nGR0
-         oEXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=4qBpWaqAk74juZmeca9VRmKlmVoYIHqDYNOH37dt7g0=;
-        fh=t0BmNaY+df0VprRNH5vZs+y53z8bWYk5oLt71YyCLS4=;
-        b=g+lbIHCFe/Cv5u1s9OpZetwe3VoRUL9Z2a2xUc6K/l7+1pRcqDmUwvxPLb5cw4Q9m1
-         qV232kFsBG7ZTjgz+9r9v09V5n/KyfH58EpRCh/hweYo3H+IriGHqUjTeR2DK8NgpPc+
-         ucYFs5wwKpWFp38XDczbEvmSZS2h7Kl/qCW6WuEitMbAgzRj5wojC03Guft8nIO/S25m
-         7eZRR99gFtFJ+sLjWddtu79DbgXc15+cChvNf55o3id2i+bdQdSR2Y0fK3ON71ISv2XR
-         j3gzO3DcqBlmxfCI0DpxCORt7Ajfg7iiAUzTPB9P7eqHJlxAZ2acb0JcDme70DXkXbxY
-         2a8w==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773140194; x=1773744994; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4qBpWaqAk74juZmeca9VRmKlmVoYIHqDYNOH37dt7g0=;
-        b=MBbGtEBRBoxPubDO7aR6dBNxnj1NeX5HfI/2iP8Lzp9seSiN+tybz+fCRUtGLW5x5H
-         Dk4DqYa2NIr6W29OV7/5WrHN0FEJ0+ScFhbkZQJ4OBIDWeIUWzj5869zWBkvAx1laXES
-         Udu4UtFP+aCcp5tqTGuMUR8kxmr0FTGzsSlplMqaY0hCenwPTPwkdVVfNjLo+2nmkSeb
-         ZLZA0ovPwmjNnfImTXGvS4gMKe4x5tYPKrZqYjvhXgCHtOZOaqyl0J7nwehmYLSwCQiN
-         4RvcjhTehRXfc9XMyLghddQw5UZF09s2CvUvSITa7ja7/9lOwh6jaZeNRFPG6ODik9Ho
-         PR+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773140194; x=1773744994;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=4qBpWaqAk74juZmeca9VRmKlmVoYIHqDYNOH37dt7g0=;
-        b=ts+yvitEPTdXA60ZO5vm1TiDdJwj/i7fmwJHMmHOs/S1j+Ivoz/cpA0RG4n7xmkf9p
-         pFYVLbq4axaEuLDPPiDmhhgvqtpZfUQLr4YjXRBG8YiPzB3ImYO83N1OJI2X8KZ2yfkL
-         7VwL+l5R1LMR8SzbRusEWbd+9hj1+gAc4ylWJWU1ogoD6StuhXZC+t4zZ1scLoZ1Skg7
-         G2bXA97bQMRvzQr1xbNKFKqnmgAWftF6BNQiwktCt0YhzLuugOE6f2ozAaIShSj7eINo
-         kNMWKg43vHL5NJaJ9Aevg5xSFFpgm1XhkoOZCjJ2upChGFLyBf/kfs1cz534ktrbQqMm
-         VLRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXHSe5PsXuzph3FX6d9sGvhkCfZCFvaBjwbFLPE78LSc2IdKGes/fxL0BcYssCrojHCAE0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxkfDN+DkqRbFkCVmD7SkEUxfL+ShV9v7Xuln+4n6sA8Owg6r/b
-	RDXqBtt+b7rf4q/H2NKe0x7YDuClcQanqs4LswOcRENTdDShqVbXFHjHz6lYmW/ACX27nyql/w0
-	lCmmznALlmYuyNBBkfZ9ZroeNP0xUeAw=
-X-Gm-Gg: ATEYQzwOAS/1ipilg5EenUyh2Iil+dtH2feYu+9tj+HB3W7JYPaqHRDKyDNnyKImWp6
-	UzeIRDaVNxIvvVoWZoVOTrp7dCGT0CF1nvuq0WHVPEG0RpPzgWtLqTjMjO363kgI+lbXSny/QzP
-	W9ygYxKLQPhbVy8KfWlv8a0i7cBTHfoDKrmYCNhBYunZ7xyO6X526dc8i76rwEYcY56SDMIyQvA
-	rnCH+0pODTCfLX5uTAmf6A43IbgMDoQBEVqHM72hxPz5LI5TupTQ1n55AIm5wWdaD4U4bEB32M6
-	i4xHUF3TfKtv4n0bVbndx+TpRdY38+Xubm2rzDAx/QBjtSH5ucn6Su713WZyp5IdO65nTdTImXB
-	eJlmi9ZqYWlsDDvuRUM3MI/k=
-X-Received: by 2002:a05:7300:ef97:b0:2bd:bc33:ca32 with SMTP id
- 5a478bee46e88-2be4e09ebfdmr2731651eec.4.1773140194353; Tue, 10 Mar 2026
- 03:56:34 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RH9zcyrJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58195C2BC86;
+	Tue, 10 Mar 2026 11:24:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773141850;
+	bh=U5+O6eb/a/OOX6fvPyffxWd4zi4YXOFBkLe1u2WC2+s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RH9zcyrJ2JDGdkmy8/GQ01j+DnKslHM6yRx4sWhVUA+pBVRBAsRoYi/Fdcv0ERfav
+	 X+9ZTPpR+H9251Em/rFrTQc+BFA7aATqGW+py5/PXNqoElZ+3ZdcIfA16LVRMn0b+p
+	 0gkO1EoEXz93nNtfXB6rPv8h6z7g8wwxJ5s3EdV8P75rlQN2NtMDtR8UXk1/wzc9ZU
+	 X1bXh5P6LEVAqpLv/80iBLKM38+UzoZsOO2PH4+tmExCrG7vZt1/SSM8dSrS711uZ4
+	 BkWiUvXVXUcdqxdHEP6evhRUvF7kLQllBbuKoLQaQFNJ6z6ne1B+R7k28gnnLtLOHO
+	 uVgU5Zaf5gzGQ==
+Message-ID: <4cad1b9a-e157-427b-9896-cf54cf6fba36@kernel.org>
+Date: Tue, 10 Mar 2026 12:24:02 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260105-define-rust-helper-v2-0-51da5f454a67@google.com>
-In-Reply-To: <20260105-define-rust-helper-v2-0-51da5f454a67@google.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 10 Mar 2026 11:56:22 +0100
-X-Gm-Features: AaiRm523FMnYeZ1Cbp2n7uyCKjNSK8gDXCio5_BkegPeyUfSKYibfT47XJIo0_0
-Message-ID: <CANiq72mT2-8m71NtnodVXVBRkhUSiK3Byq5OkBntEQpW9hbU6w@mail.gmail.com>
-Subject: Re: [PATCH v2 00/27] Allow inlining C helpers into Rust when using LTO
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	Peter Zijlstra <peterz@infradead.org>, Elle Rhumsaa <elle@weathered-steel.dev>, 
-	Andreas Hindborg <a.hindborg@kernel.org>, linux-block@vger.kernel.org, 
-	FUJITA Tomonori <fujita.tomonori@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org, 
-	Benno Lossin <lossin@kernel.org>, Danilo Krummrich <dakr@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Paul Moore <paul@paul-moore.com>, 
-	Serge Hallyn <sergeh@kernel.org>, linux-security-module@vger.kernel.org, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Jason Baron <jbaron@akamai.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>, 
-	Andrew Ballance <andrewjballance@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, maple-tree@lists.infradead.org, 
-	linux-mm@kvack.org, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	Uladzislau Rezki <urezki@gmail.com>, Vitaly Wool <vitaly.wool@konsulko.se>, 
-	Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, 
-	Daniel Almeida <daniel.almeida@collabora.com>, Michal Wilczynski <m.wilczynski@samsung.com>, 
-	linux-pwm@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org, 
-	Will Deacon <will@kernel.org>, Fiona Behrens <me@kloenk.dev>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Waiman Long <longman@redhat.com>, Mitchell Levy <levymitchell0@gmail.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Lyude Paul <lyude@redhat.com>, 
-	Anna-Maria Behnsen <anna-maria@linutronix.de>, John Stultz <jstultz@google.com>, linux-usb@vger.kernel.org, 
-	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Matthew Wilcox <willy@infradead.org>, Tamir Duberstein <tamird@gmail.com>, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: Stalls when starting a VSOCK listening socket: soft lockups, RCU
+ stalls, timeout
+Content-Language: fr
+To: Thomas Gleixner <tglx@kernel.org>, Jiri Slaby <jirislaby@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+ Stefan Hajnoczi <stefanha@redhat.com>,
+ Stefano Garzarella <sgarzare@redhat.com>, kvm@vger.kernel.org,
+ virtualization@lists.linux.dev, Netdev <netdev@vger.kernel.org>,
+ rcu@vger.kernel.org, MPTCP Linux <mptcp@lists.linux.dev>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>, luto@kernel.org,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <MKoutny@suse.com>,
+ Waiman Long <longman@redhat.com>, Marco Elver <elver@google.com>
+References: <863a5291-a636-47d0-891c-bb0524d2e134@kernel.org>
+ <717310d8-6274-4b7f-8a19-561c45f5f565@kernel.org>
+ <a2b573b4-af61-4b84-a7d1-012ed6bb23c9@kernel.org>
+ <ba067933-bf3b-476d-a0bb-53eda56996ca@kernel.org> <87zf4m2qvo.ffs@tglx>
+ <47cba228-bba7-4e58-a69d-ea41f8de6602@kernel.org> <87tsuu2i59.ffs@tglx>
+ <7efde2b5-3b72-4858-9db0-22493d446301@kernel.org> <87qzpx2sck.ffs@tglx>
+ <20260306152458.GT606826@noisy.programming.kicks-ass.net>
+ <87ldg42eu7.ffs@tglx> <87h5qr2rzi.ffs@tglx> <87eclu3coa.ffs@tglx>
+ <87v7f61cnl.ffs@tglx> <57c1e171-9520-4288-9e2d-10a72a499968@kernel.org>
+ <87pl5ds88r.ffs@tglx> <0ae4d678-5676-4523-bae3-5ad73b526e27@kernel.org>
+ <87eclsrtqg.ffs@tglx> <e846cb5f-65c4-4a9b-9f9b-593e4af526d8@kernel.org>
+ <76e2b909-98db-49de-a8eb-f6f0a192f630@kernel.org> <878qc0rofr.ffs@tglx>
+ <874imorobw.ffs@tglx>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <874imorobw.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 5, 2026 at 1:42=E2=80=AFPM Alice Ryhl <aliceryhl@google.com> wr=
-ote:
->
->       rust: clk: add __rust_helper to helpers
->       rust: jump_label: add __rust_helper to helpers
+Hi Thomas,
 
-Applied these to `rust-next` -- thanks everyone!
+On 10/03/2026 11:06, Thomas Gleixner wrote:
+> On Tue, Mar 10 2026 at 11:03, Thomas Gleixner wrote:
+>> On Tue, Mar 10 2026 at 10:00, Jiri Slaby wrote:
+>> Yes. There is an issue. Peter and me just discovered that as well, but
+>> in the case at hand it can't be the problem. The missing task is on the
+>> CPU which means it must be visible in the thread list and task list.
+> 
+> The updated debug patch fixes this fork problem and adds more tracing to
+> it.
 
-With these, the series is complete.
+Thank you for this new patch, and for continuing to look at this!
+
+> Mathieu, can you give it another spin please?
+
+Just did. Output is available there:
+
+  https://github.com/user-attachments/files/25867817/issue-617-debug-20260310.txt.gz
+
+Only 7.7k lines this time.
 
 Cheers,
-Miguel
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
