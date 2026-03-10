@@ -1,145 +1,236 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B69B3B775C;
-	Tue, 10 Mar 2026 15:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 559853C4540
+	for <rcu@vger.kernel.org>; Tue, 10 Mar 2026 16:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773157906; cv=none; b=dGupVZOZV/QRZxbcy5/6AkIJVhh3x1emQUfo0MvDqg3sHHhvbFgQ0odTBJ4Sy/xGFcgqRd/9JY2CsewPtqfNLZ0dJqNq3F9KGDZE1wgR7jk8yBY0q6OEBnIzXv9t0pQH5TQwqwOuUsph+7D0wnozJAG6Lx+6O0hWn6MLw2iv3rM=
+	t=1773160107; cv=none; b=YN7lEsOSJdooWD95U21E05mQLps6JLMZ1Tg2VdVgxoDonm4rpUm0tc2Fqt4bUFfqNS9eXnKSmvHQJvOF1B0vOQr5l3VBYxGUqGSiRHhijsdHsGcJ8HzN+PI+AfpdVrFwl4ybGpct9+9lbl3CqvTFFu7/l2MupC5GObsFc/oJDgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773157906; c=relaxed/simple;
-	bh=hrMCPiD1kSuFSsYwv40IBpKagD47pviVhBH4RjPYoYo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=foOv6E78n4tv5Ek53WcRN/C79Cst6ab45yd/VHtfYcEYZ3DNtZ0A+IzEeD6ZfA04oyFCkXm9sYCNlB9sHFpZLL0D1h/mAOOne5sgUcKeoN6ouwX9n8cxsFuMkIWbfmb05f/NmpIoFtWFsBd5hPvLB7FzjWdGFCLj8wBnBoqMxTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XHama83q; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1773160107; c=relaxed/simple;
+	bh=FL0Y++PniJCdiK4Zsc0SzSepgLO+RuZnWfvxdkNFQZM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i84UcaQ8cXTJWh4esKFgCt1myXl5QvtbzJnU+5kjIIGiptcmM4rlQeLQEqToP0ea/074XYU9fL9aRm6FDGWN6kwKJ4R80t2dPMlBIrIyKalWVwktQOWH9bBxiq9ghhU0wJZpfjTU2dZv9v1H+6154Dazp0RQyttyooaF4ZdHxXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T8C+MO8W; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XHama83q"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47990C19423;
-	Tue, 10 Mar 2026 15:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773157905;
-	bh=hrMCPiD1kSuFSsYwv40IBpKagD47pviVhBH4RjPYoYo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=XHama83qMsDpQzGN0ZbqxayU2oExcsKwBAM3hr9sLfso+2dxx0XcYdqezwNt2gQxJ
-	 8a8rgTTnjX1ddbgxmNqi/QKwwCIyQ0NLtbqPr6Ut89IodjyBvvBINR9U543EAIt2oC
-	 zSlyTSshyhTbMO+UFReA9wP+FwAMkKBQdEtKeu0dQtRvzXmFXxoP87VYtx6/taK7V1
-	 fRqFQg0IhKfzVFxUuOzPNyGZ7Bt2QKFszfOaw0VzLJQB8tAsuLXlejsgmtck5k9MgC
-	 3+mjn9WWhUFXg8FKtzI8RujpB7U1ofUuoIVNZZ27P3D2i0zDvQk1OMQgdjuT+ZLGaW
-	 8ZwbIXKLHUUjQ==
-Message-ID: <19d9b245-3307-4d6a-8e42-895fbd167887@kernel.org>
-Date: Tue, 10 Mar 2026 16:51:38 +0100
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T8C+MO8W"
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5a1322af04fso6295921e87.2
+        for <rcu@vger.kernel.org>; Tue, 10 Mar 2026 09:28:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1773160104; x=1773764904; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EGb5UTMxHHTw3aW+XSO8JqH10dAgX3Vgne2skjLFpxo=;
+        b=T8C+MO8WYRQcY+FBr3AZ7mpF2tOQHQm94k5dm3tYQuMpAJjRodQ4UI5chnEAOFmSiG
+         fqrrwIPpYgRIKUpx7mxb7bxNbZw64vvzLTMhgz9LOcWCfNsr3YtHW4Q+AA6NNMezQ8al
+         WWBOwiHtJ0jZit7ylrjdymu3wGxaLXAX6gG6iBI6QZ0hRbU7lsdFv2ACcESpB3G3UT/9
+         zBivxqBdj3vL82GL3q9HaWVnZtmNZ6d/b7qcyJxy3etRGkDK6dJsblGeR6qa8REfyNbh
+         beYngATFSKVu8YgEUp4DQncyP7be5Qvr88pjMseAImAsaTccYue4UqAYt4tiGIMfMh7+
+         JSgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1773160104; x=1773764904;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EGb5UTMxHHTw3aW+XSO8JqH10dAgX3Vgne2skjLFpxo=;
+        b=R4ES74HuKwJqQVy1SuGj75as23hFa36c06ksoGuIpTLHzh/1j1wtqmHGdcIkn/DHS7
+         Vmg5Pyfrypd3vMJJyr7I8wdoudhIoi2Oc3Ms0L8iCFX0+87W+sHUMDBas4iaZYBUXraD
+         Hw44zpUL69or220nfnKCDcoF88TLMOK1r7yEis8K1OS54n2ktxwa3EhWejs6aZmlr+0y
+         TS35vrW5hJsPFWuCBR9KbNyOqWJXP54U0DRhJrlaTnSGhR26wmdirhDqr1MU1anrrJn2
+         9nyG8s5Ww2opfYR8etS86J14GLWHtdKzJ+nvG/fNUQsdUY629zhmPBS2MxjnVWPDQglf
+         gAxw==
+X-Forwarded-Encrypted: i=1; AJvYcCUXKZuTZ8+T/uARoVOcmkpkuBTcY6ELulUg8mpITX2AvUq/Q7wLJatmDWtAVeYyBwjC03g=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyte3fLkWjxFP+sQgU51fPz/vco2X9FzyswDYfrW/MX0aMw0NBt
+	Fh8JiW1EBs71B21QW50rnv1QC/pbKtpf5+3nEFGUxD97QUf3HtNmSr7p
+X-Gm-Gg: ATEYQzwo4UTEl3qJ9ooW2+nObLtc6b8duGj5uA70irryY+/8sdyXixmn3HKXeLx+QmB
+	XUMf8XqgzXVpDpMmH+FgqEA6J3ReomtcTBMQ6c4It+UCUDnGAeg9XcRK2aDXUCgKGXZiX748kI6
+	esn2TyhgVGhXxucEzM52nLDV6xaROOOmNBlaqn2TMwZ+BmjioNVAzP+VFTmBL7vPwIN+xAcg08j
+	o+kKATq61+VHPssyMIK5egj6AQ29ndjbxoBusRaiECV8mgEjnriQ69IJuvrkDWXFCD8apZTt6Q1
+	cDqNzKGp1opf+N2zWI/qj9AiFbPT0ZvRrl36drVqnBauVaet+lV8gd6qSXxuT8yFwOsNUmFVx0Z
+	KNyOaKEbSleW3i7MPOgmg85QkkUVdLq+kzyjPnaLM+K0lHShMzPhyWLiVVsK+TZmAEux82nfuLR
+	k=
+X-Received: by 2002:a05:6512:a85:b0:5a1:3b80:8c28 with SMTP id 2adb3069b0e04-5a13cabaea4mr4476235e87.10.1773160104220;
+        Tue, 10 Mar 2026 09:28:24 -0700 (PDT)
+Received: from milan ([2001:9b1:d5a0:a500::24b])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-38a5d04627dsm6229531fa.25.2026.03.10.09.28.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Mar 2026 09:28:23 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@milan>
+Date: Tue, 10 Mar 2026 17:28:22 +0100
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	"Paul E.McKenney" <paulmck@kernel.org>,
+	Vishal Chourasia <vishalc@linux.ibm.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	Samir M <samir@linux.ibm.com>
+Subject: Re: [PATCH v2] rcu: Latch normal synchronize_rcu() path on flood
+Message-ID: <abBGpuDHlAlPmH4g@milan>
+References: <20260302100404.2624503-1-urezki@gmail.com>
+ <14e954e4-cfa6-4069-a25f-ccb444d17535@nvidia.com>
+ <aaliA7sc4Nnu_i_C@milan>
+ <abAmiX85PFNq2Ua-@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: Stalls when starting a VSOCK listening socket: soft lockups, RCU
- stalls, timeout
-Content-Language: fr
-To: Thomas Gleixner <tglx@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>, Stefan Hajnoczi <stefanha@redhat.com>,
- Stefano Garzarella <sgarzare@redhat.com>, kvm@vger.kernel.org,
- virtualization@lists.linux.dev, Netdev <netdev@vger.kernel.org>,
- rcu@vger.kernel.org, MPTCP Linux <mptcp@lists.linux.dev>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Dave Hansen <dave.hansen@linux.intel.com>, luto@kernel.org,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <MKoutny@suse.com>,
- Waiman Long <longman@redhat.com>, Marco Elver <elver@google.com>
-References: <87v7f61cnl.ffs@tglx>
- <57c1e171-9520-4288-9e2d-10a72a499968@kernel.org> <87pl5ds88r.ffs@tglx>
- <0ae4d678-5676-4523-bae3-5ad73b526e27@kernel.org> <87eclsrtqg.ffs@tglx>
- <e846cb5f-65c4-4a9b-9f9b-593e4af526d8@kernel.org>
- <76e2b909-98db-49de-a8eb-f6f0a192f630@kernel.org> <878qc0rofr.ffs@tglx>
- <874imorobw.ffs@tglx> <4cad1b9a-e157-427b-9896-cf54cf6fba36@kernel.org>
- <20260310115433.GV1282955@noisy.programming.kicks-ass.net>
- <87y0jzrhqn.ffs@tglx> <a5cabf68-df88-4a5e-8075-bb10debc44f7@kernel.org>
- <87v7f3re2w.ffs@tglx>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <87v7f3re2w.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <abAmiX85PFNq2Ua-@localhost.localdomain>
 
-On 10/03/2026 14:47, Thomas Gleixner wrote:
-> On Tue, Mar 10 2026 at 14:40, Matthieu Baerts wrote:
->> On 10/03/2026 13:28, Thomas Gleixner wrote:
->>
->> (...)
->>
->>> I've updated the debug patch and removed the @users conditionals so it
->>> keeps searching. So it should find that magic 73.
->>
->> It looks like it does, thank you! I just tried this new debug patch, and
->> I managed to boot 100 times without issues, while before I was getting
->> it after max 20 attempts. I left the test running to boot up to 1000
->> times, just in case.
+Hello, Frederic!
+
+> Le Thu, Mar 05, 2026 at 11:59:15AM +0100, Uladzislau Rezki a écrit :
+> > On Tue, Mar 03, 2026 at 03:45:58PM -0500, Joel Fernandes wrote:
+> > > On Mon, 02 Mar 2026 11:04:04 +0100, Uladzislau Rezki (Sony) wrote:
+> > > 
+> > > >  * The latch is cleared only when the pending requests are fully
+> > > >    drained(nr == 0);
+> > > 
+> > > > +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+> > > > +{
+> > > > +	long nr;
+> > > > +
+> > > > +	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
+> > > > +	nr = atomic_long_inc_return(&rcu_sr_normal_count);
+> > > > +
+> > > > +	/* Latch: only when flooded and if unlatched. */
+> > > > +	if (nr >= RCU_SR_NORMAL_LATCH_THR)
+> > > > +		(void)atomic_cmpxchg(&rcu_sr_normal_latched, 0, 1);
+> > > > +}
+> > > 
+> > > I think there is a stuck-latch race here. Once llist_add() places the
+> > > entry in srs_next, the GP kthread can pick it up and fire
+> > > rcu_sr_normal_complete() before the latching cmpxchg runs. If the last
+> > > in-flight completion drains count to zero in that window, the unlatch
+> > > cmpxchg(latched, 1, 0) fails (latched is still 0 at that moment), and
+> > > then the latching cmpxchg(latched, 0, 1) fires anyway — with count=0:
+> > > 
+> > >   CPU 0 (add_req, count just hit 64)       GP kthread
+> > >   ----------------------------------       ----------
+> > >   llist_add()    <-- entry now in srs_next
+> > >   inc_return()   --> nr = 64
+> > >   [preempted]
+> > >                                             rcu_sr_normal_complete() x64:
+> > >                                               dec_return -> count: 64..1..0
+> > >                                               count==0:
+> > >                                               cmpxchg(latched, 1, 0)
+> > >                                                 --> FAILS (latched still 0)
+> > >   [resumes]
+> > >   cmpxchg(latched, 0, 1) --> latched = 1
+> > > 
+> > >   Final state: count=0, latched=1  -->  STUCK LATCH
+> > > 
+> > > All subsequent synchronize_rcu() callers see latched==1 and take the
+> > > fallback path (not counted). With no new SR-normal callers,
+> > > rcu_sr_normal_complete() is never reached again, so the unlatch
+> > > cmpxchg(latched, 1, 0) never fires. The latch is permanently stuck.
+> > > 
+> > > This requires preemption for a full GP duration between llist_add() and
+> > > the cmpxchg, which is probably more likely on PREEMPT_RT or heavily loaded
+> > > systems.
+> > > 
+> > > The fix: move the cmpxchg *before* llist_add(), so the entry is not
+> > > visible to the GP kthread until after the latch is already set.
+> > > 
+> > > That should fix it, thoughts?
+> > > 
+> > Yes and thank you!
+> > 
+> > We can improve it even more by removing atomic_cmpxchg() in
+> > the rcu_sr_normal_add_req() function, because only one context
+> > sees the (nr == RCU_SR_NORMAL_LATCH_THR) condition:
+> > 
+> > <snip>
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 86dc88a70fd0..72b340940e11 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1640,7 +1640,7 @@ static struct workqueue_struct *sync_wq;
+> >  
+> >  /* Number of in-flight synchronize_rcu() calls queued on srs_next. */
+> >  static atomic_long_t rcu_sr_normal_count;
+> > -static atomic_t rcu_sr_normal_latched;
+> > +static int rcu_sr_normal_latched; /* 0/1 */
+> >  
+> >  static void rcu_sr_normal_complete(struct llist_node *node)
+> >  {
+> > @@ -1662,7 +1662,7 @@ static void rcu_sr_normal_complete(struct llist_node *node)
+> >  	 * drained and if it has been latched.
+> >  	 */
+> >  	if (nr == 0)
+> > -		(void)atomic_cmpxchg(&rcu_sr_normal_latched, 1, 0);
+> > +		(void)cmpxchg(&rcu_sr_normal_latched, 1, 0);
+> >  }
+> >  
+> >  static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> > @@ -1808,14 +1808,22 @@ static bool rcu_sr_normal_gp_init(void)
+> >  
+> >  static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+> >  {
+> > -	long nr;
+> > +	/*
+> > +	 * Increment before publish to avoid a complete
+> > +	 * vs enqueue race on latch.
+> > +	 */
+> > +	long nr = atomic_long_inc_return(&rcu_sr_normal_count);
+> >  
+> > -	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
+> > -	nr = atomic_long_inc_return(&rcu_sr_normal_count);
+> > +	/*
+> > +	 * Latch on threshold crossing. (nr == RCU_SR_NORMAL_LATCH_THR)
+> > +	 * can be true only for one context, avoiding contention on the
+> > +	 * write path.
+> > +	 */
+> > +	if (nr == RCU_SR_NORMAL_LATCH_THR)
+> > +		WRITE_ONCE(rcu_sr_normal_latched, 1);
 > 
-> Now that I actually understood the problem, I was able to write a
-> reproducer which triggers the issue 100% reliable.
+> Isn't it still racy?
 > 
-> The debug patch does cure it and it does the right thing. I have a
-> better version of that in testing right now which avoid all that flaky
-> accounting and especially in the vfork() case the full tasklist walk.
-> I'll send out a complete patch series with changelogs etc. later.
+> rcu_sr_normal_add_req                                   rcu_sr_normal_complete
+> ---------------------                                   ----------------------
+>                                                         nr = atomic_long_dec_return(&rcu_sr_normal_count);
+>                                                         // nr == 0
+>                                                         ======= PREEMPTION =======
+> // 64 tasks doing synchronize_rcu()
+> rcu_sr_normal_add_req()
+>    WRITE_ONCE(rcu_sr_normal_latched, 1);
+>                                                         cmpxchg(&rcu_sr_normal_latched, 1, 0);
+> 
+> 
+> Also more generally there is nothing that orders the WRITE_ONCE() with the
+> cmpxchg.
+>
+Yep that i know. This is rather "relaxed" mechanism rather than
+a strictly ordered. The race you described can happen but i do not
+find it as a problem because as noted it is relaxed policy flag.
 
-Great, thank you!
+But WRITE_ONCE() i can replace by:
 
-Note that my 1000 boot iteration finished without errors.
+if (nr == RCU_SR_NORMAL_LATCH_THR)
+    cmpxchg(&rcu_sr_normal_latched, 0, 1);
 
-> Thanks a lot for your patience and invaluable help. Very appreciated!
+>
+> Is it possible to remove rcu_sr_normal_latched and simply deal with comparisons
+> between rcu_sr_normal_count and RCU_SR_NORMAL_LATCH_THR?
+> 
+It is. But the idea with latch is a bit different then just checking
+threshold. The main goal is to detect flood and lath the path until
+__all__ users are flushed. I.e. it implements hysteresis to prevent
+repeated switches around the threshold.
 
-My pleasure! Thank you for your support, and for maintaining so many
-important pieces in the Linux kernel!
+With your proposal behaviour becomes different.
 
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
+Thoughts?
 
+--
+Uladzislau Rezki
