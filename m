@@ -1,297 +1,351 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012048.outbound.protection.outlook.com [40.107.209.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDAC2FB97B
-	for <rcu@vger.kernel.org>; Tue, 17 Mar 2026 16:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773764357; cv=none; b=GXaOwXLWeTq4N7r5Kmgm5D0zIiet9yU21Ibb6wwWUmkxiP7/Q5Yn04a7KBpV+Dilx07EOfHOhbbyd+tu0y2yJIxpeIPoYYjW51CzwXm0mNQj1f/gtf+YendUN0SoLa9rJGgz/cjju4esassgz/dGM469YjBZekg2P+mn7MBwONw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773764357; c=relaxed/simple;
-	bh=zt/myOAXjTb3IKLCZWRJQ0u436gYOOcokHSuuMAdx1Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F848T5GaUquodzatSmrN5ug6uXB/WGFoB8ek2K/I0dgwEFEBxGG8A4fHe6Me0twvCEodi5MuWgGxJAvDYuyv/UwAyn/stMiveLNxdeDTlRq9xeFoTO9FbNasJapCrW1b8y+9rmD9yi+f8pSD+Ygig2eyibkraAxQjv9M8O1dPDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=onANVyMs; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=nlxj7QJh; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=onANVyMs; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=nlxj7QJh; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3F9737CD51;
+	Tue, 17 Mar 2026 21:22:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773782575; cv=fail; b=UEw0U3rhi5kyGI17h7FwKZ7S60mTBPUqlKY6jlVF2gGqnpG7S0Sxv8RffOyFvdoKDmj751zt7SGwOJoQ2UpvQ9t21QK9UzTqccTJCmRDhs+li+F2fZ0foigmp2HybT1WvqU/W0lYY/NZlcWi5DUdRE1B2I+g8k4o25y8wmFvnQg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773782575; c=relaxed/simple;
+	bh=do8umQSGBUsARx7Xy4oiBoBsBIm0YUdDaV9LvxSbJJA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=E8Tt0pFfZWAbo4yzN1xMWti+fi4kCpCM+oOukhAUQ/+yny0HaeM5cA/pP/AR/rOdintCDguXzOUAY9n8atbyxUhPId5R3V6eZYWZOGsXBsPmmQiAxdSttOT9OtbDHJ8gggR2N24y+Ry3gpkdNWl0wtjz9jaWpCXkUD9EwGJvxRw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nF5VwnbI; arc=fail smtp.client-ip=40.107.209.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="onANVyMs";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="nlxj7QJh";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="onANVyMs";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="nlxj7QJh"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6CB7E4D300;
-	Tue, 17 Mar 2026 16:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1773764353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vRuj8oliuRB8vfh4ORqIsVuipaAv9fM7y492n9A5HMI=;
-	b=onANVyMsJfK7ABC1vv+qswwa87L39qBQ4jINzeVewhK1AxkNO/aRCI0CPap79lhYmdLKSa
-	fBkVn6baSYdEsoEOnc7lpQdzmJvqcZGY0CWer1mbj7P/l64FvIaNGGGWY7kOzAZ444NUhK
-	22BYKQH0txhm6fSYB5w5cnbI31YuNaw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1773764353;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vRuj8oliuRB8vfh4ORqIsVuipaAv9fM7y492n9A5HMI=;
-	b=nlxj7QJh47csd9CoxFDXIr77mCwdKUKjxJu3FlJGc8Egx7/Y9EgsYBwk1XVPUJUSw2Vomz
-	msNdQCjpVK2rTuCw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1773764353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vRuj8oliuRB8vfh4ORqIsVuipaAv9fM7y492n9A5HMI=;
-	b=onANVyMsJfK7ABC1vv+qswwa87L39qBQ4jINzeVewhK1AxkNO/aRCI0CPap79lhYmdLKSa
-	fBkVn6baSYdEsoEOnc7lpQdzmJvqcZGY0CWer1mbj7P/l64FvIaNGGGWY7kOzAZ444NUhK
-	22BYKQH0txhm6fSYB5w5cnbI31YuNaw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1773764353;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vRuj8oliuRB8vfh4ORqIsVuipaAv9fM7y492n9A5HMI=;
-	b=nlxj7QJh47csd9CoxFDXIr77mCwdKUKjxJu3FlJGc8Egx7/Y9EgsYBwk1XVPUJUSw2Vomz
-	msNdQCjpVK2rTuCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD75C4273B;
-	Tue, 17 Mar 2026 16:19:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8njFLgB/uWkddQAAD6G6ig
-	(envelope-from <pfalcato@suse.de>); Tue, 17 Mar 2026 16:19:12 +0000
-Date: Tue, 17 Mar 2026 16:19:11 +0000
-From: Pedro Falcato <pfalcato@suse.de>
-To: Benjamin Eikel <debian@eikel.org>
-Cc: linux-mm@kvack.org, rcu@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Lorenzo Stoakes <ljs@kernel.org>, Vlastimil Babka <vbabka@kernel.org>, 
-	David Hildenbrand <david@kernel.org>
-Subject: Re: [BUG] RCU stall in unmap_page_range during exit_mmap (6.19
- regression)
-Message-ID: <6ccygsneky6la4unzj2qd6m6o3ty3ek6xwidznzgrpdvc7tfel@qeoj7rramrmu>
-References: <6261958.lOV4Wx5bFT@thinkpad-benjamin>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nF5VwnbI"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=CV+PXLybyi3oLS8svIMMXLl1bCvbsvZnpsIRdZ1dOAOckw8yaD9CXaWe30NwDiI7sfdQeVmaxawaiWaAo0e/bt8RDOhOF0GwSTSU3E5khHiM/e4MNqaDGhnqmzIrb7HTEtyHhYLc0LFkNaHXDxHItJqrNTMAOcymMlwPJZLAbCAMDTUSWbLKlHE6BVDHhAAmA7Vba8EM/gpEq1DO25OAZ1L3aRfJgLkD9f1JxfYuKLP5+U1E9Ja3NPI2IhaS1nCay4WD6VihitMrxyvmigrDPQ2EftVG2LXwiI8btOytV/xAQpnCZwR5z4JU2m5RBmPvf6vrZJe2FYgFBPEV9xWHyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=65LZUkoGjWzviq/iskE5aDMsOQdPMFKqZvDLIvURUe4=;
+ b=pzzRyRuPKmYDY6cvGhoFH7imifI237gFhikHMi7v59SGNbot/XSjzTjJGEJSS0K3fxFkqh3RhKVa/eMz7/tGXrnMULsqM80QIn4G5YOcROweTGUNFVfWqv6lx49koM4dih5LY1B1RW7dBjIXy+kqqaFqhGytLXqxlXTqHEZ2Nyr03zySf7+1l5oVLE7FPuLIJUKSTxqIw0pHwhQleUBOkEfimSYn+05ugM1KZpu3UMrwqug4EPUtZN8RbJTv6hoqM6V5YMrqZNdn7Okv9ER5IrUhRO8Y+yP2jeV8qL2pHN3slXTnCUKef8sRm7foH08ZD2km8bQ1J74UcvNRSphPvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=65LZUkoGjWzviq/iskE5aDMsOQdPMFKqZvDLIvURUe4=;
+ b=nF5VwnbIx7Vkgy6oKkt5CcONiEvsxfKKrimkpoVSpeUOvOksUq75i+9fndk/RIKlvF2P39mOPhLH+QC6FeBEQr9U9lnySWoToKm2n01VUeF/IPAXYYQEC/CDpFFJ8VWylbL+htKDNp1FckIZ1aStewwRFNT9Ihz9vOMG21aE/uf4kj0A1Hs8693f1Mi7KTs6EmbhpcUUJOh96EF6934WoXidiBl+SBZWvMSgicfXOSFTft0+mKBvgGUjcakEcuOXnleFhD3y8f8t/8DC+QDxijKdarpglVm0rAzJJIgujLC9OjxBoQiiq6KhWy8f5oC3Lc+tsW+q0JbGrW3tQdFfNQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
+ BN7PPF5D27497F1.namprd12.prod.outlook.com (2603:10b6:40f:fc02::6d1) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9723.19; Tue, 17 Mar
+ 2026 21:22:50 +0000
+Received: from DS0PR12MB6486.namprd12.prod.outlook.com
+ ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
+ ([fe80::88a9:f314:c95f:8b33%4]) with mapi id 15.20.9723.014; Tue, 17 Mar 2026
+ 21:22:50 +0000
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: linux-kernel@vger.kernel.org,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Shuah Khan <shuah@kernel.org>
+Cc: rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH -next v1 01/16] rcutorture: Add a textbook-style trivial preemptible RCU
+Date: Tue, 17 Mar 2026 17:22:02 -0400
+Message-Id: <20260317212217.1527644-2-joelagnelf@nvidia.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260317212217.1527644-1-joelagnelf@nvidia.com>
+References: <20260317212217.1527644-1-joelagnelf@nvidia.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: CY8PR11CA0042.namprd11.prod.outlook.com
+ (2603:10b6:930:4a::16) To DS0PR12MB6486.namprd12.prod.outlook.com
+ (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6261958.lOV4Wx5bFT@thinkpad-benjamin>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|BN7PPF5D27497F1:EE_
+X-MS-Office365-Filtering-Correlation-Id: 45604b3a-1428-4fb7-4337-08de846b57dc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|376014|1800799024|7416014|56012099003|22082099003|18002099003|921020;
+X-Microsoft-Antispam-Message-Info:
+	vYLU7e83NZOXb2ssx1D+ZC5CI+XFvfZvgXvf4b68sQlGLQI/iCes4aKFgTcPEllbN7MCD46hd5X0qfTuIfOp4mD1RD5TXBffkyLrv3ZBWGHgymvelumNNd9m+h9g+nkbcuZwHi5A015wWJG//sJK4EQoHbOX03Y1FDIIbIWmf5malYXXEUcZq+v81xovD2tUjhDLPT/naW6RlUldFYJj72nmMaGKqdgD3zB083+Zv/O30aQ9TDaL5msagFNDwyF0DUd6MZ9iAWPhBLJNLU7tXvcrSjCOP/BW9vRGcwEktyGNkf9JBHc+N8/dIkJJXX+huNFBA8jAywNiKkbJWNMM8kMEtW/0b+2TzsxFllM/UbnMebgg2O2S/8+6Tzu97MsVmod+tKBXcHIBdRtydDU6OXkCYFxjXqkgdKf2dqUmKZ0nHGAZuJZ+kpcMbLVD2q4CUfL6PtBuapW9NcuUIYpzQsYfIBMs/rpYfyL+KG9ZEpxUeGQB4Ogo4KMqEG++5pqSb+wVVPxUybZzpSuLxv4SheU+fFKnIfviMrPCHKPd6gkZw1lgaq/bWaJpFxGIpiGIP33KQb0NR/DcRToYaCmUtoEOCq60868euw1V2FsmpNl3GbdEiT36QJ8pa8vM57zPMeDOhMxklMM64iHsAFoaz5vFr85V2hHeFZgzGMFT3tkbLLitWPzZjJynfjlHdvQ+XE+V1RxbIndAfSFIJrpnfFwrNIQdUU36Xx1xlJ/tCdU5UyYQzE/PhL8uyWpAaCMni1J3CEwYXFmB7fdR9DUkdw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7416014)(56012099003)(22082099003)(18002099003)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?6OPP8t+Ymc7KhMrt27N7WPHneKmdypeIXCibHdXdqI0lABdmfbKt/Ej/ZTyU?=
+ =?us-ascii?Q?mcKW3j2ySEPBLuD7iBk8VKJpA2UREBxY6zCh3WtEVv/t+GozyFVmheA5MwmI?=
+ =?us-ascii?Q?J9ed3kUTxqEFPHJahs2Il2dQllBAYp9dipEOod1wBAs+yRxgreNQRKoMn6At?=
+ =?us-ascii?Q?V41dRmxUkiLYNleedc2PTVrUxTzNJE79ZEEOwV56Mu5JBFBe/pkKex2gb8Ud?=
+ =?us-ascii?Q?yubVnKartnBQnLFcAlgJYXVOu/3iH4vyH1EKl+B0raEuTkgO4wsw21PLZiZs?=
+ =?us-ascii?Q?xV3m6pDk66p6JLPGIJFd3/QfRUN7tkpzUqKig1k1c8S95/f7pQlv3j2uZgrL?=
+ =?us-ascii?Q?5s00s7lU/hIvbXQ2+7wPEFzpbUvKdsY0130Mzndq592nJpFa40VZTYthGrNw?=
+ =?us-ascii?Q?d8J/OMEozSPi2SFMN3YtA7PG7Y9KmFKTGYGQDsxCdkEPq29icmEa0f1zRFu6?=
+ =?us-ascii?Q?3GovH/LKIpCimI6U7/2mlneaIlKsDlKy8pBRg/24nLCOXv8XFVvbfi5QXhlL?=
+ =?us-ascii?Q?iKTcFNFzx5lFeVQtlbRGfnmPSWuhNvQapOfn86YmdVwMWfSPxYJU4QPbiB9U?=
+ =?us-ascii?Q?7MIWm3KdN3+bTMuRQLBW981Jl+zREXUhrOtb0Mv8c2vAXWhEggbL0VsoW/XB?=
+ =?us-ascii?Q?P93mJKetu/OtPP+FgpXIc18S8PR8itA9gapvbR9q5r1z/A5jn2Ypyx5z2HQN?=
+ =?us-ascii?Q?PUIuHWgvy7DJy8npWsTpw5zI5gG3q+NeKFodeNEdmkjBtj8a1ZiaGiSidlAm?=
+ =?us-ascii?Q?eV3VJw+9mu0rApLHNP1eqvcd2DiXFUgGNXHiXNcziituZTKMadyfLQcROfDM?=
+ =?us-ascii?Q?MJhuvRoVhMTUwmqxOnLTCkjBv53u5vYvjzJHlLYGmP6y0iaxN9BBuLFOZL4Z?=
+ =?us-ascii?Q?NOvjKb+kWcqbV/wM5h0IR6G3wf+PsMziVX1/YZ5NN3BQbWu+vS+nva1s7wld?=
+ =?us-ascii?Q?6igUo2ex4Brid+4dcG+ZtEVU1WppZqDiBGUIvx1SZBM9HkX+NdfFoFEP8X9m?=
+ =?us-ascii?Q?pgMwRHgt/4y5K8IG4d1aQPFwh3CXpAoM83fnqPRGbhd/CiEtbPLZeWyOUOq0?=
+ =?us-ascii?Q?wXomDOiTrTlxMg+1kdnILKYwEVecrXbm0YdyhPyEhpCmWdqSmJIdLA7BWxQ/?=
+ =?us-ascii?Q?OuqMGb7qpJQhbqwCYl6OaR5ZnA2WDHBks7CJ4lfC9o8YqGwClM9CnaJF/VNp?=
+ =?us-ascii?Q?YzH80lenEC8jiReAM+YnTDTb3B8Hs6ECtyZ0MDh+Ly4m1dGUn4GIikTN5gxH?=
+ =?us-ascii?Q?Pj0FDgFg9wrBFL3B1eOLE/PR+DwDoJ99lHmynwo0WwUlEuNxQmKD/1AhUPsy?=
+ =?us-ascii?Q?otP6FHi+W5HUM6m4SrBfoYnFi2H7srH7rhUliFeRV63eJIFBxZ6tPQzWbIdX?=
+ =?us-ascii?Q?GNDuKE7lQf+B57gHV+ChfM7zO/pjSAt3U/Tj1GOpxqwqpnh/CumnpgocIfoe?=
+ =?us-ascii?Q?hzWCTNtgkRK9ccbShvK6nj8QqHezPy4iYZJnu4iEeXF6paGfKAUyuXj5z84W?=
+ =?us-ascii?Q?lhBBPj8dkWXCC9NTiJfPf/yfCnUEK6mnc2raFV/WVOWXpJ3yJ/u3kER/+Zag?=
+ =?us-ascii?Q?6GBlqGOsarC9p7UHOJ2YQtwJCz3Iy7qsrP2G0JFaV+zdYlLUOjTKeWpPr/0k?=
+ =?us-ascii?Q?9m/4iDjj/GxKehCc6otBdfsrznF8YKekAD4jdDWhLIi49zYSycDMMvpCleqS?=
+ =?us-ascii?Q?hVQKfNSx3jAHUMKaedn9gGwjsRygIvn/7ds16YY9jYF+cZIyFN9+amt9z5vz?=
+ =?us-ascii?Q?C4kqHBRhCQ=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45604b3a-1428-4fb7-4337-08de846b57dc
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2026 21:22:50.5326
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aSrO0X8jVVFCgoAV8qS6dfQFuZsbksk5TSyFh3Q0h3QOSUvQB/h9vk/7v8AtSKZwbz01XpTRqb73D8cQeiYkTA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PPF5D27497F1
 
-+Cc a bunch of relevant people
-On Mon, Mar 16, 2026 at 09:18:37AM +0100, Benjamin Eikel wrote:
-> Dear Linux kernel developers,
-> 
-> I have reported this issue as Debian bug #1130138 [1], which has been marked 
-> “upstream”. I am therefore also reaching out here to make you aware of it. 
-> Please let me know if you need additional information.
-> 
-> After upgrading from linux-image-6.18.15+deb14-amd64, I see this error several 
-> times and the system shortly freezes. It seems related to Zoom crashing first, 
-> but the freezes were not noticable with older Linux kernels.
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Do you have a simpler repro you can share?
+This commit adds a trivial textbook implementation of preemptible RCU
+to rcutorture ("torture_type=trivial-preempt"), similar in spirit to the
+existing "torture_type=trivial" textbook implementation of non-preemptible
+RCU.  Neither trivial RCU implementation has any value for production use,
+and are intended only to keep Paul honest in his introductory writings
+and presentations.
 
-> Currently booted into 6.18.15+deb14-amd64 which does not exhibit this issue. 
-> The stalls occurred when running 6.19.6+deb14-amd64. More information about my 
-> system can be found in the Debian bug report.
->
+[ paulmck: Apply kernel test robot feedback. ]
 
-Can you attach the debian kernel config? Is it possible something relevant
-changed since 6.18?
+Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+---
+ include/linux/sched.h                         |  4 ++
+ kernel/rcu/Kconfig.debug                      | 11 ++++
+ kernel/rcu/rcu.h                              |  4 ++
+ kernel/rcu/rcutorture.c                       | 57 ++++++++++++++++++-
+ kernel/rcu/update.c                           | 22 +++++++
+ .../rcutorture/configs/rcu/TRIVIAL-PREEMPT    | 12 ++++
+ .../configs/rcu/TRIVIAL-PREEMPT.boot          |  3 +
+ 7 files changed, 112 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL-PREEMPT
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL-PREEMPT.boot
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index a7b4a980eb2f..940db7ddbb49 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -949,6 +949,10 @@ struct task_struct {
+ 	struct srcu_ctr __percpu	*trc_reader_scp;
+ #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
  
-> Mär 09 09:13:48 thinkpad-benjamin kernel: rcu: INFO: rcu_preempt detected 
-> stalls on CPUs/tasks:
-> Mär 09 09:13:48 thinkpad-benjamin kernel: rcu:         Tasks blocked on 
-> level-0 rcu_node (CPUs 0-15): P10008/1:b..l
-> Mär 09 09:13:48 thinkpad-benjamin kernel: rcu:         (detected by 5, t=5252 
-> jiffies, g=177537, q=28067 ncpus=16)
-> Mär 09 09:13:48 thinkpad-benjamin kernel: task:zoom            state:R  
-> running task     stack:0     pid:10008 tgid:10008 ppid:2089   
-> task_flags:0x40040c flags:0x00080802
-> Mär 09 09:13:48 thinkpad-benjamin kernel: Call Trace:
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  <TASK>
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  __schedule+0x48a/0xfc0
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  preempt_schedule+0x32/0x50
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  preempt_schedule_thunk+0x16/0x30
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  _raw_spin_unlock+0x22/0x30
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  unmap_page_range+0xbcb/0x1700
-
-Hmm. We have a bunch of cond_resched() sprayed around this code. This _should_
-work. I don't see anything particularly interesting that changed between
-6.18 and 6.19.
-
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  unmap_vmas+0xa1/0x180
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  exit_mmap+0xe1/0x3b0
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  __mmput+0x41/0x150
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  do_exit+0x251/0xa70
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  do_group_exit+0x2d/0xc0
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  get_signal+0x8a4/0x920
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  
-> arch_do_signal_or_restart+0x40/0x250
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  exit_to_user_mode_loop+0x8e/0x480
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? __x64_sys_sched_setaffinity+0x6a/
-> 0xb0
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  do_syscall_64+0x20b/0x600
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? ksys_read+0xcd/0xf0
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? do_syscall_64+0xbe/0x600
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? do_syscall_64+0xbe/0x600
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? __x64_sys_close+0x3d/0x80
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? do_syscall_64+0xbe/0x600
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  ? exc_page_fault+0x7e/0x1a0
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  
-> entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> Mär 09 09:13:48 thinkpad-benjamin kernel: RIP: 0033:0x7f2876359e2d
-> Mär 09 09:13:48 thinkpad-benjamin kernel: RSP: 002b:00007ffc91243ad8 EFLAGS: 
-> 00000246 ORIG_RAX: 00000000000000cb
-> Mär 09 09:13:48 thinkpad-benjamin kernel: RAX: 0000000000000000 RBX: 
-> 00007f2875207700 RCX: 00007f2876359e2d
-> Mär 09 09:13:48 thinkpad-benjamin kernel: RDX: 00007ffc91243ae0 RSI: 
-> 0000000000000080 RDI: 0000000000002718
-> Mär 09 09:13:48 thinkpad-benjamin kernel: RBP: 0000000000000020 R08: 
-> 0000000000000001 R09: 00007f2875206de8
-> Mär 09 09:13:48 thinkpad-benjamin kernel: R10: 0000000000000000 R11: 
-> 0000000000000246 R12: 00007ffc91243ae0
-> Mär 09 09:13:48 thinkpad-benjamin kernel: R13: 00007ffc91243c80 R14: 
-> 0000000000000000 R15: 0000000000000020
-> Mär 09 09:13:48 thinkpad-benjamin kernel:  </TASK>
-> Mär 09 09:13:48 thinkpad-benjamin kernel: rcu: INFO: rcu_preempt detected 
-> expedited stalls on CPUs/tasks: { P10008 } 5361 jiffies s: 1609 root: 0x0/T
-> Mär 09 09:13:48 thinkpad-benjamin kernel: rcu: blocking rcu_node structures 
-> (internal RCU debug):
-> 
-> Another one:
-> 
-> Mär 09 09:14:51 thinkpad-benjamin kernel: rcu: INFO: rcu_preempt detected 
-> stalls on CPUs/tasks:
-> Mär 09 09:14:51 thinkpad-benjamin kernel: rcu:         Tasks blocked on 
-> level-0 rcu_node (CPUs 0-15): P10008/1:b..l
-> Mär 09 09:14:51 thinkpad-benjamin kernel: rcu:         (detected by 5, t=21007 
-> jiffies, g=177537, q=87903 ncpus=16)
-> Mär 09 09:14:51 thinkpad-benjamin kernel: task:zoom            state:R  
-> running task     stack:0     pid:10008 tgid:10008 ppid:2089   
-> task_flags:0x40040c flags:0x00080802
-> Mär 09 09:14:51 thinkpad-benjamin kernel: Call Trace:
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  <TASK>
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  __schedule+0x48a/0xfc0
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  preempt_schedule+0x32/0x50
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  preempt_schedule_thunk+0x16/0x30
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  _raw_spin_unlock+0x22/0x30
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  unmap_page_range+0xbcb/0x1700
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  unmap_vmas+0xa1/0x180
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  exit_mmap+0xe1/0x3b0
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  __mmput+0x41/0x150
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  do_exit+0x251/0xa70
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  do_group_exit+0x2d/0xc0
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  get_signal+0x8a4/0x920
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  
-> arch_do_signal_or_restart+0x40/0x250
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  exit_to_user_mode_loop+0x8e/0x480
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? __x64_sys_sched_setaffinity+0x6a/
-> 0xb0
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  do_syscall_64+0x20b/0x600
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? ksys_read+0xcd/0xf0
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? do_syscall_64+0xbe/0x600
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? do_syscall_64+0xbe/0x600
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? __x64_sys_close+0x3d/0x80
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? do_syscall_64+0xbe/0x600
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? 
-> srso_alias_return_thunk+0x5/0xfbef5
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  ? exc_page_fault+0x7e/0x1a0
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  
-> entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> Mär 09 09:14:51 thinkpad-benjamin kernel: RIP: 0033:0x7f2876359e2d
-> Mär 09 09:14:51 thinkpad-benjamin kernel: RSP: 002b:00007ffc91243ad8 EFLAGS: 
-> 00000246 ORIG_RAX: 00000000000000cb
-> Mär 09 09:14:51 thinkpad-benjamin kernel: RAX: 0000000000000000 RBX: 
-> 00007f2875207700 RCX: 00007f2876359e2d
-> Mär 09 09:14:51 thinkpad-benjamin kernel: RDX: 00007ffc91243ae0 RSI: 
-> 0000000000000080 RDI: 0000000000002718
-> Mär 09 09:14:51 thinkpad-benjamin kernel: RBP: 0000000000000020 R08: 
-> 0000000000000001 R09: 00007f2875206de8
-> Mär 09 09:14:51 thinkpad-benjamin kernel: R10: 0000000000000000 R11: 
-> 0000000000000246 R12: 00007ffc91243ae0
-> Mär 09 09:14:51 thinkpad-benjamin kernel: R13: 00007ffc91243c80 R14: 
-> 0000000000000000 R15: 0000000000000020
-> Mär 09 09:14:51 thinkpad-benjamin kernel:  </TASK>
-> Mär 09 09:14:52 thinkpad-benjamin kernel: rcu: INFO: rcu_preempt detected 
-> expedited stalls on CPUs/tasks: { P10008 } 21233 jiffies s: 1609 root: 0x0/T
-> Mär 09 09:14:52 thinkpad-benjamin kernel: rcu: blocking rcu_node structures 
-> (internal RCU debug):
-> 
-> Note the stall duration escalating from t=5252 jiffies (~5s) to t=21007 jiffies 
-> (~21s), with the same grace period (g=177537), indicating the unmap_page_range 
-> operation blocked for over a minute.
-> 
-> Kind regards
-> Benjamin
-> 
-> [1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1130138
-> 
-> 
-> 
-
++#ifdef CONFIG_TRIVIAL_PREEMPT_RCU
++	int				rcu_trivial_preempt_nesting;
++#endif /* #ifdef CONFIG_TRIVIAL_PREEMPT_RCU */
++
+ 	struct sched_info		sched_info;
+ 
+ 	struct list_head		tasks;
+diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+index 625d75392647..e078e988773d 100644
+--- a/kernel/rcu/Kconfig.debug
++++ b/kernel/rcu/Kconfig.debug
+@@ -228,4 +228,15 @@ config RCU_DYNTICKS_TORTURE
+ 
+ 	  This has no value for production and is only for testing.
+ 
++config TRIVIAL_PREEMPT_RCU
++	bool "Textbook trivial preemptible RCU in rcutorture"
++	depends on RCU_EXPERT && RCU_TORTURE_TEST
++	default n
++	help
++	  This option enables a textbook preemptible RCU that is
++	  implemented in rcutorture.  Its sole purpose is to validate
++	  code used in books, papers, and presentations.
++
++	  This has no value for production and is only for testing.
++
+ endmenu # "RCU Debugging"
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index dc5d614b372c..37e7a8a9e375 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -682,4 +682,8 @@ int rcu_stall_notifier_call_chain(unsigned long val, void *v);
+ static inline int rcu_stall_notifier_call_chain(unsigned long val, void *v) { return NOTIFY_DONE; }
+ #endif // #else // #if defined(CONFIG_RCU_STALL_COMMON) && defined(CONFIG_RCU_CPU_STALL_NOTIFIER)
+ 
++#ifdef CONFIG_TRIVIAL_PREEMPT_RCU
++void synchronize_rcu_trivial_preempt(void);
++#endif // #ifdef CONFIG_TRIVIAL_PREEMPT_RCU
++
+ #endif /* __LINUX_RCU_H */
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 8a9282a0245c..3c272413666b 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1061,6 +1061,61 @@ static struct rcu_torture_ops trivial_ops = {
+ 	.name		= "trivial"
+ };
+ 
++#ifdef CONFIG_TRIVIAL_PREEMPT_RCU
++
++/*
++ * Definitions for trivial CONFIG_PREEMPT=y torture testing.  This
++ * implementation does not work well with large numbers of tasks or with
++ * long-term preemption.  Either or both get you RCU CPU stall warnings.
++ */
++
++static void rcu_sync_torture_init_trivial_preempt(void)
++{
++	rcu_sync_torture_init();
++	if (WARN_ONCE(onoff_interval || shuffle_interval, "%s: Non-zero onoff_interval (%d) or shuffle_interval (%d) breaks trivial RCU, resetting to zero", __func__, onoff_interval, shuffle_interval)) {
++		onoff_interval = 0;
++		shuffle_interval = 0;
++	}
++}
++
++static int rcu_torture_read_lock_trivial_preempt(void)
++{
++	struct task_struct *t = current;
++
++	WRITE_ONCE(t->rcu_trivial_preempt_nesting, t->rcu_trivial_preempt_nesting + 1);
++	smp_mb();
++	return 0;
++}
++
++static void rcu_torture_read_unlock_trivial_preempt(int idx)
++{
++	struct task_struct *t = current;
++
++	smp_store_release(&t->rcu_trivial_preempt_nesting, t->rcu_trivial_preempt_nesting - 1);
++}
++
++static struct rcu_torture_ops trivial_preempt_ops = {
++	.ttype		= RCU_TRIVIAL_FLAVOR,
++	.init		= rcu_sync_torture_init_trivial_preempt,
++	.readlock	= rcu_torture_read_lock_trivial_preempt,
++	.read_delay	= rcu_read_delay,  // just reuse rcu's version.
++	.readunlock	= rcu_torture_read_unlock_trivial_preempt,
++	.readlock_held	= torture_readlock_not_held,
++	.get_gp_seq	= rcu_no_completed,
++	.sync		= synchronize_rcu_trivial_preempt,
++	.exp_sync	= synchronize_rcu_trivial_preempt,
++	.irq_capable	= 0, // In theory it should be, but let's keep it trivial.
++	.name		= "trivial-preempt"
++};
++
++#define TRIVIAL_PREEMPT_OPS &trivial_preempt_ops,
++
++#else // #ifdef CONFIG_TRIVIAL_PREEMPT_RCU
++
++#define TRIVIAL_PREEMPT_OPS
++
++#endif // #else // #ifdef CONFIG_TRIVIAL_PREEMPT_RCU
++
+ #ifdef CONFIG_TASKS_RCU
+ 
+ /*
+@@ -4449,7 +4504,7 @@ rcu_torture_init(void)
+ 	static struct rcu_torture_ops *torture_ops[] = {
+ 		&rcu_ops, &rcu_busted_ops, &srcu_ops, &srcud_ops, &busted_srcud_ops,
+ 		TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
+-		&trivial_ops,
++		&trivial_ops, TRIVIAL_PREEMPT_OPS
+ 	};
+ 
+ 	if (!torture_init_begin(torture_type, verbose))
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index d98a5c38e19c..b62735a67884 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -538,6 +538,28 @@ long torture_sched_setaffinity(pid_t pid, const struct cpumask *in_mask, bool do
+ EXPORT_SYMBOL_GPL(torture_sched_setaffinity);
+ #endif
+ 
++#if IS_ENABLED(CONFIG_TRIVIAL_PREEMPT_RCU)
++// Trivial and stupid grace-period wait.  Defined here so that lockdep
++// kernels can find tasklist_lock.
++void synchronize_rcu_trivial_preempt(void)
++{
++	struct task_struct *g;
++	struct task_struct *t;
++
++	smp_mb(); // Order prior accesses before grace-period start.
++	rcu_read_lock(); // Protect task list.
++	for_each_process_thread(g, t) {
++		if (t == current)
++			continue;  // Don't deadlock on ourselves!
++		// Order later rcu_read_lock() on other tasks after QS.
++		while (smp_load_acquire(&t->rcu_trivial_preempt_nesting))
++			continue;
++	}
++	rcu_read_unlock();
++}
++EXPORT_SYMBOL_GPL(synchronize_rcu_trivial_preempt);
++#endif // #if IS_ENABLED(CONFIG_TRIVIAL_PREEMPT_RCU)
++
+ int rcu_cpu_stall_notifiers __read_mostly; // !0 = provide stall notifiers (rarely useful)
+ EXPORT_SYMBOL_GPL(rcu_cpu_stall_notifiers);
+ 
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL-PREEMPT b/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL-PREEMPT
+new file mode 100644
+index 000000000000..8230b14bfe68
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL-PREEMPT
+@@ -0,0 +1,12 @@
++CONFIG_SMP=y
++CONFIG_NR_CPUS=8
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=y
++CONFIG_HZ_PERIODIC=n
++CONFIG_NO_HZ_IDLE=y
++CONFIG_NO_HZ_FULL=n
++CONFIG_DEBUG_LOCK_ALLOC=n
++CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
++CONFIG_RCU_EXPERT=y
++CONFIG_TRIVIAL_PREEMPT_RCU=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL-PREEMPT.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL-PREEMPT.boot
+new file mode 100644
+index 000000000000..299cd3a12df6
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRIVIAL-PREEMPT.boot
+@@ -0,0 +1,3 @@
++rcutorture.torture_type=trivial-preempt
++rcutorture.onoff_interval=0
++rcutorture.shuffle_interval=0
 -- 
-Pedro
+2.34.1
+
