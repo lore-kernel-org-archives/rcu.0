@@ -1,96 +1,123 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA9430EF75
-	for <rcu@vger.kernel.org>; Wed, 18 Mar 2026 18:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F0F3F0750
+	for <rcu@vger.kernel.org>; Wed, 18 Mar 2026 19:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773859739; cv=none; b=RJSanm0wQoyh3w2iIP/qDGrJhRBYzi/4oyQiPCxjHkINaTuc1fGlXtuYrrOPUtkkK1U7Cx+4wkiFahjZVc1bugjEgk8oakn0r6poAGzCigOsYJqYCKkZ0DlTKdnRtrLAEmAG7A/A9OI/hOYYpmaOdeNw4g5j89LYr2CceikC8nU=
+	t=1773862177; cv=none; b=TyA+wxRhw+r0tjI5jsG2T/7ABVKYCA4JCBlB+1vbRKsEWcQAhjH2JUwHzazcuXFDzV0Fb1GQAzt86jfE5vWd6/LvZYEK/zOFQrPuxF6vEj4HGL1T1f+6RnzD+6IvXsh7vsy4v0TvJmwrCztFblzO/mPF1iqSSNCy7Pnt8c+VrJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773859739; c=relaxed/simple;
-	bh=oEvF0uXvwc/vGO03pQPkfNIqKmyceZ3wlRF/D/Nr7D0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P1phU9zOX0UwJU2FnfsCf/pgWuAZV4GRKt7pZa9UM3iLdPVnWlogFivWMW5EayQvemtKSET6LpAVbKN9uLMU+H4r8pbO+bTmvEkQC2/i+kAr1Bbwo0tgGUeVrm3wpahiWrpZMIytCqXNgTLWL6rQ24YajXYMbbxAQEORNaCBhw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JR3JwdYA; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1773862177; c=relaxed/simple;
+	bh=HNEjWWg+eFhY1R3/DXjm6+z8FMPs8I2QwA5CTW4Zue4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OJ/cUTYutgI0anjyMaMhw6zptq+j882/Kwo2OOstasQfi7r6B398kgw0TtM2kkX+nBL8AP8oNAjQqfA+DS/qbhPC0uqIJ2tEMGjhR+tV0myl8TZmHdjRlwsgzooUv0WRuDT2FTpwdYBKuN6dcvSiGfuMM/avedLF5QzQoE7OlTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BcC8s/nL; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JR3JwdYA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EE1AC19421;
-	Wed, 18 Mar 2026 18:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773859738;
-	bh=oEvF0uXvwc/vGO03pQPkfNIqKmyceZ3wlRF/D/Nr7D0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=JR3JwdYApNoC6Ja4N/D0g26KvSd4z4PbedbGkl8e3DTHENZei4sP0/AydYg4TR+ZJ
-	 QzagZY9THEdH2tE31HEamiWHKYzzbofT5QW7Neu7RY8UkGfV5jXzE5P0CUn/U64pXx
-	 fQYhucoypJUpvxJpDGdUv44i7D3Fw4O7xELQixL5eUx6Xw7ff9TzWOQUP/X4oDOKKg
-	 wRAHvbaNf6TcM6MaVZv5daaFWqUTdBYVgC81rdRptJHrEYHsKySoFsQ0KExR4cly6f
-	 4Er2feyP487SFQ3LJ4r4lFAUYSmkk8ZT7krBc2PG9qp5q8G4/XwAPUE7pC2gDznwLJ
-	 f87QqvaJEgthA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 0F3D0CE098B; Wed, 18 Mar 2026 11:48:56 -0700 (PDT)
-Date: Wed, 18 Mar 2026 11:48:56 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: frederic@kernel.org, neeraj.iitr10@gmail.com, urezki@gmail.com,
-	joelagnelf@nvidia.com, boqun.feng@gmail.com, rcu@vger.kernel.org,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: Next-level bug in SRCU implementation of RCU Tasks Trace +
- PREEMPT_RT
-Message-ID: <9b685d13-5496-4bc9-ab6a-508bd4bf0f16@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <fe28d664-3872-40f6-83c6-818627ad5b7d@paulmck-laptop>
- <20260318105058.j2aKncBU@linutronix.de>
- <b33d2dc2-7ccf-4524-a846-95c2b64fe117@paulmck-laptop>
- <20260318144305.xI6RDtzk@linutronix.de>
- <76ef9a5e-7343-4b8e-bf3c-cabd8753ecdb@paulmck-laptop>
- <20260318160445.IyUiWV0T@linutronix.de>
- <06a0cb91-1737-4691-a810-8340e1acf1d6@paulmck-laptop>
- <20260318164710.gUolNYgg@linutronix.de>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BcC8s/nL"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1773862173;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mNDKa/Jl/+Ss4rYeY3MICivAnfJy5RYCpPz3D5LnUaw=;
+	b=BcC8s/nLmKlWaqEG0B1Wc+Qfdhkl8Lghe5iHv2pSqUmfBr8bjsV3eIljzN6OtD/pSXzbsQ
+	/6xefF7Wf13EedQZDO29RWuiLvqCRzp30UDOqNTjWg8o34YRsXyqoqbfRMb7JCBscPzv/k
+	tPDcjUeHqiEaYEPJSHDBmOinMULLfMY=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-492-BzNYZuzYNK27-vUsJPNt5A-1; Wed,
+ 18 Mar 2026 15:29:29 -0400
+X-MC-Unique: BzNYZuzYNK27-vUsJPNt5A-1
+X-Mimecast-MFC-AGG-ID: BzNYZuzYNK27-vUsJPNt5A_1773862168
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BC2F018005B2;
+	Wed, 18 Mar 2026 19:29:27 +0000 (UTC)
+Received: from [10.22.81.226] (unknown [10.22.81.226])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 038C7180075D;
+	Wed, 18 Mar 2026 19:29:25 +0000 (UTC)
+Message-ID: <22f1e3d1-3f5e-41cd-b7e7-6a0ee5c192bf@redhat.com>
+Date: Wed, 18 Mar 2026 15:29:25 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260318164710.gUolNYgg@linutronix.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] cgroups/cpusets: Spurious CPU-hotplug failures
+To: paulmck@kernel.org
+Cc: Tejun Heo <tj@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, frederic@kernel.org
+References: <049415be-0be8-4e01-bba9-530e302bf655@paulmck-laptop>
+ <5f142f48-653d-430b-90a6-400f87c88921@redhat.com>
+ <8295a194-8f35-427a-8c02-97f2f648eb70@paulmck-laptop>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <8295a194-8f35-427a-8c02-97f2f648eb70@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-On Wed, Mar 18, 2026 at 05:47:10PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2026-03-18 09:32:07 [-0700], Paul E. McKenney wrote:
-> > > What remains?
-> > 
-> > With that patch, we no longer have call_srcu() directly acquiring a
-> > non-raw spinlock, but as you say, we still have the wakeup problem.
-> 
-> Isn't this is just srcu_funnel_gp_start()? And where you could ensure
-> that it is always a delayed worked (delay always 1+) that is scheduled
-> so that it always setups a timer and never does a direct wake.
-> 
-> > > Popular? Okay. Keep me posted, please.
-> > 
-> > Will do.  Just out of curiosity, what are your concerns?
-> 
-> We don't have many NMI code paths and the possibilities are quite dense.
-> I would imagine having this possibility would lead to things that
-> wouldn't be needed otherwise. I mean we don't even allow allocating
-> memory from hardirq (except for _nolock() variant which I think is used
-> by bpf for $reasons) but need to call rcu_free from NMI.
-> This would require to remove an item from some kind of data structure
-> without regular locking. Unless RCU is used to get a delayed invocation
-> of some sorts.
 
-We would need a lockless enqueue, which we have in llist.h.
+On 3/18/26 2:43 PM, Paul E. McKenney wrote:
+> On Wed, Mar 18, 2026 at 11:02:16AM -0400, Waiman Long wrote:
+>> On 3/18/26 8:53 AM, Paul E. McKenney wrote:
+>>> Hello!
+>>>
+>>> Running rcutorture on v7.0-rc3 results in spurious CPU-hotplug failures,
+>>> most frequently on the TREE03 scenario, which suffers about ten such
+>>> failures per hundred hours of test time.  Repeat-by is as follows:
+>>>
+>>> tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 80 --duration 100h --configs "100*TREE03" --trust-make
+>>>
+>>> Though a faster repeat-by instead uses kvm-remote.sh and lots of systems.
+>>>
+>>> Bisection converges here:
+>>>
+>>> 6df415aa46ec ("cgroup/cpuset: Defer housekeeping_update() calls from CPU hotplug to workqueue")
+>>>
+>>> Reverting this commit gets rid of the spurious CPU-hotplug failures.
+>>> Of course, this also gets rid of some ability to do dynamic nohz_full
+>>> processing.
+>>>
+>>> Now, the problem might be that the workqueue handler might still be
+>>> in flight by the time that rcutorture fired up the next CPU-hotplug
+>>> operation, especially given that the TREE03 scenario only waits 200
+>>> milliseconds between these operations.  This suggests waiting for this
+>>> handler before ending each CPU-hotplug operation.  And the crude patch
+>>> below does make the problem go away.
+>>>
+>>> This alleged fix is quite heavy-handed, and also fragile in that if
+>>> hk_sd_workfn() uses a different workqueue, this breaks.  It might be
+>>> better to call into the cgroups/cpusets code and to use flush_work()
+>>> to wait only on hk_sd_workfn() and nothing else.  But it seemed best to
+>>> keep things trivial to start with.
+>>>
+>>> Either way, please consider the patch below to be part of this bug report
+>>> rather than a proper fix.
+>>>
+>>> Thoughts?
+>>>
+>>> 							Thanx, Paul
+>> There is a fix commit ca174c705db5 ("cgroup/cpuset: Call
+>> rebuild_sched_domains() directly in hotplug") in rc4 that may help. Could
+>> you try out the rc4 kernel to see if that can resolve the problem that you
+>> have?
+> It does, thank you!
+>
+> Tested-by: Paul E. McKenney <paulmck@kernel.org>
+>
+Thanks for the confirmation.
 
-The irq-work to actually do the call_rcu() or similar.
+Cheers,
+Longman
 
-There would also need to be rcu_barrier() changes, for example, to
-drain all the llists.
-
-> I mean I am curious here who needs it any why ;)
-
-You got it right above, BPF.  ;-)
-
-They currently check in_nmi() and to the irq-work step themselves.
-
-							Thanx, Paul
