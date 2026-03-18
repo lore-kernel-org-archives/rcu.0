@@ -1,75 +1,50 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044DD3101A9
-	for <rcu@vger.kernel.org>; Wed, 18 Mar 2026 16:42:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F693D3CEE
+	for <rcu@vger.kernel.org>; Wed, 18 Mar 2026 16:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773852133; cv=none; b=WpmJGkqvQhqj7ZtMTdYzzaIfFQ14rcxbdA/+Dw3UgxxvVav532z5Yj/MzWR8kzqKY/rKABQsqiwtttF5yHP0ONCECgwAi2koIIeveRDe9BsSeBtP8MFyRJOMgt3EwWPCNCmyzxACSXA3jkm/z3Veyw8RvXj83huQP9Qd5glGTCo=
+	t=1773852435; cv=none; b=CMFHGG/uKDetqxcwnkOcCrMLdPcOEH/WrzhjtdymCrVEUwKEc3KYLeqPfhO8vmgyK8yb3xj+UkGsnYhFRYKLrysnkuM61+RPWLVhOjrGUQA1VVHPIf7dfZMqbBIF8cN4japGrTuJiSKfF1QAuy7oBP7kkE2BRQe+17jXpRBtLdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773852133; c=relaxed/simple;
-	bh=xU97FWneH73EKziKqfokt+cDZwVxQchF5Ck7byA9iRM=;
+	s=arc-20240116; t=1773852435; c=relaxed/simple;
+	bh=HfpCJhFyj6Y9puS8doHbaugVLDX3X1QFkcADA3vkWCE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kMd4v6KZS8VOJ/elNky8b7XUbV+MePSYk3ksnvq/9JJZjMr93mqzqC51qDnduDoegzqTJsnya7VfGyQuXHpzoYpaPCcezcAxhMg/S63ysjBZNqmNIfmym/klA3sVEqMmZ9oRYau+k/OtCHyuPySTbPfpkWAnVkBy9+Z+m+lHzDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Isa9CKI9; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=mt/S+zAYQbfq72qThPsF7ve9B/2mJU1/3Lxb2Ubp1v030EgO1QHTJysIrIk9bxAbX+t7c8aSIuyBQVtfq5KtDzRqGe6TwJsy8OMwt9u5yu7IK5xIE1021gDgECv48UHa1gltN3cAI+MO32b8JpP2+TGqEj+qUOLGnmqXEqJgZUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BQnBFaFF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=27VysrQ/; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Isa9CKI9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01601C19421;
-	Wed, 18 Mar 2026 16:42:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773852132;
-	bh=xU97FWneH73EKziKqfokt+cDZwVxQchF5Ck7byA9iRM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Isa9CKI9dZwRXfXro1mQ1qyOzRyd3L+FRQJVaoSxyWBOJxnktiueBmo4kUIUUgL9K
-	 1Pjhonw3rkYmE/y4n2SJ2e9pxrc/IO2HaQWw/T6fY7+Zjh3jnOkT3BUGOT+Y8aof0f
-	 qScQ7HjxAbpjJ6ffBgDaqo1Tj7U09oUTS61WYpb37Bn6pCJgSY7rwoEQfg/Qd4FBlF
-	 tSqRCbkg45heXJR8mA9kvUTjrAK5LpjVCT5yiGuA5/XCUYBqGubA+Y4tB1sUxts1yt
-	 CZa6wljfj2TAjzW7fCNJqEgA8wmJB3RBq4X1tJmAGHyO34s4+5Vd9A93ANzauDYvXf
-	 AhS5YYCUA8SwQ==
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id BD96AF40074;
-	Wed, 18 Mar 2026 12:42:10 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Wed, 18 Mar 2026 12:42:10 -0400
-X-ME-Sender: <xms:4tW6aSxUnF8CsxjOGzYxkpI52FE_1aRRrtFaxl3KH4Xjk5hKLNKgHw>
-    <xme:4tW6aa1Fi2GfrZ38i6eXS14ZApE4l9EoyTF9s1NQmU6tAE_w_HIAqJCMafg22YxpF
-    7W5KH21FIpMsoLaTYgCzNnGVgUbaVZ1GykEsyCHBV4QHN0L58Nl>
-X-ME-Received: <xmr:4tW6aYxRCF5ujFUs09itDCgr3bYNH99jixi1J3WSQuHaTbi2gHqI-CD0V-I1jKwjW623LfCbvjYTlPWJAJCVmRA6lVX7b6Pn>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeftdegieegucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    ekgffhhfeuheelhfekteeuffejveetjeefffettedtteegfefftdduteduudfgleenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnod
-    hmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduieejtdelkeegjeduqddujeej
-    keehheehvddqsghoqhhunheppehkvghrnhgvlhdrohhrghesfhhigihmvgdrnhgrmhgvpd
-    hnsggprhgtphhtthhopedutddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepphgr
-    uhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghighgvrghshieslhhinh
-    huthhrohhnihigrdguvgdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdho
-    rhhgpdhrtghpthhtohepnhgvvghrrghjrdhiihhtrhdutdesghhmrghilhdrtghomhdprh
-    gtphhtthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehjohgvlhgr
-    ghhnvghlfhesnhhvihguihgrrdgtohhmpdhrtghpthhtohepsghoqhhunhdrfhgvnhhgse
-    hgmhgrihhlrdgtohhmpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhr
-    ghdprhgtphhtthhopehmvghmgihorhesghhmrghilhdrtghomh
-X-ME-Proxy: <xmx:4tW6afWBU0jH3wEBZP_IhwkwVVjBSf9_z8cOxJDK67c3dPxQZNpPZA>
-    <xmx:4tW6aU9LSnLMXEK_kJ-sNgyAKXQo05VVvCs3q7eTZHhkhOKXHwRHug>
-    <xmx:4tW6aSuCITEejcvtapgQXhJq6HFjh_0ZRKk_MFcuqg3uaX450rU5BA>
-    <xmx:4tW6aU13m-OZoND0k_ycEUnHYn5nXaDM2dYQEjs4L_maUHfH2JQ1WA>
-    <xmx:4tW6aXQKzxmfn7kfA9HwYDoeu5R1eLUOUtdQ7mhHS4vPxLyu14D9A4rk>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Mar 2026 12:42:10 -0400 (EDT)
-Date: Wed, 18 Mar 2026 09:42:09 -0700
-From: Boqun Feng <boqun@kernel.org>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BQnBFaFF";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="27VysrQ/"
+Date: Wed, 18 Mar 2026 17:47:10 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1773852431;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aug5CrbJ0rw65zwnvPTMbySmL5KuBdq3cjYZNu0bCkY=;
+	b=BQnBFaFFn0nFTDdncbGDq4ccmmu8vehRrocvhdq8c/wLxj6BSo6PFcVf11LCMw21vSoNjz
+	G9zVtqoCY47eWuDbmd+x/hi7VKJe+QiacNT6RrVkOTHmulBTmORZ9zsK1mgIFYe5rJxhum
+	ZzXxllFhRj5Ph4NLityjP1mdzmZkkFm5AfHHsQWFI1swFCkAXuZ68Oiwd/+K44Y/ArtHrR
+	M0q9ApvIqF7XRqk+A1verfkx7Dojp2ADThMIMTNaPHaepbrRBY3cHOa4dnf24f0WClts55
+	ufueiWcG1CEghXeT5MXN6ZmUe+q394iOrlWIcBTJGLco09NUExUII+XB00H4tQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1773852431;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aug5CrbJ0rw65zwnvPTMbySmL5KuBdq3cjYZNu0bCkY=;
+	b=27VysrQ/pzGntCvScHARDPIfchRgKyAp8NmxVSIyD0tBszsHuObg1WT0b41lABsu5ymAkf
+	fjF/5SV3sr3b7fDA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, frederic@kernel.org,
-	neeraj.iitr10@gmail.com, urezki@gmail.com, joelagnelf@nvidia.com,
-	boqun.feng@gmail.com, rcu@vger.kernel.org,
+Cc: frederic@kernel.org, neeraj.iitr10@gmail.com, urezki@gmail.com,
+	joelagnelf@nvidia.com, boqun.feng@gmail.com, rcu@vger.kernel.org,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Subject: Re: Next-level bug in SRCU implementation of RCU Tasks Trace +
  PREEMPT_RT
-Message-ID: <abrV4VResx7QERRo@tardis.local>
+Message-ID: <20260318164710.gUolNYgg@linutronix.de>
 References: <fe28d664-3872-40f6-83c6-818627ad5b7d@paulmck-laptop>
  <20260318105058.j2aKncBU@linutronix.de>
  <b33d2dc2-7ccf-4524-a846-95c2b64fe117@paulmck-laptop>
@@ -83,30 +58,34 @@ List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <06a0cb91-1737-4691-a810-8340e1acf1d6@paulmck-laptop>
 
-On Wed, Mar 18, 2026 at 09:32:07AM -0700, Paul E. McKenney wrote:
-> On Wed, Mar 18, 2026 at 05:04:45PM +0100, Sebastian Andrzej Siewior wrote:
-> > On 2026-03-18 08:43:32 [-0700], Paul E. McKenney wrote:
-> > > > Your patch just s/spinlock_t/raw_spinlock_t so we get the locking/
-> > > > nesting right. The wakeup problem remains, right?
-> > > > But looking at the code, there is just srcu_funnel_gp_start(). If its
-> > > > srcu_schedule_cbs_sdp() / queue_delayed_work() usage is always delayed
-> > > > then there will be always a timer and never a direct wake up of the
-> > > > worker. Wouldn't that work?
-> > > 
-> > > Right, that patch fixes one lockdep problem, but another remains.
-> > 
+On 2026-03-18 09:32:07 [-0700], Paul E. McKenney wrote:
 > > What remains?
 > 
 > With that patch, we no longer have call_srcu() directly acquiring a
 > non-raw spinlock, but as you say, we still have the wakeup problem.
+
+Isn't this is just srcu_funnel_gp_start()? And where you could ensure
+that it is always a delayed worked (delay always 1+) that is scheduled
+so that it always setups a timer and never does a direct wake.
+
+> > Popular? Okay. Keep me posted, please.
 > 
+> Will do.  Just out of curiosity, what are your concerns?
 
-I don't think we have a wakeup problem since we use workqueue to defer
-the wakeup, but maybe I'm missing something here?
+We don't have many NMI code paths and the possibilities are quite dense.
+I would imagine having this possibility would lead to things that
+wouldn't be needed otherwise. I mean we don't even allow allocating
+memory from hardirq (except for _nolock() variant which I think is used
+by bpf for $reasons) but need to call rcu_free from NMI.
+This would require to remove an item from some kind of data structure
+without regular locking. Unless RCU is used to get a delayed invocation
+of some sorts.
+I mean I am curious here who needs it any why ;)
 
-Regards,
-Boqun
+> 							Thanx, Paul
+
+Sebastian
