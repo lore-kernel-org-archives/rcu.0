@@ -1,49 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9989519C546
-	for <rcu@vger.kernel.org>; Wed, 18 Mar 2026 18:43:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A06563D34A8;
+	Wed, 18 Mar 2026 18:43:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773859380; cv=none; b=h+uxtiFHd2inTJsAW6lAtxogKWuJGyQWoyofj6EozCY6cbIDyWD+SMvB57RGAJLGniHWr1ij/6KtiMtfGRNWgUjGBIrPERYpI75AAaGXY2MSD01heRzoCdn2b5G8v0yygGF9coXiYVjJk1tXEQcP8Z1GXRLmryp4MSzQE5uzU14=
+	t=1773859420; cv=none; b=NFhLFHZ2lLD1stgPZoXTTa7/+C1bBc/MvS81QFovC2opIoBpRjhpH4tOoVIl8Zk7UVYzJ1dzjHPMLfRFbfHipJvzFHB6C9BVkDU2pSNC8SY37wscPQr+cHJ6AAhGrBLOQonWSOn2GawpOJg7RRR8NHy0KNxOw14t6T6ER8i0low=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773859380; c=relaxed/simple;
-	bh=whQt4ik7BAhJgmj8svzzgOGlxN3t1EARGNpMNibcfgg=;
+	s=arc-20240116; t=1773859420; c=relaxed/simple;
+	bh=/hgMQEWJrrvcpunCFBkdAjJaDIibrLd/Dc0zBHO2Z+I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VuxrivfOyISIz7KsqcrgbFVS/KGkxPeveLMMXpLYlgzP5IKKMRV5UgLVukiRokqTIl7AMBswhW5nHr3iLwqiZZS9F18qk4b679lrI1AEHpLM+EN8u2KGfrSuRhh64EtPQj4YCuf8T3d5KQAZZYHlII3/j92CjfH+z6KjNhvik4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B2Pqij5t; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mf+VF52nSqQpsSoAbAGLL7UOM4fAshghT9ZDETNSCyOu7nn+fQDFpAjtsGro2lZLOhwu49KeVG620JDFAmGdRq3GYzoncJcHwJVYsEpWjp1OFkeoSsbe6NAwzR89ikszvf9hSSqg249qxsGbnlZz586BxPDM/RD5u731Y5FFd/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VHPMrz9C; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B2Pqij5t"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD4F7C19421;
-	Wed, 18 Mar 2026 18:42:59 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VHPMrz9C"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1164DC19421;
+	Wed, 18 Mar 2026 18:43:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773859380;
-	bh=whQt4ik7BAhJgmj8svzzgOGlxN3t1EARGNpMNibcfgg=;
+	s=k20201202; t=1773859420;
+	bh=/hgMQEWJrrvcpunCFBkdAjJaDIibrLd/Dc0zBHO2Z+I=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=B2Pqij5tS26GLNMKmR/HP9xNeX6X+1R933XU9DbukWaGhBsWIa7vu6xTP+dNxSPFj
-	 j6TCWupA2WLUfmceEvtNjIb6GSfYUSGG45pXgjo9RgB0diybOwxYo2hoL6Yr7/oBOk
-	 in2SOrQJmZbHshFdKXmXjp2pUslcq++eMvCvmF3wWrV3gEMJLd5RppLfbqqpvJ94L6
-	 Ivwt9rA0I3bW1ntRuUMIZ/DoA6gUZCDK10og56PdvhfrF280dB+GAsCJ+U6D6rb1ev
-	 Sy5SHONkrfuKhpr+4F2J63Eik1+b48nlp5xgAa6SJzyzeyLxVxH7+0i+UwTuXQJdar
-	 g16W3xhtQkhTA==
+	b=VHPMrz9CK2utkUsEbB0KbvEMrhdvXo7LyBSTJ16y14hauNwqSp6XdN1cWkReoe5ug
+	 bWJdcm7KbMYNlzyysr8Xd2fPwkmQ4UZnK4m8sZyxzL8FCymwlnZUrMtDBYcr99vW9n
+	 rMlclmLDJoTzlv2r7O1wu3OkPJ4p6InMKu/+TF22YteY/BZ/o+um5Et6sHDbT1dUT/
+	 GKyorAhAOeXDfOqXBkdDBHHTCSEtFlf2N22yiidsSVBLQzeYPr3wbm2Yx7O7L5gjn1
+	 Kn85QvHiCbHoTI/Gyiath8F892LKLJgjMzp1VtmR60dRfdq4YyR7MIueaga1FWFu2N
+	 cUqkKFumpIedA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 89E60CE098B; Wed, 18 Mar 2026 11:42:57 -0700 (PDT)
-Date: Wed, 18 Mar 2026 11:42:57 -0700
+	id C538ACE098B; Wed, 18 Mar 2026 11:43:37 -0700 (PDT)
+Date: Wed, 18 Mar 2026 11:43:37 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Boqun Feng <boqun@kernel.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, frederic@kernel.org,
-	neeraj.iitr10@gmail.com, urezki@gmail.com, joelagnelf@nvidia.com,
-	boqun.feng@gmail.com, rcu@vger.kernel.org,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: Next-level bug in SRCU implementation of RCU Tasks Trace +
- PREEMPT_RT
-Message-ID: <214fb140-041d-4fd1-8694-658547209b84@paulmck-laptop>
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, frederic@kernel.org
+Subject: Re: [BUG] cgroups/cpusets: Spurious CPU-hotplug failures
+Message-ID: <8295a194-8f35-427a-8c02-97f2f648eb70@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <fe28d664-3872-40f6-83c6-818627ad5b7d@paulmck-laptop>
- <20260318105058.j2aKncBU@linutronix.de>
- <b33d2dc2-7ccf-4524-a846-95c2b64fe117@paulmck-laptop>
- <20260318144305.xI6RDtzk@linutronix.de>
- <abrJ9C637V6keRvd@tardis.local>
+References: <049415be-0be8-4e01-bba9-530e302bf655@paulmck-laptop>
+ <5f142f48-653d-430b-90a6-400f87c88921@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,85 +49,52 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <abrJ9C637V6keRvd@tardis.local>
+In-Reply-To: <5f142f48-653d-430b-90a6-400f87c88921@redhat.com>
 
-On Wed, Mar 18, 2026 at 08:51:16AM -0700, Boqun Feng wrote:
-> On Wed, Mar 18, 2026 at 03:43:05PM +0100, Sebastian Andrzej Siewior wrote:
-> [..]
-> > > > > way that vanilla RCU's call_rcu_core() function takes an early exit if
-> > > > > interrupts are disabled.  Of course, vanilla RCU can rely on things like
-> > > > > the scheduling-clock interrupt to start any needed grace periods [1],
-> > > > > but SRCU will instead need to manually defer this work, perhaps using
-> > > > > workqueues or IRQ work.
-> > > > > 
-> > > > > In addition, rcutorture needs to be upgraded to sometimes invoke
-> > > > > ->call() with the scheduler pi lock held, but this change is not fixing
-> > > > > a regression, so could be deferred.  (There is already code in rcutorture
-> > > > > that invokes the readers while holding a scheduler pi lock.)
-> > > > > 
-> > > > > Given that RCU for this week through the end of March belongs to you guys,
-> > > > > if one of you can get this done by end of day Thursday, London time,
-> > > > > very good!  Otherwise, I can put something together.
-> > > > > 
-> > > > > Please let me know!
-> > > > 
-> > > > Given that the current locking does allow it and lockdep should have
-> > > > complained, I am curious if we could rule that out ;)
+On Wed, Mar 18, 2026 at 11:02:16AM -0400, Waiman Long wrote:
+> On 3/18/26 8:53 AM, Paul E. McKenney wrote:
+> > Hello!
 > > 
-> > Your patch just s/spinlock_t/raw_spinlock_t so we get the locking/
-> > nesting right. The wakeup problem remains, right?
-> > But looking at the code, there is just srcu_funnel_gp_start(). If its
-> > srcu_schedule_cbs_sdp() / queue_delayed_work() usage is always delayed
-> > then there will be always a timer and never a direct wake up of the
-> > worker. Wouldn't that work?
-> 
-> Late to the party, so just make sure I understand the problem. The
-> problem is the wakeup in call_srcu() when it's called with scheduler
-> lock held, right? If so I think the current code works as what you
-> already explain, we defer the wakeup into a workqueue.
-
-The issue is that call_rcu_tasks() (which is call_srcu() now) is
-also invoked with a scheduler pi/rq lock held, which results in a
-deadlock cycle.  So the srcu_gp_start_if_needed() function's call to
-raw_spin_lock_irqsave_sdp_contention() must be deferred to the workqueue
-handler, not just the wake-up.  And that in turn means that the callback
-point also needs to be passed to this handler.
-
-See this email thread:
-
-https://lore.kernel.org/all/CAP01T75eKpvw+95NqNWg9P-1+kzVzojpN0NLat+28SF1B9wQQQ@mail.gmail.com/
-
-> (but Paul, we are not talking about calling call_srcu(), that requires
-> some more work to get it work)
-
-Agreed, splitting srcu_gp_start_if_needed() and using a workqueue if
-interrupts were already disabled on entry.  Otherwise, directly invoking
-the split-out portion of srcu_gp_start_if_needed().
-
-But we might be talking past each other.
-
-							Thanx, Paul
-
-> > > It would be nice, but your point about needing to worry about spinlocks
-> > > is compelling.
-> > > 
-> > > But couldn't lockdep scan the current task's list of held locks and see
-> > > whether only raw spinlocks are held (including when no spinlocks of any
-> > > type are held), and complain in that case?  Or would that scanning be
-> > > too high of overhead?  (But we need that scan anyway to check deadlock,
-> > > don't we?)
+> > Running rcutorture on v7.0-rc3 results in spurious CPU-hotplug failures,
+> > most frequently on the TREE03 scenario, which suffers about ten such
+> > failures per hundred hours of test time.  Repeat-by is as follows:
 > > 
-> > PeterZ didn't like it and the nesting thing identified most of the
-> > problem cases. It should also catch _this_ one.
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 80 --duration 100h --configs "100*TREE03" --trust-make
 > > 
-> > Thinking about it further, you don't need to worry about
-> > local_bh_disable() but RCU will becomes another corner case. You would
-> > have to exclude "rcu_read_lock(); spin_lock();" on a !preempt kernel
-> > which would otherwise lead to false positives.
-> > But as I said, this case as explained is a nesting problem and should be
-> > reported by lockdep with its current features.
-> 
-> Right, otherwise there is a lockdep bug ;-)
-> 
-> Regards,
-> Boqun
+> > Though a faster repeat-by instead uses kvm-remote.sh and lots of systems.
+> > 
+> > Bisection converges here:
+> > 
+> > 6df415aa46ec ("cgroup/cpuset: Defer housekeeping_update() calls from CPU hotplug to workqueue")
+> > 
+> > Reverting this commit gets rid of the spurious CPU-hotplug failures.
+> > Of course, this also gets rid of some ability to do dynamic nohz_full
+> > processing.
+> > 
+> > Now, the problem might be that the workqueue handler might still be
+> > in flight by the time that rcutorture fired up the next CPU-hotplug
+> > operation, especially given that the TREE03 scenario only waits 200
+> > milliseconds between these operations.  This suggests waiting for this
+> > handler before ending each CPU-hotplug operation.  And the crude patch
+> > below does make the problem go away.
+> > 
+> > This alleged fix is quite heavy-handed, and also fragile in that if
+> > hk_sd_workfn() uses a different workqueue, this breaks.  It might be
+> > better to call into the cgroups/cpusets code and to use flush_work()
+> > to wait only on hk_sd_workfn() and nothing else.  But it seemed best to
+> > keep things trivial to start with.
+> > 
+> > Either way, please consider the patch below to be part of this bug report
+> > rather than a proper fix.
+> > 
+> > Thoughts?
+> > 
+> > 							Thanx, Paul
+> There is a fix commit ca174c705db5 ("cgroup/cpuset: Call
+> rebuild_sched_domains() directly in hotplug") in rc4 that may help. Could
+> you try out the rc4 kernel to see if that can resolve the problem that you
+> have?
+
+It does, thank you!
+
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
