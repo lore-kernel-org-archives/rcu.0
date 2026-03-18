@@ -1,46 +1,52 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A06563D34A8;
-	Wed, 18 Mar 2026 18:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBA43EBF3B
+	for <rcu@vger.kernel.org>; Wed, 18 Mar 2026 18:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773859420; cv=none; b=NFhLFHZ2lLD1stgPZoXTTa7/+C1bBc/MvS81QFovC2opIoBpRjhpH4tOoVIl8Zk7UVYzJ1dzjHPMLfRFbfHipJvzFHB6C9BVkDU2pSNC8SY37wscPQr+cHJ6AAhGrBLOQonWSOn2GawpOJg7RRR8NHy0KNxOw14t6T6ER8i0low=
+	t=1773859524; cv=none; b=DaJz9Dyw9qw6aOnVMNI61R180lCGnuP63McyfLIL53d+HsQEjncPtiBVScVv4YwV3tOF3QEM6D0qzGDSzmfSEdRwk3bI8FRl9YMlhzfCbqoSL6IPLy3QTkTw1onOiwlAK2cCF+Fdxfn9oLLFKFh4Tfz0MmMFFX+yzIdIF0pzeb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773859420; c=relaxed/simple;
-	bh=/hgMQEWJrrvcpunCFBkdAjJaDIibrLd/Dc0zBHO2Z+I=;
+	s=arc-20240116; t=1773859524; c=relaxed/simple;
+	bh=lx4a4VCvtwpGXczIyJApAGWYUAMSzJfW6I61mZV8Xk8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mf+VF52nSqQpsSoAbAGLL7UOM4fAshghT9ZDETNSCyOu7nn+fQDFpAjtsGro2lZLOhwu49KeVG620JDFAmGdRq3GYzoncJcHwJVYsEpWjp1OFkeoSsbe6NAwzR89ikszvf9hSSqg249qxsGbnlZz586BxPDM/RD5u731Y5FFd/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VHPMrz9C; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=HnO60AEvK3czwzupyX8b74U1ZG4rri2qS/OPSD74fRVt8pvITWn77/bNuIQy7Z3inqfze1Ms8fbRaReyQnxmJ0xQy1EZxxcftv1UQBFG9u3HNZiywXjg4LNC+2MKGKeKW6Tb7aJ5WIWFXoZ15tg2H7V3UafrTJt2e8fYzxcc2y0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lBzr2Spb; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VHPMrz9C"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1164DC19421;
-	Wed, 18 Mar 2026 18:43:40 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lBzr2Spb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82BF0C2BC9E;
+	Wed, 18 Mar 2026 18:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773859420;
-	bh=/hgMQEWJrrvcpunCFBkdAjJaDIibrLd/Dc0zBHO2Z+I=;
+	s=k20201202; t=1773859523;
+	bh=lx4a4VCvtwpGXczIyJApAGWYUAMSzJfW6I61mZV8Xk8=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=VHPMrz9CK2utkUsEbB0KbvEMrhdvXo7LyBSTJ16y14hauNwqSp6XdN1cWkReoe5ug
-	 bWJdcm7KbMYNlzyysr8Xd2fPwkmQ4UZnK4m8sZyxzL8FCymwlnZUrMtDBYcr99vW9n
-	 rMlclmLDJoTzlv2r7O1wu3OkPJ4p6InMKu/+TF22YteY/BZ/o+um5Et6sHDbT1dUT/
-	 GKyorAhAOeXDfOqXBkdDBHHTCSEtFlf2N22yiidsSVBLQzeYPr3wbm2Yx7O7L5gjn1
-	 Kn85QvHiCbHoTI/Gyiath8F892LKLJgjMzp1VtmR60dRfdq4YyR7MIueaga1FWFu2N
-	 cUqkKFumpIedA==
+	b=lBzr2SpbyG8Fg0Q0XCHqPxP2bCZu7gOej9vSItLLo43hYNLwBngZYY1Z4z/a5Dvqd
+	 uO6E0+USM3PXwN9CWqhJiqCUViQmgq+N33P3qk5buXbduXcscx5q+f9OybQnZ8jGJM
+	 Mjj48/LXlQpuA95SfVPtSuTERq0Yt9o7rVNIvXjKT1LpKaehmLmvZam+/+HaDu4GCL
+	 NsCVQ8dSsCmpwUwF6BDbSYJtVZWzhlkAhyr9brDUINlMlLBEMNm7Us/+ulYdcfL76p
+	 2+O0p409ZK97NOLpd6ew/bttE219RVtgj3eH7BiIFO1Cg2scJIe6pgHphMyOTB/71n
+	 xzNXHflwtblJQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C538ACE098B; Wed, 18 Mar 2026 11:43:37 -0700 (PDT)
-Date: Wed, 18 Mar 2026 11:43:37 -0700
+	id 545E6CE098B; Wed, 18 Mar 2026 11:45:21 -0700 (PDT)
+Date: Wed, 18 Mar 2026 11:45:21 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, frederic@kernel.org
-Subject: Re: [BUG] cgroups/cpusets: Spurious CPU-hotplug failures
-Message-ID: <8295a194-8f35-427a-8c02-97f2f648eb70@paulmck-laptop>
+To: Boqun Feng <boqun@kernel.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, frederic@kernel.org,
+	neeraj.iitr10@gmail.com, urezki@gmail.com, joelagnelf@nvidia.com,
+	boqun.feng@gmail.com, rcu@vger.kernel.org,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: Next-level bug in SRCU implementation of RCU Tasks Trace +
+ PREEMPT_RT
+Message-ID: <0f0fa46f-4d41-4e79-a6be-46b832c6ae65@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <049415be-0be8-4e01-bba9-530e302bf655@paulmck-laptop>
- <5f142f48-653d-430b-90a6-400f87c88921@redhat.com>
+References: <fe28d664-3872-40f6-83c6-818627ad5b7d@paulmck-laptop>
+ <20260318105058.j2aKncBU@linutronix.de>
+ <b33d2dc2-7ccf-4524-a846-95c2b64fe117@paulmck-laptop>
+ <20260318144305.xI6RDtzk@linutronix.de>
+ <76ef9a5e-7343-4b8e-bf3c-cabd8753ecdb@paulmck-laptop>
+ <20260318160445.IyUiWV0T@linutronix.de>
+ <06a0cb91-1737-4691-a810-8340e1acf1d6@paulmck-laptop>
+ <abrV4VResx7QERRo@tardis.local>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -49,52 +55,29 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5f142f48-653d-430b-90a6-400f87c88921@redhat.com>
+In-Reply-To: <abrV4VResx7QERRo@tardis.local>
 
-On Wed, Mar 18, 2026 at 11:02:16AM -0400, Waiman Long wrote:
-> On 3/18/26 8:53 AM, Paul E. McKenney wrote:
-> > Hello!
+On Wed, Mar 18, 2026 at 09:42:09AM -0700, Boqun Feng wrote:
+> On Wed, Mar 18, 2026 at 09:32:07AM -0700, Paul E. McKenney wrote:
+> > On Wed, Mar 18, 2026 at 05:04:45PM +0100, Sebastian Andrzej Siewior wrote:
+> > > On 2026-03-18 08:43:32 [-0700], Paul E. McKenney wrote:
+> > > > > Your patch just s/spinlock_t/raw_spinlock_t so we get the locking/
+> > > > > nesting right. The wakeup problem remains, right?
+> > > > > But looking at the code, there is just srcu_funnel_gp_start(). If its
+> > > > > srcu_schedule_cbs_sdp() / queue_delayed_work() usage is always delayed
+> > > > > then there will be always a timer and never a direct wake up of the
+> > > > > worker. Wouldn't that work?
+> > > > 
+> > > > Right, that patch fixes one lockdep problem, but another remains.
+> > > 
+> > > What remains?
 > > 
-> > Running rcutorture on v7.0-rc3 results in spurious CPU-hotplug failures,
-> > most frequently on the TREE03 scenario, which suffers about ten such
-> > failures per hundred hours of test time.  Repeat-by is as follows:
-> > 
-> > tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 80 --duration 100h --configs "100*TREE03" --trust-make
-> > 
-> > Though a faster repeat-by instead uses kvm-remote.sh and lots of systems.
-> > 
-> > Bisection converges here:
-> > 
-> > 6df415aa46ec ("cgroup/cpuset: Defer housekeeping_update() calls from CPU hotplug to workqueue")
-> > 
-> > Reverting this commit gets rid of the spurious CPU-hotplug failures.
-> > Of course, this also gets rid of some ability to do dynamic nohz_full
-> > processing.
-> > 
-> > Now, the problem might be that the workqueue handler might still be
-> > in flight by the time that rcutorture fired up the next CPU-hotplug
-> > operation, especially given that the TREE03 scenario only waits 200
-> > milliseconds between these operations.  This suggests waiting for this
-> > handler before ending each CPU-hotplug operation.  And the crude patch
-> > below does make the problem go away.
-> > 
-> > This alleged fix is quite heavy-handed, and also fragile in that if
-> > hk_sd_workfn() uses a different workqueue, this breaks.  It might be
-> > better to call into the cgroups/cpusets code and to use flush_work()
-> > to wait only on hk_sd_workfn() and nothing else.  But it seemed best to
-> > keep things trivial to start with.
-> > 
-> > Either way, please consider the patch below to be part of this bug report
-> > rather than a proper fix.
-> > 
-> > Thoughts?
-> > 
-> > 							Thanx, Paul
-> There is a fix commit ca174c705db5 ("cgroup/cpuset: Call
-> rebuild_sched_domains() directly in hotplug") in rc4 that may help. Could
-> you try out the rc4 kernel to see if that can resolve the problem that you
-> have?
+> > With that patch, we no longer have call_srcu() directly acquiring a
+> > non-raw spinlock, but as you say, we still have the wakeup problem.
+> 
+> I don't think we have a wakeup problem since we use workqueue to defer
+> the wakeup, but maybe I'm missing something here?
 
-It does, thank you!
+You are right, I was confused.  We instead have a deadlock problem.
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
+							Thanx, Paul
