@@ -1,43 +1,75 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3FF2BE04C
-	for <rcu@vger.kernel.org>; Wed, 18 Mar 2026 15:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855B43EF650
+	for <rcu@vger.kernel.org>; Wed, 18 Mar 2026 15:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773848614; cv=none; b=o0ey4Q5790zBSyD7ZCF8hMcTNsyaLV249NJ8KQiz7Z5VfycN6K36cL+2PJNyyusLpgG6nbQWUsRp4zK31ydSOSwbl+BQ+oHFmnmDQ13YFSnThJlC+cLvsMsBej2gzHgq0PNvE8j7IAgc5Ep+pEQ+fm/mwMOagfacEZqyK6dyNL0=
+	t=1773849080; cv=none; b=Fi6sLkiVNIGpmYqwap8Ag6qaUNUKFbZ4X7V0U/ltaCqYftE5pa5Au+19uvyT7sgaGFQZWgpT25MWVHoCqmG2myLvjei8zcvjJBXjDN4LE6qOi3N7pJX+Zr2pwswyarPKK6whmh9C92Une8PhAI2R93i6JzOj4/FxDW61uiqtY/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773848614; c=relaxed/simple;
-	bh=yC4la/UOIYbfVe6Wj7jwgKNOo276mi29LNpOrFG4S0Q=;
+	s=arc-20240116; t=1773849080; c=relaxed/simple;
+	bh=UD+uy9GCF/jf5Mm7ZY7xhizu5LZy/INHQ0Zg6Y9eqyY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=srmBPj6r6ngr/XNT4hEuwfLIgCFjO38BWOsqNPEXIvGdwOup4qx5jQOy89LEgVs/m4VTmnXofAwkZVDOUNPiLrjQL4uAifDeaegzXd9eZs4yVZVqc0FkX+CLtJO/nHtzEZcgZJxki2i8VGkYPFHRskbwan44fICagcSi1RuPQDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LGfJSWFI; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=sT3byIwK5QO5LQYMJhKC9MM6Hlimm8L1MRYEln2mAGM38djG4lcwfksFgYB0w0xaSrHE7wbf+mWPtP2tiOMbvuJK+uUojvAy0FMk/z5ShEIxvPBvvx242TfR3+rtdnJ/Psa6wuZrAbDgR9cjvpCyC5y7prsmCOu7H9uSp1oSvuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oxIDKpmS; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LGfJSWFI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBE12C19421;
-	Wed, 18 Mar 2026 15:43:33 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oxIDKpmS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87FB8C2BCB1;
+	Wed, 18 Mar 2026 15:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773848614;
-	bh=yC4la/UOIYbfVe6Wj7jwgKNOo276mi29LNpOrFG4S0Q=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=LGfJSWFI4yJPS/+jaRBR2+W7AekqTdse/mONTKP9d0C4svC2hGpa9fys3k6JJkPOy
-	 5XqUlnYL6h82hHZDe3nWdwV41/BIMSDLKcko1kztG5ZkvA4wlzo3EQNXt/+lzU2iRX
-	 UmWAwPUPTbZzchdYVon3koxUFMVRkteSo0U85T0Ngw8HWRsnIqIbJVt11+Y/rc6t7/
-	 h89prr5AFOhD1BVvEr3GghheVvFGeRmuyrPR67NRhZC/08y+Dfo2azHptQbUVtiQak
-	 q6aRyqHTAcaoyqB1WgBXlivjJSCgtPs66ZYbyK0tmCEB7R7ylZVvT30YBKK3W7wQR1
-	 btZKEaZF2Dn8Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2F812CE0846; Wed, 18 Mar 2026 08:43:32 -0700 (PDT)
-Date: Wed, 18 Mar 2026 08:43:32 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
+	s=k20201202; t=1773849080;
+	bh=UD+uy9GCF/jf5Mm7ZY7xhizu5LZy/INHQ0Zg6Y9eqyY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oxIDKpmSzj7AAirTDlMI/6H7bDMyrIBv9p9vIBiG+aYbF3SGbfqe0YBnZSNEcV4jY
+	 I7iHx2ONv9IDpzm804qPQh6OacxoK2KDJEI11sCEm0qLf1MQgJs1uJECuJuY8uk+nn
+	 NvxOcaooUNfxsdrVgt2LkuJFS7p/aDNuOQ9Pyysi1oiZy1h5lxH6V0kS+tUK2ChgRX
+	 DjjXDh1LvPdwgDxpDtdghGvkg7uxd1UctxBPnJkXk7yHR0xwDQI812FBkD7KfqObBR
+	 rhPTCpH7mwzd7jleZCKRhES8SOQpHMJK56FHm3FxtoAcSH146AQqraZrGtZVIUM8gO
+	 xzT6zuEGywZ8w==
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 4128DF40068;
+	Wed, 18 Mar 2026 11:51:18 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Wed, 18 Mar 2026 11:51:18 -0400
+X-ME-Sender: <xms:9sm6abftS3wiIhBjg64alSdccji3uyl34qbGzWWds3vP7ez4vUW3YA>
+    <xme:9sm6adyHZnLzWrZYzPx3VlIR7nsVeLp3DVbn3HVf-klGa0H47IWeWuiqDsJWsz1IU
+    cS5g0MWucHBxsyEVIegqu3iKCDUhxKkK-jVipIpeSywm13omYplBQ>
+X-ME-Received: <xmr:9sm6aY-5LU4mKlXbfPHaqAKfw0-Ych7xdBIoYEOZHdVvDVYGFhG89v6HHAXPbnBcP732PBqY1a1_I_WLyBxnbj1ShdlpYHaT>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeftdegheegucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpe
+    ekgffhhfeuheelhfekteeuffejveetjeefffettedtteegfefftdduteduudfgleenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnod
+    hmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduieejtdelkeegjeduqddujeej
+    keehheehvddqsghoqhhunheppehkvghrnhgvlhdrohhrghesfhhigihmvgdrnhgrmhgvpd
+    hnsggprhgtphhtthhopedutddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepsghi
+    ghgvrghshieslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopehprghulhhmtghkse
+    hkvghrnhgvlhdrohhrghdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdho
+    rhhgpdhrtghpthhtohepnhgvvghrrghjrdhiihhtrhdutdesghhmrghilhdrtghomhdprh
+    gtphhtthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehjohgvlhgr
+    ghhnvghlfhesnhhvihguihgrrdgtohhmpdhrtghpthhtohepsghoqhhunhdrfhgvnhhgse
+    hgmhgrihhlrdgtohhmpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehmvghmgihorhesghhmrghilhdrtghomh
+X-ME-Proxy: <xmx:9sm6aTx9d6BDD9eTtkgxpJf0bEHw7x9Q82ITT65D5M5FDh7vkE7izw>
+    <xmx:9sm6aYoS0oSWj7CJTo5NJlRir9x3GyV_jVXVhxpgxdLT-T4lbMBiCA>
+    <xmx:9sm6aUpYVOYr6vPack7KMjQgqhIpH3QqJLhyZewg6TJFhQyItm6rpw>
+    <xmx:9sm6aYB8NP1LNmKvV4OQwf4HQggJplTlQLmcNiKOjUKSIfscaufNdg>
+    <xmx:9sm6aSsTpn_kASd9im-zFDnVT_uH9Io5jWmCAdogCTqXS1Vr73d-hzi8>
+Feedback-ID: i8dbe485b:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Mar 2026 11:51:17 -0400 (EDT)
+Date: Wed, 18 Mar 2026 08:51:16 -0700
+From: Boqun Feng <boqun@kernel.org>
 To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: frederic@kernel.org, neeraj.iitr10@gmail.com, urezki@gmail.com,
-	joelagnelf@nvidia.com, boqun.feng@gmail.com, rcu@vger.kernel.org,
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, frederic@kernel.org,
+	neeraj.iitr10@gmail.com, urezki@gmail.com, joelagnelf@nvidia.com,
+	boqun.feng@gmail.com, rcu@vger.kernel.org,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Subject: Re: Next-level bug in SRCU implementation of RCU Tasks Trace +
  PREEMPT_RT
-Message-ID: <76ef9a5e-7343-4b8e-bf3c-cabd8753ecdb@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Message-ID: <abrJ9C637V6keRvd@tardis.local>
 References: <fe28d664-3872-40f6-83c6-818627ad5b7d@paulmck-laptop>
  <20260318105058.j2aKncBU@linutronix.de>
  <b33d2dc2-7ccf-4524-a846-95c2b64fe117@paulmck-laptop>
@@ -53,35 +85,7 @@ Content-Disposition: inline
 In-Reply-To: <20260318144305.xI6RDtzk@linutronix.de>
 
 On Wed, Mar 18, 2026 at 03:43:05PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2026-03-18 04:49:52 [-0700], Paul E. McKenney wrote:
-> > > > Back to the actual bug, that call_srcu() now needs to tolerate being called
-> > > > with scheduler rq/pi locks held...
-> > > 
-> > > This is because it is called from sched_ext BPF callbacks?
-> > 
-> > You got it!  We are re-implementing Tasks Trace RCU in terms of SRCU-fast,
-> > and I missed this requirement the first time around.  I *did* make readers
-> > able to deal with BPF being invoked from everywhere, so two out of three?
-> 
-> right ;)
-> 
-> > > > The straightforward (but perhaps broken) way to resolve this is to make
-> > > > srcu_gp_start_if_needed() defer invoking the scheduler, similar to the
-> > > 
-> > > Quick question. If srcu_gp_start_if_needed() can be invoked from a
-> > > preempt-disabled section (due to rq/pi lock) then 
-> > > 	spin_lock_irqsave_sdp_contention(sdp, &flags);
-> > > 
-> > > does not work, right?
-> > 
-> > Agreed, which is why the patch at the end of this email converts this to:
-> > 
-> > 	raw_spin_lock_irqsave_sdp_contention(sdp, &flags)
-> 
-> I've seen that now. So the spinlock_t usage in SRCU was short.
-
-Almost ten years.  ;-)
-
+[..]
 > > > > way that vanilla RCU's call_rcu_core() function takes an early exit if
 > > > > interrupts are disabled.  Of course, vanilla RCU can rely on things like
 > > > > the scheduling-clock interrupt to start any needed grace periods [1],
@@ -108,8 +112,15 @@ Almost ten years.  ;-)
 > srcu_schedule_cbs_sdp() / queue_delayed_work() usage is always delayed
 > then there will be always a timer and never a direct wake up of the
 > worker. Wouldn't that work?
+> 
 
-Right, that patch fixes one lockdep problem, but another remains.
+Late to the party, so just make sure I understand the problem. The
+problem is the wakeup in call_srcu() when it's called with scheduler
+lock held, right? If so I think the current code works as what you
+already explain, we defer the wakeup into a workqueue.
+
+(but Paul, we are not talking about calling call_srcu(), that requires
+some more work to get it work)
 
 > > It would be nice, but your point about needing to worry about spinlocks
 > > is compelling.
@@ -129,38 +140,9 @@ Right, that patch fixes one lockdep problem, but another remains.
 > which would otherwise lead to false positives.
 > But as I said, this case as explained is a nesting problem and should be
 > reported by lockdep with its current features.
-
-With a raw spinlock held, agreed.
-
-Not a big deal, just working out what to put in rcutorture to avoid
-regressions that would otherwise result in being unable to invoke
-call_srcu() from non-preemptible contexts.
-
-> > > > 						Thanx, Paul [2]
-> > > > 
-> > > > [1] The exceptions to this rule being handled by the call to
-> > > >     invoke_rcu_core() when rcu_is_watching() returns false.
-> > > > 
-> > > > [2] Ah, and should vanilla RCU's call_rcu() be invokable from NMI
-> > > >     handlers?  Or should there be a call_rcu_nmi() for this purpose?
-> > > >     Or should we continue to have its callers check in_nmi() when needed?
-> > > 
-> > > Did someone ask for this?
-> > 
-> > Yes.  The BPF guys need to invoke call_srcu() from interrupts-disabled
-> > regions of code.  I am way to old and lazy to do this sort of thing
-> > spontaneously.  ;-)
 > 
-> IRQ disabled should work but you asked about call_rcu_nmi() and NMI is
-> already complicated because "most" other things don't work and you would
-> need irq_work to let the remaining kernel know that you did something in
-> NMI and this needs to be integrated now. I don't think regular RCU has
-> call_rcu() from NMI. But I guess wrapping it via irq_work would be one
-> way of dealing with it.
 
-Agreed, and as long as there is only a few call_rcu() call sites within
-NMI handlers, it is best to let the caller deal with it.  But if this
-becomes popular enough, it would be better to have a call_rcu_nmi() or
-some such.
+Right, otherwise there is a lockdep bug ;-)
 
-							Thanx, Paul
+Regards,
+Boqun
