@@ -1,73 +1,74 @@
-Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011004.outbound.protection.outlook.com [40.107.208.4])
+Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013015.outbound.protection.outlook.com [40.107.201.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB62A3D9DC5;
-	Thu, 19 Mar 2026 20:21:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D170823ABBF;
+	Thu, 19 Mar 2026 20:27:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.15
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773951715; cv=fail; b=oizbibMpUIS2HpBdslT+T9Cf8xB17QlAqStBpZSd6u+1FfYZxIJ3444SGn/yUwTkFkopu0mOyzIeB7C1uFas/aGqgjLwqm72JyvOHHn1JkGGp9Ko61kXIGKzrThEaxT45BURiZ0rgR2C4Wyqkf0q1Zmw6cvAcSocv8OxWha6HGk=
+	t=1773952026; cv=fail; b=KQ6Ki7h/On46ZqW4EAGtgL6iBOD35n4nPJCJ1jNTvSS0PyR25zIc9qzzrqmF6MLfmislJvQZyw0qAy4PZ853goOqfYqJ0gJcxZxtccl67tv7TbU/oHBq6CslhEChmuuhcMXK/eI+B2NNaW2seUKwRDZjLUFBI4+bVQgmC2yQLIo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773951715; c=relaxed/simple;
-	bh=+ysVeigIISXiV0AsdnhWx3/pnvJCnnBDE4tsdRRUSAM=;
+	s=arc-20240116; t=1773952026; c=relaxed/simple;
+	bh=7Ij9yLwNXfMFafbSbeS1eq9ykd6cZXNcgl9V3oYltvg=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Kj2r5myQY0yqSmjA5PJpqBBNrFVc5epDB70kAYppzkB+HrFwqub/0obOZpyft6zxBMWO2v2rM1r7D1ZzON1MC5b7BZmb4rYN1M05o/E9AIQFa4mem9viZt+YH6Wh/y4kKTDk9y/wQbV/fmdQyeryZJs5i4dsFaP8S8Kolu3uctc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=uiKDM3NX; arc=fail smtp.client-ip=40.107.208.4
+	 Content-Type:MIME-Version; b=JIPILzei/NyQ69jDM7uAOx0751E8U7E49laWZZmftpEecxfbgTkifxxjAupXxisXI37IrNynORVakREf3N8I9XT/KmnPZ9REp0eJfUg2Ay92UnY3ZA+bTrbmachpdKaXUz/0vAn8jMw19BQi5TtIy438q+ms4ysf4PxZbdJtCvc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=joiDrvJx; arc=fail smtp.client-ip=40.107.201.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="uiKDM3NX"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="joiDrvJx"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=WevOwnJbGqDamtGtTaWMFepZXmy1VoEkJfDW8MfZTzduqf9Zs7q8rxxEzqUSTWx001i71WgYit3h4R3LoN6nd/tUiEUAaTv3XWIFe6JPQeBHhVJ0kpHfTqCqaZXzNqsEgjX6ILnQ3a0v2N3BcrNB5Bz45NYvG0HDJxZYGnHv8eTQB3wzHMoxrXEbVygNgEn1cI/+vWDpvO44SNmY6y6CyMnFxt0nNTxk26V3k2UUPerwmoVWmQl5M1ourdH8PSi0XTLFm7vrjvxIFJNRXl60dE66WkE3v50PJSrUSO79C9HeN6KoM9UZn22H/UtGzz4bifSNRJj2bJ8XP2pPaNLvxw==
+ b=Mc41zWJCe83H3+GCgU2O1XsstglmLEXs05vN6Y8SD5ncEisdTrh+qNb+yQU2Av9RKUh45aH6Xap6ptZ9KQ+QB/OIoGKJPu6JZwCn2p5wFqxqo+XN5VQeen4pUy8reacs1VwBDsA3G8icnaJpy2qSv0yZwHUnSG+UX7/lO/GPZGQhdXFo2HsDjgUirW6VI0yotU1r85NAxx2LB+V+ezHjx7d1yw5ubLV8Q2N7jglxnWCGhCnUoef296lR+9/Uv49QEnfKIBKgwnxASC5fMOHsXyd1+yQxlHL1UxaBYrIDCJFuJj5eLMXnQ3stsP2aWhEBNNxhK+KzVDNVx8UZYXnAQQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tnySmA9YDY9isjdHzW/Hkznbfl8ZMK7J2TVgCddvAuU=;
- b=l4vN0ZTNGGZ3kuxC3Du7E1JKnQmaLD3p1/WnhInvI8E/7wkVhIGmcnIhEMCQhaquAOkMGrROpyatAd06XGDRFM+T6th+Cv9cpo7gyDJiiBMuz3LK6YJo/nj8wNtxADVI6ZQ4pyZBHBipYMVF3w4+saaoANR4V7Fr4l5Dy+dq2705uzRkDEuT5KWoD2LAeJPuWnVv8IhzYuw2nJGB8iwJj06sTMwOqO6OyLoEzLaDsefrmMlRHaQFeeoxlDhyCPABLEU30kaPLclR4qnVftrDqqqQbQeSYQeD4vUM8ta+VR85QKM5AfCHKRvspl8XMLlyZnaKNJqcADwNY2T1ZaERNg==
+ bh=RqorDPV+exu0NY+T5x60HbwDuitg6EPGE4IELCi0C5Q=;
+ b=wsVPLctzE4diQDU8rR36GozTZtUfF2eR5mjdOd1MrqDrOIBHWFRZ8gN8iWM2wyK1FwbWXTCGu9zkKe+IOKAsn4IMJhJId1lErwHkgg2I6j8CMRYEa20Y7gpk1PDAEHOSLhxmtcI3Ua4WuQo+V3OF5mOk9w7eri8Iwzkr7bJ2j7BBAV5iVIxAR0C/VdJHUCbbwNvBBG2TnPB83ABl59uKQNd0UKsgleReBWZBvhR0c+XOrWqKCgEktimUooYKhGCrAKhQzJI+ufWXt4dtZ53GIAbsjxXWMiZddyKtGARm0/dUXJ+SjLFToX10Tr61ClBQDrf2X0t4bW1jE1E2RATVlg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tnySmA9YDY9isjdHzW/Hkznbfl8ZMK7J2TVgCddvAuU=;
- b=uiKDM3NXKzD7iYQlJeI7nNUGjrZI0bj7dnvqVUrTH2igfpR5yTtIHbrZe1BohqIpnOkq1ckj+jG8fJ0qgW4H7Gum8vUp+RwAC/1BH76kez3SWF7h+IXlKQh6f+6Rayv66P90+9tb2RPeMhNZuTLXg4iYRKw/M3CZLk2gcyOQBlTCLJ5GcpPbyHygnXMZ7JTP6u4OBLLZ6nXYD2TQ6us2JkKmj37aPcr1uQM7C7iDvKsmEj0tGPS3i0h3Q8n457cR8U+aA/LfZo/uw33h7D6SfmylAQFDSo0wiCCiONUdlazZupTypnq1mpuz2cuDEstm0zrG2fD15+IEU8zciltVWw==
+ bh=RqorDPV+exu0NY+T5x60HbwDuitg6EPGE4IELCi0C5Q=;
+ b=joiDrvJxDTJR8d3rYPZqPDwpi0f1LEFQSkrCnx1b4GfCm2RMT53p9bMGODNC8xyBXbInrRQLRr+sxecx80L0i7o4AfGdRc570FqiGG3DMp3RovMZoK5zhEx3FXto/onYLm9mO2dQyv5fnCjDDONxg5E42zpKCMpKrOQ9JUbiU64+BEmZkZJ/ma5j88beaD3Gvc1TnXpRdH9djvsyaEj8yYmys0Dce4Bxeb34gdzX3zSPvyP6ci1ptEzk07+Pnn5HnkYkIxnIwEbkk7L+jqsQVyc3ciP8L7tzLpwmKSwW5oN9hF9wbJwzoLXBN7zHZk8/LQdCSxcFvOgwnRt7su6Ckg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
  IA0PR12MB7676.namprd12.prod.outlook.com (2603:10b6:208:432::5) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9745.9; Thu, 19 Mar 2026 20:21:48 +0000
+ 15.20.9745.9; Thu, 19 Mar 2026 20:26:57 +0000
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33%4]) with mapi id 15.20.9723.016; Thu, 19 Mar 2026
- 20:21:48 +0000
-Message-ID: <89763fcd-3710-49a0-91ca-cd923b47fc1e@nvidia.com>
-Date: Thu, 19 Mar 2026 16:21:45 -0400
+ 20:26:57 +0000
+Message-ID: <733c185e-9672-4184-ba65-ae5279f5bfd2@nvidia.com>
+Date: Thu, 19 Mar 2026 16:26:54 -0400
 User-Agent: Mozilla Thunderbird
 Subject: Re: Next-level bug in SRCU implementation of RCU Tasks Trace +
  PREEMPT_RT
-To: Boqun Feng <boqun@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: Boqun Feng <boqun@kernel.org>
 Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, paulmck@kernel.org,
  frederic@kernel.org, neeraj.iitr10@gmail.com, urezki@gmail.com,
- boqun.feng@gmail.com, rcu@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+ boqun.feng@gmail.com, rcu@vger.kernel.org,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>,
  bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
  Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>
+ John Fastabend <john.fastabend@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Andrea Righi <arighi@nvidia.com>
 References: <da4313b1-9ff5-46e9-b3b7-206dbcb72602@nvidia.com>
  <abs026TUV9oAg_Xy@tardis.local> <abtMhd_LVp3uL_pA@tardis.local>
  <20260319090315.Ec_eXAg4@linutronix.de> <abwkD0mOdAbD9ENJ@tardis.local>
  <20260319163350.c7WuYOM9@linutronix.de> <abwo0I_mu94t5Ews@tardis.local>
- <CAP01T75J4EXu8MFD2WEQ71Ou-bapqS=_wXFFQJ6Ed62X28HO2A@mail.gmail.com>
- <abwyGtG7hDpd8vBN@tardis.local>
- <CAP01T75S-NMgB=s_0jqq52xRwe1cQ29DzD33eeqUZHM3cSb=oA@mail.gmail.com>
- <abxZEE4SAMkNEleq@tardis.local>
+ <20260319170244.jqndSwct@linutronix.de> <abw2ECYirX1tTwV9@tardis.local>
+ <c520958e-78e1-41ce-b675-4a560305a206@nvidia.com>
+ <abxap0vo0SoP5Jh0@tardis.local>
 Content-Language: en-US
 From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <abxZEE4SAMkNEleq@tardis.local>
+In-Reply-To: <abxap0vo0SoP5Jh0@tardis.local>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1P223CA0009.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:208:2c4::14) To DS0PR12MB6486.namprd12.prod.outlook.com
+X-ClientProxiedBy: BN9PR03CA0671.namprd03.prod.outlook.com
+ (2603:10b6:408:10e::16) To DS0PR12MB6486.namprd12.prod.outlook.com
  (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -77,152 +78,143 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|IA0PR12MB7676:EE_
-X-MS-Office365-Filtering-Correlation-Id: eefe296e-64cc-4d26-eb13-08de85f52563
+X-MS-Office365-Filtering-Correlation-Id: dc5ecac2-dd36-4c68-deb2-08de85f5ddcd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|18002099003|22082099003|56012099003|7053199007;
+	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|56012099003|18002099003|22082099003;
 X-Microsoft-Antispam-Message-Info:
-	k0dqbD1KNMGffBvH/CbTeEMAHuT1I8uR8/SVGubO8PpSShITNOFdPs2LQqrKgCtfO8Tq40O5y9kBgypqmM1ubTtmgaw2U5LAFztZZgHiBQ0yHaE3S76mvGG11DL6kGC3GCVi4dClQpjcv0QdJhewVt8fuynVu/aCkA1nK78qq+lkvSLgRwXLofxg0/nEdbt7S6ZweB2UcVeXeQBeCFcH9ehKqqqCpwcHyX2ZoMV0SjP/R3BJrNk9rYOGE4DnMxbMOcPSFHT/zig2NHycT80yMKwReo2Nd3vNz0T4v5l+iaH921n0HzJU5cth3tLReygj1oyEYJiC/7KKQ1KyP6zMK1KG95Lf7wd0QPxF/mx0ial/5BLbUkjuihT5QiFANsEHEd76aKZPJDCfVP6AjsqAdSMATrhZtDHFCav407SAjmWzFl+U/bxAMRMu0bFG53JuaR+ekaPbrQOl6yUxQcB2aBd6/4PcheowluuUxu7F20dYOdsCwEba6gBHk9ORQAai107+U3ZLUGb8dzsh1r8K6zC7KZ/6kKTGKmUWITjEEBvthKAA/3smn+yZFex2onPep81QV+qEeGbTf344gZoETT86HcdDd9Ickfl52BvE+lwZNhSvklEFwK+J0VDdM+9cxnkjbLLsbAja2V7m1b70k9Hqnu/NN68MVifIijdO7WcjwkakJE1Co+LYPM0QOl5bFSkaOAQFbbkD1RNTyyp5jmCImljdaqF8gBxoYx2fScE=
+	k6FxBu/QoV/Q3Q5An+BG5lCJEjW8ORGFzNP8hBh04KKt+3doqUIl9xLm6N65mCP22bBdIMyfuwNKV4t4HWlXRdbn/KsM4QtC4yusIWtV9crvOSPsvlE820IVcbTFcBd9SNagX/PQK3DpyJ8Rsz1NP4NgfnT2+RNhH03op0/53xJd/aECqdgYqhWLQX+oAJt2+1UQLA7GTbX1G4M05i0toXscWu5QsUI4xPRso4Xv1zGBcI+8+eCnaikcmPRc8ispnH/lclLBNdExVSgzWrR/561ne47UvrhJ+bSXJaCopKlorJ5J75wZgFKizp+3ORf4+1ga7/f1Ti72ciVPLWl3yLlSHw+E5J/2WQGu50wsfgfeP59Cf67wW96V7CgKTXuQKCVhB75ZOkl7SL69FfZjdlyWtyj548lXMIDpMYBUrpMYDD2Q2Bql4dzhmHtsBhob2NOSjDwVbBI/c1gQdm5Um6z2KE4wKB8vMAytz9LScGKBziC+elnIzInbOmnRUnxSBZZt+u531Mj04DPm3PZnpzMU8H3RHcQIK2ue43OJ7F/uhjO0urYhc6+EzHs8/p634jZRFmQX8/hP0kCvsZZT8yVaFjb/nnFrArS72oRpnF+SdAyCwV/fczsnBhuLhIKbNrRsN5HlMLfT/B43ABqe5zI0eLyFu3dNAMCbbqyc82gTqPJSkANQbAse2sTcm1R1bCUTjWzfVEQEZecjtYMF9YgUzpB6iDzXlcXGVi2bCXTh8sKq8us/XMwY/dMpqJxP
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(18002099003)(22082099003)(56012099003)(7053199007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cmJQMXRJZ25HM2Q1K2FvTnlza0JYSkoxUHVFRjhLZ2t4S0VPRTFDUXRFTk8y?=
- =?utf-8?B?TGRaam1xV2VzMms0RCswTU5aWlVuS0djc2ZER0phcVNrbzNKZ2tWcUE2YVdY?=
- =?utf-8?B?QUo1MzRESW9jZXdLRTZUdmNyczQrQ25HemluVGd5OGxhT25XUmQydFFsTlcx?=
- =?utf-8?B?Y1YrWXdPVlpaS09ySi9ZT0FKRmlvMWJPOFk1QzNRNC81Q0JKR0ZOWW9peWlR?=
- =?utf-8?B?TzZhVlZsa0R6Mnhpa0xNUmQwTnM5WVdaYldibDNMRGhqSWF1b2FrN0VMbXk0?=
- =?utf-8?B?c29sOTYwMFFyQmlTM0tFQlB6RDZnTXJFL2grYmNESHNyeU5FRnpLTTBCMlZL?=
- =?utf-8?B?dlhpMklZL1NPdWFieW5jSGlZWU1hSWFnM29EU0VZaGRwZHlWNTE2ZUlTQ1JM?=
- =?utf-8?B?a2N6dnFKY2lHbkxRajlHMWZKd2hMUnFSRmpXdTBFNUVVQm94Mzk0S3VHdHdv?=
- =?utf-8?B?Tm1KTEN5eVJrYVplditNTHcwYXQ4ckxNSnYvUkJ1eXVEVG5CeThlcmJLekI5?=
- =?utf-8?B?N0pwSENmMVNrdmxLamlzQ2g1bFlUQUcvT29HQ3Z1cEVUSHZpMVVHTXZER1F6?=
- =?utf-8?B?SXI3ZlpHenY3SDlDQVhEbXFIbEI1Y1VTTVViNmNPdkRqRVFvcU5EZUtxYktC?=
- =?utf-8?B?cmhWRzhIMnVtaVlFcjJHNnEza3JRQnBFQjBoT0JrTFdLWlhheHNOUStKWWN1?=
- =?utf-8?B?K1UrT3dZZzZjbm9ZT2d2U1kyVSszZ2MyRXk5czVQbnN1N05tRDNMamo3NVo1?=
- =?utf-8?B?TnEyMEQ2L3ArMmVieXVpRW5oRkEraTZ2VERFYlZIQi9WY3lCUUhvMTh0eFVk?=
- =?utf-8?B?bXpvbVBDVTQwUC94aWt0NG9HZWRERkkyaTdJNHBBVXEvSU9ZUTNpalVEY0pV?=
- =?utf-8?B?Y21mOElyUXlSSGhrdlJ3VGlPNEViTkJWZjVlRWYrUU5yQzl1UW5qL0FaUU5o?=
- =?utf-8?B?Z0dZZXdiQ21Xa2JDMDZNVDFhV3ZmWEJxejFOYllYM1BuSkNvaXErbmZFcVNu?=
- =?utf-8?B?M2ZlSk9qQzFGUjRBcUFISGlBcXVVaktjYUVObDYrc1E1MTZmaCs2UWJXZEd3?=
- =?utf-8?B?VHAwTTFOaEVNUGZHbHpOcEpKZHBWTEFmeEdJMUJkTlFFcG1Pd055TUoxRFNz?=
- =?utf-8?B?Zm0vTGJSc1l0WmI0Y09SQUVISlYrOEY3VlZ2OE9sR2xNRSs3cEtScS93Qlk2?=
- =?utf-8?B?VGxYeHpPQzB2MlBrTXZUcWRoaW5MRlQvTmMwb2EyVTBUOStyUjArWUo5eU8z?=
- =?utf-8?B?YU5SaTkyeHVBNTZNNE5zR2RWMHIyVG8wc3pLaVNpOXZIQmdsWUdqdm9oR2dj?=
- =?utf-8?B?YTdOc0YvTndNcmwxckRxRGZDSldaa1VIeGxxaW8vYlk5eHc2cXp1SDJBMEVo?=
- =?utf-8?B?SjZKem5PeWJNL2xiYkNSY3llZE5CajZMZVF1NkdyY1VDTlBld1dQTkkwclFI?=
- =?utf-8?B?RERLMktnTmdESUVoWXJhNVBWUkpXZUJ2VnhzU0dFOTkrWDY0eUpCSTdvdzBX?=
- =?utf-8?B?R0RkV2hZRVArb1hwaHhvdEw3SHFnMFVUeHB6clJIWCtBWHJQTE1OVDhJbFo0?=
- =?utf-8?B?RWYvZTVJbGZZc1dXcmNOOElQVy8zOHJqdXd6aEFsSi9CSnoyRHNSa2RoWDFk?=
- =?utf-8?B?MGlRYzlXUXdDQS8zbXdoZzBPODB4VDluQmkrSkRuZldzSk4rdTllbm4wRDcv?=
- =?utf-8?B?VTN3WThML2ppbGt2bTlDei9QUUVjMFNqVWZYVDV3cDkvZGQrWlJycThYSmN6?=
- =?utf-8?B?SjZDenE0TG5taVJOR25CVUVBSXFwbUxsY3RIQlZieXFCbllwVUlUWkd2UGYr?=
- =?utf-8?B?TTU2UU4vNHJTQmVsbUZ2OTVEWU5nUFg2cHhuaG90eHVIeExhT2dFdTVLLzJV?=
- =?utf-8?B?UWk0a0pVVlNsZWRWa2xQTUtFbWkrQm5yd2Fpb2NWc0Q0WjJLeDNEZ3lDK1hX?=
- =?utf-8?B?ejAyM0ZacWdGNEpOREg2cXEvRzBON1AwVVZDMFMzelg5VjVvRmFpMzlhb3FP?=
- =?utf-8?B?U1BvdU1MSGxTZkhwdk5UZ280R3kyMTBFZ0dLVFlqVzBlNWtDWE4vaURwTXNw?=
- =?utf-8?B?eFhEV3RJNTk2Q2w5cTd5M2NxYVlHRDlrS2N3bStmMlkrVmFsYjdFTWlYUngz?=
- =?utf-8?B?VkwvOUE0SSt2L0R0UGdEY09DSGpCWkVIZkFic1dMdDNPZ3FySytrU0E0RUhZ?=
- =?utf-8?B?WEJVWDFMWEs1dE9IWXppaXI3U2RYc3dzS3BhUW9zZkIzSnpOK3B5dWk4OG51?=
- =?utf-8?B?WEo4aTlKQ3BtYk1mejBZSUNWb1QvWktJTjJFMVd0TzhRNGpPQVFDRlZlTGVD?=
- =?utf-8?B?ZExjOW5IZDdzSjlaRkNkSm1pRkZWZ0sxWGxSeTYvSmhzam53enBYZz09?=
+	=?utf-8?B?RkYyS1p4dzJNc1FkUDlWb0lVQTVGNFg5eCtIQ1hMT0w5WHdYVllJOXZqYVNa?=
+ =?utf-8?B?MjBMRnkrdmY5bG9vOU9BM1dUb2V6cmgyc2tYaWpWZkRjQ1MrTkV4aTdHWHYv?=
+ =?utf-8?B?N2VFYUpMZnllTG44cThWd0crVDM5UlNYNXVETjdhUHMyMFNtTlhqdHVTZjlD?=
+ =?utf-8?B?Sm01REg3cFlHV3VHd3plRWNTRFZLb3BOcWJpYUc2VjF5ZTRKbEVhSmJXbmVi?=
+ =?utf-8?B?ZjRkeTlNN3dsSFBzdkNWQnpvanVxNHRicko2K1VpUVNmS1hVb0p0eXdneHlw?=
+ =?utf-8?B?THFBWk1yUTlDZ2dRRldYa1V6d2FZcEJnSlYxQittZkF0UU9DUm5IRGhCeTU2?=
+ =?utf-8?B?bGN4d1RRTUYwNE5POXBvdy8vUEk5eDZlcGw5dDQzMkdLQ1NuNUl1ZzFUaWsr?=
+ =?utf-8?B?MjltYStjUmhudExsanRDUmRWdCtCTEpBWkF1NGw1cHdXZXBpRWFvQ1U0Sjd3?=
+ =?utf-8?B?YTJmWXJDbmZHb2J5Rk9DYXJqL3BrSm1RRkxrREVURWxQMjNiRzcxUEdwUGFF?=
+ =?utf-8?B?OWRwdElhK21aSm81bmRFN2JHcXR4d1dBZFJ6T0wyUHZYMGQyQks3V2FaVWFQ?=
+ =?utf-8?B?Yi94OFREcEJDV3NMdEtGb1ZZNGFVVmpaV0FzUjFCSjY1ZUlOZGdHekhBb2wy?=
+ =?utf-8?B?RlNqM0hIZVdsYmw2b0FRRUNZMlU2WDByMXptTlI4SkxQZjIzamhudncvUU5W?=
+ =?utf-8?B?eFo1eU40c1lDc3pSd25hb2MrTmRpeXNWZGJDRVJNWHZXZ1RzaVFrS1NFQ2Va?=
+ =?utf-8?B?eXFoa0czUk9XZE8wT2k5VmpaM0E0ZDkvZnlDQjc2Sy93MW9wcWM3aC82NS9R?=
+ =?utf-8?B?SEFoYWh0WHlSZWFaaVBOZ3hYZ21KRTBsMzJKRktnZGc2Y2ZrVzFQcUpTMTFV?=
+ =?utf-8?B?K1FUSy9IRFN4SDZXcFNyNE80VnVjUTB2RmFoUjA1MUx6aVhUandaUThWU0kx?=
+ =?utf-8?B?MEkxLy84LzdSTU9rQ1FHZW5xcWtKQnpuWWsyRTlXaklmSWtLajFHLzNwZVpI?=
+ =?utf-8?B?OS81RENGVmovNXVQMktRRWhSbHVPUXZKM1ZseFlGZDJZb2FubDRXVFAyUmov?=
+ =?utf-8?B?YXlyN3dudkhKY0c0NHJTbjkzQ2lWVGhVSnNBSllkWGxKUTB4MkVEakxyQWdl?=
+ =?utf-8?B?a0VZSmx1cW1pOEV6OEZWdVZwb0UrQ3Ara3IyNjNCTW5qd0swNjB2TU03Szdj?=
+ =?utf-8?B?dGNoRnNMZ2NrNDlZenFtRGp5NTlrcmZ3SGJFWGE4L21qc1FYYmg3MG5qaHpr?=
+ =?utf-8?B?S1BneXBSbUJyNU9CYW1aK2hyNUFPTzFhKzE5anRNZ05WOUJUdisxTVBQcERq?=
+ =?utf-8?B?UlhsaDZOWmw3cFNwSTUxY3hvQzRaVmExdnVTR2luaGNwMVBCWEc4MVlHaE9M?=
+ =?utf-8?B?QWZ0a0RLcGdoMTBpS3hWeFUvaG1MM0gyQmljK2NaSXA1K21nL1BkRUd0Q0du?=
+ =?utf-8?B?R3U4QnZGcnkwcGVkZWZNZU5QTDZaOE05RjB2WUhuUTg2SStXeHlUK0Z5VWJP?=
+ =?utf-8?B?eU9OZnYzM3dxVWI1eE9IeHVRMHFEL3BUWGREVnNXZDRYMmdLLytkVnd2UWxX?=
+ =?utf-8?B?eDRkMit0NmQwanRITFhNQlBETjVHbVU3aXpjTUJHNUN0YU1ERTgyc1R5bDVL?=
+ =?utf-8?B?aXZXM2JrL2wvekh3ZFhFdkx4TjJ1YnlEWnRMZWxPbU5kM2dNN1JMODhuYlJ2?=
+ =?utf-8?B?eVhGNSt4aVR3Z2JlcCtMdVFYVWlUVm8waTh0ZTZOUFpFVDJlUU53UEdUQVBY?=
+ =?utf-8?B?V1BIdnJHallLNVovYW1yZ0ZITm16d3VGcDBJWEc3WUV6NXZpcjVCNFRtNEdP?=
+ =?utf-8?B?WEtNMGZiSjRXdVYybVZzMVk1eSsvOUNTckRIMzZ1cmg3cENEbzROUkJONEJM?=
+ =?utf-8?B?M1ZDVVdUYmlOOVFZZk5acFFDMFVsdEFGMnZib1ZwRG56cFQ1OVhhaU02UzV4?=
+ =?utf-8?B?QzdCRGNVeTBZR0pKcUdGZWhGMGp3M0JxR1MyRlVrUzlpT3NlWVNTSlBNVFlr?=
+ =?utf-8?B?MUpTMU42MTR1WWwxelR4RXIzenpCbGRlYW1xM0orUDQrU2Rma1VWUUNicGlu?=
+ =?utf-8?B?Q2lZcmhOdlUzWEpCYno5czVPaXg1c0tGYnNsdUdrZEJKZVRJZllzTVcwVDU2?=
+ =?utf-8?B?SUxkTFRhV3R1eFFxUmlCNEVOSEppMWVNZzFXaGM5UlUxK2UxMzZoQzZjL3pW?=
+ =?utf-8?B?SElEQkNzQVB6Rm1DZkhOK25TSkN1M3pVN0NpRnl4MUlkVW5meHZTVlo2b3Jn?=
+ =?utf-8?B?TC9RSmgrVm90Uld2Z3lSMkdKbEJZYzNQZEpYREVGVTN1dU84L1ZlMG5UMGdV?=
+ =?utf-8?B?VUlpU1duT3BPckVoMU00OTEwaVk2OVowcFpXWmxGeGxFY1pXZS8wZz09?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eefe296e-64cc-4d26-eb13-08de85f52563
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc5ecac2-dd36-4c68-deb2-08de85f5ddcd
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2026 20:21:47.7301
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2026 20:26:56.9862
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ct2un79GeBfHG05xFYchX5YNNIifPxePtNGlG/GESotBioiysVqaAAqTnGjnOnRHGq2P1H8vCm0zc8iBcLdtNA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: b8RifPDU76SVPt+S0NTTMDz7xzLOd+FvnkBFHQvNdbgb7xnf95Wi33qKXdGzCjKQj4dQL01CO9vsBgMkWHmRNA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7676
 
 
 
-On 3/19/2026 4:14 PM, Boqun Feng wrote:
-> On Thu, Mar 19, 2026 at 07:41:06PM +0100, Kumar Kartikeya Dwivedi wrote:
->> On Thu, 19 Mar 2026 at 18:27, Boqun Feng <boqun@kernel.org> wrote:
+On 3/19/2026 4:20 PM, Boqun Feng wrote:
+> On Thu, Mar 19, 2026 at 02:42:56PM -0400, Joel Fernandes wrote:
+[...]
+
+>>> naturally happen: if the extra irq_work layer turns out calling issues
+>>> to other SRCU users, then we need to fix them as well. Otherwise, there
+>>> is no real need to avoid the extra irq_work hop. So I *think* it's OK
+>>> ;-)
 >>>
->>> On Thu, Mar 19, 2026 at 05:59:40PM +0100, Kumar Kartikeya Dwivedi wrote:
->>>> On Thu, 19 Mar 2026 at 17:48, Boqun Feng <boqun@kernel.org> wrote:
->>>>>
->>>>> On Thu, Mar 19, 2026 at 05:33:50PM +0100, Sebastian Andrzej Siewior wrote:
->>>>>> On 2026-03-19 09:27:59 [-0700], Boqun Feng wrote:
->>>>>>> On Thu, Mar 19, 2026 at 10:03:15AM +0100, Sebastian Andrzej Siewior wrote:
->>>>>>>> Please just use the queue_delayed_work() with a delay >0.
->>>>>>>>
->>>>>>>
->>>>>>> That doesn't work since queue_delayed_work() with a positive delay will
->>>>>>> still acquire timer base lock, and we can have BPF instrument with timer
->>>>>>> base lock held i.e. calling call_srcu() with timer base lock.
->>>>>>>
->>>>>>> irq_work on the other hand doesn't use any locking.
->>>>>>
->>>>>> Could we please restrict BPF somehow so it does roam free? It is
->>>>>> absolutely awful to have irq_work() in call_srcu() just because it
->>>>>> might acquire locks.
->>>>>>
->>>>>
->>>>> I agree it's not RCU's fault ;-)
->>>>>
->>>>> I guess it'll be difficult to restrict BPF, however maybe BPF can call
->>>>> call_srcu() in irq_work instead? Or a more systematic defer mechanism
->>>>> that allows BPF to defer any lock holding functions to a different
->>>>> context. (We have a similar issue that BPF cannot call kfree_rcu() in
->>>>> some cases IIRC).
->>>>>
->>>>> But we need to fix this in v7.0, so this short-term fix is still needed.
->>>>>
->>>>
->>>> I don't think this is an option, even longer term. We already do it
->>>> when it's incorrect to invoke call_rcu() or any other API in a
->>>> specific context (e.g., NMI, where we punt it using irq_work).
->>>> However, the case reported in this thread is different. It was an
->>>> existing user which worked fine before but got broken now. We were
->>>> using call_rcu_tasks_trace() just fine in scx callbacks where rq->lock
->>>> is held before, so the conversion underneath to call_srcu() should
->>>> continue to remain transparent in this respect.
+>>> Cleaning up all the ad-hoc irq_work usages in BPF is another thing,
+>>> which can happen if we learn about all the cases and have a good design.
+>>>
+>>>> If we could get that irq_work() part only for BPF where it is required
+>>>> then it would be already a step forward.
 >>>>
 >>>
->>> I'm not sure that's a real argument here, kernel doesn't have a stable
->>> internal API, which allows developers to refactor the code into a saner
->>> way. There are currently multiple issues that suggest we may need a
->>> defer mechanism for BPF core, and if it makes the code more easier to
->>> reason about then why not? Think about it like a process that we learn
->>> about all the defer patterns that BPF currently needs and wrap them in a
->>> nice and maintainable way.
+>>> I'm happy to include that (i.e. using Qiang's suggestion) if Joel also
+>>> agrees.
 >>
->> This is all right in theory, but I don't understand how your
->> theoretical deferral mechanism for BPF will help here in the case
->> we're discussing, or is even appealing.
+>> Sure, I am Ok with sort of short-term fix, but I worry that it still does not
+>> the issues due to the tasks-trace conversion. In particular, it doesn't fix the
+>> issue Andrea reported AFAICS, because there is a dependency on pool->lock? see:
+>> https://lore.kernel.org/all/abjzvz_tL_siV17s@gpd4/
 >>
->> How do we decide when to defer? Will we annotate all locks that can be
->> held by RCU internals to be able to check if they are held (on the
->> current cpu, which is non-trivial except by maintaining a held lock
->> table, testing the locked bit is too conservative), and then deferring
->> the call_srcu() from the caller in BPF? What if you gain new locks? It
->> doesn't seem practical to me. Plus it pushes the burden of detection
->> and deferral to the caller, making everything more complicated and
->> error-prone.
+>> That happens precisely because of the queue_delayed_work() happening from the
+>> SRCU tasks-trace specific BPF right?
+>>
+>> This looks something like this, due to combination of SRCU, scheduler and WQ:
+>>
+>> srcu_usage.lock -> pool->lock -> pi_lock -> rq->__lock
+>>        ^                                       |
+>>        |                                       |
+>>        +----------- DEADLOCK CYCLE ------------+
+>>
+>>>> Long term it would be nice if we could avoid calling this while locks
+>>>> are held. I think call_rcu() can't be used under rq/pi lock, but timers
+>>>> should be fine.
+>>>>
+>>>> Is this rq/pi locking originating from "regular" BPF code or sched_ext?
+>>>>
+>>>
+>>> I think if you have any tracepoint (include traceable functions) under
+>>> rq/pi locking, then potentially BPF can call call_srcu() there.
+>>
+>>>
+>>> The root cause of the issues is that BPF is actually like a NMI unless
+>>> the code is noinstr (There is a rabit hole about BPF calling
+>>> call_srcu() while it's instrumenting call_srcu() itself). And the right
+>>> way to solve all the issues is to have a general defer mechanism for
+>>> BPF.
+>> Will that really solve the above mentioned issue though that Andrea reported?
 >>
 > 
-> My suggestion would be: deferring all call_srcu()s that in BPF
-> core. [...]
+> It should, since we call irq_work to queue_work instead queue_work
+> directly, so we break the srcu_usage.lock -> pool->lock dependency. But
+> yes, some tests would be good, the code is at:
+> 
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git/ srcu-fix
+> 
+> related commits are:
+> 
+> 78dcdc35d85f rcu: Use an intermediate irq_work to start process_srcu()
+> 0490fe4b5c39 srcu: Use raw spinlocks so call_srcu() can be used under preempt_disable()
+> 
+> One fixes the raw spinlock vs spinlock issue, the other fixes the
+> deadlock.
+Ah yes, with the irq_work fix, indeed.
 
-isn't one of the issues is that BPF is using call_rcu_tasks_trace() which is now
-internally using call_srcu? So whether other parts of BPF use call_srcu() or
-not, the issue still stands AFAICS.
-
-I think we have to fix RCU tasks trace, one way or the other.
-
-Or did I miss something?
+I'll try to queue the irq_work fix for 7.1 and run some tests. Appreciate if
+Andrea, Paul and Kumar can also check,
 
 thanks,
 
 --
 Joel Fernandes
-
-
 
