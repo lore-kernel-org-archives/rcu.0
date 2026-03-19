@@ -1,79 +1,82 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33DB2393DEE;
-	Thu, 19 Mar 2026 20:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7CB639F17F
+	for <rcu@vger.kernel.org>; Thu, 19 Mar 2026 20:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773951253; cv=none; b=ihoiq9b9wfuc1570+ptLIp9pGH0p7jrfpLkdqmcet1QpfvB/CA1m2UYqPEYTS/cbRkzCELdQ+oHrl0nCiOUgbJOibyCeiOftWwJ6V1lREZuP3Hrz2sVSvXByXbdjubfe/qbtlzIx5X63fRBIcN0JRJQHweny1w53xEY5UIhhchc=
+	t=1773951658; cv=none; b=sAMKinfEC11Y4y8pYpbluEn8zuTD2VyhzqpwNHd6o0OdP7KLPH5pPCOkvZ1eRaAXL906Zi3QwAhKzsu62ilFbqH+v5UaVQJm1Y9af3vqbTfCF3gtFzUpfMjllIGuu8O23JeRE+Q+9tprcPSVvFNka3ekuR/biAuE9NV6wNFAJnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773951253; c=relaxed/simple;
-	bh=ffkv/+bdWwNbwdoOHkX7FajyW0d9F9DZCOd0v7uK6/4=;
+	s=arc-20240116; t=1773951658; c=relaxed/simple;
+	bh=rWRwxJ0Lc6XFEsDidVrvYvVp8gYMBObbcxwPOdg4p5k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kr07j4YG+gWtqi28ygyd3UlAFCrIYJ+jpfxdfzvK3AjVuoGmpku/zHCG5G6MRcm2XCSuN0sS+r87Unlig31DMoFg7NyGz+NDVrOTTKd61nm261wVOQ+x/bczsgbIVcPkod/jul91aJ6JN88M8xzSRZCocCkKBkLEXRKoCF7D2cQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LzHwSYHM; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=MiZ3ac7Iu435wZznBQthZsPNG6tpwk84hEPPhiOdRZSYZwjV3vPm1+UrFXMTChwdlDMiTOI7Dxd0rW/LsviuRHAbbNMVoCAkVzG0XXtygID3G1csV+ROSO6mmyBSVyM3W4epC4XFY0T98FhBGW8nUSx4L6TRKgDbmXDqBGA6SeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YOjJwFaN; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LzHwSYHM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E292C2BCAF;
-	Thu, 19 Mar 2026 20:14:11 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YOjJwFaN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5F4BC4AF0C;
+	Thu, 19 Mar 2026 20:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773951252;
-	bh=ffkv/+bdWwNbwdoOHkX7FajyW0d9F9DZCOd0v7uK6/4=;
+	s=k20201202; t=1773951658;
+	bh=rWRwxJ0Lc6XFEsDidVrvYvVp8gYMBObbcxwPOdg4p5k=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LzHwSYHMO7I/Tdi66X2nC+vUw991QerA90iMAKSaugLisy1oafZL+5+PKlMwFEoru
-	 MlzOZUUSf+Phkpp61XwAqSzNEVIUtSazpR+vX90dK1OaollosCZyEiAM2x7zy3BlIv
-	 SdDlKJ0V1wg556sAG4eLPS7GIw+EC05A/uRv16y28LCA8prXpnAOvymq29zDfHnPEe
-	 wH3b87NePjCI6YeEpxtMZOs6/zk5ajs3SqmpDJK7bQCTQDd7Vk2IgLQK9GhulWOiDZ
-	 EbwBO7Xg8nM/4P3QkMLkkiw+FUK2G37suZI35wrCkKZNBUAzt5iM5HK3uJRGMBTG8z
-	 cPfyXWWcrhnTQ==
-Received: from phl-compute-12.internal (phl-compute-12.internal [10.202.2.52])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 44A00F40087;
-	Thu, 19 Mar 2026 16:14:10 -0400 (EDT)
+	b=YOjJwFaNUJUskrfU9YcDRdTUa8EChLIuudemFiEUMYrRBwcYIVrSbkAeQLVYVzJPX
+	 crkinUAlN096vERBk+to49rPG1uiwycByV2arMy2t25iGLQsFaG98DHNIwaNGYcjHW
+	 MKfuybm7shQOjVOQpjWoYHwJ8ED/bA7sTGJVoaDSpxmNfQdk/i9Gc86t+7cxwu9dA8
+	 Rruw+uY8KVwPcZzOJwbAQugMv28gcgkWkSwmnrqQ8JW990DDCKDhsjMl/uE0jVmATi
+	 FFN8Lu1MwixTEiLQCR4Ll/c9Ihr3h/ydOr8PA4guc3V9oil/570Esya+/ztTs+Hd4k
+	 Eq9aGug4xKnFw==
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 905E3F40071;
+	Thu, 19 Mar 2026 16:20:56 -0400 (EDT)
 Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-12.internal (MEProxy); Thu, 19 Mar 2026 16:14:10 -0400
-X-ME-Sender: <xms:Elm8aUvWMUrK071clNzOOydNGmgHb6-O0xYabKye3k9qAY2omrf_MQ>
-    <xme:Elm8ab20GHydRUNIxKTeVJKS0jR-cjuPSkl66QAF1KjcI0I1181TwrTOzH1Lia-uV
-    EaAfOtFnjeJMUME9WNM3PljuxDGTbXS05TN7HhVMmceAH8n6JU6pA>
-X-ME-Received: <xmr:Elm8aV5i6TnECFldpl_gN7yw0v8aLagjYHXRxvtQVK4sPpeQU_Q_9f173WbJQKh9vPK5cJ8SaWQrDPXJrD_OLw8vOY7hYevA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeftdejleegucetufdoteggodetrf
+  by phl-compute-06.internal (MEProxy); Thu, 19 Mar 2026 16:20:56 -0400
+X-ME-Sender: <xms:qFq8aXetvjToFKiJfqyG_BAKT4fRL3iuktIxZ5zzOBRfEBWSxIjDuQ>
+    <xme:qFq8aWkRI7KnONlhEbi8n1S9eVJELUTUWaEWxSr8tpGkQM48l-PD_Na8hGDLQRq0l
+    9hE-i8ZujsGnbEm5VwG6w1EEWi-SLAFh2RpfAhb0tLrh-b-FC2DK24>
+X-ME-Received: <xmr:qFq8aZD9XUWApyDZOVkQv-nF6CGNmpM5jyOQVeM71f0-2UpO46uoBAqI_KKLLmn985tUxBL1rm4iyZtt850m23gAJIxNynqt>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeftdejleehucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
     hfgvnhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    ekgffhhfeuheelhfekteeuffejveetjeefffettedtteegfefftdduteduudfgleenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnod
-    hmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduieejtdelkeegjeduqddujeej
-    keehheehvddqsghoqhhunheppehkvghrnhgvlhdrohhrghesfhhigihmvgdrnhgrmhgvpd
-    hnsggprhgtphhtthhopeduhedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepmhgv
-    mhigohhrsehgmhgrihhlrdgtohhmpdhrtghpthhtohepsghighgvrghshieslhhinhhuth
-    hrohhnihigrdguvgdprhgtphhtthhopehjohgvlhgrghhnvghlfhesnhhvihguihgrrdgt
-    ohhmpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
-    epfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvggvrhgrjhdr
-    ihhithhruddtsehgmhgrihhlrdgtohhmpdhrtghpthhtohepuhhrvgiikhhisehgmhgrih
-    hlrdgtohhmpdhrtghpthhtohepsghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhr
-    tghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:Elm8aSV6zqSEH3vdRvfS8G3Jqgt9PA2unEfEYTCu1yefgrt9MKwuTQ>
-    <xmx:Elm8adhE7vHMgyxJL8xkENlYxCVE1iNE5FPvlWiDEc90BsSjbDMJRA>
-    <xmx:Elm8aSfTFw-BQdNO1yOAjlxF9ZjxomX_V4-9Ihp1-N0JGPXPCGEbxw>
-    <xmx:Elm8ac1hsa8556ve4vweKjEzVFPKIhkgqX0u4ALklt3NAQFSjaEqDg>
-    <xmx:Elm8aeqh8nGLp2HHmw5NFtzGQXrQtw0EmxDcXxIqYEnI6hNIqo7s5Vfk>
+    elueehtefhtddtgfejvdejueehhfekteevueeuueekgeetieeggeehvdffhefhhfenucff
+    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhn
+    rghlihhthidqudeijedtleekgeejuddqudejjeekheehhedvqdgsohhquhhnpeepkhgvrh
+    hnvghlrdhorhhgsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepudejpdhmohgu
+    vgepshhmthhpohhuthdprhgtphhtthhopehjohgvlhgrghhnvghlfhesnhhvihguihgrrd
+    gtohhmpdhrtghpthhtohepsghighgvrghshieslhhinhhuthhrohhnihigrdguvgdprhgt
+    phhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehfrhgvug
+    gvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvvghrrghjrdhiihhtrhdu
+    tdesghhmrghilhdrtghomhdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtghomh
+    dprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtghomhdprhgtphhtthho
+    pehrtghusehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgvmhigohhrse
+    hgmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:qFq8aYfUzNcPIJFeEHZEhteFf6bybY7JZqUtXlBySVF1i0hRwGPQDQ>
+    <xmx:qFq8aU7NSMZnMsX1ZZ5VkJGS5O47r0uDaqkVWn18vx0NbHlCa1ZpSA>
+    <xmx:qFq8aSNI3Wp_1M9ehw4Bt26VTtEjQqQL-f-n0WP19chdqKLr3OCRgw>
+    <xmx:qFq8aVHLQOM_aEZ2ZZDxzsPr-b0AyebHpE9g8vE3pPeBaYUtYa5Nqg>
+    <xmx:qFq8aWQWMu96uDE-WyQo9rNcceFpIp-AZDPIwYYotkzIgM6vFQThS9bA>
 Feedback-ID: i8dbe485b:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 19 Mar 2026 16:14:09 -0400 (EDT)
-Date: Thu, 19 Mar 2026 13:14:08 -0700
+ 19 Mar 2026 16:20:56 -0400 (EDT)
+Date: Thu, 19 Mar 2026 13:20:55 -0700
 From: Boqun Feng <boqun@kernel.org>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Joel Fernandes <joelagnelf@nvidia.com>, paulmck@kernel.org,
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, paulmck@kernel.org,
 	frederic@kernel.org, neeraj.iitr10@gmail.com, urezki@gmail.com,
 	boqun.feng@gmail.com, rcu@vger.kernel.org,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>
+	John Fastabend <john.fastabend@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andrea Righi <arighi@nvidia.com>
 Subject: Re: Next-level bug in SRCU implementation of RCU Tasks Trace +
  PREEMPT_RT
-Message-ID: <abxZEE4SAMkNEleq@tardis.local>
+Message-ID: <abxap0vo0SoP5Jh0@tardis.local>
 References: <da4313b1-9ff5-46e9-b3b7-206dbcb72602@nvidia.com>
  <abs026TUV9oAg_Xy@tardis.local>
  <abtMhd_LVp3uL_pA@tardis.local>
@@ -81,9 +84,9 @@ References: <da4313b1-9ff5-46e9-b3b7-206dbcb72602@nvidia.com>
  <abwkD0mOdAbD9ENJ@tardis.local>
  <20260319163350.c7WuYOM9@linutronix.de>
  <abwo0I_mu94t5Ews@tardis.local>
- <CAP01T75J4EXu8MFD2WEQ71Ou-bapqS=_wXFFQJ6Ed62X28HO2A@mail.gmail.com>
- <abwyGtG7hDpd8vBN@tardis.local>
- <CAP01T75S-NMgB=s_0jqq52xRwe1cQ29DzD33eeqUZHM3cSb=oA@mail.gmail.com>
+ <20260319170244.jqndSwct@linutronix.de>
+ <abw2ECYirX1tTwV9@tardis.local>
+ <c520958e-78e1-41ce-b675-4a560305a206@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -92,125 +95,106 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP01T75S-NMgB=s_0jqq52xRwe1cQ29DzD33eeqUZHM3cSb=oA@mail.gmail.com>
+In-Reply-To: <c520958e-78e1-41ce-b675-4a560305a206@nvidia.com>
 
-On Thu, Mar 19, 2026 at 07:41:06PM +0100, Kumar Kartikeya Dwivedi wrote:
-> On Thu, 19 Mar 2026 at 18:27, Boqun Feng <boqun@kernel.org> wrote:
-> >
-> > On Thu, Mar 19, 2026 at 05:59:40PM +0100, Kumar Kartikeya Dwivedi wrote:
-> > > On Thu, 19 Mar 2026 at 17:48, Boqun Feng <boqun@kernel.org> wrote:
-> > > >
-> > > > On Thu, Mar 19, 2026 at 05:33:50PM +0100, Sebastian Andrzej Siewior wrote:
-> > > > > On 2026-03-19 09:27:59 [-0700], Boqun Feng wrote:
-> > > > > > On Thu, Mar 19, 2026 at 10:03:15AM +0100, Sebastian Andrzej Siewior wrote:
-> > > > > > > Please just use the queue_delayed_work() with a delay >0.
-> > > > > > >
-> > > > > >
-> > > > > > That doesn't work since queue_delayed_work() with a positive delay will
-> > > > > > still acquire timer base lock, and we can have BPF instrument with timer
-> > > > > > base lock held i.e. calling call_srcu() with timer base lock.
-> > > > > >
-> > > > > > irq_work on the other hand doesn't use any locking.
-> > > > >
-> > > > > Could we please restrict BPF somehow so it does roam free? It is
-> > > > > absolutely awful to have irq_work() in call_srcu() just because it
-> > > > > might acquire locks.
-> > > > >
-> > > >
-> > > > I agree it's not RCU's fault ;-)
-> > > >
-> > > > I guess it'll be difficult to restrict BPF, however maybe BPF can call
-> > > > call_srcu() in irq_work instead? Or a more systematic defer mechanism
-> > > > that allows BPF to defer any lock holding functions to a different
-> > > > context. (We have a similar issue that BPF cannot call kfree_rcu() in
-> > > > some cases IIRC).
-> > > >
-> > > > But we need to fix this in v7.0, so this short-term fix is still needed.
-> > > >
-> > >
-> > > I don't think this is an option, even longer term. We already do it
-> > > when it's incorrect to invoke call_rcu() or any other API in a
-> > > specific context (e.g., NMI, where we punt it using irq_work).
-> > > However, the case reported in this thread is different. It was an
-> > > existing user which worked fine before but got broken now. We were
-> > > using call_rcu_tasks_trace() just fine in scx callbacks where rq->lock
-> > > is held before, so the conversion underneath to call_srcu() should
-> > > continue to remain transparent in this respect.
-> > >
-> >
-> > I'm not sure that's a real argument here, kernel doesn't have a stable
-> > internal API, which allows developers to refactor the code into a saner
-> > way. There are currently multiple issues that suggest we may need a
-> > defer mechanism for BPF core, and if it makes the code more easier to
-> > reason about then why not? Think about it like a process that we learn
-> > about all the defer patterns that BPF currently needs and wrap them in a
-> > nice and maintainable way.
+On Thu, Mar 19, 2026 at 02:42:56PM -0400, Joel Fernandes wrote:
+> On 3/19/2026 1:44 PM, Boqun Feng wrote:
+> > On Thu, Mar 19, 2026 at 06:02:44PM +0100, Sebastian Andrzej Siewior wrote:
+> >> On 2026-03-19 09:48:16 [-0700], Boqun Feng wrote:
+> >>> I agree it's not RCU's fault ;-)
+> >>
+> >> I never claimed it is anyone's fault. I just see that BPF should be able
+> >> to do things which kgdb would not be allowed to.
+> >>
+> >>> I guess it'll be difficult to restrict BPF, however maybe BPF can call
+> >>> call_srcu() in irq_work instead? Or a more systematic defer mechanism
+> >>> that allows BPF to defer any lock holding functions to a different
+> >>> context. (We have a similar issue that BPF cannot call kfree_rcu() in
+> >>> some cases IIRC).
+> >>>
+> >>> But we need to fix this in v7.0, so this short-term fix is still needed.
+> >>
+> >> I would prefer something substantial before we rush to get a quick fix
+> >> and move on.
+> >>
+> > 
+> > The quick fix here is really "restore the previous behavior of
+> > call_rcu_tasks_trace() in call_srcu()", and the future work will
 > 
-> This is all right in theory, but I don't understand how your
-> theoretical deferral mechanism for BPF will help here in the case
-> we're discussing, or is even appealing.
+> Unfortunately reverting c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in
+> terms of SRCU-fast") is tricky since the original body of RCU Tasks Trace code
+> is deleted. Perhaps we should have added an easier escape-hatch, lesson learnt:)
 > 
-> How do we decide when to defer? Will we annotate all locks that can be
-> held by RCU internals to be able to check if they are held (on the
-> current cpu, which is non-trivial except by maintaining a held lock
-> table, testing the locked bit is too conservative), and then deferring
-> the call_srcu() from the caller in BPF? What if you gain new locks? It
-> doesn't seem practical to me. Plus it pushes the burden of detection
-> and deferral to the caller, making everything more complicated and
-> error-prone.
+> > naturally happen: if the extra irq_work layer turns out calling issues
+> > to other SRCU users, then we need to fix them as well. Otherwise, there
+> > is no real need to avoid the extra irq_work hop. So I *think* it's OK
+> > ;-)
+> > 
+> > Cleaning up all the ad-hoc irq_work usages in BPF is another thing,
+> > which can happen if we learn about all the cases and have a good design.
+> > 
+> >> If we could get that irq_work() part only for BPF where it is required
+> >> then it would be already a step forward.
+> >>
+> > 
+> > I'm happy to include that (i.e. using Qiang's suggestion) if Joel also
+> > agrees.
+> 
+> Sure, I am Ok with sort of short-term fix, but I worry that it still does not
+> the issues due to the tasks-trace conversion. In particular, it doesn't fix the
+> issue Andrea reported AFAICS, because there is a dependency on pool->lock? see:
+> https://lore.kernel.org/all/abjzvz_tL_siV17s@gpd4/
+> 
+> That happens precisely because of the queue_delayed_work() happening from the
+> SRCU tasks-trace specific BPF right?
+> 
+> This looks something like this, due to combination of SRCU, scheduler and WQ:
+> 
+> srcu_usage.lock -> pool->lock -> pi_lock -> rq->__lock
+>        ^                                       |
+>        |                                       |
+>        +----------- DEADLOCK CYCLE ------------+
+> 
+> >> Long term it would be nice if we could avoid calling this while locks
+> >> are held. I think call_rcu() can't be used under rq/pi lock, but timers
+> >> should be fine.
+> >>
+> >> Is this rq/pi locking originating from "regular" BPF code or sched_ext?
+> >>
+> > 
+> > I think if you have any tracepoint (include traceable functions) under
+> > rq/pi locking, then potentially BPF can call call_srcu() there.
+> 
+> > 
+> > The root cause of the issues is that BPF is actually like a NMI unless
+> > the code is noinstr (There is a rabit hole about BPF calling
+> > call_srcu() while it's instrumenting call_srcu() itself). And the right
+> > way to solve all the issues is to have a general defer mechanism for
+> > BPF.
+> Will that really solve the above mentioned issue though that Andrea reported?
 > 
 
-My suggestion would be: deferring all call_srcu()s that in BPF
-core. For new locks, I think every lock usage in BPF core should be
-carefully audited because that's very similar to NMI. It's not hard to
-trade BPF as a different context and let lockdep detect lock mis-usage,
-similar as what we do for interrupts and NMIs.
+It should, since we call irq_work to queue_work instead queue_work
+directly, so we break the srcu_usage.lock -> pool->lock dependency. But
+yes, some tests would be good, the code is at:
 
-Basically, if we want to use some synchronization in BPF core:
+	https://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git/ srcu-fix
 
-1. If it's re-entrant safe, then go ahead and use it.
-2. If it has a lock, but can be deferred, use the general BPF defer
-   mechanism to defer the operation.
-3. If it cannot be deferred, it has to change or add a new variant that
-   support either 1 or 2.
+related commits are:
 
-i.e. a universal solution.
+78dcdc35d85f rcu: Use an intermediate irq_work to start process_srcu()
+0490fe4b5c39 srcu: Use raw spinlocks so call_srcu() can be used under preempt_disable()
 
-> Also, any unconditional deferral in the caller for APIs that can "hold
-> locks" to avoid all this is not without its cost.
-> 
-> The implementation of RCU knows and can stay in sync with those
-> conditions for when deferral is needed, and hide all that complexity
-> from the caller. The cost should definitely be paid by the caller if
-> we would break the API's broad contract, e.g., by trying to invoke it
-
-The thing is, lots of the synchronization primitives existed before BPF,
-and they were not designed or implemented with "BPF safe" in mind, and
-they could be dragged into BPF core code path if we begin to use them.
-For example, irq_work may be just "happen-to-work" here, or there is a
-bug that we are missing. It would be rather easier or clearer if we
-design a dedicate defer mechanism with BPF core in mind, and then we use
-that for all the deferrable operations.
+One fixes the raw spinlock vs spinlock issue, the other fixes the
+deadlock.
 
 Regards,
 Boqun
 
-> in NMI which it is not supposed to run in yet, in that case we already
-> handle things using irq_work. Anything more complicated than that is
-> hard to scale. All of this may also change in the future where we
-> support call_rcu_nolock() to make it work everywhere, and only defer
-> when we detect reentrancy (in the same or different context).
+> +Andrea, +Steve as well.
 > 
+> thanks,
 > 
+> --
+> Joel Fernandes
 > 
-> >
-> > Regards,
-> > Boqun
-> >
-> > > > Regars,
-> > > > Boqun
-> > > >
-> > > > > > Regards,
-> > > > > > Boqun
-> > > > > >
-> > > > > Sebastian
