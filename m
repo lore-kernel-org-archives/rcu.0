@@ -1,291 +1,170 @@
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11011005.outbound.protection.outlook.com [52.101.57.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30BA229346F;
-	Fri, 20 Mar 2026 18:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774032597; cv=none; b=HSvHgdD7N5q0u0tW2F+jRdJzLwBkOZh/ItsA+4jPF8qJflGv8JoX/KyMncuqSABYCIEvJZuLOVEcqmCncgHRCt8mr0avBlVFan7N6y5clZzAwBGDMkxP422y+yt+4wM4O3fOOCbhQbKteyRGRrf6d6QmITipcxrdvRHs8amVddw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774032597; c=relaxed/simple;
-	bh=ode6IRLnzBGMe/RGmjV1E8zt/s+60bcNaK3PwIbfPos=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=avsM7DzveJyynKUXq7csxHMOhkcClvEjn5yf/asP2CmDRXcF4BANrtnXS/cslW3/MlyjSYQ9jMyuDFEWobY7pdYNy8oFOY2ouXDn4gOGMaRgzOU+B+da1hOn4+t4tGZjgZPlCOMA3Ml5sf+1uAntvCcO08eZOY8dbkbTMq1ZnTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CxLTkIgF; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6801DE4E0;
+	Fri, 20 Mar 2026 19:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.57.5
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774034345; cv=fail; b=L4KPrHpw2UYSE6FNteLU7tcIuJFmFrY88zsxrH6sje9Ko4n5+BZ52FzhgkQSDB42zwBYDfgsAYd9d9Fj71XdAeO0tbV+uLC4pfevVlAUGAP39IhS5UJ6exRKC2bCU+6FVPWoIMCmyGH3WLiVug5aV4T8eItzR7HZmmjtBoDHm3I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774034345; c=relaxed/simple;
+	bh=QVGOscjTI9U6kOf85nDf6KUHPzezXIUCgp4Ael6kblo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Pjli2irL92cNWO0Ss4hbKAFLAvVGnjspS27YWVEa3hr3OvZu7T18WT5U/qiibcskkJ5yQZrtKbH6mz0lCPisWT/A8SNDWzkFfosDEovCoPfTM3lwI3jkYwv+GhiwzX2L86E2i114XBIYzvKVTCfEYAnVEX6FHidFu+Nu3mnKllc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=qXReC1V8; arc=fail smtp.client-ip=52.101.57.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CxLTkIgF"
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 62KHJf8r4073613;
-	Fri, 20 Mar 2026 18:49:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=MkAI5C
-	rMxU4Dfuhrmy74i1Px9ryimnDJC+LC+CxKzEk=; b=CxLTkIgFDbuwJlQTwtf/Do
-	DbzikauyZF49TYoSE4d+sxJgvI7aLZstgLnQCJxgD9OKkHXEncTwONi8bPnt8seP
-	UT3DwxsILBBvpaAlEOVTqjRHPCits5+G6HeC7i3tcCZEHPZI6qcJX0yD7sWJqSWJ
-	vUPFowgwBUDmHxvXSJd08TX3iXLmpfCQCIFQ7DQsRTmjeWj3zNNVhTRcbc69Hrgs
-	zAfzLs9kOUDb1oZP9gXyhrXf6ruXUSbXyvH7+fBRzzCQOTgsmKmTC09WDLzpxaVE
-	EhRbGvJa6uqAmp519SIiwml3ArDRsHUe0I9t6sK5arIBEuUyUvTjmqCXltWh7pFA
-	==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cvy6556mw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 20 Mar 2026 18:49:48 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62KIM00P028455;
-	Fri, 20 Mar 2026 18:49:47 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4cwmq1r9wh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 20 Mar 2026 18:49:47 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 62KInhp951446196
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 20 Mar 2026 18:49:44 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DC6F720043;
-	Fri, 20 Mar 2026 18:49:43 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BD8C120040;
-	Fri, 20 Mar 2026 18:49:38 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.124.222.114])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 20 Mar 2026 18:49:38 +0000 (GMT)
-Date: Sat, 21 Mar 2026 00:19:35 +0530
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Samir M <samir@linux.ibm.com>, Joel Fernandes <joelagnelf@nvidia.com>,
-        peterz@infradead.org, aboorvad@linux.ibm.com, boqun.feng@gmail.com,
-        frederic@kernel.org, josh@joshtriplett.org,
-        linux-kernel@vger.kernel.org, neeraj.upadhyay@kernel.org,
-        rcu@vger.kernel.org, rostedt@goodmis.org, srikar@linux.ibm.com,
-        sshegde@linux.ibm.com, tglx@linutronix.de, urezki@gmail.com
-Subject: Re: [PATCH v3 2/2] cpuhp: Expedite RCU grace periods during SMT
- operations
-Message-ID: <ab2WvwjWNnJceaWS@linux.ibm.com>
-References: <20260218083915.660252-2-vishalc@linux.ibm.com>
- <20260218083915.660252-6-vishalc@linux.ibm.com>
- <20260227011352.GA1089964@joelbox2>
- <94b3284b-885d-4263-99ed-728375c1a2b7@linux.ibm.com>
- <aapprY-prH0l_WeK@linux.ibm.com>
- <bde1a8b9-7f56-45fb-830c-038fa7b85f0d@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="qXReC1V8"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=twW1i8Z9uVqDex4Bm6cuJT6np5Las7AxXtevwRTHUMvU4g2Lsg0P/Xx9Ofzpqmb/600jnXfRV5pL6pbiKh0OhyUE4jXo3uOkmXEpND6fbInAi7H7rq1iBwUjui8WCDVB3HLQIBKEA0REl8sXn+TVGEf6R6P7d8lhgdIaCDc46o8dRf11vLvjB/gsm1rnF8S1wFsYeTDxYyH2vJrCKCiOf/G1BC21X+ElguYPgqAU4PHvMlryQ0p7qBEiERGdvkxhNuipT7ksUKtIbuHY79SS7kNZykLXK2AvTZuFzKlOUBM4NYqHl2K4G1K11OJeNyN25If8VO5vCdH/Y57EEQIR4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zIw/cv1U220WnhssXnF9dYk4vm/DdkiGnAo9+IC4kkA=;
+ b=dkzUwFviXNgUgagyU59ro/2Lrg20Y6T4jTgrFv7/+ZOG+CkcTSKwzc/vf3+TtvZIa8e7vFIXv0FzLXmGbLTKIVcLmI8bASBgFvdBMwdYsKJGA7y539DTGwZSlz2gt/1PXoDDr9uT8BNrXVOYV7qTapknNt/f10EDtr0rxFbDh25TwxP2a0HvwLbfj9WbuThOOgYnuHlcXIsH/HcACClYDQZqHwClu0gnQfEWeLyjfjk+ciNi+7X3oAdpbUANihwyqE4MX1a7DczA+U8tWz0An/So6wgGfU6kVZY6nN6Yb3hO1iBmqdvCwtY5lcDo92+2lDNOaDkXTVOkgeWPPF5LbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zIw/cv1U220WnhssXnF9dYk4vm/DdkiGnAo9+IC4kkA=;
+ b=qXReC1V8GUuqIorNlZs+uHnQQeMchBQ11F5rlEGruVd+f78/DuHi5ftFo3NBsiCvg7vLIKMoM8ocPh1xztdrO991awFRkzSTa4I3vEQO1Nexu0IO26e5xODpa6fwaMfE2v4ovw7tymSEV6gPL9OG6T6HbJAvaO2RFrMra60thg3/AwTQRPq+cQqm2IHlS6Ulb/9o/FsAu6c0IkTiOzjgOoWNyylFPKFjUQMTYruo/Jkt/l4NCdWyV5zOBtZJ6lxcJBCZPYH9pNWhFD5+at15TFRYZ0P/HT1iUiijzwA6xQrCjkPd5S6d4trM1R/QdaA6WxaltGNreH4Vop3ZlTqIcA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
+ PH7PR12MB9176.namprd12.prod.outlook.com (2603:10b6:510:2e9::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9745.9; Fri, 20 Mar 2026 19:18:59 +0000
+Received: from DS0PR12MB6486.namprd12.prod.outlook.com
+ ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
+ ([fe80::88a9:f314:c95f:8b33%4]) with mapi id 15.20.9745.007; Fri, 20 Mar 2026
+ 19:18:59 +0000
+Message-ID: <59f24a92-a738-4af0-beb3-c3ebb31c41bd@nvidia.com>
+Date: Fri, 20 Mar 2026 15:18:56 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcu: Use an intermediate irq_work to start process_srcu()
+To: Boqun Feng <boqun@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, frederic@kernel.org,
+ neeraj.iitr10@gmail.com, urezki@gmail.com, boqun.feng@gmail.com,
+ rcu@vger.kernel.org, Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>, Andrea Righi <arighi@nvidia.com>,
+ Zqiang <qiang.zhang@linux.dev>
+References: <2d9e7e42-8667-4880-9708-b81a82443809@nvidia.com>
+ <20260320181400.15909-1-boqun@kernel.org>
+Content-Language: en-US
+From: Joel Fernandes <joelagnelf@nvidia.com>
+In-Reply-To: <20260320181400.15909-1-boqun@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN0PR03CA0026.namprd03.prod.outlook.com
+ (2603:10b6:208:52f::23) To DS0PR12MB6486.namprd12.prod.outlook.com
+ (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bde1a8b9-7f56-45fb-830c-038fa7b85f0d@paulmck-laptop>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 7uJiPmEhmNVwxS0uKKnNU_5XUmYhLJaP
-X-Proofpoint-GUID: 7uJiPmEhmNVwxS0uKKnNU_5XUmYhLJaP
-X-Authority-Analysis: v=2.4 cv=KYnfcAYD c=1 sm=1 tr=0 ts=69bd96cc cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=VwQbUJbxAAAA:8
- a=VnNF1IyMAAAA:8 a=X-Hu_6gHTJTtgA5pAAIA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzIwMDE1MiBTYWx0ZWRfX2zbgprhNtXbU
- /+mlw8LMMuLxZ2URVmIixZoJBoSCj9eIhCi8R1ZLMsHPg/++JoSnEKQzs6vIDxBdPNoNUqR64e1
- /hIx4fwd10p+zJ+sIuYnv2syNNoS2YKANt5zDrssw5SBYDvZerk9CUZax37lCP1N+38Rd8wD+3s
- Xdo6Ig/C3RcZE93VMR5dkicpqQdwYh4DNYpmUw2DxxjhKwp/Y+btW5uXIdR0V4cLCSiz7baQ8/S
- ZU9+Wb6++gKK9AkdhTaABF2I/YbcvQcBtQUU2s9z0k0+ZQ9Ou6cbLFEvdrqzuzneXsBZbE6Al0m
- yxeDx1+s/cRAVcefQQ7WfMFUlSFi6ixh2wAN0pAwTJ652IVNBKigbE7DikRO/82QWenDUoKVU/5
- ym8NYCshJPnYpNHUFWmBnPpAiCoJrzivsnMvEc6WfAl+3YG7lRz261fQL3KFBC17cxKG2iZdI8G
- Zj5QxQUW7TOD1Y9yh7A==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-03-20_03,2026-03-20_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0 bulkscore=0
- spamscore=0 impostorscore=0 malwarescore=0 adultscore=0 clxscore=1015
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2603200152
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|PH7PR12MB9176:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9977c3bc-1a48-48da-1b74-08de86b589bc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|1800799024|366016|18002099003|7053199007|56012099003|22082099003;
+X-Microsoft-Antispam-Message-Info:
+	26C5FLWT8m64ax6NVmlfw70GZdwhDtLSGcgVvAxC4I9xCgUHCr/sRdWQJXKbihkXWRKAU0/Zto1oZ2WnFdJ/4phIzBB6itL0gr2OBQ/WnvO9t8+6fb3g1yysCUG1F4iGmyVwP3H/MWRPYRL4yV78mAj2qj6+72z9b8qgyuXgDZ1HaSu4qDFdzoJ78/jo6WKFDxI098n2BdTXZhZH+4xRb5nm+12NRUNqswco1OkIHexgMgLWF0a+7C5wNCfof1ckgca+2LY/dPIZhSiuHlBAGC3de9gHbv2aDNmImeq37EWHztsSPhsVD47gbv94qpJyaLDxMa/apB9Y1d9VcDF3EeLe7PH6YB6oBlFkXRa61tlk2RJVIASRHQulhjIgKbYsmj/8ppHyx9D0lFpvesKPx4D41n8Q1uTV6+usv1TGUQTYmbEuz4hz5n7NxXyqsF3ykCvsUNyVVOe+xp9UQIDPuFxY3BVBY1onvSv5kB4l3dE+dJjue2KzvMnQ5ApdHHKAy+jvdYlYHLt4fqQyp8eDnNE7byE0AmkgVKK2/YEPwwu3POKothx7mnF0yk4Wsnm34hwwA+qO4JnUbYf/oKRYR2qlMZilof1QVu6StVtfNdIJrcbi4TlhI2s13dcZb5D0MeBZ+8ko/FaDNLlQVBxKv2OJHeyE3zDecbbCG5k27pk6503OKK2W35q8Xj6uF3DZk++z5gSuY2QCwt7sbd2ur97w0l5QhSX4qQPKunm60B0rZilt+Uhf06C3hLN7ErM7
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(18002099003)(7053199007)(56012099003)(22082099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QkUxMSt0eUI0Q2hkR0tIQzFVWCs2ZThZZnRUNnRxVzJHbzMwVVBmeDM1Nkw4?=
+ =?utf-8?B?SjBlTDlNQi9vUDBRZDVxYWgzOHRvT3JsQ3pOWXBSMmhxTHpYcmszOVhXVS81?=
+ =?utf-8?B?TGszaVg4RWpsMmtDMzhlT1RwUUEwNDBhcDNLQ0NVekYwd20zMHFCaHhNMW9v?=
+ =?utf-8?B?d0ZJcmhzWndMc1RHUlJ2bVhPVFVibWoyL2dZMXU5U2R0TldpOWZtR09RWU5n?=
+ =?utf-8?B?RGd6NVYyQlBVRmtya2xNbVZGbTNLMUthY3FZclUrVGVpMVJxTWVCL0FJYkJj?=
+ =?utf-8?B?OU85WE5nVWdmSzFLQS9KZTN5eUVEM0d2UWM1ZDNQK0MrS1BNRTBxMUxjaXpH?=
+ =?utf-8?B?WEY3eHI2MVU3TmxDMVBwN20wcnNnQXpIa2RIMXNIdjNRQ0xzN3pPTGNNVGth?=
+ =?utf-8?B?L2ZjZ3diYk5CTFZqQ2phYXMxOGp6RVRDZUI0aGsrL1BmazlQbFYzQ0xNK0Ir?=
+ =?utf-8?B?eWFxTDMwMTAzWGFENmNZZjF6ZFNNZ2NmSGV1WG41cnkxYzhHUSt1a0pzVStz?=
+ =?utf-8?B?WFhtWmJ5d1ZDV1VNcWlBb2pURkdjWjd1eEJSYkpxTFNsb2ZUQm1STlgvM1N5?=
+ =?utf-8?B?Y2huaS9RREZDOUtBUEVSYituY2ZMVGwyNFRQbHNjK2FhSlJ1RjArVkkrdkxq?=
+ =?utf-8?B?TFZpRjhOWWg5M1NabWIycTJLVisxQXRPVTFhWG16S0lKVmpvUmRPYnhLYWtx?=
+ =?utf-8?B?R1dtZzFYN3dRMjc5UjUzaW84eEhPL2VIc3Y0bnFnVzlhT1F5Z1lNZDA1bExr?=
+ =?utf-8?B?RTNwL1A2d2ZuNklYeW9WQVNBamczekRVS1g4VFRSb1VDeGVpcU5MRVlHSWd2?=
+ =?utf-8?B?MFFEa0JQR2Y3UVF3SVB3amlQOXdYL0xUajZZMjhlZ3F2aVBENHFmaGpUVzBV?=
+ =?utf-8?B?UEt3eVVtcUVnTVYxa0cwVlArRXN3ZnhvQ2NiNDdhNDRvbXRMY24yQXQwUzRp?=
+ =?utf-8?B?MVJBUlcyb0thQ2RrM1dzNVpJeU9CbjJrczB4QVdPT2g2amZUY3o4V2ZJbjVM?=
+ =?utf-8?B?aTZGWUJlTGJBT1J4T3pUUFRIbm9CeFpLSGN4RWVCbEpQdERHVXQ0ei9vMW14?=
+ =?utf-8?B?R0psbmtTVktFOWk1bW1SbHhmWkFWdmxGcmlqTk9NT1ZlT1NZSUtUNDlCT0I1?=
+ =?utf-8?B?d2hJVldkY1JaYndXZ1p2cHpRTzQ1UWZMYTZZZXJvL3BJZXl3MWZoT2QyajRm?=
+ =?utf-8?B?RWxWY3BUdmZtanhNVnU1RDFkOG1XNjc2Tmo2bEZibU5tMWc4c3BMZ0lxQWdq?=
+ =?utf-8?B?Zi9lODFzUTkvMUw3bkdUcHVvNXNlVTZxbkowWG5UTVlFRlMxV3FtMU03NHV3?=
+ =?utf-8?B?UXhrQVFNekF0ZHdGQXo3VDJaU3doOHlreHBOeS9Nb3dQcjBDWHVRdkNJMmtq?=
+ =?utf-8?B?ZVB4TDdCY000SDVsY2daRldYMTM4VWljUmtENFBjKy85QUtSOExDWUJrUUoy?=
+ =?utf-8?B?N1haNm9taHRFYlNac0hkOWVUMk5LNDkycm5RTkhZRVB0ODQzdDNLWmE3Uk5M?=
+ =?utf-8?B?WkY3UU5ma3BLR1EycVNZS1Y4MEF6ekZnbVB4Yjg1bW8vdVB6SjEwd2RldFdW?=
+ =?utf-8?B?VlNkTFRCL0tJOWUxcVBQQ0hVSjRmRlB0NnFVdW9qZ2lPR1dSNlVtWm5uUm1a?=
+ =?utf-8?B?NFQyOWlUcmxmUWNxaDZ1eDlSWHFzTVdNYVB5ZElVTHloa2JWN080dTlML3BQ?=
+ =?utf-8?B?WUNsY1pVSzZWdEUwUEtzMFBINnVyZldJWWUxcWp1eE9SS0pJb1JmNW91K2Mz?=
+ =?utf-8?B?YzBMN2haRVAyYXdCaTNBdjR1RnlOOHRVc3g4TUMwc0NlR0tuck1pVFNqaFh5?=
+ =?utf-8?B?MVo5VFhjSXZrNWtHM0RDeXNtWnlUVThOTHB3SVdDL3lnc3hHUmVPSTExMEFz?=
+ =?utf-8?B?cktUWDFQcnllcWExU21SV2xRbFJLcEEwaEp6VEI1QzJoKzAzQmJwNENiS1Bt?=
+ =?utf-8?B?cjdrN0JZWmV4dnpLeWhWaDhYK3NvamRMMVoybWF5VThlbWg1WjY5UUdBOXE5?=
+ =?utf-8?B?REJFbDdTWlJ4eEZidm9hMkFHK2lGNEtiOHlHREMyNSt5SmVUY25ReVdsVXBu?=
+ =?utf-8?B?TzVGd0dKZ1RCd0dtMGxYWFRuRFQ0UFZacW9Sc2dlRThTS0ljaGNHWEZrSUor?=
+ =?utf-8?B?aUR0VGV4SVdVYkNpUjFsYUdQZUVYY0dtcXpTMnhGUS9Dak9LUVg2TTN0dVJS?=
+ =?utf-8?B?YXFhREpFUDJiQUxkM01RVDUxU3kzQjVGV3IyOWxSbE1pZENXQjNNeXZTZDJZ?=
+ =?utf-8?B?c1dqUllCWkd3c3pGZzlBZDhtQk1MUjloSDJNYi8xYUtWMFNkMkxxVGQ3cTNN?=
+ =?utf-8?B?WFpRenc3dnJkVEEzTng0Nmk1STBndkhyTWU5OWh2cm9mdkZLRlhmQT09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9977c3bc-1a48-48da-1b74-08de86b589bc
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2026 19:18:59.3174
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zg0BiN+eWZvigKu5q6oNPLR9yqdrBgFaLJeEF6kQC6h0Npbp9HzMb174Pvt1vPafhQcoJ5r/C8sD1aUMSDG9PQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9176
 
-Hi Paul, Thank you for your response. 
-Sorry, I could not revert back quicker.
 
-As I wanted to understand what's happening behind the scenes after the
-cpuhp kthread blocks upon execution of synchronize_rcu(). So I did a
-little more digging.
 
-On a 320 CPU system, (SMT8 to SMT4) operation takes >1 minute to complete.
-160 CPUs are offlined one by one. 
-
-In total 321 synchronize_rcu() calls are invoked taking ~125ms to finish
-(ftrace option sleep-time set).
-
-3298110.851011 |   316)  cpuhp/3-1614  |               |  synchronize_rcu() {
-3298111.010125 |   316)  cpuhp/3-1614  | @ 159112.9 us |  }
---
-3298111.020432 |     0) kworker-29406  |               |  synchronize_rcu() {
-3298111.190132 |     0) kworker-29406  | @ 169699.4 us |  }
---
-3298111.191327 |   317)  cpuhp/3-1619  |               |  synchronize_rcu() {
-3298111.350129 |   317)  cpuhp/3-1619  | @ 158801.9 us |  }
---
-3298111.360263 |     0) kworker-29406  |               |  synchronize_rcu() {
-3298111.530137 |     0) kworker-29406  | @ 169874.5 us |  }
---
-3298111.531098 |   318)  cpuhp/3-1624  |               |  synchronize_rcu() {
-3298111.650128 |   318)  cpuhp/3-1624  | @ 119029.8 us |  }
-
-Breakdown of the time spent during a single synchronize_rcu() during the
-invocation of sched_cpu_deactivate callback (CPU 4 was offlined)
-
-Summary:
---> cpuhp_enter (sched_cpu_deactivate)
-CB registration → AccWaitCB        ~10ms     Waiting for softirq tick on CPU 4
-GP 220685125: FQS scan 1           ~10ms     Tick delay + scan (all clear except CPU 260, 
-                                                        rcu_gp_kthread is running on CPU 260)
-GP 220685125: wait for CPU 260     ~30msi    FQS sleep interval, CPU 260 not yet reported
-GP 220685125: FQS scan 2 + end     ~0.02ms   CPU 260 clears
-GP 220685129: FQS scan 1           ~30ms     Tick delay + full scan (same: CPU 260 holdout)
-GP 220685129: wait for CPU 260     ~30ms     Same pattern
-GP 220685129: FQS scan 2 + end     ~0.02ms   CPU 260 clears
-CB invocation + wakeup             ~10ms     Softirq tick invokes wakeme_after_rcu
-destroy_sched_domains_rcu queueing ~8ms322   call_rcu() callbacks
-<-- cpuhp_exit (sched_cpu_deactivate)
-
-I have collected some rcu static tracepoint data, which I am currently
-going through.
-
-On Fri, Mar 06, 2026 at 07:12:04AM -0800, Paul E. McKenney wrote:
-> On Fri, Mar 06, 2026 at 11:14:13AM +0530, Vishal Chourasia wrote:
-> > On Mon, Mar 02, 2026 at 05:17:16PM +0530, Samir M wrote:
-> > > 
-> > > On 27/02/26 6:43 am, Joel Fernandes wrote:
-> > > > On Wed, Feb 18, 2026 at 02:09:18PM +0530, Vishal Chourasia wrote:
-> > > > > Expedite synchronize_rcu during the SMT mode switch operation when
-> > > > > initiated via /sys/devices/system/cpu/smt/control interface
-> > > > >
-> > > > After the locking related changes in patch 1, is expediting still required? I
-> > Yes.
-> > > > am just a bit concerned that we are papering over the real issue of over
-> > > > usage of synchronize_rcu() (which IIRC we discussed in earlier versions of
-> > > > the patches that reducing the number of lock acquire/release was supposed to
-> > > > help.)
-> > At present, I am not sure about the underlying issue. So far what I have
-> > found is when synchronize_rcu() is invoked, it marks the start of a new
-> > grace period number, say A. Thread invoking synchronize_rcu() blocks
-> > until all CPUs have reported QS for GP "A". There is a rcu grace period
-> > kthread that runs periodically looping over a CPU list to figure out all
-> > CPUs have reported QS. In the trace, I find some CPUs reporting QS for
-> > sequence number way back in the past for ex. A - N where N is > 10.
+On 3/20/2026 2:14 PM, Boqun Feng wrote:
+> Since commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms
+> of SRCU-fast") we switched to SRCU in BPF. However as BPF instrument can
+> happen basically everywhere (including where a scheduler lock is held),
+> call_srcu() now needs to avoid acquiring scheduler lock because
+> otherwise it could cause deadlock [1]. Fix this by following what the
+> previous RCU Tasks Trace did: using an irq_work to delay the queuing of
+> the work to start process_srcu().
 > 
-> This can happen when a CPU goes idle for multiple grace periods, then
-> wakes up in the middle of a later grace period.  This is (or at least is
-> supposed to be) harmless because a quiescent state was reported on that
-> CPU's behalf when RCU noticed that it was idle.  The report is quashed
-If it is harmless, can we consider just expediting the smt mode switch
-operation via smt/control file [1].
-
-Thanks, vishalc
-
-[1] https://lore.kernel.org/all/20260218083915.660252-6-vishalc@linux.ibm.com/
-
-> when RCU notices that the quiescent state being reported is for a grace
-> period that has already completed.  Grace-period counter wrap is handled
-> by the infamous ->gpwrap field in the rcu_data structure.
-
+> [boqun: Apply Joel's feedback]
 > 
-> I have seen N having four digits, with deep embedded devices being most
-> likely to have extremely large values of N.
+> Reported-by: Andrea Righi <arighi@nvidia.com>
+> Closes: https://lore.kernel.org/all/abjzvz_tL_siV17s@gpd4/
+> Fixes: commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms of SRCU-fast")
+> Link: https://lore.kernel.org/rcu/3c4c5a29-24ea-492d-aeee-e0d9605b4183@nvidia.com/ [1]
+> Suggested-by: Zqiang <qiang.zhang@linux.dev>
+> Signed-off-by: Boqun Feng <boqun@kernel.org>
+> ---
+> @Zqiang, I put your name as Suggested-by because you proposed the same
+> idea, let me know if you rather not have it.
 > 
-> 							Thanx, Paul
-> 
-> > > > Could you provide more justification of why expediting these sections is
-> > > > required if the locking concerns were addressed? It would be great if you can
-> > > > provide performance numbers with only the first patch and without the second
-> > > > patch. That way we can quantify this patch.
-> > > > 
-> > > > 
-> > > SMT Mode    | Without Patch(Base) | both patch applied | % Improvement  |
-> > > ------------------------------------------------------------------------|
-> > > SMT=off     | 16m 13.956s         |     6m 18.435s     |  +61.14 %      |
-> > > SMT=on      | 12m 0.982s          |     5m 59.576s     |  +50.10 %      |
-> > > 
-> > > When I tested the below patch independently, I did not observe any
-> > > improvements for either smt=on or smt=off. However, in the smt=off scenario,
-> > > I encountered hung task splats (with call traces), where some threads were
-> > > blocked on cpus_read_lock. Please also refer to the attached call trace
-> > > below.
-> > > Patch 1:
-> > > https://lore.kernel.org/all/20260218083915.660252-4-vishalc@linux.ibm.com/
-> > > 
-> > > SMT Mode    | Without Patch(Base) | just patch 1 applied   | % Improvement 
-> > > |
-> > > ----------------------------------------------------------------------------|
-> > > SMT=off     | 16m 13.956s         |     16m 9.793s         |  +0.43 %     
-> > >  |
-> > > SMT=on      | 12m 0.982s          |     12m 19.494s        |  -2.57 %     
-> > >  |
-> > > 
-> > > 
-> > > Call traces:
-> > > 12377] [  T8746]    Tainted: G      E 7.0.0-rc1-150700.51-default-dirty #1
-> > > [ 1477.612384] [  T8746] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> > > disables this message.
-> > > [ 1477.612389] [  T8746] task:systemd     state:D stack:0   pid:1  tgid:1 
-> > >  ppid:0   task_flags:0x400100 flags:0x00040000
-> > > [ 1477.612397] [  T8746] Call Trace:
-> > > [ 1477.612399] [  T8746] [c00000000cc0f4f0] [0000000000100000] 0x100000
-> > > (unreliable)
-> > > [ 1477.612416] [  T8746] [c00000000cc0f6a0] [c00000000001fe5c]
-> > > __switch_to+0x1dc/0x290
-> > > [ 1477.612425] [  T8746] [c00000000cc0f6f0] [c0000000012598ac]
-> > > __schedule+0x40c/0x1a70
-> > > [ 1477.612433] [  T8746] [c00000000cc0f840] [c00000000125af58]
-> > > schedule+0x48/0x1a0
-> > > [ 1477.612439] [  T8746] [c00000000cc0f870] [c0000000002e27b8]
-> > > percpu_rwsem_wait+0x198/0x200
-> > > [ 1477.612445] [  T8746] [c00000000cc0f8f0] [c000000001262930]
-> > > __percpu_down_read+0xb0/0x210
-> > > [ 1477.612449] [  T8746] [c00000000cc0f930] [c00000000022f400]
-> > > cpus_read_lock+0xc0/0xd0
-> > > [ 1477.612456] [  T8746] [c00000000cc0f950] [c0000000003a6398]
-> > > cgroup_procs_write_start+0x328/0x410
-> > > [ 1477.612462] [  T8746] [c00000000cc0fa00] [c0000000003a9620]
-> > > __cgroup_procs_write+0x70/0x2c0
-> > > [ 1477.612468] [  T8746] [c00000000cc0fac0] [c0000000003a98e8]
-> > > cgroup_procs_write+0x28/0x50
-> > > [ 1477.612473] [  T8746] [c00000000cc0faf0] [c0000000003a1624]
-> > > cgroup_file_write+0xb4/0x240
-> > > [ 1477.612478] [  T8746] [c00000000cc0fb50] [c000000000853ba8]
-> > > kernfs_fop_write_iter+0x1a8/0x2a0
-> > > [ 1477.612485] [  T8746] [c00000000cc0fba0] [c000000000733d5c]
-> > > vfs_write+0x27c/0x540
-> > > [ 1477.612491] [  T8746] [c00000000cc0fc50] [c000000000734350]
-> > > ksys_write+0x80/0x150
-> > > [ 1477.612495] [  T8746] [c00000000cc0fca0] [c000000000032898]
-> > > system_call_exception+0x148/0x320
-> > > [ 1477.612500] [  T8746] [c00000000cc0fe50] [c00000000000d6a0]
-> > > system_call_common+0x160/0x2c4
-> > > [ 1477.612506] [  T8746] ---- interrupt: c00 at 0x7fffa8f73df4
-> > > [ 1477.612509] [  T8746] NIP: 00007fffa8f73df4 LR: 00007fffa8eb6144 CTR:
-> > > 0000000000000000
-> > > [ 1477.612512] [  T8746] REGS: c00000000cc0fe80 TRAP: 0c00 Tainted: G     
-> > > E    (7.0.0-rc1-150700.51-default-dirty)
-> > > [ 1477.612515] [  T8746] MSR: 800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE> CR:
-> > > 28002288 XER: 00000000
-> > > 
-> > > 
-> > 
-> > Default timeout is set to 8 mins.
-> > 
-> > $ grep . /proc/sys/kernel/hung_task_timeout_secs
-> > /proc/sys/kernel/hung_task_timeout_secs:480
-> > 
-> > Now that cpus_write_lock is taken once, and SMT mode switch can take
-> > tens of minutes to complete and relinquish the lock, threads waiting on 
-> > cpus_read_lock will be blocked for this entire duration.
-> > 
-> > Although there were no splats observed for "both patch applied" case
-> > the issue still remains.
-> > 
-> > regards,
-> > vishal
+> @Joel, I did two updates (including your test feedback, other one is
+> call irq_work_sync() when we clean the srcu_struct), please give it a
+> try.
+
+Thanks Boqun, I applied it for testing further. It would be good if Andrea and
+Kumar can try this patch as well to confirm that the BPF issues are gone.
+
+thanks,
+
+--
+Joel Fernandes
+
