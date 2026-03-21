@@ -1,127 +1,204 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6524120D4E9;
-	Sat, 21 Mar 2026 03:29:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC6B029B200;
+	Sat, 21 Mar 2026 04:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774063763; cv=none; b=WTm5dTM01tOrqA9i/SkP+4REU3/McYSQ4d84pQ7zdMulR1CuEdaYFpmEv8/+5165WLUCApOMN935nhDZ2wUSGsM+hCf7jsHFlnfNBSzymC7i6NaRAoPHOuF1u03ZrNmAXmIO3GAMdqWpk5Ty8pkLyTNavEK9d7KxUUMdFNqAAl4=
+	t=1774067236; cv=none; b=PC4xOcnG3y4s8Gmamj37yIbjLDgaNETJlIhVRUK88/TWvaaVLV88zzf4owiHrGtR2ODJBGhbiiEesEklij9PR+L9YPJ0Rq5Hepm+BADpuvvVLt3qEWMilPdJqg4FYK+uO1ZGxpregaZOXMTkdhkcLYcv93txTZKY/k0NlFmU+8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774063763; c=relaxed/simple;
-	bh=mh6p76DcuMKvsZVq+jRH8JjO2UHkvmtIWgcrxKLwLzk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tgM06gz2B6Tma4IFYYZ5wFiSKa7tRAyonLpAM32uJze9RZ6zu4coQH0BAM7+MBbnNkmaezs5KNrDqJx76IivpowOWh+4WKr01ipNimx9/PASzcL7M1ofZq2ccnFjDr9phTyIk35UgTItI5XtwSLSxlSvVsBm3RJqbOUZJzzUtbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cAnZ7DQI; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1774067236; c=relaxed/simple;
+	bh=d+ffbJH4KZHoNpOYOZuBseV1dxeLfrSzxgv68B6imFo=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=OOlYmw4c6cLFlzaO5eBVuKzeWvf+7XYa1Om84nQMZwYIktffpGkaDzeYnEZI9xzW9KEsZlc1k8s+QxVJRialOEwrLpvQB3my+ipCVZ+CMEPbWn9+mY7pdrOV/Y7w/u+2YD8AxchqjJrgk6+fE4iiuaMCDOQuMJfWMSXMmWHebro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=li42/erX; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cAnZ7DQI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C116AC4CEF7;
-	Sat, 21 Mar 2026 03:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774063762;
-	bh=mh6p76DcuMKvsZVq+jRH8JjO2UHkvmtIWgcrxKLwLzk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=cAnZ7DQIOmuadhoZlwtekTPxX/lgNr2V9s1dyb2lOFWasMPTw1MmUpMqZKSVAercX
-	 cqP9wLO97qCHmw48DsVr24ceI3CL1ay6/2ionKEMKCD+i/wy8ppi9zLBefAXVxruCY
-	 APOXHE2Jyde6RecU/+QZ/4eJfb0XedToXcLdXJOILRQvXBlO12rJByvrg0HyORa0UE
-	 tvaWGoMu4NefF7K57AFsp10j8UhWnGBtSWUIhUtNqsGXf48TyFCWBYz+Cy0RJGU07d
-	 I9mjrqmcCnoQM+Ap8OXseNuxnj7RUnmilNp5FuAe+cfBreXtV4FF7gBloCyZIe7Puc
-	 9z2LP8xXeGq5A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1FD53CE0AB1; Fri, 20 Mar 2026 20:29:20 -0700 (PDT)
-Date: Fri, 20 Mar 2026 20:29:20 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Boqun Feng <boqun@kernel.org>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	frederic@kernel.org, neeraj.iitr10@gmail.com, urezki@gmail.com,
-	boqun.feng@gmail.com, rcu@vger.kernel.org,
-	Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>
-Subject: Re: Next-level bug in SRCU implementation of RCU Tasks Trace +
- PREEMPT_RT
-Message-ID: <ad67e723-7f7d-4350-b886-c04e56c0b78d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <abwyGtG7hDpd8vBN@tardis.local>
- <CAP01T75S-NMgB=s_0jqq52xRwe1cQ29DzD33eeqUZHM3cSb=oA@mail.gmail.com>
- <abxZEE4SAMkNEleq@tardis.local>
- <89763fcd-3710-49a0-91ca-cd923b47fc1e@nvidia.com>
- <abxfBZ89wIJILuom@tardis.local>
- <c391f8b9-a168-4235-aa7b-6902b4f07002@paulmck-laptop>
- <ab1u-AuqIbJakUYW@tardis.local>
- <2b3848e9-3b11-41b8-8c44-5de28d4a4433@paulmck-laptop>
- <ab18cUI_4jKA8wcA@tardis.local>
- <64a29c44-395a-4199-b580-5bfca715a816@paulmck-laptop>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="li42/erX"
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64a29c44-395a-4199-b580-5bfca715a816@paulmck-laptop>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1774067231;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F+PYCd2sFciXK62osWXLMtHZ9ZoH0cGrwp3zWzciAXQ=;
+	b=li42/erXCbIKumZrmvgFOovVOP6nroVjPyjsaFXyS+DEeXHzj9eewMC4rcx2xsI/L6SVSG
+	4adjL6s6vF3VBdcb6zXkh7btGAIGUdYD7rza+eQJ4V5v71CmYunoewPZIp35/Vxmhag2Zi
+	isxzOtNjr/9xWsOtz1LaBLuPAzjnW4I=
+Date: Sat, 21 Mar 2026 04:27:02 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Zqiang" <qiang.zhang@linux.dev>
+Message-ID: <4c23c66f86a2aff8f2d7b759f9dd257b82147a17@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH] rcu: Use an intermediate irq_work to start
+ process_srcu()
+To: "Boqun Feng" <boqun@kernel.org>, "Joel Fernandes"
+ <joelagnelf@nvidia.com>, "Paul E. McKenney" <paulmck@kernel.org>
+Cc: "Kumar Kartikeya Dwivedi" <memxor@gmail.com>, "Sebastian Andrzej Siewior"
+ <bigeasy@linutronix.de>, frederic@kernel.org, neeraj.iitr10@gmail.com,
+ urezki@gmail.com, boqun.feng@gmail.com, rcu@vger.kernel.org, "Tejun Heo"
+ <tj@kernel.org>, bpf@vger.kernel.org, "Alexei Starovoitov"
+ <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "John
+ Fastabend" <john.fastabend@gmail.com>, "Boqun Feng" <boqun@kernel.org>,
+ "Andrea Righi" <arighi@nvidia.com>
+In-Reply-To: <20260320181400.15909-1-boqun@kernel.org>
+References: <2d9e7e42-8667-4880-9708-b81a82443809@nvidia.com>
+ <20260320181400.15909-1-boqun@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Mar 20, 2026 at 04:11:26PM -0700, Paul E. McKenney wrote:
-> On Fri, Mar 20, 2026 at 09:57:21AM -0700, Boqun Feng wrote:
-> > On Fri, Mar 20, 2026 at 09:24:15AM -0700, Paul E. McKenney wrote:
+>=20
+>=20Since commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in term=
+s
+> of SRCU-fast") we switched to SRCU in BPF. However as BPF instrument ca=
+n
+> happen basically everywhere (including where a scheduler lock is held),
+> call_srcu() now needs to avoid acquiring scheduler lock because
+> otherwise it could cause deadlock [1]. Fix this by following what the
+> previous RCU Tasks Trace did: using an irq_work to delay the queuing of
+> the work to start process_srcu().
+>=20
+>=20[boqun: Apply Joel's feedback]
+>=20
+>=20Reported-by: Andrea Righi <arighi@nvidia.com>
+> Closes: https://lore.kernel.org/all/abjzvz_tL_siV17s@gpd4/
+> Fixes: commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms=
+ of SRCU-fast")
+> Link: https://lore.kernel.org/rcu/3c4c5a29-24ea-492d-aeee-e0d9605b4183@=
+nvidia.com/ [1]
+> Suggested-by: Zqiang <qiang.zhang@linux.dev>
+> Signed-off-by: Boqun Feng <boqun@kernel.org>
+> ---
+> @Zqiang, I put your name as Suggested-by because you proposed the same
+> idea, let me know if you rather not have it.
 
-[ . . . ]
+Thanks Boqun add me to Suggested-by :) .
 
-> > I will definitely review it if you beat me to it ;-)
-> 
-> I am sure that further adjustments will be required.  ;-)
+>=20
+>=20@Joel, I did two updates (including your test feedback, other one is
+> call irq_work_sync() when we clean the srcu_struct), please give it a
+> try.
+>=20
+>=20 include/linux/srcutree.h | 1 +
+>  kernel/rcu/srcutree.c | 29 +++++++++++++++++++++++++++--
+>  2 files changed, 28 insertions(+), 2 deletions(-)
+>=20
+>=20diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index dfb31d11ff05..be76fa4fc170 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -95,6 +95,7 @@ struct srcu_usage {
+>  unsigned long reschedule_jiffies;
+>  unsigned long reschedule_count;
+>  struct delayed_work work;
+> + struct irq_work irq_work;
+>  struct srcu_struct *srcu_ssp;
+>  };
+>=20=20
+>=20diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 2328827f8775..73aef361a524 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/mutex.h>
+>  #include <linux/percpu.h>
+>  #include <linux/preempt.h>
+> +#include <linux/irq_work.h>
+>  #include <linux/rcupdate_wait.h>
+>  #include <linux/sched.h>
+>  #include <linux/smp.h>
+> @@ -75,6 +76,7 @@ static bool __read_mostly srcu_init_done;
+>  static void srcu_invoke_callbacks(struct work_struct *work);
+>  static void srcu_reschedule(struct srcu_struct *ssp, unsigned long del=
+ay);
+>  static void process_srcu(struct work_struct *work);
+> +static void srcu_irq_work(struct irq_work *work);
+>  static void srcu_delay_timer(struct timer_list *t);
+>=20=20
+>=20 /*
+> @@ -216,6 +218,7 @@ static int init_srcu_struct_fields(struct srcu_stru=
+ct *ssp, bool is_static)
+>  mutex_init(&ssp->srcu_sup->srcu_barrier_mutex);
+>  atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
+>  INIT_DELAYED_WORK(&ssp->srcu_sup->work, process_srcu);
+> + init_irq_work(&ssp->srcu_sup->irq_work, srcu_irq_work);
+>  ssp->srcu_sup->sda_is_static =3D is_static;
+>  if (!is_static) {
+>  ssp->sda =3D alloc_percpu(struct srcu_data);
+> @@ -713,6 +716,8 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+>  return; /* Just leak it! */
+>  if (WARN_ON(srcu_readers_active(ssp)))
+>  return; /* Just leak it! */
+> + /* Wait for irq_work to finish first as it may queue a new work. */
+> + irq_work_sync(&sup->irq_work);
+>  flush_delayed_work(&sup->work);
+>  for_each_possible_cpu(cpu) {
+>  struct srcu_data *sdp =3D per_cpu_ptr(ssp->sda, cpu);
+> @@ -1118,9 +1123,13 @@ static void srcu_funnel_gp_start(struct srcu_str=
+uct *ssp, struct srcu_data *sdp,
 
-And speaking of further adjustments, heavier rcutorture testing found
-the bug allegedly fixed by the following.
 
-I will be testing the stack over the weekend.
+The following should also be replaced, although under normal situation,
+we wouldn't go here:
 
-							Thanx, Paul
+if (snp =3D=3D snp_leaf && snp_seq !=3D s) {
+      srcu_schedule_cbs_sdp(sdp, do_norm ? SRCU_INTERVAL : 0);
+      return;
+}
 
-------------------------------------------------------------------------
+Thanks
+Zqiang
 
-commit a717ba6b919d1be6d13e3ce13ca70e2afd3c24d0
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Fri Mar 20 20:06:22 2026 -0700
 
-    srcu: Push srcu_node allocation to GP when non-preemptible
-    
-    When the srcutree.convert_to_big and srcutree.big_cpu_lim kernel boot
-    parameters specify initialization-time allocation of the srcu_node
-    tree for statically allocated srcu_struct structures (for example, in
-    DEFINE_SRCU() at build time instead of init_srcu_struct() at runtime),
-    init_srcu_struct_nodes() will attempt to dynamically allocate this tree
-    at the first run-time update-side use of this srcu_struct structure,
-    but while holding a raw spinlock.  Because the memory allocator can
-    acquire non-raw spinlocks, this can result in lockdep splats.
-    
-    This commit therefore uses the same SRCU_SIZE_ALLOC trick that is used
-    when the first run-time update-side use of this srcu_struct structure
-    happens before srcu_init() is called.  The actual allocation then takes
-    place from workqueue context at the ends of upcoming SRCU grace periods.
-    
-    Fixes: ce2e65b01ad1 ("srcu: Use raw spinlocks so call_srcu() can be used under preempt_disable()")
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 2328827f8775c..678bd9a73875b 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -227,9 +227,12 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 	ssp->srcu_sup->srcu_gp_seq_needed_exp = SRCU_GP_SEQ_INITIAL_VAL;
- 	ssp->srcu_sup->srcu_last_gp_end = ktime_get_mono_fast_ns();
- 	if (READ_ONCE(ssp->srcu_sup->srcu_size_state) == SRCU_SIZE_SMALL && SRCU_SIZING_IS_INIT()) {
--		if (!init_srcu_struct_nodes(ssp, is_static ? GFP_ATOMIC : GFP_KERNEL))
-+		if (!preemptible())
-+			WRITE_ONCE(ssp->srcu_sup->srcu_size_state, SRCU_SIZE_ALLOC);
-+		else if (init_srcu_struct_nodes(ssp, GFP_KERNEL))
-+			WRITE_ONCE(ssp->srcu_sup->srcu_size_state, SRCU_SIZE_BIG);
-+		else
- 			goto err_free_sda;
--		WRITE_ONCE(ssp->srcu_sup->srcu_size_state, SRCU_SIZE_BIG);
- 	}
- 	ssp->srcu_sup->srcu_ssp = ssp;
- 	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed,
+
+>  // it isn't. And it does not have to be. After all, it
+>  // can only be executed during early boot when there is only
+>  // the one boot CPU running with interrupts still disabled.
+> + //
+> + // Use an irq_work here to avoid acquiring runqueue lock with
+> + // srcu rcu_node::lock held. BPF instrument could introduce the
+> + // opposite dependency, hence we need to break the possible
+> + // locking dependency here.
+>  if (likely(srcu_init_done))
+> - queue_delayed_work(rcu_gp_wq, &sup->work,
+> - !!srcu_get_delay(ssp));
+> + irq_work_queue(&sup->irq_work);
+>  else if (list_empty(&sup->work.work.entry))
+>  list_add(&sup->work.work.entry, &srcu_boot_list);
+>  }
+> @@ -1979,6 +1988,22 @@ static void process_srcu(struct work_struct *wor=
+k)
+>  srcu_reschedule(ssp, curdelay);
+>  }
+>=20=20
+>=20+static void srcu_irq_work(struct irq_work *work)
+> +{
+> + struct srcu_struct *ssp;
+> + struct srcu_usage *sup;
+> + unsigned long delay;
+> +
+> + sup =3D container_of(work, struct srcu_usage, irq_work);
+> + ssp =3D sup->srcu_ssp;
+> +
+> + raw_spin_lock_irq_rcu_node(ssp->srcu_sup);
+> + delay =3D srcu_get_delay(ssp);
+> + raw_spin_unlock_irq_rcu_node(ssp->srcu_sup);
+> +
+> + queue_delayed_work(rcu_gp_wq, &sup->work, !!delay);
+> +}
+> +
+>  void srcutorture_get_gp_data(struct srcu_struct *ssp, int *flags,
+>  unsigned long *gp_seq)
+>  {
+> --=20
+>=202.50.1 (Apple Git-155)
+>
