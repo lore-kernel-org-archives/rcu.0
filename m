@@ -1,68 +1,67 @@
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012014.outbound.protection.outlook.com [40.107.209.14])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012057.outbound.protection.outlook.com [52.101.43.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 968042FE582;
-	Mon, 23 Mar 2026 20:37:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3665E377EDE;
+	Mon, 23 Mar 2026 21:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.57
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774298257; cv=fail; b=WzBTOKCis95jQ0pwAnCB965BJAAZl7cDbZPBum+f49gq0GipBX0Uj7GkVEw9VMDnu4hFo6hYCCzRSUtFVuI/VGUrmsQelpVDYO+LoGH4S+eKSdOqEmLQn6nYOL1R7FJ7ldAbzKwmYdgOGkyGflO32NO8zETe2yvXBgPsVmK9k4Y=
+	t=1774300202; cv=fail; b=iwgTl3cIlqcWrBGrSWSja7CCJc5Py9tsuUjI7YPpgit4IxuiHcreJib9sD96OaRgRHi41G+3qsXFYNNBYPkW5MeGP3GIEcn+Ev6dp8EUltbXezjIygLXFA4QpdBPofiB9XrmuGlU2LZRACkw8zftLrhQ+Y6cy71rpPgFVQ043Lc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774298257; c=relaxed/simple;
-	bh=IhYsZ0Rol1GJPQaJmdLFfX8WvDgvmIVZyn1yalYyFJs=;
+	s=arc-20240116; t=1774300202; c=relaxed/simple;
+	bh=UcxRPOF+xkf9IDOw2kdAeMFb6bBluIHJGTfRPTIitAo=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=VJYq2OYqBwCK/DqWAhv2soIvN3zg8yutBsCfdu2d13G5yoCBtgMNtxbTO6vR2EChlSiatiXlzwRwc1P6+/yUB5e+QsGPc31eh8lWXL8dY9tKZ1UzG6ER0QduK+H9vM81IBmuHHDnMeKzTfLyYaMiFSZWM/NDL31V/6evR/DE5hU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Q/RaUzDW; arc=fail smtp.client-ip=40.107.209.14
+	 Content-Type:MIME-Version; b=HgtUCC3jIPN8aWvQ5xo+7jA9st1+wCBp5fKcvTRyc0qkwu7hVKkCrW60a/wbIHFgszLVVxAYqu9lNh8+FaYdDbKLB4w/BbzMbjVWpDywiHplZbImc8zUxOGwdBK2HJfs4X+XMFaBW+4MiJ6avh/8I/1ku6XewOjLVXOvVvkyBhg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=c+A3upuH; arc=fail smtp.client-ip=52.101.43.57
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Q/RaUzDW"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="c+A3upuH"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=kybdohM5Q8q0SHYP+HOYY/Pk1RrjRWuUiyfhdoi98zRyxhu3JJMwEC6njK6tXWBmlR2efm7p8XRiOFHaHE39VCghPybcq2CgPwgcN4lkFPbS/+dSyCrB6RFAuvFIzwOx0XnbBARvaOR/xKBd9n7zvBlxnIgu9lRtcW166C+6Ua2TyDGsMjyGe3CATwNekxU3JfPouXxkDrvq8WF72cz1SJUO57gFHUqY056Msl1/CquENkQ6Zl1hOse2mVHhUUP5QRHWma8YoaPt941BnKQoW5yGlhruL8heDuTimfu55jr3cuf7Huw86UxuoEVZJ+ARffoPc6GxXFdH2sg2mJsrcg==
+ b=f224SMyhWlvU7NnM1zjduzIDhVI7vkkG38PX242/1un3XmC/5GgKucS5u/4PVDUGirVZK5+cOYys9Ec+Stz6RECHOh6NdHhoA+zsRIVuDhFgLwLqBmHeZkrtOyGdIxT8mh7xhWndma43WlEUEThnicEPEV89TuXCb66bD94fImXBUpCGDVbIXzC8EnQq7YK47Em9bBgw8Gu5wRAhhxSfcCzGjfe32q071Zg2ZQDuHwvveMlcSD/68QDourXlnzYlZjFRxKRwqBaPa0edeh0BPmfcxW1LQw2wUI3pBNS3xUg0j9ORo90AJJg7fAk+pSk0qyqWg7bnOAfSOUFlvA8ycA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2UrMDiChlBkoSTSnazMsEzNnl6hACvaLH5E+GSjF6Gc=;
- b=J0lQr9wNACAOgRPVAU5nAccLQPFsG+yAIfLRU5iNMKvu9FvROis/eZUtpuHgRACE1tbctJ/cKtFRK1yds4puPDSIlIxzsGQEPjU7KUOKkKQhYfx31yt6eqsME8jOurC5N1HQKFkhA9dEPALz8Z5JOpqeDGXiO6fsTG9pYg/1RG//rbTjUoFnpm+PHUMW2RAxO6LzTxLoQAePqMuDlZ18l8oXZmpw+2fdI/ugg0iu35pMJ0pzRhhjyBVU3Ju5qrfKpteqcqVYhWYU/+ja8TlROOqgpfhSlSp8ipriyEN7vewQjoRI9a4fyTUgrKsTVWhn69gkldUyR5yMx+GiXsYZ6g==
+ bh=H9xNNhwQTTAvpxVkTMrP/X4nLcxChZniZ6+TewJAl9U=;
+ b=urw26vq97ga1xjmN7qamOOyf7o2GMa1izaOI6T1bApUoP0LMVUxCL36TvIpiDttMEwixkxYUPIQK9lZdrt+i2HVz9kDzMUga49z4e+VDwva+eWWtVT8XlqRcDk5Px2l4gLxzTIxW27vmxjYbGZ8UjekafHCR6GMF/68qtR3dS2A30hnz0XGewUv4wtrvcDIn4H5qzKqD9lWJUurAiIUbC9Czjk6FCEsQCILDtqtM70OmkchDG8RwmiU7+KrDwWQs4rjLJ60zQ3OenSbpvOp3GrWGf6Y79eZ6cJ/IN3+vEYL6NjZZQGrf3BpPtjwRX5wFQsSZOcSvpJOGzM8zc9tH/Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2UrMDiChlBkoSTSnazMsEzNnl6hACvaLH5E+GSjF6Gc=;
- b=Q/RaUzDWFQkD8C04CTNWgPOg+0g2mGfWvUaOfCf6+hTezfejOU/Z1CN3ldL7hS7nf42/G6y+aJboPEynfnBaRLs2PbBn5TPDSso0k0HKzDgSN+chisjyuqTjljSIoHtAU9ZenwvXrt0oWfKO2yLVTfgBdgiDu1DjW7m5MM+nBXL+8ZiJwXXcARezR8BerlOjGu1cwROz/WM6nBrfRgL1+zng7+RqtUgN94J9nNNrUUpPXNI0MIob+cK4fMvy2/aZIfv9lQZ5rrUM4LfcFTWRhfpEOw2ZKb0HOj9ZMlVGytHLeWkwb4ojoJvBdxSsYnRs9A/gCBMnuQ9aaPsWu8V3Zw==
+ bh=H9xNNhwQTTAvpxVkTMrP/X4nLcxChZniZ6+TewJAl9U=;
+ b=c+A3upuHx52x/6HBbzy2Ggm5CfLXxYZAleFRtHhttHXJwM1pRLqvPnehHqFboLoeXzD0OSXrx6G9ELq7WZQjKr7SGwnfHZUuv9FrlC/SxwJUE/XFktfvBLPtxcceEv4uswLjBcybYrPud/53q8NgHk9MHRqXO2A/pvRqAtyZ3o35FBb2feoYa4yt0PCm6NLvCN58d/MjPVKpW3rFiiVCqxs+FOz762GfmpxowGafCMKkHr3wzvMtzKYiFLMzjb0PdM/+fLHzlDvhH34D5DIQDPbIYT11cZoHVnSKGHDZeMgMJcuMZCe0pkt/jhYL5DbiG8i6Zx2Yy2oNxsP/t7eC0g==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- DM4PR12MB6011.namprd12.prod.outlook.com (2603:10b6:8:6b::14) with Microsoft
+ DM4PR12MB7695.namprd12.prod.outlook.com (2603:10b6:8:101::11) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9745.20; Mon, 23 Mar 2026 20:37:26 +0000
+ 15.20.9745.9; Mon, 23 Mar 2026 21:09:56 +0000
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33%4]) with mapi id 15.20.9745.019; Mon, 23 Mar 2026
- 20:37:25 +0000
-Message-ID: <6b3d151f-3d21-4382-9ab8-386bfc9d47fb@nvidia.com>
-Date: Mon, 23 Mar 2026 16:37:22 -0400
+ 21:09:56 +0000
+Message-ID: <8fb6b64c-5c75-4b42-8abd-8e85173710a5@nvidia.com>
+Date: Mon, 23 Mar 2026 17:09:53 -0400
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] rcu-tasks: Avoid using mod_timer() in
- call_rcu_tasks_generic()
+Subject: Re: [PATCH v2] rcu: Use an intermediate irq_work to start
+ process_srcu()
 To: Boqun Feng <boqun@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>, frederic@kernel.org,
  neeraj.iitr10@gmail.com, urezki@gmail.com, boqun.feng@gmail.com,
  rcu@vger.kernel.org, Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org,
  Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, Song Liu <song@kernel.org>,
- stable@kernel.org
-References: <2b3848e9-3b11-41b8-8c44-5de28d4a4433@paulmck-laptop>
- <20260321170321.32257-1-boqun@kernel.org> <acFZem9MNHRXin2h@tardis.local>
+ John Fastabend <john.fastabend@gmail.com>, Andrea Righi <arighi@nvidia.com>,
+ Zqiang <qiang.zhang@linux.dev>
+References: <ab2yd35rm6OgZUmb@gpd4> <20260320222916.19987-1-boqun@kernel.org>
 Content-Language: en-US
 From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <acFZem9MNHRXin2h@tardis.local>
+In-Reply-To: <20260320222916.19987-1-boqun@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR16CA0050.namprd16.prod.outlook.com
- (2603:10b6:208:234::19) To DS0PR12MB6486.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0242.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::7) To DS0PR12MB6486.namprd12.prod.outlook.com
  (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -71,231 +70,196 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|DM4PR12MB6011:EE_
-X-MS-Office365-Filtering-Correlation-Id: face7d29-7c2c-4a46-2194-08de891bfe2f
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|DM4PR12MB7695:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2fc9ba61-6f3d-4c84-1188-08de892088d3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|18002099003|22082099003|56012099003|7053199007;
+	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|7053199007|56012099003|18002099003|22082099003;
 X-Microsoft-Antispam-Message-Info:
-	08k5W6/PckwJkP+clCkIRE9lmbnlVtnuDZcyxdc0AKfkbOaKfBXejmWwGHR1CQK73VknrqCrTIBedJPKwQmdQUyP8mpcSlRHTqdj10pqgNVPk+/mLHPGPZWt4cpUx14KJ+gmTT4X2wXBcDGteO0qfFE4l0M7r0Gw+GuYs1Zh9EAVwsv5fqG7IZvLU4/52rXBMGfr1JzGYzlxEU8HIQqY834qmkh8lhemcFgN9XIAB+ewuI1dKF+WCd2OZPRijytohpPkUu8Ydj6OTs5Z5pXZ4ybdPgL52CDk/d6gNly0jQq/gGTHbH/L/mG0+BXGFbF8iS2cQYt0ZkzERA/dZSGkm546X2Zl0ISilZECPQzuzY929Tm5SwYSB5q8HZs17KByZxybkDI5WXjN4BBuNpWRFzCrlRwdYpZKMZ3M560lXQLdeuj6liRqMTk2ss1OGfWrlLoFxsZ+kEMmu0sy/o57K58CEQipiL7zO/QiwZRKY2zeiEdXXYLLDGiNXNW7ryfGI117fgko8xF7ppzi5ZC06DGk3u4Dj+JYNUljJQMdS86RQNSHBrslaWE6dF3giMZyDOdBK7kGnQvEt4IWtV6yHwGHkA2Jqki6sSE4I3c7JvoBH/I9y41qsw//uXyzvjhUQCG7pB174Z0Fo3s3Xaw4JimjUKJrFc0o2iGVwdI/cFL33NjYLz1vammzcASplP4XDJtIU+ZYjNyF+EybohC81ZfxFY9h3ajqSwBSt33CSLk=
+	NToEF96GEqn6fJ2GVm8kxvj3eJ2yvWR+k5x61D91T9MxOiQcfqMX9jmumiIsPUhWlXiCu5U94/tnQ6rUB6nIfNMoS8PjbFIZWpAahGyIhZQJFLDS0DZ8qh+puKj8Qy7TQACHfgfeIPrfey3PQK2Y7hvn7fpcJ5/kqGxofT0w8os0fJU6neW1kF6gaPr+rfbqk5WVj6TF6R3B03I3lojhS44QwU267clzkhFWw6fbBdy87kCfwkPOgZoPnx5Xd4iM/YKXOWCZcDbCsOob7Sbaa2kNd9n1NcIaltkv+Ib3hpVyzVG/8MNcnGjfpfAfz/l/LRa+fqz5KYpGQCw1Ovda7EZ1pd/89pX5IT3L1YZ0aiMLjaetiXJYzf7gz7H5Dq1mKPa6Kyy2zlD+x/BK2zwFHZm88y5ReCIvZeVAwaPh13BM0OL7jki9fdGTMRa1CQaxryiZ5aT9nQRH0rUZTwMuvFMiR6pRPWYdON/aclzLvJf4qvlOnq8GPvRB2BQFf1e4aDh40lIcyXwS3lnToqXr/840781r+K6BjwkJuuiu37BMT2GKQKnzNUeegvLLjM0fJQJyPYPJozC9kKLsSajz4lRHezdDXKERwQ7igOHKYVDnBEkazB3ZotEaL8mERlSFVVLfdsF6M0iX0x+1qcSpjRcOTGCaCThEHnrox4VZ2kwXbVO8NqDQ/PTfcvPJ87qsnyc3Hr3Pk+VX9yKXwJMPuEYlDbppnPclmRJ+kxUPE3kTcJXOu0vcK/3/7e6zFpTQ
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(18002099003)(22082099003)(56012099003)(7053199007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(7053199007)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dmdUalpJR3diUVUyNjNGQ1pMWHJ2d2JrV2ZrRXJDSDBFUWFDd0lLOHFpT3lG?=
- =?utf-8?B?T2NmSUFrK2xQWlhOTml6cFMyL09vT2w3Mk5veXQxaE5aN1lNOXJaOEd1Z21U?=
- =?utf-8?B?Qk9uNlZFd0tmTVZXeEtLbld2aWhYdTdhdXhuTUpoV2lPY1I2cmhzMTVPR3Ri?=
- =?utf-8?B?cW9EcFZLanNRRzYxVElZVmpyOGlnU2JnU24zWXI0SkJaOHJWbVRybytYR3Rx?=
- =?utf-8?B?MmxCYkQ3L1VaRWIyanpSM0VpSGtLVDFoenB1ai9wSERWRXJmci90NGhYSTkx?=
- =?utf-8?B?WU1lL2JIelR5SEZCcVRkd3RrSnNkeEUvV2p3WlJwRFhNNjd2dDJSNVc4VUI3?=
- =?utf-8?B?eDhDQXVmOFpTbWlBVVRwdXpOY1NNMXp3MnR0bmJZN0RLd05UZzE2d0FoMGxO?=
- =?utf-8?B?dSsxdUFwT2EzdmpuQzhCTlhsSGJiRk9Lc3ZJY1R5aXA2emRML3Z1cFF5eWZx?=
- =?utf-8?B?VHdGbkRXdWJsQkNlSFIraVNoeE85MUtPODRuUVFUVUZ2RFFmY09DTHV2ZXJh?=
- =?utf-8?B?MEFTT2FGSDBEK1JkSHRkVzNsR0dsOWUwSFByTnJWaU5RbU1BbDhIdHp3Wity?=
- =?utf-8?B?dC8xTnlCaUo0WU5uaWYvdVJhMkhTZTlGbDMxMnAxN1RobFJQaU1iUDdrVUE2?=
- =?utf-8?B?UHJQRlYzR0FBUmlneHdybG5Ra2c5anpIS01iUFhrQUR4Y2FNQXpBSVdzMlZV?=
- =?utf-8?B?TUQrTTFBanhnQW52bEl5ZGsrZ0JNMXNuT2h0dHNYWVY1bkRTOTMxZlJaZDM1?=
- =?utf-8?B?THlMNUxHL2ZKcHlXaWtNT0RrTkdpaVZrSHVWYkRESCsvY3oyR0NNNG5ZSnZG?=
- =?utf-8?B?ZTh3UEFpRzVZWHFqSlBBZnV4RUtkbUlnZmhWSmZaZk1DZmJhSGhxZDlWZy9L?=
- =?utf-8?B?Nnp2ZUdNb1NJWnEzVTVMVWZER1JpaG84bWdkSTBRQ0JjUDU3dURyWllVamtj?=
- =?utf-8?B?aDJPZkFQcDZqblJBWVl2TFFKNHlObWw2RmY5c1NyNytSSHNOSjQxQjRiWFJH?=
- =?utf-8?B?N0gvQ2tUbVAzMmZPaXNNanVxckRYN2NSSEVHT25xM3N4UlZxbTNUa0VKWmxD?=
- =?utf-8?B?dVJuK0VUUU40c1VkejVYMWFPczJZSHRMUTJHYXlveTNkOWdPdTZjbVFzNnRm?=
- =?utf-8?B?Z1I5ZDNlVFlWOVlTc0pRbGtYQTR3MEhGcGJDVFZBVm5wYjI3eHRsdFJPRk43?=
- =?utf-8?B?bXVrYjNZNWxhVG9IOEVpRUJLRDZsek5hSjd1YzF3Z21EL1dwQmg1Tllxc3Rq?=
- =?utf-8?B?YUVuelY1d2F5WTAvY1ZhbmVZdTdWRmR5cWZBdVF3Z1VrQU5Zb1UraFdQSzA0?=
- =?utf-8?B?eGdwbG4vemtpZjhHdFpNbUVVZ3h2Y0dDeU91V1J2TDhLeHN1dWxxRVVYRjI0?=
- =?utf-8?B?TUI4dmFJSmQxUGE4Nit4NlNvNnBaTHU5MHhwT0dBbUpiSXp0ZXJkbmxvVEpI?=
- =?utf-8?B?L1NwZ1dWV1IyK0FMZkRFaEc3OVE4WHEvVzRtRVBXSk5yRFN6VGpTckNBN0RX?=
- =?utf-8?B?SVZvNTF4RGtpM0tnQ2s3R3oxampwamdnQ3dJc00xSVZCSnN2UUpORG5od2VE?=
- =?utf-8?B?TTEvOGdKSm9UMStNR0ZvWGFRUGVuMXVQajlYSjVmWFY3Tmk3WXpXaGs0OTk1?=
- =?utf-8?B?akVoRXUzUjFzTFd3KzE0aFZkdGlIRnF1WWZVVlpaV3UrNnMyRHQvT29pVjlO?=
- =?utf-8?B?SDM4RUFpR21YdWNQdnBESDBPRmdacFJ3aDFtdVhGRzZWdVF2Tm1SMUR5N25k?=
- =?utf-8?B?T1BFVVh5VkhkMkM5KzkrdWdka2Q0a1ArQStpRnByY2pEc2QxME92UW9yUWh0?=
- =?utf-8?B?T0M5U2ZWekpJTXpqMmNrMWVXVnprUGZGZHFZdjgxdUVRdmM2cFBnT3RZUTB1?=
- =?utf-8?B?RUZSWDBjZzd0dUtJTlBlZjAvdnJDeUlPZmlDWm4zd2h2K2E1WVYzbkRRSU9n?=
- =?utf-8?B?NHZZM1RPM0FFOGF6OUt2ZXd0Y2FQODVPVUN2YzZpeVd2YU1CQTFZQUNnQlNI?=
- =?utf-8?B?NkswaDZmd3NkcjJRdnFBd1lvS1lremc3QjZYaENKb3V5dVpsbTZSUndQRlh5?=
- =?utf-8?B?SE55THIxanpuamdleVc4SEMxNmowNHNJTXExSE51dFlUejBhckhLRzVMbEVw?=
- =?utf-8?B?LzYzS04zczR4Ti85OVJVUURBRG9odUt3WW5OeGFPUmRFZ0dFZjFMWENFR25R?=
- =?utf-8?B?dm9wMFBqTHgxZlNKUzlMdXZVTlhuN1FpVWJjTzF3dlI3YWxmVjFvOGlyUWlY?=
- =?utf-8?B?d2ExWmcwaE9jU3ZTaTZIV2ZZOWllNUVOeHpNVVQxVjFmbml0bGdwNFg3a2g0?=
- =?utf-8?B?ZkxKWmhFWUhkZWZ4TjhIN0IwR3Y0T2VzTEJoVzNhb2hkemJDWThvdz09?=
+	=?utf-8?B?K2lKYk5kNzdkTlRMZnhhRHNHMGlLTWk5SnV1WHZ5TjlyY1YwNG1sM2l4QUFR?=
+ =?utf-8?B?dTFSTlFIVW5zOE1YMkcrdmhDYkVQUEoyaldoNlgwK3Z3SWYwSWFzRU92V29H?=
+ =?utf-8?B?bytZcmkzVjRDYXNWTUpsVFpzQ2RYYTU2YWdNa3dCWjk1TE13NU9CcVRGS1ZT?=
+ =?utf-8?B?ckgyUXFMV0hkZDNadFpFcmpISlVzcUtjQnp6VWdNZVB4RUdJN3dyM1dWNU1X?=
+ =?utf-8?B?bnRrTGdkZzdtMGFLVFJ1djFHenhsVVdOU2dYdmprUStKejkyZjE3NGEyY1NR?=
+ =?utf-8?B?SytaWStjQllIZmNGZy95NGN1Mk0vdm5uakhoUzc3Yyt6Nk5OODVWbnNCUzUv?=
+ =?utf-8?B?V0YzQ0p6M0Z5Ny9XVCtwU29OWlZONDBJMVlNTDlqN3R0eDdlV1psSFZFSkk2?=
+ =?utf-8?B?eFludmNUcEZPNTlmMmYzS1NnejRQaEhjSzQwbk40M1RiRWk0dnJPQ3hiOEZy?=
+ =?utf-8?B?RUFnazNrL1l6UndKV3IwYkExcENOVmtUN3MvbXIwcWVhNk1kdDd5c2dNMjJj?=
+ =?utf-8?B?Lzc0ZStwTGxIb3oyc3pQZ0MzTWd1Szl2YUM3TU1vOXBMcVJZeVc0S1NaOVJR?=
+ =?utf-8?B?R0ZwL3dxZHllZWxBT1lyaTdaRmVrc2tOOXRYZEJ3dHM4ZmhXY0V6R2dIczFQ?=
+ =?utf-8?B?NmZ4Wk8rWjJTUDdVTFdFQjNFOC9LQWsrNEJJeWJUeG0wL3ptZGIxS0gydTho?=
+ =?utf-8?B?STRtdWpmVWZyZXlXb041YTZubUh1RmpJQ1ZLV2o2Nzd1R1FPZG9DSE9xbHcv?=
+ =?utf-8?B?Yy9rbHA5WnZ5UFhpTjBNNmtnOWRRTDU0SnpnaGFPcUlWaHNoekYxbTNNekNy?=
+ =?utf-8?B?a1J1ekxQbnEvWVNKYmQwVHY0Q2xsQm8zSXl2bG4yWnNTK1NPVVJ4K05Qci9k?=
+ =?utf-8?B?dkV3c0FSazgxUmN5czlLcEhjTGlRWW1WYTBUdEs1d2dEd0lMZHFqNXJ0czhZ?=
+ =?utf-8?B?d3crRGdnNXh5MjZKNmhWbnZONEV3OHR6UnJPT0czaUNzUzVrMktwV3c2cEFU?=
+ =?utf-8?B?Sk0rNTJkR3A0a3BwNTUrSTY3dzB6UDlnS0wzdDc3MFNScVVPMnhBOXF6eUFz?=
+ =?utf-8?B?WHp2SEpwbUhEZjJCYlRMN3VVWWtDSmdpRWdLbXlOVy80Z3NncXE2STc1eWZR?=
+ =?utf-8?B?bFg5NkxFTXExbzdsaGgyZ0kwZDVjTmtldE9sWEtwR2pWSjJvQnE3VC9XbHIz?=
+ =?utf-8?B?cHJpZDBaQzZLTEx2NzdMT2pmQUhycWhXUGtKUWhzdlRzM1J5VUxWSGhuRWFp?=
+ =?utf-8?B?K216S1BCS1o5eDNIZ1pnZjNVQjNIQ2FHdkZCZU0vS3dQeUlpYWF3bGU1Rk5j?=
+ =?utf-8?B?NldmUC8xVVljb3RDUzdFMkUxeWdsbjRzSGtKRkxSYWNKdGs3aFdXMFkrZStS?=
+ =?utf-8?B?SUIxZ3ZGMVVsMURoUjJ3WEZvbEkya2VxeXNwbzR4Z0Vmek92aExTcnNIZFBs?=
+ =?utf-8?B?SXB3WEFSSkhDWkNOSytEc2RxVHU4Y2FXUlNSUDFPUjUranVIeG9FVzArMjhY?=
+ =?utf-8?B?ZzN4M1BtN0RINjA5NXZaNzB5STN1aitDSzNhMW83VDRjOW5SbFBUc05hOVFU?=
+ =?utf-8?B?V0VPQ1F5ejIrZGJtdVJ3WTJ4ZzB3eDlkcWpMR3ZRcmVqMTBFWWZROUlCUktJ?=
+ =?utf-8?B?bFlDUHBudFBhdWhKaG1vN2g4eGV1SnhKY05GaDh4ODdseldZMXJjQXlUV3VF?=
+ =?utf-8?B?NmxiS3JYVVFEZDRTV2lpWDF2cHVFSkFYL2p4SEFPV25wSDM1WTI0Zk5SWXBJ?=
+ =?utf-8?B?N0QrZzRLaTc3cjNROWtRTlg1QW92cWx4OFNIOVc0czYvVlFYT0UvQ0FsTUtB?=
+ =?utf-8?B?WHRwVGFVME9jZWkzNG85dGlKTnJGeS9aM201WURScG9pbWZ2OXRJTm9YRWI1?=
+ =?utf-8?B?dGJuU0FEVFZYOU5NdHlMeGlHRFpNb3l3ckhWM3lKZnA4QVU5RkwwdlppZUk3?=
+ =?utf-8?B?eHg4Y0NqSU15TWgydnArTUZUb2FmR0llajRPOW12UXkwaVVFYmNEZi9BNFU4?=
+ =?utf-8?B?SmJkR2V2MGdjZisydFVCUEIvNHZIWHVFZDBBOGh0MXBBcXZqK0xQMW0yWkdQ?=
+ =?utf-8?B?aG5LQlArNy85UUdBMlF1K0QwbjdqTlNqV041aCszdm1jSkN0ODY4aUlSclVp?=
+ =?utf-8?B?clU4Z1lOclNiYldQY2E0aC9ORGNqRVlBVkNFL1hwQlIyNkR0cVMvNEFkMGc2?=
+ =?utf-8?B?b3plSU9ZVmJYeVI4WStFT28zL25LUjk4cjl1aVVKSzBoSUhIYno1S3RhUWJx?=
+ =?utf-8?B?aG92RExENHlVeWtxVUcwUGtYQzJDZnpzaTN2eVlvK0tWcE04d2lwWTRNc3JT?=
+ =?utf-8?B?bXM3SVhneG1HL2gxSS9Lcll6Y21rU3dDNVNPWEFaNU5KdDNqekVHUT09?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: face7d29-7c2c-4a46-2194-08de891bfe2f
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fc9ba61-6f3d-4c84-1188-08de892088d3
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2026 20:37:25.6622
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2026 21:09:56.2192
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LCpxDHXjsvluIf5zcyrG8e/7r/1p7xCOJh2N57KQaUtO+KgnbFWhlpPh4DwUqPtrbM6I95FvdquoyP8OaBVCNA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6011
+X-MS-Exchange-CrossTenant-UserPrincipalName: L/N4pTk6qwFP+uDWOIYzjoXSL1WOmL8qnKrhvT4Xjf09lV/jOc2/UXCPaJtTMMvMolYfTL7Oj71oiMa98kV21w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7695
 
 
 
-On 3/23/2026 11:17 AM, Boqun Feng wrote:
-> On Sat, Mar 21, 2026 at 10:03:21AM -0700, Boqun Feng wrote:
->> The following deadlock is possible:
->>
->> __mod_timer()
->>   lock_timer_base()
->>     raw_spin_lock_irqsave(&base->lock)   <- base->lock ACQUIRED
->>   trace_timer_start()                    <- tp_btf/timer_start fires here
->>     [probe_timer_start BPF program]
->>       bpf_task_storage_delete()
->>         bpf_selem_unlink(selem, false)   <- reuse_now=false
->>           bpf_selem_free(false)
->>             call_rcu_tasks_trace()
->>               call_rcu_tasks_generic()
->>                 raw_spin_trylock(rtpcp)  <- succeeds (different lock)
->>                 mod_timer(lazy_timer)    <- lazy_timer is on this CPU's base
->>                   lock_timer_base()
->>                     raw_spin_lock_irqsave(&base->lock) <- SAME LOCK -> DEADLOCK
->>
->> because BPF can instrument a place while the timer base lock is held.
->> Fix it by using an intermediate irq_work.
->>
->> Further, because a "timer base->lock" to a "rtpcp lock" lock dependency
->> can be establish in this way, we cannot mod_timer() with a rtpcp lock
->> held. Fix that as well.
->>
->> Fixes: d119357d0743 ("rcu-tasks: Treat only synchronous grace periods urgently")
->> Cc: stable@kernel.org
->> Signed-off-by: Boqun Feng <boqun@kernel.org>
->> ---
->> This is a follow-up of [1], and yes we can trigger a whole system
->> deadlock freeze easily with (even non-recursively) tracing the
->> timer_start tracepoint. I have a reproduce at:
->>
->> 	https://github.com/fbq/rcu_tasks_deadlock
->>
->> Be very careful, since it'll freeze your system when run it.
->>
->> I've tested it on 6.17 and 6.19 and can confirm the deadlock could be
->> triggered. So this is an old bug if it's a bug.
->>
->> It's up to BPF whether this is a bug or not, because it has existed for
->> a while and nobody seems to get hurt(?).
->>
+On 3/20/2026 6:29 PM, Boqun Feng wrote:
+> Since commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms
+> of SRCU-fast") we switched to SRCU in BPF. However as BPF instrument can
+> happen basically everywhere (including where a scheduler lock is held),
+> call_srcu() now needs to avoid acquiring scheduler lock because
+> otherwise it could cause deadlock [1]. Fix this by following what the
+> previous RCU Tasks Trace did: using an irq_work to delay the queuing of
+> the work to start process_srcu().
 > 
-> Ping BPF ;-) I know this was sent in a Saturday and only 2 days have
-> passed, but we are at the decision point about how hard/urgent we should
-> fix these "BPF deadlocks": As this patch shows, the deadlocks existed
-> before v7.0 (i.e. before SRCU switches). And yes, ideally we should fix
-> all of them, but given we are close to v7.0 release, I would like to
-> focus the new issue that SRCU introduces, because that one would likely
-> affect SCHED_EXT. Thoughts?
+> [boqun: Apply Joel's feedback]
+> [boqun: Apply Andrea's test feedback]
+> 
+> Reported-by: Andrea Righi <arighi@nvidia.com>
+> Closes: https://lore.kernel.org/all/abjzvz_tL_siV17s@gpd4/
+> Fixes: commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms of SRCU-fast")
+> Link: https://lore.kernel.org/rcu/3c4c5a29-24ea-492d-aeee-e0d9605b4183@nvidia.com/ [1]
+> Suggested-by: Zqiang <qiang.zhang@linux.dev>
+> Tested-by: Andrea Righi <arighi@nvidia.com>
+> Signed-off-by: Boqun Feng <boqun@kernel.org>
 
-Yeah I think this deadlock is "lower priority" in the sense, I believe it
-existed even before 7.0. But the new SRCU ones are related to 7.0 where the RCU
-tasks trace implementation was switched to SRCU. So in that sense, yes I think
-the SRCU fix has to go in for 7.0 itself ideally, with the potential timer fix
-above moved to a later time.
+Tested-by: Joel Fernandes <joelagnelf@nvidia.com>
 
-I wonder also, could we (programmatically as a startup self-test) add a BPF
-tracepoint program to every trace point possible and see what blows up? I am
-pretty sure there are dragons in there too other than timers and workqueues.
-That would also make for a nice-selftest, where a test BPF program is hooked to
-all tracepoints and then busy-loop somework load is run. I'd brace for some
-fireworks but..;-)
+I have the following in the shared rcu tree rcu/dev branch, but if you're
+sending it for 7.0 -rc cycle I will drop them:
 
-Btw, I am testing the v2 of the irq_work srcu fix, so far so good. :-)
+998608c o rcu: Use an intermediate irq_work to start process_srcu()
+15d921a o rcutorture: Test call_srcu() with preemption disabled and not
 
 thanks,
 
---
-Joel Fernandes
-
-
-
-
-
-
-
-> 
-> Regards,
-> Boqun
-> 
->> [1]: https://lore.kernel.org/rcu/2b3848e9-3b11-41b8-8c44-5de28d4a4433@paulmck-laptop/
->>
->>  kernel/rcu/tasks.h | 26 +++++++++++++++++++++++---
->>  1 file changed, 23 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
->> index 2b55e6acf3c1..d9d5b7d5944e 100644
->> --- a/kernel/rcu/tasks.h
->> +++ b/kernel/rcu/tasks.h
->> @@ -46,6 +46,7 @@ struct rcu_tasks_percpu {
->>  	unsigned int urgent_gp;
->>  	struct work_struct rtp_work;
->>  	struct irq_work rtp_irq_work;
->> +	struct irq_work timer_irq_work;
->>  	struct rcu_head barrier_q_head;
->>  	struct list_head rtp_blkd_tasks;
->>  	struct list_head rtp_exit_list;
->> @@ -134,6 +135,7 @@ static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp);
->>  static DEFINE_PER_CPU(struct rcu_tasks_percpu, rt_name ## __percpu) = {			\
->>  	.lock = __RAW_SPIN_LOCK_UNLOCKED(rt_name ## __percpu.cbs_pcpu_lock),		\
->>  	.rtp_irq_work = IRQ_WORK_INIT_HARD(call_rcu_tasks_iw_wakeup),			\
->> +	.timer_irq_work = IRQ_WORK_INIT(call_rcu_tasks_mod_timer_lazy),			\
->>  };											\
->>  static struct rcu_tasks rt_name =							\
->>  {											\
->> @@ -321,11 +323,19 @@ static void call_rcu_tasks_generic_timer(struct timer_list *tlp)
->>  		if (!rtpcp->urgent_gp)
->>  			rtpcp->urgent_gp = 1;
->>  		needwake = true;
->> -		mod_timer(&rtpcp->lazy_timer, rcu_tasks_lazy_time(rtp));
->> +		/*
->> +		 * We cannot mod_timer() here because "timer base lock ->
->> +		 * rcu_node lock" lock dependencies can be establish by having
->> +		 * a BPF instrument at timer_start(), and that means deadlock
->> +		 * if we mod_timer() here. So delay the mod_timer() when we are
->> +		 * out of the lock critical section.
->> +		 */
->>  	}
->>  	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
->> -	if (needwake)
->> +	if (needwake) {
->> +		mod_timer(&rtpcp->lazy_timer, rcu_tasks_lazy_time(rtp));
->>  		rcuwait_wake_up(&rtp->cbs_wait);
->> +	}
->>  }
->>  
->>  // IRQ-work handler that does deferred wakeup for call_rcu_tasks_generic().
->> @@ -338,6 +348,16 @@ static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp)
->>  	rcuwait_wake_up(&rtp->cbs_wait);
->>  }
->>  
->> +static void call_rcu_tasks_mod_timer_lazy(struct irq_work *iwp)
->> +{
->> +	struct rcu_tasks *rtp;
->> +	struct rcu_tasks_percpu *rtpcp = container_of(iwp, struct rcu_tasks_percpu, timer_irq_work);
->> +	rtp = rtpcp->rtpp;
->> +
->> +	if (!timer_pending(&rtpcp->lazy_timer))
->> +		mod_timer(&rtpcp->lazy_timer, rcu_tasks_lazy_time(rtp));
->> +}
->> +
->>  // Enqueue a callback for the specified flavor of Tasks RCU.
->>  static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
->>  				   struct rcu_tasks *rtp)
->> @@ -377,7 +397,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
->>  		   (rcu_segcblist_n_cbs(&rtpcp->cblist) == rcu_task_lazy_lim);
->>  	if (havekthread && !needwake && !timer_pending(&rtpcp->lazy_timer)) {
->>  		if (rtp->lazy_jiffies)
->> -			mod_timer(&rtpcp->lazy_timer, rcu_tasks_lazy_time(rtp));
->> +			irq_work_queue(&rtpcp->timer_irq_work);
->>  		else
->>  			needwake = rcu_segcblist_empty(&rtpcp->cblist);
->>  	}
->> -- 
->> 2.50.1 (Apple Git-155)
->>
-
 -- 
 Joel Fernandes
+
+> ---
+>  include/linux/srcutree.h |  1 +
+>  kernel/rcu/srcutree.c    | 30 ++++++++++++++++++++++++++++--
+>  2 files changed, 29 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index dfb31d11ff05..be76fa4fc170 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -95,6 +95,7 @@ struct srcu_usage {
+>  	unsigned long reschedule_jiffies;
+>  	unsigned long reschedule_count;
+>  	struct delayed_work work;
+> +	struct irq_work irq_work;
+>  	struct srcu_struct *srcu_ssp;
+>  };
+>  
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 2328827f8775..e08aaacad695 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/mutex.h>
+>  #include <linux/percpu.h>
+>  #include <linux/preempt.h>
+> +#include <linux/irq_work.h>
+>  #include <linux/rcupdate_wait.h>
+>  #include <linux/sched.h>
+>  #include <linux/smp.h>
+> @@ -75,6 +76,7 @@ static bool __read_mostly srcu_init_done;
+>  static void srcu_invoke_callbacks(struct work_struct *work);
+>  static void srcu_reschedule(struct srcu_struct *ssp, unsigned long delay);
+>  static void process_srcu(struct work_struct *work);
+> +static void srcu_irq_work(struct irq_work *work);
+>  static void srcu_delay_timer(struct timer_list *t);
+>  
+>  /*
+> @@ -216,6 +218,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+>  	mutex_init(&ssp->srcu_sup->srcu_barrier_mutex);
+>  	atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
+>  	INIT_DELAYED_WORK(&ssp->srcu_sup->work, process_srcu);
+> +	init_irq_work(&ssp->srcu_sup->irq_work, srcu_irq_work);
+>  	ssp->srcu_sup->sda_is_static = is_static;
+>  	if (!is_static) {
+>  		ssp->sda = alloc_percpu(struct srcu_data);
+> @@ -713,6 +716,8 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+>  		return; /* Just leak it! */
+>  	if (WARN_ON(srcu_readers_active(ssp)))
+>  		return; /* Just leak it! */
+> +	/* Wait for irq_work to finish first as it may queue a new work. */
+> +	irq_work_sync(&sup->irq_work);
+>  	flush_delayed_work(&sup->work);
+>  	for_each_possible_cpu(cpu) {
+>  		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+> @@ -1118,9 +1123,13 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+>  		// it isn't.  And it does not have to be.  After all, it
+>  		// can only be executed during early boot when there is only
+>  		// the one boot CPU running with interrupts still disabled.
+> +		//
+> +		// Use an irq_work here to avoid acquiring runqueue lock with
+> +		// srcu rcu_node::lock held. BPF instrument could introduce the
+> +		// opposite dependency, hence we need to break the possible
+> +		// locking dependency here.
+>  		if (likely(srcu_init_done))
+> -			queue_delayed_work(rcu_gp_wq, &sup->work,
+> -					   !!srcu_get_delay(ssp));
+> +			irq_work_queue(&sup->irq_work);
+>  		else if (list_empty(&sup->work.work.entry))
+>  			list_add(&sup->work.work.entry, &srcu_boot_list);
+>  	}
+> @@ -1979,6 +1988,23 @@ static void process_srcu(struct work_struct *work)
+>  	srcu_reschedule(ssp, curdelay);
+>  }
+>  
+> +static void srcu_irq_work(struct irq_work *work)
+> +{
+> +	struct srcu_struct *ssp;
+> +	struct srcu_usage *sup;
+> +	unsigned long delay;
+> +	unsigned long flags;
+> +
+> +	sup = container_of(work, struct srcu_usage, irq_work);
+> +	ssp = sup->srcu_ssp;
+> +
+> +	raw_spin_lock_irqsave_rcu_node(ssp->srcu_sup, flags);
+> +	delay = srcu_get_delay(ssp);
+> +	raw_spin_unlock_irqrestore_rcu_node(ssp->srcu_sup, flags);
+> +
+> +	queue_delayed_work(rcu_gp_wq, &sup->work, !!delay);
+> +}
+> +
+>  void srcutorture_get_gp_data(struct srcu_struct *ssp, int *flags,
+>  			     unsigned long *gp_seq)
+>  {
 
