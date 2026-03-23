@@ -1,265 +1,180 @@
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012057.outbound.protection.outlook.com [52.101.43.57])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3665E377EDE;
-	Mon, 23 Mar 2026 21:10:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.57
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5979B3806DE
+	for <rcu@vger.kernel.org>; Mon, 23 Mar 2026 21:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.65
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774300202; cv=fail; b=iwgTl3cIlqcWrBGrSWSja7CCJc5Py9tsuUjI7YPpgit4IxuiHcreJib9sD96OaRgRHi41G+3qsXFYNNBYPkW5MeGP3GIEcn+Ev6dp8EUltbXezjIygLXFA4QpdBPofiB9XrmuGlU2LZRACkw8zftLrhQ+Y6cy71rpPgFVQ043Lc=
+	t=1774302659; cv=pass; b=JIpsf69vsO5C77FueqN9xCUG8S1h9Yl3mIUEahEayexsBzH2xOxpTrtuVIbQqVNRp4zjdEG75IZVRWg8JLJEmAV4gVtsHWnooWONgy5GKq8gWD6KcbsEYBnstfS/zmkUM7gf2b2t3Qc2HPua/hFCwqviceVqAI2juNcYU3qvb9I=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774300202; c=relaxed/simple;
-	bh=UcxRPOF+xkf9IDOw2kdAeMFb6bBluIHJGTfRPTIitAo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=HgtUCC3jIPN8aWvQ5xo+7jA9st1+wCBp5fKcvTRyc0qkwu7hVKkCrW60a/wbIHFgszLVVxAYqu9lNh8+FaYdDbKLB4w/BbzMbjVWpDywiHplZbImc8zUxOGwdBK2HJfs4X+XMFaBW+4MiJ6avh/8I/1ku6XewOjLVXOvVvkyBhg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=c+A3upuH; arc=fail smtp.client-ip=52.101.43.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1774302659; c=relaxed/simple;
+	bh=JauitbIwwmYeCKBlB7lhjuVccxN5zx1g3hyEezuQjYQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WLBsGAX0rV4DHSJuHeSx9ln4iGpyTeBeePDz4eF4/j9MwbQQTEl6ASBV+urvA9ZehC4zINrX4rYpYB1cGoovAux8vQXfm76fsbReJVs+HBph5MJ3NABfB1k1xWOO6Hl9EWmhamRK6AEPxzCPMWok7JCTV7eeVQajcfUCP1EVwAg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UADIvjmP; arc=pass smtp.client-ip=209.85.221.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="c+A3upuH"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=f224SMyhWlvU7NnM1zjduzIDhVI7vkkG38PX242/1un3XmC/5GgKucS5u/4PVDUGirVZK5+cOYys9Ec+Stz6RECHOh6NdHhoA+zsRIVuDhFgLwLqBmHeZkrtOyGdIxT8mh7xhWndma43WlEUEThnicEPEV89TuXCb66bD94fImXBUpCGDVbIXzC8EnQq7YK47Em9bBgw8Gu5wRAhhxSfcCzGjfe32q071Zg2ZQDuHwvveMlcSD/68QDourXlnzYlZjFRxKRwqBaPa0edeh0BPmfcxW1LQw2wUI3pBNS3xUg0j9ORo90AJJg7fAk+pSk0qyqWg7bnOAfSOUFlvA8ycA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=H9xNNhwQTTAvpxVkTMrP/X4nLcxChZniZ6+TewJAl9U=;
- b=urw26vq97ga1xjmN7qamOOyf7o2GMa1izaOI6T1bApUoP0LMVUxCL36TvIpiDttMEwixkxYUPIQK9lZdrt+i2HVz9kDzMUga49z4e+VDwva+eWWtVT8XlqRcDk5Px2l4gLxzTIxW27vmxjYbGZ8UjekafHCR6GMF/68qtR3dS2A30hnz0XGewUv4wtrvcDIn4H5qzKqD9lWJUurAiIUbC9Czjk6FCEsQCILDtqtM70OmkchDG8RwmiU7+KrDwWQs4rjLJ60zQ3OenSbpvOp3GrWGf6Y79eZ6cJ/IN3+vEYL6NjZZQGrf3BpPtjwRX5wFQsSZOcSvpJOGzM8zc9tH/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H9xNNhwQTTAvpxVkTMrP/X4nLcxChZniZ6+TewJAl9U=;
- b=c+A3upuHx52x/6HBbzy2Ggm5CfLXxYZAleFRtHhttHXJwM1pRLqvPnehHqFboLoeXzD0OSXrx6G9ELq7WZQjKr7SGwnfHZUuv9FrlC/SxwJUE/XFktfvBLPtxcceEv4uswLjBcybYrPud/53q8NgHk9MHRqXO2A/pvRqAtyZ3o35FBb2feoYa4yt0PCm6NLvCN58d/MjPVKpW3rFiiVCqxs+FOz762GfmpxowGafCMKkHr3wzvMtzKYiFLMzjb0PdM/+fLHzlDvhH34D5DIQDPbIYT11cZoHVnSKGHDZeMgMJcuMZCe0pkt/jhYL5DbiG8i6Zx2Yy2oNxsP/t7eC0g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- DM4PR12MB7695.namprd12.prod.outlook.com (2603:10b6:8:101::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9745.9; Mon, 23 Mar 2026 21:09:56 +0000
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33%4]) with mapi id 15.20.9745.019; Mon, 23 Mar 2026
- 21:09:56 +0000
-Message-ID: <8fb6b64c-5c75-4b42-8abd-8e85173710a5@nvidia.com>
-Date: Mon, 23 Mar 2026 17:09:53 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] rcu: Use an intermediate irq_work to start
- process_srcu()
-To: Boqun Feng <boqun@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, frederic@kernel.org,
- neeraj.iitr10@gmail.com, urezki@gmail.com, boqun.feng@gmail.com,
- rcu@vger.kernel.org, Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, Andrea Righi <arighi@nvidia.com>,
- Zqiang <qiang.zhang@linux.dev>
-References: <ab2yd35rm6OgZUmb@gpd4> <20260320222916.19987-1-boqun@kernel.org>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <20260320222916.19987-1-boqun@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0242.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::7) To DS0PR12MB6486.namprd12.prod.outlook.com
- (2603:10b6:8:c5::21)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UADIvjmP"
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-439c56e822eso591324f8f.2
+        for <rcu@vger.kernel.org>; Mon, 23 Mar 2026 14:50:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774302655; cv=none;
+        d=google.com; s=arc-20240605;
+        b=GiLrpQvJm036wEytcpLfvCd9PPItSnbnzjSUcfc3FIDs4tEZsvGqAW6NeJF15RbHB+
+         N9JmCsinPlU7HVorXfno0GqgjeVn2lpkHW7BHRIrcCcWQd4nPcSje+BXIukSJmlV7sMG
+         g24tG6KfodQqXjLdNM57IU9xpCzRCoaFSZqrf3r9wQoj292DQGvjq7UsKpHrQFMsbAfe
+         voic6CvSqv7xhtKPIgKgjEsvD0O+0+QSvKEImJRoYzZtWic191EFlgFzy2kE+RnXeLIF
+         GjiVYwC7Ly4vFK2XwrUyOkFDfCDbQQwhvJZW6jU6gQAuINh8juOb8il8EPFzH7A9K3U3
+         bJNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=HZaqjwMv1jZa3mR6SG8YTIplciqnanieik6C1WY8Ebw=;
+        fh=Rt8JgBK5NbejHCTYoQWcEgQupq73BzF8DKL75My7B8s=;
+        b=ORM0cLdxqFgkaPrNK6tSOnOEQyoxcfmBOJd7HnRzmtTBecvlJZw7xo91sGUejzds30
+         ksYIMVJJ87k0v9j4GyPI7f4f5G7C3LxXk9exJVwwM+9wtaY55NLzZ3/Kru7ViH0wr50L
+         gVmDiGHInnu+aUAisiBsWZEd5ITxciGcd9ISX94kThvRyyZ2op55d1AG2At0DIKb5dJn
+         6+4jjFOYTwBxWsicUE7AAXaVEu3WO/eYr8U8feJ+QM7XPtxqMeLXfO1BOHVuENI8G2wn
+         p8Ppf1D3nbU9lq5kxZhN1NoX4gHFHlQILVtVBRjVlT+SWGrtQmDevxHQJrDeBdZfv2Ia
+         d5Ww==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1774302655; x=1774907455; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HZaqjwMv1jZa3mR6SG8YTIplciqnanieik6C1WY8Ebw=;
+        b=UADIvjmPpyhZ0y2N9cpoPd2ywI0IqJoSt2zwq5cDIpv9Fx/MkTixQho4r819Q6InSP
+         pgw9Yd3vHRY6VtjXEIAbS155x1C8pwUIltmbcdy9Dc4/YRsgXJMAyPip7OgL7rjn0xoe
+         zxWU9k7d2I/pV+s+ELdGk3hWwR3cc6abt0W3+cKefd16vR3lG0ohtJYjql2EeIy8mGPN
+         G3FX7bvm8bop0cyZy+EngClUgfgTd9N5Z8RKOY+4sZaB6Wlo4gdC6Hgq/MRMcE0aRSWP
+         CVB+v0RcQ3gebzuETPNvVhsMdf0k6zyhN57taUf5Kjhd9B2VwziEeUTsmKFGL1yR+6hu
+         +C4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774302655; x=1774907455;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HZaqjwMv1jZa3mR6SG8YTIplciqnanieik6C1WY8Ebw=;
+        b=Uli2tMCgYaVRQXaZx1nW5FZYSoUCREMeNRNVVfecuVsx3tm0hVG3SW9yYaNKAHhIr6
+         b6MyO/+8Syy380txJTvOAmd1tmixLDSaSLGgZxb6mGXyt5M2kD3fXdmxFM2cirjqF8ws
+         FuZjyaQI02xrSGMzCCnKH9g7qlfOIfVcgg1MWrw4Kb8NJjnG6WyR00I5zCJk7MNvkz/N
+         M1P+SuoFy846iE29sGxSZ7tAfoYS1YWBSZm/zc2dhAzhIuHPjgvADAYoNEBBfbJJ0L1I
+         6uwO7+fUxJ8N2UnsFyZY//gVmkBSCf4pYkiBkm/W5drOTbKOPnk9BxYBF8YsTlshV6a0
+         il7w==
+X-Forwarded-Encrypted: i=1; AJvYcCXdENIxV5E5ocr6wWceSTMltK3EQ+6z25FVa2KA8sGVPuI5c3ljpkPSpVL2f0i0kYnLBy4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZ/W1/RpVrJn0tCT1x/pAoD/s+6nMvpl/DTQYJ0+zTnTz8pDbZ
+	feWbl7wy4rMw/SHPxpxwX0JCu0VdzJjfDciwW/OyfWjhxd8r5Mu6gQOQUCulNOGdSTZ7q5F967F
+	NliiON8LcAjCCP/177liQ4fTjhHfGUS8=
+X-Gm-Gg: ATEYQzyZZrHvkEwMjKkr2pi/1r0EWhiQPV4zESfpn/GkD5yRKAAGwp92aB2qg4z0g4v
+	GThWQwIyEc6Ub6IxgKoN0B83z57SUf0dqTlMflYXumHwBkNb8KmLyXZN7UcV95u1A5lSUxE1pO3
+	rmF9mKJ5ROoH5fGDbYoVgv9kawo3yG9JBR9fnJQ+PhTAg5rsArt9eMsVdfWmrkwVIewxPSLS2jv
+	aaf+8skU6VnWRCwbiER2F8YTn7GTqIzhdKi38ojysE6FrClgq7Olozup0obRNESdc14aS5zz0zg
+	g48zQJ+B+a7kA4IZXHPLnvijfRLsLAWX8zg1OwexImkS55wiQU5Pg80PK24=
+X-Received: by 2002:a05:6000:2203:b0:43b:4625:5933 with SMTP id
+ ffacd0b85a97d-43b6426b699mr21284499f8f.30.1774302654583; Mon, 23 Mar 2026
+ 14:50:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|DM4PR12MB7695:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2fc9ba61-6f3d-4c84-1188-08de892088d3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|7053199007|56012099003|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	NToEF96GEqn6fJ2GVm8kxvj3eJ2yvWR+k5x61D91T9MxOiQcfqMX9jmumiIsPUhWlXiCu5U94/tnQ6rUB6nIfNMoS8PjbFIZWpAahGyIhZQJFLDS0DZ8qh+puKj8Qy7TQACHfgfeIPrfey3PQK2Y7hvn7fpcJ5/kqGxofT0w8os0fJU6neW1kF6gaPr+rfbqk5WVj6TF6R3B03I3lojhS44QwU267clzkhFWw6fbBdy87kCfwkPOgZoPnx5Xd4iM/YKXOWCZcDbCsOob7Sbaa2kNd9n1NcIaltkv+Ib3hpVyzVG/8MNcnGjfpfAfz/l/LRa+fqz5KYpGQCw1Ovda7EZ1pd/89pX5IT3L1YZ0aiMLjaetiXJYzf7gz7H5Dq1mKPa6Kyy2zlD+x/BK2zwFHZm88y5ReCIvZeVAwaPh13BM0OL7jki9fdGTMRa1CQaxryiZ5aT9nQRH0rUZTwMuvFMiR6pRPWYdON/aclzLvJf4qvlOnq8GPvRB2BQFf1e4aDh40lIcyXwS3lnToqXr/840781r+K6BjwkJuuiu37BMT2GKQKnzNUeegvLLjM0fJQJyPYPJozC9kKLsSajz4lRHezdDXKERwQ7igOHKYVDnBEkazB3ZotEaL8mERlSFVVLfdsF6M0iX0x+1qcSpjRcOTGCaCThEHnrox4VZ2kwXbVO8NqDQ/PTfcvPJ87qsnyc3Hr3Pk+VX9yKXwJMPuEYlDbppnPclmRJ+kxUPE3kTcJXOu0vcK/3/7e6zFpTQ
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(7053199007)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?K2lKYk5kNzdkTlRMZnhhRHNHMGlLTWk5SnV1WHZ5TjlyY1YwNG1sM2l4QUFR?=
- =?utf-8?B?dTFSTlFIVW5zOE1YMkcrdmhDYkVQUEoyaldoNlgwK3Z3SWYwSWFzRU92V29H?=
- =?utf-8?B?bytZcmkzVjRDYXNWTUpsVFpzQ2RYYTU2YWdNa3dCWjk1TE13NU9CcVRGS1ZT?=
- =?utf-8?B?ckgyUXFMV0hkZDNadFpFcmpISlVzcUtjQnp6VWdNZVB4RUdJN3dyM1dWNU1X?=
- =?utf-8?B?bnRrTGdkZzdtMGFLVFJ1djFHenhsVVdOU2dYdmprUStKejkyZjE3NGEyY1NR?=
- =?utf-8?B?SytaWStjQllIZmNGZy95NGN1Mk0vdm5uakhoUzc3Yyt6Nk5OODVWbnNCUzUv?=
- =?utf-8?B?V0YzQ0p6M0Z5Ny9XVCtwU29OWlZONDBJMVlNTDlqN3R0eDdlV1psSFZFSkk2?=
- =?utf-8?B?eFludmNUcEZPNTlmMmYzS1NnejRQaEhjSzQwbk40M1RiRWk0dnJPQ3hiOEZy?=
- =?utf-8?B?RUFnazNrL1l6UndKV3IwYkExcENOVmtUN3MvbXIwcWVhNk1kdDd5c2dNMjJj?=
- =?utf-8?B?Lzc0ZStwTGxIb3oyc3pQZ0MzTWd1Szl2YUM3TU1vOXBMcVJZeVc0S1NaOVJR?=
- =?utf-8?B?R0ZwL3dxZHllZWxBT1lyaTdaRmVrc2tOOXRYZEJ3dHM4ZmhXY0V6R2dIczFQ?=
- =?utf-8?B?NmZ4Wk8rWjJTUDdVTFdFQjNFOC9LQWsrNEJJeWJUeG0wL3ptZGIxS0gydTho?=
- =?utf-8?B?STRtdWpmVWZyZXlXb041YTZubUh1RmpJQ1ZLV2o2Nzd1R1FPZG9DSE9xbHcv?=
- =?utf-8?B?Yy9rbHA5WnZ5UFhpTjBNNmtnOWRRTDU0SnpnaGFPcUlWaHNoekYxbTNNekNy?=
- =?utf-8?B?a1J1ekxQbnEvWVNKYmQwVHY0Q2xsQm8zSXl2bG4yWnNTK1NPVVJ4K05Qci9k?=
- =?utf-8?B?dkV3c0FSazgxUmN5czlLcEhjTGlRWW1WYTBUdEs1d2dEd0lMZHFqNXJ0czhZ?=
- =?utf-8?B?d3crRGdnNXh5MjZKNmhWbnZONEV3OHR6UnJPT0czaUNzUzVrMktwV3c2cEFU?=
- =?utf-8?B?Sk0rNTJkR3A0a3BwNTUrSTY3dzB6UDlnS0wzdDc3MFNScVVPMnhBOXF6eUFz?=
- =?utf-8?B?WHp2SEpwbUhEZjJCYlRMN3VVWWtDSmdpRWdLbXlOVy80Z3NncXE2STc1eWZR?=
- =?utf-8?B?bFg5NkxFTXExbzdsaGgyZ0kwZDVjTmtldE9sWEtwR2pWSjJvQnE3VC9XbHIz?=
- =?utf-8?B?cHJpZDBaQzZLTEx2NzdMT2pmQUhycWhXUGtKUWhzdlRzM1J5VUxWSGhuRWFp?=
- =?utf-8?B?K216S1BCS1o5eDNIZ1pnZjNVQjNIQ2FHdkZCZU0vS3dQeUlpYWF3bGU1Rk5j?=
- =?utf-8?B?NldmUC8xVVljb3RDUzdFMkUxeWdsbjRzSGtKRkxSYWNKdGs3aFdXMFkrZStS?=
- =?utf-8?B?SUIxZ3ZGMVVsMURoUjJ3WEZvbEkya2VxeXNwbzR4Z0Vmek92aExTcnNIZFBs?=
- =?utf-8?B?SXB3WEFSSkhDWkNOSytEc2RxVHU4Y2FXUlNSUDFPUjUranVIeG9FVzArMjhY?=
- =?utf-8?B?ZzN4M1BtN0RINjA5NXZaNzB5STN1aitDSzNhMW83VDRjOW5SbFBUc05hOVFU?=
- =?utf-8?B?V0VPQ1F5ejIrZGJtdVJ3WTJ4ZzB3eDlkcWpMR3ZRcmVqMTBFWWZROUlCUktJ?=
- =?utf-8?B?bFlDUHBudFBhdWhKaG1vN2g4eGV1SnhKY05GaDh4ODdseldZMXJjQXlUV3VF?=
- =?utf-8?B?NmxiS3JYVVFEZDRTV2lpWDF2cHVFSkFYL2p4SEFPV25wSDM1WTI0Zk5SWXBJ?=
- =?utf-8?B?N0QrZzRLaTc3cjNROWtRTlg1QW92cWx4OFNIOVc0czYvVlFYT0UvQ0FsTUtB?=
- =?utf-8?B?WHRwVGFVME9jZWkzNG85dGlKTnJGeS9aM201WURScG9pbWZ2OXRJTm9YRWI1?=
- =?utf-8?B?dGJuU0FEVFZYOU5NdHlMeGlHRFpNb3l3ckhWM3lKZnA4QVU5RkwwdlppZUk3?=
- =?utf-8?B?eHg4Y0NqSU15TWgydnArTUZUb2FmR0llajRPOW12UXkwaVVFYmNEZi9BNFU4?=
- =?utf-8?B?SmJkR2V2MGdjZisydFVCUEIvNHZIWHVFZDBBOGh0MXBBcXZqK0xQMW0yWkdQ?=
- =?utf-8?B?aG5LQlArNy85UUdBMlF1K0QwbjdqTlNqV041aCszdm1jSkN0ODY4aUlSclVp?=
- =?utf-8?B?clU4Z1lOclNiYldQY2E0aC9ORGNqRVlBVkNFL1hwQlIyNkR0cVMvNEFkMGc2?=
- =?utf-8?B?b3plSU9ZVmJYeVI4WStFT28zL25LUjk4cjl1aVVKSzBoSUhIYno1S3RhUWJx?=
- =?utf-8?B?aG92RExENHlVeWtxVUcwUGtYQzJDZnpzaTN2eVlvK0tWcE04d2lwWTRNc3JT?=
- =?utf-8?B?bXM3SVhneG1HL2gxSS9Lcll6Y21rU3dDNVNPWEFaNU5KdDNqekVHUT09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2fc9ba61-6f3d-4c84-1188-08de892088d3
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2026 21:09:56.2192
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: L/N4pTk6qwFP+uDWOIYzjoXSL1WOmL8qnKrhvT4Xjf09lV/jOc2/UXCPaJtTMMvMolYfTL7Oj71oiMa98kV21w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7695
+References: <2b3848e9-3b11-41b8-8c44-5de28d4a4433@paulmck-laptop>
+ <20260321170321.32257-1-boqun@kernel.org> <acFZem9MNHRXin2h@tardis.local>
+In-Reply-To: <acFZem9MNHRXin2h@tardis.local>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Mon, 23 Mar 2026 22:50:18 +0100
+X-Gm-Features: AQROBzA6-lACn3W8FU3yX1Q9-qB7EYcxhd8oV2QbGHkx-eHXL253BwoztQRf0sM
+Message-ID: <CAP01T761Y4AMau-4OyuvgSCNMHRD-3YW6+8JDYFxm0Nf9ycwaw@mail.gmail.com>
+Subject: Re: [RFC PATCH] rcu-tasks: Avoid using mod_timer() in call_rcu_tasks_generic()
+To: Boqun Feng <boqun@kernel.org>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, frederic@kernel.org, neeraj.iitr10@gmail.com, 
+	urezki@gmail.com, boqun.feng@gmail.com, rcu@vger.kernel.org, 
+	Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Song Liu <song@kernel.org>, stable@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Mon, 23 Mar 2026 at 16:17, Boqun Feng <boqun@kernel.org> wrote:
+>
+> On Sat, Mar 21, 2026 at 10:03:21AM -0700, Boqun Feng wrote:
+> > The following deadlock is possible:
+> >
+> > __mod_timer()
+> >   lock_timer_base()
+> >     raw_spin_lock_irqsave(&base->lock)   <- base->lock ACQUIRED
+> >   trace_timer_start()                    <- tp_btf/timer_start fires here
+> >     [probe_timer_start BPF program]
+> >       bpf_task_storage_delete()
+> >         bpf_selem_unlink(selem, false)   <- reuse_now=false
+> >           bpf_selem_free(false)
+> >             call_rcu_tasks_trace()
+> >               call_rcu_tasks_generic()
+> >                 raw_spin_trylock(rtpcp)  <- succeeds (different lock)
+> >                 mod_timer(lazy_timer)    <- lazy_timer is on this CPU's base
+> >                   lock_timer_base()
+> >                     raw_spin_lock_irqsave(&base->lock) <- SAME LOCK -> DEADLOCK
+> >
+> > because BPF can instrument a place while the timer base lock is held.
+> > Fix it by using an intermediate irq_work.
+> >
+> > Further, because a "timer base->lock" to a "rtpcp lock" lock dependency
+> > can be establish in this way, we cannot mod_timer() with a rtpcp lock
+> > held. Fix that as well.
+> >
+> > Fixes: d119357d0743 ("rcu-tasks: Treat only synchronous grace periods urgently")
+> > Cc: stable@kernel.org
+> > Signed-off-by: Boqun Feng <boqun@kernel.org>
+> > ---
+> > This is a follow-up of [1], and yes we can trigger a whole system
+> > deadlock freeze easily with (even non-recursively) tracing the
+> > timer_start tracepoint. I have a reproduce at:
+> >
+> >       https://github.com/fbq/rcu_tasks_deadlock
+> >
+> > Be very careful, since it'll freeze your system when run it.
+> >
+> > I've tested it on 6.17 and 6.19 and can confirm the deadlock could be
+> > triggered. So this is an old bug if it's a bug.
+> >
+> > It's up to BPF whether this is a bug or not, because it has existed for
+> > a while and nobody seems to get hurt(?).
+> >
+>
+> Ping BPF ;-) I know this was sent in a Saturday and only 2 days have
+> passed, but we are at the decision point about how hard/urgent we should
+> fix these "BPF deadlocks": As this patch shows, the deadlocks existed
+> before v7.0 (i.e. before SRCU switches). And yes, ideally we should fix
+> all of them, but given we are close to v7.0 release, I would like to
+> focus the new issue that SRCU introduces, because that one would likely
+> affect SCHED_EXT. Thoughts?
 
+I tried both of your changes, thanks for working on these. I agree the
+one reported by Andrea is more important, so that should be the first
+priority and should be sent as a fix for 7.0.
 
-On 3/20/2026 6:29 PM, Boqun Feng wrote:
-> Since commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms
-> of SRCU-fast") we switched to SRCU in BPF. However as BPF instrument can
-> happen basically everywhere (including where a scheduler lock is held),
-> call_srcu() now needs to avoid acquiring scheduler lock because
-> otherwise it could cause deadlock [1]. Fix this by following what the
-> previous RCU Tasks Trace did: using an irq_work to delay the queuing of
-> the work to start process_srcu().
-> 
-> [boqun: Apply Joel's feedback]
-> [boqun: Apply Andrea's test feedback]
-> 
-> Reported-by: Andrea Righi <arighi@nvidia.com>
-> Closes: https://lore.kernel.org/all/abjzvz_tL_siV17s@gpd4/
-> Fixes: commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms of SRCU-fast")
-> Link: https://lore.kernel.org/rcu/3c4c5a29-24ea-492d-aeee-e0d9605b4183@nvidia.com/ [1]
-> Suggested-by: Zqiang <qiang.zhang@linux.dev>
-> Tested-by: Andrea Righi <arighi@nvidia.com>
-> Signed-off-by: Boqun Feng <boqun@kernel.org>
+It would be good to make the timer-related fix too, but it doesn't
+need to be rushed for 7.0. We're aware of the issue being fixed by
+this patch in timer tracepoints [0].
+It's a corner case which no one has hit thus far. We already made
+similar fixes where we could, e.g. [1], but it's difficult to make a
+similar change for local storage.
 
-Tested-by: Joel Fernandes <joelagnelf@nvidia.com>
+Given Paul said he plans into looking into call_{s,}rcu_nolock()
+anyway, the guard can be dropped once call_{s,}rcu_nolock()
+materializes.
 
-I have the following in the shared rcu tree rcu/dev branch, but if you're
-sending it for 7.0 -rc cycle I will drop them:
+Something like what you did in this patch would be prerequisite for
+the call_{s,}rcu_nolock() anyway, the assumption will be that it could
+be invoked from NMI, so reentrancy can happen anywhere, it doesn't
+matter much then whether it happens in the same context when the lock
+is held and we end up invoking the same path through call_srcu(), or
+when an NMI prog interrupts when the timer lock is held.
 
-998608c o rcu: Use an intermediate irq_work to start process_srcu()
-15d921a o rcutorture: Test call_srcu() with preemption disabled and not
+  [0]: https://lore.kernel.org/bpf/CAP01T76xUCrDH4G2XikNvhPTn6ZbNTgQH59qt2Q_o0c9uudd8w@mail.gmail.com
+  [1]: https://lore.kernel.org/bpf/20260204055147.54960-2-alexei.starovoitov@gmail.com
 
-thanks,
-
--- 
-Joel Fernandes
-
-> ---
->  include/linux/srcutree.h |  1 +
->  kernel/rcu/srcutree.c    | 30 ++++++++++++++++++++++++++++--
->  2 files changed, 29 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> index dfb31d11ff05..be76fa4fc170 100644
-> --- a/include/linux/srcutree.h
-> +++ b/include/linux/srcutree.h
-> @@ -95,6 +95,7 @@ struct srcu_usage {
->  	unsigned long reschedule_jiffies;
->  	unsigned long reschedule_count;
->  	struct delayed_work work;
-> +	struct irq_work irq_work;
->  	struct srcu_struct *srcu_ssp;
->  };
->  
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 2328827f8775..e08aaacad695 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -19,6 +19,7 @@
->  #include <linux/mutex.h>
->  #include <linux/percpu.h>
->  #include <linux/preempt.h>
-> +#include <linux/irq_work.h>
->  #include <linux/rcupdate_wait.h>
->  #include <linux/sched.h>
->  #include <linux/smp.h>
-> @@ -75,6 +76,7 @@ static bool __read_mostly srcu_init_done;
->  static void srcu_invoke_callbacks(struct work_struct *work);
->  static void srcu_reschedule(struct srcu_struct *ssp, unsigned long delay);
->  static void process_srcu(struct work_struct *work);
-> +static void srcu_irq_work(struct irq_work *work);
->  static void srcu_delay_timer(struct timer_list *t);
->  
->  /*
-> @@ -216,6 +218,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
->  	mutex_init(&ssp->srcu_sup->srcu_barrier_mutex);
->  	atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
->  	INIT_DELAYED_WORK(&ssp->srcu_sup->work, process_srcu);
-> +	init_irq_work(&ssp->srcu_sup->irq_work, srcu_irq_work);
->  	ssp->srcu_sup->sda_is_static = is_static;
->  	if (!is_static) {
->  		ssp->sda = alloc_percpu(struct srcu_data);
-> @@ -713,6 +716,8 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
->  		return; /* Just leak it! */
->  	if (WARN_ON(srcu_readers_active(ssp)))
->  		return; /* Just leak it! */
-> +	/* Wait for irq_work to finish first as it may queue a new work. */
-> +	irq_work_sync(&sup->irq_work);
->  	flush_delayed_work(&sup->work);
->  	for_each_possible_cpu(cpu) {
->  		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
-> @@ -1118,9 +1123,13 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
->  		// it isn't.  And it does not have to be.  After all, it
->  		// can only be executed during early boot when there is only
->  		// the one boot CPU running with interrupts still disabled.
-> +		//
-> +		// Use an irq_work here to avoid acquiring runqueue lock with
-> +		// srcu rcu_node::lock held. BPF instrument could introduce the
-> +		// opposite dependency, hence we need to break the possible
-> +		// locking dependency here.
->  		if (likely(srcu_init_done))
-> -			queue_delayed_work(rcu_gp_wq, &sup->work,
-> -					   !!srcu_get_delay(ssp));
-> +			irq_work_queue(&sup->irq_work);
->  		else if (list_empty(&sup->work.work.entry))
->  			list_add(&sup->work.work.entry, &srcu_boot_list);
->  	}
-> @@ -1979,6 +1988,23 @@ static void process_srcu(struct work_struct *work)
->  	srcu_reschedule(ssp, curdelay);
->  }
->  
-> +static void srcu_irq_work(struct irq_work *work)
-> +{
-> +	struct srcu_struct *ssp;
-> +	struct srcu_usage *sup;
-> +	unsigned long delay;
-> +	unsigned long flags;
-> +
-> +	sup = container_of(work, struct srcu_usage, irq_work);
-> +	ssp = sup->srcu_ssp;
-> +
-> +	raw_spin_lock_irqsave_rcu_node(ssp->srcu_sup, flags);
-> +	delay = srcu_get_delay(ssp);
-> +	raw_spin_unlock_irqrestore_rcu_node(ssp->srcu_sup, flags);
-> +
-> +	queue_delayed_work(rcu_gp_wq, &sup->work, !!delay);
-> +}
-> +
->  void srcutorture_get_gp_data(struct srcu_struct *ssp, int *flags,
->  			     unsigned long *gp_seq)
->  {
-
+>
+> [...]
