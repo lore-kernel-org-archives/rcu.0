@@ -1,222 +1,151 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A49421D3F3;
-	Tue, 24 Mar 2026 20:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87AE035E953
+	for <rcu@vger.kernel.org>; Tue, 24 Mar 2026 21:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774383490; cv=none; b=omXgkUuKj/TkTKlHjMV06mHfbHgYFEd/LHaKMEPHK3Ec/MQQvx/oSKIlYeaMICQJ7Swi5YCZ86vyOMmca/kOHHJQSVCgSak0PC0BM42w8/GhC5xespxF66j/D7scatsLqrbmzQIygy3CuGmgOllY0NpiCdlHdu3eBoodqO84EEA=
+	t=1774388124; cv=none; b=BUfaLRNEseoH6Oxtnzq3gK7QDzeI9AW5AVPr0i/hVCipRXbGlNIdB594pKJP5SGkb9Q20Ffp5wZM9H0NPJZu8ZS3Gaklp4Vsxi5So0G6Tpen2Y55u1dGxEM9Jm4hPnRVyG9dumHSU5fGw1PWmlETCdV+tH8DkYn0Sjd+WsHqUFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774383490; c=relaxed/simple;
-	bh=5D4Vd+9zOBxF1KTFcJ1FjA6UMVMQUfPdMIAKszRGhSY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RLLMODb4lsQTcaG6+6SjH2jHttZdu1vGvfPSh1fFCsNfW1NyChYzXmJ7tjuwtqfXutAsYjDzr0vWaFkOPH97ew32Vk86wwltIiXlO+MfzFAzXc8o5YVimZwKTmvepmJExhagTuJi21Q35s6MNE5YV441PrDhIPrnt6cVJ59M8aE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OLhKoOM4; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1774388124; c=relaxed/simple;
+	bh=usnnnH7wUGYWY5NIsmoimFYx19G6HqPPrRI2oZAKt1Q=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=LWG1XS4pmVO2X0ShWo0eVp+GHz5wkM5DcwHsosCYA9/H5U9mDVCOezAXz76221Wh2//BbV+rIahjn3va5jLxvQ7QlUJC6UR1q2A6AN6GTbLcFnycvgGAXOJ0yp2VWBOSZmZcfDh8Knoqf/sbUY/+7ZR19HNaaJ5dli1OhzJGqDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=it3ihn2s; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OLhKoOM4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89735C2BCB2;
-	Tue, 24 Mar 2026 20:18:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774383490;
-	bh=5D4Vd+9zOBxF1KTFcJ1FjA6UMVMQUfPdMIAKszRGhSY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OLhKoOM4SZv1ZggaoplTCsJ2XFUHw61OM5gq47dhmEhIARnx/cm4b6hFESh1P6igh
-	 N8+2lEaRFK2YHWhSTvhW4ft65kTg0x/8y3T27K/HyvnXGCHLg9+d9rhIWiyIJsvV1W
-	 GYeANLavbYq3HpcgYtH0P+8JYDelqodTj5HWKQyzQv4CLPhgba1SUwWZVkWsL6Fdot
-	 EHt8lKXpknQ9u0hWk4Kh7vO/ZO7xf/7o+HqJ8oPh6+Ymd21IH0zuQDpV/Qq9c99ReA
-	 B2l4SmTK4QKuKIPlP+4TwzcqclpjXly+8VxKgAxYqhgUQX/sUrN5rDjOjULFCKLjF3
-	 /Xc2h7ZK/O/9Q==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 90405F40068;
-	Tue, 24 Mar 2026 16:18:08 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-10.internal (MEProxy); Tue, 24 Mar 2026 16:18:08 -0400
-X-ME-Sender: <xms:gPHCaTbRHEkdD7LTBAZMS26QQYXATK9QfQeOat0wQq0WtMIXx_t1tA>
-    <xme:gPHCaY43cRzhnz5nLv9OiXrtrqKi7aj1o-Z0rGn4E9siEBeIuQEHprxXhM88cM-iS
-    XT0J1ZI4f_nykYGtz0G8TwGY1GtaXLDhi39KRu_TFRtzF-69oNHzQ>
-X-ME-Received: <xmr:gPHCaT9G8McDBTDRPCr84Vp9NNDwy2toXRIG1BC8i6PSsXxwEVGog7dXndI4PhwPBG_KK2jMaYexk_m0PFfPWYejSh4crMJ5>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdefvddvhedvucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    elueehtefhtddtgfejvdejueehhfekteevueeuueekgeetieeggeehvdffhefhhfenucff
-    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhn
-    rghlihhthidqudeijedtleekgeejuddqudejjeekheehhedvqdgsohhquhhnpeepkhgvrh
-    hnvghlrdhorhhgsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepudefpdhmohgu
-    vgepshhmthhpohhuthdprhgtphhtthhopehjohgvlhgrghhnvghlfhesnhhvihguihgrrd
-    gtohhmpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthht
-    ohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvggvrhgrjh
-    druhhprgguhhihrgihsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohhshhesjhho
-    shhhthhrihhplhgvthhtrdhorhhgpdhrtghpthhtohepuhhrvgiikhhisehgmhgrihhlrd
-    gtohhmpdhrtghpthhtoheprhhoshhtvgguthesghhoohgumhhishdrohhrghdprhgtphht
-    thhopehmrghthhhivghurdguvghsnhhohigvrhhssegvfhhfihgtihhoshdrtghomhdprh
-    gtphhtthhopehjihgrnhhgshhhrghnlhgrihesghhmrghilhdrtghomh
-X-ME-Proxy: <xmx:gPHCacbOKHKN8bvHn9f8rdctTUMpU4hiQdu0c4lBZvqsIxqPYnVyXg>
-    <xmx:gPHCaU7RmxG3EzW45vawPvlNAz6Wgp1Yw7I3etO8I6CgY-nXX-iIJA>
-    <xmx:gPHCaZklErOyOgrLXdIY6hkzWbRsh3GPqePCXCfduIUGoU6oihFITA>
-    <xmx:gPHCacHFBKtwdtnBDfU6UKkmKSinrvpLH4P4T-Eh_nxc7s6yE5-sgw>
-    <xmx:gPHCaajgH_drx8bXxs-S-89RSA3SJdxzB3cTXRQLzEzozrOCOC6XYv9z>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 24 Mar 2026 16:18:07 -0400 (EDT)
-Date: Tue, 24 Mar 2026 13:18:07 -0700
-From: Boqun Feng <boqun@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] srcu: Use irq_work to start GP in tiny SRCU
-Message-ID: <acLxf01sjV0cZ0cP@tardis.local>
-References: <20260324001418.89363-1-joelagnelf@nvidia.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="it3ihn2s"
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-485317b6bd0so9935e9.1
+        for <rcu@vger.kernel.org>; Tue, 24 Mar 2026 14:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1774388121; x=1774992921; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oT0RY53ohSbpUHq/mckzhfzjGE6xK7YwQGcozbaC4yQ=;
+        b=it3ihn2sDWKB1ql3gXeIWqC/IU8Oj5Flmx4dRnelBk+Cv8FHjImkdpbfmGsD4/r/Ar
+         f4eW7B6KDuJDfjgzeLkrALFEcA8ReWuv6GSl6mEqxJMVCQnJEi6wNJBjTXFIVdDlFTiV
+         fGhur+nreGDwrcKYDu0O+gGThWv+o4d5vUMKcM0YH0OqwRUQmIHX/Sxj42Oz0ycqej/n
+         Fu6dRohbvEinESvVzJstHskR9tV3yiInapUaVf2zYpi7BSXGSUhaz7913mpp/hLDAPMk
+         9W7eHvE9sxv1e5/7Sy3Lol2X6xZU02R5OT88GkJq/9nM3o7SLjJd3Jb0w3wydjCNycsF
+         NLTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774388121; x=1774992921;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oT0RY53ohSbpUHq/mckzhfzjGE6xK7YwQGcozbaC4yQ=;
+        b=LEZhlVUqCa4VCaDEhuRVaNW/SXgFTf0PNoSo/uk6AbvE4ysxYsBkgrMSxR4Uh7h0OQ
+         hUYMBJAGQ9qvM7WGspqBtmyvNdBSuOc4xvYqVBN4M4dzYcpi6w0iYwQLJUYe7BHlBCr6
+         72v977KDKzOKuzbW21hAWu9fnKcpj6RMQ9u1qiwdyQ3Cd/8MBe36X1Pzhccq70HZVR38
+         U5l+oJUpPVTL/KXQeHGRpZx8jH23PtlRByV+7nMzItXGLfXYNa8Us34JwHTxQO35sWHP
+         UuIgRktquqbcaxD41v2lIItqEncLaZDDFgLy3M/nvxQYPsa1I/uQpB8Ena7q/tAzRLtW
+         teOw==
+X-Forwarded-Encrypted: i=1; AJvYcCUSpFxNZLiOMQwstC1QQ10Pj4MEbWGhF7TovDVcmWFtMSe3BASOZkYDWc7HUOpgJ7En8lo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw7oHG9XH7SQqXC00zoImC4hMzLH744yjqOQ5t5Q1yTz6qSReZD
+	gKCto13XAmpLNIibSEI2S5tGXO4Hpk3KTsVTfRzWD01xAYBasxjuLv7jwLCCc8uRgg==
+X-Gm-Gg: ATEYQzxQ1awbJdM3QZsOBa+jDPq0qxR5peoOyNzTl8JumOjql+nD+Zmw9GfZFkRbu2a
+	oL0hqpcJYedk6aBxrUxjmIB2CwwtC7SU0R/Rw43gbrjd7k0Pt33LjBmYmJHSj4I/XeyzaCDUbaJ
+	k4AGRuSSsLtDw/iUA/iilDrNE7sLMufkUrb0476+RUXPN9hdAHDgzHO/Q/4/h8EQ3DhJ3y16VsP
+	7eCVneiFIsihUYak3pEQduNVU8ttKSumdZQeHwuhSwaolGhWrud6L3H58OOeEm4asFgugt2REAq
+	fd67XhnWLhHnbVmFJ73+ueq4jdZvBe9NERFA5H5vibzNFHIWMSiNFyhKf9xSrpf5kSNJd5E4AUs
+	e9bi3ssK1SYAg3i1d+ewkY/cNRqVUzAdJ1vSbMPAze/+UimrHmCasBhyHHyywgjNsccFlnHB+Q1
+	sDnUjvdA0PcMY4b7ND9Ke0ZtY5YjIa4GAnUX2TiCIPtJ08+RkbhW6d5LENd3X7EA==
+X-Received: by 2002:a05:600c:c1c8:20b0:486:f772:91c4 with SMTP id 5b1f17b1804b1-48716819f7emr188615e9.8.1774388120569;
+        Tue, 24 Mar 2026 14:35:20 -0700 (PDT)
+Received: from localhost ([2a00:79e0:288a:8:ded1:e23b:8c0a:3b21])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-43b8aa474b6sm710974f8f.10.2026.03.24.14.35.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Mar 2026 14:35:19 -0700 (PDT)
+From: Jann Horn <jannh@google.com>
+Date: Tue, 24 Mar 2026 22:35:12 +0100
+Subject: [PATCH] slab,rcu: disable KVFREE_RCU_BATCHED for strict grace
+ period
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260324001418.89363-1-joelagnelf@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260324-kasan-kfree-rcu-v1-1-ac58a7a13d03@google.com>
+X-B4-Tracking: v=1; b=H4sIAI8Dw2kC/x3MwQpAQBRG4VfRXbs1xkS8iiwm/uGmhu5ESt7dZ
+ PktznkoQQWJ+uIhxSVJ9phRlQVNq48LWOZsssY2praON5985C0owDqd7NAG1xlbtwiUq0MR5P6
+ Pw/i+H49oAKphAAAA
+X-Change-ID: 20260324-kasan-kfree-rcu-4e7f490237ef
+To: Vlastimil Babka <vbabka@kernel.org>, Harry Yoo <harry.yoo@oracle.com>, 
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>, 
+ David Rientjes <rientjes@google.com>, 
+ Roman Gushchin <roman.gushchin@linux.dev>, 
+ "Paul E. McKenney" <paulmck@kernel.org>, 
+ Joel Fernandes <joelagnelf@nvidia.com>, 
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
+ Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+ Dmitry Vyukov <dvyukov@google.com>, rcu@vger.kernel.org, linux-mm@kvack.org, 
+ linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+X-Mailer: b4 0.15-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1774388116; l=1651;
+ i=jannh@google.com; s=20240730; h=from:subject:message-id;
+ bh=usnnnH7wUGYWY5NIsmoimFYx19G6HqPPrRI2oZAKt1Q=;
+ b=SgmquGvg0X9VR0OP0g3btEDHfyjT6PMsoHAYVyfCmCV0ATxqjDCX7hohdeoRiLQJIAjY7BLQY
+ dwd1J12BZ0kD7ik8LI0ZUha0325jzs7B3OE7eJaqSFXoG05/MNUX12w
+X-Developer-Key: i=jannh@google.com; a=ed25519;
+ pk=AljNtGOzXeF6khBXDJVVvwSEkVDGnnZZYqfWhP1V+C8=
 
-On Mon, Mar 23, 2026 at 08:14:18PM -0400, Joel Fernandes wrote:
-> Tiny SRCU's srcu_gp_start_if_needed() directly calls schedule_work(),
-> which acquires the workqueue pool->lock.
-> 
-> This causes a lockdep splat when call_srcu() is called with a scheduler
-> lock held, due to:
-> 
->   call_srcu() [holding pi_lock]
->     srcu_gp_start_if_needed()
->       schedule_work() -> pool->lock
-> 
->   workqueue_init() / create_worker() [holding pool->lock]
->     wake_up_process() -> try_to_wake_up() -> pi_lock
-> 
-> Also add irq_work_sync() to cleanup_srcu_struct() to prevent a
-> use-after-free if a queued irq_work fires after cleanup begins.
-> 
-> Tested with rcutorture SRCU-T and no lockdep warnings.
-> 
-> [ Thanks to Boqun for similar fix in patch "rcu: Use an intermediate irq_work
-> to start process_srcu()" ]
-> 
-> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+Disable CONFIG_KVFREE_RCU_BATCHED in CONFIG_RCU_STRICT_GRACE_PERIOD builds
+so that kernel fuzzers have an easier time finding use-after-free involving
+kfree_rcu().
 
-Queued into
+The intent behind CONFIG_RCU_STRICT_GRACE_PERIOD is that RCU should invoke
+callbacks and free objects as soon as possible (at a large performance
+cost) so that kernel fuzzers and such have an easier time detecting
+use-after-free bugs in objects with RCU lifetime.
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git fixes.v7.0-rc4
+CONFIG_KVFREE_RCU_BATCHED is a performance optimization that queues
+RCU-freed objects in ways that CONFIG_RCU_STRICT_GRACE_PERIOD can't
+expedite; for example, the following testcase doesn't trigger a KASAN splat
+when CONFIG_KVFREE_RCU_BATCHED is enabled:
+```
+struct foo_struct {
+  struct rcu_head rcu;
+  int a;
+};
+struct foo_struct *foo = kmalloc(sizeof(*foo),
+    GFP_KERNEL | __GFP_NOFAIL | __GFP_ZERO);
 
-with Paul's Reviewed-by provided in an offlist discussion.
+pr_info("%s: calling kfree_rcu()\n", __func__);
+kfree_rcu(foo, rcu);
+msleep(10);
+pr_info("%s: start UAF access\n", __func__);
+READ_ONCE(foo->a);
+pr_info("%s: end UAF access\n", __func__);
+```
 
-Regards,
-Boqun
+Signed-off-by: Jann Horn <jannh@google.com>
+---
+ mm/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
->  include/linux/srcutiny.h |  4 ++++
->  kernel/rcu/srcutiny.c    | 19 ++++++++++++++++++-
->  2 files changed, 22 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> index dec7cbe015aa..905b629e8fa3 100644
-> --- a/include/linux/srcutiny.h
-> +++ b/include/linux/srcutiny.h
-> @@ -11,6 +11,7 @@
->  #ifndef _LINUX_SRCU_TINY_H
->  #define _LINUX_SRCU_TINY_H
->  
-> +#include <linux/irq_work_types.h>
->  #include <linux/swait.h>
->  
->  struct srcu_struct {
-> @@ -24,18 +25,21 @@ struct srcu_struct {
->  	struct rcu_head *srcu_cb_head;	/* Pending callbacks: Head. */
->  	struct rcu_head **srcu_cb_tail;	/* Pending callbacks: Tail. */
->  	struct work_struct srcu_work;	/* For driving grace periods. */
-> +	struct irq_work srcu_irq_work;	/* Defer schedule_work() to irq work. */
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->  	struct lockdep_map dep_map;
->  #endif /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
->  };
->  
->  void srcu_drive_gp(struct work_struct *wp);
-> +void srcu_tiny_irq_work(struct irq_work *irq_work);
->  
->  #define __SRCU_STRUCT_INIT(name, __ignored, ___ignored, ____ignored)	\
->  {									\
->  	.srcu_wq = __SWAIT_QUEUE_HEAD_INITIALIZER(name.srcu_wq),	\
->  	.srcu_cb_tail = &name.srcu_cb_head,				\
->  	.srcu_work = __WORK_INITIALIZER(name.srcu_work, srcu_drive_gp),	\
-> +	.srcu_irq_work = { .func = srcu_tiny_irq_work },		\
->  	__SRCU_DEP_MAP_INIT(name)					\
->  }
->  
-> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> index 3450c3751ef7..a2e2d516e51b 100644
-> --- a/kernel/rcu/srcutiny.c
-> +++ b/kernel/rcu/srcutiny.c
-> @@ -9,6 +9,7 @@
->   */
->  
->  #include <linux/export.h>
-> +#include <linux/irq_work.h>
->  #include <linux/mutex.h>
->  #include <linux/preempt.h>
->  #include <linux/rcupdate_wait.h>
-> @@ -41,6 +42,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
->  	ssp->srcu_idx_max = 0;
->  	INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
->  	INIT_LIST_HEAD(&ssp->srcu_work.entry);
-> +	init_irq_work(&ssp->srcu_irq_work, srcu_tiny_irq_work);
->  	return 0;
->  }
->  
-> @@ -84,6 +86,7 @@ EXPORT_SYMBOL_GPL(init_srcu_struct);
->  void cleanup_srcu_struct(struct srcu_struct *ssp)
->  {
->  	WARN_ON(ssp->srcu_lock_nesting[0] || ssp->srcu_lock_nesting[1]);
-> +	irq_work_sync(&ssp->srcu_irq_work);
->  	flush_work(&ssp->srcu_work);
->  	WARN_ON(ssp->srcu_gp_running);
->  	WARN_ON(ssp->srcu_gp_waiting);
-> @@ -177,6 +180,20 @@ void srcu_drive_gp(struct work_struct *wp)
->  }
->  EXPORT_SYMBOL_GPL(srcu_drive_gp);
->  
-> +/*
-> + * Use an irq_work to defer schedule_work() to avoid acquiring the workqueue
-> + * pool->lock while the caller might hold scheduler locks, causing lockdep
-> + * splats due to workqueue_init() doing a wakeup.
-> + */
-> +void srcu_tiny_irq_work(struct irq_work *irq_work)
-> +{
-> +	struct srcu_struct *ssp;
-> +
-> +	ssp = container_of(irq_work, struct srcu_struct, srcu_irq_work);
-> +	schedule_work(&ssp->srcu_work);
-> +}
-> +EXPORT_SYMBOL_GPL(srcu_tiny_irq_work);
-> +
->  static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
->  {
->  	unsigned long cookie;
-> @@ -189,7 +206,7 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
->  	WRITE_ONCE(ssp->srcu_idx_max, cookie);
->  	if (!READ_ONCE(ssp->srcu_gp_running)) {
->  		if (likely(srcu_init_done))
-> -			schedule_work(&ssp->srcu_work);
-> +			irq_work_queue(&ssp->srcu_irq_work);
->  		else if (list_empty(&ssp->srcu_work.entry))
->  			list_add(&ssp->srcu_work.entry, &srcu_boot_list);
->  	}
-> -- 
-> 2.34.1
-> 
+diff --git a/mm/Kconfig b/mm/Kconfig
+index ebd8ea353687..67a72fe89186 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -172,6 +172,7 @@ config SLUB
+ config KVFREE_RCU_BATCHED
+ 	def_bool y
+ 	depends on !SLUB_TINY && !TINY_RCU
++	depends on !RCU_STRICT_GRACE_PERIOD
+ 
+ config SLUB_TINY
+ 	bool "Configure for minimal memory footprint"
+
+---
+base-commit: b29fb8829bff243512bb8c8908fd39406f9fd4c3
+change-id: 20260324-kasan-kfree-rcu-4e7f490237ef
+
+--  
+Jann Horn <jannh@google.com>
+
