@@ -1,151 +1,130 @@
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87AE035E953
-	for <rcu@vger.kernel.org>; Tue, 24 Mar 2026 21:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577BF469D
+	for <rcu@vger.kernel.org>; Wed, 25 Mar 2026 00:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774388124; cv=none; b=BUfaLRNEseoH6Oxtnzq3gK7QDzeI9AW5AVPr0i/hVCipRXbGlNIdB594pKJP5SGkb9Q20Ffp5wZM9H0NPJZu8ZS3Gaklp4Vsxi5So0G6Tpen2Y55u1dGxEM9Jm4hPnRVyG9dumHSU5fGw1PWmlETCdV+tH8DkYn0Sjd+WsHqUFU=
+	t=1774397051; cv=none; b=LJfU05FX6CaAT/9T4hl6/J2V568o06Hfz6K6CKh9pxSp/5oHUQKJBocc67fi88cHoSTqrXrwuqGdw69uaq5XbM8kcB1nrfF8to2P44nd3xidnncaAKCYYb9mumhdahlT947fejmiM6S7+AgLFnKXAkTqrMKBT3N6/2Rks44rmvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774388124; c=relaxed/simple;
-	bh=usnnnH7wUGYWY5NIsmoimFYx19G6HqPPrRI2oZAKt1Q=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=LWG1XS4pmVO2X0ShWo0eVp+GHz5wkM5DcwHsosCYA9/H5U9mDVCOezAXz76221Wh2//BbV+rIahjn3va5jLxvQ7QlUJC6UR1q2A6AN6GTbLcFnycvgGAXOJ0yp2VWBOSZmZcfDh8Knoqf/sbUY/+7ZR19HNaaJ5dli1OhzJGqDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=it3ihn2s; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1774397051; c=relaxed/simple;
+	bh=kGxQUM4ZBpKu1ewwRexf9Nhlcv1zozNwEvW9JCNnLeE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XZE1AIUJ9EaGjoPaCohLAevUdvVo7aG7U9o3XeuHTHb+ivBCVrtCeLk6lZviTjmBoKq85ADeLUntFT0ffVfExy1ByjWZ7WhY7vb9sytbvV76LrMctWui8RbOGEzaXd9T0MuPZooBOH1AzOOq/lp4aaya44EiYZ/GAAcMfEz/8Rk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BfJao19P; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="it3ihn2s"
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-485317b6bd0so9935e9.1
-        for <rcu@vger.kernel.org>; Tue, 24 Mar 2026 14:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1774388121; x=1774992921; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oT0RY53ohSbpUHq/mckzhfzjGE6xK7YwQGcozbaC4yQ=;
-        b=it3ihn2sDWKB1ql3gXeIWqC/IU8Oj5Flmx4dRnelBk+Cv8FHjImkdpbfmGsD4/r/Ar
-         f4eW7B6KDuJDfjgzeLkrALFEcA8ReWuv6GSl6mEqxJMVCQnJEi6wNJBjTXFIVdDlFTiV
-         fGhur+nreGDwrcKYDu0O+gGThWv+o4d5vUMKcM0YH0OqwRUQmIHX/Sxj42Oz0ycqej/n
-         Fu6dRohbvEinESvVzJstHskR9tV3yiInapUaVf2zYpi7BSXGSUhaz7913mpp/hLDAPMk
-         9W7eHvE9sxv1e5/7Sy3Lol2X6xZU02R5OT88GkJq/9nM3o7SLjJd3Jb0w3wydjCNycsF
-         NLTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774388121; x=1774992921;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oT0RY53ohSbpUHq/mckzhfzjGE6xK7YwQGcozbaC4yQ=;
-        b=LEZhlVUqCa4VCaDEhuRVaNW/SXgFTf0PNoSo/uk6AbvE4ysxYsBkgrMSxR4Uh7h0OQ
-         hUYMBJAGQ9qvM7WGspqBtmyvNdBSuOc4xvYqVBN4M4dzYcpi6w0iYwQLJUYe7BHlBCr6
-         72v977KDKzOKuzbW21hAWu9fnKcpj6RMQ9u1qiwdyQ3Cd/8MBe36X1Pzhccq70HZVR38
-         U5l+oJUpPVTL/KXQeHGRpZx8jH23PtlRByV+7nMzItXGLfXYNa8Us34JwHTxQO35sWHP
-         UuIgRktquqbcaxD41v2lIItqEncLaZDDFgLy3M/nvxQYPsa1I/uQpB8Ena7q/tAzRLtW
-         teOw==
-X-Forwarded-Encrypted: i=1; AJvYcCUSpFxNZLiOMQwstC1QQ10Pj4MEbWGhF7TovDVcmWFtMSe3BASOZkYDWc7HUOpgJ7En8lo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7oHG9XH7SQqXC00zoImC4hMzLH744yjqOQ5t5Q1yTz6qSReZD
-	gKCto13XAmpLNIibSEI2S5tGXO4Hpk3KTsVTfRzWD01xAYBasxjuLv7jwLCCc8uRgg==
-X-Gm-Gg: ATEYQzxQ1awbJdM3QZsOBa+jDPq0qxR5peoOyNzTl8JumOjql+nD+Zmw9GfZFkRbu2a
-	oL0hqpcJYedk6aBxrUxjmIB2CwwtC7SU0R/Rw43gbrjd7k0Pt33LjBmYmJHSj4I/XeyzaCDUbaJ
-	k4AGRuSSsLtDw/iUA/iilDrNE7sLMufkUrb0476+RUXPN9hdAHDgzHO/Q/4/h8EQ3DhJ3y16VsP
-	7eCVneiFIsihUYak3pEQduNVU8ttKSumdZQeHwuhSwaolGhWrud6L3H58OOeEm4asFgugt2REAq
-	fd67XhnWLhHnbVmFJ73+ueq4jdZvBe9NERFA5H5vibzNFHIWMSiNFyhKf9xSrpf5kSNJd5E4AUs
-	e9bi3ssK1SYAg3i1d+ewkY/cNRqVUzAdJ1vSbMPAze/+UimrHmCasBhyHHyywgjNsccFlnHB+Q1
-	sDnUjvdA0PcMY4b7ND9Ke0ZtY5YjIa4GAnUX2TiCIPtJ08+RkbhW6d5LENd3X7EA==
-X-Received: by 2002:a05:600c:c1c8:20b0:486:f772:91c4 with SMTP id 5b1f17b1804b1-48716819f7emr188615e9.8.1774388120569;
-        Tue, 24 Mar 2026 14:35:20 -0700 (PDT)
-Received: from localhost ([2a00:79e0:288a:8:ded1:e23b:8c0a:3b21])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-43b8aa474b6sm710974f8f.10.2026.03.24.14.35.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Mar 2026 14:35:19 -0700 (PDT)
-From: Jann Horn <jannh@google.com>
-Date: Tue, 24 Mar 2026 22:35:12 +0100
-Subject: [PATCH] slab,rcu: disable KVFREE_RCU_BATCHED for strict grace
- period
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BfJao19P"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1774397049;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A1Ze4sjXJJjubAZKIGLArbzswBveq/NwHoq4yYR+a3c=;
+	b=BfJao19PcO8mn/8dqmtyYWwLKgYL1Z17yuy84P9MnuTmkIj0pyq2uiMX2CW3I7Gso0wIYS
+	uxdvb24DoiErg/JHVsnBbxoXPWIfOueHRK0tyQz7uKKibuTo+dr2PcxmCbwUH5DYN8Yelx
+	x4RaufXir9urlyvtnaApaVXBOb1amx0=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-635-aXBnXIxdMZeg3RCWoCozsg-1; Tue,
+ 24 Mar 2026 20:04:03 -0400
+X-MC-Unique: aXBnXIxdMZeg3RCWoCozsg-1
+X-Mimecast-MFC-AGG-ID: aXBnXIxdMZeg3RCWoCozsg_1774397041
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7020D19560A1;
+	Wed, 25 Mar 2026 00:04:01 +0000 (UTC)
+Received: from [10.22.65.192] (unknown [10.22.65.192])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 462C319560B1;
+	Wed, 25 Mar 2026 00:03:59 +0000 (UTC)
+Message-ID: <5ee99b05-c30f-4198-84b1-36ecdedbd6c0@redhat.com>
+Date: Tue, 24 Mar 2026 20:03:58 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] cgroups/cpusets: Spurious CPU-hotplug failures
+To: paulmck@kernel.org
+Cc: Tejun Heo <tj@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, frederic@kernel.org
+References: <049415be-0be8-4e01-bba9-530e302bf655@paulmck-laptop>
+ <5f142f48-653d-430b-90a6-400f87c88921@redhat.com>
+ <8295a194-8f35-427a-8c02-97f2f648eb70@paulmck-laptop>
+ <3e48811a-c768-4c7e-a1af-b7091e75bb48@paulmck-laptop>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <3e48811a-c768-4c7e-a1af-b7091e75bb48@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260324-kasan-kfree-rcu-v1-1-ac58a7a13d03@google.com>
-X-B4-Tracking: v=1; b=H4sIAI8Dw2kC/x3MwQpAQBRG4VfRXbs1xkS8iiwm/uGmhu5ESt7dZ
- PktznkoQQWJ+uIhxSVJ9phRlQVNq48LWOZsssY2praON5985C0owDqd7NAG1xlbtwiUq0MR5P6
- Pw/i+H49oAKphAAAA
-X-Change-ID: 20260324-kasan-kfree-rcu-4e7f490237ef
-To: Vlastimil Babka <vbabka@kernel.org>, Harry Yoo <harry.yoo@oracle.com>, 
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>, 
- David Rientjes <rientjes@google.com>, 
- Roman Gushchin <roman.gushchin@linux.dev>, 
- "Paul E. McKenney" <paulmck@kernel.org>, 
- Joel Fernandes <joelagnelf@nvidia.com>, 
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
- Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
- Dmitry Vyukov <dvyukov@google.com>, rcu@vger.kernel.org, linux-mm@kvack.org, 
- linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-X-Mailer: b4 0.15-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1774388116; l=1651;
- i=jannh@google.com; s=20240730; h=from:subject:message-id;
- bh=usnnnH7wUGYWY5NIsmoimFYx19G6HqPPrRI2oZAKt1Q=;
- b=SgmquGvg0X9VR0OP0g3btEDHfyjT6PMsoHAYVyfCmCV0ATxqjDCX7hohdeoRiLQJIAjY7BLQY
- dwd1J12BZ0kD7ik8LI0ZUha0325jzs7B3OE7eJaqSFXoG05/MNUX12w
-X-Developer-Key: i=jannh@google.com; a=ed25519;
- pk=AljNtGOzXeF6khBXDJVVvwSEkVDGnnZZYqfWhP1V+C8=
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-Disable CONFIG_KVFREE_RCU_BATCHED in CONFIG_RCU_STRICT_GRACE_PERIOD builds
-so that kernel fuzzers have an easier time finding use-after-free involving
-kfree_rcu().
+On 3/24/26 5:41 AM, Paul E. McKenney wrote:
+> On Wed, Mar 18, 2026 at 11:43:37AM -0700, Paul E. McKenney wrote:
+>> On Wed, Mar 18, 2026 at 11:02:16AM -0400, Waiman Long wrote:
+>>> On 3/18/26 8:53 AM, Paul E. McKenney wrote:
+>>>> Hello!
+>>>>
+>>>> Running rcutorture on v7.0-rc3 results in spurious CPU-hotplug failures,
+>>>> most frequently on the TREE03 scenario, which suffers about ten such
+>>>> failures per hundred hours of test time.  Repeat-by is as follows:
+>>>>
+>>>> tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 80 --duration 100h --configs "100*TREE03" --trust-make
+>>>>
+>>>> Though a faster repeat-by instead uses kvm-remote.sh and lots of systems.
+>>>>
+>>>> Bisection converges here:
+>>>>
+>>>> 6df415aa46ec ("cgroup/cpuset: Defer housekeeping_update() calls from CPU hotplug to workqueue")
+>>>>
+>>>> Reverting this commit gets rid of the spurious CPU-hotplug failures.
+>>>> Of course, this also gets rid of some ability to do dynamic nohz_full
+>>>> processing.
+>>>>
+>>>> Now, the problem might be that the workqueue handler might still be
+>>>> in flight by the time that rcutorture fired up the next CPU-hotplug
+>>>> operation, especially given that the TREE03 scenario only waits 200
+>>>> milliseconds between these operations.  This suggests waiting for this
+>>>> handler before ending each CPU-hotplug operation.  And the crude patch
+>>>> below does make the problem go away.
+>>>>
+>>>> This alleged fix is quite heavy-handed, and also fragile in that if
+>>>> hk_sd_workfn() uses a different workqueue, this breaks.  It might be
+>>>> better to call into the cgroups/cpusets code and to use flush_work()
+>>>> to wait only on hk_sd_workfn() and nothing else.  But it seemed best to
+>>>> keep things trivial to start with.
+>>>>
+>>>> Either way, please consider the patch below to be part of this bug report
+>>>> rather than a proper fix.
+>>>>
+>>>> Thoughts?
+>>>>
+>>>> 							Thanx, Paul
+>>> There is a fix commit ca174c705db5 ("cgroup/cpuset: Call
+>>> rebuild_sched_domains() directly in hotplug") in rc4 that may help. Could
+>>> you try out the rc4 kernel to see if that can resolve the problem that you
+>>> have?
+>> It does, thank you!
+>>
+>> Tested-by: Paul E. McKenney <paulmck@kernel.org>
+> This did fix the problem, except for PREEMPT_RT kernels (which I have
+> not yet bisected).  If there is another patch for that configuration,
+> could you please let me know?
 
-The intent behind CONFIG_RCU_STRICT_GRACE_PERIOD is that RCU should invoke
-callbacks and free objects as soon as possible (at a large performance
-cost) so that kernel fuzzers and such have an easier time detecting
-use-after-free bugs in objects with RCU lifetime.
+Thank for the notice. I haven't much testing with respect to PREEMPT_RT 
+kernel. I will try to run some tests on PREEMPT_RT kernel and see if 
+there is any problem. Please let me know if you found out the new cpuset 
+code is at fault after bisection.
 
-CONFIG_KVFREE_RCU_BATCHED is a performance optimization that queues
-RCU-freed objects in ways that CONFIG_RCU_STRICT_GRACE_PERIOD can't
-expedite; for example, the following testcase doesn't trigger a KASAN splat
-when CONFIG_KVFREE_RCU_BATCHED is enabled:
-```
-struct foo_struct {
-  struct rcu_head rcu;
-  int a;
-};
-struct foo_struct *foo = kmalloc(sizeof(*foo),
-    GFP_KERNEL | __GFP_NOFAIL | __GFP_ZERO);
-
-pr_info("%s: calling kfree_rcu()\n", __func__);
-kfree_rcu(foo, rcu);
-msleep(10);
-pr_info("%s: start UAF access\n", __func__);
-READ_ONCE(foo->a);
-pr_info("%s: end UAF access\n", __func__);
-```
-
-Signed-off-by: Jann Horn <jannh@google.com>
----
- mm/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/mm/Kconfig b/mm/Kconfig
-index ebd8ea353687..67a72fe89186 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -172,6 +172,7 @@ config SLUB
- config KVFREE_RCU_BATCHED
- 	def_bool y
- 	depends on !SLUB_TINY && !TINY_RCU
-+	depends on !RCU_STRICT_GRACE_PERIOD
- 
- config SLUB_TINY
- 	bool "Configure for minimal memory footprint"
-
----
-base-commit: b29fb8829bff243512bb8c8908fd39406f9fd4c3
-change-id: 20260324-kasan-kfree-rcu-4e7f490237ef
-
---  
-Jann Horn <jannh@google.com>
+Cheers,
+Longman
 
