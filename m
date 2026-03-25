@@ -1,67 +1,67 @@
-Received: from mail-dy1-f175.google.com (mail-dy1-f175.google.com [74.125.82.175])
+Received: from mail-dy1-f171.google.com (mail-dy1-f171.google.com [74.125.82.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1F9351C07
-	for <rcu@vger.kernel.org>; Wed, 25 Mar 2026 09:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF74C34FF5A
+	for <rcu@vger.kernel.org>; Wed, 25 Mar 2026 09:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774429853; cv=none; b=QVEN1ejPqhAbR5mZDc2oZcU9MScU0cYKUu/X0ArpQRvJdwycBACv3cETEx3iGSU0OxrfDn9T7IQt8wOxL4PYbJqP11dn/WbJ0tV3IrF/1TNERCVKyKzN1llaauHgz+xqsdbFCvtJh1yH6Df1cr0dzdIflcGdKSm3rPIX6x4ynsk=
+	t=1774429861; cv=none; b=Oduy45hqgGRYi+lQrJd5tEvLtpUAjGeTKZ9lKUk/ABu0Btw7n0QbyOutuIhToWsQ1VNp/StXQA9ootnn/xJOvWTeMgoPOwKZ6FV23K3Udzbz6qHFx/PrI1lYIZTvdjbjymo7LdZE5WCpuajP3Ji2U5gMipgunpUyiuckMdU1y3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774429853; c=relaxed/simple;
-	bh=qg8WLXL88Iept54fzSGWgFgBN1HmxL+HvwvzbJJ1K+4=;
+	s=arc-20240116; t=1774429861; c=relaxed/simple;
+	bh=dZRPxCW29l/fu7AJjzApS7HpjEpQcwXBEnvE4/krAJA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=dEFiXwLhIy7qkGdgwuPYLwZrGRhIBKEQUQN+JsBDvhZLMLQW/8dyVbM9JTrYqp0AXOIShxslhA/eruUmN3MhPieySplHNABdw2pSJ+1doByFSYL9gvojSjdLFtJENgpzGtLa8NV+UgXzlhnmK4MzF+6I2l1VNcC3v40iDrzVMO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ISUg5NGP; arc=none smtp.client-ip=74.125.82.175
+	 In-Reply-To:To:Cc; b=KqJ+mMeTLy8e11ANirvkjbm9Qrz6oSzg1iPwHUh/hdA9SrXh2JT5c7g9/5150jYvL/I9MaUEroIASIW5WhyTiwQsn3dodtN8TwiOUl77/ka4fsWJIfffgI35VxP81wd60EXGDobaRnCR8QYDgr4lUTylmLyRq+wUC7gP8v+0LB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HegLohDh; arc=none smtp.client-ip=74.125.82.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ISUg5NGP"
-Received: by mail-dy1-f175.google.com with SMTP id 5a478bee46e88-2c0e38f3f60so274932eec.1
-        for <rcu@vger.kernel.org>; Wed, 25 Mar 2026 02:10:51 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HegLohDh"
+Received: by mail-dy1-f171.google.com with SMTP id 5a478bee46e88-2c1632faeb9so621494eec.0
+        for <rcu@vger.kernel.org>; Wed, 25 Mar 2026 02:10:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774429850; x=1775034650; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1774429859; x=1775034659; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0ZgSquaLuKBFQZpkdx/1H4ca5cGKSrUW15huIE1GEBI=;
-        b=ISUg5NGPIpEfbQsjlwC1Er3p4lCtuAt2FDC0Kwn+O9eMIErydITTEx7nqkASOssODr
-         nUDQYRuPLnwXrAUunGsnPjoelBNnq6+VMv37sBofsfopkVEDKqwM0G83asN4xCjWiP9h
-         /aMSAxRQMrAv/VOf0bSZj1MSf6ynk0EXYWjjcR4dcnNq+fLMxesPFCoQp//aP+1LT3b7
-         A9ovAYckunhqKFj+9A2M4p6T3tnIsqzgjKakPuxq2k+wNE0WrE4S55mIcwPXGTVU+zSE
-         /Y4yjn439dlLF51w6l8pGzE1P2Fjichtlj+ufpsXv/8p5FmzpDFKOhtR1WsOOB+UEvey
-         y4wg==
+        bh=j696bvYoqH2TUY0iU+oTg40Ft0YnS+LfzToj8hbXNYs=;
+        b=HegLohDha3eWmDRYz+hahj2NwKxXbH6W7eS5zL1nqNLs1OHcQk77khFA1BNuosAx89
+         3qPbPC69Wu53mTYie2F8dtuyPNdQX6jUgg1lOkQAWOG8TC6lx5TSO/ypirMxlJ8mgyCs
+         cM8olWSwaeuaT73Dov8oDvjxaaNIrC655tXyMqtV+rbrLJEQV1S0YBgiPzY+YVCtfjtc
+         SxJvR9PqYopMulnsqVPiefcjMavFtXkCSXa4qC/Gh5P2WeEuXhL8dtnVe4e06HhQRpOs
+         6mIojhVAWOQaYBDGyxOr4YyzXmf6E4PEQvqs+g4x/xUepNsQio2dk+HXdU5CB4J677xj
+         4JXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774429850; x=1775034650;
+        d=1e100.net; s=20251104; t=1774429859; x=1775034659;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=0ZgSquaLuKBFQZpkdx/1H4ca5cGKSrUW15huIE1GEBI=;
-        b=gfj9uNw1ts1JncW5gZMQnzWVQFTDYN4S/RGZcXToQOvnC57sIsAeZL2roY550a7jrj
-         0t/9bZDEUs++PlnUfnGrM4rEEN0eQmfoQCpEdXN4REvUmxvtUgkdXDqpPFBLh/ZAKH/j
-         ckmwm8QgkRpvOq1INh5mfKZ/qL9V+uOIn5MNTXPa5PVRJzx3LDFhC2WNixsA50exfEzo
-         5SUcW1f0PcyTgSymTyH+90EhKY22YctmK387jgqBa50wrhs3jAIXsDMjhdNK6OuhTXmA
-         6f/59fOkZBjPYROEriYDWZ2HNphTtbzGqYnszjqkhd9jEJJMQ93tQ0vOzfI8Ji2qyp+9
-         Cw1g==
-X-Forwarded-Encrypted: i=1; AJvYcCUhS6/1cwe/ZJIGPXFNtCMTLjgZOM0d7X7/T1FKck/3e6d5ogeAt4iD7auwpxc7GmNYt7s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9s0COTNAx05XfTAXZycBv07sNouMpxQf7wKqrrd9aYNMvgM2E
-	qFS26xNUs6LP3PnU6Qe5MXozrnSfM0VDwIGbbcyvnvc5MY9jXNekTi8T
-X-Gm-Gg: ATEYQzwVIZPQvafxCP1ciQGG3d9XbkkV5m8vS+I4iKWyzlsCozRWgBInQeOnS7JfW9o
-	8VG2f6KaG8ylM9NXUa4v8cbkDQN86gafj8reMCvX0iKbcektf4DxMjN0fNJbq8bxhv8/g+1g+R8
-	QMx1d0Z/OIMLbo/Arj/2dAu3DuIIBU57ZXKueKytZy07iU+8JsSZ2pUUGoW32n9Oxk2zIwSC4EB
-	Dj48ln/caegOvGGxNyqvLCcVgDBPPFmezQ7kjRJLjZgwmU1/JRi6zqKpunshpZV31xRST6MGicN
-	WCe/SQS4ctc3c3t+EwwWF2yCXV78pjHWIdyRNPSesT8WUk1N4krlRctxABUHvCjtVenEZtP5iTO
-	Zq0fRMxMeLuzS4DvJoJpzXQpSz5vC3VKLQ4txvI46J8KjFO49V54McnTSShD8oV+C3ZqdAgC47g
-	Vwus5nyaWGvroSJ8Sc
-X-Received: by 2002:a05:7301:9f14:b0:2c0:ac4e:1516 with SMTP id 5a478bee46e88-2c15bd3cb1cmr1301131eec.11.1774429850168;
-        Wed, 25 Mar 2026 02:10:50 -0700 (PDT)
+        bh=j696bvYoqH2TUY0iU+oTg40Ft0YnS+LfzToj8hbXNYs=;
+        b=W/EPB2tALO9CPqTwD4iJAVVLn3AB89n+d/zgfH6vSKwcTfaXxRKjbUu+9t5TtRPyfF
+         XTDb5jjdT3Qev0NHlaG+Z27sE5IfWopIbyNWpi/21cf8xXvb5JWv1/PYilkvWeUu45DS
+         xSeCRg1d5ai71I108CHo751O+LM9jWRxbqmZrVfQnTlytvc7L8A9dmHQ57Y+IWJv+r1V
+         Z45Zr5nePNSDn7QNDf7T0L0ivsCa9eK+K9JnzAjLgYK+rZCiQe8YDFHct3TjUI5Sr5lC
+         ZmbIxFrJ9BVcm2p3WrTS6Bt6K6UFgnkUo/pm413ryMqYEiriasSgQhf+7bsEYIx+ILfq
+         tbwg==
+X-Forwarded-Encrypted: i=1; AJvYcCVmaIa7S0/I3TxuEiRacL7w5oK3NoZzs434cjIBbj8Y5Hp+be565DyDIDdeM5Xf015hqpI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy40FuKp0GH4HI4jayfXgRuwuyN4sM+MY/mRWevb5CZhg85mWV7
+	SLddxbDl+il3MW8LdOXhgEVwXKaNdERWhAuC1telSYhHKx1Xq08yJ0xS
+X-Gm-Gg: ATEYQzzVV6Th73kspyVIAWMtUxf8553en+Yp0X52xc4KG+k+YeDlFZIGu294Je0dMdM
+	2bDvsEzkPYFOGN4HFhwNZmI18Xf/gJgdCGy2S/ekqrPVpJjlrZKyIV7oUKkHg+Aifj5rBaj7l0M
+	uhceIrlez5MKf5/QUpApOSehFLsE/d8Fm90PNEeNkrxqMGmeQ3acMRnvkGOyOOybpwZ+px4BIG4
+	XnWqydw5CFofBi5qiCK9RECNJxZTx5ZUXCRkTAP/Tht+InwBdaY0siqlQFbrl3eroNqX+R9TcJP
+	hQ7WVVOJU12HDzn0EYeCGz4PcnvItFTJtJVC1vRAQbRHO+qRhK0D+uEmVdJrVHv1wnmo5hGs4NQ
+	EqU8fMyhGFmoJxsc8vb78M7dPL+pz8WqOIdzIJ+YP9PvK4PiBSv3YuVa4T4qZCDOrB1zoRGaQdN
+	RwCLjsxcd7htwTmV7l
+X-Received: by 2002:a05:7300:cb0e:b0:2be:8216:57c8 with SMTP id 5a478bee46e88-2c15d4a74bdmr1207196eec.30.1774429859013;
+        Wed, 25 Mar 2026 02:10:59 -0700 (PDT)
 Received: from wujing. ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2c159e25dc7sm2786389eec.27.2026.03.25.02.10.43
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2c159e25dc7sm2786389eec.27.2026.03.25.02.10.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Mar 2026 02:10:49 -0700 (PDT)
+        Wed, 25 Mar 2026 02:10:58 -0700 (PDT)
 From: Qiliang Yuan <realwujing@gmail.com>
-Date: Wed, 25 Mar 2026 17:09:40 +0800
-Subject: [PATCH 09/15] mm/compaction: Support dynamic housekeeping mask
- updates for kcompactd
+Date: Wed, 25 Mar 2026 17:09:41 +0800
+Subject: [PATCH 10/15] tick/nohz: Transition to dynamic full dynticks state
+ management
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260325-dhei-v12-final-v1-9-919cca23cadf@gmail.com>
+Message-Id: <20260325-dhei-v12-final-v1-10-919cca23cadf@gmail.com>
 References: <20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com>
 In-Reply-To: <20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -97,80 +97,218 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
  linux-kselftest@vger.kernel.org, Qiliang Yuan <realwujing@gmail.com>
 X-Mailer: b4 0.13.0
 
-The kcompactd threads are affined to housekeeping CPUs (HK_TYPE_DOMAIN)
-at boot to avoid interference with isolated workloads. Currently,
-these threads do not migrate when the housekeeping boundaries are
-reconfigured at runtime.
+Context:
+Full dynticks (NOHZ_FULL) is typically a static configuration determined
+at boot time. DHEI extends this to support runtime activation.
 
-Implement a housekeeping notifier to synchronize kcompactd affinity.
+Problem:
+Switching to NOHZ_FULL at runtime requires careful synchronization
+of context tracking and housekeeping states. Re-invoking setup logic
+multiple times could lead to inconsistencies or warnings, and RCU
+dependency checks often prevented tick suppression in "Zero-Conf" setups.
 
-This ensures that background compaction threads honor the dynamic
-isolation boundaries configured via the DHEI sysfs interface.
+Solution:
+- Replaced the static tick_nohz_full_enabled() checks with a dynamic
+  tick_nohz_full_running state variable.
+- Refactored tick_nohz_full_setup to be safe for runtime invocation,
+  adding guards against re-initialization and ensuring IRQ work
+  interrupt support.
+- Implemented boot-time pre-activation of context tracking (shadow
+  init) for all possible CPUs to avoid instruction flow issues during
+  dynamic transitions.
+- Restored standard rcu_needs_cpu() checks now that RCU supports
+  native dynamic NOCB mode switching.
 
-Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
+This provides the core state machine for reliable, on-demand tick
+suppression and high-performance isolation.
 ---
- mm/compaction.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ kernel/time/tick-sched.c | 130 ++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 105 insertions(+), 25 deletions(-)
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 1e8f8eca318c6..574ee3c6dc942 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -24,6 +24,7 @@
- #include <linux/page_owner.h>
- #include <linux/psi.h>
- #include <linux/cpuset.h>
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 2f8a7923fa279..dee42cea259a9 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -27,6 +27,7 @@
+ #include <linux/posix-timers.h>
+ #include <linux/context_tracking.h>
+ #include <linux/mm.h>
 +#include <linux/sched/isolation.h>
- #include "internal.h"
  
- #ifdef CONFIG_COMPACTION
-@@ -3246,6 +3247,7 @@ void __meminit kcompactd_run(int nid)
- 		pr_err("Failed to start kcompactd on node %d\n", nid);
- 		pgdat->kcompactd = NULL;
- 	} else {
-+		housekeeping_affine(pgdat->kcompactd, HK_TYPE_KTHREAD);
- 		wake_up_process(pgdat->kcompactd);
- 	}
+ #include <asm/irq_regs.h>
+ 
+@@ -621,13 +622,25 @@ void __tick_nohz_task_switch(void)
+ /* Get the boot-time nohz CPU list from the kernel parameters. */
+ void __init tick_nohz_full_setup(cpumask_var_t cpumask)
+ {
+-	alloc_bootmem_cpumask_var(&tick_nohz_full_mask);
++	if (!tick_nohz_full_mask) {
++		if (!slab_is_available())
++			alloc_bootmem_cpumask_var(&tick_nohz_full_mask);
++		else
++			zalloc_cpumask_var(&tick_nohz_full_mask, GFP_KERNEL);
++	}
+ 	cpumask_copy(tick_nohz_full_mask, cpumask);
+ 	tick_nohz_full_running = true;
  }
-@@ -3320,6 +3322,30 @@ static const struct ctl_table vm_compaction[] = {
- 	},
- };
  
-+static int kcompactd_housekeeping_reconfigure(struct notifier_block *nb,
-+					      unsigned long action, void *data)
+ bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
+ {
++	/*
++	 * Allow all CPUs to go down during shutdown/reboot to avoid
++	 * interfering with the final power-off sequence.
++	 */
++	if (system_state > SYSTEM_RUNNING)
++		return true;
++
+ 	/*
+ 	 * The 'tick_do_timer_cpu' CPU handles housekeeping duty (unbound
+ 	 * timers, workqueues, timekeeping, ...) on behalf of full dynticks
+@@ -643,45 +656,112 @@ static int tick_nohz_cpu_down(unsigned int cpu)
+ 	return tick_nohz_cpu_hotpluggable(cpu) ? 0 : -EBUSY;
+ }
+ 
++static int tick_nohz_housekeeping_reconfigure(struct notifier_block *nb,
++					     unsigned long action, void *data)
 +{
 +	struct housekeeping_update *upd = data;
-+	unsigned int type = upd->type;
++	int cpu;
 +
-+	if (action == HK_UPDATE_MASK && type == HK_TYPE_KTHREAD) {
-+		int nid;
++	if (action == HK_UPDATE_MASK && upd->type == HK_TYPE_TICK) {
++		cpumask_var_t non_housekeeping_mask;
 +
-+		for_each_node_state(nid, N_MEMORY) {
-+			pg_data_t *pgdat = NODE_DATA(nid);
++		if (!alloc_cpumask_var(&non_housekeeping_mask, GFP_KERNEL))
++			return NOTIFY_BAD;
 +
-+			if (pgdat->kcompactd)
-+				housekeeping_affine(pgdat->kcompactd, HK_TYPE_KTHREAD);
++		cpumask_andnot(non_housekeeping_mask, cpu_possible_mask, upd->new_mask);
++
++		if (!tick_nohz_full_mask) {
++			if (!zalloc_cpumask_var(&tick_nohz_full_mask, GFP_KERNEL)) {
++				free_cpumask_var(non_housekeeping_mask);
++				return NOTIFY_BAD;
++			}
 +		}
++
++		/* Kick all CPUs to re-evaluate tick dependency before change */
++		for_each_online_cpu(cpu)
++			tick_nohz_full_kick_cpu(cpu);
++
++		cpumask_copy(tick_nohz_full_mask, non_housekeeping_mask);
++		tick_nohz_full_running = !cpumask_empty(tick_nohz_full_mask);
++
++		/*
++		 * If nohz_full is running, the timer duty must be on a housekeeper.
++		 * If the current timer CPU is not a housekeeper, or no duty is assigned,
++		 * pick the first housekeeper and assign it.
++		 */
++		if (tick_nohz_full_running) {
++			int timer_cpu = READ_ONCE(tick_do_timer_cpu);
++			if (timer_cpu == TICK_DO_TIMER_NONE ||
++			    !cpumask_test_cpu(timer_cpu, upd->new_mask)) {
++				int next_timer = cpumask_first(upd->new_mask);
++				if (next_timer < nr_cpu_ids)
++					WRITE_ONCE(tick_do_timer_cpu, next_timer);
++			}
++		}
++
++		/* Kick all CPUs again to apply new nohz full state */
++		for_each_online_cpu(cpu)
++			tick_nohz_full_kick_cpu(cpu);
++
++		free_cpumask_var(non_housekeeping_mask);
 +	}
 +
 +	return NOTIFY_OK;
 +}
 +
-+static struct notifier_block kcompactd_housekeeping_nb = {
-+	.notifier_call = kcompactd_housekeeping_reconfigure,
++static struct notifier_block tick_nohz_housekeeping_nb = {
++	.notifier_call = tick_nohz_housekeeping_reconfigure,
 +};
 +
- static int __init kcompactd_init(void)
+ void __init tick_nohz_init(void)
  {
- 	int nid;
-@@ -3327,6 +3353,7 @@ static int __init kcompactd_init(void)
- 	for_each_node_state(nid, N_MEMORY)
- 		kcompactd_run(nid);
- 	register_sysctl_init("vm", vm_compaction);
-+	housekeeping_register_notifier(&kcompactd_housekeeping_nb);
- 	return 0;
+ 	int cpu, ret;
+ 
+-	if (!tick_nohz_full_running)
+-		return;
+-
+-	/*
+-	 * Full dynticks uses IRQ work to drive the tick rescheduling on safe
+-	 * locking contexts. But then we need IRQ work to raise its own
+-	 * interrupts to avoid circular dependency on the tick.
+-	 */
+-	if (!arch_irq_work_has_interrupt()) {
+-		pr_warn("NO_HZ: Can't run full dynticks because arch doesn't support IRQ work self-IPIs\n");
+-		cpumask_clear(tick_nohz_full_mask);
+-		tick_nohz_full_running = false;
+-		return;
++	if (!tick_nohz_full_mask) {
++		if (!slab_is_available())
++			alloc_bootmem_cpumask_var(&tick_nohz_full_mask);
++		else
++			zalloc_cpumask_var(&tick_nohz_full_mask, GFP_KERNEL);
+ 	}
+ 
+-	if (IS_ENABLED(CONFIG_PM_SLEEP_SMP) &&
+-			!IS_ENABLED(CONFIG_PM_SLEEP_SMP_NONZERO_CPU)) {
+-		cpu = smp_processor_id();
++	housekeeping_register_notifier(&tick_nohz_housekeeping_nb);
+ 
+-		if (cpumask_test_cpu(cpu, tick_nohz_full_mask)) {
+-			pr_warn("NO_HZ: Clearing %d from nohz_full range "
+-				"for timekeeping\n", cpu);
+-			cpumask_clear_cpu(cpu, tick_nohz_full_mask);
++	if (tick_nohz_full_running) {
++		/*
++		 * Full dynticks uses IRQ work to drive the tick rescheduling on safe
++		 * locking contexts. But then we need IRQ work to raise its own
++		 * interrupts to avoid circular dependency on the tick.
++		 */
++		if (!arch_irq_work_has_interrupt()) {
++			pr_warn("NO_HZ: Can't run full dynticks because arch doesn't support IRQ work self-IPIs\n");
++			cpumask_clear(tick_nohz_full_mask);
++			tick_nohz_full_running = false;
++			goto out;
+ 		}
++
++		if (IS_ENABLED(CONFIG_PM_SLEEP_SMP) &&
++				!IS_ENABLED(CONFIG_PM_SLEEP_SMP_NONZERO_CPU)) {
++			cpu = smp_processor_id();
++
++			if (cpumask_test_cpu(cpu, tick_nohz_full_mask)) {
++				pr_warn("NO_HZ: Clearing %d from nohz_full range "
++					"for timekeeping\n", cpu);
++				cpumask_clear_cpu(cpu, tick_nohz_full_mask);
++			}
++		}
++
++		pr_info("NO_HZ: Full dynticks CPUs: %*pbl.\n",
++			cpumask_pr_args(tick_nohz_full_mask));
+ 	}
+ 
+-	for_each_cpu(cpu, tick_nohz_full_mask)
++out:
++	for_each_possible_cpu(cpu)
+ 		ct_cpu_track_user(cpu);
+ 
+ 	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+ 					"kernel/nohz:predown", NULL,
+ 					tick_nohz_cpu_down);
+ 	WARN_ON(ret < 0);
+-	pr_info("NO_HZ: Full dynticks CPUs: %*pbl.\n",
+-		cpumask_pr_args(tick_nohz_full_mask));
  }
- subsys_initcall(kcompactd_init)
+ #endif /* #ifdef CONFIG_NO_HZ_FULL */
+ 
+@@ -1200,7 +1280,7 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
+ 	if (unlikely(report_idle_softirq()))
+ 		return false;
+ 
+-	if (tick_nohz_full_enabled()) {
++	if (tick_nohz_full_running) {
+ 		int tick_cpu = READ_ONCE(tick_do_timer_cpu);
+ 
+ 		/*
 
 -- 
 2.43.0
