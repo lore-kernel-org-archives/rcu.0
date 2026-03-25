@@ -1,66 +1,67 @@
-Received: from mail-dy1-f172.google.com (mail-dy1-f172.google.com [74.125.82.172])
+Received: from mail-dy1-f175.google.com (mail-dy1-f175.google.com [74.125.82.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010B034E75A
-	for <rcu@vger.kernel.org>; Wed, 25 Mar 2026 09:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1F9351C07
+	for <rcu@vger.kernel.org>; Wed, 25 Mar 2026 09:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774429846; cv=none; b=aCB3wpROBszWdPOC39iXxlgeHhNswp21JvsItVaWUaenl3O3rFe5Z/3n5WNNHO8TYGf8vvhPXbKUE6o/BlLkrTF6nd/iqg/neQl/UuFe5o83hJvT806k7/y3RANp8j894UlvWVj81YbLewhZTgyI72aCq1ouBjCuo4dh/g00Gb8=
+	t=1774429853; cv=none; b=QVEN1ejPqhAbR5mZDc2oZcU9MScU0cYKUu/X0ArpQRvJdwycBACv3cETEx3iGSU0OxrfDn9T7IQt8wOxL4PYbJqP11dn/WbJ0tV3IrF/1TNERCVKyKzN1llaauHgz+xqsdbFCvtJh1yH6Df1cr0dzdIflcGdKSm3rPIX6x4ynsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774429846; c=relaxed/simple;
-	bh=mrfbrebLUZCOEDJjnautNoTo1l9b+KCTSw7ew/U+baw=;
+	s=arc-20240116; t=1774429853; c=relaxed/simple;
+	bh=qg8WLXL88Iept54fzSGWgFgBN1HmxL+HvwvzbJJ1K+4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qOwiVhuw8WxhM/esfjqF6ZgHjKgvmYxhSggI4eYag3wlIzv3gHo2JIN/NTkq8Xxpa2IZWTISSw1UNvz5vItxluBrc2IOQGym1FPuxNlrt5h5FtFKdXfz6/vX32d9eYENBrMsGUFTg60Q+TlnAtUODJaWeXNlbXojXHdtLxrt5qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dScfrMGD; arc=none smtp.client-ip=74.125.82.172
+	 In-Reply-To:To:Cc; b=dEFiXwLhIy7qkGdgwuPYLwZrGRhIBKEQUQN+JsBDvhZLMLQW/8dyVbM9JTrYqp0AXOIShxslhA/eruUmN3MhPieySplHNABdw2pSJ+1doByFSYL9gvojSjdLFtJENgpzGtLa8NV+UgXzlhnmK4MzF+6I2l1VNcC3v40iDrzVMO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ISUg5NGP; arc=none smtp.client-ip=74.125.82.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dScfrMGD"
-Received: by mail-dy1-f172.google.com with SMTP id 5a478bee46e88-2c1092cc08cso2896143eec.1
-        for <rcu@vger.kernel.org>; Wed, 25 Mar 2026 02:10:43 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ISUg5NGP"
+Received: by mail-dy1-f175.google.com with SMTP id 5a478bee46e88-2c0e38f3f60so274932eec.1
+        for <rcu@vger.kernel.org>; Wed, 25 Mar 2026 02:10:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774429843; x=1775034643; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1774429850; x=1775034650; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AVaXBsXyrGbsFUqtfIJ4CxUQ0g0L6QfqD42wgzMQLJ4=;
-        b=dScfrMGD3usRjutCEoZomIQAkSDL88d4lb616cZezuOz7CLOEftPeXjOiRPhgzz0UL
-         kko2no15nbdrlt9XW1zSrI+yf3oGy37Q4TaBIdQ+Boe00u0OIZwM53lrCkmG3cBj4pHh
-         FA+0o79zpu44tJgRlMt96R3oMlkaREpRItGR2mY8LaSN0HilphKJXryd4PysazU1boWD
-         YXub38f1z6I/dX5NBBkK5tlx3HR+wGc6zFNWdi5NqewBIKBLDmMz+xJTStFRvcr4zUuv
-         TjC5j9uzHNqZ8KMctgUWrmOJwysT3Fr3m8gd0DbC1JT3Kb576lvGIYFuhFQLvrt5oNTI
-         qqiw==
+        bh=0ZgSquaLuKBFQZpkdx/1H4ca5cGKSrUW15huIE1GEBI=;
+        b=ISUg5NGPIpEfbQsjlwC1Er3p4lCtuAt2FDC0Kwn+O9eMIErydITTEx7nqkASOssODr
+         nUDQYRuPLnwXrAUunGsnPjoelBNnq6+VMv37sBofsfopkVEDKqwM0G83asN4xCjWiP9h
+         /aMSAxRQMrAv/VOf0bSZj1MSf6ynk0EXYWjjcR4dcnNq+fLMxesPFCoQp//aP+1LT3b7
+         A9ovAYckunhqKFj+9A2M4p6T3tnIsqzgjKakPuxq2k+wNE0WrE4S55mIcwPXGTVU+zSE
+         /Y4yjn439dlLF51w6l8pGzE1P2Fjichtlj+ufpsXv/8p5FmzpDFKOhtR1WsOOB+UEvey
+         y4wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774429843; x=1775034643;
+        d=1e100.net; s=20251104; t=1774429850; x=1775034650;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=AVaXBsXyrGbsFUqtfIJ4CxUQ0g0L6QfqD42wgzMQLJ4=;
-        b=bg4F5s8WrTt2sNl9hktPqIxNcM300Mfk1QsZTMoZ8Y1KBz7B872AEZeS6/x7YYK628
-         SUwRel+1Y8yMrwoU+iG8+h4d5VJ4X6UAHs6kPYNLDYj/vhBvOx5Xe9CtrsHRTnjAWuxl
-         OJS3Y/qpzw4tgemw03Rw39PQpWKcrQoNJttvvZlFDDZ+EvHidnWN4WGiufTq4Rrw6US+
-         SiV7HtqhaUbcA8sAC3f5/tFmVShRnOfzIJgNlV0rsNZb7SfXFkuw/X+vlpSgOT40s9TU
-         rThwcLMP9jUhW9rUfHUH+D/Dq1m5/49qm+O3bIFfc7V52AtATxFXl7+uDkNJVgYXxk/3
-         VtRw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6a1/OZ9ggozml2zFCYDLBVoHMm+xqGs1WsOxWH/h28zv/yCBtBvolLXKNK5OL+3NulEs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwCI2+7TWhAMvWMYcS5aRz2+CGSd+HMdWqWDDzWNN7LXmhy2/Fs
-	wbrCxQ7XKVBqdFEFqEvAq8iCDLYeTJtaxJ9lNvrSY86TXLtFu2wzgXZ6
-X-Gm-Gg: ATEYQzxpRuAkhHZOMbQLrS9caCHAc4b1LSLIWGCj1ugCle1AvsCeMtqy0QrpzT4/Hvn
-	oVwQOahjwldsnk7zB9XwaGwxhYozGlhbm/LzFcS5UBx4AkLXaifGT1HmxrVsNANepNxdkBXMbR+
-	GGaHyNyskuewiJ9MGircGNM6eLGpNTb44xAhsIuB6hjcvNPLeLcgHBaweg9283pMgKcF4GXhpAU
-	inxCkdSgJT/YBT9lg1/Z0J4D4cxcAG4AUPRxX4ZBf9GYmu+MVIlgswqSYpkoxDGwIccpITFC7sv
-	Fc4CtsD5J3KhEi2tkOPeOshBWeyOsWPXX4TqlUPTpwFTNgocxbNPj7Dko2n0irvP1rcm7YqeJ5R
-	eyMhFfaCQQO0MpgjvAXCgSgfmOqtz2TIISOjwcQag1LL5OYRHxVRA04tCA7mQ27pWa9ykrxa54j
-	EboZJj91J/4xiyJjxA
-X-Received: by 2002:a05:7301:e0a:b0:2be:9886:d4cc with SMTP id 5a478bee46e88-2c15d31dab0mr1366051eec.3.1774429843054;
-        Wed, 25 Mar 2026 02:10:43 -0700 (PDT)
+        bh=0ZgSquaLuKBFQZpkdx/1H4ca5cGKSrUW15huIE1GEBI=;
+        b=gfj9uNw1ts1JncW5gZMQnzWVQFTDYN4S/RGZcXToQOvnC57sIsAeZL2roY550a7jrj
+         0t/9bZDEUs++PlnUfnGrM4rEEN0eQmfoQCpEdXN4REvUmxvtUgkdXDqpPFBLh/ZAKH/j
+         ckmwm8QgkRpvOq1INh5mfKZ/qL9V+uOIn5MNTXPa5PVRJzx3LDFhC2WNixsA50exfEzo
+         5SUcW1f0PcyTgSymTyH+90EhKY22YctmK387jgqBa50wrhs3jAIXsDMjhdNK6OuhTXmA
+         6f/59fOkZBjPYROEriYDWZ2HNphTtbzGqYnszjqkhd9jEJJMQ93tQ0vOzfI8Ji2qyp+9
+         Cw1g==
+X-Forwarded-Encrypted: i=1; AJvYcCUhS6/1cwe/ZJIGPXFNtCMTLjgZOM0d7X7/T1FKck/3e6d5ogeAt4iD7auwpxc7GmNYt7s=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz9s0COTNAx05XfTAXZycBv07sNouMpxQf7wKqrrd9aYNMvgM2E
+	qFS26xNUs6LP3PnU6Qe5MXozrnSfM0VDwIGbbcyvnvc5MY9jXNekTi8T
+X-Gm-Gg: ATEYQzwVIZPQvafxCP1ciQGG3d9XbkkV5m8vS+I4iKWyzlsCozRWgBInQeOnS7JfW9o
+	8VG2f6KaG8ylM9NXUa4v8cbkDQN86gafj8reMCvX0iKbcektf4DxMjN0fNJbq8bxhv8/g+1g+R8
+	QMx1d0Z/OIMLbo/Arj/2dAu3DuIIBU57ZXKueKytZy07iU+8JsSZ2pUUGoW32n9Oxk2zIwSC4EB
+	Dj48ln/caegOvGGxNyqvLCcVgDBPPFmezQ7kjRJLjZgwmU1/JRi6zqKpunshpZV31xRST6MGicN
+	WCe/SQS4ctc3c3t+EwwWF2yCXV78pjHWIdyRNPSesT8WUk1N4krlRctxABUHvCjtVenEZtP5iTO
+	Zq0fRMxMeLuzS4DvJoJpzXQpSz5vC3VKLQ4txvI46J8KjFO49V54McnTSShD8oV+C3ZqdAgC47g
+	Vwus5nyaWGvroSJ8Sc
+X-Received: by 2002:a05:7301:9f14:b0:2c0:ac4e:1516 with SMTP id 5a478bee46e88-2c15bd3cb1cmr1301131eec.11.1774429850168;
+        Wed, 25 Mar 2026 02:10:50 -0700 (PDT)
 Received: from wujing. ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2c159e25dc7sm2786389eec.27.2026.03.25.02.10.35
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2c159e25dc7sm2786389eec.27.2026.03.25.02.10.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Mar 2026 02:10:42 -0700 (PDT)
+        Wed, 25 Mar 2026 02:10:49 -0700 (PDT)
 From: Qiliang Yuan <realwujing@gmail.com>
-Date: Wed, 25 Mar 2026 17:09:39 +0800
-Subject: [PATCH 08/15] workqueue: Support dynamic housekeeping mask updates
+Date: Wed, 25 Mar 2026 17:09:40 +0800
+Subject: [PATCH 09/15] mm/compaction: Support dynamic housekeeping mask
+ updates for kcompactd
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -69,7 +70,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260325-dhei-v12-final-v1-8-919cca23cadf@gmail.com>
+Message-Id: <20260325-dhei-v12-final-v1-9-919cca23cadf@gmail.com>
 References: <20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com>
 In-Reply-To: <20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -96,80 +97,80 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
  linux-kselftest@vger.kernel.org, Qiliang Yuan <realwujing@gmail.com>
 X-Mailer: b4 0.13.0
 
-Unbound workqueues use HK_TYPE_WQ and HK_TYPE_DOMAIN to determine
-their default CPU affinity. These boundaries are currently static and
-only enforced during early boot.
+The kcompactd threads are affined to housekeeping CPUs (HK_TYPE_DOMAIN)
+at boot to avoid interference with isolated workloads. Currently,
+these threads do not migrate when the housekeeping boundaries are
+reconfigured at runtime.
 
-Implement a housekeeping notifier to update unbound workqueue affinity.
+Implement a housekeeping notifier to synchronize kcompactd affinity.
 
-This enables unbound workqueue tasks to respect dynamic isolation
-boundaries at runtime.
+This ensures that background compaction threads honor the dynamic
+isolation boundaries configured via the DHEI sysfs interface.
 
 Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
 ---
- kernel/workqueue.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ mm/compaction.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 253311af47c6d..ef3ef7e3fe81f 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -7904,6 +7904,47 @@ static void __init wq_cpu_intensive_thresh_init(void)
- 	wq_cpu_intensive_thresh_us = thresh;
- }
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 1e8f8eca318c6..574ee3c6dc942 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -24,6 +24,7 @@
+ #include <linux/page_owner.h>
+ #include <linux/psi.h>
+ #include <linux/cpuset.h>
++#include <linux/sched/isolation.h>
+ #include "internal.h"
  
-+static int wq_housekeeping_reconfigure(struct notifier_block *nb,
-+				     unsigned long action, void *data)
+ #ifdef CONFIG_COMPACTION
+@@ -3246,6 +3247,7 @@ void __meminit kcompactd_run(int nid)
+ 		pr_err("Failed to start kcompactd on node %d\n", nid);
+ 		pgdat->kcompactd = NULL;
+ 	} else {
++		housekeeping_affine(pgdat->kcompactd, HK_TYPE_KTHREAD);
+ 		wake_up_process(pgdat->kcompactd);
+ 	}
+ }
+@@ -3320,6 +3322,30 @@ static const struct ctl_table vm_compaction[] = {
+ 	},
+ };
+ 
++static int kcompactd_housekeeping_reconfigure(struct notifier_block *nb,
++					      unsigned long action, void *data)
 +{
-+	if (action == HK_UPDATE_MASK) {
-+		struct housekeeping_update *upd = data;
-+		unsigned int type = upd->type;
++	struct housekeeping_update *upd = data;
++	unsigned int type = upd->type;
 +
-+		if (type == HK_TYPE_WQ || type == HK_TYPE_DOMAIN) {
-+			cpumask_var_t cpumask;
++	if (action == HK_UPDATE_MASK && type == HK_TYPE_KTHREAD) {
++		int nid;
 +
-+			if (!alloc_cpumask_var(&cpumask, GFP_KERNEL)) {
-+				pr_warn("workqueue: failed to allocate cpumask for housekeeping update\n");
-+				return NOTIFY_BAD;
-+			}
++		for_each_node_state(nid, N_MEMORY) {
++			pg_data_t *pgdat = NODE_DATA(nid);
 +
-+			cpumask_copy(cpumask, cpu_possible_mask);
-+			if (!cpumask_empty(housekeeping_cpumask(HK_TYPE_WQ)))
-+				cpumask_and(cpumask, cpumask, housekeeping_cpumask(HK_TYPE_WQ));
-+			if (!cpumask_empty(housekeeping_cpumask(HK_TYPE_DOMAIN)))
-+				cpumask_and(cpumask, cpumask, housekeeping_cpumask(HK_TYPE_DOMAIN));
-+
-+			workqueue_set_unbound_cpumask(cpumask);
-+
-+			if (type == HK_TYPE_DOMAIN) {
-+				apply_wqattrs_lock();
-+				cpumask_andnot(wq_isolated_cpumask, cpu_possible_mask,
-+						housekeeping_cpumask(HK_TYPE_DOMAIN));
-+				apply_wqattrs_unlock();
-+			}
-+
-+			free_cpumask_var(cpumask);
++			if (pgdat->kcompactd)
++				housekeeping_affine(pgdat->kcompactd, HK_TYPE_KTHREAD);
 +		}
 +	}
 +
 +	return NOTIFY_OK;
 +}
 +
-+static struct notifier_block wq_housekeeping_nb = {
-+	.notifier_call = wq_housekeeping_reconfigure,
++static struct notifier_block kcompactd_housekeeping_nb = {
++	.notifier_call = kcompactd_housekeeping_reconfigure,
 +};
 +
- /**
-  * workqueue_init - bring workqueue subsystem fully online
-  *
-@@ -7964,6 +8005,7 @@ void __init workqueue_init(void)
- 
- 	wq_online = true;
- 	wq_watchdog_init();
-+	housekeeping_register_notifier(&wq_housekeeping_nb);
+ static int __init kcompactd_init(void)
+ {
+ 	int nid;
+@@ -3327,6 +3353,7 @@ static int __init kcompactd_init(void)
+ 	for_each_node_state(nid, N_MEMORY)
+ 		kcompactd_run(nid);
+ 	register_sysctl_init("vm", vm_compaction);
++	housekeeping_register_notifier(&kcompactd_housekeeping_nb);
+ 	return 0;
  }
- 
- /*
+ subsys_initcall(kcompactd_init)
 
 -- 
 2.43.0
