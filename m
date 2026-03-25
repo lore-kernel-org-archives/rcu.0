@@ -1,79 +1,147 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CC1634AAEA;
-	Wed, 25 Mar 2026 19:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A421435DA7B;
+	Wed, 25 Mar 2026 22:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774465835; cv=none; b=mV4BWUm+5Y5sFSvmwLwECduHP34eTvGP2/zzijF/1UwsKYuVP+eVmc+E1lTBqZOh83fzuEWEJf+26DvWymVDlQ1AQ9OIZpzp7Daud8gFR5jHD6eF2RqvSNVWf03B5iXplkYBC13kTI9iikGCoA080B/RU0BW8UjIJR6wYjz4y1s=
+	t=1774477734; cv=none; b=SHhi7swGhuvF06dOiR0tikC4lcwBqX3clUfaXxQ797pNL+XHCLZ9lmNTPmAaBY0LwEmDafj/5sbHxSFBWBH0zlFDXgmRCJ/VgFnw2szQzz+EC0S8yWqoccHjzG9JOv5rkPcyDELAVgbRqx1/xTFbai3gsLHgY+ov1NYvUXFepP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774465835; c=relaxed/simple;
-	bh=Lo6ndcQCWZVmKHCFLJp4pQnU/YoCge+YKln6F/OYjV8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=XfMiHRXUHotFWiMvSvlzvjUMKtNITWdR0xt4bYO3hi0fzkvLdn/Udg69ob3brDr5h88YfgUgZxrykLrtGXUnXky2+B1F7jgx08n3jIzO6BVAug1OWG/8G4550YJWVbfJmADyu25iBw9dQLvpnyp7/Vz8geWLI30gcH7z2bU2VcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bFrGU6AI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gIbSUyRP; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1774477734; c=relaxed/simple;
+	bh=xAg5Pmw9F0z0rdaUjitxwPabnZd5rFsPs3FpzlmAyAw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ehKFqU7NGNneCukSPlrP/OMDrGp964D+/Yw/DtV18DyoPojf/9Oq/++oaS9GlvFmueFkrKbJu69rsOKTjgtMvLKZxSQ4yxzVRWW/pjM1d25HU7bsQsj7AoyIvbc+Ey+5OoYLmWTP/NGCZHvF6IT+t187jz5buWvXahNIFm3Mj+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hYBGMAVw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bFrGU6AI";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gIbSUyRP"
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1774465831;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GKVUaGDSXKw0u9JjViZSjUW3b0OD9tvOeFtCgE0TUWg=;
-	b=bFrGU6AIRKmslDP/1J7bCWS8wF1w6bDG/rgM+mpg2F8KJyYTVjWSVkrLd1HQBEYEbnD6S3
-	rHykYDVa0FSH2HVD3HWMafvnIZkEwmMu0tGLH7f3G/vyo4irmjE7zEA0pffFC9ZV2sEaly
-	m7VqBBE/L7QVS3JKY87WZavEHFiRHheD/aIuyfW4i07il1NNJ44ePEC7kovHswia1btIRb
-	EmP67bpDlfk5yu/Wp/Bkkp+isFaw+W0xaGiGjHXn13Lh/49nkQHKwphakO5k/NinYc1OBi
-	ff562wYZvY1eLSsXtfwfxPyMiqYZawsEECU2J7/lJoLyuOk+yCwLCKI1tlpTPQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1774465831;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GKVUaGDSXKw0u9JjViZSjUW3b0OD9tvOeFtCgE0TUWg=;
-	b=gIbSUyRPnyrLcrCsaOYmR8i1N02bAkUQKNsraZEDU/XbtE1tZ1c4YXt43cx16UMgcYfB9Z
-	iuBwliFX9vG7zJAA==
-To: Vishal Chourasia <vishalc@linux.ibm.com>, peterz@infradead.org,
- aboorvad@linux.ibm.com
-Cc: boqun.feng@gmail.com, frederic@kernel.org, joelagnelf@nvidia.com,
- josh@joshtriplett.org, linux-kernel@vger.kernel.org,
- neeraj.upadhyay@kernel.org, paulmck@kernel.org, rcu@vger.kernel.org,
- rostedt@goodmis.org, srikar@linux.ibm.com, sshegde@linux.ibm.com,
- urezki@gmail.com, samir@linux.ibm.com, vishalc@linux.ibm.com
-Subject: Re: [PATCH v3 2/2] cpuhp: Expedite RCU grace periods during SMT
- operations
-In-Reply-To: <20260218083915.660252-6-vishalc@linux.ibm.com>
-References: <20260218083915.660252-2-vishalc@linux.ibm.com>
- <20260218083915.660252-6-vishalc@linux.ibm.com>
-Date: Wed, 25 Mar 2026 20:10:30 +0100
-Message-ID: <87fr5nendl.ffs@tglx>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYBGMAVw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 120E4C4CEF7;
+	Wed, 25 Mar 2026 22:28:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774477734;
+	bh=xAg5Pmw9F0z0rdaUjitxwPabnZd5rFsPs3FpzlmAyAw=;
+	h=Date:From:To:Cc:Subject:From;
+	b=hYBGMAVwEH1wBd7y3CLq6bpzNdYQf25GLcQrziIFcjlwQsjz51cxObIHmZ5Wv0kw7
+	 jQJwyVM9w3aDDRIEDHnYKTxa8CQMHgqp/LAifvMR2pGFrideDn3JY+WS8lUitl7fvZ
+	 evxBOF/mXFsG1P2LbzvKiTKMf6/zgMXUww2QReZ4MjJe02dptADEuxy+mQWvhUWlU0
+	 qBu9iCz292jewcveXyrHZ/fLMjdRD0tcmZ9ZdZ4unupUuLzC6av0qsa2AqFxoQbZFj
+	 kobjU/Zo0u+ufRfRobuW5uc0Hy+R98zInvGytkbZlDRSuKt9X7pGRoqiFjPrFtgUY+
+	 Z64eON04toUNQ==
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 14CF7F40074;
+	Wed, 25 Mar 2026 18:28:53 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Wed, 25 Mar 2026 18:28:53 -0400
+X-ME-Sender: <xms:pGHEaYo6M8b2UoVRgplUe3cNlLOXRvtRUR8Gi6ePyM9C3yO6WycAZg>
+    <xme:pGHEabU0ShvZQh0Aol_2EbNheohRiIBA6rAJcADMV1BidFamjIz0ijlp78f1psxrZ
+    DfLqDK3RnTPoPsk5Olgb1qb_kPoBY-vCrORdQAqCxfW3llkR9NeLA>
+X-ME-Received: <xmr:pGHEaRHyvFDQAPeLCjm-bOpr9qGgYdplYahvpb2TFvl3GS2A0YQgEVplegg6RqfMZHJXrATejycJO4ASBeIT6DHTHdXeCjWL>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdefvdehieeiucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkgggtugesthdtredttddtvdenucfhrhhomhepuehoqhhunhcuhfgv
+    nhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpeeiie
+    dvueeitedvudehheejieeftdfhffegtdeiudfhlefhtdetfedutdeuleeileenucffohhm
+    rghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
+    ihhthidqudeijedtleekgeejuddqudejjeekheehhedvqdgsohhquhhnpeepkhgvrhhnvg
+    hlrdhorhhgsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepudefpdhmohguvgep
+    shhmthhpohhuthdprhgtphhtthhopehtohhrvhgrlhgusheslhhinhhugidqfhhouhhnug
+    grthhiohhnrdhorhhgpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhg
+    pdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhope
+    hnvggvrhgrjhdruhhprgguhhihrgihsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehj
+    ohgvlhgrghhnvghlfhesnhhvihguihgrrdgtohhmpdhrtghpthhtohepuhhrvgiikhhise
+    hgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdr
+    khgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
+    hrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:pGHEaaBKYKW5XZB_d5IlnrWHYRf-y2ICO_nDzbP3sTzSQBK1b-wB0Q>
+    <xmx:pGHEabzTAkCyYkniXcUF821Egq2Nz9bHtFQ4ZjSJEeDxJMIXt_qZkw>
+    <xmx:pGHEaYdWPzXYIcxG3BuupNu_JD8olhpXEiYM7AAncQlR7e6PgogerA>
+    <xmx:pGHEaYupk4m2cyIj9zmTj6dDU6R5GUcmbis5tsK6R7_vjSSPgtSM8A>
+    <xmx:pGHEaVBRdLL9F1Bc77mKtOdgXMG_S-2evIN2iYikjZL0-jJYdxdPsLhK>
+Feedback-ID: i8dbe485b:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 25 Mar 2026 18:28:52 -0400 (EDT)
+Date: Wed, 25 Mar 2026 15:28:51 -0700
+From: Boqun Feng <boqun@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	bpf <bpf@vger.kernel.org>, Andrea Righi <arighi@nvidia.com>
+Subject: [GIT PULL] RCU fixes for v7.0 (part 2)
+Message-ID: <acRho9L4zA2MRuxc@tardis.local>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, Feb 18 2026 at 14:09, Vishal Chourasia wrote:
-> Expedite synchronize_rcu during the SMT mode switch operation when
-> initiated via /sys/devices/system/cpu/smt/control interface
->
-> SMT mode switch operation i.e. between SMT 8 to SMT 1 or vice versa and
-> others are user driven operations and therefore should complete as soon
-> as possible. Switching SMT states involves iterating over a list of CPUs
-> and performing hotplug operations. It was found these transitions took
-> significantly large amount of time to complete particularly on
-> high-core-count systems.
+Hi Linus,
 
-This changelog is neither explaining the underlying problem, nor
-explaining why expedite solves it and does not contain numbers which
-justify the change.
+This is another set fixes for RCU in v7.0-rc, please pull these into
+v7.0. The issue is since we replace the Tasks Trace RCU in tracing
+(e.g. BPF) with SRCU, SRCU has to work in preemption disabled or
+scheduler lock held contexts, which was missing in v7.0 RCU pull
+request.
 
-Thanks,
+There is an email thread which can explain more of the context:
 
-        tglx
+	https://lore.kernel.org/rcu/fe28d664-3872-40f6-83c6-818627ad5b7d@paulmck-laptop/
+
+Thanks a lot for the report and test from Kumar and Andrea, and Joel and
+Paul for the prompt fixes!
+
+
+The following changes since commit f338e77383789c0cae23ca3d48adcc5e9e137e3c:
+
+  Linux 7.0-rc4 (2026-03-15 13:52:05 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu-fixes.v7.0-20260325a
+
+for you to fetch changes up to a6fc88b22bc8d12ad52e8412c667ec0f5bf055af:
+
+  srcu: Use irq_work to start GP in tiny SRCU (2026-03-25 09:00:05 -0700)
+
+----------------------------------------------------------------
+RCU fixes for v7.0 - Part 2
+
+Fix a regression introduced by commit c27cea4416a3 ("rcu: Re-implement
+RCU Tasks Trace in terms of SRCU-fast"): BPF contexts can run with
+preemption disabled or scheduler locks held, so call_srcu() must work in
+all such contexts. Fix this by converting SRCU's spinlocks to raw
+spinlocks and avoiding scheduler lock acquisition in call_srcu() by
+deferring to an irq_work (similar to call_rcu_tasks_generic()), for both
+tree SRCU and tiny SRCU. Also fix a follow-on lockdep splat caused by
+srcu_node allocation under the newly introduced raw spinlock by
+deferring the allocation to grace-period worker context.
+
+----------------------------------------------------------------
+
+Regards,
+Boqun
+
+Boqun Feng (1):
+      rcu: Use an intermediate irq_work to start process_srcu()
+
+Joel Fernandes (1):
+      srcu: Use irq_work to start GP in tiny SRCU
+
+Paul E. McKenney (2):
+      srcu: Use raw spinlocks so call_srcu() can be used under preempt_disable()
+      srcu: Push srcu_node allocation to GP when non-preemptible
+
+ include/linux/srcutiny.h |   4 +
+ include/linux/srcutree.h |   9 +-
+ kernel/rcu/rcu.h         |   9 ++
+ kernel/rcu/srcutiny.c    |  19 ++++-
+ kernel/rcu/srcutree.c    | 211 +++++++++++++++++++++++------------------------
+ 5 files changed, 138 insertions(+), 114 deletions(-)
