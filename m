@@ -1,99 +1,135 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F08218845;
-	Wed, 25 Mar 2026 16:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBF0930594E;
+	Wed, 25 Mar 2026 19:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774454572; cv=none; b=gwbZ5gSvFOs2aOKLwzZqRdYw1G9oldvsx4zB6klr2WMD8nSM0jHrkJfEEaOz4bQqOdaxFd+BEnMJJF60Yhf0UF0o2SwO7uXGda6ZKb4bDTSZgsTsM+x22XDCIIVW2t4Me33Lz6hyR3EvqDwVOUY6qdEUdGKNYFevK1h/vwVNA1A=
+	t=1774465761; cv=none; b=shTdqypWzXl4G0gR1ofZONLiMMAp/EOIfGJ+3/UKOKe3Iw0NEtGWmXXdtPKHSNj/VIYt+9MSxthsGU0wZfYf9rmiGzujGcBPXtwB9hIjLoJrGRjk9JxN+UBYPh+rY9UdJsS774Nm7fs9zvYk71Y1mpPBkb24MRdce26QophqyHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774454572; c=relaxed/simple;
-	bh=GITsNDMkclAIBjNKnyGg5xvX4405o6x9Qefz9+3Snn0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k5/EE2CqNAACVSRj3mKYblXxfd6zdA0RZO/l6Wv8Y+ZAsXyGWg5dd3bVGoKQB3nNcuAPaBaVM8285UXjUmyzGQOUto2kE8b2NY8qM2qukqiYPumF5Q/6EsstmPS7TOE8ZZi0E3rvT8If1y6/8Z73LlE9LKbsr5w1eyuXwn8qNrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qVFbM5u4; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1774465761; c=relaxed/simple;
+	bh=fJeFP8G75M2CHp/7EG5mBsIdUvLdNEgoLcy0NuhsloE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=OzXjm+4vQ3QV/jKMEmsxFeju3NPeuTmSJ2s5zcsphajc43OxD4oCJ1TTZibigzwm4OVbFYnzVrSzhznaK08uCImWXUQvL/YzRdKv5gf4UMGv7JcHpTe+vfjrUzgAel1Kf1PaGAbuVNmIiONkZNAvZv2ZpX8CLiIW0S5HifXEaGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=FzFTHiK0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mLDyj7A3; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qVFbM5u4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0988EC4CEF7;
-	Wed, 25 Mar 2026 16:02:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774454572;
-	bh=GITsNDMkclAIBjNKnyGg5xvX4405o6x9Qefz9+3Snn0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qVFbM5u4OPn3HWPHYzho/hMZVIujEIkAyumg4ZmiBJU0EhVMhrHCltUKyfhNnKJOI
-	 ZSx0apo6vy9FR+LCxy6+rF0rhDdKj3ADfENvRcV0lo2jiAZuCKcXK7YU7zPlUUHqz+
-	 5J5paHJWH18ceQt+JTFhiLeMKpVHDynyVjE6eM3htcixlLso2yzwaYG8ULhyIv1Fl4
-	 o75FuDAHxjm7gxDciwhVAxthJH+7yRxbQsoVMsx8OVCDhnkezBr09vVM2zu3Zdi433
-	 Lx3YielnCJXfE2/bPY0vbMeu9vz360kPaJkO1S0aIV8Y8/XdPhTZ2sN9Y4FkyxIA1J
-	 NRO6w/7tUFc3g==
-Date: Wed, 25 Mar 2026 06:02:51 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Qiliang Yuan <realwujing@gmail.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Thomas Gleixner <tglx@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Brendan Jackman <jackmanb@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 00/15] Implementation of Dynamic Housekeeping & Enhanced
- Isolation (DHEI)
-Message-ID: <acQHKwGhYrpoOH1P@slm.duckdns.org>
-References: <20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="FzFTHiK0";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mLDyj7A3"
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1774465757;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iN4Rv3LXNy2hbzE+6U+o61C8MMSRdJ/QX+32T5wiLog=;
+	b=FzFTHiK0s3hr5J9s6V+le3ElDm+hAdu1a83orYCvpc0hmT1EBG5R1LHcinMJ/FUkujoBsw
+	59PJO077IYQic6mq9YGfmf4OhqsB3OUhlmTGocVkoQt6MMJtPMSOoe9m6TaS3QpjlHnLZd
+	gXB34aGiGrMGgwIAYN76GUK55sybtaZNmhOiH1ZWLrRuSo3rCztThsEZnZCnXJDcREyrrz
+	awsVBGY0q56zdP60CGZJdOotaSRAy6KkhIll1CzD0lCP3k3XzQQ8VSAJU9PY7wXLk6X/3J
+	84LZRjm8f6wAMQvNZbOzSmWHc7UOtu3JvhrKuwKX+XgVgL4NwkNqn5vU9cTqvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1774465757;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iN4Rv3LXNy2hbzE+6U+o61C8MMSRdJ/QX+32T5wiLog=;
+	b=mLDyj7A3QWY6w2hsm4tESbFho0kqINefEb2t1KKDPq1Yo7d/RSfUvqz2kTpRLNmpWRTMyK
+	AtH56wJh4NxEpDDA==
+To: Vishal Chourasia <vishalc@linux.ibm.com>, peterz@infradead.org,
+ aboorvad@linux.ibm.com
+Cc: boqun.feng@gmail.com, frederic@kernel.org, joelagnelf@nvidia.com,
+ josh@joshtriplett.org, linux-kernel@vger.kernel.org,
+ neeraj.upadhyay@kernel.org, paulmck@kernel.org, rcu@vger.kernel.org,
+ rostedt@goodmis.org, srikar@linux.ibm.com, sshegde@linux.ibm.com,
+ urezki@gmail.com, samir@linux.ibm.com, vishalc@linux.ibm.com
+Subject: Re: [PATCH v3 1/2] cpuhp: Optimize SMT switch operation by batching
+ lock acquisition
+In-Reply-To: <20260218083915.660252-4-vishalc@linux.ibm.com>
+References: <20260218083915.660252-2-vishalc@linux.ibm.com>
+ <20260218083915.660252-4-vishalc@linux.ibm.com>
+Date: Wed, 25 Mar 2026 20:09:17 +0100
+Message-ID: <87ikajenfm.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com>
+Content-Type: text/plain
 
-On Wed, Mar 25, 2026 at 05:09:31PM +0800, Qiliang Yuan wrote:
-> The Linux kernel provides mechanisms like 'isolcpus' and 'nohz_full' to
-> reduce interference for latency-sensitive workloads. However, these are
-> locked behind the "Reboot Wall" - they can only be configured via boot
-> parameters and require a system restart for changes to take effect.
-> 
-> In modern cloud-native environments, CPU resources often need to be
-> dynamically re-partitioned to accommodate container scaling without
-> the performance penalty and downtime of a full system reboot. Similarly,
-> high-frequency trading (HFT) platforms require the ability to fine-tune
-> CPU isolation at runtime to minimize jitter for critical execution threads
-> based on shifting market demands.
-> 
-> This patch series introduces Dynamic Housekeeping & Enhanced Isolation
-> (DHEI). DHEI allows administrators to reconfigure the kernel's
-> housekeeping boundaries at runtime via a new sysfs interface at
-> /sys/kernel/housekeeping/.
+On Wed, Feb 18 2026 at 14:09, Vishal Chourasia wrote:
+> From: Joel Fernandes <joelagnelf@nvidia.com>
+>
+> Bulk CPU hotplug operations, such as an SMT switch operation, requires
+> hotplugging multiple CPUs. The current implementation takes
+> cpus_write_lock() for each individual CPU, causing multiple slow grace
+> period requests.
+>
+> Introduce cpu_up_locked() and cpu_down_locked() that assume the caller
+> already holds cpus_write_lock(). The cpuhp_smt_enable() and
+> cpuhp_smt_disable() functions are updated to hold the lock once around
+> the entire loop, rather than for each individual CPU.
+>
+> Link: https://lore.kernel.org/all/20260113090153.GS830755@noisy.programming.kicks-ass.net/
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
 
-I think I asked for this in the previous thread but please coordinate with
-existing cpuset and isolation mechanisms. You aren't even cc'ing Waiman for
-cpuset.
+You dropped Joel's Signed-off-by ....
 
-Thanks.
+> -/* Requires cpu_add_remove_lock to be held */
+> -static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
+> +/* Requires cpu_add_remove_lock and cpus_write_lock to be held */
+> +static int __ref cpu_down_locked(unsigned int cpu, int tasks_frozen,
+>  			   enum cpuhp_state target)
 
--- 
-tejun
+No line break required. You have 100 chars. If you still need one:
+
+  https://www.kernel.org/doc/html/latest/process/maintainer-tip.html
+
+>  	 */
+>  	if (cpumask_any_and(cpu_online_mask,
+>  			    housekeeping_cpumask(HK_TYPE_DOMAIN)) >= nr_cpu_ids) {
+> -		ret = -EBUSY;
+> -		goto out;
+> +		return -EBUSY;
+>  	}
+
+Please remove the brackets. They are not longer required. All over the place.
+
+> +static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
+> +			   enum cpuhp_state target)
+> +{
+> +
+> +	int ret;
+> +	cpus_write_lock();
+
+Coding style...
+
+> +	ret = cpu_down_locked(cpu, tasks_frozen, target);
+>  	cpus_write_unlock();
+>  	arch_smt_update();
+>  	return ret;
+> @@ -2659,6 +2674,16 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+>  	int cpu, ret = 0;
+>  
+>  	cpu_maps_update_begin();
+> +	if (cpu_hotplug_offline_disabled) {
+> +		ret = -EOPNOTSUPP;
+> +		goto out;
+> +	}
+> +	if (cpu_hotplug_disabled) {
+> +		ret = -EBUSY;
+> +		goto out;
+> +	}
+> +	/* Hold cpus_write_lock() for entire batch operation. */
+> +	cpus_write_lock();
+
+ .... for the entire ...
+
+And please visiually separate things. Newlines exist for a reason.
+
+Thanks,
+
+        tglx
