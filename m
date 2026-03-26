@@ -1,147 +1,63 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A421435DA7B;
-	Wed, 25 Mar 2026 22:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE0128F49;
+	Thu, 26 Mar 2026 01:52:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774477734; cv=none; b=SHhi7swGhuvF06dOiR0tikC4lcwBqX3clUfaXxQ797pNL+XHCLZ9lmNTPmAaBY0LwEmDafj/5sbHxSFBWBH0zlFDXgmRCJ/VgFnw2szQzz+EC0S8yWqoccHjzG9JOv5rkPcyDELAVgbRqx1/xTFbai3gsLHgY+ov1NYvUXFepP8=
+	t=1774489949; cv=none; b=WysvzmvD4J4DS1yLKsHxBDBJetBiRZcoeWI85Ouv/r/3jdqhXrqT2+X29bieVC2WWiUW4x177gi+JRQ5Hv5zEA2K73R6QKIri0be/zDc8VVdRItmAlbWyK64RLEASJ4knXFU7dufxJyzjfdOE6BXAmsxhLoFFMaTLLxemikRMu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774477734; c=relaxed/simple;
-	bh=xAg5Pmw9F0z0rdaUjitxwPabnZd5rFsPs3FpzlmAyAw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ehKFqU7NGNneCukSPlrP/OMDrGp964D+/Yw/DtV18DyoPojf/9Oq/++oaS9GlvFmueFkrKbJu69rsOKTjgtMvLKZxSQ4yxzVRWW/pjM1d25HU7bsQsj7AoyIvbc+Ey+5OoYLmWTP/NGCZHvF6IT+t187jz5buWvXahNIFm3Mj+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hYBGMAVw; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1774489949; c=relaxed/simple;
+	bh=+UpYb++yXKDVm/k1Cx0Iw+BHYDHQ0Vz+Bkk5fxuk0Ww=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Dpfub4Emu50j2t8KDtlw7RgCrv9CZfD1Aaceywxy6ZGYiONWaAjCbu3VwWSMe1dmlv9MGToJrLGOLpXhvV+ltG6DnLe0qU2eq9RjaT+fc7VU/sBBcyXUwRoXJdDEmbQtzoyCb11Z9sZgoc1NacGheIVSsALG9+w7toxdxbnLFoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l+4/bGtH; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYBGMAVw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 120E4C4CEF7;
-	Wed, 25 Mar 2026 22:28:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l+4/bGtH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 890E0C4CEF7;
+	Thu, 26 Mar 2026 01:52:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774477734;
-	bh=xAg5Pmw9F0z0rdaUjitxwPabnZd5rFsPs3FpzlmAyAw=;
-	h=Date:From:To:Cc:Subject:From;
-	b=hYBGMAVwEH1wBd7y3CLq6bpzNdYQf25GLcQrziIFcjlwQsjz51cxObIHmZ5Wv0kw7
-	 jQJwyVM9w3aDDRIEDHnYKTxa8CQMHgqp/LAifvMR2pGFrideDn3JY+WS8lUitl7fvZ
-	 evxBOF/mXFsG1P2LbzvKiTKMf6/zgMXUww2QReZ4MjJe02dptADEuxy+mQWvhUWlU0
-	 qBu9iCz292jewcveXyrHZ/fLMjdRD0tcmZ9ZdZ4unupUuLzC6av0qsa2AqFxoQbZFj
-	 kobjU/Zo0u+ufRfRobuW5uc0Hy+R98zInvGytkbZlDRSuKt9X7pGRoqiFjPrFtgUY+
-	 Z64eON04toUNQ==
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 14CF7F40074;
-	Wed, 25 Mar 2026 18:28:53 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Wed, 25 Mar 2026 18:28:53 -0400
-X-ME-Sender: <xms:pGHEaYo6M8b2UoVRgplUe3cNlLOXRvtRUR8Gi6ePyM9C3yO6WycAZg>
-    <xme:pGHEabU0ShvZQh0Aol_2EbNheohRiIBA6rAJcADMV1BidFamjIz0ijlp78f1psxrZ
-    DfLqDK3RnTPoPsk5Olgb1qb_kPoBY-vCrORdQAqCxfW3llkR9NeLA>
-X-ME-Received: <xmr:pGHEaRHyvFDQAPeLCjm-bOpr9qGgYdplYahvpb2TFvl3GS2A0YQgEVplegg6RqfMZHJXrATejycJO4ASBeIT6DHTHdXeCjWL>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdefvdehieeiucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkgggtugesthdtredttddtvdenucfhrhhomhepuehoqhhunhcuhfgv
-    nhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpeeiie
-    dvueeitedvudehheejieeftdfhffegtdeiudfhlefhtdetfedutdeuleeileenucffohhm
-    rghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
-    ihhthidqudeijedtleekgeejuddqudejjeekheehhedvqdgsohhquhhnpeepkhgvrhhnvg
-    hlrdhorhhgsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepudefpdhmohguvgep
-    shhmthhpohhuthdprhgtphhtthhopehtohhrvhgrlhgusheslhhinhhugidqfhhouhhnug
-    grthhiohhnrdhorhhgpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhg
-    pdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhope
-    hnvggvrhgrjhdruhhprgguhhihrgihsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehj
-    ohgvlhgrghhnvghlfhesnhhvihguihgrrdgtohhmpdhrtghpthhtohepuhhrvgiikhhise
-    hgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdr
-    khgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:pGHEaaBKYKW5XZB_d5IlnrWHYRf-y2ICO_nDzbP3sTzSQBK1b-wB0Q>
-    <xmx:pGHEabzTAkCyYkniXcUF821Egq2Nz9bHtFQ4ZjSJEeDxJMIXt_qZkw>
-    <xmx:pGHEaYdWPzXYIcxG3BuupNu_JD8olhpXEiYM7AAncQlR7e6PgogerA>
-    <xmx:pGHEaYupk4m2cyIj9zmTj6dDU6R5GUcmbis5tsK6R7_vjSSPgtSM8A>
-    <xmx:pGHEaVBRdLL9F1Bc77mKtOdgXMG_S-2evIN2iYikjZL0-jJYdxdPsLhK>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Mar 2026 18:28:52 -0400 (EDT)
-Date: Wed, 25 Mar 2026 15:28:51 -0700
-From: Boqun Feng <boqun@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf <bpf@vger.kernel.org>, Andrea Righi <arighi@nvidia.com>
-Subject: [GIT PULL] RCU fixes for v7.0 (part 2)
-Message-ID: <acRho9L4zA2MRuxc@tardis.local>
+	s=k20201202; t=1774489949;
+	bh=+UpYb++yXKDVm/k1Cx0Iw+BHYDHQ0Vz+Bkk5fxuk0Ww=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=l+4/bGtHWwryolokmDvidRmHo3/a/GpunOZORAMT7y31z6WqNjRL9nB9RyBUIxgPv
+	 YTHARRWcAjz/MB1a8Q4VT991xS7k2l55sv2V4zNl+TYtfbRpkKKAKXGqNaxFhGvoiT
+	 /jJWlGkFIkra7UFobFkYdMXSteKK5qfHZtxxwB2yZ1m/I5+2CQn9UAQ9kASOhDMXkH
+	 vKd+7rIedv2fgi9PrxMKy74PJKFIIEwNFp+9RjRfMxHTFNxwd3kKrgittGebYwie6g
+	 e+C0g305wpxWxM5A2MX7ioy6Vy3Ap9DvuvRXG6HkzjKm4VlhAT3Sq8CpxZZe6mmZVn
+	 BF0dJEQ3eWayQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id BA0EB3809A08;
+	Thu, 26 Mar 2026 01:52:17 +0000 (UTC)
+Subject: Re: [GIT PULL] RCU fixes for v7.0 (part 2)
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <acRho9L4zA2MRuxc@tardis.local>
+References: <acRho9L4zA2MRuxc@tardis.local>
+X-PR-Tracked-List-Id: <rcu.vger.kernel.org>
+X-PR-Tracked-Message-Id: <acRho9L4zA2MRuxc@tardis.local>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu-fixes.v7.0-20260325a
+X-PR-Tracked-Commit-Id: a6fc88b22bc8d12ad52e8412c667ec0f5bf055af
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: aba9da0905f14106b368e0abf75220e744d27626
+Message-Id: <177448993626.2282714.5540685506997622709.pr-tracker-bot@kernel.org>
+Date: Thu, 26 Mar 2026 01:52:16 +0000
+To: Boqun Feng <boqun@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, Andrea Righi <arighi@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-Hi Linus,
+The pull request you sent on Wed, 25 Mar 2026 15:28:51 -0700:
 
-This is another set fixes for RCU in v7.0-rc, please pull these into
-v7.0. The issue is since we replace the Tasks Trace RCU in tracing
-(e.g. BPF) with SRCU, SRCU has to work in preemption disabled or
-scheduler lock held contexts, which was missing in v7.0 RCU pull
-request.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu-fixes.v7.0-20260325a
 
-There is an email thread which can explain more of the context:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/aba9da0905f14106b368e0abf75220e744d27626
 
-	https://lore.kernel.org/rcu/fe28d664-3872-40f6-83c6-818627ad5b7d@paulmck-laptop/
+Thank you!
 
-Thanks a lot for the report and test from Kumar and Andrea, and Joel and
-Paul for the prompt fixes!
-
-
-The following changes since commit f338e77383789c0cae23ca3d48adcc5e9e137e3c:
-
-  Linux 7.0-rc4 (2026-03-15 13:52:05 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu-fixes.v7.0-20260325a
-
-for you to fetch changes up to a6fc88b22bc8d12ad52e8412c667ec0f5bf055af:
-
-  srcu: Use irq_work to start GP in tiny SRCU (2026-03-25 09:00:05 -0700)
-
-----------------------------------------------------------------
-RCU fixes for v7.0 - Part 2
-
-Fix a regression introduced by commit c27cea4416a3 ("rcu: Re-implement
-RCU Tasks Trace in terms of SRCU-fast"): BPF contexts can run with
-preemption disabled or scheduler locks held, so call_srcu() must work in
-all such contexts. Fix this by converting SRCU's spinlocks to raw
-spinlocks and avoiding scheduler lock acquisition in call_srcu() by
-deferring to an irq_work (similar to call_rcu_tasks_generic()), for both
-tree SRCU and tiny SRCU. Also fix a follow-on lockdep splat caused by
-srcu_node allocation under the newly introduced raw spinlock by
-deferring the allocation to grace-period worker context.
-
-----------------------------------------------------------------
-
-Regards,
-Boqun
-
-Boqun Feng (1):
-      rcu: Use an intermediate irq_work to start process_srcu()
-
-Joel Fernandes (1):
-      srcu: Use irq_work to start GP in tiny SRCU
-
-Paul E. McKenney (2):
-      srcu: Use raw spinlocks so call_srcu() can be used under preempt_disable()
-      srcu: Push srcu_node allocation to GP when non-preemptible
-
- include/linux/srcutiny.h |   4 +
- include/linux/srcutree.h |   9 +-
- kernel/rcu/rcu.h         |   9 ++
- kernel/rcu/srcutiny.c    |  19 ++++-
- kernel/rcu/srcutree.c    | 211 +++++++++++++++++++++++------------------------
- 5 files changed, 138 insertions(+), 114 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
