@@ -1,143 +1,183 @@
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E27833C187
-	for <rcu@vger.kernel.org>; Fri, 27 Mar 2026 02:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.68
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774579682; cv=pass; b=uF3nLJZHDPAD8B/6XRrLvmPhDC0ryDEb9R/7Y7MidGzmSFFL4A9awBGBXnawH5kpA039obOpoP4gFk8+VQ59gqgcj3NHAFlIRCt76R5O1U8SAY2DN6DaVkhoNloGRoQb+8kMDwA3/orTtokNhu6kYnwM3m9yA29Bcep9vbG5uzE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774579682; c=relaxed/simple;
-	bh=ZLlqX+0XXIywDxmqLIh40E7QiUExlR8czunsHevc1Ns=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=W601EL4AzL1nZND2+mDd0n2UfKgV+1DsywWbLxgbW2ITIj2KxJR1q7snNejURbg3Dd352qwbGqWJPlkDjcFFPUzc9GyPxzRx5AmpfFJ9r0le6Mxn93cd/uhHg2ZkWCZq/KcluXWCOx9Hwdvpr5oG6LsjzcjyDKgPldrnLhNGqlg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FqdWWM16; arc=pass smtp.client-ip=209.85.218.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AD9626E709
+	for <rcu@vger.kernel.org>; Fri, 27 Mar 2026 06:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774592320; cv=none; b=QO2W0qnbMuSn7WkWd4xGJ9FyhgNRrQqIeOD4Nwp6YOhcuVseseE0u8QKqkRtmA6WCIw9oSZMWasEmStWtJ2tL3IwqneAalO97uBIVaNe8CrcPgjklHTs0qZlSZk14+mxl0KPwHzV8z8MZ2SfV2jFRgLEY/AHHLfJOwWHjDEWc2k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774592320; c=relaxed/simple;
+	bh=768pQKYNknIFff4uEMGIMLYBo1y8YxbtVHhhUyMIp9M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WXlPKPM2/SAzlKHnMrCGs1hOhYQ/kN4NJsQ9p4pmO6W6qZhZQ+8+RsWzAIg0UQZoG8UOdiS32OaGrvagaOypF7yk7yYhh90ad9hbI8QFPGnzZQdvePjXCmoBSog7Pjaf9G8o85mxsdIW4eXgVD1U+W+djTDOpZrB6ZqNzL4zosk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JZYgEuEn; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FqdWWM16"
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-b7cf4a975d2so210656866b.2
-        for <rcu@vger.kernel.org>; Thu, 26 Mar 2026 19:48:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1774579680; cv=none;
-        d=google.com; s=arc-20240605;
-        b=h1xLqDT6P+yZ2mggfbhTI6fRxUrXx2IGF3NXFLwBRRT1+qN1NxpNSpvxRVNG3jQdzS
-         HYvp4V3DKGbhfqdRMz9+lWSzAxj9p5rfsbaagNTrv+CG/YHzGGnR43pKJdEFg/JGqL4x
-         m4AgDNDFEJLNC48LnM5jR3TkvfoE79IvZQwppzFqz48JnN5eFWsmTg8/U0SuocpqzPwf
-         gtLaLG9GeglzP2gvEbZMuImqq4r0RZZTz9XBi7r4dPydhmmYU3SWgNkJXrj6af5rE73A
-         u+wH1lmTQkJbGBgowGnpO33R8IfAY7ajcdiG1iQp0cjTDbRigHC63bgw9DVGSSxQ8FZA
-         cBGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=BlfyXUX6gjmSlSlJChRNEecXdllpT7D98/cgS8kOMJg=;
-        fh=pp4N3kmCLxdn97tgh+qBfi4opskx3MQhaugPCBdoU70=;
-        b=PNKGzSDGs7+ox0lOx0ByCOzP8j8KUEqqUqgFC7YEjJ+kWVPcXevAkJMf9DTwLTKOI8
-         S3mcwwuZXEYet3BDlGL/guRW21rHZIj3eN3jkZkjmx0GEqSfejT677eUaT+6vQfU/BGX
-         SCENYqM2rH7yTpJco+tHBcndJn5o7haydFrYjN/OPyT1KbujkusdkPjLQgd5LXR1fZ54
-         MjL6TiPzDfzNSv4L5aVR6b61N/uCjwQ9+kihsXisyn1OyeJIzlLIiIcV338Q6Wrq7uec
-         qlfPpew7ZV5nisr93ajQqA0U0NyGSmXnGCmaqjBhpngdOxLcc704JdYqr2rb/E2FgvTW
-         IZOQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774579680; x=1775184480; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BlfyXUX6gjmSlSlJChRNEecXdllpT7D98/cgS8kOMJg=;
-        b=FqdWWM16VDM+kkOdecYm4aCAGvBOr81vZSEtVAXLnOtToo7S8ph6S1TQQAxEZufh+8
-         YMpFHZXsOkqjaUq0lMpAyJS4Pum/UyxMR503YN9tDZJncrE76AdRcGZR+7JOAD+niSgZ
-         H7LHVz3k6vOFES6BdWoeUj0pTUta8KH9BJjxB55fbCXt1ZSZ0mAf9So1Efa0qGrvlbrR
-         PeB7gYJjjv3f/MBpxwPBjicOMNS8EdmETtazBnuMc4hYb0DhXgDvkm8SmnqPQWRSLPxJ
-         vhJ2BXhIOociBSwXp6kVn1cH+kkZ6ZNDkbomcO7yc/VTWhmxtA+KOe7tm46zXubggxm8
-         zbRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774579680; x=1775184480;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=BlfyXUX6gjmSlSlJChRNEecXdllpT7D98/cgS8kOMJg=;
-        b=MKTchjkOY1V0Z0yCdMsruoxeR8H/TXK2rPB1Sz7NH6mdZW/T7Ua7ASa//GqvP19FnX
-         HNkoUCQNx+metheIOi/OlEq1kqo4m38nJIF3kkwUEaUBZUhPKpDApnrIK612ybkJI8ll
-         +LxFSOYacmw7q2f/Plf9cs6WrJvSHttZJtxEVTmM4+Gxnfjvp/WDBx+dVG0C4skno6ih
-         4+dsj2iYJT/3/0krsmJRYOCOSjnd5fdS72TQwCYuZZQpBwyaTCwqsQEtYhYZvD7zxzC/
-         nW8+YXM5S3MMJ1D/sGDbUuBQRPqyytoqWuHX3E3XYime8V5XVe80FV3UDwOqnPD9rhWs
-         NWfg==
-X-Forwarded-Encrypted: i=1; AJvYcCXNwkh0eUC6DHeSKmCvSoanHT3ZN6wDVb7KbylC9TFQ28+naZzlw6jHrdKRTGNkE6HAKvE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5RLuWmjo4WXDKNswaPcB4dljnvh0ENHFkYmsgr6kVHC67gy3E
-	vgHOMDH+1V+zg9ovhEsbcT8umCM2hsffFMV6QOtTSUDU6jJ2vRC3odtfffa5+c5bmukYClp8Mfg
-	jcXfeXU29aBi9HvaVflVlonB0gpjWVCs=
-X-Gm-Gg: ATEYQzy+p03MmM4Dm2XoVU4n2ns6x51e741YnZfSO8C6J0vGiafa0tdJQzG8CrZXi4f
-	J9LjuGJQriEr5lgSkt+FwiKXLKPG2H2fW8+mIWpsMDceBdF3Rh0KGq2EgnCxbag9UKoVlpZMc7m
-	8mFPFwRNdzy4ZsPnxfWyweNycOOrkxw16GPjUaQRsDesPpWwhTeRk+vDKqKWicSl/pXb1WQyN3H
-	Wx0qXj7T6SAOqDlBFEcHCLZ3G5h2qoYyvcSMFy/06aghUJOO+h0RJSlxn3SwPiYHKEFAHDMbgBu
-	p67AQumLGylbQg8DoNtVEWBI+cW8bg==
-X-Received: by 2002:a17:906:9c94:b0:b98:cb6:e896 with SMTP id
- a640c23a62f3a-b9b50909b02mr39272366b.38.1774579679566; Thu, 26 Mar 2026
- 19:47:59 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JZYgEuEn"
+Message-ID: <48987e65-a4cc-438d-9782-9f14a4494da6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1774592306;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Mfy3ymrIHqKlO6IrjAbmls1WvP3l4XQ0rCbSjp0qOxc=;
+	b=JZYgEuEnuB1K2A3De2sDMMD81Nnpw1EtZ7kNEzXzdDGS8O2MpPEKgPjQf480g+kfThWsA4
+	clreXk5wYA+ufB1Lrk71b88kgEglyVLfjNeowehtiZteCR1Y0xpjUJaujHO9PKtFLKL5EY
+	j5BNiL2+i1eTzvZZWPPQdN5ViAvItbA=
+Date: Fri, 27 Mar 2026 14:18:07 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAN2Y7hzb6yfHwHdwMC1TTP87dbnn=BHyyWz+iCQ_EswN5jVjeg@mail.gmail.com>
-In-Reply-To: <CAN2Y7hzb6yfHwHdwMC1TTP87dbnn=BHyyWz+iCQ_EswN5jVjeg@mail.gmail.com>
-From: ying chen <yc1082463@gmail.com>
-Date: Fri, 27 Mar 2026 10:47:47 +0800
-X-Gm-Features: AQROBzDUAyu9tpNSOVMlX-OjnQJ6xVte-6P4kxe-3-vWu77CbZkBxfC_Vmu4fvo
-Message-ID: <CAN2Y7hxx8OQemOiF17swXcLccd-KJ=j0P0tkWD+fQqzL5O1FhQ@mail.gmail.com>
-Subject: Fwd: [BUG] rcu_tasks detected stalls in kcompactd during proactive compaction
-To: akpm@linux-foundation.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, paulmck@kernel.org, frederic@kernel.org, 
-	quic_neeraju@quicinc.com, josh@joshtriplett.org, 
-	Steven Rostedt <rostedt@goodmis.org>, mathieu.desnoyers@efficios.com, 
-	jiangshanlai@gmail.com, joel@joelfernandes.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
----------- Forwarded message ---------
-From: ying chen <yc1082463@gmail.com>
-Date: Tue, Mar 24, 2026 at 4:26=E2=80=AFPM
-Subject: [BUG] rcu_tasks detected stalls in kcompactd during proactive
-compaction
-To: <linux-mm@kvack.org>, <linux-kernel@vger.org>,
-<paulmck@kernel.org>, <akpm@linux-foundation.org>
+Subject: Re: [PATCH 00/13] drm/tyr: add debugfs support
+To: Boqun Feng <boqun@kernel.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>,
+ Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
+ Danilo Krummrich <dakr@kernel.org>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Daniel Almeida <daniel.almeida@collabora.com>,
+ rust-for-linux@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ rcu@vger.kernel.org, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+References: <20260326-b4-tyr-debugfs-v1-0-074badd18716@linux.dev>
+ <acVDdh8KxfgUhPFw@tardis.local>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Alvin Sun <alvin.sun@linux.dev>
+In-Reply-To: <acVDdh8KxfgUhPFw@tardis.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
-Hi all,
-I encountered an RCU tasks stall issue triggered by kcompactd0 on my
-system.Below are the details of the incident:
+On 3/26/26 22:32, Boqun Feng wrote:
+> Hi Alvin,
+>
+> [cc rcu list and Mathieu]
+>
+> On Thu, Mar 26, 2026 at 02:52:53PM +0800, Alvin Sun wrote:
+>> This patchset contains:
+>> - hazptr: Add hazard pointer abstraction to kernel::sync
+>> - revocable: Introduce HazPtrRevocable, and adapt Gary Guo's downstream
+>>    LazyRevocable implementation to use hazard pointers internally,
+>>    enabling safe sharing of debugfs-root data across the tyr module and
+>>    DRM driver
+>> - drm: Add device and GEM helper functions to support debugfs
+>> - tyr: Add debugfs infrastructure and interfaces to expose GEM/VM
+>>    information
+>>
+>> See the full dependency and commit history at [1].
+>>
+> Thank you for the nice work!
+>
+> I know the context of why you're doing this because we had some
+> discussion on zulip, but maybe most of people on the list don't. So
+> could you add a "why" or "motivation" part in the cover letter for the
+> next time? It's about syncing with everyone on the same page so that
+> they can review with the context ;-) Thanks!
+>
+> Also since this is about hazptr and RCU, could you Cc
+> rcu@vger.kernel.org and Mathieu the next time? Thanks!
 
-Kernel Version=EF=BC=9A6.1.0-x
-vm.compaction_proactiveness =3D 20
-CONFIG_PREEMPT_RCU=3Dy
+Thanks for the reminder! I'll add the motivation section to the cover 
+letter and
+CC the correct lists/people in the next version.
 
-[Sun Mar 22 16:36:04 2026] INFO: rcu_tasks detected stalls on tasks:
-[Sun Mar 22 16:36:04 2026] 00000000fcafb4d6: .. nvcsw: 622963/622963
-holdout: 1 idle_cpu: -1/1
-[Sun Mar 22 16:36:04 2026] task:kcompactd0      state:R running task
- stack:0         pid:1943
-[Sun Mar 22 16:36:04 2026] Call Trace:
-[Sun Mar 22 16:36:04 2026]  <TASK>
-[Sun Mar 22 16:36:04 2026]  ? rmap_walk_anon+0x16b/0x330
-[Sun Mar 22 16:36:04 2026]  ? try_to_migrate+0x96/0x110
-[Sun Mar 22 16:36:04 2026]  ? try_to_unmap_one+0xd0/0xd0
-[Sun Mar 22 16:36:04 2026]  ? anon_vma_ctor+0x50/0x50
-[Sun Mar 22 16:36:04 2026]  ? folio_get_anon_vma+0x90/0x90
-[Sun Mar 22 16:36:04 2026]  ? invalid_mkclean_vma+0x20/0x20
-[Sun Mar 22 16:36:04 2026]  ? __unmap_and_move+0x21e/0x340
-[Sun Mar 22 16:36:04 2026]  ? free_unref_page+0x17d/0x1f0
-[Sun Mar 22 16:36:04 2026]  ? release_freepages+0xc0/0xc0
-[Sun Mar 22 16:36:04 2026]  ? release_freepages+0xc0/0xc0
-[Sun Mar 22 16:36:04 2026]  ? unmap_and_move+0xaa/0x4c0
-[Sun Mar 22 16:36:04 2026]  ? migrate_pages+0x3a9/0x790
-[Sun Mar 22 16:36:04 2026]  ? release_freepages+0xc0/0xc0
-[Sun Mar 22 16:36:04 2026]  ? isolate_migratepages+0x2a0/0x2a0
-[Sun Mar 22 16:36:04 2026]  ? compact_zone+0x310/0x5d0
-[Sun Mar 22 16:36:04 2026]  ? proactive_compact_node+0x88/0xc0
-[Sun Mar 22 16:36:04 2026]  ? kcompactd+0x365/0x3f0
-[Sun Mar 22 16:36:04 2026]  ? membarrier_register_private_expedited+0xa0/0x=
-a0
-[Sun Mar 22 16:36:04 2026]  ? kcompactd_do_work+0x2a0/0x2a0
-[Sun Mar 22 16:36:04 2026]  ? kthread+0xeb/0x120
+Best regards,
+Alvin
+
+>
+> Regards,
+> Boqun
+>
+>> Link: https://gitlab.freedesktop.org/panfrost/linux/-/issues/11
+>> Link: https://gitlab.freedesktop.org/panfrost/linux/-/merge_requests/59 [1]
+>> Signed-off-by: Alvin Sun <alvin.sun@linux.dev>
+>> ---
+>> Alvin Sun (11):
+>>        rust: sync: set_once: Rename InitError variants to fix clippy warning
+>>        rust: sync: add hazard pointer abstraction
+>>        rust: revocable: add HazPtrRevocable
+>>        rust: revocable: make LazyRevocable use HazPtrRevocable
+>>        rust: drm: add Device::primary_index()
+>>        rust: drm/gem: add GEM object query helpers for debugfs
+>>        rust: drm/gem/shmem: add resident_size() and madv() for debugfs
+>>        drm/tyr: expose Vm gpuvm_core, gpuvm and va_range as pub(crate)
+>>        drm/tyr: add debugfs infrastructure
+>>        drm/tyr: add vms and gpuvas debugfs interface
+>>        drm/tyr: add gems field and gems debugfs interface
+>>
+>> Gary Guo (2):
+>>        rust: sync: support [pin_]init for `SetOnce`
+>>        rust: revocable: add lazily instantiated revocable variant
+>>
+>>   drivers/gpu/drm/tyr/debugfs.rs  | 190 ++++++++++++++++++++++++++++++++++++
+>>   drivers/gpu/drm/tyr/driver.rs   |  18 +++-
+>>   drivers/gpu/drm/tyr/fw.rs       |   7 +-
+>>   drivers/gpu/drm/tyr/mmu.rs      |   6 +-
+>>   drivers/gpu/drm/tyr/tyr.rs      |  39 +++++++-
+>>   drivers/gpu/drm/tyr/vm.rs       |   6 +-
+>>   rust/bindings/bindings_helper.h |   1 +
+>>   rust/helpers/hazptr.c           |  13 +++
+>>   rust/helpers/helpers.c          |   1 +
+>>   rust/kernel/drm/device.rs       |  10 ++
+>>   rust/kernel/drm/gem/mod.rs      |  49 +++++++++-
+>>   rust/kernel/drm/gem/shmem.rs    |  21 ++++
+>>   rust/kernel/revocable.rs        | 209 +++++++++++++++++++++++++++++++++++++++-
+>>   rust/kernel/sync.rs             |   1 +
+>>   rust/kernel/sync/hazptr.rs      |  91 +++++++++++++++++
+>>   rust/kernel/sync/set_once.rs    | 120 +++++++++++++++++++----
+>>   16 files changed, 746 insertions(+), 36 deletions(-)
+>> ---
+>> base-commit: 34cb4f916af10153c87fabaf6c34e4cafa170427
+>> change-id: 20260320-b4-tyr-debugfs-3fcaff064297
+>> prerequisite-change-id: 20260202-io-81fd368f7565:v2
+>> prerequisite-patch-id: 74873afed2b65f5a11c33f0c0c54375c55079109
+>> prerequisite-patch-id: ae853e8eb8d58c77881371960be4ae92755e83c6
+>> prerequisite-patch-id: 0ab78b50648c7d8f66b83c32ed2af0ec3ede42a3
+>> prerequisite-patch-id: 8d20a8db8cf4660c682ee91f3db04e640c144e33
+>> prerequisite-patch-id: 299de9cd2789c19c22e2816f7c817d80d5a4f1db
+>> prerequisite-patch-id: 661ee334905f359daa8fb8d808ed5f4a8085f5c9
+>> prerequisite-change-id: 20260117-register-ccaba1d21713:v9
+>> prerequisite-patch-id: e4cb34ef09bccb92e1c35435e346b3a0459d3cdf
+>> prerequisite-patch-id: 2c3c42ae9f3f4544c088dffbe4a0527f28b1c135
+>> prerequisite-patch-id: 9f40e176e1b67bada943e376950debabb3f196d5
+>> prerequisite-patch-id: ccc86d3ab9f62883c90d1275c99720942bd2bcb3
+>> prerequisite-patch-id: 216427f1fdf94755cca0ed0676c4290f85d45e5c
+>> prerequisite-patch-id: 7e1ea4d184297dfaba1351a7cb23e3b6827fed46
+>> prerequisite-patch-id: 29ff9ffe37669d23b5509bfefb0cc1f8950eaa7c
+>> prerequisite-patch-id: e5723722ff970c585cbf559456fa4cda05f28952
+>> prerequisite-patch-id: afdae76e12011bb158d2008b8cd1ffba084db0bb
+>> prerequisite-patch-id: b0473d5c7af0bbeec6f6ec8dd36d8a09cc180fed
+>> prerequisite-message-id: <20260206223431.693765-1-lyude@redhat.com>
+>> prerequisite-patch-id: 454c4fe7a7bcc65b2c9cc69dd5dd8e4c1d952297
+>> prerequisite-patch-id: aff529cc205f5ab35518b8e4568e6e1319eecaa9
+>> prerequisite-patch-id: 9f7d5c4a8ed052f5c5f2a28c862a9392d7a812cc
+>> prerequisite-patch-id: ec9d104ba7c67488f19e6dd1a50d1ec4f682f333
+>> prerequisite-patch-id: e7a844bd6254643d1f23827886b487c196ee9968
+>> prerequisite-patch-id: 3c57ebf13497cf57c586b955d5ce90f2f9fd8cdc
+>> prerequisite-patch-id: 1a327345ac71599ece0b2272fba81472f70c568c
+>> prerequisite-change-id: 20251128-gpuvm-rust-b719cac27ad6:v5
+>> prerequisite-patch-id: 6a8ddd47a2e1c769c65a942b3d9315e6ae5cae7e
+>> prerequisite-patch-id: d4ee9fb80025c4fd8129c3477cc3dc36e13076cb
+>> prerequisite-patch-id: 0ad35cd3dfcf8a8804e9fed8df3e5612cf07da69
+>> prerequisite-patch-id: 275a900645e14169911ee00bab54553c84b48ad0
+>> prerequisite-patch-id: 2a2de2f6c4fac065de5c459026daa2c32f340d22
+>> prerequisite-patch-id: 9a721bc700da778f2554cf32917dda4807744520
+>> prerequisite-message-id: <20260131001602.2095470-1-lyude@redhat.com>
+>> prerequisite-patch-id: 6c622d1df9166ad081acba46237f8cecbf728356
+>> prerequisite-patch-id: 769892e477c161e6c7a57519ec635b1455310f1d
+>> prerequisite-patch-id: 3c5f5070ded87e95a8045083a55501fbbe9f6313
+>> prerequisite-patch-id: 10fbd8695264e67421946dda4d39e29d5fe77c64
+>>
+>> Best regards,
+>> -- 
+>> Alvin Sun <alvin.sun@linux.dev>
+>>
+>>
