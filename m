@@ -1,63 +1,63 @@
-Received: from mail-dy1-f173.google.com (mail-dy1-f173.google.com [74.125.82.173])
+Received: from mail-dl1-f41.google.com (mail-dl1-f41.google.com [74.125.82.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F683C7DEB
-	for <rcu@vger.kernel.org>; Mon, 30 Mar 2026 11:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5663C873A
+	for <rcu@vger.kernel.org>; Mon, 30 Mar 2026 11:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774871118; cv=none; b=fSxGMCVAPNxbuD0+qZR2Gc+RF+XxSSQLeA6/cdot73kh3BK8hTneptm0hHQhiayJB9TkTpnlLfXlpVkB1NuToXskkJ6rmyB3Hj4goa5gAP5MEUseN1zw2cX68u2PpDDX6B5RBqy3nnv4kO8jxpDRc29nzRuzfrspsFd1q37xAZI=
+	t=1774871147; cv=none; b=NsRix90Cc8Z6mZ/5jK7hVtkfmLWGDkmdrw6YBTPfFh07oXB+hOQP0wHPPjkPOHLmjBb5E5M+8bBpx3BCxOQaTCuw1ctFwu7KjdBVvQAO2GvqFefbRgig1VMcoDM10Wv7S3OUIfoFSSHzcWf4v5EDGdub2R7q23scIVBQbaBDZHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774871118; c=relaxed/simple;
-	bh=kycga9i6Vn45DHzFTlgg9Oku8LYokhcIRIuU+jvkYqc=;
+	s=arc-20240116; t=1774871147; c=relaxed/simple;
+	bh=ENYJkWvXLcVtI7Jk9TnX7QADJtn30XJLoRyTZBf96yo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qTby4/D9EyGbIeCl5AWUTM/wiD5DpMnf/erFdI3LJBFEK0KJBAaOItCwNMDCqR27HK9slnVA2Njb3oranw3uFvTOUv02fRQgnf4vJ/hMpM4pc3HFsJ0leJqMqcbWUX89hDkCQ98LgDD5G7k7rDCGIyyhw3WPUS10MElCOtE77/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q9hIlR57; arc=none smtp.client-ip=74.125.82.173
+	 MIME-Version; b=oCVGAFOqu80bzlO9lPns1ITXMKl2hHLlWP9XGIEpXCKHeukggrSqBko9K5UlDvuU2RLt62f6F9Z45yPv735spa2l50qw6UAuzD51lAApyzPB00fN+FaQQzIfLXDSkWICHjss+UWU3b4oQuL5CbnqnJi+zL3lAwwuD2bmnyLrT7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=csz2Yapg; arc=none smtp.client-ip=74.125.82.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q9hIlR57"
-Received: by mail-dy1-f173.google.com with SMTP id 5a478bee46e88-2c0c955a481so723476eec.1
-        for <rcu@vger.kernel.org>; Mon, 30 Mar 2026 04:45:16 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="csz2Yapg"
+Received: by mail-dl1-f41.google.com with SMTP id a92af1059eb24-126ea4b77adso5961309c88.1
+        for <rcu@vger.kernel.org>; Mon, 30 Mar 2026 04:45:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774871116; x=1775475916; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1774871145; x=1775475945; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kTACHKzRTTQTHv2BeEVVc+PV7wXJkipQOVm/vndnvSM=;
-        b=Q9hIlR57opwLzxLoGOaNh4LiKBiKNdV44IqEoRdMuyK9MmIv58Tlbr8fxcoXZA8KHk
-         cTh5YniRvEhyEhHgtyetXW+QyAoOGRvX6pTJ66pgIhshkYwyM86yke5foR6ecdMuDCOE
-         CnkSMQnOn4wg9+pgvJg5hoc01+1FtDML7C+9gssrI/vEYkrM8Y30byoq0Z4mBIoMOsnX
-         KtXHRLTwQS7PtLIaa2QGsuOSof5hQ4boXtV5QP/wXRfo6URzKh1oWugkvJ9QzILD4RzM
-         FnZa7hBMLLfI3YUmk6MBfAKXNC0jE6j/VWK/mb9uky91MnvZRPuAP+T9Kk31xczm18ao
-         hZ+Q==
+        bh=MnDbxuScG9Rm/YGh2qPYK61S3SeIJ/p/OHYJTOIzac4=;
+        b=csz2YapgXBdCd1QSpBVbPiyh1Z8pcOHOAezCYSwazGTtMUNhPAGpgezRcwV7WrUbAk
+         1ffqvlWFZ9Le3E126zVCMIkrzIRaKbvN1S/8NLyts1QlQIbp0DSPR10SnirxQ5plA7Q3
+         XOHSwleO+0y36mQf6b8XOvdM5Sl4EdMvWGfkilgZAADybQXBBgaUTLwyjWk+842K1eGE
+         1Pw6ygco4yfpDBCuU4DU7/xUZFzrGeu2k+KWJ+IiHABHtpVxEyAIcsCExnQrfr79cXXD
+         77H/3UumUSmRB3z3QxWbJ9oeCdr+FCWeVIp8dg1Bi8zl/Mb5ZcwqVPE6qebiX0m7qcOE
+         UYvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774871116; x=1775475916;
+        d=1e100.net; s=20251104; t=1774871145; x=1775475945;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=kTACHKzRTTQTHv2BeEVVc+PV7wXJkipQOVm/vndnvSM=;
-        b=qZbA7M+zSAIcSWqRpKmO6AII0QDSu7UBLkl5NuNAd9PCtZ56NpiW6E//dJgXO/pmq2
-         5MjzgnZ1JQ8wMlfwCzQo/qj5WDCEERFFGfY2Z+c2PtFSjpOpWmTCh1ziGRLsNryG7tXJ
-         nTYoe31hP3chqhjFeD/CoUp3+LVqGLKSCtbl8QsG4cZys4g1BI0cQltbfhiHFBlOQtnW
-         AzWuYeO5aBiQpfrgNcvP4rT08f1T/QJ4w1pm5VXKAOU0tbo1ta9TNxJGtKbS0TbeEDyA
-         7KtMMVmF5SkpNgGJ/9bGBhwLPgYqYFnfUaGut2cf2mucz5CT5FNHVUB+ZOWka0gkM2M6
-         hBJw==
-X-Forwarded-Encrypted: i=1; AJvYcCXBGQsyb3C6pvtX7aCZpyzZwQOh9SLiDWMPTL7z7j/OcNZyynWjZZSBgD8Qsh3jTsQzxjE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxoC9HFGyMQiCgSYiTi/smYNUG0Yra3TSCAJGM9xOQfk4GZIaGp
-	Bs7FtxFhS68CjsnyXAvAyUDa3/dtrrqTOwYLi2YudIY+0TB0Qdvt6FcZ
-X-Gm-Gg: ATEYQzzH9hBd44xeh7uyKKnlyewss/cLhbomedHtVLllTOE+Oz2p0WZ36tjAozrHtMS
-	334+hAO26R564uirIXpQjnY9z9H8hiN5zRThlNrm+9u5mo9ryMrfCdxvTo2h2F7VyOEBuCjDeea
-	3NHOnX23X20N9OqK2rKx31dCCGaVQjjrjDOLO+FZ1jvEIMR/rdzQkyHZpHc29agncONgu+gWGCM
-	c8kAuT3VOCh8BsGg0sFKtt1aUGCEIPok0/vOyydzwZPeU8xHvcmFp+GFbm0Lm9/4lspDv5tJ+OI
-	tbpvJgiq/R/xzPsuNmuZcWpqxS6n0LFYZZZFaoMEVFrrsuU2M5+kwmLlf/7RS14g1ztT1UJf9qu
-	CSbXn+FnZxwiQuUSHWJ8gCqNNyxMHxR7iOvzvHiqAINgtKL4stDhDCDOODWgnhj/c/IfcYLkqBl
-	v7thJOUqRQ2iwVCwrvNXinZIgbaIfoxKyjYcY=
-X-Received: by 2002:a05:7300:dc90:b0:2c5:a6ce:e534 with SMTP id 5a478bee46e88-2c5a6cef339mr2202718eec.8.1774871115888;
-        Mon, 30 Mar 2026 04:45:15 -0700 (PDT)
+        bh=MnDbxuScG9Rm/YGh2qPYK61S3SeIJ/p/OHYJTOIzac4=;
+        b=bPJ8GA9cAMtqHULdFSUC1AS0T5VNNeaFpTw5FN+D6bvBVPUn0CbRBuSlZZB36+CzSX
+         gBOwuGimqyCCDwxSCYLmI4VPwYdbtpi5o4k1Vj1SogmXpXHN0IIuuVfvgPE9h1R1ZMGp
+         bUQIKkn9cF7r0QnyFWYJoJjQ32vvgVf78jNoGdvnDHDo378oUSACbhxAIQ8l4nQrekqd
+         8sjKGOLLKDRz6KvhGB3tX47jd+1kuLaXC1xzNC0sb8Gduyel6tQ3JY6AUkEx87Ayti6+
+         DFaErCNeDojqzkyvXhwkvCLAPxb5t73YBrl7Z32G9IuGXMHbZs0S7S/UaQad8gnkCDLH
+         6Phw==
+X-Forwarded-Encrypted: i=1; AJvYcCXmVuT9tKoQlAokf/ii0LfR1S/vXdrvG6G2Ha8MX59psQ5TmSd0HzUInUUKkNnGhBwuQrk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzs6cfWYRUUQWUGSyQTwUSZCvDgG5fxyxYSyiNtbZEbk1V56SoV
+	U7yhhUVZPJDu3sFfvXDoKY1zO5BFQ+9qiNIY8S9hqKzSDZFNmetIokFc
+X-Gm-Gg: ATEYQzy7ghhFG2/0+1JeUYli4Wm0bSIpfXW90I6OoPWiVYNOderbsrUujtsSMduSymJ
+	VIgGxt3KL9+OG988vhJ9oQQHIhZ4ORJtKmFcppkFMK6h5rMzg1qSFxA+9SwlXT/M1+zH8bTLuu7
+	oBEDAUYpDelqOJTAq3hbJnozalUHfRinaY/wLODPKmhVNibzZUmru0I0VmxNFbJOk5SOhS441aw
+	BpmGpuJnximynLZAgEHZnW5/VgVScRgoeqy5G3enwzJUiqUPO6Kzy9x6Mdo3YyJmtaFzIAdbzxR
+	sfqY/qjzjKRscWoX6ASJbQAX/B1eyh9W6cl0Ml7p09itHz5YampbDqxEG0dCrw8Ms1V8hbG5ha+
+	Ju+ITlpPJsnIezgDZSsim22uCzXpDHkpAbU63rJEdJE6ibT9PlvOswlURpq1tOmpur3SeIG/E3m
+	hF2aOGUXDLnzZh/PLRRNkyGOC95sPom5KY+fM=
+X-Received: by 2002:a05:7022:b91:b0:128:e0dc:6428 with SMTP id a92af1059eb24-12ab2897c4emr6271373c88.17.1774871144768;
+        Mon, 30 Mar 2026 04:45:44 -0700 (PDT)
 Received: from localhost.localdomain ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2c3c41c1513sm7056897eec.8.2026.03.30.04.45.09
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12ab97e7a57sm9176288c88.6.2026.03.30.04.45.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Mar 2026 04:45:15 -0700 (PDT)
+        Mon, 30 Mar 2026 04:45:44 -0700 (PDT)
 From: Qiliang Yuan <realwujing@gmail.com>
 To: peterz@infradead.org
 Cc: longman@redhat.com,
@@ -97,12 +97,12 @@ Cc: longman@redhat.com,
 	vincent.guittot@linaro.org,
 	vschneid@redhat.com,
 	ziy@nvidia.com
-Subject: Re: [PATCH 03/15] sched/isolation: Separate housekeeping types in enum hk_type
-Date: Mon, 30 Mar 2026 19:44:48 +0800
-Message-ID: <20260330114448.103086-1-realwujing@gmail.com>
+Subject: Re: [PATCH 06/15] sched/core: Dynamically update scheduler domain housekeeping mask
+Date: Mon, 30 Mar 2026 19:45:16 +0800
+Message-ID: <20260330114516.103451-1-realwujing@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260325135904.GB3738786@noisy.programming.kicks-ass.net>
-References: <20260325135904.GB3738786@noisy.programming.kicks-ass.net>
+In-Reply-To: <20260325140053.GC3738786@noisy.programming.kicks-ass.net>
+References: <20260325140053.GC3738786@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -111,14 +111,16 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 25, 2026 at 02:59:04PM +0100, Peter Zijlstra wrote:
-> What the hell for?
+On Wed, Mar 25, 2026 at 03:00:53PM +0100, Peter Zijlstra wrote:
+> Sched domain boundaries are not static, they are easily changed by 
+> cpuset partition (v1 and v2 both support this).
 
-Direct and to the point. The original intent was to allow for asymmetric 
-isolation (e.g. offloading RCU callbacks while keeping specific timers 
-local for very specialized real-time monitoring).
+You're absolutely right. My description was imprecise. The goal of this 
+patch was to ensure that the housekeeping mask for scheduler domains 
+follows the partition boundaries dynamically as they are resized.
 
-However, I agree that for 99% of use cases, this is unnecessary 
-complexity. In V13, I will consolidate these independent enum types 
-into a unified housekeeping mask to simplify the configuration and 
-reduce the "insane configuration space" you mentioned earlier.
+In V13, I will explicitly integrate the housekeeping update logic 
+directly with `cpuset.cpus.partition` transitions. This way, any change 
+to the isolation level of a partition will automatically update 
+the kernel-internal housekeeping state, avoiding any parallel management 
+logic.
