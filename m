@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA17A3822B5;
-	Tue, 31 Mar 2026 09:39:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1096D351C22;
+	Tue, 31 Mar 2026 09:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774949973; cv=none; b=U9xCY+01FFjuwLqijaJD5uh/Zt2KSdSo1QCDLGyxyw7jF9PUtWPhYKMnRGFsBQui2vSwZ1autQTEStT8WTLbFeZT/9pN32UT6RCidN+8MK9eoHaY0HoOGRiNNK0ZJGJUF5VY363Iu5d6gI10rLuhJsXX09JnALC/b2XatrwXOXY=
+	t=1774950035; cv=none; b=kaM5VkK4WwMaEpdwBrDywzBYRTg9ko4+rsaAqJFWDJ6Uwvp6mjR8EAijm/bwc55wRWF4OOdX7nZ522hE4tyZuVHrlyK5Izwcq/eq+hUBgiU2rUgETftz3Bsc/85mDwY5g3Ti0+e5E/Zsv+Xypkb65tW4iXSwPgEe65ROPdm+Hkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774949973; c=relaxed/simple;
-	bh=BLhBqZ3dvy+/k+BE7sIj/+ih1uPmppiKzXtrrL8OQ7c=;
+	s=arc-20240116; t=1774950035; c=relaxed/simple;
+	bh=uJMOWgINMXub8AP/Kf/qJSBe/DsTYp4xy6LyAUAYweU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tKH+dNTfuHhEQoqMNiH/igpp74W0CLFjJZ5iTZCU2k7/tey32KlCEhRWo8CdvcHi+GKO8Fp4rLqw3vzlLNMC6RUxnMLJA9y7OBFGbIyGvmAy8budoEwdmKFmVfMeVD+xvU188qV6LVJhG1kzzSBvSPTYOvwkuU/6cAnn/MRBJgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TBDGmWNN; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zys3/ZyqtyhPxoGzYSxtvg7w8K3di1sIccdrVu4iKrHPAwot0E+xpQTKHg4wxNb6WtZlbTHAme1zW51mvQdj9KMDkObMBFCt8SeT/+wKfJU6pmqCBvBZSRVxmWePcAXY5p0Ell6ywzaPBFXywCPYMNjmLyHyEQFDnQY+OGCjAbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vi8vFZls; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TBDGmWNN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7361C2BCB0;
-	Tue, 31 Mar 2026 09:39:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vi8vFZls"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30C4AC19423;
+	Tue, 31 Mar 2026 09:40:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774949973;
-	bh=BLhBqZ3dvy+/k+BE7sIj/+ih1uPmppiKzXtrrL8OQ7c=;
+	s=k20201202; t=1774950034;
+	bh=uJMOWgINMXub8AP/Kf/qJSBe/DsTYp4xy6LyAUAYweU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TBDGmWNNI0rjYGNQr3ld25h4CGuuCOPmh6/TFscaT5pT3nTJrNnALBiWYkkG9HhgX
-	 Z8D+bRzXWuIiip6lEfhjIcY1UST5helZGtSt+gRnvJnCiYCgdGoqtsVTiJIhb66bcJ
-	 dcu6f8xCOjaEcUE+pcU4ACxX4ZxdQbIaKsN5ziHCkNfv8OPcDHvgwv6dRgQifeNXbs
-	 Z/ttuv3CfskP69Cr/+WfIcrbVJrbcNU8VV5329ditHYcS92mISwcO0Qqb2Lhgcs+rl
-	 NvRGRTJK/3vcqZiXNghn1SR+KWSVodebBTL1Y4C6ZtXaKkaDgDsfpFoIaBqU/1oO3K
-	 G126pJ2ggyx3Q==
-Date: Tue, 31 Mar 2026 11:39:31 +0200
+	b=Vi8vFZlsgoCOH/wPS5qHFh+9FlxjtYdO3E6n4rykwKM/RFhjQSAm2r0FAcCfmxanX
+	 8cDLuK9RMpqSLWUMKTYfvECTFdHSJ0adVPlDrHbPx18NGRCvaHyN65bWIGcLnoIfVY
+	 0C4giDsiuFPLuJ/vb4OkMsYv4rOxn15A8xHyWPVgoneACXn7syXg2Wm1YWElxFnNSW
+	 8lxDHaY7Q9beZxlUPgtPs67a4ginIchALCbX8EkYz6uBIYr3k805VD1JadWExZQR9B
+	 obrhXR5VgZKWF1oYiRiT1wHxL/MTXg+JqgNaWWaTwUnQM3/bAnX3LoJQPWCzmCJjEj
+	 oCogtt1sZFE1w==
+Date: Tue, 31 Mar 2026 11:40:32 +0200
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Qiliang Yuan <realwujing@gmail.com>
 Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
@@ -56,11 +56,11 @@ Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Ingo Molnar <mingo@kernel.org>, Shuah Khan <shuah@kernel.org>,
 	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
 	linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 08/15] workqueue: Support dynamic housekeeping mask
- updates
-Message-ID: <acuWU9bMGGE4AMEz@pavilion.home>
+Subject: Re: [PATCH 09/15] mm/compaction: Support dynamic housekeeping mask
+ updates for kcompactd
+Message-ID: <acuWkL9QHEUG7Olp@pavilion.home>
 References: <20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com>
- <20260325-dhei-v12-final-v1-8-919cca23cadf@gmail.com>
+ <20260325-dhei-v12-final-v1-9-919cca23cadf@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -70,21 +70,22 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260325-dhei-v12-final-v1-8-919cca23cadf@gmail.com>
+In-Reply-To: <20260325-dhei-v12-final-v1-9-919cca23cadf@gmail.com>
 
-Le Wed, Mar 25, 2026 at 05:09:39PM +0800, Qiliang Yuan a écrit :
-> Unbound workqueues use HK_TYPE_WQ and HK_TYPE_DOMAIN to determine
-> their default CPU affinity. These boundaries are currently static and
-> only enforced during early boot.
+Le Wed, Mar 25, 2026 at 05:09:40PM +0800, Qiliang Yuan a écrit :
+> The kcompactd threads are affined to housekeeping CPUs (HK_TYPE_DOMAIN)
+> at boot to avoid interference with isolated workloads. Currently,
+> these threads do not migrate when the housekeeping boundaries are
+> reconfigured at runtime.
 > 
-> Implement a housekeeping notifier to update unbound workqueue affinity.
+> Implement a housekeeping notifier to synchronize kcompactd affinity.
 > 
-> This enables unbound workqueue tasks to respect dynamic isolation
-> boundaries at runtime.
+> This ensures that background compaction threads honor the dynamic
+> isolation boundaries configured via the DHEI sysfs interface.
 > 
 > Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
 
-This is already handled by HK_TYPE_DOMAIN with cgroup v2.
+Unbound kthreads are now handled by HK_TYPE_DOMAIN dynamically.
 
 Thanks.
 
