@@ -1,115 +1,113 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4635233DEE5;
-	Tue, 31 Mar 2026 20:51:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA3B3382F7;
+	Wed,  1 Apr 2026 09:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774990274; cv=none; b=Fg92q7M/jZwKynpjk4G23OQUV0reIKjnGKDgtKi1Vpv5ROVYAxEpPV967iyswDezVMitrWFE7g2btgTjJdpT57yyRkL+XFo7crmLZIdOZJegXAhW5Dpe1JYlSsocuSYaLhgWLFd5oHH4rIU/0bUh+1tQwxr76d6Nxiyd2YdS6G0=
+	t=1775037115; cv=none; b=V5jqNJmNLvjFp+2vSfooxTpuqkucCw28s41etVIW5M304uAaaE1DwSlw+Mn1yeJe7yBaMqAfNiVBtwBlvMak0ies+AO2aFK49eIREhDuI5rEyxYt27H7lS+XKQQlTOGPP3THn5gamGdUkD+NaZBb581oxXApuk1KIl5mCD4Fhjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774990274; c=relaxed/simple;
-	bh=R2SNtf8D9RTFGTcrXAVFU3cnZEn4csddMjgdX7pSwAo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q+DN4590cH8BOnnmTk+mrdycWG1eLfc4b8UJm8ADff3oLTbRVR7uFEmq4Q5ezkpHJVPn0EwTJcuTGBZrRJjlrPRsGX3J0XJcmOa2wt4bnNbYqtSvxtuMz8Or+XVQimWvh27BWeFyBHMMf+UV4F0uoF9WrjeyZJfxIyHrYIKZhMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=umIoWgTc; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="umIoWgTc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE44FC19423;
-	Tue, 31 Mar 2026 20:51:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774990273;
-	bh=R2SNtf8D9RTFGTcrXAVFU3cnZEn4csddMjgdX7pSwAo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=umIoWgTcfhrBkTMgHFOTEX1PmSj7PIroh7pe4F2vc3cJojsur0HYjxdIAC/VsHteo
-	 tpAPwQ/jrzHEIW1W+Ck9eqAlg3mmTxp3IpIHngCWCF6W7Sa+eRdRttyCQeFapqtuIg
-	 bOwFL9MqIJat8ePbOGFIz2RyMooTApuhKJchsGHVXOXmTqdPZigcSQCbyvlxec+1vh
-	 kZ+w1Jkln1E74pnaXMbfKQusFRrIn6DoWWWgjQ/dBhORvXoTw9pgZvu8V/q0gdMG4N
-	 JvOwZNfDEoKsTIgmvC7CCQHvAvE1priJlIrt18/cEvJ6Hhq38VHZxAkRKf1i0Y/S/k
-	 jlM0C7lI+mKMg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8219BCE00EF; Tue, 31 Mar 2026 13:51:11 -0700 (PDT)
-Date: Tue, 31 Mar 2026 13:51:11 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Sonam Sanju <sonam.sanju@intel.com>,
+	s=arc-20240116; t=1775037115; c=relaxed/simple;
+	bh=U97ebIvudxTv88YtYZfzy5ZrlchjEOPs2mSLzLQmu6Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=IV6uAds9llZUTb+//22S/ah4+eJe4KnqD5dVSZi26xrgZf6k5/0ygUBN7r9rrGS56EwYwXq1H9mZnhB76zTR5b7PyXi5n9pitvH5S9bmVsMDJdVX+T71DnupAQ+qYYOKOwdhgMkz08AL+e1jyEnOPaYpKLZl7zBTlI0AFYXO5vI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=intel.corp-partner.google.com; spf=fail smtp.mailfrom=intel.corp-partner.google.com; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=intel.corp-partner.google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=intel.corp-partner.google.com
+X-CSE-ConnectionGUID: LKJLZTZ+QM2+ozNZRH+TsQ==
+X-CSE-MsgGUID: HrWPrAQ3Sv6Zg9p864WfiQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11745"; a="76083234"
+X-IronPort-AV: E=Sophos;i="6.23,153,1770624000"; 
+   d="scan'208";a="76083234"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2026 02:51:53 -0700
+X-CSE-ConnectionGUID: IoCaRfFXTbiEaY64u7Hknw==
+X-CSE-MsgGUID: 3y5qohERTs2JU2HsZyHR+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,153,1770624000"; 
+   d="scan'208";a="226497065"
+Received: from intel-fishhawkfalls.iind.intel.com ([10.99.116.107])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2026 02:51:49 -0700
+From: Sonam Sanju <sonam.sanju@intel.corp-partner.google.com>
+To: "Paul E . McKenney" <paulmck@kernel.org>,
+	Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	Vineeth Pillai <vineeth@bitbyteword.org>,
+	Dmitry Maluka <dmaluka@chromium.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Vineeth Pillai <vineeth@bitbyteword.org>,
-	Dmitry Maluka <dmaluka@chromium.org>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: irqfd: fix deadlock by moving synchronize_srcu
- out of resampler_lock
-Message-ID: <2d080c02-9602-4b22-94ce-1f7a71cc19a4@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260323053353.805336-1-sonam.sanju@intel.com>
- <20260323064248.1660757-1-sonam.sanju@intel.com>
- <acwPr_Aic9xd95_R@google.com>
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	rcu@vger.kernel.org,
+	Sonam Sanju <sonam.sanju@intel.com>
+Subject: Re: [PATCH v2] KVM: irqfd: fix deadlock by moving synchronize_srcu out of resampler_lock
+Date: Wed,  1 Apr 2026 15:17:14 +0530
+Message-Id: <20260401094714.2533621-1-sonam.sanju@intel.corp-partner.google.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <2d080c02-9602-4b22-94ce-1f7a71cc19a4@paulmck-laptop>
+References: <2d080c02-9602-4b22-94ce-1f7a71cc19a4@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <acwPr_Aic9xd95_R@google.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 31, 2026 at 11:17:19AM -0700, Sean Christopherson wrote:
-> +srcu folks
-> 
-> Please don't post subsequent versions In-Reply-To previous versions, it tends to
-> muck up tooling.
-> 
-> On Mon, Mar 23, 2026, Sonam Sanju wrote:
-> > irqfd_resampler_shutdown() and kvm_irqfd_assign() both call
-> > synchronize_srcu_expedited() while holding kvm->irqfds.resampler_lock.
-> > This can deadlock when multiple irqfd workers run concurrently on the
-> > kvm-irqfd-cleanup workqueue during VM teardown or when VMs are rapidly
-> > created and destroyed:
-> > 
-> >   CPU A (mutex holder)               CPU B/C/D (mutex waiters)
-> >   irqfd_shutdown()                   irqfd_shutdown() / kvm_irqfd_assign()
-> >    irqfd_resampler_shutdown()         irqfd_resampler_shutdown()
-> >     mutex_lock(resampler_lock)  <---- mutex_lock(resampler_lock) //BLOCKED
-> >     list_del_rcu(...)                     ...blocked...
-> >     synchronize_srcu_expedited()      // Waiters block workqueue,
-> >       // waits for SRCU grace            preventing SRCU grace
-> >       // period which requires            period from completing
-> >       // workqueue progress          --- DEADLOCK ---
-> > 
-> > In irqfd_resampler_shutdown(), the synchronize_srcu_expedited() in
-> > the else branch is called directly within the mutex.  In the if-last
-> > branch, kvm_unregister_irq_ack_notifier() also calls
-> > synchronize_srcu_expedited() internally.  In kvm_irqfd_assign(),
-> > synchronize_srcu_expedited() is called after list_add_rcu() but
-> > before mutex_unlock().  All paths can block indefinitely because:
-> > 
-> >   1. synchronize_srcu_expedited() waits for an SRCU grace period
-> >   2. SRCU grace period completion needs workqueue workers to run
-> >   3. The blocked mutex waiters occupy workqueue slots preventing progress
-> 
-> Unless I'm misunderstanding the bug, "fixing" in this in KVM is papering over an
-> underlying flaw.  Essentially, this would be establishing a rule that
-> synchronize_srcu_expedited() can *never* be called while holding a mutex.  That's
-> not viable.
+From: Sonam Sanju <sonam.sanju@intel.com>=0D
 
-First, it is OK to invoke synchronize_srcu_expedited() while holding
-a mutex.  Second, the synchronize_srcu_expedited() function's use of
-workqueues is the same as that of synchronize_srcu(), so in an alternate
-universe where it was not OK to invoke synchronize_srcu_expedited() while
-holding a mutex, it would also not be OK to invoke synchronize_srcu()
-while holding that same mutex.  Third, it is also OK to acquire that
-same mutex within a workqueue handler.  Fourth, SRCU and RCU use their
-own workqueue, which no one else should be using (and that prohibition
-most definitely includes the irqfd workers).
-
-As a result, I do have to ask...  When you say "multiple irqfd workers",
-exactly how many such workers are you running?
-
-							Thanx, Paul
-
-> >   4. The mutex holder never releases the lock -> deadlock
+On Tue, Mar 31, 2026 at 01:51:00PM -0700, Paul E. McKenney wrote:=0D
+> On Tue, Mar 31, 2026 at 11:17:19AM -0700, Sean Christopherson wrote:=0D
+> > Please don't post subsequent versions In-Reply-To previous versions, it=
+ tends to=0D
+> > muck up tooling.=0D
+=0D
+Noted, will send future versions as new top-level threads. Sorry about=0D
+that.=0D
+=0D
+> > Unless I'm misunderstanding the bug, "fixing" in this in KVM is paperin=
+g over an=0D
+> > underlying flaw.  Essentially, this would be establishing a rule that=0D
+> > synchronize_srcu_expedited() can *never* be called while holding a mute=
+x.  That's=0D
+> > not viable.=0D
+>=0D
+> First, it is OK to invoke synchronize_srcu_expedited() while holding=0D
+> a mutex.  Second, the synchronize_srcu_expedited() function's use of=0D
+> workqueues is the same as that of synchronize_srcu(), so in an alternate=
+=0D
+> universe where it was not OK to invoke synchronize_srcu_expedited() while=
+=0D
+> holding a mutex, it would also not be OK to invoke synchronize_srcu()=0D
+> while holding that same mutex.  Third, it is also OK to acquire that=0D
+> same mutex within a workqueue handler.  Fourth, SRCU and RCU use their=0D
+> own workqueue, which no one else should be using (and that prohibition=0D
+> most definitely includes the irqfd workers).=0D
+=0D
+Thank you for clarifying this. =0D
+=0D
+> As a result, I do have to ask...  When you say "multiple irqfd workers",=
+=0D
+> exactly how many such workers are you running?=0D
+=0D
+While running cold reboot/ warm reboot cycling in our Android platforms =0D
+with 6.18 kernel, the hung_task traces consistently show 8-15 =0D
+kvm-irqfd-cleanup workers in D state.  These are crosvm instances with =0D
+roughly 10-16 irqfd lines per VM (virtio-blk, virtio-net, virtio-input,=0D
+virtio-snd, etc., each with a resampler).=0D
+=0D
+Vineeth Pillai (Google) reproduced a related scenario under a VM=0D
+create/destroy stress test where the workqueue reached active=3D1024=0D
+refcnt=3D2062, though that is a much more extreme case than what we see=0D
+during normal shutdown.=0D
+=0D
+The first part of the deadlock is genuinely there. One worker holds =0D
+resampler_lock and blocks in synchronize_srcu_expedited() while the=0D
+remaining 8-15 workers block on __mutex_lock at =0D
+irqfd_resampler_shutdown.  =0D
+=0D
+Thanks,=0D
+Sonam=0D
