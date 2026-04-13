@@ -1,67 +1,67 @@
-Received: from mail-dl1-f49.google.com (mail-dl1-f49.google.com [74.125.82.49])
+Received: from mail-dl1-f54.google.com (mail-dl1-f54.google.com [74.125.82.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57073397E81
-	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 07:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B14397E68
+	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 07:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776066236; cv=none; b=DwUSXq6b5vIj/OC9EybswfbDeRxGWQJuTr2JTWvibst+cI/286tbmuvfbJeK8AsitluXjRRV3rMiLCIP92GrviNw3KT7S17/NRc4hjzHIa6dCWkrrEE/FPTM2qKlwW8YF4P8V9EHX1RCVGGDHps3sgsw12HPHDyWZljFzwobxu4=
+	t=1776066247; cv=none; b=EgDQH1swDhvS7KnQU36TU/eve/qxbcAFNyyirvBK5OLKF3gIXJ7NHlWB8pGweQZ53iAQUfNvhKdJoksnm3mYO3+JsM9tVFb7dVb9whqO3+6y97xbbYfAp1eGVbk2bzMlBFlrVWU5UDnJq88BT/XMesJ3A7uXptPO1s+/W40BLx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776066236; c=relaxed/simple;
-	bh=a/odz2uw4gvTIjw/tTNRaOxlb3XXkQnfh9vxBJlDOpo=;
+	s=arc-20240116; t=1776066247; c=relaxed/simple;
+	bh=Y0xqgw/0a5rTkwx+KfPUGwTxkRJeNcj/lT+2uowTJCE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Mpi2btu9pO6eMnK7/uo9IfZ75dIOgGtHArN7SyetNRpBLMe6fKj7ftaz6OcXJiBeFAoEJ1/jppkMy4zJQIjLJBkLwGbRgsDWRAGE4Mh2S7YcoW2IN+R8hfuWoxls3/ciBiWJLnlt4C7f2RGLjOt+CTCoY6jrv/96FyLG4ET75bA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LyfAsS+n; arc=none smtp.client-ip=74.125.82.49
+	 In-Reply-To:To:Cc; b=ByNfHZ1tNvlo+7USpz2E8jkDSLHM9qnIam/bm9hpMYtcGWAUgcY13jf2a6KCg3VQe9kkobHjGaEvBK5w912fWT76R2hd7LZ+YFjr9bEOcfZVM6JTMe4lEY/PshBWlbVl1gq4XKq8zuyecBBFwv/kKs90/J7qoW3aT+7duaRJiA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=psy7Tq7A; arc=none smtp.client-ip=74.125.82.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LyfAsS+n"
-Received: by mail-dl1-f49.google.com with SMTP id a92af1059eb24-12c20010f10so10473796c88.0
-        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 00:43:55 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="psy7Tq7A"
+Received: by mail-dl1-f54.google.com with SMTP id a92af1059eb24-1271257ae53so11457752c88.1
+        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 00:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776066234; x=1776671034; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1776066245; x=1776671045; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2dq7A9F2uS9NBzcitrHUera4fwiqvquYPVtGYt+ZQHw=;
-        b=LyfAsS+nyWB4jM85ExsVjPVvONfdxlrGTJBDdlw40d7Q59DquWHE7QDP7+H0x9IKv+
-         peEFhobLpVxIll5J8SnBhZzaHVaQ07/B7n/s/LV+1E18QTjtrlZJHJBZbc6mcaVspnBp
-         bzO0gWgPcXL1SccRJG6kSYRAUa18PJE9i7xWDkJA3gMId0NYYd2FOAUyY2D2IfNe9fJ5
-         cUo+uruc5CcVD1cOAgvSwv6S6CSWZub/aWg278MdwGkFZqDx1QgZCzJrKYbS2808MEgV
-         NjIxbOnChqBwR4wEqo9WZCnLAajeHcNfE4oZiOWbrK69aiUhjCdQ7bq17MmKnpEYfkLS
-         1eoQ==
+        bh=oFe08Ts/hypKtbjTki6Zi9pd0qwjzgX8Ya0BzZ0CJRU=;
+        b=psy7Tq7ABGPF6GaU9/g4aAkV1a2pzB3ML+cSDy0yWSyCa5q2CQH9lKnLnunU8ppBa+
+         KrWTifxQv7HReEaW+67JomhAJTqpAT02KfLrLMRRdpTr+olat2OAwUuTWOVjY+5Mxg8H
+         kpZ/7+gEM+8jucV3ymXmy3emhPiSlamTYIYLSNV+nKIV2SpVZ2u4+iv/2aLoMgadGBLy
+         U11ubO1qFK34y1T/GglNY/d36ZGGVs183ohh8EJ0NU1vVEzApFMlcCgsNjCnz2E0jg/9
+         TAzidbBEVDaz48R8CZeG8tHfpSyo1hCtk6RN7GIObUCuYRTCvwC4GzlTtcbiMPi96qZD
+         xbVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776066234; x=1776671034;
+        d=1e100.net; s=20251104; t=1776066245; x=1776671045;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=2dq7A9F2uS9NBzcitrHUera4fwiqvquYPVtGYt+ZQHw=;
-        b=qCzcSikC4YilNWA6KV2L+K3JZs0K3ereinAiK42Sa+7LBQ5tyZHmgApsE2j5ktQNuu
-         MN4IVrrZNx8elUhgECExp1rqljHeLeFInzQDTycIszLQA2zXdrT4tZDRKwjHvXP3BbkO
-         9NQdVwDo6pQFYyUCaJQXEaEHSHuF+rS9euKM7VJ5ocexF94dEARhmSLyROA6HPf6AuWD
-         bkMusZqQBIpbvfnVJj9308i2Kz4WKuh3Jb66L1jl4t7VyYohHXot3OqrcZnQCXPRnCvg
-         znbCx+WKNm4zDDhU6IfMpOuaf7mmY2MDWkacMB/UaimmWMEpy8LDn/X09Ar2hK/hHFFn
-         mXhw==
-X-Forwarded-Encrypted: i=1; AFNElJ+HZFD6UuQhd+Pn8MjRYg+fdls7VyMQJlZBQ18nboAcZ3OBeXCiZn2wfw7mWYSs/gci0hk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwAwoVz57s4lqftM9XKZtCmwWwOZvFhz0K/xEtVPmb1vrGYM+gF
-	u74ATu43KWsbJdHz/bz2th227AiA5N6olbtR4r6pqypY7jWjr4Hkw0+p
-X-Gm-Gg: AeBDievpf7sNqrxuFyxp76dCaIkXwzaYUHst7A38EqIkY7sDh5Uq0GMwSTwPfU1YioE
-	gpVtOoPqutIwuiPQ9w8I1liTK3fDMyiPHmsMlREe9kTHT0eguF0Bd1t4d9WnM3XBtTOp8ejsti7
-	tjqBSsj6ebM9UqWnPNdTC8xbVnuXx3HoXd0jI6HgbIkPM35NX1loqmWHV4qyWMN2WqdaRLKh0nA
-	Z79Lo4v94h+YUUjlkrEGHt0hWwIP+As8shR+/Cd+r9iuQxtxdfyaYSn1gZ7IZ91rnGiM7ZI/U8W
-	fKcQajbh4wrWettibQi/nBpF/EIwiHx9WUDGAdfUwNP14ZTK7JBh1+F5tduMY9486dOoH3ioc84
-	uOWdnLn8qcsNgAl4gvTKS6Qh1X9c0fahbKV5qIR1XCpsjIDYNUrCg9jeRokoO3o6+YIQxzbymZg
-	YHxzyvSya719fX6IYg
-X-Received: by 2002:a05:7022:439f:b0:128:d5f1:d594 with SMTP id a92af1059eb24-12c34e7b83amr6713439c88.10.1776066234304;
-        Mon, 13 Apr 2026 00:43:54 -0700 (PDT)
+        bh=oFe08Ts/hypKtbjTki6Zi9pd0qwjzgX8Ya0BzZ0CJRU=;
+        b=pPAB0+YvSrJYA9WyN0ZU0anK5SOFuRt70GHg51gqvg82IiF9UxtlYr9jzgocZAI1RV
+         XM2WUDO0l8qIiwBUKcUtyl2aUMIY3mdjun5zZLbniEbls4FMDz1V52XCfO9U8MbpKZYV
+         HXzgy3hfBkC2wRijSdMZAgwFNEgYh/TEy3Rg49hD287Wula2EhReUm2EZ6HnkbwF0T47
+         Bf5DlBHS+W3kwNhtLOrJPn6hkz05JDrc0TXK59VNsOZgiqvXtr4Vyu5f0w9np0ZNJtg2
+         fXVrWqEjHftDFcYAnJE4AvqFrfe9GzRIppnBQCromcEywGyf1K1GJff3vXrM5vNkIMC5
+         C05w==
+X-Forwarded-Encrypted: i=1; AFNElJ9rYEuTV0ZQZw5Cy6pmTUR5QS1BstlEq0OOcUlZbJ6yYeY/3OBUTGg830682mx3ax3LlC4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxz5Wc6QFcfwj3luWXCWrBKnwQysiUtvHcdbYnR/1sO3OBOcPuj
+	1q1SsHe4qxIgfHPt+DH43dKHnY30OQ4v/N5Xh78vRXwtCcUXr/M+2oqv
+X-Gm-Gg: AeBDiesn1tQwpYsEbN4WIs7SkSHEzXBYEvmuGmid8ZAjNG4x5pM0NQuI1u1LzNKv1Fp
+	cCa4NNn1GRf918X0Gc96LIcmT1be0ZcNTmCipN3IUR+L1uMhvcOKWbFDhosvR1uxt52PurKUvb3
+	NBT/rwPLj12ONoF2oFM9t2T/96a1yGAdPqmb1/K5CZaGRYdZR7GU7X17eUl7BHWDiOM9pZcqTY9
+	+/pthRotdqlsh3dYGwi1K1C9/GLVIFpiVYvAc41VoeyTKKrzn768u76U0/IluOiUzkndHYxeUqD
+	ZXzzXln/vo+rJYS3OU1v3yCBA+fq3Icm1ntANxzDyT9QjKnXoR/bRhpoNfDYJucmnjXpKwTGd0x
+	E7qQTiYCxgoRGIXJ8CEPJj6yiJHs3nIiRcI2v2eXSp14QTHi0Jn5JFTUDAD9BBtoUWsRpSoY0hN
+	yq5zIpjXQxD790q9Fk
+X-Received: by 2002:a05:7022:ec1:b0:127:5cd6:fa45 with SMTP id a92af1059eb24-12c34ea2415mr6243136c88.14.1776066245003;
+        Mon, 13 Apr 2026 00:44:05 -0700 (PDT)
 Received: from wujing. ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.43.45
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.43.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2026 00:43:54 -0700 (PDT)
+        Mon, 13 Apr 2026 00:44:04 -0700 (PDT)
 From: Qiliang Yuan <realwujing@gmail.com>
-Date: Mon, 13 Apr 2026 15:43:09 +0800
-Subject: [PATCH v2 03/12] rcu: Support runtime NOCB initialization and
- dynamic offloading
+Date: Mon, 13 Apr 2026 15:43:10 +0800
+Subject: [PATCH v2 04/12] tick/nohz: Transition to dynamic full dynticks
+ state management
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260413-wujing-dhm-v2-3-06df21caba5d@gmail.com>
+Message-Id: <20260413-wujing-dhm-v2-4-06df21caba5d@gmail.com>
 References: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
 In-Reply-To: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -103,224 +103,218 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
 X-Mailer: b4 0.13.0
 
 Context:
-The RCU Non-Callback (NOCB) infrastructure traditionally requires
-boot-time parameters (e.g., rcu_nocbs) to allocate masks and spawn
-management kthreads (rcuog/rcuo). This prevents systems from activating
-offloading on-demand without a reboot.
+Full dynticks (NOHZ_FULL) is typically a static configuration determined
+at boot time. DHEI extends this to support runtime activation.
 
 Problem:
-Dynamic Housekeeping Management requires CPUs to transition to
-NOCB mode at runtime when they are newly isolated. Without boot-time
-setup, the NOCB masks are unallocated, and critical kthreads are missing,
-preventing effective tick suppression and isolation.
+Switching to NOHZ_FULL at runtime requires careful synchronization
+of context tracking and housekeeping states. Re-invoking setup logic
+multiple times could lead to inconsistencies or warnings, and RCU
+dependency checks often prevented tick suppression in Zero-Conf setups.
 
 Solution:
-Refactor RCU initialization to support dynamic on-demand setup.
-- Introduce rcu_init_nocb_dynamic() to allocate masks and organize
-  kthreads if the system wasn't initially configured for NOCB.
-- Introduce rcu_housekeeping_reconfigure() to iterate over CPUs and
-  perform safe offload/deoffload transitions via hotplug sequences
-  (cpu_down -> offload -> cpu_up) when a housekeeping cpuset triggers
-  a notifier event.
-- Remove __init from rcu_organize_nocb_kthreads to allow runtime
-  reconfiguration of the callback management hierarchy.
+- Replace the static tick_nohz_full_enabled() checks with a dynamic
+  tick_nohz_full_running state variable.
+- Refactor tick_nohz_full_setup to be safe for runtime invocation,
+  adding guards against re-initialization and ensuring IRQ work
+  interrupt support.
+- Implement boot-time pre-activation of context tracking (shadow
+  init) for all possible CPUs to avoid instruction flow issues during
+  dynamic transitions.
+- Hook into housekeeping_notifier_list to update NO_HZ states dynamically.
 
-This enables a true "Zero-Conf" isolation experience where any CPU
-can be fully isolated at runtime regardless of boot parameters.
+This provides the core state machine for reliable, on-demand tick
+suppression and high-performance isolation.
 
 Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
 ---
- kernel/rcu/rcu.h       |  4 +++
- kernel/rcu/tree.c      | 75 ++++++++++++++++++++++++++++++++++++++++++++++++++
- kernel/rcu/tree.h      |  2 +-
- kernel/rcu/tree_nocb.h | 31 +++++++++++++--------
- 4 files changed, 100 insertions(+), 12 deletions(-)
+ kernel/time/tick-sched.c | 130 ++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 105 insertions(+), 25 deletions(-)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 9b10b57b79ada..282874443c96b 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -663,8 +663,12 @@ unsigned long srcu_batches_completed(struct srcu_struct *sp);
- #endif // #else // #ifdef CONFIG_TINY_SRCU
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index f7907fadd63f2..23d69d7d44538 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -27,6 +27,7 @@
+ #include <linux/posix-timers.h>
+ #include <linux/context_tracking.h>
+ #include <linux/mm.h>
++#include <linux/sched/isolation.h>
  
- #ifdef CONFIG_RCU_NOCB_CPU
-+void rcu_init_nocb_dynamic(void);
-+void rcu_spawn_cpu_nocb_kthread(int cpu);
- void rcu_bind_current_to_nocb(void);
- #else
-+static inline void rcu_init_nocb_dynamic(void) { }
-+static inline void rcu_spawn_cpu_nocb_kthread(int cpu) { }
- static inline void rcu_bind_current_to_nocb(void) { }
- #endif
+ #include <asm/irq_regs.h>
  
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 55df6d37145e8..84c8388cf89a1 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4928,4 +4928,79 @@ void __init rcu_init(void)
- #include "tree_stall.h"
- #include "tree_exp.h"
- #include "tree_nocb.h"
+@@ -624,13 +625,25 @@ void __tick_nohz_task_switch(void)
+ /* Get the boot-time nohz CPU list from the kernel parameters. */
+ void __init tick_nohz_full_setup(cpumask_var_t cpumask)
+ {
+-	alloc_bootmem_cpumask_var(&tick_nohz_full_mask);
++	if (!tick_nohz_full_mask) {
++		if (!slab_is_available())
++			alloc_bootmem_cpumask_var(&tick_nohz_full_mask);
++		else
++			zalloc_cpumask_var(&tick_nohz_full_mask, GFP_KERNEL);
++	}
+ 	cpumask_copy(tick_nohz_full_mask, cpumask);
+ 	tick_nohz_full_running = true;
+ }
+ 
+ bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
+ {
++	/*
++	 * Allow all CPUs to go down during shutdown/reboot to avoid
++	 * interfering with the final power-off sequence.
++	 */
++	if (system_state > SYSTEM_RUNNING)
++		return true;
 +
-+#ifdef CONFIG_SMP
-+static int rcu_housekeeping_reconfigure(struct notifier_block *nb,
-+					unsigned long action, void *data)
+ 	/*
+ 	 * The 'tick_do_timer_cpu' CPU handles housekeeping duty (unbound
+ 	 * timers, workqueues, timekeeping, ...) on behalf of full dynticks
+@@ -646,45 +659,112 @@ static int tick_nohz_cpu_down(unsigned int cpu)
+ 	return tick_nohz_cpu_hotpluggable(cpu) ? 0 : -EBUSY;
+ }
+ 
++static int tick_nohz_housekeeping_reconfigure(struct notifier_block *nb,
++					     unsigned long action, void *data)
 +{
 +	struct housekeeping_update *upd = data;
-+	struct task_struct *t;
 +	int cpu;
 +
-+	if (action != HK_UPDATE_MASK || upd->type != HK_TYPE_RCU)
-+		return NOTIFY_OK;
++	if (action == HK_UPDATE_MASK && upd->type == HK_TYPE_TICK) {
++		cpumask_var_t non_housekeeping_mask;
 +
-+	rcu_init_nocb_dynamic();
++		if (!alloc_cpumask_var(&non_housekeeping_mask, GFP_KERNEL))
++			return NOTIFY_BAD;
 +
-+	for_each_possible_cpu(cpu) {
-+		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-+		bool isolated = !cpumask_test_cpu(cpu, upd->new_mask);
-+		bool offloaded = rcu_rdp_is_offloaded(rdp);
++		cpumask_andnot(non_housekeeping_mask, cpu_possible_mask, upd->new_mask);
 +
-+		if (isolated && !offloaded) {
-+			/* Transition to NOCB */
-+			pr_info("rcu: CPU %d transitioning to NOCB mode\n", cpu);
-+			if (cpu_online(cpu)) {
-+				remove_cpu(cpu);
-+				rcu_spawn_cpu_nocb_kthread(cpu);
-+				rcu_nocb_cpu_offload(cpu);
-+				add_cpu(cpu);
-+			} else {
-+				rcu_spawn_cpu_nocb_kthread(cpu);
-+				rcu_nocb_cpu_offload(cpu);
-+			}
-+		} else if (!isolated && offloaded) {
-+			/* Transition to CB */
-+			pr_info("rcu: CPU %d transitioning to CB mode\n", cpu);
-+			if (cpu_online(cpu)) {
-+				remove_cpu(cpu);
-+				rcu_nocb_cpu_deoffload(cpu);
-+				add_cpu(cpu);
-+			} else {
-+				rcu_nocb_cpu_deoffload(cpu);
++		if (!tick_nohz_full_mask) {
++			if (!zalloc_cpumask_var(&tick_nohz_full_mask, GFP_KERNEL)) {
++				free_cpumask_var(non_housekeeping_mask);
++				return NOTIFY_BAD;
 +			}
 +		}
++
++		/* Kick all CPUs to re-evaluate tick dependency before change */
++		for_each_online_cpu(cpu)
++			tick_nohz_full_kick_cpu(cpu);
++
++		cpumask_copy(tick_nohz_full_mask, non_housekeeping_mask);
++		tick_nohz_full_running = !cpumask_empty(tick_nohz_full_mask);
++
++		/*
++		 * If nohz_full is running, the timer duty must be on a housekeeper.
++		 * If the current timer CPU is not a housekeeper, or no duty is assigned,
++		 * pick the first housekeeper and assign it.
++		 */
++		if (tick_nohz_full_running) {
++			int timer_cpu = READ_ONCE(tick_do_timer_cpu);
++			if (timer_cpu == TICK_DO_TIMER_NONE ||
++			    !cpumask_test_cpu(timer_cpu, upd->new_mask)) {
++				int next_timer = cpumask_first(upd->new_mask);
++				if (next_timer < nr_cpu_ids)
++					WRITE_ONCE(tick_do_timer_cpu, next_timer);
++			}
++		}
++
++		/* Kick all CPUs again to apply new nohz full state */
++		for_each_online_cpu(cpu)
++			tick_nohz_full_kick_cpu(cpu);
++
++		free_cpumask_var(non_housekeeping_mask);
 +	}
-+
-+	t = READ_ONCE(rcu_state.gp_kthread);
-+	if (t)
-+		housekeeping_affine(t, HK_TYPE_RCU);
-+
-+#ifdef CONFIG_TASKS_RCU
-+	t = get_rcu_tasks_gp_kthread();
-+	if (t)
-+		housekeeping_affine(t, HK_TYPE_RCU);
-+#endif
-+
-+#ifdef CONFIG_TASKS_RUDE_RCU
-+	t = get_rcu_tasks_rude_gp_kthread();
-+	if (t)
-+		housekeeping_affine(t, HK_TYPE_RCU);
-+#endif
 +
 +	return NOTIFY_OK;
 +}
 +
-+static struct notifier_block rcu_housekeeping_nb = {
-+	.notifier_call = rcu_housekeeping_reconfigure,
++static struct notifier_block tick_nohz_housekeeping_nb = {
++	.notifier_call = tick_nohz_housekeeping_reconfigure,
 +};
 +
-+static int __init rcu_init_housekeeping_notifier(void)
-+{
-+	housekeeping_register_notifier(&rcu_housekeeping_nb);
-+	return 0;
-+}
-+late_initcall(rcu_init_housekeeping_notifier);
-+#endif
-+
- #include "tree_plugin.h"
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 7dfc57e9adb18..f3d31918ea322 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -517,7 +517,7 @@ static void rcu_nocb_unlock_irqrestore(struct rcu_data *rdp,
- 				       unsigned long flags);
- static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp);
- #ifdef CONFIG_RCU_NOCB_CPU
--static void __init rcu_organize_nocb_kthreads(void);
-+static void rcu_organize_nocb_kthreads(void);
- 
- /*
-  * Disable IRQs before checking offloaded state so that local
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index b3337c7231ccb..36f6c9be937aa 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1259,6 +1259,22 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- }
- #endif // #ifdef CONFIG_RCU_LAZY
- 
-+void rcu_init_nocb_dynamic(void)
-+{
-+	if (rcu_state.nocb_is_setup)
-+		return;
-+
-+	if (!cpumask_available(rcu_nocb_mask)) {
-+		if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
-+			pr_info("rcu_nocb_mask allocation failed, dynamic offloading disabled.\n");
-+			return;
-+		}
-+	}
-+
-+	rcu_state.nocb_is_setup = true;
-+	rcu_organize_nocb_kthreads();
-+}
-+
- void __init rcu_init_nohz(void)
+ void __init tick_nohz_init(void)
  {
- 	int cpu;
-@@ -1276,15 +1292,8 @@ void __init rcu_init_nohz(void)
- 		cpumask = cpu_possible_mask;
+ 	int cpu, ret;
  
- 	if (cpumask) {
--		if (!cpumask_available(rcu_nocb_mask)) {
--			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
--				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
--				return;
--			}
--		}
+-	if (!tick_nohz_full_running)
+-		return;
 -
-+		rcu_init_nocb_dynamic();
- 		cpumask_or(rcu_nocb_mask, rcu_nocb_mask, cpumask);
--		rcu_state.nocb_is_setup = true;
+-	/*
+-	 * Full dynticks uses IRQ work to drive the tick rescheduling on safe
+-	 * locking contexts. But then we need IRQ work to raise its own
+-	 * interrupts to avoid circular dependency on the tick.
+-	 */
+-	if (!arch_irq_work_has_interrupt()) {
+-		pr_warn("NO_HZ: Can't run full dynticks because arch doesn't support IRQ work self-IPIs\n");
+-		cpumask_clear(tick_nohz_full_mask);
+-		tick_nohz_full_running = false;
+-		return;
++	if (!tick_nohz_full_mask) {
++		if (!slab_is_available())
++			alloc_bootmem_cpumask_var(&tick_nohz_full_mask);
++		else
++			zalloc_cpumask_var(&tick_nohz_full_mask, GFP_KERNEL);
  	}
  
- 	if (!rcu_state.nocb_is_setup)
-@@ -1344,7 +1353,7 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
-  * rcuo CB kthread, spawn it.  Additionally, if the rcuo GP kthread
-  * for this CPU's group has not yet been created, spawn it as well.
-  */
--static void rcu_spawn_cpu_nocb_kthread(int cpu)
-+void rcu_spawn_cpu_nocb_kthread(int cpu)
- {
- 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
- 	struct rcu_data *rdp_gp;
-@@ -1416,7 +1425,7 @@ module_param(rcu_nocb_gp_stride, int, 0444);
- /*
-  * Initialize GP-CB relationships for all no-CBs CPU.
-  */
--static void __init rcu_organize_nocb_kthreads(void)
-+static void rcu_organize_nocb_kthreads(void)
- {
- 	int cpu;
- 	bool firsttime = true;
-@@ -1668,7 +1677,7 @@ static bool do_nocb_deferred_wakeup(struct rcu_data *rdp)
- 	return false;
- }
+-	if (IS_ENABLED(CONFIG_PM_SLEEP_SMP) &&
+-			!IS_ENABLED(CONFIG_PM_SLEEP_SMP_NONZERO_CPU)) {
+-		cpu = smp_processor_id();
++	housekeeping_register_notifier(&tick_nohz_housekeeping_nb);
  
--static void rcu_spawn_cpu_nocb_kthread(int cpu)
-+void rcu_spawn_cpu_nocb_kthread(int cpu)
- {
- }
+-		if (cpumask_test_cpu(cpu, tick_nohz_full_mask)) {
+-			pr_warn("NO_HZ: Clearing %d from nohz_full range "
+-				"for timekeeping\n", cpu);
+-			cpumask_clear_cpu(cpu, tick_nohz_full_mask);
++	if (tick_nohz_full_running) {
++		/*
++		 * Full dynticks uses IRQ work to drive the tick rescheduling on safe
++		 * locking contexts. But then we need IRQ work to raise its own
++		 * interrupts to avoid circular dependency on the tick.
++		 */
++		if (!arch_irq_work_has_interrupt()) {
++			pr_warn("NO_HZ: Can't run full dynticks because arch doesn't support IRQ work self-IPIs\n");
++			cpumask_clear(tick_nohz_full_mask);
++			tick_nohz_full_running = false;
++			goto out;
+ 		}
++
++		if (IS_ENABLED(CONFIG_PM_SLEEP_SMP) &&
++				!IS_ENABLED(CONFIG_PM_SLEEP_SMP_NONZERO_CPU)) {
++			cpu = smp_processor_id();
++
++			if (cpumask_test_cpu(cpu, tick_nohz_full_mask)) {
++				pr_warn("NO_HZ: Clearing %d from nohz_full range "
++					"for timekeeping\n", cpu);
++				cpumask_clear_cpu(cpu, tick_nohz_full_mask);
++			}
++		}
++
++		pr_info("NO_HZ: Full dynticks CPUs: %*pbl.\n",
++			cpumask_pr_args(tick_nohz_full_mask));
+ 	}
  
+-	for_each_cpu(cpu, tick_nohz_full_mask)
++out:
++	for_each_possible_cpu(cpu)
+ 		ct_cpu_track_user(cpu);
+ 
+ 	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+ 					"kernel/nohz:predown", NULL,
+ 					tick_nohz_cpu_down);
+ 	WARN_ON(ret < 0);
+-	pr_info("NO_HZ: Full dynticks CPUs: %*pbl.\n",
+-		cpumask_pr_args(tick_nohz_full_mask));
+ }
+ #endif /* #ifdef CONFIG_NO_HZ_FULL */
+ 
+@@ -1209,7 +1289,7 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
+ 	if (unlikely(report_idle_softirq()))
+ 		return false;
+ 
+-	if (tick_nohz_full_enabled()) {
++	if (tick_nohz_full_running) {
+ 		int tick_cpu = READ_ONCE(tick_do_timer_cpu);
+ 
+ 		/*
 
 -- 
 2.43.0
