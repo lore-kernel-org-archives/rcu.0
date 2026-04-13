@@ -1,100 +1,89 @@
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7E131D371
-	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 19:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44AE1D95A3;
+	Mon, 13 Apr 2026 20:57:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776109133; cv=none; b=PCSXqjqgucheM0gaetpt8rfORyoYkKM5xA9riaVGu8+cnNks/S09wUvTmZwhlxm2mSjYZDmCmgzyo+EmTzS0Ww4FBM3ArzloWlsedCoQWEoAGgksXGys5UA3mGwzF6+B/Asn156ScRYXtOl7jt3RUTIJF0RDelSbu7F0iEr9g20=
+	t=1776113823; cv=none; b=VaFw3kpxtIxwVSwZuRqyKY4b6poWlpTBvQ4G67gLQbCDftQF1Bs7iPKb4ZmRwBs5UVCm8UXtDHKAtTL3aIMT3ekUMsvqxOvnsuIfmMdqTba1EOc4QCvc2HqF8tRY2uf7oN/6LQHJOKC+nHoYTbu6fVXoIsDk7q0nlmNheC/uXZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776109133; c=relaxed/simple;
-	bh=HPNedq15vNiqgaf0YXo3hv8PcvxepsSVlHVp/qIG2qA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ILdJMy7JrwQmaTyuZenTSS7v0TnEvecX5geuD2wuR36EFYFzOm3fD63Tqa0wvNLKxgODX99UCYr2HJOeWULqj6uIriaaP1V2y1ic9M94ARU0zTWSC18iKKCgfJTyHL/EC04YJ1Y9vfkxVW7xoGo9dW1EwPgn1yLLFlXjdmmYBtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Xy8+W3hS; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1776113823; c=relaxed/simple;
+	bh=/NZQBTrS4aXNzbfYy8WACG21jhIaiCNEjTekbtLr524=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mYr/MqHGdinSLNZ0ehzT1PXLaCwF/lcVnLahtne1DoOU1cf3Jh09GH2rF+W3yLF0wqEN7cSE5FSrHcSPiftzTQtsR60J26aCuTmJzIDoTj1PQvHdZlv/aDh/KNhczkeovkWEUm2IcRM73aNmZqaaWoTL2BA6DX/y2F+5EFl9qCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IjfpndEd; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Xy8+W3hS"
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-671dad7cac8so100640a12.0
-        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 12:38:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1776109130; x=1776713930; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=R5Tv9X/6ommKr0zoXLOkrcOfgZc2rsc84YMEXIMzwQQ=;
-        b=Xy8+W3hSpk/ytsJLBTihTsRb0OGKzazJKPHLlYBfK5NSoW8qv4yotMZYCD22X0NdzP
-         /vP9wbKgRn5KJu972kZn9EOKd+u5Txs3WcmS9Pgi/GvOxbRa79O9PZBzsjOMy/BgoQSC
-         0WtCJItKLM7guD0oHN28N+ZaT8KcgHGelb4q0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776109130; x=1776713930;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R5Tv9X/6ommKr0zoXLOkrcOfgZc2rsc84YMEXIMzwQQ=;
-        b=UWlNdptkq/R6Vvbk0kg0rrr5uFQbqG2SCzbGq31cK30Du/M/GW0k2XmiPpL0w2e55Y
-         B37Bv7WgSbAT4UWrKiQ3LfKd2vMxmYEedrpWHV+5s+C3okAR/laYCUuWvuwfjDivWcng
-         18ZzLSRN9z7yS5B3V7fV5kppu4MoUcq/IxNiMKnm7ozo4WQMZ7c6BBYo2FDiaxsW/bQK
-         B0RaRFN3L46QFaQyfPkz1ygHaI3NQU9mBv3+ElIm38l+KgWG2W7Bl+51D+iuCCvKmqJd
-         tQmtRWVmvUTLyuVFZ4/OkebXnAYPI06s9v8/poLqvCOQuwdEjciB4rUuWDxtTDAUPvOZ
-         GkHg==
-X-Forwarded-Encrypted: i=1; AFNElJ9Gb33DuQY7f3RyK0gLvPhep3DpgCGL6xoGkP7MxmpUD0UYMWCmxfsAf/D/UW6qfi4wIlw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxe7aDSvFnNJFfS2qB8EvaGs3r8veyWQACUzREI3IEGJFUf+LSn
-	Z+Q4s/9dkJLclfn6Uz4+p1xvdEoTwknq0EAE5+pEFqj0p9x9ZeIGmOdQIwNK+AEHR8yt30rjYpv
-	kqjn0ABg=
-X-Gm-Gg: AeBDiet2jvSn2BUxBlbpnJ8MAblJl6oYMocKRaA2/2rvcf8cY5p9wEaCZj3Yl1IKMKK
-	hNQJmTdQsMrYkudZs9d0s/VxS7PXXBki4fl3PwV8A3Y/ERm3grgMml59DdbLE+bflg53jnJNVNS
-	pAgo1kWdMq6ymksXIHunf0KKppvHR9F63T1bvNVv7OzXRB5GZvrQRDg085dQMvQI6lZ6ondeOhf
-	fcR06CKrCt61QcjMxkmSXm9Xskd8hoYfVaMUiATSiWwNwEESJ5wG5zoV6jyyswXaVwhg1Wbm4N2
-	GbZk3IaV8CvOpURWIutRxEKkYeBLe4F8vSVE05KudrZN1Prv713AenBZhAUx4ZglYdAAGkpFuBi
-	sRUcN7TEykDeO7H01hnq5fM5QOvk4OzsPN456/Zj6UsA3XIoKmkVZnXqLJWngxfzjyMVpr85gPo
-	dKEeNJUpwcQ8O88SOGooSrFKlJqPzBVJ2L7q1JJkSOBTQZSXAP+/sbPtbCdDqh5eOtLNrx+OsG
-X-Received: by 2002:a17:907:3c89:b0:b9c:b808:4617 with SMTP id a640c23a62f3a-b9d72499227mr910027666b.7.1776109130039;
-        Mon, 13 Apr 2026 12:38:50 -0700 (PDT)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b9d6de97e43sm350307066b.13.2026.04.13.12.38.49
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2026 12:38:49 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b941762394aso585043766b.1
-        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 12:38:49 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ9tSjxXeH+9xbDSXiIX4x/1RA+qartNgko5ckQ8e+RABKo2TuDGRPpqovolyk3F6xYgm8o=@vger.kernel.org
-X-Received: by 2002:a17:907:3f09:b0:b9d:f6e9:91c6 with SMTP id
- a640c23a62f3a-b9df6e99932mr195804066b.3.1776109129095; Mon, 13 Apr 2026
- 12:38:49 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IjfpndEd"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 535B9C2BCAF;
+	Mon, 13 Apr 2026 20:57:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776113823;
+	bh=/NZQBTrS4aXNzbfYy8WACG21jhIaiCNEjTekbtLr524=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=IjfpndEdmd27Lh6J0oYM4KlhY9ZpbIGzz/JEE2m/EXIFuMEz1wLJI6L990nlYabKa
+	 l8CG/xj5GBlFmyF70J0QDB1+DTrOwKnyRrASrrUeziCjQcTBmCrSZa7bWyzbJLMLIv
+	 8HjiivO9OHbEJ2sifjiUlth+2bnkx4+e/I4kgh5Ee4i7x34RWfEmQaivkZThUeD0qu
+	 p2I+N+C/cy9MPRu11G8n7MPB2QMdDwlv8u+JfnNQ+SL+c7b16zaf2hsstBSBBaqHqJ
+	 0IYHsYLFc0PBqZjiRbwRNW0w3RO//i4ZJi9HCt29H6Qq36y9072/qKbSV3/ZXMy3Ql
+	 OrS3Hp0LN+SQQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E6765CE0A6A; Mon, 13 Apr 2026 13:57:02 -0700 (PDT)
+Date: Mon, 13 Apr 2026 13:57:02 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>, joel@joelfernandes.org,
+	agnel.joel@gmail.com, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: Re: [GIT PULL] RCU changes for v7.1
+Message-ID: <0e3dad78-75da-4fd6-ba9a-873b3343c140@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <1774978730.3972500.27807@nvidia.com>
+ <CAHk-=whigg3hvOy7c1j1MXFy6o6CHp0g4Tc3Y-MAk+XDssHU0A@mail.gmail.com>
+ <cefbf713-0b88-483e-89f2-2589919adb89@paulmck-laptop>
+ <CAHk-=wiVy8iHJxmkCrFggEtBrAzqXTm5cgt9xcKvrhFoMzhD+w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1774978730.3972500.27807@nvidia.com> <CAHk-=whigg3hvOy7c1j1MXFy6o6CHp0g4Tc3Y-MAk+XDssHU0A@mail.gmail.com>
- <cefbf713-0b88-483e-89f2-2589919adb89@paulmck-laptop>
-In-Reply-To: <cefbf713-0b88-483e-89f2-2589919adb89@paulmck-laptop>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 13 Apr 2026 12:38:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiVy8iHJxmkCrFggEtBrAzqXTm5cgt9xcKvrhFoMzhD+w@mail.gmail.com>
-X-Gm-Features: AQROBzAAfwRI40yfUgzcciOplSL-UPXt1tukIpB9LzoPulRfSmCj_T6Iuq7Z4NI
-Message-ID: <CAHk-=wiVy8iHJxmkCrFggEtBrAzqXTm5cgt9xcKvrhFoMzhD+w@mail.gmail.com>
-Subject: Re: [GIT PULL] RCU changes for v7.1
-To: paulmck@kernel.org
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, joel@joelfernandes.org, 
-	agnel.joel@gmail.com, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiVy8iHJxmkCrFggEtBrAzqXTm5cgt9xcKvrhFoMzhD+w@mail.gmail.com>
 
-On Mon, 13 Apr 2026 at 11:03, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Apologies!  Would making this instead be a kernel boot parameter be
-> acceptable?
+On Mon, Apr 13, 2026 at 12:38:32PM -0700, Linus Torvalds wrote:
+> On Mon, 13 Apr 2026 at 11:03, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Apologies!  Would making this instead be a kernel boot parameter be
+> > acceptable?
+> 
+> We already have a sysctl for it, and you should *already* be able to
+> use a boot parameter for it with just
+> 
+>         sysctl.kernel.panic_on_rcu_stall=true
 
-We already have a sysctl for it, and you should *already* be able to
-use a boot parameter for it with just
+Thank you, and testing is in progress.
 
-        sysctl.kernel.panic_on_rcu_stall=true
+> Not that I've tried it, so maybe there's some bug somewhere (or
+> something I've overlooked), but I really think the whole kernel config
+> option was entirely redundant to begin with.
 
-Not that I've tried it, so maybe there's some bug somewhere (or
-something I've overlooked), but I really think the whole kernel config
-option was entirely redundant to begin with.
+Given recent improvements to bootconfig, using the sysctl kernel boot
+parameter should be just fine.
 
-                 Linus
+Before those improvements, associating particular kernel boot parameters
+with all kernels was often problematic in large sets of datacenters.
+Even worse were cases where kernel boot parameters needed to be set
+differently for different kernel versions.  But for most kernel boot
+parameters (including this one), things should be fine now.
+
+More work is needed for early boot parameters, and that is in progress.
+
+In this case, I simply failed to get all the pieces in my head at the
+same time.  In particular, I forgot that you can specify kernel boot
+parameters for sysctls.  :-/
+
+							Thanx, Paul
