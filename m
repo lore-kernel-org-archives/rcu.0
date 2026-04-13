@@ -1,172 +1,100 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A58138F24F
-	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 19:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7E131D371
+	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 19:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776108368; cv=none; b=Z3KWKAeMEeHun6pmD8jwM1eN8Dr0KPmTFKSd5tc0sz46EOzw/oiKKonW7is22rRHNtG77Ya+mpTBUeziWe4AoiZ3JaXi9rmKqKr2khbHN9gIr0NLZsyizjJftnOqqWWfxHEGtNH25rTYy8xk2QJHoNMVHt+oo7NdzUeFUKATzJw=
+	t=1776109133; cv=none; b=PCSXqjqgucheM0gaetpt8rfORyoYkKM5xA9riaVGu8+cnNks/S09wUvTmZwhlxm2mSjYZDmCmgzyo+EmTzS0Ww4FBM3ArzloWlsedCoQWEoAGgksXGys5UA3mGwzF6+B/Asn156ScRYXtOl7jt3RUTIJF0RDelSbu7F0iEr9g20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776108368; c=relaxed/simple;
-	bh=JhhiDtpgCIbIcPcjurEF+BYrFwWWHfvbfmV0YHXq4o0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fF0VV+VsGGYu7aQPj4IysGhauSmaOtVsl+pMe33G8s0kjyucWSHoKSVCfegcYqX8nOMjyBuz8j0megW2RLbRcVu0Ovfmv+LQV8jtl3h0ftLsRoxvDBp3R5ZCAyhXE9iYBfQUtriR6Q0k3Z3tWMUZxOdftLdiZHBu8NZELNkWdRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WUG4tW4E; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1776109133; c=relaxed/simple;
+	bh=HPNedq15vNiqgaf0YXo3hv8PcvxepsSVlHVp/qIG2qA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ILdJMy7JrwQmaTyuZenTSS7v0TnEvecX5geuD2wuR36EFYFzOm3fD63Tqa0wvNLKxgODX99UCYr2HJOeWULqj6uIriaaP1V2y1ic9M94ARU0zTWSC18iKKCgfJTyHL/EC04YJ1Y9vfkxVW7xoGo9dW1EwPgn1yLLFlXjdmmYBtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Xy8+W3hS; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WUG4tW4E"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1776108366;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4BWr/5AY8ZAqufMs3TADs0Xu7j+z3NdjM/f4VibM9b8=;
-	b=WUG4tW4EpKrRDOvfphj1tdkAlNV8DHdsIZFeqT6HkI0oBJ25LIWq9KyL2//iSA5cWVgG9S
-	uRMigISWTpzvBWin8rjt9JL1YGPxpq3gtPgpGA2D4dqEQ6b1/FI0rSeMHNEqHvMGj6Nez1
-	37zFXxGo+7lCk4lP4ytjqnXK6fdZVsc=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-220-Uxe0wUrkPlijpBHtUceyPQ-1; Mon,
- 13 Apr 2026 15:26:02 -0400
-X-MC-Unique: Uxe0wUrkPlijpBHtUceyPQ-1
-X-Mimecast-MFC-AGG-ID: Uxe0wUrkPlijpBHtUceyPQ_1776108358
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 546391800372;
-	Mon, 13 Apr 2026 19:25:57 +0000 (UTC)
-Received: from [10.22.65.13] (unknown [10.22.65.13])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 53FA31800357;
-	Mon, 13 Apr 2026 19:25:47 +0000 (UTC)
-Message-ID: <fd77bca8-bee8-4997-a11a-932a1693edf7@redhat.com>
-Date: Mon, 13 Apr 2026 15:25:46 -0400
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Xy8+W3hS"
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-671dad7cac8so100640a12.0
+        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 12:38:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1776109130; x=1776713930; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=R5Tv9X/6ommKr0zoXLOkrcOfgZc2rsc84YMEXIMzwQQ=;
+        b=Xy8+W3hSpk/ytsJLBTihTsRb0OGKzazJKPHLlYBfK5NSoW8qv4yotMZYCD22X0NdzP
+         /vP9wbKgRn5KJu972kZn9EOKd+u5Txs3WcmS9Pgi/GvOxbRa79O9PZBzsjOMy/BgoQSC
+         0WtCJItKLM7guD0oHN28N+ZaT8KcgHGelb4q0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776109130; x=1776713930;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R5Tv9X/6ommKr0zoXLOkrcOfgZc2rsc84YMEXIMzwQQ=;
+        b=UWlNdptkq/R6Vvbk0kg0rrr5uFQbqG2SCzbGq31cK30Du/M/GW0k2XmiPpL0w2e55Y
+         B37Bv7WgSbAT4UWrKiQ3LfKd2vMxmYEedrpWHV+5s+C3okAR/laYCUuWvuwfjDivWcng
+         18ZzLSRN9z7yS5B3V7fV5kppu4MoUcq/IxNiMKnm7ozo4WQMZ7c6BBYo2FDiaxsW/bQK
+         B0RaRFN3L46QFaQyfPkz1ygHaI3NQU9mBv3+ElIm38l+KgWG2W7Bl+51D+iuCCvKmqJd
+         tQmtRWVmvUTLyuVFZ4/OkebXnAYPI06s9v8/poLqvCOQuwdEjciB4rUuWDxtTDAUPvOZ
+         GkHg==
+X-Forwarded-Encrypted: i=1; AFNElJ9Gb33DuQY7f3RyK0gLvPhep3DpgCGL6xoGkP7MxmpUD0UYMWCmxfsAf/D/UW6qfi4wIlw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxe7aDSvFnNJFfS2qB8EvaGs3r8veyWQACUzREI3IEGJFUf+LSn
+	Z+Q4s/9dkJLclfn6Uz4+p1xvdEoTwknq0EAE5+pEFqj0p9x9ZeIGmOdQIwNK+AEHR8yt30rjYpv
+	kqjn0ABg=
+X-Gm-Gg: AeBDiet2jvSn2BUxBlbpnJ8MAblJl6oYMocKRaA2/2rvcf8cY5p9wEaCZj3Yl1IKMKK
+	hNQJmTdQsMrYkudZs9d0s/VxS7PXXBki4fl3PwV8A3Y/ERm3grgMml59DdbLE+bflg53jnJNVNS
+	pAgo1kWdMq6ymksXIHunf0KKppvHR9F63T1bvNVv7OzXRB5GZvrQRDg085dQMvQI6lZ6ondeOhf
+	fcR06CKrCt61QcjMxkmSXm9Xskd8hoYfVaMUiATSiWwNwEESJ5wG5zoV6jyyswXaVwhg1Wbm4N2
+	GbZk3IaV8CvOpURWIutRxEKkYeBLe4F8vSVE05KudrZN1Prv713AenBZhAUx4ZglYdAAGkpFuBi
+	sRUcN7TEykDeO7H01hnq5fM5QOvk4OzsPN456/Zj6UsA3XIoKmkVZnXqLJWngxfzjyMVpr85gPo
+	dKEeNJUpwcQ8O88SOGooSrFKlJqPzBVJ2L7q1JJkSOBTQZSXAP+/sbPtbCdDqh5eOtLNrx+OsG
+X-Received: by 2002:a17:907:3c89:b0:b9c:b808:4617 with SMTP id a640c23a62f3a-b9d72499227mr910027666b.7.1776109130039;
+        Mon, 13 Apr 2026 12:38:50 -0700 (PDT)
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b9d6de97e43sm350307066b.13.2026.04.13.12.38.49
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Apr 2026 12:38:49 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b941762394aso585043766b.1
+        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 12:38:49 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ9tSjxXeH+9xbDSXiIX4x/1RA+qartNgko5ckQ8e+RABKo2TuDGRPpqovolyk3F6xYgm8o=@vger.kernel.org
+X-Received: by 2002:a17:907:3f09:b0:b9d:f6e9:91c6 with SMTP id
+ a640c23a62f3a-b9df6e99932mr195804066b.3.1776109129095; Mon, 13 Apr 2026
+ 12:38:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/12] sched/isolation: Separate housekeeping types in
- enum hk_type
-To: Qiliang Yuan <realwujing@gmail.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
- <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Vlastimil Babka <vbabka@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Michal Hocko <mhocko@suse.com>, Brendan Jackman <jackmanb@google.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
- Chen Ridong <chenridong@huaweicloud.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
- <20260413-wujing-dhm-v2-1-06df21caba5d@gmail.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20260413-wujing-dhm-v2-1-06df21caba5d@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+References: <1774978730.3972500.27807@nvidia.com> <CAHk-=whigg3hvOy7c1j1MXFy6o6CHp0g4Tc3Y-MAk+XDssHU0A@mail.gmail.com>
+ <cefbf713-0b88-483e-89f2-2589919adb89@paulmck-laptop>
+In-Reply-To: <cefbf713-0b88-483e-89f2-2589919adb89@paulmck-laptop>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 13 Apr 2026 12:38:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiVy8iHJxmkCrFggEtBrAzqXTm5cgt9xcKvrhFoMzhD+w@mail.gmail.com>
+X-Gm-Features: AQROBzAAfwRI40yfUgzcciOplSL-UPXt1tukIpB9LzoPulRfSmCj_T6Iuq7Z4NI
+Message-ID: <CAHk-=wiVy8iHJxmkCrFggEtBrAzqXTm5cgt9xcKvrhFoMzhD+w@mail.gmail.com>
+Subject: Re: [GIT PULL] RCU changes for v7.1
+To: paulmck@kernel.org
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, joel@joelfernandes.org, 
+	agnel.joel@gmail.com, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/13/26 3:43 AM, Qiliang Yuan wrote:
-> Most kernel noise types (TICK, TIMER, RCU, etc.) are currently aliased
-> to a single HK_TYPE_KERNEL_NOISE enum value. This prevents fine-grained
-> runtime isolation control as all masks are forced to be identical.
+On Mon, 13 Apr 2026 at 11:03, Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> Un-alias service-specific housekeeping types in enum hk_type. This
-> separation provides the necessary granularity for DHM subsystems to
-> subscribe to and maintain independent affinity masks.
+> Apologies!  Would making this instead be a kernel boot parameter be
+> acceptable?
 
-Usually, if we want to run a latency sensitive workload like DPDK, we 
-try to minimize all sorts of kernel noises or interference as much as 
-possible. Do you have a good use case where it is advantageous to remove 
-some types of kernel noises from a given set of CPUs but not the others?
+We already have a sysctl for it, and you should *already* be able to
+use a boot parameter for it with just
 
-Cheers,
-Longman
+        sysctl.kernel.panic_on_rcu_stall=true
 
-> Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
-> ---
->   include/linux/sched/isolation.h | 20 ++++++++------------
->   kernel/sched/isolation.c        | 10 +++++++++-
->   2 files changed, 17 insertions(+), 13 deletions(-)
->
-> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-> index dc3975ff1b2e1..b9a041247565c 100644
-> --- a/include/linux/sched/isolation.h
-> +++ b/include/linux/sched/isolation.h
-> @@ -17,21 +17,17 @@ enum hk_type {
->   	/* Inverse of boot-time isolcpus=managed_irq argument */
->   	HK_TYPE_MANAGED_IRQ,
->   	/* Inverse of boot-time nohz_full= or isolcpus=nohz arguments */
-> -	HK_TYPE_KERNEL_NOISE,
-> +	HK_TYPE_TICK,
-> +	HK_TYPE_TIMER,
-> +	HK_TYPE_RCU,
-> +	HK_TYPE_MISC,
-> +	HK_TYPE_WQ,
-> +	HK_TYPE_KTHREAD,
->   	HK_TYPE_MAX,
-> -
-> -	/*
-> -	 * The following housekeeping types are only set by the nohz_full
-> -	 * boot commandline option. So they can share the same value.
-> -	 */
-> -	HK_TYPE_TICK    = HK_TYPE_KERNEL_NOISE,
-> -	HK_TYPE_TIMER   = HK_TYPE_KERNEL_NOISE,
-> -	HK_TYPE_RCU     = HK_TYPE_KERNEL_NOISE,
-> -	HK_TYPE_MISC    = HK_TYPE_KERNEL_NOISE,
-> -	HK_TYPE_WQ      = HK_TYPE_KERNEL_NOISE,
-> -	HK_TYPE_KTHREAD = HK_TYPE_KERNEL_NOISE
->   };
->   
-> +#define HK_TYPE_KERNEL_NOISE HK_TYPE_TICK
-> +
->   #ifdef CONFIG_CPU_ISOLATION
->   DECLARE_STATIC_KEY_FALSE(housekeeping_overridden);
->   extern int housekeeping_any_cpu(enum hk_type type);
-> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> index ef152d401fe20..e05ed5118e651 100644
-> --- a/kernel/sched/isolation.c
-> +++ b/kernel/sched/isolation.c
-> @@ -15,9 +15,17 @@ enum hk_flags {
->   	HK_FLAG_DOMAIN_BOOT	= BIT(HK_TYPE_DOMAIN_BOOT),
->   	HK_FLAG_DOMAIN		= BIT(HK_TYPE_DOMAIN),
->   	HK_FLAG_MANAGED_IRQ	= BIT(HK_TYPE_MANAGED_IRQ),
-> -	HK_FLAG_KERNEL_NOISE	= BIT(HK_TYPE_KERNEL_NOISE),
-> +	HK_FLAG_TICK		= BIT(HK_TYPE_TICK),
-> +	HK_FLAG_TIMER		= BIT(HK_TYPE_TIMER),
-> +	HK_FLAG_RCU		= BIT(HK_TYPE_RCU),
-> +	HK_FLAG_MISC		= BIT(HK_TYPE_MISC),
-> +	HK_FLAG_WQ		= BIT(HK_TYPE_WQ),
-> +	HK_FLAG_KTHREAD		= BIT(HK_TYPE_KTHREAD),
->   };
->   
-> +#define HK_FLAG_KERNEL_NOISE (HK_FLAG_TICK | HK_FLAG_TIMER | HK_FLAG_RCU | \
-> +			      HK_FLAG_MISC | HK_FLAG_WQ | HK_FLAG_KTHREAD)
-> +
->   DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
->   EXPORT_SYMBOL_GPL(housekeeping_overridden);
->   
->
+Not that I've tried it, so maybe there's some bug somewhere (or
+something I've overlooked), but I really think the whole kernel config
+option was entirely redundant to begin with.
 
+                 Linus
