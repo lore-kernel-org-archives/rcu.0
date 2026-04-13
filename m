@@ -1,67 +1,67 @@
-Received: from mail-dl1-f53.google.com (mail-dl1-f53.google.com [74.125.82.53])
+Received: from mail-dl1-f42.google.com (mail-dl1-f42.google.com [74.125.82.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0407239524D
-	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 07:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6291A397E6D
+	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 07:44:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776066257; cv=none; b=dc6YZbB4UMkrFFG1uHiWz0NdM2Gep97ZOmalE6oqhG2wBh8xxsqt3EWGp1GKOv6JSqTFKQ8ED9mi65T9XmggCEFI3skKyKLwZYl0oDtOeXWeM/DV68i9BJxiGgambKK+SJwhM+og0GFYDLLm4Wr8TstNM3cEw+P+uDr8btfSk9k=
+	t=1776066267; cv=none; b=hcHiL3j6v6pKm8qNM1Jds+230vqXhtQY0GDdNsO700c3ss+TWW2wQh/LXhxnn+lEvXjldkETfkcTcwV3VRAikKcTfM6KUWywutIKdaqtfN2xFe3Sc/bzAu8SHaRjfTw4U8yUcmXHgs+eGgfKjbUMqSRnb8EscHmoO5+Pfw+snec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776066257; c=relaxed/simple;
-	bh=abNstHmJGgw4JbpWqL555msiifzgY+9+aN3eQVlKCX4=;
+	s=arc-20240116; t=1776066267; c=relaxed/simple;
+	bh=EgiM0bjXMWcDXl+eqa0GeWLZyOOpvT+Ey4r6eUdy/I4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=a/MAG7qkBuo4bQ0GHAzuIJECHZehvEmqZn+1ytyMX1mETEZ+OiupKpnk6X4H7d5wYXFZygbAaeVrBpUE/3sGFLMm0XTVrDKSOFSorFbY8KKsofkBiZ+nK+zv/piN1W8PnTYH4uzXL1Jw+cKxR+10N0szKV8n9XtRBipfPWh0ntg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OfXeGHxD; arc=none smtp.client-ip=74.125.82.53
+	 In-Reply-To:To:Cc; b=Np94/Jckg+2fNtdPhZQla3lRWEBnDXdSpd7OCH1vfzSgA00Bu6hPRjLt+vMh1MvhX8ttXY50v+f6EdAVsL2oML61lfMXN7EJm1i02QfxDdk/G+lHLX3hqTmtsYID5BUsmvva9pNGPifQ5cptAlB8tC6kXOm2sYaKptn7bL6GYsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QkrLNq4d; arc=none smtp.client-ip=74.125.82.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OfXeGHxD"
-Received: by mail-dl1-f53.google.com with SMTP id a92af1059eb24-12c1fcce8f8so6903827c88.1
-        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 00:44:15 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QkrLNq4d"
+Received: by mail-dl1-f42.google.com with SMTP id a92af1059eb24-12c080efc1eso2363802c88.0
+        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 00:44:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776066255; x=1776671055; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1776066266; x=1776671066; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=EF3HsX1PiWlQS1SWUgySjoqh/zlAKHa5r5Dv0SN822Y=;
-        b=OfXeGHxDXjLlvoZJQLl2fIyr2B7Ezrmrc+Ir2bzbbK7z4cugW2V3aOao4CC1jCFf9/
-         KkiyEWtA9IQ61ZMNyufOzSeQlYQn12b5HoZujPMJGD/QijERHfLBqXfuuebIhGseJ/sc
-         HqRHyx9DrQFL1QQ3tGiLfAQiLQj969T+3JE/bnRN/O0bdfd3eJhHhPQ+g8MfVPWjclpw
-         i1y4fo+fzljdwsDlavcuqNQAQ9sTfWraQVCDFDGa78J6daPlwai6hkt+hqdV/MP0eaPp
-         vTaHIpac17q+ITfiX9s9Q4AVTfZBMhv0g0GuryusQ1pOLZpnaPsSVhVvxtsKJ9VMJG3c
-         bT9g==
+        bh=0z+BpAj/vLJ0rBDjEb9ZBDVSgQZI0DaLWhxEyOZ7nyg=;
+        b=QkrLNq4doKCsleR3Ma7HxR3hzZQUFsMJdDIdPiJb27ekNexXOZlRDvoESCgNq7brQp
+         Sau3+37we3Enj3+P8UQzhRxLGNEHhCsgoc0t94Wa/8tpN/O3P5puN9+YoeCXz3Dwl9US
+         2Nr8XDH9/YwI+tz3PJ5HHuo4ku+OIs8uLW0y1+Ieq7z6fEtBiuho+2JJKTrGVGqvqyIB
+         UlPazTO5nrytVmGkKfnPvbCZsckM8q76/gxJ1lTPdv/u8o1tiV7l2fOz4pORYvI0Nqi0
+         3Tl9eTKL4xF17H6bH1TvtP9gTOu7RVxWo49NNZByF/wYDM4l8H90CZFQ6Q2g5aN6FkhD
+         0g8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776066255; x=1776671055;
+        d=1e100.net; s=20251104; t=1776066266; x=1776671066;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=EF3HsX1PiWlQS1SWUgySjoqh/zlAKHa5r5Dv0SN822Y=;
-        b=FEn0bORC9B8WIXbvy3oyUk3DlM7yuYWyLwXr6d8eBWBcUq79a03BFrsdDGYHs2Kr4+
-         8RKUF6b4K4Xhqlh0LjCsT4E21Q6IrgsRfSHF59W8Q7JKM3EVrUpHC/I6B/ZDhfcHIQFd
-         uYQoUHhVKf+C3pejrShRPumPVbmK0bAoEE9RDBUEZ2H68yVuYF9OwG9NOjKX+i84dB7y
-         BMMu1rhWnWtDrJXUEthQ9HJguprCeVmpDTvGOeuk6xfgYXttj89w67k69ZmVyhDOocU9
-         8hBphmezRT1miZpJl7na5+1/mLekljof0GGHgXcSUVF5Upt0CYExfTb2idFv6GeSABdi
-         LsgA==
-X-Forwarded-Encrypted: i=1; AFNElJ8pFWqPrhSDl++7jq9hdskqcRQ1cKeJdkkuKb7T2NLbh+KmgDC3Eq6mKug79jhdDPGosGM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxXitmd2YouUEFWyAjo2SzJslmBK4NCgFmX8FoKb/qNxB8prK0d
-	tCWQRyrvc4B9EJ6XsPNuZH8sZ2bjHDA2mPr+zYfdjmxif/DNIoEXqfsK
-X-Gm-Gg: AeBDieuaaAYUPFJ1MiN4tPR2GxMXVfSMcO4cQrLgukclMAvVygJNKGn7/1+KDCFRaAY
-	YPo3euUpe1QDwLigHzvXBBDNCUp3Eya3dk04NkilkrVJsNIEwz512Q2roTEV33lZwqM3Ht0E5DU
-	FIrNIMhqqBkc3owbWENiSAwbfqMazZbjqlvZzh1WEJeDnHtqOQHqxewkNHqFWmp3b2EtcYMZ5QW
-	WbjzNwcD5j9dAf+qAPnDnUpDfe7l7xO7E+Zh2G4/nRo6jZjGPyB0cH0vkzkYuOOuVCAwMmOJMON
-	KNGtVmub2QQviAcLwvMdSgVVuhKggKuMWrJVJtzfevvX8mHs8WxbfArI8OkGkmsptlkbw3EKfOy
-	KHQrRsquSypdwcxF6Hffegr35JzcHimO1ccTXAAoGHxISA25WG+9E1WWNaCEHmiY82JeCyOXrZ4
-	B9nRAY/7SzZCLfLpJi0S8+Sp56cOY=
-X-Received: by 2002:a05:7022:47:b0:128:d4be:7428 with SMTP id a92af1059eb24-12c34edee4bmr7057521c88.19.1776066255198;
-        Mon, 13 Apr 2026 00:44:15 -0700 (PDT)
+        bh=0z+BpAj/vLJ0rBDjEb9ZBDVSgQZI0DaLWhxEyOZ7nyg=;
+        b=BCyIcAqdxzTrB/ujX6buHgqwpPlaWEYgfUBmlttFA3oRlDG9Mu2LFssJVNj0j8ZkLN
+         4H0Iry1Ifs975YMo4P6QOY5c3v49vPCGKPYvKRNOppi2xKuyoF/3re9XAKipeOgK6uBl
+         htKRtkAg6DAXPhFqWWtrab9Dl2Lb4HKl5Qg9EZTFNmG671sgVRwerYW7A8BMOVtcnMo6
+         f/0ZcN+c+BhiCevK7k5ehOaScPbglKnbl5FjQlq4xpwPiVronmUmv6QB2vivMksKfftk
+         h5gygZlzUs9zVAzJh7IvteGRzGy02GImA23yz41EdPlm6VvNM/cJVtCUqDTZejqLbeGz
+         4jnQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9s9ctaXgDFpIWQZxajKC04+jDsB0nyJoW5xLuqBv0gTKdXEUtMbIfZ/3frJfg0V6crZZQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzVmC/kxGUmWia8p083s46UGCd4UveGwkQpGPdjXFeIOg9vPP7
+	yIjKyKaGkJQviWYGVUDHPgjCicIOjtNj1Q0ReTgM6Sch2q0eGaQQLLqR
+X-Gm-Gg: AeBDietRpvePJRCsf0EX7ZW2O88uKEDFvvaAOhfz0yQ29Y7Ld0xrzaZp1eXtcC5egE5
+	dhbswl39kM+wDNz3E4oDsN37QVXuWAyrkqYzAKHYxVwOUP+Gb9tv+96IuHmUjanFaVOJc+ixFoH
+	1Vm4RgAO+ybCihSjNdjhAOz4zKNGhm+XbO83jVnQki8Sqmjr0zHOb7wcHZfrb74F6PsSJPh9uth
+	9S2TScFOLKlGROe9p+YEH0aDyM8oaMqLd+BE1TAz9MZGSadu9gLWcEa4gHEUgkr39F97uakpFVi
+	sq5H/lidQVn4FXy1KjsoyQk08bVZbvv9QOzHJylLOLMjc4jXk/MitRkXyA8tkS/iGka8+nhpoI3
+	WKMLyI+bSSuQIb5QqLI5KYd9+z6MxS04nF1+sDdD7QF174Gr7a35lz/WIptU5LWUiHHJXYiCGm4
+	kGP8GWskbYPCofb+yK
+X-Received: by 2002:a05:7022:4a2:b0:123:3c24:b15 with SMTP id a92af1059eb24-12c28c31ef4mr6458629c88.19.1776066265460;
+        Mon, 13 Apr 2026 00:44:25 -0700 (PDT)
 Received: from wujing. ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.44.05
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.44.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2026 00:44:14 -0700 (PDT)
+        Mon, 13 Apr 2026 00:44:25 -0700 (PDT)
 From: Qiliang Yuan <realwujing@gmail.com>
-Date: Mon, 13 Apr 2026 15:43:11 +0800
-Subject: [PATCH v2 05/12] genirq: Support dynamic migration for managed
- interrupts
+Date: Mon, 13 Apr 2026 15:43:12 +0800
+Subject: [PATCH v2 06/12] watchdog: Allow runtime toggle of lockup detector
+ affinity
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260413-wujing-dhm-v2-5-06df21caba5d@gmail.com>
+Message-Id: <20260413-wujing-dhm-v2-6-06df21caba5d@gmail.com>
 References: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
 In-Reply-To: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -102,77 +102,70 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
  linux-kselftest@vger.kernel.org, Qiliang Yuan <realwujing@gmail.com>
 X-Mailer: b4 0.13.0
 
-Managed interrupts currently have their affinity determined once,
-honoring boot-time isolation settings. There is no mechanism to migrate
-them when housekeeping boundaries change at runtime.
+The hardlockup detector threads are affined to CPUs based on the
+HK_TYPE_TIMER housekeeping mask at boot. If this mask is updated at
+runtime, these threads remain on their original CPUs, potentially
+running on isolated cores.
 
-Enable managed interrupts to respond dynamically to housekeeping updates.
+Synchronize watchdog thread affinity with HK_TYPE_TIMER updates.
 
-This ensures that managed interrupts are migrated away from newly
-isolated CPUs or redistributed when housekeeping CPUs are added.
+This ensures that hardlockup detector threads correctly follow the
+dynamic housekeeping boundaries for timers.
 
 Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
 ---
- kernel/irq/manage.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ kernel/watchdog.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 2e80724378267..31e263d9f40d0 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -2801,3 +2801,52 @@ bool irq_check_status_bit(unsigned int irq, unsigned int bitmask)
- 	return res;
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 7d675781bc917..bcd8373038126 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -26,6 +26,7 @@
+ #include <linux/sysctl.h>
+ #include <linux/tick.h>
+ #include <linux/sys_info.h>
++#include <linux/sched/isolation.h>
+ 
+ #include <linux/sched/clock.h>
+ #include <linux/sched/debug.h>
+@@ -1361,6 +1362,30 @@ static int __init lockup_detector_check(void)
  }
- EXPORT_SYMBOL_GPL(irq_check_status_bit);
-+
-+#ifdef CONFIG_SMP
-+static int irq_housekeeping_reconfigure(struct notifier_block *nb,
-+				       unsigned long action, void *data)
+ late_initcall_sync(lockup_detector_check);
+ 
++static int watchdog_housekeeping_reconfigure(struct notifier_block *nb,
++					    unsigned long action, void *data)
 +{
-+	struct housekeeping_update *upd = data;
-+	unsigned int irq;
++	if (action == HK_UPDATE_MASK) {
++		struct housekeeping_update *upd = data;
++		unsigned int type = upd->type;
 +
-+	if (action != HK_UPDATE_MASK || upd->type != HK_TYPE_MANAGED_IRQ)
-+		return NOTIFY_OK;
-+
-+	irq_lock_sparse();
-+	for_each_active_irq(irq) {
-+		struct irq_data *irqd;
-+		struct irq_desc *desc;
-+
-+		desc = irq_to_desc(irq);
-+		if (!desc)
-+			continue;
-+
-+		scoped_guard(raw_spinlock_irqsave, &desc->lock) {
-+			irqd = irq_desc_get_irq_data(desc);
-+			if (!irqd_affinity_is_managed(irqd) || !desc->action ||
-+			    !irq_data_get_irq_chip(irqd))
-+				continue;
-+
-+			/*
-+			 * Re-apply existing affinity to honor the new
-+			 * housekeeping mask via __irq_set_affinity() logic.
-+			 */
-+			irq_set_affinity_locked(irqd, irq_data_get_affinity_mask(irqd), false);
++		if (type == HK_TYPE_TIMER) {
++			mutex_lock(&watchdog_mutex);
++			cpumask_copy(&watchdog_cpumask,
++				     housekeeping_cpumask(HK_TYPE_TIMER));
++			cpumask_and(&watchdog_cpumask, &watchdog_cpumask, cpu_possible_mask);
++			__lockup_detector_reconfigure(false);
++			mutex_unlock(&watchdog_mutex);
 +		}
 +	}
-+	irq_unlock_sparse();
 +
 +	return NOTIFY_OK;
 +}
 +
-+static struct notifier_block irq_housekeeping_nb = {
-+	.notifier_call = irq_housekeeping_reconfigure,
++static struct notifier_block watchdog_housekeeping_nb = {
++	.notifier_call = watchdog_housekeeping_reconfigure,
 +};
 +
-+static int __init irq_init_housekeeping_notifier(void)
-+{
-+	housekeeping_register_notifier(&irq_housekeeping_nb);
-+	return 0;
-+}
-+core_initcall(irq_init_housekeeping_notifier);
-+#endif
+ void __init lockup_detector_init(void)
+ {
+ 	if (tick_nohz_full_enabled())
+@@ -1375,4 +1400,5 @@ void __init lockup_detector_init(void)
+ 		allow_lockup_detector_init_retry = true;
+ 
+ 	lockup_detector_setup();
++	housekeeping_register_notifier(&watchdog_housekeeping_nb);
+ }
 
 -- 
 2.43.0
