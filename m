@@ -1,65 +1,67 @@
-Received: from mail-dl1-f47.google.com (mail-dl1-f47.google.com [74.125.82.47])
+Received: from mail-dl1-f50.google.com (mail-dl1-f50.google.com [74.125.82.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A44B396B76
-	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 07:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781AA39524D
+	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 07:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776066207; cv=none; b=tDJCwOMZ9YHfh16nJPoBv7WY6KX4Ok/AsQJbAJ4JTFTWiNMze5RdHoW7dxJWogzUxlDzgApl40THOKbneUCdxAZVAxpxBuGW/TqkI/PXtlJHeqPjtWUaGqeuhuFj8NqufCNrJZsrGqeSgNIGOlu9j3TtqsIEsvzzz+y+BhGPoKo=
+	t=1776066216; cv=none; b=WTxv6AHUzDUTfEQ6flZm1XxPKhR0pX0fdF5m6sGW2xBp7zK4+XC+YB77jpNRTB53FUixtXmqzr1/xCEufOWaboEvEhlGGvk5P8zbEmjS8/3+S23P8f40T971OhG6vM782pURz6U387SzEvYAOglq9UNlczoSiSI4fmoOb4YahlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776066207; c=relaxed/simple;
-	bh=M5UhHgIw8MLkGuym5witH6XqQ7eGPHPU7XznpRaYlqQ=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ZBFlBrH5MKh7MhJCtUzH9nB56gT0MrdjjCq7I8w8GnGdIgKlW5XKhzcs4g56838sUrL1+hNV/PqkMTecNpb9fUAtqsnhYJj4bt1+u0sRG4J5yXGiJXDKvWMzz68EFkKjP8JEaGD5nKCKWK32ftRn4l4HPhfkOK9w+alSxyxn/4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GQZF7gAD; arc=none smtp.client-ip=74.125.82.47
+	s=arc-20240116; t=1776066216; c=relaxed/simple;
+	bh=rTHf4UhK6kWkIWPvhrP0nC+nWJz71sfU6irjbkXjF94=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=TdqoDAsjF2o3jhbp5Q8UF7o0mQkUNvi9P+K2YH3iCv/FE4Y4VkJhggrKAHuOS83MHcf6jfQPTGAehpZbvBT4Rb5Y1mEIfVZ2UZZAZKd54XgvZd3rbe8q4G24THczn3GoJ6qtX/0jUNp5b9WQZ4PVQTVQ9upT3Zx+lcJ1Xqg/xNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MdsYd+sq; arc=none smtp.client-ip=74.125.82.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GQZF7gAD"
-Received: by mail-dl1-f47.google.com with SMTP id a92af1059eb24-12c1a170a50so3666671c88.0
-        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 00:43:24 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MdsYd+sq"
+Received: by mail-dl1-f50.google.com with SMTP id a92af1059eb24-128b9b7e3edso5429813c88.0
+        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 00:43:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776066204; x=1776671004; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fnm3rAs1EW1zXW14+7Lf/lvhAiqaue6tqPNOeQwzzLE=;
-        b=GQZF7gADbgn9/hvhy+AYZdiCmjHHF4EqLsAsDYNAHa2y+Z7mnqEm/vZWEnOEtJ1CcQ
-         yNhLr+JH2PhsNVuoOiRdxOFK1WYkrFx501v55adf0cfiSp9/WmwqP3jV8FhBpYt/7VLl
-         o9EpEy1giuDsusMwzN1d/LfMxPOjvftL+Co/DjkLlt01aLVJlKgHxWh1Ve63x059L2ZI
-         VDSMDr6F23TdDDf04pnNfQ0NZX5X8SHB2G5h/SPXQB7APtyJX2200Yc5h3BoXz5/1mZL
-         OWv4XpecevyFDFekMsfyZLZCT8RQIfBN8wOU7St4RMGDDZango3VJoXWGsRb5ma0E5+N
-         rlZA==
+        d=gmail.com; s=20251104; t=1776066215; x=1776671015; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XnF7VA67yV6q+bGidLmOjD6jCKMoavIh1c7OZfJv2nE=;
+        b=MdsYd+sqDbrkF6hJRgJP+zfVWfsaWHt44qgzzHBORFCNt+0XS8wZT4yfbJf8gYcrH2
+         Km1p+LGSup6E1GJ87DCRHisGxCe9SsH9M394SHZkDdhh62NWIEsGtVxQdGSnb57k85hh
+         zMqgOYzeAGS300fAm7/VibRsxf59x76cmusCObNP+9Ggy8BNkDVZE6Jw6Y2JQeP3hagh
+         ldY241t0cS5H1W4ToBdXPX1mmw12BpGZXA/WlTA0kHqmk3E922VWRoAsjIMv6PG79wY8
+         UwX3jvIo/xMSvl2S2HeQ7yS57VCBuy/a3DO+rPTdEnqpVDyb17Sq7a9hYwQGLC8onNc9
+         2Nvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776066204; x=1776671004;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fnm3rAs1EW1zXW14+7Lf/lvhAiqaue6tqPNOeQwzzLE=;
-        b=NlkpmocCyCSbFwiVoJV4FQwBY+qnKkvVcxAK/JdeZ1afXzlpfiCTqKMGowZk0EYU/M
-         nx2aAq2eEULg7l/Ec5dkNUirSOsde4X9YnIeFqw5ujT+flIbBz+sDocUcCmmQxgrj+2p
-         6XCM4e6tzhKl/f/dg07gvus2QV8ck1lmbDEW4M43k/gcr5iW7z40V3joxT0+mAM0b5y4
-         FzyGHVpzb2MUdWFEzUMz+JBM6uIoy67NZV80QSBauOA+T3NH17zomEG/BG74LK/v+GHV
-         h1f9417yyPmi+zxeIiMy2RXB4YxsO9ChomIwhm3Lupa7KKfq91dRcQZawIyh+1HkerTN
-         yIJg==
-X-Forwarded-Encrypted: i=1; AFNElJ+xWd7JY2G5YQrSD4ivT/E2Q20xikEF78MNqWAHYpg7VMLABlr2QQx/VESykR4F3+Nekgo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxhEu3Gwp747ovw1xtwol20lMDa876qVl/VJLZs6w/jQq4j9fng
-	cnkl+qcD/9RYzc4HKBI0urU/frlOMmjwG/etjQdrwVDczctqeKCd/CpG
-X-Gm-Gg: AeBDievUEdoXTyJhKdRHQpqCCvgQlpNXefJn0x8R3wF64b+YRU4KNkj+EdyizrEKGgr
-	Nx1vdYo1BKbetqqkdJLGXfs171yfWnmFlozM6sd+MyTSpwT2Ol8bsWZIuBLVABli33DY3KxefWt
-	o2i9wzWTc4+eu7NJFmfFZBtqWs64fc+wkGjClfAWGZCZShG2+0Ehf9bJvEUCoRJnKlQSqQK5lr7
-	sQce8P6Sz+S96ZeDyYztxdwUss3lG7PnQgVYEb3JTI/vTdJi4naoumBaOAWXbGdN4Qzh8GQNnDy
-	unMFgu3xfZAHwVqoXT4+Z6PVqYqZbU3h8VNQXh257qUxCwbCEB7EPCWVxDl3AMeZpAw/r3WwbxH
-	C9VMSV3EdPMFq50Hhj8JDb6LhBwS8SC+85O0+DrhHzcHESoYjD5vt2tmCqZJHbfw7QP8x3VKd1j
-	zFzi9nwv+VKH4tXM81
-X-Received: by 2002:a05:7022:ec1:b0:128:ca83:5aa1 with SMTP id a92af1059eb24-12c34ea25e4mr7053217c88.16.1776066204042;
-        Mon, 13 Apr 2026 00:43:24 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1776066215; x=1776671015;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XnF7VA67yV6q+bGidLmOjD6jCKMoavIh1c7OZfJv2nE=;
+        b=hBcvy/HEZolxYGVJXpaeKOer52NANgDbJdkSrth9YSgCfloNZK9Zz8+xh4sbiwkh18
+         tS3iDvFv5pNG2ube+YBIWMYnyFKdaUXocq7+zCHtArQs1ECQ7ucdrNGqxhptM7saRksC
+         KniCtfbIQbQHgAJ4m6PcwrkmK61t2Wm4Tf962/EV6XRDfW55v1UpaRdrydTvl8MLzJyG
+         616VbGTijdaZHBw7g///mYTh232DqdLsQNwmlrh+X7a2d11eP3z/C7M0kiJeFR+nClwh
+         mGMbRz4/N/7aRb78bArUIcK7GrgTwwhJ56oZO4ZJbzwXtF8zB+hKqCnqBLzf1fGpR1LF
+         kLdg==
+X-Forwarded-Encrypted: i=1; AFNElJ92+A8wt0A1l2e58S1KiGDBu3MlVtY2A7fzZOKQB4aqRMkQI41BpQXVIktTJagLCD61s8I=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywy+ilsVA2Rh8guE/ngaf4ZBw0EVPxdU0bhw+gRV/7L0DjtvDi7
+	6dzTvXFAHRh1P1ysClsQnLk536jTEzNCVZ9424laARPCiOTAWq9o6MU3
+X-Gm-Gg: AeBDiesFZhwrrpfgkR5RT5kgCrPI11WBYB89yhy4Jxh3Yw4pkkSsRXBxfL+uDNxuVIh
+	hIJ83Mh0LaVl+3HSetCugvUUqrKc0oLXv1bXTVtiQi4lxze+Habhq74yLYu3tnzrnW1JhJ2B0fq
+	6LY3SmSaKXJY2yZpJXEdzpu9SRcFwa3UkFDMCuFecPjkisNURdUoHVPebZNWPck01oSDiv10dhA
+	YfOQXd55NLNmDjlp+HUeMUdCIKA0kLv0bW1A+QK2T3piGtINiSncaz+gVI+AFrnpKi9iJFsjU7c
+	zQKqXeqkGPX9V36Cet0DbKLR1vjpL1nyCN+j0jWjxgCvf1GkLwPGZSEQ0eAW3/iY4p7cG4ZT/p1
+	rajq+8vpqteMKkZP6BahZ7wyAYXClCbcUpf82bigKivxyOeXZBtsRJ1QVFV4iJGybQbQdg8Pc5V
+	5DTMgfQAshnOGhH8PDkLrxYoILUgY=
+X-Received: by 2002:a05:7022:eac5:b0:128:d2b3:5df with SMTP id a92af1059eb24-12c34ecea05mr6569881c88.23.1776066214618;
+        Mon, 13 Apr 2026 00:43:34 -0700 (PDT)
 Received: from wujing. ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.43.12
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.43.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2026 00:43:23 -0700 (PDT)
+        Mon, 13 Apr 2026 00:43:34 -0700 (PDT)
 From: Qiliang Yuan <realwujing@gmail.com>
-Subject: [PATCH v2 00/12] Dynamic Housekeeping Management (DHM) via CPUSets
-Date: Mon, 13 Apr 2026 15:43:06 +0800
-Message-Id: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
+Date: Mon, 13 Apr 2026 15:43:07 +0800
+Subject: [PATCH v2 01/12] sched/isolation: Separate housekeeping types in
+ enum hk_type
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -67,10 +69,10 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAIqe3GkC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyjHQUlJIzE
- vPSU3UzU4B8JSMDIzMDEwML3fLSrMy8dN2UjFxdizQT41SjFBPL5BQLJaCGgqLUtMwKsGHRsbW
- 1AC3kgphcAAAA
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260413-wujing-dhm-v2-1-06df21caba5d@gmail.com>
+References: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
+In-Reply-To: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
  Juri Lelli <juri.lelli@redhat.com>, 
  Vincent Guittot <vincent.guittot@linaro.org>, 
@@ -100,130 +102,78 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
  linux-kselftest@vger.kernel.org, Qiliang Yuan <realwujing@gmail.com>
 X-Mailer: b4 0.13.0
 
-This series introduces Dynamic Housekeeping Management (DHM) to the
-Linux kernel.
+Most kernel noise types (TICK, TIMER, RCU, etc.) are currently aliased
+to a single HK_TYPE_KERNEL_NOISE enum value. This prevents fine-grained
+runtime isolation control as all masks are forced to be identical.
 
-Previously known as the DHEI (Dynamic Housekeeping Environment Interface)
-patchset (RFC and v1), this series has been fundamentally refactored in
-response to upstream feedback. The custom sysfs interface has been entirely
-dropped. Instead, DHM is now natively integrated into the cgroup v2
-cpuset controller.
-
-By exposing `cpuset.housekeeping.cpus` on the root cgroup, system
-administrators and workload orchestrators (like Kubernetes) can
-dynamically update the kernel's global housekeeping masks at runtime,
-without requiring a node reboot.
-
-This version provides dynamic reconfiguration support for the following
-subsystems:
-- RCU (NOCB offloading)
-- Tick/NOHZ (Full dynticks)
-- Global Workqueues and Timers
-- Managed Interrupts (genirq)
-- Hardlockup Detectors (Watchdog)
-- Scheduler Domains (Isolation)
-- Memory Management (vmstat/lru_add_drain)
-- Kthreads and Softirqs (Affinity)
-
-Many thanks to the maintainers for the valuable guidance that led to this
-significantly improved and upstream-aligned architecture.
-
-To: Ingo Molnar <mingo@redhat.com>
-To: Peter Zijlstra <peterz@infradead.org>
-To: Juri Lelli <juri.lelli@redhat.com>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-To: Ben Segall <bsegall@google.com>
-To: Mel Gorman <mgorman@suse.de>
-To: Valentin Schneider <vschneid@redhat.com>
-To: Paul E. McKenney <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-To: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-To: Josh Triplett <josh@joshtriplett.org>
-To: Boqun Feng <boqun@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-To: Zqiang <qiang.zhang@linux.dev>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-To: Ingo Molnar <mingo@kernel.org>
-To: Thomas Gleixner <tglx@kernel.org>
-To: Tejun Heo <tj@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-To: Vlastimil Babka <vbabka@kernel.org>
-To: Suren Baghdasaryan <surenb@google.com>
-To: Michal Hocko <mhocko@suse.com>
-To: Brendan Jackman <jackmanb@google.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-To: Zi Yan <ziy@nvidia.com>
-To: Waiman Long <longman@redhat.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-To: Michal Koutný <mkoutny@suse.com>
-To: Jonathan Corbet <corbet@lwn.net>
-To: Shuah Khan <skhan@linuxfoundation.org>
-To: Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Cc: rcu@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: cgroups@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-
-Changes in v2:
-- Rebranded series from DHEI to DHM (Dynamic Housekeeping Management).
-- Entirely dropped custom sysfs interface.
-- Integrated housekeeping control into cgroup v2 cpuset controller
-  at the root level.
-- Added SMT-aware pipeline logic (cpuset.housekeeping.smt_aware) to
-  prevent splitting SMT siblings.
-- Added comprehensive documentation and cgroup functional selftests for
-  the DHM APIs.
-- Refactored the internal mask transition logic to use RCU-safe
-  handover.
-- Separated patch series into 4 logical phases for review.
-
-v1 Link: https://lore.kernel.org/all/20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com
+Un-alias service-specific housekeeping types in enum hk_type. This
+separation provides the necessary granularity for DHM subsystems to
+subscribe to and maintain independent affinity masks.
 
 Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
 ---
-Qiliang Yuan (12):
-      sched/isolation: Separate housekeeping types in enum hk_type
-      sched/isolation: Introduce housekeeping notifier infrastructure
-      rcu: Support runtime NOCB initialization and dynamic offloading
-      tick/nohz: Transition to dynamic full dynticks state management
-      genirq: Support dynamic migration for managed interrupts
-      watchdog: Allow runtime toggle of lockup detector affinity
-      sched/core: Dynamically update scheduler domain housekeeping mask
-      workqueue, mm: Support dynamic housekeeping mask updates
-      cgroup/cpuset: Introduce CPUSet-driven dynamic housekeeping (DHM)
-      cgroup/cpuset: Implement SMT-aware grouping and safety guards
-      Documentation: cgroup-v2: Document dynamic housekeeping (DHM)
-      selftests: cgroup: Add functional tests for dynamic housekeeping
+ include/linux/sched/isolation.h | 20 ++++++++------------
+ kernel/sched/isolation.c        | 10 +++++++++-
+ 2 files changed, 17 insertions(+), 13 deletions(-)
 
- Documentation/admin-guide/cgroup-v2.rst      |  24 +++++
- include/linux/sched/isolation.h              |  51 ++++++++---
- kernel/cgroup/cpuset-internal.h              |   2 +
- kernel/cgroup/cpuset.c                       |  73 +++++++++++++++
- kernel/irq/manage.c                          |  49 ++++++++++
- kernel/rcu/rcu.h                             |   4 +
- kernel/rcu/tree.c                            |  75 ++++++++++++++++
- kernel/rcu/tree.h                            |   2 +-
- kernel/rcu/tree_nocb.h                       |  31 ++++---
- kernel/sched/core.c                          |  23 +++++
- kernel/sched/isolation.c                     |  74 ++++++++++++++-
- kernel/time/tick-sched.c                     | 130 +++++++++++++++++++++------
- kernel/watchdog.c                            |  26 ++++++
- kernel/workqueue.c                           |  42 +++++++++
- mm/compaction.c                              |  27 ++++++
- tools/testing/selftests/cgroup/test_cpuset.c |  36 ++++++++
- 16 files changed, 620 insertions(+), 49 deletions(-)
----
-base-commit: bfe62a454542cfad3379f6ef5680b125f41e20f4
-change-id: 20260408-wujing-dhm-8f43e2d49cd8
+diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+index dc3975ff1b2e1..b9a041247565c 100644
+--- a/include/linux/sched/isolation.h
++++ b/include/linux/sched/isolation.h
+@@ -17,21 +17,17 @@ enum hk_type {
+ 	/* Inverse of boot-time isolcpus=managed_irq argument */
+ 	HK_TYPE_MANAGED_IRQ,
+ 	/* Inverse of boot-time nohz_full= or isolcpus=nohz arguments */
+-	HK_TYPE_KERNEL_NOISE,
++	HK_TYPE_TICK,
++	HK_TYPE_TIMER,
++	HK_TYPE_RCU,
++	HK_TYPE_MISC,
++	HK_TYPE_WQ,
++	HK_TYPE_KTHREAD,
+ 	HK_TYPE_MAX,
+-
+-	/*
+-	 * The following housekeeping types are only set by the nohz_full
+-	 * boot commandline option. So they can share the same value.
+-	 */
+-	HK_TYPE_TICK    = HK_TYPE_KERNEL_NOISE,
+-	HK_TYPE_TIMER   = HK_TYPE_KERNEL_NOISE,
+-	HK_TYPE_RCU     = HK_TYPE_KERNEL_NOISE,
+-	HK_TYPE_MISC    = HK_TYPE_KERNEL_NOISE,
+-	HK_TYPE_WQ      = HK_TYPE_KERNEL_NOISE,
+-	HK_TYPE_KTHREAD = HK_TYPE_KERNEL_NOISE
+ };
+ 
++#define HK_TYPE_KERNEL_NOISE HK_TYPE_TICK
++
+ #ifdef CONFIG_CPU_ISOLATION
+ DECLARE_STATIC_KEY_FALSE(housekeeping_overridden);
+ extern int housekeeping_any_cpu(enum hk_type type);
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index ef152d401fe20..e05ed5118e651 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -15,9 +15,17 @@ enum hk_flags {
+ 	HK_FLAG_DOMAIN_BOOT	= BIT(HK_TYPE_DOMAIN_BOOT),
+ 	HK_FLAG_DOMAIN		= BIT(HK_TYPE_DOMAIN),
+ 	HK_FLAG_MANAGED_IRQ	= BIT(HK_TYPE_MANAGED_IRQ),
+-	HK_FLAG_KERNEL_NOISE	= BIT(HK_TYPE_KERNEL_NOISE),
++	HK_FLAG_TICK		= BIT(HK_TYPE_TICK),
++	HK_FLAG_TIMER		= BIT(HK_TYPE_TIMER),
++	HK_FLAG_RCU		= BIT(HK_TYPE_RCU),
++	HK_FLAG_MISC		= BIT(HK_TYPE_MISC),
++	HK_FLAG_WQ		= BIT(HK_TYPE_WQ),
++	HK_FLAG_KTHREAD		= BIT(HK_TYPE_KTHREAD),
+ };
+ 
++#define HK_FLAG_KERNEL_NOISE (HK_FLAG_TICK | HK_FLAG_TIMER | HK_FLAG_RCU | \
++			      HK_FLAG_MISC | HK_FLAG_WQ | HK_FLAG_KTHREAD)
++
+ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
+ EXPORT_SYMBOL_GPL(housekeeping_overridden);
+ 
 
-Best regards,
 -- 
-Qiliang Yuan <realwujing@gmail.com>
+2.43.0
 
