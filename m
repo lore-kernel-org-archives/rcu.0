@@ -1,67 +1,67 @@
-Received: from mail-dl1-f42.google.com (mail-dl1-f42.google.com [74.125.82.42])
+Received: from mail-dl1-f48.google.com (mail-dl1-f48.google.com [74.125.82.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED52A39DBC4
-	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 07:45:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5DC239EF12
+	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 07:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776066324; cv=none; b=qFS/JOS/1S8GjXLU1i9MiQgV0vcgwrVjMRehORxdq/6kDqZoKT43OA3H4vRr/agKbOizG3H6xr3+9TsdaYRW9Q79E7JTuEio3UcFHGqvfP8ZP9x+QU3WgxdKfgyYFHXPXvUsv8tDDVUTT+axAVSGjXvyIwPKpUGlbc3VYQN6fd0=
+	t=1776066337; cv=none; b=TWU6Qsa51RccBN7SdyZYa2nTp6HAOjrgDz9f5GDI+oLdO0Zx0cez4XctiUYxF/d5hOiD0/qUxsdGR+CeJ9KAOmfRr0Tu0dSl5qMXJhNjPj5h+nf+SI0g7y3h03SOgwF5he8UZUSNS1Hlgz6821vq/zGwI2nzxCGv2W4/zM5iCZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776066324; c=relaxed/simple;
-	bh=11ce8bUKvUSdcebzsjZtiRLgXFylySnevizU5TDAFts=;
+	s=arc-20240116; t=1776066337; c=relaxed/simple;
+	bh=haYoKxwnQ4IkliWshHCYCJwKmzDfLZJY0fIFa30X7D0=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qGsqLub7L/MZI5n8T942ernGFtdxD561uhusdnGjop3OBpzbpo5twSw9nGDlI5p2KaVilsKhxd+3c/GvnlLVuFZvUGtS7Hh+gCDs3rvW2YTQWAHji0dqQSEslqno/XYZkQLDzzJlJTN9eB5U9TFc4kjIDGHrcnn6ZaaQ8h1Bk4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=rlaFdogi; arc=none smtp.client-ip=74.125.82.42
+	 In-Reply-To:To:Cc; b=Me51dW3ozMPJHzrUkLs4/571GI/G+JQ8vdtaGg85MK/PcN9SDgiKfiWgyJyLp03N83ppyRiYwvFeaWs22SP3buTQQwjsrUg4bEFE817zPeTVhwK0DkCKYk8trRVe1OytYOOuIQLJpZuGwBUr7CF7tgKQfbAEcRQQzzV5rDDvXrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JtNutOjz; arc=none smtp.client-ip=74.125.82.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rlaFdogi"
-Received: by mail-dl1-f42.google.com with SMTP id a92af1059eb24-1279eced0b9so5523244c88.0
-        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 00:45:22 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JtNutOjz"
+Received: by mail-dl1-f48.google.com with SMTP id a92af1059eb24-1271195d2a7so5345342c88.0
+        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 00:45:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776066322; x=1776671122; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1776066334; x=1776671134; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=eNYrrMihyJ/UopuSP8NsPFIh0brjDU9y6jBpikXxsOI=;
-        b=rlaFdogizaH8E48QTvwAewMKrEOKvjVGk8NUiMvPfxXtudCAn6AJJck1u1sPsjApvw
-         V+jykR2eah19Ul04Ggv5O/draHnzso2rriDuTYkLDG69k2TUR5AV1Okwx63H/SEcQT2L
-         o/VzvNMyv85GFv4tCobyFzT9S3zFYCjCVqsKNoaufkPQtko+tYf//rrd9BCFCSuG+FK+
-         AkhYscxlwAjBzJA22sYZ5r/rxj/rwKw3zptSsQ/VFOLgVdpFWutMjHkQ+VBDXz8p2/Dv
-         EoMHOmZOnDj/LNg+fv5UlS4Uhq7el9M/AggMd+8SQFoRSNoia/I7j/qH9kMjuUGwQ1qo
-         imOA==
+        bh=I5M3+b2z7keZbGNN1L4pc5gbCusIv4rK3WbERlRAtRw=;
+        b=JtNutOjzO9oL5iDsdBC2WRURLvOza8Hnh48XnYRktcHQj0XMOlIFZv7BP4/GAv1p9d
+         jzUctCWVdvbcpeoHI/bSYVebPKQVNJE8+AnoT8b3T7ENh8N2A0IhXRHLgXUS7/y1akHG
+         m5KfcN4WQYfa/WEVarvT9NSh51qmOQbT8m6xpP/RbJcHDxgYfbet1z14ouOv9HN3UbvD
+         LlAqgrsVcUXQHURb6mlYqNeO9lAYdMCmiNYvkUnfof05zveFEfF8VFiVLxuqYHy99dhH
+         SMEaWYH4zOvN70tMNyrh+no03GZUN1b9/5zXWtU6XjkeGVk9hgQwuU+8MdGN11BJSq5E
+         a4kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776066322; x=1776671122;
+        d=1e100.net; s=20251104; t=1776066334; x=1776671134;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=eNYrrMihyJ/UopuSP8NsPFIh0brjDU9y6jBpikXxsOI=;
-        b=QrOXjSdW5h8zlU0Tmz2HDQKwnKMOHK2vps4FuVOQOZpUsKYskrgVufaz6pTRpPAsK7
-         0ILVobcq1opMM3ibbiv3nXL7tcnwSRGxIfodIX0ACwd593ELzfe1bTHeV6Q3GPmQ8Xch
-         Utp2z2uFt389C90OYiiZVEYB22tBqfCuBuAKdPFyS5mQUB5QBMTqs7A4uLlQitsd0DX1
-         +dHisTOOIcq9UIJKCDkfG0/khcaow7gZdLeigdAsFomoi/+t4/v2j3v4N5DxL5wC5sNs
-         nCob/TM6MOWbBaMVG8ZhX5DBnw3QHzs5/HUuFz3RZQoXs7oSBgi0cpPgK30H/u3g+myz
-         zumg==
-X-Forwarded-Encrypted: i=1; AFNElJ8US+eP90sGjdfmXlltV5sxaqytI4PGlUkBA5lY+cK1xa4gnLkzWkq9sy81TfMTrp76PWA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4Kqbh1jLPPFATpkRCEv7PuvvLzfbge3Qus/YbI43DhcRN7PVQ
-	BqUkjyI+RB7PzdPgUc8+EYEbBnQ6UEZytgTInEGiWlAWJazP+Q4Ik0dzqVT15kck
-X-Gm-Gg: AeBDietqmltD9eTPoy2P+TXObi+BqYXjM3uZU23gSgVOO8Zsh67ouhiC7Rp0O+K08CZ
-	/eaLp/ZzuScnJ/1gDi4UlxdVKGxzUT/MHVhAiDrvCaPw4lGRrz0e3Lb5AKav5qOOrMLTvKecMOu
-	oYBsDqU2kDtY4WXSX17y3TXYGY9eCH7dZsesMnVDuep5zDC8QalyVHe9ihLoedzeD/yVI0bCKRF
-	8B+4MecLC6n2h/TCnGHQ8AP643nbeOczyQEqYpk0UQjwoLhO1MJCHKUdEgEcaJNuNxoui09dHEx
-	OO5NzT86ltuCvSLckkNViEox4VzVW9+zVi+0NfVEetwAiwhgVQSAsZJV4a+f0PwPi2SI5l/y5Mz
-	pWlwDM9QfNMmyUjRHDp0B9aVjipwttKSH3tBAW3CRJvoaTgb4MkGergPahStNvbq2e9jFWrIokn
-	Zx0UJym/q/caEH+au4
-X-Received: by 2002:a05:7022:69a2:b0:12c:8b9:7208 with SMTP id a92af1059eb24-12c34eeb95cmr7021315c88.26.1776066322024;
-        Mon, 13 Apr 2026 00:45:22 -0700 (PDT)
+        bh=I5M3+b2z7keZbGNN1L4pc5gbCusIv4rK3WbERlRAtRw=;
+        b=QMmvJr28w4gje9ynoA6+Vd0a8ymyCAERifjuPGpn79kPVHsy1kwwh4TM/pu2GN21xA
+         tfD4pxRSlz8xRTxk/V/dWMSo8hpjEpQtz4k9f9U0B3LJd3cjBIXmxKkXSj6zahVwuhtB
+         +tLeuzijafTd1tPPaFjiulJqUbHrWWmxef89xIJ14Ya6k0vQbsqOpLqlCLgXZzQRbuKg
+         MPneqdNU7mQICIiQl/dvZBh7K/rVQhnRsk6xsl8sSoynF/sgyjHXp5KZ/V+U5SsMmEs/
+         9OpeQfD8zSMnEfQ53HceVpkhoZ3ZppOjm9wuzb4u94yc6ujlg2Mf2QwwmXQym0zlortc
+         eWoQ==
+X-Forwarded-Encrypted: i=1; AFNElJ/DdeywW+LSqaNeZGMT+mE9VVQeiUc/i0u7VeOhmqsdWEZ5JtRNHuXSKQU3ZPbOSdoBcFs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhV7N5BTY2HWMzFS/4LZaFdwEjKEjfkHAMVWs/sgHa55VP50cu
+	bn632gNe/jF/JDhpeRNigZUH7RdsTTIExbGkgzZVLqUrvsnJaXbyNbWH
+X-Gm-Gg: AeBDietBcMpOgzZT9LBoc7m4/Jxfsd9U0Iymdybu/Vzzi05SH2om7W/PePDqPj/r3si
+	Zh9lomOYgR+Wle1BoaofaVWxa5JDbNnjjW3EHpvBryO95oVQB5Q8BR3uyCTeREPX597kJIsIiwr
+	qLgVFUssmZ0EfJyj/beHa7v2mOIvTaH4AI2kePiKRgQYd9h7t/r4wHFLjokbTkSHoQ7ckiv+IEg
+	PjbHBUEygFqW2qf3b2Sx2XQ4hnKsH/hYQ5fcq4QNAzw1VnoAHPFgygBL5wCm8shS7iEjOsf62f+
+	Oiqklzwc7UZl9OYQ6//28rMh+vyFv+v2c3hulfxhUk6QtKun7ivzYyLo9jQUhGRqOD9mu3RLV/Y
+	xSmbASacJPVEvgonpds/Aai7dADfwJb6mowQcq950UWtOJK96r3zbfv/4ml1Y3tzaAAjhej0Zib
+	+s337elWbYEsiWMnw4
+X-Received: by 2002:a05:7022:e1b:b0:128:d107:da0f with SMTP id a92af1059eb24-12c34ea9471mr6689826c88.10.1776066333988;
+        Mon, 13 Apr 2026 00:45:33 -0700 (PDT)
 Received: from wujing. ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.45.10
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.45.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2026 00:45:21 -0700 (PDT)
+        Mon, 13 Apr 2026 00:45:33 -0700 (PDT)
 From: Qiliang Yuan <realwujing@gmail.com>
-Date: Mon, 13 Apr 2026 15:43:17 +0800
-Subject: [PATCH v2 11/12] Documentation: cgroup-v2: Document dynamic
- housekeeping (DHM)
+Date: Mon, 13 Apr 2026 15:43:18 +0800
+Subject: [PATCH v2 12/12] selftests: cgroup: Add functional tests for
+ dynamic housekeeping
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260413-wujing-dhm-v2-11-06df21caba5d@gmail.com>
+Message-Id: <20260413-wujing-dhm-v2-12-06df21caba5d@gmail.com>
 References: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
 In-Reply-To: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -102,54 +102,77 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
  linux-kselftest@vger.kernel.org, Qiliang Yuan <realwujing@gmail.com>
 X-Mailer: b4 0.13.0
 
-Update the admin-guide for cgroup-v2 to explicitly document the newly introduced
-cpuset.housekeeping.cpus and cpuset.housekeeping.smt_aware files.
+This extends the cgroup v2 testing framework in selftests to validate the
+newly added Dynamic Housekeeping Management (DHM) cpuset interface:
+`cpuset.housekeeping.cpus` and `cpuset.housekeeping.smt_aware`.
 
-The documentation explains the use of the DHM framework for reconfiguring
-kernel subsystem isolation masks natively through the root cpuset without
-incurring system reboots, and describes the functional restrictions of
-SMT grouping safety constraints.
+The `test_cpuset_housekeeping` functional test verifies:
+- Validation of DHM's SMT safety guard (`cpuset.housekeeping.smt_aware`)
+  by ensuring writing to it behaves as expected.
+- Basic read and write capabilities of `cpuset.housekeeping.cpus` using
+  the base CPU mask.
+
+If the DHM functionality is not present in the kernel, the selftest skips gracefully.
 
 Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
 ---
- Documentation/admin-guide/cgroup-v2.rst | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ tools/testing/selftests/cgroup/test_cpuset.c | 36 ++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 91beaa6798ce0..deb644b88509f 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2592,6 +2592,30 @@ Cpuset Interface Files
- 	isolated partitions. It will be empty if no isolated partition
- 	is created.
+diff --git a/tools/testing/selftests/cgroup/test_cpuset.c b/tools/testing/selftests/cgroup/test_cpuset.c
+index c5cf8b56ceb8f..b2a032be4407a 100644
+--- a/tools/testing/selftests/cgroup/test_cpuset.c
++++ b/tools/testing/selftests/cgroup/test_cpuset.c
+@@ -232,6 +232,41 @@ static int test_cpuset_perms_subtree(const char *root)
+ 	return ret;
+ }
  
-+  cpuset.housekeeping.cpus
-+	A read-write multiple values file that exists only on the root cgroup.
++static int test_cpuset_housekeeping(const char *root)
++{
++	char buf[PAGE_SIZE];
++	int ret = KSFT_FAIL;
 +
-+	This file is part of the Dynamic Housekeeping Management (DHM)
-+	framework. It allows dynamic reconfiguration of the global
-+	kernel housekeeping CPU mask without a system reboot.
++	/* If the kernel doesn't have DHM patch, skip */
++	if (cg_read(root, "cpuset.housekeeping.cpus", buf, sizeof(buf)))
++		return KSFT_SKIP;
 +
-+	By writing a mask of CPUs (e.g. "0-3,8"), DHM will update all internal
-+	housekeeping subsystem masks (scheduler domains, RCU NOCB, tick offload,
-+	timers, unbound workqueues, and managed IRQs) in real time.
++	/* Test writing 1 and 0 to smt_aware */
++	if (cg_write(root, "cpuset.housekeeping.smt_aware", "1"))
++		goto cleanup;
 +
-+	The new mask must have at least one online CPU. The value stays constant
-+	until changed or affected by CPU hot-unplug.
++	if (cg_read_strstr(root, "cpuset.housekeeping.smt_aware", "1"))
++		goto cleanup;
 +
-+  cpuset.housekeeping.smt_aware
-+	A read-write single value file that exists only on the root cgroup.
-+	It accepts "0" or "1". The default value is "0" (false).
++	if (cg_write(root, "cpuset.housekeeping.smt_aware", "0"))
++		goto cleanup;
 +
-+	This file enables the SMT-aware pipeline logic for DHM. When enabled (1),
-+	any update to "cpuset.housekeeping.cpus" is strictly validated to ensure
-+	Hardware Threads (SMT siblings) are kept together. If an SMT sibling pair
-+	is split across the housekeeping boundary, the mask update is rejected
-+	with an error to avoid severe cache and pipeline contention penalties.
++	if (cg_read_strstr(root, "cpuset.housekeeping.smt_aware", "0"))
++		goto cleanup;
 +
-   cpuset.cpus.partition
- 	A read-write single value file which exists on non-root
- 	cpuset-enabled cgroups.  This flag is owned by the parent cgroup
++	/* Read root cpuset.cpus.effective */
++	if (cg_read(root, "cpuset.cpus.effective", buf, sizeof(buf)))
++		goto cleanup;
++	
++	/* Write it back to housekeeping.cpus */
++	if (cg_write(root, "cpuset.housekeeping.cpus", buf))
++		goto cleanup;
++
++	ret = KSFT_PASS;
++
++cleanup:
++	return ret;
++}
+ 
+ #define T(x) { x, #x }
+ struct cpuset_test {
+@@ -241,6 +276,7 @@ struct cpuset_test {
+ 	T(test_cpuset_perms_object_allow),
+ 	T(test_cpuset_perms_object_deny),
+ 	T(test_cpuset_perms_subtree),
++	T(test_cpuset_housekeeping),
+ };
+ #undef T
+ 
 
 -- 
 2.43.0
