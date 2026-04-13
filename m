@@ -1,191 +1,172 @@
-Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012050.outbound.protection.outlook.com [52.101.48.50])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563863612EE;
-	Mon, 13 Apr 2026 19:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776108245; cv=fail; b=JaHQwK8C5na78Rn4uAkmYgDDSyyYhOKvaVaEwg/gZfUU83sNyeWcaq+8iWCVZ7RHcMFbXrVn5n24U9bfNZXZq5FeriTlY/y+F+hP/FsbLXjM9xhYEexDg8PnUHTIiKKHbnp7NDBVPA7FzH+8qT99lLu/XLX/PT6YZUaClfkZ+X8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776108245; c=relaxed/simple;
-	bh=OnAplS0FjlKzKvBSxtXbLHxbWmgxFdHzTXl7tsoK2N4=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=PPynhmkF1CwY4aIPTcSOBA4UHoPSJxXXwCH79f88s1ikmyXotA6x5a3lsTxdhIv98KM+aKi8UY9yOZnBdd+dIz29BF0PYWo18fu4jXoNTImw2oB5SoXBHHJHRED0rTtFL0RaV3tzhVBqyUg/i3fnz+vTt9ZXbRMK5IO006gS4Ys=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bjHnJCru; arc=fail smtp.client-ip=52.101.48.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A58138F24F
+	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 19:26:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776108368; cv=none; b=Z3KWKAeMEeHun6pmD8jwM1eN8Dr0KPmTFKSd5tc0sz46EOzw/oiKKonW7is22rRHNtG77Ya+mpTBUeziWe4AoiZ3JaXi9rmKqKr2khbHN9gIr0NLZsyizjJftnOqqWWfxHEGtNH25rTYy8xk2QJHoNMVHt+oo7NdzUeFUKATzJw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776108368; c=relaxed/simple;
+	bh=JhhiDtpgCIbIcPcjurEF+BYrFwWWHfvbfmV0YHXq4o0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fF0VV+VsGGYu7aQPj4IysGhauSmaOtVsl+pMe33G8s0kjyucWSHoKSVCfegcYqX8nOMjyBuz8j0megW2RLbRcVu0Ovfmv+LQV8jtl3h0ftLsRoxvDBp3R5ZCAyhXE9iYBfQUtriR6Q0k3Z3tWMUZxOdftLdiZHBu8NZELNkWdRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WUG4tW4E; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="bjHnJCru"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xRyyIOBr9rCG7z70n6uDuGtA1XJDw3eWl+oE2H6oj8ZzthSb+wNkRNYaEdapDIWmBBpWdWxpfx7+TQ23pjjZC55y9RWlPMhvEvlG+0bufdzowTDkMuSgxTc6706cwrv4gu7YM4fjPNh1PQC8YH1FRntsRqzfk9NpIFl4p6JJlAfkfKBaK1QS4h3jNwqdqqx+2P2tq58qpAmoLpNZVIkaOE/WMzKyc2OXM8kPLOmYVRmZkQUL/NXWkL+NMI8r62fgMiInhxv6QVEhiXWsG+yshk44ZzhKWNQHB+1s61ljlmKvpIryGNx2g/DgOvLo+OxvTU2NFk4u/vobXXkCY97KaQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bYb5bxT6MB/ePjQL2YwYt/t8g+v+L55SKPMxAkPng5c=;
- b=XoNyINCbsgNqrn2uEHJ/IK6qlIjScxDB/QWp/vSvJQz/FE40NUB9fd6qiJF/buaVU68w/NhExXqU3gvsDSLfUXt3TMghUgDqlxKlz91Y2drUwwI4vi8NrPy8FPLnHlei39Ma/T99CNePekUocGZoxS2ZYMpD/bMKIRvPy8vk8eRG/1UDPK86aPPjrobR4K9jkOv25PXMFUhWH7zjKKmTyvKNMAJgX4SKa5AmnfsntlydNReqPOXQmukvnhzUroqgxAn7ja7od2es9o3StGzCFczCHVp6KaxKV80MYhspalEgdnbKIgjWtSP8+FFeCD356NufolvsXcfAgdNqDjuOkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bYb5bxT6MB/ePjQL2YwYt/t8g+v+L55SKPMxAkPng5c=;
- b=bjHnJCruQ89oBRNh/Ck3jw2ruxg+dOv+dv3q79o+I4QkXRysrium1YNE0rYI9IDlVldUqVV6ZBuOC363ST7s6HmrYmi63OP7NDGvwYw3TJAje6JBpfeGAfGXOGmracCr+2bmGkJwX/iJipOKTmq4xFiW2kfEfU2o7I2+JtlQoim8wgXf5PSomptPLpQZBdQHSmvFS8/CGgOo2If+BoSRjBZUX4gAB+bruTi0cn+JdtIm7zo+MNtUokgp5fdMEw7vOyMw69aMZnWvknr+Smte1YKmLtvSrRtWzsCwqfJM2B4O28xESf5hsa6uemWpultNr76wDaFY1euUbrg9I5xLbA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- MN2PR12MB4253.namprd12.prod.outlook.com (2603:10b6:208:1de::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9818.20; Mon, 13 Apr
- 2026 19:23:59 +0000
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33%4]) with mapi id 15.20.9769.014; Mon, 13 Apr 2026
- 19:23:59 +0000
-Message-ID: <6c687f78-1a5a-4d55-95c2-c459468580ba@nvidia.com>
-Date: Mon, 13 Apr 2026 15:23:56 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] RCU changes for v7.1
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>, joel@joelfernandes.org,
- agnel.joel@gmail.com, linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- Gustavo Luiz Duarte <gustavold@gmail.com>
-References: <1774978730.3972500.27807@nvidia.com>
- <CAHk-=whigg3hvOy7c1j1MXFy6o6CHp0g4Tc3Y-MAk+XDssHU0A@mail.gmail.com>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <CAHk-=whigg3hvOy7c1j1MXFy6o6CHp0g4Tc3Y-MAk+XDssHU0A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN0P223CA0028.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:208:52b::17) To DS0PR12MB6486.namprd12.prod.outlook.com
- (2603:10b6:8:c5::21)
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WUG4tW4E"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1776108366;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4BWr/5AY8ZAqufMs3TADs0Xu7j+z3NdjM/f4VibM9b8=;
+	b=WUG4tW4EpKrRDOvfphj1tdkAlNV8DHdsIZFeqT6HkI0oBJ25LIWq9KyL2//iSA5cWVgG9S
+	uRMigISWTpzvBWin8rjt9JL1YGPxpq3gtPgpGA2D4dqEQ6b1/FI0rSeMHNEqHvMGj6Nez1
+	37zFXxGo+7lCk4lP4ytjqnXK6fdZVsc=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-220-Uxe0wUrkPlijpBHtUceyPQ-1; Mon,
+ 13 Apr 2026 15:26:02 -0400
+X-MC-Unique: Uxe0wUrkPlijpBHtUceyPQ-1
+X-Mimecast-MFC-AGG-ID: Uxe0wUrkPlijpBHtUceyPQ_1776108358
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 546391800372;
+	Mon, 13 Apr 2026 19:25:57 +0000 (UTC)
+Received: from [10.22.65.13] (unknown [10.22.65.13])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 53FA31800357;
+	Mon, 13 Apr 2026 19:25:47 +0000 (UTC)
+Message-ID: <fd77bca8-bee8-4997-a11a-932a1693edf7@redhat.com>
+Date: Mon, 13 Apr 2026 15:25:46 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|MN2PR12MB4253:EE_
-X-MS-Office365-Filtering-Correlation-Id: b7792656-1888-4df5-9ff1-08de99923642
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|56012099003|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	3Jm9rTn7gDZgeICHvz7XPBM0qhfrFtS0nleTwVpKXrhCelZJ0JHMfeYdrXokHx+4zccJDh0knmtsxpkL6EeOkfDkZ5zhxaL/wn6+MsHKhC0BQonwiT7GYXt853bpph+wv1Gk2VUAtNrrLXuu7qQJde/BynI9RaJT7zUSxiq44YoLT3atRcNO4e9Goj+UBjNWaRswT1CO91jPoToe20KY3J49qMW7Ut63p2T772Qzbm/f84L8fQLZG7Ym2sylskerPGC1RpTOMAXLNRt3kwhVZZys0iwxza9KYWFKmA+j82EHKN+j87a90/nB1QTtqT4L2Xt5myXA2hVtFtuia5nIM4/UwmglX9fmapGTe2o5VLrkXbPrk8Z5NJQjGM+ZrQbqjlpzkSjzKVom3DldkgtgSgbKJDgKXK+rkTpgZ64DPfPAaPVBDcA87nn+SdyYk5J2Fwv+xB4jajnQ1+85MA/PwiAmdoO6PXvBR+3UWx+LUgkuB6tpDh/Z+5ktr/rXQxyUNPqFmthMYC9zDRcYyQBKIQBXF4PI5w7y+NtaFFIpCTr0jH+anJAOpKLgwFZKAD6D9Q4Lu1UU8l8ahIfVrkX5ZTJAezxcYo92mYDRKudE761jf6A8onOIHfOLzxyc2Q0rHYrYDBu+J2l1yD5CoJUiyyRJwKQkjzI6DHN8Uz/2z0tGFMYbZdCTx6H1ucncHqh9cwBnQtLX1sr9EMeXGrRvB/pa8YlNS77pCvHORKrNmEg=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QU5tV1l3azVWaVFmTzFwUGdpOEo3cjN3R21NTExqbWpFWTZsL2t5aUxrQ25G?=
- =?utf-8?B?bERsRll0YWo1K3czZXYvL3ZOdTRDVlZWcGNra0hIanhvK1Y1N2FXeXRVOENl?=
- =?utf-8?B?ck4zL250eTY3UVl0V09QUGs2RmJGZGo1SFhjZFhQbWJFU0NYME5KQkE0UlpT?=
- =?utf-8?B?OHNzRHVhU0FKQ0s4N1hNcVB4MDJUdVQ2eFhjSUJmMDdaWUR1MXJCODVjbUpu?=
- =?utf-8?B?cVl1NHNvcE5lY3Q2K1ZQTFRSb0s5K1pLN0JrYzFQaXF2bFNiUUttY1liUlM0?=
- =?utf-8?B?TXhwOEVqa3UxUHY4cTNZNFZOazBMcEQvSmRDZTZ0Q2d3anpKeTNjemVEbEtC?=
- =?utf-8?B?ZUdBZENtS2FCWnNYUllBSCtSTnJsZEFBSGFhbTBYajF5UFB0cDB1K3hrbEEz?=
- =?utf-8?B?dGdYNVJ5Vi9hdHdZUEs1K0g2SGtHTzd3QjZoakFqQk9CdXRNczRnL2lWenZh?=
- =?utf-8?B?TnprMXRKYUhPbTh6V2tjM0RWM2hBRk4rRVZ4S0F3OUdpOWtoMWhjeEVjOHQ0?=
- =?utf-8?B?T1pZUXNkbThhb3VFcFduSG9Mc2VFTTNVekxjUS9zcThmbUlGQVo3TzNoL3ZM?=
- =?utf-8?B?QlhDYjd0ZXR3RmdyUGhjUkdINmJRSCtGdlM2QVYra3c4cFJYUGZVOTZWNk5w?=
- =?utf-8?B?NUZKZkJnY1lwb3h3M285enJQcDBsWm4wd2gySkJKaDZTQWxIZXp3NnV5RkJE?=
- =?utf-8?B?MG5YdHIyeUk5bmVLNmZxbG54K0xXMVJPZWVsa09hRFJqTFJpUTRWWTQ3aW9P?=
- =?utf-8?B?OHFoZEJDcXd6T2Z1K1FuOGNJNkVKZldyM0xmQS80NnBnT0Y2dDRjWUV2cVJs?=
- =?utf-8?B?REN5Kys1ZVlIZU12c1p2ckFyclA2QUUybUpuY1lJWjFyNDI4cE1neVhabkJj?=
- =?utf-8?B?NG9KZURYcVJTOHh6ZHBrenM5VHdkZkZiMGNuTjJQcjlZeW1KaHNTMUdVeXRK?=
- =?utf-8?B?UHhmS0xneE1NTVFmK0pRbk9CbXlEbm9XTGRMYzFqT0JZRVB5d2lGZVJ4RDN1?=
- =?utf-8?B?RjYyMjRTeDZpcnNGSmMzaWl6UkZVR1VQSzQ3MFJkUWZEa1JFd1VHaGV2d1FE?=
- =?utf-8?B?UXM0NzJadlFPY3hEVy9ESXpYZkRSSUtTejg3OTNnei9JR1VFRk1MY0NvSDhC?=
- =?utf-8?B?aFRLQXRqc2xkVUNtc2U0Zzl6cXJqcjMrM1g2SUJoUzRMZkI4dSs0bytKK0h4?=
- =?utf-8?B?c3VUMGdoWmpIVXAzbENTV3lpWDVEc3QrTGtOUWtxUGFlR1RSTFlrb1pvZEcr?=
- =?utf-8?B?OFIyWVhSY3JBZ0ZzRTd6d2hhWVJqT0FZV1B6RGhERGVDVis1RGhKeDB0NVB3?=
- =?utf-8?B?UlBMazFrOGphc3NRU1VWVkExUmQyUlBDN2hrRGZRbzFRT05XdmZYcXhGS1hI?=
- =?utf-8?B?K0dIOUJLb2V4aVY0RzUxQkdmT09ZUEJCNUZjZjlieDF3YWRWTFFqazk3ZXNl?=
- =?utf-8?B?a2FZaTVMUDU3eXVrQmdBWTBGbERLcGJvZ3duZVdDUVhvRmZqYmVEd3g0ZUhG?=
- =?utf-8?B?TzBuUEVYa2FnQlVnY3VpVmtCdms1RE5JNHp4bE1Ic3FXcWtRSEk5dTNXeTdp?=
- =?utf-8?B?aHpSU2NNeHk4VVRVTFgyUGNCRUVTTnR2RFJiOFo5OFJQZnJmc1hMNU56ZDlD?=
- =?utf-8?B?bDZJT1FwS0t4aU5sZEV2NGdiR2JNcDZCUjE5VU5mUEhFRlpudWZzcnU1QkFO?=
- =?utf-8?B?bFB1UHJWMnllVTMySDc3SnBTSHg4Q0xIVk9oMk85UUVpNmNnTHBKdnFHZUUr?=
- =?utf-8?B?Qm85U1BVMmhhWDlndzRTZ0k4cnB3cUR0bHdwdjlWY3hVR1pTRnJXVVk5UDRD?=
- =?utf-8?B?dW9menpUSm9DdlJ0YTcyaSt5bVh5WEpadDV5b2VjZmI2M05MOUZ2WWdPaG1v?=
- =?utf-8?B?WlJua01xakJLOTRlZDVuR1hlY2RsQUFIaVZtQW50SHBpSG1qY3ZaZVU1d0tO?=
- =?utf-8?B?WWYzdGZLM25OcDcxdnpYR2VEZnlmZzNWZVZaNCs3em0xckptNFdsMXdnUFVI?=
- =?utf-8?B?Z1dzYldJU3hyNTlBNWRMS1ZLYzVrTnMxZlhkdkpNQ2dhVEpua1Y4Y1RBRG5Z?=
- =?utf-8?B?OTlMamdzcWtibG5DMWx2VE91RS9BMWhtMHYzSEs3d2gvcDk1ZjY2QXlmb0Fa?=
- =?utf-8?B?TndZNk1ycTdrbHU2UUNvbTBzM3Z3b0ZsZXpKZTFDcE55alNzQ0llU3ArbGpo?=
- =?utf-8?B?UjhmQUxFMytHSHFHOThKalJrWnNTZXFtM2lUN1FGelI0VWZIck00aWVJRlhL?=
- =?utf-8?B?Sy9kWitjV0lCN29hc3VxVXc5ak1WV2lDUHhnNE1LL291a2VFdTJZem5xRk4r?=
- =?utf-8?B?N2NuemdMOW5hZjMydCtZdTNtNkVYd1pVaGovckJlTm5odnI2cExQZz09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7792656-1888-4df5-9ff1-08de99923642
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2026 19:23:58.9432
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uJM9klze1yhytadii0bxgJNBIqBkyl4RoBqVEIRR0A83vlTBlQ+KSR+CPddDUCBa9EQsgazIfx7du5aG5bf6oQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4253
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/12] sched/isolation: Separate housekeeping types in
+ enum hk_type
+To: Qiliang Yuan <realwujing@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
+ <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Vlastimil Babka <vbabka@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Michal Hocko <mhocko@suse.com>, Brendan Jackman <jackmanb@google.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
+ Chen Ridong <chenridong@huaweicloud.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>, Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
+ <20260413-wujing-dhm-v2-1-06df21caba5d@gmail.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20260413-wujing-dhm-v2-1-06df21caba5d@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
+On 4/13/26 3:43 AM, Qiliang Yuan wrote:
+> Most kernel noise types (TICK, TIMER, RCU, etc.) are currently aliased
+> to a single HK_TYPE_KERNEL_NOISE enum value. This prevents fine-grained
+> runtime isolation control as all masks are forced to be identical.
+>
+> Un-alias service-specific housekeeping types in enum hk_type. This
+> separation provides the necessary granularity for DHM subsystems to
+> subscribe to and maintain independent affinity masks.
 
+Usually, if we want to run a latency sensitive workload like DPDK, we 
+try to minimize all sorts of kernel noises or interference as much as 
+possible. Do you have a good use case where it is advantageous to remove 
+some types of kernel noises from a given set of CPUs but not the others?
 
-On 4/13/2026 12:40 PM, Linus Torvalds wrote:
-> On Tue, 31 Mar 2026 at 10:42, Joel Fernandes <joelagnelf@nvidia.com> wrote:
->>
->> RCU stall:
->>
->> - Add BOOTPARAM_RCU_STALL_PANIC Kconfig option to allow triggering a kernel
->>   panic on RCU stall via kernel boot parameter.
-> 
-> No.
-> 
-> Dammit, stop doing these horrible things.
-> 
-> I've said this a million times by now: the kernel config phase is
-> probably one of the biggest pain points for random new people trying
-> to build their own kernels, and we DO NOT ASK PEOPLE STUIPID THINGS.
-> 
-> People who want this can damn well use the sysctl or maybe some kernel
-> command line option instead, and we DO NOT MAKE LIFE WORSE FOR
-> EVERYBODY ELSE.
-> 
-> I have removed that disgusting kernel kconfig option, and I want to
-> make it very clear to people that the kconfig files aren't your
-> personal playgrounds: they are the most visible interface to NORMAL
-> USERS that we want to encourage to build their own kernels so that
-> they can participate in kernel development.
+Cheers,
+Longman
 
-Linus, I am Ok with dropping it and thanks for doing that, no problem. sysctl
-sounds like a good option to me (CC'ing the patch author, Gustavo, as well in
-case they want to go this route).
-
-Regarding boot params, I guess I would like to add - sometimes it is difficult
-for people to change kernel boot params (coming from the Android world, I
-remember setting boot params required changing and recompiling the bootloader,
-and it was much easier to recompile the kernel than the bootloader. The
-bootloader came from flash memory and required special signing processes etc).
-
-That said, I totally agree with not polluting and complicating Kconfig
-unnecessarily.
-
-> 
-> So people: next time you feel the urge to add a Kconfig option, take a
-> deep breath, and look at that Kconfig file, and go "Maybe I can
-> instead remove this *other* useless option instead".
-
-Noted, though, in this case "removing the other option which is to
-panic-on-stall" does not help, because not everyone will want to panic-on-stall
-by default? So sysctl to turn on the feature maybe makes sense (for those who
-prefer that over boot parameters).
-
-thanks,
-
---
-Joel Fernandes
+> Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
+> ---
+>   include/linux/sched/isolation.h | 20 ++++++++------------
+>   kernel/sched/isolation.c        | 10 +++++++++-
+>   2 files changed, 17 insertions(+), 13 deletions(-)
+>
+> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+> index dc3975ff1b2e1..b9a041247565c 100644
+> --- a/include/linux/sched/isolation.h
+> +++ b/include/linux/sched/isolation.h
+> @@ -17,21 +17,17 @@ enum hk_type {
+>   	/* Inverse of boot-time isolcpus=managed_irq argument */
+>   	HK_TYPE_MANAGED_IRQ,
+>   	/* Inverse of boot-time nohz_full= or isolcpus=nohz arguments */
+> -	HK_TYPE_KERNEL_NOISE,
+> +	HK_TYPE_TICK,
+> +	HK_TYPE_TIMER,
+> +	HK_TYPE_RCU,
+> +	HK_TYPE_MISC,
+> +	HK_TYPE_WQ,
+> +	HK_TYPE_KTHREAD,
+>   	HK_TYPE_MAX,
+> -
+> -	/*
+> -	 * The following housekeeping types are only set by the nohz_full
+> -	 * boot commandline option. So they can share the same value.
+> -	 */
+> -	HK_TYPE_TICK    = HK_TYPE_KERNEL_NOISE,
+> -	HK_TYPE_TIMER   = HK_TYPE_KERNEL_NOISE,
+> -	HK_TYPE_RCU     = HK_TYPE_KERNEL_NOISE,
+> -	HK_TYPE_MISC    = HK_TYPE_KERNEL_NOISE,
+> -	HK_TYPE_WQ      = HK_TYPE_KERNEL_NOISE,
+> -	HK_TYPE_KTHREAD = HK_TYPE_KERNEL_NOISE
+>   };
+>   
+> +#define HK_TYPE_KERNEL_NOISE HK_TYPE_TICK
+> +
+>   #ifdef CONFIG_CPU_ISOLATION
+>   DECLARE_STATIC_KEY_FALSE(housekeeping_overridden);
+>   extern int housekeeping_any_cpu(enum hk_type type);
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index ef152d401fe20..e05ed5118e651 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -15,9 +15,17 @@ enum hk_flags {
+>   	HK_FLAG_DOMAIN_BOOT	= BIT(HK_TYPE_DOMAIN_BOOT),
+>   	HK_FLAG_DOMAIN		= BIT(HK_TYPE_DOMAIN),
+>   	HK_FLAG_MANAGED_IRQ	= BIT(HK_TYPE_MANAGED_IRQ),
+> -	HK_FLAG_KERNEL_NOISE	= BIT(HK_TYPE_KERNEL_NOISE),
+> +	HK_FLAG_TICK		= BIT(HK_TYPE_TICK),
+> +	HK_FLAG_TIMER		= BIT(HK_TYPE_TIMER),
+> +	HK_FLAG_RCU		= BIT(HK_TYPE_RCU),
+> +	HK_FLAG_MISC		= BIT(HK_TYPE_MISC),
+> +	HK_FLAG_WQ		= BIT(HK_TYPE_WQ),
+> +	HK_FLAG_KTHREAD		= BIT(HK_TYPE_KTHREAD),
+>   };
+>   
+> +#define HK_FLAG_KERNEL_NOISE (HK_FLAG_TICK | HK_FLAG_TIMER | HK_FLAG_RCU | \
+> +			      HK_FLAG_MISC | HK_FLAG_WQ | HK_FLAG_KTHREAD)
+> +
+>   DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
+>   EXPORT_SYMBOL_GPL(housekeeping_overridden);
+>   
+>
 
