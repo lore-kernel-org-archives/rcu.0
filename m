@@ -1,99 +1,229 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dl1-f47.google.com (mail-dl1-f47.google.com [74.125.82.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2570930B509;
-	Fri, 10 Apr 2026 19:29:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A44B396B76
+	for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 07:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775849346; cv=none; b=Cckc02gAbjapf6dbRqCyiCRpykGGfkfr6vOkSFMRMAb5y/7iyF0f5gfmFSVz9hB64zan8M1PM61CVaRnH/GTgdpEzqAD2NTUryohuT+Xe5ULVwGjy9S/MGaMaH1HuCymm7D6Y4Ciaj/1L7nTy8M5sVvBlW3/a/vpFcZKgsVPtRs=
+	t=1776066207; cv=none; b=tDJCwOMZ9YHfh16nJPoBv7WY6KX4Ok/AsQJbAJ4JTFTWiNMze5RdHoW7dxJWogzUxlDzgApl40THOKbneUCdxAZVAxpxBuGW/TqkI/PXtlJHeqPjtWUaGqeuhuFj8NqufCNrJZsrGqeSgNIGOlu9j3TtqsIEsvzzz+y+BhGPoKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775849346; c=relaxed/simple;
-	bh=zy0hAvV+NOwFb5nTFTEz3iYeb2USleR88YYuiS6EvR8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OKl+ClClVDSFnmtb5kpZoRGK+aCUKAShXYKyRBaawR7uFsXt0ZP9VNOOI+ev8CAUoXcAwaE6+jdhyvDXlKkQ7kJXG7cxWp56aSrzdF+ZjoX9YKfu4aUUWYJzh++WJv40E8E1i3f7+iMdfUgGwIsV7SamVPQiHOt/NwH1oRMvPQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oaIxhMfg; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1776066207; c=relaxed/simple;
+	bh=M5UhHgIw8MLkGuym5witH6XqQ7eGPHPU7XznpRaYlqQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ZBFlBrH5MKh7MhJCtUzH9nB56gT0MrdjjCq7I8w8GnGdIgKlW5XKhzcs4g56838sUrL1+hNV/PqkMTecNpb9fUAtqsnhYJj4bt1+u0sRG4J5yXGiJXDKvWMzz68EFkKjP8JEaGD5nKCKWK32ftRn4l4HPhfkOK9w+alSxyxn/4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GQZF7gAD; arc=none smtp.client-ip=74.125.82.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oaIxhMfg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A04B9C19421;
-	Fri, 10 Apr 2026 19:29:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775849345;
-	bh=zy0hAvV+NOwFb5nTFTEz3iYeb2USleR88YYuiS6EvR8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oaIxhMfg37pjioBpynzVtdgjP1hfBu+X9N+ucjEQuSjRNCze9Kd2Y07X+SGYiWxdD
-	 rt0OinSl7bU5elKCd8v88B3zUlBCi5KbqtpYWXoazC+fV2pYnQXM6NAAUYcQX5wgUZ
-	 k43fG1P50K7iVkitpYcivDdGuNiliJEG7h6xToBsW8/F8ErLAjvKp4uhW+5ICxqDL3
-	 RjYUn7XuKgC3Xp7wlrvVpYpZHAo67lloSAqioc2JnUFK8v0W6XF3e+iXxUKIp8s0uX
-	 UmSjNxZZEnOS7DkJhP7pTBiun1tydlNaVV3e50sD/KxGf0xdD/dfBSP+33xJu8BoBv
-	 2H7nxuryitg0Q==
-Date: Fri, 10 Apr 2026 09:29:04 -1000
-From: Tejun Heo <tj@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Boqun Feng <boqun@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-	Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: BUG: workqueue lockup - SRCU schedules work on not-online CPUs
- during size transition
-Message-ID: <adlPgOKBSkGavsss@slm.duckdns.org>
-References: <ttd89ul@ub.hpns>
- <adfhWQr1yFImSM2Q@tardis.local>
- <adfkdRCxmhpRverB@tardis.local>
- <adfmHZfABu64Kv4D@slm.duckdns.org>
- <adfrfJGrglg0bGw_@tardis.local>
- <adlHKowvhn8AGXCc@slm.duckdns.org>
- <25415176-d977-41c1-83d1-3f060292f636@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GQZF7gAD"
+Received: by mail-dl1-f47.google.com with SMTP id a92af1059eb24-12c1a170a50so3666671c88.0
+        for <rcu@vger.kernel.org>; Mon, 13 Apr 2026 00:43:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1776066204; x=1776671004; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fnm3rAs1EW1zXW14+7Lf/lvhAiqaue6tqPNOeQwzzLE=;
+        b=GQZF7gADbgn9/hvhy+AYZdiCmjHHF4EqLsAsDYNAHa2y+Z7mnqEm/vZWEnOEtJ1CcQ
+         yNhLr+JH2PhsNVuoOiRdxOFK1WYkrFx501v55adf0cfiSp9/WmwqP3jV8FhBpYt/7VLl
+         o9EpEy1giuDsusMwzN1d/LfMxPOjvftL+Co/DjkLlt01aLVJlKgHxWh1Ve63x059L2ZI
+         VDSMDr6F23TdDDf04pnNfQ0NZX5X8SHB2G5h/SPXQB7APtyJX2200Yc5h3BoXz5/1mZL
+         OWv4XpecevyFDFekMsfyZLZCT8RQIfBN8wOU7St4RMGDDZango3VJoXWGsRb5ma0E5+N
+         rlZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776066204; x=1776671004;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fnm3rAs1EW1zXW14+7Lf/lvhAiqaue6tqPNOeQwzzLE=;
+        b=NlkpmocCyCSbFwiVoJV4FQwBY+qnKkvVcxAK/JdeZ1afXzlpfiCTqKMGowZk0EYU/M
+         nx2aAq2eEULg7l/Ec5dkNUirSOsde4X9YnIeFqw5ujT+flIbBz+sDocUcCmmQxgrj+2p
+         6XCM4e6tzhKl/f/dg07gvus2QV8ck1lmbDEW4M43k/gcr5iW7z40V3joxT0+mAM0b5y4
+         FzyGHVpzb2MUdWFEzUMz+JBM6uIoy67NZV80QSBauOA+T3NH17zomEG/BG74LK/v+GHV
+         h1f9417yyPmi+zxeIiMy2RXB4YxsO9ChomIwhm3Lupa7KKfq91dRcQZawIyh+1HkerTN
+         yIJg==
+X-Forwarded-Encrypted: i=1; AFNElJ+xWd7JY2G5YQrSD4ivT/E2Q20xikEF78MNqWAHYpg7VMLABlr2QQx/VESykR4F3+Nekgo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxhEu3Gwp747ovw1xtwol20lMDa876qVl/VJLZs6w/jQq4j9fng
+	cnkl+qcD/9RYzc4HKBI0urU/frlOMmjwG/etjQdrwVDczctqeKCd/CpG
+X-Gm-Gg: AeBDievUEdoXTyJhKdRHQpqCCvgQlpNXefJn0x8R3wF64b+YRU4KNkj+EdyizrEKGgr
+	Nx1vdYo1BKbetqqkdJLGXfs171yfWnmFlozM6sd+MyTSpwT2Ol8bsWZIuBLVABli33DY3KxefWt
+	o2i9wzWTc4+eu7NJFmfFZBtqWs64fc+wkGjClfAWGZCZShG2+0Ehf9bJvEUCoRJnKlQSqQK5lr7
+	sQce8P6Sz+S96ZeDyYztxdwUss3lG7PnQgVYEb3JTI/vTdJi4naoumBaOAWXbGdN4Qzh8GQNnDy
+	unMFgu3xfZAHwVqoXT4+Z6PVqYqZbU3h8VNQXh257qUxCwbCEB7EPCWVxDl3AMeZpAw/r3WwbxH
+	C9VMSV3EdPMFq50Hhj8JDb6LhBwS8SC+85O0+DrhHzcHESoYjD5vt2tmCqZJHbfw7QP8x3VKd1j
+	zFzi9nwv+VKH4tXM81
+X-Received: by 2002:a05:7022:ec1:b0:128:ca83:5aa1 with SMTP id a92af1059eb24-12c34ea25e4mr7053217c88.16.1776066204042;
+        Mon, 13 Apr 2026 00:43:24 -0700 (PDT)
+Received: from wujing. ([74.48.213.230])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.43.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2026 00:43:23 -0700 (PDT)
+From: Qiliang Yuan <realwujing@gmail.com>
+Subject: [PATCH v2 00/12] Dynamic Housekeeping Management (DHM) via CPUSets
+Date: Mon, 13 Apr 2026 15:43:06 +0800
+Message-Id: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25415176-d977-41c1-83d1-3f060292f636@paulmck-laptop>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAIqe3GkC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyjHQUlJIzE
+ vPSU3UzU4B8JSMDIzMDEwML3fLSrMy8dN2UjFxdizQT41SjFBPL5BQLJaCGgqLUtMwKsGHRsbW
+ 1AC3kgphcAAAA
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+ Juri Lelli <juri.lelli@redhat.com>, 
+ Vincent Guittot <vincent.guittot@linaro.org>, 
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, 
+ "Paul E. McKenney" <paulmck@kernel.org>, 
+ Frederic Weisbecker <frederic@kernel.org>, 
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+ Joel Fernandes <joelagnelf@nvidia.com>, 
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
+ Uladzislau Rezki <urezki@gmail.com>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, 
+ Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
+ Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+ Vlastimil Babka <vbabka@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+ Michal Hocko <mhocko@suse.com>, Brendan Jackman <jackmanb@google.com>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>, 
+ Waiman Long <longman@redhat.com>, Chen Ridong <chenridong@huaweicloud.com>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org, 
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Qiliang Yuan <realwujing@gmail.com>
+X-Mailer: b4 0.13.0
 
-Hello, Paul.
+This series introduces Dynamic Housekeeping Management (DHM) to the
+Linux kernel.
 
-On Fri, Apr 10, 2026 at 12:17:21PM -0700, Paul E. McKenney wrote:
-> > The easiest way to do this is just creating the initial workers for all
-> > possible pools. Please see below. However, the downside is that it's going
-> > to create all workers for all possible cpus. This isn't a problem for
-> > anybody else but these IBM mainframes often come up with a lot of possible
-> > but not-yet-or-ever-online CPUs for capacity management, so the cost may not
-> > be negligible on some configurations.
-> > 
-> > IBM folks, is that okay?
-> 
-> I have also seen x86 systems whose firmware claimed very large numbers
-> of CPUs.  :-(
+Previously known as the DHEI (Dynamic Housekeeping Environment Interface)
+patchset (RFC and v1), this series has been fundamentally refactored in
+response to upstream feedback. The custom sysfs interface has been entirely
+dropped. Instead, DHM is now natively integrated into the cgroup v2
+cpuset controller.
 
-Yeah, I remember seeing those but at least the ones I remember are from long
-times ago. Hopefully, no bios is getting things that wrong anymore.
+By exposing `cpuset.housekeeping.cpus` on the root cgroup, system
+administrators and workload orchestrators (like Kubernetes) can
+dynamically update the kernel's global housekeeping masks at runtime,
+without requiring a node reboot.
 
-> > Also, why do you need to queue work items on an offline CPU? Do they
-> > actually have to be per-cpu? Can you get away with using an unbound
-> > workqueue?
-> 
-> It is good for them to run on the specified CPU in the common case for
-> cache-locality reasons, but if they were occasionally redirected to some
-> other CPU, that would be just fine.
+This version provides dynamic reconfiguration support for the following
+subsystems:
+- RCU (NOCB offloading)
+- Tick/NOHZ (Full dynticks)
+- Global Workqueues and Timers
+- Managed Interrupts (genirq)
+- Hardlockup Detectors (Watchdog)
+- Scheduler Domains (Isolation)
+- Memory Management (vmstat/lru_add_drain)
+- Kthreads and Softirqs (Affinity)
 
-I see.  
+Many thanks to the maintainers for the valuable guidance that led to this
+significantly improved and upstream-aligned architecture.
 
-> I am also keeping the patch that avoids queueing work to CPUs that are not
-> yet fully online.  Further adjustments will be needed if someone invokes
-> call_srcu(), synchronize_srcu(), or synchronize_srcu_expedited() from an
-> CPU that is not yet fully online.  Past experience of course suggests that
-> this will be happen, and that there will be a good reason for it.  ;-)
+To: Ingo Molnar <mingo@redhat.com>
+To: Peter Zijlstra <peterz@infradead.org>
+To: Juri Lelli <juri.lelli@redhat.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+To: Ben Segall <bsegall@google.com>
+To: Mel Gorman <mgorman@suse.de>
+To: Valentin Schneider <vschneid@redhat.com>
+To: Paul E. McKenney <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+To: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+To: Josh Triplett <josh@joshtriplett.org>
+To: Boqun Feng <boqun@kernel.org>
+To: Uladzislau Rezki <urezki@gmail.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+To: Zqiang <qiang.zhang@linux.dev>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+To: Ingo Molnar <mingo@kernel.org>
+To: Thomas Gleixner <tglx@kernel.org>
+To: Tejun Heo <tj@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+To: Vlastimil Babka <vbabka@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>
+To: Michal Hocko <mhocko@suse.com>
+To: Brendan Jackman <jackmanb@google.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+To: Zi Yan <ziy@nvidia.com>
+To: Waiman Long <longman@redhat.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+To: Michal Koutný <mkoutny@suse.com>
+To: Jonathan Corbet <corbet@lwn.net>
+To: Shuah Khan <skhan@linuxfoundation.org>
+To: Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: rcu@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: cgroups@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
 
-I'm gonna hold for now. From workqueue side, it's a really easy change, so
-please let me know if this comes up again.
+Changes in v2:
+- Rebranded series from DHEI to DHM (Dynamic Housekeeping Management).
+- Entirely dropped custom sysfs interface.
+- Integrated housekeeping control into cgroup v2 cpuset controller
+  at the root level.
+- Added SMT-aware pipeline logic (cpuset.housekeeping.smt_aware) to
+  prevent splitting SMT siblings.
+- Added comprehensive documentation and cgroup functional selftests for
+  the DHM APIs.
+- Refactored the internal mask transition logic to use RCU-safe
+  handover.
+- Separated patch series into 4 logical phases for review.
 
-Thanks.
+v1 Link: https://lore.kernel.org/all/20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com
 
+Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
+---
+Qiliang Yuan (12):
+      sched/isolation: Separate housekeeping types in enum hk_type
+      sched/isolation: Introduce housekeeping notifier infrastructure
+      rcu: Support runtime NOCB initialization and dynamic offloading
+      tick/nohz: Transition to dynamic full dynticks state management
+      genirq: Support dynamic migration for managed interrupts
+      watchdog: Allow runtime toggle of lockup detector affinity
+      sched/core: Dynamically update scheduler domain housekeeping mask
+      workqueue, mm: Support dynamic housekeeping mask updates
+      cgroup/cpuset: Introduce CPUSet-driven dynamic housekeeping (DHM)
+      cgroup/cpuset: Implement SMT-aware grouping and safety guards
+      Documentation: cgroup-v2: Document dynamic housekeeping (DHM)
+      selftests: cgroup: Add functional tests for dynamic housekeeping
+
+ Documentation/admin-guide/cgroup-v2.rst      |  24 +++++
+ include/linux/sched/isolation.h              |  51 ++++++++---
+ kernel/cgroup/cpuset-internal.h              |   2 +
+ kernel/cgroup/cpuset.c                       |  73 +++++++++++++++
+ kernel/irq/manage.c                          |  49 ++++++++++
+ kernel/rcu/rcu.h                             |   4 +
+ kernel/rcu/tree.c                            |  75 ++++++++++++++++
+ kernel/rcu/tree.h                            |   2 +-
+ kernel/rcu/tree_nocb.h                       |  31 ++++---
+ kernel/sched/core.c                          |  23 +++++
+ kernel/sched/isolation.c                     |  74 ++++++++++++++-
+ kernel/time/tick-sched.c                     | 130 +++++++++++++++++++++------
+ kernel/watchdog.c                            |  26 ++++++
+ kernel/workqueue.c                           |  42 +++++++++
+ mm/compaction.c                              |  27 ++++++
+ tools/testing/selftests/cgroup/test_cpuset.c |  36 ++++++++
+ 16 files changed, 620 insertions(+), 49 deletions(-)
+---
+base-commit: bfe62a454542cfad3379f6ef5680b125f41e20f4
+change-id: 20260408-wujing-dhm-8f43e2d49cd8
+
+Best regards,
 -- 
-tejun
+Qiliang Yuan <realwujing@gmail.com>
+
