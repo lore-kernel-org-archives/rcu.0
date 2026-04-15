@@ -1,101 +1,142 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1E72222D0;
-	Wed, 15 Apr 2026 10:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0300133120C;
+	Wed, 15 Apr 2026 17:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776250205; cv=none; b=p/znGS8ASfdc+TKOtheRxWZQLrVzVEzXf2EPqPGLZfn54FBLiG8I6CvlorCsxnPXhvodX2d4tpXm045PMSnNHNqJ7K3KilUYpwmDBTyjkGV3Fb1Z8oDdhoSnWgsP919lYX3Y5xVzlIWY0VIfcmU4erGIUWz11rx7bwy+xaG43iM=
+	t=1776272934; cv=none; b=Bc27cjLx+/KNX3dlsnGlewN78FlSKVD5xisVDA11f7eCCZXE4+Bd0rU8dHak3n7x3zGkk+iGwyj915X17YLhJed/RVjf3ZuIe5dvteDM80ds1vxdkbKi3GPX2zdYPmGsDu84vKaAoUQtXdky+8YYmoY8A8Ios3BaubLadjj0E3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776250205; c=relaxed/simple;
-	bh=7Y9LZV6U1xyrOHwAijlBN1vXwQsWgvG1uZWTDoxA/OM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GHH/FegOcGukmM6o4ml3Yggl62+LbYt2h1LaHxysTqem+Yb+AswTuilb/bOhJfCiDPQFq2NcmjBrldwMkDquR1dj41kvTJhdLHyw7OUJjAG0a75pmX8f+eBSES4vi4dviPrcotfm41Wsy1F6nUOsiKHoeld8WPje7r1eagApYC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kxpj4DTv; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1776272934; c=relaxed/simple;
+	bh=8EdpDbjWpEfY9zXDyutbjs8BUV0E1+6AmdmLmyEMfSA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fPzrIajZ75VS92XP+uAuT/JS+NIPuZB7QPdb2P6BzeBGqE8/13vgfhDlm3SUKA+Ve0g9FI/b3Csf5RnTNFJdWini5g4CHdIFwIePW204KVLMZuFV4A5TW22Qt2smQSBPhQXQpFBTHHXUx5q6mjiKyJ218oADo2kfueH0zAtjKF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ubOpxq+0; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kxpj4DTv"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34D0CC19424;
-	Wed, 15 Apr 2026 10:50:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776250205;
-	bh=7Y9LZV6U1xyrOHwAijlBN1vXwQsWgvG1uZWTDoxA/OM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kxpj4DTv/Yk7p5jvwdsLH5oWgEvb10ysaAyxQKmqcTsDbjN7noPDFcF4XY92vYNJb
-	 dOBvecYWIYwyaKhU51xhNFbJzDK1/r+r7irvKFZf0QXmrqleaKgjuTdx9MEhpQPWHC
-	 a/kBEIAQAcdivAYufyXZYmLM/fymJTb/ieawaY6CT9YD/021Wf0MNWjlUDAJiUu6r8
-	 j0zwzpWv45cWJNWchRO6obf4PwTSAA+kyao49lACKA2EfoMqYVDGORFxrazmDTg6Qa
-	 NooZUVllQoJyWF1P2kWtY0IE5W9KG6V0laP8BmIxTjn241wOO3SCgCxFMx9RDe2gzP
-	 lV1YlUpVXGoGw==
-Date: Wed, 15 Apr 2026 12:50:03 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Qiliang Yuan <realwujing@gmail.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Brendan Jackman <jackmanb@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
-	Waiman Long <longman@redhat.com>,
-	Chen Ridong <chenridong@huaweicloud.com>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 08/12] workqueue, mm: Support dynamic housekeeping
- mask updates
-Message-ID: <ad9tWw-J_t-f6AcB@localhost.localdomain>
-References: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
- <20260413-wujing-dhm-v2-8-06df21caba5d@gmail.com>
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="ubOpxq+0"
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 1EF2B60177;
+	Wed, 15 Apr 2026 19:08:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1776272931;
+	bh=6bOJS2bqcYmFCvqyYFWPjJ+z4vwva44OIAdYCVYUYSo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ubOpxq+02y2nkfryzTbNz7OyvqmyTWu6sHYiBPJgeLGpItsTJCx0xYalP8cAMA88b
+	 Kz0ePAVgyk05w6OJM7my66kp4C0bvdquWxhHtmX3yZ5yao7d4Zkya3zQPTWTBwDz6r
+	 Qnov6lW822xlJsuR6zjdMOZksXh1Z8Qs0nQE6wuHFF2KDqzssAZRjB9Alwv75/URnH
+	 jUywN5eqFzvckPQqXNCsu4yBoZwUOpqdt30EmL7fjp9bXP5xl6PyDu9MH/cnltUJUV
+	 XLYlzBDiVnG6kTKY6iCH5Pmns6zxpmKCrxfccyWipanjOJaBy67oY/w7zcx4P2NKg6
+	 JUdhol/zGMnGQ==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de,
+	horms@kernel.org,
+	joelagnelf@nvidia.com,
+	josh@joshtriplett.org,
+	boqun@kernel.org,
+	urezki@gmail.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev,
+	rcu@vger.kernel.org
+Subject: [PATCH nf,v2 1/3] rculist: add list_splice_rcu() for private lists
+Date: Wed, 15 Apr 2026 19:08:44 +0200
+Message-ID: <20260415170844.41355-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260413-wujing-dhm-v2-8-06df21caba5d@gmail.com>
 
-Le Mon, Apr 13, 2026 at 03:43:14PM +0800, Qiliang Yuan a écrit :
-> Unbound workqueues and kcompactd threads determine their default CPU
-> affinity from housekeeping masks (HK_TYPE_WQ, HK_TYPE_DOMAIN, and
-> HK_TYPE_KTHREAD) at boot. Currently, these boundaries are static and
-> are not updated if housekeeping is reconfigured at runtime.
-> 
-> Implement housekeeping notifiers for both workqueue and mm compaction.
-> 
-> This ensures that unbound workqueue tasks and background compaction
-> threads honor dynamic isolation boundaries configured via sysfs or
-> cpuset at runtime.
-> 
-> Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
+This patch adds a helper function, list_splice_rcu(), to safely splice
+a private (non-RCU-protected) list into an RCU-protected list.
 
-Unbound workqueues and kthreads are already handled by cpuset
-isolated partitions.
+The function ensures that only the pointer visible to RCU readers
+(prev->next) is updated using rcu_assign_pointer(), while the rest of
+the list manipulations are performed with regular assignments, as the
+source list is private and not visible to concurrent RCU readers.
 
-Thanks.
+This is useful for moving elements from a private list into a global
+RCU-protected list, ensuring safe publication for RCU readers.
+Subsystems with some sort of batching mechanism from userspace can
+benefit from this new function.
 
+The function __list_splice_rcu() has been added for clarity and to
+follow the same pattern as in the existing list_splice*() interfaces,
+where there is a check to ensure that that the list to splice is not
+empty. Note that __list_splice_rcu() has no documentation for this
+reason.
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v2: including comments by Paul McKenney.
+
+    Except, I have deliberately keep back the suggestion to squash
+    __list_splice_rcu() into list_splice_rcu(), I instead removed
+    the documentation for __list_splice_rcu(). I am looking
+    at other existing list_splice*() function in list.h and rculist.h
+    to get this aligned with __list_splice(), which also has no users
+    in the tree and no documentation. I find it easier to read with
+    __list_splice(), but if this explaination is not sound so...
+
+    @Paul: I can post v3 squashing __list_splice_rcu(), just let me
+           know.
+
+    Thanks!
+
+ include/linux/rculist.h | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index 2abba7552605..e3bc44225692 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -261,6 +261,35 @@ static inline void list_replace_rcu(struct list_head *old,
+ 	old->prev = LIST_POISON2;
+ }
+ 
++static inline void __list_splice_rcu(struct list_head *list,
++				     struct list_head *prev,
++				     struct list_head *next)
++{
++	struct list_head *first = list->next;
++	struct list_head *last = list->prev;
++
++	last->next = next;
++	first->prev = prev;
++	next->prev = last;
++	rcu_assign_pointer(list_next_rcu(prev), first);
++}
++
++/**
++ * list_splice_rcu - splice a non-RCU list into an RCU-protected list,
++ *                   designed for stacks.
++ * @list:	the non RCU-protected list to splice
++ * @head:	the place in the existing RCU-protected list to splice
++ *
++ * The list pointed to by @head can be RCU-read traversed concurrently with
++ * this function.
++ */
++static inline void list_splice_rcu(struct list_head *list,
++				   struct list_head *head)
++{
++	if (!list_empty(list))
++		__list_splice_rcu(list, head, head->next);
++}
++
+ /**
+  * __list_splice_init_rcu - join an RCU-protected list into an existing list.
+  * @list:	the RCU-protected list to splice
 -- 
-Frederic Weisbecker
-SUSE Labs
+2.47.3
+
