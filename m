@@ -1,224 +1,121 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3082A387566;
-	Tue, 14 Apr 2026 21:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAF6217704;
+	Wed, 15 Apr 2026 09:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776203876; cv=none; b=RaICNizARuxFP47dUF+harhm2gm8/kmDVvLZff0ttvJCCkjDXBfxVxQCwswRaTyvU1GxKCT5/3K/MDGn/lL5/XrGIMDrkmbSY53mRvanqTtlkT0XcVsZrZUwq+riURnv1kfLucJLsk6/m+u+i1js+SBC9ynW/YJ6klLHAnur/KM=
+	t=1776247057; cv=none; b=hW3uvCRDGXdpUhnY7PuB6xjK4zH1uk7Qar7WrJM4HxU/6NBl636IF//xaDlx/FjnQhcWao8YP4nPFQoJDGwaRcPSRR3wlixV4kdvZhOS1tgvYyww9XrMSgeWe+VLcyc30Pwp12V3BgTG1i4LBFw698KXE91MbyxJcWpXqRgP0yg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776203876; c=relaxed/simple;
-	bh=ZUNzTicQgDcyFP5w0RI4Nrc7tmhjfuPP2YRMHTfeXHw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=biQcYW6tYqJyKb5h0CSersXPTWthx+ZHfc6Qj+l7a4/9nY8+3p2M89t14c0th0uTDONXINd2OiKkdUXLe/oLjimbuKJsUfuAEJi+MlyL+k3goryBNRLuvZ1fMaCO3bmA/3d1FJ2oHr+GONLaPyMNx34Q355Vh05f7bn8FTnhB08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bpO0O54J; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1776247057; c=relaxed/simple;
+	bh=fPenWH6QfvusBtCg4QCwgZJ+BbZLJ1RStl3A1w+9t4s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uYkukbKon1x4fXqdSPPmIexySzdSP6sYz2h61+yQv9uWMgMSNDXcSvwkDL2yWmzCoHCzaSr/LUaq9yx+U+InhGc8NNKeGks9IoBvQaA/B3FQ+22pdQRZe5s/i+KfXDrse3rVqgIDxT7jrgwOuMJKCuCmjQOLT7GRsVJgdyOE1B4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a0BiKNWp; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bpO0O54J"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA95EC19425;
-	Tue, 14 Apr 2026 21:57:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a0BiKNWp"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C44FDC19424;
+	Wed, 15 Apr 2026 09:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776203875;
-	bh=ZUNzTicQgDcyFP5w0RI4Nrc7tmhjfuPP2YRMHTfeXHw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=bpO0O54J2tayfMK4LNj+PnNzYYE4jpf3X6/mDcNY+6rk5Iu3nuFLpco5R5ZzI0cqE
-	 1FS2FTQ1hTF/HrWbhVai0pCIBDQh9x//cPwtiInWdpQwVH/0QW0vOVeXgnwFA27D+d
-	 dWjnEJxD2jYfv0nRE7nM+UtQRYf+vR7EtCW2+fmlAGhtdC4+c+wLWqn3Skmb+M7S01
-	 6qa3LyUdW91baafo8JAYu2iOSg2Dwsf0At3W/2Te4M3Jz+C6o7zoKelMpO3E8Hhy4O
-	 vR5+74ONopnl8+XXC7oUb31d3nocIMR2Otp5hCvt3O/crKmRHOK2/WshfIcZ+gApy1
-	 AkdHVnGu+8dDw==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Qiliang Yuan <realwujing@gmail.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Valentin
- Schneider <vschneid@redhat.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
- Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang@linux.dev>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Tejun Heo
- <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Vlastimil
- Babka <vbabka@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal
- Hocko <mhocko@suse.com>, Brendan Jackman <jackmanb@google.com>, Johannes
- Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>, Waiman Long
- <longman@redhat.com>, Chen Ridong <chenridong@huaweicloud.com>, Michal
- =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Jonathan Corbet
- <corbet@lwn.net>, Shuah Khan
- <skhan@linuxfoundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Qiliang Yuan <realwujing@gmail.com>
-Subject: Re: [PATCH v2 04/12] tick/nohz: Transition to dynamic full dynticks
- state management
-In-Reply-To: <20260413-wujing-dhm-v2-4-06df21caba5d@gmail.com>
+	s=k20201202; t=1776247057;
+	bh=fPenWH6QfvusBtCg4QCwgZJ+BbZLJ1RStl3A1w+9t4s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=a0BiKNWpnWLV2d6FuFaeFx+ttM7qFSFSsv/h2mz0KBBk0rmD/kEGJSxeiK+bs+K+c
+	 p2ITQDCzJdU66sqqMRhGRlnKDOOkVW/fiRH7CR/faB9kJMF8eScY0j/hfB05koRTlE
+	 NylTzG1gS17InNCBSQ/aurFJZB0NT8WzjqfmAFRkF/RgGFkn4MvK1PAaK7kvRa0koW
+	 B5IsIRJrzUw64u5u9nf533r8n1IyMTFBIvTQQSKeuZ77sI9AXuqGN5ytjGgJyh/ILG
+	 UD5XuZ0zuf0A/BK20SeIdeW3pEmTPyN3iwrPA1HO8ruVFPqqcnoQTcm6iAAZNCWWlx
+	 LMDZo65fxlc9g==
+Date: Wed, 15 Apr 2026 11:57:34 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Qiliang Yuan <realwujing@gmail.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+	Tejun Heo <tj@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Brendan Jackman <jackmanb@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
+	Waiman Long <longman@redhat.com>,
+	Chen Ridong <chenridong@huaweicloud.com>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 09/12] cgroup/cpuset: Introduce CPUSet-driven dynamic
+ housekeeping (DHM)
+Message-ID: <ad9hDvLyswZCokDH@localhost.localdomain>
 References: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
- <20260413-wujing-dhm-v2-4-06df21caba5d@gmail.com>
-Date: Tue, 14 Apr 2026 23:57:52 +0200
-Message-ID: <87tstddx27.ffs@tglx>
+ <20260413-wujing-dhm-v2-9-06df21caba5d@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260413-wujing-dhm-v2-9-06df21caba5d@gmail.com>
 
-On Mon, Apr 13 2026 at 15:43, Qiliang Yuan wrote:
+Le Mon, Apr 13, 2026 at 03:43:15PM +0800, Qiliang Yuan a écrit :
+> Currently, subsystem housekeeping masks are generally static and can
+> only be configured via boot-time parameters (e.g., isolcpus, nohz_full).
+> This inflexible approach forces a system reboot whenever an orchestrator
+> needs to change workload isolation boundaries.
+> 
+> This patch introduces CPUSet-driven Dynamic Housekeeping Management (DHM)
+> by exposing the `cpuset.housekeeping.cpus` control file on the root cgroup.
+> Writing a new cpumask to this file dynamically updates the housekeeping
+> masks of all registered subsystems (scheduler, RCU, timers, tick, workqueues,
+> and managed IRQs) simultaneously, without restarting the node.
 
-> Context:
-> Full dynticks (NOHZ_FULL) is typically a static configuration determined
-> at boot time. DHEI extends this to support runtime activation.
+There is already the "isolated" partition type which does scheduler, timers
+and workqueues isolation. Shouldn't we extend that to dynamically apply nohz_full
+instead of adding a new unrelated file?
 
-I have no idea what DHEI is. Provide proper information and not magic
-acronyms.
+I don't know which form that should take. Perhaps reuse the "isolated" partition
+but add some sort of parameter to define if we want only domain isolation or
+also full isolation (that is nohz_full). Waiman should have a better idea for an
+interface here.
 
-> Problem:
-> Switching to NOHZ_FULL at runtime requires careful synchronization
-> of context tracking and housekeeping states. Re-invoking setup logic
-> multiple times could lead to inconsistencies or warnings, and RCU
-> dependency checks often prevented tick suppression in Zero-Conf setups.
+> 
+> At the cpuset and isolation core level, this change implements:
+> 1. `housekeeping_update_all_types(const struct cpumask *new_mask)` API inside
+>    `isolation.c` to safely allocate, update, and replace all enabled hk_type
+> masks.
 
-And that careful synchronization is best achieved with an opaque
-notifier callchain which relies on build time ordering. Impressive.
+HK_TYPE_DOMAIN is handled by "isolated" partitions. What remains to handle
+is HK_TYPE_KERNEL_NOISE.
 
-> Solution:
-> - Replace the static tick_nohz_full_enabled() checks with a dynamic
->   tick_nohz_full_running state variable.
+As for managed IRQs this will require more thinking but we should include that
+into "full isolation" in the future.
 
-That variable existed before and you are telling the what and not why
-this is required and how that is correct vs. the other checks in
-tick_nohz_full_enabled(). Also what's static about that function aside
-of being marked static inline?
+> +int housekeeping_update_all_types(const struct cpumask *new_mask)
 
-> - Refactor tick_nohz_full_setup to be safe for runtime invocation,
->   adding guards against re-initialization and ensuring IRQ work
->   interrupt support.
+Please reuse housekeeping_update().
 
-Refactoring has to be done in a preparatory patch and not 
+Thanks.
 
-> - Implement boot-time pre-activation of context tracking (shadow
->   init) for all possible CPUs to avoid instruction flow issues during
->   dynamic transitions.
-
-Again lot's of hand waving without a proper explanation.
-
-> - Hook into housekeeping_notifier_list to update NO_HZ states dynamically.
-
-See above.
-
-> This provides the core state machine for reliable, on-demand tick
-> suppression and high-performance isolation.
-
-I can find a lot of hacks, but definitely not the slightest notion of a
-state machine. Don't throw random buzzwords into a changelog if there is
-no evidence for their existance.
-
-> +static int tick_nohz_housekeeping_reconfigure(struct notifier_block *nb,
-> +					     unsigned long action, void *data)
-> +{
-> +	struct housekeeping_update *upd = data;
-> +	int cpu;
-> +
-> +	if (action == HK_UPDATE_MASK && upd->type == HK_TYPE_TICK) {
-> +		cpumask_var_t non_housekeeping_mask;
-> +
-> +		if (!alloc_cpumask_var(&non_housekeeping_mask, GFP_KERNEL))
-> +			return NOTIFY_BAD;
-> +
-> +		cpumask_andnot(non_housekeeping_mask, cpu_possible_mask, upd->new_mask);
-> +
-> +		if (!tick_nohz_full_mask) {
-> +			if (!zalloc_cpumask_var(&tick_nohz_full_mask, GFP_KERNEL)) {
-> +				free_cpumask_var(non_housekeeping_mask);
-> +				return NOTIFY_BAD;
-> +			}
-> +		}
-> +
-> +		/* Kick all CPUs to re-evaluate tick dependency before change */
-> +		for_each_online_cpu(cpu)
-> +			tick_nohz_full_kick_cpu(cpu);
-
-That solves what?
-
-> +		cpumask_copy(tick_nohz_full_mask, non_housekeeping_mask);
-
-What's the exact point of this non_housekeeping_mask?
-
-Why can't you simply do:
-
-		cpumask_andnot(tick_nohz_full_mask, cpu_possible_mask, upd->new_mask);
-
-That'd be too simple and comprehensible, right?
-
-> +		tick_nohz_full_running = !cpumask_empty(tick_nohz_full_mask);
-> +
-> +		/*
-> +		 * If nohz_full is running, the timer duty must be on a housekeeper.
-> +		 * If the current timer CPU is not a housekeeper, or no duty is assigned,
-> +		 * pick the first housekeeper and assign it.
-> +		 */
-> +		if (tick_nohz_full_running) {
-> +			int timer_cpu = READ_ONCE(tick_do_timer_cpu);
-
-New line between declaration and code.
-
-> +			if (timer_cpu == TICK_DO_TIMER_NONE ||
-> +			    !cpumask_test_cpu(timer_cpu, upd->new_mask)) {
-
-No line break required. You have 100 characters
-
-> +				int next_timer = cpumask_first(upd->new_mask);
-
-next_timer? Please pick variable names which are comprehensible and self
-explaining. Also why can't you re-use timer_cpu, which would be actually useful?
-
-
-> +				if (next_timer < nr_cpu_ids)
-
-How can upd->new_mask be empty? That'd be a bug, no?
-
-> +					WRITE_ONCE(tick_do_timer_cpu, next_timer);
-> +			}
-> +		}
-> +
-> +		/* Kick all CPUs again to apply new nohz full state */
-> +		for_each_online_cpu(cpu)
-> +			tick_nohz_full_kick_cpu(cpu);
-
-This whole thing lacks an explanation why it is even remotely correct.
-
-> void __init tick_nohz_init(void)
-...
-> +	if (!tick_nohz_full_mask) {
-> +		if (!slab_is_available())
-> +			alloc_bootmem_cpumask_var(&tick_nohz_full_mask);
-> +		else
-> +			zalloc_cpumask_var(&tick_nohz_full_mask, GFP_KERNEL);
->  	}
-
-I've seen the same code sequence before. Copy & paste is simpler than
-providing helper functions.....
-  
-> -	if (IS_ENABLED(CONFIG_PM_SLEEP_SMP) &&
-> -			!IS_ENABLED(CONFIG_PM_SLEEP_SMP_NONZERO_CPU)) {
-> -		cpu = smp_processor_id();
-> +	housekeeping_register_notifier(&tick_nohz_housekeeping_nb);
->  
-> -		if (cpumask_test_cpu(cpu, tick_nohz_full_mask)) {
-> -			pr_warn("NO_HZ: Clearing %d from nohz_full range "
-> -				"for timekeeping\n", cpu);
-> -			cpumask_clear_cpu(cpu, tick_nohz_full_mask);
-> +	if (tick_nohz_full_running) {
-
-This indentation and the resulting goto mess can be completely avoided
-if you actually refactor the code and not just claim to do so.
-
-Again, this does too many things at once and then explains them badly,
-which makes it unreviewable.
-
-Thanks,
-
-        tglx
+-- 
+Frederic Weisbecker
+SUSE Labs
