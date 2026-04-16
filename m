@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29C37378D9E
-	for <rcu@vger.kernel.org>; Thu, 16 Apr 2026 09:10:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627BB378D9E
+	for <rcu@vger.kernel.org>; Thu, 16 Apr 2026 09:10:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776330651; cv=none; b=TLI0YTfZ+3VYfozjsjIX+Iknhhjkut1M5pjMyCOVK0DK16NdMwW7RQqEqLLkrsqrw+jZNUjsibqJVQRrRSZR7a0t21i9xUHa51VqpfvmniOMts71nLvtWkki1MCPAOXtSc2ohpoaf3ktBRuXXHa94yDmFIz3SIASTzfYrQeHNQA=
+	t=1776330654; cv=none; b=U1AE34Zw0mTqN/VQ3zkvJJ07NWtOz6ULwr3rrqrgjJHYeDwO4dNpkGYR6u7BhfIALOByUaY1xXyVRahVYKrmWvsEtOUscKWa7TquELzjOtNto//xra3lsDIL7BIP2JstawjHXagUg0vaKB/TxmUCWXY7rEoIG/SWWAIDubuHhXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776330651; c=relaxed/simple;
-	bh=KVtcHV6ZDZO1rs/63QPo3Nc9xkoqRGLE5wgjSTGCkzk=;
+	s=arc-20240116; t=1776330654; c=relaxed/simple;
+	bh=LATxRaCRQ+I6DOtBbEo4sXyXtR4wOYD3wcNo4oJIen8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Gi4q5hQ99ThBIsd5LaV1xAqD5wrn/JJ5CL7iKHGFtVjBz4JiSLgLzQNhLF0SIv/5uezHz65wpe2q9mxjpr/wJVaAqefiRyxG9kGAuKbwpdrRCpb3bs98rl1SpRXbrbdp4CsOSlCcxXFegJ3X6Co60hFoyNg36V3EeBo0FlxVugo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u3vUv6PN; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=AVzPvujO3r8FRk3wi7eSS+dw9DxXDKmLyWsbUom8Xe6nRflJaoSZD8P/iBMwKscPWIRpZUzPBAtK0c0Doa9V4ApE/Xn1tWQa04ZpsJSTdkxIvKBGe4dxgrU6hXUF9D0jCOPjj5yXp5ZuCVmbBXN6ncnHpnj0myczH9Uq4e7ap5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dxTiqn9W; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u3vUv6PN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26590C2BCB6;
-	Thu, 16 Apr 2026 09:10:48 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dxTiqn9W"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 620A1C2BCAF;
+	Thu, 16 Apr 2026 09:10:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776330651;
-	bh=KVtcHV6ZDZO1rs/63QPo3Nc9xkoqRGLE5wgjSTGCkzk=;
+	s=k20201202; t=1776330654;
+	bh=LATxRaCRQ+I6DOtBbEo4sXyXtR4wOYD3wcNo4oJIen8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=u3vUv6PNEGqBNMbFhjMIOq/G7s+LtiA0lrMsvWv8GNiaqEbyUD1Fd1NmdozSixtAs
-	 y8xG2GmF+RePfAnvoGy2hxAouu/b6nKgtTbbZ2eIp1hmJsez9gtEp5K14DhY/MOZ7W
-	 QybgOBYVgkfFIXSj3aAlRHKfFMehWHRomQYy5iMBQTZ+eyrRkKDHfxz94+LZKHMlti
-	 /p7zExWnGfEOBU8I51QtIbfcncoqXDl4FibuAoBF/TDGt4pdL5hknrHxiyKoutdxz0
-	 8+B/iVMKlcjX9yEjg5+ULWTP6CsH+p94YUzD4ateQ8E9+eRRjgoob2shhLyA1dxR23
-	 8BWWUpPBT8SvA==
+	b=dxTiqn9WdOiYD8TTOctyYBTJnnfrMrkIeNLNCEcJUxewnXGOtMLXNR6lFgs0Ktc+q
+	 eok+ngmcTckSQlufgwP6MTzr62gQDBmhMxcHJM1BrCXAf+NKX05bWz0fKIvtvH3cr2
+	 h7J9ruuVqla1sjjCnOamlY3HpVfPvBsOLvqogelghkjecKWUdknjSFsE31BhrucK9n
+	 WcRYB0+q7cGDsU3KU+ismnHqij89BchWGuXefNClV+Kg7D530uUo33F2DBEqXOFjQ5
+	 nabrjLq8llo2lYf14wSCqMvQWGkqdik7Z6TPiaoaW39Hd+LXWZChWcStVyolkIzQNK
+	 7rDdRACbh2U8g==
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Vlastimil Babka <vbabka@kernel.org>
@@ -47,9 +47,9 @@ Cc: Christoph Lameter <cl@gentwo.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	rcu@vger.kernel.org,
 	linux-mm@kvack.org
-Subject: [PATCH 7/8] mm/slab: introduce deferred submission of rcu sheaves
-Date: Thu, 16 Apr 2026 18:10:21 +0900
-Message-ID: <20260416091022.36823-8-harry@kernel.org>
+Subject: [PATCH 8/8] lib/tests/slub_kunit: add a test case for kfree_rcu_nolock()
+Date: Thu, 16 Apr 2026 18:10:22 +0900
+Message-ID: <20260416091022.36823-9-harry@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260416091022.36823-1-harry@kernel.org>
 References: <20260416091022.36823-1-harry@kernel.org>
@@ -61,178 +61,107 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of falling back when the rcu sheaf becomes full, implement
-deferred submission of rcu sheaves. If kfree_rcu_sheaf() is invoked
-by kfree_rcu_nolock() (!allow_spin) and IRQs are disabled, the CPU might
-be in the middle of call_rcu() and thus defer call_rcu() with irq_work.
+Similar to test_kmalloc_kfree_nolock, add a test that allocates objects
+via kmalloc_nolock() and frees them via kfree_rcu_nolock() in a perf
+overflow handler (NMI or hardirq depending on the arch), while the main
+loop allocates and frees objects via kmalloc() and kfree_rcu().
 
-Submit all deferred RCU sheaves to call_rcu() before calling
-rcu_barrier() to ensure the promise of kvfree_rcu_barrier().
-
-An alternative approach could be to implement this in the RCU subsystem,
-tracking if it's safe to call call_rcu() and allowing falling back to
-deferred call_rcu() at the cost of more expensive rcu_barrier() calls.
-
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 ---
- mm/slab.h        |  2 ++
- mm/slab_common.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++--
- mm/slub.c        | 12 ++++--------
- 3 files changed, 53 insertions(+), 10 deletions(-)
+ lib/tests/slub_kunit.c | 73 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
 
-diff --git a/mm/slab.h b/mm/slab.h
-index bdad5f389490..9ba3aad1eeb2 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -411,6 +411,8 @@ static inline bool is_kmalloc_normal(struct kmem_cache *s)
+diff --git a/lib/tests/slub_kunit.c b/lib/tests/slub_kunit.c
+index fa6d31dbca16..f8d979912246 100644
+--- a/lib/tests/slub_kunit.c
++++ b/lib/tests/slub_kunit.c
+@@ -367,6 +367,78 @@ static void test_kmalloc_kfree_nolock(struct kunit *test)
+ 			kfree(objects[j]);
+ 	}
  
- #ifdef CONFIG_KVFREE_RCU_BATCHED
- bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_spin);
-+void rcu_free_sheaf(struct rcu_head *head);
-+void submit_rcu_sheaf(struct rcu_head *head, bool allow_spin);
- void flush_all_rcu_sheaves(void);
- void flush_rcu_sheaves_on_cache(struct kmem_cache *s);
- #endif
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 347e52f1538c..226009b10c4a 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1314,8 +1314,11 @@ struct kfree_rcu_cpu {
- 	// Objects queued on a lockless linked list, used to free objects
- 	// in unknown contexts when trylock fails.
- 	struct llist_head defer_head;
--
- 	struct irq_work defer_free;
++cleanup:
++	perf_event_disable(ctx.event);
++	perf_event_release_kernel(ctx.event);
 +
-+	struct llist_head defer_call_rcu_head;
-+	struct irq_work defer_call_rcu;
++	kunit_info(test, "callback_count: %d, alloc_ok: %d, alloc_fail: %d\n",
++		   ctx.callback_count, ctx.alloc_ok, ctx.alloc_fail);
 +
- 	struct irq_work sched_delayed_monitor;
- 	struct irq_work run_page_cache_worker;
- 
-@@ -1345,11 +1348,14 @@ struct kfree_rcu_cpu {
- static void defer_kfree_rcu_irq_work_fn(struct irq_work *work);
- static void sched_delayed_monitor_irq_work_fn(struct irq_work *work);
- static void run_page_cache_worker_irq_work_fn(struct irq_work *work);
-+static void defer_call_rcu_irq_work_fn(struct irq_work *work);
- 
- static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
- 	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
- 	.defer_head = LLIST_HEAD_INIT(defer_head),
- 	.defer_free = IRQ_WORK_INIT(defer_kfree_rcu_irq_work_fn),
-+	.defer_call_rcu_head = LLIST_HEAD_INIT(defer_call_rcu_head),
-+	.defer_call_rcu = IRQ_WORK_INIT(defer_call_rcu_irq_work_fn),
- 	.sched_delayed_monitor =
- 		IRQ_WORK_INIT_LAZY(sched_delayed_monitor_irq_work_fn),
- 	.run_page_cache_worker =
-@@ -1374,8 +1380,12 @@ void defer_kvfree_rcu_barrier(void)
- {
- 	int cpu;
- 
--	for_each_possible_cpu(cpu)
-+	for_each_possible_cpu(cpu) {
- 		irq_work_sync(&per_cpu_ptr(&krc, cpu)->defer_free);
-+#ifdef CONFIG_KVFREE_RCU_BATCHED
-+		irq_work_sync(&per_cpu_ptr(&krc, cpu)->defer_call_rcu);
-+#endif
++	if (alloc_fail)
++		kunit_skip(test, "Allocation failed");
++	KUNIT_EXPECT_EQ(test, 0, slab_errors);
++}
++
++struct dummy_struct {
++	struct rcu_ptr rcu;
++};
++
++static void overflow_handler_test_kfree_rcu_nolock(struct perf_event *event,
++						   struct perf_sample_data *data,
++						   struct pt_regs *regs)
++{
++	struct dummy_struct *dummy;
++	gfp_t gfp;
++	struct test_nolock_context *ctx = event->overflow_handler_context;
++
++	/* __GFP_ACCOUNT to test kmalloc_nolock() in alloc_slab_obj_exts() */
++	gfp = (ctx->callback_count % 2) ? 0 : __GFP_ACCOUNT;
++	dummy = kmalloc_nolock(sizeof(*dummy), gfp, NUMA_NO_NODE);
++
++	if (dummy) {
++		ctx->alloc_ok++;
++		kfree_rcu_nolock(dummy, rcu);
++	} else {
++		ctx->alloc_fail++;
 +	}
- }
- 
- static void *object_start_addr(void *ptr)
-@@ -1524,6 +1534,21 @@ static void sched_delayed_monitor_irq_work_fn(struct irq_work *work)
- 	schedule_delayed_monitor_work(krcp);
- }
- 
-+static void defer_call_rcu_irq_work_fn(struct irq_work *work)
-+{
-+	struct kfree_rcu_cpu *krcp;
-+	struct llist_node *llnode, *pos, *t;
-+
-+	krcp = container_of(work, struct kfree_rcu_cpu, defer_call_rcu);
-+
-+	if (llist_empty(&krcp->defer_call_rcu_head))
-+		return;
-+
-+	llnode = llist_del_all(&krcp->defer_call_rcu_head);
-+	llist_for_each_safe(pos, t, llnode)
-+		call_rcu((struct rcu_head *)pos, rcu_free_sheaf);
++	ctx->callback_count++;
 +}
 +
- static __always_inline void
- debug_rcu_bhead_unqueue(struct kvfree_rcu_bulk_data *bhead)
- {
-@@ -2187,6 +2212,26 @@ void kvfree_call_rcu_ptr(struct rcu_ptr *head, void *ptr, bool allow_spin)
- }
- EXPORT_SYMBOL_GPL(kvfree_call_rcu_ptr);
- 
-+static inline void defer_call_rcu(struct rcu_head *head)
++static void test_kfree_rcu_nolock(struct kunit *test)
 +{
-+	struct kfree_rcu_cpu *krcp;
++	int i, j;
++	struct test_nolock_context ctx = { .test = test };
++	struct perf_event *event;
++	bool alloc_fail = false;
++	struct dummy_struct *dummy;
 +
-+	VM_WARN_ON_ONCE(!irqs_disabled());
++	if (IS_BUILTIN(CONFIG_SLUB_KUNIT_TEST))
++		kunit_skip(test, "can't do kfree_rcu_nolock() when test is built-in");
 +
-+	krcp = this_cpu_ptr(&krc);
-+	if (llist_add((struct llist_node *)head, &krcp->defer_call_rcu_head))
-+		irq_work_queue(&krcp->defer_call_rcu);
-+}
++	event = perf_event_create_kernel_counter(&hw_attr, -1, current,
++						 overflow_handler_test_kfree_rcu_nolock,
++						 &ctx);
++	if (IS_ERR(event))
++		kunit_skip(test, "Failed to create perf event");
++	ctx.event = event;
++	perf_event_enable(ctx.event);
++	for (i = 0; i < NR_ITERATIONS; i++) {
++		for (j = 0; j < NR_OBJECTS; j++) {
++			gfp_t gfp = (i % 2) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
 +
-+void submit_rcu_sheaf(struct rcu_head *head, bool allow_spin)
-+{
-+	/* Might be in the middle of call_rcu(), defer it */
-+	if (unlikely(!allow_spin && irqs_disabled()))
-+		defer_call_rcu(head);
-+	else
-+		call_rcu(head, rcu_free_sheaf);
-+}
++			objects[j] = kmalloc(sizeof(*dummy), gfp);
++			if (!objects[j]) {
++				j--;
++				while (j >= 0)
++					kfree(objects[j--]);
++				alloc_fail = true;
++				goto cleanup;
++			}
++		}
++		for (j = 0; j < NR_OBJECTS; j++)
++			kfree_rcu((struct dummy_struct *)objects[j], rcu);
++	}
 +
- static inline void __kvfree_rcu_barrier(void)
- {
- 	struct kfree_rcu_cpu_work *krwp;
-diff --git a/mm/slub.c b/mm/slub.c
-index 91b8827d65da..1c3451166498 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4152,6 +4152,8 @@ static int slub_cpu_dead(unsigned int cpu)
- 			__pcs_flush_all_cpu(s, cpu);
- 	}
- 	mutex_unlock(&slab_mutex);
-+
-+	/* pending IRQ work should have been flushed before going offline */
- 	return 0;
- }
- 
-@@ -5847,7 +5849,7 @@ bool free_to_pcs(struct kmem_cache *s, void *object, bool allow_spin)
- }
- 
- #ifdef CONFIG_KVFREE_RCU_BATCHED
--static void rcu_free_sheaf(struct rcu_head *head)
-+void rcu_free_sheaf(struct rcu_head *head)
- {
- 	struct slab_sheaf *sheaf;
- 	struct node_barn *barn = NULL;
-@@ -5999,12 +6001,6 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_spin)
- 	if (likely(rcu_sheaf->size < s->sheaf_capacity)) {
- 		rcu_sheaf = NULL;
- 	} else {
--		if (unlikely(!allow_spin)) {
--			/* call_rcu() cannot be called in an unknown context */
--			rcu_sheaf->size--;
--			local_unlock(&s->cpu_sheaves->lock);
--			goto fail;
--		}
- 		pcs->rcu_free = NULL;
- 		rcu_sheaf->node = numa_node_id();
- 	}
-@@ -6014,7 +6010,7 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_spin)
- 	 * flush_all_rcu_sheaves() doesn't miss this sheaf
- 	 */
- 	if (rcu_sheaf)
--		call_rcu(&rcu_sheaf->rcu_head, rcu_free_sheaf);
-+		submit_rcu_sheaf(&rcu_sheaf->rcu_head, allow_spin);
- 
- 	local_unlock(&s->cpu_sheaves->lock);
- 
+ cleanup:
+ 	perf_event_disable(ctx.event);
+ 	perf_event_release_kernel(ctx.event);
+@@ -406,6 +478,7 @@ static struct kunit_case test_cases[] = {
+ 	KUNIT_CASE(test_krealloc_redzone_zeroing),
+ #ifdef CONFIG_PERF_EVENTS
+ 	KUNIT_CASE_SLOW(test_kmalloc_kfree_nolock),
++	KUNIT_CASE_SLOW(test_kfree_rcu_nolock),
+ #endif
+ 	{}
+ };
 -- 
 2.43.0
 
