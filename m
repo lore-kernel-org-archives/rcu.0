@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA23378D9E
-	for <rcu@vger.kernel.org>; Thu, 16 Apr 2026 09:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34963394487
+	for <rcu@vger.kernel.org>; Thu, 16 Apr 2026 09:10:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776330635; cv=none; b=Aw2yz+zYNvmS4m3p9W9dUTioSPBhb1TnuQ+whhhhyDpjlNWgpmJcYVuQQ7+xpzD3X2mg6lvyVFl5Wb+8CxYpECZN23JdbZ0qH36RlwvYqT+mmn5KLtBxoI98MUaPrHzaPCMC9yPMRQ1pBRlaiHOIJpUrX0Em4loPnCMBV1xz+I8=
+	t=1776330638; cv=none; b=qY65NAcAEdFt5GzsikRIzL3TdSx2kPLPfP0zVx8ILEssfcgK8/4ulRVkRgUUUH/gRupsKp8UqfYgGgZSgiurnM8Jr8joWX1c39QgMtnGT1+RV+EvQ8fwnGS6tl6Ui53Pp4M+pQ6sla+K5i9SDkAEo7+RMQdhzgut9dX6bC+61Gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776330635; c=relaxed/simple;
-	bh=FbfsKh65NpkUNC5s76FTA/U0ULodFRvJ0QEyCbw2wT0=;
+	s=arc-20240116; t=1776330638; c=relaxed/simple;
+	bh=CMip4eFbasUIvlR3P/M8MgeOoWuXxQ2+h4ESc3P+fLk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TH5ixfHknWzLuAVv+bp57vVFlGTWhOIgiKQUMW+rPAXKNdL36PLPjewVJMALJa4Z/GWHUWneAdzfwZ65py6T7DcI7uFRp3JPQDUVZdN1uHmGka0FIGoOfNmK43oENWgsv4Q1Qa2LIl/NcD3vEXWX2tPLRlloUwTaKQ43Kr0xzhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h/9v/hAV; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=KmfsU+d1fX/uVTKr+sj7xU+4IABldb2kU4AnZ+LQtgLiJ8JlGKhh1v3ibD2aveVHy++wlR17GRW2tHplb0AzG2kYafDKxwMsiVnmGKEEn7dnKpoRzneb3BjZAbOdhKi2T0TKsb26NCUFjnigWWXp/O0/jWI6goyklrjZj14mGrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VzdTm8vy; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h/9v/hAV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EB48C2BCB9;
-	Thu, 16 Apr 2026 09:10:31 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VzdTm8vy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27DAEC2BCB5;
+	Thu, 16 Apr 2026 09:10:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776330634;
-	bh=FbfsKh65NpkUNC5s76FTA/U0ULodFRvJ0QEyCbw2wT0=;
+	s=k20201202; t=1776330638;
+	bh=CMip4eFbasUIvlR3P/M8MgeOoWuXxQ2+h4ESc3P+fLk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=h/9v/hAVivpxbOOVVZ1g0Qn0EgFbx17lYu2siYtiroVkoHu8cHgHh5fPt4GcUKFjN
-	 TioMsCrJ7V4ygW/z0e60zQrBCVXU6ipFREYWCK4A11Zyg1cBAIk9yrNQgy5KU5g9dO
-	 0rOKY0R7QUbp7YoawRK43fruKeHvG3ZwQd981T6nPjN3N1lefD4j67n947jawb5+fi
-	 YBrhhc8R+qwSWshHs/cBSiDIbNLz9q9UNc26jxP9YzUGHdC0RjfGQy1uLQbqkSyaXN
-	 UsWBrN+r1F+FXDRTEWjeiBTPZw4az3F7g+l0uHAOjJbA/bMWg5Q00E7Cc6Hu/sFcaU
-	 iud6Xyg1AMP6g==
+	b=VzdTm8vymSC+VxFzOo1Js3YnTi6dVF6shbZ6l/VJDehvH/mQ1FrHfa06im1VSLnJC
+	 UKPyCeGUetbib07DdztNDaTtGQ+RyjZqxdmk7/SkahysloCxhkVRolOuwCugLHeISm
+	 bTV1AS9MBHO5LMrw+mnGhRm2AVYRvdUaDsR5vAO6oRSpMfz+SU6r15xYfqlrcYNUjj
+	 iJhxgw3rvBza0tjOxcML1wa/b5eh93tzfG2CBU5DkL/EaFMQPdus6usWbwcfN7qNwN
+	 uSPVlTf50zFBhZ0duMG5ZpDY8E5ZK7Kk34ksviN9v/UCufWPZr+O2alERbWvMIRekI
+	 d/uRojROwSwSA==
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Vlastimil Babka <vbabka@kernel.org>
@@ -46,13 +46,10 @@ Cc: Christoph Lameter <cl@gentwo.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	rcu@vger.kernel.org,
-	linux-mm@kvack.org,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>
-Subject: [PATCH 2/8] fs/dcache: use rcu_ptr instead of rcu_head for external names
-Date: Thu, 16 Apr 2026 18:10:16 +0900
-Message-ID: <20260416091022.36823-3-harry@kernel.org>
+	linux-mm@kvack.org
+Subject: [PATCH 3/8] mm/slab: move kfree_rcu_cpu[_work] definitions
+Date: Thu, 16 Apr 2026 18:10:17 +0900
+Message-ID: <20260416091022.36823-4-harry@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260416091022.36823-1-harry@kernel.org>
 References: <20260416091022.36823-1-harry@kernel.org>
@@ -64,59 +61,178 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When a file name length exceeds 31 (DCACHE_INLINE_LEN-1),
-struct external_name is dynamically allocated. Because only kfree_rcu()
-is used to free the objects, struct rcu_ptr is enough and saves a pointer
-per object.
+In preparation for defining kfree_rcu_cpu under
+CONFIG_KVFREE_RCU_BATCHED=n and adding a new function common to both
+configurations, move the existing kfree_rcu_cpu[_work] definitions to
+just before the beginning of the kfree_rcu batching infrastructure.
 
-Under the author's home directory, there are 230k unique file names that
-are longer than 31. Some memory saving benefit is expected.
-
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>
 Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 ---
- fs/dcache.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ mm/slab_common.c | 142 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 72 insertions(+), 70 deletions(-)
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index 7ba1801d8132..fa37e3964b38 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -325,12 +325,12 @@ static inline int dentry_cmp(const struct dentry *dentry, const unsigned char *c
- /*
-  * long names are allocated separately from dentry and never modified.
-  * Refcounted, freeing is RCU-delayed.  See take_dentry_name_snapshot()
-- * for the reason why ->count and ->head can't be combined into a union.
-+ * for the reason why ->count and ->rcu can't be combined into a union.
-  * dentry_string_cmp() relies upon ->name[] being word-aligned.
-  */
- struct external_name {
- 	atomic_t count;
--	struct rcu_head head;
-+	struct rcu_ptr rcu;
- 	unsigned char name[] __aligned(sizeof(unsigned long));
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 85c9c2d0620e..cddbf3279c13 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1263,78 +1263,9 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
+ EXPORT_TRACEPOINT_SYMBOL(kfree);
+ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
+ 
+-#ifndef CONFIG_KVFREE_RCU_BATCHED
+-
+-void kvfree_call_rcu_head(struct rcu_head *head, void *ptr)
+-{
+-	if (head) {
+-		kasan_record_aux_stack(ptr);
+-		call_rcu(head, kvfree_rcu_cb);
+-		return;
+-	}
+-
+-	// kvfree_rcu(one_arg) call.
+-	might_sleep();
+-	synchronize_rcu();
+-	kvfree(ptr);
+-}
+-EXPORT_SYMBOL_GPL(kvfree_call_rcu_head);
+-
+-void __init kvfree_rcu_init(void)
+-{
+-}
+-
+-#else /* CONFIG_KVFREE_RCU_BATCHED */
+-
+-/*
+- * This rcu parameter is runtime-read-only. It reflects
+- * a minimum allowed number of objects which can be cached
+- * per-CPU. Object size is equal to one page. This value
+- * can be changed at boot time.
+- */
+-static int rcu_min_cached_objs = 5;
+-module_param(rcu_min_cached_objs, int, 0444);
+-
+-// A page shrinker can ask for pages to be freed to make them
+-// available for other parts of the system. This usually happens
+-// under low memory conditions, and in that case we should also
+-// defer page-cache filling for a short time period.
+-//
+-// The default value is 5 seconds, which is long enough to reduce
+-// interference with the shrinker while it asks other systems to
+-// drain their caches.
+-static int rcu_delay_page_cache_fill_msec = 5000;
+-module_param(rcu_delay_page_cache_fill_msec, int, 0444);
+-
+-static struct workqueue_struct *rcu_reclaim_wq;
+-
+-/* Maximum number of jiffies to wait before draining a batch. */
+-#define KFREE_DRAIN_JIFFIES (5 * HZ)
++#ifdef CONFIG_KVFREE_RCU_BATCHED
+ #define KFREE_N_BATCHES 2
+ #define FREE_N_CHANNELS 2
+-
+-/**
+- * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
+- * @list: List node. All blocks are linked between each other
+- * @gp_snap: Snapshot of RCU state for objects placed to this bulk
+- * @nr_records: Number of active pointers in the array
+- * @records: Array of the kvfree_rcu() pointers
+- */
+-struct kvfree_rcu_bulk_data {
+-	struct list_head list;
+-	struct rcu_gp_oldstate gp_snap;
+-	unsigned long nr_records;
+-	void *records[] __counted_by(nr_records);
+-};
+-
+-/*
+- * This macro defines how many entries the "records" array
+- * will contain. It is based on the fact that the size of
+- * kvfree_rcu_bulk_data structure becomes exactly one page.
+- */
+-#define KVFREE_BULK_MAX_ENTR \
+-	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
+-
+ /**
+  * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
+  * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
+@@ -1402,6 +1333,77 @@ struct kfree_rcu_cpu {
+ 	struct llist_head bkvcache;
+ 	int nr_bkv_objs;
  };
++#endif
++
++#ifndef CONFIG_KVFREE_RCU_BATCHED
++
++void kvfree_call_rcu_head(struct rcu_head *head, void *ptr)
++{
++	if (head) {
++		kasan_record_aux_stack(ptr);
++		call_rcu(head, kvfree_rcu_cb);
++		return;
++	}
++
++	// kvfree_rcu(one_arg) call.
++	might_sleep();
++	synchronize_rcu();
++	kvfree(ptr);
++}
++EXPORT_SYMBOL_GPL(kvfree_call_rcu_head);
++
++void __init kvfree_rcu_init(void)
++{
++}
++
++#else /* CONFIG_KVFREE_RCU_BATCHED */
++
++/*
++ * This rcu parameter is runtime-read-only. It reflects
++ * a minimum allowed number of objects which can be cached
++ * per-CPU. Object size is equal to one page. This value
++ * can be changed at boot time.
++ */
++static int rcu_min_cached_objs = 5;
++module_param(rcu_min_cached_objs, int, 0444);
++
++// A page shrinker can ask for pages to be freed to make them
++// available for other parts of the system. This usually happens
++// under low memory conditions, and in that case we should also
++// defer page-cache filling for a short time period.
++//
++// The default value is 5 seconds, which is long enough to reduce
++// interference with the shrinker while it asks other systems to
++// drain their caches.
++static int rcu_delay_page_cache_fill_msec = 5000;
++module_param(rcu_delay_page_cache_fill_msec, int, 0444);
++
++static struct workqueue_struct *rcu_reclaim_wq;
++
++/* Maximum number of jiffies to wait before draining a batch. */
++#define KFREE_DRAIN_JIFFIES (5 * HZ)
++
++/**
++ * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
++ * @list: List node. All blocks are linked between each other
++ * @gp_snap: Snapshot of RCU state for objects placed to this bulk
++ * @nr_records: Number of active pointers in the array
++ * @records: Array of the kvfree_rcu() pointers
++ */
++struct kvfree_rcu_bulk_data {
++	struct list_head list;
++	struct rcu_gp_oldstate gp_snap;
++	unsigned long nr_records;
++	void *records[] __counted_by(nr_records);
++};
++
++/*
++ * This macro defines how many entries the "records" array
++ * will contain. It is based on the fact that the size of
++ * kvfree_rcu_bulk_data structure becomes exactly one page.
++ */
++#define KVFREE_BULK_MAX_ENTR \
++	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
  
-@@ -393,7 +393,7 @@ void release_dentry_name_snapshot(struct name_snapshot *name)
- 		struct external_name *p;
- 		p = container_of(name->name.name, struct external_name, name[0]);
- 		if (unlikely(atomic_dec_and_test(&p->count)))
--			kfree_rcu(p, head);
-+			kfree_rcu(p, rcu);
- 	}
- }
- EXPORT_SYMBOL(release_dentry_name_snapshot);
-@@ -2863,7 +2863,7 @@ static void copy_name(struct dentry *dentry, struct dentry *target)
- 		dentry->__d_name.hash_len = target->__d_name.hash_len;
- 	}
- 	if (old_name && likely(atomic_dec_and_test(&old_name->count)))
--		kfree_rcu(old_name, head);
-+		kfree_rcu(old_name, rcu);
- }
- 
- /*
+ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+ 	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
 -- 
 2.43.0
 
