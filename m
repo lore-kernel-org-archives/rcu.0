@@ -1,104 +1,249 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92ED231D372;
-	Wed, 15 Apr 2026 20:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D385137C11C
+	for <rcu@vger.kernel.org>; Thu, 16 Apr 2026 09:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776284735; cv=none; b=n6djdQE4NxOCApdwspXKa59xvlxhVoUSIEGO6v0lA5nLJpqy983FqBdRI7lmYVTpkZMM8MZ+I4veBoNPt4e6u2bpdlSfGmF0pycfCY+aRNqGRwc7uh5dnbT5563qHThlzWIxLTpCFTQfn7n06JB72+7LcULWguyLLWkFVFLlvXM=
+	t=1776330627; cv=none; b=JFsGDrHvikOq28+pU8c00KNL677JoI0RkoDEeo6UEugyhokehtSci+8pFyBEx29HXZwBDKEsksWjyfh6DzlAI14oL2RnT3BXw4tgOCX8KSxkwzAcxwbKlbVuupVboQ3DupG49/C918sdc6G/znVZZ2+QklCF/v/7W78XrwZc3Bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776284735; c=relaxed/simple;
-	bh=lTDSEfgLiPb6Zc6xiCp9O+PQaNg/usqGgZY7lpdsvjk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XI/Dm+l0VFXHYn3wxDzK4NqVP32925+06MXB9KM5ntzW/eYQTaQ5Blka38wvWsxwXYTw8wVK/v0h7zZXVEk6yBy1ukDS0KffSahpuQyvnD10HQdopdm16CJE9diH1L1YQngieC7E/gAISOTotA/lWwS4ljHStg0iZ1QLovuwgFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=QL9cHMuZ; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1776330627; c=relaxed/simple;
+	bh=uZlWW/ny1fbjNrth95d6p0NzCm2ARch+5GxGfyr6RWw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cIwAIQOIPObUQptjOvpryw2sMqwCAaMrmcqJZeIx4OpqbZKEs1rGZ1V5KhqWQFK/5HzxRdrySknSKf7AP3VZDfq7jBeNxdfy//THqO2ZDZCw84NeMqxF+eTRJcn5jmV2k0O9VLIbCvhZJxDr8H/JBQanWTb+VaF7GcRm/XUnOY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oTPvzIgL; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="QL9cHMuZ"
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 392A0600B9;
-	Wed, 15 Apr 2026 22:25:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1776284730;
-	bh=05tOkxOHaDMCzwX9o+tLfnCgbcASN3tKZPZ703Z0qLA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QL9cHMuZ7P9f/cOcS15BsGu1PaFGWrUUs0WXR/eAkKBrimFL5yZ/dDV0vqjSGO7WM
-	 83e5Ilv4mfAWq35SWajTqRAbXA9UzcfM2+yTi0gMQsRHB8j5cp4tnirCu5oGvRHWEy
-	 3wtnXH1joB67pNU0P6SqgzMHUQkJ0X/YBW3j7Vlrccm85wDmUs1gJymHQDtNP9MeLY
-	 Jfw1NXqHrDAs4O6ferznZw6drjnWm+F79XG6cBJAohsVzVsv9/Ik4XbIN/ASVrItZo
-	 6nO+Y5fxjmhtLRoEIZShNiH4vpgx5RSaKXMcz6FHTl5KtLUNve4U3G4PDdUW5R0nmp
-	 sfnbdTlZfpHPQ==
-Date: Wed, 15 Apr 2026 22:25:27 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
-	edumazet@google.com, fw@strlen.de, horms@kernel.org,
-	joelagnelf@nvidia.com, josh@joshtriplett.org, boqun@kernel.org,
-	urezki@gmail.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev, rcu@vger.kernel.org
-Subject: Re: [PATCH nf,v2 1/3] rculist: add list_splice_rcu() for private
- lists
-Message-ID: <ad_0N6yAOenXeXR7@chamomile>
-References: <20260415170844.41355-1-pablo@netfilter.org>
- <9210a276-8158-40f4-b3b5-6431f5f13541@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oTPvzIgL"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A249C2BCAF;
+	Thu, 16 Apr 2026 09:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776330627;
+	bh=uZlWW/ny1fbjNrth95d6p0NzCm2ARch+5GxGfyr6RWw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=oTPvzIgLGnC93OUsU0o8B8xb10kelaxog2gBtrpi/1oq2BFV12vfNJN9O8USiF/ds
+	 1ypFjtJtU4WqLMo6ix/Fd0kuW99oJEGYpQyiTpHL4bNpg/1Bm2OWWLJsSGnRqAQnGM
+	 DMOMDXdIj9L2pJvDSJCgQ66356i8qYFeDaWs4BfVGdfwZ+JTxIpGbSet1yNRD3NxNB
+	 ftsobdSrp/k13LXjfasOG8L2dIiPWgFvM9u11NS1eThWuhFl2Rh7zVMfGssi1YDQK6
+	 5IiKJ7vwQLWclX2sX/OnZfIBJ9kH04GYoHlrVdxnMIMFC+AVCbFFDh2aqNWUM3np6w
+	 OS9LjDq47A9XQ==
+From: "Harry Yoo (Oracle)" <harry@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@kernel.org>
+Cc: Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hao Li <hao.li@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	rcu@vger.kernel.org,
+	linux-mm@kvack.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>
+Subject: [RFC PATCH v2 0/8] kvfree_rcu() improvements
+Date: Thu, 16 Apr 2026 18:10:14 +0900
+Message-ID: <20260416091022.36823-1-harry@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9210a276-8158-40f4-b3b5-6431f5f13541@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 15, 2026 at 10:39:33AM -0700, Paul E. McKenney wrote:
-> On Wed, Apr 15, 2026 at 07:08:44PM +0200, Pablo Neira Ayuso wrote:
-> > This patch adds a helper function, list_splice_rcu(), to safely splice
-> > a private (non-RCU-protected) list into an RCU-protected list.
-> > 
-> > The function ensures that only the pointer visible to RCU readers
-> > (prev->next) is updated using rcu_assign_pointer(), while the rest of
-> > the list manipulations are performed with regular assignments, as the
-> > source list is private and not visible to concurrent RCU readers.
-> > 
-> > This is useful for moving elements from a private list into a global
-> > RCU-protected list, ensuring safe publication for RCU readers.
-> > Subsystems with some sort of batching mechanism from userspace can
-> > benefit from this new function.
-> > 
-> > The function __list_splice_rcu() has been added for clarity and to
-> > follow the same pattern as in the existing list_splice*() interfaces,
-> > where there is a check to ensure that that the list to splice is not
-> > empty. Note that __list_splice_rcu() has no documentation for this
-> > reason.
-> > 
-> > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> > ---
-> > v2: including comments by Paul McKenney.
-> > 
-> >     Except, I have deliberately keep back the suggestion to squash
-> >     __list_splice_rcu() into list_splice_rcu(), I instead removed
-> >     the documentation for __list_splice_rcu(). I am looking
-> >     at other existing list_splice*() function in list.h and rculist.h
-> >     to get this aligned with __list_splice(), which also has no users
-> >     in the tree and no documentation. I find it easier to read with
-> >     __list_splice(), but if this explaination is not sound so...
-> > 
-> >     @Paul: I can post v3 squashing __list_splice_rcu(), just let me
-> >            know.
-> 
-> Removing the comment addresses most of my concerns.  I do have a slight
-> but not overwhelming preference for the squashed version, but either way:
-> 
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> Or if you want this to go in via RCU, please let us know.  My guess is
-> that it would be easier for you to take it in with the code using it.
+These are a few improvements for k[v]free_rcu() API,
+suggested by Alexei Starovoitov. This aims to tackle two problems:
 
-I'd prefer to take it through nf.git, I need this as a fix for an
-invalid use of list_splice() on a RCU-protected list.
+  1) Allow an 8-byte field to be used as an alternative to
+     struct rcu_head (16-byte) for 2-argument kvfree_rcu()
+     to save memory.
 
-Thanks for your quick review Paul!
+  2) Add kfree_rcu_nolock() API for an unknown context.
+
+  "Unknown context" means the caller does not know whether spinning
+  on a lock is safe. For example, a BPF program attached to an
+  arbitrary kernel function may run while the CPU already holds
+  krcp->lock. However, in practice, it's not held most of the time.
+
+# Discussion
+
+Now that we have sheaves for kmalloc caches, most of frees go through
+the sheaves layer. However, when sheaves becomes full w/ !allow_spin,
+call_rcu() cannot be called because the context is unknown. (e.g., it
+might have preempted call_rcu()). There are two possible approaches:
+
+  a) Implement a general call_rcu_nolock() in the RCU subsystem that
+     defers call_rcu() when it's not safe.
+
+  b) Handle this as a special case only for rcu sheaf submission
+     in mm/slab_common.c, without touching the RCU core.
+
+This series takes approach (b). This is because a general
+call_rcu_nolock() would need to flush deferred callbacks before
+rcu_barrier() to preserve its guarantee, increasing the cost of
+rcu_barrier() for all RCU users, not just kfree_rcu. By keeping the
+deferred call_rcu logic in the slab subsystem, only
+kvfree_rcu_barrier() pays the extra cost.
+
+One downside of the current approach is that slab uses the condition
+`!allow_spin && irqs_disabled()` to determine whether it's safe to
+call call_rcu(), which creates a dependency on RCU's implementation
+details. I'd like to hear thoughts on this.
+
+# Part 1. Allow an 8-byte field to be used as an alternative to
+  struct rcu_head for 2-argument kvfree_rcu()
+  (patches 1-2)
+
+Technically, objects that are freed with k[v]free_rcu() need
+only one pointer to link objects, because we already know that
+the callback function is always kvfree(). For this purpose,
+struct rcu_head is unnecessarily large (16 bytes on 64-bit).
+
+Allow a smaller, 8-byte field (of struct rcu_ptr type) to be used
+with k[v]free_rcu(). Let's save one pointer per slab object.
+
+I have to admit that my naming skill isn't great; hopefully
+we'll come up with a better name than `struct rcu_ptr`.
+
+With this feature, either a struct rcu_ptr or rcu_head field
+can be used as the second argument of the k[v]free_rcu() API.
+
+Users that only use k[v]free_rcu() are may use struct rcu_ptr to save
+memory (if there can be a lot of objects). However, some users,
+such as maple tree, may use call_rcu() or k[v]free_rcu() for objects
+of the same type. For such users, struct rcu_head remains the only
+option.
+
+Patch 1 implements the struct rcu_ptr feature (for
+CONFIG_KVFREE_RCU_BATCHED), and patch 2 converts fs/dcache external_name
+to use struct rcu_ptr as an example user, saving a pointer per
+dynamically allocated external file name.
+
+# Part 2. Add kfree_rcu_nolock() for unknown contexts
+  (patches 3-8)
+
+Currently, kfree_rcu() cannot be called when the context is unknown,
+which might not allow spinning on a lock. In such a context, even
+calling call_rcu() is not legal, forcing users to implement some
+sort of deferred freeing. Let's make users' lives easier with
+a new kfree_rcu_nolock() variant.
+
+Note that only the 2-argument variant is supported, since there is
+not much we can do when trylock & memory allocation fails.
+
+When spinning on a lock is not allowed, try to acquire the spinlock
+using spin_trylock(). When trylock succeeds, do either:
+
+  1) Use the rcu sheaf to free the object. Note that call_rcu() cannot
+     be called in an unknown context, because it might have preempted
+     call_rcu(). When the rcu sheaf becomes full by freeing the object,
+     defer the submission of the full sheaf using irq_work
+     (defer_call_rcu).
+
+  2) Use bnode (of struct kvfree_rcu_bulk_data) to store the pointer.
+     If trylock succeeded but no cached bnode is available, fall back
+     and queue page cache worker just like normal 2-args kvfree_rcu()
+     path.
+
+In rare cases where trylock fails, a non-lazy irq_work is used to
+defer calling kvfree_call_rcu().
+
+When certain debug features (kmemleak, debugobjects) are enabled,
+freeing is always deferred because they use spinlocks.
+
+Patch 3 moves code for preparation.
+Patch 4 introduces kfree_rcu_nolock().
+Patch 5 teaches the rcu sheaf to handle the !allow_spin case.
+Patch 6 wraps rcu sheaf handling with CONFIG_KVFREE_RCU_BATCHED ifdef.
+Patch 7 introduces deferred submission of rcu sheaves for the
+!allow_spin case when IRQs are disabled.
+Patch 8 adds a kunit test case for kfree_rcu_nolock().
+
+Changes since RFC V1 [1]:
+  - Dropped the kmalloc_nolock() -> kfree[_rcu]() path support
+    and the objexts_flags cleanup as they already have landed mainline.
+  - Dropped rcu_ptr conversions in mm/ (previous patch 2) and instead
+    added struct external_name in fs/dcache.c as a user(new patch 2).
+  - (Fix) Handle kfence addresses correctly using is_kfence_address()
+    and kfence_object_start().
+  - Reworked kfree_rcu_nolock() (patch 4):
+    - When trylock succeeds, now attempts to use cached bnodes
+      (like normal kvfree_rcu 2-arg path) instead of only inserting
+      into krcp->head.
+    - Added allow_spin parameter to __schedule_delayed_monitor_work()
+      and run_page_cache_worker() to defer work submission via
+      irq_work when spinning is not allowed (Joel).
+    - (Fix) Introduced defer_kvfree_rcu_barrier() to flush deferred
+      objects before flushing rcu sheaves, preserving correctness of
+      kvfree_rcu_barrier().
+    - (Fix) Moved kvfree_rcu_barrier()/kvfree_rcu_barrier_on_cache()
+      to slab_common.c on CONFIG_KVFREE_RCU_BATCHED=n, and made them
+      wait for deferred irq_works even without kvfree_rcu batching.
+    - Introduced object_start_addr() helper to deduplicate the
+      start address calculation logic.
+  - Instead of falling back when the rcu sheaf becomes full,
+    implemented deferred submission of rcu sheaves using irq_work
+    (new patch 7) (Vlastimil, Alexei).
+  - Wrapped rcu sheaf handling with CONFIG_KVFREE_RCU_BATCHED ifdef
+    (new patch 6).
+  - Added a kunit test for kfree_rcu_nolock() (new patch 8).
+
+[1] RFC V1: https://lore.kernel.org/linux-mm/20260206093410.160622-1-harry.yoo@oracle.com
+
+RFC V2 branch is available at:
+https://git.kernel.org/pub/scm/linux/kernel/git/harry/linux.git/log/?h=kvfree-rcu-improvements-rfc-v2r1
+
+RFC V1 branch is available at:
+https://git.kernel.org/pub/scm/linux/kernel/git/harry/linux.git/log/?h=kvfree-rcu-improvements-rfc-v1r1
+
+What haven't changed since RFC v1:
+
+- PREEMPT_RT support for kfree_rcu_sheaf() (Vlastimil): that is worth
+  addressing and I think it's doable, but it'll be a too big change to
+  be part of this series.
+
+- Reducing struct rcu_ptr on !KVFREE_RCU_BATCHED (Vlastimil): I tried,
+  but I'm not still sure it's worth the complexity for
+  CONFIG_KVFREE_RCU_BATCHED=n users. Also, this inevitably introduces
+  some delay in freeing objects which is against the purpose of
+  RCU_STRICT_GRACE_PERIOD.
+
+- While writing this cover letter, just realized that I should probably
+  try to reduce the number of irq work structures (pointed out by Joel)
+  (at least to 2 for lazy and non-lazy instead of 4). Will explore this
+  in the next version.
+
+Harry Yoo (Oracle) (8):
+  mm/slab: introduce k[v]free_rcu() with struct rcu_ptr
+  fs/dcache: use rcu_ptr instead of rcu_head for external names
+  mm/slab: move kfree_rcu_cpu[_work] definitions
+  mm/slab: introduce kfree_rcu_nolock()
+  mm/slab: make kfree_rcu_nolock() work with sheaves
+  mm/slab: wrap rcu sheaf handling with ifdef
+  mm/slab: introduce deferred submission of rcu sheaves
+  lib/tests/slub_kunit: add a test case for kfree_rcu_nolock()
+
+ fs/dcache.c              |   8 +-
+ include/linux/rcupdate.h |  64 ++++--
+ include/linux/slab.h     |  16 +-
+ include/linux/types.h    |   9 +
+ lib/tests/slub_kunit.c   |  73 +++++++
+ mm/slab.h                |   8 +-
+ mm/slab_common.c         | 452 +++++++++++++++++++++++++++++----------
+ mm/slub.c                |  47 +++-
+ 8 files changed, 514 insertions(+), 163 deletions(-)
+
+
+base-commit: 7e0445f673205fd045f3358cacb52b3557627317
+-- 
+2.43.0
+
