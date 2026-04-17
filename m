@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F33199D8;
-	Fri, 17 Apr 2026 23:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DCFF199D8;
+	Fri, 17 Apr 2026 23:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776467583; cv=none; b=n2UgRByVtG2sCN0jTZKFqKZqucGwfosmPtwckajqSkTJreptNMNh0mA+nfpouw6JB0xdByvTcMMnClsj+0vAPoB1I2snqkIaa+6T8lRh3fZG6yOmvAS+Vo5gCATGjOXkza50NdBC7v+iH/MpuUYTHhjbMYCVS6erhobb8s/56Y4=
+	t=1776467586; cv=none; b=SDetpydNnxQRQo/v7taLMQVRBhppA3RXxuaeLsuu4nwT5brfmcjHN+BFbXlqoAtSYgIo+UlhWtjbuzA7tX7Bp1szJuHdwRhlclCBzNLfJJwj++h3muUIPQ5V4ikoj170XxF/ccfiGM9eNhNid3oPLDmN693gICwCZqdOLnIXFwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776467583; c=relaxed/simple;
-	bh=8ixe/3/zGAF570L53VBz6mu9l7AOdT6UgUvfFbLI0Yc=;
+	s=arc-20240116; t=1776467586; c=relaxed/simple;
+	bh=loKj5p5RGW7ZsaVNGWVL2jGjOwz7i8YTGPxNZoS+54w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=avM0wHrdOauK9i1W9jnK64cRXrszWpHyKjgXoQMXBfE+22HHJEn7pGflRL0k4T3hPtfNxpNRjF8FZrlwlHAbkgJMLbWQXAnwT/U2HykRlxp1QEdywbdDPOZkax1D831y06znCfpbZJhEkblVUkKJ9m+RMQMG1CtuZQgeq+c0Nts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KF9ouTbt; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=u/OsPmstUtn+Z+/lx2EXlYysPF48y3z/F7jbYtr9uPKCCAbzpvaFAW9K25a+9YrrtEWJnyRjg+biSY50+Sf2nKae1WIYXGHTsnYxZk1a6cSE9nO+RMv2b6gUFcJoeCVzfjKmXhi6xt9swGe/V2+vSfeAbBjfqqgqZ7oGg1IvNHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aV4Y+4C2; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KF9ouTbt"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73254C2BCB5;
-	Fri, 17 Apr 2026 23:13:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aV4Y+4C2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CCC0C19425;
+	Fri, 17 Apr 2026 23:13:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776467582;
-	bh=8ixe/3/zGAF570L53VBz6mu9l7AOdT6UgUvfFbLI0Yc=;
+	s=k20201202; t=1776467586;
+	bh=loKj5p5RGW7ZsaVNGWVL2jGjOwz7i8YTGPxNZoS+54w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KF9ouTbtZT3ST3tg47dzBqPCJdWtY72D5xhfI5auKqatcRbqngvNdkPfmqJigQHBs
-	 UUR/DC7nXXXbQQS4ytlFM8pz2oZUMi8V+xwx3oVF85MBvZJXRTMTTSICXbCJX2ePqz
-	 GfTMgle+ebgkXJi0V1eGjx01PGKifF/TybgXhN0ocmYtEvtmRJgxvsDSPFsJc4uZYP
-	 BgfR//1mnMO9tryNJrCJSvWXGaynY+N/ZZgGswBlGsxkbze6jLihf4bWiixqzpRyMX
-	 CDMK/GmysJyLm1Dyz6IbFqdPwmjEqrWcPQ1kUkY4aamY/Q04UmrfyXznpN4JOHhVCn
-	 AYJ8Uyv/OkHww==
+	b=aV4Y+4C2F1eUqmRwJJaikiUN0c4Gi4K1yCDTVJMgLBH39sFGDzN6zhsnX8ffMKm9+
+	 oaF2tAHer0xjwwBgHQ+eVDU6NFq2k6BbZVOnbZ2OWRUQ+rTrAitLQBf4BZVSxCglAk
+	 w0OGxZc2Hqo92R860fRj9Tm0mY9BrM2VPn/ssSY1bHk4iyfGRfAzkARTisgfpHaC6X
+	 JIgAdSu9D2ED8hPSpxOYyT+NRF2yvA8aHRcaF07f4M/+h5qqFI9MQK1gTEGlkW5k60
+	 K27Zy3nl0lQKR88yKgpA8PxqKlHNhr3swPaYyyOnF32AFNrGY1NxEF2Y14hunzRsb2
+	 wj+VCcfVGof7A==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -44,9 +44,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Zqiang <qiang.zhang@linux.dev>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Davidlohr Bueso <dave@stgolabs.net>
-Subject: [RFC PATCH 08/10] rcu: Detect expedited grace period completion in rcu_pending()
-Date: Fri, 17 Apr 2026 16:11:56 -0700
-Message-ID: <20260417231203.785172-9-puranjay@kernel.org>
+Subject: [RFC PATCH 09/10] rcu: Advance callbacks for expedited GP completion in rcu_core()
+Date: Fri, 17 Apr 2026 16:11:57 -0700
+Message-ID: <20260417231203.785172-10-puranjay@kernel.org>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260417231203.785172-1-puranjay@kernel.org>
 References: <20260417231203.785172-1-puranjay@kernel.org>
@@ -58,49 +58,54 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-rcu_pending() is the gatekeeper that decides whether rcu_core() should
-run on the current CPU's timer tick. Currently it checks if the CPU has
-callbacks ready to invoke or a grace period has completed or started.
+Even when rcu_pending() triggers rcu_core(), the normal callback
+advancement path through note_gp_changes() -> __note_gp_changes() bails
+out when rdp->gp_seq == rnp->gp_seq (no normal GP change). Since
+expedited GPs do not update rnp->gp_seq, rcu_advance_cbs() is never
+called and callbacks remain stuck in RCU_WAIT_TAIL.
 
-It does not check that an expedited GP has completed. After an expedited
-GP, callbacks remain in RCU_WAIT_TAIL (not yet advanced to
-RCU_DONE_TAIL) and So rcu_core() never runs to advance them.
+Add a direct callback advancement block in rcu_core() that checks for GP
+completion via rcu_segcblist_nextgp() combined with
+poll_state_synchronize_rcu_full(). When detected, trylock rnp and call
+rcu_advance_cbs() to move completed callbacks to RCU_DONE_TAIL. Wake the
+GP kthread if rcu_advance_cbs() requests a new grace period.
 
-Add a check using rcu_segcblist_nextgp() combined with
-poll_state_synchronize_rcu_full() to detect when any pending callbacks'
-grace period has completed.
+Uses trylock to avoid adding contention on rnp->lock. If the lock is
+contended, callbacks will be advanced on the next tick.
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- kernel/rcu/tree.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ kernel/rcu/tree.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 0e43866dc4cd..309273a37b0a 100644
+index 309273a37b0a..1a92b6105de5 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3671,6 +3671,7 @@ EXPORT_SYMBOL_GPL(cond_synchronize_rcu_full);
- static int rcu_pending(int user)
- {
- 	bool gp_in_progress;
-+	struct rcu_gp_oldstate gp_state;
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 	struct rcu_node *rnp = rdp->mynode;
+@@ -2853,6 +2853,22 @@ static __latent_entropy void rcu_core(void)
+ 	/* Update RCU state based on any recent quiescent states. */
+ 	rcu_check_quiescent_state(rdp);
  
-@@ -3701,6 +3702,12 @@ static int rcu_pending(int user)
- 	    rcu_segcblist_ready_cbs(&rdp->cblist))
- 		return 1;
- 
-+	/* Has a GP (normal or expedited) completed for pending callbacks? */
++	/* Advance callbacks if an expedited GP has completed. */
 +	if (!rcu_rdp_is_offloaded(rdp) &&
-+	    rcu_segcblist_nextgp(&rdp->cblist, &gp_state) &&
-+	    poll_state_synchronize_rcu_full(&gp_state))
-+		return 1;
++	    rcu_segcblist_is_enabled(&rdp->cblist)) {
++		struct rcu_gp_oldstate gp_state;
 +
- 	/* Has RCU gone idle with this CPU needing another grace period? */
- 	if (!gp_in_progress && rcu_segcblist_is_enabled(&rdp->cblist) &&
- 	    !rcu_rdp_is_offloaded(rdp) &&
++		if (rcu_segcblist_nextgp(&rdp->cblist, &gp_state) &&
++		    poll_state_synchronize_rcu_full(&gp_state)) {
++			guard(irqsave)();
++			if (raw_spin_trylock_rcu_node(rnp)) {
++				if (rcu_advance_cbs(rnp, rdp))
++					rcu_gp_kthread_wake();
++				raw_spin_unlock_rcu_node(rnp);
++			}
++		}
++	}
++
+ 	/* No grace period and unregistered callbacks? */
+ 	if (!rcu_gp_in_progress() &&
+ 	    rcu_segcblist_is_enabled(&rdp->cblist) && !rcu_rdp_is_offloaded(rdp)) {
 -- 
 2.52.0
 
