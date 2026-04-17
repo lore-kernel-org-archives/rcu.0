@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDFB37F01B;
-	Fri, 17 Apr 2026 23:12:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3985E37F755;
+	Fri, 17 Apr 2026 23:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776467556; cv=none; b=g962PZP0F2LJbdbDLTKIFvuV2cZ8tyS32CM/bf/v71oNAbXqbLQRzJhtM6h/GQeyEQAg1XZs5tw5DX+/3P4lPUbyGOMx8F7WDibRHogn3Oz4p/55EZNn9b2SK9JiNohQpsXZrwRwDvaVT/nTNC+Oe2OCrK3ZopwXvc9KkgN345M=
+	t=1776467560; cv=none; b=fV9KpF/MGbm/G97OWb02Ly/S+S7MuUFBXmMpYvMS0iXhCK/2Ou1hDRPvBhzFU6E4mKwYSg9NRAXNh29rMq9+hCILEV8W0bhBquakTUZwY+z994PtB9k3zpOw8HHmYCYIeOgBB/p1jZT10ehHkmlk+vxhMgtDh+WyenD81GPBKr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776467556; c=relaxed/simple;
-	bh=y8k9KesEYjw6UgKPiJ9HqmcTZawjZ2GnNcBT5jS6CwY=;
+	s=arc-20240116; t=1776467560; c=relaxed/simple;
+	bh=C6eXVJtdCv0U+mKdmzMLMpRCaEdddKwLfL5AIcr7fbc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qLw+AbmhyPEE2v/iZXU4iw1qrFBqznq2xcvlrbXiJRnfbEmgH7Al7pESoQLyQyDXBAUbSeqDeXiHFR/FgOvTAeO5SmeYquQZbP9cAAzkJa9I7q1IY7wZp7XRo0jyIEGZsR7AZt7k1hK8Lrvh3IUU/MrNWURzpUkQcmFUst0Il9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YQSolrWi; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=IcvMbaXVIY0/uyoowvO30J5OrvwOjEshDnrcbuzfFZn+y0UkZbZxcp697iksiK3UljvqJjcbgYCWIaqT9lZYVtbmKoE4shskto74FiQzEkEbYPXwSOr0AYKItndgBWjicy12G9/co9qiU78+9xzzKG3038qPMI3T7XDv9MTEfWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VTrowOah; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YQSolrWi"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 090FAC2BCB3;
-	Fri, 17 Apr 2026 23:12:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VTrowOah"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC841C19425;
+	Fri, 17 Apr 2026 23:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776467556;
-	bh=y8k9KesEYjw6UgKPiJ9HqmcTZawjZ2GnNcBT5jS6CwY=;
+	s=k20201202; t=1776467560;
+	bh=C6eXVJtdCv0U+mKdmzMLMpRCaEdddKwLfL5AIcr7fbc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YQSolrWi/5A53syeGXwVoEvkjc97WXv1yBZqnPxxIVb723CzdgTUJzt42yaMt714v
-	 BfFOzrbB4iAgG82XRIzKNNobqxL6uc2XaIYE/x1uP6OOghHNdPXU57a+dgJymzxYwe
-	 NnI6uRws0yMUkCutNlBZ2WLRJ5Tn3Puw5T5NogoghfZLEWyr7DYSXuwOOe4oFLVsCl
-	 OFAt1a4E3ECt2SY7zREgJVpJBioDEW+hSB2mh8qJFqE1w1ylxswv4B3wIaGjjApsVl
-	 JRdkScQaDV/ZXqkWbB3pz9pCyVzAEUkdhKb0Oxea/rQBUTZz3V4PK0kREfCuiWte2v
-	 oZj47OrJOafvw==
+	b=VTrowOahe0C//xWdkTuFzwMFqhSXX1rQuFikSOpiO0yeK32q1LY43mic/GWiK1nGC
+	 zZ1K4CW4gzmpVEKQsSuHwi7ml7xEpyBei6OvkBiVdirhm9IMm5AHwJ5azbrfCw1kw4
+	 Lr8sKGuTLHUB2CCsmg8FCw57PL2+OMg6MuRCJN34rJCA0aN8JIu6W+uh35G6ci7HVq
+	 GUljO4j93QRcxaMaSpAOmXQD1Guy9M7PyGoxVLjnqmMuSDQ8iPG02u2G0w31NjvNBm
+	 VOXLqXZeKSPNMFV4aVJh5xzgakP1qekghMq6j0YUmCoUBWk/B370DN8oRASB9/S5Qa
+	 XKlpLfmz18nfA==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -44,9 +44,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Zqiang <qiang.zhang@linux.dev>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Davidlohr Bueso <dave@stgolabs.net>
-Subject: [RFC PATCH 01/10] rcu/segcblist: Add SRCU and Tasks RCU wrapper functions
-Date: Fri, 17 Apr 2026 16:11:49 -0700
-Message-ID: <20260417231203.785172-2-puranjay@kernel.org>
+Subject: [RFC PATCH 02/10] rcu/segcblist: Factor out rcu_segcblist_advance_compact() helper
+Date: Fri, 17 Apr 2026 16:11:50 -0700
+Message-ID: <20260417231203.785172-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260417231203.785172-1-puranjay@kernel.org>
 References: <20260417231203.785172-1-puranjay@kernel.org>
@@ -58,141 +58,95 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add srcu_segcblist_advance() and srcu_segcblist_accelerate() wrappers
-that forward to the core rcu_segcblist_advance() and
-rcu_segcblist_accelerate() functions, and switch all SRCU (srcutree.c)
-and Tasks RCU (tasks.h) callers to use these wrappers.
-
-This isolates SRCU and Tasks RCU from upcoming changes to the core
-advance/accelerate functions, which will switch to struct
-rcu_gp_oldstate for dual normal/expedited GP tracking. Because SRCU and
-Tasks RCU use only normal GP sequences, their wrappers will maintain the
-existing unsigned long interface.
+This commit extracts the tail-pointer cleanup and segment compaction
+logic from rcu_segcblist_advance() into a new static helper function,
+rcu_segcblist_advance_compact(). This shared logic will be reused by the
+upcoming srcu_segcblist_advance() standalone implementation, which
+cannot call the core rcu_segcblist_advance() because that function will
+use RCU-specific globals.
 
 No functional change.
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- kernel/rcu/rcu_segcblist.c | 10 ++++++++++
- kernel/rcu/rcu_segcblist.h |  2 ++
- kernel/rcu/srcutree.c      | 14 +++++++-------
- kernel/rcu/tasks.h         |  8 ++++----
- 4 files changed, 23 insertions(+), 11 deletions(-)
+ kernel/rcu/rcu_segcblist.c | 50 ++++++++++++++++++++++++--------------
+ 1 file changed, 32 insertions(+), 18 deletions(-)
 
 diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 298a2c573f02..da39d818b01b 100644
+index da39d818b01b..421f1dadb5e5 100644
 --- a/kernel/rcu/rcu_segcblist.c
 +++ b/kernel/rcu/rcu_segcblist.c
-@@ -620,3 +620,13 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
- 
- 	rcu_segcblist_init(src_rsclp);
+@@ -462,13 +462,43 @@ void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
+ 	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], rclp->tail);
  }
-+
-+void srcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
+ 
++/*
++ * Clean up and compact the segmented callback list after callbacks have been
++ * advanced to the RCU_DONE_TAIL segment.  The @i parameter is the index of the
++ * first segment that was NOT advanced (i.e., the segment after the last one
++ * moved to RCU_DONE_TAIL). This function fixes up tail pointers and compacts
++ * any gaps left by the moved segments.
++ */
++static void rcu_segcblist_advance_compact(struct rcu_segcblist *rsclp, int i)
 +{
-+	rcu_segcblist_advance(rsclp, seq);
++	int j;
++
++	/* Clean up tail pointers that might have been misordered above. */
++	for (j = RCU_WAIT_TAIL; j < i; j++)
++		WRITE_ONCE(rsclp->tails[j], rsclp->tails[RCU_DONE_TAIL]);
++
++	/*
++	 * Callbacks moved, so there might be an empty RCU_WAIT_TAIL
++	 * and a non-empty RCU_NEXT_READY_TAIL.  If so, copy the
++	 * RCU_NEXT_READY_TAIL segment to fill the RCU_WAIT_TAIL gap
++	 * created by the now-ready-to-invoke segments.
++	 */
++	for (j = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++, j++) {
++		if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL])
++			break;  /* No more callbacks. */
++		WRITE_ONCE(rsclp->tails[j], rsclp->tails[i]);
++		rcu_segcblist_move_seglen(rsclp, i, j);
++		rsclp->gp_seq[j] = rsclp->gp_seq[i];
++	}
 +}
 +
-+bool srcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
-+{
-+	return rcu_segcblist_accelerate(rsclp, seq);
-+}
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index fadc08ad4b7b..956f2967d9d2 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -143,3 +143,5 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
- bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
- void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
- 			 struct rcu_segcblist *src_rsclp);
-+void srcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
-+bool srcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 7c2f7cc131f7..519a35719c89 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1351,7 +1351,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 	 *  2) The grace period for RCU_WAIT_TAIL is seen as started but not
- 	 *     completed so rcu_seq_current() returns X + SRCU_STATE_SCAN1.
- 	 *
--	 *  3) This value is passed to rcu_segcblist_advance() which can't move
-+	 *  3) This value is passed to srcu_segcblist_advance() which can't move
- 	 *     any segment forward and fails.
- 	 *
- 	 *  4) srcu_gp_start_if_needed() still proceeds with callback acceleration.
-@@ -1360,15 +1360,15 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 	 *     RCU_NEXT_READY_TAIL segment as started (ie: X + 4 + SRCU_STATE_SCAN1)
- 	 *     so it returns a snapshot of the next grace period, which is X + 12.
- 	 *
--	 *  5) The value of X + 12 is passed to rcu_segcblist_accelerate() but the
-+	 *  5) The value of X + 12 is passed to srcu_segcblist_accelerate() but the
- 	 *     freshly enqueued callback in RCU_NEXT_TAIL can't move to
- 	 *     RCU_NEXT_READY_TAIL which already has callbacks for a previous grace
- 	 *     period (gp_num = X + 8). So acceleration fails.
- 	 */
- 	s = rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq);
- 	if (rhp) {
--		rcu_segcblist_advance(&sdp->srcu_cblist,
--				      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-+		srcu_segcblist_advance(&sdp->srcu_cblist,
-+				       rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
- 		/*
- 		 * Acceleration can never fail because the base current gp_seq
- 		 * used for acceleration is <= the value of gp_seq used for
-@@ -1376,7 +1376,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 		 * always be able to be emptied by the acceleration into the
- 		 * RCU_NEXT_READY_TAIL or RCU_WAIT_TAIL segments.
- 		 */
--		WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s));
-+		WARN_ON_ONCE(!srcu_segcblist_accelerate(&sdp->srcu_cblist, s));
- 	}
- 	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
- 		sdp->srcu_gp_seq_needed = s;
-@@ -1891,8 +1891,8 @@ static void srcu_invoke_callbacks(struct work_struct *work)
- 	rcu_cblist_init(&ready_cbs);
- 	raw_spin_lock_irq_rcu_node(sdp);
- 	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
--	rcu_segcblist_advance(&sdp->srcu_cblist,
--			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-+	srcu_segcblist_advance(&sdp->srcu_cblist,
-+			       rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
- 	/*
- 	 * Although this function is theoretically re-entrant, concurrent
- 	 * callbacks invocation is disallowed to avoid executing an SRCU barrier
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 48f0d803c8e2..137eb6c48b2c 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -480,8 +480,8 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
- 			if (cpu > 0)
- 				ncbsnz += n;
- 		}
--		rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
--		(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
-+		srcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
-+		(void)srcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
- 		if (rtpcp->urgent_gp > 0 && rcu_segcblist_pend_cbs(&rtpcp->cblist)) {
- 			if (rtp->lazy_jiffies)
- 				rtpcp->urgent_gp--;
-@@ -564,7 +564,7 @@ static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu
- 	if (rcu_segcblist_empty(&rtpcp->cblist))
+ /*
+  * Advance the callbacks in the specified rcu_segcblist structure based
+  * on the current value passed in for the grace-period counter.
+  */
+ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
+ {
+-	int i, j;
++	int i;
+ 
+ 	WARN_ON_ONCE(!rcu_segcblist_is_enabled(rsclp));
+ 	if (rcu_segcblist_restempty(rsclp, RCU_DONE_TAIL))
+@@ -489,23 +519,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
+ 	if (i == RCU_WAIT_TAIL)
  		return;
- 	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
--	rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
-+	srcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
- 	rcu_segcblist_extract_done_cbs(&rtpcp->cblist, &rcl);
- 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
- 	len = rcl.len;
-@@ -577,7 +577,7 @@ static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu
- 	}
- 	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
- 	rcu_segcblist_add_len(&rtpcp->cblist, -len);
--	(void)rcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
-+	(void)srcu_segcblist_accelerate(&rtpcp->cblist, rcu_seq_snap(&rtp->tasks_gp_seq));
- 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+ 
+-	/* Clean up tail pointers that might have been misordered above. */
+-	for (j = RCU_WAIT_TAIL; j < i; j++)
+-		WRITE_ONCE(rsclp->tails[j], rsclp->tails[RCU_DONE_TAIL]);
+-
+-	/*
+-	 * Callbacks moved, so there might be an empty RCU_WAIT_TAIL
+-	 * and a non-empty RCU_NEXT_READY_TAIL.  If so, copy the
+-	 * RCU_NEXT_READY_TAIL segment to fill the RCU_WAIT_TAIL gap
+-	 * created by the now-ready-to-invoke segments.
+-	 */
+-	for (j = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++, j++) {
+-		if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL])
+-			break;  /* No more callbacks. */
+-		WRITE_ONCE(rsclp->tails[j], rsclp->tails[i]);
+-		rcu_segcblist_move_seglen(rsclp, i, j);
+-		rsclp->gp_seq[j] = rsclp->gp_seq[i];
+-	}
++	rcu_segcblist_advance_compact(rsclp, i);
  }
  
+ /*
 -- 
 2.52.0
 
