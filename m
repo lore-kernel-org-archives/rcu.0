@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DCFF199D8;
-	Fri, 17 Apr 2026 23:13:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A8A199D8;
+	Fri, 17 Apr 2026 23:13:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776467586; cv=none; b=SDetpydNnxQRQo/v7taLMQVRBhppA3RXxuaeLsuu4nwT5brfmcjHN+BFbXlqoAtSYgIo+UlhWtjbuzA7tX7Bp1szJuHdwRhlclCBzNLfJJwj++h3muUIPQ5V4ikoj170XxF/ccfiGM9eNhNid3oPLDmN693gICwCZqdOLnIXFwg=
+	t=1776467590; cv=none; b=euJSThxP0pOWCFZI0cVWkmPPJiw76AweYslAOKURucdPz2mgFr+dksrRD21H1XF7kiXB0AXdSS5M5mp/7No7md55i6xvHcW4mdDenz99c5Q1H/BAFn1mgdE626UJQgIBXxRTOokWZ7j9LEE1S0ckJ40MaOFaIbgwqUWBp7WA8Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776467586; c=relaxed/simple;
-	bh=loKj5p5RGW7ZsaVNGWVL2jGjOwz7i8YTGPxNZoS+54w=;
+	s=arc-20240116; t=1776467590; c=relaxed/simple;
+	bh=P56upJeLI7Nd10whjNS/xYx3KUleKjIASkNwO3vI8mk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u/OsPmstUtn+Z+/lx2EXlYysPF48y3z/F7jbYtr9uPKCCAbzpvaFAW9K25a+9YrrtEWJnyRjg+biSY50+Sf2nKae1WIYXGHTsnYxZk1a6cSE9nO+RMv2b6gUFcJoeCVzfjKmXhi6xt9swGe/V2+vSfeAbBjfqqgqZ7oGg1IvNHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aV4Y+4C2; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=ULrUfWjxPVKQRl0sif3Rxq1byV3fDGRWiHYjmpva0Lu6KG9xNLOcWmkkNzHXSD0to19uClmU/H515VDWAZ1tOyFkTo9wM605CApnZsQJ0bdFT4YCovEZ9diVOZM0Vt3sjH65Zc5sCWP286bGLpPmC3Z46WU5xY+nwEJNh229/bE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IyL7bG9z; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aV4Y+4C2"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CCC0C19425;
-	Fri, 17 Apr 2026 23:13:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IyL7bG9z"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB6DAC2BCB3;
+	Fri, 17 Apr 2026 23:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776467586;
-	bh=loKj5p5RGW7ZsaVNGWVL2jGjOwz7i8YTGPxNZoS+54w=;
+	s=k20201202; t=1776467590;
+	bh=P56upJeLI7Nd10whjNS/xYx3KUleKjIASkNwO3vI8mk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aV4Y+4C2F1eUqmRwJJaikiUN0c4Gi4K1yCDTVJMgLBH39sFGDzN6zhsnX8ffMKm9+
-	 oaF2tAHer0xjwwBgHQ+eVDU6NFq2k6BbZVOnbZ2OWRUQ+rTrAitLQBf4BZVSxCglAk
-	 w0OGxZc2Hqo92R860fRj9Tm0mY9BrM2VPn/ssSY1bHk4iyfGRfAzkARTisgfpHaC6X
-	 JIgAdSu9D2ED8hPSpxOYyT+NRF2yvA8aHRcaF07f4M/+h5qqFI9MQK1gTEGlkW5k60
-	 K27Zy3nl0lQKR88yKgpA8PxqKlHNhr3swPaYyyOnF32AFNrGY1NxEF2Y14hunzRsb2
-	 wj+VCcfVGof7A==
+	b=IyL7bG9zyjvK+Dsb/6ipba+4dk41xcAiUAkNtJPWgausCGFslXCwJQn2j6pDpjHcD
+	 /I5uYO2p4+uwZnAl1Us6j2N0zSkcmy6dibM99vON9ojrhz1ijLIhA9B7RtMBp1Xrzn
+	 cDZsMksRGpRE7rhbBYAgfFi+encBuyk3/wEwJ3gJtd/lmY4aMzI3P5Lt0RE1nXQ6XN
+	 iVmTEkDOjdxfFMQXXf4CisUN6qPpP0DsugEhBd65jJrVQoAkNTXL0e9sUsyBKbMmXn
+	 bNwNfG4hSJlQSIr+MHTWAzOHNHGtsY/kgQ7Y2nzCdceB3DyN3H4wPuz/Q+JVVWH/xX
+	 xdxxcBuSRtjCg==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -44,9 +44,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Zqiang <qiang.zhang@linux.dev>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Davidlohr Bueso <dave@stgolabs.net>
-Subject: [RFC PATCH 09/10] rcu: Advance callbacks for expedited GP completion in rcu_core()
-Date: Fri, 17 Apr 2026 16:11:57 -0700
-Message-ID: <20260417231203.785172-10-puranjay@kernel.org>
+Subject: [RFC PATCH 10/10] rcuscale: Add concurrent expedited GP threads for callback scaling tests
+Date: Fri, 17 Apr 2026 16:11:58 -0700
+Message-ID: <20260417231203.785172-11-puranjay@kernel.org>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260417231203.785172-1-puranjay@kernel.org>
 References: <20260417231203.785172-1-puranjay@kernel.org>
@@ -58,54 +58,176 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Even when rcu_pending() triggers rcu_core(), the normal callback
-advancement path through note_gp_changes() -> __note_gp_changes() bails
-out when rdp->gp_seq == rnp->gp_seq (no normal GP change). Since
-expedited GPs do not update rnp->gp_seq, rcu_advance_cbs() is never
-called and callbacks remain stuck in RCU_WAIT_TAIL.
+Add nexp and exp_interval parameters to rcuscale that spawn kthreads
+running synchronize_rcu_expedited() in a loop. This generates concurrent
+expedited GP load while the normal writers measure GP or callback
+latency.
 
-Add a direct callback advancement block in rcu_core() that checks for GP
-completion via rcu_segcblist_nextgp() combined with
-poll_state_synchronize_rcu_full(). When detected, trylock rnp and call
-rcu_advance_cbs() to move completed callbacks to RCU_DONE_TAIL. Wake the
-GP kthread if rcu_advance_cbs() requests a new grace period.
-
-Uses trylock to avoid adding contention on rnp->lock. If the lock is
-contended, callbacks will be advanced on the next tick.
+When combined with gp_async=1 (which uses call_rcu() for writers), this
+tests how effectively callbacks benefit from expedited grace periods.
+With RCU callback expedited GP tracking, the async callbacks should
+complete faster because they piggyback on the expedited GPs rather than
+waiting for normal GPs.
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- kernel/rcu/tree.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ kernel/rcu/rcuscale.c | 84 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 82 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 309273a37b0a..1a92b6105de5 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2853,6 +2853,22 @@ static __latent_entropy void rcu_core(void)
- 	/* Update RCU state based on any recent quiescent states. */
- 	rcu_check_quiescent_state(rdp);
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index ac0b1c6b7dae..1097ec15879c 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -91,6 +91,8 @@ torture_param(int, shutdown_secs, !IS_MODULE(CONFIG_RCU_SCALE_TEST) * 300,
+ torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
+ torture_param(int, writer_holdoff, 0, "Holdoff (us) between GPs, zero to disable");
+ torture_param(int, writer_holdoff_jiffies, 0, "Holdoff (jiffies) between GPs, zero to disable");
++torture_param(int, nexp, 0, "Number of expedited GP threads to run concurrently");
++torture_param(int, exp_interval, 0, "Interval (us) between expedited GPs, zero to disable");
+ torture_param(int, kfree_rcu_test, 0, "Do we run a kfree_rcu() scale test?");
+ torture_param(int, kfree_mult, 1, "Multiple of kfree_obj size to allocate.");
+ torture_param(int, kfree_by_call_rcu, 0, "Use call_rcu() to emulate kfree_rcu()?");
+@@ -115,8 +117,10 @@ struct writer_freelist {
  
-+	/* Advance callbacks if an expedited GP has completed. */
-+	if (!rcu_rdp_is_offloaded(rdp) &&
-+	    rcu_segcblist_is_enabled(&rdp->cblist)) {
-+		struct rcu_gp_oldstate gp_state;
+ static int nrealreaders;
+ static int nrealwriters;
++static int nrealexp;
+ static struct task_struct **writer_tasks;
+ static struct task_struct **reader_tasks;
++static struct task_struct **exp_tasks;
+ 
+ static u64 **writer_durations;
+ static bool *writer_done;
+@@ -462,6 +466,34 @@ rcu_scale_reader(void *arg)
+ 	return 0;
+ }
+ 
++/*
++ * RCU expedited GP kthread.  Repeatedly invokes expedited grace periods
++ * to generate concurrent expedited GP load while the normal-GP writers
++ * are being measured.  This allows measuring the benefit of callbacks
++ * that can piggyback on expedited grace periods.
++ */
++static int
++rcu_scale_exp(void *arg)
++{
++	long me = (long)arg;
 +
-+		if (rcu_segcblist_nextgp(&rdp->cblist, &gp_state) &&
-+		    poll_state_synchronize_rcu_full(&gp_state)) {
-+			guard(irqsave)();
-+			if (raw_spin_trylock_rcu_node(rnp)) {
-+				if (rcu_advance_cbs(rnp, rdp))
-+					rcu_gp_kthread_wake();
-+				raw_spin_unlock_rcu_node(rnp);
-+			}
++	VERBOSE_SCALEOUT_STRING("rcu_scale_exp task started");
++	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
++	set_user_nice(current, MIN_NICE);
++
++	if (holdoff)
++		schedule_timeout_idle(holdoff * HZ);
++
++	do {
++		if (exp_interval)
++			udelay(exp_interval);
++		cur_ops->exp_sync();
++		rcu_scale_wait_shutdown();
++	} while (!torture_must_stop());
++	torture_kthread_stopping("rcu_scale_exp");
++	return 0;
++}
++
+ /*
+  * Allocate a writer_mblock structure for the specified rcu_scale_writer
+  * task.
+@@ -664,8 +696,10 @@ static void
+ rcu_scale_print_module_parms(struct rcu_scale_ops *cur_ops, const char *tag)
+ {
+ 	pr_alert("%s" SCALE_FLAG
+-		 "--- %s: gp_async=%d gp_async_max=%d gp_exp=%d holdoff=%d minruntime=%d nreaders=%d nwriters=%d writer_holdoff=%d writer_holdoff_jiffies=%d verbose=%d shutdown_secs=%d\n",
+-		 scale_type, tag, gp_async, gp_async_max, gp_exp, holdoff, minruntime, nrealreaders, nrealwriters, writer_holdoff, writer_holdoff_jiffies, verbose, shutdown_secs);
++		 "--- %s: gp_async=%d gp_async_max=%d gp_exp=%d holdoff=%d minruntime=%d nreaders=%d nwriters=%d nexp=%d exp_interval=%d writer_holdoff=%d writer_holdoff_jiffies=%d verbose=%d shutdown_secs=%d\n",
++		 scale_type, tag, gp_async, gp_async_max, gp_exp, holdoff,
++		 minruntime, nrealreaders, nrealwriters, nrealexp, exp_interval,
++		 writer_holdoff, writer_holdoff_jiffies, verbose, shutdown_secs);
+ }
+ 
+ /*
+@@ -809,6 +843,13 @@ kfree_scale_cleanup(void)
+ 	if (torture_cleanup_begin())
+ 		return;
+ 
++	if (exp_tasks) {
++		for (i = 0; i < nrealexp; i++)
++			torture_stop_kthread(rcu_scale_exp, exp_tasks[i]);
++		kfree(exp_tasks);
++		exp_tasks = NULL;
++	}
++
+ 	if (kfree_reader_tasks) {
+ 		for (i = 0; i < kfree_nrealthreads; i++)
+ 			torture_stop_kthread(kfree_scale_thread,
+@@ -903,6 +944,22 @@ kfree_scale_init(void)
+ 			goto unwind;
+ 	}
+ 
++	if (nrealexp > 0 && cur_ops->exp_sync) {
++		exp_tasks = kzalloc_objs(exp_tasks[0], nrealexp);
++		if (!exp_tasks) {
++			SCALEOUT_ERRSTRING("out of memory");
++			firsterr = -ENOMEM;
++			goto unwind;
++		}
++		for (i = 0; i < nrealexp; i++) {
++			firsterr = torture_create_kthread(rcu_scale_exp,
++							  (void *)i,
++							  exp_tasks[i]);
++			if (torture_init_error(firsterr))
++				goto unwind;
 +		}
 +	}
 +
- 	/* No grace period and unregistered callbacks? */
- 	if (!rcu_gp_in_progress() &&
- 	    rcu_segcblist_is_enabled(&rdp->cblist) && !rcu_rdp_is_offloaded(rdp)) {
+ 	while (atomic_read(&n_kfree_scale_thread_started) < kfree_nrealthreads)
+ 		schedule_timeout_uninterruptible(1);
+ 
+@@ -959,6 +1016,13 @@ rcu_scale_cleanup(void)
+ 		return;
+ 	}
+ 
++	if (exp_tasks) {
++		for (i = 0; i < nrealexp; i++)
++			torture_stop_kthread(rcu_scale_exp, exp_tasks[i]);
++		kfree(exp_tasks);
++		exp_tasks = NULL;
++	}
++
+ 	if (reader_tasks) {
+ 		for (i = 0; i < nrealreaders; i++)
+ 			torture_stop_kthread(rcu_scale_reader,
+@@ -1076,6 +1140,7 @@ rcu_scale_init(void)
+ 		if (kthread_tp)
+ 			kthread_stime = kthread_tp->stime;
+ 	}
++	nrealexp = nexp;
+ 	if (kfree_rcu_test)
+ 		return kfree_scale_init();
+ 
+@@ -1107,6 +1172,21 @@ rcu_scale_init(void)
+ 	}
+ 	while (atomic_read(&n_rcu_scale_reader_started) < nrealreaders)
+ 		schedule_timeout_uninterruptible(1);
++	if (nrealexp > 0 && cur_ops->exp_sync) {
++		exp_tasks = kzalloc_objs(exp_tasks[0], nrealexp);
++		if (!exp_tasks) {
++			SCALEOUT_ERRSTRING("out of memory");
++			firsterr = -ENOMEM;
++			goto unwind;
++		}
++		for (i = 0; i < nrealexp; i++) {
++			firsterr = torture_create_kthread(rcu_scale_exp,
++							  (void *)i,
++							  exp_tasks[i]);
++			if (torture_init_error(firsterr))
++				goto unwind;
++		}
++	}
+ 	writer_tasks = kzalloc_objs(writer_tasks[0], nrealwriters);
+ 	writer_durations = kcalloc(nrealwriters, sizeof(*writer_durations), GFP_KERNEL);
+ 	writer_n_durations = kzalloc_objs(*writer_n_durations, nrealwriters);
 -- 
 2.52.0
 
