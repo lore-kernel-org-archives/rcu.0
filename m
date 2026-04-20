@@ -1,75 +1,190 @@
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9F430F533;
-	Sun, 19 Apr 2026 11:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632BF3D3012;
+	Mon, 20 Apr 2026 13:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776599014; cv=none; b=owDEyd9y/F0SocoZm4sZsaEyeuLSSCtfP6R3OwK5FiHj6k3ZHUu3CG1auKyNIIDraNccOb2dpDq8ZtdbDxZ1gJflq8lGNsC9O99IlCKoFZMXsrCBix1Rg2Lw8EDbfps5bqbWXEKj1XsCaIF8HSd5Ixdb+q6Jyx/DiINe3r8RmmE=
+	t=1776691411; cv=none; b=J4MbOLveOksQpa+WDyDJuOvnPGkMvHaw9Ps26nOPDOJrAjxLWCxhyUweH+B4VvR3or/Wq7YAs9Iho65TbWmuqj2ZDJBZ/wWsRNR5BLJN6mHIDmwVQuHTFcgpCz6fxB/ZiL35zYbVM58uUIC/DhDdegrwsIH9sd1RkMZa9BNMG9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776599014; c=relaxed/simple;
-	bh=IMDxIvzyumDawQtoXNv/Xd38pSmE6XvbynP3ndCwjJQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FzRFqETW9OPHKwKTX+GKH0vKK0mKa5y+lLloPsg2pTJo0RHeLHTCEaYrD+4zSkcwYo2OaQKr0dxYwTbM4AiysIKulq7aPjid2qaboYF2nFlHF9h+qxn0GdPu1RR78VBDxZMzvvrrPse67G7qpXYz1sIeRDkhKkuFrJ58V2Fc4+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=QVa3xvBZ; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+	s=arc-20240116; t=1776691411; c=relaxed/simple;
+	bh=MZEuU3Y93HSS0LylEUPvD8xXO8PAZIqVKPE46K33WHY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SWJcoM2YOQDNhBuO6/DpCvdhF++cD2FxCj05kXu4SMfDnLZ4wy4qkCSpqLTWdY7/ig9tWDwPdClTs8cSogdPrOdxGI1Few1RM9fK3vywvxhvLihuJcY0sIrKbDdxv4TboIs/fJoIwXvDxlf4Zklah+BwiQfoq/cLme3xTKmelM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ddEGI0rd; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="QVa3xvBZ"
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A7D4B40B0C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1776599012; bh=IMDxIvzyumDawQtoXNv/Xd38pSmE6XvbynP3ndCwjJQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=QVa3xvBZScmeUvqxIn2pX6iESz0anZ5QgZnlLPQurU7HQciufu+fjinOgMLN4rxp9
-	 3JGLM3RK1zlnvJejJZ1zlNRn8AlcUleDOifNwK6nN8jQORT8e/jghXZTuB6GjKqlv4
-	 5CUbA5V3SYW1bKY9ArozMT8fAb+mTh0vhQnZZFe7iV+46d2uJE9W9d+l057jiXhSvx
-	 7U8F6fqu0WQFzCJ3//E5Q8RIbt4Crg70sX2jpjVu5xthB+XavZ/5+1lK9XNZd1hi2t
-	 pAbLYPoj4E1k6DpE0YrOgOsRteLR5KhwR4UleZ+t2SYqdI+hICdJyUMe98KZiHYZ4A
-	 xX21nGWLWd89w==
-Received: from localhost (mdns.lwn.net [45.79.72.68])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id A7D4B40B0C;
-	Sun, 19 Apr 2026 11:43:31 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Manuel Ebner <manuelebner@mailbox.org>, Shuah Khan
- <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org
-Cc: lrcu@vger.kernel.org, linux-kernel@vger.kernel.org,
- workflows@vger.kernel.org, linux-sound@vger.kernel.org,
- rcu@vger.kernel.org, linux-media@vger.kernel.org, Kees Cook
- <kees@kernel.org>
-Subject: Re: [PATCH] Documentation: adopt new coding style of type-aware
- kmalloc-family
-In-Reply-To: <295490d9bd8b9d519dda5c4551e7dbaf36492a8a.camel@mailbox.org>
-References: <20260419065824.165921-4-manuelebner@mailbox.org>
- <87se8rw8df.fsf@trenco.lwn.net>
- <295490d9bd8b9d519dda5c4551e7dbaf36492a8a.camel@mailbox.org>
-Date: Sun, 19 Apr 2026 05:43:27 -0600
-Message-ID: <87o6jfw4yo.fsf@trenco.lwn.net>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ddEGI0rd"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B71CC19425;
+	Mon, 20 Apr 2026 13:23:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776691411;
+	bh=MZEuU3Y93HSS0LylEUPvD8xXO8PAZIqVKPE46K33WHY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ddEGI0rdfZFYlnpeJNT9VrdiRlyo8HKHXkc5Q5V+qkpSoPHOxbOHFpfHnYYY9I1E6
+	 WVHPoR25oFfhea7yxBGlK9q3KmIPaPiWWvn16f+Il1GFGxd2XglCLFTE7uvf7wnCd5
+	 ET8651mMZ9asZ5xQ9msaKGOl/84qdO7VyMMG9FI6OYz9FHNdSMY8ZuTVe+GTo9yQji
+	 HUkdQazgP3jT5fqPctVbSuhRyPNKvXrjYF2esJ4M4lACl6FJNi+DJxXG222jtdzQ3B
+	 F+8hgNSLXHiKmgPkQ6BPIye6/Iyeo7lpF9eLFaBjXKJqYY8fJniNLYTOYmDnQt5fE+
+	 Gb7wXNa5SsmKA==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Joel Fernandes <joelagnelf@nvidia.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	jiangshanlai@gmail.com,
+	josh@joshtriplett.org,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.18] srcu: Use irq_work to start GP in tiny SRCU
+Date: Mon, 20 Apr 2026 09:16:44 -0400
+Message-ID: <20260420132314.1023554-10-sashal@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260420132314.1023554-1-sashal@kernel.org>
+References: <20260420132314.1023554-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.18.23
+Content-Transfer-Encoding: 8bit
 
-Manuel Ebner <manuelebner@mailbox.org> writes:
+From: Joel Fernandes <joelagnelf@nvidia.com>
 
->> So you have not gone with the "implicit GFP_KERNEL" approach that Linus
->> added.=C2=A0 Given that, I assume, he wanted that to be the normal style=
-, we
->> should probably go with it.
->
-> I scanned those 8 replies by Linus, but i can't figure out what you mean =
-with
-> implicit GFP_Kernel approach, can you give me a hint?
->
-> https://lore.kernel.org/all/?q=3Dslab%3A+Introduce+kmalloc_obj%28%29+and+=
-family+f%3Atorvalds
+[ Upstream commit a6fc88b22bc8d12ad52e8412c667ec0f5bf055af ]
 
-See https://lwn.net/Articles/1062856/
+Tiny SRCU's srcu_gp_start_if_needed() directly calls schedule_work(),
+which acquires the workqueue pool->lock.
 
-jon
+This causes a lockdep splat when call_srcu() is called with a scheduler
+lock held, due to:
+
+  call_srcu() [holding pi_lock]
+    srcu_gp_start_if_needed()
+      schedule_work() -> pool->lock
+
+  workqueue_init() / create_worker() [holding pool->lock]
+    wake_up_process() -> try_to_wake_up() -> pi_lock
+
+Also add irq_work_sync() to cleanup_srcu_struct() to prevent a
+use-after-free if a queued irq_work fires after cleanup begins.
+
+Tested with rcutorture SRCU-T and no lockdep warnings.
+
+[ Thanks to Boqun for similar fix in patch "rcu: Use an intermediate irq_work
+to start process_srcu()" ]
+
+Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Boqun Feng <boqun@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+
+LLM Generated explanations, may be completely bogus:
+
+Error: Failed to generate final synthesis
+
+ include/linux/srcutiny.h |  4 ++++
+ kernel/rcu/srcutiny.c    | 19 ++++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 51ce25f07930e..1f9a226e6fd81 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -11,6 +11,7 @@
+ #ifndef _LINUX_SRCU_TINY_H
+ #define _LINUX_SRCU_TINY_H
+ 
++#include <linux/irq_work_types.h>
+ #include <linux/swait.h>
+ 
+ struct srcu_struct {
+@@ -24,18 +25,21 @@ struct srcu_struct {
+ 	struct rcu_head *srcu_cb_head;	/* Pending callbacks: Head. */
+ 	struct rcu_head **srcu_cb_tail;	/* Pending callbacks: Tail. */
+ 	struct work_struct srcu_work;	/* For driving grace periods. */
++	struct irq_work srcu_irq_work;	/* Defer schedule_work() to irq work. */
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 	struct lockdep_map dep_map;
+ #endif /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+ };
+ 
+ void srcu_drive_gp(struct work_struct *wp);
++void srcu_tiny_irq_work(struct irq_work *irq_work);
+ 
+ #define __SRCU_STRUCT_INIT(name, __ignored, ___ignored)			\
+ {									\
+ 	.srcu_wq = __SWAIT_QUEUE_HEAD_INITIALIZER(name.srcu_wq),	\
+ 	.srcu_cb_tail = &name.srcu_cb_head,				\
+ 	.srcu_work = __WORK_INITIALIZER(name.srcu_work, srcu_drive_gp),	\
++	.srcu_irq_work = { .func = srcu_tiny_irq_work },		\
+ 	__SRCU_DEP_MAP_INIT(name)					\
+ }
+ 
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index e3b64a5e0ec7e..d9c11d5f0ea45 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -9,6 +9,7 @@
+  */
+ 
+ #include <linux/export.h>
++#include <linux/irq_work.h>
+ #include <linux/mutex.h>
+ #include <linux/preempt.h>
+ #include <linux/rcupdate_wait.h>
+@@ -41,6 +42,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
+ 	ssp->srcu_idx_max = 0;
+ 	INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
+ 	INIT_LIST_HEAD(&ssp->srcu_work.entry);
++	init_irq_work(&ssp->srcu_irq_work, srcu_tiny_irq_work);
+ 	return 0;
+ }
+ 
+@@ -84,6 +86,7 @@ EXPORT_SYMBOL_GPL(init_srcu_struct);
+ void cleanup_srcu_struct(struct srcu_struct *ssp)
+ {
+ 	WARN_ON(ssp->srcu_lock_nesting[0] || ssp->srcu_lock_nesting[1]);
++	irq_work_sync(&ssp->srcu_irq_work);
+ 	flush_work(&ssp->srcu_work);
+ 	WARN_ON(ssp->srcu_gp_running);
+ 	WARN_ON(ssp->srcu_gp_waiting);
+@@ -172,6 +175,20 @@ void srcu_drive_gp(struct work_struct *wp)
+ }
+ EXPORT_SYMBOL_GPL(srcu_drive_gp);
+ 
++/*
++ * Use an irq_work to defer schedule_work() to avoid acquiring the workqueue
++ * pool->lock while the caller might hold scheduler locks, causing lockdep
++ * splats due to workqueue_init() doing a wakeup.
++ */
++void srcu_tiny_irq_work(struct irq_work *irq_work)
++{
++	struct srcu_struct *ssp;
++
++	ssp = container_of(irq_work, struct srcu_struct, srcu_irq_work);
++	schedule_work(&ssp->srcu_work);
++}
++EXPORT_SYMBOL_GPL(srcu_tiny_irq_work);
++
+ static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
+ {
+ 	unsigned long cookie;
+@@ -184,7 +201,7 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
+ 	WRITE_ONCE(ssp->srcu_idx_max, cookie);
+ 	if (!READ_ONCE(ssp->srcu_gp_running)) {
+ 		if (likely(srcu_init_done))
+-			schedule_work(&ssp->srcu_work);
++			irq_work_queue(&ssp->srcu_irq_work);
+ 		else if (list_empty(&ssp->srcu_work.entry))
+ 			list_add(&ssp->srcu_work.entry, &srcu_boot_list);
+ 	}
+-- 
+2.53.0
+
