@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB4E3A8FEA;
-	Tue, 21 Apr 2026 09:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B083B4E99;
+	Tue, 21 Apr 2026 11:11:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776765531; cv=none; b=nYy7vEITp4kVo7Z3oLqCSqqNVd/onwnzdyqWnyuk0ie1f7zxSimoDlJTc8MP+qd1/6BVCoIbxAgKEdAzNYn01+gnn/v21yPQOGNkxrm60At3r3DjWgIbdFCw2IrwTa9Pm7tlV8yt/Z6K1oPD9mjDkYGrqxVRNXZwkPPHLmYeKqw=
+	t=1776769886; cv=none; b=Tb0Kaca7dx+nIvoqA1MVJ6DW/lfuDvJLcSvEhqZu+Nu31lMPamLZtfsFSDB/5Nj6hXCA6IqKaBgVOP7FDTSBxEqZfjTiywqM805/Q4B07aa7vp6SXK6keBO+sTp+G8NnqiqoGNCcvbnOjsAmA8zsqeoAVn5xfrGz54QfHv8Nl5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776765531; c=relaxed/simple;
-	bh=Tsq1SH4wRGWaW6shCyBF9cxjiMaM2pGcEJjUycGIkHA=;
+	s=arc-20240116; t=1776769886; c=relaxed/simple;
+	bh=EUCP/+wIyjuuFsUEyg5Q933mW+t/e6mkILgKhGl+IIE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HFWgM9tl9MuRKlW9avi6fZLkaL0wyJZu19jiI0eaeXW8Vlrj8ANp5q0UUZqrbqN4D+a/vfzn8JMPjz2Z5wPTl51BMjmrccfaBmjyW3FJFQXe2XESexFPJYQdfVhlkZwA2yk/BgweRtjE1EUlR6EzYn2Hj8Gvu1zV3SElOCHOVzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cP3xKsVI; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=kEVtg1i2bqQtqqQLntuUm3mA0X7mqXOpX/KfSGU5Ml3KmPScFpX0ufEb2/NndMe3Hbc2qbQKTs0GR0ZDBDFLtRfxxhBNraV0f9gZL6Em8XHU3uRWRfmd4A3VFZQzPq1qEKUVBgaqQKhgA90LgCrCGdjxfeKPX5qTGNcaVzdXZ4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mbTl5fZm; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cP3xKsVI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02BA6C2BCB5;
-	Tue, 21 Apr 2026 09:58:41 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mbTl5fZm"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DE79C2BCB0;
+	Tue, 21 Apr 2026 11:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776765530;
-	bh=Tsq1SH4wRGWaW6shCyBF9cxjiMaM2pGcEJjUycGIkHA=;
+	s=k20201202; t=1776769885;
+	bh=EUCP/+wIyjuuFsUEyg5Q933mW+t/e6mkILgKhGl+IIE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cP3xKsVIfM1kILDzW4ycKUXK9pvUGTHfseBrcSwd+2BIdsiGmWFM+P0KumzB72UI1
-	 lOkEWUgX/r4+nhLTVFZbEjMoNH6v2xIfPRUU9YnXvACZ8pUCme0aEKoyIWxnN5L/wv
-	 oM0epl8AYqBESabhGOuC/pYlp0IHdg8bZhbCD75w64NEUceMywaSHpWz1pPPziQMLk
-	 UZD9/NZw6FNzHPB5s38EwvNa+54WGupllvRBZbi7hqz6g6l3BGSyJAhPl5UcQbg/Jt
-	 6cSJOyasZ92wwBEQAHfhVIhs5j9r0q5XFpoE7gSE598t4XZdlexDJQkBZ6EOoKf+sE
-	 9NpzFHHIujcQQ==
+	b=mbTl5fZmFcBU5tYSBryBs6wfkQxkyJwj6zyC9pv83aHjCcgTKfCMDZvGFMkDuU5A8
+	 FEnCZSkBSXWx7s41ioY+4hZWiFYS3HyvH2KUpE0J4zHqjwCFVAikqd9ls4kf0p93uV
+	 BZak5ObgHRI9Gxu2aKoK1xpo0pjI/eK1Qi77TQPVg+lHlyGT76wc8+TYtiUNgglqnP
+	 reWN6chojkAvkicTb3bYEJxcMTmtW9mRJU6A5qRwtb8+SSE7sxmag/RuUnPPB0+fFX
+	 z3j1boww3uG48U2bRYLly9Jab3TxwKWU/BzeGfn1EE0uhf0439miKf5/fwkDNvksIU
+	 k956mzhJQQp0A==
 From: Miguel Ojeda <ojeda@kernel.org>
 To: gregkh@linuxfoundation.org
 Cc: achill@achill.org,
@@ -64,12 +64,14 @@ Cc: achill@achill.org,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org
-Subject: Re: [PATCH 6.18 000/198] 6.18.24-rc1 review
-Date: Tue, 21 Apr 2026 11:55:49 +0200
-Message-ID: <20260421095549.47476-1-ojeda@kernel.org>
-In-Reply-To: <20260420153935.605963767@linuxfoundation.org>
-References: <20260420153935.605963767@linuxfoundation.org>
+	linux-um@lists.infradead.org,
+	Benno Lossin <lossin@kernel.org>,
+	Gary Guo <gary@garyguo.net>
+Subject: Re: [PATCH 6.12 000/162] 6.12.83-rc1 review
+Date: Tue, 21 Apr 2026 13:11:11 +0200
+Message-ID: <20260421111111.57059-1-ojeda@kernel.org>
+In-Reply-To: <20260420153927.006696811@linuxfoundation.org>
+References: <20260420153927.006696811@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -78,14 +80,14 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Mon, 20 Apr 2026 17:39:39 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Mon, 20 Apr 2026 17:40:32 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 >
-> This is the start of the stable review cycle for the 6.18.24 release.
-> There are 198 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 6.12.83 release.
+> There are 162 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
-> Responses should be made by Wed, 22 Apr 2026 15:38:57 +0000.
+> Responses should be made by Wed, 22 Apr 2026 15:38:55 +0000.
 > Anything received after that time might be too late.
 
 Boot-tested under QEMU for Rust x86_64, arm64 and riscv64; built-tested
@@ -93,26 +95,15 @@ for loongarch64:
 
 Tested-by: Miguel Ojeda <ojeda@kernel.org>
 
-For UML (x86_64) I am seeing:
+For UML (x86_64), I am also seeing the same issue as for 6.18.y:
 
-    In file included from arch/um/kernel/asm-offsets.c:3:
-    In file included from ./arch/x86/um/shared/sysdep/kernel-offsets.h:5:
-    In file included from ./include/linux/crypto.h:18:
-    In file included from ./include/linux/slab.h:16:
-    In file included from ./include/linux/gfp.h:7:
-    In file included from ./include/linux/mmzone.h:1538:
-    In file included from ./include/linux/memory_hotplug.h:7:
-    In file included from ./include/linux/notifier.h:16:
-    In file included from ./include/linux/srcu.h:59:
     ./include/linux/srcutiny.h:14:10: fatal error: 'linux/irq_work_types.h' file not found
        14 | #include <linux/irq_work_types.h>
           |          ^~~~~~~~~~~~~~~~~~~~~~~~
-    1 error generated.
 
-Caused by commit 95721c9fb3a1 ("srcu: Use irq_work to start GP in tiny
-SRCU"). The header seems to simply not be there, i.e. either the
-`#include` is changed or commit c809f081fe40 ("irqwork: Move data struct
-to a types header") is backported.
+Please see the details at:
+
+    https://lore.kernel.org/stable/20260421095549.47476-1-ojeda@kernel.org/
 
 Cc: Joel Fernandes <joelagnelf@nvidia.com>
 Cc: Paul E. McKenney <paulmck@kernel.org>
@@ -133,7 +124,19 @@ Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 Cc: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-um@lists.infradead.org
 
-I hope that helps!
+We also still have the many missing safety comments Clippy warnings we
+recently discussed:
+
+    warning: unsafe block missing a safety comment
+        --> rust/kernel/init/macros.rs:1015:25
+
+Benno/Gary: I am tempted to just `#![allow(...)]` them for now (but if
+you plan to add the comments soon, please let me know!).
+
+Cc: Benno Lossin <lossin@kernel.org>
+Cc: Gary Guo <gary@garyguo.net>
+
+Thanks!
 
 Cheers,
 Miguel
