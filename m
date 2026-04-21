@@ -1,190 +1,227 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632BF3D3012;
-	Mon, 20 Apr 2026 13:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4173265CA2
+	for <rcu@vger.kernel.org>; Tue, 21 Apr 2026 03:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776691411; cv=none; b=J4MbOLveOksQpa+WDyDJuOvnPGkMvHaw9Ps26nOPDOJrAjxLWCxhyUweH+B4VvR3or/Wq7YAs9Iho65TbWmuqj2ZDJBZ/wWsRNR5BLJN6mHIDmwVQuHTFcgpCz6fxB/ZiL35zYbVM58uUIC/DhDdegrwsIH9sd1RkMZa9BNMG9Y=
+	t=1776740703; cv=none; b=JJg44X0B5gTq5QnbNkqeZ1jAKTvDW+w/em+HTYUeyZuxu5BC7QgpLcuXw9r342UAck9Ft21GDSqanI82yR0Hr9v55lbEfTSAXm9P3intwGNHwaFGZPJE+U/nm5koZ/59OxRJ1EbvQGKHqKDuzSzPIzKMJC9UTLDoTUzAKGIxdQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776691411; c=relaxed/simple;
-	bh=MZEuU3Y93HSS0LylEUPvD8xXO8PAZIqVKPE46K33WHY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SWJcoM2YOQDNhBuO6/DpCvdhF++cD2FxCj05kXu4SMfDnLZ4wy4qkCSpqLTWdY7/ig9tWDwPdClTs8cSogdPrOdxGI1Few1RM9fK3vywvxhvLihuJcY0sIrKbDdxv4TboIs/fJoIwXvDxlf4Zklah+BwiQfoq/cLme3xTKmelM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ddEGI0rd; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1776740703; c=relaxed/simple;
+	bh=f0r0hkJLwWzr6Lbbl7nS8piEjoIcwP0Du/gFOPR+3qc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gYdOlL9itb1IjDCW03Rwu/00WHslNciIEdiS5YCX9sqT/jSCwf/ZaS7lBz4UCM3z5HXwV2toC9Z8EEO5oNYEah0bLMFWHzUEJl69m1Azb/sHDdKXF59xL94Yh0gZn9MYi0gnSgIIxDG4uA6Ev8XkiqJ588G5zubF4flt9y+Sku8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UF8ZGycg; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ddEGI0rd"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B71CC19425;
-	Mon, 20 Apr 2026 13:23:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776691411;
-	bh=MZEuU3Y93HSS0LylEUPvD8xXO8PAZIqVKPE46K33WHY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ddEGI0rdfZFYlnpeJNT9VrdiRlyo8HKHXkc5Q5V+qkpSoPHOxbOHFpfHnYYY9I1E6
-	 WVHPoR25oFfhea7yxBGlK9q3KmIPaPiWWvn16f+Il1GFGxd2XglCLFTE7uvf7wnCd5
-	 ET8651mMZ9asZ5xQ9msaKGOl/84qdO7VyMMG9FI6OYz9FHNdSMY8ZuTVe+GTo9yQji
-	 HUkdQazgP3jT5fqPctVbSuhRyPNKvXrjYF2esJ4M4lACl6FJNi+DJxXG222jtdzQ3B
-	 F+8hgNSLXHiKmgPkQ6BPIye6/Iyeo7lpF9eLFaBjXKJqYY8fJniNLYTOYmDnQt5fE+
-	 Gb7wXNa5SsmKA==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Joel Fernandes <joelagnelf@nvidia.com>,
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UF8ZGycg"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1776740701;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wjmNr9JCrkwrdx2sPCA7CcPctqUBoRuM1dGKFKpqRoo=;
+	b=UF8ZGycgN789KqdvNFJXl62AyZeHLgS45W9sEbcjEqQS0HVG2qD3yI+zTeqrJ94VbXZUi/
+	ehjj9w8uPwSQ8NKw/xKHl5oMKq4ssG83lOK+K1aVBT6wXiaNkjQ79mnhlwlhLJu2VIp6TS
+	T7WD0C/MbWjfYBLV7yyr95Rnlmi6V+8=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-637-Xlv27X_4Mf2hAD4VUDUogQ-1; Mon,
+ 20 Apr 2026 23:04:56 -0400
+X-MC-Unique: Xlv27X_4Mf2hAD4VUDUogQ-1
+X-Mimecast-MFC-AGG-ID: Xlv27X_4Mf2hAD4VUDUogQ_1776740691
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2F69018005AA;
+	Tue, 21 Apr 2026 03:04:50 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.65.81])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id EFB4119560AB;
+	Tue, 21 Apr 2026 03:04:40 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Frederic Weisbecker <frederic@kernel.org>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	jiangshanlai@gmail.com,
-	josh@joshtriplett.org,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Chen Ridong <chenridong@huaweicloud.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-hyperv@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
 	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18] srcu: Use irq_work to start GP in tiny SRCU
-Date: Mon, 20 Apr 2026 09:16:44 -0400
-Message-ID: <20260420132314.1023554-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260420132314.1023554-1-sashal@kernel.org>
-References: <20260420132314.1023554-1-sashal@kernel.org>
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Costa Shulyupin <cshulyup@redhat.com>,
+	Qiliang Yuan <realwujing@gmail.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH-next 00/23] cgroup/cpuset: Enable runtime update of nohz_full and managed_irq CPUs
+Date: Mon, 20 Apr 2026 23:03:28 -0400
+Message-ID: <20260421030351.281436-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.18.23
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-From: Joel Fernandes <joelagnelf@nvidia.com>
+The "isolcpus=domain" CPU list implied by the HK_TYPE_DOMAIN housekeeping
+cpumask is being dynamically updated whenever the set of cpuset isolated
+partitions change. This patch series extends the isolated partition code
+to make dynamic changes to the "nohz_full" and "isolcpus=managed_irq"
+CPU lists. These CPU lists correspoond to equivalent changes in the
+HK_TYPE_KERNEL_NOISE and HK_TYPE_MANAGED_IRQ housekeeping cpumasks.
 
-[ Upstream commit a6fc88b22bc8d12ad52e8412c667ec0f5bf055af ]
+To facilitate the changing of these CPU lists, the CPU hotplug code
+which is doing a lot of heavy lifting is now being used. For changing
+the "nohz_full" and HK_TYPE_KERNEL_NOISE cpumasks, the affected CPUs
+are torn down into offline mode first. Then the housekeeping cpumask
+and the corresponding cpumasks in the RCU, tick and watchdog subsystems
+are modified. After that, the affected CPUs are brought online again.
 
-Tiny SRCU's srcu_gp_start_if_needed() directly calls schedule_work(),
-which acquires the workqueue pool->lock.
+It is slightly different with the "managed_irq" HK_TYPE_MANAGED_IRQ
+cpumask, the cpumask is updated first and the affected CPUs are torn
+down and brought up to move the managed interrupts away from the newly
+isolated CPUs.
 
-This causes a lockdep splat when call_srcu() is called with a scheduler
-lock held, due to:
+Using CPU hotplug does have its drawback when multiple isolated
+partitions are being managed in a system. The CPU offline process uses
+the stop_machine mechanism to stop all the CPUs except the one being torn
+down. This will cause latency spike for isolated CPUs in other isolated
+partitions. It is not a problem if only one isolated partition is
+needed. This is an issue we need to address in the near future.
 
-  call_srcu() [holding pi_lock]
-    srcu_gp_start_if_needed()
-      schedule_work() -> pool->lock
+Patches 1-7 enables runtime updates to the nohz_full/managed_irq
+cpumasks in sched/isolation, tick, RCU and watchdog subsystems.
 
-  workqueue_init() / create_worker() [holding pool->lock]
-    wake_up_process() -> try_to_wake_up() -> pi_lock
+Patches 8-17 modifies various subsystems that need access to the
+HK_TYPE_MANAGED_IRQ cpumask and HK_TYPE_KERNEL_NOISE cpumask and its
+aliases. Like the runtime modifiable HK_TYPE_DOMAIN cpumask, RCU is used
+to protect access to cpumasks to avoid potential UAF problem. Patch 17
+updates the housekeeping_dereference_check() to print a WARNING when
+lockdep is enabled if those housekeeping cpumasks are used without the
+proper lock protection.
 
-Also add irq_work_sync() to cleanup_srcu_struct() to prevent a
-use-after-free if a queued irq_work fires after cleanup begins.
+Patch 18 introduces a new cpuhp_offline_cb() API that enables the
+shutting down of a given list of CPUs, run a callback function and then
+brought those CPUs up again while disallowing any concurrent CPU hotplug
+activity.
 
-Tested with rcutorture SRCU-T and no lockdep warnings.
+Patches 19-23 updates the cpuset code, selftest and documentation to
+allow change in isolated partition configuration to be reflected in
+the housekeeping and other cpumasks dynamically.
 
-[ Thanks to Boqun for similar fix in patch "rcu: Use an intermediate irq_work
-to start process_srcu()" ]
+As there is a slight overhead in enabling dynamic update to the nohz_full
+cpumask, this new nohz_full and managed_irq runtime update feature
+has to be explicitly opted in by adding a nohz_full kernel command
+line parameter with or without a CPU list to indicate a desire to use
+this feature. It is also because a number of subsystems have explicit
+check of nohz_full at boot time to adjust their behavior which may not
+be easy to modify after boot.
 
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Boqun Feng <boqun@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
+Waiman Long (23):
+  sched/isolation: Add HK_TYPE_KERNEL_NOISE_BOOT &
+    HK_TYPE_MANAGED_IRQ_BOOT
+  sched/isolation: Enhance housekeeping_update() to support updating
+    more than one HK cpumask
+  tick/nohz: Make nohz_full parameter optional
+  tick/nohz: Allow runtime changes in full dynticks CPUs
+  tick: Pass timer tick job to an online HK CPU in tick_cpu_dying()
+  rcu/nocbs: Allow runtime changes in RCU NOCBS cpumask
+  watchdog: Sync up with runtime change of isolated CPUs
+  arm64: topology: Use RCU to protect access to HK_TYPE_TICK cpumask
+  workqueue: Use RCU to protect access of HK_TYPE_TIMER cpumask
+  cpu: Use RCU to protect access of HK_TYPE_TIMER cpumask
+  hrtimer: Use RCU to protect access of HK_TYPE_TIMER cpumask
+  net: Use boot time housekeeping cpumask settings for now
+  sched/core: Use RCU to protect access of HK_TYPE_KERNEL_NOISE cpumask
+  hwmon/coretemp: Use RCU to protect access of HK_TYPE_MISC cpumask
+  Drivers: hv: Use RCU to protect access of HK_TYPE_MANAGED_IRQ cpumask
+  genirq/cpuhotplug: Use RCU to protect access of HK_TYPE_MANAGED_IRQ
+    cpumask
+  sched/isolation: Extend housekeeping_dereference_check() to cover
+    changes in nohz_full or manged_irqs           cpumasks
+  cpu/hotplug: Add a new cpuhp_offline_cb() API
+  cgroup/cpuset: Improve check for calling housekeeping_update()
+  cgroup/cpuset: Enable runtime update of
+    HK_TYPE_{KERNEL_NOISE,MANAGED_IRQ} cpumasks
+  cgroup/cpuset: Limit the side effect of using CPU hotplug on isolated
+    partition
+  cgroup/cpuset: Prevent offline_disabled CPUs from being used in
+    isolated partition
+  cgroup/cpuset: Documentation and kselftest updates
 
-LLM Generated explanations, may be completely bogus:
+ Documentation/admin-guide/cgroup-v2.rst       |  35 ++-
+ .../admin-guide/kernel-parameters.txt         |  15 +-
+ arch/arm64/kernel/topology.c                  |  17 +-
+ drivers/hv/channel_mgmt.c                     |  15 +-
+ drivers/hv/vmbus_drv.c                        |   7 +-
+ drivers/hwmon/coretemp.c                      |   6 +-
+ include/linux/context_tracking.h              |   8 +-
+ include/linux/cpuhplock.h                     |   9 +
+ include/linux/nmi.h                           |   2 +
+ include/linux/rcupdate.h                      |   2 +
+ include/linux/sched/isolation.h               |  18 +-
+ include/linux/tick.h                          |   2 +
+ kernel/cgroup/cpuset-internal.h               |   1 +
+ kernel/cgroup/cpuset.c                        | 292 +++++++++++++++++-
+ kernel/context_tracking.c                     |  19 +-
+ kernel/cpu.c                                  |  72 +++++
+ kernel/irq/cpuhotplug.c                       |   1 +
+ kernel/irq/manage.c                           |   1 +
+ kernel/rcu/tree_nocb.h                        |  24 +-
+ kernel/sched/core.c                           |   4 +-
+ kernel/sched/isolation.c                      | 135 +++++---
+ kernel/time/hrtimer.c                         |   4 +-
+ kernel/time/tick-common.c                     |  16 +-
+ kernel/time/tick-sched.c                      |  48 ++-
+ kernel/watchdog.c                             |  24 ++
+ kernel/workqueue.c                            |   6 +-
+ net/core/net-sysfs.c                          |   2 +-
+ .../selftests/cgroup/test_cpuset_prs.sh       |  70 ++++-
+ 28 files changed, 747 insertions(+), 108 deletions(-)
 
-Error: Failed to generate final synthesis
-
- include/linux/srcutiny.h |  4 ++++
- kernel/rcu/srcutiny.c    | 19 ++++++++++++++++++-
- 2 files changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-index 51ce25f07930e..1f9a226e6fd81 100644
---- a/include/linux/srcutiny.h
-+++ b/include/linux/srcutiny.h
-@@ -11,6 +11,7 @@
- #ifndef _LINUX_SRCU_TINY_H
- #define _LINUX_SRCU_TINY_H
- 
-+#include <linux/irq_work_types.h>
- #include <linux/swait.h>
- 
- struct srcu_struct {
-@@ -24,18 +25,21 @@ struct srcu_struct {
- 	struct rcu_head *srcu_cb_head;	/* Pending callbacks: Head. */
- 	struct rcu_head **srcu_cb_tail;	/* Pending callbacks: Tail. */
- 	struct work_struct srcu_work;	/* For driving grace periods. */
-+	struct irq_work srcu_irq_work;	/* Defer schedule_work() to irq work. */
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 	struct lockdep_map dep_map;
- #endif /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
- };
- 
- void srcu_drive_gp(struct work_struct *wp);
-+void srcu_tiny_irq_work(struct irq_work *irq_work);
- 
- #define __SRCU_STRUCT_INIT(name, __ignored, ___ignored)			\
- {									\
- 	.srcu_wq = __SWAIT_QUEUE_HEAD_INITIALIZER(name.srcu_wq),	\
- 	.srcu_cb_tail = &name.srcu_cb_head,				\
- 	.srcu_work = __WORK_INITIALIZER(name.srcu_work, srcu_drive_gp),	\
-+	.srcu_irq_work = { .func = srcu_tiny_irq_work },		\
- 	__SRCU_DEP_MAP_INIT(name)					\
- }
- 
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index e3b64a5e0ec7e..d9c11d5f0ea45 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -9,6 +9,7 @@
-  */
- 
- #include <linux/export.h>
-+#include <linux/irq_work.h>
- #include <linux/mutex.h>
- #include <linux/preempt.h>
- #include <linux/rcupdate_wait.h>
-@@ -41,6 +42,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
- 	ssp->srcu_idx_max = 0;
- 	INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
- 	INIT_LIST_HEAD(&ssp->srcu_work.entry);
-+	init_irq_work(&ssp->srcu_irq_work, srcu_tiny_irq_work);
- 	return 0;
- }
- 
-@@ -84,6 +86,7 @@ EXPORT_SYMBOL_GPL(init_srcu_struct);
- void cleanup_srcu_struct(struct srcu_struct *ssp)
- {
- 	WARN_ON(ssp->srcu_lock_nesting[0] || ssp->srcu_lock_nesting[1]);
-+	irq_work_sync(&ssp->srcu_irq_work);
- 	flush_work(&ssp->srcu_work);
- 	WARN_ON(ssp->srcu_gp_running);
- 	WARN_ON(ssp->srcu_gp_waiting);
-@@ -172,6 +175,20 @@ void srcu_drive_gp(struct work_struct *wp)
- }
- EXPORT_SYMBOL_GPL(srcu_drive_gp);
- 
-+/*
-+ * Use an irq_work to defer schedule_work() to avoid acquiring the workqueue
-+ * pool->lock while the caller might hold scheduler locks, causing lockdep
-+ * splats due to workqueue_init() doing a wakeup.
-+ */
-+void srcu_tiny_irq_work(struct irq_work *irq_work)
-+{
-+	struct srcu_struct *ssp;
-+
-+	ssp = container_of(irq_work, struct srcu_struct, srcu_irq_work);
-+	schedule_work(&ssp->srcu_work);
-+}
-+EXPORT_SYMBOL_GPL(srcu_tiny_irq_work);
-+
- static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
- {
- 	unsigned long cookie;
-@@ -184,7 +201,7 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
- 	WRITE_ONCE(ssp->srcu_idx_max, cookie);
- 	if (!READ_ONCE(ssp->srcu_gp_running)) {
- 		if (likely(srcu_init_done))
--			schedule_work(&ssp->srcu_work);
-+			irq_work_queue(&ssp->srcu_irq_work);
- 		else if (list_empty(&ssp->srcu_work.entry))
- 			list_add(&ssp->srcu_work.entry, &srcu_boot_list);
- 	}
 -- 
 2.53.0
 
