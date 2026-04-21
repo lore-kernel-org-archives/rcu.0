@@ -1,141 +1,123 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4E4212D7C
-	for <rcu@vger.kernel.org>; Tue, 21 Apr 2026 14:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F75432861E;
+	Tue, 21 Apr 2026 15:02:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776781825; cv=none; b=OZ2wPul73uxZeTNUM0tf3h3GFHUCUSndNk8wE09yaCKZC4jwcKDvCWLanGwtGj3HCdsxOCsHPNBp+5gUqKHRFd0eV7/6fntP/tM9JiFIxKh0XOPhwE1FcXGSXFk8byD37KGhlL9fnPd+Y17KM20oyLKBQ6prf66W8OEvkKRth2Q=
+	t=1776783741; cv=none; b=U67J2REIXqlh5j/l6kHTtocy/lrLrscdiwUlsweqhh6Hk80qIzpbZZDgldP1VmCJ2EZQF0nhftnceoR0aWKcs8uWrx4O6KlwKJjryNOtlyNwdPEgNCeTVt2MnGQ7pMRiGi2ko/QXWXzTXTnsOUTUG7BHNdd31/oOneWphjk/w+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776781825; c=relaxed/simple;
-	bh=wzm7TkfUtsdkCf+9WRD+mx0ZLEZab+prGzlMMBHO+zg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BDeRYK9fB74EdFhPQxiFzpNstWMNVoqiv7dhYgLfThskvIl6eDKxWahwwiiUam49zkvpsm7Lq+h+NfE/0AzWMP3uqOJg7W71Sja39AmXp+mSaZo4aml7Af36617oU0W/h4HqpUrmYSXd6NywCSWtxsRbpF81/LqW+LkOC8Wex5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YbV/cz7r; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1776783741; c=relaxed/simple;
+	bh=Mpbkj6yOe1GN3X5YpgKdXjzi0Cn1sKwaB2ZCYJvR0x0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IB5g0DcBnmpFhcLB8XOEQ+taOx0RMz1OZesOZtSv7LZOQRe0bwImrisEEzyPeeuTFFKdu6/xL1m4ynP8zLt/sIpLDEy3D78t8pyPXDFEo4Bacb/4LIZyIHUh3oQ56+04w0vgx+hBKOUzp+8i9MKjXZUzrB5sUGn+D2CkWCvZBtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WmXxT4bq; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YbV/cz7r"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1776781823;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TWylwziUJR6+djO988m8SXRnsaLXz4wU91J/b9HxTcg=;
-	b=YbV/cz7r9U1RW85Z52XozpZRqK/cBxpucRO4JzKQREXFMzd9IBUCgb6j86rKahMLFDRstu
-	0X9CQzYYIyoNMgCgF2iDb3i4/7iKTo8U1QNP20BK92kjfVOHhwbcD88PNNJmvdRKPccqFq
-	DYFBKpjShbqX54H62RsHWu68VndoaNE=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-97-OuySZZZCNne9e9u0fHq2OQ-1; Tue,
- 21 Apr 2026 10:30:16 -0400
-X-MC-Unique: OuySZZZCNne9e9u0fHq2OQ-1
-X-Mimecast-MFC-AGG-ID: OuySZZZCNne9e9u0fHq2OQ_1776781809
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CE80619560AB;
-	Tue, 21 Apr 2026 14:30:08 +0000 (UTC)
-Received: from [10.22.81.187] (unknown [10.22.81.187])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3068C1800660;
-	Tue, 21 Apr 2026 14:30:00 +0000 (UTC)
-Message-ID: <46e1989c-d0a3-46c4-9a9f-3476789b9dc1@redhat.com>
-Date: Tue, 21 Apr 2026 10:29:59 -0400
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WmXxT4bq"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D904C2BCB0;
+	Tue, 21 Apr 2026 15:02:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1776783740;
+	bh=Mpbkj6yOe1GN3X5YpgKdXjzi0Cn1sKwaB2ZCYJvR0x0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WmXxT4bq/jdUGylFLv9mGVtoKFbMm7IOdxmOVuBB4b28dU69dWhDMkm+T9Q+DWJ0r
+	 CVQJzqTUXa6/q+rkvq9bnfrBbUn2y7JSgNuJU5z3RSSkWOMVzFV2Dpkzi03eVVa2xx
+	 3K1hHh/TFZ0xkeDU+lUw3kmjwigck9NeVyuP/fWA=
+Date: Tue, 21 Apr 2026 17:02:18 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: achill@achill.org, akpm@linux-foundation.org, broonie@kernel.org,
+	conor@kernel.org, f.fainelli@gmail.com, hargar@microsoft.com,
+	jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
+	linux@roeck-us.net, lkft-triage@lists.linaro.org,
+	patches@kernelci.org, patches@lists.linux.dev, pavel@nabladev.com,
+	rwarsow@gmx.de, shuah@kernel.org, sr@sladewatkins.com,
+	stable@vger.kernel.org, sudipm.mukherjee@gmail.com,
+	torvalds@linux-foundation.org,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun@kernel.org>, Sasha Levin <sashal@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+	rcu@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org
+Subject: Re: [PATCH 6.18 000/198] 6.18.24-rc1 review
+Message-ID: <2026042155-handcuff-stunner-1318@gregkh>
+References: <20260420153935.605963767@linuxfoundation.org>
+ <20260421095549.47476-1-ojeda@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 16/23] genirq/cpuhotplug: Use RCU to protect access of
- HK_TYPE_MANAGED_IRQ cpumask
-To: Thomas Gleixner <tglx@kernel.org>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
- Guenter Roeck <linux@roeck-us.net>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
- <mingo@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
- <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Valentin Schneider <vschneid@redhat.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
- rcu@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
- Qiliang Yuan <realwujing@gmail.com>
-References: <20260421030351.281436-1-longman@redhat.com>
- <20260421030351.281436-17-longman@redhat.com> <87qzo8bs9m.ffs@tglx>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <87qzo8bs9m.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260421095549.47476-1-ojeda@kernel.org>
 
-On 4/21/26 5:02 AM, Thomas Gleixner wrote:
-> On Mon, Apr 20 2026 at 23:03, Waiman Long wrote:
->
->> As HK_TYPE_MANAGED_IRQ cpumask is going to be changeable at run time,
->> use RCU to protect access to the cpumask.
->>
->> To enable the new HK_TYPE_MANAGED_IRQ cpumask to take effect, the
->> following steps can be done.
-> Can be done?
->
->>   1) Update the HK_TYPE_MANAGED_IRQ cpumask to take out the newly isolated
->>      CPUs and add back the de-isolated CPUs.
->>   2) Tear down the affected CPUs to cause irq_migrate_all_off_this_cpu()
->>      to be called on the affected CPUs to migrate the irqs to other
->>      HK_TYPE_MANAGED_IRQ housekeeping CPUs.
->>   3) Bring up the previously offline CPUs to invoke
->>      irq_affinity_online_cpu() to allow the newly de-isolated CPUs to
->>      be used for managed irqs.
-> Which previously offline CPUs?
-This part should go into another patch.
->
->> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
->> index 2e8072437826..8270c4de260b 100644
->> --- a/kernel/irq/manage.c
->> +++ b/kernel/irq/manage.c
->> @@ -263,6 +263,7 @@ int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask, bool
->>   	    housekeeping_enabled(HK_TYPE_MANAGED_IRQ)) {
->>   		const struct cpumask *hk_mask;
->>   
->> +		guard(rcu)();
->>   		hk_mask = housekeeping_cpumask(HK_TYPE_MANAGED_IRQ);
->>   
->>   		cpumask_and(tmp_mask, mask, hk_mask);
-> How is this hunk related to $Subject?
+On Tue, Apr 21, 2026 at 11:55:49AM +0200, Miguel Ojeda wrote:
+> On Mon, 20 Apr 2026 17:39:39 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 6.18.24 release.
+> > There are 198 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 22 Apr 2026 15:38:57 +0000.
+> > Anything received after that time might be too late.
+> 
+> Boot-tested under QEMU for Rust x86_64, arm64 and riscv64; built-tested
+> for loongarch64:
+> 
+> Tested-by: Miguel Ojeda <ojeda@kernel.org>
+> 
+> For UML (x86_64) I am seeing:
+> 
+>     In file included from arch/um/kernel/asm-offsets.c:3:
+>     In file included from ./arch/x86/um/shared/sysdep/kernel-offsets.h:5:
+>     In file included from ./include/linux/crypto.h:18:
+>     In file included from ./include/linux/slab.h:16:
+>     In file included from ./include/linux/gfp.h:7:
+>     In file included from ./include/linux/mmzone.h:1538:
+>     In file included from ./include/linux/memory_hotplug.h:7:
+>     In file included from ./include/linux/notifier.h:16:
+>     In file included from ./include/linux/srcu.h:59:
+>     ./include/linux/srcutiny.h:14:10: fatal error: 'linux/irq_work_types.h' file not found
+>        14 | #include <linux/irq_work_types.h>
+>           |          ^~~~~~~~~~~~~~~~~~~~~~~~
+>     1 error generated.
+> 
+> Caused by commit 95721c9fb3a1 ("srcu: Use irq_work to start GP in tiny
+> SRCU"). The header seems to simply not be there, i.e. either the
+> `#include` is changed or commit c809f081fe40 ("irqwork: Move data struct
+> to a types header") is backported.
+> 
+> Cc: Joel Fernandes <joelagnelf@nvidia.com>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Boqun Feng <boqun@kernel.org>
+> Cc: Sasha Levin <sashal@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Uladzislau Rezki <urezki@gmail.com>
+> Cc: Zqiang <qiang.zhang@linux.dev>
+> Cc: rcu@vger.kernel.org
+> 
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: linux-um@lists.infradead.org
 
-The subject is actually about using RCU to protect access to 
-housekeeping cpumask. There are extra info in the commit  log that 
-should go to another patch.
+Thanks, I'll just drop this commit from 6.18 and older trees for now.
 
-Cheers,
-Longman
-
->
-
+greg k-h
