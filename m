@@ -1,64 +1,64 @@
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC4C3A6B9E
-	for <rcu@vger.kernel.org>; Tue, 21 Apr 2026 22:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32913630B9
+	for <rcu@vger.kernel.org>; Tue, 21 Apr 2026 22:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776811599; cv=none; b=u1x107x//n3vFlOIXt+Km2v4qxtmmKN4KH64c8+aUI9gJvBEb4HbGhVdQd8auTKqVby5tBBP/b/bv0meDXKkcmTq2pJjKTLQqkOxfaEyFuYlOAheqbG/h1SnVbNMITv75yHYhaX8MjAyYpAPn2Xd3Hro0ZqpEqJgdpxdhmCxTyA=
+	t=1776811867; cv=none; b=OZm5lVyrhd+vO/Tbwsvj+8vD9/5sKdtxQCTX++SR5cYbn0j/gUfZUapwXrEREP3/3VklyE/MXOPpA1cBnYM54AfbDma+rbyUh9CnWW2hmEjlczszvTJrjXmm8oHHg6VwEwDbSTCnGJtthA/W9v1Bnp81SGgr0BI9Ld6U6JD9jnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776811599; c=relaxed/simple;
-	bh=WriNZugWoCF6Emcloe3Ql7xk32IV/3Dq5w3ojoSr8lM=;
+	s=arc-20240116; t=1776811867; c=relaxed/simple;
+	bh=228mfLAFQ3GXHLkT80UKFb5GQ8lHGJIsTTdZABxXJ8s=;
 	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=pWe/Bk83VxeomymxHk2sp7uEBxG9adJiun3p8+sb/dXjbMWQRGeoFDAgh53Gg0zEU3FlQLGG/NxBe3bRFleHDwxH9XpKdo088IYMYzTR+yIzs7Zxdk14TrBni4+QtXV5GOHJRUbwHm/cdEuoNls22tfQa6dDOdQ3vltNMriCHSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mvplTH5H; arc=none smtp.client-ip=209.85.161.42
+	 References:In-Reply-To; b=WvY/9IDBSGwBZC8/D4GZhv5gUjtQm5pXEqQPk7QDKIN1aRuU9WBY3xGdwXKPSuPCbIq0HlkN9lpKF8Et3wIuIjGc/1ALzajU23yqKQ3x++gSQOogXWhqwHYFVir2sWshDkQ7/De1V9dy1a0+VqXJZV1Y6QNvTQ0z1q8jA7JAYnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xk0cOBDJ; arc=none smtp.client-ip=209.85.210.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mvplTH5H"
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-6948fb494a0so1135248eaf.2
-        for <rcu@vger.kernel.org>; Tue, 21 Apr 2026 15:46:33 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xk0cOBDJ"
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-7dcd9061b1aso1092100a34.2
+        for <rcu@vger.kernel.org>; Tue, 21 Apr 2026 15:51:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776811592; x=1777416392; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1776811865; x=1777416665; darn=vger.kernel.org;
         h=in-reply-to:references:from:subject:cc:to:message-id:date
          :content-transfer-encoding:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5d5I8BPQjRssZ1l0ozTg/ouvrTUnVMAjILN1cW7pQjc=;
-        b=mvplTH5HNJn8BI/GT3NdQQW1SsU2/3vWCBw+rYJST5aJbZ9ARBihrVfKdpXxo8pFaB
-         ifX97fIj/JFPyCbElTnSAT5j1MQvxrLDmJkBfivljzwOmQPiAILWRXuHpXCHGVCOS9CJ
-         0J7G2LM8ojCDmSXL6rWu/w2K4ErhXMZDDd5t+KvRK7ZObE5P6CN3/JE9a92X9GTNI0wJ
-         X7ANRgwvyGRlqXgCJNZK5BWsxBoC6wh6JYl/KjhpZ+wlr8Bsz1VT3S7TOn8YYRT1BRii
-         qXt9R4Z+CESdLCZaY938NIfUjUUij/HWmTQv9iwQLNlsLlcx01SAgHojBSD9mvv20p6N
-         8kOw==
+        bh=228mfLAFQ3GXHLkT80UKFb5GQ8lHGJIsTTdZABxXJ8s=;
+        b=Xk0cOBDJG8lrZwdUj5W6YBmHJBMsZHyqIKLw4L2TCF7vHNjLl9H0pKa3juEu5efvhc
+         I+31hUZ+ceAcGaHpysBmHBBlqZexDF+bo4Uxi0hxrdzOxL6YbOuwVn8ylVEltRXMgyMY
+         7K2D739jAkvVP4EuG3T0Kmr80vQfnPCxbMgNzaWqWKWVY0N2zwKfbzxAKsEHqp6XiEym
+         BahMkPFvOokxlR6hPjx8wTDvROcWvyB59yIAP5epPCIPBrIF7h3sEGiWLynEEyACgfMN
+         /EEJ4PHtNSn9WPXcX2gc29azIBWVAGe5GuyqALr4MvyUmeCYmPO3PnXP1YUmxrRpmau4
+         bugA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776811592; x=1777416392;
+        d=1e100.net; s=20251104; t=1776811865; x=1777416665;
         h=in-reply-to:references:from:subject:cc:to:message-id:date
          :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=5d5I8BPQjRssZ1l0ozTg/ouvrTUnVMAjILN1cW7pQjc=;
-        b=Olm+g6BVM9SceskiGCkTI89SGq3XpJLiicTfGSm5eEjxJbH5WDQ+utoVTwMHVhnjVO
-         RtQUaAktlRvC5PcpmeaEHUWbstjjnrMGRJlYc4pR6m00GHkf/5xCsAG76NfmVX16VM/e
-         2tWlt0tXnwLrdeLZmRIZPLvG2ZdcMEqjue20o0ZRLL4sEjINlDlfS5DjUrUsbXglBhVv
-         Wew+WvES1OilbXm5nGo/qPjponudAjJ7yYrggR4AjL9y/TEHJl9P6wXJBwdY07F9skZ2
-         uUi6oHrt0/oPUDsdAtvhZ1A3dBYC6pNXARKiii90sjKfD8i7Fm8N59jwiMbdnCwG2L5a
-         o6jg==
-X-Forwarded-Encrypted: i=1; AFNElJ/ygZGuPRYyBNiebkMmlYvmWDS47ITqJtqjsgjs8WwuvHv+5C81B9GgVcIxJ5ejPBzBfJY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUipuMHPvVRasVmvvHCZeQdv0eKXrqeYs/G5oTIgPkX2vfcPJg
-	T290P6SalqFfTgztbhv6Zmwz2q/5TukUDAj2yTYgBML88y4sGQjNX28B
-X-Gm-Gg: AeBDieuRDZwjJzsyJHWAw3pgleEA6jmXjLvJ1FmEZEX8bvYNwN8Bgo2TvWyBRtEaI0l
-	gQExRMJWcs5e7/46hymAXUzSA0fgBWfyduT5RFdGVvgj725aVp8LT9eKJBIWlp27V/siSz0CwEw
-	zWRPn1+MK3IETAzKIpcsRaXjWp4q12vo5oJBfIaMk4oS/8H0+loVKE0pZUevx2FTE7LZ4DbbUpH
-	Yn3qwVvF49w6deHWBR8Ora80DdavTljlZDfVqcu3fO16RMswiVImbvwqmUlWd4Zlh98DXPWSimu
-	EhIrr9zN0RQ4b9uareRPIPiSVapTVo6NCO5mM8Glvu0IWuwCtfW/PB6BZTitNiWoKraFAjFdDoX
-	DukekLjZ76wlh/yq4SoHnmyVW6hWlbembN4P3aU0KjCOca9k30jI1dHlr+jZR8d0PeL4qKtcfr2
-	wT1bkZt5PjuXnrHU+GA7ygCy4yIMHG4TNiHG/5ngYxIPUr00+zsHadMXp8miL1t6Iz0k5uOnD8E
-	Kgkv82DGNyEEy9TDj12dyCphO0M
-X-Received: by 2002:a05:6820:16a9:b0:694:8646:9933 with SMTP id 006d021491bc7-69486469ecbmr5499437eaf.9.1776811592345;
-        Tue, 21 Apr 2026 15:46:32 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:43::])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-694984114f5sm2023411eaf.7.2026.04.21.15.46.30
+        bh=228mfLAFQ3GXHLkT80UKFb5GQ8lHGJIsTTdZABxXJ8s=;
+        b=MWOrTyVKolscYERljNmTyr2A2aXJ5BRr49RwCBIagQJ0J+ZcGvBqLA8ClclYr5caTz
+         GJo4gtqUI7rZJnrRa7+zehq107t/4t7smoBN49tKkmLvaaG6zvSbQhAry36MNBoNYU0A
+         o83Gvt7e8BuHz+3Bw4KQRbxEdoISh9BaEqSaZJ24GFkczcrvyJnO7GN+APPSzqSExj0N
+         /0p5vU2XUklo2cPR88FtJ9I8F0a74bTGr5TlQTdr7i7zhvWqEHYbE9cOJGhuw4NQNhry
+         1C1rQqL2NiyuY8qfAAjwg5YSbz2ZhPM0/GeRzbCKtmiFWIXSGmfiPxtNrGzux3rlYTfY
+         nDgg==
+X-Forwarded-Encrypted: i=1; AFNElJ/ApfzjhGOO7PqCzjYynNkG/kNkFlN0WPGcoogjxYaEnoNRgdhqvpmn5Y65Dgl5ml9cHjA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxd37mkregkt1L14kRX+BO7D+tCDOLBiwCw2Zezk75iJw5GAwDc
+	+3rHChPeruKHQO0R99hsCTJRlfsITs6GsnxPzA9p8j+BfyQWrERwsBlo
+X-Gm-Gg: AeBDievqRwpxP/SXCu71nXJnw0u/f0QPsz7qd2eIVSH4HI7MgZcqg2GxopG4dX8nXVM
+	L/Ptb3Ohqz3tqtImB6GySSrgdWyRx91iCs/lNK0Bx2bQyaRAvHNhfrxmN26T0c6+ktFqckUGizM
+	+urJ6ZUJwhj6NNT3mSdrrK7QkeVoWvgA9XBCoYG2IJiigVuwdtiGYgeL7xRHifQgtnsUavZdCjf
+	jpWhtZ3fMJ4fWYkcYSqQO7tzUZP/75IYxGViv4f0flaqDFYIcSkjrhUSVP50+GpPBTlS5xq0YWe
+	vM0h0uKpey3DvqAJZCwQc6qUJg6ZJXYlpe9ve0xRLEAo8/UTeIsI1m5NTDuUGuBUvfqcGGlbgZf
+	yLHUqNf74JxLtpmsaTpfhIGZP+r5obZcaT5noouE3f79wT3tn/bsjvzHpqXiTseDA8pRFDarWqc
+	bTZeNdA2DzBMdpYNiMg90sPRKDbn9cWigyVZJNaAbKlL5egK4cyeFrPlzq9rhQkivr+jietakDx
+	54R+gDbZnVmKKhow2Ireb7/XAI+
+X-Received: by 2002:a05:6830:67f6:b0:7d7:5559:3d1c with SMTP id 46e09a7af769-7dc94f961d0mr12841177a34.1.1776811864782;
+        Tue, 21 Apr 2026 15:51:04 -0700 (PDT)
+Received: from localhost ([2a03:2880:10ff:58::])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7dccfe912edsm4252662a34.16.2026.04.21.15.51.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Apr 2026 15:46:31 -0700 (PDT)
+        Tue, 21 Apr 2026 15:51:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -67,8 +67,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 21 Apr 2026 15:46:30 -0700
-Message-Id: <DHZ7543VMYIQ.1US6BY7G0AUJK@gmail.com>
+Date: Tue, 21 Apr 2026 15:51:02 -0700
+Message-Id: <DHZ78L9HZ1YE.JY63DXXMN9NF@gmail.com>
 To: "Harry Yoo (Oracle)" <harry@kernel.org>, "Andrew Morton"
  <akpm@linux-foundation.org>, "Vlastimil Babka" <vbabka@kernel.org>
 Cc: "Christoph Lameter" <cl@gentwo.org>, "David Rientjes"
@@ -81,47 +81,31 @@ Cc: "Christoph Lameter" <cl@gentwo.org>, "David Rientjes"
  "Zqiang" <qiang.zhang@linux.dev>, "Steven Rostedt" <rostedt@goodmis.org>,
  "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>, "Lai Jiangshan"
  <jiangshanlai@gmail.com>, <rcu@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH 4/8] mm/slab: introduce kfree_rcu_nolock()
+Subject: Re: [PATCH 7/8] mm/slab: introduce deferred submission of rcu
+ sheaves
 From: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
 X-Mailer: aerc
 References: <20260416091022.36823-1-harry@kernel.org>
- <20260416091022.36823-5-harry@kernel.org>
-In-Reply-To: <20260416091022.36823-5-harry@kernel.org>
+ <20260416091022.36823-8-harry@kernel.org>
+In-Reply-To: <20260416091022.36823-8-harry@kernel.org>
 
 On Thu Apr 16, 2026 at 2:10 AM PDT, Harry Yoo (Oracle) wrote:
->  struct kfree_rcu_cpu {
-> +	// Objects queued on a lockless linked list, used to free objects
-> +	// in unknown contexts when trylock fails.
-> +	struct llist_head defer_head;
-> +
-> +	struct irq_work defer_free;
-> +	struct irq_work sched_delayed_monitor;
-> +	struct irq_work run_page_cache_worker;
-> +
->  	// Objects queued on a linked list
->  	struct rcu_ptr *head;
->  	unsigned long head_gp_snap;
-> @@ -1333,12 +1341,99 @@ struct kfree_rcu_cpu {
->  	struct llist_head bkvcache;
->  	int nr_bkv_objs;
->  };
-> +
-> +static void defer_kfree_rcu_irq_work_fn(struct irq_work *work);
-> +static void sched_delayed_monitor_irq_work_fn(struct irq_work *work);
-> +static void run_page_cache_worker_irq_work_fn(struct irq_work *work);
-> +
-> +static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) =3D {
-> +	.lock =3D __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
-> +	.defer_head =3D LLIST_HEAD_INIT(defer_head),
-> +	.defer_free =3D IRQ_WORK_INIT(defer_kfree_rcu_irq_work_fn),
-> +	.sched_delayed_monitor =3D
-> +		IRQ_WORK_INIT_LAZY(sched_delayed_monitor_irq_work_fn),
-> +	.run_page_cache_worker =3D
-> +		IRQ_WORK_INIT_LAZY(run_page_cache_worker_irq_work_fn),
-> +};
+> Instead of falling back when the rcu sheaf becomes full, implement
+> deferred submission of rcu sheaves. If kfree_rcu_sheaf() is invoked
+> by kfree_rcu_nolock() (!allow_spin) and IRQs are disabled, the CPU might
+> be in the middle of call_rcu() and thus defer call_rcu() with irq_work.
+>
+> Submit all deferred RCU sheaves to call_rcu() before calling
+> rcu_barrier() to ensure the promise of kvfree_rcu_barrier().
+>
+> An alternative approach could be to implement this in the RCU subsystem,
+> tracking if it's safe to call call_rcu() and allowing falling back to
+> deferred call_rcu() at the cost of more expensive rcu_barrier() calls.
 
-I think kfree_rcu_cpu doesn't need to be per-cpu.
-It can be global llist with single irq_work for them all.
-Not sure about sched_delayed_monitor/run_page_cache_worker.
-Do they have to be per-cpu ? Can all 3 share single irq_work?
+Yeah. call_rcu_nolock() will be really handy here and in other places.
 
+When you respin pls pick some tree that sashiko knows about.
+So it can apply it all and review it all.
+Currently it reviewed only patch 1 and failed to apply the most interesting=
+ 4+
+https://sashiko.dev/#/patchset/20260416091022.36823-1-harry%40kernel.org
