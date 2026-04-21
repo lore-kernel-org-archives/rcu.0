@@ -1,98 +1,82 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F309C35DA5B;
-	Tue, 21 Apr 2026 18:43:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6309A28504F
+	for <rcu@vger.kernel.org>; Tue, 21 Apr 2026 20:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776797031; cv=none; b=RmlUIEqpTy3KlzM6lnsQnH1ELZvyXzKSH3VdOAFLenWugglmrrKitEmYgr7z40wSesXX8pFzsEMd6JLJHSQFgH/LAV6/tWFk1gOe1Gy3GZEZP3lfpotxDVzLNN8wVBoD3wImYYswiHszVZE2ghbMNxr0AToeljJ/o3KSc2Kkm2E=
+	t=1776802674; cv=none; b=ei5IJlhnPvFTcPlrclqV30/QWj/3dyDSxk0vNRaOswjuYIr3Pb7mU0itw3V+dGL2rrpI3sg1HZpv6y/hVx9YMo8ryW8f14AibA0jgEbEn8GEM8CsDAL916xJMqXQY1/t65X55YssjUl2Kw8q9MHm6Ex3N8BXX7ajyXiQ7CgiLBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776797031; c=relaxed/simple;
-	bh=D9bO5NnHt3R2eni60hYUUr/AeT3qN1GRnjRSK4y+ECo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NlEHqPaeA0yfzoWEwTYovb++l4+f2bHaqGK3A3fuCJkHn2KorX0GntUdD0gZ7OQB+BG87rM5otYU248RyHL8LY8Lq/KVyftpLzUT7NALAClSYU1VxJkBu/7TQQmmr0IjkyxiO6XFfrnygtopJp//NVfwjW7Ksq6xwI923I4OCn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RpF/xhOX; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1776802674; c=relaxed/simple;
+	bh=KfnbFnhXl5l+gEKvgs73Yb0h2IqpHCm5Z9HckyuX2x0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zwb6ZUL2MwWGgAA+R4PP/8wwcQvbIvN9lIfHEP2jQ9OHRijmt/5K//wHJU5QKgv4+EaB5dXK9fWJ179L/7KXVVTHsuSQ1SonjmIPPReqEZEPY/GRdibaL9vQDG6Uex9s58XFaYSPV/Qrx605d5JeRc77+ppSHT4JQG693RnoMYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=c3pjcWJQ; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RpF/xhOX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9561AC2BCB0;
-	Tue, 21 Apr 2026 18:43:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776797030;
-	bh=D9bO5NnHt3R2eni60hYUUr/AeT3qN1GRnjRSK4y+ECo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=RpF/xhOXQwrMYmPF95ZzDOkYwTBWNJp3iUkcjfRBYB0LpyWrCCiuRDfKlFhymW1UQ
-	 6TOuSdalH39Zxv7ZQj0G0IyHHEgaA/YF+XUbmu7gfNazbz8YnPHY3GE4rs8+AUGipz
-	 aZirw4DaFoD6FMOWa06+XaDAkxRD9fx2FVaQ6XHO9mmSsiBXmsXBk9QH8hJPm+qaiP
-	 rcq+F6yumdX2DEEQaNL6n35fcf+nS7eRqb69WDhQlRGqa/I7egYe3Ll2In972DbiZJ
-	 eK2SF/BUcL85XKXUV9XBduFzTZV0k2a6OoYEIAJtmijoekrx9p1hnQP9Pxv9D1wIeb
-	 yIxK0DMJuV7aA==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>, Johannes
- Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?=
- <mkoutny@suse.com>, Jonathan
- Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Catalin
- Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, "K. Y.
- Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
- Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Long Li
- <longli@microsoft.com>, Guenter Roeck <linux@roeck-us.net>, Frederic
- Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes
- <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng
- <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
- <mingo@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
- <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, K Prateek
- Nayak <kprateek.nayak@amd.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
- rcu@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
- Qiliang Yuan <realwujing@gmail.com>
-Subject: Re: [PATCH 18/23] cpu/hotplug: Add a new cpuhp_offline_cb() API
-In-Reply-To: <4a0ede3e-6e87-414f-a3a3-dd15c32f25ef@redhat.com>
-References: <20260421030351.281436-1-longman@redhat.com>
- <20260421030351.281436-19-longman@redhat.com> <87o6jcb84w.ffs@tglx>
- <4a0ede3e-6e87-414f-a3a3-dd15c32f25ef@redhat.com>
-Date: Tue, 21 Apr 2026 20:43:46 +0200
-Message-ID: <87340ob1ct.ffs@tglx>
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="c3pjcWJQ"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Zmk5kCu+N+tLkVd3CGGCvLP7PJjgMTpvngzmVMjrx2c=; b=c3pjcWJQrzP/CnBpWyzEsOODaL
+	IpEOkNzpKCQufKIBgcCtLaLUdZUbppx0takTo14jvYiuZqp8xdzYI2/2/zE6ytz6edrnoZVaXBINn
+	JPEmEmWR5KBoLMUkb7GJpXXr2WpJ/yBbdmNVC89RRsjlV6OIKHaqQOQO8DOagfVA/ID96S42yJQEK
+	COv/MUwpKx8WGbf98tfFzidVpMtpo8cZT5cjO3vZzZ215aM5cIi7+rZNbDFNSJkkI0AE9SmWzBAAF
+	oO8B8dXd/IW7Vb1XqDIZX4sGQfU5XL2ad/lxjpDoMsHMCHcfaQJg1abFy6LMI9SMHcBV3/K3aKIVf
+	elDkpJIg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wFHbT-00000004sv7-1ZFx;
+	Tue, 21 Apr 2026 20:21:51 +0000
+Date: Tue, 21 Apr 2026 21:21:51 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: "Harry Yoo (Oracle)" <harry@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hao Li <hao.li@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Zqiang <qiang.zhang@linux.dev>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
+	linux-mm@kvack.org, Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 2/8] fs/dcache: use rcu_ptr instead of rcu_head for
+ external names
+Message-ID: <20260421202151.GF3518998@ZenIV>
+References: <20260416091022.36823-1-harry@kernel.org>
+ <20260416091022.36823-3-harry@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260416091022.36823-3-harry@kernel.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Tue, Apr 21 2026 at 13:29, Waiman Long wrote:
-> On 4/21/26 12:17 PM, Thomas Gleixner wrote:
-> Thanks for the great suggestions. I will certainly look into that.
->
-> We actually have a cpu_active_mask that will be cleared early in 
-> sched_cpu_deactivate(). In the CPUHP_AP_SCHED_WAIT_EMPTY state, the CPU 
-> will still have online bit set but the active bit will be cleared. Or we 
-> could add another cpumask that can be used to indicate CPUs that have 
-> reached CPUHP_AP_SCHED_WAIT_EMPTY or below if necessary.
+On Thu, Apr 16, 2026 at 06:10:16PM +0900, Harry Yoo (Oracle) wrote:
+> When a file name length exceeds 31 (DCACHE_INLINE_LEN-1),
 
-Right. Active mask is immediately cleared when a CPU goes down so that
-the scheduler does not enqueue new tasks on it. But you can't use it for
-interrupts because on CPU up the mask must be up to date when
-irq_affinity_online_cpu() is invoked. The tick has the same constraints.
+#ifdef CONFIG_64BIT
+# define DNAME_INLINE_WORDS 5 /* 192 bytes */
+#else
+# ifdef CONFIG_SMP
+#  define DNAME_INLINE_WORDS 9 /* 128 bytes */
+# else
+#  define DNAME_INLINE_WORDS 11 /* 128 bytes */
+# endif
+#endif
 
-So for interrupts this should be handled in CPUHP_AP_IRQ_AFFINITY_ONLINE
-both in the existing up and the new down callback. That can be a
-interrupt core local CPU mask which is updated on the callbacks with the
-sparse_irq_lock held.
-
-Same for the tick handover magic.
-
-Thanks,
-
-        tglx
+Where do you get that 31 from?
