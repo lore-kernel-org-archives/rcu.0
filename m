@@ -1,275 +1,179 @@
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7062F31D366;
-	Wed, 22 Apr 2026 06:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE1C295DA6
+	for <rcu@vger.kernel.org>; Wed, 22 Apr 2026 06:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776839991; cv=none; b=ubi8fsCt1YlwNTO9/+7yFf0518ZUd/bmrMffppvDWwXhORJgACdXz9lbQHS/VnSj2YifgtubvKAkSxf6UnygfxLqG9pafVRfhOslpg7idv4JX/K9ia+ze3rxBvBFkxFMJsr9jPYW6hSYZ4pqJOcrUsYIwMPkEBOPjGqVx8X2ePY=
+	t=1776840389; cv=none; b=HQXCZ3AxAUnPX9/CPRw9MQuvfMtCkKfaiuRazoiPJ7tvlf56GvIXGELTzDVEZZIgPIX5yNbkDC6emabUxc4YV2SVP6oE2onRNIEhqk5Y8WPId7L8Yi33pNYaeApm5BTaIKKDxgVwiocEo6T+RJse36+vBqAD3h/7vZq7R0oXFKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776839991; c=relaxed/simple;
-	bh=8auo9fApI0AJJbM0oVqd4iDvIZsHR0GHU8PCbKdtgfE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nEhnGlESkxk5sTuFyBRbXIkhzrOCb3a9m6NVJMgX5h698N9L6IaDoJzJnGGMxyXwfdPUnlx1I3gpIIZb/V8RPGtu/hmYgiGiRa6PX89OP81YlWNyIueKxfpE6A0OBr8SHCHG7g1GSK05fbutgELtbW6ibiBjAWzTBpLWKfF088Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4g0qMJ3lLGzKHMN6;
-	Wed, 22 Apr 2026 14:39:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id CB50540600;
-	Wed, 22 Apr 2026 14:39:44 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgBnBMIubehpzQ43BQ--.59576S2;
-	Wed, 22 Apr 2026 14:39:44 +0800 (CST)
-Message-ID: <48f5e1f5-bfb0-44cc-ae6a-14f66158796f@huaweicloud.com>
-Date: Wed, 22 Apr 2026 14:39:42 +0800
+	s=arc-20240116; t=1776840389; c=relaxed/simple;
+	bh=ckFnFpf7EY4k05pzvEaBOfkZIuezMOHmoXRs8+shPkA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=De6Gwa1Df2BKCrolVUhE5rMKB02xKE7uZL7LyW0zeYjaSYst0FxswqWhC+4O/vbmdQ0ljlK4l49eohW3A8hFe+Mbz0vdoGDmIk3nnTHG+f5z9cCYvCoeDienjVZdkNXLHqq0eeHFi+TRk+OouQamH+f+QiqOjZi/QdmQ40VUuPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AlTEg11R; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AlTEg11R"
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-35fb0bb27e7so3262134a91.1
+        for <rcu@vger.kernel.org>; Tue, 21 Apr 2026 23:46:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1776840388; x=1777445188; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d/aDT6I0ezsGEbJ8F9hURK4tUtAhZV+DQ8q+1PG94JQ=;
+        b=AlTEg11RxxvXXd9gm8I+OrJ0kLX2kGygbpJZjBNA8wW7emSquuiE/I+BeBmc5vG9ZS
+         FaDkC/N+b8caLEkv20CyM9EOCUhIbP3gwh6/tu+JirXax7r+FSc+1/7763ky69C6Klq+
+         0Nmrh9md3i9ZRCV20M5s1u9VENifCDF4isfHjgJwy8wt3Y72mU+oP24L57da3tCWsuXn
+         ORLiHZddYUUGL4h44rDjyu6TRO5x3tlGEo5gnSy8dFP/qr9R9CEEdk3doSin5bDKl1oi
+         5snaXdgj/pbCAv3mhTg8NkaUO2uuD203L59szYzaW/tA/vX7GuXEbpS6woBPDSjuOsO2
+         GDjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776840388; x=1777445188;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=d/aDT6I0ezsGEbJ8F9hURK4tUtAhZV+DQ8q+1PG94JQ=;
+        b=aziLxRb/KC7g2KaU/oMZFdE/sxn7UqZe16DSVfc6JOHliJVyAQ0W0U/0xl5+d2AFSg
+         qhK4xtPLxMlcTiQ6YLioG03UxAs6plBNqND2/4enB7j/PSCIBCht8AXQN6zGYO3TlMFP
+         dK9zm9shbRZrc6h8/5oeN7lYWFbif7KgQAdCbuL3v+ODbAJS1vMhMjKgu/v7RZs8LV/0
+         tKo3g4Lxr+ARfNR34SvLU2AjlGhyeDgrRuR2Zdsg3WmLggnjJNRvpnmQKkJXrZCYlOst
+         OwmzDinj3U/gkKU43veON6hiJC5U5DQ/UiRH5L4+lRXE2df4FKVIjETQfIz30K59BZFe
+         0WOQ==
+X-Forwarded-Encrypted: i=1; AFNElJ/tjsTP2Mg5J9tIDeMb+NoTXSFQapagN4xdtiSHlArDTUjiVWntQWfrUQyqlb4xXvchU30=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNoMYU6+UzFSa4Z1MbBgDTtfjDs/JR5Du9s3MkCMdNZee4Npeb
+	gJiClczLCBPHvxr/GOxLabMFzgOdr2fxuXZfoFVtvbS0UnMe/o15stC7
+X-Gm-Gg: AeBDiev/vYaE9jJjwU2IeVBD8bpCX6uhzi1++Z+BLGUG2JTODjw0J1rUurH5C95Syb8
+	XcM9i4eDkppYhznH6caIealmLm7KcSvcozn+KYrUts5VxVrFDQvfZEocxdbJhabC8Y0r3GUWtYE
+	yVG/RqE1kegb+U1P5/da5RluCFI/F7WoEhhrM2Uypf74sX+13ukdc5gGyq0/c5PW96AcJZn7/S5
+	/waXrDtnwHkXSdogEEx4hG0k0UnDBq/RVgigDAedap1xZDtTt3VBb15Ohx7CwrUwxLNQLonfIeC
+	Yv3CQGY3Sf/mK83789QZbfj3Y5KheNh//HdYxLvJynxsdwe6A8xjnv6Yo/RF6vWRqS6Wg8o/I4+
+	CRF0WWFodjJUXB/e8ljWmr9VndOLDxifroKRv/Zk6OunTNujALhNRmb8GizAhf9/pJRxHUNbFC4
+	aKRF+4E8bcnHDWqiC4hcqqZtdp9dRsacAhi9uNJc2L
+X-Received: by 2002:a17:90b:2e46:b0:359:8dfd:64c8 with SMTP id 98e67ed59e1d1-361404a81e0mr20221334a91.24.1776840387546;
+        Tue, 21 Apr 2026 23:46:27 -0700 (PDT)
+Received: from localhost ([103.74.250.37])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-361417748aesm15531760a91.0.2026.04.21.23.46.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 21 Apr 2026 23:46:27 -0700 (PDT)
+Date: Wed, 22 Apr 2026 14:45:36 +0800
+From: Jiazi Li <jqqlijiazi@gmail.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	rcu@vger.kernel.org, "mingzhu.wang" <mingzhu.wang@transsion.com>
+Subject: Re: [PATCH] rcu: use NMI to dump backtrace of blkd-task running on
+ other cpu
+Message-ID: <20260422063525.GA3155@Jiazi.Li>
+References: <20260417013816.3653-1-jqqlijiazi@gmail.com>
+ <7a46efa3-3d11-45df-8d73-5af8b87a4b84@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/23] sched/isolation: Enhance housekeeping_update() to
- support updating more than one HK cpumask
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
- Guenter Roeck <linux@roeck-us.net>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
- <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
- <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Valentin Schneider <vschneid@redhat.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
- rcu@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
- Qiliang Yuan <realwujing@gmail.com>
-References: <20260421030351.281436-1-longman@redhat.com>
- <20260421030351.281436-3-longman@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20260421030351.281436-3-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBnBMIubehpzQ43BQ--.59576S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3GFyrGF4kGw1fAF4xGFyxAFb_yoW7Kw4Dpr
-	Z8W3y3GFWkJr13G3s8Zw1DJr4rWw4kCw1vk3sxWw15tFy2g3WkA3409F9xJr97ur9rCr17
-	ZFZ8KwsIgFyjyrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
-	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-	xUVZ2-UUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7a46efa3-3d11-45df-8d73-5af8b87a4b84@paulmck-laptop>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 
-
-
-On 2026/4/21 11:03, Waiman Long wrote:
-> The housekeeping_update() function currently allows update to the
-> HK_TYPE_DOMAIN cpumask only. As we are going to enable dynamic
-> modification of the other housekeeping cpumasks, we need to extend
-> it to support passing in the information about the HK cpumask(s) to
-> be updated.  In cases where some HK cpumasks happen to be the same,
-> it will be more efficient to update multiple HK cpumasks in one single
-> call instead of calling it multiple times. Extend housekeeping_update()
-> to support that as well.
+On Tue, Apr 21, 2026 at 04:20:54PM -0700, Paul E. McKenney wrote:
+> On Fri, Apr 17, 2026 at 09:38:13AM +0800, Jiazi Li wrote:
+> > sched_show_task cannot dump backtrace of blkd-task running on other
+> > cpu:
+> > [117421.286553][    C0] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> > [117421.286579][    C0] rcu:    Tasks blocked on level-0 rcu_node (CPUs 0-7): P2280
+> > [117421.286595][    C0] rcu:    (detected by 0, t=5252 jiffies, g=751845, q=66318 ncpus=8)
+> > [117421.286604][    C0] task:android.imms2   state:R  running task     stack:0     ...
+> > [117421.286617][    C0] Call trace:
+> > [117421.286622][    C0]  __switch_to+0x1a0/0x318
+> > [117421.286636][    C0]  0x0
+> > 
+> > So use NMI to dump backtrace:
+> > [  390.584143] rcub/0: rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> > [  390.585156] rcub/0: rcu:     Tasks blocked on level-0 rcu_node (CPUs 0-7): P6816
+> > [  390.586207] rcub/0: rcu:     (detected by 5, t=52532 jiffies, g=7405, q=63942 ncpus=8)
+> > [  390.587320] rcub/0: Sending NMI from CPU 5 to CPUs 4:
+> > [  390.588111] rcu_stall_threa: NMI backtrace for cpu 4
+> > [  390.588116] rcu_stall_threa: CPU: 4 UID: 0 PID: 6816 Comm: rcu_stall_threa Tainted: P...
+> > [  390.588120] rcu_stall_threa: Tainted: [P]=PROPRIETARY_MODULE, [W]=WARN, [O]=OOT_MODULE
+> > [  390.588122] rcu_stall_threa: Hardware name: MT6858 (DT)
+> > [  390.588123] rcu_stall_threa: pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > [  390.588125] rcu_stall_threa: pc : _raw_spin_unlock_irqrestore+0x1c/0x44
+> > [  390.588131] rcu_stall_threa: lr : ___ratelimit+0xd4/0x110
+> > [  390.588134] rcu_stall_threa: sp : ffffffc08464bdf0
+> > [  390.588135] rcu_stall_threa: x29: ffffffc08464bdf0 x28: 0000000000000000 x27: 0000000000000000
+> > [  390.588138] rcu_stall_threa: x26: 0000000000000000 x25: 0000000000000000 x24: 00000000000004e2
+> > [  390.588140] rcu_stall_threa: x23: ffffffd82ae77000 x22: ffffffd82af1fae8 x21: 000000000000000a
+> > [  390.588142] rcu_stall_threa: x20: 0000000000000000 x19: 0000000000000000 x18: ffffffc08456d020
+> > [  390.588144] rcu_stall_threa: x17: 000000008c623181 x16: 000000008c623181 x15: 0000000000000010
+> > [  390.588146] rcu_stall_threa: x14: 0000000000000100 x13: ffffffc084648000 x12: ffffffc08464c000
+> > [  390.588148] rcu_stall_threa: x11: 5e2da9f91a08d800 x10: ffffffd8299b39fc x9 : 0000000100005874
+> > [  390.588150] rcu_stall_threa: x8 : 0000000000000000 x7 : 0000000000000001 x6 : fffffffebea2b0a0
+> > [  390.588152] rcu_stall_threa: x5 : 0000000000000000 x4 : 0000000000000402 x3 : 0000000000000000
+> > [  390.588154] rcu_stall_threa: x2 : ffffff81ca8d9680 x1 : 0000000000000000 x0 : 0000000000000001
+> > [  390.588156] rcu_stall_threa: Call trace:
+> > [  390.588157] rcu_stall_threa:  _raw_spin_unlock_irqrestore+0x1c/0x44
+> > [  390.588159] rcu_stall_threa:  ___ratelimit+0xd4/0x110
+> > [  390.588161] rcu_stall_threa:  rcu_thread_func+0x90/0xa8
+> > [  390.588164] rcu_stall_threa:  kthread+0x110/0x1a4
+> > [  390.588167] rcu_stall_threa:  ret_from_fork+0x10/0x20
+> > 
+> > Signed-off-by: Jiazi Li <jqqlijiazi@gmail.com>
+> > Tested-by: mingzhu.wang <mingzhu.wang@transsion.com>
 > 
-> Also add the restriction that passed in isolated cpumask parameter
-> of housekeeping_update() must include all the CPUs isolated at boot
-> time. This is currently the case for cpuset anyway.
+> This looks like an arm64 stack trace.  Are there any arm64 systems in
+> production that do real NMIs?  (Don't get me wrong, it would be nice if
+> there are!)
 > 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  include/linux/sched/isolation.h |  2 +-
->  kernel/cgroup/cpuset.c          |  2 +-
->  kernel/sched/isolation.c        | 99 +++++++++++++++++++++++----------
->  3 files changed, 71 insertions(+), 32 deletions(-)
+From commit 331a1b3a836c ("arm64: smp: Add arch support for backtrace using pseudo-NMI"), ARM64 using
+pseudo-NMI, it's actually an IPI.
+> > ---
+> >  kernel/rcu/tree_stall.h | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > index b67532cb8770..5806f9a43579 100644
+> > --- a/kernel/rcu/tree_stall.h
+> > +++ b/kernel/rcu/tree_stall.h
+> > @@ -289,7 +289,12 @@ static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
+> >  		 * Avoid triggering hard lockup.
+> >  		 */
+> >  		touch_nmi_watchdog();
+> > -		sched_show_task(t);
+> > +		if (unlikely(t->on_cpu && t != current) &&
 > 
-> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-> index d1707f121e20..a17f16e0156e 100644
-> --- a/include/linux/sched/isolation.h
-> +++ b/include/linux/sched/isolation.h
-> @@ -51,7 +51,7 @@ extern const struct cpumask *housekeeping_cpumask(enum hk_type type);
->  extern bool housekeeping_enabled(enum hk_type type);
->  extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
->  extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
-> -extern int housekeeping_update(struct cpumask *isol_mask);
-> +extern int housekeeping_update(struct cpumask *isol_mask, unsigned long flags);
->  extern void __init housekeeping_init(void);
->  
->  #else
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 1335e437098e..a4eccb0ec0d1 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1354,7 +1354,7 @@ static void cpuset_update_sd_hk_unlock(void)
->  		 */
->  		mutex_unlock(&cpuset_mutex);
->  		cpus_read_unlock();
-> -		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus));
-> +		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus, BIT(HK_TYPE_DOMAIN)));
->  		mutex_unlock(&cpuset_top_mutex);
->  	} else {
->  		cpuset_full_unlock();
-> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> index 9ec9ae510dc7..965d6f8fe344 100644
-> --- a/kernel/sched/isolation.c
-> +++ b/kernel/sched/isolation.c
-> @@ -120,48 +120,87 @@ bool housekeeping_test_cpu(int cpu, enum hk_type type)
->  }
->  EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
->  
-> -int housekeeping_update(struct cpumask *isol_mask)
-> -{
-> -	struct cpumask *trial, *old = NULL;
-> -	int err;
-> +/* HK type processing table */
-> +static struct {
-> +	int type;
-> +	int boot_type;
-> +} hk_types[] = {
-> +	{ HK_TYPE_DOMAIN,       HK_TYPE_DOMAIN_BOOT	  },
-> +	{ HK_TYPE_MANAGED_IRQ,  HK_TYPE_MANAGED_IRQ_BOOT  },
-> +	{ HK_TYPE_KERNEL_NOISE, HK_TYPE_KERNEL_NOISE_BOOT }
-> +};
->  
-> -	trial = kmalloc(cpumask_size(), GFP_KERNEL);
-> -	if (!trial)
-> -		return -ENOMEM;
-> +#define HK_TYPE_CNT	ARRAY_SIZE(hk_types)
->  
-> -	cpumask_andnot(trial, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT), isol_mask);
-> -	if (!cpumask_intersects(trial, cpu_online_mask)) {
-> -		kfree(trial);
-> -		return -EINVAL;
-> +int housekeeping_update(struct cpumask *isol_mask, unsigned long flags)
-> +{
-> +	struct cpumask *trial[HK_TYPE_CNT];
-> +	int i, err = 0;
-> +
-> +	for (i = 0; i < HK_TYPE_CNT; i++) {
-> +		int type = hk_types[i].type;
-> +		int boot = hk_types[i].boot_type;
-> +
-> +		trial[i] = NULL;
-> +		if (flags & BIT(type)) {
-> +			trial[i] = kmalloc(cpumask_size(), GFP_KERNEL);
-> +			if (!trial[i]) {
-> +				err = -ENOMEM;
-> +				goto out;
-> +			}
-> +			/*
-> +			 * The new HK cpumask must be a subset of its boot
-> +			 * cpumask.
-> +			 */
-> +			cpumask_andnot(trial[i], cpu_possible_mask, isol_mask);
-> +			if (!cpumask_intersects(trial[i], cpu_online_mask) ||
-> +			    !cpumask_subset(trial[i], housekeeping_cpumask(boot))) {
-> +				i++;
-> +				err = -EINVAL;
-> +				goto out;
-> +			}
-> +		}
->  	}
->  
+> What if task t blocks or migrates to some other CPU at this point?
+> 
+Yes, that's indeed a concern. We can identify such scenarios by checking
+whether the PID reported by RCU matched the PID captured in the NMI
+backtrace.
+Do you have any suggestions?
+> > +				trigger_single_cpu_backtrace(task_cpu(t))) {
+> > +			/*Successfully triggered remote backtrace*/
+> 
+> Wouldn't inverting the condition save a couple of lines of code here?
+> And make it a bit more straightforward?
+> 
+> 							Thanx, Paul
+> 
+Do you mean something like the following code?
+		if (!unlikely(t->on_cpu && t != current) ||
+			!trigger_single_cpu_backtrace(task_cpu(t)))
+			sched_show_task(t);
 
-The i++ here is confusing. Wouldn't it be more readable to just use
-kfree(trial[i]) and then break out?
-
->  	if (!housekeeping.flags)
->  		static_branch_enable(&housekeeping_overridden);
->  
-> -	if (housekeeping.flags & HK_FLAG_DOMAIN)
-> -		old = housekeeping_cpumask_dereference(HK_TYPE_DOMAIN);
-> -	else
-> -		WRITE_ONCE(housekeeping.flags, housekeeping.flags | HK_FLAG_DOMAIN);
-> -	rcu_assign_pointer(housekeeping.cpumasks[HK_TYPE_DOMAIN], trial);
-> -
-> -	synchronize_rcu();
-> -
-> -	pci_probe_flush_workqueue();
-> -	mem_cgroup_flush_workqueue();
-> -	vmstat_flush_workqueue();
-> +	for (i = 0; i < HK_TYPE_CNT; i++) {
-> +		int type =  hk_types[i].type;
-> +		struct cpumask *old;
->  
-> -	err = workqueue_unbound_housekeeping_update(housekeeping_cpumask(HK_TYPE_DOMAIN));
-> -	WARN_ON_ONCE(err < 0);
-> +		if (!trial[i])
-> +			continue;
-> +		old = NULL;
-> +		if (housekeeping.flags & BIT(type))
-> +			old = housekeeping_cpumask_dereference(type);
-> +		rcu_assign_pointer(housekeeping.cpumasks[type], trial[i]);
-> +		trial[i] = old;
-> +	}
->  
-> -	err = tmigr_isolated_exclude_cpumask(isol_mask);
-> -	WARN_ON_ONCE(err < 0);
-> +	if ((housekeeping.flags & flags) != flags)
-> +		WRITE_ONCE(housekeeping.flags, housekeeping.flags | flags);
->  
-> -	err = kthreads_update_housekeeping();
-> -	WARN_ON_ONCE(err < 0);
-> +	synchronize_rcu();
->  
-> -	kfree(old);
-> +	if (flags & HK_FLAG_DOMAIN) {
-> +		/*
-> +		 * HK_TYPE_DOMAIN specific callbacks
-> +		 */
-> +		pci_probe_flush_workqueue();
-> +		mem_cgroup_flush_workqueue();
-> +		vmstat_flush_workqueue();
-> +
-> +		WARN_ON_ONCE(workqueue_unbound_housekeeping_update(
-> +				housekeeping_cpumask(HK_TYPE_DOMAIN)) < 0);
-> +		WARN_ON_ONCE(tmigr_isolated_exclude_cpumask(isol_mask) < 0);
-> +		WARN_ON_ONCE(kthreads_update_housekeeping() < 0);
-> +	}
->  
-> -	return 0;
-> +out:
-> +	while (--i >= 0)
-> +		kfree(trial[i]);
-> +	return err;
->  }
->  
->  void __init housekeeping_init(void)
-
--- 
-Best regards,
-Ridong
-
+> > +		} else {
+> > +			sched_show_task(t);
+> > +		}
+> >  	}
+> >  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> >  }
+> > -- 
+> > 2.49.0
+> > 
