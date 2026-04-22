@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6DB32741B6
-	for <rcu@vger.kernel.org>; Wed, 22 Apr 2026 01:16:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F563932D1
+	for <rcu@vger.kernel.org>; Wed, 22 Apr 2026 03:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776820602; cv=none; b=WyAOe+EeI5Pt5XR0RQjFKB1D7nd0GGWceMXoxLCdrkdYSzuUiM8rQJ+JB89OmvwuBubN8+PDxZWw5HJiYW2Lo0laVwLopDdaTeZozvwUGI0CD5nN1m5lV4M1wUCYfXro/ojWqGGdWhHpvowdIbTZiTJG14mohT9yzfJjx3Szxfo=
+	t=1776826928; cv=none; b=FQ+P1nYZk9OhCndfnrM8pOwtf0zqAerUxuHGncnWStUtGrUrjBoagKGhpilYFOrPTnG9BriQBQtvEnHSO/3eSTrj0ZoC5q7ZV3knifyYYQGs47TcrNAfUCW2MqFjWLlUoZe6lDd9Lz1ALZf5auG17dVMHeE88TtrjkWxcZ6ziJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776820602; c=relaxed/simple;
-	bh=iCRI6Vw9mtwmyRKI+DMnjzpiQb/k2Wa71IR5f/lqDhY=;
+	s=arc-20240116; t=1776826928; c=relaxed/simple;
+	bh=sd4O6bp9bJ6/CkpIBKSx3gBRzusegphBjTuUq0STAQ0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HVr+7im80PGFkPGkENnbQ6gnXxYjBs6EqjfcvMFzr7vU0Mkpk3nFnu0DB8noD7R/L9ktQG/6kQFq1wiITVLpobnQ89se8oEt3faNb8RfHLUeVQTCqpUeahxqEb6CsVm9HW9fzLoKx1bf/r/UpGV7F1S77jaTUUpEs37dEDxOi4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=If8Mq5F7; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=kbnnNnv1gyI4r07AApjDX+lyhw6tWfo22uzul0FSuIXHJ4n0bSLrkL7QJZ7SE6dcyLxsMqg0grW7MiG6cl5WR5wlbcsgbe8OGqrFemn3akdtiWt0ED4jonH/Oh2AA1h2Ar7EX5+X+zoDnKH/+6K+OsqfF1UR1DJ+mZnOU0UlPEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cLiP4ZEn; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="If8Mq5F7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 245A7C2BCB0;
-	Wed, 22 Apr 2026 01:16:42 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cLiP4ZEn"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D429C2BCB0;
+	Wed, 22 Apr 2026 03:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776820602;
-	bh=iCRI6Vw9mtwmyRKI+DMnjzpiQb/k2Wa71IR5f/lqDhY=;
+	s=k20201202; t=1776826925;
+	bh=sd4O6bp9bJ6/CkpIBKSx3gBRzusegphBjTuUq0STAQ0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=If8Mq5F7eh58pV1iYu+Mb/FJJ7WLmRsqjfIBYcpy4kDo90dfrb+5a8Ovglcz6Btn7
-	 yar9YYJucxBLeDZG3SC4fSkrA0tIQZJkYhvPYeUk+zgavB1jpqC973fdZGLil5bFpe
-	 09zP56rDorwiGekgO2T10ObEoR9CsIsCkpAVBYneV3slDnbGjnKDq9bqkgxlUZJf+M
-	 E8TJxmXcT6xlPtOaLzOdpsFym+5nm2n9waY74DVmIpLzu1o1oZt4CqSQqDOFO9M6te
-	 H6KLDoWMJjiPNOmltQ3hJzI3dsbZt7iPZkm+hnWgsTXTBnj4DK09VdO6mHevaIifYk
-	 EyCJ/TL441yhA==
-Date: Wed, 22 Apr 2026 10:16:40 +0900
+	b=cLiP4ZEnUe7HRV+QaodZGpD/1YTHkLAj6H+vbGJmFwrXaauLuOTvX+QWd2+TVDbwa
+	 thHLX39Cp6IDLUfKSUcZ0sSc4Eh0jO1Lj0eZxLMrbmWHJmlBZhWfKuvjBVt2h58UvC
+	 ifBU+FUGg21SKDQuWb4vYCi/P57VJJ9WR0fpYpceU3c7sOIKGhCMnhYMOKN+mw9cVV
+	 KfIgaXMe8wWlgDouuSa2ObFEI9PUIzcDZ7AVsKWIay9j7ZS46EwqWZHRsf7YSWlNds
+	 5QKGBxwFERxA/UqXIU6Hj24S4uSOnxEteFHvygjp2HfivQp2Ei0+u8Edc2aCX84GtS
+	 uVPWJnPV+IwsA==
+Date: Wed, 22 Apr 2026 12:02:03 +0900
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Vlastimil Babka <vbabka@kernel.org>,
 	Christoph Lameter <cl@gentwo.org>,
 	David Rientjes <rientjes@google.com>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Hao Li <hao.li@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
@@ -45,14 +45,13 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
-	linux-mm@kvack.org, Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 2/8] fs/dcache: use rcu_ptr instead of rcu_head for
- external names
-Message-ID: <aeghePMTwTof8uzj@hyeyoo>
+	linux-mm@kvack.org
+Subject: Re: [PATCH 4/8] mm/slab: introduce kfree_rcu_nolock()
+Message-ID: <aeg6K-NcvFHZ02bk@hyeyoo>
 References: <20260416091022.36823-1-harry@kernel.org>
- <20260416091022.36823-3-harry@kernel.org>
- <20260421202151.GF3518998@ZenIV>
+ <20260416091022.36823-5-harry@kernel.org>
+ <DHZ7543VMYIQ.1US6BY7G0AUJK@gmail.com>
+ <805c33d7-3a7b-470c-bd9d-065717a3e3e2@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -61,35 +60,100 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260421202151.GF3518998@ZenIV>
+In-Reply-To: <805c33d7-3a7b-470c-bd9d-065717a3e3e2@paulmck-laptop>
 
-On Tue, Apr 21, 2026 at 09:21:51PM +0100, Al Viro wrote:
-> On Thu, Apr 16, 2026 at 06:10:16PM +0900, Harry Yoo (Oracle) wrote:
-> > When a file name length exceeds 31 (DCACHE_INLINE_LEN-1),
-					^ Now I see a typo here
+On Tue, Apr 21, 2026 at 04:10:41PM -0700, Paul E. McKenney wrote:
+> On Tue, Apr 21, 2026 at 03:46:30PM -0700, Alexei Starovoitov wrote:
+> > On Thu Apr 16, 2026 at 2:10 AM PDT, Harry Yoo (Oracle) wrote:
+> > >  struct kfree_rcu_cpu {
+> > > +	// Objects queued on a lockless linked list, used to free objects
+> > > +	// in unknown contexts when trylock fails.
+> > > +	struct llist_head defer_head;
+> > > +
+> > > +	struct irq_work defer_free;
+> > > +	struct irq_work sched_delayed_monitor;
+> > > +	struct irq_work run_page_cache_worker;
+> > > +
+> > >  	// Objects queued on a linked list
+> > >  	struct rcu_ptr *head;
+> > >  	unsigned long head_gp_snap;
+> > > @@ -1333,12 +1341,99 @@ struct kfree_rcu_cpu {
+> > >  	struct llist_head bkvcache;
+> > >  	int nr_bkv_objs;
+> > >  };
+> > > +
+> > > +static void defer_kfree_rcu_irq_work_fn(struct irq_work *work);
+> > > +static void sched_delayed_monitor_irq_work_fn(struct irq_work *work);
+> > > +static void run_page_cache_worker_irq_work_fn(struct irq_work *work);
+> > > +
+> > > +static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+> > > +	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
+> > > +	.defer_head = LLIST_HEAD_INIT(defer_head),
+> > > +	.defer_free = IRQ_WORK_INIT(defer_kfree_rcu_irq_work_fn),
+> > > +	.sched_delayed_monitor =
+> > > +		IRQ_WORK_INIT_LAZY(sched_delayed_monitor_irq_work_fn),
+> > > +	.run_page_cache_worker =
+> > > +		IRQ_WORK_INIT_LAZY(run_page_cache_worker_irq_work_fn),
+> > > +};
+> > 
+> > I think kfree_rcu_cpu doesn't need to be per-cpu.
 
-> #ifdef CONFIG_64BIT
-> # define DNAME_INLINE_WORDS 5 /* 192 bytes */
-> #else
-> # ifdef CONFIG_SMP
-> #  define DNAME_INLINE_WORDS 9 /* 128 bytes */
-> # else
-> #  define DNAME_INLINE_WORDS 11 /* 128 bytes */
-> # endif
-> #endif
-> 
-> Where do you get that 31 from?
+After reading this, I was like "Oh, that's quite a drastic change?",
+but looks like I misread it. I didn't create a new percpu structure,
+but extended the existing one.
 
-Oh god, I blindly got it from the wrong file:
+I guess you meant the new fields added (defer_head, and irq works)
+to struct kfree_rcu_cpu, not the whole structure.
 
-$ csdef DNAME_INLINE_LEN # my custom alias for cscope
-tools/testing/selftests/bpf/progs/find_vma.c DNAME_INLINE_LEN 14 #define DNAME_INLINE_LEN 32
-include/linux/dcache.h DNAME_INLINE_LEN 82 #define DNAME_INLINE_LEN (DNAME_INLINE_WORDS*sizeof(unsigned long ))
+> > It can be global llist with single irq_work for them all.
 
-Thanks for pointing it out.
+It could be, but what is the benefit of separating them from
+existing kfree_rcu_cpu and making them global?
 
-Should have been 39.
-Will fix.
+> I would be quite nervous about that, but you might well be right, given
+> that this is a trylock-acquisition failure path.  Give or take people
+> and/or machines analyzing the code for potential denial-of-service
+> attacks.  :-/
+
+It'll probably not that bad because it's trylock-acquisiion failure path
+of per-cpu lock; IIRC during my test, falling back to defer_free
+happened only a few times (< 10) when the kunit test is calling
+kfree_rcu() in a tight loop (100k calls) while concurrently invoking
+kfree_rcu_nolock() ~10k times on the same CPU.
+
+> > Not sure about sched_delayed_monitor/run_page_cache_worker.
+> > Do they have to be per-cpu ?
+
+Since existing sched_delayed_monitor/run_page_cache_worker works are
+per-cpu, I think it's better to keep those irq_works per-cpu as well.
+
+> > Can all 3 share single irq_work?
+
+I thought defer_free and defer_call_rcu should be non-lazy irq work
+and others should be lazy irq work. And I was thinking of having
+one lazy and one non-lazy IRQ work (two instead of four).
+
+But given that sched_delayed_monitor and run_page_cache_worker should
+not triggered that frequently anyway, it'll probably be okay for all of
+them to share a single non-lazy IRQ work.
+
+> On the other hand, if all CPUs are doing kfree_rcu() in even a semi-tight
+> loop, having them all unconditionally use global state is not going to
+> make for a fun time on large systems.  And there already are situations
+> where user code can make all CPUs to call_rcu() in a semi-tight loop,
+> so even if that is not yet the case for kfree_rcu(), past experience
+> indicates that it soon will be.
+
+A tight loop for kfree_rcu() should be fine.
+
+I think the question is "Can a malicious user can make all CPUs to
+kfree_rcu() in a tight loop AND concurrently trigger kfree_rcu_nolock()
+on those CPUs, so that trylock will mostly fail"
+
+> And noted on the desirability of call_rcu_nolock(), apologies for being
+> slow.
+
+No problem. Really appreciate looking into it, Alexei and Paul!
 
 -- 
 Cheers,
