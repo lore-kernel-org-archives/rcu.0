@@ -1,30 +1,33 @@
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAF3138839F;
-	Wed, 22 Apr 2026 09:35:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A533F3ED5C8
+	for <rcu@vger.kernel.org>; Wed, 22 Apr 2026 14:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776850506; cv=none; b=C1PBQwJ5BuIs+Ja24+S4JPWrSujpZ4J7Nl7Rfgb30TxVZRqQ0IOQIu48tqGQNf/QTERQWqEVe0MW5g76CaYbkJ+c4MRZfLCSEtxJbYLv6HPz0RrkwfKPtTkJsJeeiIcSKXhpiuDgOH1QMOXquQ8coYk4kMSv2twetUrZWN9T4OY=
+	t=1776868214; cv=none; b=el8KbRpMPRcE4Lji3CboSaoj6kW0d2k+i2fOXH7s3MR9U5XYOdTki/rX2rqZfjdIit6aDa+GcV40qNAWDxr7Be2qg0roSb3rptS6PRePvqX87hP1YeebI2WqzxCbKgUhkFbtwpeOghWolvQ57EeUBeU2fyy1fzTn2wipzxiQBZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776850506; c=relaxed/simple;
-	bh=p7P8V6Ltow3mGw8KRZMBasw50nMRtXyR1TO6duHL6BA=;
+	s=arc-20240116; t=1776868214; c=relaxed/simple;
+	bh=+AApuSx3VUN8zmQL3aTVwqVWL1Kh6nlC5CEFRlMZEpE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mIw5WC2SJhrqZZNPSvmb/d+lSaY1KbySphunpRj8BXoB9ZKt7bD8Z8iO+9ItQNQT+82Hjp0SB3Hk47C7CSnfrQu06LxFzhTOlnOcWl33UtgoMVBPKNjuoSQNp4dhusPLMSRsTAa2Vb71E3bndj504qVAYIf48zxBWrddb757rPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4g0vFR72LmzKHMd7;
-	Wed, 22 Apr 2026 17:34:35 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 773F1405F2;
-	Wed, 22 Apr 2026 17:34:56 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP1 (Coremail) with SMTP id cCh0CgD3mwY+luhpInw6BQ--.28182S2;
-	Wed, 22 Apr 2026 17:34:55 +0800 (CST)
-Message-ID: <e37620c6-b198-48e1-a991-ad614058e882@huaweicloud.com>
-Date: Wed, 22 Apr 2026 17:34:54 +0800
+	 In-Reply-To:Content-Type; b=VpQq5UJV4EE2t4EyfnraZIMCGe9Q5mhyf89Hd4qJ/zvRu+NgpRxqsnkWVQ6hR/pQ19ENVJ4/AE3XlvOfqgZgUv0/WT96ta6hOHlXEfdcJtZ0W5Cpyq2LKqZrPSF4iSe1dwu+HvJq3vn6skr3WdozTITmmTJP73lKIzP1MvHmFog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XsS4Z1Mk; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XsS4Z1Mk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91268C19425;
+	Wed, 22 Apr 2026 14:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776868213;
+	bh=+AApuSx3VUN8zmQL3aTVwqVWL1Kh6nlC5CEFRlMZEpE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=XsS4Z1MkUUltQ9hnKB98bBEiDYfF1hFZ1JtMBSsNSRkS0ws1n3u+JLIYk+aKCoxrw
+	 tMTbC/XcvqfEs8c5MLPIqgTD1uQnP90JwuT/Ys3zJd/lRDS+aj6qMZQHlynSYdD7Qj
+	 hO2IDF8sG1Pz2bjCly+NVZn0qHGTVHishJIzjEwdpsx+e/PdmO8I+k/TF7lJtbhBpy
+	 WppBjFM7VWAY8p2BReqnSNdMqu8t41/+iVe0IexXJpNMYI8fGHAOe1E7RSL59Dl+sl
+	 zq3Fs+rLGdE6pylbwsxdjOaBPRzSBu0ch7KaS2ZacFkLJ8UVZ3HftBh38fMtWIrNE7
+	 eNIBhZfBQ7UUg==
+Message-ID: <214ca3ac-45b7-4131-86e5-ac134ab0bcbd@kernel.org>
+Date: Wed, 22 Apr 2026 16:30:07 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -32,138 +35,47 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/23] arm64: topology: Use RCU to protect access to
- HK_TYPE_TICK cpumask
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
- Guenter Roeck <linux@roeck-us.net>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+Subject: Re: [RFC PATCH v2 0/8] kvfree_rcu() improvements
+Content-Language: en-US
+To: "Harry Yoo (Oracle)" <harry@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
  Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
  Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
  <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Zqiang <qiang.zhang@linux.dev>, Steven Rostedt <rostedt@goodmis.org>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
- <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
- <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Valentin Schneider <vschneid@redhat.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
- rcu@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
- Qiliang Yuan <realwujing@gmail.com>
-References: <20260421030351.281436-1-longman@redhat.com>
- <20260421030351.281436-9-longman@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20260421030351.281436-9-longman@redhat.com>
+ Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
+ linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>
+References: <20260416091022.36823-1-harry@kernel.org>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+In-Reply-To: <20260416091022.36823-1-harry@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgD3mwY+luhpInw6BQ--.28182S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFyrurW5uryUCr4UKF1UGFg_yoW8tw18pr
-	45Gws0krWjgFnrA343X3ZF9r1F93s3Jwn0ka93CF1Fkw43CF18KFnYkr15Wr4xuw1Dur4I
-	yrZ5tFWSga47JFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
-	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU0EksDUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-
-
-On 2026/4/21 11:03, Waiman Long wrote:
-> As the HK_TYPE_TICK cpumask is going to be changeable at run time, we
-> need to use RCU to protect access to the cpumask to prevent it from
-> going away in the middle of the operation.
+On 4/16/26 11:10, Harry Yoo (Oracle) wrote:
+> # Part 1. Allow an 8-byte field to be used as an alternative to
+>   struct rcu_head for 2-argument kvfree_rcu()
+>   (patches 1-2)
 > 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  arch/arm64/kernel/topology.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
+> Technically, objects that are freed with k[v]free_rcu() need
+> only one pointer to link objects, because we already know that
+> the callback function is always kvfree(). For this purpose,
+> struct rcu_head is unnecessarily large (16 bytes on 64-bit).
 > 
-> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> index b32f13358fbb..48f150801689 100644
-> --- a/arch/arm64/kernel/topology.c
-> +++ b/arch/arm64/kernel/topology.c
-> @@ -173,6 +173,7 @@ void arch_cpu_idle_enter(void)
->  	if (!amu_fie_cpu_supported(cpu))
->  		return;
->  
-> +	guard(rcu)();
->  	/* Kick in AMU update but only if one has not happened already */
->  	if (housekeeping_cpu(cpu, HK_TYPE_TICK) &&
->  	    time_is_before_jiffies(per_cpu(cpu_amu_samples.last_scale_update, cpu)))
-> @@ -187,11 +188,16 @@ int arch_freq_get_on_cpu(int cpu)
->  	unsigned int start_cpu = cpu;
->  	unsigned long last_update;
->  	unsigned int freq = 0;
-> +	bool hk_cpu;
->  	u64 scale;
->  
->  	if (!amu_fie_cpu_supported(cpu) || !arch_scale_freq_ref(cpu))
->  		return -EOPNOTSUPP;
->  
-> +	scoped_guard(rcu) {
-> +		hk_cpu = housekeeping_cpu(cpu, HK_TYPE_TICK);
-> +	}
-> +
+> Allow a smaller, 8-byte field (of struct rcu_ptr type) to be used
+> with k[v]free_rcu(). Let's save one pointer per slab object.
+> 
+> I have to admit that my naming skill isn't great; hopefully
+> we'll come up with a better name than `struct rcu_ptr`.
 
-Should we put this into a while loop, since cpu might be changed to ref_cpu?
-
->  	while (1) {
->  
->  		amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
-> @@ -204,16 +210,21 @@ int arch_freq_get_on_cpu(int cpu)
->  		 * (and thus freq scale), if available, for given policy: this boils
->  		 * down to identifying an active cpu within the same freq domain, if any.
->  		 */
-> -		if (!housekeeping_cpu(cpu, HK_TYPE_TICK) ||
-> +		if (!hk_cpu ||
->  		    time_is_before_jiffies(last_update + msecs_to_jiffies(AMU_SAMPLE_EXP_MS))) {
->  			struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
-> +			bool hk_intersects;
->  			int ref_cpu;
->  
->  			if (!policy)
->  				return -EINVAL;
->  
-> -			if (!cpumask_intersects(policy->related_cpus,
-> -						housekeeping_cpumask(HK_TYPE_TICK))) {
-> +			scoped_guard(rcu) {
-> +				hk_intersects = cpumask_intersects(policy->related_cpus,
-> +							housekeeping_cpumask(HK_TYPE_TICK));
-> +			}
-> +
-> +			if (!hk_intersects) {
->  				cpufreq_cpu_put(policy);
->  				return -EOPNOTSUPP;
->  			}
-
--- 
-Best regards,
-Ridong
-
+"rcu_ptr" sounds too generic to me. Things like rcu_dereference() talk about
+"RCU-protected pointer" and it could be misleading that "rcu_ptr" has
+something to do with this. Only if Paul think it's ok :)
+But maybe just "kvfree_rcu_head"? As IMHO It's an rcu_head specialized for
+kvfree.
