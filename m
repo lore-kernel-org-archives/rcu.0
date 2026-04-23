@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6CBB1F3BAC
-	for <rcu@vger.kernel.org>; Thu, 23 Apr 2026 01:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A383BB9E3
+	for <rcu@vger.kernel.org>; Thu, 23 Apr 2026 02:14:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776909385; cv=none; b=FsyM21JLDynZ16pevGsCn0VKCS7FMkfrsyZPpwGj/2brV+KTSfQ91h+vdMhUyCEFuj34in2wuJKkXRKqTVyXEMnTCC5Dh5CB8Jb8/4rDAK6L87GYBeGrfqZYmSsJMd0i4QhPOQC24SpJ1delsoZIDJVa6qUxSSK1A6GeiLaSEZk=
+	t=1776910486; cv=none; b=qNzuPSb8db6gysGjXmVMmrJuPtGgNyiGQZaReBM87UjZm1ooVNhcHyErwAPh1jrpGcUTraSsacBmrX8bQ64jZAq1Er1k5gun77QuiX79lGvSPEBhZmfhRvX8odJ09ugm1Fh+A3ru7SiZnuHfENXPLWJHDxg39X7qa45UD25NgaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776909385; c=relaxed/simple;
-	bh=KAGOUx6yOQBUTWbcJZ5YYD8oZgXKSd/G9nbZorBB8VI=;
+	s=arc-20240116; t=1776910486; c=relaxed/simple;
+	bh=w+jgw7+Kepc9dYFzbTYrY6IcLLSgaQuTLOr35M233RA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sbfq8qfNtktqq1Ck+AK2IgX3Z3JJewRPVBkRcrSl++NWJm9LiceNxO5E6ohN2q5JvqRy1+aGWKidY08PNzw/xhXouKo0krIfbLjMXhC3OVOBtKtz5tmXwu+LfK7QzHb6WDGSAyg0lID+uW76WJlyR/n3BbpOKWFv2NRUJIuEAyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ncJzQNmU; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=VV2kYLs4w4EYlZirtTPzBxxlVjBJhaMdP6KnsXtcSijisQpumoGk5MVh1UDey4DeBJ36lseP2Wc5EOwWNtyHdwQDS4frlTY4HwCB10IjkDtUK3UlraoDgPGFXyBiwstB+9Ft3q7f2xVAljp5trsqj91xNC5QkIq75ZVMTDSIH3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TtohxZ96; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ncJzQNmU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 072B3C19425;
-	Thu, 23 Apr 2026 01:56:24 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TtohxZ96"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E883EC2BCB4;
+	Thu, 23 Apr 2026 02:14:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776909385;
-	bh=KAGOUx6yOQBUTWbcJZ5YYD8oZgXKSd/G9nbZorBB8VI=;
+	s=k20201202; t=1776910486;
+	bh=w+jgw7+Kepc9dYFzbTYrY6IcLLSgaQuTLOr35M233RA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ncJzQNmU8XIhi0yRu9hOCQjgLfDGJEYeL70YBREslC+wBqHUdqZ271/iCXsrfsBWr
-	 luJ2YTFRBvf8tWy4agH3WztEDkLqhYe/5JI3b4EXJtt+leCo1yMyp1FQkATADIKigj
-	 ad5BBJdJrXZGp0nkyCvSOTCdmZvW6g727Tm91z8aLIUn5aiTv2acVnMVnsD7KOA0A7
-	 ZEan9MBbXd8xe+A2aIuqbcB4d2wVxrjkBb5eWGyBALkgDKvN285yTprc4mQ3ogsLFx
-	 70mmHSbkGwKf9KIRHN7KmRRVPGLK9JQ4elbEmYD6cyzc0th2nHNmHLNQInHOnkfThn
-	 UApdlssqWVN5A==
-Date: Thu, 23 Apr 2026 10:56:23 +0900
+	b=TtohxZ96b5cBJNzVWuN1KlMFfV8bzUz4S2Z3cc4VHRO92xjBes5Xd9TvclMKCyXqs
+	 dACx334Bw1ZWDNoum4nQ6hCYEZtweXJOY6D/PPo6OO7s1eWDqYT+Gs8Pgc6bCijmX4
+	 FHe7gBmrsiEcSoIkSkznshwyNLJ5F7WTwwBaW/5enxNvLFg+AHMNfagUcbbxdmIxlO
+	 pAx5fAe3kRB1TJY6fLr9ZJwhkV+4DgZt6lJZkDNYNF1al6OtPMkB9sOxoW+t9jQ66g
+	 xWhe90YqtmqZegKSnVh5ynbUEkgz6fiQvq/OZx3eiZDbOyrJdXbHbT7bE3zhhcN1In
+	 6O397lYNVvYZA==
+Date: Thu, 23 Apr 2026 11:14:44 +0900
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
 To: Uladzislau Rezki <urezki@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -46,7 +46,7 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
 	linux-mm@kvack.org
 Subject: Re: [PATCH 4/8] mm/slab: introduce kfree_rcu_nolock()
-Message-ID: <ael8R0vOeZ0Xbcoe@hyeyoo>
+Message-ID: <aemAlO9rhFaDPmKH@hyeyoo>
 References: <20260416091022.36823-1-harry@kernel.org>
  <20260416091022.36823-5-harry@kernel.org>
  <aejeVK0J_jHSfVhD@milan>
@@ -64,28 +64,23 @@ In-Reply-To: <aelxH--hZkCahPv6@hyeyoo>
 On Thu, Apr 23, 2026 at 10:08:49AM +0900, Harry Yoo (Oracle) wrote:
 > On Wed, Apr 22, 2026 at 04:42:28PM +0200, Uladzislau Rezki wrote:
 > > On Thu, Apr 16, 2026 at 06:10:18PM +0900, Harry Yoo (Oracle) wrote:
-> > As discussed or noted earlier, having third argument and check the
-> > entire path with "if (allow_spin)" is not optimal and is not good
-> > approach. I do not think it this would be a good fit for mainline.
+> > I think a better option is to add a separate kvfree_rcu_nmi() helper,
+> > or similar, and avoid complicating the generic implementation. Otherwise,
+> > the common path risks becoming harder to maintain.
 > 
-> I understand that this pattern is pretty uncommon and adds complexity.
-> But there is a reason why we're doing this. As Alexei pointed out
-> earlier, even rare spikes of irq_work hurt performance [1]; that can be
-> avoided in most cases where the lock is not in use. That's why buddy [2]
-> and slab [3] accepted this pattern despite the added complexity?
+> It's unfortunate that I didn't provide performance data to justify
+> adding complexity. I can try, but apparently you're not talking
+> about that.
+> 
+> Rather, you seem to be arguing that you're against this pattern
+> no matter what the benefits are?
+> 
+> I'm confused.
 
-Perhaps we can avoid complicating existing kvfree_rcu batching
-(and still avoid hurting performance).
+I was indeed confused, but before writing this, I should have thought
+that you might be considering a simple but still efficient solution.
 
-Given that kfree_rcu_nolock() (at least BPF) doesn't need to free
-vmalloc objects, we can make kfree_rcu_sheaf() handle most of frees
-(slab already knows how to handle allow_spin = false) and fall back to
-a simple irq_work as Ulad suggested.
-
-But then we need to make kfree_rcu_sheaf() try harder (currently it
-gives up when it fails to get an empty sheaf from the barn).
-
-And I guess the tricky part is making kfree_rcu_sheaf() work on RT ;)
+Apologies, my reply may have sounded a bit offensive.
 
 -- 
 Cheers,
