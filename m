@@ -1,231 +1,170 @@
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+Received: from mail-yx1-f41.google.com (mail-yx1-f41.google.com [74.125.224.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009FF375F81
-	for <rcu@vger.kernel.org>; Thu, 23 Apr 2026 11:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776944132; cv=none; b=Pps3RRQMlBcq/6E2I7+CpUGPKdnCe0HWM4lsc2BQrfNtmr8De4PWHmb8AdbPj8dlnNnc1VWmdEcZEz/LWffkGmZE2TiSVJ03Xkh072XFYVe6KvvzNXJsrtqOQVNG0pOz0ErECNlO6gbExkFMSyWZrQ98CFTvyku1nXOfDfgbFf8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776944132; c=relaxed/simple;
-	bh=S/TuTHs8TAB69o8Dy/Q/eai58sxdBsXMm8f2eO8Ynzs=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EQ1IMAz+zNHPgPwH5ZnM014HOgdVSltSbSo9sk/elMvI6RPYZ8idQUarsRGpEVCMi49OzsH1w+pw/Jkw7vhbz5g9eLWJwd8SPhKTHgZ3PdpHsOuHsTwEmnwk8p84btI9ypMLoCwJLsOEd35jOBiapUDdge5Yxpd/SdbS4PjY+io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=erpzjYPy; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD4C3F0AB1
+	for <rcu@vger.kernel.org>; Thu, 23 Apr 2026 13:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.224.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776950718; cv=pass; b=m1COkUVNv7idS0Pvz0U2d9+UKu5t/ldqeuhCsM/RPDctxmnw37OR1nUpVSy3YSfmt0muO953be+dcj4O2itGuvH4FyBavDvKragKBhtswRtFacam8rkdahGuvNSbAsSmnUW5m5tM4IG9oSKNhe5o5J5jPKduy0ruWiKYjFXz6ck=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776950718; c=relaxed/simple;
+	bh=9b8754IDEm0TQDjQSnxDEexYNuYd2dC6tmyRCw03JwU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fx2wMedGQxDEqSABrh1vefzdfhqdTAiwZo5KmtdL9plOHhrMFCw9HusIHBtOUpJKnfhalo1MBKdD5Z7DRDDsPdpHhCmMWC4igTiHG8gSTfEaPXxGnb96NP3gPwEfci1X8upYSQM1tETnrbJ4GcYK6Fkxtb1/z7xLGMENqPr09ao=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org; spf=pass smtp.mailfrom=bitbyteword.org; dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b=GYkEUMFj; arc=pass smtp.client-ip=74.125.224.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bitbyteword.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="erpzjYPy"
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-38e68e4389cso69297671fa.3
-        for <rcu@vger.kernel.org>; Thu, 23 Apr 2026 04:35:30 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="GYkEUMFj"
+Received: by mail-yx1-f41.google.com with SMTP id 956f58d0204a3-64e87a81639so6077502d50.0
+        for <rcu@vger.kernel.org>; Thu, 23 Apr 2026 06:25:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776950715; cv=none;
+        d=google.com; s=arc-20240605;
+        b=eG2G3jD4W6j6v85a+6Pt5NBwWxUsE4fn1DxptAqSaZMXjo+tb+JZvE45LhdwCnRYsY
+         f2rWnW1e7hcn44ZC40T3MZJ6V+wBqd5Nr4L4brWTEO4GQgV33w+dbJkVR+dTOiZyHCE9
+         fsMaC5fCgf+hhZak2KzNHbLt+opE2aKS5zybKIWT80DlX2usritbEzzUVsJOiGTkgLWe
+         ifd/LsoKrMUL8HXu0ACv5tphwW7DmEG+UyRiCO1JRVGWmIXlVFuJywGOn2UWbGIH31bf
+         TCtl9q6sq0ZKKJBp0ccOM07AVwTgzP3RFpznJpj+6eb61SNxee+IjOx6Gxx+SpSZiUux
+         8X7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=lhNHO9jAUIx/0udLGeS5tagccSSFrBTO/SZbGN9q6H8=;
+        fh=2mB9mkPa1Pd124NoHVrvJ5lB4ANvpnPILcptHbckhRo=;
+        b=DTsGNHqFBPzr1ZhGDI83sCHQBdBm0ASGF0sY84WMxzBl7aqDZyaNxYLYgFIt9NlD2D
+         n9/1LlKoWh5HY8jiylcMD8mxLToa6pi+Glj6w17Oo8W/2wvXC6rlWutUMIeFqei/TFQU
+         HSAJq4xJvNPbcK/IUbPo1V7R7RUqZyQpyc+5tCNcuAVRdUgErsVP69E7KtI5JxSgtSTy
+         ICd59NJPjh0eTUlWVEppsruHVW1K19wH24mRswqypEgGu0mMkaXvfsJfDtnPgulo+Gs7
+         eYuORWpehPFA0k3agbI6gY9GMHUZAB5rJfljVJ+BI4v4h//slTidTO9+KiXdOHMCj4/a
+         hqJA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776944129; x=1777548929; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iscWRn4jKN3kB/fAMJ/YC6wowWsWoekdUPD+h4UIdhI=;
-        b=erpzjYPynSqVJN8SJNEbN2sTjWL19HwsCsbkr9rFisp6MnyXVC4X9N6TprkxbCeko9
-         EzXvn36YkfXbQ1wm62keV1FtKGbVBakNGE+ZAIKGeall+8QYrXQdTldguNzF20kmWrIG
-         wJaZbRCVQMRLw6eC68k1VGuOYAaLj47WBMkwPo7fEqjqOMNH6DimuPvNNuGPk49ZxZN1
-         XezX9j/s4rgwfbs5rxSsWXHTYjhmoeW8fQC2TqodWz50b6z27+IpB39HaUFsK+AVopiY
-         6p9wqRuNzGKvhyhPtaStftvllGhVw6ZBRwUmy1YxM/XBJK5+YSMrGdnbPhdR+Mgzp9aw
-         pPTw==
+        d=bitbyteword.org; s=google; t=1776950715; x=1777555515; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lhNHO9jAUIx/0udLGeS5tagccSSFrBTO/SZbGN9q6H8=;
+        b=GYkEUMFjmceiNCtpVlZJN/CS/8bgBuEXGSA70ElbG0qbEzUFDWFrHaYJaoBY7t0OjU
+         ATEj8yutKcRnCCKXAVFWh4G1BQtH6jTviOaUue9dC7vOtmkAM28+qSrS5Wix6cRk76kE
+         +e0hJ4xxpfIllirCrxMm2ShkgcRakNWK/kKAfZKgne+3vZ1P9Qk3hEtvfiC+QLSdpoRa
+         ktzq0v8+sQ0LLT9A5BpgqI6qS3xyKxfCAjktMFtxA3UV1UOCmvEkyXIID9JJGN89XbMY
+         Xb54Vt8ZFs8dke3Gr/oAiZTEgO9JpXrMtN/3c+Hg5h0mwQX+owCPXn/2yUFJwYOSOZmt
+         Wisw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776944129; x=1777548929;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iscWRn4jKN3kB/fAMJ/YC6wowWsWoekdUPD+h4UIdhI=;
-        b=CtNmoUfJJ326D+6ILoG1k7XEgCmAyGEz3IsXtRRU3v7dd0gRxOPyJpbQPnhXP0J+FF
-         t/iKsZL2EVMOS51vm9AlBfu7QKmBmiUk0iD2kN8NQOjP3T4TaWasPBgLOljZjWsUTt5A
-         NGD0QM6RQV+oZ+k4R+antCBjhwaFOV+RJzsjOA6T3vvDddLFXzyg4jLq5gFtYhDEIHzA
-         se3JJ/wukwh7aXIXA48esNdFDOjSdWyOHBrlRQvyjpFnqj2UQhexw+er3NVjpLll3YYo
-         5FIdgf93SIxZia983i01lONss47wqhW4d5TG5RwSrDL9WxQRnmgqp+T4joNHDLG6fU57
-         XLAg==
-X-Forwarded-Encrypted: i=1; AFNElJ9v8q2xg4I37k1JCnrjxGoq64aeowsMaq6VyMJkOb160jjwOv1VOwWxmys2kiRsDgYMqzw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxD02Vm1nlNTM1IVICh7Hhl3Pf/cBi1eYpP75oFT8uxmU8L3y/D
-	5MFSf9Ey1cRgMvq03Pn38G+c2yCW6GbCMh3TbLfgCOgG7jf/SXsxS/HZ
-X-Gm-Gg: AeBDiev5CeWPCRrRIk8+4LQ1b9/tIRC24KPbRb647omKmDUhAqcIOmDvz6YcjGchl3w
-	FjXkpMhCUCtwXHFt0XoV9BIBdELTZQV15kgKiE+P71jYu5mko8l7GLYAqQ64P4lQdb5EGFE/jAE
-	l3R1jOilM0M8ZuWb4krf98bqH2lcFgSMioEwPnkqRErS5PsfjjUI4q7RIzLXFEXV7QJLjUyvGXs
-	JOuZ2itC7naDxSncVI9TPtr8nFH5Aw9F7wydAJ3sHoN/TGzSyoX+7Wp9bHGpF8t7JVaMJ0ZKIu3
-	iCp1i2bzDQZN9lAgA9TaN6xzsHpGYGQEJez4lZ6NMJUqpYeWAwwfRmJNZDwVaFg+9DwwQVFX/qh
-	puTBP3KKcTdzJ9XwL73pOimiTID+RX7SCp+gkHoWRZUz2+B9kz2ypdLIs+oqPSckJacAKYalCbB
-	C3lTgwnVQxc9RmZJJWs1df+Wa+tZuTS3khE1xNrCGXXjn+8sP6J2wgVbi2ow==
-X-Received: by 2002:a2e:bc14:0:b0:38c:4b14:144e with SMTP id 38308e7fff4ca-38ec780993bmr91273391fa.5.1776944128799;
-        Thu, 23 Apr 2026 04:35:28 -0700 (PDT)
-Received: from pc636 (host-95-203-26-80.mobileonline.telia.com. [95.203.26.80])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-38ecb6f3a30sm40716001fa.24.2026.04.23.04.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2026 04:35:28 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 23 Apr 2026 13:35:25 +0200
-To: "Harry Yoo (Oracle)" <harry@kernel.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hao Li <hao.li@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Zqiang <qiang.zhang@linux.dev>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 4/8] mm/slab: introduce kfree_rcu_nolock()
-Message-ID: <aeoD_Ts6hLsgNc9-@pc636>
-References: <20260416091022.36823-1-harry@kernel.org>
- <20260416091022.36823-5-harry@kernel.org>
- <aejeVK0J_jHSfVhD@milan>
- <aemevSofweaUSx0n@hyeyoo>
+        d=1e100.net; s=20251104; t=1776950715; x=1777555515;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=lhNHO9jAUIx/0udLGeS5tagccSSFrBTO/SZbGN9q6H8=;
+        b=iEzjfe/ppGZwiN6baTFEI+Khx94R0OUzG0xdOIgdH1IVT2UdXdrlQivDgTYxNOYdbk
+         k4Xv2BzqKDRrKgHYypxvYEUKLMr/bUuXLEdSWoAh+9nQGBAvnFso4DVpP4iE5jV6/XwM
+         jEYJQbIbw1Zc5IeHMDRDXenMr1Ei5HeSRhWZHf7ExLIWRVOWZBrJ0iwmnV9YaAWuAceP
+         /K68zadkGMM/Y7HxGCC+D3EhgU8ZcO0EODFSEdToLnpwfZD8BCG4kWovgZQ0DVeBXkJw
+         XWuDdwHvW3sEAnhzIQgaHEqT3eUgPNf7dkX0iLStZ4rfksLEypBCsQLer0KKfg9Hwirm
+         2u3w==
+X-Forwarded-Encrypted: i=1; AFNElJ+m2A7GTYdCCSMbkRm06QSRacTQTGTT7UK5Y99vuqS9J6UQzOpvcKiQVzb8L6/1rY4GLPE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz+33PEQ9PcYGrtO9H+tfMGmUPN37h5/4Zw8Os4fvTBynOBgDDt
+	CuJm7jH3v2skaBdID6lcnVTpRYFZX370EXW0k1rVqHt+o3aHESFjniYYlJZW/TgHK9MskAqZupj
+	Vl9mg7SBnmj+s4GjbCV/lhGK+Cujg2FTfQ77bU+NO/Q==
+X-Gm-Gg: AeBDievog9IFSsWXXat711AWM/tagQu+/FpzfVObzlSGOG0U5s+AMaw7EPlyul0TufQ
+	wcoCWhzupVA/oOCs6pINnQPQy7Z1ccAOP/r/IQFfUHFFfaxxH34hvi9prUPK7DI/PBXgvRNHiK7
+	XGR0a+eMgPUAnguYo2KtJGNvYkTrLsSohBtshcixo8wZQV534B6bu8xRH2cimz59pqzO0dogcNd
+	sEMsxi4hFhK2W5XUO8tGaV3bBb2OOTs9fdZjwv3/6EDZcm/k05156smTE8TVZREsWsD9jlgfgW9
+	gXUgZC/dNSBBmDJEPIf3j+UOSCx/Nm70vpJP7YB6OZt4C4zf
+X-Received: by 2002:a05:690e:1913:b0:64f:fa9a:9017 with SMTP id
+ 956f58d0204a3-653108846afmr26025810d50.28.1776950715337; Thu, 23 Apr 2026
+ 06:25:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aemevSofweaUSx0n@hyeyoo>
+References: <aefAWGcAQHeRYbs8@slm.duckdns.org> <20260423090100.3231633-1-sonam.sanju@intel.com>
+In-Reply-To: <20260423090100.3231633-1-sonam.sanju@intel.com>
+From: Vineeth Remanan Pillai <vineeth@bitbyteword.org>
+Date: Thu, 23 Apr 2026 09:25:04 -0400
+X-Gm-Features: AQROBzDuqnoAWQ0x4UMQxhwITFSDzgrxL0fOr-O37WxBma-Xso9IsfXUvAQZ01s
+Message-ID: <CAO7JXPgf-PQah9XCq-KD+FimQATkxy4HpvWy6r6LDT52Jv0sdA@mail.gmail.com>
+Subject: Re: [PATCH v2] KVM: irqfd: fix deadlock by moving synchronize_srcu
+ out of resampler_lock
+To: Sonam Sanju <sonam.sanju@intel.com>
+Cc: tj@kernel.org, dmaluka@chromium.org, kunwu.chan@linux.dev, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, paulmck@kernel.org, 
+	pbonzini@redhat.com, rcu@vger.kernel.org, seanjc@google.com, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 23, 2026 at 01:23:25PM +0900, Harry Yoo (Oracle) wrote:
-> On Wed, Apr 22, 2026 at 04:42:28PM +0200, Uladzislau Rezki wrote:
-> > I think a better option is to add a separate kvfree_rcu_nmi() helper,
-> > or similar, and avoid complicating the generic implementation. Otherwise,
-> > the common path risks becoming harder to maintain.
-> > 
-> > Below is a simple implementation.
-> 
-> I'm happy to keep things simple as long as that doesn't mean
-> compromising performance.
-> 
-> We can discuss that.
-> 
-> > <patch>
-> > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> > index d5a70a831a2a..f6ae3795ec6c 100644
-> > --- a/mm/slab_common.c
-> > +++ b/mm/slab_common.c
-> > @@ -1402,6 +1402,14 @@ struct kfree_rcu_cpu {
-> >  
-> >  	struct llist_head bkvcache;
-> >  	int nr_bkv_objs;
-> > +
-> > +	/* For NMI context. */
-> 
-> I think "unknown context" is a better term since it includes
-> NMI context as well as other contexts.
-> (I'm also slightly moving towards the term, :D)
-> 
-> > +	struct llist_head drain_list;
-> > +	struct llist_node *pending_list;
-> > +
-> > +	struct rcu_work drain_rcu_work;
-> > +	struct irq_work drain_irqwork;
-> > +	atomic_t drain_in_progress;
-> >  };
-> 
-> [... changing the order of functions a little bit to help review ...]
-> 
-> >  static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
-> > @@ -1926,6 +1934,69 @@ void __init kfree_rcu_scheduler_running(void)
-> >  	}
-> >  }
-> > +
-> > +/*
-> > + * Queue a request for lazy invocation.
-> > + * Context: For NMI contexts or unknown contexts only.
-> > + */
-> > +void
-> > +kvfree_call_rcu_nolock(struct rcu_head *head, void *ptr)
-> > +{
-> > +	struct kfree_rcu_cpu *krcp = this_cpu_ptr(&krc);
-> > +
-> > +	head->func = ptr;
-> > +	llist_add((struct llist_node *) head, &krcp->drain_list);
-> > +
-> 
-> So it inserts objects to the list,
-> 
-> > +	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING) {
-> > +		/* Only first(and only one) user rings the bell. */
-> > +		if (!atomic_cmpxchg(&krcp->drain_in_progress, 0, 1))
-> > +			irq_work_queue(&krcp->drain_irqwork);
-> 
-> and only the task that succeeds cmpxchg queues the IRQ work.
-> The IRQ work queues an RCU work which iterates over the
-> list of objects and frees them.
-> 
-> Draining will be performed a little bit more frequently
-> (every call_rcu_hurry() + work queue delay) compared to the ordinary
-> kvfree_rcu path (every 1-5 seconds)
-> 
-> The question is how frequent is too frequent, when it comes to
-> additional IRQ/RCU work invocations affecting performance.
-> 
-> > +static void
-> > +kvfree_rcu_nolock_irqwork(struct irq_work *irqwork)
-> > +{
-> > +	struct kfree_rcu_cpu *krcp =
-> > +		container_of(irqwork, struct kfree_rcu_cpu, drain_irqwork); > +	bool queued;
-> > +
-> > +	krcp->pending_list = llist_del_all(&krcp->drain_list);
-> > +	ASSERT_EXCLUSIVE_WRITER(krcp->pending_list);
-> > +	queued = queue_rcu_work(rcu_reclaim_wq, &krcp->drain_rcu_work);
-> > +	WARN_ON_ONCE(!queued);
-> > +}
+On Thu, Apr 23, 2026 at 5:05=E2=80=AFAM Sonam Sanju <sonam.sanju@intel.com>=
+ wrote:
+>
+> Hello Tejun,
+>
+> Thank you for the detailed analysis.
+>
+> On Wed, Apr 23, 2026, Tejun Heo wrote:
+> > The problem with this theory is that this kworker, while preempted, is =
+still
+> > runnable and should be dispatched to its CPU once it becomes available
+> > again. Workqueue doesn't care whether the task gets preempted or when i=
+t
+> > gets the CPU back. It only cares about whether the task enters blocking
+> > state (!runnable). A task which is preempted, even on the way to blocki=
+ng,
+> > still is runnable and should get put back on the CPU by the scheduler.
 > >
-> > +static void
-> > +kvfree_rcu_nolock_work(struct work_struct *work)
-> > +{
-> > +	struct kfree_rcu_cpu *krcp = container_of(to_rcu_work(work),
-> > +		struct kfree_rcu_cpu, drain_rcu_work);
-> > +	struct llist_node *pos, *n, *pending;
-> > +	bool queued;
-> > +
-> > +	pending = krcp->pending_list;
-> > +	krcp->pending_list = NULL;
-> > +	ASSERT_EXCLUSIVE_WRITER(krcp->pending_list);
-> > +
-> > +	llist_for_each_safe(pos, n, pending) {
-> > +		struct rcu_head *rcu = (struct rcu_head *) pos;
-> > +		void *ptr = (void *) rcu->func;
-> > +		kvfree(ptr);
-> > +	}
-> 
-> This is pretty similar to what a kvfree_rcu(two_arg) call does
-> in the slowpath (kvfree_rcu_list), except that we don't maintain
-> RCU state explicitly.
-> 
-> How much performance do we sacrifice compared to
-> letting them go through the kvfree_rcu() fastpath?
-> 
-I think we may be focusing too much on performance here. In fact it depends
-on use cases which we try to improve or fix. Freeing an object over RCU from
-NMI context is a corner case. It is __not_ generic. We even do not have(now
-in mainline) users because we never support it from NMI, just like call_rcu().
+> > If you can take a crashdump of the deadlocked state, can you see whethe=
+r the
+> > task is still on the scheduler's runqueue?
+>
+> I instrumented show_one_worker_pool() to dump scheduler state for each bu=
+sy worker
+> when the pool has been hung for >30 seconds.
+>
+> All workers show on_rq=3D0.
+>
+> =3D=3D Pool state =3D=3D
+>
+>   pool 2: cpus=3D0 node=3D0 flags=3D0x0 nice=3D0 hung=3D47s
+>   workers=3D13 nr_running=3D1 nr_idle=3D7
+>
+> =3D=3D Per-worker scheduler state (first dump at t=3D62.5s) =3D=3D
+>
+>   PID  | state | on_rq | se.on_rq | sched_delayed | sleeping | blocked_on
+>   -----|-------|-------|----------|---------------|----------|-----------=
+--------
+>   4819 | 0x2   | 0     | 0        | 0             | 1        | ffff953608=
+205210 type=3D1
+>   4823 | 0x2   | 0     | 0        | 0             | 1        | ffff953608=
+205210 type=3D1
+>   4818 | 0x2   | 0     | 0        | 0             | 0        | ffff953608=
+205210 type=3D1
+>   11   | 0x2   | 0     | 0        | 0             | 1        | ffff953608=
+205210 type=3D1
+>   9    | 0x2   | 0     | 0        | 0             | 1        | ffff953608=
+205210 type=3D1
+>   4814 | 0x2   | 0     | 0        | 0             | 1        | (mutex hol=
+der)
+>
+>
+> All 6 workers are in kvm-irqfd-cleanup, calling irqfd_shutdown =E2=86=92
+> irqfd_resampler_shutdown. They contend on the same resampler->lock
+> mutex (ffff953608205210).
+>
 
-From the other hand, if you heavily reclaim from NMI, this is likely not a
-common or intended usage pattern this is how i understand it. If BPF needs
-it, then the first question which comes to mind is not about performance.
-It is how to support this case in kfree_rcu() without adding noticeable
-complexity or overhead or hacks to the generic path without making it harder
-to maintain.
+Sorry for the late disclosure; I was running the 6.18 Android kernel
+and missed this relevant detail because the bug discussion initially
+started with KVM and I had verified the irqfd related code was the
+same as the vanilla kernel. Now, after going through Tejun's response
+and reviewing the __schedule() code regarding SM_PREEMPT, I realized
+the Android kernel has extra logic related to proxy execution that
+might be triggering this issue. I tested on vanilla 6.18.23 kernel and
+was not able to reproduce this.
 
-Performance wise you noted, you mean:
+Sonam, just checking if you are able to reproduce this issue with the
+vanilla 6.18 kernel?
 
-a) call latency(this is probably the most important for NMI)?
-b) memory footprint?
-c) pointer-chasing overhead?
-
-Please note, when we are talking about NMI support, we are in a special
-conditions thus we should no overthinking here. This is how i look at it.
-
---
-Uladzislau Rezki
+Thanks,
+Vineeth
