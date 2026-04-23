@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B01FE21CC71
-	for <rcu@vger.kernel.org>; Thu, 23 Apr 2026 01:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 298522E54A3
+	for <rcu@vger.kernel.org>; Thu, 23 Apr 2026 01:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776907879; cv=none; b=A78bBTlaNMo7DyomKLKXGzUyRsG2ZOsHMo81BpmenhqXjvy808wsyRwVgEoc+aXx+qJMkXJvu0vSAnbM3OnTeQz9EuKt+RS5Nnnj4AiUxN+rMbiSgw0jTxL++PKjumqazjJKTCdKiZqfHjdUP5bnfRBYItnux80srlb+ge0kFMM=
+	t=1776908218; cv=none; b=tZWQ6hrQ3fHqgUyWfaa6BA0Ef4vHjWseJfq34B5EY+aYBYj+jvSkln5IuPTfd6m1WhmXRssGLKokliQJa1dFRtU9szF+B2HPQIdMAwXMJm5k2tDOzLsoD4d4WlHwazIkqqOSQAj6O9BbP3XNmNUK5P7tu50TQN/6CdVpUjIgI4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776907879; c=relaxed/simple;
-	bh=jlAGtqvwrlvzYzSmfvFrSnoSFtUA9CDJqYVY/DrcyQE=;
+	s=arc-20240116; t=1776908218; c=relaxed/simple;
+	bh=5ophnTHEismmvQWNDghkIVI1SEYQ74JbW+R8huYXPOg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=grZYRv8+OohXIsnBKNWNSMrCdkcpBwxVakHxPh2zjWTnNyrrrpjMNzMaBwR5yFuf2CxHvamKQx5ywe6QL4Eb3pyrgVWeRi4+ta8LmV2iy6+SW9gOcDERby/ZCmwsgqa+uUdRCTKU9b+xj5ZfNtXJkVbSV5G51PXCU4j9m+S8RYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZEJZWo7I; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=bFkDer0M9HxRjeGLH33uIzTNrGCZqlKVrKVwaOQ/8cZaTOSGozRKOmakfwxHKSE2rSu0FfSL6McEY4N9QdUmX2zJtFpJsOJmZCXOxFnyZxtPaPiRgHSjSP6plJ9DjBMW8dh7tvmzkmCh7f2K+6jtPLJNLnzbHDoJX5/g1FBmnAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GpBZ9xFo; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZEJZWo7I"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFFCAC19425;
-	Thu, 23 Apr 2026 01:31:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GpBZ9xFo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CCC0C19425;
+	Thu, 23 Apr 2026 01:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776907879;
-	bh=jlAGtqvwrlvzYzSmfvFrSnoSFtUA9CDJqYVY/DrcyQE=;
+	s=k20201202; t=1776908217;
+	bh=5ophnTHEismmvQWNDghkIVI1SEYQ74JbW+R8huYXPOg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZEJZWo7IQJuIGCKRZDR/ii0H6m9xm9EV9uOtNDrN0f8QCeqLoedks257e0Mte/UCw
-	 K5+jGRaevfQ5qE+RMQzQ+nXMSoOHIhQC7rwC4oXhV1gxV4htVQUfw743nLlosIzf9g
-	 vYk53ptKBWwJ20msbQngDer/b42Yew2NBQhJezXnlYq4uckN2HOunUPC4eYb3XrTMV
-	 5SjtxITuoDs3apa4uPiphxFQvVF7ggKuZMx3jaQmLSbibTgethbcUWXDK9PNxtIhOs
-	 V2entigvS7oOgS4YQ/hwA1sJI9gh76lTD8zXpFw7HpVIDrG28elz6SfcTk7WrXLne4
-	 p5tFoFwXqPwJA==
-Date: Thu, 23 Apr 2026 10:31:17 +0900
+	b=GpBZ9xFo4lrMYIv2dAKyfjTO3L6bLC2iCu3G7ON2vbR0UXNKVfoEANFwoO8wK6jYj
+	 dHfzZHBRKqFJfJiqqbQj1qm9E4c/TT37ZYF1hTGWv1Dsv3CZ9lud5na2bzE+w4QSRc
+	 zljvenWVB3/E4Dre38b3Dl9/sSfu/zN3nSjLMFLAMGfrHosVkymFJTJ8GMS4Lq0uL0
+	 Q7Flq6XNN59TPudpqGyVBUBK6TdeGqyOuKiThb5HDSXdJxnQb3aDupwW0NOAncpptZ
+	 RflO7D+IGXpmneLUwhs0WLQsV/ZIRe0lch1K9DNHfAjngAaN8DSJFdyazTBjTn4jLe
+	 sx/hSs2pqSFjQ==
+Date: Thu, 23 Apr 2026 10:36:55 +0900
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
 To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -44,12 +44,12 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
-	linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [RFC PATCH v2 0/8] kvfree_rcu() improvements
-Message-ID: <ael2ZUl2neBh2VGa@hyeyoo>
+	linux-mm@kvack.org
+Subject: Re: [PATCH 1/8] mm/slab: introduce k[v]free_rcu() with struct rcu_ptr
+Message-ID: <ael3t-hiRrJEPyIi@hyeyoo>
 References: <20260416091022.36823-1-harry@kernel.org>
- <214ca3ac-45b7-4131-86e5-ac134ab0bcbd@kernel.org>
+ <20260416091022.36823-2-harry@kernel.org>
+ <baa235a3-59c4-420e-8f1e-40c8526f3bf2@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -58,39 +58,58 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <214ca3ac-45b7-4131-86e5-ac134ab0bcbd@kernel.org>
+In-Reply-To: <baa235a3-59c4-420e-8f1e-40c8526f3bf2@kernel.org>
 
-On Wed, Apr 22, 2026 at 04:30:07PM +0200, Vlastimil Babka (SUSE) wrote:
+On Wed, Apr 22, 2026 at 04:41:19PM +0200, Vlastimil Babka (SUSE) wrote:
 > On 4/16/26 11:10, Harry Yoo (Oracle) wrote:
-> > # Part 1. Allow an 8-byte field to be used as an alternative to
-> >   struct rcu_head for 2-argument kvfree_rcu()
-> >   (patches 1-2)
-> > 
-> > Technically, objects that are freed with k[v]free_rcu() need
-> > only one pointer to link objects, because we already know that
-> > the callback function is always kvfree(). For this purpose,
-> > struct rcu_head is unnecessarily large (16 bytes on 64-bit).
-> > 
-> > Allow a smaller, 8-byte field (of struct rcu_ptr type) to be used
-> > with k[v]free_rcu(). Let's save one pointer per slab object.
-> > 
-> > I have to admit that my naming skill isn't great; hopefully
-> > we'll come up with a better name than `struct rcu_ptr`.
+> > @@ -1523,18 +1522,34 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
+> >  }
+> >  
+> >  static void
+> > -kvfree_rcu_list(struct rcu_head *head)
+> > +kvfree_rcu_list(struct rcu_ptr *head)
+> >  {
+> > -	struct rcu_head *next;
+> > +	struct rcu_ptr *next;
+> >  
+> >  	for (; head; head = next) {
+> > -		void *ptr = (void *) head->func;
+> > -		unsigned long offset = (void *) head - ptr;
+> > +		void *ptr;
+> > +		unsigned long offset;
+> > +		struct slab *slab;
+> >  
+> > +		if (is_vmalloc_addr(head)) {
+> > +			ptr = (void *)PAGE_ALIGN_DOWN((unsigned long)head);
+> > +		} else {
+> > +			slab = virt_to_slab(head);
+> > +			if (!slab)
+> > +				ptr = (void *)PAGE_ALIGN_DOWN((unsigned long)head);
+> > +			else if (is_kfence_address(head))
+> > +				ptr = kfence_object_start(head);
+> > +			else
+> > +				ptr = nearest_obj(slab->slab_cache, slab, head);
+> > +		}
 > 
-> "rcu_ptr" sounds too generic to me.
+> It seems a bit wasteful to do this... (especially the virt_to_slab()) part.
+> 
+> > +
+> > +		offset = (void *)head - ptr;
+> >  		next = head->next;
+> >  		debug_rcu_head_unqueue((struct rcu_head *)ptr);
+> >  		rcu_lock_acquire(&rcu_callback_map);
+> > -		trace_rcu_invoke_kvfree_callback("slab", head, offset);
+> > +		trace_rcu_invoke_kvfree_callback("slab",
+> > +						(struct rcu_head *)head,
+> > +						offset);
+> >  
+> >  		kvfree(ptr);
+> 
+> ... and then throw it all away and let kvfree(ptr) do it again. So maybe we
+> could then call something more internal and specific based on the result of
+> the above.
 
-to me too ;)
-
-> Things like rcu_dereference() talk about
-> "RCU-protected pointer" and it could be misleading that "rcu_ptr" has
-> something to do with this.
-
-Agreed.
-
-> But maybe just "kvfree_rcu_head"? As IMHO It's an rcu_head specialized for
-> kvfree.
-
-I like the name better and will rename it, thanks!
+Good point, will do.
 
 -- 
 Cheers,
