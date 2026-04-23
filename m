@@ -1,94 +1,183 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FA7D531
-	for <rcu@vger.kernel.org>; Thu, 23 Apr 2026 01:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C78ECA4E;
+	Thu, 23 Apr 2026 01:11:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776906529; cv=none; b=cItASycEKihsDLFYVgA08LTcJ70wp5zx1YOvR5xep9TyfES0NZw8qxE9pAh6hCEokxBhGN5I8kFTqIC92H3EYBPlwTpIXejQ5z7WYkYgI8qewcY/Pyz7tboQDyxU+M4QK3gj8o89eyK9kHcgHYH1fUbI4xpSsEL65rGQENhpD2w=
+	t=1776906676; cv=none; b=bJxtXhPF/aRmVHnDnmsNXEjRrF9L3DVByYLyfZjx3CApYaQCx+xkYZuOFw4ZWOURhkA3HqP3W9o+bk+2xMe2+OjbjcQUJPLBIx8ttK+sqclIOhjlhtblop6NN3XoU9t7nbP8HKFY8Y4Za1BTBJ270cmoE0QmGK+9BpqsSd/IFFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776906529; c=relaxed/simple;
-	bh=eM7I+z11rvz3UT8atgEe1MBPkEiQna5s0ErFx4g2s9M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=chYTFMl4tXcUgzqmqBt/X/drg/u84dZ1GCHbWuF86CV1uUpHv6ZZFEizes4mh5mZ2XHoEHkzRezbmSFyL3r/+h4z31i84YfkVFP8zgflGouISgZtyiGwVhZvAAJzEwdliL8PJ3uM8uTeNwZA0GZMCXeDbuv/578tsaUmb20JEj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D9UVNgCJ; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D9UVNgCJ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F08A5C2BCB2;
-	Thu, 23 Apr 2026 01:08:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776906529;
-	bh=eM7I+z11rvz3UT8atgEe1MBPkEiQna5s0ErFx4g2s9M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D9UVNgCJ0cLMPrZuVc38yYovvZZJAYFz6SSYgXByaedaAsv/HkddogoZqdKeWVAZK
-	 7TSOt9gbCNoY/DoNtxW2MfJxhwB65t14eX094IaBtK5IMJ8RGo2YDl7GTk537eDuKZ
-	 jPU+NZTpTZ72mLsDkiUOMkmzOOb7yLdA2t0sPWbw7KrF8bX8/RgP636UJOFnKwDNM1
-	 hSoMYksqqIJNAWbCzM6JzX4IHui8Q7ip1SiZwGfjW92x1tuNOxwwyXoNTaIw2AZmyF
-	 LOTq/usjn9dBX+nzYlJv3u3ARJvpA1eBWXsw6NeFFQl2ETBnBA/YlzjKTqpObC0HEe
-	 +f9aH9iRyCfxg==
-Date: Thu, 23 Apr 2026 10:08:47 +0900
-From: "Harry Yoo (Oracle)" <harry@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hao Li <hao.li@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Zqiang <qiang.zhang@linux.dev>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 4/8] mm/slab: introduce kfree_rcu_nolock()
-Message-ID: <aelxH--hZkCahPv6@hyeyoo>
-References: <20260416091022.36823-1-harry@kernel.org>
- <20260416091022.36823-5-harry@kernel.org>
- <aejeVK0J_jHSfVhD@milan>
+	s=arc-20240116; t=1776906676; c=relaxed/simple;
+	bh=6IEjWa5Bp2HmWAT63DqZwaxugME+cvx69VMEGChpnTc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WVRejSmhhCgsxKtvPEj58Bj3JmWHQnjc2iachVRVjxev+oxqR+ZeQwazuZfDNjxSM9mBV/KwnyRB11mXfm+zcSxImBubeMqKL+uVwQe2Za2GMLYtKCSiaw7vnd6FaE8Xw61t+cNEL0fO965Kjc3CNVrVsAchaY6qqNJtaXLkdzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4g1J0p05thzYQtjP;
+	Thu, 23 Apr 2026 09:10:02 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id C684140561;
+	Thu, 23 Apr 2026 09:11:00 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP3 (Coremail) with SMTP id _Ch0CgAnHbehcelp3eGGBQ--.59173S2;
+	Thu, 23 Apr 2026 09:10:59 +0800 (CST)
+Message-ID: <e8824498-f8ec-496a-a21c-d1dc594f4c8e@huaweicloud.com>
+Date: Thu, 23 Apr 2026 09:10:57 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aejeVK0J_jHSfVhD@milan>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 19/23] cgroup/cpuset: Improve check for calling
+ housekeeping_update()
+To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+ Guenter Roeck <linux@roeck-us.net>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
+ <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
+ <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Valentin Schneider <vschneid@redhat.com>,
+ K Prateek Nayak <kprateek.nayak@amd.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ rcu@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
+ Qiliang Yuan <realwujing@gmail.com>
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260421030351.281436-20-longman@redhat.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20260421030351.281436-20-longman@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_Ch0CgAnHbehcelp3eGGBQ--.59173S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw1UJF1UurW7urWktr13urg_yoW5AFy5pr
+	yUWrW3t345trs7u343Xwn7Wry0gw48GF17KasxG3WrGF9rZFn2yry0kFnxCry8uwnxGryU
+	ZF9rWws29a4UArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
+	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	xUVZ2-UUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Wed, Apr 22, 2026 at 04:42:28PM +0200, Uladzislau Rezki wrote:
-> On Thu, Apr 16, 2026 at 06:10:18PM +0900, Harry Yoo (Oracle) wrote:
-> As discussed or noted earlier, having third argument and check the
-> entire path with "if (allow_spin)" is not optimal and is not good
-> approach. I do not think it this would be a good fit for mainline.
 
-I understand that this pattern is pretty uncommon and adds complexity.
-But there is a reason why we're doing this. As Alexei pointed out
-earlier, even rare spikes of irq_work hurt performance [1]; that can be
-avoided in most cases where the lock is not in use. That's why buddy [2]
-and slab [3] accepted this pattern despite the added complexity?
 
-[1] https://lore.kernel.org/linux-mm/CAADnVQKk_Bgi0bc-td_3pVpHYXR3CpC3R8rg-NHwdLEDiQSeNg@mail.gmail.com
-[2] https://lore.kernel.org/linux-mm/20250222024427.30294-1-alexei.starovoitov@gmail.com 
-[3] https://lore.kernel.org/linux-mm/20250909010007.1660-1-alexei.starovoitov@gmail.com
+On 2026/4/21 11:03, Waiman Long wrote:
+> By making sure that isolated_hk_cpus matches isolated_cpus at boot time,
+> we can more accurately determine if calling housekeeping_update()
+> is needed by comparing if the two cpumasks are equal. The
+> update_housekeeping flag still have a use in cpuset_handle_hotplug()
+> to determine if a work function should be queued to invoke
+> cpuset_update_sd_hk_unlock() as it is not supposed to look at
+> isolated_hk_cpus without holding cpuset_top_mutex.
+> 
 
-> I think a better option is to add a separate kvfree_rcu_nmi() helper,
-> or similar, and avoid complicating the generic implementation. Otherwise,
-> the common path risks becoming harder to maintain.
+Currently, isolated_hk_cpus is updated within the cpuset_mutex critical section
+(before mutex_unlock(&cpuset_mutex)) in cpuset_update_sd_hk_unlock. Therefore, I
+think update_housekeeping can now be removed.
 
-It's unfortunate that I didn't provide performance data to justify
-adding complexity. I can try, but apparently you're not talking
-about that.
-
-Rather, you seem to be arguing that you're against this pattern
-no matter what the benefits are?
-
-I'm confused.
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  kernel/cgroup/cpuset.c | 36 ++++++++++++++++++++----------------
+>  1 file changed, 20 insertions(+), 16 deletions(-)
+> 
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index a4eccb0ec0d1..1b0c50b46a49 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1339,26 +1339,29 @@ static void cpuset_update_sd_hk_unlock(void)
+>  	__releases(&cpuset_mutex)
+>  	__releases(&cpuset_top_mutex)
+>  {
+> +	update_housekeeping = false;
+> +
+>  	/* force_sd_rebuild will be cleared in rebuild_sched_domains_locked() */
+>  	if (force_sd_rebuild)
+>  		rebuild_sched_domains_locked();
+>  
+> -	if (update_housekeeping) {
+> -		update_housekeeping = false;
+> -		cpumask_copy(isolated_hk_cpus, isolated_cpus);
+> -
+> -		/*
+> -		 * housekeeping_update() is now called without holding
+> -		 * cpus_read_lock and cpuset_mutex. Only cpuset_top_mutex
+> -		 * is still being held for mutual exclusion.
+> -		 */
+> -		mutex_unlock(&cpuset_mutex);
+> -		cpus_read_unlock();
+> -		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus, BIT(HK_TYPE_DOMAIN)));
+> -		mutex_unlock(&cpuset_top_mutex);
+> -	} else {
+> +	if (cpumask_equal(isolated_hk_cpus, isolated_cpus)) {
+> +		/* No housekeeping cpumask update needed */
+>  		cpuset_full_unlock();
+> +		return;
+>  	}
+> +
+> +	cpumask_copy(isolated_hk_cpus, isolated_cpus);
+> +
+> +	/*
+> +	 * housekeeping_update() is now called without holding
+> +	 * cpus_read_lock and cpuset_mutex. Only cpuset_top_mutex
+> +	 * is still being held for mutual exclusion.
+> +	 */
+> +	mutex_unlock(&cpuset_mutex);
+> +	cpus_read_unlock();
+> +	WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus, BIT(HK_TYPE_DOMAIN)));
+> +	mutex_unlock(&cpuset_top_mutex);
+>  }
+>  
+>  /*
+> @@ -3692,10 +3695,11 @@ int __init cpuset_init(void)
+>  
+>  	BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
+>  
+> -	if (housekeeping_enabled(HK_TYPE_DOMAIN_BOOT))
+> +	if (housekeeping_enabled(HK_TYPE_DOMAIN_BOOT)) {
+>  		cpumask_andnot(isolated_cpus, cpu_possible_mask,
+>  			       housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT));
+> -
+> +		cpumask_copy(isolated_hk_cpus, isolated_cpus);
+> +	}
+>  	return 0;
+>  }
+>  
 
 -- 
-Cheers,
-Harry / Hyeonggon
+Best regards,
+Ridong
+
