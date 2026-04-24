@@ -1,139 +1,95 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E24F1DED5B;
-	Fri, 24 Apr 2026 15:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75932C0F69;
+	Fri, 24 Apr 2026 17:49:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777046267; cv=none; b=fHlddOl9rDzcTI3iweNdh2/A0a3gcyDUwndX0+yYkehoFwPlG394VWDZsxJ4oY79w9JUsx8zRpsJJfsqCF7KcTNfaaXfxByFk2H6jI8GFw5RPl5mswihr2Ei83UqmHgDOJWkKjF1QwNrU7wTw/cnLiIWfscyjU8t+9I3xc79edU=
+	t=1777052942; cv=none; b=kr9zieINd+NLsvh/GquAy/Vjhi3gyoWvhYSV87U2qZmidAgw8ZQ1Kj8FWdt3evnFCy4rNVSBIGTIfIMnKB/akUBbYtpswLv4iWipT240Emyqtoz1A4Ccb1fQ8MxuoW/edntqrvlk1Vijj6y8l6SYugJgkomqw0ik6EhQMAL4bQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777046267; c=relaxed/simple;
-	bh=qO/MAUTAHfRFlyhPD2rItuN3QmG4P8rtxuTLbkxNwL0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JmsT/jq26HBpxr2QofPWP7j6OCG74VoZYZYRz0K8pR7nNuSaHcDzA8ABv1ZVHOTwZO/ncQpwAIY0Ff1mUGMSWhXRFfVjSKN7Ihq+S0sZZAc4JslppF/gpgS3FR+4jIbnoJUYJY8lXWFUoS50mYdlf1xk0YCqPyMPcu308pk15dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ajfozHwD; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1777052942; c=relaxed/simple;
+	bh=kQpXIVgVCV4fISNoHIQtgbvP1EXllhQ2T3mIJ8cRNro=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HSJ9dKqfE7EBozwjIOKaNeHveC5IyTT39T0IH/Jo9Ao5NqgpxFrkjv+hyJJRyPLZ6inY+L62N4o+kaAyUMjQsvSh2mCE9Cba4koP4Z2xOtNxepIuTBYIByoIVd6QikRQdC/BdsRkkyMpKgSa3r6IjC3nCL5NnHZ3HpeHX7H2DlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=sA7gH+Fn; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=SK+D8ac0; arc=none smtp.client-ip=80.241.56.161
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ajfozHwD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84C95C2BCB6;
-	Fri, 24 Apr 2026 15:57:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777046267;
-	bh=qO/MAUTAHfRFlyhPD2rItuN3QmG4P8rtxuTLbkxNwL0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ajfozHwD1fCyxVIfcezb1FBnsxwPft4s+SO1HNKvMY5sayIllGVwXOVtVSslBiMZF
-	 iBATPF8Gcw9+n7ropEBl/64VF34ptpNInOVsEsJkrETPnxJJKygFlN1VYMgsTk/aYJ
-	 gYUvbgp7JalTMlmRCPOXSELTijM0xY26ZJKLVNhvwHiNjYbLxtQV/g5iAlxMKVWK29
-	 RGgC4BQzNUj5QUpG0M5muBCkcgoXJy+cqEnzLKsOM+NOcQcatVhMlBI26zUciOzkDE
-	 k9Zm/lBjzIrlUV4Mjw8X3a4NKdoQ0/dEMltXuRb3fUxMSZ+xWpW5L0buiDsXXrS+bR
-	 AlN0XSo5XZv8Q==
-Date: Fri, 24 Apr 2026 17:57:43 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Thomas Gleixner <tglx@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="sA7gH+Fn";
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="SK+D8ac0"
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4g2L6x6Bt3z9spW;
+	Fri, 24 Apr 2026 19:48:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1777052937;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kQpXIVgVCV4fISNoHIQtgbvP1EXllhQ2T3mIJ8cRNro=;
+	b=sA7gH+FngvczjarD1Tbb6PMFak20PWNxDbkqseniXZs+8QP3xpEuvgwReAG4J+PFdNl5GM
+	b89YykHJSGUcM7lC+lgj6zlTdRk54bZRiaxpMbW7DfWoR7XLIuq9ezyqo70QE4X05H8N4z
+	WK3gK4WK+HuJzJMh4Wsr86QsWnQUjLJr9+Mcic5BtOsW4+6zZbQfElWpmmVd19Rup6BxOF
+	G4826WZgodQbSmk/vi7l8Sg1c1N7JG8djJPql/xtRH8aG84T4s1lkwHWLo/U7Tw1GGzEDi
+	WrEamYqbj+UuOgCSj4UgnRkTId/5WRPnlzuuiHdKcMtwwz15Jpba+rHJbYgsvg==
+From: Manuel Ebner <manuelebner@mailbox.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1777052935;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kQpXIVgVCV4fISNoHIQtgbvP1EXllhQ2T3mIJ8cRNro=;
+	b=SK+D8ac0yLSSdvohGV7owNyki6lMVoJQIzG6m1Nt3gyrX9dzmoQMlO2EsYgDh2KvmlR/3G
+	Ky/jgJTC6EvnCq3j41LrqGLzTORmrqq3+msayHySfXLGg4ZAEccf05anBIXzoeEf+uMT/1
+	fTzT7buEyY6zSICe5vhyLmnhOzFcr1WZJeI6x/8o9SiWSuGNcD/x9FmqjOuo1N2h9d2MRg
+	Y7QJHh2AYZ6wOFgZHJ3e5gYExnb6+Z+GH/P6nPvev2FoJvAFxlcpuGJAtAvvj4BetjDjNp
+	SGyH1RzYojU/NuSKy2z12Cm/2dklgBHerrwsnQqQ6kISt9SM9rxgx+2NLNL9cw==
+To: Jonathan Corbet <corbet@lwn.net>,
 	Shuah Khan <skhan@linuxfoundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>, Guenter Roeck <linux@roeck-us.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>,
-	Chen Ridong <chenridong@huaweicloud.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-	linux-hwmon@vger.kernel.org, rcu@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Costa Shulyupin <cshulyup@redhat.com>,
-	Qiliang Yuan <realwujing@gmail.com>
-Subject: Re: [PATCH 03/23] tick/nohz: Make nohz_full parameter optional
-Message-ID: <aeuS98a-u899PBmR@pavilion.home>
-References: <20260421030351.281436-1-longman@redhat.com>
- <20260421030351.281436-4-longman@redhat.com>
- <875x5kd88d.ffs@tglx>
- <3b796360-81e4-4f90-9b19-8a9f21cbac07@redhat.com>
+	linux-doc@vger.kernel.org,
+	Kees Cook <kees@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	workflows@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	rcu@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-mm@kvack.org,
+	Manuel Ebner <manuelebner@mailbox.org>
+Subject: [PATCH v3 0/3] Documentation: adopt new coding style of type-aware kmalloc-family
+Date: Fri, 24 Apr 2026 19:47:44 +0200
+Message-ID: <20260424174743.257951-2-manuelebner@mailbox.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3b796360-81e4-4f90-9b19-8a9f21cbac07@redhat.com>
+X-MBO-RS-META: fzthp35po1ukxbt6fwqeub7xbmjx4tas
+X-MBO-RS-ID: ce45d6f12d0da57349b
 
-Le Tue, Apr 21, 2026 at 10:14:09AM -0400, Waiman Long a écrit :
-11;rgb:2e2e/3434/3636> On 4/21/26 4:32 AM, Thomas Gleixner wrote:
-> > On Mon, Apr 20 2026 at 23:03, Waiman Long wrote:
-> > > To provide nohz_full tick support, there is a set of tick dependency
-> > > masks that need to be evaluated on every IRQ and context switch.
-> > s/IRQ/interrupt/
-> > 
-> > This is a changelog and not a SMS service.
-> > > Switching on nohz_full tick support at runtime will be problematic
-> > > as some of the tick dependency masks may not be properly set causing
-> > > problem down the road.
-> > That's useless blurb with zero content.
-> > 
-> > > Allow nohz_full boot option to be specified without any
-> > > parameter to force enable nohz_full tick support without any
-> > > CPU in the tick_nohz_full_mask yet. The context_tracking_key and
-> > > tick_nohz_full_running flag will be enabled in this case to make
-> > > tick_nohz_full_enabled() return true.
-> > I kinda can crystal-ball what you are trying to say here, but that does
-> > not make it qualified as a proper change log.
-> > 
-> > > There is still a small performance overhead by force enable nohz_full
-> > > this way. So it should only be used if there is a chance that some
-> > > CPUs may become isolated later via the cpuset isolated partition
-> > > functionality and better CPU isolation closed to nohz_full is desired.
-> > Why has this key to be enabled on boot if there are no CPUs in the
-> > isolated mask?
-> > 
-> > If you want to manage this dynamically at runtime then enable the key
-> > once CPUs are isolated. Yes, it's more work, but that avoids the "should
-> > only be used" nonsense and makes this more robust down the road.
-> 
-> OK, I will try to make it fully dynamic. Of course, it will be more work.
+Update the documentation to reflect new type-aware kmalloc-family as
+suggested in commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj()
+and family")
 
-Since the target CPUs will be offline, it should be fine to just enable/disable
-the static key and masks on runtime. The only issue I see right now is posix
-CPU timers because the tick dependency is per task/process group. And those
-tasks could migrate to nohz_full CPUs by careless users (even though that's
-nonsense) once the target become online. So the per task/process tick dependency
-must be set up unconditionally. I don't think this should bring much noticeable
-overhead though.
+On Tue, 2026-04-21 at 19:55 +0200, Manuel Ebner wrote:
+> I have also thought about adding a few cases to checkpatch.pl, but this
+> will take me more time, and i want to get this series finished.
+I can't do it, i don't have the knowledge in Perl and Regex.
 
-Oh and the other way to go, that is removing TICK_DEP_BIT_POSIX_TIMER and forbid to
-run posix cpu timers on nohz_full CPUs, would be even more painful to implement
-so I don't have a better idea.
+ [v2] -> [v3]:
+remove obvious wrong replacements in [1/3]
+add Acked-by: Paul E. McKenney in [2/3]
+change how to mark the optional argument in [3/3]
+add recipants
+ --cc="linux-mm@kvack.org"
+ --to="Kees Cook"
+ --cc="Geert Uytterhoeven"
 
-Thanks.
+ [v1] -> [v2]:
+put RCU/* in a seperate patch [Patch 2/3]
+Omit optional argument (GFP_KERNEL) as suggested by https://lwn.net/Articles/1062856/
+deprecated.rst: change the argument gfp to optional [Patch 3/3]
 
--- 
-Frederic Weisbecker
-SUSE Labs
+Signed-off-by: Manuel Ebner <manuelebner@mailbox.org>
