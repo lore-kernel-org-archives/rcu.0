@@ -1,160 +1,187 @@
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E20D26F476;
-	Fri, 24 Apr 2026 17:57:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A4132DD60E
+	for <rcu@vger.kernel.org>; Fri, 24 Apr 2026 18:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777053447; cv=none; b=b3O+i3a0vAsVjtnflQVRhGfthdX88gwQqeqeZzUgZ09e83WMXH8sryDABWPQ0tA8syj/ADssuSzJBU1WRRCdyC+tM8wcwn5Pnj3F7VK499209QdIH908jCxUYAiWw+/k0uL0LTixTHKIdKEwLgYcqRyNNFu+LzryEbkMxZ6smM4=
+	t=1777055594; cv=none; b=rSpOiqcsQjm0mgQfCwqdzmlFfZ4hPh/DBaN4A6O/+HsTRYq26l8WSOQgl1nkGsxeTfgiBn001yeWZXybQhfnm9AEWPsKe0Rze5AI7dFraGiKxOeFbg4uLdhMRxwAphARCAYmewGK4/x8vzRSj1xwgoymTsp3wElecXigYRxaynY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777053447; c=relaxed/simple;
-	bh=5rA2QJpQdjH30aXwBWROi5azH6CiU2oSJWc6XuEEHCU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GHmPGPrc6QmBUxucbQlzGbP/ueELblsuEKiYjTvnWqM3eNAdG0uBFh+6FnCKzA3VsGX4wdfGIN4+PeNg9hqBBEbXb/xGbPZPIsErJY3IYtGwqxn9G3lRJFU/MAdfKXTUbBlrJEhBmy1aNM9INuWI8Zfyr7uaX6mq4YT//D09ZqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=DiQX2jKS; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=yZIE/V/i; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+	s=arc-20240116; t=1777055594; c=relaxed/simple;
+	bh=5KKtAI6jaBrVREHQpySmvtkbvTyy3jqrl7fEoimPtZY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Fn2+Et7FMVTJNbFW/ecf2j6owqQOffBZpaFXE3matXWBjljLeFCHychulptAVr6E1N2Z+UiciyM6d3KRdkP4I578ogKmYywcflbZJRZVAgnBM6rEa+W0ouCM293ebvw8w1hz3VEqKZKi1WXGqWNXzH9UWL5+0cT9QVwpxxp/Z5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O4QFPA/k; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="DiQX2jKS";
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="yZIE/V/i"
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O4QFPA/k"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1777055590;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/+Ofdg4jOEN9y2ToBzvsak04ExFbOMNwCGnfdG4OLXM=;
+	b=O4QFPA/kCKnrs8uR9Ni1uBt5bw9dUtH0Dei7WOZsMmEokZHXGBtZ19sXsKcdqeBBjXLHLj
+	xp9HNM6MqOoXj0yFJOBujibOPWE3lg3Eas2qfVFI+xvBcJXrbmpM9ZbUAzR/T3AW8yU2L+
+	Flx7+iQlzeotxeq6TieAatOxgVR9ldE=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-665-wNN_jrdwPo6U_kJxLlYKOg-1; Fri,
+ 24 Apr 2026 14:33:03 -0400
+X-MC-Unique: wNN_jrdwPo6U_kJxLlYKOg-1
+X-Mimecast-MFC-AGG-ID: wNN_jrdwPo6U_kJxLlYKOg_1777055577
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4g2LJh3bK2z9v09;
-	Fri, 24 Apr 2026 19:57:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1777053444;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/jpFSfh8pkq9hgF4XdFn4gci7nJHZiQrNi+Cn4q3ldM=;
-	b=DiQX2jKScEebIIsItGKvTu8w4TlEZEK5EJ1cxL3qtrx+u+a2HefIH/spvYOFb3vBGn0jFu
-	b/yzMeqBhVwiTKCybbQgn3Xc8l3pEuk13jJfhasxbf8PVZzr8Igz9hONffM29xo2Ie+PkR
-	DdRAxJC6yaGuDVmK7S4+R8DzzrAlGpT2Es9hCmvf4HCd9Mo9OFlAXUXmwUXgM2uuIUMZNQ
-	GqrhqgRi5dqkC3V4fxxAZnevI3pZU93YyALt/u2DI5yA8yY00XAVuEHZ8vQuuMdmZlJ3JM
-	pSVedQGOW3NtKUWCeErAVWrABI1acLwhtk2tsZLdRqtRGjNjnGKxb12NZCwUcQ==
-From: Manuel Ebner <manuelebner@mailbox.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1777053442;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/jpFSfh8pkq9hgF4XdFn4gci7nJHZiQrNi+Cn4q3ldM=;
-	b=yZIE/V/ioNkek2NIKv9qymxY2/zs5EY/Ens7Jn/IXiZgh3TbOvxIxXBNGpKIXLyDrYh4Nw
-	8fNtIgEqZ14LnwpG7p0lznCpCw0mXseRzZQfhCtA725d1PdsoG85VUolU5JxlU2JceNoRy
-	Z0mDPkaFsDne21Vn9hovQA0x2+0b9NhmnbvPa6cGHdCeEZGOCZcoFhry4ivyOyoqEXVXzT
-	prwMsZYhvlDV3R8HzoEV3LrAxPpqf0DsNRU+D6nGHlL4QhMNKwaG4zFbUj6yRUXGsPntwt
-	YGOi6b/yyOVxTXdmqLG6lIUCNYzSknnJG9WTGAQ+orcXjeZyghqfEKCUlNJscw==
-To: Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	linux-doc@vger.kernel.org,
-	rcu@vger.kernel.org
-Cc: Kees Cook <kees@kernel.org>,
-	linux-mm@kvack.org,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Manuel Ebner <manuelebner@mailbox.org>
-Subject: [PATCH v3 2/3] Documentation: RCU: adopt new coding style of type-aware kmalloc-family
-Date: Fri, 24 Apr 2026 19:55:55 +0200
-Message-ID: <20260424175553.258412-3-manuelebner@mailbox.org>
-In-Reply-To: <20260424174743.257951-2-manuelebner@mailbox.org>
-References: <20260424174743.257951-2-manuelebner@mailbox.org>
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D7825195608B;
+	Fri, 24 Apr 2026 18:32:55 +0000 (UTC)
+Received: from [10.22.88.143] (unknown [10.22.88.143])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 4304319560AB;
+	Fri, 24 Apr 2026 18:32:45 +0000 (UTC)
+Message-ID: <2658f7a3-5156-4cc5-86c4-b23627e4b5f2@redhat.com>
+Date: Fri, 24 Apr 2026 14:32:45 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: e0518762b50c9cfe4f5
-X-MBO-RS-META: fexjjn3ftc9wehobct5zrowsq8uu389o
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 19/23] cgroup/cpuset: Improve check for calling
+ housekeeping_update()
+To: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+ Guenter Roeck <linux@roeck-us.net>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
+ <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
+ <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Valentin Schneider <vschneid@redhat.com>,
+ K Prateek Nayak <kprateek.nayak@amd.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ rcu@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
+ Qiliang Yuan <realwujing@gmail.com>
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260421030351.281436-20-longman@redhat.com>
+ <e8824498-f8ec-496a-a21c-d1dc594f4c8e@huaweicloud.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <e8824498-f8ec-496a-a21c-d1dc594f4c8e@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-Update Documentation/RCU/* to reflect new type-aware kmalloc-family
-as suggested in commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj()
-and family")
+On 4/22/26 9:10 PM, Chen Ridong wrote:
+>
+> On 2026/4/21 11:03, Waiman Long wrote:
+>> By making sure that isolated_hk_cpus matches isolated_cpus at boot time,
+>> we can more accurately determine if calling housekeeping_update()
+>> is needed by comparing if the two cpumasks are equal. The
+>> update_housekeeping flag still have a use in cpuset_handle_hotplug()
+>> to determine if a work function should be queued to invoke
+>> cpuset_update_sd_hk_unlock() as it is not supposed to look at
+>> isolated_hk_cpus without holding cpuset_top_mutex.
+>>
+> Currently, isolated_hk_cpus is updated within the cpuset_mutex critical section
+> (before mutex_unlock(&cpuset_mutex)) in cpuset_update_sd_hk_unlock. Therefore, I
+> think update_housekeeping can now be removed.
 
-ptr = kmalloc(sizeof(*ptr), gfp);
- -> ptr = kmalloc_obj(*ptr);
+That is true. I will remove in the next version.
 
-Signed-off-by: Manuel Ebner <manuelebner@mailbox.org>
-Acked-by: Paul E. McKenney
----
-Acked-by see 
-https://lore.kernel.org/linux-doc/7a49fee0-09c8-4a48-9506-d9172ef024b0@paulmck-laptop/
+Thanks,
+Longman
 
- Documentation/RCU/Design/Requirements/Requirements.rst | 6 +++---
- Documentation/RCU/listRCU.rst                          | 2 +-
- Documentation/RCU/whatisRCU.rst                        | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index b5cdbba3ec2e..faca5a9c8c12 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -206,7 +206,7 @@ non-\ ``NULL``, locklessly accessing the ``->a`` and ``->b`` fields.
- 
-        1 bool add_gp_buggy(int a, int b)
-        2 {
--       3   p = kmalloc(sizeof(*p), GFP_KERNEL);
-+       3   p = kmalloc_obj(*p);
-        4   if (!p)
-        5     return -ENOMEM;
-        6   spin_lock(&gp_lock);
-@@ -228,7 +228,7 @@ their rights to reorder this code as follows:
- 
-        1 bool add_gp_buggy_optimized(int a, int b)
-        2 {
--       3   p = kmalloc(sizeof(*p), GFP_KERNEL);
-+       3   p = kmalloc_obj(*p);
-        4   if (!p)
-        5     return -ENOMEM;
-        6   spin_lock(&gp_lock);
-@@ -264,7 +264,7 @@ shows an example of insertion:
- 
-        1 bool add_gp(int a, int b)
-        2 {
--       3   p = kmalloc(sizeof(*p), GFP_KERNEL);
-+       3   p = kmalloc_obj(*p);
-        4   if (!p)
-        5     return -ENOMEM;
-        6   spin_lock(&gp_lock);
-diff --git a/Documentation/RCU/listRCU.rst b/Documentation/RCU/listRCU.rst
-index d8bb98623c12..48c7272a4ccc 100644
---- a/Documentation/RCU/listRCU.rst
-+++ b/Documentation/RCU/listRCU.rst
-@@ -276,7 +276,7 @@ The RCU version of audit_upd_rule() is as follows::
- 
- 		list_for_each_entry(e, list, list) {
- 			if (!audit_compare_rule(rule, &e->rule)) {
--				ne = kmalloc(sizeof(*entry), GFP_ATOMIC);
-+				ne = kmalloc_obj(*entry, GFP_ATOMIC);
- 				if (ne == NULL)
- 					return -ENOMEM;
- 				audit_copy_rule(&ne->rule, &e->rule);
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index a1582bd653d1..770aab8ea36a 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -468,7 +468,7 @@ uses of RCU may be found in listRCU.rst and NMI-RCU.rst.
- 		struct foo *new_fp;
- 		struct foo *old_fp;
- 
--		new_fp = kmalloc(sizeof(*new_fp), GFP_KERNEL);
-+		new_fp = kmalloc_obj(*new_fp);
- 		spin_lock(&foo_mutex);
- 		old_fp = rcu_dereference_protected(gbl_foo, lockdep_is_held(&foo_mutex));
- 		*new_fp = *old_fp;
-@@ -570,7 +570,7 @@ The foo_update_a() function might then be written as follows::
- 		struct foo *new_fp;
- 		struct foo *old_fp;
- 
--		new_fp = kmalloc(sizeof(*new_fp), GFP_KERNEL);
-+		new_fp = kmalloc_obj(*new_fp);
- 		spin_lock(&foo_mutex);
- 		old_fp = rcu_dereference_protected(gbl_foo, lockdep_is_held(&foo_mutex));
- 		*new_fp = *old_fp;
--- 
-2.53.0
+>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 36 ++++++++++++++++++++----------------
+>>   1 file changed, 20 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index a4eccb0ec0d1..1b0c50b46a49 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -1339,26 +1339,29 @@ static void cpuset_update_sd_hk_unlock(void)
+>>   	__releases(&cpuset_mutex)
+>>   	__releases(&cpuset_top_mutex)
+>>   {
+>> +	update_housekeeping = false;
+>> +
+>>   	/* force_sd_rebuild will be cleared in rebuild_sched_domains_locked() */
+>>   	if (force_sd_rebuild)
+>>   		rebuild_sched_domains_locked();
+>>   
+>> -	if (update_housekeeping) {
+>> -		update_housekeeping = false;
+>> -		cpumask_copy(isolated_hk_cpus, isolated_cpus);
+>> -
+>> -		/*
+>> -		 * housekeeping_update() is now called without holding
+>> -		 * cpus_read_lock and cpuset_mutex. Only cpuset_top_mutex
+>> -		 * is still being held for mutual exclusion.
+>> -		 */
+>> -		mutex_unlock(&cpuset_mutex);
+>> -		cpus_read_unlock();
+>> -		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus, BIT(HK_TYPE_DOMAIN)));
+>> -		mutex_unlock(&cpuset_top_mutex);
+>> -	} else {
+>> +	if (cpumask_equal(isolated_hk_cpus, isolated_cpus)) {
+>> +		/* No housekeeping cpumask update needed */
+>>   		cpuset_full_unlock();
+>> +		return;
+>>   	}
+>> +
+>> +	cpumask_copy(isolated_hk_cpus, isolated_cpus);
+>> +
+>> +	/*
+>> +	 * housekeeping_update() is now called without holding
+>> +	 * cpus_read_lock and cpuset_mutex. Only cpuset_top_mutex
+>> +	 * is still being held for mutual exclusion.
+>> +	 */
+>> +	mutex_unlock(&cpuset_mutex);
+>> +	cpus_read_unlock();
+>> +	WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus, BIT(HK_TYPE_DOMAIN)));
+>> +	mutex_unlock(&cpuset_top_mutex);
+>>   }
+>>   
+>>   /*
+>> @@ -3692,10 +3695,11 @@ int __init cpuset_init(void)
+>>   
+>>   	BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
+>>   
+>> -	if (housekeeping_enabled(HK_TYPE_DOMAIN_BOOT))
+>> +	if (housekeeping_enabled(HK_TYPE_DOMAIN_BOOT)) {
+>>   		cpumask_andnot(isolated_cpus, cpu_possible_mask,
+>>   			       housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT));
+>> -
+>> +		cpumask_copy(isolated_hk_cpus, isolated_cpus);
+>> +	}
+>>   	return 0;
+>>   }
+>>   
 
