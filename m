@@ -1,65 +1,66 @@
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112275CDF1;
-	Sat, 25 Apr 2026 05:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CE6242D72;
+	Sat, 25 Apr 2026 05:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777095685; cv=none; b=uMtyJV9g9oG4MK2pRUaXMs+ixpSZqk602q261sRtZ7D7sjuOfRXDe0rR9vFweB++vcBi9WpOk721XnQpM5Hd+Cg1+Jfx9N/aAC1VkjeQK8UHadR67XvedDRaWoJsW7HqtB/rt2Brkv6LOTZPFpNumgwFDqehreGbJTB++EDneRY=
+	t=1777096019; cv=none; b=bYb2BSBEbdUDshDn0Q8/KpiPPvb4V2wB2z74Fu9+igOFcU4kO2nmmK4cUFWRYa7bgcd5skdOyfWj6ENOT48iCYqISrXHJIexN18cNLY/c2Ku9Fm0HizuLEMCQSILeY5c18TELWgC1i0RzAUNAkuIfFKseScpzpqJOL078q1I0B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777095685; c=relaxed/simple;
+	s=arc-20240116; t=1777096019; c=relaxed/simple;
 	bh=rSGR3AR0m8Ij/PV5Oqw2GgCPF1gXz4burjiZJh16MP8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QTvavsD3ls2x4nnQoFgJBEtcwCykxuvIbNfQQnvxFETxL5NS71DGI8tGr393I8KVfDkyIz9/MgUZxl7THR86aJjMNctusDTjLKNPX2lqmNlMgeatAUxkYZNc317OyWLPfsANw9tr/MhVSig67dYq3uOb1Oq9kCpjE0Rzl6CbfTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=NOO5DGf5; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=Tdp0XVzw; arc=none smtp.client-ip=80.241.56.161
+	 MIME-Version; b=VZjN4ssMg1CqXbsX9WopdtM7++sK1u7c2QJRtIq56bcMlmbwwu7I5VIxXSfHlE/a3SP0sRsbRXr1BOcVe7uDlZOvdhMemxcG3LLYN/gS1v1WmLyZBd+ehBOSW+aR+OiZEr2vcMoTDmAYVxS9blBiTPMJhSPkIxZ/t/9tu0KLRSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=GJ0XVQmP; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=uwnlv62W; arc=none smtp.client-ip=80.241.56.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="NOO5DGf5";
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="Tdp0XVzw"
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="GJ0XVQmP";
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="uwnlv62W"
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4g2dwq1fWXz9tm7;
-	Sat, 25 Apr 2026 07:41:15 +0200 (CEST)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4g2f3G1B5xz9tjB;
+	Sat, 25 Apr 2026 07:46:50 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1777095675;
+	t=1777096010;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
 	bh=L1U+Lzz1qrYnndGzgY0hK0tfu2XW3iifx6J3/jCY6ZA=;
-	b=NOO5DGf5VHaE2zSaG8d4Eyy9VXNnwIrp1C7MqDKmImHFjez7ISyF2QtwJ5e6HyKjZ1C00V
-	kxW18MfngRdxrNhpmB2qUMNENQgr21fhmOpMUIzXLe691L4Gq8p0t4AO1Ucre6AfJCEdym
-	d/7YdwYEw7vL888GQRkPXD4Wvy2gKgX43TMEJv1THMSOEo/VRBvU2kSxpF2AR0gk/sbd2T
-	Vc245H3CAxWaRch/uSG03J3AF/0LQcheTAMLSOtIrAC50CyRaVVKJOeYfJK7cKj+MGtclL
-	J2zoRj9z+sCxpqn39rKXEjucf/Eqlulu+N/QzFcxKE/EXW8J6OYp6S0rFFR/cw==
+	b=GJ0XVQmPVZ3C29V9VBzl1FqGS399NvjW9ZZ3Czra6gwGX4whf9zFV5hgdEw1oKpLtx2Vrv
+	nOXr0u1WiFNxSOlWBJZkxz39rjVqiQyYtumwli3ddvkY4e0tWQCdzP5pzDJWY6DYwSJVhO
+	fDs2HQ5eOXNs6kFxoluFlnI2S1htr6BcfNCCkhXPh6AbZ4uWMKZP2z8m9BmEQHUS3rbONy
+	JKjGz2+vXemyfx8PL/YVHLryudAG4KWcs1jxi/BGdMG/88M9FlI/ataiI5t3HyGvJA906W
+	P6ETUPC3HtEqGg0bc8v/W05+GnJWhyxaIWbLa/FiXFNjm2bcDj5KppO+lFSyzg==
 From: Manuel Ebner <manuelebner@mailbox.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1777095673;
+	t=1777096009;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
 	bh=L1U+Lzz1qrYnndGzgY0hK0tfu2XW3iifx6J3/jCY6ZA=;
-	b=Tdp0XVzwyZ66Pp0J9qNYYK+uc4Iwyjt711kR+T2fvjpkKQIbEZkSrqfrMmqL25ozLORdAo
-	KE4PY4S/ggutcL/U6Df5AFS5Fz01a4zDzoAdcAEHeOLlY6YpbfqCW8FSWdK1+zgOGL1umF
-	/BNzK4kQA3OO0DR1x4GuqvpHxR18SUG94vSoteVxFStJgR55QCVd9Hl3AiX/rnkxNSV2Kp
-	oepNqQNAw8jp1dya6W2npFoypVQLrj8jps8ua71KVzZhP5xliB75jz2qLJEPI7riM2fWcw
-	6a1eTdRJLeAwVqQZXPpuTGPSo04YXVbBN3d8pETX1ATJDPxxsuATabtTLNUjDw==
-To: paulmck@kernel.org
-Cc: corbet@lwn.net,
-	kees@kernel.org,
+	b=uwnlv62WEPzcPWrQ5ZoaPqt6xlfYJLtO8XDZ46qQf0Tp3LSBPrknlCmYXpVhTgI3EyUV5A
+	lElEPJo0PzvigUjm/TwgKEgzqD4q7XAHeC3bvyy0YIZ30oeYz2i4yovhysO26IQ3JLUhhD
+	kgTXPpAXchi2m+OmBWEvOk6ocrVn9lW9g42g4XmLzERtZXzCYpwCuTLu5b1E89WhOlo1LB
+	9U1vE3A1PQ5VKeQd5194wA1rmfSojZpyB9TWxoezmi4J+Ex42PiXen/asjwsU3sbqSIAgE
+	d5ycbOektijgf7+dIkUSkcFspf3q/6bUKhFzYos3cDwNIYKE3EJCc/AQdsQSyA==
+To: manuelebner@mailbox.org,
+	corbet@lwn.net
+Cc: kees@kernel.org,
 	linux-doc@vger.kernel.org,
-	manuelebner@mailbox.org,
+	linux-mm@kvack.org,
+	paulmck@kernel.org,
 	rcu@vger.kernel.org,
 	skhan@linuxfoundation.org
 Subject: [PATCH v3 2/3] Documentation: RCU: adopt new coding style of type-aware kmalloc-family
-Date: Sat, 25 Apr 2026 07:39:22 +0200
-Message-ID: <20260425053920.272388-3-manuelebner@mailbox.org>
-In-Reply-To: <7a49fee0-09c8-4a48-9506-d9172ef024b0@paulmck-laptop>
-References: <7a49fee0-09c8-4a48-9506-d9172ef024b0@paulmck-laptop>
+Date: Sat, 25 Apr 2026 07:46:31 +0200
+Message-ID: <20260425054630.272707-2-manuelebner@mailbox.org>
+In-Reply-To: <20260424175553.258412-3-manuelebner@mailbox.org>
+References: <20260424175553.258412-3-manuelebner@mailbox.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -67,8 +68,8 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MBO-RS-META: p5n7fqecu8qcsz3shzj3ypu6u3i79smt
-X-MBO-RS-ID: fb2fc64301aaf637227
+X-MBO-RS-META: j4corux7dnuf8pgzx97gu3oi9rymqth4
+X-MBO-RS-ID: 47ae089f101825f15ed
 
 Update Documentation/RCU/* to reflect new type-aware kmalloc-family
 as suggested in commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj()
