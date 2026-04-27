@@ -1,275 +1,250 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668E0334695
-	for <rcu@vger.kernel.org>; Mon, 27 Apr 2026 15:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C8CC3C199A
+	for <rcu@vger.kernel.org>; Mon, 27 Apr 2026 15:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777304642; cv=none; b=alwNcIEZB1XYrQ1+50ZlmIEGgAK475cY8RVsM2x48c3D07i+RO4Y04EFH+G0SB0lVedN7T/CamvfLfUZTVl42C9cK+npqavPtsNEZXpLkOokHUF/+m0Lb2sOp0zAWAPwdTAHn/fa9LTsWFzp4/88VV5CTGwMU6r+p7UNScDo2Qs=
+	t=1777304865; cv=none; b=s36ENDxxynTOJ4d8iljHdVaPMe/JRLFSRWo1a9D8nO3N5SkKmRjcCFmz2rXFAJsfByaPGljbvtEIRsgZ/1y3JDU0u2IL/1cWNOGZN3nFHWtkIP+22NYfnYe6tMtlam9na6ncGiYnoVHseQ7Chbecrp0yuh3ugMXg2TkVDhdZJ6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777304642; c=relaxed/simple;
-	bh=Y0m4lfVka5tIgD8TebgzyuHkC9SbM/oEcDxBQLbgk48=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zvee92pFe8jj7rYDA/XIGCYNyQu8Bzqds9C49tL42Ju+K3db+Veda7vCBRfr4kpo3Ddkh5XMtjTT9t4HKMFFxn3NVnOmw+3xdXBwZlysgLPn4ki2PBAXWFcWiODTdVG+dE7z1dEsHUY5iJq10mKg0C8id9iOFwAjWDrsDbLbHmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B9yTiIM8; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1777304865; c=relaxed/simple;
+	bh=6QyhfmdKWsqLeaywBIrX3y0EggSxtNipVXYb8EQYAwA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HE8bBQMYGy7WLHOxlgwTC2RvrG9xeHUrKepqfxGPX/mw0CTjtwJuCHmgId9dtTg2roHFjJoT3yCZ/MTpO0HXH8BrtJNIWEpUrHfivX1VJN0CFv0DaowQ3xN9BZwR/G3AwFzpE62aUeMbcXf5v7V2lgA9kwksXWr24OmYuSrZEDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZhKAxlUM; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B9yTiIM8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF70AC2BCB4;
-	Mon, 27 Apr 2026 15:44:01 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZhKAxlUM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 587BCC19425;
+	Mon, 27 Apr 2026 15:47:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777304642;
-	bh=Y0m4lfVka5tIgD8TebgzyuHkC9SbM/oEcDxBQLbgk48=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B9yTiIM819kfF4AqtE3Ts8cxL1uUeddFTUfpkn1Tg3/p51P5v+KP8Rbw/Ijny72u4
-	 kd4iJpYck74XIq8bVOelJ49GL6Ec50j5Gjb9iJO9vtXfeHKwr3NIt0XBhJ0BsTuUGk
-	 WS16gQ/ahwfZyttd0i1dqvbt2myBNg5nUtMBWSlJiUYdxBXB5OJLgabgbAVRxCT6BG
-	 s7bWMcx5TDjScDJqGPil+/Tn0BeHulcS/d2pBRmm/Bd5pAnQMC5tdtAVVvMfLCjXiL
-	 s1RZdAOmWi6dD8295iTb5uv/7DCAM+Uw9Q3QOqrQ4hYvD9sOFmlflvc6TL7zcyCvkx
-	 u06DljfpNZn4w==
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id EC70AF40075;
-	Mon, 27 Apr 2026 11:44:00 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Mon, 27 Apr 2026 11:44:00 -0400
-X-ME-Sender: <xms:QITvac-l_EHI-ECjsKgtiKMWuKRS13h2-xjfvROIW9vnGVzMFvuLcg>
-    <xme:QITvaXyU06JGnq-E6Z7-Ttmzqtj92r3aHJuv_jPn770vd8yoJz5jq_gowS7AjGmIv
-    WNFGSLuwNSc8hNiUxZuxmLnzXM0935ma3caGKHSxknzPOgX1NIpdQo>
-X-ME-Received: <xmr:QITvacp46zHbDRfaO_VjOl62TcdrzKUkujt5a_ykvqwZ6xXOxQZaJvsS8JmiCVSwFK8inCTU3heaNYtxM1TKyj4EdLB-JEz7>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdejledtkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefukfhfgggtugfgjgesthekredttddtudenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    eiffevjeegvdefhfeiveejjeeihfehgfejtdfhueegheehvdehveelieelkedutdenucff
-    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhn
-    rghlihhthidqudeijedtleekgeejuddqudejjeekheehhedvqdgsohhquhhnpeepkhgvrh
-    hnvghlrdhorhhgsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepledpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtohepshgrmhhirheslhhinhhugidrihgsmhdrtghomh
-    dprhgtphhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopegs
-    ohhquhhnrdhfvghnghesghhmrghilhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvg
-    hrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehtjheskhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprh
-    gtphhtthhopehlihhnuhigphhptgdquggvvheslhhishhtshdrohiilhgrsghsrdhorhhg
-    pdhrtghpthhtohepshhshhgvghguvgeslhhinhhugidrihgsmhdrtghomhdprhgtphhtth
-    hopegsohhquhhnsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:QITvaYphAi8BuLB7nuuWYSUE1F20CYjQxz_PCnWK6V6bX7-Ter5pvw>
-    <xmx:QITvacDsnVJv5L35cYuiWeeE5OH_-E2e0eA3ImfuYc4NAhvf47j5IA>
-    <xmx:QITvaWteZJOrR4miG1MzHPWOa0fR-41lqp48i09eEv3S_lUtBWiuzA>
-    <xmx:QITvabIXr0wb6IyYmG0cWfGaoINODwVA7IVouYz3aGlzUbYWk4a06Q>
-    <xmx:QITvadaIZ4w-XzwpW_01paghiofamfqbq9OIG9ifmrqITsiRdFijsXEh>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 27 Apr 2026 11:44:00 -0400 (EDT)
-Date: Mon, 27 Apr 2026 08:43:59 -0700
-From: Boqun Feng <boqun@kernel.org>
-To: Samir M <samir@linux.ibm.com>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-	RCU <rcu@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
-	Shrikanth Hegde <sshegde@linux.ibm.com>
-Subject: Re: [mainline][BUG] Observed Workqueue lockups on offline CPUs.
-Message-ID: <ae-EP1BpXgnEWCt4@tardis.local>
-References: <97a7d011-d573-4754-9e5d-68b562c64089@linux.ibm.com>
- <688280dc-78a2-4796-9eaf-e1c058836012@linux.ibm.com>
+	s=k20201202; t=1777304864;
+	bh=6QyhfmdKWsqLeaywBIrX3y0EggSxtNipVXYb8EQYAwA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZhKAxlUMRWyfsqXwj4T6Fkz9QSKKjgegXNz4WzuQTf9KMWkJPTy8ph3ZbZ8Bd7G46
+	 xJ5aCLOxJGJOYWDfSGelgl4ysDhLuhxqeZFtBORtiihq6sI51VPoisfvYbhcKZ8p36
+	 3tR/ImU/GqjtVQ/GzphvIuYx33SGJMOdNZNJN30om4ygH4JE0RjOS/TqVgGzUw+FOI
+	 SDvDxURqQboX4OI5EBEumkv1SXxo4Uw9jIxuBBGFIzGR0qQTL6auU8ignQprGWLOuL
+	 C9JTFrULcaNM517z8Wo3pF43BH71wWLgsmkkJGZ+zSIr5SoxrhC5h6q+QeB28oBwiY
+	 lSQEF6WSZk6hA==
+Message-ID: <8f5952c2-d710-46dc-8ba0-012db08c9578@kernel.org>
+Date: Mon, 27 Apr 2026 17:47:39 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <688280dc-78a2-4796-9eaf-e1c058836012@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/8] mm/slab: wrap rcu sheaf handling with ifdef
+Content-Language: en-US
+To: "Harry Yoo (Oracle)" <harry@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Zqiang <qiang.zhang@linux.dev>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
+ linux-mm@kvack.org
+References: <20260416091022.36823-1-harry@kernel.org>
+ <20260416091022.36823-7-harry@kernel.org>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+In-Reply-To: <20260416091022.36823-7-harry@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 27, 2026 at 05:00:10PM +0530, Samir M wrote:
+On 4/16/26 11:10, Harry Yoo (Oracle) wrote:
+> Freeing objects via rcu sheaves is only done with
+> CONFIG_KVFREE_RCU_BATCHED. Wrap the related functions and struct
+> fields with ifdef to make this dependency explicit.
+
+With SLUB_TINY we have recently took the approach of limiting it to only
+necessary parts, and not care about unused code etc where it doesn't cause
+issues. I think it's good to minimize the ifdef complexity, so maybe it's
+possible to limit it only to allow compiling with no warnings (including
+IIRC W=1 clang that IIRC is stricter about unused functions)?
+
+> Also remove a TODO about implementing __kvfree_rcu_barrier_on_cache()
+> for a specific slab cache, as there doesn't seem to be a simple and
+> effective way to do so.
+
+Ack.
+
 > 
-
-Hi Samir,
-
-> On 27/04/26 3:32 pm, Samir M wrote:
-> > Hi Paul,
-> > 
-> > I've been testing the latest upstream kernel on a PowerPC system and
-> > encountered workqueue lockup issues that I've bisected to commit
-> > 61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
-> > non-preemptible").
-> > After booting, I'm seeing workqueue lockup warnings for CPUs 81-96,
-> > which are offline on my system. The workqueues remain stuck for over 237
-> > seconds:
-> > 
-> > [  243.309302][    C0] BUG: workqueue lockup - pool cpus=81 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309311][    C0] BUG: workqueue lockup - pool cpus=82 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309318][    C0] BUG: workqueue lockup - pool cpus=83 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309326][    C0] BUG: workqueue lockup - pool cpus=84 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309333][    C0] BUG: workqueue lockup - pool cpus=85 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309341][    C0] BUG: workqueue lockup - pool cpus=86 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309348][    C0] BUG: workqueue lockup - pool cpus=87 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309355][    C0] BUG: workqueue lockup - pool cpus=88 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309363][    C0] BUG: workqueue lockup - pool cpus=89 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309370][    C0] BUG: workqueue lockup - pool cpus=90 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309377][    C0] BUG: workqueue lockup - pool cpus=91 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309384][    C0] BUG: workqueue lockup - pool cpus=92 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309392][    C0] BUG: workqueue lockup - pool cpus=93 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309399][    C0] BUG: workqueue lockup - pool cpus=94 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309406][    C0] BUG: workqueue lockup - pool cpus=95 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > [  243.309413][    C0] BUG: workqueue lockup - pool cpus=96 node=0
-> > flags=0x4 nice=0 stuck for 237s!
-> > 
-> > Git bisect identified this as the first bad commit:
-> > 
-> > commit 61bbcfb50514a8a94e035a7349697a3790ab4783
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Fri Mar 20 20:29:20 2026 -0700
-> > 
-> >     srcu: Push srcu_node allocation to GP when non-preemptible
-> > 
-> >     When the srcutree.convert_to_big and srcutree.big_cpu_lim kernel boot
-> >     parameters specify initialization-time allocation of the srcu_node
-> >     tree for statically allocated srcu_struct structures (for example, in
-> >     DEFINE_SRCU() at build time instead of init_srcu_struct() at
-> > runtime),
-> >     init_srcu_struct_nodes() will attempt to dynamically allocate this
-> > tree
-> >     at the first run-time update-side use of this srcu_struct structure,
-> >     but while holding a raw spinlock. Because the memory allocator can
-> >     acquire non-raw spinlocks, this can result in lockdep splats.
-> > 
-> >     This commit therefore uses the same SRCU_SIZE_ALLOC trick that is
-> > used
-> >     when the first run-time update-side use of this srcu_struct structure
-> >     happens before srcu_init() is called. The actual allocation then
-> > takes
-> >     place from workqueue context at the ends of upcoming SRCU grace
-> > periods.
-> > 
-> >     [boqun: Adjust the sha1 of the Fixes tag]
-> > 
-> >     Fixes: 175b45ed343a ("srcu: Use raw spinlocks so call_srcu() can be
-> > used under preempt_disable()")
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >     Signed-off-by: Boqun Feng <boqun@kernel.org>
-> > 
-> >  kernel/rcu/srcutree.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > Reverting this commit resolves the issue.
-> > 
-> > The problem appears to be that the workqueue is attempting to execute on
-> > offline CPUs. The commit moves SRCU node allocation to workqueue context
-> > to avoid lockdep issues with memory allocation under raw spinlocks,
-> > which makes sense. However, it seems the workqueue scheduling doesn't
-> > properly account for CPU online/offline state in this code path.
-> > 
-> > My test environment:
-> > - Architecture: PowerPC
-> > - Kernel version: Latest upstream (7.1-rc1)
-> > - CPUs 81-96 are offline at boot time
-> > 
-> > I suspect the issue might be related to:
-> > 1. Workqueue not checking CPU online status before scheduling SRCU
-> > allocation work
-> > 2. Missing CPU hotplug awareness in the new workqueue-based allocation
-> > path
-> > 3. Possible race condition with CPU hotplug events
-> > 
-> > Would it make sense to use queue_work_on() with explicit online CPU
-> > selection, or add CPU hotplug handlers for this workqueue? I'm not
-> > deeply familiar with the workqueue internals, so I might be missing
-> > something.
-> > Please let me know if you need any additional details or if you'd like
-> > me to test any patches.
-> > 
-> > If you happen to fix the above issue, then please add below tag.
-> > Reported-by: Samir M <samir@linux.ibm.com>
-> > 
-> > 
-> > Thanks,
-> > Samir
-> 
-> Hi Paul,
-> 
-> 
-> I worked on fixing the issue and introduced the changes below. With these
-> updates, I no longer observe any workqueue lockup messages for offline CPUs.
-> Could you please review the changes and share your feedback?
-> 
-> The commit 61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
-> non-preemptible") introduced workqueue lockups on systems with offline
-> CPUs. The issue occurs because srcu_queue_delayed_work_on() calls
-> queue_work_on() with sdp->cpu, which may be offline, causing the
-> workqueue to spin indefinitely on that CPU.
-> 
-> This patch fixes the issue by checking if the target CPU is online
-> before queuing work on it. If the CPU is offline, we fall back to
-> using queue_work() which will schedule the work on any available
-> online CPU.
-> 
-> Fixes: 61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
-> non-preemptible")
-> 
-> Signed-off-by: Samir <samir@linux.ibm.com>
-
-Thanks for the patch, but I wonder: have you checked this email thread:
-
-	https://lore.kernel.org/rcu/ttd89ul@ub.hpns/	
-
-Paul had a fix [1], and TJ had a "fix" [2] on workqueue side.
-
-In general I think we discovered that as long as a CPU has been onlined
-once, it's OK to queue the work on that CPU (which may be offlined) even
-with our TJ's patch (whether we should do that is a different problem
-;-)). Please do check whether Paul's fix works for your case, thanks!
-
-[1]: https://lore.kernel.org/rcu/ed1fa6cd-7343-4ca3-8b9d-d699ca496f83@paulmck-laptop/
-[2]: https://lore.kernel.org/rcu/adlHKowvhn8AGXCc@slm.duckdns.org/
-
-Regards,
-Boqun
-
+> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 > ---
->  kernel/rcu/srcutree.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+>  mm/slab.h        |  3 +++
+>  mm/slab_common.c |  4 ----
+>  mm/slub.c        | 27 +++++++++++++++++++++++++--
+>  3 files changed, 28 insertions(+), 6 deletions(-)
 > 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 0d01cd8c4b4a..55a90dd4a030 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -869,10 +869,15 @@ static void srcu_delay_timer(struct timer_list *t)
->  static void srcu_queue_delayed_work_on(struct srcu_data *sdp,
->  unsigned long delay)
->  {
-> -       if (!delay) {
-> +       if (!delay && cpu_online(sdp->cpu)) {
->                 queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
->                 return;
-> +       } else if (!delay) {
-> +               /* CPU is offline, queue on any available CPU */
-> +               queue_work(rcu_gp_wq, &sdp->work);
-> +               return;
-> +       }
-> 
->         timer_reduce(&sdp->delay_work, jiffies + delay);
->  }
-> --
-> 
-> 
-> Thanks,
-> Samir
+> diff --git a/mm/slab.h b/mm/slab.h
+> index d7fd7626e9fe..bdad5f389490 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -409,9 +409,12 @@ static inline bool is_kmalloc_normal(struct kmem_cache *s)
+>  	return !(s->flags & (SLAB_CACHE_DMA|SLAB_ACCOUNT|SLAB_RECLAIM_ACCOUNT));
+>  }
+>  
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+>  bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_spin);
+>  void flush_all_rcu_sheaves(void);
+>  void flush_rcu_sheaves_on_cache(struct kmem_cache *s);
+> +#endif
+> +
+>  void defer_kvfree_rcu_barrier(void);
+>  
+>  #define SLAB_CORE_FLAGS (SLAB_HWCACHE_ALIGN | SLAB_CACHE_DMA | \
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 46a2bee1662b..347e52f1538c 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -2289,10 +2289,6 @@ void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
+>  		rcu_barrier();
+>  	}
+>  
+> -	/*
+> -	 * TODO: Introduce a version of __kvfree_rcu_barrier() that works
+> -	 * on a specific slab cache.
+> -	 */
+>  	__kvfree_rcu_barrier();
+>  }
+>  EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
+> diff --git a/mm/slub.c b/mm/slub.c
+> index d0db8d070570..91b8827d65da 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -421,7 +421,9 @@ struct slub_percpu_sheaves {
+>  	local_trylock_t lock;
+>  	struct slab_sheaf *main; /* never NULL when unlocked */
+>  	struct slab_sheaf *spare; /* empty or full, may be NULL */
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+>  	struct slab_sheaf *rcu_free; /* for batching kfree_rcu() */
+> +#endif
+>  };
+>  
+>  /*
+> @@ -2923,6 +2925,7 @@ static void sheaf_flush_unused(struct kmem_cache *s, struct slab_sheaf *sheaf)
+>  	sheaf->size = 0;
+>  }
+>  
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+>  static bool __rcu_free_sheaf_prepare(struct kmem_cache *s,
+>  				     struct slab_sheaf *sheaf)
+>  {
+> @@ -2965,6 +2968,7 @@ static void rcu_free_sheaf_nobarn(struct rcu_head *head)
+>  
+>  	free_empty_sheaf(s, sheaf);
+>  }
+> +#endif
+>  
+>  /*
+>   * Caller needs to make sure migration is disabled in order to fully flush
+> @@ -2978,7 +2982,10 @@ static void rcu_free_sheaf_nobarn(struct rcu_head *head)
+>  static void pcs_flush_all(struct kmem_cache *s)
+>  {
+>  	struct slub_percpu_sheaves *pcs;
+> -	struct slab_sheaf *spare, *rcu_free;
+> +	struct slab_sheaf *spare;
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+> +	struct slab_sheaf *rcu_free;
+> +#endif
+>  
+>  	local_lock(&s->cpu_sheaves->lock);
+>  	pcs = this_cpu_ptr(s->cpu_sheaves);
+> @@ -2986,8 +2993,10 @@ static void pcs_flush_all(struct kmem_cache *s)
+>  	spare = pcs->spare;
+>  	pcs->spare = NULL;
+>  
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+>  	rcu_free = pcs->rcu_free;
+>  	pcs->rcu_free = NULL;
+> +#endif
+>  
+>  	local_unlock(&s->cpu_sheaves->lock);
+>  
+> @@ -2996,8 +3005,10 @@ static void pcs_flush_all(struct kmem_cache *s)
+>  		free_empty_sheaf(s, spare);
+>  	}
+>  
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+>  	if (rcu_free)
+>  		call_rcu(&rcu_free->rcu_head, rcu_free_sheaf_nobarn);
+> +#endif
+>  
+>  	sheaf_flush_main(s);
+>  }
+> @@ -3016,10 +3027,12 @@ static void __pcs_flush_all_cpu(struct kmem_cache *s, unsigned int cpu)
+>  		pcs->spare = NULL;
+>  	}
+>  
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+>  	if (pcs->rcu_free) {
+>  		call_rcu(&pcs->rcu_free->rcu_head, rcu_free_sheaf_nobarn);
+>  		pcs->rcu_free = NULL;
+>  	}
+> +#endif
+>  }
+>  
+>  static void pcs_destroy(struct kmem_cache *s)
+> @@ -3056,7 +3069,9 @@ static void pcs_destroy(struct kmem_cache *s)
+>  		 */
+>  
+>  		WARN_ON(pcs->spare);
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+>  		WARN_ON(pcs->rcu_free);
+> +#endif
+>  
+>  		if (!WARN_ON(pcs->main->size)) {
+>  			free_empty_sheaf(s, pcs->main);
+> @@ -3937,7 +3952,11 @@ static bool has_pcs_used(int cpu, struct kmem_cache *s)
+>  
+>  	pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
+>  
+> -	return (pcs->spare || pcs->rcu_free || pcs->main->size);
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+> +	if (pcs->rcu_free)
+> +		return true;
+> +#endif
+> +	return (pcs->spare || pcs->main->size);
+>  }
+>  
+>  /*
+> @@ -3995,6 +4014,7 @@ static void flush_all(struct kmem_cache *s)
+>  	cpus_read_unlock();
+>  }
+>  
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+>  static void flush_rcu_sheaf(struct work_struct *w)
+>  {
+>  	struct slub_percpu_sheaves *pcs;
+> @@ -4071,6 +4091,7 @@ void flush_all_rcu_sheaves(void)
+>  
+>  	rcu_barrier();
+>  }
+> +#endif /* CONFIG_KVFREE_RCU_BATCHED */
+>  
+>  static int slub_cpu_setup(unsigned int cpu)
+>  {
+> @@ -5825,6 +5846,7 @@ bool free_to_pcs(struct kmem_cache *s, void *object, bool allow_spin)
+>  	return true;
+>  }
+>  
+> +#ifdef CONFIG_KVFREE_RCU_BATCHED
+>  static void rcu_free_sheaf(struct rcu_head *head)
+>  {
+>  	struct slab_sheaf *sheaf;
+> @@ -6005,6 +6027,7 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_spin)
+>  	lock_map_release(&kfree_rcu_sheaf_map);
+>  	return false;
+>  }
+> +#endif /* CONFIG_KVFREE_RCU_BATCHED */
+>  
+>  static __always_inline bool can_free_to_pcs(struct slab *slab)
+>  {
+
