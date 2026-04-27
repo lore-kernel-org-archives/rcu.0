@@ -1,161 +1,205 @@
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CE6242D72;
-	Sat, 25 Apr 2026 05:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F4630B50F;
+	Mon, 27 Apr 2026 10:02:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777096019; cv=none; b=bYb2BSBEbdUDshDn0Q8/KpiPPvb4V2wB2z74Fu9+igOFcU4kO2nmmK4cUFWRYa7bgcd5skdOyfWj6ENOT48iCYqISrXHJIexN18cNLY/c2Ku9Fm0HizuLEMCQSILeY5c18TELWgC1i0RzAUNAkuIfFKseScpzpqJOL078q1I0B0=
+	t=1777284170; cv=none; b=Tl46pvPhvhYD29NiRHeND4F3gM1zsMH2WPJJW0r8Gidt0FlXtRuBPv5W7qjjyOSB1ae/C+xKTzk+LLBU5cvwOjI+iP5bY8qxGUuEQeTrhi9q/CfCz3WywLnf10pJIulI4pvhQzx8l7bVApuUTPwYUXLtJGe58w8vhbRZ+ke3hbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777096019; c=relaxed/simple;
-	bh=rSGR3AR0m8Ij/PV5Oqw2GgCPF1gXz4burjiZJh16MP8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VZjN4ssMg1CqXbsX9WopdtM7++sK1u7c2QJRtIq56bcMlmbwwu7I5VIxXSfHlE/a3SP0sRsbRXr1BOcVe7uDlZOvdhMemxcG3LLYN/gS1v1WmLyZBd+ehBOSW+aR+OiZEr2vcMoTDmAYVxS9blBiTPMJhSPkIxZ/t/9tu0KLRSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=GJ0XVQmP; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=uwnlv62W; arc=none smtp.client-ip=80.241.56.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+	s=arc-20240116; t=1777284170; c=relaxed/simple;
+	bh=isG7mGDVRWgTdB/nFR/6O6TiVQQSZtEfJv3ErQps6pE=;
+	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=TuJ9wUVQRjpFFH4U2fuB3FXzJxzN9qfUG0InKga5uhIApC0qrFAjSJncpey9c5gCB19B6YqqxA7/S8HnklJsfiFMrohpYnNXWaqUm19ZutHmzIjoZfWdX61ymTb0fyIt+/NNJSs+3JBa5NsdiKtkUYdaMXWTcCLq9j6BkzmuPbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nMBTnbEn; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="GJ0XVQmP";
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="uwnlv62W"
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4g2f3G1B5xz9tjB;
-	Sat, 25 Apr 2026 07:46:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1777096010;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L1U+Lzz1qrYnndGzgY0hK0tfu2XW3iifx6J3/jCY6ZA=;
-	b=GJ0XVQmPVZ3C29V9VBzl1FqGS399NvjW9ZZ3Czra6gwGX4whf9zFV5hgdEw1oKpLtx2Vrv
-	nOXr0u1WiFNxSOlWBJZkxz39rjVqiQyYtumwli3ddvkY4e0tWQCdzP5pzDJWY6DYwSJVhO
-	fDs2HQ5eOXNs6kFxoluFlnI2S1htr6BcfNCCkhXPh6AbZ4uWMKZP2z8m9BmEQHUS3rbONy
-	JKjGz2+vXemyfx8PL/YVHLryudAG4KWcs1jxi/BGdMG/88M9FlI/ataiI5t3HyGvJA906W
-	P6ETUPC3HtEqGg0bc8v/W05+GnJWhyxaIWbLa/FiXFNjm2bcDj5KppO+lFSyzg==
-From: Manuel Ebner <manuelebner@mailbox.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1777096009;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L1U+Lzz1qrYnndGzgY0hK0tfu2XW3iifx6J3/jCY6ZA=;
-	b=uwnlv62WEPzcPWrQ5ZoaPqt6xlfYJLtO8XDZ46qQf0Tp3LSBPrknlCmYXpVhTgI3EyUV5A
-	lElEPJo0PzvigUjm/TwgKEgzqD4q7XAHeC3bvyy0YIZ30oeYz2i4yovhysO26IQ3JLUhhD
-	kgTXPpAXchi2m+OmBWEvOk6ocrVn9lW9g42g4XmLzERtZXzCYpwCuTLu5b1E89WhOlo1LB
-	9U1vE3A1PQ5VKeQd5194wA1rmfSojZpyB9TWxoezmi4J+Ex42PiXen/asjwsU3sbqSIAgE
-	d5ycbOektijgf7+dIkUSkcFspf3q/6bUKhFzYos3cDwNIYKE3EJCc/AQdsQSyA==
-To: manuelebner@mailbox.org,
-	corbet@lwn.net
-Cc: kees@kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-mm@kvack.org,
-	paulmck@kernel.org,
-	rcu@vger.kernel.org,
-	skhan@linuxfoundation.org
-Subject: [PATCH v3 2/3] Documentation: RCU: adopt new coding style of type-aware kmalloc-family
-Date: Sat, 25 Apr 2026 07:46:31 +0200
-Message-ID: <20260425054630.272707-2-manuelebner@mailbox.org>
-In-Reply-To: <20260424175553.258412-3-manuelebner@mailbox.org>
-References: <20260424175553.258412-3-manuelebner@mailbox.org>
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nMBTnbEn"
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63QLjOUD2819432;
+	Mon, 27 Apr 2026 10:02:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=pp1; bh=Znih/pJeOJMi8TAnvU9tkRa6JIl4
+	Kdte8FUXQ8cFhuE=; b=nMBTnbEnuw3zjSXKfF6PRTx5/4iHacMVBtJpi5rXph1C
+	lVKWebdZXPJZfRUr+QluVYIsmLEXh2ZmYL+R878YoajciytK84S7zvi81Cm5wEeO
+	HtQC/O+1VISCfEkwjsyTSUcoYtQW2OwfJp8Epp5mjOUxKq5SFpsdk9/Ho+jOZmlp
+	UikHyiFC1RpM/t2EcRuULN26h6wdt0ZBgV8y9QXBUuXmgx6g9Ane0lE5G3kkb1jK
+	CYPAqIAZ/krbj1mjy+kysAht5Yip+f9lons5mQGEz9NcSDKIH+tTTCBUbdaDgbtO
+	ZPTGXAd3YXWzxOfRxkqH60Ip5vRei6X90vUREbbHPg==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drn9qyrd7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 27 Apr 2026 10:02:42 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63R9rnuo011538;
+	Mon, 27 Apr 2026 10:02:41 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4ds9eh4jar-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 27 Apr 2026 10:02:40 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 63RA2e7n25821850
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 27 Apr 2026 10:02:40 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E862658054;
+	Mon, 27 Apr 2026 10:02:39 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 55F6E5805C;
+	Mon, 27 Apr 2026 10:02:37 +0000 (GMT)
+Received: from [9.123.0.247] (unknown [9.123.0.247])
+	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 27 Apr 2026 10:02:37 +0000 (GMT)
+Message-ID: <97a7d011-d573-4754-9e5d-68b562c64089@linux.ibm.com>
+Date: Mon, 27 Apr 2026 15:32:35 +0530
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Samir M <samir@linux.ibm.com>
+To: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, RCU <rcu@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, Shrikanth Hegde <sshegde@linux.ibm.com>
+Subject: [mainline][BUG] Observed Workqueue lockups on offline CPUs.
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-MBO-RS-META: j4corux7dnuf8pgzx97gu3oi9rymqth4
-X-MBO-RS-ID: 47ae089f101825f15ed
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-GUID: kfY6-BHPr3iX7WqKtuE3bxPj1S_bGaaT
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI3MDEwNCBTYWx0ZWRfXyXMO7hDysoE5
+ waVy5FmzEGg7FWtav++P/4k0TCYd/XwrLpORS5Z7SOBI/F5Z2zS7ISfokRCsOD94/3or0WHUe/e
+ m5sfAIejdAgI6sZSFAehzmXBxt8cbnGLz54Hl/Cr/XYfyq4X+xtCGE/mLDIXxHdJ3WmwN0Q+tQ+
+ FNvCAutH1YfPtHz+uRxxsnQXpw13UTnL0ndIa3EY5J7+DKmz2B3YGL5ZmfMoRcG1RjCFIQk7+9p
+ SMKYsNXiQaha2tvP+k0c/uLt5joXIQuS5Knq3ikg6isYaxxuZtTKAb/xI6cUxq4MYU9ci/ZzlOQ
+ 8e4zL0psS0kZgXzgItVOhvmnS9uTjGXTxRWzFxmnVEO3HfMxjGrSS762p39eWi3IASUdg/2k8HW
+ MbHoyRI+qlTltQUYnUiOJhMMn83cikp+jQRSsp/dAZvOr+0ZlziAcv3K6H3y88BxTqzuQj52MDY
+ zqS3ZpKtix6Rxo8eZZg==
+X-Authority-Analysis: v=2.4 cv=Kc7idwYD c=1 sm=1 tr=0 ts=69ef3442 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=zxL4xWjsNMRmpE90RzwA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: 0v7www1rMIWq9_xkwRN5gMHCmV8llu_L
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-27_02,2026-04-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1011 phishscore=0 bulkscore=0 adultscore=0 spamscore=0
+ malwarescore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
+ definitions=main-2604270104
 
-Update Documentation/RCU/* to reflect new type-aware kmalloc-family
-as suggested in commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj()
-and family")
+Hi Paul,
 
-ptr = kmalloc(sizeof(*ptr), gfp);
- -> ptr = kmalloc_obj(*ptr);
+I've been testing the latest upstream kernel on a PowerPC system and 
+encountered workqueue lockup issues that I've bisected to commit 
+61bbcfb50514 ("srcu: Push srcu_node allocation to GP when non-preemptible").
+After booting, I'm seeing workqueue lockup warnings for CPUs 81-96, 
+which are offline on my system. The workqueues remain stuck for over 237 
+seconds:
 
-Signed-off-by: Manuel Ebner <manuelebner@mailbox.org>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
----
-in the prior mail i forgot the e-mail address of Paul
-Acked-by see 
-https://lore.kernel.org/linux-doc/7a49fee0-09c8-4a48-9506-d9172ef024b0@paulmck-laptop/
+[  243.309302][    C0] BUG: workqueue lockup - pool cpus=81 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309311][    C0] BUG: workqueue lockup - pool cpus=82 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309318][    C0] BUG: workqueue lockup - pool cpus=83 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309326][    C0] BUG: workqueue lockup - pool cpus=84 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309333][    C0] BUG: workqueue lockup - pool cpus=85 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309341][    C0] BUG: workqueue lockup - pool cpus=86 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309348][    C0] BUG: workqueue lockup - pool cpus=87 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309355][    C0] BUG: workqueue lockup - pool cpus=88 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309363][    C0] BUG: workqueue lockup - pool cpus=89 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309370][    C0] BUG: workqueue lockup - pool cpus=90 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309377][    C0] BUG: workqueue lockup - pool cpus=91 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309384][    C0] BUG: workqueue lockup - pool cpus=92 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309392][    C0] BUG: workqueue lockup - pool cpus=93 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309399][    C0] BUG: workqueue lockup - pool cpus=94 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309406][    C0] BUG: workqueue lockup - pool cpus=95 node=0 
+flags=0x4 nice=0 stuck for 237s!
+[  243.309413][    C0] BUG: workqueue lockup - pool cpus=96 node=0 
+flags=0x4 nice=0 stuck for 237s!
 
- Documentation/RCU/Design/Requirements/Requirements.rst | 6 +++---
- Documentation/RCU/listRCU.rst                          | 2 +-
- Documentation/RCU/whatisRCU.rst                        | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+Git bisect identified this as the first bad commit:
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index b5cdbba3ec2e..faca5a9c8c12 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -206,7 +206,7 @@ non-\ ``NULL``, locklessly accessing the ``->a`` and ``->b`` fields.
- 
-        1 bool add_gp_buggy(int a, int b)
-        2 {
--       3   p = kmalloc(sizeof(*p), GFP_KERNEL);
-+       3   p = kmalloc_obj(*p);
-        4   if (!p)
-        5     return -ENOMEM;
-        6   spin_lock(&gp_lock);
-@@ -228,7 +228,7 @@ their rights to reorder this code as follows:
- 
-        1 bool add_gp_buggy_optimized(int a, int b)
-        2 {
--       3   p = kmalloc(sizeof(*p), GFP_KERNEL);
-+       3   p = kmalloc_obj(*p);
-        4   if (!p)
-        5     return -ENOMEM;
-        6   spin_lock(&gp_lock);
-@@ -264,7 +264,7 @@ shows an example of insertion:
- 
-        1 bool add_gp(int a, int b)
-        2 {
--       3   p = kmalloc(sizeof(*p), GFP_KERNEL);
-+       3   p = kmalloc_obj(*p);
-        4   if (!p)
-        5     return -ENOMEM;
-        6   spin_lock(&gp_lock);
-diff --git a/Documentation/RCU/listRCU.rst b/Documentation/RCU/listRCU.rst
-index d8bb98623c12..48c7272a4ccc 100644
---- a/Documentation/RCU/listRCU.rst
-+++ b/Documentation/RCU/listRCU.rst
-@@ -276,7 +276,7 @@ The RCU version of audit_upd_rule() is as follows::
- 
- 		list_for_each_entry(e, list, list) {
- 			if (!audit_compare_rule(rule, &e->rule)) {
--				ne = kmalloc(sizeof(*entry), GFP_ATOMIC);
-+				ne = kmalloc_obj(*entry, GFP_ATOMIC);
- 				if (ne == NULL)
- 					return -ENOMEM;
- 				audit_copy_rule(&ne->rule, &e->rule);
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index a1582bd653d1..770aab8ea36a 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -468,7 +468,7 @@ uses of RCU may be found in listRCU.rst and NMI-RCU.rst.
- 		struct foo *new_fp;
- 		struct foo *old_fp;
- 
--		new_fp = kmalloc(sizeof(*new_fp), GFP_KERNEL);
-+		new_fp = kmalloc_obj(*new_fp);
- 		spin_lock(&foo_mutex);
- 		old_fp = rcu_dereference_protected(gbl_foo, lockdep_is_held(&foo_mutex));
- 		*new_fp = *old_fp;
-@@ -570,7 +570,7 @@ The foo_update_a() function might then be written as follows::
- 		struct foo *new_fp;
- 		struct foo *old_fp;
- 
--		new_fp = kmalloc(sizeof(*new_fp), GFP_KERNEL);
-+		new_fp = kmalloc_obj(*new_fp);
- 		spin_lock(&foo_mutex);
- 		old_fp = rcu_dereference_protected(gbl_foo, lockdep_is_held(&foo_mutex));
- 		*new_fp = *old_fp;
--- 
-2.53.0
+commit 61bbcfb50514a8a94e035a7349697a3790ab4783
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Mar 20 20:29:20 2026 -0700
 
+     srcu: Push srcu_node allocation to GP when non-preemptible
+
+     When the srcutree.convert_to_big and srcutree.big_cpu_lim kernel boot
+     parameters specify initialization-time allocation of the srcu_node
+     tree for statically allocated srcu_struct structures (for example, in
+     DEFINE_SRCU() at build time instead of init_srcu_struct() at runtime),
+     init_srcu_struct_nodes() will attempt to dynamically allocate this tree
+     at the first run-time update-side use of this srcu_struct structure,
+     but while holding a raw spinlock. Because the memory allocator can
+     acquire non-raw spinlocks, this can result in lockdep splats.
+
+     This commit therefore uses the same SRCU_SIZE_ALLOC trick that is used
+     when the first run-time update-side use of this srcu_struct structure
+     happens before srcu_init() is called. The actual allocation then takes
+     place from workqueue context at the ends of upcoming SRCU grace 
+periods.
+
+     [boqun: Adjust the sha1 of the Fixes tag]
+
+     Fixes: 175b45ed343a ("srcu: Use raw spinlocks so call_srcu() can be 
+used under preempt_disable()")
+     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+     Signed-off-by: Boqun Feng <boqun@kernel.org>
+
+  kernel/rcu/srcutree.c | 7 +++++--
+  1 file changed, 5 insertions(+), 2 deletions(-)
+
+Reverting this commit resolves the issue.
+
+The problem appears to be that the workqueue is attempting to execute on 
+offline CPUs. The commit moves SRCU node allocation to workqueue context 
+to avoid lockdep issues with memory allocation under raw spinlocks, 
+which makes sense. However, it seems the workqueue scheduling doesn't 
+properly account for CPU online/offline state in this code path.
+
+My test environment:
+- Architecture: PowerPC
+- Kernel version: Latest upstream (7.1-rc1)
+- CPUs 81-96 are offline at boot time
+
+I suspect the issue might be related to:
+1. Workqueue not checking CPU online status before scheduling SRCU 
+allocation work
+2. Missing CPU hotplug awareness in the new workqueue-based allocation path
+3. Possible race condition with CPU hotplug events
+
+Would it make sense to use queue_work_on() with explicit online CPU 
+selection, or add CPU hotplug handlers for this workqueue? I'm not 
+deeply familiar with the workqueue internals, so I might be missing 
+something.
+Please let me know if you need any additional details or if you'd like 
+me to test any patches.
+
+If you happen to fix the above issue, then please add below tag.
+Reported-by: Samir M <samir@linux.ibm.com>
+
+
+Thanks,
+Samir
