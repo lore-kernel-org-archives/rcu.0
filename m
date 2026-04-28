@@ -1,230 +1,172 @@
-Received: from mail-05.mail-europe.com (mail-05.mail-europe.com [85.9.206.169])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE92B3E7150;
-	Tue, 28 Apr 2026 10:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.9.206.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C532475CB
+	for <rcu@vger.kernel.org>; Tue, 28 Apr 2026 13:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777372513; cv=none; b=Frzcjr+YE0Gn038gHEgZWqB9vqM+6Nr4Tzt03snxOGj7tt8AxNKdupsi+BR4HhDDxkLrRTWcigRUJgT+47x6E5h72R3LGPatnspG3BdxbGKzqwJFWY+rFR+olGOIEB7be4kZ8dehKore49SkBdsSa4qVsD5E3ILVeANN+Z41T5M=
+	t=1777381933; cv=none; b=nkkdRcKUVGK9/kVy4y3mDgr8SU9hWxERI4RCTF8Nw/AhMy+oK//DlPGFXRg1p3650rraEUDgwDmKP1aaCuoXyn9lxgjq7/4ribcPN5oD6+Xb+i9ZaD/YvNt4uPWlEF29KpN0QUUzaSGYNlCA54SknmV9KFjQ8NiMCTFCQgEk19M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777372513; c=relaxed/simple;
-	bh=eBKJ4eIdUeQwhCgd1EPn8hI3NsaQBeJdHKPN1UiZYaU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JFW746VZX6CH3Eq1w20e3ig6gNw5MRxhpZ3r7lR6V2750c2lQdNd2b6aqLBoTRAVd87xL7JKxRxhPJK/v38JgkmK1A9HwCQ89JwoxCp0Dh5jaSGrGPQR6tVwDkxhaaFefUNqmYx+uETkqVLBbblbkatZsul01pPS9OjBweFxz3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=hGHCEujM; arc=none smtp.client-ip=85.9.206.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onurozkan.dev
+	s=arc-20240116; t=1777381933; c=relaxed/simple;
+	bh=uY0VmYi3Cia4jgbgasYSewRnyQIPG2VCw0HBtI3tMlM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TZlJi6zoR27jdKAhhJn85LrDHkI9GCDo2GQY5Th5UhBfcC/zbufnsfQjGoWqmqLr4gjnJbZ/x3OvFOdO4cyN42ox386oK/YN+SStqEKi5/eBaZvsjnt36Ij4nlPe+UMlFnStdqfZpaOYki3yKppHCwrDeZ25v0rxW3scMNXF4ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IFp9yso8; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="hGHCEujM"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onurozkan.dev;
-	s=protonmail; t=1777372488; x=1777631688;
-	bh=i1szb2YquWuHqykbbXqfPmt5mC/gTJnBG1Oa09riRDc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:From:To:
-	 Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=hGHCEujMtXq5PZCxNITkpIfGPCdsPH46RejzHmyXtC83vDd6PahMCRe5EBgYw1uLD
-	 GhLXyjU6znicSdUexV/KEPPh/z9ujWY+olZsGp5VtLB/638xFUbCdksrx02MR5F98c
-	 EJArABZSnPMNrsS9YhXS0u1pPk6dk50qYvqUenrm0Jog9/SpqXpjgBF5xgh9VNIlYh
-	 9zRnKOIQI18/2Z1l6uOJHwCHBMdudTEaFSqNaOZzM/baQEGyP+8yT+16RmJ3QiukTa
-	 aMMB6Ymnk5sdcf18ovHzaMCRPtEYwJHvBMEbk77CB3eX5LCOHjbi6V09r8D5NrEw11
-	 dEBJPdHqSnPhg==
-X-Pm-Submission-Id: 4g4cJ63tD6z2ScpS
-From: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
-To: rcu@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: ojeda@kernel.org,
-	boqun@kernel.org,
-	gary@garyguo.net,
-	bjorn3_gh@protonmail.com,
-	lossin@kernel.org,
-	a.hindborg@kernel.org,
-	aliceryhl@google.com,
-	tmgross@umich.edu,
-	dakr@kernel.org,
-	peterz@infradead.org,
-	fujita.tomonori@gmail.com,
-	tamird@kernel.org,
-	jiangshanlai@gmail.com,
-	paulmck@kernel.org,
-	josh@joshtriplett.org,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
-Subject: [PATCH v1 2/3] rust: sync: add SRCU abstraction
-Date: Tue, 28 Apr 2026 13:34:36 +0300
-Message-ID: <20260428103437.156236-3-work@onurozkan.dev>
-X-Mailer: git-send-email 2.51.2
-In-Reply-To: <20260428103437.156236-1-work@onurozkan.dev>
-References: <20260428103437.156236-1-work@onurozkan.dev>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IFp9yso8"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E11F7C2BCB7;
+	Tue, 28 Apr 2026 13:12:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777381933;
+	bh=uY0VmYi3Cia4jgbgasYSewRnyQIPG2VCw0HBtI3tMlM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IFp9yso8BLkxrRD/pTw23VCq6WJRRGBFUs20CT5PW35GYCmnQlAm+da4pQNsWYMTu
+	 wG60R6P8a/4NPr/5MWxl+7paFjSDOyLKwCWXpqNT7y39RcDji4OJILcnPzS5luCI8e
+	 u35A013OVxxGgwCEJMPisAhSMjO44HY9JSXTw8yxKi7wtkx43l/Zq0lOHazX+iP++D
+	 BdX8TL4WXby2ykUrZ5E485a4jd7f0dfU/Z0B3rQ/uU+PTLHg4wIrcgk7YnclpkULWQ
+	 eBbovPR2Fx1aHgG072co7sp1RPmER9kYtDFDTYJgl2WeCzFI52/18WcrGWbIuhHsJk
+	 kf1+Inf8EoRgg==
+Date: Tue, 28 Apr 2026 22:12:06 +0900
+From: "Harry Yoo (Oracle)" <harry@kernel.org>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Vlastimil Babka <vbabka@kernel.org>, Christoph Lameter <cl@gentwo.org>, 
+	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Hao Li <hao.li@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	"Paul E . McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, Zqiang <qiang.zhang@linux.dev>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 4/8] mm/slab: introduce kfree_rcu_nolock()
+Message-ID: <3s4jafam3la72a6y3dkfvhtzxk3fsngb2cka3bpfqrirl5m633@pz3vzizefoxb>
+References: <20260416091022.36823-1-harry@kernel.org>
+ <20260416091022.36823-5-harry@kernel.org>
+ <aejeVK0J_jHSfVhD@milan>
+ <aemevSofweaUSx0n@hyeyoo>
+ <aeoD_Ts6hLsgNc9-@pc636>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aeoD_Ts6hLsgNc9-@pc636>
 
-Add a Rust abstraction for sleepable RCU.
+Hi Ulad. Apologies for the delayed response.
+I meant to reply sooner but sidetracked by other issues.
 
-Add a Rust abstraction for sleepable RCU (SRCU), backed by C srcu_struct.
-Provide FFI helpers and a safe wrapper with a guard-based API for read-side
-critical sections.
+Your questions are fair, but let me try to clarify
+the current situation.
 
-Signed-off-by: Onur Özkan <work@onurozkan.dev>
----
- rust/kernel/sync.rs      |   2 +
- rust/kernel/sync/srcu.rs | 121 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 123 insertions(+)
- create mode 100644 rust/kernel/sync/srcu.rs
+And before diving into details, I would like to reiterate that
+there are potentially two points to discuss here:
 
-diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs
-index 993dbf2caa0e..0d6a5f1300c3 100644
---- a/rust/kernel/sync.rs
-+++ b/rust/kernel/sync.rs
-@@ -21,6 +21,7 @@
- pub mod rcu;
- mod refcount;
- mod set_once;
-+pub mod srcu;
- 
- pub use arc::{Arc, ArcBorrow, UniqueArc};
- pub use completion::Completion;
-@@ -31,6 +32,7 @@
- pub use locked_by::LockedBy;
- pub use refcount::Refcount;
- pub use set_once::SetOnce;
-+pub use srcu::Srcu;
- 
- /// Represents a lockdep class.
- ///
-diff --git a/rust/kernel/sync/srcu.rs b/rust/kernel/sync/srcu.rs
-new file mode 100644
-index 000000000000..4be1748b219d
---- /dev/null
-+++ b/rust/kernel/sync/srcu.rs
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+//! Sleepable read-copy update (SRCU) support.
-+//!
-+//! C header: [`include/linux/srcu.h`](srctree/include/linux/srcu.h)
-+
-+use crate::{
-+    bindings,
-+    error::to_result,
-+    prelude::*,
-+    sync::LockClassKey,
-+    types::{
-+        NotThreadSafe,
-+        Opaque, //
-+    },
-+};
-+
-+use pin_init::pin_data;
-+
-+/// Creates an [`Srcu`] initialiser with the given name and a newly-created lock class.
-+#[macro_export]
-+macro_rules! new_srcu {
-+    ($($name:literal)?) => {
-+        $crate::sync::Srcu::new($crate::optional_name!($($name)?), $crate::static_lock_class!())
-+    };
-+}
-+pub use new_srcu;
-+
-+/// Sleepable read-copy update primitive.
-+///
-+/// SRCU readers may sleep while holding the read-side guard.
-+#[repr(transparent)]
-+#[pin_data(PinnedDrop)]
-+pub struct Srcu {
-+    #[pin]
-+    inner: Opaque<bindings::srcu_struct>,
-+}
-+
-+impl Srcu {
-+    /// Creates a new SRCU instance.
-+    #[inline]
-+    pub fn new(name: &'static CStr, key: Pin<&'static LockClassKey>) -> impl PinInit<Self, Error> {
-+        try_pin_init!(Self {
-+            inner <- Opaque::try_ffi_init(|ptr: *mut bindings::srcu_struct| {
-+                // SAFETY: `ptr` points to valid uninitialised memory for a `srcu_struct`.
-+                to_result(unsafe {
-+                    bindings::init_srcu_struct_with_key(ptr, name.as_char_ptr(), key.as_ptr())
-+                })
-+            }),
-+        })
-+    }
-+
-+    /// Enters an SRCU read-side critical section.
-+    #[inline]
-+    pub fn read_lock(&self) -> Guard<'_> {
-+        // SAFETY: By the type invariants, `self.inner.get()` is a valid initialized `srcu_struct`.
-+        let idx = unsafe { bindings::srcu_read_lock(self.inner.get()) };
-+
-+        Guard {
-+            srcu: self,
-+            idx,
-+            _not_send: NotThreadSafe,
-+        }
-+    }
-+
-+    /// Waits until all pre-existing SRCU readers have completed.
-+    #[inline]
-+    pub fn synchronize(&self) {
-+        // SAFETY: By the type invariants, `self.inner.get()` is a valid initialized `srcu_struct`.
-+        unsafe { bindings::synchronize_srcu(self.inner.get()) };
-+    }
-+
-+    /// Waits until all pre-existing SRCU readers have completed, expedited.
-+    ///
-+    /// This requests a lower-latency grace period than [`Srcu::synchronize`] typically
-+    /// at the cost of higher system-wide overhead. Prefer [`Srcu::synchronize`] by default
-+    /// and use this variant only when reducing reset or teardown latency is more important
-+    /// than the extra cost.
-+    #[inline]
-+    pub fn synchronize_expedited(&self) {
-+        // SAFETY: By the type invariants, `self.inner.get()` is a valid initialized `srcu_struct`.
-+        unsafe { bindings::synchronize_srcu_expedited(self.inner.get()) };
-+    }
-+}
-+
-+#[pinned_drop]
-+impl PinnedDrop for Srcu {
-+    fn drop(self: Pin<&mut Self>) {
-+        let ptr = self.inner.get();
-+
-+        // SAFETY: `self` is pinned and `ptr` points to a valid initialized `srcu_struct`.
-+        unsafe { bindings::srcu_barrier(ptr) };
-+        // SAFETY: Same as above.
-+        unsafe { bindings::cleanup_srcu_struct(ptr) };
-+    }
-+}
-+
-+/// Guard for an active SRCU read-side critical section on a particular [`Srcu`].
-+///
-+/// # Invariants
-+///
-+/// `idx` is the index returned by `srcu_read_lock()` for `srcu`.
-+pub struct Guard<'a> {
-+    srcu: &'a Srcu,
-+    idx: i32,
-+    _not_send: NotThreadSafe,
-+}
-+
-+impl Guard<'_> {
-+    /// Explicitly releases the SRCU read-side critical section.
-+    #[inline]
-+    pub fn unlock(self) {}
-+}
-+
-+impl Drop for Guard<'_> {
-+    fn drop(&mut self) {
-+        // SAFETY: `Guard` is only constructible through `Srcu::read_lock()`,
-+        // which returns a valid index for the SRCU instance.
-+        unsafe { bindings::srcu_read_unlock(self.srcu.inner.get(), self.idx) };
-+    }
-+}
+Point 1. Can we justify complicating subsystems by passing
+	 `allow_spin` parameter all over the place?
+
+Point 2. Can we avoid adding this complexity to kvfree_rcu() and
+	 let slab handle it instead? (as mentioned in [4])
+
+On Point 1: IMHO it could be justified, but at the same time I hope we
+end up avoiding more complexity in the long term by working on Point 2.
+
+This reply focuses only on Point 1 and explains why it could be
+justified.
+
+On Thu, Apr 23, 2026 at 01:35:25PM +0200, Uladzislau Rezki wrote:
+> On Thu, Apr 23, 2026 at 01:23:25PM +0900, Harry Yoo (Oracle) wrote:
+> > On Wed, Apr 22, 2026 at 04:42:28PM +0200, Uladzislau Rezki wrote:
+> > How much performance do we sacrifice compared to
+> > letting them go through the kvfree_rcu() fastpath?
+>
+> Freeing an object over RCU from
+> NMI context is a corner case. It is __not_ generic.
+
+First, I want to clarify that kfree_rcu_nolock() is not just for NMI
+context. It is intended to be used when the context is unknown (because
+it can be called in an arbitrary code locations).
+
+There are two kinds of problematic situations where BPF programs
+are attached to:
+
+  - 1) a tracepoint or a function that can be invoked in a critical
+       section (w/ a lock held), or
+
+  - 2) a function that can be called in an NMI context, which might
+       preempt an arbitrary context holding a lock.
+
+While 1) and 2) are not (I think) dominant use cases, and although
+most of users can legally call kvfree_rcu(), BPF can't use kvfree_rcu()
+and must consider the most restrictive contexts.
+
+> We even do not have(now
+> in mainline) users because we never support it from NMI,
+> just like call_rcu().
+
+Unfortunately, we've had this use case (of allocating memory for BPF
+programs) for a long time in the mainline. There are two current
+approaches to mitigate the limitation:
+
+  - 1) Pre-allocate all memory. e.g.) allocate all hash table elements
+       when creating a BPF map, rather than allocating them on demand.
+       This ensures correctness but sacrifices memory.
+
+  - 2) Use the BPF-specific memory allocator [1] [2] to allocate memory
+       on demand and avoid preallocation. While this wastes less memory
+       than 1) and also maintains performance, it is re-inventing yet
+       another memory allocator.
+
+       Also, the allocator reinvented kfree_rcu batching as well.
+
+Now, we're trying to avoid 1) and 2) as much as possible and use
+kmalloc_nolock() instead [3].
+
+> If BPF needs
+> it, then the first question which comes to mind is not about performance.
+> It is how to support this case in kfree_rcu() without adding noticeable
+> complexity or overhead or hacks to the generic path without making it harder
+> to maintain.
+
+Since there will be only few subsystems that needs it, and because
+they already use it on production systems, I don't see much value in
+maintaining a simple implementation if that compromises performance
+(and thus make the transition harder).
+
+> Performance wise you noted, you mean:
+> 
+> a) call latency(this is probably the most important for NMI)?
+> b) memory footprint?
+> c) pointer-chasing overhead?
+
+I think it's either
+
+- The performance of kfree_rcu_nolock() itself (a), or
+- Not distrubing workloads running on the machine (b and c)
+
+depending on what people use BPF for.
+
+[1] "A BPF-specific memory allocator", Jonathan Corbet, LWN.net, 2022.
+    Link: https://lwn.net/Articles/899274 
+
+[2] [LSF/MM/BPF TOPIC] Reentrant kmalloc usable from any context,
+    Alexei Starovoitov, the linux-mm mailing list, 2025.
+    Topic proposal: https://lore.kernel.org/linux-mm/CAADnVQ+=x31Rcjh6-qX1C+d2q0LBRCH=1gPqfKOaMXYx_fkQjw@mail.gmail.com
+    Slides: https://github.com/4ast/docs/blob/main/Reentrant%20kmalloc.pdf 
+
+[3] [GIT PULL] Introduce try_alloc_pages for 6.15, Alexei Starovoitov,
+    the linux-mm mailing list, 2025.
+    Link: https://lore.kernel.org/linux-mm/20250327145159.99799-1-alexei.starovoitov@gmail.com/
+
+[4] https://lore.kernel.org/linux-mm/ael8R0vOeZ0Xbcoe@hyeyoo
+
+After finishing this email, now I realize that I probably should have
+elaborated the cover letter ;)
+
+Hope this helps.
+
 -- 
-2.51.2
-
+Cheers,
+Harry / Hyeonggon
