@@ -1,66 +1,60 @@
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72253A7822
-	for <rcu@vger.kernel.org>; Wed, 29 Apr 2026 08:01:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC6717D6;
+	Wed, 29 Apr 2026 10:16:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777449666; cv=none; b=UC4C4pP0WK5lO0Rd5ys6/R0+AEHd2JbLJIgUiQRk7MrM8KwDsJrUytJDYW6fz/yCJkO+kTEWi1lk5GI1HGkmSlkoK2E6KY6HIk0iMG4Hj9rirqFGd3D5ndFqZl4mj2GG8YKAB8HtYLYOqaH5AgRAaXNesI9LJK3bgFuxiuoMuU4=
+	t=1777457800; cv=none; b=RnAjnCpKE+84kSx7XFbgdOmcWTKM9uA0Kb9DSrD2KCqkuQ+8N6Kgh+yx5dYi4hvvn8qS01GoJ0llRc8OG27XRCINK0+kMRKko0HvoTFW2no0xmOJNkErGmk5dLzvhKbmlKung9Zuu40DTn7xNeTR7cNiDl3gRxPttLonAEdu/Gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777449666; c=relaxed/simple;
-	bh=ryFVdBG1ajgc0fxZzunEYPvb3pz5Q6LyDKZL3IMkZ7k=;
+	s=arc-20240116; t=1777457800; c=relaxed/simple;
+	bh=Nq/UTy73S2CezEhxJsp5P7heAho57D4C+bEXFyVs0QE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TEmbjF1Hut5aozG9xBExOReV92hUOS91xIDUqQUwsGJejsYyU9Hc4HUb6VWuhgoxg/gzMTgwD/ZDzSbZ7VhguqPzCKosKQt8HVNwx6anxNLK10CaAiekYzk+FaZJ2XOnbTpRBdqcWZkZj9B5CAK3t8ybi0rNkmjhfrJ+wcmpbUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EQ0mHUcM; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	 In-Reply-To:Content-Type; b=GD2xVroqKn/KQPKmd3VzkBO+Cuy36HbdIVv1cwrh75kpD5JgYYK1+oxjdKoGs6EiXECKNYKwAEZVIQ/+S1jjF9sfCDGJR8oqYF848Ow7q0kpib52BbUgAAFpNqQzFD9V8P9ZKmA+KuoLzwN2/299H7pB3i/zNCtK2ZEjw0n7Uw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=J66TijRI; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EQ0mHUcM"
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-43cf7190580so901825f8f.0
-        for <rcu@vger.kernel.org>; Wed, 29 Apr 2026 01:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1777449663; x=1778054463; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kPx/kD4WGWKxwaJpCnYAciCBrDKMYIK8dIZn6jPFTzk=;
-        b=EQ0mHUcMAWKRdCgb4TcX/CqeEKHxNdkLSiYP7CwsFbuQL+LU7ZclPwBWMAbFHS6k/D
-         iWxmhbPPDFg4soy/Jt9+4hjrPQpqrbVvfef74S6wKZqcs4RzlBgbc/WUEzAT55Teq4Zy
-         tAGKWpZt2+wyKpXvX9dZzcWFu0Cn8NJ8daYPLlNiZ4XdqKImTCW1j5VpucqGHu2cTGmD
-         BpAAd8YoK56CxYF5jIo0sRmMEq7bo7Kagc6en5M4nJLq7S+em2Qaycx4u1wrvdVMQwFd
-         /CxTIGdgJkU+XfERkzwg1TUUymoFShVx9KoBkzJkWH3a/btwNSjFk3O8/bAl/WZydUtZ
-         NJPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777449663; x=1778054463;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kPx/kD4WGWKxwaJpCnYAciCBrDKMYIK8dIZn6jPFTzk=;
-        b=kD8Qecw7bRs5ZNLBkJoszntQaHQBVY0Hrz5/NnTab0hPhuzpAC37qTUhztTgI42a95
-         J7fXPsGFTnSTDghiY4iIS18fdr683N6M3JgHO9OYv/0RnbSVZgbfR1gKnojh7fEP4ftR
-         iCuDkK9ri14cvTPwjFJuyKCThpbchGsVctD4gtGg6GZ5KVzYQ75gFgFZtE99tnFL+urS
-         Rs0get2l1K8iamto4OqLjGA3CDrbJcTPTuct/K8mjHIDBxR8TitLuPetvU+YDudLUnol
-         PVrz0oL8XE8ICM7qqJyi/f7HzU1MChCTdaJsQvkRT6Nrl8WtE6IE1Bekb+Sx+Q6wD72Z
-         1JyA==
-X-Forwarded-Encrypted: i=1; AFNElJ9OIEl33qsVd25JV/ZsPl4oDauM3C1gsIUjcmbQBPElGMwCtxaC9HsKcJfD4hzetKAT+3U=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw0BADWcKXYdadOSg3fBZu2MVBWqKfFzaZ0KrHByQpl+C9YAHp0
-	ClfoSwhQO48aKbWluBYQOe9xAX//PAwEyzw2oNLuYrarFSZ6OHtg1SJQ09pteC0NHjA=
-X-Gm-Gg: AeBDietI6y+044NEqAvhNkPkaXy7I7N4SvouRjuL4gUpWD98o15XWUPuIDqB8cvl0O3
-	0MSqDBA4mf4mQ1of0vadMjG4TToAeRG+u3zVGjEV4QW/4ktIFf36dKYF+vT3uOhToiMWOrXZ6gc
-	EX9KleLPXPw2NGtHK1Qpr5uMhIWch+1boak47uF6+zjlMY4SzIK+MaATlTKrKi2txq/gjYGWBEQ
-	xxER/70nNEoQHxtLO9GwNi9oVNwcBgzOLMXC1yVK9akSNTPgrJYauP+qcaTFHo0+4SDsg0yJUJo
-	O5wSGCAU+VulxtrUOjBKI8o1ABpzEealZMwKdemCF+U9oedsncgT3OUZ/SDTm4sLD+j/0H5Y36+
-	gI0A6HLRwic+6pYCh88JfoNMWKnGa26f3IumYy4cxT1iOVYmYwBoHS6Bujn7r6H/FrEa2NLBeuD
-	MxMiNRI9Mjd1o03W9JvizosbHBHjO6HTOnZEz+FjyxxMVQVNb2dXVyqnrwEoJDyrruQlMA
-X-Received: by 2002:adf:e00e:0:20b0:445:c2b4:a284 with SMTP id ffacd0b85a97d-44643e18116mr3536239f8f.8.1777449663151;
-        Wed, 29 Apr 2026 01:01:03 -0700 (PDT)
-Received: from ?IPV6:2001:1a48:8:903:1ed6:4f73:ce38:f9d4? ([2001:1a48:8:903:1ed6:4f73:ce38:f9d4])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-447b7ca6451sm3922019f8f.36.2026.04.29.01.01.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Apr 2026 01:01:02 -0700 (PDT)
-Message-ID: <1a9ae46f-b43a-40fb-8bd8-750c6e17dd01@suse.com>
-Date: Wed, 29 Apr 2026 10:01:01 +0200
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="J66TijRI"
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63SNJHBM358063;
+	Wed, 29 Apr 2026 10:16:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=F/lT+9
+	gq3vxflXRL0Qzbxq9y7PHWIm46jZMnKsw2Ke4=; b=J66TijRI2beebcxwBtnUpz
+	nkscDZTO4Ci0/M0vagqjAdt6um1m6v1SSK1041tCrR0ucAyi1N1NDoJ6FLhDFBha
+	jzvRDXQStOkPcV72qb7wXSBKgKJQSsrK+AgB5AquRXXotQQA9pzHGDIuGcSrWI65
+	cGuV8lTmxGwDhQvjrkKGnymp/D0nnnOv83T+HOMrJVEiCFVonKCxumP9xZUpHyhY
+	DFZ8eiImFB/PjywFdEkiq+zqyhGOFxuwYF/8qt75oGhvJ5olsF5rkimgcZ5HmUD0
+	D5WtFHo+w+cEj93RIJF6wVVpzcBrUWP8UTXfKLzcflZi8TsgJsDKJBwdcJKVvDuA
+	==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drnb59w8s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 29 Apr 2026 10:16:31 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63TA8l5G030771;
+	Wed, 29 Apr 2026 10:16:30 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dsa5gdpb9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 29 Apr 2026 10:16:30 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 63TAGTtf7537564
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 29 Apr 2026 10:16:29 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4302458043;
+	Wed, 29 Apr 2026 10:16:29 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C72EB5805D;
+	Wed, 29 Apr 2026 10:16:18 +0000 (GMT)
+Received: from [9.123.0.247] (unknown [9.123.0.247])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 29 Apr 2026 10:16:18 +0000 (GMT)
+Message-ID: <1b89c25b-7c1d-4ed8-adf3-ac504b6f086a@linux.ibm.com>
+Date: Wed, 29 Apr 2026 15:46:09 +0530
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -68,31 +62,258 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] Documentation: RCU: adopt new coding style of
- type-aware kmalloc-family
+Subject: Re: [mainline][BUG] Observed Workqueue lockups on offline CPUs.
+To: Boqun Feng <boqun@kernel.org>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, RCU <rcu@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, Shrikanth Hegde <sshegde@linux.ibm.com>
+References: <97a7d011-d573-4754-9e5d-68b562c64089@linux.ibm.com>
+ <688280dc-78a2-4796-9eaf-e1c058836012@linux.ibm.com>
+ <ae-EP1BpXgnEWCt4@tardis.local>
 Content-Language: en-US
-To: Manuel Ebner <manuelebner@mailbox.org>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
- rcu@vger.kernel.org
-Cc: Kees Cook <kees@kernel.org>, linux-mm@kvack.org,
- "Paul E . McKenney" <paulmck@kernel.org>
-References: <20260429070759.309110-3-manuelebner@mailbox.org>
- <20260429072320.310817-2-manuelebner@mailbox.org>
-From: Vlastimil Babka <vbabka@suse.com>
-In-Reply-To: <20260429072320.310817-2-manuelebner@mailbox.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Samir M <samir@linux.ibm.com>
+In-Reply-To: <ae-EP1BpXgnEWCt4@tardis.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Authority-Analysis: v=2.4 cv=AqDeGu9P c=1 sm=1 tr=0 ts=69f1da7f cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=U7nrCbtTmkRpXpFmAIza:22 a=VwQbUJbxAAAA:8
+ a=qCof3rqyAAAA:8 a=VnNF1IyMAAAA:8 a=o1-_AkJ4wEVZsbxAFwQA:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10 a=sGiMcuukUhmiu4iKGgn_:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI5MDA5OCBTYWx0ZWRfX9/X6ZMaNEKtL
+ q/IT55ewwFm4hD09MZ1ALH8c2FESDpfveQ7m8301scb4vjUfSammr8x13vlig9Koe9ZOdsdUPor
+ n5V7AffGRjD16DjTOLXXILyBxxkZyJE3rjiyIUpTaUCT0Y4c60qQawTzMh7171RzAA3/d+Dgpwr
+ EI8fMAt+TiRmf0a1g3faA5WFiRukLAZLUy5pZltqwZVsIpewEhjBiWwOEvlANrQB9qKnztGObWi
+ +BGDsrSit9hpVmpSuQZQN/GCnS98r2JovT2RIvQFy/i4h4A7LRXs6nfMCRaXim6zo7Y6HjRkVRp
+ kgxPSe/qmSXBMTngWRuYxO7XelRRAXNFg/079a3KRVNE4/606KTYoiyKG9j0MQ/F3fNd+YrGQ3F
+ 3q8oDX9aVLg+wn1HdlXjgQRfnH10qeUCvR4D1uxitqg4n1jgddzsWNlP7H1cXOaYVPz+WAkXDvn
+ uJQnh92h6nMWnXSd0dg==
+X-Proofpoint-GUID: Wpocfkr4VUVxzzU8Hg7kuHWMEsHKFXJX
+X-Proofpoint-ORIG-GUID: 7jpyQkmcGJ1EwzTPshgboXQKOhaIFgeK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-28_05,2026-04-28_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 priorityscore=1501 phishscore=0 suspectscore=0 clxscore=1011
+ lowpriorityscore=0 spamscore=0 bulkscore=0 impostorscore=0 malwarescore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2604290098
 
-On 4/29/26 09:23, Manuel Ebner wrote:
-> Update Documentation/RCU/* to reflect new type-aware kmalloc-family
-> as suggested in commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj()
-> and family")
-> 
-> ptr = kmalloc(sizeof(*ptr), gfp);
->  -> ptr = kmalloc_obj(*ptr);
-> 
-> Signed-off-by: Manuel Ebner <manuelebner@mailbox.org>
-> Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+On 27/04/26 9:13 pm, Boqun Feng wrote:
+> On Mon, Apr 27, 2026 at 05:00:10PM +0530, Samir M wrote:
+> Hi Samir,
+>
+>> On 27/04/26 3:32 pm, Samir M wrote:
+>>> Hi Paul,
+>>>
+>>> I've been testing the latest upstream kernel on a PowerPC system and
+>>> encountered workqueue lockup issues that I've bisected to commit
+>>> 61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
+>>> non-preemptible").
+>>> After booting, I'm seeing workqueue lockup warnings for CPUs 81-96,
+>>> which are offline on my system. The workqueues remain stuck for over 237
+>>> seconds:
+>>>
+>>> [  243.309302][    C0] BUG: workqueue lockup - pool cpus=81 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309311][    C0] BUG: workqueue lockup - pool cpus=82 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309318][    C0] BUG: workqueue lockup - pool cpus=83 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309326][    C0] BUG: workqueue lockup - pool cpus=84 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309333][    C0] BUG: workqueue lockup - pool cpus=85 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309341][    C0] BUG: workqueue lockup - pool cpus=86 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309348][    C0] BUG: workqueue lockup - pool cpus=87 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309355][    C0] BUG: workqueue lockup - pool cpus=88 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309363][    C0] BUG: workqueue lockup - pool cpus=89 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309370][    C0] BUG: workqueue lockup - pool cpus=90 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309377][    C0] BUG: workqueue lockup - pool cpus=91 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309384][    C0] BUG: workqueue lockup - pool cpus=92 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309392][    C0] BUG: workqueue lockup - pool cpus=93 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309399][    C0] BUG: workqueue lockup - pool cpus=94 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309406][    C0] BUG: workqueue lockup - pool cpus=95 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>> [  243.309413][    C0] BUG: workqueue lockup - pool cpus=96 node=0
+>>> flags=0x4 nice=0 stuck for 237s!
+>>>
+>>> Git bisect identified this as the first bad commit:
+>>>
+>>> commit 61bbcfb50514a8a94e035a7349697a3790ab4783
+>>> Author: Paul E. McKenney <paulmck@kernel.org>
+>>> Date:   Fri Mar 20 20:29:20 2026 -0700
+>>>
+>>>      srcu: Push srcu_node allocation to GP when non-preemptible
+>>>
+>>>      When the srcutree.convert_to_big and srcutree.big_cpu_lim kernel boot
+>>>      parameters specify initialization-time allocation of the srcu_node
+>>>      tree for statically allocated srcu_struct structures (for example, in
+>>>      DEFINE_SRCU() at build time instead of init_srcu_struct() at
+>>> runtime),
+>>>      init_srcu_struct_nodes() will attempt to dynamically allocate this
+>>> tree
+>>>      at the first run-time update-side use of this srcu_struct structure,
+>>>      but while holding a raw spinlock. Because the memory allocator can
+>>>      acquire non-raw spinlocks, this can result in lockdep splats.
+>>>
+>>>      This commit therefore uses the same SRCU_SIZE_ALLOC trick that is
+>>> used
+>>>      when the first run-time update-side use of this srcu_struct structure
+>>>      happens before srcu_init() is called. The actual allocation then
+>>> takes
+>>>      place from workqueue context at the ends of upcoming SRCU grace
+>>> periods.
+>>>
+>>>      [boqun: Adjust the sha1 of the Fixes tag]
+>>>
+>>>      Fixes: 175b45ed343a ("srcu: Use raw spinlocks so call_srcu() can be
+>>> used under preempt_disable()")
+>>>      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>>      Signed-off-by: Boqun Feng <boqun@kernel.org>
+>>>
+>>>   kernel/rcu/srcutree.c | 7 +++++--
+>>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>>
+>>> Reverting this commit resolves the issue.
+>>>
+>>> The problem appears to be that the workqueue is attempting to execute on
+>>> offline CPUs. The commit moves SRCU node allocation to workqueue context
+>>> to avoid lockdep issues with memory allocation under raw spinlocks,
+>>> which makes sense. However, it seems the workqueue scheduling doesn't
+>>> properly account for CPU online/offline state in this code path.
+>>>
+>>> My test environment:
+>>> - Architecture: PowerPC
+>>> - Kernel version: Latest upstream (7.1-rc1)
+>>> - CPUs 81-96 are offline at boot time
+>>>
+>>> I suspect the issue might be related to:
+>>> 1. Workqueue not checking CPU online status before scheduling SRCU
+>>> allocation work
+>>> 2. Missing CPU hotplug awareness in the new workqueue-based allocation
+>>> path
+>>> 3. Possible race condition with CPU hotplug events
+>>>
+>>> Would it make sense to use queue_work_on() with explicit online CPU
+>>> selection, or add CPU hotplug handlers for this workqueue? I'm not
+>>> deeply familiar with the workqueue internals, so I might be missing
+>>> something.
+>>> Please let me know if you need any additional details or if you'd like
+>>> me to test any patches.
+>>>
+>>> If you happen to fix the above issue, then please add below tag.
+>>> Reported-by: Samir M <samir@linux.ibm.com>
+>>>
+>>>
+>>> Thanks,
+>>> Samir
+>> Hi Paul,
+>>
+>>
+>> I worked on fixing the issue and introduced the changes below. With these
+>> updates, I no longer observe any workqueue lockup messages for offline CPUs.
+>> Could you please review the changes and share your feedback?
+>>
+>> The commit 61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
+>> non-preemptible") introduced workqueue lockups on systems with offline
+>> CPUs. The issue occurs because srcu_queue_delayed_work_on() calls
+>> queue_work_on() with sdp->cpu, which may be offline, causing the
+>> workqueue to spin indefinitely on that CPU.
+>>
+>> This patch fixes the issue by checking if the target CPU is online
+>> before queuing work on it. If the CPU is offline, we fall back to
+>> using queue_work() which will schedule the work on any available
+>> online CPU.
+>>
+>> Fixes: 61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
+>> non-preemptible")
+>>
+>> Signed-off-by: Samir <samir@linux.ibm.com>
+> Thanks for the patch, but I wonder: have you checked this email thread:
+>
+> 	https://lore.kernel.org/rcu/ttd89ul@ub.hpns/	
+>
+> Paul had a fix [1], and TJ had a "fix" [2] on workqueue side.
+>
+> In general I think we discovered that as long as a CPU has been onlined
+> once, it's OK to queue the work on that CPU (which may be offlined) even
+> with our TJ's patch (whether we should do that is a different problem
+> ;-)). Please do check whether Paul's fix works for your case, thanks!
+>
+> [1]: https://lore.kernel.org/rcu/ed1fa6cd-7343-4ca3-8b9d-d699ca496f83@paulmck-laptop/
+> [2]: https://lore.kernel.org/rcu/adlHKowvhn8AGXCc@slm.duckdns.org/
+>
+> Regards,
+> Boqun
+>
+>> ---
+>>   kernel/rcu/srcutree.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+>> index 0d01cd8c4b4a..55a90dd4a030 100644
+>> --- a/kernel/rcu/srcutree.c
+>> +++ b/kernel/rcu/srcutree.c
+>> @@ -869,10 +869,15 @@ static void srcu_delay_timer(struct timer_list *t)
+>>   static void srcu_queue_delayed_work_on(struct srcu_data *sdp,
+>>   unsigned long delay)
+>>   {
+>> -       if (!delay) {
+>> +       if (!delay && cpu_online(sdp->cpu)) {
+>>                  queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
+>>                  return;
+>> +       } else if (!delay) {
+>> +               /* CPU is offline, queue on any available CPU */
+>> +               queue_work(rcu_gp_wq, &sdp->work);
+>> +               return;
+>> +       }
+>>
+>>          timer_reduce(&sdp->delay_work, jiffies + delay);
+>>   }
+>> --
+>>
+>>
+>> Thanks,
+>> Samir
+Hi Boqun,
 
+Thank you for pointing me to the existing patches. I have tested both 
+Paul's patch [1] and TJ's workqueue patch [2] on my PowerPC system (80 
+CPUs), and can confirm that the workqueue lockup issue is not observed.
+
+Test Environment:
+- System: PowerPC with 80 CPUs ( e.g. PowerPC LPARs with 80 online and 
+384 possible CPUs)
+- Kernel version: Latest upstream (7.1-rc1)
+
+Regression Testing Results:
+All tests completed successfully with no issues observed:
+- Hackbench
+- Kernel selftests
+- LTP scheduler tests
+
+The workqueue lockup that was previously occurring is no longer present 
+with the patches applied.
+
+References:
+[1]: 
+https://lore.kernel.org/rcu/ed1fa6cd-7343-4ca3-8b9d-d699ca496f83@paulmck-laptop/
+[2]: https://lore.kernel.org/rcu/adlHKowvhn8AGXCc@slm.duckdns.org/
+
+Best regards,
+Samir
