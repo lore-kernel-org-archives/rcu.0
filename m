@@ -1,160 +1,98 @@
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3285175A97;
-	Wed, 29 Apr 2026 07:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72253A7822
+	for <rcu@vger.kernel.org>; Wed, 29 Apr 2026 08:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777447468; cv=none; b=QU8hjbcaUlbI3FYMI1SntWM7ukU7fYWkdd/06oZA0amvaM2TgeVRMqbYAJRKhBlAZBrLtCDo5T4pVHJviiEDkhCCgsXXmQFo6aFUoscdB2gsPK0wZLPEC+CG1wccgTg+i2Bsn6JJT/hVQFffKXt3zUVuQycVyIZbmYBTxgxiykc=
+	t=1777449666; cv=none; b=UC4C4pP0WK5lO0Rd5ys6/R0+AEHd2JbLJIgUiQRk7MrM8KwDsJrUytJDYW6fz/yCJkO+kTEWi1lk5GI1HGkmSlkoK2E6KY6HIk0iMG4Hj9rirqFGd3D5ndFqZl4mj2GG8YKAB8HtYLYOqaH5AgRAaXNesI9LJK3bgFuxiuoMuU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777447468; c=relaxed/simple;
-	bh=VB4XXVqsTELvVPxXEcNaayKjjdYCpVkpl5sTDbndMnM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aMOGPkNnO08fH6RuHafv5cIzB46bCn8yP39GJPFdXZKfvorGK4iDuyC1/jVr1HDzi1N97vXzZSNI2e4jN3qOnbQae4HcW2TEQBAN11iJ6EpMZAXroy46JPEMpAhjuzk31eRRbDIaD3z4LxWso6Pa8VxaXUgQoagwGaIgDuW+LTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=LV1JzEdS; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=IIDVJIer; arc=none smtp.client-ip=80.241.56.161
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+	s=arc-20240116; t=1777449666; c=relaxed/simple;
+	bh=ryFVdBG1ajgc0fxZzunEYPvb3pz5Q6LyDKZL3IMkZ7k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TEmbjF1Hut5aozG9xBExOReV92hUOS91xIDUqQUwsGJejsYyU9Hc4HUb6VWuhgoxg/gzMTgwD/ZDzSbZ7VhguqPzCKosKQt8HVNwx6anxNLK10CaAiekYzk+FaZJ2XOnbTpRBdqcWZkZj9B5CAK3t8ybi0rNkmjhfrJ+wcmpbUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EQ0mHUcM; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="LV1JzEdS";
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="IIDVJIer"
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4g581y5gpBz9smP;
-	Wed, 29 Apr 2026 09:24:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1777447462;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cLZGA+GoMQmUnCBWDiqt4bvKANNT1G+HMTcCqRQTHDc=;
-	b=LV1JzEdSj0StBn8WhdlLca46jP7oMK5XFb3p8eeT5zyDzdb4/aPbMx5Qdyv1e5+VOhm2yA
-	8uJSYTg2w/XDwOX6BNGszT+0HRL9Si0OPjDev/NHESaAAnCnqsNpeVCFVX6wCeFLuvQpE6
-	6WOBJFV+0t9ASpF1nzWGoZfIxIfjlS5Y1qhYFu8PTpaTVn+chlSYUbXICY7xS/Ye5yfXNX
-	nSxbvgwfWpfYKZhWUj4SH0dkMdOT67jBjD50FbyRVRBkpNDaWd4m0sNCwc0Bza5KesOzN4
-	yUuK+WacVrnzc6a+SdyZB4fP1+3IV0F0R1pKnikfyq18gfHYEQUEq3Dspr4lVg==
-From: Manuel Ebner <manuelebner@mailbox.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1777447460;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cLZGA+GoMQmUnCBWDiqt4bvKANNT1G+HMTcCqRQTHDc=;
-	b=IIDVJIeryqFSNmcHYDo30TAn08Ymcsoz2iobD6qJowiBs64rt5mwwarsJ5Q6HR1SrsVder
-	chaq4pvCuqxsdXh/WjcHCywib1WmPcY6BcXoD7hek5PIBkBT2FTLaj5XjjNKAi2E36qx2A
-	0F6IkQH/3RMqu+rWwBwHNg93JkwVkjTl/wmA/+HtlLnG4YTgbCC4Dav1yXOzd4LfalX3PS
-	geq8Q4kENOfInic5/4Ga57q3Rz8cpK+p1f/Hrrhg466jUrT6A0drUlowdTLPOjfRd1gpmm
-	Y77Q1g4IE0VyrmUBRu4ptQko3bk1VcztIUZn9nGmWxkdy5RlOeIAiSb6M9DKUA==
-To: Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	linux-doc@vger.kernel.org,
-	rcu@vger.kernel.org
-Cc: Kees Cook <kees@kernel.org>,
-	linux-mm@kvack.org,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Manuel Ebner <manuelebner@mailbox.org>
-Subject: [PATCH v4 2/3] Documentation: RCU: adopt new coding style of type-aware kmalloc-family
-Date: Wed, 29 Apr 2026 09:23:21 +0200
-Message-ID: <20260429072320.310817-2-manuelebner@mailbox.org>
-In-Reply-To: <20260429070759.309110-3-manuelebner@mailbox.org>
-References: <20260429070759.309110-3-manuelebner@mailbox.org>
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EQ0mHUcM"
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-43cf7190580so901825f8f.0
+        for <rcu@vger.kernel.org>; Wed, 29 Apr 2026 01:01:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1777449663; x=1778054463; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kPx/kD4WGWKxwaJpCnYAciCBrDKMYIK8dIZn6jPFTzk=;
+        b=EQ0mHUcMAWKRdCgb4TcX/CqeEKHxNdkLSiYP7CwsFbuQL+LU7ZclPwBWMAbFHS6k/D
+         iWxmhbPPDFg4soy/Jt9+4hjrPQpqrbVvfef74S6wKZqcs4RzlBgbc/WUEzAT55Teq4Zy
+         tAGKWpZt2+wyKpXvX9dZzcWFu0Cn8NJ8daYPLlNiZ4XdqKImTCW1j5VpucqGHu2cTGmD
+         BpAAd8YoK56CxYF5jIo0sRmMEq7bo7Kagc6en5M4nJLq7S+em2Qaycx4u1wrvdVMQwFd
+         /CxTIGdgJkU+XfERkzwg1TUUymoFShVx9KoBkzJkWH3a/btwNSjFk3O8/bAl/WZydUtZ
+         NJPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777449663; x=1778054463;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kPx/kD4WGWKxwaJpCnYAciCBrDKMYIK8dIZn6jPFTzk=;
+        b=kD8Qecw7bRs5ZNLBkJoszntQaHQBVY0Hrz5/NnTab0hPhuzpAC37qTUhztTgI42a95
+         J7fXPsGFTnSTDghiY4iIS18fdr683N6M3JgHO9OYv/0RnbSVZgbfR1gKnojh7fEP4ftR
+         iCuDkK9ri14cvTPwjFJuyKCThpbchGsVctD4gtGg6GZ5KVzYQ75gFgFZtE99tnFL+urS
+         Rs0get2l1K8iamto4OqLjGA3CDrbJcTPTuct/K8mjHIDBxR8TitLuPetvU+YDudLUnol
+         PVrz0oL8XE8ICM7qqJyi/f7HzU1MChCTdaJsQvkRT6Nrl8WtE6IE1Bekb+Sx+Q6wD72Z
+         1JyA==
+X-Forwarded-Encrypted: i=1; AFNElJ9OIEl33qsVd25JV/ZsPl4oDauM3C1gsIUjcmbQBPElGMwCtxaC9HsKcJfD4hzetKAT+3U=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0BADWcKXYdadOSg3fBZu2MVBWqKfFzaZ0KrHByQpl+C9YAHp0
+	ClfoSwhQO48aKbWluBYQOe9xAX//PAwEyzw2oNLuYrarFSZ6OHtg1SJQ09pteC0NHjA=
+X-Gm-Gg: AeBDietI6y+044NEqAvhNkPkaXy7I7N4SvouRjuL4gUpWD98o15XWUPuIDqB8cvl0O3
+	0MSqDBA4mf4mQ1of0vadMjG4TToAeRG+u3zVGjEV4QW/4ktIFf36dKYF+vT3uOhToiMWOrXZ6gc
+	EX9KleLPXPw2NGtHK1Qpr5uMhIWch+1boak47uF6+zjlMY4SzIK+MaATlTKrKi2txq/gjYGWBEQ
+	xxER/70nNEoQHxtLO9GwNi9oVNwcBgzOLMXC1yVK9akSNTPgrJYauP+qcaTFHo0+4SDsg0yJUJo
+	O5wSGCAU+VulxtrUOjBKI8o1ABpzEealZMwKdemCF+U9oedsncgT3OUZ/SDTm4sLD+j/0H5Y36+
+	gI0A6HLRwic+6pYCh88JfoNMWKnGa26f3IumYy4cxT1iOVYmYwBoHS6Bujn7r6H/FrEa2NLBeuD
+	MxMiNRI9Mjd1o03W9JvizosbHBHjO6HTOnZEz+FjyxxMVQVNb2dXVyqnrwEoJDyrruQlMA
+X-Received: by 2002:adf:e00e:0:20b0:445:c2b4:a284 with SMTP id ffacd0b85a97d-44643e18116mr3536239f8f.8.1777449663151;
+        Wed, 29 Apr 2026 01:01:03 -0700 (PDT)
+Received: from ?IPV6:2001:1a48:8:903:1ed6:4f73:ce38:f9d4? ([2001:1a48:8:903:1ed6:4f73:ce38:f9d4])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-447b7ca6451sm3922019f8f.36.2026.04.29.01.01.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Apr 2026 01:01:02 -0700 (PDT)
+Message-ID: <1a9ae46f-b43a-40fb-8bd8-750c6e17dd01@suse.com>
+Date: Wed, 29 Apr 2026 10:01:01 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-META: tg8wij6mm8gp4fotxfs97s8xd5ophxue
-X-MBO-RS-ID: 3f314db930c67e0afdf
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/3] Documentation: RCU: adopt new coding style of
+ type-aware kmalloc-family
+Content-Language: en-US
+To: Manuel Ebner <manuelebner@mailbox.org>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
+ rcu@vger.kernel.org
+Cc: Kees Cook <kees@kernel.org>, linux-mm@kvack.org,
+ "Paul E . McKenney" <paulmck@kernel.org>
+References: <20260429070759.309110-3-manuelebner@mailbox.org>
+ <20260429072320.310817-2-manuelebner@mailbox.org>
+From: Vlastimil Babka <vbabka@suse.com>
+In-Reply-To: <20260429072320.310817-2-manuelebner@mailbox.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Update Documentation/RCU/* to reflect new type-aware kmalloc-family
-as suggested in commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj()
-and family")
+On 4/29/26 09:23, Manuel Ebner wrote:
+> Update Documentation/RCU/* to reflect new type-aware kmalloc-family
+> as suggested in commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj()
+> and family")
+> 
+> ptr = kmalloc(sizeof(*ptr), gfp);
+>  -> ptr = kmalloc_obj(*ptr);
+> 
+> Signed-off-by: Manuel Ebner <manuelebner@mailbox.org>
+> Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-ptr = kmalloc(sizeof(*ptr), gfp);
- -> ptr = kmalloc_obj(*ptr);
-
-Signed-off-by: Manuel Ebner <manuelebner@mailbox.org>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
----
-Acked-by see 
-https://lore.kernel.org/linux-doc/7a49fee0-09c8-4a48-9506-d9172ef024b0@paulmck-laptop/
-
- Documentation/RCU/Design/Requirements/Requirements.rst | 6 +++---
- Documentation/RCU/listRCU.rst                          | 2 +-
- Documentation/RCU/whatisRCU.rst                        | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index b5cdbba3ec2e..faca5a9c8c12 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -206,7 +206,7 @@ non-\ ``NULL``, locklessly accessing the ``->a`` and ``->b`` fields.
- 
-        1 bool add_gp_buggy(int a, int b)
-        2 {
--       3   p = kmalloc(sizeof(*p), GFP_KERNEL);
-+       3   p = kmalloc_obj(*p);
-        4   if (!p)
-        5     return -ENOMEM;
-        6   spin_lock(&gp_lock);
-@@ -228,7 +228,7 @@ their rights to reorder this code as follows:
- 
-        1 bool add_gp_buggy_optimized(int a, int b)
-        2 {
--       3   p = kmalloc(sizeof(*p), GFP_KERNEL);
-+       3   p = kmalloc_obj(*p);
-        4   if (!p)
-        5     return -ENOMEM;
-        6   spin_lock(&gp_lock);
-@@ -264,7 +264,7 @@ shows an example of insertion:
- 
-        1 bool add_gp(int a, int b)
-        2 {
--       3   p = kmalloc(sizeof(*p), GFP_KERNEL);
-+       3   p = kmalloc_obj(*p);
-        4   if (!p)
-        5     return -ENOMEM;
-        6   spin_lock(&gp_lock);
-diff --git a/Documentation/RCU/listRCU.rst b/Documentation/RCU/listRCU.rst
-index d8bb98623c12..48c7272a4ccc 100644
---- a/Documentation/RCU/listRCU.rst
-+++ b/Documentation/RCU/listRCU.rst
-@@ -276,7 +276,7 @@ The RCU version of audit_upd_rule() is as follows::
- 
- 		list_for_each_entry(e, list, list) {
- 			if (!audit_compare_rule(rule, &e->rule)) {
--				ne = kmalloc(sizeof(*entry), GFP_ATOMIC);
-+				ne = kmalloc_obj(*entry, GFP_ATOMIC);
- 				if (ne == NULL)
- 					return -ENOMEM;
- 				audit_copy_rule(&ne->rule, &e->rule);
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index a1582bd653d1..770aab8ea36a 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -468,7 +468,7 @@ uses of RCU may be found in listRCU.rst and NMI-RCU.rst.
- 		struct foo *new_fp;
- 		struct foo *old_fp;
- 
--		new_fp = kmalloc(sizeof(*new_fp), GFP_KERNEL);
-+		new_fp = kmalloc_obj(*new_fp);
- 		spin_lock(&foo_mutex);
- 		old_fp = rcu_dereference_protected(gbl_foo, lockdep_is_held(&foo_mutex));
- 		*new_fp = *old_fp;
-@@ -570,7 +570,7 @@ The foo_update_a() function might then be written as follows::
- 		struct foo *new_fp;
- 		struct foo *old_fp;
- 
--		new_fp = kmalloc(sizeof(*new_fp), GFP_KERNEL);
-+		new_fp = kmalloc_obj(*new_fp);
- 		spin_lock(&foo_mutex);
- 		old_fp = rcu_dereference_protected(gbl_foo, lockdep_is_held(&foo_mutex));
- 		*new_fp = *old_fp;
--- 
-2.53.0
+Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
