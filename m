@@ -1,319 +1,205 @@
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC6717D6;
-	Wed, 29 Apr 2026 10:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEDDC364E85;
+	Wed, 29 Apr 2026 15:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777457800; cv=none; b=RnAjnCpKE+84kSx7XFbgdOmcWTKM9uA0Kb9DSrD2KCqkuQ+8N6Kgh+yx5dYi4hvvn8qS01GoJ0llRc8OG27XRCINK0+kMRKko0HvoTFW2no0xmOJNkErGmk5dLzvhKbmlKung9Zuu40DTn7xNeTR7cNiDl3gRxPttLonAEdu/Gk=
+	t=1777474856; cv=none; b=HESkNuTx3k5tCJU/RsmLD7jigrloS2H2hHA+2pStJ3fJnkYnWxgS9lOm/mvbQpdcrqp6FzEWCO1iELELxcq9jA+yQapdKVqwrH6G+qrwWE19jd5oAoc9Mt5PjaZ+/CAWTSRruf7yY9pCn1GsR/hYSkoUDwbcA5cKNWZ7pVYe/Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777457800; c=relaxed/simple;
-	bh=Nq/UTy73S2CezEhxJsp5P7heAho57D4C+bEXFyVs0QE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GD2xVroqKn/KQPKmd3VzkBO+Cuy36HbdIVv1cwrh75kpD5JgYYK1+oxjdKoGs6EiXECKNYKwAEZVIQ/+S1jjF9sfCDGJR8oqYF848Ow7q0kpib52BbUgAAFpNqQzFD9V8P9ZKmA+KuoLzwN2/299H7pB3i/zNCtK2ZEjw0n7Uw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=J66TijRI; arc=none smtp.client-ip=148.163.156.1
+	s=arc-20240116; t=1777474856; c=relaxed/simple;
+	bh=PsnQmdFOF06eb5uwm+B3cvoTGp4usELwQCFcdHOG4Z0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JxSTsu3Ih3YGKnBr7KBQ9ydDOLKze1NKCrRNhQGs2zYq1ixlVYPker9PZqxUpb1SoK2uvmjcW1Z8T5WsbFGtsKhwm9BXa2OdkT47nmCUvP6yZRjeh4oiSSR3V2wskSmAao6mV2SIal7daEUDhTD9VXlfQ7fCicMFWMYAdwOsFW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=R6chvxTr; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="J66TijRI"
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63SNJHBM358063;
-	Wed, 29 Apr 2026 10:16:31 GMT
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="R6chvxTr"
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63TES64p741194;
+	Wed, 29 Apr 2026 15:00:47 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=F/lT+9
-	gq3vxflXRL0Qzbxq9y7PHWIm46jZMnKsw2Ke4=; b=J66TijRI2beebcxwBtnUpz
-	nkscDZTO4Ci0/M0vagqjAdt6um1m6v1SSK1041tCrR0ucAyi1N1NDoJ6FLhDFBha
-	jzvRDXQStOkPcV72qb7wXSBKgKJQSsrK+AgB5AquRXXotQQA9pzHGDIuGcSrWI65
-	cGuV8lTmxGwDhQvjrkKGnymp/D0nnnOv83T+HOMrJVEiCFVonKCxumP9xZUpHyhY
-	DFZ8eiImFB/PjywFdEkiq+zqyhGOFxuwYF/8qt75oGhvJ5olsF5rkimgcZ5HmUD0
-	D5WtFHo+w+cEj93RIJF6wVVpzcBrUWP8UTXfKLzcflZi8TsgJsDKJBwdcJKVvDuA
-	==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drnb59w8s-1
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:to; s=pp1; bh=b+efzKWVkcg/0oXO+Y5k8
+	ZuTV/b4eDvCevcXVKOm77E=; b=R6chvxTraWiP5T+ZyDemqe+/Ewucih2FjUdfT
+	BmsvcHNxjgDuVG0vc58IuUO4hjG8eEgV+pDSdLF7C/8e4h7zrdHI7uoW9l71380t
+	mBsgV/y+OaPrx1cDH45kcD0Q4yC8zgSMe+FpM2cOMBJSZze+cTqHNKjf9zjiR4pt
+	F16YxNsVmfCe+5zipAV0jknb8QZJ4U00BGMKKVoWwh1kcjeo+m+Zo3dbCNWkn7nq
+	nW/izvqxKDdo3EgKbu+9E8WZ+Byz3Rb8YPd9hcbn8Xu3h/pKrk9mJvzX7zCzqZmF
+	K14zLkUc8b4hnD+hMHpI2stLa6RHNNuGjvmUNoc663lD0arLA==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drn9rb3qu-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 Apr 2026 10:16:31 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63TA8l5G030771;
-	Wed, 29 Apr 2026 10:16:30 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dsa5gdpb9-1
+	Wed, 29 Apr 2026 15:00:46 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63TEcqe0030618;
+	Wed, 29 Apr 2026 15:00:45 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4ds8avxve9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 Apr 2026 10:16:30 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 63TAGTtf7537564
+	Wed, 29 Apr 2026 15:00:45 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 63TF0fjq51970480
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 29 Apr 2026 10:16:29 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4302458043;
-	Wed, 29 Apr 2026 10:16:29 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C72EB5805D;
-	Wed, 29 Apr 2026 10:16:18 +0000 (GMT)
-Received: from [9.123.0.247] (unknown [9.123.0.247])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 29 Apr 2026 10:16:18 +0000 (GMT)
-Message-ID: <1b89c25b-7c1d-4ed8-adf3-ac504b6f086a@linux.ibm.com>
-Date: Wed, 29 Apr 2026 15:46:09 +0530
+	Wed, 29 Apr 2026 15:00:41 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C1FFE2004B;
+	Wed, 29 Apr 2026 15:00:41 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4BE8920040;
+	Wed, 29 Apr 2026 15:00:39 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.126.150.29])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with SMTP;
+	Wed, 29 Apr 2026 15:00:39 +0000 (GMT)
+Date: Wed, 29 Apr 2026 20:30:38 +0530
+From: Srikar Dronamraju <srikar@linux.ibm.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Boqun Feng <boqun@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+        Joel Fernandes <joelagnelf@nvidia.com>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>, samir@linux.ibm.com
+Subject: Re: BUG: workqueue lockup - SRCU schedules work on not-online CPUs
+ during size transition
+Message-ID: <afIdFgDD9w2U6hZy@linux.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.ibm.com>
+References: <ttd89ul@ub.hpns>
+ <adfhWQr1yFImSM2Q@tardis.local>
+ <adfkdRCxmhpRverB@tardis.local>
+ <adfmHZfABu64Kv4D@slm.duckdns.org>
+ <adfrfJGrglg0bGw_@tardis.local>
+ <adlHKowvhn8AGXCc@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [mainline][BUG] Observed Workqueue lockups on offline CPUs.
-To: Boqun Feng <boqun@kernel.org>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, RCU <rcu@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, Shrikanth Hegde <sshegde@linux.ibm.com>
-References: <97a7d011-d573-4754-9e5d-68b562c64089@linux.ibm.com>
- <688280dc-78a2-4796-9eaf-e1c058836012@linux.ibm.com>
- <ae-EP1BpXgnEWCt4@tardis.local>
-Content-Language: en-US
-From: Samir M <samir@linux.ibm.com>
-In-Reply-To: <ae-EP1BpXgnEWCt4@tardis.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <adlHKowvhn8AGXCc@slm.duckdns.org>
 X-TM-AS-GCONF: 00
 X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Authority-Analysis: v=2.4 cv=AqDeGu9P c=1 sm=1 tr=0 ts=69f1da7f cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=U7nrCbtTmkRpXpFmAIza:22 a=VwQbUJbxAAAA:8
- a=qCof3rqyAAAA:8 a=VnNF1IyMAAAA:8 a=o1-_AkJ4wEVZsbxAFwQA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=sGiMcuukUhmiu4iKGgn_:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI5MDA5OCBTYWx0ZWRfX9/X6ZMaNEKtL
- q/IT55ewwFm4hD09MZ1ALH8c2FESDpfveQ7m8301scb4vjUfSammr8x13vlig9Koe9ZOdsdUPor
- n5V7AffGRjD16DjTOLXXILyBxxkZyJE3rjiyIUpTaUCT0Y4c60qQawTzMh7171RzAA3/d+Dgpwr
- EI8fMAt+TiRmf0a1g3faA5WFiRukLAZLUy5pZltqwZVsIpewEhjBiWwOEvlANrQB9qKnztGObWi
- +BGDsrSit9hpVmpSuQZQN/GCnS98r2JovT2RIvQFy/i4h4A7LRXs6nfMCRaXim6zo7Y6HjRkVRp
- kgxPSe/qmSXBMTngWRuYxO7XelRRAXNFg/079a3KRVNE4/606KTYoiyKG9j0MQ/F3fNd+YrGQ3F
- 3q8oDX9aVLg+wn1HdlXjgQRfnH10qeUCvR4D1uxitqg4n1jgddzsWNlP7H1cXOaYVPz+WAkXDvn
- uJQnh92h6nMWnXSd0dg==
-X-Proofpoint-GUID: Wpocfkr4VUVxzzU8Hg7kuHWMEsHKFXJX
-X-Proofpoint-ORIG-GUID: 7jpyQkmcGJ1EwzTPshgboXQKOhaIFgeK
+X-Proofpoint-GUID: rzA6Xk_e6USVLQboiTyyaOq9OtNgCXN-
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI5MDE1MCBTYWx0ZWRfXwc3zGgKQUFdB
+ daEdHY/zhpypmFOO2SnAIQGCpu2Efn5AXAC9lNMuNn/Tj/HSDrPH/25Yk/gJUgWdl1EHyqKhPw8
+ xKXFH7D06yrrWDZWkJ1kJgJh21WIm9LwlmuDnKQ+8sKkKIzBz7zK8T7U92gBjKFqIU39NLYjIFD
+ joNae4JfJrRPJR47qLIK1bTC6c1Jtbjzv13rA/G/Xfn2Xv7ASZp2+ZuBMxqJeuD1eYp42bXbeON
+ LOR0/BWy6m848sNOj0mGoEQy4nzn2dLCL9EJ4SxGzf6oZsag+54cCARkcGj41RwTQL+qN3sQhTV
+ Lj7PtpD10t7U0XJmcoMDNngRwYTx0KO474T4J/yRcmtF+3RgIBm8Jk2mupgz/02if71yINaoPsY
+ L6LkvHr5rC3sJOdl2wsk5aFMyKyA9AZQ/xUoQCPbKBVZMIPLEWxDk2u6E7yejxcOPb7oiAIY/iO
+ dsIYm2yEPI1yJzv8pdg==
+X-Authority-Analysis: v=2.4 cv=Kc7idwYD c=1 sm=1 tr=0 ts=69f21d1f cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=8nJEP1OIZ-IA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=6F5vfELAUXNlVjrrbYMA:9 a=wPNLvfGTeEIA:10
+X-Proofpoint-ORIG-GUID: DIeQi4eV4DF70V8l2l_cfgzeJj43tawp
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-04-28_05,2026-04-28_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 priorityscore=1501 phishscore=0 suspectscore=0 clxscore=1011
- lowpriorityscore=0 spamscore=0 bulkscore=0 impostorscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2604290098
+ clxscore=1011 phishscore=0 bulkscore=0 adultscore=0 spamscore=0
+ malwarescore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
+ definitions=main-2604290150
 
+* Tejun Heo <tj@kernel.org> [2026-04-10 08:53:30]:
 
-On 27/04/26 9:13 pm, Boqun Feng wrote:
-> On Mon, Apr 27, 2026 at 05:00:10PM +0530, Samir M wrote:
-> Hi Samir,
->
->> On 27/04/26 3:32 pm, Samir M wrote:
->>> Hi Paul,
->>>
->>> I've been testing the latest upstream kernel on a PowerPC system and
->>> encountered workqueue lockup issues that I've bisected to commit
->>> 61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
->>> non-preemptible").
->>> After booting, I'm seeing workqueue lockup warnings for CPUs 81-96,
->>> which are offline on my system. The workqueues remain stuck for over 237
->>> seconds:
->>>
->>> [  243.309302][    C0] BUG: workqueue lockup - pool cpus=81 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309311][    C0] BUG: workqueue lockup - pool cpus=82 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309318][    C0] BUG: workqueue lockup - pool cpus=83 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309326][    C0] BUG: workqueue lockup - pool cpus=84 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309333][    C0] BUG: workqueue lockup - pool cpus=85 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309341][    C0] BUG: workqueue lockup - pool cpus=86 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309348][    C0] BUG: workqueue lockup - pool cpus=87 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309355][    C0] BUG: workqueue lockup - pool cpus=88 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309363][    C0] BUG: workqueue lockup - pool cpus=89 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309370][    C0] BUG: workqueue lockup - pool cpus=90 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309377][    C0] BUG: workqueue lockup - pool cpus=91 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309384][    C0] BUG: workqueue lockup - pool cpus=92 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309392][    C0] BUG: workqueue lockup - pool cpus=93 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309399][    C0] BUG: workqueue lockup - pool cpus=94 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309406][    C0] BUG: workqueue lockup - pool cpus=95 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>> [  243.309413][    C0] BUG: workqueue lockup - pool cpus=96 node=0
->>> flags=0x4 nice=0 stuck for 237s!
->>>
->>> Git bisect identified this as the first bad commit:
->>>
->>> commit 61bbcfb50514a8a94e035a7349697a3790ab4783
->>> Author: Paul E. McKenney <paulmck@kernel.org>
->>> Date:   Fri Mar 20 20:29:20 2026 -0700
->>>
->>>      srcu: Push srcu_node allocation to GP when non-preemptible
->>>
->>>      When the srcutree.convert_to_big and srcutree.big_cpu_lim kernel boot
->>>      parameters specify initialization-time allocation of the srcu_node
->>>      tree for statically allocated srcu_struct structures (for example, in
->>>      DEFINE_SRCU() at build time instead of init_srcu_struct() at
->>> runtime),
->>>      init_srcu_struct_nodes() will attempt to dynamically allocate this
->>> tree
->>>      at the first run-time update-side use of this srcu_struct structure,
->>>      but while holding a raw spinlock. Because the memory allocator can
->>>      acquire non-raw spinlocks, this can result in lockdep splats.
->>>
->>>      This commit therefore uses the same SRCU_SIZE_ALLOC trick that is
->>> used
->>>      when the first run-time update-side use of this srcu_struct structure
->>>      happens before srcu_init() is called. The actual allocation then
->>> takes
->>>      place from workqueue context at the ends of upcoming SRCU grace
->>> periods.
->>>
->>>      [boqun: Adjust the sha1 of the Fixes tag]
->>>
->>>      Fixes: 175b45ed343a ("srcu: Use raw spinlocks so call_srcu() can be
->>> used under preempt_disable()")
->>>      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>>      Signed-off-by: Boqun Feng <boqun@kernel.org>
->>>
->>>   kernel/rcu/srcutree.c | 7 +++++--
->>>   1 file changed, 5 insertions(+), 2 deletions(-)
->>>
->>> Reverting this commit resolves the issue.
->>>
->>> The problem appears to be that the workqueue is attempting to execute on
->>> offline CPUs. The commit moves SRCU node allocation to workqueue context
->>> to avoid lockdep issues with memory allocation under raw spinlocks,
->>> which makes sense. However, it seems the workqueue scheduling doesn't
->>> properly account for CPU online/offline state in this code path.
->>>
->>> My test environment:
->>> - Architecture: PowerPC
->>> - Kernel version: Latest upstream (7.1-rc1)
->>> - CPUs 81-96 are offline at boot time
->>>
->>> I suspect the issue might be related to:
->>> 1. Workqueue not checking CPU online status before scheduling SRCU
->>> allocation work
->>> 2. Missing CPU hotplug awareness in the new workqueue-based allocation
->>> path
->>> 3. Possible race condition with CPU hotplug events
->>>
->>> Would it make sense to use queue_work_on() with explicit online CPU
->>> selection, or add CPU hotplug handlers for this workqueue? I'm not
->>> deeply familiar with the workqueue internals, so I might be missing
->>> something.
->>> Please let me know if you need any additional details or if you'd like
->>> me to test any patches.
->>>
->>> If you happen to fix the above issue, then please add below tag.
->>> Reported-by: Samir M <samir@linux.ibm.com>
->>>
->>>
->>> Thanks,
->>> Samir
->> Hi Paul,
->>
->>
->> I worked on fixing the issue and introduced the changes below. With these
->> updates, I no longer observe any workqueue lockup messages for offline CPUs.
->> Could you please review the changes and share your feedback?
->>
->> The commit 61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
->> non-preemptible") introduced workqueue lockups on systems with offline
->> CPUs. The issue occurs because srcu_queue_delayed_work_on() calls
->> queue_work_on() with sdp->cpu, which may be offline, causing the
->> workqueue to spin indefinitely on that CPU.
->>
->> This patch fixes the issue by checking if the target CPU is online
->> before queuing work on it. If the CPU is offline, we fall back to
->> using queue_work() which will schedule the work on any available
->> online CPU.
->>
->> Fixes: 61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
->> non-preemptible")
->>
->> Signed-off-by: Samir <samir@linux.ibm.com>
-> Thanks for the patch, but I wonder: have you checked this email thread:
->
-> 	https://lore.kernel.org/rcu/ttd89ul@ub.hpns/	
->
-> Paul had a fix [1], and TJ had a "fix" [2] on workqueue side.
->
-> In general I think we discovered that as long as a CPU has been onlined
-> once, it's OK to queue the work on that CPU (which may be offlined) even
-> with our TJ's patch (whether we should do that is a different problem
-> ;-)). Please do check whether Paul's fix works for your case, thanks!
->
-> [1]: https://lore.kernel.org/rcu/ed1fa6cd-7343-4ca3-8b9d-d699ca496f83@paulmck-laptop/
-> [2]: https://lore.kernel.org/rcu/adlHKowvhn8AGXCc@slm.duckdns.org/
->
-> Regards,
-> Boqun
->
->> ---
->>   kernel/rcu/srcutree.c | 7 ++++++-
->>   1 file changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->> index 0d01cd8c4b4a..55a90dd4a030 100644
->> --- a/kernel/rcu/srcutree.c
->> +++ b/kernel/rcu/srcutree.c
->> @@ -869,10 +869,15 @@ static void srcu_delay_timer(struct timer_list *t)
->>   static void srcu_queue_delayed_work_on(struct srcu_data *sdp,
->>   unsigned long delay)
->>   {
->> -       if (!delay) {
->> +       if (!delay && cpu_online(sdp->cpu)) {
->>                  queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
->>                  return;
->> +       } else if (!delay) {
->> +               /* CPU is offline, queue on any available CPU */
->> +               queue_work(rcu_gp_wq, &sdp->work);
->> +               return;
->> +       }
->>
->>          timer_reduce(&sdp->delay_work, jiffies + delay);
->>   }
->> --
->>
->>
->> Thanks,
->> Samir
-Hi Boqun,
+Hi Tejun,
 
-Thank you for pointing me to the existing patches. I have tested both 
-Paul's patch [1] and TJ's workqueue patch [2] on my PowerPC system (80 
-CPUs), and can confirm that the workqueue lockup issue is not observed.
+[ copying Samir Mulani to this thread ]
 
-Test Environment:
-- System: PowerPC with 80 CPUs ( e.g. PowerPC LPARs with 80 online and 
-384 possible CPUs)
-- Kernel version: Latest upstream (7.1-rc1)
+> Hello,
+> 
+> > Seems that we (mostly Paul) have our own trick to track whether a CPU
+> > has ever been onlined in RCU, see rcu_cpu_beenfullyonline(). Paul also
+> > used it in his fix [1]. And I think it won't be that hard to copy it
+> > into workqueue and let queue_work_on() use it so that if the user queues
+> > a work on a never-onlined CPU, it can detect it (with a warning?) and do
+> > something?
+> 
+> The easiest way to do this is just creating the initial workers for all
+> possible pools. Please see below. However, the downside is that it's going
+> to create all workers for all possible cpus. This isn't a problem for
+> anybody else but these IBM mainframes often come up with a lot of possible
+> but not-yet-or-ever-online CPUs for capacity management, so the cost may not
+> be negligible on some configurations.
+> 
+> IBM folks, is that okay?
 
-Regression Testing Results:
-All tests completed successfully with no issues observed:
-- Hackbench
-- Kernel selftests
-- LTP scheduler tests
+Even on PowerPC LPARS, its not uncommon to have possible cpus != online cpus
+at boot.  However your approach will work.
 
-The workqueue lockup that was previously occurring is no longer present 
-with the patches applied.
+And Samir has already tested the same too and reported here
+https://lkml.kernel.org/r/1b89c25b-7c1d-4ed8-adf3-ac504b6f086a@linux.ibm.com
 
-References:
-[1]: 
-https://lore.kernel.org/rcu/ed1fa6cd-7343-4ca3-8b9d-d699ca496f83@paulmck-laptop/
-[2]: https://lore.kernel.org/rcu/adlHKowvhn8AGXCc@slm.duckdns.org/
+> 
+> Also, why do you need to queue work items on an offline CPU? Do they
+> actually have to be per-cpu? Can you get away with using an unbound
+> workqueue?
+> 
+> Thanks.
+> 
+> From: Tejun Heo <tj@kernel.org>
+> Subject: workqueue: Create workers for all possible CPUs on init
+> 
+> Per-CPU worker pools are initialized for every possible CPU during early boot,
+> but workqueue_init() only creates initial workers for online CPUs. On systems
+> where possible CPUs outnumber online CPUs (e.g. s390 LPARs with 76 online and
+> 400 possible CPUs), the pools for never-onlined CPUs have POOL_DISASSOCIATED
+> set but no workers. Any work item queued on such a CPU hangs indefinitely.
+> 
+> This was exposed by 61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
+> non-preemptible") which made SRCU schedule callbacks on all possible CPUs
+> during size transitions, triggering workqueue lockup warnings for all
+> never-onlined CPUs.
+> 
+> Create workers for all possible CPUs during init, not just online ones. For
+> online CPUs, the behavior is unchanged - POOL_DISASSOCIATED is cleared and the
+> worker is bound to the CPU. For not-yet-online CPUs, POOL_DISASSOCIATED
+> remains set, so worker_attach_to_pool() marks the worker UNBOUND and it can
+> execute on any CPU. When the CPU later comes online, rebind_workers() handles
+> the transition to associated operation as usual.
+> 
 
-Best regards,
-Samir
+With these patch, if a CPU has been onlined once, it's should be ok to queue
+the work on that CPU even if its offline now.
+
+> Reported-by: Vasily Gorbik <gor@linux.ibm.com>
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> Cc: Boqun Feng <boqun@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+
+Reviewed-by: Srikar Dronamraju <srikar@linux.ibm.com>
+
+> ---
+>  kernel/workqueue.c |    5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -8068,9 +8068,10 @@ void __init workqueue_init(void)
+>  		for_each_bh_worker_pool(pool, cpu)
+>  			BUG_ON(!create_worker(pool));
+> 
+> -	for_each_online_cpu(cpu) {
+> +	for_each_possible_cpu(cpu) {
+>  		for_each_cpu_worker_pool(pool, cpu) {
+> -			pool->flags &= ~POOL_DISASSOCIATED;
+> +			if (cpu_online(cpu))
+> +				pool->flags &= ~POOL_DISASSOCIATED;
+>  			BUG_ON(!create_worker(pool));
+>  		}
+>  	}
+> -- 
+> tejun
+
+-- 
+Thanks and Regards
+Srikar Dronamraju
