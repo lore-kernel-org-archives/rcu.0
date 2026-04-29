@@ -1,155 +1,142 @@
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF868389E1F;
-	Wed, 29 Apr 2026 17:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD2D38BF8D;
+	Wed, 29 Apr 2026 17:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777485043; cv=none; b=oiuIlhtZDwhLp92fdjA2XXajKeOpOFjlSizZYvIGBGBsDbl61aZfEItGg4MvRE9mqMFlenvTBAKKx8/IbQSWjL/5Fqn2r6bFgDKWnHind10PwPh0M0X+Bo++gZ7RiJ++eZW/RV1DaEOg3WEZWL8i+K9V2dH83N1301iqjlfjXUE=
+	t=1777485095; cv=none; b=NJW58lh3bRllNSUToz3zA8NCuJ5CeVp4n8EBrLq7kahcamCK2EKhIXQT6vYRscD6bW9ghpjnwX+y5XxetNcboTfHOSdO07gsnqKxXM4wKIR+IIvcRzGtm16XL6aQlx2To0yGBTGXiO5hO9ZETnJ+RRw4tILoc76HQHy9/2Qqx8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777485043; c=relaxed/simple;
-	bh=lhRf8bewji/NelXAkO7rmLVJYVeaXGPrbJ2hXNF+bDM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b71dHrOOosnJYd0MHQzOs8rbqC+v+0XkYfkmqAnNB8xaA5A6Nt6LXTPCa5rw/sLBUgF3Rk5G8E9xP6ep9wB7NZukvP1N4LDA88XPFZbDXBCQyXLwOdfx3/ZpX7m3aftSVqBt0FoPNO+WQJXu2L0UVQnrzFXy/fiSw/LQcL1F57E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mCG3EX35; arc=none smtp.client-ip=148.163.156.1
+	s=arc-20240116; t=1777485095; c=relaxed/simple;
+	bh=Fzh+ygiNw5Dhv/7LdkbkBtM1f6wsT7wB5Y0LTZVBB1k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Hczg8Y/alq96o6bU+peEucAEhuSQUmhogSt2MiNq7Aed960/vWsrFy955TRpyl0GtwzPYDHbzkfzK2xG9DpKjoQUsk7zmUqoWxXKz/HBNlY8iB4nE3FCisiumNiLzUF6MghK/3fTTgxp3/2pFp6SmLPFwT4FojLO2i72PXIn5Ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=hoGL89hs; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mCG3EX35"
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63T9UTSP2713609;
-	Wed, 29 Apr 2026 17:50:38 GMT
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="hoGL89hs"
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63TF1onn396004;
+	Wed, 29 Apr 2026 17:51:26 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=g5YB4BVbp2W0wvk5RiZ2cwAxL3ZGaT
-	OsLR9ddNKjQJw=; b=mCG3EX35x1+9nauHxwSW+Dg9Tdy7tjfgt25iqT54uuY++u
-	rKzUhS31wFdYd/pXuZavzdBbg+wmUPy5pVBwvv/Jm4GGCS/rGZvII8UCaERswdgu
-	mczL5zF9YkuA0JjJA4vD0xc31NojUCiTfsInPCSOEw4IHohrxrJDEyce0ggKweBx
-	vILaBkrDXRG7mu22gplGadkWa0+mWYxduVA74OGRrFSBNDqLDo2YOHqunDF6FDXB
-	hFKprRxfb1Ua3Jgajt8YU1/x2KMPpZPdKNRVShLu5FyJTXIoY57edHMUhAjehsiY
-	OAWDu5R7+s7tVVnnRYXHRCzLYKt/kL1g4Pf1PBKA==
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drn9rbv24-1
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=xYE3pt
+	MboeKeZb2D5Qu/aBBO+kmVBbJdx8RwSOHXorM=; b=hoGL89hshOy7qu3tT9OXh2
+	06sc13pw1ZmQwXJop/41DrHedPcRkOn87kgjep7/mYOBgo5E+tNrLNHSfp9FGfZR
+	6CO0gfPVsR6wzvWoHFKlLzINi+ITevrGs55g3FAnByNipXppIuegdoUkSKkk1LGl
+	oHXXT1nf2kp2eAdFv3fHTDJPyermWXDpPcDBQnsaDNaXTPgvWiKfYz5iVsOsiavC
+	su5lNMEAuoLCvoQ1yECofpr7E/MgQOw3nyPho1gzkzm77mym3XWNGhT2cXGy+K72
+	caEaXmemUo3MOXRRYtNSYjkOXMpgvLbsFkipvPVas/rMFU2kA8URkwEwsPRLNViQ
+	==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drn8vjbhb-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 Apr 2026 17:50:38 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63THckjJ025518;
-	Wed, 29 Apr 2026 17:50:37 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4ds8xk7dm3-1
+	Wed, 29 Apr 2026 17:51:25 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63THd1Rx020550;
+	Wed, 29 Apr 2026 17:51:25 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dsamyf61k-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 Apr 2026 17:50:37 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 63THoX8E37683626
+	Wed, 29 Apr 2026 17:51:24 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 63THpNCH56164654
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 29 Apr 2026 17:50:33 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DE70D20040;
-	Wed, 29 Apr 2026 17:50:32 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 614B32004D;
-	Wed, 29 Apr 2026 17:50:32 +0000 (GMT)
-Received: from localhost (unknown [9.111.69.68])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 29 Apr 2026 17:50:32 +0000 (GMT)
-Date: Wed, 29 Apr 2026 19:50:31 +0200
-From: Vasily Gorbik <gor@linux.ibm.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Boqun Feng <boqun@kernel.org>, Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-        Joel Fernandes <joelagnelf@nvidia.com>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Samir M <samir@linux.ibm.com>,
-        Srikar Dronamraju <srikar@linux.ibm.com>
-Subject: Re: BUG: workqueue lockup - SRCU schedules work on not-online CPUs
- during size transition
-Message-ID: <tte9o87@ub.hpns>
-References: <ttd89ul@ub.hpns>
- <073abb55-197a-4519-b177-f9f776624fed@paulmck-laptop>
- <ttd8que@ub.hpns>
- <024e1e59-c901-4494-9935-f6871af88b2d@paulmck-laptop>
- <2157a59f-a1d3-4007-b8ce-3a7b0e0b9057@paulmck-laptop>
- <ed1fa6cd-7343-4ca3-8b9d-d699ca496f83@paulmck-laptop>
+	Wed, 29 Apr 2026 17:51:23 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3FA2120043;
+	Wed, 29 Apr 2026 17:51:23 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7851720040;
+	Wed, 29 Apr 2026 17:51:20 +0000 (GMT)
+Received: from [9.124.221.220] (unknown [9.124.221.220])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 29 Apr 2026 17:51:20 +0000 (GMT)
+Message-ID: <5ab8d72e-1a93-4d50-b097-0dde35d81f25@linux.ibm.com>
+Date: Wed, 29 Apr 2026 23:21:19 +0530
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ed1fa6cd-7343-4ca3-8b9d-d699ca496f83@paulmck-laptop>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [mainline][BUG] Observed Workqueue lockups on offline CPUs.
+To: Samir M <samir@linux.ibm.com>, "Paul E . McKenney" <paulmck@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+        RCU <rcu@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        Boqun Feng <boqun@kernel.org>
+References: <97a7d011-d573-4754-9e5d-68b562c64089@linux.ibm.com>
+ <688280dc-78a2-4796-9eaf-e1c058836012@linux.ibm.com>
+ <ae-EP1BpXgnEWCt4@tardis.local>
+ <1b89c25b-7c1d-4ed8-adf3-ac504b6f086a@linux.ibm.com>
+Content-Language: en-US
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+In-Reply-To: <1b89c25b-7c1d-4ed8-adf3-ac504b6f086a@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-GUID: aJHM6d5iFPfNqsvjoGjEIpHZ14HvB_FO
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI5MDE3OSBTYWx0ZWRfX273QpL4dFyxg
- uQcN7guOpg0Feots4fD555NjgWCbQNRdu8Jv+9aFR1TpvV5ZlMzwd+kMqCLxDqfB23ZwP9FETcF
- 1BvxZTU7GrYFh+cTGa9DX3KLSnElJ7+gD/e54d4TRn4CIk5Ecx+SA0S/ouXIMVEYL3TAXlvdkFr
- wurjMqbUSmiN051cCN4aLS02mxoX78fHfXSHjVHkdWY4NCuSpUjwlxDpxux/xEPaqV0OZPzBgAz
- qPgW24aihpZP0fKpulzYfYXxwbcM4rorXKnR+v5CN2RCxGyL7ZtdVkAp/CfnA1fDKRAeqH2nfRZ
- Gz3/Ke8iUVlhciIgdewLswDmyYiOc3p3F0mWwniR2aMcTNcPk1ontfDVPjwUEOGa9h6herD1A22
- cVVC5SdOTU54r5xweq07c0/ciJ/1dkjalsvQTsbV5kT8FnLg9rvsGXbuiUE+oO59E5evkf/sBka
- qm1QMmmi557FLvcBI7w==
-X-Authority-Analysis: v=2.4 cv=Kc7idwYD c=1 sm=1 tr=0 ts=69f244ee cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+X-Authority-Analysis: v=2.4 cv=CIIamxrD c=1 sm=1 tr=0 ts=69f2451e cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
  a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
- a=VnNF1IyMAAAA:8 a=bll54Tbc3Bfas-WANKEA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: IsuJ-D0pI-qdWZz_qQOLMIgB-ukfAK90
+ a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=VwQbUJbxAAAA:8
+ a=qCof3rqyAAAA:8 a=SltLtrhv4OmeOPo6kIgA:9 a=QEXdDO2ut3YA:10 a=zZCYzV9kfG8A:10
+ a=sGiMcuukUhmiu4iKGgn_:22
+X-Proofpoint-ORIG-GUID: _sOAm_Wn_KlF51Dlhb5XpF1pXgwTbLan
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI5MDE3OSBTYWx0ZWRfX2zilRbQWtkR8
+ v3KGwBmpl5pBm77d04qsz0DkmjiKJ0Up26LcB/jhjsWr1t0KxA/bXM/X3zBkprgivvo8jAZnhUZ
+ P704EBAIZn379VChyaZpLPCKe4d1KBdpXkCiuEd5knjdpZr+wSF9ewlCs+BhP/TDakDgaaPvpm/
+ vnAaPhkIgr4Bb6o/HuV2dENP/R45hNtCAVOmJQr7k8cBoKeIkazk65LobbTU6R6ozPc5MjLmcKs
+ Z1GxBEWMLSaO3D7Z9+obgwRaJvu1qrErLFFZ2PWy4EcasKfHEwiD6gNMEuY4OdGxiDURSpdf1VL
+ xpu6x5QVAT0M0+VxWaHNS+Q8I9CU3oKyOjYBB6VQuWVU/ZSgGG8hEUq8Z3XKDmm3jC+FcnFrfyI
+ s4p+4ARb95f3bRW/5H+J3YqMZvsDp80C0GJYtZQRafYVd9rJA37OMoT7+ZzJwE3fbhH210ZLWU4
+ r9Xf6/7EZGcVtuT1HdA==
+X-Proofpoint-GUID: vXQyVNRMRfTYp_w2LZbMfCxWk6vLQHUy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-04-29_01,2026-04-28_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 phishscore=0 bulkscore=0 adultscore=0 spamscore=0
- malwarescore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ spamscore=0 phishscore=0 malwarescore=0 suspectscore=0 adultscore=0
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 bulkscore=0
+ priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
  route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
  definitions=main-2604290179
 
-On Tue, Apr 14, 2026 at 12:24:12PM -0700, Paul E. McKenney wrote:
-> On Thu, Apr 09, 2026 at 09:03:26PM -0700, Paul E. McKenney wrote:
-> Please see below for the full patch, including refraining from queueing
-> workqueue handlers on not-yet-online CPUs and diverting SRCU callbacks
-> from not-yet-fully-online CPUs to the boot CPU's callback queue.
-...
-> commit ce533a60b2ef29a9b516cc717e77c6b679bc09c0
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Thu Apr 9 11:16:02 2026 -0700
+Hi Samir.
+
+On 4/29/26 3:46 PM, Samir M wrote:
 > 
->     srcu: Don't queue workqueue handlers to never-online CPUs
->     
->     While an srcu_struct structure is in the midst of switching from CPU-0
->     to all-CPUs state, it can attempt to invoke callbacks for CPUs that
->     have never been online.  Worse yet, it can attempt in invoke callbacks
->     for CPUs that never will be online due to not being present in the
->     cpu_possible_mask.  This can cause hangs on s390, which is not set up to
->     deal with workqueue handlers being scheduled on such CPUs.  This commit
->     therefore causes Tree SRCU to refrain from queueing workqueue handlers
->     on CPUs that have not yet (and might never) come online.
->     
->     Because callbacks are not invoked on CPUs that have not been
->     online, it is an error to invoke call_srcu(), synchronize_srcu(), or
->     synchronize_srcu_expedited() on a CPU that is not yet fully online.
->     However, it turns out to be less code to redirect the callbacks
->     from too-early invocations of call_srcu() than to warn about such
->     invocations.  This commit therefore also redirects callbacks queued on
->     not-yet-fully-online CPUs to the boot CPU.
->     
->     Reported-by: Vasily Gorbik <gor@linux.ibm.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->     Tested-by: Vasily Gorbik <gor@linux.ibm.com>
->     Cc: Tejun Heo <tj@kernel.org>
+> Hi Boqun,
+> 
+> Thank you for pointing me to the existing patches. I have tested both 
+> Paul's patch [1] and TJ's workqueue patch [2] on my PowerPC system (80 
+> CPUs), and can confirm that the workqueue lockup issue is not observed.
+> 
 
-I retested it on s390 and on x86 KVM with --smp 16,maxcpus=255, all
-looks good to me.
+Can you try only paul's patch and confirm if the issue is fixed?
 
-FWIW, again:
+> Test Environment:
+> - System: PowerPC with 80 CPUs ( e.g. PowerPC LPARs with 80 online and 
+> 384 possible CPUs)
+> - Kernel version: Latest upstream (7.1-rc1)
+> 
+> Regression Testing Results:
+> All tests completed successfully with no issues observed:
+> - Hackbench
+> - Kernel selftests
+> - LTP scheduler tests
+> 
+> The workqueue lockup that was previously occurring is no longer present 
+> with the patches applied.
+> 
+> References:
+> [1]: https://lore.kernel.org/rcu/ed1fa6cd-7343-4ca3-8b9d- 
+> d699ca496f83@paulmck-laptop/
+> [2]: https://lore.kernel.org/rcu/adlHKowvhn8AGXCc@slm.duckdns.org/
+> 
+> Best regards,
+> Samir
 
-Tested-by: Vasily Gorbik <gor@linux.ibm.com>
-
-Would you mind adding Cc: stable so it gets picked up for v7.0?
-61bbcfb50514 ("srcu: Push srcu_node allocation to GP when
-non-preemptible") is what made it reproducible for us.
-
-Thank you!
