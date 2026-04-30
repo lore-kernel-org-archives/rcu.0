@@ -1,165 +1,189 @@
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20C193054C7;
-	Thu, 30 Apr 2026 15:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F02F1632DD;
+	Thu, 30 Apr 2026 16:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777563418; cv=none; b=F4zKeICdQMER61ZTZVZUyasWUoiwU/0Hm9k6D1di5BAZYIlImZDlCfHbHjfWNMFoiCnfsu6V0Nm/AL8blnwmZFHQFYfeZq7t7XetbB4t2672V1VHpxBYJcxuXQqh8fIo0JI6PE60DWYZOQbXOY1l4ySZ7aIs/EaByULlZon3YJM=
+	t=1777565111; cv=none; b=kOxdh4UUgpOOkWMW7H/p9q2NHi4IIgsVA9cBJM9toYTUKalVULxHLCE9tKaj9D3cMiUdjyu1GmrRRZGXWLUIN2RowiuHNpxv3pVqWbWdUYVmMKNyGpJy/8iTQmwEN2wo/3FnOA+rZq2PmhsFjKzpzVdRItuxW1Fbzx9Bh0lzbqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777563418; c=relaxed/simple;
-	bh=uwhOux8oeNkoFiWEEbFxGjKgCIJKKUKBS1a+z02PWDk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l8bvgl0OoDO0MTYVhXXfMKehg30votZ6N8bZ7IRv5eYxGi6MSk+rXyvFSQWJS/VuUSY4hBCLP3s/pS3gW/IufLFon8n68O+PJO2rSDsSPdv+XtXJto7ZjB9klOGcM18B408G309Y6mA3AnAwc984PjUx8ydbHku1ljASDmu/434=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Uz/T6rwV; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	s=arc-20240116; t=1777565111; c=relaxed/simple;
+	bh=8K7tuciLFA2olFZ21d9KKbfQk/y+E65/Gkp3fBg7ThE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cWvJZPQFm85JmA/53N7hs2dAEL4qsugvhO8UY3ei8Rkcv4SwX0jzrMZvlK3+Vr6OcZKTGqIAW/YUbkIHvAHU8MOLVzkH8DGmWeJop1cXvyKgq8GO0yv9zcesPZ5H7IdjfOVozcCEY6DKKvL+y0e3NVUGwDvsUN8bQzJvAxste9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bplpg/Pe; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Uz/T6rwV"
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63UCP3Re036865;
-	Thu, 30 Apr 2026 15:36:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=h9V1qH
-	+yCoHPi85IK5Lz6IKOZqyxzFPjLfAxORR7lgk=; b=Uz/T6rwVbRIrMdQGt73sMb
-	vwz0JyEk0EoocWwmx+AT21veamu2ieauvGOJADpOCK+fsev/rRYXLKCM60xDs1lj
-	zIEk3DFr+dRWSii2wLE3lvqvGvnhQGrS7ngyqr8P/CUpq4i2qXBNnDSXnjBzApdA
-	ldXPd/S6rei4moskoW7stD2zxGRqtOQI5KsRYGHPevdBg+bGa/qHcSaf0B2SUkye
-	E0B/ixb6L1kxM/qfA0JiwqbQ8wTKP79XbhuzRpGALkYGKBpMDpO4JrxLF4Oxje8B
-	V3HOR6ZSHurUrXFICunHctC6ZSKzi6NKRefif52nCUaT3NB7hYnVl9ZRJ7l8QZnw
-	==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drm1e6u0k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Apr 2026 15:36:39 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63UFOBqO025204;
-	Thu, 30 Apr 2026 15:36:38 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4ds7xqkrkq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Apr 2026 15:36:38 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 63UFacTG32637596
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 30 Apr 2026 15:36:38 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2875058057;
-	Thu, 30 Apr 2026 15:36:38 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B8BBE5805D;
-	Thu, 30 Apr 2026 15:36:34 +0000 (GMT)
-Received: from [9.39.18.177] (unknown [9.39.18.177])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 30 Apr 2026 15:36:34 +0000 (GMT)
-Message-ID: <4597b29c-3548-482f-9a34-8d69a59d77fd@linux.ibm.com>
-Date: Thu, 30 Apr 2026 21:06:32 +0530
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bplpg/Pe"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C5BAC2BCB3;
+	Thu, 30 Apr 2026 16:05:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777565111;
+	bh=8K7tuciLFA2olFZ21d9KKbfQk/y+E65/Gkp3fBg7ThE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Bplpg/PeBCDm/DkvNj9FWBlGBOA8EfcKxBL/4iWLf/qhNtJkoCcD7vO27Vop9FRV9
+	 u7006gzoJ+1D7Nqka/K83oTMmdlXjMukv0mJkHoggYtsYjVy8Ti0Anhx374lz+JuOS
+	 YBzelB3oq3PtXybsroqDZ3XkK9ftvn5ml/5EUEMoaRG8k+yj+BffrIcxkPRWvFP8H4
+	 rj4Fqv6aklpcoAiV3Ge1SqvnxwphUNIrW8W1lshBiLp7lIOXENEbocJv/Jq3aW9jBh
+	 jvlxxOF2ZaF7+ZEZ3e1SBHRIR7UyC2HLERlI1IBP28+OLKgAiMyLI1ra0WS0mXmn48
+	 x7JjD5cTnRE3Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 611D6CE0712; Thu, 30 Apr 2026 09:05:10 -0700 (PDT)
+Date: Thu, 30 Apr 2026 09:05:10 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: Tejun Heo <tj@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>,
+	Srikar Dronamraju <srikar@linux.ibm.com>,
+	Boqun Feng <boqun@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+	Lai Jiangshan <jiangshanlai@gmail.com>, samir@linux.ibm.com
+Subject: Re: BUG: workqueue lockup - SRCU schedules work on not-online CPUs
+ during size transition
+Message-ID: <4fa26f2e-e01b-4525-a23e-df393fdb72a5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <adfkdRCxmhpRverB@tardis.local>
+ <adfmHZfABu64Kv4D@slm.duckdns.org>
+ <adfrfJGrglg0bGw_@tardis.local>
+ <adlHKowvhn8AGXCc@slm.duckdns.org>
+ <afIdFgDD9w2U6hZy@linux.ibm.com>
+ <tte9m9z@ub.hpns>
+ <3b1563df-b1aa-40b9-b83e-650d967df09c@paulmck-laptop>
+ <3f6d1123-6e1a-4566-8be7-ce95efe0609c@linux.ibm.com>
+ <7b5665b4-ddd0-404a-8314-fd0a170db458@paulmck-laptop>
+ <868cbc25-45a9-4476-b77e-7f878f1cd42c@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [mainline][BUG] Observed Workqueue lockups on offline CPUs.
-To: paulmck@kernel.org
-Cc: Shrikanth Hegde <sshegde@linux.ibm.com>, Tejun Heo <tj@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
-        RCU <rcu@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        Boqun Feng <boqun@kernel.org>
-References: <97a7d011-d573-4754-9e5d-68b562c64089@linux.ibm.com>
- <688280dc-78a2-4796-9eaf-e1c058836012@linux.ibm.com>
- <ae-EP1BpXgnEWCt4@tardis.local>
- <1b89c25b-7c1d-4ed8-adf3-ac504b6f086a@linux.ibm.com>
- <5ab8d72e-1a93-4d50-b097-0dde35d81f25@linux.ibm.com>
- <6c51cebc-3b98-439d-adcd-a0f382b98f40@linux.ibm.com>
- <16676927-5a4a-4007-9ece-593a4699adb0@paulmck-laptop>
-Content-Language: en-US
-From: Samir M <samir@linux.ibm.com>
-In-Reply-To: <16676927-5a4a-4007-9ece-593a4699adb0@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-ORIG-GUID: Wmg3tAgrz8b2fQl0dwWKjuCWspfAAcQG
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDMwMDE1OCBTYWx0ZWRfX+FH0OVqWT3um
- qS3uMtQnDCZz+jaMCAbaZgoUEJ14AZuBnF/tEdfLxq5+auzyaIkqcUIi2qZEnxP+qmB1sZb5tcO
- mzTmzRZWMCkKi3d+coeUV1xYJnlaOIg3n73znu1gDtA1DyDm0wt6f4A/vm+267gKTNFWJaQWwOK
- SYyzwkl5O6H3nXasOgzw4FuMrX55a3C2kJHaipgfNUzxZPRxNSggU/r0Q/jn7nAvLswPgs1fRMR
- RNNFqqHG1EdNsQboUijXjRQLWVSf7EX5SXynUeEMPA1PGtW1DGLCI7gZPJNwLByaZSMsfYM2iCn
- fBYqryW/qmAgMeHCXB+j29hGmJEVAAMi1hIdXvM/1faWiXy8thzEdMQ5C1Nw9X6WTvFRKFDQ2Go
- rRGkSUses5GxX18r2qobKjXGPfFTAILrik+kOYyI9f9lm7v5CNK3+p9Yggo7ub3jjyMfRLHmQTh
- UKFRXdVNvGPLzAeCrcg==
-X-Authority-Analysis: v=2.4 cv=VZLH+lp9 c=1 sm=1 tr=0 ts=69f37707 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8
- a=qCof3rqyAAAA:8 a=VnNF1IyMAAAA:8 a=OO9Z8b08tAtk0z3vkt4A:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=sGiMcuukUhmiu4iKGgn_:22
-X-Proofpoint-GUID: yEsCtX3Np_yzCS6ZTvX-RMiNgwpiTZRU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-30_04,2026-04-30_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 suspectscore=0 adultscore=0 lowpriorityscore=0 phishscore=0
- spamscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2604300158
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <868cbc25-45a9-4476-b77e-7f878f1cd42c@linux.ibm.com>
 
+On Thu, Apr 30, 2026 at 12:38:16PM +0530, Shrikanth Hegde wrote:
+> Hi Paul.
+> 
+> On 4/29/26 11:31 PM, Paul E. McKenney wrote:
+> 
+> > > That mask = ~0 is really looks uncomfortable to me. What does it mean?
+> > > It might end up even sending to non possible CPUs without proper checks.
+> > > 
+> > > It should use either cpumask_setall? or use cpu_online_mask?
+> > > 
+> > > Your current patch rcu_cpu_beenfullyonline indicates that code around
+> > > srcu_schedule_cbs_sdp handles hotplug already right?
+> > > in that case, just setting mask = cpu_online_mask would work?
+> > 
+> > Agreed.  Which is why I have this commit queued:
+> > 
+> > f8d5aaaf90f8 ("srcu: Don't queue workqueue handlers to never-online CPUs")
+> > 
+> > This is currently slated for the upcoming merge window, but if you
+> > need it sooner, please let us know.  Please see the end of this email
+> > for the full commit.
+> > 
+> > 
+> > 							Thanx, Paul
+> > 
+> > > > /**
+> > > >    * queue_work_on - queue work on specific cpu
+> > > >    * @cpu: CPU number to execute work on
+> > > >    * @wq: workqueue to use
+> > > >    * @work: work to queue
+> > > >    *
+> > > >    * We queue the work to a specific CPU, the caller must ensure it
+> > > >    * can't go away.  Callers that fail to ensure that the specified
+> > > >    * CPU cannot go away will execute on a randomly chosen CPU.
+> > > >    * But note well that callers specifying a CPU that never has been
+> > > >    * online will get a splat.
+> > > >    *
+> > > >    * Return: %false if @work was already on a queue, %true otherwise.
+> > > >    */
+> > > 
+> > > 
+> > > In that case, making offline CPUs have a unbound workqueue is wrong. no?
+> > > 
+> > > It might encourage more users to abuse queue_work_on interface to
+> > > send to offline CPUs without any checks and onus now falls onto
+> > > workqueue to disaptch to unbound wqs.
+> > > 
+> > > So I think it is better to put the guardrails in SRCU instead of any change in
+> > > workqueue.
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > commit f8d5aaaf90f8294890802ce8dccbafd9850ac5f9
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Thu Apr 9 11:16:02 2026 -0700
+> > 
+> >      srcu: Don't queue workqueue handlers to never-online CPUs
+> >      While an srcu_struct structure is in the midst of switching from CPU-0
+> >      to all-CPUs state, it can attempt to invoke callbacks for CPUs that
+> >      have never been online.  Worse yet, it can attempt in invoke callbacks
+> >      for CPUs that never will be online due to not being present in the
+> 
+> for CPUs that never will be online due to being present in the cpu_possible_mask?
+> 
+> >      cpu_possible_mask.  This can cause hangs on s390, which is not set up to
+> >      deal with workqueue handlers being scheduled on such CPUs.  This commit
+> >      therefore causes Tree SRCU to refrain from queueing workqueue handlers
+> >      on CPUs that have not yet (and might never) come online.
+> >      Because callbacks are not invoked on CPUs that have not been
+> >      online, it is an error to invoke call_srcu(), synchronize_srcu(), or
+> >      synchronize_srcu_expedited() on a CPU that is not yet fully online.
+> >      However, it turns out to be less code to redirect the callbacks
+> >      from too-early invocations of call_srcu() than to warn about such
+> >      invocations.  This commit therefore also redirects callbacks queued on
+> >      not-yet-fully-online CPUs to the boot CPU.
+> >      Reported-by: Vasily Gorbik <gor@linux.ibm.com>
+> >      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >      Tested-by: Vasily Gorbik <gor@linux.ibm.com>
+> >      Cc: Tejun Heo <tj@kernel.org>
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index 0d01cd8c4b4a7b..7c2f7cc131f7ae 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -897,11 +897,9 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
+> >   {
+> >   	int cpu;
+> > -	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+> > -		if (!(mask & (1UL << (cpu - snp->grplo))))
+> > -			continue;
+> > -		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+> > -	}
+> > +	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++)
+> > +		if ((mask & (1UL << (cpu - snp->grplo))) && rcu_cpu_beenfullyonline(cpu))
+> > +			srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+> >   }
+> >   /*
+> > @@ -1322,7 +1320,9 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+> >   	 */
+> >   	idx = __srcu_read_lock_nmisafe(ssp);
+> >   	ss_state = smp_load_acquire(&ssp->srcu_sup->srcu_size_state);
+> > -	if (ss_state < SRCU_SIZE_WAIT_CALL)
+> > +	// If !rcu_cpu_beenfullyonline(), interrupts are still disabled,
+> > +	// so no migration is possible in either direction from this CPU.
+> > +	if (ss_state < SRCU_SIZE_WAIT_CALL || !rcu_cpu_beenfullyonline(raw_smp_processor_id()))
+> 
+> How can this happen? To get a CPU offline in raw_smp_processor_id() you need to run on the offline
+> CPU.
 
-On 30/04/26 8:30 pm, Paul E. McKenney wrote:
-> On Thu, Apr 30, 2026 at 11:49:02AM +0530, Samir M wrote:
->> On 29/04/26 11:21 pm, Shrikanth Hegde wrote:
->>> Hi Samir.
->>>
->>> On 4/29/26 3:46 PM, Samir M wrote:
->>>> Hi Boqun,
->>>>
->>>> Thank you for pointing me to the existing patches. I have tested
->>>> both Paul's patch [1] and TJ's workqueue patch [2] on my PowerPC
->>>> system (80 CPUs), and can confirm that the workqueue lockup issue is
->>>> not observed.
->>>>
->>> Can you try only paul's patch and confirm if the issue is fixed?
->>>
->> Hi Shrikanth,
->>
->> I have verified Paul’s “alone” patch, and it resolves the issue no workqueue
->> lockups are observed.
-> Thank you, Samir!  May I add your Tested-by?
->
-> 							Thanx, Paul
+CPUs run for a surprisingly long time before they get around to marking
+themselves online.  If a CPU invokes call_srcu() during this time,
+this code really will be running on a CPU that is marked as offline.
 
-Hi Paul,
+Now, my initial thought was to instead splat if this happened, but it
+turned out to require more code to reliably splat than to just handle
+the situation correctly.  So here we are!  ;-)
 
-Yes, you may add:
-Tested-by: Samir <samir@linux.ibm.com>
+							Thanx, Paul
 
-Thanks,
-Samir
->> Regards,
->> Samir.
->>
->>
->>>> Test Environment:
->>>> - System: PowerPC with 80 CPUs ( e.g. PowerPC LPARs with 80 online
->>>> and 384 possible CPUs)
->>>> - Kernel version: Latest upstream (7.1-rc1)
->>>>
->>>> Regression Testing Results:
->>>> All tests completed successfully with no issues observed:
->>>> - Hackbench
->>>> - Kernel selftests
->>>> - LTP scheduler tests
->>>>
->>>> The workqueue lockup that was previously occurring is no longer
->>>> present with the patches applied.
->>>>
->>>> References:
->>>> [1]: https://lore.kernel.org/rcu/ed1fa6cd-7343-4ca3-8b9d-
->>>> d699ca496f83@paulmck-laptop/
->>>> [2]: https://lore.kernel.org/rcu/adlHKowvhn8AGXCc@slm.duckdns.org/
->>>>
->>>> Best regards,
->>>> Samir
+> >   		sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
+> >   	else
+> >   		sdp = raw_cpu_ptr(ssp->sda);
+> 
