@@ -1,232 +1,234 @@
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F63539A07B;
-	Thu, 30 Apr 2026 07:08:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6AA3FFADC
+	for <rcu@vger.kernel.org>; Thu, 30 Apr 2026 12:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777532916; cv=none; b=isnQSA3UQXW7jYk0ft/BZFeyqPtA6DTNyhqfz7GaOVYSjEtUrBBe30vAPNkNTlb6tyrkE2Hv+ikOjplDfMb6zC/Cm/DqR9WGdQWTXpEkf5/3aAYeQk3AhwNL670ctWsZCxIrKsD84VE005uuD29Bqzjfc0x15t+aRVA2EZ4rAzQ=
+	t=1777551065; cv=none; b=hkAggGcfhuO3sIA8Iw1NcuyJNdqAvesy8XBL8oD5Z6ysATOaibUVucgmfOzd6Ms8Of2NqeadYiHX505eCEZvmZYBpi+80oUxnPtyVvnnrCprwcZBlYLMraFhkIF3bdQOm7HJ/6miiT6yXOALSOi0TV87wqrnKX0+YbMxKHcq0e4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777532916; c=relaxed/simple;
-	bh=FAnv6LG3uppanLitZxS2+wtksEbIp/SAvUcVwuCRFbY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tKaqqxIII4/XGKt2pAbTch1H9mEG3SQn3ImPIu8hZEgkovqD6ZoA/ABmLklE//5ZciQV7FVZm1KIPMzhX8GkuJr4OhZppwKtHSAwAuOrFNZCxSO2toNu31IxLT0PBARtAdnWBLzdubxpMTn+r8oGCUB9twFQmRueWF/S04NJErY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=DloasYxR; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	s=arc-20240116; t=1777551065; c=relaxed/simple;
+	bh=UeMZdvydeo3t22LoSaW6/DX+kcp2q0/JAz1hNDNMCA0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MYaxouEKwbQkLl3YzxaSE2Az73B6ov89MdYLP18mDqsbl7snQpT5bumYdlCTK5iCSi6PJL5Y30C/tzfgKyGno4JuFCRQCCc44s8SyYwOWXcs6bw1NLiEQlQx44YBfG3k2biI0FXCKXByWXkooZqFnfYEmMrvk2Pkm538t7oJAKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YzByj9IY; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DloasYxR"
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63TInL9O2688397;
-	Thu, 30 Apr 2026 07:08:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=R3XxjD
-	kkhfa328K+AWP8Zweav112m51dlURxGRxS54E=; b=DloasYxRJ4VPrHQbxftUcb
-	41gGGLhRessRlcENnubvw6CWp9G1TqtWmyFHiJmeXz1KS1kQ4SbpdrYnUSpTdQ5v
-	QKrNf7Al7AfyaKFQqG7CGKXD5ZIGdvwM+3/1hT4fR+H3Sb9vmUAhrknht9QvVdEu
-	WvaAlabOE/w5S3SuSyj3E1FcrpRSK+zG4sHsrAeVZgA+N+O856+0iooiZRyvccpK
-	kpQH4FxAXEp7yiUleQYFjFfJihme0P28UetbLz3hH+xEQewaEaswHDW/c/YQKrg0
-	zxUQenB2QMDjRb3G1q7xe6hAHS0afQ9TftVt8RdSvTZYMMNEj17I+m2N/1xUfbSg
-	==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4drn9recdt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Apr 2026 07:08:27 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 63U6rpiO024424;
-	Thu, 30 Apr 2026 07:08:26 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dsamyhkue-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Apr 2026 07:08:26 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 63U78MXM53019094
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 30 Apr 2026 07:08:23 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EDF0E2004E;
-	Thu, 30 Apr 2026 07:08:19 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 470D820043;
-	Thu, 30 Apr 2026 07:08:17 +0000 (GMT)
-Received: from [9.123.5.233] (unknown [9.123.5.233])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 30 Apr 2026 07:08:17 +0000 (GMT)
-Message-ID: <868cbc25-45a9-4476-b77e-7f878f1cd42c@linux.ibm.com>
-Date: Thu, 30 Apr 2026 12:38:16 +0530
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YzByj9IY"
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5a40b2bc96dso846355e87.3
+        for <rcu@vger.kernel.org>; Thu, 30 Apr 2026 05:11:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1777551062; x=1778155862; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=t1qpxAkuAsOwU5i725XJCGiCdOGB9mh34dV03O6Zark=;
+        b=YzByj9IY63ORNA386+zCVGO5R3Zw1m97dEnQVXRa4RmEQyF5+n1Ru79RNitwigAP8d
+         BR2OX0apDiV7Utx3W55ttUQtPYGYvE0WJUOf0F7+uT7xIRqlCp2ZERssCxrRJYSgEceE
+         hN3eVs70idcHe9YLVcBZON1Sr2FTNpQAq6qW8AJrRj+BwC4BMIrHL2H4O0lkSPFDQX82
+         5SRYmZN9paJonDFtq3Wsal+q74gNYXb9P67PNsKkvpKXUPivUQSZ2+BpV3dTMROPXjQQ
+         +V8TyAuyc8GTY6eAZoj81A7PNZZjXcvmuYNSsIGfz8shCA5NSMU8xa6PFV+GdCMY8qKg
+         mqOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777551062; x=1778155862;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t1qpxAkuAsOwU5i725XJCGiCdOGB9mh34dV03O6Zark=;
+        b=qSa2ZGVOBLEnY/+cmQHWxepK6gnME1S16Q5kzPPFQ6byu+fFsRwO0n7tdL8ikwYdfi
+         XVZPixcpBLWosDuZB8oBAEyeGv5oWwtE09nzaVVI5xykH9e3wTbX2hmbGxgIrthTZJiU
+         CevWg8nZi+WQeUEBitFH2tXea0P5z0l2LIf6SEhNYxGGF2efIDZGHZh1AoPTiuIeUT2d
+         fXvWuFag1yh5VlhKx5lV+nEWYcK2fxuvVrruVIBCO09ZGwgdGWh+WX4/bDljxanQmXu9
+         SpX200P5G+RSiUY4yDMAvnnV17Ljcj72mBp9yf4YZPbGkqgU3LgyuljykEplxYO8Vs8Q
+         Q1HQ==
+X-Forwarded-Encrypted: i=1; AFNElJ+7Ilu6/o4LAOx7VhHQptMdwDxSaaRPvt30FdQLT4MW2hxHP1WcVt80IBAq7xe+KxXLKvU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5Cw2rQhfMnwKM1b+jeObaOQhZ2x0nrFcD+UKapkPC9VFide8b
+	Q5kPY0hkPdnzNDL8P7Y0KXT5jVAx3XmTauTh3BfhiZV0Rj1Qh7hKZk1P
+X-Gm-Gg: AeBDies2wqAsDZAVLz1u6kUz0RQur/93z2GqzAc7D8fOafkZik0F9uZUfGMDYA+3QxM
+	DkNtrftNa1kSfV8R6MkjHS8NXDbmX38BitDbUpyluBjvdtjOk6wVGOLXsQEHF6X5uriajFCFR5d
+	2koSwJF9xQOC7SHyTunqHdisl6HCWHAD0FUEPWm+qgyxXpIqwWlfTypw1+3rhKneMAII1xuj6WG
+	vtl1sgLnKR4onPEjn8CsqKlIPg61rJefwQyVRELIWIIZBzvN86WXJPDp9ioLUljICzHC9aJ7Yq3
+	eKdN4hxuEe/ratztQw+PaZzfd4zpLTb0uIOvC+jI/Knt5IWBiv779xqpDrj47fiH27i+kQbTNBD
+	NUJAZh6TpGqU+kOkOhTlSX3oXaVMtpUIiM/JWmZL3KBrdUPmQeHYwa8T1sX4t9jQmqfViWoLF5R
+	1a08/F2i/+OS4W2NT4zvBPg8m4Ie+eiA3PQNwHSafIomV1EEHlNIytkinx
+X-Received: by 2002:a05:6512:1092:b0:5a4:1add:c574 with SMTP id 2adb3069b0e04-5a8522b1d5emr849686e87.5.1777551061318;
+        Thu, 30 Apr 2026 05:11:01 -0700 (PDT)
+Received: from pc636 (host-95-203-5-23.mobileonline.telia.com. [95.203.5.23])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5a74a769570sm1386080e87.66.2026.04.30.05.10.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2026 05:11:00 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 30 Apr 2026 14:10:58 +0200
+To: "Harry Yoo (Oracle)" <harry@kernel.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hao Li <hao.li@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Zqiang <qiang.zhang@linux.dev>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH 4/8] mm/slab: introduce kfree_rcu_nolock()
+Message-ID: <afNG0jNQNYeZ940g@pc636>
+References: <20260416091022.36823-1-harry@kernel.org>
+ <20260416091022.36823-5-harry@kernel.org>
+ <aejeVK0J_jHSfVhD@milan>
+ <aemevSofweaUSx0n@hyeyoo>
+ <aeoD_Ts6hLsgNc9-@pc636>
+ <3s4jafam3la72a6y3dkfvhtzxk3fsngb2cka3bpfqrirl5m633@pz3vzizefoxb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BUG: workqueue lockup - SRCU schedules work on not-online CPUs
- during size transition
-To: paulmck@kernel.org
-Cc: Tejun Heo <tj@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>,
-        Srikar Dronamraju <srikar@linux.ibm.com>,
-        Boqun Feng <boqun@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-        Joel Fernandes <joelagnelf@nvidia.com>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>, samir@linux.ibm.com
-References: <ttd89ul@ub.hpns> <adfhWQr1yFImSM2Q@tardis.local>
- <adfkdRCxmhpRverB@tardis.local> <adfmHZfABu64Kv4D@slm.duckdns.org>
- <adfrfJGrglg0bGw_@tardis.local> <adlHKowvhn8AGXCc@slm.duckdns.org>
- <afIdFgDD9w2U6hZy@linux.ibm.com> <tte9m9z@ub.hpns>
- <3b1563df-b1aa-40b9-b83e-650d967df09c@paulmck-laptop>
- <3f6d1123-6e1a-4566-8be7-ce95efe0609c@linux.ibm.com>
- <7b5665b4-ddd0-404a-8314-fd0a170db458@paulmck-laptop>
-Content-Language: en-US
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <7b5665b4-ddd0-404a-8314-fd0a170db458@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-GUID: 6kFkMQZ6xgPUVW804RZfEpM_iLepMS3H
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDMwMDA2NSBTYWx0ZWRfX1eGA+z8+yzsp
- S7Ar2MOitozrZoXN0xNwSPGArCLxXhZEy5y8OqOdmoxTixZHDo6Hbaa/6/tcgC9YGnXMeWB2rxx
- /NEsP7TKtas1ATL05B1gdgo4owxA67AJNtZEyLGIQV7p+UmpU8Yqls1GrBZ1qC4EP402JpAmzHa
- FKg3Lmn2GB9CDQ+N+xFSM6cH9Y5sMyIqSaRqmWZPDIyys6to88Ihy6KwyvSbHjOZNaTvKyoCwRx
- 0R2TRX8aQqsO87P03jfe2f/c2GpQUNsWoeHAmBT1paWoC3sqJEtfG80FrUmZBDWAHv7xkljOtLO
- p6S5p8eoTKI+DQ0fmBLxT1xptRe9L0eh4lPt/yv2W51oSDjxHllNCFoGBCNs7tJW2YgN9/BBCkb
- nV93xtCTEoqYTr3nH8mVPgtvHUO5qCJaq43WNSneVoZ1YiGyWP2ITsvGTFP0O5A/xL/zIDGqLDf
- ba9JzszTREBkXulCEmA==
-X-Authority-Analysis: v=2.4 cv=Kc7idwYD c=1 sm=1 tr=0 ts=69f2ffec cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=IkcTkHD0fZMA:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
- a=VnNF1IyMAAAA:8 a=e3K_sr4fstJ4hurmY1cA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: 3WGH3OpalX2waNy5LWOflQxoC5lUDXuF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-30_02,2026-04-28_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 phishscore=0 bulkscore=0 adultscore=0 spamscore=0
- malwarescore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
- definitions=main-2604300065
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3s4jafam3la72a6y3dkfvhtzxk3fsngb2cka3bpfqrirl5m633@pz3vzizefoxb>
 
-Hi Paul.
+Hello, Harry!
 
-On 4/29/26 11:31 PM, Paul E. McKenney wrote:
+>
+> Hi Ulad. Apologies for the delayed response.
+> I meant to reply sooner but sidetracked by other issues.
+> 
+No problem, sometimes i also can lag because of other tasks :)
 
->> That mask = ~0 is really looks uncomfortable to me. What does it mean?
->> It might end up even sending to non possible CPUs without proper checks.
->>
->> It should use either cpumask_setall? or use cpu_online_mask?
->>
->> Your current patch rcu_cpu_beenfullyonline indicates that code around
->> srcu_schedule_cbs_sdp handles hotplug already right?
->> in that case, just setting mask = cpu_online_mask would work?
+> Your questions are fair, but let me try to clarify
+> the current situation.
 > 
-> Agreed.  Which is why I have this commit queued:
+> And before diving into details, I would like to reiterate that
+> there are potentially two points to discuss here:
 > 
-> f8d5aaaf90f8 ("srcu: Don't queue workqueue handlers to never-online CPUs")
+> Point 1. Can we justify complicating subsystems by passing
+> 	 `allow_spin` parameter all over the place?
 > 
-> This is currently slated for the upcoming merge window, but if you
-> need it sooner, please let us know.  Please see the end of this email
-> for the full commit.
-> 
-> 
-> 							Thanx, Paul
-> 
->>> /**
->>>    * queue_work_on - queue work on specific cpu
->>>    * @cpu: CPU number to execute work on
->>>    * @wq: workqueue to use
->>>    * @work: work to queue
->>>    *
->>>    * We queue the work to a specific CPU, the caller must ensure it
->>>    * can't go away.  Callers that fail to ensure that the specified
->>>    * CPU cannot go away will execute on a randomly chosen CPU.
->>>    * But note well that callers specifying a CPU that never has been
->>>    * online will get a splat.
->>>    *
->>>    * Return: %false if @work was already on a queue, %true otherwise.
->>>    */
->>
->>
->> In that case, making offline CPUs have a unbound workqueue is wrong. no?
->>
->> It might encourage more users to abuse queue_work_on interface to
->> send to offline CPUs without any checks and onus now falls onto
->> workqueue to disaptch to unbound wqs.
->>
->> So I think it is better to put the guardrails in SRCU instead of any change in
->> workqueue.
-> 
-> ------------------------------------------------------------------------
-> 
-> commit f8d5aaaf90f8294890802ce8dccbafd9850ac5f9
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Thu Apr 9 11:16:02 2026 -0700
-> 
->      srcu: Don't queue workqueue handlers to never-online CPUs
->      
->      While an srcu_struct structure is in the midst of switching from CPU-0
->      to all-CPUs state, it can attempt to invoke callbacks for CPUs that
->      have never been online.  Worse yet, it can attempt in invoke callbacks
->      for CPUs that never will be online due to not being present in the
+Yes, we can. But as i noted i see some drawbacks :)
 
-for CPUs that never will be online due to being present in the cpu_possible_mask?
+- all new incoming patches have to respect that new third argument;
+- the fallback mechanism which uses irq-work is not optimal in my
+  opinion:
+    a) We introduce an extra window between queuing a pointer, mark
+       irq-work to be executed and then reenter the kfree_rcu() with
+       no-sync flag and now we need to wait a GP for them. But the GP
+       might be already passed for such pointers. So we potentially
+       need more time to offload. This is rather minus.
 
->      cpu_possible_mask.  This can cause hangs on s390, which is not set up to
->      deal with workqueue handlers being scheduled on such CPUs.  This commit
->      therefore causes Tree SRCU to refrain from queueing workqueue handlers
->      on CPUs that have not yet (and might never) come online.
->      
->      Because callbacks are not invoked on CPUs that have not been
->      online, it is an error to invoke call_srcu(), synchronize_srcu(), or
->      synchronize_srcu_expedited() on a CPU that is not yet fully online.
->      However, it turns out to be less code to redirect the callbacks
->      from too-early invocations of call_srcu() than to warn about such
->      invocations.  This commit therefore also redirects callbacks queued on
->      not-yet-fully-online CPUs to the boot CPU.
->      
->      Reported-by: Vasily Gorbik <gor@linux.ibm.com>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->      Tested-by: Vasily Gorbik <gor@linux.ibm.com>
->      Cc: Tejun Heo <tj@kernel.org>
+    b) Since it is for BPF, allow_spin is always false, thus only
+       fallback path is used. Decoupling comes to mind.
+
+    c) 
+
+Why should we mix those? What it is worth to do, is to prevent mixing
+"unknown path which is for BPF/others" with generic kfree_rcu().
+
+It is easier to go that way and more cleaner, IMO. We need less code
+and we fix a specific requirements.
+
+>
+> Point 2. Can we avoid adding this complexity to kvfree_rcu() and
+> 	 let slab handle it instead? (as mentioned in [4])
 > 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 0d01cd8c4b4a7b..7c2f7cc131f7ae 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -897,11 +897,9 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
->   {
->   	int cpu;
->   
-> -	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
-> -		if (!(mask & (1UL << (cpu - snp->grplo))))
-> -			continue;
-> -		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
-> -	}
-> +	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++)
-> +		if ((mask & (1UL << (cpu - snp->grplo))) && rcu_cpu_beenfullyonline(cpu))
-> +			srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
->   }
->   
->   /*
-> @@ -1322,7 +1320,9 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
->   	 */
->   	idx = __srcu_read_lock_nmisafe(ssp);
->   	ss_state = smp_load_acquire(&ssp->srcu_sup->srcu_size_state);
-> -	if (ss_state < SRCU_SIZE_WAIT_CALL)
-> +	// If !rcu_cpu_beenfullyonline(), interrupts are still disabled,
-> +	// so no migration is possible in either direction from this CPU.
-> +	if (ss_state < SRCU_SIZE_WAIT_CALL || !rcu_cpu_beenfullyonline(raw_smp_processor_id()))
+it depends if BPF people want to free a pointer using RCU machinery?
+Do you know if that an intention?
 
-How can this happen? To get a CPU offline in raw_smp_processor_id() you need to run on the offline
-CPU.
+> On Point 1: IMHO it could be justified, but at the same time I hope we
+> end up avoiding more complexity in the long term by working on Point 2.
+> 
+> This reply focuses only on Point 1 and explains why it could be
+> justified.
+> 
+> On Thu, Apr 23, 2026 at 01:35:25PM +0200, Uladzislau Rezki wrote:
+> > On Thu, Apr 23, 2026 at 01:23:25PM +0900, Harry Yoo (Oracle) wrote:
+> > > On Wed, Apr 22, 2026 at 04:42:28PM +0200, Uladzislau Rezki wrote:
+> > > How much performance do we sacrifice compared to
+> > > letting them go through the kvfree_rcu() fastpath?
+> >
+> > Freeing an object over RCU from
+> > NMI context is a corner case. It is __not_ generic.
+> 
+> First, I want to clarify that kfree_rcu_nolock() is not just for NMI
+> context. It is intended to be used when the context is unknown (because
+> it can be called in an arbitrary code locations).
+> 
+When we say "unknown" to me it sounds like a worst case, which is NMI :)
 
->   		sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
->   	else
->   		sdp = raw_cpu_ptr(ssp->sda);
+> There are two kinds of problematic situations where BPF programs
+> are attached to:
+> 
+>   - 1) a tracepoint or a function that can be invoked in a critical
+>        section (w/ a lock held), or
+> 
+>   - 2) a function that can be called in an NMI context, which might
+>        preempt an arbitrary context holding a lock.
+> 
+> While 1) and 2) are not (I think) dominant use cases, and although
+> most of users can legally call kvfree_rcu(), BPF can't use kvfree_rcu()
+> and must consider the most restrictive contexts.
+> 
+> > We even do not have(now
+> > in mainline) users because we never support it from NMI,
+> > just like call_rcu().
+> 
+> Unfortunately, we've had this use case (of allocating memory for BPF
+> programs) for a long time in the mainline. There are two current
+> approaches to mitigate the limitation:
+> 
+>   - 1) Pre-allocate all memory. e.g.) allocate all hash table elements
+>        when creating a BPF map, rather than allocating them on demand.
+>        This ensures correctness but sacrifices memory.
+> 
+>   - 2) Use the BPF-specific memory allocator [1] [2] to allocate memory
+>        on demand and avoid preallocation. While this wastes less memory
+>        than 1) and also maintains performance, it is re-inventing yet
+>        another memory allocator.
+> 
+>        Also, the allocator reinvented kfree_rcu batching as well.
+> 
+> Now, we're trying to avoid 1) and 2) as much as possible and use
+> kmalloc_nolock() instead [3].
+> 
+> > If BPF needs
+> > it, then the first question which comes to mind is not about performance.
+> > It is how to support this case in kfree_rcu() without adding noticeable
+> > complexity or overhead or hacks to the generic path without making it harder
+> > to maintain.
+> 
+> Since there will be only few subsystems that needs it, and because
+> they already use it on production systems, I don't see much value in
+> maintaining a simple implementation if that compromises performance
+> (and thus make the transition harder).
+> 
+> > Performance wise you noted, you mean:
+> > 
+> > a) call latency(this is probably the most important for NMI)?
+> > b) memory footprint?
+> > c) pointer-chasing overhead?
+> 
+> I think it's either
+> 
+> - The performance of kfree_rcu_nolock() itself (a), or
+> - Not distrubing workloads running on the machine (b and c)
+> 
+> depending on what people use BPF for.
+> 
+Are you aware of any specific workloads which we can run? To test
+and see what we have when it comes to performance metrics? I mean
+exact uses cases with exact steps who to trigger them?
 
+That would be useful to see on behaviour.
+
+Thank you!
+
+--
+Uladzislau Rezki
