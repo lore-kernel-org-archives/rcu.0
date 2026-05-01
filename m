@@ -1,114 +1,98 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CAF428466;
-	Thu, 30 Apr 2026 16:10:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7D9382F24
+	for <rcu@vger.kernel.org>; Fri,  1 May 2026 09:51:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777565425; cv=none; b=XwWWIRbNBPythtqPMzuDGoClqZjFrIWiuAd91lGsOAXJv5uM/cEfIOtBh5okjmyNC/2Xgs6+wsQdXRjr6trj4ZiTP1opc2V9P+Ugaxf5u4sPlG8lxJ0VD6nhsXARPzCpWQOnPms2LjJJK98b4BsrJzw3fhosY+iykE6FVusWfzc=
+	t=1777629082; cv=none; b=nraXtV/jNTkMJxcRFJR+88pQX+/HMvofe93OkNlMW6zFirdTBml5cVbIv/d/rD4fUuX7ir+11oV6dTP0itkyvF+gQzsezPNo+Ri1n9NCHWwzrNx4jvdGN7CYh01zEPtFg8DomaqvydQkNSUpb/pcDCgZQ0hXDTj2K8yZFCbUPqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777565425; c=relaxed/simple;
-	bh=QdgE57g6+6+hFttnEXOHpTlvJqhdbsn/S9w+uyH+S1c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lZu8ZfNgrwaXAEvY1WSg7cOKuhdUUFvbLWozXsZX+tRm71a1FbTJyvuygZzkMhwbteck/secoahk2Yhh7sRPVNOfbpn6HX7LAA/etKJeduRZFSThN2GpSk6gZM/bARuPxSiiZ7nqlaxPZCkxj12cSw44jE3DUHtcqtVJSFCBtaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EvhFPh3F; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1777629082; c=relaxed/simple;
+	bh=iK/inTQXXe2W33q+2ejIJxYil1ZGxCcgNGcNTjVfVqE=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=XTa5qP7IkZGu1qQY/wdxvPkkmntBrWYvfJWTyIAWv6FrNOVZkbbmXwBBCGta/Nd+2dkDTiCpLPoFBV6qNzn2HLqrCLBTX5e0YZOVptDhkbLpuk5ObJNbRREtuHE81eFmlDbosvbSur8kcsWH0g7YzdMeQpl/1L8U26FT+7doGJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZtfcCaLa; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EvhFPh3F"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C404EC2BCB3;
-	Thu, 30 Apr 2026 16:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777565424;
-	bh=QdgE57g6+6+hFttnEXOHpTlvJqhdbsn/S9w+uyH+S1c=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=EvhFPh3FrK8EeatVv76smg/5O4TuFjDOXzhiFjwRatqOcrVlcbjtUl8YvOiCKSRSW
-	 AoC8e6w3gy/q50xcCcA9IR3isgLkGyxP0M1MguF8v4sdIizwy6IrODCF6S1m8N8whm
-	 zK9fA0I+yzNDnByOVU0hBzjXATXsrhO2A4eUc19G8WbYKjkdEyG0sP8CjT5fdl3iRc
-	 wP1WlApWxw1h3uRyt/VQMWLrUrkI/3HouLHmvsbHOV+WOeseUPIiboSa0dR6eOgID7
-	 pIFKcaWHcZnCY7swjcUxbgWhoDtzbWxT1Hci//3wc5LhnaVFPB/+E9zy3ur+WH/jeB
-	 wtVrkvtOBs3Vw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3E3D9CE0712; Thu, 30 Apr 2026 09:10:24 -0700 (PDT)
-Date: Thu, 30 Apr 2026 09:10:24 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: Tejun Heo <tj@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>,
-	Srikar Dronamraju <srikar@linux.ibm.com>,
-	Boqun Feng <boqun@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-	Lai Jiangshan <jiangshanlai@gmail.com>, samir@linux.ibm.com
-Subject: Re: BUG: workqueue lockup - SRCU schedules work on not-online CPUs
- during size transition
-Message-ID: <c62502b6-642d-487d-a8a2-4ed7f9c7d858@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <adfkdRCxmhpRverB@tardis.local>
- <adfmHZfABu64Kv4D@slm.duckdns.org>
- <adfrfJGrglg0bGw_@tardis.local>
- <adlHKowvhn8AGXCc@slm.duckdns.org>
- <afIdFgDD9w2U6hZy@linux.ibm.com>
- <tte9m9z@ub.hpns>
- <3b1563df-b1aa-40b9-b83e-650d967df09c@paulmck-laptop>
- <3f6d1123-6e1a-4566-8be7-ce95efe0609c@linux.ibm.com>
- <7b5665b4-ddd0-404a-8314-fd0a170db458@paulmck-laptop>
- <868cbc25-45a9-4476-b77e-7f878f1cd42c@linux.ibm.com>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZtfcCaLa"
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <868cbc25-45a9-4476-b77e-7f878f1cd42c@linux.ibm.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1777629067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KXdFBx8l3tGZes4ujoaocRj3EKhi8wM6pgwvAxaoGBA=;
+	b=ZtfcCaLazBolB4/VlQ0LaPzoKu4Ng703NTgA/qwXY4I9AkgFiMOnWok7yaN/V6hCT9PVcL
+	LVveJlxCP8Ts2wTfD5kL7fqk8XtnUYrQGURP2rNEBCPwYCOeg88JXXWrmd5YN0WOtM/0wD
+	8nsmz2nwggH+JScFjPlRrrQ9/Wbrjbg=
+Date: Fri, 01 May 2026 09:51:04 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Kunwu Chan" <kunwu.chan@linux.dev>
+Message-ID: <a66e8fbcc197cd25b234d946f818f97d6b76bab8@linux.dev>
+TLS-Required: No
+Subject: Re: [RFC PATCH 0/3] srcu: KVM: Add, export and use
+ call_srcu_expedited()
+To: "Sean Christopherson" <seanjc@google.com>
+Cc: "Lai Jiangshan" <jiangshanlai@gmail.com>, "Paul E. McKenney"
+ <paulmck@kernel.org>, "Josh Triplett" <josh@joshtriplett.org>, "Paolo
+ Bonzini" <pbonzini@redhat.com>, rcu@vger.kernel.org, kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "Nikita Kalyazin" <kalyazin@amazon.com>,
+ "Keir Fraser" <keirf@google.com>
+In-Reply-To: <abSZyLff5y-IQ0Ix@google.com>
+References: <20260309193059.2244645-1-seanjc@google.com>
+ <067c53cc-b015-43c6-9ba3-c734eff17819@linux.dev>
+ <abSZyLff5y-IQ0Ix@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 30, 2026 at 12:38:16PM +0530, Shrikanth Hegde wrote:
-> Hi Paul.
-> 
-> On 4/29/26 11:31 PM, Paul E. McKenney wrote:
+[...]
+> I'm all for a general solution, but that's far, far beyond my SRCU know=
+ledge level.
+> I was quite proud of myself for piecing together the incurred-delay. :-=
+)
+>=20
+>=20FYI, I'm going to be unavailable for ~2 weeks. Nikita (Cc'd) can like=
+ly help test
+> potential fixes.
+>=20
+Hi=20Sean, hi Nikita,
 
-[ . . . ]
+Some data points on the RFC scenario.
 
-Sorry, missed one...
+The setup follows the pattern discussed in the RFC:
+a call_srcu()-like path that can start a non-expedited GP,
+followed by a synchronize_srcu_expedited()-like wait on
+the same SRCU instance.
 
-> > ------------------------------------------------------------------------
-> > 
-> > commit f8d5aaaf90f8294890802ce8dccbafd9850ac5f9
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Thu Apr 9 11:16:02 2026 -0700
-> > 
-> >      srcu: Don't queue workqueue handlers to never-online CPUs
-> >      While an srcu_struct structure is in the midst of switching from CPU-0
-> >      to all-CPUs state, it can attempt to invoke callbacks for CPUs that
-> >      have never been online.  Worse yet, it can attempt in invoke callbacks
-> >      for CPUs that never will be online due to not being present in the
-> 
-> for CPUs that never will be online due to being present in the cpu_possible_mask?
+KVM selftest setup, BPF tracing.Single VM, single vCPU.
+Guest holds a long measured window (~8s, fixed in selftest).
 
-Exactly.
+Baseline:
+  In 5 recent 10-run batches, the no-preemption case produced
+  a single >1ms sample in total.
 
-Just because a CPU is in cpu_possible_mask doesn't mean that it will
-ever actually come online.  For example, for single-threaded performance
-reasons, a given system might choose to bring online only one CPU from
-each hypertheaded core.  In that case, the other CPU in each hyperthreaded
-core could be in the cpu_possible_mask, but would never come online.
+With same-CPU preemption:
+  >1ms reproduces consistently and shows up in most runs.
 
-							Thanx, Paul
+For >1ms samples, sched_switch/off-CPU attribution lines up
+with switch-out in the same measured window.
 
-> >      cpu_possible_mask.  This can cause hangs on s390, which is not set up to
-> >      deal with workqueue handlers being scheduled on such CPUs.  This commit
-> >      therefore causes Tree SRCU to refrain from queueing workqueue handlers
-> >      on CPUs that have not yet (and might never) come online.
-> >      Because callbacks are not invoked on CPUs that have not been
-> >      online, it is an error to invoke call_srcu(), synchronize_srcu(), or
-> >      synchronize_srcu_expedited() on a CPU that is not yet fully online.
-> >      However, it turns out to be less code to redirect the callbacks
-> >      from too-early invocations of call_srcu() than to warn about such
-> >      invocations.  This commit therefore also redirects callbacks queued on
-> >      not-yet-fully-online CPUs to the boot CPU.
-> >      Reported-by: Vasily Gorbik <gor@linux.ibm.com>
-> >      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >      Tested-by: Vasily Gorbik <gor@linux.ibm.com>
-> >      Cc: Tejun Heo <tj@kernel.org>
+In this setup, >1ms is mostly off-CPU time,not continuous in-CPU executio=
+n.
+
+Question on the original report:
+when synchronize_srcu_expedited() delay was observed,
+was the host mostly idle/bursty, or under steady load?
+
+Can share repro details if needed.
+
+Thanks,
+Kunwu Chan
