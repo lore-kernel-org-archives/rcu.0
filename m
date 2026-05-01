@@ -1,61 +1,63 @@
 Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 142CC1A6802
-	for <rcu@vger.kernel.org>; Fri,  1 May 2026 13:16:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0251D6DA9
+	for <rcu@vger.kernel.org>; Fri,  1 May 2026 13:16:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777641391; cv=none; b=ad7BlGWaHXePPjCqGWD9eUjMmC0j7RBwwhmlnKGbdN2pz6qvzbq/QnxrM7RqH02AGpr2MUmcw3T5Lv8kUNQdjVx6kDRjf+EvTj6v1zv7260byd/fXzLaJv7gt133axARfCiAdhYqqtXGJLeDUDPoA70N3NNNwa8SollibhyCEkI=
+	t=1777641393; cv=none; b=JpwiOmCaOdblmRXmyQxVSUCW4QYFfet9dEEj0rOmLHffyQR2XY3MmeKL2lR0feO6dhWLqbzk2j/9wfOcnZBJqZJqgWpGAIZ9vkt6oP+uzXXKNZntmCSGeiFV+GOJ9BQqmjUx9GqagdJbT4Wf6xJTm6/qkjwEKvhi6V0Xdac+LRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777641391; c=relaxed/simple;
-	bh=+41dixGNeuD2dVMUdxAXfx15jbMsmmmXJdlPS6imaks=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=joH074Fe1TE6H9UNwBtjQ9SpBaOxgupbD7sY2EUQDxQ0Fr0/kUWG/CPXoKVHnOE2upayKhQC4242QrNq1z10DJ87UkMMP+vdGOs6tHJxBvBJzSSkGNLKEU5aCYfJziidRApSugGadeVBvkBfx0/yQ/jemYcJ3kkYBuA6yT/rhOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YcPox11D; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1777641393; c=relaxed/simple;
+	bh=sTDR12sjqTwMm+r4fFdhIkquUwcGi7MUb8j8uCRfvQY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=segNJvvtpRDWlBhy7ud8Ltb34bhd+Rtm5uB83ya4OsPnMu9HsQoI+wiG9PI8TJGEWMsBwRPLTPB8SscXbCDvP8+skXmag7RNoH0wTZW5d1KGr7v0luVhXwqIHcVGLossOTd8V6adIBlfcOAtqiT7HhSLr7L4hvWqLofAfSjHcOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FngKzejZ; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YcPox11D"
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2b788a98557so16444275ad.2
-        for <rcu@vger.kernel.org>; Fri, 01 May 2026 06:16:29 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FngKzejZ"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2b2503753efso19255335ad.0
+        for <rcu@vger.kernel.org>; Fri, 01 May 2026 06:16:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777641389; x=1778246189; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IVOgkFgOSAS8LAKhbBot9eAfbt7830iNQpu7KWGXDJs=;
-        b=YcPox11DYNdlg7+cyaDmxZ2QuZudai+jthZywhBSIL3BupfC+4ulUprSb9jJ6Nmj9s
-         afQbKbxJPsa6qHanPSj+AM3xySsFUI8gPeDi8d+VQD4RO8HhZ7VsITjbluksJk6q2x/1
-         apXsdvDN6vzfGDtXRA8jzvl5azXH74ROhbTXPrUJsU89PaoMJD8XV9nJHNzJXqaCYZZS
-         vI6zJliET4YqQUCjR+6N5jq240zlRAbWsoUzat1GawvcW1WV9qzSLjr5XAKcOTLKZzST
-         FPtM3rs5kdMolVQ/l1IWkjbaYcmgcOQB5mWosz6U5If1YELvNqy3aW1e3Up5mCP/JBrQ
-         srUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777641389; x=1778246189;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1777641392; x=1778246192; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IVOgkFgOSAS8LAKhbBot9eAfbt7830iNQpu7KWGXDJs=;
-        b=OuHM1ka+gyfkrwFNrjYl0uiJP1MaWDRPeT1g//CddVGe9j2hGcw+izaMpzL5pyQO1A
-         1tj0jc15ClEOEiYRmXbhmazL4UZpRbWWQHAvZpnCRdTBQ669aCryIa9+xrcIx+uAWtUQ
-         Yp3EybuBPntoNwTIQJgRiFaCeb13/Me3efXIgyR8yCL1NjUi0RXuB9AwliaD1EYhrBK6
-         PDrUxWjWtWokKnZW4U1fo4ZeZYsAnELbIoWjCoNoBXEoz64cS/bQKSB/413ZsUow4sXs
-         qk1PE5jfrJB7RQi7F/ZEjsFIZpLspOHV5boQHocUHeujIBIVj9YDjXXaN55eX3I9z79D
-         EXew==
-X-Forwarded-Encrypted: i=1; AFNElJ+G4guVBQcgKidB4ziujoFzdiSCZ5ESoAl0DZFrcrvcW5JvVKvDC80hhccMWzVnSS5MCwo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyheKcaba6WEiuOS1LXRMY63dcgHSGtutRwBT+ylGvYuAPpSpqZ
-	8CdMPG9dTFFNiZIGTFzFQEkr/mooTNyIkZRVealM8A0acqQ3+Qo1eL6A
-X-Gm-Gg: AeBDieu8ZiZVE6rgpDTvL/Oa9keFJhWrRpjPTFpEIPn51LOjVqUZBntpP7sIv1bqVDT
-	4hMzMIZjPvHOrarj+LmJH26ac/2Q7RYaqrXm20pmw8j8uM30JE6k/Lky860Z+3dQqNy+X571vr7
-	8e3BTQQob0mhybweR7SBgB4BsfpTv22DfxnF0/aKVaLR+Rq4nl2H3C3XQLKAmzamCEWA0FvkkIQ
-	y38a3Qf5iVsTIXXgbqPxh4GuJRriFbC41nDHXi+Rl5kjMcCmEmGXw4ogeEBn5Bha7PN3SB2SPT/
-	6j7/LUdLpW3rhyqBhIwZiCwI8sGgcp0iPXZW9lL96W3Z0tBmujDKdxWRSO5PjghGnVYrNO2xviW
-	gPQnUwKk/9p3jwh1BTUWR1kgZV5xUJ/auL+Opywucsl1GOWkdRqkyw9m4yAKtk3sar2kKJ0jSi/
-	EQ+ixk94J0uCNvqGjKh7TGu1JpQSM5ABY6H7wW2FMBawlyb/1tGYfiM6y2bGolvjY=
-X-Received: by 2002:a17:902:c209:b0:2b0:c45a:bc2 with SMTP id d9443c01a7336-2b9a2354024mr50552755ad.16.1777641389309;
-        Fri, 01 May 2026 06:16:29 -0700 (PDT)
+        bh=fSUUEhTxPVnTNICfoGoDgRMvs6IfWcbouR7fQZ1ACRQ=;
+        b=FngKzejZI6r7wA5Ta5sKG+y4Bw19tVRdMRnacCCstkDBIZYK2I6O6fg9xg0sXJdUMy
+         i80kkDq9uFc0UwstRGN362v+co2ljGpz7kyiCe9ZD3ITw4mz49E0NCX60CJ2tNCVtsiw
+         UUB2v40jc38RCbcsbiSWM851Jep4UCFRgQ2Fko0yUXWOOgzzZEWDPMekYL0ReQ0rTGnb
+         vieLLSjxi8sYDPEXyp+h8j0eq8Pq74D9thTj8zVdTWoNKMX9JYv5YApiUEVC11P166jF
+         fTXnaqUhIusO6L6DvremxbDX255CVGP+SILcSGgTl3zXRenzlCUmaG4YMbso924pPe0u
+         xDRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777641392; x=1778246192;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=fSUUEhTxPVnTNICfoGoDgRMvs6IfWcbouR7fQZ1ACRQ=;
+        b=QRFNf5zp1BdnoG8zI3DqjKq6/TOPx00SoiMEoUSSYYhorUGjiKPePtCxofInq+/sHq
+         fUbnjo15/44BwDC2+asXayQDivHSxlz96aj/ujaWcC0t9pxD4hhfcSnjo56cWB04e0y/
+         I2ZN+XqGnAI6Jm2S5dU8dhYdCdylLjCDGXXWQtay/hZKbq4QlGHIwZy9CIPwCR88tMtX
+         zr56m3WoOZKIuA+cW8C4lROHeRzIoZO7Xoc0WxIc11+jYdniIgYJjfwc9MOQNx4moD4u
+         EeFOm8p9C09hFlZVXb27B9VAEIc2htJHz53YyBLy9MNtO5LcnZve4iHL/k07bqMOY7pZ
+         7rVQ==
+X-Forwarded-Encrypted: i=1; AFNElJ+8RwvjO8FjM59wCHwK6y10ORdoxLHrplpwak4n8e5//BMqVWqZ4QUPCecUtt3cwidWSic=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwmgBb9wWfDOwBQAfyZbnG5tGE8ul0H6C3g+oW9LZqh6V/wAcne
+	Ge5+5k9N9EfevozmAJ7LvpQKgxo2iBRKOpEWmHwJYwq6QmSx2oh24Ypm
+X-Gm-Gg: AeBDievJaFQQHL8sHWr0+qFuaDVmiPqGJ7OPI5YABg31OYVNbS9DZm/bHydlviRyJBM
+	9lQGVkNokeDDqgYHLhE/YsKoz7fli6JWFoyjP6IKrveNyg5+kw8mN8587gKf6MoYmKo1LPM8cmZ
+	e4b1swEQoyKBtUcMIPxWdW7ZczeXmpEkkevXk2RxDl3LF6AnlA5rr4yuR5O1uVhgTh17348oJn+
+	l3zEKg8VQyVgAxjIHLAWaAGcYZgsnbWvBaOuxPW1sZq7cC52DaMfaFb4DM3Ky4BuK2DlsM2AJBX
+	r6GVMHbVxhPzJrir8LSZ3NXTn57hmsLTg34wOaleIlL6n5jLKCjaVWPivZowd8va+KHwJ2HLFVR
+	g+2I3GfcfZ1U/GYiyMU5+D08XpTreaLMa1YM1BUp4It6YgE7aQQrIZbhOt9FH43l6u5IiMoLSK8
+	SzPHOybjCfU4OHElvUakrJEWHtz8lYUv7S+67yh01SzIe70qVuEbkFP8UOaBLf5pI=
+X-Received: by 2002:a17:902:db0e:b0:2b4:5cea:f618 with SMTP id d9443c01a7336-2b9d36d7eb8mr34519585ad.3.1777641391704;
+        Fri, 01 May 2026 06:16:31 -0700 (PDT)
 Received: from eric-wcnlab.tail151456.ts.net ([2001:288:7001:1099:57df:16f5:b7ab:5d05])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b9cae59f62sm22438005ad.70.2026.05.01.06.16.27
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b9cae59f62sm22438005ad.70.2026.05.01.06.16.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2026 06:16:28 -0700 (PDT)
+        Fri, 01 May 2026 06:16:31 -0700 (PDT)
 From: Cheng-Yang Chou <yphbchou0911@gmail.com>
 To: sched-ext@lists.linux.dev,
 	Tejun Heo <tj@kernel.org>,
@@ -67,10 +69,12 @@ To: sched-ext@lists.linux.dev,
 Cc: Ching-Chun Huang <jserv@ccns.ncku.edu.tw>,
 	Chia-Ping Tsai <chia7712@gmail.com>,
 	yphbchou0911@gmail.com
-Subject: [PATCH sched_ext/for-7.2 0/2] sched_ext: Follow-up fixes for exit_cpu accuracy
-Date: Fri,  1 May 2026 21:14:55 +0800
-Message-ID: <20260501131521.161852-1-yphbchou0911@gmail.com>
+Subject: [PATCH 1/2] sched_ext: Normalize exit dump header to "on CPU N"
+Date: Fri,  1 May 2026 21:14:56 +0800
+Message-ID: <20260501131521.161852-2-yphbchou0911@gmail.com>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <20260501131521.161852-1-yphbchou0911@gmail.com>
+References: <20260501131521.161852-1-yphbchou0911@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -79,37 +83,26 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Follow-up of Tejun's suggestion [1]:
+Unify to uppercase to match the UEI output.
 
-Patch 1: Normalize "on cpu N" -> "on CPU N" in the exit dump header to
-match UEI output style.
-
-Patch 2: Fix exit_cpu accuracy for the hard lockup and RCU stall paths
-which were recording the detector CPU instead of the actual hung/stalled
-CPU. Touches kernel/rcu/tree_stall.h and kernel/rcu/tree_exp.h to thread
-the stalled CPU through panic_on_rcu_stall().
-
-Based on sched_ext/for-7.2 (88588854c283).
-
-[1]: https://lore.kernel.org/r/e7cbfc99b52b4b7059267bb81498179f@kernel.org/
-
-Thanks,
-Cheng-Yang
-
+Signed-off-by: Cheng-Yang Chou <yphbchou0911@gmail.com>
 ---
+ kernel/sched/ext.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheng-Yang Chou (2):
-  sched_ext: Normalize exit dump header to "on CPU N"
-  sched_ext: Fix exit_cpu accuracy for lockup paths
-
- include/linux/sched/ext.h   |  4 ++--
- kernel/rcu/tree_exp.h       |  2 +-
- kernel/rcu/tree_stall.h     | 11 +++++++----
- kernel/sched/ext.c          | 15 ++++++++-------
- kernel/sched/ext_internal.h |  2 --
- 5 files changed, 18 insertions(+), 16 deletions(-)
-
---
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index 45a2668284bc..48c65ac8e230 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -6486,7 +6486,7 @@ static void scx_dump_state(struct scx_sched *sch, struct scx_exit_info *ei,
+ 		dump_line(&s, "Debug dump triggered by %s", ei->reason);
+ 	} else {
+ 		if (ei->exit_cpu >= 0)
+-			dump_line(&s, "%s[%d] triggered exit kind %d on cpu %d:",
++			dump_line(&s, "%s[%d] triggered exit kind %d on CPU %d:",
+ 				  current->comm, current->pid, ei->kind,
+ 				  ei->exit_cpu);
+ 		else
+-- 
 2.48.1
-
 
