@@ -1,85 +1,100 @@
-Received: from 011.lax.mailroute.net (011.lax.mailroute.net [199.89.1.14])
+Received: from mail-06.mail-europe.com (mail-06.mail-europe.com [85.9.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AC31DFF0
-	for <rcu@vger.kernel.org>; Sat,  2 May 2026 01:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DE2C38422A
+	for <rcu@vger.kernel.org>; Sat,  2 May 2026 16:28:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.9.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777687071; cv=none; b=Qg8QZuh4d9ZAu1kPO4WKwS0m/SclIpGHG76SDTwyVpJ/EJuW4UtU4Sd+J9XR96ylTqFTHFr2q2cftDWrYa8vuQN8SYWYH2ya7CReeo9yqk4ZD0BRBMo+J/68dtpJ20TtstMIruUp+c3stChtjXDegqYpUK88xYtAn4bXWjJoSE0=
+	t=1777739333; cv=none; b=TUqWpAzJFMFGZWCm/K7TRj2/ACcgvr0IIVW/7MKT/MyusCCpzIq8OpFmHsmK1zPIPYWDc5ANM7FDmiDcL6/i9iriEprdNP8J6V3SzYBNEyUClLgGzeEBsh2HTB0S8+uBLlPmTv3yEhujYbvlkFW3Lppi3UfLXT7W8JGgQfjdsnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777687071; c=relaxed/simple;
-	bh=e9NjJ2oTOBWTL04lWPefy0o983m0hca5FLJ7xqfmxUY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d6c+XgebbkJrIki+dniSMGpDFW5nUYDed+FJZgEhDnHRgSYP6SYUYLzGQlNxyMlk7nvB2tqxgH6nv5QjBlHQE7fvlsHJT+UcCfkLBg99NLZvl+QlzJR72qwT2qpzbzG+nWulWkoctL6bHkSAoaGZx9C8N1E8Xhaj0RnDdYQOIIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=4Q6bUUPr; arc=none smtp.client-ip=199.89.1.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+	s=arc-20240116; t=1777739333; c=relaxed/simple;
+	bh=jxB9thpv5FdOyIYS3e6ZyDHHXKpg/Hxvs1NgYM5uVgM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ir847mMbaQX6p+NF5KDigBRjD6sy0ZLrvvUHQtPU/A6c0RaSEgIi8WGnEUZz0UNLyuwKmmg2gSeM6ov0V+Jixne19dsfNpollcQc3+HttoTvCn7DWq6xP5BW1+rwaqM6QqpCKg290bNZzPl+VSqEMAonX4M1D8gpuN3Vu8q5UIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=udXe19jh; arc=none smtp.client-ip=85.9.210.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onurozkan.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="4Q6bUUPr"
-Received: from localhost (localhost [127.0.0.1])
-	by 011.lax.mailroute.net (Postfix) with ESMTP id 4g6rdp2Pksz1XM6Jb;
-	Sat,  2 May 2026 01:57:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:mime-version:x-mailer:message-id:date
-	:date:subject:subject:from:from:received:received; s=mr01; t=
-	1777687066; x=1780279067; bh=WtzAX03o/GtbuXK0+1Um2KP58Zgbhc6FxmB
-	YsUsrElc=; b=4Q6bUUPrlhHFbqVCxzudfwqcnCoP4ZuRHPvnPOQuJKlLZ5QIxnO
-	RO+ihc4UZVDcd7HtkpL1vWj4BaoB69ACrPgU7TfHRGKxUCEXZ4fNgmVKzsTEGuYn
-	UCYM6c9Puuyt9M8+j3N0JUSFXOjtZbjKD9WIbw8Ii5R0xeQ1fWAuk8m/LcWp3mmV
-	+w+H+lq3SI/gBp5Ul2VuCODevJ8NXuAlIpzYKD2ker2jS31oO+OgUoHnUH3nK/kF
-	IAOnREINh0xdcnKkAIFtyPJUXm544QWtekkKKZS6raLfqRv04vW5+O8fX4SsLGaQ
-	QlLJFG3ob3RbiPeOFl3viXywBuTDa6XLaWw==
-X-Virus-Scanned: by MailRoute
-Received: from 011.lax.mailroute.net ([127.0.0.1])
- by localhost (011.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id 2z6cdI156qDg; Sat,  2 May 2026 01:57:46 +0000 (UTC)
-Received: from bvanassche-glaptop2.roam.corp.google.com (unknown [216.9.110.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 011.lax.mailroute.net (Postfix) with ESMTPSA id 4g6rdg2M3gz1XM6J4;
-	Sat,  2 May 2026 01:57:43 +0000 (UTC)
-From: Bart Van Assche <bvanassche@acm.org>
-To: "Paul E . McKenney" <paulmck@kernel.org>
-Cc: Marco Elver <elver@google.com>,
-	rcu@vger.kernel.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH] srcu: Remove check from srcu_dereference_check()
-Date: Fri,  1 May 2026 18:57:32 -0700
-Message-ID: <20260502015733.431424-1-bvanassche@acm.org>
-X-Mailer: git-send-email 2.54.0.545.g6539524ca2-goog
+	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="udXe19jh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onurozkan.dev;
+	s=protonmail; t=1777739321; x=1777998521;
+	bh=m1HbgPFh+e5baZNwl2NXLwUn3/AWRq+HCEu1r0mYhb8=;
+	h=From:To:Cc:Subject:Date:Message-ID:From:To:Cc:Date:Subject:
+	 Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=udXe19jhmYxrzTP2n8ebUo+0FbkGtywgWBLjFijvR31lhidRxd2kg0vW7j2oH3AwH
+	 njpicf5CwDJZpJMmQ/cE9thV4z3jizvXeutCqKJDCxN2RcQjzN+MLobpum7IxNp9zI
+	 9bJAMavw16mtNGHS226isNI9pMDy7JLEpR+bu1f5KcGae23iFUG5uZ80prOXbtjb8x
+	 lb7GFiOYeEQaqh8oGPWdH6g5Uxedb1S9lom7NNgoIB+AblZuJkvFAj+YiVWbILL1fK
+	 z4zgxHMTtMztmiRt2CK4zrG/pjcgXKWj+lq84uHsrxOQgFL+tYQzzvFguF/9r3nW73
+	 B1WbFpkitOt6w==
+X-Pm-Submission-Id: 4g7Cyb35D5z1DFFq
+From: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
+To: rcu@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: ojeda@kernel.org,
+	boqun@kernel.org,
+	gary@garyguo.net,
+	bjorn3_gh@protonmail.com,
+	lossin@kernel.org,
+	a.hindborg@kernel.org,
+	aliceryhl@google.com,
+	tmgross@umich.edu,
+	dakr@kernel.org,
+	peterz@infradead.org,
+	fujita.tomonori@gmail.com,
+	tamird@kernel.org,
+	jiangshanlai@gmail.com,
+	paulmck@kernel.org,
+	josh@joshtriplett.org,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
+Subject: [PATCH v2 0/3] rust: add SRCU abstraction
+Date: Sat,  2 May 2026 19:27:36 +0300
+Message-ID: <20260502162833.34334-1-work@onurozkan.dev>
+X-Mailer: git-send-email 2.51.2
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Users of srcu_dereference_check() must hold either an SRCU reader lock
-or hold the update-side lock. __srcu_read_lock_must_hold() checks
-whether the SRCU reader lock is held. Since that check is too strict,
-remove it.
+The immediate motivation is the Tyr reset infrastructure [1] which needs
+to serialize reset sensitive hardware access against reset and teardown
+paths. That reset series started to require many independent dependencies
+so this SRCU support is split out as a standalone Rust API to keep the
+reset series focused on the reset logic and easier to review, rebase and
+land.
 
-Fixes: f0b7ce22d718 ("srcu: Support Clang's context analysis")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
----
- include/linux/srcu.h | 1 -
- 1 file changed, 1 deletion(-)
+[1]: https://lore.kernel.org/all/20260416171728.205141-1-work@onurozkan.dev
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 81b1938512d5..51864281164b 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -235,7 +235,6 @@ static inline void __srcu_read_lock_must_hold(const s=
-truct srcu_struct *ssp) __m
-  */
- #define srcu_dereference_check(p, ssp, c)					\
- ({										\
--	__srcu_read_lock_must_hold(ssp);					\
- 	__acquire_shared_ctx_lock(RCU);					\
- 	__auto_type __v =3D __rcu_dereference_check((p), __UNIQUE_ID(rcu),	\
- 				(c) || srcu_read_lock_held(ssp), __rcu);	\
+Changes since v1:
+
+- Made the owned SRCU read-side guard API unsafe and added a safe closure
+  based helper for callers that do not need to keep the guard. This is to
+  avoid UB on the C side cleanup_srcu_struct where the SRCU struct is freed
+  while there are still active guards, which can happen if the caller leaks
+  the guard e.g., with mem::forget().
+- Improved doc comments.
+
+v1: https://lore.kernel.org/all/20260428103437.156236-1-work@onurozkan.dev
+
+Onur Özkan (3):
+  rust: helpers: add SRCU helpers
+  rust: sync: add SRCU abstraction
+  MAINTAINERS: add Rust SRCU files to SRCU entry
+
+ MAINTAINERS              |   3 +
+ rust/helpers/helpers.c   |   1 +
+ rust/helpers/srcu.c      |  24 +++++++
+ rust/kernel/sync.rs      |   2 +
+ rust/kernel/sync/srcu.rs | 152 +++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 182 insertions(+)
+ create mode 100644 rust/helpers/srcu.c
+ create mode 100644 rust/kernel/sync/srcu.rs
+
+-- 
+2.51.2
