@@ -1,95 +1,91 @@
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA93B397E8E;
-	Sun,  3 May 2026 15:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0859397E64;
+	Sun,  3 May 2026 15:51:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777823289; cv=none; b=fIJ5COxoKUvCcKBc4zwFDfO5L2d0SD02M5x5zecnTV2n6evd/KzxvmH756MkWPt/GCU0lubKe7eY5BOXePruUrgdkSScbc74C3TU/Lftknh+kwJD46LomfwNQsljwqKBRrdYEZyFRikpxoiH+ZjuddRVMIPsgWv81S1hWlXMdNo=
+	t=1777823484; cv=none; b=GE145ZP83rWwEGfgDD1d45SQcT1h/RfhUl+NIvHDUrvqM+B1RbBkYvZlC2JyFmnmUG45tIrTpTT0xgk6mCPmcZhxtb2oTNVFUFA1KRuoEfQEwILlpfY4pqAEwWFJRk+AhPFskV4r0boI7q3n+YYb1UX/bIcX+jip2nP7i7SaEN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777823289; c=relaxed/simple;
-	bh=KMvULQt26Z7JUeaeAaMxQ2terk0U68wuEmxDC9UqF6M=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CRWwfI7pKlnAqnC//K7Wa4DhJH0M9IrqSpvpRzXEBf7c7qFWbHN58LUu/4HqhEAKV/MXYqfw8ATdld83c5Htly5MI6qnUrdwoqffalUCslUx8UF3DuMUnwMVonUSzK7qyB5bLojWgVuLu3MHqZKVPplxxK+IgpLHiDVo1v2zODs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=pPCc8QTw; arc=none smtp.client-ip=80.241.56.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+	s=arc-20240116; t=1777823484; c=relaxed/simple;
+	bh=Bid/fim6QF7BXHxw5C6NNB6CjrRdX7EsliigzYoywHU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=cYwu62SOV2P1iLGBpBH7aPHG2q7tFZFr+nTkDN0XAjiqH8rBY1L29zWcAvVOZqUm3dk8wGg+X/qUIz+PDLZEnRubd/TVsQCgdO/VZ8bHbCusYoeRD0NxyPMqQSraV4OXofiisDGDWjdY37RTJc3vzyAdYAoAVJi+m8s9rfb14xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=Q9oPpzEV; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="pPCc8QTw"
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="Q9oPpzEV"
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 759B141084
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1777823483; bh=fyRPsaLeyAmCgD7qP12n2O4WOzwaY15FpNC0oBQOyY4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=Q9oPpzEV0FONZtRS5W4Fi9uvnUEQqPxOWkdpHtCbMXHJnDNo8ZYco68Gv+cdnRJQ0
+	 HiYIRvbkdMQRdD4ggSgJrRNTgjJgFHRNO+M7U6FJy7tfxMkPdPeAS6W4PiTAj9oJb5
+	 t7H6o2TmnslANristxpVyAsBCWVaXW0XkjUb2cDVKRFYJJFuFWHSMy6rJF02Y+1aQT
+	 8peZdxLpkMbPuYLpPiF7PkfNRfkFroy/V8EA7zVNcA2ufyQtJ+85OQw3CLcbccPGI8
+	 fG4mvPHY4NDJZqMstnuiRw1B4h08V4n/d1ZOqHJUHL7PpDiyOUchZ0EMzYzJohxyOS
+	 YK8PRgeWb3v/w==
+Received: from localhost (mdns.lwn.net [45.79.72.68])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4g7q1H3GKpz9tKb;
-	Sun,  3 May 2026 17:48:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1777823283;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UoJ22uoHPxO/Fiuqw0BQb106Foyun4Y6/eKPYRUL254=;
-	b=pPCc8QTwbHGBtpyOcgiepxODTyt5c03iNTyFiVidzF17rpDgE+prPLl06qbUcWimYLdgov
-	p8wRU9+QPhUgz3db/co19ImRiwrtzsxOAmSRhf8T6ixwsI0qjl5NC2q6M/XB8wbZvlca4L
-	LGh+cd2NXlbO5g5sPPxONm/p3J0MkZXjdk1xmHl64hKZ5AzRiLOCdhlfK4AooanboFwp5S
-	lxtykgi+z5HOGvYM6qzCCgxwPys+uZEczX/QVpCVhL/VhrIBav5WglJ3E2FwZd6uEKo7wD
-	BW79SH9nFDPO/1050XrE9EciwVqsyoqHauQwl1eI7MvRlki4gHwN52lh1V9Esg==
-Message-ID: <df48beafcb0cc9caff40db78285113f0b1bd9b87.camel@mailbox.org>
+	by ms.lwn.net (Postfix) with ESMTPSA id 759B141084;
+	Sun,  3 May 2026 15:51:22 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Manuel Ebner <manuelebner@mailbox.org>, Shuah Khan
+ <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org, Kees Cook
+ <kees@kernel.org>
+Cc: linux-kernel@vger.kernel.org, workflows@vger.kernel.org,
+ linux-sound@vger.kernel.org, rcu@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: [PATCH v4 0/3] Documentation: adopt new coding style of
  type-aware kmalloc-family
-From: Manuel Ebner <manuelebner@mailbox.org>
-To: Jonathan Corbet <corbet@lwn.net>, Shuah Khan
- <skhan@linuxfoundation.org>,  linux-doc@vger.kernel.org, Kees Cook
- <kees@kernel.org>
-Cc: linux-kernel@vger.kernel.org, workflows@vger.kernel.org, 
- linux-sound@vger.kernel.org, rcu@vger.kernel.org,
- linux-media@vger.kernel.org,  linux-mm@kvack.org
-Date: Sun, 03 May 2026 17:47:57 +0200
-In-Reply-To: <87o6iwczjm.fsf@trenco.lwn.net>
+In-Reply-To: <df48beafcb0cc9caff40db78285113f0b1bd9b87.camel@mailbox.org>
 References: <20260429070759.309110-3-manuelebner@mailbox.org>
-	 <87o6iwczjm.fsf@trenco.lwn.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ <87o6iwczjm.fsf@trenco.lwn.net>
+ <df48beafcb0cc9caff40db78285113f0b1bd9b87.camel@mailbox.org>
+Date: Sun, 03 May 2026 09:51:19 -0600
+Message-ID: <87h5oobifc.fsf@trenco.lwn.net>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MBO-RS-ID: 795585f96704e0164ab
-X-MBO-RS-META: rsbayzutnfjqyda4tz9cmg9m847bfsut
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2026-05-03 at 08:56 -0600, Jonathan Corbet wrote:
-> Manuel Ebner <manuelebner@mailbox.org> writes:
->=20
-> > Update the documentation to reflect new type-aware kmalloc-family as
-> > suggested in commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj()
-> > and family")
->=20
-> OK, I have applied this series.=C2=A0 While doing so, I restored the "gfp=
-"
-> parameter in the changelog portion where it had been mistakenly removed.
+Manuel Ebner <manuelebner@mailbox.org> writes:
 
-That's good, thanks.
-I had two more changes lined up for v5 of this series:
+> On Sun, 2026-05-03 at 08:56 -0600, Jonathan Corbet wrote:
+>> Manuel Ebner <manuelebner@mailbox.org> writes:
+>>=20
+>> > Update the documentation to reflect new type-aware kmalloc-family as
+>> > suggested in commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj()
+>> > and family")
+>>=20
+>> OK, I have applied this series.=C2=A0 While doing so, I restored the "gf=
+p"
+>> parameter in the changelog portion where it had been mistakenly removed.
+>
+> That's good, thanks.
+> I had two more changes lined up for v5 of this series:
+>
+> -	ptr =3D kmalloc(sizeof(struct foo, gfp);
+> +	ptr =3D kmalloc(sizeof(struct foo), gfp);
+>
+> and=20
+>
+> -The argument gfp is optional, the default value is GFP_KERNEL.
+> +The argument `gfp` is optional, the default value is `GFP_KERNEL`.
+>
+> I don't know how to go forward with this.
+> please advice
 
--	ptr =3D kmalloc(sizeof(struct foo, gfp);
-+	ptr =3D kmalloc(sizeof(struct foo), gfp);
+Make a new patch on top of docs-next with the additional changes you
+want to do.
 
-and=20
+Thanks,
 
--The argument gfp is optional, the default value is GFP_KERNEL.
-+The argument `gfp` is optional, the default value is `GFP_KERNEL`.
-
-I don't know how to go forward with this.
-please advice
-
-Thanks
- Manuel
-
-> Thanks,
->=20
-> jon
-
-
-
+jon
