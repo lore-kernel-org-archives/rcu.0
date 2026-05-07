@@ -1,47 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1732C21C5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695592D29C7;
 	Thu,  7 May 2026 17:09:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778173793; cv=none; b=iyd4Nr7DixaZpeFHFZ4rF0jbDBZH4uupcrXiPR4qY90Ke/k7gwFu/Kmqtp8RzdlHNmuWoaINf2ZMgLmjOf5gtpHainGSvgRBsF1z4DiV/+5wXg3eOw1sqKgoJIl9gW0/jW0JgKrJap6QUBOJ4w1OCJYDtKH3rsILI0XEwNe4dho=
+	t=1778173793; cv=none; b=Daof/QJu0B/9bGLM0N0w//Om1YQiTJ7llXm8rj/PvcmMA8lWO8AMe15li9M49QZSEJ8FQyiz1PGdBDvu5gh6fhFELWHev+mn919EiQ+5tldpl0k32t16QsG4JmdFqHcktSZ49UQP7y+EPI1DW2PC7IezhuqguBE9gzwsWmLzqgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1778173793; c=relaxed/simple;
-	bh=BnQHU3UiLfVgh8EzJY+SASyVRoECPKgyAiZaumt6cvM=;
+	bh=dn0eKgumMKWPgv8A6Qf9JhTroZyknKKkxSEsAf1Np/I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Mj+3al/wu/1Eho1x0OKXmnigw4Ef3tLay8rlSQ6E+SG3WsZWaclqJAiOMYsYhpCu2cC4CyuVhvcYB5PaxQreLsEAf7ckPhLuy9XcekOfKsfhBJqNDSUm3/ggxGP4IIrqpxEbVgiQRslJ1EjFJdy7OXqRyg48HbcEDeXWX9cGFQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K+fMIoTK; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=OH/BgwKEMPpdjlEEPx2qRaQSX2Zr67nqkDaLpZtzwnNtgo9zTccxubufnpFjYK6njVYx65vR/qvu8zbjLfVoiSB0O7+QfCbhmk9vTAFz9Z8wIk29LJ/G1HPVE1YEO9wOde0aA5GG1qpFKMPv3av4pILPGzhYjbYRCUO4ASM+/QE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ADIo+DZ4; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K+fMIoTK"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 128E8C2BCC9;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ADIo+DZ4"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3426CC2BCFC;
 	Thu,  7 May 2026 17:09:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1778173793;
-	bh=BnQHU3UiLfVgh8EzJY+SASyVRoECPKgyAiZaumt6cvM=;
+	bh=dn0eKgumMKWPgv8A6Qf9JhTroZyknKKkxSEsAf1Np/I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K+fMIoTK8+cYw/K12C5AbW97Q21lKJRyLSjMaJY6M1ZF90EvTag7vtXilc0Y13812
-	 WV6AzedmGlrUGkll8Tl5tpfJXFPEog+kdbU7iQ97UvghgWNgwepI6upwPES+UEpHJ/
-	 07zrt0voUQBWWfCIhE8Zhzx1usxLpYJQdJ5b5GeCDMEcVwP4a+ilM79UMAcsaEpSD2
-	 yZwSCPiYMLsJCQe/HUPKI6aXeX0HOX1Ly+0VaZFexwhVbbwNjqeYor1PXyiCH3vX6Q
-	 EMccY3AslVgPq1VMRh1MpWCP4Sy7S3p+1fYCnWq3fqJLAMP9/Rev2Mm4xKwsRHeHq6
-	 n6dwUXQPpYDIQ==
+	b=ADIo+DZ4om6z11BUGEMPa3hDQwcvIjknWo9I3MV/lJThyy2pEmG4j0e6x+BeqAltK
+	 EvZpdbAnld3eXf0t7Y6PyqYpAhKkfKnvjLBjl3oMJnCt+DjkyUFo6JIyj2kpDY3xip
+	 J+qm/r6/bmOHHH0zIjYJ1kRq8l+259P9jA0vcjN24yIFx8pAneaDwhshnVXMHJaaRI
+	 YjTgH3NExZp2Rkp+ahXP2bvkEDx9/oqgoSi5RV2Apo/89WAt4IktJHk613APKE8PQ3
+	 XkmGu45TSZTVE88T7tttU2WqnPKsKoTBTqa0c95lxaViQThKRSYHFveq4PB9fIQlhz
+	 eRFOaoI6/w6wA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id AB2A8CE0C96; Thu,  7 May 2026 10:09:52 -0700 (PDT)
+	id B0A3DCE0F12; Thu,  7 May 2026 10:09:52 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Andy Whitcroft <apw@canonical.com>,
-	Joe Perches <joe@perches.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 3/7] checkpatch: Undeprecate rcu_read_lock_trace() and rcu_read_unlock_trace()
-Date: Thu,  7 May 2026 10:09:46 -0700
-Message-Id: <20260507170950.2040199-3-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 5/7] rcu: Simplify rcu_do_batch() by applying clamp()
+Date: Thu,  7 May 2026 10:09:48 -0700
+Message-Id: <20260507170950.2040199-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <eeeda48e-03ed-428a-847d-5a0b56508b68@paulmck-laptop>
 References: <eeeda48e-03ed-428a-847d-5a0b56508b68@paulmck-laptop>
@@ -53,41 +48,28 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It turns out that there are BPF use cases that rely on nesting RCU
-Tasks Trace readers.  These use cases are well-served by the old
-rcu_read_lock_trace() and rcu_read_unlock_trace() functions that maintain
-a nesting counter in the task_struct structure.  But these use cases incur
-a performance penalty when using the shiny new rcu_read_lock_tasks_trace()
-and rcu_read_unlock_tasks_trace() functions, which nest in the same way
-that SRCU does.
+This commit replaces a nested ?: sequence with clamp().  This does not
+reduce the number of lines of code, but it does simplify the line that
+it modifies.
 
-This means that rcu_read_lock_trace() and rcu_read_unlock_trace()
-will be with us for some time.  Therefore, remove the checkpatch.pl
-deprecation.
-
-Reported-by: Puranjay Mohan <puranjay@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Andy Whitcroft <apw@canonical.com>
-Cc: Joe Perches <joe@perches.com>
-Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- scripts/checkpatch.pl | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 0492d6afc9a1fc..7a0aa139a2424a 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -865,8 +865,6 @@ our %deprecated_apis = (
- 	"DEFINE_IDR"				=> "DEFINE_XARRAY",
- 	"idr_init"				=> "xa_init",
- 	"idr_init_base"				=> "xa_init_flags",
--	"rcu_read_lock_trace"			=> "rcu_read_lock_tasks_trace",
--	"rcu_read_unlock_trace"			=> "rcu_read_unlock_tasks_trace",
- );
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 55df6d37145e87..e46a5124c3eb88 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2584,7 +2584,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 		const long npj = NSEC_PER_SEC / HZ;
+ 		long rrn = READ_ONCE(rcu_resched_ns);
  
- #Create a search pattern for all these strings to speed up a loop below
+-		rrn = rrn < NSEC_PER_MSEC ? NSEC_PER_MSEC : rrn > NSEC_PER_SEC ? NSEC_PER_SEC : rrn;
++		rrn = clamp(rrn, NSEC_PER_MSEC, NSEC_PER_SEC);
+ 		tlimit = local_clock() + rrn;
+ 		jlimit = jiffies + (rrn + npj + 1) / npj;
+ 		jlimit_check = true;
 -- 
 2.40.1
 
