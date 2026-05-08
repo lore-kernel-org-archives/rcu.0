@@ -1,175 +1,107 @@
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A6040756B
-	for <rcu@vger.kernel.org>; Fri,  8 May 2026 16:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE99C3101A7
+	for <rcu@vger.kernel.org>; Fri,  8 May 2026 17:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778258285; cv=none; b=aMWEogl3uleCoy1YP+9Pj74Ua5xBuAfuoN1lDhECpyh4k/5ChsvObMzPXlDYSj5In6QJTKHe3DarXs8kD2BuX/ymC0mwU/6CmAqmnnaKKnxMMic6gc001PrpKU4pP0O9mXysZjwFHoPI7jtbz9X+KooofaiASQBwtGUReqYvNPo=
+	t=1778259976; cv=none; b=LNdrkcWJWSAcSxgH24G0nl5+essi0TxHGjZIpbTsW2hiiYfvMqrWhMx7/qTaas16/rEJy7so4nC97CxfTsRL4/sI04lXfcFJoi2rtIGna+P+WHpZIPUoceOtWBMIoJP1+8+Hzq4lyrpzLjkAgeQZHga0PQIcfcJn09B2CtlaOx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778258285; c=relaxed/simple;
-	bh=UA//K5KE5lxyKxBn51gpSzesiAf2ti5tilN0wFiDEj8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QStlqAVNgaRMcgO3WpU6Vw5hIItp9F/ra38zaXqsyu4ljuRnLNy2X6TcN+WYheulgin4ag3tsVdPy8n7+1Z37xsi+dSApKdhdue38R3HA/UhvdIyZ9PKRm++It/fg9Tdy29rAnelQLfEQSGzekNTdZF6YwUW2r4fJdtWPZVPc3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gsK3QfNl; arc=none smtp.client-ip=209.85.128.48
+	s=arc-20240116; t=1778259976; c=relaxed/simple;
+	bh=Q+ktTo4FbUJFAzWRrnxkkY+XVxKYylNNEPJ6oTFKYoY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CkHyP+6LLua8M9e2l9rYxqOdblDb4loLGy7WL2xgK0xZziMusfm1XB7iDhp0S1rHt9ANIRLWFzpkDxi0F4jT65pY6MGBNN0sPEj4+xIIwL0sSEuNu04QPHCSfUsIRLeFy88wabEh5vg29kr/xWPcpAad76fPzUAiNCALX7lGMI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c+Dmo5QO; arc=none smtp.client-ip=209.85.208.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gsK3QfNl"
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-48e6db3ff7eso1238335e9.0
-        for <rcu@vger.kernel.org>; Fri, 08 May 2026 09:38:02 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+Dmo5QO"
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-39396f873adso25681671fa.3
+        for <rcu@vger.kernel.org>; Fri, 08 May 2026 10:06:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778258281; x=1778863081; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DTJW4BGtGQqxWbz4seH8/4tzQ7UIXmQ1TeDbULZ3Ovo=;
-        b=gsK3QfNlZlD7oYfIGjgIx3NJkgEBskQXeW7Fljg4rZ4P97WRrFF64YSSQLaAw+5hSS
-         Fjt5CyWi4F8K/DFbs1VlnDdsMAY4FExTHDKQyKNTnvKHUkKt21/HAuB6sPRaNJlvqF1J
-         2Gwiwj0bjyjsLQR8moyAW6dxuby6EH2qbb66c0xXx6guSu71YcvevxdvC6DJeNqVkYVd
-         Jo48EpS/zdfizpqHF3s84EZZVLpT0LYRPAmAW2Wjf3xqT0a4CEiXO7jneVadAYY7kC1C
-         gXPRDKf9RWsWRMBLpnY9lBM3UKOrVjFDXmhrHgrgid6j4a0GG2O/1qTlnqXfD2L5OrTi
-         /F3g==
+        d=gmail.com; s=20251104; t=1778259973; x=1778864773; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vT1Zf+Sny75tjW/jrB/CTfN3SNBcHhHecpeLWbvSiQw=;
+        b=c+Dmo5QOWMP84WvkhQX3bbKaB4R4N3wUbzLci7Qf42YNoHmdNnB34fRuYVBjFuBLxC
+         PI8IdB23kxCdNIs45s9/NneGwk3MQLOtXoueP7kpuTBk+qTirD34qHlktJDPF9WZJJgD
+         Zzl0IyAQsbBNfeEvqROBzvxZyaTVJ9iDQSJ8zcUvR+jHHLgBdl8EQIA2DDxQEQAh4uca
+         Zf3AsSMXiDI23XHE+bz7Ps9L0O0o4Oklgl2O4uMKqrsmwZvbE+DlRhx3VakkfSTkFVQp
+         VcgwE+AJ5tuPkph9qhI7Uh5ASGgm56E025fgo7MkDQ5butwSRZm4OyJv4xBD2tsofbxw
+         ZhjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778258281; x=1778863081;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DTJW4BGtGQqxWbz4seH8/4tzQ7UIXmQ1TeDbULZ3Ovo=;
-        b=T3JJaOGjVK54/++shcxmYFZPhw4mfDriShge+/0zoOvYdVywgP3CT/58bLTXRISv+U
-         uTqtzH9/XZN0arIqgMlCnYJqU7B255qAEUEIcI1Pyf5uehyJ7ClZ8RALGoRKGvkbwSX6
-         N3DiUPOqVbIZ0Clid+NCfIGdy0XQnU4ZtB26nPzjRrNKXCD3IH+hX1cOVlmk9RlPkNtf
-         CPXGAOBU9liHtOxVQuM06uC9LI+VCqmVHBVAnN/NKpEEgV0xuBDBuS5agsgSBcUJJ40T
-         kXlU5OBH+bxbYrph/8+SBlbQQGJcwEFmvlFnvPeCuz4fELAz/fG5jq7WXMb0rnP3tYaF
-         0GHw==
-X-Forwarded-Encrypted: i=1; AFNElJ+go8PtchmiZmrXTv3FTMXELZc+Hdr3fpw7r7xIhGLaOhCoStfMbLtNNCT7e4vBDFSm0q0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yygn7RL4rGCYaVoYX1jkF5EvVARXaADYVgxNpm91DqTVBpOveiP
-	AbP4uOLj/Fbsu0EEm1wwPVMbDQi4bSoTFYoFyOXw+9ZhWh/fpvZcOVqM
-X-Gm-Gg: AeBDieuCgUPOjOarHShBWRgIM17759zPa2eHTvfhoPjDjIK0ljqvHKTTW452qVdtrMp
-	Gj+u8bcrnfW551nTPIzkKrZWxLBxn50vDIVSVr1X++Kxh+isA3dZLLO+ds8/xmDTSsNmwwHL7yr
-	ucoDe0t0LA8+Sz51zvjsWexrqQdYy144UVhGI6SucsBq2njvLRpLuGxKqUzympfZZ+grNKdPSnw
-	Zau1H8OiyMhOeR7sHJrjYy9qUdn7KbueHrKXry/sjbltHpVKl2d88Nu2q22H4ZPI5PHSvJm/61T
-	qr8unrFCUTAQkhPPAQV25hx8DoJFxsS2by1Q5h3DmtZ6jsyzRMuA81R8i5OwvOPc8GA54Pysrl/
-	zvO9D+qXWb/9ozDu6IAUze2tvJmvdFn5B88ZoEMXFx7qSvjsx4/U96x8Wxpzj30ckNIPraygEXp
-	yfpwj+WdKRP3WawP8esuvK6GZNiTbgE1JdONrDp4HvqUO+okodKSMyT8kAJ/W6ZCRgHhI=
-X-Received: by 2002:a05:600c:8b0c:b0:48a:7a10:4f47 with SMTP id 5b1f17b1804b1-48e51e0a620mr219801715e9.3.1778258281158;
-        Fri, 08 May 2026 09:38:01 -0700 (PDT)
-Received: from arey-arch ([2a02:1210:7298:ec00:73f0:d2e7:188c:1f61])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e6d8e4f0dsm3379115e9.11.2026.05.08.09.37.59
+        d=1e100.net; s=20251104; t=1778259973; x=1778864773;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vT1Zf+Sny75tjW/jrB/CTfN3SNBcHhHecpeLWbvSiQw=;
+        b=QgFkfmM8g9nBPbpuokOMAkwPHIFiFBoEn1ZY6yEtkDcn5kxOwcibPsL31XQ7S+8QeN
+         ulhfSJGlv1kae7isvzwFPLBoTVnoNighVHSS/h+C7WuRYnsw78YPXEdt/61gb5zppUrG
+         9d40rZUzEFEbZVIUraQ+tFPsLu0rEQmBp8AvgG2+WBtwl6Bp4vNnbas/DMmBDKbBLyF+
+         s/65trnozdVSkDVSwszuTMcEEQwu7mFKccUM9XqaOUGvNv02/++e5z7MrDxILp1wHLAP
+         IN5wnbYE9vmVZ2QINLiUflAcCohHMCtsf/5RQAD2Q0H04mPlNQ94oxn32WKlvnvr/egK
+         nlSw==
+X-Gm-Message-State: AOJu0YxiHpVWZRAh2byL11DIt+L4j7IBkSbwKsgTVDPlqkKWEFwLWMmk
+	Vi2EkrJr7uYHRyNm3pM6Giv6JLfD3C5tmeOftAE+UFkLivxf2Xz8LpuQ
+X-Gm-Gg: Acq92OHOfIu+uQACX+vSitpBo1Fp4YIaEwOT0K8ryivSadVqQT/qllqYvvZGyCNpa1o
+	N+F0/JrPQ1JGH1ZGEsp1hkmVvXVFrgjrrqGUIiWjzPhAb463jxXBOp3gVje0qifTH4cjF/2M4eu
+	zDFMIsG/Lu2wBuNyq5EaRTiHOiZPC4qMVyPQYUhuO4WuyaI1wPGnxJgjbdnm9HSKaDUvr9A7q9+
+	UHRKGgYkijTx2J+1wSgcxtco4zAAnSAy7G00mM1mucxKO7V/0o7MYm0mNivRGZlCG6OaU2AbOPG
+	qcJNejyGli4Dvl/ohSKiql/KfF6dQbKs5PWMHPgE0kolJjfZ8D1FbeHaTWQFHeofMCpJaTN6Ot9
+	4vwehsIcZkThRLcYzMhNmVMz5fJUy52JK0pS1Z1NhpRrczrvFU7g5ZN80jBpyvvdw
+X-Received: by 2002:a05:6512:3e04:b0:5a4:d44:99f0 with SMTP id 2adb3069b0e04-5a887ada973mr4903275e87.6.1778259972748;
+        Fri, 08 May 2026 10:06:12 -0700 (PDT)
+Received: from milan ([2001:9b1:d5a0:a500::24b])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-393f6268ddesm6281591fa.37.2026.05.08.10.06.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2026 09:38:00 -0700 (PDT)
-From: Adrien Reynard <reynard.adrien.08@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Danilo Krummrich <dakr@kernel.org>,
-	David Howells <dhowells@redhat.com>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	rcu@vger.kernel.org (open list:READ-COPY UPDATE (RCU)),
-	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-	linux-kernel@vger.kernel.org (open list),
-	driver-core@lists.linux.dev (open list:DRIVER CORE, KOBJECTS, DEBUGFS AND SYSFS),
-	netfs@lists.linux.dev (open list:FILESYSTEMS [NETFS LIBRARY]),
-	linux-fsdevel@vger.kernel.org (open list:FILESYSTEMS [NETFS LIBRARY]),
-	linux-trace-kernel@vger.kernel.org (open list:TRACING)
-Cc: Adrien Reynard <reynard.adrien.08@gmail.com>
-Subject: [PATCH 2/5] docs: fix repeated word 'that' across documentation
-Date: Fri,  8 May 2026 18:37:57 +0200
-Message-ID: <20260508163759.16231-1-reynard.adrien.08@gmail.com>
-X-Mailer: git-send-email 2.54.0
+        Fri, 08 May 2026 10:06:12 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@milan>
+Date: Fri, 8 May 2026 19:06:10 +0200
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org
+Subject: Re: [PATCH 0/4] Torture-test updates for v7.2
+Message-ID: <af4YAggY4_aj_Qxr@milan>
+References: <1e506157-35a8-4ea9-8bb6-cfe899d81e6e@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1e506157-35a8-4ea9-8bb6-cfe899d81e6e@paulmck-laptop>
 
-Signed-off-by: Adrien Reynard <reynard.adrien.08@gmail.com>
----
- Documentation/RCU/rcu.rst                          | 2 +-
- Documentation/driver-api/driver-model/overview.rst | 2 +-
- Documentation/filesystems/netfs_library.rst        | 2 +-
- Documentation/trace/histogram-design.rst           | 2 +-
- Documentation/trace/histogram.rst                  | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+On Thu, May 07, 2026 at 09:57:11AM -0700, Paul E. McKenney wrote:
+> Hello!
+> 
+> This series contains torture-test updates for v7.2:
+> 
+> 1.	Fully test lazy RCU.
+> 
+> 2.	Add torture_sched_set_normal() for user-specified nice values.
+> 
+> 3.	Improve kvm-series.sh header comment.
+> 
+> 4.	Allow "norm" abbreviation for "normal".
+> 
+> 						Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+>  b/include/linux/torture.h                              |    1 
+>  b/kernel/rcu/rcu.h                                     |    7 
+>  b/kernel/rcu/rcutorture.c                              |   21 +-
+>  b/kernel/rcu/tree_plugin.h                             |   32 +++
+>  b/kernel/torture.c                                     |   16 +
+>  b/tools/testing/selftests/rcutorture/bin/kvm-series.sh |   11 -
+>  b/tools/testing/selftests/rcutorture/bin/torture.sh    |    2 
+>  kernel/rcu/rcutorture.c                                |  160 +++++++++--------
+>  8 files changed, 168 insertions(+), 82 deletions(-)
+> 
+This i took.
 
-diff --git a/Documentation/RCU/rcu.rst b/Documentation/RCU/rcu.rst
-index bf6617b330a7..320ad3292b75 100644
---- a/Documentation/RCU/rcu.rst
-+++ b/Documentation/RCU/rcu.rst
-@@ -32,7 +32,7 @@ Frequently Asked Questions
-   Just as with spinlocks, RCU readers are not permitted to
-   block, switch to user-mode execution, or enter the idle loop.
-   Therefore, as soon as a CPU is seen passing through any of these
--  three states, we know that that CPU has exited any previous RCU
-+  three states, we know that CPU has exited any previous RCU
-   read-side critical sections.  So, if we remove an item from a
-   linked list, and then wait until all CPUs have switched context,
-   executed in user mode, or executed in the idle loop, we can
-diff --git a/Documentation/driver-api/driver-model/overview.rst b/Documentation/driver-api/driver-model/overview.rst
-index b3f447bf9f07..c1966d506d55 100644
---- a/Documentation/driver-api/driver-model/overview.rst
-+++ b/Documentation/driver-api/driver-model/overview.rst
-@@ -55,7 +55,7 @@ struct pci_dev now looks like this::
- Note first that the struct device dev within the struct pci_dev is
- statically allocated. This means only one allocation on device discovery.
- 
--Note also that that struct device dev is not necessarily defined at the
-+Note also that struct device dev is not necessarily defined at the
- front of the pci_dev structure.  This is to make people think about what
- they're doing when switching between the bus driver and the global driver,
- and to discourage meaningless and incorrect casts between the two.
-diff --git a/Documentation/filesystems/netfs_library.rst b/Documentation/filesystems/netfs_library.rst
-index ddd799df6ce3..4033de4535ac 100644
---- a/Documentation/filesystems/netfs_library.rst
-+++ b/Documentation/filesystems/netfs_library.rst
-@@ -626,7 +626,7 @@ A number of members are available for access/use by the filesystem:
- 
-    These are set by the filesystem or the cache in ->prepare_read() or
-    ->prepare_write() for each subrequest to indicate the maximum number of
--   bytes and, optionally, the maximum number of segments (if not 0) that that
-+   bytes and, optionally, the maximum number of segments (if not 0) that
-    subrequest can support.
- 
-  * ``submit_extendable_to``
-diff --git a/Documentation/trace/histogram-design.rst b/Documentation/trace/histogram-design.rst
-index e92f56ebd0b5..949bbfdb0f16 100644
---- a/Documentation/trace/histogram-design.rst
-+++ b/Documentation/trace/histogram-design.rst
-@@ -738,7 +738,7 @@ creates its own variable, wakeup_lat, but nothing yet uses it::
- 
- Looking at the sched_waking 'hist_debug' output, in addition to the
- normal key and value hist_fields, in the val fields section we see a
--field with the HIST_FIELD_FL_VAR flag, which indicates that that field
-+field with the HIST_FIELD_FL_VAR flag, which indicates that field
- represents a variable.  Note that in addition to the variable name,
- contained in the var.name field, it includes the var.idx, which is the
- index into the tracing_map_elt.vars[] array of the actual variable
-diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
-index 340bcb5099e7..5b303fabdf32 100644
---- a/Documentation/trace/histogram.rst
-+++ b/Documentation/trace/histogram.rst
-@@ -1700,7 +1700,7 @@ to that rule is that any variable used in an expression is essentially
- 'read-once' - once it's used by an expression in a subsequent event,
- it's reset to its 'unset' state, which means it can't be used again
- unless it's set again.  This ensures not only that an event doesn't
--use an uninitialized variable in a calculation, but that that variable
-+use an uninitialized variable in a calculation, but that variable
- is used only once and not for any unrelated subsequent match.
- 
- The basic syntax for saving a variable is to simply prefix a unique
--- 
-2.54.0
-
+--
+Uladzislau Rezki
