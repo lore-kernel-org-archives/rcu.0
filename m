@@ -1,114 +1,200 @@
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85241383C97
-	for <rcu@vger.kernel.org>; Fri,  8 May 2026 17:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A78D2337BA3
+	for <rcu@vger.kernel.org>; Fri,  8 May 2026 17:15:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778260023; cv=none; b=JlTBUDJCEi43PMfnm/2oFpKkCc2MSL3fE3XcdenerCsgGJYyen7SeMnoGbk0K03JZBb+F6iuUcYlBQZUR3b32k7dx5ac1GxuZJwSg41EX3nIUdNKxmKDYqJNWeMIMYb1qLnsve++EmrPEEbCB7V+/MHu1E+07wEH8RFhGMvEbeE=
+	t=1778260535; cv=none; b=Pohm+vi0qRCsOtmWCW5ALrF+8qh2T3Pr42Yy/X8UU16q644U2t97LwoZPLXmFcPyaM6ErwlyDtJ5fHrXmH0d4si2kH+a4whHUVfZwSn1wIPUf2hVBDsB2NDJhSNK0t2OpJtzNHXZ0IlxeDz5tE6tdtafNApJqAHb4pxCRAkytZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778260023; c=relaxed/simple;
-	bh=EgNZfIkmaGVc8ylvTe4XrBRxY84EKDdexRzWBAy74II=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ogjk4JAC0G1lhehn5aiLQoQWkIlFlpYlLj8C8C7YDXHvXm9bqsLGDTuowm2955aaOjI+EXG0kuRuI9SzsyCgcvOxwxkNVUwXGRpTqjZQswjQWTJzL9f4aElmChU7K/2gA+zZllzaD3ud3uOWepJpFeep+h/sVwv7Wbso6xRHEgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ltHTBtWN; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1778260535; c=relaxed/simple;
+	bh=B5LPyOWApy59FvhRnEByqk4wlO4qBooEaHT8YJ0k2J8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=BmKk5aoaEesdiQh3fqW6jkSKZs5evYaNtlfOv9WlcGsswEHGIp6pAURYsYxwZquL/AQs6kJOkdW05AFaWk4u6ebM5Rut9BhCVzU4gvA2raBYy/T5B4xPFYfBWW9Espqj2CQJAvRaRW7SJDkPcCu+qq8mGkZ7OYG9r7zpkY7Pzjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=dgewAVFP; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ltHTBtWN"
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-3938d17d6c5so18554081fa.1
-        for <rcu@vger.kernel.org>; Fri, 08 May 2026 10:07:02 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="dgewAVFP"
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-7de431da8fbso1789995a34.1
+        for <rcu@vger.kernel.org>; Fri, 08 May 2026 10:15:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778260021; x=1778864821; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HXkCnsk51anVcA2hyeLzrqmlA25SdT/u1evR6808mvA=;
-        b=ltHTBtWN0sfjzwBgRzdjQC0yLub9awMxZik2orvRjYUS7BgdFzMm/CnnBiuu0/1j8R
-         LGUl8WO0AolOldZXdW41LBZOSE58IP3pKCKBo8Qwhsup55YudE467MB1L0F3FJh3MxVr
-         pIrg09f/sMeg3+FmGpsjSEUMR7QK4U6y/BoK4UszV89zC8tEOC4S8SUQXcszlo7CCwAI
-         Uh6FtWm5NBww1TpciKPl2JBqShtw1rOr+es042s1C8oZb01UoQpnpE3dbxm9INnE3vqs
-         kD8FekTBfhALNsO8RFLTP6rS6B4pQysqIA+ELDt1wuneYBRwXcDZXhspelEy494Tubo/
-         s6lg==
+        d=linuxfoundation.org; s=google; t=1778260531; x=1778865331; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=rUvovzVI0WfmpARa7cBsFpdtftv1IZUf0H6p/9La+aQ=;
+        b=dgewAVFPAp5hg2U2qxY/zsPuv4pyfPOdJxPcKW6iGLGjL40cP3L91Ol1SM9y3/c2Oy
+         45L5G4kBhURS3mkB6occKZUUOT6BRAFlQKaJUDBuc9it9JK7bYd8dI0c5gjN3ivQW+Hv
+         AORlpPKRCz1sptUXaG/zfRM5KvGYOXPOi1mxg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778260021; x=1778864821;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HXkCnsk51anVcA2hyeLzrqmlA25SdT/u1evR6808mvA=;
-        b=M+D7mbXDscYBo4ePrBISO1Xt97IvBgiegR7S+9BCFCs+EWza/1iPIic48q5wEk3wBG
-         qQ7gceSK6AfQiPDT+AwHht1ZRIXSl/2ZKF4O8J/fixZJb6RXE32FDN6Le+Prw6wHeF6F
-         YK6SfB5kJMd2mSJopDX4PJ80hN7RjuoPX/R6XPSu1ggMxOa/0j4y8N35Ti6dvu/68Wh+
-         BFMeYBhJKHtrdv+vBu0NutlU0v/AsqMaLHtuJRHh7eNtTAarJO47h7V4lUMb3YnaVhpM
-         9O4He8bTnjZDoXlcKAlgq5zsyBGvOc7lXgyYscESCrhJOG7X2tlPRUtH9KVNDlk38u6X
-         ecxQ==
-X-Gm-Message-State: AOJu0Yw0VqlKN4Q1tN1UvhRMqt5BfbdT1T+rwIFLeVYU0VJkn6mBGvTI
-	ExFjS5kWUBLCksgTVtmxZ7XcaLd63UE1Se63QARUMK+vjSqL868uaAbG
-X-Gm-Gg: Acq92OEWx1GFqHIHuBm/7sy9dmrdOEXK1qrG4tUnZ3217n3PFkC2tMa39h+OD6TLEWW
-	KEtPjIstxG3siIISvX0IC/lXUb7urS9nC7EC9A00THc/gnqE1APetVFn/ny5qd3uJc+mBF7nXO+
-	EtVdfA3zT3grtD81e+KzH1bvWZqJx9sOJ6lp7GxiivJR6YfNaRfFEv/A3u70K5BL5jebsNhIpLe
-	YU0GeoBKhpwe1JgJRIcLbMo8DfFY5Ozrz6vvcmEux2zNiiBfKiK+iP1Q8eAYYvVjY027SWXBjkH
-	OiVsOWtIbLQAnpYuUAFWQOBmHkav+LjMhXVJ4pE8qJ8W20F/AvvaNkHLWiXTTqKeLHqw4Nag9tO
-	KTrvD/8tAEIXLIPWKhYePSrTTD4yj2Ck2/tXYRqm3ziVpO+pj5ZCk51SqYck1kVZJ
-X-Received: by 2002:a2e:8a87:0:b0:38e:84e3:3476 with SMTP id 38308e7fff4ca-393c42108abmr48877861fa.25.1778260020409;
-        Fri, 08 May 2026 10:07:00 -0700 (PDT)
-Received: from milan ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-393f5f3ae30sm6469111fa.14.2026.05.08.10.06.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2026 10:06:59 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@milan>
-Date: Fri, 8 May 2026 19:06:58 +0200
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH 0/7] Miscellaneous RCU changes for v7.2
-Message-ID: <af4YMkfQYtgZNuHl@milan>
-References: <eeeda48e-03ed-428a-847d-5a0b56508b68@paulmck-laptop>
+        d=1e100.net; s=20251104; t=1778260531; x=1778865331;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rUvovzVI0WfmpARa7cBsFpdtftv1IZUf0H6p/9La+aQ=;
+        b=rvI5e2fbPdcC+ibxZeFNa/FVXCrbDhEQa4/DY6EDm/9zcKB2loYBk2bdZyvR8dJkyl
+         o9HIa6S566AJwoxMQbGtSbqmpbIdz4otFztAPCNtbVOUmsg7/McD3RFcX2Q+L1l9eH9u
+         kf0+i0btz+T4tWijXOXncIDuEgI0Pb1i+r3cqKBxQXc5iMYbWVv2Dw9KX62lXzzCJTrM
+         wInjqONiAAHCXSc6fRwsU1jlHWZt4EOg9C6JmLWucVki8KoOiwWBTTuUwrMxxbDqOMPV
+         nVEOTEyOtDBZRjHv9HSRiJuDPXJLLNIq+bZRAN/C4J0CsPc9aPYh8qlCWXjNk3WHUsCo
+         UecQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9/XVux8aptFeeD1pkVbOb7deJN9r+OQHORT7C4Li+NmUOPSoUEmye5zfjeCXt0tHBLwoo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+B1E+xNOqW7kwGXRp/E0C+rWBpHl7OZihHoFTxOQ8xohRj10d
+	R5wHX+fSUa9O2eDyT9T7UfHC6YxECO8dP/dpAdqeL5myTGSIMzjmJrUM5W+QZiuWhh8=
+X-Gm-Gg: AeBDieu1KWKseY6cEwaaVqDfowZGZr83wv8+M7MR1SaBEa4am7uTauqgaIjrFzOaR3a
+	VOOR5c3gdN9ww0F0+cJGfHusSldOkDEUiO7mthMFWaMCOc1lKbzB2CnLVT9C5K45ILfRYrRYLiM
+	9UT8FE7kpPbQrcKIxCTpq3kCuGXu6XvfbCoqk9OQRjrCBk4Kk+TFPjd0qsVhq2yj86u0MbGb9Er
+	SaaYNIqInLgdDVrI+epoT6nY9RaECjk6vCuby3Gmhm4WX/lzsoSnSyIDBS1M7YTQKkEMCJN4jfx
+	iyp6TmlE1oipsJkzDgmU8ZSXCmrd+YgGAP7tV7hm1UhFR7vGZizLAsZL+mTdxiL/ghwI3K7M/GD
+	QSnI1ZMF1JUWjTiuIYL66BXKsB2fwI1O+CITaiulzgi1SasQn08jRme9XBwxB1HnWJ0HYIHfemV
+	Scjnvj5GjiqPpO2Bi/5GLVcPUp+Z5HMfA=
+X-Received: by 2002:a05:6830:8089:b0:7e3:7dcf:9d3f with SMTP id 46e09a7af769-7e37dcf9f5dmr17419a34.16.1778260531374;
+        Fri, 08 May 2026 10:15:31 -0700 (PDT)
+Received: from [192.168.1.14] ([38.15.57.99])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7e367d50611sm1482059a34.16.2026.05.08.10.15.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 May 2026 10:15:30 -0700 (PDT)
+Message-ID: <1501caea-8cff-4968-aca6-e8d4b20e0e80@linuxfoundation.org>
+Date: Fri, 8 May 2026 11:15:28 -0600
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eeeda48e-03ed-428a-847d-5a0b56508b68@paulmck-laptop>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] docs: fix repeated word 'that' across documentation
+To: Adrien Reynard <reynard.adrien.08@gmail.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Danilo Krummrich <dakr@kernel.org>,
+ David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ "open list:READ-COPY UPDATE (RCU)" <rcu@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:DRIVER CORE, KOBJECTS, DEBUGFS AND SYSFS"
+ <driver-core@lists.linux.dev>,
+ "open list:FILESYSTEMS [NETFS LIBRARY]" <netfs@lists.linux.dev>,
+ "open list:FILESYSTEMS [NETFS LIBRARY]" <linux-fsdevel@vger.kernel.org>,
+ "open list:TRACING" <linux-trace-kernel@vger.kernel.org>,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20260508163759.16231-1-reynard.adrien.08@gmail.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20260508163759.16231-1-reynard.adrien.08@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, May 07, 2026 at 10:09:42AM -0700, Paul E. McKenney wrote:
-> Hello!
-> 
-> This series contains miscellaneous RCU updates for v7.2:
-> 
-> 1.	Don't queue workqueue handlers to never-online CPUs.
-> 
-> 2.	Fix kerneldoc header comment typo in srcu_down_read_fast().
-> 
-> 3.	Undeprecate rcu_read_lock_trace() and rcu_read_unlock_trace().
-> 
-> 4.	Mark rcu_read_lock_tasks_trace() and friend BPF-only.
-> 
-> 5.	Simplify rcu_do_batch() by applying clamp().
-> 
-> 6.	Simplify param_set_next_fqs_jiffies() by applying clamp_val().
-> 
-> 7.	Document rcu_access_pointer() feeding into cmpxchg().
-> 
-> 						Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
->  b/include/linux/rcupdate.h |   12 +++++++-----
->  b/include/linux/srcu.h     |    2 +-
->  b/kernel/rcu/srcutree.c    |   12 ++++++------
->  b/kernel/rcu/tree.c        |    2 +-
->  b/scripts/checkpatch.pl    |    2 --
->  kernel/rcu/tree.c          |    2 +-
->  scripts/checkpatch.pl      |    3 +++
->  7 files changed, 19 insertions(+), 16 deletions(-)
-> 
-Will you resend Paul? Combining 3 and 4?
+On 5/8/26 10:37, Adrien Reynard wrote:
 
-Or i can take it and combine 3 and 4 on my own.
+Missing commit log in all your patches - I don't patch 1/5 in
+my Inbox.
 
---
-Uladzislau Rezki
+> Signed-off-by: Adrien Reynard <reynard.adrien.08@gmail.com>
+> ---
+>   Documentation/RCU/rcu.rst                          | 2 +-
+>   Documentation/driver-api/driver-model/overview.rst | 2 +-
+>   Documentation/filesystems/netfs_library.rst        | 2 +-
+>   Documentation/trace/histogram-design.rst           | 2 +-
+>   Documentation/trace/histogram.rst                  | 2 +-
+>   5 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/RCU/rcu.rst b/Documentation/RCU/rcu.rst
+> index bf6617b330a7..320ad3292b75 100644
+> --- a/Documentation/RCU/rcu.rst
+> +++ b/Documentation/RCU/rcu.rst
+> @@ -32,7 +32,7 @@ Frequently Asked Questions
+>     Just as with spinlocks, RCU readers are not permitted to
+>     block, switch to user-mode execution, or enter the idle loop.
+>     Therefore, as soon as a CPU is seen passing through any of these
+> -  three states, we know that that CPU has exited any previous RCU
+> +  three states, we know that CPU has exited any previous RCU
+
+The original intent might have been to say, "that cpu", so adding
+the missing comma after the first "that" or change "that" to "the"
+would make sense.
+
+
+>     read-side critical sections.  So, if we remove an item from a
+>     linked list, and then wait until all CPUs have switched context,
+>     executed in user mode, or executed in the idle loop, we can
+> diff --git a/Documentation/driver-api/driver-model/overview.rst b/Documentation/driver-api/driver-model/overview.rst
+> index b3f447bf9f07..c1966d506d55 100644
+> --- a/Documentation/driver-api/driver-model/overview.rst
+> +++ b/Documentation/driver-api/driver-model/overview.rst
+> @@ -55,7 +55,7 @@ struct pci_dev now looks like this::
+>   Note first that the struct device dev within the struct pci_dev is
+>   statically allocated. This means only one allocation on device discovery.
+>   
+> -Note also that that struct device dev is not necessarily defined at the
+> +Note also that struct device dev is not necessarily defined at the
+
+Sam comment here, replace "that" with "the" or add missing comma
+
+>   front of the pci_dev structure.  This is to make people think about what
+>   they're doing when switching between the bus driver and the global driver,
+>   and to discourage meaningless and incorrect casts between the two.
+> diff --git a/Documentation/filesystems/netfs_library.rst b/Documentation/filesystems/netfs_library.rst
+> index ddd799df6ce3..4033de4535ac 100644
+> --- a/Documentation/filesystems/netfs_library.rst
+> +++ b/Documentation/filesystems/netfs_library.rst
+> @@ -626,7 +626,7 @@ A number of members are available for access/use by the filesystem:
+>   
+>      These are set by the filesystem or the cache in ->prepare_read() or
+>      ->prepare_write() for each subrequest to indicate the maximum number of
+> -   bytes and, optionally, the maximum number of segments (if not 0) that that
+> +   bytes and, optionally, the maximum number of segments (if not 0) that
+
+Same here.
+
+>      subrequest can support.
+>   
+>    * ``submit_extendable_to``
+> diff --git a/Documentation/trace/histogram-design.rst b/Documentation/trace/histogram-design.rst
+> index e92f56ebd0b5..949bbfdb0f16 100644
+> --- a/Documentation/trace/histogram-design.rst
+> +++ b/Documentation/trace/histogram-design.rst
+> @@ -738,7 +738,7 @@ creates its own variable, wakeup_lat, but nothing yet uses it::
+>   
+>   Looking at the sched_waking 'hist_debug' output, in addition to the
+>   normal key and value hist_fields, in the val fields section we see a
+> -field with the HIST_FIELD_FL_VAR flag, which indicates that that field
+> +field with the HIST_FIELD_FL_VAR flag, which indicates that field
+
+Same here
+
+
+>   represents a variable.  Note that in addition to the variable name,
+>   contained in the var.name field, it includes the var.idx, which is the
+>   index into the tracing_map_elt.vars[] array of the actual variable
+> diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
+> index 340bcb5099e7..5b303fabdf32 100644
+> --- a/Documentation/trace/histogram.rst
+> +++ b/Documentation/trace/histogram.rst
+> @@ -1700,7 +1700,7 @@ to that rule is that any variable used in an expression is essentially
+>   'read-once' - once it's used by an expression in a subsequent event,
+>   it's reset to its 'unset' state, which means it can't be used again
+>   unless it's set again.  This ensures not only that an event doesn't
+> -use an uninitialized variable in a calculation, but that that variable
+> +use an uninitialized variable in a calculation, but that variable
+
+Same here
+
+>   is used only once and not for any unrelated subsequent match.
+>   
+>   The basic syntax for saving a variable is to simply prefix a unique
+
+thanks,
+-- Shuah
+
