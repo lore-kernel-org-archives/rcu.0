@@ -1,80 +1,74 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F6C3101C0;
-	Fri,  8 May 2026 17:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48BB410D3D;
+	Fri,  8 May 2026 17:43:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778262219; cv=none; b=Og2VxHEoaJhPW/b4cMNjlyInFRYRtjg/1KX8XgL+8RwJ9ygP5/tVnIVACW77L/K3M6yD1cLU9yf6n9H//wY2+8Qwlz1On2/sD8RRQ2jyOdESUfbyP4uTQx61Ids7UbQXLkucX5qT7702ppR1+eBvNM1oQ8gi2b8DS8BXnXNcfNE=
+	t=1778262236; cv=none; b=NpS/9OTTIknlzmg4BfO1qUpfP4Yf2dWbtkhiWTC9wqBQxveCpUloobweH7P4VwBQOLtPSHyXjxSKWYy79VJ4j/ZDpJjDChFv5to4JMjiPNG13mdCdvaJgjKDG9zP0zevWPIzFcSZvisC/zTFpwTWqImuXG9p+c4EU5epAB2MLqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778262219; c=relaxed/simple;
-	bh=mjT1vDNXGpoFKrGURCgweLXh/3tNKKfI0b/OGaiRwPE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CVLY921CauND8f+7wZpg7v9QiDzI9EIf6d+r1FxM3g+Zlw0aPng7IPAgTu4GijjVLuX4I/t9rpZzvhMqeZfxHFZ/Un4XRM135UP9AxBpfOPdZ8UwpYwHY1WsslGyjegOFZgALq0IJKWKWEtlGHPwZhJPA2wur4VjfYebT7BVQa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T+PBXZTS; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1778262236; c=relaxed/simple;
+	bh=/Y++xnjbRpcunrSUKXCI4237l43LWEtuXPunx3ckXv4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=m+IBJpnB6e9eYfjYUkwC9EKUdDgMElWLQaiwAy+vD79+xg+JeDShrLb+lUB0HtbT/LKhXJykMSS76a5ppOikg4pcUknUfOeOY2z3gOgB29HDYvqiLbxqe0bOA1RL0VD3K8ApkeCM6+gf/x6F074/HrpmNlYc++NO5+cugd5iskY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tje978lL; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T+PBXZTS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32AE1C2BCB0;
-	Fri,  8 May 2026 17:43:39 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tje978lL"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96790C2BCF6;
+	Fri,  8 May 2026 17:43:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778262219;
-	bh=mjT1vDNXGpoFKrGURCgweLXh/3tNKKfI0b/OGaiRwPE=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=T+PBXZTS8VNlzn6Cshnz6CPzKf9jgH9MNHH8pZfTCcFAoAz5K5nN3tMN9rG45QcfR
-	 kG2DBbOev1+kAJTMwj4o48/zmDqTqJffYKMN5CaL7f6S36dWQWjPsFhwiFBX9f26Ft
-	 SReINrqWCPDk8PEmcci5qMNJOjiTODaSbZoPl5615MUG2jS8DGfUwkVXqU7llLK0Ja
-	 rtE6KRbwudvtMKSPW10WNcTBLU7ReWk4MjAU8tDkSNA0ZUNkjRkn2zORFsd1AV4AiX
-	 Nwp33zvWQzBPwRXI6w3siK+KCpkoMFuz6E0oqYzjPfqkHHG0MwpWkjcHVOP3pfWEsn
-	 SuvoIO2JYfnPg==
+	s=k20201202; t=1778262236;
+	bh=/Y++xnjbRpcunrSUKXCI4237l43LWEtuXPunx3ckXv4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=tje978lLKSftcyBje+2oii3H/okJYfU5doS2t0hHegaB8GZeIzLW+CIX9AIfxKcmb
+	 U7gHhyAQaJ15qNf1OcmsQ2d3qV6udNuBHUyjMsZQHcmh7Hodhi97Fq9aQCmnMQbssF
+	 4nycc9AiEsLangZl84+8Z11KfoXi/c/PVbkRpLvcXfPre8d1UA5CCuZvwGUd6QfybD
+	 FmDXSdXGEfIhALImfC0ynXmugusNfazZ0LCt/gZgxwYR243qDU5rHcopM3GXZMJAd1
+	 l8/8GETTs3P2ZoW7Z/rkGjcCrhCUWCGkv6My7EKmjFfRlfyGgF+FT8iL9XIMekAAbb
+	 +64O3siEREgpw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id CD361CE06FB; Fri,  8 May 2026 10:43:38 -0700 (PDT)
-Date: Fri, 8 May 2026 10:43:38 -0700
+	id 3DA7ACE0863; Fri,  8 May 2026 10:43:56 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH v2 0/6] Miscellaneous RCU changes for v7.2
-Message-ID: <40ed4910-e20b-40a6-9598-7aa6abf006c5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <eeeda48e-03ed-428a-847d-5a0b56508b68@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 2/6] srcu: Fix kerneldoc header comment typo in srcu_down_read_fast()
+Date: Fri,  8 May 2026 10:43:49 -0700
+Message-Id: <20260508174353.905746-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <40ed4910-e20b-40a6-9598-7aa6abf006c5@paulmck-laptop>
+References: <40ed4910-e20b-40a6-9598-7aa6abf006c5@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eeeda48e-03ed-428a-847d-5a0b56508b68@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
 
-Hello!
+s/srcu_read_lock_safe()/srcu_read_lock_fast_updown(), there being no
+such thing as srcu_read_lock_safe().
 
-This series contains v2 of the miscellaneous RCU updates for v7.2:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/linux/srcu.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1.	Don't queue workqueue handlers to never-online CPUs.
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 81b1938512d5d1..a54ce9e808b92c 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -397,7 +397,7 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast_notrace(struct srcu_
+  *
+  * The same srcu_struct may be used concurrently by srcu_down_read_fast()
+  * and srcu_read_lock_fast().  However, the same definition/initialization
+- * requirements called out for srcu_read_lock_safe() apply.
++ * requirements called out for srcu_read_lock_fast_updown() apply.
+  */
+ static inline struct srcu_ctr __percpu *srcu_down_read_fast(struct srcu_struct *ssp) __acquires_shared(ssp)
+ {
+-- 
+2.40.1
 
-2.	Fix kerneldoc header comment typo in srcu_down_read_fast().
-
-3.	Undeprecate rcu_read_lock_trace() and rcu_read_unlock_trace().
-
-4.	Simplify rcu_do_batch() by applying clamp().
-
-5.	Simplify param_set_next_fqs_jiffies() by applying clamp_val().
-
-6.	Document rcu_access_pointer() feeding into cmpxchg().
-
-Changes since v1:
-
-o	Merge the two checkpatch commits (#3 and #4 in v1) into a single
-	commit (#3).
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/rcupdate.h |   12 +++++++-----
- b/include/linux/srcu.h     |    2 +-
- b/kernel/rcu/srcutree.c    |   12 ++++++------
- b/kernel/rcu/tree.c        |    2 +-
- b/scripts/checkpatch.pl    |    5 +++--
- kernel/rcu/tree.c          |    2 +-
- 6 files changed, 19 insertions(+), 16 deletions(-)
