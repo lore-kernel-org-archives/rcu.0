@@ -1,60 +1,60 @@
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F1D47A0BA
-	for <rcu@vger.kernel.org>; Mon, 11 May 2026 17:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76CCE478E49
+	for <rcu@vger.kernel.org>; Mon, 11 May 2026 17:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778522099; cv=none; b=qyqmtPtKhPYwxxy5ISu+UIDGHDRN4+L2K2VIP7SAk6ZPHsR7mac054ui30H/EbJEJ3nuAZwTi6mWvcqW3AfNiwArdV7rIaP7WtUTqlUuVFu24/9WFChpT+SM5nGhhmtZPGz0XUzJWm+6SeNAbbAmBNvWlD6c/zYo7sLsaSezrRw=
+	t=1778522100; cv=none; b=FSwTWSkaVXoiZbX96gIEI4lLVD6Nv3xnDaggB7WWPRz+Y1z1xFveflBxQubJWbRCP1/JFiw/Kz3NbZxYY5Z8dP9/c8YXW/WbM3RMoJhABjjfmreYiN8AG+w5BKkg5NfA1kDAE3C7xvcX48Ubm3LDp7M+UNB5Q5yCCl6ttApcwx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778522099; c=relaxed/simple;
-	bh=jofbNNrCF39vcNdNgWy6T1Gh9+EoGuK9YxZyAMEyS4w=;
+	s=arc-20240116; t=1778522100; c=relaxed/simple;
+	bh=yg95+jA4OYlmIgo8aira0sfiDymydxJc4HtaxzIjeEY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BWCg1XChouq632H3I9TslqhiHOao0mTRtNnNvAPCtJLcfvba263LoVAUXcdGhBQ4dTaWY7c1fB/dBfDcvozJWJgzLDLsSWHs8jplAEACiC1xhAlSU3/NxFdxXi42YAsihhNakleDGYjBV7LBz711dUyn4M0Cc6smP8tSbxlB/u0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C2PN4Px6; arc=none smtp.client-ip=209.85.208.181
+	 MIME-Version; b=EQY0IRpjhuRxnCJ5SHIDFu4rz5rPh90xF5FVbYHq4anCGXkd9FV/Y+vWVxooOExclR+r5Lso8tmjmU+n8z8enD+UZ3JCbJ6xEY2AwzgTJHJE1qfgxpw0h+Z1WCtqf2TulBzx2pV/V11gEBxbgzNwW8w/dgLnXeTXzrq8HdkKUkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=p3MU2aUA; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C2PN4Px6"
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-38be5e86918so58565581fa.3
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="p3MU2aUA"
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-3938cc204a7so37305101fa.1
         for <rcu@vger.kernel.org>; Mon, 11 May 2026 10:54:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20251104; t=1778522096; x=1779126896; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aK/hKMv3hTEcKQiSOTXGSh/P8Sd/0hfRCspIyE9/oj8=;
-        b=C2PN4Px6MVkhCX7iptbpWVRbXHXPo6UrxXJyC39iig/h7MZl8PDVq0OO3ALB0ZnnTt
-         rcU69eVZyA7hdFebOyJrGC8UgCJRiFgnk3po8gwzMjHMqFCu1HqF8E3d5i+tJoBAFrYc
-         oDfoY3Ge2Ki3YSISSOJu/m3ZSdwNzHSPdiGRUqZEFequOOt0OYNeZel7EGs64WQr0Wgv
-         nVXR/xBkUG1E241w2c/IoPwGAwUGLo59LRsa7rYGN2R+bN9CMKtHw2zm5aQ1JhDTkbAL
-         dkjZpp8kOhW8Pd/+0zC7oSRJXg7Hl9fltDk1vwrhuFodq/ihPu5YROcR8eDbseeMo4+8
-         OfWw==
+        bh=AFj4IX7pq0ONh+1KWCITkzOOtXQ9yoQpVR86RbaYawI=;
+        b=p3MU2aUARkCvcDmRt2fQMHJcUFDqMd7RGb+iAFIXZdDrexpy6tHTupRzLujP4Q3Xnc
+         e3e4bJcO2I+dtkaMfupr2OA/WnngH2p0wL83qDj4JxjhGDTeqe5rVWOJ39rzTO7AoNfO
+         kdews+gM3eBeVATqtjUElMC6qfwKJcQrx4PPIdnvYQEAD3vSkEcDJABw4lVa88qAUHBx
+         NGgTyk7DJ9Ia+PsL7/qlh6kV/F/B7RZNsKo4bgr/5wI66iuneddC0yAN6hxcaL7TK7k6
+         o83mLqmclSbCTZXVOsHYetF90WkbGebMWwZRJIAazq3XNDKB2FkHIZ4tnmetVrtq4DUr
+         +H0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20251104; t=1778522096; x=1779126896;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=aK/hKMv3hTEcKQiSOTXGSh/P8Sd/0hfRCspIyE9/oj8=;
-        b=WMEU/HyorTNppT6HgSVC4hc92uxmuehz5zRx98cyHqtEljaHZbELcgvga1pyy7wulk
-         Ag0Yn2oyE2fCj0Z1z8SATql+e5qIzQMp07Vod52AUwbKkMnnY/xLxybj9OGs7n91A1h+
-         yxYNwqcF2PNZWZFgQn4mt61XzzB7pRhF+4r/E/nEohoeGJSM0h9kGHX/UPW+M9vOOgcR
-         UFbiqUPJ5at/NMHe68ASbo8u1E2d8AxQObQouiHT/HtrpTktL2GCLncFXqYhDLULWt1J
-         8Uir+aU9K+C2VJ6nsp46zpPs/Mo3zHOGld2btlX54KSMHqRVoxOOUsRYDx3ga8ecBVsX
-         5lXQ==
-X-Gm-Message-State: AOJu0YzKT5TElSo29SBDX5bmlRcEWVk2nYwV66Zg1CX+H1GngLxe28Bx
-	IyvNAI6IEeN0yeMiPFrrBxgqEdbEhQnZuWc4pCQuAb68I7XMjfrLg25O
-X-Gm-Gg: Acq92OHT8nl9d7DUKW3RL4f4U005aEh/BSXdwoKt4yxHny2QyNvIqAGuuRFwpvo8dtF
-	yc4pEM+WmCoMCJs4T/Wed+YDFmcHxqAS6e/2q3MVHa//0B9lMl4bVbpekllinGjwrFhS0ytxHWt
-	41EHcby1cegcoKJ5tV5/8Z/w6pMdYsbxRJsvRFvYe8vjiNf07mQB/Z5EbTB5RpFyRZ0YltWMRQy
-	mz2Q35i/ayoxS1pTfdVu80rWqgdzZtVHOePtw6iT5Nz8WzYoxNJxRLJlCWhbv0j8Z2lnDW5jvaE
-	3W7kFUJq/zRsohP4iK2DXaiZQ+0ZFPr7nV04sVJjw7asNjgnFVZwyT4FbfB0gGDQ5LQsddi4Zg4
-	S90OCmQNXthyZTlbTPBBAuwSy/tt2tZOFm0LUKnswdnOmx4wcZsGZUKdx2wLtTbm2SXVDIY4GEC
-	uK+fYWZB/Aer/TZ14=
-X-Received: by 2002:a2e:bc28:0:b0:394:2b8a:234a with SMTP id 38308e7fff4ca-3942b8a5e7fmr14884781fa.25.1778522096122;
-        Mon, 11 May 2026 10:54:56 -0700 (PDT)
+        bh=AFj4IX7pq0ONh+1KWCITkzOOtXQ9yoQpVR86RbaYawI=;
+        b=SBbLvGoGD9tIVSGhQ/PU6eNkKnHtZBiU0ldst72F4WJTY8VqmV40NjpKC3seWG5O9f
+         ayONh5u4PhQtCxF4lXwkm4XL6Y1tASIL+MPt5rn6kaBuXAuGyZ3bucai7giPmS+76KR/
+         Q/pH9hBHg0RSw3zQb/cYxgj0ljJ1o+VEVE+D/ryDbou66OabaBWm651lWRZYavElenZx
+         tTHDqBIrXrtyE1sZOFIP5cQ7C46j2qY1BQtudQYKAkaQ9+0xG6zCMUmzW3KM4c+Mmilg
+         H55FlGJEqgDrRPcY+w3C3cbp535i4WJFiEYDG+znF5FMIbK1X8BdS/DWh0EpnH8FP72q
+         OuEg==
+X-Gm-Message-State: AOJu0Ywutlb7jOD6kZwzB4jqM6ZkhaBeOzTAF+1XKESuf0AGvPqz7hKJ
+	qs9lt/t6wchmHtFRxRTDMEEadpH7IPYvGLWfz2AILx0gQlwdiqkh7ddD
+X-Gm-Gg: Acq92OHmxCwUIbon7nJxfR5mvmUy/Phz3v5+pg38pCQ8FwJuP9Ox+hqxZ/DvZ2FRUXa
+	vI+QR6Z8WTNjqe7qRaX5+b0qHZhvIX0z2OXn2RR6aBVe0xQfv0Zj98grVxefcVJKLomrMROPKTW
+	UE9uHqk6DhYE17daCypnnjIFJku3oo/GhhZfb1l2CFrXCfEJngixc/okWBNCar8BleSK0sHVpvj
+	1GHkFvw+XdAYJcOyV0FF6Lhgyqr7WBrjYwPgn/enbcEG+i5utXukVPyt7kona+Q5PXfQzwk9Vby
+	jj63eeTYKPfRPusKeZQb00/mTNU5MBKl3HlcaLVgufWN3EwxGQTZ65xosDC0YOPlGedWvxABYwo
+	7EaJE7ozd6Og4t4JmLDNIcLI+j9iYdz0htMeSIhP58A7k0c8uR1wHHexVWNI93clxfHYmObzB9K
+	JxN5W3fgslOoTA7DfbtzOcZDFKQw==
+X-Received: by 2002:a2e:be14:0:b0:393:5920:2c5d with SMTP id 38308e7fff4ca-393c432462bmr104321521fa.28.1778522095555;
+        Mon, 11 May 2026 10:54:55 -0700 (PDT)
 Received: from localhost.localdomain ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-393f614a5f4sm28968891fa.33.2026.05.11.10.54.55
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-393f614a5f4sm28968891fa.33.2026.05.11.10.54.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 11 May 2026 10:54:55 -0700 (PDT)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
@@ -64,10 +64,15 @@ To: "Paul E . McKenney" <paulmck@kernel.org>,
 	Boqun Feng <boqun.feng@gmail.com>
 Cc: RCU <rcu@vger.kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>
-Subject: [PATCH -next v1 08/12] rcu: Simplify rcu_do_batch() by applying clamp()
-Date: Mon, 11 May 2026 19:54:44 +0200
-Message-ID: <20260511175448.153326-9-urezki@gmail.com>
+	Uladzislau Rezki <urezki@gmail.com>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Andy Whitcroft <apw@canonical.com>,
+	Joe Perches <joe@perches.com>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH -next v1 07/12] checkpatch: Undeprecate rcu_read_lock_trace() and rcu_read_unlock_trace()
+Date: Mon, 11 May 2026 19:54:43 +0200
+Message-ID: <20260511175448.153326-8-urezki@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260511175448.153326-1-urezki@gmail.com>
 References: <20260511175448.153326-1-urezki@gmail.com>
@@ -81,29 +86,63 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit replaces a nested ?: sequence with clamp().  This does not
-reduce the number of lines of code, but it does simplify the line that
-it modifies.
+It turns out that there are BPF use cases that rely on nesting RCU
+Tasks Trace readers.  These use cases are well-served by the old
+rcu_read_lock_trace() and rcu_read_unlock_trace() functions that maintain
+a nesting counter in the task_struct structure.  But these use cases incur
+a performance penalty when using the shiny new rcu_read_lock_tasks_trace()
+and rcu_read_unlock_tasks_trace() functions, which nest in the same way
+that SRCU does.
 
+This means that rcu_read_lock_trace() and rcu_read_unlock_trace()
+will be with us for some time.  Therefore, remove the checkpatch.pl
+deprecation.
+
+Also, the rcu_read_lock_tasks_trace() and rcu_read_unlock_tasks_trace()
+functions are intended for use only by BPF.  Therefore, add them to
+the list of functions that checkpatch complains about outside of BPF
+(and of course, RCU).
+
+Reported-by: Puranjay Mohan <puranjay@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Andy Whitcroft <apw@canonical.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/checkpatch.pl | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 55df6d37145e..e46a5124c3eb 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2584,7 +2584,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 		const long npj = NSEC_PER_SEC / HZ;
- 		long rrn = READ_ONCE(rcu_resched_ns);
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 0492d6afc9a1..cc5bbd70cb84 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -865,8 +865,6 @@ our %deprecated_apis = (
+ 	"DEFINE_IDR"				=> "DEFINE_XARRAY",
+ 	"idr_init"				=> "xa_init",
+ 	"idr_init_base"				=> "xa_init_flags",
+-	"rcu_read_lock_trace"			=> "rcu_read_lock_tasks_trace",
+-	"rcu_read_unlock_trace"			=> "rcu_read_unlock_tasks_trace",
+ );
  
--		rrn = rrn < NSEC_PER_MSEC ? NSEC_PER_MSEC : rrn > NSEC_PER_SEC ? NSEC_PER_SEC : rrn;
-+		rrn = clamp(rrn, NSEC_PER_MSEC, NSEC_PER_SEC);
- 		tlimit = local_clock() + rrn;
- 		jlimit = jiffies + (rrn + npj + 1) / npj;
- 		jlimit_check = true;
+ #Create a search pattern for all these strings to speed up a loop below
+@@ -7596,12 +7594,15 @@ sub process {
+ 
+ # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
+ 		our $rcu_trace_funcs = qr{(?x:
++			rcu_read_lock_tasks_trace |
+ 			rcu_read_lock_trace |
+ 			rcu_read_lock_trace_held |
+ 			rcu_read_unlock_trace |
++			rcu_read_unlock_tasks_trace |
+ 			call_rcu_tasks_trace |
+ 			synchronize_rcu_tasks_trace |
+ 			rcu_barrier_tasks_trace |
++			rcu_tasks_trace_expedite_current |
+ 			rcu_request_urgent_qs_task
+ 		)};
+ 		our $rcu_trace_paths = qr{(?x:
 -- 
 2.47.3
 
