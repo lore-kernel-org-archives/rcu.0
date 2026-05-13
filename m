@@ -1,133 +1,110 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.kxxt.dev (mail.kxxt.dev [74.48.220.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7669925B094;
-	Wed, 13 May 2026 13:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD522C3268;
+	Wed, 13 May 2026 13:34:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.48.220.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778677478; cv=none; b=ZnXhbKtPenqi8aJSpt0GetKmMoN+Jqu0CWMvOqEMj9CLei5MavoceTI/2WRizZWt7O48gUQ4UTDqP8+FUv0t6WjcxdNJr4StTxnGSC/ltgUJ+WgqBBulbRxoFEpxM35AlwfmNq5ZpJMBIRgCpx/rBMyiZAoe3BzjFTDI3euisjE=
+	t=1778679261; cv=none; b=g7466EuUNGr0MZCH+OjOn5yVQPRBrWwH0xvEORsXR/XLJ0FB5BRq2UmKWpmMkk0q0yZtFxci800f6iJ9YXACp2TTyCHfwpSo6ScQ8Mc4dVdjd3LZvP7dZtiAUqs3bPFYypmVllSQGO5BBw88WSEuwVQbEnm5CAAGhTTuebsYGuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778677478; c=relaxed/simple;
-	bh=6LEu9DtzugsPgS9zY7ikDk3PNAySaXFJrErwGthAkfU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cDgAuUuuooH4DASttJopd8bADXLyLqxvHBVPZyLYTq2nrja9qkfhzuwy6fXnN6ps821Z+IAaER5vOCYTGmRy7SkIEdT1DlD/Qs5Fe7oetWSG9oD39/CE1OBDK3eTCKMmIigojT7zwfKeX0nb9oFBIGpgkiib9AfabTHsMdix9OA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lGsDWVW2; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1778679261; c=relaxed/simple;
+	bh=KVaG1fmn58xgn7fD1gXleKQK+T+FAtX2PHxxsreF6fc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p1bqMyx4u73WXgTj+9PsnrQ3XhCVP0VnR4eqs0w8ji0wvrFIP2Ib4aveC15CiPGkR7975fUOcDH/cvn0yD6DbNNnmNi4gNLWdCdN9CwbugFXToEj6/2OLnogXKSBzxqOMACi8awFXwyANda2/bRNiKpRZemGgHI/8yORBO1vNgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kxxt.dev; spf=pass smtp.mailfrom=kxxt.dev; dkim=pass (1024-bit key) header.d=kxxt.dev header.i=@kxxt.dev header.b=cnDIdqmA; arc=none smtp.client-ip=74.48.220.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kxxt.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kxxt.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lGsDWVW2"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F9F9C2BCC7;
-	Wed, 13 May 2026 13:04:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778677478;
-	bh=6LEu9DtzugsPgS9zY7ikDk3PNAySaXFJrErwGthAkfU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lGsDWVW2oR08PACx9KcRC8YMpUuN6oYYOvoOWllZtScTRbHp7+islHrOswbDz0e1U
-	 Rd/2lD7xK6tofxdt3rjsHrXixgEE2cEIam/CmgAPO+rVJ0EqqFFymekAQgAVcROykG
-	 /N7UobOXD+QLpx6gmP6NTOmHQYOBi0pny/Bp5nb7yAfX2fzkn+nP5WBB8+35vCpLep
-	 jh4Y8TgC1kC/ozfdDPxCBHLqgSPMWYg5w/mYxRbWDqfzsPeOwoBvd1TnZH2MG/F2uI
-	 pbR8JRRzktjhwXI6yger0M0d/hUI8h3I7h6ajlUBWmNi8Qu54RVQUXSLuoGBn6Z7hf
-	 kXJB84AOZ4pfg==
-Date: Wed, 13 May 2026 15:04:35 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>, Guenter Roeck <linux@roeck-us.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>,
-	Chen Ridong <chenridong@huaweicloud.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-	linux-hwmon@vger.kernel.org, rcu@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Costa Shulyupin <cshulyup@redhat.com>,
-	Qiliang Yuan <realwujing@gmail.com>
-Subject: Re: [PATCH 04/23] tick/nohz: Allow runtime changes in full dynticks
- CPUs
-Message-ID: <agR241twxk9UdRrg@localhost.localdomain>
-References: <20260421030351.281436-1-longman@redhat.com>
- <20260421030351.281436-5-longman@redhat.com>
- <87340od7ev.ffs@tglx>
+	dkim=pass (1024-bit key) header.d=kxxt.dev header.i=@kxxt.dev header.b="cnDIdqmA"
+Message-ID: <1315d145-49ee-412f-ad91-0f6c61c4c2c9@kxxt.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kxxt.dev; s=mail;
+	t=1778679251;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=psldIh7n5nVm+Rtaa/u/V2mN+7zDFvNrqqhD8DETpec=;
+	b=cnDIdqmAIHI6Z9i4z4Fzs2EgIEwvu2fhMHxSHYx+jsmh8WYew61/BNiSh0bx8nzbKaH+af
+	zFhayDHFZ1xwBiOthGyJumxVqCqWydEyxYNF6q9l7ytT2Ox5SnHaiIhIQ89GBqO5zCbIbH
+	tTYxOBSg9VU/hAcPpU3jnyl7QjNEVCE=
+Date: Wed, 13 May 2026 21:34:01 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87340od7ev.ffs@tglx>
+Subject: Re: kmalloc_nolock() follow-ups, including kfree_rcu_nolock()
+To: "Harry Yoo (Oracle)" <harry@kernel.org>
+Cc: linux-mm@kvack.org, rcu@vger.kernel.org, bpf@vger.kernel.org,
+ Vlastimil Babka <vbabka@kernel.org>, Hao Li <hao.li@linux.dev>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Uladzislau Rezki
+ <urezki@gmail.com>, Joel Fernandes <joelagnelf@nvidia.com>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Amery Hung <ameryhung@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <esepccfhqg7m6jo76ns2znj2cnuaepx2xvw5zaygtwohq4psma@563ypprp6rr3>
+ <9bea1536-534a-4a59-9b5f-92389fb05688@kxxt.dev>
+ <6wvjo33urd5i4jvbf6rwp7kwe3ppn3ktgmjk663hq2jxax65gm@kxljf3hkqs5e>
+Content-Language: en-US
+From: Levi Zim <i@kxxt.dev>
+In-Reply-To: <6wvjo33urd5i4jvbf6rwp7kwe3ppn3ktgmjk663hq2jxax65gm@kxljf3hkqs5e>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Le Tue, Apr 21, 2026 at 10:50:00AM +0200, Thomas Gleixner a écrit :
-> On Mon, Apr 20 2026 at 23:03, Waiman Long wrote:
-> > +	/*
-> > +	 * To properly enable/disable nohz_full dynticks for the affected CPUs,
-> > +	 * the new nohz_full CPUs have to be copied to tick_nohz_full_mask and
-> > +	 * ct_cpu_track_user/ct_cpu_untrack_user() will have to be called
-> > +	 * for those CPUs that have their states changed. Those CPUs should be
-> > +	 * in an offline state.
-> > +	 */
-> > +	for_each_cpu_andnot(cpu, cpumask, tick_nohz_full_mask) {
-> > +		WARN_ON_ONCE(cpu_online(cpu));
-> > +		ct_cpu_track_user(cpu);
-> > +		cpumask_set_cpu(cpu, tick_nohz_full_mask);
-> > +	}
-> > +
-> > +	for_each_cpu_andnot(cpu, tick_nohz_full_mask, cpumask) {
-> > +		WARN_ON_ONCE(cpu_online(cpu));
-> > +		ct_cpu_untrack_user(cpu);
-> > +		cpumask_clear_cpu(cpu, tick_nohz_full_mask);
-> > +	}
-> > +}
-> 
-> So this writes to tick_nohz_full_mask while other CPUs can access
-> it. That's just wrong and I'm not at all interested in the resulting
-> KCSAN warnings.
-> 
-> tick_nohz_full_mask needs to become a RCU protected pointer, which is
-> updated once the new mask is established in a separately allocated one.
 
-How about just dropping tick_nohz_full_mask that is just
- ~housekeeping_cpumask(HK_TYPE_KERNEL_NOISE) which itself is becoming RCU
-protected in this patchset?
 
-Thanks.
+On 5/13/26 9:42 AM, Harry Yoo (Oracle) wrote:
+> On Tue, May 12, 2026 at 09:46:33PM +0800, Levi Zim wrote:
+>> On 5/12/26 8:25 PM, Harry Yoo (Oracle) wrote:
+>>> Hello everybody. This is a follow-up discussion of
+>>> "kmalloc_nolock() follow-ups, including kfree_rcu_nolock()" topic at
+>>> LSFMMBPF 2026 last week. Unfortunately, many RCU folks were not there,
+>>> but we can still discuss over email ;)
+>>>
+>>> The slides: https://docs.google.com/presentation/d/1kpaLd7D1dwRvIqRwQfSjJVVJL0CC2gwb-AV56yCMqXw/edit?usp=sharing
+>>>
+>>> I'm copying the slides here to make it easier to reply.
+> 
+> [...]
+> 
+>>> The end goal
+>>> ============
+>>>
+>>> - Drop the BPF memory allocator
+>>> - Avoid preallocation as much as possible in BPF
+>>> - Use kmalloc_nolock() and kfree_{,rcu_}nolock() (and friends) instead
+>>
+>> By using kmalloc_nolock, a regression happens on architectures without HAVE_CMPXCHG_DOUBLE.
+>> For reference, currently only x86, arm64, s390 and loongarch selects HAVE_CMPXCHG_DOUBLE
+>>
+>> For example, this has already caused bpf_task_storage_get with flag
+>> BPF_LOCAL_STORAGE_GET_F_CREATE to always fail on riscv64 6.19 kernel.
+> 
+> Ouch.
+> 
+>> I attempted to fix it in https://lists.infradead.org/pipermail/linux-riscv/2026-March/087159.html,
+>> but as pointed out in the threads, the approach is not sound.
+>>
+>> After that, I thought about using the BPF memory allocator instead of kmalloc_nolock on such
+>> architectures to fix it. But I haven't got time to implement it.
+> 
+> Oh please, let's not go in that direction :)
+> 
+>> I don't know how could we fix it otherwise after removing BPF memory allocator completely.
+>> Could we find a path to move forward without causing regressions on architectures without HAVE_CMPXCHG_DOUBLE?
+> 
+> Probably we can. Could you please see if this works for you?
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/harry/linux.git/log/?h=slab-kmalloc-nolock-without-cmpxchg-double-rfc-v1r1-wip
 
-> 
-> Thanks,
-> 
->         tglx
-> 
-> 
+Thanks a lot! I tested it and could confirm that it could fix the failure of
+bpf_task_storage_get(BPF_LOCAL_STORAGE_GET_F_CREATE) on riscv64.
 
--- 
-Frederic Weisbecker
-SUSE Labs
+The commit message says that the allocation may still fail if the slab lock
+acquisition fails upon the first try. But this is still a great improvement
+compared to the previous always failing code.
+
+Thanks,
+Levi
+
