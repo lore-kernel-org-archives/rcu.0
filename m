@@ -1,266 +1,87 @@
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994E23ADB8F
-	for <rcu@vger.kernel.org>; Thu, 14 May 2026 13:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.175
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778765606; cv=pass; b=asGFZgX/+RrjTCmz2UKlLaJx1QD8LGyaZ3SK+wWou+rrf9atR97RP8dX+E2IIxNyxmnBQNBnABuU5+BKo3qYmSiZKqgzwaCUt7+iG7KtcYgxs65zFAz0pM/ncCO+H3VcLEcvGx6V6oyFlFs0hy4PIX5fwb6v9Pfk+umX80D0RH8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778765606; c=relaxed/simple;
-	bh=44S4IoVPLsIUunAXYYG8t+brQYZpYLHMTF00NpFotwM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JaRI92kACfmxGCGDJkKjNBc4zz4gOySV6A1OtYR9EOaxyqDi0eOoSD+DtfWo+HUYt3cUrA7KqzEZkbHj4mIyFU1uHNE1dR631ANVWIROBGW+MqkRto9DEXpWbwGcu8PrzFrEpn7P439W/eiCTI75pUQJR+roTqoqhkED3rwg0nk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PqqMGlx1; arc=pass smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0BE299944;
+	Thu, 14 May 2026 14:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778768806; cv=none; b=E2hgcoA/T5CTLXq0j9lZUn98Vtgf11jtF6CFQEAZCZE1IcT+FUafUmY85pakDiunsxf0aZjcOQh0BOF0oeQOBBiqNraBCABjz6BGvYUBckQVyH3Nf9WdWMKs2aZolT9LJnWt1253qY+zMfWWJUllPoIwmynISMOD44MXJNnSjcQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778768806; c=relaxed/simple;
+	bh=wdU4t01p2N+3SdPkNhh5voaN25uhvmS7W5q3TIzmMXs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Vjl1KjnceIER/jy3LP+/g1726CmvxMy6hdJKmUxARAQLho171qZBcaBHXXqt4Z2U/YxM61BmRdVo9qRjv2v244yzsfGX3w+vFIYaZq5zlyzLNsbZwba4ZdkerIvcb1w05JMlSW0pJD6AE9lh9Dq2FxvSznwhL7Z9/kszkfVY4kY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OzH7RFkV; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PqqMGlx1"
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2ba6485d219so52101565ad.3
-        for <rcu@vger.kernel.org>; Thu, 14 May 2026 06:33:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778765602; cv=none;
-        d=google.com; s=arc-20240605;
-        b=WmkTAPY9/baF/mKn1FZz5YGPLwpMTgN+In51MGlG7+/TbYdSNBJwMG2S64AxcLRPQq
-         qTu3QSS9M6KartRbTYR6ofvHwxAZHYj0Dm6rReoTNZyxAarvNBDmmYcLL2GkfOyo+uFm
-         Zm/DHAlqhoxO7FTdTROxUSfQ+LPXVGge7KUEu10tRl+L9wuP5VefDnceJ4TPAJodaWJi
-         GpxjcWYcUwnR4A4xu2csTMFC4LbTTAKZWpKW/YRBuSi4H10jQA8gG0XE1THGFCJVLmRN
-         ilyGEjaMatIpJv9JizGMF6nCLA9scb60qCsA7qzkknGaNDfxg/hGlgqF2d0RS1kL7BbT
-         ELGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=1Xb4KJn83sRk5SX5DeqTxmiYllC5qz53j/utt/Wowhw=;
-        fh=JO+K+/tQeHRYrZQ5vF6SY428u8/+wRtMVf2NRRzke3g=;
-        b=FW+vZOsLegRHywVUZI07aNaWkbIPtKlO0s777X5g+T0IdAU/swHjB7Ekt+1dpvqECk
-         iTJJB4ZEBaoHwuhwMRihmpR6TDS6u0gHPaVSwocW2qJeTRM+tbGtDGUBuMCFp+fZfHwG
-         LlUrJz5oqPQmb/fkySlY/dXP2eJLYnNp0X9ZdhqOHCSgUZkltKPYVQPprmHykA5c1XYH
-         lpnMxxoClyWppozzmcTFiyFiePndAXU9x2/W8HQCn0ucAMl9DfBzKrJDk343xVnBqiRb
-         RsRuJ+4+U73m+K03+NN0j+wRHecWrKRXoshysMKb3sPatpmRCbanhKcp4KbJAsiQlT7h
-         KPug==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778765602; x=1779370402; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Xb4KJn83sRk5SX5DeqTxmiYllC5qz53j/utt/Wowhw=;
-        b=PqqMGlx1JK67XA+fcbU+MZBFylMQd8xtrmFw6ndIic+OEfxIvAblHEo+bCfuZoTqEC
-         5wNsWrT1PWR5Iggi9zsQiJynHNSU/Q/PLkzUBs8PrEc+zb/jQlmYGLxUh6yT1EyhrS/w
-         QSM2dw6wyT45YvkYY4POxZNJtqmhbC8kcXEkV6LfOxHi7k9/Ez2giqaO07yKlN1smbVu
-         HMA69Ovpe1xP9eIeT+1PdqaXBvajTE/68PoWCoVV37Pqc8VNCUCE8ZFHeM5V73/awuyB
-         jIohij4u+dgu/pFMnNT4MDDJBlZHuu38WaQPmBjkcwxq9++grnv6//H1lGuH0uamEU3Y
-         wC6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778765602; x=1779370402;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1Xb4KJn83sRk5SX5DeqTxmiYllC5qz53j/utt/Wowhw=;
-        b=Q2nCkBjs+rT2YGtNUxWgM0s8KtTE7xnCVfqvP4jX4olfju72R39t29SbGDoOKLo8F0
-         1Eu0WSs3mObMcEtzH4DfXeE5lmc/ApKl18NKT0Vk6vKLLVvru/m8EQrwnOCrW41hR/mY
-         p4BLXAL5dU/CQOVVYwylExam22rrhOQe4zs0Ce6Tqdn90W78kbk6otykYh85FiROULnR
-         4jBzj/LKuL/sevBpj8O9m328il8mTMEdzdITAXCioUW6Zq4cMwL/o29XmdlGjAH//Nhl
-         8xBicrQVzI5czTLv14US47zv5xyQi5mRrXTvae8dztCZTWPNFXx5qIkIJNrVnYVRtKpg
-         We6A==
-X-Forwarded-Encrypted: i=1; AFNElJ/nXtwiPLPRqawEfi5wkwc0Kol3dMfEbFPaFVcIzFrCyappkrPQpdTvqHIwbOWp8u0e9sg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzxF32M1IQKKyNyEgv0EF+x/3wAb1ktye7hQpodhl9l+murUpeb
-	Lxbe3cPEw0qHEnrXbdnSHT2Z74ogdddA1fttR5H6bEIniM0r6DeQbeKvZQSLzKGmUPQY41DRH97
-	qfyUsCIamXP8INB+V4hy/lR/t3H1zVjw=
-X-Gm-Gg: Acq92OEHzPJRDyN/vXDzuaVJ3Aap8G5pYqiAzyZdeDoIsFMg07/lSd79mCdcc6P6aq2
-	7Fi/XYIJ/sFsO3dEcnB5nyoCcWtoL2yz1plHW9yba+3yxOgCiNvU6rjicJBsf+8f04uK1uMC4d4
-	hPDwYfHZa21Qrimgf7lJFfCEuhfeY+NIFMCXTk4pS6DE0W9uYDwud4tahFxMfJFpTkND2su1vd+
-	oR+57ofl8ockULcJBSfG4IOv+0JeJpQz1V7mb8+sMpdM18rx8vqvumvVLHj43clhnjlSV2U25B2
-	ixFRfS2Thz9WAjawS3fpEybMnQglvkJd9wq/JwiYGl2z7HRLY+lToVo=
-X-Received: by 2002:a17:902:ebd2:b0:2bd:4d97:b5bb with SMTP id
- d9443c01a7336-2bd4d97b7e6mr52074505ad.12.1778765602088; Thu, 14 May 2026
- 06:33:22 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OzH7RFkV"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBA83C2BCB3;
+	Thu, 14 May 2026 14:26:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778768805;
+	bh=wdU4t01p2N+3SdPkNhh5voaN25uhvmS7W5q3TIzmMXs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OzH7RFkV4ENIRU8JkpGeh1mV+DeWUK1kl3bZCJKkKsAn5f1qWrv/eu7dZa0XVgpVe
+	 zMXC2xohdUNvVkiYPQqYS94ctD9tBccYKWY5e+VZAnpvAD5chPqYhGDrWy1rj2tKhr
+	 yIU+vFoxiZsFvnz3ViwQ0luGRECUp7ITZBWEyT/490u1PuELXXw4Rv16vQi5vV8lMK
+	 ac+ZaQi7usmdVVWjiQ76KP9FmS2EABqnqTKkOM1L7QyPUxy8rIU8V+xnTOesUjmZSK
+	 NKE2j023QSqTCD6SFDQW8fAii5F1uN9iMsTXMCVlzBgcCo7ZBx2pxeoNepPLPf/gyN
+	 Y7XiLAycwJDXw==
+Message-ID: <d015da7b-fe08-40e8-b14d-2e012cce3684@kernel.org>
+Date: Thu, 14 May 2026 16:26:40 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260511175448.153326-1-urezki@gmail.com> <20260511175448.153326-2-urezki@gmail.com>
-In-Reply-To: <20260511175448.153326-2-urezki@gmail.com>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Thu, 14 May 2026 21:33:10 +0800
-X-Gm-Features: AVHnY4IEHMH1ZnBVIrckozp-Hi97mxUwd4aDOs1tpgD--Cnw_BpcX7xQk1IizEE
-Message-ID: <CALm+0cVY4izVdUDVdqVCfGgREMbHcyeDryYwYp_gsHevt4t8_w@mail.gmail.com>
-Subject: Re: [PATCH -next v1 01/12] rcutorture: Fully test lazy RCU
-To: "Paul E . McKenney" <paulmck@kernel.org>, qiang.zhang@linux.dev
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, "Uladzislau Rezki (Sony)" <urezki@gmail.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Saravana Kannan <saravanak@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: kmalloc_nolock() follow-ups, including kfree_rcu_nolock()
+Content-Language: en-US
+To: "Harry Yoo (Oracle)" <harry@kernel.org>
+Cc: Levi Zim <i@kxxt.dev>, linux-mm@kvack.org, rcu@vger.kernel.org,
+ bpf@vger.kernel.org, Hao Li <hao.li@linux.dev>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Uladzislau Rezki
+ <urezki@gmail.com>, Joel Fernandes <joelagnelf@nvidia.com>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Amery Hung <ameryhung@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <esepccfhqg7m6jo76ns2znj2cnuaepx2xvw5zaygtwohq4psma@563ypprp6rr3>
+ <9bea1536-534a-4a59-9b5f-92389fb05688@kxxt.dev>
+ <6wvjo33urd5i4jvbf6rwp7kwe3ppn3ktgmjk663hq2jxax65gm@kxljf3hkqs5e>
+ <1315d145-49ee-412f-ad91-0f6c61c4c2c9@kxxt.dev>
+ <2dhbxmhg4l35gupk3wgwtufsf735rnk4czmcoyspzckvexie3z@nswohkoipx44>
+ <be7a2a06-cd81-446c-9875-fafb198caf78@kernel.org>
+ <3aza75jldxj4g3o4kqdif3hubsnzkv53jvj52y2crohfxzto74@ofzzq2wfc4tz>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+In-Reply-To: <3aza75jldxj4g3o4kqdif3hubsnzkv53jvj52y2crohfxzto74@ofzzq2wfc4tz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
->
-> From: "Paul E. McKenney" <paulmck@kernel.org>
->
-> Currently, rcutorture bypasses lazy RCU by using call_rcu_hurry().
-> This works, avoiding the dreaded rtort_pipe_count WARN(), but fails to
-> fully test lazy RCU.  The rtort_pipe_count WARN() splats because lazy RCU
-> could delay the start of an RCU grace period for a full stutter period,
-> which defaults to only three seconds.
->
-> This commit therefore reverts the call_rcu_hurry() instances
-> back to call_rcu(), but, in kernels built with CONFIG_RCU_LAZY=y,
-> queues a workqueue handler just before the call to stutter_wait() in
-> rcu_torture_writer().  This workqueue handler invokes rcu_barrier(),
-> which motivates any lingering lazy callbacks, thus avoiding the splat.
->
-> Questions for review:
->
-> 1.      Should we avoid queueing work for RCU implementations not
->         supporting lazy callbacks?
+On 5/14/26 12:09, Harry Yoo (Oracle) wrote:
+> On Thu, May 14, 2026 at 11:39:50AM +0200, Vlastimil Babka (SUSE) wrote:
+>> There's still the fallback to the larger bucket, right?
+>> That pretty much guarantees that if we fail due to a local lock in one
+>> bucket (due to preempting its holder), a local lock in another bucket won't
+>> be locked at the same time.
+> 
+> Right.
+> 
+>> However if local sheaves are exhausted, we might need a shared lock (barn,
+>> list_lock, slab bit lock when no double cmpxchg) and that might be held by
+>> another cpu in both buckets. But should be very rare.
+> 
+> I'm not sure what makes trylock failure on a list_lock rare?
 
-Hello, Paul
+That we can retry on different bucket. But maybe reality is different than
+my hopes.
 
-maybe we can do this:
+> When the local sheaves are exhausted, we're relying on either:
+> 
+> 1) another kmalloc or buddy user on that CPU (w/ allow_spin = true)
+>    refills the local sheaves or PCP 
+> 
+> 2) trylock on list_lock or zone->lock succeeds
+> 
+> Without async refills unlike the BPF memory allocator.
 
-rcu_ops = {
-         ...
-         .support_lazy = IS_ENABLED(CONFIG_RCU_LAZY),
-};
-
-and
-
-if (cur_ops->support_lazy )
-        queue_work(..., &lazy_work);
-
->
-> 2.      Should we avoid queueing work in kernels built with
->         CONFIG_RCU_LAZY=y, but that were not booted with the
->         rcutree.enable_rcu_lazy kernel boot parameter set?  (Note that
->         this requires some ugliness to access this parameter, and must
->         also handle Tiny RCU.)
->
-> 3.      Does the rcu_torture_ops structure need a ->call_hurry() field,
->         and if so, why?  If not, why not?
->
-> 4.      Your additional questions here!
->
-> Reported-by: Saravana Kannan <saravanak@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  kernel/rcu/rcutorture.c | 21 ++++++++++++++++++---
->  1 file changed, 18 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 5f2848b828dc..91ba3160ba6a 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -572,7 +572,7 @@ static unsigned long rcu_no_completed(void)
->
->  static void rcu_torture_deferred_free(struct rcu_torture *p)
->  {
-> -       call_rcu_hurry(&p->rtort_rcu, rcu_torture_cb);
-> +       call_rcu(&p->rtort_rcu, rcu_torture_cb);
->  }
->
->  static void rcu_sync_torture_init(void)
-> @@ -619,7 +619,7 @@ static struct rcu_torture_ops rcu_ops = {
->         .poll_gp_state_exp      = poll_state_synchronize_rcu,
->         .cond_sync_exp          = cond_synchronize_rcu_expedited,
->         .cond_sync_exp_full     = cond_synchronize_rcu_expedited_full,
-> -       .call                   = call_rcu_hurry,
-> +       .call                   = call_rcu,
->         .cb_barrier             = rcu_barrier,
->         .fqs                    = rcu_force_quiescent_state,
->         .gp_kthread_dbg         = show_rcu_gp_kthreads,
-> @@ -1145,7 +1145,7 @@ static void rcu_tasks_torture_deferred_free(struct rcu_torture *p)
->
->  static void synchronize_rcu_mult_test(void)
->  {
-> -       synchronize_rcu_mult(call_rcu_tasks, call_rcu_hurry);
-> +       synchronize_rcu_mult(call_rcu_tasks, call_rcu);
->  }
->
->  static struct rcu_torture_ops tasks_ops = {
-> @@ -1631,6 +1631,17 @@ static void do_rtws_sync(struct torture_random_state *trsp, void (*sync)(void))
->                 cpus_read_unlock();
->  }
->
-> +/*
-> + * Do an rcu_barrier() to motivate lazy callbacks during a stutter
-> + * pause.  Without this, we can get false-positives rtort_pipe_count
-> + * splats.
-> + */
-> +static void rcu_torture_writer_work(struct work_struct *work)
-> +{
-> +       if (cur_ops->cb_barrier)
-> +               cur_ops->cb_barrier();
-> +}
-> +
->  /*
->   * RCU torture writer kthread.  Repeatedly substitutes a new structure
->   * for that pointed to by rcu_torture_current, freeing the old structure
-> @@ -1651,6 +1662,7 @@ rcu_torture_writer(void *arg)
->         int i;
->         int idx;
->         unsigned long j;
-> +       struct work_struct lazy_work;
->         int oldnice = task_nice(current);
->         struct rcu_gp_oldstate *rgo = NULL;
->         int rgo_size = 0;
-> @@ -1667,6 +1679,7 @@ rcu_torture_writer(void *arg)
->                 stallsdone += (stall_cpu_holdoff + stall_gp_kthread + stall_cpu + 60) *
->                               HZ * (stall_cpu_repeat + 1);
->         VERBOSE_TOROUT_STRING("rcu_torture_writer task started");
-> +       INIT_WORK_ONSTACK(&lazy_work, rcu_torture_writer_work);
->         if (!can_expedite)
->                 pr_alert("%s" TORTURE_FLAG
->                          " GP expediting controlled from boot/sysfs for %s.\n",
-> @@ -1895,6 +1908,8 @@ rcu_torture_writer(void *arg)
->                                        !rcu_gp_is_normal();
->                 }
->                 rcu_torture_writer_state = RTWS_STUTTER;
-> +               if (IS_ENABLED(CONFIG_RCU_LAZY))
-> +                       queue_work(system_percpu_wq, &lazy_work);
-
-
-When the task ends, the lazy_work should be cancel and destroy:
-
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index f593f8b794dd..5adf537ab410 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1682,7 +1682,6 @@ rcu_torture_writer(void *arg)
-stallsdone += (stall_cpu_holdoff + stall_gp_kthread + stall_cpu + 60) *
-HZ * (stall_cpu_repeat + 1);
-VERBOSE_TOROUT_STRING("rcu_torture_writer task started");
-- INIT_WORK_ONSTACK(&lazy_work, rcu_torture_writer_work);
-if (!can_expedite)
-pr_alert("%s" TORTURE_FLAG
-" GP expediting controlled from boot/sysfs for %s.\n",
-@@ -1719,6 +1718,8 @@ rcu_torture_writer(void *arg)
-pr_alert("%s" TORTURE_FLAG " Waited %lu jiffies for boot to complete.\n",
-torture_type, jiffies - j);
-
-+ INIT_WORK_ONSTACK(&lazy_work, rcu_torture_writer_work);
-+
-do {
-rcu_torture_writer_state = RTWS_FIXED_DELAY;
-torture_hrtimeout_us(500, 1000, &rand);
-@@ -1943,6 +1944,9 @@ rcu_torture_writer(void *arg)
-pr_alert("%s" TORTURE_FLAG
-" Dynamic grace-period expediting was disabled.\n",
-torture_type);
-+ if (IS_ENABLED(CONFIG_RCU_LAZY))
-+ cancel_work_sync(&lazy_work);
-+ destroy_work_on_stack(&lazy_work);
-kfree(ulo);
-kfree(rgo);
-rcu_torture_writer_state = RTWS_STOPPING;
-
-Thanks
-Zqiang
-
-
->                 stutter_waited = stutter_wait("rcu_torture_writer");
->                 if (stutter_waited &&
->                     !atomic_read(&rcu_fwd_cb_nodelay) &&
-> --
-> 2.47.3
->
->
+Maybe we'll need those for sheaves at some point? Hope not.
