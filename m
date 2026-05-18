@@ -1,268 +1,267 @@
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B7A3FB044
-	for <rcu@vger.kernel.org>; Mon, 18 May 2026 13:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AAE4282F08
+	for <rcu@vger.kernel.org>; Mon, 18 May 2026 15:36:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779110014; cv=none; b=W8zCZgFjaZBkyiFmzrL1xs1I2xcTiInZIR14GeYcCmC/qr0Y2S7ie6tfPh/W/xXnp3Tt+vEsso4j9M488rVnx/D0PZBTHCCiHQds1tn0cBZa4SRpzGTWgMXhVzzdNaGOrnvoAkgVzbKm5ZSzgBtwTCkcYlQnmQbbAYfGY0dbSGA=
+	t=1779118575; cv=none; b=Ycm5Y2o7qpGDfxNnGMl7/Sk3NSziUio/zvFb7GBWKjTWhLEt/1neB3BikGvNtiA1hF0vWu5zk0p1Q+Ik/3SmI4+94i+PFFFWM3TO360AFQszfT7F4DQ+NzYjTNH1+E7OzGEG4PIviTk2yi0yfSDaqpJOsIBeS74i0AxW+uB1h1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779110014; c=relaxed/simple;
-	bh=C7nHQnxYggXqqXgHA8yK2XGmo8iSvTXSqhwUU1ZUQx8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O6Rr6BC7COrITq9Z9I1q2ASottpW67FhIerEj83e+2+FO+imrjjWeHq2deu/cl5OlROPnus5j6lrbJlYh6TAzMKFaXbN0aX/S6DF796hdY9HE8+QRLVfeYKjPrfylcPneslPVV2V2kuZyYiqY8YbBclTLjfbon1hpPqtL9N2Ex4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S31W3Gx4; arc=none smtp.client-ip=209.85.216.41
+	s=arc-20240116; t=1779118575; c=relaxed/simple;
+	bh=h7UCR9MaIA9qgYd5Ajgi6lk4r8qIQv1V0Qpn/5/cO1c=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zx+rZVmC0+O2sgoRg9YB5++M3kkOdfF6mdkJToEPjaXSho9DRdJksgRB9csrZIR6PBN87UoOuWstffPdoqPxEN5dvBujbB2L5AZhl+1ErSrrS+PFrLfhUNP8sXWAnaspOiDB6H3SDZsAD9TXS0JhcXd5ndwS+zGfXSONlqgRj9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QF3w37aF; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S31W3Gx4"
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-36974217d4eso1199465a91.2
-        for <rcu@vger.kernel.org>; Mon, 18 May 2026 06:13:33 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QF3w37aF"
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5a8fbe18b1dso3996121e87.2
+        for <rcu@vger.kernel.org>; Mon, 18 May 2026 08:36:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779110012; x=1779714812; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q+jVh1ZMjYbXV7kTF8Y6pq+jOCVWPBaSeZyRt6WW1QY=;
-        b=S31W3Gx4oHaAiLiJqiU4uIed/HDsIszScbULa3+n6KwuBMxZBzOnIuQOr44E8X8uHn
-         1SxKTtt/3W9rJaQfTfcBn7V92nyvtU1zW2AQkyOuTw6eO3BzvCpMDSDocCofY0Jw7KyV
-         ydxDLws3CrMXV7W6gE7RqDzzbL68Bp9BMQaSobRgbcnXVRPr6iSka+pl5ClflOs/5d/4
-         gvAv6E/JVyIpcZAcaXPaHMk1DTvVem4mBi+abvXFPg6Ci1nf9ERchuOqnedV3BMOl3mm
-         cPuuzlS9yFTfL7S1cy1hsvUq/XvUY1DiUzzUf4h/0zvpUWt+YQggri496lXQjxQkHVWq
-         2K3g==
+        d=gmail.com; s=20251104; t=1779118571; x=1779723371; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Cwk6S7lBBEPUcHjRmFGsFLSy4crLtyTGhsVjbDZo/Y=;
+        b=QF3w37aFms3uURRB9BZMymHqYahDnSVL1bA0YD2TvFH68mS0fYhPta2WPFLuuIk7kK
+         QLKDqg3CwB9I+A+ph/TTW07vWrYwvdbNKqaAYs9qXg/2LZAGBrQFwl+GCzdJXgT0k5mZ
+         lzNs2++1aZ6lRB64JuDUypiWb0Humrkmd0/xSK7XXjVaUHihx+Y7U2i6Q7D1hd4EtP64
+         T3Lzvuyheetd/5uzVVFVg0qofihBqh5WebiEIvUX6Djq7/HCUJOOY0i4tOVHdGauDOmT
+         ew9sn/AgO7ZDPbWhy2HAgIHVF7MzQTGdpJetE/EY5gllecI1f6y+weqjWnso0bTmLvQA
+         tf7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779110012; x=1779714812;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Q+jVh1ZMjYbXV7kTF8Y6pq+jOCVWPBaSeZyRt6WW1QY=;
-        b=n9TAwHv9ocQAQa30otMi/52BIs7WDL7k5jaFfiSrtGrbE1kbAWTgOqj6dF4a2BaBl3
-         vsMT4v+QDsu9Q7B9kFZJq07OsN9PrM2OqFOqWOrN4Dh6zbxOPfoIbX3QsVFQwoTRNPsO
-         fZ6C2eKqscv4x4oGdouFva2gfs603ecJyxmVPxMQMVj7riwO/4TDCeUxdQG7jbHsxRLu
-         Ce2JnEPxPszwh0mkUIX/tQkNpRy5uh9EgFtSQv0n1yDIPAIWJYixu/QFpSwiaSeF/mG5
-         3GNoy0AXPCgHJk+GfJSAhyw2RVdCoNdDEcsxsyHMww1msuLAZVCKKQl34oQiebj3PNwX
-         9jEw==
-X-Forwarded-Encrypted: i=1; AFNElJ+7xiPSw55PGbLm/OXDdQh7CTtm5U4pm7S7QQgv+D0KmSslWs0lS10zV8mhdYzReeAhnP4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YycUuizclPJftq25Td+T3VVMqq5/6saAASm4HCXnRkMmL+GLDam
-	CipPq+7bjoFi+siefRSFu6yl1p/XvacHyqeJ03+mNebHPw/OjqDwwgOO
-X-Gm-Gg: Acq92OFVQVEDSZRHA0+den9v+0M87gp5+i8JKiLdmiDtLSQlB1M9jnyubV+26QJzPCO
-	IzZyaKbS0l63xwqTRflnSX1FtNGf6cDHv8beETayIZRIvp1RsnOXgoQxmLEHoWByMg6+ilPykQg
-	jPq2xOJFfJY25RX58F7aG0bAfJzPp+IP3pn4fER+ugQ4RJR3d8euuShD7cFHPt5nflKdeSJQSYn
-	Hr7/Q+K4O7yox6hIpKsWwpmkpE5vVsjrbfUhS5/3evf40UtuhecDApjjKNLiIR4eDZyjrdi/hc9
-	1/PQmy2/mznKIXhZcqIZ9pagIHxEOW3zhyYvWdUKxF+zNjlW+JVmh/h2UvY1eM+qs4Eu86AmM/e
-	pKMh7GqXYrgj+c/e8C1yBzLmdu7XHxgPYM4FDCYkAbGqKB/2ScE06tErTGzylEstLCMoZtt5Llr
-	JlDndsUSZIeEy5KsLxoDSy5HPFoFmpEt1MD5aplop33PmT+zhz6hC9
-X-Received: by 2002:a17:90b:314a:b0:366:3517:1a95 with SMTP id 98e67ed59e1d1-3695173c0cfmr14018103a91.0.1779110012364;
-        Mon, 18 May 2026 06:13:32 -0700 (PDT)
-Received: from eric-wcnlab.tail151456.ts.net ([2001:288:7001:1099:c31b:5187:c514:ac40])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-369512424c2sm11241781a91.4.2026.05.18.06.13.30
+        d=1e100.net; s=20251104; t=1779118571; x=1779723371;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/Cwk6S7lBBEPUcHjRmFGsFLSy4crLtyTGhsVjbDZo/Y=;
+        b=RWpMST6kk5YKz96/McfZxJvfZmLE7tc56Ks++9A97YdQQ6hkYPd7vp29ajbzQEIrXH
+         X0R9F7ULOXRmTpE0QNKlTlFNE6tEdvbAC5WKe2PXkbIwRAS7xV/GNcPmSBaREcdF1Gnp
+         PRS3Nd+bPmlknHTZLoucavqpfPd4Z5ESz8NRX1RpYesLobfONDZuouW+yTPWcASWqgNw
+         nbvA1lQI+VMUNfzLujgpq7nhLNVKtmh/vSzVPwudhkF9JiwKzHXAbu9Zxa3s80JXpAfp
+         OO7wZT2lvwPZVA8aQ+6yMgJdSVnbRseCKAEYHdaL+T6bn4mnSanQePuKODcHZJAHjUbM
+         sV5w==
+X-Forwarded-Encrypted: i=1; AFNElJ/rlabgRyphzPIEftR5WiRI71C2DSt7sKe1OOOFlSEPQV0Aa72kYNhOOs6A9RHCWKhtPPA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3ntcl6Vz7D/+JbhUgq4zM/LJltsFsfbdxeMMv7GqcsfR1V8UC
+	Wa/RfTyYJXqwqVLr0mJOR73nEpTmCmbRkarkFimLrJkrtEk+5Tpp4lRk
+X-Gm-Gg: Acq92OF8G1maBVfstPtiLUMjncRjyc+OpuBNW54yHu8s4TnGjaGXC3hnAkukdlj1xXu
+	rbXZDyOhDNRsRv04AYK+8tVopXNd94ULSnMBvLrbmt1Osl+rbbcTW+2WG4x+IUWKYc64lly8deW
+	yxby2auHESVILGNsymYmxKOm66KZ/7LSzeLdAzW7DkCfF4bwM7pINlZxYdkwMtHtHlHR8KsMh7c
+	4Mit8DHXPtTg7Die5QwWBIC7h9SVt1wHD1iRd+Sq4HHuJR/eq8GfomTZo/meOqtLWMz67b21Nt0
+	3IUJY3fLykje6qVaIdOrCOPS6n7AdKPkjI7htc02ByC+2CTAKsDvU4nlTDSwgC9HkDz4uNQoC4m
+	tKhIbicYKTzWYEHbzqy5fFrgU8jkHjuJaDbbqxK0Tw0wFKMb7X3b10Fl83kvVLMj+
+X-Received: by 2002:a05:6512:685:b0:5a8:8357:5321 with SMTP id 2adb3069b0e04-5aa0e769aeamr4603433e87.31.1779118570932;
+        Mon, 18 May 2026 08:36:10 -0700 (PDT)
+Received: from milan ([2001:9b1:d5a0:a500::24b])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5a90f10c78csm3483531e87.14.2026.05.18.08.36.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2026 06:13:32 -0700 (PDT)
-From: Cheng-Yang Chou <yphbchou0911@gmail.com>
-To: sched-ext@lists.linux.dev,
-	Tejun Heo <tj@kernel.org>,
-	David Vernet <void@manifault.com>,
-	Andrea Righi <arighi@nvidia.com>,
-	Changwoo Min <changwoo@igalia.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	rcu@vger.kernel.org
-Cc: Ching-Chun Huang <jserv@ccns.ncku.edu.tw>,
-	Chia-Ping Tsai <chia7712@gmail.com>,
-	Cheng-Yang Chou <yphbchou0911@gmail.com>
-Subject: [PATCH v3 2/2] sched_ext, rcu: Upgrade RCU stall paths to report cpumask of stalled CPUs
-Date: Mon, 18 May 2026 21:11:49 +0800
-Message-ID: <20260518131311.1170786-3-yphbchou0911@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20260518131311.1170786-1-yphbchou0911@gmail.com>
-References: <20260518131311.1170786-1-yphbchou0911@gmail.com>
+        Mon, 18 May 2026 08:36:09 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@milan>
+Date: Mon, 18 May 2026 17:36:08 +0200
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+	Z qiang <qiang.zhang1211@gmail.com>, qiang.zhang@linux.dev,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Saravana Kannan <saravanak@kernel.org>
+Subject: Re: [PATCH -next v1 01/12] rcutorture: Fully test lazy RCU
+Message-ID: <agsx6BMegHYEJeko@milan>
+References: <20260511175448.153326-1-urezki@gmail.com>
+ <20260511175448.153326-2-urezki@gmail.com>
+ <CALm+0cVY4izVdUDVdqVCfGgREMbHcyeDryYwYp_gsHevt4t8_w@mail.gmail.com>
+ <agm3SuhBoVjkunjG@pc636>
+ <e88e9058-da7d-4e30-bcfb-461b2a6e7f24@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e88e9058-da7d-4e30-bcfb-461b2a6e7f24@paulmck-laptop>
 
-scx_rcu_cpu_stall() previously recorded the detector CPU rather than the
-stalled one, and the expedited grace period path had no stalled CPU to
-report at all.
+On Sun, May 17, 2026 at 11:30:14AM -0700, Paul E. McKenney wrote:
+> On Sun, May 17, 2026 at 02:40:42PM +0200, Uladzislau Rezki wrote:
+> > On Thu, May 14, 2026 at 09:33:10PM +0800, Z qiang wrote:
+> > > >
+> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > > >
+> > > > Currently, rcutorture bypasses lazy RCU by using call_rcu_hurry().
+> > > > This works, avoiding the dreaded rtort_pipe_count WARN(), but fails to
+> > > > fully test lazy RCU.  The rtort_pipe_count WARN() splats because lazy RCU
+> > > > could delay the start of an RCU grace period for a full stutter period,
+> > > > which defaults to only three seconds.
+> > > >
+> > > > This commit therefore reverts the call_rcu_hurry() instances
+> > > > back to call_rcu(), but, in kernels built with CONFIG_RCU_LAZY=y,
+> > > > queues a workqueue handler just before the call to stutter_wait() in
+> > > > rcu_torture_writer().  This workqueue handler invokes rcu_barrier(),
+> > > > which motivates any lingering lazy callbacks, thus avoiding the splat.
+> > > >
+> > > > Questions for review:
+> > > >
+> > > > 1.      Should we avoid queueing work for RCU implementations not
+> > > >         supporting lazy callbacks?
+> > > 
+> > > Hello, Paul
+> > > 
+> > > maybe we can do this:
+> > > 
+> > > rcu_ops = {
+> > >          ...
+> > >          .support_lazy = IS_ENABLED(CONFIG_RCU_LAZY),
+> > > };
+> > > 
+> > > and
+> > > 
+> > > if (cur_ops->support_lazy )
+> > >         queue_work(..., &lazy_work);
+> > > 
+> > > >
+> > > > 2.      Should we avoid queueing work in kernels built with
+> > > >         CONFIG_RCU_LAZY=y, but that were not booted with the
+> > > >         rcutree.enable_rcu_lazy kernel boot parameter set?  (Note that
+> > > >         this requires some ugliness to access this parameter, and must
+> > > >         also handle Tiny RCU.)
+> > > >
+> > > > 3.      Does the rcu_torture_ops structure need a ->call_hurry() field,
+> > > >         and if so, why?  If not, why not?
+> > > >
+> > > > 4.      Your additional questions here!
+> > > >
+> > > > Reported-by: Saravana Kannan <saravanak@kernel.org>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > ---
+> > > >  kernel/rcu/rcutorture.c | 21 ++++++++++++++++++---
+> > > >  1 file changed, 18 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> > > > index 5f2848b828dc..91ba3160ba6a 100644
+> > > > --- a/kernel/rcu/rcutorture.c
+> > > > +++ b/kernel/rcu/rcutorture.c
+> > > > @@ -572,7 +572,7 @@ static unsigned long rcu_no_completed(void)
+> > > >
+> > > >  static void rcu_torture_deferred_free(struct rcu_torture *p)
+> > > >  {
+> > > > -       call_rcu_hurry(&p->rtort_rcu, rcu_torture_cb);
+> > > > +       call_rcu(&p->rtort_rcu, rcu_torture_cb);
+> > > >  }
+> > > >
+> > > >  static void rcu_sync_torture_init(void)
+> > > > @@ -619,7 +619,7 @@ static struct rcu_torture_ops rcu_ops = {
+> > > >         .poll_gp_state_exp      = poll_state_synchronize_rcu,
+> > > >         .cond_sync_exp          = cond_synchronize_rcu_expedited,
+> > > >         .cond_sync_exp_full     = cond_synchronize_rcu_expedited_full,
+> > > > -       .call                   = call_rcu_hurry,
+> > > > +       .call                   = call_rcu,
+> > > >         .cb_barrier             = rcu_barrier,
+> > > >         .fqs                    = rcu_force_quiescent_state,
+> > > >         .gp_kthread_dbg         = show_rcu_gp_kthreads,
+> > > > @@ -1145,7 +1145,7 @@ static void rcu_tasks_torture_deferred_free(struct rcu_torture *p)
+> > > >
+> > > >  static void synchronize_rcu_mult_test(void)
+> > > >  {
+> > > > -       synchronize_rcu_mult(call_rcu_tasks, call_rcu_hurry);
+> > > > +       synchronize_rcu_mult(call_rcu_tasks, call_rcu);
+> > > >  }
+> > > >
+> > > >  static struct rcu_torture_ops tasks_ops = {
+> > > > @@ -1631,6 +1631,17 @@ static void do_rtws_sync(struct torture_random_state *trsp, void (*sync)(void))
+> > > >                 cpus_read_unlock();
+> > > >  }
+> > > >
+> > > > +/*
+> > > > + * Do an rcu_barrier() to motivate lazy callbacks during a stutter
+> > > > + * pause.  Without this, we can get false-positives rtort_pipe_count
+> > > > + * splats.
+> > > > + */
+> > > > +static void rcu_torture_writer_work(struct work_struct *work)
+> > > > +{
+> > > > +       if (cur_ops->cb_barrier)
+> > > > +               cur_ops->cb_barrier();
+> > > > +}
+> > > > +
+> > > >  /*
+> > > >   * RCU torture writer kthread.  Repeatedly substitutes a new structure
+> > > >   * for that pointed to by rcu_torture_current, freeing the old structure
+> > > > @@ -1651,6 +1662,7 @@ rcu_torture_writer(void *arg)
+> > > >         int i;
+> > > >         int idx;
+> > > >         unsigned long j;
+> > > > +       struct work_struct lazy_work;
+> > > >         int oldnice = task_nice(current);
+> > > >         struct rcu_gp_oldstate *rgo = NULL;
+> > > >         int rgo_size = 0;
+> > > > @@ -1667,6 +1679,7 @@ rcu_torture_writer(void *arg)
+> > > >                 stallsdone += (stall_cpu_holdoff + stall_gp_kthread + stall_cpu + 60) *
+> > > >                               HZ * (stall_cpu_repeat + 1);
+> > > >         VERBOSE_TOROUT_STRING("rcu_torture_writer task started");
+> > > > +       INIT_WORK_ONSTACK(&lazy_work, rcu_torture_writer_work);
+> > > >         if (!can_expedite)
+> > > >                 pr_alert("%s" TORTURE_FLAG
+> > > >                          " GP expediting controlled from boot/sysfs for %s.\n",
+> > > > @@ -1895,6 +1908,8 @@ rcu_torture_writer(void *arg)
+> > > >                                        !rcu_gp_is_normal();
+> > > >                 }
+> > > >                 rcu_torture_writer_state = RTWS_STUTTER;
+> > > > +               if (IS_ENABLED(CONFIG_RCU_LAZY))
+> > > > +                       queue_work(system_percpu_wq, &lazy_work);
+> > > 
+> > > 
+> > > When the task ends, the lazy_work should be cancel and destroy:
+> > > 
+> > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> > > index f593f8b794dd..5adf537ab410 100644
+> > > --- a/kernel/rcu/rcutorture.c
+> > > +++ b/kernel/rcu/rcutorture.c
+> > > @@ -1682,7 +1682,6 @@ rcu_torture_writer(void *arg)
+> > > stallsdone += (stall_cpu_holdoff + stall_gp_kthread + stall_cpu + 60) *
+> > > HZ * (stall_cpu_repeat + 1);
+> > > VERBOSE_TOROUT_STRING("rcu_torture_writer task started");
+> > > - INIT_WORK_ONSTACK(&lazy_work, rcu_torture_writer_work);
+> > > if (!can_expedite)
+> > > pr_alert("%s" TORTURE_FLAG
+> > > " GP expediting controlled from boot/sysfs for %s.\n",
+> > > @@ -1719,6 +1718,8 @@ rcu_torture_writer(void *arg)
+> > > pr_alert("%s" TORTURE_FLAG " Waited %lu jiffies for boot to complete.\n",
+> > > torture_type, jiffies - j);
+> > > 
+> > > + INIT_WORK_ONSTACK(&lazy_work, rcu_torture_writer_work);
+> > > +
+> > > do {
+> > > rcu_torture_writer_state = RTWS_FIXED_DELAY;
+> > > torture_hrtimeout_us(500, 1000, &rand);
+> > > @@ -1943,6 +1944,9 @@ rcu_torture_writer(void *arg)
+> > > pr_alert("%s" TORTURE_FLAG
+> > > " Dynamic grace-period expediting was disabled.\n",
+> > > torture_type);
+> > > + if (IS_ENABLED(CONFIG_RCU_LAZY))
+> > > + cancel_work_sync(&lazy_work);
+> > > + destroy_work_on_stack(&lazy_work);
+> > > kfree(ulo);
+> > > kfree(rgo);
+> > > rcu_torture_writer_state = RTWS_STOPPING;
+> > > 
+> > I agree, we seem miss destroying the work via destroy_work_on_stack()
+> > and "sync" the lazy_work work via cancel_work_sync().
+> > 
+> > Paul, any thoughts?
+> 
+> Good eyes!!!  I will take a closer look tomorrow.
+> 
+> In the meantime, one question...  Do we want to test for your new
+> ->support_lazy instead of IS_ENABLED(CONFIG_RCU_LAZY) for that
+> cancel_work_sync() and destroy_work_on_stack()?  If we really need
+> IS_ENABLED(CONFIG_RCU_LAZY), could you please suggest a comment giving
+> the reasoning?
+> 
+To me IS_ENABLED(CONFIG_RCU_LAZY) is enough :) I am not sure we really
+need ->support_lazy flag.
 
-Thread a cpumask through panic_on_rcu_stall() and scx_rcu_cpu_stall()
-to capture all stalled CPUs. Report cpumask_first() as exit_cpu and the
-full CPU list in the exit message. Task-only stalls yield exit_cpu = -1.
-Falls back to cpu_none_mask on allocation failure.
-
-Signed-off-by: Cheng-Yang Chou <yphbchou0911@gmail.com>
----
- include/linux/sched/ext.h |  4 ++--
- kernel/rcu/tree_exp.h     | 14 +++++++++++---
- kernel/rcu/tree_stall.h   | 15 +++++++++++----
- kernel/sched/ext.c        |  7 +++++--
- 4 files changed, 29 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
-index 20b2343aa344..75cb8b119fb7 100644
---- a/include/linux/sched/ext.h
-+++ b/include/linux/sched/ext.h
-@@ -263,7 +263,7 @@ void sched_ext_dead(struct task_struct *p);
- void print_scx_info(const char *log_lvl, struct task_struct *p);
- void scx_softlockup(u32 dur_s);
- bool scx_hardlockup(int cpu);
--bool scx_rcu_cpu_stall(void);
-+bool scx_rcu_cpu_stall(const struct cpumask *stalled_mask);
- 
- #else	/* !CONFIG_SCHED_CLASS_EXT */
- 
-@@ -271,7 +271,7 @@ static inline void sched_ext_dead(struct task_struct *p) {}
- static inline void print_scx_info(const char *log_lvl, struct task_struct *p) {}
- static inline void scx_softlockup(u32 dur_s) {}
- static inline bool scx_hardlockup(int cpu) { return false; }
--static inline bool scx_rcu_cpu_stall(void) { return false; }
-+static inline bool scx_rcu_cpu_stall(const struct cpumask *stalled_mask) { return false; }
- 
- #endif	/* CONFIG_SCHED_CLASS_EXT */
- 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 82cada459e5d..6199ca3cfb7d 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -555,7 +555,8 @@ static bool synchronize_rcu_expedited_wait_once(long tlimit)
- /*
-  * Print out an expedited RCU CPU stall warning message.
-  */
--static void synchronize_rcu_expedited_stall(unsigned long jiffies_start, unsigned long j)
-+static void synchronize_rcu_expedited_stall(unsigned long jiffies_start, unsigned long j,
-+					    struct cpumask *stalled_mask)
- {
- 	int cpu;
- 	unsigned long mask;
-@@ -578,6 +579,8 @@ static void synchronize_rcu_expedited_stall(unsigned long jiffies_start, unsigne
- 			if (!(READ_ONCE(rnp->expmask) & mask))
- 				continue;
- 			ndetected++;
-+			if (stalled_mask)
-+				cpumask_set_cpu(cpu, stalled_mask);
- 			rdp = per_cpu_ptr(&rcu_data, cpu);
- 			pr_cont(" %d-%c%c%c%c", cpu,
- 				"O."[!!cpu_online(cpu)],
-@@ -659,23 +662,28 @@ static void synchronize_rcu_expedited_wait(void)
- 
- 	for (;;) {
- 		unsigned long j;
-+		cpumask_var_t stalled_mask;
-+		bool have_mask;
- 
- 		if (synchronize_rcu_expedited_wait_once(jiffies_stall))
- 			return;
- 		if (rcu_stall_is_suppressed())
- 			continue;
- 
-+		have_mask = zalloc_cpumask_var(&stalled_mask, GFP_KERNEL);
-+
- 		nbcon_cpu_emergency_enter();
- 
- 		j = jiffies;
- 		rcu_stall_notifier_call_chain(RCU_STALL_NOTIFY_EXP, (void *)(j - jiffies_start));
- 		trace_rcu_stall_warning(rcu_state.name, TPS("ExpeditedStall"));
--		synchronize_rcu_expedited_stall(jiffies_start, j);
-+		synchronize_rcu_expedited_stall(jiffies_start, j, have_mask ? stalled_mask : NULL);
- 		jiffies_stall = 3 * rcu_exp_jiffies_till_stall_check() + 3;
- 
- 		nbcon_cpu_emergency_exit();
- 
--		panic_on_rcu_stall();
-+		panic_on_rcu_stall(have_mask ? stalled_mask : cpu_none_mask);
-+		free_cpumask_var(stalled_mask);
- 	}
- }
- 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index b67532cb8770..b25609520418 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -159,7 +159,7 @@ static int __init check_cpu_stall_init(void)
- early_initcall(check_cpu_stall_init);
- 
- /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
--static void panic_on_rcu_stall(void)
-+static void panic_on_rcu_stall(const struct cpumask *stalled_mask)
- {
- 	static int cpu_stall;
- 
-@@ -167,7 +167,7 @@ static void panic_on_rcu_stall(void)
- 	 * Attempt to kick out the BPF scheduler if it's installed and defer
- 	 * the panic to give the system a chance to recover.
- 	 */
--	if (scx_rcu_cpu_stall())
-+	if (scx_rcu_cpu_stall(stalled_mask))
- 		return;
- 
- 	if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
-@@ -631,6 +631,8 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
- static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- {
- 	int cpu;
-+	cpumask_var_t stalled_mask;
-+	bool have_mask;
- 	unsigned long flags;
- 	unsigned long gpa;
- 	unsigned long j;
-@@ -645,6 +647,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 	if (rcu_stall_is_suppressed())
- 		return;
- 
-+	have_mask = zalloc_cpumask_var(&stalled_mask, GFP_ATOMIC);
-+
- 	nbcon_cpu_emergency_enter();
- 
- 	/*
-@@ -660,6 +664,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 			for_each_leaf_node_possible_cpu(rnp, cpu)
- 				if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu)) {
- 					print_cpu_stall_info(cpu);
-+					if (have_mask)
-+						cpumask_set_cpu(cpu, stalled_mask);
- 					ndetected++;
- 				}
- 		}
-@@ -701,7 +707,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 
- 	nbcon_cpu_emergency_exit();
- 
--	panic_on_rcu_stall();
-+	panic_on_rcu_stall(have_mask ? stalled_mask : cpu_none_mask);
-+	free_cpumask_var(stalled_mask);
- 
- 	rcu_force_quiescent_state();  /* Kick them all. */
- }
-@@ -754,7 +761,7 @@ static void print_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 
- 	nbcon_cpu_emergency_exit();
- 
--	panic_on_rcu_stall();
-+	panic_on_rcu_stall(cpumask_of(smp_processor_id()));
- 
- 	/*
- 	 * Attempt to revive the RCU machinery by forcing a context switch.
-diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 22b1356aa4eb..a2ef2eae7e91 100644
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -5187,9 +5187,12 @@ static __printf(2, 3) bool handle_lockup(int exit_cpu, const char *fmt, ...)
-  * resolve the reported RCU stall. %false if sched_ext is not enabled or someone
-  * else already initiated abort.
-  */
--bool scx_rcu_cpu_stall(void)
-+bool scx_rcu_cpu_stall(const struct cpumask *stalled_mask)
- {
--	return handle_lockup(-1, "RCU CPU stall detected!");
-+	int exit_cpu = cpumask_empty(stalled_mask) ? -1 : (int)cpumask_first(stalled_mask);
-+
-+	return handle_lockup(exit_cpu, "RCU CPU stall on CPUs (%*pbl)",
-+			     cpumask_pr_args(stalled_mask));
- }
- 
- /**
--- 
-2.48.1
-
+--
+Uladzislau Rezki
