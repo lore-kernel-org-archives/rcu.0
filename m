@@ -1,154 +1,137 @@
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F2C3B6362
-	for <rcu@vger.kernel.org>; Tue, 19 May 2026 19:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 790023B19BC
+	for <rcu@vger.kernel.org>; Tue, 19 May 2026 21:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779219936; cv=none; b=ps4IL+XIVA4duP+/CeEUP3fN1SKJdApiPE+SFxQLoj+I1GMBNNifqXgmUQvQB79UxT0g3lsCGiF2hDr2M8Bh3TwLj8A7Wtq2eBFqe7Qkg/zYBB0IRx8Q4GVjPCrCOTTVDr3cAT5dQ4L4WwMKvoNwU8xjPF9ZpkGzaIbgQ+Wf6PQ=
+	t=1779225664; cv=none; b=H2ynl3ArKFphurBTLW0OgfOsqHbem9KUgynuI4/IhetYS+Y9qVdVUB5eFB5nox1j9WC6k6IU+p0KBIeJ/u0iRnV/C7H4I0xKvouTi7bYiTBjZUM0ed8U5UuexSqIZCyDAlmbT7INgx7AfZR9s3qu8QAdwUFX1uYs4ISyoTCcBCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779219936; c=relaxed/simple;
-	bh=aGn8oFIeADYd9zR2os0KsYgOWUkPHLyy0V9cTn+474I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nhanAe38kqxXq4lxX6yVd1pwH1piVw9bm1p5H+3oq7KTVFvwZ4tOfGPABLsNKp+4dy4sycw4ZQS7oUBS3/6esSNf+VbQpenS94Z3uD13wr+jGCi4qiG6tKksP2/USh+H3fpDQivouwL3pLLFRblypJ54VWdffA75jnk6fsBHiKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RD92niPd; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1779225664; c=relaxed/simple;
+	bh=EAk1WrxePPAx7h3Z5Qlgoa9GYJf172cLd2Aela9HjQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Ez8URwSeuA/sYPJiqhc9axJWOsB59EyWdSU74IZCcRpQV2Vvs9JY2v/h7MhqjgmhoDKxeWrOurAiNi2URUTPTWxVZu2iO5IJtcuWEvRzoVpUTdrDIyelwFNAiOrIccqnNLwCwIMT/NCNQhxfXS+/FZicPU4+bf34xlUWDyS16pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dwOkiFY3; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RD92niPd"
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-38e84ed22bdso50339451fa.2
-        for <rcu@vger.kernel.org>; Tue, 19 May 2026 12:45:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779219932; x=1779824732; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jgAUP6OLEyhflkklRcpo72fjxpM93txMmwPi2+jDRTQ=;
-        b=RD92niPdX0KPsWnjbexl68dIZtonhA0psOyhc7G2IO6XBEeO69+WADTp1KrflnO7mb
-         Wcc+SA2JKx1q72y6tyAFDIDzrsqsQKEOkeGPps7hswOU91lNljknqO1xN+ZUAnL4Bo01
-         p1fiR3bW9q8dF8FWS454eLa+hB5rkM2eCxwJ0VF5uSaGtNpQMiWm4NY3yE40ZiCRqXHn
-         Y0SKqyLgLn7voafra8t26KeWEtXlzS2xZgaxs55EsrEN1xVvzKDCgUBsDamcsI+eTkey
-         yqQHuBEfEwrlixEAsB24PwoJOWEXm4RGwjwESq15ZT8vPYYrYUOWkTBs7e10Nufe0nAr
-         iNHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779219932; x=1779824732;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=jgAUP6OLEyhflkklRcpo72fjxpM93txMmwPi2+jDRTQ=;
-        b=BLG4RdzHxFfadq/0IAXKcGYSPOKigtb1/csBk1X6scIdmO3g6/f5uoGap6nbN+FwUh
-         gbzdT3IDf7k6TZrcozZdlSfgO+toiO3a07J9H065jTGHvl2+yISASyWgEtbhSHamKbZp
-         kQw9CVzmCCI4+OpVGimFB1xo2s2OBA42C7l2KMQGuZgrBppVTBQpUlNsX0iQ4Lp76xTc
-         9nUuF6xoANDTiSqgtU5/yv5e14MuVsLUpMZpKKjt8fDyVTxihS+HFAN1gtF4GUfHd0V7
-         p+h19nXMuDB9stFkEofoCzcxuVC5gVg+0urVx4YYN8Y3bifkLqpRTjIkgbn26WV2+c7y
-         z6Gg==
-X-Gm-Message-State: AOJu0YyefZ2ojQ9y9RCtADLhG/LNscTWOhD4Ev/1WYD+TFJ2qQDlLGBP
-	XMhqZMe/MdtE/3Sewl3sgDqhh7dhWNBOhUbw6g9dWjGralVpEQDxuy46UOydEQqn
-X-Gm-Gg: Acq92OHiicysPW3MASWeyba5C5Cw1Vw9L7dIrx3iwoffinXBNUlKdiG9Fwu0z3QKVnG
-	eUkwwkcbA35HCmYO6xpDiD0drgLUO+koNVG+CLcZRoVAnDg0UvsdiifOlsWXoQBB13g0rZMUJ11
-	myuEG+yFkkstK+SYI3LxA4uMHK1JxXY6NIPhY++owVNO+Xh2tQhhTCMmoSgCe/aI1vdGNA6CI/l
-	FbLH/6zvsRKT+pxjeLv+3kwFHbRSeqcJi4YNnNvsFWHuUoQhV8bqDxDggPDzhiYHMs1BdYC57MA
-	sooX8gL4xIwFuHSY20JD+QXa++V6KfW22xYdv+EocXPtUK8HZlzWiKZtsoNbWwd71Q5WyPCa5r7
-	n2RfebQBYKGI2F1zK9qxRm7QO0SrYVfnEzZ9VOlalQtbivDj3G4V7hPQIiyVHzCZUNMrW8CcNxO
-	AQ9oTtatHgO3dIyRk=
-X-Received: by 2002:a05:651c:e18:b0:394:5a09:e8af with SMTP id 38308e7fff4ca-39561adbaa3mr54361861fa.1.1779219932386;
-        Tue, 19 May 2026 12:45:32 -0700 (PDT)
-Received: from localhost.localdomain ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3958827ec3fsm23558761fa.9.2026.05.19.12.45.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2026 12:45:32 -0700 (PDT)
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To: "Paul E . McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dwOkiFY3"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B16FC1F00896;
+	Tue, 19 May 2026 21:21:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779225663;
+	bh=WrkeivS3aIITDGX/99oEuuwIA+pzCtjcVnFTD37iJUU=;
+	h=Date:From:To:Cc:Subject;
+	b=dwOkiFY3zKbMNJEOw5+t4yufurSzJUM69D3qV/SL74JWABaeLFliLKs6cIB8f02BB
+	 IRY0RS59A8cRrsc1CAoc3MTDlX3+Nt3LBNEk9C99YXHKWOky1/auf6y5dLUhqyD96r
+	 421qWbaxYevXT0muxAhW3T2R1+SSkXyGSIy6CCgoWD0683sw2cU6MFG1YemgGfxGkh
+	 lqm2RE+ysuL8kOnLBHlNHPf+Vqwmue2PKf0ZE0wDNMNlLvZJeQY8JngQqWDpQ/WdhE
+	 f8lTX71s6mQ1nPxaC9yX4de/2jciurrouyh4wJdjCYE+f5WWSFcgJv9e986QdpkWfB
+	 NzHGP71mA8ZGA==
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 11BEDF40086;
+	Tue, 19 May 2026 17:21:02 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-01.internal (MEProxy); Tue, 19 May 2026 17:21:02 -0400
+X-ME-Sender: <xms:PtQMapCYXth4-YP3rrIrp-P8Ocmheeg1FP1KtmqJaBk94PweYH7P2g>
+    <xme:PtQMasucmNJ0oDFalqRmqUl6evp2xSICbKbdZ2zEBMLGHAjLeuIPhq8hApQglAM34
+    IWDKiQDo5frsb0RG3sqRA_oBwdS99R-iRaEKry2_mUty-JtdSnXHA>
+X-ME-Received: <xmr:PtQMan-sZ3zaq1DU-Zla5IkSSn-3KriSJPYLfvkm4JOtzRKc15-Dsu8DTtv2bCW1Lf3lMmC63YIRLeSIhvdO7NuJDa4T3Z8K>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgddugedvkeduucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkgggtugesthdtredttddtvdenucfhrhhomhepuehoqhhunhcuhfgv
+    nhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpeeiie
+    dvueeitedvudehheejieeftdfhffegtdeiudfhlefhtdetfedutdeuleeileenucffohhm
+    rghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
+    ihhthidqudeijedtleekgeejuddqudejjeekheehhedvqdgsohhquhhnpeepkhgvrhhnvg
+    hlrdhorhhgsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepudefpdhmohguvgep
+    shhmthhpohhuthdprhgtphhtthhopehtohhrvhgrlhgusheslhhinhhugidqfhhouhhnug
+    grthhiohhnrdhorhhgpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhg
+    pdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhope
+    hnvggvrhgrjhdruhhprgguhhihrgihsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehj
+    ohgvlhgrghhnvghlfhesnhhvihguihgrrdgtohhmpdhrtghpthhtohepuhhrvgiikhhise
+    hgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdr
+    khgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
+    hrghdprhgtphhtthhopehgohhrsehlihhnuhigrdhisghmrdgtohhm
+X-ME-Proxy: <xmx:PtQMajTLUOLUEL1zwTUy3_jEZNMR2lrvixlLPbHm4K9YgH9BKEZ90A>
+    <xmx:PtQMapXQYkHmXVnBXUb9AZJpqCEULA5wh7dn4OAwg2Qym_RdejOq7g>
+    <xmx:PtQMal8ttV7SD02CWLF6iAFdTNNuTaN_GP9y4KZCYzmnZGN3wm3egA>
+    <xmx:PtQMap08N5InUvC3jMngxLluUgacrwL0YbUdnpvbk-9r7tL5p-5uEQ>
+    <xmx:PtQMaqfx6m9pnNoXtWTr-eqUzBVeRDYrLVrulWYZR5hdUG3sdLji5q7a>
+Feedback-ID: i8dbe485b:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 19 May 2026 17:21:01 -0400 (EDT)
+Date: Tue, 19 May 2026 14:21:00 -0700
+From: Boqun Feng <boqun@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>
-Cc: RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>
-Subject: [PATCH -next v2 11/11] rcu-tasks: Fix possible boot-time tests failed for the call_rcu_tasks()
-Date: Tue, 19 May 2026 21:45:24 +0200
-Message-ID: <20260519194524.158515-12-urezki@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260519194524.158515-1-urezki@gmail.com>
-References: <20260519194524.158515-1-urezki@gmail.com>
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+	Samir <samir@linux.ibm.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: [GIT PULL] RCU fixes for v7.1
+Message-ID: <agzUPJ24ENDu37bS@tardis.local>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Zqiang <qiang.zhang@linux.dev>
+Hi Linus,
 
-The following scenarios will cause the call_rcu_tasks() boot-time
-tests failed:
+Please pull this fix into v7.1. The issue was introduced by a previous
+fix PR rather than the v7.1 RCU merge window pull request, hence I'm
+sending this "fix-on-fix" PR. The issue is because queuing a work on a
+never-online CPU won't get the work callback executed, hence SRCU needs
+to avoid doing that.
 
-                     CPU0								CPU1
+The following changes since commit 7fd2df204f342fc17d1a0bfcd474b24232fb0f32:
 
-rcu_init_tasks_generic()
-->rcu_tasks_initiate_self_tests()
-  ->call_rcu_tasks_trace(&tests[1].rh, test_rcu_tasks_callback)
-    ->call_rcu_tasks_generic()
-      ->havekthread = smp_load_acquire(&rtp->kthread_ptr)
-       "The havekthread is false"
-    ....
-								       rcu_tasks_kthread()
-								       ->smp_store_release(&rtp->kthread_ptr, current)
-								         ->rcu_tasks_one_gp()
-								           ->rcuwait_wait_event()
-								             ->rcu_tasks_need_gpcb()
-								               ->for (cpu = 0; cpu < dequeue_limit; cpu++)
-								                 ->rcu_segcblist_n_cbs(&rtpcp->cblist) == 0
-								           ->schedule()
+  Linux 7.1-rc2 (2026-05-03 14:21:25 -0700)
 
-     ->raw_spin_trylock_rcu_node()
-     ->needwake = (func == wakeme_after_rcu) ||
-     (rcu_segcblist_n_cbs(&rtpcp->cblist) == rcu_task_lazy_lim)
+are available in the Git repository at:
 
-       "the rcu_task_lazy_lim default value is 32, and the
-        func pointer is test_rcu_tasks_callback, lead to needwake
-        is false."
+  git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu-fixes.v7.1-20260519a
 
-     ->if (havekthread && !needwake && !timer_pending(&rtpcp->lazy_timer))
-        "the havekthread is false, will not enter here."
-     ....
+for you to fetch changes up to 593889c401426004bd0ea0f6d4fcece728b03420:
 
-        "the needwake is false lead to rtp_irq_work can not queue,
-         even if the rtp->kthread_ptr already exists at this point."
+  srcu: Don't queue workqueue handlers to never-online CPUs (2026-05-18 12:27:18 -0700)
 
-      ->if (needwake && READ_ONCE(rtp->kthread_ptr))
-        ->irq_work_queue(&rtpcp->rtp_irq_work)
+----------------------------------------------------------------
+RCU fixes for v7.1
 
-For the above scenarios, if the call_rcu_tasks() is not called again
-afterward, the rcu_tasks_kthread will not have a chance to be wakeup,
-the test_rcu_tasks_callback() will never be called, the boot-time tests
-failed can happen, this commit therefore check havekthread variable, if
-it's false and the rtpcp->cblist is empty, set needwake variable is true,
-if the rtp->kthread_ptr exist, the rtpcp->rtp_irq_work can be queued to
-wakeup rcu_tasks_kthread.
+Fix a regression introduced by commit 61bbcfb50514 ("srcu: Push
+srcu_node allocation to GP when non-preemptible"): SRCU may queue works
+on CPUs that are "possible" but never have been online. In such a case,
+the work callbacks may not be executed until the corresponding CPU gets
+online, and as the callbacks accumulates, workqueue lockups will fire.
+Fix this by avoiding queuing works on CPUs that have never been online.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Zqiang <qiang.zhang@linux.dev>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tasks.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+iQFhBAABCABLFiEEj5IosQTPz8XU1wRHSXnow7UH+rgFAmoMy/EbFIAAAAAABAAO
+bWFudTIsMi41KzEuMTIsMCwzERxib3F1bkBrZXJuZWwub3JnAAoJEEl56MO1B/q4
+lT8H/RlNu00LC24b0JxPYRBZJz3TSM2WlnGJQ+5LXSQgk2ecqzoTzwDE7oC3naPC
+QDkwGpSif8Y5OKaEnlVavtDcHdNa824mKrgRo/nXkk5fqrrMMubHOHe5Y0fwy5z5
+upPoEvEs0XtbW4Mm6lI4uRw+qvIH16+Ud9SMrfZMwLRGaO8axBXi3rijUtfAMRGv
+xBFqJX15Z/ixWkA6aHGuM1fI4WdApUen4/W3oUC+Ka4Lpgtt29GmIOV3n/topNQq
+R8bZM9QC+7f6Vk1s49ywD9WZYa1b4Pig74XDOXn3328kulGBxVtOnOz4sXMgBmBF
+ZLvJ4xXy8+u1eM0DFcSExJCCvHc=
+=PyvW
+-----END PGP SIGNATURE-----
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 48f0d803c8e2..f4da5fad70f5 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -373,7 +373,8 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
- 	// Queuing callbacks before initialization not yet supported.
- 	if (WARN_ON_ONCE(!rcu_segcblist_is_enabled(&rtpcp->cblist)))
- 		rcu_segcblist_init(&rtpcp->cblist);
--	needwake = (func == wakeme_after_rcu) ||
-+	needwake = (!havekthread && rcu_segcblist_empty(&rtpcp->cblist)) ||
-+		   (func == wakeme_after_rcu) ||
- 		   (rcu_segcblist_n_cbs(&rtpcp->cblist) == rcu_task_lazy_lim);
- 	if (havekthread && !needwake && !timer_pending(&rtpcp->lazy_timer)) {
- 		if (rtp->lazy_jiffies)
--- 
-2.47.3
+Regards,
+Boqun
 
+----------------------------------------------------------------
+Paul E. McKenney (1):
+      srcu: Don't queue workqueue handlers to never-online CPUs
+
+ kernel/rcu/srcutree.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
