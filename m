@@ -1,60 +1,60 @@
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380143B95EB
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD8A3B5310
 	for <rcu@vger.kernel.org>; Tue, 19 May 2026 19:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779219935; cv=none; b=ZZQ59thlbyV7tQoeYJnRtl7WhJajn1rQvtiM0GDemCLLh0dbsUH+Xpe1iRweO2QsA2vRRHeu9sVNFB0ughQAxY3mUMQ8aiRCik7EQx7Ro4CSlghvjXgShWDivoEevwXq5YUKZGCIRMSExnzxqz/zNOKIqziePlTyxb359Pn+S5k=
+	t=1779219936; cv=none; b=LzvWt3WvIKP5lSrUJV1GwO2KzSGrUrtTjH31Jclc+4LTZuLQh2lZk6y9ePj4FQMD92kT8xIXLtNOtpEgR2jkYirhzlbxNJT+LWpN3OncdVPpOvWQHqg6wsJ7bXj0vTYLzPAoE1pScLpz3GmgLb3/TRLASxQNsy65L1/SSV33O5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779219935; c=relaxed/simple;
-	bh=RkHk7z2ygyoyi1ilNEZkRX+Ty9Jdxo0cKjCdLWv4d/s=;
+	s=arc-20240116; t=1779219936; c=relaxed/simple;
+	bh=N1ZRO99Xmu7eMJ4ncdKQ4oBgaMAOlGsvAg+Q2j1/DMo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sYUdZySIyhnLJ+swBAWfKyWti9ECQWsKLJS6EPV3zrMJxHxioFLoGrdNuvgVVLyliGW6A2ui5hOXV7cInx9DHAftX2TwgSLGTYMr+cupL+Ln7wckZap1noB4yO6ly1L2x6CPhYnikwzGar+Lb7N8Td42g9elD49insnqYgSXyBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=oo/cVKbO; arc=none smtp.client-ip=209.85.208.179
+	 MIME-Version; b=nKyrWMY6SXxZeZb2iLkT34g86Eo70uAGaBiLEQq83EbcVYKJHAn+rJdFgRpXCszIgJSSmjyfUCtd9d/thoQ28LwdUIld2kdM47Z7yfwpRZ8UUzAA4kt1GMm0BalgUBzqp+F9uuLyPWeaIkAH2ggkIn7JHFHfwXXm0wnm/MUCjDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DajfT7oI; arc=none smtp.client-ip=209.85.208.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oo/cVKbO"
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-392445f11c5so44288051fa.1
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DajfT7oI"
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-39393c1b5aaso37070831fa.3
         for <rcu@vger.kernel.org>; Tue, 19 May 2026 12:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779219931; x=1779824731; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1779219932; x=1779824732; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HfDpEv+39iIZARqiCjGlpklYp+nlJJtKSY6Ud1S1ntc=;
-        b=oo/cVKbOwuQ9VzCH0JHE1tU30g9CZHYXv/oAQzJOAFFxCanZ0Rj6BrHDbzGkGWNQtl
-         pzqK3l1Y2WOc7adhC/LJ0xGeVUnEa/Fq4XEwS1YcnKaUIssBN8J/IVZB5vPPzHBdetbX
-         mOrwQ7sxRinxJ4j4cm2/MmPnKDq5byeQ5k1CsyDXIzeuPiheMeQR0y71uUsQ1UYElB80
-         jjZESSdhZTNv6nfD9NnadsUVPdpSXbSuBKgCytmXqvLXD9h39AsEd8XkEWGNiyoGaVrB
-         sfaS4gdpNu7iZQeDswTSXS1lu2jxHiOxwnWJ+JULpJbmtrnlsVzsO8w5oRWRZ+NDpK0W
-         yFxQ==
+        bh=OSjCy54KooYgtOnKS1P4NfKbs3McoPoMDdY9GznQwyk=;
+        b=DajfT7oIOa6xIzArkrPVKZoJPBjl3K4FmdCpK7aYoqiBZ4jQqlxNlSkuhFzp3tmr2R
+         eIan66XkBNNgSc4OGxlEne+Xu93s4huOTTVWfWmqzk2aVfnd88++7oQly7wIK2u/uLJA
+         UlShsrDqkES0rbvYZEErGXlNuYK0opVYQVToIZ5w9HsFOo7heSGHzhw8MZe//FSNdXuV
+         r0uX3L7Bxk0Pfl4mEOTJDsjCxsPeu1N7NXDnwz8ntyKk7RcuNz7i/vsFdpbjuNO1PMdG
+         6QK9ptUb/duTZyb/KjX0E6E1MDLwenZMRrJmRH92J1QVa8qHpcc5pyNfdiYwdHx3OEnc
+         /F2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779219931; x=1779824731;
+        d=1e100.net; s=20251104; t=1779219932; x=1779824732;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=HfDpEv+39iIZARqiCjGlpklYp+nlJJtKSY6Ud1S1ntc=;
-        b=EwGmtZTb9rQ35sc4rJQEh3d5gmqbAiwmd/KSPKfLOANn/WYukwV9FbOP2FhvWTjf3z
-         PXigiWHlMbMJIuYnQgJ7QhsUvG0zGQ4vzg2BWxMx7K3QzArQiYhLyBJNBEMk0j8djYq2
-         jr6xhewHJqxGou5LNt1ugMs6unuMOh5YgWetbTStjgQCCRV7HQrYbCBZyc4l6PtackYU
-         vk/09OvwM4/9bkmj4j9KkRIR53mx8R1RhP8xio1+yHg6vqwgCFuFV4yhGg/vpjCktb/n
-         zBu5pClXZ8YMJTie17qY6MOeErTnI9Z9IpGN48f/blkzRv3yznaBMjuScCrMeIxCOL5e
-         +03w==
-X-Gm-Message-State: AOJu0YwzCYUWXGH7ECtnl+2GrqBTbsWp/gGD4MUBxxMsdXaF5zudPq/w
-	jW75BRSNoDPGbdcWNtdTeezE34MKWPxkHjXtDcxRO0RO1wM3kAHD++uy
-X-Gm-Gg: Acq92OEmBFIMaYx0L0Ym3Rdw+CB4W5SryyTKSnF4beBWnxx9RnIqj+T+p+ffNjFlQq+
-	TWyD44TIt3c+sjo4iNkkki2f4V3ztC/IvsdlZsJHjQV9f0nRYtLUli2qAkiNPbEe0VW/hpUGWSx
-	9Q65Xr5VS6EbMnkWJYonNBD8r9m13Ztdajp6nP1GXqIoU9vUsZXR6KX19QVwdxJNE+jj8bOGJ44
-	BUzvGm6YOykPD56mqS01S2ODLDpTqrqTaoIXP3lK6uQDZs14eXodXQZ+z19Ch+uryrNJI0w6X4a
-	WunefvSYINWYa/C0DK7zk6x2BBm3gcYpNA46uau6XWuUVCjqpR+1HkyARkpo5EhYqu9jPk5uUNv
-	fqwqBzUf9R3o4UyWGWMl6A2a0X0Q+uR+R03m7SB6CCZ+fH2dT8hQM0A6Hs248k5CAhq6FSv6w1f
-	JlpLEOWCZqpBjogPc=
-X-Received: by 2002:a2e:bccb:0:b0:393:7f7a:4047 with SMTP id 38308e7fff4ca-3945b60917amr73751851fa.16.1779219931313;
+        bh=OSjCy54KooYgtOnKS1P4NfKbs3McoPoMDdY9GznQwyk=;
+        b=PQ8pO1XGPwzTEhyWFyI9KN8BbW7RinPl/QoH2sPlReb5bgbQzajH97w0Zo8BlIPFiK
+         YIDVVvaMaW+ywTHOu3mQMjA3CNZhINxQgzkP11KNid7XcqTcT8rZDEUV5sc9WH3qwMx3
+         yQwmzNERCK/RmNYx6OCvZSltQBB+P2Q0DgEv/GO3ZGeo5vknjPzh1rz45FPMGxUYbnhj
+         XZm4zjN3Ux1/XaJnFXTWnSUxxOccHfOUxTbKO/aTpIRJDyFAzi/+K6RGn/Wdfxh7qleC
+         YMcBrDIJuzi3xenlvmh50x5A3PBo7wo1tcAHGayszo2w6bAvzLtWajtamGUwQUEArdKX
+         aVng==
+X-Gm-Message-State: AOJu0Yy/QHcszKa/cfn4Wlro2FxYXPsC4tX93q1Kz2NA4Zjj0e4Zor+L
+	/wgkmOKpHvOhL5HFFeFr+grqJLlT8UTl7Ava0sADUqgE88/VKpSSRvOK
+X-Gm-Gg: Acq92OFw0fLadUQU+0T//hd4zhRhRWxTuw6jqvqk2afS1W2t6qqHJGm2a/3iTbDgWXf
+	qyWTKalxwShbIGRg3F9Lsw7z3pERY0v7ak9iGYJFO1tBjzrmDBevTD2tcDo+GKGQLtANDkA8Fac
+	3AdYA9DHAm1hi5vmzxy030Hl2/96FoxushdA4grbLzSVaVOTyh0tRIGKRFstpUN5iRA5ZN2IwJk
+	o6IBhSj+XgdzSL5HN5j1L48ISLZ0ApLbSWELDWCdUGuTLe0ej0stNRdkclvIjh3dBtxQG4r4qBG
+	RSBGjnu+HrIu7UBZX5O+1z0JMgbgYri2CyOUcjQ8kA00ZX8yOnszb/vh3DZti3h37jDKDBeyz9M
+	6ltDPu7qX3zns4IHFjwZw32uonmmqWaQLvDnUw/Ssqz3opBYTWqyO/hwV0657aUOnR9WhdnZyBP
+	tTX2IrX6fZoONieeA=
+X-Received: by 2002:a2e:c41:0:b0:394:5c9a:f31f with SMTP id 38308e7fff4ca-39561fa8ed4mr43748971fa.16.1779219931855;
         Tue, 19 May 2026 12:45:31 -0700 (PDT)
 Received: from localhost.localdomain ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3958827ec3fsm23558761fa.9.2026.05.19.12.45.30
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3958827ec3fsm23558761fa.9.2026.05.19.12.45.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 19 May 2026 12:45:31 -0700 (PDT)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
@@ -65,10 +65,10 @@ To: "Paul E . McKenney" <paulmck@kernel.org>,
 Cc: RCU <rcu@vger.kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
-	Maxim Mikityanskiy <maximmi@nvidia.com>
-Subject: [PATCH -next v2 09/11] rcu: Document rcu_access_pointer() feeding into cmpxchg()
-Date: Tue, 19 May 2026 21:45:22 +0200
-Message-ID: <20260519194524.158515-10-urezki@gmail.com>
+	Samir M <samir@linux.ibm.com>
+Subject: [PATCH -next v2 10/11] rcu: Latch normal synchronize_rcu() path on flood
+Date: Tue, 19 May 2026 21:45:23 +0200
+Message-ID: <20260519194524.158515-11-urezki@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260519194524.158515-1-urezki@gmail.com>
 References: <20260519194524.158515-1-urezki@gmail.com>
@@ -80,42 +80,185 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Currently, rcu_normal_wake_from_gp is only enabled by default
+on small systems(<= 16 CPUs) or when a user explicitly set it
+enabled.
 
-This commit documents the rcu_access_pointer() use case for fetching the
-old value of an RCU-protected pointer within a lockless updater for use
-by an atomic cmpxchg() operation.
+Introduce an adaptive latching mechanism:
+ * Track the number of in-flight synchronize_rcu() requests
+   using a new rcu_sr_normal_count counter;
 
-Reported-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+ * If the count reaches/exceeds RCU_SR_NORMAL_LATCH_THR(64),
+   it sets the rcu_sr_normal_latched, reverting new requests
+   onto the scaled wait_rcu_gp() path;
+
+ * The latch is cleared only when the pending requests are fully
+   drained(nr == 0);
+
+ * Enables rcu_normal_wake_from_gp by default for all systems,
+   relying on this dynamic throttling instead of static CPU
+   limits.
+
+Testing(synthetic flood workload):
+  * Kernel version: 6.19.0-rc6
+  * Number of CPUs: 1536
+  * 60K concurrent synchronize_rcu() calls
+
+Perf(cycles, system-wide):
+  total cycles: 932020263832
+  rcu_sr_normal_add_req(): 2650282811 cycles(~0.28%)
+
+Perf report excerpt:
+  0.01%  0.01%  sync_test/...  [k] rcu_sr_normal_add_req
+
+Measured overhead of rcu_sr_normal_add_req() remained ~0.28%
+of total CPU cycles in this synthetic stress test.
+
+Tested-by: Samir M <samir@linux.ibm.com>
+Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- include/linux/rcupdate.h | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ .../admin-guide/kernel-parameters.txt         | 10 ++--
+ kernel/rcu/tree.c                             | 52 ++++++++++++++-----
+ 2 files changed, 44 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index bfa765132de8..5e95acc33989 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -592,11 +592,13 @@ context_unsafe(							      \
-  * lockdep checks for being in an RCU read-side critical section.  This is
-  * useful when the value of this pointer is accessed, but the pointer is
-  * not dereferenced, for example, when testing an RCU-protected pointer
-- * against NULL.  Although rcu_access_pointer() may also be used in cases
-- * where update-side locks prevent the value of the pointer from changing,
-- * you should instead use rcu_dereference_protected() for this use case.
-- * Within an RCU read-side critical section, there is little reason to
-- * use rcu_access_pointer().
-+ * against NULL.  Within an RCU read-side critical section, there is little
-+ * reason to use rcu_access_pointer().  Although rcu_access_pointer() may
-+ * also be used in cases where update-side locks prevent the value of the
-+ * pointer from changing, you should instead use rcu_dereference_protected()
-+ * for this use case.  It is also permissible to use rcu_access_pointer()
-+ * within lockless updaters to obtain the old value for an atomic operation,
-+ * for example, for cmpxchg().
-  *
-  * It is usually best to test the rcu_access_pointer() return value
-  * directly in order to avoid accidental dereferences being introduced
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 4d0f545fb3ec..d5db2e85d551 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5862,13 +5862,13 @@ Kernel parameters
+ 			use a call_rcu[_hurry]() path. Please note, this is for a
+ 			normal grace period.
+ 
+-			How to enable it:
++			How to disable it:
+ 
+-			echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+-			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=1"
++			echo 0 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
++			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=0"
+ 
+-			Default is 1 if num_possible_cpus() <= 16 and it is not explicitly
+-			disabled by the boot parameter passing 0.
++			Default is 1 if it is not explicitly disabled by the boot parameter
++			passing 0.
+ 
+ 	rcuscale.gp_async= [KNL]
+ 			Measure performance of asynchronous
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 09f0cef5014c..94274330d1db 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1632,17 +1632,21 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
+ 	atomic_set_release(&sr_wn->inuse, 0);
+ }
+ 
+-/* Enable rcu_normal_wake_from_gp automatically on small systems. */
+-#define WAKE_FROM_GP_CPU_THRESHOLD 16
+-
+-static int rcu_normal_wake_from_gp = -1;
++static int rcu_normal_wake_from_gp = 1;
+ module_param(rcu_normal_wake_from_gp, int, 0644);
+ static struct workqueue_struct *sync_wq;
+ 
++#define RCU_SR_NORMAL_LATCH_THR 64
++
++/* Number of in-flight synchronize_rcu() calls queued on srs_next. */
++static atomic_long_t rcu_sr_normal_count;
++static int rcu_sr_normal_latched; /* 0/1 */
++
+ static void rcu_sr_normal_complete(struct llist_node *node)
+ {
+ 	struct rcu_synchronize *rs = container_of(
+ 		(struct rcu_head *) node, struct rcu_synchronize, head);
++	long nr;
+ 
+ 	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+ 		!poll_state_synchronize_rcu_full(&rs->oldstate),
+@@ -1650,6 +1654,15 @@ static void rcu_sr_normal_complete(struct llist_node *node)
+ 
+ 	/* Finally. */
+ 	complete(&rs->completion);
++	nr = atomic_long_dec_return(&rcu_sr_normal_count);
++	WARN_ON_ONCE(nr < 0);
++
++	/*
++	 * Unlatch: switch back to normal path when fully
++	 * drained and if it has been latched.
++	 */
++	if (nr == 0)
++		(void)cmpxchg(&rcu_sr_normal_latched, 1, 0);
+ }
+ 
+ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+@@ -1795,6 +1808,24 @@ static bool rcu_sr_normal_gp_init(void)
+ 
+ static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+ {
++	/*
++	 * Increment before publish to avoid a complete
++	 * vs enqueue race on latch.
++	 */
++	long nr = atomic_long_inc_return(&rcu_sr_normal_count);
++
++	/*
++	 * Latch when threshold is reached. Checking for an exact match
++	 * restricts cmpxchg() to a single context.
++	 *
++	 * This latch is intentionally relaxed and best-effort. Concurrent
++	 * set/clear can race and temporarily lose the latch, which is OK
++	 * because it only selects between the fast and fallback paths.
++	 */
++	if (nr == RCU_SR_NORMAL_LATCH_THR)
++		(void)cmpxchg(&rcu_sr_normal_latched, 0, 1);
++
++	/* Publish for the GP kthread/worker. */
+ 	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
+ }
+ 
+@@ -3278,14 +3309,15 @@ static void synchronize_rcu_normal(void)
+ {
+ 	struct rcu_synchronize rs;
+ 
++	init_rcu_head_on_stack(&rs.head);
+ 	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
+ 
+-	if (READ_ONCE(rcu_normal_wake_from_gp) < 1) {
++	if (READ_ONCE(rcu_normal_wake_from_gp) < 1 ||
++			READ_ONCE(rcu_sr_normal_latched)) {
+ 		wait_rcu_gp(call_rcu_hurry);
+ 		goto trace_complete_out;
+ 	}
+ 
+-	init_rcu_head_on_stack(&rs.head);
+ 	init_completion(&rs.completion);
+ 
+ 	/*
+@@ -3302,10 +3334,10 @@ static void synchronize_rcu_normal(void)
+ 
+ 	/* Now we can wait. */
+ 	wait_for_completion(&rs.completion);
+-	destroy_rcu_head_on_stack(&rs.head);
+ 
+ trace_complete_out:
+ 	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("complete"));
++	destroy_rcu_head_on_stack(&rs.head);
+ }
+ 
+ /**
+@@ -4904,12 +4936,6 @@ void __init rcu_init(void)
+ 	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
+ 	WARN_ON(!sync_wq);
+ 
+-	/* Respect if explicitly disabled via a boot parameter. */
+-	if (rcu_normal_wake_from_gp < 0) {
+-		if (num_possible_cpus() <= WAKE_FROM_GP_CPU_THRESHOLD)
+-			rcu_normal_wake_from_gp = 1;
+-	}
+-
+ 	/* Fill in default value for rcutree.qovld boot parameter. */
+ 	/* -After- the rcu_node ->lock fields are initialized! */
+ 	if (qovld < 0)
 -- 
 2.47.3
 
