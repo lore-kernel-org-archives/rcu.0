@@ -1,62 +1,62 @@
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024983B52F1
-	for <rcu@vger.kernel.org>; Tue, 19 May 2026 19:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380143B95EB
+	for <rcu@vger.kernel.org>; Tue, 19 May 2026 19:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779219934; cv=none; b=Wn53UpiFxmR8pspZ/b5WTCRNbUK2wWoPm1YmqoB3Y+pffnJ1r3AvGwBLKCIMngkJbz/9O2mbjEYkkF6axZ2j59CXpf6Wv/X1qtc5iTV7HirbYcM+bOpi0QZ3EFpxL8KdUqDRIznLUjMqsNemFwZ1LzMGNdMKsTr7J9uzfh2HIzY=
+	t=1779219935; cv=none; b=ZZQ59thlbyV7tQoeYJnRtl7WhJajn1rQvtiM0GDemCLLh0dbsUH+Xpe1iRweO2QsA2vRRHeu9sVNFB0ughQAxY3mUMQ8aiRCik7EQx7Ro4CSlghvjXgShWDivoEevwXq5YUKZGCIRMSExnzxqz/zNOKIqziePlTyxb359Pn+S5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779219934; c=relaxed/simple;
-	bh=sCzlW8dI0Fhs+cB9tikStcBigUiohJn/nNVBfBD/Z7o=;
+	s=arc-20240116; t=1779219935; c=relaxed/simple;
+	bh=RkHk7z2ygyoyi1ilNEZkRX+Ty9Jdxo0cKjCdLWv4d/s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fu9W6ROirt2PqIcSXStAuqUqrH1Zlep6lU2U3+L1V47+viFlg+UrNMa3HzOmj0CgFl+0c7GUF/ujkhDYDYNrxXpIXJSiYobtO257F+djktn2w/LKHwQFCfc7n650GeVT5U9jQRNc4tcUFgMao1Lfm+d6JQB9rE5u2Erx69MqIk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HXosfpvv; arc=none smtp.client-ip=209.85.208.169
+	 MIME-Version; b=sYUdZySIyhnLJ+swBAWfKyWti9ECQWsKLJS6EPV3zrMJxHxioFLoGrdNuvgVVLyliGW6A2ui5hOXV7cInx9DHAftX2TwgSLGTYMr+cupL+Ln7wckZap1noB4yO6ly1L2x6CPhYnikwzGar+Lb7N8Td42g9elD49insnqYgSXyBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=oo/cVKbO; arc=none smtp.client-ip=209.85.208.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HXosfpvv"
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-39378db197aso45065241fa.3
-        for <rcu@vger.kernel.org>; Tue, 19 May 2026 12:45:30 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oo/cVKbO"
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-392445f11c5so44288051fa.1
+        for <rcu@vger.kernel.org>; Tue, 19 May 2026 12:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779219929; x=1779824729; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1779219931; x=1779824731; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o/RJXFq6LqCe4pPTryrEabmW7igLHdURwee7mxbgIMM=;
-        b=HXosfpvvqjwGGah9LaWiwiTOLDN9y74EgELO4GNA13CIUkaU0wLmjOl7DIBrKvTi+D
-         0xRBswzU63hju6rKyIUIobmYXIUzcw/oNknqRrG8ANlUHEmBK81pgKcVDwKXYqMTvzGu
-         XY8+cj5J804LZNipLq/S+cyrYrVrg4gwy3WBKTxIcbuXVpyCkeo9oZlhLN/2VP0Zezwl
-         zAYzTOsT7MUSr7y3xAu9ArugTt7ThMb0ufVR6C0M76VxxoUv3Nx5ClEjX7gm+qDRX1+d
-         JXtVbJ1UEaHZ/or43oRr2inE+Tp6bLKu9qPTJzfaKpewzTV1Dhuih5TBEsM1X0FmYzpC
-         eA7w==
+        bh=HfDpEv+39iIZARqiCjGlpklYp+nlJJtKSY6Ud1S1ntc=;
+        b=oo/cVKbOwuQ9VzCH0JHE1tU30g9CZHYXv/oAQzJOAFFxCanZ0Rj6BrHDbzGkGWNQtl
+         pzqK3l1Y2WOc7adhC/LJ0xGeVUnEa/Fq4XEwS1YcnKaUIssBN8J/IVZB5vPPzHBdetbX
+         mOrwQ7sxRinxJ4j4cm2/MmPnKDq5byeQ5k1CsyDXIzeuPiheMeQR0y71uUsQ1UYElB80
+         jjZESSdhZTNv6nfD9NnadsUVPdpSXbSuBKgCytmXqvLXD9h39AsEd8XkEWGNiyoGaVrB
+         sfaS4gdpNu7iZQeDswTSXS1lu2jxHiOxwnWJ+JULpJbmtrnlsVzsO8w5oRWRZ+NDpK0W
+         yFxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779219929; x=1779824729;
+        d=1e100.net; s=20251104; t=1779219931; x=1779824731;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=o/RJXFq6LqCe4pPTryrEabmW7igLHdURwee7mxbgIMM=;
-        b=o7biLfpqeK0OSeU9oUMWrHKyaiUmVljXKEcBrYyseTY2ibj51SNoWGjHJEppHdcWxV
-         2u1DfQDaNKq3Ro8lJju0QexXFKEtWxDEbxa5iYR1sHh9gOhP33nQLXkFy8FLfZ3zN+MS
-         TU6T8G0sODGbSgWkK/ju+EVUVolUIG7+Huq+9t7XdYtNRSyn/gwXJmEUGACpR1SoTszn
-         Pimogi4VwmI4PWST3iORSBPU3s/EcuWDL+BL3U21t6XCfOqr+ejFynCFZqkW2HOLSGiX
-         KxcyGzZ7azYAoO5hB6SqryiYNjQS8w93WbQ5rmiM7JW9bXx+GQGoJE0/jmjiVMnN0HX4
-         r96Q==
-X-Gm-Message-State: AOJu0YzzDpygqZxVyVlsdNJmmG3xetbcwcV4mqKt3DOk/ZQCpkB7q4uo
-	qFBaU3GWo28b078WjEitt9cCf7XE9OPVK4NOS7e5HpVPizbnhTl3o+72
-X-Gm-Gg: Acq92OGJO3+9y8iXsHJeRFh3UL4bcD8r7JQAeK4Hiuu5mCFI9hsjLDzvlaYjX2A3jsi
-	L+R42JAO+Fb/JZrfBEKXLYazbd6+2hpCv9o800dhaqMBk0opoJ5QCNZ1lTd3p7hx+7Y9PpoaWGN
-	cj8UZurOtKM4KFte/0qHWIp2RqwnEfnn3r/elavMWrO3DI203MEhzPk1Rk0qqGu+WlryNjd4J9K
-	I9Zr6zui6lJn/9KlWr2XNOeqSZUtff/e1RGml5a+0WXZADvEj1cIBSj+HsX0qD2WrpGWEgV7BVL
-	nsugBOjNpLU7xdS0ffr3ficnHNpIql9qCYVPkBkw9H6vFk6cLsLVGqZ1ZnXkrx2lGLVQoT8i5Nw
-	9KiquAV6MHdhxO3BdlsSfpfJuhUaUdFtQYW7qmyvZjrprOZPB1VmfyRGA5WTFsuB8qWMV8M8EaD
-	E22vB7XU5xw6EnJ3xjAS+3EC+R9g==
-X-Received: by 2002:a05:651c:435c:10b0:38a:2f02:e153 with SMTP id 38308e7fff4ca-39561f67d59mr55038531fa.31.1779219929166;
-        Tue, 19 May 2026 12:45:29 -0700 (PDT)
+        bh=HfDpEv+39iIZARqiCjGlpklYp+nlJJtKSY6Ud1S1ntc=;
+        b=EwGmtZTb9rQ35sc4rJQEh3d5gmqbAiwmd/KSPKfLOANn/WYukwV9FbOP2FhvWTjf3z
+         PXigiWHlMbMJIuYnQgJ7QhsUvG0zGQ4vzg2BWxMx7K3QzArQiYhLyBJNBEMk0j8djYq2
+         jr6xhewHJqxGou5LNt1ugMs6unuMOh5YgWetbTStjgQCCRV7HQrYbCBZyc4l6PtackYU
+         vk/09OvwM4/9bkmj4j9KkRIR53mx8R1RhP8xio1+yHg6vqwgCFuFV4yhGg/vpjCktb/n
+         zBu5pClXZ8YMJTie17qY6MOeErTnI9Z9IpGN48f/blkzRv3yznaBMjuScCrMeIxCOL5e
+         +03w==
+X-Gm-Message-State: AOJu0YwzCYUWXGH7ECtnl+2GrqBTbsWp/gGD4MUBxxMsdXaF5zudPq/w
+	jW75BRSNoDPGbdcWNtdTeezE34MKWPxkHjXtDcxRO0RO1wM3kAHD++uy
+X-Gm-Gg: Acq92OEmBFIMaYx0L0Ym3Rdw+CB4W5SryyTKSnF4beBWnxx9RnIqj+T+p+ffNjFlQq+
+	TWyD44TIt3c+sjo4iNkkki2f4V3ztC/IvsdlZsJHjQV9f0nRYtLUli2qAkiNPbEe0VW/hpUGWSx
+	9Q65Xr5VS6EbMnkWJYonNBD8r9m13Ztdajp6nP1GXqIoU9vUsZXR6KX19QVwdxJNE+jj8bOGJ44
+	BUzvGm6YOykPD56mqS01S2ODLDpTqrqTaoIXP3lK6uQDZs14eXodXQZ+z19Ch+uryrNJI0w6X4a
+	WunefvSYINWYa/C0DK7zk6x2BBm3gcYpNA46uau6XWuUVCjqpR+1HkyARkpo5EhYqu9jPk5uUNv
+	fqwqBzUf9R3o4UyWGWMl6A2a0X0Q+uR+R03m7SB6CCZ+fH2dT8hQM0A6Hs248k5CAhq6FSv6w1f
+	JlpLEOWCZqpBjogPc=
+X-Received: by 2002:a2e:bccb:0:b0:393:7f7a:4047 with SMTP id 38308e7fff4ca-3945b60917amr73751851fa.16.1779219931313;
+        Tue, 19 May 2026 12:45:31 -0700 (PDT)
 Received: from localhost.localdomain ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3958827ec3fsm23558761fa.9.2026.05.19.12.45.28
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3958827ec3fsm23558761fa.9.2026.05.19.12.45.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2026 12:45:28 -0700 (PDT)
+        Tue, 19 May 2026 12:45:31 -0700 (PDT)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
@@ -64,10 +64,11 @@ To: "Paul E . McKenney" <paulmck@kernel.org>,
 	Boqun Feng <boqun.feng@gmail.com>
 Cc: RCU <rcu@vger.kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>
-Subject: [PATCH -next v2 05/11] srcu: Fix kerneldoc header comment typo in srcu_down_read_fast()
-Date: Tue, 19 May 2026 21:45:18 +0200
-Message-ID: <20260519194524.158515-6-urezki@gmail.com>
+	Uladzislau Rezki <urezki@gmail.com>,
+	Maxim Mikityanskiy <maximmi@nvidia.com>
+Subject: [PATCH -next v2 09/11] rcu: Document rcu_access_pointer() feeding into cmpxchg()
+Date: Tue, 19 May 2026 21:45:22 +0200
+Message-ID: <20260519194524.158515-10-urezki@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260519194524.158515-1-urezki@gmail.com>
 References: <20260519194524.158515-1-urezki@gmail.com>
@@ -81,28 +82,40 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-s/srcu_read_lock_safe()/srcu_read_lock_fast_updown(), there being no
-such thing as srcu_read_lock_safe().
+This commit documents the rcu_access_pointer() use case for fetching the
+old value of an RCU-protected pointer within a lockless updater for use
+by an atomic cmpxchg() operation.
 
+Reported-by: Maxim Mikityanskiy <maximmi@nvidia.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- include/linux/srcu.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/rcupdate.h | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 81b1938512d5..a54ce9e808b9 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -397,7 +397,7 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast_notrace(struct srcu_
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index bfa765132de8..5e95acc33989 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -592,11 +592,13 @@ context_unsafe(							      \
+  * lockdep checks for being in an RCU read-side critical section.  This is
+  * useful when the value of this pointer is accessed, but the pointer is
+  * not dereferenced, for example, when testing an RCU-protected pointer
+- * against NULL.  Although rcu_access_pointer() may also be used in cases
+- * where update-side locks prevent the value of the pointer from changing,
+- * you should instead use rcu_dereference_protected() for this use case.
+- * Within an RCU read-side critical section, there is little reason to
+- * use rcu_access_pointer().
++ * against NULL.  Within an RCU read-side critical section, there is little
++ * reason to use rcu_access_pointer().  Although rcu_access_pointer() may
++ * also be used in cases where update-side locks prevent the value of the
++ * pointer from changing, you should instead use rcu_dereference_protected()
++ * for this use case.  It is also permissible to use rcu_access_pointer()
++ * within lockless updaters to obtain the old value for an atomic operation,
++ * for example, for cmpxchg().
   *
-  * The same srcu_struct may be used concurrently by srcu_down_read_fast()
-  * and srcu_read_lock_fast().  However, the same definition/initialization
-- * requirements called out for srcu_read_lock_safe() apply.
-+ * requirements called out for srcu_read_lock_fast_updown() apply.
-  */
- static inline struct srcu_ctr __percpu *srcu_down_read_fast(struct srcu_struct *ssp) __acquires_shared(ssp)
- {
+  * It is usually best to test the rcu_access_pointer() return value
+  * directly in order to avoid accidental dereferences being introduced
 -- 
 2.47.3
 
