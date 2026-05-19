@@ -1,80 +1,51 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 790023B19BC
-	for <rcu@vger.kernel.org>; Tue, 19 May 2026 21:21:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C270A27281E;
+	Tue, 19 May 2026 21:52:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779225664; cv=none; b=H2ynl3ArKFphurBTLW0OgfOsqHbem9KUgynuI4/IhetYS+Y9qVdVUB5eFB5nox1j9WC6k6IU+p0KBIeJ/u0iRnV/C7H4I0xKvouTi7bYiTBjZUM0ed8U5UuexSqIZCyDAlmbT7INgx7AfZR9s3qu8QAdwUFX1uYs4ISyoTCcBCk=
+	t=1779227574; cv=none; b=mdcYCuMua5xNjpsmVtPVd3gckf77egEclSsot33oGr8PtsOzYKUWKUUim41YUL9mZfCw7203F/cV0DjFVV9XI/VS02N1E2013hs1JgALcaT9MQIwj8+O0iZ3J1Q2fI+GSOZHbE3V3VMw+bhlDYvVp4iIS1sWTBAIDqzKqgQl8+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779225664; c=relaxed/simple;
-	bh=EAk1WrxePPAx7h3Z5Qlgoa9GYJf172cLd2Aela9HjQs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Ez8URwSeuA/sYPJiqhc9axJWOsB59EyWdSU74IZCcRpQV2Vvs9JY2v/h7MhqjgmhoDKxeWrOurAiNi2URUTPTWxVZu2iO5IJtcuWEvRzoVpUTdrDIyelwFNAiOrIccqnNLwCwIMT/NCNQhxfXS+/FZicPU4+bf34xlUWDyS16pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dwOkiFY3; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1779227574; c=relaxed/simple;
+	bh=hxpkDkNyJWyVR4+J7MBuSEHvrKdrQ1KsasD1nDmBg0A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZRCErjALYaLKkeTSZG8P+7t58NZ7VN1sU6rNqwppE9yaqVzhd0HNsOm2dUxV0KEOx3OlbVTufegtPVRH3wi/6Ax4FGRKtqmNAIv52RHCXHhS4UJNT3HEkKB1PVD67/9MHKuhAFi1976mKqTbweYwfh2CwA1llXnGv0YmSxCOo4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=amm9Hf+g; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dwOkiFY3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B16FC1F00896;
-	Tue, 19 May 2026 21:21:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="amm9Hf+g"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 825101F000E9;
+	Tue, 19 May 2026 21:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779225663;
-	bh=WrkeivS3aIITDGX/99oEuuwIA+pzCtjcVnFTD37iJUU=;
-	h=Date:From:To:Cc:Subject;
-	b=dwOkiFY3zKbMNJEOw5+t4yufurSzJUM69D3qV/SL74JWABaeLFliLKs6cIB8f02BB
-	 IRY0RS59A8cRrsc1CAoc3MTDlX3+Nt3LBNEk9C99YXHKWOky1/auf6y5dLUhqyD96r
-	 421qWbaxYevXT0muxAhW3T2R1+SSkXyGSIy6CCgoWD0683sw2cU6MFG1YemgGfxGkh
-	 lqm2RE+ysuL8kOnLBHlNHPf+Vqwmue2PKf0ZE0wDNMNlLvZJeQY8JngQqWDpQ/WdhE
-	 f8lTX71s6mQ1nPxaC9yX4de/2jciurrouyh4wJdjCYE+f5WWSFcgJv9e986QdpkWfB
-	 NzHGP71mA8ZGA==
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 11BEDF40086;
-	Tue, 19 May 2026 17:21:02 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Tue, 19 May 2026 17:21:02 -0400
-X-ME-Sender: <xms:PtQMapCYXth4-YP3rrIrp-P8Ocmheeg1FP1KtmqJaBk94PweYH7P2g>
-    <xme:PtQMasucmNJ0oDFalqRmqUl6evp2xSICbKbdZ2zEBMLGHAjLeuIPhq8hApQglAM34
-    IWDKiQDo5frsb0RG3sqRA_oBwdS99R-iRaEKry2_mUty-JtdSnXHA>
-X-ME-Received: <xmr:PtQMan-sZ3zaq1DU-Zla5IkSSn-3KriSJPYLfvkm4JOtzRKc15-Dsu8DTtv2bCW1Lf3lMmC63YIRLeSIhvdO7NuJDa4T3Z8K>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgddugedvkeduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkgggtugesthdtredttddtvdenucfhrhhomhepuehoqhhunhcuhfgv
-    nhhguceosghoqhhunheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpeeiie
-    dvueeitedvudehheejieeftdfhffegtdeiudfhlefhtdetfedutdeuleeileenucffohhm
-    rghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
-    ihhthidqudeijedtleekgeejuddqudejjeekheehhedvqdgsohhquhhnpeepkhgvrhhnvg
-    hlrdhorhhgsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepudefpdhmohguvgep
-    shhmthhpohhuthdprhgtphhtthhopehtohhrvhgrlhgusheslhhinhhugidqfhhouhhnug
-    grthhiohhnrdhorhhgpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhg
-    pdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhope
-    hnvggvrhgrjhdruhhprgguhhihrgihsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehj
-    ohgvlhgrghhnvghlfhesnhhvihguihgrrdgtohhmpdhrtghpthhtohepuhhrvgiikhhise
-    hgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdr
-    khgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopehgohhrsehlihhnuhigrdhisghmrdgtohhm
-X-ME-Proxy: <xmx:PtQMajTLUOLUEL1zwTUy3_jEZNMR2lrvixlLPbHm4K9YgH9BKEZ90A>
-    <xmx:PtQMapXQYkHmXVnBXUb9AZJpqCEULA5wh7dn4OAwg2Qym_RdejOq7g>
-    <xmx:PtQMal8ttV7SD02CWLF6iAFdTNNuTaN_GP9y4KZCYzmnZGN3wm3egA>
-    <xmx:PtQMap08N5InUvC3jMngxLluUgacrwL0YbUdnpvbk-9r7tL5p-5uEQ>
-    <xmx:PtQMaqfx6m9pnNoXtWTr-eqUzBVeRDYrLVrulWYZR5hdUG3sdLji5q7a>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 19 May 2026 17:21:01 -0400 (EDT)
-Date: Tue, 19 May 2026 14:21:00 -0700
-From: Boqun Feng <boqun@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
+	s=k20260515; t=1779227573;
+	bh=9OMOZHKlKAuwAjDH0D5PZEfetycGSJp31qcVcS5JCoo=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=amm9Hf+gvPMD1v14pXsGtmENODibdEEWT+8zL3lLd51O6aoSygEbV7A7hBZs9lS1o
+	 FsQxpj8TW5q7dKiRal62Ffn4MKPgkivRxnoZlmYhgpCa+tVZYAB0/HWTlNfAqMY7rl
+	 8BWNLzJak9hQyIibhgMXAooA5nqNPR5jzkdvxxMD5LbfyE0RQeE00HuYveRDjB4p6h
+	 owVe+cmQdnHUWr/aokEE/c5DO63PklD4f7XhLv62m9DpY2R/PRROGTuk/2Sr6XfULq
+	 CelDEoVOZYVaXNyBSDBzlAoPPiVa/Q1OdLQ8If2UKlWzC6I1Q1gqegyoc7GAdlQF2W
+	 dAn+/3S/RIH8g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 3933CCE0890; Tue, 19 May 2026 14:52:53 -0700 (PDT)
+Date: Tue, 19 May 2026 14:52:53 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-	Samir <samir@linux.ibm.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: [GIT PULL] RCU fixes for v7.1
-Message-ID: <agzUPJ24ENDu37bS@tardis.local>
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>, Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, Ingo Molnar <mingo@kernel.org>,
+	Tze-nan Wu <Tze-nan.Wu@mediatek.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: reduce stack usage in nocb_gp_wait()
+Message-ID: <53d6cf5c-ba97-4341-9674-e9a5e60fb1d8@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260519190447.1716375-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -83,55 +54,46 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20260519190447.1716375-1-arnd@kernel.org>
 
-Hi Linus,
+On Tue, May 19, 2026 at 09:01:28PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When CONFIG_UBSAN_ALIGNMENT is enabled, the stack usage of nocb_gp_wait()
+> grows above typical warning limits:
+> 
+> In file included from kernel/rcu/tree.c:4930:
+> kernel/rcu/tree_nocb.h: In function 'rcu_nocb_gp_kthread':
+> kernel/rcu/tree_nocb.h:866:1: error: the frame size of 1968 bytes is larger than 1280 bytes [-Werror=frame-larger-than=]
+> 
+> Apparently, the problem is passing rcu_data from a 'void *' pointer,
+> which gcc assumes may be misaligned. When the function is not inlined
+> into rcu_nocb_gp_kthread(), that is no longer visible to gcc.
+> 
+> Add a 'noinline_for_stack' annotation that leads to skipping a lot of
+> the alignment sanitizer checks and keeps the stack usage 60% lower here.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Please pull this fix into v7.1. The issue was introduced by a previous
-fix PR rather than the v7.1 RCU merge window pull request, hence I'm
-sending this "fix-on-fix" PR. The issue is because queuing a work on a
-never-online CPU won't get the work callback executed, hence SRCU needs
-to avoid doing that.
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-The following changes since commit 7fd2df204f342fc17d1a0bfcd474b24232fb0f32:
-
-  Linux 7.1-rc2 (2026-05-03 14:21:25 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu-fixes.v7.1-20260519a
-
-for you to fetch changes up to 593889c401426004bd0ea0f6d4fcece728b03420:
-
-  srcu: Don't queue workqueue handlers to never-online CPUs (2026-05-18 12:27:18 -0700)
-
-----------------------------------------------------------------
-RCU fixes for v7.1
-
-Fix a regression introduced by commit 61bbcfb50514 ("srcu: Push
-srcu_node allocation to GP when non-preemptible"): SRCU may queue works
-on CPUs that are "possible" but never have been online. In such a case,
-the work callbacks may not be executed until the corresponding CPU gets
-online, and as the callbacks accumulates, workqueue lockups will fire.
-Fix this by avoiding queuing works on CPUs that have never been online.
------BEGIN PGP SIGNATURE-----
-
-iQFhBAABCABLFiEEj5IosQTPz8XU1wRHSXnow7UH+rgFAmoMy/EbFIAAAAAABAAO
-bWFudTIsMi41KzEuMTIsMCwzERxib3F1bkBrZXJuZWwub3JnAAoJEEl56MO1B/q4
-lT8H/RlNu00LC24b0JxPYRBZJz3TSM2WlnGJQ+5LXSQgk2ecqzoTzwDE7oC3naPC
-QDkwGpSif8Y5OKaEnlVavtDcHdNa824mKrgRo/nXkk5fqrrMMubHOHe5Y0fwy5z5
-upPoEvEs0XtbW4Mm6lI4uRw+qvIH16+Ud9SMrfZMwLRGaO8axBXi3rijUtfAMRGv
-xBFqJX15Z/ixWkA6aHGuM1fI4WdApUen4/W3oUC+Ka4Lpgtt29GmIOV3n/topNQq
-R8bZM9QC+7f6Vk1s49ywD9WZYa1b4Pig74XDOXn3328kulGBxVtOnOz4sXMgBmBF
-ZLvJ4xXy8+u1eM0DFcSExJCCvHc=
-=PyvW
------END PGP SIGNATURE-----
-
-Regards,
-Boqun
-
-----------------------------------------------------------------
-Paul E. McKenney (1):
-      srcu: Don't queue workqueue handlers to never-online CPUs
-
- kernel/rcu/srcutree.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> ---
+>  kernel/rcu/tree_nocb.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 1047b30cd46b..373b877cf171 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -655,7 +655,7 @@ static void nocb_gp_sleep(struct rcu_data *my_rdp, int cpu)
+>   * No-CBs GP kthreads come here to wait for additional callbacks to show up
+>   * or for grace periods to end.
+>   */
+> -static void nocb_gp_wait(struct rcu_data *my_rdp)
+> +static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
+>  {
+>  	bool bypass = false;
+>  	int __maybe_unused cpu = my_rdp->cpu;
+> -- 
+> 2.39.5
+> 
