@@ -1,136 +1,174 @@
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D582B3E7BCB
-	for <rcu@vger.kernel.org>; Wed, 20 May 2026 14:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A0E3DCD9D;
+	Wed, 20 May 2026 14:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779285771; cv=none; b=ROTOYhXtDzxQeBlM2u5XDo4ajOtZTRRf3af8juXg1lT/UMZj9ECO7jRNhhgtcYgo7IMzIIS6cqXObF49Cv6M7Q+SaBAB6WY9XO21bbSE+od+3xXm9oDZ4z4J3ykFJPpsKfs7bSDvShuJu3ynVtlIMNpN8fPr+o7/GFO+xq1D0Gg=
+	t=1779288203; cv=none; b=pF61YtsusUvKqg3u+lYAcfPtnsk0GMjHbLPvZRCfnAC5FmxZZKg5xhMW6y2hhYO9BQbYA/gWv3vR4rplPKy6zu0U9Tms8DilKNbIqOtLeFqkTx6jyn/ibzpvIMcaGjlPWuQjDNOZoViI8kghUXGI+5zAG8UwkDIyoGXc0JgvtLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779285771; c=relaxed/simple;
-	bh=FSMtctQdww+HEc+hPRzVd+J9wZaaN+9QWgQPg3FEMeU=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d5aDRYor/TDT0aPi7veQte12liRw9vM/NzYI5Rlt1VIBhnjUy2vjH0cHFT+v2q6IaTbZteUHZ/8s2ZvxgRmrHZ/VPOrcg5zHV7g9/g1Tcg658Y6ypfVEdYL0EpVZhtyrFKZvCbhb4k7stcI0GAH2bxu4/1mO46k1kn9+AVAhLsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=btYVc7DS; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1779288203; c=relaxed/simple;
+	bh=D8HD8Lem4Se0C31SwTDDqZ0OCuWfqxTvRyJnkm3IVKU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lIUwhtLqwh9SbagfPUFCwJc24kLn+sbYMak5n2R8D2GoSLZmj0D1S63rHtokpoI8L4NQw+nK+EHyK7u3gKQVXL5vz5ddJPVDZMbbdY9/U8b+dorvutLACrIO4h2gWeipz5j3tZQqACMv/E+A9UvOzqg1YeG3yQpHJch6L7O2HiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uv03CcmX; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="btYVc7DS"
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5aa2691db86so1705202e87.3
-        for <rcu@vger.kernel.org>; Wed, 20 May 2026 07:02:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779285768; x=1779890568; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=P/BFjjLcUpMeKtug7IfWPCG5R345sMYVMESVBGeLr1E=;
-        b=btYVc7DSZGXkjADWT+ePIc1Rry/LHgTDpFxqMGYLuhyYTXCkpIKHggfDLtbSEXGNm4
-         swIfVTUhlA+ho3gvJmT83DWlarHxppDjkiNR9Z9j+ZrXMk8ry/+vxXzL1Q3B55J0Mykf
-         G8Y/q5uOBfI3ftn8WA5o7lZrWtRBybJqq2YD9+MfZKjGOr2IiH2ArZAZJCNzKwC2yEYd
-         e52uOmxpfdeLS0TaJr1lK3/caEKZZMyAAcboVrdLsjag7rNUE/H0eKpXRNMx5r5FsvvG
-         BpKjU3RKEKpILMbwXyo0TfWpklFrhLH2yjlORyEdwMZ7VgoEu+IKtC5jj4sBlgV/Gsfm
-         g00w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779285768; x=1779890568;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P/BFjjLcUpMeKtug7IfWPCG5R345sMYVMESVBGeLr1E=;
-        b=FUJqiYd9r00CEBPcSbmPd2JgtyNb4Nq6Z5m/DW/WBizLLMQuYlSnho91VyDq+z43JZ
-         Y2xOjri1+vkaAVe1/kAVP/osq9OL+XP+nqcWIdf5X7WaXuhwr98GQN/i+fzTs53vyv0v
-         qx6EWUmLjAsnWysedNJw4f2x7mbi1aRN8rX0Ro+zUSfd/rfYkwwrR5VxTEGmJiK3Cvhd
-         jEIeDBBDprByGrCYyTHsF4NgRT77Flegqpmjq3GET+L8a3WnUAdDvG2kJJjhSyIiVYKs
-         bGgILqTrbHOmpb9gk7L+yud5A+sm9bwp59WRIESdM51yDyqoZU3jPwzhZFZk0upjdtTK
-         CLkw==
-X-Forwarded-Encrypted: i=1; AFNElJ9UO99TkUSJeUkIXPvZUCLRO7zlZMdX239WdfBv4M+I0YLhMpk7y7RhlCnQIEZ8CGErMH8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBTsi89RFXiM7KWiODsm0xMALjFnekJz8zLpXiMWnDrGTsG7yx
-	hAnvx/G/4rZsQe6d7VsvhKs3vCAyTPrNekdzlXAK4p25/14PD7Qeuya0
-X-Gm-Gg: Acq92OEZoWNCC4JLwONMWC4xppXJek8QF56f9q2nuXVdQ344ig+jIXvPNoE4njB3Aum
-	AfRDc+/6GXJ+S8Ew+U+zdbHNweLLv/OU5mGdlzNZXSpUo7/zIaLq0OYBJHcYKGFxNALsAwMecrC
-	iL9bnQLBlumW6AukFBCf3quS5TSpLUFWeZ/za6S0HZU+zwxztQ5ODmPEZ7waV/dJdOYWMzkOdIK
-	t8nVCJHLLBIKu9nf9mMdIAbR4X4FfkDwpgU8wQW/yTeZkT+GrS6VNZJVfCj9rKWVtWh79JqiHiH
-	XEP+7SGh/Cb9m6to/Ql4HnZ77XgnXGT57G54DrMRt7bsN5oX9opPHW+gqGRR3KH7hVJRbXks3qK
-	GYFzZX+2FGTDVPwkT1wmYZZ2YsJLeGbb0yKMHuBXXb0L8Z4xYtaMm8tkxQWFrrOkd
-X-Received: by 2002:a05:6512:10c2:b0:5a8:74c3:5d9b with SMTP id 2adb3069b0e04-5aa0e5ec491mr7536984e87.0.1779285767649;
-        Wed, 20 May 2026 07:02:47 -0700 (PDT)
-Received: from milan ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5a90f11ad33sm5047456e87.33.2026.05.20.07.02.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2026 07:02:47 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@milan>
-Date: Wed, 20 May 2026 16:02:45 +0200
-To: Frederic Weisbecker <frederic@kernel.org>,
-	Arnd Bergmann <arnd@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Cc: Arnd Bergmann <arnd@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uv03CcmX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6252A1F00894;
+	Wed, 20 May 2026 14:43:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779288202;
+	bh=UOTYauFVfeGw+Nb9Ia/Mgv+pKEUxmvCJBbwAkhbOWRo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Uv03CcmX9i5e0Eb05L/0vCojgww/YE0H++jqSH/itUbtl3YoAovTvMtcSs+1chmFD
+	 J8cYObJoPzOn+20j3pr9IMrPiiNgesGUAEZb+yTW+1YuvnhmPsdMydwmUU8oJJjIjY
+	 p2vhfGnrwkDlpsQku3DhkFFPzKMWXNFHvqKgOZPGovVSWWVIWyGraSsUONcoIgAjNb
+	 E6ftYCAKzLRRXwTv7zfA9t9TDUmKvbC+rX0mmZesL/wi/20jstwF7Vei0teSAIZOc3
+	 5Ro2BKdl/IegR23rOboXxqDcBnbGyOrIX07stSDXvLZGa/ZmQT2IO5/f5R/rHsJJ+s
+	 upi0TrGewfSLQ==
+Date: Wed, 20 May 2026 16:43:18 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>, Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Ingo Molnar <mingo@kernel.org>,
-	Tze-nan Wu <Tze-nan.Wu@mediatek.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/nocb: reduce stack usage in nocb_gp_wait()
-Message-ID: <ag2_BRvjDMnsarVx@milan>
-References: <20260519190447.1716375-1-arnd@kernel.org>
- <ag2jMYwauyQPODdk@localhost.localdomain>
+	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, Samir M <samir@linux.ibm.com>
+Subject: Re: [PATCH -next v2 10/11] rcu: Latch normal synchronize_rcu() path
+ on flood
+Message-ID: <ag3IhirNF-wlDE1W@localhost.localdomain>
+References: <20260519194524.158515-1-urezki@gmail.com>
+ <20260519194524.158515-11-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ag2jMYwauyQPODdk@localhost.localdomain>
+In-Reply-To: <20260519194524.158515-11-urezki@gmail.com>
 
-On Wed, May 20, 2026 at 02:04:01PM +0200, Frederic Weisbecker wrote:
-> Le Tue, May 19, 2026 at 09:01:28PM +0200, Arnd Bergmann a Ã©crit :
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > When CONFIG_UBSAN_ALIGNMENT is enabled, the stack usage of nocb_gp_wait()
-> > grows above typical warning limits:
-> > 
-> > In file included from kernel/rcu/tree.c:4930:
-> > kernel/rcu/tree_nocb.h: In function 'rcu_nocb_gp_kthread':
-> > kernel/rcu/tree_nocb.h:866:1: error: the frame size of 1968 bytes is larger than 1280 bytes [-Werror=frame-larger-than=]
-> > 
-> > Apparently, the problem is passing rcu_data from a 'void *' pointer,
-> > which gcc assumes may be misaligned. When the function is not inlined
-> > into rcu_nocb_gp_kthread(), that is no longer visible to gcc.
-> > 
-> > Add a 'noinline_for_stack' annotation that leads to skipping a lot of
-> > the alignment sanitizer checks and keeps the stack usage 60% lower here.
-> > 
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >  kernel/rcu/tree_nocb.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index 1047b30cd46b..373b877cf171 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -655,7 +655,7 @@ static void nocb_gp_sleep(struct rcu_data *my_rdp, int cpu)
-> >   * No-CBs GP kthreads come here to wait for additional callbacks to show up
-> >   * or for grace periods to end.
-> >   */
-> > -static void nocb_gp_wait(struct rcu_data *my_rdp)
-> > +static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
+Le Tue, May 19, 2026 at 09:45:23PM +0200, Uladzislau Rezki (Sony) a écrit :
+> Currently, rcu_normal_wake_from_gp is only enabled by default
+> on small systems(<= 16 CPUs) or when a user explicitly set it
+> enabled.
 > 
-> This probably deserve a comment though.
+> Introduce an adaptive latching mechanism:
+>  * Track the number of in-flight synchronize_rcu() requests
+>    using a new rcu_sr_normal_count counter;
 > 
-> Other than that:
+>  * If the count reaches/exceeds RCU_SR_NORMAL_LATCH_THR(64),
+>    it sets the rcu_sr_normal_latched, reverting new requests
+>    onto the scaled wait_rcu_gp() path;
 > 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+>  * The latch is cleared only when the pending requests are fully
+>    drained(nr == 0);
 > 
-Took the patch and applied the tag from both!
+>  * Enables rcu_normal_wake_from_gp by default for all systems,
+>    relying on this dynamic throttling instead of static CPU
+>    limits.
+> 
+> Testing(synthetic flood workload):
+>   * Kernel version: 6.19.0-rc6
+>   * Number of CPUs: 1536
+>   * 60K concurrent synchronize_rcu() calls
+> 
+> Perf(cycles, system-wide):
+>   total cycles: 932020263832
+>   rcu_sr_normal_add_req(): 2650282811 cycles(~0.28%)
+> 
+> Perf report excerpt:
+>   0.01%  0.01%  sync_test/...  [k] rcu_sr_normal_add_req
+> 
+> Measured overhead of rcu_sr_normal_add_req() remained ~0.28%
+> of total CPU cycles in this synthetic stress test.
+> 
+> Tested-by: Samir M <samir@linux.ibm.com>
+> Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  .../admin-guide/kernel-parameters.txt         | 10 ++--
+>  kernel/rcu/tree.c                             | 52 ++++++++++++++-----
+>  2 files changed, 44 insertions(+), 18 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 4d0f545fb3ec..d5db2e85d551 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5862,13 +5862,13 @@ Kernel parameters
+>  			use a call_rcu[_hurry]() path. Please note, this is for a
+>  			normal grace period.
+>  
+> -			How to enable it:
+> +			How to disable it:
+>  
+> -			echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> -			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=1"
+> +			echo 0 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> +			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=0"
+>  
+> -			Default is 1 if num_possible_cpus() <= 16 and it is not explicitly
+> -			disabled by the boot parameter passing 0.
+> +			Default is 1 if it is not explicitly disabled by the boot parameter
+> +			passing 0.
+>  
+>  	rcuscale.gp_async= [KNL]
+>  			Measure performance of asynchronous
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 09f0cef5014c..94274330d1db 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1632,17 +1632,21 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
+>  	atomic_set_release(&sr_wn->inuse, 0);
+>  }
+>  
+> -/* Enable rcu_normal_wake_from_gp automatically on small systems. */
+> -#define WAKE_FROM_GP_CPU_THRESHOLD 16
+> -
+> -static int rcu_normal_wake_from_gp = -1;
+> +static int rcu_normal_wake_from_gp = 1;
+>  module_param(rcu_normal_wake_from_gp, int, 0644);
+>  static struct workqueue_struct *sync_wq;
+>  
+> +#define RCU_SR_NORMAL_LATCH_THR 64
+> +
+> +/* Number of in-flight synchronize_rcu() calls queued on srs_next. */
+> +static atomic_long_t rcu_sr_normal_count;
+> +static int rcu_sr_normal_latched; /* 0/1 */
+> +
+>  static void rcu_sr_normal_complete(struct llist_node *node)
+>  {
+>  	struct rcu_synchronize *rs = container_of(
+>  		(struct rcu_head *) node, struct rcu_synchronize, head);
+> +	long nr;
+>  
+>  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+>  		!poll_state_synchronize_rcu_full(&rs->oldstate),
+> @@ -1650,6 +1654,15 @@ static void rcu_sr_normal_complete(struct llist_node *node)
+>  
+>  	/* Finally. */
+>  	complete(&rs->completion);
+> +	nr = atomic_long_dec_return(&rcu_sr_normal_count);
+> +	WARN_ON_ONCE(nr < 0);
+> +
+> +	/*
+> +	 * Unlatch: switch back to normal path when fully
+> +	 * drained and if it has been latched.
+> +	 */
+> +	if (nr == 0)
+> +		(void)cmpxchg(&rcu_sr_normal_latched, 1, 0);
 
---
-Uladzislau Rezki
+Given that it's already ordered by the llist add / del and the
+atomic_long_inc/dec_return, there should be no chance for bad
+things happening such as negative returned dec.
+
+So it could be cmpxchg_relaxed(). But anyway, just an optimization.
+
+In any case,
+
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+
+-- 
+Frederic Weisbecker
+SUSE Labs
