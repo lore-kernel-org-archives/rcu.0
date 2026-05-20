@@ -1,214 +1,103 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FCF63D7D9E;
-	Wed, 20 May 2026 13:19:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CC6344DA4
+	for <rcu@vger.kernel.org>; Wed, 20 May 2026 13:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779283150; cv=none; b=eMqKeZx41VFKI/85BqPAOSw4jLlVabzXn625fd+oi6ZV4LcJ+s7TlE2hYjqbsxdF/QjT7qQY804XJpnskPuP2bvtv8dGqF8AZtw1Ys4nU+KVA7UhZkTtUCY5lYPlKZv4aROgVgM8cduYPL0HuFapFfw6uTNYgDapGrtdZKsxlUA=
+	t=1779285249; cv=none; b=MwvPfrHxgrB8ArgWmLbOYSJrsxWf2L0d3XAcfZe8AP4w747xl6HZl6f80s6I5bP8eBegHvOg+CNKN++Cou5rbaZRy/qK0VULyHym9HuC8eLqOIoL2LzcEXmU7QIhEqIqGzEPzLP6ASjcG1/QYqGkSKuKCEkjpbXYYv9lpE+TeKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779283150; c=relaxed/simple;
-	bh=UIbk66JZvnzWXDB7MijFk7eDHSM1DsI/qulQVMtiqjs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j1M9DpIzjxLHiKciwJL7tGYK09XYvu9XbQm0CMhhWXpODUolD9SUDtnpo+aCzB79KMST2fxajjJYnZz5sH/mwa00D5EvPZkw2p8BL13ZU3917cDXrYQQcYvKYegvMxT6V1zL0AlbBL8FqZnjStGSPh86pBvuzbR8E54lHysmU5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IypjKVq2; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1779285249; c=relaxed/simple;
+	bh=DKohWiiNMRUCJH+Q7E6FflIYzDHqeppmsRU9EzVckqM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i6JPzLcWWigiEoUTOjaraDG/V7FNOcvG74MTtj74uw5V9xjtEveg/DEr8t2x6lcTXe79B96UVEsWL0GMHqCre7ArgElWt8uBQI/GWchgk+e84rSbQpEW0+9f9AtfqONGY/mYM4jVplYn0BQveHKHZUKK2CIljphdNmQMBhGgqCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hyyBVBo1; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IypjKVq2"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD7451F000E9;
-	Wed, 20 May 2026 13:18:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779283144;
-	bh=VdeLf/yxTevduqKLpQNBEcZqKIVSslg1GB0Eg/Qsymw=;
-	h=From:To:Cc:Subject:Date;
-	b=IypjKVq2iTPjC++u/tcWmZ209OjL08I3bW+WzyaajYs4aVwIdgs9VVBpPrx0lTFzf
-	 pcC3S/nv/PxGYvjNqPLEvfIZgi/such2Dj/QLOaHd+zX7Jkhk1+B7RggCW1Utlp5hn
-	 uYXT9bH/tGDTUtuFLT3p2+Uf+wkPPGG2a4fDcnY/8PAQjISVVqlfXw057k5ai8fxgM
-	 uYe73y/zMArbp+xD8Pt8dd5KyC1GSqLmROsQqt2cMgsUnUSPh8rrnkRKJdTZqZaXMa
-	 zFc65Chb9uWljelh2/QIIISz45yBXj2/p9EQ9S6ltoH0i8cONA+kCkdPG+OQwkggFI
-	 4zpD2vS7oiYRg==
-From: Philipp Stanner <phasta@kernel.org>
-To: Miguel Ojeda <ojeda@kernel.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Gary Guo <gary@garyguo.net>,
-	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-	Benno Lossin <lossin@kernel.org>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Trevor Gross <tmgross@umich.edu>,
-	Danilo Krummrich <dakr@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hyyBVBo1"
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5a85b30dd54so5353172e87.2
+        for <rcu@vger.kernel.org>; Wed, 20 May 2026 06:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779285246; x=1779890046; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=V9hgJ6h69w+t3jbRa2NQYpO16TuXoHhIo0EX4Qr9Grc=;
+        b=hyyBVBo1LvEDs+lchy9IRbblSVRUJtO4+eDenIIPEsWIwmgXHYQflvaF8Q4ikRSTGt
+         xzfkCdX8/lwCiwStk9VUMbRE4DkVKsLyY3QXxu0kH/Sdo6HghkIHh9ztoQB6wlZui+O3
+         WIyoHnVJH5ArEtpeQwGIw9+hQ3WSJ/XwaGk/dzsx0Y3Xgt6SEyD4I4voAjx0GeElObFh
+         bau55RWZEE+ujcSBlLSG1XDN9boXzFTdOJ745dl73OnVDP/WNAdavSv8kr+JHqlRXv3b
+         SE/rJwMd/2W2Ql7aV05+sk26Qv1xTSBotiTVrNctUYrK/+BYlP8DL7/8ly5WTncUhC6L
+         TOzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779285246; x=1779890046;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V9hgJ6h69w+t3jbRa2NQYpO16TuXoHhIo0EX4Qr9Grc=;
+        b=UcdzPqBNUvleozrIxTfSwntu5EoTiAED0/ZBczarQh99CsMP0X9SZdn0mNKMJW3MLt
+         Jf5W0N0fLlUqXafuwGcniYqOIDE1V5iDPvTGnzLQbXpTPN6x837kP88v784TGWsfJtBk
+         2mIABV+QTdgYU0syx21xAPdplCbP61xDFWCtgrUDIUeuho+wgiqLUu68fe0WAd6nHYa7
+         wYuVpv2NLMWV1ykcE3BOGx4gTlSS2y31WJxMTeL7B3kWCfsWirtJOR4ySSeTNGdX6Qxc
+         Bw7mOCNVh5KzkAed8z9dvjMMHNyOKebQHpQxCB/NPZjeALhQ5aN1p41yAyemstvIdAFj
+         SvWg==
+X-Forwarded-Encrypted: i=1; AFNElJ8EIcT8c04iHi298MFeORBymZzD/uxImFUgp23IRKwXPutxzLTHiR9SVnUQoQb4QlgyxIQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YykvV7sykSPi8fc8R2phYRIAPNkQ2vJguZ4fJyNvExRAPgEKaQp
+	IaLVQVj2QKmytfrtkZN+m7KZRZr/jnEhRJJkQXt8uZX90AcU3w6KVSeP
+X-Gm-Gg: Acq92OFYPOjnVLiP6Snpiyrotcfe4TOg9d+aeS6C1VFuq981zUOb3UlHwKumn7l+hWh
+	ivmdBY9b88D+ecKJ1D3+gZq+lWlWeGbBD73Xz2hRSxUZ+Zx83qr/9N6F3RyiLtN/QwIQ+22S/oC
+	nh9DAE8HrXF7alzH+p46ls9EOkBMj6iKXmqw7TEQTeqiZZbfVDlnT98Tbg2il+zyeAu4VdLOuqv
+	x+CMstNdhF4b9HZAZ//YUSDK9kdGVfjkmpWN9Yzo/wCqZTNCawS38SPK1quKXNbve5e52Qj93g+
+	lx0xmCc3DsGoWsNSjbzi5SOy33gD4EDSSiMpnXCMKwbnUKDJeD4GYzG5DvJxwMa5bhQmeG4PWg9
+	4/e935NBcC+xWQw2kOtW4+jXjZx6s/3OeWIrROTRBFQ3K1U+sqFXs9Xa/Hvro+Xpjs0Pt35myIj
+	8B9AzOTuK3TA==
+X-Received: by 2002:a05:6512:1291:b0:5a8:64fd:142 with SMTP id 2adb3069b0e04-5aa0e60aebdmr7643865e87.15.1779285244557;
+        Wed, 20 May 2026 06:54:04 -0700 (PDT)
+Received: from milan ([2001:9b1:d5a0:a500::24b])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5a90f10c84dsm4965501e87.10.2026.05.20.06.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2026 06:54:04 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@milan>
+Date: Wed, 20 May 2026 15:54:02 +0200
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	"Joel Fernandes (NVIDIA)" <joel@joelfernandes.org>,
-	Philipp Stanner <phasta@kernel.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Tamir Duberstein <tamird@kernel.org>
-Cc: rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: [PATCH v1] rust: rcu: Add abstraction for call_rcu()
-Date: Wed, 20 May 2026 15:17:26 +0200
-Message-ID: <20260520131725.266014-2-phasta@kernel.org>
-X-Mailer: git-send-email 2.49.0
+	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next v2 07/11] rcu: Simplify rcu_do_batch() by applying
+ clamp()
+Message-ID: <ag28-oiqpg1Y8Kcj@milan>
+References: <20260519194524.158515-1-urezki@gmail.com>
+ <20260519194524.158515-8-urezki@gmail.com>
+ <ag2oh3MNOm-GTWLs@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ag2oh3MNOm-GTWLs@localhost.localdomain>
 
-call_rcu() can be expected to be needed by a great variety of users.
-This functionality is almost always used for deallocating resources
-after all accessors are gone. Hence, it appears reasonable to implement
-the abstractions in such a way that the user merely passes data, which
-is later (after a grace period) dropped.
+On Wed, May 20, 2026 at 02:26:47PM +0200, Frederic Weisbecker wrote:
+> Le Tue, May 19, 2026 at 09:45:20PM +0200, Uladzislau Rezki (Sony) a écrit :
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > This commit replaces a nested ?: sequence with clamp().  This does not
+> > reduce the number of lines of code, but it does simplify the line that
+> > it modifies.
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> 
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> 
+Applied Reviewed-by tag!
 
-In the rare cases where the user needs special action to take place,
-this could be achieved through implementing a custom drop() method.
-
-Implement a first minimal abstraction for call_rcu().
-
-Signed-off-by: Philipp Stanner <phasta@kernel.org>
----
- rust/helpers/rcu.c      |  1 +
- rust/kernel/sync.rs     |  1 +
- rust/kernel/sync/rcu.rs | 89 ++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 90 insertions(+), 1 deletion(-)
-
-diff --git a/rust/helpers/rcu.c b/rust/helpers/rcu.c
-index 481274c05857..c9cfc99c93d5 100644
---- a/rust/helpers/rcu.c
-+++ b/rust/helpers/rcu.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+#include <linux/types.h> /* for callback_head */
- #include <linux/rcupdate.h>
- 
- __rust_helper void rust_helper_rcu_read_lock(void)
-diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs
-index 993dbf2caa0e..1ddca3847b19 100644
---- a/rust/kernel/sync.rs
-+++ b/rust/kernel/sync.rs
-@@ -31,6 +31,7 @@
- pub use locked_by::LockedBy;
- pub use refcount::Refcount;
- pub use set_once::SetOnce;
-+pub use rcu::Callback;
- 
- /// Represents a lockdep class.
- ///
-diff --git a/rust/kernel/sync/rcu.rs b/rust/kernel/sync/rcu.rs
-index a32bef6e490b..caf71fa46f5e 100644
---- a/rust/kernel/sync/rcu.rs
-+++ b/rust/kernel/sync/rcu.rs
-@@ -4,7 +4,15 @@
- //!
- //! C header: [`include/linux/rcupdate.h`](srctree/include/linux/rcupdate.h)
- 
--use crate::{bindings, types::NotThreadSafe};
-+use crate::{
-+    bindings,
-+    prelude::*,
-+    types::{
-+        NotThreadSafe,
-+        Opaque,
-+    },
-+    alloc::Flags,
-+};
- 
- /// Evidence that the RCU read side lock is held on the current thread/CPU.
- ///
-@@ -50,3 +58,82 @@ fn drop(&mut self) {
- pub fn read_lock() -> Guard {
-     Guard::new()
- }
-+
-+
-+/// An RCU callback object. Carries the user's data to drop() it once a grace period ellapsed.
-+///
-+/// This object serves to implement C's `call_rcu()` method. Since it is almost
-+/// always used to free a resource once a grace period ellapsed, the only thing
-+/// this implementation does is drop the user's data. In the rare cases in which
-+/// the user needs more action to take place, said actions need to be implemented
-+/// on the user's data via the [`Drop`] trait.
-+///
-+/// # Examples
-+///
-+/// ```
-+/// use kernel::sync::rcu::Callback;
-+///
-+/// struct Foo {};
-+///
-+/// impl Drop for Foo {
-+///     fn drop(&mut self) {
-+///         pr_info!("rcu::Foo Dropping.\n");
-+///     }
-+/// }
-+///
-+/// let data = Foo {};
-+///
-+/// let cb = Callback::new(data, GFP_KERNEL)?;
-+/// cb.submit();
-+///
-+/// Ok::<(), Error>(())
-+/// ```
-+#[repr(C)]
-+#[pin_data]
-+pub struct Callback<T: Send + 'static> {
-+    /// The RCU head. Only used (and initialized) by the C backend.
-+    #[pin]
-+    inner: Opaque<bindings::callback_head>,
-+    /// The user's data. This should implement [`Drop`] if the user wants specific
-+    /// actions, besides mere deallocation, to happen.
-+    #[pin]
-+    data: T,
-+}
-+
-+impl<T: Send + 'static> Callback<T> {
-+    /// Create a new callback.
-+    pub fn new(data: impl PinInit<T>, flags: Flags) -> Result<Pin<KBox<Self>>> {
-+        let cb = try_pin_init!(Self {
-+            inner: Opaque::uninit(), // Only needed for the C backend, who will initialize it.
-+            data <- data,
-+        });
-+
-+        KBox::pin_init(cb, flags)
-+    }
-+
-+    extern "C" fn callback(rcu_head: *mut bindings::callback_head) {
-+        let cb_ptr = rcu_head as *mut Self;
-+
-+        // SAFETY: All [`Callback`] objects in this module are always created
-+        // as `Pin<KBox<Self>>`. `Pin` is a transparent container. The action
-+        // below merely serves re-creating the KBox so that it can drop properly.
-+        let _cb = unsafe { KBox::from_raw(cb_ptr) };
-+
-+        // Self::data drops, ensuring the desired cleanup operation.
-+    }
-+
-+    fn as_raw(&self) -> *mut bindings::callback_head {
-+        self.inner.get()
-+    }
-+
-+    /// Arm a [`Callback`]. One grace period after this function was called,
-+    /// the callback object will be dropped.
-+    pub fn submit(self: Pin<KBox<Self>>) {
-+        // SAFETY: The memory is not moved by this code or the C backend.
-+        let cb = unsafe { Pin::into_inner_unchecked(self) };
-+        let ptr = KBox::into_raw(cb);
-+        // SAFETY: `ptr` was just created validly above. `Self::callback` relies
-+        // on the RCU module / code never being unloaded.
-+        unsafe { bindings::call_rcu((*ptr).as_raw(), Some(Self::callback)) };
-+    }
-+}
--- 
-2.49.0
-
+--
+Uladzislau Rezki
