@@ -1,231 +1,148 @@
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56265175A84
-	for <rcu@vger.kernel.org>; Thu, 21 May 2026 05:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EBD3955DC
+	for <rcu@vger.kernel.org>; Thu, 21 May 2026 07:00:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779341043; cv=none; b=YS4S25Bh+BpZGreN1eKkTyb699QMP5waKHs+/Tk4pJKiXQpz+OjBB8iwu7/O4MUG1VRV7EG4irpKqH0Vm0dTRfCCdNQdmywGHYuAQ9KZDaxGjLK/ru5XseKu4E8TNCyQNJuu4aEkEkqKUSxQLkaUNO8L8Z2OSePvs5wFoU1cmsI=
+	t=1779346817; cv=none; b=d9VwKpOtw10H4cH7wM/O9GzuZ47BRtAvCpsGZzngS2cWZvky5RGv7HvTNxuNqmWdVz6AJO/bjcAd9Q8xVTXoFr/pXkMExdrAQGPePhG+eeHnNhMqYb/Z0+DEm+ELgG/eS4qXy2fyx5OZkcHV2kpIAy2/11XHs2OUnPfPva7DuLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779341043; c=relaxed/simple;
-	bh=0AkV6Y6abfc3GxmYLLEzKbtsc9nr5OEHVvpYz0kBcBA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LEZl9vzdpEsK8NoKFrF0c2LxWQZmz7tWSVi25at3DgRoZk3t6tYRJdu+YfrFZqvYAplYeA1YrgDzxLQKNPvUH33IIdrmORzot3+Y+btVCRYrKg+8aGNMpJrfncBkN+DFpqIK5eCtsa5wnYkgK2l7tjhEhvlyI9o2chdDLfjFBls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F7wc0tjP; arc=none smtp.client-ip=209.85.167.42
+	s=arc-20240116; t=1779346817; c=relaxed/simple;
+	bh=d63X+oFfSjcaBWqshGJfwLycLFMBJZRpHEnPMCuCVxg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bADqEM7CoIkVu2+6IDZhn/c4Lh5DYCum3b1OMm/IWpWb2VsZLb9cMrEdM/zutcrBPE6VG7f0tNUBp6FBkR1bl6dpiNTlfkbWkhumltdA2FUJYwyMIn0ZzGNvs4AP61CGqGpEwoAS0Tph9t0w8tmPELM9Veq2hcYC49tPmRjNgJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fymXKRrI; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F7wc0tjP"
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5a87782588cso7259514e87.3
-        for <rcu@vger.kernel.org>; Wed, 20 May 2026 22:24:01 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fymXKRrI"
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-839dc688d6cso2539004b3a.2
+        for <rcu@vger.kernel.org>; Thu, 21 May 2026 00:00:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779341039; x=1779945839; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3XMkhoRXSSlnr5PN05I0uSHTY7DdiAQlMQwuf0EqQew=;
-        b=F7wc0tjPjlF4wh+eiDDsbMQSJRsMhdQbn270dTQFgR9Gew3tQyDyo90KmfGFTSy+79
-         COciSqOhKemFnoLs+TFKZ8PI3q9pRa8EpNBI9IrETZFRVEFAnk0xBlMWrIXIpqREG+9S
-         LL9d8MfkyPOYkh81Qn+gVvAKtuxey20DZLl1YKq/98i7cLPle3hsxM9A18Q7v0aAzbBz
-         769RIXcnx/odx9L/vZSUTOLvqC1tKAS4GcJw174FbNaieWnuWBplP3Lgfk3XjUOHCDnQ
-         +kCU0PKlu9kD3OSGwkCrzJ5UsdWQTaqDD13S10zXXfDj/Oeh0zy0vi1j9YBtfm70kwgi
-         1sFQ==
+        d=gmail.com; s=20251104; t=1779346816; x=1779951616; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9hhUj3jZkDnmmSfY0KCk0TW5FKcGtMJ1hBup3liDLW4=;
+        b=fymXKRrIcZOiKUcNJi7EIAYo6R9yLZIsuSIkubxcDatL7Mdv7ijUaDSv1/OyQb4qCY
+         SLfn4M6yZ1hHphvAhg1dydb+NVIF+CArPV0HM038c1mMcCiqne9HakJD/wjb4I0PW+Qm
+         K7YxBk5mEH0+cMR/u+DkwBeKIkQ3fV+f0BGUtN2+AuWUBvyHNFdFeDG1673OoxBJlUEs
+         eMWkvrBVHCzGTbAyU0hkpGQkOH/P8T19ruvTqeRwniJ92Z3m4DZYPTjr5fU8xDm+Zp4U
+         9Ce9WsQQsTJYGxUx9ElxZaDib4bL0hZuE5WlCvfCyKt28oYPh70Ird0b1FL7xGDoxEKM
+         MyHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779341039; x=1779945839;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3XMkhoRXSSlnr5PN05I0uSHTY7DdiAQlMQwuf0EqQew=;
-        b=pcfhwsA9aVuOMI/6591ZAgZCLrSkB8RJZwmZC4JMzHCb2uxKYXtkvXYvwICN98pHdo
-         f62Ih4DJfErxtowbfdzSAqzKjfz5lb6F9+oV5ixdxThrnmXrY4grtevDW6Vgi4LNhOn2
-         ok0ihW5cyhPOWxK+qdwA6wAVIRedUqoF/Ck6imY89MtR5YIOxBrOn4Q+4KN9NTDL1Hqt
-         o+F27Dp6ezLR6TtYGVGmIz/sEciSwTk4t8qRgAt8OV36N0a1ES+L5kQznQJJOBZL+ECM
-         +1NM98ZYvuPFrhKRhJp82ZEe9/XD7QjRZ1AxLyYrNhNrQUzzy1VDaMrMKfApF3Isg4tK
-         7Ylw==
-X-Forwarded-Encrypted: i=1; AFNElJ9QBzDL0KzUm5xzZMm9rBSSN679HcA41nFWcBvAbj6jmp59DR0dfDzYMi1+CJkt/4SUsCo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6//H0v6Kruxdt8pz89yZ8uIscaqI0Tu1Kcg8c3nEJ3h1C+MPl
-	UGWovsk+WaZeb6zYVtilpJl6eDd59FxCZd3ZoF3au3ya1wFGiVdCMRyo
-X-Gm-Gg: Acq92OFSMCKItOWDKUEZFlzhhhUtqn+MHe0aWy6/slFHe6Y/oQM8GhBz+utD1lgfZL/
-	Gin/0WML8/7irUp/XbPsUOVl/dXYqTDo3PFwNiaDBPCXoQ6KrsDdfhtCfiEIXOeihuidUQqOP5x
-	DULpny9NjemQllS3ssyGe17cdOaE810vNWYLCQEu5QhBG1Tt+ig73dV9ZsDIQv3vdg0+2UfNZ+v
-	AyITsuPQRsixKGEYTndmq6FKUhsGzKc+zYduOcN6LVZ4gd99jzMDDJcaGrxxNkV8ikiybyxy3c+
-	lEA93jvJw/su1A7wnV4v5oCC5+UhdE7Oz+6mNpzhy49IA7mzhw3TyQba6ATcu9YOddCX5MmMwmV
-	mn1eH1lgjHvmwctZ+WTCEsLTUYUTN3H5eY0zzZ/tldskWcxFvDHqONfpOySKPX0xAboWt7Gk9XJ
-	2SjXVlGqVyBxOxCI9Z/jo=
-X-Received: by 2002:a2e:bc83:0:b0:38e:e6fd:65b2 with SMTP id 38308e7fff4ca-395ca5ad8fbmr4560141fa.21.1779341039283;
-        Wed, 20 May 2026 22:23:59 -0700 (PDT)
-Received: from pc636 ([2001:9b1:d5a0:a500:de96:9acf:5dca:ede4])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-395882c3928sm35310351fa.11.2026.05.20.22.23.58
+        d=1e100.net; s=20251104; t=1779346816; x=1779951616;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9hhUj3jZkDnmmSfY0KCk0TW5FKcGtMJ1hBup3liDLW4=;
+        b=TmHgAG4oksvPHYhoXDFDPlk20TjXyVAigTt4JDfCZZbe1XoDSW17g/Osa1w6VoEtL4
+         +9Z0d6qo8HR3IBrd8BsZEz34udsSb9h1E1wC+a9ajlFSo8yy34Y2wtPZLrf6M9GCmi6S
+         84HiEY1ZxkiSk2wcQ7YBfXKxVS1IIwyfaXW08cOPMF+7C+TRBnJu+SJLlNAzaOdUj4of
+         lNWAwJj21AA+lv/vfFD37hY6be5iGXumpfF0w5pMu9uasQTIybdj16uNXLEaS51cHlAJ
+         uX3DQZVucDA3q+DuKoizQd38FRWKomAQvKCh7SwsWjaCq7zTY+lB/zmBQW0fAsLEh4Mx
+         ALpg==
+X-Forwarded-Encrypted: i=1; AFNElJ8C/2j/SnBOv0vtcQb/noDcopDVQCm2n+gle8j3mg9XP0x5OgNAYApLVQj8JFwiTQNdGJ8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxmDLqf1rNzzre51UkuyfTMqdOHnMk7Lmjaq4L6nG535x/JmqNf
+	UPK5M/NJjJyLRMXt4U88kXyXPajjLHvYOOYhJdSVg1/OVRikscpNs5oC
+X-Gm-Gg: Acq92OHe9WPjQ3VczDQvjP5ysQhQzRph9T6h43DZqyqv+nJMyiICK4ewO6Z1AVHqClj
+	H8971rLiAntzrKNJtH9C61Hu98Q8fme+21AK51ZGeRZLp8g3zCgyqbj2TbXqxbpcKApSdYLlDpJ
+	zEaL900yK4RjDVU34KpsrR2PcNOQ7Zb0+flY8sibcsOaOdYuqTw7b1NbQQJHcccl4vkTvcJpPOW
+	Lw0gycVNLJBQqTIIxXPqFzUgi82533g1OvlIdWS6O33qyqlA0NRXPwtkKOGB51H9jkAbU4LanfB
+	YL9GPnAqWbfIcYiFG6yDR0xiyqbq34RKEnE5FtD5G08yt8zydtdMD28CrqHccI+VYV0/B9kdD0j
+	uNZJ0/ikENYbsTN6w3a3F+DK+h0rWNRpgKpL40OcLp5ecA61hEArGPDChz0xUOzh7wQz4CyLDfs
+	7SKJIuDwgwXdnl34dvna1Dq9d36axQZCrK4P0Q4W33JRfPHB7eUNOJ3ypKYmiOeDRSDYSv/pIv9
+	KwIrQBi
+X-Received: by 2002:a05:6a00:92a4:b0:834:e882:3280 with SMTP id d2e1a72fcca58-8414adf6975mr1742050b3a.31.1779346815565;
+        Thu, 21 May 2026 00:00:15 -0700 (PDT)
+Received: from cchengyang.duckdns.org (36-225-109-223.dynamic-ip.hinet.net. [36.225.109.223])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-841549fb065sm234017b3a.14.2026.05.21.00.00.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2026 22:23:58 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 21 May 2026 07:23:57 +0200
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, Samir M <samir@linux.ibm.com>
-Subject: Re: [PATCH -next v2 10/11] rcu: Latch normal synchronize_rcu() path
- on flood
-Message-ID: <ag6W7RS3YyFClO3t@pc636>
-References: <20260519194524.158515-1-urezki@gmail.com>
- <20260519194524.158515-11-urezki@gmail.com>
- <ag3IhirNF-wlDE1W@localhost.localdomain>
- <ag3QQ7zWGMDx4MbV@milan>
- <ag41jLKrDsKGCS_H@localhost.localdomain>
+        Thu, 21 May 2026 00:00:15 -0700 (PDT)
+Date: Thu, 21 May 2026 15:00:11 +0800
+From: Cheng-Yang Chou <yphbchou0911@gmail.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: sched-ext@lists.linux.dev, Tejun Heo <tj@kernel.org>, 
+	David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>, 
+	Changwoo Min <changwoo@igalia.com>, rcu@vger.kernel.org, Ching-Chun Huang <jserv@ccns.ncku.edu.tw>, 
+	Chia-Ping Tsai <chia7712@gmail.com>
+Subject: Re: [PATCH 2/2] sched_ext, rcu: Upgrade RCU stall paths to report
+ cpumask of stalled CPUs
+Message-ID: <20260521143042.G853f@cchengyang.duckdns.org>
+References: <20260519171745.1551340-1-yphbchou0911@gmail.com>
+ <20260519171745.1551340-3-yphbchou0911@gmail.com>
+ <e17e4c18-33a3-47dd-a866-e1e381b0c496@paulmck-laptop>
+ <20260520222617.G302e@cchengyang.duckdns.org>
+ <41dacbf1-8255-4101-b6bf-636fd7d81efa@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ag41jLKrDsKGCS_H@localhost.localdomain>
+In-Reply-To: <41dacbf1-8255-4101-b6bf-636fd7d81efa@paulmck-laptop>
 
-On Thu, May 21, 2026 at 12:28:28AM +0200, Frederic Weisbecker wrote:
-> Le Wed, May 20, 2026 at 05:16:19PM +0200, Uladzislau Rezki a écrit :
-> > On Wed, May 20, 2026 at 04:43:18PM +0200, Frederic Weisbecker wrote:
-> > > Le Tue, May 19, 2026 at 09:45:23PM +0200, Uladzislau Rezki (Sony) a écrit :
-> > > > Currently, rcu_normal_wake_from_gp is only enabled by default
-> > > > on small systems(<= 16 CPUs) or when a user explicitly set it
-> > > > enabled.
-> > > > 
-> > > > Introduce an adaptive latching mechanism:
-> > > >  * Track the number of in-flight synchronize_rcu() requests
-> > > >    using a new rcu_sr_normal_count counter;
-> > > > 
-> > > >  * If the count reaches/exceeds RCU_SR_NORMAL_LATCH_THR(64),
-> > > >    it sets the rcu_sr_normal_latched, reverting new requests
-> > > >    onto the scaled wait_rcu_gp() path;
-> > > > 
-> > > >  * The latch is cleared only when the pending requests are fully
-> > > >    drained(nr == 0);
-> > > > 
-> > > >  * Enables rcu_normal_wake_from_gp by default for all systems,
-> > > >    relying on this dynamic throttling instead of static CPU
-> > > >    limits.
-> > > > 
-> > > > Testing(synthetic flood workload):
-> > > >   * Kernel version: 6.19.0-rc6
-> > > >   * Number of CPUs: 1536
-> > > >   * 60K concurrent synchronize_rcu() calls
-> > > > 
-> > > > Perf(cycles, system-wide):
-> > > >   total cycles: 932020263832
-> > > >   rcu_sr_normal_add_req(): 2650282811 cycles(~0.28%)
-> > > > 
-> > > > Perf report excerpt:
-> > > >   0.01%  0.01%  sync_test/...  [k] rcu_sr_normal_add_req
-> > > > 
-> > > > Measured overhead of rcu_sr_normal_add_req() remained ~0.28%
-> > > > of total CPU cycles in this synthetic stress test.
-> > > > 
-> > > > Tested-by: Samir M <samir@linux.ibm.com>
-> > > > Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
-> > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > ---
-> > > >  .../admin-guide/kernel-parameters.txt         | 10 ++--
-> > > >  kernel/rcu/tree.c                             | 52 ++++++++++++++-----
-> > > >  2 files changed, 44 insertions(+), 18 deletions(-)
-> > > > 
-> > > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > > > index 4d0f545fb3ec..d5db2e85d551 100644
-> > > > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > > > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > > > @@ -5862,13 +5862,13 @@ Kernel parameters
-> > > >  			use a call_rcu[_hurry]() path. Please note, this is for a
-> > > >  			normal grace period.
-> > > >  
-> > > > -			How to enable it:
-> > > > +			How to disable it:
-> > > >  
-> > > > -			echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-> > > > -			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=1"
-> > > > +			echo 0 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-> > > > +			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=0"
-> > > >  
-> > > > -			Default is 1 if num_possible_cpus() <= 16 and it is not explicitly
-> > > > -			disabled by the boot parameter passing 0.
-> > > > +			Default is 1 if it is not explicitly disabled by the boot parameter
-> > > > +			passing 0.
-> > > >  
-> > > >  	rcuscale.gp_async= [KNL]
-> > > >  			Measure performance of asynchronous
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index 09f0cef5014c..94274330d1db 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -1632,17 +1632,21 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
-> > > >  	atomic_set_release(&sr_wn->inuse, 0);
-> > > >  }
-> > > >  
-> > > > -/* Enable rcu_normal_wake_from_gp automatically on small systems. */
-> > > > -#define WAKE_FROM_GP_CPU_THRESHOLD 16
-> > > > -
-> > > > -static int rcu_normal_wake_from_gp = -1;
-> > > > +static int rcu_normal_wake_from_gp = 1;
-> > > >  module_param(rcu_normal_wake_from_gp, int, 0644);
-> > > >  static struct workqueue_struct *sync_wq;
-> > > >  
-> > > > +#define RCU_SR_NORMAL_LATCH_THR 64
-> > > > +
-> > > > +/* Number of in-flight synchronize_rcu() calls queued on srs_next. */
-> > > > +static atomic_long_t rcu_sr_normal_count;
-> > > > +static int rcu_sr_normal_latched; /* 0/1 */
-> > > > +
-> > > >  static void rcu_sr_normal_complete(struct llist_node *node)
-> > > >  {
-> > > >  	struct rcu_synchronize *rs = container_of(
-> > > >  		(struct rcu_head *) node, struct rcu_synchronize, head);
-> > > > +	long nr;
-> > > >  
-> > > >  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
-> > > >  		!poll_state_synchronize_rcu_full(&rs->oldstate),
-> > > > @@ -1650,6 +1654,15 @@ static void rcu_sr_normal_complete(struct llist_node *node)
-> > > >  
-> > > >  	/* Finally. */
-> > > >  	complete(&rs->completion);
-> > > > +	nr = atomic_long_dec_return(&rcu_sr_normal_count);
-> > > > +	WARN_ON_ONCE(nr < 0);
-> > > > +
-> > > > +	/*
-> > > > +	 * Unlatch: switch back to normal path when fully
-> > > > +	 * drained and if it has been latched.
-> > > > +	 */
-> > > > +	if (nr == 0)
-> > > > +		(void)cmpxchg(&rcu_sr_normal_latched, 1, 0);
-> > > 
-> > > Given that it's already ordered by the llist add / del and the
-> > > atomic_long_inc/dec_return, there should be no chance for bad
-> > > things happening such as negative returned dec.
-> > > 
-> > > So it could be cmpxchg_relaxed(). But anyway, just an optimization.
-> > > 
-> > > In any case,
-> > > 
-> > > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> > > 
-> > Hello, Frederic!
-> > 
-> > I change it accordingly, please check!
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 94274330d1db..2c76b59f75de 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -1655,14 +1655,13 @@ static void rcu_sr_normal_complete(struct llist_node *node)
-> >  	/* Finally. */
-> >  	complete(&rs->completion);
-> >  	nr = atomic_long_dec_return(&rcu_sr_normal_count);
-> > -	WARN_ON_ONCE(nr < 0);
-> 
-> Why dropping this?
-> 
-OK, i misread your note about negative, "such as negative returned dec."
+Hi Paul,
 
---
-Uladzislau Rezki
+On Wed, May 20, 2026 at 09:35:35AM -0700, Paul E. McKenney wrote:
+[...]
+> > > > +		free_cpumask_var(stalled_mask);
+> > > 
+> > > And free_cpumask_var() is happy to ignore a NULL pointer, so it is OK to
+> > > invoke it on the pointer passed to a failing call to zalloc_cpumask_var().
+> > 
+> > One question here: Sashiko flagged that the GFP_ATOMIC allocation
+> > risks deadlock if the stalled CPU holds a scheduler or allocator lock.
+> 
+> That sounds like a bug in either the combination of GFP_ flags used or in
+> the memory allocator itself.  It should be possible to allocate so that
+> you either get memory or get a NULL pointer, without risk of deadlock.
+> 
+> What am I missing here?
+> 
+
+Ah, you are right here, thanks for the correction.
+
+> > Rather than keeping dynamic allocation with cpumask_available() guards,
+> > I was planning to pre-allocate rcu_stall_cpumask and rcu_exp_stall_cpumask
+> > in rcu_init() with GFP_KERNEL and clear them at the start of each stall
+> > event. That would eliminate have_mask, cpumask_available(), and
+> > free_cpumask_var() from the stall paths entirely.
+> 
+> Please note that rcu_init() runs when there is only one CPU online that
+> is running with interrupts disabled.  So the fact that GFP_KERNEL works
+> in that environment is because the memory allocator is interpreting it
+> specially (see GFP_BOOT_MASK).
+> 
+> Does static allocation work?
+> 
+
+Yes, static allocation works. Declaring:
+
+	static struct cpumask rcu_stall_cpumask;
+	static struct cpumask rcu_exp_stall_cpumask;
+
+and calling cpumask_clear() at the start of each stall event removes all
+allocation, NULL checks, cpumask_available() guards, and free calls from
+the stall paths. No boot-time failure path to worry about either.
+
+> > Does that direction work for you, or would you prefer the dynamic
+> > allocation path with proper cpumask_available() guards?
+> 
+> On the one hand, memory is getting expensive.  On the other hand, cpumasks
+> are not *that* big.  I prefer dynamic allocation, but am not inalterably
+> opposed to static (or, *almost* equivalently, boot-time) allocation.
+> 
+> The "*almost*" refers to the fact that boot-time allocation can fail.
+> Usually, the system fails to boot in that situation, but some sort of
+> check would be good.
+
+Given that static allocation avoids the failure check concern and
+simplifies the stall paths, I will use static allocation for v5.
+
+Thanks!
+
+-- 
+Cheers,
+Cheng-Yang
