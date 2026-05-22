@@ -1,335 +1,168 @@
-Received: from mail-43170.protonmail.ch (mail-43170.protonmail.ch [185.70.43.170])
+Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010012.outbound.protection.outlook.com [52.101.46.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E4E13A48F1
-	for <rcu@vger.kernel.org>; Fri, 22 May 2026 05:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779428826; cv=none; b=amaMI9ZjaEcMCggSyPVYF5F8SwbKcplMepCh8ERa89UYEDHNN0cycVL20c/fEvlx6LXrnrj5524bJOfAj/mY8OcBSV5iQS80Fxy26cwWKcIP9ULCtoH5dz1eltJLsbhrz3WLnu8eHNCvmMqeWQ7iJ9ifC6UruQOwXfT9XlSMWCE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779428826; c=relaxed/simple;
-	bh=BKSPgYLwjJjqZShibS3Zb5LJlvqh/o5bzmlqighqbw4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mvH+iaUrWLcxL2XBIbJMVnNHnGhfIGwHxRt/BitLlWC7OHAAP1hWOLCYcVWOQ/lNznTWBWY2LwMjIA5MA63HfN25laOmmtSJ5RshSYMKyrTe+x4qPfRzwOzJhwfQRkMkkloYhisi1ehnK2tP9t2sGuOOu+JS5b4oimDAkL+fROY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=EiwjELHE; arc=none smtp.client-ip=185.70.43.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onurozkan.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA96F288C2C;
+	Fri, 22 May 2026 14:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779459845; cv=fail; b=Cx8fMBngd6oBzXE54IZEw2+9aw1DBH9r4lHwV4dU4fiTNcX+H2Q1EvbyF9GHZSK8i/rQL838bznWHl9W7tbivyq6v1WGUz9dn0iOu/ZM08NSIN8EGfaivUGyLY54LcnXZKR6758BgoHEg4A7/8bAX+J0syxBYXsk9GbqLXB1P+U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779459845; c=relaxed/simple;
+	bh=JI4LHCzgY3w8eH3CAWOK7oAmJGUpO3IXSRVef6qXutQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=taE+HxK+G/hwCAYlz/H/wxkkZjQjFX2s5V7FIA2bzZjF9xCS6PPx7c0gNmQk9X9SB5zCqdOrCyfpi5jSTGoOwLmr65aRSVc8YyzPR3dpw3cPqF0tJKJYB07SgJ3Gix8PtvWgrc3n5/k9qQmIjZP8bkt42Dm+f8TWt81kHmrjRUA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=CNHf07Dp; arc=fail smtp.client-ip=52.101.46.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="EiwjELHE"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onurozkan.dev;
-	s=protonmail; t=1779428821; x=1779688021;
-	bh=WfxlNU7aToSRzVT3MSvjOtvYLtjWysePhhDTEqr3jL4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:From:To:
-	 Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=EiwjELHELbkERXFR3n74wkNOdiBdPHZTN7gzNkYlvXNLmV/rc12LQUV3hAD0T83he
-	 5n4AdhxvxPWnwwTdfa3KAbjBx7G+y3QXUnIxlc3z86yE7PW+4bzeON7CEn1I7QLDeH
-	 Zp6ctFeUGM9fkOFxBytYWLmTkfhqoFPVaarJjZDMNkTEJHdoRsuPZjuN8Ca7fx85gz
-	 Es7VOeFGBDgOa+dBgDsRc715EkFKMiw0W7zlhjsZjDlojSNkUcgR3E4kTqSgvBB59f
-	 fC9cZMqT7XWLXWr0blEHIdWl1f8wjOya06Kh5dVRGIzbYPDZBXCNmYAMUJHAMaPfQy
-	 G6RkYP9zNamVQ==
-X-Pm-Submission-Id: 4gMDmz2rhcz2ScPH
-From: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
-To: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
-Cc: Gary Guo <gary@garyguo.net>,
-	rcu@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ojeda@kernel.org,
-	boqun@kernel.org,
-	bjorn3_gh@protonmail.com,
-	lossin@kernel.org,
-	a.hindborg@kernel.org,
-	aliceryhl@google.com,
-	tmgross@umich.edu,
-	dakr@kernel.org,
-	peterz@infradead.org,
-	fujita.tomonori@gmail.com,
-	tamird@kernel.org,
-	jiangshanlai@gmail.com,
-	paulmck@kernel.org,
-	josh@joshtriplett.org,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v2 2/3] rust: sync: add SRCU abstraction
-Date: Fri, 22 May 2026 08:46:54 +0300
-Message-ID: <20260522054658.122019-1-work@onurozkan.dev>
-X-Mailer: git-send-email 2.51.2
-In-Reply-To: <20260511171154.154280-1-work@onurozkan.dev>
-References: <20260502162833.34334-1-work@onurozkan.dev> <20260502162833.34334-3-work@onurozkan.dev> <DI8DUMY6GAM6.24VYS1478B7L8@garyguo.net> <20260503034008.36917-1-work@onurozkan.dev> <DI9ADEUBBUD2.22OR0R12PKVQL@garyguo.net> <20260511171154.154280-1-work@onurozkan.dev>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="CNHf07Dp"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=c56g4Z4CMyf1cQSwEAYFLgUtbk85X2zRrNbUIRiXyNlGPq0hUrbVFsu5lhWGG6DnkOMGHozFb3aZldMvLWrepOX6dKANqGa4/euqSsIQXf8+WRoY0LuCAwwejSNpPrmKWP0grB5gRgxUHpOZsEZV+rqHVIYqXKVHAuZdhiD0y6pYD9xF8247nzWqHMQzvT6lj15DaNExcU0ZiT3R+Mcz2ZsJHvo/KTGgnQ83NQd6TdV52rFf2e0TGifoZddtnILM/DmtNltkSMjBLFvlXKaAvTsLlN5/uqawNwJQFj0dQiLx6byU4gtCLSRAFQ1tiRZhJbImrjl6l02o7Rl0CAOtUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gOM1pK9je2wdZhl8FWe5vZx4985LhB6ahjZTBMYIUU8=;
+ b=INrOxgID1ynvYxOF3tUNUk92b3GW7jYk+JBDn1B5alanwzg8PU5QKsdpmbyX/KqvCMRGK5OAjv5QhwvGelg66aYDl4uo/auo6VrVyb5Tu74lta5nYUVjbvMLYpLYQAZrYI6iNQQMQ4fONWjZIxVDfpn4sS/aWy1pgymOQmkIf1/HEzi5XKWLiap+MjLfMG1x2RKu3tDWKHvFPrcqAUMHmN1fYyeJXUbC1qezUiUl13TGpFxHgyPB/7wBDBaY+OhY16cvGfNC50QfMmrqPdKZovR5k1U3BQR4fI/uve1O0DIKbOtTNaZF2FikvzGq5xvofHe8WoOUzxomFGnfzxiiQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gOM1pK9je2wdZhl8FWe5vZx4985LhB6ahjZTBMYIUU8=;
+ b=CNHf07DpNPsWRrrzcFKz4giLWaqAMamEtYTXtp0utHKFYUz66IKRV1tj4VBGODiK4uPgzf8TShUoTq/s2tgv6Q9GlXyNGd7Es98L0oGoDZhF2PHbsbJ44ZDOtC9dVMjxjlDEGD/beJLt/MhnPLGtC446HFuHKDvNq96iQFeB+wKioc5PVG734O78OyJR3EcpPvx7FhfclUF9OmmsMBTT8dSWYDATMddfUKCXRX15Z9ANoGFwbaaH2arTCz2s4io79zCRw/7eH7IIswOi+TeNRagearhA4lmTGLYejSe7p69w1Q7ZyD3S6aa5htYy7KU9wl27pth4nPuL8UkTqsCmOQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
+ MN0PR12MB5786.namprd12.prod.outlook.com (2603:10b6:208:375::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.17; Fri, 22 May
+ 2026 14:23:57 +0000
+Received: from DS0PR12MB6486.namprd12.prod.outlook.com
+ ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
+ ([fe80::88a9:f314:c95f:8b33%6]) with mapi id 15.21.0048.016; Fri, 22 May 2026
+ 14:23:57 +0000
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: linux-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>
+Cc: rcu@vger.kernel.org
+Subject: [PATCH RFC v1 0/6] rcu: fix stuck defer_qs_pending state
+Date: Fri, 22 May 2026 10:23:34 -0400
+Message-Id: <20260522142342.1536533-1-joelagnelf@nvidia.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BN0PR02CA0039.namprd02.prod.outlook.com
+ (2603:10b6:408:e5::14) To DS0PR12MB6486.namprd12.prod.outlook.com
+ (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|MN0PR12MB5786:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0e7af07d-5ffc-42ff-b70f-08deb80dc23c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|921020|11063799006|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	vrN6Udzmxh91xNCtpFD8oeGoxThcKOmJ+CNty0WBOyZgjC9U2GUb08FxGB4yX+2JHTRP9AL0IfS+TvNvROFTXggxS56geMPmUOh1kZUKtiM9QHdd2Xf0ZGFGrDW9D/bjVztZx2KQXi8bMhozulvZXuPK105Tj10qFsdTnPb9Kh5WRALIQcPixHZ2XPqkIcepGlzB+qtDZMYG5SQzlnA+e+J+IHI23CAsbp/tL1WFKuO5zk0ZQ6/unsSrmcPOUVQDyDJVFeQHlUHbIlOYeHiaGkMQGf8RnPbU2Jd7yPEYFwd7DzgULw2SHrTXZdCGZuoKnPkTfEO7FsirJ9P/Xhuc4cXKiJJ9v7UPrplp5ESYtQlB7v0h/u4z/S5Gjv4Bgf69WvohXRYB8GoNiXA1ZV6LgJfWyNQ26QFdOZ87+t8uYAZ7h9IvBU03pWXSO5Svhzka8yDrCvyVi7tlEDKwYgQ/ollhQkbEwvJZeUTYZQ4Uw1buFOE2BGruQhFuav0z/ApIArC0XKce+tcYx0IPVwVtpb8niysLAc82t9DHSVniwLnWQQi8a17Y+SNGtCLxhDmX3MD8BtuYhHyF4L68s9jUDTLZK8YVemtKcRThKEryC4Bjn2/iEnqbM4ypYDxUxmShLwYxliusfeuyGemml4h9TCGyzptW9AinFfTizOB3THuo/9clHz+sd23e+3St87fU4YVTHYncENMqELvnmvfuSyhCoSKTf41Fw7B7HalBgYtsdRGfPzIx+MpjIqP0hfqg
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(921020)(11063799006)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?KCoovNR+oRxX4sLw8mIQLh6mwavkWSdxdmZFv1aRsbNCj2MzjuEtIhtdBjz+?=
+ =?us-ascii?Q?4hxoJ7/IPPf/5PG8tbNB4ADEgWYpsNwQMn+oYvLgy4y11BN3Z4laPKvw4ILX?=
+ =?us-ascii?Q?zX4kOJtSuFsaHxWR2lDOV+weP8NozatQviGMPuqLsoaDxd+B6h3ZYMRDjFzw?=
+ =?us-ascii?Q?3aLOLRa7bwLG6iJQHAkxVzapVBcMvg0AKfRmZ2lqkjahZClHibt+xAMYq3g0?=
+ =?us-ascii?Q?p4BrMtMyT5DoimtLJtOySoK45SuMhRRv8saGSj4iDIeMcLnSTnyoI2r4f9NO?=
+ =?us-ascii?Q?tFHh6A8KqoLlPqOJZtY6rZcNI+JgvuFQevxEeIcL2bO2IHIHXBUgsmxwH5dj?=
+ =?us-ascii?Q?S418KSvFHvJ5Bq6vBItNVX0i9OzJx95b/ogMubLbIerWkq9j7gyROaSe7zOx?=
+ =?us-ascii?Q?8lR93xzIgDlqqpKXMwbu6a6GrD1blUmmfrzMAV3Gto7VATPVoxpp5YmzQNiG?=
+ =?us-ascii?Q?+9k1FtEk8/rtD4Yz2du7Rided2CT2UpjWaiHuH7+1XZjVwc84eORDAc06R9w?=
+ =?us-ascii?Q?YWbMYQG+r7R/LNigUl7C2/9IwHJUr2qWQkeIryJb37J16HL0S67DvT2ZvaEe?=
+ =?us-ascii?Q?/tGEjCn1I5jg7emNAJRp2y5EFeslqxbr8JU1Mm8R1aYxvtG81js72/htoMkH?=
+ =?us-ascii?Q?+4dDs/g4HPLxq0XW2usAx4L69ct1xqi4jLlp1GL8XEFRPIxu06iccRekE1D1?=
+ =?us-ascii?Q?fFsGJv0GAwa8Oy0InF5G+RMgavjTyal22qkiTC+UUPAmlZHezkeYJMnkvLZM?=
+ =?us-ascii?Q?lQ1VnJ7S5JbOaN6V7Y08mC2ViCN88rKpW0dekWQxNZ8arEOhBCvo9rO8CRC5?=
+ =?us-ascii?Q?gxrqTUAyA9Vgyy2og98+CqjWMmTgf04Pyt+4d6tIyMfX7Ksb3vbqCKW6U9MU?=
+ =?us-ascii?Q?V5kNc8j5EPW0r21VMEURf7sk3CSzfZ1SidRYzbdVj5P/hWR3ppL4mw9HY4/1?=
+ =?us-ascii?Q?bhfrK2gUqqfT5t6MQzQG4hjGQYH9BVxpXFNlDaoHdV6lHN7WbT7qh51+tQ4e?=
+ =?us-ascii?Q?F1uodHaVPfZzLftfJC3TMHW11tRYytbA237wjw2Tdl/kTK1+CuMuucBOvf3k?=
+ =?us-ascii?Q?M/AR40L6XvL17yiGiZI38xcbdC/aOb4bquLQRzgpPzTy0/Oco/AL/FsBET4M?=
+ =?us-ascii?Q?KH7HkcglfR01HjbkS0N8g71zYkxPoQ+rpU2Duupwowzv05JgeRW3kUd9amQP?=
+ =?us-ascii?Q?kOMw5pG9oyVaAzWbBQa3jgLubzZBuYxSi1DJ6P/Vx3eJD/8qA87Wy4fDDFT4?=
+ =?us-ascii?Q?8BgasblNJ/RTuRi7ueIleQMXDDkZhkhljZuqqA+vdkpxNrJzKU9/VfvHm3XJ?=
+ =?us-ascii?Q?PR2RG4DsCcWGIXiPy5VrwiKmdfO4EulWjw/PViTbO4CEk6R4pnlhP98jTy73?=
+ =?us-ascii?Q?hPnSOk2T1MRFUKCDXobrOjN044DGz2BHfciufc7JHSGeBIikOZGISJV7jYJH?=
+ =?us-ascii?Q?ASdBbkQ6vA/kWIEgwzwhecm1rAw3X3Udz3fvbdi4xnBNv6s9l8aNBZHTTp67?=
+ =?us-ascii?Q?Cu6Qe43vN7t9UxRiMDQCF7j5Nh72Lpm0ixRL6AzkKe7Gh4mnDdYFQIb8IOGY?=
+ =?us-ascii?Q?7EdzzmSqNngd/eyNAQ+HtlBhWnciEQ5hfDv48wJ65qkV691Uvv9XLibjP8B8?=
+ =?us-ascii?Q?Zgncb8BcNCyNI8dwNt9Zlhl2WQsNZm7wjPDe+hvE5NEUdSUv00AJU9GJtCuT?=
+ =?us-ascii?Q?A+Wg8b7ppGkmxazex1xeJEVA3MhyHBmpPg/P2CPLvu341DGpGeCgBtbkkDJf?=
+ =?us-ascii?Q?GNjRuGf/1g=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0e7af07d-5ffc-42ff-b70f-08deb80dc23c
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2026 14:23:57.0850
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KDD4p6pofP8GURvfYkwbqTVXyEircPmNms8b6DYNMKxSotbPzTa4fyDF6eZ6soHAbLCpwmKLqcUQV9s+98IYfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5786
 
-On Mon, 11 May 2026 20:11:26 +0300=0D
-Onur =C3=96zkan <work@onurozkan.dev> wrote:=0D
-=0D
-> On Sun, 03 May 2026 20:25:03 +0100=0D
-> Gary Guo <gary@garyguo.net> wrote:=0D
-> =0D
-> > On Sun May 3, 2026 at 4:39 AM BST, Onur =C3=96zkan wrote:=0D
-> > >> > +/// Sleepable read-copy update primitive.=0D
-> > >> > +///=0D
-> > >> > +/// SRCU readers may sleep while holding the read-side guard.=0D
-> > >> > +///=0D
-> > >> > +/// The destructor may sleep.=0D
-> > >> > +///=0D
-> > >> > +/// # Invariants=0D
-> > >> > +///=0D
-> > >> > +/// This represents a valid `struct srcu_struct` initialized by t=
-he C SRCU API=0D
-> > >> > +/// and it remains pinned and valid until the pinned destructor r=
-uns.=0D
-> > >> > +#[repr(transparent)]=0D
-> > >> > +#[pin_data(PinnedDrop)]=0D
-> > >> > +pub struct Srcu {=0D
-> > >> > +    #[pin]=0D
-> > >> > +    inner: Opaque<bindings::srcu_struct>,=0D
-> > >> > +}=0D
-> > >> > +=0D
-> > >> > +impl Srcu {=0D
-> > >> > +    /// Creates a new SRCU instance.=0D
-> > >> > +    #[inline]=0D
-> > >> > +    pub fn new(name: &'static CStr, key: Pin<&'static LockClassKe=
-y>) -> impl PinInit<Self, Error> {=0D
-> > >> > +        try_pin_init!(Self {=0D
-> > >> > +            inner <- Opaque::try_ffi_init(|ptr: *mut bindings::sr=
-cu_struct| {=0D
-> > >> > +                // SAFETY: `ptr` points to valid uninitialised me=
-mory for a `srcu_struct`.=0D
-> > >> > +                to_result(unsafe {=0D
-> > >> > +                    bindings::init_srcu_struct_with_key(ptr, name=
-.as_char_ptr(), key.as_ptr())=0D
-> > >> > +                })=0D
-> > >> > +            }),=0D
-> > >> > +        })=0D
-> > >> > +    }=0D
-> > >> > +=0D
-> > >> > +    /// Enters an SRCU read-side critical section.=0D
-> > >> > +    ///=0D
-> > >> > +    /// # Safety=0D
-> > >> > +    ///=0D
-> > >> > +    /// The returned [`Guard`] must not be leaked. Leaking it wit=
-h [`core::mem::forget`]=0D
-> > >> > +    /// leaves the SRCU read-side critical section active.=0D
-> > >> =0D
-> > >> I generally would prefer if we could use guard-like API instead of f=
-orcing a=0D
-> > >> callback.=0D
-> > >=0D
-> > > Me too and developers can still do that. I think the safety contract =
-here is=0D
-> > > very simple to handle. It's essentially this:=0D
-> > >=0D
-> > > 	// SAFETY: Guard is not leaked.=0D
-> > > 	let _guard =3D unsafe { x.read_lock() };=0D
-> > >=0D
-> > > To me it's very simple and straightforward for both the developer and=
- the=0D
-> > > reviewer. It doesn't add any overhead to the implementation and it en=
-sures=0D
-> > > that the developer (and later the reviewer) is aware of the potential=
- issue.=0D
-> > >=0D
-> > > Of course, there's also the safe option if the developer is happy wit=
-h=0D
-> > > closure-based API:=0D
-> > >=0D
-> > > 	x.with_read_lock(|_guard| {=0D
-> > > 		...=0D
-> > > 	});=0D
-> > >=0D
-> > > So it allows you to use the guard-based approach directly with the re=
-quirement=0D
-> > > of a safety comment and also provides a safe API for developers who d=
-on't want=0D
-> > > to deal with that. I am not sure if you fall into the third category,=
- which is=0D
-> > > "I don't like writing safety comments and I don't like the closure-ba=
-sed=0D
-> > > approach" :)=0D
-> > =0D
-> > We have been avoiding using callback-based API if there's an alternativ=
-ely way=0D
-> > to achieve this. There has been quite a very precedents with this:=0D
-> > =0D
-> > - spin_lock_irqsave requires taking and releasing in correct order, whi=
-ch is=0D
-> >   easy to solve with a callback approach. The same logic reasoning can =
-be used=0D
-> >   to provide an unsafe API + safe callback API, but Boqun & Lyude rewor=
-ked the=0D
-> >   spinlock IRQ design so we don't need that anymore.=0D
-> > =0D
-> > - `Task::current` API could easily be replaced callback-based approach,=
- but we=0D
-> >   used a macro to achieve without unsafe.=0D
-> > =0D
-> > The API here is not inherently impossible to use guard API. It's not sa=
-fe today=0D
-> > because a very specific detail. The callback-API is the "path of least=
-=0D
-> > resistence" approach, but it's not the optimal one.=0D
-> > =0D
-> > >=0D
-> > >> =0D
-> > >> I suppose the only reason that this is unsafe is the "just leak it" =
-condition=0D
-> > >> when cleaning up SRCU struct, which skips cleaning up delayed work, =
-which could=0D
-> > >> call into `process_srcu`, which accesses `srcu_struct`. This however=
- is *not*=0D
-> > >> leaked, because it's controlled by the user. Only the auxillary data=
- allocated=0D
-> > >> by SRCU is leaked. So UAF is going to happen.=0D
-> > >> =0D
-> > >> So in some aspect, the leak caused by `srcu_readers_active(ssp)` can=
- cause more=0D
-> > >> damage compared to just continuing cleanup despite active users? I t=
-hink this=0D
-> > >> could be changed in one of these ways:=0D
-> > >> * Have SRCU allocate all memory instead, and user-side would just ha=
-ve a=0D
-> > >>   `struct srcu_struct*`; then leaking would be safe. This is probabl=
-y a bit=0D
-> > >>   difficult to change because it affects many users.=0D
-> > >=0D
-> > > We could do the same on the Rust side only. Basically instead of embe=
-dding=0D
-> > > srcu_struct in Rust srcu, allocate it separately and store its pointe=
-r. Then,=0D
-> > > if cleanup hits the active reader case, we could leak that allocation=
- so any=0D
-> > > remaining srcu work does not hit UAF. I was aware of this option but =
-I would=0D
-> > > prefer to avoid it because it adds an extra allocation for every Rust=
- srcu.=0D
-> > >=0D
-> > >> * Continue to flush delayed work and stop the timer, and then leak b=
-efore the=0D
-> > >>   actual kfree happens.=0D
-> > >=0D
-> > > Can you say more? I didn't understand this particular solution.=0D
-> > =0D
-> > I was thinking that doing this _might_ be sufficient. I have to admit t=
-hat I've=0D
-> > not very familar with the internal implementation of SRCU to make it an=
-=0D
-> > assertion though.=0D
-> > =0D
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c=0D
-> > index 0d01cd8c4b4a..5d75a4dbb6e5 100644=0D
-> > --- a/kernel/rcu/srcutree.c=0D
-> > +++ b/kernel/rcu/srcutree.c=0D
-> > @@ -717,8 +717,6 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)=0D
-> >  	raw_spin_unlock_irq_rcu_node(ssp->srcu_sup);=0D
-> >  	if (WARN_ON(!delay))=0D
-> >  		return; /* Just leak it! */=0D
-> > -	if (WARN_ON(srcu_readers_active(ssp)))=0D
-> > -		return; /* Just leak it! */=0D
-> >  	/* Wait for irq_work to finish first as it may queue a new work. */=0D
-> >  	irq_work_sync(&sup->irq_work);=0D
-> >  	flush_delayed_work(&sup->work);=0D
-> > =0D
-> > But after taking another look, I am not even sure if this is needed. A =
-quick=0D
-> > glance of the code it appears that __srcu_read_unlock doesn't do anythi=
-ng apart=0D
-> > from adjusting the counter, and the SRCU grace period and thus the time=
-rs won't=0D
-> > actually start unless there's a pending grace period, which won't start=
- unless=0D
-> > there's a call_srcu or sychronize_srcu. And we *know* that none of them=
- would=0D
-> > happen, as the lifetime guarantees that nothing accesses the `Srcu` str=
-uct when=0D
-> > `drop` starts, and inside drop we have already invoked `srcu_barrier()`=
-.=0D
-> > =0D
-> > So I think, even if we hit the "Just leak it" scenario, we can still sa=
-fely=0D
-> > deallocate the backing storage of `srcu_struct` and nothing should brea=
-k?=0D
-> > =0D
-> > >=0D
-> > >> * Trigger a `BUG` when the leak condition is hit for Rust users.=0D
-> > >=0D
-> > > We need an atomic counter to detect the leak and I thought that would=
- be too=0D
-> > > much overhead for this abstraction. Basically each lock and drop will=
- call an=0D
-> > > atomic operation so.=0D
-> > =0D
-> > You could just check if srcu_sup is NULL after calling `cleanup_srcu_st=
-ruct`.=0D
-> > =0D
-> > Best,=0D
-> > Gary=0D
-> > =0D
-> > >=0D
-> > >> * Declare the `WARN_ON` to be a sufficient protection and say this c=
-an be=0D
-> > >>   considered safe. Kinda similar to the strategy we take to the=0D
-> > >>   sleep-inside-atomic context issue.=0D
-> > >=0D
-> > > I think this is a rather weak precaution.=0D
-> > >=0D
-> > =0D
-> =0D
-> Alright, here is the alternative approach I just figured and I think this=
- makes=0D
-> the most sense compared to the ones we discussed in this series:=0D
-> 	=0D
-> 	#[pinned_drop]=0D
-> 	impl PinnedDrop for Srcu {=0D
-> 		fn drop(self: Pin<&mut Self>) {=0D
-> 			let ptr =3D self.inner.get();=0D
-> =0D
-> 			// `cleanup_srcu_struct()` may return early if readers are still activ=
-e. Because `Srcu`=0D
-> 			// owns the embedded `srcu_struct`, returning from `drop` in that stat=
-e could free memory=0D
-> 			// that is still referenced by the C side.=0D
-> 			//=0D
-> 			// Wait for all readers to complete first. If any `Guard` was leaked, =
-`synchronize_srcu()`=0D
-> 			// will sleep forever.=0D
-> 			//=0D
-> 			// SAFETY: By the type invariants, `self` contains a valid and pinned =
-`struct srcu_struct`.=0D
-> 			unsafe { bindings::synchronize_srcu(ptr) };=0D
-> =0D
-> 			// ...=0D
-> =0D
-> (the code snippet above is copied from [1])=0D
-> =0D
-> As explained in the doc comments, we avoid the potential UAFs by sleeping=
-=0D
-> forever which is considered non-unsafe, right? Alice said during today's=
-=0D
-> call that "sleeping is not good, but it is not unsafe". If that's the cas=
-e,=0D
-> I think this fixes the overall problem and we can make read_unlock safe a=
-gain.=0D
-> =0D
-> What do you think? I will hold the next version until we reach a common p=
-oint.=0D
-=0D
-I will be less available in the coming week and since there has been no res=
-ponse=0D
-to my proposal here, I included it in v3 and sent it [1].=0D
-=0D
-[1]: https://lore.kernel.org/all/20260522054228.114814-1-work@onurozkan.dev=
-=0D
-=0D
-Regards,=0D
-Onur=0D
-=0D
-> =0D
-> [1]: https://github.com/onur-ozkan/linux/commit/28d9739f03=0D
-> =0D
-> - Onur=0D
+This series fixes a bug where rdp->defer_qs_pending can remain stuck in
+PENDING when a preempted reader's quiescent state is reported up-tree via
+a path other than the deferred-QS irq-work handler (FQS scan, hotplug
+transition, expedited GP IPI, context switch). Once stuck, the pending
+gate in rcu_read_unlock_special() silently suppresses all future arming
+attempts on that CPU. The series adds PENDING -> IDLE transitions at the
+missing sites.
+
+Also handles the case where the deferred-QS irq-work handler may run between
+segments of a compound section (per Paul McKenney's counter-example):
+
+I also handled expedited GP cases in a patch. I have not yet looked at how this
+interacts with the softirq paths so I am keeping the RFC tag on.
+
+The last patch is a debug-only detector (CONFIG_RCU_GP_CLEANUP_STALE_CHECK,
+marked [TEST COMMIT], not for merge) -- applied alone on unmodified mainline
+without patches 2-5 it reliably fires a WARN within 5 minutes under TREE03
+rcutorture, confirming the bug exists and the detector catches it; with the
+full fix applied, I could not reproduce the issue.
+
+The git tree with all patches can be found at:
+https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/tag/?h=rcu-dqs-stuck-rfc-v1-20260522
+
+Joel Fernandes (6):
+  rcu: introduce rcu_defer_qs_clear() helper
+  rcu: clear defer_qs_pending when notifying GP changes
+  rcu: clear defer_qs_pending in handler for compounded sections
+  rcu: drop redundant defer_qs_pending clear in irqrestore handler
+  rcu: clear defer_qs_pending at expedited IPI entry
+  [TEST COMMIT] rcu: detect stuck defer_qs_pending at GP cleanup
+
+ kernel/rcu/Kconfig.debug | 11 +++++++++
+ kernel/rcu/tree.c        | 49 ++++++++++++++++++++++++++++++++++++++++
+ kernel/rcu/tree.h        | 13 +++++++++++
+ kernel/rcu/tree_exp.h    |  6 +++++
+ kernel/rcu/tree_plugin.h | 30 ++++++++++++------------
+ 5 files changed, 94 insertions(+), 15 deletions(-)
+
+-- 
+2.34.1
+
