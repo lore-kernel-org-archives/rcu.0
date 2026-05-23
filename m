@@ -1,258 +1,194 @@
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013038.outbound.protection.outlook.com [40.107.201.38])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4014657F5;
-	Fri, 22 May 2026 14:24:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.38
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779459858; cv=fail; b=rVyIqoA1aSFhfa9wllO6QLnLMRHjzV4kW9/3EqIo4mz/78XF6Snt1kg1tNuko/VkKqbUYITzopjcE5HO0eyub7D/WaI9CMd1NGnN9cBB7HHBDystgt3faDZ/ZVZKiHUYyfD2jAU02xo6DqSyHPtQoK6xbvIkIdLcDvPadL51td8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779459858; c=relaxed/simple;
-	bh=m3/W17dDH4ZJ6qWZ8ig1bN1JTHQ/vsXEjbga7JJKJJ0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QagcIUytY5L3jtl2xCtg7WDDxTaqBbAcgxclAQbbhY5mgayzkghVj6J4tnmcflCVOkXyOjp/l/OhoTse5eipkHKa05tbJPL2JSiG+hvfhMg82RzQ0/pmcm15pUrUf/mMVTqq52fgj7gRagi1fOlitMS5+nGg0qnd5dq4Uo7vGr0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=C5Qnv6Qk; arc=fail smtp.client-ip=40.107.201.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E225F399361;
+	Sat, 23 May 2026 12:33:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779539612; cv=none; b=Ltp3L6yeDsT8DqAoOpzTvnS4fy9MKT2pFdwHMBXxx7CAZkNIlubZEZ66I9J9ZpnUAY6ypK9dmgyAOcytkLhltiGK8I9uiS+yZStHelfQe2uJhUSa6OKhinYRx+auzuf2Cftb9FnnrrmpFI0H2G2t7kXj6UC6JAUrgY9d8qKWyKs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779539612; c=relaxed/simple;
+	bh=56rtl5yWcqt/qvv0kT1QPxahxvD5Oep41kV/zQgRNLw=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=BCBnco9lLzAqCsjkIiC7wbyZX3Q4mfMVkxvqxXpgQrvRmhg0qZ2NOzxerEygdnY3GXO7fNot+h+qFF5Zv6rOwU5dgvnhtgOxNS5qC3rE0c3uzLlScf/RF8st/cbv4uHbApJRTsxyjhIodZV3tQouEDxHluvJ7QMRurRVFIfuMPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jW3+XESk; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="C5Qnv6Qk"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ZGwk8vhB/vBoKyW5bl7Se3vLuDDivk+jW9zYrsaKNU38Unne1QwZrDbXCvb9Gi7nK4DrewuIybLd08kfxkX7Kijzi2iVlkTgq8ZXwx/Pie4boYYRoUUkE5fQllTzUU4XtrZVBI4B/U4TOchh/lvd20plraWlr0S/N0PNuOtFtxLyDUf4u+TcmmKi8mTsz3+SzWu4p1JqrV94TnoxuF4FWOeBZARnMXqnO+BZvYfOjjF4JboUsjxICObgbo7+FKTVxfP+oAbHHuaE5zJVXJrO3JxcTZJK2FieHkvOWI7WUmN1VNwtkddic/AqhpyzUC8Ilksxjd/46uRjem7nXd5HSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vMOtViZGm4FnGZVYv4DWF8h2epfA5JojjLpAyxu0zCk=;
- b=AYUR3Pwb4JH8kheLllUe0d0iksbmj4Z+dkd05APYOLnkVBD0+/a5c5l2t3vC/fy+JtZIcdBQIZ1ciABCBEBVf3hdhRGAEInw1d3iyMHkcc93ZZUxDPvrjv65acTKTCExijCjV/NHtTDc7yWGDZ+sMBCrlVnODZOaax82ApAG7XgyvlFi5IqKIfTA6rnQFu5HZ7dPsIcGrNfazJSnwNBA8LqJnQbxzNf8F7xyZRifDbxb8BK8rJ1LqLASdzB4zRbYmB2U1GMBjSSNyQSsKgkdUioJ8wOYmjepiCFyrZXCqy1oKLIp5doBQMCoSRF0XjUaNB6k63XydWtqH4HwY9+A2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vMOtViZGm4FnGZVYv4DWF8h2epfA5JojjLpAyxu0zCk=;
- b=C5Qnv6QkP3eRIYK8PFlsK1iUo0ZBRbTSj1qFgtoS37R+fRgiDfVEkybPd/RRm46nJPT20rW9Bxyxpws0dces02Esd+V8jjFy4YqE3KIucTlqBScFSN8qiemR5qehTldhSc+PvO4NcI3JXqwxiPeqRhQEfatCuXC4TU2nZbc/tyuEbWL2yr1/QWHH1LtOmJ3CdvqYUBRJTHqodlUJfpwCva2NO+0UlcMsIfp3ZhGg4+vu/QMMUNOWwYFa31+wxE+WLMQ2gtBNsuZIjjoaYXdNdR/ly3O7ULXoAdRX7W4xRxOeDpFce7zyMRR8Uo5BG+Zmmh2AD+we6RFfE9X5cIOowQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- MN0PR12MB5786.namprd12.prod.outlook.com (2603:10b6:208:375::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.17; Fri, 22 May
- 2026 14:24:12 +0000
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33%6]) with mapi id 15.21.0048.016; Fri, 22 May 2026
- 14:24:12 +0000
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: linux-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>
-Cc: rcu@vger.kernel.org
-Subject: [PATCH RFC v1 6/6] [TEST COMMIT] rcu: detect stuck defer_qs_pending at GP cleanup
-Date: Fri, 22 May 2026 10:23:40 -0400
-Message-Id: <20260522142342.1536533-7-joelagnelf@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260522142342.1536533-1-joelagnelf@nvidia.com>
-References: <20260522142342.1536533-1-joelagnelf@nvidia.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR08CA0011.namprd08.prod.outlook.com
- (2603:10b6:208:239::16) To DS0PR12MB6486.namprd12.prod.outlook.com
- (2603:10b6:8:c5::21)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jW3+XESk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D033D1F000E9;
+	Sat, 23 May 2026 12:32:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779539609;
+	bh=feRzGMWHkALLA8SyrU6RJ1+Ne9lKt9MuXcA+HfB5g6s=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To;
+	b=jW3+XESk7IvEcBU+bpy8yPJAU/0IVwlShO9v6KZOWX/ll0bKB5YUpHGA74CScGkib
+	 h61p7Ii11ojyLl4zWD9zC9jbGza8+08D0KF1Xyx9eBM6rLRsPBrMoOJWaYv4k5Vx5f
+	 b+ou7eQ1gREOxWOzgW+VN7myFXCmEhBFTQ9Sdu659LX8/GPVkRUMTXMWimv/FjEczf
+	 bG24n4N8iuPU4UnGW4T49bADfkhY2K1I2wXkGRyHTK9qH1ARUHqANTaWPkqp1iRNQ2
+	 wp7jB+4PxO00QxNwhLHhUxRt7tl3Y/eymRjs0Aul1vvTeTOYwlxBhdLtHlabRl0oG/
+	 MVc5rNjQJ3rsg==
+Message-ID: <6b2a816f-eb3b-4e0c-a024-ee2e3743eb04@kernel.org>
+Date: Sat, 23 May 2026 21:32:41 +0900
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|MN0PR12MB5786:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7a2b4284-c4d2-4638-9cfd-08deb80dcb31
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|921020|11063799006|22082099003|56012099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	wjk/U4LTDHCeRV/OFnMPMQOZvcG5baC9GilW7t1GXmJ7zL1tVw4nk8m142dVAahZXHax8XGLQymQ/v0rqo0RTxBbaNNSSiE+GeSZYuYkk+/VeElTeHOL7gwPKQQcNeEFVHigyTPPwRedDJiplhP/0UggRM3u+1S5LVfoj5Ok+w7QMY666UwMsQJvJX/h66XsuzOambeTZip8maL1dAPOdiInxj04V9b1WeVdwOwraWZPCsQisG3eYKLBBSLxa59BrPxwQnfmqAwpISrjpg2cPSzlxX4DcW6npPP5TeIXbekX3ALw3Lr4HFea6fcw7xtrTnYn4lZLUvcbeann3CY0W950pG5Jndhv5RHMISwzFY8mrcKjWDANOHFyFEA4qhqjlIx8+MHuakqFvJR2infcpyLZqQLEi8mMGGOsoVenmAd7ssON/CRrrtEUVAFJAT6/yiAosCt8fRCL/Juv7sa4lnCYW2MSWEb2hPHv20g0KVRZu6eTSEep164ktoSoXo/tXt8ZBM2i6hTKWXXXXZL6ASDC7oijzLFNMOs8mjiOFDuPDVFh9Qnft/Qn/HGdRdMorg2v8p30hRdrfavb56ml6JBAGIGY4cMItmTyKK6LMT5AXuDUB+BE2zOyMiTqVYwmcqi/itc81XN7SuCJBnZ8HYYgwnrzVrgJ2gr6jkvfuZBRhKnegkzWXJ5yY8Afwt3Km+44WWJ9aQRcJILKYBQwaMcjSJmaJCydjbl4lsKgiyU=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(921020)(11063799006)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?YCoiDdpxnmOcVA32xxevITmhVpfjLGOrDV2PohE3I4IqYR8jTO5YT6YYzSeG?=
- =?us-ascii?Q?csKqobbdwGjVW8GiQkwMfPzU56EK9iBUVJK6YNQc+b4boSM96iF5KSm34iTY?=
- =?us-ascii?Q?fJ4nRxOb7avF0wv69zoJnK7wDtzjMeSVbdItLyAS+4OlbroRfndvcKdKQ+0Z?=
- =?us-ascii?Q?dpEe+5p60mPvU2mNuNUX3wamMNymz051Npic2Rhd9yR+E621NJ87cNYXUSxY?=
- =?us-ascii?Q?EMv5VyS3QrQH13cDrkeO19f3DT4cXQaR8vLdB96EwMYvesn7DCWZuXzNiasE?=
- =?us-ascii?Q?7epHNeTayxPw59XqJqk5Gv7ZPCpu7G6R3xZF6fmaNZDOPDG2mow4M2LbPoeU?=
- =?us-ascii?Q?m6hmdtNvwylv5Z83hKChlNQURNJVFcdX7UxlrQbUl5hCQhPJZubemSiobmRL?=
- =?us-ascii?Q?I8+TVwoiqd/cCxUtN3hqTWa+aMcmAVtmMVXuA6oLGZEZXk6c3fJpn/e7ZiSQ?=
- =?us-ascii?Q?+l95hTFuj3T3CBKZ+Atqh+gZMo3eYEQK8ASZHmzrwg2eAHpfgLpGgJdyb2K9?=
- =?us-ascii?Q?74ovJi4kr3u3NFS2f79Bkgs26H4KOFxgp7jgMb7Im6lOg5iVDCuD58tOEKIZ?=
- =?us-ascii?Q?fxDCB1gGxOwjEv/kLnUU7opDkeW1Gu8osxpTQkJEmeVRyR7anBNm4tBqWAtQ?=
- =?us-ascii?Q?npOqiYqkrbBcXWsvEmDrwDkDENGHkfM7ExC9kb6qm7+MDTE9Q93jwFn1hNgD?=
- =?us-ascii?Q?oDhb4M7hnzH7iEdNVjKv4hK8ErC43Tf8Zx3rwArXjsGdgxFxph90Q0Rs3XB1?=
- =?us-ascii?Q?ttkluaKeMzHu2xyHj/7+4vrvgCN8fk1qpUuU3+68NLQSLV5HBdFfdcOsA++2?=
- =?us-ascii?Q?bsbF8+/ekh6crug0OYn9cLS49nD2k523rY/tnMLsALsUrjmkn4+cpcFj4fHO?=
- =?us-ascii?Q?Cbq3H/ejLQK3Izny+ma0a9sPGWsIUOUUr/4Gh65SrQ2nOOLuWwjBWHN/4KkJ?=
- =?us-ascii?Q?fcpBJMWjSZdklzMCDnv2CyqjyOt4exvA/buc3PLyqSfYoQ+KS+iDw4u193zN?=
- =?us-ascii?Q?X4v80lK+yQSUg1WcbhQF2jcBLMQ4NRLQFAE9rWkceLNcbHEEooPqS5IFqcjB?=
- =?us-ascii?Q?2Wa6kcuM2JqzgUsRjy3ri0ccWwhoasE9bryV6sGlJA48ea5hzDsaxJdweZCb?=
- =?us-ascii?Q?sEbLaYlM+BVI23J208RZ+0OvbSKVp/Vrg4KUNQTu+hlUS2CZZYCwBRMI06an?=
- =?us-ascii?Q?Gg7QGYlg5UcVnerG9iU4v3jC6YKluIFY0xXT628HE37UHycaSVZg3GeACWo/?=
- =?us-ascii?Q?WNsAzvMjXpqNmm0UXKvqmyjXgLuBqnaToYL4WSrEqEBLBSV4plS32ZpSuKRh?=
- =?us-ascii?Q?4st0HvxIoo+NlW39nm0A0jh/mkSyJG2228ZamMeIucEP2efpU/U2OwwYma34?=
- =?us-ascii?Q?a9frlIBympieE+S13z4ify1o3UM2zMWclFZvo1oyLRxtByYKx58tULQnsRhx?=
- =?us-ascii?Q?KJZ9TEiYMHBHun3Q/wtuhg+LSuZpvUfxpxkYPqJ5MKiIJ8F4nyugw6UtBuiC?=
- =?us-ascii?Q?kgwZHzyXMqs7feAy3n+NtK/fllyBc4lRFL1232LV/qtItqbKH1b6+OJTtTnW?=
- =?us-ascii?Q?jwHBGSi8NqcN+hKTcgPDVQIFQ80Un8YdvNRm6e/Z6bxPDKiO6BtehI03yuDI?=
- =?us-ascii?Q?GUyQyhnx4eKZtk9wChbzN9/7aAIzWzCWXuOVrO08gEo7IjYaxSWg4TY4P9+Y?=
- =?us-ascii?Q?Irmn0Jd6xD7OURi/ZHGG0I0DXL6SRF03qY8S8FgqHUUe5fk+4NHPsULMvSSu?=
- =?us-ascii?Q?lHcfndNMpw=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a2b4284-c4d2-4638-9cfd-08deb80dcb31
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2026 14:24:11.7751
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jgQlAk/FIzaqTaxjCJ4hCIL1WL0XhrPTN+rQzbUQ06QG0JRvnWbrcofY4YvVt4FASldSlNQ65xKKmC3iTPucLg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5786
+User-Agent: Mozilla Thunderbird
+From: Harry Yoo <harry@kernel.org>
+Subject: DEPT (the dependency tracker) as AI review prompt? (was: DEPT v18)
+To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org
+Cc: kernel_team@skhynix.com, torvalds@linux-foundation.org,
+ damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+ adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, mingo@redhat.com,
+ peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+ rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
+ daniel.vetter@ffwll.ch, duyuyang@gmail.com, johannes.berg@intel.com,
+ tj@kernel.org, tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+ amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
+ linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+ minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+ sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+ penberg@kernel.org, rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
+ linux-block@vger.kernel.org, josef@toxicpanda.com,
+ linux-fsdevel@vger.kernel.org, jack@suse.cz, jlayton@kernel.org,
+ dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+ dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+ melissa.srw@gmail.com, hamohammed.sa@gmail.com, harry.yoo@oracle.com,
+ chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
+ max.byungchul.park@gmail.com, boqun.feng@gmail.com, longman@redhat.com,
+ yunseong.kim@ericsson.com, ysk@kzalloc.com, yeoreum.yun@arm.com,
+ netdev@vger.kernel.org, matthew.brost@intel.com, her0gyugyu@gmail.com,
+ corbet@lwn.net, catalin.marinas@arm.com, bp@alien8.de, x86@kernel.org,
+ hpa@zytor.com, luto@kernel.org, sumit.semwal@linaro.org,
+ gustavo@padovan.org, christian.koenig@amd.com, andi.shyti@kernel.org,
+ arnd@arndb.de, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ rppt@kernel.org, surenb@google.com, mcgrof@kernel.org, petr.pavlu@suse.com,
+ da.gomez@kernel.org, samitolvanen@google.com, paulmck@kernel.org,
+ frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+ josh@joshtriplett.org, urezki@gmail.com, mathieu.desnoyers@efficios.com,
+ jiangshanlai@gmail.com, qiang.zhang@linux.dev, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com,
+ mgorman@suse.de, vschneid@redhat.com, chuck.lever@oracle.com,
+ neil@brown.name, okorniev@redhat.com, Dai.Ngo@oracle.com, tom@talpey.com,
+ trondmy@kernel.org, anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
+ clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
+ kristina.martsenko@arm.com, wangkefeng.wang@huawei.com, broonie@kernel.org,
+ kevin.brodsky@arm.com, dwmw@amazon.co.uk, shakeel.butt@linux.dev,
+ ast@kernel.org, ziy@nvidia.com, yuzhao@google.com,
+ baolin.wang@linux.alibaba.com, usamaarif642@gmail.com,
+ joel.granados@kernel.org, richard.weiyang@gmail.com,
+ geert+renesas@glider.be, tim.c.chen@linux.intel.com, linux@treblig.org,
+ alexander.shishkin@linux.intel.com, lillian@star-ark.net,
+ chenhuacai@kernel.org, francesco@valla.it, guoweikang.kernel@gmail.com,
+ link@vivo.com, jpoimboe@kernel.org, masahiroy@kernel.org,
+ brauner@kernel.org, thomas.weissschuh@linutronix.de, oleg@redhat.com,
+ mjguzik@gmail.com, andrii@kernel.org, wangfushuai@baidu.com,
+ linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+ linux-i2c@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-modules@vger.kernel.org, rcu@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ 2407018371@qq.com, dakr@kernel.org, miguel.ojeda.sandonis@gmail.com,
+ neilb@ownmail.net, bagasdotme@gmail.com, wsa+renesas@sang-engineering.com,
+ dave.hansen@intel.com, geert@linux-m68k.org, ojeda@kernel.org,
+ alex.gaynor@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
+ lossin@kernel.org, a.hindborg@kernel.org, aliceryhl@google.com,
+ tmgross@umich.edu, rust-for-linux@vger.kernel.org, Chris Mason
+ <clm@meta.com>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Josef Bacik <josef@toxicpanda.com>
+References: <20251205071855.72743-1-byungchul@sk.com>
+Content-Language: en-US
+In-Reply-To: <20251205071855.72743-1-byungchul@sk.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Debug-only stuck-state detector for upstream review.  This commit is
-NOT for merge; it is a review aid.  Reviewers can enable
-CONFIG_RCU_GP_CLEANUP_STALE_CHECK to gain runtime confidence in the
-preceding fix commits.
+Can we start DEPT as an AI review prompt, by documenting DEPT's 
+dependency tracking model and false positive elimination rules as a 
+carefully crafted prompt?
 
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
----
- kernel/rcu/Kconfig.debug | 11 ++++++++++
- kernel/rcu/tree.c        | 47 ++++++++++++++++++++++++++++++++++++++++
- kernel/rcu/tree.h        |  8 +++++++
- 3 files changed, 66 insertions(+)
+While DEPT can identify deadlock issues beyond lockdep's capabilities, 
+it is hard to enable in automated testing; without fine-grained 
+annotations it can produce a high rate of false positives, and verifying 
+them requires significant human effort.
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index 35218ba74eb5..5a40c4fe544c 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -98,6 +98,17 @@ config RCU_TORTURE_TEST_LOG_GP
- 	  Say Y here if you want grace-period sequence numbers logged.
- 	  Say N if you are unsure.
- 
-+config RCU_GP_CLEANUP_STALE_CHECK
-+	bool "Detect stuck defer_qs_pending state at GP cleanup"
-+	depends on RCU_TORTURE_TEST
-+	default n
-+	help
-+	  This option adds a per-CPU instrumentation counter on every
-+	  PENDING -> IDLE transition of rdp->defer_qs_pending, and a
-+	  detector in rcu_gp_cleanup().
-+
-+	  Say N if you are unsure.
-+
- config RCU_REF_SCALE_TEST
- 	tristate "Scalability tests for read-side synchronization (RCU and others)"
- 	depends on DEBUG_KERNEL
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index d0816468ffee..1307f3fb48ac 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2146,6 +2146,52 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
- 	}
- }
- 
-+#ifdef CONFIG_RCU_GP_CLEANUP_STALE_CHECK
-+/*
-+ * Threshold of consecutive GPs with rdp->defer_qs_pending stuck at
-+ * PENDING and no observed PENDING -> IDLE transition before WARN.
-+ */
-+#define RCU_DEFER_QS_STUCK_GPS_THRESHOLD	5
-+
-+static void rcu_gp_cleanup_stale_check(void)
-+{
-+	int cpu;
-+	unsigned long cur_gp_seq = READ_ONCE(rcu_state.gp_seq);
-+
-+	for_each_online_cpu(cpu) {
-+		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-+		s64 clears_now;
-+		int p_now;
-+
-+		if (READ_ONCE(rdp->gp_seq) != cur_gp_seq) {
-+			rdp->defer_qs_pending_stuck_gps = 0;
-+			rdp->defer_qs_pending_clears_snap =
-+				atomic64_read(&rdp->defer_qs_pending_clears);
-+			continue;
-+		}
-+
-+		clears_now = atomic64_read(&rdp->defer_qs_pending_clears);
-+		p_now = READ_ONCE(rdp->defer_qs_pending);
-+
-+		if (p_now != DEFER_QS_PENDING ||
-+		    clears_now != rdp->defer_qs_pending_clears_snap) {
-+			rdp->defer_qs_pending_stuck_gps = 0;
-+			rdp->defer_qs_pending_clears_snap = clears_now;
-+			continue;
-+		}
-+
-+		rdp->defer_qs_pending_stuck_gps++;
-+		WARN_ONCE(rdp->defer_qs_pending_stuck_gps >=
-+			  RCU_DEFER_QS_STUCK_GPS_THRESHOLD,
-+			"RCU: defer_qs_pending STUCK on CPU %d for %u GPs (gp_seq=%lu, clears=%lld)\n",
-+			cpu, rdp->defer_qs_pending_stuck_gps,
-+			cur_gp_seq, clears_now);
-+	}
-+}
-+#else
-+static inline void rcu_gp_cleanup_stale_check(void) { }
-+#endif /* CONFIG_RCU_GP_CLEANUP_STALE_CHECK */
-+
- /*
-  * Clean up after the old grace period.
-  */
-@@ -2220,6 +2266,7 @@ static noinline void rcu_gp_cleanup(void)
- 
- 	/* Declare grace period done, trace first to use old GP number. */
- 	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("end"));
-+	rcu_gp_cleanup_stale_check();
- 	rcu_seq_end(&rcu_state.gp_seq);
- 	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
- 	WRITE_ONCE(rcu_state.gp_state, RCU_GP_IDLE);
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 4069132f9d44..29d852bbe218 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -204,6 +204,11 @@ struct rcu_data {
- 					/* period it is aware of. */
- 	struct irq_work defer_qs_iw;	/* Obtain later scheduler attention. */
- 	int defer_qs_pending;		/* irqwork or softirq pending? */
-+#ifdef CONFIG_RCU_GP_CLEANUP_STALE_CHECK
-+	atomic64_t   defer_qs_pending_clears;
-+	s64          defer_qs_pending_clears_snap;
-+	unsigned int defer_qs_pending_stuck_gps;
-+#endif
- 	struct work_struct strict_work;	/* Schedule readers for strict GPs. */
- 
- 	/* 2) batch handling */
-@@ -299,6 +304,9 @@ struct rcu_data {
- static inline void rcu_defer_qs_clear(struct rcu_data *rdp)
- {
- 	WRITE_ONCE(rdp->defer_qs_pending, DEFER_QS_IDLE);
-+#ifdef CONFIG_RCU_GP_CLEANUP_STALE_CHECK
-+	atomic64_inc(&rdp->defer_qs_pending_clears);
-+#endif
- }
- 
- /* Values for nocb_defer_wakeup field in struct rcu_data. */
+The open source AI Review Prompt has locking.md file [1] that teaches 
+the AI how to review locks and detect misuse.
+
+If we can write a review prompt for DEPT in a similar manner and have 
+the AI do the deadlock detection and false positive elimination, I think 
+we could identify those problems more effectively with much less human 
+effort.
+
+[1] 
+https://github.com/masoncl/review-prompts/blob/main/kernel/subsystem/locking.md
+
 -- 
-2.34.1
+Cheers,
+Harry / Hyeonggon
+
+On 12/5/25 4:18 PM, Byungchul Park wrote:
+> I'm happy to see that DEPT reported real problems in practice:
+> 
+>     https://lore.kernel.org/lkml/6383cde5-cf4b-facf-6e07-1378a485657d@I-love.SAKURA.ne.jp/
+>     https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-byungchul.park@lge.com/
+>     https://lore.kernel.org/all/b6e00e77-4a8c-4e05-ab79-266bf05fcc2d@igalia.com/
+> 
+> I’ve added documentation describing DEPT — this should help you
+> understand what DEPT is and how it works.  You can use DEPT simply by
+> enabling CONFIG_DEPT and checking dmesg at runtime.
+> ---
+> 
+> Hi Linus and folks,
+> 
+> I’ve been developing a tool to detect deadlock possibilities by tracking
+> waits/events — rather than lock acquisition order — to cover all the
+> synchronization mechanisms.  To summarize the design rationale, starting
+> from the problem statement, through analysis, to the solution:
+> 
+>     CURRENT STATUS
+>     --------------
+>     Lockdep tracks lock acquisition order to identify deadlock conditions.
+>     Additionally, it tracks IRQ state changes — via {en,dis}able — to
+>     detect cases where locks are acquired unintentionally during
+>     interrupt handling.
+>     
+>     PROBLEM
+>     -------
+>     Waits and their associated events that are never reachable can
+>     eventually lead to deadlocks.  However, since Lockdep focuses solely
+>     on lock acquisition order, it has inherent limitations when handling
+>     waits and events.
+>     
+>     Moreover, by tracking only lock acquisition order, Lockdep cannot
+>     properly handle read locks or cross-event scenarios — such as
+>     wait_for_completion() and complete() — making it increasingly
+>     inadequate as a general-purpose deadlock detection tool.
+>     
+>     SOLUTION
+>     --------
+>     Once again, waits and their associated events that are never
+>     reachable can eventually lead to deadlocks.  The new solution, DEPT,
+>     focuses directly on waits and events.  DEPT monitors waits and events,
+>     and reports them when any become unreachable.
+> 
+> DEPT provides:
+> 
+>     * Correct handling of read locks.
+>     * Support for general waits and events.
+>     * Continuous operation, even after multiple reports.
+>     * Simple, intuitive annotation APIs.
+> 
+> There are still false positives, and some are already being worked on
+> for suppression.  Especially splitting the folio class into several
+> appropriate classes e.g. block device mapping class and regular file
+> mapping class, is currently under active development by me and Yeoreum
+> Yun.
+>> Anyway, these efforts will need to continue for a while, as we’ve seen
+> with lockdep over two decades.  DEPT is tagged as EXPERIMENTAL in
+> Kconfig — meaning it’s not yet suitable for use as an automation tool.
+> 
+> However, for those who are interested in using DEPT to analyze complex
+> synchronization patterns and extract dependency insights, DEPT would be
+> a great tool for the purpose.
 
