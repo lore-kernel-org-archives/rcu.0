@@ -1,328 +1,181 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012056.outbound.protection.outlook.com [40.107.200.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7509C3AEF3B;
-	Tue, 26 May 2026 16:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779811812; cv=none; b=EpwhuxT3QXBMfOM7Fil2jdYB1RYi2GQi+UDRIIs38cZB283yDtU3WNqA37CSmk8mPixh5YdX77icwIpcY1d9PgynlljtkG6UEVXJNrO0ZhlxVWcbxnZNbFj3xhfFfNh5juFVeM1W8gdpJv6KXG8Gcrzuc82s5MPloFVK8D2A6Iw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779811812; c=relaxed/simple;
-	bh=M0Xyd3KlMjS35BSfV3e9NgAoCLfMlXrMMTaiwYzmB8A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P1zUzPyaOuxGZsxwPk5utFPZYAX1whY1hLuWc3/twlzaVqLmdLrhwLhWoeUBtxlyQZ8wjBEWKJpNxRBMyKdNmCJo0Th/SSQ6Y4W/9mhVMeMhizT9aRhgSqDYBUKMOA3XqoyVscptZHkydy0RZbhac5C+j50/vrbfUteEB/1Vo4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DjM8T/8f; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86FC35BDA8;
+	Tue, 26 May 2026 22:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779835829; cv=fail; b=Rou8X7yJ0odfbJMDPfLKANr1HGvdpKXPadM7/ae8meIYXEfsu7h1CRLyugCI7e0s1df0Vc2A5rxtFQYXerKXXUh8GvpX4uP5pr1uOWx+5yD0qAK2r4f0y/9sFak5xqBiYbPf3z25QMoAuUdz/RZ0O9dZd/DKpmO2eD2m41c/dDA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779835829; c=relaxed/simple;
+	bh=NhwsSYzpWYvophT09gClNnSlkdKeZI+E5Glb3W4Ipho=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=Jwt0KpohvM0lJOt/+8RhqbSHrth0b1aNvgrDvbcftHQJ/y4UDPjfR7eQ4XxSnFCBgCyvwKFUZZg56W6j8EWoTXtSr33QPLtlNOGDwveoSUYLiVPJkqlEV5EAA/zfFBhxQ+AvFpJbZma+DtUiBEuDWcYW8bCISya7E2CQOAwG2xY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dz9/bgW/; arc=fail smtp.client-ip=40.107.200.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DjM8T/8f"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 261A31F000E9;
-	Tue, 26 May 2026 16:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779811811;
-	bh=4+k6ndhTqZczxlv27FivWH0quTKkJFUBHwpZyGtkADI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=DjM8T/8fa1+QglN+Cnlm5qyTrke+LL8L1Mx/ezhF3l8kzyEcPErrVk9FJSNQWT3az
-	 mHrvps/u4JSkxumTP8mDBijXp6Salx2tuqWYqEf5wWATlcUsfAP6CvbIlc3s/BGQmm
-	 D9qXZSEYQMdYEq0nGs/R9ycgKeOyl34n/vnm/YAl12l3hFQ1/be974s/Vby/lcrczb
-	 8W1wST5G7gRnz8D1K5bs0sOCuIXbtFbpO9r7FVu7T3tuUO1RMnnH7lHgc4hnweQ+Mr
-	 XqV1hawHxor/Sw215UQdpzYGCbWPaHKu7327zXuM28yIdeg56tH3X8eDGIaDodFnLL
-	 zOVM1KSvH6N6w==
-Received: from phl-compute-07.internal (phl-compute-07.internal [10.202.2.47])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 7AB45F4008C;
-	Tue, 26 May 2026 12:10:09 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-07.internal (MEProxy); Tue, 26 May 2026 12:10:09 -0400
-X-ME-Sender: <xms:4cUVakW2BfraWVeu16DAq3gWWCjZxiDLD5U0CNoEPuFwtsoBm95xxg>
-    <xme:4cUVamDfpsaP4A8VxJcSs7AtRA1a2dlywAfWLJZyqMicC8jG14GdbrWoy-HLS-Y45
-    OOtOrxbUDiPNSKUFZ2pYIC1QvrTvoka92SRX1l3GxjMyhko2H6V>
-X-ME-Received: <xmr:4cUVaoUXjswKhhGYn55h_wpe8ZRtms3Xhjg5Li8AJCcctiR2fY9uSyx0X1ESAiwazxviTS6xIdG5iJSOHyetZmRd8Rsq6M1C>
-X-ME-Proxy-Cause: dmFkZTGyiv9jH28GEGpBTU51eMSPvU5uQfMq01WyuvrQSzaZDz7Jz+4yRYak/3G5mudi7l
-    PfVTIDBdscnYLK+bo0tOLBAVCyy51twaFisgUVpb6+uNKE9XbK8qqu6TmiFLq+dcSYZ9AG
-    zkxr+oq825TnxGQ5ZvH9qtFf3TTsAa1yE29VWUVQGMl1Z+fkaAhj1T/j/VAfQC4r/k7yo8
-    24mQWx+TiqSrvJ4SQWhY+vvG1jyfd7qKAFjwODNO8HFDxJex3DOVJFhh7oikBzN+2AImfI
-    xanYKBpIuaiJMhlXIE7EVVWWH7wmkkO+U94eLJPvY6ZpALovGjXqgmgQPX4jowd2Zgksti
-    6fN9IQfh+n5PeTAmcAnaXreKj56yofEySmO8rZz/9K0I/IoNl6YqST1tDsb7U1+KWayQCE
-    3LRN93fgk7WhaifNPLnmicVFjeLjQiYrwOoE/FjsOvwGWjOK00S1M4WIRWfApM4Utv4IYj
-    sn7rJLAwourgIkis7nmBvfhQ9PHb3ROQZMhdc8lzairGZAb7WlkCzBdtIDz/xitA1154Oi
-    7mYMOXFql+JB+EbD1iASx/EztTq27fGOtgdXDSRiWzm/YvqfkMJT6vE30Z6o+TiTYsOQA3
-    koCBDrn97OzNtg8N1+YoHb1J7/FL5+jaWoDcvdoZFlYa/q5ZmLrTQQlaS32Q
-X-ME-Proxy: <xmx:4cUVak8agjC0moN7zzLFq3FaNhtRzMi-PfBuduhw-OgoVLC2Sp32bw>
-    <xmx:4cUVaumFoHhaSUUlBrI35I6sdM7uxAIez8LQQaZ-RV30YwHSodukSw>
-    <xmx:4cUVavKL0gZwFKgofaTYTFmBeoTHMS_yEq85SgrFLKnj0-QZu7G1oQ>
-    <xmx:4cUVakprSjriceDAHL-YbBoaibbhMTlMLw8_7RPDwk6geH6Ew4MoEA>
-    <xmx:4cUVasSJWwa0U-BmlLf5qlpOJM7EJnI8Gultahbi3UsIkvAhEI4Y02_A>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 26 May 2026 12:10:08 -0400 (EDT)
-Date: Tue, 26 May 2026 09:10:07 -0700
-From: Boqun Feng <boqun@kernel.org>
-To: phasta@kernel.org
-Cc: Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <lossin@kernel.org>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
-	Danilo Krummrich <dakr@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dz9/bgW/"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=NpKajmRlqUg0EsqI5aji1iIjH1RbOOYx9ZY65kVkP7ZfFK43wf/obM1RNHxJKKxlchMvFPif06nnAZ4E1MgeRat+Sxq1En6pNVilk0YIlqDfjkg+7FSEtuAE9ZDi0ZmP/NQu7XXUuUoYbeUsQd7j0+ykeE3WLbSYNSj4f986i9+s4/3GXXtU6KwpbO0a929mF8qtzMGQJkpQp1JkTc87mufCZKt6vQgXulN1cdRWPkoduQ1mOQuXa6BqECYIxYQBbz+jvHFkZx7hNoU8bFfUy0YM00JZmpA61oTY546oh9YbhL8TMZ5gZEujxJvg8rKa777Y2Mwh/m351pzKK1Dw3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KlaJU0O8JSkk5Y1HkVsh6aryH+8Kq+nHX7tXbcaZV0I=;
+ b=UBg37hh61gAfXZXp7Q2Dp/ggTFbR8qqMClO3cID3cDRpSLQPmBTAmPUB5UbZlXCKxF9PzKkd7fZA+Q9Oaio2wx5+V53xResbOTbObvA596VeUqHqcUCYX7DODTe5qudcxYulWOFzVac+mbBtol6JWNa9R23AYLlvzYvVr9Ze+obzRD7v6V0Q9QOkrVa0guSXXdqGEW0Md/C3SRrAn/59hIXS5aTESfToNbxC3XTbJ3SuYvekwuFjFd1HrBNVWl9Y57JtBunboVkZM6Se8DnbQgJjfw92UvM1XLQaGz15r4/WZ+aEFlz0G98QSR6DRPmripqpRxUXnK0pGfm3IFIYmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KlaJU0O8JSkk5Y1HkVsh6aryH+8Kq+nHX7tXbcaZV0I=;
+ b=dz9/bgW/GTrsUea86id16ylT6nV1q/z5NkgA016FQnsTIcmwZTooLBHHHdrCKClfI3YgA0qf0AoXUBZY3amxvhuFx11fd9GzTDPclt0XrElexo1SSVyH1n8UQxiyU/wpTtav4I+jv46XyeQCy8nAN15BOSyI+ChtgSACClDyKDdwldOI6tMWKoemuZkVxOYHGKayZJQcS4+Wh20a7k0djZPNJAaL/7ind55WZffV46GzRB12Gm0pdwpy701bbRIj8fFS5Q1d54UQzPC9oAKOpZfhXsZHRKZn+n8UbXIv3eKdPzYF5K+iTfc0uQ3NodRJCeE/47e3j0kpq2/+zgOuXQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
+ CH3PR12MB8353.namprd12.prod.outlook.com (2603:10b6:610:12c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.20; Tue, 26 May
+ 2026 22:50:19 +0000
+Received: from DS0PR12MB6486.namprd12.prod.outlook.com
+ ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
+ ([fe80::88a9:f314:c95f:8b33%6]) with mapi id 15.21.0071.011; Tue, 26 May 2026
+ 22:50:18 +0000
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: linux-kernel@vger.kernel.org
+Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
 	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,	Zqiang <qiang.zhang@linux.dev>,
-	"Joel Fernandes (NVIDIA)" <joel@joelfernandes.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Tamir Duberstein <tamird@kernel.org>,	rust-for-linux@vger.kernel.org,
- linux-kernel@vger.kernel.org,	rcu@vger.kernel.org,
-	Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v1] rust: rcu: Add abstraction for call_rcu()
-Message-ID: <ahXF39fwE5helcj6@tardis.local>
-References: <20260520131725.266014-2-phasta@kernel.org>
- <ag2-T9i2nFHjiYLm@tardis.local>
- <857ba45ce62f7f209a3a764aeb2cd27dc067870d.camel@mailbox.org>
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	rcu@vger.kernel.org,
+	Joel Fernandes <joelagnelf@nvidia.com>
+Subject: [PATCH v2 0/7] rcu: fix stuck defer_qs_pending state
+Date: Tue, 26 May 2026 18:50:07 -0400
+Message-Id: <20260526225014.314734-1-joelagnelf@nvidia.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BLAPR05CA0002.namprd05.prod.outlook.com
+ (2603:10b6:208:36e::12) To DS0PR12MB6486.namprd12.prod.outlook.com
+ (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <857ba45ce62f7f209a3a764aeb2cd27dc067870d.camel@mailbox.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|CH3PR12MB8353:EE_
+X-MS-Office365-Filtering-Correlation-Id: 42a0cbcf-50de-46c7-a7c1-08debb7928fe
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|366016|1800799024|11063799006|18002099003|56012099006;
+X-Microsoft-Antispam-Message-Info:
+	Y/Dc82jT//5Df/mPj9dmSOFEkLW5jfmxCieI527m7gvZSPxlyRb+C8Vtl1jZm6YaLHJo8ApOa+Bb2LFaNME7B9t4uWgb1oV8xvt3sFXChl4OLm2LirQLCfMx2QfeY78/f1KgP3ysfbTZ0EFI9jJmviIJberrrSoZI3jaSeZKKAwUllH6cY8MVHXwz48/9C2Q+ebj8+Ws2fXY//OQpZbZVPTzY1V5KrEG8z6weZafRAKhX+ql4n6k4yIkGtafwxuqaGitBOP6Oor1sWqmmumL2EH6Xt5geOnlejjA6OCruWLjV52n2Gy47+8eRWXOejCvl0Czj7bVsaMU3/Jp4EH5PKyOO+H0KQSgWgwFjiThJFlqJUKvQE+r434AWVlv053wst8sSfrawbPtDYFztPbXQf2+H/YJ5RRG6yruFTlCsptZM3erj26vbZ2JK01l42imd+Rtsvw+pipEYffSFuVQ2iCcKzFZwRjcZ4zmxepWLE9JFqMH+d5UiaGhO2SqZnmiiGHo8z7ZvBp50k/n9kfT4oj5ADa9pEuH1+kk9os9SbncX0JM/KBISHFodZXXDJt1I5bmU0FS4tXmrUppxPhDbXnqKiI6Hr1Rk3Lz4JdBcGiWdm+Uq0bhxUFZwP7zIEDz48tkgs4mgWSkwyYDl3k4H+Kf2QQnNeYJ6QFKmjg4dCjpPUOStZe7iuPtOxO40gugshy6UamB5ED9VXuga3gpaA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(11063799006)(18002099003)(56012099006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?MLMbqszo45Wih25TKBRTjcW1v8eCOYYygfi2FWM3127anafb1E/S+DCx4rbS?=
+ =?us-ascii?Q?zMbylUYZOmgrPhwODl4kl4mMjOnfIp6t0QVy4X8zQqS41lll0OgxGvDLBWa8?=
+ =?us-ascii?Q?Usne1CmKEGjgETrhs3BuYqj3vI2G4i3ddIuNVGJ6qO3CI35jj8CMi+aiM4zT?=
+ =?us-ascii?Q?B7ohEHTdLQsc5sBfqo746Kxdq3Y2JDSdqr7Hps7SMw+/htnA+BRlr+FIXK8B?=
+ =?us-ascii?Q?pwJ82JrA/jQTDMpZQv2CC+oxMJPemEXJiiA4FlnQNK8iMFDnsfgJeayS3Hfm?=
+ =?us-ascii?Q?8BeW2rQL2cwl0IOqXEbUtZof1raacBHWUpkEfCl/5OrgTtut6sXUAXC5zCOi?=
+ =?us-ascii?Q?9z+X2DEnbyGeEv2gHqs/hRHtHcWejytDGM9JvaTuZnNOuosXSn5rlXwG8O5e?=
+ =?us-ascii?Q?IhodhVM4vaBZIp+tpo8N0iuJVB4mjr2mLfvo3gP8kt9VPTiGo7ClPMDWj6b+?=
+ =?us-ascii?Q?l36av5GSbPXyaBxsA1o6OZ7QW+X7ng06+2qwZyhBPg8liP3FUvnAZQtZQakM?=
+ =?us-ascii?Q?3Ltd/rkx4mOCIx/dm3sYNrjqQMX/Iu5hUeyYK8rwFZnPxTde2rREZ+aE7jpY?=
+ =?us-ascii?Q?y51+7Dx8F3PTLZ8JaWTHVg7zM5Uwl6NoxsazZO1zEoBh/uH5OCBPxYcyz88L?=
+ =?us-ascii?Q?2csf+H4s5ykqwc8XlT/OCJ2rxDPTreV9RUOSPLYdqhyygzWPplyMOCKG7qfe?=
+ =?us-ascii?Q?xnwlfUcPOcW2GUTwFpjdFm02N2YniUeSB2BvVKDNSdxUa/bD5kEp2vZY5l5P?=
+ =?us-ascii?Q?3kAdfemFudv4kX+itb2R2a7niG7usXy/MYiP++VnqRyqgNkYpPdiGQj49rIX?=
+ =?us-ascii?Q?iWVoYgHeVBIF1j4l6wSKRyuQab1UGswHgjayHcH42UNrnckOPhb8dJDy0U3F?=
+ =?us-ascii?Q?2LAiKL+Y71/5zxc73iyyR0jIDGWESLTOA/CmoLrf9gRtZ9LubdZcPVPvNRek?=
+ =?us-ascii?Q?nJ3Zvd/fyHAwPUyWz7XpiSYMG2Qqz1+BBG5dHLoFgo5ZzSGDBTVLIac9i0qr?=
+ =?us-ascii?Q?RgsfAHhjhKSQBv8JgAtwj/7E144yoivKwO5MpYmjTE6Nf19GiANNeHKvM20s?=
+ =?us-ascii?Q?uaAu/e4SQzUe4fdREmC2w9FNo+2vRl7Qu0H2Mzfb0m6fnfdDAfQ5Wpi32iC8?=
+ =?us-ascii?Q?EHmemEKgBy4onEmVBYCj0xZWlUdI1QArUiED4MAEyeP0eeW5XM8arfns2o5x?=
+ =?us-ascii?Q?p1lhCMI1pvzI58RZ2aJ2vGoWwMCiWi5K+UzoJ+M0eeWNoBDZilwg5/1N1Xyp?=
+ =?us-ascii?Q?1IgSiWsEso8nur1mmw3nHcwIJDvxyxJpc0yV0UGxwcmAHvz1/FDYjfL0k4As?=
+ =?us-ascii?Q?XLioE/bkaVp0sNWCvi8y5Ch4t6+R+Sv9ToAPScnULFLw0n5Si8cHtxADEBpx?=
+ =?us-ascii?Q?wcMGEoKGSnTGgHaLjgftzvpOllIg1pQRgYTWMLrDQSkQMY2ZAlxX5aszNZ4h?=
+ =?us-ascii?Q?oUU2SY6XXJnFz3abpgmhwJs18bELlt8wvEKvJv+MtZ61xgbTpMAYh03HRJOY?=
+ =?us-ascii?Q?CGq/gaKdiCp/Rqu0oAaAtBJiTFiAeWf91YodRUE/i0ynYV9JW+yOSNjUFtd8?=
+ =?us-ascii?Q?iamj68W22IRaIA7C4x5bK3XFO1033YrUVKvxU/eqNTi8NWaicwNWMXFWZSOF?=
+ =?us-ascii?Q?JfTneCGcaHWdzAfjZHDO3Ftyl+SD2otDf3dEcsJNiCaknjrtrPgqtM2BKoTo?=
+ =?us-ascii?Q?DYK7ckIsAeNvIiql3GeFiFpRJ0jmpVEajD/9yrXXAJ7JE+9Pnrvfq1l+src6?=
+ =?us-ascii?Q?YteE+pVRNg=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42a0cbcf-50de-46c7-a7c1-08debb7928fe
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2026 22:50:18.8324
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z5WoRsuOhtYf029bBOUT/XBPN4aROf8xg3Vf3OtjVUf/RikvxYI4gnKjLiCE2KCIlIjVnLvx+GP2Umkwa/aMcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8353
 
-On Thu, May 21, 2026 at 09:25:28AM +0200, Philipp Stanner wrote:
-> [+cc Boris]
-> 
-> On Wed, 2026-05-20 at 06:59 -0700, Boqun Feng wrote:
-> > Hi Philipp,
-> 
-> Hi Boqun; hope you're doing well
-> 
-> > 
-> > On Wed, May 20, 2026 at 03:17:26PM +0200, Philipp Stanner wrote:
-> > > call_rcu() can be expected to be needed by a great variety of users.
-> > > This functionality is almost always used for deallocating resources
-> > > after all accessors are gone. Hence, it appears reasonable to implement
-> > > the abstractions in such a way that the user merely passes data, which
-> > > is later (after a grace period) dropped.
-> > > 
-> > > In the rare cases where the user needs special action to take place,
-> > > this could be achieved through implementing a custom drop() method.
-> > > 
-> > > Implement a first minimal abstraction for call_rcu().
-> > > 
-> > 
-> > Thanks for the patch! Do you have have any reference usage of this new
-> > API, maybe contains how RCU readers will read the data?
-> 
-> Read the data? This design does not intend to have any readers.
-> 
+This series fixes a bug where rdp->defer_qs_pending can remain stuck in
+PENDING when a preempted reader's quiescent state is reported up-tree via
+a path other than the deferred-QS irq-work handler (FQS scan, hotplug
+transition, expedited GP IPI, context switch). Once stuck, the pending
+gate in rcu_read_unlock_special() silently suppresses all future arming
+attempts on that CPU. The series adds PENDING -> IDLE transitions at the
+missing sites.
 
-Please understand that from the perspective of an RCU maintainer, I
-would like to examine how the current design would work with a more
-general case, otherwise it's going to be a maintenance nightmare.
+Also handles the case where the deferred-QS irq-work handler may run
+between segments of a compound section (per Paul McKenney's
+counter-example).
 
-> I want it as some sort of trash-bin container that does nothing but
-> defer a drop(). Intended user will be this section here:
-> 
-> https://gitlab.freedesktop.org/pstanner/linux-drm-work/-/merge_requests/1/diffs#5ef8add7e1b3375ce9a0b47595b531244bf98dce_0_611
-> 
+The softirq deferred-QS arming path is now also handled (patch 6), which
+was the remaining gap flagged in v1.
 
-The fact that you need a "defer" means that there are readers, right?
+The last patch is a debug-only detector (CONFIG_RCU_GP_CLEANUP_STALE_CHECK,
+marked [TEST COMMIT], not for merge) -- applied alone on unmodified
+mainline without patches 2-6 it reliably fires a WARN within 5 minutes
+under TREE03 rcutorture, confirming the bug exists and the detector
+catches it; with the full fix applied, I could not reproduce the issue.
 
-You don't need to worry about here because the readers are in the
-callback of fences.
+The git tree with all patches can be found at:
+git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git (tag: rcu-dqs-stuck-v2-20260526)
 
-> 
-> > 
-> > Compared to Alice's RcuBox proposal:
-> > 
-> > 	https://lore.kernel.org/rust-for-linux/20260116-rcu-box-v1-1-38ebfbcd53f0@google.com/
-> > 
-> > I do have a design question: is support data type like Arc<CallBack<T>>
-> > or Pin<VBox<Callback<T>> in the plan of this API? If so, how would that
-> > be like? A separate new() and submit() function or a separate data type?
-> 
-> I wasn't aware of Alice's proposal. Let me try whether I can make it
-> work for my purposes.
-> 
-> The idea behind my code here would be to have some minimalist RCU
-> wrapper that merely defers dropping data. So it's a fire-and-forget
-> mechanism that would not support Arc: take over ownership of the data,
-> have it be unaccessible, and drop it after a grace period.
-> 
+Change log:
 
-Maybe then name this data structure `RcuDeferDropBox<T>` or something?
-Because if the design goal is not to support a general RCU usage (with
-readers), than it probably shouldn't take the rcu::Callback name.
+Changes from v1 to v2:
+- Dropped RFC tag now that softirq paths have been investigated.
+- Added new patch "rcu: set need_resched on softirq deferred-QS arming
+  path" to handle the softirq arming case that was deferred in v1.
 
-Or maybe keep the `Callback<T>`, but only implement `new()` (with a
-return type as `impl PinInit<Callback<T>>` and the rcu_head accessor of
-it. Then based on it you can implement the `RcuDeferDropBox<T>`, in this
-way, we could both support your usage and move towards a full-featured
-RCU implementation. Thoughts?
+Link to v1: https://lore.kernel.org/all/20260522142342.1536533-1-joelagnelf@nvidia.com/
 
-Plus, I think Alice's patch here [1] would also benefit from having a
-basic rcu::Callback (to replace `PollCondVarBoxInner`).
+Joel Fernandes (7):
+  rcu: introduce rcu_defer_qs_clear() helper
+  rcu: clear defer_qs_pending when notifying GP changes
+  rcu: clear defer_qs_pending in handler for compounded sections
+  rcu: drop redundant defer_qs_pending clear in irqrestore handler
+  rcu: clear defer_qs_pending at expedited IPI entry
+  rcu: set need_resched on softirq deferred-QS arming path
+  [TEST COMMIT] rcu: detect stuck defer_qs_pending at GP cleanup
 
-[1]: https://lore.kernel.org/rust-for-linux/20260523-upgrade-poll-v4-1-f5b4c747eac2@google.com/
+ kernel/rcu/Kconfig.debug | 11 +++++++++
+ kernel/rcu/tree.c        | 49 ++++++++++++++++++++++++++++++++++++++++
+ kernel/rcu/tree.h        | 13 +++++++++++
+ kernel/rcu/tree_exp.h    |  6 +++++
+ kernel/rcu/tree_plugin.h | 31 +++++++++++++------------
+ 5 files changed, 95 insertions(+), 15 deletions(-)
 
-Regards,
-Boqun
 
-> Reason is that call_rcu() is most commonly needed for delaying a free()
-> operation.
-> 
-> Alice's idea seems more generic.
-> 
-> But I agree that large allocations, aka VBox, should be supported.
-> 
-> 
-> P.
-> 
-> > If not, what's the main difference between Callback API and RcuBox?
-> > 
-> > Regards,
-> > Boqun
-> > 
-> > > Signed-off-by: Philipp Stanner <phasta@kernel.org>
-> > > ---
-> > >  rust/helpers/rcu.c      |  1 +
-> > >  rust/kernel/sync.rs     |  1 +
-> > >  rust/kernel/sync/rcu.rs | 89 ++++++++++++++++++++++++++++++++++++++++-
-> > >  3 files changed, 90 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/rust/helpers/rcu.c b/rust/helpers/rcu.c
-> > > index 481274c05857..c9cfc99c93d5 100644
-> > > --- a/rust/helpers/rcu.c
-> > > +++ b/rust/helpers/rcu.c
-> > > @@ -1,5 +1,6 @@
-> > >  // SPDX-License-Identifier: GPL-2.0
-> > >  
-> > > +#include <linux/types.h> /* for callback_head */
-> > >  #include <linux/rcupdate.h>
-> > >  
-> > >  __rust_helper void rust_helper_rcu_read_lock(void)
-> > > diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs
-> > > index 993dbf2caa0e..1ddca3847b19 100644
-> > > --- a/rust/kernel/sync.rs
-> > > +++ b/rust/kernel/sync.rs
-> > > @@ -31,6 +31,7 @@
-> > >  pub use locked_by::LockedBy;
-> > >  pub use refcount::Refcount;
-> > >  pub use set_once::SetOnce;
-> > > +pub use rcu::Callback;
-> > >  
-> > >  /// Represents a lockdep class.
-> > >  ///
-> > > diff --git a/rust/kernel/sync/rcu.rs b/rust/kernel/sync/rcu.rs
-> > > index a32bef6e490b..caf71fa46f5e 100644
-> > > --- a/rust/kernel/sync/rcu.rs
-> > > +++ b/rust/kernel/sync/rcu.rs
-> > > @@ -4,7 +4,15 @@
-> > >  //!
-> > >  //! C header: [`include/linux/rcupdate.h`](srctree/include/linux/rcupdate.h)
-> > >  
-> > > -use crate::{bindings, types::NotThreadSafe};
-> > > +use crate::{
-> > > +    bindings,
-> > > +    prelude::*,
-> > > +    types::{
-> > > +        NotThreadSafe,
-> > > +        Opaque,
-> > > +    },
-> > > +    alloc::Flags,
-> > > +};
-> > >  
-> > >  /// Evidence that the RCU read side lock is held on the current thread/CPU.
-> > >  ///
-> > > @@ -50,3 +58,82 @@ fn drop(&mut self) {
-> > >  pub fn read_lock() -> Guard {
-> > >      Guard::new()
-> > >  }
-> > > +
-> > > +
-> > > +/// An RCU callback object. Carries the user's data to drop() it once a grace period ellapsed.
-> > > +///
-> > > +/// This object serves to implement C's `call_rcu()` method. Since it is almost
-> > > +/// always used to free a resource once a grace period ellapsed, the only thing
-> > > +/// this implementation does is drop the user's data. In the rare cases in which
-> > > +/// the user needs more action to take place, said actions need to be implemented
-> > > +/// on the user's data via the [`Drop`] trait.
-> > > +///
-> > > +/// # Examples
-> > > +///
-> > > +/// ```
-> > > +/// use kernel::sync::rcu::Callback;
-> > > +///
-> > > +/// struct Foo {};
-> > > +///
-> > > +/// impl Drop for Foo {
-> > > +///     fn drop(&mut self) {
-> > > +///         pr_info!("rcu::Foo Dropping.\n");
-> > > +///     }
-> > > +/// }
-> > > +///
-> > > +/// let data = Foo {};
-> > > +///
-> > > +/// let cb = Callback::new(data, GFP_KERNEL)?;
-> > > +/// cb.submit();
-> > > +///
-> > > +/// Ok::<(), Error>(())
-> > > +/// ```
-> > > +#[repr(C)]
-> > > +#[pin_data]
-> > > +pub struct Callback<T: Send + 'static> {
-> > > +    /// The RCU head. Only used (and initialized) by the C backend.
-> > > +    #[pin]
-> > > +    inner: Opaque<bindings::callback_head>,
-> > > +    /// The user's data. This should implement [`Drop`] if the user wants specific
-> > > +    /// actions, besides mere deallocation, to happen.
-> > > +    #[pin]
-> > > +    data: T,
-> > > +}
-> > > +
-> > > +impl<T: Send + 'static> Callback<T> {
-> > > +    /// Create a new callback.
-> > > +    pub fn new(data: impl PinInit<T>, flags: Flags) -> Result<Pin<KBox<Self>>> {
-> > > +        let cb = try_pin_init!(Self {
-> > > +            inner: Opaque::uninit(), // Only needed for the C backend, who will initialize it.
-> > > +            data <- data,
-> > > +        });
-> > > +
-> > > +        KBox::pin_init(cb, flags)
-> > > +    }
-> > > +
-> > > +    extern "C" fn callback(rcu_head: *mut bindings::callback_head) {
-> > > +        let cb_ptr = rcu_head as *mut Self;
-> > > +
-> > > +        // SAFETY: All [`Callback`] objects in this module are always created
-> > > +        // as `Pin<KBox<Self>>`. `Pin` is a transparent container. The action
-> > > +        // below merely serves re-creating the KBox so that it can drop properly.
-> > > +        let _cb = unsafe { KBox::from_raw(cb_ptr) };
-> > > +
-> > > +        // Self::data drops, ensuring the desired cleanup operation.
-> > > +    }
-> > > +
-> > > +    fn as_raw(&self) -> *mut bindings::callback_head {
-> > > +        self.inner.get()
-> > > +    }
-> > > +
-> > > +    /// Arm a [`Callback`]. One grace period after this function was called,
-> > > +    /// the callback object will be dropped.
-> > > +    pub fn submit(self: Pin<KBox<Self>>) {
-> > > +        // SAFETY: The memory is not moved by this code or the C backend.
-> > > +        let cb = unsafe { Pin::into_inner_unchecked(self) };
-> > > +        let ptr = KBox::into_raw(cb);
-> > > +        // SAFETY: `ptr` was just created validly above. `Self::callback` relies
-> > > +        // on the RCU module / code never being unloaded.
-> > > +        unsafe { bindings::call_rcu((*ptr).as_raw(), Some(Self::callback)) };
-> > > +    }
-> > > +}
-> > > -- 
-> > > 2.49.0
-> > > 
-> 
-> 
+base-commit: 95c7d025cc8c3c6c41206e2a18332eb04878b7ef
+-- 
+2.34.1
+
