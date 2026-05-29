@@ -1,33 +1,32 @@
-Received: from mail-43170.protonmail.ch (mail-43170.protonmail.ch [185.70.43.170])
+Received: from mail-244108.protonmail.ch (mail-244108.protonmail.ch [109.224.244.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E313B3BCD34;
-	Fri, 29 May 2026 11:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 367663DC4AE
+	for <rcu@vger.kernel.org>; Fri, 29 May 2026 11:45:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.224.244.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780055105; cv=none; b=KDEXNxGaJuedj8tAMGOkCcmrybkv8YZQ0G4SCgA7/qfxzcY3QsJI522il8VVN21KdSfOSvlSK3IoPB/qo6OYIYcsFL4GSd0OMHb+4p3PXW7e+E59iVV4sg2iqPCg7aJz7qHwDc8iRcXjjzR5Bk056hnRUXji+djClsTHyXNwrQY=
+	t=1780055109; cv=none; b=RwrhY+wv7tDWl844SIBgYzJ/+B9Sfw6xlE0A7vaqGyBvDTRT4PYfLTZT2ODJ/lay3HsVm7wKnm+umSj9A1ks20uiLBzOJEUG4nNkxTCn94UfRewoIpnRMcAMY+gwXoBeftmYU53FtUykaD3kIwW424u2sU4hSqz+CWnlvw0f888=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780055105; c=relaxed/simple;
-	bh=r2V3NNmJ1FMNs2qXlSBmdvHpo127A6yMdpacTbf8yWo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=onk0wHGrH9GX0dCaFpKhqM15bD8pXJ8yFM/btqtWn4E0IFxX4JI/gyL9jBPmKIG5k50jCg2JCs2MItC2ltB8Z0r8lI8dVCCtQrlPoitRa8OKmKGeWLJx5x0Yl7NhQwYOoFJY8A5+w+O9lpWuo3xJPqo0bAwDvPfpTzlvjbCfH8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=dpe213dl; arc=none smtp.client-ip=185.70.43.170
+	s=arc-20240116; t=1780055109; c=relaxed/simple;
+	bh=QOgMwlVGoSS3aWw2O4I+mn0eC5ABmtw5uXckh0d/Chg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ET1vDai3CpYRXuCwzuoDDN0w/ofCp306YU8EKDps6A6fZkjh6XkFcJQWQTZKws0Tv+pdwhotd/ffqTuZ8MLURzvRwTx8WI5EwN1kSJyCVUTHVfmU4szJA9pPbXb3L3WY5Qt4qrqfw0nJ7J8e45WWTitHAQP6ZlY5BKPz2cFmvBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=mWB16Zn6; arc=none smtp.client-ip=109.224.244.108
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onurozkan.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="dpe213dl"
+	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="mWB16Zn6"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onurozkan.dev;
-	s=protonmail; t=1780055099; x=1780314299;
-	bh=r/4/lCxneay9Wm1Is0SI8vp62o6LmcLfnaBDeJWkaUY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:From:To:
-	 Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=dpe213dlMyiaUNkfsvA0AEoEWws2Scuk1SHxjaYNIV1VYWC3pecvnoIIU+7V3w67e
-	 N40GBPRaBX6algC6NL2wcxKgZ+MvfSggPKU2qDr6ooMGxco5LC41yQ93KqLALuu+eN
-	 t/tP9gNqPqbWSBVcBk3no8l+ph1yd9VPzKezwt+3b2S1Qo3yf/X9adtgzhlGZ4+ecj
-	 8NKEkz70g6Kjfi8w3IaIgZKoTBXRiv0ZeYBM8mECOgRe2SgUwUdGj/hfT40gCqpQ5A
-	 M6t3egmnLNJsRsJbWvWJ4QZdwCORczngm6DP3rtuY/eGMLF4mbzMXehJmxjoGHc4KE
-	 7lHpGoSA277Cw==
-X-Pm-Submission-Id: 4gRhNn1K5rz1DDLg
+	s=protonmail; t=1780055098; x=1780314298;
+	bh=teMeCr9MNW9sCv6xOxoqpMjTo09nSFeejzagqRk5rM4=;
+	h=From:To:Cc:Subject:Date:Message-ID:From:To:Cc:Date:Subject:
+	 Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=mWB16Zn6lO6kJTHFFWq2Dr+MPadde1ZYuJUxn9wQ66j6KEHS+KKIO6i6Hw/RP9pI7
+	 CMhPv2PTnQhBdRzDj4ZVcRpvRpdPo8LzkiKuxUVerKWQRnnhDYDCBRTI+lTKTejeKJ
+	 lzy+84F7a30XdENhRMmNMVzWA2ThfWptEwslE2c5lYksjzQ/z58V8bNTOYGkqrgGwq
+	 wLd+QzsoURGxVzs4D64moni7tIX/QVaH6aWg41w3R1ytYZ+hwhwUYHv/aVe84u/VHz
+	 8g/yEh7NRJ+twfv1QRe/c+bmxZNYxMMKXmdoz7Q76uOIcLsgT/znqaRmQ0CKmQ2yFq
+	 K1WjjCoDLgFsA==
+X-Pm-Submission-Id: 4gRhNk40RHz1DF6t
 From: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
 To: rcu@vger.kernel.org,
 	rust-for-linux@vger.kernel.org,
@@ -50,12 +49,10 @@ Cc: ojeda@kernel.org,
 	rostedt@goodmis.org,
 	mathieu.desnoyers@efficios.com,
 	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
-Subject: [PATCH v8 1/4] rust: helpers: add SRCU helpers
-Date: Fri, 29 May 2026 14:43:50 +0300
-Message-ID: <20260529114449.112066-2-work@onurozkan.dev>
+Subject: [PATCH v8 0/4] rust: helpers: add SRCU helpers
+Date: Fri, 29 May 2026 14:43:49 +0300
+Message-ID: <20260529114449.112066-1-work@onurozkan.dev>
 X-Mailer: git-send-email 2.51.2
-In-Reply-To: <20260529114449.112066-1-work@onurozkan.dev>
-References: <20260529114449.112066-1-work@onurozkan.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -65,82 +62,100 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add helper wrappers for SRCU functions that are exposed to Rust
-through generated bindings.
+The immediate motivation is the Tyr reset infrastructure [1] which needs
+to serialize reset sensitive hardware access against reset and teardown
+paths. That reset series started to require many independent dependencies
+so this SRCU support is split out as a standalone Rust API to keep the
+reset series focused on the reset logic and easier to review, rebase and
+land.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Onur Özkan <work@onurozkan.dev>
----
- include/linux/srcu.h   |  5 +++++
- rust/helpers/helpers.c |  1 +
- rust/helpers/srcu.c    | 30 ++++++++++++++++++++++++++++++
- 3 files changed, 36 insertions(+)
+Changes since v7:
+
+- Moved synchronize_srcu() call inside "if srcu_readers_active()"
+  condition in "impl PinnedDrop for Srcu".
+- Improved comments on the synchronize_srcu() call in
+  "impl PinnedDrop for Srcu".
+
+v7: https://lore.kernel.org/all/20260528062810.256212-1-work@onurozkan.dev
+
+Changes since v6:
+
+- Removed "CONFIG_DEBUG_LOCK_ALLOC" condition from "rust/helpers/srcu.c"
+  and created a simple wrapper inside "include/linux/srcu.h" for it.
+
+v6: https://lore.kernel.org/all/20260527203615.163688-1-work@onurozkan.dev
+
+Changes since v5:
+
+- Created separate srcu_readers_active() variants for "srcutiny.h" and
+  "srcutree.h".
+
+v5: https://lore.kernel.org/all/20260527174120.510447-1-work@onurozkan.dev
+
+Changes since v4:
+
+- Exposed srcu_readers_active from C side and wired it to the Rust
+  helpers.
+- Used srcu_readers_active() in SRCU drop and logged with pr_warn if
+  there are leaked guards during the drop.
+
+v4: https://lore.kernel.org/all/20260525175706.124910-1-work@onurozkan.dev
+
+Changes since v3 (which are for Sashiko notes [2]):
+
+- Added rust helpers for srcu_barrier() and synchronize_srcu_expedited()
+  so the abstraction builds with CONFIG_TINY_SRCU, where these are
+  static inline functions.
+- Added missing INVARIANT comment in Srcu::new() about why the type
+  invariants hold after successful initialization.
+
+v3: https://lore.kernel.org/all/20260522054228.114814-1-work@onurozkan.dev
+
+Changes since v2:
+
+- Removed closure-based API.
+- Added #[doc(hidden)] on new_srcu macro.
+- Added #[must_use..] on srcu::Guard.
+- Improved the clean-up path (PinnedDrop implementation) which
+  eventually made read_lock safe with leaked guards.
+
+v2: https://lore.kernel.org/all/20260502162833.34334-1-work@onurozkan.dev
+
+Changes since v1:
+
+- Made the owned SRCU read-side guard API unsafe and added a safe closure
+  based helper for callers that do not need to keep the guard. This is to
+  avoid UB on the C side cleanup_srcu_struct where the SRCU struct is freed
+  while there are still active guards, which can happen if the caller leaks
+  the guard e.g., with mem::forget().
+- Improved doc comments.
+
+v1: https://lore.kernel.org/all/20260428103437.156236-1-work@onurozkan.dev
+
+
+[1]: https://lore.kernel.org/all/20260416171728.205141-1-work@onurozkan.dev
+[2]: https://sashiko.dev/#/patchset/20260522054228.114814-1-work@onurozkan.dev?part=2
+
+Onur Özkan (4):
+  rust: helpers: add SRCU helpers
+  srcu: expose srcu_readers_active()
+  rust: sync: add SRCU abstraction
+  MAINTAINERS: add Rust SRCU files to SRCU entry
+
+ MAINTAINERS              |   3 +
+ include/linux/srcu.h     |   5 ++
+ include/linux/srcutiny.h |  13 +++
+ include/linux/srcutree.h |  24 ++++++
+ kernel/rcu/srcutiny.c    |   2 +-
+ kernel/rcu/srcutree.c    |  25 ------
+ rust/helpers/helpers.c   |   1 +
+ rust/helpers/srcu.c      |  35 ++++++++
+ rust/kernel/sync.rs      |   2 +
+ rust/kernel/sync/srcu.rs | 173 +++++++++++++++++++++++++++++++++++++++
+ 10 files changed, 257 insertions(+), 26 deletions(-)
  create mode 100644 rust/helpers/srcu.c
+ create mode 100644 rust/kernel/sync/srcu.rs
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 81b1938512d5..790a4ef713c0 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -57,6 +57,11 @@ int __init_srcu_struct_fast_updown(struct srcu_struct *ssp, const char *name,
- #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
- 
- int init_srcu_struct(struct srcu_struct *ssp);
-+static inline int __init_srcu_struct(struct srcu_struct *ssp, const char *name,
-+				     struct lock_class_key *key)
-+{
-+	return init_srcu_struct(ssp);
-+}
- #ifndef CONFIG_TINY_SRCU
- int init_srcu_struct_fast(struct srcu_struct *ssp);
- int init_srcu_struct_fast_updown(struct srcu_struct *ssp);
-diff --git a/rust/helpers/helpers.c b/rust/helpers/helpers.c
-index 625921e27dfb..f3562d3b3888 100644
---- a/rust/helpers/helpers.c
-+++ b/rust/helpers/helpers.c
-@@ -88,6 +88,7 @@
- #include "signal.c"
- #include "slab.c"
- #include "spinlock.c"
-+#include "srcu.c"
- #include "sync.c"
- #include "task.c"
- #include "time.c"
-diff --git a/rust/helpers/srcu.c b/rust/helpers/srcu.c
-new file mode 100644
-index 000000000000..225b3bf9334a
---- /dev/null
-+++ b/rust/helpers/srcu.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/srcu.h>
-+
-+__rust_helper int rust_helper_init_srcu_struct_with_key(struct srcu_struct *ssp,
-+							const char *name,
-+							struct lock_class_key *key)
-+{
-+	return __init_srcu_struct(ssp, name, key);
-+}
-+
-+__rust_helper int rust_helper_srcu_read_lock(struct srcu_struct *ssp)
-+{
-+	return srcu_read_lock(ssp);
-+}
-+
-+__rust_helper void rust_helper_srcu_read_unlock(struct srcu_struct *ssp, int idx)
-+{
-+	srcu_read_unlock(ssp, idx);
-+}
-+
-+__rust_helper void rust_helper_srcu_barrier(struct srcu_struct *ssp)
-+{
-+	srcu_barrier(ssp);
-+}
-+
-+__rust_helper void rust_helper_synchronize_srcu_expedited(struct srcu_struct *ssp)
-+{
-+	synchronize_srcu_expedited(ssp);
-+}
 -- 
 2.51.2
 
