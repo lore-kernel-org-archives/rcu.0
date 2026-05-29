@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA873C3442;
-	Fri, 29 May 2026 14:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1AD93EC2E1;
+	Fri, 29 May 2026 14:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780065573; cv=none; b=Urx2QqjO9vYxdydLaPk2Zx8Z8UQ39Owgs3Quuj2GJ10WseBEFrOqkD4LJ4MqEphXiHzVW9tlTauVmkb4gZho8ejihPdLzpPCX6OTq0605HY7HpjGCKRMIQoF/WcGF7OdxtQ5nVWTEBWYjn6B1mEeJ94CKqAhlIqcO7TsMZJRHwQ=
+	t=1780065899; cv=none; b=jrXdJ9QpKUe20M+oNJLj/wG8QzQxAnKYz9fphgsFsi3UnmZiRYBgAkeDMvjQuNQDEMOPR4/cBB21w9IfDCRhiY99xT/DVxhPk9njy7IIcCGvpQLE6Wc258jW2biSGnRKvkivztcryiNVcN1Lzqx9xENMNyFgcrtcO4oJt23nVTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780065573; c=relaxed/simple;
-	bh=B4v65EkSYYfc6W/AP3HtolvSHSB3ffldDfSlYvFH9bU=;
+	s=arc-20240116; t=1780065899; c=relaxed/simple;
+	bh=1Ivezq50Aih7fP4bRgpPF0bnHD0+q0Ra7z8UIbb8yUY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F1JZSbzDsUVplcTWbKB3RcNVi4bbpNbAq1S3FlIrOb8/OMLKEj3fQ3W0d05nrGKiigIIQiN92Gb6oESNLYGgw6/VbZJVff2MUXFWytesz6/g6CH2nN5TBBvDmv+5Vsnl2doUwWA75BPMQmIvQ9KCjaWnno8oT1qpNZ+pMYHhhrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=byU39WLk; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=J7ABR2NRydD2Zd2lYhPEvj3nQfjuMdOxZmzxP2fMykOMqdO/LztlcdyFiVY0rHTYW/EizKyVC3L7JEKjnXiIitavzpTlXwFw4mC3Ei/O3XgyK9t9Ao/muMoHNv60ihr+HM7UGp9/JmTV0498vzfvx3xYivuLZ4dyqjU2v7JsiHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I1ZTQRbj; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="byU39WLk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F2351F00893;
-	Fri, 29 May 2026 14:39:31 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I1ZTQRbj"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 031CD1F00893;
+	Fri, 29 May 2026 14:44:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780065571;
-	bh=FQ5LAZJas9VmjgRM/gA9vyyyp0frMUGasfqAhzBfzAE=;
+	s=k20260515; t=1780065897;
+	bh=FcLLsVIB9S0IaLxt0QV7rD/IXevTVDEuTKketUNGioc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=byU39WLkCeF5DKW4cY0N88UAnIeavXfY8FW7l4ki2cPXjO8gX0p/wYikpMFgRI0ZY
-	 NDjckxuGOIHFmRqLwizVOjTVm1d9I2VEJ5xUjf7Sc0QXLbn8OMr+ZqgfAuflXBhgE9
-	 +JVwMa7nND8fsZzqioDk8oy5sfqsn6wia/RWZ/262QncnxO8fTVcHwQGJjC+PsWb+U
-	 r5pfLD6pWVYtzW+uLOzaSEfnkuFOaWxXvZpTTcPT2m45ZIwvh7aiB/rnErRbf5y5af
-	 KOofJFzuN/UoYGgBM5C9v5pY4fuUnHWZilnwLm8hSorQUqMS4K2uSJVEM4PIxh+bB/
-	 Qqx4tETs1B5yA==
-Date: Fri, 29 May 2026 16:39:28 +0200
+	b=I1ZTQRbjusbEkA8mO3sR9TKhsyY0RrsJINdpb3IyMIXXR9I/QIXMj7FZ8uCPsWumU
+	 nn0odTm5907pR4/4L99boDo7epvEeEkjK1nvwsgjOHdF3h1v7Jbk1q/g0xD/6mIdgi
+	 5kFUaAHPEOOC9BVkKzp+AfUZRXBDxM9S5uVewvxzVQtmPI0cwYzUaPfTg/4q3IHKGd
+	 rAQOPxFIRWv1kIoU2zSRQ6nlazSwQEynVHXeB/GsS5ts7PCSdsJS/852yaRcIZsgmU
+	 um7hJi9mMu4vUJz4wz8C99KKtTYIx1XFkLd5e7jShOcUNnAFMhoj5Gjhp++V7OSeZx
+	 Ak8ZPamUVdcSg==
+Date: Fri, 29 May 2026 16:44:54 +0200
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Puranjay Mohan <puranjay@kernel.org>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -42,11 +42,11 @@ Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Zqiang <qiang.zhang@linux.dev>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [RFC PATCH 05/10] rcu: Enable RCU callbacks to benefit from
- expedited grace periods
-Message-ID: <ahmlILc6gJnk9vEb@pavilion.home>
+Subject: Re: [RFC PATCH 08/10] rcu: Detect expedited grace period completion
+ in rcu_pending()
+Message-ID: <ahmmZglg5tBFgC6i@pavilion.home>
 References: <20260417231203.785172-1-puranjay@kernel.org>
- <20260417231203.785172-6-puranjay@kernel.org>
+ <20260417231203.785172-9-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -55,88 +55,63 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260417231203.785172-6-puranjay@kernel.org>
+In-Reply-To: <20260417231203.785172-9-puranjay@kernel.org>
 
-On Fri, Apr 17, 2026 at 04:11:53PM -0700, Puranjay Mohan wrote:
-> Currently, RCU callbacks only track normal grace period sequence
-> numbers.  This means callbacks must wait for normal grace periods to
-> complete even when expedited grace periods have already elapsed.
+On Fri, Apr 17, 2026 at 04:11:56PM -0700, Puranjay Mohan wrote:
+> rcu_pending() is the gatekeeper that decides whether rcu_core() should
+> run on the current CPU's timer tick. Currently it checks if the CPU has
+> callbacks ready to invoke or a grace period has completed or started.
 > 
-> This commit uses the full rcu_gp_oldstate structure (which tracks both
-> normal and expedited GP sequences) throughout the callback
-> infrastructure.
+> It does not check that an expedited GP has completed. After an expedited
+> GP, callbacks remain in RCU_WAIT_TAIL (not yet advanced to
+> RCU_DONE_TAIL) and So rcu_core() never runs to advance them.
 > 
-> The rcu_segcblist_advance() function now checks both normal and
-> expedited GP completion via poll_state_synchronize_rcu_full(), becoming
-> parameterless since it reads the GP state internally.
-> rcu_segcblist_accelerate() stores the full GP state (both normal and
-> expedited sequences) instead of just the normal sequence.
-> 
-> The rcu_accelerate_cbs() and rcu_accelerate_cbs_unlocked() functions use
-> get_state_synchronize_rcu_full() to capture both GP sequences. The NOCB
-> code uses poll_state_synchronize_rcu_full() for advance checks instead
-> of comparing only the normal GP sequence.
-> 
-> srcu_segcblist_advance() become standalone implementations because
-> compares SRCU sequences directly (it cannot use
-> poll_state_synchronize_rcu_full(), which reads RCU-specific globals).
-> srcu_segcblist_accelerate() sets rgos_exp to RCU_GET_STATE_NOT_TRACKED
-> so poll_state_synchronize_rcu_full() only compares the rgosp->rgos_norm
-> and ignores rgos_exp.
+> Add a check using rcu_segcblist_nextgp() combined with
+> poll_state_synchronize_rcu_full() to detect when any pending callbacks'
+> grace period has completed.
 > 
 > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 > ---
->  kernel/rcu/rcu_segcblist.c | 30 ++++++++++++++++++++++++------
->  kernel/rcu/rcu_segcblist.h |  2 +-
->  kernel/rcu/tree.c          |  9 +++------
->  kernel/rcu/tree_nocb.h     | 33 +++++++++++++++++++++++----------
->  4 files changed, 51 insertions(+), 23 deletions(-)
+>  kernel/rcu/tree.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index 00e164db8b74..11174e2be3c2 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -12,6 +12,7 @@
->  #include <linux/kernel.h>
->  #include <linux/types.h>
->  
-> +#include "rcu.h"
->  #include "rcu_segcblist.h"
->  
->  /* Initialize simple callback list. */
-> @@ -494,9 +495,9 @@ static void rcu_segcblist_advance_compact(struct rcu_segcblist *rsclp, int i)
->  
->  /*
->   * Advance the callbacks in the specified rcu_segcblist structure based
-> - * on the current value passed in for the grace-period counter.
-> + * on the current value of the grace-period counter.
->   */
-> -void rcu_segcblist_advance(struct rcu_segcblist *rsclp, struct rcu_gp_oldstate *rgosp)
-> +void rcu_segcblist_advance(struct rcu_segcblist *rsclp)
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 0e43866dc4cd..309273a37b0a 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3671,6 +3671,7 @@ EXPORT_SYMBOL_GPL(cond_synchronize_rcu_full);
+>  static int rcu_pending(int user)
 >  {
->  	int i;
+>  	bool gp_in_progress;
+> +	struct rcu_gp_oldstate gp_state;
+>  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>  	struct rcu_node *rnp = rdp->mynode;
 >  
-> @@ -509,7 +510,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, struct rcu_gp_oldstate *
->  	 * are ready to invoke, and put them into the RCU_DONE_TAIL segment.
->  	 */
->  	for (i = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++) {
-> -		if (ULONG_CMP_LT(rgosp->rgos_norm, rsclp->gp_seq_full[i].rgos_norm))
-> +		if (!poll_state_synchronize_rcu_full(&rsclp->gp_seq_full[i]))
+> @@ -3701,6 +3702,12 @@ static int rcu_pending(int user)
+>  	    rcu_segcblist_ready_cbs(&rdp->cblist))
+>  		return 1;
+>  
+> +	/* Has a GP (normal or expedited) completed for pending callbacks? */
+> +	if (!rcu_rdp_is_offloaded(rdp) &&
+> +	    rcu_segcblist_nextgp(&rdp->cblist, &gp_state) &&
+> +	    poll_state_synchronize_rcu_full(&gp_state))
+> +		return 1;
 
-Ok that should work but it's worth noting two subtle changes:
+Do we need the overhead of at least one and at worst two full memory
+barriers on every ticks that have pending callbacks? I think that there can be
+a racy check here, some unordered version of poll_state_synchronize_rcu_full()
+perhaps, and leave the ordering duty to rcu_core().
 
-- The sequence number to be compared against the segment snapshot one is now
-  always from the root while it often used to be the one from the leaf node.
-  It shouldn't matter I think especially as now the source of the segment
-  snapshot is always either rcu_seq_snap() on the state or get_state_synchronize_rcu_full()
-  and thus rcu_seq_snap() on the state as well.
+Thanks.
 
-- But poll_state_synchronize_rcu_full() does two full memory barriers. Hmm
-  probably the one after reading the root state is necessary because we may not
-  be holding the root node lock. But is the first smp_mb() necessary here?
-  
-Thanks.  
+> +
+>  	/* Has RCU gone idle with this CPU needing another grace period? */
+>  	if (!gp_in_progress && rcu_segcblist_is_enabled(&rdp->cblist) &&
+>  	    !rcu_rdp_is_offloaded(rdp) &&
+> -- 
+> 2.52.0
+> 
 
 -- 
 Frederic Weisbecker
