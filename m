@@ -1,33 +1,33 @@
 Received: from mail-244107.protonmail.ch (mail-244107.protonmail.ch [109.224.244.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5774A1EB5C2;
-	Fri, 29 May 2026 13:40:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD53C320A00;
+	Fri, 29 May 2026 13:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.224.244.107
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780062020; cv=none; b=Y+Nk7/bnxQNuSrlRBZC0wWKEIc+rW+VfYjINqmQCG/g4MF86ZXLwvJtgPdrIy7xAjKPaUXdlK1FEjU6M9Pz38z9JKHHv3RtqH+AYaWxpMkhetZnisUn4G51++E6ufCHSD5FJnboxbH4rFvzQ4qmOF0uQDClOyaTvDyyf2+np6oo=
+	t=1780062021; cv=none; b=PjSaxa78yEvNq4ofiXP8divcgPmRmph3EGmgK86U7mXjC73MXgMbmQY44yT3WEEu8oOr5rmQDOVDSCI/6osZk49WaYgk1wjDCHHC93FXb0tBEdFW/9ovws+5hRNda5TTXdaLa4h0Sa0wublxZr2AcrB0E5vxJGtWHtJgDw0pQnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780062020; c=relaxed/simple;
-	bh=GRu2w6Yl53hjYDtCSyWax23qkoJc99/mS9lhpS2cZNs=;
+	s=arc-20240116; t=1780062021; c=relaxed/simple;
+	bh=AqTNnLPq2ilHYXq41hOFJaefF2Ku6iuUxVu/iVxfiIQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TWmJ6ZYRNwUvY9gTMTVeaLZm1j21Hw53Se8lwFWo53bZggIttEsYjzKOrcu0zyOOIT8hdjDJAAUZUq59TNhAmIb9csJ09DipoiTuJPKTi7zy+NLxe1rq3rg2bkor/O9hrJPDedNquVIHxDkG3qRPisjQ7JUoBe7+ncYfWLJhWS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=QpxB0QRR; arc=none smtp.client-ip=109.224.244.107
+	 MIME-Version:Content-Type; b=kh7WzHK5X/gkNj9rhrk9LPclZDoQlYdzuVkWMn239cc6y60UCqMRD/1H64YjNzPo90pfl9U4gDZzZ65VSVoAONpHKJJhPktqP+KQ81dxIq7s++9Rr6Z8rQeGgaL8ofdreOD4d8zt1/3TDFu8XG0qYdwgcSCmLE7CYTA5mc4Hy/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=s++3AGjs; arc=none smtp.client-ip=109.224.244.107
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onurozkan.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="QpxB0QRR"
+	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="s++3AGjs"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onurozkan.dev;
-	s=protonmail; t=1780062014; x=1780321214;
-	bh=ZL9ESIKvQirxwn04NTuae03syak/bnIEqsL+uBn0S2o=;
+	s=protonmail; t=1780062017; x=1780321217;
+	bh=RS5uw7rrHdO0zbI3L/86c50tam7X+ja2SpZF9/n5OEw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:From:To:
 	 Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=QpxB0QRRMygiPZjw1oV34QjExJrxrqAkCwknEpeMVyiFSEa0sh+6rIRO+2HcXiHtE
-	 r8i4FTFmOR0vNj5Se2zIwa1/2QIr0LFjtCm7PQbYGg+8CM5fugC5yee1CyjdWpPJeN
-	 4cdlEbccFe/ffRjLHfi0EGfanamgIPy7cGSMnBZO4NUSuu30zbh6ToKcBu607l1SvL
-	 t1q/aqRscmt//RZNPfjJOnDKnpqlbmclaNvGuDJK3sluOhPcGEle5qBY1SDuiq82Lp
-	 171WSKio6Ks9gvuZYrParYATnU30YkZRDbkVqIn1+hvauWTbu41/5P+yre2rrVrQuq
-	 Ts2aAxsxYqbWg==
-X-Pm-Submission-Id: 4gRkxk4FqHz1DDLL
+	b=s++3AGjsQnVbIGQLhDbZBiSOydRp+FZXYAp9skGL7sX3+xlawULsL2mHGalOsOe7M
+	 cWHHrOs1NvtnEMtlpzROumfkFlSo1jPMPFJO725zU1q0IJ0RSEGqdW+WD6nwIh750P
+	 MFnPnOjjRQsHI74inu1YuL4Q6RhdhAd/tmmyjS3y26rdGlSufSRAnGlmW7tPu0G57E
+	 XkCFNw9YLMOzmJVik29EUUmAQeY6f2LfnYfNezLzgAX4Md8DxYh9gptXeqiIj/eywM
+	 h4DCKi+kaCGERSo+r24v6MZA27NucfjNO0bsy3V5f3YETPteI80YhUtikMgN/VsUFg
+	 Zq8gU8WVKG9OA==
+X-Pm-Submission-Id: 4gRkxn54VVz1DDKv
 From: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
 To: rcu@vger.kernel.org,
 	rust-for-linux@vger.kernel.org,
@@ -50,9 +50,9 @@ Cc: ojeda@kernel.org,
 	rostedt@goodmis.org,
 	mathieu.desnoyers@efficios.com,
 	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
-Subject: [PATCH v9 1/4] rust: helpers: add SRCU helpers
-Date: Fri, 29 May 2026 16:39:51 +0300
-Message-ID: <20260529134004.396743-2-work@onurozkan.dev>
+Subject: [PATCH v9 2/4] srcu: expose srcu_readers_active()
+Date: Fri, 29 May 2026 16:39:52 +0300
+Message-ID: <20260529134004.396743-3-work@onurozkan.dev>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <20260529134004.396743-1-work@onurozkan.dev>
 References: <20260529134004.396743-1-work@onurozkan.dev>
@@ -65,199 +65,150 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add helper wrappers for SRCU functions that are exposed to Rust
-through generated bindings.
+This is needed by rust/helpers/srcu.c which now adds
+rust_helper_srcu_readers_active() as a wrapper around the SRCU helper
+for Rust callers.
 
+To achive this:
+
+1- Move the srcu_readers_active() implementation from
+   "kernel/rcu/srcutree.c" to "include/linux/srcutree.h".
+
+2- Implement a matching srcu_readers_active() in
+   "include/linux/srcutiny.h" and use it on the existing open-coded
+   WARN_ON() check in cleanup_srcu_struct().
+
+Reviewed-by: Gary Guo <gary@garyguo.net>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Onur Özkan <work@onurozkan.dev>
 ---
- include/linux/srcu.h   | 29 ++++++++++++++++++++---------
- kernel/rcu/srcutiny.c  | 10 +++++-----
- kernel/rcu/srcutree.c  |  9 +++++----
- rust/helpers/helpers.c |  1 +
- rust/helpers/srcu.c    | 30 ++++++++++++++++++++++++++++++
- 5 files changed, 61 insertions(+), 18 deletions(-)
- create mode 100644 rust/helpers/srcu.c
+ include/linux/srcutiny.h | 13 +++++++++++++
+ include/linux/srcutree.h | 24 ++++++++++++++++++++++++
+ kernel/rcu/srcutiny.c    |  2 +-
+ kernel/rcu/srcutree.c    | 25 -------------------------
+ rust/helpers/srcu.c      |  5 +++++
+ 5 files changed, 43 insertions(+), 26 deletions(-)
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 81b1938512d5..a028a5b5ebef 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -25,20 +25,19 @@ context_lock_struct(srcu_struct, __reentrant_ctx_lock);
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 905b629e8fa3..fbcf13bc12d1 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -154,4 +154,17 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+ 		 data_race(READ_ONCE(ssp->srcu_idx_max)));
+ }
  
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 
--int __init_srcu_struct(struct srcu_struct *ssp, const char *name, struct lock_class_key *key);
-+int init_srcu_struct_lockdep(struct srcu_struct *ssp, const char *name,
-+				     struct lock_class_key *key);
-+static inline int __init_srcu_struct(struct srcu_struct *ssp, const char *name,
-+				     struct lock_class_key *key)
++/**
++ * srcu_readers_active - returns true if there are readers. and false otherwise.
++ * @ssp: which srcu_struct to count active readers (holding srcu_read_lock).
++ *
++ * Note that this is not an atomic primitive, and can therefore suffer
++ * severe errors when invoked on an active srcu_struct. That said, it
++ * can be useful as an error check at cleanup time.
++ */
++static inline bool srcu_readers_active(struct srcu_struct *ssp)
 +{
-+	return init_srcu_struct_lockdep(ssp, name, key);
++	return READ_ONCE(ssp->srcu_lock_nesting[0]) || READ_ONCE(ssp->srcu_lock_nesting[1]);
 +}
- #ifndef CONFIG_TINY_SRCU
- int __init_srcu_struct_fast(struct srcu_struct *ssp, const char *name, struct lock_class_key *key);
- int __init_srcu_struct_fast_updown(struct srcu_struct *ssp, const char *name,
- 				   struct lock_class_key *key);
- #endif // #ifndef CONFIG_TINY_SRCU
- 
--#define init_srcu_struct(ssp) \
--({ \
--	static struct lock_class_key __srcu_key; \
--	\
--	__init_srcu_struct((ssp), #ssp, &__srcu_key); \
--})
--
- #define init_srcu_struct_fast(ssp) \
- ({ \
- 	static struct lock_class_key __srcu_key; \
-@@ -56,7 +55,12 @@ int __init_srcu_struct_fast_updown(struct srcu_struct *ssp, const char *name,
- #define __SRCU_DEP_MAP_INIT(srcu_name)	.dep_map = { .name = #srcu_name },
- #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
- 
--int init_srcu_struct(struct srcu_struct *ssp);
-+int init_srcu_struct_generic(struct srcu_struct *ssp);
-+static inline int __init_srcu_struct(struct srcu_struct *ssp, const char *name,
-+				     struct lock_class_key *key)
-+{
-+	return init_srcu_struct_generic(ssp);
-+}
- #ifndef CONFIG_TINY_SRCU
- int init_srcu_struct_fast(struct srcu_struct *ssp);
- int init_srcu_struct_fast_updown(struct srcu_struct *ssp);
-@@ -65,6 +69,13 @@ int init_srcu_struct_fast_updown(struct srcu_struct *ssp);
- #define __SRCU_DEP_MAP_INIT(srcu_name)
- #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
- 
-+#define init_srcu_struct(ssp) \
-+({ \
-+	static struct lock_class_key __srcu_key; \
-+	\
-+	__init_srcu_struct((ssp), #ssp, &__srcu_key); \
-+})
 +
- /* Values for SRCU Tree srcu_data ->srcu_reader_flavor, but also used by rcutorture. */
- #define SRCU_READ_FLAVOR_NORMAL		0x1		// srcu_read_lock().
- #define SRCU_READ_FLAVOR_NMI		0x2		// srcu_read_lock_nmisafe().
+ #endif
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index fd1a9270cb9a..75e54e4f963f 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -374,4 +374,28 @@ static inline void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flav
+ 		__srcu_check_read_flavor(ssp, read_flavor);
+ }
+ 
++/**
++ * srcu_readers_active - returns true if there are readers. and false otherwise.
++ * @ssp: which srcu_struct to count active readers (holding srcu_read_lock).
++ *
++ * Note that this is not an atomic primitive, and can therefore suffer
++ * severe errors when invoked on an active srcu_struct. That said, it
++ * can be useful as an error check at cleanup time.
++ */
++static inline bool srcu_readers_active(struct srcu_struct *ssp)
++{
++	int cpu;
++	unsigned long sum = 0;
++
++	for_each_possible_cpu(cpu) {
++		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
++
++		sum += atomic_long_read(&sdp->srcu_ctrs[0].srcu_locks);
++		sum += atomic_long_read(&sdp->srcu_ctrs[1].srcu_locks);
++		sum -= atomic_long_read(&sdp->srcu_ctrs[0].srcu_unlocks);
++		sum -= atomic_long_read(&sdp->srcu_ctrs[1].srcu_unlocks);
++	}
++	return sum;
++}
++
+ #endif
 diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index a2e2d516e51b..780a95e8cad7 100644
+index 780a95e8cad7..dde99876d473 100644
 --- a/kernel/rcu/srcutiny.c
 +++ b/kernel/rcu/srcutiny.c
-@@ -48,15 +48,15 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 
--int __init_srcu_struct(struct srcu_struct *ssp, const char *name,
--		       struct lock_class_key *key)
-+int init_srcu_struct_lockdep(struct srcu_struct *ssp, const char *name,
-+		     struct lock_class_key *key)
- {
- 	/* Don't re-initialize a lock while it is held. */
- 	debug_check_no_locks_freed((void *)ssp, sizeof(*ssp));
- 	lockdep_init_map(&ssp->dep_map, name, key, 0);
- 	return init_srcu_struct_fields(ssp);
- }
--EXPORT_SYMBOL_GPL(__init_srcu_struct);
-+EXPORT_SYMBOL_GPL(init_srcu_struct_lockdep);
- 
- #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
- 
-@@ -68,11 +68,11 @@ EXPORT_SYMBOL_GPL(__init_srcu_struct);
-  * to any other function.  Each srcu_struct represents a separate domain
-  * of SRCU protection.
+@@ -85,7 +85,7 @@ EXPORT_SYMBOL_GPL(init_srcu_struct_generic);
   */
--int init_srcu_struct(struct srcu_struct *ssp)
-+int init_srcu_struct_generic(struct srcu_struct *ssp)
+ void cleanup_srcu_struct(struct srcu_struct *ssp)
  {
- 	return init_srcu_struct_fields(ssp);
- }
--EXPORT_SYMBOL_GPL(init_srcu_struct);
-+EXPORT_SYMBOL_GPL(init_srcu_struct_generic);
- 
- #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
- 
+-	WARN_ON(ssp->srcu_lock_nesting[0] || ssp->srcu_lock_nesting[1]);
++	WARN_ON(srcu_readers_active(ssp));
+ 	irq_work_sync(&ssp->srcu_irq_work);
+ 	flush_work(&ssp->srcu_work);
+ 	WARN_ON(ssp->srcu_gp_running);
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 0d01cd8c4b4a..45154630c54e 100644
+index 45154630c54e..d1a69320b5c0 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -266,12 +266,13 @@ __init_srcu_struct_common(struct srcu_struct *ssp, const char *name, struct lock
- 	return init_srcu_struct_fields(ssp, false);
+@@ -599,31 +599,6 @@ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
+ 	return srcu_readers_lock_idx(ssp, idx, did_gp, unlocks);
  }
  
--int __init_srcu_struct(struct srcu_struct *ssp, const char *name, struct lock_class_key *key)
-+int init_srcu_struct_lockdep(struct srcu_struct *ssp, const char *name,
-+			     struct lock_class_key *key)
- {
- 	ssp->srcu_reader_flavor = 0;
- 	return __init_srcu_struct_common(ssp, name, key);
- }
--EXPORT_SYMBOL_GPL(__init_srcu_struct);
-+EXPORT_SYMBOL_GPL(init_srcu_struct_lockdep);
- 
- int __init_srcu_struct_fast(struct srcu_struct *ssp, const char *name, struct lock_class_key *key)
- {
-@@ -301,12 +302,12 @@ EXPORT_SYMBOL_GPL(__init_srcu_struct_fast_updown);
-  * to any other function.  Each srcu_struct represents a separate domain
-  * of SRCU protection.
-  */
--int init_srcu_struct(struct srcu_struct *ssp)
-+int init_srcu_struct_generic(struct srcu_struct *ssp)
- {
- 	ssp->srcu_reader_flavor = 0;
- 	return init_srcu_struct_fields(ssp, false);
- }
--EXPORT_SYMBOL_GPL(init_srcu_struct);
-+EXPORT_SYMBOL_GPL(init_srcu_struct_generic);
- 
- /**
-  * init_srcu_struct_fast - initialize a fast-reader sleep-RCU structure
-diff --git a/rust/helpers/helpers.c b/rust/helpers/helpers.c
-index 625921e27dfb..f3562d3b3888 100644
---- a/rust/helpers/helpers.c
-+++ b/rust/helpers/helpers.c
-@@ -88,6 +88,7 @@
- #include "signal.c"
- #include "slab.c"
- #include "spinlock.c"
-+#include "srcu.c"
- #include "sync.c"
- #include "task.c"
- #include "time.c"
+-/**
+- * srcu_readers_active - returns true if there are readers. and false
+- *                       otherwise
+- * @ssp: which srcu_struct to count active readers (holding srcu_read_lock).
+- *
+- * Note that this is not an atomic primitive, and can therefore suffer
+- * severe errors when invoked on an active srcu_struct.  That said, it
+- * can be useful as an error check at cleanup time.
+- */
+-static bool srcu_readers_active(struct srcu_struct *ssp)
+-{
+-	int cpu;
+-	unsigned long sum = 0;
+-
+-	for_each_possible_cpu(cpu) {
+-		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+-
+-		sum += atomic_long_read(&sdp->srcu_ctrs[0].srcu_locks);
+-		sum += atomic_long_read(&sdp->srcu_ctrs[1].srcu_locks);
+-		sum -= atomic_long_read(&sdp->srcu_ctrs[0].srcu_unlocks);
+-		sum -= atomic_long_read(&sdp->srcu_ctrs[1].srcu_unlocks);
+-	}
+-	return sum;
+-}
+-
+ /*
+  * We use an adaptive strategy for synchronize_srcu() and especially for
+  * synchronize_srcu_expedited().  We spin for a fixed time period
 diff --git a/rust/helpers/srcu.c b/rust/helpers/srcu.c
-new file mode 100644
-index 000000000000..225b3bf9334a
---- /dev/null
+index 225b3bf9334a..1a2f563640e0 100644
+--- a/rust/helpers/srcu.c
 +++ b/rust/helpers/srcu.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/srcu.h>
-+
-+__rust_helper int rust_helper_init_srcu_struct_with_key(struct srcu_struct *ssp,
-+							const char *name,
-+							struct lock_class_key *key)
+@@ -9,6 +9,11 @@ __rust_helper int rust_helper_init_srcu_struct_with_key(struct srcu_struct *ssp,
+ 	return __init_srcu_struct(ssp, name, key);
+ }
+ 
++__rust_helper bool rust_helper_srcu_readers_active(struct srcu_struct *ssp)
 +{
-+	return __init_srcu_struct(ssp, name, key);
++	return srcu_readers_active(ssp);
 +}
 +
-+__rust_helper int rust_helper_srcu_read_lock(struct srcu_struct *ssp)
-+{
-+	return srcu_read_lock(ssp);
-+}
-+
-+__rust_helper void rust_helper_srcu_read_unlock(struct srcu_struct *ssp, int idx)
-+{
-+	srcu_read_unlock(ssp, idx);
-+}
-+
-+__rust_helper void rust_helper_srcu_barrier(struct srcu_struct *ssp)
-+{
-+	srcu_barrier(ssp);
-+}
-+
-+__rust_helper void rust_helper_synchronize_srcu_expedited(struct srcu_struct *ssp)
-+{
-+	synchronize_srcu_expedited(ssp);
-+}
+ __rust_helper int rust_helper_srcu_read_lock(struct srcu_struct *ssp)
+ {
+ 	return srcu_read_lock(ssp);
 -- 
 2.51.2
 
