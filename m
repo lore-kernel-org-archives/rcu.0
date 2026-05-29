@@ -1,33 +1,32 @@
-Received: from mail-244107.protonmail.ch (mail-244107.protonmail.ch [109.224.244.107])
+Received: from mail-106113.protonmail.ch (mail-106113.protonmail.ch [79.135.106.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD53C320A00;
-	Fri, 29 May 2026 13:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.224.244.107
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 793BE329C54;
+	Fri, 29 May 2026 13:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780062021; cv=none; b=PjSaxa78yEvNq4ofiXP8divcgPmRmph3EGmgK86U7mXjC73MXgMbmQY44yT3WEEu8oOr5rmQDOVDSCI/6osZk49WaYgk1wjDCHHC93FXb0tBEdFW/9ovws+5hRNda5TTXdaLa4h0Sa0wublxZr2AcrB0E5vxJGtWHtJgDw0pQnQ=
+	t=1780062024; cv=none; b=XJsEf/yb/ZEWWhbESJ4iLmkCRFeuvwqRu/3IK26D8Arzek2eVzYas1ybhqzMlYDFbQkSX0OdmDnuEbwzfPE6w8hZ7JW4eZiZmCMCTHemSzZjF8K3UCDVhxezS5Q7Fn634kEtUO74WjrAGye7cKqyWSqoNzWOKL7enkv7KOQu4Dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780062021; c=relaxed/simple;
-	bh=AqTNnLPq2ilHYXq41hOFJaefF2Ku6iuUxVu/iVxfiIQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kh7WzHK5X/gkNj9rhrk9LPclZDoQlYdzuVkWMn239cc6y60UCqMRD/1H64YjNzPo90pfl9U4gDZzZ65VSVoAONpHKJJhPktqP+KQ81dxIq7s++9Rr6Z8rQeGgaL8ofdreOD4d8zt1/3TDFu8XG0qYdwgcSCmLE7CYTA5mc4Hy/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=s++3AGjs; arc=none smtp.client-ip=109.224.244.107
+	s=arc-20240116; t=1780062024; c=relaxed/simple;
+	bh=V76K5Gugw6gQcruCr4ZwRGVpHteVhlI7zrGVVaUh6c0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bgE428uiOU36gpna6wxxk68q6mJwhIlOjHpT+H6eolAjfvgRetDGHUuSB5uzZGp03D1avN8/z7FArnvqP43iewfR8wLg+I3JL0V6soZSHJo1FRtaMiUYI2z02j1K9cM5mHWXEDYxZt7GEWahiFkj6PHFQQ0qxY9mq5cpkrfiyiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=OYYs7Z6j; arc=none smtp.client-ip=79.135.106.113
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onurozkan.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="s++3AGjs"
+	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="OYYs7Z6j"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onurozkan.dev;
-	s=protonmail; t=1780062017; x=1780321217;
-	bh=RS5uw7rrHdO0zbI3L/86c50tam7X+ja2SpZF9/n5OEw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:From:To:
-	 Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=s++3AGjsQnVbIGQLhDbZBiSOydRp+FZXYAp9skGL7sX3+xlawULsL2mHGalOsOe7M
-	 cWHHrOs1NvtnEMtlpzROumfkFlSo1jPMPFJO725zU1q0IJ0RSEGqdW+WD6nwIh750P
-	 MFnPnOjjRQsHI74inu1YuL4Q6RhdhAd/tmmyjS3y26rdGlSufSRAnGlmW7tPu0G57E
-	 XkCFNw9YLMOzmJVik29EUUmAQeY6f2LfnYfNezLzgAX4Md8DxYh9gptXeqiIj/eywM
-	 h4DCKi+kaCGERSo+r24v6MZA27NucfjNO0bsy3V5f3YETPteI80YhUtikMgN/VsUFg
-	 Zq8gU8WVKG9OA==
-X-Pm-Submission-Id: 4gRkxn54VVz1DDKv
+	s=protonmail; t=1780062011; x=1780321211;
+	bh=IOtnxQrp4YaiFhpRJRIKIPHnMA6NKedXJ2qcTsHdZiA=;
+	h=From:To:Cc:Subject:Date:Message-ID:From:To:Cc:Date:Subject:
+	 Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=OYYs7Z6j+Fbsx08EbflZG40e9b1u3/NwDRlJXHQj8NJTZhaNc23qY/bBB3lQtZpHL
+	 O9o9w1LfXJ9u7o8VpUKs0tAB4Q+m2KNeXX/KqOzKWTeSxrT2ABiIlsnNhFRJHpvIOV
+	 Tdm6keqycPcY19Au3JswpqZuPWrJvBBZgFWLfRwtierRrged9YcBm03+rvL8s/ikpy
+	 s0S6utLNqPEoMQfwfZKxKIGvN4ZHddfVJyYWyuyyDyLbklfjwpVfU1oeGhcrL7TOLv
+	 +Lx3YULtRgndj+5Ql/7k+Rfp6OV/5WGSxTP3Pgmokv80qCOwQ9RKxlBz98f/Bp/wGg
+	 0ZZZBqYFxEUew==
+X-Pm-Submission-Id: 4gRkxh0m33z1DDL0
 From: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
 To: rcu@vger.kernel.org,
 	rust-for-linux@vger.kernel.org,
@@ -50,12 +49,10 @@ Cc: ojeda@kernel.org,
 	rostedt@goodmis.org,
 	mathieu.desnoyers@efficios.com,
 	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
-Subject: [PATCH v9 2/4] srcu: expose srcu_readers_active()
-Date: Fri, 29 May 2026 16:39:52 +0300
-Message-ID: <20260529134004.396743-3-work@onurozkan.dev>
+Subject: [PATCH v9 0/4] rust: add SRCU abstraction
+Date: Fri, 29 May 2026 16:39:50 +0300
+Message-ID: <20260529134004.396743-1-work@onurozkan.dev>
 X-Mailer: git-send-email 2.51.2
-In-Reply-To: <20260529134004.396743-1-work@onurozkan.dev>
-References: <20260529134004.396743-1-work@onurozkan.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -65,150 +62,108 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This is needed by rust/helpers/srcu.c which now adds
-rust_helper_srcu_readers_active() as a wrapper around the SRCU helper
-for Rust callers.
+The immediate motivation is the Tyr reset infrastructure [1] which needs
+to serialize reset sensitive hardware access against reset and teardown
+paths. That reset series started to require many independent dependencies
+so this SRCU support is split out as a standalone Rust API to keep the
+reset series focused on the reset logic and easier to review, rebase and
+land.
 
-To achive this:
+Changes since v8:
 
-1- Move the srcu_readers_active() implementation from
-   "kernel/rcu/srcutree.c" to "include/linux/srcutree.h".
+- Refactor srcu init handling to provide better init API (motivated by
+  the "mutex.h" initializers.
+- Use warn_on! instead of pr_warn! on leaked guard detection.
 
-2- Implement a matching srcu_readers_active() in
-   "include/linux/srcutiny.h" and use it on the existing open-coded
-   WARN_ON() check in cleanup_srcu_struct().
+v8: https://lore.kernel.org/all/20260529114449.112066-1-work@onurozkan.dev
 
-Reviewed-by: Gary Guo <gary@garyguo.net>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Onur Özkan <work@onurozkan.dev>
----
- include/linux/srcutiny.h | 13 +++++++++++++
- include/linux/srcutree.h | 24 ++++++++++++++++++++++++
- kernel/rcu/srcutiny.c    |  2 +-
- kernel/rcu/srcutree.c    | 25 -------------------------
- rust/helpers/srcu.c      |  5 +++++
- 5 files changed, 43 insertions(+), 26 deletions(-)
+Changes since v7:
 
-diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-index 905b629e8fa3..fbcf13bc12d1 100644
---- a/include/linux/srcutiny.h
-+++ b/include/linux/srcutiny.h
-@@ -154,4 +154,17 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
- 		 data_race(READ_ONCE(ssp->srcu_idx_max)));
- }
- 
-+/**
-+ * srcu_readers_active - returns true if there are readers. and false otherwise.
-+ * @ssp: which srcu_struct to count active readers (holding srcu_read_lock).
-+ *
-+ * Note that this is not an atomic primitive, and can therefore suffer
-+ * severe errors when invoked on an active srcu_struct. That said, it
-+ * can be useful as an error check at cleanup time.
-+ */
-+static inline bool srcu_readers_active(struct srcu_struct *ssp)
-+{
-+	return READ_ONCE(ssp->srcu_lock_nesting[0]) || READ_ONCE(ssp->srcu_lock_nesting[1]);
-+}
-+
- #endif
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index fd1a9270cb9a..75e54e4f963f 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -374,4 +374,28 @@ static inline void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flav
- 		__srcu_check_read_flavor(ssp, read_flavor);
- }
- 
-+/**
-+ * srcu_readers_active - returns true if there are readers. and false otherwise.
-+ * @ssp: which srcu_struct to count active readers (holding srcu_read_lock).
-+ *
-+ * Note that this is not an atomic primitive, and can therefore suffer
-+ * severe errors when invoked on an active srcu_struct. That said, it
-+ * can be useful as an error check at cleanup time.
-+ */
-+static inline bool srcu_readers_active(struct srcu_struct *ssp)
-+{
-+	int cpu;
-+	unsigned long sum = 0;
-+
-+	for_each_possible_cpu(cpu) {
-+		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
-+
-+		sum += atomic_long_read(&sdp->srcu_ctrs[0].srcu_locks);
-+		sum += atomic_long_read(&sdp->srcu_ctrs[1].srcu_locks);
-+		sum -= atomic_long_read(&sdp->srcu_ctrs[0].srcu_unlocks);
-+		sum -= atomic_long_read(&sdp->srcu_ctrs[1].srcu_unlocks);
-+	}
-+	return sum;
-+}
-+
- #endif
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index 780a95e8cad7..dde99876d473 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -85,7 +85,7 @@ EXPORT_SYMBOL_GPL(init_srcu_struct_generic);
-  */
- void cleanup_srcu_struct(struct srcu_struct *ssp)
- {
--	WARN_ON(ssp->srcu_lock_nesting[0] || ssp->srcu_lock_nesting[1]);
-+	WARN_ON(srcu_readers_active(ssp));
- 	irq_work_sync(&ssp->srcu_irq_work);
- 	flush_work(&ssp->srcu_work);
- 	WARN_ON(ssp->srcu_gp_running);
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 45154630c54e..d1a69320b5c0 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -599,31 +599,6 @@ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
- 	return srcu_readers_lock_idx(ssp, idx, did_gp, unlocks);
- }
- 
--/**
-- * srcu_readers_active - returns true if there are readers. and false
-- *                       otherwise
-- * @ssp: which srcu_struct to count active readers (holding srcu_read_lock).
-- *
-- * Note that this is not an atomic primitive, and can therefore suffer
-- * severe errors when invoked on an active srcu_struct.  That said, it
-- * can be useful as an error check at cleanup time.
-- */
--static bool srcu_readers_active(struct srcu_struct *ssp)
--{
--	int cpu;
--	unsigned long sum = 0;
--
--	for_each_possible_cpu(cpu) {
--		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
--
--		sum += atomic_long_read(&sdp->srcu_ctrs[0].srcu_locks);
--		sum += atomic_long_read(&sdp->srcu_ctrs[1].srcu_locks);
--		sum -= atomic_long_read(&sdp->srcu_ctrs[0].srcu_unlocks);
--		sum -= atomic_long_read(&sdp->srcu_ctrs[1].srcu_unlocks);
--	}
--	return sum;
--}
--
- /*
-  * We use an adaptive strategy for synchronize_srcu() and especially for
-  * synchronize_srcu_expedited().  We spin for a fixed time period
-diff --git a/rust/helpers/srcu.c b/rust/helpers/srcu.c
-index 225b3bf9334a..1a2f563640e0 100644
---- a/rust/helpers/srcu.c
-+++ b/rust/helpers/srcu.c
-@@ -9,6 +9,11 @@ __rust_helper int rust_helper_init_srcu_struct_with_key(struct srcu_struct *ssp,
- 	return __init_srcu_struct(ssp, name, key);
- }
- 
-+__rust_helper bool rust_helper_srcu_readers_active(struct srcu_struct *ssp)
-+{
-+	return srcu_readers_active(ssp);
-+}
-+
- __rust_helper int rust_helper_srcu_read_lock(struct srcu_struct *ssp)
- {
- 	return srcu_read_lock(ssp);
+- Moved synchronize_srcu() call inside "if srcu_readers_active()"
+  condition in "impl PinnedDrop for Srcu".
+- Improved comments on the synchronize_srcu() call in
+  "impl PinnedDrop for Srcu".
+
+v7: https://lore.kernel.org/all/20260528062810.256212-1-work@onurozkan.dev
+
+Changes since v6:
+
+- Removed "CONFIG_DEBUG_LOCK_ALLOC" condition from "rust/helpers/srcu.c"
+  and created a simple wrapper inside "include/linux/srcu.h" for it.
+
+v6: https://lore.kernel.org/all/20260527203615.163688-1-work@onurozkan.dev
+
+Changes since v5:
+
+- Created separate srcu_readers_active() variants for "srcutiny.h" and
+  "srcutree.h".
+
+v5: https://lore.kernel.org/all/20260527174120.510447-1-work@onurozkan.dev
+
+Changes since v4:
+
+- Exposed srcu_readers_active from C side and wired it to the Rust
+  helpers.
+- Used srcu_readers_active() in SRCU drop and logged with pr_warn if
+  there are leaked guards during the drop.
+
+v4: https://lore.kernel.org/all/20260525175706.124910-1-work@onurozkan.dev
+
+Changes since v3 (which are for Sashiko notes [2]):
+
+- Added rust helpers for srcu_barrier() and synchronize_srcu_expedited()
+  so the abstraction builds with CONFIG_TINY_SRCU, where these are
+  static inline functions.
+- Added missing INVARIANT comment in Srcu::new() about why the type
+  invariants hold after successful initialization.
+
+v3: https://lore.kernel.org/all/20260522054228.114814-1-work@onurozkan.dev
+
+Changes since v2:
+
+- Removed closure-based API.
+- Added #[doc(hidden)] on new_srcu macro.
+- Added #[must_use..] on srcu::Guard.
+- Improved the clean-up path (PinnedDrop implementation) which
+  eventually made read_lock safe with leaked guards.
+
+v2: https://lore.kernel.org/all/20260502162833.34334-1-work@onurozkan.dev
+
+Changes since v1:
+
+- Made the owned SRCU read-side guard API unsafe and added a safe closure
+  based helper for callers that do not need to keep the guard. This is to
+  avoid UB on the C side cleanup_srcu_struct where the SRCU struct is freed
+  while there are still active guards, which can happen if the caller leaks
+  the guard e.g., with mem::forget().
+- Improved doc comments.
+
+v1: https://lore.kernel.org/all/20260428103437.156236-1-work@onurozkan.dev
+
+
+[1]: https://lore.kernel.org/all/20260416171728.205141-1-work@onurozkan.dev
+[2]: https://sashiko.dev/#/patchset/20260522054228.114814-1-work@onurozkan.dev?part=2
+
+Onur Özkan (4):
+  rust: helpers: add SRCU helpers
+  srcu: expose srcu_readers_active()
+  rust: sync: add SRCU abstraction
+  MAINTAINERS: add Rust SRCU files to SRCU entry
+
+ MAINTAINERS              |   3 +
+ include/linux/srcu.h     |  29 ++++---
+ include/linux/srcutiny.h |  13 +++
+ include/linux/srcutree.h |  24 ++++++
+ kernel/rcu/srcutiny.c    |  12 +--
+ kernel/rcu/srcutree.c    |  34 ++------
+ rust/helpers/helpers.c   |   1 +
+ rust/helpers/srcu.c      |  35 ++++++++
+ rust/kernel/sync.rs      |   2 +
+ rust/kernel/sync/srcu.rs | 171 +++++++++++++++++++++++++++++++++++++++
+ 10 files changed, 280 insertions(+), 44 deletions(-)
+ create mode 100644 rust/helpers/srcu.c
+ create mode 100644 rust/kernel/sync/srcu.rs
+
 -- 
 2.51.2
 
