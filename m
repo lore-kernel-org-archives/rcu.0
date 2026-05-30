@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E757272603;
-	Sat, 30 May 2026 15:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A618298991;
+	Sat, 30 May 2026 15:20:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780154180; cv=none; b=b3A74s9x7+HISWwK4zIxGxdhEIg4hDmce7pJGl6XPmucYWbDKFh/YZeLkzLuJGI4U/SrkQCIuAXs9CR6qUUzBh2LMDfRy2TWi2tTOlapzQ7slN3OztlP9jPCgwAGOz9AsmoUAcc0mMx/QJ6DMbwd3TufTOfzI7go9jebCCekNHk=
+	t=1780154435; cv=none; b=NEmvj/8B1egUcHRhtugfp06Kh2QQT4n40E+263muN4CBGFl06nxaCnHjaz6xHVFL2m7YPKrfoNdRQVLfUvd3s6uYELotdwgkCVyPo8p7N56Ove7gBGNQZzcrvzvpdC7pFBmVp0rAPR9c5+3gK/4V9TgZQ13w0nizKuB7LBaZt9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780154180; c=relaxed/simple;
-	bh=f0GdUq+MhlYLfV4RgBdNdh/WhTPQgXHeUjOAGryZXyo=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=kDIfXubGhwyFZZA09QqmO+cYLk02zCYO0TuVjGMNj9VPJnkdxxwSYyhvWhKHO0Vf0KMSS+sWpn2zZb3HVUcXwtLCnB2a0n3mP7MI8hfKRIFeZXZTAhSh9Dsyw7n6vw/t8hv2y1rnFC/CIur9VtmzLrxre22sC5D+075egXz+IJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ivG9I9Wb; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1780154435; c=relaxed/simple;
+	bh=AMSHQkmzbYijlbpzL1WWSi7Jnr2RVej2XthBhjRBNT8=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
+	 References:In-Reply-To; b=YxgiU9HD4gYoAmmXF43kXbicCxIcS1x8ofL3nJ30aXFXRPq/jp8lF8yLZjygAzhW4PwYrdt8zXPsdI573uZGCZFYru4ayYDCuXnvRLcQUXeCxz9xkQSjM1HUvHv9mur4i7KMJiVO2/l/12E2mjmi9v4uPEYcMzHF3Qx7A7yaCzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lk8OFmb5; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ivG9I9Wb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 111F01F00893;
-	Sat, 30 May 2026 15:16:11 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lk8OFmb5"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C3031F00893;
+	Sat, 30 May 2026 15:20:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780154178;
-	bh=B3IwrE3HK9xQ/GsYTmA9pt7vQYdzp5OkBKwI6mjM0Ks=;
-	h=Date:Subject:Cc:To:From:References:In-Reply-To;
-	b=ivG9I9Wb1Fhio7A/1AlExKrVKTjWm24EHtORlfbrP5Dc4c4bL4JMnbjqDTqUA/GFw
-	 2hr7JqaFVsRU72p3y/y0tKVuwPBZ1YqwRmNSTlIn/26d96dkH+Sy9RJ+UCy/TQRG9P
-	 FS/IoYmNxEQQnhqdfMEDa4BW6n5TRSFdF/H1ZXEdoBqvT/ZQ3PzfF4VnO2xdJercPK
-	 sX1uqzRFCchLdr9KtyGJY5K3Dppkt48lqnyW+qgP4Rh0Y1laLZMrIkSkM2Du8o+XGS
-	 mj3MkD12yXLxdzx/mmh7lN93ATCHzyYUyKnkzOqiOKnwCuMuEfsUjYPJRG5tWljvVg
-	 Twtc4kpXUkYDA==
+	s=k20260515; t=1780154434;
+	bh=+sc/8gqjxXPGiBvIvfD3IGHEnbbWMn6slfVxYS4NsDE=;
+	h=Date:Cc:To:From:Subject:References:In-Reply-To;
+	b=Lk8OFmb5QUw2CRzhJufG32U11EnGHWNH/C0HzWLKA/jvmjZe838mBvYadKLJtFXqq
+	 zzRhj8RUIYR2wS3J4i7sBa1XwPe9fU+s9n1vBm99BUrZHxYKr+eRl9Lf6AFHMr6RgV
+	 5+MaCL9TOxBtcku2/J9XgRMSe1HS6ZKH8izhS0cTidUhU9sPdh1WsGsboOq/q7ltCB
+	 RJ58HZLV7thBtBRayXAdRhT86s/05Y3/fIgh0Hm6aW+oukCbXscB6mrbzGaqZGPkDq
+	 mA4KdB2jzkHRm/cT6yR/NCRW3tuOm1eywlxCE62osPNM4t+SK2MGoinEALteGeYNOp
+	 5ith0jBQvczLw==
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -34,9 +34,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Sat, 30 May 2026 17:16:10 +0200
-Message-Id: <DIW3ZK5NLKU3.1QYMQB0ISHFBG@kernel.org>
-Subject: Re: [PATCH 3/4] rust: Add dma_fence abstractions
+Date: Sat, 30 May 2026 17:20:26 +0200
+Message-Id: <DIW42TO5HY6H.2RLL8V8H48A5A@kernel.org>
 Cc: "Miguel Ojeda" <ojeda@kernel.org>, "Boqun Feng" <boqun@kernel.org>,
  "Gary Guo" <gary@garyguo.net>, =?utf-8?q?Bj=C3=B6rn_Roy_Baron?=
  <bjorn3_gh@protonmail.com>, "Benno Lossin" <lossin@kernel.org>, "Andreas
@@ -62,179 +61,21 @@ Cc: "Miguel Ojeda" <ojeda@kernel.org>, "Boqun Feng" <boqun@kernel.org>,
  <rcu@vger.kernel.org>
 To: "Philipp Stanner" <phasta@kernel.org>
 From: "Danilo Krummrich" <dakr@kernel.org>
+Subject: Re: [PATCH 4/4] MAINTAINERS: Add entry for Rust dma-buf
 References: <20260530143541.229628-2-phasta@kernel.org>
- <20260530143541.229628-5-phasta@kernel.org>
-In-Reply-To: <20260530143541.229628-5-phasta@kernel.org>
-
-(Not a full review, but a few drive-by comments.)
+ <20260530143541.229628-7-phasta@kernel.org>
+In-Reply-To: <20260530143541.229628-7-phasta@kernel.org>
 
 On Sat May 30, 2026 at 4:35 PM CEST, Philipp Stanner wrote:
-> +#[allow(unused_unsafe)]
+> @@ -7529,6 +7530,7 @@ T:	git https://gitlab.freedesktop.org/drm/misc/kern=
+el.git
+>  F:	Documentation/driver-api/dma-buf.rst
+>  F:	Documentation/userspace-api/dma-buf-alloc-exchange.rst
+>  F:	drivers/dma-buf/
+> +F:	rust/kernel/dma_buf/
 
-What is this needed for?
+Please also add rust/helpers/dma_fence.c.
 
-> +impl<F: Send + Sync + DriverFenceAllowedData, C: Send + Sync> FenceCtx<F=
-, C> {
-
-<snip>
-
-> +impl<F: Send + Sync, C: Send + Sync> PinnedDrop for FenceCtx<F, C> {
-> +    fn drop(self: Pin<&mut Self>) {
-> +        // SAFETY: `rcu_barrier()` is always safe to be called.
-> +        unsafe { bindings::rcu_barrier() };
-
-We should probably add a safe function for this.
-
-> +impl<T: FenceCb> FenceCbRegistration<T> {
-> +    /// Register a callback on a fence.
-> +    ///
-> +    /// On success the callback is pinned in place and will fire when th=
-e fence
-> +    /// signals. On `AlreadySignaled` the callback is returned to the ca=
-ller so
-> +    /// that owned resources can be reclaimed.
-> +    pub fn new<'a>(fence: &'a Fence, callback: T) -> impl PinInit<Self, =
-CallbackError<T>> + 'a
-> +    where
-> +        T: 'a,
-> +    {
-> +        // Uses `pin_init_from_closure` instead of `try_pin_init!` so th=
-at on
-> +        // `-ENOENT` (already signaled) the callback can be read back fr=
-om the
-> +        // partially-initialized slot and returned through the error.
-
-Seems a bit odd that this needs pin_init_from_closure(). You can still use
-try_pin_init!() with &this in Self an a _: initializer at the end in the wo=
-rst
-case. But the fence and callback fields should be fine to initialize "norma=
-lly"?
-
-> +        //
-> +        // SAFETY: `pin_init_from_closure` requires:
-> +        // - On `Ok(())`: the slot is fully initialized and valid for `D=
-rop`.
-> +        // - On `Err(_)`: the slot is clean, i.e.: no partially-initiali=
-zed fields
-> +        //   remain, and the slot can be deallocated without dropping.
-> +        //
-> +        // We uphold this as follows:
-> +        // - On success: all three fields are initialized. Ok(()) is ret=
-urned.
-> +        // - On ENOENT (already signaled): `callback` and `fence` are re=
-ad back
-> +        //   from the slot via `ptr::read`, leaving the slot clean. `cb`=
- was
-> +        //   initialized by `dma_fence_add_callback` (it calls
-> +        //   `INIT_LIST_HEAD(&cb->node)` even on error), but `cb` is
-> +        //   `Opaque<dma_fence_cb>` which has no `Drop`, so not dropping=
- it is
-> +        //   fine. The callback is returned through `AlreadySignaled(T)`=
-.
-> +        // - On other errors: same cleanup as ENOENT, error returned as
-> +        //   `Other(e)`.
-> +        unsafe {
-> +            pin_init_from_closure(move |slot: *mut Self| {
-> +                let slot_callback =3D &raw mut (*slot).callback;
-> +                let slot_fence =3D &raw mut (*slot).fence;
-> +                let slot_cb =3D &raw mut (*slot).cb;
-> +
-> +                // Write callback and fence first =E2=80=94 must be visi=
-ble before
-> +                // dma_fence_add_callback makes the registration live.
-> +                core::ptr::write(slot_callback, callback);
-> +                core::ptr::write(slot_fence, ARef::from(fence));
-> +
-> +                let ret =3D to_result(bindings::dma_fence_add_callback(
-> +                    fence.inner.get(),
-> +                    Opaque::cast_into(slot_cb),
-> +                    Some(Self::dma_fence_callback),
-> +                ));
-> +
-> +                match ret {
-> +                    Ok(()) =3D> Ok(()),
-> +                    Err(e) =3D> {
-> +                        // Read back what we wrote to leave the slot cle=
-an.
-> +                        let cb_back =3D core::ptr::read(slot_callback);
-> +                        let _fence_back =3D core::ptr::read(slot_fence);
-
-What's the purpose of _fence_back?
-
-> +
-> +                        if e.to_errno() =3D=3D ENOENT.to_errno() {
-> +                            Err(CallbackError::AlreadySignaled(cb_back))
-> +                        } else {
-> +                            Err(CallbackError::Other(e))
-> +                        }
-> +                    }
-> +                }
-> +            })
-> +        }
-> +    }
-> +    /// Signal the fence. This will invoke all registered callbacks.
-> +    pub fn signal(self, res: Result) {
-> +        let fence =3D self.as_raw();
-> +        let mut fence_flags: usize =3D 0;
-> +        let flag_ptr =3D &raw mut fence_flags;
-> +
-> +        // SAFETY: Once a `DriverFence` is initialized, the inner `fence=
-` is
-> +        // valid and initialized. It is valid until the refcount drops
-> +        // to 0, which can earliest happen once the `DriverFence` has be=
-en dropped.
-> +        unsafe {
-> +            bindings::dma_fence_lock_irqsave(fence, flag_ptr);
-> +            if !bindings::dma_fence_is_signaled_locked(fence) {
-> +                if let Err(err) =3D res {
-> +                    bindings::dma_fence_set_error(fence, err.to_errno())=
-;
-> +                }
-> +                bindings::dma_fence_signal_locked(fence);
-> +            }
-> +            bindings::dma_fence_unlock_irqrestore(fence, flag_ptr);
-> +        }
-
-Please use a single unsafe block per unsafe function call, here and in a fe=
-w
-other places.
-
-> +    }
-> +}
-> +
-> +// SAFETY: Fences are literally designed to be shared between threads.
-> +unsafe impl<F: Send + Sync, C: Send + Sync> Send for DriverFence<F, C> {=
-}
-> +
-> +impl<F: Send + Sync, C: Send + Sync> Deref for DriverFence<F, C> {
-> +    type Target =3D F;
-> +
-> +    fn deref(&self) -> &Self::Target {
-> +        // SAFETY: Thanks to refcounting, `data` is always valid as long=
- as `self` is.
-> +        let data =3D unsafe { &*self.data.as_ptr() };
-> +
-> +        &data.data
-> +    }
-> +}
-> +
-> +/// A borrowed [`DriverFence`]. All you can do with it is access your us=
-er data
-> +/// and obtain a [`Fence`].
-> +pub struct DriverFenceBorrow<F: Send + Sync, C: Send + Sync> {
-
-This misses the lifetime bound, which is the purpose of this struct.
-
-> +    /// The actual content of the fence. Lives in a raw pointer so that =
-its
-> +    /// memory can be managed independently. Valid until both the [`Driv=
-erFence`]
-> +    /// and all associated [`Fence`]s have disappeared.
-> +    data: NonNull<DriverFenceData<F, C>>,
-
-Why not use ManuallyDrop<DriverFence>? This way you would only need a Deref=
- impl
-to &'a DriverFence.
-
-This way you basically reimplement the DriverFence type just without the
-destructor.
+Given that dma-buf goes through drm-misc, we should probably also add those=
+ file
+to the drm-rust entry.
