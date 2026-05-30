@@ -1,60 +1,73 @@
-Received: from mail-106113.protonmail.ch (mail-106113.protonmail.ch [79.135.106.113])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9B325B084;
-	Sat, 30 May 2026 06:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E29EC15C;
+	Sat, 30 May 2026 14:36:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780122465; cv=none; b=RtGPsSklxFoI2cRgHSFKeMcb0kxPD2HJ1nPPJi6XURwUHdetJ7J7pjAfOOU1bZWEqjEGb3r+fFG32WvsuftNXH+m43rdMlBC6jxWh5ZcAyu5Neg2k5yrDhdpV7y6mvBEbkmdjYDvKHTtrPW4rp3owenk1Gh5EUTjocB3rMfY0OY=
+	t=1780151774; cv=none; b=fnKYgAlQQK3yDc9C7ZtAasdN1me5y9HA8wreHbebeMF5zSliSoDHg0UviGb1b8s8PsML8YN5smtP6Ty44+3CsoOqh0qi5LPAlv1IwuSEHLhuafNMSITZwU5YufikX5X4LLRkz1jQbLAOt/toQ3+l8c3v5NBNAvUpNstCeyWPa98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780122465; c=relaxed/simple;
-	bh=yMAHVCFmmUiFAK92xcvyI4Ulktoa4C5f8gjeqX9lvHA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ocyIGDmTIAsjc2nC3yod2zG999vo/MBZxMen05OQj7Z6B0ZTl0qYtVTHUR80NIRq+a72qg7FLN05OumOr2a8rAeD+g6HCcOu7aPVZ0nWcclX00W4t2pZT2zOirURRsBXXJnRQNG+h1zRzdPm+xkLUy2Kpri88bZEppIs7q8JQC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=uSdFtXWo; arc=none smtp.client-ip=79.135.106.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onurozkan.dev
+	s=arc-20240116; t=1780151774; c=relaxed/simple;
+	bh=kWdFGXaIdTqSIXR1N4ZXJu3yyoPEhmdsXSJR/tKNIhw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QXuOhEz3nUydv6h2ZrHRy8093a4DrzgYxhg1kVuN5cCWynldGwb63Wu+2nzzpL/sXQTcgs9XsXZwESJkMsh0MKhq64VqPSHzIcpuwgIzXLOwwLWZoye69o1ESrioWRRrHNYS3AnoSDRalz2G5/ciPfKYtfVk/pvt3dDmU5oT88c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KuUNbr4g; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="uSdFtXWo"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onurozkan.dev;
-	s=protonmail; t=1780122457; x=1780381657;
-	bh=/7KVO7NNVVZLhgs7uHvMHpbUVIAm88VHLPbRqmbLeB0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:From:To:
-	 Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=uSdFtXWoivbUdLoiYfJ/GPnIDXI7SH9SlBfvWTnv7lSb1wxwGyd/JekhNUyQkT3OR
-	 BlJvLEwHtfjtgdK0RYGqLC8HleOMKn21/XthOOiucKZLhMov5X0z2x/vkL8hK/6hNC
-	 REqMrSzDP6JKJl86VO5Zg2dvNThDOQDOs06xaSHIv0jjSM4EzkgqXkXEk1MxT23F9l
-	 1n6du1eIzrmPRo5U3SBdYLg5cgSxhEwOAgvHsWVpAG4IphXH0O9ws4MnPpuoEfqnaU
-	 G6A72IWk/PI6xgJLMoQ6eJqJyAI48Ja/FjZMoeQAAGrLZZS8Qvj/gehPz1+Endw5gZ
-	 Ok/b8jFInRXog==
-X-Pm-Submission-Id: 4gS9J35k6Bz1DF6h
-From: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Gary Guo <gary@garyguo.net>,
-	rcu@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KuUNbr4g"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A2A91F00893;
+	Sat, 30 May 2026 14:36:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780151773;
+	bh=xz9gQQhI8Lkkj85ZF10THg+XrwAiifLzonLHj9O4ez8=;
+	h=From:To:Cc:Subject:Date;
+	b=KuUNbr4gBLFewAbSoKvU4Sn6LwubCf4meWBq/sC1Kldjx+uqF1Sm/MGZtX83s0/dz
+	 094NqiBWjEddTVeAGXvkz/whF2v+lvOrj2Vjnkuva4KYPTPJAXDK8kg0SZX41sKmRb
+	 3777EhJG9dJQ6JhEEm5rOchcHXIWjcOpNJuMHXRIldbGlHeP4mHFuznkALLsCQGcQk
+	 gNaGPqoMZb9DH/TFw5IwXHggXPcWOo+3ChQTRT3ufsUKe22tpUipEsZdsTOe4o+t2A
+	 IyCOu4dmSX9ZrLxbLSKLR0Z5avuKZRbXbGzCQNFocfUlPma7Mly7Y/xdYjQHkpoyk/
+	 4db50WjYoqMPw==
+From: Philipp Stanner <phasta@kernel.org>
+To: Miguel Ojeda <ojeda@kernel.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Benno Lossin <lossin@kernel.org>,
+	Andreas Hindborg <a.hindborg@kernel.org>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Trevor Gross <tmgross@umich.edu>,
+	Danilo Krummrich <dakr@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Philipp Stanner <phasta@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Daniel Almeida <daniel.almeida@collabora.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Igor Korotin <igor.korotin@linux.dev>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Alexandre Courbot <acourbot@nvidia.com>,
+	FUJITA Tomonori <fujita.tomonori@gmail.com>,
+	Krishna Ketan Rai <prafulrai522@gmail.com>,
+	Shankari Anand <shankari.ak0208@gmail.com>,
+	manos@pitsidianak.is,
+	Boris Brezillon <boris.brezillon@collabora.com>
+Cc: linux-kernel@vger.kernel.org,
 	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ojeda@kernel.org,
-	boqun@kernel.org,
-	bjorn3_gh@protonmail.com,
-	lossin@kernel.org,
-	a.hindborg@kernel.org,
-	aliceryhl@google.com,
-	tmgross@umich.edu,
-	dakr@kernel.org,
-	peterz@infradead.org,
-	fujita.tomonori@gmail.com,
-	tamird@kernel.org,
-	jiangshanlai@gmail.com,
-	josh@joshtriplett.org,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v7 3/4] rust: sync: add SRCU abstraction
-Date: Sat, 30 May 2026 09:27:29 +0300
-Message-ID: <20260530062730.38077-1-work@onurozkan.dev>
-X-Mailer: git-send-email 2.51.2
-In-Reply-To: <b4f6d3e8-3a08-409e-89ae-ba5d612bae30@paulmck-laptop>
-References: <20260528062810.256212-1-work@onurozkan.dev> <20260528062810.256212-4-work@onurozkan.dev> <20260528082025.44414-1-work@onurozkan.dev> <20260528083518.66203-1-work@onurozkan.dev> <DIUB2DNTF6W9.2BT1NF6UXUOFI@garyguo.net> <b4f6d3e8-3a08-409e-89ae-ba5d612bae30@paulmck-laptop>
+	linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org,
+	rcu@vger.kernel.org
+Subject: [PATCH 0/4] rust / dma_buf: Add abstractions for dma_fence
+Date: Sat, 30 May 2026 16:35:08 +0200
+Message-ID: <20260530143541.229628-2-phasta@kernel.org>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -62,274 +75,104 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, 29 May 2026 08:36:16 -0700=0D
-"Paul E. McKenney" <paulmck@kernel.org> wrote:=0D
-=0D
-> On Thu, May 28, 2026 at 01:23:39PM +0100, Gary Guo wrote:=0D
-> > On Thu May 28, 2026 at 9:35 AM BST, Onur =C3=96zkan wrote:=0D
-> > > On Thu, 28 May 2026 11:20:10 +0300=0D
-> > > Onur =C3=96zkan <work@onurozkan.dev> wrote:=0D
-> > >=0D
-> > >> On Thu, 28 May 2026 09:27:35 +0300=0D
-> > >> Onur =C3=96zkan <work@onurozkan.dev> wrote:=0D
-> > >> =0D
-> > >> > Add a Rust abstraction for sleepable RCU (SRCU), backed by C srcu_=
-struct.=0D
-> > >> > Provide FFI helpers and a safe wrapper with a guard-based API for =
-read-side=0D
-> > >> > critical sections.=0D
-> > >> > =0D
-> > >> > Cleanup is handled via `PinnedDrop`, which explicitly drains pendi=
-ng grace=0D
-> > >> > periods and callbacks via `synchronize_srcu` and `srcu_barrier` be=
-fore=0D
-> > >> > executing `cleanup_srcu_struct` to guarantee memory safety e.g. wh=
-en there=0D
-> > >> > are leaked guards (via `mem::forget($guard)`).=0D
-> > >> > =0D
-> > >> > Signed-off-by: Onur =C3=96zkan <work@onurozkan.dev>=0D
-> > >> > ---=0D
-> > >> >  rust/kernel/sync.rs      |   2 +=0D
-> > >> >  rust/kernel/sync/srcu.rs | 166 ++++++++++++++++++++++++++++++++++=
-+++++=0D
-> > >> >  2 files changed, 168 insertions(+)=0D
-> > >> >  create mode 100644 rust/kernel/sync/srcu.rs=0D
-> > >> > =0D
-> > >> > diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs=0D
-> > >> > index 993dbf2caa0e..0d6a5f1300c3 100644=0D
-> > >> > --- a/rust/kernel/sync.rs=0D
-> > >> > +++ b/rust/kernel/sync.rs=0D
-> > >> > @@ -21,6 +21,7 @@=0D
-> > >> >  pub mod rcu;=0D
-> > >> >  mod refcount;=0D
-> > >> >  mod set_once;=0D
-> > >> > +pub mod srcu;=0D
-> > >> >  =0D
-> > >> >  pub use arc::{Arc, ArcBorrow, UniqueArc};=0D
-> > >> >  pub use completion::Completion;=0D
-> > >> > @@ -31,6 +32,7 @@=0D
-> > >> >  pub use locked_by::LockedBy;=0D
-> > >> >  pub use refcount::Refcount;=0D
-> > >> >  pub use set_once::SetOnce;=0D
-> > >> > +pub use srcu::Srcu;=0D
-> > >> >  =0D
-> > >> >  /// Represents a lockdep class.=0D
-> > >> >  ///=0D
-> > >> > diff --git a/rust/kernel/sync/srcu.rs b/rust/kernel/sync/srcu.rs=0D
-> > >> > new file mode 100644=0D
-> > >> > index 000000000000..343f00d070c7=0D
-> > >> > --- /dev/null=0D
-> > >> > +++ b/rust/kernel/sync/srcu.rs=0D
-> > >> > @@ -0,0 +1,166 @@=0D
-> > >> > +// SPDX-License-Identifier: GPL-2.0=0D
-> > >> > +=0D
-> > >> > +//! Sleepable read-copy update (SRCU) support.=0D
-> > >> > +//!=0D
-> > >> > +//! C header: [`include/linux/srcu.h`](srctree/include/linux/srcu=
-.h)=0D
-> > >> > +=0D
-> > >> > +use crate::{=0D
-> > >> > +    bindings,=0D
-> > >> > +    error::to_result,=0D
-> > >> > +    prelude::*,=0D
-> > >> > +    sync::LockClassKey,=0D
-> > >> > +    types::{=0D
-> > >> > +        NotThreadSafe,=0D
-> > >> > +        Opaque, //=0D
-> > >> > +    },=0D
-> > >> > +};=0D
-> > >> > +=0D
-> > >> > +use pin_init::pin_data;=0D
-> > >> > +=0D
-> > >> > +/// Creates an [`Srcu`] initialiser with the given name and a new=
-ly-created lock class.=0D
-> > >> > +#[doc(hidden)]=0D
-> > >> > +#[macro_export]=0D
-> > >> > +macro_rules! new_srcu {=0D
-> > >> > +    ($($name:literal)?) =3D> {=0D
-> > >> > +        $crate::sync::Srcu::new($crate::optional_name!($($name)?)=
-, $crate::static_lock_class!())=0D
-> > >> > +    };=0D
-> > >> > +}=0D
-> > >> > +pub use new_srcu;=0D
-> > >> > +=0D
-> > >> > +/// Sleepable read-copy update primitive.=0D
-> > >> > +///=0D
-> > >> > +/// SRCU readers may sleep while holding the read-side guard.=0D
-> > >> > +///=0D
-> > >> > +/// The destructor waits for active readers and callbacks, so it =
-may sleep.=0D
-> > >> > +/// If a read-side guard has been leaked, dropping an [`Srcu`] ma=
-y never return.=0D
-> > >> > +///=0D
-> > >> > +/// # Invariants=0D
-> > >> > +///=0D
-> > >> > +/// This represents a valid `struct srcu_struct` initialized by t=
-he C SRCU API=0D
-> > >> > +/// and it remains pinned and valid until the pinned destructor r=
-uns.=0D
-> > >> > +#[repr(transparent)]=0D
-> > >> > +#[pin_data(PinnedDrop)]=0D
-> > >> > +pub struct Srcu {=0D
-> > >> > +    #[pin]=0D
-> > >> > +    inner: Opaque<bindings::srcu_struct>,=0D
-> > >> > +}=0D
-> > >> > +=0D
-> > >> > +impl Srcu {=0D
-> > >> > +    /// Creates a new SRCU instance.=0D
-> > >> > +    #[inline]=0D
-> > >> > +    pub fn new(name: &'static CStr, key: Pin<&'static LockClassKe=
-y>) -> impl PinInit<Self, Error> {=0D
-> > >> > +        try_pin_init!(Self {=0D
-> > >> > +            // INVARIANT: On success, the C initializer creates a=
- valid `srcu_struct` and=0D
-> > >> > +            // it remains pinned until `PinnedDrop` runs.=0D
-> > >> > +            inner <- Opaque::try_ffi_init(|ptr: *mut bindings::sr=
-cu_struct| {=0D
-> > >> > +                // SAFETY: `ptr` points to valid uninitialised me=
-mory for a `srcu_struct`.=0D
-> > >> > +                to_result(unsafe {=0D
-> > >> > +                    bindings::init_srcu_struct_with_key(ptr, name=
-.as_char_ptr(), key.as_ptr())=0D
-> > >> > +                })=0D
-> > >> > +            }),=0D
-> > >> > +        })=0D
-> > >> > +    }=0D
-> > >> > +=0D
-> > >> > +    /// Enters an SRCU read-side critical section.=0D
-> > >> > +    ///=0D
-> > >> > +    /// Leaking the returned [`Guard`] leaves the SRCU read-side =
-critical=0D
-> > >> > +    /// section active and makes `drop` sleep forever.=0D
-> > >> > +    #[inline]=0D
-> > >> > +    pub fn read_lock(&self) -> Guard<'_> {=0D
-> > >> > +        // SAFETY: By the type invariants, `self` contains a vali=
-d `struct srcu_struct`.=0D
-> > >> > +        let idx =3D unsafe { bindings::srcu_read_lock(self.inner.=
-get()) };=0D
-> > >> > +=0D
-> > >> > +        // INVARIANT: `idx` was returned by `srcu_read_lock()` fo=
-r this `Srcu`.=0D
-> > >> > +        Guard {=0D
-> > >> > +            srcu: self,=0D
-> > >> > +            idx,=0D
-> > >> > +            _not_send: NotThreadSafe,=0D
-> > >> > +        }=0D
-> > >> > +    }=0D
-> > >> > +=0D
-> > >> > +    /// Waits until all pre-existing SRCU readers have completed.=
-=0D
-> > >> > +    #[inline]=0D
-> > >> > +    pub fn synchronize(&self) {=0D
-> > >> > +        // SAFETY: By the type invariants, `self` contains a vali=
-d `struct srcu_struct`.=0D
-> > >> > +        unsafe { bindings::synchronize_srcu(self.inner.get()) };=
-=0D
-> > >> > +    }=0D
-> > >> > +=0D
-> > >> > +    /// Waits until all pre-existing SRCU readers have completed,=
- expedited.=0D
-> > >> > +    ///=0D
-> > >> > +    /// This requests a lower-latency grace period than [`Srcu::s=
-ynchronize`] typically=0D
-> > >> > +    /// at the cost of higher system-wide overhead. Prefer [`Srcu=
-::synchronize`] by default=0D
-> > >> > +    /// and use this variant only when reducing reset or teardown=
- latency is more important=0D
-> > >> > +    /// than the extra cost.=0D
-> > >> > +    #[inline]=0D
-> > >> > +    pub fn synchronize_expedited(&self) {=0D
-> > >> > +        // SAFETY: By the type invariants, `self` contains a vali=
-d `struct srcu_struct`.=0D
-> > >> > +        unsafe { bindings::synchronize_srcu_expedited(self.inner.=
-get()) };=0D
-> > >> > +    }=0D
-> > >> > +}=0D
-> > >> > +=0D
-> > >> > +#[pinned_drop]=0D
-> > >> > +impl PinnedDrop for Srcu {=0D
-> > >> > +    fn drop(self: Pin<&mut Self>) {=0D
-> > >> > +        let ptr =3D self.inner.get();=0D
-> > >> > +=0D
-> > >> > +        // SAFETY: By the type invariants, `self` contains a vali=
-d and pinned `struct srcu_struct`=0D
-> > >> > +        // and `srcu_readers_active()` only checks the active rea=
-der count.=0D
-> > >> > +        if unsafe { bindings::srcu_readers_active(ptr) } {=0D
-> > >> > +            crate::pr_warn!(=0D
-> > >> > +                "Leaked `Guard` detected while dropping SRCU; dro=
-p will block forever.\n"=0D
-> > >> > +            );=0D
-> > =0D
-> > I think this could be a `warn_on` similar to how cleanup_srcu_struct ha=
-ndle the=0D
-> > condition.=0D
-> > =0D
-> > >> > +        }=0D
-> > >> > +=0D
-> > >> > +        // `cleanup_srcu_struct()` may return early if readers ar=
-e still active. Because `Srcu`=0D
-> > >> > +        // owns the embedded `srcu_struct`, returning from `drop`=
- in that state could free memory=0D
-> > >> > +        // that is still referenced by the C side.=0D
-> > >> > +        //=0D
-> > >> > +        // Wait for all readers to complete first. If any `Guard`=
- was leaked, `synchronize_srcu()`=0D
-> > >> > +        // will sleep forever.=0D
-> > >> > +        //=0D
-> > >> > +        // SAFETY: By the type invariants, `self` contains a vali=
-d and pinned `struct srcu_struct`.=0D
-> > >> > +        unsafe { bindings::synchronize_srcu(ptr) };=0D
-> > >> =0D
-> > >> Sashiko got a good point here which is calling synchronize_srcu() on=
-ly if there=0D
-> > >> are active readers. That's a nice low-effort improvement we can have=
- in the next=0D
-> > >> version.=0D
-> > >> =0D
-> > >> Onur=0D
-> > >=0D
-> > > Actually, now I am now thinking about whether we can come up with a b=
-etter=0D
-> > > approach when we detect leaked guards. Initially I came up with the=0D
-> > > synchronize_srcu() solution because it would handle leaked guards aut=
-omatically=0D
-> > > without requiring any additional checks. But now that we can actually=
- detect=0D
-> > > whether guards are leaked the question becomes:=0D
-> > >=0D
-> > > 	"Is there a better option than effectively sleeping forever when lea=
-ked=0D
-> > > 	 guards are detected?"=0D
-> > >=0D
-> > > I have no plans for tomorrow other than finalizing this series includ=
-ing the=0D
-> > > question above.=0D
-> > =0D
-> > The best solution is to proceed cleanups anyway, given Rust rules ensur=
-e that=0D
-> > these are actual leaks and not just srcu read-side critical section tha=
-t failed=0D
-> > to synchronize with the destruction of SRCU.=0D
-> > =0D
-> > This obviously require changes to the SRCU code though.=0D
-> =0D
-> Right now, the C-language SRCU code would splat and leak the srcu_struct=
-=0D
-> structure.  Of course, we *could* provide something that zeroed the=0D
-> reader counts to avoid the splat and leak, but yikes!  Or is there a=0D
-> way to make such a function available *only* to the Rust code associated=
-=0D
-> with cleanup_srcu_struct(), and not to other C/Rust code?=0D
-> =0D
-=0D
-=0D
-Anyone can use them if they want from `bindings::` once it's exposed to Rus=
-t.=0D
-=0D
-Regards,=0D
-Onur=0D
-=0D
-> 							Thanx, Paul=0D
+Changes since the RFC:
+  - Include support for ForeignOwnable for ARef, so that a Fence can be
+    stuffed into an XArray et al. (Code by Danilo)
+  - Implement ForeignOwnable (with new borrow type) for DriverFence, so
+    that it can be stuffed into an XArray.
+  - Include the rcu::RcuBox data type to defer dropping data with RCU
+    (Cody by Alice)
+  - Port DmaFence to RcuBox to make UAF bugs through later, new dma_fence
+    callbacks (backend_ops) impossible.
+  - Force users to pass their fence data in an RcuBox (or have it not
+    need drop()) through a Sealed trait.
+  - Document the rules for the user's DriverFence::data's drop
+    implementation very clearly (deadlock danger).
+  - rustfmt, Clippy.
+  - Various style suggestions, safety comments, etc. (Önur)
+  - Add __rust_helper prefix to helper functions. (Önur)
+
+Changes in RFC v3:
+  - Omit JobQueue patches for now
+  - Completely redesign the memory layout: Instead of a Fence
+    refcounting a DriverFence, both now live in the same allocation to
+    allow for future support the dma_fence backend_ops callbacks which
+    need to do container_of. (mostly Boris's feedback)
+  - Allow for pre-allocating fences to avoid deadlocks when submitting
+    jobs to a GPU. (Boris)
+  - Simultaneously, allow for pre-preparing fence callback objects, so
+    the driver can allocate them when it sees fit. (code largely stolen
+    and inspired by Daniel).
+  - Signal fences on drop, ensure synchronization.
+  - Force users to set an error code when signalling.
+  - Write more documentation
+  - A ton of minor other changes.
+
+Alright, so since the last RFCs did not reveal significant design
+issues, I decided to transition this series to a v1 and hope that we can
+get it upstream.
+
+This now includes code for more common infrastructure that dma_fence
+needs, contributed by Danilo and Alice.
+
+---
+
+Old cover letter for RFC:
+
+So, this is the spiritual successor of the first / second RFC [1]. v2
+also contained code for drm::JobQueue, but mostly to show how the fence
+code would be used. JobQueue is under heavy rework right now, so I don't
+want to bother your eyes with it. The docstring examples should show how
+Rust fences are supposed to be used, though.
+
+This v3 contains a huge amount of highly valuable feedback from a
+variety of people, notably Boris, but also from Alice, Gary and Danilo.
+
+There are some TODOs open (a better trait for fence backend_ops and RCU
+support), but my hope is that this effort is now finally approaching its
+end.
+
+I would greatly appreciate feedback and especially more information
+about what might be missing to make this usable, which is obviously
+where Daniel's and Boris's feedback will be valuable once more.
+
+Please regard this patch just as what it's titled: an RFC, to discuss a
+bit more and to inform a broader community about what the current state
+is and where this is heading at.
+
+Many regards,
+Philipp
+
+[1] https://lore.kernel.org/rust-for-linux/20260203081403.68733-2-phasta@kernel.org/
+
+Alice Ryhl (1):
+  rust: rcu: add RcuBox type
+
+Danilo Krummrich (1):
+  rust: types: implement ForeignOwnable for ARef<T>
+
+Philipp Stanner (2):
+  rust: Add dma_fence abstractions
+  MAINTAINERS: Add entry for Rust dma-buf
+
+ MAINTAINERS                      |   2 +
+ rust/bindings/bindings_helper.h  |   2 +
+ rust/helpers/dma_fence.c         |  48 ++
+ rust/helpers/helpers.c           |   1 +
+ rust/kernel/dma_buf/dma_fence.rs | 821 +++++++++++++++++++++++++++++++
+ rust/kernel/dma_buf/mod.rs       |  13 +
+ rust/kernel/lib.rs               |   1 +
+ rust/kernel/sync/aref.rs         |  39 ++
+ rust/kernel/sync/rcu.rs          |  31 +-
+ rust/kernel/sync/rcu/rcu_box.rs  | 145 ++++++
+ 10 files changed, 1102 insertions(+), 1 deletion(-)
+ create mode 100644 rust/helpers/dma_fence.c
+ create mode 100644 rust/kernel/dma_buf/dma_fence.rs
+ create mode 100644 rust/kernel/dma_buf/mod.rs
+ create mode 100644 rust/kernel/sync/rcu/rcu_box.rs
+
+-- 
+2.54.0
+
