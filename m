@@ -1,348 +1,335 @@
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-106113.protonmail.ch (mail-106113.protonmail.ch [79.135.106.113])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4D23FF1D9
-	for <rcu@vger.kernel.org>; Fri, 29 May 2026 15:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9B325B084;
+	Sat, 30 May 2026 06:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780069926; cv=none; b=rkYBMlx9TnLav6LVE8+657WhUKCiSWiC+OaQjgT7IIdeBEVpGDqJqh+lfK4/a3xCC5XDgiBA2EBu/SM1/n1SYBBD5jAAdNxdifjBBcy9FxsNI16mSmTSrumA6ccgM5l30I7JqD/Njk41z6pgEasr6kOoqHlJe1GezX5iInJy4tU=
+	t=1780122465; cv=none; b=RtGPsSklxFoI2cRgHSFKeMcb0kxPD2HJ1nPPJi6XURwUHdetJ7J7pjAfOOU1bZWEqjEGb3r+fFG32WvsuftNXH+m43rdMlBC6jxWh5ZcAyu5Neg2k5yrDhdpV7y6mvBEbkmdjYDvKHTtrPW4rp3owenk1Gh5EUTjocB3rMfY0OY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780069926; c=relaxed/simple;
-	bh=DOt/FscedNBalKmbrCX7DNYaR2v+1Xccunjq7K5Dra8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RvmIwebBL0UyWfMz1i1ciyfZVe07sHwGM3FdLkiX5WWRLVL+J6KqSMS7JYtU58Qge0Oy5b7NCEOBkcFztHwnxd7i9SbfjQ/UJQgfnWq4K6INwWiv0N/pcA1ExSIZw5+Ey9zovAhHxR/flkiKozMU+jtr3Nm1HTJynpE+T/Xs+ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y3xtfuju; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1780122465; c=relaxed/simple;
+	bh=yMAHVCFmmUiFAK92xcvyI4Ulktoa4C5f8gjeqX9lvHA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ocyIGDmTIAsjc2nC3yod2zG999vo/MBZxMen05OQj7Z6B0ZTl0qYtVTHUR80NIRq+a72qg7FLN05OumOr2a8rAeD+g6HCcOu7aPVZ0nWcclX00W4t2pZT2zOirURRsBXXJnRQNG+h1zRzdPm+xkLUy2Kpri88bZEppIs7q8JQC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=uSdFtXWo; arc=none smtp.client-ip=79.135.106.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onurozkan.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y3xtfuju"
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-c8572350022so544061a12.1
-        for <rcu@vger.kernel.org>; Fri, 29 May 2026 08:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780069919; x=1780674719; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zyvZfJ64Ok9rkT1fbSw+QwvuGZzuFxNCaqmrG+8+EWg=;
-        b=Y3xtfujuzghSrL0io9II3yXxJc3CQxuK/nVbK6UlZBYdPxz+ZBU98TT5/DC6nGzHTN
-         WmWZYHuabrqaTPmv7hv+5sihsi5Pl7k+HX3kF2PP9RqaxPS984uxG0rv22p7TJQSQ9xW
-         LhmtJGq5CprwvVHh4it5UcsVCi31Ige4S2vjjc4DKspKbOY/UoqxI06TAPc0pMbEpo82
-         RgsfVe4QTX0+ne8c3RtkRaTJAaL8nVXKci/0Up1Fg2wIRmgze9ZLnjH7muiy/06ZVk9k
-         0AmbdEppZP/tjE92Wjq67Gjm20QXMOJwsM0Dr0S0yLI2uYr14+YCknGeyqdAwVW8AAQ2
-         mGDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780069919; x=1780674719;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zyvZfJ64Ok9rkT1fbSw+QwvuGZzuFxNCaqmrG+8+EWg=;
-        b=byNWxmDY68h5G01qcO8uzFhvkOTug1joUPpzyR/QX2gcdADtWjVyjRDDF77R8n+UaV
-         iCESiRpPqL+KfbaekxrbG0JjSsmr5aYtDVFv+YFYQPXgaDcE8j8P2caKbMsaDy8BG1cv
-         6+eLmi4iAyvcU1Kpbbn8UBqfLWe8Frvj+tITXyMf4eNf3snAM7cUBFXqgZZ2LekPgNpH
-         5vE0KF8rYpa+JcIL1xeQaJSUYyekOp9k1t40n+LhSN7xcV3e8noqktWZ3pqiNK24ohfl
-         2rDgI7DbVpwFW+/cLS2d6Kii9IqZ5phsCkR/CIsw5JYIBet6Y6RlY4URhY6WrCf1uRJO
-         SFnA==
-X-Forwarded-Encrypted: i=1; AFNElJ9Bt9XyY3HFzpqybIhDuq/cpXVVGKL4PthloWIud9Bl/VkHYncdCYf3KxoS3gDz/hm1XlU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxoD6muiplYqEXi8M2kV4oj50a7TjwOZR88RvXjFUH9HulH9WaM
-	IXRaD3W9UKdgzdRBodG/BRyav9k4fbyMRjw01buqmpDlYl4JskW49whH
-X-Gm-Gg: Acq92OE1NmxJl03KUBu2oJEKH1W93LcMqZkiU3lO3xFYqOSLH2WMkIyzQ7zCR0fkbtv
-	B0KRbgy0b9un/0vAzNEy6cY9eFga1Rw/uZqYAj5k+TVAueGrEC+IgNRVfJxthmDRwXt1nE1pwqb
-	MRJnqjMAusrrisvU70XWEH6A3ATg8v3ro5bVJJ/O2y+FSoFO6Z5fxjipPt+kQx2eCHfxiU0xWZV
-	6VKkiU6r6xZzt7gOIMg9Zw/D7EnDHINzzBtPNnBUvDPP1xvc3TKa4YprgpmtquwgWkCgGPcxd+A
-	NYVwD8wE3zHBbBTr/drLHBKIypiLIrFJMTBkfUUzJBfeuVjB/IM6ryYnr+Ha9ccpJXp228Anp78
-	jIAkAOzKiowohhGgp7PyZieiNd6HSaFiirls9GSw8pm42iSDu0GmqMMPdI5gCDbeq7LKInMzhhJ
-	jsrqmueswy8rJtW7MqHNzPVn0mfZEWLClqoa13nD/RqYMnx+fNpqrCEcaCqBHUFH/89dg6jNfLe
-	+qi1rIhStnqfFfo
-X-Received: by 2002:a05:6a20:cf8d:b0:3b3:26aa:5453 with SMTP id adf61e73a8af0-3b4122c8ec2mr3974845637.29.1780069918806;
-        Fri, 29 May 2026 08:51:58 -0700 (PDT)
-Received: from cchengyang.duckdns.org (36-226-227-39.dynamic-ip.hinet.net. [36.226.227.39])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c8580efbad6sm579028a12.13.2026.05.29.08.51.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2026 08:51:58 -0700 (PDT)
-Date: Fri, 29 May 2026 23:51:54 +0800
-From: Cheng-Yang Chou <yphbchou0911@gmail.com>
+	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="uSdFtXWo"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onurozkan.dev;
+	s=protonmail; t=1780122457; x=1780381657;
+	bh=/7KVO7NNVVZLhgs7uHvMHpbUVIAm88VHLPbRqmbLeB0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:From:To:
+	 Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=uSdFtXWoivbUdLoiYfJ/GPnIDXI7SH9SlBfvWTnv7lSb1wxwGyd/JekhNUyQkT3OR
+	 BlJvLEwHtfjtgdK0RYGqLC8HleOMKn21/XthOOiucKZLhMov5X0z2x/vkL8hK/6hNC
+	 REqMrSzDP6JKJl86VO5Zg2dvNThDOQDOs06xaSHIv0jjSM4EzkgqXkXEk1MxT23F9l
+	 1n6du1eIzrmPRo5U3SBdYLg5cgSxhEwOAgvHsWVpAG4IphXH0O9ws4MnPpuoEfqnaU
+	 G6A72IWk/PI6xgJLMoQ6eJqJyAI48Ja/FjZMoeQAAGrLZZS8Qvj/gehPz1+Endw5gZ
+	 Ok/b8jFInRXog==
+X-Pm-Submission-Id: 4gS9J35k6Bz1DF6h
+From: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
 To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: sched-ext@lists.linux.dev, Tejun Heo <tj@kernel.org>, 
-	David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>, 
-	Changwoo Min <changwoo@igalia.com>, rcu@vger.kernel.org, Ching-Chun Huang <jserv@ccns.ncku.edu.tw>, 
-	Chia-Ping Tsai <chia7712@gmail.com>
-Subject: Re: [PATCH 2/2] sched_ext, rcu: Upgrade RCU stall paths to report
- cpumask of stalled CPUs
-Message-ID: <20260529234948.G96b5@cchengyang.duckdns.org>
-References: <20260521161636.1893894-1-yphbchou0911@gmail.com>
- <20260521161636.1893894-3-yphbchou0911@gmail.com>
- <6e26e461-6953-4161-835d-5e4412f8ba33@paulmck-laptop>
+Cc: Gary Guo <gary@garyguo.net>,
+	rcu@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ojeda@kernel.org,
+	boqun@kernel.org,
+	bjorn3_gh@protonmail.com,
+	lossin@kernel.org,
+	a.hindborg@kernel.org,
+	aliceryhl@google.com,
+	tmgross@umich.edu,
+	dakr@kernel.org,
+	peterz@infradead.org,
+	fujita.tomonori@gmail.com,
+	tamird@kernel.org,
+	jiangshanlai@gmail.com,
+	josh@joshtriplett.org,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v7 3/4] rust: sync: add SRCU abstraction
+Date: Sat, 30 May 2026 09:27:29 +0300
+Message-ID: <20260530062730.38077-1-work@onurozkan.dev>
+X-Mailer: git-send-email 2.51.2
+In-Reply-To: <b4f6d3e8-3a08-409e-89ae-ba5d612bae30@paulmck-laptop>
+References: <20260528062810.256212-1-work@onurozkan.dev> <20260528062810.256212-4-work@onurozkan.dev> <20260528082025.44414-1-work@onurozkan.dev> <20260528083518.66203-1-work@onurozkan.dev> <DIUB2DNTF6W9.2BT1NF6UXUOFI@garyguo.net> <b4f6d3e8-3a08-409e-89ae-ba5d612bae30@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6e26e461-6953-4161-835d-5e4412f8ba33@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Paul,
-
-On Wed, May 27, 2026 at 04:19:08PM -0700, Paul E. McKenney wrote:
-[...]
-> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> > index 82cada459e5d..0a9a509c8c91 100644
-> > --- a/kernel/rcu/tree_exp.h
-> > +++ b/kernel/rcu/tree_exp.h
-> > @@ -555,7 +555,8 @@ static bool synchronize_rcu_expedited_wait_once(long tlimit)
-> >  /*
-> >   * Print out an expedited RCU CPU stall warning message.
-> >   */
-> > -static void synchronize_rcu_expedited_stall(unsigned long jiffies_start, unsigned long j)
-> > +static void synchronize_rcu_expedited_stall(unsigned long jiffies_start, unsigned long j,
-> > +					    struct cpumask *stalled_mask)
-> >  {
-> >  	int cpu;
-> >  	unsigned long mask;
-> > @@ -578,6 +579,7 @@ static void synchronize_rcu_expedited_stall(unsigned long jiffies_start, unsigne
-> >  			if (!(READ_ONCE(rnp->expmask) & mask))
-> >  				continue;
-> >  			ndetected++;
-> > +			cpumask_set_cpu(cpu, stalled_mask);
-> >  			rdp = per_cpu_ptr(&rcu_data, cpu);
-> >  			pr_cont(" %d-%c%c%c%c", cpu,
-> >  				"O."[!!cpu_online(cpu)],
-> > @@ -665,17 +667,19 @@ static void synchronize_rcu_expedited_wait(void)
-> >  		if (rcu_stall_is_suppressed())
-> >  			continue;
-> >  
-> > +		cpumask_clear(&rcu_exp_stall_cpumask);
-> > +
-> >  		nbcon_cpu_emergency_enter();
-> >  
-> >  		j = jiffies;
-> >  		rcu_stall_notifier_call_chain(RCU_STALL_NOTIFY_EXP, (void *)(j - jiffies_start));
-> >  		trace_rcu_stall_warning(rcu_state.name, TPS("ExpeditedStall"));
-> > -		synchronize_rcu_expedited_stall(jiffies_start, j);
-> > +		synchronize_rcu_expedited_stall(jiffies_start, j, &rcu_exp_stall_cpumask);
-> 
-> Are we ever going to pass some other cpumask to this function?
-> 
-> I would not expect that the rcu_stall_cpumask would ever be passed in
-> here, for example.  And the two definitions in tree.c are visible to
-> the synchronize_rcu_expedited_stall() function.
-
-Agree, drop in v6, thanks!
-
-> 
-> Or am I missing something here?
-> 
-> >  		jiffies_stall = 3 * rcu_exp_jiffies_till_stall_check() + 3;
-> >  
-> >  		nbcon_cpu_emergency_exit();
-> >  
-> > -		panic_on_rcu_stall();
-> > +		panic_on_rcu_stall(&rcu_exp_stall_cpumask);
-> 
-> Now this one I get: This function is called from both normal and expedited
-> RCU CPU stall code.
-> 
-> >  	}
-> >  }
-> >  
-> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > index b67532cb8770..d0c4f193f17e 100644
-> > --- a/kernel/rcu/tree_stall.h
-> > +++ b/kernel/rcu/tree_stall.h
-> > @@ -159,7 +159,7 @@ static int __init check_cpu_stall_init(void)
-> >  early_initcall(check_cpu_stall_init);
-> >  
-> >  /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
-> > -static void panic_on_rcu_stall(void)
-> > +static void panic_on_rcu_stall(const struct cpumask *stalled_mask)
-> >  {
-> >  	static int cpu_stall;
-> >  
-> > @@ -167,7 +167,7 @@ static void panic_on_rcu_stall(void)
-> >  	 * Attempt to kick out the BPF scheduler if it's installed and defer
-> >  	 * the panic to give the system a chance to recover.
-> >  	 */
-> > -	if (scx_rcu_cpu_stall())
-> > +	if (scx_rcu_cpu_stall(stalled_mask))
-> >  		return;
-> >  
-> >  	if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
-> > @@ -645,6 +645,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
-> >  	if (rcu_stall_is_suppressed())
-> >  		return;
-> >  
-> > +	cpumask_clear(&rcu_stall_cpumask);
-> > +
-> >  	nbcon_cpu_emergency_enter();
-> >  
-> >  	/*
-> > @@ -660,6 +662,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
-> >  			for_each_leaf_node_possible_cpu(rnp, cpu)
-> >  				if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu)) {
-> >  					print_cpu_stall_info(cpu);
-> > +					cpumask_set_cpu(cpu, &rcu_stall_cpumask);
-> >  					ndetected++;
-> >  				}
-> >  		}
-> > @@ -701,7 +704,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
-> >  
-> >  	nbcon_cpu_emergency_exit();
-> >  
-> > -	panic_on_rcu_stall();
-> > +	panic_on_rcu_stall(&rcu_stall_cpumask);
-> >  
-> >  	rcu_force_quiescent_state();  /* Kick them all. */
-> >  }
-> > @@ -754,7 +757,9 @@ static void print_cpu_stall(unsigned long gp_seq, unsigned long gps)
-> >  
-> >  	nbcon_cpu_emergency_exit();
-> >  
-> > -	panic_on_rcu_stall();
-> > +	cpumask_clear(&rcu_stall_cpumask);
-> > +	cpumask_set_cpu(smp_processor_id(), &rcu_stall_cpumask);
-> > +	panic_on_rcu_stall(&rcu_stall_cpumask);
-> >  
-> >  	/*
-> >  	 * Attempt to revive the RCU machinery by forcing a context switch.
-> > diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-> > index 22b1356aa4eb..7bf3c22d573e 100644
-> > --- a/kernel/sched/ext.c
-> > +++ b/kernel/sched/ext.c
-> > @@ -4948,6 +4948,8 @@ static const struct attribute_group scx_global_attr_group = {
-> >  
-> >  static void free_pnode(struct scx_sched_pnode *pnode);
-> >  static void free_exit_info(struct scx_exit_info *ei);
-> > +static const char *scx_exit_reason(enum scx_exit_kind kind);
-> > +static bool scx_claim_exit(struct scx_sched *sch, enum scx_exit_kind kind);
-> >  
-> >  static void scx_sched_free_rcu_work(struct work_struct *work)
-> >  {
-> > @@ -4962,6 +4964,7 @@ static void scx_sched_free_rcu_work(struct work_struct *work)
-> >  	timer_shutdown_sync(&sch->bypass_lb_timer);
-> >  	free_cpumask_var(sch->bypass_lb_donee_cpumask);
-> >  	free_cpumask_var(sch->bypass_lb_resched_cpumask);
-> > +	free_cpumask_var(sch->stall_cpus);
-> >  
-> >  #ifdef CONFIG_EXT_SUB_SCHED
-> >  	kfree(sch->cgrp_path);
-> > @@ -5187,9 +5190,46 @@ static __printf(2, 3) bool handle_lockup(int exit_cpu, const char *fmt, ...)
-> >   * resolve the reported RCU stall. %false if sched_ext is not enabled or someone
-> >   * else already initiated abort.
-> >   */
-> > -bool scx_rcu_cpu_stall(void)
-> > +bool scx_rcu_cpu_stall(const struct cpumask *stalled_mask)
-> >  {
-> > -	return handle_lockup(-1, "RCU CPU stall detected!");
-> > +	struct scx_sched *sch;
-> > +	struct scx_exit_info *ei;
-> > +	int exit_cpu;
-> > +
-> > +	guard(rcu)();
-> > +
-> > +	sch = rcu_dereference(scx_root);
-> > +	if (unlikely(!sch))
-> > +		return false;
-> > +
-> > +	switch (scx_enable_state()) {
-> > +	case SCX_ENABLING:
-> > +	case SCX_ENABLED:
-> > +		break;
-> > +	default:
-> > +		return false;
-> > +	}
-> > +
-> > +	exit_cpu = cpumask_empty(stalled_mask) ? -1 : (int)cpumask_first(stalled_mask);
-> > +	ei = sch->exit_info;
-> > +
-> > +	guard(preempt)();
-> > +
-> > +	if (!scx_claim_exit(sch, SCX_EXIT_ERROR))
-> > +		return false;
-> > +
-> > +#ifdef CONFIG_STACKTRACE
-> > +	ei->bt_len = stack_trace_save(ei->bt, SCX_EXIT_BT_LEN, 1);
-> > +#endif
-> > +	scnprintf(ei->msg, SCX_EXIT_MSG_LEN, "RCU CPU stall on CPUs (%*pbl)",
-> > +		  cpumask_pr_args(stalled_mask));
-> > +	ei->kind = SCX_EXIT_ERROR;
-> > +	ei->reason = scx_exit_reason(SCX_EXIT_ERROR);
-> > +	ei->exit_cpu = exit_cpu;
-> > +	cpumask_copy(sch->stall_cpus, stalled_mask);
-> > +
-> > +	irq_work_queue(&sch->disable_irq_work);
-> > +	return true;
-> >  }
-> >  
-> >  /**
-> > @@ -6608,14 +6648,23 @@ static void scx_dump_state(struct scx_sched *sch, struct scx_exit_info *ei,
-> >  	dump_line(&s, "----------");
-> >  
-> >  	/*
-> > -	 * Dump the exit CPU first so it isn't lost to dump truncation, then
-> > -	 * walk the rest in order, skipping the one already dumped.
-> > +	 * Dump stalled CPUs first so they aren't lost to dump truncation, then
-> > +	 * walk the rest in order. Fall back to exit_cpu if no stall mask set.
-> >  	 */
-> > -	if (ei->exit_cpu >= 0)
-> > -		scx_dump_cpu(sch, &s, &dctx, ei->exit_cpu, dump_all_tasks);
-> > -	for_each_possible_cpu(cpu) {
-> > -		if (cpu != ei->exit_cpu)
-> > +	if (!cpumask_empty(sch->stall_cpus)) {
-> > +		for_each_cpu(cpu, sch->stall_cpus)
-> >  			scx_dump_cpu(sch, &s, &dctx, cpu, dump_all_tasks);
-> > +		for_each_possible_cpu(cpu) {
-> > +			if (!cpumask_test_cpu(cpu, sch->stall_cpus))
-> > +				scx_dump_cpu(sch, &s, &dctx, cpu, dump_all_tasks);
-> > +		}
-> > +	} else {
-> > +		if (ei->exit_cpu >= 0)
-> > +			scx_dump_cpu(sch, &s, &dctx, ei->exit_cpu, dump_all_tasks);
-> > +		for_each_possible_cpu(cpu) {
-> > +			if (cpu != ei->exit_cpu)
-> > +				scx_dump_cpu(sch, &s, &dctx, cpu, dump_all_tasks);
-> > +		}
-> >  	}
-> >  
-> >  	dump_newline(&s);
-> > @@ -6851,6 +6900,10 @@ static struct scx_sched *scx_alloc_and_add_sched(struct scx_enable_cmd *cmd,
-> >  		ret = -ENOMEM;
-> >  		goto err_free_lb_cpumask;
-> >  	}
-> > +	if (!zalloc_cpumask_var(&sch->stall_cpus, GFP_KERNEL)) {
-> > +		ret = -ENOMEM;
-> > +		goto err_free_lb_resched_cpumask;
-> > +	}
-> >  	/*
-> >  	 * Copy ops through the right union view. For cid-form the source is
-> >  	 * struct sched_ext_ops_cid which lacks the trailing cpu_acquire/
-> > @@ -6920,8 +6973,10 @@ static struct scx_sched *scx_alloc_and_add_sched(struct scx_enable_cmd *cmd,
-> >  #ifdef CONFIG_EXT_SUB_SCHED
-> >  err_free_lb_resched:
-> >  	RCU_INIT_POINTER(ops->priv, NULL);
-> > -	free_cpumask_var(sch->bypass_lb_resched_cpumask);
-> > +	free_cpumask_var(sch->stall_cpus);
-> >  #endif
-> > +err_free_lb_resched_cpumask:
-> > +	free_cpumask_var(sch->bypass_lb_resched_cpumask);
-> >  err_free_lb_cpumask:
-> >  	free_cpumask_var(sch->bypass_lb_donee_cpumask);
-> >  err_stop_helper:
-> > diff --git a/kernel/sched/ext_internal.h b/kernel/sched/ext_internal.h
-> > index 3ccfea06cba0..f51f03868ff7 100644
-> > --- a/kernel/sched/ext_internal.h
-> > +++ b/kernel/sched/ext_internal.h
-> > @@ -1178,6 +1178,7 @@ struct scx_sched {
-> >  	struct timer_list	bypass_lb_timer;
-> >  	cpumask_var_t		bypass_lb_donee_cpumask;
-> >  	cpumask_var_t		bypass_lb_resched_cpumask;
-> > +	cpumask_var_t		stall_cpus;
-> >  	struct rcu_work		rcu_work;
-> >  
-> >  	/* all ancestors including self */
-> > -- 
-> > 2.48.1
-> > 
-
--- 
-Cheers,
-Cheng-Yang
+On Fri, 29 May 2026 08:36:16 -0700=0D
+"Paul E. McKenney" <paulmck@kernel.org> wrote:=0D
+=0D
+> On Thu, May 28, 2026 at 01:23:39PM +0100, Gary Guo wrote:=0D
+> > On Thu May 28, 2026 at 9:35 AM BST, Onur =C3=96zkan wrote:=0D
+> > > On Thu, 28 May 2026 11:20:10 +0300=0D
+> > > Onur =C3=96zkan <work@onurozkan.dev> wrote:=0D
+> > >=0D
+> > >> On Thu, 28 May 2026 09:27:35 +0300=0D
+> > >> Onur =C3=96zkan <work@onurozkan.dev> wrote:=0D
+> > >> =0D
+> > >> > Add a Rust abstraction for sleepable RCU (SRCU), backed by C srcu_=
+struct.=0D
+> > >> > Provide FFI helpers and a safe wrapper with a guard-based API for =
+read-side=0D
+> > >> > critical sections.=0D
+> > >> > =0D
+> > >> > Cleanup is handled via `PinnedDrop`, which explicitly drains pendi=
+ng grace=0D
+> > >> > periods and callbacks via `synchronize_srcu` and `srcu_barrier` be=
+fore=0D
+> > >> > executing `cleanup_srcu_struct` to guarantee memory safety e.g. wh=
+en there=0D
+> > >> > are leaked guards (via `mem::forget($guard)`).=0D
+> > >> > =0D
+> > >> > Signed-off-by: Onur =C3=96zkan <work@onurozkan.dev>=0D
+> > >> > ---=0D
+> > >> >  rust/kernel/sync.rs      |   2 +=0D
+> > >> >  rust/kernel/sync/srcu.rs | 166 ++++++++++++++++++++++++++++++++++=
++++++=0D
+> > >> >  2 files changed, 168 insertions(+)=0D
+> > >> >  create mode 100644 rust/kernel/sync/srcu.rs=0D
+> > >> > =0D
+> > >> > diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs=0D
+> > >> > index 993dbf2caa0e..0d6a5f1300c3 100644=0D
+> > >> > --- a/rust/kernel/sync.rs=0D
+> > >> > +++ b/rust/kernel/sync.rs=0D
+> > >> > @@ -21,6 +21,7 @@=0D
+> > >> >  pub mod rcu;=0D
+> > >> >  mod refcount;=0D
+> > >> >  mod set_once;=0D
+> > >> > +pub mod srcu;=0D
+> > >> >  =0D
+> > >> >  pub use arc::{Arc, ArcBorrow, UniqueArc};=0D
+> > >> >  pub use completion::Completion;=0D
+> > >> > @@ -31,6 +32,7 @@=0D
+> > >> >  pub use locked_by::LockedBy;=0D
+> > >> >  pub use refcount::Refcount;=0D
+> > >> >  pub use set_once::SetOnce;=0D
+> > >> > +pub use srcu::Srcu;=0D
+> > >> >  =0D
+> > >> >  /// Represents a lockdep class.=0D
+> > >> >  ///=0D
+> > >> > diff --git a/rust/kernel/sync/srcu.rs b/rust/kernel/sync/srcu.rs=0D
+> > >> > new file mode 100644=0D
+> > >> > index 000000000000..343f00d070c7=0D
+> > >> > --- /dev/null=0D
+> > >> > +++ b/rust/kernel/sync/srcu.rs=0D
+> > >> > @@ -0,0 +1,166 @@=0D
+> > >> > +// SPDX-License-Identifier: GPL-2.0=0D
+> > >> > +=0D
+> > >> > +//! Sleepable read-copy update (SRCU) support.=0D
+> > >> > +//!=0D
+> > >> > +//! C header: [`include/linux/srcu.h`](srctree/include/linux/srcu=
+.h)=0D
+> > >> > +=0D
+> > >> > +use crate::{=0D
+> > >> > +    bindings,=0D
+> > >> > +    error::to_result,=0D
+> > >> > +    prelude::*,=0D
+> > >> > +    sync::LockClassKey,=0D
+> > >> > +    types::{=0D
+> > >> > +        NotThreadSafe,=0D
+> > >> > +        Opaque, //=0D
+> > >> > +    },=0D
+> > >> > +};=0D
+> > >> > +=0D
+> > >> > +use pin_init::pin_data;=0D
+> > >> > +=0D
+> > >> > +/// Creates an [`Srcu`] initialiser with the given name and a new=
+ly-created lock class.=0D
+> > >> > +#[doc(hidden)]=0D
+> > >> > +#[macro_export]=0D
+> > >> > +macro_rules! new_srcu {=0D
+> > >> > +    ($($name:literal)?) =3D> {=0D
+> > >> > +        $crate::sync::Srcu::new($crate::optional_name!($($name)?)=
+, $crate::static_lock_class!())=0D
+> > >> > +    };=0D
+> > >> > +}=0D
+> > >> > +pub use new_srcu;=0D
+> > >> > +=0D
+> > >> > +/// Sleepable read-copy update primitive.=0D
+> > >> > +///=0D
+> > >> > +/// SRCU readers may sleep while holding the read-side guard.=0D
+> > >> > +///=0D
+> > >> > +/// The destructor waits for active readers and callbacks, so it =
+may sleep.=0D
+> > >> > +/// If a read-side guard has been leaked, dropping an [`Srcu`] ma=
+y never return.=0D
+> > >> > +///=0D
+> > >> > +/// # Invariants=0D
+> > >> > +///=0D
+> > >> > +/// This represents a valid `struct srcu_struct` initialized by t=
+he C SRCU API=0D
+> > >> > +/// and it remains pinned and valid until the pinned destructor r=
+uns.=0D
+> > >> > +#[repr(transparent)]=0D
+> > >> > +#[pin_data(PinnedDrop)]=0D
+> > >> > +pub struct Srcu {=0D
+> > >> > +    #[pin]=0D
+> > >> > +    inner: Opaque<bindings::srcu_struct>,=0D
+> > >> > +}=0D
+> > >> > +=0D
+> > >> > +impl Srcu {=0D
+> > >> > +    /// Creates a new SRCU instance.=0D
+> > >> > +    #[inline]=0D
+> > >> > +    pub fn new(name: &'static CStr, key: Pin<&'static LockClassKe=
+y>) -> impl PinInit<Self, Error> {=0D
+> > >> > +        try_pin_init!(Self {=0D
+> > >> > +            // INVARIANT: On success, the C initializer creates a=
+ valid `srcu_struct` and=0D
+> > >> > +            // it remains pinned until `PinnedDrop` runs.=0D
+> > >> > +            inner <- Opaque::try_ffi_init(|ptr: *mut bindings::sr=
+cu_struct| {=0D
+> > >> > +                // SAFETY: `ptr` points to valid uninitialised me=
+mory for a `srcu_struct`.=0D
+> > >> > +                to_result(unsafe {=0D
+> > >> > +                    bindings::init_srcu_struct_with_key(ptr, name=
+.as_char_ptr(), key.as_ptr())=0D
+> > >> > +                })=0D
+> > >> > +            }),=0D
+> > >> > +        })=0D
+> > >> > +    }=0D
+> > >> > +=0D
+> > >> > +    /// Enters an SRCU read-side critical section.=0D
+> > >> > +    ///=0D
+> > >> > +    /// Leaking the returned [`Guard`] leaves the SRCU read-side =
+critical=0D
+> > >> > +    /// section active and makes `drop` sleep forever.=0D
+> > >> > +    #[inline]=0D
+> > >> > +    pub fn read_lock(&self) -> Guard<'_> {=0D
+> > >> > +        // SAFETY: By the type invariants, `self` contains a vali=
+d `struct srcu_struct`.=0D
+> > >> > +        let idx =3D unsafe { bindings::srcu_read_lock(self.inner.=
+get()) };=0D
+> > >> > +=0D
+> > >> > +        // INVARIANT: `idx` was returned by `srcu_read_lock()` fo=
+r this `Srcu`.=0D
+> > >> > +        Guard {=0D
+> > >> > +            srcu: self,=0D
+> > >> > +            idx,=0D
+> > >> > +            _not_send: NotThreadSafe,=0D
+> > >> > +        }=0D
+> > >> > +    }=0D
+> > >> > +=0D
+> > >> > +    /// Waits until all pre-existing SRCU readers have completed.=
+=0D
+> > >> > +    #[inline]=0D
+> > >> > +    pub fn synchronize(&self) {=0D
+> > >> > +        // SAFETY: By the type invariants, `self` contains a vali=
+d `struct srcu_struct`.=0D
+> > >> > +        unsafe { bindings::synchronize_srcu(self.inner.get()) };=
+=0D
+> > >> > +    }=0D
+> > >> > +=0D
+> > >> > +    /// Waits until all pre-existing SRCU readers have completed,=
+ expedited.=0D
+> > >> > +    ///=0D
+> > >> > +    /// This requests a lower-latency grace period than [`Srcu::s=
+ynchronize`] typically=0D
+> > >> > +    /// at the cost of higher system-wide overhead. Prefer [`Srcu=
+::synchronize`] by default=0D
+> > >> > +    /// and use this variant only when reducing reset or teardown=
+ latency is more important=0D
+> > >> > +    /// than the extra cost.=0D
+> > >> > +    #[inline]=0D
+> > >> > +    pub fn synchronize_expedited(&self) {=0D
+> > >> > +        // SAFETY: By the type invariants, `self` contains a vali=
+d `struct srcu_struct`.=0D
+> > >> > +        unsafe { bindings::synchronize_srcu_expedited(self.inner.=
+get()) };=0D
+> > >> > +    }=0D
+> > >> > +}=0D
+> > >> > +=0D
+> > >> > +#[pinned_drop]=0D
+> > >> > +impl PinnedDrop for Srcu {=0D
+> > >> > +    fn drop(self: Pin<&mut Self>) {=0D
+> > >> > +        let ptr =3D self.inner.get();=0D
+> > >> > +=0D
+> > >> > +        // SAFETY: By the type invariants, `self` contains a vali=
+d and pinned `struct srcu_struct`=0D
+> > >> > +        // and `srcu_readers_active()` only checks the active rea=
+der count.=0D
+> > >> > +        if unsafe { bindings::srcu_readers_active(ptr) } {=0D
+> > >> > +            crate::pr_warn!(=0D
+> > >> > +                "Leaked `Guard` detected while dropping SRCU; dro=
+p will block forever.\n"=0D
+> > >> > +            );=0D
+> > =0D
+> > I think this could be a `warn_on` similar to how cleanup_srcu_struct ha=
+ndle the=0D
+> > condition.=0D
+> > =0D
+> > >> > +        }=0D
+> > >> > +=0D
+> > >> > +        // `cleanup_srcu_struct()` may return early if readers ar=
+e still active. Because `Srcu`=0D
+> > >> > +        // owns the embedded `srcu_struct`, returning from `drop`=
+ in that state could free memory=0D
+> > >> > +        // that is still referenced by the C side.=0D
+> > >> > +        //=0D
+> > >> > +        // Wait for all readers to complete first. If any `Guard`=
+ was leaked, `synchronize_srcu()`=0D
+> > >> > +        // will sleep forever.=0D
+> > >> > +        //=0D
+> > >> > +        // SAFETY: By the type invariants, `self` contains a vali=
+d and pinned `struct srcu_struct`.=0D
+> > >> > +        unsafe { bindings::synchronize_srcu(ptr) };=0D
+> > >> =0D
+> > >> Sashiko got a good point here which is calling synchronize_srcu() on=
+ly if there=0D
+> > >> are active readers. That's a nice low-effort improvement we can have=
+ in the next=0D
+> > >> version.=0D
+> > >> =0D
+> > >> Onur=0D
+> > >=0D
+> > > Actually, now I am now thinking about whether we can come up with a b=
+etter=0D
+> > > approach when we detect leaked guards. Initially I came up with the=0D
+> > > synchronize_srcu() solution because it would handle leaked guards aut=
+omatically=0D
+> > > without requiring any additional checks. But now that we can actually=
+ detect=0D
+> > > whether guards are leaked the question becomes:=0D
+> > >=0D
+> > > 	"Is there a better option than effectively sleeping forever when lea=
+ked=0D
+> > > 	 guards are detected?"=0D
+> > >=0D
+> > > I have no plans for tomorrow other than finalizing this series includ=
+ing the=0D
+> > > question above.=0D
+> > =0D
+> > The best solution is to proceed cleanups anyway, given Rust rules ensur=
+e that=0D
+> > these are actual leaks and not just srcu read-side critical section tha=
+t failed=0D
+> > to synchronize with the destruction of SRCU.=0D
+> > =0D
+> > This obviously require changes to the SRCU code though.=0D
+> =0D
+> Right now, the C-language SRCU code would splat and leak the srcu_struct=
+=0D
+> structure.  Of course, we *could* provide something that zeroed the=0D
+> reader counts to avoid the splat and leak, but yikes!  Or is there a=0D
+> way to make such a function available *only* to the Rust code associated=
+=0D
+> with cleanup_srcu_struct(), and not to other C/Rust code?=0D
+> =0D
+=0D
+=0D
+Anyone can use them if they want from `bindings::` once it's exposed to Rus=
+t.=0D
+=0D
+Regards,=0D
+Onur=0D
+=0D
+> 							Thanx, Paul=0D
