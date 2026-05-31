@@ -1,172 +1,151 @@
-Received: from mail-106111.protonmail.ch (mail-106111.protonmail.ch [79.135.106.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A63DF233944;
-	Sat, 30 May 2026 19:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5823390C84
+	for <rcu@vger.kernel.org>; Sun, 31 May 2026 15:27:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780167866; cv=none; b=RJN41dv3V+3yu0FRXlO8Jp0aILfnGjHgwYnpAwhPGw85OlbRMK4mfOUDUJeL0TDuDzKGyq1P2AW/DFU53rf7EPMaVEt6xvSIQJg1dJuAfUheZsnYd2p2F5o5+rJ+yYelvkLV9ijaMABRScmwJ34tjuTkMea32GKE/RZCQ28LVH0=
+	t=1780241276; cv=none; b=OYJgJUWfxJNX+3G7mG6mdwuPM43UPYJ2+MLS5XSYAV+SU2uySUcWk5PmVKjWvngTafNF+0pKD4ujauxV/RqAaTfDGaKtyRKkLA1VOZ47y0SPsrC0TL30Ro6yGSLvvxssRCi8hau5gywitypCw/Aov+hjkv2JSX7myJoI8L2LUfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780167866; c=relaxed/simple;
-	bh=/T7UrSU5XCpZvw2C38x2jiVi8ogoTB6rNVHoeLNhCgs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HEgn5EXhUjs6ghK8/tiMj22vpBE7qTMPS9hf9V7kYo7Q6wlTU8VkDbNvf7liNjfPlbKbn5jMVKQXURNaGqcYXfkEDRY8iSAk+dxQZB/RbCUvgej/ea1cZm2qsAJqtP3ftLubWHWu+VpfnEVh2ntaRZKENLflWAm4tr7YJeo/zCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=EvuLNOXj; arc=none smtp.client-ip=79.135.106.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onurozkan.dev
+	s=arc-20240116; t=1780241276; c=relaxed/simple;
+	bh=VjCJylqdfAQWj9+KnBFgVKqM4UADrEfypRh5XSComKI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oHM4LAdERWrCV3vs9yVKWh8OOWliwcF90LsiZ5HsLXHwO5OhO43pTkDsjLk1gB7ce9xqw8sTSOQz3VM3Jbkg7XBmzQmnJIgWVisNQp06vTW/AS7wgjuhfK+eWVqUc+wu1/Esf6Ft0HBoHj2EMltIigbUzMCH0DBgtoGb+/WsIsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GmWQdsX3; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="EvuLNOXj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onurozkan.dev;
-	s=protonmail; t=1780167860; x=1780427060;
-	bh=rdkfGcD4WFq4qnJGm76D2aHxb8DVkQ+0+svroCGwR+c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:From:To:
-	 Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=EvuLNOXj9OQ5ISV9XHCDHHBKluke/xz4jMA/Ky+5Eq8BF1RdLdbZ9Phu4/XKnKtG2
-	 gaH2WTiaDYCLCM5bsgV8RZ7p1NyVENE7zM4HVfRHjL8We5mOSMUhCdSRhqKQkw/5ta
-	 6DbYEcUs7Jg83qK7auzCn5NtWdGxwgGEc+R2IWTQ9CCXWU8Ldso0NZrUELJgzAtmUf
-	 4ie7UvAt7T5ECIoqdXygsWzK7hy468Xv0wEhfAo3IoqwUl6IHjTNmGgw3MJWXqk1C2
-	 H8IGxU+uZrJxgkiPXlrmvQkzQjJHg1AMIJNYE+Ib1kSdWdAOtDvJNtWA+6+toxiCmW
-	 C+kYZDpsPInZg==
-X-Pm-Submission-Id: 4gSV5C5tXkz1DDL0
-From: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Gary Guo <gary@garyguo.net>,
-	rcu@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ojeda@kernel.org,
-	boqun@kernel.org,
-	bjorn3_gh@protonmail.com,
-	lossin@kernel.org,
-	a.hindborg@kernel.org,
-	aliceryhl@google.com,
-	tmgross@umich.edu,
-	dakr@kernel.org,
-	peterz@infradead.org,
-	fujita.tomonori@gmail.com,
-	tamird@kernel.org,
-	jiangshanlai@gmail.com,
-	josh@joshtriplett.org,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v8 1/4] rust: helpers: add SRCU helpers
-Date: Sat, 30 May 2026 22:04:10 +0300
-Message-ID: <20260530190413.15079-1-work@onurozkan.dev>
-X-Mailer: git-send-email 2.51.2
-In-Reply-To: <dbcfbe88-0103-41e1-8650-4c559112547d@paulmck-laptop>
-References: <20260529114449.112066-1-work@onurozkan.dev> <20260529114449.112066-2-work@onurozkan.dev> <DIV55HYTKCM3.23VXO47N90C9G@garyguo.net> <20260529120759.145202-1-work@onurozkan.dev> <DIV5JADSFZEM.3DV46U1BI4EYS@garyguo.net> <dbcfbe88-0103-41e1-8650-4c559112547d@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GmWQdsX3"
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2c0c1e0b0faso3425485ad.0
+        for <rcu@vger.kernel.org>; Sun, 31 May 2026 08:27:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780241274; x=1780846074; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/8U6hfJxoj/rPCBmp3s7bgS+TKfume2zkXAj7Af2fpo=;
+        b=GmWQdsX342DnIk/zgPdjM2rGAfqPUiryO7o5E36Kt4F5ToPq0nX3wIv22hj6OGvk3Y
+         Y1yriq81cSO+iKW4HezUk29GtZ0nUVznx53ErG5pCx7+4YEzKfY/2jWQQfUn367fuHkq
+         nnaJziZJf9sccZSWdtfK3lzd+6t3UzuoiOs8NWTeeIG1sugEyY4HNruzmvMaaOxeKvLg
+         gY0L2UI4toWOfPHQQcAL/23E9h7Wfz7sHrFCYovAsoCsNLGiZciGtYd6QECeRjVyyi9O
+         KNf10CR0WzVsLcM+m3o+DXlFvhpHKHMNIX/IBvNqyj2qrdoNclPwmpBX5t3kwGsaYapz
+         c4wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780241274; x=1780846074;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/8U6hfJxoj/rPCBmp3s7bgS+TKfume2zkXAj7Af2fpo=;
+        b=ShZ/jpgm+Ly1419y3eEdemfufs0JfGHl00gPxuipMrMYSXBvWbASDkMLI1cD0MJ6sY
+         07IYsIW+aYSchs9bwi2b51iYxAV6xn/0N99Djbs6vNOhmQL7HatGpZ6i6JUSbFMnRPI1
+         9MXgTsUY1siIKD1U//FDMcrH153c8iylWhQP8RAFXmh5ZmZmcEW5yBkZ0/Tzg8C8yFfd
+         0q2FvEvFzcdVIi8AVlorqawblfJEwUOEsxzMqdX8RCyG1c3suiuFChCpG1a4+yq9KgCl
+         PlHvq215zOdTSfEyuOzUhsEMVJNvH74IeSNbM5EWa8/fh1jX1PkqK/gFijN20W3bP2ky
+         HbBg==
+X-Forwarded-Encrypted: i=1; AFNElJ9/zMUe7BJqi6URvku3YdMWyoJpzlU11SEfqwtTUQEGXjEUUEN/SFEKEcUJ+oi1ayIJQwA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YypvA8H28rZvBcQk1mt20JTOcFzFxP3zNwK+AEwpQZWwdaLI9Zp
+	swpftNECnqtHan3nV9oWUbEeznQOOL+jLb6+fxdGtLTc8U8owr8fMSf1
+X-Gm-Gg: Acq92OE9R82z7Vt0wVOj5HOuOhTh/XrK/U7fag64jgGLEXhauolL5gxCP5/LvueQaVB
+	cWhRsKE3n1ZPAvSC30LbYeYurqkGfbzmpOgBJSLvjUEznWezoKH2CjCdF1miBNkpftck6d4il8A
+	Zs9wxilSiW+NikVsDFLse8nnSRhL7RUHp1GuCyDPMcMdN3te32VAUz+Z3Tad4hs0wXH1nE4VPEc
+	ksNY3MNk6AqJ5zYHKHPPxSIdFrwFqlpyQHsqDAgXj8Wk8Qk4xth1nvQXB/+AS+GPbB0z7JhJIBY
+	up7QUIq2jykFJYIu3nX8QMSG9ox0GTT7nCM1Pbp4/0EXSJA+87bw55uZUNZPUolvYS6+FHsZNw0
+	Oqnlm18WjQjGHnCH/9REMAw39GZXEOzSa6Iqq/wqFjycR0IzO3LPvg55V7wPtX3lVMaCCo+A7R1
+	VXyu7aH3pOzyxrcRhR8hOAl+dE/ahP4U4hAoSgFfyhAzXzpbYhPdBE3Jm0cejTQF4=
+X-Received: by 2002:a17:903:8c8:b0:2bf:2256:7334 with SMTP id d9443c01a7336-2bf36828b0amr76246415ad.24.1780241273958;
+        Sun, 31 May 2026 08:27:53 -0700 (PDT)
+Received: from eric-wcnlab.tail151456.ts.net ([2001:288:7001:1099:1fc8:a0da:7205:7281])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2bf23a00c13sm83921845ad.28.2026.05.31.08.27.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 May 2026 08:27:53 -0700 (PDT)
+From: Cheng-Yang Chou <yphbchou0911@gmail.com>
+To: sched-ext@lists.linux.dev,
+	Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Andrea Righi <arighi@nvidia.com>,
+	Changwoo Min <changwoo@igalia.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	rcu@vger.kernel.org
+Cc: Ching-Chun Huang <jserv@ccns.ncku.edu.tw>,
+	Chia-Ping Tsai <chia7712@gmail.com>,
+	Cheng-Yang Chou <yphbchou0911@gmail.com>
+Subject: [PATCH v6 sched_ext/for-7.2 0/2] sched_ext: Follow-up fixes for exit_cpu accuracy
+Date: Sun, 31 May 2026 23:25:25 +0800
+Message-ID: <20260531152646.1206799-1-yphbchou0911@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sat, 30 May 2026 12:01:21 -0700=0D
-"Paul E. McKenney" <paulmck@kernel.org> wrote:=0D
-=0D
-> On Fri, May 29, 2026 at 01:16:17PM +0100, Gary Guo wrote:=0D
-> > On Fri May 29, 2026 at 1:07 PM BST, Onur =C3=96zkan wrote:=0D
-> > > On Fri, 29 May 2026 12:58:17 +0100=0D
-> > > Gary Guo <gary@garyguo.net> wrote:=0D
-> > >=0D
-> > >> On Fri May 29, 2026 at 12:43 PM BST, Onur =C3=96zkan wrote:=0D
-> > >> > Add helper wrappers for SRCU functions that are exposed to Rust=0D
-> > >> > through generated bindings.=0D
-> > >> >=0D
-> > >> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>=0D
-> > >> > Signed-off-by: Onur =C3=96zkan <work@onurozkan.dev>=0D
-> > >> > ---=0D
-> > >> >  include/linux/srcu.h   |  5 +++++=0D
-> > >> >  rust/helpers/helpers.c |  1 +=0D
-> > >> >  rust/helpers/srcu.c    | 30 ++++++++++++++++++++++++++++++=0D
-> > >> >  3 files changed, 36 insertions(+)=0D
-> > >> >  create mode 100644 rust/helpers/srcu.c=0D
-> > >> >=0D
-> > >> > diff --git a/include/linux/srcu.h b/include/linux/srcu.h=0D
-> > >> > index 81b1938512d5..790a4ef713c0 100644=0D
-> > >> > --- a/include/linux/srcu.h=0D
-> > >> > +++ b/include/linux/srcu.h=0D
-> > >> > @@ -57,6 +57,11 @@ int __init_srcu_struct_fast_updown(struct srcu_=
-struct *ssp, const char *name,=0D
-> > >> >  #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */=0D
-> > >> >  =0D
-> > >> >  int init_srcu_struct(struct srcu_struct *ssp);=0D
-> > >> > +static inline int __init_srcu_struct(struct srcu_struct *ssp, con=
-st char *name,=0D
-> > >> > +				     struct lock_class_key *key)=0D
-> > >> > +{=0D
-> > >> > +	return init_srcu_struct(ssp);=0D
-> > >> > +}=0D
-> > >> =0D
-> > >> =0D
-> > >> This looks like a different strategy than, say, how mutex handles lo=
-ckdep. IMO=0D
-> > >> the way that mutex handles this is more clear.=0D
-> > >=0D
-> > > Initially it was the same strategy, this one was suggested by Paul [1=
-] and it=0D
-> > > didn't sound like a bad idea to me. Also, in previous revisions, Boqu=
-n once=0D
-> > > said:=0D
-> > =0D
-> > I'm talking about changing how this is handled in SRCU side, not helper=
- side.=0D
-> > =0D
-> > >=0D
-> > > 	"Having a "#ifdef" in a function body is generally considered as bad=
- code=0D
-> > > 	(I know we have some of these in rust helpers, but helpers are a bit=
-=0D
-> > > 	special and maybe we should clean them up). So could you move this=0D
-> > > 	function into include/linux/srcutiny.h and include/linux/srcutree.h?=
-"=0D
-> > =0D
-> > mutex.h doesn't use ifdef inside function body, it just define two stat=
-ic inline=0D
-> > functions with the same signature in different ifdef branches.=0D
-> =0D
-> True, but SRCU has the added complication of having different !SMP (Tiny)=
-=0D
-> and SMP (Tree) implementations.  On the other hand, it is quite possible=
-=0D
-> that I missed a trick when setting up this part of SRCU.  Please feel=0D
-> free to send a patch that simplifies it.=0D
-=0D
-It's on the list [1].=0D
-=0D
-Thanks,=0D
-Onur=0D
-=0D
-[1]: https://lore.kernel.org/all/20260529134004.396743-2-work@onurozkan.dev=
-=0D
-=0D
-> =0D
-> 							Thanx, Paul=0D
-> =0D
-> > Best,=0D
-> > Gary=0D
-> > =0D
-> > >=0D
-> > > So putting them together, I decided to follow Paul's suggestion.=0D
-> > >=0D
-> > > [1]: https://lore.kernel.org/all/05906890-cf06-414c-a625-02f9d7150d57=
-@paulmck-laptop=0D
-> > >=0D
-> > >> =0D
-> > >> If we follow the way mutex is handles this, the `init_srcu_struct` w=
-ould always=0D
-> > >> create lock class key and forward to `__init_srcu_struct`, and=0D
-> > >> `__init_srcu_struct` is an inline function that either calls=0D
-> > >> `init_srcu_struct_lockdep` with all args, or discard name/key and fo=
-rward to=0D
-> > >> `init_srcu_struct_mutex`.=0D
-> > >> =0D
-> > >> This is beneficial because the usage flows one way. You don't have i=
-n one config=0D
-> > >> `init_srcu_struct` call `__init_srcu_struct` and have the opposite i=
-n another=0D
-> > >> config, which I think can be quite confusing.=0D
-> > =0D
+Follow-up of Tejun's suggestion [1], discussed in v2 and the subsequent
+review thread [2].
+
+Patch 1 fixes exit_cpu accuracy for the hard lockup and softlockup
+paths. For the RCU stall path, -1 is used as a placeholder until
+patch 2 threads the cpumask.
+
+Patch 2 upgrades panic_on_rcu_stall() and scx_rcu_cpu_stall() to
+accept a cpumask of stalled CPUs, stored in scx_sched and piped
+directly to scx_dump_state().
+
+Based on sched_ext/for-next (b565a73baec2).
+
+Changes in v6:
+- Drop stalled_mask parameter from synchronize_rcu_expedited_stall()
+  (Paul McKenney).
+- Link to v5:
+  https://lore.kernel.org/r/20260521161636.1893894-1-yphbchou0911@gmail.com/
+
+Changes in v5:
+- Replace dynamic cpumask allocation in both RCU stall paths with static
+  rcu_stall_cpumask and rcu_exp_stall_cpumask (Paul McKenney).
+- Link to v4:
+  https://lore.kernel.org/r/20260519171745.1551340-1-yphbchou0911@gmail.com/
+
+Changes in v4:
+- Store stall mask in scx_sched rather than scx_exit_info (Tejun Heo).
+- Use __GFP_NOWARN for cpumask allocations in both RCU stall paths.
+- Link to v3:
+  https://lore.kernel.org/r/20260518131311.1170786-1-yphbchou0911@gmail.com/
+
+Changes in v3:
+- Drop patch 1 of v2 ("Normalize exit dump header to 'on CPU N'"),
+  already applied to sched_ext/for-7.2.
+- Replace single stalled_cpu int with const struct cpumask * in
+  panic_on_rcu_stall() and scx_rcu_cpu_stall() (Paul McKenney, Tejun Heo).
+- Thread cpumask through the expedited stall path (Tejun Heo).
+- Falls back to cpu_none_mask on allocation failure.
+- Link to v2:
+  https://lore.kernel.org/r/20260504161543.674488-1-yphbchou0911@gmail.com/
+
+Changes in v2:
+- Use raw_smp_processor_id() in synchronize_rcu_expedited_wait() to
+  avoid CONFIG_DEBUG_PREEMPT splat.
+- Link to v1:
+  https://lore.kernel.org/r/20260501131521.161852-1-yphbchou0911@gmail.com/
+
+[1]: https://lore.kernel.org/r/e7cbfc99b52b4b7059267bb81498179f@kernel.org/
+[2]: https://lore.kernel.org/r/af0Gn47y1Lj2BAqd@slm.duckdns.org/
+
+Thanks,
+Cheng-Yang
+
+---
+Cheng-Yang Chou (2):
+  sched_ext: Fix exit_cpu accuracy for lockup paths
+  sched_ext, rcu: Upgrade RCU stall paths to report cpumask of stalled
+    CPUs
+
+ include/linux/sched/ext.h   |  4 +-
+ kernel/rcu/tree.c           |  3 ++
+ kernel/rcu/tree_exp.h       |  5 ++-
+ kernel/rcu/tree_stall.h     | 13 ++++--
+ kernel/sched/ext.c          | 85 +++++++++++++++++++++++++++++++------
+ kernel/sched/ext_internal.h |  3 +-
+ 6 files changed, 91 insertions(+), 22 deletions(-)
+
+-- 
+2.48.1
+
