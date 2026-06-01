@@ -1,57 +1,56 @@
 Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A224738911F;
-	Mon,  1 Jun 2026 07:56:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15935343D86;
+	Mon,  1 Jun 2026 08:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780300611; cv=none; b=L41vz1PF1CXrUn1ZSi7W6BTqVk0o2HAoflFdMSrNptHIR9u7wg/4+rmX/jjwTQnzIw6yE5D4oYsA4wTMB5CwXRBc81YgZ1piS/XC+OanZxU44Ilj6fONKW6AnehVNtxSoPHppkCGflyG0D6vWEAdpj4QJHOBXDxTfuDHF/FEkyE=
+	t=1780303605; cv=none; b=kZVXS3z10D0bClvSGtNuzaQpGYB75AnWMVSYvLFStuYZwakFZnSZzfJZtACcI4Qe8lWdS7Eag2sp4spmUn6msb3hx0JBEQVYmRxuP0c/cRnPiiyY3xafYbL2tnLS5FyMAP4xm0FwPIhoZWzm+X/dZF9vLLNDmxy/b3d4IrrysmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780300611; c=relaxed/simple;
-	bh=1URQBoGf9nbCa99ErlnRLlBGaMQP3UsUIruVAVDE5TI=;
+	s=arc-20240116; t=1780303605; c=relaxed/simple;
+	bh=TRfcJtRlchZEGxap6JkQGnGqe9tHTNUIeQjlYrEhxs0=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Aw6l5WZilGmUlIVRFzhDerFsJp3BSBkBRRn4gD40TB3ZIYJagvaU5/jqaFdUoTut8VapEDzt/kJ8x4f8PPiuA37aCJegR8yQgTitOCvDh67/IZWMVZL1l2NNMAmQ9+YRGjG+Gwyi5QLs/CgSUSudyHmXPQEmPkJ+D++zKNABAs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=P6Tgqh7K; arc=none smtp.client-ip=80.241.56.151
+	 Content-Type:MIME-Version; b=fbmd2gZcnm0KxwzpN7YQSL6WyxI4hbq6jZn8tDJVDkTWiLKuzsoQD24Ng3dBJMa1q81tgLVblkffmhGlV+5GjB6D+8P3sDeinJxH5lK3Ti63c9qqv5Ksfp0rBOQekuDGV4S/OM5bLu53ptEh7khxR7Yq/wYoreOoYTy5F41cq5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=l+L4lkx5; arc=none smtp.client-ip=80.241.56.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="P6Tgqh7K"
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="l+L4lkx5"
 Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4gTR9y1vJSz9tdy;
-	Mon,  1 Jun 2026 09:56:38 +0200 (CEST)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4gTSHh09Pdz9smP;
+	Mon,  1 Jun 2026 10:46:40 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1780300598; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	t=1780303600; h=from:from:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1URQBoGf9nbCa99ErlnRLlBGaMQP3UsUIruVAVDE5TI=;
-	b=P6Tgqh7KD/X5qaaXWBeT1qExrw/0YLeYi4ijpGMX/3Cx9TUlsP1fSuQlJfld5WULO4VlVe
-	vHJfKvdKSaTuaGI3tyTg3rqegfqVNGMCx5sc+E6bJlKbq4a6oEWcQqyDq1rHIUdlABLCG9
-	qJFB3AQ35NiJ5TzERL5/Bkico/0ZYs2q4y2zO6PGXjVc/EC9de8ybG62KoohaWsrePXg5/
-	J5x5MMQsIuAT6FCCbEkKxvFIO4JjTv2Ofgaz45TeDaOElXzcnJO9eEZEL9goX16MO2i2Bz
-	rh31T5bF8yHbkzj3Tq39au7ShEXjwuCBw39W6CUiDCUc5dsWKWNkKf+5SnFWtA==
-Message-ID: <e8b16f3b40d42f3b0a8814180fa9b06f82c9d901.camel@mailbox.org>
-Subject: Re: [PATCH 2/4] rust: rcu: add RcuBox type
+	bh=TRfcJtRlchZEGxap6JkQGnGqe9tHTNUIeQjlYrEhxs0=;
+	b=l+L4lkx5YykvlZQQ78XWjIA6WEdByX0p9ODGpQG0i7HCziAq8cfWlQaF04W54go7TCGLXY
+	SDxoOfHqTW1b7btZjZsYeCoazTQKE4F1DuXT7szg3AGSoiJpvOIChcaPDWRkI+bwWXXOnA
+	2k01Pio/CM829xoopFjDlv5vxLrjIzbcVb4rSWkQ5sdhC3IIeRBdub1LshfGjHODqiVjze
+	KaIWiCEHjRwq/+aXTNL2OyykkgJObBIkgKuBmUOMTDL9EVuw9hR/tzGOruI2TxU3GRpljy
+	g307wc/GZwe3P1/bXaT4sMwXvQCv/wsZe6FvghgoWUsGY+N+09vPF5CFPG79Ag==
+Message-ID: <08b87b07279e7774c76c0267b1d6c337f705acda.camel@mailbox.org>
+Subject: Re: [PATCH 3/4] rust: Add dma_fence abstractions
 From: Philipp Stanner <phasta@mailbox.org>
 Reply-To: phasta@kernel.org
-To: Boqun Feng <boqun@kernel.org>, Philipp Stanner <phasta@kernel.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>, 
- =?ISO-8859-1?Q?Bj=F6rn?= Roy Baron	 <bjorn3_gh@protonmail.com>, Benno
- Lossin <lossin@kernel.org>, Andreas Hindborg	 <a.hindborg@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>, Trevor Gross	 <tmgross@umich.edu>,
- Danilo Krummrich <dakr@kernel.org>, Sumit Semwal	
- <sumit.semwal@linaro.org>, Christian =?ISO-8859-1?Q?K=F6nig?=	
- <christian.koenig@amd.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
- Frederic Weisbecker	 <frederic@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
- Triplett <josh@joshtriplett.org>, Uladzislau Rezki	 <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers	
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
- Zqiang <qiang.zhang@linux.dev>, Daniel Almeida
+To: Danilo Krummrich <dakr@kernel.org>, Philipp Stanner <phasta@kernel.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Boqun Feng <boqun@kernel.org>, Gary Guo
+	 <gary@garyguo.net>, =?ISO-8859-1?Q?Bj=F6rn?= Roy Baron	
+ <bjorn3_gh@protonmail.com>, Benno Lossin <lossin@kernel.org>, Andreas
+ Hindborg	 <a.hindborg@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
+ Trevor Gross	 <tmgross@umich.edu>, Sumit Semwal <sumit.semwal@linaro.org>,
+ Christian =?ISO-8859-1?Q?K=F6nig?=	 <christian.koenig@amd.com>, "Paul E.
+ McKenney" <paulmck@kernel.org>,  Frederic Weisbecker	
+ <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel
+ Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>,
+ Uladzislau Rezki	 <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers	 <mathieu.desnoyers@efficios.com>, Lai Jiangshan
+ <jiangshanlai@gmail.com>,  Zqiang <qiang.zhang@linux.dev>, Daniel Almeida
  <daniel.almeida@collabora.com>, Greg Kroah-Hartman
  <gregkh@linuxfoundation.org>, Igor Korotin <igor.korotin@linux.dev>,
  Lorenzo Stoakes	 <ljs@kernel.org>, Alexandre Courbot <acourbot@nvidia.com>,
@@ -61,346 +60,157 @@ Cc: Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
 	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
 	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
 	linaro-mm-sig@lists.linaro.org, rcu@vger.kernel.org
-Date: Mon, 01 Jun 2026 09:56:23 +0200
-In-Reply-To: <ahr9gtzQLSbPeBx_@tardis.local>
+Date: Mon, 01 Jun 2026 10:46:19 +0200
+In-Reply-To: <DIW3ZK5NLKU3.1QYMQB0ISHFBG@kernel.org>
 References: <20260530143541.229628-2-phasta@kernel.org>
-	 <20260530143541.229628-4-phasta@kernel.org> <ahr9gtzQLSbPeBx_@tardis.local>
+	 <20260530143541.229628-5-phasta@kernel.org>
+	 <DIW3ZK5NLKU3.1QYMQB0ISHFBG@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MBO-RS-META: r87bt5ibht9pafpb4h354upmhg9hyr19
-X-MBO-RS-ID: 50ca84abab62f69a854
+X-MBO-RS-META: 3ism9n1pwksnxia1e8r9xncusxhxj974
+X-MBO-RS-ID: 388db5ec2fecad88473
 
-On Sat, 2026-05-30 at 08:08 -0700, Boqun Feng wrote:
-> On Sat, May 30, 2026 at 04:35:10PM +0200, Philipp Stanner wrote:
-> > From: Alice Ryhl <aliceryhl@google.com>
-> >=20
-> > This adds an RcuBox container, which is like KBox except that the value
-> > is freed with kfree_rcu.
-> >=20
-> > To allow containers to rely on the rcu properties of RcuBox, an
-> > extension of ForeignOwnable is added.
-> >=20
-> > Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> > ---
->=20
-> I have the following on top of Alice's patch. @Alice, @Danilo, thoughts?
->=20
-> Then we can have:
->=20
-> type RcuKBox<T> =3D RcuBox<T, Kmalloc>;
-> type RcuVBox<T> =3D RcuBox<T, Vmalloc>;
+T24gU2F0LCAyMDI2LTA1LTMwIGF0IDE3OjE2ICswMjAwLCBEYW5pbG8gS3J1bW1yaWNoIHdyb3Rl
+Ogo+IChOb3QgYSBmdWxsIHJldmlldywgYnV0IGEgZmV3IGRyaXZlLWJ5IGNvbW1lbnRzLikKPiAK
+PiBPbiBTYXQgTWF5IDMwLCAyMDI2IGF0IDQ6MzUgUE0gQ0VTVCwgUGhpbGlwcCBTdGFubmVyIHdy
+b3RlOgo+ID4gKyNbYWxsb3codW51c2VkX3Vuc2FmZSldCj4gCj4gV2hhdCBpcyB0aGlzIG5lZWRl
+ZCBmb3I/CgpZb3Uga25vdyB0aGF0IDotUAoKPiAKPiA+ICtpbXBsPEY6IFNlbmQgKyBTeW5jICsg
+RHJpdmVyRmVuY2VBbGxvd2VkRGF0YSwgQzogU2VuZCArIFN5bmM+IEZlbmNlQ3R4PEYsIEM+IHsK
+PiAKPiA8c25pcD4KPiAKPiA+ICtpbXBsPEY6IFNlbmQgKyBTeW5jLCBDOiBTZW5kICsgU3luYz4g
+UGlubmVkRHJvcCBmb3IgRmVuY2VDdHg8RiwgQz4gewo+ID4gK8KgwqDCoCBmbiBkcm9wKHNlbGY6
+IFBpbjwmbXV0IFNlbGY+KSB7Cj4gPiArwqDCoMKgwqDCoMKgwqAgLy8gU0FGRVRZOiBgcmN1X2Jh
+cnJpZXIoKWAgaXMgYWx3YXlzIHNhZmUgdG8gYmUgY2FsbGVkLgo+ID4gK8KgwqDCoMKgwqDCoMKg
+IHVuc2FmZSB7IGJpbmRpbmdzOjpyY3VfYmFycmllcigpIH07Cj4gCj4gV2Ugc2hvdWxkIHByb2Jh
+Ymx5IGFkZCBhIHNhZmUgZnVuY3Rpb24gZm9yIHRoaXMuCgpBQ0suCgo+IAo+ID4gK2ltcGw8VDog
+RmVuY2VDYj4gRmVuY2VDYlJlZ2lzdHJhdGlvbjxUPiB7Cj4gPiArwqDCoMKgIC8vLyBSZWdpc3Rl
+ciBhIGNhbGxiYWNrIG9uIGEgZmVuY2UuCj4gPiArwqDCoMKgIC8vLwo+ID4gK8KgwqDCoCAvLy8g
+T24gc3VjY2VzcyB0aGUgY2FsbGJhY2sgaXMgcGlubmVkIGluIHBsYWNlIGFuZCB3aWxsIGZpcmUg
+d2hlbiB0aGUgZmVuY2UKPiA+ICvCoMKgwqAgLy8vIHNpZ25hbHMuIE9uIGBBbHJlYWR5U2lnbmFs
+ZWRgIHRoZSBjYWxsYmFjayBpcyByZXR1cm5lZCB0byB0aGUgY2FsbGVyIHNvCj4gPiArwqDCoMKg
+IC8vLyB0aGF0IG93bmVkIHJlc291cmNlcyBjYW4gYmUgcmVjbGFpbWVkLgo+ID4gK8KgwqDCoCBw
+dWIgZm4gbmV3PCdhPihmZW5jZTogJidhIEZlbmNlLCBjYWxsYmFjazogVCkgLT4gaW1wbCBQaW5J
+bml0PFNlbGYsIENhbGxiYWNrRXJyb3I8VD4+ICsgJ2EKPiA+ICvCoMKgwqAgd2hlcmUKPiA+ICvC
+oMKgwqDCoMKgwqDCoCBUOiAnYSwKPiA+ICvCoMKgwqAgewo+ID4gK8KgwqDCoMKgwqDCoMKgIC8v
+IFVzZXMgYHBpbl9pbml0X2Zyb21fY2xvc3VyZWAgaW5zdGVhZCBvZiBgdHJ5X3Bpbl9pbml0IWAg
+c28gdGhhdCBvbgo+ID4gK8KgwqDCoMKgwqDCoMKgIC8vIGAtRU5PRU5UYCAoYWxyZWFkeSBzaWdu
+YWxlZCkgdGhlIGNhbGxiYWNrIGNhbiBiZSByZWFkIGJhY2sgZnJvbSB0aGUKPiA+ICvCoMKgwqDC
+oMKgwqDCoCAvLyBwYXJ0aWFsbHktaW5pdGlhbGl6ZWQgc2xvdCBhbmQgcmV0dXJuZWQgdGhyb3Vn
+aCB0aGUgZXJyb3IuCj4gCj4gU2VlbXMgYSBiaXQgb2RkIHRoYXQgdGhpcyBuZWVkcyBwaW5faW5p
+dF9mcm9tX2Nsb3N1cmUoKS4gWW91IGNhbiBzdGlsbCB1c2UKPiB0cnlfcGluX2luaXQhKCkgd2l0
+aCAmdGhpcyBpbiBTZWxmIGFuIGEgXzogaW5pdGlhbGl6ZXIgYXQgdGhlIGVuZCBpbiB0aGUgd29y
+c3QKPiBjYXNlLiBCdXQgdGhlIGZlbmNlIGFuZCBjYWxsYmFjayBmaWVsZHMgc2hvdWxkIGJlIGZp
+bmUgdG8gaW5pdGlhbGl6ZSAibm9ybWFsbHkiPwoKSSdsbCBpbnZlc3RpZ2F0ZSB0aGF0LgoKPiAK
+PiA+ICvCoMKgwqDCoMKgwqDCoCAvLwo+ID4gK8KgwqDCoMKgwqDCoMKgIC8vIFNBRkVUWTogYHBp
+bl9pbml0X2Zyb21fY2xvc3VyZWAgcmVxdWlyZXM6Cj4gPiArwqDCoMKgwqDCoMKgwqAgLy8gLSBP
+biBgT2soKCkpYDogdGhlIHNsb3QgaXMgZnVsbHkgaW5pdGlhbGl6ZWQgYW5kIHZhbGlkIGZvciBg
+RHJvcGAuCj4gPiArwqDCoMKgwqDCoMKgwqAgLy8gLSBPbiBgRXJyKF8pYDogdGhlIHNsb3QgaXMg
+Y2xlYW4sIGkuZS46IG5vIHBhcnRpYWxseS1pbml0aWFsaXplZCBmaWVsZHMKPiA+ICvCoMKgwqDC
+oMKgwqDCoCAvL8KgwqAgcmVtYWluLCBhbmQgdGhlIHNsb3QgY2FuIGJlIGRlYWxsb2NhdGVkIHdp
+dGhvdXQgZHJvcHBpbmcuCj4gPiArwqDCoMKgwqDCoMKgwqAgLy8KPiA+ICvCoMKgwqDCoMKgwqDC
+oCAvLyBXZSB1cGhvbGQgdGhpcyBhcyBmb2xsb3dzOgo+ID4gK8KgwqDCoMKgwqDCoMKgIC8vIC0g
+T24gc3VjY2VzczogYWxsIHRocmVlIGZpZWxkcyBhcmUgaW5pdGlhbGl6ZWQuIE9rKCgpKSBpcyBy
+ZXR1cm5lZC4KPiA+ICvCoMKgwqDCoMKgwqDCoCAvLyAtIE9uIEVOT0VOVCAoYWxyZWFkeSBzaWdu
+YWxlZCk6IGBjYWxsYmFja2AgYW5kIGBmZW5jZWAgYXJlIHJlYWQgYmFjawo+ID4gK8KgwqDCoMKg
+wqDCoMKgIC8vwqDCoCBmcm9tIHRoZSBzbG90IHZpYSBgcHRyOjpyZWFkYCwgbGVhdmluZyB0aGUg
+c2xvdCBjbGVhbi4gYGNiYCB3YXMKPiA+ICvCoMKgwqDCoMKgwqDCoCAvL8KgwqAgaW5pdGlhbGl6
+ZWQgYnkgYGRtYV9mZW5jZV9hZGRfY2FsbGJhY2tgIChpdCBjYWxscwo+ID4gK8KgwqDCoMKgwqDC
+oMKgIC8vwqDCoCBgSU5JVF9MSVNUX0hFQUQoJmNiLT5ub2RlKWAgZXZlbiBvbiBlcnJvciksIGJ1
+dCBgY2JgIGlzCj4gPiArwqDCoMKgwqDCoMKgwqAgLy/CoMKgIGBPcGFxdWU8ZG1hX2ZlbmNlX2Ni
+PmAgd2hpY2ggaGFzIG5vIGBEcm9wYCwgc28gbm90IGRyb3BwaW5nIGl0IGlzCj4gPiArwqDCoMKg
+wqDCoMKgwqAgLy/CoMKgIGZpbmUuIFRoZSBjYWxsYmFjayBpcyByZXR1cm5lZCB0aHJvdWdoIGBB
+bHJlYWR5U2lnbmFsZWQoVClgLgo+ID4gK8KgwqDCoMKgwqDCoMKgIC8vIC0gT24gb3RoZXIgZXJy
+b3JzOiBzYW1lIGNsZWFudXAgYXMgRU5PRU5ULCBlcnJvciByZXR1cm5lZCBhcwo+ID4gK8KgwqDC
+oMKgwqDCoMKgIC8vwqDCoCBgT3RoZXIoZSlgLgo+ID4gK8KgwqDCoMKgwqDCoMKgIHVuc2FmZSB7
+Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwaW5faW5pdF9mcm9tX2Nsb3N1cmUobW92ZSB8
+c2xvdDogKm11dCBTZWxmfCB7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGxl
+dCBzbG90X2NhbGxiYWNrID0gJnJhdyBtdXQgKCpzbG90KS5jYWxsYmFjazsKPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbGV0IHNsb3RfZmVuY2UgPSAmcmF3IG11dCAoKnNsb3Qp
+LmZlbmNlOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsZXQgc2xvdF9jYiA9
+ICZyYXcgbXV0ICgqc2xvdCkuY2I7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIC8vIFdyaXRlIGNhbGxiYWNrIGFuZCBmZW5jZSBmaXJzdCDigJQgbXVzdCBiZSB2aXNp
+YmxlIGJlZm9yZQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvLyBkbWFfZmVu
+Y2VfYWRkX2NhbGxiYWNrIG1ha2VzIHRoZSByZWdpc3RyYXRpb24gbGl2ZS4KPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29yZTo6cHRyOjp3cml0ZShzbG90X2NhbGxiYWNrLCBj
+YWxsYmFjayk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvcmU6OnB0cjo6
+d3JpdGUoc2xvdF9mZW5jZSwgQVJlZjo6ZnJvbShmZW5jZSkpOwo+ID4gKwo+ID4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsZXQgcmV0ID0gdG9fcmVzdWx0KGJpbmRpbmdzOjpkbWFf
+ZmVuY2VfYWRkX2NhbGxiYWNrKAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGZlbmNlLmlubmVyLmdldCgpLAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIE9wYXF1ZTo6Y2FzdF9pbnRvKHNsb3RfY2IpLAo+ID4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFNvbWUoU2VsZjo6ZG1hX2ZlbmNlX2NhbGxiYWNr
+KSwKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKSk7Cj4gPiArCj4gPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG1hdGNoIHJldCB7Cj4gPiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgT2soKCkpID0+IE9rKCgpKSwKPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBFcnIoZSkgPT4gewo+ID4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLy8gUmVhZCBiYWNrIHdoYXQg
+d2Ugd3JvdGUgdG8gbGVhdmUgdGhlIHNsb3QgY2xlYW4uCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsZXQgY2JfYmFjayA9IGNvcmU6OnB0cjo6cmVh
+ZChzbG90X2NhbGxiYWNrKTsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIGxldCBfZmVuY2VfYmFjayA9IGNvcmU6OnB0cjo6cmVhZChzbG90X2ZlbmNl
+KTsKPiAKPiBXaGF0J3MgdGhlIHB1cnBvc2Ugb2YgX2ZlbmNlX2JhY2s/CgpSZWxpYy4gV2lsbCBy
+ZXdvcmsuCgo+IAo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgaWYgZS50b19lcnJubygpID09IEVOT0VOVC50b19lcnJubygpIHsKPiA+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgRXJy
+KENhbGxiYWNrRXJyb3I6OkFscmVhZHlTaWduYWxlZChjYl9iYWNrKSkKPiA+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0gZWxzZSB7Cj4gPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEVycihDYWxs
+YmFja0Vycm9yOjpPdGhlcihlKSkKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIH0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCB9Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0KPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIH0pCj4gPiArwqDCoMKgwqDCoMKgwqAgfQo+ID4gK8KgwqDCoCB9Cj4g
+PiArwqDCoMKgIC8vLyBTaWduYWwgdGhlIGZlbmNlLiBUaGlzIHdpbGwgaW52b2tlIGFsbCByZWdp
+c3RlcmVkIGNhbGxiYWNrcy4KPiA+ICvCoMKgwqAgcHViIGZuIHNpZ25hbChzZWxmLCByZXM6IFJl
+c3VsdCkgewo+ID4gK8KgwqDCoMKgwqDCoMKgIGxldCBmZW5jZSA9IHNlbGYuYXNfcmF3KCk7Cj4g
+PiArwqDCoMKgwqDCoMKgwqAgbGV0IG11dCBmZW5jZV9mbGFnczogdXNpemUgPSAwOwo+ID4gK8Kg
+wqDCoMKgwqDCoMKgIGxldCBmbGFnX3B0ciA9ICZyYXcgbXV0IGZlbmNlX2ZsYWdzOwo+ID4gKwo+
+ID4gK8KgwqDCoMKgwqDCoMKgIC8vIFNBRkVUWTogT25jZSBhIGBEcml2ZXJGZW5jZWAgaXMgaW5p
+dGlhbGl6ZWQsIHRoZSBpbm5lciBgZmVuY2VgIGlzCj4gPiArwqDCoMKgwqDCoMKgwqAgLy8gdmFs
+aWQgYW5kIGluaXRpYWxpemVkLiBJdCBpcyB2YWxpZCB1bnRpbCB0aGUgcmVmY291bnQgZHJvcHMK
+PiA+ICvCoMKgwqDCoMKgwqDCoCAvLyB0byAwLCB3aGljaCBjYW4gZWFybGllc3QgaGFwcGVuIG9u
+Y2UgdGhlIGBEcml2ZXJGZW5jZWAgaGFzIGJlZW4gZHJvcHBlZC4KPiA+ICvCoMKgwqDCoMKgwqDC
+oCB1bnNhZmUgewo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYmluZGluZ3M6OmRtYV9mZW5j
+ZV9sb2NrX2lycXNhdmUoZmVuY2UsIGZsYWdfcHRyKTsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIGlmICFiaW5kaW5nczo6ZG1hX2ZlbmNlX2lzX3NpZ25hbGVkX2xvY2tlZChmZW5jZSkgewo+
+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiBsZXQgRXJyKGVycikgPSByZXMg
+ewo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJpbmRpbmdzOjpk
+bWFfZmVuY2Vfc2V0X2Vycm9yKGZlbmNlLCBlcnIudG9fZXJybm8oKSk7Cj4gPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgYmluZGluZ3M6OmRtYV9mZW5jZV9zaWduYWxfbG9ja2VkKGZlbmNlKTsKPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIH0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJpbmRpbmdzOjpk
+bWFfZmVuY2VfdW5sb2NrX2lycXJlc3RvcmUoZmVuY2UsIGZsYWdfcHRyKTsKPiA+ICvCoMKgwqDC
+oMKgwqDCoCB9Cj4gCj4gUGxlYXNlIHVzZSBhIHNpbmdsZSB1bnNhZmUgYmxvY2sgcGVyIHVuc2Fm
+ZSBmdW5jdGlvbiBjYWxsLCBoZXJlIGFuZCBpbiBhIGZldwo+IG90aGVyIHBsYWNlcy4KCklzIHRo
+YXQgYW4gb2ZmaWNpYWwgcnVsZT8gSWYgc28sIHRoZSBsaW50ZXJzIHNob3VsZCBpbmZvcm0gYWJv
+dXQgaXQuCgpBdCBmaXJzdCBnbGFuY2UsIEkgZG9uJ3Qgc2VlIGFueSBhZHZhbnRhZ2UgdG8gaXQg
+YW5kIHRoZSBkaXNhZHZhbnRhZ2UKb2YgZ3JlYXRseSByZWR1Y2luZyByZWFkYWJpbGl0eS4KCj4g
+Cj4gPiArwqDCoMKgIH0KPiA+ICt9Cj4gPiArCj4gPiArLy8gU0FGRVRZOiBGZW5jZXMgYXJlIGxp
+dGVyYWxseSBkZXNpZ25lZCB0byBiZSBzaGFyZWQgYmV0d2VlbiB0aHJlYWRzLgo+ID4gK3Vuc2Fm
+ZSBpbXBsPEY6IFNlbmQgKyBTeW5jLCBDOiBTZW5kICsgU3luYz4gU2VuZCBmb3IgRHJpdmVyRmVu
+Y2U8RiwgQz4ge30KPiA+ICsKPiA+ICtpbXBsPEY6IFNlbmQgKyBTeW5jLCBDOiBTZW5kICsgU3lu
+Yz4gRGVyZWYgZm9yIERyaXZlckZlbmNlPEYsIEM+IHsKPiA+ICvCoMKgwqAgdHlwZSBUYXJnZXQg
+PSBGOwo+ID4gKwo+ID4gK8KgwqDCoCBmbiBkZXJlZigmc2VsZikgLT4gJlNlbGY6OlRhcmdldCB7
+Cj4gPiArwqDCoMKgwqDCoMKgwqAgLy8gU0FGRVRZOiBUaGFua3MgdG8gcmVmY291bnRpbmcsIGBk
+YXRhYCBpcyBhbHdheXMgdmFsaWQgYXMgbG9uZyBhcyBgc2VsZmAgaXMuCj4gPiArwqDCoMKgwqDC
+oMKgwqAgbGV0IGRhdGEgPSB1bnNhZmUgeyAmKnNlbGYuZGF0YS5hc19wdHIoKSB9Owo+ID4gKwo+
+ID4gK8KgwqDCoMKgwqDCoMKgICZkYXRhLmRhdGEKPiA+ICvCoMKgwqAgfQo+ID4gK30KPiA+ICsK
+PiA+ICsvLy8gQSBib3Jyb3dlZCBbYERyaXZlckZlbmNlYF0uIEFsbCB5b3UgY2FuIGRvIHdpdGgg
+aXQgaXMgYWNjZXNzIHlvdXIgdXNlciBkYXRhCj4gPiArLy8vIGFuZCBvYnRhaW4gYSBbYEZlbmNl
+YF0uCj4gPiArcHViIHN0cnVjdCBEcml2ZXJGZW5jZUJvcnJvdzxGOiBTZW5kICsgU3luYywgQzog
+U2VuZCArIFN5bmM+IHsKPiAKPiBUaGlzIG1pc3NlcyB0aGUgbGlmZXRpbWUgYm91bmQsIHdoaWNo
+IGlzIHRoZSBwdXJwb3NlIG9mIHRoaXMgc3RydWN0Lgo+IAo+ID4gK8KgwqDCoCAvLy8gVGhlIGFj
+dHVhbCBjb250ZW50IG9mIHRoZSBmZW5jZS4gTGl2ZXMgaW4gYSByYXcgcG9pbnRlciBzbyB0aGF0
+IGl0cwo+ID4gK8KgwqDCoCAvLy8gbWVtb3J5IGNhbiBiZSBtYW5hZ2VkIGluZGVwZW5kZW50bHku
+IFZhbGlkIHVudGlsIGJvdGggdGhlIFtgRHJpdmVyRmVuY2VgXQo+ID4gK8KgwqDCoCAvLy8gYW5k
+IGFsbCBhc3NvY2lhdGVkIFtgRmVuY2VgXXMgaGF2ZSBkaXNhcHBlYXJlZC4KPiA+ICvCoMKgwqAg
+ZGF0YTogTm9uTnVsbDxEcml2ZXJGZW5jZURhdGE8RiwgQz4+LAo+IAo+IFdoeSBub3QgdXNlIE1h
+bnVhbGx5RHJvcDxEcml2ZXJGZW5jZT4/IFRoaXMgd2F5IHlvdSB3b3VsZCBvbmx5IG5lZWQgYSBE
+ZXJlZiBpbXBsCj4gdG8gJidhIERyaXZlckZlbmNlLgo+IAo+IFRoaXMgd2F5IHlvdSBiYXNpY2Fs
+bHkgcmVpbXBsZW1lbnQgdGhlIERyaXZlckZlbmNlIHR5cGUganVzdCB3aXRob3V0IHRoZQo+IGRl
+c3RydWN0b3IuCgpHb29kIGlkZWEsIHdpbGwgZG8uCgpQLgo=
 
-No objections by me.
-
-I just think we have to decide how the treat the namespaces, though.
-Probably Alice wrote it like that so that it's very apparent that this
-is not a normal box. It still breaks the naming convention in my
-opinion.
-
-rcu::Box vs rcu::RcuBox
-
-With all other subsystems, naming like that seems not allowed.
-
-dma::Fence vs dma::DmaFence
-
-
-I probably would allow the user to decide whether he wants to just use
-it as `rcu::Box` in all his code.
-
-But no hard feelings.
-
-
-
->=20
-> and Philipp can use the `RcuKBox` in this patchset. We also need to impl
-> InPlaceInit for RcuBox, but that can be added later.
-
-So shall we merge my series with Alice's patch, and later we add your
-patch and other features, or would you prefer to have the additional
-boxes from your patch from the get-go?
-
-
-P.
-
->=20
-> Regards,
-> Boqun
->=20
-> ------------->8
-> Subject: [PATCH] rust: rcu: Make RcuBox generic over Allocator
->=20
-> To support RCU-protected vmalloc allocation, we need to make `RcuBox`
-> generic over `Allocator`. Currently this works since all `Allocator`s
-> are either kmalloc() or vmalloc(), and kvfree_call_rcu() works with both
-> allocations.
->=20
-> While we are at it, add some basic test cases.
->=20
-> Signed-off-by: Boqun Feng <boqun@kernel.org>
-> ---
-> =C2=A0rust/kernel/sync/rcu/rcu_box.rs | 96 +++++++++++++++++++++++-------=
----
-> =C2=A01 file changed, 67 insertions(+), 29 deletions(-)
->=20
-> diff --git a/rust/kernel/sync/rcu/rcu_box.rs b/rust/kernel/sync/rcu/rcu_b=
-ox.rs
-> index 2508fdb609ec..5c344d82c0d9 100644
-> --- a/rust/kernel/sync/rcu/rcu_box.rs
-> +++ b/rust/kernel/sync/rcu/rcu_box.rs
-> @@ -4,47 +4,59 @@
-> =C2=A0
-> =C2=A0//! Provides the `RcuBox` type for Rust allocations that live for a=
- grace period.
-> =C2=A0
-> -use core::{ops::Deref, ptr::NonNull};
-> +use core::{
-> +=C2=A0=C2=A0=C2=A0 marker::PhantomData,
-> +=C2=A0=C2=A0=C2=A0 ops::Deref,
-> +=C2=A0=C2=A0=C2=A0 ptr::NonNull, //
-> +};
-> =C2=A0
-> =C2=A0use kernel::{
-> -=C2=A0=C2=A0=C2=A0 alloc::{self, AllocError},
-> +=C2=A0=C2=A0=C2=A0 alloc::{
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 self,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 AllocError,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Allocator, //
-> +=C2=A0=C2=A0=C2=A0 },
-> =C2=A0=C2=A0=C2=A0=C2=A0 bindings,
-> =C2=A0=C2=A0=C2=A0=C2=A0 ffi::c_void,
-> =C2=A0=C2=A0=C2=A0=C2=A0 prelude::*,
-> -=C2=A0=C2=A0=C2=A0 sync::rcu::{ForeignOwnableRcu, Guard},
-> =C2=A0=C2=A0=C2=A0=C2=A0 types::ForeignOwnable,
-> =C2=A0};
-> =C2=A0
-> +use super::{
-> +=C2=A0=C2=A0=C2=A0 ForeignOwnableRcu,
-> +=C2=A0=C2=A0=C2=A0 Guard, //
-> +};
-> +
-> =C2=A0/// A box that is freed with rcu.
-> =C2=A0///
-> =C2=A0/// The value must be `Send`, as rcu may drop it on another thread.
-> =C2=A0///
-> =C2=A0/// # Invariants
-> =C2=A0///
-> -/// * The pointer is valid and references a pinned `RcuBoxInner<T>` allo=
-cated with `kmalloc`.
-> +/// * The pointer is valid and references a pinned `RcuBoxInner<T>` allo=
-cated with `A`.
-> =C2=A0/// * This `RcuBox` holds exclusive permissions to rcu free the all=
-ocation.
-> -pub struct RcuBox<T: Send>(NonNull<RcuBoxInner<T>>);
-> +pub struct RcuBox<T: Send, A: Allocator>(NonNull<RcuBoxInner<T>>, Phanto=
-mData<A>);
-> =C2=A0
-> =C2=A0struct RcuBoxInner<T> {
-> =C2=A0=C2=A0=C2=A0=C2=A0 value: T,
-> =C2=A0=C2=A0=C2=A0=C2=A0 rcu_head: bindings::callback_head,
-> =C2=A0}
-> =C2=A0
-> -// Note that `T: Sync` is required since when moving an `RcuBox<T>`, the=
- previous owner may still
-> -// access `&T` for one grace period.
-> +// Note that `T: Sync` is required since when moving an `RcuBox<T, A>`, =
-the previous owner may
-> +// still access `&T` for one grace period.
-> =C2=A0//
-> -// SAFETY: Ownership of the `RcuBox<T>` allows for `&T` and dropping the=
- `T`, so `T: Send + Sync`
-> -// implies `RcuBox<T>: Send`.
-> -unsafe impl<T: Send + Sync> Send for RcuBox<T> {}
-> +// SAFETY: Ownership of the `RcuBox<T, A>` allows for `&T` and dropping =
-the `T`, so `T: Send +
-> +// Sync` implies `RcuBox<T, A>: Send`.
-> +unsafe impl<T: Send + Sync, A: Allocator> Send for RcuBox<T, A> {}
-> =C2=A0
-> -// SAFETY: `&RcuBox<T>` allows for no operations other than those permit=
-ted by `&T`, so `T: Sync`
-> -// implies `RcuBox<T>: Sync`.
-> -unsafe impl<T: Send + Sync> Sync for RcuBox<T> {}
-> +// SAFETY: `&RcuBox<T, A>` allows for no operations other than those per=
-mitted by `&T`, so `T:
-> +// Sync` implies `RcuBox<T, A>: Sync`.
-> +unsafe impl<T: Send + Sync, A: Allocator> Sync for RcuBox<T, A> {}
-> =C2=A0
-> -impl<T: Send> RcuBox<T> {
-> +impl<T: Send, A: Allocator> RcuBox<T, A> {
-> =C2=A0=C2=A0=C2=A0=C2=A0 /// Create a new `RcuBox`.
-> =C2=A0=C2=A0=C2=A0=C2=A0 pub fn new(x: T, flags: alloc::Flags) -> Result<=
-Self, AllocError> {
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 let b =3D KBox::new(
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 let b =3D Box::<_, A>::new(
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-RcuBoxInner {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 value: x,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 rcu_head: Default::default(),
-> @@ -53,9 +65,9 @@ pub fn new(x: T, flags: alloc::Flags) -> Result<Self, A=
-llocError> {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 )?;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // INVARIANT:
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // * The pointer contains a v=
-alid `RcuBoxInner` allocated with `kmalloc`.
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // * The pointer contains a v=
-alid `RcuBoxInner` allocated with `A`.
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // * We just allocated i=
-t, so we own free permissions.
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Ok(RcuBox(NonNull::from(KBox:=
-:leak(b))))
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Ok(RcuBox(NonNull::from(Box::=
-leak(b)), PhantomData))
-> =C2=A0=C2=A0=C2=A0=C2=A0 }
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0 /// Access the value for a grace period.
-> @@ -66,7 +78,7 @@ pub fn with_rcu<'rcu>(&self, _read_guard: &'rcu Guard) =
--> &'rcu T {
-> =C2=A0=C2=A0=C2=A0=C2=A0 }
-> =C2=A0}
-> =C2=A0
-> -impl<T: Send> Deref for RcuBox<T> {
-> +impl<T: Send, A: Allocator> Deref for RcuBox<T, A> {
-> =C2=A0=C2=A0=C2=A0=C2=A0 type Target =3D T;
-> =C2=A0=C2=A0=C2=A0=C2=A0 fn deref(&self) -> &T {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // SAFETY: While the `Rc=
-uBox<T>` exists, the value remains valid.
-> @@ -75,10 +87,10 @@ fn deref(&self) -> &T {
-> =C2=A0}
-> =C2=A0
-> =C2=A0// SAFETY:
-> -// * The `RcuBoxInner<T>` was allocated with `kmalloc`.
-> +// * The `RcuBoxInner<T>` was allocated with `A`.
-> =C2=A0// * `NonNull::as_ptr` returns a non-null pointer.
-> -unsafe impl<T: Send + 'static> ForeignOwnable for RcuBox<T> {
-> -=C2=A0=C2=A0=C2=A0 const FOREIGN_ALIGN: usize =3D <KBox<RcuBoxInner<T>> =
-as ForeignOwnable>::FOREIGN_ALIGN;
-> +unsafe impl<T: Send + 'static, A: Allocator> ForeignOwnable for RcuBox<T=
-, A> {
-> +=C2=A0=C2=A0=C2=A0 const FOREIGN_ALIGN: usize =3D <Box<RcuBoxInner<T>, A=
-> as ForeignOwnable>::FOREIGN_ALIGN;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0 type Borrowed<'a> =3D &'a T;
-> =C2=A0=C2=A0=C2=A0=C2=A0 type BorrowedMut<'a> =3D &'a T;
-> @@ -88,9 +100,9 @@ fn into_foreign(self) -> *mut c_void {
-> =C2=A0=C2=A0=C2=A0=C2=A0 }
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0 unsafe fn from_foreign(ptr: *mut c_void) -> Self=
- {
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // INVARIANT: Pointer returne=
-d by `into_foreign` carries same invariants as `RcuBox<T>`.
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // INVARIANT: Pointer returne=
-d by `into_foreign, A` carries same invariants as `RcuBox<T>`.
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // SAFETY: `into_foreign=
-` never returns a null pointer.
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Self(unsafe { NonNull::new_un=
-checked(ptr.cast()) })
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Self(unsafe { NonNull::new_un=
-checked(ptr.cast()) }, PhantomData)
-> =C2=A0=C2=A0=C2=A0=C2=A0 }
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0 unsafe fn borrow<'a>(ptr: *mut c_void) -> &'a T =
-{
-> @@ -104,7 +116,7 @@ unsafe fn borrow_mut<'a>(ptr: *mut c_void) -> &'a T {
-> =C2=A0=C2=A0=C2=A0=C2=A0 }
-> =C2=A0}
-> =C2=A0
-> -impl<T: Send + 'static> ForeignOwnableRcu for RcuBox<T> {
-> +impl<T: Send + 'static, A: Allocator> ForeignOwnableRcu for RcuBox<T, A>=
- {
-> =C2=A0=C2=A0=C2=A0=C2=A0 type RcuBorrowed<'a> =3D &'a T;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0 unsafe fn rcu_borrow<'a>(ptr: *mut c_void) -> &'=
-a T {
-> @@ -114,7 +126,7 @@ unsafe fn rcu_borrow<'a>(ptr: *mut c_void) -> &'a T {
-> =C2=A0=C2=A0=C2=A0=C2=A0 }
-> =C2=A0}
-> =C2=A0
-> -impl<T: Send> Drop for RcuBox<T> {
-> +impl<T: Send, A: Allocator> Drop for RcuBox<T, A> {
-> =C2=A0=C2=A0=C2=A0=C2=A0 fn drop(&mut self) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // SAFETY: The `rcu_head=
-` field is in-bounds of a valid allocation.
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 let rcu_head =3D unsafe =
-{ &raw mut (*self.0.as_ptr()).rcu_head };
-> @@ -122,9 +134,11 @@ fn drop(&mut self) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-// SAFETY: `rcu_head` is the `rcu_head` field of `RcuBoxInner<T>`. All user=
-s will be
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-// gone in an rcu grace period. This is the destructor, so we may pass owne=
-rship of the
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-// allocation.
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsaf=
-e { bindings::call_rcu(rcu_head, Some(drop_rcu_box::<T>)) };
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsaf=
-e { bindings::call_rcu(rcu_head, Some(drop_rcu_box::<T, A>)) };
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-// SAFETY: All users will be gone in an rcu grace period.
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // TO=
-DO: We are luckily since `kvfree_call_rcu()` works on both kmalloc and vmal=
-loc,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // ma=
-ybe a new `Allocator` method is needed.
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-unsafe { bindings::kvfree_call_rcu(rcu_head, self.0.as_ptr().cast()) };
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> =C2=A0=C2=A0=C2=A0=C2=A0 }
-> @@ -135,11 +149,35 @@ fn drop(&mut self) {
-> =C2=A0/// # Safety
-> =C2=A0///
-> =C2=A0/// `head` references the `rcu_head` field of an `RcuBoxInner<T>` t=
-hat has no references to it.
-> -/// Ownership of the `KBox<RcuBoxInner<T>>` must be passed.
-> -unsafe extern "C" fn drop_rcu_box<T>(head: *mut bindings::callback_head)=
- {
-> +/// Ownership of the `Box<RcuBoxInner<T>, A>` must be passed.
-> +unsafe extern "C" fn drop_rcu_box<T, A: Allocator>(head: *mut bindings::=
-callback_head) {
-> =C2=A0=C2=A0=C2=A0=C2=A0 // SAFETY: Caller provides a pointer to the `rcu=
-_head` field of a `RcuBoxInner<T>`.
-> =C2=A0=C2=A0=C2=A0=C2=A0 let box_inner =3D unsafe { crate::container_of!(=
-head, RcuBoxInner<T>, rcu_head) };
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0 // SAFETY: Caller ensures exclusive access and p=
-assed ownership.
-> -=C2=A0=C2=A0=C2=A0 drop(unsafe { KBox::from_raw(box_inner) });
-> +=C2=A0=C2=A0=C2=A0 drop(unsafe { Box::<_, A>::from_raw(box_inner) });
-> +}
-> +
-> +#[kunit_tests(rust_rcu_box)]
-> +mod tests {
-> +=C2=A0=C2=A0=C2=A0 use super::*;
-> +
-> +=C2=A0=C2=A0=C2=A0 #[test]
-> +=C2=A0=C2=A0=C2=A0 fn rcu_box_basic() -> Result {
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 let rb =3D RcuBox::<_, alloc:=
-:allocator::Kmalloc>::new(42i32, alloc::flags::GFP_KERNEL)?;
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 assert_eq!(*rb, 42);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 assert_eq!(*rb.with_rcu(&Guar=
-d::new()), 42);
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drop(rb);
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 let rb =3D RcuBox::<_, alloc:=
-:allocator::Vmalloc>::new(42i32, alloc::flags::GFP_KERNEL)?;
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 assert_eq!(*rb, 42);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 assert_eq!(*rb.with_rcu(&Guar=
-d::new()), 42);
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drop(rb);
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Ok(())
-> +=C2=A0=C2=A0=C2=A0 }
-> =C2=A0}
