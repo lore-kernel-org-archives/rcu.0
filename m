@@ -1,95 +1,136 @@
-Received: from mail-ed1-f73.google.com (mail-ed1-f73.google.com [209.85.208.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6BDA3955F6
-	for <rcu@vger.kernel.org>; Mon,  1 Jun 2026 09:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D040A3921C8;
+	Mon,  1 Jun 2026 10:13:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780307171; cv=none; b=KgZzfwUJVLB1nKwBV7vXTSIWEAFiaqyAKyZUEIzLCL1XqzLR7wkgg9WADhAwIlbWr9B3RYKvS0Q0fmisVZiT1q5pcatC4eFnG6cP35c2BE48FDhdpFwhLW90sDUeaPHCmIUe20944MzHu60iDf9B749qnysVHRlRokThxnPhb0w=
+	t=1780308830; cv=none; b=o0HFocX1lzG3AZtyDqSl/PIsQo97SiBvhThdIE3ndMgChXyhg2zivrfa7o7GfF5UP7JzVMTmq0uzSMcG20qefkGVYY7HZNQAFN7rR+KWuCv/tbXt2S/WDAhl5utcWLGk0ZCsv/9PIZTQAQfDoIeYima0ARKLq6k9skLYYr/si+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780307171; c=relaxed/simple;
-	bh=cV18jvtNXIodO6tysPsBXW0X3xVvWrtNzux1ufx6488=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=FmiTAHIuAUrC1U7DC1Red8e4uv9W5ipvViK+uEJnBlSTDw+xOnu1A7YgeaFLfsh1ms3P6q3YOnVqCG4msAma3RAy3BV8k0AB32pYNs0vae3EqPgR1DS3wSh1jYVdNevTFxD+KtU3q/dgj4QcFyL2PMO5zKdWahWweOfAz4tbuKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Df+gsVdw; arc=none smtp.client-ip=209.85.208.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+	s=arc-20240116; t=1780308830; c=relaxed/simple;
+	bh=3Ts6lB+NKnhLtXYHmT257yvnWMD6Ph1yqe+TlwPK+oM=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=frsNnGB7SecOVnuRe8E6saSjU1EQNZkmhrk2ttIzOZ3clsZL0kxaKtEoVg4HpV3LrOAPegR6Z7kbtUNV/zfM1gjUkPWitesURuJ6f87gpus/nlkq1JiIrBhdq+A6JrNzh9Po4zja4QR9jRZBN1Uu3+yDTog6JMcyehqM93BFHOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pd8ZT5BK; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Df+gsVdw"
-Received: by mail-ed1-f73.google.com with SMTP id 4fb4d7f45d1cf-68b3e28267dso3233223a12.3
-        for <rcu@vger.kernel.org>; Mon, 01 Jun 2026 02:46:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1780307162; x=1780911962; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F2mLiP05KImuXhLYRlm3itUuIPBG7j9sX+uByjRaID4=;
-        b=Df+gsVdwnaFnn3ZIHTyclLRbocaC0Vij9gUEXBbEsqwia8hx88vkEF6PrH925lg2F4
-         TNkNWB+rjEQ85OPUwZMIbeilLRRRm14mpIG9XQimhC4/GyBjiJxX1Aq6e0IjJGdhoaXQ
-         9RuaIevv3hHB2IozWJsYLF11si7iA7x1zS18ujoIoDAfzCEcwxt9UKFWEJEq36f/xzuH
-         Unqlf+CvnkFLsRaKk4qu5Lw1T7bUOU/kOBwZ4Po9HiGaTEte9T1rFXm4IUUrcTFF0/NX
-         r1QWy5Y/KUoYfUZcBqBlklb8mSemf/5OM6lWVqyNBvGgO0aFoiVE8tLrjCFBVdF1Ijei
-         PGNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780307162; x=1780911962;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F2mLiP05KImuXhLYRlm3itUuIPBG7j9sX+uByjRaID4=;
-        b=XPdCA2XtVWQXGGiawdb/Q08C9eESgLLTKcJcVthilteO3JxoKHpurBS46x6/NrU/He
-         qINPKYLPZGiVWRHxDb7hTNg2qmaFCbt/Xnh4W2kZsJznoG2gqqeW2j76sf0HuPPE/A/j
-         F/9WWqSF+CEBvZ1jzyEo1O7fkcjbcIyP/WGMk6IOMU3qqUwgwmFs/+cm7iYwxuLzKq+p
-         zo9sCxZ2KOEbvHquzqS4ivZi9Yy3QiR5yZT2w9oalXDCIIQUfQFYqG9Fv7PP4D7eMhXp
-         KtAhAF9V1jBKdY+i7DD42n1f/VYW8JWU6zM2BLjOuZVHNUk2KNnkgz64XUJy9NQr5r+Z
-         k90A==
-X-Forwarded-Encrypted: i=1; AFNElJ9OfW4hSmRAkechnUtwimNDoCcSz9+GF6h6ShZG08YG0e//sG6IfJmwnP33B4h7g6KytNU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz25to3b6VszC/6tDySjOwiJbwLRERMeCPwgVGLPO0jLVBiHdUP
-	ZhVUA1YE3LmIShSAIFRgqpv8ZHOs6Kg7QS7MFIWzugb4IKSLNi8CPdPZ+2xs9tz1dd8eK+xOtvQ
-	dtxp7l4CQpvRwRKXaKA==
-X-Received: from ejcmy11.prod.google.com ([2002:a17:906:5a4b:b0:beb:3773:86c7])
- (user=aliceryhl job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:907:e158:b0:beb:7979:47dd with SMTP id a640c23a62f3a-beb797959f7mr242224566b.27.1780307161830;
- Mon, 01 Jun 2026 02:46:01 -0700 (PDT)
-Date: Mon, 1 Jun 2026 09:46:00 +0000
-In-Reply-To: <20260530143541.229628-3-phasta@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pd8ZT5BK"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 425C21F00893;
+	Mon,  1 Jun 2026 10:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780308827;
+	bh=3Ts6lB+NKnhLtXYHmT257yvnWMD6Ph1yqe+TlwPK+oM=;
+	h=Date:Subject:Cc:To:From:References:In-Reply-To;
+	b=Pd8ZT5BK2RvzgTUlsXOQVBEiMwZGkMyUoMd8Lx5ODzTdFIWZswBajI/tODyqROqWT
+	 to5Yfm2ruJGsFd7Aaqg5YI78s6jRh8vdyPShR3BzPDi0KAtBFul22aTc8Gw2fRrPyU
+	 415n2lb7D2q/yed7aDWBBAXuFXxW8frBXPM1v6tiAg9tphhbwFI8zO4a0Z8dtR2zDI
+	 vsoh7J7e32jR6yQKssPu7IRwWXZNZ3yCtIwpB4nto02HbgaYuXtIWLC5SNmvl/u1eu
+	 Nw//bc5n+3e3w5IED5m33qGD9XEW0gruuh669lKpNd15WbUaIAG0a70JOKA5dT7gd8
+	 VGaNX/Kx7TrDg==
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20260530143541.229628-2-phasta@kernel.org> <20260530143541.229628-3-phasta@kernel.org>
-Message-ID: <ah1U2P8ppTjprYwR@google.com>
-Subject: Re: [PATCH 1/4] rust: types: implement ForeignOwnable for ARef<T>
-From: Alice Ryhl <aliceryhl@google.com>
-To: Philipp Stanner <phasta@kernel.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>, 
-	"=?utf-8?B?QmrDtnJu?= Roy Baron" <bjorn3_gh@protonmail.com>, Benno Lossin <lossin@kernel.org>, 
-	Andreas Hindborg <a.hindborg@kernel.org>, Trevor Gross <tmgross@umich.edu>, 
-	Danilo Krummrich <dakr@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	"Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang@linux.dev>, Daniel Almeida <daniel.almeida@collabora.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Igor Korotin <igor.korotin@linux.dev>, 
-	Lorenzo Stoakes <ljs@kernel.org>, Alexandre Courbot <acourbot@nvidia.com>, 
-	FUJITA Tomonori <fujita.tomonori@gmail.com>, Krishna Ketan Rai <prafulrai522@gmail.com>, 
-	Shankari Anand <shankari.ak0208@gmail.com>, manos@pitsidianak.is, 
-	Boris Brezillon <boris.brezillon@collabora.com>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
-	rcu@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 01 Jun 2026 12:13:38 +0200
+Message-Id: <DIXMT0KKU8D9.2XLDHIGBCM1PZ@kernel.org>
+Subject: Re: [PATCH 3/4] rust: Add dma_fence abstractions
+Cc: <phasta@kernel.org>, "Miguel Ojeda" <ojeda@kernel.org>, "Boqun Feng"
+ <boqun@kernel.org>, "Gary Guo" <gary@garyguo.net>,
+ =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, "Benno Lossin"
+ <lossin@kernel.org>, "Andreas Hindborg" <a.hindborg@kernel.org>, "Alice
+ Ryhl" <aliceryhl@google.com>, "Trevor Gross" <tmgross@umich.edu>, "Sumit
+ Semwal" <sumit.semwal@linaro.org>, =?utf-8?q?Christian_K=C3=B6nig?=
+ <christian.koenig@amd.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ "Frederic Weisbecker" <frederic@kernel.org>, "Neeraj Upadhyay"
+ <neeraj.upadhyay@kernel.org>, "Joel Fernandes" <joelagnelf@nvidia.com>,
+ "Josh Triplett" <josh@joshtriplett.org>, "Uladzislau Rezki"
+ <urezki@gmail.com>, "Steven Rostedt" <rostedt@goodmis.org>, "Mathieu
+ Desnoyers" <mathieu.desnoyers@efficios.com>, "Lai Jiangshan"
+ <jiangshanlai@gmail.com>, "Zqiang" <qiang.zhang@linux.dev>, "Daniel
+ Almeida" <daniel.almeida@collabora.com>, "Greg Kroah-Hartman"
+ <gregkh@linuxfoundation.org>, "Igor Korotin" <igor.korotin@linux.dev>,
+ "Lorenzo Stoakes" <ljs@kernel.org>, "Alexandre Courbot"
+ <acourbot@nvidia.com>, "FUJITA Tomonori" <fujita.tomonori@gmail.com>,
+ "Krishna Ketan Rai" <prafulrai522@gmail.com>, "Shankari Anand"
+ <shankari.ak0208@gmail.com>, <manos@pitsidianak.is>, "Boris Brezillon"
+ <boris.brezillon@collabora.com>, <linux-kernel@vger.kernel.org>,
+ <rust-for-linux@vger.kernel.org>, <linux-media@vger.kernel.org>,
+ <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>,
+ <rcu@vger.kernel.org>
+To: "Philipp Stanner" <phasta@mailbox.org>
+From: "Danilo Krummrich" <dakr@kernel.org>
+References: <20260530143541.229628-2-phasta@kernel.org>
+ <20260530143541.229628-5-phasta@kernel.org>
+ <DIW3ZK5NLKU3.1QYMQB0ISHFBG@kernel.org>
+ <08b87b07279e7774c76c0267b1d6c337f705acda.camel@mailbox.org>
+In-Reply-To: <08b87b07279e7774c76c0267b1d6c337f705acda.camel@mailbox.org>
 
-On Sat, May 30, 2026 at 04:35:09PM +0200, Philipp Stanner wrote:
-> From: Danilo Krummrich <dakr@kernel.org>
-> 
-> Implement ForeignOwnable for ARef<T>, making it possible for C code to
-> own an ARef<T>.
-> 
-> Since ARef represents shared ownership, BorrowedMut is &T rather than
-> &mut T, matching the semantics of the underlying reference-counted type.
-> 
-> Signed-off-by: Danilo Krummrich <dakr@kernel.org>
+On Mon Jun 1, 2026 at 10:46 AM CEST, Philipp Stanner wrote:
+> On Sat, 2026-05-30 at 17:16 +0200, Danilo Krummrich wrote:
+>> (Not a full review, but a few drive-by comments.)
+>>=20
+>> On Sat May 30, 2026 at 4:35 PM CEST, Philipp Stanner wrote:
+>> > +#[allow(unused_unsafe)]
+>>=20
+>> What is this needed for?
+>
+> You know that :-P
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+I don't, it's a serious question.
+
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // SAFETY: Once a `DriverF=
+ence` is initialized, the inner `fence` is
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // valid and initialized. =
+It is valid until the refcount drops
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 // to 0, which can earlies=
+t happen once the `DriverFence` has been dropped.
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsafe {
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bi=
+ndings::dma_fence_lock_irqsave(fence, flag_ptr);
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if=
+ !bindings::dma_fence_is_signaled_locked(fence) {
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 if let Err(err) =3D res {
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bindings::dma_fence_set_error=
+(fence, err.to_errno());
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 }
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 bindings::dma_fence_signal_locked(fence);
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bi=
+ndings::dma_fence_unlock_irqrestore(fence, flag_ptr);
+>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>=20
+>> Please use a single unsafe block per unsafe function call, here and in a=
+ few
+>> other places.
+>
+> Is that an official rule? If so, the linters should inform about it.
+>
+> At first glance, I don't see any advantage to it and the disadvantage
+> of greatly reducing readability.
+
+The advantage is that it separates the safety justifications per unsafe cal=
+l,
+which increases the chances of catching a bug, makes it easier for the read=
+er to
+match requirements against justifications and potentially allows tooling to
+perform checks of the justification against the requirement.
+
+For the specific case above, there's no documented requirements in the sens=
+e of
+Rust safety requirements of course, as they are all FFI calls, but
+dma_fence_signal_locked() for instance has the obvious requirement that it =
+must
+only be called with the fence lock held and dma_fence_set_error() must only=
+ be
+called when the fence is actually signaled.
+
+Besides that, since this pattern seems to occur at least twice, you could a=
+lso
+consider adding a lock guard.
