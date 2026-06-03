@@ -1,137 +1,97 @@
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAF9386557
-	for <rcu@vger.kernel.org>; Wed,  3 Jun 2026 14:39:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 413873E1686;
+	Wed,  3 Jun 2026 15:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780497570; cv=pass; b=q1mLgv2MAUX+pyydoziSgSEp3ibpTwDOOjDZGbfGJo9LdKf3KvoxPiU8APka3oHtKNqBgmVp84bEUrv/LZ0vfFtkGX6Wt54HEi9tCM9BcUbmvUB6+ZgA1Wrc3NuugZv78/ZOUh7YREf/kC2zu6Etz0EvaQAX+cFDh7N06gUsIKA=
+	t=1780500288; cv=pass; b=mzkbRWa2fM5RvnmYOZ/ARLFVtWJ3+Hzxof+w5mfvBHUPsOYzDGqgybIwyuZOiss/4AQ6hGGxnlujVTFkMVeuc3kQNdaeKbHE6e4zw9r2yytNxvqMH6BMHz7+evSAhALuwOMwaQZIJ6RXQOp4Ko/tgn/jOuolp16qZOeIyF2o96U=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780497570; c=relaxed/simple;
-	bh=IGO3PuvDPm+gsi6Lka7LaUI6qTd54dbBVyczsiILhXU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WmkmuR5dM4ymt8+N2NgLWzIX8QexLISG1OI9hiZdqwlYhHMkTXIsKezL7KrchJHqm1fLQpLzl3bqIXPeK71fMR4Xoz5VntHqin+nHWK62hVdhXIF+pNm+cCIRHLIyd3GKtFqoL7zPdZI7C4B7Lt1Q6FuDLfUEgFHyFLlwqDTsqI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mBXv+/2r; arc=pass smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1780500288; c=relaxed/simple;
+	bh=So9rH2Wa9Qe/DNplu0afd7KojnM7XszJ5ToWirB61zg=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=rjorhBWDhmP/xH7w+0gENsW3NaRKe92qA0AjjRhyWUUjoAx4np9Z8D20sRw4b9OfW5wbGl2FikF+J8AqGou5msFKS4yoo3DwfzGu7GUaA6h2aR6vhyEcr0B8hApTjQvl0EXhygFUzsni8anSKWVDLCyzHEkuf4WYULV4u48MDMw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=daniel.almeida@collabora.com header.b=j5WYXppv; arc=pass smtp.client-ip=136.143.188.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mBXv+/2r"
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-68bd9fce347so10268513a12.2
-        for <rcu@vger.kernel.org>; Wed, 03 Jun 2026 07:39:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1780497567; cv=none;
-        d=google.com; s=arc-20240605;
-        b=gnenJA/x8JHJdIwlLnGP2L77nna9potyaosWRhy6R+jnBH/65BsfEW24k1cXh+v4pf
-         eWvvTFA9PGCvLizTpWzfCazZR2VOG6oJRYFg3WnL5s16YyJTkb0VQylIgGx3EfW4nDaS
-         iU5Nuwnp0Dv0wIujPpx/Sb8l19uZQNXsHtmpNzP+jDObxDYg5+tn/1NJVGVL7TU8weLh
-         vJuLlWkWBVJOslf87GfUebuCvj0W0qSiPdCgL3YDX6LajXvN1S5Bc515asUrlj7GVj3t
-         SsBePoRUwvtMqVOX4PPJWaTFUNm33k3iS4Ci+0q0/tnFYX7eM5Kjdji+rT1g+3UkPR9f
-         iJgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=IGO3PuvDPm+gsi6Lka7LaUI6qTd54dbBVyczsiILhXU=;
-        fh=Yuftqc3rf+Lddb6GC2x6/AsbkhhWurRuKIpLDW3ADOA=;
-        b=SHy/wvvndCulwofv8pzZ9iVFOdWwpX1/4Ji1lyjSbxWcrkRaa4Y1T1v46SFLVhYHug
-         cpugucyDj5sNK/oF+rZOC4Il8pCIhuJz7ia7TZB2lJEQyw2ZSv81Qmgb8cEBck4i9own
-         dolyv6qTa2i7eseZu0seuPPFK9y9Rkuyr0qMoWqL9ad8m5+4Cwk54qqcjdPZDIOzs7nY
-         MN0OsJgjobM9lcURii19SLwHugfHUdOKiWM/u6YxaT8jbjEsJhII9Yf7j8+J6IZ7Oxuf
-         IbGERUBcFixGvWKUQUFGKuCDrYFtksUeKIensEsy/Mam3AGfQp7pJ8/gMvS1ouqbgumo
-         hs9w==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780497567; x=1781102367; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IGO3PuvDPm+gsi6Lka7LaUI6qTd54dbBVyczsiILhXU=;
-        b=mBXv+/2rrQJ/8E65tGladFfucL3ST48yuRmvBJifMeXU/Wenwq19Wee+/Cck8vgDsL
-         1F9Spi439MxhlsO6OTw/VvqIRg7Vz+WDN+smIN8d4ZT2H4A7V46ZmBRvpSmNNvdfGZPA
-         gN13FGFtn2eUZ5elpyXZMjiallTYQ8035c1tKHJwwGM1KHRENkIFKop3uQdRp2f1P4q8
-         6Y9+jVmPMdpMGbdJuckX/f+HHbksBBBGU8CfEN5soyuinEo6qzUSYZXLGLohT9XKOPz1
-         FwZo42XOmctNaM4n0nO+Zq0aDeVdVV71RM0ybl1rwZlt85HrNEXHHwjNMeiYYcUZmT9e
-         6bZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780497567; x=1781102367;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=IGO3PuvDPm+gsi6Lka7LaUI6qTd54dbBVyczsiILhXU=;
-        b=T6sXwvOOJFGx+nsBaEiss7bktvAeFuNlvScOFnhdVfbTI3BBz4Fiw/olITiB0xeKIg
-         mdQR6W1WQCJKMPIEqS3V0iWMOCYsWgQpTivVCLhC9uJMGglGvExVQ/7iK07LjtPyRjv3
-         jkkMy/D+4kd/W/Ulq/pQdjSwLL5ckRafYpiSqoOdhzPdjmKiKjC4IN85aKHr2EJU82SH
-         MAz2bucrV2qXdkwUuRhNnOJKxjavfC+4MeYNI0otrb9I36jsmptgfK9c188oix7SWWAD
-         mC4P40ZHz1rv700mHce5yZFVGedKWLmekpIUK90nYwjiDgMMN864pCVQ/Z38qfoKi3Zq
-         MoOg==
-X-Gm-Message-State: AOJu0Yzd2ZbNHVnRtnboWD9K9kv3xDdKDa+rjOmX6gKLjwP2QVjb3Xie
-	kh8abBgINCREeUaGgywRHvaCZXAnl5FS5TQGhIykDaBhTil9PUiMiKdjo22KGFuWu0HD5sC34WU
-	F1eUv2hfYyxXsC4dJMCF6tWkjIGn7C3Y=
-X-Gm-Gg: Acq92OGSjeScOQT6nQ//s4qZcAoZNhyOywdcs4d/WPcqe8qdFFUGRL9/8j56LIZDdG1
-	XTURvfc3sDA06c2qMdZDSWneDfKeavUeBOCRFKPUdCigoEPzZUqY1REwp49p5NB0IoZY1ZXvyeN
-	b1wiU8CsKenydYpKgIKQFgxHX/t/FW8wA1k8poOrDFjbC52yL5jpm6ffnHibA0J2Nm0Ye/MjurW
-	KadhSb7LCaWsFXLJTC7M1pVtDTs4Czxyp87b9LFP3cNxaplWqzfMfi9gOT5r0IzzZnkgFBSRcZZ
-	YT6QiRdONKoGCD2t4q+RtJ2C0tyuimPVhZRn0hZ7Dtjy
-X-Received: by 2002:a05:6402:28ce:b0:68d:92cf:52f4 with SMTP id
- 4fb4d7f45d1cf-68e6f7935a1mr1958834a12.5.1780497567206; Wed, 03 Jun 2026
- 07:39:27 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=collabora.com header.i=daniel.almeida@collabora.com header.b="j5WYXppv"
+ARC-Seal: i=1; a=rsa-sha256; t=1780500203; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=D/0dxtUblON0mXObz6BR/PDgkNDFDP/80FrqnGoouLQJ14XmDwwmnX5FsiqGaK6+7ge+DF3OW9MWDOve00+M/FJ3FuGAq4Cp7cNWW5JmxeFgYza1SA7tMDNWVx1AtAUq19YATy9XmC3899kfKwsj8lDFT7zjCGZC5FuftLJrapM=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1780500203; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=So9rH2Wa9Qe/DNplu0afd7KojnM7XszJ5ToWirB61zg=; 
+	b=aMPm3sSfvKgr1e0Q4dy9VwmM2KrrIarsGVzDsWf52uuVfY/oTef29laLpXXNOnVwAlH+MkzBJx/Aig5+Ck9PAspdgvppkWJrEhJR1fwQhr/+tdXpSlZExTZSsJgyo1n9s00uACQAbMTpuHYGCgzyAIQ97cuzXUoYnTAETLdV0uE=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=collabora.com;
+	spf=pass  smtp.mailfrom=daniel.almeida@collabora.com;
+	dmarc=pass header.from=<daniel.almeida@collabora.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1780500203;
+	s=zohomail; d=collabora.com; i=daniel.almeida@collabora.com;
+	h=Content-Type:Mime-Version:Subject:Subject:From:From:In-Reply-To:Date:Date:Cc:Cc:Content-Transfer-Encoding:Message-Id:Message-Id:References:To:To:Reply-To;
+	bh=So9rH2Wa9Qe/DNplu0afd7KojnM7XszJ5ToWirB61zg=;
+	b=j5WYXppv0gWakahQAHN3IARwLLtuiyzF5As+zXBSFYIEqglZKhqBq2zQ4K/+ZuoG
+	wHFprTnd4InI66J91owt/Ro2rUWwtmfPGyxRbUGxCnvgFYc0Z5/EmjwnN1IQJazNi3+
+	cUV5Wx+6Y5mE2h6HdfzkJCA98VUtadRlBLg/YAXw=
+Received: by mx.zohomail.com with SMTPS id 1780500200690832.6247679096393;
+	Wed, 3 Jun 2026 08:23:20 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20260417231203.785172-1-puranjay@kernel.org> <ahgxkIbBLkTJyUVt@localhost.localdomain>
-In-Reply-To: <ahgxkIbBLkTJyUVt@localhost.localdomain>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Wed, 3 Jun 2026 15:39:13 +0100
-X-Gm-Features: AVHnY4I2ofbFOw3-botyHDbqPzrG7jRG5CNyqRLx4va3_j8bkKgXxI12wfISC8Y
-Message-ID: <CANk7y0htB0VZUhXQavAjZJ4+BSZyup8uVnLaFTHbg_ixEge1-Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/10] RCU: Enable callbacks to benefit from expedited
- grace periods
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
-	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang@linux.dev>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Davidlohr Bueso <dave@stgolabs.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81\))
+Subject: Re: [PATCH 0/4] rust / dma_buf: Add abstractions for dma_fence
+From: Daniel Almeida <daniel.almeida@collabora.com>
+In-Reply-To: <20260530143541.229628-2-phasta@kernel.org>
+Date: Wed, 3 Jun 2026 12:22:57 -0300
+Cc: Miguel Ojeda <ojeda@kernel.org>,
+ Boqun Feng <boqun@kernel.org>,
+ Gary Guo <gary@garyguo.net>,
+ =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <lossin@kernel.org>,
+ Andreas Hindborg <a.hindborg@kernel.org>,
+ Alice Ryhl <aliceryhl@google.com>,
+ Trevor Gross <tmgross@umich.edu>,
+ Danilo Krummrich <dakr@kernel.org>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>,
+ Josh Triplett <josh@joshtriplett.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang@linux.dev>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Igor Korotin <igor.korotin@linux.dev>,
+ Lorenzo Stoakes <ljs@kernel.org>,
+ Alexandre Courbot <acourbot@nvidia.com>,
+ FUJITA Tomonori <fujita.tomonori@gmail.com>,
+ Krishna Ketan Rai <prafulrai522@gmail.com>,
+ Shankari Anand <shankari.ak0208@gmail.com>,
+ manos@pitsidianak.is,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-kernel@vger.kernel.org,
+ rust-for-linux@vger.kernel.org,
+ linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org,
+ rcu@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <9AA494AE-3CC0-4D8B-8D44-3DBB654A7880@collabora.com>
+References: <20260530143541.229628-2-phasta@kernel.org>
+To: Philipp Stanner <phasta@kernel.org>
+X-Mailer: Apple Mail (2.3826.700.81)
+X-ZohoMailClient: External
 
-Hi Frederic,
+I tested this on Tyr and both GNOME and kmscube work, with a few
+(small) caveats. I will address them in the respective patches.
 
-Thanks a lot for the detailed feedback on all patches, I will send the
-next version soon with requested changes.
-
-
-On Thu, May 28, 2026 at 1:14=E2=80=AFPM Frederic Weisbecker <frederic@kerne=
-l.org> wrote:
->
-> Hi,
->
-> Le Fri, Apr 17, 2026 at 04:11:48PM -0700, Puranjay Mohan a =C3=A9crit :
-> > RCU callbacks only track normal grace period sequence numbers. This
-> > means callbacks must wait for normal GPs even when expedited GPs have
-> > already elapsed.
-> >
-> > This series tracks both normal and expedited GP sequences in the
-> > callback infrastructure using struct rcu_gp_oldstate, so callbacks
-> > advance when either GP type completes.
->
-> What is the motivation behind this? When most callbacks don't have much l=
-atency
-> requirements between queue and invocation?
-
-Right now there's an asymmetry: synchronize_rcu_expedited() callers
-get fast object freeing, but call_rcu() callers never benefit from
-those same grace periods even though they prove the exact same thing.
-This series closes that gap, the callback infrastructure treats a
-grace period as a grace period regardless of how it was driven. The
-practical effect is faster memory reclaim: objects that could already
-be safely freed stop sitting around waiting for the next normal GP.
-I'll make this motivation clearer in the next version.
-
-Thanks,
-Puranjay
+Tested-by: Daniel Almeida <daniel.almeida@collabora.com>
