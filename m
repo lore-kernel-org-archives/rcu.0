@@ -1,248 +1,81 @@
-Received: from bali.collaboradmins.com (bali.collaboradmins.com [148.251.105.195])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1052DA762;
-	Thu,  4 Jun 2026 08:16:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.251.105.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A144C8FEF;
+	Thu,  4 Jun 2026 17:50:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780560966; cv=none; b=TpJbur0qGI6vt/VCa8N4emm7DLnE8lCdpw+J76x/CuN05Ml+nDcDli1oWraSaxMp88PkvQdNT4XPiA7kU3XDC26jNLH5ZXa/CQGJoP9KhhC9DHv8uU9MYk+j+j3RRkT7+FX5vzumRNQAoCNgo61ybhZRkndpPiuLzdKPgEVivSY=
+	t=1780595411; cv=none; b=kPwiH3N8KDa0KQgtsRFVpt//Z0eNxUh646szh09uf0vFHTrwwZKJBM0TlixVeVjGU904Fh7TDY0wxE5w3IjbPHuXkCnxaKW6piOCqIefA6hi6kzCAPYKmLUh5NFgi3DbYKg6Dv5C1e/Ph/fdIL8E03/C0FXFd/T9V0ppeGdSUio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780560966; c=relaxed/simple;
-	bh=0Y7Wgjd+88mbx6eBRrnHlgMIRq18/ldRsZrp3x6grII=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FaG6k6JQ3AxWM6f0PDxEltVbacQAfewowTPDLxPQL9LZN65S3bN+o/DLc+6Bp1O2IidNDIu2DVrGW8NQRPviPZyAdgnm6cF/8Uk6QXEdaystXH764vMnfEmsX3kN4fsfuW2y7oBrLDoynZjK26VLgkLprc51elCbLPFsPhly4A0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ZNinGa1J; arc=none smtp.client-ip=148.251.105.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+	s=arc-20240116; t=1780595411; c=relaxed/simple;
+	bh=uH3DN8+vwbtEFnrUkdFiU7sXwLD0nEKjCJu2NvZm0Ag=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oEX09FSUQYOsVn6v9mj9uA/VzTwS6lhaE7ZJKmm0U8DHuAUS95EcZ7rVY9ujSkGWd7vg7wYF/FNH0B4Y6kU7/uR9Q7GuNnurYX69kiHf4YzgAUr0C5cSKi8wCEEcJc68FZ5DGWakZx2JNOlxboJ/mLzAQWjNbBgs6RqBA/pEejs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ltNEM1qX; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ZNinGa1J"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1780560963;
-	bh=0Y7Wgjd+88mbx6eBRrnHlgMIRq18/ldRsZrp3x6grII=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZNinGa1J0lLXQYyrBJR0buj+EVTZ80+2Uuh9nZXqO5DlLo5sEXIgohmA8VDsKAtoz
-	 UvCqtRX47RtYpxgOHrWo8+vktVHLFvnBvDW+E8Ko4K+xhPvTaH/nI/lejQf80lbqWm
-	 Qf9POeDLzHkMsjucLQavTvPNYR8Tr3Jlr6KSD2or4e8PqPTGjgy6DrUgHQIuUL3B+q
-	 JzkgS9DOAEszq/R8nHmx76Yu6iVGRNez/yOJPiT4sseUIitOTj/fezTTaeFWg6GsAc
-	 oMAUvO7JH3MpB05Q9sDx1vkCEmwLYRlQG801pUppqED/pS+btzqljwhf8djFJ1x0NG
-	 eZyz35pp1VL0A==
-Received: from fedora-2.home (unknown [100.64.0.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by bali.collaboradmins.com (Postfix) with ESMTPSA id E820317E0979;
-	Thu,  4 Jun 2026 10:16:01 +0200 (CEST)
-Date: Thu, 4 Jun 2026 10:15:52 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Daniel Almeida <dwlsalmeida@gmail.com>
-Cc: Philipp Stanner <phasta@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
- Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>,
- =?UTF-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin
- <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>, Alice Ryhl
- <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>, Danilo Krummrich
- <dakr@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, Christian
- =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, Neeraj
- Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes
- <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, Uladzislau
- Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Igor Korotin
- <igor.korotin@linux.dev>, Lorenzo Stoakes <ljs@kernel.org>, Alexandre
- Courbot <acourbot@nvidia.com>, FUJITA Tomonori <fujita.tomonori@gmail.com>,
- Krishna Ketan Rai <prafulrai522@gmail.com>, Shankari Anand
- <shankari.ak0208@gmail.com>, manos@pitsidianak.is,
- linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, rcu@vger.kernel.org
-Subject: Re: [PATCH 3/4] rust: Add dma_fence abstractions
-Message-ID: <20260604101552.4232733b@fedora-2.home>
-In-Reply-To: <09096455-BA79-4E61-AD88-44DA57C5BEA8@gmail.com>
-References: <20260530143541.229628-2-phasta@kernel.org>
-	<20260530143541.229628-5-phasta@kernel.org>
-	<4F8E8E04-5AB5-4E6B-9194-5FC467E2313F@collabora.com>
-	<20260603191405.4c75badb@fedora-2.home>
-	<09096455-BA79-4E61-AD88-44DA57C5BEA8@gmail.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-redhat-linux-gnu)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ltNEM1qX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECFC21F00893;
+	Thu,  4 Jun 2026 17:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780595410;
+	bh=Vi3s9rwTzUobC7ambNJchfKIUv646AOhB4wzLDGNaaw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=ltNEM1qX2BkGBQ/D3OEWWqRgXfXpQCbN33puk+Mqfo6NDmVytoJ7K4dLTi/IfBMQB
+	 Paa319mYAGxo+YjAD1h15nmuIFtbXL7uPCRbvjLiEA4BXOAEjlp5hO86H2dy+7+KoD
+	 3dwTnewEYiKXXZCEwFDX/FltCfkskju7aisL5fZ93moa7P8tfMcaakEtkaF3xwjEcW
+	 hG2zZH0DOKOR/lfplGkMS3upclklgrFPSWLXlkD8g45VMo1E3kMbnbOTvkB88ACAuj
+	 +gMwEnQWJYY5+45s857LuqFqKseea+55J3zsXLlA/+aAp3i9ZRvqwDFG3J06F0lkWo
+	 PAUV+LX9HDiFg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 9E612CE0555; Thu,  4 Jun 2026 10:50:09 -0700 (PDT)
+Date: Thu, 4 Jun 2026 10:50:09 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Onur =?iso-8859-1?Q?=D6zkan?= <work@onurozkan.dev>,
+	Gary Guo <gary@garyguo.net>, rcu@vger.kernel.org,
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ojeda@kernel.org, boqun@kernel.org, bjorn3_gh@protonmail.com,
+	lossin@kernel.org, a.hindborg@kernel.org, aliceryhl@google.com,
+	tmgross@umich.edu, dakr@kernel.org, peterz@infradead.org,
+	fujita.tomonori@gmail.com, tamird@kernel.org,
+	jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v7 3/4] rust: sync: add SRCU abstraction
+Message-ID: <f76235e4-33f9-46bb-b01e-2af8c76beac9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260528062810.256212-4-work@onurozkan.dev>
+ <20260528082025.44414-1-work@onurozkan.dev>
+ <20260528083518.66203-1-work@onurozkan.dev>
+ <DIUB2DNTF6W9.2BT1NF6UXUOFI@garyguo.net>
+ <b4f6d3e8-3a08-409e-89ae-ba5d612bae30@paulmck-laptop>
+ <20260530062730.38077-1-work@onurozkan.dev>
+ <3ef86db1-edc4-4e50-8614-2dd7270540b4@paulmck-laptop>
+ <CANiq72=jVHEu5veW_k9B66avYgVR2aHDN2QmDny=j4EK2uRXbw@mail.gmail.com>
+ <20260531191107.35357-1-work@onurozkan.dev>
+ <CANiq72mdeiG79tS4=xbCzHT-n5ZDTB5_QKwhF3Z=XeuWkr8BXw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72mdeiG79tS4=xbCzHT-n5ZDTB5_QKwhF3Z=XeuWkr8BXw@mail.gmail.com>
 
-On Wed, 3 Jun 2026 21:43:05 -0300
-Daniel Almeida <dwlsalmeida@gmail.com> wrote:
+On Mon, Jun 01, 2026 at 11:29:40AM +0200, Miguel Ojeda wrote:
+> On Mon, Jun 1, 2026 at 11:17 AM Onur Özkan <work@onurozkan.dev> wrote:
+> >
+> > I am waiting for the v9 [1] reviews. If we get a complain on the current
+> > approach we can consider the Rust-specific clean-up C function +
+> > disallowed_methods from Clippy.
+> 
+> Just to clarify, I only meant to reply to Paul about linting in Rust
+> in general, i.e. I didn't mean to ask for a particular approach here.
 
-> > On 3 Jun 2026, at 14:14, Boris Brezillon <boris.brezillon@collabora.com=
-> wrote:
-> >=20
-> > On Wed, 3 Jun 2026 13:41:02 -0300
-> > Daniel Almeida <dwlsalmeida@gmail.com> wrote:
-> >  =20
-> >>> +    /// Called when the fence is signaled.
-> >>> +    ///
-> >>> +    /// This is called from the fence signaling path, which may be i=
-n interrupt
-> >>> +    /// context or with locks held, which is why `self` is only borr=
-owed, so that
-> >>> +    /// it cannot drop. Implementations must not sleep or perform
-> >>> +    /// long-running operations.
-> >>> +    ///
-> >>> +    /// An implementation likely wants to inform itself (e.g., throu=
-gh a work item)
-> >>> +    /// within this callback that the associated [`FenceCbRegistrati=
-on`] can now be
-> >>> +    /// dropped.
-> >>> +    fn called(&mut self);   =20
-> >>=20
-> >> This is a central point. We ideally would want this to consume self, b=
-ecause we
-> >> may want to move things out of the callback.   =20
-> >=20
-> > This one comes from me. The rationale being that ::called() is called
-> > from an atomic context, and the resources attached to the callback data
-> > might require acquiring other sleeping locks to be released, and
-> > sometimes you don't even notice immediately because said resources are
-> > refcounted, and the lock is only acquired when you happen to be the
-> > last owner. Yes, those can be caught at runtime if the C side is
-> > properly annotated with might_sleep(), but that's not always the case.
-> >=20
-> > If we defer the drop of the data only when the FenceCb is
-> > dropped/recycled, we're at least not constrained by this "runs in
-> > atomic context" thing.
-> >  =20
->=20
-> This design does not solve it, because one can quite trivially get around=
- this
-> restriction using Option<T> as I said. If your point is =E2=80=9Cdon=E2=
-=80=99t run any drop() here=E2=80=9D,
-> then &mut self doesn=E2=80=99t do it.
+Apologies for being slow!  Onur, could you please use whichever method
+works best so that inappropriate use of the new C-language SRCU functions
+for Rust get complained about?
 
-My bad, I thought you were talking about some Option<T> in
-FenceCbRegistration<T> (there was one at some point, but it's gone now),
-but you're talking about having an Option<X> inside the T. Yes, there's
-indeed nothing preventing a drop on X in that path, and it's just as
-bad as passing the fence back as value to the callback in that case.
-
->=20
-> >>=20
-> >> Consider a fence design where signal() consumes self. Now consider thi=
-s:
-> >>=20
-> >> ```
-> >> impl FenceCb for MyCallback {
-> >> fn called(&mut self) {
-> >>   // Can't move the fence out, so we have to put an Option<T> just to =
-be able
-> >>   // to move.
-> >>   if let Some(f) =3D self.some_fence.take() {
-> >>     f.signal();
-> >>   }
-> >> }
-> >> ```
-> >>=20
-> >> This used to be the case when our version of the job queue used the "p=
-roxy
-> >> fence" design:
-> >>=20
-> >>=20
-> >> ```
-> >> // Callback on the hw fence
-> >> impl FenceCb for MyCallback {
-> >> fn called(&mut self) {
-> >>   if let Some(f) =3D self.submit_fence.take() {
-> >>     f.signal();
-> >>   } =20
-> >=20
-> > I'm pretty sure lockdep won't like it anyway, because this is nested
-> > locking of the same lock class. For such proxies, we'll need to teach
-> > lockdep about the nesting like has been recently done on
-> > dma_fence_array & co. But I'm digressing. =20
->=20
-> Yeah, but this is more about resource transfer in general, not
-> this pattern specifically.
->=20
-> I agree that this has issues, and yes, lockdep complained back
-> then :)
-
-The thing is, there's so many aspects that could go wrong because of the
-context this callback is called in. Nested locking is one of them,
-the fact we can't sleep is another. And with rust it's even worse,
-because of the implicit drops that will happen when you take ownership
-of resources (taking sleeping locks to remove resources from a dataset
-for instance).
-
-So, by passing self by value to the ::callback(), you're basically
-telling users "hey, BTW, don't forget to defer the drop to some
-workqueue if you think it's not atomic-safe". And how can users know
-that the thing they're about to drop can be dropped in atomic context?
-They basically have to audit the ::drop() of all the resources they
-embed in their type implementing FenceCb. Not only that, but they also
-have to design the thing so the deferral of this ::drop() doesn't
-allocate, because, obviously, allocating in atomic context is
-tricky/fallible. AFAIK, none of this can be spot at compile-time (I
-remember Gary/Danilo mentioning that we could teach the klint about
-some of these rules). This would leave us with runtime checks like
-might_sleep(), but most of the C putters (xxx_put(object)) don't have
-might_sleep() in the path where the decref doesn't lead to a refcnt=3D0
-situation.
-
-TLDR; Call this PTSD if you want, but this is the sort of bugs I
-struggled with on the C side, and I can predict that the exact same
-will happen in rust drivers if we expose the FenceCb as it is designed
-here and we don't have a way to check the soundness of the FenceCb
-implementations at compile time.
-
-The other option (the one I've been advocating for from the start), is
-to not let drivers implement FenceCb (make it private), but instead
-have a bunch of implementations that we know are safe. Here's a list of
-implementations that I think would unblock most of the drivers use
-cases:
-
-- wakeup a thread
-- complete a completion object
-- schedule a WorkItem
-- schedule a kthread_worker (once we get a proper rust abstraction for
-  that)
-
-It doesn't mean we can't have optimized FenceCb implementations that do
-a lot more in the callback() path instead of deferring to a
-workqueue/thread, but at least those would have to be implemented in
-dma_fence.rs, and the dma_fence.rs maintainers can then carefully audit
-the code as part of the review process, which we know is not really the
-case when changes touch drivers code only.
-
-FWIW, I think the FenceProxy design you were describing falls into
-this "must be carefully audited" bucket, and should be implemented in
-dma_fence.rs.
-
->=20
-> >  =20
-> >> }
-> >> ```
-> >>=20
-> >> Although this is not the case anymore, since we phased out this design=
- given
-> >> Christian's recent work. Still, we should ideally not require Option<T=
-> here in
-> >> general just to make resource transfer possible. =20
-> >=20
-> > I see. OTOH, don't we need to make this inner data movable if we want
-> > to cancel the FenceCb before the fence is signaled anyway? And that's
-> > most certainly a case we have in the teardown path. =20
->=20
-> Can you expand a bit on what you mean here?
-
-Never mind, I was confusing two different iterations of the code here.
-I thought the Option<T> you were mentioning was in
-FenceCbRegistration<T>, with some explicit ::cancel() function that
-would return Option<T> so the user can get its resources back when it
-cancels the registration, and also know whether the callback was called
-or not. But this is all gone now, and all we can do is drop the
-registration, which will automatically drop the inner T.
+							Thanx, Paul
