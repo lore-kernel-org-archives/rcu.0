@@ -1,257 +1,135 @@
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A591C2EEE6F;
-	Fri,  5 Jun 2026 07:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368A42FF144
+	for <rcu@vger.kernel.org>; Fri,  5 Jun 2026 13:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780646236; cv=none; b=ZRicP4v5cMIT3e1gaA/meg9fmsPx95VL4+vo7z3Au4cagLuSh/bkQGLpmB89CKnxtKLmdw9ZoDqkrSo+jg1eTHEDbA2zoNDi3Ly/45LTjHhZdyYofDI+4ouhJuOK37YCvD4UVUT9uPi+WaS8pFsCNCvqNTeGyzb0etcHybhY3Tk=
+	t=1780666551; cv=none; b=uy+qDWQzCPQg398BPjY733dxsh7smi9tUnnxBC1mD6+khBqlGZwrQGlFcvo4cToUg7bachkIEcJqJh/F7sx4Cy+x1/O3QTISgGQFQUzXWrg1A2NFW5wfTOwR3rhNzOfzlt7oAvTOsvW+aeLQ100gU/5tbTZbJ2gN0ihNOWp4Qtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780646236; c=relaxed/simple;
-	bh=YZscO3yakbHdZc4j0RGnCdnyy50smezrqiuIpDYbTeI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BFFc7ZMJBSEFbO+uMpE4cge1hFxhObmg/77+hHGw3qh4BViAF1lkKY/pVDwYeQMo8KqXgbr+FKZUR46SJV85o/Cfe5xDv1g//tFkF37e3EONdoHwbSdWdRchFi11O5q+CMftzGXOIRgnjYI66wfZ59mD+ZlR6vA3XbpcJo+2lJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=ud9TN26i; arc=none smtp.client-ip=80.241.56.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+	s=arc-20240116; t=1780666551; c=relaxed/simple;
+	bh=UUhxtcNBQidBPnhJq9akfhz+nsSIhTWipy6zveKmyyc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DuoQ/iXwKXu7Fy6ppAKKNGxrMahi+BF7bEakW8KYgXq/QZxAmQXwh/MXgXf8M/4EHNhLVcbidQaUNdufSlqGG7XUFDE88geQikdO7EWV58eC9MgG+c2bwN9950sQDxUViTNrqdERYO4FNptEvRwH1z6tgUQRViriPOuU/WSWhLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hv30AGuR; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="ud9TN26i"
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4gWv0c3R1Bz9tgY;
-	Fri,  5 Jun 2026 09:57:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1780646224; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YZscO3yakbHdZc4j0RGnCdnyy50smezrqiuIpDYbTeI=;
-	b=ud9TN26ikC4TheW87sW5sBb0y2fqqKzew5ee3W2uJP7eL0IRSx/XGRTNn5y9pkOecyS/RA
-	K/7g4n+Do9YA3XS5TTP7T+S4TLlVSPWnYnOzde5LcsMROQMe90Tm96LylDf2b8x9VuQkZp
-	qN3vsiXI30/uRjCLIoblFdNRbR2frgMsipUZg8qVTRTY8whn5tDu8Jq1sVSNwtq8ZCVnou
-	CRNyO4ketnaWtSzGeGYji4nJfM/n4irESZmSi/vosa12sTW4nCsmiXR8qGjWrqAsWV5PHR
-	W2uKePhv2y5CPa6GuTTA6MKwDkB/s/bhnE71Z8HtFvVpqmS2fMwJCQMne/9ECw==
-Message-ID: <8ff2de94a50ed077a4cfe520a081f2b8b438a375.camel@mailbox.org>
-Subject: Re: [PATCH 3/4] rust: Add dma_fence abstractions
-From: Philipp Stanner <phasta@mailbox.org>
-Reply-To: phasta@kernel.org
-To: Boris Brezillon <boris.brezillon@collabora.com>, Daniel Almeida
-	 <dwlsalmeida@gmail.com>
-Cc: Philipp Stanner <phasta@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, 
- Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>,
- =?ISO-8859-1?Q?Bj=F6rn?= Roy Baron	 <bjorn3_gh@protonmail.com>, Benno
- Lossin <lossin@kernel.org>, Andreas Hindborg	 <a.hindborg@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>, Trevor Gross	 <tmgross@umich.edu>,
- Danilo Krummrich <dakr@kernel.org>, Sumit Semwal	
- <sumit.semwal@linaro.org>, Christian =?ISO-8859-1?Q?K=F6nig?=	
- <christian.koenig@amd.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
- Frederic Weisbecker	 <frederic@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
- Triplett <josh@joshtriplett.org>, Uladzislau Rezki	 <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers	
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
- Zqiang <qiang.zhang@linux.dev>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Igor Korotin	 <igor.korotin@linux.dev>,
- Lorenzo Stoakes <ljs@kernel.org>, Alexandre Courbot	 <acourbot@nvidia.com>,
- FUJITA Tomonori <fujita.tomonori@gmail.com>, Krishna Ketan Rai
- <prafulrai522@gmail.com>, Shankari Anand <shankari.ak0208@gmail.com>,
- manos@pitsidianak.is, 	linux-kernel@vger.kernel.org,
- rust-for-linux@vger.kernel.org, 	linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, 	linaro-mm-sig@lists.linaro.org,
- rcu@vger.kernel.org
-Date: Fri, 05 Jun 2026 09:56:51 +0200
-In-Reply-To: <20260604101552.4232733b@fedora-2.home>
-References: <20260530143541.229628-2-phasta@kernel.org>
-		<20260530143541.229628-5-phasta@kernel.org>
-		<4F8E8E04-5AB5-4E6B-9194-5FC467E2313F@collabora.com>
-		<20260603191405.4c75badb@fedora-2.home>
-		<09096455-BA79-4E61-AD88-44DA57C5BEA8@gmail.com>
-	 <20260604101552.4232733b@fedora-2.home>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hv30AGuR"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F3691F00898;
+	Fri,  5 Jun 2026 13:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780666548;
+	bh=V+3GJsZxiITcRMlzwywosE1kBJjYYPTTK69C+X92Rrw=;
+	h=From:To:Cc:Subject:Date;
+	b=Hv30AGuR+cz2CQ2dj67Yzpp52IXj2ahmvSWppUfeA7+bppg8L4k+Hy7Pfqcu4W62R
+	 l0hQsQfHDF0dhRyZopukNUwZ30jtYN3jkaG1B9Ex7yFoRjEx5TNLXPXbKfUWpf0NfR
+	 v64+z5I+zn3QoUp3NrsD/yYhKNsSVacQ4zGYlsxXS3JeOoRbe6uDkBrMwFFOPpJmAR
+	 92/wP/EOjqTU5YsI+hvhpDCzD3jvArw0S8HR0o4CzV20pI4bnib1gCgEZYButbIKg3
+	 tUXn3339talxM8SxFivN+oP+v/rv88klTG92uWDDp6r1n1cwgOU2pir71Cl4ZV1vM9
+	 xaa9FveNs/CKQ==
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 5B751F4006F;
+	Fri,  5 Jun 2026 09:35:47 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Fri, 05 Jun 2026 09:35:47 -0400
+X-ME-Sender: <xms:s9AiaradpzQawOzKlJVdLrR4MQLkpLTE_FbiMrwK4PtwHVH_Qy5Vrw>
+    <xme:s9Aiam0rZx6Vqij-n0XJQMXbyll_Wv18_UYjL5Pc6oD_1DKFgEun5JsmkyKRsLgDF
+    ba5z_9a237nYuDO5K7KEU1zrsxyLGKSA93STKOyVKhnUnNCZXk-JtQ>
+X-ME-Received: <xmr:s9AialO2SzzCUNoUPS8MA78Q6f4GJkThBBPf1nyzR7DSTjOoRX4s-kHFkvM>
+X-ME-Proxy-Cause: dmFkZTFKENnCiyPS37jOfUW/oSt3ApI4Om6wyeJiiPYsBRF27Y77NEp2GRWEH/Wu22F/nN
+    jSLPXUo+vpn9G/MZoMnCSmi/RsIDJMGfJOTTMeMH880odghXtGPynqv6EEGLiWUW12Ktmf
+    F+PPRU0YRdVUAi+LO4dYxUc0b6J0tg7+Juur2hWdNU+gehj5U/NdtzZkPNhXPF4Ah90viD
+    aqhiOSGPff6V/LBAdW9kqJklU4xsIoTyQSGu0+i9A580vKQSwad1R6zoD1RnChJ5FNQ0dU
+    bczE0+CcxhZJZhPPbEA3Zn2zVHH/I+liU4sR06uQjZ7j0Fz1fxA7p/zOJ9UaIcNU9giYU4
+    XnFhxWfhVpmI0x48ilXTpAWnWZJOWYHCRkUPVu8DzmXQd2Evddhunr9+jUv3n1xsRGUJ1h
+    KQmDvz7AHx4jreqF+CU8EJa22nDQZyEc9Isrzx55OoJPiCds42Ma8cXKeCFslYjHG0g2UR
+    m6MN2ENP/0QYdd3tNgHfqUXI8s9lbQEVkiZm7rEvQKJcZd9JW2V8zNmSlmmZOl++/Hc5au
+    +QVxNWcUjE7N0iLrQMQT9DTEs0O5zHvXQelb/HgeoOaRMTqiwWdtOm48B35HA/2VcP5yvX
+    S1vKc1wSal6Sc4eAgayfqjlzetTHUH/A4qSt4sbZEumI7lZ7JRGIbnYqaGjA
+X-ME-Proxy: <xmx:s9AiaoJP5H1mQq9mKqc22IPHCNQuAKSzFAZYMeMiGwLs8-ig5fL5Hg>
+    <xmx:s9Aiam4LYBXuxb1CczLm-kQ0FUaaSPEcwlsLr9L1gFUdmjctsaDyDg>
+    <xmx:s9AiatSoEaiQxwJIDLjzp4xVMegWPQ5UQXM7aeL9Vst0yqyTkKrP3A>
+    <xmx:s9AiahdPhb1tKWWG_57IHXbjRJhH6bbERiKFH42OtQjaSz7OoEZYxQ>
+    <xmx:s9Aiam3Zz_OY6OnrU-z3FXeMx44yzRAihPGnvnLADD9yX_TAyGAs9s8j>
+Feedback-ID: i8dbe485b:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 5 Jun 2026 09:35:46 -0400 (EDT)
+From: Boqun Feng <boqun@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	rcu@vger.kernel.org
+Cc: Miguel Ojeda <ojeda@kernel.org>,	Boqun Feng <boqun@kernel.org>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Benno Lossin <lossin@kernel.org>,
+	Andreas Hindborg <a.hindborg@kernel.org>,
+	Alice Ryhl <aliceryhl@google.com>,	Trevor Gross <tmgross@umich.edu>,
+	Danilo Krummrich <dakr@kernel.org>,
+	"Liam R. Howlett" <liam@infradead.org>,
+	Andrew Ballance <andrewjballance@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,	Zqiang <qiang.zhang@linux.dev>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	maple-tree@lists.infradead.org,	linux-mm@kvack.org,
+	linux-media@vger.kernel.org,	dri-devel@lists.freedesktop.org,
+	Philipp Stanner <phasta@kernel.org>,	Lyude Paul <lyude@redhat.com>,
+	Daniel Almeida <daniel.almeida@collabora.com>,
+	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
+Subject: [PATCH 0/3] rust: sync: Introduce Rcu*Box
+Date: Fri,  5 Jun 2026 06:35:36 -0700
+Message-ID: <20260605133541.22569-1-boqun@kernel.org>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MBO-RS-ID: a672bee9a7bdcd496a0
-X-MBO-RS-META: 5yqks91n4urtritwsng9kaxh7prq1gie
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2026-06-04 at 10:15 +0200, Boris Brezillon wrote:
-> On Wed, 3 Jun 2026 21:43:05 -0300
-> Daniel Almeida <dwlsalmeida@gmail.com> wrote:
->=20
-> > > On 3 Jun 2026, at 14:14, Boris Brezillon <boris.brezillon@collabora.c=
-om> wrote:
-> > >=20
-> > > On Wed, 3 Jun 2026 13:41:02 -0300
-> > > Daniel Almeida <dwlsalmeida@gmail.com> wrote:
-> > > =C2=A0=20
-> > > > > +=C2=A0=C2=A0=C2=A0 /// Called when the fence is signaled.
-> > > > > +=C2=A0=C2=A0=C2=A0 ///
-> > > > > +=C2=A0=C2=A0=C2=A0 /// This is called from the fence signaling p=
-ath, which may be in interrupt
-> > > > > +=C2=A0=C2=A0=C2=A0 /// context or with locks held, which is why =
-`self` is only borrowed, so that
-> > > > > +=C2=A0=C2=A0=C2=A0 /// it cannot drop. Implementations must not =
-sleep or perform
-> > > > > +=C2=A0=C2=A0=C2=A0 /// long-running operations.
-> > > > > +=C2=A0=C2=A0=C2=A0 ///
-> > > > > +=C2=A0=C2=A0=C2=A0 /// An implementation likely wants to inform =
-itself (e.g., through a work item)
-> > > > > +=C2=A0=C2=A0=C2=A0 /// within this callback that the associated =
-[`FenceCbRegistration`] can now be
-> > > > > +=C2=A0=C2=A0=C2=A0 /// dropped.
-> > > > > +=C2=A0=C2=A0=C2=A0 fn called(&mut self);=C2=A0=C2=A0=C2=A0=20
-> > > >=20
-> > > > This is a central point. We ideally would want this to consume self=
-, because we
-> > > > may want to move things out of the callback.=C2=A0=C2=A0=C2=A0=20
-> > >=20
-> > > This one comes from me. The rationale being that ::called() is called
-> > > from an atomic context, and the resources attached to the callback da=
-ta
-> > > might require acquiring other sleeping locks to be released, and
-> > > sometimes you don't even notice immediately because said resources ar=
-e
-> > > refcounted, and the lock is only acquired when you happen to be the
-> > > last owner. Yes, those can be caught at runtime if the C side is
-> > > properly annotated with might_sleep(), but that's not always the case=
-.
-> > >=20
-> > > If we defer the drop of the data only when the FenceCb is
-> > > dropped/recycled, we're at least not constrained by this "runs in
-> > > atomic context" thing.
-> > > =C2=A0=20
-> >=20
-> > This design does not solve it, because one can quite trivially get arou=
-nd this
-> > restriction using Option<T> as I said. If your point is =E2=80=9Cdon=E2=
-=80=99t run any drop() here=E2=80=9D,
-> > then &mut self doesn=E2=80=99t do it.
->=20
-> My bad, I thought you were talking about some Option<T> in
-> FenceCbRegistration<T> (there was one at some point, but it's gone now),
-> but you're talking about having an Option<X> inside the T. Yes, there's
-> indeed nothing preventing a drop on X in that path, and it's just as
-> bad as passing the fence back as value to the callback in that case.
+(this series is based on Alice's RFC [1] and discussion around Philipp's
+patches [2], [3])
 
-Then maybe we should just pass it by value and require implementation
-of an unsafe trait on `T`, whose safety-requirements demand that this
-must be save to drop from atomic context.
+As an easy way to provide RCU-protected allocation, two major types are
+provided:
 
->=20
-> >=20
-> > > >=20
-> > > > Consider a fence design where signal() consumes self. Now consider =
-this:
-> > > >=20
-> > > > ```
-> > > > impl FenceCb for MyCallback {
-> > > > fn called(&mut self) {
-> > > > =C2=A0 // Can't move the fence out, so we have to put an Option<T> =
-just to be able
-> > > > =C2=A0 // to move.
-> > > > =C2=A0 if let Some(f) =3D self.some_fence.take() {
-> > > > =C2=A0=C2=A0=C2=A0 f.signal();
-> > > > =C2=A0 }
-> > > > }
-> > > > ```
-> > > >=20
-> > > > This used to be the case when our version of the job queue used the=
- "proxy
-> > > > fence" design:
-> > > >=20
-> > > >=20
-> > > > ```
-> > > > // Callback on the hw fence
-> > > > impl FenceCb for MyCallback {
-> > > > fn called(&mut self) {
-> > > > =C2=A0 if let Some(f) =3D self.submit_fence.take() {
-> > > > =C2=A0=C2=A0=C2=A0 f.signal();
-> > > > =C2=A0 }=C2=A0=20
-> > >=20
-> > > I'm pretty sure lockdep won't like it anyway, because this is nested
-> > > locking of the same lock class. For such proxies, we'll need to teach
-> > > lockdep about the nesting like has been recently done on
-> > > dma_fence_array & co. But I'm digressing.=C2=A0=20
-> >=20
-> > Yeah, but this is more about resource transfer in general, not
-> > this pattern specifically.
-> >=20
-> > I agree that this has issues, and yes, lockdep complained back
-> > then :)
->=20
-> The thing is, there's so many aspects that could go wrong because of the
-> context this callback is called in. Nested locking is one of them,
-> the fact we can't sleep is another. And with rust it's even worse,
-> because of the implicit drops that will happen when you take ownership
-> of resources (taking sleeping locks to remove resources from a dataset
-> for instance).
-
-Doesn't that have to be a problem for much of Rust infrastructure? How
-do other parties solve that?
-
->=20
-> So, by passing self by value to the ::callback(), you're basically
-> telling users "hey, BTW, don't forget to defer the drop to some
-> workqueue if you think it's not atomic-safe". And how can users know
-> that the thing they're about to drop can be dropped in atomic context?
-> They basically have to audit the ::drop() of all the resources they
-> embed in their type implementing FenceCb. Not only that, but they also
-> have to design the thing so the deferral of this ::drop() doesn't
-> allocate, because, obviously, allocating in atomic context is
-> tricky/fallible. AFAIK, none of this can be spot at compile-time (I
-> remember Gary/Danilo mentioning that we could teach the klint about
-> some of these rules). This would leave us with runtime checks like
-> might_sleep(), but most of the C putters (xxx_put(object)) don't have
-> might_sleep() in the path where the decref doesn't lead to a refcnt=3D0
-> situation.
->=20
-> TLDR; Call this PTSD if you want, but this is the sort of bugs I
-> struggled with on the C side, and I can predict that the exact same
-> will happen in rust drivers if we expose the FenceCb as it is designed
-> here and we don't have a way to check the soundness of the FenceCb
-> implementations at compile time.
-
-My guess would be that the existence of unsafe-traits is the admission
-of Rust that this just cannot be guaranteed by design.
-
-If a driver cannot know whether this or that is safe to drop, then it
-would have to defer it's dropping. Or would there be cases where this
-also doesn't work?
-
->=20
-> The other option (the one I've been advocating for from the start), is
-> to not let drivers implement FenceCb (make it private), but instead
-> have a bunch of implementations that we know are safe. Here's a list of
-> implementations that I think would unblock most of the drivers use
-> cases:
->=20
-> - wakeup a thread
-> - complete a completion object
-> - schedule a WorkItem
-> - schedule a kthread_worker (once we get a proper rust abstraction for
-> =C2=A0 that)
->=20
-> It doesn't mean we can't have optimized FenceCb implementations that do
-> a lot more in the callback() path instead of deferring to a
-> workqueue/thread, but at least those would have to be implemented in
-> dma_fence.rs, and the dma_fence.rs maintainers can then carefully audit
-> the code as part of the review process, which we know is not really the
-> case when changes touch drivers code only.
-
-Pragmatically speaking, if the common cases are trivial, then the
-drivers will get them right, because those critical primitives are
-already atomic-safe.
-
-And a non-common case will have to be implemented in the driver
-anyways, so we'd have to allow for that.
+- `RcuBox<T, A>`, inner T will be dropped and after a grace period.
+  Users: binder with maple_tree and dma_fence.
+- `RcuFreeBox<T, A>`, inner T will be cleaned up immmediately and freed
+  after a grace period. (Name suggestion is welcome). This is an attempt
+  to consolidate Alice's `PollCondVarBox` [4] into a generic
+  implementation, InPlaceInit support is still missing, but I want to
+  get some feedback on the trait `RcuFreeSafe`.
 
 
+[1]: https://lore.kernel.org/rust-for-linux/20260116-rcu-box-v1-0-38ebfbcd53f0@google.com/
+[2]: https://lore.kernel.org/rust-for-linux/20260530143541.229628-2-phasta@kernel.org/
+[3]: https://lore.kernel.org/rust-for-linux/20260520131725.266014-2-phasta@kernel.org/
+[4]: https://lore.kernel.org/rust-for-linux/20260523-upgrade-poll-v4-0-f5b4c747eac2@google.com/
 
-P.
+Regards,
+Boqun
+
+Alice Ryhl (2):
+  rust: rcu: Add RcuBox type
+  rust: maple_tree: Add load_rcu()
+
+Boqun Feng (1):
+  rust: rcu: Introduce RcuFreeBox
+
+ rust/bindings/bindings_helper.h |   1 +
+ rust/kernel/maple_tree.rs       |  52 ++++++
+ rust/kernel/sync/rcu.rs         |  65 ++++++-
+ rust/kernel/sync/rcu/rcu_box.rs | 290 ++++++++++++++++++++++++++++++++
+ 4 files changed, 407 insertions(+), 1 deletion(-)
+ create mode 100644 rust/kernel/sync/rcu/rcu_box.rs
+
+-- 
+2.51.0
+
