@@ -1,367 +1,257 @@
-Received: from mail-43170.protonmail.ch (mail-43170.protonmail.ch [185.70.43.170])
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFD340626E;
-	Fri,  5 Jun 2026 06:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A591C2EEE6F;
+	Fri,  5 Jun 2026 07:57:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780641391; cv=none; b=KE4GwjzlRYpHb/Jyjf49A1+xxCYLSjju581s7XRQyxBfC01HsfYMywkndqLEFB49rAWIMSc+vy7BgYiNuTFygFXl8bGTplmF1YrQBsYrFF6PD8BCzNozBLExG+BnpUCHXidwAgB/M9T54gue7GGElGm3uHQhQirvvYEAFVTlYTA=
+	t=1780646236; cv=none; b=ZRicP4v5cMIT3e1gaA/meg9fmsPx95VL4+vo7z3Au4cagLuSh/bkQGLpmB89CKnxtKLmdw9ZoDqkrSo+jg1eTHEDbA2zoNDi3Ly/45LTjHhZdyYofDI+4ouhJuOK37YCvD4UVUT9uPi+WaS8pFsCNCvqNTeGyzb0etcHybhY3Tk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780641391; c=relaxed/simple;
-	bh=miqHdEu3z8HReD0dUe181194Bz7kAcuHHqvQQoIbHhU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q7nWIZaGcMkqpMkjMNCoD2KbTreuC3jDOsSou5LpY2nBBKS7fnO0ibxA25QvOohWG/btwhZYYYnWBv72zd8hcEHbqtduDyH2Dc1MFx0cjWWOWdpzx5coSuDsC9DDoq2F10rzbGH2RIIMQsraDVLXlDH+TkVvvf1nbY7q/ptasZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev; spf=pass smtp.mailfrom=onurozkan.dev; dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b=r5lGvjK/; arc=none smtp.client-ip=185.70.43.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=onurozkan.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=onurozkan.dev
+	s=arc-20240116; t=1780646236; c=relaxed/simple;
+	bh=YZscO3yakbHdZc4j0RGnCdnyy50smezrqiuIpDYbTeI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BFFc7ZMJBSEFbO+uMpE4cge1hFxhObmg/77+hHGw3qh4BViAF1lkKY/pVDwYeQMo8KqXgbr+FKZUR46SJV85o/Cfe5xDv1g//tFkF37e3EONdoHwbSdWdRchFi11O5q+CMftzGXOIRgnjYI66wfZ59mD+ZlR6vA3XbpcJo+2lJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=ud9TN26i; arc=none smtp.client-ip=80.241.56.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=onurozkan.dev header.i=@onurozkan.dev header.b="r5lGvjK/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onurozkan.dev;
-	s=protonmail; t=1780641379; x=1780900579;
-	bh=qveSfLeksZ7hInrBILIxW8PXrRlvzzBrxL1I60tCo6g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:From:To:
-	 Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=r5lGvjK/CKx5k+BzTZV4NYh8goaTmtEtH5zB2FTM8I1MOcryzz2l9dqTuytPlSxP+
-	 LrlUvMAGKshIxzfY9unBTFA0DCuYdzkozidhYWYvCvufpSQ4TecgJh6cH+qlae9ANm
-	 TdOhM9ySbZpyPw7DRVTusphrmxfgC0uzWWyf89wNzjugBZvbac1+hhIQSANc197GvR
-	 3TuFFmULOqyXTPGHTmbBvrpVZUizgE+Mrzpp0cdQm56W1vq/gkISa3bdle5C0+KFqT
-	 b/t/zkfe74NunCVGE2xEvEICc+Rxw0E0QOfeMBe9tsFhnuk4lgpanfdXTu/YyjDOms
-	 47lCuYyjQR5wQ==
-X-Pm-Submission-Id: 4gWsCM0fSYz1DFSR
-From: =?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ojeda@kernel.org,
-	boqun@kernel.org,
-	gary@garyguo.net,
-	bjorn3_gh@protonmail.com,
-	lossin@kernel.org,
-	a.hindborg@kernel.org,
-	aliceryhl@google.com,
-	tmgross@umich.edu,
-	dakr@kernel.org,
-	peterz@infradead.org,
-	fujita.tomonori@gmail.com,
-	tamird@kernel.org,
-	jiangshanlai@gmail.com,
-	josh@joshtriplett.org,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v9 1/4] rust: helpers: add SRCU helpers
-Date: Fri,  5 Jun 2026 09:32:28 +0300
-Message-ID: <20260605063613.81637-1-work@onurozkan.dev>
-X-Mailer: git-send-email 2.51.2
-In-Reply-To: <5d82d96f-5dbb-46bd-b34b-25411be157ce@paulmck-laptop>
-References: <20260529134004.396743-1-work@onurozkan.dev> <20260529134004.396743-2-work@onurozkan.dev> <5d82d96f-5dbb-46bd-b34b-25411be157ce@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="ud9TN26i"
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4gWv0c3R1Bz9tgY;
+	Fri,  5 Jun 2026 09:57:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1780646224; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YZscO3yakbHdZc4j0RGnCdnyy50smezrqiuIpDYbTeI=;
+	b=ud9TN26ikC4TheW87sW5sBb0y2fqqKzew5ee3W2uJP7eL0IRSx/XGRTNn5y9pkOecyS/RA
+	K/7g4n+Do9YA3XS5TTP7T+S4TLlVSPWnYnOzde5LcsMROQMe90Tm96LylDf2b8x9VuQkZp
+	qN3vsiXI30/uRjCLIoblFdNRbR2frgMsipUZg8qVTRTY8whn5tDu8Jq1sVSNwtq8ZCVnou
+	CRNyO4ketnaWtSzGeGYji4nJfM/n4irESZmSi/vosa12sTW4nCsmiXR8qGjWrqAsWV5PHR
+	W2uKePhv2y5CPa6GuTTA6MKwDkB/s/bhnE71Z8HtFvVpqmS2fMwJCQMne/9ECw==
+Message-ID: <8ff2de94a50ed077a4cfe520a081f2b8b438a375.camel@mailbox.org>
+Subject: Re: [PATCH 3/4] rust: Add dma_fence abstractions
+From: Philipp Stanner <phasta@mailbox.org>
+Reply-To: phasta@kernel.org
+To: Boris Brezillon <boris.brezillon@collabora.com>, Daniel Almeida
+	 <dwlsalmeida@gmail.com>
+Cc: Philipp Stanner <phasta@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, 
+ Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>,
+ =?ISO-8859-1?Q?Bj=F6rn?= Roy Baron	 <bjorn3_gh@protonmail.com>, Benno
+ Lossin <lossin@kernel.org>, Andreas Hindborg	 <a.hindborg@kernel.org>,
+ Alice Ryhl <aliceryhl@google.com>, Trevor Gross	 <tmgross@umich.edu>,
+ Danilo Krummrich <dakr@kernel.org>, Sumit Semwal	
+ <sumit.semwal@linaro.org>, Christian =?ISO-8859-1?Q?K=F6nig?=	
+ <christian.koenig@amd.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+ Frederic Weisbecker	 <frederic@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
+ Triplett <josh@joshtriplett.org>, Uladzislau Rezki	 <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers	
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+ Zqiang <qiang.zhang@linux.dev>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Igor Korotin	 <igor.korotin@linux.dev>,
+ Lorenzo Stoakes <ljs@kernel.org>, Alexandre Courbot	 <acourbot@nvidia.com>,
+ FUJITA Tomonori <fujita.tomonori@gmail.com>, Krishna Ketan Rai
+ <prafulrai522@gmail.com>, Shankari Anand <shankari.ak0208@gmail.com>,
+ manos@pitsidianak.is, 	linux-kernel@vger.kernel.org,
+ rust-for-linux@vger.kernel.org, 	linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, 	linaro-mm-sig@lists.linaro.org,
+ rcu@vger.kernel.org
+Date: Fri, 05 Jun 2026 09:56:51 +0200
+In-Reply-To: <20260604101552.4232733b@fedora-2.home>
+References: <20260530143541.229628-2-phasta@kernel.org>
+		<20260530143541.229628-5-phasta@kernel.org>
+		<4F8E8E04-5AB5-4E6B-9194-5FC467E2313F@collabora.com>
+		<20260603191405.4c75badb@fedora-2.home>
+		<09096455-BA79-4E61-AD88-44DA57C5BEA8@gmail.com>
+	 <20260604101552.4232733b@fedora-2.home>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MBO-RS-ID: a672bee9a7bdcd496a0
+X-MBO-RS-META: 5yqks91n4urtritwsng9kaxh7prq1gie
 
-On Thu, 04 Jun 2026 11:40:59 -0700=0D
-"Paul E. McKenney" <paulmck@kernel.org> wrote:=0D
-=0D
-> On Fri, May 29, 2026 at 04:39:51PM +0300, Onur =C3=96zkan wrote:=0D
-> > Add helper wrappers for SRCU functions that are exposed to Rust=0D
-> > through generated bindings.=0D
-> > =0D
-> > Signed-off-by: Onur =C3=96zkan <work@onurozkan.dev>=0D
-> > =0D
-> > ---=0D
-> >  include/linux/srcu.h   | 29 ++++++++++++++++++++---------=0D
-> >  kernel/rcu/srcutiny.c  | 10 +++++-----=0D
-> >  kernel/rcu/srcutree.c  |  9 +++++----=0D
-> >  rust/helpers/helpers.c |  1 +=0D
-> >  rust/helpers/srcu.c    | 30 ++++++++++++++++++++++++++++++=0D
-> >  5 files changed, 61 insertions(+), 18 deletions(-)=0D
-> >  create mode 100644 rust/helpers/srcu.c=0D
-> =0D
-> On the next version, please split the rust/helpers changes into a=0D
-> separate patch.  It looks like the simplification to SRCU adds code=0D
-> rather than deleting it?=0D
-> =0D
-=0D
-Well, it's mostly renaming (e.g. init_srcu_struct -> init_srcu_struct_gener=
-ic)=0D
-and moving code around (moving init_srcu_struct outside CONFIG_DEBUG_LOCK_A=
-LLOC=0D
-guard). The actual "added" code lines are around 10 lines or something.=0D
-=0D
-> But let me see if I understand the structure.=0D
-> =0D
-> > diff --git a/include/linux/srcu.h b/include/linux/srcu.h=0D
-> > index 81b1938512d5..a028a5b5ebef 100644=0D
-> > --- a/include/linux/srcu.h=0D
-> > +++ b/include/linux/srcu.h=0D
-> > @@ -25,20 +25,19 @@ context_lock_struct(srcu_struct, __reentrant_ctx_lo=
-ck);=0D
-> >  =0D
-> >  #ifdef CONFIG_DEBUG_LOCK_ALLOC=0D
-> >  =0D
-> > -int __init_srcu_struct(struct srcu_struct *ssp, const char *name, stru=
-ct lock_class_key *key);=0D
-> > +int init_srcu_struct_lockdep(struct srcu_struct *ssp, const char *name=
-,=0D
-> > +				     struct lock_class_key *key);=0D
-> > +static inline int __init_srcu_struct(struct srcu_struct *ssp, const ch=
-ar *name,=0D
-> > +				     struct lock_class_key *key)=0D
-> > +{=0D
-> > +	return init_srcu_struct_lockdep(ssp, name, key);=0D
-> > +}=0D
-> =0D
-> __init_srcu_struct() invokes init_srcu_struct_lockdep()...=0D
-> =0D
-> >  #ifndef CONFIG_TINY_SRCU=0D
-> >  int __init_srcu_struct_fast(struct srcu_struct *ssp, const char *name,=
- struct lock_class_key *key);=0D
-> >  int __init_srcu_struct_fast_updown(struct srcu_struct *ssp, const char=
- *name,=0D
-> >  				   struct lock_class_key *key);=0D
-> >  #endif // #ifndef CONFIG_TINY_SRCU=0D
-> >  =0D
-> > -#define init_srcu_struct(ssp) \=0D
-> > -({ \=0D
-> > -	static struct lock_class_key __srcu_key; \=0D
-> > -	\=0D
-> > -	__init_srcu_struct((ssp), #ssp, &__srcu_key); \=0D
-> > -})=0D
-> =0D
-> init_srcu_struct() invokes __init_srcu_struct()...  (moved)=0D
-> =0D
-> >  #define init_srcu_struct_fast(ssp) \=0D
-> >  ({ \=0D
-> >  	static struct lock_class_key __srcu_key; \=0D
-> > @@ -56,7 +55,12 @@ int __init_srcu_struct_fast_updown(struct srcu_struc=
-t *ssp, const char *name,=0D
-> >  #define __SRCU_DEP_MAP_INIT(srcu_name)	.dep_map =3D { .name =3D #srcu_=
-name },=0D
-> >  #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */=0D
-> >  =0D
-> > -int init_srcu_struct(struct srcu_struct *ssp);=0D
-> > +int init_srcu_struct_generic(struct srcu_struct *ssp);=0D
-> > +static inline int __init_srcu_struct(struct srcu_struct *ssp, const ch=
-ar *name,=0D
-> > +				     struct lock_class_key *key)=0D
-> > +{=0D
-> > +	return init_srcu_struct_generic(ssp);=0D
-> > +}=0D
-> =0D
-> __init_srcu_struct() invokes init_srcu_struct_generic()...=0D
-> =0D
-> >  #ifndef CONFIG_TINY_SRCU=0D
-> >  int init_srcu_struct_fast(struct srcu_struct *ssp);=0D
-> >  int init_srcu_struct_fast_updown(struct srcu_struct *ssp);=0D
-> > @@ -65,6 +69,13 @@ int init_srcu_struct_fast_updown(struct srcu_struct =
-*ssp);=0D
-> >  #define __SRCU_DEP_MAP_INIT(srcu_name)=0D
-> >  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */=0D
-> >  =0D
-> > +#define init_srcu_struct(ssp) \=0D
-> > +({ \=0D
-> > +	static struct lock_class_key __srcu_key; \=0D
-> > +	\=0D
-> > +	__init_srcu_struct((ssp), #ssp, &__srcu_key); \=0D
-> > +})=0D
-> =0D
-> ...and here is where it moved to.=0D
-> =0D
-> > +=0D
-> >  /* Values for SRCU Tree srcu_data ->srcu_reader_flavor, but also used =
-by rcutorture. */=0D
-> >  #define SRCU_READ_FLAVOR_NORMAL		0x1		// srcu_read_lock().=0D
-> >  #define SRCU_READ_FLAVOR_NMI		0x2		// srcu_read_lock_nmisafe().=0D
-> > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c=0D
-> > index a2e2d516e51b..780a95e8cad7 100644=0D
-> > --- a/kernel/rcu/srcutiny.c=0D
-> > +++ b/kernel/rcu/srcutiny.c=0D
-> > @@ -48,15 +48,15 @@ static int init_srcu_struct_fields(struct srcu_stru=
-ct *ssp)=0D
-> >  =0D
-> >  #ifdef CONFIG_DEBUG_LOCK_ALLOC=0D
-> >  =0D
-> > -int __init_srcu_struct(struct srcu_struct *ssp, const char *name,=0D
-> > -		       struct lock_class_key *key)=0D
-> > +int init_srcu_struct_lockdep(struct srcu_struct *ssp, const char *name=
-,=0D
-> > +		     struct lock_class_key *key)=0D
-> >  {=0D
-> >  	/* Don't re-initialize a lock while it is held. */=0D
-> >  	debug_check_no_locks_freed((void *)ssp, sizeof(*ssp));=0D
-> >  	lockdep_init_map(&ssp->dep_map, name, key, 0);=0D
-> >  	return init_srcu_struct_fields(ssp);=0D
-> >  }=0D
-> > -EXPORT_SYMBOL_GPL(__init_srcu_struct);=0D
-> > +EXPORT_SYMBOL_GPL(init_srcu_struct_lockdep);=0D
-> =0D
-> init_srcu_struct_lockdep() invokes init_srcu_struct_fields()...=0D
-> =0D
-> >  #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */=0D
-> >  =0D
-> > @@ -68,11 +68,11 @@ EXPORT_SYMBOL_GPL(__init_srcu_struct);=0D
-> >   * to any other function.  Each srcu_struct represents a separate doma=
-in=0D
-> >   * of SRCU protection.=0D
-> >   */=0D
-> > -int init_srcu_struct(struct srcu_struct *ssp)=0D
-> > +int init_srcu_struct_generic(struct srcu_struct *ssp)=0D
-> >  {=0D
-> >  	return init_srcu_struct_fields(ssp);=0D
-> >  }=0D
-> > -EXPORT_SYMBOL_GPL(init_srcu_struct);=0D
-> > +EXPORT_SYMBOL_GPL(init_srcu_struct_generic);=0D
-> =0D
-> init_srcu_struct_generic() invokes init_srcu_struct_fields()...=0D
-> =0D
-> >  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */=0D
-> >  =0D
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c=0D
-> > index 0d01cd8c4b4a..45154630c54e 100644=0D
-> > --- a/kernel/rcu/srcutree.c=0D
-> > +++ b/kernel/rcu/srcutree.c=0D
-> > @@ -266,12 +266,13 @@ __init_srcu_struct_common(struct srcu_struct *ssp=
-, const char *name, struct lock=0D
-> >  	return init_srcu_struct_fields(ssp, false);=0D
-> >  }=0D
-> >  =0D
-> > -int __init_srcu_struct(struct srcu_struct *ssp, const char *name, stru=
-ct lock_class_key *key)=0D
-> > +int init_srcu_struct_lockdep(struct srcu_struct *ssp, const char *name=
-,=0D
-> > +			     struct lock_class_key *key)=0D
-> >  {=0D
-> >  	ssp->srcu_reader_flavor =3D 0;=0D
-> >  	return __init_srcu_struct_common(ssp, name, key);=0D
-> >  }=0D
-> > -EXPORT_SYMBOL_GPL(__init_srcu_struct);=0D
-> > +EXPORT_SYMBOL_GPL(init_srcu_struct_lockdep);=0D
-> =0D
-> init_srcu_struct_lockdep() invokes __init_srcu_struct_common()...=0D
-> =0D
-> >  int __init_srcu_struct_fast(struct srcu_struct *ssp, const char *name,=
- struct lock_class_key *key)=0D
-> >  {=0D
-> > @@ -301,12 +302,12 @@ EXPORT_SYMBOL_GPL(__init_srcu_struct_fast_updown)=
-;=0D
-> >   * to any other function.  Each srcu_struct represents a separate doma=
-in=0D
-> >   * of SRCU protection.=0D
-> >   */=0D
-> > -int init_srcu_struct(struct srcu_struct *ssp)=0D
-> > +int init_srcu_struct_generic(struct srcu_struct *ssp)=0D
-> >  {=0D
-> >  	ssp->srcu_reader_flavor =3D 0;=0D
-> >  	return init_srcu_struct_fields(ssp, false);=0D
-> >  }=0D
-> > -EXPORT_SYMBOL_GPL(init_srcu_struct);=0D
-> > +EXPORT_SYMBOL_GPL(init_srcu_struct_generic);=0D
-> =0D
-> init_srcu_struct_generic() invokes init_srcu_struct_fields()...=0D
-> =0D
-> This gets me the structure shown in the attached PDF.  Did I get it=0D
-> right?=0D
-> =0D
-=0D
-Yes, it looks right.=0D
-=0D
-> I am surprised not to see any changes involving cleanup_srcu_struct().=0D
-> What did I miss?=0D
-> =0D
-=0D
-Do you mean changing cleanup_srcu_struct() on the C side? As I mentioned=0D
-previously [1], I would prefer to keep the current approach for now and=0D
-see what others think. If we receive complaints from other people, we can=0D
-then consider proposing an alternative approach which would likely involve=
-=0D
-changing (or simply adding) C code.=0D
-=0D
-Personally, I prefer the current approach because it doesn't add any=0D
-complexity. The problem is already documented and it's highly unlikely=0D
-that we will ever hit it in practice. It's fairly easy to catch those=0D
-kind of mistakes (leaking the guard explicitly with mem::forget) on=0D
-review.=0D
-=0D
-Even if we add a dedicated cleanup function on the C side, leaking an=0D
-SRCU guard should still not be allowed and should be treated as a=0D
-"bad code" and should require a follow-up patch. Adding a special C=0D
-function that changes counters just switches "don't leak an SRCU guard"=0D
-problem into "don't call $the_special_cleanup function anywhere else".=0D
-=0D
-[1]: https://lore.kernel.org/all/20260531191107.35357-1-work@onurozkan.dev=
-=0D
-=0D
-> And again, please put the following in a later patch to allow separate=0D
-> evaluation of the restructuring.=0D
-> =0D
-=0D
-Sure thing. I will split them in the next version.=0D
-=0D
-Thanks,=0D
-Onur=0D
-=0D
-> 							Thanx, Paul=0D
-> =0D
-> >  /**=0D
-> >   * init_srcu_struct_fast - initialize a fast-reader sleep-RCU structur=
-e=0D
-> > diff --git a/rust/helpers/helpers.c b/rust/helpers/helpers.c=0D
-> > index 625921e27dfb..f3562d3b3888 100644=0D
-> > --- a/rust/helpers/helpers.c=0D
-> > +++ b/rust/helpers/helpers.c=0D
-> > @@ -88,6 +88,7 @@=0D
-> >  #include "signal.c"=0D
-> >  #include "slab.c"=0D
-> >  #include "spinlock.c"=0D
-> > +#include "srcu.c"=0D
-> >  #include "sync.c"=0D
-> >  #include "task.c"=0D
-> >  #include "time.c"=0D
-> > diff --git a/rust/helpers/srcu.c b/rust/helpers/srcu.c=0D
-> > new file mode 100644=0D
-> > index 000000000000..225b3bf9334a=0D
-> > --- /dev/null=0D
-> > +++ b/rust/helpers/srcu.c=0D
-> > @@ -0,0 +1,30 @@=0D
-> > +// SPDX-License-Identifier: GPL-2.0=0D
-> > +=0D
-> > +#include <linux/srcu.h>=0D
-> > +=0D
-> > +__rust_helper int rust_helper_init_srcu_struct_with_key(struct srcu_st=
-ruct *ssp,=0D
-> > +							const char *name,=0D
-> > +							struct lock_class_key *key)=0D
-> > +{=0D
-> > +	return __init_srcu_struct(ssp, name, key);=0D
-> > +}=0D
-> > +=0D
-> > +__rust_helper int rust_helper_srcu_read_lock(struct srcu_struct *ssp)=
-=0D
-> > +{=0D
-> > +	return srcu_read_lock(ssp);=0D
-> > +}=0D
-> > +=0D
-> > +__rust_helper void rust_helper_srcu_read_unlock(struct srcu_struct *ss=
-p, int idx)=0D
-> > +{=0D
-> > +	srcu_read_unlock(ssp, idx);=0D
-> > +}=0D
-> > +=0D
-> > +__rust_helper void rust_helper_srcu_barrier(struct srcu_struct *ssp)=0D
-> > +{=0D
-> > +	srcu_barrier(ssp);=0D
-> > +}=0D
-> > +=0D
-> > +__rust_helper void rust_helper_synchronize_srcu_expedited(struct srcu_=
-struct *ssp)=0D
-> > +{=0D
-> > +	synchronize_srcu_expedited(ssp);=0D
-> > +}=0D
-> > -- =0D
-> > 2.51.2=0D
-> > =0D
+On Thu, 2026-06-04 at 10:15 +0200, Boris Brezillon wrote:
+> On Wed, 3 Jun 2026 21:43:05 -0300
+> Daniel Almeida <dwlsalmeida@gmail.com> wrote:
+>=20
+> > > On 3 Jun 2026, at 14:14, Boris Brezillon <boris.brezillon@collabora.c=
+om> wrote:
+> > >=20
+> > > On Wed, 3 Jun 2026 13:41:02 -0300
+> > > Daniel Almeida <dwlsalmeida@gmail.com> wrote:
+> > > =C2=A0=20
+> > > > > +=C2=A0=C2=A0=C2=A0 /// Called when the fence is signaled.
+> > > > > +=C2=A0=C2=A0=C2=A0 ///
+> > > > > +=C2=A0=C2=A0=C2=A0 /// This is called from the fence signaling p=
+ath, which may be in interrupt
+> > > > > +=C2=A0=C2=A0=C2=A0 /// context or with locks held, which is why =
+`self` is only borrowed, so that
+> > > > > +=C2=A0=C2=A0=C2=A0 /// it cannot drop. Implementations must not =
+sleep or perform
+> > > > > +=C2=A0=C2=A0=C2=A0 /// long-running operations.
+> > > > > +=C2=A0=C2=A0=C2=A0 ///
+> > > > > +=C2=A0=C2=A0=C2=A0 /// An implementation likely wants to inform =
+itself (e.g., through a work item)
+> > > > > +=C2=A0=C2=A0=C2=A0 /// within this callback that the associated =
+[`FenceCbRegistration`] can now be
+> > > > > +=C2=A0=C2=A0=C2=A0 /// dropped.
+> > > > > +=C2=A0=C2=A0=C2=A0 fn called(&mut self);=C2=A0=C2=A0=C2=A0=20
+> > > >=20
+> > > > This is a central point. We ideally would want this to consume self=
+, because we
+> > > > may want to move things out of the callback.=C2=A0=C2=A0=C2=A0=20
+> > >=20
+> > > This one comes from me. The rationale being that ::called() is called
+> > > from an atomic context, and the resources attached to the callback da=
+ta
+> > > might require acquiring other sleeping locks to be released, and
+> > > sometimes you don't even notice immediately because said resources ar=
+e
+> > > refcounted, and the lock is only acquired when you happen to be the
+> > > last owner. Yes, those can be caught at runtime if the C side is
+> > > properly annotated with might_sleep(), but that's not always the case=
+.
+> > >=20
+> > > If we defer the drop of the data only when the FenceCb is
+> > > dropped/recycled, we're at least not constrained by this "runs in
+> > > atomic context" thing.
+> > > =C2=A0=20
+> >=20
+> > This design does not solve it, because one can quite trivially get arou=
+nd this
+> > restriction using Option<T> as I said. If your point is =E2=80=9Cdon=E2=
+=80=99t run any drop() here=E2=80=9D,
+> > then &mut self doesn=E2=80=99t do it.
+>=20
+> My bad, I thought you were talking about some Option<T> in
+> FenceCbRegistration<T> (there was one at some point, but it's gone now),
+> but you're talking about having an Option<X> inside the T. Yes, there's
+> indeed nothing preventing a drop on X in that path, and it's just as
+> bad as passing the fence back as value to the callback in that case.
+
+Then maybe we should just pass it by value and require implementation
+of an unsafe trait on `T`, whose safety-requirements demand that this
+must be save to drop from atomic context.
+
+>=20
+> >=20
+> > > >=20
+> > > > Consider a fence design where signal() consumes self. Now consider =
+this:
+> > > >=20
+> > > > ```
+> > > > impl FenceCb for MyCallback {
+> > > > fn called(&mut self) {
+> > > > =C2=A0 // Can't move the fence out, so we have to put an Option<T> =
+just to be able
+> > > > =C2=A0 // to move.
+> > > > =C2=A0 if let Some(f) =3D self.some_fence.take() {
+> > > > =C2=A0=C2=A0=C2=A0 f.signal();
+> > > > =C2=A0 }
+> > > > }
+> > > > ```
+> > > >=20
+> > > > This used to be the case when our version of the job queue used the=
+ "proxy
+> > > > fence" design:
+> > > >=20
+> > > >=20
+> > > > ```
+> > > > // Callback on the hw fence
+> > > > impl FenceCb for MyCallback {
+> > > > fn called(&mut self) {
+> > > > =C2=A0 if let Some(f) =3D self.submit_fence.take() {
+> > > > =C2=A0=C2=A0=C2=A0 f.signal();
+> > > > =C2=A0 }=C2=A0=20
+> > >=20
+> > > I'm pretty sure lockdep won't like it anyway, because this is nested
+> > > locking of the same lock class. For such proxies, we'll need to teach
+> > > lockdep about the nesting like has been recently done on
+> > > dma_fence_array & co. But I'm digressing.=C2=A0=20
+> >=20
+> > Yeah, but this is more about resource transfer in general, not
+> > this pattern specifically.
+> >=20
+> > I agree that this has issues, and yes, lockdep complained back
+> > then :)
+>=20
+> The thing is, there's so many aspects that could go wrong because of the
+> context this callback is called in. Nested locking is one of them,
+> the fact we can't sleep is another. And with rust it's even worse,
+> because of the implicit drops that will happen when you take ownership
+> of resources (taking sleeping locks to remove resources from a dataset
+> for instance).
+
+Doesn't that have to be a problem for much of Rust infrastructure? How
+do other parties solve that?
+
+>=20
+> So, by passing self by value to the ::callback(), you're basically
+> telling users "hey, BTW, don't forget to defer the drop to some
+> workqueue if you think it's not atomic-safe". And how can users know
+> that the thing they're about to drop can be dropped in atomic context?
+> They basically have to audit the ::drop() of all the resources they
+> embed in their type implementing FenceCb. Not only that, but they also
+> have to design the thing so the deferral of this ::drop() doesn't
+> allocate, because, obviously, allocating in atomic context is
+> tricky/fallible. AFAIK, none of this can be spot at compile-time (I
+> remember Gary/Danilo mentioning that we could teach the klint about
+> some of these rules). This would leave us with runtime checks like
+> might_sleep(), but most of the C putters (xxx_put(object)) don't have
+> might_sleep() in the path where the decref doesn't lead to a refcnt=3D0
+> situation.
+>=20
+> TLDR; Call this PTSD if you want, but this is the sort of bugs I
+> struggled with on the C side, and I can predict that the exact same
+> will happen in rust drivers if we expose the FenceCb as it is designed
+> here and we don't have a way to check the soundness of the FenceCb
+> implementations at compile time.
+
+My guess would be that the existence of unsafe-traits is the admission
+of Rust that this just cannot be guaranteed by design.
+
+If a driver cannot know whether this or that is safe to drop, then it
+would have to defer it's dropping. Or would there be cases where this
+also doesn't work?
+
+>=20
+> The other option (the one I've been advocating for from the start), is
+> to not let drivers implement FenceCb (make it private), but instead
+> have a bunch of implementations that we know are safe. Here's a list of
+> implementations that I think would unblock most of the drivers use
+> cases:
+>=20
+> - wakeup a thread
+> - complete a completion object
+> - schedule a WorkItem
+> - schedule a kthread_worker (once we get a proper rust abstraction for
+> =C2=A0 that)
+>=20
+> It doesn't mean we can't have optimized FenceCb implementations that do
+> a lot more in the callback() path instead of deferring to a
+> workqueue/thread, but at least those would have to be implemented in
+> dma_fence.rs, and the dma_fence.rs maintainers can then carefully audit
+> the code as part of the review process, which we know is not really the
+> case when changes touch drivers code only.
+
+Pragmatically speaking, if the common cases are trivial, then the
+drivers will get them right, because those critical primitives are
+already atomic-safe.
+
+And a non-common case will have to be implemented in the driver
+anyways, so we'd have to allow for that.
+
+
+
+P.
