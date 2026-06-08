@@ -1,186 +1,166 @@
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637F131ED93
-	for <rcu@vger.kernel.org>; Fri,  5 Jun 2026 16:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A282AD0C;
+	Mon,  8 Jun 2026 09:16:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780675380; cv=none; b=CyOoPMGcwYMHGzU4yInhKnM2cLHL/vVovHG3CPhdS+pQlOz7k2x0du7qa9OkdYWqjusoN0baPIJDNokaGbhvoF1d53+qu6eDF17fLQcg3tFBw66Ol5Jx9yKGj+/hHD0ajLsRxlATN1gnAOWK0c3qNPPCD3cZ8j3+4e/BYON1IEc=
+	t=1780910197; cv=none; b=EpSWm01z0xqXutMUvTdE15eRTttRueXplf+w8kFElyiUnH1pNQ2Ubj2prKKNRKRE3tbZx/5gnIYanRd/Ql6jjGYojabZ2XDP+XdXqyaMpMWSBP+VSimmXCskops3/PconrNL0c2ufJJq8dkwSc0YSCYbH1i28QXk74nLYboW+zE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780675380; c=relaxed/simple;
-	bh=GMM8rItwjOBKBZTiVFQDKLbinjfJL7SeunmDuhS3L9o=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=iRCWlSK2lueRQD71SjecV3wdZj8yMl8V6q2cGMJXLDQHIpOdF8n6Sl5X7kl9kBJ91E1HQMzEYSed8v1UH0o72C3uQ/WoGdWSbIm8Ef/jMnoDOlQRNyuvEg7eEt/KZVcvTJzFX6bKUsEvYJc4vOTF4ZBMOhnwHWUhZY/N56k7oOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=phnS7lpi; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1780910197; c=relaxed/simple;
+	bh=Fc4Hzd5WS7zNcoerRKsEPWoQCH2DM3ophsDO2DDX2BI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YWQu3h/+oBJNgWDq0xzaP4888yTT+wVQqcey11/V2jxwgSWOEkTUVkUG664uNS7NtuHuPYdmNtk1db5G3x90TjSW0lgdU2sKZvM/RHpnxe432OQ957/VJ27DoAeJ+t2EQCAunqaGkNYUVVs8e+taed/B8yrt0fvmsDWGuRimgKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sPEMxKVH; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="phnS7lpi"
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-96387977596so751495241.1
-        for <rcu@vger.kernel.org>; Fri, 05 Jun 2026 09:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780675378; x=1781280178; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GMM8rItwjOBKBZTiVFQDKLbinjfJL7SeunmDuhS3L9o=;
-        b=phnS7lpiu0AgZ4noQy/KYuqfmUif+4T8mkMql9h22PnhP7PSenOVFLBpfAb0c6zmy5
-         kzBeHOWO7dT3G2kkKqBFdaENtYgiYQe6LlSM/GKVkYYjjGsIsBgX9ZXYwHFq1lIrukBH
-         WGtGQkdzGaTDR+8jAUg1u8zKH2OnpP7O6VwtF54MjibpPByFvjwBNjQk7PYP1z0Hyh1b
-         bjzJ/HBveB0DxeGSFmi6aR21VcPBldru/kyKFfgQyGXepHsAV0EjrT45SJOVrhgXL+m0
-         hoYvlYGVRBTLb4iETPbcuE1M7RQYgjdrwiUUyrVDlHbHcpwqQxJakhtQt79+DzZFG41j
-         i/nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780675378; x=1781280178;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GMM8rItwjOBKBZTiVFQDKLbinjfJL7SeunmDuhS3L9o=;
-        b=iIrxqM3AY20ChE1swfhNhca5J+HOrDb2cGmAXm9bEMKV0uK34kWMp1BmULJyG3TC09
-         IUixHpCmNsSGoxg+XjSIARr1kMnWA4cjlFNOQqi9uC6cm2yug7+Ro+hAzAg7siSxBaaN
-         +tJ6AR9WjNKIn5A4mXGtbL7DdjWp9hl/jBWRb+JJr+6KBwXKeMKtJZM9rHYyMcEe7HPI
-         sWUj5yo9/fzxbrr78U9WqJjzAEegKXZYxsjvqAqT5KmOlumyzlqxmX2kQCiFxRm2I2qD
-         uUh9jrdrIdIQt9zbTrVUkCzvkFREoRu2OX9m4QyKtkBnkJGWP753DNnznG1+Rh2vVAku
-         dLzQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8iDODTTuB/A9MVCHXf5VK2ZnfrOVSQ9nrlisCFr4Sm1GDkoK/jgnAOAvc+WZb370VmCe8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzdfErJUmfIugDC3gDVBumX60nsFLxYpSvbECWEounhMVMhL0qC
-	6N17R8OWUB8jpiO2H+J6vNzS8nahIbv5tm+YSZtzdg3tXf7OSa3pxJZW
-X-Gm-Gg: Acq92OFsXAm3h1R2ymfba9TAgzZZMnVvPX1spC/bUHiFZwuyyW1D+8YOdjHjWyk2Osl
-	zmLA6+7tKufEq+ceW/m/H+pAu9OFQL6iWVfvKxPnXMTDkoANm5zl5JvULhyjcpymJxruwMc+eF1
-	XWCWiyAc1ZDiDInHPlHws8ykm6ZvoiV5k2Swgwc8WbFyGOR8rTZiCfj64VPJ3zopqimVYB0Y2Mu
-	RnACwJygviu6bwPdZdWp6QCHTKbV2JJymCmARbMpJjOsP/qF0Kc3aIRfZl0M8E+E4sAB4g1vvN2
-	d26uG+kMdWw07BUAZDRGzylJLUBC+l50YOcBBXB1oy6j80GH4Gun5R4E5IFDuEMS4o2Fz4ydnqs
-	x5E3q4epx+6ImnhdCg0AauD/6sfwKyW9AvzjjKNc73v3Qo7wavC+1jXOTryTPcMthI7Bb0PJyZP
-	usBUgkKze0h3WnZFNex81L0Wu43ZJn8XIJ1a0yQ8aHJGoN6oMOcBk/6uw/CP276gRrGKxFBPmg
-X-Received: by 2002:a05:6122:3d45:b0:573:a779:62cf with SMTP id 71dfb90a1353d-5ac4f952082mr2315135e0c.7.1780675378285;
-        Fri, 05 Jun 2026 09:02:58 -0700 (PDT)
-Received: from smtpclient.apple ([2804:7f1:c241:abe4:8c1d:3d1b:d7cb:e7e9])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-96413f9afe7sm6908115241.6.2026.06.05.09.02.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Jun 2026 09:02:57 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sPEMxKVH"
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6586c5Yh2323666;
+	Mon, 8 Jun 2026 09:16:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=BWrIZy
+	JXZYhOWZXAGvXikimc9ccv2vD3i2Nd1K8LAO0=; b=sPEMxKVHGnjFDHF2TuUYRc
+	qZdNeFArOGDX6oxc5eGY9+Q8cYd7bX5fsbbNKnhGRi8jFxVMjxXb4/i/b7gsJTrM
+	3pfMgBm83k9//M/Jq8GRT66hCQ3XjLJKPS7t/OnjDcNgCrJGNH1PwDEUMo+AMdUz
+	oPAcCuCQvwuDyYbB3iHygeH1VHy2Y0EVjw03pSNb4nXmBbUuvxcS6raib3rZN3cx
+	lV1gQGg28ZobcUrOCHR0f6rHa0aVg/GsL3d1I4Ect/fd6xbeK+TDMkdyutr6ChIB
+	8T/hII+iY2fTQ6RLYv+cDd1IuuF9xvr2FSpHf53gDmRSK9sqIhyF3+uBcw+wCe4g
+	==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4em8yhppjf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jun 2026 09:16:06 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65894sOg012179;
+	Mon, 8 Jun 2026 09:16:05 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4en03fverw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jun 2026 09:16:05 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6589G2dv42795448
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 8 Jun 2026 09:16:02 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3A5612004B;
+	Mon,  8 Jun 2026 09:16:02 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CEA0D20040;
+	Mon,  8 Jun 2026 09:15:58 +0000 (GMT)
+Received: from [9.123.2.84] (unknown [9.123.2.84])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  8 Jun 2026 09:15:58 +0000 (GMT)
+Message-ID: <f54ab277-cd9f-4d09-86ba-ea74a9648547@linux.ibm.com>
+Date: Mon, 8 Jun 2026 14:45:57 +0530
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81\))
-Subject: Re: [PATCH 3/4] rust: Add dma_fence abstractions
-From: Daniel Almeida <dwlsalmeida@gmail.com>
-In-Reply-To: <FEFE0522-FD7A-40DE-8B2A-09FE2F33F327@gmail.com>
-Date: Fri, 5 Jun 2026 13:02:36 -0300
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- Miguel Ojeda <ojeda@kernel.org>,
- Boqun Feng <boqun@kernel.org>,
- Gary Guo <gary@garyguo.net>,
- =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Benno Lossin <lossin@kernel.org>,
- Andreas Hindborg <a.hindborg@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>,
- Trevor Gross <tmgross@umich.edu>,
- Danilo Krummrich <dakr@kernel.org>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>,
- Josh Triplett <josh@joshtriplett.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang@linux.dev>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Igor Korotin <igor.korotin@linux.dev>,
- Lorenzo Stoakes <ljs@kernel.org>,
- Alexandre Courbot <acourbot@nvidia.com>,
- FUJITA Tomonori <fujita.tomonori@gmail.com>,
- Krishna Ketan Rai <prafulrai522@gmail.com>,
- Shankari Anand <shankari.ak0208@gmail.com>,
- manos@pitsidianak.is,
- linux-kernel@vger.kernel.org,
- rust-for-linux@vger.kernel.org,
- linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org,
- rcu@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <48CE71C8-7A67-4D09-84C2-A0B83C32B169@gmail.com>
-References: <20260530143541.229628-2-phasta@kernel.org>
- <20260530143541.229628-5-phasta@kernel.org>
- <4F8E8E04-5AB5-4E6B-9194-5FC467E2313F@collabora.com>
- <20260603191405.4c75badb@fedora-2.home>
- <09096455-BA79-4E61-AD88-44DA57C5BEA8@gmail.com>
- <20260604101552.4232733b@fedora-2.home>
- <8ff2de94a50ed077a4cfe520a081f2b8b438a375.camel@mailbox.org>
- <FEFE0522-FD7A-40DE-8B2A-09FE2F33F327@gmail.com>
-To: phasta@kernel.org
-X-Mailer: Apple Mail (2.3826.700.81)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/1] cpuhp: Expedite RCU when toggling system-wide SMT
+ mode
+To: peterz@infradead.org, tglx@linutronix.de, paulmck@kernel.org
+Cc: boqun.feng@gmail.com, frederic@kernel.org, joelagnelf@nvidia.com,
+        josh@joshtriplett.org, linux-kernel@vger.kernel.org,
+        neeraj.upadhyay@kernel.org, rcu@vger.kernel.org, rostedt@goodmis.org,
+        srikar@linux.ibm.com, sshegde@linux.ibm.com, urezki@gmail.com,
+        samir@linux.ibm.com
+References: <20260507053928.2975867-2-vishalc@linux.ibm.com>
+Content-Language: en-US, en-IN
+From: Vishal Chourasia <vishalc@linux.ibm.com>
+In-Reply-To: <20260507053928.2975867-2-vishalc@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA4MDA4NCBTYWx0ZWRfX/sUPJY2jyhq0
+ q4kk0ENrY4lbMMQeMO3F/zEwET7CeQbwYTBwNFZzGrEzRzyT0lXbJV8aGiqyLwiLEKz5hwW/i7m
+ KCOCxR1aQVIkG4RZO0FObseWt3Tu6G+a6tpin02L2G+4NoUct9D3c+7U52J2p8COVQnhsgwrHfG
+ QMchmOPRLhI82EUKlq98D4IG4RHF7cWEsCouUAlux3Ib3vsntfPCcZfeZ6oEx+ZuU1kmBYs+bDk
+ /8nRjiHfQNLkiD2PR4a/dm7fjBEy6mZo2g8MjHURGllF2PYnMKTum7kyusE5yfX1bjoW22wtL/m
+ 0xt3lDwz/Kube2uZALc6f8/szOAesizpNK1pLmP2dvGNqrWgu4SyIsocqun7xpwU9AnZ0cW1MMX
+ OudV8IozhItLkwU75KpbfZyRQY47QJUaoGzI0pWa3uRMPXCMbNLwnoAoUpFkzbEk/wy6G0BDIqE
+ M840TeV/whtcRlqQBag==
+X-Authority-Analysis: v=2.4 cv=HvFG3UTS c=1 sm=1 tr=0 ts=6a268856 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=WsHKUha7AAAA:8 a=Ikd4Dj_1AAAA:8 a=zGnbNwYJTL78zy_cPoEA:9
+ a=QEXdDO2ut3YA:10 a=H4LAKuo8djmI0KOkngUh:22
+X-Proofpoint-ORIG-GUID: mHm5t7NZY69TceaBj6OMPvH-CpNV272h
+X-Proofpoint-GUID: LJVZVlNuRsXOi0k36eJExYOQZRXCqxz1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-08_02,2026-06-05_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 clxscore=1011 lowpriorityscore=0 adultscore=0 suspectscore=0
+ spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 bulkscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606080084
 
+Hi All,
 
->>=20
->>>=20
->>> So, by passing self by value to the ::callback(), you're basically
->>> telling users "hey, BTW, don't forget to defer the drop to some
->>> workqueue if you think it's not atomic-safe". And how can users know
->>> that the thing they're about to drop can be dropped in atomic =
-context?
->>> They basically have to audit the ::drop() of all the resources they
->>> embed in their type implementing FenceCb. Not only that, but they =
-also
->>> have to design the thing so the deferral of this ::drop() doesn't
->>> allocate, because, obviously, allocating in atomic context is
->>> tricky/fallible. AFAIK, none of this can be spot at compile-time (I
->>> remember Gary/Danilo mentioning that we could teach the klint about
->>> some of these rules). This would leave us with runtime checks like
->>> might_sleep(), but most of the C putters (xxx_put(object)) don't =
-have
->>> might_sleep() in the path where the decref doesn't lead to a =
-refcnt=3D0
->>> situation.
->>>=20
->>> TLDR; Call this PTSD if you want, but this is the sort of bugs I
->>> struggled with on the C side, and I can predict that the exact same
->>> will happen in rust drivers if we expose the FenceCb as it is =
-designed
->>> here and we don't have a way to check the soundness of the FenceCb
->>> implementations at compile time.
->>=20
->> My guess would be that the existence of unsafe-traits is the =
-admission
->> of Rust that this just cannot be guaranteed by design.
->>=20
->> If a driver cannot know whether this or that is safe to drop, then it
->> would have to defer it's dropping. Or would there be cases where this
->> also doesn't work?
->=20
->=20
-> Although I totally understand where Boris is coming from here, and I =
-agree with
-> him, the reality is that the current &mut self design doesn=E2=80=99t =
-solve this. An
-> unsafe trait could work as a pinky-promise by drivers, which is =
-half-way there.
->=20
-> What we ideally would like to have is a bound though, something like:
->=20
-> T: !Drop
->=20
-> If I recall correctly there were people working to get support for =
-that on
-> Rust? I think there are two things here: !Trait, which is not =
-supported except
-> for !Sized IIRC, and having an auto trait that represents types that =
-implement
-> Drop, similar to Send and Sync.
->=20
+Gentle ping.
+Should I send another version with the tags?
 
+Thanks,
+vishalc
 
-In fact, ping the pin-init people here, i.e.: Benno, Gary, etc.=20
-
-What is the magic behind =E2=80=9CMustNotImplDrop=E2=80=9D? Perhaps we =
-could apply that here?
-
-=E2=80=94 Daniel=
+On 07/05/26 11:09, Vishal Chourasia wrote:
+> Hello All,
+>
+> SMT mode switch operation on a large CPU count system takes close to an
+> hour to complete. Initial debugging root caused the delay to the CPU
+> hotplug subsystem being blocked on numerous synchronize_rcu() calls.
+> Simply enabling system-wide RCU expediting reduced the switch time to
+> 5-6 minutes. Since then, different approaches have been explored, of
+> which some had their own side effects and others didn't work as
+> expected.
+>
+> Approaches explored:
+>
+> 1. Expedited individual CPU hotplug operations by wrapping
+> _cpu_up()/_cpu_down() with rcu_expedite_gp()/rcu_unexpedite_gp() [0].
+> Peter suggested expediting only when SMT switch is triggered via the
+> sysfs control interface, not for individual hotplug operations [1].
+>
+> 2. Replacing synchronize_rcu() calls in the CPU hotplug codepath with
+> their expedited variants. This is not viable because one
+> synchronize_rcu() is invoked inside cpus_write_lock(), which is shared
+> with other kernel subsystems [5].
+>
+> 3. Hoisting cpus_write_lock() to be taken once for the entire SMT switch
+> operation instead of per-CPU [3][4]. On large systems where the SMT
+> switch can still take 5-6 minutes, holding the lock for that duration
+> causes hung task splats and starves other subsystems depending on the
+> read lock.
+>
+> 4. Peter has also suggested using rcu_sync_{enter|exit}() which as is
+> doesn't help as is, but can be paired the approach 2 from above.
+>
+> Current approach: expedite RCU grace periods around the SMT switch
+> operation in the sysfs control interface path, per Peter's suggestion
+> [1], with Aboorva's analysis confirming synchronize_rcu() as the
+> bottleneck [2].
+>
+> [0] https://lore.kernel.org/all/20260218083915.660252-2-vishalc@linux.ibm.com
+> [1] https://lore.kernel.org/all/20260113090153.GS830755@noisy.programming.kicks-ass.net/
+> [2] https://lore.kernel.org/all/5f2ab8a44d685701fe36cdaa8042a1aef215d10d.camel@linux.vnet.ibm.com
+> [3] https://lore.kernel.org/all/20260119114333.GI1890602@noisy.programming.kicks-ass.net/
+> [4] https://lore.kernel.org/all/ba470918-0ad9-4548-9161-826948462f73@linux.ibm.com/
+> [5] https://lore.kernel.org/all/804E7B47-F515-4592-B12E-84AD251EB07D@nvidia.com/
+> [6] https://lore.kernel.org/all/e2cca734-9191-4073-ba9d-936014498645@linux.ibm.com/
+>
+> Vishal Chourasia (1):
+>    cpuhp: Expedite RCU when toggling system-wide SMT mode
+>
+>   include/linux/rcupdate.h | 8 ++++++++
+>   kernel/cpu.c             | 4 ++++
+>   kernel/rcu/rcu.h         | 4 ----
+>   3 files changed, 12 insertions(+), 4 deletions(-)
+>
