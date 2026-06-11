@@ -1,104 +1,173 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681F930C629;
-	Wed, 10 Jun 2026 19:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E0940D589
+	for <rcu@vger.kernel.org>; Thu, 11 Jun 2026 07:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781121046; cv=none; b=HOls0MHPYiCjYjIYy1637Z3iMEvWJTRiyQCHAip8CHRdGqHodQvhldPx/4yBp2tEXUUiL4gXZC7nekigE/ETgELLXNvOgMBCf7fUpu5x4uuc/BaIIMnP9bU/DcUcQZdDlaCybL/mTeCIgEG2K8dh51ZEvbn4UZas+SZGxB5iU8c=
+	t=1781163183; cv=none; b=sCPWvJFyudZOmy7QrpAPIfVRNbjG88dFgDEkHCl9T8dRpb0emFw6HJbRNIKkio//wWfGkXeusF6/UXFJPN//j1fZMs0HS+wCT/x1ieKj60ew4bfyGZrEV6OJY4s7VdUIN7accU01CsL5/DwVhVuTC25sI1JKU/6/Xa9e5fP836I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781121046; c=relaxed/simple;
-	bh=NNksoh7Ns2g1gqLHnb6MZ59thijmaV2sFavKgQ6aShA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ko4Q9YS0OVmfQUV0OBe8JNOtZ/1UiDrhPrGr9Ppxux8U4LwZmRfYKpbwL6kgyYFaA/9zvV6mC51fL9kuOUqLdKwksVBp6JNN3VFOtfz8iCFVpC2d9wtR1sNc89Ly5Wi4v17qSEZf4E3C2tM0J5JLf+ym3A1jyq1HMI1PgIEMZrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LUCOdF8Q; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1781163183; c=relaxed/simple;
+	bh=b9Tlx25RXuAClYq9rl38boE9K5SpisHZRsSCO0FaWk0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EcZxZuVMuQe08hlrltGQRfQ1NFLLnvaUdtPLoQsd2tr1yyT898V0BsydcF4wfGRQta00GKT09Kqp6mpWLWOn6+JSecgril4oE6nQZ3A7W/w7dhao01k3NaOPIQlth/vliDCUSnUXY3eqRsbyIOxBdLaPoaGWwhIm/sLbOCpQrO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LQ58nyqR; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LUCOdF8Q"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1781121046; x=1812657046;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NNksoh7Ns2g1gqLHnb6MZ59thijmaV2sFavKgQ6aShA=;
-  b=LUCOdF8QCa3t587tvEB6/Rf0gBjjoVdW5HRXrVtzLlXQhTLvHSpsKFiX
-   +51jwTZGscF7t1epclLlfteXB0ULoq9t7f/m1/xfQ1ySp6FJZ3HOqFxkR
-   Z2sIN4KWYEUO+d7RlUwUo8q+pxw/nH0P7QkDvHt5UUAcXKe0A52hA/OQr
-   7ahB9Wgwki+t0bmlJhiNyft2Zk4oxVHrLUKSChKjmQ9Ez1Mcacm1y1IGC
-   t44KE7fIUTNjAb7Tmmp9NX5ZE7WS+9l9EuJOgJ0ByNXzlZ2aMdsOezMfo
-   5x1IzqWGe4zNzG1CCNqJvnhuw5ZDZwToSK0eYJN8u410wNQUPa8+uE5RK
-   A==;
-X-CSE-ConnectionGUID: MP9QI3VQQbS44nJ0N5E/xg==
-X-CSE-MsgGUID: 5/fvOypgRe6UCOcZcCJtqA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11813"; a="81902011"
-X-IronPort-AV: E=Sophos;i="6.24,197,1774335600"; 
-   d="scan'208";a="81902011"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2026 12:50:45 -0700
-X-CSE-ConnectionGUID: MNol4bm2Su26hykbOpkGTA==
-X-CSE-MsgGUID: QjEYvZrpRMO1aH1q6gDrCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,197,1774335600"; 
-   d="scan'208";a="243312217"
-Received: from igk-lkp-server01.igk.intel.com (HELO 892db79562d4) ([10.211.93.152])
-  by fmviesa007.fm.intel.com with ESMTP; 10 Jun 2026 12:50:40 -0700
-Received: from kbuild by 892db79562d4 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wXOwf-000000003oP-4AsC;
-	Wed, 10 Jun 2026 19:50:37 +0000
-Date: Wed, 10 Jun 2026 21:50:06 +0200
-From: kernel test robot <lkp@intel.com>
-To: Onur =?iso-8859-1?Q?=D6zkan?= <work@onurozkan.dev>, rcu@vger.kernel.org,
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, ojeda@kernel.org,
-	boqun@kernel.org, gary@garyguo.net, bjorn3_gh@protonmail.com,
-	lossin@kernel.org, a.hindborg@kernel.org, aliceryhl@google.com,
-	tmgross@umich.edu, dakr@kernel.org, peterz@infradead.org,
-	fujita.tomonori@gmail.com, tamird@kernel.org,
-	jiangshanlai@gmail.com, paulmck@kernel.org, josh@joshtriplett.org,
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-	Onur =?iso-8859-1?Q?=D6zkan?= <work@onurozkan.dev>
-Subject: Re: [PATCH v9 4/4] MAINTAINERS: add Rust SRCU files to SRCU entry
-Message-ID: <202606102148.n3zUlB8z-lkp@intel.com>
-References: <20260529134004.396743-5-work@onurozkan.dev>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LQ58nyqR"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1781163178;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=R1MiBfAMRsEVqkQTwOGbLdBbmKfoWauEQVGgroevOKY=;
+	b=LQ58nyqRVya6vT3G83/oprWmS3rp9Ub9WmsgmS+ylJzqF2sDwMaTDwj2kkNO6YaJ0VxmEz
+	OX33MhA2NZNWgGXBz3qXyG6XzqeEGr/IQQR2cxniT2JD170g4zsC/5nSrrWeNs1mtfrNWh
+	cgK5GkSD7rcl6Zq9gUhbUpv3HRw91r0=
+From: Kunwu Chan <kunwu.chan@linux.dev>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	josh@joshtriplett.org,
+	boqun@kernel.org,
+	urezki@gmail.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev,
+	dave@stgolabs.net
+Cc: rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	Wang Lian <lianux.mm@gmail.com>
+Subject: [PATCH] rcu: Use task_state_to_char() in stall-warning prints
+Date: Thu, 11 Jun 2026 15:32:01 +0800
+Message-ID: <20260611073201.3889919-1-kunwu.chan@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260529134004.396743-5-work@onurozkan.dev>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Onur,
+From: Kunwu Chan <kunwu.chan@gmail.com>
 
-kernel test robot noticed the following build warnings:
+RCU stall warnings currently print task states as raw hexadecimal
+values (e.g., ->state=0x402), forcing developers to manually decode
+them from memory.
 
-[auto build test WARNING on rcu/rcu/dev]
-[also build test WARNING on rust/rust-next linus/master v7.1-rc7 next-20260610]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Replace these raw hex values with the compact, single-letter symbols
+already established by sched_show_task():
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Onur-zkan/rust-helpers-add-SRCU-helpers/20260529-214529
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git rcu/dev
-patch link:    https://lore.kernel.org/r/20260529134004.396743-5-work%40onurozkan.dev
-patch subject: [PATCH v9 4/4] MAINTAINERS: add Rust SRCU files to SRCU entry
-config: x86_64-kexec (https://download.01.org/0day-ci/archive/20260610/202606102148.n3zUlB8z-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project f43d6834093b19baf79beda8c0337ab020ac5f17)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260610/202606102148.n3zUlB8z-lkp@intel.com/reproduce)
+    ->state=0x402  becomes  ->state=I  (TASK_IDLE)
+    ->state=0x0    becomes  ->state=R  (TASK_RUNNING)
+    ->state=0x2    becomes  ->state=D  (TASK_UNINTERRUPTIBLE)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202606102148.n3zUlB8z-lkp@intel.com/
+Convert five print sites across tree_stall.h, rcutorture.c, and
+hazptrtorture.c to use task_state_to_char() instead of the raw
+->__state value.
 
-All warnings (new ones prefixed by >>):
+Suggested-by: Zqiang <qiang.zhang@linux.dev>
+Co-developed-by: Wang Lian <lianux.mm@gmail.com>
+Signed-off-by: Wang Lian <lianux.mm@gmail.com>
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 
->> Warning: kernel/rcu/srcutree.c:305 expecting prototype for init_srcu_struct(). Prototype was for init_srcu_struct_generic() instead
+---
+Based on: linux-rcu repo (dev branch)
+URL: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+base-commit: 85bf11e84 ("smp: Make CSD lock acquisition atomic for debug mode")
+---
+ kernel/rcu/hazptrtorture.c |  4 ++--
+ kernel/rcu/rcutorture.c    |  4 ++--
+ kernel/rcu/tree_stall.h    | 12 ++++++------
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
+index 0da0a4606..19ea479c9 100644
+--- a/kernel/rcu/hazptrtorture.c
++++ b/kernel/rcu/hazptrtorture.c
+@@ -497,10 +497,10 @@ hazptr_torture_stats_print(void)
+ 		unsigned long __maybe_unused gp_seq = 0;
+ 
+ 		wtp = READ_ONCE(writer_task);
+-		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %#x cpu %d\n",
++		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %c cpu %d\n",
+ 			 hazptr_torture_writer_state_getname(),
+ 			 hazptr_torture_writer_state, gp_seq, flags,
+-			 wtp == NULL ? ~0U : wtp->__state,
++			 wtp == NULL ? '?' : task_state_to_char(wtp),
+ 			 wtp == NULL ? -1 : (int)task_cpu(wtp));
+ 		if (!splatted && wtp) {
+ 			sched_show_task(wtp);
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index fcb421ced..4d4ebeeea 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -3074,10 +3074,10 @@ rcu_torture_stats_print(void)
+ 		if (cur_ops->get_gp_data)
+ 			cur_ops->get_gp_data(&flags, &gp_seq);
+ 		wtp = READ_ONCE(writer_task);
+-		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %#x cpu %d\n",
++		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %c cpu %d\n",
+ 			 rcu_torture_writer_state_getname(),
+ 			 rcu_torture_writer_state, gp_seq, flags,
+-			 wtp == NULL ? ~0U : wtp->__state,
++			 wtp == NULL ? '?' : task_state_to_char(wtp),
+ 			 wtp == NULL ? -1 : (int)task_cpu(wtp));
+ 		if (!splatted && wtp) {
+ 			sched_show_task(wtp);
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 317ef91b1..7ca434b08 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -596,13 +596,13 @@ static void rcu_check_gp_kthread_starvation(void)
+ 
+ 	if (rcu_is_gp_kthread_starving(&j)) {
+ 		cpu = gpk ? task_cpu(gpk) : -1;
+-		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%#x ->cpu=%d\n",
++		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%c ->cpu=%d\n",
+ 		       rcu_state.name, j,
+ 		       (long)rcu_seq_current(&rcu_state.gp_seq),
+ 		       data_race(READ_ONCE(rcu_state.gp_flags)),
+ 		       gp_state_getname(rcu_state.gp_state),
+ 		       data_race(READ_ONCE(rcu_state.gp_state)),
+-		       gpk ? data_race(READ_ONCE(gpk->__state)) : ~0, cpu);
++		       gpk ? task_state_to_char(gpk) : '?', cpu);
+ 		if (gpk) {
+ 			struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ 
+@@ -639,12 +639,12 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
+ 	    time_after(jiffies, jiffies_fqs + RCU_STALL_MIGHT_MIN) &&
+ 	    gpk && !READ_ONCE(gpk->on_rq)) {
+ 		cpu = task_cpu(gpk);
+-		pr_err("%s kthread timer wakeup didn't happen for %ld jiffies! g%ld f%#x %s(%d) ->state=%#x\n",
++		pr_err("%s kthread timer wakeup didn't happen for %ld jiffies! g%ld f%#x %s(%d) ->state=%c\n",
+ 		       rcu_state.name, (jiffies - jiffies_fqs),
+ 		       (long)rcu_seq_current(&rcu_state.gp_seq),
+ 		       data_race(READ_ONCE(rcu_state.gp_flags)), // Diagnostic read
+ 		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
+-		       data_race(READ_ONCE(gpk->__state)));
++		       task_state_to_char(gpk));
+ 		pr_err("\tPossible timer handling issue on cpu=%d timer-softirq=%u\n",
+ 		       cpu, kstat_softirqs_cpu(TIMER_SOFTIRQ, cpu));
+ 	}
+@@ -971,10 +971,10 @@ void show_rcu_gp_kthreads(void)
+ 	jr = j - data_race(READ_ONCE(rcu_state.gp_req_activity));
+ 	js = j - data_race(READ_ONCE(rcu_state.gp_start));
+ 	jw = j - data_race(READ_ONCE(rcu_state.gp_wake_time));
+-	pr_info("%s: wait state: %s(%d) ->state: %#x ->rt_priority %u delta ->gp_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n",
++	pr_info("%s: wait state: %s(%d) ->state: %c ->rt_priority %u delta ->gp_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n",
+ 		rcu_state.name, gp_state_getname(rcu_state.gp_state),
+ 		data_race(READ_ONCE(rcu_state.gp_state)),
+-		t ? data_race(READ_ONCE(t->__state)) : 0x1ffff, t ? t->rt_priority : 0xffU,
++		t ? task_state_to_char(t) : '?', t ? t->rt_priority : 0xffU,
+ 		js, ja, jr, jw, (long)data_race(READ_ONCE(rcu_state.gp_wake_seq)),
+ 		(long)data_race(READ_ONCE(rcu_state.gp_seq)),
+ 		(long)data_race(READ_ONCE(rcu_get_root()->gp_seq_needed)),
+-- 
+2.43.0
+
