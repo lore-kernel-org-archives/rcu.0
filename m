@@ -1,32 +1,32 @@
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E2B1E531
-	for <rcu@vger.kernel.org>; Fri, 12 Jun 2026 02:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73BC52FD68B
+	for <rcu@vger.kernel.org>; Fri, 12 Jun 2026 02:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781231729; cv=none; b=CsJ3ADsg/8Y88vgwF7uApGob+ZKxLosZN3k64c5fUYRKVRhMewtAk9NJdS28YU/anB/ucOdHit+b+vvArVUhiAtv7Y2atKPs7iYCyIeXv1T/9IGHLvDITpZuiE6oF32jpTJpUc4jWm5DlKDS+GsuKqbijkmzbJvOGC7ITRqmTKM=
+	t=1781231733; cv=none; b=sAZKgw9Ew67YlYX2Vyf5ogfEkaoCS9h0fknD4dCyT7w6EjO86etIJb5BDBJ145w/oxHVZ1jbmHeuILeHpz7TePfTCcBh4iTPWmJcNq6xHBt9QlS8nuKboWTY8+vMf0HJX00T8x4UQGbflRiHEtLJleWKwStD5bRAmayGaiCR4Ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781231729; c=relaxed/simple;
-	bh=aB1gF2vPVt2AuUHVqjDBlo1QMwKrGx49FU0CM9uR/AM=;
+	s=arc-20240116; t=1781231733; c=relaxed/simple;
+	bh=us7CT6O7r6DBOBGqCqbB4KCGGmWCDWgcfYM0vWcUD14=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jHogZBb93dZQS+uGp9VuPe8fXwzowGZpVzb7oDtCVNnxjfAO6hL9ojhiUao5Op1PtZwfxb4OtW4q9VxuPLXMXY6td2KRgRBBvcFB4RNamf+AsBDrQw8fG6GfHEZ0eGu2nHraDmJtRHhIpe8M8W+4ISEJnW1dXqDKDmCejEJ2LP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qnGP15Di; arc=none smtp.client-ip=95.215.58.172
+	 MIME-Version; b=Oxz94+eZ/xA5eGpod47KOnkznEQSlIYYX1TncVivQgvQXRmnupeK+E4o0Uk66jS9MwL8BteY2t8NyFhN0o5cLRgUjCdmSf5eB5AKyAO9PeXZ3lFohljrcAahREjLM1ywPVosvovF53ZfXpZhtOS3GNHkRWp4KYNI4kdxpklw4so=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JyHLBx3+; arc=none smtp.client-ip=95.215.58.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qnGP15Di"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JyHLBx3+"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1781231726;
+	t=1781231730;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FEuDAMANXlDj+w8kkWDyyRkALkFDsOb3rm3quwg8Iws=;
-	b=qnGP15DiJ473dUij0BMzdodAQL+lsIenvK8bJJD48yHOvdGcye2m0lLcgnM1yEvDUMDK6G
-	SVrHBl+co0qx4OLD2PXYg6DbDtAJzmPaTkD7EpccOKikas1jKcz+zuBvd5J/Rr4dIBWrRt
-	1jedJ06kch3KJhmswIBcrkeKF4cD/DA=
+	bh=pTYmi2pJn14v+F8dalqoWcVlyGrMp+RKHY2LIowQqRE=;
+	b=JyHLBx3+DUZDPgvX7orlSGEHcxS1OwnNRumONM05hu7joVW5FIIMgpoVF8/lQC98bPLKlN
+	9AAqOU8GhftAL4Zsf3J5nIur7ZrT6KGm73PBnH5ECwuF1Ozm8YPBKhL0gaeh4WB5Jv9ows
+	m7GVDnGFHWlcyqQAht6oWcF2ay7gWz0=
 From: Kunwu Chan <kunwu.chan@linux.dev>
 To: paulmck@kernel.org,
 	frederic@kernel.org,
@@ -44,9 +44,9 @@ Cc: rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Wang Lian <lianux.mm@gmail.com>
-Subject: [PATCH v2 1/3] rcu: Use task_state_to_char() in stall-warning prints
-Date: Fri, 12 Jun 2026 10:34:12 +0800
-Message-ID: <20260612023414.679618-2-kunwu.chan@linux.dev>
+Subject: [PATCH v2 2/3] rcutorture: Use task_state_to_char() for task-state reporting
+Date: Fri, 12 Jun 2026 10:34:13 +0800
+Message-ID: <20260612023414.679618-3-kunwu.chan@linux.dev>
 In-Reply-To: <20260612023414.679618-1-kunwu.chan@linux.dev>
 References: <20260612023414.679618-1-kunwu.chan@linux.dev>
 Precedence: bulk
@@ -60,76 +60,34 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Kunwu Chan <kunwu.chan@gmail.com>
 
-RCU stall warnings currently print task states as raw hexadecimal
-values, requiring developers to manually decode them.
-
-Use task_state_to_char() so that stall warnings show the same symbolic
-task-state representation used elsewhere in the kernel.
-
-For example:
-	->state=0x402  becomes  ->state=I
-	->state=0x0    becomes  ->state=R
-	->state=0x2    becomes  ->state=D
-
-This improves readability while preserving the underlying diagnostic
-information.
+Use the kernel's standard symbolic task-state representation instead of
+printing raw hexadecimal task-state values.
 
 Suggested-by: Zqiang <qiang.zhang@linux.dev>
 Co-developed-by: Wang Lian <lianux.mm@gmail.com>
 Signed-off-by: Wang Lian <lianux.mm@gmail.com>
 Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 ---
- kernel/rcu/tree_stall.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/rcu/rcutorture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 317ef91b1..7ca434b08 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -596,13 +596,13 @@ static void rcu_check_gp_kthread_starvation(void)
- 
- 	if (rcu_is_gp_kthread_starving(&j)) {
- 		cpu = gpk ? task_cpu(gpk) : -1;
--		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%#x ->cpu=%d\n",
-+		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%c ->cpu=%d\n",
- 		       rcu_state.name, j,
- 		       (long)rcu_seq_current(&rcu_state.gp_seq),
- 		       data_race(READ_ONCE(rcu_state.gp_flags)),
- 		       gp_state_getname(rcu_state.gp_state),
- 		       data_race(READ_ONCE(rcu_state.gp_state)),
--		       gpk ? data_race(READ_ONCE(gpk->__state)) : ~0, cpu);
-+		       gpk ? task_state_to_char(gpk) : '?', cpu);
- 		if (gpk) {
- 			struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
- 
-@@ -639,12 +639,12 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
- 	    time_after(jiffies, jiffies_fqs + RCU_STALL_MIGHT_MIN) &&
- 	    gpk && !READ_ONCE(gpk->on_rq)) {
- 		cpu = task_cpu(gpk);
--		pr_err("%s kthread timer wakeup didn't happen for %ld jiffies! g%ld f%#x %s(%d) ->state=%#x\n",
-+		pr_err("%s kthread timer wakeup didn't happen for %ld jiffies! g%ld f%#x %s(%d) ->state=%c\n",
- 		       rcu_state.name, (jiffies - jiffies_fqs),
- 		       (long)rcu_seq_current(&rcu_state.gp_seq),
- 		       data_race(READ_ONCE(rcu_state.gp_flags)), // Diagnostic read
- 		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
--		       data_race(READ_ONCE(gpk->__state)));
-+		       task_state_to_char(gpk));
- 		pr_err("\tPossible timer handling issue on cpu=%d timer-softirq=%u\n",
- 		       cpu, kstat_softirqs_cpu(TIMER_SOFTIRQ, cpu));
- 	}
-@@ -971,10 +971,10 @@ void show_rcu_gp_kthreads(void)
- 	jr = j - data_race(READ_ONCE(rcu_state.gp_req_activity));
- 	js = j - data_race(READ_ONCE(rcu_state.gp_start));
- 	jw = j - data_race(READ_ONCE(rcu_state.gp_wake_time));
--	pr_info("%s: wait state: %s(%d) ->state: %#x ->rt_priority %u delta ->gp_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n",
-+	pr_info("%s: wait state: %s(%d) ->state: %c ->rt_priority %u delta ->gp_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n",
- 		rcu_state.name, gp_state_getname(rcu_state.gp_state),
- 		data_race(READ_ONCE(rcu_state.gp_state)),
--		t ? data_race(READ_ONCE(t->__state)) : 0x1ffff, t ? t->rt_priority : 0xffU,
-+		t ? task_state_to_char(t) : '?', t ? t->rt_priority : 0xffU,
- 		js, ja, jr, jw, (long)data_race(READ_ONCE(rcu_state.gp_wake_seq)),
- 		(long)data_race(READ_ONCE(rcu_state.gp_seq)),
- 		(long)data_race(READ_ONCE(rcu_get_root()->gp_seq_needed)),
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index fcb421ced..4d4ebeeea 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -3074,10 +3074,10 @@ rcu_torture_stats_print(void)
+ 		if (cur_ops->get_gp_data)
+ 			cur_ops->get_gp_data(&flags, &gp_seq);
+ 		wtp = READ_ONCE(writer_task);
+-		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %#x cpu %d\n",
++		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %c cpu %d\n",
+ 			 rcu_torture_writer_state_getname(),
+ 			 rcu_torture_writer_state, gp_seq, flags,
+-			 wtp == NULL ? ~0U : wtp->__state,
++			 wtp == NULL ? '?' : task_state_to_char(wtp),
+ 			 wtp == NULL ? -1 : (int)task_cpu(wtp));
+ 		if (!splatted && wtp) {
+ 			sched_show_task(wtp);
 -- 
 2.43.0
 
