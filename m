@@ -1,35 +1,34 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF4B3E2ABC;
-	Mon, 15 Jun 2026 11:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BA83E3142;
+	Mon, 15 Jun 2026 11:07:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781521622; cv=none; b=DYUTDn+Z0kSOUenP7Wc3Q3XP5Bg+U11EdTtQaDYGzW6ZdNARuMip/sxf0MK8/3Itf1JaEkEBq8wjiZZ9obQdgx92GH5QR6LEfW4HpC77/Ms+DW6hSYYHxB1aZT2PmX7Cdol8HqUyVSaERcwM0ZxSypIO14pgX13fLVwN3ibglr4=
+	t=1781521628; cv=none; b=H4S3PSxRAmKMZBxQNqL6nKY16yFfxXZLBheKR7eIA+36cd+8aIdv641q3C1Yj/Cu9SRjXLu+uBVBAwdWwQGSJzhRcu+UfGLrsRqKWrF8tYa9UXlb3d/nGc8Nikt+YVXwrGy6eT9yJmkBnxRErV8nyX09SMUTxxOLA+0VBql8IoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781521622; c=relaxed/simple;
-	bh=0YN09r9ufH/m32CAUhGk+GLdrBESjM+ktEGZNvgCFg8=;
+	s=arc-20240116; t=1781521628; c=relaxed/simple;
+	bh=e9L2FUVgI+U8WUY37xJbJx/maqW/MzNl6/ENsx9N/xs=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=OhrxKTXYO1KM8LzI+9ePqm3ne2z5pgDEDbRoD1SCW0AgjXG9zcnz8Y2y6Xa9dt5gAjRAH9YKE8e9TWkyAiaoi4Jd6urpGGAzK/yA4HH2O2JxTII7WuGLCamitMQXCtMsDQzi2V9n2Y+RHjJ3EgZO7Kpg6xUc5IJSxZ+vprThVN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iaBD3ZhE; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:To:Cc; b=KT5DXn0pVP/XXe8q27j+1XKGsRN5VOkEZnUE19dUyiBmYaV4iepVmyX6VZIRFZV7Mr7cJa9sANXcBi6XQSEzrLV9v0SP4SBwxgubWM9lntmAGTXL6C4g6pLCqf9UN0r49dGkLdqjVpxDqvHiABAkLfI7WgkSYGYdcOGt2Dv+tk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XMv8qxXa; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iaBD3ZhE"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C63AD1F000E9;
-	Mon, 15 Jun 2026 11:06:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XMv8qxXa"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 595581F00A3A;
+	Mon, 15 Jun 2026 11:07:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781521620;
-	bh=UsslpcItYnCr71s4HsvSrZRmdgMuGce17m7B3R3mHoQ=;
+	s=k20260515; t=1781521627;
+	bh=s4UEZqgmZLkk1COBgMPnEsRLoFfhBPP6Xjsgpxi9p30=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=iaBD3ZhECsm1/HgsiHdbO7n4c8v5uRscT2sWbFMSF/T7P2GXp+JtLu1fLhD+v5/nX
-	 QJuASVY9zKi4tsJf0UpPP6E5Wlsn08EqqN79f/pB+0OPIW7Y0CFo+vL7B5AulrIO5g
-	 GW9nLY7cB5lrQrFcVnSDjlLyF9yht8hdgmPiIHYjZFiNM/1gdHUw6b9LsYUgKMyYlu
-	 3PD+DUZDtKLcT/4y6cTeiB5yt9zyIgd7zsCwcC9YQYJh88XKli7UFIfpZgtUtIdkLC
-	 w6Zn+zC0j1lCjRh3ld2RSrw5IasLHtPv/6Un2sjtrgfhrgaHSPvS6fxE2HUPjPPvM0
-	 XWmTv2FuRld9w==
+	b=XMv8qxXadaOIsubxpGdBq4VrQCMdoGph28gNuR2kiIDp1l/5aYvluqd2p8MxX/jha
+	 PxNi85xPi1drEsQGbyrCpIEUR42DETMbQb6W8RqCQCRudqS07/8ZCAo03bc2VuhdCJ
+	 ORLn61CLc1ckWxhLAcnwXX8TdpIVsvTSlSuvSIHLfyi/XQmhcujErWRoS2K9D37a3z
+	 pqSvGe7QbkwVwiCIdKPWQD74x7wBO9h88RHqePE7Q1kxBnfaWZV4ug+m1lc4gPaReK
+	 fmSyZXioKWI8aZv4UIUPXbulThxSATjeJPi++ChMpOO+Bit8LWnnrEmCEYSCn8w32B
+	 vKAtQKonwRE2w==
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
-Date: Mon, 15 Jun 2026 20:06:00 +0900
-Subject: [PATCH for-next v3 6/9] mm/slab: allow kfree_rcu_sheaf() on
- PREEMPT_RT
+Date: Mon, 15 Jun 2026 20:06:01 +0900
+Subject: [PATCH for-next v3 7/9] mm/slab: introduce kfree_rcu_nolock()
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -38,7 +37,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260615-kfree_rcu_nolock-v3-6-70a54f3775bb@kernel.org>
+Message-Id: <20260615-kfree_rcu_nolock-v3-7-70a54f3775bb@kernel.org>
 References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
 In-Reply-To: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
 To: Vlastimil Babka <vbabka@kernel.org>, 
@@ -62,113 +61,182 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
 X-Mailer: b4 0.14.3
 
-As suggested by Vlastimil Babka, kfree_rcu_sheaf() can be used
-on PREEMPT_RT if we always assume spinning is not allowed on PREEMPT_RT.
-This is because local_trylock and spinlock_t are safe to use with
-trylock variant as long as the kernel does not spin and the context is
-not NMI and not hardirq.
+Currently, k[v]free_rcu() cannot be called in unknown context since
+it could lead to a deadlock when called in the middle of k[v]free_rcu().
 
-Now that __kfree_rcu_sheaf() knows how to handle allow_spin = false,
-relax the limitation and try the sheaves path on PREEMPT_RT as well.
+Make users' lives easier by introducing kfree_rcu_nolock() variant,
+now that kfree_rcu_sheaf() is available on PREEMPT_RT and
+__kfree_rcu_sheaf() handles unknown context.
 
-Keep the lockdep map on non RT kernels. However, do not use the lockdep
-map on PREEMPT_RT to avoid suppressing valid lockdep warnings.
+Unlike k[v]free_rcu(), kfree_rcu_nolock() does not fall back to
+the kvfree_rcu batching when the sheaves path fails, and falls back to
+defer_kfree_rcu() instead. In most cases, the sheaves path is expected
+to succeed and it's unnecessary to add complexity to the existing
+kvfree_rcu batching.
 
-Link: https://lore.kernel.org/linux-mm/6811cc17-8ee4-48c8-8cbf-6bf4d9f98162@kernel.org
-Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+Since defer_kfree_rcu() can be called on caches without sheaves, move
+deferred_work_barrier() and rcu_barrier() outside the branch in
+kvfree_rcu_barrier_on_cache().
+
 Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 ---
- mm/slab_common.c | 11 +++++++++--
- mm/slub.c        | 17 ++++++++++-------
- 2 files changed, 19 insertions(+), 9 deletions(-)
+ include/linux/rcupdate.h | 12 ++++++++++++
+ mm/slab.h                |  1 +
+ mm/slab_common.c         | 22 ++++++++++++++++++++--
+ mm/slub.c                | 23 ++++++++++++++++++++++-
+ 4 files changed, 55 insertions(+), 3 deletions(-)
 
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 5e95acc33989..3025249bfcb5 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -1099,6 +1099,7 @@ static inline void rcu_read_unlock_migrate(void)
+  * In mm/slab_common.c, no suitable header to include here.
+  */
+ void kvfree_call_rcu(struct rcu_head *head, void *ptr);
++void kfree_call_rcu_nolock(struct rcu_head *head, void *ptr);
+ 
+ /*
+  * The BUILD_BUG_ON() makes sure the rcu_head offset can be handled. See the
+@@ -1122,6 +1123,17 @@ do {								\
+ 		kvfree_call_rcu(NULL, (void *) (___p));		\
+ } while (0)
+ 
++/* kfree_rcu_nolock() supports 2-arg variant only */
++#define kfree_rcu_nolock(ptr, krhf)					\
++do {									\
++	typeof (ptr) ___p = (ptr);					\
++									\
++	if (___p) {							\
++		BUILD_BUG_ON(offsetof(typeof(*(ptr)), krhf) >= 4096);	\
++		kfree_call_rcu_nolock(&((___p)->krhf), (void *) (___p));\
++	}								\
++} while (0)
++
+ /*
+  * Place this after a lock-acquisition primitive to guarantee that
+  * an UNLOCK+LOCK pair acts as a full barrier.  This guarantee applies
+diff --git a/mm/slab.h b/mm/slab.h
+index 961581e35ec8..a493c5201e96 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -745,6 +745,7 @@ void __check_heap_object(const void *ptr, unsigned long n,
+ 			 const struct slab *slab, bool to_user);
+ 
+ void deferred_work_barrier(void);
++void defer_kfree_rcu(struct rcu_head *head);
+ 
+ static inline bool slub_debug_orig_size(struct kmem_cache *s)
+ {
 diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 55546b8385ff..807924a94fb0 100644
+index 807924a94fb0..5a39e6225160 100644
 --- a/mm/slab_common.c
 +++ b/mm/slab_common.c
-@@ -1595,6 +1595,13 @@ static bool kfree_rcu_sheaf(void *obj)
- {
- 	struct kmem_cache *s;
- 	struct slab *slab;
-+	bool allow_spin;
+@@ -1263,6 +1263,23 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
+ EXPORT_TRACEPOINT_SYMBOL(kfree);
+ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
+ 
++void kfree_call_rcu_nolock(struct rcu_head *head, void *ptr)
++{
++	struct slab *slab;
++	struct kmem_cache *s;
 +
-+	/*
-+	 * It is not safe to spin on PREEMPT_RT because the kernel might be
-+	 * holding a raw spinlock and slab acquires sleeping locks.
-+	 */
-+	allow_spin = !IS_ENABLED(CONFIG_PREEMPT_RT);
++	VM_WARN_ON_ONCE(is_vmalloc_addr(ptr) || !virt_to_slab(ptr));
++
++	slab = virt_to_slab(ptr);
++	s = slab->slab_cache;
++
++	if (__kfree_rcu_sheaf(s, ptr, /* allow_spin = */ false))
++		return;
++
++	defer_kfree_rcu(head);
++}
++EXPORT_SYMBOL_GPL(kfree_call_rcu_nolock);
++
+ #ifndef CONFIG_KVFREE_RCU_BATCHED
  
- 	if (is_vmalloc_addr(obj))
- 		return false;
-@@ -1605,7 +1612,7 @@ static bool kfree_rcu_sheaf(void *obj)
+ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+@@ -2120,10 +2137,11 @@ void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
+ 		cpus_read_lock();
+ 		flush_rcu_sheaves_on_cache(s);
+ 		cpus_read_unlock();
+-		deferred_work_barrier();
+-		rcu_barrier();
+ 	}
  
- 	s = slab->slab_cache;
- 	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) == numa_mem_id()))
--		return __kfree_rcu_sheaf(s, obj, /* allow_spin = */ true);
-+		return __kfree_rcu_sheaf(s, obj, allow_spin);
- 
- 	return false;
++	/* kfree_rcu_nolock() might have deferred frees even without sheaves */
++	deferred_work_barrier();
++	rcu_barrier();
+ 	__kvfree_rcu_barrier();
  }
-@@ -1954,7 +1961,7 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
- 	if (!head)
- 		might_sleep();
- 
--	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && kfree_rcu_sheaf(ptr))
-+	if (kfree_rcu_sheaf(ptr))
- 		return;
- 
- 	// Queue the object but don't yet schedule the batch.
+ EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
 diff --git a/mm/slub.c b/mm/slub.c
-index ba593c1c53d5..4850629774b2 100644
+index 4850629774b2..19018a979445 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -6082,12 +6082,13 @@ static void rcu_free_sheaf(struct rcu_head *head)
-  * kvfree_call_rcu() can be called while holding a raw_spinlock_t. Since
-  * __kfree_rcu_sheaf() may acquire a spinlock_t (sleeping lock on PREEMPT_RT),
-  * this would violate lock nesting rules. Therefore, kvfree_call_rcu() avoids
-- * this problem by bypassing the sheaves layer entirely on PREEMPT_RT.
-+ * this problem by passing allow_spin = false on PREEMPT_RT.
-  *
-  * However, lockdep still complains that it is invalid to acquire spinlock_t
-  * while holding raw_spinlock_t, even on !PREEMPT_RT where spinlock_t is a
-  * spinning lock. Tell lockdep that acquiring spinlock_t is valid here
-- * by temporarily raising the wait-type to LD_WAIT_CONFIG.
-+ * by temporarily raising the wait-type to LD_WAIT_CONFIG. Skip the lockdep map
-+ * on PREEMPT_RT to avoid suppressing valid lockdep warnings.
-  */
- static DEFINE_WAIT_OVERRIDE_MAP(kfree_rcu_sheaf_map, LD_WAIT_CONFIG);
+@@ -4075,6 +4075,7 @@ static void flush_all(struct kmem_cache *s)
  
-@@ -6096,10 +6097,10 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_spin)
- 	struct slub_percpu_sheaves *pcs;
- 	struct slab_sheaf *rcu_sheaf;
+ struct deferred_percpu_work {
+ 	struct llist_head objects;
++	struct llist_head objects_by_rcu;
+ 	struct llist_head rcu_sheaves;
+ 	struct irq_work work;
+ };
+@@ -4083,6 +4084,7 @@ static void deferred_percpu_work_fn(struct irq_work *work);
  
--	if (WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT)))
--		return false;
-+	VM_WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT) && allow_spin);
+ static DEFINE_PER_CPU(struct deferred_percpu_work, deferred_percpu_work) = {
+ 	.objects = LLIST_HEAD_INIT(objects),
++	.objects_by_rcu = LLIST_HEAD_INIT(objects_by_rcu),
+ 	.rcu_sheaves = LLIST_HEAD_INIT(rcu_sheaves),
+ 	.work = IRQ_WORK_INIT(deferred_percpu_work_fn),
+ };
+@@ -6392,12 +6394,13 @@ static void free_to_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
+ static void deferred_percpu_work_fn(struct irq_work *work)
+ {
+ 	struct deferred_percpu_work *dpw;
+-	struct llist_head *objs, *rcu_sheaves;
++	struct llist_head *objs, *objs_by_rcu, *rcu_sheaves;
+ 	struct llist_node *llnode, *pos, *t;
  
--	lock_map_acquire_try(&kfree_rcu_sheaf_map);
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		lock_map_acquire_try(&kfree_rcu_sheaf_map);
+ 	dpw = container_of(work, struct deferred_percpu_work, work);
+ 	rcu_sheaves = &dpw->rcu_sheaves;
+ 	objs = &dpw->objects;
++	objs_by_rcu = &dpw->objects_by_rcu;
  
- 	if (!local_trylock(&s->cpu_sheaves->lock))
- 		goto fail;
-@@ -6199,12 +6200,14 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_spin)
- 	local_unlock(&s->cpu_sheaves->lock);
+ 	llnode = llist_del_all(objs);
+ 	llist_for_each_safe(pos, t, llnode) {
+@@ -6428,6 +6431,13 @@ static void deferred_percpu_work_fn(struct irq_work *work)
  
- 	stat(s, FREE_RCU_SHEAF);
--	lock_map_release(&kfree_rcu_sheaf_map);
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		lock_map_release(&kfree_rcu_sheaf_map);
- 	return true;
- 
- fail:
- 	stat(s, FREE_RCU_SHEAF_FAIL);
--	lock_map_release(&kfree_rcu_sheaf_map);
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		lock_map_release(&kfree_rcu_sheaf_map);
- 	return false;
+ 		call_rcu(&rcu_sheaf->rcu_head, rcu_free_sheaf);
+ 	}
++
++	llnode = llist_del_all(objs_by_rcu);
++	llist_for_each_safe(pos, t, llnode) {
++		struct rcu_head *head = (struct rcu_head *)pos;
++
++		call_rcu(head, kvfree_rcu_cb);
++	}
  }
  
+ static void defer_free(struct kmem_cache *s, void *head)
+@@ -6443,6 +6453,17 @@ static void defer_free(struct kmem_cache *s, void *head)
+ 		irq_work_queue(&dpw->work);
+ }
+ 
++void defer_kfree_rcu(struct rcu_head *head)
++{
++	struct deferred_percpu_work *dpw;
++
++	guard(preempt)();
++
++	dpw = this_cpu_ptr(&deferred_percpu_work);
++	if (llist_add((struct llist_node *)head, &dpw->objects_by_rcu))
++		irq_work_queue(&dpw->work);
++}
++
+ void deferred_work_barrier(void)
+ {
+ 	int cpu;
 
 -- 
 2.53.0
