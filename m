@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3A247AF65;
-	Tue, 16 Jun 2026 17:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB63477E57;
+	Tue, 16 Jun 2026 17:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781630892; cv=none; b=PGE+x9MlZ86Qd+NVfjTY0kD58yjflqai1JAeJiZgmGN8eoOyhLSAs8BApEPzwC2KQaC11OU2r81hJ2hVoD5o5KFcDbIGRfGGRUrJsqzIdv7pyN/jz/JKeoA5LsqMkH68ylEYj0i6rPquTGISf8vtgc0zTRPPbXZjqy6wjlqKoDI=
+	t=1781631403; cv=none; b=QJXhTMqra0uKCQR4LyF7Laq54d1nrL2oAMLENpP6s9J0UcoXjgyUU8Za0reV23kfhFOps51+RmS+3FT32rDFL7dD4VylbSVCwznB1Bi1ZQVasJSvzI9r2DtDvQzOLtgnTNFc3qvIYtkJvCjnP9hbkeAzfFsokPw7f8w61D9KVaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781630892; c=relaxed/simple;
-	bh=KE/aznHp0NVzmT4oL1MlprWnVfPvYJkJJZe9jdE/LBQ=;
+	s=arc-20240116; t=1781631403; c=relaxed/simple;
+	bh=ADK1pZnvzpZfHVSvTlkwocaK5MCqJUIsrhwbiy2WHsY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bRq3CCa9cMAErcyI9gdLyMQAJxhQ2i/k7GS3tfnF7+ygnR/jfzcreahpH7RebjXJOBrKqJeDqJsWC44hvCOj0aIxdj2k+7VA1PZgQOb4u1vHRwBGzGJ+I7z19IWXBLfglTUys6sQ+AV+MFVUJH/x0eRAiG+sfGgC5JAozbrc12I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZNzoKRNX; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:Content-Type; b=sOjplczRoLRYJaJLuxZst7rpyCBJ8NVjISdOxIpfQrhWUden6JMlP+JqHAKi0MNfVqdLEAOePZxz+E511V+ABbl4ThbP9EjYiiTWQJmFi07gOMYrpcAlubUZt+DpSa/x1qxuEZdtO2Ny/5bpuzl4vBnkVpSMHiWC4xLmuaYx9RI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C90SZoFg; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZNzoKRNX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56D9C1F00A3A;
-	Tue, 16 Jun 2026 17:28:04 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C90SZoFg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71BF81F00A3A;
+	Tue, 16 Jun 2026 17:36:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781630889;
-	bh=WyG97ng1Fn1T2laiW4tpsv24G07CL+haanDsoY1+JKs=;
+	s=k20260515; t=1781631401;
+	bh=miWoZw44n/i8JPGdPHxVqhm2xC4JeWLsG92ImJPLJOI=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=ZNzoKRNXPa9VesT5+aoHFmh+j6Dtp6RDQphh2tnejnZEsrzZBWqKsfstiugwI7nUY
-	 dy3UtCeldFvqMroY6SC0uxtG631j0tT87BqPlen3Hg6FIz3dPFKYuYYxsjkmdR+gDj
-	 aYmPyufcMcQN7UjRR389q2MeHOJfF1vX7hwKQp+oxjct+a84Ex06Jc2hPnOISi/ml5
-	 ENEAQmdPEtBiMtk/cfEu5z03sYntLjNdzeSgzA3WGm5iV3rt4AZxOi0FpLT/J+TUMY
-	 FF/9CwCLTCvHehGD2vSnOCzHlrVAy2o0z47SqJBZmws5g2gn5kv4TNpo3oKC8oQzwI
-	 diCYM76RBlP2g==
-Message-ID: <26022de8-eea6-4684-bb2d-05419b10d898@kernel.org>
-Date: Tue, 16 Jun 2026 19:28:03 +0200
+	b=C90SZoFg4ac5+IOo7IeDW3b2pZsuaYxolz4o7a8725ULS2tGbQBi9DvtDeP8zKVGj
+	 l8W7QnZvuVDtl/UjocYfHS5Ns09NH22YGhKDcl7RAlV4F2ADWvP7UObbO5L+0Jnkuj
+	 TLb5IPfd962++y4B2ksGFXtQfuXp3Msh5mA5tX84YdaSHQ/G1ev2JODiwMpmVmnl6z
+	 I6BvxNw2m63HOVQJzcRY7qkofbiv9KiuMPM6s/+nkHrMtn/gdauhzvUcy1FgaP7eV2
+	 twnCczBqnu+6Raiu6oP3cNmjva7BiA8/6cE4NcutFUaEuj5tgNhN8BvVoA704OhiWq
+	 pEr2x+df6w1vQ==
+Message-ID: <bf349ff7-d749-4cc6-a6c1-56f5549b82b8@kernel.org>
+Date: Tue, 16 Jun 2026 19:36:34 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -35,7 +35,8 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH for-next v3 7/9] mm/slab: introduce kfree_rcu_nolock()
+Subject: Re: [PATCH for-next v3 8/9] mm/slab: introduce struct kfree_rcu_head
+ and use in kfree_rcu_nolock()
 Content-Language: en-US
 To: "Harry Yoo (Oracle)" <harry@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
@@ -57,7 +58,7 @@ To: "Harry Yoo (Oracle)" <harry@kernel.org>,
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
 References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-7-70a54f3775bb@kernel.org>
+ <20260615-kfree_rcu_nolock-v3-8-70a54f3775bb@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -98,30 +99,37 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <20260615-kfree_rcu_nolock-v3-7-70a54f3775bb@kernel.org>
+In-Reply-To: <20260615-kfree_rcu_nolock-v3-8-70a54f3775bb@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 6/15/26 13:06, Harry Yoo (Oracle) wrote:
-> Currently, k[v]free_rcu() cannot be called in unknown context since
-> it could lead to a deadlock when called in the middle of k[v]free_rcu().
+> struct rcu_head is overkill for kfree_rcu() because the callback
+> function is always kfree() and thus there is no need for a function
+> pointer.
 > 
-> Make users' lives easier by introducing kfree_rcu_nolock() variant,
-> now that kfree_rcu_sheaf() is available on PREEMPT_RT and
-> __kfree_rcu_sheaf() handles unknown context.
+> It is enough to implement a linked list using a single pointer.
+> Introduce a new struct called kfree_rcu_head (the name was suggested
+> by Vlastimil Babka), which is similar to struct rcu_head but is only
+> a single pointer. Use it only in kfree_rcu_nolock() for now.
 > 
-> Unlike k[v]free_rcu(), kfree_rcu_nolock() does not fall back to
-> the kvfree_rcu batching when the sheaves path fails, and falls back to
-> defer_kfree_rcu() instead. In most cases, the sheaves path is expected
-> to succeed and it's unnecessary to add complexity to the existing
-> kvfree_rcu batching.
+> It is intended that in most cases, kfree_rcu_nolock() goes through
+> sheaves path and the field is not used at all. However, in the worst
+> case where trylock fails or no empty sheaves are available, maintain
+> a global list of objects that will later be freed after
+> synchronize_rcu() in a workqueue. Since the fallback is intended to be
+> the last resort, it focuses on minimizing complexity and memory usage.
 > 
-> Since defer_kfree_rcu() can be called on caches without sheaves, move
-> deferred_work_barrier() and rcu_barrier() outside the branch in
-> kvfree_rcu_barrier_on_cache().
+> To avoid crashing the kernel in a theoretical case where fallback path
+> is taken before kmem_cache_init_late(), do not queue the work until
+> the workqueue is actually allocated.
 > 
+> Factor out the logic that calculates object start address into
+> object_start_address() from kvfree_rcu_cb() to avoid duplicating it.
+> 
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
 > Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 
-LGTM, nice.
-Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+Looks reasonable, if it works fast enough in practice.
+Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
