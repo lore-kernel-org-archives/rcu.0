@@ -1,47 +1,47 @@
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011012.outbound.protection.outlook.com [52.101.62.12])
+Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010031.outbound.protection.outlook.com [52.101.61.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 854D6394EA6;
-	Tue, 16 Jun 2026 22:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D28E3ACA71;
+	Tue, 16 Jun 2026 22:26:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.31
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781648792; cv=fail; b=uPfwvEG3gX/9dUMNuyPkdPgKRmGM7ddabAI4SKM4unKkqcLyw49AkX2o8xLFeVn3pM4K9Bm4/OBSVStizMNyZTnlGB4z4w3tCMFeI3uUtqGaLXFsw/DD4ZmBWiOlJvulok36UD82R0k0k1D9x2YQKYtJSG87MIZKTwKz4/NCT1A=
+	t=1781648794; cv=fail; b=XyeTmvLrx51GLQDmFO4CzsfXITrnZ8Xemz/kOmd70zm2KZYZ25M2sh+BAmmPpMmbzJVAvrE7M7MSqWWDrztYUDMtedQGhlqKtjnSOn4suu3KtePsGmyzbrPRGi0iI0AJf+oab3SnEXVKdwLGI1sBN+QtqGj009upbWRJqT0sS00=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781648792; c=relaxed/simple;
-	bh=U/Amj8gEXU3rhXeK9/d7U9c71C27/a3XiuCxp4p6KnA=;
+	s=arc-20240116; t=1781648794; c=relaxed/simple;
+	bh=fk6oqn0kK+fDzNEw8Sv005MVV6gqRyz5Y2ToGOITUB0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BKqRDt+Uoe0dx5XXnwOG7kM8XGadA00nEL1DsPcERprADV8v1QjnCXH8gVe7bLIrUUOypMBzWIo6KtMeqEtVMt9eG6QFdnvSzZvZxNMtHW6QflifPRE9CfGdtPgZyRchHJUwRivY9wwhqhaH8LoUO0SolSMbwUsZ1T1vWTc3NAs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=SK8rVqJw; arc=fail smtp.client-ip=52.101.62.12
+	 Content-Type:MIME-Version; b=VvMwbx66LeFl+mQ6umooFUwlFipq60geBz3uejV9hyyBvb6S4Lu5KL7WkaCWWripm6NYpd7AUUSVhw1KDtxBFd0O1SjtiiwBWTT6GnN/OeXAfxC1VBJMwPBX0w7TrpP0LGuEZXu+KeBQdIkc+0tEsBCyWCqHo+HYhUNgGd3BQ2E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=VphC02GY; arc=fail smtp.client-ip=52.101.61.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="SK8rVqJw"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="VphC02GY"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KZKU7hAtRpKDiSB712wDgSaAj7NwOTiVE/0OKi0X8rQD1gIwiOw+6VE3cuGcG7eQ4DFcTCA69wL+HDxBOwnh/R8Yq91HKoUBfbyp2gKQo+E95DCtM4u3fCGlYkSLXQ1DPEWD75zRbBfrFNROcpoIUuSMfFgVkekQcYkGkOuUoxcgD2C+MYAxIDj7rXeQIGTqPJ59uK8Lqx1QggiC+Jhwg+qbEdIXPli54M/e5aGJjSZFUA0iJVBhO7D/fudH8o+V102fzxGFb/+9qh+szccqG+5q3wxU8+czfWeZdGzP2qY7Uz+nQZmnEnVjV4Sl3gTGqVPKM6MEffGYMc3kRc63kg==
+ b=ef3H3OgQ1J94Q0BxoCaHZxTHphoc5vTRkR9prysIGGkF8289po/k6AHs0WV6DvNC7sr51W+DoAkoJ0mrUGsIsrbSkyDm6E4+Q8eN6y4vc/WSlR/PKifLuEXnSSl3BmhxOfk3363kjTUk2cNOXfDGVhrSkal1Z/zy4mGxGNCiVrbTnslHzokHcI2EwWBteByJVPI8RFokpQXLvDSUDSGXMxAUJ+4TWb8YAY89/PPECwo3ZPGfsn9c/a89zrEIYTXsbTd+hdJwKtY30kuXm1R5UmaMIvzCvoYmAvK6IWE4i/m1CsOxIEEiygLYV9i/sLRBZqCw4n8XvbU23T46UkYyzA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rdGYtDES9nOXYiv6UmpSlBNZRm5s2kbR26hd76U3Hyg=;
- b=Daofs57RVFwVwEg0BNm1SwZRdXoyxOKDkqiGhWD3m6ozsnSbzppP6gPO9JgbyoRUHnQYPGOfFWOa7vFsotyUg8AngYTaGqUWq9YxCVtn+pL2sS0IvVJEFV/iyEA4qXJZxTFHMetm7DXIQtq55JdzfLycfeKRCXaParGgVXzSa55c982anShxU4ihE/k0Nx0T40P5n0FsNcAy6zLxIwDRqk2g1T/XwWbXiZwaEfgv4RIg6F2LpEyrQmOJrVfcPr2SO9SaGpmbVAb454WDCmdEl29QPn0SXIx0GugNoLgze0gCppTJUEVIt2j2HnAfa7QxgB6bbgyBP932BZUoaL5YjA==
+ bh=lOLd6o1HWrZjz7ZySqyf1s9Wqb8TBcNhXGqF14sJ/HE=;
+ b=mtwyChXj7JcGudbkFYjxkGdGwB11UidY8Ue3ZC5CUHAFYc1TDGlMj/r1z8hnX6FLqqWeDx/dlB/12LFt6KHa5yMXWYNSlSerQZaZw8wxkDGhY6wEaMZqW6k6aPba+T0Om5f8PrVNAvqLlDtQF0znPSmum2IccqqoM97RXYU8LfCIslvLfA8bSiodzJULTOnJ8c3Hb/CwJSgqfWfBmE/DkzlHPO7wXMc1XEUIylLXjLWUF9xwpbuXx1GNxmhggMcL4Lz5qFVdpp0L41h3vh5MA83xdH0/CAmdNFGhIwbjHpw7o8luDbkujOGsKeZpps4Jv/2cN2+6D3afZFIel9OWBQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rdGYtDES9nOXYiv6UmpSlBNZRm5s2kbR26hd76U3Hyg=;
- b=SK8rVqJw/a0hjFdpK+JWEHNd5qLwXFuvXLi0Y7OUzScl5jOMLPgr0MjYHSoZT4sX7v6vJp8DkkEOq15xxS5+XygOL90flQfdkUGJN5G1qpdfVKBc0v/PHi3LosFd6a4Oqdw5ChRuabmbgGnqYnU7kB+tbrMANIWsvEkPJYO3Vknozon5zkBUeTYznzcTLP6N7fMfvvZeIYsZ/SXTxJ5gMWl7tZwODdRsX5cNVAJ0Jt8ZauLkm9lkwLTGl1GOi8oR3MtRd6QBcftL8cF2sQuR12Kx9tNupt32TdxtyyOx48MU7UYIK39qsP5mtq9eELdfQ0DbH9GF6eFqdrAz60q47g==
+ bh=lOLd6o1HWrZjz7ZySqyf1s9Wqb8TBcNhXGqF14sJ/HE=;
+ b=VphC02GYdTn/ThhxJuBFtO6+/Vj6woviwxKDdlg49DmL2X+ROMt0a6g9uwLiLkfkj/1xxcrapX8FDOOKI+LnRltARhifUFthsCinHK6N8pRubkKLdNsdDDybWPRtBVM+O8fxbhmi/udTXnr5FfBLCSLSjvjIXbauGRRhM37u2By/V+5trEx9vopfuggkM06w8aBiENEv87bnwZ6P/74vF8kTaf4/dJy7FbcmZ8le+VQqiDvkf6x6Rq6H/pUt+jhyhs4k0mMCYbDdDLL2mdwNhdqw5Ofivat7JZwMzGcVEfN08ZnHq3MFd+JNvmgBqWpX5Ox6vQNW1TdXHb+QxYE6gw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- IA1PR12MB6233.namprd12.prod.outlook.com (2603:10b6:208:3e7::11) with
+ SJ2PR12MB8831.namprd12.prod.outlook.com (2603:10b6:a03:4d0::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.113.18; Tue, 16 Jun
- 2026 22:26:26 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.113.16; Tue, 16 Jun
+ 2026 22:26:28 +0000
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33%6]) with mapi id 15.21.0113.015; Tue, 16 Jun 2026
- 22:26:26 +0000
+ 22:26:27 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
 To: linux-kernel@vger.kernel.org
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -57,16 +57,17 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Zqiang <qiang.zhang@linux.dev>,
 	Davidlohr Bueso <dave@stgolabs.net>,
 	rcu@vger.kernel.org
-Subject: [PATCH RFC v1 1/5] rcutorture: Abstract reader-segment dump into rcu_torture_dump_read_segs()
-Date: Tue, 16 Jun 2026 18:26:18 -0400
-Message-Id: <20260616222622.2981876-2-joelagnelf@nvidia.com>
+Subject: [PATCH RFC v1 2/5] rcutorture: Check for immediate deboosting at reader end
+Date: Tue, 16 Jun 2026 18:26:19 -0400
+Message-Id: <20260616222622.2981876-3-joelagnelf@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260616222622.2981876-1-joelagnelf@nvidia.com>
 References: <20260616222622.2981876-1-joelagnelf@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MN2PR01CA0057.prod.exchangelabs.com (2603:10b6:208:23f::26)
- To DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21)
+X-ClientProxiedBy: MN0PR05CA0018.namprd05.prod.outlook.com
+ (2603:10b6:208:52c::30) To DS0PR12MB6486.namprd12.prod.outlook.com
+ (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -74,248 +75,211 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|IA1PR12MB6233:EE_
-X-MS-Office365-Filtering-Correlation-Id: d8c0ab00-2752-4c7f-6d51-08decbf64dc2
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|SJ2PR12MB8831:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9634be48-26ef-403b-c04e-08decbf64eaa
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|366016|23010399003|376014|1800799024|56012099006|11063799006|22082099003|18002099003|6133799003;
+	BCL:0;ARA:13230040|1800799024|366016|376014|7416014|23010399003|18002099003|22082099003|11063799006|5023799004|6133799003|3023799007|56012099006;
 X-Microsoft-Antispam-Message-Info:
-	O/+nKTN/HC49iDXgPfJLxVdF53tW0FAu0Itq23NSyZJt9QbFNkTe1DlrcXep/2OgNqiUfFup7Uadkym2YuZZkE7IgMSvBDflXCoRc0E5hi1HQJ9SuuLOLSFFQiMipjx57qomjnvhJEdPwaBrLRbnXIDfMbmMvlR5uQdPZy4+uf9NDKb80po/R7utNw9tvCASDOnqDI7dWgOKJ4fdPejuktt1FLA3wraWW0IJ/d+cqO2CgerZxRZpdK6QifcjeRy8aM39ZrwiEBLLgnZFyyiFsTkMPXTDxSiey36+7z5YeLmNwddIJLPhU5M1kqnvdGPz5ZPJURbIAKJWylR2auvAR6Pl6V8I1xV2AOHFwYMIYe1BQLHGHkLxB893G79Z6MiEuWBybEgvbyiHaABtnxnwZt8bKyt1HklM5xEupSNIz63YS5dAuYWbaocdBuzlhvUcCfHTPoNDg8ESqwJ/dnQofaPqiWSqRqpkYLWO/4zZr2DD5WXovpSLcxNhpDX2uJSRufV5i+FJ/fPsR0+3f03w3lgLhxhWMUUIi3iFvlsVE91OdLVbAC+YFrMwF8rEATuxmpHI7ULvJa5Ek3Ohm5404mZ4rmARPRr+pskSKRNRH7p/aTRIyja+5Ijts7+GDdx2QCDBQHY6TiEfjz8c+XhXbaPDFyZEUrjixrK3yGUWNQKSA/conJBI5XALV/ZvDPXB
+	DGsoqnGRfnmfBfZDNOD+0Ewl2/76IZ/JRDR9p+Kx5PDY2YOAROJe3wpKeWWvl045+v9Nq4OHORuW7n8FVSnI7yxvciXv1KSCQhjUfDEPulyEaF9ypd8fVOqyk5k4G6blXmCXxxE0Ppz+HrIzUIwJc/I0k8vapGIByM+4YpRtAAgKCdNH2VYXSF84XSOyk1cc4zC5ggoh1arvm8IFjSl8hSm2myvrWD3ayRS1pW5+mPfbe5OMly9UgD+vooy16xng3/J2J4OkDqcz8okL6wcrjiMr+X6JXqlHj8QmyTy53v6fRuk2HCCe3xt6ccfkyqi4b1IFhdejCWFowt28pG+MO9B6QHy8hVD4BIp8Q4ilp7n9Y8a6sJgWxuHslo/TsEKuXfJJfu+9zM9m1OY+LMuIJpyz1WTiy9DX4/s3RzZseHICBUj2+cDJtTQX0v1DZzU1bnKxv8PRC8bXcpPUTc/J8ZBZt9ARQqqsjBCQESUC/+uLgIxYPYowi3nD5gCUo9pyw2/gEboB/UzOZX2ekLRqWOZfKBFrbCeT+hZ+iDNPUR7IKOt9fiOcDtUzZ1/UP/6zt4vTX7VcuMGwxzelbWExqP6khwBmaI42kuQCqRxgb6FxLKWyT9jhYRyVsp/fnEPt0aBPZxg3tGWs0P0vlyz+En4hCkXTixyoFS4EGGlL87DtkgO9+sADo1wFP8MiL26f
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(23010399003)(376014)(1800799024)(56012099006)(11063799006)(22082099003)(18002099003)(6133799003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(23010399003)(18002099003)(22082099003)(11063799006)(5023799004)(6133799003)(3023799007)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?d7NuNDFN/JIInJBzVyNgjSxgo2XAjj/8p3y8zail0FD5SjXSYO75ytn1IG3u?=
- =?us-ascii?Q?WxwySjfJ935SSKQoApi7lLsHGw4oFxO8E0oalkvDEyP9xXf3qgObt/LsR+1f?=
- =?us-ascii?Q?gSIqiKp42JY8V3GmYZqFOj/ixlIqTgwElPOE22/YmEMRlqFTWGHQq7ab/Akd?=
- =?us-ascii?Q?olMeY3LG4PbiZ6L5eon42jwE5UOpRGiAn9x8vHIHijLxL0s5j3PZiarWCVGv?=
- =?us-ascii?Q?c9iBHl3ngTO/GJLaZdBY7zH4jJKR37TkOHBGbydoPdGZsI6+YVcs8EbSphg/?=
- =?us-ascii?Q?eobDCgenaeRdtCs5JXiNn8/D111i8P0STsIXuhwa4uyGVBdDExIlnP+oZYBu?=
- =?us-ascii?Q?OY1jVwM30RTJD1+/6A57JD4GELFfuPq5IiRbIey+qmnfgGWT/loSJzlSBDqa?=
- =?us-ascii?Q?qT6FTOnA7Bbo8YMvK1bm8ehdJ7g7MYn9P+GjILA61NCTYBgrOLVsvKct8dZA?=
- =?us-ascii?Q?RX7V9vJ64sfBuLBHfkGOjqu2BK8y20bqy8QpHp20dp2vu3UZ04env9h/w+Fm?=
- =?us-ascii?Q?l0EKeLWcKEcyvKGxFfziSANeU4tpgUAq63fcLYH1sW+TlyjKGdxNxuI364d8?=
- =?us-ascii?Q?ZGW/Bx6a6g0IHUMEXLGAcs4wkMGoXjPQFzkjRugxgX9GbYpEGMR6NuvMI4HY?=
- =?us-ascii?Q?hxs3EfoA6M32Fv4rbTAkXAOV/KYqu1LTn0ORMdpNW7bfokZmD3oRw8P5rj/f?=
- =?us-ascii?Q?1PXKRoqGFvNdaTLJC11+l3aGWqx00d9dIVUDo+X9yuvmupq567tH0ovjlQ9e?=
- =?us-ascii?Q?5DJn2KY5G3uVAMiHAfbnm3Fg4yZAAwVm1MYTxkx1vziqNVQd50ChAfscz3wI?=
- =?us-ascii?Q?HmZloiDJti5yoIsfMv+QJWMwDOIVmnbraI0KXa+Ub0iclcMrnNOD9OTFCLbg?=
- =?us-ascii?Q?copnuOPmfUAwInDpoEHuG/EYpqIwRap6OFMrA7mf1kjYJw4EIzBrg1/+J24g?=
- =?us-ascii?Q?py8q2k6qSjXE6ODmpzFd64P8eBcKmAXy47j/Mvw0e159+olUGuZzmFHr44lo?=
- =?us-ascii?Q?Vh/2oo3mmuls7yE2VsWC1Ryn0rOwFmchh+BwOGUUk9vntsEbClUMdBzREKuz?=
- =?us-ascii?Q?FjaxAWmQgv2kMU35ju7BRUffoMhb1TKPLT8BKdZl9RzxDu1ogxmY6JcFKxyE?=
- =?us-ascii?Q?ZcHZG6WtHmxI7QdkFdD/7wN25q1AiaN/uvdtKw0aFqK/DKBKAvvFrB1y5/oH?=
- =?us-ascii?Q?TsNk3IQn5KEOFQW+YGwqn7laW3ZfvVGUNP3DEzJ8LCwKNAF4bMJM3Uio1NEC?=
- =?us-ascii?Q?xWDXit3gzhSVf7pKBYJkwHbChgUcsdiI2ukRzrdJB4rcgcKfv/yVBUv47jFV?=
- =?us-ascii?Q?yZ7QCi5VlwOb3QrQS8KeTrb14yoj0qQWj1TuCcTouISFzFA+8D39AbmvanLq?=
- =?us-ascii?Q?oGw1gvlD0w8yG44rxndK2JHLULj1DpABimJpeX7ehyD5+WK/L8YCrsdMCRvK?=
- =?us-ascii?Q?MkM9J3p6alsyjrPy1zeqbEqAhxx5CLAdvBVW4TqBYfaBmrmD1DzXaabJsGtQ?=
- =?us-ascii?Q?BkLsoQZYUA8FhpwQTR5oGj5DESfNXU++Y8xlw8QFjURzenrumSvfI5Ek3No1?=
- =?us-ascii?Q?ky7saJH0/MIGi5sxFMev5ZXga7O8Po4ONTSvmlvoPFbeN1E0uB/92hmfWps3?=
- =?us-ascii?Q?5nFuYLqG3DM/Fj78H8sjsDnyW1AKcqexpbJ9qFGCHWieugLyCKLMg124qJ3z?=
- =?us-ascii?Q?sRlWFlBL74DXr2D6oY02K0kh2BrYRLLSZgSzUHN3RtidJ6yyXzs66zG652JD?=
- =?us-ascii?Q?0/uGibwhiw=3D=3D?=
+	=?us-ascii?Q?PEzfKo2SS220RKts0iIc6E82Mrazvt3UR5ABXI1aN9J4V03mQpRWrXAtz7x7?=
+ =?us-ascii?Q?lhz4fxFv5cHhqMblDLC8fJ8/vSNYrXJOxdG3N67iJDRPgylfw7U2hgHLehwm?=
+ =?us-ascii?Q?Gy+nVNf3T0w6n6F5BdTmlE0WZoyUbgzXVDt4MlZoMdEL5girdFLI/i7zqXCC?=
+ =?us-ascii?Q?87vB/EZI0wpghRuD5mmzB87H9x2RkB9zlzoKOalZ2ou6nffRFQKJKQ3RQWz3?=
+ =?us-ascii?Q?Yf8a77ZjkwtVmy0otfcUSupPSFJVhZoxNOygvZlCRuMaA43PuvwSvbZGgU5v?=
+ =?us-ascii?Q?SJ4a/Qh3CwhqbDyCFhNrJi8PgbFEpQ6kblnl6aUhQN6WJXvsAOH3Cx00KEfE?=
+ =?us-ascii?Q?ZCOh7YKgVKIPlVUKypHElYPAd7VOw6JyyeaPh28zEnL4gHVEj0eFCvENmndk?=
+ =?us-ascii?Q?vxlIXaJfU9mAWAym18DcD3dcxVlhOzeDpwDNiD4sO0c9W+4VvEwGC5cHceG5?=
+ =?us-ascii?Q?D/5L0mCdWrs+nYm2v/JUBclpg5o3joYBQmdSJJNXzwMrBhJJkboA6KF5/Ovf?=
+ =?us-ascii?Q?R/MXaNygRntBccdsiQbsrn3oTG83XnU+b8KwSEIjPDHa/Q7Ml4pGg5uxdqG3?=
+ =?us-ascii?Q?EFFe/K1Z3ADhaITHnVdZ8OEZjFSWWd+3NoYNNc4mQURfPhU40Tz7+eXnosKs?=
+ =?us-ascii?Q?6MIUuPBApcWgauX4UVDJ9XtEaWKQ+BItjgzYg0ygdYEBGNTv+3ONWZCp7sja?=
+ =?us-ascii?Q?UHnWfJRjVm1+q5Dk3MlAb5c6/eqKD+efnI5k3oZn1KL9Z9aoH94LJTA98NPM?=
+ =?us-ascii?Q?5wD2YMWKD3AvzUd0yV/b+aDhQTDe/S6AAj7WbyfSdtFdmvy4gSpNr0dHq2wg?=
+ =?us-ascii?Q?3fJk0LKkUkXNxWGi67Simc37lZ9nitoCDqcTKHL+aHbon1p1JOfJ0EGsCjq/?=
+ =?us-ascii?Q?CZZMZ+0FzPV7YWn4QDC8q3KlJ/DaufK7Org8iSnDKoVVtihkS72uktIzofhp?=
+ =?us-ascii?Q?YKX9lz0MiKJigFpw8iF5HU6RuSRgpd+ej3vZmOPXBAoAszEi8D+mXHVCJrcZ?=
+ =?us-ascii?Q?LXA/JqI5e27Lr9DWLchMcEQ7DvdHeivhJyMg9ua6GX0btU3tL1Pd55abwK3/?=
+ =?us-ascii?Q?CF2mzOf0xri79TSnxur/cLJCNd4iqkXGvFFAA5su7VChcRN4dr15929Tniwi?=
+ =?us-ascii?Q?/mY0S7meoYKBaAo39Lx3qpnOrnqZNwaaNilA6DfLFbPB3BcMbjLmnEHqZoDj?=
+ =?us-ascii?Q?NX0+VwiBjUEk03Ooe4KCY3Gt1sWMEQybeTM1qYghgP0qHCQJ84tXX+c0Efic?=
+ =?us-ascii?Q?xe1z9ctksVovdsaU8SwYNFDWNvxt2yV3nLHpfvF9fgba97YyMkzVq+hcKXE6?=
+ =?us-ascii?Q?XoSkbPyGTdVc7n8PIJbFxLrNCSEs2+mwGwD1cdWRvlpNvkUY5lA+NyRQqIcQ?=
+ =?us-ascii?Q?me7WpazFyjrgfgGzMbem6+AHHhW1KoKfQ5zaJ6/IMymC/Fg19GoMg8g6pI0c?=
+ =?us-ascii?Q?KjVrvqd5T0GvfFt5rLitENQPTU2M+x5zJYJncdlqkcHiEtS+n1NlgkmtfIHH?=
+ =?us-ascii?Q?oUwsKRrJeGFt0wqp+NO4ft8VoznkmKf7EVJBvCjdokBlRL3PAfbbSByiief+?=
+ =?us-ascii?Q?dc2YBeFbjktoRt9Rrf2GhYNdcdzqY5EiptEHoa1iaVPASwK1bYZWF4LyklV8?=
+ =?us-ascii?Q?muXJyzVL+hmDp4NQU+Wk2aZM9mx8Jmk8CQHyy3pgGfFrALVpRVvJlAfiId3c?=
+ =?us-ascii?Q?rTY82KllNJGj+N4prOTRFUb8graw5OImrdvWWiLDWnx+4UMrmyj5EvmC5I4S?=
+ =?us-ascii?Q?rkugiDN78A=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8c0ab00-2752-4c7f-6d51-08decbf64dc2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9634be48-26ef-403b-c04e-08decbf64eaa
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2026 22:26:26.2757
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2026 22:26:27.6542
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D9iaxBOTyikmURVNrE3kdl3VRXkRYM4A2JZVdso71c7DRk9IZK26i74v/QiQvqH7KeeuElS1on08x01G2xIpOw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6233
+X-MS-Exchange-CrossTenant-UserPrincipalName: 25rN33yDpdjljfKMK8CYcHm+Eu88ys3d+G1vWfYAKS+PxFF47Cqe84fOtBATtdGPj/ZWS2RwyVBuVvS7duqZGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8831
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit abstracts the open-coded dumping of reader segments in the
-rcu_torture_cleanup() function into a new rcu_torture_dump_read_segs()
-function.  This abstraction will allow reader segments to be dumped for
-other purposes.
+This commit adds a check for failure to have fully deboosted a
+multi-segmented RCU reader at the end of the full read-side critical
+section.  This check only happens for fully task-level readers, because a
+a handler might have interrupted an already-boosted task-level RCU reader,
+and a reader in that handler could then cause false positives.  The first
+failed check (due to an RCU reader that was not immediately deboosted)
+causes a splat and a list of the segments making up that RCU reader.
+Subsequent failures fail silently, all in the name of keeping console
+output down to a dull roar.
+
+Although most uses of RCU priority boosting serve as debugging aids,
+this might change, and in fact might already have changed.  And allowing
+(for example) RCU priority boosting to persist until the next scheduler
+tick could cause an aggressively real-time system to miss sub-millisecond
+deadlines.  So we do need to find this sort of problem during testing,
+and preferably not in the field.
+
+The name and type of the newly added rcu_torture_ops function pointer
+(named "->is_task_rcu_boosted()") may need to change should other
+end-of-reader checks be needed.  But let's start simple.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 148 +++++++++++++++++++++-------------------
- 1 file changed, 76 insertions(+), 72 deletions(-)
+ kernel/rcu/rcu.h         |  7 +++++++
+ kernel/rcu/rcutorture.c  | 22 ++++++++++++++++++++++
+ kernel/rcu/tree_plugin.h | 32 +++++++++++++++++++++++++++++++-
+ 3 files changed, 60 insertions(+), 1 deletion(-)
 
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index fa6d30ce73d1..14faa11ef23c 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -695,4 +695,11 @@ static inline int rcu_stall_notifier_call_chain(unsigned long val, void *v) { re
+ void synchronize_rcu_trivial_preempt(void);
+ #endif // #ifdef CONFIG_TRIVIAL_PREEMPT_RCU
+ 
++#if defined(CONFIG_RCU_TORTURE_TEST) && defined(CONFIG_RCU_BOOST)
++bool rcu_is_task_rcu_boosted(void);
++#else // #if defined(CONFIG_RCU_TORTURE_TEST) && defined(CONFIG_RCU_BOOST)
++static inline bool rcu_is_task_rcu_boosted(void) { return false; }
++#endif // #else // #if defined(CONFIG_RCU_TORTURE_TEST) && defined(CONFIG_RCU_BOOST)
++
++
+ #endif /* __LINUX_RCU_H */
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 5f2848b828dc..42f94c62c18a 100644
+index 42f94c62c18a..04c36fcde5cd 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -2378,6 +2378,80 @@ struct rcu_torture_one_read_state {
- 	unsigned long long ts;
- };
+@@ -426,6 +426,7 @@ struct rcu_torture_ops {
+ 	void (*format_gp_seqs)(unsigned long long seqs, char *cp, size_t len);
+ 	void (*set_gpwrap_lag)(unsigned long lag);
+ 	int (*get_gpwrap_count)(int cpu);
++	bool (*is_task_rcu_boosted)(void);
+ 	long cbflood_max;
+ 	int irq_capable;
+ 	int can_boost;
+@@ -635,6 +636,7 @@ static struct rcu_torture_ops rcu_ops = {
+ 	.format_gp_seqs		= rcutorture_format_gp_seqs,
+ 	.set_gpwrap_lag		= rcu_set_gpwrap_lag,
+ 	.get_gpwrap_count	= rcu_get_gpwrap_count,
++	.is_task_rcu_boosted	= rcu_is_task_rcu_boosted,
+ 	.irq_capable		= 1,
+ 	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
+ 	.extendables		= RCUTORTURE_MAX_EXTEND,
+@@ -2565,7 +2567,9 @@ static void rcu_torture_one_read_end(struct rcu_torture_one_read_state *rtorsp,
+  */
+ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+ {
++	static int firsttime = 1;
+ 	int newstate;
++	unsigned int nsegs;
+ 	struct rcu_torture_one_read_state rtors;
  
-+static void rcu_torture_dump_read_segs(struct rt_read_seg *rrsp, int nsegs)
-+{
-+	bool firsttime;
-+	int i;
-+	int j;
-+
-+	firsttime = 1;
-+	for (i = 0; i < nsegs; i++) {
-+		if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_GP))
-+			pr_alert("\t%lluus ", div64_u64(rrsp[i].rt_ts, 1000ULL));
-+		else
-+			pr_alert("\t");
-+		pr_cont("%d: %#4x", i, rrsp[i].rt_readstate);
-+		if (rrsp[i].rt_delay_jiffies != 0) {
-+			pr_cont("%s%ldjiffies", firsttime ? "" : "+",
-+				rrsp[i].rt_delay_jiffies);
-+			firsttime = 0;
-+		}
-+		if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_CPU)) {
-+			pr_cont(" CPU %2d", rrsp[i].rt_cpu);
-+			if (rrsp[i].rt_cpu != rrsp[i].rt_end_cpu)
-+				pr_cont("->%-2d", rrsp[i].rt_end_cpu);
-+			else
-+				pr_cont(" ...");
-+		}
-+		if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_GP) &&
-+		    cur_ops->gather_gp_seqs && cur_ops->format_gp_seqs) {
-+			char buf1[20+1];
-+			char buf2[20+1];
-+			char sepchar = '-';
-+
-+			cur_ops->format_gp_seqs(rrsp[i].rt_gp_seq, buf1, ARRAY_SIZE(buf1));
-+			cur_ops->format_gp_seqs(rrsp[i].rt_gp_seq_end, buf2, ARRAY_SIZE(buf2));
-+			if (rrsp[i].rt_gp_seq == rrsp[i].rt_gp_seq_end) {
-+				if (buf2[0]) {
-+					for (j = 0; buf2[j]; j++)
-+						buf2[j] = '.';
-+					if (j)
-+						buf2[j - 1] = ' ';
-+				}
-+				sepchar = ' ';
-+			}
-+			pr_cont(" %s%c%s", buf1, sepchar, buf2);
-+		}
-+		if (rrsp[i].rt_delay_ms != 0) {
-+			pr_cont(" %s%ldms", firsttime ? "" : "+", rrsp[i].rt_delay_ms);
-+			firsttime = 0;
-+		}
-+		if (rrsp[i].rt_delay_us != 0) {
-+			pr_cont(" %s%ldus", firsttime ? "" : "+", rrsp[i].rt_delay_us);
-+			firsttime = 0;
-+		}
-+		pr_cont("%s", rrsp[i].rt_preempted ? " preempted" : "");
-+		if (rrsp[i].rt_readstate & RCUTORTURE_RDR_BH)
-+			pr_cont(" BH");
-+		if (rrsp[i].rt_readstate & RCUTORTURE_RDR_IRQ)
-+			pr_cont(" IRQ");
-+		if (rrsp[i].rt_readstate & RCUTORTURE_RDR_PREEMPT)
-+			pr_cont(" PREEMPT");
-+		if (rrsp[i].rt_readstate & RCUTORTURE_RDR_RBH)
-+			pr_cont(" RBH");
-+		if (rrsp[i].rt_readstate & RCUTORTURE_RDR_SCHED)
-+			pr_cont(" SCHED");
-+		if (rrsp[i].rt_readstate & RCUTORTURE_RDR_RCU_1)
-+			pr_cont(" RCU_1");
-+		if (rrsp[i].rt_readstate & RCUTORTURE_RDR_RCU_2)
-+			pr_cont(" RCU_2");
-+		pr_cont("\n");
-+
+ 	WARN_ON_ONCE(!rcu_is_watching());
+@@ -2577,6 +2581,24 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+ 		return false;
+ 	rtors.rtrsp = rcutorture_loop_extend(&rtors.readstate, trsp, rtors.rtrsp);
+ 	rcu_torture_one_read_end(&rtors, trsp);
++	// This splat will happen on systems built with CONFIG_IRQ_WORK=n
++	// and on systems where arch_irq_work_has_interrupt() returns false.
++	// It might also happen on systems using a short-duration clock
++	// interrupt instead of a self-IPI (powerpc, s390) or that use
++	// neither a self-IPI nor a short-duration clock interrupts
++	// (all architectures using the generic implementation
++	// of arch_irq_work_raise()).  On such systems, RCU cannot
++	// guarantee to immediately deboost RCU readers when the outermost
++	// rcu_read_unlock() does not end the full segmented RCU read-side
++	// critical section.
++	if (WARN_ON_ONCE(cur_ops->is_task_rcu_boosted && cur_ops->is_task_rcu_boosted() &&
++			 !in_serving_softirq() && !in_hardirq() && !in_nmi()) &&
++	    READ_ONCE(firsttime) && xchg(&firsttime, 0)) {
++		nsegs = rtors.rtrsp - rtors.rtseg;
++		nsegs = clamp_val(nsegs, 0, RCUTORTURE_RDR_MAX_SEGS);
++		pr_alert("Slow-deboost rcutorture reader segments:\n");
++		rcu_torture_dump_read_segs(rtors.rtseg, nsegs);
 +	}
-+	if (rt_read_preempted)
-+		pr_alert("\tReader was preempted.\n");
-+}
-+
- static void init_rcu_torture_one_read_state(struct rcu_torture_one_read_state *rtorsp,
- 					    struct torture_random_state *trsp)
- {
-@@ -4071,11 +4145,9 @@ static void rcu_gpwrap_lag_cleanup(void)
- static void
- rcu_torture_cleanup(void)
- {
--	int firsttime;
- 	int flags = 0;
- 	unsigned long gp_seq = 0;
- 	int i;
--	int j;
+ 	return true;
+ }
  
- 	if (torture_cleanup_begin()) {
- 		if (cur_ops->cb_barrier != NULL) {
-@@ -4160,76 +4232,8 @@ rcu_torture_cleanup(void)
- 		pr_alert("Failure/close-call rcutorture reader segments:\n");
- 		if (rt_read_nsegs == 0)
- 			pr_alert("\t: No segments recorded!!!\n");
--		firsttime = 1;
--		for (i = 0; i < rt_read_nsegs; i++) {
--			if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_GP))
--				pr_alert("\t%lluus ", div64_u64(err_segs[i].rt_ts, 1000ULL));
--			else
--				pr_alert("\t");
--			pr_cont("%d: %#4x", i, err_segs[i].rt_readstate);
--			if (err_segs[i].rt_delay_jiffies != 0) {
--				pr_cont("%s%ldjiffies", firsttime ? "" : "+",
--					err_segs[i].rt_delay_jiffies);
--				firsttime = 0;
--			}
--			if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_CPU)) {
--				pr_cont(" CPU %2d", err_segs[i].rt_cpu);
--				if (err_segs[i].rt_cpu != err_segs[i].rt_end_cpu)
--					pr_cont("->%-2d", err_segs[i].rt_end_cpu);
--				else
--					pr_cont(" ...");
--			}
--			if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_GP) &&
--			    cur_ops->gather_gp_seqs && cur_ops->format_gp_seqs) {
--				char buf1[20+1];
--				char buf2[20+1];
--				char sepchar = '-';
--
--				cur_ops->format_gp_seqs(err_segs[i].rt_gp_seq,
--							buf1, ARRAY_SIZE(buf1));
--				cur_ops->format_gp_seqs(err_segs[i].rt_gp_seq_end,
--							buf2, ARRAY_SIZE(buf2));
--				if (err_segs[i].rt_gp_seq == err_segs[i].rt_gp_seq_end) {
--					if (buf2[0]) {
--						for (j = 0; buf2[j]; j++)
--							buf2[j] = '.';
--						if (j)
--							buf2[j - 1] = ' ';
--					}
--					sepchar = ' ';
--				}
--				pr_cont(" %s%c%s", buf1, sepchar, buf2);
--			}
--			if (err_segs[i].rt_delay_ms != 0) {
--				pr_cont(" %s%ldms", firsttime ? "" : "+",
--					err_segs[i].rt_delay_ms);
--				firsttime = 0;
--			}
--			if (err_segs[i].rt_delay_us != 0) {
--				pr_cont(" %s%ldus", firsttime ? "" : "+",
--					err_segs[i].rt_delay_us);
--				firsttime = 0;
--			}
--			pr_cont("%s", err_segs[i].rt_preempted ? " preempted" : "");
--			if (err_segs[i].rt_readstate & RCUTORTURE_RDR_BH)
--				pr_cont(" BH");
--			if (err_segs[i].rt_readstate & RCUTORTURE_RDR_IRQ)
--				pr_cont(" IRQ");
--			if (err_segs[i].rt_readstate & RCUTORTURE_RDR_PREEMPT)
--				pr_cont(" PREEMPT");
--			if (err_segs[i].rt_readstate & RCUTORTURE_RDR_RBH)
--				pr_cont(" RBH");
--			if (err_segs[i].rt_readstate & RCUTORTURE_RDR_SCHED)
--				pr_cont(" SCHED");
--			if (err_segs[i].rt_readstate & RCUTORTURE_RDR_RCU_1)
--				pr_cont(" RCU_1");
--			if (err_segs[i].rt_readstate & RCUTORTURE_RDR_RCU_2)
--				pr_cont(" RCU_2");
--			pr_cont("\n");
--
--		}
--		if (rt_read_preempted)
--			pr_alert("\tReader was preempted.\n");
-+		else
-+			rcu_torture_dump_read_segs(err_segs, rt_read_nsegs);
- 	}
- 	if (atomic_read(&n_rcu_torture_error) || n_rcu_torture_barrier_error)
- 		rcu_torture_print_module_parms(cur_ops, "End of test: FAILURE");
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index fbbabcf2c3a7..d495747e143f 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1093,7 +1093,7 @@ void rcu_read_unlock_strict(void)
+ 	 *
+ 	 * The in_atomic_preempt_off() check ensures that we come here holding
+ 	 * the last preempt_count (which will get dropped once we return to
+-	 * __rcu_read_unlock().
++	 * __rcu_read_unlock()).
+ 	 */
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	rdp->cpu_no_qs.b.norm = false;
+@@ -1490,6 +1490,36 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
+ 	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
+ }
+ 
++#ifdef CONFIG_RCU_TORTURE_TEST
++
++/*
++ * Is the current task RCU priority boosted?  This is used by
++ * rcutorture to check that tasks are always deboosted once then exit
++ * an RCU read-side critical section, no matter how many overlapping
++ * segments of rcu_read_lock(), preempt_disable(), local_bh_disable(),
++ * or local_irq_disable() made up that reader.
++ *
++ * The lockless accesses in rt_mutex_owner(&rnp->boost_mtx.rtmutex)
++ * are safe because tasks release ->boost_mtx when they own it, they
++ * cannot be boosted unless current->rcu_blocked_node is non-NULL,
++ * current->rcu_blocked_node is modified only by the current task,
++ * rt_mutex_owner() uses READ_ONCE() on the ->owner field, and the owner
++ * switching among other tasks cannot force an equality comparison.
++ */
++bool rcu_is_task_rcu_boosted(void)
++{
++	struct rcu_node *rnp;
++	struct task_struct *t = current;
++
++	rnp = t->rcu_blocked_node;
++	if (!rnp)
++		return false;
++	return rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t;
++}
++EXPORT_SYMBOL_GPL(rcu_is_task_rcu_boosted);
++
++#endif // #ifdef CONFIG_RCU_TORTURE_TEST
++
+ #else /* #ifdef CONFIG_RCU_BOOST */
+ 
+ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
 -- 
 2.34.1
 
