@@ -1,47 +1,47 @@
 Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010031.outbound.protection.outlook.com [52.101.61.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA92D3911A8;
-	Tue, 16 Jun 2026 22:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4A23AC0F4;
+	Tue, 16 Jun 2026 22:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.31
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781648807; cv=fail; b=EIqIN7Tr6AdiEyzvLtpDPQURLWCImhdLBKPmaYUvrKpDCjgd34oDq8nVJSv7dHSdIPGyJVS5X08KMMOQv6/YXh6C90mF04mFKVVkF7JYzUQwkGqXoe8l1OjTsUE65QtX89x6gftIHnIr8xGigFE9M/8v8fQ0jcSFWerVQP/FJ7k=
+	t=1781648809; cv=fail; b=oCnCAdvo1HVBi7N1arzhgI1kZTnLeNgWiSD4b3Y+MP1jhE2YlXC2WkFE8fdfJyjLxIhPbZv4oZRN1Pcym0aB/7Oja3kD8hNJREs1nrtz2fqYB0bKN4hz+ZeCaqub3pEBAXJS0IV64WiT/SRABFjEwKVaZEAmk2BB0psIFcL3OYI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781648807; c=relaxed/simple;
-	bh=6/YWWMDLKs9DnEFldbk23nR8KqyhTnP/2Ef3cbAaRIc=;
+	s=arc-20240116; t=1781648809; c=relaxed/simple;
+	bh=3G23MgUr0ITjJpdC3gwqHgbujwXiWlJ1AjALycwX8AA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Va/VoSozDIOd+VvX1oo3ilDJXRqmu6ZjNmyCEPrYJZVOYBnpi8jmoCmlOX4YUuJjegW+A1z9g1XPRLYLRyg4VNkffQY/TvhYgXuADOfAgVusZskSbjWVQPu/9zLwniURPiiI1TQCybmSvw8WM/eilL5HJXlPEcXZWVQzrRV6pHA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=D1ye+aeG; arc=fail smtp.client-ip=52.101.61.31
+	 Content-Type:MIME-Version; b=bOC1Jwhs60f4dEJLaddmoQuiGOn2HVB0HWyDEBtCAy1AG5uWCsDbSz5UaxcI81iG73l/wioPqTSTsGEreT63UR+koEpasZZ69wFvcCpzZyEXRq7x3gendw9eImyaw7fw5CyB0uNyeGOLcUyJ037mt8A5HHfhSzdWGgx/rxYlxEU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=TSkKxDpG; arc=fail smtp.client-ip=52.101.61.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="D1ye+aeG"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="TSkKxDpG"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Z45MDpEy7GpYTr9YMVtW4M3UIDxPOG/K/44Xxmr7qbd37O5uA7aIMUFAg0OTfqA6OEX2dapSEZBVNBmCDgUQkde5Rm2eLWZ2IAvnA1wMlRRDy6mpXFQRiE1mM6+VnJnsfG4h0VOVfV96JFhSGsKe4KE0+iwxC6zvqcEQmeEJyWC4Tz/ikCCAaera7Skuuui73Za57I73/GskELACg1Z7/QGAQjKVXx8Fv4K9Ix5nW0rDQejn82YI6fwFmsWsuF1ebjSOnGOe285ELk65K8SCxcDleMiCW0wh1akiG4HUl6g7cpcoMagFdr0jpKx+OIve4i6VtXvHCpS7InT3hBkvdQ==
+ b=VG/b+LzLIgUP1zRYtgzqH6lPmvfIIhSLzYPrXbcqIoqbSydNFjkvEe956+30ZDT8Ry7dogMfdtva2ZF9PwzfEMwv8xmT63pHQnbZF2quW0JVt8XuUwGE0avmaxzvcOITY3QbHEtSfzHIgkhRHdu6E4gB+rVuFNyz9DWY/4xNrZvYvnF5NcHnJsDJVNZ/b4LYOZbOQj/odDWLHgnaz9gwZaZwteScRhAccASPTkH+yCyd/wkEhw5vA7WaejBGrJ8//op6K5GcSG7M6Yua1gRrcefZAct7fjoR3uRV04JLGknMYUh8o1QSdVkS2s2lDpW5trksU4c5aDTzVTHxbNjezw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tfSdkXRFp8fyGyAGQv4PDPhSyJSJOtnhSFK5XvTSVfE=;
- b=P6cJLARR5gd7E/PfjJbql8p8e8Jgm0qiy2+8P/eCC6XYNUvEzLhmxLxeldqfL2ofc9y5IWG2qg5EziOcItPSGGteUZtKEEcmSbqdFCtD2UHUergDA8eI8TiMfdz582pVDaPkdC4nIg/4lDK7PvXy28gk8hnUcxEvxZcldozbfC34Mat+toAePWNdYAtJ/Mg9Xcr3HvkWAzo0zLBP8dEX5qsTI27r3GJlE61NTBHfxQpy+MjV1RsyurLio2qh2JJmHIq853gKbtXOuBHpJRCxSHaVdWcOpRf49k4X8FYZ2SJtLL7yb/7unhdoc3WTnzm8qX2goM3dwfMT45A8/Q3Mwg==
+ bh=a2LcGQUyFOiE4grq5fgOCEtiCNZ/4gGKf348JIWKVmQ=;
+ b=YCDVlYiaRSwckFblqvZngAzEVXoyNiJuw+kB3xIEXdimSPl73xVLlIKX9xf5MOKl8fPmCebahZnJC15v9xSeMVCTC6RITmq3jXDIpszo7P1nBDVl45krCaiswJtcuoJwWd/OwfJXRBZIctgcmA2NNVKS2ngbUjPpMm/9sW6jUZnxWhnclZcCI/cmLE1kmx+6k+JW52WbEvnJNpUMQsXuupQT3+Eon6DNGxDjAmUIvtwmLPOJM8PzK8JOH50q5j+6bMsNZsPCyDXPVJ8zQJwiJw1KsUuzn8L5/yk6zVX3B5ONxNDbVk7MtDQVGxBGpk7+hXLXbNQ2GwixeMFj6fJv2g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tfSdkXRFp8fyGyAGQv4PDPhSyJSJOtnhSFK5XvTSVfE=;
- b=D1ye+aeGKtcMDaY38iNpOLZedSFbXoHaA0SU7sJ+2sxn3JgWvZrd2/Ut3MSgWxhmJDoGxZlCymUOvUWqlIciksZ7fqievGgtcdXTc6xGMElDAN4+TCHRw1LHHn+FxV8YauHjGcyj3UrqVvOHCn6b+mJoo88Uaf9vPNCY4TRVbJ43lsYfEQ9EewREGeDXn440GucF7xGTz1w4fvQU3zad6WnGBWaNP3Ma2iq9uTo+ONSavMDL8ySTz2D40BN7BFWZVgBVe+RSo5+RW4t6Ncat0bsLZGKdo0eOH+A7Y21zLA0hTJkGclN4k8YL3xVxckzWLyQcNqUUp/mSjnB89CBW+A==
+ bh=a2LcGQUyFOiE4grq5fgOCEtiCNZ/4gGKf348JIWKVmQ=;
+ b=TSkKxDpGstW3bk6D0tLER0ytGxk5/h1BG7Q4b2Lm5/rI2zjy2Yw9UlhFcGMSLxhyL3jld0KGit798pAlhRwTWtMr1RM6KxVOTgBATbUQ6NTnWGtHZSszgFarUpg5bbsKUniws+Xmm3FHEr3mahsq8EBOgCou55AIBn4x5/hU1dRdjkGRh5rNmQUqCqzZDgKdGt4civLZlxG3pNzPzZSlxk3K2S+GlHzoSyvbgTvkcD70Pcxz2vXQqbvUoctPyEEtbP6B0HNTsC044+iLRpUJRBmF8Ot6ltdbMCoUjOXGFbfoj1htD2MzPZPcDxfrgBy4qm3bsb62khSOUDYwA3j4ZA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
  SJ2PR12MB8831.namprd12.prod.outlook.com (2603:10b6:a03:4d0::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.113.16; Tue, 16 Jun
- 2026 22:26:31 +0000
+ 2026 22:26:32 +0000
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33%6]) with mapi id 15.21.0113.015; Tue, 16 Jun 2026
- 22:26:30 +0000
+ 22:26:32 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
 To: linux-kernel@vger.kernel.org
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -57,16 +57,16 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Zqiang <qiang.zhang@linux.dev>,
 	Davidlohr Bueso <dave@stgolabs.net>,
 	rcu@vger.kernel.org
-Subject: [PATCH RFC v1 4/5] rcutorture: tighten boost-WARN to exclude any implicit-reader context
-Date: Tue, 16 Jun 2026 18:26:21 -0400
-Message-Id: <20260616222622.2981876-5-joelagnelf@nvidia.com>
+Subject: [PATCH RFC v1 5/5] rcutorture: give async deboost mechanisms up to 500us before WARN
+Date: Tue, 16 Jun 2026 18:26:22 -0400
+Message-Id: <20260616222622.2981876-6-joelagnelf@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260616222622.2981876-1-joelagnelf@nvidia.com>
 References: <20260616222622.2981876-1-joelagnelf@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BL1PR13CA0206.namprd13.prod.outlook.com
- (2603:10b6:208:2be::31) To DS0PR12MB6486.namprd12.prod.outlook.com
+Content-Type: text/plain
+X-ClientProxiedBy: MN0P223CA0011.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:208:52b::32) To DS0PR12MB6486.namprd12.prod.outlook.com
  (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -76,126 +76,113 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|SJ2PR12MB8831:EE_
-X-MS-Office365-Filtering-Correlation-Id: 93117032-5a60-4877-e330-08decbf6504e
+X-MS-Office365-Filtering-Correlation-Id: 4ef96980-8ddd-4e4c-0a02-08decbf65164
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|376014|7416014|23010399003|18002099003|22082099003|11063799006|56012099006;
+	BCL:0;ARA:13230040|1800799024|366016|376014|7416014|23010399003|18002099003|22082099003|11063799006|6133799003|56012099006;
 X-Microsoft-Antispam-Message-Info:
-	rUucfaXPxkZwJwx80oo8gZvIQhBTn1U6Q/emtnFIg1IlGSJxewz6gGvltUbJDNL87DLs6Jn//LbTmZfvBRBUIUPbz2joTubqyOa68HoM7Up7NuBIh6PGmXQ2MVAYInTxgMOOV9brOpOCSxZclRzOYIr5nwwBOv14+iTxCFk8iq2q1sYHAFPE0I3z8vTXMLw5y/JZDNkZhJQ399aWqxmm01nrmoLKcY8grHt8Ar+B1x7Es4bG/tSX+WK7usjKv/Gu50Xfa29YS4oGUFACrsapuXGFHIJBPTcEg5cwRdYeFyqH2eoxHxB3CFGR6Ktxxnc4p4fN/aP+ZWsC6Z8AFpyhiXqgF/BTp+XA2QErryMtFVTM4KiDnokJyEXge5u31QliVEHId4+vjybpQC7gjyoNINmrfAXi4FVCTYUYGOl8azTN2MR9ymMK8t5xpkP9xgcociAOZjuUcqKAJDN9/flfwqBXf16G+x8xY5zQ45aaTaIOzhVqMzUqV2b/pg4BS1EJoR4I0/Wmz74mIXwtVrnYiCsgHb3JEF2d2tSPGVCPrbSI6MHdeddUZ7VoaAWZD1AxNF8yMpAb0iaD6yaTThBTGadRkmHsRdQqR8vBr+RSmkZRB3WVxgB49hbIjzAnCPr1PZ2v7cy2QaK2D21qKd68KaOnA4G77dPB2b3/zXTrRLeKQebV3jEbw05kXzwtZjMj
+	Q1xb43wy3rfbAC0U7bfnTu6m9uZlIt+TFQuW0/EMDzWj9Np9/z1kYW6cbTO0sP0OjNbPcLn9AFx99VvXJRiJs9ujSGrTsyYGHj0S/xrbt8HZz/FLLAf+f9iaMzr10iJefKeMFPfBBxoK5RW2gqLju7ioEQCl7FJX6Fye36YK2HqvWb5krT5nxBDABn1KDVwmcXIg2Rqmt0FS85TfCzqBeq5APjpVDfSwdW0OlTvWVFeX5ww4WCdGe5Mti7Ocj7EyRqg5WV21mRIoDdvteHC8q5XGGNvDUHwVP89NjMkb3j7qYd62QwuroDeJDdCm3DjXTNLVZRJNdbXe/fQa1IzblEKlnWydp0rn7r3Ybo5VlLgR/vcu2Co8IBM9Ato3i+rYiQPOCJz0FraPf3ih5qpZyEC0FceBEWziGqma6zIgtUKBfc7jqMG+2yKbxGG5lGKKRwSjKm0zDbND9utOgAtG3UVUYW0zWBbHjp80rM+OZ27LxjP9Inv6lqt5RXbUcxaF6D1V+nqxWGvf1X1nrxhT7A9e2VuenEtM9zLiPfPQ7GCV2KpjV1XRtUdAEnSit686QPmWdlFEcm8EFsTOyJEADlupQerEpY25giIhKT+dPdM6OoWQd4UnW1fNk/lSApvbmiWHLNRkd18k4VJ0dcHMb3xyHP0EPCoqFsrRZlKzPLVvn5FErp90ATD+u2mMO7l1
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(23010399003)(18002099003)(22082099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(23010399003)(18002099003)(22082099003)(11063799006)(6133799003)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UWt3clRGVDhUeUlEUVIzK29Qby9abkc2NncxQ01nSVdZNjZpdHJKczgvSlFs?=
- =?utf-8?B?SW1tcDVaSnNaOTJCL1FNOUp3N3R0Q3laNjFYdERWK0tBaWwyeDRpcFJIMGp4?=
- =?utf-8?B?b05mYWpOWWwxbU50eXRod2ZWZCtBcVVnSUFBL0tIM1hhRUVXTTF2Tit3QUUx?=
- =?utf-8?B?NFUyNjB4c1dhV3B1dGtzamFZTlFET1RSb2lHWDNRZEVtL2E5ZVE0bFQzWGo5?=
- =?utf-8?B?YkpFVEhCSnBUTnliVmZQMzl4V0N1dnFZKzF5OFBRbkFINE56Nm5iRGZpMnVK?=
- =?utf-8?B?djdKd3ZpOVFBS2lQYlJJNEVBSHJhQWhvU2FsbkZHdnMwcjZTRkFYNkJ1aElr?=
- =?utf-8?B?ODEzbFJSYkNUWThYZ1F4M1Ewemh3VGJXY1hVTjRIY2N4SjZOWnYwU2FDQzBR?=
- =?utf-8?B?alNwMXFvS1NFS2owTFo5dzdmcHdFRDZmUjRLdWl0R0RKaHptVkd1MUtxNysw?=
- =?utf-8?B?ZjVtZmdpMGNnK0RrbkNlelhxVUV6WU8rU3VmckZtYVdwTTZwWnZoS0pmTnR3?=
- =?utf-8?B?STVQeWxFV0FLL1NXRk8rdGRnbCtnTGp5SjVlYjkwaFdkVzhwcEMvLytjTmhZ?=
- =?utf-8?B?NDFTVUp6UTFybjA5UDZkZkZCd1hFQjdZVi9LdE1UTzBTRkx3TjhKMFBUOVgw?=
- =?utf-8?B?THhid25jb3d1MGpCQmN6Q1FBZTNNcG9Jc3E1SStSU1Z2dkYwaERBTnZkdEg4?=
- =?utf-8?B?YW50aGRPRzl4NGNqRHJvR2lObHRsemZoT3BETFRkYStxdnlYQUVPYVlYTUxi?=
- =?utf-8?B?Y3JHZFFGVHNYTVlQQlNUeno4bm94MlVWK2NyVGFRTDhKVkMyL2pYTGUzNmJT?=
- =?utf-8?B?RHZ3UTVxL1lSSWUxOHl2QlBXOXdGdVg3MnNPVU5aRzFYQVVHZ3R3NGJKN1Uw?=
- =?utf-8?B?d2dYNTBTVTlNdTQ4emRBcU1jUXhyUmRsNE4vM2JxaHIxNENST24waDBzSkVY?=
- =?utf-8?B?YmhoWmoyMldvUEs2MWh0a2w0OUVqZituY09iTVZNZzhNVVliWE9yUzVRekQ5?=
- =?utf-8?B?L1BIZytkQmdtUGZyNi9BOUZheXlNUHovTmJMMmNNYzgrN0pwWGhaRXFwTzc0?=
- =?utf-8?B?QktPblJYRzFGMi9hNGhpUGQ4QVhjb3BLYzF1VjllRGhsdEpGaU1kbzBpd3U3?=
- =?utf-8?B?UzhpVDlnc0VmbkhOYTB4OTIxQmFlRkZndjg4eDJEZlExMGNLQzdwU3BhM3A3?=
- =?utf-8?B?QlMxQ3NyOS9ybXBqZFdza3RZQ3VsR0FWZWVzSHpGc2x6OXRvTDFtdk9ITW0v?=
- =?utf-8?B?ZitWT0VEeG5rYW8vYXNoR3BBNnZaWEh0YnhBV3I5QmM0R0JqbXNjcGcyMVBs?=
- =?utf-8?B?YjlFVjB5elRMVGFHNkh6WjJwMVV5ODNvUHJVdzMxWVBmSElHd0VkVk5abFpQ?=
- =?utf-8?B?dFZQSG1lVWZza1Fmd1ZkT3ViZDdxMTVKZ3NWcW5HQ2s2bnRRdlNiSXdmcXNH?=
- =?utf-8?B?Wlg2SUxuN0N3ekNOaWpncmxISVdlYmJ1MkNwTzUwZWdoY1c2dmI0dk9QKytz?=
- =?utf-8?B?ZHNWU3Q3RkpiSmFkT1k1ZlJyRmNOak1XUng3N2xxMEJ3eVpDQkNBTThpd1VP?=
- =?utf-8?B?L01VaEp1VGQrNHRXSU85enF3UjFlQi9vQWgwZXM2dHpvVVgxd3VvWVVFN3pw?=
- =?utf-8?B?VTcrSis5UXI4Y2xqSzQvZTJ0cDhjUGVhYlIrVng0UGJWT2pWanExSDFsR0ww?=
- =?utf-8?B?bWUrYjNjTWJleTY1NFovK1JFNkwyWVpOZlFEL1VPbzJnbDZJTnp0anN1R2t6?=
- =?utf-8?B?NVBVNE5INkdTbmdKSFZVeEYxSXhMaWgrT1VZTlFaOEhpZ1BuUVhsekZsOHVs?=
- =?utf-8?B?MWJteUpucS9ScHNaOGJpWVFsVk9TRHFBV3RpWVFnYWhjcTU3d3JVMXNudXkv?=
- =?utf-8?B?dWpKSVErU3I2Ny9zWHNxOVNkaCtCSXY4SGRIM2EwZ2NZc1JpWjlQNG9waVBp?=
- =?utf-8?B?b3dVS01hcFl3Q0dhUzF0bXp0WnJPNGZYRVZTU2pzY0x5UkVkSHZhZDZNVjFV?=
- =?utf-8?B?KzVFb2tOUmhHY3N0WjVQdmRac25lVjkxNlBsOW0vVk1SVFNVdW1CQm9Ed1dF?=
- =?utf-8?B?UEhHWkh6SnYrdzZ5SC84bXF3VTliZFcvUUZQMkcvdnUwazQ1bzJKSFNGVHNk?=
- =?utf-8?B?cndJaU5Nb2VFbmYzaXB2TzF4REFXNmRqWW1Ga0pYa3NxK1pUK2doc2VVemxN?=
- =?utf-8?B?VEFlWWNMYkVsWmVnVTB4elNzaUlLMTlEZFdwcEVhbzZ4U1NjazdaVVNUTVpo?=
- =?utf-8?B?U3RaZ0ZTdjlDNHVJSlhiRTNudE1Gb1A3WE42NTBMQkQ5NEhYMFYwU0ZzVVVY?=
- =?utf-8?B?Z2dmNzdIQWFYWEEva0hzdXNNdmJjZksxS1ptd2JIN2xXL0NGcHc3dz09?=
+	=?us-ascii?Q?yRtD7UtKHcsKSn+XDNUtT/jrskEyRRwHYRS0qGcSny979PF4G6NGuk2EowAj?=
+ =?us-ascii?Q?c1uMKNdKVMo/e4wfpv8qBuQ4VMWrCrlxGyftcR55xJIbK+OEqppfIVTxaNtx?=
+ =?us-ascii?Q?qhsdLYVXahBH5LfMOZxF1ZEvS4dPUvRl8NeW0hT4VYjrffBE3ROv3QFS5Ik/?=
+ =?us-ascii?Q?j9QV8SSGW0q35jltXbimxKgcUjmaI1zZiNEzxaygykgDGZGIEpTrGI3zXoYV?=
+ =?us-ascii?Q?V5o3lE54YmJGoQ/jQf3rUlva/PqttsPwgxoCL/tCgpygE42reZ53EMox84Is?=
+ =?us-ascii?Q?cUKZfeQ8ECyaH/wy0TB2cJkqEEp7DjUaL/3Zm+dEVsKvMpZN+cDZ5QfSqvGV?=
+ =?us-ascii?Q?5huNYRyH+K25fnOezaNa9STSiqq1g3XAmditfTWmVQSQ2QzayFYksYOuijlW?=
+ =?us-ascii?Q?ed0Mt6+U3jaUByoVYP7oN84xZT/iD+2xjnbm+ONPzd+sTXlDvfhRabmnLi2K?=
+ =?us-ascii?Q?xqMbftMaQxM3E8haJFRRkN63JRgZ78zqHKljI0YvUcBTc7AMLUpg5Bk8ezNY?=
+ =?us-ascii?Q?XyGWkpFmR96EBcKW4p4O++FIuwA48J9Ir9eZGg8FYnOUGC41AAEMqZjV2RW0?=
+ =?us-ascii?Q?DjIpgutukY9vG+7BoB/W7MeKIM21VgBGoHZ5ujHk5EZ6JNe7gvUjy8DLGVNb?=
+ =?us-ascii?Q?MLXWR6nWpMmylKxrYnsPyhob/vvYUN4uABu/+OL3cJvC3xmcpRHCaMYMi/ZK?=
+ =?us-ascii?Q?kcWMm3201c+xlDylebqFChfl9EzX6mEBDFSaryxgfZ3/8ZAf22lUvx1/6Kui?=
+ =?us-ascii?Q?ZUbN49pigubf8fv7Ol8ARS5E5dxI2uNa6X6JDxb+T9bGtFJYPQeg/G++98aU?=
+ =?us-ascii?Q?UjrZFUZsPsCPh3XROFaLee2jPK9Ar0lmfl/MKy8ipcSCQ2cPVHO9fk4MNJU5?=
+ =?us-ascii?Q?lYjT6auP3anX3d9mqOLq55j57dw0R/btM/a6OjILmwMZVaPcdr+B7EeLM0Rd?=
+ =?us-ascii?Q?PR5I8OLZOodfwnt848udabLuNmFrklW5yAPJAUsedV0vZncBV7a+m5aBRkq0?=
+ =?us-ascii?Q?kxXVbtkFYQRz7yffydAFqlNAn1+FZiA63GShRHvOcxjIEPdPnopLfDytKPlO?=
+ =?us-ascii?Q?EJp0bVt+dd+wftaAVG4wyTGfOL0phstgcDmmq7fhFpQ8uyVy0k+9kbl11f44?=
+ =?us-ascii?Q?tvzVmc4iBzYS256SldtTIUMTXFUkW6KofuB7UnVek1GlPmCiMz+ZPduGT3DJ?=
+ =?us-ascii?Q?9+GCHyTAPyf9BXKV8+m9EU3NAZn6zbK7ixUtr1d+iX2V/CYpgp0EtIQaO4b1?=
+ =?us-ascii?Q?gSn9B+P2d8iqRHv/S1h5yEiI2wz/o+S+iHEsg3tc4Mgd+4hCRMxHi0qRBWRK?=
+ =?us-ascii?Q?cYGRjcm7s8LwIwoO6DNwnceP10G92FFntXRvLsQbVNENjNp+h7+zZXdVHsEN?=
+ =?us-ascii?Q?CGm6VLHLtflWrZ2EQh++nPlxinFfwP+mdZzlKX/GodGthKPJoO4pmFSNBfB+?=
+ =?us-ascii?Q?Lllhj2nV6B6hKMDBT4aZSUXIjwet0nGnWRgSnGLSIx3eGzMlLEk04WGR/fcF?=
+ =?us-ascii?Q?/tPgpn6TjDmDxEG8ymW1fMn6VxZReQQNe3G5OR/NbVM/2+EAaOt2RagXwrCw?=
+ =?us-ascii?Q?d2QpaQ7POG27KCMe1Fd6nuX0wpytLdzJyNLX4H5t2Pej+EcwZEun7ms3sRt4?=
+ =?us-ascii?Q?LXHl37MJ3Qm0J7qEyfaFbakLGcrrmKW6cbXHl6llyTunmpadwFHGb1YSZGKn?=
+ =?us-ascii?Q?OYkEYUpizjs7JWxASL1Oivh5lwJevpJG+Q1Gxak1Pb4yu6XX7KB7xdm+5L6j?=
+ =?us-ascii?Q?Z1yXy8VLBQ=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 93117032-5a60-4877-e330-08decbf6504e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ef96980-8ddd-4e4c-0a02-08decbf65164
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2026 22:26:30.6434
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2026 22:26:32.3965
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8zC8VgqCZxSPOlW2l3YAoyFdYgnSFSmL7cSAW79sKFt7ElIi2go1fjG2Fy5f63gkemLiOBYNkaQ6sN3enLaWsw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: yxs1jlkGyTmqCz09muU/IhSqgmsv94SD2f8dHmWTqVRV3eDCJkLhJy7G44LIcX2k4xkSgItBIenvY76OpvNN7w==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8831
 
-The Slow-deboost WARN_ON_ONCE in rcu_torture_one_read() currently uses
-only the handler-context predicates to decide whether the calling
-context is "safe" to assert immediate deboosting:
+The Slow-deboost detector in rcu_torture_one_read() checks for a still-
+boosted task immediately after the outer rcu_read_unlock() returns.
+Sub-microsecond checking is unrealistic for any async deboost mechanism
+(irq_work, softirq dispatch).  As, even with a delay in deboosting of
+just 50us, the check beats  it.
 
-    !in_serving_softirq() && !in_hardirq() && !in_nmi()
-
-They do NOT exclude several other contexts in which the task is still
-holding an implicit RCU read-side critical section.
-
-  1. local_bh_disable()-but-not-in-softirq.
-
-  2. preempt_disable()-held.
-
-  3. irqs_disabled().
-
-  4. rcu_preempt_depth() > 0.
-
-The current predicate set lets the WARN fire while these implicit
-readers are still active, which is a false positive: the user-visible
-"tardy deboost" finding becomes ambiguous between an actual
-deferred-QS bug and a valid caller still inside an implicit-reader
-section.
-
-Replace the three handler-only predicates with the following which
-covers everything.
-
-    preempt_count() == 0 && !irqs_disabled() && rcu_preempt_depth() == 0
-
-Note that we only check in contexts where rcu_read_unlock_special() deboosts
-synchronously, i.e. where it is not inside an implicit RCU read-side
-critical section. This matches rcu_read_unlock_special()'s own gate
-and rcu_flavor_sched_clock_irq()'s:
- "rcu_preempt_depth() > 0 || (preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))".
-
-Also note, in PREEMPT_RT, softirqs always run under local_bh_disable(),
-which itself takes rcu_read_lock() to satisfy RCU's bottom-half
-requirement (see softirq.c) — so rcu_preempt_depth() is non-zero
-throughout any RT softirq thus making in_serving_softirq() redundant.
+Therefore, poll the boost state for up to 500us before declaring the
+deboost tardy.
 
 Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 ---
- kernel/rcu/rcutorture.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/rcu/rcutorture.c | 29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 13e0eec1e1ce..e0bea4039c42 100644
+index e0bea4039c42..12813b5381d6 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -2603,7 +2603,8 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+@@ -2601,15 +2601,26 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+ 	// of arch_irq_work_raise()).  On such systems, RCU cannot
+ 	// guarantee to immediately deboost RCU readers when the outermost
  	// rcu_read_unlock() does not end the full segmented RCU read-side
- 	// critical section.
- 	if (WARN_ON_ONCE(cur_ops->is_task_rcu_boosted && cur_ops->is_task_rcu_boosted() &&
--			 !in_serving_softirq() && !in_hardirq() && !in_nmi()) &&
-+			 preempt_count() == 0 && !irqs_disabled() &&
-+			 rcu_preempt_depth() == 0) &&
- 	    READ_ONCE(firsttime) && xchg(&firsttime, 0)) {
- 		nsegs = rtors.rtrsp - rtors.rtseg;
- 		nsegs = clamp_val(nsegs, 0, RCUTORTURE_RDR_MAX_SEGS);
+-	// critical section.
+-	if (WARN_ON_ONCE(cur_ops->is_task_rcu_boosted && cur_ops->is_task_rcu_boosted() &&
+-			 preempt_count() == 0 && !irqs_disabled() &&
+-			 rcu_preempt_depth() == 0) &&
+-	    READ_ONCE(firsttime) && xchg(&firsttime, 0)) {
+-		nsegs = rtors.rtrsp - rtors.rtseg;
+-		nsegs = clamp_val(nsegs, 0, RCUTORTURE_RDR_MAX_SEGS);
+-		pr_alert("Slow-deboost rcutorture reader segments:\n");
+-		rcu_torture_dump_read_segs(rtors.rtseg, nsegs);
++	// critical section.  Allow up to 500us for an async deboost
++	// mechanism (e.g. irq work, timers etc) to fire before
++	// declaring the deboost tardy.
++	if (cur_ops->is_task_rcu_boosted && cur_ops->is_task_rcu_boosted() &&
++	    preempt_count() == 0 && !irqs_disabled() &&
++	    rcu_preempt_depth() == 0) {
++		int wait_us;
++
++		for (wait_us = 0; wait_us < 500; wait_us += 10) {
++			udelay(10);
++			if (!cur_ops->is_task_rcu_boosted())
++				break;
++		}
++		if (WARN_ON_ONCE(cur_ops->is_task_rcu_boosted()) &&
++		    READ_ONCE(firsttime) && xchg(&firsttime, 0)) {
++			nsegs = rtors.rtrsp - rtors.rtseg;
++			nsegs = clamp_val(nsegs, 0, RCUTORTURE_RDR_MAX_SEGS);
++			pr_alert("Slow-deboost rcutorture reader segments:\n");
++			rcu_torture_dump_read_segs(rtors.rtseg, nsegs);
++		}
+ 	}
+ 	return true;
+ }
 -- 
 2.34.1
 
