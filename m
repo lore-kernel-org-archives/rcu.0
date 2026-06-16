@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F6353ABDA4;
-	Tue, 16 Jun 2026 09:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C62B421890;
+	Tue, 16 Jun 2026 09:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781601629; cv=none; b=rZgaLdb5Sh5P4ZY+rWkQOf12DKFCFyvhOoA6zmONjTADPE+L3x44xPBK4rMsH0C0WHIFUxnF0npcZbO+CX76AlJNmvYEnJXYxkL3Je6G/nlknPG/1syb2spf5xrsjQbiRfuafP9yyKpIGPtXQeSg8G2rGbent1zdSMp2t7EekzM=
+	t=1781603504; cv=none; b=m/swdjPTVUAHV2692mCVUvyIJ2vmffSzlaYz5iwB1OEDO1ux5NQDkWotzzVbKloPQaXiYSNN+PFcHJsjbSAKvh8n5VFilh2z2Cp5zn5HUZAaFvJVNbrMC36Aneq0bc3+us8hXLIHY/ewM6RpaZHZAJRnjXlkLIHQ2cjN16aAGIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781601629; c=relaxed/simple;
-	bh=Cr+DI/LlbjtXfZaaazfALq/4PnrYr/JXdwNX9hG4uw0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=G+xP+P6+VhKHvIhF0en73EedoPuh50i2wNcbrx75Z7BxkV61nrtC+NDzkIFr1iEkqwC24lh2tifzmj9FAiPww/kpNoB8W0VgQEllbZDtsYpb14bbBsR1gu7favrs52vglfaREufONYgKBka+PQeP/ewY0B8ZOmAQsbfpAYM4Kdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a5jNwEBg; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781603504; c=relaxed/simple;
+	bh=mkIiPn8R9UXl42ps031DfgxAVIx0omm7NGj6TJD+Etc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fgGVjfZZjvawuuriD3gTM0cYxlGpDljLt3YfS8twEF9y0LzaInGkVQdAxOvul5YYLxOANIQZmcjnfA8DqnI7r7qmMmcwNihU7eBuFuJyNhgrA4kvnpBOP0lapHrVQ2xJueHq18gyRCUKO2KRT9LzsLL3hqM3CeJQ7iwCm/8HcBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VEbUHWJb; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a5jNwEBg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 639F71F000E9;
-	Tue, 16 Jun 2026 09:20:22 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VEbUHWJb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FD3F1F000E9;
+	Tue, 16 Jun 2026 09:51:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781601627;
-	bh=Cr+DI/LlbjtXfZaaazfALq/4PnrYr/JXdwNX9hG4uw0=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To;
-	b=a5jNwEBgb8NE7sjPTAqAASarn7s9L7kUBxYy1b7o9nJuNTimyuI1NdbsirIqTOsgM
-	 +dVa5mtgAXH4Tj8Jumdbs2MdTqtCq6JVEepvSiihJV+1VeqY9BZ8cn2SWwEsvzya5O
-	 WzJEYKVxeuuibpeFjBLO5z4ACGW/7eVKaM629mia5St63rDrZoVSGX8KDDdHuNl374
-	 +Q88ddf862x73R+AVQQ6Ifmhx2/Da+jO9Bom/aP4KAFxJ7LwkyUAYhMc35tR4yatfT
-	 NdUs2wfBpfNcidXluRGN5XsIvKlxKXWkcgX/IKyrjfwbTgODzspuCid9fXvZDX7D86
-	 OtvPb9Qatv/Rw==
-Message-ID: <a9d67e65-ccfd-49b0-b9c3-6a749166bdc0@kernel.org>
-Date: Tue, 16 Jun 2026 11:20:20 +0200
+	s=k20260515; t=1781603503;
+	bh=7TG//1mKDMUKLREopRBqL7Cg563LdIMWhQer/zVSDV4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=VEbUHWJbOquczSSNP/eSM+7TfY7LBj19vnpy88JwPL8u6G2J2krkyEDpDthqReOk4
+	 O0Je5Fa52Is624R1kaEUeg0Vx6aw/yegO4au3szhcfbgNrrQI2gjkuEG2pmOjok/vR
+	 tEGNqEmV4vvgP3raEtSW3lWXqsCRPugvHu6YRELh5gdJhSFUmX96/CXbQG1DuHQDp6
+	 hrjnIyQRhc4lkwgoAECgm6qjkrgmrnZYwXz3T0l6Erh9iL+gOP6GwssbpHqifn2xrH
+	 oiNhcI1nAOy15rCu/Quvxru1hLfOGg+7SF94mO2CfZjFN9dejUzkuHk8HnnrOoLQN6
+	 pnGBek4rqpOsg==
+Message-ID: <a3149f57-d587-4169-91cb-b1e0558744df@kernel.org>
+Date: Tue, 16 Jun 2026 11:51:35 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -35,10 +35,9 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH for-next v3 3/9] mm/slab: handle the !allow_spin case in
- kfree_rcu_sheaf()
+Subject: Re: [PATCH for-next v3 4/9] mm/slab: use call_rcu() in unknown
+ context if irqs are enabled
 Content-Language: en-US
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 To: "Harry Yoo (Oracle)" <harry@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
  Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
@@ -59,8 +58,8 @@ To: "Harry Yoo (Oracle)" <harry@kernel.org>,
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
 References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-3-70a54f3775bb@kernel.org>
- <4d7ebcd5-f3b7-4c73-94f1-b7d3ac12a521@kernel.org>
+ <20260615-kfree_rcu_nolock-v3-4-70a54f3775bb@kernel.org>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
  KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
@@ -100,24 +99,49 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <4d7ebcd5-f3b7-4c73-94f1-b7d3ac12a521@kernel.org>
+In-Reply-To: <20260615-kfree_rcu_nolock-v3-4-70a54f3775bb@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 6/16/26 09:55, Vlastimil Babka (SUSE) wrote:
-> On 6/15/26 13:05, Harry Yoo (Oracle) wrote:
-> Also maybe there could be a wrapper kfree_maybe_nolock() (~better name?)
-> That means "I want to kfree safely in kfree_nolock() context something that
-> MIGHT have been kmalloc()"
-> And maybe depending on the debugging options that make kmalloc() ->
-> kfree_nolock() incompatible, if those are not enabled, it wouldn't have to
-> defer, but proceed normally?
+On 6/15/26 13:05, Harry Yoo (Oracle) wrote:
+> call_rcu() disables IRQs with local_irq_save() to protect its per-cpu
+> data structures. Therefore, if IRQs are not disabled, they cannot be
+> corrupted by reentrance into call_rcu(). So fall back to the deferred
+> path only when !allow_spin && irqs_disabled().
+> 
+> The RCU subsystem does not guarantee this contractually, and this
+> optimization relies on RCU's implementation details. Ideally, it should
+> be removed once call_rcu_nolock() is supported by the RCU subsystem.
+> 
+> Link: https://lore.kernel.org/linux-mm/CAADnVQKRVD5ZSnEKbZZU7w86gHbGHUug2pvzpgZTngNS+fg4rw@mail.gmail.com
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 
-Or just make kfree_nolock() handle all (non-large) kmalloc() objects. Seems
-the blockers are only kmemleak and kfence.
+Hope RCU people can approve this.
 
-Kmemleak is a debugging option not for production so if it's enabled, just
-defer free everything.
+> ---
+>  mm/slub.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index b0d38d515386..6a3552b70683 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -6158,8 +6158,8 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_spin)
+>  	if (likely(rcu_sheaf->size < s->sheaf_capacity)) {
+>  		rcu_sheaf = NULL;
+>  	} else {
+> -		if (unlikely(!allow_spin)) {
+> -			/* call_rcu() cannot be called in an unknown context */
+> +		/* call_rcu() disables IRQs to protect percpu data structures */
 
-KFENCE is a production option, but we could just defer_free for
-is_kfence_address() and that will be rare.
+Maybe elaborate that with !allow_spin we might have preempted call_rcu()'s
+protected section, which disables IRQs, so we can't call_rcu(). But if IRQs
+are not disabled, we know it's not the case?
+
+> +		if (unlikely(!allow_spin && irqs_disabled())) {
+>  			rcu_sheaf->size--;
+>  			local_unlock(&s->cpu_sheaves->lock);
+>  			goto fail;
+> 
+
