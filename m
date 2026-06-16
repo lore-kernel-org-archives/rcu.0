@@ -1,60 +1,33 @@
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 812083DA7D1;
-	Tue, 16 Jun 2026 06:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A101FC7FB;
+	Tue, 16 Jun 2026 06:57:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781590234; cv=none; b=AkDHFawd4PQ24skGHvHS39qSjnHoi/evIb1IaTVCR+Y3tTH93sjCrWkit5r6cMrwSqRne00DcnlTk2hv/BFBfXhtSnI35BC3Xu8xpJHwhR10ngT7XuyB6sAtyESLVDwvKJw94NLVbTKTjDgqE+S5eEx4Qr9lM3NyLYFQH5xrDI8=
+	t=1781593073; cv=none; b=trohbD0U1m4CDqXVz9Cf3YAN3IcFdnpzyn4YVoA5GeSihJyLf2iDGc+C53kJI4ykZomQP9Gq3z5Zt79CRaDWlQvGYa3IjrVJf8k40D5YFMYqyUL98UnzDN0d4GvkesiMSwwJoe5u3Dzfgyz52zNRERrb+jK6zOodup14zP9Pz4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781590234; c=relaxed/simple;
-	bh=FJ3XO5+CsVhYrUtvIWsI3MycqxYWA3mgfm8Uk0SE/gc=;
+	s=arc-20240116; t=1781593073; c=relaxed/simple;
+	bh=ShF/kWa2CviwYqZxt7Rlzm9lYLieHp0PQcJ0ZicPi+E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TU0zcOfItgCpeMQKQ6Degtw7Ulp58FBuH39G8lLVUgtGmT6pOFNJMJbOkT1Jnq9sjWvihWn+sKo8LjxdbgWykjXep23iznO+UvaRuN4Vbkb2bjs+L/1Qk+QaVsYJ05R+7CHI6Bolq/YMbTjQle2HOcnmZrdk6JQFfpnD6YegjlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Uygj5XhI; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	 In-Reply-To:Content-Type; b=s4VUMpTGzItEOrVhJXBNl2LlfQwfukJXx5bqAraw6fjA7Lf9o6QZH8OTB3z+I1ApONLqHexwEbp0qqIx6zo8VaXZGFaRV79h+1+SbHP5cCn5YyyjK9Zr9LJE+jddeZrPSVUypwNff5BMo/qrCLF6b71GSlSM1sykYVAQD7xgee0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fG0ASzzB; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Uygj5XhI"
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 65G0mMMn3975754;
-	Tue, 16 Jun 2026 06:10:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=rnzOq1
-	/Bd0unfJsQNHBjAvB63vbUrAPXSl6+fyLHbO8=; b=Uygj5XhI+m+Lka06KdWhm9
-	DkYhQ1MbqAdUH2XcUhCwgi0YvCXPQTk4B49XtVaop4iBXDffLp6QcoI1AIoIbbbO
-	g4nwTLKnbd5qzYtzK8vApcfrjuzehqUPIhM5xbDzmXEh04Yc3pNEpHB2LB9rEmRf
-	smYb9Ile5HnbeJAUD5Krp64Z89ccTh0sQpChtrSwSp8cxo4f9mncr5PVhxbhq0aZ
-	PJPSzwjvlHmR08tsDpmsnbJSUoFx8vM5dtprYKIZ1Migm1WS+rLUD11XWUp2IdXd
-	F1bP+qOt4a6sXviJzL5uiTgoTxxqKHQANo3Lk3NekneZD3e29rXf++QGM6xpOTUw
-	==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4es1v2bmrn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jun 2026 06:10:00 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 65G65sXi002122;
-	Tue, 16 Jun 2026 06:09:59 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4eshww23qn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jun 2026 06:09:59 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 65G69tHC51446084
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Jun 2026 06:09:56 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CD00F20040;
-	Tue, 16 Jun 2026 06:09:55 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 953F320043;
-	Tue, 16 Jun 2026 06:09:50 +0000 (GMT)
-Received: from [9.39.31.192] (unknown [9.39.31.192])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 16 Jun 2026 06:09:50 +0000 (GMT)
-Message-ID: <4bd12c51-414d-49b5-8fce-2a6e73a479fa@linux.ibm.com>
-Date: Tue, 16 Jun 2026 11:39:49 +0530
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fG0ASzzB"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6291A1F000E9;
+	Tue, 16 Jun 2026 06:57:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781593072;
+	bh=5YYnjwXkhIaJkMK4KVBBMhIkUoLKifb+v7A8S2YfApM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=fG0ASzzB2I00G5iVEAds9Q0q7Bms6RNkBLE07l71xjSDi1o26hZfRZfswbg31vdsK
+	 ce5IeSOVRKXGkI/hpwduGQILYFHaUrY+2ssX4eXph+FypjmNykxQW8fD0dDu7qA5xq
+	 DRvPVbYt8/y6/e0z7neaIY8iRXWRnxCcZU1l9CWmZHCq4kTr0ascmZ+KjtYJOC9YJi
+	 IN6OL83bQhAqlgkSTAib+xvaI0FH55lUdY0CPs/orNwXoBsZkAUT8/cP6T019r5GxX
+	 rVW4XyLhkNnHxNeac/MHoNNQJdlBJM37Ii+dZrmKRkrHsClpnDXYcFjw3+kn87wsIn
+	 P7w3/bYbfhirg==
+Message-ID: <a64777b0-dfdf-4cc4-bb3a-87f25ca394bf@kernel.org>
+Date: Tue, 16 Jun 2026 08:57:44 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -62,190 +35,368 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/1] cpuhp: Expedite RCU when toggling system-wide SMT
- mode
-To: paulmck@kernel.org, Vishal Chourasia <vishalc@linux.ibm.com>,
-        tglx@linutronix.de, peterz@infradead.org
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, aboorvad@linux.ibm.com,
-        boqun.feng@gmail.com, frederic@kernel.org, joelagnelf@nvidia.com,
-        josh@joshtriplett.org, neeraj.upadhyay@kernel.org, rostedt@goodmis.org,
-        srikar@linux.ibm.com, urezki@gmail.com, samir@linux.ibm.com
-References: <20260615042514.694993-2-vishalc@linux.ibm.com>
- <20260615042514.694993-4-vishalc@linux.ibm.com>
- <f1a04d2f-367e-4be8-b313-31a73e15bcd0@paulmck-laptop>
+Subject: Re: [PATCH for-next v3 2/9] mm/slab, slub_kunit: register kprobe to
+ trigger _nolock APIs
 Content-Language: en-US
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <f1a04d2f-367e-4be8-b313-31a73e15bcd0@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: "Harry Yoo (Oracle)" <harry@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
+References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
+ <20260615-kfree_rcu_nolock-v3-2-70a54f3775bb@kernel.org>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Autocrypt: addr=vbabka@kernel.org; keydata=
+ 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
+In-Reply-To: <20260615-kfree_rcu_nolock-v3-2-70a54f3775bb@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE2MDA1NSBTYWx0ZWRfX2kLA9BegRX3r
- qPTZnfhTV2SSck0zjST+jIQnCkqcifEQWR4P5H+bTHLrtQ7aAXBq6edqZ6o1NIQy1umD0jreBP8
- QVaOZ7Maa5BpZdsfLn62xL01ZmNo9+A=
-X-Proofpoint-GUID: s467W7Ue9ESbhLKDM8nwVNXAvkJ84KUg
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE2MDA1NSBTYWx0ZWRfX4z2ZtblGAkzR
- hDbwFGc3MSiQnvrDXHkXscDd+JxLljk/8w4oPnBo39svNEk+FCUIFK7NJIe0IVzwQCP4vchAx9h
- HRGLuSJnFP8m3oVkTTylB7cYgSuNf7bVI/PGaxcHGa1sJtWMotXGxfiEIzcYYdaKX6hZjKgaBUp
- 3T6ez3RbJmyH7Pu3qbv6XBPLKYnvL7jTj2U0zy26CGvktpJlA2F9sML8nNKMKmz0F/4MyQwuuKq
- IV1GGrMouUJXghAzSZJvF5qGEkCAWX6XM0o2HEOBe9DNA0kNIgnXRvaVd9tizvzlDg+wZRj9kCL
- nRhyFXRNcMYjOw2dEa9dqq9EQUSSKjnuj3ulNn5qGPGJGXzUw55jaIAXuHYdsWNr8hhDZPhjX9O
- Ovavlqw+rhVyomqxvT/HkXvd5PNZtiWdo7niYmszAMv6gKLiGKmPQ1Xu262JNxUagr/720tN67J
- aLq3I3dmQ3Xu798Oe1w==
-X-Proofpoint-ORIG-GUID: QvrHqgGOQjiPi6_n-JQ0jj7BQtsN91Nw
-X-Authority-Analysis: v=2.4 cv=Dd0nbPtW c=1 sm=1 tr=0 ts=6a30e8b8 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=VnNF1IyMAAAA:8
- a=VwQbUJbxAAAA:8 a=axXu-iBfu26a61bggtcA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-06-16_01,2026-06-15_04,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 clxscore=1011 priorityscore=1501 impostorscore=0
- lowpriorityscore=0 adultscore=0 suspectscore=0 phishscore=0 spamscore=0
- bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.22.0-2606040000
- definitions=main-2606160055
 
-
-
-On 6/15/26 8:35 PM, Paul E. McKenney wrote:
-> On Mon, Jun 15, 2026 at 09:55:16AM +0530, Vishal Chourasia wrote:
->> On large idle systems, changing system-wide SMT level using the sysfs
->> control interface still takes approximately 40-55 minutes. Changing SMT
->> levels is an user triggered operation generally done when systems are
->> fairly idle. This causes users to be blocked from doing other subsequent
->> work.
->>
->> Analyzing the collected profile data during SMT level switch, showed
->> that CPU hotplug machinery was blocked on synchronize_rcu() calls.
->>
->> Expedite RCU grace periods for the entire duration of triggered SMT
->> switch operation via the sysfs control interface. Individual CPU hotplug
->> operations via the online/offline interface are not affected.
->>
->> On a PPC64 system with 400 CPUs:
->>
->>    SMT8 to SMT1:
->>      before:  1m14s
->>      after:   3.2s   (~23x faster)
->>
->>    SMT1 to SMT8:
->>      before:  2m27s
->>      after:   2.5s   (~58x faster)
->>
->> On a large config system with 1920 CPUs, completion time improves from
->> ~1 hour to 5-6 minutes.
->>
->> Tested-by: Samir <samir@linux.ibm.com>
->> Reviewed-by: Shrikanth Hegde <sshegde@linux.ibm.com>
->> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
+On 6/15/26 13:05, Harry Yoo (Oracle) wrote:
+> Since kmalloc_nolock() always fails in NMI and hardirq contexts on
+> PREEMPT_RT, slub_kunit cannot properly test _nolock() APIs.
 > 
->  From an RCU viewpoint:
+> Register a kprobe pre-handler to invoke kmalloc_nolock() and
+> kfree_nolock() in the middle of the slab allocator. However, do not
+> register the handler on UP kernels [1].
 > 
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
-Thank you Paul for reviewing this.
-
+> To attach the pre-handler while s->cpu_sheaves->lock or n->list_lock
+> is held, add a wrapper function for lockdep_assert_held() that calls
+> a no-op function slab_attach_kprobe_locked() on debug builds. The
+> function is optimized away when neither CONFIG_PROVE_LOCKING nor
+> CONFIG_DEBUG_VM is selected and register_kprobe() fails.
 > 
-> I am guessing that you will be taking this up some other path, but if
-> you would like it to to via RCU, please let me know.
+> The function calls barrier() to prevent the compiler from optimizing
+> away its callsites. Otherwise, the compiler may consider the function
+> does not have any side effect and remove callsites.
 > 
-> 							Thanx, Paul
+> Link: https://lore.kernel.org/linux-mm/20260427-nolock-api-fix-v2-0-a6b83a92d9a4@kernel.org [1]
+> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
+
+Looks very useful!
+Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+
+> ---
+>  lib/tests/slub_kunit.c | 82 +++++++++++++++++++++++++++++++++++++++++++-------
+>  mm/slub.c              | 36 ++++++++++++++++------
+>  2 files changed, 98 insertions(+), 20 deletions(-)
 > 
-
-I would prefer this to go via tip tree since main change is in cpu.c
-
-Thomas, peter,
-What do you guys suggest? can this go via tip tree?
-
-Also, do you have any other review comments on this or test to be done?
-
->> ---
->>   include/linux/rcupdate.h | 8 ++++++++
->>   kernel/cpu.c             | 4 ++++
->>   kernel/rcu/rcu.h         | 4 ----
->>   3 files changed, 12 insertions(+), 4 deletions(-)
->>
->> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
->> index bfa765132de8..b6bccf131f1c 100644
->> --- a/include/linux/rcupdate.h
->> +++ b/include/linux/rcupdate.h
->> @@ -1178,6 +1178,14 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
->>   extern int rcu_expedited;
->>   extern int rcu_normal;
->>   
->> +#ifdef CONFIG_TINY_RCU
->> +static inline void rcu_expedite_gp(void) { }
->> +static inline void rcu_unexpedite_gp(void) { }
->> +#else
->> +void rcu_expedite_gp(void);
->> +void rcu_unexpedite_gp(void);
->> +#endif
->> +
->>   DEFINE_LOCK_GUARD_0(rcu, rcu_read_lock(), rcu_read_unlock())
->>   DECLARE_LOCK_GUARD_0_ATTRS(rcu, __acquires_shared(RCU), __releases_shared(RCU))
->>   
->> diff --git a/kernel/cpu.c b/kernel/cpu.c
->> index bc4f7a9ba64e..6351da9dffdc 100644
->> --- a/kernel/cpu.c
->> +++ b/kernel/cpu.c
->> @@ -2658,6 +2658,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
->>   	int cpu, ret = 0;
->>   
->>   	cpu_maps_update_begin();
->> +	rcu_expedite_gp();
->>   	for_each_online_cpu(cpu) {
->>   		if (topology_is_primary_thread(cpu))
->>   			continue;
->> @@ -2687,6 +2688,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
->>   	}
->>   	if (!ret)
->>   		cpu_smt_control = ctrlval;
->> +	rcu_unexpedite_gp();
->>   	cpu_maps_update_done();
->>   	return ret;
->>   }
->> @@ -2704,6 +2706,7 @@ int cpuhp_smt_enable(void)
->>   	int cpu, ret = 0;
->>   
->>   	cpu_maps_update_begin();
->> +	rcu_expedite_gp();
->>   	cpu_smt_control = CPU_SMT_ENABLED;
->>   	for_each_present_cpu(cpu) {
->>   		/* Skip online CPUs and CPUs on offline nodes */
->> @@ -2717,6 +2720,7 @@ int cpuhp_smt_enable(void)
->>   		/* See comment in cpuhp_smt_disable() */
->>   		cpuhp_online_cpu_device(cpu);
->>   	}
->> +	rcu_unexpedite_gp();
->>   	cpu_maps_update_done();
->>   	return ret;
->>   }
->> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
->> index fa6d30ce73d1..d6a63ee60bc0 100644
->> --- a/kernel/rcu/rcu.h
->> +++ b/kernel/rcu/rcu.h
->> @@ -521,8 +521,6 @@ do {									\
->>   static inline bool rcu_gp_is_normal(void) { return true; }
->>   static inline bool rcu_gp_is_expedited(void) { return false; }
->>   static inline bool rcu_async_should_hurry(void) { return false; }
->> -static inline void rcu_expedite_gp(void) { }
->> -static inline void rcu_unexpedite_gp(void) { }
->>   static inline void rcu_async_hurry(void) { }
->>   static inline void rcu_async_relax(void) { }
->>   static inline bool rcu_cpu_online(int cpu) { return true; }
->> @@ -530,8 +528,6 @@ static inline bool rcu_cpu_online(int cpu) { return true; }
->>   bool rcu_gp_is_normal(void);     /* Internal RCU use. */
->>   bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
->>   bool rcu_async_should_hurry(void);  /* Internal RCU use. */
->> -void rcu_expedite_gp(void);
->> -void rcu_unexpedite_gp(void);
->>   void rcu_async_hurry(void);
->>   void rcu_async_relax(void);
->>   void rcupdate_announce_bootup_oddness(void);
->> -- 
->> 2.54.0
->>
+> diff --git a/lib/tests/slub_kunit.c b/lib/tests/slub_kunit.c
+> index 11255fc8eb78..01d808cb77fa 100644
+> --- a/lib/tests/slub_kunit.c
+> +++ b/lib/tests/slub_kunit.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/rcupdate.h>
+>  #include <linux/delay.h>
+>  #include <linux/perf_event.h>
+> +#include <linux/kprobes.h>
+>  #include "../mm/slab.h"
+>  
+>  static struct kunit_resource resource;
+> @@ -292,7 +293,8 @@ static void test_krealloc_redzone_zeroing(struct kunit *test)
+>  	kmem_cache_destroy(s);
+>  }
+>  
+> -#ifdef CONFIG_PERF_EVENTS
+> +#if defined(CONFIG_PERF_EVENTS) || (defined(CONFIG_KPROBES) && defined(CONFIG_SMP))
+> +#define SLUB_KUNIT_TEST_KMALLOC_KFREE_NOLOCK
+>  #define NR_ITERATIONS 1000
+>  #define NR_OBJECTS 1000
+>  static void *objects[NR_OBJECTS];
+> @@ -302,10 +304,16 @@ struct test_nolock_context {
+>  	int callback_count;
+>  	int alloc_ok;
+>  	int alloc_fail;
+> +#ifdef CONFIG_PERF_EVENTS
+>  	struct perf_event *event;
+>  	bool is_perf_type_hw;
+> +#endif
+> +#ifdef CONFIG_KPROBES
+> +	struct kprobe kprobe;
+> +#endif
+>  };
+>  
+> +#ifdef CONFIG_PERF_EVENTS
+>  static struct perf_event_attr hw_attr = {
+>  	.type = PERF_TYPE_HARDWARE,
+>  	.config = PERF_COUNT_HW_CPU_CYCLES,
+> @@ -326,13 +334,10 @@ static struct perf_event_attr sw_attr = {
+>  	.sample_freq = 100000,
+>  };
+>  
+> -static void overflow_handler_test_nolock(struct perf_event *event,
+> -					 struct perf_sample_data *data,
+> -					 struct pt_regs *regs)
+> +static void test_nolock(struct test_nolock_context *ctx)
+>  {
+>  	void *objp;
+>  	gfp_t gfp;
+> -	struct test_nolock_context *ctx = event->overflow_handler_context;
+>  
+>  	/* __GFP_ACCOUNT to test kmalloc_nolock() in alloc_slab_obj_exts() */
+>  	gfp = (ctx->callback_count % 2) ? 0 : __GFP_ACCOUNT;
+> @@ -347,6 +352,15 @@ static void overflow_handler_test_nolock(struct perf_event *event,
+>  	ctx->callback_count++;
+>  }
+>  
+> +static void overflow_handler_test_nolock(struct perf_event *event,
+> +					 struct perf_sample_data *data,
+> +					 struct pt_regs *regs)
+> +{
+> +	struct test_nolock_context *ctx = event->overflow_handler_context;
+> +
+> +	test_nolock(ctx);
+> +}
+> +
+>  static bool enable_perf_events(struct test_nolock_context *ctx)
+>  {
+>  	struct perf_event *event;
+> @@ -382,17 +396,60 @@ static void disable_perf_events(struct test_nolock_context *ctx)
+>  	perf_event_disable(ctx->event);
+>  	perf_event_release_kernel(ctx->event);
+>  }
+> +#else
+> +static bool enable_perf_events(struct test_nolock_context *ctx) { return false; }
+> +static void disable_perf_events(struct test_nolock_context *ctx) { }
+> +#endif
+> +
+> +#if defined(CONFIG_KPROBES) && defined(CONFIG_SMP)
+> +static int slab_kprobe_pre_handler(struct kprobe *p, struct pt_regs *regs)
+> +{
+> +	struct test_nolock_context *ctx;
+> +
+> +	ctx = container_of(p, struct test_nolock_context, kprobe);
+> +	test_nolock(ctx);
+> +	return 0;
+> +}
+> +
+> +static bool register_slab_kprobes(struct test_nolock_context *ctx)
+> +{
+> +	ctx->kprobe.symbol_name = "slab_attach_kprobe_locked";
+> +	ctx->kprobe.pre_handler = slab_kprobe_pre_handler;
+> +
+> +	if (register_kprobe(&ctx->kprobe))
+> +		return false;
+> +	return true;
+> +}
+> +
+> +static void unregister_slab_kprobes(struct test_nolock_context *ctx)
+> +{
+> +	kunit_info(ctx->test, "kprobes: callback_count: %d, alloc_ok: %d, alloc_fail: %d\n",
+> +		   ctx->callback_count, ctx->alloc_ok, ctx->alloc_fail);
+> +	unregister_kprobe(&ctx->kprobe);
+> +}
+> +#else
+> +static bool register_slab_kprobes(struct test_nolock_context *ctx) { return false; }
+> +static void unregister_slab_kprobes(struct test_nolock_context *ctx) { }
+> +#endif
+>  
+>  static void test_kmalloc_kfree_nolock(struct kunit *test)
+>  {
+>  	int i, j;
+> -	struct test_nolock_context ctx = { .test = test };
+> +	struct test_nolock_context perf_ctx = { .test = test };
+> +	struct test_nolock_context kprobe_ctx = { .test = test };
+>  	bool alloc_fail = false;
+>  	bool perf_events_enabled;
+> +	bool slab_kprobes_enabled;
+>  
+> -	perf_events_enabled = enable_perf_events(&ctx);
+> -	if (!perf_events_enabled)
+> -		kunit_skip(test, "Failed to create perf event");
+> +	perf_events_enabled = enable_perf_events(&perf_ctx);
+> +	slab_kprobes_enabled = register_slab_kprobes(&kprobe_ctx);
+> +
+> +	if (!perf_events_enabled && !slab_kprobes_enabled)
+> +		kunit_skip(test, "Failed to enable perf event and kprobe, skipping");
+> +	else if (!perf_events_enabled)
+> +		kunit_info(test, "Failed to create perf event");
+> +	if (!slab_kprobes_enabled)
+> +		kunit_info(test, "Failed to register kprobe pre-handler");
+>  
+>  	for (i = 0; i < NR_ITERATIONS; i++) {
+>  		for (j = 0; j < NR_OBJECTS; j++) {
+> @@ -412,7 +469,10 @@ static void test_kmalloc_kfree_nolock(struct kunit *test)
+>  	}
+>  
+>  cleanup:
+> -	disable_perf_events(&ctx);
+> +	if (perf_events_enabled)
+> +		disable_perf_events(&perf_ctx);
+> +	if (slab_kprobes_enabled)
+> +		unregister_slab_kprobes(&kprobe_ctx);
+>  
+>  	if (alloc_fail)
+>  		kunit_skip(test, "Allocation failed");
+> @@ -444,7 +504,7 @@ static struct kunit_case test_cases[] = {
+>  	KUNIT_CASE(test_kfree_rcu_wq_destroy),
+>  	KUNIT_CASE(test_leak_destroy),
+>  	KUNIT_CASE(test_krealloc_redzone_zeroing),
+> -#ifdef CONFIG_PERF_EVENTS
+> +#ifdef SLUB_KUNIT_TEST_KMALLOC_KFREE_NOLOCK
+>  	KUNIT_CASE_SLOW(test_kmalloc_kfree_nolock),
+>  #endif
+>  	{}
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 813fb863254d..87ca154ccd80 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -908,6 +908,24 @@ static inline unsigned int obj_exts_offset_in_object(struct kmem_cache *s)
+>  }
+>  #endif
+>  
+> +/*
+> + * A no-op function used to attach kprobe handlers in slub_kunit tests.
+> + * The barrier is needed to prevent the compiler from optimizing out callsites.
+> + */
+> +#if defined(CONFIG_DEBUG_VM) || defined(CONFIG_PROVE_LOCKING)
+> +static noinline void slab_attach_kprobe_locked(void)
+> +{
+> +	barrier();
+> +}
+> +#else
+> +static inline void slab_attach_kprobe_locked(void) { }
+> +#endif
+> +
+> +#define slab_lockdep_assert_held(lock) do {	\
+> +	lockdep_assert_held(lock);		\
+> +	slab_attach_kprobe_locked();	\
+> +} while (0)
+> +
+>  #ifdef CONFIG_SLUB_DEBUG
+>  
+>  /*
+> @@ -1665,7 +1683,7 @@ static void add_full(struct kmem_cache *s,
+>  	if (!(s->flags & SLAB_STORE_USER))
+>  		return;
+>  
+> -	lockdep_assert_held(&n->list_lock);
+> +	slab_lockdep_assert_held(&n->list_lock);
+>  	list_add(&slab->slab_list, &n->full);
+>  }
+>  
+> @@ -1674,7 +1692,7 @@ static void remove_full(struct kmem_cache *s, struct kmem_cache_node *n, struct
+>  	if (!(s->flags & SLAB_STORE_USER))
+>  		return;
+>  
+> -	lockdep_assert_held(&n->list_lock);
+> +	slab_lockdep_assert_held(&n->list_lock);
+>  	list_del(&slab->slab_list);
+>  }
+>  
+> @@ -2866,7 +2884,7 @@ static unsigned int __sheaf_flush_main_batch(struct kmem_cache *s)
+>  	void *objects[PCS_BATCH_MAX];
+>  	struct slab_sheaf *sheaf;
+>  
+> -	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+> +	slab_lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+>  
+>  	pcs = this_cpu_ptr(s->cpu_sheaves);
+>  	sheaf = pcs->main;
+> @@ -3545,7 +3563,7 @@ __add_partial(struct kmem_cache_node *n, struct slab *slab, enum add_mode mode)
+>  static inline void add_partial(struct kmem_cache_node *n,
+>  				struct slab *slab, enum add_mode mode)
+>  {
+> -	lockdep_assert_held(&n->list_lock);
+> +	slab_lockdep_assert_held(&n->list_lock);
+>  	__add_partial(n, slab, mode);
+>  }
+>  
+> @@ -3559,7 +3577,7 @@ static inline void clear_node_partial_state(struct kmem_cache_node *n,
+>  static inline void remove_partial(struct kmem_cache_node *n,
+>  					struct slab *slab)
+>  {
+> -	lockdep_assert_held(&n->list_lock);
+> +	slab_lockdep_assert_held(&n->list_lock);
+>  	list_del(&slab->slab_list);
+>  	clear_node_partial_state(n, slab);
+>  }
+> @@ -3575,7 +3593,7 @@ static void *alloc_single_from_partial(struct kmem_cache *s,
+>  {
+>  	void *object;
+>  
+> -	lockdep_assert_held(&n->list_lock);
+> +	slab_lockdep_assert_held(&n->list_lock);
+>  
+>  #ifdef CONFIG_SLUB_DEBUG
+>  	if (s->flags & SLAB_CONSISTENCY_CHECKS) {
+> @@ -4646,7 +4664,7 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
+>  	struct node_barn *barn;
+>  	bool allow_spin;
+>  
+> -	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+> +	slab_lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+>  
+>  	/* Bootstrap or debug cache, back off */
+>  	if (unlikely(!cache_has_sheaves(s))) {
+> @@ -5786,7 +5804,7 @@ static void __pcs_install_empty_sheaf(struct kmem_cache *s,
+>  		struct slub_percpu_sheaves *pcs, struct slab_sheaf *empty,
+>  		struct node_barn *barn)
+>  {
+> -	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+> +	slab_lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+>  
+>  	/* This is what we expect to find if nobody interrupted us. */
+>  	if (likely(!pcs->spare)) {
+> @@ -5837,7 +5855,7 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
+>  	bool put_fail;
+>  
+>  restart:
+> -	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+> +	slab_lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+>  
+>  	/* Bootstrap or debug cache, back off */
+>  	if (unlikely(!cache_has_sheaves(s))) {
+> 
 
