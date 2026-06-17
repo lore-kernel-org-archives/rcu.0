@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3FD834A791;
-	Wed, 17 Jun 2026 05:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC87399357;
+	Wed, 17 Jun 2026 05:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781674381; cv=none; b=QfIL6Fi2OErw3o9Sg9TkoYTBaNDREqvYg6KsB+wnk66JaospLymzBWGFRJHjIO/+gpeTn5gJ6uJmrvspY+pSDDyjXzPWJoozA4pg8zAqpsKuklHEAfyT5/IcMSmZkyolSNLoalP62r7wsc0xIOGoGN8V/wjC/GMIf/c2K0/qutE=
+	t=1781674711; cv=none; b=Z13enEo8s4OGtX4Z2+j8cjw09OMeoxrNZSfkggcNIMsHk5a2Ach/iCyt/bnRtMv2oO2wrcuUShPF0yxOthIcLQGc8c6NB3gAe83jHLIBQYp+BTUOt2T0xqI7/Au7qnzu+4YXT0Eqx1Oex60MJE+X8NHNp/fZIdh/OLL0401ya70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781674381; c=relaxed/simple;
-	bh=jGEuNpic4qZyQr9xTfusui6vESYaBx+XTLnP6gs8AvU=;
+	s=arc-20240116; t=1781674711; c=relaxed/simple;
+	bh=R9EJveHGxrLDMK3qG6qDZwx/iAI+usRoD/JIjaVnaG0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OqImvLx2DBezd0sR6Ua1EfwQiawc96sJa+QZtERVO4yqx8NVp9tVf4wR+hJdUYcLr4YfMghJ1zak9/YxOrHKdr+r7PNgaIAnPQmOXNDN2xhQY6El1v4Ddf6x1te//aRBl6u2L0vV+KP/sNv8KXR4c7ZaQi8Q8xhTzJ1fkc82cOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aMCuyKZA; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:Content-Type; b=N3fKuiNaLMLBRRztAcy+r5CiAZDRgF4xeH7aar33FrFAh68t3pZwEQEDbn2z83epq7FYL0wgEMwDdSZUDpwUDFcx2E+R5soqmCEjZbTPbqOR/qHbTBU8UJqwf7dSupyi6zItA3p84SM2bupf03vZUL0aGbITSKMR2x0Qm5Ty1Gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kRlZI/S/; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aMCuyKZA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 877061F000E9;
-	Wed, 17 Jun 2026 05:32:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kRlZI/S/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 056D31F00A3A;
+	Wed, 17 Jun 2026 05:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781674379;
-	bh=ZCy0RGVwhFQ7leuqrM8fySPSwmvrPlB9/5amWSSk2xU=;
+	s=k20260515; t=1781674704;
+	bh=BziNteM5YVB6ogs4Q9Gd0LtktaFtRuTFTklo5cSHf2o=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=aMCuyKZAe8lfdvxd9tXY5nOBo75gNBoltsHEPiWGh202rk9fIzGH/nd47z8zj+b/Z
-	 Aub3vtYaviTBghykfLFvwDEFrwja9TuiNu58TIkNKnDTUsDKe6ibWQnrqcy9yRR/Gl
-	 PySfsN8XOIsxsihzAc+6iRyO2uvYsp4tUyxckBeU8gxidmki9vnmFmO9bmu7EwU7fg
-	 3phTLDqLdMa8RzJWw3uVxxnMzXxClIfePk+XS1zbS9bKa0taO4Le/uvZmD3KjdLTgS
-	 5JDSuADJDc6H8PMHd+j0Ba9Da8TpLsfeGiq0yFeb3uzwT1B3M00zWb4LPiN00NnMNc
-	 x9DAvj4bue+GQ==
-Message-ID: <e8940857-4f71-4a34-ad80-81584f7378c8@kernel.org>
-Date: Wed, 17 Jun 2026 14:32:52 +0900
+	b=kRlZI/S/SFJ7eCHH30KOn3xKjAraKHzfGJ0VFaXesYzWx9f8/ZZX9aOtIC5gDNtsV
+	 EzVzvviG/lHxv5MJLbJt1K3PRAtgBkG746r+esGVf+fmcWatIYPqja3wSwGOyRSrxz
+	 EVx7KpbWmC5lCfbOFcd2nqfUxm2RvtQQf7p5B5UG5eL6+jFeCdW4DvUQxPp6JK6bSB
+	 89m2xNrHdH6k/eM9OBvI8GimRTvGRKkyArQHOinpuvLSiLCOMEYllllqcxJrs3fzW1
+	 d2MvE+tcdh10NAQc1gKhSlxxp4QK7ZU0tPLjbkDcDRxR0iTiVuEVi9nT/wvr3MM62e
+	 Nr4//4MN5llxA==
+Message-ID: <9d8ca1ed-bc53-417f-944b-d78eecd1e6a5@kernel.org>
+Date: Wed, 17 Jun 2026 07:38:16 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -35,11 +35,11 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH for-next v3 3/9] mm/slab: handle the !allow_spin case in
- kfree_rcu_sheaf()
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+Subject: Re: [PATCH for-next v3 6/9] mm/slab: allow kfree_rcu_sheaf() on
+ PREEMPT_RT
+To: Harry Yoo <harry@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
+ David Rientjes <rientjes@google.com>,
  Roman Gushchin <roman.gushchin@linux.dev>,
  Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
  Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
@@ -53,325 +53,114 @@ To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
  Uladzislau Rezki <urezki@gmail.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>
+ Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>,
+ Peter Zijlstra <peterz@infradead.org>
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
 References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-3-70a54f3775bb@kernel.org>
- <4d7ebcd5-f3b7-4c73-94f1-b7d3ac12a521@kernel.org>
+ <20260615-kfree_rcu_nolock-v3-6-70a54f3775bb@kernel.org>
+ <f3a56a5a-f10b-46dc-bc99-28449ade1661@kernel.org>
+ <40591888-3a87-433e-b3d2-cda1cab543be@kernel.org>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Content-Language: en-US
-From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <4d7ebcd5-f3b7-4c73-94f1-b7d3ac12a521@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------gZ9AQq0y4SZlPtbwhYO0tskz"
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------gZ9AQq0y4SZlPtbwhYO0tskz
-Content-Type: multipart/mixed; boundary="------------oyYMwnEgsJOBwiuqZXNKiyCU";
- protected-headers="v1"
-From: Harry Yoo <harry@kernel.org>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <e8940857-4f71-4a34-ad80-81584f7378c8@kernel.org>
-Subject: Re: [PATCH for-next v3 3/9] mm/slab: handle the !allow_spin case in
- kfree_rcu_sheaf()
-References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-3-70a54f3775bb@kernel.org>
- <4d7ebcd5-f3b7-4c73-94f1-b7d3ac12a521@kernel.org>
-In-Reply-To: <4d7ebcd5-f3b7-4c73-94f1-b7d3ac12a521@kernel.org>
-
---------------oyYMwnEgsJOBwiuqZXNKiyCU
+Autocrypt: addr=vbabka@kernel.org; keydata=
+ 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
+In-Reply-To: <40591888-3a87-433e-b3d2-cda1cab543be@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
+On 6/17/26 07:14, Harry Yoo wrote:
+> 
+> 
+> On 6/17/26 2:24 AM, Vlastimil Babka (SUSE) wrote:
+>> On 6/15/26 13:06, Harry Yoo (Oracle) wrote:
+>>> As suggested by Vlastimil Babka, kfree_rcu_sheaf() can be used
+>>> on PREEMPT_RT if we always assume spinning is not allowed on PREEMPT_RT.
+>>> This is because local_trylock and spinlock_t are safe to use with
+>>> trylock variant as long as the kernel does not spin and the context is
+>>> not NMI and not hardirq.
+>>>
+>>> Now that __kfree_rcu_sheaf() knows how to handle allow_spin = false,
+>>> relax the limitation and try the sheaves path on PREEMPT_RT as well.
+>>>
+>>> Keep the lockdep map on non RT kernels. However, do not use the lockdep
+>>> map on PREEMPT_RT to avoid suppressing valid lockdep warnings.
+>>>
+>>> Link: https://lore.kernel.org/linux-mm/6811cc17-8ee4-48c8-8cbf-6bf4d9f98162@kernel.org
+>>> Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+>>> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
+>> 
+>> LGTM, but maybe unnecessary pessimistic wrt call_rcu() on PREEMPT_RT?
+>> I thought (in the Link: above) we'd only need to downgrade allow_spin to
+>> false on PREEMPT_RT for handling sheaves movement from/to barn and
+>> alloc_empty_sheaf(), but call_rcu() would be safe from kfree_rcu() even on
+>> RT?
+> 
+> Indeed. Good point, thanks!
+> 
+> Hmm, but I'm not sure that it's worth the complexity given that
+> PREEMPT_RT tries very hard to avoid disabling IRQs...
+> 
+>> Or is the irqs_disabled() condition rare enough so we don't care?
+> 
+> Given that most users don't call kfree_rcu() under raw spinlock or
+> IRQs-disabled section on PREEMPT_RT, I think it's okay to keep it as is
+> (it's not making things worse, at least) and wait for call_rcu_nolock()?
 
+Sounds good.
 
-On 6/16/26 4:55 PM, Vlastimil Babka (SUSE) wrote:
-> On 6/15/26 13:05, Harry Yoo (Oracle) wrote:
->> Teach kfree_rcu_sheaf() how to handle the !allow_spin case. Try to get=
+> On a side note, I don't have much idea on what needs to call kfree_rcu()
+> under a raw spinlock, other than set_cpus_allowed_force(), which should
+> really be using kfree_nolock() instead of kfree_rcu() once we support
+> kmalloc() -> kfree_nolock():
 
->> an empty sheaf from pcs->spare or the barn even when spinning is not
->> allowed. Unlike __pcs_replace_full_main(), try harder to allocate
->> an empty sheaf because the fallback path will be more expensive than
->> kfree_nolock().
->=20
-> You mean that it will try to allocate an empty sheaf, while
-> __pcs_replace_full_main() doesn't with allow_spin =3D=3D false.
-> I just noticed the comment there is a bit stale... nevermind.
+Looks like the case. Well if the fallback path of kfree_nolock() that is
+irq_work_queue() is indeed safe here.
 
-That function
+>> 	/*
+>> 	 * Because this is called with p->pi_lock held, it is not possible
+>> 	 * to use kfree() here (when PREEMPT_RT=y), therefore punt to using
+>> 	 * kfree_rcu().
+>> 	 */
+>> 	kfree_rcu((union cpumask_rcuhead *)ac.user_mask, rcu);
+> 
+> Any thoughts, RCU/RT folks?
+> 
 
->> When trylock fails or the kernel observes non-NULL pcs->rcu_free after=
-
->> lock acquisition, free the sheaf instead of putting it to the barn.
->> This is rare and not worth complicating the code.
->>
->> Since call_rcu() cannot be called in an unknown context,
->> kfree_rcu_sheaf() fails when the rcu sheaf becomes full.
->>
->> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
->> ---
->>  mm/slab.h        |  2 +-
->>  mm/slab_common.c |  2 +-
->>  mm/slub.c        | 39 ++++++++++++++++++++++++++++++---------
->>  3 files changed, 32 insertions(+), 11 deletions(-)
->>
->> diff --git a/mm/slab.h b/mm/slab.h
->> index 509f330654b8..b1bd33a16544 100644
->> --- a/mm/slab.h
->> +++ b/mm/slab.h
->> @@ -429,7 +429,7 @@ static inline bool is_kmalloc_normal(struct kmem_c=
-ache *s)
->>  	return !(s->flags & (SLAB_CACHE_DMA|SLAB_ACCOUNT|SLAB_RECLAIM_ACCOUN=
-T));
->>  }
->> =20
->> -bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj);
->> +bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_sp=
-in);
->>  void flush_all_rcu_sheaves(void);
->>  void flush_rcu_sheaves_on_cache(struct kmem_cache *s);
->> =20
->> diff --git a/mm/slab_common.c b/mm/slab_common.c
->> index b6426d7ceec9..bc1a8ec938d9 100644
->> --- a/mm/slab_common.c
->> +++ b/mm/slab_common.c
->> @@ -1605,7 +1605,7 @@ static bool kfree_rcu_sheaf(void *obj)
->> =20
->>  	s =3D slab->slab_cache;
->>  	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) =3D=3D numa_me=
-m_id()))
->> -		return __kfree_rcu_sheaf(s, obj);
->> +		return __kfree_rcu_sheaf(s, obj, /* allow_spin =3D */ true);
->> =20
->>  	return false;
->>  }
->> diff --git a/mm/slub.c b/mm/slub.c
->> index 87ca154ccd80..b0d38d515386 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -2815,7 +2815,8 @@ static inline struct slab_sheaf *alloc_empty_she=
-af(struct kmem_cache *s,
->>  	return __alloc_empty_sheaf(s, gfp, alloc_flags, s->sheaf_capacity);
->>  }
->> =20
->> -static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf =
-*sheaf)
->> +static void __free_empty_sheaf(struct kmem_cache *s, struct slab_shea=
-f *sheaf,
->> +			       bool allow_spin)
->>  {
->>  	/*
->>  	 * If the sheaf was created with SLAB_ALLOC_NO_RECURSE flag then its=
-
->> @@ -2827,11 +2828,20 @@ static void free_empty_sheaf(struct kmem_cache=
- *s, struct slab_sheaf *sheaf)
->>  		mark_obj_codetag_empty(sheaf);
->> =20
->>  	VM_WARN_ON_ONCE(sheaf->size > 0);
->> -	kfree(sheaf);
->> +
->> +	if (likely(allow_spin))
->> +		kfree(sheaf);
->> +	else
->> +		kfree_nolock(sheaf);
->=20
-> Hmm what if the sheaf wasn't allocated with kmalloc_nolock()?
->=20
->>  	stat(s, SHEAF_FREE);
->>  }
->> =20
->> +static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf =
-*sheaf)
->> +{
->> +	__free_empty_sheaf(s, sheaf, /* allow_spin =3D */ true);
->> +}
->> +
->>  static unsigned int
->>  refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned in=
-t min,
->>  	       unsigned int max);
->> @@ -3132,7 +3142,6 @@ static struct slab_sheaf *barn_get_empty_sheaf(s=
-truct node_barn *barn,
->>   * intended action due to a race or cpu migration. Thus they do not c=
-heck the
->>   * empty or full sheaf limits for simplicity.
->>   */
->> -
->>  static void barn_put_empty_sheaf(struct node_barn *barn, struct slab_=
-sheaf *sheaf)
->>  {
->>  	unsigned long flags;
->> @@ -6065,7 +6074,7 @@ static void rcu_free_sheaf(struct rcu_head *head=
-)
->>   */
->>  static DEFINE_WAIT_OVERRIDE_MAP(kfree_rcu_sheaf_map, LD_WAIT_CONFIG);=
-
->> =20
->> -bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
->> +bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_sp=
-in)
->>  {
->>  	struct slub_percpu_sheaves *pcs;
->>  	struct slab_sheaf *rcu_sheaf;
->> @@ -6081,9 +6090,10 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, vo=
-id *obj)
->>  	pcs =3D this_cpu_ptr(s->cpu_sheaves);
->> =20
->>  	if (unlikely(!pcs->rcu_free)) {
->> -
->>  		struct slab_sheaf *empty;
->>  		struct node_barn *barn;
->> +		unsigned int alloc_flags =3D SLAB_ALLOC_DEFAULT;
->> +		gfp_t gfp =3D GFP_NOWAIT;
->> =20
->>  		/* Bootstrap or debug cache, fall back */
->>  		if (unlikely(!cache_has_sheaves(s))) {
->> @@ -6103,7 +6113,7 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, voi=
-d *obj)
->>  			goto fail;
->>  		}
->> =20
->> -		empty =3D barn_get_empty_sheaf(barn, true);
->> +		empty =3D barn_get_empty_sheaf(barn, allow_spin);
->=20
-> Here we might be getting a sheaf allocated previously with kmalloc().
-
-Right.
-
->> =20
->>  		if (empty) {
->>  			pcs->rcu_free =3D empty;
->> @@ -6112,20 +6122,25 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, v=
-oid *obj)
->> =20
->>  		local_unlock(&s->cpu_sheaves->lock);
->> =20
->> -		empty =3D alloc_empty_sheaf(s, GFP_NOWAIT, SLAB_ALLOC_DEFAULT);
->> +		if (unlikely(!allow_spin)) {
->> +			alloc_flags =3D SLAB_ALLOC_TRYLOCK;
->> +			gfp =3D 0;
->=20
-> Maybe __GFP_NOWARN?
-
-Ouch. Good catch. Thanks! Will do.
-
-> Here we would get a sheaf with kmalloc_nolock() so that's ok even if it=
-'s
-> later freed by someone else by kfree(), right.
->=20
->> +		}
->> +
->> +		empty =3D alloc_empty_sheaf(s, gfp, alloc_flags);
->> =20
->>  		if (!empty)
->>  			goto fail;
->> =20
->>  		if (!local_trylock(&s->cpu_sheaves->lock)) {
->> -			barn_put_empty_sheaf(barn, empty);
->> +			__free_empty_sheaf(s, empty, allow_spin);
->=20
-> Well we could still use the barn with allow_spin =3D=3D true.
-
-Initially I did
-
-if (!__barn_put_empty_sheaf(barn, empty, allow_spin))
-	__free_empty_sheaf(s, empty, allow_spin);
-
-but I ended up just calling __free_empty_sheaf() because it's
-pretty rare to hit... no strong opinion though.
-
-> But more crucially, here we might be freeing with kfree_nolock() a shea=
-f
-> from the barn previously allocated with kmalloc()?
-
-Well, we don't release and reacquire the local lock when we got an empty
-sheaf from the barn, so it doesn't free the sheaf from the barn?
-
-That was indeed very subtle and I got confused :D.
-
-When we free a sheaf in this function, it's always allocated in current
-context?
-
-> Maybe we need to track if it's the case and defer-free it or something.=
-
->=20
-> Also maybe there could be a wrapper kfree_maybe_nolock() (~better name?=
-)
-> That means "I want to kfree safely in kfree_nolock() context something =
-that
-> MIGHT have been kmalloc()"
-> And maybe depending on the debugging options that make kmalloc() ->
-> kfree_nolock() incompatible, if those are not enabled, it wouldn't have=
- to
-> defer, but proceed normally?
-
-But I really like the idea of supporting kmalloc() -> kfree_nolock(),
-and I think it's worth exploring that.
-
-Thanks!
-
---=20
-Cheers,
-Harry / Hyeonggon
-
->>  			goto fail;
->>  		}
->> =20
->>  		pcs =3D this_cpu_ptr(s->cpu_sheaves);
->> =20
->>  		if (unlikely(pcs->rcu_free))
->> -			barn_put_empty_sheaf(barn, empty);
->> +			__free_empty_sheaf(s, empty, allow_spin);
->>  		else
->>  			pcs->rcu_free =3D empty;
->>  	}
->> @@ -6143,6 +6158,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, vo=
-id *obj)
->>  	if (likely(rcu_sheaf->size < s->sheaf_capacity)) {
->>  		rcu_sheaf =3D NULL;
->>  	} else {
->> +		if (unlikely(!allow_spin)) {
->> +			/* call_rcu() cannot be called in an unknown context */
->> +			rcu_sheaf->size--;
->> +			local_unlock(&s->cpu_sheaves->lock);
->> +			goto fail;
->> +		}
->>  		pcs->rcu_free =3D NULL;
->>  		rcu_sheaf->node =3D numa_node_id();
->>  	}
-
---------------oyYMwnEgsJOBwiuqZXNKiyCU--
-
---------------gZ9AQq0y4SZlPtbwhYO0tskz
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCajIxhAAKCRCGXBN6rc5S
-1m+4AP9ew2whcCln80iVmFOKVQp6yA+tZBtPYjgxhkggCH1lBgD+Ot0nZKepZ2Jp
-pVPDKTSYJm7mbApT5N01TQjdmN0Srwo=
-=rHGs
------END PGP SIGNATURE-----
-
---------------gZ9AQq0y4SZlPtbwhYO0tskz--
