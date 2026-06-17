@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC87399357;
-	Wed, 17 Jun 2026 05:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2845A3AFD01;
+	Wed, 17 Jun 2026 05:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781674711; cv=none; b=Z13enEo8s4OGtX4Z2+j8cjw09OMeoxrNZSfkggcNIMsHk5a2Ach/iCyt/bnRtMv2oO2wrcuUShPF0yxOthIcLQGc8c6NB3gAe83jHLIBQYp+BTUOt2T0xqI7/Au7qnzu+4YXT0Eqx1Oex60MJE+X8NHNp/fZIdh/OLL0401ya70=
+	t=1781675901; cv=none; b=TUr2YPzk4v7WKohbZoKyjf7L6cAIpHS2Bxn2irNExt7Y3X7ZFmPuvAPNp/FjNc2MDqu15j8rr4+77+jmNwBK8R+2/isLsH459DxbAH/zBycozFzZ9bo9144k2/fTcfjaQT2zpr7jYcs8yA8mZPniaTqG5YlwJxuI/+HIzSveMWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781674711; c=relaxed/simple;
-	bh=R9EJveHGxrLDMK3qG6qDZwx/iAI+usRoD/JIjaVnaG0=;
+	s=arc-20240116; t=1781675901; c=relaxed/simple;
+	bh=MKp+gQfP29ujZM4yIYrm7TJ0istjf6qopuT84uY3M/8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N3fKuiNaLMLBRRztAcy+r5CiAZDRgF4xeH7aar33FrFAh68t3pZwEQEDbn2z83epq7FYL0wgEMwDdSZUDpwUDFcx2E+R5soqmCEjZbTPbqOR/qHbTBU8UJqwf7dSupyi6zItA3p84SM2bupf03vZUL0aGbITSKMR2x0Qm5Ty1Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kRlZI/S/; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:Content-Type; b=JztmYO4dEN9xB+GsgUoQkY7BeuD6oHU6spbFP9VinpWP+q6v6FV6PIMzzdrKNmcB7lN1x+svLeC2hYzCNKF0ET8jwqrx6ARFcv22MCrGvDaeqmwtNvzgZozKnfiRyLdo0Rsgz0iCIwAf7QjUarEZWDNAC+ge77G6cTv/si16y08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RNB97Kz1; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kRlZI/S/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 056D31F00A3A;
-	Wed, 17 Jun 2026 05:38:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RNB97Kz1"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DFC01F000E9;
+	Wed, 17 Jun 2026 05:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781674704;
-	bh=BziNteM5YVB6ogs4Q9Gd0LtktaFtRuTFTklo5cSHf2o=;
+	s=k20260515; t=1781675899;
+	bh=z0WnoCTe/WZyehgOrexh6SFggV7BqrfLheqjX/wcWBQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=kRlZI/S/SFJ7eCHH30KOn3xKjAraKHzfGJ0VFaXesYzWx9f8/ZZX9aOtIC5gDNtsV
-	 EzVzvviG/lHxv5MJLbJt1K3PRAtgBkG746r+esGVf+fmcWatIYPqja3wSwGOyRSrxz
-	 EVx7KpbWmC5lCfbOFcd2nqfUxm2RvtQQf7p5B5UG5eL6+jFeCdW4DvUQxPp6JK6bSB
-	 89m2xNrHdH6k/eM9OBvI8GimRTvGRKkyArQHOinpuvLSiLCOMEYllllqcxJrs3fzW1
-	 d2MvE+tcdh10NAQc1gKhSlxxp4QK7ZU0tPLjbkDcDRxR0iTiVuEVi9nT/wvr3MM62e
-	 Nr4//4MN5llxA==
-Message-ID: <9d8ca1ed-bc53-417f-944b-d78eecd1e6a5@kernel.org>
-Date: Wed, 17 Jun 2026 07:38:16 +0200
+	b=RNB97Kz10Ao2R5CDg1QEMage+MHmk+FqZV1XZM+AotUPoZ7KQ0Z5T+pzTAbTnxBw5
+	 Akfag50v5nhbjm1byNozw58F4ZlGMykbL+FJ/uhH0h4DMspxgDIlxOYxE3JLkSpc/h
+	 OCP+LwIwBY+uKtRjaZJTOxm/z8Iwe+7J2ylF2sIUs5MHx176pLyLiqq26IU8y11/db
+	 PO5luUTpvTYJ4KwMD7OwhbSyZDFDTVGH+XZalYYyH0zD0z+iXWrvKWqMifdoSP6UTm
+	 LtYwV5u6eqmFQXcGTCLD11o+wFeHPn4nIe/syIXpjCIOXx5om/rGxZpv14tdjXMhsl
+	 i7aerDDOvFFEg==
+Message-ID: <cda21b5a-b61b-430f-bb82-c6a4d1e7548a@kernel.org>
+Date: Wed, 17 Jun 2026 07:58:12 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -35,8 +35,9 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH for-next v3 6/9] mm/slab: allow kfree_rcu_sheaf() on
- PREEMPT_RT
+Subject: Re: [PATCH for-next v3 3/9] mm/slab: handle the !allow_spin case in
+ kfree_rcu_sheaf()
+Content-Language: en-US
 To: Harry Yoo <harry@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
  Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  David Rientjes <rientjes@google.com>,
@@ -53,16 +54,14 @@ To: Harry Yoo <harry@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
  Uladzislau Rezki <urezki@gmail.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>,
- Peter Zijlstra <peterz@infradead.org>
+ Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
 References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-6-70a54f3775bb@kernel.org>
- <f3a56a5a-f10b-46dc-bc99-28449ade1661@kernel.org>
- <40591888-3a87-433e-b3d2-cda1cab543be@kernel.org>
+ <20260615-kfree_rcu_nolock-v3-3-70a54f3775bb@kernel.org>
+ <4d7ebcd5-f3b7-4c73-94f1-b7d3ac12a521@kernel.org>
+ <e8940857-4f71-4a34-ad80-81584f7378c8@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Content-Language: en-US
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
  KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
@@ -102,65 +101,64 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <40591888-3a87-433e-b3d2-cda1cab543be@kernel.org>
+In-Reply-To: <e8940857-4f71-4a34-ad80-81584f7378c8@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 6/17/26 07:14, Harry Yoo wrote:
-> 
-> 
-> On 6/17/26 2:24 AM, Vlastimil Babka (SUSE) wrote:
->> On 6/15/26 13:06, Harry Yoo (Oracle) wrote:
->>> As suggested by Vlastimil Babka, kfree_rcu_sheaf() can be used
->>> on PREEMPT_RT if we always assume spinning is not allowed on PREEMPT_RT.
->>> This is because local_trylock and spinlock_t are safe to use with
->>> trylock variant as long as the kernel does not spin and the context is
->>> not NMI and not hardirq.
->>>
->>> Now that __kfree_rcu_sheaf() knows how to handle allow_spin = false,
->>> relax the limitation and try the sheaves path on PREEMPT_RT as well.
->>>
->>> Keep the lockdep map on non RT kernels. However, do not use the lockdep
->>> map on PREEMPT_RT to avoid suppressing valid lockdep warnings.
->>>
->>> Link: https://lore.kernel.org/linux-mm/6811cc17-8ee4-48c8-8cbf-6bf4d9f98162@kernel.org
->>> Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
->>> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
+On 6/17/26 07:32, Harry Yoo wrote:
+>> Here we would get a sheaf with kmalloc_nolock() so that's ok even if it's
+>> later freed by someone else by kfree(), right.
 >> 
->> LGTM, but maybe unnecessary pessimistic wrt call_rcu() on PREEMPT_RT?
->> I thought (in the Link: above) we'd only need to downgrade allow_spin to
->> false on PREEMPT_RT for handling sheaves movement from/to barn and
->> alloc_empty_sheaf(), but call_rcu() would be safe from kfree_rcu() even on
->> RT?
+>>> +		}
+>>> +
+>>> +		empty = alloc_empty_sheaf(s, gfp, alloc_flags);
+>>>  
+>>>  		if (!empty)
+>>>  			goto fail;
+>>>  
+>>>  		if (!local_trylock(&s->cpu_sheaves->lock)) {
+>>> -			barn_put_empty_sheaf(barn, empty);
+>>> +			__free_empty_sheaf(s, empty, allow_spin);
+>> 
+>> Well we could still use the barn with allow_spin == true.
 > 
-> Indeed. Good point, thanks!
+> Initially I did
 > 
-> Hmm, but I'm not sure that it's worth the complexity given that
-> PREEMPT_RT tries very hard to avoid disabling IRQs...
+> if (!__barn_put_empty_sheaf(barn, empty, allow_spin))
+> 	__free_empty_sheaf(s, empty, allow_spin);
 > 
->> Or is the irqs_disabled() condition rare enough so we don't care?
-> 
-> Given that most users don't call kfree_rcu() under raw spinlock or
-> IRQs-disabled section on PREEMPT_RT, I think it's okay to keep it as is
-> (it's not making things worse, at least) and wait for call_rcu_nolock()?
+> but I ended up just calling __free_empty_sheaf() because it's
+> pretty rare to hit... no strong opinion though.
 
-Sounds good.
+Yeah we can leave it simpler as it's rare.
 
-> On a side note, I don't have much idea on what needs to call kfree_rcu()
-> under a raw spinlock, other than set_cpus_allowed_force(), which should
-> really be using kfree_nolock() instead of kfree_rcu() once we support
-> kmalloc() -> kfree_nolock():
-
-Looks like the case. Well if the fallback path of kfree_nolock() that is
-irq_work_queue() is indeed safe here.
-
->> 	/*
->> 	 * Because this is called with p->pi_lock held, it is not possible
->> 	 * to use kfree() here (when PREEMPT_RT=y), therefore punt to using
->> 	 * kfree_rcu().
->> 	 */
->> 	kfree_rcu((union cpumask_rcuhead *)ac.user_mask, rcu);
+>> But more crucially, here we might be freeing with kfree_nolock() a sheaf
+>> from the barn previously allocated with kmalloc()?
 > 
-> Any thoughts, RCU/RT folks?
+> Well, we don't release and reacquire the local lock when we got an empty
+> sheaf from the barn, so it doesn't free the sheaf from the barn?
+> 
+> That was indeed very subtle and I got confused :D.
+> 
+> When we free a sheaf in this function, it's always allocated in current
+> context?
+
+Indeed! It's fine then.
+
+>> Maybe we need to track if it's the case and defer-free it or something.
+>> 
+>> Also maybe there could be a wrapper kfree_maybe_nolock() (~better name?)
+>> That means "I want to kfree safely in kfree_nolock() context something that
+>> MIGHT have been kmalloc()"
+>> And maybe depending on the debugging options that make kmalloc() ->
+>> kfree_nolock() incompatible, if those are not enabled, it wouldn't have to
+>> defer, but proceed normally?
+> 
+> But I really like the idea of supporting kmalloc() -> kfree_nolock(),
+> and I think it's worth exploring that.
+
+At least my confusion potentially lead to something good then :)
+
+> Thanks!
 > 
 
