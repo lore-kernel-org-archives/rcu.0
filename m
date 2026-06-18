@@ -1,67 +1,67 @@
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64538331EAC
-	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 03:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA0B8331EAA
+	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 03:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781752299; cv=none; b=rFgUiLTupWMw+HD6eIh9ixYCp6RdLxbAAV/WabAZiGCVpuKRwoQXIIVZK7kdLc9WDPkqTc8+pzwq7jwPDROfeUhLwIIerpNU+muR4Tm2WGvrDV/juHZVHR7wfrZ+G9ezOmIGJGZyo+XU//B/0HP0gD4SiGVkwSiZgy6eaBDfHtg=
+	t=1781752306; cv=none; b=ho2LqWw9CBJopc51Amkb0F6m+CtZ7KnGuOpmc0tOQnjbybMTK4d/kb7ZzKJjTcSPxneznycTzdNpNL61lzzb1E/RILb/xzwL7rccFg9013cwvjTlu17jHQDAyegO7SBNZypUXvJWa1wr1cgcJ5OZ5h+sMHuBpwD12lZsQZxEb7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781752299; c=relaxed/simple;
-	bh=wNAVoY+2XUhNXD7ws5hDG4Y7LngUTCxkc6ilR6rWf9o=;
+	s=arc-20240116; t=1781752306; c=relaxed/simple;
+	bh=YCJVKs6GRsboN/yU+D9T5MpjnesbxxZmC8h0qZxZbQI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=XV7vXuT4LofhXuCe7S0cGepMk7LzhZkCVW73Vob0PM3EC7684+Ms156vGj6KnXVTQtnxjfxE+BC/OU5+eL2WtM224bYxq4aFFu6YvS1GX1tJKypymIjBqRukN06u6Zx1TwAg99lT/mkIj1LX/EM/efzqKv3PKyZ4DzQhrBZHHQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RNbVv9Mb; arc=none smtp.client-ip=209.85.215.175
+	 In-Reply-To:To:Cc; b=hWA2XiSwUrIsY9WOsG4P8LruQ1rFGNzPuGWDyPJSzX6tpcVejuupH+fa9aMe4CdcxtsJB4Cp1AQanYkA+Ye0D0/2TVDUpDv5rirOAlIJRTSd/sF8War+/a5UzpEV4z+yEGKZcKCa412jxg+z2QR2Aq99/ZMYee378f3xe9oDoww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=snYOpuep; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RNbVv9Mb"
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-c88d4606ec8so233744a12.0
-        for <rcu@vger.kernel.org>; Wed, 17 Jun 2026 20:11:38 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="snYOpuep"
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2c6be9cd7afso2023635ad.1
+        for <rcu@vger.kernel.org>; Wed, 17 Jun 2026 20:11:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781752298; x=1782357098; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1781752304; x=1782357104; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GH2J//DFdecoNTzDNyFAADQileJGwCOemNHhoqIoONY=;
-        b=RNbVv9Mb9PpiUrdAQpE9vJagWCFUYRcE4SfoUFAoTQjFEO/62sIBh5NDM+zQtGy48C
-         CLRHkE0ctwXA9zcmEbRa3fLDapHAQnWkU+TqIscCln0iqqviIt7iCg8xYMABo8onmNJG
-         Rby8kq6RpslJcF/iy+8aBy4ZbncoWvcjXlWFCzJtxFIoey93oo7m6ieRNRHOo3aOTvB6
-         +3caSVFAgM7vYRzjBKNU21wBmhhKRVAxhcjZ+Hwoj1uvl7vgUO7ub82M+P4Q9UC83GSE
-         4oJbOS4+8sJeiG6KEX2KfTgcjx4uewd7z9n+1mqdQ9y7R/oCrdT+TgZtesptSoF1Slbt
-         qAQA==
+        bh=8004pEbSIDGa1Ap5Bs3Wfq58HXT/Y9JfCOcV2ZZV6yI=;
+        b=snYOpuep97JPsToZB0W4g+q370ip3Aj3uGEwrKAOGhSl8Iz3CJNqwGKO9CYLK8DcYS
+         jZAPlE+khqKLi7t4hITH6mq/qljMvAyJL+g+paXOa/FBOpOgmjayosvtW+/npENk7oEz
+         pWaTABQNWUSzM+XclOHGElKZOxGPjRNV9XrtzOp81HB9fMEahH3fqdtMdwb+V5+b0Cvw
+         Ywy30/UFVZ/vhyoYPVV0T6HIYZI627suVm4Lp2FLtVRFG7nSWTlTKiTBoSckxB8lFuNh
+         FQJsmltWJDjWYd3wyuGt+p4XM2wXxXZLASQsvaiyJ2JABufc15DqDY78F/3EgjHH7Lja
+         SWgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781752298; x=1782357098;
+        d=1e100.net; s=20251104; t=1781752304; x=1782357104;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=GH2J//DFdecoNTzDNyFAADQileJGwCOemNHhoqIoONY=;
-        b=H3gzgIZE2Q6A3pjLJJX09BxHzKClodXs7YdJU0iXnj7jKpju5hG8WdLC/J8VogntDq
-         G3/YbxPZ+9Bu4qwGOsPOY2lGFcnHcXtOtCWfbpWQ+WjojVYbqYcaFzJXbLpXGgp/n7DD
-         5uoPS07nGt4VluMXIG6KCQ7eZ7n0oEYmTMEkKfTj4Rtad0Gelh5PITMS7HinRIf0L9gj
-         4UUKUIIQweTlmNoA8lBb1mNlI7fIEbRy3XvHKPhzNyMiff1Z7Emf1GHTUrOX1lMrxuU5
-         RluHDBDVg+/5lxu/dBBD7mxwCiBzNFlJsz48r7Rz8PmrbEeqeh4SXIo9He6FrLOg8myx
-         w1yQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8CTdq/X38dbzfcrX7yiqeWRxeJY5yXXg5/r/nkDplIajpIm8I+jUgqXPBCYSvomQ4+7gU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz42FdBqddhg0rhwKDaAk2vj7dDYNvNutCeWHsEh1AVIopxISTO
-	E11rJyItLjKnHXY4S3pUCzwO1k5C3Nl7+Rt3OsNI68E9UY/JXDWEu16G
-X-Gm-Gg: AfdE7ck2Nm4E8bmxNPM5+JFtPosf486do78IvNzIdCaaIqglcshvLKsnJYWUr6dNDKw
-	1ryShyvc/xPlX24bjP/d6DW5IuHSLcNgBypzfIcET2dkJ3/n3rnygvC2rErTrLpSIb9vR6kasJy
-	1EVq9DkLQgWbUnO114CLqonJLsKTEooCfyj6Rz8PeYwhDJsY4JkfrzRKlHzN6rtX2HJB553N6cb
-	l8pawp1W85uMcM+PT7DlspE9Hf6u58RI6p4bAyGjjrnAHKtO8eBeQtsixeqzHh1aZjAFCFp57do
-	XU5wFB77LTaQR8o47PurIP21qUQcl/iBWXEueWK22rBlAp0GdMilAw2Ws4NgF7VjS+sRE0elFFj
-	VO/3Y46Avsz9wvkeM/SOCyaIWb0npV6V4qPzCZ9PE8W0oAdPzP98M0+hWVILgLBEw/mXi9exIpF
-	nTRG7kugCrosQ=
-X-Received: by 2002:a17:903:3550:b0:2c0:e5ee:f56c with SMTP id d9443c01a7336-2c6e527622dmr16575975ad.20.1781752297602;
-        Wed, 17 Jun 2026 20:11:37 -0700 (PDT)
+        bh=8004pEbSIDGa1Ap5Bs3Wfq58HXT/Y9JfCOcV2ZZV6yI=;
+        b=FkZcIkjLAUxmNB+WD0hu8OIoJ0qgnOKrBOOfvVzHTJzaeJ9n4SGICS+MNNpwVkSCsC
+         iVpDIwXQDwa4PO4J2cfNIC1Hg/ovZhkmuBqO0kjEeEBJol/tGlNRkLRYGW19GCmvTERz
+         hFC5Husv8nCX3Sxnje1bups3yjYQwux7/P3h/6Lgh5ZhZyH1kSaKDKxSuAqiiC6G4z8C
+         9LOOzrkZd29ERdU/Z7JRuiTDQU6Jnwdx/KPr/h9oESTt7+H5WUmPdzB6lYavFH5qm4SF
+         GjUGll7B4MqRGpG7yQVlIQwEt4VkC2kEBOrM1gVEU0iHuFPCNauNUvz7budwBm4MOXOL
+         BxCA==
+X-Forwarded-Encrypted: i=1; AFNElJ+48qdcQBx3SowjdlULhv68NPpQVlKb4AamGDWYKJ4khJ38FfV/8H2qb9EykNnRRw7tEmo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy3ZqDA1nebgUk0Lc+ZTMBZwtcldC5NsuEuT9eOWmXZ2bYWInvb
+	aWrTjfy2vCN9Xh4ZsLdlI2EDKpQIjtrE1PvPjFdI1Eq8dC+Jc3Qd1Fkx
+X-Gm-Gg: AfdE7cmZkqCQpRuYZlCppEyEmup6WimE/A97ElRqlywyaVRpr/Sh3QaZXFO1FEqosYf
+	AMs3uf4j5S7FXlV6Y+jq5Tb/CgvRNhn9t4ZzSZiBzkrIvowDIS0erQa2PF3GgL8LAjAvX4esqu9
+	RVyqbNiifZBPW8BMhoWHjwlmtaAMfxtWI4+O3b3kUJrsKInhX3iKPMSxhZ6gBkiD2TXN/6lpifg
+	I/Tlvhck4y25VyG1bcIf0Uusd80jBWcQQ/mgkJMw6/lHjAxbzgOksP6ayTzsUmPbtiqGN1iYPQZ
+	X4hP0lnhfDgkuxGM9H6WnXlFYEWci1BMzPKRk8b2tQ64KmDTiHUxqmHRuxY/r+ejjsP+lKn0c7y
+	Cgx/rwbyRGpM/WjLZ2lF8pz04usS8OPvuCAgd/eyQkPvis07aU10/VaWDbFwWn6xr6iB6K+j6fY
+	cqBEtD6Oo0Xts=
+X-Received: by 2002:a17:902:e889:b0:2c1:150d:6db5 with SMTP id d9443c01a7336-2c6e4724551mr17521875ad.6.1781752304159;
+        Wed, 17 Jun 2026 20:11:44 -0700 (PDT)
 Received: from [127.0.1.1] ([138.199.21.246])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c6a403b242sm60152975ad.31.2026.06.17.20.11.31
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c6a403b242sm60152975ad.31.2026.06.17.20.11.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2026 20:11:37 -0700 (PDT)
+        Wed, 17 Jun 2026 20:11:43 -0700 (PDT)
 From: Jing Wu <realwujing@gmail.com>
-Date: Thu, 18 Jun 2026 11:11:13 +0800
-Subject: [PATCH v3 02/13] sched/isolation: Add housekeeping_update_types()
- for kernel-noise masks
+Date: Thu, 18 Jun 2026 11:11:14 +0800
+Subject: [PATCH v3 03/13] sched/isolation: RCU-protect all housekeeping
+ cpumask readers
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260618-wujing-dhm-v3-2-28f1a4d83b68@gmail.com>
+Message-Id: <20260618-wujing-dhm-v3-3-28f1a4d83b68@gmail.com>
 References: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
 In-Reply-To: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -96,192 +96,136 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
  Qiliang Yuan <yuanql9@chinatelecom.cn>
 X-Mailer: b4 0.13.0
 
-Introduce housekeeping_update_types(), which updates the cpumask for
-each specified housekeeping type atomically using an RCU pointer swap.
+Extend housekeeping_dereference_check() to validate all runtime-mutable
+types (HK_TYPE_DOMAIN, HK_TYPE_KERNEL_NOISE, HK_TYPE_MANAGED_IRQ), not
+only HK_TYPE_DOMAIN.  Boot-only types (HK_TYPE_DOMAIN_BOOT) remain
+unchecked.
 
-For each type in @type_mask the trial mask is computed as
-(base & ~isol_mask), where the base depends on the type:
+Add housekeeping_cpumask_rcu() for callers that already hold an RCU
+read lock.  This variant uses rcu_dereference() without the lockdep
+annotation, avoiding false-positive lockdep warnings in RCU read-side
+critical sections.
 
-  - Most types use the current housekeeping cpumask as base.  For
-    types that are only set at boot this is equivalent to the boot
-    mask, so trial = (boot_mask & ~isol_mask).
-
-  - HK_TYPE_KERNEL_NOISE always uses cpu_possible_mask as base.  Its
-    semantics are "all possible CPUs minus the currently-isolated set";
-    using the current HK mask instead would leave it stuck at its last
-    non-trivial value after de-isolation, breaking subsequent isolation
-    cycles.
-
-HK_TYPE_KERNEL_NOISE also supports runtime first-enable: if it was not
-registered at boot (no nohz_full= on the kernel command line),
-housekeeping_update_types() registers it in housekeeping.flags on the
-first call.  All other types must already be boot-enabled.
-
-For each type the function validates the trial mask against
-cpu_online_mask, runs registered pre_validate() callbacks (which may
-reject the update), swaps all RCU cpumask pointers in a single pass,
-calls synchronize_rcu(), frees the old masks, and then runs apply()
-callbacks.
-
-The existing housekeeping_update() continues to update only
-HK_TYPE_DOMAIN and remains the entry point for the cpuset partition
-path.  housekeeping_update_types() enables the partition path to also
-drive the kernel-noise types (HK_TYPE_KERNEL_NOISE,
-HK_TYPE_MANAGED_IRQ) through the explicit callback interface added in
-the previous patch.
+Use READ_ONCE() consistently when testing housekeeping.flags in paths
+that may race with housekeeping_update_types().
 
 Signed-off-by: Jing Wu <realwujing@gmail.com>
 Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
 ---
- include/linux/sched/isolation.h |   4 ++
- kernel/sched/isolation.c        | 112 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 116 insertions(+)
+ include/linux/sched/isolation.h |  6 +++++
+ kernel/sched/isolation.c        | 57 +++++++++++++++++++++++++++++++----------
+ 2 files changed, 49 insertions(+), 14 deletions(-)
 
 diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index f362876b3ebdf..eecbcbe802bd0 100644
+index eecbcbe802bd0..ed6e1c6980131 100644
 --- a/include/linux/sched/isolation.h
 +++ b/include/linux/sched/isolation.h
-@@ -44,6 +44,8 @@ extern bool housekeeping_enabled(enum hk_type type);
+@@ -40,6 +40,7 @@ enum hk_type {
+ DECLARE_STATIC_KEY_FALSE(housekeeping_overridden);
+ extern int housekeeping_any_cpu(enum hk_type type);
+ extern const struct cpumask *housekeeping_cpumask(enum hk_type type);
++extern const struct cpumask *housekeeping_cpumask_rcu(enum hk_type type);
+ extern bool housekeeping_enabled(enum hk_type type);
  extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
  extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
- extern int housekeeping_update(struct cpumask *isol_mask);
-+extern int housekeeping_update_types(unsigned long type_mask,
-+				     struct cpumask *isol_mask);
- extern void __init housekeeping_init(void);
- 
- /**
-@@ -99,6 +101,8 @@ static inline bool housekeeping_test_cpu(int cpu, enum hk_type type)
+@@ -87,6 +88,11 @@ static inline const struct cpumask *housekeeping_cpumask(enum hk_type type)
+ 	return cpu_possible_mask;
  }
  
- static inline int housekeeping_update(struct cpumask *isol_mask) { return 0; }
-+static inline int housekeeping_update_types(unsigned long type_mask,
-+					    struct cpumask *isol_mask) { return 0; }
- static inline void housekeeping_init(void) { }
- static inline int housekeeping_register_cbs(enum hk_type type,
- 					    struct housekeeping_cbs *cbs) { return 0; }
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index aae4dff7fbfc8..4eca18cc5e8ce 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -249,6 +249,118 @@ int housekeeping_update(struct cpumask *isol_mask)
- 	return 0;
- }
- 
-+/**
-+ * housekeeping_update_types - Update housekeeping masks for specified types
-+ * @type_mask: Bitmask of housekeeping types to update
-+ * @isol_mask: CPUs being added to the isolation set
-+ *
-+ * For each type in @type_mask that was enabled at boot, compute the
-+ * trial mask as (boot mask & ~@isol_mask), validate it against
-+ * @cpu_online_mask, invoke pre_validate() callbacks, swap the RCU
-+ * mask pointer, and run apply() callbacks after synchronize_rcu().
-+ *
-+ * HK_TYPE_KERNEL_NOISE also supports runtime first-enable: when an
-+ * isolated cpuset partition is created without nohz_full= at boot,
-+ * cpu_possible_mask is used as the initial base and the type flag is
-+ * set in housekeeping.flags on the first call.
-+ *
-+ * Return: 0 on success, -ENOMEM on allocation failure, -EINVAL if
-+ * a trial mask has no online CPUs.
-+ */
-+int housekeeping_update_types(unsigned long type_mask,
-+			      struct cpumask *isol_mask)
++static inline const struct cpumask *housekeeping_cpumask_rcu(enum hk_type type)
 +{
-+	struct cpumask *trials[HK_TYPE_MAX] = {};
-+	struct cpumask *old_masks[HK_TYPE_MAX] = {};
-+	enum hk_type type;
-+	int ret = 0;
-+
-+	for_each_set_bit(type, &type_mask, HK_TYPE_MAX) {
-+		const struct cpumask *base;
-+
-+		if (type == HK_TYPE_DOMAIN_BOOT)
-+			continue;
-+		if (!housekeeping_enabled(type)) {
-+			/*
-+			 * HK_TYPE_KERNEL_NOISE supports runtime first-enable
-+			 * for DHM isolated partitions created without nohz_full=
-+			 * at boot.  All other types must be boot-enabled.
-+			 */
-+			if (type != HK_TYPE_KERNEL_NOISE)
-+				continue;
-+		}
-+
-+		/*
-+		 * HK_TYPE_KERNEL_NOISE always uses cpu_possible_mask as its
-+		 * base.  Its semantics are exactly "cpu_possible minus the
-+		 * currently-isolated set", so the base never shrinks across
-+		 * successive isolation/de-isolation cycles.  If we used the
-+		 * current HK mask instead, de-isolating all partitions would
-+		 * leave the mask at its last non-trivial value rather than
-+		 * reverting to cpu_possible, breaking subsequent isolations.
-+		 */
-+		if (type == HK_TYPE_KERNEL_NOISE)
-+			base = cpu_possible_mask;
-+		else
-+			base = housekeeping_cpumask(type);
-+		trials[type] = kmalloc(cpumask_size(), GFP_KERNEL);
-+		if (!trials[type]) {
-+			ret = -ENOMEM;
-+			goto err_free;
-+		}
-+		cpumask_andnot(trials[type], base, isol_mask);
-+		if (!cpumask_intersects(trials[type], cpu_online_mask)) {
-+			ret = -EINVAL;
-+			goto err_free;
-+		}
-+	}
-+
-+	if (!housekeeping.flags) {
-+		ret = -EINVAL;
-+		goto err_free;
-+	}
-+
-+	for_each_set_bit(type, &type_mask, HK_TYPE_MAX) {
-+		if (!trials[type])
-+			continue;
-+		ret = housekeeping_pre_validate_cbs(type,
-+						    housekeeping_cpumask(type),
-+						    trials[type]);
-+		if (ret < 0)
-+			goto err_free;
-+	}
-+
-+	for_each_set_bit(type, &type_mask, HK_TYPE_MAX) {
-+		if (!trials[type])
-+			continue;
-+		old_masks[type] = housekeeping_cpumask_dereference(type);
-+		/* First-time runtime enable: register the type now. */
-+		if (!housekeeping_enabled(type))
-+			WRITE_ONCE(housekeeping.flags,
-+				   housekeeping.flags | BIT(type));
-+		rcu_assign_pointer(housekeeping.cpumasks[type], trials[type]);
-+		trials[type] = NULL;
-+	}
-+
-+	synchronize_rcu();
-+
-+	for_each_set_bit(type, &type_mask, HK_TYPE_MAX) {
-+		if (housekeeping_cbs_table[type].nr == 0)
-+			continue;
-+		housekeeping_apply_cbs(type);
-+	}
-+
-+	for_each_set_bit(type, &type_mask, HK_TYPE_MAX)
-+		kfree(old_masks[type]);
-+
-+	return 0;
-+
-+err_free:
-+	for_each_set_bit(type, &type_mask, HK_TYPE_MAX)
-+		kfree(trials[type]);
-+	return ret;
++	return cpu_possible_mask;
 +}
 +
- void __init housekeeping_init(void)
+ static inline bool housekeeping_enabled(enum hk_type type)
  {
- 	enum hk_type type;
+ 	return false;
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 4eca18cc5e8ce..3d5d3f12853c7 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -121,25 +121,40 @@ bool housekeeping_enabled(enum hk_type type)
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_enabled);
+ 
++/*
++ * Types that can change at runtime via cpuset isolated partitions.
++ * Boot-only types (DOMAIN_BOOT) are always safe to read without lockdep.
++ */
++static bool housekeeping_type_can_change(enum hk_type type)
++{
++	switch (type) {
++	case HK_TYPE_DOMAIN:
++	case HK_TYPE_KERNEL_NOISE:
++	case HK_TYPE_MANAGED_IRQ:
++		return true;
++	default:
++		return false;
++	}
++}
++
+ static bool housekeeping_dereference_check(enum hk_type type)
+ {
+-	if (IS_ENABLED(CONFIG_LOCKDEP) && type == HK_TYPE_DOMAIN) {
+-		/* Cpuset isn't even writable yet? */
+-		if (system_state <= SYSTEM_SCHEDULING)
+-			return true;
++	if (!IS_ENABLED(CONFIG_LOCKDEP) || !housekeeping_type_can_change(type))
++		return true;
+ 
+-		/* CPU hotplug write locked, so cpuset partition can't be overwritten */
+-		if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_write_held())
+-			return true;
++	/* Cpuset isn't even writable yet? */
++	if (system_state <= SYSTEM_SCHEDULING)
++		return true;
+ 
+-		/* Cpuset lock held, partitions not writable */
+-		if (IS_ENABLED(CONFIG_CPUSETS) && lockdep_is_cpuset_held())
+-			return true;
++	/* CPU hotplug write locked, so cpuset partition can't be overwritten */
++	if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_write_held())
++		return true;
+ 
+-		return false;
+-	}
++	/* Cpuset lock held, partitions not writable */
++	if (IS_ENABLED(CONFIG_CPUSETS) && lockdep_is_cpuset_held())
++		return true;
+ 
+-	return true;
++	return false;
+ }
+ 
+ static inline struct cpumask *housekeeping_cpumask_dereference(enum hk_type type)
+@@ -162,12 +177,26 @@ const struct cpumask *housekeeping_cpumask(enum hk_type type)
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_cpumask);
+ 
++const struct cpumask *housekeeping_cpumask_rcu(enum hk_type type)
++{
++	const struct cpumask *mask = NULL;
++
++	if (static_branch_unlikely(&housekeeping_overridden)) {
++		if (READ_ONCE(housekeeping.flags) & BIT(type))
++			mask = rcu_dereference(housekeeping.cpumasks[type]);
++	}
++	if (!mask)
++		mask = cpu_possible_mask;
++	return mask;
++}
++EXPORT_SYMBOL_GPL(housekeeping_cpumask_rcu);
++
+ int housekeeping_any_cpu(enum hk_type type)
+ {
+ 	int cpu;
+ 
+ 	if (static_branch_unlikely(&housekeeping_overridden)) {
+-		if (housekeeping.flags & BIT(type)) {
++		if (READ_ONCE(housekeeping.flags) & BIT(type)) {
+ 			cpu = sched_numa_find_closest(housekeeping_cpumask(type), smp_processor_id());
+ 			if (cpu < nr_cpu_ids)
+ 				return cpu;
 
 -- 
 2.43.0
