@@ -1,47 +1,47 @@
 Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11011043.outbound.protection.outlook.com [52.101.57.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B6D83E122F;
-	Thu, 18 Jun 2026 18:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6450411666;
+	Thu, 18 Jun 2026 18:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.57.43
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781808708; cv=fail; b=BkEuPABodf9rQdeWhV2B+3pzV9UK+1TP9g5QtzNj/NKc3gNVy/NY0hTtMbdX+XEIrmHgYpidrRslfpPrZuhjQkzmYYLLMF2d2C33eDCaIgJ3QLv9yrxjxVK1MavCrlr/Qh7v1kgXQXqKKE5innw2PRxO1fEJCLyFBuU8ill174M=
+	t=1781808710; cv=fail; b=hBfIzjXDIp2VHerCJDiWrUlY1Q76za5zr1nCIpvMe/Tez8OChUVXCGe+R1GZVmrEHERCtt+hYvmcvtm7+vQfciGDRbpjOj/rSw77UIB7OhMaFAti7/+AMjYtmz17UgK9Pi5yDHtNOAPMubjySEDzEUQZPn+uYTyyynhI04NF1xY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781808708; c=relaxed/simple;
-	bh=wYrAdyQkPyY+sn+TjuztlaweIyim5T8dcWLh8sKIQWQ=;
+	s=arc-20240116; t=1781808710; c=relaxed/simple;
+	bh=6/YWWMDLKs9DnEFldbk23nR8KqyhTnP/2Ef3cbAaRIc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=mCY20ZJYhswtUzmG2OfQHfw78FuR2XT33Hr7e5wj4c0QkUrzBQboQwcHgRCvW0tgThfVkxemIya8LYemLB+8RtWCeM+XLWjmNqWZKxMtJjRqEGC7NayqfA7v+IrOMjFnC1mHaQi+0y0qoIkNHX6UGyc+yfPrj9VuanWvg5Yu8tI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=q/2FS4BC; arc=fail smtp.client-ip=52.101.57.43
+	 Content-Type:MIME-Version; b=vCjENmU1+yTw/arSORH7jKdvyf1+zE0SNVcTzw6mxph2xEqovOLAljbrJXlL6GSlBFFM97+NK8V0JS7xBqElS3ZdXjWDW8RlFwHNJpU4RQMeYCkBWE+rQDb6tPNjXyPWHxsHO05fe4UwlcuNC6ZCy+t3p9j3ndwA0svx72/bfE4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=uLIxR0Mm; arc=fail smtp.client-ip=52.101.57.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="q/2FS4BC"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="uLIxR0Mm"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=QfuLXVAei2Otvjjx2xvctGZUoEPeEVMfQ2SRgbNMWZzbI0h/fjYcT8q8ZzX0qlMEs6kziTvLPB1F7Fw/RAb/xVCHL6ISE6y3ZbNbFIAxqzPZ9QIw4vAt6bb145EyKnI6+nTMxB49M6gqpfQfWU2o/YzcTLxfpFlNc8yQrIIryvRh9U3Br5HxBsjqNXf1JLNG2vGxF793N8yw2L8LipmvNilK6l95g60au6u2bkOqVtNq+rDLCE4CoTDZGPbWf4W4hRftZJUhUS1WDP7mECtmwZzQh0xshk2aVmfdHUTAfAtxEXtnHvVVN4Lll3IjFDuNgnxozO9pjnLQxK7eZ1LeFg==
+ b=yE3GYmDclfQJNin961eVoGBJXPoMFwhQI+UIMSunV/yEXE+js2P0SFF/78KVxyX7fVzGXLTTANkd0Y3dYcVZkSqigvHd2F2nidawhn1F/PegT+A4JnFPiNbUH2ZvqpvYKfiLUhLq0HUd61nCre2/1SQaK1l/q8TOYDhcX/AwwxsVW8hKkVwsbnxNVIZDRLZ40/iNOuU4/HNxFDWn71hFeTA2GSKPByLoacSUTRlr/vAA6lmyxdvO8bCSTOqMbrcc8uVzFT1znGGG5lfFDgULjI6yDHjq7CdOLTw7N3zLMfPalZHcIuyMD9UY5oDSs+3gEoh+JswKmqIjeOZzOLlPWw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PbxdbxbvNn2u8tEWNaU0ltZqVZ4sJ5UM6znrYfdm5Uk=;
- b=qXzpo9AEjH+2cLcQvhCeUzAPTd0c38oCLO/8cwNgV3HgZdBJRPZ7+Iww1yhreLksii1Uv4Tf6FRWm/uY3jcxuCzBjxE6V0ddEBN4K6dLGxpi8XWqlQTNZDQZPvqUdE5+Wj1/b8u5Uc7/rnUXUvzGqOXxbgfcThz6+RNoFnUygsFxxex5fAcroRhute/E2Uy2OrYzBTDKaYBGUeP4l2aFbpBG8QgFNgolj/a/pl7MIwXBfQ5WHFmuHhzSpDjwtvIaaWztHDdDj+le8b59vnOaf0NUA3juxmjB2UR9xJ6PLFdKDwlWSmRss9ywjufeY+PAvX5jLw5SVuB8eZHSpoicNg==
+ bh=tfSdkXRFp8fyGyAGQv4PDPhSyJSJOtnhSFK5XvTSVfE=;
+ b=XPlxlStMWCktrDipm54DaPfgd+JvLLDUf2gufSshAxW0cHnRPktpS1a7eTUncHnsfELLeyyLDmuCCmy3A8lEbHhbcqo2Af1/L2lKsZIK5uJveuJfVqs9hbsssGTMNhx7PIfzjoWK0qQETkooe7ANRkIj3Zc/NSD7rtbn/m3s5WRg24zambkNM3cHS6VTWeIBIr79wWdzS7QF5ju8mlnCbiLhqdiy+3Hv3QzXludHc4vd0ZNecYkVq2A0XOPWLMPh7KSOQJZaPFkrJ6s7c/4oNxghlvHwhLNgIS2IK8T7UbjkZOGRQ+3102lrmAzenNiC6w5/p3zX1IEWFYxVHKksrQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PbxdbxbvNn2u8tEWNaU0ltZqVZ4sJ5UM6znrYfdm5Uk=;
- b=q/2FS4BCT6xQT/g9NWwU5TWE+dDoDM2vqrME2Ccs1xViSGUghkk7sVRI3dRpJK2+gM05cBhpdlYlw0fvA8Sew3UP7NXDyvihF2NqJN50o94iJcHS24SZ6OyAWbOGGQyYKe/Ccix3Dy9vpoTRho6qRZ0JPaMuLC/xJJMz+qsFwgF1rlQZKMfvW145ly+RCuOEoPzGeA0H4PDjN1BNGFHZankhuPjPyd4BY0IKOy+pKKAJV9LWMWB/5iyGDMgDNsdBmj/JyEsLDZU2UZTGN80Un8lYiyJ+u7KmxoT24ltEAfHbaDMpwfOBM84RcjCmaKViGScxGwcYW34z1sn+jFhPsw==
+ bh=tfSdkXRFp8fyGyAGQv4PDPhSyJSJOtnhSFK5XvTSVfE=;
+ b=uLIxR0MmYYH4exHaqpkPl0FGM0SxiCLT7HrV2gZoTBauBHRVgkpFnFNYJsRAmwQXI/zCulLTjlu9GWUQXLsfNtNNNKmhKQvjJfiYWMqz6ag22rC4e1ToBNIQkcSnXLZquReTN067fS5UX0CpiLZ3LHdZat/aCX4NlIGSx/doHlBIneVKIWXz/qfWIV2uNNlGnsTQ02SUFlp3oNLN0qK/TLGBGSSR1tDcI/J+kjoaWqY65b3lfygfk6+7zUTrpNlG8RWy/p5o4QVerOyb1OchO3LleoOkM5DJt6mMOyBfWk9+999ZfwQYqFf/NSMLoFc46Txlm31DmceG8TGw1NXW4Q==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
  SJ2PR12MB9088.namprd12.prod.outlook.com (2603:10b6:a03:565::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.139.11; Thu, 18 Jun
- 2026 18:51:32 +0000
+ 2026 18:51:33 +0000
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33%6]) with mapi id 15.21.0113.015; Thu, 18 Jun 2026
- 18:51:32 +0000
+ 18:51:33 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
 To: linux-kernel@vger.kernel.org
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -57,16 +57,16 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Davidlohr Bueso <dave@stgolabs.net>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
 	rcu@vger.kernel.org
-Subject: [PATCH v3 11/14] rcutorture: Test RCU readers from hardware interrupt handlers
-Date: Thu, 18 Jun 2026 14:50:27 -0400
-Message-Id: <20260618185030.376450-12-joelagnelf@nvidia.com>
+Subject: [PATCH v3 12/14] rcutorture: tighten boost-WARN to exclude any implicit-reader context
+Date: Thu, 18 Jun 2026 14:50:28 -0400
+Message-Id: <20260618185030.376450-13-joelagnelf@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260618185030.376450-1-joelagnelf@nvidia.com>
 References: <20260618185030.376450-1-joelagnelf@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR08CA0022.namprd08.prod.outlook.com
- (2603:10b6:208:239::27) To DS0PR12MB6486.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0329.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::34) To DS0PR12MB6486.namprd12.prod.outlook.com
  (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -76,237 +76,126 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|SJ2PR12MB9088:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2106c908-e052-4b53-d7ac-08decd6a9cfd
+X-MS-Office365-Filtering-Correlation-Id: 708559b4-09ea-418a-aa1b-08decd6a9e07
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|366016|376014|23010399003|1800799024|56012099006|5023799004|11063799006|6133799003|18002099003|22082099003;
+	BCL:0;ARA:13230040|7416014|366016|376014|23010399003|1800799024|56012099006|11063799006|18002099003|22082099003;
 X-Microsoft-Antispam-Message-Info:
-	+S3mqgyh/TuBCvJUZjdWiOOTSwCfNSZfspoEo9PvykQraqIHXnsnvOJ7+zkgtbxrTVbHq2McaY6UByA+R9bou9+Qrl1qTBvvAF7RfrRjPpzzMCNl65UNqhV2ZPv8e9UZzuvlVXrVvcxLOhLLWpwN8l2V3sIEG6z2O//PbDy5/G83i7ZhO6xLE4txbVY1w+szEiMgGII8DxdDwQ2ROLvZwznSb9etwqkF8gFEDK5x7K6bd0g9PfiqoX7hroO6g0qIou9w1eJ59WYILg5qK6LxJNbF4gWVUg+gMgH5WIXlCasyh72+T6y34mtyCKilPhOQfLVLp5Ye+IqtXChj45gt22IHkSrTnAK7d36tiLlwvHz7GKOuF5CHsCKWPk3BH3VZQuY6j0PydzFLADtVggATYehxpzys93VUMtisQnwfRmoeWZXNFJrlZ0YAqlP+eLytCpxmOid1R46+UXOtnuzQtDzFCCYoBwF2bGnNoIhPyTV1yX2VtbVn3/mbAHGfZZxS/lc4FlYuck9NyhkQfUzXNwmBAwmWikkA2vxvebshzdZYMIzXj4Y83Q3daO37+urWMKDlpW/xYiMOzILgvUKpkT4CpBBXpTda84VXQCJ36FShyyvFbu3LWDpi8NMlxWzw4kmMhXx6DnHnMaJYDtG1Pg2+tNf8PToftmU4mhZSb9M7G6ViY2OD7YL4gcg01YkE
+	uFSGvqdY1T44AarO/i01lSl1PquUWu7StNs4xWU2dUz5/97bwjnNRFHnDA/5ic3C5jpnfXIvA/QVku/6Q+wqcw6mciQ+BkAD8aErMHjcfjewdNI+vDO5HIErzXefbmlAbDGzq9Vp/YaG65RQNFILgL4fbhKI6TugEJTwdrgqG+lhc43eaNwU5ORM8xApjT+DaxGxKvlDjBgAtrsfHG8Ii6jmfBx8RJdCUAa2iXo87s61RDT6VMceuOiU8U0SCJ8PYTgg1nIUJ/dWSuvQ2BZUp3mj/s3pJTJuZUuHQI9h98WRZ/3QekZNSZxzIugKmjBpP5s9MH6ERCqyunNio5JfGhNUIzFqsHJTta2mhRobTwRavPUPfvmLg6o43tGkGy6Tw3YGFL5oOTxJmu0rTaWjESV1TshMdqz/5fRRmqNrHT8fJTX9NEDo2ZENe1uBMGznPpUqbWed4mS9VBtEbUpW2QjAnVEgti5FcE77Gb5SX8kKgORSudL183t8eZTnhw5WXbZrBoonOXI+mv5QcH5YM/B/GWqJiZV9YReu0vWXVIYt2fOqtkz1wD56yAbYH13p+zzqHhu+NfBUnjZnW0wKVI0WCz7yQ7u8177/Qd1EKjAYfPrABKVKBhvsuMwhCQ4WxVh8xil4vYJfbF5q5G+UdNDmH5oCeNaQA2Y4rAoD0pMgzoCc7Nx4PxpEsthPIvMm
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(376014)(23010399003)(1800799024)(56012099006)(5023799004)(11063799006)(6133799003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(376014)(23010399003)(1800799024)(56012099006)(11063799006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?UPg4JwnI4/RxRO0J7MtPBEg/GD7x+bLbvt8MS19IoPywwA19ALQuTg6/MXeO?=
- =?us-ascii?Q?lS1x3ZZS7hLq63uIw7j3Fck0copOxdmeLFVPZc/H4XPHNyhcEqOcrU7Ct6sp?=
- =?us-ascii?Q?fU09TJFRayWKLJb4uwkNLgiZfwhlaFzIX/okjZ/u23QrJ+uBkrqbLTuaGSke?=
- =?us-ascii?Q?1SPO0weOnbU/RuqqaZyD2m+GHY1sB4N6UvF5ahNGdmfnsJSoACtzXbNWnvit?=
- =?us-ascii?Q?bv+PapwQrLA043zQeZYPNUzoaxUMGV8o8IhMY23uHhIzlbnUVHL8Dxsh/uUl?=
- =?us-ascii?Q?FYb6EeFPobnqXpCHgD0sgLY8JQ8VnB2Fd1CkkOnhEQVaYIouoKOraSETpUD+?=
- =?us-ascii?Q?KiLi8CalgMnCd7Ka4BJsDGFh577pg5OG1/IZm5WqfbYxpGbWhYAEl5cCk+LZ?=
- =?us-ascii?Q?L63IU+y4y6ouX2TVvesNYAp94elIHd3tVSVV2M87t/yjjj17oVMuFwnBAOOg?=
- =?us-ascii?Q?TWewX5SV0W6HjyZmrHGq6xDGQ6o//7BaRNLH4L7QTNRH2TcyXoNX9gLxTEJ6?=
- =?us-ascii?Q?iAW4LKgnab7ekt/c/YbvMxxSEOgsGiyQa0+R5SvsvblOxS07ZQ+gpBKf+pdE?=
- =?us-ascii?Q?XkoB9PCOAGgYW5rNvRZkyn6IrOTWKHvvQSaQBrkgE+5B1+sWzA5JYNIa9ZZy?=
- =?us-ascii?Q?O5kcgf9B74tHg8ryoxDJNzPrnbZe0+GfHsgS185d9gkq+9WjB+8JL0qCDLCN?=
- =?us-ascii?Q?a6TJZbjQ4ZHGSfDlV6C4HWhDYx42MwnNrOSJSfHqiTkelPZ7JYplQG42Y4O8?=
- =?us-ascii?Q?cfRnc4H0mLRJz/QZh2wuTvNNw2c2BitDnJFqxFChR/qZ8QHncERdbh3K0Wkk?=
- =?us-ascii?Q?OSejxC3m2AGEKIg0lWuIO2iD/l2+dBsN8QKsy8t/MK3xkF2LpC3Fq1aAhMQd?=
- =?us-ascii?Q?G0M9YLkD1VwL3oiHaSTa+ZGroM/UgOBAN70bBtGsgj7eg/jqu5h7BTO3Oi3N?=
- =?us-ascii?Q?JJEcVJWLqpG5nr3HcXtzvOpXOwdZzfr1D7Cpm2PX2o9vokbYrVFKJGdlqLNr?=
- =?us-ascii?Q?7aIIIrBTakLQeZPhqlSryJKXARhtTiSKw2o2QfIomCv8vdEKXOEd5vb69rBf?=
- =?us-ascii?Q?2flU3aune8UNluzfvcv0AUxhBtb7a/NFTUsyPxDO5OQQs+SxTjleEyDzFc3N?=
- =?us-ascii?Q?TGFjYHChxLXCo1DW8kbo5y7AmCJWXssMDa0SQYb47KN5VYfMmf77gS70V/DT?=
- =?us-ascii?Q?8SxnNpD1e0Gyiu5GYHSt/u8aOVxc9p+Fi7Csd0dRtMYtDLdLGTH7jAUd+UnW?=
- =?us-ascii?Q?lupCiqmY6370bKgCeRP+Gjeug2AQtQkODPM0lOONL8aaFwJEgD5iyshzNe7g?=
- =?us-ascii?Q?CHgeu+7FaU9kNg3+nhR1X3Hc7HRjVRPjSNoAlyuIU2VCszpYKa/xuVpv7/81?=
- =?us-ascii?Q?0exagv4tp2htlXGeTNjBvoHIBSOwT9VEBYdm4kP2D8YB+fl6bY0WLec12so8?=
- =?us-ascii?Q?HKuxIuLhdgXSR258gUAVMlqbu5Dicxj2dw4STICjrJG6SdKbvYAAyuExEWG1?=
- =?us-ascii?Q?VDkKvOaCuITU5cHPtC/yxiQ2mN1Lt89VE1ggdqEf5fDOcVL8jqQrjXga6BBB?=
- =?us-ascii?Q?Mhf3DP/NulopOmXI0Q++tDApGYtEc7NUuZI4sU19d5AkwCKr83e233SZcwqr?=
- =?us-ascii?Q?Tsu15ZaRfWgq0yMUqjb5j9k+Vq+uFgcKPhVJlO0NusjP0K8Xa3IkShPfw1Qe?=
- =?us-ascii?Q?HddISY6oofCmQDgmyhU5127syf4xXmCCwcLv2hm/eBhD0B+xMXb9PpgNqOGZ?=
- =?us-ascii?Q?dLhSfjmU4A=3D=3D?=
+	=?utf-8?B?Yk5DTVdKOStzWm9oVjVDMm11SHByTFdqWmJtWDY4UTB4eHlEQkk2UGgyUnpG?=
+ =?utf-8?B?NkR0TW9KUit3QmlIUmZiS2hKcmticUFsS2wwNWo5dVVNbk44Z0U3RGVTQzBM?=
+ =?utf-8?B?V29ESTQxNjhHUW5rNXJ6L2Fxd21ZanJrN2ZqT1F4RjdzSjBLbS85cSsxV290?=
+ =?utf-8?B?NkRKakYwTzJPbzBuVVRBNUxseVVqSVFtYWNiRy93K2ZxWE9GMWE3TlFJcHlF?=
+ =?utf-8?B?OENGdnpXUHc3Qmxpd0s3NVJ5RWJVcTFkL0J2amduUHphdGxzYTFPbEpVdUFp?=
+ =?utf-8?B?K1VJZWt6TnErOGExYmZXUFhycFhCdElQb3hsRmx1RGNQYiswOU5uRUxEL0hP?=
+ =?utf-8?B?VXcreDYxOFRIZjJtSXdPaXkyK1A3K3JFdDVmbXEwWk9iVFNDTE9KVXkxUTh5?=
+ =?utf-8?B?UDV1RHNNQ2dFSmIyZTFxMEtYdUhYNEVMSHlLS0tkTWVGb2d0eTZpS1JpcDEx?=
+ =?utf-8?B?WVorRm9rMG4rL0hwb2tZckQ5VDVkdWc3YWo2ZnpCaHorUE9LY3c2Z3hhN2dH?=
+ =?utf-8?B?ZUh2Vmh2S1JvWldWbE1hOHBwb2VqejRSWXVSVTFJa2o3dkFvRjBBUzhnUmM5?=
+ =?utf-8?B?N01nOURiY3o0NGNzclVxbjVMTDhzd0hkcHpZbHJBVVd5TldqNHQzVnR2SFU4?=
+ =?utf-8?B?NnpWaktydE9YdnlqYzRkSWtBeXVhYU9UVFFXWmN3RzhnY00ramlqSkJIbFpD?=
+ =?utf-8?B?RDZRaHRFYzJrbHVkd0tJTFpYQ2RVdXcwVDFQWkRrM0htMUpFU3JNWER1ZlBU?=
+ =?utf-8?B?YnBDR1Y4dmxreFIrNGRLNzJHeWpZY1RxcjZIQjk4c2t1WVZ1dmd3T0dleUpQ?=
+ =?utf-8?B?M1FqcTBkbXhubDhWMkdFbUpKOUJZTldCZnV6UlBMdVdmT3VERHFZeGdzUktm?=
+ =?utf-8?B?TGtHalY4VytvcW90cTg4cUhQUHBDR0pQblNrRjNSdFlHZ0JmdjhyTXJPVS9P?=
+ =?utf-8?B?SlZTOHBUQzFRTXpxWU9kNFQydWl1d2N4a1lpSTdQU25USFJTc21FakpxNVF1?=
+ =?utf-8?B?RWxqd1FkUXpodmNucGp6bStEWXVwdU05cERuOTRBUURTcHB0bGhjQ1BTYm9E?=
+ =?utf-8?B?cmZraW1jME11QWVqandKbFdxYVZGV2FLVFpBNno4VmRkNE81TjJKbmx1VGlx?=
+ =?utf-8?B?OGFRYnVvcnpHWlFMRXM0ZHZIQ2NUa3V3VGYzUkFlTzdLOU9SQXFPaHIxVkR4?=
+ =?utf-8?B?RHR1WmhHdHdEbTZDN0pSamluMGh1cmtiSEoyMHEvVDByeVdsNFp4dTBlRDZQ?=
+ =?utf-8?B?eFJ5clVpd2NseUJMS004N2dWZ2M1MWJJSERzMEs5cVRVZm94WTR5ZHlPWkJD?=
+ =?utf-8?B?UDlsSXJodkQ4bXRadXo3N3ZZbENvemJMVFJnZTFPbjd2TEs5czFZOEF0MGY0?=
+ =?utf-8?B?NUdtQXFhL1J6NUVxUFErTkJZSzRjL0x4ZSsyRTdwRVdQV1E2L01POTdldUxo?=
+ =?utf-8?B?QUxGRTNyeUh6VnFXcFRKOGJ2K1NJR24yTThMUnQ0Ui80RXJiblZSd0kyR2M1?=
+ =?utf-8?B?alNxUzVPWTNjYkxLRzNkL1FLemJvS1FaS0dETVUzOGdjOWEvRFpQNmFPRFc4?=
+ =?utf-8?B?TDFIUUV5TW1CSmNyR0dXd0xvUHNDcnU1VnhGZmd3MU50THVUWHdjOWVxUDl2?=
+ =?utf-8?B?THRRMEJubFk5ajQ4SUxpbDlYc0t6WEV1bDByRGtwM2NsaWQxNmVKWmIrYVM4?=
+ =?utf-8?B?bER1QzI5eTcxVG94ZzFDeEI0Vmh6VlVqcG0ycFRNa1BDVEx5djVqUE8rb0NP?=
+ =?utf-8?B?Vk9zRTRvL1hTYTZ5M1UvS3dFemh0emZCcFNBMVVGbjI3M3JlS0U4cVYvcEox?=
+ =?utf-8?B?QXhxYmJ3WmNoblhEdEpKaW8wVng4dHlGL3lUUGI5N3JZMmJJOVcxM0NSY0dR?=
+ =?utf-8?B?N1ZCY1ZPbWxFVExYejJWRVlmQ3NrMWFSU1dsSVNMZkdGanZYQ3B1TEFyVkpo?=
+ =?utf-8?B?UHhCZm5ON3d3dy9va09yUFhCMHQ2Uzd1WlV2ODlBL1h1bU4wZXJ5VGZNRFQv?=
+ =?utf-8?B?ajFWL21HSEViOFNPQUlOUDNIejhML3BjUFBNdGh5aC9Xdm9aY1ZRTDBsd25p?=
+ =?utf-8?B?RXJ4cERIUXRpb1pJQU1SQVFzbDEwckJHR2NkVHdBSmUwS3NZTWQ2T09VRWVv?=
+ =?utf-8?B?S1gwdWlVN1ZMYTJyeWNQOTJveTRRNnRtM0liNXk2WUNrbkxuUXdqQWJ1N2Nv?=
+ =?utf-8?B?VjNCRGhYbllwc24xNkUyY2ZNL3lBbzNKUlpUL05yQTJvN09JMnB6djh1dWJz?=
+ =?utf-8?B?TmZxYnZBWE83K1Z6Yjh6U0hFVFB1b0xBcXZmSGlJKzAyMXI5OXlOYmQzSVpC?=
+ =?utf-8?B?L0NkZDlJNlYxRERsTzJ1TU8yTUlmdzFCYTlNNGo5ckl3cEE0UlE2dz09?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2106c908-e052-4b53-d7ac-08decd6a9cfd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 708559b4-09ea-418a-aa1b-08decd6a9e07
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2026 18:51:32.0215
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2026 18:51:33.7186
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OUKIr64+HhcvOCe8Y/6gbRRlJBwKz4fmtBn8Dzu1+RhedNefr+T7gQ0v4AFQaEv6OzO37anW34oQEj3BY3YHxg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: EHBK+Pum9SYQDWyXNMWFF6lg+jCmAYk2eogsQN8OajvX1OustpgMdf3Vy+q370l+h4eam1ILzNsrRfeDSrZwAQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9088
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+The Slow-deboost WARN_ON_ONCE in rcu_torture_one_read() currently uses
+only the handler-context predicates to decide whether the calling
+context is "safe" to assert immediate deboosting:
 
-Although rcutorture has long had the irqreader module parameter, this
-parameter results only in RCU readers in softirq handlers, specifically,
-timers.  This commit therefore uses smp_call_function_single() to test
-RCU readers in real hardware interrupt handlers, thus providing the full
-effect from the irqreader module parameter.
+    !in_serving_softirq() && !in_hardirq() && !in_nmi()
 
-However, consistency/debug checks must account for the possibility that
-the smp_call_function_single() handler function is directly invoked
-from the idle loop, in which case, for example, in_hardirq() will
-return false.  This commit uses a per-CPU variable to record being in
-the rcu_torture_irq() smp_call_function_single() handler function.
+They do NOT exclude several other contexts in which the task is still
+holding an implicit RCU read-side critical section.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+  1. local_bh_disable()-but-not-in-softirq.
+
+  2. preempt_disable()-held.
+
+  3. irqs_disabled().
+
+  4. rcu_preempt_depth() > 0.
+
+The current predicate set lets the WARN fire while these implicit
+readers are still active, which is a false positive: the user-visible
+"tardy deboost" finding becomes ambiguous between an actual
+deferred-QS bug and a valid caller still inside an implicit-reader
+section.
+
+Replace the three handler-only predicates with the following which
+covers everything.
+
+    preempt_count() == 0 && !irqs_disabled() && rcu_preempt_depth() == 0
+
+Note that we only check in contexts where rcu_read_unlock_special() deboosts
+synchronously, i.e. where it is not inside an implicit RCU read-side
+critical section. This matches rcu_read_unlock_special()'s own gate
+and rcu_flavor_sched_clock_irq()'s:
+ "rcu_preempt_depth() > 0 || (preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))".
+
+Also note, in PREEMPT_RT, softirqs always run under local_bh_disable(),
+which itself takes rcu_read_lock() to satisfy RCU's bottom-half
+requirement (see softirq.c) — so rcu_preempt_depth() is non-zero
+throughout any RT softirq thus making in_serving_softirq() redundant.
+
 Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 ---
- kernel/rcu/rcutorture.c | 75 ++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 70 insertions(+), 5 deletions(-)
+ kernel/rcu/rcutorture.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 04c36fcde5cd..13e0eec1e1ce 100644
+index 13e0eec1e1ce..e0bea4039c42 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -212,6 +212,7 @@ static long n_rcu_torture_boost_ktrerror;
- static long n_rcu_torture_boost_failure;
- static long n_rcu_torture_boosts;
- static atomic_long_t n_rcu_torture_timers;
-+static atomic_long_t n_rcu_torture_irqs;
- static long n_barrier_attempts;
- static long n_barrier_successes; /* did rcu_barrier test succeed? */
- static unsigned long n_read_exits;
-@@ -2103,6 +2104,8 @@ static void rcu_torture_reader_do_mbchk(long myid, struct rcu_torture *rtp,
- 	smp_store_release(&rtrcp_assigner->rtc_chkrdr, -1); // Assigner can again assign.
- }
- 
-+static DEFINE_PER_CPU(bool, torture_in_scf_handler);
-+
- // Verify the specified RCUTORTURE_RDR* state.
- #define ROEC_ARGS "%s %s: Current %#x  To add %#x  To remove %#x  preempt_count() %#x\n", __func__, s, curstate, new, old, preempt_count()
- static void rcutorture_one_extend_check(char *s, int curstate, int new, int old)
-@@ -2129,7 +2132,7 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old)
- 
- 	// Interrupt handlers have all sorts of stuff disabled, so ignore
- 	// unintended disabling.
--	if (in_serving_softirq() || in_hardirq())
-+	if (in_serving_softirq() || in_hardirq() || this_cpu_read(torture_in_scf_handler))
- 		return;
- 
- 	WARN_ONCE(cur_ops->extendables &&
-@@ -2321,12 +2324,19 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 			mask |= RCUTORTURE_RDR_RCU_1;
- 	}
- 
-+	/*
-+	 * Don't mess with interrupt masking in interrupt handlers.
-+	 */
-+	if (in_hardirq() || this_cpu_read(torture_in_scf_handler))
-+		mask &= ~(preempts_irq | bhs);
-+
- 	/*
- 	 * Can't enable bh w/irq disabled.
- 	 */
- 	if (mask & RCUTORTURE_RDR_IRQ)
- 		mask |= oldmask & bhs;
- 
-+
- 	/*
- 	 * Ideally these sequences would be detected in debug builds
- 	 * (regardless of RT), but until then don't stop testing
-@@ -2581,6 +2591,7 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
- 		return false;
- 	rtors.rtrsp = rcutorture_loop_extend(&rtors.readstate, trsp, rtors.rtrsp);
- 	rcu_torture_one_read_end(&rtors, trsp);
-+
- 	// This splat will happen on systems built with CONFIG_IRQ_WORK=n
- 	// and on systems where arch_irq_work_has_interrupt() returns false.
- 	// It might also happen on systems using a short-duration clock
-@@ -2618,7 +2629,7 @@ static void rcu_torture_timer(struct timer_list *unused)
- 	atomic_long_inc(&n_rcu_torture_timers);
- 	(void)rcu_torture_one_read(this_cpu_ptr(&rcu_torture_timer_rand), -1);
- 
--	/* Test call_rcu() invocation from interrupt handler. */
-+	/* Test call_rcu() invocation from softirq handler. */
- 	if (cur_ops->call) {
- 		struct rcu_head *rhp = kmalloc_obj(*rhp, GFP_NOWAIT);
- 
-@@ -2627,6 +2638,41 @@ static void rcu_torture_timer(struct timer_list *unused)
- 	}
- }
- 
-+static DEFINE_TORTURE_RANDOM_PERCPU(rcu_torture_irq_rand);
-+
-+/*
-+ * RCU torture reader from timer handler.  Dereferences rcu_torture_current,
-+ * incrementing the corresponding element of the pipeline array.  The
-+ * counter in the element should never be greater than 1, otherwise, the
-+ * RCU implementation is broken.
-+ *
-+ * Note that on some systems, "interrupts" from idle are direct calls
-+ * rather than interrupts.  The torture_in_scf_handler per-CPU variable
-+ * accounts for this case.
-+ */
-+static void rcu_torture_irq(void *unused)
-+{
-+	WARN_ON_ONCE(in_nmi());
-+	lockdep_assert_irqs_disabled();
-+	atomic_long_inc(&n_rcu_torture_irqs);
-+	this_cpu_write(torture_in_scf_handler, true);
-+	(void)rcu_torture_one_read(this_cpu_ptr(&rcu_torture_irq_rand), -1);
-+	this_cpu_write(torture_in_scf_handler, false);
-+
-+	// Test call_rcu() invocation from interrupt handler.  Interrupts
-+	// will always be disabled here, even in CONFIG_PREEMPT_RT=y kernels.
-+	// The "right" thing to do would be to create a special-purpose
-+	// lockless or raw-spinlock-protected allocator, but in the meantime,
-+	// skip testing call_rcu() from interrupt handlers in kernels built
-+	// with either CONFIG_PREEMPT_RT=y or CONFIG_PROVE_LOCKING=y.
-+	if (cur_ops->call && !IS_ENABLED(CONFIG_PROVE_LOCKING) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+		struct rcu_head *rhp = kmalloc_obj(*rhp, GFP_NOWAIT);
-+
-+		if (rhp)
-+			cur_ops->call(rhp, rcu_torture_timer_cb);
-+	}
-+}
-+
- /*
-  * RCU torture reader kthread.  Repeatedly dereferences rcu_torture_current,
-  * incrementing the corresponding element of the pipeline array.  The
-@@ -2636,6 +2682,7 @@ static void rcu_torture_timer(struct timer_list *unused)
- static int
- rcu_torture_reader(void *arg)
- {
-+	unsigned long lastscf = jiffies;
- 	unsigned long lastsleep = jiffies;
- 	long myid = (long)arg;
- 	int mynumonline = myid;
-@@ -2649,8 +2696,25 @@ rcu_torture_reader(void *arg)
- 	tick_dep_set_task(current, TICK_DEP_BIT_RCU);  // CPU bound, so need tick.
- 	do {
- 		if (irqreader && cur_ops->irq_capable) {
--			if (!timer_pending(&t))
-+			if (!timer_pending(&t)) {
-+				int cpu;
-+
- 				mod_timer(&t, jiffies + 1);
-+				preempt_disable();
-+				cpu = torture_random(&rand) % nr_cpu_ids;
-+				if (!cpu_online(cpu)) {
-+					cpu = cpumask_next(cpu, cpu_online_mask);
-+					if (cpu >= nr_cpu_ids)
-+						cpu = cpumask_next(-1, cpu_online_mask);
-+				}
-+				// An smp_call_function_single() to self is not an interrupt!
-+				if (cpu != smp_processor_id() &&
-+				    time_after(jiffies, lastscf + HZ * nrealreaders / 50)) {
-+					smp_call_function_single(cpu, rcu_torture_irq, NULL, 0);
-+					lastscf = jiffies;
-+				}
-+				preempt_enable();
-+			}
- 		}
- 		if (!rcu_torture_one_read(&rand, myid) && !torture_must_stop())
- 			schedule_timeout_interruptible(HZ);
-@@ -2926,10 +2990,11 @@ rcu_torture_stats_print(void)
- 		atomic_read(&n_rcu_torture_mbchk_fail), atomic_read(&n_rcu_torture_mbchk_tries),
- 		n_rcu_torture_barrier_error,
- 		n_rcu_torture_boost_ktrerror);
--	pr_cont("rtbf: %ld rtb: %ld nt: %ld ",
-+	pr_cont("rtbf: %ld rtb: %ld nt: %ld ni: %ld ",
- 		n_rcu_torture_boost_failure,
- 		n_rcu_torture_boosts,
--		atomic_long_read(&n_rcu_torture_timers));
-+		atomic_long_read(&n_rcu_torture_timers),
-+		atomic_long_read(&n_rcu_torture_irqs));
- 	if (updownreaders)
- 		pr_cont("ndowns: %lu nups: %lu nhrt: %lu nmigrates: %lu ", ndowns, nups, nunexpired,  nmigrates);
- 	torture_onoff_stats();
+@@ -2603,7 +2603,8 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+ 	// rcu_read_unlock() does not end the full segmented RCU read-side
+ 	// critical section.
+ 	if (WARN_ON_ONCE(cur_ops->is_task_rcu_boosted && cur_ops->is_task_rcu_boosted() &&
+-			 !in_serving_softirq() && !in_hardirq() && !in_nmi()) &&
++			 preempt_count() == 0 && !irqs_disabled() &&
++			 rcu_preempt_depth() == 0) &&
+ 	    READ_ONCE(firsttime) && xchg(&firsttime, 0)) {
+ 		nsegs = rtors.rtrsp - rtors.rtseg;
+ 		nsegs = clamp_val(nsegs, 0, RCUTORTURE_RDR_MAX_SEGS);
 -- 
 2.34.1
 
