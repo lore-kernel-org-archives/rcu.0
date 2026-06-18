@@ -1,67 +1,67 @@
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D06D33A6E9
-	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 03:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C169A33ADBF
+	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 03:12:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781752339; cv=none; b=b/a57P5XBJSEZsVMQp0TPZY+iT2MhEnkNN3SD0XDUJpCrj76JeiJJt6/FtOrKDYyXZkQlNR/bt4m9Vr3pya4arJf2KAv5k+V1ycF7YXCe8pDis2SMmphlqRqCgYvyZ4Bv0WEOLprBz1hTTSr1RRAK7EbvTghk1zH4c71LsKNS3I=
+	t=1781752346; cv=none; b=i3CuEKlVq0ADkzHX9AF5zrsd3Ddv4UmM0KEMbRDbyUa71FGa/hotKkD36DtV4biYMV6uDr6xh2a0dzciZw3mOSMPjG/YuxQqQhPBoJtInnG5LC2ZI70CCB9SxBRClSylPcKJD85peyICcKVLiL+iqJ39gRj9a8oJ1q15+eTP6eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781752339; c=relaxed/simple;
-	bh=3HjydHuBQc8Yz/ieYczKmbxBkWvFg657XPocXx3aUSI=;
+	s=arc-20240116; t=1781752346; c=relaxed/simple;
+	bh=SZOR3Po26I5px5IWl3qao5Q198zBGy4no+Y9jQCKPSI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=YeII6LIivDEb42ElshAoMGfx661vxAJ7NyUes8xg3EM/gMLrWVFgFmKOHOuozyxSMymf9IFpFNQsRQSk7phQ+7mfv/43WnfDh5JZxgEm9dWIadRYy1wSMx9xqY6Iu30jWMZjs3L6b19Mp/K0n98f7uQtDNd+hHsNvg4vWAN+dkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=r/uq9dbg; arc=none smtp.client-ip=209.85.214.169
+	 In-Reply-To:To:Cc; b=Vja/C2uLFTjofLegEv78caYa1WBiTrxkCxT/ORE75j2tACgknS6OIexoyD5havjJMmulqKGErt5U7x66F46ObazJ9ePAzK9ezeeCJ7lEmQ5b+dO01RFQ6R/NYUJ1XAIoF60mFv1owKewyRaypGopsM2b1hymqszshQK3tCXxonE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PHAmH5IP; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="r/uq9dbg"
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2bf2247e38eso5329475ad.3
-        for <rcu@vger.kernel.org>; Wed, 17 Jun 2026 20:12:16 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PHAmH5IP"
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-c85c531d4a9so173531a12.2
+        for <rcu@vger.kernel.org>; Wed, 17 Jun 2026 20:12:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781752336; x=1782357136; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1781752342; x=1782357142; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=POSLMoWO52pf9/fOCCs2lrXk8F61Uty8Y4SKc9fV888=;
-        b=r/uq9dbgmTSTgBtkQQFEDXdDvYL4SmgILgJ4iqOB5Uvjw1LpHYc2zeB1zrVw5ZvyVk
-         u8SPn77jlToZzZLatU9Nbsin7wIImhw2+kThl4Louxqe6QPZaQ7EOqueg16cASSWmVjR
-         HJmw2amKIE57qK3SWfLHjDWs+3iXJOVS4pGsidLOlEDb5oXUngZrdZI2KJrqYSxLCHxy
-         Mihi0Plt733FUpYw6g0jRoa4L+NguZKhotv5RRP8vxak0goBovFNP+yOo5YM0tK0MruU
-         BSq1qMKxYbDOtnwBDSGNxYoEBQUFPJ1C/7P7bFKnu+XNwIzBOINNVrThMACVY/1AORS2
-         eWZQ==
+        bh=GTFQPj89QbzgFs0dMZHtOVwajXrW91e6WK1jm8uL+Eg=;
+        b=PHAmH5IPLrZV/EG6wS1qTEkI8DsVC2qRHijBIoPG3bGf1q3aI6OaG8IstQ5gFY71XG
+         12fAD4RRLw00mD/USJ0d/0FKlgopsQ1jjimgtHGVHW9GugaUGexPgRn0+OnXlEgCQpjM
+         Mc4K8w9N79gZTqi0th0g4YJ9lLFmWuSv03IeKxSmZHHmeIfKJNcoH7kfsDp8jdureFKM
+         pQT0KP1oL17uD3r0omav7WTSTnxzVfC3w3LsYpY3uvEmuFbcNnj+Co9FEPlEpNhzLtJA
+         C/W0QhGHNrDB67BAbRYD4wXkhS5aovYwUpBeAadRGLCO6nEdUFmZNtJjnjj+c6kXiDg3
+         YVtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781752336; x=1782357136;
+        d=1e100.net; s=20251104; t=1781752342; x=1782357142;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=POSLMoWO52pf9/fOCCs2lrXk8F61Uty8Y4SKc9fV888=;
-        b=VK14/eteXwcBmPbbvdp2+ivjHSnJGqdDa3W3CJKn8bDJ1PsMVPjzLwy3JQV3hbT58s
-         Ce69CmcTM+hyBUNhH5/BdJA/b8ora1bp5uK/+uzUYHDriHEEVPBkCMPOa1QGshV4fXF3
-         fc1jY6rgG4x5PBvkbfQRmH+Bwc/qMLZz4VOqNa3lqTrmR5glQYngPbuSGQwv6/a7KVCa
-         1fRNi3w5soUrLWd/fHGF3EoL0WoPMjITj/Zyk3uNmbdLoHeaC3HGuSHSst0usC8tmvTI
-         jum52ssjTueGYFFETB0P5hOmCBUhqabvaAvb8JljzEURiHHzRAeuSqLBfpc0I0G5LrYH
-         jFZQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9ODg6HGfTOn4ZQGqJwGb87P5o7Qo/40y9i2P6C++Cd1kQlb/kd2E/rUgCQK7GNMwCxd/s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzm8uExS7xMFi9DfOFH2h3kx1KcsPYr0dBH1YmdNPnf4XUqMffe
-	TllLFQFkH9QcSZEkRPb0cLTQgvEH/PLVDT9i0jDaNvlGwQU9kJ+RZgys
-X-Gm-Gg: AfdE7cl72b9HxF73dIC85mRAwb0JThgMWYscMYypHpR4ovEkoi18Z0d66N66+MDrOOW
-	UgQZY1M8wA4bAYFnIkad68xqE6uXduqF6Z/7v+EqBYbOqIRhCFBeFAsvnhCWrquWEb2eKcKFcKU
-	VkhUIbxCHTVGEWIzX2C7M6lnDtw90l2karK9apIQ6VRtcRm7cSLjNaMpZDHBZgOdZgCg3q2WVDg
-	fywBbjoOMFBpIcuZVxgl12Y1tYQMCtQvqt5VdcqR6KPQfWnJn9k2fABnXShnA3Q/A7doJ+HCPlW
-	OSKcF1QpghvUUlg3YFAa/zf9ClrbYKpvxzExq+telX1w0M4TiZEgAtpJfTeJFqbLPu9yoem2JIZ
-	HigfPUrgL3g5F0MDaIrUw5/d2HJdbPBqDEw7fP76Y0G36fackA7e+zm8oafUN+p24XdLJEPN+JW
-	FIZvHfuzbJIJ0=
-X-Received: by 2002:a17:903:b85:b0:2c6:cf7b:d34d with SMTP id d9443c01a7336-2c6cf7bd4fdmr41476075ad.13.1781752335960;
-        Wed, 17 Jun 2026 20:12:15 -0700 (PDT)
+        bh=GTFQPj89QbzgFs0dMZHtOVwajXrW91e6WK1jm8uL+Eg=;
+        b=P3XfaDTePSKHgc3xCKqzZYj1YS0mbz0kTaq0TjfvWErsn0vOkF5c+vLBokbNRQwgPO
+         QgbwXS7+hekloOzr64Bv3oUczW3dQNUgu+yqGzMj9ap+4MIVdCzQFXuncmQCtwIFO0EO
+         uC0boQIvA22DIaG0xtoHHOu5fUaGyNS7J7Fg3MiugJnpYiHMO4v5w//Umrzpo/4VGaBJ
+         cU9d9nX/zUNY/9XvTUw5iqgVkMtkxICQxQF7GpM++WK0CvX1Ok9nM2vglGgxoIxWm/gE
+         E7HMHyPJJQ2SsXR/jK+JHBm3gKtJ76ZickXqCTjW0mHXr90W+95YDXtdxuM5H98z/KbR
+         0v+g==
+X-Forwarded-Encrypted: i=1; AFNElJ90xQ9I8EqzWHLIoRnGJ6TvhTdOOIUf4b4ZuImTp7V8vhH/usGYHC4nQkZduj0aCMFjDU0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyainOVZ+j938kM8Y6lQH7YripF9t0I4ZO/vmuxHv2CXTosl8qf
+	OnN6TiwROmyh0/ecUFpQ7+2FnA9U5ayqsBYwUi8MiakPVaQY6WKYVEeU
+X-Gm-Gg: AfdE7cnH35L/3LGtp565fRGCbj3cUmL+JmDamMNrj5z2ddqBC0agmh7sWny83xFnBep
+	5KeD1aLNGRWrVY3vH2mqjbTU67HPv0aW4+yqvPQSiBUcy1kCd1eTr/kxoiH7u+7fSk7ZDi0oH6T
+	3Axt9wGucfTO4sr9DOW+2bcdUwz5HRgcEuZ1Ik4msvzKdZzAGpyeJOV+3KHIB64AVijMlkNAViA
+	EiHW5cotX/jD8Aj1AJ8B03ppct78LY/mFxEh+mKcccOsYSGmSp6XFo5IMj5g19I11iJPmSJ9SqN
+	3grOQID+LNHIL/84CvmQ/SWrQscBY2XXX+jPm+Kcf3qp6qKh1lsQAFsO7kTT+ZtQBLd2MpQb3Ar
+	79ZBzBmEJDXpwOyEEHpla0Mx5OwDM7hP9BXKCIEgGa1tzsTNIWcTFJ4SMSJ2QaP4ZEL4CBI6MPS
+	uTGOmpWgIjCi0=
+X-Received: by 2002:a17:902:e54b:b0:2bc:b80f:6782 with SMTP id d9443c01a7336-2c6e484a87fmr17591495ad.11.1781752342087;
+        Wed, 17 Jun 2026 20:12:22 -0700 (PDT)
 Received: from [127.0.1.1] ([138.199.21.246])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c6a403b242sm60152975ad.31.2026.06.17.20.12.09
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c6a403b242sm60152975ad.31.2026.06.17.20.12.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2026 20:12:15 -0700 (PDT)
+        Wed, 17 Jun 2026 20:12:21 -0700 (PDT)
 From: Jing Wu <realwujing@gmail.com>
-Date: Thu, 18 Jun 2026 11:11:19 +0800
-Subject: [PATCH v3 08/13] genirq: Add explicit housekeeping callback for
- managed IRQ migration
+Date: Thu, 18 Jun 2026 11:11:20 +0800
+Subject: [PATCH v3 09/13] watchdog/lockup_detector: Register housekeeping
+ callback for kernel-noise
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260618-wujing-dhm-v3-8-28f1a4d83b68@gmail.com>
+Message-Id: <20260618-wujing-dhm-v3-9-28f1a4d83b68@gmail.com>
 References: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
 In-Reply-To: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -96,131 +96,100 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
  Qiliang Yuan <yuanql9@chinatelecom.cn>
 X-Mailer: b4 0.13.0
 
-Register a housekeeping callback for HK_TYPE_MANAGED_IRQ.  When the
-mask changes, iterate all active managed interrupts, intersect their
-current affinity mask with the new housekeeping mask, and re-apply
-with irq_do_set_affinity().  Managed interrupts on CPUs removed from
-the housekeeping set are migrated to remaining housekeeping CPUs.
+Initialize watchdog_cpumask from HK_TYPE_KERNEL_NOISE rather than
+HK_TYPE_TIMER at boot, so the initial mask already reflects any CPUs
+excluded by nohz_full= on the kernel command line.
 
-Only managed interrupts (IRQF_AFFINITY_MANAGED) are selected because
-the kernel owns their affinity; user-controlled IRQ affinities must
-not be overridden by the housekeeping layer.
+Register a housekeeping_cbs so watchdog_cpumask stays in sync with
+HK_TYPE_KERNEL_NOISE when isolation boundaries change at runtime via
+cpuset isolated partitions.  The apply() callback copies the new
+housekeeping mask into watchdog_cpumask and triggers
+__lockup_detector_reconfigure() to restart watchdog threads on the
+updated CPU set.
 
-The new HK_TYPE_MANAGED_IRQ cpumask is snapshotted once under an RCU
-read lock before the IRQ loop, satisfying the lockdep annotation in
-housekeeping_cpumask() for runtime-mutable types.
-
-When the intersection of the IRQ's current affinity and the new
-housekeeping mask is non-empty, irq_do_set_affinity() moves the IRQ
-to the restricted set.  If the intersection is empty (all CPUs that
-were serving this IRQ are now isolated), the affinity update is skipped
-and the IRQ continues to run on the isolated CPU temporarily.  Full
-support for the IRQ shutdown / re-startup path (when all serving CPUs
-become isolated) is left for follow-up work.
-
-Guarded by irq_lock_sparse() and per-descriptor raw_spin_lock to
-prevent races with concurrent affinity changes.
+When nohz_full= is absent at boot, tick_nohz_full_running remains
+false and DHM isolated partitions do not activate tick suppression.
+In that case watchdog_hk_apply() is a no-op: there is no need to
+reconfigure the watchdog CPU set because the full nohz_full
+infrastructure was never initialized.
 
 Signed-off-by: Jing Wu <realwujing@gmail.com>
 Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
 ---
- kernel/irq/manage.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 86 insertions(+)
+ kernel/watchdog.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 2e80724378267..ea97f455eab2a 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -2801,3 +2801,89 @@ bool irq_check_status_bit(unsigned int irq, unsigned int bitmask)
- 	return res;
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 87dd5e0f6968d..998ad94da4cb9 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -1389,7 +1389,7 @@ void __init lockup_detector_init(void)
+ 		pr_info("Disabling watchdog on nohz_full cores by default\n");
+ 
+ 	cpumask_copy(&watchdog_cpumask,
+-		     housekeeping_cpumask(HK_TYPE_TIMER));
++		     housekeeping_cpumask(HK_TYPE_KERNEL_NOISE));
+ 
+ 	if (!watchdog_hardlockup_probe())
+ 		watchdog_hardlockup_available = true;
+@@ -1398,3 +1398,57 @@ void __init lockup_detector_init(void)
+ 
+ 	lockup_detector_setup();
  }
- EXPORT_SYMBOL_GPL(irq_check_status_bit);
 +
 +/*
-+ * Managed IRQ housekeeping callback: iterate all managed IRQs and ask
-+ * the chip to move them off CPUs newly removed from HK_TYPE_MANAGED_IRQ.
++ * Watchdog housekeeping callback: resync watchdog_cpumask with
++ * HK_TYPE_KERNEL_NOISE when isolation boundaries change at runtime.
 + */
-+static void irq_hk_apply(enum hk_type type)
++#ifdef CONFIG_CPU_ISOLATION
++static void watchdog_hk_apply(enum hk_type type)
 +{
-+	cpumask_var_t hk_mask;
-+	struct irq_desc *desc;
-+	unsigned int irq;
-+
-+	if (!alloc_cpumask_var(&hk_mask, GFP_KERNEL))
-+		return;
++	const struct cpumask *hk;
 +
 +	/*
-+	 * Snapshot the new HK_TYPE_MANAGED_IRQ mask under an RCU read lock
-+	 * before iterating IRQ descriptors.  The lockdep annotation in
-+	 * housekeeping_cpumask() requires an RCU read-side critical section
-+	 * for runtime-mutable types.
++	 * When nohz_full= was not given at boot, tick_nohz_full_running
++	 * remains false and the full nohz_full infrastructure was never
++	 * initialised.  DHM isolated partitions do not activate tick
++	 * suppression in that case, so there is no need to reconfigure the
++	 * watchdog CPU set.
 +	 */
-+	rcu_read_lock();
-+	cpumask_copy(hk_mask, housekeeping_cpumask_rcu(HK_TYPE_MANAGED_IRQ));
-+	rcu_read_unlock();
++#ifdef CONFIG_NO_HZ_FULL
++	if (!READ_ONCE(tick_nohz_full_running))
++		return;
++#endif
 +
-+	irq_lock_sparse();
-+
-+	for_each_active_irq(irq) {
-+		desc = irq_to_desc(irq);
-+		if (!desc || !desc->action)
-+			continue;
-+
-+		/*
-+		 * Only managed interrupts are selected: they have
-+		 * IRQF_AFFINITY_MANAGED set, meaning the kernel owns their
-+		 * affinity.  User-controlled IRQs are intentionally skipped.
-+		 *
-+		 * When the intersection of the current affinity mask and the
-+		 * new housekeeping mask is non-empty, re-apply the restricted
-+		 * affinity to migrate the IRQ away from newly isolated CPUs.
-+		 * If the intersection is empty (all serving CPUs are now
-+		 * isolated), the IRQ is left on its current CPU temporarily;
-+		 * handling that case (IRQ shutdown / re-startup) is left for
-+		 * a follow-up.
-+		 */
-+		if (irqd_affinity_is_managed(&desc->irq_data)) {
-+			const struct cpumask *mask;
-+			struct cpumask *tmp = this_cpu_ptr(&__tmp_mask);
-+
-+			raw_spin_lock_irq(&desc->lock);
-+			mask = irq_data_get_affinity_mask(&desc->irq_data);
-+			cpumask_and(tmp, mask, hk_mask);
-+			if (cpumask_intersects(tmp, cpu_online_mask))
-+				irq_do_set_affinity(&desc->irq_data, tmp, false);
-+			raw_spin_unlock_irq(&desc->lock);
-+		}
++	hk = housekeeping_cpumask(HK_TYPE_KERNEL_NOISE);
++	if (mutex_trylock(&watchdog_mutex)) {
++		cpumask_copy(&watchdog_cpumask, hk);
++		__lockup_detector_reconfigure(false);
++		mutex_unlock(&watchdog_mutex);
 +	}
-+
-+	irq_unlock_sparse();
-+	free_cpumask_var(hk_mask);
 +}
 +
-+static int irq_hk_validate(enum hk_type type,
-+			   const struct cpumask *cur_mask,
-+			   const struct cpumask *new_mask)
++static int watchdog_hk_validate(enum hk_type type,
++				const struct cpumask *cur_mask,
++				const struct cpumask *new_mask)
 +{
-+	if (!IS_ENABLED(CONFIG_SMP))
-+		return -EOPNOTSUPP;
 +	return 0;
 +}
 +
-+static struct housekeeping_cbs irq_hk_cbs = {
-+	.name		= "genirq/managed",
-+	.pre_validate	= irq_hk_validate,
-+	.apply		= irq_hk_apply,
++static struct housekeeping_cbs watchdog_hk_cbs = {
++	.name		= "watchdog",
++	.pre_validate	= watchdog_hk_validate,
++	.apply		= watchdog_hk_apply,
 +};
 +
-+static int __init irq_hk_init(void)
++static int __init watchdog_hk_init(void)
 +{
 +	int ret;
 +
-+	ret = housekeeping_register_cbs(HK_TYPE_MANAGED_IRQ, &irq_hk_cbs);
++	ret = housekeeping_register_cbs(HK_TYPE_KERNEL_NOISE, &watchdog_hk_cbs);
 +	if (ret)
-+		pr_info("genirq: managed IRQ runtime migration disabled (%d)\n", ret);
++		pr_debug("watchdog: hk callback registration skipped (%d)\n", ret);
 +	return 0;
 +}
-+late_initcall(irq_hk_init);
++late_initcall(watchdog_hk_init);
++#endif
 
 -- 
 2.43.0
