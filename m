@@ -1,47 +1,47 @@
 Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11011043.outbound.protection.outlook.com [52.101.57.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B9F3D75D7;
-	Thu, 18 Jun 2026 18:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C023E122F;
+	Thu, 18 Jun 2026 18:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.57.43
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781808689; cv=fail; b=HV88oWSGA7SVf/EwZq/TWJ1p3GLi2vQsvKaaxmm0ELo64lvnaoz1MkqZSFEQaSrMn6aPlQENHPXJsewY0ngF3U19HfOR6lUOscOsGfQS+AYBZyvm0Br7gVLyvyf11eoi5kifYmdPrkvq6373mQVobuvtkFgnSMh7qOzvmhqbu98=
+	t=1781808696; cv=fail; b=K28xK0VfCiqfrk/wl78jmoqHpwgutg/DI62gQvzrqBfm3he50eZR6DQOWaCbW3B3XE78Cb4yKzMdk1+Gmg5OSbZya9L5NEUGZ4b/obY9Of7qB1xAA2PeOpyZNOU9mOR0WNeP4EN475ewNWvtWyYFMtV12kDqAZAJq9jMmMKF+PE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781808689; c=relaxed/simple;
-	bh=i5ccyOM6NQzmv+Oq+eBJFpH1UlwsRjLK8QAgVcA9JUg=;
+	s=arc-20240116; t=1781808696; c=relaxed/simple;
+	bh=f2BGV9GP/BaPKoBrHX5vbIIo+U8s1HnbmGhbfNCoG/0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lwx//yrdnlk0MVorn3l023RcRqGQZ4XW8T5SnIX0sBZs/V9Ngg77Dm2kRLm6vfOLqspCtXLiNfu/1L+T7Ght8jcsrvy6QZwcQdH+bLY8dCqDdRCzkJ5BNnwLakgP8bLkjd/Sr0oVShLT5nffq9R87SXKVRoGcUXJpyZJeL1xLbM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bZN79Xdv; arc=fail smtp.client-ip=52.101.57.43
+	 Content-Type:MIME-Version; b=a3xON4+s6WMOkr2Z1Zwy8zeSqOjTDresetMSywDQRor8KHNhTEY1kpDVcm3b2BDQBKPDK0ZhAKrTuau7Avz79DemzUy4m90ChyAFACuD0Pioj1A8/w2nX+N4TkhL1c87V1t/rqAns+EJa0ssdOyohtA7wOG+VpDFp9/EW8fMGsg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Ft+y5H0E; arc=fail smtp.client-ip=52.101.57.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="bZN79Xdv"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Ft+y5H0E"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Lud1xzMkSRThYATPbKQ6P4BvarUcOd/mONltTd6WBSdL4EWjgTtymFNdyVLwMjbEdBwQRtErZHjj9Zki7vhg9w17drDbKxGmWtFYKagPYhXzuShlnRLy9EVx9hjlS2HAoaWNo1iB0erOYMNgnLbA8uvADBZX9YA6YFdjTzQ2q3rkZo+FzGo8Va9ERdzkYO6UaUv8i/MbIHWxNUUjoytAOlIU5cpcWh7jLRhY1ZDoIlpsQMXh90bSgjeZ/QyIU3XIZOt63kINRD4IgJk4z4WpRlYH6qbWWkgwNgBCV+///9IfYArUdnQsEhDPRJ8ygnyZVHHXx/IOiVjnr8v9dzhKRQ==
+ b=IKFa75gZhhTun6dMok1dvUQY7W2NF2b35mzL6mI1Z/Oro3CDrjyKiao8m7t6HxD8JguSS6C6Veyx9iqWB13s1ykK6g3m851hWNEWJzx51ICxs8fveXia9e+XonBXsoBOL1FEXle8+yfJPKFGccKp4eqSgde0KQ0G0wAgwpHrouNw8aFSVju/HrjkpQ3VLyd+6frXbbWGri/br9Tj75tG3dy5Zuk0kmfE4KZxMhBp5tr1pV5h6h5I5gZNeRrYXqISZ4ET9MUl7kCqq+2n3eNWpu1Y+X6KV2REp0chrTJTBi1HMmAIKv/HKt7ouCj6FkJHZ4L8OzfHOph7DJ14+1zOQA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w8caone8W+O1koWf1I0fbJ31miabks0BK1rNItW5rdw=;
- b=RUnnTVfIY4p7ycycvvcJyKo1PxBh4XPWCSLoSo28Ac4E8biQluMR5rfXcDSgdhHQXirKBiYRgWNicEwLoeecF5cmZkSr3l2BxzGejwATBN3k+tzmmQM3vOetoYLZWZuDkSRTwkkI16QsogMY6SSZszscZP4iG1GNWS03gHAtU5TQxstxjUHqPEu/YtQMWcSq7TTucAHpIqrWlbqX/yrZOG1uZL8kqcYt9U1qKFu9PIsu6DvGNnQzq03H0fWzqmZXGWpjzg2yxWWMKKq+/CgppzoUVZ5N+kGiIRtq4MHKPv4Llme5bD7Am+x0jCB60iCG9Njy/979aZaqDsWuVMTVVg==
+ bh=7By4rAGPYyp00uhRxzYWu4hi/nhuvSLA8fLMdOFbkbU=;
+ b=yEF5S4CLd5Ut+C+J5n1MS4/R5l3kUjrQR4zKy5JXSDhvVmvbbK/Hbdy5r9DOeBGqzKLzhTvq3eXgg5rAvyppWUyPrNK726QXFC+aT/QVg7q79nkJEfruGuU7XnxqgGI0UbokD/BlsGcqI01WyjXQCC+JwSYMv7kcDUAGrVOp8BhRH7wait8uOf8igFVRwb0TCCAoI2vDAjhyLoc5z8QS19zH8r6pWUKz0fEJjgJ4skrKt0jpzLxE02Up/z6lbGD9iqNUkezQTKNEB+V7XAz9Dlfdiv51wQxGpL1vwwpaf7IbViev/Yjlmwdv/2twi8Ao/T227J+Hix9ksTMGi/qzXQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w8caone8W+O1koWf1I0fbJ31miabks0BK1rNItW5rdw=;
- b=bZN79XdvF7c8cR97fwwfcCwDOwinK8XCntpDGH7W2vc9wePzHaSEuTHUEsuLwq75+BfcHlt22CgT3CHidvLYQ0OHaYKCBLxGt3l0V7DsICJUt5iHHJgBGEZEbzQX6E2fYf1PToFoHSpH+PCyJikAf0FmbbQ39QZqjw6/HAwPSBDiECD2XX6hbfmvMEMv1621h0ZfTaD5fowg9XMhKKKmMDsD9F3FtWa5WTMkHjra/oj/jxbjjBMfVTTAYJuosGS0sZ9eJ+lqC06pB7HINxaz+MhNibpmggFY0ohi5S5SCtpo0+SY8O+RuPLP7jzhsFQ0EeoyXa335RfO7gCJhGoV7w==
+ bh=7By4rAGPYyp00uhRxzYWu4hi/nhuvSLA8fLMdOFbkbU=;
+ b=Ft+y5H0EKIsS0OvFX3LPWt3wWQOXEU7qE9pBPkg92NHgWuEBMMNrTbX0MgO27zhDZJoffsf0KkrjugrEi5g/+Rwaqm69SpJkvA7pLo9CoB1eKGhpeoF+10+OWR86GbF74cocvGHh2LBkoF5VCxacXCn5LsimNOLAxhZaflbM60bt4lHQ3TbUM8C2ZxQD1d03pLbpiJmYu+vnOFlgbLkqlKCsItaKdL7Pz4r/WLYv6a/81vJsyD040IjvCkWxWs2hapPEOW8Qs0JZqonuLCr4z2x/JbTk4QLdZSECBFg7cobw2q4y6vUPKs73CnFpmjw1+ipfV5HDIFQjpzp3gAJ8vA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
  SJ2PR12MB9088.namprd12.prod.outlook.com (2603:10b6:a03:565::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.139.11; Thu, 18 Jun
- 2026 18:51:20 +0000
+ 2026 18:51:22 +0000
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33%6]) with mapi id 15.21.0113.015; Thu, 18 Jun 2026
- 18:51:19 +0000
+ 18:51:21 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
 To: linux-kernel@vger.kernel.org
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -57,16 +57,16 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Davidlohr Bueso <dave@stgolabs.net>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
 	rcu@vger.kernel.org
-Subject: [PATCH v3 05/14] rcu: clear defer_qs_pending at expedited IPI entry
-Date: Thu, 18 Jun 2026 14:50:21 -0400
-Message-Id: <20260618185030.376450-6-joelagnelf@nvidia.com>
+Subject: [PATCH v3 06/14] rcu: set need_resched on softirq deferred-QS arming path
+Date: Thu, 18 Jun 2026 14:50:22 -0400
+Message-Id: <20260618185030.376450-7-joelagnelf@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260618185030.376450-1-joelagnelf@nvidia.com>
 References: <20260618185030.376450-1-joelagnelf@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0331.namprd13.prod.outlook.com
- (2603:10b6:208:2c6::6) To DS0PR12MB6486.namprd12.prod.outlook.com
+X-ClientProxiedBy: MN2PR14CA0017.namprd14.prod.outlook.com
+ (2603:10b6:208:23e::22) To DS0PR12MB6486.namprd12.prod.outlook.com
  (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -76,93 +76,118 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|SJ2PR12MB9088:EE_
-X-MS-Office365-Filtering-Correlation-Id: 52f895ac-dacc-46d1-d208-08decd6a95bb
+X-MS-Office365-Filtering-Correlation-Id: 7bf2233f-076e-4ed8-40f1-08decd6a96b0
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|7416014|366016|376014|23010399003|1800799024|56012099006|11063799006|18002099003|22082099003;
 X-Microsoft-Antispam-Message-Info:
-	qqwq3xrIDpePqBva/6ShLLVtm30SOjnOpg+xOHMNQ7Gul0HD/W4bH6eBvaBYm4rM/H2Y7ZmJT/jXMJTEX4LTjL12J1ogp+L6TTbZgDkxnHccnsWEyXsWv0gBnckinxBuqRKJ0I5We//PkmLi8fEAAA8X2yu4/lpnjNDW4nfIgCquVOjm9TQ4igK303VbLcYZSvTftso/gj1uvp8Ro7ORcC4SHzK49IltupyrGQ9m6EB43m0Fw1p9pzRucSVZpKnq2hKy6L0vTn8xFLqhdzaG/o20kJAoVzKsZBLSuU5ZPjyRmqWJZ/9vDutWkOObMua+CVWOuKVcGc/O7qYkK0u/CHaHwKcntYRFTA8nWNh9JodpmaVBrg7nPdm+lws2YtV3Eniy3KHw+caXHbbixpVgnHgF+9eozhGL1W2yYHbwjWBeEFZ1lLXIBxL/2rNWjrIjOHE2MFhWE6wG9U9sP+9SSKv4k9qRjl6ixsazOnYWyGDBg7Zn67NjVRKwKYLT4H0OQuJCIi15xRxG5k93+Ym9gm0A77EhhfcSeIq3gH+IscTFWXp0w8bKTkRx+4XBw/R2LbU6TFYuT/7WbHLFVxgTL9wq72+BxiB2Dy86vlSsVC3Vs+vm1O+gnJZ5N6sSiGrL+1xJ7xzmZUWSvrTNW5/Ab4idtqjUw/a4eqsTFQyzfn20gM/BLuYcgGKpJyMKrA0M
+	SRDbkr9nFn+66KF0jjFkSHyZqAn2rJNJVtiY3KZr61ouBfPxArrvP0syW2AdiqWVyvz6Fw5zDDDr/kZ4lj8AMQ/TErEqZHsHUhB4tPwz4lFhW21J+Q9pDZ02djv+xadTq/DUPiapPkpNHt7sme+ysS0+1Kc+KbeGBJ5JhwqKH5VGAzaNC/A1QCJejBTGqyt/BMv3nlwe6rmjAOa+UKTiZHg0ui/Jb4iMRIk9trW1RUm8Xvi842KqpSlQV46MbXMf4frxahzK8DXqwOQt5jBUEeBWxYLK2kLjB9R+AEFOFTV3/Om0VZyJgHYtUw2U6av1zoTx3XbMKwhGOIQvhpEkLeV9pZDbCP7ppSFo4DFaomQWb1jJnYlMXncfuOu8lzZ8ZL8DD+SvD6uChgtKHPjpzu2epOkd220IJ8pRbZW68Wlv0U8UgqfJTvuoMlwOYXzA4FtUCZ/BM/wcwb6RduoqnTG/C0oZCrl2TuDpf3RxwS8ZbYuKEa596GmG4VZBTxiyo9oU1Q9VE6v6ZKPDO0P68OPFbfwG5ONRJlbR4HrU0cfmC6jsPrpvkVfGif8YH0JgDunMvSpBuLYnS7uE3orCkavJhiaOLB0FSSWsvgLZFvgjPqV51+VBiIr+dUMT2MeH+OJTxRT98GRqk375U8UNi/nKWJtD+lugca8hkp5n6DT4/bq9+wyLLo1cTAI7vzRA
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(376014)(23010399003)(1800799024)(56012099006)(11063799006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?U4rHMYCKoE8ymNPYMoRvTCCiqeoi+YrLnVf5nOE7M/Pe5bH61F4Pqc/wrJ+n?=
- =?us-ascii?Q?9bBfaqQjnSoRzh5qEvktfnFweGrQ9v8MkuSuYTOvETCI2rN1Drdi2/Ipk2/2?=
- =?us-ascii?Q?+M6RVSfXWo458Y3OWbEjaagcIjVSKpjQg6NySNZ9KU3eBxE8pE7Qx+nDs3Z0?=
- =?us-ascii?Q?aPo6O97LkbstsTH0OsNKw51oWCrhUfecef8THOrGyd4gXIluVH+lA/YpNnL8?=
- =?us-ascii?Q?5eE2sY44snBoN2YoNBt/hk6L0bxEefI7Pj6UZ9WQUkO39V1t6Hxb/8NXZLaK?=
- =?us-ascii?Q?Oxc4lcpQQa8+ZrV1u9dsmRshGZ4sX42AbilT9clqFHVHm6fuO2QuZgMYj0aR?=
- =?us-ascii?Q?GhiS/U+iQTz0nDKU8Mt65YHPnO3LMbxlZg05eWmBz9Qrx0tG2e9E+A+ygy2x?=
- =?us-ascii?Q?mUHzKrVsG0xZkQvrYUrt1KJUHFey4qctUKCCJcdlTCHgb8YR25cy3Ng5fiB3?=
- =?us-ascii?Q?gbfdzKTmAQ/0SDh1zbjvATG9oFErUcDnLRUPtI2dkm8sg31rMgk4dLKNjPOO?=
- =?us-ascii?Q?gXFDcByKk7G37GFXYF5RiEFI5S3HB59iDNi3/NhEpbtiqqegkbipQ0T0B2MI?=
- =?us-ascii?Q?TwuSpP2KDTEmUOkmhYeCl3vaAH0UfJFEIh8tyFVasYZl5P9fWwI06ajUTgJC?=
- =?us-ascii?Q?KJxZ/oB+NKv6O93Ctc+k0rWxhZVsCcRZ51wvOSl+kFu1ztsmquSp3dnyp4Yz?=
- =?us-ascii?Q?AuUofG1waFD6BDfkeTk87GZnFtqcdTZF4GbKCXECECrlujXnlQF9lc1Mkksn?=
- =?us-ascii?Q?Wz/y0m1PHKyLOQAOs/eiZuuQKYYko0zITzKex1D/WT7bu397aYTqOchKzOA8?=
- =?us-ascii?Q?G8euuzeJFeL9SZl//AFIjjjEv8t+figNS2yhBHYAXwJThoFkqL6dHmIbK/ER?=
- =?us-ascii?Q?asQYDWmR2XRou2kdSdCeQVnr8LV0/u03GHQQalLl20RXo1ZnBUSuk4hHYUZ+?=
- =?us-ascii?Q?p29c9R5RmB0gOqNS7DDAJpcl1U1z30FUWDVLDYdpeivji/T6otUYnQFGK83x?=
- =?us-ascii?Q?5Rxa0UwkNkautohrowPq37myUVQY4OI3uMPpd43IvjBK6aE6YBw1ZAA6L2dL?=
- =?us-ascii?Q?k1Q1Zps6caJyGYHQxC1AqsOGkJsewpckyo7L8qtUice5hzi5t/XVDr0OGdyx?=
- =?us-ascii?Q?9jlwaFQt08IJE7ivqNV867M67lfBXXD/ytqlw/p7HYcsC7bEiKbJSEBL1feL?=
- =?us-ascii?Q?kDrP8rf+lqhAbruryIYu8malAPe00eeBJuSFAHHPTgs3PvFpFptmlCkh5lKe?=
- =?us-ascii?Q?FCRECXmDMe7JSuh/zsYkn8JCezgGg5GGIU/OSDYaiw9vdzJtWJnqXv46v/2C?=
- =?us-ascii?Q?vhwlU52oQz7m/NOwtmb1mmxwnGGqg/iBpxk0iBM3gNWXLabWtEXONYjj84pC?=
- =?us-ascii?Q?9fSgwwnkdxB+9VQgUHQ2Q0RV8zUskktvM8vrepAR+CogF/Pke9Vg5RybEZ42?=
- =?us-ascii?Q?JiBV7k2+C5wWwIzgneC1OQOJWXvOV13lJn0sUyU6xiTNfPKbrs144Ag6adgv?=
- =?us-ascii?Q?Pf1gPE2pV1tekoKXOSgrAUSrabvxXTAMU8ccGEaPVT2J4Pm1tQjUkgiIA3Nk?=
- =?us-ascii?Q?Ywg3UAwLW2EvKZ7QQiHueK2d5mIBZZQ4INU30k5v4W41gGuRlf4vABMV/0GE?=
- =?us-ascii?Q?zQzGFkt7yWZXmtu2tgbkst3JQr1fS3I3Vf81scAFHGdLNK9XCADjfC4Yn+Di?=
- =?us-ascii?Q?CUzcl1+ibxRqAPie9zxLqv5k1b0qNj4lG/SPgIVHO9gI9ZpizvnLztRlzwO8?=
- =?us-ascii?Q?d+bjuzBWYw=3D=3D?=
+	=?us-ascii?Q?JZtImTA+AGlN1J8F2KXVO6YP0m+th11UEd7O6e7MuBj6rsA9Pc86nmyngi3L?=
+ =?us-ascii?Q?ImhaipX/6mi8nrgaHPwjlete6ZTbfbXsiB6dJbCqcPyHfAkKzZsFaMOajHmM?=
+ =?us-ascii?Q?w5j9uRhVw1ZoYEm2mF4wCV4yube4keYav8JYG/fHDrOHbd6/YNPIK90kL7mf?=
+ =?us-ascii?Q?eVaE8vMiJqfOyhqDPXlUDS45+EkIhzg7fu0PdU08sbztEP3bTPUBYLD0VOQq?=
+ =?us-ascii?Q?RjwgT0Oj88W0WKgNY5BV9Ovdg3io/d/h8R5cR8PtKIrkJTZSH1uB4DfSpYe7?=
+ =?us-ascii?Q?YUlsHiJj/vJ80CI9RjT0E1oRGHGuzSJftfjlxt6VHk3D/6dJtNhMwFDKZty1?=
+ =?us-ascii?Q?O7MM/RccQBXd3+eu/JfVSEEnX0kbkalNKBxjPAILrEvzldN9bzaCi8fowpSf?=
+ =?us-ascii?Q?AuJpl4I3zN68LdIM8W84y6uSQbfL61MRKEDcH5+zoJei9IQOvP4TtZYHzS/V?=
+ =?us-ascii?Q?niLRvPMr/51wG2OX2BgX52aD9WR8Ag0GvP8VsuEf9cEKfneG/SWWcUr5XUjz?=
+ =?us-ascii?Q?MlLNqLjM9X/gIAVouPGhaWJv15xqxna2RqlkrWZM9BVihAYyoX0uWqJGn20b?=
+ =?us-ascii?Q?PYqNvwZQZMnO2NrirLrj7zLO0TzFC3ddvUCgWgXFbUiGdimIb5Ci0fcyyz3C?=
+ =?us-ascii?Q?fdjySJZ3zA2+m2EjmZfMgXsjllEx3eD+nEwml3HDgHfLga76QlvspL+GiXhq?=
+ =?us-ascii?Q?CcpLwWHi9Yt53nIlrlCVwJBzjGlWDJkiAmjIaJ0YCKuFsYCYYup44lOpkK8k?=
+ =?us-ascii?Q?+QI2cJJbQCRl2ia7Cs+vW2UoF+tH9+2yidhp4SCTZVG1sMFjdGJAW0G3DxRV?=
+ =?us-ascii?Q?2GhFQmXD9D2DtOyx4OzLG8l39luti0WMnuRHiEJux/bcy/qS8VtyBC4KYY3a?=
+ =?us-ascii?Q?icAze6OewfaiP/FHA/0aqoxXkUg3I+B0XdHprCJdZS183CJe54cQaUFjcY5E?=
+ =?us-ascii?Q?qdDE82OVIHMCZyrl26+WkaKpygKDhxNEx+xWnLZwy815Xf4IAWDmJZgaLPnb?=
+ =?us-ascii?Q?VBrcqmHyjoXV8mYTxis4iA2Bue/pZ1aVOjV2DWov/7TawxruMGgvCiu0WJF0?=
+ =?us-ascii?Q?DpYOTUV2CmZZwHJgJ77zyYkiHqEywl5SOH1vPTOMyzX7oJTv2Uhtix7XVHr4?=
+ =?us-ascii?Q?SD24FwPzG+Irel3TIXudxAXkPh2v4SkUOR4UoBSgsvlO/GXY8tDkHV+THP7d?=
+ =?us-ascii?Q?LLLyuml7pfkP6/aSQyRNXIPawjb99CAwJnpWqXU3lIVh1wXFXuTrPTAgUFYO?=
+ =?us-ascii?Q?MFF1fXFFAr6ecpgNdXOZa1RNoMscwfSzUZe9aRAB87OpAAkGWSrH+yVUEgE0?=
+ =?us-ascii?Q?OoI+iEI9THmhZLubZpRFBzyBvwqrJTNdZ+o1sNCXBix256PeSa+8GrG1vTGR?=
+ =?us-ascii?Q?sZbyWCIyN40kmpP4e0wHfWvQdAivxNexSrDEd9lc3mKf0zJFTOhZzklNbiiv?=
+ =?us-ascii?Q?FrMb7Fv2Zt2URyumRSHqNOwNMxy58CLfVzRu68klELGA0mzRQCSi69eHjN2s?=
+ =?us-ascii?Q?oULHw8FJ+NUfZVLnFvaQai0j+aQf09stMpOoK09wvfkeFVlm1I9Ywz9jKEew?=
+ =?us-ascii?Q?DWB86uv1r/yA/IFVdjjvy76q7paDmSZQZmgVwBnLYYueI+EPE1YUR0HAF5To?=
+ =?us-ascii?Q?KM/7V1TOFUTUHGBn+SzMRYpx5zXTY2iaHwAQJCgDr3R/pwMDr3Grn1lSlGmd?=
+ =?us-ascii?Q?Gkof6byNcn23IXXCRdweihvJ6UOEhNPnw0O+z+LsUU7d/1n0PlAayNWx80Dv?=
+ =?us-ascii?Q?WBWCYGEpWA=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52f895ac-dacc-46d1-d208-08decd6a95bb
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7bf2233f-076e-4ed8-40f1-08decd6a96b0
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2026 18:51:19.8248
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2026 18:51:21.4694
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: psvh122wHxz+lvtRvZnvBdw4moIJqWT5qDgZpX0bRYz0OLoHgJNaIRl2GxQ+oQe6ZS8ifICu22ZbEaQZOrHJgA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: C85inL5RHL5TZHgmpsqETOVwEHkDElSUcjn+oWLCRUcSHsfJXq80d4nMXpYPdyBWGxikQ79NaHUtfaXTtt9sqw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9088
 
-The per-CPU clear in __note_gp_changes() (from an earlier commit)
-runs only when the local CPU notices a normal-GP advance.  When an
-expedited GP arrives at a CPU whose defer_qs_pending is already
-PENDING, rcu_read_unlock_special() may skip irq_work queuing due to the
-pending gate.
+The arming code in rcu_read_unlock_special() has two paths for
+deferring QS reporting: a softirq raise and an irq_work/set_need_resched
+combination.
 
-Clear defer_qs_pending on the IPI target right in rcu_exp_handler().
-This makes it possible for any arming attempt that follows
-the IPI within the current GP to be able to queue irq_work again,
-allowing completion expedited GPs quickly than waiting for one scheduler
-tick.
+The irq_work path always calls set_need_resched_current() before
+queuing irq_work. The softirq path does not, relying solely on the
+softirq firing to do the rightthing.
+
+This results in a problem as follows:
+
+Consider 2 rcu_read_lock/unlock segments:
+
+        rcu_read_lock();            // segment 1 starts
+        // needs_exp becomes true
+        preempt_disable();
+        rcu_read_unlock();          // segment 1 ends; IRQs on, preempt
+                                    // off, needs_exp=true =>
+                                    //   raise_softirq(RCU_SOFTIRQ);
+                                    //   arms defer_qs_pending.
+                                    // Before this fix: no
+                                    // set_need_resched_current().
+        local_irq_disable();
+        preempt_enable();           // softirq pending but IRQs disabled
+                                    // hold it off.
+        rcu_read_lock();            // segment 2 starts
+        local_irq_enable();         // softirq fires: rcu_core runs, but
+                                    // we are inside a reader (depth>0)
+                                    // so no QS report; on softirq-exit
+                                    // preempt-check finds no
+                                    // need_resched -- still no nudge.
+        preempt_disable();
+        rcu_read_unlock();          // arming attempt suppressed
+                                    // incorrectly: defer_qs_pending
+                                    // already PENDING.  Without this
+                                    // fix, no fresh
+                                    // set_need_resched_current() on
+                                    // this path either.
+        preempt_enable();
+
+Therefore, add set_need_resched_current() to the softirq deferral path to
+avoid long latencies in situations where GP needs to end sooner.
 
 Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 ---
- kernel/rcu/tree_exp.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/rcu/tree_plugin.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 82cada459e5d..f8564a041879 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -763,6 +763,12 @@ static void rcu_exp_handler(void *unused)
- 			 READ_ONCE(rdp->cpu_no_qs.b.exp)))
- 		return;
- 
-+	/*
-+	 * Clear defer_qs_pending so arming attempts following this IPI
-+	 * within the current GP can queue irq_work again.
-+	 */
-+	rcu_defer_qs_clear(rdp);
-+
- 	/*
- 	 * Second, the common case of not being in an RCU read-side
- 	 * critical section.  If also enabled or idle, immediately
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index d17c2d97ebcc..7045f0deee17 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -765,6 +765,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 			// Using softirq, safe to awaken, and either the
+ 			// wakeup is free or there is either an expedited
+ 			// GP in flight or a potential need to deboost.
++			set_need_resched_current();
+ 			if (rdp->defer_qs_pending != DEFER_QS_PENDING) {
+ 				rdp->defer_qs_pending = DEFER_QS_PENDING;
+ 				raise_softirq_irqoff(RCU_SOFTIRQ);
 -- 
 2.34.1
 
