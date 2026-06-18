@@ -1,67 +1,67 @@
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4DE33BBC5
-	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 03:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9392133DEC0
+	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 03:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781752362; cv=none; b=ay7lH31GC+esCSqHAj+2IXms39BX/2I7YeQrWB65eoj9OsHJsT8KxUQLKG3KwkfX/Ykmo2LPhrLMMvZUMm97iogFYnVNpX10aPrHd1Qn2fL4l5wszAkCHdrwqqp+g2Mq4LZSYDlCUwBPfTuGV2rBDN5pb2VTqiUCQQ8nsAZzG6I=
+	t=1781752369; cv=none; b=kbgQcHW3zotJ0miH/x17P8l9YAZVPfB42TWlCujOOqexMAqOBFgOIjZnQUTSn4ltlpOcxP4rwE34UFxAR7QsDQeu2QNm6iRjO4iQZ3XEegT42nY5KLrGuLNDkaBrBYgRbSNsL7+6TUlSd5pSlQRJsQdkhXmMBdhrMcTwIYdleLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781752362; c=relaxed/simple;
-	bh=SZSfvX12VlEuwZl+6hAVKIfqxpPnB1VqKOp94X4ryo0=;
+	s=arc-20240116; t=1781752369; c=relaxed/simple;
+	bh=sFs7mynJbe12HuAxVNUwUdIyzOYLmiTuiC6AfxKdZXc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=PABc0P9BIxRD+NelpEjC83XVkA1kAXl61gIxkWGE602ekYW4rEKm8FkG9xX5mnIb0X7Q7q8+dX5MgK329Hao7MzbM/iVmF+lWbGM/Me9ulCGmG9BF2UzuxUuWl4aFVhUoOy4LuLUQi41K+FRUnnI06RMZ6RSqp2/DQm3dju32ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CZqe4DdH; arc=none smtp.client-ip=209.85.214.171
+	 In-Reply-To:To:Cc; b=Nk+KFtqj6HfaYveDrvbpgtQo+WWeSvKNcbFYgaHocFOOnF3Coh2OoP6JzSwiwuazWFh99sHZYsxERTFDt6sker+dTP7/vmdIt09RSd2Y+XKZv5ao45Hu+jc+chaHXu12WnNIPcb05H9msE56PnlsjvxOj/O/kZwc69DJrnDU7w0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=crKDOiIJ; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CZqe4DdH"
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2c6be9cd89bso1988555ad.2
-        for <rcu@vger.kernel.org>; Wed, 17 Jun 2026 20:12:41 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="crKDOiIJ"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2c6b67d5fa1so4058165ad.2
+        for <rcu@vger.kernel.org>; Wed, 17 Jun 2026 20:12:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781752361; x=1782357161; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1781752367; x=1782357167; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=v3I6IX1xUYJMTfIXEi0w2UhaS8cMsiIG3uPORXy/Kqg=;
-        b=CZqe4DdHuvA83HXuWHxNF+zbSnA/5STgQ7D8CWrVBB6gmc4KskyUW59tKbRVl1V3vC
-         iEnxeIbNe3Xk0TsPZiLIVbK3M1WDMzKTjnTvV9gA2Y5bT1L1ZRtvGxWDT2KP1sVCWjaO
-         DN04QcsZ6c6SDbsjZakOm/AD3yccCOyNCXMMd6c1EsiqTocuIJ9wUGoy5B6H/OgIey5M
-         G6vWB6sE3qPynStWyu7ckXbk8zpmAUQ7G1rwosSEp8tUxgEfCqd83FBTwaIBr2xpeNe7
-         kXFDpdpf+DCO9kP2Wb9HfyfFet0xxaYu/Aj2ft5pOLvWHGzAaqcqE8i/AruzjUBA22wT
-         CLWA==
+        bh=EAMlJUtgJr93wlY4Vrgrp/rfGIjYwybe1wRU3OQLFss=;
+        b=crKDOiIJ+3vKsFMXjsHxDDuyInXKr6ZbM7f5q1ZDmMeA6uRS3Bb2BYhuZtS6wEynNi
+         p1MB8ok+AB3CbvCM9bMLeecS0eJn7UAXcOzltlfGri40RG0E3iwubEoJTpKrsH1HcV6a
+         m4tq3a8sD3czy2PCM4HyXTvbHBRiuLgP+ULmQsllwKBsSC8SVnlfVjX5zvSATwHqECmv
+         bEGMhjQAT+xeerFrgznm3954Yj/Nb7mA9htAztoGDf6j2xOYdAfi8sCBG27zeSpCGrq/
+         7F4V87e4yZp+qpHQ57Am52AXBzh03xYxbNAWOXv0Y1xI+FO/0AA+Fjz4S5xvFusCHjOB
+         kxAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781752361; x=1782357161;
+        d=1e100.net; s=20251104; t=1781752367; x=1782357167;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=v3I6IX1xUYJMTfIXEi0w2UhaS8cMsiIG3uPORXy/Kqg=;
-        b=JfGh4d1XoPkU9yzt7BaKAicjC7GoNaIos0Um7kT9SV9aK0+hnKnZuFdfJGbulQAgBC
-         CI08VAdvEnvhEbKke32MqO4eSyKAkYGjsxuSVyaHiXcj3cgaB3tq+5cObTIJFzKrTHwG
-         6AfOapX+hnXA2vZ7ayC+EwDT++7wIbLP9IHIBCn8d0zSBvDzP+i0xUogECI5FHQ/pfND
-         sSXEyB3nQvvGDP+3uDnjUQvKVq/7aNMIZqGr7MmU27pN7BQuBILHJzgWW9IQeYB3w3BX
-         Zh9woIxa4pI7rNA49XOrlx9ADtbm0CTO/MBeUGXx8vOC8EaIp76CTAhGCqxonflENwlL
-         7FZg==
-X-Forwarded-Encrypted: i=1; AFNElJ/M6wkIJ9x1L7z7txfuivF6ihgntBuHXZUyvCJF1hE1J0VBEwM91OlxKf2Z76Eh4s/IM64=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw04VATmXgJw0ee5+1VGdbHEiVLtM+2kZ0OY41PrucGjt9WrhwR
-	Ixa5nwU4pfeS5l7ajzHXzh7hyFkADDCNYyQ0wl5Ky2r46BWRbdX+204O
-X-Gm-Gg: AfdE7clXkL06cOD720/Zhxtap2ns4NQKNE60dVGVDEY2GgKq5ecQ3Jp9/GkDO83Duoy
-	hsujtrQyu91Xar7EeU54A/Ai1+9TZSSNzh6THAwae+VrfljMS7Mb/RCPhp2reD8KGFxKXbzhMpr
-	lyz9SHLvkD84+CVqTgfOP3mU2MWOS08p1juAD25ot/i49OR+u1Ww1JyhZuq4IfwQIZgeY5DytWd
-	eELgN4VJUt+VGzM3BLWh7AaKTsvZ0SQJ4EkcULDHMFcLHdmOd0dKxtdxySR8XSSnB1L3skeCNym
-	jMpEp5q6jAU7HcOsuM9x4XwdfdVhp5JSdieaH0oMLOQNyIFS4SYkRHRxmavdfp/h4j8Akqyl66j
-	dT26mVN0UWBaHX1iIVHEcCjoUUddKmW4g60PgCDiOkr+RWLK68EaPGQWJYLB8dnQ+rU0LdBeoKF
-	IEsnwdw+ug+I0=
-X-Received: by 2002:a17:902:ea07:b0:2be:22cc:e227 with SMTP id d9443c01a7336-2c6bbf9dfa0mr65761055ad.4.1781752360871;
-        Wed, 17 Jun 2026 20:12:40 -0700 (PDT)
+        bh=EAMlJUtgJr93wlY4Vrgrp/rfGIjYwybe1wRU3OQLFss=;
+        b=l5yle5l0jK+6mRb0CuVYTK3KbOuQiIa4rx/ulE8wSOAKALbJSPXE+qRXx3AOENHmpu
+         YBiC9l3qU9aVsObNXe48HntyQLYCYDkR8Xg8E0yB3CzBaCYt6W0w/T0yv1OBWYouv1Go
+         YKjdT7H3y9o9AYmCxJ5aJZDxrzeUdlFCt7IDc3d/9H1YPQ+Y2MeqSFgCPUMV/Xuwu7GL
+         ZpzlmMpJVJ1a9gX4aQIu6KSmbdoyQGGj+IqpNeiOMgdemL9Wuu3UODjWo6eeOpCEf1xW
+         uItGR3/JEbPg4tjE0fJEY/IvL3iFXhAk8OCunfUonfEnFnaYXarp3eoBXYn3D1FUBeAM
+         gffA==
+X-Forwarded-Encrypted: i=1; AFNElJ8oTLKa0aECxQNcPimqESHTrm1aGfusu2TLtYkal41LnZfAUD4V50i1Eir/JNwoOgoHLUQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDYtWC0/BaIT1Ij+fXureLoXIF9B4PWdE03MSR2uLPTj5VXgYv
+	jv9gEkQdZ0x3oQO36A1Tty0LVxDlvbzNTFfkePAbypkpgZ5I1PzL54oA
+X-Gm-Gg: AfdE7clE/9dbZOwQwRETf6etGxsqdVgfvhPwEhFFtPpdYAZ2EINKzy2BgIaOhQBJFvg
+	IF4SQXnAUcpUnZq0DRANpAx8PRpV6BVnP8HGbwwAC8yOQ/TUNMJZ6j70n+JEGtcHBocPZ61taHv
+	9KhC8ITLFpdb/gf0YyohqIoP7gjaBj1b+P5WjosMN8h4kqLXKIhPYp5WQd0O0UQaaJCWHyNaiJh
+	1m6zQl4aCldXXHtAxxerxfgdMnxInX3qu0IrO3oFMoFTSFoSKo6y7aXHX/yX8sOJowNzR30PUPA
+	CX2QffGW4Ejn/W55YscLNXTFJ2wL9z3oQuYU9FqV4bPtwUPiQtKveHdSAq/OYLjNcoG+7u5c52C
+	GG+gQtr/0o1j4rw3s+D5JhPoQ7/YQqM/FMtQlbjgTj8BPV+qpgN2Itan6EPD7rx9bIj8xXeZIhK
+	HkKUA2nK4IXe8=
+X-Received: by 2002:a17:902:f547:b0:2c2:bd0d:3cfa with SMTP id d9443c01a7336-2c6bc0c6684mr67014325ad.11.1781752366951;
+        Wed, 17 Jun 2026 20:12:46 -0700 (PDT)
 Received: from [127.0.1.1] ([138.199.21.246])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c6a403b242sm60152975ad.31.2026.06.17.20.12.35
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c6a403b242sm60152975ad.31.2026.06.17.20.12.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2026 20:12:40 -0700 (PDT)
+        Wed, 17 Jun 2026 20:12:46 -0700 (PDT)
 From: Jing Wu <realwujing@gmail.com>
-Date: Thu, 18 Jun 2026 11:11:23 +0800
-Subject: [PATCH v3 12/13] docs: cgroup-v2: Document kernel-noise isolation
- via isolated partitions
+Date: Thu, 18 Jun 2026 11:11:24 +0800
+Subject: [PATCH v3 13/13] selftests/cgroup: Add kernel-noise isolation test
+ to cpuset selftest
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -69,8 +69,8 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260618-wujing-dhm-v3-12-28f1a4d83b68@gmail.com>
+Content-Transfer-Encoding: 8bit
+Message-Id: <20260618-wujing-dhm-v3-13-28f1a4d83b68@gmail.com>
 References: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
 In-Reply-To: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -96,38 +96,265 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
  Qiliang Yuan <yuanql9@chinatelecom.cn>
 X-Mailer: b4 0.13.0
 
-Document that cpuset.cpus.partition=isolated now drives runtime updates
-of the housekeeping masks for kernel-noise types: nohz_full (tick
-suppression), RCU NOCB offloading, and managed IRQ migration.  No
-additional cgroupfs files are required; the partition update path
-automatically triggers explicit housekeeping callbacks for all affected
-subsystems.
+Add test_hk_noise_isolated() to test_cpuset_prs.sh to verify that
+creating and destroying an isolated cpuset partition updates both the
+domain isolation state and the kernel-noise (nohz_full) state.
+
+For domain isolation, the test checks cpuset.cpus.isolated before and
+after the partition create/destroy cycle.
+
+For kernel-noise isolation, the test reads
+/sys/devices/system/cpu/nohz_full to confirm that the CPUs placed in
+an isolated partition appear in the nohz_full mask while the partition
+is active, and are removed from it once the partition is destroyed.
+This sysfs attribute only exists when CONFIG_NO_HZ_FULL is enabled;
+the nohz_full checks are skipped when it is absent so the test remains
+usable on kernels without NO_HZ_FULL.
+
+Add cpu_in_cpulist() to correctly determine whether a CPU number falls
+within a kernel cpulist string (e.g. "4-7").  A plain grep cannot
+detect membership in the interior of a range; cpu_in_cpulist() walks
+each comma-separated element and handles both single values and
+lo-hi ranges explicitly.
+
+The test also covers: rejection of all-CPU isolation, the SMT sibling
+constraint, nested partition inheritance, and a 100-cycle pressure test.
+nohz_full is verified to be restored to its pre-test value after each
+create/destroy cycle and after the pressure test.
+
+Fix awk invocation to drop the spurious -e flag.
 
 Signed-off-by: Jing Wu <realwujing@gmail.com>
 Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
 ---
- Documentation/admin-guide/cgroup-v2.rst | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ tools/testing/selftests/cgroup/test_cpuset_prs.sh | 204 +++++++++++++++++++++-
+ 1 file changed, 203 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 6efd0095ed995..7c3b048e75cb5 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2721,6 +2721,14 @@ Cpuset Interface Files
- 	kernel boot command line option.  If those CPUs are to be put
- 	into a partition, they have to be used in an isolated partition.
+diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+index a56f4153c64df..047db14953fac 100755
+--- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
++++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+@@ -20,7 +20,7 @@ skip_test() {
+ WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
  
-+	When an isolated partition is created or destroyed, the kernel
-+	automatically drives runtime updates of the housekeeping masks
-+	for kernel-noise types (nohz_full, RCU NOCB, managed IRQ
-+	interrupts).  This extends isolation beyond scheduler domains:
-+	the tick is stopped on isolated CPUs, RCU callbacks are
-+	offloaded to housekeeping cores, and managed interrupts are
-+	migrated away.  No additional cgroupfs files are required.
+ # Find cgroup v2 mount point
+-CGROUP2=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
++CGROUP2=$(mount -t cgroup2 | head -1 | awk '{print $3}')
+ [[ -n "$CGROUP2" ]] || skip_test "Cgroup v2 mount point not found!"
+ SUBPARTS_CPUS=$CGROUP2/.__DEBUG__.cpuset.cpus.subpartitions
+ CPULIST=$(cat $CGROUP2/cpuset.cpus.effective)
+@@ -1204,9 +1204,211 @@ test_inotify()
+ 	echo "" > cpuset.cpus
+ }
+ 
++#
++# cpu_in_cpulist <cpu> <cpulist>
++#
++# Return 0 if <cpu> appears in <cpulist> (a kernel cpumask list such as
++# "0-3,8-31"), non-zero otherwise.  The kernel cpulist format uses ranges
++# ("lo-hi") and comma-separated items; a simple grep cannot detect that a
++# number falls in the middle of a range, so walk each element explicitly.
++#
++cpu_in_cpulist()
++{
++	local cpu=$1 list=$2 range lo hi
++	for range in $(echo "$list" | tr ',' ' '); do
++		if [[ "$range" == *-* ]]; then
++			lo=${range%-*}
++			hi=${range#*-}
++			[[ $cpu -ge $lo && $cpu -le $hi ]] && return 0
++		else
++			[[ $cpu -eq $range ]] && return 0
++		fi
++	done
++	return 1
++}
 +
- 
- Device controller
- -----------------
++#
++# Test that isolated partition creation/destruction drives kernel-noise
++# housekeeping mask updates and remains correct under pressure.
++#
++# Requires: >=8 CPUs, no isolcpus= boot conflict, root
++#
++test_hk_noise_isolated()
++{
++	local ISOL_BEFORE TEST_CPUS i PART ISOL_AFTER ISOL_RESTORE
++	local NOHZ_FILE NOHZ_BEFORE NOHZ_AFTER NOHZ_RESTORE
++	local HK_NOHZ_CHECK=0
++	local LOOPS=100
++
++	[[ $NR_CPUS -ge 8 ]] || {
++		echo "HK-noise test skipped: need >=8 CPUs, have $NR_CPUS"
++		return 0
++	}
++
++	# Detect whether CONFIG_NO_HZ_FULL is active: the sysfs attribute
++	# /sys/devices/system/cpu/nohz_full exposes the current nohz_full
++	# cpumask and is only present when NO_HZ_FULL is enabled.
++	NOHZ_FILE=/sys/devices/system/cpu/nohz_full
++	[[ -r "$NOHZ_FILE" ]] && HK_NOHZ_CHECK=1
++
++	cd $CGROUP2/test
++	echo member > cpuset.cpus.partition 2>/dev/null
++	echo "" > cpuset.cpus 2>/dev/null
++
++	ISOL_BEFORE=$(cat $CGROUP2/cpuset.cpus.isolated)
++	[[ $HK_NOHZ_CHECK -eq 1 ]] && NOHZ_BEFORE=$(cat $NOHZ_FILE)
++	TEST_CPUS="4-7"
++	echo $TEST_CPUS > cpuset.cpus
++
++	#
++	# Basic create/destroy cycle — verify domain isolation and
++	# kernel-noise (nohz_full) changes together.
++	#
++	console_msg "HK-noise: basic create/destroy cycle"
++	echo isolated > cpuset.cpus.partition
++
++	ISOL_AFTER=$(cat $CGROUP2/cpuset.cpus.isolated)
++	[[ $ISOL_AFTER != "$ISOL_BEFORE" ]] || {
++		echo "FAIL: isolated set unchanged after partition create"
++		exit 1
++	}
++
++	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
++		NOHZ_AFTER=$(cat $NOHZ_FILE)
++		# Verify that the newly isolated CPUs (4-7) appear in nohz_full.
++		# nohz_full = inverse of housekeeping, so isolating 4-7 should
++		# add them to nohz_full.
++		for cpu in 4 5 6 7; do
++			if ! cpu_in_cpulist $cpu "$NOHZ_AFTER"; then
++				echo "FAIL: cpu${cpu} not in nohz_full after isolation" \
++				     "(got: '$NOHZ_AFTER')"
++				exit 1
++			fi
++		done
++		console_msg "HK-noise: nohz_full after isolation: $NOHZ_AFTER"
++	fi
++
++	echo member > cpuset.cpus.partition
++
++	ISOL_RESTORE=$(cat $CGROUP2/cpuset.cpus.isolated)
++	[[ $ISOL_RESTORE = "$ISOL_BEFORE" ]] || {
++		echo "FAIL: expected '$ISOL_BEFORE' after destroy, got '$ISOL_RESTORE'"
++		exit 1
++	}
++
++	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
++		NOHZ_RESTORE=$(cat $NOHZ_FILE)
++		[[ "$NOHZ_RESTORE" = "$NOHZ_BEFORE" ]] || {
++			echo "FAIL: nohz_full not restored: expected '$NOHZ_BEFORE'," \
++			     "got '$NOHZ_RESTORE'"
++			exit 1
++		}
++	fi
++
++	#
++	# Reject all-CPU isolation (must leave at least one housekeeping CPU)
++	#
++	console_msg "HK-noise: reject all-CPU isolation"
++	echo 0-$((NR_CPUS - 1)) > cpuset.cpus
++	echo isolated > cpuset.cpus.partition
++	PART=$(cat cpuset.cpus.partition)
++	[[ $PART = *invalid* || $PART = member ]] || {
++		echo "FAIL: all-CPU isolation was not rejected, got '$PART'"
++		exit 1
++	}
++
++	#
++	# SMT safety: partial sibling isolation
++	#
++	console_msg "HK-noise: SMT sibling constraint"
++	echo $TEST_CPUS > cpuset.cpus
++	echo isolated > cpuset.cpus.partition
++	PART=$(cat cpuset.cpus.partition)
++	[[ $PART = isolated ]] || {
++		echo "FAIL: could not create isolated partition, got '$PART'"
++		exit 1
++	}
++	echo member > cpuset.cpus.partition
++
++	#
++	# Nested partition: parent root → child isolated
++	#
++	console_msg "HK-noise: nested partition inheritance"
++	echo $TEST_CPUS > cpuset.cpus
++	test_partition root
++	mkdir -p HK_SUB
++	cd HK_SUB
++	echo 4-5 > cpuset.cpus
++	echo isolated > cpuset.cpus.partition
++	ISOL_AFTER=$(cat $CGROUP2/cpuset.cpus.isolated)
++	[[ -n $ISOL_AFTER ]] || {
++		echo "FAIL: nested isolated partition not reflected in cpuset.cpus.isolated"
++		exit 1
++	}
++	echo member > cpuset.cpus.partition
++	cd $CGROUP2/test
++	echo member > cpuset.cpus.partition
++	rmdir HK_SUB 2>/dev/null
++
++	#
++	# Pressure test: 100 create/destroy cycles
++	#
++	console_msg "HK-noise: pressure test ($LOOPS cycles)"
++	echo $TEST_CPUS > cpuset.cpus
++	for i in $(seq 1 $LOOPS); do
++		echo isolated > cpuset.cpus.partition
++		PART=$(cat cpuset.cpus.partition)
++		[[ $PART = isolated ]] || {
++			echo "FAIL: cycle $i create failed, got '$PART'"
++			exit 1
++		}
++		echo member > cpuset.cpus.partition
++		PART=$(cat cpuset.cpus.partition)
++		[[ $PART = member ]] || {
++			echo "FAIL: cycle $i destroy failed, got '$PART'"
++			exit 1
++		}
++	done
++
++	#
++	# Stability: after pressure test, verify final state
++	#
++	console_msg "HK-noise: post-pressure cleanup"
++	echo isolated > cpuset.cpus.partition
++	ISOL_AFTER=$(cat $CGROUP2/cpuset.cpus.isolated)
++	[[ -n $ISOL_AFTER ]] || {
++		echo "FAIL: isolated set empty after pressure test"
++		exit 1
++	}
++	echo member > cpuset.cpus.partition
++	echo "" > cpuset.cpus
++	ISOL_RESTORE=$(cat $CGROUP2/cpuset.cpus.isolated)
++	[[ $ISOL_RESTORE = "$ISOL_BEFORE" ]] || {
++		echo "FAIL: final isolated '$ISOL_RESTORE' != '$ISOL_BEFORE'"
++		exit 1
++	}
++
++	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
++		NOHZ_RESTORE=$(cat $NOHZ_FILE)
++		[[ "$NOHZ_RESTORE" = "$NOHZ_BEFORE" ]] || {
++			echo "FAIL: nohz_full not restored after pressure test:" \
++			     "expected '$NOHZ_BEFORE', got '$NOHZ_RESTORE'"
++			exit 1
++		}
++	fi
++
++	cd $CGROUP2
++	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
++		console_msg "HK-noise: PASSED (with nohz_full verification)"
++	else
++		console_msg "HK-noise: PASSED (nohz_full skipped: CONFIG_NO_HZ_FULL not active)"
++	fi
++}
++
+ trap cleanup 0 2 3 6
+ run_state_test TEST_MATRIX
+ run_remote_state_test REMOTE_TEST_MATRIX
+ test_isolated
+ test_inotify
++test_hk_noise_isolated
+ echo "All tests PASSED."
 
 -- 
 2.43.0
