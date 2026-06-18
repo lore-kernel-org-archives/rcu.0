@@ -1,135 +1,157 @@
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306613E95BD
-	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 13:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B7C3E1729
+	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 13:11:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.125.188.123
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781788023; cv=pass; b=D51pihoOI0qbaFVYXaRPRs1Q+OrwUfZU2VHbkoaPUI9GhNAekEFiozJ068uIymvilE9jX+hZS9YR2nEJb3fQ2+IqTLUc+CHPufanFtibwBQWfn5Tg0hHOYxMtnEbvXcKQmGuhgYe06LUwelGYuiIMOW3cO5lVg6mykLeto2d8Fg=
+	t=1781788305; cv=pass; b=m22hIi30NONxkUWh435a56OSWKP/EZhE9AQfz9HWmB+zQQ+8zCIc5OD787mU6uJt/JLsI0DLMz+0UT8eZgQ7BXkdjEb64qBCKCbSR6pVwpOcsD/Xb78ykZThNef9O80w+51ANzy0hNOycdRvGShdBErAf8VDwgUTJoAI01iURLs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781788023; c=relaxed/simple;
-	bh=xLDEczlFg03N7NCLGvlcEdzsmuKKaWL0tH9EnNveSys=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jJ7FYHpHHcnv5gRcMkI56YLt4fiZEzmcTQaSW4/cs7G/Jh6A/nJGlxZrHXjt03nCcBCZQHFJkskv4Hc3dNOZ0ojm+RS1YSQOCI+ZkEeUC8oGQq7FUOcaBC0jz7cU2WwygROsaWyO3yD4vUPsErG/oWGTioXraeNl1yaS1tKy4kk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BjzQHTWa; arc=pass smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1781788305; c=relaxed/simple;
+	bh=Ikyt66TMlNKpG3woAwTQOhNuC+F7tCqH5WhDe9sQD5w=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YSGI74D8Wdng/cy800pG5duy7OKGGDOEYbaJhcCh7bx9e4hcGC3yfUbVIfRm3BlWOCBEBiJ2LaVY4dgsDn9bZGT40p1G5KQ081y9JebR5UvCrmcsRPwCVgWbweDjjf99Da5YchmCLp2r+perfQ351OXRVFIIElo6ZGnDJ03kCmE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=l7lBrjx/; arc=pass smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BjzQHTWa"
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-491609cdd8fso5203165e9.2
-        for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 06:07:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781788020; cv=none;
+	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="l7lBrjx/"
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 88A303F85F
+	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 13:11:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20251003; t=1781788299;
+	bh=Ikyt66TMlNKpG3woAwTQOhNuC+F7tCqH5WhDe9sQD5w=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=l7lBrjx/i4WZD1f4Wfxq71E84Mk5upv5cobBaRXhDUlFm7y6qHXwZy7DRfz8oJfSK
+	 KI7degmeiyUGkduQJC+G2el2K2yUTdq9DP8qx8BaMaRgPahfgkmgS/9LmDGV4hCrwr
+	 qgNuwcMqAtDucYs2wUOmGoZlYIQKtgNXSwTWOQtouvtDEQjhQERt+Da5NoYFPDJIjf
+	 eE0+/wnVNnsXZBVbg7C/TjrM7wtBVs0g/egEnAOldxr1WboZjg3noItr6WGO7u56uS
+	 t1UDo9n0sTQZjAElbRNS3w3fVwmIrd70BzioI5OD9Jk24SuoBM3yGeKWCLOky/iVoC
+	 siEjw2MwFHZ5JoRhUefwiLDSYQnUUBuoddHieM5ZWl+qJh74xtqSxxkBVVJ00Wki2d
+	 WyJ828StNI2NbPEvnxuLto7dKtxqhSTlXYWMTLBgAMfJxllxACcvYPT5eo0O0Ey0v/
+	 iGiH71OW+YkCbAo8kxi0pIWmJa8UdGuMe4ZvIFGvqCqMzWPBY9HN53R/+sYOSZ6fCl
+	 ibqanGkJxFb2ihN6MR6XuKVzD5s6AR6h4DETyiI/s4S/WZWoP1N2DmNvw8H8RgiUaW
+	 T1AHO4aq5WT2kR/vmsSnKgVo+mtT0sE3cdMUvha5LxZg4wXkwpzr1XFJfKBxHtLXIb
+	 TqPsm1ri7AFoAUAsgGmjuDmM=
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-c04a3ebafd2so95307266b.3
+        for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 06:11:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781788299; cv=none;
         d=google.com; s=arc-20240605;
-        b=KqeFmRTHE+BzD2dE+zveOC2IndihNIzTrxx7mHieJzdWg5b2SoqEBe3iaCh4NLUMe0
-         nqpbUeU7jT/+1wF5gONvgoI3poCCteL0pJBKVcrgsW7dkVc+bquzq6Ge1147jaWhv/3K
-         nUdn/uWopPgTsboosvM3bflhfOkxo31o1/yLq7py7dzW9+pv9aJ96JzpUFxaCSznJZ1M
-         m9pY0Zpoh61RUUa/QvynJ8yeJR85evf6ZbLiB2Bw9KPRxFFVqjwO/D3so2yyLzvKzsFc
-         7oXC/Tk6uyKy4R/vsHqoqaa0ME92Nqs/eDxUwTMZJ37tsOi/xVcvObSq3n8CFOrEAys3
-         E39Q==
+        b=CCycQ0dZ/NjCTBL2ONuz3fPrCKkSwhfmANpx4VGtNpUNy1cRfR48H0R3w3oyGFOsC1
+         s9FUvCtXFtmQ1Hmd2v2OMdK5/d9JQPiugtOh9Vc4GUnzNrV/qytNLOA8sROdc3FU0v1A
+         TZzrAdgB+Q58u6Lyb3N8qqdrIhW4d8AOaw/N7ktmrmR+ovAVkw6Bn7SXj/rVeEXOj/et
+         FI9sL2l26C+82JVZ53zJai/OXoIMAkF0HxtLW+a7KNo9rRNRFR+fUT8K7lZ+8lPcZYoD
+         It6f+HgqAIDFRTORcumH6ksnTqIHO5kYo7XB6e3HTOZOOm1mQXKtg57aM2lYgXnTKyVL
+         xzqg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=xLDEczlFg03N7NCLGvlcEdzsmuKKaWL0tH9EnNveSys=;
-        fh=N1/pMCuNMexQn646z84fYsGhYQe2HDIjEhEaNHkiwJ4=;
-        b=KXqp7VBtgvLd4fLrHFrTC1rCrowIqr1fmTw2Qp5MdHO8lJthgcJcsaFA7diJpwMYen
-         EHj7wDNAvd7SR78J1mUWQNfs8utDuR1dGMP++KAkK2O6z1BrN8TEv9yXp8sTkLCNciby
-         V5kjRdcoP01qefhprbtCtPJ2Bxj0gSbt9hzEifaxkKEGMXKA4+suIXngE/L47whIWUfX
-         Lxk/eaMdB/atJ8mu6VHW7NcecZPrweH3J+wukkZEl4pW0W0/8j3MgB3cVYEwn46Z6y6y
-         C8fTGJ7fCLE7/0Ern/Q+9IngDQrxwRhfV37lpi1Iu1K689LHHTx5dRvY//ELbUtJ3lvm
-         OAtg==;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version;
+        bh=Ikyt66TMlNKpG3woAwTQOhNuC+F7tCqH5WhDe9sQD5w=;
+        fh=rNJQqfssN5gThYivpsPN3Ja8+GkdGdYMyweFLXBSsfI=;
+        b=HcVw33vWCa5xs71NNASzF02VtEnt2coz7LCPioN9qODE//hh4r99E5G/Aq9SzypDER
+         diX8PviwuyJ6x0a7WzWlwZ7w/VnAhOr8G5NnH9pDGvvLanHE2x81sHBP6Af/lo1j7qAX
+         VYVc+ER8aJ4VgAFysYA3IR4H6d6ELaHKUhJ6sRKYESzJZWyHlGvCQ6gxYfQ3YmOMlvQX
+         7qoqW2gc29FQKORP/Xx2ciaFWx75mmtw6nCrofQTG67rz+ruiTZGEmMpSNxLtzbwgVSI
+         so9TqotLFLt5mNCVX9kJzxMOFPDC8J9g42I2gJEiBnDclFKsbBcgnZP1l98o6TI/Sj6Y
+         CubA==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1781788020; x=1782392820; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xLDEczlFg03N7NCLGvlcEdzsmuKKaWL0tH9EnNveSys=;
-        b=BjzQHTWaGrlElZhTphqsaonDcnsCRrcbgD/mIhHASznoB7+YzFpV/ak6WLmTdbr1H9
-         jWt8eWYEerrspbdLy7Fr5QqvJZO2m/6WLGRmc6fsRAXf5vZavpUSFUHlSwGIGkahtKA0
-         ryVYRtspqcOar8q0qjAUWlo5XSoEpdtcRKm+JhGyohKi3sogAKrnL2CtXS29pot/dy+b
-         R0xWab/uz8Yd6AyPE5kbtsmwfs9NZUvQw5GvaPxcweUgav9iBKuoLQ87usWPd30QN5Pm
-         I1GQSHxItMA42nhmBIuH+QIGyl2M8MC+9M8+IYm+BBxp6cznHaNO6odR9P2Z4aa0AE2K
-         1jQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781788020; x=1782392820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=xLDEczlFg03N7NCLGvlcEdzsmuKKaWL0tH9EnNveSys=;
-        b=nvdgbkZrJ0gNRwBEKE9v0ps4YNU/1Kan9FUxJuiWrgN6p3L7GXc6HfrhwYqY32g7nN
-         Z9guHGjFLkCxxAR6pbRMCwft1f4aiwpa1P0JQoIPAVB+vjgB6S4/Kyxg/4C5qdsoyOk4
-         ueIUvpmvIfgkn7035h3kvkaJRV85Bo0j+zNWc7/YfiE9kda0e+WilxDpGd9lIgvkJY/J
-         WbFkWfVqqKhw0Gvc6ljUCcZfvdgtosL9sBYPeSiFTwlMGEpv2lF18XZHBbOY4Ug6Tm6M
-         /ntID1of0QRdDx2rC+NSlW2QENL5BKgidI3/4wfC1jiMxPKAla/msGRC7loIYwjs8vjm
-         hhgA==
-X-Forwarded-Encrypted: i=1; AFNElJ8KHgTWRLlmgpEZcCiK2UnMEEEnG5h+F8pvv83SDZNvcP61EdmS2hPS8WQyKYmAXja1PhY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyD1paudDa6bGFPxshF2TvDFSARryiVHyf5VrwWwPG7HiiPIzRv
-	GLXLeiMyN78OfWOkuFkJC8UonINvl1jsY8UcqHKWzmv2q1xpDH/wq2WNoaKNGddhHLLFebaxvmG
-	mSp23hJUD5XhHxt7mlIPjsf1QQlyLolflBBP0ibGW
-X-Gm-Gg: AfdE7clmFf6VvkV1G4KK0QGyEmesXhZ5unxfFdihX6895VJ25DuX0FSxFIbWy1bBmn1
-	6f7Ut9ujN3tdnKz9dpHsAzdm8KoIGYqaP5zpoUDbkFAmLDZC5/TWCFQAS27TZgx32+e33ka3hhr
-	tGBxbeuvJsEof2RCHdO0k3xc+OvP5r6Jc9eY9Sic6IUkTKGbOgJggiPdWFfsBbSIIN4DyuQqiFD
-	MZUsJ9icvgtuI+HApPMGgxliFcWPYY5Bs4p2aaY5O4yyDBR+vi0EhPtnZ6m/hKTBDMBhYWtQN0q
-	zoAc2QSs1Rh6g2J1rUlOebIo0KfDwNTqZJRBRdwbp/Feib/fsbWRWfgcUkWrWOsMQNtkIA==
-X-Received: by 2002:a05:600c:4c09:b0:490:b355:9c8c with SMTP id
- 5b1f17b1804b1-492333ca42bmr96135075e9.23.1781788019918; Thu, 18 Jun 2026
- 06:06:59 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1781788299; x=1782393099;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ikyt66TMlNKpG3woAwTQOhNuC+F7tCqH5WhDe9sQD5w=;
+        b=L2UjpHxU+V31hQeVu/ksxKKDOvfyO7M6AREqI8tS6GczsTh29Uom9iHejBJf4jwUi9
+         iZDUiioU4IjtHbP/mMDhHq/tDcRMPHcqLsUXFjHCXXIWofdJri3IPD/zZY6g9Gn3dqPx
+         wNLgVUr7j90SYqA/3YuU2OFgVBxfYG6pLQxN9iv3NMpdctwuS+5+ShE+7DD0wSOcyh1t
+         NUG6UpszlQiP4fH1F6icq9KuLt1E0Tzp1m748ZBvKgHSeh7IR714L6hUs70OT1lKkJL+
+         T3Wgx+oZfMFmTKrGFmymZTDkpEfG+ltpe6G7q8c83fRKqZH3egJK+vLkVbTGQRGaVumC
+         6XqA==
+X-Forwarded-Encrypted: i=1; AFNElJ9oOl0Ew+KRfH3YpWZspXo6jE5fWboEJ6p/qSxmShVAuHZbfMKPkU1Zn6ni7i1DCIbbc5c=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxHIomDTcWXH1nKAlcb9q1DRwLcJr8r5TJ+bRyq43No6mpemP/P
+	/BWf3A0pnpWue4hFv0fjmXy5qYhRjBCrBIulWboG4e2nkUIa8Gc2vAfWjoTpA/YmMXDOBCG5ppE
+	U15XurOAHsiki+RyOlAoP2scLHeZWIrqiZ9pXCDaqNSH2sp8CXeeNiq5BHouoyGBvefMH27Cw/p
+	EIedED0HTtlJwKIkzD9/VB7SNGPrw+nKmhxs+akDaN2YQz
+X-Gm-Gg: Acq92OEworKLLgYKq+OYfjLl92v6rhDe1VGbN0ONLhGv3AbtnU4evMRQopB2mUEOK/N
+	soYsxpWiPHr1L2PVhjApUu9odnJKCAMOPdKe+uKCemh14hxoTO2yMJzbaZ1A0l33J7S4qTYS0Up
+	+GWdEBZf0FADIng6WSiDMRbpyCwpKtAxmrvmARusULNu1DTBjDaUrBkl0yOt76axrqpQ==
+X-Received: by 2002:a17:906:cc47:b0:bec:e6ae:2f69 with SMTP id a640c23a62f3a-c05a4720184mr330889266b.30.1781788299096;
+        Thu, 18 Jun 2026 06:11:39 -0700 (PDT)
+X-Received: by 2002:a17:906:cc47:b0:bec:e6ae:2f69 with SMTP id
+ a640c23a62f3a-c05a4720184mr330886266b.30.1781788298585; Thu, 18 Jun 2026
+ 06:11:38 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 18 Jun 2026 08:11:36 -0500
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 18 Jun 2026 08:11:36 -0500
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260618095952.3687099-1-phasta@kernel.org> <20260618095952.3687099-2-phasta@kernel.org>
- <15e81f5bf354cbe3cde765526762e4ebb3ef6970.camel@mailbox.org>
- <ajPa4_U_gcxr8SKO@google.com> <81c530248789f79da265da772a6f248a0d524eed.camel@mailbox.org>
-In-Reply-To: <81c530248789f79da265da772a6f248a0d524eed.camel@mailbox.org>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 18 Jun 2026 15:06:47 +0200
-X-Gm-Features: AVVi8CeK2MScB-t7m9DsXQaFm4-l0PDopN55uoi7q9D_cmJhkYOY8sxrgmKJWI0
-Message-ID: <CAH5fLghB3Q-Mc4YzVMX3nGVSTzfh=jqFzsLMcXqXLTiVcgxhKg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] rust: sync: Add abstraction for synchronize_rcu()
-To: phasta@kernel.org
-Cc: Miguel Ojeda <ojeda@kernel.org>, Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>, 
-	Trevor Gross <tmgross@umich.edu>, Danilo Krummrich <dakr@kernel.org>, 
-	Daniel Almeida <daniel.almeida@collabora.com>, Tamir Duberstein <tamird@kernel.org>, 
-	Alexandre Courbot <acourbot@nvidia.com>, =?UTF-8?Q?Onur_=C3=96zkan?= <work@onurozkan.dev>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Lyude Paul <lyude@redhat.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang@linux.dev>, Christian Schrefl <chrisi.schrefl@gmail.com>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, rcu@vger.kernel.org
+In-Reply-To: <20260320222916.19987-1-boqun@kernel.org>
+References: <ab2yd35rm6OgZUmb@gpd4> <20260320222916.19987-1-boqun@kernel.org>
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+User-Agent: alot/0.0.0
+Date: Thu, 18 Jun 2026 08:11:36 -0500
+X-Gm-Features: AVVi8CdNkaVYBWAhyDgLK0vLSd4h3zxECQx9FcmqMplPRvrgTirU1SNRffTdnLU
+Message-ID: <CAJM55Z-hiNDuu5UwoBe7m0wq+_WJrRY0cwopALUgpG+r3ixj8g@mail.gmail.com>
+Subject: Re: [PATCH v2] rcu: Use an intermediate irq_work to start process_srcu()
+To: Boqun Feng <boqun@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, frederic@kernel.org, 
+	neeraj.iitr10@gmail.com, urezki@gmail.com, boqun.feng@gmail.com, 
+	rcu@vger.kernel.org, Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrea Righi <arighi@nvidia.com>, 
+	Zqiang <qiang.zhang@linux.dev>, Samuel Holland <samuel.holland@sifive.com>, 
+	linux-riscv@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 18, 2026 at 2:47=E2=80=AFPM Philipp Stanner <phasta@mailbox.org=
-> wrote:
+Quoting Boqun Feng (2026-03-20 23:29:16)
+> Since commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms
+> of SRCU-fast") we switched to SRCU in BPF. However as BPF instrument can
+> happen basically everywhere (including where a scheduler lock is held),
+> call_srcu() now needs to avoid acquiring scheduler lock because
+> otherwise it could cause deadlock [1]. Fix this by following what the
+> previous RCU Tasks Trace did: using an irq_work to delay the queuing of
+> the work to start process_srcu().
 >
-> On Thu, 2026-06-18 at 11:47 +0000, Alice Ryhl wrote:
-> > On Thu, Jun 18, 2026 at 01:40:05PM +0200, Philipp Stanner wrote:
-> > > Moreover, this would be an opportunity to change the naming conventio=
-n
-> > > to rcu::synchronize()
-> > >
-> > > But since Boqun & Alice are pushing for rcu::RcuKBox for the reason
-> > > that it seems desirable to explicitly highlight that that's a special
-> > > Box, I guess we should be consistent with that and also have "rcu" in
-> > > the name here.
-> >
-> > I prefer the naming of synchronize_rcu() here.
+> [boqun: Apply Joel's feedback]
+> [boqun: Apply Andrea's test feedback]
 >
-> We might be tempted to at least call it rcu_synchronize(), though. It's
-> also RcuKBox, not KBoxRcu.
->
-> But I don't have hard emotions on that topic.
+> Reported-by: Andrea Righi <arighi@nvidia.com>
+> Closes: https://lore.kernel.org/all/abjzvz_tL_siV17s@gpd4/
+> Fixes: commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms of SRCU-fast")
+> Link: https://lore.kernel.org/rcu/3c4c5a29-24ea-492d-aeee-e0d9605b4183@nvidia.com/ [1]
+> Suggested-by: Zqiang <qiang.zhang@linux.dev>
+> Tested-by: Andrea Righi <arighi@nvidia.com>
+> Signed-off-by: Boqun Feng <boqun@kernel.org>
 
-I don't think we should change the C name without quite good reasons.
+Thanks for the patch, which is now upstream as
+7c405fb3279b ("rcu: Use an intermediate irq_work to start process_srcu()")
 
-Alice
+Unfortunately it seems to halt booting on the Allwinner D1 single-core RISC-V
+SoC both on the 7.0 and 7.1 kernels:
+
+https://esmil.dk/d1-7.0.txt
+https://esmil.dk/d1-7.1.txt
+
+Reverting this patch seems to fix the issue although it then breaks when loading
+modules which is can be fixed by reverting:
+d6e152d905bd ("clockevents: Prevent timer interrupt starvation")
+
+This might be a side-effect of reverting this patch though.
+
+We'd really like to continue support for this SoC on the 7.0 kernel, but since
+this patch is a bugfix just shippping the revert doesn't sound appealing.
+So some guidance would be much appreciated, thanks!
+
+/Emil
