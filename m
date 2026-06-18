@@ -1,67 +1,67 @@
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C169A33ADBF
-	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 03:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19D9331EC6
+	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 03:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781752346; cv=none; b=i3CuEKlVq0ADkzHX9AF5zrsd3Ddv4UmM0KEMbRDbyUa71FGa/hotKkD36DtV4biYMV6uDr6xh2a0dzciZw3mOSMPjG/YuxQqQhPBoJtInnG5LC2ZI70CCB9SxBRClSylPcKJD85peyICcKVLiL+iqJ39gRj9a8oJ1q15+eTP6eo=
+	t=1781752350; cv=none; b=gejUNkPpemuel4jsvpTtqv5+bDpQZjMuqDihKKtQDxG+whKCCNVfhn6CwImmOWx5SuwQdUCyLd3F12jSNBQcbhbQd5R7H9w/h4CREoDoJZ6UEs2U1MyPpGerBjgt5RyKGhAgFnkBCITF3npbOaEmQq8k7xrVTWX+unNVmbCO6mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781752346; c=relaxed/simple;
-	bh=SZOR3Po26I5px5IWl3qao5Q198zBGy4no+Y9jQCKPSI=;
+	s=arc-20240116; t=1781752350; c=relaxed/simple;
+	bh=CGVA/ZVSxDQwk3QuV1O5/oZqn1YqVi8jf66NBKmDl2E=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Vja/C2uLFTjofLegEv78caYa1WBiTrxkCxT/ORE75j2tACgknS6OIexoyD5havjJMmulqKGErt5U7x66F46ObazJ9ePAzK9ezeeCJ7lEmQ5b+dO01RFQ6R/NYUJ1XAIoF60mFv1owKewyRaypGopsM2b1hymqszshQK3tCXxonE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PHAmH5IP; arc=none smtp.client-ip=209.85.215.170
+	 In-Reply-To:To:Cc; b=ei7E3U4WlMTI2npYtIeP8/LYakSeJOm1Ouj4/3yah8OONO3ITN7But854+/zi/FRgzsIeqm3TvHmUn0fUOCT2A3Mw3+8dy3jMwVrZbtU+LtMEGlKLl5qJGYr3Pb9NPcx+A1OTbLFLKsQuxCNhxFQs/qbBwL2oOHzVNVsjgdpiUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SKV3MOor; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PHAmH5IP"
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-c85c531d4a9so173531a12.2
-        for <rcu@vger.kernel.org>; Wed, 17 Jun 2026 20:12:22 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SKV3MOor"
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2c40397e746so2965915ad.3
+        for <rcu@vger.kernel.org>; Wed, 17 Jun 2026 20:12:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781752342; x=1782357142; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1781752348; x=1782357148; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GTFQPj89QbzgFs0dMZHtOVwajXrW91e6WK1jm8uL+Eg=;
-        b=PHAmH5IPLrZV/EG6wS1qTEkI8DsVC2qRHijBIoPG3bGf1q3aI6OaG8IstQ5gFY71XG
-         12fAD4RRLw00mD/USJ0d/0FKlgopsQ1jjimgtHGVHW9GugaUGexPgRn0+OnXlEgCQpjM
-         Mc4K8w9N79gZTqi0th0g4YJ9lLFmWuSv03IeKxSmZHHmeIfKJNcoH7kfsDp8jdureFKM
-         pQT0KP1oL17uD3r0omav7WTSTnxzVfC3w3LsYpY3uvEmuFbcNnj+Co9FEPlEpNhzLtJA
-         C/W0QhGHNrDB67BAbRYD4wXkhS5aovYwUpBeAadRGLCO6nEdUFmZNtJjnjj+c6kXiDg3
-         YVtQ==
+        bh=jSeuXyNGDp0AEfOTbyJ0TXed/qE2r/+QX9gKv1aP6Yc=;
+        b=SKV3MOorcrjwv4HA9Mg8Ix23s1nMLV28lvCxj2kIbssmS4bXrK2jSPDkwBifo5gJw7
+         wSKtcC8O9qdpYPadAeq/CTzZhC6LkcTE3gIdRSduX1+t1i+lG+71BZl3fUb4CKTtzDWu
+         8hkvlCYTlj7XEKRbAhGc2dt5stId3Dq7VEqoC8GKcwb5/HaZ49r5iZ8Waus7OzN9O+Kw
+         dxh0g1eYs7ay1/x9E3KZeSOD7WgAz27Uh/QAoGmi3scboQdvwuoki4eTEbJJz272YcuY
+         SXP0ltz7A6aPr8F+OKocWKUQpUTnS3y9XkuNTbhsZqrcD6+AqjermA3T32B6w1jGxp6e
+         5zcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781752342; x=1782357142;
+        d=1e100.net; s=20251104; t=1781752348; x=1782357148;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=GTFQPj89QbzgFs0dMZHtOVwajXrW91e6WK1jm8uL+Eg=;
-        b=P3XfaDTePSKHgc3xCKqzZYj1YS0mbz0kTaq0TjfvWErsn0vOkF5c+vLBokbNRQwgPO
-         QgbwXS7+hekloOzr64Bv3oUczW3dQNUgu+yqGzMj9ap+4MIVdCzQFXuncmQCtwIFO0EO
-         uC0boQIvA22DIaG0xtoHHOu5fUaGyNS7J7Fg3MiugJnpYiHMO4v5w//Umrzpo/4VGaBJ
-         cU9d9nX/zUNY/9XvTUw5iqgVkMtkxICQxQF7GpM++WK0CvX1Ok9nM2vglGgxoIxWm/gE
-         E7HMHyPJJQ2SsXR/jK+JHBm3gKtJ76ZickXqCTjW0mHXr90W+95YDXtdxuM5H98z/KbR
-         0v+g==
-X-Forwarded-Encrypted: i=1; AFNElJ90xQ9I8EqzWHLIoRnGJ6TvhTdOOIUf4b4ZuImTp7V8vhH/usGYHC4nQkZduj0aCMFjDU0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyainOVZ+j938kM8Y6lQH7YripF9t0I4ZO/vmuxHv2CXTosl8qf
-	OnN6TiwROmyh0/ecUFpQ7+2FnA9U5ayqsBYwUi8MiakPVaQY6WKYVEeU
-X-Gm-Gg: AfdE7cnH35L/3LGtp565fRGCbj3cUmL+JmDamMNrj5z2ddqBC0agmh7sWny83xFnBep
-	5KeD1aLNGRWrVY3vH2mqjbTU67HPv0aW4+yqvPQSiBUcy1kCd1eTr/kxoiH7u+7fSk7ZDi0oH6T
-	3Axt9wGucfTO4sr9DOW+2bcdUwz5HRgcEuZ1Ik4msvzKdZzAGpyeJOV+3KHIB64AVijMlkNAViA
-	EiHW5cotX/jD8Aj1AJ8B03ppct78LY/mFxEh+mKcccOsYSGmSp6XFo5IMj5g19I11iJPmSJ9SqN
-	3grOQID+LNHIL/84CvmQ/SWrQscBY2XXX+jPm+Kcf3qp6qKh1lsQAFsO7kTT+ZtQBLd2MpQb3Ar
-	79ZBzBmEJDXpwOyEEHpla0Mx5OwDM7hP9BXKCIEgGa1tzsTNIWcTFJ4SMSJ2QaP4ZEL4CBI6MPS
-	uTGOmpWgIjCi0=
-X-Received: by 2002:a17:902:e54b:b0:2bc:b80f:6782 with SMTP id d9443c01a7336-2c6e484a87fmr17591495ad.11.1781752342087;
-        Wed, 17 Jun 2026 20:12:22 -0700 (PDT)
+        bh=jSeuXyNGDp0AEfOTbyJ0TXed/qE2r/+QX9gKv1aP6Yc=;
+        b=Mo18BUCBuvDhSq91dhryQRc0V5awZcYq0RuhNjNekN/eQo9a7VQRif1shnOiOpMJ30
+         LREK5kkOv5/na4BrTlaKoJoQBLJQlak4w3FUyVUv8GjTm5c9SuO/yOgDy137XcbhXL1e
+         f68jrKqYfO2PCbBgnv6D205e7NgPk9nF/rfrAoYuwmLWoGh+qo8Y63q8wqkemyIq7I62
+         XwBJZyots2024rB5+NSZn8yVgSN14vc9ikDdsoDljUVamLf4UX5sw2oxmFwkgcr+27kE
+         YaW4EIw8VfrEUA42V/PL7kYC4jC3kOw3impFxFhNa1ogb7itDLjAfX7pG/c/V26mK6Uh
+         sAxQ==
+X-Forwarded-Encrypted: i=1; AFNElJ8WWhEtt4mcgfxMRZ+V7bN4Quzjd3GY1ssc1mqVeO9kyENg1pVD+l0YHxFc+ZKUGNNHdIE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0xaCMdnBKo8P9Gmcyc2DaXfJJ+Kd7Nbld3AEqJuI1PCONao1H
+	ADFiWbMokb7OmY9Vs2ndOmSbYrbaLVuZAuyJo+Knhs1kfdv6NFUhgeor
+X-Gm-Gg: AfdE7ckRfButdZG9/c2Xu33JQ17OmsJZXGOXteRYft5V/xzLITdypYMH1n1JIcRYz3L
+	2Sr1pKOARu5jMxX7QI62Jq5bhffpME9d0JA3AqBR0F0jQ7ccdi58LiW93VE/dsaXiOi2DXJkhrO
+	dAsDFgV+gPCMWcaFFFG4SMRUtbdQte3qtpLuiRJdrJTvkLjfKcDYjA5H2fRVlNgjH4hX3P5RwI9
+	PX0otRy3zY6vaijLA6jZwXq2jrc/5jqUMgY1iS2fdg7r2pLz6Y5K0aZK7jziJ27CVbZgmSZLgZc
+	jUp1bOa0wsqQpi/dYeDEy1v91L622FSz0Yh61nmHcMMz7r1RYWsrb2I/eTq/HtiS2rouzPyycFa
+	uFJ+TNyT2PEapKpTIkEpdEY49B6aoGotsxBtjStM4R3rWeftUT/bbGcMrmYP+6Q8bJ3jhpy5E8y
+	b+klV09LkWZlI=
+X-Received: by 2002:a17:903:19ce:b0:2bf:128d:f7ff with SMTP id d9443c01a7336-2c6f34327c6mr5866785ad.16.1781752348483;
+        Wed, 17 Jun 2026 20:12:28 -0700 (PDT)
 Received: from [127.0.1.1] ([138.199.21.246])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c6a403b242sm60152975ad.31.2026.06.17.20.12.16
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c6a403b242sm60152975ad.31.2026.06.17.20.12.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2026 20:12:21 -0700 (PDT)
+        Wed, 17 Jun 2026 20:12:28 -0700 (PDT)
 From: Jing Wu <realwujing@gmail.com>
-Date: Thu, 18 Jun 2026 11:11:20 +0800
-Subject: [PATCH v3 09/13] watchdog/lockup_detector: Register housekeeping
- callback for kernel-noise
+Date: Thu, 18 Jun 2026 11:11:21 +0800
+Subject: [PATCH v3 10/13] sched: Guard sched_tick_start/stop against
+ uninitialized tick_work_cpu
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260618-wujing-dhm-v3-9-28f1a4d83b68@gmail.com>
+Message-Id: <20260618-wujing-dhm-v3-10-28f1a4d83b68@gmail.com>
 References: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
 In-Reply-To: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -96,100 +96,51 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
  Qiliang Yuan <yuanql9@chinatelecom.cn>
 X-Mailer: b4 0.13.0
 
-Initialize watchdog_cpumask from HK_TYPE_KERNEL_NOISE rather than
-HK_TYPE_TIMER at boot, so the initial mask already reflects any CPUs
-excluded by nohz_full= on the kernel command line.
+sched_tick_start() and sched_tick_stop() are called during CPU hotplug
+for CPUs not in the HK_TYPE_KERNEL_NOISE set.  They dereference
+tick_work_cpu, which is allocated by sched_tick_offload_init() and only
+called from housekeeping_init() when nohz_full= is present at boot.
 
-Register a housekeeping_cbs so watchdog_cpumask stays in sync with
-HK_TYPE_KERNEL_NOISE when isolation boundaries change at runtime via
-cpuset isolated partitions.  The apply() callback copies the new
-housekeeping mask into watchdog_cpumask and triggers
-__lockup_detector_reconfigure() to restart watchdog threads on the
-updated CPU set.
+When the DHM subsystem first-enables HK_TYPE_KERNEL_NOISE at runtime via
+housekeeping_update_types(), tick_work_cpu remains NULL because
+sched_tick_offload_init() is __init-only and cannot be re-invoked.  A
+subsequent CPU offline/online cycle for an isolated CPU triggers
+WARN_ON_ONCE(!tick_work_cpu) followed by a NULL-pointer dereference in
+per_cpu_ptr(tick_work_cpu, cpu), crashing the kernel.
 
-When nohz_full= is absent at boot, tick_nohz_full_running remains
-false and DHM isolated partitions do not activate tick suppression.
-In that case watchdog_hk_apply() is a no-op: there is no need to
-reconfigure the watchdog CPU set because the full nohz_full
-infrastructure was never initialized.
+Since nohz_full= was not active at boot, tick_nohz_full_running remains
+false and the tick-offload infrastructure is never activated; isolated
+CPUs continue to receive their own ticks.  Guard both helpers with an
+additional !tick_work_cpu check so they become no-ops in this case.
 
 Signed-off-by: Jing Wu <realwujing@gmail.com>
 Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
 ---
- kernel/watchdog.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 55 insertions(+), 1 deletion(-)
+ kernel/sched/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 87dd5e0f6968d..998ad94da4cb9 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -1389,7 +1389,7 @@ void __init lockup_detector_init(void)
- 		pr_info("Disabling watchdog on nohz_full cores by default\n");
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 371b509d92164..df004e3efca70 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5778,7 +5778,7 @@ static void sched_tick_start(int cpu)
+ 	int os;
+ 	struct tick_work *twork;
  
- 	cpumask_copy(&watchdog_cpumask,
--		     housekeeping_cpumask(HK_TYPE_TIMER));
-+		     housekeeping_cpumask(HK_TYPE_KERNEL_NOISE));
+-	if (housekeeping_cpu(cpu, HK_TYPE_KERNEL_NOISE))
++	if (housekeeping_cpu(cpu, HK_TYPE_KERNEL_NOISE) || !tick_work_cpu)
+ 		return;
  
- 	if (!watchdog_hardlockup_probe())
- 		watchdog_hardlockup_available = true;
-@@ -1398,3 +1398,57 @@ void __init lockup_detector_init(void)
+ 	WARN_ON_ONCE(!tick_work_cpu);
+@@ -5799,7 +5799,7 @@ static void sched_tick_stop(int cpu)
+ 	struct tick_work *twork;
+ 	int os;
  
- 	lockup_detector_setup();
- }
-+
-+/*
-+ * Watchdog housekeeping callback: resync watchdog_cpumask with
-+ * HK_TYPE_KERNEL_NOISE when isolation boundaries change at runtime.
-+ */
-+#ifdef CONFIG_CPU_ISOLATION
-+static void watchdog_hk_apply(enum hk_type type)
-+{
-+	const struct cpumask *hk;
-+
-+	/*
-+	 * When nohz_full= was not given at boot, tick_nohz_full_running
-+	 * remains false and the full nohz_full infrastructure was never
-+	 * initialised.  DHM isolated partitions do not activate tick
-+	 * suppression in that case, so there is no need to reconfigure the
-+	 * watchdog CPU set.
-+	 */
-+#ifdef CONFIG_NO_HZ_FULL
-+	if (!READ_ONCE(tick_nohz_full_running))
-+		return;
-+#endif
-+
-+	hk = housekeeping_cpumask(HK_TYPE_KERNEL_NOISE);
-+	if (mutex_trylock(&watchdog_mutex)) {
-+		cpumask_copy(&watchdog_cpumask, hk);
-+		__lockup_detector_reconfigure(false);
-+		mutex_unlock(&watchdog_mutex);
-+	}
-+}
-+
-+static int watchdog_hk_validate(enum hk_type type,
-+				const struct cpumask *cur_mask,
-+				const struct cpumask *new_mask)
-+{
-+	return 0;
-+}
-+
-+static struct housekeeping_cbs watchdog_hk_cbs = {
-+	.name		= "watchdog",
-+	.pre_validate	= watchdog_hk_validate,
-+	.apply		= watchdog_hk_apply,
-+};
-+
-+static int __init watchdog_hk_init(void)
-+{
-+	int ret;
-+
-+	ret = housekeeping_register_cbs(HK_TYPE_KERNEL_NOISE, &watchdog_hk_cbs);
-+	if (ret)
-+		pr_debug("watchdog: hk callback registration skipped (%d)\n", ret);
-+	return 0;
-+}
-+late_initcall(watchdog_hk_init);
-+#endif
+-	if (housekeeping_cpu(cpu, HK_TYPE_KERNEL_NOISE))
++	if (housekeeping_cpu(cpu, HK_TYPE_KERNEL_NOISE) || !tick_work_cpu)
+ 		return;
+ 
+ 	WARN_ON_ONCE(!tick_work_cpu);
 
 -- 
 2.43.0
