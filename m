@@ -1,50 +1,80 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB0A7083C;
-	Thu, 18 Jun 2026 14:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0881A301708
+	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 15:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781794653; cv=none; b=TTdu27IYSWv4jfvlJ+h7agzr4W0TSj2x0Mbt7tIpvHabyyfhJvOb8svzy+YRTogfEbf9IMVQFPWkfcYN+TxdlIf6uYZURR5nIjWw2X1JyCtXkgHEyofB9mDR3DOXXx9XFD1B3KZckymetTVDaN6lF6DDDaGIffJ4JAnnkZesrgg=
+	t=1781796615; cv=none; b=GcTzULG+oxKbbCEBFVwqjaIidXd1YlbBQgK6qgY2WWWuCv5CIFymJzBjCnWY8eJxOQ49f+VC4d5k/n2PLk8cO6dIM6w5R28ivJiKqP/pxWZbt4Jde0HGvZWkgjuPlbhls3lIafWp5FYBxpfP7PLNRhGrFw5FQC67dhyK9sqQVMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781794653; c=relaxed/simple;
-	bh=SKMYXZ1btuifYvtrFSVUersOg88ynq9Y0I1WxxrUmPg=;
+	s=arc-20240116; t=1781796615; c=relaxed/simple;
+	bh=F0XHc5tffhJfH2pxJrKh1dRi5hlbamYiIhKbtvvu7wo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HpqAmqYp5E0l1VuIFeeTXOF1pLEE/vlKMeX3AdgQpxivI9pqi6H4+uvRH77A4Q4V/0P49yyJaedU0brmcfekKccvUDRUz1xhKbjKcRGvcHw/6UOIbTeZsY6GRQvz80SY+G4mOwGvS/8ciVbZJIKXuzmqXkABMts+xTMt25ozu2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nwIQ7YCL; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=YhYifxmtI9LWgfY0wQaTWNF2y1ySc/cshd6XOsTGXQWFyDhWhhapT1sarAnaWVRdCWWrwCHsDDuDC3fH9f3AbtN4IuzMNOsSlYgXmh/aituSVsHbDlXOFtNe+tH3A46hGOuKjrjgCxbbeXIvA21zJjKq8JNI9hlEGSNYV6YFpO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T6bhc/hS; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nwIQ7YCL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3BD01F00A3A;
-	Thu, 18 Jun 2026 14:57:31 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T6bhc/hS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 723B01F00A3A;
+	Thu, 18 Jun 2026 15:30:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781794651;
-	bh=SWI1if1bHqKESxZg7Q+sI9Ol2KSZ/tXukzeQK7MU8u0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=nwIQ7YCLR1Q8vOEDyL07510reHtQWIxO+BfTkQfsxsRlbPPbfv3qYinCxjzx+urx2
-	 EKv/SN4i49zxUn2xIsr++yBFwcos4fX9fTcpw+70olfy+BQhQUtQpoWskteiOVVvCK
-	 /LrSB+nhVDfMyVc+Ezijomim2l64gvr6Es8FjMIWCV5sH1U0RnfxUaVBPqaI4niKI+
-	 dRnwGAS3QXRw0qGvVLvl9TkV8mMYkIEFhOzBLrqBzH2nzdY0zjBRfG6IaPh8BEh6OJ
-	 8avc4Do7ScxR+H7ZqsctDNVviXHu8s4fANdG0oMyOKUfH3CpdG5ZEEMlbekyE0N+p8
-	 GT9QhBxuo5S4Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 64D0FCE0973; Thu, 18 Jun 2026 07:57:31 -0700 (PDT)
-Date: Thu, 18 Jun 2026 07:57:31 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Usama Arif <usama.arif@linux.dev>
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Alan Stern <stern@rowland.harvard.edu>, lkmm@lists.linux.dev,
-	joelagnelf@nvidia.com, linux-kernel@vger.kernel.org,
-	marco.crivellari@suse.com, rafael.j.wysocki@intel.com,
-	riel@surriel.com, sshegde@linux.ibm.com, tglx@kernel.org,
-	ulfh@kernel.org, yury.norov@gmail.com, rcu@vger.kernel.org,
-	shakeel.butt@linux.dev, hannes@cmpxchg.org, kernel-team@meta.com
-Subject: Re: [PATCH] smp: Use release stores for csd_lock_record() state
-Message-ID: <cf092a63-a9bd-4ecd-8276-d4736a37d3ee@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260617212001.3658605-1-usama.arif@linux.dev>
- <831f9fb1-82a5-46ba-9541-b82c94e43639@rowland.harvard.edu>
- <2d4034d5-fa7c-463b-89c3-2725e4dbd137@infradead.org>
- <01437928-ff79-4d8e-823b-7f20146946f6@linux.dev>
+	s=k20260515; t=1781796613;
+	bh=G0BFgogMIJaXJGDiQZV8U4+rZmptmkIJn2CptvNFtEg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=T6bhc/hS1MHBzVVZKzC7XVkLTDaM/TdhjMUMJJKeAt5stfx0C67loUVDyLfaG+GHC
+	 zr86q5BW/me0499BiyTCsfTsyNYeyYxt89bfS7udF299hBDWrAA9fVyo9VVFtyNuGS
+	 QmvblVaaC5mcxb0CE9R3Go+IR2UuvXbpf4MZKnfnTedzEih14wPH8nvsa1HbIKABQS
+	 q8TcyohO8D7s69hVgfuGxGu37Rg+QPEgl0zCDepNrqp1PDwuaiYUZDC41ENrvLTqv1
+	 lYa9BJWGhHN8KfjSYFdKf98FCZVHgoR1zVlXXpcKApRUbYU21xWVV/MdtdAPjnJQs1
+	 m0ajXT/RWrJ8g==
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfauth.phl.internal (Postfix) with ESMTP id A31B3F40082;
+	Thu, 18 Jun 2026 11:30:12 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-02.internal (MEProxy); Thu, 18 Jun 2026 11:30:12 -0400
+X-ME-Sender: <xms:BA80asNdm4zfeiaBzam79lJw3tcCGaYgs6S-Gq28UcCJ6cAzM812VQ>
+    <xme:BA80an31-XoElJPaZ8UAjINBag02b3TjWULPS6FWTiqNfw2-B9PYHIE8etYHjDTZo
+    5f8vjolCza9H5pMNf3ZdkTxgbWhPtASbI5iIjmQvBPHYykNv53LIA>
+X-ME-Received: <xmr:BA80ar0chNeqDGcHwK667pBFihJT8iZUrsiS8Q8ehieYN4o1XvogBxdHf1Q21rWiEpTKFC77PGYkd7Ex_S6atJCsG7FZ64KL>
+X-ME-Proxy-Cause: dmFkZTFMbSsA9J0WA0JULckOoW50HX4x9J7CjHhu7BPf2uJHl9tL6yhfYmd3fMQmaZnC7G
+    Tr/s4dTY1dimqtLUA/YZxW5i13LqojtflIgd4qePbDl9cbd7L+fsC5SiCXaYmv9BDlIyJW
+    6x0jQMH9i+a38GTWd/jiHTQw7rOWqdzDIc0PDwuy3TYnzwSiQcSsQ9Fz2xWGaA5zW2aIae
+    wdTncdObWpOmv3iy8Ty7W/8VRKBfVNtIbFDT4nsW+sqww6ua5ZkM+1cqv67HjSRf5CE+Wd
+    8HZS1bExz/22zkg8ZXi3O2ei9xVRhG0mGUwNJQrfNNkrbXDVloyOHB1jdcg9c5iDdFZSH8
+    zGFHXGzLSKdX2E2XN5Mec2ykR8p1BWTmzA+P2zaoPD0E6JNH+0njNk0H0ihMZpJ71GaA9x
+    SHeygttBoPEDOdF0HVLZglB73bp/I1cg/I+jym6LvZfaB1xPoCyob4axdlBxF+JCJzaEfO
+    Fv4prp0UhhgnsEunGdDQCOJ+CiublHU2jnQcYkxyZ1tb17y59pZr9ef3VeMMisAFtDQR0H
+    LdyFEiWrC0/xGWPRikpHJ3d8dLPoNt0urnEkFD/KZczA8pdIrsQqsubBlOgd5rdrsSkt0q
+    ibCxLV/X3NeKLZjD4W663RcLECpAd4Hyf0v/0xwiQpjKunV7/zuSiCsJqJWw
+X-ME-Proxy: <xmx:BA80al9ZUbW6v9VLLraQyxNt3khO62Ln66VEiaRbEuNuQVDkfIPgeg>
+    <xmx:BA80anZOlhjWzK85EIMgg7DhiQnm2GiBrXFqd1muzhy0amkZF__HRA>
+    <xmx:BA80akxWuH7DqRvmMJ6Buave3_hderdbGJzDjOaTHafOLPf3F-qdgw>
+    <xmx:BA80al-_gIOcs3PcdKvxsDpgrNkdx9z4bu7MlsuH8MvMv7u6Nv9aRw>
+    <xmx:BA80agxssDfbSnCBIzh0f27rlH-WnzVstuKAjp3xbiCvX7EBfH-A-hXo>
+Feedback-ID: i8dbe485b:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Jun 2026 11:30:11 -0400 (EDT)
+Date: Thu, 18 Jun 2026 08:30:10 -0700
+From: Boqun Feng <boqun@kernel.org>
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	frederic@kernel.org, neeraj.iitr10@gmail.com, urezki@gmail.com,
+	boqun.feng@gmail.com, rcu@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrea Righi <arighi@nvidia.com>, Zqiang <qiang.zhang@linux.dev>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2] rcu: Use an intermediate irq_work to start
+ process_srcu()
+Message-ID: <ajQPAk_ALP-84obp@MacBook-0RXW5>
+References: <ab2yd35rm6OgZUmb@gpd4>
+ <20260320222916.19987-1-boqun@kernel.org>
+ <CAJM55Z-hiNDuu5UwoBe7m0wq+_WJrRY0cwopALUgpG+r3ixj8g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -53,121 +83,84 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <01437928-ff79-4d8e-823b-7f20146946f6@linux.dev>
+In-Reply-To: <CAJM55Z-hiNDuu5UwoBe7m0wq+_WJrRY0cwopALUgpG+r3ixj8g@mail.gmail.com>
 
-On Thu, Jun 18, 2026 at 03:44:36PM +0100, Usama Arif wrote:
-> On 18/06/2026 04:30, Randy Dunlap wrote:
-> > On 6/17/26 6:44 PM, Alan Stern wrote:
-> >> On Wed, Jun 17, 2026 at 02:20:01PM -0700, Usama Arif wrote:
-> >>> __csd_lock_record() publishes per-CPU CSD debug state that is read by
-> >>> csd_lock_wait_toolong() on another CPU.  The remote side first reads
-> >>> cur_csd with smp_load_acquire() and, when non-NULL, may then read the
-> >>> matching cur_csd_func and cur_csd_info fields.
-> >>>
-> >>> Use smp_store_release() when publishing cur_csd so that the preceding
-> >>> cur_csd_func and cur_csd_info stores are ordered before the pointer
-> >>> that csd_lock_wait_toolong() acquires.  This replaces the open-coded
-> >>> smp_wmb() plus plain cur_csd store with the release operation that
-> >>> matches the smp_load_acquire() in csd_lock_wait_toolong().
-> >>>
-> >>> For the clear path, use smp_store_release(&cur_csd, NULL) so that
-> >>> clearing the diagnostic state remains ordered after the preceding
-> >>> callback/unlock work, without requiring a full barrier before the
-> >>> store.  On x86 this removes the locked full barrier from the clear
-> >>> path; on weaker memory models it uses the release operation needed by
-> >>> the smp_load_acquire() in csd_lock_wait_toolong().
-> >>>
-> >>> The old code also had smp_mb() calls around cur_csd updates. Those would
-> >>> only be needed if cur_csd were treated as an exact live-state marker whose
-> >>> publication had to be observed before callback execution or CSD unlock.
-> >>> CSD stall warnings do not currently have RCU-style stall-ended checks, so
-> >>> they already allow the stall to end while diagnostics are being assembled.
-> >>> The cur_csd record is therefore best-effort diagnostic context, not a
-> >>> precise completion/stall boundary.
-> >>>
-> >>> Signed-off-by: Usama Arif <usama.arif@linux.dev>
-> >>> ---
-> >>>  kernel/smp.c | 8 ++------
-> >>>  1 file changed, 2 insertions(+), 6 deletions(-)
-> >>>
-> >>> diff --git a/kernel/smp.c b/kernel/smp.c
-> >>> index a0bb56bd8dda..5ba4a20ba77d 100644
-> >>> --- a/kernel/smp.c
-> >>> +++ b/kernel/smp.c
-> >>> @@ -182,16 +182,12 @@ static atomic_t csd_bug_count = ATOMIC_INIT(0);
-> >>>  static void __csd_lock_record(call_single_data_t *csd)
-> >>>  {
-> >>>  	if (!csd) {
-> >>> -		smp_mb(); /* NULL cur_csd after unlock. */
-> >>> -		__this_cpu_write(cur_csd, NULL);
-> >>> +		smp_store_release(this_cpu_ptr(&cur_csd), NULL);
-> >>>  		return;
-> >>>  	}
-> >>>  	__this_cpu_write(cur_csd_func, csd->func);
-> >>>  	__this_cpu_write(cur_csd_info, csd->info);
-> >>> -	smp_wmb(); /* func and info before csd. */
-> >>> -	__this_cpu_write(cur_csd, csd);
-> >>> -	smp_mb(); /* Update cur_csd before function call. */
-> >>> -		  /* Or before unlock, as the case may be. */
-> >>> +	smp_store_release(this_cpu_ptr(&cur_csd), csd);
-> >>
-> >> Isn't there a general policy in the kernel that memory barriers should 
-> >> be accompanied by a comment explaining what other memory barriers they 
-> >> synchronize with?  Including such comments is a good idea in any case.
-> > 
-> > in Documentation/process/submit-checklist.rst:
-> > 
-> > 3) All memory barriers {e.g., ``barrier()``, ``rmb()``, ``wmb()``} need a
-> >    comment in the source code that explains the logic of what they are doing
-> >    and why.
-> > 
-> > in Documentation/process/4.Coding.rst:
-> > 
-> > Certain things should always be commented.  Uses of memory barriers should
-> > be accompanied by a line explaining why the barrier is necessary.
-> > 
-> > but looking in the 3000+ lines of Documentation/memory-barriers.txt won't tell
-> > anyone about that.
-> > 
-> > 
+On Thu, Jun 18, 2026 at 08:11:36AM -0500, Emil Renner Berthing wrote:
+> Quoting Boqun Feng (2026-03-20 23:29:16)
+> > Since commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms
+> > of SRCU-fast") we switched to SRCU in BPF. However as BPF instrument can
+> > happen basically everywhere (including where a scheduler lock is held),
+> > call_srcu() now needs to avoid acquiring scheduler lock because
+> > otherwise it could cause deadlock [1]. Fix this by following what the
+> > previous RCU Tasks Trace did: using an irq_work to delay the queuing of
+> > the work to start process_srcu().
+> >
+> > [boqun: Apply Joel's feedback]
+> > [boqun: Apply Andrea's test feedback]
+> >
+> > Reported-by: Andrea Righi <arighi@nvidia.com>
+> > Closes: https://lore.kernel.org/all/abjzvz_tL_siV17s@gpd4/
+> > Fixes: commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in terms of SRCU-fast")
+> > Link: https://lore.kernel.org/rcu/3c4c5a29-24ea-492d-aeee-e0d9605b4183@nvidia.com/ [1]
+> > Suggested-by: Zqiang <qiang.zhang@linux.dev>
+> > Tested-by: Andrea Righi <arighi@nvidia.com>
+> > Signed-off-by: Boqun Feng <boqun@kernel.org>
 > 
-> Thanks!
-> I will send a v2 with the below diff if there are no objections?
+> Thanks for the patch, which is now upstream as
+> 7c405fb3279b ("rcu: Use an intermediate irq_work to start process_srcu()")
 > 
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index 5ba4a20ba77d..685829875a3e 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -182,11 +182,21 @@ static atomic_t csd_bug_count = ATOMIC_INIT(0);
->  static void __csd_lock_record(call_single_data_t *csd)
->  {
->         if (!csd) {
-> +               /*
-> +                * Pairs with smp_load_acquire() of cur_csd in
-> +                * csd_lock_wait_toolong(): orders any preceding CSD
-> +                * callback/unlock before a remote reader observes NULL.
-> +                */
+> Unfortunately it seems to halt booting on the Allwinner D1 single-core RISC-V
+> SoC both on the 7.0 and 7.1 kernels:
+> 
 
-Please replace the spaces with tabs.  (Probably a copy-pasta issue.)
+By "single-core", is it only one CPU in that system?
 
->                 smp_store_release(this_cpu_ptr(&cur_csd), NULL);
+> https://esmil.dk/d1-7.0.txt
+> https://esmil.dk/d1-7.1.txt
+> 
 
-		smp_store_release(this_cpu_ptr(&cur_csd), NULL); /* ^^^ */
+From the callstack,
 
-Adding the comment as show above will satisfy tools such as checkpatch.
+[  243.002818] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  243.010681] task:kworker/0:0     state:D stack:0     pid:9     tgid:9     ppid:2      task_flags:0x4208060 flags:0x00000000
+[  243.021858] Workqueue: device_link_wq device_link_release_fn
+[  243.027587] Call Trace:
+[  243.030079] [<ffffffff80745b66>] __schedule+0x232/0x530
+[  243.035365] [<ffffffff80745e82>] schedule+0x1e/0x94
+[  243.040298] [<ffffffff8074aa7a>] schedule_timeout+0x6e/0xa8
+[  243.045929] [<ffffffff8004d6a0>] wakeup_preempt+0x8c/0x98
+[  243.051380] [<ffffffff80746aee>] wait_for_completion+0x3a/0xb0
+[  243.057267] [<ffffffff80087226>] __synchronize_srcu.part.0+0x4e/0x60
+[  243.063712] [<ffffffff80084414>] rcu_tasks_get_gp_data+0xc/0x10
+[  243.069699] [<ffffffff80490898>] device_link_release_fn+0x14/0x80
+[  243.075850] [<ffffffff8003dbd0>] process_one_work+0xf8/0x1c8
+[  243.081583] [<ffffffff8003e282>] worker_thread+0x11a/0x254
+[  243.087127] [<ffffffff8003e164>] rescuer_thread+0x3a0/0x3a4
+[  243.092755] [<ffffffff8003e164>] rescuer_thread+0x3a0/0x3a4
+[  243.098381] [<ffffffff8004499e>] kthread+0xbe/0xe4
+[  243.103231] [<ffffffff8001349e>] ret_from_fork_kernel+0x6/0xd0
+[  243.109127] [<ffffffff800517a8>] schedule_tail+0x8/0xac
+[  243.114410] [<ffffffff800448dc>] kthreads_online_cpu+0x0/0x4
+[  243.120121] [<ffffffff8074be0a>] ret_from_fork_kernel_asm+0x12/0x18
 
->                 return;
->         }
->         __this_cpu_write(cur_csd_func, csd->func);
->         __this_cpu_write(cur_csd_info, csd->info);
-> +       /*
-> +        * Pairs with smp_load_acquire() of cur_csd in
-> +        * csd_lock_wait_toolong(): publishes cur_csd_func and
-> +        * cur_csd_info before the non-NULL pointer becomes visible.
-> +        */
->         smp_store_release(this_cpu_ptr(&cur_csd), csd);
->  }
+I will guess for some reasons the irq_work was missed or the IPI never
+happened. Is it possible for you to enable trace points ipi_send_cpu and
+ipi_entry to get more information?
 
-The comments look good to me, but I must defer to Alan and Randy.
+> Reverting this patch seems to fix the issue although it then breaks when loading
+> modules which is can be fixed by reverting:
+> d6e152d905bd ("clockevents: Prevent timer interrupt starvation")
+> 
+> This might be a side-effect of reverting this patch though.
+> 
 
-						Thanx, Paul
+I'm not so sure about this, i.e. you might have *two* problems :(
+
+Regards,
+Boqun
+
+> We'd really like to continue support for this SoC on the 7.0 kernel, but since
+> this patch is a bugfix just shippping the revert doesn't sound appealing.
+> So some guidance would be much appreciated, thanks!
+> 
+> /Emil
