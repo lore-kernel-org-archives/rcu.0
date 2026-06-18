@@ -1,140 +1,209 @@
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6072DB798
-	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 01:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E5C330B01
+	for <rcu@vger.kernel.org>; Thu, 18 Jun 2026 03:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781747090; cv=none; b=QHZnGiDm8hPYSnxqw5mp0FJR7yaUeWzWF0XW6oc02SmvdgGuoOJPFIduDcLQY2eBnJieWAorsmqVztQ5defe/74yBivIrDNLu5k5ujx2HNY6TGH7mgqnPBJXHptNt+Gofe62ctXupbuWwrC0RwYZjH4R0yaZyJ+jJh0gVKsLZlM=
+	t=1781752283; cv=none; b=tWCuxiplEbsqkuQhmFhKop2YdYcbzIQ9nki4auV5MQ3NXy7WVfwb4T1EhEzehRAODFsjMh0lc1oNY7vAgJVDpLj3+7HayYCszd4AODxr06LKcihgQxNAoBDF/3Tb5/sBofebUKOcTd31wLKQGPso73eKaZQAYeOV8NQWjzGUtV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781747090; c=relaxed/simple;
-	bh=MA97i8ZFd22Ja0P77uimpuoQ4H+PreSlSaN2v78FnYs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QH9WnYn35+X6rpRI9vGG/egukde29wtDWocxfDh9x2Qjk9o0XDLzzyTUA6TQBxTpKv4sLbKtBUQABRD85uZO6p4wwiU6uunCfpordfw+wdg6HHauMYJW8dfXhY7JEl4vteMEhLUeVmcUjgfCGVrZWrQfBMBuF4fi5zw0mzHoSuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rowland.harvard.edu; spf=fail smtp.mailfrom=g.harvard.edu; dkim=pass (2048-bit key) header.d=rowland.harvard.edu header.i=@rowland.harvard.edu header.b=WX+kyF+o; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=g.harvard.edu
+	s=arc-20240116; t=1781752283; c=relaxed/simple;
+	bh=Xa5StEN2UH086bDikWsQrqqqrc9uy1URBleR3Pv/RuI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=mXUGgwDgAqEgWHacNNMHaZruGHeahDdnTCo6LKWCHi5D7RVLlDmzWTDWb5jrOKputdU7j+Fk+tAd5ThJuku1bqGwPTBJA839Z5ZSHnF68cadAtky7HSFRm7PtE1ShPvhF+pZIpMetm970k+d+RqeAWmTMLUljDAj1Zxv6OtUsyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XTRDT8rP; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rowland.harvard.edu header.i=@rowland.harvard.edu header.b="WX+kyF+o"
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-9158c621ebbso49094185a.2
-        for <rcu@vger.kernel.org>; Wed, 17 Jun 2026 18:44:48 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XTRDT8rP"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2c132ac5ec2so4924995ad.1
+        for <rcu@vger.kernel.org>; Wed, 17 Jun 2026 20:11:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rowland.harvard.edu; s=google; t=1781747088; x=1782351888; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BknC521z3j7HYlZ+93y/0lWMWDCjeC/ViP/zZCod4gA=;
-        b=WX+kyF+oEUoZ2u8LBnwsmec1c1TXPmBIUxTIhuIbIcwSYV3UjhY90GsPxMe1AZ647v
-         h3QjYCfPK5y+KhIzc3gpJCQyssVSC+Wtq2RFDWTLbNx4lSvLvFT+5JDlzzoG/QOmuYGM
-         6MMa9hvs1ggwMV0hWj4wit2gv2CEWgLpOgFvho8us7P1bt2+fFN0Esc8RE4ZzNJRoH0B
-         HM0nYMGeSyNGSRgtZgu39GmZ4/GLGeLB5ODq99Askh4qDr3IW1zFHKTjX/ZNaIEtoqA+
-         Ym04Tqebiy2eXjjuMYxfy7qb08RhxXcYwjlDItcAUab8WS7fBwYtYwi7sTTXZiUTawQm
-         KH+w==
+        d=gmail.com; s=20251104; t=1781752281; x=1782357081; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CJIpWsHRh9AKKYRu7jgv8q277vRNDwM5z3jTZiQx1lI=;
+        b=XTRDT8rPpb1rok5YcsfdkCFn5xepyXLOhNXa+rIw5uMymVh8ILY3E0XxNialBahegb
+         aFJ6yi8FTOuNfMUutWSQQWW5hoE5EPNk/e4ZK6wTqK6IUpVYbQTtLNmyQDD8wMe5R1GZ
+         hspO2RY2IRxhav77+cE64G6ECphZd8032RI2pb97QhTISlKhzv6gdy65x5xx5ejn5M/y
+         PGWwhknRZIrieY02awERilsrb9WarsQuJvQN5lnjhZIijnFkO0u7UO6vqYIIQRjZvgYm
+         Z0jAcNrrVZWywlspd4uto83Tl2Di+O6Me5cOdAVCH1KPwd8ilNVeVkDrvc7Ayz0H0h9f
+         H2EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781747088; x=1782351888;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BknC521z3j7HYlZ+93y/0lWMWDCjeC/ViP/zZCod4gA=;
-        b=TXcrgYBi/0y7LXn/ib+oxurFmz0N+0QCb2jsgSn9SLGRqrvyMcb17oUNbU3sy50qaP
-         CqO/Dv1aWjk/38/eSQeGcJ6TxtxVvWquxbgx7ExKQ3dQjpZpfThzG4tGXcqHmr4ihPUl
-         pTEeveHPiy7MX2Eika7SVU79FCcSE5eV0IM694+Sv4lTBngMIQdCJRfZBztoZpCoT2j8
-         P1bk3BNUMfxC6e13K54yCSxKf/vZ81lkr59HtyPyJxQ1iJ/GE+SyRo3pYdsfmC7la0cc
-         dAnDhby8TXsNjHFAqCEbpW+f9++aVlXmyaYu8+8uRtVGf5UPm18T4jU0DCjCHU//HG1U
-         L2YA==
-X-Forwarded-Encrypted: i=1; AFNElJ93YSfiA5Bwr0nq2nIu4qjzF/TVZEtG7T+bntUHTEsCCF1Lj+V2wHp72CC3ftZEiJzD0OE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzIzXRFOV7A2jS9pNTvGaST/BjRhnyc4BZT6EEu7k9//WA4ckxQ
-	ye95dAhO1hMtQexT6eMdpm2gL2KpLbH2qwEv/8wGeNnYT/deh4JedsY1+9I+2GbFYw==
-X-Gm-Gg: Acq92OEWSMpmUroAAMPRAVCg69HbKw8/W356UvL7qExSBoS5eXehm7AMbAHedn9Mksk
-	w3YCDIqUAuraU6ozw4rIih5ZL9hh6eMdJWA3g0fNAI3yaRzCFTF3686zQ5j9JK5bUnbbKCyOoJi
-	aifQxCfCCR46n6/IZ2feTGNV4i/3hFCI8cfXOBSCLyEqYXSDueqBbGwl0Bl4mDFWEz+eTcdxqts
-	yXpgva688O00QDyGXFV+XdDMjDGd9fOWBeMYiNB6zc3Q/CRzjfGR8O7W08IrzsPv2LRm8Pu5kZ8
-	J4L4NSgdcOgmmA5THyQCqZdHXMdpeM+8CFdkDNKPh1Y5a6hIVWyHLPSEaX1LWLqniEae9J+j8NO
-	Tnms9eW+m8BzQPeQe5riedL7TUbIm5BZHbwnU6iudfC9JgZDV11BQkCcWOh8BcicLV+u0PN/63k
-	RRB2Tt4EeItBvaFkO75SSD+JDrCQRs/rid
-X-Received: by 2002:a05:620a:2b43:b0:914:9bed:9443 with SMTP id af79cd13be357-91f2b7761d8mr250318985a.25.1781747087645;
-        Wed, 17 Jun 2026 18:44:47 -0700 (PDT)
-Received: from rowland.harvard.edu ([2601:19b:d01:d210:d62f:1911:f952:16ba])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-91619f3c324sm1923222385a.21.2026.06.17.18.44.46
+        d=1e100.net; s=20251104; t=1781752281; x=1782357081;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CJIpWsHRh9AKKYRu7jgv8q277vRNDwM5z3jTZiQx1lI=;
+        b=AHf4SB6Sdev2gL1WEm7O7Lk/DgKT6VmaH6xQYyRK1Lu+rtxZBcRnVRrHRpMXUro0Uj
+         jGMW9souRVWrySzx7/kLIKpsNizsjRDEnVR0+mRNRlGx8Q1SY6anUnVczYUHedrb/NRh
+         qkII+ZyDTpDHCWGvG7O6EGEZ8aFUQrq1n11yVW+QGS1Kb8VqWNZhtlm3EKn4h/Nb0jEV
+         Zr59QUmBLJXfA9hjtbTQXkOy/4z4YeVNEtB4+VpL6jcWHlwR24W1muo48HEP3EeN+Swr
+         5nWH1tmkkltL7xN+Kh+93wo9bszF48mYF/569rvZMETHE4y6C741VXoV58f5DYJqYxEL
+         4RNA==
+X-Forwarded-Encrypted: i=1; AFNElJ+DXCW41XuRX7EJ9o8tXqe5f+6zl6bLeSv2ksfaC1YtQ0GI3eR+mcacytoLFIjwjj8ZbfQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YynIdwQON0JCtSALhRt8iUBeFpU0jEJHGnJ5sT7zAziZFg0UvPv
+	j31t0ZfU1Xix6dZmyz3Dtj1nQo3RIeS4JCErCntcCoVSz1RYJY7QVzpm
+X-Gm-Gg: AfdE7clUvJ6n9bOI/H88wa4xBJOjJShVAzGOPFrAtRBtHDD7O8iCD3mi33U9Q1k2Upn
+	kgnUy2pe7RPfE9cRdpQurM1rGl+KzUPSm78iwtnAfAdNpEjQwqN7w5JXWN/mO5uc24iUiwFqNH/
+	ponbfk/2MK2CrMOUlt4CgH3KVD3YQb1PDUtQjy/99Tc7BF93mhWNeZ3GSe4YqKAA3DjtSFkW1KD
+	lLXatnjeQcj+Y62cKnyJN7b9KoOupeXCNHnBfx58gigdzCuUQmUABOIgQWYeyXojcmW7NOr7/nb
+	Zd68Kp9HcfLujWYq+X4QteDbcxs9kXcLRKbUe2nbDWSLWQW1lPgohCxNLmwGROpdgwxeGtDyo/w
+	vl+W/L+Bptv+Rnlg/gtWENcl95re+cUUc6WzakjB6aj5xv2tOjfVyS/T1KUqDeXRxuGIVhdkQ78
+	JppSV6i2mDEoY=
+X-Received: by 2002:a17:903:1d2:b0:2bd:5ab:af95 with SMTP id d9443c01a7336-2c6e2464d52mr16755565ad.0.1781752281045;
+        Wed, 17 Jun 2026 20:11:21 -0700 (PDT)
+Received: from [127.0.1.1] ([138.199.21.246])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c6a403b242sm60152975ad.31.2026.06.17.20.11.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2026 18:44:47 -0700 (PDT)
-Date: Wed, 17 Jun 2026 21:44:44 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Usama Arif <usama.arif@linux.dev>
-Cc: lkmm@lists.linux.dev, joelagnelf@nvidia.com,
-	linux-kernel@vger.kernel.org, marco.crivellari@suse.com,
-	paulmck@kernel.org, rafael.j.wysocki@intel.com,
-	rdunlap@infradead.org, riel@surriel.com, sshegde@linux.ibm.com,
-	tglx@kernel.org, ulfh@kernel.org, yury.norov@gmail.com,
-	rcu@vger.kernel.org, shakeel.butt@linux.dev, hannes@cmpxchg.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH] smp: Use release stores for csd_lock_record() state
-Message-ID: <831f9fb1-82a5-46ba-9541-b82c94e43639@rowland.harvard.edu>
-References: <20260617212001.3658605-1-usama.arif@linux.dev>
+        Wed, 17 Jun 2026 20:11:20 -0700 (PDT)
+From: Jing Wu <realwujing@gmail.com>
+Subject: [PATCH v3 00/13] Dynamic Housekeeping Management (DHM) via CPUSets
+Date: Thu, 18 Jun 2026 11:11:11 +0800
+Message-Id: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260617212001.3658605-1-usama.arif@linux.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAM9hM2oC/13O0YrCMBCF4VeRXG+WZFJr69W+xyISJ5N2ljaVx
+ MYV6btvKoKydzkD/0fuIlFkSmK/uYtImRNPoQzzsRHY29CRZFe2AAW1qlQjr/MPh066fpSNrwy
+ Bq1p0jSjBOZLn3wf2fSi753SZ4u1hZ1ivT0abdyaDVFLVzoNGe7Jb99WNlodPnEaxMlm/UgPb0
+ hDLrEF6DnYor5K3ukW0YNA6/y+PHl89qFp6spc5knS3YEfGI6dpwPOcjk94/Y2yO63ppHBXvXP
+ LsvwB3W6kfjIBAAA=
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+ Juri Lelli <juri.lelli@redhat.com>, 
+ Vincent Guittot <vincent.guittot@linaro.org>, 
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, 
+ "Paul E. McKenney" <paulmck@kernel.org>, 
+ Frederic Weisbecker <frederic@kernel.org>, 
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+ Joel Fernandes <joelagnelf@nvidia.com>, 
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
+ Uladzislau Rezki <urezki@gmail.com>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Tejun Heo <tj@kernel.org>, 
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+ Shuah Khan <shuah@kernel.org>, Thomas Gleixner <tglx@kernel.org>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Jing Wu <realwujing@gmail.com>, 
+ Qiliang Yuan <yuanql9@chinatelecom.cn>
+X-Mailer: b4 0.13.0
 
-On Wed, Jun 17, 2026 at 02:20:01PM -0700, Usama Arif wrote:
-> __csd_lock_record() publishes per-CPU CSD debug state that is read by
-> csd_lock_wait_toolong() on another CPU.  The remote side first reads
-> cur_csd with smp_load_acquire() and, when non-NULL, may then read the
-> matching cur_csd_func and cur_csd_info fields.
-> 
-> Use smp_store_release() when publishing cur_csd so that the preceding
-> cur_csd_func and cur_csd_info stores are ordered before the pointer
-> that csd_lock_wait_toolong() acquires.  This replaces the open-coded
-> smp_wmb() plus plain cur_csd store with the release operation that
-> matches the smp_load_acquire() in csd_lock_wait_toolong().
-> 
-> For the clear path, use smp_store_release(&cur_csd, NULL) so that
-> clearing the diagnostic state remains ordered after the preceding
-> callback/unlock work, without requiring a full barrier before the
-> store.  On x86 this removes the locked full barrier from the clear
-> path; on weaker memory models it uses the release operation needed by
-> the smp_load_acquire() in csd_lock_wait_toolong().
-> 
-> The old code also had smp_mb() calls around cur_csd updates. Those would
-> only be needed if cur_csd were treated as an exact live-state marker whose
-> publication had to be observed before callback execution or CSD unlock.
-> CSD stall warnings do not currently have RCU-style stall-ended checks, so
-> they already allow the stall to end while diagnostics are being assembled.
-> The cur_csd record is therefore best-effort diagnostic context, not a
-> precise completion/stall boundary.
-> 
-> Signed-off-by: Usama Arif <usama.arif@linux.dev>
-> ---
->  kernel/smp.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index a0bb56bd8dda..5ba4a20ba77d 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -182,16 +182,12 @@ static atomic_t csd_bug_count = ATOMIC_INIT(0);
->  static void __csd_lock_record(call_single_data_t *csd)
->  {
->  	if (!csd) {
-> -		smp_mb(); /* NULL cur_csd after unlock. */
-> -		__this_cpu_write(cur_csd, NULL);
-> +		smp_store_release(this_cpu_ptr(&cur_csd), NULL);
->  		return;
->  	}
->  	__this_cpu_write(cur_csd_func, csd->func);
->  	__this_cpu_write(cur_csd_info, csd->info);
-> -	smp_wmb(); /* func and info before csd. */
-> -	__this_cpu_write(cur_csd, csd);
-> -	smp_mb(); /* Update cur_csd before function call. */
-> -		  /* Or before unlock, as the case may be. */
-> +	smp_store_release(this_cpu_ptr(&cur_csd), csd);
+This series introduces Dynamic Housekeeping Management (DHM) to the Linux
+kernel, enabling runtime reconfiguration of kernel-noise housekeeping
+(nohz_full tick suppression, RCU NOCB offloading, and managed IRQ
+migration) through the existing cgroup v2 cpuset isolated partition
+mechanism — no new kernel ABI required.
 
-Isn't there a general policy in the kernel that memory barriers should 
-be accompanied by a comment explaining what other memory barriers they 
-synchronize with?  Including such comments is a good idea in any case.
+When a cpuset partition is set to isolated mode, the CPUs in that
+partition are removed from the kernel's global housekeeping masks.  The
+housekeeping subsystems (tick/nohz, RCU NOCB, genirq) react via explicit
+registered callbacks, applying the new masks at runtime.  Destroying the
+partition restores the CPUs to all housekeeping masks.
 
-Alan Stern
+The architecture uses a per-type callback table (struct housekeeping_cbs)
+with pre_validate/apply hooks, replacing the previous notifier chain.
+Housekeeping cpumask pointers are RCU-protected to allow lock-free readers
+during updates.
+
+Signed-off-by: Jing Wu <realwujing@gmail.com>
+Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
+---
+V2 -> V3:
+- Replace notifier chain with explicit per-type callback interface
+  (struct housekeeping_cbs with .name, .pre_validate, .apply fields).
+- RCU-protect all housekeeping cpumask pointers; callers must hold
+  rcu_read_lock() or use housekeeping_cpumask_rcu() in apply() callbacks.
+- Drop 5 patches from v2: HK_TYPE enum separation (upstream aliases are
+  already correct), no-op timer/hrtimer patches, kthread dead code, and
+  workqueue double-update.
+- Fix deadlock in rcu_hk_workfn(): remove cpus_read_lock() wrapper around
+  remove_cpu()/add_cpu() which take cpu_hotplug_lock write side.
+- Fix UAF in rcu_hk_apply(): snapshot the housekeeping cpumask inside the
+  work function under rcu_read_lock(), not at apply() time where the old
+  pointer may be freed by synchronize_rcu() before the work runs.
+- Fix tick apply(): snapshot housekeeping_cpumask_rcu() under
+  rcu_read_lock() as required by lockdep for runtime-mutable types.
+- Activate context_tracking dynamically via ct_cpu_track_user() /
+  ct_cpu_untrack_user() in tick apply(), eliminating the dependency on
+  CONFIG_CONTEXT_TRACKING_USER_FORCE flagged by tglx.
+- Fix genirq apply(): snapshot HK_TYPE_MANAGED_IRQ mask under
+  rcu_read_lock() before the IRQ iteration loop.
+- Simplify cpuset noise_types to BIT(HK_TYPE_KERNEL_NOISE) |
+  BIT(HK_TYPE_MANAGED_IRQ), replacing the redundant per-alias bitmask.
+- housekeeping_update_types(): always use cpu_possible_mask as base
+  for HK_TYPE_KERNEL_NOISE, so de-isolation restores the mask to all
+  possible CPUs rather than leaving it at its last non-trivial value.
+- Initialize watchdog_cpumask from HK_TYPE_KERNEL_NOISE (not
+  HK_TYPE_TIMER) at boot; keep it in sync at runtime via a new
+  housekeeping_cbs callback.
+- Add kernel-noise selftest to test_cpuset_prs.sh, including
+  cpu_in_cpulist() for correct cpulist range membership detection and
+  nohz_full sysfs verification when CONFIG_NO_HZ_FULL is active.
+- Add RCU caller fixes: sched/core (HK_TYPE_KERNEL_NOISE) and
+  drivers/hv (HK_TYPE_MANAGED_IRQ) are required because those types
+  are updated at runtime; hrtimer (HK_TYPE_TIMER) and arm64/topology
+  (HK_TYPE_TICK) are defensive fixes.
+- Reorder patches so all subsystem callbacks are registered before the
+  cpuset patch that triggers housekeeping_update_types().
+
+V1 -> V2:
+- Rebrand series from DHEI to DHM (Dynamic Housekeeping Management).
+- Drop custom sysfs interface entirely.
+- Integrate housekeeping control into cgroup v2 cpuset isolated partition
+  mechanism.
+- Add SMT-aware isolation constraints to prevent splitting SMT siblings.
+- Add comprehensive documentation and cgroup functional selftests.
+- Refactor mask transition logic to use RCU-safe handover.
+
+v2: https://lore.kernel.org/r/20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com
+v1: https://lore.kernel.org/all/20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com
+
+---
+Jing Wu (13):
+      sched/isolation: Replace notifier chain with explicit callback interface
+      sched/isolation: Add housekeeping_update_types() for kernel-noise masks
+      sched/isolation: RCU-protect all housekeeping cpumask readers
+      sched/isolation: Fix RCU protection for runtime-mutable cpumask callers
+      cpu/hotplug: Reserve CPUHP states for nohz_full and managed IRQ down-paths
+      tick/nohz, context_tracking: Prepare for runtime nohz_full updates
+      rcu/nocb: Add explicit housekeeping callback for runtime NOCB toggling
+      genirq: Add explicit housekeeping callback for managed IRQ migration
+      watchdog/lockup_detector: Register housekeeping callback for kernel-noise
+      sched: Guard sched_tick_start/stop against uninitialized tick_work_cpu
+      cgroup/cpuset: Extend isolated partition to trigger kernel-noise isolation
+      docs: cgroup-v2: Document kernel-noise isolation via isolated partitions
+      selftests/cgroup: Add kernel-noise isolation test to cpuset selftest
+
+ Documentation/admin-guide/cgroup-v2.rst           |   8 +
+ arch/arm64/kernel/topology.c                      |   9 +-
+ drivers/hv/channel_mgmt.c                         |  50 +++--
+ include/linux/context_tracking.h                  |   1 +
+ include/linux/cpuhotplug.h                        |   2 +
+ include/linux/sched/isolation.h                   |  41 ++++
+ kernel/cgroup/cpuset.c                            |  23 +-
+ kernel/context_tracking.c                         |  23 +-
+ kernel/irq/manage.c                               |  86 ++++++++
+ kernel/rcu/tree.c                                 | 104 +++++++++
+ kernel/sched/core.c                               |   7 +-
+ kernel/sched/isolation.c                          | 256 ++++++++++++++++++++--
+ kernel/time/hrtimer.c                             |   5 +-
+ kernel/time/tick-sched.c                          | 157 ++++++++++++-
+ kernel/watchdog.c                                 |  56 ++++-
+ tools/testing/selftests/cgroup/test_cpuset_prs.sh | 204 ++++++++++++++++-
+ 16 files changed, 968 insertions(+), 64 deletions(-)
+---
+base-commit: eb3f4b7426cfd2b79d65b7d37155480b32259a11
+change-id: 20260408-wujing-dhm-8f43e2d49cd8
+
+Best regards,
+-- 
+Jing Wu <realwujing@gmail.com>
+
