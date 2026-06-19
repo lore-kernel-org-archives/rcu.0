@@ -1,78 +1,110 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B94A284662;
-	Thu, 18 Jun 2026 21:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFD28F49;
+	Fri, 19 Jun 2026 06:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781817100; cv=none; b=XknVYvuXptZUfaVV6e4MMNTWB2i5P7FyGQdS2fmOXdO+Yp249m9Qy5eDeWvhaq0wFWbhX3pNxPzS8TxcSPGtNdoxbu+DijVVm9F53k982WumXG1V3/5SYn8/OVdrP+fayWw1EnITW48BA2Fnq+TCfo7XN5HMQI4912c6q9iITuE=
+	t=1781852168; cv=none; b=Y+G/2OmhBLZRAcVt3aPectd8Wp8GbqGVMdI+nuTkqBpQ+xlxkm7MLnnhEOF/ikG3IsgBLWV+pJ6rBbCXy2eVgvTznf7M8AZKVkegczMOth3NZOODUzcbY2lEjNkDTdHf5TI3BxBh8jgQWnXErLlhdE05Wl31HWjBlJUlaxuPgsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781817100; c=relaxed/simple;
-	bh=5J6h2tNPPWn/FYPAOaZ2llids3Y3YxLIy/0yx0sHrgM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YhWUFFfQKIdRhV/Y8p7ASI7wl+jSwpo7RHPrdwaPsqG2jMoC5QNmLrZt2M2QMxToIcGfd0H6BthPgKg7faHUJEkSik3xt9CkgQQTwcBv2xz077ltkd0itC3NQJez2dxkD5mV450K2lpm81DJTwR3sdhW16BOwqa2JigQeRb83kM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NRlpDCJR; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781852168; c=relaxed/simple;
+	bh=rnMwtPFZnLUO11a+g60kO7gTwd4Qi44HIG83dTASAoE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=aFjnLMEjRCpKadwz9SAT0Bnig2d/YRrYzAORiJLmUXjv9xtZ8HpjohNQZSa3hYYARJA1AntCqOd4mvv2EZYGMbequYyUWyVQFfJ2bB6ixVdyE/ew/pkz+Htu0WIfX+q3L87fXbceBNylIFGlS/zPyBIoYm5Z7m5Fpf9eMbbi6qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=qREpy7H+; arc=none smtp.client-ip=80.241.56.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NRlpDCJR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F7CC1F000E9;
-	Thu, 18 Jun 2026 21:11:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781817098;
-	bh=aBAfK0AC8Dm0DX5YdQDLhdJtI8Iuh2HnALm598WNeYA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=NRlpDCJRw0x8mRkCKYUNiDKD/ZijAaUiBQKyxzhdEjNmyjeQAF0QjatXwliSbKJkM
-	 8tYxA9woFXv/dRVXmmFfTAjvmkY91ZRTKmk0N0ac6eeb1bpYXYrD2wgwjK4ryTl+/T
-	 xOOkcUgyRQ6PpKwF05z81XqyS9Sb+vKq4tGJqVqgKfmWpSr1IVP9jEWoiXXwxLe2tJ
-	 juHAj0VC6UigQqEDNSieHZFoxuvPETllOy8jEf25QfpRKFUlMVEn6YbnS9pEOWtL9l
-	 3habm1Q8OHDj68B3+kdS23NlfLI94fgqt2va9UYYhX2GlsERg3EBOwnisLxP3GraIb
-	 JRdklbliVVatw==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Jing Wu <realwujing@gmail.com>, Ingo Molnar <mingo@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Valentin
- Schneider <vschneid@redhat.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
- Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, Uladzislau
- Rezki <urezki@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang@linux.dev>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Tejun Heo <tj@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Shuah Khan
- <shuah@kernel.org>, Waiman Long <longman@redhat.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Jing Wu <realwujing@gmail.com>, Qiliang
- Yuan <yuanql9@chinatelecom.cn>
-Subject: Re: [PATCH v3 08/13] genirq: Add explicit housekeeping callback for
- managed IRQ migration
-In-Reply-To: <87cxxnegqa.ffs@fw13>
-References: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
- <20260618-wujing-dhm-v3-8-28f1a4d83b68@gmail.com> <87cxxnegqa.ffs@fw13>
-Date: Thu, 18 Jun 2026 23:11:36 +0200
-Message-ID: <87zf0rd053.ffs@fw13>
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="qREpy7H+"
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4ghSzc4Fs0z9ts2;
+	Fri, 19 Jun 2026 08:55:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1781852156; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rnMwtPFZnLUO11a+g60kO7gTwd4Qi44HIG83dTASAoE=;
+	b=qREpy7H+srfkUlKmgnvmZLwwzsua7BHkTyYbHhtmNgqNiI5JRiPmvGB2fZFL2nkERatEgD
+	7HNBx4Qls48PQ+JqnoGF/h0BeltpcBcCXGmoLrl04tEjLw9dCiviaBMNBXFGMheBEgiqYJ
+	3cGdwbRf0vF+0Ag4qt85y52MKQTiEfLbU0uY6NkjlV6qLanYAoXR5bPQYTzOrk3EfCP/D0
+	T5bdf+oHGpodOnoK7Q3viwlFguwKSfU61xxHYMdnT2SaxI75yHro5Piq7hPqUuAPUqA8BJ
+	+VSliA+VDby4g1S9T8lFMWdLpkf9xMgmysJlStIL6txCrtaTIcBcTyPiNkuhaA==
+Message-ID: <c449f26e2283a2df6d5240879f85bee1b2fd4c50.camel@mailbox.org>
+Subject: Re: [PATCH 3/3] rust: sync: Use safe synchronize_rcu() abstraction
+ in poll
+From: Philipp Stanner <phasta@mailbox.org>
+Reply-To: phasta@kernel.org
+To: Onur =?ISO-8859-1?Q?=D6zkan?= <work@onurozkan.dev>, Philipp Stanner
+	 <phasta@kernel.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Boqun Feng <boqun@kernel.org>, Gary Guo
+	 <gary@garyguo.net>, =?ISO-8859-1?Q?Bj=F6rn?= Roy Baron	
+ <bjorn3_gh@protonmail.com>, Benno Lossin <lossin@kernel.org>, Andreas
+ Hindborg	 <a.hindborg@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
+ Trevor Gross	 <tmgross@umich.edu>, Danilo Krummrich <dakr@kernel.org>,
+ Daniel Almeida	 <daniel.almeida@collabora.com>, Tamir Duberstein
+ <tamird@kernel.org>,  Alexandre Courbot <acourbot@nvidia.com>, Alexander
+ Viro <viro@zeniv.linux.org.uk>, Christian Brauner	 <brauner@kernel.org>,
+ Jan Kara <jack@suse.cz>, Lyude Paul <lyude@redhat.com>,  "Paul E. McKenney"
+	 <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, Neeraj
+ Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes
+ <joelagnelf@nvidia.com>, Josh Triplett	 <josh@joshtriplett.org>, Uladzislau
+ Rezki <urezki@gmail.com>, Steven Rostedt	 <rostedt@goodmis.org>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>,  Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, Christian Schrefl
+	 <chrisi.schrefl@gmail.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ rcu@vger.kernel.org
+Date: Fri, 19 Jun 2026 08:55:44 +0200
+In-Reply-To: <20260618181142.200117-1-work@onurozkan.dev>
+References: <20260618095952.3687099-1-phasta@kernel.org>
+	 <20260618095952.3687099-4-phasta@kernel.org>
+	 <20260618181142.200117-1-work@onurozkan.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MBO-RS-ID: 329e3f9f6774554fee3
+X-MBO-RS-META: 5849hp6ni6h4tycs7cw57pyxmz7igp8t
 
-On Thu, Jun 18 2026 at 22:27, Thomas Gleixner wrote:
-> On Thu, Jun 18 2026 at 11:11, Jing Wu wrote:
->> +		 */
->> +		if (irqd_affinity_is_managed(&desc->irq_data)) {
->
-> So you set the affinity even on an interrupt which is shutdown?
->
->> +			const struct cpumask *mask;
->> +			struct cpumask *tmp = this_cpu_ptr(&__tmp_mask);
+On Thu, 2026-06-18 at 21:11 +0300, Onur =C3=96zkan wrote:
+> On Thu, 18 Jun 2026 11:59:52 +0200
+> Philipp Stanner <phasta@kernel.org> wrote:
+>=20
+> > We now have a safe wrapper for the foreign function synchronize_rcu().
+> >=20
+> > Use it in poll.rs.
+> >=20
+> > Signed-off-by: Philipp Stanner <phasta@kernel.org>
+> > ---
+> > =C2=A0rust/kernel/sync/poll.rs | 6 ++----
+> > =C2=A01 file changed, 2 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/rust/kernel/sync/poll.rs b/rust/kernel/sync/poll.rs
+> > index 0ec985d560c8..401cf4d3f35f 100644
+> > --- a/rust/kernel/sync/poll.rs
+> > +++ b/rust/kernel/sync/poll.rs
+> > @@ -8,7 +8,7 @@
+> > =C2=A0=C2=A0=C2=A0=C2=A0 bindings,
+> > =C2=A0=C2=A0=C2=A0=C2=A0 fs::File,
+> > =C2=A0=C2=A0=C2=A0=C2=A0 prelude::*,
+> > -=C2=A0=C2=A0=C2=A0 sync::{CondVar, LockClassKey},
+> > +=C2=A0=C2=A0=C2=A0 sync::{rcu::synchronize_rcu, CondVar, LockClassKey}=
+,
+>=20
+> nit: Missing vertical import. Same in the other module as well.
 
-How is this correct? You cannot get the per cpu pointer in preemptible
-context. The task might be migrated and then fiddle with the wrong
-per CPU data. But that's moot as this code is broken anyway.
+Was already like that when I came here ;)
+
+But if it helps I can format it while I'm at it..
 
 
+P.
