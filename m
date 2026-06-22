@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B92175A85;
-	Mon, 22 Jun 2026 17:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20D31A680E;
+	Mon, 22 Jun 2026 17:33:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782149605; cv=none; b=PPnEE8WTzEe1OLZxFd5m9Q2i8bUuiapvwTGPDywhYSS8g/fzsneuCvmcgsua4ObWl+aBvD/AcCGwZXrXZkI3v6CSHRDJXsNVM2mgmlbgHfgag69OjOeA+Ij89DK9LA5V2hcZKxzyXixERI1B4fLbWQxz0woRbEc4Zy8qyrQ5DPA=
+	t=1782149611; cv=none; b=sik7YMWMalSabxuLxnsvJKA1xwxUXIwgiAPK/8TnYcyZt3cWMj9RwTj1ZOlWN/+UxL/lngxbxwEToBwKKDqpCynBbZZ4LT1HBkfPsMqwD3vJMH9WoNLvFxDdPSOHGCL/bKwWXyF69D2QNHNT0UCmQTXSJ/VNWBWAkB9BsaRFjgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782149605; c=relaxed/simple;
-	bh=WPrJVzJV1qVMV6EA1bvwukUKLGMlywGIfC7thG6fw7U=;
+	s=arc-20240116; t=1782149611; c=relaxed/simple;
+	bh=uKSc6qrx7IuatnJmOjo8996xDEFbNY5Q9ErD7q8awVQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IPUZG9/K8DmSaj0qxCJj5GbKz3qQZQfHZhY1sDEd/PTvJIF6T3hPPtKyOjGohxIHuSllYGftne5VECOl3A+i3Oj9LOPX/1WVnBMovIb7f+P5SQhfQnwhGgYFXPf+hgH+p4i/jMkfdl9J0nfmB3qgf9lw3un4+PWPUkT5qSRi0ZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GL8ZXotb; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=H+tjepOJ6rDWpK3+shh0AgqDlOV2e6w15tiX2KLHN6aocp2XCZEGb4cEYZoPqonNHfCgkGqRTwbc0fTK7mlUgMYmrXoJGV/V23koMGB2OYoaInXd9INBcLY8s5OqpNvtzA31/5VZrPn5Sw8m1D4eA023ZlsusDgOgEr34N7uOOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PkC4Lqn4; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GL8ZXotb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 535D01F000E9;
-	Mon, 22 Jun 2026 17:33:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PkC4Lqn4"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27AAC1F00A3A;
+	Mon, 22 Jun 2026 17:33:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782149603;
-	bh=j0AqZHIVlNW8eG7pSltNIt0e97h0jSsmKwE7BD8uenk=;
+	s=k20260515; t=1782149610;
+	bh=m49MKTSc1P/p1L29za4J/TD61X+wV5tL/oQX4CgdDdI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=GL8ZXotbZKQ5ATWdlppMsiGHtpgJlHZ+qTLSml0uY0gFknaqFILiWiMosl42KGRxq
-	 kzi5E2cvrkQ72Uwy3+4vL7H1e3CtBPo0d+pN3Fa9lCsaLFp9GIh2N85I0Lyoat8WFv
-	 lBbRGabj94nPQR7VZFH6cKAnI4ny4HgQG8aMGqlgqZMIb0Gk1r8+V6CBpxmsZw1XL/
-	 2sPv1v3fK7l4Xu8YUr8jD35IcJCmTa076TIwt6IGFg/oYwjxwetif87GxPhs5SdIMK
-	 dh5l7YrLITJEt68nMt90ft6K+wj6JvWD9r3bb+9fq4oeLBp6O+tnr7Mn4bPrxMvtBB
-	 0HBiiXiC67HqQ==
+	b=PkC4Lqn4fR8S/mq4IYUohNFpBYX23pLJ5UZF7j+rD8AU1i08fJFSv9sNso03Krz98
+	 RCM8Js22sqhi6VyinI8zIKQNEvBjKy1vjiQ8OUStcdrN8NLGzpSDH0FN79nGFXVBT4
+	 Ud2YVi6aOsPG7Pn66MkFFW1IxHl6ETOMUiF88QjgKQxLCMHSbElxUtxFsSL/RhVltC
+	 fY4xmitmN9pRFkyUuO9Q/tc3adusCwiJ0I6ThLsY6P8nx0JhOTHv07tYq5sf58yq+g
+	 KqI/GFtyizw5/lwqLhGSB/zNf5Jv31ygLC89H+VGB3VSrcQ6snZVBijpB1/repoz7R
+	 9K0Yc2SNV4DEw==
 From: Philipp Stanner <phasta@kernel.org>
 To: Miguel Ojeda <ojeda@kernel.org>,
 	Boqun Feng <boqun@kernel.org>,
@@ -60,9 +60,9 @@ Cc: rust-for-linux@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	rcu@vger.kernel.org
-Subject: [PATCH v2 2/3] rust: revocable: Use safe synchronize_rcu() abstraction
-Date: Mon, 22 Jun 2026 19:32:50 +0200
-Message-ID: <20260622173250.411377-4-phasta@kernel.org>
+Subject: [PATCH v2 3/3] rust: sync: Use safe synchronize_rcu() abstraction in poll
+Date: Mon, 22 Jun 2026 19:32:51 +0200
+Message-ID: <20260622173250.411377-5-phasta@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260622173250.411377-2-phasta@kernel.org>
 References: <20260622173250.411377-2-phasta@kernel.org>
@@ -76,40 +76,41 @@ Content-Transfer-Encoding: 8bit
 
 We now have a safe wrapper for the foreign function synchronize_rcu().
 
-Use it in revocable.rs.
+Use it in poll.rs.
 
 Signed-off-by: Philipp Stanner <phasta@kernel.org>
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 ---
- rust/kernel/revocable.rs | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ rust/kernel/sync/poll.rs | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/rust/kernel/revocable.rs b/rust/kernel/revocable.rs
-index 0f4ae673256d..f539603349f1 100644
---- a/rust/kernel/revocable.rs
-+++ b/rust/kernel/revocable.rs
-@@ -7,7 +7,11 @@
+diff --git a/rust/kernel/sync/poll.rs b/rust/kernel/sync/poll.rs
+index 0ec985d560c8..30ebeea1702f 100644
+--- a/rust/kernel/sync/poll.rs
++++ b/rust/kernel/sync/poll.rs
+@@ -8,7 +8,11 @@
+     bindings,
+     fs::File,
+     prelude::*,
+-    sync::{CondVar, LockClassKey},
++    sync::{
++        CondVar,
++        LockClassKey,
++        rcu::synchronize_rcu, //
++    }, //
+ };
+ use core::{marker::PhantomData, ops::Deref};
  
- use pin_init::Wrapper;
+@@ -99,8 +103,6 @@ fn drop(self: Pin<&mut Self>) {
+         unsafe { bindings::__wake_up_pollfree(self.inner.wait_queue_head.get()) };
  
--use crate::{bindings, prelude::*, sync::rcu, types::Opaque};
-+use crate::{
-+    prelude::*,
-+    sync::rcu,
-+    types::Opaque, //
-+};
- use core::{
-     marker::PhantomData,
-     ops::Deref,
-@@ -161,8 +165,7 @@ unsafe fn revoke_internal<const SYNC: bool>(&self) -> bool {
- 
-         if revoke {
-             if SYNC {
--                // SAFETY: Just an FFI call, there are no further requirements.
--                unsafe { bindings::synchronize_rcu() };
-+                rcu::synchronize_rcu();
-             }
- 
-             // SAFETY: We know `self.data` is valid because only one CPU can succeed the
+         // Wait for epoll items to be properly removed.
+-        //
+-        // SAFETY: Just an FFI call.
+-        unsafe { bindings::synchronize_rcu() };
++        synchronize_rcu();
+     }
+ }
 -- 
 2.54.0
 
