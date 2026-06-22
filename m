@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D53D29B781;
-	Mon, 22 Jun 2026 18:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1277157487;
+	Mon, 22 Jun 2026 18:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782153990; cv=none; b=IKnSuHl5EC0p7rjJJGnaENkGRR/0WZvW+j0Bjx4RW+izjCSI4ofs7x4Ng1fkqDRIrwb+0bs/DOkNLBim45Y1Ldp+5KND5G2K7fyP2WO8YzWLzPQWZ9y80KCPrMN5vVYBkLO30Y9aVaFrgiDx4DtkT0vx61Rxn2YcSpNgCWS4edE=
+	t=1782154045; cv=none; b=Sx94LD8hRtkaWKljmsWeLRcVAYIge/45VgG+R15a8AGZPzGe1RaEMfhypYgKu/CEqIVU4fuoey3T8L1qCdFD31Wr/sZNe5rB3m7lAabMz4gwKP+w0cqZPUpy5BIBQfQuC4yw4J+1ijngPupWyW90t9pbcyxiB/TsQfbFFHAtqb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782153990; c=relaxed/simple;
-	bh=t5ph3wiqKU3VNHK6wx0lo3wW666g+OlPUKp6Ns/UsEM=;
+	s=arc-20240116; t=1782154045; c=relaxed/simple;
+	bh=hCkg8hYbYXc9JrwEzg7wqLO6PPnmU114Q46FmCKWRSg=;
 	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=hRjaCJZmLD8Do8h5nyY6JLprVAGxLiMuQXWyrr8qngSOAYYgyw5Tt83x4xXkb85cx/Pk4O1ddxuQvCH3Ew6CIlJKJdE/LV41xSu+e7AYqBcDUdk/LQUpjlYrVnTFY0hKlKB2+AmwRgtxcjy6MbzVdPq2/z+9tzOBzKSeoR8Yen0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O5JDDg16; arc=none smtp.client-ip=100.103.45.18
+	 References:In-Reply-To; b=Un6G91eyer/doZBMvOMP17Wd+sVJ91LIB8JHSE5JUsH3UtnSdhePQqJKclZydGJPy+yLxStpiB5r6J9jcrIG8hiqcO4Do6NV++GNJiSbsw+7oSUxOL7+baiYGX7tGToq1pvXHuwJmrBOtWcM3jVLGsjk7hGiQROC7d0bkjmfXhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FYbkdMcP; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O5JDDg16"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E677D1F000E9;
-	Mon, 22 Jun 2026 18:46:22 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FYbkdMcP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AD461F000E9;
+	Mon, 22 Jun 2026 18:47:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782153988;
-	bh=liL7tmJ6GOuD4jO/2yGo9UceXee7KH6ey0qVEMF53JA=;
+	s=k20260515; t=1782154044;
+	bh=+McouJ3hkTGmA66sNXUO5zoGlCSzbHbEHeO4weauw1g=;
 	h=Date:Subject:Cc:To:From:References:In-Reply-To;
-	b=O5JDDg16BsqCl/Rm2ukrcWHRM7OlxgC1Aif/rDe2GZcQCC0YlnzkhTFsCz0cTVSy3
-	 6sz9BAZc300lQGtkX2CHoMR5vApFKJw9pW0UkZmUiDh5LWW0tIayT655MD+TQOomUP
-	 YbzDl2oqhsNNZPI4AY5igAX6CK/uJCkchUKlmsaYgsu8esc7djv8JlizLmBpPc0sqo
-	 mEnMsojV88aH5gqVZ2n3ix5Yu6PfqEhLoQve1GIEhuHCopXZQtyJqKEVhfzeGBbu8g
-	 yBBPSCfloMOZx1HuTR0X6RRJDtjL/JSGLdAG6c5myCc5NIFJjdQprXwVmIjhzhEXlO
-	 I2ZvqLD/p6Klw==
+	b=FYbkdMcPkWjZkG3jpfToALGwm8HxiRCi+Iy49Z10f3+WnGRjLUT+jwxC/K1ftAm8n
+	 Sg15F/4vwMXMiqYVXJezsCOAN/KT3YHCX5/+i8D3d/xaze9kh8MbWHaZGv+B7Y2RWy
+	 aqUChOo4ipSDyC5u/cu6UkrGFMBCLYRdis42tDkDpHvkAMka51UTaoOqjMODvxhekq
+	 G/65YKCclpEM1rDb3w7g8bx0Q3rNLDqKLEFP6T2dCpgkUCb3xOQnDqrLJQPZ2H3BS6
+	 bAJdwwhVviYvy+bmGOWOEnG8A2LTfBTLlvow+HdgVFFfxX1FfpoqcFugaHEcdM8BUc
+	 BL6Nr/XxWMegA==
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -34,10 +34,9 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Mon, 22 Jun 2026 20:46:21 +0200
-Message-Id: <DJFSV0OS9NEG.G9W8K1OHQ8D5@kernel.org>
-Subject: Re: [PATCH v2 1/3] rust: sync: Add abstraction for
- synchronize_rcu()
+Date: Mon, 22 Jun 2026 20:47:17 +0200
+Message-Id: <DJFSVQ7MGLD4.3CO0IAJDUJ29@kernel.org>
+Subject: Re: [PATCH v2 0/3] Add and use abstraction for synchronize_rcu()
 Cc: "Miguel Ojeda" <ojeda@kernel.org>, "Boqun Feng" <boqun@kernel.org>,
  "Gary Guo" <gary@garyguo.net>, =?utf-8?q?Bj=C3=B6rn_Roy_Baron?=
  <bjorn3_gh@protonmail.com>, "Benno Lossin" <lossin@kernel.org>, "Andreas
@@ -60,30 +59,11 @@ Cc: "Miguel Ojeda" <ojeda@kernel.org>, "Boqun Feng" <boqun@kernel.org>,
 To: "Philipp Stanner" <phasta@kernel.org>
 From: "Danilo Krummrich" <dakr@kernel.org>
 References: <20260622173250.411377-2-phasta@kernel.org>
- <20260622173250.411377-3-phasta@kernel.org>
-In-Reply-To: <20260622173250.411377-3-phasta@kernel.org>
+In-Reply-To: <20260622173250.411377-2-phasta@kernel.org>
 
 On Mon Jun 22, 2026 at 7:32 PM CEST, Philipp Stanner wrote:
-> +/// Wait for one RCU grace period.
-> +///
-> +/// You typically do this to wait for everyone holding a [`Guard`].
+>   rust: sync: Add abstraction for synchronize_rcu()
+>   rust: revocable: Use safe synchronize_rcu() abstraction
+>   rust: sync: Use safe synchronize_rcu() abstraction in poll
 
-NIT: "typically" reads a bit as if there were other reasons to call
-synchronize_rcu() than to wait for all concurrent RCU read side critical
-sections.
-
-Also, while it's implicit, it might still be worth to explicitly call out t=
-hat
-this means concurrently held Guard objects (concurrent read side critical
-sections), i.e. subsequent read side critical sections may still run
-concurrently.
-
-> +#[inline]
-> +pub fn synchronize_rcu() {
-> +    // SAFETY: `synchronize_rcu()` is always safe to be called. It just =
-waits for a grace period.
-> +    unsafe { bindings::synchronize_rcu() };
-> +}
-> --=20
-> 2.54.0
-
+Reviewed-by: Danilo Krummrich <dakr@kernel.org>
