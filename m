@@ -1,167 +1,283 @@
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.54])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED8D17E0FF;
-	Sun, 21 Jun 2026 00:29:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA58D351C28;
+	Mon, 22 Jun 2026 04:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782001781; cv=none; b=GtOGKzQwD+AvKhRmvv6ilU4BqkOAmMLklW3feMhieSa9/6KKTCXpi4W8yiEOtk1l7lEcwUztYFwf6Cj4dZUJRizpOs/JDgJC9UgO4UAP6wsNeYB31XaDGbbfaTVgmEX0AmxfrDLKmbZE1joUQqzuiq2egJoOSHM6sI3itlvWCdM=
+	t=1782101204; cv=none; b=JwPA7XS6qaF9SRYjrCm2TF3afI69ONWn6iIE0pMaBaIVbs0ZoTwjiDJk0KeAxxC4apbutfu6XldmP6MU88SFfQwXhWq3JvJJT4WNaxx9lqM7TOqBHE267qNK4vnEqRljc5PrSq1HZdpTA/zCQRJE/GwGijjLqivA/BOcbQUMbP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782001781; c=relaxed/simple;
-	bh=1MnWNqh0Ih//0t81t9oNMlb5t06OUcy7Zz/BNBFXUT0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=riHWYP6xpfRHLQr2nc37ll3ErAl8WqcBVOz2sUAC3ZC+fUfaNWHDD6ythz34j6NBfKPtFOVjCVOIRKX1okYYjF1nl3Df6aQQC31w0iuHOdRrtalGetNs006U5qPQCYF5KhqrqzRq4YRE8MHe/GlI83w/nqh5WeFthK4BdmUobNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=wwydNH/N; arc=none smtp.client-ip=43.163.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1782101204; c=relaxed/simple;
+	bh=sI2dRrm2rYzC5hsq52tWdXiGHIDaT9AxOFi7X+Rlza0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SIqL/ifW3wkROpBUE4L4shmMA2B8x0LD8DIZXjfVPOjADAK84pUrOImDQRT+/YSDaIHVopMfrM4suJhxH1f+KZ7/c1pTZui+UxwVV93oRgL86ddoHWfPUIVaXcbsGmq1UUkgwbxzGTf6ytylC9zeSldmjSlRxISbUNzdZRk6StQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oHrwj+Sj; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="wwydNH/N"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1782001776; bh=tV+HkNoqzvKpgSRnvGC6RmogVfBvelOvm7aH4UT4sWE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=wwydNH/N/FlJkbysIxkx2U1DuTaZe1a8sWH0i1aPf6jpaOTAWU0BfWQvx7e+hP/aD
-	 msFG6CtnKQt6VQxuevmwWUCkApnD5PIqH+syaXZTI0rnug4CdT9llNSkbnuy7XdyRr
-	 6Dy0tt1wau1g0nEu9fdPW7qHKW119k4MgTlFyg78=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
-X-QQ-XMAILINFO: MF2s0TKt0BDQ/rAu5/bVF6ZNILrc10mr2NDK5So5PZea2C0ouyc6T0AU7Lv/0m
-	 M+tiChHuvcTMkEr7KxEG8VnMxxBZg/FL2VWvaGR+PVbmIS213R4X2rMZTUn0tTK8tqPcAkg54H8hm
-	 MolsdFNAM21nSu+sGsS6BwabyTIUlI87LRHTYv6OC+bpdKnIYgkHyx1/8aIg+QOWQKCsFrCuAEOO2
-	 ikeK44vqRz3+kEZjQZYtGJHxm7o3OOGlLSLYGaQwguUUo+5isE5F3rdwiQiijWZjrFNcwDinft0xJ
-	 uk7SlLwRsMpfemvZf2tyJ/wRtmyJ42c5xoan+9jdHzbu0Fpn0ukU/uLfWzm8UBXVLWgLW68OtxZ+s
-	 s7UubAhyGi2OXhd37kt3OG1hB0sUBXP2GDdavSpB4w/mabdznQ6reeBY0HrU5tjSNazw2ZvnH+27l
-	 uqBEdF9IFVj65f8p9WJFtt4qO67/4cTjlD03/NsuvHON5OvsdOYj3DQLKVX3cxKysLMUcrFUicMfa
-	 FRz+GSBnNjRJtKh047QqHUJ6ONmwAQ7sKinwsMjiHzBWJDzh6flXhZLfD7Qc9nuYS/aj9/xuI2mwd
-	 KUiC9lDTKL4D0Tp1LKzldI1FK8ChtHutDuZSilufRP37SnjVKthlobfWZuOgNjb/kWKeFtChGZuoH
-	 NIuCGmd2y1PzzrJZyjDT55awvUINzzRpq7VIEjGHNkMHYJL9ZLN8GzWrfqZupeaUNdKg9Q7aljomT
-	 czs0HD+4/Bo9RHbKxfmm5qwKbCx0TrClmnshOdZFSxwK3i/Vi8XplgVonX78ZqRHzeRM9wJaZo5jW
-	 GxQ+316YYUksIkDpl25GrCh8UrMjB8JQwBbhcROpPiidgoCq8VTZCJuvrlJ0NGU5k2oFk5jd4bI3/
-	 x/v8/Sb9BSVlp2QtLRfJYGnW3htAUjy+MT2fam177lsNCnPgb3wNlAgG1RkN3yTeR27g8bfs7+efn
-	 +N3w9NvhV6ONr0SHy1f06fEgazvq7hkv5k/ZVjvYsP/w0D4rwV+tYIpXyvr7/g6mJv4/wHNOA9YYv
-	 81WKVzAZj0/KqNn4jFku/Aso0866oBomlIAXyY7yYVbBfVMCMRV4ITq3GnogfuCWqPonFdPZgNvcK
-	 jcjUlIxFvNXuePoauHAU+5rTvg95QwdWsFBdxMzP9IYHeg==
-Received: from [192.168.1.100] ([183.94.22.181])
-	by newxmesmtplogicsvrsza53-0.qq.com (NewEsmtp) with SMTP
-	id 75E2FA1F; Sun, 21 Jun 2026 08:29:30 +0800
-X-QQ-mid: xmsmtpt1782001770t17vm1vd5
-Message-ID: <tencent_45CAE878B5922990DB102BE05A1BAD50DA09@qq.com>
-X-OQ-MSGID: <213501bc-74e7-43ef-b72e-83ed5976371b@qq.com>
-Date: Sun, 21 Jun 2026 08:29:30 +0800
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oHrwj+Sj"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782101196;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ZUWyFEvXeVLfLgRyqSt5dzUpDWIXdvcmv/YrGiPhDm0=;
+	b=oHrwj+SjzLCSYGSoHMsBlTyi/BPO1LYEAowZCiJy/BgfowxK1Nhv4wBnxGATzNJAQy2Usu
+	3Aui+a8Xl2VwYnUg4vaKt1jLEunHuuM12PdPzSO2e5i/XDE+X1RLFq1HeiZLctcF2EtPOU
+	pEKF/++lDxrY0G4TuBJvKoXJ/NqYwTU=
+From: Kaitao Cheng <kaitao.cheng@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Tejun Heo <tj@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Paul Moore <paul@paul-moore.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: David Howells <dhowells@redhat.com>,
+	Simona Vetter <simona.vetter@ffwll.ch>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Philipp Stanner <phasta@kernel.org>,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-ntfs-dev@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org,
+	io-uring@vger.kernel.org,
+	audit@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-perf-users@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	kexec@lists.infradead.org,
+	live-patching@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	rcu@vger.kernel.org,
+	sched-ext@lists.linux.dev,
+	linux-mm@kvack.org,
+	virtualization@lists.linux.dev,
+	damon@lists.linux.dev,
+	llvm@lists.linux.dev,
+	chengkaitao <chengkaitao@kylinos.cn>
+Subject: [PATCH v3 0/7] Prepare mutable list iterators to cache cursor state
+Date: Mon, 22 Jun 2026 12:05:30 +0800
+Message-ID: <20260622040533.29824-1-kaitao.cheng@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH for-next v3 7/9] mm/slab: introduce kfree_rcu_nolock()
-To: "Harry Yoo (Oracle)" <harry@kernel.org>,
- Vlastimil Babka <vbabka@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
-References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-7-70a54f3775bb@kernel.org>
-From: XIAO WU <xiaowu.417@qq.com>
-In-Reply-To: <20260615-kfree_rcu_nolock-v3-7-70a54f3775bb@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
+From: chengkaitao <chengkaitao@kylinos.cn>
 
-I noticed the Sashiko AI review [1] in this thread flagged that
-kfree_call_rcu_nolock() dereferences slab->slab_cache even when
-virt_to_slab() returns NULL (for large kmalloc objects that bypass
-SLUB, or vmalloc addresses).  The VM_WARN_ON_ONCE fires but does not
-stop execution, and the subsequent NULL dereference is deterministic.
+The list_for_each*_safe() helpers are used when the loop body may remove
+the current entry.  Their current interface, however, forces every caller
+to define a temporary cursor outside the macro and pass it in, even when
+the caller never uses that cursor directly.  For most call sites this
+extra cursor is just boilerplate required by the macro implementation.
 
-I was able to reproduce this in QEMU with KASAN.  The trigger is as
-simple as passing a large (>8KB) kmalloc buffer to the new function.
+This is awkward because the saved next pointer is an internal detail of
+the iteration.  Callers that only remove or move the current entry do not
+need to spell it out.
 
-On Tue, Jun 16, 2026 at 12:06:14AM +0800, Harry Yoo (Oracle) wrote:
- > This commit introduces kfree_rcu_nolock(), a variant of kfree_rcu()
- > designed to be safely called from unknown contexts without falling
- > back to batched processing.
-...
- > +void kfree_call_rcu_nolock(struct rcu_head *head, void *ptr)
- > +{
- > +    struct slab *slab;
- > +    struct kmem_cache *s;
- > +
- > +    VM_WARN_ON_ONCE(is_vmalloc_addr(ptr) || !virt_to_slab(ptr));
- > +
- > +    slab = virt_to_slab(ptr);
- > +    s = slab->slab_cache;
+The _safe() suffix has also caused confusion.  Christian Koenig pointed
+out that the name is easy to read as a thread-safe variant, especially
+for beginners, even though it only means that the iterator keeps enough
+state to tolerate removal of the current entry.  He suggested _mutable()
+as a clearer description of what the loop permits.
 
-The problem: if ptr is a large kmalloc object (> KMALLOC_MAX_CACHE_SIZE,
-which is 8 KB on x86_64), the allocation bypasses SLUB and comes from
-the page allocator.  virt_to_slab() returns NULL.  VM_WARN_ON_ONCE
-prints a warning but does NOT return, and the next line dereferences
-NULL->slab_cache at offset 0x8.
+Add *_mutable() iterator variants for list, hlist and llist.  The new
+helpers are variadic and support both forms.  In the common case, the
+caller omits the temporary cursor and the macro creates a unique internal
+cursor with typeof(pos) and __UNIQUE_ID().  If a loop really needs an
+explicit temporary cursor, the caller can still pass it and the helper
+keeps the existing *_safe() behaviour.
 
-[Reproduction]
+For example, a call site may use the shorter form:
 
-I rebuilt the kernel with CONFIG_KASAN=y and added a small late_initcall
-that allocates a 16 KB buffer and passes it to kfree_call_rcu_nolock():
+  list_for_each_entry_mutable(pos, head, member)
 
-   static int __init kfree_rcu_nolock_poc_trigger(void)
-   {
-       void *p = kmalloc(16384, GFP_KERNEL);
-       struct rcu_head *head = kmalloc(sizeof(*head), GFP_KERNEL);
-       kfree_call_rcu_nolock(head, p);
-       return 0;
-   }
-   late_initcall(kfree_rcu_nolock_poc_trigger);
+or keep the explicit temporary cursor form:
 
-[Crash log — kernel 6.19.0-rc5, CONFIG_KASAN=y, CONFIG_DEBUG_VM=y]
+  list_for_each_entry_mutable(pos, tmp, head, member)
 
-   kfree_rcu_nolock PoC: calling kfree_call_rcu_nolock on large obj 
-ffff888026c5c000
+The existing *_safe() helpers remain available for compatibility.  This
+series only converts users in mm, block, kernel, init and io_uring.  If
+this approach looks acceptable, the remaining users can be converted in
+follow-up series.
 
-   WARNING: mm/slab_common.c:1271 at kfree_call_rcu_nolock+0x1e/0xc0
-   VM_WARN_ON_ONCE(is_vmalloc_addr(ptr) || !virt_to_slab(ptr))
+Changes in v3 (Christian König, Andy Shevchenko):
+- Convert safe list walks to mutable iterators
 
-   BUG: kernel NULL pointer dereference, address: 0000000000000008
-   #PF: supervisor read access in kernel mode
-   #PF: error_code(0x0000) - not-present page
+Changes in v2 (Muchun Song, Andy Shevchenko):
+- Drop the list_for_each_entry_mutable*() helpers from v1 and make the
+  cursor change directly in the existing list_for_each_entry*() helpers.
+- Open-code special list walks that rely on updating the loop cursor in
+  the body, preserving their existing traversal semantics.
 
-   RIP: 0010:kfree_call_rcu_nolock+0x5c/0xc0
-   Call Trace:
-    <TASK>
-    poc_trigger_init+0x2a/0x40
-    do_one_initcall+0x131/0x730
-    kernel_init_freeable+0x471/0x7e0
-    kernel_init+0x28/0x300
-    ret_from_fork+0x2c/0xc0
-    </TASK>
+Link to v2:
+https://lore.kernel.org/all/20260609061347.93688-1-kaitao.cheng@linux.dev/
 
-   Kernel panic - not syncing: Fatal exception
+Link to v1:
+https://lore.kernel.org/all/20260529082149.76764-1-kaitao.cheng@linux.dev/
 
-The crash is at offset 0x5c inside kfree_call_rcu_nolock(), which
-corresponds to `s = slab->slab_cache`.  The fault address 0x8 is
-exactly offsetof(struct slab, slab_cache).
+Kaitao Cheng (7):
+  list: Add mutable iterator variants
+  llist: Add mutable iterator variants
+  mm: Use mutable list iterators
+  block: Use mutable list iterators
+  kernel: Use mutable list iterators
+  initramfs: Use mutable list iterator
+  io_uring: Use mutable list iterators
 
+ block/bfq-iosched.c                 |  17 +-
+ block/blk-cgroup.c                  |  12 +-
+ block/blk-flush.c                   |   4 +-
+ block/blk-iocost.c                  |  18 +-
+ block/blk-mq.c                      |   8 +-
+ block/blk-throttle.c                |   4 +-
+ block/kyber-iosched.c               |   4 +-
+ block/partitions/ldm.c              |   8 +-
+ block/sed-opal.c                    |   4 +-
+ include/linux/list.h                | 269 ++++++++++++++++++++++++----
+ include/linux/llist.h               |  81 +++++++--
+ init/initramfs.c                    |   5 +-
+ io_uring/cancel.c                   |   6 +-
+ io_uring/poll.c                     |   3 +-
+ io_uring/rw.c                       |   4 +-
+ io_uring/timeout.c                  |   8 +-
+ io_uring/uring_cmd.c                |   3 +-
+ kernel/audit_tree.c                 |   4 +-
+ kernel/audit_watch.c                |  16 +-
+ kernel/auditfilter.c                |   4 +-
+ kernel/auditsc.c                    |   4 +-
+ kernel/bpf/arena.c                  |  10 +-
+ kernel/bpf/arraymap.c               |   8 +-
+ kernel/bpf/bpf_local_storage.c      |   3 +-
+ kernel/bpf/bpf_lru_list.c           |  25 ++-
+ kernel/bpf/btf.c                    |  18 +-
+ kernel/bpf/cgroup.c                 |   7 +-
+ kernel/bpf/cpumap.c                 |   4 +-
+ kernel/bpf/devmap.c                 |  10 +-
+ kernel/bpf/helpers.c                |   8 +-
+ kernel/bpf/local_storage.c          |   4 +-
+ kernel/bpf/memalloc.c               |  16 +-
+ kernel/bpf/offload.c                |   8 +-
+ kernel/bpf/states.c                 |   4 +-
+ kernel/bpf/stream.c                 |   4 +-
+ kernel/bpf/verifier.c               |   6 +-
+ kernel/cgroup/cgroup-v1.c           |   4 +-
+ kernel/cgroup/cgroup.c              |  54 +++---
+ kernel/cgroup/dmem.c                |  12 +-
+ kernel/cgroup/rdma.c                |   8 +-
+ kernel/events/core.c                |  44 +++--
+ kernel/events/uprobes.c             |  12 +-
+ kernel/exit.c                       |   8 +-
+ kernel/fail_function.c              |   4 +-
+ kernel/gcov/clang.c                 |   4 +-
+ kernel/irq_work.c                   |   4 +-
+ kernel/kexec_core.c                 |   4 +-
+ kernel/kprobes.c                    |  16 +-
+ kernel/livepatch/core.c             |   4 +-
+ kernel/livepatch/core.h             |   4 +-
+ kernel/liveupdate/kho_block.c       |   4 +-
+ kernel/liveupdate/luo_flb.c         |   4 +-
+ kernel/locking/rwsem.c              |   2 +-
+ kernel/locking/test-ww_mutex.c      |   2 +-
+ kernel/module/main.c                |  11 +-
+ kernel/padata.c                     |   4 +-
+ kernel/power/snapshot.c             |   8 +-
+ kernel/power/wakelock.c             |   4 +-
+ kernel/printk/printk.c              |  11 +-
+ kernel/ptrace.c                     |   4 +-
+ kernel/rcu/rcutorture.c             |   3 +-
+ kernel/rcu/tasks.h                  |   9 +-
+ kernel/rcu/tree.c                   |   6 +-
+ kernel/resource.c                   |   4 +-
+ kernel/sched/core.c                 |   4 +-
+ kernel/sched/ext.c                  |  22 +--
+ kernel/sched/fair.c                 |  28 +--
+ kernel/sched/topology.c             |   4 +-
+ kernel/sched/wait.c                 |   4 +-
+ kernel/seccomp.c                    |   4 +-
+ kernel/signal.c                     |  11 +-
+ kernel/smp.c                        |   4 +-
+ kernel/taskstats.c                  |   8 +-
+ kernel/time/clockevents.c           |   6 +-
+ kernel/time/clocksource.c           |   4 +-
+ kernel/time/posix-cpu-timers.c      |   4 +-
+ kernel/time/posix-timers.c          |   3 +-
+ kernel/torture.c                    |   3 +-
+ kernel/trace/bpf_trace.c            |   4 +-
+ kernel/trace/ftrace.c               |  49 +++--
+ kernel/trace/ring_buffer.c          |  25 ++-
+ kernel/trace/trace.c                |  12 +-
+ kernel/trace/trace_dynevent.c       |   6 +-
+ kernel/trace/trace_dynevent.h       |   5 +-
+ kernel/trace/trace_events.c         |  35 ++--
+ kernel/trace/trace_events_filter.c  |   4 +-
+ kernel/trace/trace_events_hist.c    |   8 +-
+ kernel/trace/trace_events_trigger.c |  17 +-
+ kernel/trace/trace_events_user.c    |  16 +-
+ kernel/trace/trace_stat.c           |   4 +-
+ kernel/user-return-notifier.c       |   3 +-
+ kernel/workqueue.c                  |  16 +-
+ mm/backing-dev.c                    |   8 +-
+ mm/balloon.c                        |   8 +-
+ mm/cma.c                            |   4 +-
+ mm/compaction.c                     |   4 +-
+ mm/damon/core.c                     |   4 +-
+ mm/damon/sysfs-schemes.c            |   4 +-
+ mm/dmapool.c                        |   4 +-
+ mm/huge_memory.c                    |   8 +-
+ mm/hugetlb.c                        |  56 +++---
+ mm/hugetlb_vmemmap.c                |  16 +-
+ mm/khugepaged.c                     |  14 +-
+ mm/kmemleak.c                       |   7 +-
+ mm/ksm.c                            |  25 +--
+ mm/list_lru.c                       |   4 +-
+ mm/memcontrol-v1.c                  |   8 +-
+ mm/memory-failure.c                 |  12 +-
+ mm/memory-tiers.c                   |   4 +-
+ mm/migrate.c                        |  23 ++-
+ mm/mmu_notifier.c                   |   9 +-
+ mm/page_alloc.c                     |   8 +-
+ mm/page_reporting.c                 |   2 +-
+ mm/percpu.c                         |  11 +-
+ mm/pgtable-generic.c                |   4 +-
+ mm/rmap.c                           |  10 +-
+ mm/shmem.c                          |   9 +-
+ mm/slab_common.c                    |  14 +-
+ mm/slub.c                           |  33 ++--
+ mm/swapfile.c                       |   4 +-
+ mm/userfaultfd.c                    |  12 +-
+ mm/vmalloc.c                        |  24 +--
+ mm/vmscan.c                         |   7 +-
+ mm/zsmalloc.c                       |   4 +-
+ 124 files changed, 875 insertions(+), 681 deletions(-)
 
-[1] 
-https://sashiko.dev/#/patchset/20260615-kfree_rcu_nolock-v3-0-70a54f3775bb%40kernel.org
-     (Sashiko AI code review — "Null Pointer Dereference", Severity: 
-Critical)
-
-Thanks,
-XIAO
-
+-- 
+2.43.0
 
