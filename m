@@ -1,161 +1,136 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCD235F16F
-	for <rcu@vger.kernel.org>; Wed, 24 Jun 2026 13:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0124A3BFE5C;
+	Wed, 24 Jun 2026 14:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782308487; cv=none; b=Yi0kpGmnL8pHYw7KqhY+87Sl7iLFPYhIW4TUw6mowt/0H6lRkXz21z2qEtFChHZcU4tciWGkVCfm/6dCn59zSGlSWxUbEbjE/ubbfVMfUTeEOPGJUYcV3jU1vYTKncGTeLvkupXnxE8HJd93e1LN06TbrpImODlaKOhU9/ZwaVU=
+	t=1782310571; cv=none; b=cOkrw8uv6raPPC6+uuh9RlycHGeC+fBng7A+QQlDHmz8aPWXNGbTdimxualC/5frdA0lzayeCxKnl7MOuHRH+44+H4IKsC62NJUP4mMPdbdErcnV6X3+aFfaRHBN3CzHz1T3PhlUqz/J//ShNXjjgolXt5vczzZ/Fx3PyjFOavY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782308487; c=relaxed/simple;
-	bh=V4baC9XDLxXBojAV6zUUjxYzzXqcwXtx1rIYrUbzjew=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J245UQ19Qsc9wF+/UPjCynZ127Q+q6fGKphFEL1wBE0k8TjBqmj7vQVLb8krBOw1q7oE3PNjy9+vstE1kxI+X7BBXjraeL4YsP5hk8m52Tv9K/ltSfetXcbdPY4lLk6OT21agap5s14NDSuRLdOIj6V6F6jUSGMeKw/tYRMNmm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ojTLct+B; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jsl310v6; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ojTLct+B; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jsl310v6; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	s=arc-20240116; t=1782310571; c=relaxed/simple;
+	bh=UI2NNA2hb1Ih3IR06qE170SNFF1aFICiLHj70kD4Y2M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QjYBwawY3ydcttyYgoCnXPGNJM6A9dXflkD2nOk1LBvNrbeoRKoiBGkmU8AY/SwRk3RhfOE8gYJn8ERum+qIsGiTWssZELzt8m0K1aBbNTlOXMM3cpQ6aQoCD4igVR90XxKIrbxmLo/CrgQeqAlGTY3hEkNeb778fgoKwpWFMbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YGeN61UR; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ojTLct+B";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jsl310v6";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ojTLct+B";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jsl310v6"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F2F8971425;
-	Wed, 24 Jun 2026 13:41:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1782308485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YGeN61UR"
+Message-ID: <1030b968-4184-4818-99dc-aeb0956ef6a3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782310566;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sR3sJGwujfNLRWW+1TBYQaHSIL+b0DW9aOFZ/atPQkc=;
-	b=ojTLct+B6Q134cNmxEmKnlNW4Pb1dd55qKYAkyXLnMwKcccVDVIAbU53kcQXsWUTFNxcZU
-	f3AbFAVyVqVrPvoh/v1yXrWpnaZg1fGcg77FzYPvMRF/JM06fkneXi6LHW0hCO0+sKSA3t
-	+gcNyr7zjUk1MLR5OIZYRAhlxe+cWA8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1782308485;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sR3sJGwujfNLRWW+1TBYQaHSIL+b0DW9aOFZ/atPQkc=;
-	b=jsl310v6c3qVx+TvswUZhMgyeTEJklTDi6CIYB/IJ9khWjX18P2wLJVMQVkAAHNFRDtTjH
-	3W6gTUn2NJX1VlCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1782308485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sR3sJGwujfNLRWW+1TBYQaHSIL+b0DW9aOFZ/atPQkc=;
-	b=ojTLct+B6Q134cNmxEmKnlNW4Pb1dd55qKYAkyXLnMwKcccVDVIAbU53kcQXsWUTFNxcZU
-	f3AbFAVyVqVrPvoh/v1yXrWpnaZg1fGcg77FzYPvMRF/JM06fkneXi6LHW0hCO0+sKSA3t
-	+gcNyr7zjUk1MLR5OIZYRAhlxe+cWA8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1782308485;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sR3sJGwujfNLRWW+1TBYQaHSIL+b0DW9aOFZ/atPQkc=;
-	b=jsl310v6c3qVx+TvswUZhMgyeTEJklTDi6CIYB/IJ9khWjX18P2wLJVMQVkAAHNFRDtTjH
-	3W6gTUn2NJX1VlCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 22AC3779A8;
-	Wed, 24 Jun 2026 13:41:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FeK3BIPeO2q0FQAAD6G6ig
-	(envelope-from <pfalcato@suse.de>); Wed, 24 Jun 2026 13:41:23 +0000
-Date: Wed, 24 Jun 2026 14:41:20 +0100
-From: Pedro Falcato <pfalcato@suse.de>
-To: "Harry Yoo (Oracle)" <harry@kernel.org>
-Cc: Vlastimil Babka <vbabka@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>, 
-	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang@linux.dev>, Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, 
-	bpf@vger.kernel.org
-Subject: Re: [PATCH for-next v3 2/9] mm/slab, slub_kunit: register kprobe to
- trigger _nolock APIs
-Message-ID: <ajvczSpMOGWFhe30@pedro-suse>
-References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-2-70a54f3775bb@kernel.org>
+	bh=dWM7/K0F3C5pxQFwSgsZm5S7ELhGilSGA5hWWaaRFNI=;
+	b=YGeN61URMed8FpXNsXYxLJfqOAStpoVJ5VV3vvz8ElP4F+Nbh8QvaWpMTXkba3YhZjdty+
+	X+rLtuGt36ajhdUfdgvzVJcQsyEVGssupxitTGSraomwG6NLuh7Nfc6/rolwGtBYJxpzm/
+	oQzB1gybTiKUQI+oEnwNtgC27a+bocA=
+Date: Wed, 24 Jun 2026 22:15:03 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260615-kfree_rcu_nolock-v3-2-70a54f3775bb@kernel.org>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[30];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	R_RATELIMIT(0.00)[to_ip_from(RLg9nrgqsibwm9ympc34uc4grz)];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,linux-foundation.org,linux.dev,gentwo.org,google.com,gmail.com,linutronix.de,goodmis.org,nvidia.com,joshtriplett.org,efficios.com,kvack.org,vger.kernel.org,lists.linux.dev];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Level: 
+Subject: Re: [PATCH v2] smp: Use release stores for csd_lock_record() state
+To: Usama Arif <usama.arif@linux.dev>, lkmm@lists.linux.dev,
+ joelagnelf@nvidia.com, linux-kernel@vger.kernel.org,
+ marco.crivellari@suse.com, paulmck@kernel.org, rafael.j.wysocki@intel.com,
+ rdunlap@infradead.org, riel@surriel.com, sshegde@linux.ibm.com,
+ tglx@kernel.org, ulfh@kernel.org, yury.norov@gmail.com, rcu@vger.kernel.org
+Cc: shakeel.butt@linux.dev, hannes@cmpxchg.org, kernel-team@meta.com
+References: <20260622163807.4187558-1-usama.arif@linux.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kunwu Chan <kunwu.chan@linux.dev>
+In-Reply-To: <20260622163807.4187558-1-usama.arif@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jun 15, 2026 at 08:05:56PM +0900, Harry Yoo (Oracle) wrote:
-> Since kmalloc_nolock() always fails in NMI and hardirq contexts on
-> PREEMPT_RT, slub_kunit cannot properly test _nolock() APIs.
-> 
-> Register a kprobe pre-handler to invoke kmalloc_nolock() and
-> kfree_nolock() in the middle of the slab allocator. However, do not
-> register the handler on UP kernels [1].
+On 6/23/26 00:38, Usama Arif wrote:
+> __csd_lock_record() publishes per-CPU CSD debug state that is read by
+> csd_lock_wait_toolong() on another CPU.  The remote side first reads
+> cur_csd with smp_load_acquire() and, when non-NULL, may then read the
+> matching cur_csd_func and cur_csd_info fields.
+>
+> Use smp_store_release() when publishing cur_csd so that the preceding
+> cur_csd_func and cur_csd_info stores are ordered before the pointer
+> that csd_lock_wait_toolong() acquires.  This replaces the open-coded
+> smp_wmb() plus plain cur_csd store with the release operation that
+> matches the smp_load_acquire() in csd_lock_wait_toolong().
+>
+> For the clear path, use smp_store_release(&cur_csd, NULL) so that
+> clearing the diagnostic state remains ordered after the preceding
+> callback/unlock work, without requiring a full barrier before the
+> store.  On x86 this removes the locked full barrier from the clear
+> path; on weaker memory models it uses the release operation needed by
+> the smp_load_acquire() in csd_lock_wait_toolong().
+>
+> The old code also had smp_mb() calls around cur_csd updates. Those would
+> only be needed if cur_csd were treated as an exact live-state marker whose
+> publication had to be observed before callback execution or CSD unlock.
+ The original comments around those updates seem to suggest a stronger
+relationship:
+  /* Update cur_csd before function call. */
+  /* NULL cur_csd after unlock. */
 
-Maybe explain in the commit message why that is?
- 
-> To attach the pre-handler while s->cpu_sheaves->lock or n->list_lock
-> is held, add a wrapper function for lockdep_assert_held() that calls
-> a no-op function slab_attach_kprobe_locked() on debug builds. The
+The changelog characterizes cur_csd as best-effort diagnostic context. 
 
-Why lockdep? Wouldn't it make more sense to add these triggers after
-locking these locks?
+Is there prior consensus that cur_csd carries no ordering relationship 
+to callback execution / unlock state, 
 
-> function is optimized away when neither CONFIG_PROVE_LOCKING nor
-> CONFIG_DEBUG_VM is selected and register_kprobe() fails.
-> 
-> The function calls barrier() to prevent the compiler from optimizing
-> away its callsites. Otherwise, the compiler may consider the function
-> does not have any side effect and remove callsites.
+or is this patch effectively relaxing that historical assumption?
 
-My wider comment is the following: this looks very useful but perhaps should
-be lifted to Kunit itself? There's already function redirection (which could
-be used for this as well). I don't know if that suits your purposes?
-Choosing to say "I want to hook this random function using kprobe and give
-it custom behavior" sounds lovely for all sorts of testing.
 
--- 
-Pedro
+Thanks,  Kunwu
+
+> CSD stall warnings do not currently have RCU-style stall-ended checks, so
+> they already allow the stall to end while diagnostics are being assembled.
+> The cur_csd record is therefore best-effort diagnostic context, not a
+> precise completion/stall boundary.
+>
+> Signed-off-by: Usama Arif <usama.arif@linux.dev>
+> ---
+> v1 -> v2: https://lore.kernel.org/all/01437928-ff79-4d8e-823b-7f20146946f6@linux.dev/
+> - Document where the smp_store_release() synchronizes with (Alan Stern,
+>   Randy Dunlap and Paul McKenney).
+> ---
+>  kernel/smp.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index a0bb56bd8dda..685829875a3e 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -182,16 +182,22 @@ static atomic_t csd_bug_count = ATOMIC_INIT(0);
+>  static void __csd_lock_record(call_single_data_t *csd)
+>  {
+>  	if (!csd) {
+> -		smp_mb(); /* NULL cur_csd after unlock. */
+> -		__this_cpu_write(cur_csd, NULL);
+> +		/*
+> +		 * Pairs with smp_load_acquire() of cur_csd in
+> +		 * csd_lock_wait_toolong(): orders any preceding CSD
+> +		 * callback/unlock before a remote reader observes NULL.
+> +		 */
+> +		smp_store_release(this_cpu_ptr(&cur_csd), NULL);
+>  		return;
+>  	}
+>  	__this_cpu_write(cur_csd_func, csd->func);
+>  	__this_cpu_write(cur_csd_info, csd->info);
+> -	smp_wmb(); /* func and info before csd. */
+> -	__this_cpu_write(cur_csd, csd);
+> -	smp_mb(); /* Update cur_csd before function call. */
+> -		  /* Or before unlock, as the case may be. */
+> +	/*
+> +	 * Pairs with smp_load_acquire() of cur_csd in
+> +	 * csd_lock_wait_toolong(): publishes cur_csd_func and
+> +	 * cur_csd_info before the non-NULL pointer becomes visible.
+> +	 */
+> +	smp_store_release(this_cpu_ptr(&cur_csd), csd);
+>  }
+>  
+>  static __always_inline void csd_lock_record(call_single_data_t *csd)
