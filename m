@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31BD03B9DA4;
-	Wed, 24 Jun 2026 13:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AD1246782;
+	Wed, 24 Jun 2026 13:24:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782307488; cv=none; b=f5DKxp9DUI2Y18MZ6uEqeTjRdPG7FuKex6YZVw+xoebZtX0UrP8n9xpC1bKguRZOIoj7nYkjk0/nC42E8CNXP69PTcwP1m6iRiC2oTr3TKQupJ70EnD6kfr5+uihzEvcm64h0+AynxRQMsoEYcWJicPSKN3elwTSAVvQQFgCgrM=
+	t=1782307492; cv=none; b=PaRtwgmGJspqAkxnFept+4wZJcMcuKOsxmaZVfGKuOYH074Qy03f6BBhVFVZAdXOTyJ7Sf/qEKRan4hUQh+9dJgJN5yiSxhV10KDXi61C550wY0v8GOQM68BWMEyMyzn45S+wpo7kre8zZGnMjAu1wTth8y+T+YS/2vp/11CL2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782307488; c=relaxed/simple;
-	bh=FPnCwpEpDcB82KXC5QZhXP7j7Xtuj1bGzZ3oiB1sfA8=;
+	s=arc-20240116; t=1782307492; c=relaxed/simple;
+	bh=0pQhSW8mhjoVCMXKhqt25SbJ17jW/hghSyno4iy8g3k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B+Hnvg0UCVjD3sjifYQfBz/kLz57kigtIUReqWwMzDEXPwzpPdiQpyRZ77Qegc3gq6/hy+pSK7l/UxMbTrALNJfuByK1CbicZTOTqQbm482keTmc8EaqBzbAuXL+n7iYULSzioxFbHlBwBX+HkZpyhb/zLyvq21/+oeOyxWPeo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ezJYzacH; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=hEk4n9WvId8tE2uKHyus7Tvt4Cj2x7TCtGTjXAOyWQLgw775KrlL6wsk29Du2qLq1RqQuAM5tdlDGABDzBFmmt9JVFttugNj5e7QWsAb9SaKQI7w/BEcdK/7SFVOUfpDBJaK47HU/u8dWB6rlxuBWkdNYwr7SjeGY//2w2J0tVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZNC1oyOX; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ezJYzacH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 812E81F000E9;
-	Wed, 24 Jun 2026 13:24:44 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZNC1oyOX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E75841F00A3A;
+	Wed, 24 Jun 2026 13:24:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782307484;
-	bh=SxSNqzlNioUN/jTs9zP0oVQe6RQhkHsx/QBz6WvA+PM=;
+	s=k20260515; t=1782307488;
+	bh=+vNizmGQ1/AKgw4WOuPtkJNKLNL4EZgR9Tv2TQkkO3s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ezJYzacHflkTSFGGTn5qfBbcnyYlXM6Hah7bgIfohrOuXISOIMT/bfCxaULeKWpaD
-	 HALcAf4sZ4JttZ2XiuXZWDB33PhFpiW6q+otWOwckJsX7mpwL0Pnvc1ZJmbyMIpbPO
-	 7E3inb8HW4YuI13HTIaKg8jcWWopNZVvhypb/r4H+lln9LjMnJuVd6ACgOiVssByB2
-	 L2rshpRIE3FkPEjTezI2D1pWfCu0QZ/WyhyeHGX6CGbfUvYE0JgbQ8R/xwXosDyfDi
-	 F+fiOiOJZH1nHEm5I+W0n7nl+95aO2VGXM4OJYkRl+4GUL51uDPu3NpShbJwwat3Kd
-	 xFRRjuPFJKRYA==
+	b=ZNC1oyOXxPnoRZqaXL8S/MatYLYidOA0lTGZrbhWBUDtNvqwAUFG32gK+P85kwTZX
+	 qzok1p1c4uz4tsfI1NzeyBRhTmFYcDVgzn5oFP62o8C8T/sR7UZRBc1owHu3f+3x7X
+	 RjD1AaKQEuE5jDRjQ1mMPXnoLsD/PsD/uWJ4XfcEwjEKAdgf6RCwBBW6eaYeGb228H
+	 H9WY0Lbk2BkWpAi4DyO7NGZVYDukdgu4hQk29RF1mweCrAP3CT2HCuCQhcXtWb6RMJ
+	 /w8A73IuOR5sWTQd3L0yVzGbKy+3vh8M/BxHE4Rqko4ooPSD/5YlvkTjMYf01uuKEl
+	 WWVU/RsnpBGcg==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -45,9 +45,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Davidlohr Bueso <dave@stgolabs.net>,
 	Breno Leitao <leitao@debian.org>
-Subject: [PATCH v1 07/11] rcu: Update comments for gp_seq and expedited GP tracking
-Date: Wed, 24 Jun 2026 06:23:49 -0700
-Message-ID: <20260624132356.516959-8-puranjay@kernel.org>
+Subject: [PATCH v1 08/11] rcu: Wake NOCB rcuog kthreads on expedited grace period completion
+Date: Wed, 24 Jun 2026 06:23:50 -0700
+Message-ID: <20260624132356.516959-9-puranjay@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260624132356.516959-1-puranjay@kernel.org>
 References: <20260624132356.516959-1-puranjay@kernel.org>
@@ -59,192 +59,289 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Update documentation comments throughout the RCU callback infrastructure
-to reflect the transition from a single grace-period sequence number to
-the full struct rcu_gp_seq that tracks both normal and expedited grace
-periods.
+When an expedited grace period completes, rcu_exp_wait_wake() wakes
+waiters on rnp->exp_wq[] but does not notify the NOCB rcuog kthreads.  An
+rcuog kthread that is waiting for a grace period sleeps on the leaf
+rcu_node's ->nocb_gp_wq[] with a wait condition based on the grace-period
+state, so without a wakeup, callbacks on offloaded CPUs that could
+benefit from the expedited GP wait until the rcuog kthread wakes for some
+other reason (e.g. the next normal GP or a timer).
 
-The ->gp_seq[] array documentation in rcu_segcblist.h is updated to
-describe dual (normal and expedited) GP tracking.  The
-rcu_segcblist_advance(), rcu_segcblist_accelerate(), and
-rcu_advance_cbs() comments are updated to refer to the struct rcu_gp_seq
-state (gsp) instead of the old bare grace-period sequence number (seq).
+Make the rcuog grace-period wait honour expedited GPs and wake it when
+one completes:
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+ - nocb_gp_wait() now records the grace period to wait for as a struct
+   rcu_gp_seq (both normal and expedited), tracks the earliest pending
+   normal and expedited sequence across the group, and releases the wait
+   via poll_state_synchronize_rcu_full() so it wakes for whichever
+   completes first.  ->nocb_gp_seq is widened to struct rcu_gp_seq
+   accordingly.
+
+ - rcu_exp_wait_wake() calls the new rcu_nocb_exp_cleanup() on leaf
+   nodes, which wakes both ->nocb_gp_wq[0] and ->nocb_gp_wq[1] (the
+   expedited sequence does not share parity with the normal ->gp_seq the
+   waiter indexed with).  Both this path and rcu_nocb_gp_cleanup() use
+   the shared rcu_nocb_cleanup_wake() helper, which checks swait_active()
+   first; the smp_mb() in rcu_gp_cleanup()/rcu_exp_wait_wake() orders the
+   grace-period state update before that check.
+
+A stub rcu_nocb_exp_cleanup() is provided for CONFIG_RCU_NOCB_CPU=n.
+
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- include/linux/rcu_segcblist.h | 14 +++++++-----
- kernel/rcu/rcu_segcblist.c    | 43 +++++++++++++++++++++++------------
- kernel/rcu/tree.c             |  6 ++---
- 3 files changed, 39 insertions(+), 24 deletions(-)
+ kernel/rcu/tree.c      | 11 ++++-
+ kernel/rcu/tree.h      |  3 +-
+ kernel/rcu/tree_exp.h  |  2 +
+ kernel/rcu/tree_nocb.h | 95 +++++++++++++++++++++++++++++++++++-------
+ 4 files changed, 94 insertions(+), 17 deletions(-)
 
-diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-index 137cc23b024c5..08b63ecf719b2 100644
---- a/include/linux/rcu_segcblist.h
-+++ b/include/linux/rcu_segcblist.h
-@@ -50,12 +50,14 @@ struct rcu_cblist {
-  * Note that RCU_WAIT_TAIL cannot be empty unless RCU_NEXT_READY_TAIL is also
-  * empty.
-  *
-- * The ->gp_seq[] array contains the grace-period number at which the
-- * corresponding segment of callbacks will be ready to invoke.  A given
-- * element of this array is meaningful only when the corresponding segment
-- * is non-empty, and it is never valid for RCU_DONE_TAIL (whose callbacks
-- * are already ready to invoke) or for RCU_NEXT_TAIL (whose callbacks have
-- * not yet been assigned a grace-period number).
-+ * The ->gp_seq[] array contains the grace-period state at which the
-+ * corresponding segment of callbacks will be ready to invoke.  This tracks
-+ * both normal and expedited grace periods, allowing callbacks to complete
-+ * when either type of GP finishes.  A given element of this array is
-+ * meaningful only when the corresponding segment is non-empty, and it is
-+ * never valid for RCU_DONE_TAIL (whose callbacks are already ready to
-+ * invoke) or for RCU_NEXT_TAIL (whose callbacks have not yet been assigned
-+ * a grace-period state).
-  */
- #define RCU_DONE_TAIL		0	/* Also RCU_WAIT head. */
- #define RCU_WAIT_TAIL		1	/* Also RCU_NEXT_READY head. */
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index cf8951d33e767..dd770006e7f8b 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -495,7 +495,8 @@ static void rcu_segcblist_advance_compact(struct rcu_segcblist *rsclp, int i)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index d7e47dfcf702e..169d98ed52bbb 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2224,8 +2224,15 @@ static noinline void rcu_gp_cleanup(void)
+ 			dump_blkd_tasks(rnp, 10);
+ 		WARN_ON_ONCE(rnp->qsmask);
+ 		WRITE_ONCE(rnp->gp_seq, new_gp_seq);
+-		if (!rnp->parent)
+-			smp_mb(); // Order against failing poll_state_synchronize_rcu_full().
++		if (!rnp->parent) {
++			/*
++			 * Order against failing poll_state_synchronize_rcu_full(),
++			 * and also against rcu_nocb_gp_cleanup() -> swait_active(),
++			 * which relies on this barrier to observe a waiter that
++			 * enqueued before re-checking the grace-period state.
++			 */
++			smp_mb();
++		}
+ 		rdp = this_cpu_ptr(&rcu_data);
+ 		if (rnp == rdp->mynode)
+ 			needgp = __note_gp_changes(rnp, rdp) || needgp;
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 36330739d937c..79d3a656e5f73 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -268,7 +268,7 @@ struct rcu_data {
+ 	u8 nocb_gp_sleep;		/* Is the nocb GP thread asleep? */
+ 	u8 nocb_gp_bypass;		/* Found a bypass on last scan? */
+ 	u8 nocb_gp_gp;			/* GP to wait for on last scan? */
+-	unsigned long nocb_gp_seq;	/*  If so, ->gp_seq to wait for. */
++	struct rcu_gp_seq nocb_gp_seq; /* If so, GP state to wait for. */
+ 	unsigned long nocb_gp_loops;	/* # passes through wait code. */
+ 	struct swait_queue_head nocb_gp_wq; /* For nocb kthreads to sleep on. */
+ 	bool nocb_cb_sleep;		/* Is the nocb CB thread asleep? */
+@@ -511,6 +511,7 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t);
+ static void zero_cpu_stall_ticks(struct rcu_data *rdp);
+ static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp);
+ static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq);
++static void rcu_nocb_exp_cleanup(struct rcu_node *rnp);
+ static void rcu_init_one_nocb(struct rcu_node *rnp);
+ static bool wake_nocb_gp(struct rcu_data *rdp);
+ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 0569d8e40e86d..5c35e28708640 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -708,6 +708,8 @@ static void rcu_exp_wait_wake(unsigned long s)
+ 		}
+ 		smp_mb(); /* All above changes before wakeup. */
+ 		wake_up_all(&rnp->exp_wq[rcu_seq_ctr(s) & 0x3]);
++		if (rcu_is_leaf_node(rnp))
++			rcu_nocb_exp_cleanup(rnp);
+ 	}
+ 	trace_rcu_exp_grace_period(rcu_state.name, s, TPS("endwake"));
+ 	mutex_unlock(&rcu_state.exp_wake_mutex);
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 263bb8a65a988..6da1b8f524768 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -170,13 +170,35 @@ static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp)
+ 		lockdep_assert_held(&rdp->nocb_lock);
+ }
  
++static void rcu_nocb_cleanup_wake(struct swait_queue_head *sq)
++{
++	if (swait_active(sq))
++		swake_up_all(sq);
++}
++
  /*
-  * Advance the callbacks in the specified rcu_segcblist structure based
-- * on the current value of the grace-period counter.
-+ * on the current grace-period state.  Checks both normal and expedited
-+ * grace periods, advancing callbacks when either GP type completes.
+  * Wake up any no-CBs CPUs' kthreads that were waiting on the just-ended
+  * grace period.
   */
- void rcu_segcblist_advance(struct rcu_segcblist *rsclp)
+ static void rcu_nocb_gp_cleanup(struct swait_queue_head *sq)
  {
-@@ -506,8 +507,10 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp)
- 		return;
- 
- 	/*
--	 * Find all callbacks whose ->gp_seq numbers indicate that they
--	 * are ready to invoke, and put them into the RCU_DONE_TAIL segment.
-+	 * Find all callbacks whose grace periods have completed (either
-+	 * normal or expedited) and put them into the RCU_DONE_TAIL segment.
-+	 * We check against the current global GP state, which includes
-+	 * proper memory barriers and handles special completion values.
- 	 */
- 	for (i = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++) {
- 		if (!poll_state_synchronize_rcu_full(&rsclp->gp_seq[i]))
-@@ -534,9 +537,9 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp)
-  * them to complete at the end of the earlier grace period.
-  *
-  * This function operates on an rcu_segcblist structure, and also the
-- * grace-period sequence number seq at which new callbacks would become
-+ * grace-period state gsp at which new callbacks would become
-  * ready to invoke.  Returns true if there are callbacks that won't be
-- * ready to invoke until seq, false otherwise.
-+ * ready to invoke until the grace period represented by gsp, false otherwise.
-  */
- bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp)
- {
-@@ -548,11 +551,11 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gs
- 
- 	/*
- 	 * Find the segment preceding the oldest segment of callbacks
--	 * whose ->gp_seq[] completion is at or after that passed in via
--	 * "seq", skipping any empty segments.  This oldest segment, along
-+	 * whose grace period completion is at or after that passed in via
-+	 * "gsp", skipping any empty segments.  This oldest segment, along
- 	 * with any later segments, can be merged in with any newly arrived
--	 * callbacks in the RCU_NEXT_TAIL segment, and assigned "seq"
--	 * as their ->gp_seq[] grace-period completion sequence number.
-+	 * callbacks in the RCU_NEXT_TAIL segment, and assigned "gsp"
-+	 * as their grace-period completion state.
- 	 */
- 	for (i = RCU_NEXT_READY_TAIL; i > RCU_DONE_TAIL; i--)
- 		if (!rcu_segcblist_segempty(rsclp, i) &&
-@@ -561,7 +564,7 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gs
- 
- 	/*
- 	 * If all the segments contain callbacks that correspond to
--	 * earlier grace-period sequence numbers than "seq", leave.
-+	 * earlier grace-period sequence numbers than "gsp", leave.
- 	 * Assuming that the rcu_segcblist structure has enough
- 	 * segments in its arrays, this can only happen if some of
- 	 * the non-done segments contain callbacks that really are
-@@ -569,15 +572,15 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gs
- 	 * out by the next call to rcu_segcblist_advance().
- 	 *
- 	 * Also advance to the oldest segment of callbacks whose
--	 * ->gp_seq[] completion is at or after that passed in via "seq",
-+	 * ->gp_seq[] completion is at or after that passed in via "gsp",
- 	 * skipping any empty segments.
- 	 *
- 	 * Note that segment "i" (and any lower-numbered segments
- 	 * containing older callbacks) will be unaffected, and their
--	 * grace-period numbers remain unchanged.  For example, if i ==
-+	 * grace-period states remain unchanged.  For example, if i ==
- 	 * WAIT_TAIL, then neither WAIT_TAIL nor DONE_TAIL will be touched.
- 	 * Instead, the CBs in NEXT_TAIL will be merged with those in
--	 * NEXT_READY_TAIL and the grace-period number of NEXT_READY_TAIL
-+	 * NEXT_READY_TAIL and the grace-period state of NEXT_READY_TAIL
- 	 * would be updated.  NEXT_TAIL would then be empty.
- 	 */
- 	if (rcu_segcblist_restempty(rsclp, i) || ++i >= RCU_NEXT_TAIL)
-@@ -589,8 +592,8 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gs
- 
- 	/*
- 	 * Merge all later callbacks, including newly arrived callbacks,
--	 * into the segment located by the for-loop above.  Assign "seq"
--	 * as the ->gp_seq[] value in order to correctly handle the case
-+	 * into the segment located by the for-loop above.  Assign "gsp"
-+	 * as the grace-period state in order to correctly handle the case
- 	 * where there were no pending callbacks in the rcu_segcblist
- 	 * structure other than in the RCU_NEXT_TAIL segment.
- 	 */
-@@ -644,6 +647,10 @@ void srcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
- 	if (rcu_segcblist_restempty(rsclp, RCU_DONE_TAIL))
- 		return;
- 
+-	swake_up_all(sq);
 +	/*
-+	 * Find all callbacks whose normal GP sequence numbers indicate
-+	 * that they are ready to invoke.  For SRCU, we only check norm.
++	 * swait_active() can be checked first because of the following
++	 * ordering, which pairs the smp_mb() in rcu_gp_cleanup() against
++	 * the implicit barrier in prepare_to_swait()/set_current_state()
++	 * on the nocb_gp_wait() side:
++	 *
++	 * rcu_gp_cleanup()                          nocb_gp_wait()
++	 * ---------------                           --------------
++	 * WRITE_ONCE(root->gp_seq, new_gp_seq);     swait_event_interruptible_exclusive(sq)
++	 * smp_mb()                                     prepare_to_swait()
++	 * if swait_active(sq)                             list_add_tail(...)
++	 *    swake_up_all(sq)                            set_current_state()
++	 *                                                  smp_mb()
++	 *                                             if (poll_state_synchronize_rcu_full())
++	 *                                                ...
 +	 */
- 	for (i = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++) {
- 		if (ULONG_CMP_LT(seq, rsclp->gp_seq[i].norm))
- 			break;
-@@ -658,6 +665,12 @@ void srcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
- 	rcu_segcblist_advance_compact(rsclp, i);
++	rcu_nocb_cleanup_wake(sq);
+ }
+ 
+ static struct swait_queue_head *rcu_nocb_gp_get(struct rcu_node *rnp)
+@@ -190,6 +212,38 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
+ 	init_swait_queue_head(&rnp->nocb_gp_wq[1]);
  }
  
 +/*
-+ * SRCU wrapper for rcu_segcblist_accelerate() - converts SRCU's unsigned
-+ * long GP sequence to rcu_gp_seq format with exp set to
-+ * RCU_GET_STATE_NOT_TRACKED (since SRCU does not use expedited GPs)
-+ * and calls the core rcu_segcblist_accelerate().
++ * Wake NOCB rcuog kthreads on a leaf node so that they can advance
++ * callbacks that were waiting for the just-completed expedited GP.
++ *
++ * The rcuog kthread waiting for a grace period sleeps on the per-leaf-node
++ * ->nocb_gp_wq[] (not on its rdp_gp's ->nocb_gp_wq, which only signals that
++ * new callbacks have shown up), so this is the queue that must be woken.
++ * Both the even and odd waitqueues are woken because the expedited sequence
++ * does not share parity with the normal ->gp_seq the waiter indexed with.
 + */
- bool srcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
++static void rcu_nocb_exp_cleanup(struct rcu_node *rnp)
++{
++	/*
++	 * swait_active() can be checked first because of the following
++	 * ordering, which pairs the smp_mb() in rcu_exp_wait_wake() against
++	 * the implicit barrier in prepare_to_swait()/set_current_state()
++	 * on the nocb_gp_wait() side:
++	 *
++	 * rcu_exp_wait_wake()                          nocb_gp_wait()
++	 * ---------------                              --------------
++	 * rcu_seq_end(&rcu_state.expedited_sequence);  swait_event_interruptible_exclusive(sq)
++	 * smp_mb()                                         prepare_to_swait()
++	 * if swait_active(sq)                                 list_add_tail(...)
++	 *    swake_up_all(sq)                                set_current_state()
++	 *                                                      smp_mb()
++	 *                                                 if (poll_state_synchronize_rcu_full())
++	 *                                                    ...
++	 */
++	rcu_nocb_cleanup_wake(&rnp->nocb_gp_wq[0]);
++	rcu_nocb_cleanup_wake(&rnp->nocb_gp_wq[1]);
++}
++
+ /* Clear any pending deferred wakeup timer (nocb_gp_lock must be held). */
+ static void nocb_defer_wakeup_cancel(struct rcu_data *rdp_gp)
  {
- 	struct rcu_gp_seq gs = { .norm = seq, .exp = RCU_GET_STATE_NOT_TRACKED };
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 91c03887a1228..d7e47dfcf702e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1209,7 +1209,7 @@ static void rcu_accelerate_cbs_unlocked(struct rcu_node *rnp,
- /*
-  * Move any callbacks whose grace period has completed to the
-  * RCU_DONE_TAIL sublist, then compact the remaining sublists and
-- * assign ->gp_seq numbers to any callbacks in the RCU_NEXT_TAIL
-+ * assign ->gp_seq[] state to any callbacks in the RCU_NEXT_TAIL
-  * sublist.  This function is idempotent, so it does not hurt to
-  * invoke it repeatedly.  As long as it is not invoked -too- often...
-  * Returns true if the RCU grace-period kthread needs to be awakened.
-@@ -1226,8 +1226,8 @@ static bool rcu_advance_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- 		return false;
+@@ -659,7 +713,6 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
+ {
+ 	bool bypass = false;
+ 	int __maybe_unused cpu = my_rdp->cpu;
+-	struct rcu_gp_seq cur_gp_seq;
+ 	unsigned long flags;
+ 	bool gotcbs = false;
+ 	unsigned long j = jiffies;
+@@ -669,7 +722,7 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
+ 	bool needwake_gp;
+ 	struct rcu_data *rdp, *rdp_toggling = NULL;
+ 	struct rcu_node *rnp;
+-	unsigned long wait_gp_seq = 0; // Suppress "use uninitialized" warning.
++	struct rcu_gp_seq wait_gp_seq = {0}; // Suppress "use uninitialized" warning.
+ 	bool wasempty = false;
  
  	/*
--	 * Find all callbacks whose ->gp_seq numbers indicate that they
--	 * are ready to invoke, and put them into the RCU_DONE_TAIL sublist.
-+	 * Find all callbacks whose grace periods have completed (either
-+	 * normal or expedited) and put them into the RCU_DONE_TAIL sublist.
+@@ -693,6 +746,7 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
+ 	 * won't be ignored for long.
  	 */
- 	rcu_segcblist_advance(&rdp->cblist);
+ 	list_for_each_entry(rdp, &my_rdp->nocb_head_rdp, nocb_entry_rdp) {
++		struct rcu_gp_seq cur_gp_seq;
+ 		long bypass_ncbs;
+ 		bool flush_bypass = false;
+ 		long lazy_ncbs;
+@@ -754,9 +808,15 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
+ 		 */
+ 		if (rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
+ 		    !poll_state_synchronize_rcu_full(&cur_gp_seq)) {
+-			if (!needwait_gp ||
+-			    ULONG_CMP_LT(cur_gp_seq.norm, wait_gp_seq))
+-				wait_gp_seq = cur_gp_seq.norm;
++			/*
++			 * Track the earliest pending normal and expedited GP
++			 * across the group so the wait below can be released by
++			 * whichever completes first.
++			 */
++			if (!needwait_gp || ULONG_CMP_LT(cur_gp_seq.norm, wait_gp_seq.norm))
++				wait_gp_seq.norm = cur_gp_seq.norm;
++			if (!needwait_gp || ULONG_CMP_LT(cur_gp_seq.exp, wait_gp_seq.exp))
++				wait_gp_seq.exp = cur_gp_seq.exp;
+ 			needwait_gp = true;
+ 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+ 					    TPS("NeedWaitGP"));
+@@ -778,7 +838,8 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
  
+ 	my_rdp->nocb_gp_bypass = bypass;
+ 	my_rdp->nocb_gp_gp = needwait_gp;
+-	my_rdp->nocb_gp_seq = needwait_gp ? wait_gp_seq : 0;
++	if (needwait_gp)
++		my_rdp->nocb_gp_seq = wait_gp_seq;
+ 
+ 	// At least one child with non-empty ->nocb_bypass, so set
+ 	// timer in order to avoid stranding its callbacks.
+@@ -813,12 +874,12 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
+ 		nocb_gp_sleep(my_rdp, cpu);
+ 	} else {
+ 		rnp = my_rdp->mynode;
+-		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq, TPS("StartWait"));
++		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq.norm, TPS("StartWait"));
+ 		swait_event_interruptible_exclusive(
+-			rnp->nocb_gp_wq[rcu_seq_ctr(wait_gp_seq) & 0x1],
+-			rcu_seq_done(&rnp->gp_seq, wait_gp_seq) ||
++			rnp->nocb_gp_wq[rcu_seq_ctr(wait_gp_seq.norm) & 0x1],
++			poll_state_synchronize_rcu_full(&wait_gp_seq) ||
+ 			!READ_ONCE(my_rdp->nocb_gp_sleep));
+-		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq, TPS("EndWait"));
++		trace_rcu_this_gp(rnp, my_rdp, wait_gp_seq.norm, TPS("EndWait"));
+ 	}
+ 
+ 	if (!rcu_nocb_poll) {
+@@ -852,7 +913,8 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
+ 		swake_up_one(&rdp_toggling->nocb_state_wq);
+ 	}
+ 
+-	my_rdp->nocb_gp_seq = -1;
++	my_rdp->nocb_gp_seq.norm = -1;
++	my_rdp->nocb_gp_seq.exp = -1;
+ 	WARN_ON(signal_pending(current));
+ }
+ 
+@@ -1536,7 +1598,7 @@ static void show_rcu_nocb_gp_state(struct rcu_data *rdp)
+ {
+ 	struct rcu_node *rnp = rdp->mynode;
+ 
+-	pr_info("nocb GP %d %c%c%c%c%c %c[%c%c] %c%c:%ld rnp %d:%d %lu %c CPU %d%s\n",
++	pr_info("nocb GP %d %c%c%c%c%c %c[%c%c] %c%c:%ld/%ld rnp %d:%d %lu %c CPU %d%s\n",
+ 		rdp->cpu,
+ 		"kK"[!!rdp->nocb_gp_kthread],
+ 		"lL"[raw_spin_is_locked(&rdp->nocb_gp_lock)],
+@@ -1548,7 +1610,8 @@ static void show_rcu_nocb_gp_state(struct rcu_data *rdp)
+ 		".W"[swait_active(&rnp->nocb_gp_wq[1])],
+ 		".B"[!!rdp->nocb_gp_bypass],
+ 		".G"[!!rdp->nocb_gp_gp],
+-		(long)rdp->nocb_gp_seq,
++		(long)rdp->nocb_gp_seq.norm,
++		(long)rdp->nocb_gp_seq.exp,
+ 		rnp->grplo, rnp->grphi, READ_ONCE(rdp->nocb_gp_loops),
+ 		rdp->nocb_gp_kthread ? task_state_to_char(rdp->nocb_gp_kthread) : '.',
+ 		rdp->nocb_gp_kthread ? (int)task_cpu(rdp->nocb_gp_kthread) : -1,
+@@ -1668,6 +1731,10 @@ static void rcu_init_one_nocb(struct rcu_node *rnp)
+ {
+ }
+ 
++static void rcu_nocb_exp_cleanup(struct rcu_node *rnp)
++{
++}
++
+ static bool wake_nocb_gp(struct rcu_data *rdp)
+ {
+ 	return false;
 -- 
 2.53.0-Meta
 
