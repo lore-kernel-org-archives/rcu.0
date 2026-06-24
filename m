@@ -1,264 +1,321 @@
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A3D3C10A6
-	for <rcu@vger.kernel.org>; Wed, 24 Jun 2026 14:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532913C2B9C
+	for <rcu@vger.kernel.org>; Wed, 24 Jun 2026 14:28:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782311011; cv=none; b=d4k5UIaRUbnT3/GuPrREeTTO7EtMqUh3Y8TSWaWo3D6ru6XM8V8MbWN/grrNSWSyCJe3li3yfj19IAVTiEkglOSMjYdDVphUZApUT4NVOvhnD3UyALnObGQkEvD29tpVuukYX035EkqVCRWUzAKGbCSvc5HzjEcZz00WiFaLyzo=
+	t=1782311300; cv=none; b=TBzO5mXhb5K60qB/FUoSSp0FpjSIaePYlujDh7P9HA4yz0h4aREFSAsyLZ3SLlYh/Cqln3wRoGTdJoG5Zahm1aSQbPJNSdE+Tg9Q/PY1jCMkcNm9vgtaXcylu+z1q2BgRF15n27o0S9ly/T2FHkZM6TUNH0uApgvUGCjj4ZWb88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782311011; c=relaxed/simple;
-	bh=ANcnDbJl1GrE6afhpUmaNktn53Zw0TE+IUnQR7Lyflk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UZe0F+CEM0Y+FcHXOnXA1y8Bbjw1BQRnTBQ77X5SUt5miWe/2UFu2z+MZboMk9NsMLfCO8JYbth9xgUrgBIB0+X1MdKy5UxIITLZ8XQBU61SIV+Opda4BLb4fxPsL1CrVGS24uiXZGJmabfAgXc4KMNnRswyqq5TgSsSO9nX0iE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CK1QgHuI; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1782311300; c=relaxed/simple;
+	bh=zq1uG6JGRXuQikOLa+wb9I2eJVy78SluVXhOLe6UJX8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fOxwkw1Sgyno+Vg/UQQWw37I6aEO+IU7vH4qM5Db+6hbZNDSz52FICYTWvqJ2b8TAhKZLB5zRcX+gVuM4SSw2J2k4unEQpvp2i+KBLyC0HtYnsTRS+k61WSt6dc5o+oSEfBV6Js/0TKSSN3qql0rq61e792SWLVMBvZorK4LMmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KQkbv6XT; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=F/Hd+Tmo; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KQkbv6XT; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=F/Hd+Tmo; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CK1QgHuI"
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-46cacc39191so163979f8f.0
-        for <rcu@vger.kernel.org>; Wed, 24 Jun 2026 07:23:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782311007; x=1782915807; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Per6MI6n5CBZ4jce2Yah0coKW3mXxHCaIKwWKmwmsgQ=;
-        b=CK1QgHuIU3L+Hoq9eyhLAP/tW60WuHCUI7tfWelD/UEnl2Wy0NhsVkfh8AA22XEOA2
-         hDg0I3Qw0c8thCpYKIRQF2GB97/jDtHq3N7sH/zC33OPWPVMkUtDc/wZajKMWaLEVhh+
-         9ZNJdTbT7ze+PrqZ/wGdLFb1rAwCCMVFvHdTBfoD6HTQegbltGhdwjkQ+PvECoQiudJB
-         SKRNGqOXEB2kF2ZVf2qCX1biZAaWtJawZh0E366EpIQ4SAIrWsXVO2ZBPpaWDzupv+RC
-         TaMQybC2UB1JHLVfYACnBxKWlff5n5TZv8mwnhHgObgWNzrtct1UvpEaaP+EMi+/wDnr
-         NuMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782311007; x=1782915807;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Per6MI6n5CBZ4jce2Yah0coKW3mXxHCaIKwWKmwmsgQ=;
-        b=qas418YPil8CxTy09xpsbIaYwOIrC93G+bKiv5fs+JqC1Lio58XEad2EtX7hNhYqsU
-         t6rLMS/WWPGYOCciq+f/2AH/auciRTT4FHmhBbcSxUVkwRN7BWIP9FaO2FkCtnedPrZV
-         BlnA4cNG88YHyePYYKymWDw+agFF5TwSfXmxWbApaAyFO5HJUKgJ5h/30+PVLFMdT/hC
-         T2GahSbFCIU2fs5/MhOE41O0P8p+DRzwgWfnzA7uPEnvrojBaVSB6aHEPrvnlT6xKirF
-         U3oiUsLSHSow2Ez6npxROM5O/+mS8+fkgkcdoGCmH+N9e9zRnpp3f5ZJT3p+0WuzkIL2
-         RwiQ==
-X-Forwarded-Encrypted: i=1; AHgh+RreSuW+KVpAXKQsoHd2xewixrxXU+Kat0zWbHwHtTo4khF71uFUdexJhzUaRll1lx3N5Vk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfW8ppSypxK4xwvld78tjUUc7QmGR/2cZYhknsQT8XP1Dm55FV
-	hZwdfOiJUTBwiRGvB2IfAdHnhhZA7elDGcXznOhdx1savqG1v9HGIDT/
-X-Gm-Gg: AfdE7cmJm4LyPojSzf4NRkx3VhnVqc7gxh0oKw9r9wPK+VY5zEtq7QL6Ct3ADTKwGZQ
-	EP4Rl3K8dp3L5W55fBZedALzzD+wGnwnAidjiOOTzFqCXz3T/TK4QWYUEijw7A9uHox90shFcRl
-	dPYj2oZZOptJS3bU/fd1xTomKRvUMouAfGTk6lwa4fYtPuUdxj1PLCcRcimc8Eh4SD6nPPrVPUi
-	9rZQB7CUFaYyzJ6VrDXDAkuAlmSWp4VthUke25c6I4KXmiFmmByq2YWOe2uAvQ1v4IXZGj3D1eD
-	tFkOyR+z9IzM97tx5zA+0lP3QgKzb1JYcdrKxBOYBGSD27AtH7U9iyp6KeZTrlokRnFN4dSf5Ft
-	hSV65LSGq69z3XTmM72PS6+eJE2Dtrk4lqfnFBe8SU0bIJr84Gpb3dOSvZI5D1prOqbmjK0f4tz
-	SQuQR9ywS35jUUaTXJEzAf5+qQswNsFQwQQuQHinS7KhQXcT+X+Q==
-X-Received: by 2002:a05:6000:471a:b0:460:2e53:a6f6 with SMTP id ffacd0b85a97d-46d04583b35mr1261972f8f.12.1782311006854;
-        Wed, 24 Jun 2026 07:23:26 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-46c221d9405sm8183744f8f.22.2026.06.24.07.23.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2026 07:23:26 -0700 (PDT)
-Date: Wed, 24 Jun 2026 15:23:24 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc: Kaitao Cheng <kaitao.cheng@linux.dev>, Andrew Morton
- <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, Jens
- Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim
- <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>, Juri Lelli
- <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Paul
- Moore <paul@paul-moore.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, David Howells
- <dhowells@redhat.com>, Simona Vetter <simona.vetter@ffwll.ch>, Randy Dunlap
- <rdunlap@infradead.org>, Luca Ceresoli <luca.ceresoli@bootlin.com>, Philipp
- Stanner <phasta@kernel.org>, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- io-uring@vger.kernel.org, audit@vger.kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-perf-users@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- kexec@lists.infradead.org, live-patching@vger.kernel.org,
- linux-modules@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-pm@vger.kernel.org, rcu@vger.kernel.org, sched-ext@lists.linux.dev,
- linux-mm@kvack.org, virtualization@lists.linux.dev, damon@lists.linux.dev,
- llvm@lists.linux.dev, Kaitao Cheng <chengkaitao@kylinos.cn>
-Subject: Re: [PATCH v3 1/7] list: Add mutable iterator variants
-Message-ID: <20260624152324.3def88ce@pumpkin>
-In-Reply-To: <cf8467c7-b98f-44a5-9cf9-60b43b5da711@amd.com>
-References: <20260622040533.29824-1-kaitao.cheng@linux.dev>
-	<20260622040533.29824-2-kaitao.cheng@linux.dev>
-	<20260622094242.64531b9a@pumpkin>
-	<351a6b67-b394-4c58-aee2-88b6c8089ad5@linux.dev>
-	<cf8467c7-b98f-44a5-9cf9-60b43b5da711@amd.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KQkbv6XT";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="F/Hd+Tmo";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KQkbv6XT";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="F/Hd+Tmo"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7E88F75F42;
+	Wed, 24 Jun 2026 14:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1782311295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ExC3wTG/pYX1uSPWpIMmjed8BsggjZ6ZCCx5gzuyEC8=;
+	b=KQkbv6XTcaklRO9GsVwqPpY/SRJDC//NIRWVvfltHJFQK7EgaqNJTbtcD3ml+d4H9PZSb5
+	YZcVPvTGZWudl8gKMI1NJveRuNXNAdrnyLHcOiNe5MF2psuFfQKi+h5AhJL3+pK/5G0ReY
+	5lBKeKyvApf9AhuL0DbSyKBR/he9jZk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1782311295;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ExC3wTG/pYX1uSPWpIMmjed8BsggjZ6ZCCx5gzuyEC8=;
+	b=F/Hd+Tmo3itq/3SsPZ4O5AseJn1xNPyzRktS4MmVBIc9aUGYgvda/IDbcowcqT03+Rlal/
+	DTJcdMpCy88+PMCw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=KQkbv6XT;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="F/Hd+Tmo"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1782311295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ExC3wTG/pYX1uSPWpIMmjed8BsggjZ6ZCCx5gzuyEC8=;
+	b=KQkbv6XTcaklRO9GsVwqPpY/SRJDC//NIRWVvfltHJFQK7EgaqNJTbtcD3ml+d4H9PZSb5
+	YZcVPvTGZWudl8gKMI1NJveRuNXNAdrnyLHcOiNe5MF2psuFfQKi+h5AhJL3+pK/5G0ReY
+	5lBKeKyvApf9AhuL0DbSyKBR/he9jZk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1782311295;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ExC3wTG/pYX1uSPWpIMmjed8BsggjZ6ZCCx5gzuyEC8=;
+	b=F/Hd+Tmo3itq/3SsPZ4O5AseJn1xNPyzRktS4MmVBIc9aUGYgvda/IDbcowcqT03+Rlal/
+	DTJcdMpCy88+PMCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4F95779A8;
+	Wed, 24 Jun 2026 14:28:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id cbznJH3pO2qRQwAAD6G6ig
+	(envelope-from <pfalcato@suse.de>); Wed, 24 Jun 2026 14:28:13 +0000
+Date: Wed, 24 Jun 2026 15:28:11 +0100
+From: Pedro Falcato <pfalcato@suse.de>
+To: "Harry Yoo (Oracle)" <harry@kernel.org>
+Cc: Vlastimil Babka <vbabka@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>, 
+	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang@linux.dev>, Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, 
+	bpf@vger.kernel.org
+Subject: Re: [PATCH for-next v3 3/9] mm/slab: handle the !allow_spin case in
+ kfree_rcu_sheaf()
+Message-ID: <ajvn5-2yJxykPlbP@pedro-suse>
+References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
+ <20260615-kfree_rcu_nolock-v3-3-70a54f3775bb@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260615-kfree_rcu_nolock-v3-3-70a54f3775bb@kernel.org>
+X-Spam-Flag: NO
+X-Rspamd-Action: no action
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	SUBJECT_HAS_EXCLAIM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[30];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,linux-foundation.org,linux.dev,gentwo.org,google.com,gmail.com,linutronix.de,goodmis.org,nvidia.com,joshtriplett.org,efficios.com,kvack.org,vger.kernel.org,lists.linux.dev];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	R_RATELIMIT(0.00)[to_ip_from(RLj61o5ry9wekc93e5gwgzgtt8)];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 7E88F75F42
+X-Spam-Score: -4.01
 
-On Wed, 24 Jun 2026 15:23:47 +0200
-Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
+On Mon, Jun 15, 2026 at 08:05:57PM +0900, Harry Yoo (Oracle) wrote:
+> Teach kfree_rcu_sheaf() how to handle the !allow_spin case. Try to get
+> an empty sheaf from pcs->spare or the barn even when spinning is not
+> allowed. Unlike __pcs_replace_full_main(), try harder to allocate
+> an empty sheaf because the fallback path will be more expensive than
+> kfree_nolock().
+> 
+> When trylock fails or the kernel observes non-NULL pcs->rcu_free after
+> lock acquisition, free the sheaf instead of putting it to the barn.
+> This is rare and not worth complicating the code.
+> 
+> Since call_rcu() cannot be called in an unknown context,
+> kfree_rcu_sheaf() fails when the rcu sheaf becomes full.
+> 
+> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
+> ---
+>  mm/slab.h        |  2 +-
+>  mm/slab_common.c |  2 +-
+>  mm/slub.c        | 39 ++++++++++++++++++++++++++++++---------
+>  3 files changed, 32 insertions(+), 11 deletions(-)
+> 
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 509f330654b8..b1bd33a16544 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -429,7 +429,7 @@ static inline bool is_kmalloc_normal(struct kmem_cache *s)
+>  	return !(s->flags & (SLAB_CACHE_DMA|SLAB_ACCOUNT|SLAB_RECLAIM_ACCOUNT));
+>  }
+>  
+> -bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj);
+> +bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_spin);
+>  void flush_all_rcu_sheaves(void);
+>  void flush_rcu_sheaves_on_cache(struct kmem_cache *s);
+>  
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index b6426d7ceec9..bc1a8ec938d9 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1605,7 +1605,7 @@ static bool kfree_rcu_sheaf(void *obj)
+>  
+>  	s = slab->slab_cache;
+>  	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) == numa_mem_id()))
+> -		return __kfree_rcu_sheaf(s, obj);
+> +		return __kfree_rcu_sheaf(s, obj, /* allow_spin = */ true);
 
-> On 6/24/26 15:14, Kaitao Cheng wrote:
-> >=20
-> >=20
-> > =E5=9C=A8 2026/6/22 16:42, David Laight =E5=86=99=E9=81=93: =20
-> >> On Mon, 22 Jun 2026 12:05:31 +0800
-> >> Kaitao Cheng <kaitao.cheng@linux.dev> wrote:
-> >> =20
-> >>> From: Kaitao Cheng <chengkaitao@kylinos.cn>
-> >>>
-> >>> The list_for_each*_safe() helpers are used when the loop body may
-> >>> remove the current entry.  Their API exposes the temporary cursor at
-> >>> every call site, even though most users only need it for the iterator
-> >>> implementation and never reference it in the loop body.
-> >>>
-> >>> Add *_mutable() variants for list and hlist iteration.  The new helpe=
-rs
-> >>> support both forms: callers may keep passing an explicit temporary cu=
-rsor
-> >>> when they need to inspect or reset it, or omit it and let the helper =
-use
-> >>> a unique internal cursor. =20
-> >>
-> >> I'm not really sure 'mutable' means anything either.
-> >> It is possible to make it valid for the loop body (or even other threa=
-ds)
-> >> to delete arbitrary list items - but that needs significant extra over=
-heads.
-> >>
-> >> It might be worth doing something that doesn't need the extra variable,
-> >> but there is little point doing all the churn just to rename things.
-> >> =20
-> >>>
-> >>> This makes call sites that only mutate the list through the current e=
-ntry
-> >>> less noisy, while keeping the existing *_safe() helpers available for
-> >>> compatibility.
-> >>>
-> >>> Signed-off-by: Kaitao Cheng <chengkaitao@kylinos.cn>
-> >>> ---
-> >>>  include/linux/list.h | 269 +++++++++++++++++++++++++++++++++++++----=
---
-> >>>  1 file changed, 231 insertions(+), 38 deletions(-)
-> >>>
-> >>> diff --git a/include/linux/list.h b/include/linux/list.h
-> >>> index 09d979976b3b..1081def7cea9 100644
-> >>> --- a/include/linux/list.h
-> >>> +++ b/include/linux/list.h
-> >>> @@ -7,6 +7,7 @@
-> >>>  #include <linux/stddef.h>
-> >>>  #include <linux/poison.h>
-> >>>  #include <linux/const.h>
-> >>> +#include <linux/args.h>
-> >>> =20
-> >>>  #include <asm/barrier.h>
-> >>> =20
-> >>> @@ -763,28 +764,72 @@ static inline void list_splice_tail_init(struct=
- list_head *list,
-> >>>  #define list_for_each_prev(pos, head) \
-> >>>  	for (pos =3D (head)->prev; !list_is_head(pos, (head)); pos =3D pos-=
->prev)
-> >>> =20
-> >>> -/**
-> >>> - * list_for_each_safe - iterate over a list safe against removal of =
-list entry
-> >>> - * @pos:	the &struct list_head to use as a loop cursor.
-> >>> - * @n:		another &struct list_head to use as temporary storage
-> >>> - * @head:	the head for your list.
-> >>> +/*
-> >>> + * list_for_each_safe is an old interface, use list_for_each_mutable=
- instead.
-> >>>   */
-> >>>  #define list_for_each_safe(pos, n, head) \
-> >>>  	for (pos =3D (head)->next, n =3D pos->next; \
-> >>>  	     !list_is_head(pos, (head)); \
-> >>>  	     pos =3D n, n =3D pos->next)
-> >>> =20
-> >>> +#define __list_for_each_mutable_internal(pos, tmp, head)		\
-> >>> +	for (typeof(pos) tmp =3D (pos =3D (head)->next)->next;		\ =20
-> >>
-> >> Use auto
-> >> =20
-> >>> +	     !list_is_head(pos, (head));				\
-> >>> +	     pos =3D tmp, tmp =3D pos->next)
-> >>> +
-> >>> +#define __list_for_each_mutable1(pos, head)				\
-> >>> +	__list_for_each_mutable_internal(pos, __UNIQUE_ID(next), head)
-> >>> +
-> >>> +#define __list_for_each_mutable2(pos, next, head)			\
-> >>> +	list_for_each_safe(pos, next, head)
-> >>> +
-> >>>  /**
-> >>> - * list_for_each_prev_safe - iterate over a list backwards safe agai=
-nst removal of list entry
-> >>> + * list_for_each_mutable - iterate over a list safe against entry re=
-moval
-> >>>   * @pos:	the &struct list_head to use as a loop cursor.
-> >>> - * @n:		another &struct list_head to use as temporary storage
-> >>> - * @head:	the head for your list.
-> >>> + * @...:	either (head) or (next, head)
-> >>> + *
-> >>> + * next:	another &struct list_head to use as optional temporary stor=
-age.
-> >>> + *		The temporary cursor is internal unless explicitly supplied by
-> >>> + *		the caller.
-> >>> + * head:	the head for your list.
-> >>> + */
-> >>> +#define list_for_each_mutable(pos, ...)					\
-> >>> +	CONCATENATE(__list_for_each_mutable, COUNT_ARGS(__VA_ARGS__))	\
-> >>> +		(pos, __VA_ARGS__) =20
-> >>
-> >> The variable argument count logic really just slows down compilation.
-> >> Maybe there aren't enough copies of this code to make that significant.
-> >> But just because you can do it doesn't mean it is a gooD idea.
-> >> I'm also not sure it really adds anything to the readability.
-> >>
-> >> And, it you are going to make the middle argument optional there is
-> >> no need to change the macro name. =20
-> >=20
-> > Christian K=C3=B6nig and Jani Nikula also disagree with the variadic-ar=
-gument
-> > implementation approach. If we abandon that method, it means we will
-> > inevitably need to add some new macros. If mutable is not a good name,
-> > suggestions for better alternatives would be welcome; coming up with a
-> > suitable name is indeed rather tricky. =20
->=20
-> I don't think you need to add a new macro for the specific use case that =
-people want to modify the next element of the iteration.
->=20
-> If I remember your numbers correctly that is a really corner case and kee=
-ping using the existing *_safe() macros for that sounds perfectly fine to m=
-e.
+Since this is stacked on top of the slab alloc flags work, could it pass slab
+alloc flags instead of allow_spin?
 
-IIRC currently you have a choice of either:
-	define               Item that can't be deleted
-	list_for_each()	     The current item.
-	list_for_each_safe() The next item.
-There is also likely to be code that updates the variables to allow
-for other scenarios.
+>  
+>  	return false;
+>  }
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 87ca154ccd80..b0d38d515386 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2815,7 +2815,8 @@ static inline struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s,
+>  	return __alloc_empty_sheaf(s, gfp, alloc_flags, s->sheaf_capacity);
+>  }
+>  
+> -static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
+> +static void __free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf,
+> +			       bool allow_spin)
+>  {
+>  	/*
+>  	 * If the sheaf was created with SLAB_ALLOC_NO_RECURSE flag then its
+> @@ -2827,11 +2828,20 @@ static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
+>  		mark_obj_codetag_empty(sheaf);
+>  
+>  	VM_WARN_ON_ONCE(sheaf->size > 0);
+> -	kfree(sheaf);
+> +
+> +	if (likely(allow_spin))
+> +		kfree(sheaf);
+> +	else
+> +		kfree_nolock(sheaf);
+>  
+>  	stat(s, SHEAF_FREE);
+>  }
+>  
+> +static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
+> +{
+> +	__free_empty_sheaf(s, sheaf, /* allow_spin = */ true);
+> +}
+> +
+>  static unsigned int
+>  refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
+>  	       unsigned int max);
+> @@ -3132,7 +3142,6 @@ static struct slab_sheaf *barn_get_empty_sheaf(struct node_barn *barn,
+>   * intended action due to a race or cpu migration. Thus they do not check the
+>   * empty or full sheaf limits for simplicity.
+>   */
+> -
+>  static void barn_put_empty_sheaf(struct node_barn *barn, struct slab_sheaf *sheaf)
+>  {
+>  	unsigned long flags;
+> @@ -6065,7 +6074,7 @@ static void rcu_free_sheaf(struct rcu_head *head)
+>   */
+>  static DEFINE_WAIT_OVERRIDE_MAP(kfree_rcu_sheaf_map, LD_WAIT_CONFIG);
+>  
+> -bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
+> +bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, bool allow_spin)
+>  {
+>  	struct slub_percpu_sheaves *pcs;
+>  	struct slab_sheaf *rcu_sheaf;
+> @@ -6081,9 +6090,10 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
+>  	pcs = this_cpu_ptr(s->cpu_sheaves);
+>  
+>  	if (unlikely(!pcs->rcu_free)) {
+> -
+>  		struct slab_sheaf *empty;
+>  		struct node_barn *barn;
+> +		unsigned int alloc_flags = SLAB_ALLOC_DEFAULT;
 
-Note that if increase a reference count and release a lock then list_for_ea=
-ch()
-is likely safer than list_for_each_safe() :-)
+which would make this logic more natural.
 
-list.h has 9 variants of the 'safe' loop.
-The bloat of another 9 is getting excessive.
+> +		gfp_t gfp = GFP_NOWAIT;
+>  
+>  		/* Bootstrap or debug cache, fall back */
+>  		if (unlikely(!cache_has_sheaves(s))) {
+> @@ -6103,7 +6113,7 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
+>  			goto fail;
+>  		}
+>  
+> -		empty = barn_get_empty_sheaf(barn, true);
+> +		empty = barn_get_empty_sheaf(barn, allow_spin);
+>  
+>  		if (empty) {
+>  			pcs->rcu_free = empty;
+> @@ -6112,20 +6122,25 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
+>  
+>  		local_unlock(&s->cpu_sheaves->lock);
+>  
+> -		empty = alloc_empty_sheaf(s, GFP_NOWAIT, SLAB_ALLOC_DEFAULT);
+> +		if (unlikely(!allow_spin)) {
+> +			alloc_flags = SLAB_ALLOC_TRYLOCK;
+> +			gfp = 0;
 
-It has to be said that this is one of my least favourite type of list...
+and this as well (alloc_empty_sheaf() could derive gfp from whatever you
+passed it, by simply knowing alloc_flags = TRYLOCK -> gfp = 0
+(or gfp &= ~__GFP_RECLAIM)).
 
-	David
+> +		}
+> +
+> +		empty = alloc_empty_sheaf(s, gfp, alloc_flags);
+>  
+>  		if (!empty)
+>  			goto fail;
+>  
+>  		if (!local_trylock(&s->cpu_sheaves->lock)) {
+> -			barn_put_empty_sheaf(barn, empty);
+> +			__free_empty_sheaf(s, empty, allow_spin);
+>  			goto fail;
+>  		}
+>  
+>  		pcs = this_cpu_ptr(s->cpu_sheaves);
+>  
+>  		if (unlikely(pcs->rcu_free))
+> -			barn_put_empty_sheaf(barn, empty);
+> +			__free_empty_sheaf(s, empty, allow_spin);
+>  		else
+>  			pcs->rcu_free = empty;
+>  	}
+> @@ -6143,6 +6158,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
+>  	if (likely(rcu_sheaf->size < s->sheaf_capacity)) {
+>  		rcu_sheaf = NULL;
+>  	} else {
+> +		if (unlikely(!allow_spin)) {
+> +			/* call_rcu() cannot be called in an unknown context */
+> +			rcu_sheaf->size--;
+> +			local_unlock(&s->cpu_sheaves->lock);
+> +			goto fail;
+> +		}
+>  		pcs->rcu_free = NULL;
+>  		rcu_sheaf->node = numa_node_id();
+>  	}
+> 
+> -- 
+> 2.53.0
+> 
 
->=20
-> Regards,
-> Christian.
-
+-- 
+Pedro
