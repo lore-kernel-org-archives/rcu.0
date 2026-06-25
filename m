@@ -1,350 +1,134 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from mail.ilvokhin.com (mail.ilvokhin.com [178.62.254.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9973A960F;
-	Thu, 25 Jun 2026 11:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243F33A873E;
+	Thu, 25 Jun 2026 14:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.62.254.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782385257; cv=none; b=gy3zmA9rq19Ifz1kgvRzpAFdluze481e/k+uH2t6uAeVyzKhKoYxJbqT3rQA2MTGr3WaJMfR1wjAD2Nk4nRgX2Oug4Ysz4XQsjaV9Woddub4m2gQUMN8ch/DsC8ssYxuf8jCrWjDbXU1lWp49ZQnm50llimyyY3wTm9OKfwdzeY=
+	t=1782398551; cv=none; b=onFBgz0cAPwuzXC0UWJ6ZhOWHKiPd/xOL7Y5bIZrXamT/qShi+WsE0QSrMP/JF5Wuge+8YeJu8/egYHWYUPyHblf3fxcDVvzLGWoQBcqIGtrg+9UTGpdgITfGEUYT4qH/DPmpc5UxC6X7YbN76BuSEtj0+mISvJUrrxWen2vKyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782385257; c=relaxed/simple;
-	bh=vUCknLxuUl+l9swTriiC6ceqP2YAiFjd4mW5kfnFb/U=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iByqunH8HDRVjjf7KQRNwxjDiznJGJ1BgWHRuG+ivFRxfa1Z3pIKaRw1rslP+YPl94o6mZl1UCL0Y58mUmAWWt3C6c2Xgfc+hFjH/ntElQ71RFSOmjzeoQTZb1dcI+lvcjWfJ6VMjlonBe5kLfkccZigzE+nF7xZ7D2rAWwUARk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ft52+1SA; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1782398551; c=relaxed/simple;
+	bh=JGVTRb5DqYe0LpDZ1wZvuP+94/ev4LoITOfgIh5CyTA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jHhvS3McSRqrPuJLP/hvmb1DdaFTDbAg3eCfzRpIcVHp7+V5tVQhz4PNph/JNgLNNiz4nSv6+3DWMLFj/vsgWcUdyJ28ihpcFiGiaLHXUuWJCA12M/lF2/wMW8yTwr1uv4/Vn9o6SKHBJNpvsIn6PKH/VwU6BdJenTZDNRt2JeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ilvokhin.com; spf=pass smtp.mailfrom=ilvokhin.com; dkim=pass (1024-bit key) header.d=ilvokhin.com header.i=@ilvokhin.com header.b=X2SLTx2L; arc=none smtp.client-ip=178.62.254.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ilvokhin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ilvokhin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ft52+1SA"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1782385256; x=1813921256;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=vUCknLxuUl+l9swTriiC6ceqP2YAiFjd4mW5kfnFb/U=;
-  b=Ft52+1SATq1u9siZpCOShDXPUvQAEG9ceDn7d9ZMPuM0nNyneHaVsdhA
-   8PEM0RUVdQ2PaDACVwhwaAFzd7noGS03jnog8lD3zVPxeY7okREDQEVxE
-   qP9mAd3ifJyapa+aBDMAlWpOlGaiqn2rJCoVw5DJLjtx+ecHuzin0SWW3
-   4tR/vC28360JA6YUveloUPYzjUc2LWb5VZVZQNDNCOds2CJ6zGcjXzptW
-   JokMDaD019UtCfYUSjYdHqFr5zuA/Ug897IFsMtYRA7yxs2parB9ogQJR
-   izsOSKsHwdKywvHy89LMPAiQ9RRyCClmtT/a3AH4RExovS5Dt/1btygar
-   w==;
-X-CSE-ConnectionGUID: 2PvImUdiS8WGFHJi5Pa1Xw==
-X-CSE-MsgGUID: dIvq8SOKTQqtsgS9xAYFeA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11827"; a="86838512"
-X-IronPort-AV: E=Sophos;i="6.24,224,1774335600"; 
-   d="scan'208";a="86838512"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2026 04:00:55 -0700
-X-CSE-ConnectionGUID: vmMDYz3IR0yKtgcbLjpOxw==
-X-CSE-MsgGUID: owF9N6AWRaOmSHlf6kHSKg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,224,1774335600"; 
-   d="scan'208";a="254729051"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.126])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2026 04:00:42 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Kaitao Cheng <kaitao.cheng@linux.dev>, David Laight
- <david.laight.linux@gmail.com>, Christian =?utf-8?Q?K=C3=B6nig?=
- <christian.koenig@amd.com>, "David Hildenbrand (Arm)" <david@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand
- <david@kernel.org>, Jens Axboe <axboe@kernel.dk>, Tejun Heo
- <tj@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian
- Brauner <brauner@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim
- <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>, Juri Lelli
- <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
- Paul Moore <paul@paul-moore.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, David Howells
- <dhowells@redhat.com>, Simona Vetter <simona.vetter@ffwll.ch>, Randy
- Dunlap <rdunlap@infradead.org>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Philipp Stanner <phasta@kernel.org>, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- io-uring@vger.kernel.org, audit@vger.kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-perf-users@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- kexec@lists.infradead.org, live-patching@vger.kernel.org,
- linux-modules@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-pm@vger.kernel.org, rcu@vger.kernel.org, sched-ext@lists.linux.dev,
- linux-mm@kvack.org, virtualization@lists.linux.dev, damon@lists.linux.dev,
- llvm@lists.linux.dev, Kaitao Cheng <chengkaitao@kylinos.cn>, Muchun Song
- <muchun.song@linux.dev>
-Subject: Re: [PATCH v3 1/7] list: Add mutable iterator variants
-In-Reply-To: <0ed6b5c3-e955-46e2-9fc6-075a0dfd1c4f@linux.dev>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park,
- 6 krs Bertel Jungin Aukio 5, 02600 Espoo, Finland
-References: <20260622040533.29824-1-kaitao.cheng@linux.dev>
- <20260622040533.29824-2-kaitao.cheng@linux.dev>
- <20260622094242.64531b9a@pumpkin>
- <351a6b67-b394-4c58-aee2-88b6c8089ad5@linux.dev>
- <cf8467c7-b98f-44a5-9cf9-60b43b5da711@amd.com>
- <20260624152324.3def88ce@pumpkin>
- <0ed6b5c3-e955-46e2-9fc6-075a0dfd1c4f@linux.dev>
-Date: Thu, 25 Jun 2026 14:00:39 +0300
-Message-ID: <734f66ca51485ee3ec9788c0eaaead681e00664b@intel.com>
+	dkim=pass (1024-bit key) header.d=ilvokhin.com header.i=@ilvokhin.com header.b="X2SLTx2L"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilvokhin.com;
+	s=mail; t=1782398541;
+	bh=uWaBoqYfbNoWhVcIPdsvXePepaUpdOqRtpnHcvJcJbc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=X2SLTx2LiaRZ9qppN1ShUfMj+uhI1Os05qSVFcd9vm6Ea1SCyYamf0qO9z5HKUVhh
+	 3Rq9uRniaDIQrxqxa/b76AqymMEL2Fkc9wzlMhFat/hGVi3LsQIEFDJM790iOegHOU
+	 H4rfRwiWsUEq8xHap0znlhRnZA81JjEeGy0kJnQo=
+Received: from shell.ilvokhin.com (shell.ilvokhin.com [138.68.190.75])
+	(Authenticated sender: d@ilvokhin.com)
+	by mail.ilvokhin.com (Postfix) with ESMTPSA id 37A1BDAFEA;
+	Thu, 25 Jun 2026 14:42:21 +0000 (UTC)
+Date: Thu, 25 Jun 2026 14:42:17 +0000
+From: Dmitry Ilvokhin <d@ilvokhin.com>
+To: Usama Arif <usama.arif@linux.dev>
+Cc: lkmm@lists.linux.dev, joelagnelf@nvidia.com,
+	linux-kernel@vger.kernel.org, marco.crivellari@suse.com,
+	paulmck@kernel.org, rafael.j.wysocki@intel.com,
+	rdunlap@infradead.org, riel@surriel.com, sshegde@linux.ibm.com,
+	tglx@kernel.org, ulfh@kernel.org, yury.norov@gmail.com,
+	rcu@vger.kernel.org, shakeel.butt@linux.dev, hannes@cmpxchg.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH v2] smp: Use release stores for csd_lock_record() state
+Message-ID: <aj0-SYJJdDzf56Ex@shell.ilvokhin.com>
+References: <20260622163807.4187558-1-usama.arif@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260622163807.4187558-1-usama.arif@linux.dev>
 
-On Thu, 25 Jun 2026, Kaitao Cheng <kaitao.cheng@linux.dev> wrote:
-> =E5=9C=A8 2026/6/24 22:23, David Laight =E5=86=99=E9=81=93:
->> On Wed, 24 Jun 2026 15:23:47 +0200
->> Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
->>> On 6/24/26 15:14, Kaitao Cheng wrote:
->>>> =E5=9C=A8 2026/6/22 16:42, David Laight =E5=86=99=E9=81=93:=20=20
->>>>> On Mon, 22 Jun 2026 12:05:31 +0800
->>>>> Kaitao Cheng <kaitao.cheng@linux.dev> wrote:
->>>>>=20=20
->>>>>> From: Kaitao Cheng <chengkaitao@kylinos.cn>
->>>>>>
->>>>>> The list_for_each*_safe() helpers are used when the loop body may
->>>>>> remove the current entry.  Their API exposes the temporary cursor at
->>>>>> every call site, even though most users only need it for the iterator
->>>>>> implementation and never reference it in the loop body.
->>>>>>
->>>>>> Add *_mutable() variants for list and hlist iteration.  The new help=
-ers
->>>>>> support both forms: callers may keep passing an explicit temporary c=
-ursor
->>>>>> when they need to inspect or reset it, or omit it and let the helper=
- use
->>>>>> a unique internal cursor.=20=20
->>>>>
->>>>> I'm not really sure 'mutable' means anything either.
->>>>> It is possible to make it valid for the loop body (or even other thre=
-ads)
->>>>> to delete arbitrary list items - but that needs significant extra ove=
-rheads.
->>>>>
->>>>> It might be worth doing something that doesn't need the extra variabl=
-e,
->>>>> but there is little point doing all the churn just to rename things.
->>>>>=20=20
->>>>>>
->>>>>> This makes call sites that only mutate the list through the current =
-entry
->>>>>> less noisy, while keeping the existing *_safe() helpers available for
->>>>>> compatibility.
->>>>>>
->>>>>> Signed-off-by: Kaitao Cheng <chengkaitao@kylinos.cn>
->>>>>> ---
->>>>>>  include/linux/list.h | 269 +++++++++++++++++++++++++++++++++++++---=
----
->>>>>>  1 file changed, 231 insertions(+), 38 deletions(-)
->>>>>>
->>>>>> diff --git a/include/linux/list.h b/include/linux/list.h
->>>>>> index 09d979976b3b..1081def7cea9 100644
->>>>>> --- a/include/linux/list.h
->>>>>> +++ b/include/linux/list.h
->>>>>> @@ -7,6 +7,7 @@
->>>>>>  #include <linux/stddef.h>
->>>>>>  #include <linux/poison.h>
->>>>>>  #include <linux/const.h>
->>>>>> +#include <linux/args.h>
->>>>>>=20=20
->>>>>>  #include <asm/barrier.h>
->>>>>>=20=20
->>>>>> @@ -763,28 +764,72 @@ static inline void list_splice_tail_init(struc=
-t list_head *list,
->>>>>>  #define list_for_each_prev(pos, head) \
->>>>>>  	for (pos =3D (head)->prev; !list_is_head(pos, (head)); pos =3D pos=
-->prev)
->>>>>>=20=20
->>>>>> -/**
->>>>>> - * list_for_each_safe - iterate over a list safe against removal of=
- list entry
->>>>>> - * @pos:	the &struct list_head to use as a loop cursor.
->>>>>> - * @n:		another &struct list_head to use as temporary storage
->>>>>> - * @head:	the head for your list.
->>>>>> +/*
->>>>>> + * list_for_each_safe is an old interface, use list_for_each_mutabl=
-e instead.
->>>>>>   */
->>>>>>  #define list_for_each_safe(pos, n, head) \
->>>>>>  	for (pos =3D (head)->next, n =3D pos->next; \
->>>>>>  	     !list_is_head(pos, (head)); \
->>>>>>  	     pos =3D n, n =3D pos->next)
->>>>>>=20=20
->>>>>> +#define __list_for_each_mutable_internal(pos, tmp, head)		\
->>>>>> +	for (typeof(pos) tmp =3D (pos =3D (head)->next)->next;		\=20=20
->>>>>
->>>>> Use auto
->>>>>=20=20
->>>>>> +	     !list_is_head(pos, (head));				\
->>>>>> +	     pos =3D tmp, tmp =3D pos->next)
->>>>>> +
->>>>>> +#define __list_for_each_mutable1(pos, head)				\
->>>>>> +	__list_for_each_mutable_internal(pos, __UNIQUE_ID(next), head)
->>>>>> +
->>>>>> +#define __list_for_each_mutable2(pos, next, head)			\
->>>>>> +	list_for_each_safe(pos, next, head)
->>>>>> +
->>>>>>  /**
->>>>>> - * list_for_each_prev_safe - iterate over a list backwards safe aga=
-inst removal of list entry
->>>>>> + * list_for_each_mutable - iterate over a list safe against entry r=
-emoval
->>>>>>   * @pos:	the &struct list_head to use as a loop cursor.
->>>>>> - * @n:		another &struct list_head to use as temporary storage
->>>>>> - * @head:	the head for your list.
->>>>>> + * @...:	either (head) or (next, head)
->>>>>> + *
->>>>>> + * next:	another &struct list_head to use as optional temporary sto=
-rage.
->>>>>> + *		The temporary cursor is internal unless explicitly supplied by
->>>>>> + *		the caller.
->>>>>> + * head:	the head for your list.
->>>>>> + */
->>>>>> +#define list_for_each_mutable(pos, ...)					\
->>>>>> +	CONCATENATE(__list_for_each_mutable, COUNT_ARGS(__VA_ARGS__))	\
->>>>>> +		(pos, __VA_ARGS__)=20=20
->>>>>
->>>>> The variable argument count logic really just slows down compilation.
->>>>> Maybe there aren't enough copies of this code to make that significan=
-t.
->>>>> But just because you can do it doesn't mean it is a gooD idea.
->>>>> I'm also not sure it really adds anything to the readability.
->>>>>
->>>>> And, it you are going to make the middle argument optional there is
->>>>> no need to change the macro name.=20=20
->>>>
->>>> Christian K=C3=B6nig and Jani Nikula also disagree with the variadic-a=
-rgument
->>>> implementation approach. If we abandon that method, it means we will
->>>> inevitably need to add some new macros. If mutable is not a good name,
->>>> suggestions for better alternatives would be welcome; coming up with a
->>>> suitable name is indeed rather tricky.=20=20
->>>
->>> I don't think you need to add a new macro for the specific use case tha=
-t people want to modify the next element of the iteration.
->>>
->>> If I remember your numbers correctly that is a really corner case and k=
-eeping using the existing *_safe() macros for that sounds perfectly fine to=
- me.
->>=20
->> IIRC currently you have a choice of either:
->> 	define               Item that can't be deleted
->> 	list_for_each()	     The current item.
->> 	list_for_each_safe() The next item.
->> There is also likely to be code that updates the variables to allow
->> for other scenarios.
->>=20
->> Note that if increase a reference count and release a lock then list_for=
-_each()
->> is likely safer than list_for_each_safe() :-)
->>=20
->> list.h has 9 variants of the 'safe' loop.
->> The bloat of another 9 is getting excessive.
->>=20
->> It has to be said that this is one of my least favourite type of list...
->
-> Hi Christian K=C3=B6nig, David Laight, Jani Nikula, David Hildenbrand,
-> Andy Shevchenko, Alexei Starovoitov
->
-> For ease of discussion, I need to summarize the currently possible
-> approaches and briefly describe their respective pros and cons,
-> using the list_for_each_entry* interfaces as examples.
->
-> 1. Add list_for_each_entry_mutable, while keeping list_for_each_entry
-> and list_for_each_entry_safe unchanged. list_for_each_entry_mutable
-> would be used specifically for safe deletion scenarios that do not
-> need to expose the temporary cursor externally. The code can refer to
-> the v1 version.
->
-> Pros: Does not depend on immediate per-subsystem adaptation and can be
->       merged directly.
-> Cons: Requires adding a whole set of mutable interfaces, which makes the
->       code somewhat redundant.
+On Mon, Jun 22, 2026 at 09:38:07AM -0700, Usama Arif wrote:
+> __csd_lock_record() publishes per-CPU CSD debug state that is read by
+> csd_lock_wait_toolong() on another CPU.  The remote side first reads
+> cur_csd with smp_load_acquire() and, when non-NULL, may then read the
+> matching cur_csd_func and cur_csd_info fields.
+> 
+> Use smp_store_release() when publishing cur_csd so that the preceding
+> cur_csd_func and cur_csd_info stores are ordered before the pointer
+> that csd_lock_wait_toolong() acquires.  This replaces the open-coded
+> smp_wmb() plus plain cur_csd store with the release operation that
+> matches the smp_load_acquire() in csd_lock_wait_toolong().
+> 
+> For the clear path, use smp_store_release(&cur_csd, NULL) so that
+> clearing the diagnostic state remains ordered after the preceding
+> callback/unlock work, without requiring a full barrier before the
+> store.  On x86 this removes the locked full barrier from the clear
+> path; on weaker memory models it uses the release operation needed by
+> the smp_load_acquire() in csd_lock_wait_toolong().
 
-Seems fine, and the original _safe naming is ambiguous anyway.
+The changelog only calls out the clear path here, but the publish path
+also drops its trailing smp_mb() (plus the smp_wmb()), so on x86 both
+paths lose a locked full barrier. Worth describing symmetrically.
 
-> 2. Directly optimize away the temporary cursor in list_for_each_entry_safe
-> and define it inside the loop instead, changing the interface from four
-> arguments to three.
->
-> Pros: Does not add redundant interfaces.
-> Cons: (1) Users need to manually update special cases that use the
->       traversal variable of list_for_each_entry_safe, the new
->       list_for_each_entry_safe would no longer apply there and would
->       need to be open-coded.
->       (2) Because the macro arguments changes, all list_for_each_entry_sa=
-fe
->       callers would need to be modified and merged together, making it
->       difficult to merge such a large amount of code at once.
+> 
+> The old code also had smp_mb() calls around cur_csd updates. Those would
+> only be needed if cur_csd were treated as an exact live-state marker whose
+> publication had to be observed before callback execution or CSD unlock.
+> CSD stall warnings do not currently have RCU-style stall-ended checks, so
+> they already allow the stall to end while diagnostics are being assembled.
+> The cur_csd record is therefore best-effort diagnostic context, not a
+> precise completion/stall boundary.
+> 
+> Signed-off-by: Usama Arif <usama.arif@linux.dev>
+> ---
+> v1 -> v2: https://lore.kernel.org/all/01437928-ff79-4d8e-823b-7f20146946f6@linux.dev/
+> - Document where the smp_store_release() synchronizes with (Alan Stern,
+>   Randy Dunlap and Paul McKenney).
+> ---
+>  kernel/smp.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index a0bb56bd8dda..685829875a3e 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -182,16 +182,22 @@ static atomic_t csd_bug_count = ATOMIC_INIT(0);
+>  static void __csd_lock_record(call_single_data_t *csd)
+>  {
+>  	if (!csd) {
+> -		smp_mb(); /* NULL cur_csd after unlock. */
+> -		__this_cpu_write(cur_csd, NULL);
+> +		/*
+> +		 * Pairs with smp_load_acquire() of cur_csd in
+> +		 * csd_lock_wait_toolong(): orders any preceding CSD
+> +		 * callback/unlock before a remote reader observes NULL.
+> +		 */
+> +		smp_store_release(this_cpu_ptr(&cur_csd), NULL);
+>  		return;
+>  	}
+>  	__this_cpu_write(cur_csd_func, csd->func);
+>  	__this_cpu_write(cur_csd_info, csd->info);
+> -	smp_wmb(); /* func and info before csd. */
+> -	__this_cpu_write(cur_csd, csd);
+> -	smp_mb(); /* Update cur_csd before function call. */
+> -		  /* Or before unlock, as the case may be. */
+> +	/*
+> +	 * Pairs with smp_load_acquire() of cur_csd in
+> +	 * csd_lock_wait_toolong(): publishes cur_csd_func and
+> +	 * cur_csd_info before the non-NULL pointer becomes visible.
+> +	 */
+> +	smp_store_release(this_cpu_ptr(&cur_csd), csd);
+>  }
 
-This won't fly because there are literally thousands of
-list_for_each_entry_safe() users.
+Since v2 is specifically about documenting the pairing, it would be good
+to make it symmetric and add the comment on the acquire side in
+csd_lock_wait_toolong().
 
-> 3. Use a variadic macro approach to optimize list_for_each_entry_safe,
-> so that it supports both three and four arguments.
->
-> Pros: (1) Does not add redundant interfaces.
->       (2) Does not depend on immediate per-subsystem adaptation and can
->       be merged directly.
-> Cons: (1) Increases compile time.
->       (2) Makes the interface harder for users to use.
-
-Basically I'm against any variadic macro tricks where the optional
-argument is not the last argument. That's just way too surprising, and
-goes against common practice in just about all other languages.
-
-> 4. Optimize list_for_each_entry by defining the temporary cursor internal=
-ly,
-> making it compatible with the functionality of list_for_each_entry_safe.
-> The code can refer to the v2 version.
->
-> Pros: (1) Does not add redundant interfaces.
->       (2) The number of externally visible arguments of list_for_each_ent=
-ry
->       remains unchanged, still three.
-> Cons: (1) list_for_each_entry and list_for_each_entry_safe would be merged
->       into one, and list_for_each_entry_safe would gradually be deprecate=
-d.
->       (2) Users need to manually update special cases that use the traver=
-sal
->       variable of list_for_each_entry, the new list_for_each_entry would =
-no
->       longer apply there and would need to be open-coded. There are 15 su=
-ch
->       cases in total.
-
-This sounds good to me, though I take it there's some code size increase
-and/or performance penalty?
-
-Maybe the 15 cases are questionable anyway?
-
-> 5. Use a variadic macro approach to optimize list_for_each_entry, so that
-> it supports both three and four arguments.
->
-> Pros: (1) Does not add redundant interfaces.
->       (2) Does not depend on immediate per-subsystem adaptation and can be
->       merged directly.
-> Cons: (1) Increases compile time.
->       (2) list_for_each_entry and list_for_each_entry_safe would be merged
->       into one, and list_for_each_entry_safe would gradually be deprecate=
-d.
-
-Please don't do the macro tricks.
-
-> 6. Make no changes, keep the current logic unchanged, and close the curre=
-nt
-> email discussion.
-
-I like hiding the temporary stuff when possible.
-
-
-BR,
-Jani.
-
---=20
-Jani Nikula, Intel
+>  
+>  static __always_inline void csd_lock_record(call_single_data_t *csd)
+> -- 
+> 2.53.0-Meta
+> 
