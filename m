@@ -1,287 +1,261 @@
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335923A9D9B;
-	Thu, 25 Jun 2026 03:02:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1E012C534;
+	Thu, 25 Jun 2026 05:27:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782356555; cv=none; b=YSxVUXNUAGVJQK3FixWnyCh41A8l2rOWu6DCt7dwstetOPLjgY+gKIHNcvM4dYEQuNhQGffLvlb1KNzIaapTDNC0Zor9sEMw5ITUPgoC4WAJ7efu3CcrCfEsv22L1mpjyJOS9eHi7fMcN/VLxqT/dPMSws4jhzoq4ErQ6kw+NCQ=
+	t=1782365250; cv=none; b=Lk67M5mE6SWT6Qp28F5kt3qvND2VBbPl13YkZ0bixBWldViJiC2PV2JNUCaXn+GNm7kAVaZ6YI54xCtxzLMaTtQiV7Rmv6aJF1Eu8JAp4GIagyvx+1o9tdoWtdbFHmDrc8Clq5DA5biDAeMeo424y67BjRQPYY46UNqPUFvaZnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782356555; c=relaxed/simple;
-	bh=AJ5z7v+xj1bwU2aG0Bcmfo35foG9ftC+wsjfKkRv/5U=;
+	s=arc-20240116; t=1782365250; c=relaxed/simple;
+	bh=16gLOvVg1+I9vrM7P9jWzIPMeQh/IJhgDY9+aNOXBAM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TmODMDhHXXaEGDHIxOGY+s+BzRVsRa3tVG07QOunJ0/IHOYJ4INpyXYgbzBuxWMV0mpTwZRbEU52z9MH1WxUhvPVjF1k1D4fCeB43bteYRg6QoOmwozdsPrakrTuejmR8NVqc+Dfn2LMHp02L5gVxv0aUlCUqYWM4dim6n7QXZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f3XfhSe6; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 In-Reply-To:Content-Type; b=JeJwlMdoSwLVyEJ8PhaDkltfAS5Iqn3ug6ymXeUjLIxnHRwe0brozLF1XHsMc4L3E2mpeJbD1R0Iaj7t4A0kqRpBhzRfCmZrL1gRllxinVP0WrICOIoLkExV3jcfw1bYTIdiq7mAvTqH3wloeB23JIUiFSeDCCT4yeTMx1cWDzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UMfGlucx; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f3XfhSe6"
-Message-ID: <0ed6b5c3-e955-46e2-9fc6-075a0dfd1c4f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782356535;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bg7TU7hDzDNv/08FHHH/On04xmb+0Xhy9JCW39bnqOs=;
-	b=f3XfhSe6G7brFNVp6GZqjOXNU3vcFca4poUFfkwgVZymI1EYtq9zeoyJzoopay7HWx5JvC
-	E0YJXxuEv9p9ioc24zHIhHD7MfpA8W6eQqa3vo59Vdd3bvTmswHZxeWqPUReOxJ21Oxizv
-	nnsvKa6R3D4a+gLxizvgKiVabRJ3kcE=
-Date: Thu, 25 Jun 2026 11:01:21 +0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UMfGlucx"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B7531F000E9;
+	Thu, 25 Jun 2026 05:27:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1782365248;
+	bh=16gLOvVg1+I9vrM7P9jWzIPMeQh/IJhgDY9+aNOXBAM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=UMfGlucxjCtnoosPgwHb0AUMixwX+WJ+i4FsrBedZL55zbcOs5lBJ1+R0wNt9bZpG
+	 dw3r7UHuCmhwawC6FjPIAmf2C8GdgV33ptgxNQLw5nvQtfg1nO6WaMDDydxPYO1R9g
+	 wKJyo4XyGTUfN53RX0t1pMTaIuXOphmH+RM8POA26SvE223MFAZlj80wyphGDYEThn
+	 9p+HptNmFNo1hOvR7ECRYbnRBbHXb5JII4/BSBVdIB18aMom9YNoXfSd14Efu3oEO6
+	 94rcJ8AQR0hcYlEI0Vt9urNhvqUYiW307twuZR1kIuS95TicAFKMKO/TBgOXKfJisy
+	 glckMWm75eQog==
+Message-ID: <529a9856-4a0d-4db0-9c97-43c0c462e396@kernel.org>
+Date: Thu, 25 Jun 2026 14:27:17 +0900
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 1/7] list: Add mutable iterator variants
-To: David Laight <david.laight.linux@gmail.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- "David Hildenbrand (Arm)" <david@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@kernel.org>, Jens Axboe <axboe@kernel.dk>,
- Tejun Heo <tj@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Paul Moore <paul@paul-moore.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH for-next v3 7/9] mm/slab: introduce kfree_rcu_nolock()
+To: XIAO WU <xiaowu.417@qq.com>, Vlastimil Babka <vbabka@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
  "Paul E. McKenney" <paulmck@kernel.org>,
- Shakeel Butt <shakeel.butt@linux.dev>, David Howells <dhowells@redhat.com>,
- Simona Vetter <simona.vetter@ffwll.ch>, Randy Dunlap
- <rdunlap@infradead.org>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Philipp Stanner <phasta@kernel.org>, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- io-uring@vger.kernel.org, audit@vger.kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-perf-users@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- kexec@lists.infradead.org, live-patching@vger.kernel.org,
- linux-modules@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-pm@vger.kernel.org, rcu@vger.kernel.org, sched-ext@lists.linux.dev,
- linux-mm@kvack.org, virtualization@lists.linux.dev, damon@lists.linux.dev,
- llvm@lists.linux.dev, Kaitao Cheng <chengkaitao@kylinos.cn>,
- Muchun Song <muchun.song@linux.dev>
-References: <20260622040533.29824-1-kaitao.cheng@linux.dev>
- <20260622040533.29824-2-kaitao.cheng@linux.dev>
- <20260622094242.64531b9a@pumpkin>
- <351a6b67-b394-4c58-aee2-88b6c8089ad5@linux.dev>
- <cf8467c7-b98f-44a5-9cf9-60b43b5da711@amd.com>
- <20260624152324.3def88ce@pumpkin>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kaitao Cheng <kaitao.cheng@linux.dev>
-In-Reply-To: <20260624152324.3def88ce@pumpkin>
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
+References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
+ <20260615-kfree_rcu_nolock-v3-7-70a54f3775bb@kernel.org>
+ <tencent_45CAE878B5922990DB102BE05A1BAD50DA09@qq.com>
+ <e54ce8be-9480-4583-9c6a-d0dbe1378f53@kernel.org>
+ <tencent_12A1049445F2CE248F20CB235AC111353A0A@qq.com>
+Content-Language: en-US
+From: Harry Yoo <harry@kernel.org>
+In-Reply-To: <tencent_12A1049445F2CE248F20CB235AC111353A0A@qq.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------HHB5JammkAG9i5v0ifUbiioD"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------HHB5JammkAG9i5v0ifUbiioD
+Content-Type: multipart/mixed; boundary="------------5yZ5NYuEVU4HrXYvVZYNisDF";
+ protected-headers="v1"
+From: Harry Yoo <harry@kernel.org>
+To: XIAO WU <xiaowu.417@qq.com>, Vlastimil Babka <vbabka@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
+Message-ID: <529a9856-4a0d-4db0-9c97-43c0c462e396@kernel.org>
+Subject: Re: [PATCH for-next v3 7/9] mm/slab: introduce kfree_rcu_nolock()
+References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
+ <20260615-kfree_rcu_nolock-v3-7-70a54f3775bb@kernel.org>
+ <tencent_45CAE878B5922990DB102BE05A1BAD50DA09@qq.com>
+ <e54ce8be-9480-4583-9c6a-d0dbe1378f53@kernel.org>
+ <tencent_12A1049445F2CE248F20CB235AC111353A0A@qq.com>
+In-Reply-To: <tencent_12A1049445F2CE248F20CB235AC111353A0A@qq.com>
+
+--------------5yZ5NYuEVU4HrXYvVZYNisDF
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
 
-在 2026/6/24 22:23, David Laight 写道:
-> On Wed, 24 Jun 2026 15:23:47 +0200
-> Christian König <christian.koenig@amd.com> wrote:
->> On 6/24/26 15:14, Kaitao Cheng wrote:
->>> 在 2026/6/22 16:42, David Laight 写道:  
->>>> On Mon, 22 Jun 2026 12:05:31 +0800
->>>> Kaitao Cheng <kaitao.cheng@linux.dev> wrote:
->>>>  
->>>>> From: Kaitao Cheng <chengkaitao@kylinos.cn>
->>>>>
->>>>> The list_for_each*_safe() helpers are used when the loop body may
->>>>> remove the current entry.  Their API exposes the temporary cursor at
->>>>> every call site, even though most users only need it for the iterator
->>>>> implementation and never reference it in the loop body.
->>>>>
->>>>> Add *_mutable() variants for list and hlist iteration.  The new helpers
->>>>> support both forms: callers may keep passing an explicit temporary cursor
->>>>> when they need to inspect or reset it, or omit it and let the helper use
->>>>> a unique internal cursor.  
->>>>
->>>> I'm not really sure 'mutable' means anything either.
->>>> It is possible to make it valid for the loop body (or even other threads)
->>>> to delete arbitrary list items - but that needs significant extra overheads.
->>>>
->>>> It might be worth doing something that doesn't need the extra variable,
->>>> but there is little point doing all the churn just to rename things.
->>>>  
->>>>>
->>>>> This makes call sites that only mutate the list through the current entry
->>>>> less noisy, while keeping the existing *_safe() helpers available for
->>>>> compatibility.
->>>>>
->>>>> Signed-off-by: Kaitao Cheng <chengkaitao@kylinos.cn>
->>>>> ---
->>>>>  include/linux/list.h | 269 +++++++++++++++++++++++++++++++++++++------
->>>>>  1 file changed, 231 insertions(+), 38 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/list.h b/include/linux/list.h
->>>>> index 09d979976b3b..1081def7cea9 100644
->>>>> --- a/include/linux/list.h
->>>>> +++ b/include/linux/list.h
->>>>> @@ -7,6 +7,7 @@
->>>>>  #include <linux/stddef.h>
->>>>>  #include <linux/poison.h>
->>>>>  #include <linux/const.h>
->>>>> +#include <linux/args.h>
->>>>>  
->>>>>  #include <asm/barrier.h>
->>>>>  
->>>>> @@ -763,28 +764,72 @@ static inline void list_splice_tail_init(struct list_head *list,
->>>>>  #define list_for_each_prev(pos, head) \
->>>>>  	for (pos = (head)->prev; !list_is_head(pos, (head)); pos = pos->prev)
->>>>>  
->>>>> -/**
->>>>> - * list_for_each_safe - iterate over a list safe against removal of list entry
->>>>> - * @pos:	the &struct list_head to use as a loop cursor.
->>>>> - * @n:		another &struct list_head to use as temporary storage
->>>>> - * @head:	the head for your list.
->>>>> +/*
->>>>> + * list_for_each_safe is an old interface, use list_for_each_mutable instead.
->>>>>   */
->>>>>  #define list_for_each_safe(pos, n, head) \
->>>>>  	for (pos = (head)->next, n = pos->next; \
->>>>>  	     !list_is_head(pos, (head)); \
->>>>>  	     pos = n, n = pos->next)
->>>>>  
->>>>> +#define __list_for_each_mutable_internal(pos, tmp, head)		\
->>>>> +	for (typeof(pos) tmp = (pos = (head)->next)->next;		\  
->>>>
->>>> Use auto
->>>>  
->>>>> +	     !list_is_head(pos, (head));				\
->>>>> +	     pos = tmp, tmp = pos->next)
->>>>> +
->>>>> +#define __list_for_each_mutable1(pos, head)				\
->>>>> +	__list_for_each_mutable_internal(pos, __UNIQUE_ID(next), head)
->>>>> +
->>>>> +#define __list_for_each_mutable2(pos, next, head)			\
->>>>> +	list_for_each_safe(pos, next, head)
->>>>> +
->>>>>  /**
->>>>> - * list_for_each_prev_safe - iterate over a list backwards safe against removal of list entry
->>>>> + * list_for_each_mutable - iterate over a list safe against entry removal
->>>>>   * @pos:	the &struct list_head to use as a loop cursor.
->>>>> - * @n:		another &struct list_head to use as temporary storage
->>>>> - * @head:	the head for your list.
->>>>> + * @...:	either (head) or (next, head)
->>>>> + *
->>>>> + * next:	another &struct list_head to use as optional temporary storage.
->>>>> + *		The temporary cursor is internal unless explicitly supplied by
->>>>> + *		the caller.
->>>>> + * head:	the head for your list.
->>>>> + */
->>>>> +#define list_for_each_mutable(pos, ...)					\
->>>>> +	CONCATENATE(__list_for_each_mutable, COUNT_ARGS(__VA_ARGS__))	\
->>>>> +		(pos, __VA_ARGS__)  
->>>>
->>>> The variable argument count logic really just slows down compilation.
->>>> Maybe there aren't enough copies of this code to make that significant.
->>>> But just because you can do it doesn't mean it is a gooD idea.
->>>> I'm also not sure it really adds anything to the readability.
->>>>
->>>> And, it you are going to make the middle argument optional there is
->>>> no need to change the macro name.  
->>>
->>> Christian König and Jani Nikula also disagree with the variadic-argument
->>> implementation approach. If we abandon that method, it means we will
->>> inevitably need to add some new macros. If mutable is not a good name,
->>> suggestions for better alternatives would be welcome; coming up with a
->>> suitable name is indeed rather tricky.  
+
+
+On 6/22/26 11:56 PM, XIAO WU wrote:
+> Hi Harry,
+>=20
+> On Mon, Jun 22, 2026 at 02:28:44PM +0900, Harry Yoo wrote:
+>> On 6/21/26 9:29 AM, XIAO WU wrote:
+>> > I was able to reproduce this in QEMU with KASAN.=C2=A0 The trigger i=
+s as
+>> > simple as passing a large (>8KB) kmalloc buffer to the new function.=
+
 >>
->> I don't think you need to add a new macro for the specific use case that people want to modify the next element of the iteration.
+>> Thanks for taking a look, but this was intentional.
 >>
->> If I remember your numbers correctly that is a really corner case and keeping using the existing *_safe() macros for that sounds perfectly fine to me.
-> 
-> IIRC currently you have a choice of either:
-> 	define               Item that can't be deleted
-> 	list_for_each()	     The current item.
-> 	list_for_each_safe() The next item.
-> There is also likely to be code that updates the variables to allow
-> for other scenarios.
-> 
-> Note that if increase a reference count and release a lock then list_for_each()
-> is likely safer than list_for_each_safe() :-)
-> 
-> list.h has 9 variants of the 'safe' loop.
-> The bloat of another 9 is getting excessive.
-> 
-> It has to be said that this is one of my least favourite type of list...
+>> I should have documented that only kmalloc_nolock() ->
+>> kfree_rcu_nolock() is allowed and kmalloc() -> kfree_rcu_nolock()
+>> is not allowed (yet).
+>>
+>> Since kmalloc_nolock() does not support large kmalloc, the warning
+>> is not supposed to trigger. That is why I added only debug warnings.
+>=20
+> Thank you very much for taking the time to explain =E2=80=94 I really
+> appreciate it, especially since I'm still learning my way around the
+> mm/ subsystem.=C2=A0 You are absolutely right that kmalloc_nolock() ret=
+urns
+> NULL for sizes above KMALLOC_MAX_CACHE_SIZE, so a proper caller using
+> the kmalloc_nolock() =E2=86=92 kfree_rcu_nolock() pairing would never h=
+it this.
+>=20
+> I did notice one small thing that I wanted to gently bring up, though.
+> Please forgive me if I'm missing something obvious here.
+>=20
+> When I was reading through the surrounding code to understand the
+> pattern better, I noticed that kfree_nolock() =E2=80=94 which has the s=
+ame
+> "only for kmalloc_nolock()" constraint (documented in the comment at
+> mm/slub.c:6828-6835) =E2=80=94 actually does check for a NULL slab:
+>=20
+> =C2=A0 void kfree_nolock(const void *object)
+> =C2=A0 {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 slab =3D virt_to_slab(object);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(!slab)) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WARN_ONCE(1, "la=
+rge_kmalloc is not supported by kfree_nolock()");
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 s =3D slab->slab_cache;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+>=20
+> So kfree_nolock() gracefully returns with a warning even though it too
+> expects only kmalloc_nolock() callers.=C2=A0 That pattern seemed really=
 
-Hi Christian König, David Laight, Jani Nikula, David Hildenbrand,
-Andy Shevchenko, Alexei Starovoitov
+> sensible to me =E2=80=94 it costs almost nothing and prevents a panic i=
+f
+> someone ever passes the wrong pointer (which they shouldn't, but as you=
 
-For ease of discussion, I need to summarize the currently possible
-approaches and briefly describe their respective pros and cons,
-using the list_for_each_entry* interfaces as examples.
+> mentioned, the constraint isn't documented on kfree_call_rcu_nolock()
+> yet).
+>
+> I also wondered about the difference between WARN_ONCE (used in
+> kfree_nolock) and VM_WARN_ON_ONCE (used in kfree_call_rcu_nolock).=C2=A0=
+If
+> I understand correctly, VM_WARN_ON_ONCE compiles away entirely on
+> production kernels without CONFIG_DEBUG_VM, which would make the
+> subsequent NULL dereference completely silent =E2=80=94 no warning, jus=
+t a
+> panic.
 
-1. Add list_for_each_entry_mutable, while keeping list_for_each_entry
-and list_for_each_entry_safe unchanged. list_for_each_entry_mutable
-would be used specifically for safe deletion scenarios that do not
-need to expose the temporary cursor externally. The code can refer to
-the v1 version.
+It would crash without debug option anyway, but warnings are there to
+make it easier to point what's gone wrong.
 
-Pros: Does not depend on immediate per-subsystem adaptation and can be
-      merged directly.
-Cons: Requires adding a whole set of mutable interfaces, which makes the
-      code somewhat redundant.
+And not testing the code path at least once with debug option is a big
+problem :)
 
-2. Directly optimize away the temporary cursor in list_for_each_entry_safe
-and define it inside the loop instead, changing the interface from four
-arguments to three.
+> And since you mentioned that kmalloc() =E2=86=92 kfree_rcu_nolock() sup=
+port is
+> planned for the future (the "yet") =E2=80=94 wouldn't this code path ne=
+ed the
+> NULL check at that point anyway?
+>=20
+> I was thinking something like this would make the function consistent
+> with kfree_nolock() and also make it forward-compatible with the
+> planned kmalloc() support:
+>=20
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1266,10 +1266,16 @@ void kfree_call_rcu_nolock(struct rcu_head
+> *head, void *ptr)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0 struct slab *slab;
+> =C2=A0=C2=A0=C2=A0=C2=A0 struct kmem_cache *s;
+>=20
+> -=C2=A0=C2=A0=C2=A0 VM_WARN_ON_ONCE(is_vmalloc_addr(ptr) || !virt_to_sl=
+ab(ptr));
+> -
+> =C2=A0=C2=A0=C2=A0=C2=A0 slab =3D virt_to_slab(ptr);
+> +=C2=A0=C2=A0=C2=A0 /*
+> +=C2=A0=C2=A0=C2=A0=C2=A0 * kmalloc_nolock() never produces large-kmall=
+oc or vmalloc
+> +=C2=A0=C2=A0=C2=A0=C2=A0 * addresses, but be defensive: fall back to d=
+efer_kfree_rcu()
+> +=C2=A0=C2=A0=C2=A0=C2=A0 * for unsupported pointer types, consistent w=
+ith kfree_nolock().
+> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+> +=C2=A0=C2=A0=C2=A0 if (unlikely(!slab))
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto fallback;
 
-Pros: Does not add redundant interfaces.
-Cons: (1) Users need to manually update special cases that use the
-      traversal variable of list_for_each_entry_safe, the new
-      list_for_each_entry_safe would no longer apply there and would
-      need to be open-coded.
-      (2) Because the macro arguments changes, all list_for_each_entry_safe
-      callers would need to be modified and merged together, making it
-      difficult to merge such a large amount of code at once.
+Just FYI, virt_to_slab() and virt_to_page()
+don't work correctly for vmalloc addresses.
 
-3. Use a variadic macro approach to optimize list_for_each_entry_safe,
-so that it supports both three and four arguments.
+And I don't think silently making it work is good.
 
-Pros: (1) Does not add redundant interfaces.
-      (2) Does not depend on immediate per-subsystem adaptation and can
-      be merged directly.
-Cons: (1) Increases compile time.
-      (2) Makes the interface harder for users to use.
+> +
+> =C2=A0=C2=A0=C2=A0=C2=A0 s =3D slab->slab_cache;
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0 if (__kfree_rcu_sheaf(s, ptr, /* allow_spin =3D=
+ */ false))
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
+>=20
+> +fallback:
+> =C2=A0=C2=A0=C2=A0=C2=A0 defer_kfree_rcu(head);
+> =C2=A0}
+>=20
+> Of course, this is just a suggestion =E2=80=94 you know this code far b=
+etter
+> than I do.=C2=A0 If you feel the current code is fine as-is with proper=
 
-4. Optimize list_for_each_entry by defining the temporary cursor internally,
-making it compatible with the functionality of list_for_each_entry_safe.
-The code can refer to the v2 version.
+> documentation, I completely understand and won't press the point
+> further.
+>=20
+> Either way, thank you again for the explanation, and for working on
+> this series =E2=80=94 having kfree_rcu_nolock() available for BPF and o=
+ther
+> contexts will be really valuable.
+>=20
+> Thanks,
+> XIAO
 
-Pros: (1) Does not add redundant interfaces.
-      (2) The number of externally visible arguments of list_for_each_entry
-      remains unchanged, still three.
-Cons: (1) list_for_each_entry and list_for_each_entry_safe would be merged
-      into one, and list_for_each_entry_safe would gradually be deprecated.
-      (2) Users need to manually update special cases that use the traversal
-      variable of list_for_each_entry, the new list_for_each_entry would no
-      longer apply there and would need to be open-coded. There are 15 such
-      cases in total.
+--------------5yZ5NYuEVU4HrXYvVZYNisDF--
 
-5. Use a variadic macro approach to optimize list_for_each_entry, so that
-it supports both three and four arguments.
+--------------HHB5JammkAG9i5v0ifUbiioD
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-Pros: (1) Does not add redundant interfaces.
-      (2) Does not depend on immediate per-subsystem adaptation and can be
-      merged directly.
-Cons: (1) Increases compile time.
-      (2) list_for_each_entry and list_for_each_entry_safe would be merged
-      into one, and list_for_each_entry_safe would gradually be deprecated.
+-----BEGIN PGP SIGNATURE-----
 
-6. Make no changes, keep the current logic unchanged, and close the current
-email discussion.
+iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCajy8NQAKCRCGXBN6rc5S
+1oG6AQDcpJmCoSOVmh6QBfAn7SSLAj/dCrCVdlDGkux+9WPEAAEAwzyj8gI9j//s
+tpMbnooH3cAwdhFTBanFE9AL924TWgk=
+=XwYR
+-----END PGP SIGNATURE-----
 
-
-Which of the six solutions above do people prefer?
-
--- 
-Thanks
-Kaitao Cheng
-
+--------------HHB5JammkAG9i5v0ifUbiioD--
