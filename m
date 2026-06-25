@@ -1,33 +1,49 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1E012C534;
-	Thu, 25 Jun 2026 05:27:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B8A0305662
+	for <rcu@vger.kernel.org>; Thu, 25 Jun 2026 05:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782365250; cv=none; b=Lk67M5mE6SWT6Qp28F5kt3qvND2VBbPl13YkZ0bixBWldViJiC2PV2JNUCaXn+GNm7kAVaZ6YI54xCtxzLMaTtQiV7Rmv6aJF1Eu8JAp4GIagyvx+1o9tdoWtdbFHmDrc8Clq5DA5biDAeMeo424y67BjRQPYY46UNqPUFvaZnQ=
+	t=1782365285; cv=none; b=qEhHxpKiVusZg4Y6fqEMy01lj2RiAJIsJ+M4xwXY990IFRD09GAJqvnutlerRh6LLO5HQSEgdcH8MjvGjgKM7DMwKkXVtjZ6Xx9jbimHErzK6diWuyMShJ09lv/6fiYc1O8AU8Ut75i63npqFvgITBOLV3mqCJh5n57INSKxrg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782365250; c=relaxed/simple;
-	bh=16gLOvVg1+I9vrM7P9jWzIPMeQh/IJhgDY9+aNOXBAM=;
+	s=arc-20240116; t=1782365285; c=relaxed/simple;
+	bh=aTi/pXkw91hda8Kdn4Vpsi0Sl3Y5Vo7qzyAsuTxvfuI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JeJwlMdoSwLVyEJ8PhaDkltfAS5Iqn3ug6ymXeUjLIxnHRwe0brozLF1XHsMc4L3E2mpeJbD1R0Iaj7t4A0kqRpBhzRfCmZrL1gRllxinVP0WrICOIoLkExV3jcfw1bYTIdiq7mAvTqH3wloeB23JIUiFSeDCCT4yeTMx1cWDzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UMfGlucx; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:Content-Type; b=cwql9JxlDx/09u4We+bzsor/PG8KMdaWI2ejqdYY+cqcn2MGyHclMq7rLTIROMxMFaoc3/Rrdv2mj2kn8eYrpxM5/6ZHq/Vt6jx2ZHi3hNOf0DfwVfALe7c8NYHRTD0C1HW6aTA86qEc7eFMdLNhIFSp+b7n5qEXj1/b8lZ61R0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XhtSAMZ0; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UMfGlucx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B7531F000E9;
-	Thu, 25 Jun 2026 05:27:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782365248;
-	bh=16gLOvVg1+I9vrM7P9jWzIPMeQh/IJhgDY9+aNOXBAM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=UMfGlucxjCtnoosPgwHb0AUMixwX+WJ+i4FsrBedZL55zbcOs5lBJ1+R0wNt9bZpG
-	 dw3r7UHuCmhwawC6FjPIAmf2C8GdgV33ptgxNQLw5nvQtfg1nO6WaMDDydxPYO1R9g
-	 wKJyo4XyGTUfN53RX0t1pMTaIuXOphmH+RM8POA26SvE223MFAZlj80wyphGDYEThn
-	 9p+HptNmFNo1hOvR7ECRYbnRBbHXb5JII4/BSBVdIB18aMom9YNoXfSd14Efu3oEO6
-	 94rcJ8AQR0hcYlEI0Vt9urNhvqUYiW307twuZR1kIuS95TicAFKMKO/TBgOXKfJisy
-	 glckMWm75eQog==
-Message-ID: <529a9856-4a0d-4db0-9c97-43c0c462e396@kernel.org>
-Date: Thu, 25 Jun 2026 14:27:17 +0900
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XhtSAMZ0"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1782365283;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tkCv2oYuzPEka7BacCiWxFFuaGiHcvr95rXSLBOAyWM=;
+	b=XhtSAMZ0cBOGE9qM5taYZ6Qfa3unMbY/S+EBi+m8Jl3C8RyX9z1dHd4WbID8iEZUXvHJG8
+	cBHcNdijU1PT1fxfAhq6ySKU6NGY1H8PD7e7z7XTVzkwUZ9gKgcIczWvA3taSwZt/MSrMS
+	ttmPnhrry1Lp3w3m/7WZe5xniZ5uCSw=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-465-i-fo0p_PO5-DT5CegNM5ZQ-1; Thu,
+ 25 Jun 2026 01:27:59 -0400
+X-MC-Unique: i-fo0p_PO5-DT5CegNM5ZQ-1
+X-Mimecast-MFC-AGG-ID: i-fo0p_PO5-DT5CegNM5ZQ_1782365278
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7DDAE1956043;
+	Thu, 25 Jun 2026 05:27:57 +0000 (UTC)
+Received: from [10.2.16.163] (unknown [10.2.16.163])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 7B4121800677;
+	Thu, 25 Jun 2026 05:27:55 +0000 (UTC)
+Message-ID: <4ad24488-9cc1-4f1c-8dc5-6830ae7420df@redhat.com>
+Date: Thu, 25 Jun 2026 01:27:54 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -35,227 +51,98 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH for-next v3 7/9] mm/slab: introduce kfree_rcu_nolock()
-To: XIAO WU <xiaowu.417@qq.com>, Vlastimil Babka <vbabka@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
-References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-7-70a54f3775bb@kernel.org>
- <tencent_45CAE878B5922990DB102BE05A1BAD50DA09@qq.com>
- <e54ce8be-9480-4583-9c6a-d0dbe1378f53@kernel.org>
- <tencent_12A1049445F2CE248F20CB235AC111353A0A@qq.com>
+Subject: Re: [PATCH-next 00/23] cgroup/cpuset: Enable runtime update of
+ nohz_full and managed_irq CPUs
+To: Jing Wu <realwujing@gmail.com>
+Cc: Thomas Gleixner <tglx@kernel.org>, linux-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, cgroups@vger.kernel.org,
+ Qiliang Yuan <yuanql9@chinatelecom.cn>
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260624063404.2106807-1-realwujing@gmail.com>
 Content-Language: en-US
-From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <tencent_12A1049445F2CE248F20CB235AC111353A0A@qq.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------HHB5JammkAG9i5v0ifUbiioD"
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20260624063404.2106807-1-realwujing@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------HHB5JammkAG9i5v0ifUbiioD
-Content-Type: multipart/mixed; boundary="------------5yZ5NYuEVU4HrXYvVZYNisDF";
- protected-headers="v1"
-From: Harry Yoo <harry@kernel.org>
-To: XIAO WU <xiaowu.417@qq.com>, Vlastimil Babka <vbabka@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <529a9856-4a0d-4db0-9c97-43c0c462e396@kernel.org>
-Subject: Re: [PATCH for-next v3 7/9] mm/slab: introduce kfree_rcu_nolock()
-References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-7-70a54f3775bb@kernel.org>
- <tencent_45CAE878B5922990DB102BE05A1BAD50DA09@qq.com>
- <e54ce8be-9480-4583-9c6a-d0dbe1378f53@kernel.org>
- <tencent_12A1049445F2CE248F20CB235AC111353A0A@qq.com>
-In-Reply-To: <tencent_12A1049445F2CE248F20CB235AC111353A0A@qq.com>
-
---------------5yZ5NYuEVU4HrXYvVZYNisDF
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 6/22/26 11:56 PM, XIAO WU wrote:
-> Hi Harry,
->=20
-> On Mon, Jun 22, 2026 at 02:28:44PM +0900, Harry Yoo wrote:
->> On 6/21/26 9:29 AM, XIAO WU wrote:
->> > I was able to reproduce this in QEMU with KASAN.=C2=A0 The trigger i=
-s as
->> > simple as passing a large (>8KB) kmalloc buffer to the new function.=
-
->>
->> Thanks for taking a look, but this was intentional.
->>
->> I should have documented that only kmalloc_nolock() ->
->> kfree_rcu_nolock() is allowed and kmalloc() -> kfree_rcu_nolock()
->> is not allowed (yet).
->>
->> Since kmalloc_nolock() does not support large kmalloc, the warning
->> is not supposed to trigger. That is why I added only debug warnings.
->=20
-> Thank you very much for taking the time to explain =E2=80=94 I really
-> appreciate it, especially since I'm still learning my way around the
-> mm/ subsystem.=C2=A0 You are absolutely right that kmalloc_nolock() ret=
-urns
-> NULL for sizes above KMALLOC_MAX_CACHE_SIZE, so a proper caller using
-> the kmalloc_nolock() =E2=86=92 kfree_rcu_nolock() pairing would never h=
-it this.
->=20
-> I did notice one small thing that I wanted to gently bring up, though.
-> Please forgive me if I'm missing something obvious here.
->=20
-> When I was reading through the surrounding code to understand the
-> pattern better, I noticed that kfree_nolock() =E2=80=94 which has the s=
-ame
-> "only for kmalloc_nolock()" constraint (documented in the comment at
-> mm/slub.c:6828-6835) =E2=80=94 actually does check for a NULL slab:
->=20
-> =C2=A0 void kfree_nolock(const void *object)
-> =C2=A0 {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 slab =3D virt_to_slab(object);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(!slab)) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WARN_ONCE(1, "la=
-rge_kmalloc is not supported by kfree_nolock()");
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 s =3D slab->slab_cache;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->=20
-> So kfree_nolock() gracefully returns with a warning even though it too
-> expects only kmalloc_nolock() callers.=C2=A0 That pattern seemed really=
-
-> sensible to me =E2=80=94 it costs almost nothing and prevents a panic i=
-f
-> someone ever passes the wrong pointer (which they shouldn't, but as you=
-
-> mentioned, the constraint isn't documented on kfree_call_rcu_nolock()
-> yet).
+On 6/24/26 2:34 AM, Jing Wu wrote:
+> Hi Waiman,
 >
-> I also wondered about the difference between WARN_ONCE (used in
-> kfree_nolock) and VM_WARN_ON_ONCE (used in kfree_call_rcu_nolock).=C2=A0=
-If
-> I understand correctly, VM_WARN_ON_ONCE compiles away entirely on
-> production kernels without CONFIG_DEBUG_VM, which would make the
-> subsequent NULL dereference completely silent =E2=80=94 no warning, jus=
-t a
-> panic.
+> Thomas Gleixner suggested we coordinate, so reaching out directly.
+>
+> We have been working on a similar feature called Dynamic Housekeeping
+> Management (DHM) [1][2][3][4]. The RFC was posted on 2026-02-06, v1 on
+> 2026-03-25, and v2 on 2026-04-13 — a week before your series appeared.
+> It seems we developed these independently in parallel.
+>
+> After Thomas's review of DHM v3, we are rebuilding v4 around the
+> CPU-by-CPU offline/online hotplug mechanism, which aligns with the
+> direction of your series.
+>
+> There is one key difference in scope worth discussing:
+>
+>    Your series requires "nohz_full=" to be present at boot (even with
+>    an empty CPU list) to opt into runtime updates. DHM targets systems
+>    where nohz_full= was never configured at boot — enabling CPU noise
+>    isolation purely at runtime without any boot-time setup.
+>
+>    This requires making the nohz_full infrastructure activatable at
+>    runtime for the first time, rather than just extending an already-
+>    initialized boot configuration.
+>
+> Before we start coding v4, a few questions:
+>
+>    1. Are you planning a v2 of your series? If so, what is your
+>       timeline? We want to avoid duplicating effort on the subsystem
+>       patches (tick, RCU, genirq).
 
-It would crash without debug option anyway, but warnings are there to
-make it easier to point what's gone wrong.
+Yes, I am planning to send out a v2 in a few weeks depending on whether 
+I can finish the other works that I am doing right now.
 
-And not testing the code path at least once with debug option is a big
-problem :)
 
-> And since you mentioned that kmalloc() =E2=86=92 kfree_rcu_nolock() sup=
-port is
-> planned for the future (the "yet") =E2=80=94 wouldn't this code path ne=
-ed the
-> NULL check at that point anyway?
->=20
-> I was thinking something like this would make the function consistent
-> with kfree_nolock() and also make it forward-compatible with the
-> planned kmalloc() support:
->=20
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1266,10 +1266,16 @@ void kfree_call_rcu_nolock(struct rcu_head
-> *head, void *ptr)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0 struct slab *slab;
-> =C2=A0=C2=A0=C2=A0=C2=A0 struct kmem_cache *s;
->=20
-> -=C2=A0=C2=A0=C2=A0 VM_WARN_ON_ONCE(is_vmalloc_addr(ptr) || !virt_to_sl=
-ab(ptr));
-> -
-> =C2=A0=C2=A0=C2=A0=C2=A0 slab =3D virt_to_slab(ptr);
-> +=C2=A0=C2=A0=C2=A0 /*
-> +=C2=A0=C2=A0=C2=A0=C2=A0 * kmalloc_nolock() never produces large-kmall=
-oc or vmalloc
-> +=C2=A0=C2=A0=C2=A0=C2=A0 * addresses, but be defensive: fall back to d=
-efer_kfree_rcu()
-> +=C2=A0=C2=A0=C2=A0=C2=A0 * for unsupported pointer types, consistent w=
-ith kfree_nolock().
-> +=C2=A0=C2=A0=C2=A0=C2=A0 */
-> +=C2=A0=C2=A0=C2=A0 if (unlikely(!slab))
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto fallback;
+>
+>    2. Would you be open to extending your series to cover the
+>       "no boot parameter" use case, or do you think it is better kept
+>       as a separate series?
+The reason to make the v1 series depending on the nohz_full parameter is 
+basically a short cut as some code will change its behavior slightly 
+depending on if the nohz_full parameter is set. By making it optional, 
+we just have to add more code to enable them. It is more work, but 
+doable. I will make that optional in the next version, but I probably 
+won't have all the needed code other than the essential ones and the 
+rests will be handled in a followup patch series.
+>
+>    3. Are there specific patches in your series where you would welcome
+>       our contribution directly?
 
-Just FYI, virt_to_slab() and virt_to_page()
-don't work correctly for vmalloc addresses.
+I have broken down the shutdown callback into separate portions as 
+suggested by Thomas. The other major change that I am working on is to 
+try to shutdown to only CPUHP_AP_OFFLINE state instead of all the way 
+down to CPUHP_OFFLINE. That will require some adjustments to the 
+nohz_full related hotplug functions. I have some ideas of what needs to 
+be done. However, I haven't looked into RCU yet. I know RCU support 
+changing the nocb mask for fully offline CPUs, I will need to find out 
+if it possible to do that for partially offline CPUs.
 
-And I don't think silently making it work is good.
+The work has been suspended for a while as I have other works to do. 
+Hopefully I can restart it soon to further refresh my memory and we can 
+discuss collaboration at that point.
 
-> +
-> =C2=A0=C2=A0=C2=A0=C2=A0 s =3D slab->slab_cache;
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0 if (__kfree_rcu_sheaf(s, ptr, /* allow_spin =3D=
- */ false))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
->=20
-> +fallback:
-> =C2=A0=C2=A0=C2=A0=C2=A0 defer_kfree_rcu(head);
-> =C2=A0}
->=20
-> Of course, this is just a suggestion =E2=80=94 you know this code far b=
-etter
-> than I do.=C2=A0 If you feel the current code is fine as-is with proper=
+Cheers,
+Longman
 
-> documentation, I completely understand and won't press the point
-> further.
->=20
-> Either way, thank you again for the explanation, and for working on
-> this series =E2=80=94 having kfree_rcu_nolock() available for BPF and o=
-ther
-> contexts will be really valuable.
->=20
-> Thanks,
-> XIAO
 
---------------5yZ5NYuEVU4HrXYvVZYNisDF--
+>
+> Happy to collaborate on a unified approach.
+>
+> [1] DHM RFC (2026-02-06): https://lore.kernel.org/r/20260206-feature-dynamic_isolcpus_dhei-v1-0-00a711eb0c74@gmail.com
+> [2] DHM v1  (2026-03-25): https://lore.kernel.org/r/20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com
+> [3] DHM v2  (2026-04-13): https://lore.kernel.org/r/20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com
+> [4] DHM v3  (2026-06-18): https://lore.kernel.org/r/20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com
+> [5] Your series v1 (2026-04-20): https://lore.kernel.org/r/20260421030351.281436-1-longman@redhat.com
+>
+> Jing Wu <realwujing@gmail.com>
+> Qiliang Yuan <yuanql9@chinatelecom.cn>
+>
 
---------------HHB5JammkAG9i5v0ifUbiioD
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCajy8NQAKCRCGXBN6rc5S
-1oG6AQDcpJmCoSOVmh6QBfAn7SSLAj/dCrCVdlDGkux+9WPEAAEAwzyj8gI9j//s
-tpMbnooH3cAwdhFTBanFE9AL924TWgk=
-=XwYR
------END PGP SIGNATURE-----
-
---------------HHB5JammkAG9i5v0ifUbiioD--
