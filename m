@@ -1,177 +1,149 @@
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012027.outbound.protection.outlook.com [52.101.43.27])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE826277818;
-	Fri, 26 Jun 2026 14:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.27
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782485777; cv=fail; b=SppoFMDr0Z2dAcFWQCRfuBod17uaj1WotqOXGF/+mYkRIUief6EYiy7+P8kzVH5mO/njPv7Tr0p+BK3b7PNf3HXVTLqdKlSRffO60mTtWMvK5t2bwqI9Jmvq8Hkyrcguh1iGt/Te2kJwcbiWHcEFqZmEDVjoAjpM3uVJ+lHArig=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782485777; c=relaxed/simple;
-	bh=CUlX4wBGu3LF8UZqP75RXIe0Abiiih/4OrFF1qhAQRM=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=qKXx/Foyv9KYVsX7t9AnbHY9Md/M1GF8lNyEp1wBuSwueEg5A2/oryA44w9jLw8hfD2HTsAJDj/sF5ySUkMZ8fdJWmtNaOVKUBxAibSIk0OJykP0r+nPeJf1L8+yT0XxnXGB5FqnA87LM8C0tjKALi+L8Jz493waGzMRrMesfMY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OecgUX05; arc=fail smtp.client-ip=52.101.43.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5332E3FBEC9
+	for <rcu@vger.kernel.org>; Fri, 26 Jun 2026 16:30:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782491442; cv=none; b=rl3F9QLo28/eLCKbhIElu96Oa0Be7T4MCF5EbgWqaSvkeTURZvSL0n+3+iTSH3/z+06aIMkF0lQGcdCJjHQ4y3oMhIIOogxwS5fTk2AcSfaOeKsaL2pwwYmj64r/1wPiHL+25zJ/n7y7vWpeVgvkiuR1bfkx+XaMid8KI3xIDgA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782491442; c=relaxed/simple;
+	bh=rWOiwxCoRgiJZKsYjqvfKpfnDCTlg7NhP9vkLRgydlI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iLutQdbY13XIThkFpq7rwmhUnYp9JKKKiG+DcX/Dd4g+ipvNyoK9bzDswboBpPCFEnoRY/K1QYCuydJQpJtq2SC7vZSbeg6zsoS9V+pMeqyYPK0eys12UnfUFk9JlfO/tlTHdXnpzMrrs6RO5iZbO/g1VuWDbthZZl8EiTR/DCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jFiVDpoL; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OecgUX05"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=zWIEeoLpjmZwnHe4jN9cU3UvqBrYBQcQzvb/CbdFQr0vQGOdfy4c7Di8QnVYQdj0cZ7ODlH+txkiWrpO3o6eaZbHjBuWn1qWTDR9OpGD4Bc/xyT4h7jH6l+eVoNkP4h++jKZxhBo6nMHyu1jSAZdSnjI9IfWVOy4I83FPYNKwipb5LC6KrGiB7ba7J5sdcdbu8aAMoPpM6ZS0k1ss0NHR0v/9GrD7pS1IlWdpYFfqMhpLynzES20cGIZttxts9on1uVtsLtSmHDIHcZ79oHRFV7g4h18BeYtryjd3MSB8F67NuOyQgoUn5fUi/wWTp0IrsPSQpaef1rO7SH2wwELqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SlmMs3m0DWSHmWUA+E2qmqtOr1vAPfJUL4zXUbuLY2Q=;
- b=IbhDdaLZzKUkr+zndGWD+t4bG9H7Wpc6EUMeWVF5v8OyLIcofl/cux+Nf55Sfe7bknHX67UVbhBj+cVVYjy/pI0q5tv7v64+kNjL/KkN7i5zuTkcUMW/IplXUU/zWHvOIfy16g2Cgpy6EIxXhzV2gelIJHhCIjz08BpKgOH7Gz3mTGrcsicPpo6XM+oQyp+WGld5hPFeaEwVTomELDpsqyTgwRfwm9aD/PipCXyVO1ngcGnXgNwcKeT+ZkviuMIibL/jCf8EAKw/DlGQKhMrs5WcUjwcEs70+OJvyHPgm8xUvrspgn9BgnxcOAr7fiodyK1oHs8bHbDJzvsZLGqBow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SlmMs3m0DWSHmWUA+E2qmqtOr1vAPfJUL4zXUbuLY2Q=;
- b=OecgUX05fHlE+I25XtkNIpgO4N+eUqR9c/YJ9TDm2gaZk0zAJagKRnDhOfYVOD6hMeOS+vPMWipC+FhKAiHKullctFyoXJVELia+8OayPC+hcRWDXkx7N6E5Ns6oig+UuK7+GCni5ZmEYVFL6kZoWIvVU1E5Z3xOu4Kgsj6psV2ixrtGR3PZ8y+RiNr7hi4k/qPCWkRhUh5oNHgeOeKMBzpy6CFsztAAjbARDrPiP6BGElVluFPLUGXgW+bASDLV73Lp66wjU1et1s6NgPH4md62ZSrsPpHvmCYhKO4MM5Uhn6cyrkfLS7yZV1LJpdtIUHYHY1WnJwCpAbKeXkFIeA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- DS0PR12MB6656.namprd12.prod.outlook.com (2603:10b6:8:d2::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.139.19; Fri, 26 Jun 2026 14:56:10 +0000
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33%6]) with mapi id 15.21.0159.016; Fri, 26 Jun 2026
- 14:56:10 +0000
-Message-ID: <c2a42624-2ac2-4f70-8882-a63ac5bd01e1@nvidia.com>
-Date: Fri, 26 Jun 2026 10:56:08 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/8] rcu: fix stuck defer_qs_pending state and add
- rescue timer
-To: linux-kernel@vger.kernel.org
-Cc: "Paul E . McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Davidlohr Bueso <dave@stgolabs.net>, rcu@vger.kernel.org
-References: <20260626004301.1632168-1-joelagnelf@nvidia.com>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <20260626004301.1632168-1-joelagnelf@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0281.namprd13.prod.outlook.com
- (2603:10b6:208:2bc::16) To DS0PR12MB6486.namprd12.prod.outlook.com
- (2603:10b6:8:c5::21)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jFiVDpoL"
+Message-ID: <19ad0544-7401-4050-b991-1cc374921e49@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782491429;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HMHQixL/BAkUs2Zzi8nL/MwEPIi7gF2NyGowzygA1Vg=;
+	b=jFiVDpoLlKB2GxTGCukGcmlksLPZOLbXXpRLZEOirkHkCnym+0PFsrScirkySSncxPrhpj
+	z9mS/1wKSLeICjU3xkhtj+naVi9FZ3LvqEY1hC527rEvLC/fJLCMBUNLW3SUNMQPJo7CWK
+	QlnpsTUe2UcgMGnHGzEdvrFzZf0+PZo=
+Date: Fri, 26 Jun 2026 17:30:21 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|DS0PR12MB6656:EE_
-X-MS-Office365-Filtering-Correlation-Id: 29270998-91f2-4906-3d7c-08ded3930f4e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|366016|1800799024|23010399003|7416014|18002099003|22082099003|11063799006|56012099006;
-X-Microsoft-Antispam-Message-Info:
-	dzdJQvHOaHc+i7D0OqmjRXgFLYmHYX4lCyKoaYdlG5+ZTUU6g6+fOUzS75pCtrEYjqtR4SFlt3Tzg9Rb0N7dj/cR/JdQDACtdoD8ItArKUg4/xyA5n1CKrM9+GWncJG0LLyvwgCdm3URWNAJHhnyMA0TxzXs/OTed3+S8c5lCeqhyQg9yRo3U97mS32RWXpJH4SOj7fAPpVWsHOeKRxhN5eWKGxbSXqPHNMX101Z0vgWKSzcdCpVeEVdRnLPoP64bfIbjpnneQ3FtSJMM3tCgA/ec4UwdgTm4XBXDveGyzpMbQ5NX3bF4caX4pFdsj8w7Fv06ydqYgjJktX+xERGkHnKsVKvQzZQfFJbrgofPMZRglk5VLYnuT1ApvVTiPcgV4gGa71exvry2dYs8cFhpe8IDw7Z2S65P5tIgeUmlWf7/3dKcA0EzpJRLjtCNwcIFk3XSWe7M4VQ5OjhPYBrwbnnI4RmBosyqDS+NxWy/vQneQ0Y/+SBVHcP8rESjLe3Pahhrxqd7Gf/rPSXn4cahfqxMGVEv8R9EU37y/qkjU14pcb8fEZSZ7G7UAewjfrxzshZoinshOe3+I9gJd5r47cYdIoBOmS0Z+g0w1orvmQmvavArhM4An7bv4i/FG00FwBTi6HNr915erpwOWXlEPUk9+X6qzAQt9DMszZhJeI=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(23010399003)(7416014)(18002099003)(22082099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bUpMRExTRzhuZ1VPTnRpZzd2OFIwUUZNK0tLWXlsRERhN2dDK1BWSkgvbU9z?=
- =?utf-8?B?TE81MXpvd3oyZVVLYmppOVl3cWhsWUEzV3RjdGI5czQzSTVmOWNtVGJwa1FM?=
- =?utf-8?B?TFJMbDFmS2RDVTJnQ1lpM0Y1UTFDTlJ6UjJobkdIZWhPYVByQmVIWVdIelFM?=
- =?utf-8?B?NDgvSXk2WXpyelJOaGZEVXlpQzBKbmllSjZ1NzBoVHZFTGxNWHp1dzhLM2JX?=
- =?utf-8?B?UTdYNXJ0ejlCUllPUU9FUlN3N1ZkM3U2MnZxejM3dlZjMUovS05WaC9wc1Jv?=
- =?utf-8?B?bzYxOWthV2M1dVpkUGlRZDBaRWFjNnRSdlg1ZWR5ekFOQ29tTVRtRkZFc0NI?=
- =?utf-8?B?YlAvNmVlY2IzeFRxNlZDRVJldDFVd1E5KzFWMU5kekpUWTA2K0ZncWdoc280?=
- =?utf-8?B?TENoYXlWOVlXS0thSzZlMzd0UGt6MFNuSnErU3lwcjFLL2JYTE5LYjJMcjRk?=
- =?utf-8?B?WEdPUzBsMDZXYVdrK0ZNN2U5V3FhTFZ2UzVlcVNVVzQyVGtxczJTZXVnNjZT?=
- =?utf-8?B?bmVpNGdQZ0VtOGxOamJoZ1lqUmZtTWZJY3p0c3JkTWJaaGxldFRzQkVVLy9Z?=
- =?utf-8?B?dDlISkxVU2ZGbldCZ3hlTGYxMGhhRkZ3MG84UzlJWkQ0NURTZXBzdWwzdDh6?=
- =?utf-8?B?WEs2Mk15aHpsOUFjL1JZalZ6WnVTYkRxZHg2VjB5cXFHNEpTRWIvenRGazNx?=
- =?utf-8?B?TlAwS1FoYW5UQjFOYTlVNkorN0NtWTAvUlNidVpBSUlnUnBsWUJkQUgvRkJR?=
- =?utf-8?B?TEJ0S0RZaG1vbGF5RHJOUDVqNCtQa0UvYTJLNVRQWC9RUHNTcEdaS3ZTRVhz?=
- =?utf-8?B?LzFpblVJSEVBSVdodVJySXUyYmNibUc5Qitmd3dPQXhoTkdQTi9GUC9LL3dp?=
- =?utf-8?B?N2dlT1hqbThWWTFiMHA0KzFTRzZzZUVZMFFOam1CVWVlankxZ0MvTHVuTHhn?=
- =?utf-8?B?eUJGOENOdHpMcEVDUVVDYWVBL0RRNDhDTzFFc2I0SEg3WU8vQWx0VEVSR2lR?=
- =?utf-8?B?V3FZQ3dYR0ZDenB3NWFHR3l3YlJXa21QMTlZMjVid3o3YmpXOUdhOCtOUCty?=
- =?utf-8?B?UWhhS2ZRZldTOGlPdmE3SXFBU2R4dGVQUTdRRzhaM3M3aGJuVnJvU2k0RVFD?=
- =?utf-8?B?WFQrUjdzSHRWdVJyU0IxUWRGVUVJS1dxYlNvc0tWNFJ2bnJ0NUF4bnVzcVVw?=
- =?utf-8?B?TWN1WEJnOEl2aTZST0VQN3pjeEVEY3RSSys1SS9acmFNckZSdkpZc0tZcVJO?=
- =?utf-8?B?a2tRT0cxVlRPcWpZMjFXcGZzSDQwNWNYa1krYzZmeUc3M3FONm56bEM2cHZF?=
- =?utf-8?B?VmIxa2lrOWJzcjRMMEJsYWhFU2FlQitwRzlkSHlURU42ZVhva0tySFZ4SmI5?=
- =?utf-8?B?TnNGNkpFcStjbDJranRoL2l4QmRKVTM4ZDl5Vzd4YjRaVk5SUEVGTG9IbGR2?=
- =?utf-8?B?SDhLaWtKUlM1NWF1dlJCaXpvTHNSQzlWcGhWVTdqY2grYUJ5RUZ0OXVOSERP?=
- =?utf-8?B?dy9FUHZUNjB4aXlMMWUwc1hZci9xMHcwY2xMZWFhSUY5SFNNbTJlN3VFMEZh?=
- =?utf-8?B?ZWRqVFJiVTMyS3Y0eXhiSlo1V2ZxelhLbU1pNTFJNWVqWXYwRjZXWnJDOWEx?=
- =?utf-8?B?QVJYck1jQnp1VVBGQjJmT25icGU1MXlIK1VIbnl4Qjh3MWhDU0puYmhmMHlQ?=
- =?utf-8?B?VUsyeXJNbjg1cHJiNDNoWmNkclVjd1A1RVJpRlY0bGx3YkJhWCtKZUIxbzVO?=
- =?utf-8?B?K1RzWFVxaUFnaTlHZS9kdTZjL3JTTDdUeDZyK0NiU3BvYzBJLzY0Q2RTcHFQ?=
- =?utf-8?B?SkFvdTFSdjVSK3BqNUhTYmZueXhST0l0VERGd0FvaHVDRVh3QnZFSjlQQmZp?=
- =?utf-8?B?VmQyYkdMUXR3cEZXR1VQRDZJSDJXbzc5a2JnZVdPVnc2SzA0dTlQVkswWVJH?=
- =?utf-8?B?bW8rVmhKbkZQRW53UVROdm5SYklSUlZuUWU0V2JIajdaZU5MMnV6VDVSd2hi?=
- =?utf-8?B?RHBqTllMYjAyQ2tFQ00vS3R0a3FLZVBNMHMyckQ4aTJQMlpwZW0yZktxVnl2?=
- =?utf-8?B?VWRUZFl6VFlNTlJEaG9sdUt5VHE5WWcwOXZZV2pPNnVobEl5Q3QrV0YwUFJO?=
- =?utf-8?B?cFpidWNtSjZ6MjJVTFZQTHZjWUxwb212a1hadkhKVjIrc1V5ZDJIbjk2dzdw?=
- =?utf-8?B?NFpaa1E0UE10NWgwWk42aW55d0lYQ3hyRkR4MGI3MXB5eDhaVlJ0dEVoQ21E?=
- =?utf-8?B?dnRqWjI1K0FxTzVoVEpFVUlHcElKaCs2RXlhWEhzS2VUOG9KSWJtZkhYV0t3?=
- =?utf-8?B?dUc5ejkvNytiS0JUNUxtSE56eUp2NFRjcTQrcFgyMks1SG5vMmdEdz09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29270998-91f2-4906-3d7c-08ded3930f4e
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2026 14:56:10.5734
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MGb+Pv3wNPNrCFmbl1HCQkW5VYl3H2mXnt7lW99LZco4gQQGkuFL9y0X7jMaLXgpmHq3aT0rKQFvocvZJcNPhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6656
+Subject: Re: [PATCH v2] smp: Use release stores for csd_lock_record() state
+To: Dmitry Ilvokhin <d@ilvokhin.com>
+Cc: lkmm@lists.linux.dev, joelagnelf@nvidia.com,
+ linux-kernel@vger.kernel.org, marco.crivellari@suse.com, paulmck@kernel.org,
+ rafael.j.wysocki@intel.com, rdunlap@infradead.org, riel@surriel.com,
+ sshegde@linux.ibm.com, tglx@kernel.org, ulfh@kernel.org,
+ yury.norov@gmail.com, rcu@vger.kernel.org, shakeel.butt@linux.dev,
+ hannes@cmpxchg.org, kernel-team@meta.com
+References: <20260622163807.4187558-1-usama.arif@linux.dev>
+ <aj0-SYJJdDzf56Ex@shell.ilvokhin.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Usama Arif <usama.arif@linux.dev>
+In-Reply-To: <aj0-SYJJdDzf56Ex@shell.ilvokhin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
 
-On 6/25/2026 8:42 PM, Joel Fernandes wrote:
-> This series fixes a bug where rdp->defer_qs_pending can remain stuck in
-> PENDING when a preempted reader's quiescent state is reported up-tree via
-> a path other than the deferred-QS irq-work handler (FQS scan, hotplug
-> transition, expedited GP IPI, context switch). Once stuck, the pending
-> gate in rcu_read_unlock_special() silently suppresses all future arming
-> attempts on that CPU. The series adds PENDING -> IDLE transitions at the
-> missing sites (patches 1-7), including the case where the deferred-QS
-> irq-work handler may run between segments of a compound section (per Paul
-> McKenney's counter-example) and the softirq deferred-QS arming path.
+On 25/06/2026 15:42, Dmitry Ilvokhin wrote:
+> On Mon, Jun 22, 2026 at 09:38:07AM -0700, Usama Arif wrote:
+>> __csd_lock_record() publishes per-CPU CSD debug state that is read by
+>> csd_lock_wait_toolong() on another CPU.  The remote side first reads
+>> cur_csd with smp_load_acquire() and, when non-NULL, may then read the
+>> matching cur_csd_func and cur_csd_info fields.
+>>
+>> Use smp_store_release() when publishing cur_csd so that the preceding
+>> cur_csd_func and cur_csd_info stores are ordered before the pointer
+>> that csd_lock_wait_toolong() acquires.  This replaces the open-coded
+>> smp_wmb() plus plain cur_csd store with the release operation that
+>> matches the smp_load_acquire() in csd_lock_wait_toolong().
+>>
+>> For the clear path, use smp_store_release(&cur_csd, NULL) so that
+>> clearing the diagnostic state remains ordered after the preceding
+>> callback/unlock work, without requiring a full barrier before the
+>> store.  On x86 this removes the locked full barrier from the clear
+>> path; on weaker memory models it uses the release operation needed by
+>> the smp_load_acquire() in csd_lock_wait_toolong().
 > 
-> Patch 8 adds a per-CPU rescue hrtimer that bounds the worst-case
-> deferred-QS reporting latency: when the irq-work handler lands in a clean
-> (non-reader, non-compound) context it reports the quiescent state directly
-> via the new rcu_preempt_deferred_qs_try_report() helper, and the rescue timer
-> reuses the same helper so that, under preempt=none, the QS report is quick
-> without depending on the scheduler.  The rescue timer is cancelled from the
-> normal deferred-QS report path so it does not fire once the quiescent state
-> has already been reported.
-> 
-> This version is rebased on top of Paul's latest rcu/dev branch. The
-> rcutorture reader-end deboost test patches that were folded into v3 are now
-> in rcu/dev and have been dropped here. The git tree below additionally
-> carries two debug-only commits on top of the series ([TEST COMMIT], not for
-> merge): a detector that WARNs if defer_qs_pending is stuck at GP cleanup,
-> and an rcutorture tweak that gives the async deboost mechanisms up to 500us
-> before warning. Applied alone on unmodified mainline, the detector reliably
-> fires within 5 minutes under TREE03 rcutorture; with the full fix applied I
-> could not reproduce the issue.
-> 
-> The git tree with all patches can be found at:
-> git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git (tag: rcu-dqs-stuck-v4-20260625)
+> The changelog only calls out the clear path here, but the publish path
+> also drops its trailing smp_mb() (plus the smp_wmb()), so on x86 both
+> paths lose a locked full barrier. Worth describing symmetrically.
 
-Additional overnight testing with the patch series passes. Perhaps ready
-for some linux -next testing? Or do you want to test on your end as well first?
+Do you mean whats written in the next paragraph? The paragraph above
+is for clear, the paragraph just below is for publish. The reason for removing
+smp_wmb() is in 2nd paragraph. I think all the information regarding the changes
+is in the commit message.> 
+>>
+>> The old code also had smp_mb() calls around cur_csd updates. Those would
+>> only be needed if cur_csd were treated as an exact live-state marker whose
+>> publication had to be observed before callback execution or CSD unlock.
+>> CSD stall warnings do not currently have RCU-style stall-ended checks, so
+>> they already allow the stall to end while diagnostics are being assembled.
+>> The cur_csd record is therefore best-effort diagnostic context, not a
+>> precise completion/stall boundary.
+>>
+>> Signed-off-by: Usama Arif <usama.arif@linux.dev>
+>> ---
+>> v1 -> v2: https://lore.kernel.org/all/01437928-ff79-4d8e-823b-7f20146946f6@linux.dev/
+>> - Document where the smp_store_release() synchronizes with (Alan Stern,
+>>   Randy Dunlap and Paul McKenney).
+>> ---
+>>  kernel/smp.c | 18 ++++++++++++------
+>>  1 file changed, 12 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/kernel/smp.c b/kernel/smp.c
+>> index a0bb56bd8dda..685829875a3e 100644
+>> --- a/kernel/smp.c
+>> +++ b/kernel/smp.c
+>> @@ -182,16 +182,22 @@ static atomic_t csd_bug_count = ATOMIC_INIT(0);
+>>  static void __csd_lock_record(call_single_data_t *csd)
+>>  {
+>>  	if (!csd) {
+>> -		smp_mb(); /* NULL cur_csd after unlock. */
+>> -		__this_cpu_write(cur_csd, NULL);
+>> +		/*
+>> +		 * Pairs with smp_load_acquire() of cur_csd in
+>> +		 * csd_lock_wait_toolong(): orders any preceding CSD
+>> +		 * callback/unlock before a remote reader observes NULL.
+>> +		 */
+>> +		smp_store_release(this_cpu_ptr(&cur_csd), NULL);
+>>  		return;
+>>  	}
+>>  	__this_cpu_write(cur_csd_func, csd->func);
+>>  	__this_cpu_write(cur_csd_info, csd->info);
+>> -	smp_wmb(); /* func and info before csd. */
+>> -	__this_cpu_write(cur_csd, csd);
+>> -	smp_mb(); /* Update cur_csd before function call. */
+>> -		  /* Or before unlock, as the case may be. */
+>> +	/*
+>> +	 * Pairs with smp_load_acquire() of cur_csd in
+>> +	 * csd_lock_wait_toolong(): publishes cur_csd_func and
+>> +	 * cur_csd_info before the non-NULL pointer becomes visible.
+>> +	 */
+>> +	smp_store_release(this_cpu_ptr(&cur_csd), csd);
+>>  }
+> 
+> Since v2 is specifically about documenting the pairing, it would be good
+> to make it symmetric and add the comment on the acquire side in
+> csd_lock_wait_toolong().
+> 
 
-thanks,
-Joel Fernandes
+Its already documented [1]
+
+[1] https://elixir.bootlin.com/linux/v7.1.1/source/kernel/smp.c#L275
+
+>>  
+>>  static __always_inline void csd_lock_record(call_single_data_t *csd)
+>> -- 
+>> 2.53.0-Meta
+>>
 
