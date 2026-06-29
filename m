@@ -1,155 +1,197 @@
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C86137E300
-	for <rcu@vger.kernel.org>; Mon, 29 Jun 2026 16:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9503FB074
+	for <rcu@vger.kernel.org>; Mon, 29 Jun 2026 16:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782751413; cv=none; b=T/7BboR7GA6tbX/J95CntWFRp/27E0CT8cxNYeSIKcEJSNa3ewMG20R2U/hg1Jdp8z6NYrvZQf5fgSRonj0g//gnvqaDhwVE9RJk2k+bKA3dUhCq3ptNlPhbg0W+nY6vEWClvmGFWiCytg/XrOyoeR5+DXt48QYGf1Crg77M/Sc=
+	t=1782751783; cv=none; b=FbmHlO9QozpTirlXBXJIbFRpMXwFIZ3j8i6ceNnBpzEADFcc4C6h7peG4NToH0+P4KDAvbncAwCh4/zv3EkxMBdEx7WuaXHWEEG2BsKavjku9VfKhJDBOiSel+B/C11lJI7Iyx47o4/W+7RvV6GzgzZoA5ClZ3NEJW6hQPcmNXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782751413; c=relaxed/simple;
-	bh=c7t5t9ehvd9AT/whmAS1K6P26pUwc41TyNJ7edSDo2g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fdFRVXoqU/d74V8yyN1TqjgSzr9jXT3scZayI71dvfTFB+RxPik83YYJP59/Db06+WLO0mqlbCOgMAYdVOMp3WbfTHVhfDedA6My8AnQdyyRwoasw+/kOw3IsLdhdFtGA55q+icaqvq9PEWtf8Gi1qU1/XTKo2lQh2wMfNezm6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oEp7tRnq; arc=none smtp.client-ip=91.218.175.178
+	s=arc-20240116; t=1782751783; c=relaxed/simple;
+	bh=/c/td0l49GrTYIdOiDvTBEx5r+8NUhgWFGP30RpUw5g=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=pJCaC/daW9XcqaK96+o8XgKGZurEYZNvHQ4Wb+iWg1aN5H6WoEQ9MdIHfDzz1cHpqNKA/4/gOEfe7adl6bKMDAyPRYwCrbPYTFKtJLFzynBBLcADqai2NzGkvzVtQv0zj2YrqADGecL05+8dNa91+EM4yhPzs2sBTt+G6q4JIGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FL1NklTV; arc=none smtp.client-ip=91.218.175.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oEp7tRnq"
-Message-ID: <e3d91c52-7a3c-41eb-834b-a253d2900839@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782751399;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qAERY6YYlDjCgjdc5pFThzfIpUUE8ygA/6rL1jL9C8k=;
-	b=oEp7tRnq7oeJ/T1VhGQ6L28gv3We+VqBERgQvkNIqk+0rBIQmS52nFRjFOt91ev77mR/zZ
-	N2bCDqN5iyQ9E/J4C32NEfUTndjzD/+IDsRu17ugGBE/kd43HiRJR+qRoThrMKX08rogwD
-	U3iQFnsWUd8truWQI0dv1HNGDzyTZkY=
-Date: Tue, 30 Jun 2026 00:42:37 +0800
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FL1NklTV"
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3] smp: Use release stores for csd_lock_record() state
-To: Usama Arif <usama.arif@linux.dev>, lkmm@lists.linux.dev,
- joelagnelf@nvidia.com, linux-kernel@vger.kernel.org,
- marco.crivellari@suse.com, paulmck@kernel.org, rafael.j.wysocki@intel.com,
- rdunlap@infradead.org, sshegde@linux.ibm.com, tglx@kernel.org,
- ulfh@kernel.org, vineeth@bitbyteword.org, yury.norov@gmail.com,
- rcu@vger.kernel.org, d@ilvokhin.com
-Cc: shakeel.butt@linux.dev, hannes@cmpxchg.org, kernel-team@meta.com
-References: <20260629105745.1696683-1-usama.arif@linux.dev>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782751779;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vUtYpDl1uQ44PbsZ1biMHpyJk3g/3hXd1zmMGA9K3Q4=;
+	b=FL1NklTVO0od/kaqvRwWq3gW0vfYCX7GLsAxVpRk0KP4mXu8YI55xjwEkiaBLQZNyxVQAX
+	DZo95wfdB5MgUhtR1u0A4Bq6kstozqeE2jYKmTUDfSeIS8jFxBljMbECABne2wO1pca1J1
+	PkaQwae/BJBKvuUaRXL0ojohOrnhf+U=
+Date: Mon, 29 Jun 2026 16:49:36 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kunwu Chan <kunwu.chan@linux.dev>
-In-Reply-To: <20260629105745.1696683-1-usama.arif@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: "Kunwu Chan" <kunwu.chan@linux.dev>
+Message-ID: <70ecf76276244a204b36164858ba85d78e8a5061@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH v2] smp: Use release stores for csd_lock_record() state
+To: "Usama Arif" <usama.arif@linux.dev>, lkmm@lists.linux.dev,
+ joelagnelf@nvidia.com, linux-kernel@vger.kernel.org,
+ marco.crivellari@suse.com, paulmck@kernel.org,
+ rafael.j.wysocki@intel.com, rdunlap@infradead.org, riel@surriel.com,
+ sshegde@linux.ibm.com, tglx@kernel.org, ulfh@kernel.org,
+ yury.norov@gmail.com, rcu@vger.kernel.org
+Cc: shakeel.butt@linux.dev, hannes@cmpxchg.org, kernel-team@meta.com
+In-Reply-To: <b0d88052-64d6-40c1-a728-7242bfbcda1b@linux.dev>
+References: <20260622163807.4187558-1-usama.arif@linux.dev>
+ <1030b968-4184-4818-99dc-aeb0956ef6a3@linux.dev>
+ <b0d88052-64d6-40c1-a728-7242bfbcda1b@linux.dev>
 X-Migadu-Flow: FLOW_OUT
 
-On 6/29/26 18:57, Usama Arif wrote:
-> __csd_lock_record() publishes per-CPU diagnostic state (cur_csd,
-> cur_csd_func, cur_csd_info) that is consumed from a remote CPU by
-> csd_lock_wait_toolong() via smp_load_acquire(&cur_csd). To order the
-> matching cur_csd_func/cur_csd_info stores before the cur_csd
-> publication, the producer issues smp_wmb() before writing cur_csd;
-> to order the publication before the subsequent callback execution or
-> CSD unlock, it issues smp_mb() after the write. The clear path
-> mirrors this with smp_mb() before storing NULL into cur_csd so the
-> preceding callback/unlock is observed first.
->
-> The smp_mb() pair is heavier than what the consumer actually
-> requires (on x86 each emits a locked full barrier). The consumer
-> only needs to observe the matching cur_csd_func/cur_csd_info when it
-> sees a non-NULL cur_csd, and to observe the preceding callback/unlock
-> when it sees NULL -- both of which a release/acquire pair provides.
-> The extra two-way ordering enforced by smp_mb() -- that cur_csd
-> publication be observed before callback execution or unlock becomes
-> visible -- would only matter if cur_csd were an exact live-state
-> marker. csd_lock_wait_toolong() does not treat it that way: it
-> snapshots cur_csd via smp_load_acquire() and then prints / dumps /
-> re-IPIs without an RCU-style stall-ended recheck, so the diagnostic
-> already tolerates the remote CPU completing its work between snapshot
-> and report. cur_csd is best-effort context, not a precise stall
-> boundary.
->
-> Replace the smp_wmb() + plain store + smp_mb() in the publish path,
-> and the smp_mb() + plain store in the clear path, with
-> smp_store_release(). This pairs with the smp_load_acquire() in
-> csd_lock_wait_toolong(): preceding cur_csd_func/cur_csd_info stores
-> become visible before a remote reader observes the non-NULL
-> publication, and any preceding callback/unlock becomes visible before
-> a reader observes the NULL clear.
->
-> Signed-off-by: Usama Arif <usama.arif@linux.dev>
-> ---
-> v2 -> v3: https://lore.kernel.org/all/20260622163807.4187558-1-usama.arif@linux.dev/
-> - Restructure changelog into context/problem/solution form (Thomas
->   Gleixner).
-> - Add reciprocal pairing comment on the smp_load_acquire() in
->   csd_lock_wait_toolong() (Dmitry).
->
-> v1 -> v2: https://lore.kernel.org/all/01437928-ff79-4d8e-823b-7f20146946f6@linux.dev/
-> - Document where the smp_store_release() synchronizes with (Alan
->   Stern, Randy Dunlap and Paul McKenney).
-> ---
->  kernel/smp.c | 26 +++++++++++++++++++-------
->  1 file changed, 19 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index a0bb56bd8dda..8a847a34f132 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -182,16 +182,22 @@ static atomic_t csd_bug_count = ATOMIC_INIT(0);
->  static void __csd_lock_record(call_single_data_t *csd)
->  {
->  	if (!csd) {
-> -		smp_mb(); /* NULL cur_csd after unlock. */
-> -		__this_cpu_write(cur_csd, NULL);
-> +		/*
-> +		 * Pairs with smp_load_acquire() of cur_csd in
-> +		 * csd_lock_wait_toolong(): orders any preceding CSD
-> +		 * callback/unlock before a remote reader observes NULL.
-> +		 */
-> +		smp_store_release(this_cpu_ptr(&cur_csd), NULL);
->  		return;
->  	}
->  	__this_cpu_write(cur_csd_func, csd->func);
->  	__this_cpu_write(cur_csd_info, csd->info);
-> -	smp_wmb(); /* func and info before csd. */
-> -	__this_cpu_write(cur_csd, csd);
-> -	smp_mb(); /* Update cur_csd before function call. */
-> -		  /* Or before unlock, as the case may be. */
-> +	/*
-> +	 * Pairs with smp_load_acquire() of cur_csd in
-> +	 * csd_lock_wait_toolong(): publishes cur_csd_func and
-> +	 * cur_csd_info before the non-NULL pointer becomes visible.
-> +	 */
-> +	smp_store_release(this_cpu_ptr(&cur_csd), csd);
->  }
->  
->  static __always_inline void csd_lock_record(call_single_data_t *csd)
-> @@ -272,7 +278,13 @@ static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, in
->  		cpux = 0;
->  	else
->  		cpux = cpu;
-> -	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux)); /* Before func and info. */
-> +	/*
-> +	 * Pairs with smp_store_release() of cur_csd in __csd_lock_record():
-> +	 * a non-NULL cur_csd here implies cur_csd_func and cur_csd_info
-> +	 * are the matching publication; a NULL value is ordered after any
-> +	 * preceding CSD callback/unlock on the remote CPU.
-> +	 */
-> +	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux));
->  	/* How long since this CSD lock was stuck. */
->  	ts_delta = ts2 - ts0;
->  	pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %lld ns for CPU#%02d %pS(%ps).\n",
-Reviewed-by: Kunwu Chan <kunwu.chan@linux.dev>
+2026=E5=B9=B46=E6=9C=8824=E6=97=A5 23:27, "Usama Arif" <usama.arif@linux.=
+dev mailto:usama.arif@linux.dev?to=3D%22Usama%20Arif%22%20%3Cusama.arif%4=
+0linux.dev%3E > =E5=86=99=E5=88=B0:
 
--- 
-Thanx, Kunwu
 
+>=20
+>=20On 24/06/2026 15:15, Kunwu Chan wrote:
+>=20
+>=20>=20
+>=20> On 6/23/26 00:38, Usama Arif wrote:
+> >=20
+>=20> >=20
+>=20> > __csd_lock_record() publishes per-CPU CSD debug state that is rea=
+d by
+> > >  csd_lock_wait_toolong() on another CPU. The remote side first read=
+s
+> > >  cur_csd with smp_load_acquire() and, when non-NULL, may then read =
+the
+> > >  matching cur_csd_func and cur_csd_info fields.
+> > >=20
+>=20> >  Use smp_store_release() when publishing cur_csd so that the prec=
+eding
+> > >  cur_csd_func and cur_csd_info stores are ordered before the pointe=
+r
+> > >  that csd_lock_wait_toolong() acquires. This replaces the open-code=
+d
+> > >  smp_wmb() plus plain cur_csd store with the release operation that
+> > >  matches the smp_load_acquire() in csd_lock_wait_toolong().
+> > >=20
+>=20> >  For the clear path, use smp_store_release(&cur_csd, NULL) so tha=
+t
+> > >  clearing the diagnostic state remains ordered after the preceding
+> > >  callback/unlock work, without requiring a full barrier before the
+> > >  store. On x86 this removes the locked full barrier from the clear
+> > >  path; on weaker memory models it uses the release operation needed=
+ by
+> > >  the smp_load_acquire() in csd_lock_wait_toolong().
+> > >=20
+>=20> >  The old code also had smp_mb() calls around cur_csd updates. Tho=
+se would
+> > >  only be needed if cur_csd were treated as an exact live-state mark=
+er whose
+> > >  publication had to be observed before callback execution or CSD un=
+lock.
+> > >=20
+>=20>  =C2=A0The original comments around those updates seem to suggest a=
+ stronger
+> >  relationship:
+> >  =C2=A0 /* Update cur_csd before function call. */
+> >  =C2=A0 /* NULL cur_csd after unlock. */
+> >=20=20
+>=20>  The changelog characterizes cur_csd as best-effort diagnostic cont=
+ext.=C2=A0
+> >=20=20
+>=20>  Is there prior consensus that cur_csd carries no ordering relation=
+ship=C2=A0
+> >  to callback execution / unlock state,=C2=A0
+> >=20=20
+>=20>  or is this patch effectively relaxing that historical assumption?
+> >=20=20
+>=20>=20=20
+>=20>  Thanks,=C2=A0 Kunwu
+> >=20
+>=20Thanks for the review Kunwu!
+>=20
+>=20The patch preserves the ordering that reader actually needs:=20
+>=20csd_lock_wait_toolong() observes non-NULL cur_csd, the matching func/=
+info have
+> been published. If it observes NULL, the prior callback/unlock work is =
+ordered
+> before the clear.
+>=20
+>=20So yes, this relaxes the historical implementation ordering around th=
+e
+> diagnostic marker, but not the CSD execution/reuse ordering.
+>=20
+
+
+Thanks=20for the v3 update. The explanation of reader-side tolerance for=
+=20
+snapshot-vs-completion=20races addresses my concern.
+
+
+> >=20
+>=20> >=20
+>=20> > CSD stall warnings do not currently have RCU-style stall-ended ch=
+ecks, so
+> > >  they already allow the stall to end while diagnostics are being as=
+sembled.
+> > >  The cur_csd record is therefore best-effort diagnostic context, no=
+t a
+> > >  precise completion/stall boundary.
+> > >=20
+>=20> >  Signed-off-by: Usama Arif <usama.arif@linux.dev>
+> > >  ---
+> > >  v1 -> v2: https://lore.kernel.org/all/01437928-ff79-4d8e-823b-7f20=
+146946f6@linux.dev/
+> > >  - Document where the smp_store_release() synchronizes with (Alan S=
+tern,
+> > >  Randy Dunlap and Paul McKenney).
+> > >  ---
+> > >  kernel/smp.c | 18 ++++++++++++------
+> > >  1 file changed, 12 insertions(+), 6 deletions(-)
+> > >=20
+>=20> >  diff --git a/kernel/smp.c b/kernel/smp.c
+> > >  index a0bb56bd8dda..685829875a3e 100644
+> > >  --- a/kernel/smp.c
+> > >  +++ b/kernel/smp.c
+> > >  @@ -182,16 +182,22 @@ static atomic_t csd_bug_count =3D ATOMIC_INI=
+T(0);
+> > >  static void __csd_lock_record(call_single_data_t *csd)
+> > >  {
+> > >  if (!csd) {
+> > >  - smp_mb(); /* NULL cur_csd after unlock. */
+> > >  - __this_cpu_write(cur_csd, NULL);
+> > >  + /*
+> > >  + * Pairs with smp_load_acquire() of cur_csd in
+> > >  + * csd_lock_wait_toolong(): orders any preceding CSD
+> > >  + * callback/unlock before a remote reader observes NULL.
+> > >  + */
+> > >  + smp_store_release(this_cpu_ptr(&cur_csd), NULL);
+> > >  return;
+> > >  }
+> > >  __this_cpu_write(cur_csd_func, csd->func);
+> > >  __this_cpu_write(cur_csd_info, csd->info);
+> > >  - smp_wmb(); /* func and info before csd. */
+> > >  - __this_cpu_write(cur_csd, csd);
+> > >  - smp_mb(); /* Update cur_csd before function call. */
+> > >  - /* Or before unlock, as the case may be. */
+> > >  + /*
+> > >  + * Pairs with smp_load_acquire() of cur_csd in
+> > >  + * csd_lock_wait_toolong(): publishes cur_csd_func and
+> > >  + * cur_csd_info before the non-NULL pointer becomes visible.
+> > >  + */
+> > >  + smp_store_release(this_cpu_ptr(&cur_csd), csd);
+> > >  }
+> > >=20=20
+>=20> >  static __always_inline void csd_lock_record(call_single_data_t *=
+csd)
+> > >
+> >
+>
