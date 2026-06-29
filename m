@@ -1,58 +1,57 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320AC40801E;
-	Mon, 29 Jun 2026 15:35:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C86137E300
+	for <rcu@vger.kernel.org>; Mon, 29 Jun 2026 16:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782747347; cv=none; b=IGS3ug7zrEEMnFyEIJaOrcSXzmIy/XeYFI+KML8jOe8H+hbK8H8RN+LYd8IGRn351JGwe+NmEEThhC1ZT90N7V8VRnFs9Cf0FYlTTNnwD84kpQiiNVopljx4s42zLLUYzRWA3qEsGvNdAkC+EYPJmM97vdOUcBqOr/M85LxmqSQ=
+	t=1782751413; cv=none; b=T/7BboR7GA6tbX/J95CntWFRp/27E0CT8cxNYeSIKcEJSNa3ewMG20R2U/hg1Jdp8z6NYrvZQf5fgSRonj0g//gnvqaDhwVE9RJk2k+bKA3dUhCq3ptNlPhbg0W+nY6vEWClvmGFWiCytg/XrOyoeR5+DXt48QYGf1Crg77M/Sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782747347; c=relaxed/simple;
-	bh=1nYTX2SSgL5Xoj6/GQC0n113mzO60Sqg0/mwOgzi/l8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rGC64muFoEcCDNAvCCM4ql8Q5WR3pBoe6/WhGwMIKDkKKSlrVLqZ9SuiGErx130B6ZJHCTmM1HUxrtabQAJUNxDrCYEukkPcB/RBmjA84xRTq4SnvL/ODcMSMb9lAIXyXhUuXDr4gJdgel3VNWE2vPfSMkQszs2bTbujT/w8gZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GfwSQQCE; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1782751413; c=relaxed/simple;
+	bh=c7t5t9ehvd9AT/whmAS1K6P26pUwc41TyNJ7edSDo2g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fdFRVXoqU/d74V8yyN1TqjgSzr9jXT3scZayI71dvfTFB+RxPik83YYJP59/Db06+WLO0mqlbCOgMAYdVOMp3WbfTHVhfDedA6My8AnQdyyRwoasw+/kOw3IsLdhdFtGA55q+icaqvq9PEWtf8Gi1qU1/XTKo2lQh2wMfNezm6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oEp7tRnq; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GfwSQQCE"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CEAE1F00A3E;
-	Mon, 29 Jun 2026 15:35:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782747346;
-	bh=VQRkgbBLbEtvZUS3wUZtr9Ihzsk3DvhVlV4E01dnKao=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=GfwSQQCE8SqaW3PtsQ43woZ3sZUPyZPtyPFpljbSLaqQrMiGk0ctaZKYRoseYynU/
-	 ziCIf53kVjqfoD+5/2uKex4oFQYYAsgRqwF6Eq4EYI1Z2gX7TujajfJP2uBO99u4rw
-	 CutOs0rZRUrYrU+YE5keBPzYWuHpobBRNk9H9/XTQ6p7f++fXc2QcnrQFAuQ1uH/K8
-	 5uz5DggbpKg4Z+9J0WBB105jTe+4NZhpWTrsfJ0exBPH2EXrplomqUDZW4OkaA7SB0
-	 VxCGIf15hv4KKjtZK2XpU22ql6OebAbo4UW9I6LH7YkLMulmXXKdncPkt9HiFYDQk8
-	 aADhrMlt48WvA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C8F9BCE04B8; Mon, 29 Jun 2026 08:35:45 -0700 (PDT)
-Date: Mon, 29 Jun 2026 08:35:45 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Usama Arif <usama.arif@linux.dev>
-Cc: lkmm@lists.linux.dev, joelagnelf@nvidia.com,
-	linux-kernel@vger.kernel.org, marco.crivellari@suse.com,
-	rafael.j.wysocki@intel.com, rdunlap@infradead.org,
-	sshegde@linux.ibm.com, tglx@kernel.org, ulfh@kernel.org,
-	vineeth@bitbyteword.org, yury.norov@gmail.com, rcu@vger.kernel.org,
-	d@ilvokhin.com, shakeel.butt@linux.dev, hannes@cmpxchg.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH v3] smp: Use release stores for csd_lock_record() state
-Message-ID: <50bec589-1e68-442f-968c-0cc159f2ec69@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260629105745.1696683-1-usama.arif@linux.dev>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oEp7tRnq"
+Message-ID: <e3d91c52-7a3c-41eb-834b-a253d2900839@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782751399;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qAERY6YYlDjCgjdc5pFThzfIpUUE8ygA/6rL1jL9C8k=;
+	b=oEp7tRnq7oeJ/T1VhGQ6L28gv3We+VqBERgQvkNIqk+0rBIQmS52nFRjFOt91ev77mR/zZ
+	N2bCDqN5iyQ9E/J4C32NEfUTndjzD/+IDsRu17ugGBE/kd43HiRJR+qRoThrMKX08rogwD
+	U3iQFnsWUd8truWQI0dv1HNGDzyTZkY=
+Date: Tue, 30 Jun 2026 00:42:37 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Subject: Re: [PATCH v3] smp: Use release stores for csd_lock_record() state
+To: Usama Arif <usama.arif@linux.dev>, lkmm@lists.linux.dev,
+ joelagnelf@nvidia.com, linux-kernel@vger.kernel.org,
+ marco.crivellari@suse.com, paulmck@kernel.org, rafael.j.wysocki@intel.com,
+ rdunlap@infradead.org, sshegde@linux.ibm.com, tglx@kernel.org,
+ ulfh@kernel.org, vineeth@bitbyteword.org, yury.norov@gmail.com,
+ rcu@vger.kernel.org, d@ilvokhin.com
+Cc: shakeel.butt@linux.dev, hannes@cmpxchg.org, kernel-team@meta.com
+References: <20260629105745.1696683-1-usama.arif@linux.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kunwu Chan <kunwu.chan@linux.dev>
 In-Reply-To: <20260629105745.1696683-1-usama.arif@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jun 29, 2026 at 03:57:45AM -0700, Usama Arif wrote:
+On 6/29/26 18:57, Usama Arif wrote:
 > __csd_lock_record() publishes per-CPU diagnostic state (cur_csd,
 > cur_csd_func, cur_csd_info) that is consumed from a remote CPU by
 > csd_lock_wait_toolong() via smp_load_acquire(&cur_csd). To order the
@@ -62,7 +61,7 @@ On Mon, Jun 29, 2026 at 03:57:45AM -0700, Usama Arif wrote:
 > CSD unlock, it issues smp_mb() after the write. The clear path
 > mirrors this with smp_mb() before storing NULL into cur_csd so the
 > preceding callback/unlock is observed first.
-> 
+>
 > The smp_mb() pair is heavier than what the consumer actually
 > requires (on x86 each emits a locked full barrier). The consumer
 > only needs to observe the matching cur_csd_func/cur_csd_info when it
@@ -77,7 +76,7 @@ On Mon, Jun 29, 2026 at 03:57:45AM -0700, Usama Arif wrote:
 > already tolerates the remote CPU completing its work between snapshot
 > and report. cur_csd is best-effort context, not a precise stall
 > boundary.
-> 
+>
 > Replace the smp_wmb() + plain store + smp_mb() in the publish path,
 > and the smp_mb() + plain store in the clear path, with
 > smp_store_release(). This pairs with the smp_load_acquire() in
@@ -85,25 +84,22 @@ On Mon, Jun 29, 2026 at 03:57:45AM -0700, Usama Arif wrote:
 > become visible before a remote reader observes the non-NULL
 > publication, and any preceding callback/unlock becomes visible before
 > a reader observes the NULL clear.
-> 
+>
 > Signed-off-by: Usama Arif <usama.arif@linux.dev>
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
 > ---
 > v2 -> v3: https://lore.kernel.org/all/20260622163807.4187558-1-usama.arif@linux.dev/
 > - Restructure changelog into context/problem/solution form (Thomas
 >   Gleixner).
 > - Add reciprocal pairing comment on the smp_load_acquire() in
 >   csd_lock_wait_toolong() (Dmitry).
-> 
+>
 > v1 -> v2: https://lore.kernel.org/all/01437928-ff79-4d8e-823b-7f20146946f6@linux.dev/
 > - Document where the smp_store_release() synchronizes with (Alan
 >   Stern, Randy Dunlap and Paul McKenney).
 > ---
 >  kernel/smp.c | 26 +++++++++++++++++++-------
 >  1 file changed, 19 insertions(+), 7 deletions(-)
-> 
+>
 > diff --git a/kernel/smp.c b/kernel/smp.c
 > index a0bb56bd8dda..8a847a34f132 100644
 > --- a/kernel/smp.c
@@ -152,6 +148,8 @@ Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 >  	/* How long since this CSD lock was stuck. */
 >  	ts_delta = ts2 - ts0;
 >  	pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %lld ns for CPU#%02d %pS(%ps).\n",
-> -- 
-> 2.53.0-Meta
-> 
+Reviewed-by: Kunwu Chan <kunwu.chan@linux.dev>
+
+-- 
+Thanx, Kunwu
+
