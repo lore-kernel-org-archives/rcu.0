@@ -1,151 +1,157 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 733203D6CDD;
-	Mon, 29 Jun 2026 08:20:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAED63644C1
+	for <rcu@vger.kernel.org>; Mon, 29 Jun 2026 10:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782721258; cv=none; b=ZEPNLSV9NLFcgsab0oMUubc09YX9TAZJ3mHSIDRxi/G8yNXZakCjTpGFWLRNCQsnvofaYrXv60cGkMS2z2TbFGXY43DEd+HSMwKV2o3h23W9GFBYYec6BtDLYHfn/40baUyaOwDMald6byige7RPApuaC08+B6L+SVnjwGlBw2A=
+	t=1782730686; cv=none; b=G/wQtxwEuGzID+zCuK/xiiGZHaxpyeoSQ/suU29VYDHgoAGSciX8qSxcWd1bd6f0meumxd9sknUoHT9+5LFB6AGKy7nVCZFvRYD8xeYwEYOk3sjL5SPPvGvDxgi7pfwLUeOcsN5k+vPFsnDBDjqn2Rr2z+Xis68Eet7oUqJsAcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782721258; c=relaxed/simple;
-	bh=kia53t9Vmn3rVHR65dB2hSoGJC+kCBm9nZndKzrlbpY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=QnG8d1VISMT0Otqw9r0ERDORDgLcnBoM8gwwdpY3pexGf5MVHTtO/VZs7Y1iPYOrcxnd+o/9ZgSwVYPLWN/NCTgG/+qHmc4odyZq2ei0YAfVFvqU/d1vb0eJGTLIe981YQT6banoCFle4epLlNo0z77By6aNg2eWztVjworcogw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ALYdjdHR; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1782730686; c=relaxed/simple;
+	bh=Z9aZsoeYstk5H320NtMroiq66CWdGiXVSjCn316BC7k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hW66RENGnc9a07FyTcKaOPN2xRWnMHkLr1KcrV2kg7Y4DS/mBjrXlX6vmkgv8wCWISPOT22w6a72t6hcAbfTzw1djMKfeUZDlqMiH1kybNBuOGL61uj9Nhdm03GQKmB/MJULwCGqGqQ4454in0uM0GWD2DbylY38Zm6mwH9ED7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xk4rVo9w; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ALYdjdHR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F287B1F000E9;
-	Mon, 29 Jun 2026 08:20:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782721257;
-	bh=kia53t9Vmn3rVHR65dB2hSoGJC+kCBm9nZndKzrlbpY=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To;
-	b=ALYdjdHREWYrGGiSraB7MR+uJIezD9H8RD62KChSKPY5qxgXGXnNPOmA0XJMurrdl
-	 AkcvDW58TEZEpP1VIafI87KjnUhZDr6+wuOVo8M2U+CPKAURCoIRpcaz0eUU0pIy+x
-	 Nr5nn+rpu7fQ2EyjOORAw0sP6LIEf5fSon8WkphyJmSJCzTWa+2f7PMN3A1rKTklKR
-	 7tfSSATNMl2tmIcJh72y3vqvLxCEGX/i3vIpmOHpyUcauAEPrMJVSHvsuJAAoFlyg8
-	 ZHcQH4W7mHA01/DLNoviNonduxaiLIX3gsV2xK9uh8cMi1ilmE4nEQTdUj32wpg4Kg
-	 1Fn3sX7B19hVw==
-Message-ID: <b48c8045-2297-47ee-a0f7-d7a67e74ea09@kernel.org>
-Date: Mon, 29 Jun 2026 17:20:46 +0900
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xk4rVo9w"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782730682;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kYr1OHYrkj2Xes1nsfoK90P6VKB6Cn7J8nMA80ny+s4=;
+	b=xk4rVo9wWIY8+ghK6t02y4DfF1s71OEerZ4RkS4wpZFmaEAI5YCrLveecvICBVoMd2eHoQ
+	jewvFPPSeuFCWcuJxKQdlnEgFJYdTZMig+47noHNQlliAVbEyotx7vKmdCMS34AUrNL0h0
+	HfDvtYfZSiGbQxD1McDlk6QJojTRU94=
+From: Usama Arif <usama.arif@linux.dev>
+To: lkmm@lists.linux.dev,
+	joelagnelf@nvidia.com,
+	linux-kernel@vger.kernel.org,
+	marco.crivellari@suse.com,
+	paulmck@kernel.org,
+	rafael.j.wysocki@intel.com,
+	rdunlap@infradead.org,
+	sshegde@linux.ibm.com,
+	tglx@kernel.org,
+	ulfh@kernel.org,
+	usama.arif@linux.dev,
+	vineeth@bitbyteword.org,
+	yury.norov@gmail.com,
+	rcu@vger.kernel.org,
+	d@ilvokhin.com
+Cc: shakeel.butt@linux.dev,
+	hannes@cmpxchg.org,
+	kernel-team@meta.com
+Subject: [PATCH v3] smp: Use release stores for csd_lock_record() state
+Date: Mon, 29 Jun 2026 03:57:45 -0700
+Message-ID: <20260629105745.1696683-1-usama.arif@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH for-next v3 2/9] mm/slab, slub_kunit: register kprobe to
- trigger _nolock APIs
-From: Harry Yoo <harry@kernel.org>
-To: Pedro Falcato <pfalcato@suse.de>
-Cc: Vlastimil Babka <vbabka@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
- rcu@vger.kernel.org, bpf@vger.kernel.org
-References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-2-70a54f3775bb@kernel.org>
- <ajvczSpMOGWFhe30@pedro-suse>
- <6edebc2b-5f5a-4b9c-9a4c-564310acee1b@kernel.org>
-Content-Language: en-US
-In-Reply-To: <6edebc2b-5f5a-4b9c-9a4c-564310acee1b@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------8xQSbLfkLa3QcHTEy0A3WfM5"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------8xQSbLfkLa3QcHTEy0A3WfM5
-Content-Type: multipart/mixed; boundary="------------H7l0hVTepAgAY5a6Xn02vj04";
- protected-headers="v1"
-From: Harry Yoo <harry@kernel.org>
-To: Pedro Falcato <pfalcato@suse.de>
-Cc: Vlastimil Babka <vbabka@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
- rcu@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <b48c8045-2297-47ee-a0f7-d7a67e74ea09@kernel.org>
-Subject: Re: [PATCH for-next v3 2/9] mm/slab, slub_kunit: register kprobe to
- trigger _nolock APIs
-References: <20260615-kfree_rcu_nolock-v3-0-70a54f3775bb@kernel.org>
- <20260615-kfree_rcu_nolock-v3-2-70a54f3775bb@kernel.org>
- <ajvczSpMOGWFhe30@pedro-suse>
- <6edebc2b-5f5a-4b9c-9a4c-564310acee1b@kernel.org>
-In-Reply-To: <6edebc2b-5f5a-4b9c-9a4c-564310acee1b@kernel.org>
+__csd_lock_record() publishes per-CPU diagnostic state (cur_csd,
+cur_csd_func, cur_csd_info) that is consumed from a remote CPU by
+csd_lock_wait_toolong() via smp_load_acquire(&cur_csd). To order the
+matching cur_csd_func/cur_csd_info stores before the cur_csd
+publication, the producer issues smp_wmb() before writing cur_csd;
+to order the publication before the subsequent callback execution or
+CSD unlock, it issues smp_mb() after the write. The clear path
+mirrors this with smp_mb() before storing NULL into cur_csd so the
+preceding callback/unlock is observed first.
 
---------------H7l0hVTepAgAY5a6Xn02vj04
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+The smp_mb() pair is heavier than what the consumer actually
+requires (on x86 each emits a locked full barrier). The consumer
+only needs to observe the matching cur_csd_func/cur_csd_info when it
+sees a non-NULL cur_csd, and to observe the preceding callback/unlock
+when it sees NULL -- both of which a release/acquire pair provides.
+The extra two-way ordering enforced by smp_mb() -- that cur_csd
+publication be observed before callback execution or unlock becomes
+visible -- would only matter if cur_csd were an exact live-state
+marker. csd_lock_wait_toolong() does not treat it that way: it
+snapshots cur_csd via smp_load_acquire() and then prints / dumps /
+re-IPIs without an RCU-style stall-ended recheck, so the diagnostic
+already tolerates the remote CPU completing its work between snapshot
+and report. cur_csd is best-effort context, not a precise stall
+boundary.
 
+Replace the smp_wmb() + plain store + smp_mb() in the publish path,
+and the smp_mb() + plain store in the clear path, with
+smp_store_release(). This pairs with the smp_load_acquire() in
+csd_lock_wait_toolong(): preceding cur_csd_func/cur_csd_info stores
+become visible before a remote reader observes the non-NULL
+publication, and any preceding callback/unlock becomes visible before
+a reader observes the NULL clear.
 
+Signed-off-by: Usama Arif <usama.arif@linux.dev>
+---
+v2 -> v3: https://lore.kernel.org/all/20260622163807.4187558-1-usama.arif@linux.dev/
+- Restructure changelog into context/problem/solution form (Thomas
+  Gleixner).
+- Add reciprocal pairing comment on the smp_load_acquire() in
+  csd_lock_wait_toolong() (Dmitry).
 
-On 6/29/26 4:34 PM, Harry Yoo wrote:
->=20
->=20
-> On 6/24/26 10:41 PM, Pedro Falcato wrote:
->> On Mon, Jun 15, 2026 at 08:05:56PM +0900, Harry Yoo (Oracle) wrote:
->>> Since kmalloc_nolock() always fails in NMI and hardirq contexts on
->>> PREEMPT_RT, slub_kunit cannot properly test _nolock() APIs.
->>>
->>> Register a kprobe pre-handler to invoke kmalloc_nolock() and
->>> kfree_nolock() in the middle of the slab allocator. However, do not
->>> register the handler on UP kernels [1].
->>
->> Maybe explain in the commit message why that is?
->=20
-> Because it's the case is broken on UP and we decided not bother to fix.=
+v1 -> v2: https://lore.kernel.org/all/01437928-ff79-4d8e-823b-7f20146946f6@linux.dev/
+- Document where the smp_store_release() synchronizes with (Alan
+  Stern, Randy Dunlap and Paul McKenney).
+---
+ kernel/smp.c | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-> Thought the cover letter in Link: would give enough context.
+diff --git a/kernel/smp.c b/kernel/smp.c
+index a0bb56bd8dda..8a847a34f132 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -182,16 +182,22 @@ static atomic_t csd_bug_count = ATOMIC_INIT(0);
+ static void __csd_lock_record(call_single_data_t *csd)
+ {
+ 	if (!csd) {
+-		smp_mb(); /* NULL cur_csd after unlock. */
+-		__this_cpu_write(cur_csd, NULL);
++		/*
++		 * Pairs with smp_load_acquire() of cur_csd in
++		 * csd_lock_wait_toolong(): orders any preceding CSD
++		 * callback/unlock before a remote reader observes NULL.
++		 */
++		smp_store_release(this_cpu_ptr(&cur_csd), NULL);
+ 		return;
+ 	}
+ 	__this_cpu_write(cur_csd_func, csd->func);
+ 	__this_cpu_write(cur_csd_info, csd->info);
+-	smp_wmb(); /* func and info before csd. */
+-	__this_cpu_write(cur_csd, csd);
+-	smp_mb(); /* Update cur_csd before function call. */
+-		  /* Or before unlock, as the case may be. */
++	/*
++	 * Pairs with smp_load_acquire() of cur_csd in
++	 * csd_lock_wait_toolong(): publishes cur_csd_func and
++	 * cur_csd_info before the non-NULL pointer becomes visible.
++	 */
++	smp_store_release(this_cpu_ptr(&cur_csd), csd);
+ }
+ 
+ static __always_inline void csd_lock_record(call_single_data_t *csd)
+@@ -272,7 +278,13 @@ static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, in
+ 		cpux = 0;
+ 	else
+ 		cpux = cpu;
+-	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux)); /* Before func and info. */
++	/*
++	 * Pairs with smp_store_release() of cur_csd in __csd_lock_record():
++	 * a non-NULL cur_csd here implies cur_csd_func and cur_csd_info
++	 * are the matching publication; a NULL value is ordered after any
++	 * preceding CSD callback/unlock on the remote CPU.
++	 */
++	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux));
+ 	/* How long since this CSD lock was stuck. */
+ 	ts_delta = ts2 - ts0;
+ 	pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %lld ns for CPU#%02d %pS(%ps).\n",
+-- 
+2.53.0-Meta
 
-But I will clarify this on the commit message, thanks!
-
---=20
-Cheers,
-Harry / Hyeonggon
-
-
---------------H7l0hVTepAgAY5a6Xn02vj04--
-
---------------8xQSbLfkLa3QcHTEy0A3WfM5
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCakIq3gAKCRCGXBN6rc5S
-1oI0AQCmD4+FAnCL5s0WuOSoFo5XR/5TKwqVhP08qfsAyrwXvwD/RJBmV5okisfF
-oBc6p+YW15g8jrEgvQwjI3qwgz+UDgw=
-=v2D6
------END PGP SIGNATURE-----
-
---------------8xQSbLfkLa3QcHTEy0A3WfM5--
