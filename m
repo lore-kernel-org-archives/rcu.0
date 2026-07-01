@@ -1,197 +1,316 @@
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9503FB074
-	for <rcu@vger.kernel.org>; Mon, 29 Jun 2026 16:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D111F44BCB4
+	for <rcu@vger.kernel.org>; Wed,  1 Jul 2026 11:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782751783; cv=none; b=FbmHlO9QozpTirlXBXJIbFRpMXwFIZ3j8i6ceNnBpzEADFcc4C6h7peG4NToH0+P4KDAvbncAwCh4/zv3EkxMBdEx7WuaXHWEEG2BsKavjku9VfKhJDBOiSel+B/C11lJI7Iyx47o4/W+7RvV6GzgzZoA5ClZ3NEJW6hQPcmNXI=
+	t=1782904114; cv=none; b=XUSQEv+HQwLJSYgOwrdzIT9ANVZzD0qznpz381/bGQ9V4M/OGGIvIAmEn6bYR5MZImc0dMHTohc3+orVK33AMQaUIDJwgm9F3WaVuN9JC7Q1QEDTkCdDKS+8KuHDsDfZ2JAbpYEC1QpAARgOX1a69ITLdMWc68cy9OdWKjfo7kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782751783; c=relaxed/simple;
-	bh=/c/td0l49GrTYIdOiDvTBEx5r+8NUhgWFGP30RpUw5g=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=pJCaC/daW9XcqaK96+o8XgKGZurEYZNvHQ4Wb+iWg1aN5H6WoEQ9MdIHfDzz1cHpqNKA/4/gOEfe7adl6bKMDAyPRYwCrbPYTFKtJLFzynBBLcADqai2NzGkvzVtQv0zj2YrqADGecL05+8dNa91+EM4yhPzs2sBTt+G6q4JIGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FL1NklTV; arc=none smtp.client-ip=91.218.175.173
+	s=arc-20240116; t=1782904114; c=relaxed/simple;
+	bh=S9U/QQkOj2QcN7GOUDf8Nq4vJ3cWwPyQIEl2/pEFaPo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kKqfYrPMMtRjByZsakL5vlqIu8RDlC/porwbV+EY/X+Jj9W3fGQ2JVzTMgHChj6U5oxh/+xWUv2W+DAbDDkJiS7KS9eDPDCmvhIxkkvNsibMetJp77YrOHf0L+2x8Z20NrFQp002+l5oP/AhbnD+3usivHw10XAkUxqddKyCofU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QRnvYhKi; arc=none smtp.client-ip=91.218.175.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FL1NklTV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QRnvYhKi"
+Message-ID: <0efcc0a9-a51d-4de8-8406-b8fa536a91b7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782904099;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ieMgPSS1eIBfAPTWcoeMePMwN2vKLGAwkXUol+yS3JM=;
+	b=QRnvYhKi7ifn2CAOqwrrTALRRhFuKdBNRY4USBSzQESgxOH79yyPbWsw+wvjxJGm9pDQu3
+	75wHltVABewcdEultw97xVO9Srux+vxmHLrM1y3qkyY8Qi8RlcbW/19L2d+jmEkSOqKAw5
+	8d3ZpLHm3o4fEt3mWUbZ+Ie+mvfoBxk=
+Date: Wed, 1 Jul 2026 19:07:22 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782751779;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vUtYpDl1uQ44PbsZ1biMHpyJk3g/3hXd1zmMGA9K3Q4=;
-	b=FL1NklTVO0od/kaqvRwWq3gW0vfYCX7GLsAxVpRk0KP4mXu8YI55xjwEkiaBLQZNyxVQAX
-	DZo95wfdB5MgUhtR1u0A4Bq6kstozqeE2jYKmTUDfSeIS8jFxBljMbECABne2wO1pca1J1
-	PkaQwae/BJBKvuUaRXL0ojohOrnhf+U=
-Date: Mon, 29 Jun 2026 16:49:36 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 1/7] list: Add mutable iterator variants
+To: Jani Nikula <jani.nikula@linux.intel.com>,
+ David Laight <david.laight.linux@gmail.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "David Hildenbrand (Arm)" <david@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
+ Tejun Heo <tj@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Paul Moore <paul@paul-moore.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Shakeel Butt <shakeel.butt@linux.dev>, David Howells <dhowells@redhat.com>,
+ Simona Vetter <simona.vetter@ffwll.ch>, Randy Dunlap
+ <rdunlap@infradead.org>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Philipp Stanner <phasta@kernel.org>, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ io-uring@vger.kernel.org, audit@vger.kernel.org, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-perf-users@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ kexec@lists.infradead.org, live-patching@vger.kernel.org,
+ linux-modules@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-pm@vger.kernel.org, rcu@vger.kernel.org, sched-ext@lists.linux.dev,
+ linux-mm@kvack.org, virtualization@lists.linux.dev, damon@lists.linux.dev,
+ llvm@lists.linux.dev, Kaitao Cheng <chengkaitao@kylinos.cn>,
+ Muchun Song <muchun.song@linux.dev>
+References: <20260622040533.29824-1-kaitao.cheng@linux.dev>
+ <20260622040533.29824-2-kaitao.cheng@linux.dev>
+ <20260622094242.64531b9a@pumpkin>
+ <351a6b67-b394-4c58-aee2-88b6c8089ad5@linux.dev>
+ <cf8467c7-b98f-44a5-9cf9-60b43b5da711@amd.com>
+ <20260624152324.3def88ce@pumpkin>
+ <0ed6b5c3-e955-46e2-9fc6-075a0dfd1c4f@linux.dev>
+ <734f66ca51485ee3ec9788c0eaaead681e00664b@intel.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Kunwu Chan" <kunwu.chan@linux.dev>
-Message-ID: <70ecf76276244a204b36164858ba85d78e8a5061@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH v2] smp: Use release stores for csd_lock_record() state
-To: "Usama Arif" <usama.arif@linux.dev>, lkmm@lists.linux.dev,
- joelagnelf@nvidia.com, linux-kernel@vger.kernel.org,
- marco.crivellari@suse.com, paulmck@kernel.org,
- rafael.j.wysocki@intel.com, rdunlap@infradead.org, riel@surriel.com,
- sshegde@linux.ibm.com, tglx@kernel.org, ulfh@kernel.org,
- yury.norov@gmail.com, rcu@vger.kernel.org
-Cc: shakeel.butt@linux.dev, hannes@cmpxchg.org, kernel-team@meta.com
-In-Reply-To: <b0d88052-64d6-40c1-a728-7242bfbcda1b@linux.dev>
-References: <20260622163807.4187558-1-usama.arif@linux.dev>
- <1030b968-4184-4818-99dc-aeb0956ef6a3@linux.dev>
- <b0d88052-64d6-40c1-a728-7242bfbcda1b@linux.dev>
+From: Kaitao Cheng <kaitao.cheng@linux.dev>
+In-Reply-To: <734f66ca51485ee3ec9788c0eaaead681e00664b@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-2026=E5=B9=B46=E6=9C=8824=E6=97=A5 23:27, "Usama Arif" <usama.arif@linux.=
-dev mailto:usama.arif@linux.dev?to=3D%22Usama%20Arif%22%20%3Cusama.arif%4=
-0linux.dev%3E > =E5=86=99=E5=88=B0:
+在 2026/6/25 19:00, Jani Nikula 写道:
+> On Thu, 25 Jun 2026, Kaitao Cheng <kaitao.cheng@linux.dev> wrote:
+>> 在 2026/6/24 22:23, David Laight 写道:
+>>> On Wed, 24 Jun 2026 15:23:47 +0200
+>>> Christian König <christian.koenig@amd.com> wrote:
+>>>> On 6/24/26 15:14, Kaitao Cheng wrote:
+>>>>> 在 2026/6/22 16:42, David Laight 写道:  
+>>>>>> On Mon, 22 Jun 2026 12:05:31 +0800
+>>>>>> Kaitao Cheng <kaitao.cheng@linux.dev> wrote:
+>>>>>>  
+>>>>>>> From: Kaitao Cheng <chengkaitao@kylinos.cn>
+>>>>>>>
+>>>>>>> The list_for_each*_safe() helpers are used when the loop body may
+>>>>>>> remove the current entry.  Their API exposes the temporary cursor at
+>>>>>>> every call site, even though most users only need it for the iterator
+>>>>>>> implementation and never reference it in the loop body.
+>>>>>>>
+>>>>>>> Add *_mutable() variants for list and hlist iteration.  The new helpers
+>>>>>>> support both forms: callers may keep passing an explicit temporary cursor
+>>>>>>> when they need to inspect or reset it, or omit it and let the helper use
+>>>>>>> a unique internal cursor.  
+>>>>>>
+>>>>>> I'm not really sure 'mutable' means anything either.
+>>>>>> It is possible to make it valid for the loop body (or even other threads)
+>>>>>> to delete arbitrary list items - but that needs significant extra overheads.
+>>>>>>
+>>>>>> It might be worth doing something that doesn't need the extra variable,
+>>>>>> but there is little point doing all the churn just to rename things.
+>>>>>>  
+>>>>>>>
+>>>>>>> This makes call sites that only mutate the list through the current entry
+>>>>>>> less noisy, while keeping the existing *_safe() helpers available for
+>>>>>>> compatibility.
+>>>>>>>
+>>>>>>> Signed-off-by: Kaitao Cheng <chengkaitao@kylinos.cn>
+>>>>>>> ---
+>>>>>>>  include/linux/list.h | 269 +++++++++++++++++++++++++++++++++++++------
+>>>>>>>  1 file changed, 231 insertions(+), 38 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/include/linux/list.h b/include/linux/list.h
+>>>>>>> index 09d979976b3b..1081def7cea9 100644
+>>>>>>> --- a/include/linux/list.h
+>>>>>>> +++ b/include/linux/list.h
+>>>>>>> @@ -7,6 +7,7 @@
+>>>>>>>  #include <linux/stddef.h>
+>>>>>>>  #include <linux/poison.h>
+>>>>>>>  #include <linux/const.h>
+>>>>>>> +#include <linux/args.h>
+>>>>>>>  
+>>>>>>>  #include <asm/barrier.h>
+>>>>>>>  
+>>>>>>> @@ -763,28 +764,72 @@ static inline void list_splice_tail_init(struct list_head *list,
+>>>>>>>  #define list_for_each_prev(pos, head) \
+>>>>>>>  	for (pos = (head)->prev; !list_is_head(pos, (head)); pos = pos->prev)
+>>>>>>>  
+>>>>>>> -/**
+>>>>>>> - * list_for_each_safe - iterate over a list safe against removal of list entry
+>>>>>>> - * @pos:	the &struct list_head to use as a loop cursor.
+>>>>>>> - * @n:		another &struct list_head to use as temporary storage
+>>>>>>> - * @head:	the head for your list.
+>>>>>>> +/*
+>>>>>>> + * list_for_each_safe is an old interface, use list_for_each_mutable instead.
+>>>>>>>   */
+>>>>>>>  #define list_for_each_safe(pos, n, head) \
+>>>>>>>  	for (pos = (head)->next, n = pos->next; \
+>>>>>>>  	     !list_is_head(pos, (head)); \
+>>>>>>>  	     pos = n, n = pos->next)
+>>>>>>>  
+>>>>>>> +#define __list_for_each_mutable_internal(pos, tmp, head)		\
+>>>>>>> +	for (typeof(pos) tmp = (pos = (head)->next)->next;		\  
+>>>>>>
+>>>>>> Use auto
+>>>>>>  
+>>>>>>> +	     !list_is_head(pos, (head));				\
+>>>>>>> +	     pos = tmp, tmp = pos->next)
+>>>>>>> +
+>>>>>>> +#define __list_for_each_mutable1(pos, head)				\
+>>>>>>> +	__list_for_each_mutable_internal(pos, __UNIQUE_ID(next), head)
+>>>>>>> +
+>>>>>>> +#define __list_for_each_mutable2(pos, next, head)			\
+>>>>>>> +	list_for_each_safe(pos, next, head)
+>>>>>>> +
+>>>>>>>  /**
+>>>>>>> - * list_for_each_prev_safe - iterate over a list backwards safe against removal of list entry
+>>>>>>> + * list_for_each_mutable - iterate over a list safe against entry removal
+>>>>>>>   * @pos:	the &struct list_head to use as a loop cursor.
+>>>>>>> - * @n:		another &struct list_head to use as temporary storage
+>>>>>>> - * @head:	the head for your list.
+>>>>>>> + * @...:	either (head) or (next, head)
+>>>>>>> + *
+>>>>>>> + * next:	another &struct list_head to use as optional temporary storage.
+>>>>>>> + *		The temporary cursor is internal unless explicitly supplied by
+>>>>>>> + *		the caller.
+>>>>>>> + * head:	the head for your list.
+>>>>>>> + */
+>>>>>>> +#define list_for_each_mutable(pos, ...)					\
+>>>>>>> +	CONCATENATE(__list_for_each_mutable, COUNT_ARGS(__VA_ARGS__))	\
+>>>>>>> +		(pos, __VA_ARGS__)  
+>>>>>>
+>>>>>> The variable argument count logic really just slows down compilation.
+>>>>>> Maybe there aren't enough copies of this code to make that significant.
+>>>>>> But just because you can do it doesn't mean it is a gooD idea.
+>>>>>> I'm also not sure it really adds anything to the readability.
+>>>>>>
+>>>>>> And, it you are going to make the middle argument optional there is
+>>>>>> no need to change the macro name.  
+>>>>>
+>>>>> Christian König and Jani Nikula also disagree with the variadic-argument
+>>>>> implementation approach. If we abandon that method, it means we will
+>>>>> inevitably need to add some new macros. If mutable is not a good name,
+>>>>> suggestions for better alternatives would be welcome; coming up with a
+>>>>> suitable name is indeed rather tricky.  
+>>>>
+>>>> I don't think you need to add a new macro for the specific use case that people want to modify the next element of the iteration.
+>>>>
+>>>> If I remember your numbers correctly that is a really corner case and keeping using the existing *_safe() macros for that sounds perfectly fine to me.
+>>>
+>>> IIRC currently you have a choice of either:
+>>> 	define               Item that can't be deleted
+>>> 	list_for_each()	     The current item.
+>>> 	list_for_each_safe() The next item.
+>>> There is also likely to be code that updates the variables to allow
+>>> for other scenarios.
+>>>
+>>> Note that if increase a reference count and release a lock then list_for_each()
+>>> is likely safer than list_for_each_safe() :-)
+>>>
+>>> list.h has 9 variants of the 'safe' loop.
+>>> The bloat of another 9 is getting excessive.
+>>>
+>>> It has to be said that this is one of my least favourite type of list...
+>>
+>> Hi Christian König, David Laight, Jani Nikula, David Hildenbrand,
+>> Andy Shevchenko, Alexei Starovoitov
+>>
+>> For ease of discussion, I need to summarize the currently possible
+>> approaches and briefly describe their respective pros and cons,
+>> using the list_for_each_entry* interfaces as examples.
+>>
+>> 1. Add list_for_each_entry_mutable, while keeping list_for_each_entry
+>> and list_for_each_entry_safe unchanged. list_for_each_entry_mutable
+>> would be used specifically for safe deletion scenarios that do not
+>> need to expose the temporary cursor externally. The code can refer to
+>> the v1 version.
+>>
+>> Pros: Does not depend on immediate per-subsystem adaptation and can be
+>>       merged directly.
+>> Cons: Requires adding a whole set of mutable interfaces, which makes the
+>>       code somewhat redundant.
+> 
+> Seems fine, and the original _safe naming is ambiguous anyway.
+> 
+>> 2. Directly optimize away the temporary cursor in list_for_each_entry_safe
+>> and define it inside the loop instead, changing the interface from four
+>> arguments to three.
+>>
+>> Pros: Does not add redundant interfaces.
+>> Cons: (1) Users need to manually update special cases that use the
+>>       traversal variable of list_for_each_entry_safe, the new
+>>       list_for_each_entry_safe would no longer apply there and would
+>>       need to be open-coded.
+>>       (2) Because the macro arguments changes, all list_for_each_entry_safe
+>>       callers would need to be modified and merged together, making it
+>>       difficult to merge such a large amount of code at once.
+> 
+> This won't fly because there are literally thousands of
+> list_for_each_entry_safe() users.
+> 
+>> 3. Use a variadic macro approach to optimize list_for_each_entry_safe,
+>> so that it supports both three and four arguments.
+>>
+>> Pros: (1) Does not add redundant interfaces.
+>>       (2) Does not depend on immediate per-subsystem adaptation and can
+>>       be merged directly.
+>> Cons: (1) Increases compile time.
+>>       (2) Makes the interface harder for users to use.
+> 
+> Basically I'm against any variadic macro tricks where the optional
+> argument is not the last argument. That's just way too surprising, and
+> goes against common practice in just about all other languages.
+> 
+>> 4. Optimize list_for_each_entry by defining the temporary cursor internally,
+>> making it compatible with the functionality of list_for_each_entry_safe.
+>> The code can refer to the v2 version.
+>>
+>> Pros: (1) Does not add redundant interfaces.
+>>       (2) The number of externally visible arguments of list_for_each_entry
+>>       remains unchanged, still three.
+>> Cons: (1) list_for_each_entry and list_for_each_entry_safe would be merged
+>>       into one, and list_for_each_entry_safe would gradually be deprecated.
+>>       (2) Users need to manually update special cases that use the traversal
+>>       variable of list_for_each_entry, the new list_for_each_entry would no
+>>       longer apply there and would need to be open-coded. There are 15 such
+>>       cases in total.
+> 
+> This sounds good to me, though I take it there's some code size increase
+> and/or performance penalty?
+> 
+> Maybe the 15 cases are questionable anyway?
+> 
+>> 5. Use a variadic macro approach to optimize list_for_each_entry, so that
+>> it supports both three and four arguments.
+>>
+>> Pros: (1) Does not add redundant interfaces.
+>>       (2) Does not depend on immediate per-subsystem adaptation and can be
+>>       merged directly.
+>> Cons: (1) Increases compile time.
+>>       (2) list_for_each_entry and list_for_each_entry_safe would be merged
+>>       into one, and list_for_each_entry_safe would gradually be deprecated.
+> 
+> Please don't do the macro tricks.
+> 
+>> 6. Make no changes, keep the current logic unchanged, and close the current
+>> email discussion.
+> 
+> I like hiding the temporary stuff when possible.
+> 
+> BR,
+> Jani.
+
+Hi all,
+If there are no objections, I will make the changes using the first approach.
 
 
->=20
->=20On 24/06/2026 15:15, Kunwu Chan wrote:
->=20
->=20>=20
->=20> On 6/23/26 00:38, Usama Arif wrote:
-> >=20
->=20> >=20
->=20> > __csd_lock_record() publishes per-CPU CSD debug state that is rea=
-d by
-> > >  csd_lock_wait_toolong() on another CPU. The remote side first read=
-s
-> > >  cur_csd with smp_load_acquire() and, when non-NULL, may then read =
-the
-> > >  matching cur_csd_func and cur_csd_info fields.
-> > >=20
->=20> >  Use smp_store_release() when publishing cur_csd so that the prec=
-eding
-> > >  cur_csd_func and cur_csd_info stores are ordered before the pointe=
-r
-> > >  that csd_lock_wait_toolong() acquires. This replaces the open-code=
-d
-> > >  smp_wmb() plus plain cur_csd store with the release operation that
-> > >  matches the smp_load_acquire() in csd_lock_wait_toolong().
-> > >=20
->=20> >  For the clear path, use smp_store_release(&cur_csd, NULL) so tha=
-t
-> > >  clearing the diagnostic state remains ordered after the preceding
-> > >  callback/unlock work, without requiring a full barrier before the
-> > >  store. On x86 this removes the locked full barrier from the clear
-> > >  path; on weaker memory models it uses the release operation needed=
- by
-> > >  the smp_load_acquire() in csd_lock_wait_toolong().
-> > >=20
->=20> >  The old code also had smp_mb() calls around cur_csd updates. Tho=
-se would
-> > >  only be needed if cur_csd were treated as an exact live-state mark=
-er whose
-> > >  publication had to be observed before callback execution or CSD un=
-lock.
-> > >=20
->=20>  =C2=A0The original comments around those updates seem to suggest a=
- stronger
-> >  relationship:
-> >  =C2=A0 /* Update cur_csd before function call. */
-> >  =C2=A0 /* NULL cur_csd after unlock. */
-> >=20=20
->=20>  The changelog characterizes cur_csd as best-effort diagnostic cont=
-ext.=C2=A0
-> >=20=20
->=20>  Is there prior consensus that cur_csd carries no ordering relation=
-ship=C2=A0
-> >  to callback execution / unlock state,=C2=A0
-> >=20=20
->=20>  or is this patch effectively relaxing that historical assumption?
-> >=20=20
->=20>=20=20
->=20>  Thanks,=C2=A0 Kunwu
-> >=20
->=20Thanks for the review Kunwu!
->=20
->=20The patch preserves the ordering that reader actually needs:=20
->=20csd_lock_wait_toolong() observes non-NULL cur_csd, the matching func/=
-info have
-> been published. If it observes NULL, the prior callback/unlock work is =
-ordered
-> before the clear.
->=20
->=20So yes, this relaxes the historical implementation ordering around th=
-e
-> diagnostic marker, but not the CSD execution/reuse ordering.
->=20
+Hi David Laight,
+You previously expressed a different opinion. Do you have any further comments
+on the current proposed approach?
 
+-- 
+Thanks
+Kaitao Cheng
 
-Thanks=20for the v3 update. The explanation of reader-side tolerance for=
-=20
-snapshot-vs-completion=20races addresses my concern.
-
-
-> >=20
->=20> >=20
->=20> > CSD stall warnings do not currently have RCU-style stall-ended ch=
-ecks, so
-> > >  they already allow the stall to end while diagnostics are being as=
-sembled.
-> > >  The cur_csd record is therefore best-effort diagnostic context, no=
-t a
-> > >  precise completion/stall boundary.
-> > >=20
->=20> >  Signed-off-by: Usama Arif <usama.arif@linux.dev>
-> > >  ---
-> > >  v1 -> v2: https://lore.kernel.org/all/01437928-ff79-4d8e-823b-7f20=
-146946f6@linux.dev/
-> > >  - Document where the smp_store_release() synchronizes with (Alan S=
-tern,
-> > >  Randy Dunlap and Paul McKenney).
-> > >  ---
-> > >  kernel/smp.c | 18 ++++++++++++------
-> > >  1 file changed, 12 insertions(+), 6 deletions(-)
-> > >=20
->=20> >  diff --git a/kernel/smp.c b/kernel/smp.c
-> > >  index a0bb56bd8dda..685829875a3e 100644
-> > >  --- a/kernel/smp.c
-> > >  +++ b/kernel/smp.c
-> > >  @@ -182,16 +182,22 @@ static atomic_t csd_bug_count =3D ATOMIC_INI=
-T(0);
-> > >  static void __csd_lock_record(call_single_data_t *csd)
-> > >  {
-> > >  if (!csd) {
-> > >  - smp_mb(); /* NULL cur_csd after unlock. */
-> > >  - __this_cpu_write(cur_csd, NULL);
-> > >  + /*
-> > >  + * Pairs with smp_load_acquire() of cur_csd in
-> > >  + * csd_lock_wait_toolong(): orders any preceding CSD
-> > >  + * callback/unlock before a remote reader observes NULL.
-> > >  + */
-> > >  + smp_store_release(this_cpu_ptr(&cur_csd), NULL);
-> > >  return;
-> > >  }
-> > >  __this_cpu_write(cur_csd_func, csd->func);
-> > >  __this_cpu_write(cur_csd_info, csd->info);
-> > >  - smp_wmb(); /* func and info before csd. */
-> > >  - __this_cpu_write(cur_csd, csd);
-> > >  - smp_mb(); /* Update cur_csd before function call. */
-> > >  - /* Or before unlock, as the case may be. */
-> > >  + /*
-> > >  + * Pairs with smp_load_acquire() of cur_csd in
-> > >  + * csd_lock_wait_toolong(): publishes cur_csd_func and
-> > >  + * cur_csd_info before the non-NULL pointer becomes visible.
-> > >  + */
-> > >  + smp_store_release(this_cpu_ptr(&cur_csd), csd);
-> > >  }
-> > >=20=20
->=20> >  static __always_inline void csd_lock_record(call_single_data_t *=
-csd)
-> > >
-> >
->
