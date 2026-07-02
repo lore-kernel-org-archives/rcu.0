@@ -1,138 +1,94 @@
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF7533859A
-	for <rcu@vger.kernel.org>; Thu,  2 Jul 2026 03:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E31BF30F7EA
+	for <rcu@vger.kernel.org>; Thu,  2 Jul 2026 10:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782963583; cv=none; b=qyuIeWxkL8/ldF9vp0VqkmJOQkB2dVsZp9cIqJbJddABk9ibipkgZaQFmenCiMhELwlCAqTRWdppX1h4tjbiubNzpYzHDOu1cwEy3I+mEVttpprjF6VGzA7eyBUZjlBknB133qo8cf+cL4wFlTloGCkhSshyAexENsQ1Qijg+NQ=
+	t=1782987096; cv=none; b=Otg7xkIkeRO/nJKDvWnfWLAGKgL7xHC6nyEpXgD0jMj7J4J6hAWIYWpFMASi8noTLhm/QHPKzEip/VUG15LOgRu1cxNC1KKNQ/9ARJCbX6C6cxRom+3m3sYVWlA7abWxXBdD4rt1JokJ+qEZUO1mfxc1Z4RNbBNk+GW0hBS90MA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782963583; c=relaxed/simple;
-	bh=kSShOwgNt8IDVVQslIs1QEU/IBXXGiSnMdnup/QXhVw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DuNZMfUI+/CaT4S5bjTx2r5+wOlfTpDapKE6BTmY9t60z96x9zYzXlvH5ScarN/vn+O5FDhEt9rJoumr3FG6U/FjjL1WB9LBMvTvMw7xcariFCyLTOknPWBEcGAty0NwJr70sAabJgg9VuMUDs80h58MVevRsjZF0ty0hDg/Fqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=qa4hAJEy; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1782987096; c=relaxed/simple;
+	bh=vXBY8X1VpcE86nsXf4rfCzfnmeVf+t0i6VLgBEGtHjE=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=hSuZgPZ4HARBZkFvmqQJ+a6LbJhEPNF6EuTuXKjdH3KFwVJ4BQg9MTwbLEV9f/EJOFMURshmJsDhLZyMJvN4uStYk5pXQ/IHv28cPvPPBXd6mhLxWUxQbZZxEehIgk6WtLNLVBCq0uspzQWhIpMMVugeouOE27DwUf6jzuPWscE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F3sDL/UP; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qa4hAJEy"
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-37fad5eca09so174221a91.1
-        for <rcu@vger.kernel.org>; Wed, 01 Jul 2026 20:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782963580; x=1783568380; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uIEGBTVDaNYu4hR+EgvyT/hJz0vtGSFwLtKpw+9mfTU=;
-        b=qa4hAJEynPQrLhUOImKdOXVEXmQvpaI2Np+eD4PAldsnMiE9rNr+y+5frB/IUO1zdi
-         5tKKUTVRhS60fLiE5937zMfec1xfOTGkBBpreMSIF5BOqpKbt9m15jqYe5HHBxxeigzp
-         8WAoGug+6eRos2g1eyJFqOA85ijHmKp9Tp3FoklHOBmRloB8P3Xww8DzS7HRhRXcrNu2
-         NHu8Yc4GJ4YHKqL3ANP2YgUsYZLqVcL+ZQZkHIjRcLf1pX3P+Mj02rJMnUe9ChtaLoLZ
-         1LbzjzP/LyGesTc+YHre0Lmf5lY9BF4ZbxkO2pjOWRj4fSvFprlIvy2oQzkOTtGaYBXZ
-         HcYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782963580; x=1783568380;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=uIEGBTVDaNYu4hR+EgvyT/hJz0vtGSFwLtKpw+9mfTU=;
-        b=TrI7Eun4188RlDthvP67ft3ZqTpKD8aCTIwCVMd2pp6KdooIB8KS8HyPVLuUsRrZHb
-         2ybYRU5L6VuKmPth76hXmXaCTGzR5tW2gK92iqSbHU8vSaVzkJ5Z1RrUm8a3jpDK6z1F
-         8v55XOQAjBYfiX7ped0wUu1ilQP/d0Nz47ZxQ072CF70DiFOPoqJG+gPt4Dp/0BVW/rO
-         cgJozt8oZQKrlxbNAtjORoEhIWXOlfvX0olsTAISJ8GCfrplsvbovjhSmCkvtbMPc+/E
-         Ve2Ue5zov/uYwQwXzV8xVFYg/OHmAgzPFo8GirfqwsoVqCokN02zSEzQ5PawCUz0Z+xH
-         h8OQ==
-X-Forwarded-Encrypted: i=1; AHgh+RqOuUPwGvjuW2SLqu5bAJ7QBccT+c1q+LpSKUw5pb3AQGdwHZ6Xs9WAeZn20pia8ikpf94=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw16QiyEVI12aUoZLJQhAyH2URiEMdHUa5BocBTho92c7cukExy
-	SLYs8gZWz8DLAc1DS5A33x3R2DVWOumRR6VLG7Zr65w9d5rX0hoxBL21
-X-Gm-Gg: AfdE7clvxxMRkUva6Y9U6WMUyH9C+ZCyg5LbjkCEHtPbyrZMTuBD/6rB3/wfdCAgBtZ
-	v3IWy4M5uw2VBWr0I/jCTLDRO1ldr7mcwqIaRYL5DZyj1gIYtiDRvhamMd2AH1DRaXcsjhSOHRK
-	5OIUtjcEF/wGDUXnHQCXYoHm1n5Rr4DuC8KUXb0JaFGl5mo4Vq3RhTG0DSV9QkKIcenWzgn5Q0t
-	onbDCwOtlkuigMT2FlWdRxN2nfbhufWHzUy8cHfT0lYaPsFX4cemOxHb4gYX/iq3JMJCGxHoaRZ
-	2kwSrt4KYPhMYzymLjGi3ArMFxw6ZzWHz/FJf10Kp7CU86XSG8ukvNwZ8zecJ1EbKJMxW8mSACp
-	8kvitX6X9xnpvnbCR4D5XwEMc5X8FKWArJAFXCThHjfJeRnO+6GZaqCB9MUl0hulSnSELMqL5OP
-	BMiysw7JU=
-X-Received: by 2002:a17:90b:5827:b0:37f:9e21:91d9 with SMTP id 98e67ed59e1d1-380aa21afd1mr3930206a91.16.1782963579929;
-        Wed, 01 Jul 2026 20:39:39 -0700 (PDT)
-Received: from ubuntu.. ([138.199.21.246])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-380e165cf62sm252231a91.17.2026.07.01.20.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2026 20:39:39 -0700 (PDT)
-From: Jing Wu <realwujing@gmail.com>
-To: Waiman Long <longman@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Cc: Jing Wu <realwujing@gmail.com>,
-	Thomas Gleixner <tglx@kernel.org>,
-	linux-kernel@vger.kernel.org,
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F3sDL/UP"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782987093;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc; bh=VpcrzsL+LYGt4tdSKZjEyyQfxAn9oxbx7N3Ne5akxOk=;
+	b=F3sDL/UPThwpT8tXNPRg/n27VLSZA7iL/OTSW7ZbXBVG2D0ZE99X+DDqXWy58E9cntAhc8
+	MwaZbxpeRrr5EX90VjRriKuICO8GhNakQ4ebuj97GHwEzFTIYJcSupw4SIJsiOZFLwkms1
+	fgjiLOju21bgVrh2Df8rFnm1B/1lV3s=
+From: Zqiang <qiang.zhang@linux.dev>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	urezki@gmail.com,
+	boqun@kernel.org
+Cc: qiang.zhang@linux.dev,
 	rcu@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Qiliang Yuan <yuanql9@chinatelecom.cn>
-Subject: Re: [PATCH-next 00/23] cgroup/cpuset: Enable runtime update of nohz_full and managed_irq CPUs
-Date: Thu,  2 Jul 2026 11:39:33 +0800
-Message-ID: <20260702033934.984512-1-realwujing@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <fe35dd41-7068-4cf0-9ee9-eb9c12017b42@redhat.com>
-References: <20260421030351.281436-1-longman@redhat.com> <akUii2CyEi7SRid7@localhost.localdomain> <fe35dd41-7068-4cf0-9ee9-eb9c12017b42@redhat.com>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rcutorture: Use __set_current_state() set task state in rcu_nocb_toggle()
+Date: Thu,  2 Jul 2026 18:11:25 +0800
+Message-Id: <20260702101125.14100-1-qiang.zhang@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-On 7/1/26 14:56, Waiman Long wrote:
-> On 7/1/26 10:22 AM, Frederic Weisbecker wrote:
-> > > I know RCU support changing the nocb mask for fully offline CPUs, I
-> > > will need to find out if it possible to do that for partially
-> > > offline CPUs.
-> > No because callbacks can still be enqueued at this stage. But we could
-> > manage to make it work with CPUHP_AP_IDLE_DEAD.
->
-> If we can only go as high as CPUHP_AP_IDLE_DEAD, we may as well go down
-> all the way to CPUHP_OFFLINE [...] we may have to break RCU out from
-> HK_TYPE_KERNEL_NOISE and add a cpuset control switch [...]
+In the rcu_nocb_toggle(), the schedule_hrtimeout() is called after the
+state assignment with no condition check. the release-acquire pair from
+raw_spin_unlock/lock(&cpu_base->lock), guarantee that task->__state is
+visible to the hrtimer callback:
 
-A data point from the DHM side that corroborates this.
+              CPU0                                                     CPU1
+__set_current_state(TASK_INTERRUPTIBLE)
+->WRITE_ONCE(task->__state, TASK_INTERRUPTIBLE)
+schedule_hrtimeout
+->hrtimer_sleeper_start_expires()
+  ->raw_spin_lock_irqsave(&cpu_base->lock)
+    ....
+  ->raw_spin_unlock_irqrestore(&cpu_base->lock)
 
-Our RCU/nocb prototype toggled the NOCB state by fully offlining each
-affected CPU, one at a time:
+								hard-irq:
+							raw_spin_lock_irqsave(&cpu_base->lock)
+							__hrtimer_run_queues
+							->__run_hrtimer
+							  ->raw_spin_unlock_irqrestore(&cpu_base->lock)
+							  ->fn(timer)
+							    ->hrtimer_wakeup
+							      ->wake_up_process
+								->try_to_wake_up
+								  ->READ task->__state
 
-	remove_cpu(cpu);
-	rcu_nocb_cpu_offload(cpu) / rcu_nocb_cpu_deoffload(cpu);
-	add_cpu(cpu);
+This commit therefore use the __set_current_state() to replace the
+set_current_state() in rcu_nocb_toggle().
 
-i.e. it went all the way to CPUHP_OFFLINE, which matches Frederic's
-point that the nocb mask change needs the CPU at least at
-CPUHP_AP_IDLE_DEAD - callbacks are still enqueued before that.  It worked
-functionally, but it also confirmed the cost Waiman describes: each
-remove_cpu() pays the stop_machine price, so doing this while another
-isolated partition is running latency-sensitive work is disruptive.
+Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+---
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-We are reworking that code precisely because doing it asynchronously
-raced with concurrent CPU hotplug (a TOCTOU on cpu_online() and the nocb
-state), so +1 that this has to be serialized against hotplug the way
-Thomas outlined.
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index b1bab59efde5..a0e6901e0f90 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2947,7 +2947,7 @@ static int rcu_nocb_toggle(void *arg)
+ 			atomic_long_inc(&n_nocb_deoffload);
+ 		}
+ 		toggle_delay = torture_random(&rand) % toggle_fuzz + toggle_interval;
+-		set_current_state(TASK_INTERRUPTIBLE);
++		__set_current_state(TASK_INTERRUPTIBLE);
+ 		schedule_hrtimeout(&toggle_delay, HRTIMER_MODE_REL);
+ 		if (stutter_wait("rcu_nocb_toggle"))
+ 			sched_set_normal(current, oldnice);
+-- 
+2.17.1
 
-So decoupling RCU from HK_TYPE_KERNEL_NOISE and gating the "pay the
-stop_machine spike" behaviour behind an explicit cpuset switch sounds
-right to us.  RCU seems to be the only kernel-noise type that needs to go
-that deep; tick, managed_irq and the watchdog appear to only need the CPU
-to cycle through the existing online-side callbacks, not a forced
-IDLE_DEAD - please correct us if that is wrong.
-
-On Frederic's idea of asking userspace to offline the target CPUs before
-toggling isolation: that cleanly removes the kernel-internal offline for
-the isolate direction.  How would you see the de-isolate direction - the
-admin brings the CPU back online and the housekeeping/nocb masks are
-recomputed in the online path?
-
-Waiman, since you mentioned you have not started on RCU and it carries
-the deepest hotplug constraints, we are happy to take the RCU/nocb
-decoupling piece and build it on top of your CPU down/up primitives,
-following Frederic's CPUHP_AP_IDLE_DEAD guidance.  That keeps the
-subsystem split clean and avoids duplicating your tick/irq work.
-
-Thanks,
-Jing Wu
-Qiliang Yuan
