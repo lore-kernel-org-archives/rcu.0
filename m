@@ -1,30 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C543B7B68;
-	Mon,  6 Jul 2026 17:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFD83B8D75;
+	Mon,  6 Jul 2026 17:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783358886; cv=none; b=Q3D1HZ8mwOhwzMo+uMoUyNqApakuHIeddIhSL1ho2fvmBWXY2j08eur66ykXsftI/BCM+FYWrBmhjYuNnoAam9IAO1+/ZPItOkd/vkFNEVBe1KEPwKPjkBx5SLx1GZEbqK9/xTh5loSbIVJpLdVWW6Sx8I46ACH6rjZcOqTSrGk=
+	t=1783358889; cv=none; b=rprYOw8H9hUww+KtR2OC50qolYVDFcOmaPjNBy+7mBDHn0QnUIwtKvh54uMqhgFmIO4xQ4ZjkTx2IuNsjswsy/EM6axqH0zHdzxpIJ9BTXTyhV45V4hvZca68Mqx5TJ3nPH2anIq3i8K3Qty4XhI+s6VMi/k9zFBg55aAbLlXro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783358886; c=relaxed/simple;
-	bh=SYFpDKAk8+dFtlASujFsmgU216MKeio7L6quS4HPEBU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TZhxhWjjq8Jk8ENvo7PMcO8cT6nNTY8JXHaMQVfxJeY9YzRtmZQ8MtoLU8t8k3m9PDCqG9W7ukIb7aF+OQzVpSRImg0DZMUfK+TxsvXwRW0s83UtTyhTa/5w2bQTQCIHUNtBAhvM/pTyWZ8U7kpgEfVcOnS6wZuLkdWt1sni0p0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RKACWxd3; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1783358889; c=relaxed/simple;
+	bh=53GiFZhnQzwnO4b0Tj/JBGgNVPFjY5AdV7oQvh8Tysc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=H/92LA2tOwG7yPZWbZxln7+CQ2AK23hs15RBIDYYtP3FmwDgdWEm33jMPKC3UTGSRDZ/yo++mj5PmYZupauJJqHkG3yPb3RIcIvxeOwZDzEwNdF4UfpXY94a+ppq/qpYpjOtBPNKjYk8ehxdT77erWUUKIy1NCLxGpH50rLWJ1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=REXFBEHE; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RKACWxd3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7533E1F000E9;
-	Mon,  6 Jul 2026 17:28:04 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="REXFBEHE"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 994CF1F000E9;
+	Mon,  6 Jul 2026 17:28:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783358884;
-	bh=5nL9Cg67aT7fpoC4oBGnVgDZdUYDNOflSikqbePlEFk=;
-	h=From:To:Cc:Subject:Date;
-	b=RKACWxd3s9uvx06CEHCTYK4zZcHUQXhKTk4i/YrXpmZMLC3XsrfQF+T4i8AtOWI3C
-	 R3NhclRz0L+ONPDkWUxhgZzPgP/HQMrMIgl0IDE0RUFBF+RlP5CnNvw9qo45q7WFcP
-	 BoklitrvITbH5atWgdx6QjKCMuQVdRNZJCiG55DJkKlHaTSNlZ0USEVu+OnjgqlnsO
-	 TAMIWHJOtvpg6kKxe5tR2CIvwLLbPO1cFu85Ij1Gif7TiWnzr311+VzY5hZtVBKN68
-	 hSS9NAljcyQlQl47UXzbwRZ1AGWHai9/DBGL9PPY2S/5t+jznVx5JrAh5HEddGJX3r
-	 94dLvm25w7D4A==
+	s=k20260515; t=1783358887;
+	bh=cD4VVXp5TnIqFhzSBhexKUn6HSVG2nDuJZQtRH2FUU0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=REXFBEHEm94e71S72DGN4ctUTbZYoZYBuB4jTjouD1lcWwXZ8fEiN187gZ9OVKLPl
+	 22fZCRER+QT4Z3hHpsDwLRiWJiBL9QsPxkg3vEuwINS2hDDIotrUv0NjK6735INrqa
+	 Ipp60RqgR63Z+QUZgiSR68TPetqtAWz/gC1pLXVi4vsjZlGATaCqvxkRhCyqQSp2dm
+	 Lw4TWXQ9oZeBks9tsAc2MuQWiH7L+3CJEJ2YyWjAEUnxm/FLyZo2B8Y5ADI4oQw8st
+	 epvsmHyW0EPfYWtksxDzQiYC3I/CPA5lA5LYMv2r3Zc45Ja/8KDj0g2hChMLNWsGg2
+	 ff7YEreFAGqug==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Lai Jiangshan <jiangshanlai@gmail.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
@@ -51,10 +52,12 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-perf-users@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next 0/2] uprobes: Switch uretprobes_srcu to SRCU-fast-updown
-Date: Mon,  6 Jul 2026 10:27:40 -0700
-Message-ID: <20260706172744.3920417-1-puranjay@kernel.org>
+Subject: [PATCH bpf-next 1/2] srcu: Add lock guard for srcu_fast_updown flavor
+Date: Mon,  6 Jul 2026 10:27:41 -0700
+Message-ID: <20260706172744.3920417-2-puranjay@kernel.org>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260706172744.3920417-1-puranjay@kernel.org>
+References: <20260706172744.3920417-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -63,63 +66,31 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-uretprobes_srcu currently uses normal SRCU. Normal SRCU issues an
-smp_mb() on both srcu_read_lock() and srcu_read_unlock(), i.e. two full
-memory barriers per read-side critical section. For uretprobes this cost
-is paid on every uretprobe invocation: prepare_uretprobe() takes the
-read lock that is later dropped on the normal return path
-(hprobe_finalize()) or from ri_timer()/dup_utask() (hprobe_expire()).
+Add a guard(srcu_fast_updown) definition for scoped
+SRCU-fast-updown read-side critical sections, following the
+existing pattern of guard(srcu) and guard(srcu_fast).
 
-Switch uretprobes_srcu to the SRCU-fast-updown flavor. SRCU-fast moves
-the read-side ordering off the reader and onto the (rare) grace-period
-side: synchronize_srcu() rides on synchronize_rcu() instead of relying
-on reader-side smp_mb(). This is a good trade for uretprobes, where
-reader-side hits vastly outnumber grace periods (uprobe unregistration).
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ include/linux/srcu.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-The updown variant (rather than plain SRCU-fast) is required because the
-read lock is acquired in prepare_uretprobe() on the way out to user
-space and is released only once the return instance is finalized -- from
-a different context than it was taken: the normal return path
-(uprobe_handle_trampoline() -> hprobe_finalize()), the timer callback,
-or the fork path (ri_timer()/dup_utask() -> hprobe_expire()).
-srcu_down_read_fast()/srcu_up_read_fast() are designed for this
-semaphore-like, cross-context pattern and, unlike the same-context
-srcu_read_lock_fast() variant, do not carry lockdep read-side tracking
-that would warn on it -- which is why the old code had to use the raw
-__srcu_read_lock() here. For the short, same-context sections in
-ri_timer() and dup_utask(), guard(srcu_fast_updown) is used instead,
-giving proper lockdep coverage.
-
-Patch 1 adds the guard(srcu_fast_updown) definition, following the
-existing guard(srcu)/guard(srcu_fast) pattern.
-Patch 2 does the uretprobes_srcu conversion.
-
-Note
-----
-Only uretprobes_srcu is converted; the main uprobe readers (RB-tree
-lookup and consumer-list iteration) are deliberately left on RCU Tasks
-Trace. RCU Tasks Trace is already implemented on top of
-srcu_read_lock_fast(), so the reader-side cost is identical, and it has
-a nesting fast path that the uprobe -> sleepable-BPF-program call chain
-relies on (the BPF trampoline takes rcu_read_lock_trace() while uprobes
-already holds it; the nested acquire is just a counter bump). Converting
-those readers to a separate srcu_struct would turn one real + one nested
-lock into two real locks and lose that optimization for no reader-side
-gain. uretprobes_srcu is different: it uses normal SRCU (not Tasks
-Trace), its readers are long-lived and cross-context, and it genuinely
-benefits from dropping the per-reader barriers.
-
-Puranjay Mohan (2):
-  srcu: Add lock guard for srcu_fast_updown flavor
-  uprobes: Switch uretprobes_srcu to SRCU-fast-updown
-
- include/linux/srcu.h    |  7 +++++++
- include/linux/uprobes.h |  5 +++--
- kernel/events/uprobes.c | 29 +++++++++++++++++------------
- 3 files changed, 27 insertions(+), 14 deletions(-)
-
-
-base-commit: 87bfe634b1193db90e5170e1ddbad04a63ef4501
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index a54ce9e808b92..72c86d3b23f2e 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -638,4 +638,11 @@ DEFINE_LOCK_GUARD_1(srcu_fast_notrace, struct srcu_struct,
+ DECLARE_LOCK_GUARD_1_ATTRS(srcu_fast_notrace, __acquires_shared(_T), __releases_shared(*(struct srcu_struct **)_T))
+ #define class_srcu_fast_notrace_constructor(_T) WITH_LOCK_GUARD_1_ATTRS(srcu_fast_notrace, _T)
+ 
++DEFINE_LOCK_GUARD_1(srcu_fast_updown, struct srcu_struct,
++		    _T->scp = srcu_read_lock_fast_updown(_T->lock),
++		    srcu_read_unlock_fast_updown(_T->lock, _T->scp),
++		    struct srcu_ctr __percpu *scp)
++DECLARE_LOCK_GUARD_1_ATTRS(srcu_fast_updown, __acquires_shared(_T), __releases_shared(*(struct srcu_struct **)_T))
++#define class_srcu_fast_updown_constructor(_T) WITH_LOCK_GUARD_1_ATTRS(srcu_fast_updown, _T)
++
+ #endif
 -- 
 2.53.0-Meta
 
