@@ -1,292 +1,198 @@
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA853E63AD
-	for <rcu@vger.kernel.org>; Wed,  8 Jul 2026 06:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.215.174
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783493912; cv=pass; b=OlXrN3pV9zMljuBKE0mkAFFqda9Yzj+pOaXrT8WtSoijbLCaBvcuKKuGXoT0dtUkRBka+Ljbeic5Rwbr/EnGs9bWmO/qPcA2zhCdlDptJG7Khwm3O6WdIigyHt3ExmWRRrFTk75ap/MDLuaOVnJhVnphD6LPONqwcu+VqFRLPcs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783493912; c=relaxed/simple;
-	bh=+3JOKZQTIXSiy7TPE+EiYNvh21Ntyyf/aSWG9sMXBzA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M3yIkzIjQHr3mS6KzrgX9DOknsmXmFHs0jJ/UpN+4NecpqY8zD0Stu+XHszYZlm19S9zyKQADnRQJtnIyxsMdXlEdHOXEmlAMfzEAAi6qtwBU9JN0Y/iXZ+j73JyZdUIaKFhNnH9mZrLxK/sxQzyPE82XB3gCeWTSOyBSGaAGMU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aGFnxJaG; arc=pass smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41B12C2360;
+	Wed,  8 Jul 2026 17:44:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783532656; cv=none; b=FMPcq20Upeb1FnSlYsAGkvZicLJ42kQe+aVK2ew+pkz8Z55mNluvPsJYbXXRNiqQRf1DuLnsRmaI479jCzW5F9OOUm447xGqa1r6OP4oiwy5hhcRu40oZOqRB89mBlJw4hrtwnKKoMj7C2j0z4XAOAdvAfWpD8Jt/HzleMh0AX0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783532656; c=relaxed/simple;
+	bh=CN8O5bAgAZLJ4ohTFnmZLjKPA1oVWromYxibg/WJFRc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=chmz8eMdiUgOtOFX7kXpoNq41PokEZiB7vMuisPKR61deSnobqr+McFHAl4o5lNIrJEy96G2c2a/EeRfTxvwP9DuFhKtSaEj336pWm72y6B+6LKkgvYE4vbvpRgZLTTVWcQsN/CQ8+AMUv+MOOso3T7/hSuaXU3RT9pHIYd2/ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gzEZsVow; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aGFnxJaG"
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-c88973b6965so1011774a12.1
-        for <rcu@vger.kernel.org>; Tue, 07 Jul 2026 23:58:26 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1783493902; cv=none;
-        d=google.com; s=arc-20260327;
-        b=bUjJ9OML3fc1/+7mEdOHNTXr457bTnEsO5x/5WwuQ3+5mS8G6fdwlWMhMJDALd+8/B
-         bi0JWGq9vidLJ4NAHxvOaJDzFMlLgeh8Y1WGzqUAzjhgTj3pYLVArRwlCwl613UD1c0b
-         BA6LkwJ6fTgNUS0ZIUxXKWPaRK0OgfnKz9QH3QER+oqYUXsJZftfrpIfq1jZ/O9zneZi
-         E9CXTCSknPYURvi/xLLClXDC1wSmeGh+NGF9oERH/2h+apAhEh/AkaD16rXEaMPdDZnK
-         CYiD1z6CMG+3fvya/OQxkPl+Cll0O1RbLG8uVHgaPdjiAKwApvqWqyi9lkRnrMe+/eDL
-         sSyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=++Np+i7QbYkMJq7srOxofh9iDJgIYXe+19kl+BTYoIk=;
-        fh=eWskCM7XhAd2wIVTSuSp/5LfrHm8v/CB0YzAYZzLQgY=;
-        b=Nsp05hsCyHRQXe9wnAB6+eip8g/fOS53ijeD8nJ/ucNQqrSf0R592RIn9rQEzbzgmA
-         z8SOpMEI43E+VpgcwQ+hb+iXF02GSdrre2t3vka7ZhWR8Ms74ghsbtEtfnQ3NrT1I+zQ
-         L0H4iZ2ddLfGMuJXItIiFvGScMrl9a6I0C7zLyfZd84BAuYPiajm4JzcVHx2MAcSoy+R
-         rFHAML0ih6VILUVt1ssabVnWZLYJubHhPIHae4VlbvhnlWVZJWkL8ZtJ4TODUVd3M5wC
-         n8tPCRtwBu5HqyRVnTc47Ax75EBQpfqW/8RsliDUACx99FTXboLStrloAjtzMh2LTt/1
-         LbQA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783493902; x=1784098702; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=++Np+i7QbYkMJq7srOxofh9iDJgIYXe+19kl+BTYoIk=;
-        b=aGFnxJaGdXEJyfLtpTUdLUyJk5N1u1+P/2rw05ZGkQxpAf4VHovfLWU4yFX1+NbSOL
-         3Xrw5GgaplZ7EejfyImUBK3HlufkLob2EWeBXhSJReJzoxn0u4Fc4sY+dGdknvxcN1kd
-         HnzWKknFgn6Flrlbgfv+VDV9/KStwVv/DYCXQykYEmqVnmfay8q1IiTEzGWp14TWETaS
-         nyQYl/bNzFUB+xUnVqX6c9TfJjRM02803DY5uRni9GWlgd0Nrl/kVM/muv31EoeGEgiv
-         51T9KfK7h0to8WphUG1TG4W52LGtmtGIyrQbOLKW+rLHtCuVkMVgQ2MYvn3Ffwrr9X7h
-         vZcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783493902; x=1784098702;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=++Np+i7QbYkMJq7srOxofh9iDJgIYXe+19kl+BTYoIk=;
-        b=kt5cRtkhTsdDs43TCYxQKUewkmDpNtZ1OS4RH6mXKh/za9uWuSpDTHqBpQuhtpwbc0
-         W6lJhQLEp4BY69gGDjQv7DC2Cmi+4qT36A3J7HXRtrQ3o6S3QPoA75DyC1e+/i2Cp2r+
-         dZ1fxc+r4IEb+CFZecYHnJIMhKpZ0CcOdXCq8myO+9KZbGNGrnhC7WRk1EQoM+EX0GsD
-         AdEHt49ywdlZ1AwrGQHtOi6q0D6n43gvYFrQI+/efs0So68fVXjUxxZKtPc6msRDTDgM
-         Lr9vo8EOMJJKvypLujt/x/syPB88TGzIUKbzQNtZtVCl+IScOVKtiDO3E9i4x08Eeh/b
-         7GIA==
-X-Forwarded-Encrypted: i=1; AHgh+RpizE0knhfjarY82IRSMlD7N+g9XB3qjK68zg0xOxyQ8HqqRU5yrqbBHg75ibL7sRExeOY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwI/bT0bKoG7s6uxGpivCEQaSFqx6cbDJsX17NyS1oHGu0th02T
-	wQytKOedOma7CHElcusFPsClzxq5zmZjhJfo/6M6fEEYJ81zpdHRzmMNpCVw/EaaHoSJkBtaThq
-	GduDOLzaGVaClsRgmh0YIh6JdUOoVoA0=
-X-Gm-Gg: AfdE7cnplTO8BgCmSeqxW3SGuWKQmUUuemuh12wngIKhJcKV4uvnTnUmr9rjQ3h1pbc
-	hsJ0wGnSSwE1bqy9XkVcbens7C8T24zhe4kAyXwS4OoItslnc8fY2uVf4JTdnXW3ZfENs5SEmiP
-	Kq1gecAo5IBsNozOIFq32J6Ibmkg9b+ZAmSWPO32zqUCJ5SQpUSoCG4QQANeoy+oL9CtiwD95C6
-	0/b82qAUehAie3fwJQZ1ZL7k6IwcdOENK0zEWcs3+vA4J3aw6v8ATrirSpMX+2bUFqeA6UP
-X-Received: by 2002:a05:6a21:168b:b0:3b4:8c67:51d4 with SMTP id
- adf61e73a8af0-3c09b4ab238mr8981970637.39.1783493901839; Tue, 07 Jul 2026
- 23:58:21 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gzEZsVow"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 800371F000E9;
+	Wed,  8 Jul 2026 17:44:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783532654;
+	bh=1UfXovoVRPgBYyyVA6ZCh/ECFhi74BDYFahcAuHhkto=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=gzEZsVowNzoDwPJMkWwccLS41zQqdQRoZIVJl5oe4Sqpl+Rf6UwFmEO0jDEkEO/P9
+	 tAtBrVe0iSu7SsxfzMCqbmtzd0kQDcN6CxdQDSnVftgYoBAml5ywf0pAeCfuG7jcro
+	 dGR4GYkk4uGNcQAormxVqAl4joglIUJC1JSecS4aGm4WlBGvykSaON5vc+vwBoKa9q
+	 /7/FVt9Ywckd9+0tZWQAT7JjD9P7dfnoMgMd5fA0uHH7C2ca08ZRFLkDQ712wK/1tc
+	 D7+tuyTriKQmEKXRnYCoYxbnR4L2xQRoyLAaDNt7yRG69kzsYaOUaVvCVwE8PJcI7u
+	 urmOpMWo7zIdw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 54C83CE074A; Wed,  8 Jul 2026 10:44:14 -0700 (PDT)
+Date: Wed, 8 Jul 2026 10:44:14 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Zqiang <qiang.zhang@linux.dev>
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+	urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu-tasks: Remove unused struct
+ rcu_tasks's->n_ipis_fails variables
+Message-ID: <dd2f3c67-915c-426b-905d-d457f4245530@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260706100310.19735-1-qiang.zhang@linux.dev>
+ <cb922347-ff9c-407e-a774-054e0117ac52@paulmck-laptop>
+ <7b56bf2752621d6b845fb0d3086300e057e95aa2@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ab2yd35rm6OgZUmb@gpd4> <20260320222916.19987-1-boqun@kernel.org>
- <CAJM55Z-hiNDuu5UwoBe7m0wq+_WJrRY0cwopALUgpG+r3ixj8g@mail.gmail.com>
- <ajQPAk_ALP-84obp@MacBook-0RXW5> <CAJM55Z_15U7GssTOims1=J34CYSj=8CDE_di1kJYs5hE3=J53w@mail.gmail.com>
- <ajlW4oSzEqav6gxc@MacBook-0RXW5> <CAJM55Z_7N40ARWGoZg04p-NnAy-w10v4=Em-e4Bx4+oNYMGBLg@mail.gmail.com>
- <80773b89-f333-4c82-99b5-3fca44ea93b3@sifive.com> <CAJM55Z_aUzPieiGKPgr_iETovgyGB0EUFau+=tLxZksT9CkpYQ@mail.gmail.com>
- <1a9a672d-914d-43c2-b1da-6a0deede4dac@leemhuis.info>
-In-Reply-To: <1a9a672d-914d-43c2-b1da-6a0deede4dac@leemhuis.info>
-From: Indrek Kruusa <indrek.kruusa@gmail.com>
-Date: Wed, 8 Jul 2026 09:58:08 +0300
-X-Gm-Features: AVVi8CcDPihGLFO6KDd2QFz3SBo9Xu3AC0vfTDbgAUFDI1HQZllfyXn0bskFxwc
-Message-ID: <CA+fTLhissp1Vrezd73iEzjrO808W1hrOF4ry-Tc0VrbqDsRKQw@mail.gmail.com>
-Subject: Re: [PATCH v2] rcu: Use an intermediate irq_work to start process_srcu()
-To: Thorsten Leemhuis <regressions@leemhuis.info>
-Cc: Emil Renner Berthing <emil.renner.berthing@canonical.com>, Boqun Feng <boqun@kernel.org>, 
-	Samuel Holland <samuel.holland@sifive.com>, Joel Fernandes <joelagnelf@nvidia.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, frederic@kernel.org, neeraj.iitr10@gmail.com, 
-	urezki@gmail.com, boqun.feng@gmail.com, rcu@vger.kernel.org, 
-	Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrea Righi <arighi@nvidia.com>, Zqiang <qiang.zhang@linux.dev>, 
-	linux-riscv@lists.infradead.org, Sarah Emery <sarah.emery@canonical.com>, 
-	Linux kernel regressions list <regressions@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7b56bf2752621d6b845fb0d3086300e057e95aa2@linux.dev>
 
-Kontakt Thorsten Leemhuis (<regressions@leemhuis.info>) kirjutas
-kuup=C3=A4eval E, 6. juuli 2026 kell 14:33:
->
-> On 6/24/26 10:55, Emil Renner Berthing wrote:
-> > Quoting Samuel Holland (2026-06-23 17:53:19)
-> >> On 2026-06-23 4:34 AM, Emil Renner Berthing wrote:
-> >>> Quoting Boqun Feng (2026-06-22 17:38:10)
-> >>>> On Sat, Jun 20, 2026 at 05:25:25AM -0400, Emil Renner Berthing wrote=
-:
-> >>>>> Quoting Boqun Feng (2026-06-18 17:30:10)
-> >>>>>> On Thu, Jun 18, 2026 at 08:11:36AM -0500, Emil Renner Berthing wro=
-te:
-> >>>>>>> Quoting Boqun Feng (2026-03-20 23:29:16)
-> >>>>>>>> Since commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace in=
- terms
-> >>>>>>>> of SRCU-fast") we switched to SRCU in BPF. However as BPF instru=
-ment can
-> >>>>>>>> happen basically everywhere (including where a scheduler lock is=
- held),
-> >>>>>>>> call_srcu() now needs to avoid acquiring scheduler lock because
-> >>>>>>>> otherwise it could cause deadlock [1]. Fix this by following wha=
-t the
-> >>>>>>>> previous RCU Tasks Trace did: using an irq_work to delay the que=
-uing of
-> >>>>>>>> the work to start process_srcu().
-> >>>>>>>>
-> >>>>>>>> [boqun: Apply Joel's feedback]
-> >>>>>>>> [boqun: Apply Andrea's test feedback]
-> >>>>>>>>
-> >>>>>>>> Reported-by: Andrea Righi <arighi@nvidia.com>
-> >>>>>>>> Closes: https://lore.kernel.org/all/abjzvz_tL_siV17s@gpd4/
-> >>>>>>>> Fixes: commit c27cea4416a3 ("rcu: Re-implement RCU Tasks Trace i=
-n terms of SRCU-fast")
-> >>>>>>>> Link: https://lore.kernel.org/rcu/3c4c5a29-24ea-492d-aeee-e0d960=
-5b4183@nvidia.com/ [1]
-> >>>>>>>> Suggested-by: Zqiang <qiang.zhang@linux.dev>
-> >>>>>>>> Tested-by: Andrea Righi <arighi@nvidia.com>
-> >>>>>>>> Signed-off-by: Boqun Feng <boqun@kernel.org>
-> >>>>>>>
-> >>>>>>> Thanks for the patch, which is now upstream as
-> >>>>>>> 7c405fb3279b ("rcu: Use an intermediate irq_work to start process=
-_srcu()")
-> >>>>>>>
-> >>>>>>> Unfortunately it seems to halt booting on the Allwinner D1 single=
--core RISC-V
-> >>>>>>> SoC both on the 7.0 and 7.1 kernels:
-> >>>>>>>
-> >>>>>>
-> >>>>>> By "single-core", is it only one CPU in that system?
-> >>>>>>
-> >>>>>>> https://esmil.dk/d1-7.0.txt
-> >>>>>>> https://esmil.dk/d1-7.1.txt
-> >>>>>>>
-> >>>>>
-> >>>>> Yes, the SoC only has one CPU core capable of running Linux at leas=
-t.
-> >>>>>
-> >>>>>> From the callstack,
-> >>>>>>
-> >>>>>> [  243.002818] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" =
-disables this message.
-> >>>>>> [  243.010681] task:kworker/0:0     state:D stack:0     pid:9     =
-tgid:9     ppid:2      task_flags:0x4208060 flags:0x00000000
-> >>>>>> [  243.021858] Workqueue: device_link_wq device_link_release_fn
-> >>>>>> [  243.027587] Call Trace:
-> >>>>>> [  243.030079] [<ffffffff80745b66>] __schedule+0x232/0x530
-> >>>>>> [  243.035365] [<ffffffff80745e82>] schedule+0x1e/0x94
-> >>>>>> [  243.040298] [<ffffffff8074aa7a>] schedule_timeout+0x6e/0xa8
-> >>>>>> [  243.045929] [<ffffffff8004d6a0>] wakeup_preempt+0x8c/0x98
-> >>>>>> [  243.051380] [<ffffffff80746aee>] wait_for_completion+0x3a/0xb0
-> >>>>>> [  243.057267] [<ffffffff80087226>] __synchronize_srcu.part.0+0x4e=
-/0x60
-> >>>>>> [  243.063712] [<ffffffff80084414>] rcu_tasks_get_gp_data+0xc/0x10
-> >>>>>> [  243.069699] [<ffffffff80490898>] device_link_release_fn+0x14/0x=
-80
-> >>>>>> [  243.075850] [<ffffffff8003dbd0>] process_one_work+0xf8/0x1c8
-> >>>>>> [  243.081583] [<ffffffff8003e282>] worker_thread+0x11a/0x254
-> >>>>>> [  243.087127] [<ffffffff8003e164>] rescuer_thread+0x3a0/0x3a4
-> >>>>>> [  243.092755] [<ffffffff8003e164>] rescuer_thread+0x3a0/0x3a4
-> >>>>>> [  243.098381] [<ffffffff8004499e>] kthread+0xbe/0xe4
-> >>>>>> [  243.103231] [<ffffffff8001349e>] ret_from_fork_kernel+0x6/0xd0
-> >>>>>> [  243.109127] [<ffffffff800517a8>] schedule_tail+0x8/0xac
-> >>>>>> [  243.114410] [<ffffffff800448dc>] kthreads_online_cpu+0x0/0x4
-> >>>>>> [  243.120121] [<ffffffff8074be0a>] ret_from_fork_kernel_asm+0x12/=
-0x18
-> >>>>>>
-> >>>>>> I will guess for some reasons the irq_work was missed or the IPI n=
-ever
-> >>>>>> happened. Is it possible for you to enable trace points ipi_send_c=
-pu and
-> >>>>>> ipi_entry to get more information?
-> >>>>>
-> >>>>> I have to admit I've not used tracepoints before, but it seems like=
- only
-> >>>>> ipi_send_cpu and ipi_send_cpumask is available on RISC-V.
-> >>>>> I've now added trace_event=3Dipi:* and tp_printk to the command lin=
-e, and this
-> >>>>
-> >>>> Thank you! Yeah, this is what I meant ;-)
-> >>>>
-> >>>>> is what I get:
-> >>>>> https://esmil.dk/d1-7.0-2.txt
-> >>>>>
-> >>>>
-> >>>>
-> >>>> [    0.071132] rcu:     Max phase no-delay instances is 1000.
-> >>>> [    0.077837] ipi_send_cpu: cpu=3D0 callsite=3Dirq_work_queue+0x22/=
-0x4c callback=3Dsrcu_irq_work+0x0/0x58
-> >>>>
-> >>>> Is this the last line you can see from your (serial?) console, or we=
- are
-> >>>> missing a few more lines? Maybe it'll should the same hung task
-> >>>> messages?
-> >>>
-> >>> Yes, sorry for not being clear about that. This is the exact same bin=
-ary booted
-> >>> without the two extra command line parametrs:
-> >>> https://esmil.dk/d1-7.0-3.txt
-> >>>
-> >>> But with the two parameters added the board reboots before getting to=
- the hung
-> >>> task messages. The bootloader enables the watchdog, so I think what h=
-appens is
-> >>> that the kernel halts earlier with the tracepoints enabled, and doesn=
-'t get to
-> >>> load the watchdog driver to keep the machine from rebooting.
-> >>>
-> >>> The same happens with just trace_event=3Dipi:* added, just without th=
-e last
-> >>> message above.
-> >>>
-> >>>>
-> >>>> The ipi_send_cpu message means RCU was able to send an IPI, now if t=
-here
-> >>>> is no ipi_handler between the send and the hung task, that would mea=
-n
-> >>>> the IPI was missed.
-> >>
-> >> Assuming that your OpenSBI version is exactly v1.3 per the boot log, a=
-nd not
-> >> "v1.3 + patches", then you would indeed not be receiving IPIs. You nee=
-d at least
-> >> this commit: https://github.com/riscv-software-src/opensbi/commit/446f=
-a65eb579
-> >> (included in v1.4) or alternatively to add the CLINT to the M-mode dev=
-icetree.
-> >
-> > So then we're in a situation similar to [1], where upgrading the kernel=
- from
-> > 6.19 to 7.0 requires you to update the firmware first.
->
-> Which normally should never happen to ensure users feel save to update
-> the kernel. But I wonder if that is relevant, as Indrek Kruusa reported
-> problems with that board, too -- and there is a fix that fixes it:
-> https://lore.kernel.org/linux-riscv/20260624220434.4183732-1-felixonmars@=
-archlinux.org/
->
-> Does that maybe fix your problem, too (even if it was bisected to a
-> different commit, it might be related somehow, that's why I'm asking)?
->
-> Ciao, Thorsten
->
+On Tue, Jul 07, 2026 at 01:09:21PM +0000, Zqiang wrote:
+> > 
+> > On Mon, Jul 06, 2026 at 06:03:09PM +0800, Zqiang wrote:
+> > 
+> > > 
+> > > The RCU tasks trace has been reimplemented by 'commit c27cea4416a3
+> > >  ("rcu: Re-implement RCU Tasks Trace in terms of SRCU-fast")', the
+> > >  rcu_tasks structure's->n_ipis_fails is no longer used, this commit
+> > >  therefore remove it.
+> > >  
+> > >  Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+> > > 
+> > I have queued both for review and testing, thank you!
+> > 
+> > This patch produced the expected result in my initial tests. However,
+> > for the second patch, I used this command to force a stall:
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 15 --configs "TASKS01 TASKS02 TASKS03 RUDE01" --bootargs "rcutorture.stall_cpu=660" --trust-make
+> > 
+> > Except I got vanilla RCU CPU stall warnings, but not RCU Tasks nor
+> > RCU Tasks Rude stall warnings. And not even the "grace period number"
+> > pre-stall message. Probably because I am forgetting something. But what
+> > did you do to test your change?
+> 
+> Hello, Paul
+> 
+> The rcutorture module use module_init() to load, however the
+> rcu_tasks_initiate_self_tests() is called in core_initcall(), 
+> the core_initcall() have a higher priority than module_init().
+> 
+> This is possible, the RCU tasks test may have already completed, 
+> but the rcutorture may have only just started.
+> 
+> so I use the following modifications to verify:
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index d9e1e53f4ccf..7e5ff5108cdd 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -1489,7 +1489,6 @@ static void rcu_tasks_initiate_self_tests(void)
+>         pr_info("Running RCU Tasks wait API self tests\n");
+>         tests[0].runstart = jiffies;
+>         synchronize_rcu_tasks();
+> -       call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
+>  #endif
+>  
+>  #ifdef CONFIG_TASKS_RUDE_RCU
+> @@ -1555,6 +1554,7 @@ static void rcu_tasks_verify_work_fn(struct work_struct *work __maybe_unused)
+>  static int rcu_tasks_verify_schedule_work(void)
+>  {
+>         INIT_DELAYED_WORK(&rcu_tasks_verify_work, rcu_tasks_verify_work_fn);
+> +       call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
+>         rcu_tasks_verify_work_fn(NULL);
+>         return 0;
+>  }
 
-I tend to think we have two different situations here. I am using
-newer OpenSBI (v1.8) and an experimental u-boot based on newer
-v2026.07-rc1 [1].
-So, my firmware is different, also the context Emil is pointing to is diffe=
-rent.
+Or I can just comment out the call_rcu_tasks() entirely, correct?
 
-Best regards,
-Indrek
+> Run qemu with bootparams="rcutorture.torture_type=srcu 
+> rcutorture.stall_cpu=800 rcutorture.stall_cpu_block=1 
+> rcutorture.stall_no_softlockup=1 rcupdate.rcu_tasks_lazy_ms=120000"
 
-[1] https://github.com/ikruusa/u-boot/tree/v2026-07-rc1-thead-base-b1
+OK, one of my problems was that I was forgetting stall_cpu_block=1,
+which was causing all sorts of other stalls to confuse things.  So thank
+you for that!
 
+> [   30.826022] call_rcu_tasks() has failed boot-time tests.
+> [   30.826790] rcu_tasks: RTGS_WAIT_CBS(11) since 7596 g:4 i:0 kCuU l:30000 
+> [   30.827424] ------------[ cut here ]------------
+> [   30.827862] WARNING: kernel/rcu/tasks.h:1533 at rcu_tasks_verify_self_tests+0xa7/0xc0, CPU#1: kworker/1:1/79
+> [   30.828717] Modules linked in:
+> [   30.829144] CPU: 1 UID: 0 PID: 79 Comm: kworker/1:1 Tainted: G        W           7.1.0-rc4+ #25 PREEMPT(lazy)  e641c8af833b714510f82b4c2bc5dbbb1ef1e911
+> [   30.830176] Tainted: [W]=WARN 
+> [   30.830468] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
+> [   30.831326] Workqueue: events rcu_tasks_verify_work_fn
+> ....
+> [  722.218096] INFO: rcu_tasks detected stalls on tasks:
+> [  722.218689] 0000000095041800: .. nvcsw: 2/2 holdout: 1 idle_cpu: -1/7
+> [  722.219308] task:rcu_torture_sta state:R  running task     stack:0     pid:122   tgid:122   ppid:2      task_flags:0x208040 flags:0x00080000
+> [  722.220442] Call Trace:
+> [  722.220744]  <TASK>
+> [  722.221035]  __schedule+0x2e9/0x1460
+> [  722.221449]  ? preempt_schedule+0x30/0x40
+> [  722.221895]  preempt_schedule_common+0x24/0x90
+> [  722.222432]  preempt_schedule+0x30/0x40
+> [  722.222842]  rcu_torture_stall+0x266/0x430
+> [  722.223286]  ? __kthread_parkme+0x8f/0xe0
+> [  722.223735]  ? __pfx_rcu_torture_stall+0x10/0x10
+> [  722.224226]  kthread+0x13d/0x180
+> [  722.224600]  ? __pfx_kthread+0x10/0x10
+> [  722.224996]  ret_from_fork+0x29d/0x3b0
+> [  722.225669]  ? __pfx_kthread+0x10/0x10
+> [  722.226131]  ret_from_fork_asm+0x1a/0x30
+> [  722.226668]  </TASK>
 
-> > To me and from the thread
-> > that seems like a really obvious regression. So the question is, how ca=
-n we make
-> > the current kernel work like < 7.0 kernels worked?
-> >
-> > [1]: https://lore.kernel.org/all/87jzgjnh9z.ffs@tglx/#t
->
->
+But if I comment out that call_rcu_tasks() entirely, then I don't need
+rcutorture to explictly generate a stall.  Which means that this:
+
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --configs "TASKS01" --trust-make
+
+Gets me this:
+
+[   30.734277] call_rcu_tasks() has failed boot-time tests.
+[   30.735048] rcu_tasks: RTGS_INVOKE_CBS(10) since 4 g:524 i:0 kCuU l:250 
+[   30.736032] ------------[ cut here ]------------
+[   30.736668] WARNING: kernel/rcu/tasks.h:1534 at rcu_tasks_verify_work_fn+0x86/0xc0, CPU#0: kworker/0:2/59
+[   30.737929] Modules linked in:
+[   30.738467] CPU: 0 UID: 0 PID: 59 Comm: kworker/0:2 Not tainted 7.1.0-rc4-00077-ge5ee2ea2d00a-dirty #1508 PREEMPT(full) 
+[   30.739873] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
+[   30.740910] Workqueue: events rcu_tasks_verify_work_fn
+[   30.741631] RIP: 0010:rcu_tasks_verify_work_fn+0x86/0xc0
+[   30.742298] Code: 74 27 41 83 fc 01 75 25 48 8b 35 35 0a 9f 01 5b b9 e8 03 00 00 48 c7 c2 60 14 58 ae 5d bf 04 00 00 00 41 5c e9 2b 89 f6 ff 90 <0f> 0b 90 5b 5d 41 5c c3 cc cc cc cc 48 8b 73 10 48 c7 c7 e8 e9 9e
+[   30.744382] RSP: 0018:ffffa0cf00207e28 EFLAGS: 00010246
+[   30.744977] RAX: 000000000000003c RBX: ffffffffacf5f100 RCX: 3fffffffffffdfff
+[   30.745816] RDX: 0000000000000000 RSI: ffffffffffffffff RDI: 0000000000000001
+[   30.746657] RBP: 0000000000007530 R08: ffffffffacf5ccc8 R09: 3fffffffffffdfff
+[   30.747494] R10: fffffffface7cce0 R11: 0000000000000784 R12: 00000000ffffffff
+[   30.748238] R13: ffffffffae581460 R14: ffff980001055605 R15: ffff980001b30600
+[   30.749058] FS:  0000000000000000(0000) GS:ffff98007198a000(0000) knlGS:0000000000000000
+[   30.749955] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   30.750653] CR2: 0000000000402007 CR3: 00000000022fa000 CR4: 00000000000006f0
+[   30.751483] Call Trace:
+[   30.751777]  <TASK>
+[   30.752032]  process_one_work+0x20d/0x6a0
+[   30.752546]  ? lock_is_held_type+0x9e/0x120
+[   30.753025]  worker_thread+0x195/0x350
+[   30.753511]  ? __pfx_worker_thread+0x10/0x10
+[   30.754003]  kthread+0xe8/0x120
+[   30.754412]  ? __pfx_kthread+0x10/0x10
+[   30.754865]  ret_from_fork+0x2a7/0x310
+[   30.755306]  ? __pfx_kthread+0x10/0x10
+[   30.755767]  ret_from_fork_asm+0x1a/0x30
+[   30.756297]  </TASK>
+[   30.756608] irq event stamp: 2747
+[   30.756988] hardirqs last  enabled at (2755): [<ffffffffab13cfbd>] __up_console_sem+0x4d/0x60
+[   30.757977] hardirqs last disabled at (2766): [<ffffffffab13cfa2>] __up_console_sem+0x32/0x60
+[   30.758961] softirqs last  enabled at (2430): [<ffffffffab0c357d>] process_one_work+0x20d/0x6a0
+[   30.759943] softirqs last disabled at (2426): [<ffffffffabdf6b2c>] neigh_periodic_work+0x2c/0x380
+[   30.760970] ---[ end trace 0000000000000000 ]---
+
+Which has the additional information from your patch.
+
+Thank you for bearing with me!
+
+							Thanx, Paul
