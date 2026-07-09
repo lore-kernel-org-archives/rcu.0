@@ -1,84 +1,89 @@
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC1737B027
-	for <rcu@vger.kernel.org>; Thu,  9 Jul 2026 10:06:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 704CB3FCB22;
+	Thu,  9 Jul 2026 11:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783591574; cv=none; b=PjOwwxe/+PAKYsHL/xzODYpW9+udUrgulcnreByPdSCxPhIDPp/RiJLWNN1/YJRu1j/wqyvADiHOV6IiC049zLrmcM1U+GgeqwH3n+dyC1KgMH69ZaKEKxdEW0TRm8MTXzVwyXDmT60KqSQ/SsgD6+f8/6afGhI5si2ZxZCIpQw=
+	t=1783597679; cv=none; b=iw3JxWvGkXYQsMwmKuDZBjAOJcoPKQlVPJg6mjDDIk2MkNoCdCfPkla3ehIGlCaiW4lyCqTHBcAiiCq8/JaeBZnjQpydtkL65cTPL5H1YuMNty/HqGMHOpY7E7HgEreD8QQfyzciJRBdyZ4cc7dBETIbOzGeyalWrgmTdhg4s3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783591574; c=relaxed/simple;
-	bh=WEfxnlKngtkjWSOkjSVZL97A3/35dYp3+/HNvWnzFKQ=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=jDbWQ4BD6zZYfntW9yadVs+/Pzgnd0kkHtOxnv6a/AR9lparcRBTIlDm1H4x2gXAc9V90O//Lj+F4692OccejuHhVwZyorblCLjJhVWaLIdQZ8IJdcFODdxRT6+zFFGKKGbUoBlgbfrH+V0nadUDd2VTRApQSfG4169+POI4hIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vOP71zTo; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1783597679; c=relaxed/simple;
+	bh=7b9ubX4eJpSrKckxC665q6Rcq1ny5va7YFqVt9ztfDs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LUeUTZvxGqXMDazJlThdk50Ft/kDz6cluQ5MJmF//Tnd5lXeVhrQmfilG686XB0xc7G9kHqzsRltxKg8jTYvG5VWDTHOUd8YPsalGh57YANfnxuyF7qjf42dBh0IVx6KdLXKZ0FFtXq29xI++8JRJrT7SLCaSh4OKSJD7fPKD5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rz9Uguzh; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vOP71zTo"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1783591570;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc; bh=WzpRcNLeleHuaLrfhlaWkFZ7FFcNOi/6rUOgRO01pPI=;
-	b=vOP71zToodqXQ5L4CZ24aQH8cxgUZMGcKKZ+A4N4fk2ZN5/sYIK091ZtDIwRY9moWQ2fA1
-	FWa1VUnMsHd06tD+Xqtkn6gdG3E3DTLaDjgC2fvPatntnsVPixJOcZJ29vHd3tpnuwAac1
-	DVLoiTfNXquFzkuxDqfy9ypgwLR6IA0=
-From: Zqiang <qiang.zhang@linux.dev>
-To: paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com,
-	urezki@gmail.com,
-	boqun@kernel.org
-Cc: qiang.zhang@linux.dev,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] srcu: Queue sdp->work when the delay timer is successfully deleted
-Date: Thu,  9 Jul 2026 18:06:02 +0800
-Message-Id: <20260709100602.821-1-qiang.zhang@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rz9Uguzh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 916F81F000E9;
+	Thu,  9 Jul 2026 11:47:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783597678;
+	bh=//bPCs/Fj5nQIbCrq3GNhoz3E7nl1LpSHZDhsIuiOrQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Rz9UguzhaXzVeulfRp/+ijY6avpCTyPTgkEKIo9UqmYvowKzWhOs0DfH/iPJCngcR
+	 RDZryP++n4jwwvXj8bAvQqVCa1+WJU008QxCJl02SA32oXnq+k2hyddmyFcqoG9WRK
+	 tFQeJGB4ycanyxptPdOQd7NRsUDTj7kF7tU2ix9pyvBps2qGUh5ftYIxPX7SPIU9OF
+	 cRQaOFCibXAFqX4HurO76rT8x8JiHDRV5g7HNFJPPrXZyUODKBF9phuqqt9tlPeAPO
+	 wRXMNkFkf83lBDYnfJSRkEtXQBv7dHvJBz0emiOC+VgVLP7zyh02FeVjgLBRMrrD5b
+	 aeawLGEnRbhAg==
+Date: Thu, 9 Jul 2026 13:47:55 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Breno Leitao <leitao@debian.org>
+Subject: Re: [PATCH v1 01/11] rcu: Rename struct rcu_gp_oldstate to rcu_gp_seq
+Message-ID: <ak-Ka-jUGH77WNeO@localhost.localdomain>
+References: <20260624132356.516959-1-puranjay@kernel.org>
+ <20260624132356.516959-2-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260624132356.516959-2-puranjay@kernel.org>
 
-In the cleanup_srcu_struct(), when iterating over per-cpu's srcu_data,
-the timer_delete_sync(&sdp->delay_work) is called to cancel the delay
-timer before flush_work(&sdp->work).
+Le Wed, Jun 24, 2026 at 06:23:43AM -0700, Puranjay Mohan a écrit :
+> The polled grace-period state structure rcu_gp_oldstate holds a snapshot
+> of the normal (and, on SMP, expedited) grace-period sequence numbers.
+> Upcoming changes store this structure in the callback segment list, where
+> the "oldstate" name reads poorly: there it represents the grace period a
+> segment is waiting on and is also compared against the current
+> grace-period state.
+> 
+> Rename struct rcu_gp_oldstate to the more neutral struct rcu_gp_seq, and
+> shorten its members rgos_norm and rgos_exp to norm and exp.  Local
+> variables and parameters of this type are renamed from rgosp/rgos to
+> gsp/gs accordingly.
+> 
+> While at it, provide a single definition of the structure in rcupdate.h
+> rather than separate Tiny-RCU and Tree-RCU definitions, and give it the
+> ->exp field unconditionally.  Tiny RCU does not track expedited grace
+> periods and leaves ->exp unused, but a single definition that always has
+> ->exp lets the shared callback code in rcu_segcblist.c reference it
+> without CONFIG_SMP guards, including on !SMP builds.
+> 
+> No functional change.
+> 
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
-However, if the timer_delete_sync() returns 1 means that it successfully
-deleted an pending timer before it had a chance to fire, also means that
-the sdp->work cannot be queued, the subsequent flush_work(&sdp->work)
-will returns immediately without waiting for anything, this causes SRCU
-callbacks to not be processed.
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Fix this by checking the return value of timer_delete_sync(), if it
-returns 1, explicitly queue sdp->work so that the following flush_work()
-can correctly wait for the work to complete.
-
-Signed-off-by: Zqiang <qiang.zhang@linux.dev>
----
- kernel/rcu/srcutree.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 7c2f7cc131f7..02c322b7c6f1 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -725,7 +725,11 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
- 
--		timer_delete_sync(&sdp->delay_work);
-+		//In most scenarios, calling srcu_barrier before cleanup
-+		//will not trigger WARN_ON().
-+		if (WARN_ON(timer_delete_sync(&sdp->delay_work)) &&
-+					rcu_cpu_beenfullyonline(sdp->cpu))
-+			queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
- 		flush_work(&sdp->work);
- 		if (WARN_ON(rcu_segcblist_n_cbs(&sdp->srcu_cblist)))
- 			return; /* Forgot srcu_barrier(), so just leak it! */
 -- 
-2.17.1
-
+Frederic Weisbecker
+SUSE Labs
