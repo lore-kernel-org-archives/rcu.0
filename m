@@ -1,173 +1,79 @@
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851CB282F22
-	for <rcu@vger.kernel.org>; Thu,  9 Jul 2026 12:05:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C10280331;
+	Thu,  9 Jul 2026 13:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783598733; cv=none; b=ZoHanVQP9olgXC9ZlpE3WtQeyw2FzMGswdEwT+QvjPIftACyi6q2uBfzTX6LBAV5eeunPs4kx3A6Dp5hgfGBVuUsceHD0+bWKBvlbMEFkJk5v9JqrB4lwkFHzLSJO8TS2R0dL1kKlcWT0d6Sfi2v8VlbqfjdAQbKGFRtPIl+4Fw=
+	t=1783603269; cv=none; b=YrbecY79diFTuLEGGgaWeo5/BQcxliOCGaX4O0t3JmzZ9Zoe2h81C4e5YmaFL/ETq6uwHEDMBWPeloUqd5Qh/mBYdk3W7ftZmgUjLBiAH5YQqk00FMQ12SqLCg+ygefYDYPobyFDszuOySDb8fn14x4luI3TXt5jccsiuIOw+po=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783598733; c=relaxed/simple;
-	bh=13VwL2M/pOhzguitruni4ulFisd0HKNLOMEi2/kqjsE=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=aO0MuyMAQvE7zJq8OejwoPHxWxQvr8ojhg5pR72S3yyJN8UnBql2bFsuUVzJMOSTvVrBTuB8mbVA/hUC3ZMx5/kU0P5wL+bWmyXGwgsd34zeek1hX9fGdKHdfUZdjcw/650A13H5xVlAPAVMMjH/Z78ti9j9WPAU2J1CqmRmfY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vMzSOshP; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1783603269; c=relaxed/simple;
+	bh=RKmSMB5r6yyfAGHz3AniEGoLvYl2pyESyvNaD1EqqKs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fds1NHJTib0CKPMIiXwRiEhOW0qC3gVrOJK7tYr0hiWDoeoJ/WgJuFLTAO2X6hSY+eYFRdXNDpKj4LY1RptYKE7/nwkgO2NojYUfnZVa3f+LQ5Wo3MB4cPulL3uLWNa4NKWRYi9/J+Laa9L4ySPlI0tQMm9p93Jv0aOnGbj1Lkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e1yULooy; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vMzSOshP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e1yULooy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7242A1F000E9;
+	Thu,  9 Jul 2026 13:21:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783603268;
+	bh=44xeEcsdBWTa9yg7vkPk2k3o4MOa5JK7uo4IQVKQNNA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=e1yULooydQQIMjxTGqffDLm9wv9csrV7PduwLazHfVC2FEAB+BUd+KXGks0Fyn22M
+	 /GcHoDxll21qRB4zkt84fvNnT/wVLUlVzCberbfplYeKGlS6KChjvBR9J4xu9PKNw+
+	 B2JjQZoFPydiNs5LEzsbAuJzB4umz6E/j/3ta0gAnxFHsSLgrtXB48w3RevK7gkGw7
+	 Ax+swIO33B6gUoQHkXw621TKVMzqLFbOY7/zNeM7T2tQL4Ffz+A6nrMmIo6yQn68Vt
+	 goR+lZeeiD5JBoDL9C3qUKDmA9iFGjdD9q6VeAow0IV0WXPLLGlmhZS2Nyzs1vB4v+
+	 mrOqEtiOQ/yNw==
+Date: Thu, 9 Jul 2026 15:21:05 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Breno Leitao <leitao@debian.org>
+Subject: Re: [PATCH v1 03/11] rcu/segcblist: Factor out
+ rcu_segcblist_advance_compact() helper
+Message-ID: <ak-gQQgMHLZOyU7D@localhost.localdomain>
+References: <20260624132356.516959-1-puranjay@kernel.org>
+ <20260624132356.516959-4-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1783598729;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+JLxK0wAxMofA3cDWWhRLal1aR5UpvIxEg6JrRKJtMg=;
-	b=vMzSOshPcPBxNL5V7lERaKs4J1TMxcDe30e54chmatDkBFkzjyGG+NkJLl9KuOBqwmWUae
-	SCYbbcQgx1CCALZavEQ18auqBTrVKFwmPYQ9TKa1rL3hjbYejM/C3GNMUh1TTLBLOcKR0e
-	C1IlplSdunKd68uh+y5SrXHfJKfvceM=
-Date: Thu, 09 Jul 2026 12:05:27 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Zqiang" <qiang.zhang@linux.dev>
-Message-ID: <8ec6e6f111e19bd489fbd5986e4f01dac68a4351@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH] rcutorture: Use __set_current_state() set task state in
- rcu_nocb_toggle()
-To: paulmck@kernel.org
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
- urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <a733c594-e856-4abb-9c27-95141413579a@paulmck-laptop>
-References: <20260702101125.14100-1-qiang.zhang@linux.dev>
- <c826b59e-993f-4ff5-ac1a-6898bfaf05cc@paulmck-laptop>
- <490e998c483920e9e7bd796b00a337bcd11aa129@linux.dev>
- <a733c594-e856-4abb-9c27-95141413579a@paulmck-laptop>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260624132356.516959-4-puranjay@kernel.org>
 
->=20
->=20On Tue, Jul 07, 2026 at 01:15:10PM +0000, Zqiang wrote:
->=20
->=20>=20
->=20> On Thu, Jul 02, 2026 at 06:11:25PM +0800, Zqiang wrote:
-> >=20=20
->=20>  >=20
->=20>  > In the rcu_nocb_toggle(), the schedule_hrtimeout() is called aft=
-er the
-> >  > state assignment with no condition check. the release-acquire pair=
- from
-> >  > raw_spin_unlock/lock(&cpu_base->lock), guarantee that task->__stat=
-e is
-> >  > visible to the hrtimer callback:
-> >  >=20
->=20>  > CPU0 CPU1
-> >  > __set_current_state(TASK_INTERRUPTIBLE)
-> >  > ->WRITE_ONCE(task->__state, TASK_INTERRUPTIBLE)
-> >  > schedule_hrtimeout
-> >  > ->hrtimer_sleeper_start_expires()
-> >  > ->raw_spin_lock_irqsave(&cpu_base->lock)
-> >  > ....
-> >  > ->raw_spin_unlock_irqrestore(&cpu_base->lock)
-> >  >=20
->=20>  > hard-irq:
-> >  > raw_spin_lock_irqsave(&cpu_base->lock)
-> >  > __hrtimer_run_queues
-> >  > ->__run_hrtimer
-> >  > ->raw_spin_unlock_irqrestore(&cpu_base->lock)
-> >  > ->fn(timer)
-> >  > ->hrtimer_wakeup
-> >  > ->wake_up_process
-> >  > ->try_to_wake_up
-> >  > ->READ task->__state
-> >  >=20
->=20>  > This commit therefore use the __set_current_state() to replace t=
-he
-> >  > set_current_state() in rcu_nocb_toggle().
-> >  >=20
->=20>  > Signed-off-by: Zqiang <qiang.zhang@linux.dev>
-> >  >=20
->=20>  This looks correct, and either drops an smp_mb() or converts an
-> >  xchg() to a WRITE_ONCE(), which does decrease overhead. Except that
-> >  rcu_nocb_toggle() is invoked very infrequently and has high overhead
-> >  that I would expect to lose this overhead decrease in the noise. And=
- it
-> >  forces those reading the code to go figure out what is different bet=
-ween
-> >  set_current_state() and __set_current_state().
-> >=20=20
->=20>  So I am not convinced to take this patch. But am I missing somethi=
-ng here?
-> >=20=20
->=20>  Nothing was missed, only from memory ordering perspective,
-> >  using set_current_state() is unnecessary.=20
->=20>  furthermore, in RCU tasks, we used the following code:
-> >=20=20
->=20>  __set_current_state(TASK_IDLE); // in this we use __set_current_st=
-ate()
-> >  schedule_hrtimeout_range(&exp, jiffies_to_nsecs(HZ / 2), HRTIMER_MOD=
-E_REL_HARD);
-> >=20=20
->=20>  Or perhaps we could also add a comment something like this(kernel/=
-time/sleep_timeout.c):
-> >=20=20
->=20>  /*
-> >  * __set_current_state() can be used in schedule_timeout_*() function=
-s, because
-> >  * schedule_timeout() calls schedule() unconditionally.
-> >  */
-> >=20
->=20Would it make sense for a variant of schedule_hrtimeout_range() to ta=
-ke an
-> TASK_* argument and then use __set_current_state() internally? That wou=
-ld
-> get you the performance increase across all calls, but avoid bothering
-> the typical user with the difference between __set_current_state() vs.
-> set_current_state().
+Le Wed, Jun 24, 2026 at 06:23:45AM -0700, Puranjay Mohan a écrit :
+> This commit extracts the tail-pointer cleanup and segment compaction
+> logic from rcu_segcblist_advance() into a new static helper function,
+> rcu_segcblist_advance_compact(). This shared logic will be reused by the
+> upcoming srcu_segcblist_advance() standalone implementation, which
+> cannot call the core rcu_segcblist_advance() because that function will
+> use RCU-specific globals.
+> 
+> No functional change.
+> 
+> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
-This is a good idea.
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Thanks
-Zqiang
-
->=20
->=20 Thanx, Paul
->=20
->=20>=20
->=20> Thanks
-> >  Zqiang
-> >=20=20
->=20>=20=20
->=20>=20=20
->=20>  Thanx, Paul
-> >=20=20
->=20>  >=20
->=20>  > ---
-> >  > kernel/rcu/rcutorture.c | 2 +-
-> >  > 1 file changed, 1 insertion(+), 1 deletion(-)
-> >  >=20
->=20>  > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> >  > index b1bab59efde5..a0e6901e0f90 100644
-> >  > --- a/kernel/rcu/rcutorture.c
-> >  > +++ b/kernel/rcu/rcutorture.c
-> >  > @@ -2947,7 +2947,7 @@ static int rcu_nocb_toggle(void *arg)
-> >  > atomic_long_inc(&n_nocb_deoffload);
-> >  > }
-> >  > toggle_delay =3D torture_random(&rand) % toggle_fuzz + toggle_inte=
-rval;
-> >  > - set_current_state(TASK_INTERRUPTIBLE);
-> >  > + __set_current_state(TASK_INTERRUPTIBLE);
-> >  > schedule_hrtimeout(&toggle_delay, HRTIMER_MODE_REL);
-> >  > if (stutter_wait("rcu_nocb_toggle"))
-> >  > sched_set_normal(current, oldnice);
-> >  > --=20
->=20>  > 2.17.1
-> >  >
-> >
->
+-- 
+Frederic Weisbecker
+SUSE Labs
