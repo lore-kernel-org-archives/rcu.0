@@ -1,44 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4D2377017;
-	Fri, 10 Jul 2026 18:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40BD028373;
+	Fri, 10 Jul 2026 18:34:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783707904; cv=none; b=Afyv2SF3D7FKMTQ6kGJwMBxY5RM/7tM2D+ViM1k/qQYImioE51w3N8g3gdI+juGForLQz9veccSuHnQCEMF5BDUD7dgWt8FjYGm0hd2R2ymlOi/iKY/ws6phMdxU1xcy8tVZr15Jp1v+8LgNBB2uuCz3cH/dF5o6HCNs4BKDLLI=
+	t=1783708500; cv=none; b=jzuzd72NRhthceBOerSZmvHQeZ2qasfYFc7JIdj0aRs0uXlvlheu2bL25iHr44oj+mPTOkX3ikC8zLetGGX0Rp1v5M+IG0Q/Lv6QE6LPcsCOoMQXJ0WiXnLEOsRtCSSJrm+ApX987Y13AknhlacrbQwYEeLhNgZnlmVi5rtlJaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783707904; c=relaxed/simple;
-	bh=pYGv1Xp4rrfxYh2J/3fpdwwX7yz25tYz3ICBcWJHzys=;
+	s=arc-20240116; t=1783708500; c=relaxed/simple;
+	bh=77llPFpRWdCIXbg+KrBxrygRKrWPzXLhHKuqUb+Ge2M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CuRFEInXR3oecig8LIMiKwOF3e3MPN7tHB58qebv2YUAH2p0aUb9v3/cmpABHBkzf00CVLOf3nUv09p3g/0UrzhZ7lMyb3kmr/A5z1thVKN3BJwFpzfiJ+tH9z6gIK1rtbq+UH1uj2kw6cOGANe/8VhZlAoQCE4+4cn24Ogt9bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WKubxXxU; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=hWwsFNbmlB/Ivm8Zo5GrenB2tN0tZ3nEXDP+FyLSB4iF3KT2VM3Rqf9JF5t8tJCEHgpn1fvZQXM90UJTc34BFIdkQHlTIQ1+bbnpXMp7Mo244QfG6O2G+D/XHf5oYVuTIKecEpp4CDkBLD4hATwuYVqPP2f4CYQmfUp7u242RyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dseu/24D; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WKubxXxU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57B5C1F000E9;
-	Fri, 10 Jul 2026 18:25:01 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dseu/24D"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6FAC1F000E9;
+	Fri, 10 Jul 2026 18:34:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783707901;
-	bh=hlWI+s7PTyGVVFgwyVJsVPbD/1CjYjWlMmUlYTnXzeg=;
+	s=k20260515; t=1783708498;
+	bh=IRdwhV8P0MxC+t0uc52H/DAloh5jHYdj7TOGQBF98tY=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=WKubxXxUZG5o7bj2sh6qqhxWsWUNvLce9qQkkw0SLaELFV9F3Z0Dh38VDCg4fOKDn
-	 IOfaoTz9pswX58sRpjEE6MKDw5ymFf7YcKlRMpJ9Rb+VMleaHGwghrXbASpkWM/NCK
-	 Gbd7HRpBQbrjzEUU+IjiPaDaaGgPHZMPOam1XnaVTmq1Ag8ZhNP9kJfx/WHGRrDZlp
-	 FeW7hr+UEsLP7zCnDgqliYPQJsjABl5Jaoj4UnmznPtx2SajnB5udQUYs7m551WJwD
-	 hfVAhNR+BZmGzHvqLAZXmDvY3w+s72Fw/M47tMa7QEBRScJAdyuHrqIALHWvMNhLGh
-	 X//s2ELdPMUmw==
+	b=dseu/24DYyCy3wSeHSJBaeH2F+9ixJUXaBVx8p5shtGx9GdgUshX3DIQW3o44ji2N
+	 2uyf9xsL1nawidPvvgBpQE3AJVIr8+uhKN68gyLsB/rRPNDIygxXRE0mRUYh6FiNgR
+	 gkb9sR5m7d9unT4EhaNyVrcm5cutWzX7D2jryLMXRcU/J3anE1wrzIjm1+eInwV+4E
+	 hIOm7DyEYKb7vnxBPkTl926F/o9Mea3kK/FWB4iqUUslhp3gG5VIL1Sa/LtiY0T5HH
+	 9xXSmfM8nAhgMzg5yaja4wsmXa91IEylOXRdfYa8L6kiknxobVJwUeVLVsMZvlVvXp
+	 UDT01r1NbFm7Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 10DB7CE084A; Fri, 10 Jul 2026 11:25:01 -0700 (PDT)
-Date: Fri, 10 Jul 2026 11:25:01 -0700
+	id A005FCE084A; Fri, 10 Jul 2026 11:34:58 -0700 (PDT)
+Date: Fri, 10 Jul 2026 11:34:58 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Zqiang <qiang.zhang@linux.dev>
 Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
 	urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Remove smp_mb() in
- rcu_spawn_tasks_kthread_generic()
-Message-ID: <8e1b325f-f26a-4c2b-b36f-c13a0335d95a@paulmck-laptop>
+Subject: Re: [PATCH] srcu: Queue sdp->work when the delay timer is
+ successfully deleted
+Message-ID: <8b0f9909-1eff-4ae2-a005-93581dbcc865@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20260710115028.30303-1-qiang.zhang@linux.dev>
+References: <20260709100602.821-1-qiang.zhang@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -47,86 +47,96 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260710115028.30303-1-qiang.zhang@linux.dev>
+In-Reply-To: <20260709100602.821-1-qiang.zhang@linux.dev>
 
-On Fri, Jul 10, 2026 at 07:50:28PM +0800, Zqiang wrote:
-> The smp_mb() after kthread_run() in rcu_spawn_tasks_kthread_generic()
-> from early 'commit eacd6f04a133 ("rcu-tasks: Move Tasks RCU to its
-> own file")' and 'commit 84a8f446ffd7 ("rcu: Defer rcu_tasks_kthread()
-> creation till first call_rcu_tasks()")', the pairing as follows:
+On Thu, Jul 09, 2026 at 06:06:02PM +0800, Zqiang wrote:
+> In the cleanup_srcu_struct(), when iterating over per-cpu's srcu_data,
+> the timer_delete_sync(&sdp->delay_work) is called to cancel the delay
+> timer before flush_work(&sdp->work).
 > 
-> rcu_spawn_tasks_kthread()
-> ->t = kthread_run(rcu_tasks_kthread, ...);
-> ->smp_mb(); /* Ensure others see full kthread. */
-> ->WRITE_ONCE(rcu_tasks_kthread_ptr, t);
+> However, if the timer_delete_sync() returns 1 means that it successfully
+> deleted an pending timer before it had a chance to fire, also means that
+> the sdp->work cannot be queued, the subsequent flush_work(&sdp->work)
+> will returns immediately without waiting for anything, this causes SRCU
+> callbacks to not be processed.
 > 
-> 							call_rcu_tasks()
-> 					      		->if (READ_ONCE(rcu_tasks_kthread_ptr))
-> 					         	  ->wake_up(&rcu_tasks_cbs_wq)
-> 							    ->try_to_wake_up()
-> 							      lock pi_lock
-> 							      ->smp_mb__after_spinlock()
-> 								//see full kthread
-> 
-> Currently, the 'commit d119357d0743 ("rcu-tasks: Treat only synchronous
-> grace periods urgently")' moved kthread_ptr assignment into the
-> rcu_tasks_kthread(), the following pairings are sufficient:
-> 
-> The rq->lock/unlock from wake_up_process() in kthread_run() and
-> __schedule() provides a memory barrier when the kthread is first
-> scheduled, this ensures the kthread itself observes all of the
-> kthread's initialization.
-> 
-> The kthread's smp_store_release(&rtp->kthread_ptr, ...) in
-> rcu_tasks_kthread() and smp_load_acquire(&rtp->kthread_ptr) in
-> call_rcu_tasks_generic() compose release/acquire pairing, the
-> cumulativity of smp_store_release() propagates visibility of the
-> kthread's initialization through the scheduler chain.
-> 
-> This commit therefore remove smp_mb() in rcu_spawn_tasks_kthread_generic().
+> Fix this by checking the return value of timer_delete_sync(), if it
+> returns 1, explicitly queue sdp->work so that the following flush_work()
+> can correctly wait for the work to complete.
 > 
 > Signed-off-by: Zqiang <qiang.zhang@linux.dev>
 
-Very good, a removal of an smp_mb() that also simplifies analysis!
+Good catch!  I updated the commit log and comment as shown below.  Does
+that work for you?
 
-One question...
+						Thanx, Paul
 
 > ---
->  kernel/rcu/tasks.h | 2 --
->  1 file changed, 2 deletions(-)
+>  kernel/rcu/srcutree.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 5a8db89135eb..18ab335665e3 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -395,7 +395,6 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
->  		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
->  	}
->  	rcu_read_unlock();
-> -	/* We can't create the thread unless interrupts are enabled. */
-
-Why remove this comment?  People reading this code might wonder why we
-are not just invoking rcu_spawn_tasks_kthread_generic() to create the
-task here.
-
-Now, if you say that the current comment is confusing because if that
-kthread already exists, we also defer the wakeup, fair enough.  But in
-that case, could you please propose a replacement comment, perhaps as
-a separate patch?
-
-							Thanx, Paul
-
->  	if (needwake && READ_ONCE(rtp->kthread_ptr))
->  		irq_work_queue(&rtpcp->rtp_irq_work);
->  }
-> @@ -681,7 +680,6 @@ static void __init rcu_spawn_tasks_kthread_generic(struct rcu_tasks *rtp)
->  	t = kthread_run(rcu_tasks_kthread, rtp, "%s_kthread", rtp->kname);
->  	if (WARN_ONCE(IS_ERR(t), "%s: Could not start %s grace-period kthread, OOM is now expected behavior\n", __func__, rtp->name))
->  		return;
-> -	smp_mb(); /* Ensure others see full kthread. */
->  }
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 7c2f7cc131f7..02c322b7c6f1 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -725,7 +725,11 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+>  	for_each_possible_cpu(cpu) {
+>  		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
 >  
->  #ifndef CONFIG_TINY_RCU
+> -		timer_delete_sync(&sdp->delay_work);
+> +		//In most scenarios, calling srcu_barrier before cleanup
+> +		//will not trigger WARN_ON().
+> +		if (WARN_ON(timer_delete_sync(&sdp->delay_work)) &&
+> +					rcu_cpu_beenfullyonline(sdp->cpu))
+> +			queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
+>  		flush_work(&sdp->work);
+>  		if (WARN_ON(rcu_segcblist_n_cbs(&sdp->srcu_cblist)))
+>  			return; /* Forgot srcu_barrier(), so just leak it! */
 > -- 
 > 2.17.1
-> 
+
+------------------------------------------------------------------------
+
+commit d0b7ba8ff706ad1e3a51ffa46ee79b60ff0203f3
+Author: Zqiang <qiang.zhang@linux.dev>
+Date:   Thu Jul 9 18:06:02 2026 +0800
+
+    srcu: Queue sdp->work when the delay timer is successfully deleted
+    
+    In the cleanup_srcu_struct() function, when iterating over per-cpu's
+    srcu_data, timer_delete_sync(&sdp->delay_work) is called to cancel the
+    delayed work before doing flush_work(&sdp->work).
+    
+    However, suppose that timer_delete_sync() returns 1, which means that it
+    successfully deleted an pending timer before it had a chance to fire.
+    But this also means that the sdp->work will not be queued, so that the
+    subsequent flush_work(&sdp->work) will returns immediately without waiting
+    for anything.  Taken together, all of this means that any recently queued
+    SRCU callbacks to not be invoked, which can result in memory leaks,
+    hangs, or worse.
+    
+    Fix this by checking the return value of timer_delete_sync(), if it
+    returns 1, explicitly queue sdp->work so that the callbacks will be
+    invoked and the following flush_work() will correctly wait for all of
+    those callbacks to finish executing.
+    
+    Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 4a00e90e17fc07..8b4e7783bdc963 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -701,7 +701,11 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+ 	for_each_possible_cpu(cpu) {
+ 		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+ 
+-		timer_delete_sync(&sdp->delay_work);
++		// Call srcu_barrier() before this cleanup_srcu_struct()
++		// to avoid triggering this WARN_ON().
++		if (WARN_ON(timer_delete_sync(&sdp->delay_work)) &&
++					rcu_cpu_beenfullyonline(sdp->cpu))
++			queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
+ 		flush_work(&sdp->work);
+ 		if (WARN_ON(rcu_segcblist_n_cbs(&sdp->srcu_cblist)))
+ 			return; /* Forgot srcu_barrier(), so just leak it! */
