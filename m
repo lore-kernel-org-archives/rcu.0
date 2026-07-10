@@ -1,68 +1,68 @@
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F41367B92
-	for <rcu@vger.kernel.org>; Fri, 10 Jul 2026 03:29:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91AF63672A5
+	for <rcu@vger.kernel.org>; Fri, 10 Jul 2026 03:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783654182; cv=none; b=qwIyS2Bv7EGyu9A5LtI277225JzsdeCJwHn/pg+rWqmJ0YOc8kxD/1nHj7ILBAOH482vpvjEJrRGOj8qk8ACU5Sf97YEKjNwY1F+x/UY4CWRdGiJTuD13ep7mwTwYz4NurekQ+KAcUZQgKH9cjO2XiYHfBDjzW1bsM37uU36IZA=
+	t=1783654189; cv=none; b=FHc9IAWpFjfU1/ND2FcH+7Ldj++bs1vXPpf59BpIHoupvHdjYWe3CY+NX0WnZx7DeD+Hx5NQKb70hdf1fD+IYqKmK7h6Lv0/SSLnI7ro1c5rCbn6iSLbCIymAGghnAyq0RWAtRaNfaJAcbkQaLp1HsUUqxnQN4KiybyOKxTRAhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783654182; c=relaxed/simple;
-	bh=0kVUx60+5alzmI6kgDLzOujtVEhari+4UwkUd1VMwS0=;
+	s=arc-20240116; t=1783654189; c=relaxed/simple;
+	bh=Fu7ulrEF9vMTmeYkdDPOqk6yNZOJFGTqTgSUSx/HiFE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=eqoAWFUbpt900+eaRddoaG35Hk20z2WLL65Z7wRA+BAHu0nSza2LGjd0BoiT7aAqKA0bdliWL/a+x1y+vGVAS8KQrG6ebZgw0yTby0jxcdx0tEYWb2W2PN7wg+lyR15CVVwmBD/qlKMwQAiDB4BomMVcMcHo06UqP6jYs8fvx/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bt8EBiUI; arc=none smtp.client-ip=209.85.214.173
+	 In-Reply-To:To:Cc; b=TIjGs9K5WDfI3zN9oc1xEqCWLVpTWGAmolK4K51FGYubivdd63sl9LofWGPGZV3VE5lmx1UJB4LENZssvyUCT953rWmRZpNyzn8+7XsxP6pf0bCHMDaf0zXnq9TETkloi7dlfm2+Ss4UMGWe3Y0zB6LIdBpJn+aOdWGu8LWnx+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CPjSwQ1+; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bt8EBiUI"
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2ca64c3ce5fso5858445ad.3
-        for <rcu@vger.kernel.org>; Thu, 09 Jul 2026 20:29:39 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CPjSwQ1+"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2cacd69a9c0so3805945ad.1
+        for <rcu@vger.kernel.org>; Thu, 09 Jul 2026 20:29:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783654179; x=1784258979; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1783654188; x=1784258988; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=mrKXut03HXmQzwP+VjNkq+G+JdZqPXgKjkWKKkzd7+Y=;
-        b=Bt8EBiUI2V1wO/K1l4Lhczu1qbvAKxWWLcDVIaRqro2iD8040Zp0B29lShkQSOZqIF
-         RaOhkFfd1jw/2JevWdAHN8MDl5/Rz0LVgkys/NG3qmkDACsvZMr340yo6cR/p02sVzfa
-         Wk9sXELAFSfRZ5D4FDm71dyKQu+mri5cQXtazs71jcl8Mm9Yjp/z6zpCtpJ9GVDo1TVn
-         RpxfAuT8075tF4tdEsYCPsgxzgZGLVEixqLXb1RCniZ7rBI2z7gnaoRFyKFDhjnNO0j5
-         L8Y1cQ1BlE36/M4ZUDZCg3C5jESYopsnCGY1gF8nyvHYKsqEr6NamSU+iOItO9Pg8Wa+
-         4WJw==
+        bh=csN4cJukbkvLe5YqSWgDpZ0W4w2lD/0lFTHmWQ8kViM=;
+        b=CPjSwQ1+Uh+vPpiUN05+zQHyfSzuyXF4e3gROBnIIoc2rU4Ll0devqaPDVA9FCir8o
+         5LVYRJITVLiku3cPATljGHQ1eB1yHBR20dcFXTuo+talptIz++27a0LM6nhRWs0K7Hwa
+         wxACCtUNOziunFnY7mbMCo627vNHOktUsBl5DIJ0G+xZQ8SEnWua8BPiGENm0X3fT7lv
+         uhg9/zkRaDLCxUU4fiaSUPbryuaJ4bQUwalWRnKnkP6dnv3kNXATI2umjMHm4zsmx8Ju
+         ybXTCKBjPEVV0n3jNhEOJbweOsBBCq69kmyrSwG0/rnJZUu/9eX01RydiiYGnLkwtJsn
+         MvDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783654179; x=1784258979;
+        d=1e100.net; s=20251104; t=1783654188; x=1784258988;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=mrKXut03HXmQzwP+VjNkq+G+JdZqPXgKjkWKKkzd7+Y=;
-        b=mp19VzOtXv6lPPHJv5Z+Z+Pa8YF8z1WQtZXsQ3iV3b+ulfB/ZrIoDGGSO9iiVPzYtQ
-         ByqJf3W75kypglxt/QdiogbltD6bpMAOJ+9GRv4zo4t1Ni70O9gg7cFWe3+haDPIigIf
-         +zlhdCvRHRNTFyTmir96As7R5qpseXJHedkSZ/EyvFspCKuUBzOwuII3Uu0cZO2fMKy0
-         47YGb24330k2fU7pZuD51OM0Axn0Ak5cOXxKOS4x1b6JDnC4y09ESdF9WoXI5iP3PckK
-         FKrDnsAI/7WYfNzjJ41DcsfJdXz8bLZ85h9zUqIjKEBPNpaE9NnoHPmt2duGJMVq0gQL
-         uBJQ==
-X-Forwarded-Encrypted: i=1; AHgh+RqR35L0DqASo8ixlokeqFdgKkV911ej4apBmqtDQPyMDHNzAMfQpvRTRyXtyPE4fdCSQos=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxx1MUPDjQ0F+tmmmEg89k7kZv+z4ohwo9iioBImCuvQH3uW/8c
-	iyH2QclVmxpio2Z+hMyJ2qnZ8XtJSIg7+hM5dRvB35M7ApdxbzJTO6Kv
-X-Gm-Gg: AfdE7cl5MbQv6+I9u5g2OKGH0nfnOv0wPpibvUuOblORwcgziASNgsgTJvP7DqyB7DE
-	eBon3IiU2SFsuu9xfv70x65W0cLGWjUZ1u3GPxm8rn7E/SrQY61i+GqmL6QLonl1zvivnQPLIPz
-	N3VKrXOE2ABiWKQux5PTQEGDhkqpyUBZT3ctX9qEJz84JoXenqRQ7oEmolrDaIkOUOyK/6uHiRd
-	SKnHzMGHBaeeMBUhsFHOo8QINXQMp1jljkhO3yOxAbnSaJgewW8gsFN6VehthX8p9/tQmFSHMsV
-	cV5+F/OaAmlBBAISIHxHmkmyE+8Iq00PpqcUHvlhxxV3UPprLZyjrI5mdZR0vrN0Uq6YELR2uNc
-	vb8/d1Ax+hgMwfRLX1m0d8mCLre+hEzdO0tuh9QFL3B5LvV4iEPzyqoIyHpS26JvT0VjT/NnJTt
-	Km15TH1Xdc7TF//4OBR046vw==
-X-Received: by 2002:a17:903:2411:b0:2c9:b396:1a55 with SMTP id d9443c01a7336-2ccea394d5dmr102447495ad.12.1783654178893;
-        Thu, 09 Jul 2026 20:29:38 -0700 (PDT)
+        bh=csN4cJukbkvLe5YqSWgDpZ0W4w2lD/0lFTHmWQ8kViM=;
+        b=gzNRqG9WHe7gr+gAC9SBiKxN6wTqeF6EWgFcy092/uSCKPbesvPjihDFYIZyG76U5h
+         azf33PFCO/8Suo6NqVb1WFyHZmdbtD0eFNPpXG0A/D4XL5ISM1CqlzBJM5kYv7LQjN3o
+         BSUFKdWrCO6AW3BmodmDA4IdFtNonw1n3nhssJgn0/GajLj9/Hv8S66VQe67tGxfqh0q
+         wAKKZV1Iq9D8beVE2+5mo8Q57WIDEEi/bavVlphmij82/mV/c0woY0BTxf9r4SMBXs5i
+         9iXl8YqCNzsZNfsZIh4JqAxIKr0Kl/jdkh90OB67GoxAWo+TgWB+UjTHKOEDikAu06rM
+         G3Tg==
+X-Forwarded-Encrypted: i=1; AHgh+RqoirJZs78khYJC/B+y4KecZSFexo9Ulp2kn8uwsAVNXbinr0ejERnlPLsi3+EU8GKuVQs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZ00+zoofS6JMmwrVpBcjQSeoP/VlYtyjrXPkJZ9i8CtJ206pY
+	uICjJUM5fJKe0Ij6w/Ly6lLI/JVFVSETW/gv/1gELR81wkq11YeWfHaN
+X-Gm-Gg: AfdE7clFLy4DJm0xRYAg15EaSk0mMwFwsaxO8Lh4g+ubnhEcp3kdS979txtp7f+247h
+	H5woI6GydUS9YNNIBMkiOudJjYaQuh/s3KiAAaW9Z/waUjAsA1//tIgGaBgVgeEWd1vOC8LSyMt
+	Msfg/+J996HlXAG0if6WnYGnViaVI2LjP7Dq48jKHo31ez30JEaHQG6GcpYVAGmCzZws4reym+x
+	3YMg+Pv2UcB3abNgWlynxSRIfupWhA7XZv4JmVZberEwrEvtii4JzPhIGt8RLdmtt94HZ8nggMZ
+	1aAo1nVzCCVq3CswoShT/s8FAJQY+6Fe+dHPo/bfwXUQy5TzShHORhg4WugNjMbyYdhCzNxoFtt
+	W2bDXJQNsfg0KatJ8V3Dyqr9N/GW0/7i/VJLrKSzZDYVKkJiOk8sbey7UoY7RSmyaAc0hypz86q
+	g0lj4xidh9hwU=
+X-Received: by 2002:a17:903:2990:b0:2cc:f4d4:29a7 with SMTP id d9443c01a7336-2ccf4d46bd1mr83112295ad.24.1783654187634;
+        Thu, 09 Jul 2026 20:29:47 -0700 (PDT)
 Received: from [127.0.1.1] ([138.199.21.246])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ccc9bdb56fsm53436465ad.15.2026.07.09.20.29.27
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ccc9bdb56fsm53436465ad.15.2026.07.09.20.29.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 20:29:38 -0700 (PDT)
+        Thu, 09 Jul 2026 20:29:47 -0700 (PDT)
 From: Jing Wu <realwujing@gmail.com>
-Date: Fri, 10 Jul 2026 11:28:19 +0800
-Subject: [PATCH v4 08/11] cpuset: add dhm_cycling_cpus mask to suppress
- transient invalidation
+Date: Fri, 10 Jul 2026 11:28:20 +0800
+Subject: [PATCH v4 09/11] cpuset: drive kernel-noise isolation via per-CPU
+ hotplug cycling
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -71,7 +71,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260710-wujing-dhm-v4-8-2e912e5d9645@gmail.com>
+Message-Id: <20260710-wujing-dhm-v4-9-2e912e5d9645@gmail.com>
 References: <20260710-wujing-dhm-v4-0-2e912e5d9645@gmail.com>
 In-Reply-To: <20260710-wujing-dhm-v4-0-2e912e5d9645@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -97,104 +97,194 @@ Cc: Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
  Qiliang Yuan <yuanql9@chinatelecom.cn>
 X-Mailer: b4 0.13.0
 
-When the cpuset code cycles a CPU through hotplug to apply kernel-noise
-isolation (remove_cpu followed by add_cpu), the CPU disappears from
-cpu_active_mask temporarily. cpuset_hotplug_update_tasks() sees an
-empty effective CPU set on the isolated partition and issues
-partcmd_invalidate, tearing down the partition. The subsequent add_cpu
-brings the CPU back online, but the partition has already been marked
-invalid and requires manual user intervention to restore.
+Track A (cpuset_update_sd_hk_unlock) updates the HK_TYPE_KERNEL_NOISE
+and HK_TYPE_MANAGED_IRQ cpumasks but performs no per-CPU reconfiguration.
+Tick suppression, RCU callback offloading and managed-IRQ remapping only
+take effect when the affected CPUs pass through the CPU hotplug machinery.
 
-Add a global dhm_cycling_cpus cpumask protected by dhm_cycling_lock.
-The isolation cycling path sets the bits for CPUs being cycled before
-calling remove_cpu(), clears them after add_cpu() completes.
-cpuset_hotplug_update_tasks() checks whether any of the cpuset's
-effective exclusive CPUs are in dhm_cycling_cpus and skips the
-invalidation command when they are, treating the transient empty-CPU
-state as expected rather than an error.
+Implement dhm_cycle_isolated_cpus() and call it from
+cpuset_update_sd_hk_unlock() after all cpuset and hotplug locks are
+released so that remove_cpu()/add_cpu() may acquire cpus_write_lock
+without violating the cpu_hotplug_lock > cpuset_top_mutex order.
 
-A global cpumask avoids the need to walk the cpuset tree to find the
-owning cpuset during the cycling loop which runs without cpuset locks.
+On isolation, for each newly-isolated CPU:
+  1. remove_cpu()              - offline; dying callbacks migrate IRQs
+  2. tick_nohz_cpu_isolate()  - add to tick_nohz_full_mask, enable
+                                 context tracking (B0/B3)
+  3. rcu_nocb_cpu_isolate()   - lazy nocb init, spawn kthreads, offload
+                                 callbacks (B1)
+  4. add_cpu()                 - online; tick and IRQ online callbacks
+                                 reconfigure against updated HK masks
+
+On de-isolation, the reverse order is applied.  The managed-IRQ
+remapping requires no explicit call: irq_migrate_all_off_this_cpu()
+(dying callback) and irq_affinity_online_cpu() (online callback)
+already consult the updated HK_TYPE_MANAGED_IRQ mask.
+
+dhm_prev_isolated tracks the previous isolation set so that only CPUs
+whose state changed are cycled rather than the full isolation set.
+lockup_detector_hk_update() (B2) is called once after all CPUs are
+cycled to update the watchdog mask.
+
+CPUs with hotplug disabled (e.g. x86-64 boot CPU) cannot be taken
+offline and are skipped.  On any remove_cpu() failure the corresponding
+CPU is cleared from dhm_prev_isolated so the next isolation attempt
+will retry rather than silently treating it as already isolated.
+Symmetrically, a de-isolation remove_cpu() failure re-sets the bit in
+dhm_prev_isolated so the CPU remains tracked as still isolated.
 
 Co-developed-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
 Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
 Signed-off-by: Jing Wu <realwujing@gmail.com>
 ---
- kernel/cgroup/cpuset.c | 40 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 38 insertions(+), 2 deletions(-)
+ kernel/cgroup/cpuset.c | 98 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 98 insertions(+)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 80f43a24d3c8a..62eb6798a0c3e 100644
+index 62eb6798a0c3e..d9e121bf14292 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -156,6 +156,14 @@ static bool		update_housekeeping;	/* RWCS */
+@@ -20,6 +20,8 @@
   */
- static cpumask_var_t	isolated_hk_cpus;	/* T */
+ #include "cpuset-internal.h"
+ 
++#include <linux/cpu.h>
++#include <linux/cpuhplock.h>
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+@@ -33,7 +35,9 @@
+ #include <linux/sched/task.h>
+ #include <linux/security.h>
+ #include <linux/oom.h>
++#include <linux/nmi.h>
+ #include <linux/sched/isolation.h>
++#include <linux/tick.h>
+ #include <linux/wait.h>
+ #include <linux/workqueue.h>
+ #include <linux/task_work.h>
+@@ -164,6 +168,14 @@ static cpumask_var_t	isolated_hk_cpus;	/* T */
+ static DEFINE_SPINLOCK(dhm_cycling_lock);
+ static cpumask_var_t	dhm_cycling_cpus;
  
 +/*
-+ * CPUs currently being cycled through hotplug for kernel-noise isolation.
-+ * Protected by dhm_cycling_lock; read in cpuset_hotplug_update_tasks() to
-+ * suppress transient partition invalidation during the offline step.
++ * Snapshot of the isolated CPUs from the previous housekeeping update.
++ * Used to compute the delta (newly isolated / newly de-isolated) so that
++ * only the changed CPUs are cycled rather than the full isolation set.
++ * Protected by cpuset_top_mutex.
 + */
-+static DEFINE_SPINLOCK(dhm_cycling_lock);
-+static cpumask_var_t	dhm_cycling_cpus;
++static cpumask_var_t	dhm_prev_isolated;
 +
  /*
   * A flag to force sched domain rebuild at the end of an operation.
   * It can be set in
-@@ -3708,6 +3716,7 @@ int __init cpuset_init(void)
- 	BUG_ON(!zalloc_cpumask_var(&subpartitions_cpus, GFP_KERNEL));
+@@ -1339,6 +1351,84 @@ static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
+ 	return false;
+ }
+ 
++/*
++ * dhm_cycle_isolated_cpus - Apply kernel-noise isolation via hotplug cycling
++ *
++ * For each CPU newly entering isolation: cycle it offline, configure tick
++ * suppression and RCU callback offloading while it is offline, then bring
++ * it back online.  The managed-IRQ state is handled automatically by the
++ * existing irq_migrate_all_off_this_cpu() dying callback and the
++ * irq_affinity_online_cpu() online callback which both consult the
++ * already-updated HK_TYPE_MANAGED_IRQ mask.
++ *
++ * For each CPU leaving isolation: cycle it offline, de-offload RCU and
++ * restore the tick, then bring it back online.
++ *
++ * Must be called without any cpuset or hotplug locks held.
++ */
++static void dhm_cycle_isolated_cpus(const struct cpumask *new_isolated)
++{
++	cpumask_var_t newly_isolated, newly_deisolated;
++	int cpu;
++
++	if (!alloc_cpumask_var(&newly_isolated, GFP_KERNEL) ||
++	    !alloc_cpumask_var(&newly_deisolated, GFP_KERNEL)) {
++		free_cpumask_var(newly_isolated);
++		return;
++	}
++
++	cpumask_andnot(newly_isolated, new_isolated, dhm_prev_isolated);
++	cpumask_andnot(newly_deisolated, dhm_prev_isolated, new_isolated);
++	cpumask_copy(dhm_prev_isolated, new_isolated);
++
++	if (cpumask_empty(newly_isolated) && cpumask_empty(newly_deisolated))
++		return;
++
++	/* Mark cycling CPUs so cpuset_hotplug_update_tasks skips invalidation */
++	spin_lock(&dhm_cycling_lock);
++	cpumask_or(dhm_cycling_cpus, newly_isolated, newly_deisolated);
++	spin_unlock(&dhm_cycling_lock);
++
++	for_each_cpu(cpu, newly_isolated) {
++		if (!cpu_is_hotpluggable(cpu)) {
++			pr_warn_once("cpuset: CPU%d cannot be isolated (hotplug disabled)\n",
++				     cpu);
++			cpumask_clear_cpu(cpu, dhm_prev_isolated);
++			continue;
++		}
++		if (remove_cpu(cpu)) {
++			pr_warn_once("cpuset: failed to offline CPU%d for isolation\n",
++				     cpu);
++			cpumask_clear_cpu(cpu, dhm_prev_isolated);
++			continue;
++		}
++		WARN_ON_ONCE(tick_nohz_cpu_isolate(cpu));
++		WARN_ON_ONCE(rcu_nocb_cpu_isolate(cpu));
++		WARN_ON_ONCE(add_cpu(cpu));
++	}
++
++	for_each_cpu(cpu, newly_deisolated) {
++		if (remove_cpu(cpu)) {
++			pr_warn_once("cpuset: failed to offline CPU%d for de-isolation\n",
++				     cpu);
++			cpumask_set_cpu(cpu, dhm_prev_isolated);
++			continue;
++		}
++		WARN_ON_ONCE(rcu_nocb_cpu_deoffload(cpu));
++		tick_nohz_cpu_deisolate(cpu);
++		WARN_ON_ONCE(add_cpu(cpu));
++	}
++
++	spin_lock(&dhm_cycling_lock);
++	cpumask_clear(dhm_cycling_cpus);
++	spin_unlock(&dhm_cycling_lock);
++
++	lockup_detector_hk_update();
++
++	free_cpumask_var(newly_isolated);
++	free_cpumask_var(newly_deisolated);
++}
++
+ /*
+  * cpuset_update_sd_hk_unlock - Rebuild sched domains, update HK & unlock
+  *
+@@ -1386,6 +1476,13 @@ static void cpuset_update_sd_hk_unlock(void)
+ 		WARN_ON_ONCE(housekeeping_update_types(noise_types,
+ 						       isolated_hk_cpus));
+ 		mutex_unlock(&cpuset_top_mutex);
++
++		/*
++		 * All cpuset and hotplug locks are released.  Cycle each
++		 * affected CPU through hotplug to activate tick suppression,
++		 * RCU callback offloading and managed-IRQ remapping.
++		 */
++		dhm_cycle_isolated_cpus(isolated_hk_cpus);
+ 	} else {
+ 		cpuset_full_unlock();
+ 	}
+@@ -3717,6 +3814,7 @@ int __init cpuset_init(void)
  	BUG_ON(!zalloc_cpumask_var(&isolated_cpus, GFP_KERNEL));
  	BUG_ON(!zalloc_cpumask_var(&isolated_hk_cpus, GFP_KERNEL));
-+	BUG_ON(!zalloc_cpumask_var(&dhm_cycling_cpus, GFP_KERNEL));
+ 	BUG_ON(!zalloc_cpumask_var(&dhm_cycling_cpus, GFP_KERNEL));
++	BUG_ON(!zalloc_cpumask_var(&dhm_prev_isolated, GFP_KERNEL));
  
  	cpumask_setall(top_cpuset.cpus_allowed);
  	nodes_setall(top_cpuset.mems_allowed);
-@@ -3804,6 +3813,20 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	if (remote && (cpumask_empty(subpartitions_cpus) ||
- 			(cpumask_empty(&new_cpus) &&
- 			 partition_is_populated(cs, NULL)))) {
-+		bool cycling;
-+
-+		/*
-+		 * Suppress transient invalidation when the offline is part
-+		 * of a hotplug cycling step for kernel-noise isolation.
-+		 */
-+		spin_lock(&dhm_cycling_lock);
-+		cycling = cpumask_available(dhm_cycling_cpus) &&
-+			  cpumask_intersects(cs->effective_xcpus,
-+					     dhm_cycling_cpus);
-+		spin_unlock(&dhm_cycling_lock);
-+		if (cycling)
-+			goto unlock;
-+
- 		cs->prs_err = PERR_HOTPLUG;
- 		remote_partition_disable(cs, tmp);
- 		compute_effective_cpumask(&new_cpus, cs, parent);
-@@ -3821,8 +3844,21 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	if (is_local_partition(cs) &&
- 	    (!is_partition_valid(parent) ||
- 	     tasks_nocpu_error(parent, cs, &new_cpus) ||
--	     cpumask_empty(subpartitions_cpus)))
--		partcmd = partcmd_invalidate;
-+	     cpumask_empty(subpartitions_cpus))) {
-+		bool cycling;
-+
-+		/*
-+		 * Suppress transient invalidation when the offline is part
-+		 * of a hotplug cycling step for kernel-noise isolation.
-+		 */
-+		spin_lock(&dhm_cycling_lock);
-+		cycling = cpumask_available(dhm_cycling_cpus) &&
-+			  cpumask_intersects(cs->effective_xcpus,
-+					     dhm_cycling_cpus);
-+		spin_unlock(&dhm_cycling_lock);
-+		if (!cycling)
-+			partcmd = partcmd_invalidate;
-+	}
- 	/*
- 	 * On the other hand, an invalid partition root may be transitioned
- 	 * back to a regular one with a non-empty effective xcpus.
 
 -- 
 2.43.0
