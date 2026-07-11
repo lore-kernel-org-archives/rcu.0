@@ -1,164 +1,126 @@
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16CE3C3BFF
-	for <rcu@vger.kernel.org>; Sat, 11 Jul 2026 12:13:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783772001; cv=pass; b=sOUf+A4zxcbbYB18LHSAsq+LP9GgBINN9AFAykXaoXK3RsoHaY+/oz4iifmhGTboz5oQG4SbZMArOXWJNUtl8rBTicbdTtPFi5CkWX5Wy1Qo67jO4Q+w/e9Kt9qXkCEsXjhtwTfYTTYO20kh6S9C5kwwoTIu2hxgR/oPZsSN7aE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783772001; c=relaxed/simple;
-	bh=80vo3JIjnCsKn8zo158HX4vkfRXd32w7uPzzJAtLaF0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K7AeBtbrysa03RQO7Y3e3j90F0Oj8Y6kqi8oFT5O9O/KXnXblwMPAU2wVGM9GF2DN3xVD49rkliVk0YqmesNZWob/gxkt/tJ7cgaEUt7GlN9CTovTwp2udZGGVawJ9ZALJAQMa1RN/zPLSjf4gr0UTIWC1K5RR51PHCjG5q4Sss=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gHFB0fSe; arc=pass smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52F73C061D
+	for <rcu@vger.kernel.org>; Sat, 11 Jul 2026 13:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783774915; cv=none; b=nSN9AOsvP2nszlgZzrgRG1bk4sF/Av59Vf6PyVZDt7/oJgFxp1UZMBE4Za5wFz3gkfsixfaLFaZyFYWVYCYQB3de3xHvMRO3bZtsLx9qloSGQpycTYb2lwqGBj8dO6GIvIRkUSBFzthrlK1cmVskFGEYMcZPdckCM/zl3z9hnhw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783774915; c=relaxed/simple;
+	bh=7sRtOZF+YPTQA4fFn6HdZmoBJ2AcEBCS9lMdLmotymc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bc4TjwbdjUqP/QDQoHQUqf7YC1Rg2mONbMX19ANoI55p6OTQfWorLn2QkHZ9ic1oKjyWquG7+7qT9N3hIXpSbcT/stXEFxbglJbz0V7FQtV4b4SiZtxxw7c2IfafmRu/h5gwROS16xdLbtvo9+tvLtzxCzvCU7hcPCl5c7Fg0rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FMUcg1cs; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gHFB0fSe"
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3856d4015e0so265657a91.2
-        for <rcu@vger.kernel.org>; Sat, 11 Jul 2026 05:13:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1783771999; cv=none;
-        d=google.com; s=arc-20260327;
-        b=rvtsC2t5P61IhwzKh0EUO0QSfMR33C2iMwOtR7d2Tx65YsJ+zYWJ7Ds58/EtMxesLP
-         8xFW8WPsojFnzJ0thnrKYopdzd4ol/dp7rreqMrA/5HDXcx0a2FQJKwbXKNzP93PnlsE
-         r605XQ2nPgjhMj8n+PrK37W+G4O5zAC4YydNR6GPjAmadZUXD/DNLvnGPgZaJSde/E0Q
-         vo1YmdXBGpJbrJw3iUPgC3eUCO4iv7Z0Lu+F8t+g9LmVuWttFkg9UdP7/caMWMUv33pU
-         t7sKbCqtWeLf+Zat2gwjGJPjLYPHQd+NN3/gbGdPL5eGGxPPyXMfF3LAAJJ3oluS2TGb
-         3WAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=80vo3JIjnCsKn8zo158HX4vkfRXd32w7uPzzJAtLaF0=;
-        fh=Phty7xTmowcdFnggyuHSftCPuew0zNyt5ih4yTYUkZM=;
-        b=B8YwvLsXT6ScR6LA7wTDSFrMZbAo9PxHReLa7pf2W8iH40cc589ALHe8agnUA5tirY
-         /a7NOkCjNCKAvnISSws/iW+UGjrT3+IAyhfyAUk3KzGTHIlYLOb1hrfwKL1YoWEzjmQ3
-         ebypwreQxANrCBt9kysV+xbP3kPH+Dg6aaEes8n1L/gywgXiS53nsWFL4Q8Z3acry0v7
-         4lC4QGeriDrY9T50murLoe4qYOUD7oOFmYFxMxKTmyK7n6a9Kdm4dayFpUMt0zwbXwem
-         PmhZO+iLXZXrhDZ/GBI6yxdpyj69dIWGdD/EWYuoDXZrUpFV+afygzlt8xfGZS12SyyK
-         /hpQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783771999; x=1784376799; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=80vo3JIjnCsKn8zo158HX4vkfRXd32w7uPzzJAtLaF0=;
-        b=gHFB0fSemSn6s4jVp/EuBtir/qlPGO8Vq2wg3sOO56WQSEm3m1wgLV+PH+YCzCwe4w
-         40XUJ8N3llKffVv3KvwlpEx0PwjFhEP4ejwfKckXHhOrs4COlZYMuCDJVCD700HVWfby
-         Wef44AYzEvkwlRh4pmvCSPrnSSb+EuoMS7xAp1fqanhd4vgQUbVFs9DMhr/aX2ve4EZi
-         XKK9VbugY1ax8izR6ls1BpqL9Fr7yUJMtkts2rZtlWUvAdEs5tvYZoRcRU9pXB0Y6W76
-         RQw5PmUpYS6rrCfKNmEtUvADgYNWM7gb8xCEbJGzjwstKv7ju7GWWD5f6bQVByQhgD9b
-         Verg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783771999; x=1784376799;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=80vo3JIjnCsKn8zo158HX4vkfRXd32w7uPzzJAtLaF0=;
-        b=ENEcSMWSUjxGlJCLU+e7CT003Ux/15F4HLpU3vzhkp8xYvoOyCew6O9cW1YCW81beZ
-         agfAHl+tPX/dfwgoUnesPlrO8fFiOPtVDhoyu1Zh4XLBNHdO1XshpVoWnvXW4donZ/IY
-         88HVrzLAvODTrST2eJyFpMfSjUF2iqmcE690dGyPJSco2RLUH9m5v8Swc/p+mbFW6hLh
-         /HhQJZ6cByBNsYdQNwwehYVr6NQ5L7IRYbrV2XXSorHxn3//xpZsrMjqYkj8h6o9Cxw/
-         IHJSOvPlWXM5cT8/3x8m6O7qtZ5IHNBmqbu4+5xzPz0DIN5QycZxLFrKCIBsn08uM37M
-         ZdBQ==
-X-Forwarded-Encrypted: i=1; AHgh+RrLv1uOpCryZomVFne2C+prGpxcjwiszgzhUfXMedPan0MbE/iQ6+iEb7ERTQiCNRr3O5k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAWcdc774UiSkne7Z9yu/Yb8//JhnDfdf0T7xWbKWC5T6nRdn6
-	k+F+W2N9kl8NeCBY2tfdDH59dRVm1ud63yCWTG+i2P8dL3EUwWvQ7NOA1NlAVN/eQS7Cb1sZGOY
-	TSqB4OzMRKhKE10M7HZe0DYt3JE+qlco=
-X-Gm-Gg: AfdE7cmKTakvX7Cm1rqdAaGCd+Rt5dn4170JDeLKZtNvEYyAZq/aTaym7TnfqhhnHVK
-	9nqEI1VtzeelKLLBACGSTUNrCQ3s3/aqtGIlIaSv2QMLFubO6FBmJzag3bdHRRcFcM3Y/5HawOy
-	VsUvq03QTQXn5hiwGfmgGtho8FJaBegzjHyaQ5m/dQvwWvUSKOCBrSgVp3NfSaRkCtCmwZu4Wov
-	85z7MhlaxGskuLIpqDtZROgsekcnvTciu9YgMib4ynuvRAvDtYAYc7m5V6Tta/al08G5deyPJCk
-	qt7/MAWB53TUjenndJfEw8IrDNK7647bpxTDiRdvpGnam53G84MHZGRj9fThaWi6xR1qiDbD5/P
-	EtEItWyHLuPG2
-X-Received: by 2002:a17:90b:4984:b0:380:9cd1:d985 with SMTP id
- 98e67ed59e1d1-38dc7c111a8mr1909664a91.6.1783771998816; Sat, 11 Jul 2026
- 05:13:18 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FMUcg1cs"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1783774912;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a6vDyJk3Cy2WXcJVb9Fz2t23mdGudHpQUdVcvkmNRO8=;
+	b=FMUcg1csdEVl1fQfIu680BFdQIR44T5BGLX+23FXhfdsGWyNP28CgU9qyN5vPND7y99gsI
+	8ZWAKoBVbqGYi6nAeWH5jmvUE01Yv41+2F3NZ+lsdznwSIckALvrdjrtTkGB+5GbJ8e0p0
+	jo3IvX/9j3jZbJ2yb1+D3Yt9sGBeFk4=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-410-Zf1DJUG4OMunXLcWCMzOvg-1; Sat,
+ 11 Jul 2026 09:01:48 -0400
+X-MC-Unique: Zf1DJUG4OMunXLcWCMzOvg-1
+X-Mimecast-MFC-AGG-ID: Zf1DJUG4OMunXLcWCMzOvg_1783774905
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5F89119560BB;
+	Sat, 11 Jul 2026 13:01:44 +0000 (UTC)
+Received: from fedora (unknown [10.44.49.164])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 8AFE918005B7;
+	Sat, 11 Jul 2026 13:01:35 +0000 (UTC)
+Received: by fedora (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sat, 11 Jul 2026 15:01:43 +0200 (CEST)
+Date: Sat, 11 Jul 2026 15:01:32 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	James Clark <james.clark@linaro.org>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/2] uprobes: Switch uretprobes_srcu to
+ SRCU-fast-updown
+Message-ID: <alI-rKAWUdoPCy5k@redhat.com>
+References: <20260706172744.3920417-1-puranjay@kernel.org>
+ <20260706172744.3920417-3-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260706061928.66713-1-byungchul@sk.com> <20260706061928.66713-40-byungchul@sk.com>
-In-Reply-To: <20260706061928.66713-40-byungchul@sk.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Sat, 11 Jul 2026 14:13:05 +0200
-X-Gm-Features: AUfX_mwWK6GqFCLIKCx9ivosmcno3i0b64L6R15FyNFXSSwj0HKdZlNefQKWcgc
-Message-ID: <CANiq72kEo=bGcHNaSA9JZhv4iuE+YDvu0kN+Z7aopVp3=2C+Wg@mail.gmail.com>
-Subject: Re: [PATCH v19 39/40] rust: completion: Add __rust_helper to rust_helper_wait_for_completion()
-To: Byungchul Park <byungchul@sk.com>, Gary Guo <gary@garyguo.net>
-Cc: linux-kernel@vger.kernel.org, max.byungchul.park@gmail.com, 
-	kernel_team@skhynix.com, torvalds@linux-foundation.org, 
-	damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org, 
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, mingo@redhat.com, 
-	peterz@infradead.org, will@kernel.org, tglx@linutronix.de, 
-	rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org, 
-	daniel.vetter@ffwll.ch, duyuyang@gmail.com, johannes.berg@intel.com, 
-	tj@kernel.org, tytso@mit.edu, willy@infradead.org, david@fromorbit.com, 
-	amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com, 
-	linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org, 
-	minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org, 
-	jglisse@redhat.com, dennis@kernel.org, cl@linux.com, penberg@kernel.org, 
-	rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org, 
-	linux-block@vger.kernel.org, josef@toxicpanda.com, 
-	linux-fsdevel@vger.kernel.org, jack@suse.cz, jlayton@kernel.org, 
-	dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org, 
-	dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com, 
-	melissa.srw@gmail.com, hamohammed.sa@gmail.com, harry.yoo@oracle.com, 
-	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com, boqun.feng@gmail.com, 
-	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com, 
-	yeoreum.yun@arm.com, netdev@vger.kernel.org, matthew.brost@intel.com, 
-	her0gyugyu@gmail.com, corbet@lwn.net, catalin.marinas@arm.com, bp@alien8.de, 
-	x86@kernel.org, hpa@zytor.com, luto@kernel.org, sumit.semwal@linaro.org, 
-	gustavo@padovan.org, christian.koenig@amd.com, andi.shyti@kernel.org, 
-	arnd@arndb.de, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, 
-	rppt@kernel.org, surenb@google.com, mcgrof@kernel.org, petr.pavlu@suse.com, 
-	da.gomez@kernel.org, samitolvanen@google.com, paulmck@kernel.org, 
-	frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, 
-	josh@joshtriplett.org, urezki@gmail.com, mathieu.desnoyers@efficios.com, 
-	jiangshanlai@gmail.com, qiang.zhang@linux.dev, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, 
-	mgorman@suse.de, vschneid@redhat.com, chuck.lever@oracle.com, neil@brown.name, 
-	okorniev@redhat.com, Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org, 
-	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de, clrkwllms@kernel.org, 
-	mark.rutland@arm.com, ada.coupriediaz@arm.com, kristina.martsenko@arm.com, 
-	wangkefeng.wang@huawei.com, broonie@kernel.org, kevin.brodsky@arm.com, 
-	dwmw@amazon.co.uk, shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com, 
-	yuzhao@google.com, baolin.wang@linux.alibaba.com, usamaarif642@gmail.com, 
-	joel.granados@kernel.org, richard.weiyang@gmail.com, geert+renesas@glider.be, 
-	tim.c.chen@linux.intel.com, linux@treblig.org, 
-	alexander.shishkin@linux.intel.com, lillian@star-ark.net, 
-	chenhuacai@kernel.org, francesco@valla.it, guoweikang.kernel@gmail.com, 
-	link@vivo.com, jpoimboe@kernel.org, masahiroy@kernel.org, brauner@kernel.org, 
-	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com, 
-	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, 
-	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org, 
-	rcu@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, 2407018371@qq.com, dakr@kernel.org, 
-	neilb@ownmail.net, bagasdotme@gmail.com, wsa+renesas@sang-engineering.com, 
-	dave.hansen@intel.com, geert@linux-m68k.org, ojeda@kernel.org, 
-	alex.gaynor@gmail.com, bjorn3_gh@protonmail.com, lossin@kernel.org, 
-	a.hindborg@kernel.org, aliceryhl@google.com, tmgross@umich.edu, 
-	rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260706172744.3920417-3-puranjay@kernel.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-On Mon, Jul 6, 2026 at 8:22=E2=80=AFAM Byungchul Park <byungchul@sk.com> wr=
-ote:
+On 07/06, Puranjay Mohan wrote:
 >
-> This is needed to inline these helpers into Rust code, which is required
-> for DEPT to play with wait_for_completion().
+> uretprobes_srcu currently uses normal SRCU, which issues
+> two smp_mb() per read lock/unlock pair. This overhead is
+> paid on every uretprobe hit.
 >
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> Switch to SRCU-fast-updown, which eliminates the per-reader
+> memory barriers by moving the ordering cost to the
+> grace-period side (synchronize_rcu() instead of smp_mb()).
+> This is acceptable because grace periods (uprobe
+> unregistration) are infrequent compared to reader-side
+> uretprobe hits.
+>
+> The updown flavor is required because the SRCU read lock is
+> taken in prepare_uretprobe() when a return instance is
+> created and is held until that return instance is finalized.
+> The traced thread returns to user space in between, so the
+> lock is inherently released in a different context from
+> where it was acquired: on the normal return path via
+> uprobe_handle_trampoline() -> hprobe_finalize(), or from
+> ri_timer() (expiry) or dup_utask() (fork) via
+> hprobe_expire(). srcu_down_read_fast() / srcu_up_read_fast()
+> are designed for this acquire-here / release-elsewhere
+> pattern and, unlike the same-context srcu_read_lock_fast()
+> variant, do not carry the lockdep read-side tracking that
+> would warn on it.
+>
+> The short, same-context SRCU sections in ri_timer() and
+> dup_utask() (which guard the uprobe against reuse across the
+> hprobe_expire() cmpxchg) instead use guard(srcu_fast_updown)
+> for proper lockdep coverage.
+>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  include/linux/uprobes.h |  5 +++--
+>  kernel/events/uprobes.c | 29 +++++++++++++++++------------
+>  2 files changed, 20 insertions(+), 14 deletions(-)
 
-Apart from what Gary said -- why did you need to do this in a separate
-patch in the same series?
+And the commit d3f52f53a562 ("srcu: Create an SRCU-fast-updown API")
+even mentions uretprobes as a likely user.
 
-Cheers,
-Miguel
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+
