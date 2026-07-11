@@ -1,102 +1,164 @@
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351482F4A05
-	for <rcu@vger.kernel.org>; Sat, 11 Jul 2026 05:56:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783749382; cv=none; b=Vb5gntd/P4/dSwU+00ZHD4gZczlb/uageQ90/2jeW1ndcaGgkCrqGtSzMD037jiI4wmrGkYw3ZEjuwIG+7VHkesG1JXd+v3vT7sFhveSbxPJVsgSU5v+mJLq+7aLyKNhmq/nf7fwbYV6WwocayvJwgbaVz6NMFqTjRy1YUAtUik=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783749382; c=relaxed/simple;
-	bh=malqePsjYETlp6YRyNOGcOnY/0Qdf0rdTDZd6rzljMk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k+so5MS+S1+ouDzoiX8FviOe16bQF3lCU7nCOT/osXaE6lSGM0iNhmYQHQstoLWe0z2CF0ZUBzA8WcuDXtRulYEahiO/biQbue4PRGbbGdQ3qtLR9FKElQSyFBjadyL+ToOSONZ0RY0dtPM2NpkF+JPdT0y7oQshGlhBoopdlLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com; spf=none smtp.mailfrom=readmodwrite.com; dkim=pass (2048-bit key) header.d=readmodwrite-com.20251104.gappssmtp.com header.i=@readmodwrite-com.20251104.gappssmtp.com header.b=FCif4/8E; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=readmodwrite.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16CE3C3BFF
+	for <rcu@vger.kernel.org>; Sat, 11 Jul 2026 12:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783772001; cv=pass; b=sOUf+A4zxcbbYB18LHSAsq+LP9GgBINN9AFAykXaoXK3RsoHaY+/oz4iifmhGTboz5oQG4SbZMArOXWJNUtl8rBTicbdTtPFi5CkWX5Wy1Qo67jO4Q+w/e9Kt9qXkCEsXjhtwTfYTTYO20kh6S9C5kwwoTIu2hxgR/oPZsSN7aE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783772001; c=relaxed/simple;
+	bh=80vo3JIjnCsKn8zo158HX4vkfRXd32w7uPzzJAtLaF0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K7AeBtbrysa03RQO7Y3e3j90F0Oj8Y6kqi8oFT5O9O/KXnXblwMPAU2wVGM9GF2DN3xVD49rkliVk0YqmesNZWob/gxkt/tJ7cgaEUt7GlN9CTovTwp2udZGGVawJ9ZALJAQMa1RN/zPLSjf4gr0UTIWC1K5RR51PHCjG5q4Sss=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gHFB0fSe; arc=pass smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=readmodwrite-com.20251104.gappssmtp.com header.i=@readmodwrite-com.20251104.gappssmtp.com header.b="FCif4/8E"
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-476a130c138so1931657f8f.0
-        for <rcu@vger.kernel.org>; Fri, 10 Jul 2026 22:56:21 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gHFB0fSe"
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3856d4015e0so265657a91.2
+        for <rcu@vger.kernel.org>; Sat, 11 Jul 2026 05:13:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1783771999; cv=none;
+        d=google.com; s=arc-20260327;
+        b=rvtsC2t5P61IhwzKh0EUO0QSfMR33C2iMwOtR7d2Tx65YsJ+zYWJ7Ds58/EtMxesLP
+         8xFW8WPsojFnzJ0thnrKYopdzd4ol/dp7rreqMrA/5HDXcx0a2FQJKwbXKNzP93PnlsE
+         r605XQ2nPgjhMj8n+PrK37W+G4O5zAC4YydNR6GPjAmadZUXD/DNLvnGPgZaJSde/E0Q
+         vo1YmdXBGpJbrJw3iUPgC3eUCO4iv7Z0Lu+F8t+g9LmVuWttFkg9UdP7/caMWMUv33pU
+         t7sKbCqtWeLf+Zat2gwjGJPjLYPHQd+NN3/gbGdPL5eGGxPPyXMfF3LAAJJ3oluS2TGb
+         3WAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=80vo3JIjnCsKn8zo158HX4vkfRXd32w7uPzzJAtLaF0=;
+        fh=Phty7xTmowcdFnggyuHSftCPuew0zNyt5ih4yTYUkZM=;
+        b=B8YwvLsXT6ScR6LA7wTDSFrMZbAo9PxHReLa7pf2W8iH40cc589ALHe8agnUA5tirY
+         /a7NOkCjNCKAvnISSws/iW+UGjrT3+IAyhfyAUk3KzGTHIlYLOb1hrfwKL1YoWEzjmQ3
+         ebypwreQxANrCBt9kysV+xbP3kPH+Dg6aaEes8n1L/gywgXiS53nsWFL4Q8Z3acry0v7
+         4lC4QGeriDrY9T50murLoe4qYOUD7oOFmYFxMxKTmyK7n6a9Kdm4dayFpUMt0zwbXwem
+         PmhZO+iLXZXrhDZ/GBI6yxdpyj69dIWGdD/EWYuoDXZrUpFV+afygzlt8xfGZS12SyyK
+         /hpQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=readmodwrite-com.20251104.gappssmtp.com; s=20251104; t=1783749380; x=1784354180; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+        d=gmail.com; s=20251104; t=1783771999; x=1784376799; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=JXWYlcHV8kyBocpQgRM3YOKQ4YhOMcY53dOQDtkUlDg=;
-        b=FCif4/8EfHYX/HpTsHnAQEKzqbWqPB30b12/ayje7FwtEZAYmhV19kqdLsTGNYV/ls
-         444eE3zKR3xtkih4J2+dcIi4DPZPlv+pB9fzBSZaXSt7Vzb9tuhwGw78EK2XkuQDueIZ
-         wodkL0N5ORCtXqS6ZAkJe6eBJq+CidrUq58Ps3HsPDchpu/NeGoHxnxEqoSADPO+uBdd
-         K9fJL/uVGlClgI0cNLWWHczT+WKF9D570oWq4fysGRwwJDdGoWOKv3ZMHL79rgDdFBvn
-         Rc+5Ut2h9KiWE15n8I1pGcd1artIgTcxJwyhzL69w/0FKhTY8lV9dDAz0BH+xKqZeFXi
-         lYDg==
+        bh=80vo3JIjnCsKn8zo158HX4vkfRXd32w7uPzzJAtLaF0=;
+        b=gHFB0fSemSn6s4jVp/EuBtir/qlPGO8Vq2wg3sOO56WQSEm3m1wgLV+PH+YCzCwe4w
+         40XUJ8N3llKffVv3KvwlpEx0PwjFhEP4ejwfKckXHhOrs4COlZYMuCDJVCD700HVWfby
+         Wef44AYzEvkwlRh4pmvCSPrnSSb+EuoMS7xAp1fqanhd4vgQUbVFs9DMhr/aX2ve4EZi
+         XKK9VbugY1ax8izR6ls1BpqL9Fr7yUJMtkts2rZtlWUvAdEs5tvYZoRcRU9pXB0Y6W76
+         RQw5PmUpYS6rrCfKNmEtUvADgYNWM7gb8xCEbJGzjwstKv7ju7GWWD5f6bQVByQhgD9b
+         Verg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783749380; x=1784354180;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
+        d=1e100.net; s=20251104; t=1783771999; x=1784376799;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=JXWYlcHV8kyBocpQgRM3YOKQ4YhOMcY53dOQDtkUlDg=;
-        b=Z++NnUUSMTtVZAH857sypfooimXJYxVWfbq0CExcVhyx59Z8K7siPwR2Swdd7LqYwV
-         ZkBt6LGuq5Bw/iPiwIjlWVmI7nI07O/CQyvqSgE0wb75ZfBxL9evhhxtC5RLBjxygrpV
-         cWA4xsVr4MGh4hwWcb7DH6CmFyXXXOAkXan5s7PDgIXFgBV9g+y+YcLVhwWqThvCFvin
-         0cMi4iGROOJGW/x12VAiD6RjLTCgJWROMnpiJvjfYv13BMCGf8HEbIKARWBVGCzFQWw6
-         V6vtW7gIwpbYDH0Yv8u/QhMrRxc+r1mosGMM3Uj/a+dn+1B6YQNJ8TFae3jawDGcfmsA
-         JHwQ==
-X-Forwarded-Encrypted: i=1; AHgh+RrYbO92SIDtv6492z1A9CSSS8GvtnI4VI4tqUq1zJioihXslOXBaLXaCRJc7fLpc1QKhZY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7trSTVsx1aI8CEStjTy44PDNM72s17zS8w9OaqnjgC310vZbH
-	ah5/gzh9joYHoehukqj/gBsC7dZ+7zt9KXuQ8mX7jwmLXwYFGJeokL1RuVfX5RfNWEs=
-X-Gm-Gg: AfdE7ck1pmy4B3rVqsyS0LBxNP4JPYz0MWCqZ0DUZpe16+FBO06VUvhExc+dIbM2sH7
-	ax9VTNAhWA3vugLVw6fbg28Pl3U2JkiMiXdqxCyHWueMdh3OSam3t3ho6L4hxLY8d18H8CvF60z
-	tg7lPFapR3KmK4AuDn6+BqR3tK+4aiQDkwVgaVaQddzCxhMAo7uFpddUW3NOfdKjQHI4JjhzvCq
-	1/afcsgrDfwdOpbrGt6zQ6spxed6Oi4zKGwRVrH7YRxbdstCbjQnOIOEio3KzusVRwa1O+PNcVV
-	3XcEcjG6+WVxnqN0q/JMYE4/T04rDtXNnJF8O4jPV/xA8PIfIfxxvX0sdJadv+Opou+KNzvyg3g
-	jjoFcahaXO/jfPzM3xPXaHervHuHJagRBdj3UO8vNEGlZhJV0Y6+sGWOOJ+15INyuDNiirdfV4y
-	8=
-X-Received: by 2002:a05:6000:4a05:b0:47f:2906:b551 with SMTP id ffacd0b85a97d-47f2dd2113dmr1544164f8f.32.1783749379539;
-        Fri, 10 Jul 2026 22:56:19 -0700 (PDT)
-Received: from localhost ([2a09:bac6:37a8:26dc::3df:54])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47a9e4d83bdsm65233731f8f.13.2026.07.10.22.56.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2026 22:56:18 -0700 (PDT)
-Date: Sat, 11 Jul 2026 06:56:18 +0100
-From: Matt Fleming <matt@readmodwrite.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
-	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang@linux.dev>, Tejun Heo <tj@kernel.org>, Andrea Righi <arighi@nvidia.com>, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, sched-ext@lists.linux.dev, 
-	stable@vger.kernel.org, kernel-team@cloudflare.com, 
-	Matt Fleming <mfleming@cloudflare.com>
-Subject: Re: [PATCH 6.18.y] rcu-tasks: Defer IRQ-disabled callback enqueue to
- irq_work
-Message-ID: <alHapJgHNRea7eZz@matt-Precision-5490>
-References: <20260710095359.2643791-1-matt@readmodwrite.com>
- <886c23ff-7dca-4679-9d2b-ca499523853c@paulmck-laptop>
+        bh=80vo3JIjnCsKn8zo158HX4vkfRXd32w7uPzzJAtLaF0=;
+        b=ENEcSMWSUjxGlJCLU+e7CT003Ux/15F4HLpU3vzhkp8xYvoOyCew6O9cW1YCW81beZ
+         agfAHl+tPX/dfwgoUnesPlrO8fFiOPtVDhoyu1Zh4XLBNHdO1XshpVoWnvXW4donZ/IY
+         88HVrzLAvODTrST2eJyFpMfSjUF2iqmcE690dGyPJSco2RLUH9m5v8Swc/p+mbFW6hLh
+         /HhQJZ6cByBNsYdQNwwehYVr6NQ5L7IRYbrV2XXSorHxn3//xpZsrMjqYkj8h6o9Cxw/
+         IHJSOvPlWXM5cT8/3x8m6O7qtZ5IHNBmqbu4+5xzPz0DIN5QycZxLFrKCIBsn08uM37M
+         ZdBQ==
+X-Forwarded-Encrypted: i=1; AHgh+RrLv1uOpCryZomVFne2C+prGpxcjwiszgzhUfXMedPan0MbE/iQ6+iEb7ERTQiCNRr3O5k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzAWcdc774UiSkne7Z9yu/Yb8//JhnDfdf0T7xWbKWC5T6nRdn6
+	k+F+W2N9kl8NeCBY2tfdDH59dRVm1ud63yCWTG+i2P8dL3EUwWvQ7NOA1NlAVN/eQS7Cb1sZGOY
+	TSqB4OzMRKhKE10M7HZe0DYt3JE+qlco=
+X-Gm-Gg: AfdE7cmKTakvX7Cm1rqdAaGCd+Rt5dn4170JDeLKZtNvEYyAZq/aTaym7TnfqhhnHVK
+	9nqEI1VtzeelKLLBACGSTUNrCQ3s3/aqtGIlIaSv2QMLFubO6FBmJzag3bdHRRcFcM3Y/5HawOy
+	VsUvq03QTQXn5hiwGfmgGtho8FJaBegzjHyaQ5m/dQvwWvUSKOCBrSgVp3NfSaRkCtCmwZu4Wov
+	85z7MhlaxGskuLIpqDtZROgsekcnvTciu9YgMib4ynuvRAvDtYAYc7m5V6Tta/al08G5deyPJCk
+	qt7/MAWB53TUjenndJfEw8IrDNK7647bpxTDiRdvpGnam53G84MHZGRj9fThaWi6xR1qiDbD5/P
+	EtEItWyHLuPG2
+X-Received: by 2002:a17:90b:4984:b0:380:9cd1:d985 with SMTP id
+ 98e67ed59e1d1-38dc7c111a8mr1909664a91.6.1783771998816; Sat, 11 Jul 2026
+ 05:13:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <886c23ff-7dca-4679-9d2b-ca499523853c@paulmck-laptop>
+References: <20260706061928.66713-1-byungchul@sk.com> <20260706061928.66713-40-byungchul@sk.com>
+In-Reply-To: <20260706061928.66713-40-byungchul@sk.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sat, 11 Jul 2026 14:13:05 +0200
+X-Gm-Features: AUfX_mwWK6GqFCLIKCx9ivosmcno3i0b64L6R15FyNFXSSwj0HKdZlNefQKWcgc
+Message-ID: <CANiq72kEo=bGcHNaSA9JZhv4iuE+YDvu0kN+Z7aopVp3=2C+Wg@mail.gmail.com>
+Subject: Re: [PATCH v19 39/40] rust: completion: Add __rust_helper to rust_helper_wait_for_completion()
+To: Byungchul Park <byungchul@sk.com>, Gary Guo <gary@garyguo.net>
+Cc: linux-kernel@vger.kernel.org, max.byungchul.park@gmail.com, 
+	kernel_team@skhynix.com, torvalds@linux-foundation.org, 
+	damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org, 
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, mingo@redhat.com, 
+	peterz@infradead.org, will@kernel.org, tglx@linutronix.de, 
+	rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org, 
+	daniel.vetter@ffwll.ch, duyuyang@gmail.com, johannes.berg@intel.com, 
+	tj@kernel.org, tytso@mit.edu, willy@infradead.org, david@fromorbit.com, 
+	amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com, 
+	linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org, 
+	minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org, 
+	jglisse@redhat.com, dennis@kernel.org, cl@linux.com, penberg@kernel.org, 
+	rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org, 
+	linux-block@vger.kernel.org, josef@toxicpanda.com, 
+	linux-fsdevel@vger.kernel.org, jack@suse.cz, jlayton@kernel.org, 
+	dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org, 
+	dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com, 
+	melissa.srw@gmail.com, hamohammed.sa@gmail.com, harry.yoo@oracle.com, 
+	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com, boqun.feng@gmail.com, 
+	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com, 
+	yeoreum.yun@arm.com, netdev@vger.kernel.org, matthew.brost@intel.com, 
+	her0gyugyu@gmail.com, corbet@lwn.net, catalin.marinas@arm.com, bp@alien8.de, 
+	x86@kernel.org, hpa@zytor.com, luto@kernel.org, sumit.semwal@linaro.org, 
+	gustavo@padovan.org, christian.koenig@amd.com, andi.shyti@kernel.org, 
+	arnd@arndb.de, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, 
+	rppt@kernel.org, surenb@google.com, mcgrof@kernel.org, petr.pavlu@suse.com, 
+	da.gomez@kernel.org, samitolvanen@google.com, paulmck@kernel.org, 
+	frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, 
+	josh@joshtriplett.org, urezki@gmail.com, mathieu.desnoyers@efficios.com, 
+	jiangshanlai@gmail.com, qiang.zhang@linux.dev, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, 
+	mgorman@suse.de, vschneid@redhat.com, chuck.lever@oracle.com, neil@brown.name, 
+	okorniev@redhat.com, Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org, 
+	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de, clrkwllms@kernel.org, 
+	mark.rutland@arm.com, ada.coupriediaz@arm.com, kristina.martsenko@arm.com, 
+	wangkefeng.wang@huawei.com, broonie@kernel.org, kevin.brodsky@arm.com, 
+	dwmw@amazon.co.uk, shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com, 
+	yuzhao@google.com, baolin.wang@linux.alibaba.com, usamaarif642@gmail.com, 
+	joel.granados@kernel.org, richard.weiyang@gmail.com, geert+renesas@glider.be, 
+	tim.c.chen@linux.intel.com, linux@treblig.org, 
+	alexander.shishkin@linux.intel.com, lillian@star-ark.net, 
+	chenhuacai@kernel.org, francesco@valla.it, guoweikang.kernel@gmail.com, 
+	link@vivo.com, jpoimboe@kernel.org, masahiroy@kernel.org, brauner@kernel.org, 
+	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com, 
+	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, 
+	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org, 
+	rcu@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-rt-devel@lists.linux.dev, 2407018371@qq.com, dakr@kernel.org, 
+	neilb@ownmail.net, bagasdotme@gmail.com, wsa+renesas@sang-engineering.com, 
+	dave.hansen@intel.com, geert@linux-m68k.org, ojeda@kernel.org, 
+	alex.gaynor@gmail.com, bjorn3_gh@protonmail.com, lossin@kernel.org, 
+	a.hindborg@kernel.org, aliceryhl@google.com, tmgross@umich.edu, 
+	rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 10, 2026 at 11:16:27AM -0700, Paul E. McKenney wrote:
-> 
-> This does look plausible, thank you!  However, it does not apply cleanly
-> to either current mainline or my -rcu tree.
-> 
-> Judging from the subject line, this is against v6.18 rather than current
-> mainline, correct?  If so, would you be willing to forward-port it?
+On Mon, Jul 6, 2026 at 8:22=E2=80=AFAM Byungchul Park <byungchul@sk.com> wr=
+ote:
+>
+> This is needed to inline these helpers into Rust code, which is required
+> for DEPT to play with wait_for_completion().
+>
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
 
-Yeah, my bad. Since the SRCU code in mainline fixed the original
-deadlock I reported I kept this to 6.18. But I'm happy to forward port
-this patch too.
+Apart from what Gary said -- why did you need to do this in a separate
+patch in the same series?
 
-Thanks,
-Matt
+Cheers,
+Miguel
