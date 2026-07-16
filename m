@@ -1,98 +1,106 @@
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B543D88F7
-	for <rcu@vger.kernel.org>; Thu, 16 Jul 2026 09:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A054641A760
+	for <rcu@vger.kernel.org>; Thu, 16 Jul 2026 12:09:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784195884; cv=none; b=JncP28hz/5R/yGPPPN1OMMGgcUUBQph542xZ952JLwWRDtmZZhZsAwePBaAnKCUQHmlaVAwutjNj71f5VWB45KmCcHqfeUdsnTEI9Fs2rFK6h0W6yDhGFVh4zhHsqceuQr0nhCbLE0mOyUSv0H5Rp93ISodO7LvS9YrfRKigDFg=
+	t=1784203764; cv=none; b=Ge57AYOEH64HUYynci9PJB7uOaMztHgTlk30H8Jxb5q3/7fCwNu4siTVN0SwCX27O0Vw2YJk2PQTn+M51nG6QVLt1f7PunEFdjES6NTAiqucWNFv/tkZQs+8mS2WHNstiTj+RQb53/i5JTxSp9ZBSNxT7+VcEfm8cjpRil7ze+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784195884; c=relaxed/simple;
-	bh=Tyl2/hykBetSDaGYfwPkaP7vJGJZa465zuX32/hlzEk=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=CG5cLDqhOmWshLgHSAxJ7CEddeXr3Uevchh1lO4lUhbA6GGpicq5C/wWWMLgJczd0nZrLIsw/n6wK7K2YBsfgSkYPI7vzNkZqJvaE1GpGrgCZRh3ouGpPOVUIfcsLINs8eH1i+/OO4MSbRNdR3ZA8HCMLq+c8RpgFe1c3OKpNW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IhNkZ+ge; arc=none smtp.client-ip=91.218.175.174
+	s=arc-20240116; t=1784203764; c=relaxed/simple;
+	bh=r2dmu2ycJGEYVHizZLl85lfiNoo1A1VJLvOUSh5JlGE=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=L0YKcj6ZOJx45/mDQp1XVNCtiV1wj8d1Y11Y4JptS+JOnM7yUbfmTpAuC3kP2Y0CNgZdU/3gRUnfuOGDWtMNL1nougBW+jP+cLCvdeZZvYU7bcYtiZi/NdoHUR3t9R35/1fJ70DfoqZ5gy2teLh7CUIxJ4qQV/R2R4PMXL5vo2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hh/v1Y1s; arc=none smtp.client-ip=91.218.175.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IhNkZ+ge"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1784195880;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc; bh=dyng1bq1uW1noHl5YZws9kuGFCXD/NaMxtWCvR5ZBUk=;
-	b=IhNkZ+geDKRTBIctyAwKVTKB+wFph5rnw5xPVF0LElqNtaXWzEvL1sCoJnMqMM+KpuQsp2
-	ThNNMDhqNxFgqR5CbxdFIan9IvJye/sLQdz/ssyu0xjSTHFREm4z9wmKrKN2p8sTII2dH6
-	cUtuE3RSVFiY4B8w7p+1rCvFzWSKBEc=
-From: Zqiang <qiang.zhang@linux.dev>
-To: paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com,
-	urezki@gmail.com,
-	boqun@kernel.org
-Cc: qiang.zhang@linux.dev,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu-tasks: Dump rtpcp->lazy_timer status in show_rcu_tasks_generic_gp_kthread()
-Date: Thu, 16 Jul 2026 17:57:54 +0800
-Message-Id: <20260716095754.24827-1-qiang.zhang@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hh/v1Y1s"
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1784203750;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MN0sRFKK3BwtvDA7sIcX0Sie8Fsea3P7aTP6Q81xsKY=;
+	b=hh/v1Y1s+6+d+2apo6D+5ghFc94I5NtQdDdksfAEeWuOIm5cVJM1wyXrEDX6ilNtpTxCxn
+	iILmvpwZgDGN8X/5UKZf82Z8IzExAc+DOH3F8jvDeOJhDIybKNMBaKDm66uFbeFTBfKSjJ
+	jmK44lm5BAkivi7Q38O1HY6pVNJTKm0=
+Date: Thu, 16 Jul 2026 12:09:08 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Zqiang" <qiang.zhang@linux.dev>
+Message-ID: <7ac329e8d59e4dfbb8a19d127e1dff6915735872@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH] rcu-tasks: Update comments in call_rcu_tasks_generic()
+To: paulmck@kernel.org
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+ urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <4f9b2c64-3d9d-4b39-af13-9ac726e21660@paulmck-laptop>
+References: <20260713103126.29782-1-qiang.zhang@linux.dev>
+ <4f9b2c64-3d9d-4b39-af13-9ac726e21660@paulmck-laptop>
+X-Migadu-Flow: FLOW_OUT
 
-Add 'P' flag to the diagnostic line to indicate whether any per-cpu
-rtpcp's lazy_timer is pending.  this helps diagnose stalls where
-rcu-task callbacks are queued but the kthread stay sleep because
-the lazy_timer has not yet fired and no grace period has started.
+>=20
+>=20On Mon, Jul 13, 2026 at 06:31:26PM +0800, Zqiang wrote:
+>=20
+>=20>=20
+>=20> Currently, the comments: "We can't create the thread unless interru=
+pts
+> >  are enabled." from 'commit 4929c913bda5 ("rcu: Make call_rcu_tasks()
+> >  tolerate first call with irqs disabled")', now the kthread creation
+> >  has been move to core_initcall() time from 'commit c63eb17ff06d
+> >  ("rcu: Create call_rcu_tasks() kthread at boot time")', and use the
+> >  irq_work does deferred wakeup. this commit therefore update comments
+> >  in call_rcu_tasks_generic().
+> >=20=20
+>=20>  Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+> >=20
+>=20Queued and pushed both, thank you! I adjusted the comment and commit =
+log,
+> so please double-check them in case I messed something up.
 
-The output is as follows:
+Thank you for adjusted comment! I have been checked(including previous SR=
+CU patches).
 
-[   31.319540][   T77] call_rcu_tasks() has failed boot-time tests.
-[   31.320205][   T77] rcu_tasks: RTGS_WAIT_CBS(11) since 7518 g:4 i:0 kCuUP l:150000
+Thanks
+Zqiang
 
-Signed-off-by: Zqiang <qiang.zhang@linux.dev>
----
- kernel/rcu/tasks.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 6720dc25cd39..a146d1d98c22 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -723,6 +723,7 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
- 	bool havecbs = false;
- 	bool haveurgent = false;
- 	bool haveurgentcbs = false;
-+	bool havependtimer = false;
- 
- 	for_each_possible_cpu(cpu) {
- 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
-@@ -733,10 +734,12 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
- 			haveurgent = true;
- 		if (!data_race(rcu_segcblist_empty(&rtpcp->cblist)) && data_race(rtpcp->urgent_gp))
- 			haveurgentcbs = true;
--		if (havecbs && haveurgent && haveurgentcbs)
-+		if (data_race(timer_pending(&rtpcp->lazy_timer)))
-+			havependtimer = true;
-+		if (havecbs && haveurgent && haveurgentcbs && havependtimer)
- 			break;
- 	}
--	pr_info("%s: %s(%d) since %lu g:%lu i:%lu %c%c%c%c l:%lu %s\n",
-+	pr_info("%s: %s(%d) since %lu g:%lu i:%lu %c%c%c%c%c l:%lu %s\n",
- 		rtp->kname,
- 		tasks_gp_state_getname(rtp), data_race(rtp->gp_state),
- 		jiffies - data_race(rtp->gp_jiffies),
-@@ -746,6 +749,7 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
- 		".C"[havecbs],
- 		".u"[haveurgent],
- 		".U"[haveurgentcbs],
-+		".P"[havependtimer],
- 		rtp->lazy_jiffies,
- 		s);
- }
--- 
-2.17.1
-
+>=20
+>=20 Thanx, Paul
+>=20
+>=20>=20
+>=20> ---
+> >  kernel/rcu/tasks.h | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >=20=20
+>=20>  diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> >  index a2ca79d1dd6a..089a0d5a5cc9 100644
+> >  --- a/kernel/rcu/tasks.h
+> >  +++ b/kernel/rcu/tasks.h
+> >  @@ -395,7 +395,11 @@ static void call_rcu_tasks_generic(struct rcu_h=
+ead *rhp, rcu_callback_t func,
+> >  raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+> >  }
+> >  rcu_read_unlock();
+> >  - /* We can't create the thread unless interrupts are enabled. */
+> >  + // We can't create the kthread with interrupts disabled,
+> >  + // or a spinlock might be held, the kthread creation has
+> >  + // been move to core_initcall() time.
+> >  + // at the same time, use the irq_work does deferred wakeup
+> >  + // to avoid potential lockdep splat.
+> >  if (needwake && READ_ONCE(rtp->kthread_ptr))
+> >  irq_work_queue(&rtpcp->rtp_irq_work);
+> >  }
+> >  --=20
+>=20>  2.17.1
+> >
+>
