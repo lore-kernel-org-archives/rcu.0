@@ -1,43 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861981F3B85;
-	Thu, 16 Jul 2026 00:18:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460232264B0;
+	Thu, 16 Jul 2026 00:18:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784161097; cv=none; b=AeK5m2XOW0tUNjS4t8OgVnCmKLAnjTg3ER+0bmkFhNtQFhHTRZMJP+jU+5/oFwRJ93VllAQhFjoCEzuIx2N21DwTY7/QnKX/g9pyps3cxFvN6+QOjJcYgEhCTDc0a3hZIQVXb15tR9ziz1xaYfh0cj3p2/SIgddnjoEcGwXoFYw=
+	t=1784161097; cv=none; b=vAUWJUXaFTa+2Qec4SnBoGX+BPEChQN+eTjo3ZCvgLwTPMVgqOvxe85/OPUbvlHAJrQxTHeDwbDvagoY8IZIgBMR1Om641L18HmadNgqkStPk3uKkLepcirWZev39crRYIo5q5W+2ksLS2gNAc/izEuMuMoVHLr0XkLyutE5Flo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1784161097; c=relaxed/simple;
-	bh=6oVzcSBj6kE8wjYY1W4nlz+iO87tEMu2odbs3kQBbUA=;
+	bh=7Pyke/o79sTDfkUqS45VlLOxDMP8MIL1i7PXIg6sUu0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=t+k/bOUUA4kacZkOSaQeHyMYzCIn8osd97NwYSRvUIW6Q+UvWt+9GlOZ1tej3Man4kDBSOm3o6Pdf1SnMVGtOLn53ENMrs30yE7nIMjPNkx5/QUQeATQ8gTi6b2f0T0rFXfClNzb7LvY375x7+RznIcV6ZQGFl/Ijewb9MvDsdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CU2b58TX; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=KEHYsn/3UpOeZWU2/vCWFN83a/B4t6+ULhRfOBpdxcYlf1G/vlygfX8WUMtIs8Uzw5lStUY3JohfzsGT9Jm82TE4dj1E7FamVuMjI+5a7Yu9A/RsZCwPuGToKjXdAPlJXd+IrSHhJqaqi0u9wR/gSj+UM4qbhrvcnjS9XSVSGk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SvP8yra/; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CU2b58TX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D92D91F01566;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SvP8yra/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6D6B1F00A3D;
 	Thu, 16 Jul 2026 00:18:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1784161091;
-	bh=BR7mqeQqi1nfzRNjsh6eZW1e50dQgGiaIf2ARC6PPoQ=;
+	bh=AAbLUnNrcnqFC0CF5ESAMKua77koOg9Ol3O6aMT/qRc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=CU2b58TXF3wKbn72zP+YgK/WYxyJeWjA8P/XrK+diKJk1Vv/0wWvBTS2glUKxStp8
-	 ATeIpX/Kgd/LFm5WwHdBKXe1wh/vO9ecmldlAobiaISD3Yf5sydug30ZrwxDMND9Q/
-	 eiZEBBfEetCFyw2e/qZU6nuus9P8ktsoKX8TozUzJjLjbSgurl50y8pZB/dwBZEim2
-	 JxjODgnYVIykbyUq4ZWRJTq+/JVLERyVxGbqW9vPdGxEa+6b4nLFznc2bIl/cfHKLi
-	 5pLOURWMVsDUsxbmxprd+IuG03Rgn99q2UI5TiT4x9+ub4QVaexmV7T3Ek6+McA4Tc
-	 txjRrqavZKqzw==
+	b=SvP8yra/uNjYWoI5kgfJAusi/owJ0qAIS//DRKTW2g8y8v8B3wCv/MsRSFJ+cVO6K
+	 kbPyB+h8DV2HA1gBLY/lwHo1TSZAyUCCaBPSlWzy16a+60rYDelYzg0wPbgAjEqqja
+	 UvsPGW/WaQHUMfWPYcOIkH70FQvOzJ5w8yHYj3ThPTbm3nBs8DeRD9/JgND6hl4iC2
+	 lpv07/a8kWb3lEjYSpFei92+uykNKmgx0bYEEoczF2xuQTsIhIIO+zchiaiBB0yMX3
+	 pMzU1+QDb71jyBV/kMIi2aT7F8WfkESpWyCAtMbFdICM0gSKw0HV+fJoVR4HdjEFpM
+	 2ksItvwfz96Xw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 59F4BCE0F85; Wed, 15 Jul 2026 17:18:11 -0700 (PDT)
+	id 47D1ECE0F4C; Wed, 15 Jul 2026 17:18:11 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC v2 22/24] hazptrtorture: Fix hazptr ownership issue
-Date: Wed, 15 Jul 2026 17:18:07 -0700
-Message-Id: <20260716001809.11084-22-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH RFC v2 15/24] hazptrtorture: Add the ability to disable the writer kthread
+Date: Wed, 15 Jul 2026 17:18:00 -0700
+Message-Id: <20260716001809.11084-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <23e34c2e-67fd-45da-b130-e70a131a59ea@paulmck-laptop>
 References: <23e34c2e-67fd-45da-b130-e70a131a59ea@paulmck-laptop>
@@ -49,64 +48,59 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+This commit adds a hazptrtorture.nwriters module parameter that, when set
+to zero, disables hazard-pointer update-side activity.
 
-hazptr_torture_acquire is invoked from IPI on remote CPUs. It needs to
-immediately detach the hazptr from its local task so it can be released
-from other tasks.
-
-Without this fix, the hazptrtorture test fails loudly with a OOPS. It
-passes with the fix applied.
-
-[ This applies on top of linux-rcu dev branch at
-  commit e5ee2ea2d00ae5a0ca53ccf9c9100f2357e1bd08 ]
-
-[ paulmck: s/hazptr_detach_from_task/hazptr_detach/ per Mathieu. ]
-
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/hazptrtorture.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ kernel/rcu/hazptrtorture.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
-index ac0cb5b9f4f0f6..b2999f577af8b1 100644
+index 625ed90912a2c6..0752cedb2f5570 100644
 --- a/kernel/rcu/hazptrtorture.c
 +++ b/kernel/rcu/hazptrtorture.c
-@@ -370,6 +370,11 @@ static void hazptr_torture_acquire(void *hppp_in)
- 	struct hazptr_pending *hppp = hppp_in;
+@@ -36,6 +36,7 @@ torture_param(int, irq_acquire, -1,
+ torture_param(int, kthread_do_pending_ms, -1,
+ 	      "Delay between cleanups for deferred hazard pointers (ms), zero to disable");
+ torture_param(int, nreaders, -1, "Number of hazard-pointer reader threads");
++torture_param(int, nwriters, 1, "Number of hazard-pointer writer threads, 0 or 1");
+ torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
+ torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (jiffies), 0=disable");
+ torture_param(int, preempt_duration, 0, "Preemption duration (ms), zero to disable");
+@@ -658,14 +659,14 @@ static void
+ hazptr_torture_print_module_parms(struct hazptr_torture_ops *cur_ops, const char *tag)
+ {
+ 	pr_alert("%s" TORTURE_FLAG
+-		 "--- %s: nreaders=%d "
++		 "--- %s: nreaders=%d nwriters=%d "
+ 		 "defer_modulus=%d irq_acquire=%d kthread_do_pending_ms=%d "
+ 		 "onoff_interval=%d onoff_holdoff=%d "
+ 		 "preempt_duration=%d preempt_interval=%d "
+ 		 "reader_sleep_us=%d "
+ 		 "shuffle_interval=%d shutdown_secs=%d stat_interval=%d stutter=%d "
+ 		 "verbose=%d\n",
+-		 torture_type, tag, nrealreaders,
++		 torture_type, tag, nrealreaders, nwriters,
+ 		 defer_modulus, irq_acquire, kthread_do_pending_ms,
+ 		 onoff_interval, onoff_holdoff,
+ 		 preempt_duration, preempt_interval,
+@@ -825,9 +826,12 @@ static int __init hazptr_torture_init(void)
+ 			goto unwind;
+ 	}
  
- 	hppp->hpp_htp = cur_ops->readlock(&hppp->hpp_hc);
-+	/*
-+	 * Acquiring a hazard pointer from a remote CPU.
-+	 * Detach hazptr from its task so it can be released by another task.
-+	 */
-+	hazptr_detach(&hppp->hpp_hc);
- 	atomic_long_inc(per_cpu_ptr(&hazptr_torture_acquires_irq, raw_smp_processor_id()));
- }
+-	firsterr = torture_create_kthread(hazptr_torture_writer, NULL, writer_task);
+-	if (torture_init_error(firsterr))
+-		goto unwind;
++	if (nwriters) {
++		WARN_ON(IS_BUILTIN(CONFIG_HAZPTR_TORTURE_TEST) && nwriters != 1);
++		firsterr = torture_create_kthread(hazptr_torture_writer, NULL, writer_task);
++		if (torture_init_error(firsterr))
++			goto unwind;
++	}
  
-@@ -411,6 +416,10 @@ hazptr_torture_reader_tail(struct hazptr_pending *hppp, struct torture_random_st
- 	preempt_enable();
- 	if (irq_release && !(torture_random(trsp) % irq_release)) {
- 		guard(preempt)();
-+		/*
-+		 * Handling release from a remote CPU.
-+		 * Detach hazptr from its task so it can be released by another task.
-+		 */
- 		hazptr_detach(&hppp->hpp_hc);
- 		cpu = cpumask_next_wrap(smp_processor_id(), cpu_online_mask);
- 		smp_call_function_single(cpu, hazptr_torture_release, hppp, 1);
-@@ -429,6 +438,10 @@ static void hazptr_torture_defer(struct hazptr_pending *hppp, struct torture_ran
- 	struct llist_head *llhp;
- 
- 	guard(preempt)();
-+	/*
-+	 * Handling release from a remote CPU.
-+	 * Detach hazptr from its task so it can be released by another task.
-+	 */
- 	hazptr_detach(&hppp->hpp_hc);
- 	cpu = cpumask_next_wrap(cpu, cpu_online_mask);
- 	llhp = per_cpu_ptr(&hazptr_pending, cpu);
+ 	firsterr = torture_onoff_init(onoff_holdoff * HZ, onoff_interval, NULL);
+ 	if (torture_init_error(firsterr))
 -- 
 2.40.1
 
