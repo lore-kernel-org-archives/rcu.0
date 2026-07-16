@@ -1,91 +1,75 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC3B22576E;
-	Thu, 16 Jul 2026 00:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638DB23D2A4;
+	Thu, 16 Jul 2026 00:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784161415; cv=none; b=uR/x6FTiIEkyZXZwmPeKrC1azZ9x/RZQfaY6PnS+SkTuViTFTKGh2ZqdiNMi3Jfv44rwJ5nFVj9WIVpsbkky+MnqtghUt1Yj1DFrkCLdQEnN1Jdu5WzI7FXYs5NXlslwCoUnNMw5DRjUqSJ8TyfZBNyr3HXEVF9/FmJzpod7l2Y=
+	t=1784161422; cv=none; b=RQQ6IDUqWSiyWdD1N2CEN2C2wmNE9atMXwWb23/ho9RHyYT9SU1XpaLWZFz21tGezPReFB5BOF+qYqKQf/TtoF02uP7APZ+dlWeGjICErWN+9+4HWVJZ0XDJVMk4zW3Bi0ghCH9t+o+vs3+mvKSMzh0T79rn6Dh1oYioPkXiCXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784161415; c=relaxed/simple;
-	bh=OGn7n9s3hiNbZff8adM/u8QsThpk6vOauIod2Zo2+MM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=KqisYXQryxolf6hRQM+iLQLzEWYr2AT98Ul6xw9zcI9dsJoCphcSPKrracZa8fL8vWxXvp0HgOD8KRj31yAX8EIjkkzuSjMdib1VLNSGeNhS2TY+kqim8CizRKtHvJ58vAavy12s4JtAutrP5nuQL5rwv0HKGz5ErJQv/pfzHLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FdtUPVzc; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784161422; c=relaxed/simple;
+	bh=YOgIfjZ9Hv3w6fqRg4OHpHpWDtOkOacsGc+bursHpzc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=rkz7rN8AyT4RD4XChtEQeYATCndM36oz/ZkJDwhBeIDeeYj3LWAINnEtEavTPaeYlz1RCWCH1RyxSlIfE1ZiSciZqaMfqEfvkGTcCkrbhdepDMSzeodVOTZPiscDh952ZuuOSBJukotEJ9YvGpqV6qclAUizIhlqkw1nJZAbHV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QQZ6FKeJ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FdtUPVzc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C351F000E9;
-	Thu, 16 Jul 2026 00:23:34 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QQZ6FKeJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11F531F000E9;
+	Thu, 16 Jul 2026 00:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784161414;
-	bh=mi8MKQUoqmn6hvM/GtzeOVNP9jklaequTD7Viyr/e4c=;
-	h=Date:From:To:Cc:Subject:Reply-To;
-	b=FdtUPVzc0/BaoJu0iiYU2h4QcgrAFsP1KuiTDd5HA3vP8Sb0rkHKsLfxUnNovugun
-	 MNmoLGkt7bty0pgYS+zovGidDZyFBnkO1Um/1KiTExq85ZdBm71sEnoJQyuLjbZN6a
-	 a7pIXrxKOT1GzT5vWS10wVDB8vdUfQxbjI6DgPcobpd9Hg8pAarK4HNdGYQ7MhidUX
-	 G/Jv3LW/YySG599wrWOtPYwxck28+Yh/vsnFv3o3tRK4iRhUmZg+IvUQj6KWOrFB+J
-	 qjuIYQ8oHNfYWbJ80zk8RMyINJN64+e2rthA/6qo5IAa3dqtVjyn9qoX7t71pUT6J7
-	 xA8BF7YzbRPTA==
+	s=k20260515; t=1784161421;
+	bh=D0YSEH/Doqmop/Dz/KZ0B/3nd5tyCJxHYawhjRSN0dM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=QQZ6FKeJFmLtnEonruCWuuT4cNO65EWsTDshzBOaTKvjxvu2PXcpjrz7ha8pUUOhE
+	 QP24aTOYcbLy0tbMq0bxyc7tt3XHKq4D7yKk03rXngHwkULlkjLkzxv6hVQGCky/HR
+	 u/x9GcRRW/H40qxy57MppyaNk1QWOmtm8xKEUSvnfzEzmO6Iu09YGA10kcvTDPw68U
+	 S05bITcvoMyvfLqpDhliWTLaqM/X+KbYhq0KosiwbEA10LVTNAsDvnMcVSV3h6M70/
+	 vyWcK3UXDCiCUqdnz5n7qmRXL97dZMO3Y63bHTCr4EiUJ+3KwbjweUdEENnuyK1Guk
+	 7mE1+e2o0U1Cw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 236FACE0569; Wed, 15 Jul 2026 17:23:34 -0700 (PDT)
-Date: Wed, 15 Jul 2026 17:23:34 -0700
+	id E7B69CE0569; Wed, 15 Jul 2026 17:23:40 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH 0/10] Miscellaneous RCU updates for v7.3
-Message-ID: <bc69cc01-509e-43f8-a46a-d77946e7adc7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 01/10] rcu-tasks: TASKS_TRACE_RCU doesn't need IRQ_WORK
+Date: Wed, 15 Jul 2026 17:23:30 -0700
+Message-Id: <20260716002339.11717-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <bc69cc01-509e-43f8-a46a-d77946e7adc7@paulmck-laptop>
+References: <bc69cc01-509e-43f8-a46a-d77946e7adc7@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+Now that Tasks Trace RCU is implemented in terms of SRCU, it no longer
+has any particular need for the IRQ_WORK Kconfig option.  This commit
+therefore removes the "select IRQ_WORK" from the TASKS_TRACE_RCU Kconfig
+option.
 
-This series contains miscellaneous RCU updates for v7.3:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-1.	TASKS_TRACE_RCU doesn't need IRQ_WORK.
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 762299291e09ba..332df7a7a6347c 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -140,7 +140,6 @@ config FORCE_TASKS_TRACE_RCU
+ config TASKS_TRACE_RCU
+ 	bool
+ 	default n
+-	select IRQ_WORK
+ 
+ config TASKS_TRACE_RCU_NO_MB
+ 	bool "Override RCU Tasks Trace inclusion of read-side memory barriers"
+-- 
+2.40.1
 
-2.	Use task_state_to_char() in stall-warning prints, courtesy of
-	Kunwu Chan.
-
-3.	Mark __rcu_access_pointer() as context_unsafe().
-
-4.	RCU: Adopt new coding style of type-aware kmalloc-family -
-	part 2/2, courtesy of Manuel Ebner.
-
-5.	Remove unused struct rcu_tasks's->n_ipis_fails variables,
-	courtesy of Zqiang.
-
-6.	Dump rcu tasks status when the boot-test failed, courtesy
-	of Zqiang.
-
-7.	RCU: Fix brackets, courtesy of Manuel Ebner.
-
-8.	Apply READ_ONCE() and WRITE_ONCE() to fix data race.
-
-9.	Remove smp_mb() in rcu_spawn_tasks_kthread_generic(), courtesy
-	of Zqiang.
-
-10.	Update comments in call_rcu_tasks_generic(), courtesy of Zqiang.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst |    2 -
- b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg                      |    2 -
- b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg                      |    2 -
- b/Documentation/RCU/Design/Requirements/Requirements.rst                       |    2 -
- b/Documentation/RCU/rcu_dereference.rst                                        |    4 +--
- b/include/linux/rcupdate.h                                                     |    4 +--
- b/include/linux/rcupdate_trace.h                                               |   10 ++++++--
- b/kernel/rcu/Kconfig                                                           |    1 
- b/kernel/rcu/tasks.h                                                           |    6 +----
- b/kernel/rcu/tree_stall.h                                                      |   12 +++++-----
- kernel/rcu/tasks.h                                                             |   12 ++++++++--
- 11 files changed, 34 insertions(+), 23 deletions(-)
