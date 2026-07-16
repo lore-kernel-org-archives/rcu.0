@@ -1,42 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C42145355;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D6819C556;
 	Thu, 16 Jul 2026 00:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784161092; cv=none; b=QZX7vXCf1oGmL/5ZnesVRY7tnKxxjpJvijTGnDyDj4YpuZho1Gr3o0ECB32LdmVF9T2t2Zyaah20Gyah6LRikXrLhKkSWqwJMYKSa4xSsZoB16bInm+rBVo5hbeYR8QiByPrZ4lh5UYPUGQ1SQWWeVE2vXz5NCY9JGw+RydHIIA=
+	t=1784161092; cv=none; b=qrj7ZpVkUDWPog+keXrTiORhj9+DztAXAeuSUJLGdT3AxH7bLyDFsi7E+nyJWp/h9qF09VmnAQwfCKhn4jCoY2pWZfdic6AOsDd9z3hCZUM2KPcyLDR5QDK1PHpBdScaZI6NPLshokIdfwR27MSy7+BJAYDtN9iruZnPRcHWsLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1784161092; c=relaxed/simple;
-	bh=//FELBnZMe/1P4IlYUwD9U/a8/x4j15TVXGrWC50gRU=;
+	bh=5CQy2SixWdszyZBFvsnR1ERCtjWgrC0RnKvY/mF+7wE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NFwOyFQ3aicW4XJtSpcSw9pE/ZIx2P0LGjKu8aUWQXVDysbBwYM87mV2iRL5J/ViXCrc65cvzd2hE5uSvOy2dHK9MCairLDhXh7Y3aE20gIQpCx526n7FaKvQxJJbxeBQsaI3gF4lUcSBLeI39zSHDiY5FmXRi3vEwf65QFa7TE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jUbIUpxQ; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=OZmPDypFYsufwhmR52l0rfDS+BD0wwJOtlomVyZKI3rRiHAgBOutkQ7nzKQw/0UMqXYSohmWAJqlBlrttXOqmxV0RZAFekdudfgXBdYCtglqaqBSFwllc2OxrDNR/WeT6uuVz0+0xSfNvA0/Gt3EU55RDfKXzH7GXktBAX1oAL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kQVQALlM; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jUbIUpxQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F46E1F00ADF;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kQVQALlM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DB6A1F00A3A;
 	Thu, 16 Jul 2026 00:18:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1784161091;
-	bh=D9KA50uigaEU66rKjO2UKiByjh8eGkvgbDo4WqhIl9M=;
+	bh=hKV57X1DTBu0Cfp4aIMAmc3dhW9PqHag1BVOJPYPt6w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=jUbIUpxQPM2dGNs6AvsAj/kEIc9rEJ46EmqYMTXm/tdjnGQGaJ+0BGsDyEV0KnvCc
-	 WGbTz+CLDECmxC7AuKWk4MEQu3t6GFyRf1uKdor3x/1JkHbFzTMucE0kN2jhJsVoLR
-	 x8fWkThVYB0UzFXi49cO49HFB3R2mi1sYr+YXonLlebzeVea5wC6t1g9n3RdrecP99
-	 zEkiTok76DFwxxHo7X+yomGjMV0C6vQNORuJPypBmDCKATq7LuCcSiPM9ka06ElDRy
-	 4jNugcDu04F6fflMN1/Yph3tPzL6gYS1ZsvUQhTUKFds4iFrnhgZlUuunJrG1aic/V
-	 bFFFMsItzbmGA==
+	b=kQVQALlMKzkVNZDp0tUiKlTFJlzW7PNfLfZZa71OTwrJktCxeNXT6I2yXIJKtZV9/
+	 XcK0VhLCMqa4lveym9swW5gzozxiDw/mnHJ2cNEFq9EM5/ADcmtKE0QYrrUGVCKBHh
+	 3JHf6zQ77TKGIz5Ge53hgAsaero4GCA8vofFQrbXmKtbppQq7Y01KS+Jp50//WA3YR
+	 blbugshSUZm80HIrUDDqVlUX82qaaXWWsNFGT0yvwTZn/ZyuYY4rYA4P6dmzzmljUO
+	 yms6J2vLS5dOlgqSaWW1IWjnNyUn9SpZhxl6ajKm91AZCp+v/dXe/rR4rrRm3vfY9K
+	 2/oxUtbsSZjYg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2FD92CE0C57; Wed, 15 Jul 2026 17:18:11 -0700 (PDT)
+	id 280A8CE0B87; Wed, 15 Jul 2026 17:18:11 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC v2 05/24] hazptrtorture: Add microsecond-scale sleep in readers
-Date: Wed, 15 Jul 2026 17:17:50 -0700
-Message-Id: <20260716001809.11084-5-paulmck@kernel.org>
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Boqun Feng <boqun@kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH RFC v2 02/24] hazptr: Add refscale test
+Date: Wed, 15 Jul 2026 17:17:47 -0700
+Message-Id: <20260716001809.11084-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <23e34c2e-67fd-45da-b130-e70a131a59ea@paulmck-laptop>
 References: <23e34c2e-67fd-45da-b130-e70a131a59ea@paulmck-laptop>
@@ -48,50 +50,86 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds a default-disabled reader_sleep_us module parameter
-that causes the hazard-pointer reader to unconditionally sleep for the
-specified number of microseconds.
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
+Add the refscale test for hazptr to measure the reader side
+performance.
+
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Co-developed-by: Boqun Feng <boqun@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/hazptrtorture.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/rcu/refscale.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
-index 0f25637c82876b..4dd31104779fe8 100644
---- a/kernel/rcu/hazptrtorture.c
-+++ b/kernel/rcu/hazptrtorture.c
-@@ -35,6 +35,7 @@ torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
- torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (jiffies), 0=disable");
- torture_param(int, preempt_duration, 0, "Preemption duration (ms), zero to disable");
- torture_param(int, preempt_interval, MSEC_PER_SEC, "Interval between preemptions (ms)");
-+torture_param(int, reader_sleep_us, 0, "Reader sleep duration (us)");
- torture_param(int, shuffle_interval, 3, "Number of seconds between shuffles");
- torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
- torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s");
-@@ -219,6 +220,8 @@ static void hazptr_read_delay(struct torture_random_state *rrsp)
- 		udelay(shortdelay_us);
- 	if (!preempt_count() && !(torture_random(rrsp) % (nrealreaders * 500)))
- 		torture_preempt_schedule();  /* QS only if preemptible. */
-+	if (reader_sleep_us > 0)
-+		torture_hrtimeout_us(reader_sleep_us, 0, NULL);
- }
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index a2d9d75d88a10d..2320b3fedec736 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -29,6 +29,7 @@
+ #include <linux/reboot.h>
+ #include <linux/sched.h>
+ #include <linux/seq_buf.h>
++#include <linux/hazptr.h>
+ #include <linux/spinlock.h>
+ #include <linux/smp.h>
+ #include <linux/stat.h>
+@@ -1200,6 +1201,47 @@ static const struct ref_scale_ops typesafe_seqlock_ops = {
+ 	.name		= "typesafe_seqlock"
+ };
  
- static void hazptr_torture_read_unlock(struct hazptr_ctx *hcp, struct hazptr_torture *htp)
-@@ -508,11 +511,13 @@ hazptr_torture_print_module_parms(struct hazptr_torture_ops *cur_ops, const char
- 		 "--- %s: nreaders=%d "
- 		 "onoff_interval=%d onoff_holdoff=%d "
- 		 "preempt_duration=%d preempt_interval=%d "
-+		 "reader_sleep_us=%d "
- 		 "shuffle_interval=%d shutdown_secs=%d stat_interval=%d stutter=%d "
- 		 "verbose=%d\n",
- 		 torture_type, tag, nrealreaders,
- 		 onoff_interval, onoff_holdoff,
- 		 preempt_duration, preempt_interval,
-+		 reader_sleep_us,
- 		 shuffle_interval, shutdown_secs, stat_interval, stutter,
- 		 verbose);
- }
++static void ref_hazptr_read_section(const int nloops)
++{
++	static void *ref_hazptr_read_section_ptr = ref_hazptr_read_section;
++	int i;
++
++	for (i = nloops; i >= 0; i--) {
++		struct hazptr_ctx ctx;
++		void *addr;
++
++		addr = hazptr_acquire(&ctx, &ref_hazptr_read_section_ptr);
++		hazptr_release(&ctx, addr);
++	}
++}
++
++static void ref_hazptr_delay_section(const int nloops, const int udl, const int ndl)
++{
++	static void *ref_hazptr_delay_section_ptr = ref_hazptr_delay_section;
++	int i;
++
++	for (i = nloops; i >= 0; i--) {
++		struct hazptr_ctx ctx;
++		void *addr;
++
++		addr = hazptr_acquire(&ctx, &ref_hazptr_delay_section_ptr);
++		un_delay(udl, ndl);
++		hazptr_release(&ctx, addr);
++	}
++}
++
++static bool ref_hazptr_init(void)
++{
++	return true;
++}
++
++static const struct ref_scale_ops hazptr_ops = {
++	.init		= ref_hazptr_init,
++	.readsection	= ref_hazptr_read_section,
++	.delaysection	= ref_hazptr_delay_section,
++	.name		= "hazptr"
++};
++
+ static void rcu_scale_one_reader(void)
+ {
+ 	if (readdelay <= 0)
+@@ -1504,6 +1546,7 @@ ref_scale_init(void)
+ 		&sched_clock_ops, &clock_ops, &jiffies_ops,
+ 		&preempt_ops, &bh_ops, &irq_ops, &irqsave_ops,
+ 		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
++		&hazptr_ops,
+ 	};
+ 
+ 	if (!torture_init_begin(scale_type, verbose))
 -- 
 2.40.1
 
