@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B682DF134;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E3A2C028F;
 	Thu, 16 Jul 2026 00:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784161531; cv=none; b=SHQwCsmxv4tenD7gdLuBcFK+v2ZhA0H53YRCbGqVRccMm+vwnBOPDeoCf4JAMXeFJZ6V3bwjDkP9Q+FK1vXuk9YBkMOJwQULr+/wHS4EbyAsWp7azDyuuujWvU/GUVRxom3tohOKtHMcsRbBsW4R3oiK/1RlrCwxcTga+aQ9daE=
+	t=1784161531; cv=none; b=ftbDuBw7YoCt21/5+jhEtUPQq20nEk4Os5Lq9aVeWTSvfv6g+lM3het6ZIIpqXdpWTBiwvgL+jhqBf+9bRkVnxkd9ACod10Nsxlut3qr9LuJ+UE9A2Z5XyqFUTPUNVYGOxXVQyx/xP/XI/XrHFE2y3DHijNXMyj3pyLi17AOgOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1784161531; c=relaxed/simple;
-	bh=Jjl3SE2rLdpUtNPn4o7XuSq/LnB/VF011jsxpNIOszA=;
+	bh=5TRH08HpnQpKefliFHBcZse/jV9F6sm8wkK7QGwdEwI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Z5FHCV5HXpipt1lKRWD0ik94qs7/mF3McTRN5NQdpPUwk0LA4J4ZOAAAPjpYdCiNObIwHtetFk7sThUZMkyUWA9u9L1G6M0aXa+JWK+QOOB+3bg3g7xrMo5gRLFDSQZYwNJs3w10elIBKIjAWdxkig+l8NgTDP+/OP6qtUmKvCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QhNqibui; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=arLvxTXGFg8bl6RU79OG65owj+Ggw7aamZvRwfTdN5cR3gUuU3A7gVdiMc5RXVtvGmD8SdwL4vopLXVu33LySzdjIL3tNRBJnjr1+3pkjOGGONsF4csWph253AB/JIdCpS9CzD7DCAuVYNN2v917N55nsmQwta2KUcfize8ZJjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hmP4Wtj8; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QhNqibui"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9F8A1F01558;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hmP4Wtj8"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF1011F01559;
 	Thu, 16 Jul 2026 00:25:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784161522;
-	bh=pdF7AJpaq+Dg2l9UISLXY1kgDLD+XAKQk0wFurP0uhk=;
+	s=k20260515; t=1784161523;
+	bh=e8XPOoUXngqgBuzXy/XFx1AR3lM5r9CAVwZr40LUuY4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=QhNqibuiKEw0UpJmfMltIaiuIYAk14JWMmYsmAMR+1P9vbW2OfHyFLUDHgJ5T50Jo
-	 2Gt2MOnAbUU2CWvI4vpOB4An9dslvD8F8Hd15OqeqOEjVRIWb3FosryoEwH6GQVWpV
-	 07x8hwLkiEyl9IvgIK/0ZTDCFLhVDGKjncSYiQXi8w5XIxw8tPmEkVfA0hmSwdrLh2
-	 6r/cie2ThX5DFsYwmSx7uS8vssll7c+vwgF8zWnqbZvjpDTAJORA1YbDs/8JUFyRw6
-	 zBOtpeBEtXvki05nwhD23Db3qGWQ7x3LvHgHWl6VOfm1pJ5/ZuGzax5I1UaZM3YnnJ
-	 tGJcNYS1OaJsQ==
+	b=hmP4Wtj8ai4zKr7Mky+15dV+y0X7AtLz0BT2nUgJtAx5YCyBUoz5IHlkCwfr3n19h
+	 ON8Fud1G347Jcy3SEvUS0r19v7OpnMU9rk7fjVuqztYmT8Hn5wCnGHYxXGi+PExPVR
+	 h4eJEsRSwEHBWkpRNN3Dz/FjBDezSh7KsPXlC+GFVY3qWq0W7wmdvJnbT0hhGZbzvp
+	 suMq9UjO6AAwsDXk7bRnv6fyAG0YZRdmsaurRtnjMmlnvaL74IdrmVTZx+Qln0eIYt
+	 cAzYhdCuR8tIZiyV05n0ZswriWmVI+e6o9uVEHyXHTGm1sWf9PRoJRXWC1pIzzopyS
+	 sGv0lSM7usRIg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 81B41CE0E2A; Wed, 15 Jul 2026 17:25:22 -0700 (PDT)
+	id 88B48CE0E8B; Wed, 15 Jul 2026 17:25:22 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 08/11] rcutorture: Add a stall_only module parameter
-Date: Wed, 15 Jul 2026 17:25:17 -0700
-Message-Id: <20260716002520.11895-8-paulmck@kernel.org>
+Subject: [PATCH 11/11] rcutorture: Use this_cpu_inc() for rcu_torture_count[] and rcu_torture_batch[]
+Date: Wed, 15 Jul 2026 17:25:20 -0700
+Message-Id: <20260716002520.11895-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <3f56c779-b900-40f9-9a24-6136fb28ddfb@paulmck-laptop>
 References: <3f56c779-b900-40f9-9a24-6136fb28ddfb@paulmck-laptop>
@@ -48,74 +48,39 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds a stall_only module parameter that shuts off all
-rcutorture kthreads other than the RCU CPU stall-warning test kthreads.
-The purpose of this is to test production applictions' reactions to
-CPU stalls, and with minimal additional overhead.  Or you can omit the
-stall-warning tests as well and get a heavy no-op, your choice!
+Currently __this_cpu_inc() is used to increment elements of both
+the rcu_torture_count[] and rcu_torture_batch[] arrays.  However,
+this can fail when the increments can happen in interrupt handlers,
+as recently became possible.  This commit therefore upgrades the uses
+of __this_cpu_inc() to the interrupt-safe this_cpu_inc().
+
+KCSAN located this issue.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt          |  9 +++++++++
- kernel/rcu/rcutorture.c                        | 18 ++++++++++++++++++
- 2 files changed, 27 insertions(+)
+ kernel/rcu/rcutorture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index b942149720c9bf..40d2831add4a21 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -6211,6 +6211,15 @@ Kernel parameters
- 			and stall_gp_kthread are specified, the
- 			kthread is starved first, then the CPU.
- 
-+	rcutorture.stall_only= [KNL]
-+			Shut off all rcutorture kthreads other than the
-+			RCU CPU stall-warning test kthreads.  The purpose
-+			of this is to test production applictions'
-+			reactions to CPU stalls, and with minimal
-+			additional overhead.  Or you can omit the
-+			stall-warning tests as well and get a heavy
-+			no-op, your choice!
-+
- 	rcutorture.stat_interval= [KNL]
- 			Time (s) between statistics printk()s.
- 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index a6a8b9ba342d02..a0d27756141846 100644
+index 8514fef3ec10b6..9180016d87c0ce 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -140,6 +140,7 @@ torture_param(int, stall_cpu_irqsoff, 0, "Disable interrupts while stalling.");
- torture_param(int, stall_cpu_block, 0, "Sleep while stalling.");
- torture_param(int, stall_cpu_repeat, 0, "Number of additional stalls after the first one.");
- torture_param(int, stall_gp_kthread, 0, "Grace-period kthread stall duration (s).");
-+torture_param(bool, stall_only, 0, "Suppress all non-CPU-stall kthreads.");
- torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s");
- torture_param(int, stutter, 5, "Number of seconds to run/halt test");
- torture_param(int, test_boost, 1, "Test RCU prio boost: 0=no, 1=maybe, 2=yes.");
-@@ -4649,6 +4650,23 @@ rcu_torture_init(void)
- 		cur_ops = NULL;
- 		goto unwind;
+@@ -2565,13 +2565,13 @@ static void rcu_torture_one_read_end(struct rcu_torture_one_read_state *rtorsp,
+ 					  rtorsp->ts, rtorsp->started, completed);
+ 		rcu_ftrace_dump(DUMP_ALL);
  	}
-+	if (stall_only) {
-+		pr_alert("rcu-torture: stall_only specified, suppressing all else.\n");
-+		fqs_stutter = 0;
-+		fwd_progress = 0;
-+		n_barrier_cbs = 0;
-+		nfakewriters = 0;
-+		nocbs_nthreads = 0;
-+		nreaders = 0;
-+		n_up_down = 0;
-+		nwriters = 0;
-+		onoff_interval = 0;
-+		preempt_duration = 0;
-+		read_exit_burst = 0;
-+		shuffle_interval = 0;
-+		stutter = 0;
-+		test_boost = 0;
-+	}
- 	if (cur_ops->fqs == NULL && fqs_duration != 0) {
- 		pr_alert("rcu-torture: ->fqs NULL and non-zero fqs_duration, fqs disabled.\n");
- 		fqs_duration = 0;
+-	__this_cpu_inc(rcu_torture_count[pipe_count]);
++	this_cpu_inc(rcu_torture_count[pipe_count]);
+ 	completed = rcutorture_seq_diff(completed, rtorsp->started);
+ 	if (completed > RCU_TORTURE_PIPE_LEN) {
+ 		/* Should not happen, but... */
+ 		completed = RCU_TORTURE_PIPE_LEN;
+ 	}
+-	__this_cpu_inc(rcu_torture_batch[completed]);
++	this_cpu_inc(rcu_torture_batch[completed]);
+ 	preempt_enable();
+ 	if (rtorsp->checkpolling) {
+ 		if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
 -- 
 2.40.1
 
