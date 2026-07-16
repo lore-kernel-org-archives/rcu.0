@@ -1,144 +1,97 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816541D432D;
-	Thu, 16 Jul 2026 00:18:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C42145355;
+	Thu, 16 Jul 2026 00:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784161085; cv=none; b=itCucroEiNHgTTXpiTZA4NWxPGbCpnWLFNHB1S7Vzm3sRB29/2C5gQHed8uF0C9ind3hBRtDEfVynbg3k6aC/mvxmjj/uPHgSSuQDZkjX95sQ45zC+GUvh1Y/cgmwLxepdEJbXgo7/1/NLgYypNz6pK2kLldJMu/U2B458DQ7eg=
+	t=1784161092; cv=none; b=QZX7vXCf1oGmL/5ZnesVRY7tnKxxjpJvijTGnDyDj4YpuZho1Gr3o0ECB32LdmVF9T2t2Zyaah20Gyah6LRikXrLhKkSWqwJMYKSa4xSsZoB16bInm+rBVo5hbeYR8QiByPrZ4lh5UYPUGQ1SQWWeVE2vXz5NCY9JGw+RydHIIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784161085; c=relaxed/simple;
-	bh=XD+juzLwmEXqpiZbVMEdqcD2llXJ2aOUsPoLQxPD91w=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=s6KfeY3VXPLDdnOUn3BiaaFFjhNCa8bHUUD//zO3Xivkt/KN6MGNS5Qka9mVCxjPS8AQv7opE+QDiZ9prqCw4oHy6VAuFLRqgha5e6jBPNduAC9R3H1bK3hYOP7QMERe4aa5WvxlhkgLelvOkOSYMij8l6SXelNuHJNSb/4rP6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OGZox/bY; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784161092; c=relaxed/simple;
+	bh=//FELBnZMe/1P4IlYUwD9U/a8/x4j15TVXGrWC50gRU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=NFwOyFQ3aicW4XJtSpcSw9pE/ZIx2P0LGjKu8aUWQXVDysbBwYM87mV2iRL5J/ViXCrc65cvzd2hE5uSvOy2dHK9MCairLDhXh7Y3aE20gIQpCx526n7FaKvQxJJbxeBQsaI3gF4lUcSBLeI39zSHDiY5FmXRi3vEwf65QFa7TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jUbIUpxQ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OGZox/bY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EB091F000E9;
-	Thu, 16 Jul 2026 00:18:04 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jUbIUpxQ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F46E1F00ADF;
+	Thu, 16 Jul 2026 00:18:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784161084;
-	bh=06xLE9KS6cAXCUqEKi58c5x/YMAOSqhpJhlZXZmSXEg=;
-	h=Date:From:To:Cc:Subject:Reply-To;
-	b=OGZox/bYvgBDE/9O0s9rvFg0++IMqPqvm7cRkDuW6mIrimLfqvrYdHvxNHX+J8GOy
-	 HDNfaRynwtVpxlo8Qm6z3yOzuBfQMxnv5le4Jf0RqUFyZBgGNsE71wsGZdzLX0Qo76
-	 ISrl47+pB1vDshVTKXpg9UUMx8MBaPlGYN4EEZ+nqRFHogVHpXf0K+kxnX4HZQ+L+L
-	 8iq0Bg8N7CU4MjlQ0MnJbibN+YyrJY1ft5ZnZeGS8CpJr8+aWSH81mu5bw4e3gW/Yx
-	 PTVUtHJoBd+IliYxLnsJt77CObDJaYpve9LuRQtQx6668ZGSK+EQhwFsWoMy4B17Cv
-	 3s08seWT8gjUw==
+	s=k20260515; t=1784161091;
+	bh=D9KA50uigaEU66rKjO2UKiByjh8eGkvgbDo4WqhIl9M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=jUbIUpxQPM2dGNs6AvsAj/kEIc9rEJ46EmqYMTXm/tdjnGQGaJ+0BGsDyEV0KnvCc
+	 WGbTz+CLDECmxC7AuKWk4MEQu3t6GFyRf1uKdor3x/1JkHbFzTMucE0kN2jhJsVoLR
+	 x8fWkThVYB0UzFXi49cO49HFB3R2mi1sYr+YXonLlebzeVea5wC6t1g9n3RdrecP99
+	 zEkiTok76DFwxxHo7X+yomGjMV0C6vQNORuJPypBmDCKATq7LuCcSiPM9ka06ElDRy
+	 4jNugcDu04F6fflMN1/Yph3tPzL6gYS1ZsvUQhTUKFds4iFrnhgZlUuunJrG1aic/V
+	 bFFFMsItzbmGA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 31CFFCE0569; Wed, 15 Jul 2026 17:18:04 -0700 (PDT)
-Date: Wed, 15 Jul 2026 17:18:04 -0700
+	id 2FD92CE0C57; Wed, 15 Jul 2026 17:18:11 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH RFC v2 0/24] Simple hazard-pointer implementation and torture
- tests
-Message-ID: <23e34c2e-67fd-45da-b130-e70a131a59ea@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH RFC v2 05/24] hazptrtorture: Add microsecond-scale sleep in readers
+Date: Wed, 15 Jul 2026 17:17:50 -0700
+Message-Id: <20260716001809.11084-5-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <23e34c2e-67fd-45da-b130-e70a131a59ea@paulmck-laptop>
+References: <23e34c2e-67fd-45da-b130-e70a131a59ea@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+This commit adds a default-disabled reader_sleep_us module parameter
+that causes the hazard-pointer reader to unconditionally sleep for the
+specified number of microseconds.
 
-This series contains a simple hazard-pointer implementation and associated
-torture tests:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/hazptrtorture.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-1.	Implement Hazard Pointers, courtesy of Mathieu Desnoyers.
+diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
+index 0f25637c82876b..4dd31104779fe8 100644
+--- a/kernel/rcu/hazptrtorture.c
++++ b/kernel/rcu/hazptrtorture.c
+@@ -35,6 +35,7 @@ torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
+ torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (jiffies), 0=disable");
+ torture_param(int, preempt_duration, 0, "Preemption duration (ms), zero to disable");
+ torture_param(int, preempt_interval, MSEC_PER_SEC, "Interval between preemptions (ms)");
++torture_param(int, reader_sleep_us, 0, "Reader sleep duration (us)");
+ torture_param(int, shuffle_interval, 3, "Number of seconds between shuffles");
+ torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
+ torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s");
+@@ -219,6 +220,8 @@ static void hazptr_read_delay(struct torture_random_state *rrsp)
+ 		udelay(shortdelay_us);
+ 	if (!preempt_count() && !(torture_random(rrsp) % (nrealreaders * 500)))
+ 		torture_preempt_schedule();  /* QS only if preemptible. */
++	if (reader_sleep_us > 0)
++		torture_hrtimeout_us(reader_sleep_us, 0, NULL);
+ }
+ 
+ static void hazptr_torture_read_unlock(struct hazptr_ctx *hcp, struct hazptr_torture *htp)
+@@ -508,11 +511,13 @@ hazptr_torture_print_module_parms(struct hazptr_torture_ops *cur_ops, const char
+ 		 "--- %s: nreaders=%d "
+ 		 "onoff_interval=%d onoff_holdoff=%d "
+ 		 "preempt_duration=%d preempt_interval=%d "
++		 "reader_sleep_us=%d "
+ 		 "shuffle_interval=%d shutdown_secs=%d stat_interval=%d stutter=%d "
+ 		 "verbose=%d\n",
+ 		 torture_type, tag, nrealreaders,
+ 		 onoff_interval, onoff_holdoff,
+ 		 preempt_duration, preempt_interval,
++		 reader_sleep_us,
+ 		 shuffle_interval, shutdown_secs, stat_interval, stutter,
+ 		 verbose);
+ }
+-- 
+2.40.1
 
-2.	Add refscale test, courtesy of Mathieu Desnoyers.
-
-3.	Add a hazptrtorture.c torture test.
-
-4.	Add testing of on-stack hazptr_ctx structures.
-
-5.	Add microsecond-scale sleep in readers.
-
-6.	Enable system-independent CPU overcommit.
-
-7.	Add a stutter_will_wait() function.
-
-8.	Use mnemonic local variables for context information.
-
-9.	Split hazptr_torture_reader_tail() from hazptr_torture_reader().
-
-10.	Add kthread to release deferred hazard pointers.
-
-11.	Defer release of hazard pointers.
-
-12.	Add irq_acquire to acquire hazptr from irq.
-
-13.	Use task_state_to_char() for task-state reporting, courtesy of
-	Kunwu Chan.
-
-14.	Pass hazptr_pending to hazptr_torture_reader_tail().
-
-15.	Add the ability to disable the writer kthread.
-
-16.	Add irq_release to release hazptr from irq.
-
-17.	Accumulate operation statistics.
-
-18.	Add hazptrtorture module parameters.
-
-19.	Permit detaching hazard pointers from contexts, courtesy of
-	Mathieu Desnoyers.
-
-20.	Detach deferred and IPIed hazard pointers, courtesy of Mathieu
-	Desnoyers.
-
-21.	Introduce CONFIG_HAZPTR_DEBUG misuse detection, courtesy of
-	Mathieu Desnoyers.
-
-22.	Fix hazptr ownership issue, courtesy of Mathieu Desnoyers.
-
-23.	Enable CONFIG_HAZPTR_DEBUG.
-
-24.	Upgrade kernel-doc headers.
-
-Changes since RFC v1:
-
-o	Added a hazptr_detach() function to allow hazptr_acquire()
-	and the corresponding hazptr_release() to be in different
-	execution contexts.
-
-o	Torture testing of execution-context migration.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/Documentation/admin-guide/kernel-parameters.txt                    |   96 +
- b/include/linux/hazptr.h                                             |  197 ++
- b/include/linux/torture.h                                            |    2 
- b/init/main.c                                                        |    2 
- b/kernel/Makefile                                                    |    2 
- b/kernel/hazptr.c                                                    |  242 +++
- b/kernel/rcu/Kconfig.debug                                           |   12 
- b/kernel/rcu/Makefile                                                |    1 
- b/kernel/rcu/hazptrtorture.c                                         |  682 ++++++++++
- b/kernel/rcu/refscale.c                                              |   43 
- b/kernel/rcu/update.c                                                |    3 
- b/kernel/sched/core.c                                                |    2 
- b/kernel/torture.c                                                   |   23 
- b/tools/testing/selftests/rcutorture/bin/kvm.sh                      |    6 
- b/tools/testing/selftests/rcutorture/configs/hazptr/CFLIST           |    2 
- b/tools/testing/selftests/rcutorture/configs/hazptr/CFcommon         |    2 
- b/tools/testing/selftests/rcutorture/configs/hazptr/NOPREEMPT        |   17 
- b/tools/testing/selftests/rcutorture/configs/hazptr/NOPREEMPT.boot   |    1 
- b/tools/testing/selftests/rcutorture/configs/hazptr/PREEMPT          |   14 
- b/tools/testing/selftests/rcutorture/configs/hazptr/ver_functions.sh |   40 
- include/linux/hazptr.h                                               |  168 ++
- include/linux/torture.h                                              |    4 
- kernel/rcu/Kconfig.debug                                             |    9 
- kernel/rcu/hazptrtorture.c                                           |  422 +++++-
- kernel/torture.c                                                     |   15 
- tools/testing/selftests/rcutorture/configs/hazptr/NOPREEMPT          |    2 
- tools/testing/selftests/rcutorture/configs/hazptr/PREEMPT            |    2 
- 27 files changed, 1897 insertions(+), 114 deletions(-)
