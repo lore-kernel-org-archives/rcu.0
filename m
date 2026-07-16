@@ -1,96 +1,98 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD9B2D322E;
-	Thu, 16 Jul 2026 00:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B543D88F7
+	for <rcu@vger.kernel.org>; Thu, 16 Jul 2026 09:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784161707; cv=none; b=OcagkJ5AIK9L5Ggx+9hdbHE69S2AVybpBGEyT5YruT8R394WLhdsM0enufy81zZc9IsgBf0fj9+mDwtqoWo6x9lqWXmvIBA42quWWkPkGQBxJaR8wjHxk/NjbryUrNhORer9IjDg1HmZup3nO87gevSGLDMgqhfFIpudGXPrYXU=
+	t=1784195884; cv=none; b=JncP28hz/5R/yGPPPN1OMMGgcUUBQph542xZ952JLwWRDtmZZhZsAwePBaAnKCUQHmlaVAwutjNj71f5VWB45KmCcHqfeUdsnTEI9Fs2rFK6h0W6yDhGFVh4zhHsqceuQr0nhCbLE0mOyUSv0H5Rp93ISodO7LvS9YrfRKigDFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784161707; c=relaxed/simple;
-	bh=Rl00XC1ehwn2H9cCcEJlBpQZhGpGhXrtCG4dWtCYznY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lpIBfIg7Hl7xNqHeMMBKhQRnz3THTr3egxnwI0NPNWdNctPMXV0NmrRHC5bb+ZkiZxvfHdhYR11kiTWFDzQwAXORYAC9XNQDR6UcSImE3YD1Cp52Kx97lrJ8YYUdxGzBsa2TfPWuWBepyHCsOrs0PcnevcAOVcnJfzyfbxycLvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EKUNvPA1; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784195884; c=relaxed/simple;
+	bh=Tyl2/hykBetSDaGYfwPkaP7vJGJZa465zuX32/hlzEk=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=CG5cLDqhOmWshLgHSAxJ7CEddeXr3Uevchh1lO4lUhbA6GGpicq5C/wWWMLgJczd0nZrLIsw/n6wK7K2YBsfgSkYPI7vzNkZqJvaE1GpGrgCZRh3ouGpPOVUIfcsLINs8eH1i+/OO4MSbRNdR3ZA8HCMLq+c8RpgFe1c3OKpNW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IhNkZ+ge; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EKUNvPA1"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C991F00A3E;
-	Thu, 16 Jul 2026 00:28:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784161705;
-	bh=cck7VcezaFz+NOrwA1nANKOT+K8ZYsRsfJL4fBsY8Vk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=EKUNvPA13JogXK5F+ZpqTPHn7szWb2HqkvEtWGO962B+mmTAXk/Om+HmVZoWsfDwv
-	 WQlpTV0vrOT97yzNSyDRwLLISfWX9muWXikpwqfc59xkhwbGCWpEpGmfvy9AC4YO+C
-	 kmHZHCHEJAPaERX3a0YF/H8rY1jU/GWo+27sRc8mUihUxoX9zR1qfUDfQ4ii1umQ2Q
-	 maK+uJnoxo8GKgUs74IqlX3suUXtscJGMIBaUrKLYJWhCJf6VDnUWq1+DpHfmxq84c
-	 eiwyhs0SnQ9dDMIo+kcXq1JQHJDX6XPQF2lNpyRVg6M1sMgSipINY7COY6T/xEBxJb
-	 bd34N1ErRhtjQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id ED06FCE0D3B; Wed, 15 Jul 2026 17:28:24 -0700 (PDT)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	Zqiang <qiang.zhang@linux.dev>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH 6/6] srcu: Queue sdp->work when the delay timer is successfully deleted
-Date: Wed, 15 Jul 2026 17:28:23 -0700
-Message-Id: <20260716002823.12176-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <d9081db0-37e9-4187-84e1-871ab30a2b3f@paulmck-laptop>
-References: <d9081db0-37e9-4187-84e1-871ab30a2b3f@paulmck-laptop>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IhNkZ+ge"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1784195880;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc; bh=dyng1bq1uW1noHl5YZws9kuGFCXD/NaMxtWCvR5ZBUk=;
+	b=IhNkZ+geDKRTBIctyAwKVTKB+wFph5rnw5xPVF0LElqNtaXWzEvL1sCoJnMqMM+KpuQsp2
+	ThNNMDhqNxFgqR5CbxdFIan9IvJye/sLQdz/ssyu0xjSTHFREm4z9wmKrKN2p8sTII2dH6
+	cUtuE3RSVFiY4B8w7p+1rCvFzWSKBEc=
+From: Zqiang <qiang.zhang@linux.dev>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	urezki@gmail.com,
+	boqun@kernel.org
+Cc: qiang.zhang@linux.dev,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu-tasks: Dump rtpcp->lazy_timer status in show_rcu_tasks_generic_gp_kthread()
+Date: Thu, 16 Jul 2026 17:57:54 +0800
+Message-Id: <20260716095754.24827-1-qiang.zhang@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Zqiang <qiang.zhang@linux.dev>
+Add 'P' flag to the diagnostic line to indicate whether any per-cpu
+rtpcp's lazy_timer is pending.  this helps diagnose stalls where
+rcu-task callbacks are queued but the kthread stay sleep because
+the lazy_timer has not yet fired and no grace period has started.
 
-In the cleanup_srcu_struct() function, when iterating over per-cpu's
-srcu_data, timer_delete_sync(&sdp->delay_work) is called to cancel the
-delayed work before doing flush_work(&sdp->work).
+The output is as follows:
 
-However, suppose that timer_delete_sync() returns 1, which means that it
-successfully deleted an pending timer before it had a chance to fire.
-But this also means that the sdp->work will not be queued, so that the
-subsequent flush_work(&sdp->work) will returns immediately without waiting
-for anything.  Taken together, all of this means that any recently queued
-SRCU callbacks to not be invoked, which can result in memory leaks,
-hangs, or worse.
-
-Fix this by checking the return value of timer_delete_sync(), if it
-returns 1, explicitly queue sdp->work so that the callbacks will be
-invoked and the following flush_work() will correctly wait for all of
-those callbacks to finish executing.
+[   31.319540][   T77] call_rcu_tasks() has failed boot-time tests.
+[   31.320205][   T77] rcu_tasks: RTGS_WAIT_CBS(11) since 7518 g:4 i:0 kCuUP l:150000
 
 Signed-off-by: Zqiang <qiang.zhang@linux.dev>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutree.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/rcu/tasks.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 4a00e90e17fc07..8b4e7783bdc963 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -701,7 +701,11 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
- 	for_each_possible_cpu(cpu) {
- 		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 6720dc25cd39..a146d1d98c22 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -723,6 +723,7 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
+ 	bool havecbs = false;
+ 	bool haveurgent = false;
+ 	bool haveurgentcbs = false;
++	bool havependtimer = false;
  
--		timer_delete_sync(&sdp->delay_work);
-+		// Call srcu_barrier() before this cleanup_srcu_struct()
-+		// to avoid triggering this WARN_ON().
-+		if (WARN_ON(timer_delete_sync(&sdp->delay_work)) &&
-+					rcu_cpu_beenfullyonline(sdp->cpu))
-+			queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
- 		flush_work(&sdp->work);
- 		if (WARN_ON(rcu_segcblist_n_cbs(&sdp->srcu_cblist)))
- 			return; /* Forgot srcu_barrier(), so just leak it! */
+ 	for_each_possible_cpu(cpu) {
+ 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
+@@ -733,10 +734,12 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
+ 			haveurgent = true;
+ 		if (!data_race(rcu_segcblist_empty(&rtpcp->cblist)) && data_race(rtpcp->urgent_gp))
+ 			haveurgentcbs = true;
+-		if (havecbs && haveurgent && haveurgentcbs)
++		if (data_race(timer_pending(&rtpcp->lazy_timer)))
++			havependtimer = true;
++		if (havecbs && haveurgent && haveurgentcbs && havependtimer)
+ 			break;
+ 	}
+-	pr_info("%s: %s(%d) since %lu g:%lu i:%lu %c%c%c%c l:%lu %s\n",
++	pr_info("%s: %s(%d) since %lu g:%lu i:%lu %c%c%c%c%c l:%lu %s\n",
+ 		rtp->kname,
+ 		tasks_gp_state_getname(rtp), data_race(rtp->gp_state),
+ 		jiffies - data_race(rtp->gp_jiffies),
+@@ -746,6 +749,7 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
+ 		".C"[havecbs],
+ 		".u"[haveurgent],
+ 		".U"[haveurgentcbs],
++		".P"[havependtimer],
+ 		rtp->lazy_jiffies,
+ 		s);
+ }
 -- 
-2.40.1
+2.17.1
 
