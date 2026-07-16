@@ -1,119 +1,87 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFBC27EC7C;
-	Thu, 16 Jul 2026 00:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC402BDC2F;
+	Thu, 16 Jul 2026 00:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784161424; cv=none; b=IfXEWk51yoEj1JzvpxTc0fEnQ5lhVIvxTOpHynHnokaPmF2+4yN9lqKkTGWUZ134nAGLANMN/6J7ZHKoxKYKFZRPbcaG8oc0KtoReBfANO6RBUYx4SgpEWzKVyOXjGBglSF3dQaEQ9l3F3mv/XY9r2QRkyBwZ7REEr8Oj5pMA0E=
+	t=1784161516; cv=none; b=ETbAcNZvyPAxbwsyY+nw6u7TTkLr393/5ep6GZKAgLzsJwYFmRCd9s2CJKZIpCmjMA8haTQ0CwNC+hyH+gldM0gTm6nQYEFz3V1LQ/G7bUO9KAwTIh073ITAIYik9wTHJWI/74m1VAfHgZZXLKMKLzlIVS6aqI/gQPyDvxDj4to=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784161424; c=relaxed/simple;
-	bh=mc9NEZIorPJjdaORA+vKGv+Y4mGP0Y2nM4Pw5HrxZAw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cN4OBhYa8QbMxu2M1VjeWtHaKHSs0QSCxfvO3wdjB8futOdW7rXjEijoRQcONowUOwpbYO4g6jioXt5wTMw4bDCNQbMDOIZphUyT0uwsnyIXK6M+dR7gwimZgaGU8Fe391G+PQLj4wP3f04MKLawSjzqTi1B7XxIGcYIrkj2yKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gMDe9A7j; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784161516; c=relaxed/simple;
+	bh=tWGH2YfS0CY+qoGb6q5u9CbVbm4MaYbt62kB4XIh6l8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=eB71R68mobQ6lkcEJhrABhmKs4KZTZQ22LKq02ZhczTdfFaMAyAxpIYgGeG7ojISDv5NlW4j3WJEQFdo5JE2T8yqsjSORhjgjWEMG3UU3Qx7/21fEzFSvzEXC2PzP4ousnwYGdGOJOSM2bWyDsMG+1wRZv1/3LfUhL7YXOE3lCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AfTG5v5q; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gMDe9A7j"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63E701F01559;
-	Thu, 16 Jul 2026 00:23:41 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AfTG5v5q"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC68F1F000E9;
+	Thu, 16 Jul 2026 00:25:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784161421;
-	bh=eKklVX3VgDMz+JyKSn/kR/vQ4ctDUmrdEUdbFfrwoac=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=gMDe9A7junBBekONoYSm4po6AJVmGDAsQorEmMpmRVd3kE3BWRvEMmXiFwUA4WsBS
-	 n1qgVCqb4FrE8rnsG+AtA/ktufbZxrhexurEh1rMrUITqRG2WAlZBSfhOZPhUf/TyJ
-	 +ecdHvTiQZ30goBlq3z7/X/qINJHNDf50ex6UJm+XfIaoawxm0esTncQ02mVf4IyYR
-	 EvZsFXjRnqrVlJG23/4QnoQR41zvUrGX7IoTuS4vUUVsmm5qZ8UqaFoP03+DKwxTOs
-	 oRWp5qJlzsGgVOD/0wOBK6yqElsZyghGsYtqSQjNJ4sR75WPquk5b0OyGsOw0ypoi6
-	 so1kTLTlh+7DQ==
+	s=k20260515; t=1784161514;
+	bh=k3zFmpnhcb/ge83iWoGHYgIRgOQ5dsOSQyprFEhV+yc=;
+	h=Date:From:To:Cc:Subject:Reply-To;
+	b=AfTG5v5qW1UAVEfPVssQ77KbKP41FKSG4IVh+/TKZqhnJB+wZdkJzCmsHfA82i5z+
+	 HkFoHjC5PccvLx5RI4rxeGZdWjOPYgFHYkiYHpBvCzve/2ajLFFEbQgHtVnJUJFnYq
+	 +3Y13SEpWq85JjitEP4oAVDIIZBQpkAAg80Q+X+totMCbVoB8UpxRn0b/PjKScV3nM
+	 HY2odZH6t82Or7qc38kquqIrE4x6jNHdFDGzR0IJvQA+yq2cQzO3Sc/BUdDutey6qi
+	 zsq17Wv2cexPHDq/1ZwN6zEfWN6nOzZPmUnz+V9f/HtQb7ZvEnMQ9m+pN5wZJ2Jkaz
+	 NZJJZUHFuwgIA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 02E00CE0E0B; Wed, 15 Jul 2026 17:23:41 -0700 (PDT)
+	id 84421CE0569; Wed, 15 Jul 2026 17:25:14 -0700 (PDT)
+Date: Wed, 15 Jul 2026 17:25:14 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	Manuel Ebner <manuelebner@mailbox.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH 07/10] doc: RCU: Fix brackets
-Date: Wed, 15 Jul 2026 17:23:36 -0700
-Message-Id: <20260716002339.11717-7-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <bc69cc01-509e-43f8-a46a-d77946e7adc7@paulmck-laptop>
-References: <bc69cc01-509e-43f8-a46a-d77946e7adc7@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH 0/11] RCU torture-test updates for v7.3
+Message-ID: <3f56c779-b900-40f9-9a24-6136fb28ddfb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Manuel Ebner <manuelebner@mailbox.org>
+Hello!
 
-Remove needless brackets and add missing brackets.
+This series contains torture-test updates for v7.3:
 
-Signed-off-by: Manuel Ebner <manuelebner@mailbox.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- .../Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst  | 2 +-
- Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg         | 2 +-
- Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg         | 2 +-
- Documentation/RCU/Design/Requirements/Requirements.rst          | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+1.	Abstract reader-segment dump into rcu_torture_dump_read_segs().
 
-diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
-index 414f8a2012d684..cf0f9cdca7e8cb 100644
---- a/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
-+++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
-@@ -410,7 +410,7 @@ workqueues (see Documentation/core-api/workqueue.rst).
- 
- The requesting task still does counter snapshotting and funnel-lock
- processing, but the task reaching the top of the funnel lock does a
--``schedule_work()`` (from ``_synchronize_rcu_expedited()`` so that a
-+``schedule_work()`` (from ``_synchronize_rcu_expedited()``) so that a
- workqueue kthread does the actual grace-period processing. Because
- workqueue kthreads do not accept POSIX signals, grace-period-wait
- processing need not allow for POSIX signals. In addition, this approach
-diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-index d05bc7b27edb7a..95a66de40ca5a2 100644
---- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-+++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-@@ -3933,7 +3933,7 @@
-          font-style="normal"
-          y="-3914.085"
-          x="3745.7725"
--         xml:space="preserve">rcu__report_qs_rdp())</text>
-+         xml:space="preserve">rcu__report_qs_rdp()</text>
-     </g>
-     <g
-        id="g4504-3"
-diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
-index 7d6c5f7e505c68..882132680308ef 100644
---- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
-+++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
-@@ -815,7 +815,7 @@
-          font-style="normal"
-          y="-3914.085"
-          x="3745.7725"
--         xml:space="preserve">rcu__report_qs_rdp())</text>
-+         xml:space="preserve">rcu__report_qs_rdp()</text>
-     </g>
-     <g
-        id="g4504-3"
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index 8a216e4a46a7df..8101fe6229d579 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -2785,7 +2785,7 @@ both srcu_read_lock() and srcu_read_unlock().  This need is handled by
- a Tasks Trace RCU API implemented as thin wrappers around SRCU-fast,
- which avoids the read-side memory barriers, at least for architectures
- that apply noinstr to kernel entry/exit code (or that build with
--``CONFIG_TASKS_TRACE_RCU_NO_MB=y``.
-+``CONFIG_TASKS_TRACE_RCU_NO_MB=y``).
- 
- Now that the implementation is based on SRCU-fast, a call
- to synchronize_rcu_tasks_trace() implies at least one call to
--- 
-2.40.1
+2.	Check for immediate deboosting at reader end.
 
+3.	Make srcu_read_delay() check for disabled interrupts.
+
+4.	Test RCU readers from hardware interrupt handlers.
+
+5.	Use cpumask_next_wrap() in rcu_torture_preempt().
+
+6.	Use task_state_to_char() for task-state reporting, courtesy of
+	Kunwu Chan.
+
+7.	Add nwriters module parameter.
+
+8.	Add a stall_only module parameter.
+
+9.	Test RCU Tasks Trace GP implying RCU GP.
+
+10.	Make RCU Tasks Trace track Reader Batches.
+
+11.	Use this_cpu_inc() for rcu_torture_count[] and
+	rcu_torture_batch[].
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt   |    9 +
+ b/Documentation/admin-guide/kernel-parameters.txt |    5 
+ b/include/linux/rcupdate_trace.h                  |    3 
+ b/kernel/rcu/rcu.h                                |    7 
+ b/kernel/rcu/rcutorture.c                         |  148 +++++++++---------
+ b/kernel/rcu/tasks.h                              |    6 
+ b/kernel/rcu/tree_plugin.h                        |   32 +++-
+ kernel/rcu/rcutorture.c                           |  172 ++++++++++++++++++----
+ 8 files changed, 282 insertions(+), 100 deletions(-)
