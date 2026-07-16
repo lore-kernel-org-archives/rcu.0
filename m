@@ -1,84 +1,122 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE3F29B78F;
-	Thu, 16 Jul 2026 00:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5462F2BDC0E;
+	Thu, 16 Jul 2026 00:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784161695; cv=none; b=G8W3PdZACL13zhCSwtbfXJ8/J9vrmgx8TSIkKY4pyYJyxtZZcdeGywryhoKN+m8rzp7zG9uZ7mnQDK0DafexjnOI5MPZdFjH1emkQt6z+NPmSEgBj7EGJCePJdNkCf0xJvgJi2ONH2NJzC+MXFDxNEjOSgqKjn3tXY8NCS5F9b8=
+	t=1784161706; cv=none; b=mdsm1m2MAafOvigbxBrO5EHyikjBHfKVu+Bls1iSz9FiEwsj1oMkV9GL5rraLN2gVMiKZ0Vzm6VeQdsd5sgoslSKOWW1rnyUlnVKRowLbSj0+ZZ9JmyR1fzuS0ZRutkpnWQytGIzt6VcYp9/2tdc6HWXwnA6ymb/BsOOtmlwub8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784161695; c=relaxed/simple;
-	bh=G2In8+xKQwIEHz+nOQdy53Exzh6JYTKw0KSVKdubik8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=MsYx1Tqf73v17nnqJXKa+09J+jTg5hYcWqPL6a3K4v1M1LREdynJzMj4I1bor7gshRXrxZeDxYfB2qS0ky6TzHiorJMZOvLHHpEa2Ng0QmDlHaM0utg3UN9rewQVDW2b9aPTqAGhzQA+XjjnESowab5Nwhbe5O1ppiRMwsvL2dM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KEEdzTN6; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784161706; c=relaxed/simple;
+	bh=+HYh5TWo+jZqzQyJt7hUZ8rs2CoiXqjr6mKGvkYHPIs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=I7BzI3tKyrCeqXS153VWhm1NPKG08tpP58Rwpyr2+/YzPbLrqiMQLq6vLu/83XvzouGNl6gw/MTbJVipVbsvUurZtMRjYg98O3jfJ9utpcq+vNyIihosMtSKbLYHfUzLjnEPbSnfUFBqTTyxB5ZhgiN1s0TMw4UX0mGkUziN6Lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GuHWoaWL; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KEEdzTN6"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A6FE1F00A3A;
-	Thu, 16 Jul 2026 00:28:13 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GuHWoaWL"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18D921F00A3A;
+	Thu, 16 Jul 2026 00:28:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784161693;
-	bh=170iPSVM1HPbkvavMj3ykBLg7JRBn1BqWNWEd9DJHLo=;
-	h=Date:From:To:Cc:Subject:Reply-To;
-	b=KEEdzTN67AtUFG/Onu76kD3eLVlombN5vjV8o9N6SkJdpv1Ar7lWzqvu1BYmXHYsG
-	 0MN34dd5bRiqMmYk2XUN/5cZGDoWLGs3wQ9bim+Smf/c6XI5KD7TDN2azruQlMIlpY
-	 JExto0/t7GlRsWNhBMv3v/fEZVLI1mPTtY0QogOnfe5VSmEGOxJxJuiFW0zmFNGNB2
-	 7+Le6XVMYvtiDJ0AAyevQC0fI0Evo3Cfco32CaDZusH9SezqHfPWlAQhEHbQHaGIdW
-	 F3Jf3fq0aXDfE1O10l9hMGOTGEcRBWmsdh/2nPYijxEK14PqTwC2iFZSfL9LvJORun
-	 Rz64sdRzahyaw==
+	s=k20260515; t=1784161705;
+	bh=0G/9lixuEcp8q2iCYDzp4XsrGAmvKvdV//8mCb/bJqE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=GuHWoaWLQu27woEyUzKnS6HxUYTPAnbQXGY3emFC7Oz6lKMCe3vLD2KWWxmiDEvDc
+	 xa0Bl2XuFEeYP2u5h9MKf8KFkJ1cmZ0C6OPufaj0Oce5wiRw8OLwMeWgnzm0+SQKAH
+	 ZSwCoAuig27MVpjg6mygeOYVqyMmDhNIZKXIe3+0ZF2bjC7MGE/80+U0E6I3nbbxFZ
+	 E4X4UqcRGBtVYBuS/zCsWk7oPGi/9SpeSq+GeP1MWfTvngK5TZ5T0jVnB38WTPKKiK
+	 rvKCC+vjupQi+v+GKrZH3s2iooQnmOwtZ4tkqECI3gtjX4TpDbU0uOSVi922khxIb8
+	 fVeNwhGttmhBA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5816DCE0569; Wed, 15 Jul 2026 17:28:13 -0700 (PDT)
-Date: Wed, 15 Jul 2026 17:28:13 -0700
+	id E2284CE0B87; Wed, 15 Jul 2026 17:28:24 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH 0/6] SRCU updates for v7.3
-Message-ID: <d9081db0-37e9-4187-84e1-871ab30a2b3f@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>,
+	Gary Guo <gary@garyguo.net>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Boqun Feng <boqun@kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH 2/6] rust: helpers: add SRCU helpers
+Date: Wed, 15 Jul 2026 17:28:19 -0700
+Message-Id: <20260716002823.12176-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <d9081db0-37e9-4187-84e1-871ab30a2b3f@paulmck-laptop>
+References: <d9081db0-37e9-4187-84e1-871ab30a2b3f@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hello!
+From: Onur Ã–zkan <work@onurozkan.dev>
 
-This series contains SRCU updates for v7.3, most notably Rust bindings.
+Add helper wrappers for SRCU functions that are exposed to Rust
+through generated bindings.
 
-1.	make init_srcu_struct() consistently wrap __init_srcu_struct(),
-	courtesy of Onur Özkan.
+Signed-off-by: Onur Ã–zkan <work@onurozkan.dev>
+Reviewed-by: Gary Guo <gary@garyguo.net>
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+Reviewed-by: Boqun Feng <boqun@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ rust/helpers/helpers.c |  1 +
+ rust/helpers/srcu.c    | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+)
+ create mode 100644 rust/helpers/srcu.c
 
-2.	helpers: add SRCU helpers, courtesy of Onur Özkan.
+diff --git a/rust/helpers/helpers.c b/rust/helpers/helpers.c
+index 998e31052e6601..35954f38ff6a4e 100644
+--- a/rust/helpers/helpers.c
++++ b/rust/helpers/helpers.c
+@@ -91,6 +91,7 @@
+ #include "slab.c"
+ #include "spinlock.c"
+ #include "string.c"
++#include "srcu.c"
+ #include "sync.c"
+ #include "task.c"
+ #include "time.c"
+diff --git a/rust/helpers/srcu.c b/rust/helpers/srcu.c
+new file mode 100644
+index 00000000000000..225b3bf9334a8f
+--- /dev/null
++++ b/rust/helpers/srcu.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/srcu.h>
++
++__rust_helper int rust_helper_init_srcu_struct_with_key(struct srcu_struct *ssp,
++							const char *name,
++							struct lock_class_key *key)
++{
++	return __init_srcu_struct(ssp, name, key);
++}
++
++__rust_helper int rust_helper_srcu_read_lock(struct srcu_struct *ssp)
++{
++	return srcu_read_lock(ssp);
++}
++
++__rust_helper void rust_helper_srcu_read_unlock(struct srcu_struct *ssp, int idx)
++{
++	srcu_read_unlock(ssp, idx);
++}
++
++__rust_helper void rust_helper_srcu_barrier(struct srcu_struct *ssp)
++{
++	srcu_barrier(ssp);
++}
++
++__rust_helper void rust_helper_synchronize_srcu_expedited(struct srcu_struct *ssp)
++{
++	synchronize_srcu_expedited(ssp);
++}
+-- 
+2.40.1
 
-3.	expose srcu_readers_active(), courtesy of Onur Özkan.
-
-4.	sync: add SRCU abstraction, courtesy of Onur Özkan.
-
-5.	MAINTAINERS: add Rust SRCU files to SRCU entry, courtesy of
-	Onur Özkan.
-
-6.	Queue sdp->work when the delay timer is successfully deleted,
-	courtesy of Zqiang.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/MAINTAINERS              |    3 
- b/include/linux/srcu.h     |   29 +++++--
- b/include/linux/srcutiny.h |   13 +++
- b/include/linux/srcutree.h |   24 ++++++
- b/kernel/rcu/srcutiny.c    |   12 +--
- b/kernel/rcu/srcutree.c    |   11 +-
- b/rust/helpers/helpers.c   |    1 
- b/rust/helpers/srcu.c      |   30 +++++++
- b/rust/kernel/sync.rs      |    2 
- b/rust/kernel/sync/srcu.rs |  171 +++++++++++++++++++++++++++++++++++++++++++++
- kernel/rcu/srcutiny.c      |    2 
- kernel/rcu/srcutree.c      |   31 +-------
- rust/helpers/srcu.c        |    5 +
- 13 files changed, 287 insertions(+), 47 deletions(-)
