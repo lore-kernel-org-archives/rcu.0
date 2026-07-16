@@ -1,42 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7631DF980;
-	Thu, 16 Jul 2026 00:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11458223DD4;
+	Thu, 16 Jul 2026 00:18:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784161095; cv=none; b=Ik1WsGtU2RqUDuFIKsHt8UR/kUufBlVwjB0a91gztyI+W+7eh259GAz347p4dKCJDIGyiZ5hS2VVoLniNSFV99gmfKghCmX3CGjzUG2KUzWsKNqt53GnEQfltqF2lf8obr8/4nemoWvJWVSup9OruCUxgr3L3MrvJd89o54NMMI=
+	t=1784161095; cv=none; b=s4X4DgKfnbd7qcNxckU1ssu754XgogQGi6pBqOSB3Z7alW9FhRyLy9S/vXVlSWW8TzRSughCBTbm0mnA/P9t8iVl87kmRWSEtu4ycUhoYYQYX62VjWX+Ljr6G2x8F0V3UcWYWFuv0fPKTw7UJ9QxBIXaJ/4Accf7wTK+xNmfYis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1784161095; c=relaxed/simple;
-	bh=KCTqDcoSNBl3bpRi6VKE0ye3sMYgJQD/SmQAZWZocO4=;
+	bh=q5x7h/cKxZhYRIDtmDdIaqS5ptNKMn+4az5MYemtxRU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jV5UIJmrXnCvDC+9bRzSMP4+DfCpH2sjBnrv9GniL1CzzYLlTwC+gRKdNADOtmDpQxNc4rWaGudLhWswuQiVIVBMy1+fPBSwgU2/VQQYEb6oSYN9viBLkkpvVgBLYiQM10JKQapW54UBPJ/nSbSTXFAg3S4nJ4XsoO/2jTkx9zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TkR4nF2J; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=NBzWILA/JddUGiUXtgYUVneoEL13d6zDqsVKrOaVON4sYkdkx/90/VhL/UACsAFP/UE1BxWBN8Ud4AmCV2rZIU4avYrJR17MGdQfjA8aJI+kQa2q2DHAT+zy7nHtrrf4R1/rRmHU2PCBmY0Q5bjQDvzWWhb2TtsI9erOI2wYjG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=csf1T6D8; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TkR4nF2J"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D0F11F0155B;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="csf1T6D8"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD6371F00A3E;
 	Thu, 16 Jul 2026 00:18:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1784161091;
-	bh=OrmEDktF9ULNSe1gracoYBb5VOuwxPcRL2J82R2YnPk=;
+	bh=3CvywNr0WbXOGx0JTNUPTDTUNzLnOXqHzFE6wFFrR5s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=TkR4nF2JBXmEn4tOoSVvnT0SA7ey+cZevvJyRSZdvrJzaEHCbNDwiNCUvKrqU6T1y
-	 El70jAiQK9/33ElHZk9jX3ZIJzUrQ1BNYh1WC/zKjx58E7sZ2P4g1yhLw+X8LiS2i2
-	 JT5hG3ht2noLiRrscSC3opBFkmJjBvGTaqiCrAURcB5quoY0/tV5/v/KCw6kuQC9Da
-	 y7lzncT70jH9N5GX7uAlUUBA3vgg+6+QAhMyO+Z3jPYKoN7JXrNY4wdvCi6+0OFOC1
-	 4WiPHUO5Hqxnx9mrqzHN8ZuiPmOKXtCgof9Hf38rcxP5fTOmRxiL7JlMIETw0MxYA4
-	 TKmxbZHGRy2Sg==
+	b=csf1T6D8JqrGZsEcDKWkDiSyH+M/AKUgFMKfL9u48n+1HNOAqcnKohhOCBkJ1/GCK
+	 3VBvqbbvV0UHUBAOSYkYc8Vf+qEyNNcOIZiKrOI7oB7mL3U3jmeRCAk/jQ9kMIAlfa
+	 h97apb+Yt9VE8NnwCLLGwfGDXcbMWoFBurdwRmDKIEdo9XP8CSI7QBq4aMjj4revZ5
+	 7GX2khwfKhw1w7OiYOMEFGSEBCUqvBUpvnLxcpBEbTA2z0/XM3T/uhhOGDlDimN0gu
+	 JJp9EEldZyjF/bWwl848Qa+vRBDO1GejsCnreePyhb2Gi2gxqHPk/FO6HaWln22bHs
+	 pU3KtKbW1PZlw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 36F0CCE0E2A; Wed, 15 Jul 2026 17:18:11 -0700 (PDT)
+	id 430DFCE0F14; Wed, 15 Jul 2026 17:18:11 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC v2 08/24] hazptrtorture: Use mnemonic local variables for context information
-Date: Wed, 15 Jul 2026 17:17:53 -0700
-Message-Id: <20260716001809.11084-8-paulmck@kernel.org>
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Wang Lian <lianux.mm@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH RFC v2 13/24] hazptrtorture: Use task_state_to_char() for task-state reporting
+Date: Wed, 15 Jul 2026 17:17:58 -0700
+Message-Id: <20260716001809.11084-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <23e34c2e-67fd-45da-b130-e70a131a59ea@paulmck-laptop>
 References: <23e34c2e-67fd-45da-b130-e70a131a59ea@paulmck-laptop>
@@ -48,51 +51,37 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit introduces can_sleep and short_spin local variables to
-hazptr_read_delay(). The can_sleep variable records whether unconstrained
-sleeping is feasible, and the short_spin variable checks for the NMI
-handlers, IRQ handlers, or disabled interrupts/softirqs suggesting short
-spin times.  While in the area, it disables the reader_sleep_us module
-parameter when invoked where sleeping is not permitted.
+From: Kunwu Chan <kunwu.chan@gmail.com>
 
+Use the kernel's standard symbolic task-state representation instead of
+printing raw hexadecimal task-state values.
+
+Suggested-by: Zqiang <qiang.zhang@linux.dev>
+Co-developed-by: Wang Lian <lianux.mm@gmail.com>
+Signed-off-by: Wang Lian <lianux.mm@gmail.com>
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/hazptrtorture.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ kernel/rcu/hazptrtorture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
-index 21a72667554fe0..adaf250ecfd585 100644
+index 3304eb450d7e32..266fecb00105f9 100644
 --- a/kernel/rcu/hazptrtorture.c
 +++ b/kernel/rcu/hazptrtorture.c
-@@ -204,23 +204,25 @@ static struct hazptr_torture *hazptr_torture_read_lock(struct hazptr_ctx **hcpp)
+@@ -621,10 +621,10 @@ hazptr_torture_stats_print(void)
+ 		unsigned long __maybe_unused gp_seq = 0;
  
- static void hazptr_read_delay(struct torture_random_state *rrsp)
- {
-+	const bool can_sleep = !preempt_count() && !irqs_disabled();
- 	const unsigned long shortdelay_us = 200;
- 	unsigned long longdelay_ms = 300;
-+	const bool short_spin = irqs_disabled() || irq_count();
- 
- 	/* We want a short delay sometimes to make a reader delay the grace
- 	 * period, and we want a long delay occasionally to trigger
- 	 * force_quiescent_state. */
- 
- 	if (!(torture_random(rrsp) % (nrealreaders * 2000 * longdelay_ms))) {
--		if ((preempt_count() & HARDIRQ_MASK) || softirq_count())
-+		if (short_spin)
- 			longdelay_ms = 5; /* Avoid triggering BH limits. */
- 		mdelay(longdelay_ms);
- 	}
- 	if (!(torture_random(rrsp) % (nrealreaders * 2 * shortdelay_us)))
- 		udelay(shortdelay_us);
--	if (!preempt_count() && !(torture_random(rrsp) % (nrealreaders * 500)))
-+	if (can_sleep && !(torture_random(rrsp) % (nrealreaders * 500)))
- 		torture_preempt_schedule();  /* QS only if preemptible. */
--	if (reader_sleep_us > 0)
-+	if (can_sleep && reader_sleep_us > 0)
- 		torture_hrtimeout_us(reader_sleep_us, 0, NULL);
- }
- 
+ 		wtp = READ_ONCE(writer_task);
+-		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %#x cpu %d\n",
++		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %c cpu %d\n",
+ 			 hazptr_torture_writer_state_getname(),
+ 			 hazptr_torture_writer_state, gp_seq, flags,
+-			 wtp == NULL ? ~0U : wtp->__state,
++			 wtp == NULL ? '?' : task_state_to_char(wtp),
+ 			 wtp == NULL ? -1 : (int)task_cpu(wtp));
+ 		if (!splatted && wtp) {
+ 			sched_show_task(wtp);
 -- 
 2.40.1
 
