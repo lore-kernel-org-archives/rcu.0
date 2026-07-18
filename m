@@ -1,58 +1,58 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C973148BB;
-	Sat, 18 Jul 2026 05:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A657019AD5C;
+	Sat, 18 Jul 2026 05:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784352780; cv=none; b=NrtVKC0Qn7fJXBgJB61WtKLJIqrPpIK2AHPRfB97JbH97WpyCLMFilTaABiaeUjxHaz0mGh1c5EFGk5PIhtaOhW3VaZXw827V0kZxDlsyIlNLYV5trzI90VvGJNV4dIyQv30/aSQvWwo+NjRPEUb9kNeTWTJdFSGcHXBKrfJxmc=
+	t=1784352786; cv=none; b=D2Rw8/r2yZIclbIy0rrDNHz33E+y+K82e66EaSWge+KEET9xvAj/ktub7Y7XWw7WmpRq67o1LV/uYHcWu5c/FKLt4Jehws9oDHXHfbb3tN1hkkTGH231OeOlBEbotQPBL07IYgzbsfXafO7t4cQKmpALvM8SOV1AMElOMQi/O1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784352780; c=relaxed/simple;
-	bh=gBSF6HTvlP8QoHhv6ajLL8wrlqNkDC+cdCgNg5zylp8=;
+	s=arc-20240116; t=1784352786; c=relaxed/simple;
+	bh=TNn/jDEr9CbQuxOMUVdYM2YyDJveN3eRBuNASoulf4M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OrQAzSZr9MkTRy6ZvkjYU8yP9K39AzF4/onqBYkHLIYkaKJT4Suk3gbBGPfeiqI1suibYIcHo78Kb9rZXSCFfsVPD6AyC9m44okYBE8aPoCu4FDnB+q5grnlnXDY9ZoY60cnBnxZpZlEphbBQATCsinUclm8FVhDuL9TkAQuP6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/z/vWDk; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=sE4pkh2FHMPc7lw+yRVX8AdG7qGPSlGNYYcdkttmww8rglqu5nxqGD1VNUF1tNSX8NwQd9xfxRAJ/ZaAZO0r8Ax1yOLTwjJkQbhXNRjckb8dXp+LK5bETXUFeXd3WtkfvS5wJiiHitM+JHg4jD28RFjSMM7t3RkdTxm79uT2rKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fU1ozw21; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/z/vWDk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2DDC1F00A3E;
-	Sat, 18 Jul 2026 05:32:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fU1ozw21"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FA6C1F00A3F;
+	Sat, 18 Jul 2026 05:33:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784352778;
-	bh=siyOnS6l4OgE+SqBMQ+V/Oxq7Qn3CqbcWz13kbHYzvY=;
+	s=k20260515; t=1784352784;
+	bh=YumMbTuFN39udjMu2dZ9HB8drw55p7kF/M9QUGWthnc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=m/z/vWDk0NEjI5nJFWg6lfGdO3EahGYp5EXwGohcJ/dafxtYLGtrJr0DuPYkpGMJt
-	 hwWrwidXLbgCAXNSA6n99skP69xEEcAXG06byG5ywzuQaCbBaiFxabg7cOBg0VvmmA
-	 X38pUaSmV1BvAcXMaXZ6m+nABidrzSKwC2QTEmY54gkewtq7pakwPxEUfbdtul0GV9
-	 jPMdAUSByQjaC5+GOqdm6+hf3Jmmcz9HpIixUjJl9Vtl6SYqeavnxUMvwDU6UL60Q7
-	 3+oSPOr0gm60kGJQ7FFDq1st48V3HyE8JNvu6+rCHQyTpQA2ClQ1iaW4fQd5c0XM86
-	 9QE8Xf4lV7i0w==
+	b=fU1ozw21g3OiLiw32hofDBp594Bnbsf4fggg3vRf2B3N20vySW14GDyXM3Zd/55Ok
+	 BmJK5lEN2a99FJFR76Qi3qYkDMDW3cHPMF8Bvj8jMoQV9iSH4/6LBnBLYjyOC79N5R
+	 xJMGDMUaJLqd4falmtUhigxSUtYOVjqdrtuzz+7aYaGkqC1atbUT8mFPrGJ6UE2Y0z
+	 RxaOO2ZGETbyVDjQTdX9lP7YHALngdas1wuaWSXYQ2PeB39r8ikeVge1fjNQ8Uw7L3
+	 VuX21L+Cz0hlaj+NgKXsQ29XGBGKGJ5NeRxFeU9ygADtXeSGVUXNqV51RZqQOduFFk
+	 SaAbYGWIhwReg==
 Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 28E26F4006A;
-	Sat, 18 Jul 2026 01:32:57 -0400 (EDT)
+	by mailfauth.phl.internal (Postfix) with ESMTP id 910F2F4006A;
+	Sat, 18 Jul 2026 01:33:02 -0400 (EDT)
 Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Sat, 18 Jul 2026 01:32:57 -0400
-X-ME-Sender: <xms:CRBbal0f4TF1GOEeTKlAucxG3TgzTOXYfgpLSEPu59HI6Tc8GITuNw>
-    <xme:CRBbal7DE12LmkHccLlpQ820yjKfEAARY9Oe80AeG_xkxhn126MxlmkcO0KCFyd4L
-    TSmMfk63SWs6t3ipV9tWTp23RzBwRBBwoL_Lor1MqkZIUdoddKwvw>
-X-ME-Received: <xmr:CRBbahWgW9Xkr8UqRbTsHe-5_P0teLekAC6T63o_xMq9R0IABzgJUr6C2b6RfOxKNackkdYI_zV7NTTFQnXKZCN1MVtuFZGE>
-X-ME-Proxy-Cause: dmFkZTE3j4lQBeju3HcweDJLEhgBazSdYdANC00q2qr0s4koYeBtdPShv70v8pi3tGI1gb
-    rI8gxibm6pg/EQlIbC5FCYfXYVoSlDO/lTkmwnSzTVXyDHp0bfUhA0XAFwbqJvrGefhv0r
-    XUnOrITJ3N4nqMI0h7+jzGq32g0S5vfV61f6E12mCvHFBAfvexQj6fIzJszAZ9rfBYqYfO
-    T6OIfII3tTQkjZZVd1g1QAoU9kPbui+CHn/TMFHwriLkDlU60ZMdQktApUZbVe8QEyUYr3
-    jVEpI07EG25Rz4jWtBQdqLQWlPbWtXp4KaGcuyKCPxFukwJtrryv/3hqo9da0SnjgWsXR5
-    r634v+PE6k1OOxPqJGPC6mLQ2SHFvEjMbkLTHDB2JAngHD5Xb2TlmvMt5+deZLEFky8MTp
-    +pZ6vDgd1ct7pb24/9mOaEE4bzmFLaxvMSjZqNWGE36StaJFzQ7OhQswbLfkdihoypCLJO
-    wVah/j4nT8Tv8JoxYMGrX08FYk3Vu3BOCb5PlbFyBTIg+gmWbN7az9X0FdnG6gtttdtOSO
-    ZfqnYHBkPgYnV2p1bQV0o85xip/4UU1y5gZplGT/oIUI0zqVr4nfnYtzGq9aRg4Pkk4A+b
-    gMq2pVnWbONZT/jamHXyJA/y6YTQ11zB6QsVeP78ZsiyEKnUDmeC7sew4kKg
-X-ME-Proxy: <xmx:CRBbavOR5w-PE2hjaET1N4mC_rEQwwAXGpoQV6--Xu6qZru9JXrrVQ>
-    <xmx:CRBbai88NHAJBu7GuF625FZR16YZM_J2opngYukSyE86TOhFeHLniQ>
-    <xmx:CRBban_tgKioVBwNrKAOkaex0m96IQEwTvjwWys4XCt3zC5MyM3O3Q>
-    <xmx:CRBbaqqIpcuB7cwxNDqP7OpfgefvXVsdQy2-PXWB9jtZDaraJXJG5g>
-    <xmx:CRBbaqIIw5gxJkKlso4-urSnPIlQAd_vIOUxQ8t-etRXm5ML03IbFEN6>
+  by phl-compute-05.internal (MEProxy); Sat, 18 Jul 2026 01:33:02 -0400
+X-ME-Sender: <xms:DhBbatM3cbC7GrwtQUl0vocmFrHvculOiFCpIsBBbGD6YAOE3OC2Xg>
+    <xme:DhBbapwxMJfbKkCXXwpVS8LswofOh42yBgmjkIXFquKH2JLgBdvuj_hkT6ikp-Bh2
+    aPMC89sZ-u47djPsXryZlegfuaq-9k26SH2z9e1wnYKVRriEt1Eig>
+X-ME-Received: <xmr:DhBbantEqoOjClhPKhdV2QArNaDA5R_SHjWuf-9deQkEKQ5SfQ8d34TAMDjWuu2uJZFIuzWEK5tuMeMglPaMsoxpDFFKytgC>
+X-ME-Proxy-Cause: dmFkZTEe1tEuSFJRyejgcADWwC1Q31VcIulMbzlwxQxSwM7p7NELQtXxoL4t9u3P3h6szL
+    wb7v4Y1Nfd9PJf44pRYto2n4BU3w63GmouT4LNR6cMb94hByhC4T19UClHqFpzwzazj5Vf
+    A8YkKW1UUR0TJ8dV49ki0VbHb8uMKM6KId0g8EWioE2qFZQpDctdLDeip2hFqPq5d3ACH5
+    qO7/M64UwGhfkVp49Uw1mz7RUEmunGbHxCq20xcQsFHR4VpiWV6KRY8BvJYxsbWtxpbsKA
+    SwMJCFL53Iue2y6cUSY74fyEj9Wo66A5FNIdAV9MLOMsDNkZ9FUjwGTU+R2pAhU2dl3BiV
+    3I6CxXPrsaR7ob/+XwDdwE1bYBvmRiUsRk7/rUs+UYDvdKLKB7I6Eu1kIAIIDcE1+a4imU
+    YHcJetBuL/vOAIOYwH6aaoJDy+GJIhenv+zw/dHzAIgAqqJYpd3e5O78/+ODcs2txRksBs
+    Ewqmdqb5NZoKU++D/70ThHKygiJvh5+z3zklLGIVDfh1OjUh01ut04C68MFuC2qz3KMABj
+    JuDPLErNsJpKDu8I1saGiCQEKmgO8R0Vw8A3yJBeComoPpSEVZJI3K6KXgBdSdFOGDn2KY
+    d8uzNvMiS6CBun5S29KMsO3+5Is6UApvD+5wrf+PGpBpTm2rIsuZVK74ylLQ
+X-ME-Proxy: <xmx:DhBbamE1H_E4VSkLK1ClXlVpr0JFDhePHIbXv02ng2wMqlt_5daqrA>
+    <xmx:DhBbagWmIV_OnQrFhiITWokgAMxhQslsij1XL2GTuOLTBnzokRR1kA>
+    <xmx:DhBbap1B9dUEAnsuJRdSaUz-kBKiOpySNcbwKBTWwRanFsTCi9cZHw>
+    <xmx:DhBbanBNaDl4rQ1nSlCQUGKlC-43JV1X2DWRbkqeO7gWjwbvnSXuYQ>
+    <xmx:DhBbavC0AmwD1PztAYBUfpPwWmatjtViYgpBBU9U4LhJmhkJvlbb7Hhc>
 Feedback-ID: i8dbe485b:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 18 Jul 2026 01:32:56 -0400 (EDT)
+ 18 Jul 2026 01:33:01 -0400 (EDT)
 From: Boqun Feng <boqun@kernel.org>
 To: rust-for-linux@vger.kernel.org,
 	rcu@vger.kernel.org
@@ -90,9 +90,9 @@ Cc: Miguel Ojeda <ojeda@kernel.org>,	Boqun Feng <boqun@kernel.org>,
 	linux-mm@kvack.org,	linux-fsdevel@vger.kernel.org,
 	linux-media@vger.kernel.org,	dri-devel@lists.freedesktop.org,
 	linaro-mm-sig@lists.linaro.org
-Subject: [RFC PATCH v2 1/4] rust: rcu: Add RcuBox type
-Date: Fri, 17 Jul 2026 22:32:44 -0700
-Message-ID: <20260718053247.25154-2-boqun@kernel.org>
+Subject: [RFC PATCH v2 3/4] rust: rcu: Introduce RcuFreeBox
+Date: Fri, 17 Jul 2026 22:32:46 -0700
+Message-ID: <20260718053247.25154-4-boqun@kernel.org>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20260718053247.25154-1-boqun@kernel.org>
 References: <20260718053247.25154-1-boqun@kernel.org>
@@ -104,344 +104,211 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Alice Ryhl <aliceryhl@google.com>
+The current RcuBox will call the `drop()` function after a grace period
+inside an RCU callback. This suffices for maintaining a RCU-protected
+object:
 
-This adds an RcuBox container, which is like Box except that the value
-is freed after waiting for one grace period (via {kvfree_,}call_rcu()).
+  RcuBox::drop():
+    call_rcu(
+      |..| { // <- call back after one grace period.
+        T::drop(); // <- call the destructor of the inner object.
+      }
+    )
 
-To allow containers to rely on the RCU properties of RcuBox, an
-extension of ForeignOwnable is added.
+However, to support a different RCU usage pattern as below we need to
+extend RcuBox:
 
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-[boqun: Make RcuBox generic over Allocator and add tests]
-[boqun: Add type alias for Rcu*Box]
-[boqun: Adjust the ForeignOwnable changes on `T` not being `:'static`]
-Co-developed-by: Boqun Feng <boqun@kernel.org>
+1. clean up the object, and unshare it from future RCU readers.
+2. wait for an RCU grace period.
+3. no other RCU readers, we can free the memory.
+
+An `RcuFreeBox<T: RcuFreeSafe>` is introduced to provide support for
+this:
+
+  RcuFreeBox::drop():
+    T::drop_before_gp(); // clean up and ushare.
+    kfree_call_rcu(..);  // free it after one grace period.
+
 Signed-off-by: Boqun Feng <boqun@kernel.org>
 ---
- rust/bindings/bindings_helper.h |   1 +
- rust/kernel/sync/rcu.rs         |  36 ++++-
- rust/kernel/sync/rcu/rcu_box.rs | 248 ++++++++++++++++++++++++++++++++
- 3 files changed, 284 insertions(+), 1 deletion(-)
- create mode 100644 rust/kernel/sync/rcu/rcu_box.rs
+ rust/kernel/sync/rcu.rs         | 34 ++++++++++++++++
+ rust/kernel/sync/rcu/rcu_box.rs | 72 +++++++++++++++++++++++++++++++--
+ 2 files changed, 102 insertions(+), 4 deletions(-)
 
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index 1124785e210b..3e3f1799a49f 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -81,6 +81,7 @@
- #include <linux/property.h>
- #include <linux/pwm.h>
- #include <linux/random.h>
-+#include <linux/rcupdate.h>
- #include <linux/refcount.h>
- #include <linux/regulator/consumer.h>
- #include <linux/sched.h>
 diff --git a/rust/kernel/sync/rcu.rs b/rust/kernel/sync/rcu.rs
-index 2bae76d229f0..42f6bbc83f71 100644
+index 42f6bbc83f71..e781a5044de9 100644
 --- a/rust/kernel/sync/rcu.rs
 +++ b/rust/kernel/sync/rcu.rs
-@@ -4,7 +4,19 @@
+@@ -4,6 +4,8 @@
  //!
  //! C header: [`include/linux/rcupdate.h`](srctree/include/linux/rcupdate.h)
  
--use crate::{bindings, types::NotThreadSafe};
-+use crate::{
-+    bindings,
-+    types::{
-+        ForeignOwnable,
-+        NotThreadSafe, //
-+    }, //
-+};
++use core::pin::Pin;
 +
-+mod rcu_box;
-+pub use self::rcu_box::RcuBox;
-+pub use self::rcu_box::RcuKBox;
-+pub use self::rcu_box::RcuKVBox;
-+pub use self::rcu_box::RcuVBox;
+ use crate::{
+     bindings,
+     types::{
+@@ -18,6 +20,8 @@
+ pub use self::rcu_box::RcuKVBox;
+ pub use self::rcu_box::RcuVBox;
  
++pub use self::rcu_box::RcuFreeBox;
++
  /// Evidence that the RCU read side lock is held on the current thread/CPU.
  ///
-@@ -66,3 +78,25 @@ pub fn synchronize_rcu() {
-     // SAFETY: `synchronize_rcu()` is always safe to be called from process context.
-     unsafe { bindings::synchronize_rcu() };
+ /// The type is explicitly not `Send` because this property is per-thread/CPU.
+@@ -100,3 +104,33 @@ pub trait ForeignOwnableRcu: ForeignOwnable {
+     /// [`from_foreign`]: ForeignOwnable::from_foreign
+     unsafe fn rcu_borrow<'a>(ptr: *mut ffi::c_void) -> Self::RcuBorrowed<'a>;
  }
 +
-+/// Declares that a pointer type is rcu safe.
-+pub trait ForeignOwnableRcu: ForeignOwnable {
-+    /// Type used to immutably borrow an rcu-safe value that is currently foreign-owned.
-+    type RcuBorrowed<'a>
-+    where
-+        Self: 'a;
-+
-+    /// Borrows a foreign-owned object immutably for an rcu grace period.
-+    ///
-+    /// This method provides a way to access a foreign-owned rcu-safe value from Rust immutably.
-+    ///
-+    /// # Safety
-+    ///
-+    /// * The provided pointer must have been returned by a previous call to [`into_foreign`].
-+    /// * If [`from_foreign`] is called, then `'a` must not end after the call to `from_foreign`
-+    ///   plus one rcu grace period.
-+    ///
-+    /// [`into_foreign`]: ForeignOwnable::into_foreign
-+    /// [`from_foreign`]: ForeignOwnable::from_foreign
-+    unsafe fn rcu_borrow<'a>(ptr: *mut ffi::c_void) -> Self::RcuBorrowed<'a>;
-+}
-diff --git a/rust/kernel/sync/rcu/rcu_box.rs b/rust/kernel/sync/rcu/rcu_box.rs
-new file mode 100644
-index 000000000000..cb1fd422480a
---- /dev/null
-+++ b/rust/kernel/sync/rcu/rcu_box.rs
-@@ -0,0 +1,248 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+// Copyright (C) 2026 Google LLC.
-+
-+//! Provides the `RcuBox` type for Rust allocations that live for a grace period.
-+
-+use core::{
-+    marker::PhantomData,
-+    ops::Deref,
-+    ptr::NonNull, //
-+};
-+
-+use crate::{
-+    alloc::{
-+        self,
-+        allocator::{
-+            KVmalloc,
-+            Kmalloc,
-+            Vmalloc, //
-+        },
-+        AllocError,
-+        Allocator, //
-+    },
-+    bindings,
-+    ffi::c_void,
-+    prelude::*,
-+    types::ForeignOwnable,
-+};
-+
-+use super::{
-+    ForeignOwnableRcu,
-+    Guard, //
-+};
-+
-+/// A box that is freed with rcu.
-+///
-+/// The value must be `Send`, as rcu may drop it on another thread.
-+///
-+/// # Invariants
-+///
-+/// * The pointer is valid and references a pinned `RcuBoxInner<T>` allocated with `A`.
-+/// * This `RcuBox` holds exclusive permissions to rcu free the allocation.
-+pub struct RcuBox<T: Send, A: Allocator>(NonNull<RcuBoxInner<T>>, PhantomData<A>);
-+
-+/// Type alias for [`RcuBox`] with a [`Kmalloc`] allocator.
-+///
-+/// # Examples
-+///
-+/// ```
-+/// # use kernel::sync::rcu::{self, RcuKBox};
-+/// let rb = RcuKBox::new(42, GFP_KERNEL)?;
-+///
-+/// assert_eq!(*rb, 42);
-+/// assert_eq!(*rb.with_rcu(&rcu::read_lock()), 42);
-+/// # Ok::<(), Error>(())
-+/// ```
-+pub type RcuKBox<T> = RcuBox<T, Kmalloc>;
-+
-+/// Type alias for [`RcuBox`] with a [`Vmalloc`] allocator.
-+///
-+/// # Examples
-+///
-+/// ```
-+/// # use kernel::sync::rcu::{self, RcuVBox};
-+/// let rb = RcuVBox::new(42, GFP_KERNEL)?;
-+///
-+/// assert_eq!(*rb, 42);
-+/// assert_eq!(*rb.with_rcu(&rcu::read_lock()), 42);
-+/// # Ok::<(), Error>(())
-+/// ```
-+pub type RcuVBox<T> = RcuBox<T, Vmalloc>;
-+
-+/// Type alias for [`RcuBox`] with a [`KVmalloc`] allocator.
-+///
-+/// # Examples
-+///
-+/// ```
-+/// # use kernel::sync::rcu::{self, RcuKVBox};
-+/// let rb = RcuKVBox::new(42, GFP_KERNEL)?;
-+///
-+/// assert_eq!(*rb, 42);
-+/// assert_eq!(*rb.with_rcu(&rcu::read_lock()), 42);
-+/// # Ok::<(), Error>(())
-+/// ```
-+pub type RcuKVBox<T> = RcuBox<T, KVmalloc>;
-+
-+struct RcuBoxInner<T> {
-+    rcu_head: bindings::callback_head,
-+    value: T,
-+}
-+
-+// Note that `T: Sync` is required since when moving an `RcuBox<T, A>`, the previous owner may
-+// still access `&T` for one grace period.
-+//
-+// SAFETY: Ownership of the `RcuBox<T, A>` allows for `&T` and dropping the `T`, so `T: Send +
-+// Sync` implies `RcuBox<T, A>: Send`.
-+unsafe impl<T: Send + Sync, A: Allocator> Send for RcuBox<T, A> {}
-+
-+// SAFETY: `&RcuBox<T, A>` allows for no operations other than those permitted by `&T`, so `T:
-+// Sync` implies `RcuBox<T, A>: Sync`.
-+unsafe impl<T: Send + Sync, A: Allocator> Sync for RcuBox<T, A> {}
-+
-+impl<T: Send, A: Allocator> RcuBox<T, A> {
-+    /// Create a new `RcuBox`.
-+    pub fn new(x: T, flags: alloc::Flags) -> Result<Self, AllocError> {
-+        let b = Box::<_, A>::new(
-+            RcuBoxInner {
-+                value: x,
-+                rcu_head: Default::default(),
-+            },
-+            flags,
-+        )?;
-+
-+        // INVARIANT:
-+        // * The pointer contains a valid `RcuBoxInner` allocated with `A`.
-+        // * We just allocated it, so we own free permissions.
-+        Ok(RcuBox(NonNull::from(Box::leak(b)), PhantomData))
-+    }
-+
-+    /// Access the value for a grace period.
-+    pub fn with_rcu<'rcu>(&self, _read_guard: &'rcu Guard) -> &'rcu T {
-+        // SAFETY: The `RcuBox` has not been dropped yet, so the value is valid for at least one
-+        // grace period.
-+        unsafe { &(*self.0.as_ptr()).value }
-+    }
-+}
-+
-+impl<T: Send, A: Allocator> Deref for RcuBox<T, A> {
-+    type Target = T;
-+    fn deref(&self) -> &T {
-+        // SAFETY: While the `RcuBox<T>` exists, the value remains valid.
-+        unsafe { &(*self.0.as_ptr()).value }
-+    }
-+}
-+
-+// SAFETY:
-+// * The `RcuBoxInner<T>` was allocated with `A`.
-+// * `NonNull::as_ptr` returns a non-null pointer.
-+unsafe impl<T: Send, A: Allocator> ForeignOwnable for RcuBox<T, A> {
-+    const FOREIGN_ALIGN: usize = <Box<RcuBoxInner<T>, A> as ForeignOwnable>::FOREIGN_ALIGN;
-+
-+    type Borrowed<'a>
-+        = &'a T
-+    where
-+        Self: 'a;
-+    type BorrowedMut<'a>
-+        = &'a T
-+    where
-+        Self: 'a;
-+
-+    fn into_foreign(self) -> *mut c_void {
-+        core::mem::ManuallyDrop::new(self).0.as_ptr().cast()
-+    }
-+
-+    unsafe fn from_foreign(ptr: *mut c_void) -> Self {
-+        // INVARIANT: Pointer returned by `into_foreign, A` carries same invariants as `RcuBox<T>`.
-+        // SAFETY: `into_foreign` never returns a null pointer.
-+        Self(unsafe { NonNull::new_unchecked(ptr.cast()) }, PhantomData)
-+    }
-+
-+    unsafe fn borrow<'a>(ptr: *mut c_void) -> &'a T
-+    where
-+        Self: 'a,
-+    {
-+        // SAFETY: Caller ensures that `'a` is short enough.
-+        unsafe { &(*ptr.cast::<RcuBoxInner<T>>()).value }
-+    }
-+
-+    unsafe fn borrow_mut<'a>(ptr: *mut c_void) -> &'a T
-+    where
-+        Self: 'a,
-+    {
-+        // SAFETY: `borrow_mut` has strictly stronger preconditions than `borrow`.
-+        unsafe { Self::borrow(ptr) }
-+    }
-+}
-+
-+impl<T: Send, A: Allocator> ForeignOwnableRcu for RcuBox<T, A> {
-+    type RcuBorrowed<'a>
-+        = &'a T
-+    where
-+        Self: 'a;
-+
-+    unsafe fn rcu_borrow<'a>(ptr: *mut c_void) -> &'a T
-+    where
-+        Self: 'a,
-+    {
-+        // SAFETY: `RcuBox::drop` can only run after `from_foreign` is called, and the value is
-+        // valid until `RcuBox::drop` plus one grace period.
-+        unsafe { &(*ptr.cast::<RcuBoxInner<T>>()).value }
-+    }
-+}
-+
-+impl<T: Send, A: Allocator> Drop for RcuBox<T, A> {
-+    fn drop(&mut self) {
-+        // SAFETY: The `rcu_head` field is in-bounds of a valid allocation.
-+        let rcu_head = unsafe { &raw mut (*self.0.as_ptr()).rcu_head };
-+        if core::mem::needs_drop::<T>() {
-+            // SAFETY: `rcu_head` is the `rcu_head` field of `RcuBoxInner<T>`. All users will be
-+            // gone in an rcu grace period. This is the destructor, so we may pass ownership of the
-+            // allocation.
-+            unsafe { bindings::call_rcu(rcu_head, Some(drop_rcu_box::<T, A>)) };
-+        } else {
-+            // SAFETY: All users will be gone in an rcu grace period.
-+            // TODO: We are luckily since `kvfree_call_rcu()` works on both kmalloc and vmalloc,
-+            // maybe a new `Allocator` method is needed.
-+            unsafe { bindings::kvfree_call_rcu(rcu_head, self.0.as_ptr().cast()) };
-+        }
-+    }
-+}
-+
-+/// Free this `RcuBoxInner<T>`.
++/// Declares a struct is safe to free after a grace period if all readers are guarded by RCU.
 +///
 +/// # Safety
 +///
-+/// `head` references the `rcu_head` field of an `RcuBoxInner<T>` that has no references to it.
-+/// Ownership of the `Box<RcuBoxInner<T>, A>` must be passed.
-+unsafe extern "C" fn drop_rcu_box<T, A: Allocator>(head: *mut bindings::callback_head) {
-+    // SAFETY: Caller provides a pointer to the `rcu_head` field of a `RcuBoxInner<T>`.
-+    let box_inner = unsafe { crate::container_of!(head, RcuBoxInner<T>, rcu_head) };
-+
-+    // SAFETY: Caller ensures exclusive access and passed ownership.
-+    drop(unsafe { Box::<_, A>::from_raw(box_inner) });
++/// Implementation must guarantee `drop_before_gp()` makes sure no future RCU reader will access
++/// any part of [`Self`], as a result, after `drop_before_gp()` return + one grace period, no RCU
++/// reader will be on the object, and it's safe to free it.
++///
++/// Notes for implementators: implementing this trait in general requires `Self` being a
++/// [`UnsafePinned`], i.e. a `&mut Self` is not a noalias reference if `Self` has non-trivial
++/// `drop()` function.
++pub unsafe trait RcuFreeSafe {
++    /// Clean up `Self` and make it ready to be RCU freed.
++    fn drop_before_gp(self: Pin<&mut Self>);
 +}
 +
-+#[kunit_tests(rust_rcu_box)]
-+mod tests {
-+    use super::*;
-+
-+    #[test]
-+    fn rcu_box_basic() -> Result {
-+        let rb = RcuBox::<_, alloc::allocator::Kmalloc>::new(42i32, alloc::flags::GFP_KERNEL)?;
-+
-+        assert_eq!(*rb, 42);
-+        assert_eq!(*rb.with_rcu(&Guard::new()), 42);
-+
-+        drop(rb);
-+
-+        let rb = RcuBox::<_, alloc::allocator::Vmalloc>::new(42i32, alloc::flags::GFP_KERNEL)?;
-+
-+        assert_eq!(*rb, 42);
-+        assert_eq!(*rb.with_rcu(&Guard::new()), 42);
-+
-+        drop(rb);
-+
-+        Ok(())
++macro_rules! impl_not_drop {
++    ($($t:ty, )*) => {
++        // SAFETY: Dropping `T` has no side effect means `T` is always ready to be freed. And an
++        // empty `drop_before_gp()` suffices.
++        $(unsafe impl RcuFreeSafe for $t {
++            fn drop_before_gp(self: Pin<&mut Self>) {
++                $crate::const_assert!(!core::mem::needs_drop::<$t>());
++            }
++        })*
 +    }
 +}
++
++impl_not_drop! {i8,u8,i16,u16,i32,u32,isize,usize,i64,u64,}
+diff --git a/rust/kernel/sync/rcu/rcu_box.rs b/rust/kernel/sync/rcu/rcu_box.rs
+index cb1fd422480a..ab4e9b2a4444 100644
+--- a/rust/kernel/sync/rcu/rcu_box.rs
++++ b/rust/kernel/sync/rcu/rcu_box.rs
+@@ -6,6 +6,7 @@
+ 
+ use core::{
+     marker::PhantomData,
++    mem::ManuallyDrop,
+     ops::Deref,
+     ptr::NonNull, //
+ };
+@@ -29,17 +30,18 @@
+ 
+ use super::{
+     ForeignOwnableRcu,
+-    Guard, //
++    Guard,
++    RcuFreeSafe, //
+ };
+ 
+-/// A box that is freed with rcu.
++/// A box that is drop with RCU.
+ ///
+-/// The value must be `Send`, as rcu may drop it on another thread.
++/// The value must be `Send`, as RCU may drop it on another thread.
+ ///
+ /// # Invariants
+ ///
+ /// * The pointer is valid and references a pinned `RcuBoxInner<T>` allocated with `A`.
+-/// * This `RcuBox` holds exclusive permissions to rcu free the allocation.
++/// * This `RcuBox` holds exclusive permissions to RCU-free the allocation.
+ pub struct RcuBox<T: Send, A: Allocator>(NonNull<RcuBoxInner<T>>, PhantomData<A>);
+ 
+ /// Type alias for [`RcuBox`] with a [`Kmalloc`] allocator.
+@@ -223,6 +225,56 @@ fn drop(&mut self) {
+     drop(unsafe { Box::<_, A>::from_raw(box_inner) });
+ }
+ 
++/// A box that is freed with RCU.
++///
++/// Currently we require `T` being `Send` because of an implementation limitation. In theory we can
++/// support `T` being `!Send`, since the RCU callback is only used to free the memory, not dropping
++/// `T`.
++pub struct RcuFreeBox<T: Send + RcuFreeSafe, A: Allocator>(RcuBox<ManuallyDrop<T>, A>);
++
++impl<T: Send + RcuFreeSafe, A: Allocator> RcuFreeBox<T, A> {
++    /// Create a new `RcuFreeBox`.
++    pub fn new(x: T, flags: alloc::Flags) -> Result<Self, AllocError> {
++        Ok(Self(RcuBox::new(ManuallyDrop::new(x), flags)?))
++    }
++}
++
++impl<T: Send + RcuFreeSafe, A: Allocator> Deref for RcuFreeBox<T, A> {
++    type Target = T;
++
++    fn deref(&self) -> &T {
++        self.0.deref()
++    }
++}
++
++impl<T: Send + RcuFreeSafe, A: Allocator> Drop for RcuFreeBox<T, A> {
++    fn drop(&mut self) {
++        // CAST: `ManuallyDrop<RcuBoxInner<T>>` is transparent to `RcuBoxInner<T>`, and `RcuBox`
++        // owns the object per type invariants.
++        let inner: *mut RcuBoxInner<T> = self.0 .0.as_ptr().cast();
++
++        // SAFETY: Per the invariants of `RcuBox`, `inner` owns the pointed object. And we are not
++        // going to move it.
++        let pin = unsafe { Pin::new_unchecked(&mut (*inner).value) };
++
++        pin.drop_before_gp();
++
++        // `needs_drop::<ManuallyDrop>()` returns `false`, hence `kvfree_call_rcu()` will be called
++        // and free the underlying data after a grace period.
++    }
++}
++
++// Note that `T: Sync` is required since when moving an `RcuFreeBox<T, A>`, the previous owner may
++// still access `&T` for one grace period.
++//
++// SAFETY: Ownership of the `RcuFreeBox<T, A>` allows for `&T` and dropping the `T`, so `T: Send +
++// Sync` implies `RcuFreeBox<T, A>: Send`.
++unsafe impl<T: Send + Sync + RcuFreeSafe, A: Allocator> Send for RcuFreeBox<T, A> {}
++
++// SAFETY: `&RcuFreeBox<T, A>` allows for no operations other than those permitted by `&T`, so `T:
++// Sync` implies `RcuFreeBox<T, A>: Sync`.
++unsafe impl<T: Send + Sync + RcuFreeSafe, A: Allocator> Sync for RcuFreeBox<T, A> {}
++
+ #[kunit_tests(rust_rcu_box)]
+ mod tests {
+     use super::*;
+@@ -236,6 +288,12 @@ fn rcu_box_basic() -> Result {
+ 
+         drop(rb);
+ 
++        let rb = RcuFreeBox::<_, alloc::allocator::Kmalloc>::new(42i32, alloc::flags::GFP_KERNEL)?;
++
++        assert_eq!(*rb, 42);
++
++        drop(rb);
++
+         let rb = RcuBox::<_, alloc::allocator::Vmalloc>::new(42i32, alloc::flags::GFP_KERNEL)?;
+ 
+         assert_eq!(*rb, 42);
+@@ -243,6 +301,12 @@ fn rcu_box_basic() -> Result {
+ 
+         drop(rb);
+ 
++        let rb = RcuFreeBox::<_, alloc::allocator::Vmalloc>::new(42i32, alloc::flags::GFP_KERNEL)?;
++
++        assert_eq!(*rb, 42);
++
++        drop(rb);
++
+         Ok(())
+     }
+ }
 -- 
 2.50.1 (Apple Git-155)
 
