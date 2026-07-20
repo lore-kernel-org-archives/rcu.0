@@ -1,212 +1,91 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4106141737D;
-	Mon, 20 Jul 2026 12:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA3A1A4F3C;
+	Mon, 20 Jul 2026 14:22:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784551577; cv=none; b=Nbr4B2bukTQZxeB1S5t7RaHQSmdStufBp7dF1gBpWh10ZJxcY3TWv+lUnGEVcfzP4f73NMQX2uILSCKxMSapFT3W57SrzGKqfjm67/0hrI66x7V6B1nPTXuPxrdpZq9nYMLYlaqV4//sz97eILTztMzUg0PzeQaPEMoiqeu+p8k=
+	t=1784557357; cv=none; b=p8YkH1UJeyT2mPWVXZLOpfG3TcK6FVQI4xiD8utWasYdRG1R1Vh6cYb1JbfErfogPytWM0nQiNQRNbj/tSiyr/COTQLew0ispxdI7aTmUpdXVPNTauFi2KR6bVOTKnmtQ2SeNdVWEUYzQRaldhZhMUGj8B06lmUmreds9JoFB24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784551577; c=relaxed/simple;
-	bh=rTl/DxJagCa+9Hy+ONCJKy/uvlP3BJsWT2MiI42DyvM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lNVqYu6haL+DqKKqXPyKJKSbo8XsS+IAYe84kL7pYATg2DmB7ncPxXap10p9XG+paCa1T5ZO1ipB8CLlYK3QVVB2p5qjAFmX4dv6fXTPeh60HSVfm+3pN6Ak0PDIkf/4lT6a87Bpsk7y+mj1I3c5HB0yHtA6Jtufd6y/l8CjSCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HDvhW/pe; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784557357; c=relaxed/simple;
+	bh=e4ShkY0fOjmYMLTXJuuDIB0nO1MlwzHCy3DlP6ePVY0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YMNfb1S7ywJWjbHqL3PuIP4ymcPZJu03GCxdmkUlT/NOzIc97ll4ZmYzhlqU2tPKo/zlLGgBAJeMA/w3LiEtGk8zF8U0apeyIshUq7VWxsi3o5RiB7FfjxJeV8PiueztDsG5M7oefvvDlJpJ8pid5JFEWQwj20ICJqqr6p4Nz5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZcySVioV; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HDvhW/pe"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87BE51F00A3D;
-	Mon, 20 Jul 2026 12:46:10 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZcySVioV"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2E331F00A3A;
+	Mon, 20 Jul 2026 14:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784551576;
-	bh=8Mf6ICl8QV0PyvQov1wiSUifOBTOQefLFAPMuDN3x10=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=HDvhW/peMepVeAoQL2dW+MaaHo1MGlQYb4TFy3R2tW14fKkWa7VZuh/s7cn77dzVq
-	 sSUYzoDD0SiPfWqY6iHqc1QPDZJF4mfo7RDsW0xED6Ocm1iSrM006ijnC32MukKMJg
-	 +M4A9DHP5vFdtw8YzVwC+FgASQzKKZ/7g8LmG1g7O925c6BlyXO/vrp/UVfT2tnXnB
-	 f88Yo0i+2f8bKWy6EHEkO8A/eC2WpRLdVtXDEkY4qe1PwbwR5P2G2Y25t+7v1ZHSRf
-	 BgXSa4nahdSdUJJPlQDjNhmC9dsQ5Q1yMC0NEV9C+gyKdIxG/GsiVQFZ1uaKW0ckTc
-	 vj+VGSJbrqYpA==
-From: "Harry Yoo (Oracle)" <harry@kernel.org>
-Date: Mon, 20 Jul 2026 21:44:37 +0900
-Subject: [PATCH slab/for-next v4 8/8] slub_kunit: extend the test for
- kfree_rcu_nolock()
+	s=k20260515; t=1784557356;
+	bh=Pg4VEI11tL6cZaF+rCWtAkKHA9kf+Lq96Oz8E8WHg1Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=ZcySVioVpe1Hs66nBttwzLNP4f6A985e0K3kGxWzMCqjM2ajt5M4OVaIfHIic+Pzs
+	 iE6H09BZYvKAE1d9A7uYvrFDyEvBcX5DyAl3JOpkLHCVBQ6g+nVEq5jO4ammP2S7XS
+	 LIKjt80PE0+Jw1xyEt0tHlv/2d5pjL64y8RHgrqEYtMqP64HsvlsH4LMORVTjyiemJ
+	 IlRl85jhV9AG2YzDe9LkzzLZZNUXXw/uKORmN2p2YPAXJvPRH1hJNIPLNg7raXTL6r
+	 rAHc2DXLvD97Rl9AD/DeiWidWCPz+8RVckfY8z477Qk9FoLTTJb0k6uW9ffstTGQJq
+	 mneM0a5s9w+YA==
+Date: Mon, 20 Jul 2026 16:22:33 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Breno Leitao <leitao@debian.org>
+Subject: Re: [PATCH v1 06/11] rcu: Enable RCU callbacks to benefit from
+ expedited grace periods
+Message-ID: <al4vKQ02tBYyYANk@localhost.localdomain>
+References: <20260624132356.516959-1-puranjay@kernel.org>
+ <20260624132356.516959-7-puranjay@kernel.org>
+ <alD6o01ukyliCS37@localhost.localdomain>
+ <6c683413-8e8b-4888-ba01-9d79c3867432@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260720-kfree_rcu_nolock-v4-8-964e03c41a4e@kernel.org>
-References: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
-In-Reply-To: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
-To: Vlastimil Babka <vbabka@kernel.org>, 
- Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>, 
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
- Roman Gushchin <roman.gushchin@linux.dev>, 
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>, 
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
- "Paul E. McKenney" <paulmck@kernel.org>, 
- Frederic Weisbecker <frederic@kernel.org>, 
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
- Joel Fernandes <joelagnelf@nvidia.com>, 
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
- Uladzislau Rezki <urezki@gmail.com>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
- Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>, 
- Shengming Hu <hu.shengming@zte.com.cn>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org, 
- "Harry Yoo (Oracle)" <harry@kernel.org>
-X-Mailer: b4 0.14.3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6c683413-8e8b-4888-ba01-9d79c3867432@paulmck-laptop>
 
-When slub_kunit is not built-in, call kfree_rcu() and kfree_rcu_nolock()
-to test kfree_rcu_nolock() in slub_kunit.
+Le Tue, Jul 14, 2026 at 11:48:08AM -0700, Paul E. McKenney a écrit :
+> > I have similar concerns about the three smp_mb() in
+> > get_state_synchronize_rcu_full(). It could be just two (rcu_seq_snap()
+> > has a barrier that could be just one). Not sure if that matters but,
+> > just wanted to point that.
+> 
+> We need the one at the beginning of get_state_synchronize_rcu_full(),
+> but from what I can see, not the ones in the calls to rcu_seq_snap().
+> I blame laziness.  We could make an rcu_seq_snap_no_ordering() that
+> didn't have the smp_mb(), but I didn't believe that the overhead would
+> be visible at the system level.
 
-Rename the test case as the test covers more _nolock() APIs.
+It isn't so much about performance than being clear about ordering
+expectations. Though we could argue that grace period polling can be
+about performance.
 
-Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
----
- lib/tests/slub_kunit.c | 45 +++++++++++++++++++++++++++++----------------
- 1 file changed, 29 insertions(+), 16 deletions(-)
+But in general rcu_seq_snap() advertizes:
 
-diff --git a/lib/tests/slub_kunit.c b/lib/tests/slub_kunit.c
-index a391467c1aa6..e3b63f0338d5 100644
---- a/lib/tests/slub_kunit.c
-+++ b/lib/tests/slub_kunit.c
-@@ -162,7 +162,10 @@ static void test_kmalloc_redzone_access(struct kunit *test)
- }
- 
- struct test_kfree_rcu_struct {
--	struct rcu_head rcu;
-+	union {
-+		struct rcu_head rcu;
-+		struct kvfree_rcu_head kvrcu;
-+	};
- };
- 
- static void test_kfree_rcu(struct kunit *test)
-@@ -296,7 +299,7 @@ static void test_krealloc_redzone_zeroing(struct kunit *test)
- #if defined(CONFIG_PERF_EVENTS) || (defined(CONFIG_KPROBES) && defined(CONFIG_SMP))
- #define NR_ITERATIONS 1000
- #define NR_OBJECTS 1000
--static void *objects[NR_OBJECTS];
-+static struct test_kfree_rcu_struct *objects[NR_OBJECTS];
- 
- struct test_nolock_context {
- 	struct kunit *test;
-@@ -311,13 +314,14 @@ struct test_nolock_context {
- #endif
- };
- 
--static void test_kmalloc_kfree(void)
-+static void test_kmalloc_and_friends(void)
- {
- 	int i, j;
-+	bool can_use_kfree_rcu = !IS_BUILTIN(CONFIG_SLUB_KUNIT_TEST);
- 
- 	for (i = 0; i < NR_ITERATIONS; i++) {
- 		for (j = 0; j < NR_OBJECTS; j++) {
--			gfp_t gfp = (i % 2) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
-+			gfp_t gfp = (i & 1) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
- 
- 			objects[j] = kmalloc_obj(*objects[j], gfp);
- 			if (!objects[j]) {
-@@ -328,26 +332,35 @@ static void test_kmalloc_kfree(void)
- 			}
- 		}
- 
--		for (j = 0; j < NR_OBJECTS; j++)
--			kfree(objects[j]);
-+		for (j = 0; j < NR_OBJECTS; j++) {
-+			if (can_use_kfree_rcu && (i & 2))
-+				kfree_rcu(objects[j], rcu);
-+			else
-+				kfree(objects[j]);
-+		}
- 	}
- }
- 
- static void test_nolock(struct test_nolock_context *ctx)
- {
--	void *objp;
-+	struct test_kfree_rcu_struct *objp;
- 	gfp_t gfp;
-+	bool can_use_kfree_rcu = !IS_BUILTIN(CONFIG_SLUB_KUNIT_TEST);
- 
- 	/* __GFP_ACCOUNT to test kmalloc_nolock() in alloc_slab_obj_exts() */
--	gfp = (ctx->callback_count % 2) ? 0 : __GFP_ACCOUNT;
--	objp = kmalloc_nolock(64, gfp, NUMA_NO_NODE);
-+	gfp = (ctx->callback_count & 1) ? 0 : __GFP_ACCOUNT;
-+	objp = kmalloc_nolock(sizeof(*objp), gfp, NUMA_NO_NODE);
- 
- 	if (objp)
- 		ctx->alloc_ok++;
- 	else
- 		ctx->alloc_fail++;
- 
--	kfree_nolock(objp);
-+	if (can_use_kfree_rcu && (ctx->callback_count & 2))
-+		kfree_rcu_nolock(objp, kvrcu);
-+	else
-+		kfree_nolock(objp);
-+
- 	ctx->callback_count++;
- }
- #endif
-@@ -397,14 +410,14 @@ static void disable_perf_events(struct test_nolock_context *ctx)
- 	perf_event_release_kernel(ctx->event);
- }
- 
--static void test_kmalloc_kfree_nolock_perf(struct kunit *test)
-+static void test_kmalloc_nolock_and_friends_perf(struct kunit *test)
- {
- 	struct test_nolock_context ctx = { .test = test };
- 
- 	if (!enable_perf_events(&ctx))
- 		kunit_skip(test, "Failed to enable perf event, skipping");
- 
--	test_kmalloc_kfree();
-+	test_kmalloc_and_friends();
- 
- 	disable_perf_events(&ctx);
- 	KUNIT_EXPECT_EQ(test, 0, slab_errors);
-@@ -438,14 +451,14 @@ static void unregister_slab_kprobes(struct test_nolock_context *ctx)
- 	unregister_kprobe(&ctx->kprobe);
- }
- 
--static void test_kmalloc_kfree_nolock_kprobe(struct kunit *test)
-+static void test_kmalloc_nolock_and_friends_kprobe(struct kunit *test)
- {
- 	struct test_nolock_context ctx = { .test = test };
- 
- 	if (!register_slab_kprobes(&ctx))
- 		kunit_skip(test, "Failed to register kprobe, skipping");
- 
--	test_kmalloc_kfree();
-+	test_kmalloc_and_friends();
- 
- 	unregister_slab_kprobes(&ctx);
- 	KUNIT_EXPECT_EQ(test, 0, slab_errors);
-@@ -477,10 +490,10 @@ static struct kunit_case test_cases[] = {
- 	KUNIT_CASE(test_leak_destroy),
- 	KUNIT_CASE(test_krealloc_redzone_zeroing),
- #ifdef CONFIG_PERF_EVENTS
--	KUNIT_CASE_SLOW(test_kmalloc_kfree_nolock_perf),
-+	KUNIT_CASE_SLOW(test_kmalloc_nolock_and_friends_perf),
- #endif
- #if defined(CONFIG_KPROBES) && defined(CONFIG_SMP)
--	KUNIT_CASE_SLOW(test_kmalloc_kfree_nolock_kprobe),
-+	KUNIT_CASE_SLOW(test_kmalloc_nolock_and_friends_kprobe),
- #endif
- 	{}
- };
+   READ seq
+   smp_mb() /* Above access must not bleed into critical section. */
+
+This doesn't tell much. Which critical section? That's not used on
+read side.
+
+Thanks.
 
 -- 
-2.53.0
-
+Frederic Weisbecker
+SUSE Labs
