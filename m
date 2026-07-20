@@ -1,38 +1,39 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DC243B3EE;
-	Mon, 20 Jul 2026 16:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A06A433BC2;
+	Mon, 20 Jul 2026 18:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784566544; cv=none; b=S7SxESHjwTr83LOcWExjDfchCE+9UQRU9zTExTj4l8Poavuo5JMGaADIDQb4Fk2VEJhkmEzoOh1PK2pxnymCaBYsia5MK9qKKhn3ubzBCKjbaSbpFmxE86KQVi+yypbNg3z+2O49TO22V5V8/5hgpazTRzW9prSil943dhr/zhQ=
+	t=1784570559; cv=none; b=GGnzxEdns/AMyT5mUGUPuLHzZMeZ2VwtWsjWPpauZxEHkWUGU84aL9Hx3ZiCZboWWeJCYNz+nayhGHk4iNsOczllRjd5fH615rG5tueXgvMA9tcKFeUDAA0VhBvQePnM1WTBELZwuaipxZajqTACa+y0MSipvVHN1Sl6C+/cSts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784566544; c=relaxed/simple;
-	bh=AubKSU3dLsPzm3qNcyZZd+4XouIFlKAGmaeIvVSyLaw=;
+	s=arc-20240116; t=1784570559; c=relaxed/simple;
+	bh=8fbSoafJSGiRFZ4DytBcIiZaqu9xMyQfx/A2tr+kHvE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BIiq/6VZIy5d/6ATvSp3IaS2zpf/op8o6GKDF8zq9K2T/q5H5DdXmubpsZo85Mi2b3gy7m+slPOCXl9F/cMB5PaIERqu1YzWoXOYAvW99RMIZ7bFwsWN/4sYLoWtIIJcL5sGui4NK78Vtx0w4D9GnbkIvwECxeNCyHSttyisXQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P2aIIh9c; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=ppUEXrd0vyVj+UGQqJFVVvT5hBcyWQg7ZX14SLl4BF1drrL5ISfhSZvgticM7tPnS0SRDNEv+lHn9lF80i2ZMeCygTrVUY98LGh++KDFA1B33Ww7in3/FV8DJnY6xRM4epItC7BhdrLhIT8TM5Mws6ag+AdoLuPPTAMIBp4pmkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UEhd9HMD; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P2aIIh9c"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E357B1F000E9;
-	Mon, 20 Jul 2026 16:55:42 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UEhd9HMD"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 424321F00A3A;
+	Mon, 20 Jul 2026 18:02:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784566542;
-	bh=+4VUlVgc7+EubpcqvcLFxntuQI31LVXsFkyms9nAtdE=;
+	s=k20260515; t=1784570558;
+	bh=DGrmLNF+95XaOSZs2mjtaOUyUATmvdR0fxA/D636Nk0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=P2aIIh9cNQ89sgbFowQNjn4BY7RSrgY6FySizmJ6s8FNihNCEu27OQGTbsss0vDZO
-	 QB3EAPi7AiA71M0NWTrrVRWTVsnTBuUAGstRyI6w7ze9x3OW9b53T4WpfQEhKbTa5O
-	 KGofX0yVNH4eOfQJEzaglHn9IlN2pxTw1RJ13K9922xczUTSU2kwd3+4C45Zm1tIdu
-	 LD7eNqTIyc8Cyt8qT4f0vwwy1mktl48jXtJ5pVOhPM6X6QZ4WMkwIlmhHehjTwHJdW
-	 wFdNB6GbMLTQ35fYVBlEibk3BKSmYXcbz7F9FUMJznfb5GeGpWi7jD963GWbnje+fy
-	 FFkOYkVIKzEDA==
+	b=UEhd9HMD5fQGcUhG5JsAgvAhJiFwiHxTveZ3OhuXcqWQjURPs9qZpTftjeWjZPE3K
+	 AgcZcw0wJHsQdUnA3N7VCiZEzLz3iDPSZTta07Q0yuLzB5sN6bg3fZY8t0O3Q8mAb2
+	 9mURjz3jT5Ph/Xl0fFdTfo5gmHEKh649qfEwDOV+IjdXm5tq+mSZ/AwFi0IgHno7hr
+	 YGvZhbA63N31Fd0WchM25x/Cg+I9wqIJdicXX6FFbb0/55+0Z4PeiilSLnEPrqwnz8
+	 VADD7BHnXevKtLbmTLBrxqZDDXpNScYdyxXZKzSDq0+YOxB81mcMrI9p5Vpwm0PIbQ
+	 DoX7P1fz6ChFA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id AE9ACCE0C57; Mon, 20 Jul 2026 09:55:42 -0700 (PDT)
-Date: Mon, 20 Jul 2026 09:55:42 -0700
+	id F1C79CE0F20; Mon, 20 Jul 2026 11:02:37 -0700 (PDT)
+Date: Mon, 20 Jul 2026 11:02:37 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
 	Josh Triplett <josh@joshtriplett.org>,
@@ -44,60 +45,116 @@ Cc: Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Davidlohr Bueso <dave@stgolabs.net>,
 	Breno Leitao <leitao@debian.org>
-Subject: Re: [PATCH v1 06/11] rcu: Enable RCU callbacks to benefit from
- expedited grace periods
-Message-ID: <cf1a3ffc-ed2a-41f4-bfd2-cbeab9d06861@paulmck-laptop>
+Subject: Re: [PATCH v1 00/11] RCU: Enable callbacks to benefit from expedited
+ grace periods
+Message-ID: <a7a86621-2aeb-46bf-b797-33ec91960791@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20260624132356.516959-1-puranjay@kernel.org>
- <20260624132356.516959-7-puranjay@kernel.org>
- <alD6o01ukyliCS37@localhost.localdomain>
- <6c683413-8e8b-4888-ba01-9d79c3867432@paulmck-laptop>
- <al4vKQ02tBYyYANk@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <al4vKQ02tBYyYANk@localhost.localdomain>
+In-Reply-To: <20260624132356.516959-1-puranjay@kernel.org>
 
-On Mon, Jul 20, 2026 at 04:22:33PM +0200, Frederic Weisbecker wrote:
-> Le Tue, Jul 14, 2026 at 11:48:08AM -0700, Paul E. McKenney a écrit :
-> > > I have similar concerns about the three smp_mb() in
-> > > get_state_synchronize_rcu_full(). It could be just two (rcu_seq_snap()
-> > > has a barrier that could be just one). Not sure if that matters but,
-> > > just wanted to point that.
-> > 
-> > We need the one at the beginning of get_state_synchronize_rcu_full(),
-> > but from what I can see, not the ones in the calls to rcu_seq_snap().
-> > I blame laziness.  We could make an rcu_seq_snap_no_ordering() that
-> > didn't have the smp_mb(), but I didn't believe that the overhead would
-> > be visible at the system level.
+On Wed, Jun 24, 2026 at 06:23:42AM -0700, Puranjay Mohan wrote:
+> This series lets call_rcu() callbacks be reclaimed as soon as either a
+> normal or an expedited grace period that covers them has elapsed, rather
+> than always waiting for a normal grace period.
 > 
-> It isn't so much about performance than being clear about ordering
-> expectations. Though we could argue that grace period polling can be
-> about performance.
+> Motivation
+> ==========
+> Today there is an asymmetry: synchronize_rcu_expedited() callers get fast
+> reclaim, but call_rcu() callers never benefit from those same expedited
+> grace periods, even though an expedited GP proves exactly the same thing
+> as a normal one -- all pre-existing readers are done.  When expedited GPs
+> are running on the system (driven by other subsystems), call_rcu()
+> callbacks that could already be freed instead sit in RCU_WAIT_TAIL until
+> the next normal GP.  This series treats a grace period as a grace period
+> regardless of how it was driven, so memory is reclaimed sooner.
 > 
-> But in general rcu_seq_snap() advertizes:
+> Design
+> ======
+> Callback segments now record both the normal and expedited grace-period
+> sequence in struct rcu_gp_seq, and rcu_segcblist_advance() releases a
+> segment as soon as poll_state_synchronize_rcu_full() reports that either
+> has completed.  Three notification paths are taught about expedited
+> completion so the advance actually happens: the NOCB rcuog kthreads,
+> the rcu_pending() tick gate, and rcu_core().
 > 
->    READ seq
->    smp_mb() /* Above access must not bleed into critical section. */
+> Changelog:
+> RFC: https://lore.kernel.org/all/20260417231203.785172-1-puranjay@kernel.org/
+> Changes in v1:
+>  - New prep patch 1 renames struct rcu_gp_oldstate to struct rcu_gp_seq
+>    and its fields rgos_norm/rgos_exp to norm/exp tree-wide (Frederic).
+>  - The rcu_segcblist segment field stays named gp_seq; only its type
+>    changes (Frederic).
+>  - Patch 8 (NOCB wake) is reworked.  v1 woke the wrong waitqueue
+>    (rdp_gp->nocb_gp_wq via wake_nocb_gp() rather than the leaf
+>    rnp->nocb_gp_wq[] that an rcuog kthread waiting for a GP sleeps on),
+>    and the wait condition only checked the normal ->gp_seq.  The rcuog
+>    grace-period wait now tracks a struct rcu_gp_seq and is released via
+>    poll_state_synchronize_rcu_full(); rcu_exp_wait_wake() wakes the leaf
+>    node through the new rcu_nocb_exp_cleanup() (Frederic).
+>  - rcu_pending() uses a new memory-ordering-free
+>    poll_state_synchronize_rcu_full_unordered() to avoid memory barriers
+>    on every tick, leaving the ordering duty to rcu_core() (Frederic).
 > 
-> This doesn't tell much. Which critical section? That's not used on
-> read side.
+> Still open: Frederic asked whether the first smp_mb() in
+> poll_state_synchronize_rcu_full() is needed on the callback-advance path
+> (patch 6).  That path still uses the fully ordered helper; only
+> rcu_pending() was switched to the unordered variant.  Happy to revisit.
 
-Fair question!
+And these all have reviews, other than 9/11, which is mine to review.
+So I have pulled them in for further review and testing, thank you
+very much!!!
 
-And the answer is "any critical section that might later be executed by
-the current task."
-
-Would it help if I made that comment read as follows, separately from
-Puranjay's series?
-
-	// The above access must not bleed into any later RCU read-side
-	// critical section executed by the current task.
+If everything goes well, there is some chance that these will make the
+next merge window.
 
 							Thanx, Paul
+
+> Puranjay Mohan (11):
+>   rcu: Rename struct rcu_gp_oldstate to rcu_gp_seq
+>   rcu/segcblist: Add SRCU and Tasks RCU wrapper functions
+>   rcu/segcblist: Factor out rcu_segcblist_advance_compact() helper
+>   rcu/segcblist: Track segment grace periods with struct rcu_gp_seq
+>   rcu: Add RCU_GET_STATE_NOT_TRACKED for subsystems without expedited
+>     GPs
+>   rcu: Enable RCU callbacks to benefit from expedited grace periods
+>   rcu: Update comments for gp_seq and expedited GP tracking
+>   rcu: Wake NOCB rcuog kthreads on expedited grace period completion
+>   rcu: Detect expedited grace period completion in rcu_pending()
+>   rcu: Advance callbacks for expedited GP completion in rcu_core()
+>   rcuscale: Add concurrent expedited GP threads for callback scaling
+>     tests
+> 
+>  include/linux/rcu_segcblist.h |  16 ++--
+>  include/linux/rcupdate.h      |  13 ++-
+>  include/linux/rcupdate_wait.h |   2 +-
+>  include/linux/rcutiny.h       |  36 ++++-----
+>  include/linux/rcutree.h       |  29 +++----
+>  include/trace/events/rcu.h    |   5 +-
+>  kernel/rcu/rcu.h              |  13 ++-
+>  kernel/rcu/rcu_segcblist.c    | 139 ++++++++++++++++++++++----------
+>  kernel/rcu/rcu_segcblist.h    |   8 +-
+>  kernel/rcu/rcuscale.c         |  84 ++++++++++++++++++-
+>  kernel/rcu/rcutorture.c       |  30 +++----
+>  kernel/rcu/srcutree.c         |  14 ++--
+>  kernel/rcu/tasks.h            |   8 +-
+>  kernel/rcu/tiny.c             |   4 +-
+>  kernel/rcu/tree.c             | 147 ++++++++++++++++++++++------------
+>  kernel/rcu/tree.h             |   3 +-
+>  kernel/rcu/tree_exp.h         |  20 ++---
+>  kernel/rcu/tree_nocb.h        | 131 ++++++++++++++++++++++++------
+>  mm/slab_common.c              |   6 +-
+>  19 files changed, 496 insertions(+), 212 deletions(-)
+> 
+> 
+> base-commit: 709d17a22bfac78765f6cbaec42e15bcd4aa4f08
+> -- 
+> 2.53.0-Meta
+> 
