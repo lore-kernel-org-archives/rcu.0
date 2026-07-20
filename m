@@ -1,35 +1,35 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D92A419317;
-	Mon, 20 Jul 2026 12:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91AA3D7A16;
+	Mon, 20 Jul 2026 12:45:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784551540; cv=none; b=c0/+TnLEeJQpNVmNr2Y3IXTy+LmvOBmui37dG4fSt/kiHQD3JwQodPe1nEQACiVeUzl8vw5Z6pxVWXNdywujpHfHrc/oXvxLx1uJl3kAlgGr38v/5yX9FQZzUSjM+o6bjLZ4AdQ1jFKPl41QdUZ+zBgAQbfG76JLgsjT7l4kYIo=
+	t=1784551546; cv=none; b=ddWnwzX+L6WIjCnUPuvIw0tM233oObCsrI7iS1jlJnvOGmuoLFXdZE4tzYF5U/10UETphnA+MuhnEj7D38g1CIyUand4QS5hvcLXQDQJofJIR9zFqKPG0TB0+GwAih098Xgd4exROzSSLWMxSYyrNkNpcl4m10TU/1AT5+5uePU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784551540; c=relaxed/simple;
-	bh=qZAN/3UpeKtSuciPkQqFy2NNocauB7H5gDD7EAnl7MA=;
+	s=arc-20240116; t=1784551546; c=relaxed/simple;
+	bh=gBca40z1NbOcdl7POOTl1q4QE43EIoZSZD2kATW63Kw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Rj5h/CtL+Yq9tUXMlGzEaUSwVekXInU4VunXIRtNG8fovmAByCB5hmKfYJSucambHAlt2uOvgG6xwd8JdP/vrbhXX+IFCQYopOYkbvMtnJk8H5CG+RLKqTgAYy3x/Qcm/fmv8z8ejDOWFfqg/3chS7jlUtHNB214a+vWKIWPjBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QzdowtEn; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:To:Cc; b=hO72aXjVyuRQNjd9vdGnSH16TU0wJkKfdhvoxUnUZK90g/+12O+DlOx9YRXRcLXEb5YLLAN5LH6uy0kZNFLiexjasrBcqKxgWKd/hremURDqtzhL4SEL+nKMEP/rEaiEK9p/3TLs1DxfQYp1lcJZq+MdtGCkVWoo17I8b9p7Mx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JSe/I62a; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QzdowtEn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 969B01F00A3A;
-	Mon, 20 Jul 2026 12:45:33 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JSe/I62a"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD0951F000E9;
+	Mon, 20 Jul 2026 12:45:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784551539;
-	bh=M7imT+FTw9hwkIa++YEpGORHLE52uWQJDNq1DlQ+ILo=;
+	s=k20260515; t=1784551545;
+	bh=gEdEptG0SQeRDcDet0HzsJ7ij1w4V3/phd6b9zQynDM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=QzdowtEnOJWwFNbLbV2yvYoyji13SiHT3RbhpTWm01Vb0CDHB5GanlqnnhmLU6vjs
-	 IJXAcAqXGPaRQtTnXRM86CdRaGkoeYL67caTz/cQ9bf9MZaBPdnjInjxYoJ9iJojxP
-	 UgL2qymEknwnABdFsw/Qd2KPeYvlsNTC6T/Vk0cL85DgTHJqiVx3tnZeWg4vhZJUwG
-	 NiB/PJe1cADxfsP6BVJEYuvxjevtnJODGAcFU/K+PTgq4fDfGVrTONKgUfm1BZn8d0
-	 MBKdMb++oT+5U3U9rae8fsFDKfAEPB0U2X69dMIfXZycK26wj9STpnS/sNYSy+B0u+
-	 +F7NhIDhZQwhA==
+	b=JSe/I62a0Ly9w+RpYYJBwxSnl/fcB1i1i+ovbkac+K7zljbU1l40+93Xs9ETK/nQY
+	 0ye6HHrTCwU0wr71HfK6CPqwYFw5hQcIAa8Hk2ae518qQl1QP8z41Q+RLWh1ObU537
+	 AkAWqNhBPp5ZLV4OZqBzUvCG6IrpXb1HT8FxcEjKLsSKB1Gl3H8hKaMMhFtK7fJTIT
+	 m2XTAQcrOLOAMCRT4Rtzt9qqMI23AtvrfVJFv1nbI5R9WwrA8WwX+rc1Ar2VkE2OhC
+	 jCQXx9oE+gwDRDAQXiqlXkuhvihklWv0jIwGHvHR0E27/VlTC1rb7m2/ZdGQs2P9hS
+	 KYY9IVpgfF00Q==
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
-Date: Mon, 20 Jul 2026 21:44:31 +0900
-Subject: [PATCH slab/for-next v4 2/8] mm/slab: handle the !allow_spin case
- in kfree_rcu_sheaf()
+Date: Mon, 20 Jul 2026 21:44:32 +0900
+Subject: [PATCH slab/for-next v4 3/8] mm/slab: use call_rcu() in unknown
+ context if irqs are enabled
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -38,7 +38,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260720-kfree_rcu_nolock-v4-2-964e03c41a4e@kernel.org>
+Message-Id: <20260720-kfree_rcu_nolock-v4-3-964e03c41a4e@kernel.org>
 References: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
 In-Reply-To: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
 To: Vlastimil Babka <vbabka@kernel.org>, 
@@ -64,198 +64,41 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  "Harry Yoo (Oracle)" <harry@kernel.org>
 X-Mailer: b4 0.14.3
 
-Teach kfree_rcu_sheaf() how to handle the !allow_spin case. Try to get
-an empty sheaf from pcs->spare or the barn even when spinning is not
-allowed. Unlike __pcs_replace_full_main(), try harder to allocate
-an empty sheaf because the fallback path will be more expensive than
-kfree_nolock().
+call_rcu() disables IRQs with local_irq_save() to protect its per-cpu
+data structures. Therefore, if IRQs are not disabled, they cannot be
+corrupted by reentrance into call_rcu(). So fall back to the deferred
+path only when !allow_spin && irqs_disabled().
 
-Now that slab has internal alloc_flags to describe context, introduce
-free_flags analogously and convert free_flags to alloc_flags when
-allocating memory in the free path. alloc_empty_sheaf() now strips
-__GFP_RECLAIM when SLAB_ALLOC_NOLOCK is specified.
+The RCU subsystem does not guarantee this contractually, and this
+optimization relies on RCU's implementation details. Ideally, it should
+be removed once call_rcu_nolock() is supported by the RCU subsystem.
 
-When trylock fails or the kernel observes non-NULL pcs->rcu_free after
-lock acquisition, free the sheaf instead of putting it to the barn.
-This is rare and not worth complicating the code.
-
-Since call_rcu() cannot be called in an unknown context,
-kfree_rcu_sheaf() fails when the rcu sheaf becomes full.
-
-Link: https://lore.kernel.org/linux-mm/872bd673-3d45-4111-8a41-31185db3ece5@kernel.org
+Link: https://lore.kernel.org/linux-mm/CAADnVQKRVD5ZSnEKbZZU7w86gHbGHUug2pvzpgZTngNS+fg4rw@mail.gmail.com
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 ---
- mm/slab.h        | 18 +++++++++++++++++-
- mm/slab_common.c |  2 +-
- mm/slub.c        | 36 ++++++++++++++++++++++++++++--------
- 3 files changed, 46 insertions(+), 10 deletions(-)
+ mm/slub.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/mm/slab.h b/mm/slab.h
-index 281a65233795..85ef2ebc9812 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -23,11 +23,27 @@
- #define SLAB_ALLOC_NEW_SLAB	0x02 /* a flag for alloc_slab_obj_exts() */
- #define SLAB_ALLOC_NO_RECURSE	0x04 /* prevent kmalloc() recursion */
- 
-+#define SLAB_FREE_DEFAULT	0x00 /* no flags */
-+#define SLAB_FREE_NOLOCK	0x01 /* spinning not allowed */
-+
-+static inline unsigned int to_alloc_flags(unsigned int free_flags)
-+{
-+	if (free_flags & SLAB_FREE_NOLOCK)
-+		return SLAB_ALLOC_NOLOCK;
-+	else
-+		return SLAB_ALLOC_DEFAULT;
-+}
-+
- static inline bool alloc_flags_allow_spinning(const unsigned int alloc_flags)
- {
- 	return !(alloc_flags & SLAB_ALLOC_NOLOCK);
- }
- 
-+static inline bool free_flags_allow_spinning(const unsigned int free_flags)
-+{
-+	return !(free_flags & SLAB_FREE_NOLOCK);
-+}
-+
- void *__kmalloc_flags_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t flags,
- 				  unsigned int alloc_flags, int node)
- 				  __assume_kmalloc_alignment __alloc_size(1);
-@@ -429,7 +445,7 @@ static inline bool is_kmalloc_normal(struct kmem_cache *s)
- 	return !(s->flags & (SLAB_CACHE_DMA|SLAB_ACCOUNT|SLAB_RECLAIM_ACCOUNT));
- }
- 
--bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj);
-+bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags);
- void flush_all_rcu_sheaves(void);
- void flush_rcu_sheaves_on_cache(struct kmem_cache *s);
- 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index b6426d7ceec9..e07b4e6d6679 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1605,7 +1605,7 @@ static bool kfree_rcu_sheaf(void *obj)
- 
- 	s = slab->slab_cache;
- 	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) == numa_mem_id()))
--		return __kfree_rcu_sheaf(s, obj);
-+		return __kfree_rcu_sheaf(s, obj, SLAB_FREE_DEFAULT);
- 
- 	return false;
- }
 diff --git a/mm/slub.c b/mm/slub.c
-index e32a68677537..0c350274fbff 100644
+index 0c350274fbff..680fe64aff72 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2814,10 +2814,14 @@ static inline struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s,
- 
- 	gfp &= ~OBJCGS_CLEAR_MASK;
- 
-+	if (alloc_flags & SLAB_ALLOC_NOLOCK)
-+		gfp &= ~__GFP_RECLAIM;
-+
- 	return __alloc_empty_sheaf(s, gfp, alloc_flags, s->sheaf_capacity);
- }
- 
--static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
-+static void __free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf,
-+			       bool allow_spin)
- {
- 	/*
- 	 * If the sheaf was created with SLAB_ALLOC_NO_RECURSE flag then its
-@@ -2829,11 +2833,20 @@ static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
- 		mark_obj_codetag_empty(sheaf);
- 
- 	VM_WARN_ON_ONCE(sheaf->size > 0);
--	kfree(sheaf);
-+
-+	if (likely(allow_spin))
-+		kfree(sheaf);
-+	else
-+		kfree_nolock(sheaf);
- 
- 	stat(s, SHEAF_FREE);
- }
- 
-+static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
-+{
-+	__free_empty_sheaf(s, sheaf, /* allow_spin = */ true);
-+}
-+
- static unsigned int
- refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
- 	       unsigned int max);
-@@ -6044,10 +6057,11 @@ static void rcu_free_sheaf(struct rcu_head *head)
-  */
- static DEFINE_WAIT_OVERRIDE_MAP(kfree_rcu_sheaf_map, LD_WAIT_CONFIG);
- 
--bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
-+bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags)
- {
- 	struct slub_percpu_sheaves *pcs;
- 	struct slab_sheaf *rcu_sheaf;
-+	bool allow_spin = free_flags_allow_spinning(free_flags);
- 
- 	if (WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT)))
- 		return false;
-@@ -6060,9 +6074,9 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
- 	pcs = this_cpu_ptr(s->cpu_sheaves);
- 
- 	if (unlikely(!pcs->rcu_free)) {
--
- 		struct slab_sheaf *empty;
- 		struct node_barn *barn;
-+		unsigned int alloc_flags = to_alloc_flags(free_flags);
- 
- 		/* Bootstrap or debug cache, fall back */
- 		if (unlikely(!cache_has_sheaves(s))) {
-@@ -6082,7 +6096,7 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
- 			goto fail;
- 		}
- 
--		empty = barn_get_empty_sheaf(barn, true);
-+		empty = barn_get_empty_sheaf(barn, allow_spin);
- 
- 		if (empty) {
- 			pcs->rcu_free = empty;
-@@ -6091,20 +6105,20 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
- 
- 		local_unlock(&s->cpu_sheaves->lock);
- 
--		empty = alloc_empty_sheaf(s, GFP_NOWAIT, SLAB_ALLOC_DEFAULT);
-+		empty = alloc_empty_sheaf(s, GFP_NOWAIT, alloc_flags);
- 
- 		if (!empty)
- 			goto fail;
- 
- 		if (!local_trylock(&s->cpu_sheaves->lock)) {
--			barn_put_empty_sheaf(barn, empty);
-+			__free_empty_sheaf(s, empty, allow_spin);
- 			goto fail;
- 		}
- 
- 		pcs = this_cpu_ptr(s->cpu_sheaves);
- 
- 		if (unlikely(pcs->rcu_free))
--			barn_put_empty_sheaf(barn, empty);
-+			__free_empty_sheaf(s, empty, allow_spin);
- 		else
- 			pcs->rcu_free = empty;
- 	}
-@@ -6122,6 +6136,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
+@@ -6136,8 +6136,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags)
  	if (likely(rcu_sheaf->size < s->sheaf_capacity)) {
  		rcu_sheaf = NULL;
  	} else {
-+		if (unlikely(!allow_spin)) {
-+			/* call_rcu() cannot be called in an unknown context */
-+			rcu_sheaf->size--;
-+			local_unlock(&s->cpu_sheaves->lock);
-+			goto fail;
-+		}
- 		pcs->rcu_free = NULL;
- 		rcu_sheaf->node = numa_node_id();
- 	}
+-		if (unlikely(!allow_spin)) {
+-			/* call_rcu() cannot be called in an unknown context */
++		/*
++		 * With !allow_spin, we might have interrupted call_rcu()'s
++		 * IRQ-disabled critical section. If IRQs are not disabled,
++		 * we know that's not the case.
++		 */
++		if (unlikely(!allow_spin && irqs_disabled())) {
+ 			rcu_sheaf->size--;
+ 			local_unlock(&s->cpu_sheaves->lock);
+ 			goto fail;
 
 -- 
 2.53.0
