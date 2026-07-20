@@ -1,35 +1,35 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91AA3D7A16;
-	Mon, 20 Jul 2026 12:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4B1419FCC;
+	Mon, 20 Jul 2026 12:45:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784551546; cv=none; b=ddWnwzX+L6WIjCnUPuvIw0tM233oObCsrI7iS1jlJnvOGmuoLFXdZE4tzYF5U/10UETphnA+MuhnEj7D38g1CIyUand4QS5hvcLXQDQJofJIR9zFqKPG0TB0+GwAih098Xgd4exROzSSLWMxSYyrNkNpcl4m10TU/1AT5+5uePU=
+	t=1784551553; cv=none; b=WhlbRFVHEROFMkOH7ucUTOR2BSVBCkvzyZOJwretpgB+5ZOpKXXSOinSX7RArxOCHbOLL26Ey45xIpXgcQ/bdK2+c50bRUudAHKHk+XInwp2lvnqEYNZi9IUbJsNqmDOnPrSOs2pfUsjjbXG+jQ+4xar4nmS/40UuPlZc98NJ34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784551546; c=relaxed/simple;
-	bh=gBca40z1NbOcdl7POOTl1q4QE43EIoZSZD2kATW63Kw=;
+	s=arc-20240116; t=1784551553; c=relaxed/simple;
+	bh=8DPvhzfaG4acHM+kXrphkoecMpwVSfDPYU60IuVu2wM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hO72aXjVyuRQNjd9vdGnSH16TU0wJkKfdhvoxUnUZK90g/+12O+DlOx9YRXRcLXEb5YLLAN5LH6uy0kZNFLiexjasrBcqKxgWKd/hremURDqtzhL4SEL+nKMEP/rEaiEK9p/3TLs1DxfQYp1lcJZq+MdtGCkVWoo17I8b9p7Mx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JSe/I62a; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:To:Cc; b=rWTg7fx2X6XgKizEw8FihN4T7+y0HmmmHU6j8RjYkQb4WE3Xbxl07YCgfP1gZvuNAYSKp4E0gYGAYzQ4xMAtGnmABLKPVXNBs3KP3ghBqxMPIy7078KM3K344FFWr2tSKcyI/P5Pd42PPnMsT9Y4jbWk8DihSG8h6rF13zG4ds8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZFj+X6YN; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JSe/I62a"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD0951F000E9;
-	Mon, 20 Jul 2026 12:45:39 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZFj+X6YN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0909D1F00A3E;
+	Mon, 20 Jul 2026 12:45:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784551545;
-	bh=gEdEptG0SQeRDcDet0HzsJ7ij1w4V3/phd6b9zQynDM=;
+	s=k20260515; t=1784551551;
+	bh=Ra4Fb4kdhCfFUfu58piVrVDiMeFaEqKjymoRqiTdUjg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=JSe/I62a0Ly9w+RpYYJBwxSnl/fcB1i1i+ovbkac+K7zljbU1l40+93Xs9ETK/nQY
-	 0ye6HHrTCwU0wr71HfK6CPqwYFw5hQcIAa8Hk2ae518qQl1QP8z41Q+RLWh1ObU537
-	 AkAWqNhBPp5ZLV4OZqBzUvCG6IrpXb1HT8FxcEjKLsSKB1Gl3H8hKaMMhFtK7fJTIT
-	 m2XTAQcrOLOAMCRT4Rtzt9qqMI23AtvrfVJFv1nbI5R9WwrA8WwX+rc1Ar2VkE2OhC
-	 jCQXx9oE+gwDRDAQXiqlXkuhvihklWv0jIwGHvHR0E27/VlTC1rb7m2/ZdGQs2P9hS
-	 KYY9IVpgfF00Q==
+	b=ZFj+X6YNmvcSASRoE+QeBprhXOaKzVYC2OqVlhXlhv6dQ1ZN0TmnjT540pnjBbT7y
+	 PfPqWq/JnZ3IbEMSUhjw9rYzuEufryOAzk46N7JDsG4kGg2pfUjhwWbR9Qa810QNb1
+	 CiqLX9XqfQvaM9+/uhOEOAFBiAYI9zcrb9czKW0Ny4phm+IaWp8AAKuGLZvBpZm5nE
+	 du4DwRjr+IbDnjrcXk0Os6YR7QEc/l5IZqXl+dEeEMZ29iMWXchp/wcPn6hQ0j4P3X
+	 qyYO7jdNW5gsa7+kXPYp9JvJyZ9Oq1dEk88i2vCWyVmlZtrvlkGEJxBW9FOsuTr5LZ
+	 vvFsJtpotgL8g==
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
-Date: Mon, 20 Jul 2026 21:44:32 +0900
-Subject: [PATCH slab/for-next v4 3/8] mm/slab: use call_rcu() in unknown
- context if irqs are enabled
+Date: Mon, 20 Jul 2026 21:44:33 +0900
+Subject: [PATCH slab/for-next v4 4/8] mm/slab: extend deferred free
+ mechanism to handle rcu sheaves
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -38,7 +38,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260720-kfree_rcu_nolock-v4-3-964e03c41a4e@kernel.org>
+Message-Id: <20260720-kfree_rcu_nolock-v4-4-964e03c41a4e@kernel.org>
 References: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
 In-Reply-To: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
 To: Vlastimil Babka <vbabka@kernel.org>, 
@@ -64,41 +64,235 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  "Harry Yoo (Oracle)" <harry@kernel.org>
 X-Mailer: b4 0.14.3
 
-call_rcu() disables IRQs with local_irq_save() to protect its per-cpu
-data structures. Therefore, if IRQs are not disabled, they cannot be
-corrupted by reentrance into call_rcu(). So fall back to the deferred
-path only when !allow_spin && irqs_disabled().
+__kfree_rcu_sheaf() cannot invoke call_rcu() when spinning is not
+allowed and IRQs are disabled. To relax the limitation, extend the
+deferred free fallback so that a full rcu sheaf can be submitted to
+call_rcu() via the existing IRQ work.
 
-The RCU subsystem does not guarantee this contractually, and this
-optimization relies on RCU's implementation details. Ideally, it should
-be removed once call_rcu_nolock() is supported by the RCU subsystem.
+Since the deferred mechanism does more than deferred freeing of objects,
+rename the struct to deferred_percpu_work and adjust names accordingly.
 
-Link: https://lore.kernel.org/linux-mm/CAADnVQKRVD5ZSnEKbZZU7w86gHbGHUug2pvzpgZTngNS+fg4rw@mail.gmail.com
+When a sheaf is queued on an IRQ work, it is detached from
+pcs->rcu_free but call_rcu() is not invoked until the irq_work runs.
+To keep the kvfree_rcu barrier's promise, call irq_work_sync() on each
+CPU before calling rcu_barrier().
+
+In the meantime, remove the TODO item as apparently there is no simple
+and effective way to achieve that. This is because, unlike sheaves,
+kfree_rcu() batches objects from different caches together.
+
 Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Reviewed-by: Pedro Falcato <pfalcato@suse.de>
+Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 ---
- mm/slub.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ mm/slab.h        |  2 +-
+ mm/slab_common.c |  7 ++---
+ mm/slub.c        | 85 +++++++++++++++++++++++++++++++++-----------------------
+ 3 files changed, 53 insertions(+), 41 deletions(-)
 
+diff --git a/mm/slab.h b/mm/slab.h
+index 85ef2ebc9812..fdd293b3efa5 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -760,7 +760,7 @@ void __kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *slab)
+ void __check_heap_object(const void *ptr, unsigned long n,
+ 			 const struct slab *slab, bool to_user);
+ 
+-void defer_free_barrier(void);
++void deferred_work_barrier(void);
+ 
+ static inline bool slub_debug_orig_size(struct kmem_cache *s)
+ {
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index e07b4e6d6679..9c9ae1384f47 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -551,7 +551,7 @@ void kmem_cache_destroy(struct kmem_cache *s)
+ 	}
+ 
+ 	/* Wait for deferred work from kmalloc/kfree_nolock() */
+-	defer_free_barrier();
++	deferred_work_barrier();
+ 
+ 	cpus_read_lock();
+ 	mutex_lock(&slab_mutex);
+@@ -2113,13 +2113,10 @@ void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
+ 		cpus_read_lock();
+ 		flush_rcu_sheaves_on_cache(s);
+ 		cpus_read_unlock();
++		deferred_work_barrier();
+ 		rcu_barrier();
+ 	}
+ 
+-	/*
+-	 * TODO: Introduce a version of __kvfree_rcu_barrier() that works
+-	 * on a specific slab cache.
+-	 */
+ 	__kvfree_rcu_barrier();
+ }
+ EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
 diff --git a/mm/slub.c b/mm/slub.c
-index 0c350274fbff..680fe64aff72 100644
+index 680fe64aff72..8afa6b47b1f2 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -6136,8 +6136,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags)
+@@ -418,6 +418,8 @@ struct slab_sheaf {
+ 	union {
+ 		struct rcu_head rcu_head;
+ 		struct list_head barn_list;
++		/* only used to defer call_rcu() in unknown context */
++		struct llist_node llnode;
+ 		/* only used for prefilled sheafs */
+ 		struct {
+ 			unsigned int capacity;
+@@ -4077,6 +4079,20 @@ static void flush_all(struct kmem_cache *s)
+ 	cpus_read_unlock();
+ }
+ 
++struct deferred_percpu_work {
++	struct llist_head objects;
++	struct llist_head rcu_sheaves;
++	struct irq_work work;
++};
++
++static void deferred_percpu_work_fn(struct irq_work *work);
++
++static DEFINE_PER_CPU(struct deferred_percpu_work, deferred_percpu_work) = {
++	.objects = LLIST_HEAD_INIT(objects),
++	.rcu_sheaves = LLIST_HEAD_INIT(rcu_sheaves),
++	.work = IRQ_WORK_INIT(deferred_percpu_work_fn),
++};
++
+ static void flush_rcu_sheaf(struct work_struct *w)
+ {
+ 	struct slub_percpu_sheaves *pcs;
+@@ -4148,6 +4164,7 @@ void flush_all_rcu_sheaves(void)
+ 	mutex_unlock(&slab_mutex);
+ 	cpus_read_unlock();
+ 
++	deferred_work_barrier();
+ 	rcu_barrier();
+ }
+ 
+@@ -6136,16 +6153,6 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags)
  	if (likely(rcu_sheaf->size < s->sheaf_capacity)) {
  		rcu_sheaf = NULL;
  	} else {
--		if (unlikely(!allow_spin)) {
--			/* call_rcu() cannot be called in an unknown context */
+-		/*
+-		 * With !allow_spin, we might have interrupted call_rcu()'s
+-		 * IRQ-disabled critical section. If IRQs are not disabled,
+-		 * we know that's not the case.
+-		 */
+-		if (unlikely(!allow_spin && irqs_disabled())) {
+-			rcu_sheaf->size--;
+-			local_unlock(&s->cpu_sheaves->lock);
+-			goto fail;
+-		}
+ 		pcs->rcu_free = NULL;
+ 		rcu_sheaf->node = numa_node_id();
+ 	}
+@@ -6154,8 +6161,22 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags)
+ 	 * we flush before local_unlock to make sure a racing
+ 	 * flush_all_rcu_sheaves() doesn't miss this sheaf
+ 	 */
+-	if (rcu_sheaf)
+-		call_rcu(&rcu_sheaf->rcu_head, rcu_free_sheaf);
++	if (rcu_sheaf) {
 +		/*
 +		 * With !allow_spin, we might have interrupted call_rcu()'s
 +		 * IRQ-disabled critical section. If IRQs are not disabled,
 +		 * we know that's not the case.
 +		 */
 +		if (unlikely(!allow_spin && irqs_disabled())) {
- 			rcu_sheaf->size--;
- 			local_unlock(&s->cpu_sheaves->lock);
- 			goto fail;
++			struct deferred_percpu_work *dpw;
++
++			dpw = this_cpu_ptr(&deferred_percpu_work);
++			if (llist_add(&rcu_sheaf->llnode, &dpw->rcu_sheaves))
++				irq_work_queue(&dpw->work);
++		} else {
++			call_rcu(&rcu_sheaf->rcu_head, rcu_free_sheaf);
++		}
++	}
+ 
+ 	local_unlock(&s->cpu_sheaves->lock);
+ 
+@@ -6354,31 +6375,21 @@ static void free_to_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
+ 	}
+ }
+ 
+-struct defer_free {
+-	struct llist_head objects;
+-	struct irq_work work;
+-};
+-
+-static void free_deferred_objects(struct irq_work *work);
+-
+-static DEFINE_PER_CPU(struct defer_free, defer_free_objects) = {
+-	.objects = LLIST_HEAD_INIT(objects),
+-	.work = IRQ_WORK_INIT(free_deferred_objects),
+-};
+-
+ /*
+  * In PREEMPT_RT irq_work runs in per-cpu kthread, so it's safe
+  * to take sleeping spin_locks from __slab_free().
+  * In !PREEMPT_RT irq_work will run after local_unlock_irqrestore().
+  */
+-static void free_deferred_objects(struct irq_work *work)
++static void deferred_percpu_work_fn(struct irq_work *work)
+ {
+-	struct defer_free *df = container_of(work, struct defer_free, work);
+-	struct llist_head *objs = &df->objects;
++	struct deferred_percpu_work *dpw;
++	struct llist_head *objs, *rcu_sheaves;
+ 	struct llist_node *llnode, *pos, *t;
++	struct slab_sheaf *sheaf, *next;
+ 
+-	if (llist_empty(objs))
+-		return;
++	dpw = container_of(work, struct deferred_percpu_work, work);
++	rcu_sheaves = &dpw->rcu_sheaves;
++	objs = &dpw->objects;
+ 
+ 	llnode = llist_del_all(objs);
+ 	llist_for_each_safe(pos, t, llnode) {
+@@ -6402,27 +6413,31 @@ static void free_deferred_objects(struct irq_work *work)
+ 		__slab_free(s, slab, x, x, 1, _THIS_IP_);
+ 		stat(s, FREE_SLOWPATH);
+ 	}
++
++	llnode = llist_del_all(rcu_sheaves);
++	llist_for_each_entry_safe(sheaf, next, llnode, llnode)
++		call_rcu(&sheaf->rcu_head, rcu_free_sheaf);
+ }
+ 
+ static void defer_free(struct kmem_cache *s, void *head)
+ {
+-	struct defer_free *df;
++	struct deferred_percpu_work *dpw;
+ 
+ 	guard(preempt)();
+ 
+ 	head = kasan_reset_tag(head);
+ 
+-	df = this_cpu_ptr(&defer_free_objects);
+-	if (llist_add(head + s->offset, &df->objects))
+-		irq_work_queue(&df->work);
++	dpw = this_cpu_ptr(&deferred_percpu_work);
++	if (llist_add(head + s->offset, &dpw->objects))
++		irq_work_queue(&dpw->work);
+ }
+ 
+-void defer_free_barrier(void)
++void deferred_work_barrier(void)
+ {
+ 	int cpu;
+ 
+ 	for_each_possible_cpu(cpu)
+-		irq_work_sync(&per_cpu_ptr(&defer_free_objects, cpu)->work);
++		irq_work_sync(&per_cpu_ptr(&deferred_percpu_work, cpu)->work);
+ }
+ 
+ static __fastpath_inline
 
 -- 
 2.53.0
