@@ -1,34 +1,35 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79E8E4195C3;
-	Mon, 20 Jul 2026 12:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4106141737D;
+	Mon, 20 Jul 2026 12:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784551571; cv=none; b=Zju4FOPQuPO8lAjfGUszzZFCZhchYkWJxTlBH61QliphHXF/ehud9xXR8KjuUHuZBc9qjU0hB8SZrBorJAl43Ocwu6IeVyVNreXNW+tSUhvGdRYBKcy8IfLVW1OZKtpNsXGoVjIa85/2boj8BweSSPvHTTM4wOSLTe6sUqydDrE=
+	t=1784551577; cv=none; b=Nbr4B2bukTQZxeB1S5t7RaHQSmdStufBp7dF1gBpWh10ZJxcY3TWv+lUnGEVcfzP4f73NMQX2uILSCKxMSapFT3W57SrzGKqfjm67/0hrI66x7V6B1nPTXuPxrdpZq9nYMLYlaqV4//sz97eILTztMzUg0PzeQaPEMoiqeu+p8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784551571; c=relaxed/simple;
-	bh=Td9yzK+lW3SpaynxjYepq1jC6b/ZmqRlIDj4vYJb8pc=;
+	s=arc-20240116; t=1784551577; c=relaxed/simple;
+	bh=rTl/DxJagCa+9Hy+ONCJKy/uvlP3BJsWT2MiI42DyvM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Xslr+hafU1rg1Cetr1zEembw99bsKeKpO9p/mIeJitnUsZUoyJZU29DGcJe9kPmJL9kBl/IHrZMfn7JEtx/Zd9Ij4tp7bU9ASdvQSYHzHdXn9+mZlPElJkTfgvYsD9uXsKj8XsduMq7YBamXA+zTNmCBgkZxfkzN2/AHPKkncrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RX13nvMZ; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:To:Cc; b=lNVqYu6haL+DqKKqXPyKJKSbo8XsS+IAYe84kL7pYATg2DmB7ncPxXap10p9XG+paCa1T5ZO1ipB8CLlYK3QVVB2p5qjAFmX4dv6fXTPeh60HSVfm+3pN6Ak0PDIkf/4lT6a87Bpsk7y+mj1I3c5HB0yHtA6Jtufd6y/l8CjSCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HDvhW/pe; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RX13nvMZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A73C1F000E9;
-	Mon, 20 Jul 2026 12:46:04 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HDvhW/pe"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87BE51F00A3D;
+	Mon, 20 Jul 2026 12:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784551570;
-	bh=tR+P/h2nByeigiwGZHMwdsEAW1PKLC/u8oNgU53PQWs=;
+	s=k20260515; t=1784551576;
+	bh=8Mf6ICl8QV0PyvQov1wiSUifOBTOQefLFAPMuDN3x10=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=RX13nvMZggBA2+prEs/70znjmQ6xnGVlj01nl2N3late5GXTZ5ldIXKVfpeO6FGOE
-	 uq6jE4Bg7233yFmRNr5Ym/MJa6QAdPWAdEZjhnXlyPZdkCs4lvAA5gAD23Z0RnM6/m
-	 Nlz8B5WZYRksPbohtdp2ggK6YFe047r9lQmhgkI4eN3xS/o90+1/2tvU/Y7gw5AuUO
-	 ZhBgS6EfD+AmWhLkvMDkDJJqnJB7WkKhoDv5sRz4JEg7AeP6AdUdYCtgXynth9HjFw
-	 XwJQcb9Gr2ThOYi4o5aQDyO7CfHbABRCDCMUhkifAUdxdiTCcQuJ4zi6m/ruUZ2Egj
-	 OLZYyrMO5zOzA==
+	b=HDvhW/peMepVeAoQL2dW+MaaHo1MGlQYb4TFy3R2tW14fKkWa7VZuh/s7cn77dzVq
+	 sSUYzoDD0SiPfWqY6iHqc1QPDZJF4mfo7RDsW0xED6Ocm1iSrM006ijnC32MukKMJg
+	 +M4A9DHP5vFdtw8YzVwC+FgASQzKKZ/7g8LmG1g7O925c6BlyXO/vrp/UVfT2tnXnB
+	 f88Yo0i+2f8bKWy6EHEkO8A/eC2WpRLdVtXDEkY4qe1PwbwR5P2G2Y25t+7v1ZHSRf
+	 BgXSa4nahdSdUJJPlQDjNhmC9dsQ5Q1yMC0NEV9C+gyKdIxG/GsiVQFZ1uaKW0ckTc
+	 vj+VGSJbrqYpA==
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
-Date: Mon, 20 Jul 2026 21:44:36 +0900
-Subject: [PATCH slab/for-next v4 7/8] mm/slab: introduce kfree_rcu_nolock()
+Date: Mon, 20 Jul 2026 21:44:37 +0900
+Subject: [PATCH slab/for-next v4 8/8] slub_kunit: extend the test for
+ kfree_rcu_nolock()
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -37,7 +38,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260720-kfree_rcu_nolock-v4-7-964e03c41a4e@kernel.org>
+Message-Id: <20260720-kfree_rcu_nolock-v4-8-964e03c41a4e@kernel.org>
 References: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
 In-Reply-To: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
 To: Vlastimil Babka <vbabka@kernel.org>, 
@@ -63,183 +64,148 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  "Harry Yoo (Oracle)" <harry@kernel.org>
 X-Mailer: b4 0.14.3
 
-Currently, k[v]free_rcu() cannot be called in unknown context since
-it could lead to a deadlock when called in the middle of k[v]free_rcu().
+When slub_kunit is not built-in, call kfree_rcu() and kfree_rcu_nolock()
+to test kfree_rcu_nolock() in slub_kunit.
 
-Make users' lives easier by introducing kfree_rcu_nolock() variant,
-now that kfree_rcu_sheaf() is available on PREEMPT_RT and
-__kfree_rcu_sheaf() handles unknown context.
+Rename the test case as the test covers more _nolock() APIs.
 
-kfree_rcu_nolock() falls back to the kvfree_rcu batching when sheaves
-path fails. In most cases, the sheaves path is expected to succeed
-and it's unnecessary to add complexity to the existing kvfree_rcu
-batching by teaching it how to handle unknown context.
-
-Since defer_kfree_rcu() can be called on caches without sheaves, move
-deferred_work_barrier() and rcu_barrier() outside the branch in
-kvfree_rcu_barrier_on_cache().
-
+Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 ---
- include/linux/rcupdate.h | 19 +++++++++++++++++++
- mm/slab_common.c         | 28 ++++++++++++++++++++++++++--
- mm/slub.c                | 24 +++++++++++++++++++++++-
- 3 files changed, 68 insertions(+), 3 deletions(-)
+ lib/tests/slub_kunit.c | 45 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 29 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index ef5bb6981133..ce0fd401352e 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -1099,6 +1099,7 @@ static inline void rcu_read_unlock_migrate(void)
-  * In mm/slab_common.c, no suitable header to include here.
-  */
- void kvfree_call_rcu(struct kvfree_rcu_head *head, void *ptr);
-+void kfree_call_rcu_nolock(struct kvfree_rcu_head *head, void *ptr);
- 
- /*
-  * The BUILD_BUG_ON() makes sure the rcu_head offset can be handled. See the
-@@ -1124,6 +1125,24 @@ do {								\
- 		kvfree_call_rcu(NULL, (void *) (___p));		\
- } while (0)
- 
-+/**
-+ * kfree_rcu_nolock() - a version of kfree_rcu() that can be called in any context.
-+ * @ptr: pointer to kfree for double-argument invocations.
-+ * @kvrhf: the name of the struct kvfree_rcu_head within the type of @ptr.
-+ *
-+ * Objects that are not allocated via kmalloc_nolock() are not supported.
-+ * kfree_rcu_nolock() supports 2-arg variant only.
-+ */
-+#define kfree_rcu_nolock(ptr, kvrhf)						\
-+do {										\
-+	typeof (ptr) ___p = (ptr);						\
-+										\
-+	if (___p) {								\
-+		BUILD_BUG_ON(offsetof(typeof(*(ptr)), kvrhf) >= 4096);		\
-+		kfree_call_rcu_nolock(&((___p)->kvrhf), (void *) (___p));	\
-+	}									\
-+} while (0)
-+
- /*
-  * Place this after a lock-acquisition primitive to guarantee that
-  * an UNLOCK+LOCK pair acts as a full barrier.  This guarantee applies
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index c1c32909fa52..09c457645e03 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1263,6 +1263,29 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
- EXPORT_TRACEPOINT_SYMBOL(kfree);
- EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
- 
-+void kfree_call_rcu_nolock(struct kvfree_rcu_head *head, void *ptr)
-+{
-+	struct slab *slab;
-+	struct kmem_cache *s;
-+
-+	VM_WARN_ON_ONCE(is_vmalloc_addr(ptr) || !virt_to_slab(ptr));
-+
-+	slab = virt_to_slab(ptr);
-+	s = slab->slab_cache;
-+
-+	if (unlikely(IS_ENABLED(CONFIG_NUMA) && slab_nid(slab) != numa_mem_id()))
-+		goto fallback;
-+
-+	if (unlikely(!__kfree_rcu_sheaf(s, ptr, SLAB_FREE_NOLOCK)))
-+		goto fallback;
-+
-+	return;
-+
-+fallback:
-+	defer_kfree_rcu(head);
-+}
-+EXPORT_SYMBOL_GPL(kfree_call_rcu_nolock);
-+
- #ifndef CONFIG_KVFREE_RCU_BATCHED
- 
- void kvfree_call_rcu(struct rcu_head *head, void *ptr)
-@@ -2120,10 +2143,11 @@ void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
- 		cpus_read_lock();
- 		flush_rcu_sheaves_on_cache(s);
- 		cpus_read_unlock();
--		deferred_work_barrier();
--		rcu_barrier();
- 	}
- 
-+	/* kfree_rcu_nolock() might have deferred frees even without sheaves */
-+	deferred_work_barrier();
-+	rcu_barrier();
- 	__kvfree_rcu_barrier();
- }
- EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
-diff --git a/mm/slub.c b/mm/slub.c
-index d0976396d703..7114451dd5d0 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4081,6 +4081,7 @@ static void flush_all(struct kmem_cache *s)
- 
- struct deferred_percpu_work {
- 	struct llist_head objects;
-+	struct llist_head objects_by_rcu;
- 	struct llist_head rcu_sheaves;
- 	struct irq_work work;
- };
-@@ -4089,6 +4090,7 @@ static void deferred_percpu_work_fn(struct irq_work *work);
- 
- static DEFINE_PER_CPU(struct deferred_percpu_work, deferred_percpu_work) = {
- 	.objects = LLIST_HEAD_INIT(objects),
-+	.objects_by_rcu = LLIST_HEAD_INIT(objects_by_rcu),
- 	.rcu_sheaves = LLIST_HEAD_INIT(rcu_sheaves),
- 	.work = IRQ_WORK_INIT(deferred_percpu_work_fn),
- };
-@@ -6386,13 +6388,14 @@ static void free_to_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
- static void deferred_percpu_work_fn(struct irq_work *work)
- {
- 	struct deferred_percpu_work *dpw;
--	struct llist_head *objs, *rcu_sheaves;
-+	struct llist_head *objs, *objs_by_rcu, *rcu_sheaves;
- 	struct llist_node *llnode, *pos, *t;
- 	struct slab_sheaf *sheaf, *next;
- 
- 	dpw = container_of(work, struct deferred_percpu_work, work);
- 	rcu_sheaves = &dpw->rcu_sheaves;
- 	objs = &dpw->objects;
-+	objs_by_rcu = &dpw->objects_by_rcu;
- 
- 	llnode = llist_del_all(objs);
- 	llist_for_each_safe(pos, t, llnode) {
-@@ -6417,6 +6420,14 @@ static void deferred_percpu_work_fn(struct irq_work *work)
- 		stat(s, FREE_SLOWPATH);
- 	}
- 
-+	llnode = llist_del_all(objs_by_rcu);
-+	llist_for_each_safe(pos, t, llnode) {
-+		void *head = pos;
-+		void *objp = kvmalloc_obj_start_addr(head);
-+
-+		kvfree_call_rcu(head, objp);
-+	}
-+
- 	llnode = llist_del_all(rcu_sheaves);
- 	llist_for_each_entry_safe(sheaf, next, llnode, llnode)
- 		call_rcu(&sheaf->rcu_head, rcu_free_sheaf);
-@@ -6435,6 +6446,17 @@ static void defer_free(struct kmem_cache *s, void *head)
- 		irq_work_queue(&dpw->work);
+diff --git a/lib/tests/slub_kunit.c b/lib/tests/slub_kunit.c
+index a391467c1aa6..e3b63f0338d5 100644
+--- a/lib/tests/slub_kunit.c
++++ b/lib/tests/slub_kunit.c
+@@ -162,7 +162,10 @@ static void test_kmalloc_redzone_access(struct kunit *test)
  }
  
-+void defer_kfree_rcu(struct kvfree_rcu_head *head)
-+{
-+	struct deferred_percpu_work *dpw;
-+
-+	guard(preempt)();
-+
-+	dpw = this_cpu_ptr(&deferred_percpu_work);
-+	if (llist_add((struct llist_node *)head, &dpw->objects_by_rcu))
-+		irq_work_queue(&dpw->work);
-+}
-+
- void deferred_work_barrier(void)
+ struct test_kfree_rcu_struct {
+-	struct rcu_head rcu;
++	union {
++		struct rcu_head rcu;
++		struct kvfree_rcu_head kvrcu;
++	};
+ };
+ 
+ static void test_kfree_rcu(struct kunit *test)
+@@ -296,7 +299,7 @@ static void test_krealloc_redzone_zeroing(struct kunit *test)
+ #if defined(CONFIG_PERF_EVENTS) || (defined(CONFIG_KPROBES) && defined(CONFIG_SMP))
+ #define NR_ITERATIONS 1000
+ #define NR_OBJECTS 1000
+-static void *objects[NR_OBJECTS];
++static struct test_kfree_rcu_struct *objects[NR_OBJECTS];
+ 
+ struct test_nolock_context {
+ 	struct kunit *test;
+@@ -311,13 +314,14 @@ struct test_nolock_context {
+ #endif
+ };
+ 
+-static void test_kmalloc_kfree(void)
++static void test_kmalloc_and_friends(void)
  {
- 	int cpu;
+ 	int i, j;
++	bool can_use_kfree_rcu = !IS_BUILTIN(CONFIG_SLUB_KUNIT_TEST);
+ 
+ 	for (i = 0; i < NR_ITERATIONS; i++) {
+ 		for (j = 0; j < NR_OBJECTS; j++) {
+-			gfp_t gfp = (i % 2) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
++			gfp_t gfp = (i & 1) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
+ 
+ 			objects[j] = kmalloc_obj(*objects[j], gfp);
+ 			if (!objects[j]) {
+@@ -328,26 +332,35 @@ static void test_kmalloc_kfree(void)
+ 			}
+ 		}
+ 
+-		for (j = 0; j < NR_OBJECTS; j++)
+-			kfree(objects[j]);
++		for (j = 0; j < NR_OBJECTS; j++) {
++			if (can_use_kfree_rcu && (i & 2))
++				kfree_rcu(objects[j], rcu);
++			else
++				kfree(objects[j]);
++		}
+ 	}
+ }
+ 
+ static void test_nolock(struct test_nolock_context *ctx)
+ {
+-	void *objp;
++	struct test_kfree_rcu_struct *objp;
+ 	gfp_t gfp;
++	bool can_use_kfree_rcu = !IS_BUILTIN(CONFIG_SLUB_KUNIT_TEST);
+ 
+ 	/* __GFP_ACCOUNT to test kmalloc_nolock() in alloc_slab_obj_exts() */
+-	gfp = (ctx->callback_count % 2) ? 0 : __GFP_ACCOUNT;
+-	objp = kmalloc_nolock(64, gfp, NUMA_NO_NODE);
++	gfp = (ctx->callback_count & 1) ? 0 : __GFP_ACCOUNT;
++	objp = kmalloc_nolock(sizeof(*objp), gfp, NUMA_NO_NODE);
+ 
+ 	if (objp)
+ 		ctx->alloc_ok++;
+ 	else
+ 		ctx->alloc_fail++;
+ 
+-	kfree_nolock(objp);
++	if (can_use_kfree_rcu && (ctx->callback_count & 2))
++		kfree_rcu_nolock(objp, kvrcu);
++	else
++		kfree_nolock(objp);
++
+ 	ctx->callback_count++;
+ }
+ #endif
+@@ -397,14 +410,14 @@ static void disable_perf_events(struct test_nolock_context *ctx)
+ 	perf_event_release_kernel(ctx->event);
+ }
+ 
+-static void test_kmalloc_kfree_nolock_perf(struct kunit *test)
++static void test_kmalloc_nolock_and_friends_perf(struct kunit *test)
+ {
+ 	struct test_nolock_context ctx = { .test = test };
+ 
+ 	if (!enable_perf_events(&ctx))
+ 		kunit_skip(test, "Failed to enable perf event, skipping");
+ 
+-	test_kmalloc_kfree();
++	test_kmalloc_and_friends();
+ 
+ 	disable_perf_events(&ctx);
+ 	KUNIT_EXPECT_EQ(test, 0, slab_errors);
+@@ -438,14 +451,14 @@ static void unregister_slab_kprobes(struct test_nolock_context *ctx)
+ 	unregister_kprobe(&ctx->kprobe);
+ }
+ 
+-static void test_kmalloc_kfree_nolock_kprobe(struct kunit *test)
++static void test_kmalloc_nolock_and_friends_kprobe(struct kunit *test)
+ {
+ 	struct test_nolock_context ctx = { .test = test };
+ 
+ 	if (!register_slab_kprobes(&ctx))
+ 		kunit_skip(test, "Failed to register kprobe, skipping");
+ 
+-	test_kmalloc_kfree();
++	test_kmalloc_and_friends();
+ 
+ 	unregister_slab_kprobes(&ctx);
+ 	KUNIT_EXPECT_EQ(test, 0, slab_errors);
+@@ -477,10 +490,10 @@ static struct kunit_case test_cases[] = {
+ 	KUNIT_CASE(test_leak_destroy),
+ 	KUNIT_CASE(test_krealloc_redzone_zeroing),
+ #ifdef CONFIG_PERF_EVENTS
+-	KUNIT_CASE_SLOW(test_kmalloc_kfree_nolock_perf),
++	KUNIT_CASE_SLOW(test_kmalloc_nolock_and_friends_perf),
+ #endif
+ #if defined(CONFIG_KPROBES) && defined(CONFIG_SMP)
+-	KUNIT_CASE_SLOW(test_kmalloc_kfree_nolock_kprobe),
++	KUNIT_CASE_SLOW(test_kmalloc_nolock_and_friends_kprobe),
+ #endif
+ 	{}
+ };
 
 -- 
 2.53.0
