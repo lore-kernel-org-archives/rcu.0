@@ -1,36 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50219480978;
-	Tue, 21 Jul 2026 12:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C902AE7A;
+	Tue, 21 Jul 2026 12:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784635610; cv=none; b=Ias9my1S4NE8tJ9Vx6mOZow/Q1ybynAOO+05F8YQnxKBo0YF9BK41a/cu6vohJyzKu3shUVsaneKhiMBYHwNw9yA0L3uqdvUBhPa5xF0go6t3JNDNV2a95jIdqgfhp1vLMp7RfZiCVcCVFFaA1syQtO2tZzrb4EQz1d8w3kr5Ik=
+	t=1784637940; cv=none; b=SXINq7JL0P6gyDN+xkglNrMKi1A9d1+q5EBejjzB+lmn33BzVayQ733oFvz2xuUPEkyyqVnL8vfl0lcbB+OSU6kflIYe/eYgAEEVnl76qmDTYrCwSheShOmROUgLXBvP4umoCVEx95f09z8SmY7hvT7uTAASQf8jXQ8Bmcckrj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784635610; c=relaxed/simple;
-	bh=0xTjoRQ1Wr1zypivmWlxZfm7mUXFCPaCT2D0d/7viTk=;
+	s=arc-20240116; t=1784637940; c=relaxed/simple;
+	bh=aaMkhiBFiu17GatSYEse632pcGcTPtmuR9L5kOmooYM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mHKpnmy2Bq2PKcDQFVnAqunN0zkYOqDyTH1caa+eNj0e9dCSioyECzYCAHR9mOzzDgiWBks4c3w48bpaHWwyemthbrUfIMFO47S22VkEgjlw7e9vCndYNzwbl4l7DFl0ZigTNH/g2Gy28Ep2NzE4tpmXiSLXMdam8r8qRUYpqSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=crzaN3CN; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=b3c6n9EkyWHvcHnlSTwdR4NY38ihNZiMFA5rZcjfRhLygVHZbG0N/8xb6nwhysrDGVkTZz2fpKHOeQG88gyBa4yDS+pvGr3xUhNbxmUDPOrGOTPVYBsHdsdG9n/bUM83YOn56Zq78pOlrilhgbZcMWKyygbdnp02ZY5FVztTRTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=STzXpxaB; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="crzaN3CN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 514281F000E9;
-	Tue, 21 Jul 2026 12:06:48 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="STzXpxaB"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EA191F000E9;
+	Tue, 21 Jul 2026 12:45:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784635608;
-	bh=61jYVANBvB7v2o9ArsK0xxnnG5wRNzmTKO9igEhginc=;
+	s=k20260515; t=1784637939;
+	bh=Ik7QVHXZ9oKI0kQC0nUb8YwWvsgFy3i7X6oSkaDdGQ8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=crzaN3CN0wKTWsuSiGgX2ronFs+TT7Q3dPUCpvUZz0rv53yEkPW8FrPVwLL5i+7NY
-	 Ly6cILTrD+NaGBxyoWuDoGELWc2L35Xhyw1eJKqaoHooUqaNbfpaHHYQIKw6hzyeXQ
-	 St2Sp3fGxNhMUpDHdt8rTB6YqrAt3vAQrvvzfltB0lTP9T1WWQo4N74XaHZupyUb5R
-	 F7DeAlQE0R7/ReqjSBf15qZn/xs6apm+FAzF80TiLmfM0S0tveLO9Zg0PnSFmVl70y
-	 IJDz5raWBtsj+HntAulvi9H/ebJ9shhi8Ee9onqhZlvWNln034hMF/+CmI6J89dibS
-	 u6TIndxhevAJw==
-Date: Tue, 21 Jul 2026 14:06:45 +0200
+	b=STzXpxaBVIH8F7QTLuysIYMtLR5v27J8uz3Z7/F/M4cYEXDpFBA45djy2+MNFNBQ7
+	 RBTXhYL/jDgYlQcG9Wrt27A464ACvecKGTDhoA2BFxS6FPI0W/Wz3dwXQjskgSvJSp
+	 a8EtVIhJlKhVYYkKlsdy6jt7/wfyRR3sxtfPfM/twmg1LhilLtsAl4VXKd3Z1rRUL7
+	 I/QGShik0qNuJUoKfMeydL+3NMD6DRyyBOPORH8y0QvFUqJ5AzGrOfsLBW7uUeTeig
+	 2yOuONgLlaCpr2ojJkimFzpXttbzkptal2CgyVe/+j06dfTu0QsncEFuVZHZmiyr+m
+	 FMmq0tX3ZZyXg==
+Date: Tue, 21 Jul 2026 14:45:36 +0200
 From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
 	Josh Triplett <josh@joshtriplett.org>,
@@ -42,15 +43,11 @@ Cc: Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Davidlohr Bueso <dave@stgolabs.net>,
 	Breno Leitao <leitao@debian.org>
-Subject: Re: [PATCH v1 06/11] rcu: Enable RCU callbacks to benefit from
- expedited grace periods
-Message-ID: <al9g1Zq4_MkGD0I0@localhost.localdomain>
+Subject: Re: [PATCH v1 09/11] rcu: Detect expedited grace period completion
+ in rcu_pending()
+Message-ID: <al9p8MrcEdByrjfh@localhost.localdomain>
 References: <20260624132356.516959-1-puranjay@kernel.org>
- <20260624132356.516959-7-puranjay@kernel.org>
- <alD6o01ukyliCS37@localhost.localdomain>
- <6c683413-8e8b-4888-ba01-9d79c3867432@paulmck-laptop>
- <al4vKQ02tBYyYANk@localhost.localdomain>
- <cf1a3ffc-ed2a-41f4-bfd2-cbeab9d06861@paulmck-laptop>
+ <20260624132356.516959-10-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -60,49 +57,27 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <cf1a3ffc-ed2a-41f4-bfd2-cbeab9d06861@paulmck-laptop>
+In-Reply-To: <20260624132356.516959-10-puranjay@kernel.org>
 
-Le Mon, Jul 20, 2026 at 09:55:42AM -0700, Paul E. McKenney a écrit :
-> On Mon, Jul 20, 2026 at 04:22:33PM +0200, Frederic Weisbecker wrote:
-> > Le Tue, Jul 14, 2026 at 11:48:08AM -0700, Paul E. McKenney a écrit :
-> > > > I have similar concerns about the three smp_mb() in
-> > > > get_state_synchronize_rcu_full(). It could be just two (rcu_seq_snap()
-> > > > has a barrier that could be just one). Not sure if that matters but,
-> > > > just wanted to point that.
-> > > 
-> > > We need the one at the beginning of get_state_synchronize_rcu_full(),
-> > > but from what I can see, not the ones in the calls to rcu_seq_snap().
-> > > I blame laziness.  We could make an rcu_seq_snap_no_ordering() that
-> > > didn't have the smp_mb(), but I didn't believe that the overhead would
-> > > be visible at the system level.
-> > 
-> > It isn't so much about performance than being clear about ordering
-> > expectations. Though we could argue that grace period polling can be
-> > about performance.
-> > 
-> > But in general rcu_seq_snap() advertizes:
-> > 
-> >    READ seq
-> >    smp_mb() /* Above access must not bleed into critical section. */
-> > 
-> > This doesn't tell much. Which critical section? That's not used on
-> > read side.
+Le Wed, Jun 24, 2026 at 06:23:51AM -0700, Puranjay Mohan a écrit :
+> rcu_pending() decides whether rcu_core() should run on the current CPU's
+> timer tick.  It does not account for expedited grace periods: after an
+> expedited GP completes, a non-offloaded CPU's callbacks remain in
+> RCU_WAIT_TAIL (not yet advanced to RCU_DONE_TAIL) and rcu_core() is
+> never invoked to advance them.
 > 
-> Fair question!
+> Detect that case via rcu_segcblist_nextgp() combined with a new
+> memory-ordering-free poll variant,
+> poll_state_synchronize_rcu_full_unordered().  This keeps rcu_pending()
+> cheap: it runs on every tick that has pending callbacks, so it must
+> not pay for the two memory barriers in
+> poll_state_synchronize_rcu_full().  The check is only a hint to run
+> rcu_core(); the ordered re-check and the actual callback advancement
+> happen there.
 > 
-> And the answer is "any critical section that might later be executed by
-> the current task."
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
-But why does it matter, what could go wrong for example?
-
-> 
-> Would it help if I made that comment read as follows, separately from
-> Puranjay's series?
-> 
-> 	// The above access must not bleed into any later RCU read-side
-> 	// critical section executed by the current task.
-> 
-> 							Thanx, Paul
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
 -- 
 Frederic Weisbecker
