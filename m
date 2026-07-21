@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 325D4442FB8;
-	Tue, 21 Jul 2026 10:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7937837E5EF;
+	Tue, 21 Jul 2026 10:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784628460; cv=none; b=jUdGhQeU9Xt3cpU/PIBw+9y+EbpXzu/UjO5wfkiSMYQrIIa9hlG3J/zGnq2f5lTGZ3CeHPMLras9SoF4wTaqBKICIPOu97lcKaEdZf+14YFX+5DfhOYQxXcBUi9COob5jyMr1W4GEEl0wXfj6AKURhdFYGI7FkC2lrDgzDvOHFQ=
+	t=1784630820; cv=none; b=Up8XWvSsfgkkW0qyaI6SnXsoNy2pvF4xzyLqYpchvfHlJABvRRyyBbGYdTJb0bJXeOrk8Z966BjwZvg6lDgc1BasnGSqVuNkjFxRSA+L48jA06n4CzraUgIrX2X+bsdzPk2vi683IBh7/MVwkDGCD0hbsY5771im7I9YadquH1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784628460; c=relaxed/simple;
-	bh=EX86EBA1Lpd+L1z2KYaIjSNr/t3YbxGeFxCyt+vkhvg=;
+	s=arc-20240116; t=1784630820; c=relaxed/simple;
+	bh=1vm5b1f4nHNmH0W7NEQir6F8Wl4czzLDJkUbQm1YMUo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PXe2/T485H+AtQX/1M6t93GOrwJyjsZ2eefhYRc6/ln4IPmTrcofSlxhBAOPUtdDkBy5KaW/UM2W9U3SZMfg4f8eHNjw1zXqfl8ceR3oK5g9YItHhiTogH9OibkkiDWtHQMFgWVZ6S3tH6GVYdGOedYlqZjLyeMxHB0PEa3OcCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c+XgjAmg; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:Content-Type; b=gj4j8E3pBYdbCaTnjdE6WzYZvTS4blUSzTx1jLRNs/P8OT76S/eN/ppHSqYVi9oMMYFOBZhXzMlKbhiL0ZeAs800AkYmK2XHQJzfYnZ1uNUMXQdYuKvhbQXceiMytiSyc1+7ZiofgtG8OVQhBD5VjO5hUj17S5j5jytEpAPiASc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LpSb/m/n; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c+XgjAmg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1722B1F00A3A;
-	Tue, 21 Jul 2026 10:07:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LpSb/m/n"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B50A1F00A3F;
+	Tue, 21 Jul 2026 10:46:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784628459;
-	bh=bOploRvDj134COovQFMYbavpqHjEd7HZWn3WCljAxGI=;
+	s=k20260515; t=1784630803;
+	bh=dO+PVrm5HMtA1iQW+bv64CElxpl8z6fE8uq5ZpX/a00=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=c+XgjAmgGbN4YGbGofBEf6QaJ4+OzyF+uyxW5Lbiu/b+Bx+Ghw3EBQVy0+a7ELCCb
-	 KTsigTcX0kRsAvMAqfvxWiPJgpY60F1DapyGEjHQRP7X9sNyGcZiPXblyvPPSBhmhd
-	 X8wQqDUCZ4DmpA3F0xyh6ZkZV9hDD3uhfVJt7ZWH3VDiiS/v9O99GVzR0k4XRkJWjz
-	 RsoySu/eKwL7XgFbm0ImUaXEzXgHmnBtcN/DlCewPNrLbUzJtbNfQ0byWKxvA8qON+
-	 SOxMmrYn5KUO76dtdAHxN3Oetv9ktGLMJ5+vvgPNumGe7OQWVzkf3NjGOHoKsauDbT
-	 Vtm/bXBdlk+UA==
-Message-ID: <1d0d8021-62d2-4c42-a2a6-a7e8ce2f5d37@kernel.org>
-Date: Tue, 21 Jul 2026 12:07:31 +0200
+	b=LpSb/m/nFwv6Fxf5E4wwMzA7a+zOz1RBkSBx/X2VMxQsjr3Jh5IKmhspJL2hbmV7V
+	 /o2P27drWcfPuhXrKLBUxWzh7xlRF/f+KelYKfm1dhIsE4iZzJS9mR4Jsif7unblPh
+	 XyXCRDg8gkRqH/5VgHF31/P3ht3P9mDAaZJolDrrk+J09luZY75llAHOiBc3u95Fkt
+	 s1NRRgaO1p+mVXyxHrRrkvd/sVLJLVghF6Vce1FP+c02FIOQ/dt4gh4lLaj+s0nv0N
+	 YrVAtJf5Yjlmnu8I1sxzExiRnxIVsfghFGLy6EL3LrC82sPMhJhLsAqM80fja5mayC
+	 rxhrYrO/l9lgQ==
+Message-ID: <12c63386-f96e-421e-b34c-00548d016f69@kernel.org>
+Date: Tue, 21 Jul 2026 12:46:35 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -35,8 +35,8 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH slab/for-next v4 2/8] mm/slab: handle the !allow_spin case
- in kfree_rcu_sheaf()
+Subject: Re: [PATCH slab/for-next v4 5/8] mm/slab: allow kfree_rcu_sheaf() on
+ PREEMPT_RT
 Content-Language: en-US
 To: "Harry Yoo (Oracle)" <harry@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
@@ -59,7 +59,7 @@ To: "Harry Yoo (Oracle)" <harry@kernel.org>,
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
 References: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
- <20260720-kfree_rcu_nolock-v4-2-964e03c41a4e@kernel.org>
+ <20260720-kfree_rcu_nolock-v4-5-964e03c41a4e@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -100,149 +100,133 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <20260720-kfree_rcu_nolock-v4-2-964e03c41a4e@kernel.org>
+In-Reply-To: <20260720-kfree_rcu_nolock-v4-5-964e03c41a4e@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 7/20/26 14:44, Harry Yoo (Oracle) wrote:
-> Teach kfree_rcu_sheaf() how to handle the !allow_spin case. Try to get
-> an empty sheaf from pcs->spare or the barn even when spinning is not
-> allowed. Unlike __pcs_replace_full_main(), try harder to allocate
-> an empty sheaf because the fallback path will be more expensive than
-> kfree_nolock().
+> As suggested by Vlastimil Babka [1], kfree_rcu_sheaf() can be used
+> on PREEMPT_RT if we always assume spinning is not allowed on PREEMPT_RT.
+> This is because local_trylock and spinlock_t are safe to use with
+> trylock and unlock as long as the kernel does not spin and the context
+> is not NMI and not hardirq.
 > 
-> Now that slab has internal alloc_flags to describe context, introduce
-> free_flags analogously and convert free_flags to alloc_flags when
-> allocating memory in the free path. alloc_empty_sheaf() now strips
-> __GFP_RECLAIM when SLAB_ALLOC_NOLOCK is specified.
+> Now that __kfree_rcu_sheaf() knows how to handle SLAB_FREE_NOLOCK,
+> relax the limitation and try the sheaves path on PREEMPT_RT as well.
 > 
-> When trylock fails or the kernel observes non-NULL pcs->rcu_free after
-> lock acquisition, free the sheaf instead of putting it to the barn.
-> This is rare and not worth complicating the code.
+> Keep the lockdep map on non RT kernels. However, do not use the lockdep
+> map on PREEMPT_RT to avoid suppressing valid lockdep warnings.
 > 
-> Since call_rcu() cannot be called in an unknown context,
-> kfree_rcu_sheaf() fails when the rcu sheaf becomes full.
+> As pointed by Vlastimil Babka [2], on PREEMPT_RT it is unnecessary to
+> defer call_rcu() under IRQ-disabled section or raw spinlock. However,
+> let us avoid adding more complexity as the scenario is not supposed
+> to be common on PREEMPT_RT, with a hope that call_rcu_nolock() will be
+> soon supported in RCU.
 > 
-> Link: https://lore.kernel.org/linux-mm/872bd673-3d45-4111-8a41-31185db3ece5@kernel.org
+> Link: https://lore.kernel.org/linux-mm/6811cc17-8ee4-48c8-8cbf-6bf4d9f98162@kernel.org [1]
+> Link: https://lore.kernel.org/linux-mm/40591888-3a87-433e-b3d2-cda1cab543be@kernel.org [2]
+> Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 > Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
-
-LGTM.
 
 Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
-Nits below:
+Nit:
 
 > ---
->  mm/slab.h        | 18 +++++++++++++++++-
->  mm/slab_common.c |  2 +-
->  mm/slub.c        | 36 ++++++++++++++++++++++++++++--------
->  3 files changed, 46 insertions(+), 10 deletions(-)
+>  mm/slab_common.c | 12 ++++++++++--
+>  mm/slub.c        | 17 ++++++++++-------
+>  2 files changed, 20 insertions(+), 9 deletions(-)
 > 
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 281a65233795..85ef2ebc9812 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -23,11 +23,27 @@
->  #define SLAB_ALLOC_NEW_SLAB	0x02 /* a flag for alloc_slab_obj_exts() */
->  #define SLAB_ALLOC_NO_RECURSE	0x04 /* prevent kmalloc() recursion */
->  
-> +#define SLAB_FREE_DEFAULT	0x00 /* no flags */
-> +#define SLAB_FREE_NOLOCK	0x01 /* spinning not allowed */
-> +
-> +static inline unsigned int to_alloc_flags(unsigned int free_flags)
-> +{
-> +	if (free_flags & SLAB_FREE_NOLOCK)
-> +		return SLAB_ALLOC_NOLOCK;
-> +	else
-> +		return SLAB_ALLOC_DEFAULT;
-> +}
-> +
->  static inline bool alloc_flags_allow_spinning(const unsigned int alloc_flags)
->  {
->  	return !(alloc_flags & SLAB_ALLOC_NOLOCK);
->  }
->  
-> +static inline bool free_flags_allow_spinning(const unsigned int free_flags)
-> +{
-> +	return !(free_flags & SLAB_FREE_NOLOCK);
-> +}
-> +
->  void *__kmalloc_flags_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t flags,
->  				  unsigned int alloc_flags, int node)
->  				  __assume_kmalloc_alignment __alloc_size(1);
-> @@ -429,7 +445,7 @@ static inline bool is_kmalloc_normal(struct kmem_cache *s)
->  	return !(s->flags & (SLAB_CACHE_DMA|SLAB_ACCOUNT|SLAB_RECLAIM_ACCOUNT));
->  }
->  
-> -bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj);
-> +bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags);
->  void flush_all_rcu_sheaves(void);
->  void flush_rcu_sheaves_on_cache(struct kmem_cache *s);
->  
 > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index b6426d7ceec9..e07b4e6d6679 100644
+> index 9c9ae1384f47..8c631bf97cd5 100644
 > --- a/mm/slab_common.c
 > +++ b/mm/slab_common.c
-> @@ -1605,7 +1605,7 @@ static bool kfree_rcu_sheaf(void *obj)
+> @@ -1595,6 +1595,14 @@ static bool kfree_rcu_sheaf(void *obj)
+>  {
+>  	struct kmem_cache *s;
+>  	struct slab *slab;
+> +	unsigned int free_flags = SLAB_FREE_DEFAULT;
+> +
+> +	/*
+> +	 * It is not safe to spin on PREEMPT_RT because the kernel might be
+> +	 * holding a raw spinlock and slab acquires sleeping locks.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> +		free_flags = SLAB_FREE_NOLOCK;
+>  
+>  	if (is_vmalloc_addr(obj))
+>  		return false;
+> @@ -1605,7 +1613,7 @@ static bool kfree_rcu_sheaf(void *obj)
 >  
 >  	s = slab->slab_cache;
 >  	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) == numa_mem_id()))
-> -		return __kfree_rcu_sheaf(s, obj);
-> +		return __kfree_rcu_sheaf(s, obj, SLAB_FREE_DEFAULT);
+> -		return __kfree_rcu_sheaf(s, obj, SLAB_FREE_DEFAULT);
+> +		return __kfree_rcu_sheaf(s, obj, free_flags);
 >  
 >  	return false;
 >  }
+> @@ -1954,7 +1962,7 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+>  	if (!head)
+>  		might_sleep();
+>  
+> -	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && kfree_rcu_sheaf(ptr))
+> +	if (kfree_rcu_sheaf(ptr))
+>  		return;
+>  
+>  	// Queue the object but don't yet schedule the batch.
 > diff --git a/mm/slub.c b/mm/slub.c
-> index e32a68677537..0c350274fbff 100644
+> index 8afa6b47b1f2..deac315d0f23 100644
 > --- a/mm/slub.c
 > +++ b/mm/slub.c
-> @@ -2814,10 +2814,14 @@ static inline struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s,
->  
->  	gfp &= ~OBJCGS_CLEAR_MASK;
->  
-> +	if (alloc_flags & SLAB_ALLOC_NOLOCK)
-> +		gfp &= ~__GFP_RECLAIM;
+> @@ -6065,12 +6065,13 @@ static void rcu_free_sheaf(struct rcu_head *head)
+>   * kvfree_call_rcu() can be called while holding a raw_spinlock_t. Since
+>   * __kfree_rcu_sheaf() may acquire a spinlock_t (sleeping lock on PREEMPT_RT),
+>   * this would violate lock nesting rules. Therefore, kvfree_call_rcu() avoids
+> - * this problem by bypassing the sheaves layer entirely on PREEMPT_RT.
+> + * this problem by passing allow_spin = false on PREEMPT_RT.
 
-So in general we expect gfp and alloc flags to be compatible and warn if
-they are not. This now performs an auto-adjustment, which makes it unusual.
-But AFAICS only one caller relies on it - __kfree_rcu_sheaf(). So maybe we
-could just do it there?
+by passing SLAB_FREE_NOLOCK ?
 
-> +
->  	return __alloc_empty_sheaf(s, gfp, alloc_flags, s->sheaf_capacity);
+>   *
+>   * However, lockdep still complains that it is invalid to acquire spinlock_t
+>   * while holding raw_spinlock_t, even on !PREEMPT_RT where spinlock_t is a
+>   * spinning lock. Tell lockdep that acquiring spinlock_t is valid here
+> - * by temporarily raising the wait-type to LD_WAIT_CONFIG.
+> + * by temporarily raising the wait-type to LD_WAIT_CONFIG. Skip the lockdep map
+> + * on PREEMPT_RT to avoid suppressing valid lockdep warnings.
+>   */
+>  static DEFINE_WAIT_OVERRIDE_MAP(kfree_rcu_sheaf_map, LD_WAIT_CONFIG);
+>  
+> @@ -6080,10 +6081,10 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags)
+>  	struct slab_sheaf *rcu_sheaf;
+>  	bool allow_spin = free_flags_allow_spinning(free_flags);
+>  
+> -	if (WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT)))
+> -		return false;
+> +	VM_WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT) && allow_spin);
+>  
+> -	lock_map_acquire_try(&kfree_rcu_sheaf_map);
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> +		lock_map_acquire_try(&kfree_rcu_sheaf_map);
+>  
+>  	if (!local_trylock(&s->cpu_sheaves->lock))
+>  		goto fail;
+> @@ -6181,12 +6182,14 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags)
+>  	local_unlock(&s->cpu_sheaves->lock);
+>  
+>  	stat(s, FREE_RCU_SHEAF);
+> -	lock_map_release(&kfree_rcu_sheaf_map);
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> +		lock_map_release(&kfree_rcu_sheaf_map);
+>  	return true;
+>  
+>  fail:
+>  	stat(s, FREE_RCU_SHEAF_FAIL);
+> -	lock_map_release(&kfree_rcu_sheaf_map);
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> +		lock_map_release(&kfree_rcu_sheaf_map);
+>  	return false;
 >  }
 >  
-> -static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
-> +static void __free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf,
-> +			       bool allow_spin)
+> 
 
-Why not free_flags instead of allow_spin? Since you already introduced them.
-
->  {
->  	/*
->  	 * If the sheaf was created with SLAB_ALLOC_NO_RECURSE flag then its
-> @@ -2829,11 +2833,20 @@ static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
->  		mark_obj_codetag_empty(sheaf);
->  
->  	VM_WARN_ON_ONCE(sheaf->size > 0);
-> -	kfree(sheaf);
-> +
-> +	if (likely(allow_spin))
-> +		kfree(sheaf);
-> +	else
-> +		kfree_nolock(sheaf);
->  
->  	stat(s, SHEAF_FREE);
->  }
->  
-> +static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
-> +{
-> +	__free_empty_sheaf(s, sheaf, /* allow_spin = */ true);
-
-Would avoid this ugliness.
-
-> +}
-> +
->  static unsigned int
->  refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
->  	       unsigned int max);
