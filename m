@@ -1,161 +1,218 @@
-Received: from mxct.zte.com.cn (mxct.zte.com.cn [183.62.165.209])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A37D3F9A10;
-	Wed, 22 Jul 2026 08:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=183.62.165.209
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924F43D955F;
+	Wed, 22 Jul 2026 10:05:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784709163; cv=none; b=E8Du9AT4UckDI822/kdxulxIOA3QaS57+VF1n0XqOoXH3DHtMfORTP8IWXfou5VzaDEbiudIrCx4lUJTbMUWN3cxEMa5FOYjCtx12kV79gbO09yy/1LMZ/PbR5dlP0q/0jU6GJYbe5Z5FhALZJZ3Wn+B+Jpt7RS1PllHj33bC14=
+	t=1784714761; cv=none; b=J8OZA/fpcxoYonr0iYsBCSRkBMVINPH6qtWWMA5mlJpQjJZHtxEXzsIMTjO4Py+9rqvkQtN9zBT7dYO2zilWG8nKxy+l9+s9LYs66iGC4P5eO/fxXr1ENPANo3LLVwEbwGw0kDMwknqn8qXYxYBGs02PGj6EwemDWJ6SysUhEhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784709163; c=relaxed/simple;
-	bh=QdFR6f52WU7kcE0NqQgKLhBmV5FepprBUdAKqo1Hhqk=;
-	h=Message-ID:In-Reply-To:References:Date:Mime-Version:From:To:Cc:
-	 Subject:Content-Type; b=cT2i4LHtBuvQM7kkvTT8NBBd4U2Lusf5MHVxi2dQWRttw74vSVZzb6OpQRBStOmuO5/SI18g6xqo9zct6zj2wRwRO2QJJ4B+Bv034peiABjw4JAz5jKEUPwvkcGtZGemYK7d5jV1Hx9/5a69sGo6p4iwCorAY6+f1fKk+o9LQmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=183.62.165.209
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxct.zte.com.cn (FangMail) with ESMTPS id 4h4nYp2q18z55y2H;
-	Wed, 22 Jul 2026 16:32:30 +0800 (CST)
-Received: from xaxapp05.zte.com.cn ([10.99.98.109])
-	by mse-fl1.zte.com.cn with SMTP id 66M8WOxP048119;
-	Wed, 22 Jul 2026 16:32:24 +0800 (+08)
-	(envelope-from hu.shengming@zte.com.cn)
-Received: from mapi (xaxapp05[null])
-	by mapi (Zmail) with MAPI id mid32;
-	Wed, 22 Jul 2026 16:32:26 +0800 (CST)
-X-Zmail-TransId: 2afc6a60801acda-ec081
-X-Mailer: Zmail v1.0
-Message-ID: <202607221632263010RKz3KaXP9NUQ9kGPYnU_@zte.com.cn>
-In-Reply-To: <004d1215-a1da-448e-bf10-df637c7029f5@kernel.org>
-References: 20260722112748588_IEr10bQdigv8c8bjw7Ck@zte.com.cn,004d1215-a1da-448e-bf10-df637c7029f5@kernel.org
-Date: Wed, 22 Jul 2026 16:32:26 +0800 (CST)
+	s=arc-20240116; t=1784714761; c=relaxed/simple;
+	bh=y44IcYD/EvuVLvIwZePuwQ98zpuLjpnJgnqDNFMAV3o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K8g8eB3qH+DFzSvQ5DmjJue5Dlac8bwfc9WXGWlye7RBe4J2XyviQUrANratVl2E3MAA8gSzY3MzGmQa7rZWC7vL7dbD3QaQTuT/A6B5wlSbuehA+pyYuYAXPlsRbo0oc4WLpQSzMN+gRYE92RIvTaPg0l4A4kNvDg7Nyptg/zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l8yQoO+D; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l8yQoO+D"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49D871F000E9;
+	Wed, 22 Jul 2026 10:05:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784714757;
+	bh=D6xRJg1cx2MApnHZbTatL/7rofeEJ41u17Yfn/n5svk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=l8yQoO+Dlue8vZ1yUqfeSgih4Rs9yNiQyqVpA7436Ssb9aTi4vw/bCvaoY28YmbhN
+	 nLUIuZnMQr4FsWHmbhjWhO5aO0g3mlmNM9IfG0Gj8lINAdf14fcSQ+wlh2m5vLg0gZ
+	 8KMR6onERgLKAlrQfNIDBFCZxcA+z8KS4SjAJvBXKWCJRgD6dQ8FPKhYSy9W0mZ/ru
+	 1VCvvamIr7Eu6raA8FcnBQe0BtPNHSqP4tYmdTzhYsN+hG0ne8bwgSbs6Mg9UGYyyN
+	 4ir3qvSYcZtHmZWysW5Spo+OLmUs9gFWMBWojk7/VC7IXPC6Fr9oywbavW0lYX4HwW
+	 n9jfuNl8SxFmg==
+Message-ID: <8d67a924-9c1f-4e93-9e2a-4d71001167a2@kernel.org>
+Date: Wed, 22 Jul 2026 12:05:49 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-From: <hu.shengming@zte.com.cn>
-To: <harry@kernel.org>
-Cc: <vbabka@kernel.org>, <akpm@linux-foundation.org>, <hao.li@linux.dev>,
-        <cl@gentwo.org>, <rientjes@google.com>, <roman.gushchin@linux.dev>,
-        <ast@kernel.org>, <andrii@kernel.org>, <puranjay@kernel.org>,
-        <ameryhung@gmail.com>, <bigeasy@linutronix.de>, <clrkwllms@kernel.org>,
-        <rostedt@goodmis.org>, <paulmck@kernel.org>, <frederic@kernel.org>,
-        <neeraj.upadhyay@kernel.org>, <joelagnelf@nvidia.com>,
-        <josh@joshtriplett.org>, <boqun@kernel.org>, <urezki@gmail.com>,
-        <mathieu.desnoyers@efficios.com>, <jiangshanlai@gmail.com>,
-        <qiang.zhang@linux.dev>, <pfalcato@suse.de>, <surenb@google.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-rt-devel@lists.linux.dev>, <rcu@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCBzbGFiL2Zvci1uZXh0IHY0IDEvOF0gbW0vc2xhYiwgc2x1Yl9rdW5pdDogcmVnaXN0ZXIga3Byb2JlIHRvIHRyaWdnZXIgX25vbG9jayBBUElz?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-fl1.zte.com.cn 66M8WOxP048119
-X-TLS: YES
-X-ENVELOPE-SENDER: hu.shengming@zte.com.cn
-X-SOURCE-IP: 10.5.228.132 unknown Wed, 22 Jul 2026 16:32:30 +0800
-X-CLEAN: YES
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 6A60801E.001/4h4nYp2q18z55y2H
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH slab/for-next v4 7/8] mm/slab: introduce
+ kfree_rcu_nolock()
+Content-Language: en-US
+To: Harry Yoo <harry@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
+ David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>,
+ Shengming Hu <hu.shengming@zte.com.cn>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
+References: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
+ <20260720-kfree_rcu_nolock-v4-7-964e03c41a4e@kernel.org>
+ <c7607f25-5336-4f64-9244-9476dcc8ff3d@kernel.org>
+ <734ecdc6-f415-41d8-9357-7fc11379e4da@kernel.org>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Autocrypt: addr=vbabka@kernel.org; keydata=
+ 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
+In-Reply-To: <734ecdc6-f415-41d8-9357-7fc11379e4da@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Harry wrote:
-> On 7/22/26 12:27 PM, hu.shengming@zte.com.cn wrote:
-> > Harry wrote:
-> >> Since kmalloc_nolock() always fails in NMI and hardirq contexts on
-> >> PREEMPT_RT, slub_kunit cannot properly test _nolock() APIs.
-> >>
-> >> Register a kprobe pre-handler to invoke kmalloc_nolock() and
-> >> kfree_nolock() in the middle of the slab allocator. However, do not
-> >> register the handler on UP kernels because that use case is not
-> >> well supported [1] in the kernel.
-> >>
-> >> To attach the pre-handler while s->cpu_sheaves->lock or n->list_lock
-> >> is held, add a wrapper function for lockdep_assert_held() that calls
-> >> a no-op function slab_attach_kprobe_locked() on debug builds. The
-> >> function is optimized away when neither CONFIG_PROVE_LOCKING nor
-> >> CONFIG_DEBUG_VM is selected and register_kprobe() fails.
-> >>
-> >> The function calls barrier() to prevent the compiler from optimizing
-> >> away its callsites. Otherwise, the compiler may consider the function
-> >> does not have any side effect and remove callsites.
-> >>
-> >> Compared to using plain kprobe, this has two advantages: 1) it avoids
-> >> hardcoding function names in the test, and 2) it can trigger those APIs
-> >> in the middle of a function, where the lock is expected to be held as
-> >> annotated with lockdep.
-> >>
-> >> While it was proposed [2] to use kunit function redirection to test
-> >> this, it is currently infeasible as some lock helpers don't have
-> >> symbols.
-> >>
-> >> Factor out the nested loop that calls kmalloc and friends to
-> >> test_kmalloc_kfree(), and call them in
-> >> test_kmalloc_kfree_nolock_{perf,kprobe}(), each being an independent
-> >> test case. During the refactoring, drop alloc_fail handling as it
-> >> doesn't provide much benefits.
-> > 
-> > Nice test addition!
-> > 
-> > Reviewed-by: Shengming Hu <hu.shengming@zte.com.cn>
+On 7/22/26 10:15, Harry Yoo wrote:
+> On 7/21/26 10:09 PM, Vlastimil Babka (SUSE) wrote:
+>> On 7/20/26 14:44, Harry Yoo (Oracle) wrote:
+>>> Currently, k[v]free_rcu() cannot be called in unknown context since
+>>> it could lead to a deadlock when called in the middle of k[v]free_rcu().
+>>>
+>>> Make users' lives easier by introducing kfree_rcu_nolock() variant,
+>>> now that kfree_rcu_sheaf() is available on PREEMPT_RT and
+>>> __kfree_rcu_sheaf() handles unknown context.
+>>>
+>>> kfree_rcu_nolock() falls back to the kvfree_rcu batching when sheaves
+>>> path fails.
+>> 
+>> From the code I would say it falls back to defer_kfree_rcu(), which is an
+>> irq_work that does kvfree_rcu batching?
 > 
-> Thanks a lot for reviewing, Shengming!
-> 
-> Just FYI, I'm going to adjust a nit pointed out by sashiko
-> that kmalloc_obj(*objects[j], gfp) is wrong because objects is an array
-> of void pointers. (which is fixed later in the series)
+> Indeed that was what I intended to say, but I messed up while
+> writing it :-) Will fix that.
 
-Indeed, Nice catch by sashiko. :)
+Thanks!
 
-> > Nit below:
-> >> +static void test_kmalloc_kfree_nolock_perf(struct kunit *test)
-> >> +{
-> >> +    struct test_nolock_context ctx = { .test = test };
-> >>  
-> >> -    kunit_info(test, "callback_count: %d, alloc_ok: %d, alloc_fail: %d\n",
-> >> -           ctx.callback_count, ctx.alloc_ok, ctx.alloc_fail);
-> >> +    if (!enable_perf_events(&ctx))
-> >> +        kunit_skip(test, "Failed to enable perf event, skipping");
-> >>  
-> >> -    if (alloc_fail)
-> >> -        kunit_skip(test, "Allocation failed");
-> >> +    test_kmalloc_kfree();
-> >> +
-> >> +    disable_perf_events(&ctx);
-> >> +    KUNIT_EXPECT_EQ(test, 0, slab_errors);
-> >> +}
-> >> +#endif
-> >> +
-> > 
-> > Maybe it would be worth checking that the perf event actually fired:
-> > 
-> >     KUNIT_EXPECT_GT(test, ctx.callback_count, 0);
-> > 
-> > Otherwise, the test could pass without the callback.
+>> Otherwise the sentence would contradict the following:
+>>
+>>> In most cases, the sheaves path is expected to succeed
+>>> and it's unnecessary to add complexity to the existing kvfree_rcu
+>>> batching by teaching it how to handle unknown context.
+>> 
+>> This talks about trying to perform the batching immediately without defering.
 > 
-> I'm not sure if that would be useful though.
-> 
-> Ideally we want to make sure every code path that handles
-> allow_spin = false is tested, but it's tricky to measure that and
-> also it's tricky to make sure those paths are properly tested
-> (especially with perf events).
-> 
-> callback_count is not a good indicator to measure test coverage.
-> 
-> (I use GCOV to make sure we have reasonable coverage,
->  but it's hard to turn that into a test case...)
+> You mean the earlier sentence "kfree_rcu_nolock() falls back to the
+> kvfree_rcu batching when sheaves path fails", right?
 
-Thanks for the explanation.
+I was trying to point out how it contradicts the wording above. To be clear,
+with above fixed, this part is fine.
 
-I was considering it only as a basic sanity check, but agreed that
-callback_count does not reflect the actual path coverage. I'm fine
-with leaving it as is.
+>>> Since defer_kfree_rcu() can be called on caches without sheaves, move
+>>> deferred_work_barrier() and rcu_barrier() outside the branch in
+>>> kvfree_rcu_barrier_on_cache().
+>>>
+>>> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
+>> 
+>> Other than that and a comment correction below, LGTM.
+>> 
+>> Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+> 
+> Thanks!
+> 
+>>> ---
+>>>  include/linux/rcupdate.h | 19 +++++++++++++++++++
+>>>  mm/slab_common.c         | 28 ++++++++++++++++++++++++++--
+>>>  mm/slub.c                | 24 +++++++++++++++++++++++-
+>>>  3 files changed, 68 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+>>> index ef5bb6981133..ce0fd401352e 100644
+>>> --- a/include/linux/rcupdate.h
+>>> +++ b/include/linux/rcupdate.h
+>>> @@ -1099,6 +1099,7 @@ static inline void rcu_read_unlock_migrate(void)
+>>>   * In mm/slab_common.c, no suitable header to include here.
+>>>   */
+>>>  void kvfree_call_rcu(struct kvfree_rcu_head *head, void *ptr);
+>>> +void kfree_call_rcu_nolock(struct kvfree_rcu_head *head, void *ptr);
+>>>  
+>>>  /*
+>>>   * The BUILD_BUG_ON() makes sure the rcu_head offset can be handled. See the
+>>> @@ -1124,6 +1125,24 @@ do {								\
+>>>  		kvfree_call_rcu(NULL, (void *) (___p));		\
+>>>  } while (0)
+>>>  
+>>> +/**
+>>> + * kfree_rcu_nolock() - a version of kfree_rcu() that can be called in any context.
+>>> + * @ptr: pointer to kfree for double-argument invocations.
+>>> + * @kvrhf: the name of the struct kvfree_rcu_head within the type of @ptr.
+>>> + *
+>>> + * Objects that are not allocated via kmalloc_nolock() are not supported.
+>> 
+>> Is this true? If __kfree_rcu_sheaf() succeeds, rcu_sheaf is either flushed
+>> normally (call_rcu with rcu_free_sheaf()) or via the irq_work doing the
+>> same. The defer_kfree_rcu() fallback ends up doing a normal
+>> kvfree_call_rcu(). I don't see any path that ends up doing kfree_nolock().
+>> Am I missing something?
+> 
+> I added this limitation because I thought it doesn't make sense
+> to support this when we don't support large kmalloc and vmalloc in
+> unknown context.
+> 
+> Perhaps too limiting than it should be though.
 
---
-With Best Regards,
-Shengming
+Hmm right. Maybe we could just state that it handles all small kmalloc() and
+kmalloc_nolock() allocations without deferring as much as possible, but
+large k[v]malloc() allocations that end up being large_kmalloc() or
+vmalloc(), will also work but be always deferred?
+
+>>> + * kfree_rcu_nolock() supports 2-arg variant only.
+>>> + */
+>>> +#define kfree_rcu_nolock(ptr, kvrhf)						\
+>>> +do {										\
+>>> +	typeof (ptr) ___p = (ptr);						\
+>>> +										\
+>>> +	if (___p) {								\
+>>> +		BUILD_BUG_ON(offsetof(typeof(*(ptr)), kvrhf) >= 4096);		\
+>>> +		kfree_call_rcu_nolock(&((___p)->kvrhf), (void *) (___p));	\
+>>> +	}									\
+>>> +} while (0)
+>>> +
+>>>  /*
+>>>   * Place this after a lock-acquisition primitive to guarantee that
+>>>   * an UNLOCK+LOCK pair acts as a full barrier.  This guarantee applies
+> 
+
