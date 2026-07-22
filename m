@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6732DEA6B;
-	Wed, 22 Jul 2026 07:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6368C4195A3;
+	Wed, 22 Jul 2026 07:29:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784704573; cv=none; b=rXT/6eWkRH1uEi9SdaRAtOn8buBTT3wxlZTN1h1Z4CQcZyJ4j3DgSaYBh5cHmXfDZdsEZveePENEoNdOj9zpMA3IXk+r1z/+C7gwsIcFsLddmVCXe+xgTNtEXe/nkKlpgNa/IjrpxnejPya8sxU3LQx6hI9nios+xF7s0WpcOqU=
+	t=1784705345; cv=none; b=jwnnlNE51ofs6Zq53vP/191jVdxXx8iFnWb71SDCT/3dqYvMAjmKlj448w3PlgXvLSq8XhORa9iixpy9cP9cTa2TsMOTczmyS5rprCmf2Qwwl0+tZMBBX8sZMfWs9Ri5s6N2TNGT5mvW/GNB0co/5jBBAua4OzOpdZuZkamHR1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784704573; c=relaxed/simple;
-	bh=693vjRiYIWjTznoCO9BwIbJbyn7Sft9EHzTdPud4tSk=;
+	s=arc-20240116; t=1784705345; c=relaxed/simple;
+	bh=RiRK01IvlckUScgeNWGOPdPHw/zeYWLvwWkfa6wkKxk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RDH+OCM5R/DQCkGf3wzp1kreONAZ2uBLCLvcP1J2ZirLo/sRn3vtmAGJXmVpJTTwJW5tifnNz9uuOX57qDHJcowIZooQvsTTkcRYRL5MjzBptrO/gKnNHMwTKNrfD7YKDwUa6dMK3UO49nqK7UP7o6WMSfdqeM4ueUNX+LE59zY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bc2KXFhL; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:Content-Type; b=b9mK2/IRFpKwjWqTXFlmqOD+Fpe0PtKKJjiJB7mrvpnW/f5lOZrNpi5Fw2BWkVDtEODeFKuUApLikRpjmbOvrpVPJz4UptdFByCfxYgOjSjRDwNqj0Om0hZPYJCDpMhgZ+OUKY/jG5iTmhOShrFEAjML+LtlY2MECIw4G7USZnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eR1tq1df; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bc2KXFhL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52CF81F000E9;
-	Wed, 22 Jul 2026 07:16:04 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eR1tq1df"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B939B1F000E9;
+	Wed, 22 Jul 2026 07:28:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784704571;
-	bh=QczM2k3gjfBkQg6SLRGr4KO6x2nabmYHG3X/oqp3yTs=;
+	s=k20260515; t=1784705342;
+	bh=8zaevow8IizUqrNUcZdF6Ch67AOjnnMBszvEW0bHxEE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=Bc2KXFhLyD1DFGv9udYttAPL0u9PjXCUNwYk04HPyfgCvnAu9cGaUQrkVKvywTKP0
-	 q6a4lSNIvV/Uj+o6GsQJz7gfTQhwKYCN2YV0cMHbW9FvAzXDNF/r4gRv347/cb4NkC
-	 BVwlbm1iBJ/BBJaazXm5X/zPLqkS0JgXjeJxDBkvuFqjPh+YhL2ruH6sNcNAGmJzKc
-	 qcOh6urXoStSQVqxwmwYJK0SDceGzyBkt3rXoQVi8NT1r16WBweAkE1aN19QvgPL/F
-	 w1II5sds5nmCRYLsCDvcjrsmqp3Oygz24L/gQM/umdbjIO9AQIsbSR9uTfnPF3ijIC
-	 NfIcK7iov/lCg==
-Message-ID: <004d1215-a1da-448e-bf10-df637c7029f5@kernel.org>
-Date: Wed, 22 Jul 2026 16:16:00 +0900
+	b=eR1tq1dfYU3pPLytxYWoMVbWt34/wZDF68rS7EULqxvYoLvXO5reb0PEIU1z3P/sv
+	 59BDy79IjRDD3KzwI4clF3F8lJigz9echcgr5En4CVUC1SPUI2XP5cc21m1c4rerb9
+	 SXOFndIfgoe46aMUrRfmYVtxRcKoP9z81kVYtK+5WYl8VBmyL6017eBAKA4UNOoJPX
+	 neQKetZ/7SZc0x8ubFK+ANzV+5efW46xojRoHhGkW2SfdsLaSWbj5o2qoPPLhecLlb
+	 B04zwWJYf73qNeqn1w5xA4Nkvqe1ajUthU8vq6Vl4lAdai8YVPFkhnuuaHoHyM4S2j
+	 QggDqSqh9TTIQ==
+Message-ID: <0ce88f37-f231-4a00-b06b-95b0910c2db0@kernel.org>
+Date: Wed, 22 Jul 2026 16:28:45 +0900
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -35,157 +35,208 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH slab/for-next v4 1/8] mm/slab, slub_kunit: register kprobe
- to trigger _nolock APIs
-To: hu.shengming@zte.com.cn
-Cc: vbabka@kernel.org, akpm@linux-foundation.org, hao.li@linux.dev,
- cl@gentwo.org, rientjes@google.com, roman.gushchin@linux.dev,
- ast@kernel.org, andrii@kernel.org, puranjay@kernel.org, ameryhung@gmail.com,
- bigeasy@linutronix.de, clrkwllms@kernel.org, rostedt@goodmis.org,
- paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
- joelagnelf@nvidia.com, josh@joshtriplett.org, boqun@kernel.org,
- urezki@gmail.com, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
- qiang.zhang@linux.dev, pfalcato@suse.de, surenb@google.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+Subject: Re: [PATCH slab/for-next v4 2/8] mm/slab: handle the !allow_spin case
+ in kfree_rcu_sheaf()
+To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>,
+ Shengming Hu <hu.shengming@zte.com.cn>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
-References: <20260722112748588_IEr10bQdigv8c8bjw7Ck@zte.com.cn>
+References: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
+ <20260720-kfree_rcu_nolock-v4-2-964e03c41a4e@kernel.org>
+ <1d0d8021-62d2-4c42-a2a6-a7e8ce2f5d37@kernel.org>
 Content-Language: en-US
 From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <20260722112748588_IEr10bQdigv8c8bjw7Ck@zte.com.cn>
+In-Reply-To: <1d0d8021-62d2-4c42-a2a6-a7e8ce2f5d37@kernel.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="------------l2diSXyS8PSFwRyJhRRP3Q53"
+ boundary="------------58QvpuwGaHyC0C8BQWDhp8Ia"
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------l2diSXyS8PSFwRyJhRRP3Q53
-Content-Type: multipart/mixed; boundary="------------80TQbEbkEElO0TKxmuJVujmY";
+--------------58QvpuwGaHyC0C8BQWDhp8Ia
+Content-Type: multipart/mixed; boundary="------------40SV3jDSYoI2dLADM2Om5ZNL";
  protected-headers="v1"
 From: Harry Yoo <harry@kernel.org>
-To: hu.shengming@zte.com.cn
-Cc: vbabka@kernel.org, akpm@linux-foundation.org, hao.li@linux.dev,
- cl@gentwo.org, rientjes@google.com, roman.gushchin@linux.dev,
- ast@kernel.org, andrii@kernel.org, puranjay@kernel.org, ameryhung@gmail.com,
- bigeasy@linutronix.de, clrkwllms@kernel.org, rostedt@goodmis.org,
- paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
- joelagnelf@nvidia.com, josh@joshtriplett.org, boqun@kernel.org,
- urezki@gmail.com, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
- qiang.zhang@linux.dev, pfalcato@suse.de, surenb@google.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>,
+ Shengming Hu <hu.shengming@zte.com.cn>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <004d1215-a1da-448e-bf10-df637c7029f5@kernel.org>
-Subject: Re: [PATCH slab/for-next v4 1/8] mm/slab, slub_kunit: register kprobe
- to trigger _nolock APIs
-References: <20260722112748588_IEr10bQdigv8c8bjw7Ck@zte.com.cn>
-In-Reply-To: <20260722112748588_IEr10bQdigv8c8bjw7Ck@zte.com.cn>
+Message-ID: <0ce88f37-f231-4a00-b06b-95b0910c2db0@kernel.org>
+Subject: Re: [PATCH slab/for-next v4 2/8] mm/slab: handle the !allow_spin case
+ in kfree_rcu_sheaf()
+References: <20260720-kfree_rcu_nolock-v4-0-964e03c41a4e@kernel.org>
+ <20260720-kfree_rcu_nolock-v4-2-964e03c41a4e@kernel.org>
+ <1d0d8021-62d2-4c42-a2a6-a7e8ce2f5d37@kernel.org>
+In-Reply-To: <1d0d8021-62d2-4c42-a2a6-a7e8ce2f5d37@kernel.org>
 
---------------80TQbEbkEElO0TKxmuJVujmY
+--------------40SV3jDSYoI2dLADM2Om5ZNL
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 7/22/26 12:27 PM, hu.shengming@zte.com.cn wrote:
-> Harry wrote:
->> Since kmalloc_nolock() always fails in NMI and hardirq contexts on
->> PREEMPT_RT, slub_kunit cannot properly test _nolock() APIs.
+On 7/21/26 7:07 PM, Vlastimil Babka (SUSE) wrote:
+> On 7/20/26 14:44, Harry Yoo (Oracle) wrote:
+>> Teach kfree_rcu_sheaf() how to handle the !allow_spin case. Try to get=
+
+>> an empty sheaf from pcs->spare or the barn even when spinning is not
+>> allowed. Unlike __pcs_replace_full_main(), try harder to allocate
+>> an empty sheaf because the fallback path will be more expensive than
+>> kfree_nolock().
 >>
->> Register a kprobe pre-handler to invoke kmalloc_nolock() and
->> kfree_nolock() in the middle of the slab allocator. However, do not
->> register the handler on UP kernels because that use case is not
->> well supported [1] in the kernel.
+>> Now that slab has internal alloc_flags to describe context, introduce
+>> free_flags analogously and convert free_flags to alloc_flags when
+>> allocating memory in the free path. alloc_empty_sheaf() now strips
+>> __GFP_RECLAIM when SLAB_ALLOC_NOLOCK is specified.
 >>
->> To attach the pre-handler while s->cpu_sheaves->lock or n->list_lock
->> is held, add a wrapper function for lockdep_assert_held() that calls
->> a no-op function slab_attach_kprobe_locked() on debug builds. The
->> function is optimized away when neither CONFIG_PROVE_LOCKING nor
->> CONFIG_DEBUG_VM is selected and register_kprobe() fails.
+>> When trylock fails or the kernel observes non-NULL pcs->rcu_free after=
+
+>> lock acquisition, free the sheaf instead of putting it to the barn.
+>> This is rare and not worth complicating the code.
 >>
->> The function calls barrier() to prevent the compiler from optimizing
->> away its callsites. Otherwise, the compiler may consider the function
->> does not have any side effect and remove callsites.
+>> Since call_rcu() cannot be called in an unknown context,
+>> kfree_rcu_sheaf() fails when the rcu sheaf becomes full.
 >>
->> Compared to using plain kprobe, this has two advantages: 1) it avoids
->> hardcoding function names in the test, and 2) it can trigger those API=
-s
->> in the middle of a function, where the lock is expected to be held as
->> annotated with lockdep.
->>
->> While it was proposed [2] to use kunit function redirection to test
->> this, it is currently infeasible as some lock helpers don't have
->> symbols.
->>
->> Factor out the nested loop that calls kmalloc and friends to
->> test_kmalloc_kfree(), and call them in
->> test_kmalloc_kfree_nolock_{perf,kprobe}(), each being an independent
->> test case. During the refactoring, drop alloc_fail handling as it
->> doesn't provide much benefits.
+>> Link: https://lore.kernel.org/linux-mm/872bd673-3d45-4111-8a41-31185db=
+3ece5@kernel.org
+>> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 >=20
-> Nice test addition!
+> LGTM.
 >=20
-> Reviewed-by: Shengming Hu <hu.shengming@zte.com.cn>
+> Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
-Thanks a lot for reviewing, Shengming!
+Thanks a lot for reviewing, Vlastimil!
 
-Just FYI, I'm going to adjust a nit pointed out by sashiko
-that kmalloc_obj(*objects[j], gfp) is wrong because objects is an array
-of void pointers. (which is fixed later in the series)
-
-> Nit below:
->> +static void test_kmalloc_kfree_nolock_perf(struct kunit *test)
->> +{
->> +    struct test_nolock_context ctx =3D { .test =3D test };
+> Nits below:
+>=20
+>> ---
+>>  mm/slab.h        | 18 +++++++++++++++++-
+>>  mm/slab_common.c |  2 +-
+>>  mm/slub.c        | 36 ++++++++++++++++++++++++++++--------
+>>  3 files changed, 46 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/mm/slab.h b/mm/slab.h
+>> index 281a65233795..85ef2ebc9812 100644
+>> --- a/mm/slab.h
+>> +++ b/mm/slab.h
+>> @@ -429,7 +445,7 @@ static inline bool is_kmalloc_normal(struct kmem_c=
+ache *s)
+>>  	return !(s->flags & (SLAB_CACHE_DMA|SLAB_ACCOUNT|SLAB_RECLAIM_ACCOUN=
+T));
+>>  }
 >> =20
->> -    kunit_info(test, "callback_count: %d, alloc_ok: %d, alloc_fail: %=
-d\n",
->> -           ctx.callback_count, ctx.alloc_ok, ctx.alloc_fail);
->> +    if (!enable_perf_events(&ctx))
->> +        kunit_skip(test, "Failed to enable perf event, skipping");
+>> -bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj);
+>> +bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int =
+free_flags);
+>>  void flush_all_rcu_sheaves(void);
+>>  void flush_rcu_sheaves_on_cache(struct kmem_cache *s);
 >> =20
->> -    if (alloc_fail)
->> -        kunit_skip(test, "Allocation failed");
->> +    test_kmalloc_kfree();
->> +
->> +    disable_perf_events(&ctx);
->> +    KUNIT_EXPECT_EQ(test, 0, slab_errors);
->> +}
->> +#endif
->> +
+>> diff --git a/mm/slab_common.c b/mm/slab_common.c
+>> index b6426d7ceec9..e07b4e6d6679 100644
+>> --- a/mm/slab_common.c
+>> +++ b/mm/slab_common.c
+>> @@ -1605,7 +1605,7 @@ static bool kfree_rcu_sheaf(void *obj)
+>> =20
+>>  	s =3D slab->slab_cache;
+>>  	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) =3D=3D numa_me=
+m_id()))
+>> -		return __kfree_rcu_sheaf(s, obj);
+>> +		return __kfree_rcu_sheaf(s, obj, SLAB_FREE_DEFAULT);
+>> =20
+>>  	return false;
+>>  }
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index e32a68677537..0c350274fbff 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -2814,10 +2814,14 @@ static inline struct slab_sheaf *alloc_empty_s=
+heaf(struct kmem_cache *s,
+>> =20
+>>  	gfp &=3D ~OBJCGS_CLEAR_MASK;
+>> =20
+>> +	if (alloc_flags & SLAB_ALLOC_NOLOCK)
+>> +		gfp &=3D ~__GFP_RECLAIM;
 >=20
-> Maybe it would be worth checking that the perf event actually fired:
+> So in general we expect gfp and alloc flags to be compatible and warn i=
+f
+> they are not. This now performs an auto-adjustment, which makes it unus=
+ual.
+
+That's fair.
+
+> But AFAICS only one caller relies on it - __kfree_rcu_sheaf(). So maybe=
+ we
+> could just do it there?
+
+Will do. I don't have strong preference on this.
+
+>>  	return __alloc_empty_sheaf(s, gfp, alloc_flags, s->sheaf_capacity);
+>>  }
+>> =20
+>> -static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf =
+*sheaf)
+>> +static void __free_empty_sheaf(struct kmem_cache *s, struct slab_shea=
+f *sheaf,
+>> +			       bool allow_spin)
 >=20
->     KUNIT_EXPECT_GT(test, ctx.callback_count, 0);
->=20
-> Otherwise, the test could pass without the callback.
+> Why not free_flags instead of allow_spin? Since you already introduced =
+them.
 
-I'm not sure if that would be useful though.
+Indeed I tried that but gave up on doing that as part of series
+after realizing free_empty_sheaf() alone has 12 callers :)
 
-Ideally we want to make sure every code path that handles
-allow_spin =3D false is tested, but it's tricky to measure that and
-also it's tricky to make sure those paths are properly tested
-(especially with perf events).
-
-callback_count is not a good indicator to measure test coverage.
-
-(I use GCOV to make sure we have reasonable coverage,
- but it's hard to turn that into a test case...)
+But I think it's worth teaching those functions (including
+free_empty_sheaf()) to handle SLAB_ALLOC_* and SLAB_FREE_* flags
+rather than propagating allow_spin.
 
 --=20
 Cheers,
 Harry / Hyeonggon
 
---------------80TQbEbkEElO0TKxmuJVujmY--
+--------------40SV3jDSYoI2dLADM2Om5ZNL--
 
---------------l2diSXyS8PSFwRyJhRRP3Q53
+--------------58QvpuwGaHyC0C8BQWDhp8Ia
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCamBuMAAKCRCGXBN6rc5S
-1sPeAQDxKa0DMrDQTezN00ksgEUR3eb05xC3gVwrShymZlkh5wEA7tBOlrr/Ntis
-S3x7DXHLG0TmEitCZ5rUhYKcT3diOQI=
-=g7jN
+iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCamBxLQAKCRCGXBN6rc5S
+1lmSAP9lYDgvsDB/HErz8AaTnBiLvXlODJbuM/n6AnzN174nqQD/e4Fyvp2AXL7v
+i1a62GaFBxE4ZzdiDFmrY9G+9EoQZgs=
+=AE3u
 -----END PGP SIGNATURE-----
 
---------------l2diSXyS8PSFwRyJhRRP3Q53--
+--------------58QvpuwGaHyC0C8BQWDhp8Ia--
