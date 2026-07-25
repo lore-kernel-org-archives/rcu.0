@@ -1,313 +1,156 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01C4C2BEFEB;
-	Sat, 25 Jul 2026 00:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784939031; cv=none; b=ZlUP/KP7eLNjn3yujg+myMhQXNMX7zp4cu0JzEoL/6WUFylLHDe2tmPFPuzKglyusN+p5rxMAdf8revMqT9UCeKhaUw2Jb+jmQEyfB2QiYNYIjTLKxihfL/eGGbGt0quiPVE9HfHFN4ujEEBqwfnX5cxmxbAYbgYypHjE42HtUM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784939031; c=relaxed/simple;
-	bh=JQxqrRaCFniYN4o+pmYiGWS9uQylvc3ueU3bAcFP9NU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cVItN0ByZLzPxM77fyYTgXhBgN92nfs5qIwf7agG0Es3jmJvPxcuynyZ1ntcxCmTytDqYlof1oLs0zgw0EtkP4LbYVJmHc1bQ/OAP2StU7GtoY+kcRN00vYgYjsjlW+0nm2Xpr9h70RolXA4qMDYgNffLza83H3Ye1xAihM6clo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lAeB2yLP; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E9725F7A5
+	for <rcu@vger.kernel.org>; Sat, 25 Jul 2026 12:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1784981077; cv=pass; b=HidkPGg0XtmHsUoSfXa2OgwePrMndmIobA3tweK+iO+F0YK5AR6/wejdFpZqTQWS3UG0Rjl2gm+wy3OTzGSTgXqnFvLQiM/zaZ83LgycmmSMPIt57u3O/dp8unUcUrMtsCcRcLEkUu53+Lt1lZqPuHgjqlNDt9R/9HC3LpkhpOI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1784981077; c=relaxed/simple;
+	bh=GCRHgUN5OrDS3h6TXUSztQQGkBJEns8zn1TosahCLFs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TdlidVvkBXg1wPX1ZnwY9DCcXje7mUlSwlR0WIlUr7FcbRdZEHaD/ywnEPa2WEBSPNqMw2bthAMeoEBUnIWSkP7XQsCskJvYa5J+AtNVvTDeOZqZNbrUv8DJwySAGE/rvHslZ6MapSpdYeB2NMlW3829VEdaCKQVnIU/UfptdAY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W2bKQRDX; arc=pass smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lAeB2yLP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D68C91F000E9;
-	Sat, 25 Jul 2026 00:23:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784939029;
-	bh=dCcSKyFSBUlwhY/bMBsb+0+TwreVcu79UC32Ayrh3hk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=lAeB2yLPTCXp3ap9v0UtCqPN8s+xgmdAJxFA/KM2ue/H7Bfgq/0nhdfIIbMmlb9Ys
-	 vEAmdWv0/z1YRDvjw3Aph4wxOTlU3DEPAwJRVfsRmzgTD7+LyvTxOCKqoahCCQMMcu
-	 /p1B0b1/unCDP+bDu6cBy+yTWOaS7I6iVm7U6iYz1flUtpp9qdlyp+ue9cPjxNuaML
-	 F1ivyjJLAYnGYm8ahSZE2nu4UN0eCyDf6OauGYjOOED0Css+EWl1jVycCw6Rgy1Z0u
-	 60cxla6Uou54cn9B8qKyjf4Jg6XYjhajMGw8D9ub+1nqT9d2qf/ZfvoPZryTJ2KEyJ
-	 J9RTlKHkdY+Qw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 90CA6CE1623; Fri, 24 Jul 2026 17:23:49 -0700 (PDT)
-Date: Fri, 24 Jul 2026 17:23:49 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Breno Leitao <leitao@debian.org>
-Subject: Re: [PATCH v2 6/11] rcu: Enable RCU callbacks to benefit from
- expedited grace periods
-Message-ID: <5a87e5f1-7cbf-45c0-a6e2-88320db628bc@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260624132356.516959-7-puranjay@kernel.org>
- <20260724183123.160051-1-puranjay@kernel.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W2bKQRDX"
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-c1c24ec9525so199837766b.1
+        for <rcu@vger.kernel.org>; Sat, 25 Jul 2026 05:04:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1784981075; cv=none;
+        d=google.com; s=arc-20260327;
+        b=Ai/UShjKAUhIU6fREsjDpynAKbFJ3AaxpREced4McRIR8IdPR8a9MCTVWcOXR5daj5
+         8I3UFGGjuWPGbMs6rAa+iAPmAtwJDSzR4OTLHMZaah0GSZ2scL57EZVuhmnuqTB4TWXY
+         LHJuWfR0awkBsmVI71wiPj1KApForuVws6JqXdwUNu2tVCpCFEUsI4fi7BKyf4iPZNqs
+         FzJUIao4Fdc5p7SLuPEuL68vwOegdNdfqBb53lIuptwhpI6zkdG6etGl69BGe9DO96Hq
+         hFJXIHVLK8+n/1kH16phH6E4EvB5cSHokU+OsogfGvQUArrBoJ1/nWHqgJfyQq6kof5Q
+         cmjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=Tq198tQF1IsV+MyvQWn4ns+avHzmhK6z4MHxI2nb1Oo=;
+        fh=jCXfH7gvhINBTSU+oLB6bFWSEnujCu+DQrjcvcETUeQ=;
+        b=EJ3KgbKIAGgTb4lPzr0Yb2Hdn1T1SRUbbl+QoDY/NVUHIIhnImCtxTGY0TaC64/485
+         qGEqwDs88YTDn9UIAK+m3oZm7k7m19/h6h1gQ10LKPuyw2Y2coZVKip52Krc5f9B1LfN
+         AhTyRiyNYbYP/jSufUCTIAsBALV+vsLRNmbZZYmhTONzFx6BGDPFmwOOyQxvB6R7+xG5
+         +MmBfRAu6Ceyry/gx8DJVjwlSSnafdWS1FvXTYaldS5Hv2fakdWvLsN1kVKMxI8vMdZu
+         NyS0+ii388L+y+3WZXUvf2TZhN8unBhtUkwMuqTfDgN29ilOcXb+LdQhS/ERJeM9dSS3
+         aHxw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1784981075; x=1785585875; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=Tq198tQF1IsV+MyvQWn4ns+avHzmhK6z4MHxI2nb1Oo=;
+        b=W2bKQRDXaiKxUlFM9puuh6benUuuvBUbyJFHV/eRLetklJyoiyz72bNHOsi3lKM229
+         WNh5cT09R3d/d1KW8vOZWOGvfWUgGifN+TioFzWe81FkMMmSFISM6c3TGgZqm2CVmAG3
+         7zihTVssdSFpRbOyp9Q6FppwVbxe8I7WlVpF21GrvW5QWZkfEk2w/fqVRF4/vPqEE6IX
+         xjQKmnjvrY7vCZuop7V4zCLUMyPYqfGwbW3IyYY/jZKWXOJZj0t1lGS3EhKCiwBVEoD1
+         1bWLiCrrBkEG01CUGuToi4fO1vZ68i4/CKGLxDQy1xc5yAGEW2chkQ0CMfu/1DGGZhtX
+         jJiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784981075; x=1785585875;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=Tq198tQF1IsV+MyvQWn4ns+avHzmhK6z4MHxI2nb1Oo=;
+        b=AsdwA5k1VMIEhbizKewd5EMeeXEa0hiu/u47wnE1zdqG8Mjo9r6tEjPfFHXATppeP5
+         rh2JnvoDF3oKBQ/YHBrcZ0PHSDnsHtjJpYPNRy2jFE50JdOr4WBgC1CVjxPE9tuA/VsQ
+         ISRg+SbBIFXdsb//CFTLjTDZGaUdQgUzx6VG5m2pFDwEQ/fPKRqrR4XS6P/F+2lrOXiE
+         zuFP4o6jLLAMgwChNoc2mwncG8Lu1+3lt00PDgHpclN11YGvvBjwBdEfCCTyDosq9U8Q
+         edOdCG1PhYxBMvmB5IahOWuPMh1/Bzfw7P9hr9Zwy2fHb8jrEGa+DiOTKUqZQ6tXNtht
+         GE7Q==
+X-Gm-Message-State: AOJu0YwrKEn9XMtigRWzRnJhvwUv/8a92HPctzwH+i1RQmEVY39+spqt
+	v2mJ6rh4OwKEjEHWEUaGUa86KwzCdGXSLjJ4o21iVELdYlzypFVKub+KCaulaMz8Qw5PCnyc/qu
+	bdLyGktKr6r9a/N50KTzaj2pLhTOK3s5muQ==
+X-Gm-Gg: AR+sD12vB7l0K98B6D4gLtxPglOffvWRdEvnpbnwbFNTzvDjgLJRM4bmqEV1jSHbP6r
+	/HMZGMI0U0VCSYiVQAVxn/Tfpuy/MnXI9+Ew07qiR5dqxBnEDvO3kdgmAOHKtFmy83S1gT6jrbg
+	xKBgg5NnVypnjJ5pojo2OdrqQwgMpbCj3tCiNGYCOQ9KNTHP0IsMaOKsD9hVoZrTq4vRFyBdbr0
+	kz/OASOAxyPOLtUHGq5b1WxOItRkk8T43LF57mdFOiDcusshtFwsVZE1u1tARcBw0E41gTInKfZ
+	V+Gj0tHirDQ+iu3uFBxGT2heNT6bng==
+X-Received: by 2002:a17:907:97cc:b0:c15:f6b6:18f4 with SMTP id
+ a640c23a62f3a-c1f1ed40564mr75174166b.24.1784981074298; Sat, 25 Jul 2026
+ 05:04:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260724183123.160051-1-puranjay@kernel.org>
+References: <20260624132356.516959-7-puranjay@kernel.org> <20260724183123.160051-1-puranjay@kernel.org>
+ <5a87e5f1-7cbf-45c0-a6e2-88320db628bc@paulmck-laptop>
+In-Reply-To: <5a87e5f1-7cbf-45c0-a6e2-88320db628bc@paulmck-laptop>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Sat, 25 Jul 2026 13:04:21 +0100
+X-Gm-Features: AUfX_mxztUek5QzrvnuWv513tANm2vUvNcHIsu0rIcLDMCQdR_8_cVOv82niJL4
+Message-ID: <CANk7y0jZ7JuR6MoNKZZU3R=+kfe0pELRUWYomtxHKQwsBan3Bw@mail.gmail.com>
+Subject: Re: [PATCH v2 6/11] rcu: Enable RCU callbacks to benefit from
+ expedited grace periods
+To: paulmck@kernel.org
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang@linux.dev>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Davidlohr Bueso <dave@stgolabs.net>, Breno Leitao <leitao@debian.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 24, 2026 at 11:31:23AM -0700, Puranjay Mohan wrote:
-> Currently, RCU callbacks only track normal grace-period sequence
-> numbers.  This means callbacks must wait for normal grace periods to
-> complete even when expedited grace periods have already elapsed.
-> 
-> Use the full struct rcu_gp_seq (which tracks both the normal and
-> expedited grace-period sequences) throughout the callback
-> infrastructure.
-> 
-> rcu_segcblist_advance() now checks both normal and expedited GP
-> completion via poll_state_synchronize_rcu_full(), and becomes
-> parameterless since it reads the grace-period state internally.
-> rcu_segcblist_accelerate() stores the full state (both sequences)
-> instead of just the normal one.  rcu_accelerate_cbs() and
-> rcu_accelerate_cbs_unlocked() use get_state_synchronize_rcu_full() to
-> capture both sequences, and the NOCB advance checks use
-> poll_state_synchronize_rcu_full() instead of comparing only the normal
-> sequence.
-> 
-> srcu_segcblist_advance() becomes a standalone implementation because it
-> compares SRCU sequences directly and cannot use
-> poll_state_synchronize_rcu_full(), which reads RCU-specific globals.
-> srcu_segcblist_accelerate() sets the ->exp field to
-> RCU_GET_STATE_NOT_TRACKED so that poll_state_synchronize_rcu_full()
-> compares only ->norm and ignores ->exp.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
-> Paul, please take this in place of the original 6/11.  The only change
-> from v1 is dropping the premature !poll_state_synchronize_rcu_full() gate
-> in nocb_gp_wait(): if a grace period completed between rcu_advance_cbs()
-> and that poll, the rcuog slept grace-period-deaf in nocb_gp_sleep() with
-> advanceable callbacks still queued -- the lost wakeup Frederic diagnosed.
-> Verified by widening that window with a delay: the original reproduced the
-> writer stall within ~75s, this version stayed clean.
+On Sat, Jul 25, 2026 at 1:23=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Fri, Jul 24, 2026 at 11:31:23AM -0700, Puranjay Mohan wrote:
+> > Currently, RCU callbacks only track normal grace-period sequence
+> > numbers.  This means callbacks must wait for normal grace periods to
+> > complete even when expedited grace periods have already elapsed.
+> >
+> > Use the full struct rcu_gp_seq (which tracks both the normal and
+> > expedited grace-period sequences) throughout the callback
+> > infrastructure.
+> >
+> > rcu_segcblist_advance() now checks both normal and expedited GP
+> > completion via poll_state_synchronize_rcu_full(), and becomes
+> > parameterless since it reads the grace-period state internally.
+> > rcu_segcblist_accelerate() stores the full state (both sequences)
+> > instead of just the normal one.  rcu_accelerate_cbs() and
+> > rcu_accelerate_cbs_unlocked() use get_state_synchronize_rcu_full() to
+> > capture both sequences, and the NOCB advance checks use
+> > poll_state_synchronize_rcu_full() instead of comparing only the normal
+> > sequence.
+> >
+> > srcu_segcblist_advance() becomes a standalone implementation because it
+> > compares SRCU sequences directly and cannot use
+> > poll_state_synchronize_rcu_full(), which reads RCU-specific globals.
+> > srcu_segcblist_accelerate() sets the ->exp field to
+> > RCU_GET_STATE_NOT_TRACKED so that poll_state_synchronize_rcu_full()
+> > compares only ->norm and ignores ->exp.
+> >
+> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> > ---
+> > Paul, please take this in place of the original 6/11.  The only change
+> > from v1 is dropping the premature !poll_state_synchronize_rcu_full() ga=
+te
+> > in nocb_gp_wait(): if a grace period completed between rcu_advance_cbs(=
+)
+> > and that poll, the rcuog slept grace-period-deaf in nocb_gp_sleep() wit=
+h
+> > advanceable callbacks still queued -- the lost wakeup Frederic diagnose=
+d.
+> > Verified by widening that window with a delay: the original reproduced =
+the
+> > writer stall within ~75s, this version stayed clean.
+>
+> Done, and will test during the weekend, thank you!
+>
+> There were some conflicts, so could you please double-check?
 
-Done, and will test during the weekend, thank you!
+I have looked at your latest dev branch and everything looks good to me.
 
-There were some conflicts, so could you please double-check?
-
-							Thanx, Paul
-
->  kernel/rcu/rcu_segcblist.c | 30 +++++++++++++++++++++++-------
->  kernel/rcu/rcu_segcblist.h |  2 +-
->  kernel/rcu/tree.c          |  9 +++------
->  kernel/rcu/tree_nocb.h     | 22 ++++++++++++----------
->  4 files changed, 39 insertions(+), 24 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index 4e3dfe42bc097..cf8951d33e767 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -12,6 +12,7 @@
->  #include <linux/kernel.h>
->  #include <linux/types.h>
->  
-> +#include "rcu.h"
->  #include "rcu_segcblist.h"
->  
->  /* Initialize simple callback list. */
-> @@ -494,9 +495,9 @@ static void rcu_segcblist_advance_compact(struct rcu_segcblist *rsclp, int i)
->  
->  /*
->   * Advance the callbacks in the specified rcu_segcblist structure based
-> - * on the current value passed in for the grace-period counter.
-> + * on the current value of the grace-period counter.
->   */
-> -void rcu_segcblist_advance(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp)
-> +void rcu_segcblist_advance(struct rcu_segcblist *rsclp)
->  {
->  	int i;
->  
-> @@ -509,7 +510,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp)
->  	 * are ready to invoke, and put them into the RCU_DONE_TAIL segment.
->  	 */
->  	for (i = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++) {
-> -		if (ULONG_CMP_LT(gsp->norm, rsclp->gp_seq[i].norm))
-> +		if (!poll_state_synchronize_rcu_full(&rsclp->gp_seq[i]))
->  			break;
->  		WRITE_ONCE(rsclp->tails[RCU_DONE_TAIL], rsclp->tails[i]);
->  		rcu_segcblist_move_seglen(rsclp, i, RCU_DONE_TAIL);
-> @@ -595,7 +596,7 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gs
->  	 */
->  	for (; i < RCU_NEXT_TAIL; i++) {
->  		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_NEXT_TAIL]);
-> -		rsclp->gp_seq[i].norm = gsp->norm;
-> +		rsclp->gp_seq[i] = *gsp;
->  	}
->  	return true;
->  }
-> @@ -637,14 +638,29 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
->  
->  void srcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
->  {
-> -	struct rcu_gp_seq gs = { .norm = seq };
-> +	int i;
-> +
-> +	WARN_ON_ONCE(!rcu_segcblist_is_enabled(rsclp));
-> +	if (rcu_segcblist_restempty(rsclp, RCU_DONE_TAIL))
-> +		return;
-> +
-> +	for (i = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++) {
-> +		if (ULONG_CMP_LT(seq, rsclp->gp_seq[i].norm))
-> +			break;
-> +		WRITE_ONCE(rsclp->tails[RCU_DONE_TAIL], rsclp->tails[i]);
-> +		rcu_segcblist_move_seglen(rsclp, i, RCU_DONE_TAIL);
-> +	}
-> +
-> +	/* If no callbacks moved, nothing more need be done. */
-> +	if (i == RCU_WAIT_TAIL)
-> +		return;
->  
-> -	rcu_segcblist_advance(rsclp, &gs);
-> +	rcu_segcblist_advance_compact(rsclp, i);
->  }
->  
->  bool srcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
->  {
-> -	struct rcu_gp_seq gs = { .norm = seq };
-> +	struct rcu_gp_seq gs = { .norm = seq, .exp = RCU_GET_STATE_NOT_TRACKED };
->  
->  	return rcu_segcblist_accelerate(rsclp, &gs);
->  }
-> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-> index 16b0cb6b32507..431c4466b8898 100644
-> --- a/kernel/rcu/rcu_segcblist.h
-> +++ b/kernel/rcu/rcu_segcblist.h
-> @@ -139,7 +139,7 @@ void rcu_segcblist_insert_done_cbs(struct rcu_segcblist *rsclp,
->  				   struct rcu_cblist *rclp);
->  void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
->  				   struct rcu_cblist *rclp);
-> -void rcu_segcblist_advance(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp);
-> +void rcu_segcblist_advance(struct rcu_segcblist *rsclp);
->  bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp);
->  void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
->  			 struct rcu_segcblist *src_rsclp);
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 640ebe055a246..f63ce75c5b4f5 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1159,7 +1159,7 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
->  	 * accelerating callback invocation to an earlier grace-period
->  	 * number.
->  	 */
-> -	gs.norm = rcu_seq_snap(&rcu_state.gp_seq);
-> +	get_state_synchronize_rcu_full(&gs);
->  	if (rcu_segcblist_accelerate(&rdp->cblist, &gs))
->  		ret = rcu_start_this_gp(rnp, rdp, gs.norm);
->  
-> @@ -1188,7 +1188,7 @@ static void rcu_accelerate_cbs_unlocked(struct rcu_node *rnp,
->  	bool needwake;
->  
->  	rcu_lockdep_assert_cblist_protected(rdp);
-> -	gs.norm = rcu_seq_snap(&rcu_state.gp_seq);
-> +	get_state_synchronize_rcu_full(&gs);
->  	if (!READ_ONCE(rdp->gpwrap) && ULONG_CMP_GE(rdp->gp_seq_needed, gs.norm)) {
->  		/* Old request still live, so mark recent callbacks. */
->  		(void)rcu_segcblist_accelerate(&rdp->cblist, &gs);
-> @@ -1213,8 +1213,6 @@ static void rcu_accelerate_cbs_unlocked(struct rcu_node *rnp,
->   */
->  static bool rcu_advance_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
->  {
-> -	struct rcu_gp_seq gs;
-> -
->  	rcu_lockdep_assert_cblist_protected(rdp);
->  	raw_lockdep_assert_held_rcu_node(rnp);
->  
-> @@ -1226,8 +1224,7 @@ static bool rcu_advance_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
->  	 * Find all callbacks whose ->gp_seq numbers indicate that they
->  	 * are ready to invoke, and put them into the RCU_DONE_TAIL sublist.
->  	 */
-> -	gs.norm = rnp->gp_seq;
-> -	rcu_segcblist_advance(&rdp->cblist, &gs);
-> +	rcu_segcblist_advance(&rdp->cblist);
->  
->  	/* Classify any remaining callbacks. */
->  	return rcu_accelerate_cbs(rnp, rdp);
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index eaa1ad5297e29..876dd897f18be 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -502,7 +502,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  		}
->  		if (j != rdp->nocb_gp_adv_time &&
->  		    rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
-> -		    rcu_seq_done(&rdp->mynode->gp_seq, cur_gp_seq.norm)) {
-> +		    poll_state_synchronize_rcu_full(&cur_gp_seq)) {
->  			rcu_advance_cbs_nowake(rdp->mynode, rdp);
->  			rdp->nocb_gp_adv_time = j;
->  		}
-> @@ -731,17 +731,17 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
->  		if (!rcu_segcblist_restempty(&rdp->cblist,
->  					     RCU_NEXT_READY_TAIL) ||
->  		    (rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
-> -		     rcu_seq_done(&rnp->gp_seq, cur_gp_seq.norm))) {
-> +		     poll_state_synchronize_rcu_full(&cur_gp_seq))) {
->  			raw_spin_lock_rcu_node(rnp); /* irqs disabled. */
->  			needwake_gp = rcu_advance_cbs(rnp, rdp);
->  			wasempty = rcu_segcblist_restempty(&rdp->cblist,
->  							   RCU_NEXT_READY_TAIL);
->  			raw_spin_unlock_rcu_node(rnp); /* irqs disabled. */
->  		}
-> -		// Need to wait on some grace period?
->  		WARN_ON_ONCE(wasempty &&
->  			     !rcu_segcblist_restempty(&rdp->cblist,
->  						      RCU_NEXT_READY_TAIL));
-> +		// Need to wait on some grace period?
->  		if (rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq)) {
->  			if (!needwait_gp ||
->  			    ULONG_CMP_LT(cur_gp_seq.norm, wait_gp_seq))
-> @@ -919,7 +919,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
->  	lockdep_assert_irqs_enabled();
->  	rcu_nocb_lock_irqsave(rdp, flags);
->  	if (rcu_segcblist_nextgp(cblist, &cur_gp_seq) &&
-> -	    rcu_seq_done(&rnp->gp_seq, cur_gp_seq.norm) &&
-> +	    poll_state_synchronize_rcu_full(&cur_gp_seq) &&
->  	    raw_spin_trylock_rcu_node(rnp)) { /* irqs already disabled. */
->  		needwake_gp = rcu_advance_cbs(rdp->mynode, rdp);
->  		raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
-> @@ -1548,8 +1548,8 @@ static void show_rcu_nocb_gp_state(struct rcu_data *rdp)
->  static void show_rcu_nocb_state(struct rcu_data *rdp)
->  {
->  	char bufd[22];
-> -	char bufw[45];
-> -	char bufr[45];
-> +	char bufw[64];
-> +	char bufr[64];
->  	char bufn[22];
->  	char bufb[22];
->  	struct rcu_data *nocb_next_rdp;
-> @@ -1569,10 +1569,12 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
->  					      nocb_entry_rdp);
->  
->  	sprintf(bufd, "%ld", rsclp->seglen[RCU_DONE_TAIL]);
-> -	sprintf(bufw, "%ld(%ld)", rsclp->seglen[RCU_WAIT_TAIL],
-> -		rsclp->gp_seq[RCU_WAIT_TAIL].norm);
-> -	sprintf(bufr, "%ld(%ld)", rsclp->seglen[RCU_NEXT_READY_TAIL],
-> -		rsclp->gp_seq[RCU_NEXT_READY_TAIL].norm);
-> +	sprintf(bufw, "%ld(%ld/%ld)", rsclp->seglen[RCU_WAIT_TAIL],
-> +		rsclp->gp_seq[RCU_WAIT_TAIL].norm,
-> +		rsclp->gp_seq[RCU_WAIT_TAIL].exp);
-> +	sprintf(bufr, "%ld(%ld/%ld)", rsclp->seglen[RCU_NEXT_READY_TAIL],
-> +		rsclp->gp_seq[RCU_NEXT_READY_TAIL].norm,
-> +		rsclp->gp_seq[RCU_NEXT_READY_TAIL].exp);
->  	sprintf(bufn, "%ld", rsclp->seglen[RCU_NEXT_TAIL]);
->  	sprintf(bufb, "%ld", rcu_cblist_n_cbs(&rdp->nocb_bypass));
->  	pr_info("   CB %d^%d->%d %c%c%c%c%c F%ld L%ld C%d %c%s%c%s%c%s%c%s%c%s q%ld %c CPU %d%s\n",
-> -- 
-> 2.53.0-Meta
-> 
+Thanks,
+Puranjay
