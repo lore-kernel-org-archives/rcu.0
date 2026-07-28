@@ -1,42 +1,80 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4DB29898B
-	for <rcu@vger.kernel.org>; Mon, 27 Jul 2026 18:37:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1923E5EFB
+	for <rcu@vger.kernel.org>; Tue, 28 Jul 2026 10:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785177466; cv=none; b=G2p6qQcISgj47vqp4jJGwZ+nudj4SMmG6o2AuUNDTvmH3UIM1VzxvfS7jvvbTNukUiFHq9Z0+JM06yIWe/e+NskeKu9UOB6hB635hYJAn7R8ttlzx9HDEC1wggv7gpXWBGTXJ2lXWwd24plOMKoY2B6yvFLEhxpg2Tk9XASX1xo=
+	t=1785235179; cv=none; b=hajzihQnd9PCx1Ue6xWk/qv1afU211mSLsw/KimKa9NeEa4x3TIe6GwYbPK2j9aIwHQmiHKvQ6WTIDxizAz4PtV/cBjogh0lbiXnKfozgVrb9pFbZWBUE3bTnRjpKr0TW+KqxNdmyZ54+HeRiE1gUU8ldwAzdOBTVnDbKeMXKxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785177466; c=relaxed/simple;
-	bh=fapvYc8IoWLzrhT0yWXHWtWcySFEL3tITVFTXNkxhsw=;
+	s=arc-20240116; t=1785235179; c=relaxed/simple;
+	bh=qpSpYBhIpJtMXaX73sqUbb/dClW7iZn/LKMcEnuzdf4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AIa2yFWqdC7Zg84DRQec6EbE8BTZEpbWxbWCXHO6AV3/lWfn09nOmbgC99ZEg7aCBukFH0hD8BanHo1m4p2NGyiGn2joqAEUrDrjogmJ2m2BEG5CDBjE9JGYD0jZzw38JKDMspcHZmPKIRlrqnup90pN8wgjpBKAoeTWFd8ywvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZSPUgEJA; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=oJ7ejkZZWOzI6FpPSpxmYm6mqa15+4ToJ/1I6wM9xEos3TApRZXEbzNO+9tEBpvxH85yLDGZGXmtoshDdQU/cgjwGk1r0INUK1CDIK4LWzRUpqr28Uj+hJNajyttRzCN1Fdv7ZvR8B8XH479aIkxsvm750FACjPIGxBy9znvAy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com; spf=none smtp.mailfrom=readmodwrite.com; dkim=pass (2048-bit key) header.d=readmodwrite-com.20251104.gappssmtp.com header.i=@readmodwrite-com.20251104.gappssmtp.com header.b=vxiw03eF; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=readmodwrite.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZSPUgEJA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 373351F000E9;
-	Mon, 27 Jul 2026 18:37:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785177465;
-	bh=770Uy9X5w22d/lQgp29Ci5F7IeBSkHQ49FnmsRGoTRg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=ZSPUgEJAOkox1bBbtifm1rpDw/KY6v+/Ivb9x98dF7r7eozHptUsjO8wl1pOSyGPV
-	 kW2aLO1uF+GICKx3T2TGcqUstkMmkRjf4kzOW0MFx7HnXNA+o+2Tb0x1Bg/1x0Q1bS
-	 sDjvzM6ZFNCKs0G0nJ3bu9mT6Ny6tyKLp4BeNhFxNd7G3WQ1alswHDlqcMMW1R8bGb
-	 Qkka1rIVQGKE4tudcLIX8RggR/fFnLmVg6J9yJ+qYeDfMIo211riSthR8f/Uo/LYgj
-	 69tZ1JhymDYPxq6U/FjRBSCNOluPluo06l3BjnCAtX6GiMI+qgJ3LKm+lvncQjpgLs
-	 su68dQ+ldbP7w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 0F81CCE08BC; Mon, 27 Jul 2026 11:37:45 -0700 (PDT)
-Date: Mon, 27 Jul 2026 11:37:45 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: GROTEPASS Frans - Contractor <Frans.GROTEPASS@nl.thalesgroup.com>
-Cc: rcu@vger.kernel.org
-Subject: Re: rcu timeouts
-Message-ID: <16548bd6-79c3-4a70-b3f3-dec899268e61@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <cc0b1ab120d5428794d92f55c932e077@nl.thalesgroup.com>
- <d9fb7819-ad5b-45dd-b6fb-0534f5ca0ef2@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=readmodwrite-com.20251104.gappssmtp.com header.i=@readmodwrite-com.20251104.gappssmtp.com header.b="vxiw03eF"
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4921eed3fa2so25730895e9.0
+        for <rcu@vger.kernel.org>; Tue, 28 Jul 2026 03:39:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=readmodwrite-com.20251104.gappssmtp.com; s=20251104; t=1785235176; x=1785839976; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=Hh9GGg57kuY2hD4zZm36wFzr1EZULMRj8TJL33H+8H4=;
+        b=vxiw03eFtILF+s2UA+7KBEoxGjJN0LQk7pqq+NYOJl82o/1bQP9NtOM9v4EE3GqyZ6
+         GjhURE4JmrA6p8oKk7lW/4udmtMcCTgFCBiFftpfVvx++lR7nd7QTiF9LQodSsOnUHwg
+         Rs54acEcdf1s6YXcvsyP0tZ9qkjscoRlEycODA6GuYc3mBWKEHq0FZ01qRFcKvXLbzmq
+         mKlM5Hlw1/dGoR01dphWanPmL+EhrvGZE2pnsl9qRiJ9FmTLq6YkyK2LnmRWG162ym7H
+         xpUwkXH8KRgT+uHUwnTvS1lJzAraiXdEjJiPViIwxnBSZNItGjHGKrhLtKBg9pBr4BOY
+         dM0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785235176; x=1785839976;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=Hh9GGg57kuY2hD4zZm36wFzr1EZULMRj8TJL33H+8H4=;
+        b=sAn1RDbM3v9PoHIkhaxLEJW2MgK0wFB7Ov6Kd73mcr3HAtEjxvBGrjy6iAkPDKHB7E
+         y9f40zG19/CRjtbDQjN3Q5JrTlElJxZmtx0Lud/6WGh5gLAUnfdRAERXlAgsklng5kjM
+         S4uUIK4SqeX/ljDBM5FGdaigOWsfl/Z20eZuKqUrlXEL6SLOFFtwz0scoSSvJVF7N2He
+         n0LoIqb/Q04RmdeZQF2DYWFCV+7wpUkNs9Q9Q3OSZosz1xVtPBamGjjE9avaB4vqcwQK
+         ZeiscjJ8y6RqWFSnqLDrp+hvHbakSHfbGQ3+CvE0G04zp0zmMQ778rGp5ShFV6/3k6uU
+         bboA==
+X-Forwarded-Encrypted: i=1; AHgh+RqWX0Sz73r57ci69SdSVkyo9bH4YXfUrJllx8R0trjQ9y2xofMFL6FLxCRbYG42ae6Bwww=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywc8n139/tY/tqgIfr090YyoyOTZTKdFFSNpPSOzCtqqsZYuG2h
+	5PdIq08Ah/EFgT41OTsRakhLtCFTKpx+IS+KHY5qawZMFDXBjfRxO2n4TPsyt5G69oM=
+X-Gm-Gg: AR+sD1354Cw2SMXo0Zss9GzaTY4DvLvq/A6puPN15t6/LG471S2ha2YSV3Bxg7evARL
+	hDNo75WYSihGPO/56SnOIGaqHu/RItXkRPS6ED+wWVayVyKtiEtUysJnAJz1uY+G8Jja4RHuGBu
+	UwbsUpXhnHJAcBlKHTds5sUqq82Y9dXrP8u7kNs8Nr3MPDYJeFM+9xMcAaLhumze832jY743wiI
+	EW59C6GgAcga9/yEgB/yHpIZCgFV34ZubTRrmmQX1pmPOumA/AF6uZhyRNS3qoetWrMCy+y2uyi
+	YNkcLlf0PAOS27rzCjxpeQMc48aGGhxo93cmJnuxnwil/CsVACGUvq69ijA7LbeZ0xtiWlKeSxI
+	gjw2hg+7Ru5YJp/UtLJPIsJJ/mKjTZhck5pi//Qx4K1ASA/LPDryNbt9r4TGK8P/Q+ket4Akb2Q
+	==
+X-Received: by 2002:a05:600c:8b74:b0:495:4b42:8677 with SMTP id 5b1f17b1804b1-496c657651cmr19071605e9.18.1785235175708;
+        Tue, 28 Jul 2026 03:39:35 -0700 (PDT)
+Received: from localhost ([2a09:bac6:37a8:26a0::3d9:b])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4957bfd1a60sm293299405e9.2.2026.07.28.03.39.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2026 03:39:34 -0700 (PDT)
+Date: Tue, 28 Jul 2026 11:39:33 +0100
+From: Matt Fleming <matt@readmodwrite.com>
+To: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang@linux.dev>, Tejun Heo <tj@kernel.org>, Andrea Righi <arighi@nvidia.com>, 
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, sched-ext@lists.linux.dev, 
+	stable@vger.kernel.org, kernel-team@cloudflare.com, 
+	Matt Fleming <mfleming@cloudflare.com>
+Subject: Re: [PATCH] rcu-tasks: Defer IRQ-disabled callback enqueue to
+ irq_work
+Message-ID: <amiGJWJ-tzUMYizu@matt-Precision-5490>
+References: <20260713101245.3207634-1-matt@readmodwrite.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -45,118 +83,35 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d9fb7819-ad5b-45dd-b6fb-0534f5ca0ef2@paulmck-laptop>
+In-Reply-To: <20260713101245.3207634-1-matt@readmodwrite.com>
 
-This time correctly spelling the RCU list...
+On Mon, Jul 13, 2026 at 11:12:45AM +0100, Matt Fleming wrote:
+> From: Matt Fleming <mfleming@cloudflare.com>
+> 
+> call_rcu_tasks_generic() can be invoked with IRQs disabled, and on
+> older kernels this exposed an ABBA deadlock against the scheduler
+> runqueue lock via sched_ext's task-storage teardown path:
+> 
+>         CPU 0                           CPU 1
+>         -----                           -----
+> sched_ext_free()
+>   task_rq_lock()
+>     raw_spin_lock(rq->lock)
+>                                       rcu_tasks_one_gp()
+>                                         raw_spin_lock(cbs_gbl_lock)
+>   scx_exit_task()
+>     bpf_task_storage_delete()
+>       call_rcu_tasks_generic()
+>         raw_spin_lock(cbs_gbl_lock)
+>           <blocks>
+>                                         _printk()
+>                                           console_unlock()
+>                                             try_to_wake_up()
+>                                               raw_spin_lock(rq->lock)
+>                                                 <blocks>
 
-							Thanx, Paul
+Hey Paul, it looks like this didn't get picked up and now won't apply
+cleanly to your tree. Should I submit a v2?
 
-On Mon, Jul 27, 2026 at 11:36:59AM -0700, Paul E. McKenney wrote:
-> On Mon, Jul 27, 2026 at 11:28:00AM +0000, GROTEPASS Frans - Contractor wrote:
-> > Classified as: {OPEN}
-> > 
-> > Hi Paul,
-> > 
-> > I watched an interesting talk you gave about the RCU errors. Thanks for providing these insights. We are busy with i.MX8 development and ran into this issue with a kernel version using RT_PREEMPT enabled. With RT_PREEMPT enabled we noticed that rcu_preempt timeouts were generated and there were also kernel messages pointing to the mmc. I assembled the localized logs for you. What we used:
-> > 
-> > i.MX8sx8x running linux-fslc-6.12.x-fslc
-> > 
-> > We found a work around not needing the RT_PREEMPT, so the error is not blocking for us anymore, but if you might need extra support with this one, I can collect a sample for you with more logging in my own time.
-> 
-> Hello, Frans,
-> 
-> I added rcu@vger.kernel.org on CC in case the other RCU maintainers have
-> thoughts or suggestions.
-> 
-> Starting with serial_run_0012.txt, please note these lines:
-> 
-> [   77.010227] rcu:     3-...!: (1 GPs behind) idle=ca5c/1/0x4000000000000000 softirq=0/0 fqs=156 rcuc=21000 jiffies(starved)
-> [   77.010235] rcu:     (t=21000 jiffies g=12173 q=94 ncpus=4)
-> [   77.010240] rcu: rcu_preempt kthread timer wakeup didn't happen for 20351 jiffies! g12173 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x1000
-> [   77.010245] rcu:     Possible timer handling issue on cpu=0 timer-softirq=2461
-> 
-> The "rcuc=21000 jiffies(starved)" indicates that RCU's rcuc kthread
-> (which is used in place of RCU_SOFTIRQ in PREEMPT_RT) is not getting
-> any CPU time.  Do you have a CPU-bound real-time process that is
-> preventing this rcuc kthread from running?
-> 
-> In addition, RCU relies on its grace-period kthread (in this case named
-> "rcu_preempt") being awakened every few jiffies so that it can check
-> the state of idle CPUs.  The above lines say that this kthread was not
-> awakened, which by itself would cause this CPU stall warning.
-> I suggest looking carefully at your PREEMPT_RT timer setup.  Or perhaps
-> whatever is preventing the rcuc kthread from running is also preventing
-> the timers from running.
-> 
-> In serial_run_0026.txt, there is this:
-> 
-> [   75.643219] rcu:     0-....: (1 GPs behind) idle=4044/1/0x4000000000000000 softirq=0/0 fqs=4750 rcuc=21004 jiffies(starved)
-> 
-> The "rcuc=21004 jiffies(starved)" indicates that RCU's rcuc kthread
-> (which is used in place of RCU_SOFTIRQ in PREEMPT_RT) is not getting
-> any CPU time.  Which might (or might not) be related to the "mmc2:
-> Timeout waiting for hardware interrupt" messages.
-> 
-> Similar messages appear in serial_run_0112.txt, serial_run_0184.txt,
-> and serial_run_0330.txt.
-> 
-> In serial_run_0116.txt:
-> 
-> [   68.051976] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:^M
-> [   68.051987] rcu:     Tasks blocked on level-0 rcu_node (CPUs 0-3): P29/3:b..l^M
-> [   68.052001] rcu:     (detected by 2, t=21002 jiffies, g=8581, q=6949 ncpus=4)^M
-> [   68.052008] task:ksoftirqd/1     state:R  running task     stack:0     pid:29    tgid:29    ppid:2      flags:0x00000008^M
-> [   68.052017] Call trace:^M
-> [   68.052019]  __switch_to+0xe8/0x148^M
-> [   68.052033]  __schedule+0x2bc/0x874^M
-> [   68.052039]  preempt_schedule+0x48/0x60^M
-> [   68.052047]  try_to_wake_up+0x128/0x44c^M
-> [   68.052054]  wake_up_process+0x18/0x24^M
-> [   68.052059]  hrtimer_wakeup+0x20/0x38^M
-> [   68.052065]  __hrtimer_run_queues+0x138/0x1fc^M
-> [   68.052071]  hrtimer_run_softirq+0x7c/0xdc^M
-> [   68.052077]  handle_softirqs.isra.0+0xe8/0x1f0^M
-> [   68.052083]  run_ksoftirqd+0x38/0x84^M
-> [   68.052089]  smpboot_thread_fn+0x204/0x228^M
-> [   68.052096]  kthread+0x110/0x114^M
-> [   68.052105]  ret_from_fork+0x10/0x20^M
-> 
-> This could happen if your workload produced a flood of hrtimers.  Or if
-> one of your hrtimer handlers had a longer-than-average loop.
-> 
-> In serial_run_0121.txt, there are lots of these:
-> 
-> [   64.721625] tlv320aic32x4 15-0018: ASoC: error at soc_component_read_no_lock on tlv320aic32x4.15-0018 for register: [0x0000005f] -110
-> 
-> In addition, there is the same message as above:
-> 
-> [   64.922583] rcu: INFO: rcu_preempt self-detected stall on CPU
-> [   64.922593] rcu:     0-....: (1 GPs behind) idle=98d4/1/0x4000000000000000 softirq=0/0 fqs=4374 rcuc=21004 jiffies(starved)
-> 
-> Again, the "rcuc=21004 jiffies(starved)" indicates that the rcuc kthreads
-> are not getting any CPU time.
-> 
-> I hope that this helps.
-> 
-> 							Thanx, Paul
-> 
-> > Best regards,
-> > 
-> > Frans
-> > 
-> > 
-> > ------------------------------------------------------------------------------------------------------------
-> > Disclaimer:
-> > 
-> > If you are not the intended recipient of this email, please notify the sender and
-> > delete it.
-> > Any unauthorized copying, disclosure or distribution of this email or its
-> > attachment(s) is forbidden.
-> > Thales Nederland BV will not accept liability for any damage caused by this email or
-> > its attachment(s).
-> > Thales Nederland BV is seated in Hengelo and is registered at the Chamber of
-> > Commerce under number 06061578.
-> > ------------------------------------------------------------------------------------------------------------
-> > 
-> 
-> 
+Thanks,
+Matt
