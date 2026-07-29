@@ -1,33 +1,60 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433D147ACC7;
-	Wed, 29 Jul 2026 14:14:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD69B4CA268;
+	Wed, 29 Jul 2026 14:54:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785334454; cv=none; b=ru1quhbzOWVqatkFq/PfhkLuQUz1J6ewVCtlNYfY9rSd/Iksm0lceyFHTwV7p2xi05JTrbqOji1b56x//4JmvgrACCQrE60O2jXN+Hny1v192ARWM8N0qGf4LhJh+gZXwK6Qw7LD3rDdAxEG7jyGOCZlZdsg/oDDApBsddnXnes=
+	t=1785336859; cv=none; b=pGgsEm+xOrYakiHkmamGiVEkYm/SosFudfKHAQ+2RE0z8I4QPwV7lq9D1E/FudfBpxTWZQt88XjOJ21UhlYGTP9mtSWKJP80UPetQrtH21libt9KXUL3F7w796HOPheP2Zw6LvnN1VamRnwnPy556S7597SijVGT93DMlZMzvN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785334454; c=relaxed/simple;
-	bh=K9R2xwjEk2SPXjAT1vPM8BAsvMBWXKP+4fYXXytvK2g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EPWC3ldsgffvzxd0bVw0q4ZhtZz6HGK7qmlw0Jv/L+ch+ZiSfwjH95pv+bpH97rzzrF4NbJow2R9ADlkZ1kEvcTbdREtBu7RgWU/Ju5kpISiwedUtrWBOD51q1fY/A5+3dBeJ+CEsIJYvCOtmzM/WuhURAz8Z4+Ts1rzJ6N8PVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M7N+xkVI; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785336859; c=relaxed/simple;
+	bh=cqbWrhOAt0P9vECJC0q//+b/D8YsbCKxPZ6CAHAKG6s=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=G5kGE0ImiUG7FbuagkZuaeGB/K+ZHD1hounDygYijf4I9sXd7aBLrtJpHSdUODgbJ14kQGbd3bqzXeDMyJ90jVsiAG0zxedwItE3FLwiV1HpKaCkDeOx1OhryGT5qg0Xaz7cC7SsJgPWV+bYz2pL2lglo/0J2MU59M8OUhUW+wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=trgy0w9f; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M7N+xkVI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B28891F00A3A;
-	Wed, 29 Jul 2026 14:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785334452;
-	bh=KR+HtKGzuohI9h8IjhDmmFqiaFeXTkINifmtGZ3dgIA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=M7N+xkVIxLiKKt6LAuXsLMfV9V43y5vkIDnSQFrycZ1pEgUQCfVqi4pWqHT8MCqNl
-	 Y/4yUHdVj6AUqgh/OnchFDCb4JWXw8pp3oTMa4xj9DV289QQpEEfyrb+5yPaSuEOMz
-	 EOGQaUz/dzzzZD6Ei5iOVfjjZPbmNwwtwkD/pRNcyQTl2ClrqCJvMXrfBr9kgtifC9
-	 1AMBdOWUR7tmolauvZdTq/kvfLi3qxi/7mCwcqud0fldUL0C+pUHO4S7I3LLIUzM42
-	 gWNpIsuE6vCBjg73w+FOD3weyfA0uLPopfM10hkrUuhbohNWhaLHQ6Zb8LW8EjCYRg
-	 pR3cCCp2u3rLQ==
-Message-ID: <5342124c-4847-4e93-92a4-f3512928c4d1@kernel.org>
-Date: Wed, 29 Jul 2026 16:14:05 +0200
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="trgy0w9f"
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66TEmNlp213362;
+	Wed, 29 Jul 2026 14:53:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=V/5N4T
+	lpiRbsq8FXi3DtU+q3gxjlGdBVulboxYjNUsg=; b=trgy0w9fD1G2yvxCIpOFXu
+	PIevem7VGNXDeBw97W+V8Lu7hJTWzGoaV72TvkLZvaWnhehLeLOK4trJl2cYSvhp
+	5CmpvpH2VT9DKaLpST0VPV/QNNkJbxbOdTtNtWwqgSNyn/mYIi3uyXqs8zFQFN/S
+	isRETxcXwR/yhSUkOFWqLajXruSsMDcs+LnrDb4qsTnOdHPYzfkg6ZvfEW3Ln/c3
+	S0f2RpUOtyNTtYCK6bWEGSVdfqXofJwzFEA/b991yDcI5qNb0VzaKcNR9wIh7twm
+	7PxhnT2BGo6PvyOR5RyR6TLKcSZUIV5pbfHLas9F3Cs9vFQ+btnzxIdc3MpkhYgQ
+	==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fmuyjaeqr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 29 Jul 2026 14:53:58 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66TEfKiG007381;
+	Wed, 29 Jul 2026 14:53:58 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4fn8yhf24y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 29 Jul 2026 14:53:58 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 66TErrWU35586306
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 29 Jul 2026 14:53:54 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D9D7D20043;
+	Wed, 29 Jul 2026 14:53:53 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E3E7020040;
+	Wed, 29 Jul 2026 14:53:49 +0000 (GMT)
+Received: from [9.39.24.89] (unknown [9.39.24.89])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 29 Jul 2026 14:53:49 +0000 (GMT)
+Message-ID: <cda6b648-2c3a-4b01-8126-933056f221a9@linux.ibm.com>
+Date: Wed, 29 Jul 2026 20:23:48 +0530
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -35,136 +62,102 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/8] mm/slab: introduce kfree_rcu_nolock() and improve
- slub_kunit coverage
+Subject: Re: [PATCH v5 1/1] cpuhp: Expedite RCU when toggling system-wide SMT
+ mode
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+To: paulmck@kernel.org, tglx@linutronix.de, peterz@infradead.org,
+        Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, aboorvad@linux.ibm.com,
+        boqun.feng@gmail.com, frederic@kernel.org, joelagnelf@nvidia.com,
+        josh@joshtriplett.org, neeraj.upadhyay@kernel.org, rostedt@goodmis.org,
+        srikar@linux.ibm.com, urezki@gmail.com,
+        Vishal Chourasia <vishalc@linux.ibm.com>, samir@linux.ibm.com
+References: <20260615042514.694993-2-vishalc@linux.ibm.com>
+ <20260615042514.694993-4-vishalc@linux.ibm.com>
+ <f1a04d2f-367e-4be8-b313-31a73e15bcd0@paulmck-laptop>
+ <4bd12c51-414d-49b5-8fce-2a6e73a479fa@linux.ibm.com>
+ <e143d10e-69b1-455d-90b3-5f29a9482c15@linux.ibm.com>
 Content-Language: en-US
-To: "Harry Yoo (Oracle)" <harry@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>,
- Shengming Hu <hu.shengming@zte.com.cn>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
-References: <20260729-kfree_rcu_nolock-v5-0-a28cdcda9673@kernel.org>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Autocrypt: addr=vbabka@kernel.org; keydata=
- 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
-In-Reply-To: <20260729-kfree_rcu_nolock-v5-0-a28cdcda9673@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <e143d10e-69b1-455d-90b3-5f29a9482c15@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzI5MDEyMCBTYWx0ZWRfX7PwEIC5i/i1z
+ tau3q7VkvAYih24i0EA6aDnpRlOb8/jI3SBTnuGxFjaGF2RS1ytT9kUahLrm1gY1hdoCoSkHLRr
+ i3y3SBbYNX3BmkrGUVd4RXAWZIx6Vis=
+X-Proofpoint-GUID: lvEVG1Lzb5arMdrFsSqlaDWambzl81vs
+X-Proofpoint-ORIG-GUID: hSjyWncFqD0JwYfVNVkJ9lYIKGFQsoi5
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzI5MDEyMCBTYWx0ZWRfX2Q7akR7p1J/I
+ qkycJu36rGa03FjXPgVbvsR3/sca8OnR/d8z1ZdiYdAxYr55McDKOOqTlVE1R9bQQgqDffPHB3x
+ HbhzBNJFffHEFPP3q1yBgmQanClIQFeeAMwOzszQgQVS8b/PDwYFnuhnLKInTc+nU3qllYuot4k
+ McdhvUGX3BZ7VC0RQMpSlAXu2ut1qKMw+e26JA2CCNqYaUX28OMYz9QVPc7aJ2ZuPv6G4zfh7cl
+ 4ysuUE95xIOpgaJzqvwwc4u88BISCDIl/NmZjSO9AU6cyQpj/g6GXnr92wzkqEviuIvQGYKIrBZ
+ K42GH9rKiNR/7kwXjPam8GQ+kkoJix0elv9y6GxBl0alVA0/43AXILL2TmLjNt54ViCe7oPSPsh
+ HTriCSjTvvKuZ0QZCgA0i7twmkC6blKuS4oImaoWZM5ssrDzMoZZAYAIZCm1Shb//ZZzOs3PAtk
+ 6e7x1injOh+eKH2uYkw==
+X-Authority-Analysis: v=2.4 cv=X5Vi7mTe c=1 sm=1 tr=0 ts=6a6a1407 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8
+ a=VwQbUJbxAAAA:8 a=0DI864wKsEq8_xCAzw8A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-29_06,2026-07-28_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0
+ adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
+ definitions=main-2607290120
 
-On 7/29/26 10:20, Harry Yoo (Oracle) wrote:
 
-...
 
-> 8:  8e69c83a1e52 ! 8:  aeaf2ab60046 slub_kunit: extend the test for kfree_rcu_nolock()
->     @@ lib/tests/slub_kunit.c: struct test_nolock_context {
->      -			gfp_t gfp = (i % 2) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
->      +			gfp_t gfp = (i & 1) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
->       
->     - 			objects[j] = kmalloc_obj(*objects[j], gfp);
->     +-			objects[j] = kmalloc(64, gfp);
->     ++			objects[j] = kmalloc_obj(*objects[j], gfp);
->       			if (!objects[j]) {
->     + 				j--;
->     + 				while (j >= 0)
->      @@ lib/tests/slub_kunit.c: static void test_kmalloc_kfree(void)
->       			}
->       		}
+On 7/21/26 10:01 AM, Shrikanth Hegde wrote:
 > 
-> Link: https://lore.kernel.org/linux-mm/20260427-nolock-api-fix-v2-0-a6b83a92d9a4@kernel.org [1]
-> Link: https://lore.kernel.org/linux-mm/6edebc2b-5f5a-4b9c-9a4c-564310acee1b@kernel.org  [2]
-> Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
-> Link: https://lore.kernel.org/linux-mm/872bd673-3d45-4111-8a41-31185db3ece5@kernel.org
-> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
-> Link: https://lore.kernel.org/linux-mm/6811cc17-8ee4-48c8-8cbf-6bf4d9f98162@kernel.org [1]
-> Link: https://lore.kernel.org/linux-mm/40591888-3a87-433e-b3d2-cda1cab543be@kernel.org [2]
-> Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
-> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
-> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
-
-Wonder what produced this weird block of assorted trailers? "b4 prep
---compare-to vX" never did that for me?
-
-> ---
-> Harry Yoo (Oracle) (8):
->       mm/slab, slub_kunit: register kprobe to trigger _nolock APIs
->       mm/slab: handle the !allow_spin case in kfree_rcu_sheaf()
->       mm/slab: use call_rcu() in unknown context if irqs are enabled
->       mm/slab: extend deferred free mechanism to handle rcu sheaves
->       mm/slab: allow kfree_rcu_sheaf() on PREEMPT_RT
->       mm/slab: introduce struct kvfree_rcu_head for kvfree_rcu batching
->       mm/slab: introduce kfree_rcu_nolock()
->       slub_kunit: extend the test for kfree_rcu_nolock()
 > 
->  include/linux/rcupdate.h   |  32 ++++++-
->  include/linux/slab.h       |  16 +---
->  include/linux/types.h      |   8 ++
->  include/trace/events/rcu.h |   2 +-
->  lib/tests/slub_kunit.c     | 190 ++++++++++++++++++++++++++++-----------
->  mm/slab.h                  |  52 ++++++++++-
->  mm/slab_common.c           |  81 +++++++++++++----
->  mm/slub.c                  | 220 ++++++++++++++++++++++++++++-----------------
->  8 files changed, 433 insertions(+), 168 deletions(-)
-
-Applied to slab/for-7.3/kfree_rcu_nolock and merged go slab/for-next, thanks!
-Used slab/for-next-fixes as a base for a better topic branch indepdencence.
-
-> ---
-> base-commit: ffc64805cebac330b2a60b2f1f144fcc35b8ab46
-> change-id: 20260615-kfree_rcu_nolock-e5502555992f
+> On 6/16/26 11:39 AM, Shrikanth Hegde wrote:
+>>
+>>
 > 
-> Best regards,
+>>>>
+>>>> On a large config system with 1920 CPUs, completion time improves from
+>>>> ~1 hour to 5-6 minutes.
+>>>>
+>>>> Tested-by: Samir <samir@linux.ibm.com>
+>>>> Reviewed-by: Shrikanth Hegde <sshegde@linux.ibm.com>
+>>>> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
+>>>
+>>>  From an RCU viewpoint:
+>>>
+>>> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+>>
+>> Thank you Paul for reviewing this.
+>>
+>>>
+>>> I am guessing that you will be taking this up some other path, but if
+>>> you would like it to to via RCU, please let me know.
+>>>
+>>>                             Thanx, Paul
+>>>
+>>
+>> I would prefer this to go via tip tree since main change is in cpu.c
+>>
+>> Thomas, peter,
+>> What do you guys suggest? can this go via tip tree?
+>>
+>> Also, do you have any other review comments on this or test to be done?
+>>
+> 
+> Gentle Ping.
+> 
+> Thomas, Peter, Ingo, Can this go via tip tree?
+> Do you guys have any comments to be addressed?
+> 
+> Or Do you want it to go via RCU tree?
+> 
 
+Gentle Reminder.
+
+This might have fell through the cracks.
+Are there any concerns still to be addressed?
