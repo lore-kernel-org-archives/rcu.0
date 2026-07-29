@@ -1,35 +1,35 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1E643C7CB;
-	Wed, 29 Jul 2026 08:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79172F7F14;
+	Wed, 29 Jul 2026 08:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785313275; cv=none; b=b1emzY1LoGmf1xY03KSvauqgR+Dj6L1lh2eqP1Wf82iqKOZ6M1p47L8Co460u1ZQea48GAtvC0oprMtrDTMMyjV2IkN/4Jqu+ffOzuSeulmE+i6GlDLfnKodbF8eHr/oHc4QegPsLxBzwCG1SFaTBFnGnlHQYWUXDxCcstbmrW4=
+	t=1785313279; cv=none; b=FVB9EPo92lfm0rdZPjs4TY8Fj3UP7UyRX5pZ5+g+uoF3npIYYm8Dof+ANQWi0/GbuWOmFV6/oIWYTkYHKKG6kAJ8GjdsfoyEJrN+UEh+Pz28PHZOgdgiY2GHUB/auceLeu4gaj56KUule3np5mHqacEtlNCPs0KlLcKgi8cTQKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785313275; c=relaxed/simple;
-	bh=lOt5umOXkArUgC/qaTOiLslk63AI7xbzG+dwfV4d+yw=;
+	s=arc-20240116; t=1785313279; c=relaxed/simple;
+	bh=P8B/0Dd4chrz72rOS2DnmEuCMsO1dppWpySJUBexmws=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=YTLay3MGFNOzvad5FQmoc2oOwrHVbLmnmg6LnrWhW+B8WrVL2gaeyrC9buFgVn8sd/n6QXJJYqH+lgKXov9esD8LRf3X7iC0g07rHlxyzunu4ocak/TMawgkQ6VJbTGi/+VuEY9Dor/IsUxBbuh25OubbK15UtGZnwcyIqHPnQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMnK9Ivp; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:To:Cc; b=tzeCbFZgm0Dp0w5BPcHDSYXyFodvAejAUbFHwxtZY2d5DqDaDnGc9RW8Hnqa7GmrbgqHCkQM+5v4PsQe1RaX09BoOMJ6/3S3ZPBCRBYg5G0Woews/wGRPMYc45aywVoat92HzrA/PG3JJqba/DIoc5lNSnfJkOVdDfPBbgF4SNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EyAbcc3j; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMnK9Ivp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 659DA1F00A3A;
-	Wed, 29 Jul 2026 08:20:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EyAbcc3j"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62F481F00A3E;
+	Wed, 29 Jul 2026 08:21:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785313263;
-	bh=VFSRdx4VR4AvdkOAoQOMpC+N39DKHBrUpDK98mPZCUM=;
+	s=k20260515; t=1785313269;
+	bh=HM1wrl+9RHTKM2wJk5hN+B7UZm4v6BaeKkHLrltGjOA=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=kMnK9Ivp6mBrw8pG6TGk8Ypr26SD3KAQistfH6ePze8HfrYfXYetLAqtkh9Fp0ny8
-	 fPuU4vZwsxB00ibaFhEaagvZ8GdsCwfxcA40s6XDiq9m7bCwL0VXVawxghLDUqDzKJ
-	 ZoP878T1L6qKyu+TW1DJmzLheelntpOeW6TzFxBOe29q55ii9W1uTCWd6PmJakFIe9
-	 HBdO6OdFl/V0+V/NeZ42+Aw4ky8+07kuiZr5UKh48pVhOFFQHBrDtk/RRkqG0AOVgT
-	 7vqUER7geUK8cGxyfPSV2fHcyx6rcBX6jqsaCWC9vbi1FAOvc627vihJ2Y3b1xXk4t
-	 mFciSGtF0FfVg==
+	b=EyAbcc3jjLA0GxD5916aWovmwGKNzGCrJ+FUiQETxgZhoAoffGO5d8qZlh7ZGdvpy
+	 7bRTkGMJ1rN+jgO2Wto1dvFjuZH7+XiWsJf/ZhMA4ywDLmXGSC72TX8JyOkJSQl0ti
+	 uf6OFvQsTV0rfTcUTHcyaxYP+COx3G+LseZLTdLcVfzC3D3HfzcGiSCQYX7/aThvTx
+	 uivmJVR90qoH9TW+UeNNcan4HAsdb/4uium6Yo8gFTGpgokAmoiF0PczhtQFXQ6xyn
+	 +AurBi2V4o2bNcRXdHkIO0t8DZ79NoSPX93eAVCzu2YScvDUIg18Tr3BT4C8jDX9RN
+	 V5JWBCh4rVLEg==
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
-Date: Wed, 29 Jul 2026 17:20:09 +0900
-Subject: [PATCH v5 1/8] mm/slab, slub_kunit: register kprobe to trigger
- _nolock APIs
+Date: Wed, 29 Jul 2026 17:20:10 +0900
+Subject: [PATCH v5 2/8] mm/slab: handle the !allow_spin case in
+ kfree_rcu_sheaf()
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -38,7 +38,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260729-kfree_rcu_nolock-v5-1-a28cdcda9673@kernel.org>
+Message-Id: <20260729-kfree_rcu_nolock-v5-2-a28cdcda9673@kernel.org>
 References: <20260729-kfree_rcu_nolock-v5-0-a28cdcda9673@kernel.org>
 In-Reply-To: <20260729-kfree_rcu_nolock-v5-0-a28cdcda9673@kernel.org>
 To: Vlastimil Babka <vbabka@kernel.org>, 
@@ -64,382 +64,193 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  "Harry Yoo (Oracle)" <harry@kernel.org>
 X-Mailer: b4 0.14.3
 
-Since kmalloc_nolock() always fails in NMI and hardirq contexts on
-PREEMPT_RT, slub_kunit cannot properly test _nolock() APIs.
+Teach kfree_rcu_sheaf() how to handle the !allow_spin case. Try to get
+an empty sheaf from pcs->spare or the barn even when spinning is not
+allowed. Unlike __pcs_replace_full_main(), try harder to allocate
+an empty sheaf because the fallback path will be more expensive than
+kfree_nolock().
 
-Register a kprobe pre-handler to invoke kmalloc_nolock() and
-kfree_nolock() in the middle of the slab allocator. However, do not
-register the handler on UP kernels because that use case is not
-well supported [1] in the kernel.
+Now that slab has internal alloc_flags to describe context, introduce
+free_flags analogously and convert free_flags to alloc_flags when
+allocating memory in the free path.
 
-To attach the pre-handler while s->cpu_sheaves->lock or n->list_lock
-is held, add a wrapper function for lockdep_assert_held() that calls
-a no-op function slab_attach_kprobe_locked() on debug builds. The
-function is optimized away when neither CONFIG_PROVE_LOCKING nor
-CONFIG_DEBUG_VM is selected and register_kprobe() fails.
+When trylock fails or the kernel observes non-NULL pcs->rcu_free after
+lock acquisition, free the sheaf instead of putting it to the barn.
+This is rare and not worth complicating the code.
 
-The function calls barrier() to prevent the compiler from optimizing
-away its callsites. Otherwise, the compiler may consider the function
-does not have any side effect and remove callsites.
+Since call_rcu() cannot be called in an unknown context,
+kfree_rcu_sheaf() fails when the rcu sheaf becomes full.
 
-Compared to using plain kprobe, this has two advantages: 1) it avoids
-hardcoding function names in the test, and 2) it can trigger those APIs
-in the middle of a function, where the lock is expected to be held as
-annotated with lockdep.
-
-While it was proposed [2] to use kunit function redirection to test
-this, it is currently infeasible as some lock helpers don't have
-symbols.
-
-Factor out the nested loop that calls kmalloc and friends to
-test_kmalloc_kfree(), and call them in
-test_kmalloc_kfree_nolock_{perf,kprobe}(), each being an independent
-test case. During the refactoring, drop alloc_fail handling as it
-doesn't provide much benefits.
-
-Link: https://lore.kernel.org/linux-mm/20260427-nolock-api-fix-v2-0-a6b83a92d9a4@kernel.org [1]
-Link: https://lore.kernel.org/linux-mm/6edebc2b-5f5a-4b9c-9a4c-564310acee1b@kernel.org  [2]
-Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-Reviewed-by: Shengming Hu <hu.shengming@zte.com.cn>
+Link: https://lore.kernel.org/linux-mm/872bd673-3d45-4111-8a41-31185db3ece5@kernel.org
+Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 ---
- lib/tests/slub_kunit.c | 167 +++++++++++++++++++++++++++++++++++--------------
- mm/slub.c              |  36 ++++++++---
- 2 files changed, 148 insertions(+), 55 deletions(-)
+ mm/slab.h        | 18 +++++++++++++++++-
+ mm/slab_common.c |  2 +-
+ mm/slub.c        | 34 ++++++++++++++++++++++++++--------
+ 3 files changed, 44 insertions(+), 10 deletions(-)
 
-diff --git a/lib/tests/slub_kunit.c b/lib/tests/slub_kunit.c
-index fa6d31dbca16..8c2b9911471e 100644
---- a/lib/tests/slub_kunit.c
-+++ b/lib/tests/slub_kunit.c
-@@ -8,6 +8,7 @@
- #include <linux/rcupdate.h>
- #include <linux/delay.h>
- #include <linux/perf_event.h>
-+#include <linux/kprobes.h>
- #include "../mm/slab.h"
+diff --git a/mm/slab.h b/mm/slab.h
+index aec0047ed943..7e7f986b49e9 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -24,11 +24,27 @@
+ #define SLAB_ALLOC_NO_RECURSE	0x04 /* prevent kmalloc() recursion */
+ #define SLAB_ALLOC_NO_OBJ_EXT	0x08 /* prevent obj_exts array allocation */
  
- static struct kunit_resource resource;
-@@ -292,7 +293,7 @@ static void test_krealloc_redzone_zeroing(struct kunit *test)
- 	kmem_cache_destroy(s);
- }
- 
--#ifdef CONFIG_PERF_EVENTS
-+#if defined(CONFIG_PERF_EVENTS) || (defined(CONFIG_KPROBES) && defined(CONFIG_SMP))
- #define NR_ITERATIONS 1000
- #define NR_OBJECTS 1000
- static void *objects[NR_OBJECTS];
-@@ -302,26 +303,40 @@ struct test_nolock_context {
- 	int callback_count;
- 	int alloc_ok;
- 	int alloc_fail;
-+#ifdef CONFIG_PERF_EVENTS
- 	struct perf_event *event;
-+#endif
-+#if defined(CONFIG_KPROBES) && defined(CONFIG_SMP)
-+	struct kprobe kprobe;
-+#endif
- };
- 
--static struct perf_event_attr hw_attr = {
--	.type = PERF_TYPE_HARDWARE,
--	.config = PERF_COUNT_HW_CPU_CYCLES,
--	.size = sizeof(struct perf_event_attr),
--	.pinned = 1,
--	.disabled = 1,
--	.freq = 1,
--	.sample_freq = 100000,
--};
-+static void test_kmalloc_kfree(void)
++#define SLAB_FREE_DEFAULT	0x00 /* no flags */
++#define SLAB_FREE_NOLOCK	0x01 /* spinning not allowed */
++
++static inline unsigned int to_alloc_flags(unsigned int free_flags)
 +{
-+	int i, j;
-+
-+	for (i = 0; i < NR_ITERATIONS; i++) {
-+		for (j = 0; j < NR_OBJECTS; j++) {
-+			gfp_t gfp = (i % 2) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
-+
-+			objects[j] = kmalloc(64, gfp);
-+			if (!objects[j]) {
-+				j--;
-+				while (j >= 0)
-+					kfree(objects[j--]);
-+				return;
-+			}
-+		}
-+
-+		for (j = 0; j < NR_OBJECTS; j++)
-+			kfree(objects[j]);
-+	}
++	if (free_flags & SLAB_FREE_NOLOCK)
++		return SLAB_ALLOC_NOLOCK;
++	else
++		return SLAB_ALLOC_DEFAULT;
 +}
- 
--static void overflow_handler_test_kmalloc_kfree_nolock(struct perf_event *event,
--						       struct perf_sample_data *data,
--						       struct pt_regs *regs)
-+static void test_nolock(struct test_nolock_context *ctx)
++
+ static inline bool alloc_flags_allow_spinning(const unsigned int alloc_flags)
  {
- 	void *objp;
- 	gfp_t gfp;
--	struct test_nolock_context *ctx = event->overflow_handler_context;
- 
- 	/* __GFP_ACCOUNT to test kmalloc_nolock() in alloc_slab_obj_exts() */
- 	gfp = (ctx->callback_count % 2) ? 0 : __GFP_ACCOUNT;
-@@ -335,47 +350,104 @@ static void overflow_handler_test_kmalloc_kfree_nolock(struct perf_event *event,
- 	kfree_nolock(objp);
- 	ctx->callback_count++;
+ 	return !(alloc_flags & SLAB_ALLOC_NOLOCK);
  }
-+#endif
-+
-+#ifdef CONFIG_PERF_EVENTS
-+static struct perf_event_attr hw_attr = {
-+	.type = PERF_TYPE_HARDWARE,
-+	.config = PERF_COUNT_HW_CPU_CYCLES,
-+	.size = sizeof(struct perf_event_attr),
-+	.pinned = 1,
-+	.disabled = 1,
-+	.freq = 1,
-+	.sample_freq = 100000,
-+};
  
--static void test_kmalloc_kfree_nolock(struct kunit *test)
-+static void overflow_handler_test_nolock(struct perf_event *event,
-+					 struct perf_sample_data *data,
-+					 struct pt_regs *regs)
++static inline bool free_flags_allow_spinning(const unsigned int free_flags)
 +{
-+	struct test_nolock_context *ctx = event->overflow_handler_context;
-+
-+	test_nolock(ctx);
++	return !(free_flags & SLAB_FREE_NOLOCK);
 +}
 +
-+static bool enable_perf_events(struct test_nolock_context *ctx)
- {
--	int i, j;
--	struct test_nolock_context ctx = { .test = test };
- 	struct perf_event *event;
--	bool alloc_fail = false;
- 
- 	event = perf_event_create_kernel_counter(&hw_attr, -1, current,
--						 overflow_handler_test_kmalloc_kfree_nolock,
--						 &ctx);
-+						 overflow_handler_test_nolock,
-+						 ctx);
-+
- 	if (IS_ERR(event))
--		kunit_skip(test, "Failed to create perf event");
--	ctx.event = event;
--	perf_event_enable(ctx.event);
--	for (i = 0; i < NR_ITERATIONS; i++) {
--		for (j = 0; j < NR_OBJECTS; j++) {
--			gfp_t gfp = (i % 2) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
-+		return false;
- 
--			objects[j] = kmalloc(64, gfp);
--			if (!objects[j]) {
--				j--;
--				while (j >= 0)
--					kfree(objects[j--]);
--				alloc_fail = true;
--				goto cleanup;
--			}
--		}
--		for (j = 0; j < NR_OBJECTS; j++)
--			kfree(objects[j]);
--	}
-+	ctx->event = event;
-+	perf_event_enable(ctx->event);
-+	return true;
-+}
-+
-+static void disable_perf_events(struct test_nolock_context *ctx)
-+{
-+	kunit_info(ctx->test, "HW perf events: callback_count: %d, alloc_ok: %d, alloc_fail: %d\n",
-+		   ctx->callback_count, ctx->alloc_ok, ctx->alloc_fail);
-+
-+	perf_event_disable(ctx->event);
-+	perf_event_release_kernel(ctx->event);
-+}
-+
-+static void test_kmalloc_kfree_nolock_perf(struct kunit *test)
-+{
-+	struct test_nolock_context ctx = { .test = test };
-+
-+	if (!enable_perf_events(&ctx))
-+		kunit_skip(test, "Failed to enable perf event, skipping");
-+
-+	test_kmalloc_kfree();
-+
-+	disable_perf_events(&ctx);
-+	KUNIT_EXPECT_EQ(test, 0, slab_errors);
-+}
-+#endif
-+
-+#if defined(CONFIG_KPROBES) && defined(CONFIG_SMP)
-+static int slab_kprobe_pre_handler(struct kprobe *p, struct pt_regs *regs)
-+{
-+	struct test_nolock_context *ctx;
-+
-+	ctx = container_of(p, struct test_nolock_context, kprobe);
-+	test_nolock(ctx);
-+	return 0;
-+}
-+
-+static bool register_slab_kprobes(struct test_nolock_context *ctx)
-+{
-+	ctx->kprobe.symbol_name = "slab_attach_kprobe_locked";
-+	ctx->kprobe.pre_handler = slab_kprobe_pre_handler;
-+
-+	if (register_kprobe(&ctx->kprobe))
-+		return false;
-+	return true;
-+}
-+
-+static void unregister_slab_kprobes(struct test_nolock_context *ctx)
-+{
-+	kunit_info(ctx->test, "kprobes: callback_count: %d, alloc_ok: %d, alloc_fail: %d\n",
-+		   ctx->callback_count, ctx->alloc_ok, ctx->alloc_fail);
-+	unregister_kprobe(&ctx->kprobe);
-+}
-+
-+static void test_kmalloc_kfree_nolock_kprobe(struct kunit *test)
-+{
-+	struct test_nolock_context ctx = { .test = test };
- 
--cleanup:
--	perf_event_disable(ctx.event);
--	perf_event_release_kernel(ctx.event);
-+	if (!register_slab_kprobes(&ctx))
-+		kunit_skip(test, "Failed to register kprobe, skipping");
- 
--	kunit_info(test, "callback_count: %d, alloc_ok: %d, alloc_fail: %d\n",
--		   ctx.callback_count, ctx.alloc_ok, ctx.alloc_fail);
-+	test_kmalloc_kfree();
- 
--	if (alloc_fail)
--		kunit_skip(test, "Allocation failed");
-+	unregister_slab_kprobes(&ctx);
- 	KUNIT_EXPECT_EQ(test, 0, slab_errors);
+ void *__kmalloc_flags_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t flags,
+ 				  unsigned int alloc_flags, int node)
+ 				  __assume_kmalloc_alignment __alloc_size(1);
+@@ -431,7 +447,7 @@ static inline bool is_kmalloc_normal(struct kmem_cache *s)
+ 	return !(s->flags & (SLAB_CACHE_DMA|SLAB_ACCOUNT|SLAB_RECLAIM_ACCOUNT|SLAB_NO_OBJ_EXT));
  }
- #endif
-@@ -405,7 +477,10 @@ static struct kunit_case test_cases[] = {
- 	KUNIT_CASE(test_leak_destroy),
- 	KUNIT_CASE(test_krealloc_redzone_zeroing),
- #ifdef CONFIG_PERF_EVENTS
--	KUNIT_CASE_SLOW(test_kmalloc_kfree_nolock),
-+	KUNIT_CASE_SLOW(test_kmalloc_kfree_nolock_perf),
-+#endif
-+#if defined(CONFIG_KPROBES) && defined(CONFIG_SMP)
-+	KUNIT_CASE_SLOW(test_kmalloc_kfree_nolock_kprobe),
- #endif
- 	{}
- };
+ 
+-bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj);
++bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags);
+ void flush_all_rcu_sheaves(void);
+ void flush_rcu_sheaves_on_cache(struct kmem_cache *s);
+ 
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 1e1d3feec353..42db62f3e801 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1638,7 +1638,7 @@ static bool kfree_rcu_sheaf(void *obj)
+ 
+ 	s = slab->slab_cache;
+ 	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) == numa_mem_id()))
+-		return __kfree_rcu_sheaf(s, obj);
++		return __kfree_rcu_sheaf(s, obj, SLAB_FREE_DEFAULT);
+ 
+ 	return false;
+ }
 diff --git a/mm/slub.c b/mm/slub.c
-index 691977e8c09d..d14226ad0982 100644
+index d14226ad0982..2c5ba8c326e7 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -905,6 +905,24 @@ static inline void slab_set_obj_exts_in_object(struct slab *slab)
+@@ -2833,7 +2833,8 @@ static inline struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s,
+ 	return __alloc_empty_sheaf(s, gfp, alloc_flags, s->sheaf_capacity);
  }
- #endif
  
-+/*
-+ * A no-op function used to attach kprobe handlers in slub_kunit tests.
-+ * The barrier is needed to prevent the compiler from optimizing out callsites.
-+ */
-+#if defined(CONFIG_DEBUG_VM) || defined(CONFIG_PROVE_LOCKING)
-+static noinline void slab_attach_kprobe_locked(void)
+-static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
++static void __free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf,
++			       unsigned int free_flags)
+ {
+ 	/*
+ 	 * If the sheaf was created with SLAB_ALLOC_NO_RECURSE flag then its
+@@ -2845,11 +2846,20 @@ static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
+ 		mark_obj_codetag_empty(sheaf);
+ 
+ 	VM_WARN_ON_ONCE(sheaf->size > 0);
+-	kfree(sheaf);
++
++	if (unlikely(free_flags & SLAB_FREE_NOLOCK))
++		kfree_nolock(sheaf);
++	else
++		kfree(sheaf);
+ 
+ 	stat(s, SHEAF_FREE);
+ }
+ 
++static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
 +{
-+	barrier();
++	__free_empty_sheaf(s, sheaf, SLAB_FREE_DEFAULT);
 +}
-+#else
-+static inline void slab_attach_kprobe_locked(void) { }
-+#endif
 +
-+#define slab_lockdep_assert_held(lock) do {	\
-+	lockdep_assert_held(lock);		\
-+	slab_attach_kprobe_locked();	\
-+} while (0)
-+
- #ifdef CONFIG_SLUB_DEBUG
+ static unsigned int
+ refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
+ 	       unsigned int max);
+@@ -6067,10 +6077,11 @@ static void rcu_free_sheaf(struct rcu_head *head)
+  */
+ static DEFINE_WAIT_OVERRIDE_MAP(kfree_rcu_sheaf_map, LD_WAIT_CONFIG);
  
- /*
-@@ -1662,7 +1680,7 @@ static void add_full(struct kmem_cache *s,
- 	if (!(s->flags & SLAB_STORE_USER))
- 		return;
+-bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
++bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags)
+ {
+ 	struct slub_percpu_sheaves *pcs;
+ 	struct slab_sheaf *rcu_sheaf;
++	bool allow_spin = free_flags_allow_spinning(free_flags);
  
--	lockdep_assert_held(&n->list_lock);
-+	slab_lockdep_assert_held(&n->list_lock);
- 	list_add(&slab->slab_list, &n->full);
- }
- 
-@@ -1671,7 +1689,7 @@ static void remove_full(struct kmem_cache *s, struct kmem_cache_node *n, struct
- 	if (!(s->flags & SLAB_STORE_USER))
- 		return;
- 
--	lockdep_assert_held(&n->list_lock);
-+	slab_lockdep_assert_held(&n->list_lock);
- 	list_del(&slab->slab_list);
- }
- 
-@@ -2884,7 +2902,7 @@ static unsigned int __sheaf_flush_main_batch(struct kmem_cache *s)
- 	void *objects[PCS_BATCH_MAX];
- 	struct slab_sheaf *sheaf;
- 
--	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
-+	slab_lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
- 
+ 	if (WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT)))
+ 		return false;
+@@ -6083,9 +6094,10 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
  	pcs = this_cpu_ptr(s->cpu_sheaves);
- 	sheaf = pcs->main;
-@@ -3568,7 +3586,7 @@ __add_partial(struct kmem_cache_node *n, struct slab *slab, enum add_mode mode)
- static inline void add_partial(struct kmem_cache_node *n,
- 				struct slab *slab, enum add_mode mode)
- {
--	lockdep_assert_held(&n->list_lock);
-+	slab_lockdep_assert_held(&n->list_lock);
- 	__add_partial(n, slab, mode);
- }
  
-@@ -3582,7 +3600,7 @@ static inline void clear_node_partial_state(struct kmem_cache_node *n,
- static inline void remove_partial(struct kmem_cache_node *n,
- 					struct slab *slab)
- {
--	lockdep_assert_held(&n->list_lock);
-+	slab_lockdep_assert_held(&n->list_lock);
- 	list_del(&slab->slab_list);
- 	clear_node_partial_state(n, slab);
- }
-@@ -3598,7 +3616,7 @@ static void *alloc_single_from_partial(struct kmem_cache *s,
- {
- 	void *object;
+ 	if (unlikely(!pcs->rcu_free)) {
+-
+ 		struct slab_sheaf *empty;
+ 		struct node_barn *barn;
++		unsigned int alloc_flags = to_alloc_flags(free_flags);
++		gfp_t gfp = allow_spin ? GFP_NOWAIT : __GFP_NOWARN;
  
--	lockdep_assert_held(&n->list_lock);
-+	slab_lockdep_assert_held(&n->list_lock);
+ 		/* Bootstrap or debug cache, fall back */
+ 		if (unlikely(!cache_has_sheaves(s))) {
+@@ -6105,7 +6117,7 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
+ 			goto fail;
+ 		}
  
- #ifdef CONFIG_SLUB_DEBUG
- 	if (s->flags & SLAB_CONSISTENCY_CHECKS) {
-@@ -4663,7 +4681,7 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
- 	struct node_barn *barn;
- 	bool allow_spin;
+-		empty = barn_get_empty_sheaf(barn, true);
++		empty = barn_get_empty_sheaf(barn, allow_spin);
  
--	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
-+	slab_lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+ 		if (empty) {
+ 			pcs->rcu_free = empty;
+@@ -6114,20 +6126,20 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
  
- 	/* Bootstrap or debug cache, back off */
- 	if (unlikely(!cache_has_sheaves(s))) {
-@@ -5788,7 +5806,7 @@ static void __pcs_install_empty_sheaf(struct kmem_cache *s,
- 		struct slub_percpu_sheaves *pcs, struct slab_sheaf *empty,
- 		struct node_barn *barn)
- {
--	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
-+	slab_lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+ 		local_unlock(&s->cpu_sheaves->lock);
  
- 	/* This is what we expect to find if nobody interrupted us. */
- 	if (likely(!pcs->spare)) {
-@@ -5839,7 +5857,7 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
- 	bool put_fail;
+-		empty = alloc_empty_sheaf(s, GFP_NOWAIT, SLAB_ALLOC_DEFAULT);
++		empty = alloc_empty_sheaf(s, gfp, alloc_flags);
  
- restart:
--	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
-+	slab_lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+ 		if (!empty)
+ 			goto fail;
  
- 	/* Bootstrap or debug cache, back off */
- 	if (unlikely(!cache_has_sheaves(s))) {
+ 		if (!local_trylock(&s->cpu_sheaves->lock)) {
+-			barn_put_empty_sheaf(barn, empty);
++			__free_empty_sheaf(s, empty, free_flags);
+ 			goto fail;
+ 		}
+ 
+ 		pcs = this_cpu_ptr(s->cpu_sheaves);
+ 
+ 		if (unlikely(pcs->rcu_free))
+-			barn_put_empty_sheaf(barn, empty);
++			__free_empty_sheaf(s, empty, free_flags);
+ 		else
+ 			pcs->rcu_free = empty;
+ 	}
+@@ -6145,6 +6157,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
+ 	if (likely(rcu_sheaf->size < s->sheaf_capacity)) {
+ 		rcu_sheaf = NULL;
+ 	} else {
++		if (unlikely(!allow_spin)) {
++			/* call_rcu() cannot be called in an unknown context */
++			rcu_sheaf->size--;
++			local_unlock(&s->cpu_sheaves->lock);
++			goto fail;
++		}
+ 		pcs->rcu_free = NULL;
+ 		rcu_sheaf->node = numa_node_id();
+ 	}
 
 -- 
 2.53.0
