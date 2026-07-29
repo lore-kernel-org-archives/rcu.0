@@ -1,163 +1,148 @@
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD69B4CA268;
-	Wed, 29 Jul 2026 14:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA133AFD1C;
+	Wed, 29 Jul 2026 16:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785336859; cv=none; b=pGgsEm+xOrYakiHkmamGiVEkYm/SosFudfKHAQ+2RE0z8I4QPwV7lq9D1E/FudfBpxTWZQt88XjOJ21UhlYGTP9mtSWKJP80UPetQrtH21libt9KXUL3F7w796HOPheP2Zw6LvnN1VamRnwnPy556S7597SijVGT93DMlZMzvN4=
+	t=1785342166; cv=none; b=GClUNiTqFoAsRHm3ZI7kfxV8lfSAbpKH+xRBHYaxVrXpDk5s144ozWtE/dIZvSgOA1ifxtTviWPrJwcAzbBHZf3OAqX2jQl+2oZhFrZzrNEeE5Y0rpuB5X5UwVEiU5wjXV2XbwnTB+L5nhFTzg14xpRbnYFP1N3xJd2P/5l1qCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785336859; c=relaxed/simple;
-	bh=cqbWrhOAt0P9vECJC0q//+b/D8YsbCKxPZ6CAHAKG6s=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=G5kGE0ImiUG7FbuagkZuaeGB/K+ZHD1hounDygYijf4I9sXd7aBLrtJpHSdUODgbJ14kQGbd3bqzXeDMyJ90jVsiAG0zxedwItE3FLwiV1HpKaCkDeOx1OhryGT5qg0Xaz7cC7SsJgPWV+bYz2pL2lglo/0J2MU59M8OUhUW+wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=trgy0w9f; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	s=arc-20240116; t=1785342166; c=relaxed/simple;
+	bh=4utBxRp1du/iKBz8vWg5RcUHGriGvYyW0Ks06qZJeCA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JvIAqTos1kh53e3ggfBTDZR3cx7EcedbHdLjbYCrJh1Bb8FrKK14d43J06FpEy5gQhQLPb7GPnY0ZQ6qT7/ZEzI405PlUMF/FbA7yKOf08776puCCQO3BkRsFaDZnMVU9SFCoYKnYH0vkSsj7fbQcSe68zxOyje1i7We8YkA/L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oKIYbwFo; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="trgy0w9f"
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66TEmNlp213362;
-	Wed, 29 Jul 2026 14:53:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=V/5N4T
-	lpiRbsq8FXi3DtU+q3gxjlGdBVulboxYjNUsg=; b=trgy0w9fD1G2yvxCIpOFXu
-	PIevem7VGNXDeBw97W+V8Lu7hJTWzGoaV72TvkLZvaWnhehLeLOK4trJl2cYSvhp
-	5CmpvpH2VT9DKaLpST0VPV/QNNkJbxbOdTtNtWwqgSNyn/mYIi3uyXqs8zFQFN/S
-	isRETxcXwR/yhSUkOFWqLajXruSsMDcs+LnrDb4qsTnOdHPYzfkg6ZvfEW3Ln/c3
-	S0f2RpUOtyNTtYCK6bWEGSVdfqXofJwzFEA/b991yDcI5qNb0VzaKcNR9wIh7twm
-	7PxhnT2BGo6PvyOR5RyR6TLKcSZUIV5pbfHLas9F3Cs9vFQ+btnzxIdc3MpkhYgQ
-	==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fmuyjaeqr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 Jul 2026 14:53:58 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66TEfKiG007381;
-	Wed, 29 Jul 2026 14:53:58 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4fn8yhf24y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 Jul 2026 14:53:58 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 66TErrWU35586306
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 29 Jul 2026 14:53:54 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D9D7D20043;
-	Wed, 29 Jul 2026 14:53:53 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E3E7020040;
-	Wed, 29 Jul 2026 14:53:49 +0000 (GMT)
-Received: from [9.39.24.89] (unknown [9.39.24.89])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 29 Jul 2026 14:53:49 +0000 (GMT)
-Message-ID: <cda6b648-2c3a-4b01-8126-933056f221a9@linux.ibm.com>
-Date: Wed, 29 Jul 2026 20:23:48 +0530
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oKIYbwFo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE7D31F000E9;
+	Wed, 29 Jul 2026 16:22:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785342164;
+	bh=0EC6OVFW3I+KCso6dTh0muALrjxKmcwm0yoroHZf15I=;
+	h=From:To:Cc:Subject:Date;
+	b=oKIYbwFogHrpyft4SUwFG56qJAQMQcWA5DdUvSooZrsl2p9cT9Al2HyXl/hqp0kp1
+	 GlemdIPp3CviwG2deEA1tdT4pLTCxlTEaKbf+vD5WhL7ZzjMOYEs0w8B9GvvvvVnbT
+	 eA56Q0ZJGFHal/5gfjbwccBizP0Dx7Eq0T2edc1Y1zsptm/q9jgbpF5iLbv8Mx/7td
+	 0WElvcPKI+xQsOlipZDCXBd6xmFZKZvIdCCs/FelgzvLcwZw/cQ5bdP6NWCAm3/maT
+	 h4JK3WgCoZ6uwfgKTRDqbNVLVcQoS7Pc6tPtW9o151dmrJvWK+Gthmgzhmb31t8Axo
+	 AuYplonP6C5xg==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Lai Jiangshan <jiangshanlai@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Boqun Feng <boqun@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Emil Tsalapatis <emil@etsalapatis.com>,
+	Matt Fleming <mfleming@cloudflare.com>,
+	"Harry Yoo (Oracle)" <harry@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-rt-devel@lists.linux.dev
+Subject: [PATCH 0/6] rcu,srcu: Make call_rcu()/call_srcu() safe from any context
+Date: Wed, 29 Jul 2026 09:21:59 -0700
+Message-ID: <20260729162207.1567770-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/1] cpuhp: Expedite RCU when toggling system-wide SMT
- mode
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-To: paulmck@kernel.org, tglx@linutronix.de, peterz@infradead.org,
-        Ingo Molnar <mingo@kernel.org>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, aboorvad@linux.ibm.com,
-        boqun.feng@gmail.com, frederic@kernel.org, joelagnelf@nvidia.com,
-        josh@joshtriplett.org, neeraj.upadhyay@kernel.org, rostedt@goodmis.org,
-        srikar@linux.ibm.com, urezki@gmail.com,
-        Vishal Chourasia <vishalc@linux.ibm.com>, samir@linux.ibm.com
-References: <20260615042514.694993-2-vishalc@linux.ibm.com>
- <20260615042514.694993-4-vishalc@linux.ibm.com>
- <f1a04d2f-367e-4be8-b313-31a73e15bcd0@paulmck-laptop>
- <4bd12c51-414d-49b5-8fce-2a6e73a479fa@linux.ibm.com>
- <e143d10e-69b1-455d-90b3-5f29a9482c15@linux.ibm.com>
-Content-Language: en-US
-In-Reply-To: <e143d10e-69b1-455d-90b3-5f29a9482c15@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzI5MDEyMCBTYWx0ZWRfX7PwEIC5i/i1z
- tau3q7VkvAYih24i0EA6aDnpRlOb8/jI3SBTnuGxFjaGF2RS1ytT9kUahLrm1gY1hdoCoSkHLRr
- i3y3SBbYNX3BmkrGUVd4RXAWZIx6Vis=
-X-Proofpoint-GUID: lvEVG1Lzb5arMdrFsSqlaDWambzl81vs
-X-Proofpoint-ORIG-GUID: hSjyWncFqD0JwYfVNVkJ9lYIKGFQsoi5
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzI5MDEyMCBTYWx0ZWRfX2Q7akR7p1J/I
- qkycJu36rGa03FjXPgVbvsR3/sca8OnR/d8z1ZdiYdAxYr55McDKOOqTlVE1R9bQQgqDffPHB3x
- HbhzBNJFffHEFPP3q1yBgmQanClIQFeeAMwOzszQgQVS8b/PDwYFnuhnLKInTc+nU3qllYuot4k
- McdhvUGX3BZ7VC0RQMpSlAXu2ut1qKMw+e26JA2CCNqYaUX28OMYz9QVPc7aJ2ZuPv6G4zfh7cl
- 4ysuUE95xIOpgaJzqvwwc4u88BISCDIl/NmZjSO9AU6cyQpj/g6GXnr92wzkqEviuIvQGYKIrBZ
- K42GH9rKiNR/7kwXjPam8GQ+kkoJix0elv9y6GxBl0alVA0/43AXILL2TmLjNt54ViCe7oPSPsh
- HTriCSjTvvKuZ0QZCgA0i7twmkC6blKuS4oImaoWZM5ssrDzMoZZAYAIZCm1Shb//ZZzOs3PAtk
- 6e7x1injOh+eKH2uYkw==
-X-Authority-Analysis: v=2.4 cv=X5Vi7mTe c=1 sm=1 tr=0 ts=6a6a1407 cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8
- a=VwQbUJbxAAAA:8 a=0DI864wKsEq8_xCAzw8A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-29_06,2026-07-28_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 impostorscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0
- adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2607290120
+
+call_rcu() and call_srcu() only ever touch their per-CPU callback lists
+with interrupts disabled: the enqueue runs under local_irq_save() (and the
+nocb locks when offloaded), and so do callback invocation and grace-period
+work.  That is fine as long as call_rcu() itself is invoked with
+interrupts enabled, but it is not always.  An NMI handler can call
+call_rcu(), and instrumentation can reenter it.  The case that prompted
+this is a BPF program attached to rcu_segcblist_enqueue() that frees an
+object: the free reaches call_rcu_tasks_trace(), which is call_srcu()
+under the hood, back on the same CPU with the srcu_data lock already held,
+and it deadlocks on that lock.  Either way, enqueuing directly can corrupt
+the list or deadlock.
+
+Rather than scatter context checks through the enqueue, make it defer
+whenever interrupts are disabled: stage the callback on a per-CPU lockless
+list and re-issue it from an irq_work once interrupts are back on, going
+straight to the enqueue helper so the re-issue cannot defer again.  Only
+the drain side takes a lock; the staging is a bare llist_add() and stays
+safe from NMI.  This is behind a new hidden CONFIG_RCU_DEFER, which is set
+wherever a reentrant enqueue is possible (HAVE_NMI, KPROBES,
+FUNCTION_TRACER or TRACEPOINTS); without it call_rcu() enqueues exactly as
+before.
+
+CPU offline is the awkward part.  A callback can be deferred very late in
+the outgoing CPU's teardown -- from do_idle() or cpuhp_ap_report_dead(),
+past the CPUHP_AP_SMPCFD_DYING flush that would otherwise run the irq_work
+-- so the irq_work can no longer run there to re-issue it.  rcu_barrier()
+and srcu_barrier() therefore drain the deferred lists themselves before
+they wait: for online CPUs they wait the irq_work out, and for offline
+ones they drain the list directly, since that irq_work may never run
+again.  rcutree_migrate_callbacks() drains the outgoing CPU's list too, so
+a late deferral still lands on a callback list even when nobody calls a
+barrier.  To keep those three drainers from stepping on each other, the
+drain holds a per-CPU raw lock across the llist_del_all() and the
+re-issue, so a drainer never returns having pulled callbacks off the
+deferred list but not yet put them on a callback list.  Every lock the
+re-issue touches (nocb, rcu_node, srcu_data) is already raw, so the
+nesting is fine.
+
+The irq_work is IRQ_WORK_INIT_HARD.  It is not needed for correctness, but
+a non-HARD irq_work runs from a kthread on PREEMPT_RT and can be delayed
+under load, letting deferred callbacks pile up; running the re-issue in
+hard-irq context keeps that from turning into an OOM.
+
+Patches 1 and 2 do Tree and Tiny RCU, 3 and 4 Tree and Tiny SRCU.  Patch 5
+teaches rcutorture to issue ->call() from a perf-overflow NMI -- the
+nmi_calls parameter, on by default -- on the flavors that advertise it,
+and checks that every callback issued from NMI is later invoked.  Patch 6
+adds the BPF reentry reproducer described above.
+
+Puranjay Mohan (6):
+  rcu: Make call_rcu() safe to call from any context
+  rcu: Make Tiny call_rcu() safe to call from any context
+  srcu: Make call_srcu() safe to call from any context
+  srcu: Make Tiny call_srcu() safe to call from any context
+  rcutorture: Exercise ->call() from NMI context
+  selftests/bpf: Add a call_srcu() re-entry reproducer
+
+ include/linux/srcutiny.h                      |  11 +-
+ include/linux/srcutree.h                      |   4 +
+ kernel/rcu/Kconfig                            |   6 +
+ kernel/rcu/rcu.h                              |  18 +++
+ kernel/rcu/rcutorture.c                       | 115 +++++++++++++++
+ kernel/rcu/srcutiny.c                         |  53 ++++++-
+ kernel/rcu/srcutree.c                         | 138 +++++++++++++++++-
+ kernel/rcu/tiny.c                             | 101 ++++++++++---
+ kernel/rcu/tree.c                             | 122 ++++++++++++++--
+ kernel/rcu/tree.h                             |   5 +
+ .../selftests/bpf/prog_tests/rcu_reentry.c    |  58 ++++++++
+ .../testing/selftests/bpf/progs/rcu_reentry.c |  45 ++++++
+ 12 files changed, 636 insertions(+), 40 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rcu_reentry.c
 
 
+base-commit: 9dc303e69bcd49f9668ca090ae45325269531fbb
+-- 
+2.53.0-Meta
 
-On 7/21/26 10:01 AM, Shrikanth Hegde wrote:
-> 
-> 
-> On 6/16/26 11:39 AM, Shrikanth Hegde wrote:
->>
->>
-> 
->>>>
->>>> On a large config system with 1920 CPUs, completion time improves from
->>>> ~1 hour to 5-6 minutes.
->>>>
->>>> Tested-by: Samir <samir@linux.ibm.com>
->>>> Reviewed-by: Shrikanth Hegde <sshegde@linux.ibm.com>
->>>> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
->>>
->>>  From an RCU viewpoint:
->>>
->>> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
->>
->> Thank you Paul for reviewing this.
->>
->>>
->>> I am guessing that you will be taking this up some other path, but if
->>> you would like it to to via RCU, please let me know.
->>>
->>>                             Thanx, Paul
->>>
->>
->> I would prefer this to go via tip tree since main change is in cpu.c
->>
->> Thomas, peter,
->> What do you guys suggest? can this go via tip tree?
->>
->> Also, do you have any other review comments on this or test to be done?
->>
-> 
-> Gentle Ping.
-> 
-> Thomas, Peter, Ingo, Can this go via tip tree?
-> Do you guys have any comments to be addressed?
-> 
-> Or Do you want it to go via RCU tree?
-> 
-
-Gentle Reminder.
-
-This might have fell through the cracks.
-Are there any concerns still to be addressed?
