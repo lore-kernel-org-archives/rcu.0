@@ -1,35 +1,34 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C623A43B6E5;
-	Wed, 29 Jul 2026 08:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9D8A4028F5;
+	Wed, 29 Jul 2026 08:21:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785313309; cv=none; b=YKwhDpFpbuMW7eQQkX4UgTueLee1NXOhnW5i37QwOTeQA4SbhbghIaBg84A43Ec58MVJ1GHebbgCM75L/mYf3W4r4n6lc/3isEwFfSLxE2LxaVcSG2/APGedtAdYAWzkk+guBm12aE25LYUpHQZyn+tseh8AioMgh8O5tYZxIgE=
+	t=1785313314; cv=none; b=hayUlO3KrrQDpo0IU2Q+ZJlnGTCLgdsZRwJEu5P2gNU5tpSGv3V82JNZT/xYKlUZFIQkuskWGWoLATi6rDLCANolwjRsxg3I4o5bpa+Fq6U9aDuFD4hz7Bb7HjXBdPnfQUs+j975RNz6QKwyw+JbDFsm0ZGMhH5PEwY1Ts35MSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785313309; c=relaxed/simple;
-	bh=Ey+f8l4XLsfaOdZL079filXHp5bMK0zVH0fewLSr8Sc=;
+	s=arc-20240116; t=1785313314; c=relaxed/simple;
+	bh=Zi7JX2F0IcgVy/2A5F8HmVr/1/NxjrqWJKa+H9iafIQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VPi8YJpkEijL2h7lZvXTzLtbdGjuq4IxxkIJ/YpB/m2SLvvbOVGnCthDWntmBshiQNBIzF1LwUGY3YiI1s4Y0lJcVnQymd27NQAXu5OPDGSV7tpj6Ny3+Lwyo5AXQrB9Fvv6aOGFLk3da2Zg5uGM7xUHl/AlDUeFtahx4+fMl8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oS+hQaMG; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:To:Cc; b=c52IdVUVOusPdYwPDoA3MHXdLNTudd4qXJtQLBCRTDsJ3Ny36uKbJx1idP1XtRX1bvhjQ1Ys1ek/uiRmllBVU+9ZlN9VetQcHfjTqYsCqfYwB7xpFT1N3mKzJeFdgF73oLwGPKqSpMZ/U876rexIDneYG3j89nOq40Sgl37isSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mY7s/rhL; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oS+hQaMG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D6381F000E9;
-	Wed, 29 Jul 2026 08:21:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mY7s/rhL"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A5421F00A3A;
+	Wed, 29 Jul 2026 08:21:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785313293;
-	bh=Yh8xxI8IwkcJ1dgmcaV/tWyT7/NE7RNTeAYVA+pLPVw=;
+	s=k20260515; t=1785313299;
+	bh=HjSBb9mVbLXIx6izzSo3Zj/I/hrxLU57UnbtahM6eqg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=oS+hQaMG3f6p6s7y/83Mm3dEGgnbZoVpbILKW5IQqB2FRaoafWmSSfqKJ1GbMEdZw
-	 uxBQl02M/lJTnRFU+bZMBp2iulIr8apVlUhWl1X6FVTL2ieZDFRlUNMck5LjkF45CS
-	 L7ilohbFxfs1L3NkG04/b1MFVGjsjYR5WITomXWwlB30UlvK9yJMJ3gaS3pEcROlZ+
-	 gUGD3pdPjcaoZFilBzsCLlZOW1ERpsSjMTjMk0Uh4Mq3sGRH/NMLQ02fGpMqHpGxPP
-	 5ACWQqvBYRgFInQOb3z+G9Ni4GTTl9MqR5Ri4xnNilCBYEfOjWu1C9ZNX7cI/NLRjk
-	 6h66VScPdLprQ==
+	b=mY7s/rhLzCihs9hLBNtGbfu7njKF4M2YR7eW/RydfLq9zjbt0Ha+EpVpdHmuYu/eB
+	 l9eoPBzqNY/gaRpVSYjSJMwMQLEg1fXE/7E+uyhGr9LNT/U6sh5KWDdXzQxlHdXZyJ
+	 W4qR014DdqITqxtkYkF/WuRjlSt2E021fh3B7E3lKgKN5KHBMlJ7RKQ5J/aMvXDExy
+	 waKrD+a9OgT4X5fEolwM+2qfs4mJgdmQ4SlUMifKTr+LMKRj69KmtWsp7Aat0Tb8sw
+	 MBWoR31zAthzvaXzzFZgWGMtFv251Dxv3d5ZRUrvAOb7mi5r5CyJXwU7WHuIy1dzVK
+	 gglmWp7YzuMcA==
 From: "Harry Yoo (Oracle)" <harry@kernel.org>
-Date: Wed, 29 Jul 2026 17:20:14 +0900
-Subject: [PATCH v5 6/8] mm/slab: introduce struct kvfree_rcu_head for
- kvfree_rcu batching
+Date: Wed, 29 Jul 2026 17:20:15 +0900
+Subject: [PATCH v5 7/8] mm/slab: introduce kfree_rcu_nolock()
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -38,7 +37,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260729-kfree_rcu_nolock-v5-6-a28cdcda9673@kernel.org>
+Message-Id: <20260729-kfree_rcu_nolock-v5-7-a28cdcda9673@kernel.org>
 References: <20260729-kfree_rcu_nolock-v5-0-a28cdcda9673@kernel.org>
 In-Reply-To: <20260729-kfree_rcu_nolock-v5-0-a28cdcda9673@kernel.org>
 To: Vlastimil Babka <vbabka@kernel.org>, 
@@ -64,290 +63,281 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  "Harry Yoo (Oracle)" <harry@kernel.org>
 X-Mailer: b4 0.14.3
 
-rcu_head is overkill for kvfree_rcu() because the callback
-function is always either kfree(), vfree(), or free_large_kmalloc(),
-and thus there is no need for a function pointer.
+Currently, k[v]free_rcu() cannot be called in unknown context since
+it could lead to a deadlock when called in the middle of k[v]free_rcu().
 
-kvfree_rcu batching reuses the field to store the start address
-of an object, however, this is not strictly needed because we can
-calculate the start address in the slowpath. For the purpose of
-kvfree_rcu batching, it is sufficient to implement a linked list using
-a single pointer.
+Make users' lives easier by introducing kfree_rcu_nolock() variant,
+now that kfree_rcu_sheaf() is available on PREEMPT_RT and
+__kfree_rcu_sheaf() handles unknown context.
 
-Introduce a new struct called kvfree_rcu_head (the name was suggested
-by Vlastimil Babka), which is similar to rcu_head but is only a single
-pointer to build a linked list, without a function pointer, when
-CONFIG_KVFREE_RCU_BATCHED=y.
+When sheaves path fails, kfree_rcu_nolock() falls back to
+defer_kfree_rcu() that uses an irq work to free the object via
+kvfree_call_rcu(). In most cases, the sheaves path is expected to
+succeed and therefore it's unnecessary to introduce additional
+complexity to the existing kvfree_rcu batching by teaching it
+how to handle unknown context.
 
-When kvfree_rcu is not batched, kvfree_rcu_head is the same size
-as rcu_head. Note that shrinking struct kvfree_rcu_head on
-CONFIG_KVFREE_RCU_BATCHED=n kernels would inevitably require additional
-complexity and also some sort of batching (which defeats the purpose of
-the config option) because it cannot fall back to call_rcu().
+Since defer_kfree_rcu() can be called on caches without sheaves, move
+deferred_work_barrier() and rcu_barrier() outside the branch in
+kvfree_rcu_barrier_on_cache().
 
-For now there are no user-visible changes to the API. k[v]free_rcu()
-simply casts rcu_head to kvfree_rcu_head. While this does not affect
-the API, it allows kfree_rcu_nolock() to reuse kvfree_rcu batching
-as a fallback when trylock or sheaf allocation fails.
+Now that deferred kvfree_rcu objects are submitted to kvfree_call_rcu()
+after deferred_work_barrier() and may end up in RCU sheaves,
+deferred_work_barrier() must be invoked before
+flush_rcu_sheaves_on_cache().
 
-Stop storing the object pointer in rcu_head.func and instead calculate
-the object's start address in kvfree_rcu_list(). Factor out the existing
-logic to calculate the start address from kvfree_rcu_cb() to
-kvmalloc_obj_start_addr(). To avoid losing the KASAN tag, calculate
-the offset and subtract it from the address of the kvfree_rcu_head.
+Since the RCU sheaf path has not been used on !KVFREE_RCU_BATCHED
+kernels, always fall back when kvfree_rcu() is not batched, for
+consistency. kvfree_rcu_barrier{,_on_cache()}() on
+!KVFREE_RCU_BATCHED are moved to mm/slab_common.c to invoke
+deferred_work_barrier() before rcu_barrier().
 
 Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 ---
- include/linux/rcupdate.h   | 10 ++++++----
- include/linux/types.h      |  8 ++++++++
- include/trace/events/rcu.h |  2 +-
- mm/slab.h                  | 32 ++++++++++++++++++++++++++++++++
- mm/slab_common.c           | 17 ++++++++---------
- mm/slub.c                  | 40 +++++++++-------------------------------
- 6 files changed, 64 insertions(+), 45 deletions(-)
+ include/linux/rcupdate.h | 22 ++++++++++++++++++++++
+ include/linux/slab.h     | 16 +++-------------
+ mm/slab_common.c         | 47 +++++++++++++++++++++++++++++++++++++++++++++--
+ mm/slub.c                | 28 ++++++++++++++++++++++++++--
+ 4 files changed, 96 insertions(+), 17 deletions(-)
 
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 5e95acc33989..ef5bb6981133 100644
+index ef5bb6981133..aede77bd0387 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
-@@ -1098,19 +1098,21 @@ static inline void rcu_read_unlock_migrate(void)
- /*
+@@ -1099,6 +1099,7 @@ static inline void rcu_read_unlock_migrate(void)
   * In mm/slab_common.c, no suitable header to include here.
   */
--void kvfree_call_rcu(struct rcu_head *head, void *ptr);
-+void kvfree_call_rcu(struct kvfree_rcu_head *head, void *ptr);
+ void kvfree_call_rcu(struct kvfree_rcu_head *head, void *ptr);
++void kfree_call_rcu_nolock(struct kvfree_rcu_head *head, void *ptr);
  
  /*
   * The BUILD_BUG_ON() makes sure the rcu_head offset can be handled. See the
-  * comment of kfree_rcu() for details.
-  */
--#define kvfree_rcu_arg_2(ptr, rhf)					\
-+#define kvfree_rcu_arg_2(ptr, kvrhf)					\
- do {									\
- 	typeof (ptr) ___p = (ptr);					\
-+	struct kvfree_rcu_head *___head;				\
- 									\
- 	if (___p) {							\
--		BUILD_BUG_ON(offsetof(typeof(*(ptr)), rhf) >= 4096);	\
--		kvfree_call_rcu(&((___p)->rhf), (void *) (___p));	\
-+		BUILD_BUG_ON(offsetof(typeof(*(ptr)), kvrhf) >= 4096);	\
-+		___head = (struct kvfree_rcu_head *) &(___p)->kvrhf;	\
-+		kvfree_call_rcu(___head, (void *) (___p));		\
- 	}								\
+@@ -1124,6 +1125,27 @@ do {								\
+ 		kvfree_call_rcu(NULL, (void *) (___p));		\
  } while (0)
  
-diff --git a/include/linux/types.h b/include/linux/types.h
-index 93166b0b0617..8b0976669d66 100644
---- a/include/linux/types.h
-+++ b/include/linux/types.h
-@@ -255,6 +255,14 @@ struct callback_head {
- } __attribute__((aligned(sizeof(void *))));
- #define rcu_head callback_head
- 
-+#ifdef CONFIG_KVFREE_RCU_BATCHED
-+struct kvfree_rcu_head {
-+	struct kvfree_rcu_head *next;
-+};
-+#else
-+#define kvfree_rcu_head rcu_head
-+#endif
-+
- typedef void (*rcu_callback_t)(struct rcu_head *head);
- typedef void (*call_rcu_func_t)(struct rcu_head *head, rcu_callback_t func);
- 
-diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-index 5fbdabe3faea..a74027126a2f 100644
---- a/include/trace/events/rcu.h
-+++ b/include/trace/events/rcu.h
-@@ -625,7 +625,7 @@ TRACE_EVENT_RCU(rcu_invoke_callback,
-  */
- TRACE_EVENT_RCU(rcu_invoke_kvfree_callback,
- 
--	TP_PROTO(const char *rcuname, struct rcu_head *rhp, unsigned long offset),
-+	TP_PROTO(const char *rcuname, struct kvfree_rcu_head *rhp, unsigned long offset),
- 
- 	TP_ARGS(rcuname, rhp, offset),
- 
-diff --git a/mm/slab.h b/mm/slab.h
-index d13a0f6b7a1b..ec72ed95c21b 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -347,6 +347,37 @@ static inline unsigned int obj_to_index(const struct kmem_cache *cache,
- 	return __obj_to_index(cache, slab_address(slab), obj);
- }
- 
-+/*
-+ * kvfree_rcu_head offset can be only less than page size.
-+ * Calculate the start address while preserving the KASAN tag.
++/**
++ * kfree_rcu_nolock() - a version of kfree_rcu() that can be called in any context.
++ * @ptr: pointer to kfree for double-argument invocations.
++ * @kvrhf: the name of the struct kvfree_rcu_head within the type of @ptr.
++ *
++ * With KVFREE_RCU_BATCHED, kfree_rcu_nolock() tries hard to free objects
++ * without any deferred processing, but may still defer freeing.
++ * Large kmalloc and vmalloc objects are always deferred.
++ *
++ * kfree_rcu_nolock() supports 2-arg variant only.
 + */
-+static inline void *kvmalloc_obj_start_addr(void *head)
-+{
-+	unsigned long offset;
-+
-+	if (unlikely(is_vmalloc_addr(head))) {
-+		offset = offset_in_page(head);
-+	} else {
-+		struct slab *slab = virt_to_slab(head);
-+
-+		if (!slab) {
-+			offset = offset_in_page(head);
-+		} else if (is_kfence_address(head)) {
-+			offset = head - kfence_object_start(head);
-+		} else {
-+			struct kmem_cache *s = slab->slab_cache;
-+			unsigned int idx = __obj_to_index(s, slab_address(slab), head);
-+			void *obj = slab_address(slab) + s->size * idx;
-+
-+			obj = fixup_red_left(s, obj);
-+			obj = kasan_reset_tag(obj);
-+			offset = kasan_reset_tag(head) - obj;
-+		}
-+	}
-+
-+	return head - offset;
-+}
++#define kfree_rcu_nolock(ptr, kvrhf)						\
++do {										\
++	typeof (ptr) ___p = (ptr);						\
++										\
++	if (___p) {								\
++		BUILD_BUG_ON(offsetof(typeof(*(ptr)), kvrhf) >= 4096);		\
++		kfree_call_rcu_nolock(&((___p)->kvrhf), (void *) (___p));	\
++	}									\
++} while (0)
 +
  /*
-  * State of the slab allocator.
+  * Place this after a lock-acquisition primitive to guarantee that
+  * an UNLOCK+LOCK pair acts as a full barrier.  This guarantee applies
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index e1915026e030..cda126def67a 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -1430,25 +1430,15 @@ extern void kvfree_sensitive(const void *addr, size_t len);
+ unsigned int kmem_cache_size(struct kmem_cache *s);
+ 
+ #ifndef CONFIG_KVFREE_RCU_BATCHED
+-static inline void kvfree_rcu_barrier(void)
+-{
+-	rcu_barrier();
+-}
+-
+-static inline void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
+-{
+-	rcu_barrier();
+-}
+-
+ static inline void kfree_rcu_scheduler_running(void) { }
+ #else
++void kfree_rcu_scheduler_running(void);
++#endif
++
+ void kvfree_rcu_barrier(void);
+ 
+ void kvfree_rcu_barrier_on_cache(struct kmem_cache *s);
+ 
+-void kfree_rcu_scheduler_running(void);
+-#endif
+-
+ /**
+  * kmalloc_size_roundup - Report allocation bucket size for the given size
   *
-@@ -910,6 +941,7 @@ void __check_heap_object(const void *ptr, unsigned long n,
- 			 const struct slab *slab, bool to_user);
- 
- void deferred_work_barrier(void);
-+void defer_kfree_rcu(struct kvfree_rcu_head *head);
- 
- static inline bool slub_debug_orig_size(struct kmem_cache *s)
- {
 diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 9c2cca9add89..691ce6db4519 100644
+index 691ce6db4519..b8f21eabcccc 100644
 --- a/mm/slab_common.c
 +++ b/mm/slab_common.c
-@@ -1379,7 +1379,7 @@ struct kvfree_rcu_bulk_data {
+@@ -1296,6 +1296,33 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
+ EXPORT_TRACEPOINT_SYMBOL(kfree);
+ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
  
- struct kfree_rcu_cpu_work {
- 	struct rcu_work rcu_work;
--	struct rcu_head *head_free;
-+	struct kvfree_rcu_head *head_free;
- 	struct rcu_gp_oldstate head_free_gp_snap;
- 	struct list_head bulk_head_free[FREE_N_CHANNELS];
- 	struct kfree_rcu_cpu *krcp;
-@@ -1415,7 +1415,7 @@ struct kfree_rcu_cpu_work {
- struct kfree_rcu_cpu {
- 	// Objects queued on a linked list
- 	// through their rcu_head structures.
--	struct rcu_head *head;
-+	struct kvfree_rcu_head *head;
- 	unsigned long head_gp_snap;
- 	atomic_t head_count;
++void kfree_call_rcu_nolock(struct kvfree_rcu_head *head, void *ptr)
++{
++	struct slab *slab;
++
++	if (!IS_ENABLED(CONFIG_KVFREE_RCU_BATCHED))
++		goto fallback;
++
++	if (unlikely(is_vmalloc_addr(ptr)))
++		goto fallback;
++
++	slab = virt_to_slab(ptr);
++	if (unlikely(!slab))
++		goto fallback;
++
++	if (unlikely(IS_ENABLED(CONFIG_NUMA) && slab_nid(slab) != numa_mem_id()))
++		goto fallback;
++
++	if (unlikely(!__kfree_rcu_sheaf(slab->slab_cache, ptr, SLAB_FREE_NOLOCK)))
++		goto fallback;
++
++	return;
++
++fallback:
++	defer_kfree_rcu(head);
++}
++EXPORT_SYMBOL_GPL(kfree_call_rcu_nolock);
++
+ #ifndef CONFIG_KVFREE_RCU_BATCHED
  
-@@ -1556,12 +1556,12 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
+ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+@@ -1313,6 +1340,20 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
  }
+ EXPORT_SYMBOL_GPL(kvfree_call_rcu);
  
- static void
--kvfree_rcu_list(struct rcu_head *head)
-+kvfree_rcu_list(struct kvfree_rcu_head *head)
++void kvfree_rcu_barrier(void)
++{
++	deferred_work_barrier();
++	rcu_barrier();
++}
++EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
++
++void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
++{
++	deferred_work_barrier();
++	rcu_barrier();
++}
++EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
++
+ void __init kvfree_rcu_init(void)
  {
--	struct rcu_head *next;
-+	struct kvfree_rcu_head *next;
- 
- 	for (; head; head = next) {
--		void *ptr = (void *) head->func;
-+		void *ptr = kvmalloc_obj_start_addr(head);
- 		unsigned long offset = (void *) head - ptr;
- 
- 		next = head->next;
-@@ -1585,7 +1585,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	unsigned long flags;
- 	struct kvfree_rcu_bulk_data *bnode, *n;
- 	struct list_head bulk_head[FREE_N_CHANNELS];
--	struct rcu_head *head;
-+	struct kvfree_rcu_head *head;
- 	struct kfree_rcu_cpu *krcp;
- 	struct kfree_rcu_cpu_work *krwp;
- 	struct rcu_gp_oldstate head_gp_snap;
-@@ -1716,7 +1716,7 @@ kvfree_rcu_drain_ready(struct kfree_rcu_cpu *krcp)
- {
- 	struct list_head bulk_ready[FREE_N_CHANNELS];
- 	struct kvfree_rcu_bulk_data *bnode, *n;
--	struct rcu_head *head_ready = NULL;
-+	struct kvfree_rcu_head *head_ready = NULL;
- 	unsigned long flags;
- 	int i;
- 
-@@ -1979,7 +1979,7 @@ void __init kfree_rcu_scheduler_running(void)
-  * be free'd in workqueue context. This allows us to: batch requests together to
-  * reduce the number of grace periods during heavy kfree_rcu()/kvfree_rcu() load.
+ }
+@@ -2149,14 +2190,16 @@ EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
   */
--void kvfree_call_rcu(struct rcu_head *head, void *ptr)
-+void kvfree_call_rcu(struct kvfree_rcu_head *head, void *ptr)
+ void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
  {
- 	unsigned long flags;
- 	struct kfree_rcu_cpu *krcp;
-@@ -2017,7 +2017,6 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
- 			// Inline if kvfree_rcu(one_arg) call.
- 			goto unlock_return;
++	/* kfree_rcu_nolock() might have deferred frees even without sheaves */
++	deferred_work_barrier();
++
+ 	if (cache_has_sheaves(s)) {
+ 		cpus_read_lock();
+ 		flush_rcu_sheaves_on_cache(s);
+ 		cpus_read_unlock();
+-		deferred_work_barrier();
+-		rcu_barrier();
+ 	}
  
--		head->func = ptr;
- 		head->next = krcp->head;
- 		WRITE_ONCE(krcp->head, head);
- 		atomic_inc(&krcp->head_count);
++	rcu_barrier();
+ 	__kvfree_rcu_barrier();
+ }
+ EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
 diff --git a/mm/slub.c b/mm/slub.c
-index 6c81722afb18..774104267f3c 100644
+index 774104267f3c..6e5aa38e7569 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -6720,43 +6720,21 @@ static void free_large_kmalloc(struct page *page, void *object)
-  */
- void kvfree_rcu_cb(struct rcu_head *head)
+@@ -4099,6 +4099,7 @@ static void flush_all(struct kmem_cache *s)
+ 
+ struct deferred_percpu_work {
+ 	struct llist_head objects;
++	struct llist_head objects_by_rcu;
+ 	struct llist_head rcu_sheaves;
+ 	struct irq_work work;
+ };
+@@ -4107,6 +4108,7 @@ static void deferred_percpu_work_fn(struct irq_work *work);
+ 
+ static DEFINE_PER_CPU(struct deferred_percpu_work, deferred_percpu_work) = {
+ 	.objects = LLIST_HEAD_INIT(objects),
++	.objects_by_rcu = LLIST_HEAD_INIT(objects_by_rcu),
+ 	.rcu_sheaves = LLIST_HEAD_INIT(rcu_sheaves),
+ 	.work = IRQ_WORK_INIT(deferred_percpu_work_fn),
+ };
+@@ -4170,6 +4172,8 @@ void flush_all_rcu_sheaves(void)
  {
--	void *obj = head;
--	struct page *page;
--	struct slab *slab;
--	struct kmem_cache *s;
--	void *slab_addr;
-+	void *obj;
+ 	struct kmem_cache *s;
+ 
++	deferred_work_barrier();
 +
-+	obj = kvmalloc_obj_start_addr(head);
+ 	cpus_read_lock();
+ 	mutex_lock(&slab_mutex);
  
- 	if (is_vmalloc_addr(obj)) {
--		obj = (void *) PAGE_ALIGN_DOWN((unsigned long)obj);
- 		vfree(obj);
--		return;
--	}
--
--	page = virt_to_page(obj);
--	slab = page_slab(page);
--	if (!slab) {
--		/*
--		 * rcu_head offset can be only less than page size so no need to
--		 * consider allocation order
--		 */
--		obj = (void *) PAGE_ALIGN_DOWN((unsigned long)obj);
--		free_large_kmalloc(page, obj);
--		return;
--	}
--
--	s = slab->slab_cache;
--	slab_addr = slab_address(slab);
--
--	if (is_kfence_address(obj)) {
--		obj = kfence_object_start(obj);
- 	} else {
--		unsigned int idx = __obj_to_index(s, slab_addr, obj);
-+		struct page *page = virt_to_page(obj);
-+		struct slab *slab = page_slab(page);
+@@ -4182,7 +4186,6 @@ void flush_all_rcu_sheaves(void)
+ 	mutex_unlock(&slab_mutex);
+ 	cpus_read_unlock();
  
--		obj = slab_addr + s->size * idx;
--		obj = fixup_red_left(s, obj);
-+		if (slab)
-+			slab_free(slab->slab_cache, slab, obj, _RET_IP_);
-+		else
-+			free_large_kmalloc(page, obj);
- 	}
--
--	slab_free(s, slab, obj, _RET_IP_);
+-	deferred_work_barrier();
+ 	rcu_barrier();
  }
  
- /**
+@@ -6407,13 +6410,14 @@ static void free_to_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
+ static void deferred_percpu_work_fn(struct irq_work *work)
+ {
+ 	struct deferred_percpu_work *dpw;
+-	struct llist_head *objs, *rcu_sheaves;
++	struct llist_head *objs, *objs_by_rcu, *rcu_sheaves;
+ 	struct llist_node *llnode, *pos, *t;
+ 	struct slab_sheaf *sheaf, *next;
+ 
+ 	dpw = container_of(work, struct deferred_percpu_work, work);
+ 	rcu_sheaves = &dpw->rcu_sheaves;
+ 	objs = &dpw->objects;
++	objs_by_rcu = &dpw->objects_by_rcu;
+ 
+ 	llnode = llist_del_all(objs);
+ 	llist_for_each_safe(pos, t, llnode) {
+@@ -6438,6 +6442,14 @@ static void deferred_percpu_work_fn(struct irq_work *work)
+ 		stat(s, FREE_SLOWPATH);
+ 	}
+ 
++	llnode = llist_del_all(objs_by_rcu);
++	llist_for_each_safe(pos, t, llnode) {
++		void *head = pos;
++		void *objp = kvmalloc_obj_start_addr(head);
++
++		kvfree_call_rcu(head, objp);
++	}
++
+ 	llnode = llist_del_all(rcu_sheaves);
+ 	llist_for_each_entry_safe(sheaf, next, llnode, llnode)
+ 		call_rcu(&sheaf->rcu_head, rcu_free_sheaf);
+@@ -6456,6 +6468,18 @@ static void defer_free(struct kmem_cache *s, void *head)
+ 		irq_work_queue(&dpw->work);
+ }
+ 
++void defer_kfree_rcu(struct kvfree_rcu_head *head)
++{
++	struct deferred_percpu_work *dpw;
++
++	guard(preempt)();
++
++	dpw = this_cpu_ptr(&deferred_percpu_work);
++	if (llist_add((struct llist_node *)head, &dpw->objects_by_rcu))
++		irq_work_queue(&dpw->work);
++}
++
++/* Must be called before flush_rcu_sheaves_on_cache() */
+ void deferred_work_barrier(void)
+ {
+ 	int cpu;
 
 -- 
 2.53.0
