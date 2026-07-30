@@ -1,114 +1,169 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A490392C36;
-	Thu, 30 Jul 2026 20:59:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785445164; cv=none; b=WqIiABs1e6b0Tre8/8JTnwc92Y7wWMSHlMG17bHh+kCGhGozxJpf8YksE068/sgb+WW80GlRDHbEDxgSUBKZGmiGDOvicvfrKDcfrX4rfEx08mY9mOW+8D5HyWJRGbm9PXwuR52A/ajfUYM8Jx5zWDRbom6D0ISJUwgQCNLGuB4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785445164; c=relaxed/simple;
-	bh=ybxBfnkIwp1ZqafLSKc5G1hdXeWMpst9lXuUUF17yYU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GIDDJZjds9idp3zFM8lFYlFcdQKbKB+p7wWHY8AXihROarWKixLjtDgSVBPF+uCqTt95VQHwFq7Bwr9gdYmdM0UQa9fYWV860G1uYPEFz03AvPw33fI7YpbVouMPvM5+T3wkhnEgbb/j1UDAH6EkNdiKrcKisl0dgYHY5UUHAcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b4VDYtZs; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92243DC4D8
+	for <rcu@vger.kernel.org>; Thu, 30 Jul 2026 22:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.176
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1785450465; cv=pass; b=Xpg/Kplxjc6scfmDydhd0lXLv5/+hb5gVSKdAMtWwE6z8WTl2AipX4dh/ihD9AVOCd7dIxFnJNdTKFJdBJFgG2uhkLJQ3/7YiEiVN+qQVZaD3T+BoSvz+dRUiEfB3GX2fOSoEL9IxK213q7yuBnC4pf3oHDbMdBTvUF5dJuIG2Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1785450465; c=relaxed/simple;
+	bh=mxR6zo1uzVmlCvrVVTNLSNdWhxzrwV7OGrG+Af4HFoM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DBiDg4U0hvA7EtYer9fSQCAEUpsei6swV/61gmALWtBwKnFoQJkCcWRVGC69YWT69N9YXHPg/25bTDJpvhxvRH7UWZVgZodZj8JtaNoewJ1ZhaL4okBAWymU1OEIsExKsuXKGji8SmAG3XwTXhTqsxeS+joUzoVS76NVzvX4et0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kAVr1pfw; arc=pass smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b4VDYtZs"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC0D61F000E9;
-	Thu, 30 Jul 2026 20:59:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785445163;
-	bh=TdKteJ2Ppi5Qmu1+gV5giVne/pmuTopgGWMGEUu1j1E=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=b4VDYtZs2WOhpYQMRq2262d6mVq2UU9G8CF/txykgF8rdH8yJTgx1YwDdpOkrEday
-	 glvAEialobwOZKV/W+Lc/MpBeUy/EGRUS7A7m7Ima9Mv2qQkNO3TECwfbKry0tH0BR
-	 Z7ONFGjUj/Qe+9QCT4VlMOG2DBGYl2xeEBVpygf8e99q6bgm0B/2llfy01A9uSNeff
-	 6AGdSjk/iieBUKz5PYINHFGz+5qPDKy55GQ7N0iGtXJFMo5P8nkH5HYMVk7fTlCMvs
-	 mUt6rkh7jL8DzFdCLnQF2Yofr836IcAdVNVW+1zEjPx5IFR4B64gk4+KlW+RBXD7Uh
-	 Cg8eRYY8WGFKw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A053FCE0B67; Thu, 30 Jul 2026 13:59:22 -0700 (PDT)
-Date: Thu, 30 Jul 2026 13:59:22 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Harry Yoo <harry@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-	Hao Li <hao.li@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/slab: stop exporting kvfree_rcu_barrier[_on_cache]()
-Message-ID: <d2cd0e92-930f-44e4-96e5-67b751419a1c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260730-unexport-barriers-v1-1-852f6641abe9@kernel.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kAVr1pfw"
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-84864086bfeso449377b3a.1
+        for <rcu@vger.kernel.org>; Thu, 30 Jul 2026 15:27:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1785450462; cv=none;
+        d=google.com; s=arc-20260327;
+        b=cA2FzTbPE3flG2z0J6qM/vkGJAao4EcBo+NZMqQ4JVaVUd//VbQZP4SkgkT91WB9fW
+         N8AEHA8BGFCr8RsCI2fld8NTjdg+rhN8+zHdvsYI/X8+mpaypbzP1JozRuFstUnvBrNN
+         AfEPQiPBXNW0zwbneLDd+bW80fraW+KgrjtwenPTXScrWAvfLXl288YOqgp7ntX2yyau
+         cek94/sqF3Wa3sz42HvH4KQfX0PbFG5Pv8LF1qLWTi1KdqGpLFNuJXz8WG11xOdLGchY
+         pNjhu4bu1p0J5co2fNVOA2k+k5cyk9V7ioZmKy66B9itBKMqxGS+iOepdTjzMEAdQB0T
+         Hexw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=5roJyEXd7zYUkj2A9s/Sahih0EpxfdZ7m3/sd8D6kWU=;
+        fh=sCTmb4NAYlmsd2o4yJM8fsS0d/u6UcTjFOQqWSB1mT4=;
+        b=drQlfkNoTCHLpmO0FJqcLkFQKnmv/En3XiTx2rzXOrzpPHOsgwrG5f/FYiOUX6jXjh
+         VDYvQ1gRilTKiiRO7od4HWm+8JaY/84rTOTJKTJd7ag6jA20tNb6KqexAs0xaRLtIDq9
+         pGiz5zpyODp3xZhLPXEm+6mwm1Mo1zx4GCn+3cDdMxU6j+zaaj8upkXUjQRIoLfswdeT
+         gyABGdByfcgHInk7E0vgg7JLEd8CnwYS0E4keZZfy1NSmfj0RXS9xoIMsMd/VoG8oVa4
+         0Aqp4cMO0d+3r3bia49qrt6Bl743ociPoQxA/OoI7Bcsa0THvX5jx6eRM97NmmjEyB06
+         arEA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1785450462; x=1786055262; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=5roJyEXd7zYUkj2A9s/Sahih0EpxfdZ7m3/sd8D6kWU=;
+        b=kAVr1pfwLotij0D/D1LNuSSV7eWURHJKJ9ODxzZVVUGFEJkqaFm+LPBTf4faSM0vOY
+         9fNS4/9fB4691cD4z+w0fTFJetWOtE6FTN5yN8WqQh5EZJIqHHKaUjatResq//qoYEN0
+         hVXUQ3w/1i+6u8aipLwJZXTDPc4bFRaVFC033swyS9R18K35kYCsKyHRf95dqELAuzLT
+         nGnaw3ZwL10yE7cLYjWA7+E1FJiVyucawHXoy6+aQcRsczQOnezCxO9WwqxmAsGyg3JY
+         SdTHxbiujsnADkJiN+8mxrtKpubgkfZ982rI2V+9fm797IGmsaxzASE8Q9V8dMHNI+xb
+         s9Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785450462; x=1786055262;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=5roJyEXd7zYUkj2A9s/Sahih0EpxfdZ7m3/sd8D6kWU=;
+        b=JABfXN6Jq4JkTWQAhPPPELvn+fb4eylMcF4OG0hCt0/VgSXTAjM+R1JyaY6DJk/IzQ
+         Z0FSi67JHlDqnt0bzCX75G0GNb7zXtyaeZWMbNWeUZUYq0HJCPkkvKdMh7FQVIQqxBxk
+         ZrrakNtfBBQGfbK6Q0MEw5dmEwJSjCC5ZVbPaQK14CHcRpHmxdMCGWoCkSXHKaHesGuK
+         wPnYq7+QI3vs50GzBOFqpCm7aDg6nBh8CFuhQAw720CUGHsb630EJTiOBpkLsFLZR+Ex
+         xMlosVlcQB6MdfOUE6MLTs+ltqx50nZcM3zyLPqmgQfUB1kCIzqiKmFCwpJ5vYsGnBWy
+         txfQ==
+X-Forwarded-Encrypted: i=1; AHgh+Ro+FlONeX8TcURsnnkJRf10YhWtUri34hSNcMtYMG5fx0YjaneiJW1ANHCJFJIyWSfAgDQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwepUYE3yQO/cCx8DnsB4wxR3EkZQBEsLH3CZZMuu+s+E9mmqcz
+	M3JNTtZOAfd5ZQiGBXy7lk/N6DJrP7jV0pwZ+1DDsy6MO6JPObgUv/hW4XYRDF2fxcnjY4SB33X
+	No8SNw+KXgSCd3Ta9rQNlrAjC8gIM7X0=
+X-Gm-Gg: AR+sD12xFkH3ZKXE3CI0Bu34swjz2krDo0V5uLnovZ0H+doeCxXGS4VNeMtyEY5pUsZ
+	NReQcH2bMxYBCAUmDBKXInkCt2UV8pbv9+SKDCMu/c/juI74js5NPunNrIvf7WnXHaZQQ2wQ/Vs
+	xF9upjq8hjT2gqukYM5YY6q2tnNStJ00ZnXbPk1wRSLjrm32uGSKuj1kfeeBcHNAcpW7fjOKUMi
+	fub2hXW98TA0jWroydailjbErK+sSNqBQfErdRj1A7j1NUUUwf4MVysBw30Zsr/wleBv5JflEp1
+	ESfgNLP1tITPB1x23zlat0xRKwJCBAaAS6tLMlrLoc2gFArAtiK/5v9z68TpyKM9vqTnZXKSET8
+	6foVSXwxwXT7oNIWgJ3/9Txl3xe5oR/UhL23uibX7vo3AdkEowMPmzVkwJalx0Bz9
+X-Received: by 2002:a05:6a00:c82:b0:848:4754:28e5 with SMTP id
+ d2e1a72fcca58-84ebc1fdaa9mr3988166b3a.16.1785450462053; Thu, 30 Jul 2026
+ 15:27:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260730-unexport-barriers-v1-1-852f6641abe9@kernel.org>
+References: <20260706172744.3920417-1-puranjay@kernel.org> <20260706172744.3920417-3-puranjay@kernel.org>
+ <CAEf4BzaDSeUxeZmHjXRYXnXDZj8Obwd3rmOsfNygjcXJ0yy5bA@mail.gmail.com> <DK4I97UIL347.3P2KEBO828JK8@gmail.com>
+In-Reply-To: <DK4I97UIL347.3P2KEBO828JK8@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 30 Jul 2026 15:27:27 -0700
+X-Gm-Features: AUfX_mwDesWtdCLE-1Fw6wnAI4608m7zqiXpKFs0ROJhEZiKm1s5xaCdqqVAUCY
+Message-ID: <CAEf4Bza3LeVB-z3jwMdnBGLdjpPr9tZFhGHt5pUwui64ZX66Lw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] uprobes: Switch uretprobes_srcu to SRCU-fast-updown
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Puranjay Mohan <puranjay@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	James Clark <james.clark@linaro.org>, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 30, 2026 at 04:32:46PM +0200, Vlastimil Babka (SUSE) wrote:
-> No module code calls these functions directly. Seems it was always the
-> case. Remove the exports.
-> 
-> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+On Tue, Jul 21, 2026 at 12:44=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Fri Jul 10, 2026 at 11:23 PM CEST, Andrii Nakryiko wrote:
+> > On Mon, Jul 6, 2026 at 10:28=E2=80=AFAM Puranjay Mohan <puranjay@kernel=
+.org> wrote:
+> >>
+> >> uretprobes_srcu currently uses normal SRCU, which issues
+> >> two smp_mb() per read lock/unlock pair. This overhead is
+> >> paid on every uretprobe hit.
+> >>
+> >> Switch to SRCU-fast-updown, which eliminates the per-reader
+> >> memory barriers by moving the ordering cost to the
+> >> grace-period side (synchronize_rcu() instead of smp_mb()).
+> >> This is acceptable because grace periods (uprobe
+> >> unregistration) are infrequent compared to reader-side
+> >> uretprobe hits.
+> >>
+> >> The updown flavor is required because the SRCU read lock is
+> >> taken in prepare_uretprobe() when a return instance is
+> >> created and is held until that return instance is finalized.
+> >> The traced thread returns to user space in between, so the
+> >> lock is inherently released in a different context from
+> >> where it was acquired: on the normal return path via
+> >> uprobe_handle_trampoline() -> hprobe_finalize(), or from
+> >> ri_timer() (expiry) or dup_utask() (fork) via
+> >> hprobe_expire(). srcu_down_read_fast() / srcu_up_read_fast()
+> >> are designed for this acquire-here / release-elsewhere
+> >> pattern and, unlike the same-context srcu_read_lock_fast()
+> >> variant, do not carry the lockdep read-side tracking that
+> >> would warn on it.
+> >>
+> >> The short, same-context SRCU sections in ri_timer() and
+> >> dup_utask() (which guard the uprobe against reuse across the
+> >> hprobe_expire() cmpxchg) instead use guard(srcu_fast_updown)
+> >> for proper lockdep coverage.
+> >>
+> >> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> >> ---
+> >>  include/linux/uprobes.h |  5 +++--
+> >>  kernel/events/uprobes.c | 29 +++++++++++++++++------------
+> >>  2 files changed, 20 insertions(+), 14 deletions(-)
+> >>
+> >
+> > Very straightforward replacement and will improve performance, thanks!
+> > LGTM. Peter or Mingo, I assume you guys will want to route this
+> > through your tip tree, right?
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+>
+> Hi Peter, Ingo,
+>
+> Gentle ping for this.
+>
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Another ping, please consider applying, thanks!
 
-Which reminds me...  Are you guys interested in taking the kfree_rcu()
-test code from kernel/rcu/rcuscale.c?  See for example the kfree_rcu_test
-module parameter.
-
-							Thanx, Paul
-
-> ---
-> Based on slab/for-7.3/kfree_rcu_nolock
-> ---
->  mm/slab_common.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 6750dfa27367..cd155ffc2762 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1329,14 +1329,12 @@ void kvfree_rcu_barrier(void)
->  	deferred_work_barrier();
->  	rcu_barrier();
->  }
-> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
->  
->  void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
->  {
->  	deferred_work_barrier();
->  	rcu_barrier();
->  }
-> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
->  
->  void __init kvfree_rcu_init(void)
->  {
-> @@ -2163,7 +2161,6 @@ void kvfree_rcu_barrier(void)
->  	flush_all_rcu_sheaves();
->  	__kvfree_rcu_barrier();
->  }
-> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
->  
->  /**
->   * kvfree_rcu_barrier_on_cache - Wait for in-flight kvfree_rcu() calls on a
-> @@ -2186,7 +2183,6 @@ void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
->  	rcu_barrier();
->  	__kvfree_rcu_barrier();
->  }
-> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
->  
->  static unsigned long
->  kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
-> 
-> ---
-> base-commit: b01f6ed9ff0c4581fc669044fa5b82a93b4ef144
-> change-id: 20260730-unexport-barriers-439b3f69f791
-> 
-> 
+> > [...]
+>
