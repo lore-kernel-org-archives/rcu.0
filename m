@@ -1,157 +1,155 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A1E3546E6;
-	Thu, 30 Jul 2026 03:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87E3367F2F;
+	Thu, 30 Jul 2026 03:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785380828; cv=none; b=cxzsGTiHquaRExxHrU/cMwEWXGFgnqhRbVWiVqRoUbHF7uS+702JFm4ihgoNnaXwVJ4QbiAruNTL+qlRvt/nQKxFyooJ0fkhy0OWvnoJ2G1NkzWq61R89kHh8zPViwLnZwhYYodiQjEid0OHSNzE3W2V0EZIjVxSrqmUQh6af3o=
+	t=1785380933; cv=none; b=Z6qiImiM3/IxMNlA5FDoWcndwN0G8v27joahHyIwa3YTlSaED2ZkQchi7QTiE+zOG2eB3VvdS+6dZKLeTpx9aPQ4D2mD1S+sWG5/wzHYPjnkTQe1tZXKXqdSv2pAYMOTdnYSR9CX1GPU0tYhTM0BySKvuNrzU+XqpqNeE0SLbhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785380828; c=relaxed/simple;
-	bh=sCY+K4DkAjhiR6dYdfx2h2rqq90TqChd6e8Mt6L7qVU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Du9C5OUx08/Y+KBumH8zY3xOrvZv3t1ReOOedGjShoYXQsIeHto8b+IW/JbvljKdwSeyKityfyzYRZWHJk7LuG578cp2Ow2qnckKuy1v+Wog5prsq3LA4JQeZFwtUbcjwkCPs+fhD2G13hAgfNZI9n262OQIAANZYCTY61Ad5kA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E51sKSfe; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785380933; c=relaxed/simple;
+	bh=RXUJcPQ0nd7RDchKXPgt+jkCnXJ1MtGPAWTqSFTEyXE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BdV2d1aXzewQ2hiiaO7JvVIK9y0WFx0UwzZ7tcMVMuHuacUKMojpw2+Z1HEww1vpf3+F886C7Lh5ubx0i5NweAcfpRXkyB9cbWb0gd8vR7pMwCQcMAkoN6SqUIL9x2vCjUVY4sXPsFFKCdLBYTrGdZl8m4IDnoaimzRKAjHlV3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fkb51iDq; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E51sKSfe"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B69CB1F000E9;
-	Thu, 30 Jul 2026 03:07:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fkb51iDq"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30B9F1F000E9;
+	Thu, 30 Jul 2026 03:08:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785380826;
-	bh=fjAqdmIhpZ1vVpExo2y/0q1CHCN+4GtNv2IMQGVhBK0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=E51sKSfe7wtAhBUuw01PkEfbc3AVabEdl4M0CtOO8olC8Pgd1l4x6feEwrQUyyCVz
-	 83A2GvgUZNEy8P5hV0LPfFp1MPY2QfBiMJQnX5i+J2soBwzyqyXBP95cC7yvpEGDgY
-	 qJ35qqfL90fJwgg7niIVAv6nTF5/QtwDYHsrxTzwCna8RGXsJl2k0yxSsiGNQsnAGR
-	 X17041xB4/K0GHxPTiSAa/J8tPpykxJj0f1KFUzqZoJxKCEE8q9WvKwhaPvzayQIFP
-	 uQCOQwNvWrdEKLZgEdc5CpDBjq7KaFNxtriCRgbdV4bHpXSD5CV2JZahPh+JwNI/CA
-	 CTX3vcRmUe7rQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 76A50CE1402; Wed, 29 Jul 2026 20:07:06 -0700 (PDT)
-Date: Wed, 29 Jul 2026 20:07:06 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Onur =?iso-8859-1?Q?=D6zkan?= <work@onurozkan.dev>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	Matt Fleming <mfleming@cloudflare.com>,
-	"Harry Yoo (Oracle)" <harry@kernel.org>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH 0/6] rcu,srcu: Make call_rcu()/call_srcu() safe from any
- context
-Message-ID: <0096fbf8-c3be-4388-a60b-1968664e4f27@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260729162207.1567770-1-puranjay@kernel.org>
+	s=k20260515; t=1785380931;
+	bh=JFYplbxEhQ00hEvZ5hng6YDKKuCP2Lh5XB9nlXgKZ7o=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Fkb51iDqkqLHhVoJ5kwF3219gubEw0+gbN9PTrmEy6rMkapWH7oDh37pFO+af77/p
+	 kahJV9sx2eIC5HeZEEK5a4hik06jV5Zj94qDu1RFbxTuppTEsUCTMQco42MDHgMdnn
+	 4B5D1ck16rJRGRY8IfDwuJwucgu6QHd0hpvL1J3gEXQ1MmVC7ufOXWqkqyu1ph7nZ8
+	 tjhCBvGb8Ow0Zy8k5pqlD5tmdBpqIjJZX4uOT8jHL61KSaS3rYAcz1sDDv1N14ff0T
+	 85D3zm7H5b/fEVJBzh3I8jE7+3KKEuFiUGgOScu24FS2KR4fTV0BwKMeqOlHT0qAM7
+	 tD7nZxZ/SveFA==
+Message-ID: <f97853e9-3021-4f20-81d3-4bb710ca444a@kernel.org>
+Date: Thu, 30 Jul 2026 12:08:44 +0900
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260729162207.1567770-1-puranjay@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/8] mm/slab: introduce kfree_rcu_nolock() and improve
+ slub_kunit coverage
+To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Hao Li <hao.li@linux.dev>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>, Amery Hung <ameryhung@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Pedro Falcato <pfalcato@suse.de>, Suren Baghdasaryan <surenb@google.com>,
+ Shengming Hu <hu.shengming@zte.com.cn>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, bpf@vger.kernel.org
+References: <20260729-kfree_rcu_nolock-v5-0-a28cdcda9673@kernel.org>
+ <5342124c-4847-4e93-92a4-f3512928c4d1@kernel.org>
+Content-Language: en-US
+From: Harry Yoo <harry@kernel.org>
+In-Reply-To: <5342124c-4847-4e93-92a4-f3512928c4d1@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jul 29, 2026 at 09:21:59AM -0700, Puranjay Mohan wrote:
-> call_rcu() and call_srcu() only ever touch their per-CPU callback lists
-> with interrupts disabled: the enqueue runs under local_irq_save() (and the
-> nocb locks when offloaded), and so do callback invocation and grace-period
-> work.  That is fine as long as call_rcu() itself is invoked with
-> interrupts enabled, but it is not always.  An NMI handler can call
-> call_rcu(), and instrumentation can reenter it.  The case that prompted
-> this is a BPF program attached to rcu_segcblist_enqueue() that frees an
-> object: the free reaches call_rcu_tasks_trace(), which is call_srcu()
-> under the hood, back on the same CPU with the srcu_data lock already held,
-> and it deadlocks on that lock.  Either way, enqueuing directly can corrupt
-> the list or deadlock.
-> 
-> Rather than scatter context checks through the enqueue, make it defer
-> whenever interrupts are disabled: stage the callback on a per-CPU lockless
-> list and re-issue it from an irq_work once interrupts are back on, going
-> straight to the enqueue helper so the re-issue cannot defer again.  Only
-> the drain side takes a lock; the staging is a bare llist_add() and stays
-> safe from NMI.  This is behind a new hidden CONFIG_RCU_DEFER, which is set
-> wherever a reentrant enqueue is possible (HAVE_NMI, KPROBES,
-> FUNCTION_TRACER or TRACEPOINTS); without it call_rcu() enqueues exactly as
-> before.
-> 
-> CPU offline is the awkward part.  A callback can be deferred very late in
-> the outgoing CPU's teardown -- from do_idle() or cpuhp_ap_report_dead(),
-> past the CPUHP_AP_SMPCFD_DYING flush that would otherwise run the irq_work
-> -- so the irq_work can no longer run there to re-issue it.  rcu_barrier()
-> and srcu_barrier() therefore drain the deferred lists themselves before
-> they wait: for online CPUs they wait the irq_work out, and for offline
-> ones they drain the list directly, since that irq_work may never run
-> again.  rcutree_migrate_callbacks() drains the outgoing CPU's list too, so
-> a late deferral still lands on a callback list even when nobody calls a
-> barrier.  To keep those three drainers from stepping on each other, the
-> drain holds a per-CPU raw lock across the llist_del_all() and the
-> re-issue, so a drainer never returns having pulled callbacks off the
-> deferred list but not yet put them on a callback list.  Every lock the
-> re-issue touches (nocb, rcu_node, srcu_data) is already raw, so the
-> nesting is fine.
-> 
-> The irq_work is IRQ_WORK_INIT_HARD.  It is not needed for correctness, but
-> a non-HARD irq_work runs from a kthread on PREEMPT_RT and can be delayed
-> under load, letting deferred callbacks pile up; running the re-issue in
-> hard-irq context keeps that from turning into an OOM.
-> 
-> Patches 1 and 2 do Tree and Tiny RCU, 3 and 4 Tree and Tiny SRCU.  Patch 5
-> teaches rcutorture to issue ->call() from a perf-overflow NMI -- the
-> nmi_calls parameter, on by default -- on the flavors that advertise it,
-> and checks that every callback issued from NMI is later invoked.  Patch 6
-> adds the BPF reentry reproducer described above.
 
-Nice!  I applied this series to -rcu for testing and review.  Patch 6
-might want to go up a different path, but let's see how it goes.
-If it goes via -rcu, it will need an appropriate ack.
 
-							Thanx, Paul
+On 7/29/26 11:14 PM, Vlastimil Babka (SUSE) wrote:
+> On 7/29/26 10:20, Harry Yoo (Oracle) wrote:
+> 
+> ...
+> 
+>> 8:  8e69c83a1e52 ! 8:  aeaf2ab60046 slub_kunit: extend the test for kfree_rcu_nolock()
+>>     @@ lib/tests/slub_kunit.c: struct test_nolock_context {
+>>      -			gfp_t gfp = (i % 2) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
+>>      +			gfp_t gfp = (i & 1) ? GFP_KERNEL : GFP_KERNEL_ACCOUNT;
+>>       
+>>     - 			objects[j] = kmalloc_obj(*objects[j], gfp);
+>>     +-			objects[j] = kmalloc(64, gfp);
+>>     ++			objects[j] = kmalloc_obj(*objects[j], gfp);
+>>       			if (!objects[j]) {
+>>     + 				j--;
+>>     + 				while (j >= 0)
+>>      @@ lib/tests/slub_kunit.c: static void test_kmalloc_kfree(void)
+>>       			}
+>>       		}
+>>
+>> Link: https://lore.kernel.org/linux-mm/20260427-nolock-api-fix-v2-0-a6b83a92d9a4@kernel.org [1]
+>> Link: https://lore.kernel.org/linux-mm/6edebc2b-5f5a-4b9c-9a4c-564310acee1b@kernel.org  [2]
+>> Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+>> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
+>> Link: https://lore.kernel.org/linux-mm/872bd673-3d45-4111-8a41-31185db3ece5@kernel.org
+>> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
+>> Link: https://lore.kernel.org/linux-mm/6811cc17-8ee4-48c8-8cbf-6bf4d9f98162@kernel.org [1]
+>> Link: https://lore.kernel.org/linux-mm/40591888-3a87-433e-b3d2-cda1cab543be@kernel.org [2]
+>> Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+>> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
+>> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
+>> Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
+> 
+> Wonder what produced this weird block of assorted trailers? "b4 prep
+> --compare-to vX" never did that for me?
 
-> Puranjay Mohan (6):
->   rcu: Make call_rcu() safe to call from any context
->   rcu: Make Tiny call_rcu() safe to call from any context
->   srcu: Make call_srcu() safe to call from any context
->   srcu: Make Tiny call_srcu() safe to call from any context
->   rcutorture: Exercise ->call() from NMI context
->   selftests/bpf: Add a call_srcu() re-entry reproducer
+Interesting. I checked it again with `b4 prep --compare-to v4`, but the
+command didn't produce this. Looking at the cover letter
+`b4 prep --edit-cover` It's not even there.
+
+Probably it was produced during b4 send --no-sign? hmm...
+
+>> ---
+>> Harry Yoo (Oracle) (8):
+>>       mm/slab, slub_kunit: register kprobe to trigger _nolock APIs
+>>       mm/slab: handle the !allow_spin case in kfree_rcu_sheaf()
+>>       mm/slab: use call_rcu() in unknown context if irqs are enabled
+>>       mm/slab: extend deferred free mechanism to handle rcu sheaves
+>>       mm/slab: allow kfree_rcu_sheaf() on PREEMPT_RT
+>>       mm/slab: introduce struct kvfree_rcu_head for kvfree_rcu batching
+>>       mm/slab: introduce kfree_rcu_nolock()
+>>       slub_kunit: extend the test for kfree_rcu_nolock()
+>>
+>>  include/linux/rcupdate.h   |  32 ++++++-
+>>  include/linux/slab.h       |  16 +---
+>>  include/linux/types.h      |   8 ++
+>>  include/trace/events/rcu.h |   2 +-
+>>  lib/tests/slub_kunit.c     | 190 ++++++++++++++++++++++++++++-----------
+>>  mm/slab.h                  |  52 ++++++++++-
+>>  mm/slab_common.c           |  81 +++++++++++++----
+>>  mm/slub.c                  | 220 ++++++++++++++++++++++++++++-----------------
+>>  8 files changed, 433 insertions(+), 168 deletions(-)
 > 
->  include/linux/srcutiny.h                      |  11 +-
->  include/linux/srcutree.h                      |   4 +
->  kernel/rcu/Kconfig                            |   6 +
->  kernel/rcu/rcu.h                              |  18 +++
->  kernel/rcu/rcutorture.c                       | 115 +++++++++++++++
->  kernel/rcu/srcutiny.c                         |  53 ++++++-
->  kernel/rcu/srcutree.c                         | 138 +++++++++++++++++-
->  kernel/rcu/tiny.c                             | 101 ++++++++++---
->  kernel/rcu/tree.c                             | 122 ++++++++++++++--
->  kernel/rcu/tree.h                             |   5 +
->  .../selftests/bpf/prog_tests/rcu_reentry.c    |  58 ++++++++
->  .../testing/selftests/bpf/progs/rcu_reentry.c |  45 ++++++
->  12 files changed, 636 insertions(+), 40 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
->  create mode 100644 tools/testing/selftests/bpf/progs/rcu_reentry.c
-> 
-> 
-> base-commit: 9dc303e69bcd49f9668ca090ae45325269531fbb
-> -- 
-> 2.53.0-Meta
-> 
+> Applied to slab/for-7.3/kfree_rcu_nolock and merged go slab/for-next, thanks!
+
+Thanks a lot!
+
+> Used slab/for-next-fixes as a base for a better topic branch indepdencence.
+
+Ah, I see. thanks.
+
+So slab/for-next is not a good base unless it depends too much on
+existing commits on the branch?
+
+And usually it's better to use the base (slab/for-next-fixes,
+in this case) of slab/for-next as a base?
+
+>> ---
+>> base-commit: ffc64805cebac330b2a60b2f1f144fcc35b8ab46
+>> change-id: 20260615-kfree_rcu_nolock-e5502555992f
+>>
+>> Best regards,
+
+-- 
+Cheers,
+Harry / Hyeonggon
