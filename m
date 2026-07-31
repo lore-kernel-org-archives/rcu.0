@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F1A48986C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A13C2C0F6D;
 	Fri, 31 Jul 2026 01:04:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785459846; cv=none; b=A6K4QqYRkbclvW0RVCbomCCK8BzQ46z71jheThIrHFSNFK8G/80rY6e0wvJYiRveUzKsk+X1OMVULCMqZV0/rK2Qd+NyxDs46fFuMHwKOETs22ZZYXUVVc0yzA5HFr86IGrYr5DGUi4px7w7dyBoCEuw6iSC7nmqXtI8PTgo6is=
+	t=1785459847; cv=none; b=WmlkDbheX0qKyGq+UFhFSPgoldSWYAoG72pXeBJnerNRtaWlrU4yGe3hXGUIslXXFs9GQIFJJrdXmru2XCrtA/uM9nDeyBzeod1vVweV3okPLjBfNbcfJ+mKV7GxLZ3KRJBQZG5XJD3gbWQj6vVrmwQT9djl7/gXWB82KzTRCB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785459846; c=relaxed/simple;
-	bh=5llBbBwxLKYol1TJ1pnv214WRC7ABWW8LA58eihPHbA=;
+	s=arc-20240116; t=1785459847; c=relaxed/simple;
+	bh=4GN8E6kKtIf3UE7YFBchKGzEHDGtnnAHGAVtBMwydhc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Mvh0WKd4HmhgWok5grLUeZ4JSPv8hWZMrL9qkF6GKz7F/Py0CUnxAagc6R8++T3pRrcRz2C/G5Za1EDelvFFbn1Nhu6JQ024mlVWl5DKYJDGgS8biSmk4oSFS5/UH6kYwrCo5dfVXevrBO7jVCrEBIjzc4hbzBxtB8icyx4SPqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X7RP3nGl; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=j3TvilKxqdCZ/bX94duHPFiAOpnCNET2wKHvumVzB5eC9Tp7f358VICL4D44TMeHzXmi8+JxZ/sVjhiZF27REt3u4vclIH87axPznUzbddnApUiumnh3CvmtSnL/gqWYe25NTccwP3ZbfcsbDbGJFkp/6TJOdduxvT+k14IiYhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LY9hGLDp; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X7RP3nGl"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F1841F00ADE;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LY9hGLDp"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 187BE1F01558;
 	Fri, 31 Jul 2026 01:04:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1785459844;
-	bh=JLZa/Dd+sC18+73+Ra12WgAISql/ToNz9XBkZZW556k=;
+	bh=dqH4f2gQvM3neNCaqOlG30lCQN2dfQawkc5ucXKZqXk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=X7RP3nGldjnT59WSYztj9OdSIIPanwiy3chCVY9CCfp2fQwd2dbIjyXrq+zMtB030
-	 1ME83VmLPxJr1a7sMfj+7K91TzoAKg38VovGXQtPG4OQZOsRHO+b0e9NvHmApRWBAe
-	 12Q+N+YdY8USRzoWyHogS5nx4wlSmKtovHd2SPhbehri78yItWDJ+OE0JZsiHWoCH7
-	 nZHXNWX3b+3ft9R2M1hYNR8qQEaHyvOyUIXGIzfNMY5rZ6SqSBcEByttyMlNc2UCD3
-	 sDH+aE8NjlPtL22AJ5QTCwfWhCYY8IT5bVXMJ4lawqXhYIHHxDs/zEOjpxkBBwL9hH
-	 2I320diEt1Zyg==
+	b=LY9hGLDpsaQbNHg2puy7x2PbOmKB7g51AvgVMY2p60bS5J5XVoqHzigetQu+mYXwp
+	 9DdHS0qp1OijuTGcXBon9Cu9OXwY78Txko45tw9rmxfgot1GsQPXiYjWlvWs0hBxx4
+	 U4FOQoo/d0ESROgI+cHnMe3P2M2sz4CWqNHtXDZuOsiJ9a6gFDeIt0de4c0X1Cs3Jh
+	 gCNXWB/Eth/PYmTwaIfjh+20ULuU83BczJIN1ojAysCS7yPZOIdvfWQeAXakUBqlqK
+	 7d7Fl04Yn9H4Fe6Lf9Jtguxzyfhp9mo5Jqrwp3QvJGFgss92u6v87ueAvxgXmZYWSD
+	 h8nbp3kjZN5qg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 99A60CE1059; Thu, 30 Jul 2026 18:04:03 -0700 (PDT)
+	id 9F082CE14D9; Thu, 30 Jul 2026 18:04:03 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -35,9 +35,9 @@ Cc: linux-kernel@vger.kernel.org,
 	rostedt@goodmis.org,
 	Zqiang <qiang.zhang@linux.dev>,
 	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC 07/10] rcu-tasks: Dump rtpcp->lazy_timer status in show_rcu_tasks_generic_gp_kthread()
-Date: Thu, 30 Jul 2026 18:03:58 -0700
-Message-Id: <20260731010401.3531631-7-paulmck@kernel.org>
+Subject: [PATCH RFC 09/10] rcu-tasks: Rename tasks_rcu_exit_srcu_stall_timer to tasks_rcu_exit_stall_timer
+Date: Thu, 30 Jul 2026 18:04:00 -0700
+Message-Id: <20260731010401.3531631-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c50fb3e6-8d9f-4311-953e-a4703ba1e863@paulmck-laptop>
 References: <c50fb3e6-8d9f-4311-953e-a4703ba1e863@paulmck-laptop>
@@ -51,57 +51,72 @@ Content-Transfer-Encoding: 8bit
 
 From: Zqiang <qiang.zhang@linux.dev>
 
-Add 'P' flag to the diagnostic line to indicate whether any per-cpu
-rtpcp's lazy_timer is pending.  this helps diagnose stalls where
-rcu-task callbacks are queued but the kthread stay sleep because
-the lazy_timer has not yet fired and no grace period has started.
-
-The output is as follows:
-
-[   31.319540][   T77] call_rcu_tasks() has failed boot-time tests.
-[   31.320205][   T77] rcu_tasks: RTGS_WAIT_CBS(11) since 7518 g:4 i:0 kCuUP l:150000
+This 'commit 1612160b9127 ("rcu-tasks: Eliminate deadlocks involving
+do_exit() and RCU tasks")' has reimplemented the rcu_tasks_postscan(),
+and the synchronize_srcu() has been removed, this commit therefore
+rename tasks_rcu_exit_srcu_stall_timer to tasks_rcu_exit_stall_timer.
 
 Signed-off-by: Zqiang <qiang.zhang@linux.dev>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ kernel/rcu/tasks.h | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index bc49698a3bcc14..0306a0568f0144 100644
+index 0306a0568f0144..fce57d90db1a60 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -723,6 +723,7 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
- 	bool havecbs = false;
- 	bool haveurgent = false;
- 	bool haveurgentcbs = false;
-+	bool havependtimer = false;
+@@ -155,8 +155,8 @@ static struct rcu_tasks rt_name =							\
+ #ifdef CONFIG_TASKS_RCU
  
- 	for_each_possible_cpu(cpu) {
- 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
-@@ -733,10 +734,12 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
- 			haveurgent = true;
- 		if (!data_race(rcu_segcblist_empty(&rtpcp->cblist)) && data_race(rtpcp->urgent_gp))
- 			haveurgentcbs = true;
--		if (havecbs && haveurgent && haveurgentcbs)
-+		if (data_race(timer_pending(&rtpcp->lazy_timer)))
-+			havependtimer = true;
-+		if (havecbs && haveurgent && haveurgentcbs && havependtimer)
- 			break;
+ /* Report delay of scan exiting tasklist in rcu_tasks_postscan(). */
+-static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
+-static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
++static void tasks_rcu_exit_stall(struct timer_list *unused);
++static DEFINE_TIMER(tasks_rcu_exit_stall_timer, tasks_rcu_exit_stall);
+ #endif
+ 
+ /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
+@@ -1032,8 +1032,8 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ 	int rtsi = READ_ONCE(rcu_task_stall_info);
+ 
+ 	if (!IS_ENABLED(CONFIG_TINY_RCU)) {
+-		tasks_rcu_exit_srcu_stall_timer.expires = jiffies + rtsi;
+-		add_timer(&tasks_rcu_exit_srcu_stall_timer);
++		tasks_rcu_exit_stall_timer.expires = jiffies + rtsi;
++		add_timer(&tasks_rcu_exit_stall_timer);
  	}
--	pr_info("%s: %s(%d) since %lu g:%lu i:%lu %c%c%c%c l:%lu %s\n",
-+	pr_info("%s: %s(%d) since %lu g:%lu i:%lu %c%c%c%c%c l:%lu %s\n",
- 		rtp->kname,
- 		tasks_gp_state_getname(rtp), data_race(rtp->gp_state),
- 		jiffies - data_race(rtp->gp_jiffies),
-@@ -746,6 +749,7 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
- 		".C"[havecbs],
- 		".u"[haveurgent],
- 		".U"[haveurgentcbs],
-+		".P"[havependtimer],
- 		rtp->lazy_jiffies,
- 		s);
+ 
+ 	/*
+@@ -1086,7 +1086,7 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ 	}
+ 
+ 	if (!IS_ENABLED(CONFIG_TINY_RCU))
+-		timer_delete_sync(&tasks_rcu_exit_srcu_stall_timer);
++		timer_delete_sync(&tasks_rcu_exit_stall_timer);
  }
+ 
+ /* See if tasks are still holding out, complain if so. */
+@@ -1158,7 +1158,7 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
+ 	synchronize_rcu();
+ }
+ 
+-static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
++static void tasks_rcu_exit_stall(struct timer_list *unused)
+ {
+ #ifndef CONFIG_TINY_RCU
+ 	int rtsi;
+@@ -1168,8 +1168,8 @@ static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
+ 		__func__, rcu_tasks.kname, rcu_tasks.tasks_gp_seq,
+ 		tasks_gp_state_getname(&rcu_tasks), jiffies - rcu_tasks.gp_jiffies);
+ 	pr_info("Please check any exiting tasks stuck between calls to exit_tasks_rcu_start() and exit_tasks_rcu_finish()\n");
+-	tasks_rcu_exit_srcu_stall_timer.expires = jiffies + rtsi;
+-	add_timer(&tasks_rcu_exit_srcu_stall_timer);
++	tasks_rcu_exit_stall_timer.expires = jiffies + rtsi;
++	add_timer(&tasks_rcu_exit_stall_timer);
+ #endif // #ifndef CONFIG_TINY_RCU
+ }
+ 
 -- 
 2.40.1
 
