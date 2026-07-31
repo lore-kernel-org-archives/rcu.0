@@ -1,47 +1,45 @@
-Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2826644606A;
-	Fri, 31 Jul 2026 17:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54FB3420E9F;
+	Fri, 31 Jul 2026 18:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785519967; cv=none; b=TaF9Gn8l3JuK+3k2uJ+vQD0rYQ24dZxz/XwQL408LH+v32yh1uXkqPuDGt4KM+XF5PamjwuNr/hlt33RYAi8xNhOSiFpntGUqXCo82UNGqpHcAwte3wktqX+xKBOexY6/U5PUV+Xw89YV0qHm3En6QUVeO3BMsNUUuo8emM0X9I=
+	t=1785520886; cv=none; b=G1snPmW+mSeIMRcG5DrMRBWnO2W9TFDyRGPMyhBuPTsIyO9Bo8Zp/Kl4kaLPcfws3jU7i5x0e+ryhxdnriSERSWY6OWswHjHZ1+H8lqyJRTxfoXtS8hbEOT+lckXUORhgAVx0DU+kgjJqAhNpq9kGYY3YD+hG5+hcycL927PLAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785519967; c=relaxed/simple;
-	bh=E8GbfTK4jYzSVrrPrktZPc2gGB0GxAKAuonOv+GCqf0=;
+	s=arc-20240116; t=1785520886; c=relaxed/simple;
+	bh=7JVSnnTR4SzkXlMH5eqzaL+pZ6rwY/ULXg6tcZlz8Ac=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jdt1cAIK/2JDb9FasqW8WBKRGpBm0D0XAgM+e63xQOTHJYB18MK60jMjz8ZnjR1d69BiJ5MZySvbhl7J9u4Qt9h9I2tAwUX/+l9MJeIuTKeQQUdx5r+OKF5y0Dqyain74/ijqE2anipjXF5gnMsDcsLXNw/IFnqsPB/q2nkj5oA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=qWUNMVQ2; arc=none smtp.client-ip=82.195.75.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=debian.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=KYE6Jn4M4F/bvBLbMjpfG/I3UQ4vohA8lRDC9PtiLO/Ad+wWUMT6RkfVmC73CajR7+m5u91VaMptUuhXew7HV6MzwvzcYwqVbUHIHUJahB1r0ZzMjbjshY9JsmQiciwUaEzfabzjMVqrBwfefC5A2yuZyHDf3bS/jjkfA8Z+zwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L7XKIsBY; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="qWUNMVQ2"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-	s=smtpauto.stravinsky; h=X-Debian-User:In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=1cyP0g1IYzdHkjLS0GOwgZb8r8AIfzKv5ky9GYAbfhc=; b=qWUNMVQ29GiQV2ldHDgHAbFWMJ
-	UVRrlDG88qQmSAA8miF2IYfx0DnUru7wAmG1lv9rv6J+NjlSFFuj9llKdlFgvkHrZg+WT4swffRXW
-	/MGpiWYohN8Zn7+UueEUzQjnip9SWdQ+GtWs1D24P81kuyeuhygqHyHwbiutHcYlu6sBVCLu6KnS3
-	u9AdYZ79UelseiS260qdZkZOVUZwjXF/U31c5pLBXnpu/4QeyNdVBM2m26xEaJ1WCx0FYP2IwvtLF
-	3RIPXRU2EpD1oGLzSMVdmjwRjEXg6e0JdAUvDXT+OiNeTNBbifsfoXP6Flac+gaeUKyRqiszGzhEN
-	MmhcbOKQ==;
-Received: from authenticated-user
-	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <leitao@debian.org>)
-	id 1wprIz-00ACFB-0r;
-	Fri, 31 Jul 2026 17:45:57 +0000
-Date: Fri, 31 Jul 2026 10:45:51 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Zqiang <qiang.zhang@linux.dev>
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org, 
-	joelagnelf@nvidia.com, urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] srcu: Queue sdp->work when the delay timer is
- successfully deleted
-Message-ID: <amzfBSSGyVF0vyQ9@gmail.com>
-References: <20260709100602.821-1-qiang.zhang@linux.dev>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L7XKIsBY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E78EC1F00AC4;
+	Fri, 31 Jul 2026 18:01:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785520884;
+	bh=MhrQuKcKot42xAdzWYtgn0nEP9ckiS+8jtKZt9/qrRg=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=L7XKIsBYpV0kMlLXACZpQC3nHdLdem2VHpeXHWxdJWX7zPOsmwG8mvzgcUcjxKAO8
+	 6jn76yTY+aOcNx0aXQrKPgpwxkyIOYrdAlpgw7QBhs+7bHNbH3R+8FYDTt/4SrIKAm
+	 vwDTj9k/zrwa3jJP36G0C2tpbj6AVj8ri8XqqEWtSaJi0EnHO2CX8tNIJVyELZXwNo
+	 /i85f7ffbuVwBbph7SoO1EERV2uZC8ioyPrOp3vxToryh8nnhm5a+ndrxaHZ+bfx0K
+	 OUkMaO1VH+SaDqNnwpPv9vcjFirFPLv40Un7JoHQhzP6bn5HM70lwkdJYGbLVnkrRn
+	 x615b4rX3GSig==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id A3694CE11BE; Fri, 31 Jul 2026 11:01:24 -0700 (PDT)
+Date: Fri, 31 Jul 2026 11:01:24 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Puranjay Mohan <puranjay@kernel.org>,
+	Usama Arif <usama.arif@linux.dev>
+Subject: Re: [PATCH v2 06/13] rcutorture: Add nwriters module parameter
+Message-ID: <389782a8-9f51-4e92-83cc-3737d1bba65e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <d1db6e52-06c2-401d-b6fe-85aa588196d8@paulmck-laptop>
+ <20260731010719.3531912-6-paulmck@kernel.org>
+ <amxauiJZab9_3OKr@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -50,84 +48,56 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260709100602.821-1-qiang.zhang@linux.dev>
-X-Debian-User: leitao
+In-Reply-To: <amxauiJZab9_3OKr@gmail.com>
 
-Hello Zqiang,
-
-On Thu, Jul 09, 2026 at 06:06:02PM +0800, Zqiang wrote:
-> In the cleanup_srcu_struct(), when iterating over per-cpu's srcu_data,
-> the timer_delete_sync(&sdp->delay_work) is called to cancel the delay
-> timer before flush_work(&sdp->work).
+On Fri, Jul 31, 2026 at 01:22:19AM -0700, Breno Leitao wrote:
+> On Thu, Jul 30, 2026 at 06:07:12PM -0700, Paul E. McKenney wrote:
+> > Believe it or not, there are people who would like to run rcutorture
+> > without actually torturing RCU.  For example, some people would like to
+> > induce various types of stall warnings without placing any unnecessary
+> > additional overhead on their systems running in production.  And
+> > rcutorture provides the stall_cpu, stall_cpu_holdoff, stall_no_softlockup,
+> > stall_cpu_irqsoff, stall_cpu_block, and stall_cpu_repeat module parameters
+> > in order to allow the user to force numerous types of stalls.  In addition,
+> > rcutorture provides a great number of other module parameters to allow the
+> > user to reduce other overhead.
+> > 
+> > But unfortunately, there is no way to turn of the rcu_torture_writer()
+> > portion of this torture test, which on my x86 laptop consumes somewhere
+> > between 40% and 45% of a CPU.  Although this is quite lightweight for a
+> > torture test, it is not welcome on systems running production workloads.
+> > This commit therefore adds an nwriters module parameter that defaults
+> > to 1 but can be set to 0 in order to disable the rcu_torture_writer()
+> > portion of the torture test, but that cannot be set to any other value
+> > (that is what the fakewriters module parameter is for!).  This reduces
+> > the overhead to well under 1% of a CPU, which is much more likely to be
+> > compatible with production workloads.
+> > 
+> > Reported-by: Breno Leitao <leitao@debian.org>
+> > Reported-by: Puranjay Mohan <puranjay@kernel.org>
+> > Reported-by: Usama Arif <usama.arif@linux.dev>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> However, if the timer_delete_sync() returns 1 means that it successfully
-> deleted an pending timer before it had a chance to fire, also means that
-> the sdp->work cannot be queued, the subsequent flush_work(&sdp->work)
-> will returns immediately without waiting for anything, this causes SRCU
-> callbacks to not be processed.
+> Reviewed-by: Breno Leitao <leitao@debian.org>
 > 
-> Fix this by checking the return value of timer_delete_sync(), if it
-> returns 1, explicitly queue sdp->work so that the following flush_work()
-> can correctly wait for the work to complete.
+> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> ...
+> > +torture_param(bool, nwriters, 1, "Number of RCU writer threads (0 or 1)");
 > 
-> Signed-off-by: Zqiang <qiang.zhang@linux.dev>
-> ---
->  kernel/rcu/srcutree.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> It looks like you used `int` for the same parameter in hazptrtorure.c
+> and bool here
 > 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 7c2f7cc131f7..02c322b7c6f1 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -725,7 +725,11 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
->  	for_each_possible_cpu(cpu) {
->  		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
->  
-> -		timer_delete_sync(&sdp->delay_work);
-> +		//In most scenarios, calling srcu_barrier before cleanup
-> +		//will not trigger WARN_ON().
-> +		if (WARN_ON(timer_delete_sync(&sdp->delay_work)) &&
-> +					rcu_cpu_beenfullyonline(sdp->cpu))
-> +			queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
+> 	torture_param(int, nwriters, 1, "Number of hazard-pointer writer threads, 0 or 1");
+> 
+> Needeless to say that bool is more appropriate, and you don't need to
+> check it later.
+> 
+> 	WARN_ON(IS_BUILTIN(CONFIG_HAZPTR_TORTURE_TEST) && nwriters != 1);
 
-I started seeing this on my tests, it is not trivial to decode this one,
-but, I can try harder if _really_ needed.
+Fair point!  Although the check is because I didn't think that it made
+sense to do a built-in test without any writers.  Which sounds a bit
+silly now.
 
- 07:11:44  Invalid logical block size (65535)
-           Invalid logical block size (256)
- 07:11:45  WARNING: kernel/rcu/srcutree.c:706 at cleanup_srcu_struct+0x408/0x7e8, CPU#50: stress-ng-loop/1233713  ^[[36m[warn]^[[0m
-           Modules linked in: sch_htb(E) cls_u32(E) cls_cgroup(E) cls_basic(E) act_police(E) act_mirred(E) act_bpf(E) sch_fq(E) br_netfilter(E) udp_diag(E) i
-           CPU: 50 UID: 0 PID: 1233713 Comm: stress-ng-loop Kdump: loaded Tainted: G            E       7.2.0-rc5-next-20260730upstream-baseline #1 PREEMPT(f
-           Tainted: [E]=UNSIGNED_MODULE
-           pstate: 03401009 (nzcv daif +PAN -UAO +TCO +DIT +SSBS BTYPE=--)
-           pc : cleanup_srcu_struct+0x408/0x7e8
-           lr : cleanup_srcu_struct+0x3dc/0x7e8
-           sp : ffff800150357b30
-           x29: ffff800150357b50 x28: fffffdffbdb51c40 x27: 0000000000000000
-           x26: dfff800000000000 x25: 1fffe000202daa5f x24: ffff800083bbb010
-           x23: ffff800083f67210 x22: ffff0001016d52f8 x21: 00007dc98b656c40
-           x20: 1ffff000107ece42 x19: 0000000000000003 x18: 1fffe006d6db3f20
-           x17: 0000000000000000 x16: ffff800083f67000 x15: 0000000000000001
-           x14: 1fffe006d6db6388 x13: 0000000000000000 x12: 0000000000000000
-           x11: 0000000000000003 x10: fffffdffbdb51e40 x9 : dfff800000000000
-           x8 : 0000000100000000 x7 : 0000000000000000 x6 : ffff80008148f060
-           x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000010
-           x2 : ffff800150357a60 x1 : ffff80008036827c x0 : 0000000000000001
-           Call trace:
-            cleanup_srcu_struct+0x408/0x7e8 (P)
-            blk_mq_free_tag_set+0x4b4/0x5f0
-            loop_remove+0x50/0xd8 [loop]
-            loop_control_ioctl+0x340/0x438 [loop]
-            __arm64_sys_ioctl+0xc04/0x1310
-            invoke_syscall+0x74/0x188
-            do_el0_svc+0x10c/0x198
-            el0_svc+0x64/0x260
-            el0t_64_sync_handler+0x84/0x130
-            el0t_64_sync+0x198/0x1a0
-           irq event stamp: 0
-           hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-           hardirqs last disabled at (0): [<ffff800080100734>] copy_process+0x109c/0x31e8
-           softirqs last  enabled at (0): [<ffff800080100760>] copy_process+0x10c8/0x31e8
-           softirqs last disabled at (0): [<0000000000000000>] 0x0
-           ---[ end trace 0000000000000000 ]---
+I will change nwriters to "bool" and remove that WARN_ON(), thank you!
 
+							Thanx, Paul
