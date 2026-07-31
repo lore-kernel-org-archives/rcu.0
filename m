@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2631B2D739C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1692E0B5C;
 	Fri, 31 Jul 2026 01:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785459718; cv=none; b=vC+xBCwLI9NvgCWLzAPV4fC5/+L7SDbX4hB5TMQiPNlPJ8JiofvV+Bqg8MFJbtL1ztcALki036UhJ+QE4TzZ11BqXdlVsLhMW9JiA2zFc8xf+497vzslq4z3SPsRuUBMvn1IU1bjB2hGFz97IglC8xXemsRsHvHQGubmR4BGQRc=
+	t=1785459718; cv=none; b=hF48qh48motKNtOmmEZi22pggABzYDnSHvl/Re3uT+vhXkkRAOToxj2A2rKj+j82b86EJpfZSly0aa8SvkbdJtrbiTzPOuhDyKpDfCbXLIUtKutKFGdjQGWXQidk8Z3WP7es7mbPgCJ801BQJNfAfiEGP01QVZXAXKYrpi92ZyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1785459718; c=relaxed/simple;
-	bh=H/LywIBhDN+7gS6h2t/zpJNCBkFiQp9SnPcP3462Yb8=;
+	bh=8dRscm5WjZJJ6gnnEC3G11Y1b0fADU3e4aeIuAkhUq0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BsMeBvk8I/RTrFVTK5JNVOEwpVMoNozEFmqf3sF5hsztpSq6r+TiPZFx6atoRyeO6pYexHzXSYSmrVL4jsF4STzWSDrasHYqOklC29UciNXO4EkHFD7kvQ7ZZ3MZuJMbvOVUbJm4bPF5kDbId6C6fuaStg0dQeRpAbGZhGrmDdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XuNqD11L; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=CR30uQ30DO0xLszf8ZRf36KokySUeNJ9rcgROYdpxDmv93JHWAWtazT/0WTJscacOOT+F8Xy9cUuNrCItvizjYj1RCiRe3WdyQoU5Gac/WLfZ5+qFwftlIGoy/H8P6MG/VSHa+6Er3qscVF21Dxp9ENgl9UQvRtkkHvDzdUgBko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SSFsLVjG; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XuNqD11L"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25ADA1F00ADF;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SSFsLVjG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A0761F0155A;
 	Fri, 31 Jul 2026 01:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1785459715;
-	bh=8nXrgC14QXbEPY+ClX2MuAHMfuWbHbQvcoYUAqNNUBM=;
+	bh=i35NiPZ9XyqWbZPDmlJF5mksq725ThYC0oGPQKHrPlQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=XuNqD11LB85ul7phFDq8hJ3kAH/FFQmc9/0vlQhnf8J2oB3i0Oiqx0It800kqr1hM
-	 8V4Achgav+tG3MTMIU0D4hSEUrbBiMbFDYlVd5HYD2EJ5qHVZUWMURQLU33cGc3Ati
-	 iE+qSwuL3gMfAW4OiU65d809D7YgZqMXZawMurEkI/4TQOR0DzSPHNY6/RfGuGCW3k
-	 AGvwDeVis14qa/6eCorK38DE6K6ceBr1R/wiyJdqhhOS3eQF7BvNxvyR4JiYzodjyJ
-	 mvihvRrwTs/LbQocFUoY9J3lcUuZGG1CJOq4QUfFbh+deOU17dyziZTajFjmgneHIz
-	 7caC0oYShfaIg==
+	b=SSFsLVjGgOl1O1mBihfcGn7Cdm4JztNmHkSJtGMCKk6h++SDJ9qIF90fGWrQrgFQF
+	 o4j6dLzOyz8J9PzzO27l/azCYPN2WKF8kiU9+0tEG0s2VaBE+0PfAqg4iMKx2yE/oI
+	 v2Bul0qLVNbjTYUXpAO9FrW0OLuvE8v2MsKqLa5/N9T2AnA77x6PxGlwTJF1HYPKns
+	 +fQhTxV+hxA1v7i2Y2RnrCeED6QbioMg/2u4nus2MjY/beuwZLIriEMbly0ptBtUvN
+	 Sog7bkhO2uwPxVefB/TKXbp3MrOxvKcLHcqbKRreH2JfbujTBQNHFLk8NmBr5X+2tJ
+	 YdwVKcPZcuzBQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B27DCCE1059; Thu, 30 Jul 2026 18:01:54 -0700 (PDT)
+	id BC6E4CE1716; Thu, 30 Jul 2026 18:01:54 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC 07/16] rcu: Use this_cpu_{read,write}() for ->cpu_no_qs.b.exp
-Date: Thu, 30 Jul 2026 18:01:44 -0700
-Message-Id: <20260731010153.3531313-7-paulmck@kernel.org>
+Subject: [PATCH RFC 11/16] rcu: Mark accesses to rdp->rcu_cpu_has_work
+Date: Thu, 30 Jul 2026 18:01:48 -0700
+Message-Id: <20260731010153.3531313-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <9de287bc-e565-4f21-bd3c-5c17792e6abc@paulmck-laptop>
 References: <9de287bc-e565-4f21-bd3c-5c17792e6abc@paulmck-laptop>
@@ -48,65 +48,64 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently __this_cpu_read() and __this_cpu_write() is used to access the
-->cpu_no_qs.b.exp field of the per-CPU rcu_data structure.  However,
-this can fail when the accesses can happen in interrupt handlers, as
-recently started being exercised by rcutorture.  This commit therefore
-upgrades the uses of __this_cpu_read() and __this_cpu_write() to their
-interrupt-safe counterparts this_cpu_read() and this_cpu_write().
+Although the rdp->rcu_cpu_has_work field is accessed only by the
+corresponding CPU, it can be accessed by both interrupt handlers via
+invoke_rcu_core_kthread() and at task level via rcu_cpu_kthread().
+This means that we need this_cpu_read() rather than __this_cpu_read(),
+this_cpu_write() rather than __this_cpu_write(), and READ_ONCE()
+rather than plain C-language loads.  The exception is the boot-time
+rcu_spawn_core_kthreads(), which cannot race with kthreads that have
+not yet been spawned.
+
+This commit therefore makes it so.
 
 KCSAN located this issue.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_exp.h    | 4 ++--
- kernel/rcu/tree_plugin.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ kernel/rcu/tree.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 82cada459e5d0c..e03cb3d447a57d 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -731,7 +731,7 @@ static void rcu_exp_need_qs(void)
- {
- 	lockdep_assert_irqs_disabled();
- 	ASSERT_EXCLUSIVE_WRITER_SCOPED(*this_cpu_ptr(&rcu_data.cpu_no_qs.b.exp));
--	__this_cpu_write(rcu_data.cpu_no_qs.b.exp, true);
-+	this_cpu_write(rcu_data.cpu_no_qs.b.exp, true);
- 	/* Store .exp before .rcu_urgent_qs. */
- 	smp_store_release(this_cpu_ptr(&rcu_data.rcu_urgent_qs), true);
- 	set_need_resched_current();
-@@ -870,7 +870,7 @@ static void rcu_exp_handler(void *unused)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 390dad82675db5..c9780e7c0e2afa 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2671,7 +2671,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 			// reporting, so check time limits for them.
+ 			if (rdp->rcu_cpu_kthread_status == RCU_KTHREAD_RUNNING &&
+ 			    rcu_do_batch_check_time(count, tlimit, jlimit_check, jlimit)) {
+-				rdp->rcu_cpu_has_work = 1;
++				WRITE_ONCE(rdp->rcu_cpu_has_work, 1);
+ 				break;
+ 			}
+ 		}
+@@ -2931,7 +2931,7 @@ static void invoke_rcu_core_kthread(void)
+ 	unsigned long flags;
  
- 	ASSERT_EXCLUSIVE_WRITER_SCOPED(rdp->cpu_no_qs.b.exp);
- 	if (!(READ_ONCE(rnp->expmask) & rdp->grpmask) ||
--	    __this_cpu_read(rcu_data.cpu_no_qs.b.exp))
-+	    this_cpu_read(rcu_data.cpu_no_qs.b.exp))
- 		return;
- 	if (rcu_is_cpu_rrupt_from_idle() ||
- 	    (IS_ENABLED(CONFIG_PREEMPT_COUNT) && preempt_bh_enabled)) {
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 9ba136a4233a26..c3db1ad4a2807a 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -599,7 +599,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
-  */
- static notrace bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+ 	local_irq_save(flags);
+-	__this_cpu_write(rcu_data.rcu_cpu_has_work, 1);
++	this_cpu_write(rcu_data.rcu_cpu_has_work, 1);
+ 	t = __this_cpu_read(rcu_data.rcu_cpu_kthread_task);
+ 	if (t != NULL && t != current)
+ 		rcu_wake_cond(t, __this_cpu_read(rcu_data.rcu_cpu_kthread_status));
+@@ -2958,7 +2958,7 @@ static void rcu_cpu_kthread_park(unsigned int cpu)
+ 
+ static int rcu_cpu_kthread_should_run(unsigned int cpu)
  {
--	return (__this_cpu_read(rcu_data.cpu_no_qs.b.exp) ||
-+	return (this_cpu_read(rcu_data.cpu_no_qs.b.exp) ||
- 		READ_ONCE(t->rcu_read_unlock_special.s)) &&
- 	       rcu_preempt_depth() == 0;
- }
-@@ -981,7 +981,7 @@ static void rcu_qs(void)
- 	trace_rcu_grace_period(TPS("rcu_sched"),
- 			       __this_cpu_read(rcu_data.gp_seq), TPS("cpuqs"));
- 	__this_cpu_write(rcu_data.cpu_no_qs.b.norm, false);
--	if (__this_cpu_read(rcu_data.cpu_no_qs.b.exp))
-+	if (this_cpu_read(rcu_data.cpu_no_qs.b.exp))
- 		rcu_report_exp_rdp(this_cpu_ptr(&rcu_data));
+-	return __this_cpu_read(rcu_data.rcu_cpu_has_work);
++	return this_cpu_read(rcu_data.rcu_cpu_has_work);
  }
  
+ /*
+@@ -2979,7 +2979,7 @@ static void rcu_cpu_kthread(unsigned int cpu)
+ 		local_bh_disable();
+ 		*statusp = RCU_KTHREAD_RUNNING;
+ 		local_irq_disable();
+-		work = *workp;
++		work = READ_ONCE(*workp);
+ 		WRITE_ONCE(*workp, 0);
+ 		local_irq_enable();
+ 		if (work)
 -- 
 2.40.1
 
