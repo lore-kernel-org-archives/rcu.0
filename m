@@ -1,320 +1,133 @@
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C69942CAF3
-	for <rcu@vger.kernel.org>; Fri, 31 Jul 2026 14:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785507985; cv=pass; b=Z6Jrl8rlZeXVvUm98E0/YQtADoK/FWHE2Rt0Yfx7xyIf3oSCTc8M64N9ds0Vtp/ocxskt/pYIe+HRc8xKzIr/O/63SQ3vpedvMAyemM0IxEKEtQerE+f66BHByvmeQYN4ji7diMZK2i0BuIUM8rDWV9nguE8dPMKbFjr758yzJY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785507985; c=relaxed/simple;
-	bh=OJEjYqZXR6D8o5i1tKss18NEHMG/oQmxzQk/ihg2t8A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vA//8pQ1YPhoojdqwNbdjUTGgef6F4E+Aqq6Oc7t+jDgE+bI67e3YHRsN0j2E6HQTEiQguhtt5k0fKPFg4NdFxmI2GMsdPwxO+KAosGSH6LUUxq0pRNSMNJOrSbPv6PDB+lH8JId3gCCMcICw4uij9434BYLta4Oxl8J5c3Jv5k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iWp0GOaD; arc=pass smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2826644606A;
+	Fri, 31 Jul 2026 17:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.108
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1785519967; cv=none; b=TaF9Gn8l3JuK+3k2uJ+vQD0rYQ24dZxz/XwQL408LH+v32yh1uXkqPuDGt4KM+XF5PamjwuNr/hlt33RYAi8xNhOSiFpntGUqXCo82UNGqpHcAwte3wktqX+xKBOexY6/U5PUV+Xw89YV0qHm3En6QUVeO3BMsNUUuo8emM0X9I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1785519967; c=relaxed/simple;
+	bh=E8GbfTK4jYzSVrrPrktZPc2gGB0GxAKAuonOv+GCqf0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jdt1cAIK/2JDb9FasqW8WBKRGpBm0D0XAgM+e63xQOTHJYB18MK60jMjz8ZnjR1d69BiJ5MZySvbhl7J9u4Qt9h9I2tAwUX/+l9MJeIuTKeQQUdx5r+OKF5y0Dqyain74/ijqE2anipjXF5gnMsDcsLXNw/IFnqsPB/q2nkj5oA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=qWUNMVQ2; arc=none smtp.client-ip=82.195.75.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=debian.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iWp0GOaD"
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-69fc6a09b5aso1895441a12.3
-        for <rcu@vger.kernel.org>; Fri, 31 Jul 2026 07:26:22 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1785507981; cv=none;
-        d=google.com; s=arc-20260327;
-        b=GSh9Gd93+r5ow7rhnzVEqmWLC5Fl7+fb9m+AU/IFpE6Xf7DV4vrNOVGUCLRNXE2gZF
-         lcVZ7ZKPErldZ84Qo1G9wdG34Gh31VXZ2hgCJwwTiA264+omvPQ8MZm4dtOzHEsBCpmV
-         GMUFaGWkCC1bHVQQiBO9D3LMjyiCy05MDkm1dr4k05D8V1YRxJH0jfxijInMFy+KkCLy
-         6tj9gDJ4tTosqVZYNQ+EAXXwZNdfGtaNc27RdYSqNPPNbWLcsP/kATsWWRjDRnn3oU/o
-         B6NZwmupIuuEXpNKT+0U0Q+Furp2UCV23gC1zNBAEHbB774WeEinfc8ccIfrOP8G+tTY
-         Yp8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=W2yZkXeMTFenp1C/Q3jIxXtZxx8SXWBO8BbuefERWdA=;
-        fh=c4TZ2LlFmrUMKbj9OltaN1SxIcp0+AUb5PRZydLxLjQ=;
-        b=CKfznLpdckEuUQ5xwBJYADT9h49NN6b5J+HnDiqpXTOd0h+/+wveGFCYhRH2tggHdz
-         eGBWwJ/8P4aMzi4vQaKWSP0IlbDD9Hko7dCOErbQabOaIVxwewWaynzsTPSFk1aKkfhc
-         IlfgL4DrfrAoIMnTyI6m2/PC8DxX/M95rV+V2lBZzHEObI/rMdLd5FVh8EQv2sY3Zumm
-         9pbfql/ySSimphJtv+o7boaxzB/ZQWULpBf+rcOthgZoH5A7qw0RzrzkATUvhOfXtkVy
-         /IY6fQsjEO/eLPiSdi7AZPMm9Sqq7NwB6vA2jCMWjau6CFTFJK8lP5oeqa8Hs/3d482a
-         Okfw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1785507981; x=1786112781; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=W2yZkXeMTFenp1C/Q3jIxXtZxx8SXWBO8BbuefERWdA=;
-        b=iWp0GOaD5erQisRDNhuWCBlrkqK6r0pWR4IukL5OFykox9viEQ1rQODvK0TPPtDKmJ
-         DD+VwZ84vJuVhf2Yive6v+aTzQ0RtmYYh/1dngF5VVbfb+rytkRgBzU9U89q39EeVpOw
-         FA/+307bAim+5RKknj5ZOQJu6MJaOV0Af1uhyrsR7FaaA0HQYCtmatQraD4HiDL9Okox
-         cYkOzDDoE/4v3TB7VqP0G7LV1cu02lU5w8iLV+OCymdxJjBEh4Awq7Dx9hgaaOF8+Z0Y
-         HcD9TUyRziUTMdLdF9lHxicx+cEIvalMvtnQ7LA9FWv1lCLcV0LtGICCPEJyz8vQqsNz
-         DqqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785507981; x=1786112781;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=W2yZkXeMTFenp1C/Q3jIxXtZxx8SXWBO8BbuefERWdA=;
-        b=MUA0QX2rTLB9SdsGTGZiQ3lSBzUMynbJ4nVEY5b1X05XfVelNg94baGKUms0sHQcsV
-         UOtG200+9IjNLAgOtJcstPW7MIrAzsH0IFKtVCwPHMfnBLLvkMYpC5OitiuB9g/Zdrf+
-         ds+OCxLylIWhNsSeXuYyngA/rDHrZ+cB+wqmexPYFDATRh0efqlMMDsq/oY9/inCfbtI
-         IOGA3hkQSc/opzW6AJRj6L/LIL0mvcxA+RsLikoYmRj0BaG1S20PdT/KPS2UxQ5koQFL
-         9bfv1q7gfucsEJ1axp+oKrIpq6jIF0s2hSoVju4AotJ8RkcfNF6o4SdqQlQDCAWSO6Yp
-         jvHw==
-X-Forwarded-Encrypted: i=1; AHgh+Rr06M+4WW8M8c5CG0E6qQFaLRj72bcPtboyRa5Jh2DKr8VS1GJWvo6yjFeGn2bMyfT1H2w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBiAlY9b3zX0rG9w8Hv+jg7/KGSqzNYeJzQ/lr97BxMtAjmOtg
-	Y/10ICNlZEIYTZ83VotGfV3NH7VcFeVUC9veEQkskNNKdSrdOJaSaU8Z0/aGN+FJwhbpnpcHgLU
-	4T2iPDtZ5snxiqi3l9Duxz7S8W/Y4K1o=
-X-Gm-Gg: AR+sD12HyFux6+itUhggjLci3XqvOKezXPKM+64RmBFABMvV7O76qQIqaM7nEFFHl3f
-	9+TKylnKzgG7znjQ0t6WHtV3zgUFyzRbKDGXsVuCVoEEpzLC3MJwBCnF8p/chcoUJn+SpGnN0+m
-	AJBHN0aN6kM1qwWH+FBatgn+TIxc+6mvVD4IT94fAjF2HLkKgfFHxGrqowbgBD4vnGKX21s0WYK
-	cY1emzg1+SsTeIDyz3ZzW7dvfHlhKzVRdZhTEorD2Yhyw3zkZoQ2h72HsqnMGLASVBvRJtSlZGW
-	vksoZXBwgLFIuN/uqHCR54Drfs/cQjiLwBI02qzwDmx1iHlEgFtrH6L9OfkP
-X-Received: by 2002:a17:907:3f8f:b0:c12:4cb8:a826 with SMTP id
- a640c23a62f3a-c1fd238bfb3mr118334566b.6.1785507980912; Fri, 31 Jul 2026
- 07:26:20 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="qWUNMVQ2"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
+	s=smtpauto.stravinsky; h=X-Debian-User:In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=1cyP0g1IYzdHkjLS0GOwgZb8r8AIfzKv5ky9GYAbfhc=; b=qWUNMVQ29GiQV2ldHDgHAbFWMJ
+	UVRrlDG88qQmSAA8miF2IYfx0DnUru7wAmG1lv9rv6J+NjlSFFuj9llKdlFgvkHrZg+WT4swffRXW
+	/MGpiWYohN8Zn7+UueEUzQjnip9SWdQ+GtWs1D24P81kuyeuhygqHyHwbiutHcYlu6sBVCLu6KnS3
+	u9AdYZ79UelseiS260qdZkZOVUZwjXF/U31c5pLBXnpu/4QeyNdVBM2m26xEaJ1WCx0FYP2IwvtLF
+	3RIPXRU2EpD1oGLzSMVdmjwRjEXg6e0JdAUvDXT+OiNeTNBbifsfoXP6Flac+gaeUKyRqiszGzhEN
+	MmhcbOKQ==;
+Received: from authenticated-user
+	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.96)
+	(envelope-from <leitao@debian.org>)
+	id 1wprIz-00ACFB-0r;
+	Fri, 31 Jul 2026 17:45:57 +0000
+Date: Fri, 31 Jul 2026 10:45:51 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Zqiang <qiang.zhang@linux.dev>
+Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org, 
+	joelagnelf@nvidia.com, urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] srcu: Queue sdp->work when the delay timer is
+ successfully deleted
+Message-ID: <amzfBSSGyVF0vyQ9@gmail.com>
+References: <20260709100602.821-1-qiang.zhang@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260729162207.1567770-1-puranjay@kernel.org> <20260729162207.1567770-4-puranjay@kernel.org>
- <96a07fd8d37018b005de85a0eac6045fa426e892@linux.dev>
-In-Reply-To: <96a07fd8d37018b005de85a0eac6045fa426e892@linux.dev>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Fri, 31 Jul 2026 15:26:07 +0100
-X-Gm-Features: AUfX_myqCfx8h0yHc581WwWjTLagnsHorHWGgwfxqIRoqW5qkV1Oj9THSsqRF-8
-Message-ID: <CANk7y0g3tE7YJMV4nokqjiaMVeENVKxSv3zjLinXWF4GD4zzxw@mail.gmail.com>
-Subject: Re: [PATCH 3/6] srcu: Make call_srcu() safe to call from any context
-To: Zqiang <qiang.zhang@linux.dev>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Josh Triplett <josh@joshtriplett.org>, =?UTF-8?Q?Onur_=C3=96zkan?= <work@onurozkan.dev>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joelagnelf@nvidia.com>, Boqun Feng <boqun@kernel.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Davidlohr Bueso <dave@stgolabs.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Jiri Olsa <jolsa@kernel.org>, 
-	Emil Tsalapatis <emil@etsalapatis.com>, Matt Fleming <mfleming@cloudflare.com>, 
-	"Harry Yoo (Oracle)" <harry@kernel.org>, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-rt-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260709100602.821-1-qiang.zhang@linux.dev>
+X-Debian-User: leitao
 
-On Fri, Jul 31, 2026 at 2:03=E2=80=AFPM Zqiang <qiang.zhang@linux.dev> wrot=
-e:
->
-> >
-> > call_srcu() has the same constraint as call_rcu(): its callback list an=
-d
-> > locks are only touched with interrupts disabled. srcu_gp_start_if_neede=
-d()
-> > enqueues under raw_spin_lock_irqsave() and may walk the srcu_node tree,
-> > and callback invocation and grace-period work do likewise. So a
-> > call_srcu() with interrupts disabled may be racing a list operation in
-> > flight on this CPU, and enqueuing directly could corrupt the list or
-> > deadlock.
-> >
-> > Defer as call_rcu() does: stage the callback on the srcu_data's
-> > ->defer_cbs, chain that srcu_data onto a per-CPU list, and kick a per-C=
-PU
-> > irq_work that re-issues it straight to the enqueue helper -- never back
-> > through __call_srcu(), so it cannot defer again.
-> >
-> > The irq_work is global (per CPU, not per srcu_struct) and statically
-> > initialized, so the deferral never runs check_init_srcu_struct(). It is
-> > IRQ_WORK_INIT_HARD to re-issue promptly, as for call_rcu(). srcu_barrie=
-r()
-> > and cleanup_srcu_struct() flush it first, and rcutree_migrate_callbacks=
-()
-> > calls srcu_offline_drain() to drain an outgoing CPU's deferred callback=
-s.
-> > Gated by CONFIG_RCU_DEFER, as for call_rcu().
-> >
-> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> > ---
-> >  include/linux/srcutree.h | 4 ++
-> >  kernel/rcu/rcu.h | 3 +
-> >  kernel/rcu/srcutree.c | 138 ++++++++++++++++++++++++++++++++++++++-
-> >  kernel/rcu/tree.c | 2 +
-> >  4 files changed, 144 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> > index 75e54e4f963fa..1ce759fb70948 100644
-> > --- a/include/linux/srcutree.h
-> > +++ b/include/linux/srcutree.h
-> > @@ -13,6 +13,8 @@
-> >
-> >  #include <linux/rcu_node_tree.h>
-> >  #include <linux/completion.h>
-> > +#include <linux/irq_work_types.h>
-> > +#include <linux/llist.h>
-> >
-> >  struct srcu_node;
-> >  struct srcu_struct;
-> > @@ -41,6 +43,8 @@ struct srcu_data {
-> >  bool srcu_cblist_invoking; /* Invoking these CBs? */
-> >  struct timer_list delay_work; /* Delay for CB invoking */
-> >  struct work_struct work; /* Context for CB invoking. */
-> > + struct llist_head defer_cbs; /* Callbacks deferred on re-entry. */
-> > + struct llist_node defer_link; /* Links onto the per-CPU deferral drai=
-n list */
-> >  struct rcu_head srcu_barrier_head; /* For srcu_barrier() use. */
-> >  struct rcu_head srcu_ec_head; /* For srcu_expedite_current() use. */
-> >  int srcu_ec_state; /* State for srcu_expedite_current(). */
-> > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > index ed6604445f2ac..036d28516e92d 100644
-> > --- a/kernel/rcu/rcu.h
-> > +++ b/kernel/rcu/rcu.h
-> > @@ -587,6 +587,9 @@ static inline bool should_rcu_defer(void)
-> >  return irqs_disabled() && rcu_scheduler_active !=3D RCU_SCHEDULER_INAC=
-TIVE;
-> >  }
-> >
-> > +/* Drain an outgoing CPU's deferred SRCU callbacks; see rcutree_migrat=
-e_callbacks(). */
-> > +void srcu_offline_drain(int cpu);
-> > +
-> >  enum rcutorture_type {
-> >  RCU_FLAVOR,
-> >  RCU_TASKS_FLAVOR,
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 304112674e8a2..b9fe57ff91000 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -20,6 +20,7 @@
-> >  #include <linux/percpu.h>
-> >  #include <linux/preempt.h>
-> >  #include <linux/irq_work.h>
-> > +#include <linux/llist.h>
-> >  #include <linux/rcupdate_wait.h>
-> >  #include <linux/sched.h>
-> >  #include <linux/smp.h>
-> > @@ -79,6 +80,46 @@ static void process_srcu(struct work_struct *work);
-> >  static void srcu_irq_work(struct irq_work *work);
-> >  static void srcu_delay_timer(struct timer_list *t);
-> >
-> > +static void srcu_defer_drain(struct irq_work *iw);
-> > +
-> > +/*
-> > + * Per-CPU call_srcu() deferral state. The irq_work is global (shared =
-by every
-> > + * srcu_struct), so it must find which srcu_structs deferred callbacks=
-: a
-> > + * callback is staged on its srcu_data's ->defer_cbs, and that srcu_da=
-ta is
-> > + * chained (->defer_link) onto this per-CPU ->list that the irq_work w=
-alks.
-> > + */
-> > +struct srcu_defer {
-> > + struct llist_head list;
-> > + struct irq_work iw;
-> > + raw_spinlock_t lock;
-> > +};
-> > +
-> > +static DEFINE_PER_CPU(struct srcu_defer, srcu_defer) =3D {
-> > + .lock =3D __RAW_SPIN_LOCK_UNLOCKED(srcu_defer.lock),
-> > + .iw =3D IRQ_WORK_INIT_HARD(srcu_defer_drain),
-> > +};
-> > +
-> > +/*
-> > + * Register pending deferred call_srcu() callbacks so a following srcu=
-_barrier()
-> > + * waits for them. An online CPU's own irq_work re-issues its callback=
-s, so wait
-> > + * it out; an offline CPU's irq_work may never run again, so drain its=
- list
-> > + * directly onto this CPU instead.
-> > + */
-> > +static void srcu_defer_flush(void)
-> > +{
-> > + int cpu;
-> > +
-> > + if (!IS_ENABLED(CONFIG_RCU_DEFER))
-> > + return;
-> > +
-> > + for_each_possible_cpu(cpu) {
-> > + if (cpu_online(cpu))
-> > + irq_work_sync(&per_cpu(srcu_defer, cpu).iw);
-> > + else
-> > + srcu_defer_drain(&per_cpu(srcu_defer, cpu).iw);
-> > + }
-> > +}
-> > +
-> >  /*
-> >  * Initialize SRCU per-CPU data. Note that statically allocated
-> >  * srcu_struct structures might already have srcu_read_lock() and
-> > @@ -107,6 +148,11 @@ static void init_srcu_struct_data(struct srcu_stru=
-ct *ssp)
-> >  sdp->cpu =3D cpu;
-> >  INIT_WORK(&sdp->work, srcu_invoke_callbacks);
-> >  timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
-> > + /*
-> > + * ->defer_cbs and ->defer_link are valid when zeroed and are not
-> > + * reinitialized here, lest we clobber callbacks a reentrant
-> > + * call_srcu() already staged. See __call_srcu().
-> > + */
-> >  sdp->ssp =3D ssp;
-> >  }
-> >  }
-> > @@ -697,6 +743,8 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
-> >  return; /* Just leak it! */
-> >  /* Wait for irq_work to finish first as it may queue a new work. */
-> >  irq_work_sync(&sup->irq_work);
-> > + /* Drain any deferred callbacks (shared irq_work) before freeing ->sd=
-a. */
-> > + srcu_defer_flush();
->
-> 1. Should we move srcu_defer_flush() before irq_work_sync(&sup->irq_work)=
- ?
+Hello Zqiang,
 
-Will fix it in next version.
+On Thu, Jul 09, 2026 at 06:06:02PM +0800, Zqiang wrote:
+> In the cleanup_srcu_struct(), when iterating over per-cpu's srcu_data,
+> the timer_delete_sync(&sdp->delay_work) is called to cancel the delay
+> timer before flush_work(&sdp->work).
+> 
+> However, if the timer_delete_sync() returns 1 means that it successfully
+> deleted an pending timer before it had a chance to fire, also means that
+> the sdp->work cannot be queued, the subsequent flush_work(&sdp->work)
+> will returns immediately without waiting for anything, this causes SRCU
+> callbacks to not be processed.
+> 
+> Fix this by checking the return value of timer_delete_sync(), if it
+> returns 1, explicitly queue sdp->work so that the following flush_work()
+> can correctly wait for the work to complete.
+> 
+> Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+> ---
+>  kernel/rcu/srcutree.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 7c2f7cc131f7..02c322b7c6f1 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -725,7 +725,11 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+>  	for_each_possible_cpu(cpu) {
+>  		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+>  
+> -		timer_delete_sync(&sdp->delay_work);
+> +		//In most scenarios, calling srcu_barrier before cleanup
+> +		//will not trigger WARN_ON().
+> +		if (WARN_ON(timer_delete_sync(&sdp->delay_work)) &&
+> +					rcu_cpu_beenfullyonline(sdp->cpu))
+> +			queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
 
->
-> 2. Will the following scenario trigger soft/hard_lockup ?
->
->     In irq_work context, irq disbaled:
->     srcu_defer_drain
->     ->srcu_do_enqueue
->       ->srcu_gp_start_if_needed
->         ->rcu_segcblist_enqueue
->           fentry ebpf prog
->              call_rcu_tasks_trace()
->              ->__call_srcu()
->                ->should_rcu_defer() =3D true
->                  ->llist_add() + irq_work_queue()
->                    the ipi send and irq_work run again -> srcu_defer_drai=
-n()->srcu_do_enqueue
->
-> Did I miss something?
+I started seeing this on my tests, it is not trivial to decode this one,
+but, I can try harder if _really_ needed.
 
-BPF programs don't allow recursion on the same CPU for the same BPF
-program, but your scenario can still occur because here the BPF
-program doesn't recurse rather it keeps enqueueing and firing IPIs.
-Before this patch it would have been a deadlock.
+ 07:11:44  Invalid logical block size (65535)
+           Invalid logical block size (256)
+ 07:11:45  WARNING: kernel/rcu/srcutree.c:706 at cleanup_srcu_struct+0x408/0x7e8, CPU#50: stress-ng-loop/1233713  ^[[36m[warn]^[[0m
+           Modules linked in: sch_htb(E) cls_u32(E) cls_cgroup(E) cls_basic(E) act_police(E) act_mirred(E) act_bpf(E) sch_fq(E) br_netfilter(E) udp_diag(E) i
+           CPU: 50 UID: 0 PID: 1233713 Comm: stress-ng-loop Kdump: loaded Tainted: G            E       7.2.0-rc5-next-20260730upstream-baseline #1 PREEMPT(f
+           Tainted: [E]=UNSIGNED_MODULE
+           pstate: 03401009 (nzcv daif +PAN -UAO +TCO +DIT +SSBS BTYPE=--)
+           pc : cleanup_srcu_struct+0x408/0x7e8
+           lr : cleanup_srcu_struct+0x3dc/0x7e8
+           sp : ffff800150357b30
+           x29: ffff800150357b50 x28: fffffdffbdb51c40 x27: 0000000000000000
+           x26: dfff800000000000 x25: 1fffe000202daa5f x24: ffff800083bbb010
+           x23: ffff800083f67210 x22: ffff0001016d52f8 x21: 00007dc98b656c40
+           x20: 1ffff000107ece42 x19: 0000000000000003 x18: 1fffe006d6db3f20
+           x17: 0000000000000000 x16: ffff800083f67000 x15: 0000000000000001
+           x14: 1fffe006d6db6388 x13: 0000000000000000 x12: 0000000000000000
+           x11: 0000000000000003 x10: fffffdffbdb51e40 x9 : dfff800000000000
+           x8 : 0000000100000000 x7 : 0000000000000000 x6 : ffff80008148f060
+           x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000010
+           x2 : ffff800150357a60 x1 : ffff80008036827c x0 : 0000000000000001
+           Call trace:
+            cleanup_srcu_struct+0x408/0x7e8 (P)
+            blk_mq_free_tag_set+0x4b4/0x5f0
+            loop_remove+0x50/0xd8 [loop]
+            loop_control_ioctl+0x340/0x438 [loop]
+            __arm64_sys_ioctl+0xc04/0x1310
+            invoke_syscall+0x74/0x188
+            do_el0_svc+0x10c/0x198
+            el0_svc+0x64/0x260
+            el0t_64_sync_handler+0x84/0x130
+            el0t_64_sync+0x198/0x1a0
+           irq event stamp: 0
+           hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+           hardirqs last disabled at (0): [<ffff800080100734>] copy_process+0x109c/0x31e8
+           softirqs last  enabled at (0): [<ffff800080100760>] copy_process+0x10c8/0x31e8
+           softirqs last disabled at (0): [<0000000000000000>] 0x0
+           ---[ end trace 0000000000000000 ]---
 
-So, this is expected behaviour and to fix it we have following options:
-
-1. Make stuff under call_srcu() notrace or keep the normal enqueue
-traceable (so the outer reentry still happens once and the deadlock
-fix is still exercised), but have srcu_defer_drain() re-issue through
-a notrace copy of the enqueue chain so the prog can't fire during
-  the drain.
-2. Accept it and document it, and correct BPF programs like the
-selftest in last patch will work because they detect reently.
-3. Have a per-cpu in-drain flag set in srcu_defer_drain() and if in
-call_srcu should_rcu_defer() returns true and this flag is set +
-in_nmi() returns false, this means we are in this refeeding loop, so
-we can just leak that callback with a warning.
-
-I prefer option 3 but let's wait for Paul for his feedback.
-
-Thanks,
-Puranjay
