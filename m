@@ -1,85 +1,119 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD97E7081A;
-	Fri, 31 Jul 2026 00:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D3A2D060D;
+	Fri, 31 Jul 2026 00:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785459120; cv=none; b=oYMLRZCowixDG/im5L6/vzEeRfs2UGkhUWrXHgUvhQNrKzGaYrt1FCe9Q1cB61CgFjqZOcxPC4GyPOioMoMS48vJWhB98a7hnq1qvvaoft8tse2/ag4ysacjai04Y5KTX0bw0MDZ4ZCLl9FFUan3PY7l/MoLkNQAsKC2ABifwt8=
+	t=1785459448; cv=none; b=EAHUwcMmwaYn86yjDQ4WVHBkPDfitJ2o6U3XMq3xgq1TXpiCCGjfTAal96FuHNcdOeAMUNMZxCh7tN65vyE4QrJHs21e0mYr7c2R1Kd3mCLuGah5fZyAOZVUt/Q1IobqXN0lJOIVanUIa/5iAvwgZbIjuIyuVZx7my6E2m7AEPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785459120; c=relaxed/simple;
-	bh=dnbDTzZr+3li+Hteo32eo2C0UBLA06db9rCm9aX9A+Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=h8gxw3CafW87tvdC45b77M91yOdQ76y8OMeA1n5wKTMrcC8dlLJL5Z67rbViYL/iJyhGelGuu/h0qdgU+TgMAnXJkEob8Lwtd/mrf8nBkB012YJgXemzfbW1hTXYcRFvnk7/f3iB/RqYH0zQJvU7dTC2u9jfpoeO1J8+fLZRRbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WuJytdI2; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785459448; c=relaxed/simple;
+	bh=pzwGbimlaQbePhTgIOZiCBAE9+8ggB69QEJhW+lMzBg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=HphH7xBMPrXhzsWBs1vkjGczWW7+Pj5tyq66YNp5m9CyqkYGmPsw2/er6L+mscgi7/hzyYKnIeBnNyjupCOhCawyfT+emOMlDzdkIHZYiejZI2i4rm9aLi6COWzPiyb8bCUQ6VRjZCtC2iDJxFUrrzIRwNCA1bGtf/38Fh+QtHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hhZVnfCZ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WuJytdI2"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CB951F000E9;
-	Fri, 31 Jul 2026 00:51:59 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hhZVnfCZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBC951F00A3A;
+	Fri, 31 Jul 2026 00:57:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785459119;
-	bh=lW3pfCijzuBvvuTq3n5s3iLnB4z0QLXT2qZhp51f4LQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=WuJytdI2KvUPEkSK0+EuoHf+0FAl4Bsj29khG5eUEeJLs6gJDJhi/IJ1ryp+Ya+4Q
-	 eVcFdkhZtv5p8zoB5P58t1qPpJA+mdNXfyvdMDkXr8k9Uq3M4/92Cm1//XHwb+7kQp
-	 COPn5QU/r9W7PTRnwFXVxbNiHI9+VN9ZFLOMqdPP9guASds1yQvjixa+cZEGElDSqY
-	 7RM3m5KRKkOpUFvct4yxu8PbOP1HsRyf3TyjxlHpiQNjtENVSXpxyErm72GcKcebkr
-	 zhwlF+EuZCM86IN9vE3RyC/aqpgSjAL3XVv938ct2nxOCCTngimXhNByIVCu3a4TnK
-	 N1Lw7QHUgYlkA==
+	s=k20260515; t=1785459447;
+	bh=bHXOsBuveONZJn2Jb+075EEHyCPrPcSneGeBFQRy5Gg=;
+	h=Date:From:To:Cc:Subject:Reply-To;
+	b=hhZVnfCZVmHDV4qqEtP7OrrVIXDdiqz/IYoMtGQbYP62RSjmHPv218FV9RGiEa3+s
+	 m4gZdtTohuVRV9rbpV7xXJsOZ23OPybm0iftpSLNv9YTdTewhKl155hXaceL0kU5u1
+	 6tLp4gyMEIyylEHzThMB1vkx2mg7lR63iAz7hCMCzsdsARCHK1idA63T27EN8OWY3b
+	 rnjZTsMwL+fr3k++2y/Nuj6GKNT2BoxhMrDhwYPAuitLgodMd+uQ7wSxKThodaHaKv
+	 ECseiZNF50uSQefusixQH3POzNVYb4UWdd3Jp42WRuSqdhcfL56yNMv+/cYEQUJYqO
+	 Fd9ecNQJXcQ0w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 48AB8CE0F69; Thu, 30 Jul 2026 17:51:59 -0700 (PDT)
+	id B603DCE0F69; Thu, 30 Jul 2026 17:57:26 -0700 (PDT)
+Date: Thu, 30 Jul 2026 17:57:26 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC 1/2] scftorture: Count single_rpc offline failures in statistics output
-Date: Thu, 30 Jul 2026 17:51:57 -0700
-Message-Id: <20260731005158.3530675-1-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <d470e612-b88a-4916-a1b9-1a6e8e6f968b@paulmck-laptop>
-References: <d470e612-b88a-4916-a1b9-1a6e8e6f968b@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH 0/12] Expediting normal RCU callbacks
+Message-ID: <58bcd561-0520-43ff-95b0-1ed10e1e3bff@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Joel Fernandes <joelagnelf@nvidia.com>
+Hello!
 
-scf_torture_stats_print() aggregates each invoker thread's counters
-into a local scf_statistics structure before printing, but the
-n_single_rpc_ofl field is missing from the aggregation loop.  As a
-result, the "single_rpc_ofl" value printed in the statistics line is
-always zero, even when smp_call_function_single() invocations for the
-RPC test have failed due to offline CPUs and been counted by the
-invoker threads.
+This series advances normal RCU callbacks when an expedited RCU grace
+period elapses, thus reducing memory-reclamation latency.  This allows
+synchronize_rcu_expedited() to be used to speed up reclamation of
+RCU-protected memory.  The series is as follows:
 
-Add the missing accumulation so that the printed value reflects the
-actual counts.
+1.	Remove unused rdp parameter from trace_rcu_this_gp(), courtesy
+	of Joel Fernandes.
 
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/scftorture.c | 1 +
- 1 file changed, 1 insertion(+)
+2.	Rename struct rcu_gp_oldstate to rcu_gp_seq, courtesy of
+	Puranjay Mohan.
 
-diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 327c315f411cc2..ffd6c83732ee74 100644
---- a/kernel/scftorture.c
-+++ b/kernel/scftorture.c
-@@ -193,6 +193,7 @@ static void scf_torture_stats_print(void)
- 		scfs.n_single += scf_stats_p[i].n_single;
- 		scfs.n_single_ofl += scf_stats_p[i].n_single_ofl;
- 		scfs.n_single_rpc += scf_stats_p[i].n_single_rpc;
-+		scfs.n_single_rpc_ofl += scf_stats_p[i].n_single_rpc_ofl;
- 		scfs.n_single_wait += scf_stats_p[i].n_single_wait;
- 		scfs.n_single_wait_ofl += scf_stats_p[i].n_single_wait_ofl;
- 		scfs.n_many += scf_stats_p[i].n_many;
--- 
-2.40.1
+3.	Add SRCU and Tasks RCU wrapper functions, courtesy of Puranjay
+	Mohan.
 
+4.	Factor out rcu_segcblist_advance_compact() helper, courtesy of
+	Puranjay Mohan.
+
+5.	Track segment grace periods with struct rcu_gp_seq, courtesy of
+	Puranjay Mohan.
+
+6.	Add RCU_GET_STATE_NOT_TRACKED for subsystems without expedited
+	GPs, courtesy of Puranjay Mohan.
+
+7.	Enable RCU callbacks to benefit from expedited grace periods,
+	courtesy of Puranjay Mohan.
+
+8.	Update comments for gp_seq and expedited GP tracking, courtesy
+	of Puranjay Mohan.
+
+9.	Wake NOCB rcuog kthreads on expedited grace period completion,
+	courtesy of Puranjay Mohan.
+
+10.	Detect expedited grace period completion in rcu_pending(),
+	courtesy of Puranjay Mohan.
+
+11.	Advance callbacks for expedited GP completion in rcu_core(),
+	courtesy of Puranjay Mohan.
+
+12.	Add concurrent expedited GP threads for callback scaling tests,
+	courtesy of Puranjay Mohan.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/rcu_segcblist.h |    2 
+ b/include/linux/rcupdate.h      |   13 ++-
+ b/include/linux/rcupdate_wait.h |    2 
+ b/include/linux/rcutiny.h       |   36 +++-----
+ b/include/linux/rcutree.h       |   29 ++----
+ b/include/trace/events/rcu.h    |    5 -
+ b/kernel/rcu/rcu.h              |   13 ++-
+ b/kernel/rcu/rcu_segcblist.c    |   10 ++
+ b/kernel/rcu/rcu_segcblist.h    |    2 
+ b/kernel/rcu/rcuscale.c         |   84 +++++++++++++++++++
+ b/kernel/rcu/rcutorture.c       |   30 +++----
+ b/kernel/rcu/srcutree.c         |   14 +--
+ b/kernel/rcu/tasks.h            |    8 -
+ b/kernel/rcu/tiny.c             |    4 
+ b/kernel/rcu/tree.c             |   23 ++---
+ b/kernel/rcu/tree.h             |    3 
+ b/kernel/rcu/tree_exp.h         |   18 ++--
+ b/kernel/rcu/tree_nocb.h        |    4 
+ b/mm/slab_common.c              |    6 -
+ include/linux/rcu_segcblist.h   |   14 +--
+ kernel/rcu/rcu_segcblist.c      |  147 ++++++++++++++++++++++------------
+ kernel/rcu/rcu_segcblist.h      |    8 -
+ kernel/rcu/tree.c               |  171 +++++++++++++++++++++++++---------------
+ kernel/rcu/tree_exp.h           |    2 
+ kernel/rcu/tree_nocb.h          |  138 ++++++++++++++++++++++++--------
+ 25 files changed, 528 insertions(+), 258 deletions(-)
