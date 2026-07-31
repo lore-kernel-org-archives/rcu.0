@@ -1,43 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6B32BE033;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1B7C2C8;
 	Fri, 31 Jul 2026 01:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785459845; cv=none; b=ufDGxODMzBbjulp7+cuCsXcOQafM9QVWq9qlYj+Kxv0IOYyp9SvCBxWRSFUEhrrlrp7fa/efhaAqWoqv/ULgspbF2991t61t8FAl1p4ZGFC78AKZwcVBe1xqDGCfFnLlCe3/dwylpkQt3O59SYXuLeF6HNJ4P5PwNyhNVKGo2vc=
+	t=1785459845; cv=none; b=XsaFiZ6TH8QP7j2+XZw1fOTOf+Eb9cNMdeyroVpivw7L+amB0cK+5/vCzdULXQKzRzm3MuOPWBS8hoUdjL2hFvT5XwlkXBl30P+XEpQx3BKsslUantJZ/t93KgeVWflalHjQKAMzlZllDfXImMC1X8Shwy4BFs4J2NJzlRHh0Uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1785459845; c=relaxed/simple;
-	bh=x1v3NISCPTvmugF4LUUhLDczxEsZx2rv5fgRjpex4OE=;
+	bh=YOgIfjZ9Hv3w6fqRg4OHpHpWDtOkOacsGc+bursHpzc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i4hG5w7+CbtES4UBdBPSU4oyqPjPdLImWVVpiyqxjJzojfMAuv4a6eX377I7ooJFAsmeEE6XkIYerHBpwLs0/LOPvKVrAUoweIUpYO90Bn/reE1pvg7uc/ylWHfgUfAb0AkCRAJqS+Z7L7vcKi2bDOV7n6pVgjZFu0Ja3vkTjRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z60qzlXC; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=dDJzsr1cQY73rDUDDjfVaP0JFJuLFRs86IRFBiE3VLWMZrGWA3jwkCtWzDSuFObxhMdJ9blXXT2cqkBZA+uDcnbfd7BgRrnkuIy/XQ3a/FwhI5M/kijlWTaAwid4A9M8Lc7LRPHaQXQVusjmyAFVcdGOhBQHP/puRFDElOf6dKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SLR6lCpW; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z60qzlXC"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C289D1F00A3A;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SLR6lCpW"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B52301F000E9;
 	Fri, 31 Jul 2026 01:04:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1785459843;
-	bh=5awFt3rVsUFRv61tL7C01iSjH3iLbouNiQclS/ingoY=;
+	bh=D0YSEH/Doqmop/Dz/KZ0B/3nd5tyCJxHYawhjRSN0dM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Z60qzlXCZ5mwv/Ys14dijt2wX+m3Gj5XS/U/s6fadhs3LT2KNh3UG0B+0s+LrSgqE
-	 xAZqhI+LkAWVY4uiaJoEmdaE6fNmoxDaIQFuDXx7/A8rtI40qdyHEMefMDTquwObUf
-	 dgCXShPieaelKNYL6iz9V3w865ezYeAjDCJ8i+gMrIY/lZvvYx1+eFhgtdx8SmRzqE
-	 cczPPFHEG/XSDxuCdBqCSMA42voRIXuoiTO06LaIsRppCVLdedfVaMaCtEpIXJ8V6h
-	 t2T7qeN3Lfj5oOp7+n+0+KA2WtC+AcxSD81SOOxfGxQTgEtBXPY4JhuOAiMtOKoUD+
-	 F0yFCBklLqi6A==
+	b=SLR6lCpWbe0725u7glWXikjC3ZJxi5gshVS6iz3DnvEd+87l/ahuCPoUwg6vimpKa
+	 m8TJhUm4HAp7RIVHzPbKqj4xqWsd5x7iqClR51owJ13gbESCKojWScoEbEIxbfDBUe
+	 AsIWI47O5mAF0ho3JmHFCNcxlD6Dbi2tuL9MmSa6/03cbKg4jBGPDmuPY7qL8uKiOO
+	 P/Q19AC2zJDnCsHtVh+a1PUAVjmp4lpgm3EmNiVc6D+qOlSaen6S9gga1foYBaSedJ
+	 fPIF4kNazUil7YKv0m0DtMhdd+Wi9ioN86vlosxnp9mPvcSIziuuxaK4/millXw4bl
+	 9197wJGB8QAMA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8C9F3CE0F6A; Thu, 30 Jul 2026 18:04:03 -0700 (PDT)
+	id 894AECE0F69; Thu, 30 Jul 2026 18:04:03 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	Zqiang <qiang.zhang@linux.dev>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC 02/10] rcu-tasks: Remove unused struct rcu_tasks's->n_ipis_fails variables
-Date: Thu, 30 Jul 2026 18:03:53 -0700
-Message-Id: <20260731010401.3531631-2-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH RFC 01/10] rcu-tasks: TASKS_TRACE_RCU doesn't need IRQ_WORK
+Date: Thu, 30 Jul 2026 18:03:52 -0700
+Message-Id: <20260731010401.3531631-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c50fb3e6-8d9f-4311-953e-a4703ba1e863@paulmck-laptop>
 References: <c50fb3e6-8d9f-4311-953e-a4703ba1e863@paulmck-laptop>
@@ -49,54 +48,28 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Zqiang <qiang.zhang@linux.dev>
+Now that Tasks Trace RCU is implemented in terms of SRCU, it no longer
+has any particular need for the IRQ_WORK Kconfig option.  This commit
+therefore removes the "select IRQ_WORK" from the TASKS_TRACE_RCU Kconfig
+option.
 
-The RCU tasks trace has been reimplemented by 'commit c27cea4416a3
-("rcu: Re-implement RCU Tasks Trace in terms of SRCU-fast")', the
-rcu_tasks structure's->n_ipis_fails is no longer used, this commit
-therefore remove it.
-
-Signed-off-by: Zqiang <qiang.zhang@linux.dev>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ kernel/rcu/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index f4da5fad70f516..7f7d1e6362178a 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -67,7 +67,6 @@ struct rcu_tasks_percpu {
-  * @gp_start: Most recent grace-period start in jiffies.
-  * @tasks_gp_seq: Number of grace periods completed since boot in upper bits.
-  * @n_ipis: Number of IPIs sent to encourage grace periods to end.
-- * @n_ipis_fails: Number of IPI-send failures.
-  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
-  * @lazy_jiffies: Number of jiffies to allow callbacks to be lazy.
-  * @pregp_func: This flavor's pre-grace-period function (optional).
-@@ -102,7 +101,6 @@ struct rcu_tasks {
- 	unsigned long gp_start;
- 	unsigned long tasks_gp_seq;
- 	unsigned long n_ipis;
--	unsigned long n_ipis_fails;
- 	struct task_struct *kthread_ptr;
- 	unsigned long lazy_jiffies;
- 	rcu_tasks_gp_func_t gp_func;
-@@ -735,12 +733,12 @@ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
- 		if (havecbs && haveurgent && haveurgentcbs)
- 			break;
- 	}
--	pr_info("%s: %s(%d) since %lu g:%lu i:%lu/%lu %c%c%c%c l:%lu %s\n",
-+	pr_info("%s: %s(%d) since %lu g:%lu i:%lu %c%c%c%c l:%lu %s\n",
- 		rtp->kname,
- 		tasks_gp_state_getname(rtp), data_race(rtp->gp_state),
- 		jiffies - data_race(rtp->gp_jiffies),
- 		data_race(rcu_seq_current(&rtp->tasks_gp_seq)),
--		data_race(rtp->n_ipis_fails), data_race(rtp->n_ipis),
-+		data_race(rtp->n_ipis),
- 		".k"[!!data_race(rtp->kthread_ptr)],
- 		".C"[havecbs],
- 		".u"[haveurgent],
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 762299291e09ba..332df7a7a6347c 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -140,7 +140,6 @@ config FORCE_TASKS_TRACE_RCU
+ config TASKS_TRACE_RCU
+ 	bool
+ 	default n
+-	select IRQ_WORK
+ 
+ config TASKS_TRACE_RCU_NO_MB
+ 	bool "Override RCU Tasks Trace inclusion of read-side memory barriers"
 -- 
 2.40.1
 
