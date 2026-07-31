@@ -1,42 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782BE2DA76A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7781C2D9EED;
 	Fri, 31 Jul 2026 01:04:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785459847; cv=none; b=hIm4JUsms0aYAYGUsAhs/CsN95l19Tzqip0BGLwf7ThK20DIIMfoJpuMdH6OtmzIt1nat0MMJrPJS1KACHHtQtQD+z0Mr7dVTHWzAzG5ZK2WIFPEAEuqr8FnrFBRT7DbggJugq+Xk9nI6gG4KtyMbqRRGaVoAp4oCYDZ9paRF5c=
+	t=1785459847; cv=none; b=tiEmPeekTKMDUB9TDMUyQy0ytn6N38OwEUugKh9eG//lDYv33JpXdJxMJYlwN4N6W9u4dPFnVnFmjRemYzGV0q2Ig+hCStQdMUlx+BZRBuCSohKpp6QHPwdZcUKTjy1uPvjJZV0ibeOGNZfP94ZaP+wXyAAhOhKOvnsi7OsS72s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1785459847; c=relaxed/simple;
-	bh=Yb5qKEYD7gqWoJ8H0XhEOcVMDaNEDLXxCd6UHdiYAPs=;
+	bh=kixO6JvWknVv0y5UXghrF9REqzOJ/0OUqWnDzoXcuvs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VYeXEHK9YzZAEvNVV628YD5Ohxe0np6R+3FHqj99socDxlsANrBPjYMWq7+dzrwQZQXZwoty1jY5Sg4kE3V2AxdqR6napRDEGINlWU5Mug6fphWlegvDwPhU45bVBH6MdODW6njzolkWtIfRDq5ysjvepSxqrGXNF4OOcy5BCUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gqBuzx2C; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=Lik2wk0dRgXxgz/CHlC8ZncOJJkwOO9fV4L2yjninMJQBnV0+T0OpDieMX1QcmrNhn/aHIqkgkI7bkIH7Smsv5R2+Ew32p9X12WN3vuw+tpJuouTwvwszyfhGRwDdTfB5IGbpdIvhwTuddr2P2TNkRily3ayV5vu8Zr6TnN0K80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n27tkRLc; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gqBuzx2C"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15A4D1F00ADB;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n27tkRLc"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 004501F00ACF;
 	Fri, 31 Jul 2026 01:04:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1785459844;
-	bh=fKNGySMMG/lARfFIiQH61dXgzdia8Ddv1o1T8fH8wcw=;
+	bh=nEKeOsgSe/HXocB7lbj72PDx0xCpbC4xVzX2wWZdGt4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=gqBuzx2Cevhsig7tS4nxwLAZX6VqgfTaE/TXpWQqCBKSmDAUxQnmFAfFU78o7RLIQ
-	 PScB6wKi0JFU+8EAAwDzxHot6mD9IisYzYV/B7mLnYbyw/a9tjnkRjOXKcpVA2lNbY
-	 Vz8KH6DLay0Xau2FfcNGMUv0jU7/2dhzq9cpDlMuHnzeBhCNHqQDjbq5xGC6XyF8Yk
-	 98zrhgynlSu4D9i2RFLsg0UJUOZlBUuG3X+g2/PRszSgLQ5G39gS1GMkNbdJ/G/8vV
-	 Bn6/pD1uLy36gMOqOoHA/oZxh9fkD93fjaTweXS2ZE4JMRhuumyBqXQ94058nwWIUL
-	 fty/ApNnsRUUw==
+	b=n27tkRLcFZRRDOKZnGSNnfOl2iO8FMdc8I/bhQOIqshVyjd/3nuX5+ZEMD2zFq54h
+	 X0/U5/Dcd/Xcf8W9AmRYLY9kiORAnnMfRO7xClRvg2XVVoE+sTmxvKIrJdeThhM28S
+	 7iouHg7+4Z3l9zXMpNgDITqw9gLBGHASvRnQlAdT2JBlgY3MTGUrefopGofZ8Civa5
+	 CEJ9oLPedC7pPbSqXhtnNZVed9uBr8mLuKbxZHtzztBIljRZJZxA9tw44WvGb+lxp+
+	 Vu5AgSJOK1z+J85UOcZ27rNW4gI7ptI0fVyA4FQFzj8Jy1cz2gINlhaSVeHZNiadwX
+	 FkQlqU7cDoMbg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9C595CE1497; Thu, 30 Jul 2026 18:04:03 -0700 (PDT)
+	id 973DECE1018; Thu, 30 Jul 2026 18:04:03 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC 08/10] rcu-tasks: Fix IRQ read lock/unlock data race
-Date: Thu, 30 Jul 2026 18:03:59 -0700
-Message-Id: <20260731010401.3531631-8-paulmck@kernel.org>
+	Zqiang <qiang.zhang@linux.dev>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH RFC 06/10] rcu-tasks: Update comments in call_rcu_tasks_generic()
+Date: Thu, 30 Jul 2026 18:03:57 -0700
+Message-Id: <20260731010401.3531631-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c50fb3e6-8d9f-4311-953e-a4703ba1e863@paulmck-laptop>
 References: <c50fb3e6-8d9f-4311-953e-a4703ba1e863@paulmck-laptop>
@@ -48,55 +49,38 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As noted by Marco Elver:
+From: Zqiang <qiang.zhang@linux.dev>
 
-rcu_read_lock_trace()
-   ....
-t->trc_reader_scp = __srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
-	<interrupt>
-					rcu_read_unlock_trace()
-					< ... var decls only ... >
-					scp = t->trc_reader_scp;
+This commit updates the comment "We can't create the thread unless
+interrupts are enabled." from 'commit 4929c913bda5 ("rcu: Make
+call_rcu_tasks() tolerate first call with irqs disabled")' to be more
+clear and also to cover deferred wakeup and to take into account the fact
+that kthread creation has been move to core_initcall() time by 'commit
+c63eb17ff06d ("rcu: Create call_rcu_tasks() kthread at boot time")'.
 
-This constitutes a data race between these two accesses to
-t->trc_reader_scp.  If rcu_read_lock_trace() were to tear its store,
-this value would be corrupted.
-
-This commit therefore defers the rcu_read_lock_untrace() function's
-load from t->trc_reader_scp until after it has verified that this is
-the outermost rcu_read_unlock_trace().  With this change, the interrupt
-handler increments and decrements t->trc_reader_nesting and does not
-access t->trc_reader_scp, thus avoiding the data race.
-
-KCSAN located this issue.
-
+Signed-off-by: Zqiang <qiang.zhang@linux.dev>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate_trace.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ kernel/rcu/tasks.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index fd3ddeb6aa3bd2..70decf877348a6 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -126,11 +126,13 @@ static inline void rcu_read_unlock_trace(void)
- 	struct srcu_ctr __percpu *scp;
- 	struct task_struct *t = current;
- 
--	scp = t->trc_reader_scp;
--	barrier();  // scp before nesting to protect against interrupt handler.
- 	n = READ_ONCE(t->trc_reader_nesting) - 1;
--	WRITE_ONCE(t->trc_reader_nesting, n);
--	if (!n) {
-+	if (n) {
-+		WRITE_ONCE(t->trc_reader_nesting, n);
-+	} else {
-+		scp = t->trc_reader_scp; // Compiler cannot hoist load due to data raciness.
-+		barrier();  // scp before nesting to protect against interrupt handler.
-+		WRITE_ONCE(t->trc_reader_nesting, n);
- 		if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
- 			smp_mb(); // Placeholder for more selective ordering
- 		__srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 79aa5d51388c45..bc49698a3bcc14 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -395,7 +395,11 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 	}
+ 	rcu_read_unlock();
+-	/* We can't create the thread unless interrupts are enabled. */
++	// We can't create the kthread with interrupts disabled because a
++	// scheduler spinlock might be held, so kthread creation is deferred
++	// until core_initcall() time.  Similarly, wakeups are deferred using
++	// irq_work in order to avoid potential scheduler-lock-deadlock
++	// lockdep splats.
+ 	if (needwake && READ_ONCE(rtp->kthread_ptr))
+ 		irq_work_queue(&rtpcp->rtp_irq_work);
+ }
 -- 
 2.40.1
 
