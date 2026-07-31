@@ -1,100 +1,99 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B057B2DEA86;
-	Fri, 31 Jul 2026 01:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68BBC78F26;
+	Fri, 31 Jul 2026 01:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785459847; cv=none; b=llVY9f0bO81QevwRkFVjcROx7T1sl44IW1coCZru8Bc12barrh2TEWwYxxIneKcvqpXumMQsXgZeAwKRd0Mr4rMrOuZJZLAeuIP3EDi2jhZ//9CsZhyeK52kNZzrxYI+dU0IA4shv2M9ZyggzT608eB6Bjh3vaKveEHtcV3niUc=
+	t=1785460033; cv=none; b=cLeWTXOetPl+3bQyGasvTaJ+5M/cMsCzrROi5zoWnqrRmyWAP0tH1lRdC5Qba/Ub/N0n2SRWulO8OF8ddJngC9z+fHllBOPvrEKQmSkvdHW35vq525fJpJ58JIFSg06Je5iWVsVCEnjPlTxuzdLlYT9lgQ4PDvUt9PQPF1nArx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785459847; c=relaxed/simple;
-	bh=jk/3LupnUbkgwyeTdBT3jbri03SneHqbqDFyGn7XhbM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NxHDBLog76MyL8rk3BHojDrU+zwogihLxmDUoGFfPB9Xkt6Jo7DrnSw73hXupDldwIeAG6emORUUSg2zNuxO0ANfMOr5Na/1Jcmk5NBqUy61Vm9KIv9TYz7ybFWAqrq483q8/iihQRFqPxwG0TK2X6eiX/fhS/5TCNK6B9J+tmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GH8CYFKH; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785460033; c=relaxed/simple;
+	bh=czsaTb227b1BV3REPsqww+77uisBFa+zmJ/19iuzQ/w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DAD89WEAgwo8GrYnvI8+c+kF2ZM7hdqyrAVMq6998p8a8Qq9G8arGmwHNwvRnQMxvpmhMTFpo2hBM3GBLMKZOBAD4zt1AhOBXRYQKHbaCznJZr8IQ8PeXvrnm+cFgsK0sEJE/TYgbW3X2Lfe+8cuPCRCDiSvJrEipw/D6tQZq94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YtBeR7qw; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GH8CYFKH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21EE41F00ADF;
-	Fri, 31 Jul 2026 01:04:04 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YtBeR7qw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 056331F000E9;
+	Fri, 31 Jul 2026 01:07:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785459844;
-	bh=Qr0BZEAvHLD5EZAEoOzzrj7YVcEO6epGSKpP9H+vH8o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=GH8CYFKHvJdPy286y5/UKGyUXt6N5zcNbl90VUizWAy3uDQOYCQedMuxD/dU4FtE6
-	 gpjJoXwb3bRPEYBdDxguxOJ9P0YCwwTxxIZ0rkPlyzgs0t2AxjvXjpNlXxID35NRzD
-	 cIkm4a/DS6q8iIf3e79XGBh87IgdSMhO3v4/pP24zOrhNMZVL2Xk/lfZ4QPDzOCRTN
-	 nMFe5mlJwbfwSLpB++EwwLn+V0c/Mc/J0v5VidSMNaVh2cjYksMweJbDRkBlQu9tzl
-	 EwoYUbSHCOaLJHc7ajtTYvxOwJlZnfVgDG6j09C6aD5FgfZBr8azSfYSaxmWksvJDv
-	 E25rZrgaYdWKA==
+	s=k20260515; t=1785460032;
+	bh=WLkr7i/9mIfIFJYYQyUPztSsFllTNva/6MFXYfkp/zA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=YtBeR7qwhQRuhJeHSmPCiD0JcGSetB22ps1QjGqHFrY53b2ISvgCS3XLaZEvqd+8W
+	 arBluIehGxbMOD4zv3WN3CHhTHlCXS8yH8ByNQpi+V83+jM1ILhKJm2tq1eWahFWlo
+	 tfr5p9pmhPlKdslQ+mL9EFZYAhtbN5VyISOY8QZwMky+xhqLo+SGFQCkLJ0vOYItaj
+	 ODHBA+t9Ki6W5HR8OPJgYTdfI0tI28Qw4oO2GoqvjiYV4j7CibFgE0GkQEgWZ/le/R
+	 lS8m/l//4kVNl1kGTiPQHTyapQ7xiUM8N3Jcm1PF7idjxu8hrYlHYbfwMk/8gVrJMB
+	 XAbNHkQg8Uo/g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A1B4DCE14DB; Thu, 30 Jul 2026 18:04:03 -0700 (PDT)
+	id BF118CE0F69; Thu, 30 Jul 2026 18:07:11 -0700 (PDT)
+Date: Thu, 30 Jul 2026 18:07:11 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	Zqiang <qiang.zhang@linux.dev>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC 10/10] rcu-tasks: Fix some comments for call_rcu_tasks() and call_rcu_tasks_rude()
-Date: Thu, 30 Jul 2026 18:04:01 -0700
-Message-Id: <20260731010401.3531631-10-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <c50fb3e6-8d9f-4311-953e-a4703ba1e863@paulmck-laptop>
-References: <c50fb3e6-8d9f-4311-953e-a4703ba1e863@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH v2 0/13] RCU torture-test updates for v7.3
+Message-ID: <d1db6e52-06c2-401d-b6fe-85aa588196d8@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <3f56c779-b900-40f9-9a24-6136fb28ddfb@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3f56c779-b900-40f9-9a24-6136fb28ddfb@paulmck-laptop>
 
-From: Zqiang <qiang.zhang@linux.dev>
+Hello!
 
-The comments for call_rcu_tasks() and call_rcu_tasks_rude() referred
-to "RCU read-side critical sections", which is ambiguous. specify
-"rcu-tasks" and "rcu-tasks rude" respectively to match the actual
-flavor being described.
+This series contains torture-test updates for v7.3:
 
-Signed-off-by: Zqiang <qiang.zhang@linux.dev>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tasks.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+1.	Abstract reader-segment dump into rcu_torture_dump_read_segs().
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index fce57d90db1a60..851ac225770c78 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1179,7 +1179,7 @@ static void tasks_rcu_exit_stall(struct timer_list *unused)
-  * @func: actual callback function to be invoked after the grace period
-  *
-  * The callback function will be invoked some time after a full grace
-- * period elapses, in other words after all currently executing RCU
-+ * period elapses, in other words after all currently executing rcu-tasks
-  * read-side critical sections have completed. call_rcu_tasks() assumes
-  * that the read-side critical sections end at a voluntary context
-  * switch (not a preemption!), cond_resched_tasks_rcu_qs(), entry into idle,
-@@ -1365,8 +1365,8 @@ DEFINE_RCU_TASKS(rcu_tasks_rude, rcu_tasks_rude_wait_gp, call_rcu_tasks_rude,
-  * @func: actual callback function to be invoked after the grace period
-  *
-  * The callback function will be invoked some time after a full grace
-- * period elapses, in other words after all currently executing RCU
-- * read-side critical sections have completed. call_rcu_tasks_rude()
-+ * period elapses, in other words after all currently executing rude
-+ * rcu-tasks read-side critical sections have completed. call_rcu_tasks_rude()
-  * assumes that the read-side critical sections end at context switch,
-  * cond_resched_tasks_rcu_qs(), or transition to usermode execution (as
-  * usermode execution is schedulable). As such, there are no read-side
-@@ -1390,7 +1390,7 @@ static void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func)
-  *
-  * Control will return to the caller some time after a rude rcu-tasks
-  * grace period has elapsed, in other words after all currently
-- * executing rcu-tasks read-side critical sections have elapsed.  These
-+ * executing rude rcu-tasks read-side critical sections have elapsed. These
-  * read-side critical sections are delimited by calls to schedule(),
-  * cond_resched_tasks_rcu_qs(), userspace execution (which is a schedulable
-  * context), and (in theory, anyway) cond_resched().
--- 
-2.40.1
+2.	Check for immediate deboosting at reader end.
 
+3.	Test RCU readers from hardware interrupt handlers.
+
+4.	Use cpumask_next_wrap() in rcu_torture_preempt().
+
+5.	Use task_state_to_char() for task-state reporting, courtesy of
+	Kunwu Chan.
+
+6.	Add nwriters module parameter.
+
+7.	Add a stall_only module parameter.
+
+8.	Test RCU Tasks Trace GP implying RCU GP.
+
+9.	Make RCU Tasks Trace track Reader Batches.
+
+10.	Use this_cpu_inc() for rcu_torture_count[] and
+	rcu_torture_batch[].
+
+11.	Don't leak shuffle_tmp_mask when shuffler kthread fails to start,
+	courtesy of Joel Fernandes.
+
+12.	Announce declining to forward-progress test.
+
+13.	Make {,s}rcu_read_delay() better handle forward-progress testing.
+
+Changes since v1:
+
+o	Added patches 12 and 13.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt   |    9 +
+ b/Documentation/admin-guide/kernel-parameters.txt |    5 
+ b/include/linux/rcupdate_trace.h                  |    3 
+ b/kernel/rcu/rcu.h                                |    7 
+ b/kernel/rcu/rcutorture.c                         |  148 ++++++++--------
+ b/kernel/rcu/tasks.h                              |    6 
+ b/kernel/rcu/tree_plugin.h                        |   37 ++++
+ b/kernel/torture.c                                |    7 
+ kernel/rcu/rcutorture.c                           |  196 ++++++++++++++++++----
+ 9 files changed, 310 insertions(+), 108 deletions(-)
