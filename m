@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E03392BE7BA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5F723E35F;
 	Fri, 31 Jul 2026 00:57:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785459456; cv=none; b=etwptGfqFGm+PfYCqdeM3tu8A1U8l/eE6ZzSCXGMCzqFoU5Ak768Kh4aPy4GyVjoEiUHU5xUG/2z4Bldlj8vVuuK7WhFsPvn8prd0Ha7tGK1OPlOYFUC9ye13T2CC9XQfKsqcnp81XsH3QKP6VxIxcKtYSb7MCOqGFsgWSqawDQ=
+	t=1785459457; cv=none; b=ZNigtybJ0rEqROM6sl9CprZ7u539KhmZc4WjKUDMFrBDsy6/Qfd8YYRxHa6T9qBywudqi1HEvKPm78xLZabZGqIHACfBwSabqSuB1a5U7BNH5J64cnVH5CqpOhFjMMwPj+PQmkvuNhxgggD8W8HoVxlKLxXLDGcwUKRZkv/rjzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785459456; c=relaxed/simple;
-	bh=GFcPvRC2pjrQ0eVppbivf9Gu6E9sJjHYSOTnZBwwij4=;
+	s=arc-20240116; t=1785459457; c=relaxed/simple;
+	bh=r2TSh2GyYxTeJXbC3bXR0fSmeYTRqdHL/5bfUyzFXjM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rRQYWybhNBzblUfYC6l/o3qdeAKOeP42bO4lH+6HCdJTIbTcfqVe0shSbEPNujS3Hn4i11qmtBzSzeE1NZSwYQL+zj8NucQz088OYzZqoqtla7px+JlDUSjTOe62A5eSDJxRBXe7ZGjrVp9lSvzIa+4Ki7nUUnZ1T5uo3YPYbGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ce0St9ga; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=AOdRQVxm40kEpDzSpvVmMgMddBWX0PYH1XyjcakrKoyuBaxYl2PWfh0SStoghiZxFaeULJV3ySuHIwScHm8EZdTzWEi6c9ZdA+PUXi83o2nW/PqSVaDgP8xym1glFPrubSKJYrPJrCvKRB/GKoeWgmOfmr3jF5DizZpOvgIinTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H/DL1SLr; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ce0St9ga"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90C071F00A3F;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H/DL1SLr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 623421F00A3A;
 	Fri, 31 Jul 2026 00:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1785459454;
-	bh=OcKKDi6kL11ztm3nb7nkv0xRJMaAOQCKlk5wfpu09XI=;
+	bh=pfK1dXMdINth6jNZ75UcjCQtbsul1mEeVXG2Kodqe2I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ce0St9gaJcL/V+BEn4mquTm3afEfrruLtkO9Hk9gLOKJMzQCvHtW+PJQOEp49KjUm
-	 CkXpcJUKGHhoCy+WmRQD5WR61rcg7/My8ODVAoyUcMCG9n3svYYgEOpOV4nMDZtstV
-	 Prqv11gGwmcyK102CgegGgjh66iwUaW0cfiGNDNt65MTyA3HB2hPfBGZlgwvpuWFhw
-	 ngXJuZVJOO8t4le8rtRIRf71nmMAqYCrwrR33PgnjZvL0L1H6znE76t7EQs2FwuYc9
-	 aTeTeN1OjQAq+Qnov929XjqZphMh6Rl3dEZn7uwj4hSh/5xoiClDPmS+6Z4ziGG+Cl
-	 Mip4ZJjdhLu2w==
+	b=H/DL1SLrprwHDhZSag0fwFVufJirZf8swYBwi7/mAVqSBz7w/NV9scZPPyRvyLUPe
+	 /32eaduKqiVCpfqWbECptQPb/AAlolWN93EC6q+6UizZq4OIKClOLnL7NzXvGKcad0
+	 ++NtvKPMepJPDe0FAlwNeTKcEKG8RaJXA2cNPlWT6YcEZ5BrEyTel2YiEAGEK6LjqI
+	 lmaBKXlVGuH14b/QCnz4ONIL/+HxyHRUcEvuxifC9rXbg8N36IJMQlmTUtxlWnMee2
+	 CMl3sYbq79ffq5HTluDpfLxK1IoYfiMF5E46+iu5b44cYdINuGkU9w0l1zVV45mZsA
+	 aL2e0mL/fpvJg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3E911CE100D; Thu, 30 Jul 2026 17:57:34 -0700 (PDT)
+	id 36464CE0F6A; Thu, 30 Jul 2026 17:57:34 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -36,9 +36,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Puranjay Mohan <puranjay@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC 05/12] rcu/segcblist: Track segment grace periods with struct rcu_gp_seq
-Date: Thu, 30 Jul 2026 17:57:25 -0700
-Message-Id: <20260731005732.3530999-5-paulmck@kernel.org>
+Subject: [PATCH RFC 02/12] rcu: Rename struct rcu_gp_oldstate to rcu_gp_seq
+Date: Thu, 30 Jul 2026 17:57:22 -0700
+Message-Id: <20260731005732.3530999-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <58bcd561-0520-43ff-95b0-1ed10e1e3bff@paulmck-laptop>
 References: <58bcd561-0520-43ff-95b0-1ed10e1e3bff@paulmck-laptop>
@@ -52,323 +52,602 @@ Content-Transfer-Encoding: 8bit
 
 From: Puranjay Mohan <puranjay@kernel.org>
 
-Change the type of the per-segment ->gp_seq[] array in struct
-rcu_segcblist from unsigned long to struct rcu_gp_seq.  This prepares the
-callback tracking infrastructure to record both normal and expedited
-grace periods per segment.
+The polled grace-period state structure rcu_gp_oldstate holds a snapshot
+of the normal (and, on SMP, expedited) grace-period sequence numbers.
+Upcoming changes store this structure in the callback segment list, where
+the "oldstate" name reads poorly: there it represents the grace period a
+segment is waiting on and is also compared against the current
+grace-period state.
 
-The rcu_segcblist_nextgp(), rcu_segcblist_advance(), and
-rcu_segcblist_accelerate() helpers now take a struct rcu_gp_seq * instead
-of an unsigned long, and all callers use the .norm field for comparisons
-and assignments.  The SRCU and Tasks RCU wrappers construct a struct
-rcu_gp_seq with only .norm set and forward to the core helpers.
+Rename struct rcu_gp_oldstate to the more neutral struct rcu_gp_seq, and
+shorten its members rgos_norm and rgos_exp to norm and exp.  Local
+variables and parameters of this type are renamed from rgosp/rgos to
+gsp/gs accordingly.
 
-No functional change: only the .norm field is used.
+While at it, provide a single definition of the structure in rcupdate.h
+rather than separate Tiny-RCU and Tree-RCU definitions, and give it the
+->exp field unconditionally.  Tiny RCU does not track expedited grace
+periods and leaves ->exp unused, but a single definition that always has
+->exp lets the shared callback code in rcu_segcblist.c reference it
+without CONFIG_SMP guards, including on !SMP builds.
+
+No functional change.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcu_segcblist.h |  2 +-
- include/trace/events/rcu.h    |  5 +++--
- kernel/rcu/rcu_segcblist.c    | 24 ++++++++++++++----------
- kernel/rcu/rcu_segcblist.h    |  6 +++---
- kernel/rcu/tree.c             | 25 ++++++++++++++-----------
- kernel/rcu/tree_nocb.h        | 21 +++++++++++----------
- 6 files changed, 46 insertions(+), 37 deletions(-)
+ include/linux/rcupdate.h      | 13 ++++++--
+ include/linux/rcupdate_wait.h |  2 +-
+ include/linux/rcutiny.h       | 36 +++++++++-----------
+ include/linux/rcutree.h       | 29 +++++++---------
+ kernel/rcu/rcutorture.c       | 30 ++++++++---------
+ kernel/rcu/tiny.c             |  4 +--
+ kernel/rcu/tree.c             | 62 +++++++++++++++++------------------
+ kernel/rcu/tree_exp.h         | 18 +++++-----
+ mm/slab_common.c              |  6 ++--
+ 9 files changed, 100 insertions(+), 100 deletions(-)
 
-diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-index 2fdc2208f1ca3a..137cc23b024c5f 100644
---- a/include/linux/rcu_segcblist.h
-+++ b/include/linux/rcu_segcblist.h
-@@ -190,7 +190,7 @@ struct rcu_cblist {
- struct rcu_segcblist {
- 	struct rcu_head *head;
- 	struct rcu_head **tails[RCU_CBLIST_NSEGS];
--	unsigned long gp_seq[RCU_CBLIST_NSEGS];
-+	struct rcu_gp_seq gp_seq[RCU_CBLIST_NSEGS];
- #ifdef CONFIG_RCU_NOCB_CPU
- 	atomic_long_t len;
- #else
-diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-index 5fbdabe3faead8..c84309c3883436 100644
---- a/include/trace/events/rcu.h
-+++ b/include/trace/events/rcu.h
-@@ -547,10 +547,11 @@ TRACE_EVENT_RCU(rcu_segcb_stats,
- 		),
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 5e95acc33989b6..ce00f1726e95e3 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -52,9 +52,18 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func);
+ void rcu_barrier_tasks(void);
+ void synchronize_rcu(void);
  
- 		TP_fast_assign(
-+			int i;
- 			__entry->ctx = ctx;
- 			memcpy(__entry->seglen, rs->seglen, RCU_CBLIST_NSEGS * sizeof(long));
--			memcpy(__entry->gp_seq, rs->gp_seq, RCU_CBLIST_NSEGS * sizeof(unsigned long));
+-struct rcu_gp_oldstate;
++/*
++ * Grace-period sequence snapshot for the polled RCU APIs: ->norm for the
++ * normal grace period and ->exp for the expedited one.  ->exp is unused by
++ * Tiny RCU, but is present unconditionally so that a single definition
++ * serves both Tiny RCU and Tree RCU.
++ */
++struct rcu_gp_seq {
++	unsigned long norm;
++	unsigned long exp;
++};
+ unsigned long get_completed_synchronize_rcu(void);
+-void get_completed_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp);
++void get_completed_synchronize_rcu_full(struct rcu_gp_seq *gsp);
+ 
+ // Maximum number of unsigned long values corresponding to
+ // not-yet-completed RCU grace periods.
+diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
+index 4c92d4291cce7a..fa884704a3b797 100644
+--- a/include/linux/rcupdate_wait.h
++++ b/include/linux/rcupdate_wait.h
+@@ -18,7 +18,7 @@ struct rcu_synchronize {
+ 	struct completion completion;
+ 
+ 	/* This is for debugging. */
+-	struct rcu_gp_oldstate oldstate;
++	struct rcu_gp_seq oldstate;
+ };
+ void wakeme_after_rcu(struct rcu_head *head);
+ 
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index f519cd68022867..e56ded733b1b5d 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -14,11 +14,7 @@
+ 
+ #include <asm/param.h> /* for HZ */
+ 
+-struct rcu_gp_oldstate {
+-	unsigned long rgos_norm;
+-};
 -
-+			for (i = 0; i < RCU_CBLIST_NSEGS; i++)
-+				__entry->gp_seq[i] = rs->gp_seq[i].norm;
- 		),
+-// Maximum number of rcu_gp_oldstate values corresponding to
++// Maximum number of rcu_gp_seq values corresponding to
+ // not-yet-completed RCU grace periods.
+ #define NUM_ACTIVE_RCU_POLL_FULL_OLDSTATE 2
  
- 		TP_printk("%s seglen: (DONE=%ld, WAIT=%ld, NEXT_READY=%ld, NEXT=%ld) "
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 421f1dadb5e55b..4e3dfe42bc097b 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -307,13 +307,13 @@ struct rcu_head *rcu_segcblist_first_pend_cb(struct rcu_segcblist *rsclp)
- 
- /*
-  * Return false if there are no CBs awaiting grace periods, otherwise,
-- * return true and store the nearest waited-upon grace period into *lp.
-+ * return true and store the nearest waited-upon grace period state into *gsp.
+@@ -26,31 +22,31 @@ struct rcu_gp_oldstate {
+  * Are the two oldstate values the same?  See the Tree RCU version for
+  * docbook header.
   */
--bool rcu_segcblist_nextgp(struct rcu_segcblist *rsclp, unsigned long *lp)
-+bool rcu_segcblist_nextgp(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp)
+-static inline bool same_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp1,
+-						   struct rcu_gp_oldstate *rgosp2)
++static inline bool same_state_synchronize_rcu_full(struct rcu_gp_seq *rgosp1,
++						   struct rcu_gp_seq *rgosp2)
  {
- 	if (!rcu_segcblist_pend_cbs(rsclp))
- 		return false;
--	*lp = rsclp->gp_seq[RCU_WAIT_TAIL];
-+	*gsp = rsclp->gp_seq[RCU_WAIT_TAIL];
- 	return true;
+-	return rgosp1->rgos_norm == rgosp2->rgos_norm;
++	return rgosp1->norm == rgosp2->norm;
  }
  
-@@ -496,7 +496,7 @@ static void rcu_segcblist_advance_compact(struct rcu_segcblist *rsclp, int i)
-  * Advance the callbacks in the specified rcu_segcblist structure based
-  * on the current value passed in for the grace-period counter.
-  */
--void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
-+void rcu_segcblist_advance(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp)
+ unsigned long get_state_synchronize_rcu(void);
+ 
+-static inline void get_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
++static inline void get_state_synchronize_rcu_full(struct rcu_gp_seq *gsp)
  {
+-	rgosp->rgos_norm = get_state_synchronize_rcu();
++	gsp->norm = get_state_synchronize_rcu();
+ }
+ 
+ unsigned long start_poll_synchronize_rcu(void);
+ 
+-static inline void start_poll_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
++static inline void start_poll_synchronize_rcu_full(struct rcu_gp_seq *gsp)
+ {
+-	rgosp->rgos_norm = start_poll_synchronize_rcu();
++	gsp->norm = start_poll_synchronize_rcu();
+ }
+ 
+ bool poll_state_synchronize_rcu(unsigned long oldstate);
+ 
+-static inline bool poll_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
++static inline bool poll_state_synchronize_rcu_full(struct rcu_gp_seq *gsp)
+ {
+-	return poll_state_synchronize_rcu(rgosp->rgos_norm);
++	return poll_state_synchronize_rcu(gsp->norm);
+ }
+ 
+ static inline void cond_synchronize_rcu(unsigned long oldstate)
+@@ -58,9 +54,9 @@ static inline void cond_synchronize_rcu(unsigned long oldstate)
+ 	might_sleep();
+ }
+ 
+-static inline void cond_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
++static inline void cond_synchronize_rcu_full(struct rcu_gp_seq *gsp)
+ {
+-	cond_synchronize_rcu(rgosp->rgos_norm);
++	cond_synchronize_rcu(gsp->norm);
+ }
+ 
+ static inline unsigned long start_poll_synchronize_rcu_expedited(void)
+@@ -68,9 +64,9 @@ static inline unsigned long start_poll_synchronize_rcu_expedited(void)
+ 	return start_poll_synchronize_rcu();
+ }
+ 
+-static inline void start_poll_synchronize_rcu_expedited_full(struct rcu_gp_oldstate *rgosp)
++static inline void start_poll_synchronize_rcu_expedited_full(struct rcu_gp_seq *gsp)
+ {
+-	rgosp->rgos_norm = start_poll_synchronize_rcu_expedited();
++	gsp->norm = start_poll_synchronize_rcu_expedited();
+ }
+ 
+ static inline void cond_synchronize_rcu_expedited(unsigned long oldstate)
+@@ -78,9 +74,9 @@ static inline void cond_synchronize_rcu_expedited(unsigned long oldstate)
+ 	cond_synchronize_rcu(oldstate);
+ }
+ 
+-static inline void cond_synchronize_rcu_expedited_full(struct rcu_gp_oldstate *rgosp)
++static inline void cond_synchronize_rcu_expedited_full(struct rcu_gp_seq *gsp)
+ {
+-	cond_synchronize_rcu_expedited(rgosp->rgos_norm);
++	cond_synchronize_rcu_expedited(gsp->norm);
+ }
+ 
+ extern void rcu_barrier(void);
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index 9d2d7bd251d4f6..16a04202888b45 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -38,12 +38,7 @@ void synchronize_rcu_expedited(void);
+ void rcu_barrier(void);
+ void rcu_momentary_eqs(void);
+ 
+-struct rcu_gp_oldstate {
+-	unsigned long rgos_norm;
+-	unsigned long rgos_exp;
+-};
+-
+-// Maximum number of rcu_gp_oldstate values corresponding to
++// Maximum number of rcu_gp_seq values corresponding to
+ // not-yet-completed RCU grace periods.
+ #define NUM_ACTIVE_RCU_POLL_FULL_OLDSTATE 4
+ 
+@@ -60,29 +55,29 @@ struct rcu_gp_oldstate {
+  * to a list header, allowing those structures to be slightly smaller.
+  *
+  * Note that equality is judged on a bitwise basis, so that an
+- * @rcu_gp_oldstate structure with an already-completed state in one field
++ * @rcu_gp_seq structure with an already-completed state in one field
+  * will compare not-equal to a structure with an already-completed state
+- * in the other field.  After all, the @rcu_gp_oldstate structure is opaque
++ * in the other field.  After all, the @rcu_gp_seq structure is opaque
+  * so how did such a situation come to pass in the first place?
+  */
+-static inline bool same_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp1,
+-						   struct rcu_gp_oldstate *rgosp2)
++static inline bool same_state_synchronize_rcu_full(struct rcu_gp_seq *rgosp1,
++						   struct rcu_gp_seq *rgosp2)
+ {
+-	return rgosp1->rgos_norm == rgosp2->rgos_norm && rgosp1->rgos_exp == rgosp2->rgos_exp;
++	return rgosp1->norm == rgosp2->norm && rgosp1->exp == rgosp2->exp;
+ }
+ 
+ unsigned long start_poll_synchronize_rcu_expedited(void);
+-void start_poll_synchronize_rcu_expedited_full(struct rcu_gp_oldstate *rgosp);
++void start_poll_synchronize_rcu_expedited_full(struct rcu_gp_seq *gsp);
+ void cond_synchronize_rcu_expedited(unsigned long oldstate);
+-void cond_synchronize_rcu_expedited_full(struct rcu_gp_oldstate *rgosp);
++void cond_synchronize_rcu_expedited_full(struct rcu_gp_seq *gsp);
+ unsigned long get_state_synchronize_rcu(void);
+-void get_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp);
++void get_state_synchronize_rcu_full(struct rcu_gp_seq *gsp);
+ unsigned long start_poll_synchronize_rcu(void);
+-void start_poll_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp);
++void start_poll_synchronize_rcu_full(struct rcu_gp_seq *gsp);
+ bool poll_state_synchronize_rcu(unsigned long oldstate);
+-bool poll_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp);
++bool poll_state_synchronize_rcu_full(struct rcu_gp_seq *gsp);
+ void cond_synchronize_rcu(unsigned long oldstate);
+-void cond_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp);
++void cond_synchronize_rcu_full(struct rcu_gp_seq *gsp);
+ 
+ #ifdef CONFIG_PROVE_RCU
+ void rcu_irq_exit_check_preempt(void);
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 882a158ada7bbd..d71911ac911a01 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -392,23 +392,23 @@ struct rcu_torture_ops {
+ 	void (*exp_current)(void);
+ 	unsigned long (*get_gp_state_exp)(void);
+ 	unsigned long (*start_gp_poll_exp)(void);
+-	void (*start_gp_poll_exp_full)(struct rcu_gp_oldstate *rgosp);
++	void (*start_gp_poll_exp_full)(struct rcu_gp_seq *gsp);
+ 	bool (*poll_gp_state_exp)(unsigned long oldstate);
+ 	void (*cond_sync_exp)(unsigned long oldstate);
+-	void (*cond_sync_exp_full)(struct rcu_gp_oldstate *rgosp);
++	void (*cond_sync_exp_full)(struct rcu_gp_seq *gsp);
+ 	unsigned long (*get_comp_state)(void);
+-	void (*get_comp_state_full)(struct rcu_gp_oldstate *rgosp);
++	void (*get_comp_state_full)(struct rcu_gp_seq *gsp);
+ 	bool (*same_gp_state)(unsigned long oldstate1, unsigned long oldstate2);
+-	bool (*same_gp_state_full)(struct rcu_gp_oldstate *rgosp1, struct rcu_gp_oldstate *rgosp2);
++	bool (*same_gp_state_full)(struct rcu_gp_seq *rgosp1, struct rcu_gp_seq *rgosp2);
+ 	unsigned long (*get_gp_state)(void);
+-	void (*get_gp_state_full)(struct rcu_gp_oldstate *rgosp);
++	void (*get_gp_state_full)(struct rcu_gp_seq *gsp);
+ 	unsigned long (*start_gp_poll)(void);
+-	void (*start_gp_poll_full)(struct rcu_gp_oldstate *rgosp);
++	void (*start_gp_poll_full)(struct rcu_gp_seq *gsp);
+ 	bool (*poll_gp_state)(unsigned long oldstate);
+-	bool (*poll_gp_state_full)(struct rcu_gp_oldstate *rgosp);
++	bool (*poll_gp_state_full)(struct rcu_gp_seq *gsp);
+ 	bool (*poll_need_2gp)(bool poll, bool poll_full);
+ 	void (*cond_sync)(unsigned long oldstate);
+-	void (*cond_sync_full)(struct rcu_gp_oldstate *rgosp);
++	void (*cond_sync_full)(struct rcu_gp_seq *gsp);
+ 	int poll_active;
+ 	int poll_active_full;
+ 	call_rcu_func_t call;
+@@ -1605,7 +1605,7 @@ static void rcu_torture_write_types(void)
+ static void do_rtws_sync(struct torture_random_state *trsp, void (*sync)(void))
+ {
+ 	unsigned long cookie;
+-	struct rcu_gp_oldstate cookie_full;
++	struct rcu_gp_seq cookie_full;
+ 	bool dopoll;
+ 	bool dopoll_full;
+ 	unsigned long r = torture_random(trsp);
+@@ -1653,18 +1653,18 @@ rcu_torture_writer(void *arg)
+ 	bool booting_still = false;
+ 	bool can_expedite = !rcu_gp_is_expedited() && !rcu_gp_is_normal();
+ 	unsigned long cookie;
+-	struct rcu_gp_oldstate cookie_full;
++	struct rcu_gp_seq cookie_full;
+ 	int expediting = 0;
+ 	unsigned long gp_snap;
+ 	unsigned long gp_snap1;
+-	struct rcu_gp_oldstate gp_snap_full;
+-	struct rcu_gp_oldstate gp_snap1_full;
++	struct rcu_gp_seq gp_snap_full;
++	struct rcu_gp_seq gp_snap1_full;
  	int i;
+ 	int idx;
+ 	unsigned long j;
+ 	struct work_struct lazy_work;
+ 	int oldnice = task_nice(current);
+-	struct rcu_gp_oldstate *rgo = NULL;
++	struct rcu_gp_seq *rgo = NULL;
+ 	int rgo_size = 0;
+ 	struct rcu_torture *rp;
+ 	struct rcu_torture *old_rp;
+@@ -1963,7 +1963,7 @@ static int
+ rcu_torture_fakewriter(void *arg)
+ {
+ 	unsigned long gp_snap;
+-	struct rcu_gp_oldstate gp_snap_full;
++	struct rcu_gp_seq gp_snap_full;
+ 	DEFINE_TORTURE_RANDOM(rand);
  
-@@ -509,7 +509,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
- 	 * are ready to invoke, and put them into the RCU_DONE_TAIL segment.
- 	 */
- 	for (i = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++) {
--		if (ULONG_CMP_LT(seq, rsclp->gp_seq[i]))
-+		if (ULONG_CMP_LT(gsp->norm, rsclp->gp_seq[i].norm))
- 			break;
- 		WRITE_ONCE(rsclp->tails[RCU_DONE_TAIL], rsclp->tails[i]);
- 		rcu_segcblist_move_seglen(rsclp, i, RCU_DONE_TAIL);
-@@ -537,7 +537,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
-  * ready to invoke.  Returns true if there are callbacks that won't be
-  * ready to invoke until seq, false otherwise.
+ 	VERBOSE_TOROUT_STRING("rcu_torture_fakewriter task started");
+@@ -2392,7 +2392,7 @@ rcutorture_loop_extend(int *readstate, struct torture_random_state *trsp, struct
+ struct rcu_torture_one_read_state {
+ 	bool checkpolling;
+ 	unsigned long cookie;
+-	struct rcu_gp_oldstate cookie_full;
++	struct rcu_gp_seq cookie_full;
+ 	unsigned long started;
+ 	struct rcu_torture *p;
+ 	int readstate;
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index 585cade21010e7..dccccd6be94111 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -187,9 +187,9 @@ EXPORT_SYMBOL_GPL(call_rcu);
+  * Store a grace-period-counter "cookie".  For more information,
+  * see the Tree RCU header comment.
   */
--bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
-+bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp)
+-void get_completed_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
++void get_completed_synchronize_rcu_full(struct rcu_gp_seq *gsp)
  {
- 	int i, j;
- 
-@@ -555,7 +555,7 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
- 	 */
- 	for (i = RCU_NEXT_READY_TAIL; i > RCU_DONE_TAIL; i--)
- 		if (!rcu_segcblist_segempty(rsclp, i) &&
--		    ULONG_CMP_LT(rsclp->gp_seq[i], seq))
-+		    ULONG_CMP_LT(rsclp->gp_seq[i].norm, gsp->norm))
- 			break;
- 
- 	/*
-@@ -595,7 +595,7 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
- 	 */
- 	for (; i < RCU_NEXT_TAIL; i++) {
- 		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_NEXT_TAIL]);
--		rsclp->gp_seq[i] = seq;
-+		rsclp->gp_seq[i].norm = gsp->norm;
- 	}
- 	return true;
+-	rgosp->rgos_norm = RCU_GET_STATE_COMPLETED;
++	gsp->norm = RCU_GET_STATE_COMPLETED;
  }
-@@ -637,10 +637,14 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
+ EXPORT_SYMBOL_GPL(get_completed_synchronize_rcu_full);
  
- void srcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
- {
--	rcu_segcblist_advance(rsclp, seq);
-+	struct rcu_gp_seq gs = { .norm = seq };
-+
-+	rcu_segcblist_advance(rsclp, &gs);
- }
- 
- bool srcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
- {
--	return rcu_segcblist_accelerate(rsclp, seq);
-+	struct rcu_gp_seq gs = { .norm = seq };
-+
-+	return rcu_segcblist_accelerate(rsclp, &gs);
- }
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index 956f2967d9d294..16b0cb6b32507a 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -124,7 +124,7 @@ bool rcu_segcblist_ready_cbs(struct rcu_segcblist *rsclp);
- bool rcu_segcblist_pend_cbs(struct rcu_segcblist *rsclp);
- struct rcu_head *rcu_segcblist_first_cb(struct rcu_segcblist *rsclp);
- struct rcu_head *rcu_segcblist_first_pend_cb(struct rcu_segcblist *rsclp);
--bool rcu_segcblist_nextgp(struct rcu_segcblist *rsclp, unsigned long *lp);
-+bool rcu_segcblist_nextgp(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp);
- void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
- 			   struct rcu_head *rhp);
- bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
-@@ -139,8 +139,8 @@ void rcu_segcblist_insert_done_cbs(struct rcu_segcblist *rsclp,
- 				   struct rcu_cblist *rclp);
- void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
- 				   struct rcu_cblist *rclp);
--void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
--bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
-+void rcu_segcblist_advance(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp);
-+bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, struct rcu_gp_seq *gsp);
- void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
- 			 struct rcu_segcblist *src_rsclp);
- void srcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 0d2d877eb94564..9ca811e534b5bf 100644
+index ef553189ee248e..0d2d877eb94564 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1137,7 +1137,7 @@ static void rcu_gp_kthread_wake(void)
+@@ -3284,7 +3284,7 @@ EXPORT_SYMBOL_GPL(call_rcu);
+  * Later on, this could in theory be the case for kernels built with
+  * CONFIG_SMP=y && CONFIG_PREEMPTION=y running on a single CPU, but this
+  * is not a common case.  Furthermore, this optimization would cause
+- * the rcu_gp_oldstate structure to expand by 50%, so this potential
++ * the rcu_gp_seq structure to expand by 50%, so this potential
+  * grace-period optimization is ignored once the scheduler is running.
   */
- static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+ static int rcu_blocking_is_gp(void)
+@@ -3413,16 +3413,16 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
+ 
+ /**
+  * get_completed_synchronize_rcu_full - Return a full pre-completed polled state cookie
+- * @rgosp: Place to put state cookie
++ * @gsp: Place to put state cookie
+  *
+- * Stores into @rgosp a value that will always be treated by functions
++ * Stores into @gsp a value that will always be treated by functions
+  * like poll_state_synchronize_rcu_full() as a cookie whose grace period
+  * has already completed.
+  */
+-void get_completed_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
++void get_completed_synchronize_rcu_full(struct rcu_gp_seq *gsp)
  {
--	unsigned long gp_seq_req;
-+	struct rcu_gp_seq gs;
- 	bool ret = false;
+-	rgosp->rgos_norm = RCU_GET_STATE_COMPLETED;
+-	rgosp->rgos_exp = RCU_GET_STATE_COMPLETED;
++	gsp->norm = RCU_GET_STATE_COMPLETED;
++	gsp->exp = RCU_GET_STATE_COMPLETED;
+ }
+ EXPORT_SYMBOL_GPL(get_completed_synchronize_rcu_full);
  
- 	rcu_lockdep_assert_cblist_protected(rdp);
-@@ -1159,15 +1159,15 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- 	 * accelerating callback invocation to an earlier grace-period
- 	 * number.
- 	 */
--	gp_seq_req = rcu_seq_snap(&rcu_state.gp_seq);
--	if (rcu_segcblist_accelerate(&rdp->cblist, gp_seq_req))
--		ret = rcu_start_this_gp(rnp, rdp, gp_seq_req);
-+	gs.norm = rcu_seq_snap(&rcu_state.gp_seq);
-+	if (rcu_segcblist_accelerate(&rdp->cblist, &gs))
-+		ret = rcu_start_this_gp(rnp, rdp, gs.norm);
+@@ -3446,13 +3446,13 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
  
- 	/* Trace depending on how much we were able to accelerate. */
- 	if (rcu_segcblist_restempty(&rdp->cblist, RCU_WAIT_TAIL))
--		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccWaitCB"));
-+		trace_rcu_grace_period(rcu_state.name, gs.norm, TPS("AccWaitCB"));
- 	else
--		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
-+		trace_rcu_grace_period(rcu_state.name, gs.norm, TPS("AccReadyCB"));
- 
- 	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPostAcc"));
- 
-@@ -1184,14 +1184,14 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- static void rcu_accelerate_cbs_unlocked(struct rcu_node *rnp,
- 					struct rcu_data *rdp)
+ /**
+  * get_state_synchronize_rcu_full - Snapshot RCU state, both normal and expedited
+- * @rgosp: location to place combined normal/expedited grace-period state
++ * @gsp: location to place combined normal/expedited grace-period state
+  *
+- * Places the normal and expedited grace-period states in @rgosp.  This
++ * Places the normal and expedited grace-period states in @gsp.  This
+  * state value can be passed to a later call to cond_synchronize_rcu_full()
+  * or poll_state_synchronize_rcu_full() to determine whether or not a
+  * grace period (whether normal or expedited) has elapsed in the meantime.
+- * The rcu_gp_oldstate structure takes up twice the memory of an unsigned
++ * The rcu_gp_seq structure takes up twice the memory of an unsigned
+  * long, but is guaranteed to see all grace periods.  In contrast, the
+  * combined state occupies less memory, but can sometimes fail to take
+  * grace periods into account.
+@@ -3460,7 +3460,7 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
+  * This does not guarantee that the needed grace period will actually
+  * start.
+  */
+-void get_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
++void get_state_synchronize_rcu_full(struct rcu_gp_seq *gsp)
  {
--	unsigned long c;
-+	struct rcu_gp_seq gs;
- 	bool needwake;
+ 	/*
+ 	 * Any prior manipulation of RCU-protected data must happen
+@@ -3472,8 +3472,8 @@ void get_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
+ 	// in poll_state_synchronize_rcu_full() notwithstanding.  Use of
+ 	// the latter here would result in too-short grace periods due to
+ 	// interactions with newly onlined CPUs.
+-	rgosp->rgos_norm = rcu_seq_snap(&rcu_state.gp_seq);
+-	rgosp->rgos_exp = rcu_seq_snap(&rcu_state.expedited_sequence);
++	gsp->norm = rcu_seq_snap(&rcu_state.gp_seq);
++	gsp->exp = rcu_seq_snap(&rcu_state.expedited_sequence);
+ }
+ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu_full);
  
- 	rcu_lockdep_assert_cblist_protected(rdp);
--	c = rcu_seq_snap(&rcu_state.gp_seq);
--	if (!READ_ONCE(rdp->gpwrap) && ULONG_CMP_GE(rdp->gp_seq_needed, c)) {
-+	gs.norm = rcu_seq_snap(&rcu_state.gp_seq);
-+	if (!READ_ONCE(rdp->gpwrap) && ULONG_CMP_GE(rdp->gp_seq_needed, gs.norm)) {
- 		/* Old request still live, so mark recent callbacks. */
--		(void)rcu_segcblist_accelerate(&rdp->cblist, c);
-+		(void)rcu_segcblist_accelerate(&rdp->cblist, &gs);
- 		return;
+@@ -3524,18 +3524,18 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
+ 
+ /**
+  * start_poll_synchronize_rcu_full - Take a full snapshot and start RCU grace period
+- * @rgosp: value from get_state_synchronize_rcu_full() or start_poll_synchronize_rcu_full()
++ * @gsp: value from get_state_synchronize_rcu_full() or start_poll_synchronize_rcu_full()
+  *
+- * Places the normal and expedited grace-period states in *@rgos.  This
++ * Places the normal and expedited grace-period states in *@gs.  This
+  * state value can be passed to a later call to cond_synchronize_rcu_full()
+  * or poll_state_synchronize_rcu_full() to determine whether or not a
+  * grace period (whether normal or expedited) has elapsed in the meantime.
+  * If the needed grace period is not already slated to start, notifies
+  * RCU core of the need for that grace period.
+  */
+-void start_poll_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
++void start_poll_synchronize_rcu_full(struct rcu_gp_seq *gsp)
+ {
+-	get_state_synchronize_rcu_full(rgosp);
++	get_state_synchronize_rcu_full(gsp);
+ 
+ 	start_poll_synchronize_rcu_common();
+ }
+@@ -3587,19 +3587,19 @@ EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
+ 
+ /**
+  * poll_state_synchronize_rcu_full - Has the specified RCU grace period completed?
+- * @rgosp: value from get_state_synchronize_rcu_full() or start_poll_synchronize_rcu_full()
++ * @gsp: value from get_state_synchronize_rcu_full() or start_poll_synchronize_rcu_full()
+  *
+  * If a full RCU grace period has elapsed since the earlier call from
+- * which *rgosp was obtained, return @true, otherwise return @false.
++ * which *gsp was obtained, return @true, otherwise return @false.
+  * If @false is returned, it is the caller's responsibility to invoke this
+  * function later on until it does return @true.  Alternatively, the caller
+- * can explicitly wait for a grace period, for example, by passing @rgosp
++ * can explicitly wait for a grace period, for example, by passing @gsp
+  * to cond_synchronize_rcu() or by directly invoking synchronize_rcu().
+  *
+  * Yes, this function does not take counter wrap into account.
+  * But counter wrap is harmless.  If the counter wraps, we have waited
+  * for more than a billion grace periods (and way more on a 64-bit
+- * system!).  Those needing to keep rcu_gp_oldstate values for very
++ * system!).  Those needing to keep rcu_gp_seq values for very
+  * long time periods (many hours even on 32-bit systems) should check
+  * them occasionally and either refresh them or set a flag indicating
+  * that the grace period has completed.  Alternatively, they can use
+@@ -3608,7 +3608,7 @@ EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
+  *
+  * This function provides the same memory-ordering guarantees that would
+  * be provided by a synchronize_rcu() that was invoked at the call to
+- * the function that provided @rgosp, and that returned at the end of this
++ * the function that provided @gsp, and that returned at the end of this
+  * function.  And this guarantee requires that the root rcu_node structure's
+  * ->gp_seq field be checked instead of that of the rcu_state structure.
+  * The problem is that the just-ending grace-period's callbacks can be
+@@ -3618,15 +3618,15 @@ EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
+  * cause a subsequent poll_state_synchronize_rcu_full() to return @true,
+  * then the root rcu_node structure is the one that needs to be polled.
+  */
+-bool poll_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
++bool poll_state_synchronize_rcu_full(struct rcu_gp_seq *gsp)
+ {
+ 	struct rcu_node *rnp = rcu_get_root();
+ 
+ 	smp_mb(); // Order against root rcu_node structure grace-period cleanup.
+-	if (rgosp->rgos_norm == RCU_GET_STATE_COMPLETED ||
+-	    rcu_seq_done_exact(&rnp->gp_seq, rgosp->rgos_norm) ||
+-	    rgosp->rgos_exp == RCU_GET_STATE_COMPLETED ||
+-	    rcu_seq_done_exact(&rcu_state.expedited_sequence, rgosp->rgos_exp)) {
++	if (gsp->norm == RCU_GET_STATE_COMPLETED ||
++	    rcu_seq_done_exact(&rnp->gp_seq, gsp->norm) ||
++	    gsp->exp == RCU_GET_STATE_COMPLETED ||
++	    rcu_seq_done_exact(&rcu_state.expedited_sequence, gsp->exp)) {
+ 		smp_mb(); /* Ensure GP ends before subsequent accesses. */
+ 		return true;
  	}
- 	raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
-@@ -1213,6 +1213,8 @@ static void rcu_accelerate_cbs_unlocked(struct rcu_node *rnp,
+@@ -3661,11 +3661,11 @@ EXPORT_SYMBOL_GPL(cond_synchronize_rcu);
+ 
+ /**
+  * cond_synchronize_rcu_full - Conditionally wait for an RCU grace period
+- * @rgosp: value from get_state_synchronize_rcu_full(), start_poll_synchronize_rcu_full(), or start_poll_synchronize_rcu_expedited_full()
++ * @gsp: value from get_state_synchronize_rcu_full(), start_poll_synchronize_rcu_full(), or start_poll_synchronize_rcu_expedited_full()
+  *
+  * If a full RCU grace period has elapsed since the call to
+  * get_state_synchronize_rcu_full(), start_poll_synchronize_rcu_full(),
+- * or start_poll_synchronize_rcu_expedited_full() from which @rgosp was
++ * or start_poll_synchronize_rcu_expedited_full() from which @gsp was
+  * obtained, just return.  Otherwise, invoke synchronize_rcu() to wait
+  * for a full grace period.
+  *
+@@ -3676,12 +3676,12 @@ EXPORT_SYMBOL_GPL(cond_synchronize_rcu);
+  *
+  * This function provides the same memory-ordering guarantees that
+  * would be provided by a synchronize_rcu() that was invoked at the call
+- * to the function that provided @rgosp and that returned at the end of
++ * to the function that provided @gsp and that returned at the end of
+  * this function.
   */
- static bool rcu_advance_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+-void cond_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
++void cond_synchronize_rcu_full(struct rcu_gp_seq *gsp)
  {
-+	struct rcu_gp_seq gs;
-+
- 	rcu_lockdep_assert_cblist_protected(rdp);
- 	raw_lockdep_assert_held_rcu_node(rnp);
+-	if (!poll_state_synchronize_rcu_full(rgosp))
++	if (!poll_state_synchronize_rcu_full(gsp))
+ 		synchronize_rcu();
+ }
+ EXPORT_SYMBOL_GPL(cond_synchronize_rcu_full);
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 82cada459e5d0c..7024131574df8a 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -1047,18 +1047,18 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu_expedited);
  
-@@ -1224,7 +1226,8 @@ static bool rcu_advance_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- 	 * Find all callbacks whose ->gp_seq numbers indicate that they
- 	 * are ready to invoke, and put them into the RCU_DONE_TAIL sublist.
- 	 */
--	rcu_segcblist_advance(&rdp->cblist, rnp->gp_seq);
-+	gs.norm = rnp->gp_seq;
-+	rcu_segcblist_advance(&rdp->cblist, &gs);
+ /**
+  * start_poll_synchronize_rcu_expedited_full - Take a full snapshot and start expedited grace period
+- * @rgosp: Place to put snapshot of grace-period state
++ * @gsp: Place to put snapshot of grace-period state
+  *
+- * Places the normal and expedited grace-period states in rgosp.  This
++ * Places the normal and expedited grace-period states in gsp.  This
+  * state value can be passed to a later call to cond_synchronize_rcu_full()
+  * or poll_state_synchronize_rcu_full() to determine whether or not a
+  * grace period (whether normal or expedited) has elapsed in the meantime.
+  * If the needed expedited grace period is not already slated to start,
+  * initiates that grace period.
+  */
+-void start_poll_synchronize_rcu_expedited_full(struct rcu_gp_oldstate *rgosp)
++void start_poll_synchronize_rcu_expedited_full(struct rcu_gp_seq *gsp)
+ {
+-	get_state_synchronize_rcu_full(rgosp);
++	get_state_synchronize_rcu_full(gsp);
+ 	(void)start_poll_synchronize_rcu_expedited();
+ }
+ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu_expedited_full);
+@@ -1092,11 +1092,11 @@ EXPORT_SYMBOL_GPL(cond_synchronize_rcu_expedited);
  
- 	/* Classify any remaining callbacks. */
- 	return rcu_accelerate_cbs(rnp, rdp);
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index c4a5b4662b3afa..eaa1ad5297e293 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -433,7 +433,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 				bool lazy)
+ /**
+  * cond_synchronize_rcu_expedited_full - Conditionally wait for an expedited RCU grace period
+- * @rgosp: value from get_state_synchronize_rcu_full(), start_poll_synchronize_rcu_full(), or start_poll_synchronize_rcu_expedited_full()
++ * @gsp: value from get_state_synchronize_rcu_full(), start_poll_synchronize_rcu_full(), or start_poll_synchronize_rcu_expedited_full()
+  *
+  * If a full RCU grace period has elapsed since the call to
+  * get_state_synchronize_rcu_full(), start_poll_synchronize_rcu_full(),
+- * or start_poll_synchronize_rcu_expedited_full() from which @rgosp was
++ * or start_poll_synchronize_rcu_expedited_full() from which @gsp was
+  * obtained, just return.  Otherwise, invoke synchronize_rcu_expedited()
+  * to wait for a full grace period.
+  *
+@@ -1107,12 +1107,12 @@ EXPORT_SYMBOL_GPL(cond_synchronize_rcu_expedited);
+  *
+  * This function provides the same memory-ordering guarantees that
+  * would be provided by a synchronize_rcu() that was invoked at the call
+- * to the function that provided @rgosp and that returned at the end of
++ * to the function that provided @gsp and that returned at the end of
+  * this function.
+  */
+-void cond_synchronize_rcu_expedited_full(struct rcu_gp_oldstate *rgosp)
++void cond_synchronize_rcu_expedited_full(struct rcu_gp_seq *gsp)
  {
- 	unsigned long c;
--	unsigned long cur_gp_seq;
-+	struct rcu_gp_seq cur_gp_seq;
- 	unsigned long j = jiffies;
- 	long ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
- 	long lazy_len = READ_ONCE(rdp->lazy_len);
-@@ -502,7 +502,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 		}
- 		if (j != rdp->nocb_gp_adv_time &&
- 		    rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
--		    rcu_seq_done(&rdp->mynode->gp_seq, cur_gp_seq)) {
-+		    rcu_seq_done(&rdp->mynode->gp_seq, cur_gp_seq.norm)) {
- 			rcu_advance_cbs_nowake(rdp->mynode, rdp);
- 			rdp->nocb_gp_adv_time = j;
- 		}
-@@ -659,7 +659,7 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
- {
- 	bool bypass = false;
- 	int __maybe_unused cpu = my_rdp->cpu;
--	unsigned long cur_gp_seq;
-+	struct rcu_gp_seq cur_gp_seq;
- 	unsigned long flags;
- 	bool gotcbs = false;
- 	unsigned long j = jiffies;
-@@ -731,7 +731,7 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
- 		if (!rcu_segcblist_restempty(&rdp->cblist,
- 					     RCU_NEXT_READY_TAIL) ||
- 		    (rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
--		     rcu_seq_done(&rnp->gp_seq, cur_gp_seq))) {
-+		     rcu_seq_done(&rnp->gp_seq, cur_gp_seq.norm))) {
- 			raw_spin_lock_rcu_node(rnp); /* irqs disabled. */
- 			needwake_gp = rcu_advance_cbs(rnp, rdp);
- 			wasempty = rcu_segcblist_restempty(&rdp->cblist,
-@@ -744,8 +744,8 @@ static noinline_for_stack void nocb_gp_wait(struct rcu_data *my_rdp)
- 						      RCU_NEXT_READY_TAIL));
- 		if (rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq)) {
- 			if (!needwait_gp ||
--			    ULONG_CMP_LT(cur_gp_seq, wait_gp_seq))
--				wait_gp_seq = cur_gp_seq;
-+			    ULONG_CMP_LT(cur_gp_seq.norm, wait_gp_seq))
-+				wait_gp_seq = cur_gp_seq.norm;
- 			needwait_gp = true;
- 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
- 					    TPS("NeedWaitGP"));
-@@ -877,7 +877,7 @@ static inline bool nocb_cb_wait_cond(struct rcu_data *rdp)
- static void nocb_cb_wait(struct rcu_data *rdp)
- {
- 	struct rcu_segcblist *cblist = &rdp->cblist;
--	unsigned long cur_gp_seq;
-+	struct rcu_gp_seq cur_gp_seq;
- 	unsigned long flags;
- 	bool needwake_gp = false;
- 	struct rcu_node *rnp = rdp->mynode;
-@@ -919,7 +919,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
- 	lockdep_assert_irqs_enabled();
- 	rcu_nocb_lock_irqsave(rdp, flags);
- 	if (rcu_segcblist_nextgp(cblist, &cur_gp_seq) &&
--	    rcu_seq_done(&rnp->gp_seq, cur_gp_seq) &&
-+	    rcu_seq_done(&rnp->gp_seq, cur_gp_seq.norm) &&
- 	    raw_spin_trylock_rcu_node(rnp)) { /* irqs already disabled. */
- 		needwake_gp = rcu_advance_cbs(rdp->mynode, rdp);
- 		raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
-@@ -1569,9 +1569,10 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 					      nocb_entry_rdp);
+-	if (!poll_state_synchronize_rcu_full(rgosp))
++	if (!poll_state_synchronize_rcu_full(gsp))
+ 		synchronize_rcu_expedited();
+ }
+ EXPORT_SYMBOL_GPL(cond_synchronize_rcu_expedited_full);
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index b6426d7ceec922..d34743d1f3cbb2 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1322,7 +1322,7 @@ static struct workqueue_struct *rcu_reclaim_wq;
+  */
+ struct kvfree_rcu_bulk_data {
+ 	struct list_head list;
+-	struct rcu_gp_oldstate gp_snap;
++	struct rcu_gp_seq gp_snap;
+ 	unsigned long nr_records;
+ 	void *records[] __counted_by(nr_records);
+ };
+@@ -1347,7 +1347,7 @@ struct kvfree_rcu_bulk_data {
+ struct kfree_rcu_cpu_work {
+ 	struct rcu_work rcu_work;
+ 	struct rcu_head *head_free;
+-	struct rcu_gp_oldstate head_free_gp_snap;
++	struct rcu_gp_seq head_free_gp_snap;
+ 	struct list_head bulk_head_free[FREE_N_CHANNELS];
+ 	struct kfree_rcu_cpu *krcp;
+ };
+@@ -1555,7 +1555,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	struct rcu_head *head;
+ 	struct kfree_rcu_cpu *krcp;
+ 	struct kfree_rcu_cpu_work *krwp;
+-	struct rcu_gp_oldstate head_gp_snap;
++	struct rcu_gp_seq head_gp_snap;
+ 	int i;
  
- 	sprintf(bufd, "%ld", rsclp->seglen[RCU_DONE_TAIL]);
--	sprintf(bufw, "%ld(%ld)", rsclp->seglen[RCU_WAIT_TAIL], rsclp->gp_seq[RCU_WAIT_TAIL]);
-+	sprintf(bufw, "%ld(%ld)", rsclp->seglen[RCU_WAIT_TAIL],
-+		rsclp->gp_seq[RCU_WAIT_TAIL].norm);
- 	sprintf(bufr, "%ld(%ld)", rsclp->seglen[RCU_NEXT_READY_TAIL],
--		      rsclp->gp_seq[RCU_NEXT_READY_TAIL]);
-+		rsclp->gp_seq[RCU_NEXT_READY_TAIL].norm);
- 	sprintf(bufn, "%ld", rsclp->seglen[RCU_NEXT_TAIL]);
- 	sprintf(bufb, "%ld", rcu_cblist_n_cbs(&rdp->nocb_bypass));
- 	pr_info("   CB %d^%d->%d %c%c%c%c%c F%ld L%ld C%d %c%s%c%s%c%s%c%s%c%s q%ld %c CPU %d%s\n",
+ 	krwp = container_of(to_rcu_work(work),
 -- 
 2.40.1
 
