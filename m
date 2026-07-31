@@ -1,43 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A13C2C0F6D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782BE2DA76A;
 	Fri, 31 Jul 2026 01:04:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785459847; cv=none; b=WmlkDbheX0qKyGq+UFhFSPgoldSWYAoG72pXeBJnerNRtaWlrU4yGe3hXGUIslXXFs9GQIFJJrdXmru2XCrtA/uM9nDeyBzeod1vVweV3okPLjBfNbcfJ+mKV7GxLZ3KRJBQZG5XJD3gbWQj6vVrmwQT9djl7/gXWB82KzTRCB0=
+	t=1785459847; cv=none; b=hIm4JUsms0aYAYGUsAhs/CsN95l19Tzqip0BGLwf7ThK20DIIMfoJpuMdH6OtmzIt1nat0MMJrPJS1KACHHtQtQD+z0Mr7dVTHWzAzG5ZK2WIFPEAEuqr8FnrFBRT7DbggJugq+Xk9nI6gG4KtyMbqRRGaVoAp4oCYDZ9paRF5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1785459847; c=relaxed/simple;
-	bh=4GN8E6kKtIf3UE7YFBchKGzEHDGtnnAHGAVtBMwydhc=;
+	bh=Yb5qKEYD7gqWoJ8H0XhEOcVMDaNEDLXxCd6UHdiYAPs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=j3TvilKxqdCZ/bX94duHPFiAOpnCNET2wKHvumVzB5eC9Tp7f358VICL4D44TMeHzXmi8+JxZ/sVjhiZF27REt3u4vclIH87axPznUzbddnApUiumnh3CvmtSnL/gqWYe25NTccwP3ZbfcsbDbGJFkp/6TJOdduxvT+k14IiYhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LY9hGLDp; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=VYeXEHK9YzZAEvNVV628YD5Ohxe0np6R+3FHqj99socDxlsANrBPjYMWq7+dzrwQZQXZwoty1jY5Sg4kE3V2AxdqR6napRDEGINlWU5Mug6fphWlegvDwPhU45bVBH6MdODW6njzolkWtIfRDq5ysjvepSxqrGXNF4OOcy5BCUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gqBuzx2C; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LY9hGLDp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 187BE1F01558;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gqBuzx2C"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15A4D1F00ADB;
 	Fri, 31 Jul 2026 01:04:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1785459844;
-	bh=dqH4f2gQvM3neNCaqOlG30lCQN2dfQawkc5ucXKZqXk=;
+	bh=fKNGySMMG/lARfFIiQH61dXgzdia8Ddv1o1T8fH8wcw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=LY9hGLDpsaQbNHg2puy7x2PbOmKB7g51AvgVMY2p60bS5J5XVoqHzigetQu+mYXwp
-	 9DdHS0qp1OijuTGcXBon9Cu9OXwY78Txko45tw9rmxfgot1GsQPXiYjWlvWs0hBxx4
-	 U4FOQoo/d0ESROgI+cHnMe3P2M2sz4CWqNHtXDZuOsiJ9a6gFDeIt0de4c0X1Cs3Jh
-	 gCNXWB/Eth/PYmTwaIfjh+20ULuU83BczJIN1ojAysCS7yPZOIdvfWQeAXakUBqlqK
-	 7d7Fl04Yn9H4Fe6Lf9Jtguxzyfhp9mo5Jqrwp3QvJGFgss92u6v87ueAvxgXmZYWSD
-	 h8nbp3kjZN5qg==
+	b=gqBuzx2Cevhsig7tS4nxwLAZX6VqgfTaE/TXpWQqCBKSmDAUxQnmFAfFU78o7RLIQ
+	 PScB6wKi0JFU+8EAAwDzxHot6mD9IisYzYV/B7mLnYbyw/a9tjnkRjOXKcpVA2lNbY
+	 Vz8KH6DLay0Xau2FfcNGMUv0jU7/2dhzq9cpDlMuHnzeBhCNHqQDjbq5xGC6XyF8Yk
+	 98zrhgynlSu4D9i2RFLsg0UJUOZlBUuG3X+g2/PRszSgLQ5G39gS1GMkNbdJ/G/8vV
+	 Bn6/pD1uLy36gMOqOoHA/oZxh9fkD93fjaTweXS2ZE4JMRhuumyBqXQ94058nwWIUL
+	 fty/ApNnsRUUw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9F082CE14D9; Thu, 30 Jul 2026 18:04:03 -0700 (PDT)
+	id 9C595CE1497; Thu, 30 Jul 2026 18:04:03 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	Zqiang <qiang.zhang@linux.dev>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC 09/10] rcu-tasks: Rename tasks_rcu_exit_srcu_stall_timer to tasks_rcu_exit_stall_timer
-Date: Thu, 30 Jul 2026 18:04:00 -0700
-Message-Id: <20260731010401.3531631-9-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH RFC 08/10] rcu-tasks: Fix IRQ read lock/unlock data race
+Date: Thu, 30 Jul 2026 18:03:59 -0700
+Message-Id: <20260731010401.3531631-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c50fb3e6-8d9f-4311-953e-a4703ba1e863@paulmck-laptop>
 References: <c50fb3e6-8d9f-4311-953e-a4703ba1e863@paulmck-laptop>
@@ -49,74 +48,55 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Zqiang <qiang.zhang@linux.dev>
+As noted by Marco Elver:
 
-This 'commit 1612160b9127 ("rcu-tasks: Eliminate deadlocks involving
-do_exit() and RCU tasks")' has reimplemented the rcu_tasks_postscan(),
-and the synchronize_srcu() has been removed, this commit therefore
-rename tasks_rcu_exit_srcu_stall_timer to tasks_rcu_exit_stall_timer.
+rcu_read_lock_trace()
+   ....
+t->trc_reader_scp = __srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
+	<interrupt>
+					rcu_read_unlock_trace()
+					< ... var decls only ... >
+					scp = t->trc_reader_scp;
 
-Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+This constitutes a data race between these two accesses to
+t->trc_reader_scp.  If rcu_read_lock_trace() were to tear its store,
+this value would be corrupted.
+
+This commit therefore defers the rcu_read_lock_untrace() function's
+load from t->trc_reader_scp until after it has verified that this is
+the outermost rcu_read_unlock_trace().  With this change, the interrupt
+handler increments and decrements t->trc_reader_nesting and does not
+access t->trc_reader_scp, thus avoiding the data race.
+
+KCSAN located this issue.
+
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ include/linux/rcupdate_trace.h | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 0306a0568f0144..fce57d90db1a60 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -155,8 +155,8 @@ static struct rcu_tasks rt_name =							\
- #ifdef CONFIG_TASKS_RCU
+diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+index fd3ddeb6aa3bd2..70decf877348a6 100644
+--- a/include/linux/rcupdate_trace.h
++++ b/include/linux/rcupdate_trace.h
+@@ -126,11 +126,13 @@ static inline void rcu_read_unlock_trace(void)
+ 	struct srcu_ctr __percpu *scp;
+ 	struct task_struct *t = current;
  
- /* Report delay of scan exiting tasklist in rcu_tasks_postscan(). */
--static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
--static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
-+static void tasks_rcu_exit_stall(struct timer_list *unused);
-+static DEFINE_TIMER(tasks_rcu_exit_stall_timer, tasks_rcu_exit_stall);
- #endif
- 
- /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
-@@ -1032,8 +1032,8 @@ static void rcu_tasks_postscan(struct list_head *hop)
- 	int rtsi = READ_ONCE(rcu_task_stall_info);
- 
- 	if (!IS_ENABLED(CONFIG_TINY_RCU)) {
--		tasks_rcu_exit_srcu_stall_timer.expires = jiffies + rtsi;
--		add_timer(&tasks_rcu_exit_srcu_stall_timer);
-+		tasks_rcu_exit_stall_timer.expires = jiffies + rtsi;
-+		add_timer(&tasks_rcu_exit_stall_timer);
- 	}
- 
- 	/*
-@@ -1086,7 +1086,7 @@ static void rcu_tasks_postscan(struct list_head *hop)
- 	}
- 
- 	if (!IS_ENABLED(CONFIG_TINY_RCU))
--		timer_delete_sync(&tasks_rcu_exit_srcu_stall_timer);
-+		timer_delete_sync(&tasks_rcu_exit_stall_timer);
- }
- 
- /* See if tasks are still holding out, complain if so. */
-@@ -1158,7 +1158,7 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
- 	synchronize_rcu();
- }
- 
--static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
-+static void tasks_rcu_exit_stall(struct timer_list *unused)
- {
- #ifndef CONFIG_TINY_RCU
- 	int rtsi;
-@@ -1168,8 +1168,8 @@ static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
- 		__func__, rcu_tasks.kname, rcu_tasks.tasks_gp_seq,
- 		tasks_gp_state_getname(&rcu_tasks), jiffies - rcu_tasks.gp_jiffies);
- 	pr_info("Please check any exiting tasks stuck between calls to exit_tasks_rcu_start() and exit_tasks_rcu_finish()\n");
--	tasks_rcu_exit_srcu_stall_timer.expires = jiffies + rtsi;
--	add_timer(&tasks_rcu_exit_srcu_stall_timer);
-+	tasks_rcu_exit_stall_timer.expires = jiffies + rtsi;
-+	add_timer(&tasks_rcu_exit_stall_timer);
- #endif // #ifndef CONFIG_TINY_RCU
- }
- 
+-	scp = t->trc_reader_scp;
+-	barrier();  // scp before nesting to protect against interrupt handler.
+ 	n = READ_ONCE(t->trc_reader_nesting) - 1;
+-	WRITE_ONCE(t->trc_reader_nesting, n);
+-	if (!n) {
++	if (n) {
++		WRITE_ONCE(t->trc_reader_nesting, n);
++	} else {
++		scp = t->trc_reader_scp; // Compiler cannot hoist load due to data raciness.
++		barrier();  // scp before nesting to protect against interrupt handler.
++		WRITE_ONCE(t->trc_reader_nesting, n);
+ 		if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_NO_MB))
+ 			smp_mb(); // Placeholder for more selective ordering
+ 		__srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
 -- 
 2.40.1
 
