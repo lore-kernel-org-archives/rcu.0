@@ -1,42 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E581E1D9A70;
-	Fri, 31 Jul 2026 01:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CDF42652A2;
+	Fri, 31 Jul 2026 01:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785460042; cv=none; b=HHpu6Rf2YZ3qVOVBGNRav9Emvvbo7w6pKEctaYXh2S0DZCpL8mWlMH15MmKBmml5JDWwE0CK6B4gRhDElAa24vYrm8I/gkyAJEQnneHb3UaHQYpAHpT8uWMQhMXqtJe9lStsU364b3gYUdBk1SYRbXvlodKTfZv+XEgnNOrouDM=
+	t=1785460042; cv=none; b=MGa+rsS8kIq61ar1fPAvoxy9lyuvM7qaDBd/1E8oiffOMQVyghGFD4Tck/5hffDMB68tLkSgtaWjKjEhy//zwiNyCG7bSU1qykk4NuDASI49vJMTOsTnmL/rs5jW2cBLvMO5pG2FS5Wml4jLBs3VF0CeRuCt8aAXbWPL8LHymgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1785460042; c=relaxed/simple;
-	bh=qfDxVNja4G148EtV2LAEI+BPPuehgKzUHs16AaXR7No=;
+	bh=X+zjpUTialN217GxINZjjxEnAThH7MrOoqISR1JfgSY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=itUNlIbGsB+SVVQcLt/loHURJDYdnpzAOeZHLlr+ohwvwtNgboxB62Wk1ENrozZZRZ+B+uDj8vD9la4MjtuPq4Bz20uQbMKACkLiCrO2yTUKC3K+9OhgAiYRx4Y+f7HLBGlvvWgX3pydTOLFn0IGdt2pZsCZzK8o5GDbdk4TZrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KzBfYGlM; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=OB4y14/SkmfQpnrpMQRQVMXYdEuVANE+BHZuzGqwjdAlDOlDYvwpPInNALYcoDO6DRDvnGIzCKFdMim3EusasI+R2VhJDUN8qm93FoGznoXLM8nZQotlKntgXCV5UTXlIL7Pnh7OiSiXIzjsYpeQlntoIBP2ilpPWR2bbGS9f34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NHZ9oXpr; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KzBfYGlM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFB761F00A3E;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NHZ9oXpr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3E961F00ACA;
 	Fri, 31 Jul 2026 01:07:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1785460040;
-	bh=rYZ/madQ77kTTGYaMP18lQlwdZpTKcRrpQX+eV2+c4w=;
+	bh=ZpVWw6bO0EhfE2mpGLcCRa9qeQ7ESRQGQv+cwEd4gFE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=KzBfYGlMm+y1K2gD9eRmxH/DVLp6FxJ/SwyC31Pvr/+iJirsJOMSdtKEi0PH24x4k
-	 VwIi3Y3chuAhlveYHNAmR2RRIhfljBONnAL5kEGZ7tJd6viyh0gNP8MINkLfZP8mD1
-	 iEERhQt3YtCa/t91sn3R/2h63ctYQH9Dx9RFRAgnz8hMSCv7AhXY86QYpxbNjhodZh
-	 1QSTDmDyJ8qiGykJsEGy1k20tAPtjuG0MwB5ZHOz/pYCoWn/Ih9y55Yfp/hdDDzjnx
-	 FPRQbQmHM4MxYH3ivMwe3DlRrfUYDXRceiVG1VQ4ToqQIq+SoxLtZYrBwuBxGawSk2
-	 vRfUtkvhG/l2A==
+	b=NHZ9oXprkaF3wqLbeB5D7jkGTpmTHEK5w7wRjz7nM9IkO/XxInlpZw4vXPK2i49Zr
+	 HYcTJGEMKkOI8bomJOZuzBXPdZCejh/XCETh/YtHGGlmM/FIUcIb4qlh2e56q92NDP
+	 vSye1vRfWsgPMiEJuL5PNIaROOC0gLtSKihURy3l1E05/ZvJv3GMvz4YbBAj5HIg/j
+	 VmsWGhn+z+Mrz1JVyEZ8hpbCxZzGivVJoQFWrTD/8Vh2Z/p4S2H+G4JzUEEiCpwRO8
+	 Cx3T0X79rJ+kl4VVmsgCf04X+1kDDW888HYhT6a1WSQI+I8KgMg0gcycnuEScWGUZ+
+	 3hBb4wKAMA5Bw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 87ABECE0F7B; Thu, 30 Jul 2026 18:07:20 -0700 (PDT)
+	id 8CFA6CE100D; Thu, 30 Jul 2026 18:07:20 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2 03/13] rcutorture: Test RCU readers from hardware interrupt handlers
-Date: Thu, 30 Jul 2026 18:07:09 -0700
-Message-Id: <20260731010719.3531912-3-paulmck@kernel.org>
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Wang Lian <lianux.mm@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 05/13] rcutorture: Use task_state_to_char() for task-state reporting
+Date: Thu, 30 Jul 2026 18:07:11 -0700
+Message-Id: <20260731010719.3531912-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <d1db6e52-06c2-401d-b6fe-85aa588196d8@paulmck-laptop>
 References: <d1db6e52-06c2-401d-b6fe-85aa588196d8@paulmck-laptop>
@@ -48,190 +51,37 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Although rcutorture has long had the irqreader module parameter, this
-parameter results only in RCU readers in softirq handlers, specifically,
-timers.  This commit therefore uses smp_call_function_single() to test
-RCU readers in real hardware interrupt handlers, thus providing the full
-effect from the irqreader module parameter.
+From: Kunwu Chan <kunwu.chan@gmail.com>
 
-However, consistency/debug checks must account for the possibility that
-the smp_call_function_single() handler function is directly invoked
-from the idle loop, in which case, for example, in_hardirq() will
-return false.  This commit uses a per-CPU variable to record being in
-the rcu_torture_irq() smp_call_function_single() handler function.
+Use the kernel's standard symbolic task-state representation instead of
+printing raw hexadecimal task-state values.
 
+Suggested-by: Zqiang <qiang.zhang@linux.dev>
+Co-developed-by: Wang Lian <lianux.mm@gmail.com>
+Signed-off-by: Wang Lian <lianux.mm@gmail.com>
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 77 +++++++++++++++++++++++++++++++++++++----
- 1 file changed, 71 insertions(+), 6 deletions(-)
+ kernel/rcu/rcutorture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 1a033ae1f1eb6a..57cae3fe23fdca 100644
+index afd5045263be36..c9fb375701f893 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -213,6 +213,7 @@ static long n_rcu_torture_boost_ktrerror;
- static long n_rcu_torture_boost_failure;
- static long n_rcu_torture_boosts;
- static atomic_long_t n_rcu_torture_timers;
-+static atomic_long_t n_rcu_torture_irqs;
- static long n_barrier_attempts;
- static long n_barrier_successes; /* did rcu_barrier test succeed? */
- static unsigned long n_read_exits;
-@@ -2127,6 +2128,8 @@ static void rcu_torture_reader_do_mbchk(long myid, struct rcu_torture *rtp,
- 	smp_store_release(&rtrcp_assigner->rtc_chkrdr, -1); // Assigner can again assign.
- }
- 
-+static DEFINE_PER_CPU(bool, torture_in_scf_handler);
-+
- // Verify the specified RCUTORTURE_RDR* state.
- #define ROEC_ARGS "%s %s: Current %#x  To add %#x  To remove %#x  preempt_count() %#x\n", __func__, s, curstate, new, old, preempt_count()
- static void rcutorture_one_extend_check(char *s, int curstate, int new, int old)
-@@ -2136,7 +2139,7 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old)
- 	if (!IS_ENABLED(CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE) || in_nmi())
- 		return;
- 
--	WARN_ONCE(!(curstate & RCUTORTURE_RDR_IRQ) && irqs_disabled() && !in_hardirq(), ROEC_ARGS);
-+	WARN_ONCE(!(curstate & RCUTORTURE_RDR_IRQ) && irqs_disabled() && !in_hardirq() && !this_cpu_read(torture_in_scf_handler), ROEC_ARGS);
- 	WARN_ONCE((curstate & RCUTORTURE_RDR_IRQ) && !irqs_disabled(), ROEC_ARGS);
- 
- 	// If CONFIG_PREEMPT_COUNT=n, further checks are unreliable.
-@@ -2153,7 +2156,7 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old)
- 
- 	// Interrupt handlers have all sorts of stuff disabled, so ignore
- 	// unintended disabling.
--	if (in_serving_softirq() || in_hardirq())
-+	if (in_serving_softirq() || in_hardirq() || this_cpu_read(torture_in_scf_handler))
- 		return;
- 
- 	WARN_ONCE(cur_ops->extendables &&
-@@ -2345,12 +2348,19 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 			mask |= RCUTORTURE_RDR_RCU_1;
- 	}
- 
-+	/*
-+	 * Don't mess with interrupt masking in interrupt handlers.
-+	 */
-+	if (in_hardirq() || this_cpu_read(torture_in_scf_handler))
-+		mask &= ~(preempts_irq | bhs);
-+
- 	/*
- 	 * Can't enable bh w/irq disabled.
- 	 */
- 	if (mask & RCUTORTURE_RDR_IRQ)
- 		mask |= oldmask & bhs;
- 
-+
- 	/*
- 	 * Ideally these sequences would be detected in debug builds
- 	 * (regardless of RT), but until then don't stop testing
-@@ -2605,6 +2615,7 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
- 		return false;
- 	rtors.rtrsp = rcutorture_loop_extend(&rtors.readstate, trsp, rtors.rtrsp);
- 	rcu_torture_one_read_end(&rtors, trsp);
-+
- 	// This splat will happen on systems built with CONFIG_IRQ_WORK=n
- 	// and on systems where arch_irq_work_has_interrupt() returns false.
- 	// It might also happen on systems using a short-duration clock
-@@ -2643,7 +2654,7 @@ static void rcu_torture_timer(struct timer_list *unused)
- 	atomic_long_inc(&n_rcu_torture_timers);
- 	(void)rcu_torture_one_read(this_cpu_ptr(&rcu_torture_timer_rand), -1);
- 
--	/* Test call_rcu() invocation from interrupt handler. */
-+	/* Test call_rcu() invocation from softirq handler. */
- 	if (cur_ops->call) {
- 		struct rcu_head *rhp = kmalloc_obj(*rhp, GFP_NOWAIT);
- 
-@@ -2652,6 +2663,41 @@ static void rcu_torture_timer(struct timer_list *unused)
- 	}
- }
- 
-+static DEFINE_TORTURE_RANDOM_PERCPU(rcu_torture_irq_rand);
-+
-+/*
-+ * RCU torture reader from timer handler.  Dereferences rcu_torture_current,
-+ * incrementing the corresponding element of the pipeline array.  The
-+ * counter in the element should never be greater than 1, otherwise, the
-+ * RCU implementation is broken.
-+ *
-+ * Note that on some systems, "interrupts" from idle are direct calls
-+ * rather than interrupts.  The torture_in_scf_handler per-CPU variable
-+ * accounts for this case.
-+ */
-+static void rcu_torture_irq(void *unused)
-+{
-+	WARN_ON_ONCE(in_nmi());
-+	lockdep_assert_irqs_disabled();
-+	atomic_long_inc(&n_rcu_torture_irqs);
-+	this_cpu_write(torture_in_scf_handler, true);
-+	(void)rcu_torture_one_read(this_cpu_ptr(&rcu_torture_irq_rand), -1);
-+	this_cpu_write(torture_in_scf_handler, false);
-+
-+	// Test call_rcu() invocation from interrupt handler.  Interrupts
-+	// will always be disabled here, even in CONFIG_PREEMPT_RT=y kernels.
-+	// The "right" thing to do would be to create a special-purpose
-+	// lockless or raw-spinlock-protected allocator, but in the meantime,
-+	// skip testing call_rcu() from interrupt handlers in kernels built
-+	// with either CONFIG_PREEMPT_RT=y or CONFIG_PROVE_LOCKING=y.
-+	if (cur_ops->call && !IS_ENABLED(CONFIG_PROVE_LOCKING) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+		struct rcu_head *rhp = kmalloc_obj(*rhp, GFP_NOWAIT);
-+
-+		if (rhp)
-+			cur_ops->call(rhp, rcu_torture_timer_cb);
-+	}
-+}
-+
- /*
-  * RCU torture reader kthread.  Repeatedly dereferences rcu_torture_current,
-  * incrementing the corresponding element of the pipeline array.  The
-@@ -2661,6 +2707,7 @@ static void rcu_torture_timer(struct timer_list *unused)
- static int
- rcu_torture_reader(void *arg)
- {
-+	unsigned long lastscf = jiffies;
- 	unsigned long lastsleep = jiffies;
- 	long myid = (long)arg;
- 	int mynumonline = myid;
-@@ -2674,8 +2721,25 @@ rcu_torture_reader(void *arg)
- 	tick_dep_set_task(current, TICK_DEP_BIT_RCU);  // CPU bound, so need tick.
- 	do {
- 		if (irqreader && cur_ops->irq_capable) {
--			if (!timer_pending(&t))
-+			if (!timer_pending(&t)) {
-+				int cpu;
-+
- 				mod_timer(&t, jiffies + 1);
-+				preempt_disable();
-+				cpu = torture_random(&rand) % nr_cpu_ids;
-+				if (!cpu_online(cpu)) {
-+					cpu = cpumask_next(cpu, cpu_online_mask);
-+					if (cpu >= nr_cpu_ids)
-+						cpu = cpumask_next(-1, cpu_online_mask);
-+				}
-+				// An smp_call_function_single() to self is not an interrupt!
-+				if (cpu != smp_processor_id() &&
-+				    time_after(jiffies, lastscf + HZ * nrealreaders / 50)) {
-+					smp_call_function_single(cpu, rcu_torture_irq, NULL, 0);
-+					lastscf = jiffies;
-+				}
-+				preempt_enable();
-+			}
- 		}
- 		if (!rcu_torture_one_read(&rand, myid) && !torture_must_stop())
- 			schedule_timeout_interruptible(HZ);
-@@ -2951,10 +3015,11 @@ rcu_torture_stats_print(void)
- 		atomic_read(&n_rcu_torture_mbchk_fail), atomic_read(&n_rcu_torture_mbchk_tries),
- 		n_rcu_torture_barrier_error,
- 		n_rcu_torture_boost_ktrerror);
--	pr_cont("rtbf: %ld rtb: %ld nt: %ld ",
-+	pr_cont("rtbf: %ld rtb: %ld nt: %ld ni: %ld ",
- 		n_rcu_torture_boost_failure,
- 		n_rcu_torture_boosts,
--		atomic_long_read(&n_rcu_torture_timers));
-+		atomic_long_read(&n_rcu_torture_timers),
-+		atomic_long_read(&n_rcu_torture_irqs));
- 	if (updownreaders)
- 		pr_cont("ndowns: %lu nups: %lu nhrt: %lu nmigrates: %lu ", ndowns, nups, nunexpired,  nmigrates);
- 	torture_onoff_stats();
+@@ -3076,10 +3076,10 @@ rcu_torture_stats_print(void)
+ 		if (cur_ops->get_gp_data)
+ 			cur_ops->get_gp_data(&flags, &gp_seq);
+ 		wtp = READ_ONCE(writer_task);
+-		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %#x cpu %d\n",
++		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %c cpu %d\n",
+ 			 rcu_torture_writer_state_getname(),
+ 			 rcu_torture_writer_state, gp_seq, flags,
+-			 wtp == NULL ? ~0U : wtp->__state,
++			 wtp == NULL ? '?' : task_state_to_char(wtp),
+ 			 wtp == NULL ? -1 : (int)task_cpu(wtp));
+ 		if (!splatted && wtp) {
+ 			sched_show_task(wtp);
 -- 
 2.40.1
 
