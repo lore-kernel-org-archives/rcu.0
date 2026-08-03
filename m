@@ -1,30 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852C24156C5;
-	Mon,  3 Aug 2026 13:48:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F6C40F8ED;
+	Mon,  3 Aug 2026 13:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785764938; cv=none; b=tA1QVDxL8o37sEFK8ziUs3/yLyHTI8jqkT5VK2KEVXLAX/YNVZe9UgaedzZffekSpEYRAPdyRpLIzg/jgImk+QdiSCB9iiLf7jtpKiBw0D1OZd24dNb7SpxgHmLQP8EZeaC7p9z1a5ogP1GRmsPrjk4Tlt3a+Z45VT7mbuX7FCc=
+	t=1785765226; cv=none; b=mSx4AG8Fff+ujjUazIeKjBcvByxzbKeaPg/midQLA4jS9xP1UfwYcZET8mYPca4OmzdsqfUtJhoUybsC/I8MDRtfZIcDEMOz24pdyjJdkTfadwOJvUXAGexScfH63Y44kb6OQGP5eioQf0DUbjT9sb8n1YV6QOSa5b+2/JxT2pM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785764938; c=relaxed/simple;
-	bh=y2vq0Rtvi23xC3UBGRZhXisy0K7tCU/fz7MqhkHwOeI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jAYJx2JLNrhnmGLr1e4kyJZWAHZwRW6jB4mqBUjRuioY/ks3HFfKQsUd7gL2D6j/K4+kZbnRelDyB4IqR+AJrFsfPsUjWPA0EZ/PX+RdoMhUP0/BAp4/fZt0UUiJsIJlcjFiuLPqO/qsLaLGtmLkUhq6u4ae3rBKI7RNKzbEx6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c+Fvwqim; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785765226; c=relaxed/simple;
+	bh=SuY+2cmy5+frrBrBWY9FtmrnhhFO7LK0X/x0Q9jIuaQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=PujEuvpqEfjUmiadcNtpzEmKlh3EXG3d7WTyA/5AShl1N9Ca8uuLEo6TV/jy5F5HjLMoprpXMmebDLPm3bOCDhAllC6D2N21KE3qbJitTMimP1TvLwKRPVJNo/ubBcUc/jdC0Z7OvtvUthXrC6VQzD2GzNSKJYqR2xaVUxhwilE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gRean5fo; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c+Fvwqim"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E38C41F000E9;
-	Mon,  3 Aug 2026 13:48:56 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gRean5fo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED8141F000E9;
+	Mon,  3 Aug 2026 13:53:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785764937;
-	bh=Jxuvs5IAsxwP+L5G5fsI4l4NRqBN57QdSr9PqE5QsQY=;
-	h=From:To:Cc:Subject:Date;
-	b=c+FvwqimBWULXLkd1RWk3on+ftVmi/q5Q3qJBY9Ku7w2vVepH8QwJ1B3HjPMZJ7i2
-	 wQzf2cfUCz8LBJsowngZ4+vsz7D5uivFi+vcj+Z7G+V3aSuqSS4ziVMuUgmtKQJOwZ
-	 dfzrAFHZhOw+MZziW1BIDiAJS11YF1SU9d3BLRowSKXBDR18n8/tu02pE+zZkilke0
-	 6mSY+JP9MwuV7/qbPSowsRu2RNYMld8eNF0tTvNDVr3c0qdgQjrBRQRnaddy5Wf6aH
-	 qRWFASAkmWEwAuqD1YyXbaAlYuRMNj9JofarISmgI3Z6uMUCfmri9NLwYDfqpCKcpn
-	 R1qY+KBm6awzg==
+	s=k20260515; t=1785765225;
+	bh=E7FsjnOMScN9KjMOsRPgBmpBN+1GiwYAOe/GbQx/MUA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=gRean5foXhST/WWlfSKa7djrsDmHzboTv3pG/ikjsBj7KEQ5bf3Dne0Q6xJnng2Rk
+	 9wwBxiUNjmABCBCqCCRwE0sJLbu851QmDiMtUCVqcdYFSoO+f91Mn1Bb6Ae2y3BDE1
+	 BrpChm1PZm5aOW7IZ1sOxeBjK/UZ+BonTqRiVJtl6Rtg7BzAoLOl8GcaAlBrFah06h
+	 LpBPceqEoDVGiXiVmtCQ0CVeQjtc2qBEqu9itKdo8z7ytbtrbI4NjwC6hKhTpjV3lt
+	 O7qgtXCQ3V0RIm+8pGI3Gm8p6IQDxxPtis92XQboozLUdvGx8jDnTfCaU03BDsLWKF
+	 v7/nv0s42Z0aw==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: "Lai Jiangshan" <jiangshanlai@gmail.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
@@ -56,10 +57,12 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	rcu@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-rt-devel@lists.linux.dev
-Subject: [PATCH v2 0/6] rcu,srcu: Make call_rcu()/call_srcu() safe from any context
-Date: Mon,  3 Aug 2026 06:48:16 -0700
-Message-ID: <20260803134839.2103051-1-puranjay@kernel.org>
+Subject: [PATCH v2 1/6] rcu: Make call_rcu() safe to call from any context
+Date: Mon,  3 Aug 2026 06:53:24 -0700
+Message-ID: <20260803135329.2327280-1-puranjay@kernel.org>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260803134839.2103051-1-puranjay@kernel.org>
+References: <20260803134839.2103051-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -68,106 +71,290 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-call_rcu() and call_srcu() only ever touch their per-CPU callback lists
-with interrupts disabled: the enqueue runs under local_irq_save() (and the
-nocb locks when offloaded), and so do callback invocation and grace-period
-work.  That is fine as long as call_rcu() itself is invoked with
-interrupts enabled, but it is not always.  An NMI handler can call
-call_rcu(), and instrumentation can reenter it.  The case that prompted
-this is a BPF program attached to rcu_segcblist_enqueue() that frees an
-object: the free reaches call_rcu_tasks_trace(), which is call_srcu()
-under the hood, back on the same CPU with the srcu_data lock already held,
-and it deadlocks on that lock.  Either way, enqueuing directly can corrupt
-the list or deadlock.
+RCU's per-CPU callback list is only touched with interrupts disabled:
+the enqueue runs under local_irq_save() (and the nocb locks when
+offloaded), as do callback invocation and grace-period work.  A
+call_rcu() that arrives with interrupts already disabled, whether from an
+NMI or from instrumentation that re-enters RCU, can interrupt one of
+those and corrupt the list or deadlock.
 
-Rather than scatter context checks through the enqueue, make it defer
-whenever interrupts are disabled: stage the callback on a per-CPU lockless
-list and re-issue it from an irq_work once interrupts are back on, going
-straight to the enqueue helper so the re-issue cannot defer again.  Only
-the drain side takes a lock; the staging is a bare llist_add() and stays
-safe from NMI.  This is behind a new hidden CONFIG_RCU_DEFER, which is set
-wherever a reentrant enqueue is possible (HAVE_NMI, KPROBES,
-FUNCTION_TRACER or TRACEPOINTS); without it call_rcu() enqueues exactly as
-before.
+Handle it by deferring: stage the callback on a per-CPU llist and raise
+an irq_work that re-issues it once interrupts are on.  The re-issue goes
+straight to the enqueue so it cannot defer again.  Callers that only hold
+interrupts off are deferred too, which is harmless.  Skip the gate while
+the scheduler is down (RCU_SCHEDULER_INACTIVE), since irq_work is not
+usable that early and rcu_init() already calls call_rcu().
 
-CPU offline is the awkward part.  A callback can be deferred very late in
-the outgoing CPU's teardown -- from do_idle() or cpuhp_ap_report_dead(),
-past the CPUHP_AP_SMPCFD_DYING flush that would otherwise run the irq_work
--- so the irq_work can no longer run there to re-issue it.  rcu_barrier()
-and srcu_barrier() therefore drain the deferred lists themselves before
-they wait: for online CPUs they wait the irq_work out, and for offline
-ones they drain the list directly, since that irq_work may never run
-again.  rcutree_migrate_callbacks() drains the outgoing CPU's list too, so
-a late deferral still lands on a callback list even when nobody calls a
-barrier.  To keep those three drainers from stepping on each other, the
-drain holds a per-CPU raw lock across the llist_del_all() and the
-re-issue, so a drainer never returns having pulled callbacks off the
-deferred list but not yet put them on a callback list.  Every lock the
-re-issue touches (nocb, rcu_node, srcu_data) is already raw, so the
-nesting is fine.
+rcu_barrier() flushes deferred callbacks before it scans the lists: it
+waits out each online CPU's irq_work and drains an offline CPU's list
+directly, since that irq_work may never run again.
+rcutree_migrate_callbacks() drains an outgoing CPU's ->defer_head for the
+same reason.  ->defer_lock is held across llist_del_all() and the
+re-issue so these drainers serialize.
 
-The drain re-issues with interrupts disabled, so instrumentation on the
-enqueue path can re-enter call_rcu()/call_srcu() from inside it, stage
-another callback, re-raise the irq_work, and the drain never finishes.  A
-per-CPU flag set across the re-issue catches that: a deferral that arrives
-while this CPU is draining, and is not from an NMI, is dropped with a
-warning instead of staged.  Dropping leaks that callback, but the
-alternative is a CPU that never leaves the drain, and the producer is a
-BPF program that emits one callback per enqueue, so there is nothing
-finite to wait for.  Instrumenting the irq_work machinery itself can still
-loop, as it can for any irq_work user, and is not something this series
-can fix.
+The re-issue runs with interrupts disabled, so instrumentation on the
+enqueue path can re-enter call_rcu(), stage another callback, and
+re-raise the irq_work, livelocking the drain.  A per-CPU flag guards it:
+a call_rcu() that tries to defer while the drain is running, and is not
+from an NMI, is dropped with WARN_ONCE() instead of re-queued.  Dropping
+leaks the callback, but the alternative is an unbounded loop.
 
-The irq_work is IRQ_WORK_INIT_HARD.  It is not needed for correctness, but
-a non-HARD irq_work runs from a kthread on PREEMPT_RT and can be delayed
-under load, letting deferred callbacks pile up; running the re-issue in
-hard-irq context keeps that from turning into an OOM.
+The irq_work is IRQ_WORK_INIT_HARD so the re-issue stays prompt on
+PREEMPT_RT, where a non-HARD irq_work runs in a kthread that can be
+delayed under load.  A hidden CONFIG_RCU_DEFER gates the code and its
+IRQ_WORK dependency; without it call_rcu() enqueues directly as before.
+Under CONFIG_PROVE_RCU, warn if the direct path is reached from an NMI.
 
-Patches 1 and 2 do Tree and Tiny RCU, 3 and 4 Tree and Tiny SRCU.  Patch 5
-teaches rcutorture to issue ->call() from a perf-overflow NMI -- the
-nmi_calls parameter, on by default -- on the flavors that advertise it,
-and checks that every callback issued from NMI is later invoked.  Patch 6
-adds the BPF reentry reproducer described above.
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ kernel/rcu/Kconfig |   6 +++
+ kernel/rcu/rcu.h   |  14 +++++
+ kernel/rcu/tree.c  | 130 +++++++++++++++++++++++++++++++++++++++++----
+ kernel/rcu/tree.h  |   5 ++
+ 4 files changed, 145 insertions(+), 10 deletions(-)
 
-Changelog:
-v1: https://lore.kernel.org/all/20260729162207.1567770-1-puranjay@kernel.org/
-Changes in v2:
-- Fixed the re-entry livelock Zqiang spotted: a BPF program on the enqueue
-  path re-enters call_srcu() from inside srcu_defer_drain(), stages another
-  callback and re-raises the irq_work, so the drain never finishes.  A
-  per-CPU flag now drops such a deferral, with a warning, unless it comes
-  from an NMI.
-- cleanup_srcu_struct(): drain the deferred callbacks before syncing
-  ->irq_work rather than after, since re-issuing one can start a grace
-  period and re-queue that irq_work (Zqiang).
-- Tiny SRCU: sync ->defer_iw in cleanup_srcu_struct() as well, so a
-  deferred callback is re-issued onto ->srcu_cb_head where the leak checks
-  can see it instead of being stranded on a soon-to-be-freed srcu_struct.
-- Added Kumar's ack to the BPF selftest patch.
-
-Puranjay Mohan (6):
-  rcu: Make call_rcu() safe to call from any context
-  rcu: Make Tiny call_rcu() safe to call from any context
-  srcu: Make call_srcu() safe to call from any context
-  srcu: Make Tiny call_srcu() safe to call from any context
-  rcutorture: Exercise ->call() from NMI context
-  selftests/bpf: Add a call_srcu() re-entry reproducer
-
- include/linux/srcutiny.h                      |  11 +-
- include/linux/srcutree.h                      |   4 +
- kernel/rcu/Kconfig                            |   6 +
- kernel/rcu/rcu.h                              |  17 ++
- kernel/rcu/rcutorture.c                       | 112 +++++++++++++
- kernel/rcu/srcutiny.c                         |  63 +++++++-
- kernel/rcu/srcutree.c                         | 150 +++++++++++++++++-
- kernel/rcu/tiny.c                             | 104 +++++++++---
- kernel/rcu/tree.c                             | 132 +++++++++++++--
- kernel/rcu/tree.h                             |   5 +
- .../selftests/bpf/prog_tests/rcu_reentry.c    |  58 +++++++
- .../testing/selftests/bpf/progs/rcu_reentry.c |  45 ++++++
- 12 files changed, 666 insertions(+), 41 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
- create mode 100644 tools/testing/selftests/bpf/progs/rcu_reentry.c
---
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index f15da8038d0ba..1a5fb3156c062 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -175,6 +175,12 @@ config RCU_STALL_COMMON
+ config RCU_NEED_SEGCBLIST
+ 	def_bool ( TREE_RCU || TREE_SRCU || TASKS_RCU_GENERIC )
+ 
++# The deferral (and the IRQ_WORK it uses) is only needed where call_rcu() /
++# call_srcu() can be invoked while a callback-list operation is in flight.
++config RCU_DEFER
++	def_bool HAVE_NMI || KPROBES || FUNCTION_TRACER || TRACEPOINTS
++	select IRQ_WORK
++
+ config RCU_FANOUT
+ 	int "Tree-based hierarchical RCU fanout value"
+ 	range 2 64 if 64BIT
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index 39a9f6fa9a7b2..f8add8f8eae15 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -572,6 +572,20 @@ static inline void tasks_cblist_init_generic(void) { }
+ #define RCU_SCHEDULER_INIT	1
+ #define RCU_SCHEDULER_RUNNING	2
+ 
++/*
++ * Defer a call_rcu()/call_srcu() callback rather than enqueue it now?  Defer
++ * whenever interrupts are disabled, since a callback-list operation may be in
++ * flight on this CPU.  Not while the scheduler is down, though: irq_work is
++ * unusable before init_IRQ(), yet rcu_init() already calls call_rcu().
++ */
++static inline bool should_rcu_defer(void)
++{
++	if (!IS_ENABLED(CONFIG_RCU_DEFER))
++		return false;
++
++	return irqs_disabled() && rcu_scheduler_active != RCU_SCHEDULER_INACTIVE;
++}
++
+ enum rcutorture_type {
+ 	RCU_FLAVOR,
+ 	RCU_TASKS_FLAVOR,
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 21b6ce1dffb63..744a7cb60db4a 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -24,6 +24,7 @@
+ #include <linux/smp.h>
+ #include <linux/rcupdate_wait.h>
+ #include <linux/interrupt.h>
++#include <linux/llist.h>
+ #include <linux/sched.h>
+ #include <linux/sched/debug.h>
+ #include <linux/nmi.h>
+@@ -3148,21 +3149,28 @@ static void check_cb_ovld(struct rcu_data *rdp)
+ 	raw_spin_unlock_rcu_node(rnp);
+ }
+ 
+-static void
+-__call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
++/*
++ * The callback list is only accessed with interrupts disabled, so a call_rcu()
++ * that arrives with interrupts off (see should_rcu_defer()) stages the callback
++ * on a per-CPU llist that an irq_work re-issues once interrupts are on.
++ */
++static void rcu_defer_drain(struct irq_work *iw);
++
++/* Set while rcu_defer_drain() re-issues, to catch a re-entrant call_rcu(). */
++static DEFINE_PER_CPU(bool, rcu_defer_draining);
++
++/*
++ * Enqueue @head on this CPU's rcu_segcblist.  Also called by rcu_defer_drain()
++ * to re-issue a deferred callback, so it must not re-check the deferral
++ * condition.  Either caller may have interrupts already disabled.
++ */
++static void rcu_do_enqueue(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+ {
+ 	static atomic_t doublefrees;
+ 	unsigned long flags;
+ 	bool lazy;
+ 	struct rcu_data *rdp;
+ 
+-	/* Misaligned rcu_head! */
+-	WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
+-
+-	/* Avoid NULL dereference if callback is NULL. */
+-	if (WARN_ON_ONCE(!func))
+-		return;
+-
+ 	if (debug_rcu_head_queue(head)) {
+ 		/*
+ 		 * Probable double call_rcu(), so leak the callback.
+@@ -3206,6 +3214,92 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+ 	local_irq_restore(flags);
+ }
+ 
++/*
++ * Re-issue deferred callbacks straight to the enqueue so they cannot defer
++ * again.  ->defer_lock serializes the drainers: this CPU's irq_work,
++ * rcu_defer_flush() and rcutree_migrate_callbacks().
++ */
++static void rcu_defer_drain(struct irq_work *iw)
++{
++	struct rcu_data *rdp = container_of(iw, struct rcu_data, defer_work);
++	struct llist_node *node, *next;
++	unsigned long flags;
++
++	raw_spin_lock_irqsave(&rdp->defer_lock, flags);
++	this_cpu_write(rcu_defer_draining, true);
++	llist_for_each_safe(node, next, llist_del_all(&rdp->defer_head)) {
++		struct rcu_head *head = (struct rcu_head *)node;
++
++		rcu_do_enqueue(head, head->func, false);
++	}
++	this_cpu_write(rcu_defer_draining, false);
++	raw_spin_unlock_irqrestore(&rdp->defer_lock, flags);
++}
++
++/* Stage @head for this CPU's irq_work when call_rcu() cannot enqueue now. */
++static void call_rcu_defer(struct rcu_head *head, rcu_callback_t func)
++{
++	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
++
++	/*
++	 * Instrumentation on the enqueue path can re-enter here from inside
++	 * rcu_defer_drain().  Re-queuing would livelock the drain, so drop the
++	 * callback; an NMI is one-shot and cannot loop, so let it through.
++	 */
++	if (this_cpu_read(rcu_defer_draining) && !in_nmi()) {
++		WARN_ONCE(1, "call_rcu() re-entered during callback drain; leaking callback\n");
++		return;
++	}
++	head->func = func;
++	if (llist_add((struct llist_node *)head, &rdp->defer_head))
++		irq_work_queue(&rdp->defer_work);
++}
++
++/*
++ * Register pending deferred callbacks into the callback lists so a following
++ * rcu_barrier() waits for them.  This runs before rcu_barrier() scans the
++ * lists.  An online CPU's own irq_work re-issues its callbacks, so wait it out;
++ * an offline CPU's irq_work may never run again, so drain its list directly
++ * onto this CPU instead.
++ */
++static void rcu_defer_flush(void)
++{
++	int cpu;
++
++	if (!IS_ENABLED(CONFIG_RCU_DEFER))
++		return;
++
++	for_each_possible_cpu(cpu) {
++		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
++
++		if (cpu_online(cpu))
++			irq_work_sync(&rdp->defer_work);
++		else
++			rcu_defer_drain(&rdp->defer_work);
++	}
++}
++
++static void
++__call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
++{
++	/* Misaligned rcu_head! */
++	WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
++
++	/* Avoid NULL dereference if callback is NULL. */
++	if (WARN_ON_ONCE(!func))
++		return;
++
++	if (should_rcu_defer()) {
++		call_rcu_defer(head, func);
++		return;
++	}
++
++	/* An NMI reaching here entered with irqs enabled, so the enqueue can race. */
++	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
++
++	rcu_do_enqueue(head, func, lazy_in);
++}
++
+ #ifdef CONFIG_RCU_LAZY
+ static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
+ module_param(enable_rcu_lazy, bool, 0444);
+@@ -3896,8 +3990,12 @@ void rcu_barrier(void)
+ 	unsigned long flags;
+ 	unsigned long gseq;
+ 	struct rcu_data *rdp;
+-	unsigned long s = rcu_seq_snap(&rcu_state.barrier_sequence);
++	unsigned long s;
+ 
++	/* Register any deferred callbacks before snapshotting the sequence. */
++	rcu_defer_flush();
++
++	s = rcu_seq_snap(&rcu_state.barrier_sequence);
+ 	rcu_barrier_trace(TPS("Begin"), -1, s);
+ 
+ 	/* Take mutex to serialize concurrent rcu_barrier() requests. */
+@@ -4231,6 +4329,10 @@ rcu_boot_init_percpu_data(int cpu)
+ 	rdp->rcu_onl_gp_state = RCU_GP_CLEANED;
+ 	rdp->last_sched_clock = jiffies;
+ 	rdp->cpu = cpu;
++	init_llist_head(&rdp->defer_head);
++	raw_spin_lock_init(&rdp->defer_lock);
++	/* Hard irq_work so the re-issue runs promptly. */
++	rdp->defer_work = IRQ_WORK_INIT_HARD(rcu_defer_drain);
+ 	rcu_boot_init_nocb_percpu_data(rdp);
+ }
+ 
+@@ -4528,6 +4630,14 @@ void rcutree_migrate_callbacks(int cpu)
+ 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ 	bool needwake;
+ 
++	/*
++	 * Callbacks the outgoing CPU deferred late in the offline path (past the
++	 * point its irq_work can run) sit on ->defer_head, which the ->cblist
++	 * migration below does not cover.  Drain them here, before the early
++	 * returns; the re-issue lands on this CPU.
++	 */
++	rcu_defer_drain(&rdp->defer_work);
++
+ 	if (rcu_rdp_is_offloaded(rdp))
+ 		return;
+ 
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index eedfa43059e80..3a8e17136c5a7 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -229,6 +229,11 @@ struct rcu_data {
+ 	struct rcu_head barrier_head;
+ 	int exp_watching_snap;		/* Double-check need for IPI. */
+ 
++	/* Deferral of an NMI/reentrant call_rcu(); see __call_rcu_common(). */
++	struct llist_head defer_head;
++	struct irq_work defer_work;
++	raw_spinlock_t defer_lock;
++
+ 	/* 5) Callback offloading. */
+ #ifdef CONFIG_RCU_NOCB_CPU
+ 	struct swait_queue_head nocb_cb_wq; /* For nocb kthreads to sleep on. */
+-- 
 2.53.0-Meta
 
