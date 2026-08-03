@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A678837F33B;
-	Mon,  3 Aug 2026 07:59:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38F73AEF3B;
+	Mon,  3 Aug 2026 08:01:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785743989; cv=none; b=h1IqQY9/SPH4XfSv6KcvONkCOzBqk7jo9TsY2RNaWPmdc/o3yZvkNrSdBT60ixKFn5ZlS6Ef+oyGNDCb+7ba0QgYaZ239t5K+3ZpbAMZHCNf+I+vPH1PU5pKv2BycZOty1b0hmiAQA5io7J3frV5y0prNl//UwGdqDvdeFEcZGs=
+	t=1785744109; cv=none; b=Ta7ZvZX275T/4YN0Gxc+uWyPp2xvlIEPpEWm+B3SbTdn3WqwJDZJkOY+V4tQxru0FBeoxUeVrDBBmn88G8XxIUyMi1DkIWzLjPGKq4sY2PBfjgDDYDaUJlGr+ndh7krMMJpSOg/UTyYG/FT96xzcQdiEKSIUJQg5DjTmsU7m90E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785743989; c=relaxed/simple;
-	bh=/LN3SgVRVJHTNjBwPNrHLS9cRncZ/9/lzOonVVQ6wvI=;
+	s=arc-20240116; t=1785744109; c=relaxed/simple;
+	bh=tLY+3UuYiXB8AZiSIXJ/6A/dg5ML7CLemxLK1p+BW6E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vDSG0tk71rbBapVaFxkZoO6IPA6JGyCVcLQoWS0HLACyXJe37PljTsE9aKfxi9rx0jfP1cB6FjrqUU/gML9X0pvK8YgBbkEpn+68BHuaRo9lXcHVeWUge46Y6QkICc1QldfxuGPZHtxZ7Lysd9+Pa8JR0PZLp9Zt7U1OqVmcj18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l6x89Ii5; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:Content-Type; b=ZuntUJczALC92X9beVt4PUWxun6GMWAQOXeAMmnZvD+g6PFDDipr8crQzpNLzP9GQ7bXSLSfgOIedwE2BxR5QhjncbABsKq62JIsnqKpoaNqGTS2ow25hMoHzImo9b9vvfH1pJx7+11i2aZc9pgNjFyT2TiJ9Cg8CeVFRYS6uVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jnfJtzwz; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l6x89Ii5"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 302A71F000E9;
-	Mon,  3 Aug 2026 07:59:46 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jnfJtzwz"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 663331F000E9;
+	Mon,  3 Aug 2026 08:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785743988;
-	bh=hsn1KsK/5eC7jnlXNMG0EcugFZK3YL3Y70CXScw+FU4=;
+	s=k20260515; t=1785744105;
+	bh=Na/aANYMDUehsOMBe0MMj5OUvwi9UUXCwO4pWcm1pcM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=l6x89Ii55cOr7kXhH1CEmN2arHvrvbHSmgwQiU7piZMOxpHd/Rx7qORHW1zMZfGfo
-	 NWkUjQ6e7z1fEWkg39ucRETA5UNetU1PRoMiDaQeiVNIwVsbKcTiH2f5CD1ShbYKWO
-	 FnP/ViZw92rYOX4LyrSwHo9AzfppQLkmPOJBfVuz76xn3zhqbZ/ClSUR3upCT74n9c
-	 L8wX+mdcqB6FAq359hULhW25YH0xjkPEbtIqk0CEDiakc+U2ZmpoI67AIvOP9fVPu7
-	 RtxPsarKoxsIJOuiVT6hscNjpNFqkGsE/dclzlwoI8R9FJJ9/Q0G2KRiHCfcmLOuLD
-	 021lURTb0sZug==
-Message-ID: <c4057657-7246-48ce-80d0-123e351a921b@kernel.org>
-Date: Mon, 3 Aug 2026 09:59:44 +0200
+	b=jnfJtzwzy2+6HusmPCYxjmVTUBa3VmnP/4od7x6hqMpnI6SxwPX9auaDwxAh3r1JC
+	 9UufHYlFNa1Zj4AuSdWjB/5h1F5PHWvUvcgN/zVkDzqhJ/Z6edPs/aisUiKIYcYf3Y
+	 umHi0Uu59w7lQdAkPpDLhYEPOzRPQg74Qi0V4rAmrJtuYSZdnL7Vp5etvtn3XDoKzc
+	 Dwey7+NkW1ci4nxmtZVk8gGZn6VUxa78OQ2WK9uV/Fv8UFeG6GHyvV7Mj+VgZaNB5u
+	 77XBNaiQ7Ctbh2sDbu1fVpvlfxe4ng2gOnGWqXR3/nnBqp5DoBdWP6XwDjYbkQH8nM
+	 fqVKcwqBBzrAQ==
+Message-ID: <50432ae2-1d2e-4f76-aea4-28b16874f472@kernel.org>
+Date: Mon, 3 Aug 2026 10:01:42 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -36,16 +36,14 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] mm/slab: stop exporting kvfree_rcu_barrier[_on_cache]()
-To: paulmck@kernel.org
-Cc: Harry Yoo <harry@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Hao Li <hao.li@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
+Content-Language: en-US
+To: Harry Yoo <harry@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Hao Li <hao.li@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
  Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
  Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
  rcu@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20260730-unexport-barriers-v1-1-852f6641abe9@kernel.org>
- <d2cd0e92-930f-44e4-96e5-67b751419a1c@paulmck-laptop>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Content-Language: en-US
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
  KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
@@ -85,77 +83,62 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <d2cd0e92-930f-44e4-96e5-67b751419a1c@paulmck-laptop>
+In-Reply-To: <20260730-unexport-barriers-v1-1-852f6641abe9@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 7/30/26 22:59, Paul E. McKenney wrote:
-> On Thu, Jul 30, 2026 at 04:32:46PM +0200, Vlastimil Babka (SUSE) wrote:
->> No module code calls these functions directly. Seems it was always the
->> case. Remove the exports.
->> 
->> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+On 7/30/26 16:32, Vlastimil Babka (SUSE) wrote:
+> No module code calls these functions directly. Seems it was always the
+> case. Remove the exports.
 > 
-> Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+> ---
+> Based on slab/for-7.3/kfree_rcu_nolock
 
-Thanks!
+Applied to that branch and slab/for-next
 
-> Which reminds me...  Are you guys interested in taking the kfree_rcu()
-> test code from kernel/rcu/rcuscale.c?  See for example the kfree_rcu_test
-> module parameter.
-
-Hmm, we have a slub kunit test, but I think no such torture/scaling test
-infra. Maybe once we have that? What do you think, Harry?
-
-
-
-> 							Thanx, Paul
+> ---
+>  mm/slab_common.c | 4 ----
+>  1 file changed, 4 deletions(-)
 > 
->> ---
->> Based on slab/for-7.3/kfree_rcu_nolock
->> ---
->>  mm/slab_common.c | 4 ----
->>  1 file changed, 4 deletions(-)
->> 
->> diff --git a/mm/slab_common.c b/mm/slab_common.c
->> index 6750dfa27367..cd155ffc2762 100644
->> --- a/mm/slab_common.c
->> +++ b/mm/slab_common.c
->> @@ -1329,14 +1329,12 @@ void kvfree_rcu_barrier(void)
->>  	deferred_work_barrier();
->>  	rcu_barrier();
->>  }
->> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
->>  
->>  void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
->>  {
->>  	deferred_work_barrier();
->>  	rcu_barrier();
->>  }
->> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
->>  
->>  void __init kvfree_rcu_init(void)
->>  {
->> @@ -2163,7 +2161,6 @@ void kvfree_rcu_barrier(void)
->>  	flush_all_rcu_sheaves();
->>  	__kvfree_rcu_barrier();
->>  }
->> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
->>  
->>  /**
->>   * kvfree_rcu_barrier_on_cache - Wait for in-flight kvfree_rcu() calls on a
->> @@ -2186,7 +2183,6 @@ void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
->>  	rcu_barrier();
->>  	__kvfree_rcu_barrier();
->>  }
->> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
->>  
->>  static unsigned long
->>  kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
->> 
->> ---
->> base-commit: b01f6ed9ff0c4581fc669044fa5b82a93b4ef144
->> change-id: 20260730-unexport-barriers-439b3f69f791
->> 
->> 
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 6750dfa27367..cd155ffc2762 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1329,14 +1329,12 @@ void kvfree_rcu_barrier(void)
+>  	deferred_work_barrier();
+>  	rcu_barrier();
+>  }
+> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
+>  
+>  void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
+>  {
+>  	deferred_work_barrier();
+>  	rcu_barrier();
+>  }
+> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
+>  
+>  void __init kvfree_rcu_init(void)
+>  {
+> @@ -2163,7 +2161,6 @@ void kvfree_rcu_barrier(void)
+>  	flush_all_rcu_sheaves();
+>  	__kvfree_rcu_barrier();
+>  }
+> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
+>  
+>  /**
+>   * kvfree_rcu_barrier_on_cache - Wait for in-flight kvfree_rcu() calls on a
+> @@ -2186,7 +2183,6 @@ void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
+>  	rcu_barrier();
+>  	__kvfree_rcu_barrier();
+>  }
+> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
+>  
+>  static unsigned long
+>  kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+> 
+> ---
+> base-commit: b01f6ed9ff0c4581fc669044fa5b82a93b4ef144
+> change-id: 20260730-unexport-barriers-439b3f69f791
+> 
 
