@@ -1,111 +1,161 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F702D7398;
-	Mon,  3 Aug 2026 07:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A678837F33B;
+	Mon,  3 Aug 2026 07:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785741575; cv=none; b=WGrnVgax3v0aQF/67bKm2H3Bt2cGkavniMVmwF1pmy1N13kYZ9LJWK9Qji4PgnC7yznPcIxXlv1/CQoSdZWs/o9UrNUnJrxDAmrypxvjXPE2ixlJS8/pkozboW24kqzdyq+B/H3yre/XJhjbSMQZn6e8eWauk4qQDSTJl41B6l8=
+	t=1785743989; cv=none; b=h1IqQY9/SPH4XfSv6KcvONkCOzBqk7jo9TsY2RNaWPmdc/o3yZvkNrSdBT60ixKFn5ZlS6Ef+oyGNDCb+7ba0QgYaZ239t5K+3ZpbAMZHCNf+I+vPH1PU5pKv2BycZOty1b0hmiAQA5io7J3frV5y0prNl//UwGdqDvdeFEcZGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785741575; c=relaxed/simple;
-	bh=mVg1gkAE/IwYQ+cm6zbvqlDMO6ttXZbvtuQjV+aXoJg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rKaZhSHAgsRjk2w6hBAtivLXMXdQWKqOaqoIe0MSOR3al6E+NZ9u//ew9/02sXiUh9FadyI7cXi0asarF06X2HiG8RexB1wXue0dzI8U37NNGBJZvjbV9Al+ZNTviGHWbcFMlJMu7bMsCiEKe413mTRHxNKNYYrm/jHMsT73d+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lzaAoMly; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785743989; c=relaxed/simple;
+	bh=/LN3SgVRVJHTNjBwPNrHLS9cRncZ/9/lzOonVVQ6wvI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=vDSG0tk71rbBapVaFxkZoO6IPA6JGyCVcLQoWS0HLACyXJe37PljTsE9aKfxi9rx0jfP1cB6FjrqUU/gML9X0pvK8YgBbkEpn+68BHuaRo9lXcHVeWUge46Y6QkICc1QldfxuGPZHtxZ7Lysd9+Pa8JR0PZLp9Zt7U1OqVmcj18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l6x89Ii5; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lzaAoMly"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDEC11F000E9;
-	Mon,  3 Aug 2026 07:19:33 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l6x89Ii5"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 302A71F000E9;
+	Mon,  3 Aug 2026 07:59:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785741574;
-	bh=ykiHD7DY9G7XaqnDrtXQxXTCaNG81ozB7o0StBvDD0I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=lzaAoMlymuF4kOmQnImnMrd2VoWNnAasbFn4o2tBj12KoFhxjSN8hLToPrUhEiPO3
-	 oEu01foRUuD96Mip7GJ/acAD9l5u9VkO4iDzOrj9beBTGIyLAiEW/He4sdcfIWR3n7
-	 RoN9b4qjdAuINP2QHcnwf5x1HZN43ZdyVyrsWPcMNbDbNFueIBK0loDZwVDtJPb2SE
-	 rcklEDK89DM7Xmy1+ytTbF5YZCEtiis0hg+Kv8tXcbAnKEat5wDNORC+GyfsWBPVwO
-	 T0B5vGq7AyGeM/xz3vlVg9E4xxxTYVvJpOLWt9rRX3QR2pByMJ/nbp0UJrLour9D6V
-	 8QwW0AVgNn8CQ==
-Date: Mon, 3 Aug 2026 07:19:32 +0000
-From: Harry Yoo <harry@kernel.org>
-To: hu.shengming@zte.com.cn
-Cc: vbabka@kernel.org, akpm@linux-foundation.org, hao.li@linux.dev, 
-	cl@gentwo.org, rientjes@google.com, roman.gushchin@linux.dev, ast@kernel.org, 
-	andrii@kernel.org, puranjay@kernel.org, ameryhung@gmail.com, bigeasy@linutronix.de, 
-	clrkwllms@kernel.org, rostedt@goodmis.org, paulmck@kernel.org, frederic@kernel.org, 
-	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, josh@joshtriplett.org, boqun@kernel.org, 
-	urezki@gmail.com, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, 
-	qiang.zhang@linux.dev, pfalcato@suse.de, surenb@google.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, 
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v5 3/8] mm/slab: use call_rcu() in unknown context if
- irqs are enabled
-Message-ID: <anBAiTl_16H7NqEr@dev>
-References: <20260729-kfree_rcu_nolock-v5-3-a28cdcda9673@kernel.org>
- <20260730192119586UvhYMv4xrNqaZLKIJH9X0@zte.com.cn>
+	s=k20260515; t=1785743988;
+	bh=hsn1KsK/5eC7jnlXNMG0EcugFZK3YL3Y70CXScw+FU4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=l6x89Ii55cOr7kXhH1CEmN2arHvrvbHSmgwQiU7piZMOxpHd/Rx7qORHW1zMZfGfo
+	 NWkUjQ6e7z1fEWkg39ucRETA5UNetU1PRoMiDaQeiVNIwVsbKcTiH2f5CD1ShbYKWO
+	 FnP/ViZw92rYOX4LyrSwHo9AzfppQLkmPOJBfVuz76xn3zhqbZ/ClSUR3upCT74n9c
+	 L8wX+mdcqB6FAq359hULhW25YH0xjkPEbtIqk0CEDiakc+U2ZmpoI67AIvOP9fVPu7
+	 RtxPsarKoxsIJOuiVT6hscNjpNFqkGsE/dclzlwoI8R9FJJ9/Q0G2KRiHCfcmLOuLD
+	 021lURTb0sZug==
+Message-ID: <c4057657-7246-48ce-80d0-123e351a921b@kernel.org>
+Date: Mon, 3 Aug 2026 09:59:44 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260730192119586UvhYMv4xrNqaZLKIJH9X0@zte.com.cn>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/slab: stop exporting kvfree_rcu_barrier[_on_cache]()
+To: paulmck@kernel.org
+Cc: Harry Yoo <harry@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Hao Li <hao.li@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+ rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260730-unexport-barriers-v1-1-852f6641abe9@kernel.org>
+ <d2cd0e92-930f-44e4-96e5-67b751419a1c@paulmck-laptop>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=vbabka@kernel.org; keydata=
+ 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
+In-Reply-To: <d2cd0e92-930f-44e4-96e5-67b751419a1c@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jul 30, 2026 at 07:21:19PM +0800, hu.shengming@zte.com.cn wrote:
-> Harry wrote:
-> > call_rcu() disables IRQs with local_irq_save() to protect its per-cpu
-> > data structures. Therefore, if IRQs are not disabled, they cannot be
-> > corrupted by reentrance into call_rcu(). So fall back to the deferred
-> > path only when !allow_spin && irqs_disabled().
-> > 
-> > The RCU subsystem does not guarantee this contractually, and this
-> > optimization relies on RCU's implementation details. Ideally, it should
-> > be removed once call_rcu_nolock() is supported by the RCU subsystem.
-> > 
-> > Link: https://lore.kernel.org/linux-mm/CAADnVQKRVD5ZSnEKbZZU7w86gHbGHUug2pvzpgZTngNS+fg4rw@mail.gmail.com
-> > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
-> > ---
-> >  mm/slub.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index 2c5ba8c326e7..bb0f2975c95b 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -6157,8 +6157,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags)
-> >      if (likely(rcu_sheaf->size < s->sheaf_capacity)) {
-> >          rcu_sheaf = NULL;
-> >      } else {
-> > -        if (unlikely(!allow_spin)) {
-> > -            /* call_rcu() cannot be called in an unknown context */
-> > +        /*
-> > +         * With !allow_spin, we might have interrupted call_rcu()'s
-> > +         * IRQ-disabled critical section. If IRQs are not disabled,
-> > +         * we know that's not the case.
-> > +         */
-> > +        if (unlikely(!allow_spin && irqs_disabled())) {
+On 7/30/26 22:59, Paul E. McKenney wrote:
+> On Thu, Jul 30, 2026 at 04:32:46PM +0200, Vlastimil Babka (SUSE) wrote:
+>> No module code calls these functions directly. Seems it was always the
+>> case. Remove the exports.
+>> 
+>> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 > 
-> LGTM!
-> Reviewed-by: Shengming Hu <hu.shengming@zte.com.cn>
+> Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-Thanks a lot, Shengming!
+Thanks!
 
-> I initially wondered whether in_nmi() should also be checked here.
-> However, irqs_disabled() already covers the relevant reentrancy case,
-> since call_rcu() disables IRQs while modifying its per-CPU data.
+> Which reminds me...  Are you guys interested in taking the kfree_rcu()
+> test code from kernel/rcu/rcuscale.c?  See for example the kfree_rcu_test
+> module parameter.
 
-Exactly, that was my reasoning ;)
+Hmm, we have a slub kunit test, but I think no such torture/scaling test
+infra. Maybe once we have that? What do you think, Harry?
 
-As a side note there is an attempt to do this in call_rcu() instead of
-slab:
 
-https://lore.kernel.org/all/20260729162207.1567770-1-puranjay@kernel.org
 
-Just FYI.
+> 							Thanx, Paul
+> 
+>> ---
+>> Based on slab/for-7.3/kfree_rcu_nolock
+>> ---
+>>  mm/slab_common.c | 4 ----
+>>  1 file changed, 4 deletions(-)
+>> 
+>> diff --git a/mm/slab_common.c b/mm/slab_common.c
+>> index 6750dfa27367..cd155ffc2762 100644
+>> --- a/mm/slab_common.c
+>> +++ b/mm/slab_common.c
+>> @@ -1329,14 +1329,12 @@ void kvfree_rcu_barrier(void)
+>>  	deferred_work_barrier();
+>>  	rcu_barrier();
+>>  }
+>> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
+>>  
+>>  void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
+>>  {
+>>  	deferred_work_barrier();
+>>  	rcu_barrier();
+>>  }
+>> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
+>>  
+>>  void __init kvfree_rcu_init(void)
+>>  {
+>> @@ -2163,7 +2161,6 @@ void kvfree_rcu_barrier(void)
+>>  	flush_all_rcu_sheaves();
+>>  	__kvfree_rcu_barrier();
+>>  }
+>> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
+>>  
+>>  /**
+>>   * kvfree_rcu_barrier_on_cache - Wait for in-flight kvfree_rcu() calls on a
+>> @@ -2186,7 +2183,6 @@ void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
+>>  	rcu_barrier();
+>>  	__kvfree_rcu_barrier();
+>>  }
+>> -EXPORT_SYMBOL_GPL(kvfree_rcu_barrier_on_cache);
+>>  
+>>  static unsigned long
+>>  kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+>> 
+>> ---
+>> base-commit: b01f6ed9ff0c4581fc669044fa5b82a93b4ef144
+>> change-id: 20260730-unexport-barriers-439b3f69f791
+>> 
+>> 
 
--- 
-Cheers,
-Harry / Hyeonggon
