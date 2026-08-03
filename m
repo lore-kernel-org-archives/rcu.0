@@ -1,55 +1,50 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A908130AAD8;
-	Mon,  3 Aug 2026 15:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC70306D3F;
+	Mon,  3 Aug 2026 15:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785771046; cv=none; b=FMUJLcIMoZUMhqGb92QhGl8osM3PbA+0bcuT69hRVrZHGM9twOmoElfZfL2assqrIcPdPwUrnoiRKOVGXHNrXusm4FXhnXWnIMF8nFbKBPQsnBzvkMcNjmkOXPuhkswLfn1s2izQt8YVzZq0NkpeaRlQD72uLUiDTz0vSRG7FyA=
+	t=1785771442; cv=none; b=milewKCsyQMR3Gdf/1P1q6rH3i/SUMmJT6cU97kteh6waSdUqe4p5T8ktHMs5wHee9BOzdiLLC1stS1V8vWgdTzZcK2WogU16UfZhJBiHrAZyITKCFvh6SWy99D8MJH5jMpybnrjr2Kzlahx8jXm4IpYwKRalzIwEPS0uEOLAp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785771046; c=relaxed/simple;
-	bh=LYgVEw6TU4uM0WLict6gXRn0n4Sk0/ASBM+eXr+DMwk=;
+	s=arc-20240116; t=1785771442; c=relaxed/simple;
+	bh=+QpMUSWk/GvVGBPqojXOHL0RT3WyBMlsbUpHI4qqqHo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=INMB3O6sN2PaCvOqcxO5llONQNjBumCQKKrwMYpMLftkOL9tqYsTBVah9MkvgUKy8HP1IWSxaxAYGjrWXWbVZiqzJ4aJlopJaZmkNqoBBnvItVYgNh/SIf0nKReHzKZb/pRYzHdg2QFikhTrCtHgNYPKrOnX5YVhTyfZkbPvhxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H4cM7EkQ; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=ELHQ/3cQitklBx/jrdAjtaO68O3ViqxClaphznCheVIFWvNNqEIHxq/6k0Dl0tWlzdxFLWLyXX2PEvG/cgc0sFwQGLeYDtZs+6V6deEl4LnIPau3/HSLEoU5dbXp66BhNiSKlZvnHq5GKijCn1f34moOPvX70JFUp0MzSkwb2HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L1vtDyRu; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H4cM7EkQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 298C11F000E9;
-	Mon,  3 Aug 2026 15:30:45 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L1vtDyRu"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B44C1F000E9;
+	Mon,  3 Aug 2026 15:37:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785771045;
-	bh=o2DlwFFQ7c69iQDGWX5wN0uky725dmGY92UH68gtyxg=;
+	s=k20260515; t=1785771441;
+	bh=EEeHvCK/4qr0udFm9xmmfnLHXKUOj1vvk2w3lbpsW+w=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=H4cM7EkQ3LmPnIVD1B4GJPrQpM2/VvFq8kIOmxYWwzqFmWEeC6Aai/uUHOFR2oVYU
-	 NkSD9sg5hBgN/+MI/7ehjvmlgr+eIkgn2erHgLklpwfcTq4GGttuYAvl3VryS3HCeq
-	 Io39nbVKt229iLOwbCp9l0BFsxkmxaRgfPVavAqpRbIvdH3cF5gSSPhZ3aG6ePv+EN
-	 pVwxi5ttwl1MX6NnXocv7BT7A2un7C3dByDMUt1GXjmCoh98IjcV+mKUD2ie8hXhcM
-	 Yb4nmBeTNFuZ3otl7WRCz4eOZM21QKunTtRJNrS8sguLSFEjuWCEpCums446vZO1K5
-	 1qxxlyS3nBzwg==
+	b=L1vtDyRurwnCEOZ2LLZLwBHDU7joi5ok/iepNHu2YWDHslKpqlFboRSdyO5xCRhKw
+	 T/7amMFjOZPiWnsk8fH0/s51+udxYa0Uew7jo7e3DXUt7oGTUN81ZsOOoZazyaMH/C
+	 L4LcHET9THFSgfv8I0Gi5bKwPrPAB3zInEXpk2/rdcq5fImT4FA3Xfk/SOaT3Z17Xw
+	 jfw9EHd/faF3s/xRBKDks8m4ZrFxfZcB+wX8u8Ns4kgg4cTQFy1yzbyJI+NERCQKMe
+	 JUYb2xIF2H4K2IguY8Ok3P4evxCYlFQ6tJSWH2hNXrfTTiL3lKalkmOPQtXS/xoGkt
+	 Yjyt2gidm6DcA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E7F0BCE19B2; Mon,  3 Aug 2026 08:30:44 -0700 (PDT)
-Date: Mon, 3 Aug 2026 08:30:44 -0700
+	id E6F4BCE19B2; Mon,  3 Aug 2026 08:37:20 -0700 (PDT)
+Date: Mon, 3 Aug 2026 08:37:20 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Harry Yoo <harry@kernel.org>
-Cc: hu.shengming@zte.com.cn, vbabka@kernel.org, akpm@linux-foundation.org,
-	hao.li@linux.dev, cl@gentwo.org, rientjes@google.com,
-	roman.gushchin@linux.dev, ast@kernel.org, andrii@kernel.org,
-	puranjay@kernel.org, ameryhung@gmail.com, bigeasy@linutronix.de,
-	clrkwllms@kernel.org, rostedt@goodmis.org, frederic@kernel.org,
-	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
-	josh@joshtriplett.org, boqun@kernel.org, urezki@gmail.com,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev, pfalcato@suse.de, surenb@google.com,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v5 3/8] mm/slab: use call_rcu() in unknown context if
- irqs are enabled
-Message-ID: <03f04f1f-97c2-4800-b73c-23460ef15466@paulmck-laptop>
+Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Hao Li <hao.li@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/slab: stop exporting kvfree_rcu_barrier[_on_cache]()
+Message-ID: <f309e572-8fd9-479f-8ba4-4c9ecaa73bbb@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20260729-kfree_rcu_nolock-v5-3-a28cdcda9673@kernel.org>
- <20260730192119586UvhYMv4xrNqaZLKIJH9X0@zte.com.cn>
- <anBAiTl_16H7NqEr@dev>
+References: <20260730-unexport-barriers-v1-1-852f6641abe9@kernel.org>
+ <d2cd0e92-930f-44e4-96e5-67b751419a1c@paulmck-laptop>
+ <c4057657-7246-48ce-80d0-123e351a921b@kernel.org>
+ <anCCVU7Y6lMaPmAT@dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -58,64 +53,29 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <anBAiTl_16H7NqEr@dev>
+In-Reply-To: <anCCVU7Y6lMaPmAT@dev>
 
-On Mon, Aug 03, 2026 at 07:19:32AM +0000, Harry Yoo wrote:
-> On Thu, Jul 30, 2026 at 07:21:19PM +0800, hu.shengming@zte.com.cn wrote:
-> > Harry wrote:
-> > > call_rcu() disables IRQs with local_irq_save() to protect its per-cpu
-> > > data structures. Therefore, if IRQs are not disabled, they cannot be
-> > > corrupted by reentrance into call_rcu(). So fall back to the deferred
-> > > path only when !allow_spin && irqs_disabled().
-> > > 
-> > > The RCU subsystem does not guarantee this contractually, and this
-> > > optimization relies on RCU's implementation details. Ideally, it should
-> > > be removed once call_rcu_nolock() is supported by the RCU subsystem.
-> > > 
-> > > Link: https://lore.kernel.org/linux-mm/CAADnVQKRVD5ZSnEKbZZU7w86gHbGHUug2pvzpgZTngNS+fg4rw@mail.gmail.com
-> > > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > > Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
-> > > ---
-> > >  mm/slub.c | 8 ++++++--
-> > >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/mm/slub.c b/mm/slub.c
-> > > index 2c5ba8c326e7..bb0f2975c95b 100644
-> > > --- a/mm/slub.c
-> > > +++ b/mm/slub.c
-> > > @@ -6157,8 +6157,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj, unsigned int free_flags)
-> > >      if (likely(rcu_sheaf->size < s->sheaf_capacity)) {
-> > >          rcu_sheaf = NULL;
-> > >      } else {
-> > > -        if (unlikely(!allow_spin)) {
-> > > -            /* call_rcu() cannot be called in an unknown context */
-> > > +        /*
-> > > +         * With !allow_spin, we might have interrupted call_rcu()'s
-> > > +         * IRQ-disabled critical section. If IRQs are not disabled,
-> > > +         * we know that's not the case.
-> > > +         */
-> > > +        if (unlikely(!allow_spin && irqs_disabled())) {
+On Mon, Aug 03, 2026 at 12:26:55PM +0000, Harry Yoo wrote:
+> On Mon, Aug 03, 2026 at 09:59:44AM +0200, Vlastimil Babka (SUSE) wrote:
+> > On 7/30/26 22:59, Paul E. McKenney wrote:
+> > > On Thu, Jul 30, 2026 at 04:32:46PM +0200, Vlastimil Babka (SUSE) wrote:
+> > > Which reminds me...  Are you guys interested in taking the kfree_rcu()
+> > > test code from kernel/rcu/rcuscale.c?  See for example the kfree_rcu_test
+> > > module parameter.
 > > 
-> > LGTM!
-> > Reviewed-by: Shengming Hu <hu.shengming@zte.com.cn>
+> > Hmm, we have a slub kunit test, but I think no such torture/scaling test
+> > infra. Maybe once we have that? What do you think, Harry?
 > 
-> Thanks a lot, Shengming!
+> That'd be definitely useful. We have been reviving performance tests
+> every time we wondered if it'd affect performance in a surprising way.
+> But we've never put that in the mainline ;)
 > 
-> > I initially wondered whether in_nmi() should also be checked here.
-> > However, irqs_disabled() already covers the relevant reentrancy case,
-> > since call_rcu() disables IRQs while modifying its per-CPU data.
+> Probably test_kmalloc_nolock_and_friends*() don't even belong
+> slub_kunit.
 > 
-> Exactly, that was my reasoning ;)
-> 
-> As a side note there is an attempt to do this in call_rcu() instead of
-> slab:
-> 
-> https://lore.kernel.org/all/20260729162207.1567770-1-puranjay@kernel.org
-> 
-> Just FYI.
+> Perhaps worth starting small with lib/test_slab.c, and slowly
+> move/add torture/scaling tests to there?
 
-Why not both?  ;-)
-
-(Sorry, couldn't resist.)
+That would work for me.
 
 							Thanx, Paul
