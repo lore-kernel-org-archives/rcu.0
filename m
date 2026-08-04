@@ -1,81 +1,88 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from confino.investici.org (confino.investici.org [93.190.126.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC70306D3F;
-	Mon,  3 Aug 2026 15:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5902D13FEE;
+	Tue,  4 Aug 2026 00:03:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.190.126.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785771442; cv=none; b=milewKCsyQMR3Gdf/1P1q6rH3i/SUMmJT6cU97kteh6waSdUqe4p5T8ktHMs5wHee9BOzdiLLC1stS1V8vWgdTzZcK2WogU16UfZhJBiHrAZyITKCFvh6SWy99D8MJH5jMpybnrjr2Kzlahx8jXm4IpYwKRalzIwEPS0uEOLAp0=
+	t=1785801834; cv=none; b=BJuW0dovANqA+Uiq6yJs+vcw/yK5tKgVp0hvV+Vu7bLJDksfqXXcOv9nTUuTRl004ddUZBNJb5f5JKSyxm5INqMnPU109fwwp2Qp957i37tqaoq715LwHPUy86n20MHjJAJt6y2WyxTAxABNPZsrudtNIWTQ6kmUbHvhqQ3K4KY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785771442; c=relaxed/simple;
-	bh=+QpMUSWk/GvVGBPqojXOHL0RT3WyBMlsbUpHI4qqqHo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ELHQ/3cQitklBx/jrdAjtaO68O3ViqxClaphznCheVIFWvNNqEIHxq/6k0Dl0tWlzdxFLWLyXX2PEvG/cgc0sFwQGLeYDtZs+6V6deEl4LnIPau3/HSLEoU5dbXp66BhNiSKlZvnHq5GKijCn1f34moOPvX70JFUp0MzSkwb2HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L1vtDyRu; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785801834; c=relaxed/simple;
+	bh=CCimtxGCRC0NSJ1taDhAkxzVIhsW9r6GeTO1XCUhZYo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xb0MWl1rrmzaDyazKn0h3hB1+H8Z8qeB+mP9GOSKcRcz4xAikCZRApPf2yPL2qO+lFsYEVHhF7z3Kl8EcgdrmkeFaPVwNjDlGSyVRyASAK6EAZD4DT+LseiLO9EM9qkOg1a+BSW06xleVN8yD2kKHiJdE5NflwN3lZ9I4yR05IU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=grrlz.net; spf=pass smtp.mailfrom=grrlz.net; dkim=pass (1024-bit key) header.d=grrlz.net header.i=@grrlz.net header.b=pYhWpOUw; arc=none smtp.client-ip=93.190.126.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=grrlz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=grrlz.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L1vtDyRu"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B44C1F000E9;
-	Mon,  3 Aug 2026 15:37:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785771441;
-	bh=EEeHvCK/4qr0udFm9xmmfnLHXKUOj1vvk2w3lbpsW+w=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=L1vtDyRurwnCEOZ2LLZLwBHDU7joi5ok/iepNHu2YWDHslKpqlFboRSdyO5xCRhKw
-	 T/7amMFjOZPiWnsk8fH0/s51+udxYa0Uew7jo7e3DXUt7oGTUN81ZsOOoZazyaMH/C
-	 L4LcHET9THFSgfv8I0Gi5bKwPrPAB3zInEXpk2/rdcq5fImT4FA3Xfk/SOaT3Z17Xw
-	 jfw9EHd/faF3s/xRBKDks8m4ZrFxfZcB+wX8u8Ns4kgg4cTQFy1yzbyJI+NERCQKMe
-	 JUYb2xIF2H4K2IguY8Ok3P4evxCYlFQ6tJSWH2hNXrfTTiL3lKalkmOPQtXS/xoGkt
-	 Yjyt2gidm6DcA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E6F4BCE19B2; Mon,  3 Aug 2026 08:37:20 -0700 (PDT)
-Date: Mon, 3 Aug 2026 08:37:20 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Harry Yoo <harry@kernel.org>
-Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Hao Li <hao.li@linux.dev>, Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/slab: stop exporting kvfree_rcu_barrier[_on_cache]()
-Message-ID: <f309e572-8fd9-479f-8ba4-4c9ecaa73bbb@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260730-unexport-barriers-v1-1-852f6641abe9@kernel.org>
- <d2cd0e92-930f-44e4-96e5-67b751419a1c@paulmck-laptop>
- <c4057657-7246-48ce-80d0-123e351a921b@kernel.org>
- <anCCVU7Y6lMaPmAT@dev>
+	dkim=pass (1024-bit key) header.d=grrlz.net header.i=@grrlz.net header.b="pYhWpOUw"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=grrlz.net;
+	s=stigmate; t=1785801821;
+	bh=kXnXKKtoRN+fL226V5e+aXyE+V0mtd9pYLDdPMt+mac=;
+	h=From:To:Cc:Subject:Date:From;
+	b=pYhWpOUwMIcI1E7d502A1vaDNlUr7+rZZZWY2Ipc/8/gOTBpfig0m1K/nBJT4gZ0i
+	 DHJMXHkAulkk6iYBsKDIKMAXofGhOCAnPdG2S97nJXi0yMjpK6dZgw37r608AX9KxS
+	 XsQms/Di9ZoIUJivbeKYVfOhOG9cve6vJSz5F0AI=
+Received: from mx1.investici.org (unknown [127.0.0.1])
+	by confino.investici.org (Postfix) with UTF8SMTP id 4hDYfj0h69z11cv;
+	Tue, 04 Aug 2026 00:03:41 +0000 (UTC)
+Received: by mx1.investici.org (Postfix) id 4hDYfh4fXzz11ct;
+	Tue, 04 Aug 2026 00:03:40 +0000 (UTC)
+From: Bradley Morgan <include@grrlz.net>
+To: "Paul E . McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] hazptrtorture: Fix inverted sleep condition in do_pending kthread
+Date: Tue,  4 Aug 2026 00:03:39 +0000
+Message-ID: <20260804000340.4812-1-include@grrlz.net>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <anCCVU7Y6lMaPmAT@dev>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 03, 2026 at 12:26:55PM +0000, Harry Yoo wrote:
-> On Mon, Aug 03, 2026 at 09:59:44AM +0200, Vlastimil Babka (SUSE) wrote:
-> > On 7/30/26 22:59, Paul E. McKenney wrote:
-> > > On Thu, Jul 30, 2026 at 04:32:46PM +0200, Vlastimil Babka (SUSE) wrote:
-> > > Which reminds me...  Are you guys interested in taking the kfree_rcu()
-> > > test code from kernel/rcu/rcuscale.c?  See for example the kfree_rcu_test
-> > > module parameter.
-> > 
-> > Hmm, we have a slub kunit test, but I think no such torture/scaling test
-> > infra. Maybe once we have that? What do you think, Harry?
-> 
-> That'd be definitely useful. We have been reviving performance tests
-> every time we wondered if it'd affect performance in a surprising way.
-> But we've never put that in the mainline ;)
-> 
-> Probably test_kmalloc_nolock_and_friends*() don't even belong
-> slub_kunit.
-> 
-> Perhaps worth starting small with lib/test_slab.c, and slowly
-> move/add torture/scaling tests to there?
+The do_pending kthread never sleeps. Its supposed to.
+kthread_do_pending_ms sets the gap between cleanups, and the docs
+say so too. But the sleep sits behind torture_must_stop(), and thats
+false while the test runs. So the kthread never sleeps. It just loops.
+It drains the pending lists over and over, no pause, and burns a full
+CPU for the whole test.
 
-That would work for me.
+Flip the check. With !torture_must_stop() it sleeps for
+kthread_do_pending_ms between passes. When the test stops it does one
+last cleanup and exits. Nothing left to do, so no sleep needed then.
 
-							Thanx, Paul
+Fixes: 94d2e93c222e ("hazptrtorture: Add kthread to release deferred hazard pointers")
+Signed-off-by: Bradley Morgan <include@grrlz.net>
+---
+ kernel/rcu/hazptrtorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
+index 72aeb50668e9..7c8b5899fb01 100644
+--- a/kernel/rcu/hazptrtorture.c
++++ b/kernel/rcu/hazptrtorture.c
+@@ -555,7 +555,7 @@ static int hazptr_torture_do_pending(void *arg)
+ 			cpu = cpumask_next_wrap(cpu, cpu_possible_mask);
+ 			hazptr_torture_do_one_pending(cpu, &rand);
+ 		}
+-		if (torture_must_stop())
++		if (!torture_must_stop())
+ 			torture_hrtimeout_ms(kthread_do_pending_ms, USEC_PER_MSEC, &rand);
+ 		// Omit stutter_wait() because this function needs to do cleanup.
+ 	} while (!torture_must_stop());
+-- 
+2.47.3
+
