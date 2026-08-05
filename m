@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 371C93939B1;
-	Wed,  5 Aug 2026 15:01:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4072D46CE;
+	Wed,  5 Aug 2026 15:02:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785942115; cv=none; b=hheTD66AP2cYjF1vMPeQQKI9Hd2qCRp381cXjb/eGyyvxM20QbW5OHqTSbJ6dp6rvkbEARAUwIcspzqkA2q74h07/NZ99d12jNU5RVbK/S8oHJiACWMySYKY0mMp/spwXEaYzDvHNgTFPlse7A6gwUIiwsmCk0SXbeCniWtEbt4=
+	t=1785942124; cv=none; b=uKddV9d2nl2gkAEa3vHdrB4xH3HxYolcqCAitJbgkZHaEcvozUU3HZcqyPj+L/B0L16LAknoM//jtcdVdbcszfFBSAwOK44WbhyIQvcznwOTUt10zmAdc429YbeWiE8WVw/JMIR29VrJVTOQfqJ+j/1Lv1FOcjXLFhql4Fsm7js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785942115; c=relaxed/simple;
-	bh=TGSVS27VsGgTdKeWuqJIXGATo3lWZJfA/ki8bAvqyz8=;
+	s=arc-20240116; t=1785942124; c=relaxed/simple;
+	bh=YOlv3o40GyVVy99CqrmV5kA8RFAg585fD7edIGWhAR8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qVpKIqIPNUFI417qXRMSF6BPUE+oz8AuF0COBBO/UryK24y1+iiLu2BjSvIsxiRmu0vUvXNyuL9guTZeM90bGGDS1DD/qDjN6+BInR8p+Lgzi0s9gjmfNaG5/4FNRxX9S63YQpGzoJAQt8bfO92RmOw/h7/0fgeyFxYrXafdbBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=juMsvdCE; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=fXZ/LfTF8cHiC5QEgNfbXjSwwOz56DtsXj3kCzKt4ubpdhUwSY1wVGm8bvkwr2cvy9mt7lw5et99p98xkli86Zchgm76J+8zOCuKkKZl+yhheFd9mx00iErlHqW/O1M7xLFUC0l7vp0QClt7L4OQ3akGG5JO3YzQu3SCq+v6F5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GiPWknGk; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="juMsvdCE"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0A671F000E9;
-	Wed,  5 Aug 2026 15:01:44 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GiPWknGk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 272791F00A3A;
+	Wed,  5 Aug 2026 15:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785942113;
-	bh=LXJwHWfyIyYAol7hr0XIHN7RcUAOgHD73uS/AqOnnf4=;
+	s=k20260515; t=1785942123;
+	bh=ES4LoSb21zgaO4ykRP24VmWuxpdtjPaJPxGZBbKvNvM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=juMsvdCE66RAjWyfSj04+GfkMyD7Ciy1yD2Cx0DxW18pNFXsyg4ww+LCtzci+5ff6
-	 0jRsdVq/FOvK+uri82mj8rf2AwD6vwyj8Q7658YgH0q8j/c0hOf6gs4sxPO+NrNDKx
-	 HtEQR0epBgVH7PbGQ/Zp5cJR2aRFm6g71qsp8/txyrcXzPLqFjPgQ+c90kYSbkPgEq
-	 C2Ba1tx4OT2R9i4IOxqHKWhUopLAnVyeQy1gUDVVGQOJgrZmJgoPQute5KuPL4xDY7
-	 FF1/6FCFYTq0HJZ+WeigqmBcLZMepLAh0rGiYk5u6Hw86WVxMarMHJXbOWN/64ARjd
-	 0KJRY9gZLQgBg==
+	b=GiPWknGkRCtuMRgROKHnONNIBdarVWNcK71u2CbBh0K0HUWT3SqWuQ6mpA8CpNzhH
+	 /9PHlVnh6piykDZOXABoZb9J+iVuNw8eOwRDV+DdMuN+Y3KATX9qHyBCc3stng8WfI
+	 KJMPb04A4EL0OyFWEiGZVvOUe15PBIZ58cA6iwnVQm0KluzPZwBGoOZoNDT9J1cVDe
+	 rR1wZJk0yIb8B+aP1hX7aCpTo5KYIa06cZKlC4onZG0SKN49qh9w2tLZ+ADSTrPn6k
+	 B4uqxf4ggiBqoPcCxDdeS2bVq9EShUOqCyyGVFBga7U5EtnQoG6gC+BE/iW8yU5+Bx
+	 BEuVzQv/me1Xw==
 From: Philipp Stanner <phasta@kernel.org>
 To: Miguel Ojeda <ojeda@kernel.org>,
 	Boqun Feng <boqun@kernel.org>,
@@ -70,9 +70,9 @@ Cc: linux-kernel@vger.kernel.org,
 	dri-devel@lists.freedesktop.org,
 	linaro-mm-sig@lists.linaro.org,
 	rcu@vger.kernel.org
-Subject: [PATCH v9 2/5] rust: types: implement ForeignOwnable for ARef<T>
-Date: Wed,  5 Aug 2026 16:59:44 +0200
-Message-ID: <20260805145949.938505-4-phasta@kernel.org>
+Subject: [PATCH v9 3/5] rust: sync: Add abstraction for rcu_barrier()
+Date: Wed,  5 Aug 2026 16:59:45 +0200
+Message-ID: <20260805145949.938505-5-phasta@kernel.org>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260805145949.938505-2-phasta@kernel.org>
 References: <20260805145949.938505-2-phasta@kernel.org>
@@ -84,79 +84,45 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Danilo Krummrich <dakr@kernel.org>
+rcu_barrier() is a frequently used C function which is always safe to be
+called.
 
-Implement ForeignOwnable for ARef<T>, making it possible for C code to
-own an ARef<T>.
+Add a safe abstraction for rcu_barrier().
 
-Since ARef represents shared ownership, BorrowedMut is &T rather than
-&mut T, matching the semantics of the underlying reference-counted type.
-
-Signed-off-by: Danilo Krummrich <dakr@kernel.org>
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+Signed-off-by: Philipp Stanner <phasta@kernel.org>
 Tested-by: Daniel Almeida <daniel.almeida@collabora.com>
 ---
- rust/kernel/sync/aref.rs | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ rust/kernel/sync/rcu.rs | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/rust/kernel/sync/aref.rs b/rust/kernel/sync/aref.rs
-index b721b2e00b98..540766613659 100644
---- a/rust/kernel/sync/aref.rs
-+++ b/rust/kernel/sync/aref.rs
-@@ -24,6 +24,11 @@
-     ptr::NonNull, //
- };
- 
-+use crate::{
-+    prelude::*,
-+    types::ForeignOwnable, //
-+};
-+
- /// Types that are _always_ reference counted.
- ///
- /// It allows such types to define their own custom ref increment and decrement functions.
-@@ -188,6 +193,41 @@ fn eq(&self, other: &ARef<U>) -> bool {
+diff --git a/rust/kernel/sync/rcu.rs b/rust/kernel/sync/rcu.rs
+index a32bef6e490b..7031ca5d2473 100644
+--- a/rust/kernel/sync/rcu.rs
++++ b/rust/kernel/sync/rcu.rs
+@@ -50,3 +50,23 @@ fn drop(&mut self) {
+ pub fn read_lock() -> Guard {
+     Guard::new()
  }
- impl<T: AlwaysRefCounted + Eq> Eq for ARef<T> {}
- 
-+// SAFETY: `into_foreign` returns a pointer from `NonNull::as_ptr`, so it's non-null. The
-+// `ARef` invariant guarantees that `ptr` points to a valid `T`, so it's aligned to `T`.
-+unsafe impl<T: AlwaysRefCounted + 'static> ForeignOwnable for ARef<T> {
-+    const FOREIGN_ALIGN: usize = core::mem::align_of::<T>();
 +
-+    type Borrowed<'a> = &'a T;
-+    type BorrowedMut<'a> = &'a T;
-+
-+    fn into_foreign(self) -> *mut c_void {
-+        ARef::into_raw(self).as_ptr().cast()
-+    }
-+
-+    unsafe fn from_foreign(ptr: *mut c_void) -> Self {
-+        // SAFETY: The safety requirements of this function ensure that `ptr` comes from a previous
-+        // call to `Self::into_foreign`.
-+        let ptr = unsafe { NonNull::new_unchecked(ptr.cast()) };
-+
-+        // SAFETY: `ptr` came from `into_foreign`, which consumed an `ARef` without decrementing
-+        // the refcount, so we can transfer the ownership to the new `ARef`.
-+        unsafe { ARef::from_raw(ptr) }
-+    }
-+
-+    unsafe fn borrow<'a>(ptr: *mut c_void) -> &'a T {
-+        // SAFETY: The safety requirements of this method ensure that the object remains alive and
-+        // immutable for the duration of 'a.
-+        unsafe { &*ptr.cast() }
-+    }
-+
-+    unsafe fn borrow_mut<'a>(ptr: *mut c_void) -> &'a T {
-+        // SAFETY: The safety requirements for `borrow_mut` are a superset of the safety
-+        // requirements for `borrow`.
-+        unsafe { <Self as ForeignOwnable>::borrow(ptr) }
-+    }
++/// Wait until all in-flight call_rcu() callbacks complete.
++///
++/// Note that this primitive does not necessarily wait for an RCU grace period
++/// to complete.  For example, if there are no RCU callbacks queued anywhere
++/// in the system, then rcu_barrier() is within its rights to return
++/// immediately, without waiting for anything, much less an RCU grace period.
++/// In fact, rcu_barrier() will normally not result in any RCU grace periods
++/// beyond those that were already destined to be executed.
++///
++/// In kernels built with CONFIG_RCU_LAZY=y, this function also hurries all
++/// pending lazy RCU callbacks.
++///
++/// Note that this is one of the RCU primitives which must not be called in
++/// atomic context.
++#[inline]
++pub fn rcu_barrier() {
++    // SAFETY: `rcu_barrier()` is always safe to be called. It just might wait for a grace period.
++    unsafe { bindings::rcu_barrier() };
 +}
-+
- impl<T, U> PartialEq<&'_ U> for ARef<T>
- where
-     T: AlwaysRefCounted + PartialEq<U>,
 -- 
 2.55.0
 
