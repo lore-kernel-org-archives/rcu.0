@@ -1,260 +1,287 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70BC84657FD;
-	Wed,  5 Aug 2026 12:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76EA739CD0A;
+	Wed,  5 Aug 2026 15:01:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785932662; cv=none; b=BcFOrVJb+BEJDRrI3Zz6WFCXvSoSBDMn4D1kNlH2+fQTlVjPQBItfErZhfB5NzcUMnKFVNgEnEE263pBHAJldYPgG1rHKCkfLwMTog2RBiQW8naYjj3pxLSak9sSjHPo2vYH/t0QFPf53PIHVRABp780EZ3R5BcnTJWKCVZaHwg=
+	t=1785942096; cv=none; b=cQ33jWvTKsKbbG0d4pYBWOeAbzI8TLtEkPdJyw8f7EqyoxXHNQZbxjD7fX3oepY2BrWKQMv/SFaNMtiO3lVpa5pN0wQeTkmpIwKZ0vlZtaKeyi+zB5uth3mALMSMrSbMnb2x24P6HvcIaLKMr9AOSNW0pDiK/4Yyt5I/WGW3bsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785932662; c=relaxed/simple;
-	bh=u43ECnkxfmdGYW8Bf4pwUp69IBSkp9X0YymN34IHNp4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nrr1/zAkbOlB67ao68y7x8wYWtPvRULfsdrVkGMgrjKxp3FdFcxWheRrbm/xIbe6oseC/uNjy1Ronuse8CspQQ2hCGa5FhaXSvWAV/yWJM7d1QqlZM74keDfIvtQ2QziQuQ/PFT/Lo/vAG7GJKHqa+pALAWmwAy7M/skdXUAfek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dSSC+WFQ; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785942096; c=relaxed/simple;
+	bh=BvXtUeYMcTd7jbVmjaJCRr6MyTWzcwXoxm8tKNY1Jc0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dX9KQdCffnUMUWnR68wt/TLAYQoBabYvJIHONpa6+bJcajlEAc2yusc78TWctiiFbkcLKDteYEc/8X8DPF+idrFqL6T+3J3NcI9y00M9izerNsbGkv7MGobvC2ZhC5Ln3Y8KVqUEqrJcNY0/B9qQXsR5uQcWPAq+X0QQO8fqaQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GDVRpwpj; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dSSC+WFQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EFAD1F000E9;
-	Wed,  5 Aug 2026 12:24:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GDVRpwpj"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77FE61F000E9;
+	Wed,  5 Aug 2026 15:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785932661;
-	bh=wZC1Z+3adPrHkC8Qv8oyMha0PitI7krXLmp3Adhm/jI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=dSSC+WFQ00umcfx+tqieACzSJnSWVkJCWdn9wqPvWedAh/OxhGwB+Manb2VPnhQsz
-	 WCmuPJtBVldoxTSbpDiXLrYwhRZcqI/C4I/WABG2yIsGxBSEfa6fBP7TuiSCCKUdf9
-	 2TEmjqFSlQs7G8SH9HiM+unVa6sqciokFlbYml7Z16f4ToVSHv/oR84Zuq+m0/Qk2x
-	 TLxMZOzxvAA4CH6h+g/3jAyYyaascOhSdMHjw7C6nLjlWwUY3zJ11pg8FgikNTLhB8
-	 2si6lGIhhsAMwvcQvfWYs84TCvzVj3NHhQAiqyiJY8JTtgTqf3KkG8kgUx9ux9okgd
-	 HdTQ4mmwsUERg==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: "Lai Jiangshan" <jiangshanlai@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	"Josh Triplett" <josh@joshtriplett.org>,
+	s=k20260515; t=1785942095;
+	bh=v2aKYWsjZrpFjmAZPyjIXid8SZBkegU3K+QTwpr3X8k=;
+	h=From:To:Cc:Subject:Date;
+	b=GDVRpwpjlXc5otMjB8lr75W7HtvMLx1iLiKwoe+n0v25nMOvnU6vWoh26fbFIYOdF
+	 Tc0kVIUXbgvs3Q3740qHZL9eRtsB0zAsh5mD1PeCpstFqm1uHR8jNw72b5zoqO/4tb
+	 0tHpihIslx5sRyhCey/q+zCJCSCUf9ZaVcEMy+iBv7FPZvp4CF1kTQiuBq/jJdMDv6
+	 iWs/aSoHbXcXgS4ZM0D8a9JuOtUxRMk9NmhDz0lpHqz8e3rFZu3PCIDQuhZWlw29lV
+	 bJ3/Udj6VYg8qyYYGIxW9fU5kMrtrT1hr4yLV3nKRRt7syqnedZf2Y2THepyCecONJ
+	 ImSBEf+hvvt9g==
+From: Philipp Stanner <phasta@kernel.org>
+To: Miguel Ojeda <ojeda@kernel.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Benno Lossin <lossin@kernel.org>,
+	Andreas Hindborg <a.hindborg@kernel.org>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Trevor Gross <tmgross@umich.edu>,
+	Danilo Krummrich <dakr@kernel.org>,
+	Daniel Almeida <daniel.almeida@collabora.com>,
+	Tamir Duberstein <tamird@kernel.org>,
+	Alexandre Courbot <acourbot@nvidia.com>,
 	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>,
-	"Frederic Weisbecker" <frederic@kernel.org>,
-	"Neeraj Upadhyay" <neeraj.upadhyay@kernel.org>,
-	"Joel Fernandes" <joelagnelf@nvidia.com>,
-	"Boqun Feng" <boqun@kernel.org>,
-	"Uladzislau Rezki" <urezki@gmail.com>,
-	"Davidlohr Bueso" <dave@stgolabs.net>,
-	"Andrii Nakryiko" <andrii@kernel.org>,
-	"Eduard Zingerman" <eddyz87@gmail.com>,
-	"Alexei Starovoitov" <ast@kernel.org>,
-	"Daniel Borkmann" <daniel@iogearbox.net>,
-	"Kumar Kartikeya Dwivedi" <memxor@gmail.com>
-Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Philipp Stanner <phasta@kernel.org>,
+	Lyude Paul <lyude@redhat.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	Matt Fleming <mfleming@cloudflare.com>,
-	"Harry Yoo (Oracle)" <harry@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev
-Subject: [PATCH v3 6/6] selftests/bpf: Add a call_srcu() re-entry reproducer
-Date: Wed,  5 Aug 2026 05:23:43 -0700
-Message-ID: <20260805122346.269445-7-puranjay@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260805122346.269445-1-puranjay@kernel.org>
-References: <20260805122346.269445-1-puranjay@kernel.org>
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Asahi Lina <lina+kernel@asahilina.net>,
+	Burak Emir <bqe@google.com>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	FUJITA Tomonori <fujita.tomonori@gmail.com>,
+	Eliot Courtney <ecourtney@nvidia.com>,
+	Mirko Adzic <adzicmirko97@gmail.com>,
+	Timur Tabi <ttabi@nvidia.com>,
+	Daniel del Castillo <delcastillodelarosadaniel@gmail.com>,
+	Boris Brezillon <boris.brezillon@collabora.com>
+Cc: linux-kernel@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org,
+	rcu@vger.kernel.org
+Subject: [PATCH v9 0/5] rust / dma_buf: Add abstractions for dma_fence
+Date: Wed,  5 Aug 2026 16:59:42 +0200
+Message-ID: <20260805145949.938505-2-phasta@kernel.org>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Re-enter call_srcu() from a BPF program to exercise its any-context
-safety (and thus call_rcu_tasks_trace(), which is call_srcu() on
-rcu_tasks_trace_srcu_struct).
+(Timur's patch is just included so that the series builds)
 
-An fentry program on rcu_segcblist_enqueue() fires mid-enqueue: that
-function is reached from srcu_gp_start_if_needed() with the srcu_data
-->lock held.  The program does a task-storage delete, whose only deferred
-work is call_rcu_tasks_trace(), re-entering the enqueue on the same CPU.
-The triggering thread is pinned to one CPU and matched by TID, so the
-program fires only for the test's own delete.
+Changes since v8:
+  - Improve function naming. (Daniel)
+  - Panic in case of forgotten fences. (Alice)
+    (reason being that this cannot happen with the intended JobQueue
+    design, it would be a fatal bug anyways and we can easily fix this up)
+  - Improve spelling and grammar. (Daniel)
+  - Add Daniel's Tested-by
+  - Improve Copyright notice to SPDX. (Daniel)
 
-Without the fix the nested call re-takes the same sdp lock and
-self-deadlocks; with it the nested __call_srcu() sees interrupts disabled
-and defers via irq_work, so the delete returns and the test passes.  Since
-it can hang an unfixed kernel, run it only against a kernel carrying the
-fix.
+Changes since v7:
+  - Remove the forgotten-fences-tracking from FenceContext. Merely warn
+    in this unlikely case, using an atomic integer.
+  - Be more verbose in warnings about what exactly the problem is.
 
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Changes since v6:
+  - Add Timur's error code patch (just so that the series builds. Merge
+    however you prefer). (Timur)
+  - Replace XArray with list, remove XArray patch.
+  - Detail the issue with core::mem::forget() in the commit message.
+  - Some code formatting etc.
+
+Changes since v5:
+  - Because Rust can "forget" DriverFences, it could bypass the lifetime
+    ensuring that DriverFences don't outlive a FenceContext. Mitigate
+    this by having the FenceContext keep track of unsignaled fences.
+    (Danilo)
+  - To support the point above, add support for memory reservations to
+    XArray.
+  - To support the point above, have FenceContext::alloc_fence()
+    increment the sequence number. This is necessary for the xarray
+    index. It might become critical with fence seqno holes.. please
+    review.
+  - Remove acronyms in declarations. (Daniel)
+  - Allow for providing initial seqno in FenceContext::new(). (Daniel)
+  - Flesh out documentation about DriverFence <-> Fence. (Daniel)
+  - Flesh out documentation about weirdness in C backend. (Daniel)
+  - Add new, purely internal locking helper / guard for dma_fence.
+  - Use the kernel atomics (Gary).
+  - Curse angrily at my computer.
+
+Changes since v4:
+  - Fix an uninitialized memory bug for FenceCbRegistration with
+    ManuallyDrop.
+  - Return FenceCtx as impl PinInit
+  - Make FenceCtx return an impl PinInit<T, Error> (Danilo)
+  - Reformat some comments
+
+Changes since v3:
+  - Add a FIXME for an encountered Rust compiler bug. (Gary)
+  - Add new Rust files also to DRM drivers & common infrastructure
+    MAINTAINERS file. (Danilo)
+  - Reposition ECANCELED error code. (Miguel)
+  - Replace refcounted FenceCtx in DriverFenceData with a reference plus
+    life time. (Boris)
+  - Re-add rcu_barrier() patch, since we now can use it for dropping the
+    fence context. (Danilo)
+  - Add forgotten R-b from Alice, and Acks for MAINTAINERS from
+    Christian and Sumit.
+
+Changes since v2:
+  - Don't drop DriverFenceData as a whole, but only the members we
+    really want to drop. Gives more robustness. (Gary).
+  - Break apart large pin_init_from_closure(). (Danilo, Onur)
+  - Remove rcu_barrier() and synchronize_rcu() from FenceCtx::drop().
+    FenceCtx might drop in atomic context, where you must not perform
+    those operations. With the current way C dma_fence is designed, the
+    driver must wait for a grace period manually until it unloads.
+  - Repair the DriverFenceBorrow implementation, properly injecting a
+    life time into it. (Danilo)
+  - Fix memory layout bug for rcu_head. (Onur)
+  - Drop RCU patches, since this series doesn't need them anymore.
+
+Changes since v1:
+  - Remove unnecessary mutable references (Alice)
+  - Split up unsafe comments where possible (Danilo)
+  - Remove PhantomData + implement FenceCtx ops trait (Boris)
+  - Consistently call FenceCtx generic data `T`. FenceDataType is
+    derived from that. (Boris)
+  - Add abstractions for call_rcu() and synchronize_rcu() (Danilo)
+  - Add ECANCELED error code in Rust (Alice)
+  - Remove the rcu_barrier() from FenceCtx::drop() – because we now use
+    call_rcu(), there can be no UAF access to the FenceCtx anymore. In
+    any case, it is illegal to use either call_rcu() or
+    synchronize_rcu() in FenceCtx::drop(), because our new
+    drop_driver_fence_data() can run in atomic context and might put the
+    last fence_ctx reference.
+    So we now only have to guard against module unload, which it seems
+    either the driver or Rust driver-core / module unload infrastructure
+    must solve.
+  - Minor formatting etc. changes
+  - Add C helpers to MAINTAINERS. (Danilo)
+  - Ensure that `Fence::is_signaled()` is fully synchronized, i.e., all
+    callbacks really have run. See [1] and [2]. (Myself, Christian
+    König)
+
+Changes since the RFCs:
+  - Include support for ForeignOwnable for ARef, so that a Fence can be
+    stuffed into an XArray et al. (Code by Danilo)
+  - Implement ForeignOwnable (with new borrow type) for DriverFence, so
+    that it can be stuffed into an XArray.
+  - Include the rcu::RcuBox data type to defer dropping data with RCU
+    (Cody by Alice)
+  - Port DmaFence to RcuBox to make UAF bugs through later, new dma_fence
+    callbacks (backend_ops) impossible.
+  - Force users to pass their fence data in an RcuBox (or have it not
+    need drop()) through a Sealed trait.
+  - Document the rules for the user's DriverFence::data's drop
+    implementation very clearly (deadlock danger).
+  - rustfmt, Clippy.
+  - Various style suggestions, safety comments, etc. (Önur)
+  - Add __rust_helper prefix to helper functions. (Önur)
+
+Changes in RFC v3:
+  - Omit JobQueue patches for now
+  - Completely redesign the memory layout: Instead of a Fence
+    refcounting a DriverFence, both now live in the same allocation to
+    allow for future support the dma_fence backend_ops callbacks which
+    need to do container_of. (mostly Boris's feedback)
+  - Allow for pre-allocating fences to avoid deadlocks when submitting
+    jobs to a GPU. (Boris)
+  - Simultaneously, allow for pre-preparing fence callback objects, so
+    the driver can allocate them when it sees fit. (code largely stolen
+    and inspired by Daniel).
+  - Signal fences on drop, ensure synchronization.
+  - Force users to set an error code when signalling.
+  - Write more documentation
+  - A ton of minor other changes.
+
+
+[1] https://lore.kernel.org/dri-devel/20260608142436.265820-2-phasta@kernel.org/
+[2] https://lore.kernel.org/dri-devel/20260612104251.2264707-2-phasta@kernel.org/
+
+
+Alright, so since the last RFCs did not reveal significant design
+issues, I decided to transition this series to a v1 and hope that we can
+get it upstream.
+
+This now includes code for more common infrastructure that dma_fence
+needs, contributed by Danilo and Alice.
+
 ---
- .../selftests/bpf/prog_tests/rcu_reentry.c    | 95 +++++++++++++++++++
- .../testing/selftests/bpf/progs/rcu_reentry.c | 51 ++++++++++
- 2 files changed, 146 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
- create mode 100644 tools/testing/selftests/bpf/progs/rcu_reentry.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_reentry.c b/tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
-new file mode 100644
-index 0000000000000..fa813d1d492b6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Exercise re-entry into call_srcu() from BPF; see progs/rcu_reentry.c.
-+ *
-+ * On a kernel without the call_srcu() any-context fix the nested call
-+ * self-deadlocks on the srcu_data lock, so this hangs rather than fails.
-+ */
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <sys/syscall.h>
-+#include <test_progs.h>
-+#include "rcu_reentry.skel.h"
-+
-+static int sys_pidfd_open(pid_t pid, unsigned int flags)
-+{
-+	return syscall(__NR_pidfd_open, pid, flags);
-+}
-+
-+/* Tiny RCU builds have no rcu_segcblist_enqueue() to attach to. */
-+static bool have_attach_target(void)
-+{
-+	char buf[256];
-+	bool found = false;
-+	FILE *f;
-+
-+	f = fopen("/proc/kallsyms", "r");
-+	if (!f)
-+		return true;	/* cannot tell; let the attach decide */
-+	while (fgets(buf, sizeof(buf), f)) {
-+		if (strstr(buf, " rcu_segcblist_enqueue\n")) {
-+			found = true;
-+			break;
-+		}
-+	}
-+	fclose(f);
-+	return found;
-+}
-+
-+void test_rcu_reentry(void)
-+{
-+	struct rcu_reentry *skel;
-+	int err, pidfd = -1, map_fd;
-+	cpu_set_t set, old_set;
-+	bool affinity_saved;
-+	__u64 val = 1;
-+
-+	if (!have_attach_target()) {
-+		test__skip();
-+		return;
-+	}
-+
-+	skel = rcu_reentry__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	err = rcu_reentry__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	/* Keep the re-entry on a single CPU. */
-+	affinity_saved = !sched_getaffinity(0, sizeof(old_set), &old_set);
-+	CPU_ZERO(&set);
-+	CPU_SET(0, &set);
-+	if (!ASSERT_OK(sched_setaffinity(0, sizeof(set), &set), "setaffinity"))
-+		goto out;
-+
-+	pidfd = sys_pidfd_open(getpid(), 0);
-+	if (!ASSERT_GE(pidfd, 0, "pidfd_open"))
-+		goto restore;
-+	map_fd = bpf_map__fd(skel->maps.task_stg);
-+	err = bpf_map_update_elem(map_fd, &pidfd, &val, BPF_NOEXIST);
-+	if (!ASSERT_OK(err, "boot_create"))
-+		goto restore;
-+
-+	/* Arm the handler for this thread, then trigger call_rcu_tasks_trace(). */
-+	skel->bss->target_pid = syscall(__NR_gettid);
-+	err = bpf_map_delete_elem(map_fd, &pidfd);
-+	if (!ASSERT_OK(err, "boot_delete"))
-+		goto restore;
-+
-+	/* Only Tree SRCU enqueues via rcu_segcblist_enqueue(); skip elsewhere. */
-+	if (!skel->bss->hits) {
-+		test__skip();
-+		goto restore;
-+	}
-+	ASSERT_EQ(skel->bss->get_errs, 0, "nested_storage_get");
-+	ASSERT_EQ(skel->bss->del_errs, 0, "nested_storage_delete");
-+restore:
-+	if (affinity_saved)
-+		sched_setaffinity(0, sizeof(old_set), &old_set);
-+out:
-+	if (pidfd >= 0)
-+		close(pidfd);
-+	rcu_reentry__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/rcu_reentry.c b/tools/testing/selftests/bpf/progs/rcu_reentry.c
-new file mode 100644
-index 0000000000000..47a36f704cf3e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/rcu_reentry.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Re-enter call_srcu() from a BPF program.  fentry on rcu_segcblist_enqueue()
-+ * fires inside call_srcu()'s enqueue (reached from srcu_gp_start_if_needed()
-+ * with the srcu_data ->lock held); the handler then calls call_rcu_tasks_trace()
-+ * -- itself call_srcu() on rcu_tasks_trace_srcu_struct -- re-entering the same
-+ * srcu_data on the same CPU.
-+ */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, __u64);
-+} task_stg SEC(".maps");
-+
-+int target_pid;
-+int hits;
-+int get_errs;
-+int del_errs;
-+int done;
-+
-+SEC("fentry/rcu_segcblist_enqueue")
-+int BPF_PROG(reenter)
-+{
-+	struct task_struct *cur;
-+
-+	if (done || !target_pid)
-+		return 0;
-+
-+	cur = bpf_get_current_task_btf();
-+	if (cur->pid != target_pid)
-+		return 0;
-+
-+	/* Issue the nested call exactly once, so the test is deterministic. */
-+	done = 1;
-+	__sync_fetch_and_add(&hits, 1);
-+
-+	/* Re-enter via a task-storage delete, which calls call_rcu_tasks_trace(). */
-+	if (!bpf_task_storage_get(&task_stg, cur, 0, BPF_LOCAL_STORAGE_GET_F_CREATE))
-+		__sync_fetch_and_add(&get_errs, 1);
-+	else if (bpf_task_storage_delete(&task_stg, cur))
-+		__sync_fetch_and_add(&del_errs, 1);
-+
-+	return 0;
-+}
+Old cover letter for RFC:
+
+So, this is the spiritual successor of the first / second RFC [1]. v2
+also contained code for drm::JobQueue, but mostly to show how the fence
+code would be used. JobQueue is under heavy rework right now, so I don't
+want to bother your eyes with it. The docstring examples should show how
+Rust fences are supposed to be used, though.
+
+This v3 contains a huge amount of highly valuable feedback from a
+variety of people, notably Boris, but also from Alice, Gary and Danilo.
+
+There are some TODOs open (a better trait for fence backend_ops and RCU
+support), but my hope is that this effort is now finally approaching its
+end.
+
+I would greatly appreciate feedback and especially more information
+about what might be missing to make this usable, which is obviously
+where Daniel's and Boris's feedback will be valuable once more.
+
+Please regard this patch just as what it's titled: an RFC, to discuss a
+bit more and to inform a broader community about what the current state
+is and where this is heading at.
+
+Many regards,
+Philipp
+
+[1] https://lore.kernel.org/rust-for-linux/20260203081403.68733-2-phasta@kernel.org/
+
+Danilo Krummrich (1):
+  rust: types: implement ForeignOwnable for ARef<T>
+
+Philipp Stanner (3):
+  rust: sync: Add abstraction for rcu_barrier()
+  rust: Add dma_fence abstractions
+  MAINTAINERS: Add entry for Rust dma-buf
+
+Timur Tabi (1):
+  rust: error: add remaining error codes
+
+ MAINTAINERS                      |    5 +
+ rust/bindings/bindings_helper.h  |    1 +
+ rust/helpers/dma_fence.c         |   48 ++
+ rust/helpers/helpers.c           |    1 +
+ rust/kernel/dma_buf/dma_fence.rs | 1002 ++++++++++++++++++++++++++++++
+ rust/kernel/dma_buf/mod.rs       |   14 +
+ rust/kernel/error.rs             |  105 ++++
+ rust/kernel/lib.rs               |    1 +
+ rust/kernel/sync/aref.rs         |   40 ++
+ rust/kernel/sync/rcu.rs          |   20 +
+ 10 files changed, 1237 insertions(+)
+ create mode 100644 rust/helpers/dma_fence.c
+ create mode 100644 rust/kernel/dma_buf/dma_fence.rs
+ create mode 100644 rust/kernel/dma_buf/mod.rs
+
+
+base-commit: 44e7e7f7cffb10a93bb88e7cb59b7b8b3e2deb1c
 -- 
-2.53.0-Meta
+2.55.0
 
