@@ -1,30 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76EA739CD0A;
-	Wed,  5 Aug 2026 15:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF91D38CFFA;
+	Wed,  5 Aug 2026 15:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785942096; cv=none; b=cQ33jWvTKsKbbG0d4pYBWOeAbzI8TLtEkPdJyw8f7EqyoxXHNQZbxjD7fX3oepY2BrWKQMv/SFaNMtiO3lVpa5pN0wQeTkmpIwKZ0vlZtaKeyi+zB5uth3mALMSMrSbMnb2x24P6HvcIaLKMr9AOSNW0pDiK/4Yyt5I/WGW3bsA=
+	t=1785942106; cv=none; b=kKjKTVWs+567bJ0Wwb9KegTvbuO8N1+AnPWQ89BewilAB/H67iv6inVAtqZLWfLn3aSqHTSDnTQS8HKcQ4yWlvmIOhWZmpf18PFT8RR6J4aTBwvXvE3F6wz2krbdOaYg1fYNpVoSer8b8pZ8DsQEGNtR0cNJbt0N/icL3YbD1As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785942096; c=relaxed/simple;
-	bh=BvXtUeYMcTd7jbVmjaJCRr6MyTWzcwXoxm8tKNY1Jc0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dX9KQdCffnUMUWnR68wt/TLAYQoBabYvJIHONpa6+bJcajlEAc2yusc78TWctiiFbkcLKDteYEc/8X8DPF+idrFqL6T+3J3NcI9y00M9izerNsbGkv7MGobvC2ZhC5Ln3Y8KVqUEqrJcNY0/B9qQXsR5uQcWPAq+X0QQO8fqaQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GDVRpwpj; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785942106; c=relaxed/simple;
+	bh=rCp+R3qtDaeP/d/2j8SxhMKLUNhNwI3f0ikDyy4GaBY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=JgYeVrdOao4q11PlVXlOPRPNEZgG9YR4xZO+uWAjQEoTLjDeAzBHplDPNvxl0r6OYweRsBK3bkYfLHgEwQ5Z09F/rfKJ0S5mBaQVkj36oN8UTSEavFsBQ43nl63bkTbL5irro7zLhERNcP3kg9CaR9flB6IPHqksylFHidmnzf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n3TwAC4D; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GDVRpwpj"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77FE61F000E9;
-	Wed,  5 Aug 2026 15:01:26 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n3TwAC4D"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A25B1F00A3A;
+	Wed,  5 Aug 2026 15:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785942095;
-	bh=v2aKYWsjZrpFjmAZPyjIXid8SZBkegU3K+QTwpr3X8k=;
-	h=From:To:Cc:Subject:Date;
-	b=GDVRpwpjlXc5otMjB8lr75W7HtvMLx1iLiKwoe+n0v25nMOvnU6vWoh26fbFIYOdF
-	 Tc0kVIUXbgvs3Q3740qHZL9eRtsB0zAsh5mD1PeCpstFqm1uHR8jNw72b5zoqO/4tb
-	 0tHpihIslx5sRyhCey/q+zCJCSCUf9ZaVcEMy+iBv7FPZvp4CF1kTQiuBq/jJdMDv6
-	 iWs/aSoHbXcXgS4ZM0D8a9JuOtUxRMk9NmhDz0lpHqz8e3rFZu3PCIDQuhZWlw29lV
-	 bJ3/Udj6VYg8qyYYGIxW9fU5kMrtrT1hr4yLV3nKRRt7syqnedZf2Y2THepyCecONJ
-	 ImSBEf+hvvt9g==
+	s=k20260515; t=1785942104;
+	bh=mmTO2+HZnZJEiRo2DbVArdBrDXpT+adGtZsImi4HSIw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=n3TwAC4DF1kCUoiZ4ZdcTWLxgsnqw9nQI2b/0RpZta+m7SBf3oZHYlrlHDVdr4Y9e
+	 W8DbQjLB3LrCXszjf6Eq8zrUzK85OzhC9MqAej/q5KNRMb/9XhdA2Se32S4jtitoVg
+	 wj7858BayC1qEI8/1G+IVR4lvptVdJJxh19JokpQc/bZu6dkuePQzN3xIIIP5B8132
+	 dGa+G8Nbbm9NByXJNtBcSzfrIDNSE5eRHL+10RB6VgsvkzCPxn1eqC1FYoTo7Zodw0
+	 HdI2Ep5I/TcWIGMH8o5eTQbYBmepb/4LZYnnR1TMH1k3Ok14oW6iC1r+kvga0clLw2
+	 B5Jr1h3O/wGIw==
 From: Philipp Stanner <phasta@kernel.org>
 To: Miguel Ojeda <ojeda@kernel.org>,
 	Boqun Feng <boqun@kernel.org>,
@@ -68,220 +69,169 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-media@vger.kernel.org,
 	dri-devel@lists.freedesktop.org,
 	linaro-mm-sig@lists.linaro.org,
-	rcu@vger.kernel.org
-Subject: [PATCH v9 0/5] rust / dma_buf: Add abstractions for dma_fence
-Date: Wed,  5 Aug 2026 16:59:42 +0200
-Message-ID: <20260805145949.938505-2-phasta@kernel.org>
+	rcu@vger.kernel.org,
+	Fiona Behrens <me@kloenk.dev>
+Subject: [PATCH v9 1/5] rust: error: add remaining error codes
+Date: Wed,  5 Aug 2026 16:59:43 +0200
+Message-ID: <20260805145949.938505-3-phasta@kernel.org>
 X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260805145949.938505-2-phasta@kernel.org>
+References: <20260805145949.938505-2-phasta@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-(Timur's patch is just included so that the series builds)
+From: Timur Tabi <ttabi@nvidia.com>
 
-Changes since v8:
-  - Improve function naming. (Daniel)
-  - Panic in case of forgotten fences. (Alice)
-    (reason being that this cannot happen with the intended JobQueue
-    design, it would be a fatal bug anyways and we can easily fix this up)
-  - Improve spelling and grammar. (Daniel)
-  - Add Daniel's Tested-by
-  - Improve Copyright notice to SPDX. (Daniel)
+Add all of the remaining error codes from include/uapi/asm-generic/errno.h.
 
-Changes since v7:
-  - Remove the forgotten-fences-tracking from FenceContext. Merely warn
-    in this unlikely case, using an atomic integer.
-  - Be more verbose in warnings about what exactly the problem is.
+Previous updates to error.rs have been piecemeal -- adding single error
+codes as needed.  Instead, we can avoid future problems by adding all
+the remaining error code in one swoop.
 
-Changes since v6:
-  - Add Timur's error code patch (just so that the series builds. Merge
-    however you prefer). (Timur)
-  - Replace XArray with list, remove XArray patch.
-  - Detail the issue with core::mem::forget() in the commit message.
-  - Some code formatting etc.
+EDEADLOCK and EWOULDBLOCK are intentionally left out: they are just
+deprecated compatibility aliases of EDEADLK and EAGAIN, kept around for
+non-Linux/POSIX code, and have no use in new kernel code.
 
-Changes since v5:
-  - Because Rust can "forget" DriverFences, it could bypass the lifetime
-    ensuring that DriverFences don't outlive a FenceContext. Mitigate
-    this by having the FenceContext keep track of unsignaled fences.
-    (Danilo)
-  - To support the point above, add support for memory reservations to
-    XArray.
-  - To support the point above, have FenceContext::alloc_fence()
-    increment the sequence number. This is necessary for the xarray
-    index. It might become critical with fence seqno holes.. please
-    review.
-  - Remove acronyms in declarations. (Daniel)
-  - Allow for providing initial seqno in FenceContext::new(). (Daniel)
-  - Flesh out documentation about DriverFence <-> Fence. (Daniel)
-  - Flesh out documentation about weirdness in C backend. (Daniel)
-  - Add new, purely internal locking helper / guard for dma_fence.
-  - Use the kernel atomics (Gary).
-  - Curse angrily at my computer.
-
-Changes since v4:
-  - Fix an uninitialized memory bug for FenceCbRegistration with
-    ManuallyDrop.
-  - Return FenceCtx as impl PinInit
-  - Make FenceCtx return an impl PinInit<T, Error> (Danilo)
-  - Reformat some comments
-
-Changes since v3:
-  - Add a FIXME for an encountered Rust compiler bug. (Gary)
-  - Add new Rust files also to DRM drivers & common infrastructure
-    MAINTAINERS file. (Danilo)
-  - Reposition ECANCELED error code. (Miguel)
-  - Replace refcounted FenceCtx in DriverFenceData with a reference plus
-    life time. (Boris)
-  - Re-add rcu_barrier() patch, since we now can use it for dropping the
-    fence context. (Danilo)
-  - Add forgotten R-b from Alice, and Acks for MAINTAINERS from
-    Christian and Sumit.
-
-Changes since v2:
-  - Don't drop DriverFenceData as a whole, but only the members we
-    really want to drop. Gives more robustness. (Gary).
-  - Break apart large pin_init_from_closure(). (Danilo, Onur)
-  - Remove rcu_barrier() and synchronize_rcu() from FenceCtx::drop().
-    FenceCtx might drop in atomic context, where you must not perform
-    those operations. With the current way C dma_fence is designed, the
-    driver must wait for a grace period manually until it unloads.
-  - Repair the DriverFenceBorrow implementation, properly injecting a
-    life time into it. (Danilo)
-  - Fix memory layout bug for rcu_head. (Onur)
-  - Drop RCU patches, since this series doesn't need them anymore.
-
-Changes since v1:
-  - Remove unnecessary mutable references (Alice)
-  - Split up unsafe comments where possible (Danilo)
-  - Remove PhantomData + implement FenceCtx ops trait (Boris)
-  - Consistently call FenceCtx generic data `T`. FenceDataType is
-    derived from that. (Boris)
-  - Add abstractions for call_rcu() and synchronize_rcu() (Danilo)
-  - Add ECANCELED error code in Rust (Alice)
-  - Remove the rcu_barrier() from FenceCtx::drop() – because we now use
-    call_rcu(), there can be no UAF access to the FenceCtx anymore. In
-    any case, it is illegal to use either call_rcu() or
-    synchronize_rcu() in FenceCtx::drop(), because our new
-    drop_driver_fence_data() can run in atomic context and might put the
-    last fence_ctx reference.
-    So we now only have to guard against module unload, which it seems
-    either the driver or Rust driver-core / module unload infrastructure
-    must solve.
-  - Minor formatting etc. changes
-  - Add C helpers to MAINTAINERS. (Danilo)
-  - Ensure that `Fence::is_signaled()` is fully synchronized, i.e., all
-    callbacks really have run. See [1] and [2]. (Myself, Christian
-    König)
-
-Changes since the RFCs:
-  - Include support for ForeignOwnable for ARef, so that a Fence can be
-    stuffed into an XArray et al. (Code by Danilo)
-  - Implement ForeignOwnable (with new borrow type) for DriverFence, so
-    that it can be stuffed into an XArray.
-  - Include the rcu::RcuBox data type to defer dropping data with RCU
-    (Cody by Alice)
-  - Port DmaFence to RcuBox to make UAF bugs through later, new dma_fence
-    callbacks (backend_ops) impossible.
-  - Force users to pass their fence data in an RcuBox (or have it not
-    need drop()) through a Sealed trait.
-  - Document the rules for the user's DriverFence::data's drop
-    implementation very clearly (deadlock danger).
-  - rustfmt, Clippy.
-  - Various style suggestions, safety comments, etc. (Önur)
-  - Add __rust_helper prefix to helper functions. (Önur)
-
-Changes in RFC v3:
-  - Omit JobQueue patches for now
-  - Completely redesign the memory layout: Instead of a Fence
-    refcounting a DriverFence, both now live in the same allocation to
-    allow for future support the dma_fence backend_ops callbacks which
-    need to do container_of. (mostly Boris's feedback)
-  - Allow for pre-allocating fences to avoid deadlocks when submitting
-    jobs to a GPU. (Boris)
-  - Simultaneously, allow for pre-preparing fence callback objects, so
-    the driver can allocate them when it sees fit. (code largely stolen
-    and inspired by Daniel).
-  - Signal fences on drop, ensure synchronization.
-  - Force users to set an error code when signalling.
-  - Write more documentation
-  - A ton of minor other changes.
-
-
-[1] https://lore.kernel.org/dri-devel/20260608142436.265820-2-phasta@kernel.org/
-[2] https://lore.kernel.org/dri-devel/20260612104251.2264707-2-phasta@kernel.org/
-
-
-Alright, so since the last RFCs did not reveal significant design
-issues, I decided to transition this series to a v1 and hope that we can
-get it upstream.
-
-This now includes code for more common infrastructure that dma_fence
-needs, contributed by Danilo and Alice.
-
+Signed-off-by: Timur Tabi <ttabi@nvidia.com>
+Reviewed-by: Fiona Behrens <me@kloenk.dev>
+Acked-by: Danilo Krummrich <dakr@kernel.org>
+Reviewed-by: Gary Guo <gary@garyguo.net>
+Reviewed-by: Alexandre Courbot <acourbot@nvidia.com>
 ---
+ rust/kernel/error.rs | 105 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 105 insertions(+)
 
-Old cover letter for RFC:
-
-So, this is the spiritual successor of the first / second RFC [1]. v2
-also contained code for drm::JobQueue, but mostly to show how the fence
-code would be used. JobQueue is under heavy rework right now, so I don't
-want to bother your eyes with it. The docstring examples should show how
-Rust fences are supposed to be used, though.
-
-This v3 contains a huge amount of highly valuable feedback from a
-variety of people, notably Boris, but also from Alice, Gary and Danilo.
-
-There are some TODOs open (a better trait for fence backend_ops and RCU
-support), but my hope is that this effort is now finally approaching its
-end.
-
-I would greatly appreciate feedback and especially more information
-about what might be missing to make this usable, which is obviously
-where Daniel's and Boris's feedback will be valuable once more.
-
-Please regard this patch just as what it's titled: an RFC, to discuss a
-bit more and to inform a broader community about what the current state
-is and where this is heading at.
-
-Many regards,
-Philipp
-
-[1] https://lore.kernel.org/rust-for-linux/20260203081403.68733-2-phasta@kernel.org/
-
-Danilo Krummrich (1):
-  rust: types: implement ForeignOwnable for ARef<T>
-
-Philipp Stanner (3):
-  rust: sync: Add abstraction for rcu_barrier()
-  rust: Add dma_fence abstractions
-  MAINTAINERS: Add entry for Rust dma-buf
-
-Timur Tabi (1):
-  rust: error: add remaining error codes
-
- MAINTAINERS                      |    5 +
- rust/bindings/bindings_helper.h  |    1 +
- rust/helpers/dma_fence.c         |   48 ++
- rust/helpers/helpers.c           |    1 +
- rust/kernel/dma_buf/dma_fence.rs | 1002 ++++++++++++++++++++++++++++++
- rust/kernel/dma_buf/mod.rs       |   14 +
- rust/kernel/error.rs             |  105 ++++
- rust/kernel/lib.rs               |    1 +
- rust/kernel/sync/aref.rs         |   40 ++
- rust/kernel/sync/rcu.rs          |   20 +
- 10 files changed, 1237 insertions(+)
- create mode 100644 rust/helpers/dma_fence.c
- create mode 100644 rust/kernel/dma_buf/dma_fence.rs
- create mode 100644 rust/kernel/dma_buf/mod.rs
-
-
-base-commit: 44e7e7f7cffb10a93bb88e7cb59b7b8b3e2deb1c
+diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
+index a56ba6309594..f3096d7c73ac 100644
+--- a/rust/kernel/error.rs
++++ b/rust/kernel/error.rs
+@@ -30,6 +30,8 @@ macro_rules! declare_err {
+         };
+     }
+ 
++    // From include/uapi/asm-generic/errno-base.h
++
+     declare_err!(EPERM, "Operation not permitted.");
+     declare_err!(ENOENT, "No such file or directory.");
+     declare_err!(ESRCH, "No such process.");
+@@ -64,9 +66,112 @@ macro_rules! declare_err {
+     declare_err!(EPIPE, "Broken pipe.");
+     declare_err!(EDOM, "Math argument out of domain of func.");
+     declare_err!(ERANGE, "Math result not representable.");
++
++    // From include/uapi/asm-generic/errno.h
++
++    declare_err!(EDEADLK, "Resource deadlock would occur.");
++    declare_err!(ENAMETOOLONG, "File name too long.");
++    declare_err!(ENOLCK, "No record locks available.");
++    declare_err!(ENOSYS, "Invalid system call number.");
++    declare_err!(ENOTEMPTY, "Directory not empty.");
++    declare_err!(ELOOP, "Too many symbolic links encountered.");
++    declare_err!(ENOMSG, "No message of desired type.");
++    declare_err!(EIDRM, "Identifier removed.");
++    declare_err!(ECHRNG, "Channel number out of range.");
++    declare_err!(EL2NSYNC, "Level 2 not synchronized.");
++    declare_err!(EL3HLT, "Level 3 halted.");
++    declare_err!(EL3RST, "Level 3 reset.");
++    declare_err!(ELNRNG, "Link number out of range.");
++    declare_err!(EUNATCH, "Protocol driver not attached.");
++    declare_err!(ENOCSI, "No CSI structure available.");
++    declare_err!(EL2HLT, "Level 2 halted.");
++    declare_err!(EBADE, "Invalid exchange.");
++    declare_err!(EBADR, "Invalid request descriptor.");
++    declare_err!(EXFULL, "Exchange full.");
++    declare_err!(ENOANO, "No anode.");
++    declare_err!(EBADRQC, "Invalid request code.");
++    declare_err!(EBADSLT, "Invalid slot.");
++    declare_err!(EBFONT, "Bad font file format.");
++    declare_err!(ENOSTR, "Device not a stream.");
++    declare_err!(ENODATA, "No data available.");
++    declare_err!(ETIME, "Timer expired.");
++    declare_err!(ENOSR, "Out of streams resources.");
++    declare_err!(ENONET, "Machine is not on the network.");
++    declare_err!(ENOPKG, "Package not installed.");
++    declare_err!(EREMOTE, "Object is remote.");
++    declare_err!(ENOLINK, "Link has been severed.");
++    declare_err!(EADV, "Advertise error.");
++    declare_err!(ESRMNT, "Srmount error.");
++    declare_err!(ECOMM, "Communication error on send.");
++    declare_err!(EPROTO, "Protocol error.");
++    declare_err!(EMULTIHOP, "Multihop attempted.");
++    declare_err!(EDOTDOT, "RFS specific error.");
++    declare_err!(EBADMSG, "Not a data message.");
++    declare_err!(EFSBADCRC, "Bad CRC detected.");
+     declare_err!(EOVERFLOW, "Value too large for defined data type.");
++    declare_err!(ENOTUNIQ, "Name not unique on network.");
++    declare_err!(EBADFD, "File descriptor in bad state.");
++    declare_err!(EREMCHG, "Remote address changed.");
++    declare_err!(ELIBACC, "Can not access a needed shared library.");
++    declare_err!(ELIBBAD, "Accessing a corrupted shared library.");
++    declare_err!(ELIBSCN, ".lib section in a.out corrupted.");
++    declare_err!(ELIBMAX, "Attempting to link in too many shared libraries.");
++    declare_err!(ELIBEXEC, "Cannot exec a shared library directly.");
++    declare_err!(EILSEQ, "Illegal byte sequence.");
++    declare_err!(ERESTART, "Interrupted system call should be restarted.");
++    declare_err!(ESTRPIPE, "Streams pipe error.");
++    declare_err!(EUSERS, "Too many users.");
++    declare_err!(ENOTSOCK, "Socket operation on non-socket.");
++    declare_err!(EDESTADDRREQ, "Destination address required.");
+     declare_err!(EMSGSIZE, "Message too long.");
++    declare_err!(EPROTOTYPE, "Protocol wrong type for socket.");
++    declare_err!(ENOPROTOOPT, "Protocol not available.");
++    declare_err!(EPROTONOSUPPORT, "Protocol not supported.");
++    declare_err!(ESOCKTNOSUPPORT, "Socket type not supported.");
++    declare_err!(EOPNOTSUPP, "Operation not supported on transport endpoint.");
++    declare_err!(EPFNOSUPPORT, "Protocol family not supported.");
++    declare_err!(EAFNOSUPPORT, "Address family not supported by protocol.");
++    declare_err!(EADDRINUSE, "Address already in use.");
++    declare_err!(EADDRNOTAVAIL, "Cannot assign requested address.");
++    declare_err!(ENETDOWN, "Network is down.");
++    declare_err!(ENETUNREACH, "Network is unreachable.");
++    declare_err!(ENETRESET, "Network dropped connection because of reset.");
++    declare_err!(ECONNABORTED, "Software caused connection abort.");
++    declare_err!(ECONNRESET, "Connection reset by peer.");
++    declare_err!(ENOBUFS, "No buffer space available.");
++    declare_err!(EISCONN, "Transport endpoint is already connected.");
++    declare_err!(ENOTCONN, "Transport endpoint is not connected.");
++    declare_err!(ESHUTDOWN, "Cannot send after transport endpoint shutdown.");
++    declare_err!(ETOOMANYREFS, "Too many references: cannot splice.");
+     declare_err!(ETIMEDOUT, "Connection timed out.");
++    declare_err!(ECONNREFUSED, "Connection refused.");
++    declare_err!(EHOSTDOWN, "Host is down.");
++    declare_err!(EHOSTUNREACH, "No route to host.");
++    declare_err!(EALREADY, "Operation already in progress.");
++    declare_err!(EINPROGRESS, "Operation now in progress.");
++    declare_err!(ESTALE, "Stale file handle.");
++    declare_err!(EUCLEAN, "Structure needs cleaning.");
++    declare_err!(EFSCORRUPTED, "Filesystem is corrupted.");
++    declare_err!(ENOTNAM, "Not a XENIX named type file.");
++    declare_err!(ENAVAIL, "No XENIX semaphores available.");
++    declare_err!(EISNAM, "Is a named type file.");
++    declare_err!(EREMOTEIO, "Remote I/O error.");
++    declare_err!(EDQUOT, "Quota exceeded.");
++    declare_err!(ENOMEDIUM, "No medium found.");
++    declare_err!(EMEDIUMTYPE, "Wrong medium type.");
++    declare_err!(ECANCELED, "Operation Canceled.");
++    declare_err!(ENOKEY, "Required key not available.");
++    declare_err!(EKEYEXPIRED, "Key has expired.");
++    declare_err!(EKEYREVOKED, "Key has been revoked.");
++    declare_err!(EKEYREJECTED, "Key was rejected by service.");
++    declare_err!(EOWNERDEAD, "Owner died.");
++    declare_err!(ENOTRECOVERABLE, "State not recoverable.");
++    declare_err!(ERFKILL, "Operation not possible due to RF-kill.");
++    declare_err!(EHWPOISON, "Memory page has hardware error.");
++    declare_err!(EFTYPE, "Wrong file type for the intended operation.");
++
++    // From include/linux/errno.h
++
+     declare_err!(ERESTARTSYS, "Restart the system call.");
+     declare_err!(ERESTARTNOINTR, "System call was interrupted by a signal and will be restarted.");
+     declare_err!(ERESTARTNOHAND, "Restart if no handler.");
 -- 
 2.55.0
 
