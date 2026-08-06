@@ -1,1698 +1,477 @@
-Received: from LO0P265CU003.outbound.protection.outlook.com (mail-uksouthazon11022082.outbound.protection.outlook.com [52.101.96.82])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F5139BFF8;
-	Thu,  6 Aug 2026 13:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.96.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786024612; cv=fail; b=e/mhofl7GoVe28h21yk3Af7ndJhimnJOShWFZk/KNUxACVmX5/Adnr2oWT1Uu6H3o1ZHDYaI7FiKqIHsavhz/jD0kI53461n4ZaXyGZMvFleYXMTDpSLp36720KSOWPjqByqbRNIdAGPuL9bhCzKjpVdo7/xJgyOF+czyWnVrbc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786024612; c=relaxed/simple;
-	bh=uCxKn3Fcjf3VGaCPqreF66rdfSiwZk3mAnVFUz9ZpFo=;
-	h=Content-Type:Date:Message-Id:Cc:Subject:From:To:References:
-	 In-Reply-To:MIME-Version; b=JC0SDEESawVk57jre/oy8FOCpswO6hPqe8B+XR8nuWB+3rW5EvTEqgAOMdPOzPVJ4K/uoFV7bONgw2zQWXbiIw7TNgLPY+mIYiGk58jiuA2UfXGNQc3DfDFxidjn04EyMk5+xe+U4uGN1NOodZj5Rr+U20cuLcLi1MC0wgbFJMA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net; spf=pass smtp.mailfrom=garyguo.net; dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b=Q8Yc0fZh; arc=fail smtp.client-ip=52.101.96.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C7E3B6C19;
+	Thu,  6 Aug 2026 14:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786025082; cv=none; b=CIhBb+BqrSwlGca4lpqFKMqFWcy02VvAT3L4s0xA3lsTcxGmusYHXdz36+NabkFKrhkJMlEgYlPHEy06lu3pca/sETmx3fhaXuveGXY0SugUmpsUc+nbW+rEx7zLgET52ktPjTB0A/0PY7DI6Lw55505OnnT47Je9F/k5mlVDJo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786025082; c=relaxed/simple;
+	bh=nYFhLgx06bARm7n2DwZI9J/FXuLZglWh1tT9QZB3JRo=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=oQGuOLo1JcuwSaeWDtogZLlHtlJmrQF6RjUcZgnTzvZAnnGxOOFplmnF1cCoDM84ExtG7dq5Oj56UaHOxpuRIGroWniECEFIqcuyf+iHNuT6RVsxNWuGlV6zF8qOOkcoqdqwzeYcLC0vlIn4Il/4PxQDIplmDpYCBkP/w7KIxGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LneReIoM; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b="Q8Yc0fZh"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=EWu50bEcadt//PS8IvenAFs6/lmpq2iJvAgVf+X+cUOAzSWdhUjwOVcf1jbtMvEY9POA9T1CvWvM3Z0svgSEltYAEqF7PHbggW5fcQdjxBsq1J1B9FZLoHDjkxiYchcd7aEz5WKw8QE9ZM/OBFnIR3pwtdgLL5vZCFk1jUKdaQzDfJb5PEwGI92kx2inXpt9pv2QYK0ayUsbXVsRl4RR4Ll8NOFtQPYamLgdArZFaMScBPd+5q96dtdB5OTqTB34Vy3E77U86mzMUbbc4bEVm7L8NiXuNEx2i2cO/EU0bbFgzPCkky/YOhEg7FcfngHhSQixWK4QOCs766owTjyUJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bohx+bzBDh8MtqhLsM+PWRsaPT1ssPcW8GpCgA7MwhA=;
- b=A5gyoSWfftXKfrYSjjsBd9a+xfUy05eDUPOj/Xq8jvdws8qnczk45YJ0wnjSniCLvCDAqzI7Mgb6QOihmaT/WSnf7BJLnhHG4gF5oUDJ2BByAJP80Jn4HSmMVCMFZemKwwq8sA9a6RjEllTvSmNHbMoF7knlPNL+PLSHO0bZebFdiU4wqBcGCwKmaZVRlLUY25A/1Iwf/ZVUi9JnB33510qJwiugPa/c6H5WCuUFeeUKdUroC7lvrKZmXFPhNLALYTzLu9zAnA5lOMXVJ7qsSLkCpBFHHq4/6TBmxdXnV+uCAcpdXtCKAP0Aq9ARrRhZloati//2jtrokCiLanxYbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
- dkim=pass header.d=garyguo.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bohx+bzBDh8MtqhLsM+PWRsaPT1ssPcW8GpCgA7MwhA=;
- b=Q8Yc0fZhaeEE0xBe3nFgAocn8RuH4HKkrtonwE9LhtQhTKM4qvUcVtkQ5SJVIUbDuu0/p0Zfc6iPgoTSU//om/d/RZAqy+ajmJcI+AHq9OHk5pruclg6q+TYh0X2bTBEr4iM1UqYjidmR9IIoSeDxaa+WhHrEaCnDTwCJc0mlbk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=garyguo.net;
-Received: from LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:4b4::24)
- by LO2P265MB5471.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:25e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.20; Thu, 6 Aug
- 2026 13:56:45 +0000
-Received: from LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM
- ([fe80::c07d:488c:d4aa:2a4a]) by LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM
- ([fe80::c07d:488c:d4aa:2a4a%4]) with mapi id 15.21.0292.019; Thu, 6 Aug 2026
- 13:56:44 +0000
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 06 Aug 2026 14:56:43 +0100
-Message-Id: <DKHWVRYDD28C.3H5R8CKLZ3035@garyguo.net>
-Cc: <linux-kernel@vger.kernel.org>, <rust-for-linux@vger.kernel.org>,
- <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
- <linaro-mm-sig@lists.linaro.org>, <rcu@vger.kernel.org>
-Subject: Re: [PATCH v9 4/5] rust: Add dma_fence abstractions
-From: "Gary Guo" <gary@garyguo.net>
-To: "Philipp Stanner" <phasta@kernel.org>, "Miguel Ojeda"
- <ojeda@kernel.org>, "Boqun Feng" <boqun@kernel.org>, "Gary Guo"
- <gary@garyguo.net>, =?utf-8?q?Bj=C3=B6rn_Roy_Baron?=
- <bjorn3_gh@protonmail.com>, "Benno Lossin" <lossin@kernel.org>, "Andreas
- Hindborg" <a.hindborg@kernel.org>, "Alice Ryhl" <aliceryhl@google.com>,
- "Trevor Gross" <tmgross@umich.edu>, "Danilo Krummrich" <dakr@kernel.org>,
- "Daniel Almeida" <daniel.almeida@collabora.com>, "Tamir Duberstein"
- <tamird@kernel.org>, "Alexandre Courbot" <acourbot@nvidia.com>,
- =?utf-8?q?Onur_=C3=96zkan?= <work@onurozkan.dev>, "Sumit Semwal"
- <sumit.semwal@linaro.org>, =?utf-8?q?Christian_K=C3=B6nig?=
- <christian.koenig@amd.com>, "Lyude Paul" <lyude@redhat.com>, "Paul E.
- McKenney" <paulmck@kernel.org>, "Frederic Weisbecker"
- <frederic@kernel.org>, "Neeraj Upadhyay" <neeraj.upadhyay@kernel.org>,
- "Joel Fernandes" <joelagnelf@nvidia.com>, "Josh Triplett"
- <josh@joshtriplett.org>, "Uladzislau Rezki" <urezki@gmail.com>, "Steven
- Rostedt" <rostedt@goodmis.org>, "Mathieu Desnoyers"
- <mathieu.desnoyers@efficios.com>, "Lai Jiangshan" <jiangshanlai@gmail.com>,
- "Zqiang" <qiang.zhang@linux.dev>, "Greg Kroah-Hartman"
- <gregkh@linuxfoundation.org>, "Asahi Lina" <lina+kernel@asahilina.net>,
- "Burak Emir" <bqe@google.com>, "Lorenzo Stoakes" <ljs@kernel.org>, "FUJITA
- Tomonori" <fujita.tomonori@gmail.com>, "Eliot Courtney"
- <ecourtney@nvidia.com>, "Mirko Adzic" <adzicmirko97@gmail.com>, "Timur
- Tabi" <ttabi@nvidia.com>, "Daniel del Castillo"
- <delcastillodelarosadaniel@gmail.com>, "Boris Brezillon"
- <boris.brezillon@collabora.com>
-X-Mailer: aerc 0.21.0
-References: <20260805145949.938505-2-phasta@kernel.org>
- <20260805145949.938505-6-phasta@kernel.org>
-In-Reply-To: <20260805145949.938505-6-phasta@kernel.org>
-X-ClientProxiedBy: LO6P123CA0015.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:338::20) To LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:4b4::24)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LneReIoM"
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LOZP265MB8551:EE_|LO2P265MB5471:EE_
-X-MS-Office365-Filtering-Correlation-Id: d23c6222-7640-45c7-9543-08def3c28cde
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|376014|23010399003|7416014|10070799003|56012099006|5023799004|4143699003|10067099003|6133799003|10063799003|22082099003|18002099003|3023799007|921020;
-X-Microsoft-Antispam-Message-Info:
-	Li2PBIFzPwgd0TenW07OYMsdbDmTxM+Mx2IRB2zBa/5BmTTNjw/a7hDBWTXyipDH75BBWByeWBm1AQjxoOciVDOGs6gDyjW+rsiHqbCH9DADd8MPYXE2V0pCcbq+INv+wEYLTx5RnxuOLMHZ6DtJs0/yDuNSbWlD/eqH3aXKcolWrZn8CFksv2V0oywMJ69JXXZDFKOyYes8TTOBkL0lR+ss+bJUEhZG2CsCZh9at8LjFYhkbKGhVN9lw0OukcZuQMwW9L+Lr7rSWHAZoZJSY+OchE/o+etofJhMpjVVcvLzrHNJ3QDQSJYbbiPOpW1NOPBtedpVpRyUNycc2bPOW9fEggrFgqE0lGPoBhmk7Xd9sFKhKZRpmR6TrDYkSRxxZayvgr+EX7cITht2iMsMausY9Yz3kov0fb8hd/2FMbS9JCi5Pm2LsScqj5aQMZEBuMNrWco1OY1YD9dY8JWx00FNjWzxDU+uRPS0v3q2cdqVGUqiFxtVIgA5NOYHUWZkO7O8GJl+xPubpLUfguLVBiqXLkZbfaspHTMGvP5oErV38FlFvPY1gpKEsPHoRljXT73kPC5Fyb0YbNxNWO83zX1Rz37Sbki/8twgVWglQlYruZY/+TQ6HWmBJ898y5YTXJtdHJillfIZhVqP8BcrJVkema1R7dkfbs6yuCIwi0SFVsQZGFAzSNLZhSWS44DQIzwAdGPnU3X5SMvYIEUM+A==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(23010399003)(7416014)(10070799003)(56012099006)(5023799004)(4143699003)(10067099003)(6133799003)(10063799003)(22082099003)(18002099003)(3023799007)(921020);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dTdJenRqK2NBVDJtakJRZW01TVhRNkFMVVlGNEozdDZ5U1lRS1JUODU0V29Y?=
- =?utf-8?B?em8yWit5Vnc2MDIweG8vM1c5U3lKWVI0dXRnK1pJczl2NFNKbFdzZ1dvSUp1?=
- =?utf-8?B?dWdVVVkwVkk4Z2ZyZE9mUmtuOGdFeGpUU3dRZFNIUkVTRUlwSU8zaVUxSWZy?=
- =?utf-8?B?Sk9wVlVRcDhaVGhWdi9lRlE3bnA3ZWhMZk5GZnJMaElBbTdpSlpyeXk5SGNy?=
- =?utf-8?B?WXFoOWhoUkpweXlCWVpaazFKdEJaWWM1UkZpTTlCOVFEOUZXeGgzU3lGcHFS?=
- =?utf-8?B?ZFJ5aWk0UXVjd04yR2M2dGhCVDJZZk93R2FONm9WTFNIV3Rmck5wN0dZZS90?=
- =?utf-8?B?dVlCNjA1SjZhYml6dTVuZFNpUGVYa0pLbUFQNjU4WWVnb2s4REp6eFBpcDN1?=
- =?utf-8?B?aW9oMndXR0lMOW5lM1BhM1d0Q0FFQ0xnY0lIQVBDZkFjV08vU2JhU08zQzBw?=
- =?utf-8?B?SGlVb2pnQmczK3JMQnRhVVpwdkRKeVRHY0ovSVkxNHlhSW5GUnp1cUVXUlVz?=
- =?utf-8?B?NFZPT21CMXlBZmVnTEIvZ3FwUHhHWG9NMmViTUVESmRSWTVYWkdGdnRKRDFa?=
- =?utf-8?B?cUM5S2VHRmVGKzFSWWZJOUtIQnNxNUx6MFRQYjA1dURWSklUV0dKdmJwQjhp?=
- =?utf-8?B?ZGtjNDc3ZGRTSGFsdnRCZUphT2NURVNBTHB0cVdEWnI1eUo2dm5RUjF2RUJq?=
- =?utf-8?B?M3VyanJ0bGhkVWhoTVRLWXlncUdQYnRlMnQxQVhyVjU0OWdCQ2dwMitOZXFQ?=
- =?utf-8?B?UHBJOExvWFJaVWw4SHBJci9uWFJvRkRJZzQ3d24zMS9uVVJkYlczaUs0ajln?=
- =?utf-8?B?OXRpQkk5Nml2RG1TK3ZJaDBzWDV0eTBCWk4waFdjenhEcXZMNzVkUnJuT2hP?=
- =?utf-8?B?SkFZYWhZV3VydHEvQkZTTnZmeVd3WkRpUTR1SElZTXRTcURmeDNPa2tXZ3Zs?=
- =?utf-8?B?MVExN1RGZmNoWWNiMzY0MDZ5Q3hhY3pya1E0Z09HZ1c2SVBvZHdqOEUvcGpW?=
- =?utf-8?B?bUdlRE5qK3o3c2lMMk5Eb0xmRDE1R2UvRTZwbktib1krdFQwUEwvNUIzTWNG?=
- =?utf-8?B?eXR1OWhDc2lpZFlpMnZwWkpzSGQvUmxOU3RJSHFuVWsxZjVhUW9aVE95MUZh?=
- =?utf-8?B?TGZScXJYenVhNHBoZ1A0RFRxZWFYbFlXcTk2OVAzWko3ODVxYjdBNmhKSWZQ?=
- =?utf-8?B?U3ZpeXplK1FBQTJ2ZWovdWZSMFQwRU5OR1ZnODBqaUs1TTc1U05ta2pVR1VL?=
- =?utf-8?B?TmN5dlMzNy9pYVlMK0dWUXU4NUZPOFcxVEJTL0t5QTFWUnNvc2N6OTNDWmFk?=
- =?utf-8?B?bUhENktUOS9EVEdhRjY5YWdRWmN0c2NaZk10QlZGQnZMSlZvUWRucEZBMVN5?=
- =?utf-8?B?ZlNKRkZpNDJQN2d1TWFwRFJUVXpkV1BlMVBMYlppOXpMYkg3SWhpRG0xMysw?=
- =?utf-8?B?WEpYbitEaE8rQjNYdFlYNjFiWE5seWxwTDdVVjVteDNxbS9CWHU3eElZaWlV?=
- =?utf-8?B?TlJQdW5YTDFxZUpVcHVWbEtwRUM5aHd6N1ArbEVpNmdUbkU5VG5xZ0RTNW9O?=
- =?utf-8?B?TkJwN0NHblBjWjU2ZytmT3VkdGxPcHRUeFdhZHJ5b0Vqd3FRRWhkT1JTRUZP?=
- =?utf-8?B?S2k0TlZWRHQ1ZUY5MWE1YzViRXpvSzYrcVJSUHJKelpnTEUwT1h0bUxtL3Ew?=
- =?utf-8?B?WmNhVUdLZ1ZQTHY5SmM0eldOamV5aWVJdUliQXdidzJyUmpkc2d4ai9wSzNw?=
- =?utf-8?B?T3JvZVZyVWtucEFQZGNoWnFGdDlZTDI4ckUzd082bndCeTJicGJOTnBjRkwv?=
- =?utf-8?B?RlA2b05uNzA2aWRwcHIwd3hDaGZ4ZkNsYTJ5amExd0JOb0lrbFM0Z1pSd0lF?=
- =?utf-8?B?dXltWXBBdTMzcFZ3UVo4Q2hHUHZ3NGVqMi9ycStQbkFEVUEwdUJIdk56M0xx?=
- =?utf-8?B?ZUlxNUdUSEYyZEF4VXBVNUYrSldISGdmWlJETlkvOG9mZ0pPVFdsK0xhLzho?=
- =?utf-8?B?NmQ2Y0dtbk9Vc0tQNXE0MzcybmNGWmhLWEcwL3lWMzg2QTRTSzgxRXY4aWkx?=
- =?utf-8?B?S3JVT0E1VDZYR1grQUpGTGF1dGhFNGNYZXdlemVuV0d0M0gzOG5RdkFTMlkz?=
- =?utf-8?B?YW8zeGtIdGJkR0lWejZrVkEySWxYcmFRVUJFUEZ6VFRDd3NGWk55M1VlcDht?=
- =?utf-8?B?MTFXTC9xVzY1MHB1VVBzQU1rVm9HRFUzMjNUdjFCd05GY09zQk9qRTdUZW9Z?=
- =?utf-8?B?QzFuQkdCamVaUmRxeVBKdWhJWXhuOC9GdnV5VVZPenhQdWw3dDBOSmdqN2Fm?=
- =?utf-8?B?cU1DcnNUcXg5aVZiUmtQNzFKc3dmcjRLazZZSTNVdC9tamtLU1BmQT09?=
-X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: d23c6222-7640-45c7-9543-08def3c28cde
-X-MS-Exchange-CrossTenant-AuthSource: LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2026 13:56:44.7109
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BbSVxrpj0xH5jn8GUEL3g5yZAUMAajNJvHST7SuvSsWtGh1f8lZqhcKmO9DLPihf5ELaXzUFjdfqniUyfbtZWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO2P265MB5471
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1786025061;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jtguJMYJ6hwNQzhjGD4uCYRJY5p3LxKf0KoesX0k4qE=;
+	b=LneReIoMmV1i7OqWCNVH2V1+VkkgtSKsnD7/Tbg17jy8kiKIsCTgm1a4hD7CmSe8WA4pxt
+	n4Kh000V+ifMSpV/WNfkLiMBseebrqE9kbPEQGndfixEi89yLZ9rHRy0mhNXRoXQKmKzP3
+	S+s/dvKC8c/ANUEhGy79Lx6FejsyWXg=
+Date: Thu, 06 Aug 2026 14:04:17 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Zqiang" <qiang.zhang@linux.dev>
+Message-ID: <5421cedd8d7372ed4b89836ac19a975226346364@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH v3 3/6] srcu: Make call_srcu() safe to call from any
+ context
+To: "Puranjay Mohan" <puranjay@kernel.org>, "Lai Jiangshan"
+ <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, "Josh
+ Triplett" <josh@joshtriplett.org>, "=?utf-8?B?T251ciDDlnprYW4=?="
+ <work@onurozkan.dev>, "Frederic Weisbecker" <frederic@kernel.org>,
+ "Neeraj Upadhyay" <neeraj.upadhyay@kernel.org>, "Joel Fernandes"
+ <joelagnelf@nvidia.com>, "Boqun Feng" <boqun@kernel.org>, "Uladzislau
+ Rezki" <urezki@gmail.com>, "Davidlohr Bueso" <dave@stgolabs.net>, "Andrii
+ Nakryiko" <andrii@kernel.org>, "Eduard Zingerman" <eddyz87@gmail.com>,
+ "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
+ <daniel@iogearbox.net>, "Kumar Kartikeya Dwivedi" <memxor@gmail.com>
+Cc: "Puranjay Mohan" <puranjay@kernel.org>, "Steven Rostedt"
+ <rostedt@goodmis.org>, "Mathieu Desnoyers"
+ <mathieu.desnoyers@efficios.com>, "Martin KaFai Lau"
+ <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>, "Yonghong Song"
+ <yonghong.song@linux.dev>, "Jiri Olsa" <jolsa@kernel.org>, "Emil
+ Tsalapatis" <emil@etsalapatis.com>, "Matt Fleming"
+ <mfleming@cloudflare.com>, "Harry Yoo (Oracle)" <harry@kernel.org>,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org,
+ linux-rt-devel@lists.linux.dev
+In-Reply-To: <20260805122346.269445-4-puranjay@kernel.org>
+References: <20260805122346.269445-1-puranjay@kernel.org>
+ <20260805122346.269445-4-puranjay@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed Aug 5, 2026 at 3:59 PM BST, Philipp Stanner wrote:
-> C's dma_fence's are synchronisation primitives that will be needed by all
-> Rust GPU drivers.
->
-> The dma_fence framework sets a number of rules, notably:
->   - fences must only be signaled once
->   - all fences must be signaled at some point
->   - fence error codes must only be set before signaling
->   - every pointer to a fence must be backed by a reference
->
-> All those rules are being addressed by these abstractions.
->
-> To cleanly decouple fence issuers and consumers, two types are provided:
->   - DriverFence: the only fence type that can be signaled and that
->     carries driver-specific data.
->   - Fence: the fence type to be shared with other drivers and / or
->     userspace. The only type callbacks can be registered on.
->     Cannot be signaled.
->
-> Hereby, a Fence lives in the same chunk of memory as a DriverFence. Both
-> share the refcount of the underlying C dma_fence. Since this
-> implementation does not provide a custom dma_fence_backend_ops.release()
-> function, the memory is freed by the dma_fence backend once the refcount
-> drops to 0.
->
-> To create a DriverFence, the user must first allocate a
-> DriverFenceAllocation, so that the creation of the DriverFence later on
-> can always succeed. Otherwise, deadlocks could occur if fences need to
-> be created in a GPU job submission path.
->
-> Synchronization is ensured by the dma_fence backend.
->
-> All DriverFence's created through this abstraction must be signaled by
-> the creator with an error code. In case a DriverFence drops without
-> being signaled beforehand, it is signaled with -ECANCELLED as its
-> error and a warning is printed. This allows the Rust abstraction to very
-> cleanly decouple fence issuer and consumer by relying on the decoupling
-> mechanisms in the C backend, which ensures through RCU and the
-> 'signaled' fence-flag that dma_fence_backend_ops functions cannot
-> access the potentially unloaded driver code anymore.
->
-> Signalling fences on drop thus grants many advantages. Not signaling
-> fences on drop would risk deadlock and does not grant real advantages:
-> By definition only the drivers can ensure that a fence always represents
-> the hardware's state correctly.
->
-> This implementation models a DmaFenceContext object on which fences are
-> to be created, thereby ensuring correct sequence numbering according to
-> the timeline.
->
-> dma_fence supports a variety of callbacks. The mandatory callbacks
-> (get_timeline_name() and get_driver_name()) are implemented in this
-> patch. For convenience, they store those name parameters in the fence
-> context, saving the driver from implementing these two callbacks.
->
-> Support for other callbacks (like for hardware signaling) is prepared
-> for through the fact that both DriverFence and Fence live in the same
-> allocation, allowing for usage of container_of from the callback to
-> access the driver-specific data.
->
-> It is expected that other callbacks, added in the future, also mostly
-> operate on the generic data in the FenceContext. To make this safe, the
-> implementation ensures through a lifetime that a DriverFence cannot
-> outlive its FenceContext.
->
-> Synchronization for dma_fence_ops callbacks is ensured by only running th=
-e
-> Rust deconstructor delayed with call_rcu(), which prevents UAF-bugs
-> should a DriverFence drop while a Fence callback is currently operating
-> on the associated driver data. Since they can also operate on the
-> FenceContext's data, its drop implementation also performs the necessary
-> delay with rcu_barrier().
->
-> An additional issue discovered during the review process of this code is
-> that there is (currently) no mechanism in Rust to prevent someone from
-> circumventing the DriverFence's FenceContext-reference's lifetime by
-> "forgetting" the fence, e.g. with core::mem::forget(). This would enable
-> UAF bugs on the FenceContext. Throw a panic if this happens and document
-> a path towards a more robust solution.
->
-> Add abstractions for dma_fence in Rust.
->
-> Signed-off-by: Philipp Stanner <phasta@kernel.org>
-> Tested-by: Daniel Almeida <daniel.almeida@collabora.com>
-> ---
->  rust/bindings/bindings_helper.h  |    1 +
->  rust/helpers/dma_fence.c         |   48 ++
->  rust/helpers/helpers.c           |    1 +
->  rust/kernel/dma_buf/dma_fence.rs | 1002 ++++++++++++++++++++++++++++++
->  rust/kernel/dma_buf/mod.rs       |   14 +
->  rust/kernel/lib.rs               |    1 +
->  6 files changed, 1067 insertions(+)
->  create mode 100644 rust/helpers/dma_fence.c
->  create mode 100644 rust/kernel/dma_buf/dma_fence.rs
->  create mode 100644 rust/kernel/dma_buf/mod.rs
->
-> diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_hel=
-per.h
-> index 1124785e210b..54b62d952e01 100644
-> --- a/rust/bindings/bindings_helper.h
-> +++ b/rust/bindings/bindings_helper.h
-> @@ -53,6 +53,7 @@
->  #include <linux/debugfs.h>
->  #include <linux/device/faux.h>
->  #include <linux/dma-direction.h>
-> +#include <linux/dma-fence.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/dma-resv.h>
->  #include <linux/errname.h>
-> diff --git a/rust/helpers/dma_fence.c b/rust/helpers/dma_fence.c
-> new file mode 100644
-> index 000000000000..0e08411098fa
-> --- /dev/null
-> +++ b/rust/helpers/dma_fence.c
-> @@ -0,0 +1,48 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/dma-fence.h>
-> +
-> +__rust_helper void rust_helper_dma_fence_get(struct dma_fence *f)
-> +{
-> +	dma_fence_get(f);
-> +}
-> +
-> +__rust_helper void rust_helper_dma_fence_put(struct dma_fence *f)
-> +{
-> +	dma_fence_put(f);
-> +}
-> +
-> +__rust_helper bool rust_helper_dma_fence_begin_signalling(void)
-> +{
-> +	return dma_fence_begin_signalling();
-> +}
-> +
-> +__rust_helper void rust_helper_dma_fence_end_signalling(bool cookie)
-> +{
-> +	dma_fence_end_signalling(cookie);
-> +}
-> +
-> +__rust_helper bool rust_helper_dma_fence_is_signaled(struct dma_fence *f=
-)
-> +{
-> +	return dma_fence_is_signaled(f);
-> +}
-> +
-> +__rust_helper bool rust_helper_dma_fence_test_signaled_flag(struct dma_f=
-ence *f)
-> +{
-> +	return dma_fence_test_signaled_flag(f);
-> +}
-> +
-> +__rust_helper void rust_helper_dma_fence_lock_irqsave(struct dma_fence *=
-f, unsigned long *flags)
-> +{
-> +	dma_fence_lock_irqsave(f, *flags);
-> +}
-> +
-> +__rust_helper void rust_helper_dma_fence_unlock_irqrestore(struct dma_fe=
-nce *f, unsigned long *flags)
-> +{
-> +	dma_fence_unlock_irqrestore(f, *flags);
-> +}
-> +
-> +__rust_helper void rust_helper_dma_fence_set_error(struct dma_fence *f, =
-int error)
-> +{
-> +	dma_fence_set_error(f, error);
-> +}
-> diff --git a/rust/helpers/helpers.c b/rust/helpers/helpers.c
-> index 998e31052e66..4ab8aa9da7e7 100644
-> --- a/rust/helpers/helpers.c
-> +++ b/rust/helpers/helpers.c
-> @@ -58,6 +58,7 @@
->  #include "cred.c"
->  #include "device.c"
->  #include "dma.c"
-> +#include "dma_fence.c"
->  #include "dma-resv.c"
->  #include "drm.c"
->  #include "drm_gpuvm.c"
-> diff --git a/rust/kernel/dma_buf/dma_fence.rs b/rust/kernel/dma_buf/dma_f=
-ence.rs
-> new file mode 100644
-> index 000000000000..e61b4b2d8b8c
-> --- /dev/null
-> +++ b/rust/kernel/dma_buf/dma_fence.rs
-> @@ -0,0 +1,1002 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2025-2026 Red Hat Inc.
-> + * Author: Philipp Stanner <pstanner@redhat.com>
-> + */
-> +
-> +//! DriverFence support.
-> +//!
-> +//! Reference: <https://docs.kernel.org/driver-api/dma-buf.html#c.dma_fe=
-nce>
-> +//!
-> +//! header: [`include/linux/dma-fence.h`](srctree/include/linux/dma-fenc=
-e.h)
-> +
-> +use crate::{
-> +    alloc::AllocError,
-> +    bindings,
-> +    container_of,
-> +    error::to_result,
-> +    prelude::*,
-> +    types::ForeignOwnable,
-> +    types::Opaque, //
-> +};
-> +
-> +use core::{
-> +    marker::PhantomData,
-> +    mem::ManuallyDrop,
-> +    ops::Deref,
-> +    ptr,
-> +    ptr::{
-> +        drop_in_place,
-> +        NonNull, //
-> +    }, //
-> +};
-> +
-> +use kernel::{
-> +    str::CString,
-> +    sync::{
-> +        aref::{
-> +            ARef,
-> +            AlwaysRefCounted, //
-> +        },
-> +        atomic::{
-> +            Atomic,
-> +            Relaxed, //
-> +        },
-> +        rcu::rcu_barrier, //
-> +    }, //
-> +};
-> +
-> +/// VTable for dma_fence backend_ops callbacks.
-> +//
-> +// Mandatory dma_fence backend_ops are implemented implicitly through
-> +// [`FenceContext`]. Additional ones shall get implemented on this trait=
-.
-> +pub trait FenceContextOps {
-> +    /// The generic payload data for [`DriverFence`]s created on this fc=
-tx.
-> +    type FenceDataType: Send + Sync;
-> +}
-> +
-> +/// A dma-fence context. A fence context takes care of associating relat=
-ed fences
-> +/// with each other, providing each with raising sequence numbers and a =
-common
-> +/// identifier.
-> +#[pin_data(PinnedDrop)]
-> +pub struct FenceContext<T: FenceContextOps + Send + Sync> {
-> +    /// The fence context number.
-> +    nr: u64,
-> +    /// The sequence number for the next fence created.
-> +    seqno: Atomic<u64>,
-> +    // The name parameters can be accessed by the dma_fence backend_ops.=
- UAF
-> +    // errors are prevented by the `call_rcu()` in `drop_driver_fence_da=
-ta()`.
-> +    /// The name of the driver this FenceContext's fences belong to.
-> +    driver_name: CString,
-> +    /// The name of the timeline this FenceContext's fences belong to.
-> +    timeline_name: CString,
-> +    /// The number of all unsignaled fences on this context.
-> +    // Used to prevent bugs due to forgotten fences.
-> +    //
-> +    // The lifetime on `DriverFence`s should typically prevent this from
-> +    // happening.
-> +    //
-> +    // However, we cannot fully guarantee in Rust that `DriverFence`s wi=
-ll not
-> +    // be forgotten, e.g., through `core::mem::forget()`. This could cir=
-cumvent
-> +    // the lifetime which intends to enforce that all fences disappear b=
-efore
-> +    // their context.
-> +    nr_of_unsignaled_fences: Atomic<u64>,
-
-This can be `Atomic<usize>` so it doesn't need to go through the generic 64=
--bit
-atomic mechanism on 32-bit systems.
-
-> +    /// The user's data.
-> +    #[pin]
-> +    data: T,
-> +}
-> +
-> +impl<'a, T: Send + Sync + FenceContextOps> FenceContext<T> {
-> +    // This can later be extended as a vtable in case other parties need=
- support
-> +    // for the more "exotic" callbacks.
-> +    const OPS: bindings::dma_fence_ops =3D bindings::dma_fence_ops {
-> +        get_driver_name: Some(Self::get_driver_name),
-> +        get_timeline_name: Some(Self::get_timeline_name),
-> +        enable_signaling: None,
-> +        signaled: None,
-> +        wait: None,
-> +        release: None,
-> +        set_deadline: None,
-> +    };
-> +
-> +    /// Create a new `FenceContext`.
-> +    pub fn new<E>(
-> +        initial_seqno: u64,
-> +        driver_name: CString,
-> +        timeline_name: CString,
-> +        data: impl PinInit<T, E>,
-> +    ) -> impl PinInit<Self, Error>
-> +    where
-> +        Error: From<E>,
-> +    {
-> +        try_pin_init!(Self {
-> +            // SAFETY: `dma_fence_context_alloc()` merely works on a glo=
-bal
-> +            // atomic. Parameter `1` is the number of contexts we want t=
-o
-> +            // allocate.
-> +            nr: unsafe { bindings::dma_fence_context_alloc(1) },
-> +            seqno: Atomic::new(initial_seqno),
-> +            driver_name,
-> +            timeline_name,
-> +            nr_of_unsignaled_fences: Atomic::new(0),
-> +            data <- data,
-> +        })
-> +    }
-> +
-> +    fn next_seqno(&self) -> u64 {
-> +        self.seqno.fetch_add(1, Relaxed)
-> +    }
-> +
-> +    /// Allocate the memory for a [`DriverFence`] and already store `dat=
-a` inside.
-> +    ///
-> +    /// This is needed because many times, creation of a [`DriverFence`]=
- must not
-> +    /// fail, and allocating might deadlock in some situations.
-> +    ///
-> +    /// The `data` you pass here must not perform any operations that ar=
-e illegal
-> +    /// in atomic context in its [`Drop`] implementation.
-> +    pub fn new_fence_allocation(
-> +        &self,
-> +        data: T::FenceDataType,
-> +    ) -> Result<DriverFenceAllocation<'_, T>> {
-> +        let fence_data =3D DriverFenceData {
-> +            rcu_head: Default::default(),
-> +            // `inner` remains uninitialized until a `DriverFence` takes=
- over.
-> +            inner: Fence {
-> +                inner: Opaque::uninit(),
-> +            },
-> +            fctx: self,
-> +            data,
-> +        };
-> +
-> +        // In order to support the C dma_fence callbacks, it is necessar=
-y for
-> +        // a `Fence` and a `DriverFence` to live in the same allocation,
-> +        // because the C backend passes a dma_fence, from which the driv=
-er most
-> +        // likely wants to be able to access its `data` in `DriverFence`=
-.
-> +        //
-> +        // Hence, we need the manage the memory manually. It will be fre=
-ed by the
-> +        // C backend automatically once the refcount within `Fence` drop=
-s to 0.
-> +        let data =3D KBox::new(fence_data, GFP_KERNEL | __GFP_ZERO)?;
-> +
-> +        Ok(DriverFenceAllocation {
-> +            data,
-> +            ops: &Self::OPS,
-> +        })
-> +    }
-> +
-> +    extern "C" fn get_driver_name(ptr: *mut bindings::dma_fence) -> *con=
-st c_char {
-> +        // SAFETY: The C backend only invokes this callback with `ptr` p=
-ointing
-> +        // to a valid, unsignaled `bindings::dma_fence`. All fences crea=
-ted in
-> +        // this module always reside within `Fence` which always resides=
- in a
-> +        // `DriverFenceData`, thus satisfying the function's safety
-> +        // requirements.
-> +        let fctx =3D unsafe { Self::from_raw_fence(ptr) };
-> +
-> +        fctx.driver_name.as_char_ptr()
-> +    }
-> +
-> +    extern "C" fn get_timeline_name(ptr: *mut bindings::dma_fence) -> *c=
-onst c_char {
-> +        // SAFETY: The C backend only invokes this callback with `ptr` p=
-ointing
-> +        // to a valid, unsignaled `bindings::dma_fence`. All fences crea=
-ted in
-> +        // this module always reside within `Fence` which always resides=
- in a
-> +        // `DriverFenceData`, thus satisfying the function's safety
-> +        // requirements.
-> +        let fctx =3D unsafe { Self::from_raw_fence(ptr) };
-> +
-> +        fctx.timeline_name.as_char_ptr()
-> +    }
-> +
-> +    /// Create a [`FenceContext`] from an associated [`bindings::dma_fen=
-ce`].
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// `ptr` must be a valid pointer to a [`bindings::dma_fence`] which=
- resides
-> +    /// within a [`Fence`], which in turn resides in a [`DriverFenceData=
-`].
-> +    unsafe fn from_raw_fence(ptr: *mut bindings::dma_fence) -> &'a Self =
-{
-> +        let opaque_fence =3D Opaque::cast_from(ptr);
-> +
-> +        // SAFETY: Safe due to the function's overall safety requirement=
-s.
-> +        let fence_ptr =3D unsafe { container_of!(opaque_fence, Fence, in=
-ner) };
-> +
-> +        // CAST: `DriverFenceData` is repr(C) and a `Fence` is its first=
- member.
-
-`repr(C)`
-
-> +        let fence_data_ptr =3D fence_ptr as *mut DriverFenceData<'a, T>;
-
-`*const` should work here too?
-
-> +
-> +        // SAFETY: Safe because of the comments directly above.
-> +        let fence_data =3D unsafe { &*fence_data_ptr };
-> +
-> +        fence_data.fctx
-> +    }
-> +}
-> +
-> +// FenceContext's drop() ensures that the driver cannot unload while the=
-re are
-> +// still dma_fence callbacks running. This also prevents UAF problems wi=
-th
-> +// `fctx.driver_name` and `fctx.timeline_name`.
-> +//
-> +// DriverFence data gets dropped through `call_rcu()` in `DriverFence::d=
-rop`.
-> +// This `rcu_barrier()` also serves to wait for their completion.
-
-These should be comment on the drop code itself, not as comment of `PinnedD=
-rop`
-impl.
-
-This can be more detailed about why a UAF problem exists (and this should b=
-e
-commented on the panic part, as something like:
-
-    // Fence ops callbacks may be called on unsignaled fences, so we may no=
-t
-    // leak any driver fences, otherwise `fctx.driver_name` and
-    // `fctx.timeline_name` can be accessed after drop (UAF).
-    if self.nr_of_unsignaled_fences.load(Relaxed) !=3D 0 {
-   =20
-    // Fence ops callbacks use RCU to sychronize callbacks and thus we use =
-`call_rcu`
-    // to destroy `DriverFence` data. `rcu_barrier` here synchronize with d=
-river
-    // fence's destruction.
-
-> +#[pinned_drop]
-> +impl<T: FenceContextOps + Send + Sync> PinnedDrop for FenceContext<T> {
-> +    fn drop(self: Pin<&mut Self>) {
-> +        // TODO:
-> +        // It would be better if the fence context signals all forgotten=
- fences
-> +        // itself. To do so, it would keep a list of unsignaled fences. =
-That
-> +        // list members would have to be pre-allocated (see
-> +        // `FenceCallback::new_fence_allocation()`).
-> +        if self.nr_of_unsignaled_fences.load(Relaxed) !=3D 0 {
-> +            panic!("Forgotten fences in FenceContext.");
-> +        }
-> +
-> +        rcu_barrier();
-> +    }
-> +}
-> +
-> +/// Error type for fence callback registration.
-> +///
-> +/// Generic over `T` so that `AlreadySignaled` can return the callback t=
-o the
-> +/// caller, allowing it to reclaim any resources owned by the callback (=
-e.g.,
-> +/// a fence handle that needs to be signaled).
-> +#[derive(Debug)]
-> +pub enum CallbackError<T =3D ()> {
-
-What is this `=3D ()` used for?
-
-> +    /// The fence was already signaled. The callback is returned so the =
-caller
-> +    /// can extract owned resources without losing them.
-> +    AlreadySignaled(T),
-> +    /// Some other error occurred during registration.
-> +    Other(Error),
-> +}
-> +
-> +impl<T> From<CallbackError<T>> for Error {
-
-#[inline]
-
-> +    fn from(err: CallbackError<T>) -> Self {
-> +        match err {
-> +            CallbackError::AlreadySignaled(_) =3D> ENOENT,
-> +            CallbackError::Other(e) =3D> e,
-> +        }
-> +    }
-> +}
-> +
-> +impl<T> From<AllocError> for CallbackError<T> {
-
-#[inline]
-
-> +    fn from(e: AllocError) -> Self {
-> +        CallbackError::Other(Error::from(e))
-> +    }
-> +}
-> +
-> +/// Trait for callbacks that can be registered on fences.
-> +///
-> +/// When the fence signals, the callback will be invoked.
-> +///
-> +/// # Example
-> +///
-> +/// ```rust
-> +/// use kernel::dma_buf::FenceCallback;
-> +///
-> +/// struct MyCallback {
-> +///     // Your callback state here
-> +/// }
-> +///
-> +/// impl FenceCallback for MyCallback {
-> +///     fn called(&mut self) {
-> +///         pr_info!("Fence signaled!");
-> +///         // Handle fence completion
-> +///     }
-> +/// }
-> +/// ```
-> +pub trait FenceCallback: Send + 'static {
-> +    /// Called when the fence is signaled.
-> +    ///
-> +    /// This is called from the fence signaling path, which may be in in=
-terrupt
-> +    /// context or with locks held, which is why `self` is only borrowed=
-, so that
-> +    /// it cannot drop. Implementations must not sleep or perform
-> +    /// long-running operations.
-> +    ///
-> +    /// An implementation likely wants to inform itself (e.g., through a=
- work item)
-> +    /// within this callback that the associated [`FenceCallbackRegistra=
-tion`]
-> +    /// can now be dropped.
-> +    fn called(&mut self);
-
-The name feels a bit awkward to me. I think this should either look like an
-action on the callback, in which case "call" or describe an event on the fe=
-nce,
-i.e. "on_signal" or "signaled". Naming it "called" is very weird because it=
-'s
-not a event that is triggered when something is "called".
-
-> +}
-> +
-> +/// A callback registration on a fence.
-> +///
-> +/// When this object is dropped, the callback is automatically removed i=
-f it
-> +/// hasn't been called yet.
-> +#[pin_data(PinnedDrop)]
-> +pub struct FenceCallbackRegistration<T: FenceCallback + 'static> {
-> +    #[pin]
-> +    callback_foreign: Opaque<bindings::dma_fence_cb>,
-> +    callback: ManuallyDrop<T>,
-> +    fence: ARef<Fence>,
-> +}
-> +
-> +impl<T: FenceCallback> FenceCallbackRegistration<T> {
-> +    /// Create a [`PinInit`] closure for registering a callback on a fen=
-ce.
-> +    ///
-> +    /// The actual attempt at registering the callback will take place o=
-nce you
-> +    /// call an allocator's `pin_init()` function.
-> +    ///
-> +    /// On success the callback is pinned in place and will fire when th=
-e fence
-> +    /// signals. On `AlreadySignaled` the callback is returned to the ca=
-ller so
-> +    /// that owned resources can be reclaimed.
-> +    pub fn new<'a>(fence: &'a Fence, callback: T) -> impl PinInit<Self, =
-CallbackError<T>> + 'a
-> +    where
-> +        T: 'a,
-> +    {
-> +        try_pin_init!(Self {
-> +            // We need to fully initialize the fence because after
-> +            // `dma_fence_add_callback()` ran, the callback might immedi=
-ately
-> +            // get invoked.
-> +            callback: ManuallyDrop::new(callback),
-> +            fence: ARef::from(fence),
-> +            callback_foreign <- Opaque::try_ffi_init(|ptr| {
-> +                // SAFETY: `fence.inner.get()` is a valid, initialized `=
-struct
-> +                // dma_fence`. `ptr` points to the `struct dma_fence_cb`=
- field
-> +                // within the pinned allocation, so it remains valid unt=
-il
-> +                // `dma_fence_remove_callback()` in `PinnedDrop` or unti=
-l the
-> +                // callback fires.
-> +                let ret =3D unsafe {
-> +                    to_result(bindings::dma_fence_add_callback(
-> +                        fence.inner.get(),
-> +                        ptr,
-> +                        Some(Self::dma_fence_callback),
-> +                    ))
-> +                };
-> +                match ret {
-> +                    Ok(()) =3D> Ok(()),
-> +                    Err(e) =3D> {
-> +                        // SAFETY: We could not register the callback. T=
-hus,
-> +                        // C will not use it. So we can just take it bac=
-k
-> +                        // and pass it to the user again.
-> +                        let cb_back =3D unsafe { ManuallyDrop::take(call=
-back) };
-> +                        if e =3D=3D ENOENT {
-> +                            Err(CallbackError::AlreadySignaled(cb_back))
-> +                        } else {
-> +                            Err(CallbackError::Other(e))
-> +                        }
-> +                    },
-> +                }
-> +            }),
-> +        }? CallbackError<T>)
-> +    }
-> +
-> +    /// Raw dma fence callback that is called by the C code.
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// This is only called by the dma_fence subsystem with valid pointe=
-rs.
-> +    unsafe extern "C" fn dma_fence_callback(
-> +        _fence: *mut bindings::dma_fence,
-> +        callback_foreign: *mut bindings::dma_fence_cb,
-> +    ) {
-> +        let ptr =3D Opaque::cast_from(callback_foreign).cast_mut();
-> +
-> +        // SAFETY: All `cb` we can receive here have been created in suc=
-h a way
-> +        // that they are embedded into a `FenceCallbackRegistration`. Th=
-e
-> +        // backend ensures synchronisation so whoever holds the registra=
-tion
-> +        // object cannot drop it while this code is running. See
-> +        // `FenceCallbackRegistration::drop`.
-> +        unsafe {
-> +            let reg: *mut Self =3D container_of!(ptr, Self, callback_for=
-eign);
-> +
-> +            (*reg).callback.called();
-> +        }
-> +    }
-> +
-> +    /// Returns a reference to the fence this callback is registered on.
-> +    pub fn fence(self: Pin<&Self>) -> &Fence {
-> +        &self.get_ref().fence
-> +    }
-
-This can just be `fence(&self) -> &Fence`.
-
-> +}
-> +
-> +#[pinned_drop]
-> +impl<T: FenceCallback> PinnedDrop for FenceCallbackRegistration<T> {
-> +    fn drop(self: Pin<&mut Self>) {
-> +        // Always call dma_fence_remove_callback, even if `callback` has=
- already
-> +        // been taken by `dma_fence_callback`.  This is necessary for
-
-Is this still up-to-date? You're not taking callback anymore in
-`dma_fence_callback`.
-
-> +        // synchronization: `dma_fence_remove_callback` acquires `fence-=
->lock`,
-> +        // which ensures that any in-flight `dma_fence_signal` (which ca=
-lls our
-> +        // callback while holding the same lock) has completed before we=
- free
-> +        // the struct.
-> +        //
-> +        // Without this, Drop can race with a concurrent signal:
-> +        //   CPU0 (signal, lock held): take() -> signaled(fence_ref) (in=
- progress)
-> +        //   CPU1 (drop): sees is_some()=3D=3Dfalse -> skips lock -> fre=
-es struct
-> +        //   CPU0: accesses fence_ref -> use-after-free
-> +        //
-> +        // When the callback has already fired, the signal path detached=
- the
-> +        // list node via INIT_LIST_HEAD, so dma_fence_remove_callback ju=
-st sees
-> +        // an empty node and returns false =E2=80=94 the lock acquisitio=
-n is the only
-> +        // thing that matters.
-> +        //
-> +        // SAFETY: The fence pointer is valid and the cb was initialized=
- by
-> +        // dma_fence_add_callback during construction.
-> +        unsafe {
-> +            bindings::dma_fence_remove_callback(self.fence.as_raw(), sel=
-f.callback_foreign.get());
-> +        }
-> +
-> +        // SAFETY: This is literally the drop implementation, so no one =
-has
-> +        // dropped this so far; so we can do it now.
-> +        unsafe { ManuallyDrop::<T>::drop(self.project().callback) };
-> +    }
-> +}
-> +
-> +// SAFETY: FenceCallbackRegistration can be sent between threads.
-> +unsafe impl<T: FenceCallback> Send for FenceCallbackRegistration<T> {}
-> +
-> +// SAFETY: &FenceCallbackRegistration can be shared between threads if &=
-T can.
-> +unsafe impl<T: FenceCallback> Sync for FenceCallbackRegistration<T> wher=
-e T: Sync {}
-> +
-> +/// The receiving counterpart of a [`DriverFence`].
-> +///
-> +/// The Rust DMA fence implementation has a dualistic design: [`DriverFe=
-nce`]s
-> +/// are the producer-side, intended to be always owned by only one party=
-. That
-> +/// party has the monopoly on signalling the fence.
-> +///
-> +/// A [`Fence`] is the counterpart for consumers. Thus, [`Fence`]s are a=
-lways
-> +/// refcounted and can shared with an arbitrary number of parties, inclu=
-ding
-> +/// userspace. A [`Fence`] can only be used for actions such as checking=
- the
-> +/// fence's status or for registering callbacks on it.
-> +///
-> +/// Once the associated [`DriverFence`] signals, all
-> +/// [`FenceCallbackRegistration`]s registered on the [`Fence`] will be e=
-xecuted.
-> +///
-> +/// A [`Fence`] can arbitrarily outlive its [`DriverFence`] and the
-> +/// [`FenceContext`]. Signalling a [`DriverFence`] decouples it from its
-> +/// [`Fence`]s.
-> +#[repr(transparent)]
-> +pub struct Fence {
-> +    /// The actual dma_fence passed to C.
-> +    inner: Opaque<bindings::dma_fence>,
-> +}
-> +
-> +/// Guard helper for locking within this module.
-> +///
-> +/// Its only purpose for now is to avoid a number of unsafe lock-unlock =
-cycles.
-> +/// It is never used outside of this module.
-> +// TODO: This should be made more canonical, probably by basing it on a
-> +// SpinLockIrqGuard once available.
-> +struct FenceGuard {
-> +    inner: *mut bindings::dma_fence,
-> +    flags: usize,
-> +}
-> +
-> +impl Deref for FenceGuard {
-> +    type Target =3D *mut bindings::dma_fence;
-
-Why not store and return `&Fence`?
-
-> +
-> +    fn deref(&self) -> &Self::Target {
-> +        &self.inner
-> +    }
-> +}
-> +
-> +impl Drop for FenceGuard {
-> +    fn drop(&mut self) {
-> +        // SAFETY: `fence` is valid because `self` is valid. `flag_ptr` =
-is
-> +        // merely a pointer to an integer, which lives as long as this f=
-unction.
-> +        // When a `FenceGuard` exists, the lock has been taken by defini=
-tion.
-> +        unsafe { bindings::dma_fence_unlock_irqrestore(self.inner, &raw =
-mut self.flags) };
-> +    }
-> +}
-> +
-> +// SAFETY: Fences are literally designed to be shared between threads.
-> +unsafe impl Send for Fence {}
-> +// SAFETY: Fences are literally designed to be shared between threads.
-> +unsafe impl Sync for Fence {}
-> +
-> +impl Fence {
-> +    /// Check whether the fence was signaled at the moment of the functi=
-on call.
-> +    ///
-> +    /// Note that this can return `true` for a [`Fence`] whose [`DriverF=
-ence`]
-> +    /// has not yet been dropped. The reason is that the fence ops callb=
-acks can
-> +    /// cause the fence to get signaled by the C backend.
-> +    pub fn is_signaled(&self) -> bool {
-> +        // We should not use `dma_fence_is_signaled_locked()` here, beca=
-use
-> +        // according to the C backend's recommendations, that function i=
+>=20
+>=20call_srcu() has the same constraint as call_rcu(): its callback list =
+and
+> locks are only touched with interrupts disabled. srcu_gp_start_if_neede=
+d()
+> enqueues under raw_spin_lock_irqsave() and may walk the srcu_node tree,=
+ as
+> do callback invocation and grace-period work. A call_srcu() with
+> interrupts disabled can race a list operation in flight on this CPU and
+> corrupt the list or deadlock. call_rcu_tasks_trace() is call_srcu() und=
+er
+> the hood, so a sleepable BPF program freeing an object can reach this.
+>=20
+>=20Defer as call_rcu() does: stage the callback on the srcu_data's
+> ->defer_cbs, chain that srcu_data onto a per-CPU list, and raise a per-=
+CPU
+> irq_work that re-issues it straight to the enqueue helper, never back
+> through __call_srcu(). The common path is unchanged and keeps interrupt=
 s
-> +        // problematic and we should avoid calling that function with a =
-lock
-> +        // held.
-> +
-> +        // SAFETY: Inner `fence` is valid because `self` is valid.
-> +        let ret =3D unsafe { bindings::dma_fence_is_signaled(self.as_raw=
-()) };
-> +
-> +        // To be as robust as possible for the future we guarantee that =
-an API
-> +        // caller can 100% rely on the signalling being completed (i.e.,=
- all
-> +        // fence callbacks ran), so we have to take the lock.
-> +        //
-> +        // The reason is that the C dma_fence backend currently does not
-> +        // carefully synchronize the `dma_fence_is_signaled()` function =
-with the
-> +        // proper spinlock. This can lead to the function returning `tru=
-e` while
-> +        // fence callbacks are still being executed. This can be mitigat=
-ed by
-> +        // guarding the entire function with the spinlock.
-> +        //
-> +        // The fundamental reason is that the C backend currently does g=
-uard
-> +        // setting of the fence's signaled-bit with the fence's spinlock=
-, but
-> +        // reading is done locklessly.
-> +        //
-> +        // See commit c8a5d5ea3ba6a.
-> +
-
-Extra newline here.
-
-> +        let _ =3D self.lock();
-> +
-> +        ret
-> +    }
-> +
-
-#[inline] here and many more below.
-
-> +    fn lock(&self) -> FenceGuard {
-> +        let mut guard =3D FenceGuard {
-> +            inner: self.as_raw(),
-> +            flags: 0,
-> +        };
-> +
-> +        // SAFETY: `fence` is valid because `self` is valid. `flag_ptr` =
-is
-> +        // merely a pointer to an integer, whose lifetime is tied to the=
- guard
-> +        // object.
-> +        unsafe { bindings::dma_fence_lock_irqsave(guard.inner, &raw mut =
-guard.flags) };
-> +
-> +        guard
-> +    }
-> +
-> +    /// Get the fence's sequence number.
-> +    pub fn seqno(&self) -> u64 {
-> +        // SAFETY: Valid because `self` is valid.
-> +        unsafe { (*self.as_raw()).seqno }
-> +    }
-> +
-> +    fn as_raw(&self) -> *mut bindings::dma_fence {
-> +        self.inner.get()
-> +    }
-> +
-> +    /// Create a [`Fence`] from a raw C [`bindings::dma_fence`].
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// `ptr` must point to an initialized fence that is embedded into a=
- [`Fence`].
-> +    pub unsafe fn from_raw<'a>(ptr: *mut bindings::dma_fence) -> &'a Sel=
-f {
-> +        // SAFETY: Safe as per the function's overall safety requirement=
-s.
-> +        unsafe { &*ptr.cast() }
-> +    }
-> +}
-> +
-> +// SAFETY: These implement the C backends refcounting methods which are =
-proven
-> +// to work correctly.
-> +unsafe impl AlwaysRefCounted for Fence {
-> +    fn inc_ref(&self) {
-> +        // SAFETY: `self.as_raw()` is a pointer to a valid `struct dma_f=
-ence`.
-> +        unsafe { bindings::dma_fence_get(self.as_raw()) }
-> +    }
-> +
-> +    /// # Safety
-> +    ///
-> +    /// `ptr`must be a valid pointer to a [`DriverFence`].
-> +    unsafe fn dec_ref(ptr: NonNull<Self>) {
-> +        // SAFETY: `ptr` is never a NULL pointer; and when `dec_ref()` i=
-s called
-> +        // the fence is by definition still valid.
-> +        let fence =3D unsafe { (*ptr.as_ptr()).inner.get() };
-> +
-> +        // SAFETY: `fence` was created validly above. When `dec_ref()` i=
-s called,
-> +        // there is by definition still a reference alive that can be pu=
-t.
-> +        unsafe { bindings::dma_fence_put(fence) }
-> +    }
-> +}
-> +
-> +// Necessary to guarantee that `inner` always comes first and can be fre=
-ed by C.
-> +// Also useful for using casts instead of container_of().
-> +#[repr(C)]
-> +#[pin_data]
-> +struct DriverFenceData<'a, T: Send + Sync + FenceContextOps> {
-> +    #[pin]
-> +    /// The inner fence.
-> +    // Must always be the first member so that unsafe casting works; but=
- also
-> +    // necessary so that the C backend can free the allocation (coming f=
-rom our
-> +    // Rust code) with kfree_rcu().
-> +    inner: Fence,
-> +    /// Callback head for dropping this in a deferred manner through RCU=
-.
-> +    rcu_head: bindings::callback_head,
-> +    /// Reference to access the FenceContext. Useful for obtaining name =
-parameters.
-> +    fctx: &'a FenceContext<T>,
-> +    /// The API user's data. It is essential that the data only performs
-> +    /// operations legal in atomic context in its [`Drop`] implementatio=
-n.
-> +    #[pin]
-> +    data: T::FenceDataType,
-> +}
-> +
-> +/// A synchronization primitive mainly for GPU drivers.
-> +///
-> +/// The Rust DMA fence implementation has a dualistic design: [`DriverFe=
-nce`]s
-> +/// are the producer-side, intended to be always owned by only one party=
-. That
-> +/// party has the monopoly on signalling the fence.
-> +///
-> +/// A [`Fence`] is the counterpart for consumers. Thus, [`Fence`]s are a=
-lways
-> +/// refcounted and can shared with an arbitrary number of parties, inclu=
-ding
-> +/// userspace. A [`Fence`] can only be used for actions such as checking=
- the
-> +/// fence's status or for registering callbacks on it.
-> +///
-> +/// Once the associated [`DriverFence`] signals, all
-> +/// [`FenceCallbackRegistration`]s registered on a [`Fence`] will be exe=
-cuted.
-> +///
-> +/// A [`Fence`] can arbitrarily outlive its [`DriverFence`] and the
-> +/// [`FenceContext`]. Signalling a [`DriverFence`] decouples it from its
-> +/// [`Fence`]s.
-> +///
-> +/// It is crucial that a [`DriverFence`] always correctly represents the=
- state
-> +/// of the associated job on the hardware. Especially, it is strictly ne=
-cessary
-> +/// that the owner ensures that all [`DriverFence`]s eventually get sign=
-aled.
-> +/// As a last resort, a [`DriverFence`] will signal itself if it drops
-> +/// unsignaled and print a warning.
-> +///
-> +/// This design intends to implement the [`bindings::dma_fence_ops`] in =
-such a
-> +/// way that the driver-data necessary to implement the callback's funct=
-ionality
-> +/// resides in the [`FenceContext`]. Thus, a [`DriverFence`] contains a
-> +/// reference to the context, which can be accessed in the callbacks. Th=
-e
-> +/// implementation, therefore, ensures that a [`DriverFence`] cannot out=
-live its
-> +/// [`FenceContext`]. Unfortunately, this can be circumvented under cert=
-ain
-> +/// circumstances in Rust (e.g., usage of [`core::mem::forget`]).
-> +///
-> +/// In the unlikely case of such violations, error warnings are printed.
-> +///
-> +/// # Examples
-> +///
-> +/// ```
-> +/// use kernel::dma_buf::{
-> +///     DriverFence,
-> +///     FenceContext,
-> +///     FenceContextOps,
-> +///     FenceCallback,
-> +///     FenceCallbackRegistration, //
-> +/// };
-> +/// use kernel::str::CString;
-> +/// use kernel::sync::aref::ARef;
-> +/// use core::fmt::Display;
-> +///
-> +/// struct CallbackData { }
-> +///
-> +/// impl FenceCallback for CallbackData {
-> +///     fn called(&mut self) {
-> +///         pr_info!("DmaFence callback executed.\n");
-> +///     }
-> +/// }
-> +///
-> +/// #[pin_data]
-> +/// struct FenceContextData {}
-> +///
-> +/// impl FenceContextData {
-> +///     fn new() -> impl PinInit<Self> {
-> +///         pin_init!(Self {})
-> +///     }
-> +/// }
-> +///
-> +/// impl FenceContextOps for FenceContextData {
-> +///     type FenceDataType =3D FenceData;
-> +/// }
-> +///
-> +/// let fctx_data =3D FenceContextData::new();
-> +///
-> +/// let driver_name =3D CString::try_from_fmt(fmt!("dummy_driver"))?;
-> +/// let timeline_name =3D CString::try_from_fmt(fmt!("dummy_timeline"))?=
-;
-> +///
-> +/// let mut fctx =3D KBox::pin_init(
-> +///     FenceContext::new(0, driver_name, timeline_name, fctx_data), GFP=
-_KERNEL)?;
-> +///
-> +/// struct FenceData {
-> +///     data: CString,
-> +/// }
-> +///
-> +/// let data =3D CString::try_from_fmt(fmt!("dummy_data"))?;
-> +/// let fence_data =3D FenceData { data };
-> +///
-> +/// let fence_alloc =3D fctx.new_fence_allocation(fence_data)?;
-> +/// let mut fence =3D fence_alloc.new_fence();
-> +///
-> +/// let cb_data =3D CallbackData { };
-> +/// let waiting_fence =3D ARef::from(fence.as_fence());
-> +/// let cb_reg =3D FenceCallbackRegistration::new(&waiting_fence, cb_dat=
-a);
-> +/// let cb_reg =3D KBox::pin_init(cb_reg, GFP_KERNEL)?;
-> +///
-> +/// // TODO signalling guards
-> +/// fence.signal(Ok(()));
-> +/// assert_eq!(waiting_fence.is_signaled(), true);
-> +///
-> +/// Ok::<(), Error>(())
-> +/// ```
-> +pub struct DriverFence<'a, T: Send + Sync + FenceContextOps> {
-> +    /// The actual content of the fence. Lives in a [`NonNull`] so that =
-its
-> +    /// memory can be managed independently. Valid until both the [`Driv=
-erFence`]
-> +    /// and all associated [`Fence`]s have disappeared.
-> +    data: NonNull<DriverFenceData<'a, T>>,
-> +}
-> +
-> +/// A pre-prepared DMA fence, carrying the user's data and the memory it=
- and the
-> +/// fence reside in. Only useful for creating a [`DriverFence`]. Splitti=
-ng
-> +/// allocation and full initialization is necessary because fences canno=
-t be
-> +/// allocated dynamically in some circumstances (deadlock).
-> +pub struct DriverFenceAllocation<'a, T: Send + Sync + FenceContextOps> {
-> +    /// The memory for the actual content of the fence.
-> +    /// Handed over to a [`DriverFence`], or deallocated once the
-> +    /// [`DriverFenceAllocation`] drops.
-> +    data: KBox<DriverFenceData<'a, T>>,
-> +    /// Pointer for the ops for the associated [`FenceContext`]
-> +    ops: *const bindings::dma_fence_ops,
-> +}
-> +
-> +impl<'a, T: Send + Sync + FenceContextOps> DriverFenceAllocation<'a, T> =
-{
-> +    /// Create a new fence, consuming `data`.
-
-There's no `data`.
-
-> +    ///
-> +    /// This increments the sequence number in the associated [`FenceCon=
-text`].
-> +    pub fn new_fence(self) -> DriverFence<'a, T> {
-> +        // We feed the C dma_fence backend a NULL for the spinlock so th=
-at it
-> +        // uses per-fence locks automatically.
-> +        let null_ptr: *mut bindings::spinlock =3D ptr::null_mut();
-> +        let seqno =3D self.data.fctx.next_seqno();
-> +        let fence_ptr =3D self.as_raw();
-> +        // SAFETY: `fence_ptr` has been created directly above. It will =
-live
-> +        // at least as long as `Self`. The same applies to `&Self::OPS`.
-> +        unsafe {
-> +            bindings::dma_fence_init(fence_ptr, self.ops, null_ptr, self=
-.data.fctx.nr, seqno)
-> +        };
-> +
-> +        self.data.fctx.nr_of_unsignaled_fences.fetch_add(1, Relaxed);
-> +
-> +        // A `DriverFenceAllocation`'s purpose is to carry allocated mem=
-ory, so that
-> +        // `DriverFence`s can always be created without allocating. In t=
-his
-> +        // method, ownership over that memory is transferred to the new
-> +        // `DriverFence` and managed through refcounting. The C dma_fenc=
-e
-> +        // backend will ultimately free the memory once the refcount rea=
-ches 0.
-> +        let ptr =3D KBox::into_raw(self.data);
-> +        // SAFETY: `ptr` was just created validly directly above.
-> +        let ptr =3D unsafe { NonNull::new_unchecked(ptr) };
-> +
-> +        DriverFence { data: ptr }
-> +    }
-> +
-> +    fn as_raw(&self) -> *mut bindings::dma_fence {
-> +        self.data.inner.inner.get()
-> +    }
-> +}
-> +
-> +impl<'a, T: Send + Sync + FenceContextOps> DriverFence<'a, T> {
-> +    fn as_raw(&self) -> *mut bindings::dma_fence {
-> +        // SAFETY: Valid because `self` is valid.
-> +        let fence_data =3D unsafe { &*self.data.as_ptr() };
-> +
-> +        fence_data.inner.inner.get()
-> +    }
-> +
-> +    /// Create a [`DriverFence`] from a raw pointer to a [`bindings::dma=
-_fence`].
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// `ptr` must be a valid pointer to a `dma_fence` that was obtained=
- through
-> +    /// a [`DriverFence`] with matching generic data for both fence and =
-associated
-> +    /// [`FenceContext`].
-> +    unsafe fn from_raw(ptr: *mut bindings::dma_fence) -> Self {
-> +        let opaque_fence =3D Opaque::cast_from(ptr);
-> +
-> +        // SAFETY: Safe due to the function's overall safety requirement=
-s.
-> +        let fence_ptr =3D unsafe { container_of!(opaque_fence, Fence, in=
-ner) };
-> +
-> +        // DriverFenceData is repr(C) and a Fence is its first member.
-> +        let fence_data_ptr =3D fence_ptr as *mut DriverFenceData<'a, T>;
-> +
-> +        // SAFETY: `fence_data_ptr` was created validly above.
-> +        let data =3D unsafe { NonNull::new_unchecked(fence_data_ptr) };
-> +
-> +        Self { data }
-> +    }
-> +
-> +    /// Return the underlying [`Fence`].
-> +    pub fn as_fence(&self) -> &Fence {
-> +        // SAFETY: `self` is by definition still valid, and it cannot dr=
-op until
-> +        // this new reference is gone.
-> +        unsafe { Fence::from_raw(self.as_raw()) }
-> +    }
-> +
-> +    /// Signal the fence. This will invoke all registered callbacks.
-> +    pub fn signal(self, res: Result) {
-> +        let fence =3D self.as_fence().lock();
-> +
-> +        // SAFETY: `fence` is valid because `self` is valid. The lock mu=
-st be
-> +        // held, which we acquired directly above.
-> +        if !unsafe { bindings::dma_fence_test_signaled_flag(*fence.deref=
-()) } {
-
-These `*fence.deref()` are quite weird as consequence of `FenceGuard` desig=
-n.
-If `FenceGuard` just derefs to `&Fence` then this can be `fence.as_raw()`.
-
-> +            if let Err(err) =3D res {
-> +                // SAFETY: `fence` is valid because `self` is valid. The=
- fence
-> +                // must not have been signaled yet, which we check direc=
-tly above.
-> +                unsafe { bindings::dma_fence_set_error(*fence.deref(), e=
-rr.to_errno()) };
-> +            }
-> +            // SAFETY: `fence` is valid because `self` is valid. The loc=
-k must
-> +            // be held, which we acquired above.
-> +            unsafe { bindings::dma_fence_signal_locked(*fence.deref()) }=
-;
-> +        }
-> +
-> +        // SAFETY: `self.data` is valid because `self` is valid.
-> +        let fctx =3D unsafe { self.data.as_ref().fctx };
-> +        let _ =3D fctx.nr_of_unsignaled_fences.fetch_sub(1, Relaxed);
-
-Drop impl of `self` here will neededlessly take lock again before checking =
-it's
-signaled already and unlock.
-
-> +    }
-> +}
-> +
-> +// SAFETY: Fences are literally designed to be shared between threads.
-> +unsafe impl<'a, T: Send + Sync + FenceContextOps> Send for DriverFence<'=
-a, T> {}
-> +// SAFETY: Fences are literally designed to be shared between threads.
-> +unsafe impl<'a, T: Send + Sync + FenceContextOps> Sync for DriverFence<'=
-a, T> {}
-> +
-> +impl<'a, T: Send + Sync + FenceContextOps> Deref for DriverFence<'a, T> =
-{
-> +    type Target =3D T::FenceDataType;
-> +
-> +    fn deref(&self) -> &Self::Target {
-> +        // SAFETY: Thanks to refcounting, `data` is always valid as long=
- as `self` is.
-> +        let data =3D unsafe { &*self.data.as_ptr() };
-> +
-> +        &data.data
-> +    }
-> +}
-> +
-> +/// A borrow wrapper for [`DriverFence`]. Implements [`Deref`].
-> +pub struct DriverFenceBorrow<'a, T: Send + Sync + FenceContextOps> {
-> +    driver_fence: ManuallyDrop<DriverFence<'a, T>>,
-> +    _lifetime: PhantomData<&'a T>,
-> +}
-> +
-> +impl<'a, T: Send + Sync + FenceContextOps> Deref for DriverFenceBorrow<'=
-a, T> {
-> +    type Target =3D DriverFence<'a, T>;
-> +
-> +    fn deref(&self) -> &Self::Target {
-> +        self.driver_fence.deref()
-> +    }
-> +}
-> +
-> +// SAFETY: The Rust dma_fence abstractions are already designed around t=
-he inner
-> +// C `dma_fence`, which can serve safely as the identification point whe=
-n being
-> +// owned by C. Moreover, safety is ensured by not dropping `DriverFence`=
- and by
-> +// only allowing operations without side effects on the Borrowed type.
-> +unsafe impl<T: Send + Sync + FenceContextOps + 'static> ForeignOwnable f=
-or DriverFence<'_, T> {
-
-The `'static` shouldn't be needed here.
-
-> +    type Borrowed<'a>
-> +        =3D DriverFenceBorrow<'a, T>
-> +    where
-> +        Self: 'a;
-> +    type BorrowedMut<'a>
-> +        =3D DriverFenceBorrow<'a, T>
-> +    where
-> +        Self: 'a;
-> +
-> +    const FOREIGN_ALIGN: usize =3D core::mem::align_of::<bindings::dma_f=
-ence>();
-> +
-> +    fn into_foreign(self) -> *mut c_void {
-> +        let fence =3D self;
-> +
-> +        let ptr =3D fence.as_raw();
-> +
-> +        // DriverFence must not drop.
-> +        let _ =3D ManuallyDrop::new(fence);
-> +
-> +        ptr.cast()
-> +    }
-> +
-> +    unsafe fn from_foreign(ptr: *mut c_void) -> Self {
-> +        // SAFETY: Safe because the trait implementation only invokes th=
-is with
-> +        // a valid `ptr`, associated to a `DriverFence` with matching ge=
-neric data.
-> +        unsafe { Self::from_raw(ptr.cast()) }
-> +    }
-> +
-> +    unsafe fn borrow<'a>(ptr: *mut c_void) -> Self::Borrowed<'a>
-> +    where
-> +        Self: 'a,
-> +    {
-> +        // SAFETY: The trait implementation ensures that `ptr` always re=
-sides
-> +        // within a [`Fence`] within a [`DriverFenceData`].
-> +        let driver_fence =3D unsafe { Self::from_raw(ptr.cast()) };
-> +
-> +        let driver_fence =3D ManuallyDrop::new(driver_fence);
-> +
-> +        DriverFenceBorrow {
-> +            driver_fence,
-> +            _lifetime: PhantomData,
-> +        }
-> +    }
-> +
-> +    unsafe fn borrow_mut<'a>(ptr: *mut c_void) -> Self::BorrowedMut<'a>
-> +    // FIXME: The bound below and the one above in `borrow` should actua=
-lly be
-> +    // unnecessary since the compiler should be able to completely deriv=
-e all
-> +    // necessary information automatically. There is currently a compile=
-r bug
-> +    // preventing that, though:
-> +    //
-> +    // https://github.com/rust-lang/rust/issues/155430.
-> +    //
-> +    // (Help to) fix the compiler bug and remove the bounds afterwards.
-> +    where
-> +        Self: 'a,
-> +    {
-> +        // SAFETY: The trait implementation ensures that `ptr` always re=
-sides
-> +        // within a [`Fence`] within a [`DriverFenceData`].
-> +        let driver_fence =3D unsafe { Self::from_raw(ptr.cast()) };
-> +
-> +        let driver_fence =3D ManuallyDrop::new(driver_fence);
-> +
-> +        DriverFenceBorrow {
-> +            driver_fence,
-> +            _lifetime: PhantomData,
-> +        }
-> +    }
-> +}
-> +
-> +impl<'a, T: Send + Sync + FenceContextOps> Drop for DriverFence<'a, T> {
-> +    fn drop(&mut self) {
-> +        let guard =3D self.as_fence().lock();
-> +
-> +        // Use dma_fence_test_signaled_flag() instead of
-> +        // dma_fence_is_signaled_locked() because the C backend wants to=
- get rid
-> +        // of the latter.
-> +
-> +        // SAFETY: `guard` is valid until the `call_rcu()` below.
-> +        let signaled: bool =3D unsafe { bindings::dma_fence_test_signale=
-d_flag(*guard.deref()) };
-> +        if !signaled {
-> +            pr_err!("DriverFence drops unsignaled. Danger of memory corr=
-uption!\n");
-> +            // SAFETY: `guard` is valid until the `call_rcu()` below. Th=
-e fence
-> +            // must not have been signaled yet, which we check directly =
-above.
-> +            unsafe { bindings::dma_fence_set_error(*guard.deref(), ECANC=
-ELED.to_errno()) };
-> +            // SAFETY: `guard` is valid until the `call_rcu()` below. Th=
-e lock
-> +            // must be held, which we acquired above.
-> +            unsafe { bindings::dma_fence_signal_locked(*guard.deref()) }=
-;
-> +
-> +            // SAFETY: `self.data` is valid because `self` is valid.
-> +            let fctx =3D unsafe { self.data.as_ref().fctx };
-> +            let _ =3D fctx.nr_of_unsignaled_fences.fetch_sub(1, Relaxed)=
-;
-> +        }
-> +        drop(guard);
-> +
-> +        // SAFETY: Valid because `self` is valid.
-> +        let rcu_head_ptr =3D unsafe { &raw mut (*self.data.as_ptr()).rcu=
-_head };
-> +
-> +        // `DriverFenceData` but could be accessed through some dma_fenc=
-e
-> +        // callbacks right now. Access is being revoked in principle abo=
-ve by
-> +        // signalling the fence, but since the C backend does not guaran=
-tee
-> +        // perfect full synchronization, we have to wait for one grace p=
-eriod to
-> +        // ensure that all accessors of `DriverFenceData` (through the
-> +        // dma_fence_ops accessible through a `Fence`) are gone.
-> +
-> +        // SAFETY: `call_rcu()` is always safe to be called. `rcu_head_p=
-tr` was
-> +        // created validly above. The module must perform a `synchronize=
-_rcu()`
-> +        // or `rcu_barrier()` call to guard against module unload.
-> +        unsafe { bindings::call_rcu(rcu_head_ptr, Some(drop_driver_fence=
-_data::<T>)) };
-
-I thought at some point it was mentioned that we want a fast path
-
-    if !mem::needs_drop::<...>() {
-    }
-
-?
-
-> +    }
-> +}
-> +
-> +// TODO:
-> +// The entire call_rcu() mechanism in the drop above and the code below =
-would be
-> +// unnecessary if C's dma_fence_signal() could be reworked in a way that=
- after it
-> +// ran, the caller knows that no fence_ops callbacks can be running anym=
-ore.
-> +// In other words, if the dma_fence backend would use its spinlock for f=
-ull
-> +// synchronization.
-> +//
-> +// Then we could move the drop_in_place() and dma_fence_put() upwards in=
-to the
-> +// drop() implementation and call it a day.
-> +
-> +/// Finally really drop this `DriverFence<T>`
-> +///
-> +/// # Safety
-> +///
-> +/// `head` references the `rcu_head` field of an `DriverFenceData<T>`. A=
-ll
-> +/// accessors to that `DriverFenceData<T>` must be gone by now. This mus=
-t be
-> +/// ensured by signalling the associated `DriverFence<T>` and then waiti=
-ng
-> +/// for a grace period until calling this function here.
-> +unsafe extern "C" fn drop_driver_fence_data<T: Send + Sync + FenceContex=
-tOps>(
-> +    head: *mut bindings::callback_head,
-> +) {
-> +    // SAFETY: Caller provides a pointer to the `rcu_head` field of a `D=
-riverFenceData<C>`.
-> +    let fence_data =3D unsafe { container_of!(head, DriverFenceData<'_, =
-T>, rcu_head) };
-> +
-> +    // SAFETY: `fence_data` was created validly above. All the fence's d=
-ata will
-> +    // only drop below, but the raw pointer to the raw C `dma_fence` rem=
-ains
-> +    // valid because the reference count is only decremented at the end =
-of the
-> +    // function.
-> +    let fence =3D unsafe { (*fence_data).inner.inner.get() };
-> +
-> +    // SAFETY: `fence_data` was created validly above. A grace period ha=
-s passed.
-> +    // All callbacks which might have had access to the `fctx` are gone =
-now.
-> +    unsafe { drop_in_place(&raw mut (*fence_data).fctx) };
-
-fctx is just a reference, so this is a no-op.
-
-Best,
-Gary
-
-> +
-> +    // SAFETY: `fence_data` was created validly above. The user has alre=
-ady
-> +    // dropped the only conventional accessor to the user data, the `Dri=
-verFence`,
-> +    // one grace period ago. All accessors are gone now.
-> +    unsafe { drop_in_place(&raw mut (*fence_data).data) };
-> +
-> +    // The inner `Fence` explicitly does not get dropped because there m=
-ay be
-> +    // many more users / consumers, each holding their own reference.
-> +
-> +    // SAFETY: Once a `DriverFence` is initialized, the inner `fence` is
-> +    // valid and initialized. It is valid until the refcount drops
-> +    // to 0, which can earliest happen once we drop the `DriverFence`'s =
-reference
-> +    // here.
-> +    unsafe { bindings::dma_fence_put(fence) };
-> +
-> +    // The actual memory the data associated with a `DriverFence` lives =
-in
-> +    // gets freed by the C dma_fence backend once the fence's refcount r=
-eaches 0.
-> +}
-> diff --git a/rust/kernel/dma_buf/mod.rs b/rust/kernel/dma_buf/mod.rs
-> new file mode 100644
-> index 000000000000..4764a828642e
-> --- /dev/null
-> +++ b/rust/kernel/dma_buf/mod.rs
-> @@ -0,0 +1,14 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR MIT
-> +
-> +//! DMA-buf subsystem abstractions.
-> +
-> +pub mod dma_fence;
-> +
-> +pub use self::dma_fence::{
-> +    DriverFence,
-> +    Fence,
-> +    FenceCallback,
-> +    FenceCallbackRegistration,
-> +    FenceContext,
-> +    FenceContextOps, //
+> enabled across srcu_gp_start_if_needed().
+>=20
+>=20The irq_work is per-CPU rather than per-srcu_struct and statically
+> initialized, so deferral never runs check_init_srcu_struct(); it is
+> IRQ_WORK_INIT_HARD as for call_rcu(). srcu_barrier() and
+> cleanup_srcu_struct() flush it first, and rcutree_migrate_callbacks()
+> calls srcu_offline_drain() for an outgoing CPU. ->lock is held across t=
+he
+> drain so the drainers serialize.
+>=20
+>=20As in call_rcu(), the re-issue runs with interrupts disabled and can =
+be
+> re-entered by instrumentation, so a flag on the srcu_data being drained
+> drops a deferring call_srcu() seen mid-drain (unless from an NMI). Stag=
+ing
+> records only the callback, so an expedited request is remembered per
+> srcu_data in ->defer_exp and the whole batch is re-issued expedited rat=
+her
+> than silently downgraded to a normal grace period. A dropped callback c=
+an
+> also strand state its caller associated with it, not just the callback
+> itself.
+>=20
+>=20Gated by CONFIG_RCU_DEFER. Under CONFIG_PROVE_RCU, warn if the direct
+> path is reached from an NMI.
+>=20
+>=20Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  include/linux/srcutree.h | 5 ++
+>  kernel/rcu/rcu.h | 3 +
+>  kernel/rcu/srcutree.c | 171 ++++++++++++++++++++++++++++++++++++++-
+>  kernel/rcu/tree.c | 2 +
+>  4 files changed, 177 insertions(+), 4 deletions(-)
+>=20
+>=20diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index 75e54e4f963fa..09a9c8f4a6d24 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -13,6 +13,8 @@
+>=20=20
+>=20 #include <linux/rcu_node_tree.h>
+>  #include <linux/completion.h>
+> +#include <linux/irq_work_types.h>
+> +#include <linux/llist.h>
+>=20=20
+>=20 struct srcu_node;
+>  struct srcu_struct;
+> @@ -41,6 +43,9 @@ struct srcu_data {
+>  bool srcu_cblist_invoking; /* Invoking these CBs? */
+>  struct timer_list delay_work; /* Delay for CB invoking */
+>  struct work_struct work; /* Context for CB invoking. */
+> + struct llist_head defer_cbs; /* Callbacks deferred on re-entry. */
+> + struct llist_node defer_link; /* Links onto the per-CPU deferral drai=
+n list */
+> + bool defer_exp; /* A deferred callback asked to expedite. */
+>  struct rcu_head srcu_barrier_head; /* For srcu_barrier() use. */
+>  struct rcu_head srcu_ec_head; /* For srcu_expedite_current() use. */
+>  int srcu_ec_state; /* State for srcu_expedite_current(). */
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index fd075d91b80cf..84d74cd5a351c 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -587,6 +587,9 @@ static inline bool should_rcu_defer(void)
+>  return irqs_disabled() && rcu_scheduler_active !=3D RCU_SCHEDULER_INAC=
+TIVE;
+>  }
+>=20=20
+>=20+/* Drain an outgoing CPU's deferred SRCU callbacks; see rcutree_migr=
+ate_callbacks(). */
+> +void srcu_offline_drain(int cpu);
+> +
+>  enum rcutorture_type {
+>  RCU_FLAVOR,
+>  RCU_TASKS_FLAVOR,
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 304112674e8a2..35fface51d50b 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/percpu.h>
+>  #include <linux/preempt.h>
+>  #include <linux/irq_work.h>
+> +#include <linux/llist.h>
+>  #include <linux/rcupdate_wait.h>
+>  #include <linux/sched.h>
+>  #include <linux/smp.h>
+> @@ -79,6 +80,45 @@ static void process_srcu(struct work_struct *work);
+>  static void srcu_irq_work(struct irq_work *work);
+>  static void srcu_delay_timer(struct timer_list *t);
+>=20=20
+>=20+struct srcu_defer;
+> +static void srcu_defer_drain(struct irq_work *iw);
+> +static void __srcu_defer_drain(struct srcu_defer *sndp, bool guard);
+> +
+> +/*
+> + * Per-CPU call_srcu() deferral state, shared by every srcu_struct. A =
+deferred
+> + * callback is staged on its srcu_data's ->defer_cbs; that srcu_data i=
+s chained
+> + * via ->defer_link onto ->list, which the irq_work walks.
+> + */
+> +struct srcu_defer {
+> + struct llist_head list;
+> + struct irq_work iw;
+> + raw_spinlock_t lock;
+> + bool draining;
 > +};
-> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-> index 68f4d9a3425d..6221ebfe71df 100644
-> --- a/rust/kernel/lib.rs
-> +++ b/rust/kernel/lib.rs
-> @@ -67,6 +67,7 @@
->  pub mod device_id;
->  pub mod devres;
->  pub mod dma;
-> +pub mod dma_buf;
->  pub mod driver;
->  #[cfg(CONFIG_DRM =3D "y")]
->  pub mod drm;
+> +
+> +static DEFINE_PER_CPU(struct srcu_defer, srcu_defer) =3D {
+> + .lock =3D __RAW_SPIN_LOCK_UNLOCKED(srcu_defer.lock),
+> + .iw =3D IRQ_WORK_INIT_HARD(srcu_defer_drain),
+> +};
+> +
+> +/*
+> + * Flush pending deferred callbacks so a following srcu_barrier() wait=
+s for them.
+> + */
+> +static void srcu_defer_flush(void)
+> +{
+> + int cpu;
+> +
+> + if (!IS_ENABLED(CONFIG_RCU_DEFER))
+> + return;
+> +
+> + for_each_possible_cpu(cpu) {
+> + struct srcu_defer *sndp =3D &per_cpu(srcu_defer, cpu);
+> +
+> + if (!llist_empty(&sndp->list))
+> + __srcu_defer_drain(sndp, false);
+> + }
+> +}
+> +
+>  /*
+>  * Initialize SRCU per-CPU data. Note that statically allocated
+>  * srcu_struct structures might already have srcu_read_lock() and
+> @@ -107,6 +147,11 @@ static void init_srcu_struct_data(struct srcu_stru=
+ct *ssp)
+>  sdp->cpu =3D cpu;
+>  INIT_WORK(&sdp->work, srcu_invoke_callbacks);
+>  timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
+> + /*
+> + * ->defer_cbs, ->defer_link and ->defer_exp are valid when zeroed
+> + * and are not reinitialized here, lest we clobber callbacks a
+> + * reentrant call_srcu() already staged. See __call_srcu().
+> + */
+>  sdp->ssp =3D ssp;
+>  }
+>  }
+> @@ -695,7 +740,12 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+>  return; /* Just leak it! */
+>  if (WARN_ON(srcu_readers_active(ssp)))
+>  return; /* Just leak it! */
+> - /* Wait for irq_work to finish first as it may queue a new work. */
+> + /*
+> + * Drain deferred callbacks before syncing ->irq_work: re-issuing one =
+can
+> + * start a grace period and re-queue ->irq_work, which then schedules
+> + * ->work, so both must be waited out after the drain.
+> + */
+> + srcu_defer_flush();
+>  irq_work_sync(&sup->irq_work);
+>  flush_delayed_work(&sup->work);
+>  for_each_possible_cpu(cpu) {
+> @@ -1410,8 +1460,8 @@ static unsigned long srcu_gp_start_if_needed(stru=
+ct srcu_struct *ssp,
+>  * srcu_read_lock(), and srcu_read_unlock() that are all passed the sam=
+e
+>  * srcu_struct structure.
+>  */
+> -static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+> - rcu_callback_t func, bool do_norm)
+> +static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *=
+rhp,
+> + rcu_callback_t func, bool do_norm)
+>  {
+>  if (debug_rcu_head_queue(rhp)) {
+>  /* Probable double call_srcu(), so leak the callback. */
+> @@ -1423,6 +1473,111 @@ static void __call_srcu(struct srcu_struct *ssp=
+, struct rcu_head *rhp,
+>  (void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
+>  }
+>=20=20
+>=20+/*
+> + * The srcu_cblist and srcu_node tree are only accessed with interrupt=
+s disabled
+> + * (srcu_gp_start_if_needed() enqueues under raw_spin_lock_irqsave() a=
+nd may walk
+> + * the tree). Like call_rcu(), __call_srcu() defers when interrupts ar=
+e already
+> + * disabled, so a re-entrant call_srcu() -- e.g. call_rcu_tasks_trace(=
+) from a
+> + * BPF program -- cannot corrupt the list or deadlock.
+> + */
+> +static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+> + rcu_callback_t func, bool do_norm)
+> +{
+> + if (should_rcu_defer()) {
+> + struct srcu_defer *sndp =3D this_cpu_ptr(&srcu_defer);
+> + struct srcu_data *sdp;
+> +
+> + /*
+> + * Instrumentation on the enqueue path can re-enter here from
+> + * inside srcu_defer_drain(). Re-queuing would livelock the
+> + * drain, so drop the callback; an NMI cannot loop, so let it in.
+> + */
+> + if (READ_ONCE(sndp->draining) && !in_nmi()) {
+> + WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
+> + "call_srcu() re-entered during callback drain; leaking callback\n");
+> + return;
+> + }
+> + sdp =3D this_cpu_ptr(ssp->sda);
+> + rhp->func =3D func;
+> + if (!do_norm)
+> + WRITE_ONCE(sdp->defer_exp, true);
+> + if (llist_add((struct llist_node *)rhp, &sdp->defer_cbs)) {
+> + /*
+> + * Chain this srcu_data for the drain. ->ssp must be
+> + * published here: deferral skips check_init_srcu_struct(),
+> + * so on a never-initialized static srcu_struct the
+> + * statically zeroed ->sda still has a NULL ->ssp.
+> + */
+> + sdp->ssp =3D ssp;
+> + if (llist_add(&sdp->defer_link, &sndp->list))
+> + irq_work_queue(&sndp->iw);
+> + }
+> + return;
+> + }
+> +
+> + /* An NMI reaching here entered with irqs enabled, so the enqueue can=
+ race. */
+> + WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
+> +
+> + srcu_do_enqueue(ssp, rhp, func, do_norm);
+> +}
+> +
+> +/*
+> + * Re-issue deferred callbacks straight to srcu_do_enqueue() so they c=
+annot defer
+> + * again. ->lock serializes the drainers: the irq_work, srcu_defer_flu=
+sh() and
+> + * srcu_offline_drain().
+> + */
+> +static void __srcu_defer_drain(struct srcu_defer *sndp, bool guard)
+> +{
+> + struct llist_node *snode, *snext;
+> + unsigned long flags;
+> +
+> + raw_spin_lock_irqsave(&sndp->lock, flags);
+> + if (guard)
+> + WRITE_ONCE(sndp->draining, true);
+> + llist_for_each_safe(snode, snext, llist_del_all(&sndp->list)) {
+> + struct srcu_data *sdp =3D container_of(snode, struct srcu_data, defer=
+_link);
+> + struct srcu_struct *ssp =3D sdp->ssp;
+> + struct llist_node *cnode, *cnext;
+> + bool do_norm;
+> +
+> + cnode =3D llist_del_all(&sdp->defer_cbs);
+> + do_norm =3D !READ_ONCE(sdp->defer_exp);
+> + if (!do_norm)
+> + WRITE_ONCE(sdp->defer_exp, false);
+> + llist_for_each_safe(cnode, cnext, cnode) {
+> + struct rcu_head *rhp =3D (struct rcu_head *)cnode;
+> +
+> + rhp->next =3D NULL;
+> + srcu_do_enqueue(ssp, rhp, rhp->func, do_norm);
+> + }
+> + }
+> + if (guard)
+> + WRITE_ONCE(sndp->draining, false);
+> + raw_spin_unlock_irqrestore(&sndp->lock, flags);
+> +}
+> +
+> +/*
+> + * Only the irq_work drain can be re-fed by its own re-issue, so only =
+it sets
+> + * ->draining. A direct drain re-issues onto this CPU, and anything st=
+aged
+> + * during it is picked up by that CPU's own irq_work.
+> + */
+> +static void srcu_defer_drain(struct irq_work *iw)
+> +{
+> + __srcu_defer_drain(container_of(iw, struct srcu_defer, iw), true);
+> +}
+> +
+> +/*
+> + * Drain @cpu's deferred call_srcu() callbacks from rcutree_migrate_ca=
+llbacks()
+> + * once @cpu is dead. One pass covers every srcu_struct, and the re-is=
+sue lands
+> + * on the current CPU.
+> + */
+> +void srcu_offline_drain(int cpu)
+> +{
+> + if (!IS_ENABLED(CONFIG_RCU_DEFER))
+> + return;
+> + __srcu_defer_drain(&per_cpu(srcu_defer, cpu), false);
+> +}
+> +
+>  /**
+>  * call_srcu() - Queue a callback for invocation after an SRCU grace pe=
+riod
+>  * @ssp: srcu_struct in queue the callback
+> @@ -1677,9 +1832,17 @@ void srcu_barrier(struct srcu_struct *ssp)
+>  {
+>  int cpu;
+>  int idx;
+> - unsigned long s =3D rcu_seq_snap(&ssp->srcu_sup->srcu_barrier_seq);
+> + unsigned long s;
+>=20=20
+>=20 check_init_srcu_struct(ssp);
+> +
+> + /*
+> + * Register any deferred callbacks before snapshotting the sequence. T=
+he
+> + * shared irq_work may also drain other srcu_structs', which is harmle=
+ss.
+> + */
+> + srcu_defer_flush();
+
+If there are two ssp1 and ssp2 concurrent call srcu_barrier(),
+and assuming there are only two CPUs, CPU0->sndp0 and CPU1->sndp1.
 
 
+srcu_barrier(&ssp1)
+->srcu_defer_flush()
+  ->llist_empty(&sndp0->list) is not empty
+  ->__srcu_defer_drain(sndp0)
+    ->raw_spinlock()
+    ->llist_for_each_safe(llist_del_all(&sndp0->list))=20=20=20=20=20
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20
+=20                                                                      =
+srcu_barrier(&ssp2)
+                                                                       ->=
+srcu_defer_flush()
+                                                                         =
+ ->llist_empty(&sndp0->list) is empty
+                                                                        .=
+..
+                                                                       ->=
+srcu_barrier_one_cpu()
+                                                                         =
+ ->sdp0 =3D per_cpu_ptr(ssp2->sda, 0)
+                                                                         =
+ ->rcu_segcblist_entrain(&sdp0->srcu_cblist, ...)=20
+=20                                                                      =
+     //the sdp0->srcu_cblist is empty, return false.
+                                                                        r=
+eturn;
+
+     ->srcu_do_enqueue(ssp2, rhp, rhp->func, do_norm);
+       // the srcu_barrier(&ssp2) has already return,
+       // miss waiting to current queue ssp2's callback
+       // to complete.
+=20=20=20
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20
+
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20
+Thanks
+Zqiang
+
+
+
+>=20+
+> + s =3D rcu_seq_snap(&ssp->srcu_sup->srcu_barrier_seq);
+>  mutex_lock(&ssp->srcu_sup->srcu_barrier_mutex);
+>  if (rcu_seq_done(&ssp->srcu_sup->srcu_barrier_seq, s)) {
+>  smp_mb(); /* Force ordering following return. */
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 6a83408974c2b..227790a87b02f 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4646,6 +4646,8 @@ void rcutree_migrate_callbacks(int cpu)
+>  * returns; the re-issue lands on this CPU.
+>  */
+>  __rcu_defer_drain(rdp, false);
+> + /* Likewise for the outgoing CPU's deferred call_srcu() callbacks. */
+> + srcu_offline_drain(cpu);
+>=20=20
+>=20 if (rcu_rdp_is_offloaded(rdp))
+>  return;
+> --=20
+>=202.53.0-Meta
+>
