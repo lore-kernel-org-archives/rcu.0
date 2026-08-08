@@ -1,345 +1,265 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7C331E826;
-	Sat,  8 Aug 2026 10:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D7032E13B;
+	Sat,  8 Aug 2026 17:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786183795; cv=none; b=JprMSzTaJHrxFJQeCyFHDzTsoL/FOh65Wtw36XtY8lrgF4MccCPw+bWOuq5qFGfTllV7iq7yq/h8/VseFJyHGamFLI9mPOOt7/z0z8L1GDhPGfcLrLa7PwbrbQx666qGi0SvZ3H1nyLeTX//+ealpUIQStfcx7aCkZ8D9r505TM=
+	t=1786211916; cv=none; b=BjmF5gCPVMDVpUd2WfCRzcAxjg7FSyZPQriqcCrLeI9cRyNoteJvgoPht2rv+tyQhR4jhUfgY5YSfXzejCaFyorc7pfAWRvyKWjtWj3+77fZ6b6n1Hnxdg43NCWVDLKcHLwFMrxsFND1hvSXViTyDg/CIzL0coQP6QG5OFacxxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786183795; c=relaxed/simple;
-	bh=KM5nfN4S1BzmWrGqwX3h6Cgj0p4HYxuiXxjyTnpkhLg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fkzlKhtcF71+1srzGKZCjnh1UcVst5DLi8PD+pp1TKUKe4GGhpEco1cEUcj2HsIpo09immk6QfWn1Wjk3gfoHnbgBKW/np6B1aRu/CtILLphSp8UQcUGxgpNsdStd3nEII/bMfw6mS9YjkU+vFJt1Wp9HKrDsIR1ioorigjfRAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=N7IsKVwm; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+	s=arc-20240116; t=1786211916; c=relaxed/simple;
+	bh=lBAvlktH3ryQ/dQTN0CKmUscpUCLUKoLOsBTslASPqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SmEiE1SNijohVDeqHnnwJZPhQXTkQSVYrnZ9Qyqpe3VVJAUYwcnTorFhs16iZEhe7pur/9jSAdF/tWNh3MCV17qwqYO8Jm/QncCg1vY8wlHennhHAVgTeskEItzw2ueqSWSt2Zdb9bFkaoa8ZT9ZcgMcpt4h0zme/eJN2phGBbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WBSYxX4F; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="N7IsKVwm"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=P2TThDTqoHNj/Yj9MrQAS1M2X8AYS8v0TNHBZrZ6QNg=; b=N7IsKVwmHcTaQNZt/6nrQSyvX5
-	18FVyWiZ+KezySVZgfcKLu/1N+Mbu2nJFBGnnIEi/Bo/EfZ6jlk/tM9J5O/EAdqaDhoSWK3sQkXRy
-	8Bnxc8VfyWdX4uXJJzo5iL8cZ91tWT3AOyCBVAJO99IIF1OzgGsjW1/wKh8D0drebleOV2z5ANGpg
-	QHkNI49stSOgqRQfYI1dHzh0Bchx2ztzoq2R71Y9/sHJvu40hBg6uzz8GK+zgXQopTjsYvoHh0Zv4
-	zXxNAQ6bdvItfySFL6owceKJz7FF02ggISyLy5nmQ4yEhqe4Ok/HR6tYnc5XEBEbcZSmt1zRPX1F1
-	2/VLjUbQ==;
-Received: from [54.239.6.187] (helo=u09cd745991455d.ant.amazon.com)
-	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsdzq-00000006Dmr-0Yyl;
-	Sat, 08 Aug 2026 10:09:42 +0000
-Message-ID: <ad7269a90e5215f43a024d2a332b92fdb521a0e9.camel@infradead.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WBSYxX4F"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6B9B1F000E9;
+	Sat,  8 Aug 2026 17:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786211914;
+	bh=VPo1MDHiQ1uSSwehVN71+vKqLv3kXGLDI5qliHB5zCs=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=WBSYxX4Fkyv5E1wvkuydvAzTYKrFSMCwfkDKVB8R0XkFUc7RQCJ14kZxoZm3sf8Oa
+	 +yzlb07Yedr8BNfxlus2yxg8WUT/mktrzYBl1a27Bc+s5pkD1JCRJUtwtNqPfGhXtW
+	 XEqNnhsV2yW5emdwhacMDrFQvJKMFXCD8vxf0gJ9MLFSdKVXt5myY85t3ekth6rShX
+	 /qVEaCOYQW31ZbVMLPDz10tPYqf+DXy3Z+bpdkbqGTAxgXM67HTRawIsCEOuzeGbXy
+	 MoSZofIQTkDoJcm7B/Fsy8tAQnV0eVekLxT79EcFjdpOaWRQ1Cl0tjzOaxp28F5k3q
+	 Q0+r67FrlAdnw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 6F683CE1AD0; Sat,  8 Aug 2026 10:58:34 -0700 (PDT)
+Date: Sat, 8 Aug 2026 10:58:34 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Sean Christopherson <seanjc@google.com>, Boqun Feng <boqun@kernel.org>,
+	kvm@vger.kernel.org, rcu@vger.kernel.org
 Subject: Re: [PATCH v3 3/7] KVM: pfncache: Use RCU for readers instead of a
  rwlock
-From: David Woodhouse <dwmw2@infradead.org>
-To: paulmck@kernel.org
-Cc: Sean Christopherson <seanjc@google.com>, Boqun Feng <boqun@kernel.org>, 
-	kvm@vger.kernel.org, rcu@vger.kernel.org
-Date: Sat, 08 Aug 2026 11:09:41 +0100
-In-Reply-To: <4a8c82b27972f9dda156aede0fb352d58fa66db7.camel@infradead.org>
-References: <20260805195528.3853473-1-dwmw@amazon.co.uk>
-		 <20260805195528.3853473-4-dwmw@amazon.co.uk>
-		 <20260805203608.D3CA61F000E9@smtp.kernel.org>
-	 <anS8C4Cxqy6ehCo3@google.com>
-		 <bbb2ad42d2ee3b2c20cfc31c3d58a9fecebb77e4.camel@amazon.co.uk>
-		 <7dbe2929b5e7be6a2b9de860649598403d52f9a9.camel@infradead.org>
-		 <31e9a043-7d4b-40f3-8fdb-62701b730c5d@paulmck-laptop>
-		 <9E3BF4F1-EB01-48DC-9DC3-6780EDE06CC2@infradead.org>
-		 <3da4c9d6-39ae-4cf4-8d79-9661968f7f7c@paulmck-laptop>
-	 <4a8c82b27972f9dda156aede0fb352d58fa66db7.camel@infradead.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-A/tNxptQtXqBHJf4460f"
-User-Agent: Evolution 3.60.3-0ubuntu1~ppa9~24.04 
+Message-ID: <0d483855-4d2f-4502-858c-c88077aa0b94@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260805195528.3853473-4-dwmw@amazon.co.uk>
+ <20260805203608.D3CA61F000E9@smtp.kernel.org>
+ <anS8C4Cxqy6ehCo3@google.com>
+ <bbb2ad42d2ee3b2c20cfc31c3d58a9fecebb77e4.camel@amazon.co.uk>
+ <7dbe2929b5e7be6a2b9de860649598403d52f9a9.camel@infradead.org>
+ <31e9a043-7d4b-40f3-8fdb-62701b730c5d@paulmck-laptop>
+ <9E3BF4F1-EB01-48DC-9DC3-6780EDE06CC2@infradead.org>
+ <3da4c9d6-39ae-4cf4-8d79-9661968f7f7c@paulmck-laptop>
+ <4a8c82b27972f9dda156aede0fb352d58fa66db7.camel@infradead.org>
+ <ad7269a90e5215f43a024d2a332b92fdb521a0e9.camel@infradead.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ad7269a90e5215f43a024d2a332b92fdb521a0e9.camel@infradead.org>
+
+On Sat, Aug 08, 2026 at 11:09:41AM +0100, David Woodhouse wrote:
+> On Sat, 2026-08-08 at 08:09 +0100, David Woodhouse wrote:
+> > 
+> > As I was reading through, I was landing on "combine #4 and #1": use
+> > GFP_NOWAIT unconditionally, but on failure trigger a workqueue to
+> > allocate that memory in a clean environment.
+
+By the way, good point on all the SRCU instances sharing a common
+set of workqueues.  More ways to deadlock!  But I don't see having
+per-srcu_struct sets of dedicated kthreads.  ;-)
+
+> In fact, why even do that as a fallback? This allocation is *literally*
+> one size fits all, isn't it? The size depends on rcu_num_nodes which is
+> a boot-time constant.
+> 
+> Just allocate it in *advance* from a safe context, and have
+> init_srcu_struct_nodes() consume the preallocated one. And if a second
+> init_srcu_struct_nodes() runs before it can be replenished, *then* fall
+> back to a direct GFP_NOWAIT allocation.
+> 
+> We'd probably want to take a look at the early boot path, but
+> GFP_KERNEL is effectively GFP_NOWAIT at that point anyway —
+> gfp_allowed_mask strips __GFP_RECLAIM until well after srcu_init() has
+> run.
+> 
+> Something like this, perhaps...
+
+This does look like a reasonable approach, though the thought of having
+something like this surrounding many memory allocations throughout the
+kernel is not a happy one.
+
+Nevertheless, given the current state, it is not at all bad.
+
+A few questions and comments below...
+
+							Thanx, Paul
+
+> From: David Woodhouse <dwmw@amazon.co.uk>
+> Date: Sat, 8 Aug 2026 11:01:52 +0100
+> Subject: [PATCH] srcu: Keep a spare node array so srcu_gp_end() need not allocate
+> 
+> 
+> The one-time transition of an srcu_struct from SRCU_SIZE_SMALL to
+> SRCU_SIZE_BIG allocates the srcu_node combining tree with GFP_KERNEL
+> from srcu_gp_end(). That runs on the same workqueue which processes
+> grace periods for every srcu_struct in the system — including grace
+> periods awaited from OOM/reclaim contexts such as the OOM reaper
+> calling synchronize_srcu() via an mmu_notifier. If the allocation
+> blocks in direct reclaim, it can be waiting on the very OOM reaper
+> whose grace period is queued behind it: a deadlock.
+> 
+> The allocation is literally one size fits all: it depends only on
+> rcu_num_nodes, which is fixed once rcu_init_geometry() has run. So
+> keep a single preallocated spare array, primed in srcu_init() when
+> lazy (contention-triggered) sizing is in effect, and have
+> init_srcu_struct_nodes() consume it with xchg(). The consumer kicks a
+> replenish worker on system_wq (a clean context where GFP_KERNEL is
+> safe); if a second transition races ahead of the replenish, the
+> GFP_NOWAIT fallback keeps today's benign fail-and-retry behaviour,
+> now with no possibility of blocking the grace-period workqueue in
+> reclaim.
+> 
+> The init-time paths (init_srcu_struct_fields() and boot) also flow
+> through srcu_alloc_nodes() and may consume the spare; that is
+> harmless, as the replenish worker refills it.
+
+True, but shouldn't we take as much pressure off of the spare as we can
+so that it will be there for us when we really need it.
+
+> Not-yet-tested-by: David Woodhouse <dwmw@amazon.co.uk>
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> Assisted-by: Claude:claude-mythos-5
+> ---
+>  kernel/rcu/srcutree.c | 64 +++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 61 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 7c2f7cc131f7..914a0574dce2 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -123,6 +123,51 @@ static inline bool srcu_invl_snp_seq(unsigned long s)
+>  	return s == SRCU_SNP_INIT_SEQ;
+>  }
+>  
+> +/*
+> + * A standing spare srcu_node array. The size of the allocation depends
+> + * only on rcu_num_nodes, which is fixed once rcu_init_geometry() has run,
+> + * so one preallocated array fits every srcu_struct in the system.
+> + *
+> + * This exists because srcu_gp_end() may need to allocate the array when
+> + * a size transition is triggered by contention, and srcu_gp_end() runs
+> + * on the same workqueue for every srcu_struct — including grace periods
+> + * awaited from OOM/reclaim contexts (e.g. the OOM reaper via an
+> + * mmu_notifier). Blocking there in GFP_KERNEL reclaim can deadlock: the
+> + * reclaim may be waiting on the very OOM reaper whose grace period is
+> + * queued behind this allocation. Consuming a preallocated array instead
+> + * keeps the grace-period path allocation-free; the spare is replenished
+> + * from a clean context on system_wq, and a direct GFP_NOWAIT attempt
+> + * remains as the fallback if a second transition wins the race for the
+> + * spare before it can be replenished.
+> + */
+> +static struct srcu_node *srcu_spare_nodes;
+> +
+> +static void srcu_spare_replenish_wq(struct work_struct *work)
+> +{
+> +	struct srcu_node *spare;
+> +
+> +	spare = kzalloc_objs(*spare, rcu_num_nodes, GFP_KERNEL);
+> +	if (!spare)
+> +		return;
+> +	if (cmpxchg(&srcu_spare_nodes, NULL, spare))
+
+Mightn't !try_cmpxchg() be a better fit here?  You are using the returned
+pointer as a boolean anyway.  (One could also argue for xchg(), but why
+unnecessarily write to that poor cache line?)
+
+Of course, we get here only if two different SRCU workqueue handlers
+both see a NULL srcu_spare_nodes, and one of the is delayed so that its
+schedule_work() call follows the other's completion of its workqueue
+handler.  So low probability, right?  (Otherwise, I would suggest a
+check of srcu_spare_nodes before doign the initial kzalloc_objs().)
+
+> +		kfree(spare);	/* Someone else refilled it first. */
+> +}
+> +static DECLARE_WORK(srcu_spare_replenish_work, srcu_spare_replenish_wq);
+> +
+> +static struct srcu_node *srcu_alloc_nodes(gfp_t gfp_flags)
+> +{
+> +	struct srcu_node *node;
+> +
+
+Why not do a "GFP_NOWAIT | __GFP_NOWARN" attempt before raiding
+srcu_spare_nodes?  Wouldn't that increase the probability that there
+would be an srcu_node array available when someone really needed it?
+
+Yes, I do see that schedule_work(), but that can involve significant
+delays if the system is under any sort of pressure, right?
+
+> +	node = xchg(&srcu_spare_nodes, NULL);
+> +	if (node) {
+> +		schedule_work(&srcu_spare_replenish_work);
+> +		return node;
+> +	}
+> +
+> +	/* Spare already taken and not yet replenished. */
+> +	return kzalloc_objs(*node, rcu_num_nodes, gfp_flags);
+
+And the across-SRCU shared-workqueue deadlock that you pointed out is
+avoided because the only way that gfp_flags is set to GFP_KERNEL is when
+the caller is supplying its own task, correct?
+
+> +}
+> +
+>  /*
+>   * Allocated and initialize SRCU combining tree.  Returns @true if
+>   * allocation succeeded and @false otherwise.
+> @@ -139,8 +184,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+>  
+>  	/* Initialize geometry if it has not already been initialized. */
+>  	rcu_init_geometry();
+> -	ssp->srcu_sup->node = kzalloc_objs(*ssp->srcu_sup->node, rcu_num_nodes,
+> -					   gfp_flags);
+> +	ssp->srcu_sup->node = srcu_alloc_nodes(gfp_flags);
+>  	if (!ssp->srcu_sup->node)
+>  		return false;
+>  
+> @@ -1004,7 +1048,7 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+>  	/* Transition to big if needed. */
+>  	if (ss_state != SRCU_SIZE_SMALL && ss_state != SRCU_SIZE_BIG) {
+>  		if (ss_state == SRCU_SIZE_ALLOC)
+> -			init_srcu_struct_nodes(ssp, GFP_KERNEL);
+> +			init_srcu_struct_nodes(ssp, GFP_NOWAIT | __GFP_NOWARN);
+>  		else
+>  			smp_store_release(&sup->srcu_size_state, ss_state + 1);
+>  	}
+> @@ -2111,6 +2155,20 @@ void __init srcu_init(void)
+>  		}
+>  	}
+>  
+> +	/*
+> +	 * Prime the spare node array if lazy (contention-triggered) size
+> +	 * transitions are possible, so that srcu_gp_end() never needs to
+> +	 * allocate. Early-boot GFP_KERNEL is implicitly non-blocking
+> +	 * (gfp_allowed_mask strips __GFP_RECLAIM until much later), and
+> +	 * failure here is harmless: the GFP_NOWAIT fallback and replenish
+> +	 * worker remain.
+> +	 */
+> +	if (SRCU_SIZING_IS_CONTEND() || SRCU_SIZING_IS_TORTURE()) {
+> +		rcu_init_geometry();
+
+And this is early boot, which means that there is only one CPU with
+interrupts off, thus rcu_init_geometry() is idempotent, so OK.
+
+> +		srcu_spare_nodes = kzalloc_objs(*srcu_spare_nodes,
+> +						rcu_num_nodes, GFP_KERNEL);
+> +	}
+> +
+>  	/*
+>  	 * Once that is set, call_srcu() can follow the normal path and
+>  	 * queue delayed work. This must follow RCU workqueues creation
+> -- 
+> 2.43.0
+> 
 
 
---=-A/tNxptQtXqBHJf4460f
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, 2026-08-08 at 08:09 +0100, David Woodhouse wrote:
->=20
-> As I was reading through, I was landing on "combine #4 and #1": use
-> GFP_NOWAIT unconditionally, but on failure trigger a workqueue to
-> allocate that memory in a clean environment.
-
-In fact, why even do that as a fallback? This allocation is *literally*
-one size fits all, isn't it? The size depends on rcu_num_nodes which is
-a boot-time constant.
-
-Just allocate it in *advance* from a safe context, and have
-init_srcu_struct_nodes() consume the preallocated one. And if a second
-init_srcu_struct_nodes() runs before it can be replenished, *then* fall
-back to a direct GFP_NOWAIT allocation.
-
-We'd probably want to take a look at the early boot path, but
-GFP_KERNEL is effectively GFP_NOWAIT at that point anyway =E2=80=94
-gfp_allowed_mask strips __GFP_RECLAIM until well after srcu_init() has
-run.
-
-Something like this, perhaps...
-
-From: David Woodhouse <dwmw@amazon.co.uk>
-Date: Sat, 8 Aug 2026 11:01:52 +0100
-Subject: [PATCH] srcu: Keep a spare node array so srcu_gp_end() need not al=
-locate
-
-
-The one-time transition of an srcu_struct from SRCU_SIZE_SMALL to
-SRCU_SIZE_BIG allocates the srcu_node combining tree with GFP_KERNEL
-from srcu_gp_end(). That runs on the same workqueue which processes
-grace periods for every srcu_struct in the system =E2=80=94 including grace
-periods awaited from OOM/reclaim contexts such as the OOM reaper
-calling synchronize_srcu() via an mmu_notifier. If the allocation
-blocks in direct reclaim, it can be waiting on the very OOM reaper
-whose grace period is queued behind it: a deadlock.
-
-The allocation is literally one size fits all: it depends only on
-rcu_num_nodes, which is fixed once rcu_init_geometry() has run. So
-keep a single preallocated spare array, primed in srcu_init() when
-lazy (contention-triggered) sizing is in effect, and have
-init_srcu_struct_nodes() consume it with xchg(). The consumer kicks a
-replenish worker on system_wq (a clean context where GFP_KERNEL is
-safe); if a second transition races ahead of the replenish, the
-GFP_NOWAIT fallback keeps today's benign fail-and-retry behaviour,
-now with no possibility of blocking the grace-period workqueue in
-reclaim.
-
-The init-time paths (init_srcu_struct_fields() and boot) also flow
-through srcu_alloc_nodes() and may consume the spare; that is
-harmless, as the replenish worker refills it.
-
-Not-yet-tested-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Assisted-by: Claude:claude-mythos-5
----
- kernel/rcu/srcutree.c | 64 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 61 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 7c2f7cc131f7..914a0574dce2 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -123,6 +123,51 @@ static inline bool srcu_invl_snp_seq(unsigned long s)
- 	return s =3D=3D SRCU_SNP_INIT_SEQ;
- }
-=20
-+/*
-+ * A standing spare srcu_node array. The size of the allocation depends
-+ * only on rcu_num_nodes, which is fixed once rcu_init_geometry() has run,
-+ * so one preallocated array fits every srcu_struct in the system.
-+ *
-+ * This exists because srcu_gp_end() may need to allocate the array when
-+ * a size transition is triggered by contention, and srcu_gp_end() runs
-+ * on the same workqueue for every srcu_struct =E2=80=94 including grace p=
-eriods
-+ * awaited from OOM/reclaim contexts (e.g. the OOM reaper via an
-+ * mmu_notifier). Blocking there in GFP_KERNEL reclaim can deadlock: the
-+ * reclaim may be waiting on the very OOM reaper whose grace period is
-+ * queued behind this allocation. Consuming a preallocated array instead
-+ * keeps the grace-period path allocation-free; the spare is replenished
-+ * from a clean context on system_wq, and a direct GFP_NOWAIT attempt
-+ * remains as the fallback if a second transition wins the race for the
-+ * spare before it can be replenished.
-+ */
-+static struct srcu_node *srcu_spare_nodes;
-+
-+static void srcu_spare_replenish_wq(struct work_struct *work)
-+{
-+	struct srcu_node *spare;
-+
-+	spare =3D kzalloc_objs(*spare, rcu_num_nodes, GFP_KERNEL);
-+	if (!spare)
-+		return;
-+	if (cmpxchg(&srcu_spare_nodes, NULL, spare))
-+		kfree(spare);	/* Someone else refilled it first. */
-+}
-+static DECLARE_WORK(srcu_spare_replenish_work, srcu_spare_replenish_wq);
-+
-+static struct srcu_node *srcu_alloc_nodes(gfp_t gfp_flags)
-+{
-+	struct srcu_node *node;
-+
-+	node =3D xchg(&srcu_spare_nodes, NULL);
-+	if (node) {
-+		schedule_work(&srcu_spare_replenish_work);
-+		return node;
-+	}
-+
-+	/* Spare already taken and not yet replenished. */
-+	return kzalloc_objs(*node, rcu_num_nodes, gfp_flags);
-+}
-+
- /*
-  * Allocated and initialize SRCU combining tree.  Returns @true if
-  * allocation succeeded and @false otherwise.
-@@ -139,8 +184,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *=
-ssp, gfp_t gfp_flags)
-=20
- 	/* Initialize geometry if it has not already been initialized. */
- 	rcu_init_geometry();
--	ssp->srcu_sup->node =3D kzalloc_objs(*ssp->srcu_sup->node, rcu_num_nodes,
--					   gfp_flags);
-+	ssp->srcu_sup->node =3D srcu_alloc_nodes(gfp_flags);
- 	if (!ssp->srcu_sup->node)
- 		return false;
-=20
-@@ -1004,7 +1048,7 @@ static void srcu_gp_end(struct srcu_struct *ssp)
- 	/* Transition to big if needed. */
- 	if (ss_state !=3D SRCU_SIZE_SMALL && ss_state !=3D SRCU_SIZE_BIG) {
- 		if (ss_state =3D=3D SRCU_SIZE_ALLOC)
--			init_srcu_struct_nodes(ssp, GFP_KERNEL);
-+			init_srcu_struct_nodes(ssp, GFP_NOWAIT | __GFP_NOWARN);
- 		else
- 			smp_store_release(&sup->srcu_size_state, ss_state + 1);
- 	}
-@@ -2111,6 +2155,20 @@ void __init srcu_init(void)
- 		}
- 	}
-=20
-+	/*
-+	 * Prime the spare node array if lazy (contention-triggered) size
-+	 * transitions are possible, so that srcu_gp_end() never needs to
-+	 * allocate. Early-boot GFP_KERNEL is implicitly non-blocking
-+	 * (gfp_allowed_mask strips __GFP_RECLAIM until much later), and
-+	 * failure here is harmless: the GFP_NOWAIT fallback and replenish
-+	 * worker remain.
-+	 */
-+	if (SRCU_SIZING_IS_CONTEND() || SRCU_SIZING_IS_TORTURE()) {
-+		rcu_init_geometry();
-+		srcu_spare_nodes =3D kzalloc_objs(*srcu_spare_nodes,
-+						rcu_num_nodes, GFP_KERNEL);
-+	}
-+
- 	/*
- 	 * Once that is set, call_srcu() can follow the normal path and
- 	 * queue delayed work. This must follow RCU workqueues creation
---=20
-2.43.0
-
-
---=-A/tNxptQtXqBHJf4460f
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCE8Ew
-ggWvMIIEl6ADAgECAhANkOKMSmGXhF5eMl0rsRhvMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYT
-AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAi
-BgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBHMjAeFw0yNDAzMTMwMDAwMDBaFw0zNDAz
-MTIyMzU5NTlaMGIxCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UE
-AxMxRGlnaUNlcnQgQXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTCCAiIw
-DQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAOfSIeC0vv1xPQ+dgSxbIIrkaru6skAWJYaGFzmv
-q4Kq+2wU2jxhcWlJg/JeP5jEkq/LM3pn5aaLao79j+XRmS7J1ZpJKUODJVoM4s9MQJhTMvo4qS5Z
-S64g6QR7Obkz3I1Lr3aWeSBmDDEyzue+NKtuWZ1Cxy3RdXo/w5HgRc3l2AercOM3Gt1XonTzEtTb
-Z/Hwc0Sn9Gz8RmGRK6Ka4hVDl8q/2l110KaV233Kh5etP0csXS8MIMdVRfRu3sc5hp13DG7lCKzK
-72a2GEpI8Wpl26G6I1/LMzz/98T+FqjTqxsdquk7Cj7m2vKGLW1BorpQH7WFGPdJQXJe1hfbfiZA
-CcVdCtl4nAacFacmsiArZBfX7AQGL7isvHUwwYFEtcApyGW4p2Lt+t8nvU0CANA6BHOpOz1xOP8W
-mAESbUriIjyuTUf3fJ9oDNCurVqhASMJCDaWI3lYX/QAoiAzt6akqbbZxo2ujW7mGGqc0KxqE2cs
-h2T79v7pC8aUtHBfwNrTR19GnZVxE0eQ7ViIQhR6mpSaUQFA9sG+cmD2G8TnCgYsLa0q8De6F61a
-CBevQGHNzrbZ3JAMneveYg/Jy1XxQHDRcvrMfWKe0jjcWbdKYlaGVPm5V1ILwYz7Yv5ewo3NUrxI
-GJiywe9qPhuJSDZs7VehTuI0FxGIsgKzVjgbAgMBAAGjggFcMIIBWDASBgNVHRMBAf8ECDAGAQH/
-AgEAMB0GA1UdDgQWBBT3m6JO05fF9DQPQw6Bhc6RkzKv+TAfBgNVHSMEGDAWgBTOw0q5mVXyuNtg
-v6l+vVa1lzan1jAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MHkGCCsGAQUFBwEBBG0wazAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEMG
-CCsGAQUFBzAChjdodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURS
-b290RzIuY3J0MEUGA1UdHwQ+MDwwOqA4oDaGNGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdp
-Q2VydEFzc3VyZWRJRFJvb3RHMi5jcmwwEQYDVR0gBAowCDAGBgRVHSAAMA0GCSqGSIb3DQEBDAUA
-A4IBAQA+b8Uw53sDspdZgukU+qzLyyHkcjlxGGhHlP+zrmDLKm1wEFvCRS2pili3Hy67i8N4N5NU
-vw5Rg6kv3lxb9S9Rktxk43k+tvm68pl7OxQE55ZjVY87P0lUPGwEqOOwLLyH02ZQcsfq5p5LrOH9
-0JvmvZ1yy73HS+VpDAqOlytE0NSvTIRqFFkKQGQwfjvtql9YflujuNNvJztjBaHKYZsnNSg+J38o
-jYq4TP3pSg3UdVH0PncVjPQyqxC9xef5Xae92Kbkzol3x7Nel3A1bwAkalrDMspvTHvey6LfiBks
-FIqviTnoy7fgjaRAJgHS+RXx/cmuRd3rUAclSVVrYu8RMIIHAzCCBOugAwIBAgIQAzUotrsybJHx
-HTjKOIVdIDANBgkqhkiG9w0BAQsFADBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQs
-IEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFzc3VyZWQgRzIgU01JTUUgUlNBNDA5NiBTSEEzODQg
-MjAyNCBDQTEwHhcNMjYwNzE4MDAwMDAwWhcNMjgwMTA0MjM1OTU5WjAeMRwwGgYDVQQDDBNkd213
-MkBpbmZyYWRlYWQub3JnMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA2pYux73kdbYX
-sWF8f1u6DJP91qcqaZetsyfPkZk0B+MmXmAEv0kVes5n15V2mbDThOnpoPFly0UugQO9JYqLfrtD
-tKD5yL58fgrDB9Dw+LQikgrHafl6YSCds5AvUu/8hw2J6noKrcOLJpKlKn9Fl/4IB9Q3JIdLx5aa
-EtTqMalIPqHFOlgrJ7s+aua8xbB8YQ9ahqYBXWRJNv3P/2b1DYtdrz1oqZPE3CcB8Pc6Gf2a1Tcm
-6TAgtEx7Cf1BFcrsrMz7TWHmGQITieNb2r9UYWSc2Gp+GtYFNJCgT0JJXKUBIauPMKBLteYrL8Fo
-ff/uY44dC/mDWjdCP/5x0qelPQjlBvWdHL5zvBTOj06rJ0m3HNI/hnIcDh0Qu2j9reb9rLVcdym6
-bWmBM4uDEB8Zv9Ph0KTBFSy1IosyakuD1j1Os30EzjGfbi0EUXIvnOcYbTBAbM5UAzrxEHMhBvoX
-Pvnx+OyvjJmc9tWxTX6AcSz+m40esbT17URBeZS18afgieiikm5TynlUYP1LciR3hSgGVzvGXnKO
-02VDFR5itGWdRKZ2W5wIShNfWfhSa0D0K5UdIDt5Qc7sjzwK1Yb1sY5Tu0uA5mhIS82q1ov83uxB
-sFkriNnhGv/M1NCDVLBiOMsHu73qUM+yKmgKLwF9Hfn9WI25glbAMI4S5r3hYzcCAwEAAaOCAfcw
-ggHzMB8GA1UdIwQYMBaAFPebok7Tl8X0NA9DDoGFzpGTMq/5MB0GA1UdDgQWBBRcYhqbcGzn1jrT
-JOZaB8O7qllDpzAwBgNVHREEKTAngRNkd213MkBpbmZyYWRlYWQub3JngRBkYXZpZEB3b29kaG91
-LnNlMBQGA1UdIAQNMAswCQYHZ4EMAQUBAjAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0lBBYwFAYIKwYB
-BQUHAwIGCCsGAQUFBwMEMIGpBgNVHR8EgaEwgZ4wTaBLoEmGR2h0dHA6Ly9jcmwzLmRpZ2ljZXJ0
-LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsME2gS6BJ
-hkdodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZT
-SEEzODQyMDI0Q0ExLmNybDCBjQYIKwYBBQUHAQEEgYAwfjAkBggrBgEFBQcwAYYYaHR0cDovL29j
-c3AuZGlnaWNlcnQuY29tMFYGCCsGAQUFBzAChkpodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20v
-RGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZTSEEzODQyMDI0Q0ExLmNydDANBgkqhkiG9w0B
-AQsFAAOCAgEAocabrh1cPd5s3vY5rnlBVQSTc7zs2ZWs67dAIltR+05WELrYClVzzUhMs/LOJPlr
-EUo45UDDomXq38DxFepaPd9+iNLjXfn33EX/IG44j04lU/oF/Rg9VeQILkYLbCZ/x9wOjNHZc4SN
-ydY7Dhvf/sT5aBz88u7D5+azZJ7Qf1U57wYseCH1Mt0nDrtr5y19IJ8D9xJJ33RFL6vfpHZBBAQ8
-+3RqkKNxLoV2aFvQhxdhjNLDqTv3LjUIdicwPraN7JkxEu7CV2Lka7eRqJgkWL7SK0YmBjGpRafs
-+icP/ON5RCCKTTb6VlX8eTG2sJJfsFhvJNCCt6xexbWzWtIrfP7NvPBvwBB737AyEGBZkS5aNizT
-McURJGTv9UKvBh1LF/+tNhYtLvPCN7oecGzhCHht9jcwSkygTo3Y6YlK3QgOu+ncmiBbfeuwlLZ1
-LxbYvG6hgNqXv7u6YyADbYajAQJXJ2OQen39pm3Q/AQSyLYG+B8lDglWsM8tYXPlEdrYJcksGK6F
-nqIX6Bumn43rBooLJdiZp4WmfWdL2pxe+LxRDjprmqu1WprixDxULSTOKJZoqTlugs6y3Bc+if+s
-gHnBBtz9WQ6MtPHkh7zONDAFIKcBmv8OqPQCx0F3Wv3OEybwMpXx0OsKgK8wLldaX1pXcMuyDgTL
-Sqs0AV0OHUgwggcDMIIE66ADAgECAhADNSi2uzJskfEdOMo4hV0gMA0GCSqGSIb3DQEBCwUAMGIx
-CzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UEAxMxRGlnaUNlcnQg
-QXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTAeFw0yNjA3MTgwMDAwMDBa
-Fw0yODAxMDQyMzU5NTlaMB4xHDAaBgNVBAMME2R3bXcyQGluZnJhZGVhZC5vcmcwggIiMA0GCSqG
-SIb3DQEBAQUAA4ICDwAwggIKAoICAQDali7HveR1thexYXx/W7oMk/3Wpyppl62zJ8+RmTQH4yZe
-YAS/SRV6zmfXlXaZsNOE6emg8WXLRS6BA70liot+u0O0oPnIvnx+CsMH0PD4tCKSCsdp+XphIJ2z
-kC9S7/yHDYnqegqtw4smkqUqf0WX/ggH1Dckh0vHlpoS1OoxqUg+ocU6WCsnuz5q5rzFsHxhD1qG
-pgFdZEk2/c//ZvUNi12vPWipk8TcJwHw9zoZ/ZrVNybpMCC0THsJ/UEVyuyszPtNYeYZAhOJ41va
-v1RhZJzYan4a1gU0kKBPQklcpQEhq48woEu15isvwWh9/+5jjh0L+YNaN0I//nHSp6U9COUG9Z0c
-vnO8FM6PTqsnSbcc0j+GchwOHRC7aP2t5v2stVx3KbptaYEzi4MQHxm/0+HQpMEVLLUiizJqS4PW
-PU6zfQTOMZ9uLQRRci+c5xhtMEBszlQDOvEQcyEG+hc++fH47K+MmZz21bFNfoBxLP6bjR6xtPXt
-REF5lLXxp+CJ6KKSblPKeVRg/UtyJHeFKAZXO8Zeco7TZUMVHmK0ZZ1EpnZbnAhKE19Z+FJrQPQr
-lR0gO3lBzuyPPArVhvWxjlO7S4DmaEhLzarWi/ze7EGwWSuI2eEa/8zU0INUsGI4ywe7vepQz7Iq
-aAovAX0d+f1YjbmCVsAwjhLmveFjNwIDAQABo4IB9zCCAfMwHwYDVR0jBBgwFoAU95uiTtOXxfQ0
-D0MOgYXOkZMyr/kwHQYDVR0OBBYEFFxiGptwbOfWOtMk5loHw7uqWUOnMDAGA1UdEQQpMCeBE2R3
-bXcyQGluZnJhZGVhZC5vcmeBEGRhdmlkQHdvb2Rob3Uuc2UwFAYDVR0gBA0wCzAJBgdngQwBBQEC
-MA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwgakGA1UdHwSB
-oTCBnjBNoEugSYZHaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZEcyU01J
-TUVSU0E0MDk2U0hBMzg0MjAyNENBMS5jcmwwTaBLoEmGR2h0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNv
-bS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsMIGNBggrBgEF
-BQcBAQSBgDB+MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wVgYIKwYBBQUH
-MAKGSmh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNB
-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
-8+21xW8ZvU5F5mPTn1GU1CEAAAAAAAA=
-
-
---=-A/tNxptQtXqBHJf4460f--
