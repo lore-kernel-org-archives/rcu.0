@@ -1,128 +1,91 @@
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA7A3B95EB
-	for <rcu@vger.kernel.org>; Mon, 10 Aug 2026 10:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C543BBFCB
+	for <rcu@vger.kernel.org>; Mon, 10 Aug 2026 10:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786357362; cv=none; b=LwF4JEoGEupYbKN40j3Upjm7AamAmeaJykkDtdVipIiPZRIfMv66HFbj226dQc6fBg51fMupi3XNN7QeInpMtd+GcCNA+Z9dajKZxEvXtQ1qpKJ7SkrGoxM/E9ECTwArXnQy4A7N2El/CTaot7LTtS9a3SbZVa6VKD7jvhFFEYM=
+	t=1786359347; cv=none; b=K206h2t8sNXBJrPYqAGE2j8MZVIFmkrjKpeKEWS3Nu0Yw1KlS4aiTVESinaQ6Pi7i95DDzGadkgq/sgwJCFMZFPUDNu/nr11K7TcAJ4wpECYMYIQAb5yOxzgCMLYPn1wd+X4uyJm6BkVk5/YxMRKCj5a6HxeoWlpjVk5KofrjL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786357362; c=relaxed/simple;
-	bh=FJRzbufEtBJAhLCkPlm5BxuuEKScVokDrohw9V0wWgI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jw1/0nFMZwjLuOcUcSePvq52vDusWfBGduNX/52cdJN9Dlm97LywccfbhNMA3hObMTkJi6ug6yrivH4CrTAKbuM85cVCWD+tS7Di/dzAlj7a3OGZNwu3IBVaBBEayOZHCdaXZidRCuSNfnWGEEjYeM/3G5q0cB1Sg6UIygENwys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j3cPWLjI; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1786359347; c=relaxed/simple;
+	bh=qeXWIqBfHAkAaTv+q1lIIUSS6OEGRcAe3dmLubmVVpM=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=pTtD3/rhaqLA6NHCVOzWI5vUj/6Fevzjw6bncwYTL6MdRXH7RIA39329wIR/3BSxKmWZOxfZ1d1PlVvpGvJaQRxmzNLQf2xSKUs7pgf2FO2xB51CqqR+q0nvvYAgejmWw95vDqq6pa4j9VbjtiDLybVVo+6WEBvUDv3CCt9tBOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=W8dqcDcY; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j3cPWLjI"
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-39c953950dfso11683261fa.1
-        for <rcu@vger.kernel.org>; Mon, 10 Aug 2026 03:22:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786357359; x=1786962159; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:date:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=pYeuabCvSp2X+27QeVgnHc3kyISwurDqCe0A6joolwY=;
-        b=j3cPWLjIBF5EubjaIeE5g7F2urbcTjnikWqnZfDp5l/0T5eoG2tYNeRctXcFomsgZs
-         MeUEDx8DWSodxR+t98XUwXYNTx7qjWb4MsWEmLpCLSOAuKmkgYmJz8JLto/2lb6n7amn
-         nkDGG4hZlsmRfJ4mA7btaPjIkI5o2vIWJJo3w4wP8+Jh5k/xGpgLwU0F89wJu5Ahv5dB
-         Hf35earGUIDbd45Ksg+XVp6/Tf+uSP3tu6RDuUYD4PTEKZd8Iu+BEOabHFsA/+dzF4sH
-         UymgeWQxNklnYHEK+RopZm/1/6ojLHSOCYkBI5UO+Pvg4tqe7T0bt4+xDH8FAeU1LNvG
-         E2IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786357359; x=1786962159;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=pYeuabCvSp2X+27QeVgnHc3kyISwurDqCe0A6joolwY=;
-        b=OTnX6mail7EAYyiAeEY33fqhSEIk8wfPcVPZFzXPMi7bjqnKl1mocEL0FxJxuDpXSp
-         OrVEmyZXqRhb2vjW4BGhj0KZI8wcWkv9WoVHRdYGDIS0eHfIqYQBuk61n5aQek0t8+u5
-         OLgz9cO180kJHc6GKT+BhEk8hjzvk1gvD3qESjePyEWLUCP3NL4Tiywd+O1MQ6z+xW10
-         ShGhAVjBp6KSWDQtwixz+F8QUYzxoUyU2qz0cqGKcdR4r1KI820ampck2xI2QqCS1EIY
-         padzwLtv4reijYMRBW5apZ8og+of5uOORpRdLCh19UeuHRzm43vv0tFbkTfTtmAwipki
-         lJ7w==
-X-Forwarded-Encrypted: i=1; AHgh+Ro64VFRJPM1ebWCXomd622FbXmV9J8Mn7h/e/51hHzkuHj/3NwV0WkkGjmSYuKHMtA9mmo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8jemU73bNb3HOCr0pl5lCpcM5dNAQoFGFvDXcizlsa+rbGRUG
-	P7TRtl4lcL/PmrogmawytlUWiSepz7+R39JrWmKmpDynS3U1SJe6sNzo
-X-Gm-Gg: AR+sD12y3BzlHlpqiyR6oUeiyxOD4p/o6Rgb5zeyh7UBhVFj8OzrluVDggLUWA/dwnU
-	AUdU1hxXB41A1U0xw/SttB9HuBbZEfg9Lh2JlhOlkDBgCL9zBXw8Y98iLBW2VWKSwzwprE/WG5k
-	CxILTCoIxY3A6ueEhwaFLSQYUpw2iBk+KVXefsATjfl9U2t8BJU3LiUMHuEo7lqs9ekLB8qlM5/
-	HG7sFlAQQuSCFh7eubvbTmrrT0peNe5zl70uuJDKk1V0k4/6QsWE+5XVj1+nTJI47tVc05JBeMj
-	M2pqTMBqEweJsTmU/0kR9BMOwZaQLHFO5r1N2Ugc/LunfDA+YWGWB7CiRMfKZz5+lPzGPzCy9ck
-	FyBwnpoTCDLKh5mct8Zp2o98eolmYldG6MgIHsFUJ2M06++Qa9zfwkYGWsgm9nf9yVgLsAyyRh7
-	YjJuHrQwmqghi6NBv8+o9EiOzttw==
-X-Received: by 2002:a05:651c:1586:b0:39e:ea4f:4202 with SMTP id 38308e7fff4ca-39fbb262b33mr47691471fa.31.1786357358435;
-        Mon, 10 Aug 2026 03:22:38 -0700 (PDT)
-Received: from milan ([2001:9b1:d5a0:a500::24b])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-39fddd67ec0sm22873191fa.30.2026.08.10.03.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2026 03:22:38 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@milan>
-Date: Mon, 10 Aug 2026 12:22:36 +0200
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	Boqun Feng <boqun@kernel.org>, kvm@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] KVM: pfncache: Use RCU for readers instead of a
- rwlock
-Message-ID: <anmmbDqk5rfi_Gsx@milan>
-References: <0d483855-4d2f-4502-858c-c88077aa0b94@paulmck-laptop>
- <d0fdf8aa4faa4e349cdc0e051b6e211cddd566b0.camel@infradead.org>
- <anibnhTYdwdn51FF@milan>
- <54244653-0825-4F1C-8852-003762176FE3@infradead.org>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="W8dqcDcY"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1786359333;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc; bh=S0/c+TFXi4CcHaO0LSruu19Vq9Mar/rn7dR4O6tfvx4=;
+	b=W8dqcDcY/aw/VEaizwYgYLnvlOtW4XceHX5RxQ56FF7P1HLu6b8EjMoZ8vO838yHkUzg62
+	t5cvgav1mWebevUrMV0PgpzwifmiafrpBHGNJCBYMAYkPkvR/0cGfucMkYeiRS0td9Y7gs
+	quXSykwEU2i89fc9EyV0xgWJCgLWHEM=
+From: Zqiang <qiang.zhang@linux.dev>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	urezki@gmail.com,
+	boqun@kernel.org
+Cc: qiang.zhang@linux.dev,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	leitao@debian.org
+Subject: [PATCH v2] srcu: Fix WARN_ON() for timer_delete_sync() in cleanup_srcu_struct()
+Date: Mon, 10 Aug 2026 18:55:22 +0800
+Message-Id: <20260810105522.19022-1-qiang.zhang@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54244653-0825-4F1C-8852-003762176FE3@infradead.org>
 
-On Sun, Aug 09, 2026 at 06:44:55PM +0100, David Woodhouse wrote:
-> On 9 August 2026 16:24:14 BST, Uladzislau Rezki <urezki@gmail.com> wrote:
-> >On Sun, Aug 09, 2026 at 10:59:59AM +0100, David Woodhouse wrote:
-> >> +	/*
-> >> +	 * Try a non-blocking allocation first, leaving the spare untouched
-> >> +	 * in the common no-pressure case so that it is still there when
-> >> +	 * there really is pressure.
-> >> +	 */
-> >> +	node = kzalloc_objs(*node, rcu_num_nodes, GFP_NOWAIT | __GFP_NOWARN);
-> >>
-> >GFP_NOWAIT already contains __GFP_NOWARN. It is odd.
-> 
-> Ack, thanks. Will fix in my tree.
-> 
-> >> +	if (node)
-> >> +		return node;
-> >> +
-> >> +	node = xchg(&srcu_spare_nodes, NULL);
-> >> +	if (node) {
-> >> +		schedule_work(&srcu_spare_replenish_work);
-> >>
-> >I am not sure but if there is a need in doing progress forward, probably
-> >separate wq with WQ_MEM_RECLAIM | WQ_UNBOUND flags is better. It has an
-> >extra rescue kthread to do the progress if no memory or high mem-pressure.
-> 
-> I don't think there is a *need* per se,  as all that happens is a few more less efficient grace periods before the allocation finally succeeds. And frankly, if memory pressure is that bad the efficiency of the grace periods is probably the least of your worries.
+The WARN_ON() for timer_delete_sync() means that the caller forgot to
+call srcu_barrier() before cleanup. however, it still can trigger even
+when srcu_barrier() was properly called.
 
-Probably. I was thinking about something like(example taken from driver.c):
+When a SRCU grace period ends and ss_state < SRCU_SIZE_BIG, the mask=~0
+causes delay_work timer be queued on every online CPU regardless of
+whether it's sdp->srcu_cblist has callbacks. srcu_barrier() only wait
+srcu_barrier_head's callbacks to complete, however, the srcu_barrier_head
+will not be inserted into an empty sdp->srcu_cblist. after that, when
+cleanup_srcu_struct() finds a pending delay_work timer on a CPU with no
+callbacks, triggering a false positive.
 
-<snip>
-synchronize_srcu(&encl->srcu);
-mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
-kfree(encl_mm);
-<snip>
+This commit therefore add rcu_segcblist_n_cbs() to WARN_ON(), make the
+warning triggers only when the timer is still pending and there are actual
+outstanding callbacks.
 
-i.e. when we need to free memory. We want a faster reclaim especially
-when low memory conditions. From the other hand it looks like we do not
-call quite often init_srcu_struct_nodes() from srcu_gp_end(), so no
-strong opinion here.
+Fixes: 05c3e88488ed ("srcu: Queue sdp->work when the delay timer is successfully deleted")
+Reported-by: Breno Leitao <leitao@debian.org>
+Reported-by: kernel test robot <oliver.sang@intel.com> 
+Closes: https://lore.kernel.org/oe-lkp/202608060833.bce92909-lkp@intel.com/ 
+Tested-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+---
+ kernel/rcu/srcutree.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---
-Uladzislau Rezki
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 35fface51d50..090dddfc7463 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -753,8 +753,9 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+ 
+ 		// Call srcu_barrier() before this cleanup_srcu_struct()
+ 		// to avoid triggering this WARN_ON().
+-		if (WARN_ON(timer_delete_sync(&sdp->delay_work)) &&
+-					rcu_cpu_beenfullyonline(sdp->cpu))
++		if (WARN_ON(timer_delete_sync(&sdp->delay_work) &&
++			rcu_segcblist_n_cbs(&sdp->srcu_cblist)) &&
++				rcu_cpu_beenfullyonline(sdp->cpu))
+ 			queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
+ 		flush_work(&sdp->work);
+ 		if (WARN_ON(rcu_segcblist_n_cbs(&sdp->srcu_cblist)))
+-- 
+2.17.1
+
