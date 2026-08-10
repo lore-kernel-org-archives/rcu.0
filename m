@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C24973C1D54;
-	Mon, 10 Aug 2026 12:28:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9E73D891F;
+	Mon, 10 Aug 2026 12:28:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786364908; cv=none; b=U9VOctxRMHXQCDWEIdKmeRyRfbQBOsygeUenaAK85vOp0lIGdsUsLlj/JhyFA8KSViNpgT4w6CZnW2XwL+kfTGNcmEoZdL05OeVww++l9DjRYp/8GNQMcwXkiVRXMXpfDvRqCa9+KqGcFDanTjhdOtRiHKvzDgJ5kjj7pIqb8q0=
+	t=1786364912; cv=none; b=T+2lZ9U1IJcoGUwZKKi6zosutTiqJmyqq4wlfTuEATLFWherUMX5Gli0hsQjUZee5xsL1TI7E6b1+uA1dD+0efHAL91Mp8OEtsB+XNTfucUdAkXUMZ6eNtpKR0cGGmfBSImRdHEHSjTUmrA2DEu/ySB/+8/H7rebQxUzeAjve5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786364908; c=relaxed/simple;
-	bh=8IZkTjWxB/mCH6zxRPg2wXo/r2AOxyyVU2JLi8n4lpI=;
+	s=arc-20240116; t=1786364912; c=relaxed/simple;
+	bh=sWLF8Lu85GKRJJUDw2IixZ09zb8cNHc9glLQxA1l1zo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mPSf5wgpVSMS/GAAtN5mnwsgYpV12HFQA48nSCIMaN4GHCekwpXUS7OA9+LCkgiBg5ztx6qhr0fd+oM/9M9fmzGtE50qSevyboUG9WGC8d7C+5AUhMOVuEhZhbDmI6wfeSQ5vJCGUGrqvVVWqREG99ojDjJIx5SaUP7JoEEuvRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Af1lWU6b; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=jdHAhI0yMbdzPjK8xU4+Y4qOzcHk8SFBLQplAGvlfCDqVuKRmmT0zVDMMHTBPeFKTGG8pNZ+GXYv3OoaAs1vb4SmovpDQG9labyNf0te93CEo2bLYrLqX/9GbuHU5XxHu5w2v2K70DuUfxYA/uxLfsUw6FoeZmcVMP2CXUmJP54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NHxtv9kL; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Af1lWU6b"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C8AC1F000E9;
-	Mon, 10 Aug 2026 12:28:26 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NHxtv9kL"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D08AC1F000E9;
+	Mon, 10 Aug 2026 12:28:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786364906;
-	bh=4q2JdJfCqnB/x9SGqg8GRyZ5t0vijKgS1SaGHiWaOyg=;
+	s=k20260515; t=1786364911;
+	bh=Rr6LlzJz94VLUxbndZCJiHNS6lr28WG/jTb07f20srE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Af1lWU6bwIPMp64uVrYCQvo7DK4a91++7zNa9ptL78PZzXt3c7e0zqnFwm1MZsYrv
-	 ZasTQ5RZoOhGcn1dJ4yewohhCzPUcLyxRzFW8gysdA6jmIwSi4u9O10mT/dFedqaTE
-	 0ut55EWURwqQgdSTj+GT5I/fjDxAZP+Ckoadj9N6rRqns8mvoiNVmwswpJmpfajCkh
-	 3mGhj6jy59ZFp7N4Dp2UPBAUAetUG6fuE9Q9zZ4oj0knXa4lCk74LoNFsPJUt3m9p9
-	 uJYV6mNqUL/x+UYT0+G2OnGC4bkbljutjJxJSJrLUnqZujq0N28T21kOE+nBR6okWU
-	 zRC8UCWmPxCRA==
+	b=NHxtv9kLjeZDw4kHWkb8jNqa8rqRc4ZITD3HwIiaXA8ePPHbv+CR1PaxSm3YdWrJR
+	 Y068NKKDkvjjsECTdmwDr51yFl0wn+hZzbneMT77jsNaUoOY2jxr50qYR3wUG5jXcl
+	 soyZk2Uf9YbMa2DpAyAaqN8kQ/8sePcMHGNIvI8tPOiqetqfi4/UorW6HQB5rfSICi
+	 XKGNfoONUwbTAivkrp6URvYcrA5Z/h7+mUqPC0r7OzYLsG4xqrtdXGJbF+KqDfaK31
+	 rpeHJlSOWyn3c45rhjUAbRWlucUQBvNpAhf3G6kaijSDWGWceFI9A0cbkHCyGlCRsn
+	 NvSWbuDFRajHA==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: "Lai Jiangshan" <jiangshanlai@gmail.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
@@ -57,9 +57,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	rcu@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-rt-devel@lists.linux.dev
-Subject: [PATCH v4 3/6] srcu: Make call_srcu() safe to call from any context
-Date: Mon, 10 Aug 2026 05:27:52 -0700
-Message-ID: <20260810122758.183765-4-puranjay@kernel.org>
+Subject: [PATCH v4 4/6] srcu: Make Tiny call_srcu() safe to call from any context
+Date: Mon, 10 Aug 2026 05:27:53 -0700
+Message-ID: <20260810122758.183765-5-puranjay@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260810122758.183765-1-puranjay@kernel.org>
 References: <20260810122758.183765-1-puranjay@kernel.org>
@@ -71,250 +71,215 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-call_srcu() has the same constraint as call_rcu():
-srcu_gp_start_if_needed() enqueues under raw_spin_lock_irqsave() and may
-walk the srcu_node tree, as do callback invocation and grace-period work,
-so a call_srcu() with interrupts already disabled can race an operation in
-flight on this CPU.  call_rcu_tasks_trace() is call_srcu() under the hood,
-so a sleepable BPF program freeing an object can reach this.
+Give Tiny call_srcu() the same treatment as Tree SRCU.  When interrupts
+are disabled and the scheduler is up, stage the callback on the
+srcu_struct's lockless list for an irq_work to re-issue later.  Tiny SRCU
+is uniprocessor, so there is no CPU-offline drain.  A draining flag drops
+a deferring call_srcu() that re-enters mid-drain (unless from an NMI), as
+in Tree SRCU; such a drop can strand state the caller tied to the callback,
+not just the callback itself.
 
-Defer as call_rcu() does: stage the callback on the srcu_data's
-->defer_cbs, chain that srcu_data onto a per-CPU list, and raise a per-CPU
-irq_work that re-issues it straight to the enqueue helper, never back
-through __call_srcu().  The irqs-enabled path is unchanged; as for
-call_rcu() the gate is bare irqs_disabled(), so callers that merely hold
-interrupts off are deferred too and pay one irq_work hop, including
-call_rcu_tasks_trace() from the BPF memalloc irq_work.
+Interrupts stay off for the whole batch.  TINY_SRCU implies !SMP, where
+arch_irq_work_has_interrupt() is false, so the drain always waits for the
+tick and a batch is whatever one tick's worth of interrupts-disabled
+call_srcu()s staged.  Unlike the other three flavors srcu_do_enqueue() here
+has no debug_rcu_head_queue(), so nothing reports a double call_srcu();
+termination of the drain rests on srcu_do_enqueue() clearing ->next, and
+the callback list self-links at the tail exactly as a double call_srcu()
+made it before.
 
-The irq_work is per-CPU rather than per-srcu_struct and statically
-initialized, so deferral never runs check_init_srcu_struct(); it is
-IRQ_WORK_INIT_HARD as for call_rcu().  srcu_barrier() flushes it first, and
-rcutree_migrate_callbacks() calls srcu_offline_drain() for an outgoing CPU.
-cleanup_srcu_struct() drains before its "just leak it" early returns, and
-srcu_module_going() before freeing any ->sda, since a staged srcu_data left
-chained on a per-CPU list would dangle.  Staging is two steps, the callback
-onto
-->defer_cbs and then the srcu_data onto the per-CPU list, so a flusher can
-find the per-CPU list empty while a callback whose call_srcu() has not
-returned sits on ->defer_cbs; the staging CPU's own irq_work takes that
-one.
+srcu_barrier() (now out of line) and cleanup_srcu_struct() drain the
+deferred list first, so a deferred callback is re-issued onto the callback
+list and invoked by the grace-period work that cleanup_srcu_struct()
+flushes, rather than stranded on a soon-to-be-freed srcu_struct.
+cleanup_srcu_struct() also syncs ->defer_iw, since that irq_work is
+embedded in the srcu_struct the caller is about to free.
 
-The per-CPU srcu_defer ->lock, not any srcu_data's, is held with interrupts
-off across the whole nested drain: the chain of srcu_datas staged on that
-CPU and, for each, its callbacks, with srcu_do_enqueue() taking that
-srcu_data's ->lock and possibly starting a grace period for every one.
-That is what serializes the drainers.  The bound is as for call_rcu(): what
-one interrupts-disabled region could stage, normally a single callback, or
-whatever accumulates before the tick where arch_irq_work_has_interrupt() is
-false.  Both lists are drained newest-first; nothing depends on call_srcu()
-ordering.
+The draining flag is global rather than per-srcu_struct: a re-entrant
+call_srcu(B) inside a drain of A raises B's own ->defer_iw, whose drain can
+stage back onto A, so a per-srcu_struct flag would not break the chain.
+The cost is that a drain of A also drops a non-NMI call_srcu() to any
+other srcu_struct for its duration.
 
-The drain clears ->next before re-issuing, which bounds a node self-linked
-by a double call_srcu(); a longer cycle is not bounded, and a double
-call_srcu() stays undefined, as for call_rcu().
-
-A callback deferred past the CPUHP_AP_SMPCFD_DYING irq_work flush leaves
-that CPU's srcu_defer ->iw claimed with its self-IPI lost, as for
-call_rcu().  srcu_offline_drain() still re-issues the callback, but the
-irq_work cannot be un-queued, and here the claim is shared by every
-srcu_struct on the CPU.
-
-As in call_rcu(), the re-issue runs with interrupts disabled and can be
-re-entered by instrumentation, so a per-CPU flag, set only while that CPU
-is inside its own irq_work drain, drops a deferring call_srcu() seen
-mid-drain unless it comes from an NMI.  Such a drop can strand state the
-caller associated with the callback, not just the callback itself.
-
-Staging records only the callback, so a deferred expedited call_srcu()
-completes as a normal grace period.  Only srcu_expedite_current() can hit
-that, and only when invoked with interrupts already disabled.
-
-Gated by CONFIG_RCU_DEFER, though the srcu_data members and the per-CPU
-srcu_defer are unconditional.  Under CONFIG_PROVE_RCU, warn if the direct
-path is reached from an NMI.
+Gated by CONFIG_RCU_DEFER like Tree SRCU, though the srcu_struct members
+are unconditional.
 
 Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- include/linux/srcutree.h |   4 +
- kernel/rcu/rcu.h         |   3 +
- kernel/rcu/srcutree.c    | 170 ++++++++++++++++++++++++++++++++++++++-
- kernel/rcu/tree.c        |   2 +
- 4 files changed, 175 insertions(+), 4 deletions(-)
+ include/linux/srcutiny.h | 12 ++++--
+ kernel/rcu/srcutiny.c    | 93 ++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 97 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 75e54e4f963fa..1ce759fb70948 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -13,6 +13,8 @@
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index fbcf13bc12d15..85b5de438450b 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -12,6 +12,7 @@
+ #define _LINUX_SRCU_TINY_H
  
- #include <linux/rcu_node_tree.h>
- #include <linux/completion.h>
-+#include <linux/irq_work_types.h>
+ #include <linux/irq_work_types.h>
 +#include <linux/llist.h>
+ #include <linux/swait.h>
  
- struct srcu_node;
- struct srcu_struct;
-@@ -41,6 +43,8 @@ struct srcu_data {
- 	bool srcu_cblist_invoking;		/* Invoking these CBs? */
- 	struct timer_list delay_work;		/* Delay for CB invoking */
- 	struct work_struct work;		/* Context for CB invoking. */
-+	struct llist_head defer_cbs;		/* Callbacks deferred on re-entry. */
-+	struct llist_node defer_link;		/* Links onto the per-CPU deferral drain list */
- 	struct rcu_head srcu_barrier_head;	/* For srcu_barrier() use. */
- 	struct rcu_head srcu_ec_head;		/* For srcu_expedite_current() use. */
- 	int srcu_ec_state;			/*  State for srcu_expedite_current(). */
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 91e33571a554d..d60444bf3a02d 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -583,6 +583,9 @@ static inline bool should_rcu_defer(void)
- 	       rcu_scheduler_active != RCU_SCHEDULER_INACTIVE;
+ struct srcu_struct {
+@@ -26,6 +27,8 @@ struct srcu_struct {
+ 	struct rcu_head **srcu_cb_tail;	/* Pending callbacks: Tail. */
+ 	struct work_struct srcu_work;	/* For driving grace periods. */
+ 	struct irq_work srcu_irq_work;	/* Defer schedule_work() to irq work. */
++	struct llist_head defer_cbs;	/* Callbacks deferred on re-entry. */
++	struct irq_work defer_iw;	/* Re-issues defer_cbs later. */
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 	struct lockdep_map dep_map;
+ #endif /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+@@ -33,6 +36,7 @@ struct srcu_struct {
+ 
+ void srcu_drive_gp(struct work_struct *wp);
+ void srcu_tiny_irq_work(struct irq_work *irq_work);
++void srcu_defer_drain(struct irq_work *irq_work);
+ 
+ #define __SRCU_STRUCT_INIT(name, __ignored, ___ignored, ____ignored)	\
+ {									\
+@@ -40,6 +44,9 @@ void srcu_tiny_irq_work(struct irq_work *irq_work);
+ 	.srcu_cb_tail = &name.srcu_cb_head,				\
+ 	.srcu_work = __WORK_INITIALIZER(name.srcu_work, srcu_drive_gp),	\
+ 	.srcu_irq_work = { .func = srcu_tiny_irq_work },		\
++	.defer_cbs = LLIST_HEAD_INIT(name.defer_cbs),			\
++	.defer_iw = { .node = { .u_flags = IRQ_WORK_HARD_IRQ },		\
++		      .func = srcu_defer_drain },			\
+ 	__SRCU_DEP_MAP_INIT(name)					\
  }
  
-+/* Drain an outgoing CPU's deferred SRCU callbacks; see rcutree_migrate_callbacks(). */
-+void srcu_offline_drain(int cpu);
-+
- enum rcutorture_type {
- 	RCU_FLAVOR,
- 	RCU_TASKS_FLAVOR,
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 304112674e8a2..10c89f34920c8 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -20,6 +20,7 @@
- #include <linux/percpu.h>
- #include <linux/preempt.h>
+@@ -131,10 +138,7 @@ static inline void synchronize_srcu_expedited(struct srcu_struct *ssp)
+ 	synchronize_srcu(ssp);
+ }
+ 
+-static inline void srcu_barrier(struct srcu_struct *ssp)
+-{
+-	synchronize_srcu(ssp);
+-}
++void srcu_barrier(struct srcu_struct *ssp);
+ 
+ static inline void srcu_expedite_current(struct srcu_struct *ssp) { }
+ #define srcu_check_read_flavor(ssp, read_flavor) do { } while (0)
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index f9c498ae75df2..32b37d63d58aa 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -10,6 +10,7 @@
+ 
+ #include <linux/export.h>
  #include <linux/irq_work.h>
 +#include <linux/llist.h>
+ #include <linux/mutex.h>
+ #include <linux/preempt.h>
  #include <linux/rcupdate_wait.h>
- #include <linux/sched.h>
- #include <linux/smp.h>
-@@ -79,6 +80,38 @@ static void process_srcu(struct work_struct *work);
- static void srcu_irq_work(struct irq_work *work);
- static void srcu_delay_timer(struct timer_list *t);
+@@ -29,6 +30,8 @@ extern int rcu_scheduler_active;
+ static LIST_HEAD(srcu_boot_list);
+ static bool srcu_init_done;
  
-+struct srcu_defer;
-+static void srcu_defer_drain(struct irq_work *iw);
-+static void __srcu_defer_drain(struct srcu_defer *sndp);
++static void __srcu_defer_drain(struct srcu_struct *ssp);
++
+ static int init_srcu_struct_fields(struct srcu_struct *ssp)
+ {
+ 	ssp->srcu_lock_nesting[0] = 0;
+@@ -43,6 +46,8 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
+ 	INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
+ 	INIT_LIST_HEAD(&ssp->srcu_work.entry);
+ 	init_irq_work(&ssp->srcu_irq_work, srcu_tiny_irq_work);
++	init_llist_head(&ssp->defer_cbs);
++	ssp->defer_iw = IRQ_WORK_INIT_HARD(srcu_defer_drain);
+ 	return 0;
+ }
+ 
+@@ -86,6 +91,16 @@ EXPORT_SYMBOL_GPL(init_srcu_struct_generic);
+ void cleanup_srcu_struct(struct srcu_struct *ssp)
+ {
+ 	WARN_ON(srcu_readers_active(ssp));
++	/*
++	 * Re-issue any deferred callbacks, then wait out ->defer_iw before it is
++	 * freed.  Skipped entirely with CONFIG_RCU_DEFER=n: irq_work_sync() ends
++	 * in an unconditional synchronize_rcu() wherever
++	 * arch_irq_work_has_interrupt() is false, which is every !SMP target.
++	 */
++	if (IS_ENABLED(CONFIG_RCU_DEFER)) {
++		__srcu_defer_drain(ssp);
++		irq_work_sync(&ssp->defer_iw);
++	}
+ 	irq_work_sync(&ssp->srcu_irq_work);
+ 	flush_work(&ssp->srcu_work);
+ 	WARN_ON(ssp->srcu_gp_running);
+@@ -215,11 +230,11 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
+ }
+ 
+ /*
+- * Enqueue an SRCU callback on the specified srcu_struct structure,
+- * initiating grace-period processing if it is not already running.
++ * Also called by __srcu_defer_drain() to re-issue a deferred callback, so it
++ * must not re-check the deferral condition.
+  */
+-void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+-	       rcu_callback_t func)
++static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
++			    rcu_callback_t func)
+ {
+ 	unsigned long flags;
+ 
+@@ -233,6 +248,68 @@ void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+ 	srcu_gp_start_if_needed(ssp);
+ 	preempt_enable();
+ }
 +
 +/*
-+ * Per-CPU call_srcu() deferral state, shared by every srcu_struct.  A deferred
-+ * callback is staged on its srcu_data's ->defer_cbs; that srcu_data is chained
-+ * via ->defer_link onto ->list, which the irq_work walks.
++ * Set only by the irq_work drain, the one drain its own re-issue can re-feed;
++ * a callback staged during a direct drain is taken by ->defer_iw afterwards.
++ * Global rather than per-srcu_struct: a re-entrant call_srcu(B) inside a drain
++ * of A raises B's own ->defer_iw, whose drain can stage back onto A.
 + */
-+struct srcu_defer {
-+	struct llist_head	list;
-+	struct irq_work		iw;
-+	raw_spinlock_t		lock;
-+	bool			draining;
-+};
++static bool srcu_defer_draining;
 +
-+static DEFINE_PER_CPU(struct srcu_defer, srcu_defer) = {
-+	.lock = __RAW_SPIN_LOCK_UNLOCKED(srcu_defer.lock),
-+	.iw = IRQ_WORK_INIT_HARD(srcu_defer_drain),
-+};
-+
-+/*
-+ * Flush pending deferred callbacks so a following srcu_barrier() waits for them.
-+ */
-+static void srcu_defer_flush(void)
++static void __srcu_defer_drain(struct srcu_struct *ssp)
 +{
-+	int cpu;
++	struct llist_node *node, *next;
++	unsigned long flags;
 +
-+	for_each_possible_cpu(cpu)
-+		__srcu_defer_drain(&per_cpu(srcu_defer, cpu));
++	if (!IS_ENABLED(CONFIG_RCU_DEFER))
++		return;
++
++	/* Re-issued newest-first; nothing depends on call_srcu() ordering. */
++	local_irq_save(flags);
++	llist_for_each_safe(node, next, llist_del_all(&ssp->defer_cbs)) {
++		struct rcu_head *rhp = (struct rcu_head *)node;
++
++		srcu_do_enqueue(ssp, rhp, rhp->func);
++	}
++	local_irq_restore(flags);
 +}
 +
- /*
-  * Initialize SRCU per-CPU data.  Note that statically allocated
-  * srcu_struct structures might already have srcu_read_lock() and
-@@ -107,6 +140,11 @@ static void init_srcu_struct_data(struct srcu_struct *ssp)
- 		sdp->cpu = cpu;
- 		INIT_WORK(&sdp->work, srcu_invoke_callbacks);
- 		timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
-+		/*
-+		 * ->defer_cbs and ->defer_link are valid when zeroed and are not
-+		 * reinitialized here: that would clobber callbacks a reentrant
-+		 * call_srcu() already staged.  See __call_srcu().
-+		 */
- 		sdp->ssp = ssp;
- 	}
- }
-@@ -688,6 +726,14 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
- 	unsigned long delay;
- 	struct srcu_usage *sup = ssp->srcu_sup;
- 
-+	/*
-+	 * Drain before the early returns below: they leak the srcu_struct, but
-+	 * srcu_module_going() frees ->sda regardless, and a staged srcu_data
-+	 * left chained on a per-CPU list would then dangle.  Draining first also
-+	 * has to precede the ->irq_work sync, since re-issuing a callback can
-+	 * start a grace period and re-queue ->irq_work, which schedules ->work.
-+	 */
-+	srcu_defer_flush();
- 	raw_spin_lock_irq_rcu_node(ssp->srcu_sup);
- 	delay = srcu_get_delay(ssp);
- 	raw_spin_unlock_irq_rcu_node(ssp->srcu_sup);
-@@ -695,7 +741,6 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
- 		return; /* Just leak it! */
- 	if (WARN_ON(srcu_readers_active(ssp)))
- 		return; /* Just leak it! */
--	/* Wait for irq_work to finish first as it may queue a new work. */
- 	irq_work_sync(&sup->irq_work);
- 	flush_delayed_work(&sup->work);
- 	for_each_possible_cpu(cpu) {
-@@ -1410,8 +1455,8 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-  * srcu_read_lock(), and srcu_read_unlock() that are all passed the same
-  * srcu_struct structure.
-  */
--static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
--			rcu_callback_t func, bool do_norm)
-+static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
-+			    rcu_callback_t func, bool do_norm)
- {
- 	if (debug_rcu_head_queue(rhp)) {
- 		/* Probable double call_srcu(), so leak the callback. */
-@@ -1423,6 +1468,108 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 	(void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
- }
- 
-+/*
-+ * The srcu_cblist and srcu_node tree are only accessed with interrupts
-+ * disabled, so defer when interrupts are already off rather than enqueue into
-+ * an operation that may be in flight on this CPU.
-+ */
-+static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
-+			rcu_callback_t func, bool do_norm)
++/* Only the irq_work drain can be re-fed by its own re-issue; see Tree SRCU. */
++void srcu_defer_drain(struct irq_work *iw)
++{
++	struct srcu_struct *ssp = container_of(iw, struct srcu_struct, defer_iw);
++
++	WRITE_ONCE(srcu_defer_draining, true);
++	__srcu_defer_drain(ssp);
++	WRITE_ONCE(srcu_defer_draining, false);
++}
++EXPORT_SYMBOL_GPL(srcu_defer_drain);
++
++void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
++	       rcu_callback_t func)
 +{
 +	if (should_rcu_defer()) {
-+		struct srcu_defer *sndp = this_cpu_ptr(&srcu_defer);
-+		struct srcu_data *sdp;
-+
-+		/*
-+		 * Instrumentation on the enqueue path can re-enter here from
-+		 * inside the drain.  Re-queuing would livelock it, so drop the
-+		 * callback; an NMI cannot loop, so let it through.
-+		 */
-+		if (READ_ONCE(sndp->draining) && !in_nmi()) {
++		/* A re-entrant call_srcu() during the drain would livelock it. */
++		if (READ_ONCE(srcu_defer_draining) && !in_nmi()) {
 +			WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
 +				  "call_srcu() re-entered during callback drain; leaking callback\n");
 +			return;
 +		}
-+		sdp = this_cpu_ptr(ssp->sda);
 +		rhp->func = func;
-+		if (llist_add((struct llist_node *)rhp, &sdp->defer_cbs)) {
-+			/*
-+			 * Chain this srcu_data for the drain.  ->ssp must be
-+			 * published here: deferral skips
-+			 * check_init_srcu_struct(), so on a never-initialized
-+			 * static srcu_struct the srcu_data are still zeroed and
-+			 * the drain would read a NULL ->ssp.
-+			 */
-+			sdp->ssp = ssp;
-+			if (llist_add(&sdp->defer_link, &sndp->list))
-+				irq_work_queue(&sndp->iw);
-+		}
++		if (llist_add((struct llist_node *)rhp, &ssp->defer_cbs))
++			irq_work_queue(&ssp->defer_iw);
 +		return;
 +	}
 +
@@ -324,112 +289,26 @@ index 304112674e8a2..10c89f34920c8 100644
 +	 */
 +	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
 +
-+	srcu_do_enqueue(ssp, rhp, func, do_norm);
++	srcu_do_enqueue(ssp, rhp, func);
 +}
-+
-+/*
-+ * Re-issue deferred callbacks straight to srcu_do_enqueue() so they cannot defer
-+ * again.  ->lock serializes the drainers: the irq_work, srcu_defer_flush() and
-+ * srcu_offline_drain().
-+ */
-+static void __srcu_defer_drain(struct srcu_defer *sndp)
-+{
-+	struct llist_node *snode, *snext;
-+	unsigned long flags;
-+
-+	if (!IS_ENABLED(CONFIG_RCU_DEFER))
-+		return;
-+
-+	raw_spin_lock_irqsave(&sndp->lock, flags);
-+	llist_for_each_safe(snode, snext, llist_del_all(&sndp->list)) {
-+		struct srcu_data *sdp = container_of(snode, struct srcu_data, defer_link);
-+		struct srcu_struct *ssp = sdp->ssp;
-+		struct llist_node *cnode, *cnext;
-+
-+		cnode = llist_del_all(&sdp->defer_cbs);
-+		llist_for_each_safe(cnode, cnext, cnode) {
-+			struct rcu_head *rhp = (struct rcu_head *)cnode;
-+
-+			/* Bounds a node self-linked by a double call_srcu(). */
-+			rhp->next = NULL;
-+			srcu_do_enqueue(ssp, rhp, rhp->func, true);
-+		}
-+	}
-+	raw_spin_unlock_irqrestore(&sndp->lock, flags);
-+}
-+
-+/*
-+ * Only the irq_work drain can be re-fed by its own re-issue, so only it sets
-+ * ->draining.  A direct drain re-issues onto this CPU, and anything staged
-+ * during it is picked up by that CPU's own irq_work.
-+ */
-+static void srcu_defer_drain(struct irq_work *iw)
-+{
-+	struct srcu_defer *sndp = container_of(iw, struct srcu_defer, iw);
-+
-+	WRITE_ONCE(sndp->draining, true);
-+	__srcu_defer_drain(sndp);
-+	WRITE_ONCE(sndp->draining, false);
-+}
-+
-+/*
-+ * Drain @cpu's deferred call_srcu() callbacks once @cpu is dead.  One pass
-+ * covers every srcu_struct; the re-issue lands on the current CPU.
-+ */
-+void srcu_offline_drain(int cpu)
-+{
-+	__srcu_defer_drain(&per_cpu(srcu_defer, cpu));
-+}
-+
- /**
-  * call_srcu() - Queue a callback for invocation after an SRCU grace period
-  * @ssp: srcu_struct in queue the callback
-@@ -1677,9 +1824,18 @@ void srcu_barrier(struct srcu_struct *ssp)
- {
- 	int cpu;
- 	int idx;
--	unsigned long s = rcu_seq_snap(&ssp->srcu_sup->srcu_barrier_seq);
-+	unsigned long s;
+ EXPORT_SYMBOL_GPL(call_srcu);
  
- 	check_init_srcu_struct(ssp);
-+
-+	/*
-+	 * Register any deferred callbacks before snapshotting the sequence.  The
-+	 * staging list is per-CPU, not per-srcu_struct, so this also drains
-+	 * other srcu_structs'.
-+	 */
-+	srcu_defer_flush();
-+
-+	s = rcu_seq_snap(&ssp->srcu_sup->srcu_barrier_seq);
- 	mutex_lock(&ssp->srcu_sup->srcu_barrier_mutex);
- 	if (rcu_seq_done(&ssp->srcu_sup->srcu_barrier_seq, s)) {
- 		smp_mb(); /* Force ordering following return. */
-@@ -2134,6 +2290,12 @@ static void srcu_module_going(struct module *mod)
- 	struct srcu_struct *ssp;
- 	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
+ /*
+@@ -262,6 +339,14 @@ void synchronize_srcu(struct srcu_struct *ssp)
+ }
+ EXPORT_SYMBOL_GPL(synchronize_srcu);
  
-+	/*
-+	 * Deferral skips check_init_srcu_struct(), so cleanup_srcu_struct()
-+	 * below can be skipped for an srcu_struct that has staged callbacks.
-+	 * Drain them before any ->sda is freed.
-+	 */
-+	srcu_defer_flush();
- 	for (i = 0; i < mod->num_srcu_structs; i++) {
- 		ssp = *(sspp++);
- 		if (!rcu_seq_state(smp_load_acquire(&ssp->srcu_sup->srcu_gp_seq_needed)) &&
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 3bf3a250f9de8..7a9b18825e029 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4636,6 +4636,8 @@ void rcutree_migrate_callbacks(int cpu)
- 	 * cover.  Drain them here, before the early returns.
- 	 */
- 	__rcu_defer_drain(rdp);
-+	/* Likewise for the outgoing CPU's deferred call_srcu() callbacks. */
-+	srcu_offline_drain(cpu);
- 
- 	if (rcu_rdp_is_offloaded(rdp))
- 		return;
++/* Register any deferred callbacks, then wait for all in-flight ones. */
++void srcu_barrier(struct srcu_struct *ssp)
++{
++	__srcu_defer_drain(ssp);
++	synchronize_srcu(ssp);
++}
++EXPORT_SYMBOL_GPL(srcu_barrier);
++
+ /*
+  * get_state_synchronize_srcu - Provide an end-of-grace-period cookie
+  */
 -- 
 2.53.0-Meta
 
