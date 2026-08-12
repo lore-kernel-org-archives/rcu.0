@@ -1,46 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1AA2490BE2;
-	Wed, 12 Aug 2026 21:27:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119DF48C3E3;
+	Wed, 12 Aug 2026 21:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786570026; cv=none; b=rTIHmggPxPiKrE+wRn8F9Ao1RLvZkB4TfUN7+5Lce4rQxmvuue6+IME50eGSy0UaHMcukZOK6DXFETU/K5fhyMeht/uxq/qk2bBEc6mPDUIoNCsq3j3kp0EIZSDUUONDftAdXPYJcOSND/C6ZBS1OC83y1ZiUCGGF9DM6q9dCnw=
+	t=1786570180; cv=none; b=mqYK9pVmBtm18H0wMG7I0TDe5EVvdvo1VZMf1Jmq4vX1C0RY9W4WW4wmaJwdAK8U6opuE8EoC3QiQDodu0PPtoTcVhxTeU/Z+xuSg8Pqpz3/Kcn0H+YaFNNIuyKiRqeQSZ4hBM5z2VIf33jPplYaBeKbheE02sHeKkrJfkSKGOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786570026; c=relaxed/simple;
-	bh=aRYUUqHwLCH9J5qPwA8C2e1PRfbrPHnkeWjcd7jChZE=;
+	s=arc-20240116; t=1786570180; c=relaxed/simple;
+	bh=iR1DKvAFor+wbnwSxob6rgygEa+SXp3NsC3eYPqjNx0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gH53ysWU99Pr66O6byHZPO0+0DlgjZimNjBJ8th3yL6C3fr+UuK+Jgt5tJr1MShWryUwc4pt+aQqQJy+bVyV0K+ud4uZaBKNqUypIWe+g0F2fguLwaJkp900TBDa8ZE3hoDOrk3uuaZsQzC4JSbdkFJAla12QmJtHjJRHowxGTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XP9oFoBt; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=GcT39P9B6YOGhUAMAGbZjJ3AhZQtIrrbrwjW9w2P0YaDizDq7jhvnUabCwAxc3IM4anQjCwCyQcU1DQwy5zca8cKlOCllnQoXoXfNg2ahrfem1zsroV4PjVimOK7TmAuyzPI8Uf250EOnJeEn+lYbYp/2Il29JFBB9JHS7cbo5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hgoKDZYG; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XP9oFoBt"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDC4B1F00A3A;
-	Wed, 12 Aug 2026 21:26:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hgoKDZYG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 991171F000E9;
+	Wed, 12 Aug 2026 21:29:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786570017;
-	bh=0tKpPjGzkf8Xj+uCWoNNLTUaBvdi59dJkV8/z3hY3hk=;
+	s=k20260515; t=1786570178;
+	bh=BOHa58FJaGH8oiqqQ92/djPY9z94j0otwLbIoF0R/Do=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=XP9oFoBtFLw8G6h2pExLyiU+NsfcI4igRxhnTm6+L1Kk3nAa0C/ar2/NAXIv4/DXH
-	 Hem8UJ7MY1sjeNYkiO+KnQlOiNIA6T54O3XXkJFe0HKwN6jPvi2XtnwLIZNaFDS+mf
-	 klvFiIueqCFCwIzZ01ygOnTy13RrJVndiRobuYrSEx3H8sAz+n6NRxck8hzs989/w7
-	 syQnRTMVUD8n7VXTM+ffOeqJIgZ7ZAcJXhyr7Pk8fnQJJe8XmJQ5MUkdtsuWOgfy6N
-	 KzfXPS0r/V6/EPDEqlDkE3gqyQj2hHql9vKRjK4DXbJL25Q0/NP/CofS4kaOnefgBO
-	 F3mKEkWRxxStA==
+	b=hgoKDZYGxNcWxhmlm6ZUKQoVrcah/PraqIH5EsopsWmAMD6xYltXwcGqKXShqGJSp
+	 09ZDTO5tXa3naNhLMGXWrDFlApp1lulTon/5TPJKC54iW4gaRVS8NEjLupJ0C73rAL
+	 eBjswhC0Z9ba29vmYajMT6PMRUCESrv39Gfjc46lEQDgGcphp2cWO2qd46IelZLC6d
+	 yYD0I7Cxz2GnoCX+nCtIDBBKUy/9PAzEuws3zys8CaOscJlWGylc/WRdKdvUNW9v3j
+	 U7c6SJ7pq2IRKQu1EUmcYEEkyZGzhJKNLKCUYECtiIrQkMV5lpI85CxrYQME7buGO1
+	 dL6d+pTZeZZnw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 68F03CE0EBE; Wed, 12 Aug 2026 14:26:57 -0700 (PDT)
-Date: Wed, 12 Aug 2026 14:26:57 -0700
+	id 3C082CE0EBE; Wed, 12 Aug 2026 14:29:38 -0700 (PDT)
+Date: Wed, 12 Aug 2026 14:29:38 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Breno Leitao <leitao@debian.org>
-Cc: Zqiang <qiang.zhang@linux.dev>, frederic@kernel.org,
-	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, boqun@kernel.org,
-	urezki@gmail.com, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v2] srcu: Fix WARN_ON() for timer_delete_sync() in
- cleanup_srcu_struct()
-Message-ID: <12a80fb0-d725-4f20-8c97-f636866eebd4@paulmck-laptop>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	David Dai <david.dai@linux.dev>
+Subject: Re: [PATCH RFC] rcu-tasks: Disable callback contend/collapse
+ messages by default
+Message-ID: <7924bc0d-2730-4187-9091-60e8725ec8a5@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20260811002951.106631-1-qiang.zhang@linux.dev>
- <anw3uOzb-WXTh6B4@gmail.com>
+References: <eb1c47d9-e694-407f-9e4c-3b7519f4ec46@paulmck-laptop>
+ <anw8Qw8lfeIykski@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -49,37 +47,52 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <anw3uOzb-WXTh6B4@gmail.com>
+In-Reply-To: <anw8Qw8lfeIykski@gmail.com>
 
-On Wed, Aug 12, 2026 at 02:07:13AM -0700, Breno Leitao wrote:
-> On Tue, Aug 11, 2026 at 08:29:51AM +0800, Zqiang wrote:
-> > The WARN_ON() for timer_delete_sync() means that the caller forgot
-> > to call srcu_barrier() before cleanup. however, it still can trigger
-> > even when srcu_barrier() was properly called.
+On Wed, Aug 12, 2026 at 02:28:10AM -0700, Breno Leitao wrote:
+> On Tue, Aug 11, 2026 at 07:00:14PM -0700, Paul E. McKenney wrote:
+> > New workloads can do large bursts of call_rcu_tasks() invocations in a
+> > short time period, followed by a quiet time period long enough to drain
+> > all of the callbacks, followed by another burst of call_rcu_tasks()
+> > invocations.  This can cause RCU Tasks to switch back and forth between
+> > queuing callbacks only on CPU 0 (during quiet periods) and on all CPUs
+> > (during bursts).
 > > 
-> > When a SRCU grace period ends and find that the allocation of srcu_node
-> > tree has been completed, but the ss_state is still less than SRCU_SIZE_BIG,
-> > the mask=~0 causes delay_work timer be queued on every CPU which has
-> > been online regardless of whether it's sdp->srcu_cblist has callbacks.
-> > the srcu_barrier() only wait srcu_barrier_head's callbacks to complete,
-> > however, the srcu_barrier_head will not be inserted into an empty
-> > sdp->srcu_cblist. after that, when cleanup_srcu_struct() finds a pending
-> > delay_work timer on a CPU with no callbacks, triggering a false positive.
+> > Which is fine.  Except for the fact that each cycle from CPU-0-only to
+> > all-CPUs queuing and back generates three console messages, one announcing
+> > the shift to all-CPUs queuing, another announcing the start of the shift
+> > back to CPU-0-only queuing, and the third announcing completion of this
+> > shift after an RCU grace period.  And these console messages can overrun
+> > console-log communications channels and obscure other console-message-based
+> > debugging information.  And the only known use for these console messages
+> > is debugging RCU Tasks itself.
 > > 
-> > This commit therefore add rcu_segcblist_n_cbs() to WARN_ON(), make the
-> > warning triggers only when the timer is still pending and there are
-> > actual outstanding callbacks.
+> > This commit therefore adds a rcupdate.rcu_task_collapse_debug module
+> > parameter that defaults to false (suppressing these console messages).
+> > Those debugging or otherwise playing with RCU Tasks callback queuing
+> > auto-adjustment can set this parameter to the value true.
 > > 
-> > Fixes: 05c3e88488ed ("srcu: Queue sdp->work when the delay timer is successfully deleted")
 > > Reported-by: Breno Leitao <leitao@debian.org>
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Closes: https://lore.kernel.org/oe-lkp/202608060833.bce92909-lkp@intel.com/
-> > Tested-by: kernel test robot <oliver.sang@intel.com>
-> > Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+> > Reported-by: David Dai <david.dai@linux.dev>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> Tested-by: Breno Leitao <leitao@debian.org>
+> Reviewed-by: Breno Leitao <leitao@debian.org>
 
-Thank you, Breno!  I will add this to the original, which I merged this
-fix into.
+Thank you!  I will apply this on my next rebase.
+
+> Thanks for the patch. I confirm that this is flooding the monitoring
+> systems at Meta, together with [1]
+> 
+> Link:
+> https://lore.kernel.org/all/20260810-swap-v1-0-375ef0767206@debian.org/
+> [0]
+> 
+> > +static bool rcu_task_collapse_debug __read_mostly = false;
+> 
+> nit: You don't need false here. Checkpatch even raises an error:
+> 
+> 	ERROR: do not initialise statics to false
+
+And this fix as well.
 
 							Thanx, Paul
