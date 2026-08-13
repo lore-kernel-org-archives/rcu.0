@@ -1,44 +1,56 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119DF48C3E3;
-	Wed, 12 Aug 2026 21:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E69F413D62
+	for <rcu@vger.kernel.org>; Thu, 13 Aug 2026 06:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786570180; cv=none; b=mqYK9pVmBtm18H0wMG7I0TDe5EVvdvo1VZMf1Jmq4vX1C0RY9W4WW4wmaJwdAK8U6opuE8EoC3QiQDodu0PPtoTcVhxTeU/Z+xuSg8Pqpz3/Kcn0H+YaFNNIuyKiRqeQSZ4hBM5z2VIf33jPplYaBeKbheE02sHeKkrJfkSKGOw=
+	t=1786603780; cv=none; b=aLeHYym95qWbDXBgq79qZ+96uWzIdCMZVbcUB+WOQpm2lzlHHnx1sbGRZWvNglBIU4zy80NfX7PALzfk6F9U7db9KHJuRPqmQDVSGGtdmI+X81dqlXtcnpiCY7Y4P0aQ22okB/NFFw6MWwx0Iila/nS0WE3SBNLuWWN3Be6/SIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786570180; c=relaxed/simple;
-	bh=iR1DKvAFor+wbnwSxob6rgygEa+SXp3NsC3eYPqjNx0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GcT39P9B6YOGhUAMAGbZjJ3AhZQtIrrbrwjW9w2P0YaDizDq7jhvnUabCwAxc3IM4anQjCwCyQcU1DQwy5zca8cKlOCllnQoXoXfNg2ahrfem1zsroV4PjVimOK7TmAuyzPI8Uf250EOnJeEn+lYbYp/2Il29JFBB9JHS7cbo5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hgoKDZYG; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1786603780; c=relaxed/simple;
+	bh=zjej5DS0bsfxfxbsF8cZMOUS4c8WA6q6Hfn3aXF69YI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Kq+oxt09KeJ0Fm69BMFnCHVAvch2NAQjazHHCMtDfBDV4nIe5YtR9AFWWZKQ28KVcEmLWiQ09ERe2IEUcfoFge14fdQzTVXl3FxZG/4QJ5MR9wbBnDxugaGVd2OzhB8jG5j1VwJq8UGf2m/dxmJEk+Xl9/NDFiYz1a04ya6BjxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aMpEX2jC; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hgoKDZYG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 991171F000E9;
-	Wed, 12 Aug 2026 21:29:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786570178;
-	bh=BOHa58FJaGH8oiqqQ92/djPY9z94j0otwLbIoF0R/Do=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=hgoKDZYGxNcWxhmlm6ZUKQoVrcah/PraqIH5EsopsWmAMD6xYltXwcGqKXShqGJSp
-	 09ZDTO5tXa3naNhLMGXWrDFlApp1lulTon/5TPJKC54iW4gaRVS8NEjLupJ0C73rAL
-	 eBjswhC0Z9ba29vmYajMT6PMRUCESrv39Gfjc46lEQDgGcphp2cWO2qd46IelZLC6d
-	 yYD0I7Cxz2GnoCX+nCtIDBBKUy/9PAzEuws3zys8CaOscJlWGylc/WRdKdvUNW9v3j
-	 U7c6SJ7pq2IRKQu1EUmcYEEkyZGzhJKNLKCUYECtiIrQkMV5lpI85CxrYQME7buGO1
-	 dL6d+pTZeZZnw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3C082CE0EBE; Wed, 12 Aug 2026 14:29:38 -0700 (PDT)
-Date: Wed, 12 Aug 2026 14:29:38 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	David Dai <david.dai@linux.dev>
-Subject: Re: [PATCH RFC] rcu-tasks: Disable callback contend/collapse
- messages by default
-Message-ID: <7924bc0d-2730-4187-9091-60e8725ec8a5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <eb1c47d9-e694-407f-9e4c-3b7519f4ec46@paulmck-laptop>
- <anw8Qw8lfeIykski@gmail.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aMpEX2jC"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1786603778; x=1818139778;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=zjej5DS0bsfxfxbsF8cZMOUS4c8WA6q6Hfn3aXF69YI=;
+  b=aMpEX2jCC7k57wqjQt4AsJ5RcaQv0O6knlQcXTUB8FsF/rGUnSkNZzQ9
+   mmHFeyNvcjf9b3nifkiy12UxXnFA75Lr5bCpIdjg/Zxgrm9xlaD9xy5uT
+   EaN9xTp2MFTgllPb+DrWgqNgGkQXj8d+vbEa5d7e68TtsVqo0ucR3Q+Ss
+   KCqxCTwRil0HWwDpKFNF4e8Y+bWzvvVuYQmOQTDS96/7UZZTCaJgm76Lr
+   dQEsQl+SBzwN3QZ2e+Yy5mX+0DB4vcVmutx6NB+H86ZyJQEcAXuqhRFrK
+   csxxy6VTa0v6+FW8/v4BXOlzgKdOZ8FhPROKQZAnV0wXxLKML8tpGbqTR
+   A==;
+X-CSE-ConnectionGUID: 1bzdvIB9T9OfooYGjrAtfA==
+X-CSE-MsgGUID: bfWuTvP0SgaY39GrOzAKBA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11873"; a="87051282"
+X-IronPort-AV: E=Sophos;i="6.25,220,1779174000"; 
+   d="scan'208";a="87051282"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2026 23:49:37 -0700
+X-CSE-ConnectionGUID: dEXqSifzRvK8E4bkVacJRw==
+X-CSE-MsgGUID: IzCdM1JiQQGMCokNGRLV1A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,220,1779174000"; 
+   d="scan'208";a="269042149"
+Received: from ly-workstation.sh.intel.com (HELO ly-workstation) ([10.239.182.64])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2026 23:49:35 -0700
+Date: Thu, 13 Aug 2026 14:49:31 +0800
+From: kernel test robot <yi1.lai@intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, Boqun Feng <boqun@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	rcu@vger.kernel.org, yi1.lai@intel.com
+Subject: [paulmckrcu:non-rcu/next] [hazptrtorture] 9b08a09f6d:
+ BUG:kernel_NULL_pointer_dereference,address
+Message-ID: <202608130915.62b53936-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -47,52 +59,154 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <anw8Qw8lfeIykski@gmail.com>
 
-On Wed, Aug 12, 2026 at 02:28:10AM -0700, Breno Leitao wrote:
-> On Tue, Aug 11, 2026 at 07:00:14PM -0700, Paul E. McKenney wrote:
-> > New workloads can do large bursts of call_rcu_tasks() invocations in a
-> > short time period, followed by a quiet time period long enough to drain
-> > all of the callbacks, followed by another burst of call_rcu_tasks()
-> > invocations.  This can cause RCU Tasks to switch back and forth between
-> > queuing callbacks only on CPU 0 (during quiet periods) and on all CPUs
-> > (during bursts).
-> > 
-> > Which is fine.  Except for the fact that each cycle from CPU-0-only to
-> > all-CPUs queuing and back generates three console messages, one announcing
-> > the shift to all-CPUs queuing, another announcing the start of the shift
-> > back to CPU-0-only queuing, and the third announcing completion of this
-> > shift after an RCU grace period.  And these console messages can overrun
-> > console-log communications channels and obscure other console-message-based
-> > debugging information.  And the only known use for these console messages
-> > is debugging RCU Tasks itself.
-> > 
-> > This commit therefore adds a rcupdate.rcu_task_collapse_debug module
-> > parameter that defaults to false (suppressing these console messages).
-> > Those debugging or otherwise playing with RCU Tasks callback queuing
-> > auto-adjustment can set this parameter to the value true.
-> > 
-> > Reported-by: Breno Leitao <leitao@debian.org>
-> > Reported-by: David Dai <david.dai@linux.dev>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> Reviewed-by: Breno Leitao <leitao@debian.org>
 
-Thank you!  I will apply this on my next rebase.
 
-> Thanks for the patch. I confirm that this is flooding the monitoring
-> systems at Meta, together with [1]
-> 
-> Link:
-> https://lore.kernel.org/all/20260810-swap-v1-0-375ef0767206@debian.org/
-> [0]
-> 
-> > +static bool rcu_task_collapse_debug __read_mostly = false;
-> 
-> nit: You don't need false here. Checkpatch even raises an error:
-> 
-> 	ERROR: do not initialise statics to false
+Hello,
 
-And this fix as well.
+kernel test robot noticed "BUG:kernel_NULL_pointer_dereference,address" on:
 
-							Thanx, Paul
+commit: 9b08a09f6d073bebd38e7be08781b0a4758c924e ("hazptrtorture: Defer release of hazard pointers") https://github.com/paulmckrcu/linux non-rcu/next
+
+[test failed on linux-next/master 6b8c8af514d739d0335f5579b585e02babe8a727]
+
+in testcase: trinity
+version: trinity-i386-abe9de86-1_20230429 with following parameters:
+
+	runtime: 300s
+	group: group-00
+	nr_groups: 5
+	reproduction: run 254 cycles, the issue can be reproduced for 16 times.
+
+
+config: i386-randconfig-015-20260807
+compiler: clang-22
+test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <yi1.lai@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202608130915.62b53936-lkp@intel.com
+
+
+
+[  419.412561][   T52] BUG: kernel NULL pointer dereference, address: 00000108
+[  419.456670][   T52] #PF: supervisor read access in kernel mode
+[  419.495649][   T52] #PF: error_code(0x0000) - not-present page
+[  419.534113][   T52] *pde = 00000000
+[  419.554661][   T52] Oops: Oops: 0000 [#1] SMP
+[  419.579287][   T52] CPU: 0 UID: 0 PID: 52 Comm: hazptr_torture_ Tainted: G        W           7.2.0-rc3-00011-g9b08a09f6d07 #1 PREEMPTLAZY  809133f67ba61c2271624f9b1ff820a8a212cdad
+[  419.666331][   T52] Tainted: [W]=WARN
+[  419.686632][   T52] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[  419.731225][   T52] EIP: hazptr_synchronize_overflow_list+0x43/0xc0
+[  419.767103][   T52] Code: 30 8b 4e 34 90 90 90 89 4d e8 89 7d ec 8d 46 2c 89 45 f0 8b 45 f0 8b 00 89 45 f0 85 c0 74 67 90 90 90 90 90 90 90 90 8b 45 f0 <8b> 40 08 3b 45 e4 0f 95 c3 83 f8 01 0f 95 c7 89 f0 e8 67 bc fe 00
+All code
+========
+   0:	30 8b 4e 34 90 90    	xor    %cl,-0x6f6fcbb2(%rbx)
+   6:	90                   	nop
+   7:	89 4d e8             	mov    %ecx,-0x18(%rbp)
+   a:	89 7d ec             	mov    %edi,-0x14(%rbp)
+   d:	8d 46 2c             	lea    0x2c(%rsi),%eax
+  10:	89 45 f0             	mov    %eax,-0x10(%rbp)
+  13:	8b 45 f0             	mov    -0x10(%rbp),%eax
+  16:	8b 00                	mov    (%rax),%eax
+  18:	89 45 f0             	mov    %eax,-0x10(%rbp)
+  1b:	85 c0                	test   %eax,%eax
+  1d:	74 67                	je     0x86
+  1f:	90                   	nop
+  20:	90                   	nop
+  21:	90                   	nop
+  22:	90                   	nop
+  23:	90                   	nop
+  24:	90                   	nop
+  25:	90                   	nop
+  26:	90                   	nop
+  27:	8b 45 f0             	mov    -0x10(%rbp),%eax
+  2a:*	8b 40 08             	mov    0x8(%rax),%eax		<-- trapping instruction
+  2d:	3b 45 e4             	cmp    -0x1c(%rbp),%eax
+  30:	0f 95 c3             	setne  %bl
+  33:	83 f8 01             	cmp    $0x1,%eax
+  36:	0f 95 c7             	setne  %bh
+  39:	89 f0                	mov    %esi,%eax
+  3b:	e8 67 bc fe 00       	call   0xfebca7
+
+Code starting with the faulting instruction ===========================================
+   0:	8b 40 08             	mov    0x8(%rax),%eax
+   3:	3b 45 e4             	cmp    -0x1c(%rbp),%eax
+   6:	0f 95 c3             	setne  %bl
+   9:	83 f8 01             	cmp    $0x1,%eax
+   c:	0f 95 c7             	setne  %bh
+   f:	89 f0                	mov    %esi,%eax
+  11:	e8 67 bc fe 00       	call   0xfebc7d
+[  419.872228][   T52] EAX: 00000100 EBX: 00000000 ECX: 00000000 EDX: 00000202
+[  419.904569][   T52] ESI: e4f7e13c EDI: 00000829 EBP: b3e9df20 ESP: b3e9df04
+[  419.941247][   T52] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010006
+[  419.980096][   T52] CR0: 80050033 CR2: 00000108 CR3: 05fb1000 CR4: 00000690
+[  420.005370][   T52] Call Trace:
+[  420.022998][   T52]  hazptr_synchronize+0x166/0x200
+[  420.050473][   T52]  hazptr_torture_writer+0x153/0x400
+[  420.076986][   T52]  ? __kthread_parkme+0x4b/0x100
+[  420.094745][   T52]  kthread+0x107/0x140
+[  420.112829][   T52]  ? hazptr_torture_reader+0x340/0x340
+[  420.140468][   T52]  ? kthread_unuse_mm+0xc0/0xc0
+[  420.165878][   T52]  ? kthread_unuse_mm+0xc0/0xc0
+[  420.185387][   T52]  ret_from_fork+0x131/0x240
+[  420.207521][   T52]  ? kthread_unuse_mm+0xc0/0xc0
+[  420.231501][   T52]  ret_from_fork_asm+0x12/0x20
+[  420.256219][   T52]  entry_INT80_32+0x125/0x125
+[  420.280981][   T52] Modules linked in: ipmi_devintf ppdev rapl i2c_piix4 tpm_tis tpm_tis_core i2c_smbus tpm i2c_core ata_generic i6300esb libata parport_pc rtc_cmos parport fuse
+[  420.365047][   T52] CR2: 0000000000000108
+[  420.387629][   T52] ---[ end trace 0000000000000000 ]---
+[  420.416535][   T52] EIP: hazptr_synchronize_overflow_list+0x43/0xc0
+[  420.451442][   T52] Code: 30 8b 4e 34 90 90 90 89 4d e8 89 7d ec 8d 46 2c 89 45 f0 8b 45 f0 8b 00 89 45 f0 85 c0 74 67 90 90 90 90 90 90 90 90 8b 45 f0 <8b> 40 08 3b 45 e4 0f 95 c3 83 f8 01 0f 95 c7 89 f0 e8 67 bc fe 00
+All code
+========
+   0:	30 8b 4e 34 90 90    	xor    %cl,-0x6f6fcbb2(%rbx)
+   6:	90                   	nop
+   7:	89 4d e8             	mov    %ecx,-0x18(%rbp)
+   a:	89 7d ec             	mov    %edi,-0x14(%rbp)
+   d:	8d 46 2c             	lea    0x2c(%rsi),%eax
+  10:	89 45 f0             	mov    %eax,-0x10(%rbp)
+  13:	8b 45 f0             	mov    -0x10(%rbp),%eax
+  16:	8b 00                	mov    (%rax),%eax
+  18:	89 45 f0             	mov    %eax,-0x10(%rbp)
+  1b:	85 c0                	test   %eax,%eax
+  1d:	74 67                	je     0x86
+  1f:	90                   	nop
+  20:	90                   	nop
+  21:	90                   	nop
+  22:	90                   	nop
+  23:	90                   	nop
+  24:	90                   	nop
+  25:	90                   	nop
+  26:	90                   	nop
+  27:	8b 45 f0             	mov    -0x10(%rbp),%eax
+  2a:*	8b 40 08             	mov    0x8(%rax),%eax		<-- trapping instruction
+  2d:	3b 45 e4             	cmp    -0x1c(%rbp),%eax
+  30:	0f 95 c3             	setne  %bl
+  33:	83 f8 01             	cmp    $0x1,%eax
+  36:	0f 95 c7             	setne  %bh
+  39:	89 f0                	mov    %esi,%eax
+  3b:	e8 67 bc fe 00       	call   0xfebca7
+
+Code starting with the faulting instruction ===========================================
+   0:	8b 40 08             	mov    0x8(%rax),%eax
+   3:	3b 45 e4             	cmp    -0x1c(%rbp),%eax
+   6:	0f 95 c3             	setne  %bl
+   9:	83 f8 01             	cmp    $0x1,%eax
+   c:	0f 95 c7             	setne  %bh
+   f:	89 f0                	mov    %esi,%eax
+  11:	e8 67 bc fe 00       	call   0xfebc7d
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20260813/202608130915.62b53936-lkp@intel.com
+
+
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+
