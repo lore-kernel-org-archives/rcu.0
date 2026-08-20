@@ -1,199 +1,142 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8E243A80C;
-	Mon, 17 Aug 2026 14:12:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473DD4028F7
+	for <rcu@vger.kernel.org>; Thu, 20 Aug 2026 09:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786975943; cv=none; b=sediMufQA50Nu1/OaVpOPuZ0xfu+/vHX5kAU4cBiBpBbxOIXdWonGGgySrOgTwH8f1sTtZ51P1/IWGj6AzNYhHkxWk2CUjC5a5Av90BGUDXNOuXG5av52sPYHP/yx7Gw0vhqDBiPd3SN2jIaSPavei6gyvRHg5WYd5MWFNCFx6c=
+	t=1787218979; cv=none; b=Cy8GnsszasFPi5ewATnnFk7UyvpLii+22R6uUTYXxLExl5okXAN5rbQgp+V0jT668dh3+IU2WFZYBc2e4ShJsZZ7olkkx8TT0WRjZXRs1FS2zdaHcWMnyrVqCYNkH13IkUof0xfnxjdoPE62/vy623RP2dwCZLZlkvF0NhJWbCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786975943; c=relaxed/simple;
-	bh=whLp4VQJ11W9FF8YH3UE9BW3zGvNgHZnLowXxnte3TI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OAFBNjA9OKRT/8+SDun7YUhU7Lk3qD147+/4JEhSfC43HVswoG1J2trHK1USMb6E8p3qy7ef5wuqObR+Dl9KcL9c9rHqoWAlDTJYnCnyesSfu+FNN88GZe1AIhBUcjnVbsxWKvDrXK7rDZwLhVe0t0TpTUHI/kM/UIdhjSXYvW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=etaDw40h; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1787218979; c=relaxed/simple;
+	bh=94oBQ1E3TrOnZwIjKlOqHsa45htCk8xjD+RIr5rGE4c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uqH93EIaL/j6+A8yIz+7jwlfAQQAamnnGCCwZIDfXCPQUsYyMf6UOmcdX+P0TpUlP4vtJT5Ij9oixqSruSZ44SRsKv63/b5RLXx5vrWh7Co7uaaUT2XXAfjPZyZpQZw7clpnRlP8wB1G5MLQozLZpUav/XgDDo16Pdj65TF6BW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DLttaMpU; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="etaDw40h"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B5021F000E9;
-	Mon, 17 Aug 2026 14:12:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786975941;
-	bh=fBAlu1r2lvk6SmvLzH3lcGNBXNN/owPNzuHBstahDAo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=etaDw40hb4DjVCE5yLn969Pe/c187Eu50Rfd6V9iHj0BwMsvtJwA0J56MhnWHb2L2
-	 2pg73vFhsgn0tUlbUGybnCBmzL+Gf2w8lsvs/l/6BI/Wn87AlL5h73xfAXIi8cPkn0
-	 XBMprk/hRCIdhPKWMLuC/zF0SV4+inGLjXN75NpCirL+SrHU5ziWiOHIHi76vJxyo6
-	 j8Jf/I+UNHzR9YactB8w2ZERCET0JJkbLcqp2lfq3aSI1MiV6ce+CI76w5uMnM4wig
-	 IRMkDb8Gdkw/6rzICmZ5JCUL+itoEK0aYNdrTArESDATZZTVCPRgWi42W0PgYGbIbd
-	 I2Tq0SiHD0trA==
-Date: Mon, 17 Aug 2026 16:12:18 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Breno Leitao <leitao@debian.org>
-Subject: Re: [PATCH v1 10/11] rcu: Advance callbacks for expedited GP
- completion in rcu_core()
-Message-ID: <aoMWwva-MkA-OHkp@localhost.localdomain>
-References: <20260624132356.516959-1-puranjay@kernel.org>
- <20260624132356.516959-11-puranjay@kernel.org>
- <al-DopVEIe2FvLnv@localhost.localdomain>
- <CANk7y0hado1yb9Gaeg0FVX45E96E3U_8d6gJTF0=s-pjwcQEpQ@mail.gmail.com>
- <amE7NrJRm0YDYroX@pavilion.home>
- <CANk7y0g24_wj+PUKSRdkrCqY2P1tQ=5JxbWYZbWsbTLhR0M9Lw@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DLttaMpU"
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-38fdeaed181so2863471a91.1
+        for <rcu@vger.kernel.org>; Thu, 20 Aug 2026 02:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787218965; x=1787823765; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=Mz4ga/wlmpIJIqfhDzk1rmZoX+M5goupxtiu1lKt8Xw=;
+        b=DLttaMpUztuV58+tMEVJ1QvPfz5t5bm/T5e4vJ0IKJUcHD9uf1X6n56PvRPw+lJY5l
+         7AFfCE+9dfxSSvvWThknJPzq+Ee7PXnbQG0ueSIb08H1AQ5cr3eWNVxaQKE0mGS7YtUV
+         l0E1i4Gs+LMNsV/ZJxQ4kXe7x4aqqUrtxR4lAU5gjdkr0c6zhghAf9AH44aTNTvZuRdK
+         FNMB2Qt5CG2GxLBc156cCG88Zx/iyamZ7R8echUEFU+O2HvXCZJY7xTgk1ZOYKLljP8w
+         /XZ6IUzNpqVFCfwYTiv7QQAyrK4sIARgHPYluiU6E0v5HE4wVyyWYcaO8beb81pnYpwX
+         c0EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787218965; x=1787823765;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=Mz4ga/wlmpIJIqfhDzk1rmZoX+M5goupxtiu1lKt8Xw=;
+        b=lVn3iUzzitCUTFGwQtgrAFORoAFt4jH/kjoyltRM1KhR/bAqxmidouJRiLBJ9LXKzA
+         v5oLpfFsEgS8XE90Lcu1EAYC+b91XAjJGFHYYBNqV3LGQhEAJaNTAacdqBgVBOWNt1iv
+         6ID0L0oIQavXiVVcZYARf0N8sNAZ+RrpJpYURwMBNtnkq3AkhhTY0SxwCoR9h9HYnCfM
+         iO+DntL0hZZ8KuvcBXZl3prbN0pA5K+lFXLGC6lh3PTCtxgxV2r7ZFmwAtEXXz2GL++J
+         blJhRlXOnAE8B6EIXSuar1erV5SvBemtV9aNX7pGVXvUW33uY2OyeTF7Zz80PjHb6uZB
+         JMFg==
+X-Forwarded-Encrypted: i=1; AHgh+Rop40ZL0zI0ODiV/Ktbiv2gvC6700hjR0Q2XkIcwgZEEKb1JXUMhs3OJOwOAdfK9DnhgJU=@vger.kernel.org
+X-Gm-Message-State: AFuF++lrwJkIoOnAs8VH+TLTulZR8XpHyBt2pE8RGrKmo8pY8AzlE84Q
+	1Wt+dlRJcigxMAGaz/qTOujrTs3oxNgtZe+NR7Sg6du1o1+e/Y76n/7G
+X-Gm-Gg: AR+sD10saR+jGCvuwjIpuwg+JH+UJgB+ezSdLbZg2s1Pe/FM2nNbqAsmd9W4/BkeUzU
+	iOQNAkuiHjCVug4DNTUBYBbUVkQWDHgoiP2ox827d23UXNtXMoXrE6/qMqYnGEIkbajSE8IpFXU
+	3sicT0PiIWxF/pvFiJ1I/wi85IrztNK+Ar3VliRVCkhLfa88orwQvxQhHknT4vfhnr3pF9tiuFr
+	pv01GlTJ3aZ6R8I1nBBT1S3KPTN2/kCFBmXmM3C2uQkCSbK+w+WM+mUh7QKEUZYeHZpfTy4Onkg
+	x94fsrrbsXTmvYpwoBhtooUkIkQYtJAg7wIxlu11G/MxiKXZJVebQXhzoYZkRS5tCHI+6yeJ33W
+	IgLYDVKA1uj7IRemhg/oJYIszxiFbIJjuXqLaeN4S1Xv/aF6fiuWKmTBJkIz50A/Inni5Pw+Ssg
+	j/SXdl3O86tGmbmEIUaNKcZJztcGF4u3cn4EmTv0NfPBAIVNPoeCzN23GgP5x85voRjt091lTPj
+	EmPwVg=
+X-Received: by 2002:a17:90a:e188:b0:38e:6d4c:14e6 with SMTP id 98e67ed59e1d1-39580a50d5cmr21560453a91.3.1787218964207;
+        Thu, 20 Aug 2026 02:42:44 -0700 (PDT)
+Received: from kernel.tail6741c6.ts.net ([116.128.244.169])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-395adaf52b7sm494590a91.0.2026.08.20.02.42.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2026 02:42:43 -0700 (PDT)
+From: Kunwu Chan <kunwu.chan@gmail.com>
+X-Google-Original-From: Kunwu Chan <kunwu.chan@linux.dev>
+To: dave@stgolabs.net,
+	paulmck@kernel.org,
+	josh@joshtriplett.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	boqun@kernel.org,
+	urezki@gmail.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev
+Cc: linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org,
+	Kunwu Chan <kunwu.chan@gmail.com>
+Subject: [PATCH] rcutorture: Fix divide-by-zero with fwd_progress_div=1
+Date: Thu, 20 Aug 2026 17:42:28 +0800
+Message-ID: <20260820094228.540304-1-kunwu.chan@linux.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANk7y0g24_wj+PUKSRdkrCqY2P1tQ=5JxbWYZbWsbTLhR0M9Lw@mail.gmail.com>
 
-Hi Puranjay,
+From: Kunwu Chan <kunwu.chan@gmail.com>
 
-Le Fri, Jul 24, 2026 at 03:54:20PM +0100, Puranjay Mohan a écrit :
-> Hi Frederic.
-> 
-> I took your approach and created this commit with minor changes to your diff:
-> 
-> A few points I'd like a second opinion on. I kept the unordered
-> poll_state_synchronize_rcu_full_unordered() for the advance check (the
-> old rcu_core() block used the ordered variant): this looks safe
-> because rcu_segcblist_advance() re-checks each segment with the
-> ordered poll_state_synchronize_rcu_full() before moving callbacks to
-> RCU_DONE_TAIL, so the check here is only a gate and the barriers still
-> apply where callbacks are actually advanced, please confirm that
-> reasoning.
+When fwd_progress_div=1, the forward-progress test computes:
+  sd4 = (sd + div - 1) / div = sd
+  dur = sd4 + torture_random(&trs) % (sd - sd4) = sd4 + % 0
 
-I confirm!
+The modulo operation with a zero divisor triggers an integer
+division by zero (undefined behavior at the C level, #DE trap on x86),
+causing a kernel Oops and panic. On x86_64, this manifests as:
 
-> need_note_gp_changes() runs the callback-list poll on the
-> lockless preamble for both callers, including offloaded rdps where
-> __note_gp_changes() won't advance anything; I left it ungated since it
-> only leads to a trylock, but it could take a
-> !rcu_rdp_is_offloaded(rdp) guard.
+  rcu_torture_fwd_prog_nr: Starting forward-progress test 0
+  Oops: divide error: 0000 [#1] SMP PTI
+  RIP: 0010:rcu_torture_fwd_prog+0x90b/0x1160
+  R12: 0000000000000000
 
-May make sense to spare the trylock if it's offloaded &&
-rdp->gpnum == rnp->gpnum && likely(!rdp->gpwrap).
+The existing guard only handles non-positive values. However,
+fwd_progress_div=1 also makes the random range empty because
+sd4 == sd.
 
-> I also dropped the
-> rcu_segcblist_is_enabled() guard the rcu_core() block had, relying on
-> __note_gp_changes() already operating on the cblist unconditionally
-> for non-offloaded rdps.
+Change the guard to reject values below 2. The forward-progress test
+only reaches this calculation when stall_dur() is positive, so
+sd = stall_dur() + 1 >= 2. For fwd_progress_div >= 2, sd4 < sd,
+ensuring that sd - sd4 is at least 1.
 
-Ok, some more below:
+Keep the existing fallback to the default value of 4 for invalid
+values.
 
-> 
-> -- >8 --
-> 
-> From c38c5f599d699e2c40d3459fdf3ef383a99c0097 Mon Sep 17 00:00:00 2001
-> From: Puranjay Mohan <puranjay@kernel.org>
-> Date: Fri, 24 Jul 2026 07:26:25 -0700
-> Subject: [PATCH] rcu: Advance callbacks for expedited GP completion in
->  note_gp_changes()
-> 
-> When rcu_pending() triggers rcu_core(), the callback advancement path
-> through note_gp_changes() -> __note_gp_changes() bails out when
-> rdp->gp_seq == rnp->gp_seq (no normal GP change). Since expedited GPs do
-> not update rnp->gp_seq, rcu_advance_cbs() is never reached from there and
-> callbacks satisfied by an expedited GP would otherwise remain stuck in
-> RCU_WAIT_TAIL until the next normal GP.
-> 
-> This is currently handled by a dedicated advancement block in rcu_core()
-> that polls the callback list and advances under a trylock. But callback
-> advancement no longer depends on the leaf-node grace-period delta; it is
-> driven by the grace-period state stored in the callback list, which
-> tracks both normal and expedited GPs. __note_gp_changes() is the natural
-> home for it, and hosting it there lets every note_gp_changes() caller
-> benefit from expedited completions rather than just rcu_core().
-> 
-> Move the advancement into __note_gp_changes(): trigger rcu_advance_cbs()
-> whenever rcu_segcblist_nextgp() confirmed with
-> poll_state_synchronize_rcu_full_unordered() reports a completed grace
-> period, and add need_note_gp_changes() so the lockless preamble takes the
-> lock for an expedited-only completion instead of short-circuiting on
-> rdp->gp_seq == rnp->gp_seq. Remove the now-redundant rcu_core() block.
-> 
-> The quiescent-state bookkeeping stays keyed to an actual rnp->gp_seq
-> change, so an expedited completion never clears a still-pending
-> core_needs_qs and stalls the normal grace period.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->  kernel/rcu/tree.c | 56 ++++++++++++++++++++++++-----------------------
->  kernel/rcu/tree.h |  1 +
->  2 files changed, 30 insertions(+), 27 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 21b6ce1dffb63..0e700d0ecf27e 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1270,27 +1270,33 @@ static bool __note_gp_changes(struct rcu_node
-> *rnp, struct rcu_data *rdp)
->  {
->         bool ret = false;
->         bool need_qs;
-> +       struct rcu_gp_seq gp_state;
->         const bool offloaded = rcu_rdp_is_offloaded(rdp);
-> +       bool completed = rcu_seq_completed_gp(rdp->gp_seq, rnp->gp_seq) ||
-> +                        unlikely(rdp->gpwrap);
-> 
->         raw_lockdep_assert_held_rcu_node(rnp);
-> 
-> -       if (rdp->gp_seq == rnp->gp_seq)
-> -               return false; /* Nothing to do. */
-> -
->         /* Handle the ends of any preceding grace periods first. */
-> -       if (rcu_seq_completed_gp(rdp->gp_seq, rnp->gp_seq) ||
-> -           unlikely(rdp->gpwrap)) {
-> +       if (completed ||
-> +           (rcu_segcblist_nextgp(&rdp->cblist, &gp_state) &&
-> +            poll_state_synchronize_rcu_full_unordered(&gp_state))) {
->                 if (!offloaded)
->                         ret = rcu_advance_cbs(rnp, rdp); /* Advance CBs. */
-> -               rdp->core_needs_qs = false;
-> -               trace_rcu_grace_period(rcu_state.name, rdp->gp_seq,
-> TPS("cpuend"));
-> -       } else {
-> +               if (completed) {
-> +                       rdp->core_needs_qs = false;
-> +                       trace_rcu_grace_period(rcu_state.name,
-> rdp->gp_seq, TPS("cpuend"));
-> +               }
-> +       } else if (rdp->gp_seq != rnp->gp_seq) {
->                 if (!offloaded)
->                         ret = rcu_accelerate_cbs(rnp, rdp); /* Recent CBs. */
->                 if (rdp->core_needs_qs)
->                         rdp->core_needs_qs = !!(rnp->qsmask & rdp->grpmask);
->         }
-> 
-> +       if (rdp->gp_seq == rnp->gp_seq)
-> +               return ret; /* Nothing else to do. */
+Verified with QEMU/KVM: a 138-second run with fwd_progress_div=1
+completed 81 forward-progress test cycles without a crash.
 
-We still need to process the below block if rdp->gpwrap, because rnp->gp_seq
-might have wrapped and equal again rdp->gp_seq.
+Fixes: 1b27291b1ea4f ("rcutorture: Add forward-progress tests for RCU grace periods")
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+---
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +
->         /* Now handle the beginnings of any new-to-this-CPU grace periods. */
->         if (rcu_seq_new_gp(rdp->gp_seq, rnp->gp_seq) ||
->             unlikely(rdp->gpwrap)) {
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 54bec8e21e71..ed2407e888b4 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -3990,7 +3990,7 @@ static int __init rcu_torture_fwd_prog_init(void)
+ 	}
+ 	if (fwd_progress_holdoff <= 0)
+ 		fwd_progress_holdoff = 1;
+-	if (fwd_progress_div <= 0)
++	if (fwd_progress_div < 2)
+ 		fwd_progress_div = 4;
+ 	rfp = kzalloc_objs(*rfp, fwd_progress);
+ 	fwd_prog_tasks = kzalloc_objs(*fwd_prog_tasks, fwd_progress);
 
-Thanks.
-
+base-commit: c68271c3f83a46de3fca48d3aa9e27c4dec8e58a
 -- 
-Frederic Weisbecker
-SUSE Labs
+2.43.0
+
