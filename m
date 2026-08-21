@@ -1,53 +1,51 @@
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC333394490;
-	Fri, 21 Aug 2026 11:53:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C69357CEA;
+	Fri, 21 Aug 2026 12:05:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787313231; cv=none; b=uJFIJFMQdiRCJpg3V8mR+yiyUAXUMxdAKgn45rG1iJqf75ObA+/0b71ik04jyeRREkju+W9adb6rd8UW/aTvt28vjxNgSf4LcGM6Q8NAP5jaOCmfRzX1bWXXaTWvMkGCSZyp3gwuSONlPGDklf6ZegBF1y6IQ+qa/WSNot1IzOs=
+	t=1787313928; cv=none; b=pu+xkzLk8ahzpVI69YGyuiEcdpO0LIN1xfE7XGmwNWbRD3mBQ0DjPpv8dX4hi/lc8UKtCdijrdM+nRw6pA6/L7Am62txyj9kLIbp/O8ggEkuAMR7yZiJDT7yIHCcI+s1+zEnc1h0U4t7GGG4fUXIz3ZEvEAl0HcnO94YLTjlryE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787313231; c=relaxed/simple;
-	bh=Iy1cPbV20QoEpDx5ugY3Fc8vEGWCnfCd3DvradBUgwg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:Content-Type:
-	 MIME-Version; b=rOwK8JVuUsG72T+l6pJTvKIpJnl8BPOEc7pyRLFB9UZN1E3r5aNNoSKnnrrEDulE4TJlbIqXpw9n3hmrYfTmSmGJZ7nz4TEef6B/4KFE9GWy4Kv4mlAcp95LO6tP7R7VloChTQPXkpWJ2KNl5lDN/PNRARpTWTjKz29F36yGnUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=knzJfTEt; arc=none smtp.client-ip=90.155.50.34
+	s=arc-20240116; t=1787313928; c=relaxed/simple;
+	bh=H8CGg8WVbpH3bG+JXHx7NyhsKsZflWMHxQbUa6as/Bw=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=NT5vq3iKKEcqGZmu1EQZ8eOEmzliwwzYetvVrePCyRFNXgpKb3tcA/hPc8yau/uopsiAoyXocFJ9aVXVBbT1qI/zO8rwHwxQ2V4nYACAfLo66tSpd2fHZ1EkjcPuRzbgmBAf84NhJ0aQqzbuULsqnyWB7Xr5icQfdCB4pO1H4yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nkiGc4V/; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="knzJfTEt"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nkiGc4V/"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:References;
-	bh=XZ3gFnn0A5RbW71OmMNANd6FSjYvWKogaEgxxwHp5Bo=; b=knzJfTEta0umt4+eH5wqOo6WZJ
-	dKDtijNdAFDePfe+Ge/S9gC1rq7xnmJjQ76ElS+Pq9HusrPyMZrDCCdQ48EKnQ8u+yV78cvOH5u9Q
-	MglvlG4NAkZy7dEcWNns0qMGpAYH+5GdI0aDE9HAqMwQ+mXj8zeifrMoOJ5mBZ1K1a5B5YjS5c8p7
-	ZK8j0jWZjfvKVUMOhyejoQbVuzZmxcdEqCsut3ZIphkcXrit8uERtI3bNj+IARZ9dPinmFoxY7HG6
-	6zMd4rsyVbYvTSL0UrY6aiEJIElTqi8tIAPrbyh/ORR+mHWys/ZrSvljiY0j5tgwWGZR8pDxeoVxs
-	KwRmCjGA==;
+	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:Date:Cc:To:
+	From:Subject:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=7D4QYieqmty+LVJHaLmYlTIz8EYkao6XPkrKNytIrPg=; b=nkiGc4V/Qs7iEDzPr+rFLh3iZK
+	J2Kvx9R+AzG9A1WOVOyvahDY6unBt1IDZDQk/Ic7uWghcdM1BqlsOlRBrnK0Sh1g4IqlQtwCb7zp3
+	E5/QW+qnoDb1cvMWzEgb2XhT2aFxqqSDh8+CmJ9P56jdmHlOsP1APa/FqH/wccZDv7Wwr15T9gqKj
+	HtwWKomXXA+OV/E3vygBlCmm7PhgxMCDXAM+JfwTVTnLdyKazuBCrZ2bVJ8Fu2XkXW+nihB453JP2
+	0ednGawFDgYPt4klRJHELiwhtYdqAp5aF+cE1WkZHZyoJNjPrj1hUdHIP8uXsNngC6TBOB5q9crnz
+	wSopVF4Q==;
 Received: from [2001:8b0:10b:5:1f55:b76d:f266:856d] (helo=u09cd745991455d.ant.amazon.com)
 	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wxNoW-0000000HNED-0koJ;
-	Fri, 21 Aug 2026 11:53:36 +0000
-Message-ID: <d26ec36e92e8f5aa244e2a22de5d167d14b36597.camel@infradead.org>
-Subject: Re: [PATCH] srcu: Add try_synchronize_srcu() for callers which can
+	id 1wxNzi-0000000HOVA-182C;
+	Fri, 21 Aug 2026 12:05:10 +0000
+Message-ID: <05e5a29a95793651062dc5d165661b4d590f08ab.camel@infradead.org>
+Subject: [PATCH v2] srcu: Add try_synchronize_srcu() for callers which can
  prove readers absent
 From: David Woodhouse <dwmw2@infradead.org>
-To: Kunwu Chan <kunwu.chan@gmail.com>
-Cc: Kunwu Chan <kunwu.chan@linux.dev>, "Paul E. McKenney"
- <paulmck@kernel.org>,  Lai Jiangshan <jiangshanlai@gmail.com>, Josh
- Triplett <josh@joshtriplett.org>, Steven Rostedt	 <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,  Boqun Feng
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Kunwu Chan <kunwu.chan@linux.dev>, Kunwu Chan <kunwu.chan@gmail.com>, 
+ Lai Jiangshan <jiangshanlai@gmail.com>, Josh Triplett
+ <josh@joshtriplett.org>, Steven Rostedt	 <rostedt@goodmis.org>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>,  Boqun Feng
  <boqun.feng@gmail.com>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel
  Fernandes	 <joel@joelfernandes.org>, Uladzislau Rezki <urezki@gmail.com>,
  Sean Christopherson <seanjc@google.com>, Paolo Bonzini
  <pbonzini@redhat.com>, rcu@vger.kernel.org, kvm@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
-Date: Fri, 21 Aug 2026 12:53:22 +0100
-In-Reply-To: <20260821032210.792451-1-kunwu.chan@linux.dev>
+Date: Fri, 21 Aug 2026 13:04:56 +0100
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-dz+qIfCEeiAqzpwLKE2J"
+	boundary="=-7YOb3W+OdXnl4efEoQ0u"
 User-Agent: Evolution 3.60.3-0ubuntu1~ppa9~24.04 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -58,113 +56,254 @@ MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
 
---=-dz+qIfCEeiAqzpwLKE2J
+--=-7YOb3W+OdXnl4efEoQ0u
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2026-08-21 at 11:22 +0800, Kunwu Chan wrote:
-> If the common case is that there are no readers and the new fast path
-> is intended to avoid the SRCU grace-period machinery, could you explain
-> what property of SRCU is still required by the proposed users that
-> prevents using ordinary RCU instead?
+For a dedicated srcu_struct whose read-side critical sections are
+short, atomic, and usually absent =E2=80=94 such as one converted from a
+spinning lock =E2=80=94 the common case at synchronize time is that there a=
+re
+no readers at all. Even synchronize_srcu_expedited() still costs the
+caller an unconditional sleep and two trips through the SRCU workqueue
+to discover that: tens of microseconds of machinery to wait for
+nothing. And synchronize_srcu()'s auto-expedite heuristic explicitly
+declines to expedite within exp_holdoff (25=C2=B5s) of the previous grace
+period, which is exactly the regime a burst of back-to-back
+invalidations puts such a domain in.
 
-My original version did use RCU, but Sean asked me to switch to a
-dedicated per-vm SRCU=C2=B9 because a system-wide grace period doesn't work
-well on large KVM hosting systems.
+Provide try_synchronize_srcu(), which proves the no-readers case
+inline and returns true without sleeping, without the workqueue, and
+without advancing the grace-period sequence. A successful return
+provides the caller the full happens-before guarantee of
+synchronize_srcu(), but is not a grace-period completion for the
+state and callback APIs: cookies from get_state_synchronize_srcu()
+remain unfinished and queued callbacks are not invoked. If the proof
+fails, it returns false and the caller falls back:
 
-=C2=B9 https://lore.kernel.org/all/anS8C4Cxqy6ehCo3@google.com/
+	if (!try_synchronize_srcu(ssp))
+		synchronize_srcu_expedited(ssp);
 
-> Could this use case instead be addressed by making exp_holdoff
-> configurable per srcu_struct, or otherwise allowing a dedicated SRCU
-> domain to use a more aggressive expedite policy?
+For Tree SRCU the proof sums both epochs' unlock counters, executes a
+full barrier, then sums both epochs' lock counters. Equality proves a
+moment within this function at which no reader existed: a reader
+entering between the sums inflates only the lock sum (spurious
+fallback, safe), and a reader whose increment is unobserved has not
+yet returned from srcu_read_lock() =E2=80=94 the barrier pairing with
+__srcu_read_lock() guarantees such a reader sees every store the
+caller made beforehand, so it is not a reader the caller is obliged
+to wait for. Summing both epochs means no index flip is required, and
+without a flip the counter-wrap concerns of
+srcu_readers_active_idx_check() do not arise. Readers of the _fast()
+flavors elide the read-side barrier this depends on; any sign of them
+(in the unlock-side rdm mask, which is gathered unconditionally)
+disqualifies the fast path.
 
-That doesn't help much; the other concern is latency. And the mere act
-of bouncing to the workqueue only to realise we can wake up again was
-adding 100=C2=B5s or so every time for nothing. *Plus* once you schedule at
-all, you start to see really high tail latencies of >20ms too =E2=80=94 whi=
-ch
-is why we've also started looking at synchronize_srcu_atomic() to
-eliminate that completely. If we get *that*, then maybe I don't
-personally care as much about try_synchronize_srcu(), although it might
-be a useful extension to synchronize_srcu_expedited() =E2=80=94 this *would=
-* be
-the 'more aggressive expedite policy' of which you speak, for the case
-where there are no readers.
+For Tiny SRCU (!SMP) both nesting counts being zero already proves no
+reader exists =E2=80=94 a mid-section reader could only be preempted or in =
+an
+interrupt, either of which leaves its count visibly elevated =E2=80=94 and
+program order on the sole CPU provides all the required ordering.
 
-> Could you also clarify why observing no readers during this
-> check is sufficient for the reclamation/happens-before guarantee
-> required by the proposed callers?
+The immediate motivation is a proposed conversion of KVM's
+gfn_to_pfn_cache to use SRCU=C2=B9, where the mmu_notifier invalidation
+path must drain readers of a cache (in the manner of a TLB shootdown)
+before the primary MMU zaps the backing page. Those readers are short
+non-sleeping fast paths, some in contexts which cannot sleep (hardirq
+event channel delivery, the scheduler's sched-out hook); measurement
+under a worst-case invalidation flood shows 98.8% of drains complete
+inline in 4-16=C2=B5s where the expedited grace period took 32-128=C2=B5s, =
+with
+the wait dominated by workqueue round-trip latency, not by readers.
 
-Both halves of the grace-period guarantee are provided when it returns
-true. For any reader, either:
+=C2=B9 https://lore.kernel.org/all/20260811132237.102400-1-dwmw2@infradead.=
+org/
 
-   =E2=80=A2 its lock increment was observed by the sums and its unlock was
-     too =E2=80=94 the reader's final smp_mb() then orders its whole critic=
-al
-     section before the caller's subsequent accesses (that reader has
-     completed), or
+More potential use cases already exist in the tree with the same
+no-readers-common-case profile: kvm->irq_srcu takes half a dozen
+expedited grace periods in the irqfd and routing-update paths (bursts
+of which, at VM boot, fall inside the exp_holdoff window), and mshv's
+pt_irq_srcu is the same shape.
 
-   =E2=80=A2 its lock increment was not observed =E2=80=94 in which case th=
-e
-     store-buffering pairing with the smp_mb() in __srcu_read_lock()
-     guarantees that reader observes every store the caller made
-     before calling: it is a "new" reader for the purposes of the
-     grace period, exactly as if it had started after a real
-     synchronize_srcu() returned, or
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Assisted-by: Claude:claude-mythos-5
+---
+v2 (all per Kunwu Chan's review):
+ - Rebase onto rcu/dev (check_init_srcu_struct() is_atomic argument).
+ - Drop the leading smp_mb(): the middle barrier already orders the
+   caller's prior stores before the lock-counter reads, which is the
+   only edge the store-buffering pairing needs; document the middle
+   barrier's double duty (matching srcu_readers_active_idx_check(),
+   which likewise has no barrier before its unlock reads).
+ - Add the same-type-read-side RCU_LOCKDEP_WARN() as in
+   synchronize_srcu(), to both Tree and Tiny variants.
+ - Document that success is not a grace-period completion for the
+   cookie/callback APIs.
 
-   =E2=80=A2 its lock increment was observed but its unlock was not =E2=80=
-=94 the one
-     case where the reader may still be running with no guarantee it
-     saw anything. But that reader inflates the lock sum above the
-     unlock sum, so this is precisely the case in which we return
-     false and the caller takes the real grace period.
+Compile-tested for Tiny SRCU (tinyconfig); the Tree version has had
+the KVM gfn_to_pfn_cache conversion soaking on it under an adversarial
+invalidation flood (48h KASAN+lockdep clean, though of the v1 barrier
+arrangement; the v2 change only removes a barrier proven redundant).
+---
+ include/linux/srcu.h  |  1 +
+ kernel/rcu/srcutiny.c | 29 ++++++++++++++++
+ kernel/rcu/srcutree.c | 81 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 111 insertions(+)
 
-It's the same argument srcu_readers_active_idx_check() makes; the only
-novelty is summing both epochs so no flip is needed.
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 60100d8a2671..ee32c2583b30 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -105,6 +105,7 @@ void call_srcu(struct srcu_struct *ssp, struct rcu_head=
+ *head,
+ void cleanup_srcu_struct(struct srcu_struct *ssp);
+ void synchronize_srcu(struct srcu_struct *ssp);
+ void synchronize_srcu_atomic(struct srcu_struct *ssp);
++bool try_synchronize_srcu(struct srcu_struct *ssp);
+=20
+ #define SRCU_GET_STATE_COMPLETED 0x1
+=20
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 32b37d63d58a..eb8beb365c1f 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -347,6 +347,35 @@ void srcu_barrier(struct srcu_struct *ssp)
+ }
+ EXPORT_SYMBOL_GPL(srcu_barrier);
+=20
++/**
++ * try_synchronize_srcu - inline grace period for a reader-free srcu_struc=
+t
++ * @ssp: srcu_struct with which to synchronize.
++ *
++ * If @ssp provably has no readers in either epoch, provide the
++ * synchronize_srcu() guarantee to the caller immediately, without
++ * sleeping. Returns true on success; on failure the caller must fall
++ * back to synchronize_srcu().
++ *
++ * On !SMP a reader can only be mid-critical-section if it was
++ * preempted (or is running in an interrupt which preempted us), in
++ * which case its nesting count is visibly non-zero. Both counts being
++ * zero therefore proves that no reader exists, and any reader which
++ * begins after this function returns will, by program order on this
++ * sole CPU, observe every store the caller made before calling it.
++ */
++bool try_synchronize_srcu(struct srcu_struct *ssp)
++{
++	RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
++			lock_is_held(&rcu_bh_lock_map) ||
++			lock_is_held(&rcu_lock_map) ||
++			lock_is_held(&rcu_sched_lock_map),
++			"Illegal try_synchronize_srcu() in same-type SRCU (or in RCU) read-side=
+ critical section");
++
++	return !READ_ONCE(ssp->srcu_lock_nesting[0]) &&
++	       !READ_ONCE(ssp->srcu_lock_nesting[1]);
++}
++EXPORT_SYMBOL_GPL(try_synchronize_srcu);
++
+ /*
+  * get_state_synchronize_srcu - Provide an end-of-grace-period cookie
+  */
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index e44763e198e3..c3a2170d05db 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1714,6 +1714,87 @@ void synchronize_srcu(struct srcu_struct *ssp)
+ }
+ EXPORT_SYMBOL_GPL(synchronize_srcu);
+=20
++/**
++ * try_synchronize_srcu - inline grace period for a reader-free srcu_struc=
+t
++ * @ssp: srcu_struct with which to synchronize.
++ *
++ * If @ssp provably has no readers in either epoch, provide the
++ * synchronize_srcu() guarantee to the caller immediately: without
++ * sleeping, without a trip through the SRCU workqueue, and without
++ * advancing the grace-period sequence. Returns true on success; on
++ * failure the caller must fall back to synchronize_srcu() or
++ * synchronize_srcu_expedited().
++ *
++ * This serves dedicated srcu_struct structures whose read-side critical
++ * sections are short, atomic, and usually absent =E2=80=94 where even an
++ * expedited grace period costs two trips through the workqueue and an
++ * unconditional sleep of the caller, three orders of magnitude more
++ * than the check below.
++ *
++ * Only readers of the srcu_read_lock() and srcu_read_lock_nmisafe()
++ * flavors are compatible with this proof; if the _fast() flavors have
++ * ever been used on @ssp, this function always returns false.
++ *
++ * Note that a successful return provides the caller the full
++ * happens-before guarantee of synchronize_srcu(), but does NOT
++ * constitute a grace-period completion for the state and callback
++ * APIs: the grace-period sequence is not advanced, so cookies from
++ * get_state_synchronize_srcu() remain unfinished and queued callbacks
++ * are not invoked.
++ */
++bool try_synchronize_srcu(struct srcu_struct *ssp)
++{
++	unsigned long unlocks0, unlocks1;
++	unsigned long rdm0, rdm1;
++
++	RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
++			 lock_is_held(&rcu_bh_lock_map) ||
++			 lock_is_held(&rcu_lock_map) ||
++			 lock_is_held(&rcu_sched_lock_map),
++			 "Illegal try_synchronize_srcu() in same-type SRCU (or in RCU) read-sid=
+e critical section");
++
++	check_init_srcu_struct(ssp, false);
++
++	unlocks0 =3D srcu_readers_unlock_idx(ssp, 0, &rdm0);
++	unlocks1 =3D srcu_readers_unlock_idx(ssp, 1, &rdm1);
++
++	/*
++	 * Reader flavors which elide the read-side smp_mb() that the
++	 * pairings below depend on cannot be proven absent this way;
++	 * they need a real grace period.
++	 */
++	if ((rdm0 | rdm1) & SRCU_READ_FLAVOR_SLOWGP)
++		return false;
++
++	/*
++	 * As in srcu_readers_active_idx_check(), this barrier serves two
++	 * purposes. First, it ensures that a lock is always counted if
++	 * the corresponding unlock is counted, so that a reader racing
++	 * with these sums can only inflate the lock sum and force the
++	 * (safe) fallback. Second, it orders the caller's prior stores
++	 * before the lock-counter reads: pairing (store-buffering
++	 * pattern) with the smp_mb() in __srcu_read_lock(), any reader
++	 * whose lock increment is not observed by the sums below is
++	 * guaranteed to observe, within its critical section, every
++	 * store the caller made before calling this function.
++	 *
++	 * Summing both epochs means no index flip is needed: a stable
++	 * equality proves there was a moment in this function at which
++	 * no readers existed at all.
++	 */
++	smp_mb();
++
++	if (!srcu_readers_lock_idx(ssp, 0, false, unlocks0))
++		return false;
++	if (!srcu_readers_lock_idx(ssp, 1, false, unlocks1))
++		return false;
++
++	/* Order the caller's subsequent accesses after the proof. */
++	smp_mb();
++	return true;
++}
++EXPORT_SYMBOL_GPL(try_synchronize_srcu);
++
+ /**
+  * get_state_synchronize_srcu - Provide an end-of-grace-period cookie
+  * @ssp: srcu_struct to provide cookie for.
+--=20
+2.43.0
 
-> Since a successful try_synchronize_srcu() does not advance srcu_gp_seq,
-> flip the SRCU index, or process callbacks, could we document more
-> explicitly that a successful try provides the required
-> reclamation/happens-before guarantee to the caller, but does not
-> constitute an SRCU grace-period completion for the state/callback APIs?
 
-Yes; done in v2.
-
-> What ordering edge does the first smp_mb() establish that is not
-> already provided by the middle and final barriers?
-
-Er.... none? :)
-
-We need the caller's prior stores ordered before the *lock*-counter
-reads, but the middle barrier already does that for us. Dropped in v2,
-and the comment on the middle barrier updated.
-
-> Would it make sense to perform the same lockdep check in the try path?
-
-Ack.
-
-> When applying this to current rcu/dev, the patch also needs to account
-> for the additional bool is_atomic argument to
-> check_init_srcu_struct(). Please rebase accordingly.
-
-Ooh, shiny, I hadn't spotted that the atomic thing had landed. Maybe I
-should retract my 'if we get that' above... but let's see how it
-survives.
-
-I also have more than just this patch to rebase onto rcu/dev =E2=80=94 unli=
-ke
-some, I'm not just hacking RCU for the fun of it; I get my jollies
-elsewhere :)
-
-Btw, the current commit c68271c3f83a message says "no index flip, no
-grace-period sequence update" but that isn't true of the implementation
-any more, is it? In fact, it *always* does those things, and doesn't
-take the try-path optimisation by counting both epochs, that I'm doing
-here?
-
-Thanks for the careful review.
-
---=-dz+qIfCEeiAqzpwLKE2J
+--=-7YOb3W+OdXnl4efEoQ0u
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -262,22 +401,22 @@ vFEOOmuaq7VamuLEPFQtJM4olmipOW6CzrLcFz6J/6yAecEG3P1ZDoy08eSHvM40MAUgpwGa/w6o
 MAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMTowOAYDVQQDEzFEaWdpQ2VydCBB
 c3N1cmVkIEcyIFNNSU1FIFJTQTQwOTYgU0hBMzg0IDIwMjQgQ0ExAhADNSi2uzJskfEdOMo4hV0g
 MA0GCWCGSAFlAwQCAQUAoIIBezAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJ
-BTEPFw0yNjA4MjExMTUzMjJaMC8GCSqGSIb3DQEJBDEiBCDvTj6wGxE2yazrai7KDr4QkRiz6H/e
-DV0En/0S1DLJ9zCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGln
+BTEPFw0yNjA4MjExMjA0NTZaMC8GCSqGSIb3DQEJBDEiBCC8CRbYHukHOmxoo0L75yyq3EMekCf2
+XoEaxLvXxzmEqjCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGln
 aUNlcnQsIEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFzc3VyZWQgRzIgU01JTUUgUlNBNDA5NiBT
 SEEzODQgMjAyNCBDQTECEAM1KLa7MmyR8R04yjiFXSAwgYcGCyqGSIb3DQEJEAILMXigdjBiMQsw
 CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFz
 c3VyZWQgRzIgU01JTUUgUlNBNDA5NiBTSEEzODQgMjAyNCBDQTECEAM1KLa7MmyR8R04yjiFXSAw
-DQYJKoZIhvcNAQEBBQAEggIAXeR09+P9SR7TzQW5rNnZJm3KRNLeN85JacpMK+DModXfVkzTEMm0
-xSF286NFHLKm/d2fuLdZu8iN+X2PyUEaPkVqj4IO3Vw44Y/ttgHTgeP9uvLmiHAenkeQoGqhd9IJ
-l/0G4dfEcgONcwuM/xcqa4XDylBOev00KpX33NGJfAwa15UOvqIRgvT2RxrppKz/WeJ+0IMEooJX
-H+PU56LfEbpK2CJPJrfUurI66f3qgCAQJl2u/0sdspOnPHJVFhIRDhvU4AwgW4cqPCKQrZN1Mpvg
-0b6yRCSIhjzvm3/LuObcmhKWyb2ceF5jI63E/gmASiM9FXSt/dRzLX/Ng14Rf99HX0n30fFWZvWj
-NVXAqoNF2Woj/YheqmBBxDx/8Ay+NvBbj2nrFcy7KYfdzP+tdzd7aTWfY67WKssOiZjlcLPONaEi
-mE/8jOqQS5qa3zAI/x/T/iZf63BzRmH0yA8P+dzOWuja8bTfHPsCcfdTi/AYEaVCoT8Fnmn8Sda3
-+PW4IxBOxTnFTSPZYQbHwVa6zsIjtT8bdjFJySC+OTSYvjq4TEWtcVmaxrmUWILj5NLesZrXPnPe
-UXXgMGIQdmkeXbzVBGQpOtVOwb+AN+61oANhW1n0B3ZQzpnkC6Q6qg8ek2wt/c3KbH5TNoeszKq6
-dGbX3XUKhwDmdtztRmyp6KMAAAAAAAA=
+DQYJKoZIhvcNAQEBBQAEggIAXpU2P4FOWNWwWX92PVBuw512TXDfvDTMxO/RnJtOse4DobQePIkb
+fQKTOO1UNgI6kRtd+rxW62Qr3vO8HTZtgXBswUDETlaNLx0zlgiydO1iX3lmxtnRwnjxJ6jcGuIm
+vF/D8JXSh6pFQxqcKbxWRIpQo1jeh2yDQBTL6Gn9r4zH1Ei1vdgLOja/1TFoGkn75ZSZw7c+9ezU
+fHk3glzjNOG1BMxebm0gegtfTxdZzZf2jMyU0GpmlBl6TFnfU3xr7QTRofk2KgmfAnT+BHWSIAdq
+ZyTMuH14Kc826TJo3nx2YdZUeYWdD1d3XGv5vGiFTS15DIuJjfHz4T0shMMoilFfIx3VCeLqC9V2
+QYfgQ9CiHN5AM9tNwZUcV30D3axIpRMLTyyvr1sR+XO760jON6BZwfbRQo8a5lMiqpoj5dNTeu7u
+imkkwmCl85m9bsX5PaTB8XvmnuNitDINpEseew+U/yr0uY8XskYoCR01YxtQJ9tg+gWY0uk5htVY
+XMmOtr/wOhH9dVscv8KpqstS1Khx+vEdzXyeXaSwWjBcUdlRgPEpDulx5SCtAsAtz7kQEKBOo4L8
+4q/6wM3FVqJULrheObQEg/IjMA9m1HxSw+U4QbkXxt4QqDBSgBNTZT2YaJPRynvUg3xutZjINH2w
+h0comoA+KaesvY0L99PBO0IAAAAAAAA=
 
 
---=-dz+qIfCEeiAqzpwLKE2J--
+--=-7YOb3W+OdXnl4efEoQ0u--
