@@ -1,96 +1,98 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mta0.migadu.com (out-8.mta0.migadu.com [91.218.175.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010AB365A14;
-	Mon, 24 Aug 2026 09:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B41839F184
+	for <rcu@vger.kernel.org>; Mon, 24 Aug 2026 09:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787563237; cv=none; b=JcVMxWyyYNOpd6eVfCjyAPbGHrWyl/fce3S7in4R3Oh2i8eSNxaD03YZSZYYrvRbN7qeBGHySX3/sNSorraVHi3xdBZb1AEEyOO8mOEgm1BBvVlOPmvUNfvQ0fc3HlVzLWrhBYCCKfWQpRU4vTAyzP1OPIuEq2TQP8zPFPgYtvY=
+	t=1787563478; cv=none; b=Q3TNp35VqMcvmbCO1BHyZbIBFnKpkAaTRN4KqbO+pxZl/r9TvI1okU96Goerern/FHJ4WIk4FdB9V6UCNaakMIVuOPyomQ6kcgU6INlK8bicX1UPx94DUa8ltaVKyBYzoI0s09bLomIc/t6VDhJZBq36un60cfvctN+6isFiYJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787563237; c=relaxed/simple;
-	bh=EJR0HZAidY5OceGJ+eu9LmIqoVlPgAuhha4+quau4gM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Me4k6aVzQuUNBvsFMIiqjoANZbYcaZKbCaJLFglRC2OYI1rCEn3e/Jit05Z0tF52YddFTw45UdWqEcAFQ5D1I0Evl0rtUTKgU5FiAFEstsNwGUqJbzh+RdQMQ/LAuEFgXWBx+Egz2dEvPLq/b8fPDo2N0Moq4Kx/MCELB5931sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=bL+PHrQM; arc=none smtp.client-ip=220.197.31.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1787563478; c=relaxed/simple;
+	bh=gN0OPYtRwq4PppeYRaGySw2xF295lMVGHlCHp3sUmps=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=JtW2QjeUCBZWNOAIE85HM9UO94UWsheqQfM3oRFHYHBnd08j8Gbo8nme1jlBq1l4QclMUZbahvvIeq4NxMlDVbeCtlforwkT2gop0xmTNrgK810QpiSOh6aQuk7WfBwqF4oXurrYWemJXYBokXhaxLRapJgy3wqx5UsPI/ejpbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aMCp5NDI; arc=none smtp.client-ip=91.218.175.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="bL+PHrQM"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=qq
-	6CTw9aog03XEKs9hMeWAiZoyfqTL2ZWlIAp3UfVfQ=; b=bL+PHrQMD9HvsXVgg5
-	g+gdvFry3YQw2ywvp8Mdl8PkXAhC9IIP9Q0LYDe9HOzofOJfgYVZadOHLdqmN/Bt
-	DKmMIL+pHoFhtkdYAkntcLbVKYNgV00fl84Q1GvxTdqY2CUIgPAWYomC3QWf406V
-	dcGGnaKrvclWOZ5cETz+iWf08=
-Received: from XLL-9950X.localdomain (unknown [])
-	by gzsmtp2 (Coremail) with SMTP id PSgvCgAnWPeZDIxq17gxMw--.50121S2;
-	Mon, 24 Aug 2026 17:19:23 +0800 (CST)
-From: Longlong Xia <xialonglong2025@163.com>
-To: vbabka@kernel.org,
-	harry@kernel.org,
-	akpm@linux-foundation.org
-Cc: hao.li@linux.dev,
-	cl@gentwo.org,
-	rientjes@google.com,
-	roman.gushchin@linux.dev,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	paulmck@kernel.org,
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aMCp5NDI"
+X-Envelope-To: rcu@vger.kernel.org
+DKIM-Signature: a=rsa-sha256; bh=gN0OPYtRwq4PppeYRaGySw2xF295lMVGHlCHp3sUmps=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1787563474; v=1; x=1788168274;
+ b=aMCp5NDI5s1AewTYqnGfrHSA6lACufo4eo7rJ9W+VT9rpAfdir6bdzIncWH2B58vi/fJdZB2
+ pDk/xGCuCfeWkjeCbzf+FvAYpBv8ou7XQYsd3gPA1/dnD/Sa/OuvcgYvFfsOTeSjNFB7q2Pg5SM
+ tTJ0qqNvFZvfz/f7nQYCwQXQ=
+X-Envelope-To: rcu@vger.kernel.org
+Received: from MSCND1355B05.fareast.nevint.com (117.128.58.94)
+	by smtp.migadu.com with ESMTPS id 4840c9236047bcdf;
+	Mon, 24 Aug 2026 09:24:34 +0000
+X-Mizu-Trace-ID: 4840c9236047bcdf
+X-Migadu-Flow: FLOW_OUT
+From: Zqiang <qiang.zhang@linux.dev>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	urezki@gmail.com,
+	boqun@kernel.org
+Cc: qiang.zhang@linux.dev,
 	rcu@vger.kernel.org,
-	Longlong Xia <xialonglong@kylinos.cn>
-Subject: [PATCH 1/1] mm/slab_common: fix shrink budget underflow in kfree_rcu_shrink_scan
-Date: Mon, 24 Aug 2026 17:18:38 +0800
-Message-ID: <20260824091838.1692153-1-xialonglong2025@163.com>
-X-Mailer: git-send-email 2.43.0
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rcutorture: Synchronously wait for all rcu_torture_irq() callbacks to complete
+Date: Mon, 24 Aug 2026 17:24:27 +0800
+Message-Id: <20260824092427.31303-1-qiang.zhang@linux.dev>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PSgvCgAnWPeZDIxq17gxMw--.50121S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tr18JF4rKr4xGF43tw47urg_yoW8JFyxpF
-	WjkFyUKr48XF4UZr4kA3W8Xay5X3ySyFZ7GrWqkw43Jwn8Xw1fta4xJry29Fy5Ka48Xaya
-	vrnF93WUZa4jkFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jbAwsUUUUU=
-X-CM-SenderInfo: x0ldz0pqjo00rjsqjki6rwjhhfrp/xtbC3Bvm32qMDJuUSQAA3S
 
-From: Longlong Xia <xialonglong@kylinos.cn>
+The rcu_torture_reader() drives RCU readers from interrupt context via
+smp_call_function_single(cpu, rcu_torture_irq, NULL, 0) with wait=0, to
+runs rcu_torture_irq() on a remote CPU. this is async, nothing waits for
+the remote handler to run.
 
-The kfree_rcu shrinker decremented sc->nr_to_scan (unsigned long)
-and then tested the result with <= 0. When a single CPU's object
-count exceeds the remaining budget, the subtraction wraps to a large
-positive value and the <= 0 comparison, which is equivalent to == 0
-for an unsigned type, never fires again. The scan loop then iterates
-through every possible CPU instead of honouring the reclaim budget.
+On shutdown, torture_stop_kthread() only waits for each reader kthread to
+return, and the reader's timer_delete_sync() only drains its timer. Neither
+waits for a rcu_torture_irq() which still pending or executing on a remote
+CPU, so it can run after all readers have exited and rcu_torture_cleanup()
+has already advanced.
 
-Reorder the logic to compare count against nr_to_scan before
-subtracting, so the loop exits as soon as the budget is met.
+1. rcu_torture_irq() may issue cur_ops->call(rhp, rcu_torture_timer_cb)
+   after cur_ops->cb_barrier() has been waiting for all outstanding
+   callbacks complete. once the module is unloaded, fires into freed
+   module text, a use-after-free happen.
 
-Assisted-by: Codex:gpt-5.6-sol
-Signed-off-by: Longlong Xia <xialonglong@kylinos.cn>
+2. rcu_torture_irq() may still be inside rcu_torture_one_read(), holding
+   a read-side critical section, when cur_ops->cleanup() tears the flavor
+   down (e.g. cleanup_srcu_struct()), triggering an active-reader warning
+   or use-after-free of the torn-down structure.
+
+This commit therefore issue a kick_all_cpus_sync() after all readers
+kthread have returned and before cur_ops->cb_barrier(), synchronous IPI
+round trip to every CPU guarantees that every rcu_torture_irq() which
+previously issued by any reader has completed.
+
+Signed-off-by: Zqiang <qiang.zhang@linux.dev>
 ---
- mm/slab_common.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/rcutorture.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 657fd75776ea..95ddbab290d4 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -2172,11 +2172,11 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 		count += drain_page_cache(krcp);
- 		kfree_rcu_monitor(&krcp->monitor_work.work);
- 
--		sc->nr_to_scan -= count;
- 		freed += count;
- 
--		if (sc->nr_to_scan <= 0)
-+		if (count >= sc->nr_to_scan)
- 			break;
-+		sc->nr_to_scan -= count;
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 4b4d9c70e827..f177ba9cb604 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -4476,6 +4476,8 @@ rcu_torture_cleanup(void)
+ 		for (i = 0; i < nrealreaders; i++)
+ 			torture_stop_kthread(rcu_torture_reader,
+ 					     reader_tasks[i]);
++		if (irqreader && cur_ops->irq_capable)
++			kick_all_cpus_sync();
+ 		kfree(reader_tasks);
+ 		reader_tasks = NULL;
  	}
- 
- 	return freed == 0 ? SHRINK_STOP : freed;
 -- 
-2.43.0
+2.17.1
 
