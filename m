@@ -1,71 +1,49 @@
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4349B40800D
-	for <rcu@vger.kernel.org>; Mon, 24 Aug 2026 10:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2042D0C72;
+	Mon, 24 Aug 2026 13:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787569007; cv=none; b=QkwjsJhfQNvhtaDU5WNBO9+kjNe59o1mLioKxh5tZYLP3C5D8jXgpwYn/KhwxgtZv92vmjdQMOePaS5wvXBAiPh4/SbHl7Pg3UpiR2dQqyl8h5j1ilcA+KzYHk1U3/JotVoUcI0gxAcrZMvJINCEdcZ5CG8FUsPD+j2GP3O2+Ho=
+	t=1787578444; cv=none; b=rvHbTMMmP5DOvf8l/4CJZjzfC1HjNOPhWN9YCQn5lddOMQaBbgNmaEgnMbRMjwYu1pY6VFHxKDJJuxfktSkWuHeS3xcr8y9d2LT3K+0gEo3HZn881f9+sTCUueQJKWQZKl+Lv5CHeUQgTWgSFxUA2wQ0Jq8m+n49D6+inkWOdEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787569007; c=relaxed/simple;
-	bh=HAVhEo41ftBXk2eGrSZviX7ckEMXwirfUSQXIvaJGVw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EmcZoz1ZSVVNvxHQ7IGBSqkcUliIC91fcO4DNPf05gVehUE6jClm2v5EyCKeMXXzRlZ/rBgJuOmm4QdIzvllpKk/jPOsbAqmCgvOXMl7Pm4sUv0c6C5BvRaaxSJzBZNP+32S4uvhxoySjsy5TF2z339TmuWZjI9cpL9MFxfgD8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PM2XTxns; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1787578444; c=relaxed/simple;
+	bh=oqCpM8e82MTHbEpCfGzpqBtUymWyg9sVqUEyWSbYK6w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EBK1OsXWODtbPuONqAByFbMuwp+tVc8R/u8CJ8IshB6jKmnE/K4R4Rvh5zBkI8HvEXijX0NPuvCv0PUZn8RU2FBvz3AEPU2kSN28sxzszfMjEqVrAPvSFsIZgHJrZoyYC/YBiKIrDAOuKbdDaXLEUBseIFPXe0sLzTykWI3kWc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=YQ+vvoEy; arc=none smtp.client-ip=117.135.210.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PM2XTxns"
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-84faf87d19dso3245761b3a.3
-        for <rcu@vger.kernel.org>; Mon, 24 Aug 2026 03:56:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787569006; x=1788173806; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=HAVhEo41ftBXk2eGrSZviX7ckEMXwirfUSQXIvaJGVw=;
-        b=PM2XTxnsESdIsfjOTRga8vtAz3QPD2NeF9gStLX2lj+Svxb5Av8yKMWpoA8z2WVr+/
-         EjbLC5ZHr1h/56WCAi3HXuovn+n7cBNFoAIJj/FPXB4RmkJhgo0o9DLM0CYGzE86VHnI
-         w7nlM/ZkmfphsO0GPWBBskDSWgWuwnXf4zRh881W23d5FQsehkZMeUL32qUJVfaLp6U7
-         b6tDhnU1zDZNxbsQSeMg3mg5Tg3PEqJzwjHjx9N2KvcQAuFPa2L547Gfd6nmH4QXFZx8
-         S+6i3lvt1vl86hN4s/i4TxS3bmnb7CH0Hp/pIYs0m4oduTanBSimT4sf0tXP4cp76plT
-         j+qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787569006; x=1788173806;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=HAVhEo41ftBXk2eGrSZviX7ckEMXwirfUSQXIvaJGVw=;
-        b=BMrm9qUicf4/c/J6uA8rm365Rqb9/E0WEFYQbv0G6TtlmvtSeu5M5Rgpeoea/o/rJu
-         fbFohP1o1V1rcTRz+j7uw4H5wJquIasPnq9MRoHWcmjKlf9mokd/3msPfuACUqJPn1Uy
-         BU38xtxlFioKbQDIN5d5SkWplzPgrmceSJLoV6I6k9PlBTG18ldOBOeN/Js1XB/hzUOf
-         GWNJkfnqLk0H9f9ZP6MZ32N7ZwkQ/5A+6EKSDhBSLgvaTQwErfgNo1NlSWUz6rQpRYh8
-         xAWP+zUmylKnLUGZUjxvajsAHK+FHU00zQ/40IyPwpXbq1SF5mKRsfbaNfvPeeDjv4Ui
-         A7iw==
-X-Gm-Message-State: AFuF++lcgiLuo0UgUlPwHoDXTxKtAP1cFA6PqjGscdNDrxLBUPHkgn7H
-	jZtetVZibVxSWDyAlsUl+/prqHYwOzfb16hfaXrnAauFKiChxkFGKsdd0pirW7WCZbw=
-X-Gm-Gg: AR+sD10bPt2oHNbNMelYN9U9SHNzehekycfj7XycDe4fY7T9hVT/ythiBm3Ue5gNu02
-	E5D+W2zY+5g7IKhK3A5XSKiM9ZOIY83lYUPZrQ9U3QCdjB0oO1tiF6SucdskaxiJMp5I2wR8G60
-	P4/uI989jZl0ox+VWCJTEZJP+A4DNzVzTJoQWNieuexpQX1EL+EBeBZ2aoMFSIpaWzKgHb3gTNx
-	kh3+5RDT7CAfIf8p2qbxirSh4jh+GhOKa9T12SO2DNpjrlaNXs/1ENnUwDKTTNmRpIAYAN2zmwk
-	enLQgUKRjktZ5NIymvGUP7rLGk8GlncG/VZ6bxL51HZcxqPZYd2a5LlefIzvp5r0GCC6dOy9xzR
-	f8kOjASHEwudtP8hcayW2708uXnG6FRprKI/mMEPo2/ZaNO7a6h6JQH04yQlaqem+yA8Daq+TCI
-	9cz+2UzlcKzsG5WAB1dDI3CJ/WxrwuUpYgN2rCNAgjxA9iGcB3QvMBXkFuiHkMktSNRHygN6jir
-	AknI3oN1uvJA9K/+Q==
-X-Received: by 2002:a05:6a00:300c:b0:848:4859:a45 with SMTP id d2e1a72fcca58-8520b96630dmr32205642b3a.2.1787569005520;
-        Mon, 24 Aug 2026 03:56:45 -0700 (PDT)
-Received: from shpark-MS-7E27.tailee9dcb.ts.net ([218.49.81.87])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cc199daed9asm913911a12.5.2026.08.24.03.56.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2026 03:56:45 -0700 (PDT)
-From: Sunho Park <shpark061104@gmail.com>
-To: rcu@vger.kernel.org
-Cc: paulmck@kernel.org,
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="YQ+vvoEy"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=vW
+	VriaitYN1KglPbAKhmjDPWKdXy8ZX+UIxHe2PiL0Q=; b=YQ+vvoEyFeEON3RHuu
+	8Codx0udyLk4WajSDLk6on/uxZXacVxglAw3AidkvqNMl3iDoW2tmRUKtZoOVxUe
+	7XOfbEdpRV1ORt9yh5dHexeHnroPRhhmOnV0bQ2kS8l/Rp8rsY3aGqcALNyfB6Hv
+	0dAaF/JZu6gbSQJa0q1RUd/Ac=
+Received: from XLL-9950X.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wBX28e_R4xqJJw4RA--.50069S2;
+	Mon, 24 Aug 2026 21:31:46 +0800 (CST)
+From: Longlong Xia <xialonglong2025@163.com>
+To: paulmck@kernel.org,
+	frederic@kernel.org
+Cc: neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	josh@joshtriplett.org,
+	boqun@kernel.org,
+	urezki@gmail.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
 	qiang.zhang@linux.dev,
+	vineeth@bitbyteword.org,
+	joel@joelfernandes.org,
+	rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Sunho Park <shpark061104@gmail.com>,
-	syzbot+d4faf7db59e11f6fd1ab@syzkaller.appspotmail.com
-Subject: [BUG] srcu: false-positive WARN in cleanup_srcu_struct() after 78a38cbf6f20
-Date: Mon, 24 Aug 2026 19:56:25 +0900
-Message-ID: <20260824105625.3725157-1-shpark061104@gmail.com>
+	Longlong Xia <xialonglong@kylinos.cn>
+Subject: [PATCH 1/1] rcu: fix shrink budget underflow in lazy_rcu_shrink_scan
+Date: Mon, 24 Aug 2026 21:31:42 +0800
+Message-ID: <20260824133142.2293426-1-xialonglong2025@163.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -74,36 +52,51 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wBX28e_R4xqJJw4RA--.50069S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJF1UWr1fZrWrAr43XrWUArb_yoW8GFy3pF
+	WjkFyUKr4rXF48Xr9rZ3WrZFZ8Zw4rCFW5KFZY9a4fJ3Z8uwnIqa4UAFy2gw45ta1xJF4Y
+	9r1jg34j9ayvy3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UM5lnUUUUU=
+X-CM-SenderInfo: x0ldz0pqjo00rjsqjki6rwjhhfrp/xtbC9wK-uGqMR8IP-QAA3j
 
-The main crash report [1] which is tested on non-merged commit 6b8c8af514d7
-is caused by the single-condition WARN_ON(timer_delete_sync(&sdp->delay_work))
-in cleanup_srcu_struct(&kvm->irq_srcu). As discussed in [2], it is a false
-positive because irq_srcu does not use call_srcu().
+From: Longlong Xia <xialonglong@kylinos.cn>
 
-However, the merged WARN_ON(timer_delete_sync(&sdp->delay_work) &&
-rcu_segcblist_n_cbs(&sdp->srcu_cblist)) is also triggered in
-cleanup_srcu_struct(&kvm->srcu) which is called after srcu_barrier() properly.
-Although my syz test command [3] failed to reproduce, it was reproducible
-in my QEMU environment built with the .config of the report.
+The lazy RCU shrinker decremented sc->nr_to_scan (unsigned long)
+and then tested the result with <= 0.  When a single CPU's lazy
+callback count exceeds the remaining budget, the subtraction wraps
+to a large positive value and the <= 0 comparison, which is
+equivalent to == 0 for an unsigned type, never fires again.  The
+scan loop then iterates through every nocb CPU instead of honouring
+the reclaim budget.
 
-I found out that the return value of rcu_segcblist_n_cbs can be nonzero
-even after srcu_barrier() because of the srcu_barrier_cb() that srcu_barrier()
-inserts at the end of the queue. The length of cblist is decreased after
-srcu_invoke_callbacks() finishes invoking all callbacks in a batch. But
-srcu_barrier() may return when all the srcu_barrier_cb() are called, bringing
-the counter to zero, even if srcu_invoke_callbacks() has not yet decremented
-the length. So checking cblist length before flush_work() is inaccurate.
+Reorder the logic to compare _count against nr_to_scan before
+subtracting, so the loop exits as soon as the budget is met.
 
-By the comment of srcu_barrier(), it guarantees that all the previously
-registered call_srcu() callbacks are completed. Therefore srcu_barrier()
-did what it said, only the length of cblist was not updated. I think there
-are two options:
+Fixes: c945b4da7a448 ("rcu: Shrinker for lazy rcu")
+Assisted-by: Zcode:GLM-5.2
+Signed-off-by: Longlong Xia <xialonglong@kylinos.cn>
+---
+ kernel/rcu/tree_nocb.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-1) Not to check the length of cblist before flush_work()
-2) Make srcu_barrier() guarantee the length of cblist is adjusted when it returns
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 19bb42672baf..afc3ab84cc47 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1332,10 +1332,11 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 		rcu_nocb_try_flush_bypass(rdp, jiffies);
+ 		rcu_nocb_unlock_irqrestore(rdp, flags);
+ 		wake_nocb_gp(rdp);
+-		sc->nr_to_scan -= _count;
+ 		count += _count;
+-		if (sc->nr_to_scan <= 0)
++
++		if (_count >= sc->nr_to_scan)
+ 			break;
++		sc->nr_to_scan -= _count;
+ 	}
+ 
+ 	mutex_unlock(&rcu_state.nocb_mutex);
+-- 
+2.43.0
 
-[1] https://lore.kernel.org/all/6a78d191.b50370da.49fe0.0042.GAE@google.com/T
-[2] https://lore.kernel.org/rcu/01484cd339ea024dd7c01f02a9781f00e67cb52d@linux.dev/T
-[3] https://lore.kernel.org/all/6a8bc111.91706f20.16b6e3.02cd.GAE@google.com
-
-Reported-by: syzbot+d4faf7db59e11f6fd1ab@syzkaller.appspotmail.com
