@@ -1,241 +1,312 @@
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow-b1-smtp.messagingengine.com (flow-b1-smtp.messagingengine.com [202.12.124.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD0B44C652
-	for <rcu@vger.kernel.org>; Mon, 24 Aug 2026 15:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787586694; cv=pass; b=Mgu3ETTc/qzE3/ZbhOef7AFMYmbjQiRFENKPC2/Y7v8WuqeL2WErFGbo9Z/lBVKLMyVugN1DFB0iC71R4MMT/EsKAAPFov1b5wmvEgUZwCyRnhRTyMAuUs8rVWdbla7ZMI3otYJQipN2T9HQedP6RnTrh441DNMciVLqitooHUY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787586694; c=relaxed/simple;
-	bh=sBSAv4EkTd8DKEcxJQbtwQ6P4wI0iZ+8eiNq8EFTT0A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=H2lg2bnvT1M23vSPuGGHSJEOwXx7e6U4sFUnsKsE1hLHhdsF8PebijjqLxApOlJYqKfOHCZ3QI+FgWVfyycZkqFmTxxPq6PCfUwDP2wDixO4fvLDJT8pGH5moXUCGWVblwjlIc78shAZND+liTshp3o9idrnZ1su/NHe8LNBxsg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XS145Y8D; arc=pass smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D266230BE9;
+	Mon, 24 Aug 2026 23:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.136
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787614713; cv=none; b=f81l4PuBLf1DTWM6S/1jLrYyr2/KQEWz9PJ5natbKwMmf7D2d5MmIqpOfKOIlPKv95Gzb12MDqzEg3cZsNd69/q51m9cCZXV8eAbllPUEpVMmivGHOx/ziZN6DdY8tCB5PLK44MWqDnlBrsKj1LMmjpgFx/uQ7r23ghMGp4iw8E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787614713; c=relaxed/simple;
+	bh=zNXZSfRmtwpy/a/iBRxK6ZOuQXHjxvf/jrS/UpDVoZE=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=njbh5i0VGCqizvFVGDDzCpIq/E4hgLzSyWm/tWvgvV0kL/PHx/KyhaNxop+Gpp+F2Dun3faTfehE1hZntGIqzxFg9P0KHiUsJIciBJgnkSuw1O2d/erGVV4/2ba5JThegASeQspcwHBb6Je2Kr/FRvoCyDTkyRerdmKtvFFj7TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net; spf=pass smtp.mailfrom=ownmail.net; dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b=XBhGMGf0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IlzNSJWi; arc=none smtp.client-ip=202.12.124.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ownmail.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XS145Y8D"
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-c15cb6f5c12so650661666b.0
-        for <rcu@vger.kernel.org>; Mon, 24 Aug 2026 08:51:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1787586690; cv=none;
-        d=google.com; s=arc-20260327;
-        b=ndsz+8q9QDW2xUTldP2sVolOVK0E/fnJOr0HfgxEZ4ZBJs/DRx1u5Adko6od+s3iXA
-         M8Z/CD8JdnhfO45zBJHQd3SuzPrIp6wIqp1AHHTVpMaK3M5JqcMY64FwE5iUkokkHCZn
-         hxUCJpvYkkc9Q0Hwdn9AdYJ2b4e1jmSpPJtQj8yeyDdkD01RBLdf69e+DLu7Dy8u8Pog
-         2xOq7djqmfB7VgBz1amCJNCMkoSZCXi0MpkTUDIWmDZpNEkd6v8vw5T3ZOpnOolbx51r
-         NAV9LgtjXiXVVeciN3fgR4gMkYwETEJ0PTBTgg7co4wDrikGuM+z8E8NgkpR279YvH4Y
-         ClMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=gQiW2ywPDLYfrD3ul9Z5RDPRzs1zZ4Pk+mj/Dzx2uhI=;
-        fh=mkDehLQK4pdJ6BZ9KGim5ABsBolNjNdltJVdctbHvp4=;
-        b=dNhaTS2EyV22hWrYu2xL6WJo9onzzlRJeH5/R1XQ+8T8jtla/wc6a8rNbQxBDvkPFx
-         OpiW5R9fHnkisUqOEIyurRtpvMRPBWn9VrK5JA5yQfrxnglfcP06HZNU/ZFsYmiEWrz+
-         JFa0hoM6VpvZ4TxE9ubwPC3WMHWar6qi3TrALIBZAATx7GxvueQ/IsQyXkS1El3iLqzH
-         EDH9tmyzcmqoUoFo7pO/43dvloRyhFy+LKpgBND/gzHD7wHfQy9Mf0XBVW60DkODpwQ4
-         SjNKnfYcbW/GfKKh6ONaA3cUQ+4w7UW/Anmejbw7bYqxsj5FeDg7CiPl6CYb/PIKboPQ
-         qzXg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787586690; x=1788191490; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=gQiW2ywPDLYfrD3ul9Z5RDPRzs1zZ4Pk+mj/Dzx2uhI=;
-        b=XS145Y8DZnVG3rTeNPsmT9IQ4S19bIH1qsYOXItqtvQb4orkKJHWAIhyS400Dmr8Ab
-         oU55Za76UsflALzg0S5j8BZVfrq91bJOoGGo+ohrHbduH0HPNs8WbjS25MAFXW9cjFpB
-         VHrjmka/NKf9HzFitma6tq5n3hqObRBfSF+tNRuAgbFYrfHeT+r+e7bxbz3km0vFV3GN
-         j5zFOa0jk12h+qiWQTD6cZxtoeRzWBimwk24xFdmbDB3m//8wlGIiVpnjmX3IdoJE6oT
-         rbGPcX4M1zgdA2zfJERdyLv7Xfz0/dYgyiBo0Y1YPfo4D6PmGSC6xHaq6LDDOyCseUe5
-         KMyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787586690; x=1788191490;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=gQiW2ywPDLYfrD3ul9Z5RDPRzs1zZ4Pk+mj/Dzx2uhI=;
-        b=AmI2lBXUgntwEiISg0efGslYmdnTLxP1BmKlFyxoJqyafdy1YoJFG8I5Kgc27DdV2+
-         ykQT0J2JeU3mkzcNcvlwCvbKVoKsc5ycq1R3sZbDn7Mr/Jbrxf9AkqEmEn95CMpxd/cC
-         dbGkOs7Q6gv86ZUiFyREAo+b/iouuwfMaJVlXCijcNB4TUdNW5r5erqDdvGbOqtT4Zmf
-         DiG+MS8/UeFQNB0FRhFSWuZ/T/91PYrlCwGUbUUU9qPB8Tk+4hq9aOb7DFtemRGta6ov
-         95NaTyN4Gw/87z/3mtZB87ksA6tHLwDlyfXlxTLT22IgLzz/SpRyM9ljO6oKcHbGoEQZ
-         f/dA==
-X-Forwarded-Encrypted: i=1; AHgh+RqhSzDyfSzuZ+P0Smgqxi0k0Lh13otDIDjLuoxzUt/iiStCsknq2OrwSleKjlWBKwd+EMY=@vger.kernel.org
-X-Gm-Message-State: AFuF++nO7D9+jyitBbZP5OPU20hwO2PGg8NiTGivX1PgTdEG+7TvnbYD
-	ZKwknVgrzgaK7yPFJlYFd+3bEIbn1NwxO7nMAzD2ScOlQnS6q7sfw7sxG0d8NBzbMi8MhFY15qC
-	Iq3+7Y92ZHoZYA/bcTE2ZJyMCZnjfheSisUaO
-X-Gm-Gg: AR+sD12xVlplqHeKO6HhCXNgEHTVcjTYacggfWv+QYDCtaZUDYiXWNBM+PvjrKTaYNn
-	FDW2MjRxH7KgFrIvcuIfOmJq5VKQ1Kin1O3/tpnTNUyDN6AAenrdpDC5v8kQ6Xxt2JRiJfiW27J
-	/w4B89SGOIHADkmTF5l5GYRgWIsMb+Pml9q4cupN8I9qvjbC3oXxiCRYPYom+9VpDu88Po07qIb
-	h6aMELpyIv5P4YoVoO6TMM87oJp5VroLRCx9OWhQSYykK7B15EfsjLDTKSIU0TzYHAo5mc+Fh42
-	yTabj3PR94c/2K963gvjiqfJifzCaD+PYgFBcjwpgeMOsw==
-X-Received: by 2002:a17:907:9607:b0:c1f:c7f0:b433 with SMTP id
- a640c23a62f3a-c24924b8575mr2254111866b.9.1787586690042; Mon, 24 Aug 2026
- 08:51:30 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b="XBhGMGf0";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IlzNSJWi"
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailflow.stl.internal (Postfix) with ESMTP id 2D1D01300083;
+	Mon, 24 Aug 2026 19:38:26 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Mon, 24 Aug 2026 19:38:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to; s=fm3; t=
+	1787614706; x=1787621906; bh=1ks+pZPsMFw/dX/SaAC+B9uhzl7GasUHVZ9
+	HfOG6GYI=; b=XBhGMGf07QdE2qp575VTBn2lqjfeSn8rsfkfLCsM/Oyww79wzpr
+	ApE3lQnrKoKXPaR0AbukURBDsEpzjpZweEngjZwwjsdH9qRwACpaeJanhQMFIhCr
+	dL3/dlnRNmyY2j2u+W+CipVxCIJb6vhNXP2C4CkNEGyZlipst9/MLs7k5gSRn+SN
+	0quDrwjC2k2VRQGqs+zwgB/delGuW8VyU+zGtcxaHB1sn6ywd60as4c7iW0EPzSE
+	92xvuUYOrQEshiIW/INtUWY7tI7Bwmm7colbKFqt8Q5QGdrch76Fr7Plgw62Rqyr
+	Jv6QgWDRLEDm/DeYpdwqJ+h+XUAg+043sSw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1787614706; x=
+	1787621906; bh=1ks+pZPsMFw/dX/SaAC+B9uhzl7GasUHVZ9HfOG6GYI=; b=I
+	lzNSJWico+svMdus2gBAc3HIZDjiFr3cckIgnsASVB4TdasKY3A7/axRo3a8Dlu8
+	UmIPoTkwXXQFiIUQavHV3nTdGVcPGawQ+n+YgCa1oiUwsu1VUziOY7oMW0Lvfa2T
+	wmasGsZCKt9ahl1HWHHWhZYKGUMx+a1Fpq8mWL4iBSbnzjAYIsyb/btw0r2MoUh7
+	zvLeWL3H2dn7Kz2xakvXBkOQaQ4rZWbWkpTFHaOEJ6bUsKCCuNX2HfvNCC/w40AJ
+	kMFcNkAPwwJjPvtCGWrAft+YK2E7UoCvGd1cQjqbOm4YgcGP1sXFBqNBvmEIKRgJ
+	cVTPKjQmGCi0BcJWxcFKQ==
+X-ME-Sender: <xms:6tWMao3MGXfEgZ2hm2rhJ71A-6ZVub-9zpOsoFZN2tiw6iThTBuwzQ>
+    <xme:6tWMaj7LeLQe0L41ggA0tcRjTkl9-GpsxTnxiTGYyYN5yIAzniuLbkD6EQECYCsEK
+    7Mzb2xbWmZiJbLOhwCmDXxyCQmmc8ItDh28Twvl1zl3UUIbdA>
+X-ME-Received: <xmr:6tWMaq0AmSmgSL256G9_XnlUhr7KJ5Y6VaebmpSrnHeHBRVqGKgfoc5ceuuKsFRFQtRz2tJPuSvfafSrKm5R8VcBJIxJ-dg>
+X-ME-Proxy-Cause: dmFkZTFrEmQssS56tdgzvy9yebBt5E0gIk2nhGFkQJdPkBb8h8m7nM4ZqL1LHvw+mehMwh
+    SuskV2FjoEkeI+MG8HTwFAriu5Q6OkP/hQVA5ynEUh3wAYbRSBZIsgskB8Fx4Wcz8GJ310
+    UDJQteufz/bw/Bw4Zubkj9pGGvYWCVB2usE09lF2iKKwZ51xN7XwzuON1GjKoLgtSooAPS
+    Z8k0+xsDpc6+7r0zmKuwWWaa04PYjqkjOaRrvBIcWl6EZWvN462VRhzf4aa4qLvSyuJgiX
+    IxiZbGoL6xvgKgowADVQoe0bCo/iQpSX/L/ODuY4BqB3a5cgRS/Pv/It4YpoMEFrrnb4S4
+    xaHdANv5XmZhj5jUtQUM+tbBd3v3vyobnvGmKS8r6iIefPGgdZ6m7FkjfOkUwwxardZIBF
+    ov3rXrrjWY4LqAMHQGxdQF0tf9e2+LhvSHn4O0tUUhDCb7/X1NX7HV0RpQR4HyUwIb2hST
+    /fLf3kKA3KLnmOzPSg1CrvY3neXXPTpIeB4LH2wU8TpCHMiW/VGkYoQvDHsb1+g6V5qAzm
+    w2khMNxTKBB0iEhJ5JIuexGlH+74WbRFJbR2/Yo2fV83CG5jiE1w5XKkTwMMd3XsHCynVm
+    mj24vQMvXowNJqDWzd2Bq4Pbj4dLEIMXsFcPpSxJimaXGcg56pIfSKtLhp/w
+X-ME-Proxy: <xmx:6tWMaufjzla0ip1qs-FrtSacwDRI3EAzO1bOezUmuRVGRnFnBS7RMA>
+    <xmx:6tWMaoU519ST5ee1SE38PMgk1GORN1rpC2xttFjtO_OI0yK7o9XM1A>
+    <xmx:6tWMaglJLrawf2a_NkBTlQ5UlrLCBmgEBzrfq0Yg3tigyBrWdxQ-eg>
+    <xmx:6tWMapZO_qV_XfrR3y1XelcvL6bR7AlBBrT5_bVrVIjnPfrWBW0m0A>
+    <xmx:8tWManlmlHzgk4wctTycNwj4xlJ5R-159qG6IeaQBCmxaIJGdyiqoABK>
+Feedback-ID: i9d664b8f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 24 Aug 2026 19:37:38 -0400 (EDT)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260821032210.792451-1-kunwu.chan@linux.dev> <d26ec36e92e8f5aa244e2a22de5d167d14b36597.camel@infradead.org>
-In-Reply-To: <d26ec36e92e8f5aa244e2a22de5d167d14b36597.camel@infradead.org>
-From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Mon, 24 Aug 2026 23:51:17 +0800
-X-Gm-Features: AcwNN1Uq-eRgOY9GNoEPoa7dv086UlNsCEHedj9wcGeXWfsWr1sK6Ylb8-nGreE
-Message-ID: <CAN_Opa_osKeScHG1h4L4XZ9CwUGtDkRFLzvJp5KfSAKPz3-iaQ@mail.gmail.com>
-Subject: Re: [PATCH] srcu: Add try_synchronize_srcu() for callers which can
- prove readers absent
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Kunwu Chan <kunwu.chan@linux.dev>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, rcu@vger.kernel.org, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: NeilBrown <neilb@ownmail.net>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: "Byungchul Park" <byungchul@sk.com>, linux-kernel@vger.kernel.org,
+ max.byungchul.park@gmail.com, kernel_team@skhynix.com,
+ torvalds@linux-foundation.org, linux-ide@vger.kernel.org,
+ adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, mingo@redhat.com,
+ peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+ rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
+ daniel.vetter@ffwll.ch, duyuyang@gmail.com, johannes.berg@intel.com,
+ tj@kernel.org, tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+ amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
+ linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+ minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+ sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+ penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+ ngupta@vflare.org, linux-block@vger.kernel.org, josef@toxicpanda.com,
+ linux-fsdevel@vger.kernel.org, jack@suse.cz, jlayton@kernel.org,
+ hch@infradead.org, djwong@kernel.org, dri-devel@lists.freedesktop.org,
+ rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+ hamohammed.sa@gmail.com, harry.yoo@oracle.com, chris.p.wilson@intel.com,
+ gwan-gyeong.mun@intel.com, boqun.feng@gmail.com, longman@redhat.com,
+ yunseong.kim@ericsson.com, ysk@kzalloc.com, yeoreum.yun@arm.com,
+ netdev@vger.kernel.org, matthew.brost@intel.com, her0gyugyu@gmail.com,
+ corbet@lwn.net, catalin.marinas@arm.com, bp@alien8.de, x86@kernel.org,
+ hpa@zytor.com, luto@kernel.org, sumit.semwal@linaro.org,
+ gustavo@padovan.org, christian.koenig@amd.com, andi.shyti@kernel.org,
+ arnd@arndb.de, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ rppt@kernel.org, surenb@google.com, mcgrof@kernel.org,
+ petr.pavlu@suse.com, da.gomez@kernel.org, samitolvanen@google.com,
+ paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
+ joelagnelf@nvidia.com, josh@joshtriplett.org, urezki@gmail.com,
+ mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+ qiang.zhang@linux.dev, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+ vschneid@redhat.com, chuck.lever@oracle.com, okorniev@redhat.com,
+ Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org, anna@kernel.org,
+ kees@kernel.org, bigeasy@linutronix.de, clrkwllms@kernel.org,
+ mark.rutland@arm.com, ada.coupriediaz@arm.com,
+ kristina.martsenko@arm.com, wangkefeng.wang@huawei.com,
+ broonie@kernel.org, kevin.brodsky@arm.com, dwmw@amazon.co.uk,
+ shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com,
+ yuzhao@google.com, baolin.wang@linux.alibaba.com, usamaarif642@gmail.com,
+ joel.granados@kernel.org, richard.weiyang@gmail.com,
+ geert+renesas@glider.be, tim.c.chen@linux.intel.com, linux@treblig.org,
+ alexander.shishkin@linux.intel.com, lillian@star-ark.net,
+ chenhuacai@kernel.org, francesco@valla.it, guoweikang.kernel@gmail.com,
+ link@vivo.com, jpoimboe@kernel.org, masahiroy@kernel.org,
+ brauner@kernel.org, thomas.weissschuh@linutronix.de, oleg@redhat.com,
+ mjguzik@gmail.com, andrii@kernel.org, wangfushuai@baidu.com,
+ linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+ linux-i2c@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-modules@vger.kernel.org, rcu@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ 2407018371@qq.com, dakr@kernel.org, miguel.ojeda.sandonis@gmail.com,
+ bagasdotme@gmail.com, wsa+renesas@sang-engineering.com,
+ dave.hansen@intel.com, geert@linux-m68k.org, ojeda@kernel.org,
+ alex.gaynor@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
+ lossin@kernel.org, a.hindborg@kernel.org, aliceryhl@google.com,
+ tmgross@umich.edu, rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH v19 00/40] DEPT(DEPendency Tracker)
+In-reply-to: <3d58eb3c-7a9d-4183-907b-46172664631c@kernel.org>
+References: <20260706061928.66713-1-byungchul@sk.com>
+  <359ea967-9b97-4584-88e6-bddb4044de2e@kernel.org>
+  <20260821042143.GA40890@system.software.com>
+  <825134a8-ceae-430c-b2fc-d1d0c7240f39@kernel.org>
+  <178730572084.2852630.7732425311008244683@noble.neil.brown.name>
+  <3d58eb3c-7a9d-4183-907b-46172664631c@kernel.org>
+Date: Tue, 25 Aug 2026 09:37:34 +1000
+Message-id: <178761465493.3510150.12380729360578969391@noble.neil.brown.name>
+Reply-To: NeilBrown <neil@brown.name>
 
-Hi David,
+On Tue, 25 Aug 2026, David Hildenbrand (Arm) wrote:
+> Hi!
+>=20
+> >>>
+> >>> That's a good news for lockdep.  (And even for DEPT :)
+> >>
+> >> He :) Where do you currently store the additional per-page information?
+> >=20
+> > lockdep doesn't need to store per-page information.  Possibly DEPT
+> > doesn't either.
+>=20
+> That would be even better.
 
-Thanks for the detailed explanations and for addressing the review
-comments in v2.
+A little bit more on this:
+ lockdep *does* store per-lock information - a "struct lockdep_map".
+ I don't fully understand how it is used, but it seems to be mostly
+ for convenience and performance.
+ When you lock something, lockdep need to know what class the lock
+ belongs to.  The lockdep_map maps from the lock to the class so the
+ caller doesn't have to explicitly identify the class every time.
+ The lockdep_map also contains a "name" and some wait_types which I
+ *think* are only used for more descriptive error messages.
+ There is also a "class_cache" which makes it easier (faster) for lockdep to
+ find the target class for different subclasses.
 
-On Fri, Aug 21, 2026 at 7:53=E2=80=AFPM David Woodhouse <dwmw2@infradead.or=
-g> wrote:
->
-> On Fri, 2026-08-21 at 11:22 +0800, Kunwu Chan wrote:
-> > If the common case is that there are no readers and the new fast path
-> > is intended to avoid the SRCU grace-period machinery, could you explain
-> > what property of SRCU is still required by the proposed users that
-> > prevents using ordinary RCU instead?
->
-> My original version did use RCU, but Sean asked me to switch to a
-> dedicated per-vm SRCU=C2=B9 because a system-wide grace period doesn't wo=
-rk
-> well on large KVM hosting systems.
+ rhashtables "bucket_table" is an existence proof there there doesn't
+ need to be a lockdep_map for each lock.  Every bucket has its own
+ bit-spin-lock, but there is only one lockdep_map that they all shared.
 
-The rationale for the per-VM SRCU and the no-reader fast path is much
-clearer now. In particular, I understand that the per-VM SRCU is mainly
-about having a dedicated synchronization domain, while the try path
-avoids the unnecessary workqueue and scheduling latency in the
-no-reader case.
+ You could conceivably put a lockdep_map in each "struct address_space"
+ for folio locks (assuming all lockable folios still belong to some
+ address_space).
 
->
-> =C2=B9 https://lore.kernel.org/all/anS8C4Cxqy6ehCo3@google.com/
->
-> > Could this use case instead be addressed by making exp_holdoff
-> > configurable per srcu_struct, or otherwise allowing a dedicated SRCU
-> > domain to use a more aggressive expedite policy?
->
-> That doesn't help much; the other concern is latency. And the mere act
-> of bouncing to the workqueue only to realise we can wake up again was
-> adding 100=C2=B5s or so every time for nothing. *Plus* once you schedule =
-at
-> all, you start to see really high tail latencies of >20ms too =E2=80=94 w=
-hich
-> is why we've also started looking at synchronize_srcu_atomic() to
-> eliminate that completely. If we get *that*, then maybe I don't
-> personally care as much about try_synchronize_srcu(), although it might
-> be a useful extension to synchronize_srcu_expedited() =E2=80=94 this *wou=
-ld* be
-> the 'more aggressive expedite policy' of which you speak, for the case
-> where there are no readers.
->
+>=20
+> [...]
+>=20
+> >=20
+> > maybe you put the folio which is locked on a queue or an lru or
+> > whatever.
+>=20
+> For readahead, I think that queues / lru are not involved. We submit the I/=
+O,
+> and once the I/O is done, we unlock the folio from interrupt context.
 
-In particular, tuning exp_holdoff would not address the workqueue round-tri=
-p
-and the resulting tail latency.
+"submit the I/O" means "attach the page to a "struct bio" (or similar)
+and attach the struct bio to a transmit queue for the device (or
+similar).  So there really is a queue.
 
-> > Could you also clarify why observing no readers during this
-> > check is sufficient for the reclamation/happens-before guarantee
-> > required by the proposed callers?
->
-> Both halves of the grace-period guarantee are provided when it returns
-> true. For any reader, either:
->
->    =E2=80=A2 its lock increment was observed by the sums and its unlock w=
-as
->      too =E2=80=94 the reader's final smp_mb() then orders its whole crit=
-ical
->      section before the caller's subsequent accesses (that reader has
->      completed), or
->
->    =E2=80=A2 its lock increment was not observed =E2=80=94 in which case =
-the
->      store-buffering pairing with the smp_mb() in __srcu_read_lock()
->      guarantees that reader observes every store the caller made
->      before calling: it is a "new" reader for the purposes of the
->      grace period, exactly as if it had started after a real
->      synchronize_srcu() returned, or
->
->    =E2=80=A2 its lock increment was observed but its unlock was not =E2=
-=80=94 the one
->      case where the reader may still be running with no guarantee it
->      saw anything. But that reader inflates the lock sum above the
->      unlock sum, so this is precisely the case in which we return
->      false and the caller takes the real grace period.
->
-> It's the same argument srcu_readers_active_idx_check() makes; the only
-> novelty is summing both epochs so no flip is needed.
->
-> > Since a successful try_synchronize_srcu() does not advance srcu_gp_seq,
-> > flip the SRCU index, or process callbacks, could we document more
-> > explicitly that a successful try provides the required
-> > reclamation/happens-before guarantee to the caller, but does not
-> > constitute an SRCU grace-period completion for the state/callback APIs?
->
-> Yes; done in v2.
->
-> > What ordering edge does the first smp_mb() establish that is not
-> > already provided by the middle and final barriers?
->
-> Er.... none? :)
->
-> We need the caller's prior stores ordered before the *lock*-counter
-> reads, but the middle barrier already does that for us. Dropped in v2,
-> and the comment on the middle barrier updated.
->
-> > Would it make sense to perform the same lockdep check in the try path?
->
-> Ack.
->
-> > When applying this to current rcu/dev, the patch also needs to account
-> > for the additional bool is_atomic argument to
-> > check_init_srcu_struct(). Please rebase accordingly.
->
-> Ooh, shiny, I hadn't spotted that the atomic thing had landed. Maybe I
-> should retract my 'if we get that' above... but let's see how it
-> survives.
->
-> I also have more than just this patch to rebase onto rcu/dev =E2=80=94 un=
-like
-> some, I'm not just hacking RCU for the fun of it; I get my jollies
-> elsewhere :)
->
-> Btw, the current commit c68271c3f83a message says "no index flip, no
-> grace-period sequence update" but that isn't true of the implementation
-> any more, is it? In fact, it *always* does those things, and doesn't
-> take the try-path optimisation by counting both epochs, that I'm doing
-> here?
->
+>=20
+> end_buffer_async_read() / iomap_finish_folio_read() end up calling
+> folio_end_read(), where we do the magic
+>=20
+> 	folio_wake_bit(folio, PG_locked);
 
-The v2 changes address the points I raised, including removing the
-redundant leading smp_mb(), adding the lockdep check, and clarifying
-that a successful try does not constitute an SRCU grace-period
-completion for the state/callback APIs.
+Exactly where the lock ownership should be reclaimed is not immediately
+clear to me.  bio_endio() might be early enough but there are probably
+better points.
 
-I'll take another look at v2, in particular the two-epoch counter proof
-and its correspondence with srcu_readers_active_idx_check().
+A small difficulty here is that a bio has multiple folios and they are
+all locked.  I cannot see that lockdep has a concept of holding an
+arbitrarily large set of related locks.
+We could just tell lockdep=20
+  "I have some folios locked"=20
+or maybe enhance lockdep to allow
+  "I have N folios locked"
+or even
+  "I have N folios in address-space A with the highest offset being O".
 
-Thanks again for the detailed explanations.
+This would allow lockdep to check the validity of locking another folio
+- only allowed if the address space is the same and the offset is larger
+than the previous largest.
+
+>=20
+> It's interesting, that for writeback we never unlock the folio on the I/O p=
+ath,
+> but instead have the dedicated page flag to tell us when writeback is compl=
+ete.
+
+PG_locked and PG_writeback are two different lock-bits with two
+different meanings.
+When a folio is PG_locked the content is invalid and shouldn't be accessed.
+When a folio is in PG_writeback its data is not safe even though
+PG_dirty has been cleared (if I remember correctly).
+
+So these are two separate, though related, lock bits that would both
+need to be tracked.  lockdep would detect how they are related.
+
+>=20
+> >=20
+> > There is no way to say "that queue owns this lock".  Maybe that could
+> > usefully be added - assuming coherent semantics can be designed.
+> >=20
+> > Somewhere else some other task takes responsibility for that folio and
+> > the lock.  maybe it dequeues a page, or maybe an lru callback gives the
+> > locked page to some code.
+> > That code then calls
+> >    lock_map_acquire_try(&the_lock_map)
+>=20
+> I'd assume that's what the unlock path would do from interrupt context.
+
+exactly.
+
+>=20
+> >=20
+> > This says "this task is now holding this lock" (or more accurately "now
+> > holding a lock of this class").
+> > Note the "_try" - that says that the task didn't have to wait for the
+> > lock, it just got it for free, which in fact it did.
+> >=20
+> > Now if that task takes some other lock, lockdep will see a dependency
+> > between the page lock and the new lock, and will accept or reject it as
+> > you would expect.
+>=20
+> I guess on the interrupt path, we primarily unlock the folio lock only. But=
+ we
+> might take some other spinlocks temporarily indeed, like
+> iomap_finish_folio_read() does.
+
+Yes.  It is hard to see there being locking problems in interrupt
+handlers as the folio locks are sleeping locks and an interrupt handler
+can only take atomic locks, so getting the ordering wrong is likely
+impossible.
+
+You would be more likely to see problems in a workqueue which takes the
+completely IO and does something with it, maybe verify a checksum or
+whatever (it is a long time since I've worked in the block layer).
+
+>=20
+>=20
+> >  But I'd like to see a coherent
+> > explanation of how the functionality offered by DEPT is clearly better.
+>=20
+> Yes, that's also what I am missing.
+>=20
+> Stating that lockdep is stable and should not be destabilized is not really=
+ a
+> good argument.
+
+No it is not.  We change "stable" things all the time.  Replacing one
+big thing with another big thing is almost always rejected.
+Incremental development is the preferred approach.
+So developing something like DEPT to explore and learn and demonstrate
+a cool idea is great.  Making it completely separate can give a
+developer freedom to innovate.
+But the path from there to upstream acceptance is to take the lessons
+learned and to apply them one by one to the existing tools.
+Yes, that takes longer.  Yes it can be frustrating.  Yes you need to
+be able to work with people - not just code - to bring the community
+along with you.
+But the result is generally much better.
 
 Thanks,
-Kunwu
+NeilBrown
 
-> Thanks for the careful review.
+
+>=20
+> --=20
+> Cheers,
+>=20
+> David
+>=20
+
