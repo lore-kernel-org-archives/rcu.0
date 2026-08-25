@@ -1,63 +1,64 @@
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456483806D2
-	for <rcu@vger.kernel.org>; Tue, 25 Aug 2026 20:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E4BC387378
+	for <rcu@vger.kernel.org>; Tue, 25 Aug 2026 20:02:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787688138; cv=none; b=XxOla6lL+arZ5uoV0inuhW6vpyjpK39eUVnUpwfIm99inYBPe17TSlpWk8qvqw4YrmJKv9SzwW9Gxypo19WLP8XV4gOAw9EVeam53F+LzReGIZwFi8VvnvmOVYKfsX6De01AupqEZreqa4uu5Ro4lGgFEvuyY8puv8NZASRHEWM=
+	t=1787688139; cv=none; b=NJD6D3liUE+4Ph/IwAOV698dpGi0FOKjACZ7RF+5clA3xxu5KZsicXZYHi+0Jh3F2tEVZsgsvhfhFYKXzEVneo+qgN9UPN+SIY3JVdVLQRUfHvkrptoKz9eEGC+wr1U/NZDwp7NT6XSpEQHdKoux/d8NQ8vvw2jdf4yemwGZmYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787688138; c=relaxed/simple;
-	bh=O7y3IluJMK/6pA1hlZoHNlPX/Gm62xZ0jklwqyiwC7Y=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=qlF6YBgtJIUTPanHbpMZVxmX8n0qgwZPYFN981kF/53Xo4XeMbU9dLJsx2vkZe8htOePIXOy64HDiPDwMEMrS7dtQvNy3sLzcZGzH7xV9pWu3nPYEvsAss/oCukXEMlkV7z2wYXuW+kzHNBLWJETbHjydXEmnkbykBeDGJ4vIzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EvwA35cQ; arc=none smtp.client-ip=209.85.167.41
+	s=arc-20240116; t=1787688139; c=relaxed/simple;
+	bh=qUBA6A9UnyHbYzJFPiZQnoAk4q/iuycPsbOtXqa6CtY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=DtiYmwesd2DfeBoBcrKwAkPB559ROiV50IuV2Nm33JnVMW3awSerbdp42oe85lLskK9yzWhnTSOXeu4rR7szXOI7He3DFHVDXfdRCIt5JFVga6z8tHgJotTw67lQhKTUgNL1XNwjELrpPiJlntibwqJBjf3MJZ0vOxoIWpoSZA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZxNFX/Ex; arc=none smtp.client-ip=209.85.167.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EvwA35cQ"
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5aeb2bc82ccso141324e87.2
-        for <rcu@vger.kernel.org>; Tue, 25 Aug 2026 13:02:16 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZxNFX/Ex"
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5aec6360133so120255e87.1
+        for <rcu@vger.kernel.org>; Tue, 25 Aug 2026 13:02:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1787688135; x=1788292935; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:content-type:mime-version
-         :message-id:date:subject:from:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=DLElBAQ3asF/fSjoLEYXQNanm1yfS++Q98wWygCv/i4=;
-        b=EvwA35cQMnuc74UswhXnbdzRItqvZFgZy195bb8/FUwi6F1KYCPGY1DBMrTaBJugHG
-         HdwouHZoVW1cxuSl2KK1ryONr+svdeB+qcrIV96nh6X9KErF4HyAAtFDFkWbC3Ev5i3d
-         mJ0LiuoZuYRtdC0OAl5WtnBPWqEgjSw9T2VEE=
+        d=chromium.org; s=google; t=1787688136; x=1788292936; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=UX7g0ukijwjjIrziQAgaTHtTRLbta6EIpn4u0/mNSSE=;
+        b=ZxNFX/ExHXAUebpdXw902S1auhenzWEpOXYRKpXDRFxK/PnER8g3/q3A1n3iYxE0lJ
+         2ZGTRh7QVBDpCsuX7vTjSddmtQi3qXZcOVGitmvXbWUHNlVkLMTMTrEx9ftNZs1RJ3vz
+         5bbr8ePrFKqJpOELdOiaKMmQmvpt0+zQ0UE8k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787688135; x=1788292935;
-        h=cc:to:content-transfer-encoding:content-type:mime-version
-         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=DLElBAQ3asF/fSjoLEYXQNanm1yfS++Q98wWygCv/i4=;
-        b=e/Qehk7aHIc1/aWQkP6Fp18t8T3fsElQbFkCf7hdeWUSJdOcd1sIhQL2M4TE1fRA7W
-         jdp3IsQgRagahp34vMH0lNxyxm7j+IBy/uOoRbRmhHNJxnzCdNk/Q1MA9qs3g7DBbtVj
-         lO1zapqE0USbaurOsTpq/1ysZaH6V6opMAhRwlDHH2qc4IcD7n9GukbnmGbXAhzuw21l
-         ynp86EdSZuQhGY7rTcEDX1w9KVp0HluxdDlO7Y7KtUPsekkzOagdzhdzKwmXfUEv+xPt
-         tq8XgZGbMXOiFV0vnwnoDnQseKQCO51Uc7JwM7Aotbag9JprTbBmdRw5sVoK2KA8yH70
-         yVWA==
-X-Gm-Message-State: AFuF++nBkMdYWHJTBfkePDKg3oghB1rdFP6QVDjTyIxJRJopEJrM1nv0
-	wccrPbdcdMsUYIc7TrrHdd71SYYrIqktyWoFiAjeQr4HFoDeJarlW7NaiTONROINvg==
-X-Gm-Gg: AR+sD10pr9q/oWn9MPMWkc7rOpNgMQv5naO7XYLnzfTThPPn2G1eVm4zceyu5aCAmR+
-	yEB45sbbJpKGz9bR2CbWdTBm3HfNF4ILJSZvIyItc0WcG8AetiixHae5FFASnWfUZ8iwrP5Xw3n
-	eprfT8+zScTwaLh0WuvqoGg/e1+Hn0dpp/7EyCWAoSvxuhjwZwVisQoK+qB0sahXmDUkdLy+P9U
-	cv/E8Bqw/pUIax+QlBETsj0Yxs7j2P+TUw1MtYtKboTJo4VCHe4kgecEZQrnhWX+Ox75YbofHZB
-	/GDOXJuI+a5NbTK9kpK8nLk1E54gH8/fMfRAzdBjG0jLepdQMbnItGPzFvAP5JSnKbEWufuvT/K
-	rK3eOTcjYjdt1DOJuYvRpw5/ooGwWPMnVNclm2Ry73jAdtG6vhP1/khr7gxgrAGMIYEYa/OXgyN
-	Ozq7nXvTfb+i5wCcBWaJAAvQIn4ZlCUBpxthsaHqsZcaAsrygQ1JDArCUjELESdIBmEfs69VofA
-	YsbLZ3flDljzPSxlxc1xfcXrQXof/BVU+9kYnk=
-X-Received: by 2002:a05:6512:3c8e:b0:5ae:b7bc:27a7 with SMTP id 2adb3069b0e04-5b4a901432dmr167451e87.6.1787688135140;
-        Tue, 25 Aug 2026 13:02:15 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1787688136; x=1788292936;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=UX7g0ukijwjjIrziQAgaTHtTRLbta6EIpn4u0/mNSSE=;
+        b=q7VSYzE76jwJognHSOSUuog6n+ovWzabKbix0y8DgEKzv9ah+BbUIpTrRV0QVNbBHX
+         L/GsEeR+05IxiSoNb4zememjcuazy6rKOW+eP9QjEmn9DbGKTA20Uo9zZepne1TW5KWn
+         +t5Rch3PBgGerMPQlxzD/lBR6Fur08t54OW3E4HV+3mSobtsojV3Kjco/4hnHL6UDElo
+         hxAzF03SpYGrCRVFBgUZoAWouhHIDmwlk59wnOoN4vnmQwsK/Z3lsW502VUVmzwtOhsa
+         RtROYF2yKWlEEXsz7NOYuEeHP6O5eFmadoKebo4Ub80CPmf+VYWsCc8k5QpQGkddDXaG
+         H1QA==
+X-Gm-Message-State: AFuF++kOzJg1HonwEiFj2bRcDqaor4eZoPShmar93rSeCsqKXav4jqck
+	4sTMG3SMHK/0L3pxGODbcZ9ckYAE5qY3Qy02ozy04QC6Tp4P5WorJDfDLUilNUa9Wg==
+X-Gm-Gg: AR+sD13bjpNpQU5Y65UAvLQQom3EQ1bvKVNmdeZNs876PULaM9BIqqSjuoN+KZo38CT
+	Yhboq9MUtizMXpykxOvZy4tZ6fW7bb9MR9etdiNWOWBn88fhj2kmZzfcepAmLobRYy4LXdkgi1T
+	C5c5PeW7W1X9DphKHMjsF0ypr/Sn5p8Ic6GikAYfEkKHbqhvP8O44PitGwvCz/PW9vWdCYm0JtC
+	Zd9Q4r1AwDKjEaiZZD9Hmcepd5GLUPWhpQX2U+eIr4ZpuJ0yxdZmJh7rHP5GTLvdP/+rfdCOG2A
+	MPTOJjB8rxU/Z/cPHaA5ph/iq8fyycMUP4Hceaqe9lfG+22Q4kFzT1hR7QzYS608nXUTKDHiUG7
+	2piUUg9fkE1qcEG2sTDdBltH1i3MY4TQNcD/2wKRiPv4TNPHGAN20lY8B8V/yW+TT69HT/rNcd3
+	5V12zgEREozRfkaPwINpUeu22nZDyc9mJ84AeCyQf9rlAT9ntD3r9eRcTO0FxAB+HiwBLAHBtRy
+	F8ooxbAuzzlMAknjKs95DhlDb4sh//n4cjL9DqUK992Cvq5Gg==
+X-Received: by 2002:ac2:5e8a:0:b0:5b1:537b:de9b with SMTP id 2adb3069b0e04-5b4a9064b4amr172876e87.19.1787688136158;
+        Tue, 25 Aug 2026 13:02:16 -0700 (PDT)
 Received: from ribalda.c.googlers.com (11.36.88.34.bc.googleusercontent.com. [34.88.36.11])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5b4a41533c5sm135381e87.15.2026.08.25.13.02.13
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5b4a41533c5sm135381e87.15.2026.08.25.13.02.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2026 13:02:14 -0700 (PDT)
+        Tue, 25 Aug 2026 13:02:15 -0700 (PDT)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH 0/2] Fix warnings with recent smatch
-Date: Tue, 25 Aug 2026 20:02:09 +0000
-Message-Id: <20260825-unqual-v1-0-7024fb81b4f9@chromium.org>
+Date: Tue, 25 Aug 2026 20:02:10 +0000
+Subject: [PATCH 1/2] rcu: Fix casting while dereferencing rcu pointers
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -66,10 +67,9 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAMH0jWoC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDCyNT3dK8wtLEHF0j0xTL1FRzk7QUQwMloOKCotS0zAqwQdGxtbUAjZ4
- wtlgAAAA=
-X-Change-ID: 20260825-unqual-25d9ee74fd10
+Message-Id: <20260825-unqual-v1-1-7024fb81b4f9@chromium.org>
+References: <20260825-unqual-v1-0-7024fb81b4f9@chromium.org>
+In-Reply-To: <20260825-unqual-v1-0-7024fb81b4f9@chromium.org>
 To: "Paul E. McKenney" <paulmck@kernel.org>, 
  Frederic Weisbecker <frederic@kernel.org>, 
  Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
@@ -83,31 +83,72 @@ To: "Paul E. McKenney" <paulmck@kernel.org>,
  x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
  Dan Carpenter <error27@gmail.com>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Ricardo Ribalda <ribalda@chromium.org>, Dan Carpenter <error27@gmail.com>
+ Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.14.3
 
-Recent versions of smatch are more exhaustive while running typeof() [1].
-This has triggered new errors in media-ci.
+Recent versions of smatch preserved the address space qualifiers with
+typeof()[1].
 
-This series takes care of them following Dan's suggestion [2].
+This fix has discovered an invalid casting in rcu dereference logic.
+
+This patch fixes tens of smatch errors like the following:
+./include/trace/events/vb2.h:46:1: warning: incorrect type in assignment (different address spaces)
+./include/trace/events/vb2.h:46:1:    expected struct tracepoint_func *it_func_ptr
+./include/trace/events/vb2.h:46:1:    got struct tracepoint_func __rcu *
 
 [1] https://github.com/error27/smatch/commit/e53027a4e816a772403baafa83c09e4a94c1cb8f
-[2] https://lore.kernel.org/all/CANiDSCuizbMt77XfrzGPMa3Biai5TF1vcs+C5qdhYoLrP=9b3g@mail.gmail.com/
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
-Ricardo Ribalda (2):
-      rcu: Fix casting while dereferencing rcu pointers
-      x86/uaccess: Fix casting in put_user
+ include/linux/rcupdate.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
- arch/x86/include/asm/uaccess.h |  4 ++--
- include/linux/rcupdate.h       | 10 +++++-----
- 2 files changed, 7 insertions(+), 7 deletions(-)
----
-base-commit: 66498c75b4f8017f62d720d9b59675bdf3abce91
-change-id: 20260825-unqual-25d9ee74fd10
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 44c07a66edff..80276cedda80 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -488,7 +488,7 @@ static __always_inline bool lockdep_assert_rcu_helper(bool c, const struct __ctx
+ context_unsafe(								\
+ 	typeof(*p) *local = (typeof(*p) *__force)(p);			\
+ 	rcu_check_sparse(p, __rcu);					\
+-	((typeof(*p) __force __kernel *)(local))			\
++	((TYPEOF_UNQUAL(*p) __force __kernel *)(local))			\
+ )
+ /**
+  * unrcu_pointer - mark a pointer as not being RCU protected
+@@ -503,7 +503,7 @@ context_unsafe(								\
+ ({ \
+ 	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+ 	rcu_check_sparse(p, space); \
+-	((typeof(*p) __force __kernel *)(local)); \
++	((TYPEOF_UNQUAL(*p) __force __kernel *)(local)); \
+ }) )
+ #define __rcu_dereference_check(p, local, c, space) \
+ ({ \
+@@ -511,19 +511,19 @@ context_unsafe(								\
+ 	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+ 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_check() usage"); \
+ 	rcu_check_sparse(p, space); \
+-	((typeof(*p) __force __kernel *)(local)); \
++	((TYPEOF_UNQUAL(*p) __force __kernel *)(local)); \
+ })
+ #define __rcu_dereference_protected(p, local, c, space) \
+ ({ \
+ 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
+ 	rcu_check_sparse(p, space); \
+-	((typeof(*p) __force __kernel *)(p)); \
++	((TYPEOF_UNQUAL(*p) __force __kernel *)(p)); \
+ })
+ #define __rcu_dereference_raw(p, local) \
+ ({ \
+ 	/* Dependency order vs. p above. */ \
+ 	typeof(p) local = READ_ONCE(p); \
+-	((typeof(*p) __force __kernel *)(local)); \
++	((TYPEOF_UNQUAL(*p) __force __kernel *)(local)); \
+ })
+ #define rcu_dereference_raw(p) __rcu_dereference_raw(p, __UNIQUE_ID(rcu))
+ 
 
-Best regards,
 -- 
-Ricardo Ribalda <ribalda@chromium.org>
+2.55.0.897.gb25b4bd76c-goog
 
