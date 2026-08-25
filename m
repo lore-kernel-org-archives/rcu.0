@@ -1,64 +1,64 @@
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E4BC387378
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 298B63B2D00
 	for <rcu@vger.kernel.org>; Tue, 25 Aug 2026 20:02:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787688139; cv=none; b=NJD6D3liUE+4Ph/IwAOV698dpGi0FOKjACZ7RF+5clA3xxu5KZsicXZYHi+0Jh3F2tEVZsgsvhfhFYKXzEVneo+qgN9UPN+SIY3JVdVLQRUfHvkrptoKz9eEGC+wr1U/NZDwp7NT6XSpEQHdKoux/d8NQ8vvw2jdf4yemwGZmYQ=
+	t=1787688140; cv=none; b=Gbnmm7O1uspTp1WAs/OFhD87MIAnsXRtK2SkXZMMQPfnKgUkkGY6/AWT40YJnNYGRYfXDdJ0dKfzbFlCkoG0t1Jhnq0Gn2YKXlCc33Mm3hqregrcsrP6PaXTxZNGrdS03LdEI4SY7mJLLe4Y8EMw8OxpSLitgdrP2SunKQp+d5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787688139; c=relaxed/simple;
-	bh=qUBA6A9UnyHbYzJFPiZQnoAk4q/iuycPsbOtXqa6CtY=;
+	s=arc-20240116; t=1787688140; c=relaxed/simple;
+	bh=I4fpEQQE9zFc0xnAO9CBIB2LJQb63RqiIeKZFmwOlzw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DtiYmwesd2DfeBoBcrKwAkPB559ROiV50IuV2Nm33JnVMW3awSerbdp42oe85lLskK9yzWhnTSOXeu4rR7szXOI7He3DFHVDXfdRCIt5JFVga6z8tHgJotTw67lQhKTUgNL1XNwjELrpPiJlntibwqJBjf3MJZ0vOxoIWpoSZA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZxNFX/Ex; arc=none smtp.client-ip=209.85.167.49
+	 In-Reply-To:To:Cc; b=C4g1Jn7bNkUv+Qffql6h12zwjKPc5288ssTBpq39d17xmLT98GtDO6s7Mwx1TlBZeWehqAAdPvny7F/Hu6Sl4INEDv5PANvsQDVtUgAzMgfqw6nvV9bzUlOffdABMgOjmrJWKC48GOxBpHoKV3VVtHHxVGv9R6zYCF05/uqNluc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ClfAUPwa; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZxNFX/Ex"
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5aec6360133so120255e87.1
-        for <rcu@vger.kernel.org>; Tue, 25 Aug 2026 13:02:17 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ClfAUPwa"
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5b01cb18515so136746e87.2
+        for <rcu@vger.kernel.org>; Tue, 25 Aug 2026 13:02:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1787688136; x=1788292936; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1787688137; x=1788292937; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=UX7g0ukijwjjIrziQAgaTHtTRLbta6EIpn4u0/mNSSE=;
-        b=ZxNFX/ExHXAUebpdXw902S1auhenzWEpOXYRKpXDRFxK/PnER8g3/q3A1n3iYxE0lJ
-         2ZGTRh7QVBDpCsuX7vTjSddmtQi3qXZcOVGitmvXbWUHNlVkLMTMTrEx9ftNZs1RJ3vz
-         5bbr8ePrFKqJpOELdOiaKMmQmvpt0+zQ0UE8k=
+        bh=GTVqDctRrMjBLA2E0tBTgvop5gHmOnA0BG3Qw1HtV1U=;
+        b=ClfAUPwaqsMFUkAZpT875RLTyqz/pDVtGDKsrOIUiAYuoUmvIzLkAJ1g2Pd2uNoTFq
+         M8cy4xgalegUZgqsBKElZjPZGb9gviFMYEkUeJVtUFJ4aCvBHfWAJh6jc982/iwLZ0zG
+         S5ZFJvDZs8QiB1gNGugLCrtGrOoJaI3cxH/vU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787688136; x=1788292936;
+        d=1e100.net; s=20251104; t=1787688137; x=1788292937;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=UX7g0ukijwjjIrziQAgaTHtTRLbta6EIpn4u0/mNSSE=;
-        b=q7VSYzE76jwJognHSOSUuog6n+ovWzabKbix0y8DgEKzv9ah+BbUIpTrRV0QVNbBHX
-         L/GsEeR+05IxiSoNb4zememjcuazy6rKOW+eP9QjEmn9DbGKTA20Uo9zZepne1TW5KWn
-         +t5Rch3PBgGerMPQlxzD/lBR6Fur08t54OW3E4HV+3mSobtsojV3Kjco/4hnHL6UDElo
-         hxAzF03SpYGrCRVFBgUZoAWouhHIDmwlk59wnOoN4vnmQwsK/Z3lsW502VUVmzwtOhsa
-         RtROYF2yKWlEEXsz7NOYuEeHP6O5eFmadoKebo4Ub80CPmf+VYWsCc8k5QpQGkddDXaG
-         H1QA==
-X-Gm-Message-State: AFuF++kOzJg1HonwEiFj2bRcDqaor4eZoPShmar93rSeCsqKXav4jqck
-	4sTMG3SMHK/0L3pxGODbcZ9ckYAE5qY3Qy02ozy04QC6Tp4P5WorJDfDLUilNUa9Wg==
-X-Gm-Gg: AR+sD13bjpNpQU5Y65UAvLQQom3EQ1bvKVNmdeZNs876PULaM9BIqqSjuoN+KZo38CT
-	Yhboq9MUtizMXpykxOvZy4tZ6fW7bb9MR9etdiNWOWBn88fhj2kmZzfcepAmLobRYy4LXdkgi1T
-	C5c5PeW7W1X9DphKHMjsF0ypr/Sn5p8Ic6GikAYfEkKHbqhvP8O44PitGwvCz/PW9vWdCYm0JtC
-	Zd9Q4r1AwDKjEaiZZD9Hmcepd5GLUPWhpQX2U+eIr4ZpuJ0yxdZmJh7rHP5GTLvdP/+rfdCOG2A
-	MPTOJjB8rxU/Z/cPHaA5ph/iq8fyycMUP4Hceaqe9lfG+22Q4kFzT1hR7QzYS608nXUTKDHiUG7
-	2piUUg9fkE1qcEG2sTDdBltH1i3MY4TQNcD/2wKRiPv4TNPHGAN20lY8B8V/yW+TT69HT/rNcd3
-	5V12zgEREozRfkaPwINpUeu22nZDyc9mJ84AeCyQf9rlAT9ntD3r9eRcTO0FxAB+HiwBLAHBtRy
-	F8ooxbAuzzlMAknjKs95DhlDb4sh//n4cjL9DqUK992Cvq5Gg==
-X-Received: by 2002:ac2:5e8a:0:b0:5b1:537b:de9b with SMTP id 2adb3069b0e04-5b4a9064b4amr172876e87.19.1787688136158;
-        Tue, 25 Aug 2026 13:02:16 -0700 (PDT)
+        bh=GTVqDctRrMjBLA2E0tBTgvop5gHmOnA0BG3Qw1HtV1U=;
+        b=rki1EOdoS/sCQmGqnbyi9lyg+pY1mXfwB4kxEqJhoq7bhLvOITqZedyX54ZmOFGSs/
+         8iDJD0gJ8gkImUTBqZpbrWmbcfSBmjBo0npz+nbuldWOOUsQoggvB0GuuDoZUIQRS53/
+         4deXHQzge0MeOcCiatxkEcuplJYiMPDRqBID3EnCtbWknbL36Unbr14uzsKMyhCU/kBe
+         Dz7i4jTf9I8HpZvv6dpV+rPHUOFBShJsAkmA3bDGHtpBaXnr4WWhr7jOyK9ETok7Jwfj
+         NmvgAiACfX2aUx9wrJaaxnLzF7OXRcRsULfP78o7aKFemqnQvkdBRgmd7q/Ku8P4bZtH
+         Jn4w==
+X-Gm-Message-State: AFuF++klwj9IbVBMpDKDCnt3EKop89T6CIzlJ9+/Jes+lS8FqnVg4YJR
+	tXt9emCPryD3rriS+1MCcAomCOojsAWXPQUp2wemI6UInnRBJxyxGDQmR03OuDnCbw==
+X-Gm-Gg: AR+sD1239NIDuiilZGsJ6+66TId1FGUU1uG0CGveKxU6k98zqG5hgHf4KP1JiPWHpns
+	fBezv6tzDoU6PFejSlansuw1z9l2ro+zwB979JC0FC/w9TGRVxb49tYqt5L7bzCD+eO8EbkPzDd
+	mVCNSEWg/iA/mh1SPvHGLfsAXmDE2cAHV2laMr6IiXbBM0FgJ6slTZsdBTn+6gWvzKYJINxIFiN
+	h6+ORTiUBbiOL6AdMxYkJPip3U/hj9XOQpi7OLwlOT7UR+NiKrCcA/G5+WexndEywl4TlQf7DqK
+	bMGfebj+3JLhhV3RlSaLcrVnJPTT+FXFMZAsbAANnNGiQuGl2R90wbnKfhSfihip+zveQtqb5Nq
+	yIRlApx/U4N4NJdUJrnX4YLexw434m5BafsQ1ge5zY/yjNnx9agDqE0HFnO8xQJKhlshor2mC5z
+	86p7+SfzUUlfqlY3rpuFn1r7939kyLZCSMZfqvyG9yj1mwsx6sC2jpVbB3rTroplySkZ1IaOyq1
+	VEe07BMc/nMLNW2YuVloO0zlpMG9GHRGY6bpqY=
+X-Received: by 2002:a05:6512:6399:20b0:5ae:b8f8:77ce with SMTP id 2adb3069b0e04-5b4a906a95emr148221e87.23.1787688137080;
+        Tue, 25 Aug 2026 13:02:17 -0700 (PDT)
 Received: from ribalda.c.googlers.com (11.36.88.34.bc.googleusercontent.com. [34.88.36.11])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5b4a41533c5sm135381e87.15.2026.08.25.13.02.15
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5b4a41533c5sm135381e87.15.2026.08.25.13.02.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2026 13:02:15 -0700 (PDT)
+        Tue, 25 Aug 2026 13:02:16 -0700 (PDT)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Tue, 25 Aug 2026 20:02:10 +0000
-Subject: [PATCH 1/2] rcu: Fix casting while dereferencing rcu pointers
+Date: Tue, 25 Aug 2026 20:02:11 +0000
+Subject: [PATCH 2/2] x86/uaccess: Fix casting in put_user
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -67,7 +67,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260825-unqual-v1-1-7024fb81b4f9@chromium.org>
+Message-Id: <20260825-unqual-v1-2-7024fb81b4f9@chromium.org>
 References: <20260825-unqual-v1-0-7024fb81b4f9@chromium.org>
 In-Reply-To: <20260825-unqual-v1-0-7024fb81b4f9@chromium.org>
 To: "Paul E. McKenney" <paulmck@kernel.org>, 
@@ -83,71 +83,49 @@ To: "Paul E. McKenney" <paulmck@kernel.org>,
  x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
  Dan Carpenter <error27@gmail.com>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Ricardo Ribalda <ribalda@chromium.org>
+ Ricardo Ribalda <ribalda@chromium.org>, Dan Carpenter <error27@gmail.com>
 X-Mailer: b4 0.14.3
 
 Recent versions of smatch preserved the address space qualifiers with
 typeof()[1].
 
-This fix has discovered an invalid casting in rcu dereference logic.
+This fix has discovered an invalid casting in put_user.
 
 This patch fixes tens of smatch errors like the following:
-./include/trace/events/vb2.h:46:1: warning: incorrect type in assignment (different address spaces)
-./include/trace/events/vb2.h:46:1:    expected struct tracepoint_func *it_func_ptr
-./include/trace/events/vb2.h:46:1:    got struct tracepoint_func __rcu *
+drivers/media/usb/uvc/uvc_v4l2.c:1112:13: warning: incorrect type in argument 2 (different address spaces)
+drivers/media/usb/uvc/uvc_v4l2.c:1112:13:    expected void const *from
+drivers/media/usb/uvc/uvc_v4l2.c:1112:13:    got unsigned int __user *
 
 [1] https://github.com/error27/smatch/commit/e53027a4e816a772403baafa83c09e4a94c1cb8f
 
+Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- include/linux/rcupdate.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/uaccess.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 44c07a66edff..80276cedda80 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -488,7 +488,7 @@ static __always_inline bool lockdep_assert_rcu_helper(bool c, const struct __ctx
- context_unsafe(								\
- 	typeof(*p) *local = (typeof(*p) *__force)(p);			\
- 	rcu_check_sparse(p, __rcu);					\
--	((typeof(*p) __force __kernel *)(local))			\
-+	((TYPEOF_UNQUAL(*p) __force __kernel *)(local))			\
- )
- /**
-  * unrcu_pointer - mark a pointer as not being RCU protected
-@@ -503,7 +503,7 @@ context_unsafe(								\
- ({ \
- 	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
- 	rcu_check_sparse(p, space); \
--	((typeof(*p) __force __kernel *)(local)); \
-+	((TYPEOF_UNQUAL(*p) __force __kernel *)(local)); \
- }) )
- #define __rcu_dereference_check(p, local, c, space) \
- ({ \
-@@ -511,19 +511,19 @@ context_unsafe(								\
- 	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
- 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_check() usage"); \
- 	rcu_check_sparse(p, space); \
--	((typeof(*p) __force __kernel *)(local)); \
-+	((TYPEOF_UNQUAL(*p) __force __kernel *)(local)); \
- })
- #define __rcu_dereference_protected(p, local, c, space) \
- ({ \
- 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
- 	rcu_check_sparse(p, space); \
--	((typeof(*p) __force __kernel *)(p)); \
-+	((TYPEOF_UNQUAL(*p) __force __kernel *)(p)); \
- })
- #define __rcu_dereference_raw(p, local) \
- ({ \
- 	/* Dependency order vs. p above. */ \
- 	typeof(p) local = READ_ONCE(p); \
--	((typeof(*p) __force __kernel *)(local)); \
-+	((TYPEOF_UNQUAL(*p) __force __kernel *)(local)); \
- })
- #define rcu_dereference_raw(p) __rcu_dereference_raw(p, __UNIQUE_ID(rcu))
+diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+index 3a0dd3c2b233..4e576c0b9131 100644
+--- a/arch/x86/include/asm/uaccess.h
++++ b/arch/x86/include/asm/uaccess.h
+@@ -172,7 +172,7 @@ extern void __put_user_nocheck_8(void);
+ 	int __ret_pu;							\
+ 	void __user *__ptr_pu;						\
+ 	register __typeof__(*(ptr)) __val_pu asm("%"_ASM_AX);		\
+-	__typeof__(*(ptr)) __x = (x); /* eval x once */			\
++	TYPEOF_UNQUAL(*(ptr)) __x = (x); /* eval x once */		\
+ 	__typeof__(ptr) __ptr = (ptr); /* eval ptr once */		\
+ 	__chk_user_ptr(__ptr);						\
+ 	__ptr_pu = __ptr;						\
+@@ -231,7 +231,7 @@ extern void __put_user_nocheck_8(void);
  
+ #define __put_user_size(x, ptr, size, label)				\
+ do {									\
+-	__typeof__(*(ptr)) __x = (x); /* eval x once */			\
++	TYPEOF_UNQUAL(*(ptr)) __x = (x); /* eval x once */		\
+ 	__typeof__(ptr) __ptr = (ptr); /* eval ptr once */		\
+ 	__chk_user_ptr(__ptr);						\
+ 	switch (size) {							\
 
 -- 
 2.55.0.897.gb25b4bd76c-goog
