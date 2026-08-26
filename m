@@ -1,167 +1,123 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583E7445AC1;
-	Wed, 26 Aug 2026 14:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDABC392836
+	for <rcu@vger.kernel.org>; Wed, 26 Aug 2026 16:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787755605; cv=none; b=s80RgSkrg8OCRdXbWXLalN13v/RdAfJnb8OucGugxzkl/VhnCFKBeddd2gUNz4hSXzvPEOYrpfzIXRKFwC7CM4L5xHMy0JS8+/qhN+NCad1aF4PYlEBPAE5yIChgLj5iChQ0YiVN9IdBQWYqvg8EhCx+qLVwZCgCPqziWBLN1P8=
+	t=1787760239; cv=none; b=ZrjVD2yLB09MGDVaTBGvTM7/AEbNLAF7Uunt9iubCXYjtAFf0KaBGaYh3T/VettIt1k+rt7zAylFkGasQ27Hzx/x8o6SVE1g0SPX23nmef6OFUduvEcbdff0fNQvDdQ25FsdeoAqHyjHxUsfmLaFOX4J+12OXx2nspDEZtnMeoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787755605; c=relaxed/simple;
-	bh=n/5mZkYkKK5GavBNGTNXlJp3qMnQh82rUrq1G8+x6Nw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PG7n8Qmnzrq6WMkF8nEXoErNdjk1XPJrXQCAvXOuPfUE6Teox7nPEO0FFl30Y905mX2hbkOwLnrJATFTtoIBt6wWRtnCwcItRVzclWUtGhuLEdHsDngGGoEMGkcIuvYV/ioWEJjkdSY2ocPh5k41OxbMUUcmceZ7DapZtBng4/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LrU6HUGT; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gozkSWv+; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1787760239; c=relaxed/simple;
+	bh=LJM0Wd7RUEGT+1o4S3J7rTftxoFqM18lTZscyhoCrFQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QnePzbtzOjhFkKiIGaddUI292TJOeQpo2rID2Coya24GQbCUrm6MfGLcILt7C9AoM6UXQ0fpp8OMfyKPGWquVLF+PCMN1VfV9iw7BrG+CNJFgcg3U+brkhu7FM7J2o7+1qDAyKb+/rWRea6ThP6Lr+6gEx1zjoC6CKlzKdxf3nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TGlnDKG/; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LrU6HUGT";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gozkSWv+"
-Date: Wed, 26 Aug 2026 16:46:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1787755597;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S0Kkynge44FrWWoalc/XYt1t696+d537CJ47hQiSN5E=;
-	b=LrU6HUGTkQ/HPzremJzckNm2cqpOlgdcnVt6mDteTHCiWw38x2TkLAPOkDqwYKiASklx/L
-	16cJ8SSSTa7or4LPHRb9naKFyEoYjDUeC7RsEIQySnA5ZWHWjJpJZq6N+xS9FalE0OB3OB
-	5V9TADPX2yz9EYITk0j2qBA0v2y9Df+m0oRzu7NNGth7jHhLBktHDad8Pihk2vvXfkTrQ+
-	glUH2itooDT6gk79kYPFH7nSw6/HU13o8ew/kJO5j9u4RUvJhRViY/HhprQ2x5OK/bIzth
-	bq0bvFl8/T0ixvO1FIui8ErYqQPhceCZ3BQH6abLN5pj9+WLUvBHxWuYjTljEA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1787755597;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S0Kkynge44FrWWoalc/XYt1t696+d537CJ47hQiSN5E=;
-	b=gozkSWv+kjmm1LlGRIFiYIde5MxTEoTadSEOrNSFuVaThoY56VhcztspbhDoqkXFnMK/mz
-	hyMu85VWKTOTPkBw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Onur =?utf-8?B?w5Z6a2Fu?= <work@onurozkan.dev>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	Matt Fleming <mfleming@cloudflare.com>,
-	"Harry Yoo (Oracle)" <harry@kernel.org>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH v4 1/6] rcu: Make call_rcu() safe to call from any context
-Message-ID: <20260826144636.3IRUXeFV@linutronix.de>
-References: <20260810122758.183765-1-puranjay@kernel.org>
- <20260810122758.183765-2-puranjay@kernel.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TGlnDKG/"
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-853e2610bb4so39036b3a.0
+        for <rcu@vger.kernel.org>; Wed, 26 Aug 2026 09:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787760229; x=1788365029; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=Ql47cxhhPz+pBekLN3rh9Yom4KlDNtrvH/6xbr+Yqz0=;
+        b=TGlnDKG/aCWqIj8Cw/g5OFShkYAIArci3YAgKrHI0GlYd8D88s0VEwiI8abN8rkulk
+         01R2emyIvPnaZgZ6/H9XbzXaYc3L3sULRT5WwKZeY4vgSJrK/RcokkAZ6O+O+VVFT1gt
+         3VLr2FqnwAIsVxUQRAYIzKSXl0qkUF8XeKKP1TtFJLi+okZpqqyOfPcvHE+uBjTBYmcU
+         YX1ulnKxriMrQnqe4V3W/gw36xCkzSmsLUbfC75aVSmjb1HRMKgDsx8u1QZmqT7jGZIv
+         9ZjYxH1hu8q9sLVHm7mvCIUnqDs+DOlHaMAeS6noJQjuIMU7Q25voXVg5xmTEGlkqndb
+         qWVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787760229; x=1788365029;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=Ql47cxhhPz+pBekLN3rh9Yom4KlDNtrvH/6xbr+Yqz0=;
+        b=VJGdxGTpO3MY1IKWjNt5p7BDj5qa5uQwwkOECb8p8vvw09ixi4HpU1NG04iJvP0L6X
+         hD3p6hTob19/ST9odXBWyGIAjWl7POb6TkhJ/9kF5c6fB8QHIge2KI5cxC4+JXLrA51F
+         s1DXBSOY4vl6B9dhqNeTPA0yLQgzBRCKNfIGU8DpjAJ+mEMYYh3Ae3ROBs8QlMPWq2ki
+         okS7Xv9G2k57GkMnq4DUnud/i0sYUcEW26/mbfTcVMNLlKeZY6BAEsCwsTxhZ7ND7l83
+         v7pB1R4OryCX4Y2fb8D3mVspCncnrw2kk71OQabENkXzJGioYrhOqhHrwkzlDezwfa88
+         2klg==
+X-Forwarded-Encrypted: i=1; AHgh+Ro2yvBGqUv2t+QX6Qzx6WkbO0xGsnJ+wFttEmbUts6cY6nZntdOxjqMYjmccrq+6VtgxD8=@vger.kernel.org
+X-Gm-Message-State: AFuF++nYAlqWs5XowBumx8NAIcUN7/kdz4/K2hw+pdNpX+9tezKpj3XZ
+	8XYcaZypjQp+DOYMpILOE6MJ6lhmkYFWjhFqlrESJTkmY0Nc5/TThsYZ43dXu4+PA7w=
+X-Gm-Gg: AR+sD10YTAgFYNQ/ksaw8DpC19VX5YEqQXErdwx5cVKBegMQUAiGBNOtKLHp8rYyBm8
+	H4ZV5lQsIUxsY/y2lTCzZepmbhc39i46LN5//IDhyrOA+fHjHGbPHZ4/nf5gPEOz05dVGpshMaZ
+	xkpMFXq7mvS2mE/VZgOYyfx3ypyNOfQSvBrxgZCzBtMeX5G4FNfEnqLPiJ56/FnW7BrvrM3oXZB
+	vzeTWCHxCnSHi/eCwwM58uVPJdH2kIRGJyxn9iuLgSP+clBxzuGllSE0llpxhf1RK7Jia3U5Ms8
+	dBUBST5ZchvlqNRSEXtuDZIg1J6ay96DTwWXQVPHKNPH2Ujj4Eq0XmMQQZoSKZwmZcHRRTk86LN
+	E7p6S2Gnsq30Gq5N9cquB6Jmta5xTQJzWz67zeJMJBVznQU3Lpl1VaXOaVDueeaErsxGGvW89Fk
+	yM39GPJVxOYt/vrfvXUtFgGUDLFjdnMRTGMpU8CR+HfLV6BkZoBkhQ03Db2QAJQR+l40w=
+X-Received: by 2002:a05:6a20:e347:b0:3cd:9c00:33fb with SMTP id adf61e73a8af0-3d0f4bccb5emr293716637.5.1787760228707;
+        Wed, 26 Aug 2026 09:03:48 -0700 (PDT)
+Received: from [192.168.55.196] ([218.49.81.87])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cc1beb2d4c5sm1104043a12.13.2026.08.26.09.03.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Aug 2026 09:03:47 -0700 (PDT)
+Message-ID: <9e216978-d884-4d56-b39f-d134f78a4999@gmail.com>
+Date: Thu, 27 Aug 2026 01:03:45 +0900
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20260810122758.183765-2-puranjay@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] srcu: false-positive WARN in cleanup_srcu_struct() after
+ 78a38cbf6f20
+To: Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org
+Cc: paulmck@kernel.org, linux-kernel@vger.kernel.org,
+ syzbot+d4faf7db59e11f6fd1ab@syzkaller.appspotmail.com
+References: <20260824105625.3725157-1-shpark061104@gmail.com>
+ <494f3e0cdb3692bf13690f4cddd3b40098b51627@linux.dev>
+ <24c0edd6-3cdc-4536-ac78-394bf785aad4@gmail.com>
+ <0e74e6799bf042293fd1e34e2f242c56786c3de4@linux.dev>
+Content-Language: en-US
+From: Sunho Park <shpark061104@gmail.com>
+In-Reply-To: <0e74e6799bf042293fd1e34e2f242c56786c3de4@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 2026-08-10 05:27:50 [-0700], Puranjay Mohan wrote:
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -572,6 +572,17 @@ static inline void tasks_cblist_init_generic(void) {=
- }
->  #define RCU_SCHEDULER_INIT	1
->  #define RCU_SCHEDULER_RUNNING	2
-> =20
-> +/*
-> + * Defer whenever interrupts are disabled, since a callback-list operati=
-on may
-> + * be in flight on this CPU.  Not before the scheduler is up: irq_work i=
-s not
-> + * usable that early, and rcu_init() itself calls call_rcu().
-> + */
-> +static inline bool should_rcu_defer(void)
-> +{
-> +	return IS_ENABLED(CONFIG_RCU_DEFER) && irqs_disabled() &&
-> +	       rcu_scheduler_active !=3D RCU_SCHEDULER_INACTIVE;
-> +}
+On 8/26/26 22:13, Zqiang wrote:
+> In this SRCU_SIZE_SMALL mode, when queue delayed work timer, the cblist is always no-empty.
+> unless invoke start_poll_synchronize_srcu() to begin SRCU garce period,
+> otherwise invoke call_srcu() or synchronize_srcu*() will insert callback.
+Right, every grace period which armed the delay_work timer is started by 
+the real call_srcu(&kvm->srcu, &bus->rcu, __free_bus) in 
+kvm_io_bus_register_dev(). I missed one point: the invoke work which 
+invoked the barrier callbacks is not queued by the nearest end of grace 
+period. It was queued by the timer of a previous end of GP, and it 
+started only after the last GP had ended. Meanwhile the srcu_gp_end() 
+from the last GP armed another timer even though the work was already 
+queued. The timeline is as below:
 
-Why does the description say that the defer part is for usage from NMI
-and the test here has irqs_disabled() instead of in_nmi()?
+1. call_srcu(&kvm->srcu, &bus->rcu, __free_bus)
+2. One end of GP comes, arms a timer.
+3. The timer is fired and an invoke work is queued to rcu_gp_wq. The 
+timer is disabled now.
+4. Another call_srcu(&kvm->srcu, &bus->rcu, __free_bus)
+5. srcu_barrier() is called and queues barrier callbacks, waits for 
+srcu_invoke_callbacks() to invoke them.
+6. The end of GP from step 4 comes, arms another timer.
+7. The invoke work queued in step 3 starts, srcu_invoke_callbacks() is 
+called. It starts invoking callbacks without subtracting the cblist len 
+field. It will call rcu_segcblist_add_len(&sdp->srcu_cblist, -len) after 
+the invoking loop is over.
+When I debugged, there were five __free_bus(the real callbacks) and one 
+barrier callback, so the cblist len field was 6.
+8. Barrier callback is invoked, still the cblist len field is not 
+subtracted as srcu_invoke_callbacks()'s invoking loop is not over.
+9. srcu_barrier() wakes up by completion and cleanup_srcu_struct() is 
+called before the timer armed in step 6 expires.
+At this point the cblist is physically empty (head == NULL, all seglen 
+are 0) as all six callbacks have already been invoked. Only the cblist 
+len field is stale(>0).
 
-> +
->  enum rcutorture_type {
->  	RCU_FLAVOR,
->  	RCU_TASKS_FLAVOR,
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 21b6ce1dffb63..3bf3a250f9de8 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3206,6 +3204,103 @@ __call_rcu_common(struct rcu_head *head, rcu_call=
-back_t func, bool lazy_in)
->  	local_irq_restore(flags);
->  }
-> =20
-> +/*
-> + * Re-issue deferred callbacks straight to the enqueue so they cannot de=
-fer
-> + * again.  ->defer_lock serializes the drainers: this CPU's irq_work,
-> + * rcu_defer_flush() and rcutree_migrate_callbacks().
-> + */
-> +static void __rcu_defer_drain(struct rcu_data *rdp)
-> +{
-> +	struct llist_node *node, *next;
-> +	unsigned long flags;
-> +
-> +	if (!IS_ENABLED(CONFIG_RCU_DEFER))
-> +		return;
-> +
-> +	raw_spin_lock_irqsave(&rdp->defer_lock, flags);
-> +	llist_for_each_safe(node, next, llist_del_all(&rdp->defer_head)) {
-> +		struct rcu_head *head =3D (struct rcu_head *)node;
-
-Why do you need the lock. This is still not clear to me despite the
-comment. You can do llist_del_all() towards another list and then feed
-it into rcu_do_enqueue() one by one. And you use the LAZY part.
-
-> +
-> +		/* Bounds a node self-linked by a double call_rcu(). */
-> +		head->next =3D NULL;
-> +		rcu_do_enqueue(head, head->func, false);
-> +	}
-> +	raw_spin_unlock_irqrestore(&rdp->defer_lock, flags);
-> +}
-=E2=80=A6
-> @@ -4231,6 +4330,9 @@ rcu_boot_init_percpu_data(int cpu)
->  	rdp->rcu_onl_gp_state =3D RCU_GP_CLEANED;
->  	rdp->last_sched_clock =3D jiffies;
->  	rdp->cpu =3D cpu;
-> +	init_llist_head(&rdp->defer_head);
-> +	raw_spin_lock_init(&rdp->defer_lock);
-> +	rdp->defer_work =3D IRQ_WORK_INIT_HARD(rcu_defer_drain);
-
-Why is this IRQ_WORK_INIT_HARD() instead, say, IRQ_WORK_INIT_LAZY()? Is
-there a requirement that the RCU callback needs to complete asap and not
-be delayed to the next tick? This would give kind of the LAZY part.
-
->  	rcu_boot_init_nocb_percpu_data(rdp);
->  }
-> =20
-
-Sebastian
+Thanks
+Sunho Park
