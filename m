@@ -1,100 +1,153 @@
-Received: from mta0.migadu.com (out-42.mta0.migadu.com [91.218.175.42])
+Received: from mta1.migadu.com (out-239.mta1.migadu.com [95.215.58.239])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A86D02BFC85
-	for <rcu@vger.kernel.org>; Wed, 26 Aug 2026 02:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DE1306498
+	for <rcu@vger.kernel.org>; Wed, 26 Aug 2026 03:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787712999; cv=none; b=CuPh+MnjyyVmDcGVKeyuh8ieCEijFTLfB9BqXS/nHDLHhFuz9dtGfieM7foKDQdVKRfnLA0mLitr8gNMlVsk17jepk+yKrennB+wwPZLOAJ5MIRHsmSIYL6DqT3x1AJBP5fChgVEbcoiiLIdAlCl5+U/OC+W7j4mODrw5OLaGsU=
+	t=1787714782; cv=none; b=Esid1MW84OwijZbhuX7ghltnDiEyOKvjTIibdM7bo/d7ly7slnp9dFWubATfw4kd8MDD/gqpVCt+S4yYErhCI2SlXArSipBVKn6wt2g9AZ9rBWvUJcM/hPVTnbcDqpDptQGqhNcFJejHSX4SPKwIJ3o4x7xJ9foIzDNexLaTQ/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787712999; c=relaxed/simple;
-	bh=HZYjrb8/ZziX4qSQKv1N6qCU+IzCO6UVMJye9TdsnNw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i9n51CBVZuffxfBtQMIvgYO7DOrRSaEPksD+BpJzzlCWmOC7/KPHFtzlXSoo9fY83zrf4opx4pUyA5nW7FfMgNZ7JBvM4ii7PdrMaGp28e+9387VUH6u8JAPnZb7l42RssO9Cgb7B7vE05Vpt5hYxY45g0TnstnuheKAmX7SDn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qXtSa9YS; arc=none smtp.client-ip=91.218.175.42
+	s=arc-20240116; t=1787714782; c=relaxed/simple;
+	bh=BoOEeC1UgkAdtAXh0gBc2XLf7OBg9w6rgGaafjYXKno=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=HwiGui6Xo5O5EU7FTU8TgR3mtJtNhwncY0OdpybEaIAW2mi/Jgq/6I66qLuf/QFnlRN305e/Px6JrZIS8Qs4671cc2AGrLpAhNFx3lv5SGZwQgwdLkpGiAQ4H9LsulX2OD2i57OllVEfd7q7eoDEKN1mTmQyAWO8yjqsc5+D6oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OkNMMC5l; arc=none smtp.client-ip=95.215.58.239
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qXtSa9YS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OkNMMC5l"
 X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=HZYjrb8/ZziX4qSQKv1N6qCU+IzCO6UVMJye9TdsnNw=;
+DKIM-Signature: a=rsa-sha256; bh=BoOEeC1UgkAdtAXh0gBc2XLf7OBg9w6rgGaafjYXKno=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1787712995; v=1; x=1788317795;
- b=qXtSa9YS7HTMxaA9YcQRbK8hOG1X8APePregnSzV+vWusRnQO0yEqeOS0UGMkd/cdGekTRXC
- lY+pgmmfOapO9pALU0MKlrYIZvGNmgf25Bs4PrsVvleKYPHj2uQoHM2xbRKvQ9gS5vcihjj4Ie6
- eHcqWvSziJpJLWAabdguuzpU=
+ t=1787714778; v=1; x=1788319578;
+ b=OkNMMC5lMdXzApYz/qaKAxgtogsGBr8mR75ZkS7c/iDkY+BUUiPvSVRAQGfuYH6freICC5Ic
+ 5wcJmg7cO6Actoz/Tm6xDGKTdh9kSTJJMNQJ3FjLn1n8uA5rL0PNOkZ41U8lUuH9jZ9wb0hTHav
+ VKzB7x4inGcPzuH48wvbNBXw=
 X-Envelope-To: rcu@vger.kernel.org
-Received: from fedora (117.129.78.49)
-	by smtp.migadu.com with ESMTPS id c7d4d76eb3de895d;
-	Wed, 26 Aug 2026 02:56:25 +0000
-X-Mizu-Trace-ID: c7d4d76eb3de895d
+Received: from webmail.migadu.com (2001:41d0:303:fc7a::)
+	by smtp.migadu.com with ESMTPS id 94384c40a50ac1d2;
+	Wed, 26 Aug 2026 03:26:18 +0000
+X-Mizu-Trace-ID: 94384c40a50ac1d2
 X-Migadu-Flow: FLOW_OUT
-Date: Wed, 26 Aug 2026 10:56:19 +0800
-From: Hao Li <hao.li@linux.dev>
-To: Longlong Xia <xialonglong2025@163.com>
-Cc: vbabka@kernel.org, harry@kernel.org, akpm@linux-foundation.org, 
-	cl@gentwo.org, rientjes@google.com, roman.gushchin@linux.dev, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, paulmck@kernel.org, 
-	rcu@vger.kernel.org, Longlong Xia <xialonglong@kylinos.cn>
-Subject: Re: [PATCH 1/1] mm/slab_common: fix shrink budget underflow in
- kfree_rcu_shrink_scan
-Message-ID: <ao5UqBL4iPh8zlpG@fedora>
-References: <20260824091838.1692153-1-xialonglong2025@163.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260824091838.1692153-1-xialonglong2025@163.com>
+Date: Wed, 26 Aug 2026 03:26:18 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+From: "Kunwu Chan" <kunwu.chan@linux.dev>
+Message-ID: <ef7c880f59eedf0cd2f2b26842016bbbc2b68a06@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH] srcu: Add try_synchronize_srcu() for callers which can
+ prove readers absent
+To: paulmck@kernel.org, "David Woodhouse" <dwmw2@infradead.org>
+Cc: "Kunwu Chan" <kunwu.chan@gmail.com>, "Lai Jiangshan"
+ <jiangshanlai@gmail.com>, "Josh Triplett" <josh@joshtriplett.org>,
+ "Steven Rostedt" <rostedt@goodmis.org>, "Mathieu Desnoyers"
+ <mathieu.desnoyers@efficios.com>, "Boqun Feng" <boqun.feng@gmail.com>,
+ "Neeraj Upadhyay" <neeraj.upadhyay@kernel.org>, "Joel Fernandes"
+ <joel@joelfernandes.org>, "Uladzislau Rezki" <urezki@gmail.com>, "Sean
+ Christopherson" <seanjc@google.com>, "Paolo Bonzini"
+ <pbonzini@redhat.com>, rcu@vger.kernel.org, kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <42ba6de7-3281-42c9-8d7b-f7dc62c10f62@paulmck-laptop>
+References: <20260821032210.792451-1-kunwu.chan@linux.dev>
+ <d26ec36e92e8f5aa244e2a22de5d167d14b36597.camel@infradead.org>
+ <42ba6de7-3281-42c9-8d7b-f7dc62c10f62@paulmck-laptop>
 
-On Mon, Aug 24, 2026 at 05:18:38PM +0800, Longlong Xia wrote:
-> From: Longlong Xia <xialonglong@kylinos.cn>
-> 
-> The kfree_rcu shrinker decremented sc->nr_to_scan (unsigned long)
-> and then tested the result with <= 0. When a single CPU's object
-> count exceeds the remaining budget, the subtraction wraps to a large
-> positive value and the <= 0 comparison, which is equivalent to == 0
-> for an unsigned type, never fires again. The scan loop then iterates
-> through every possible CPU instead of honouring the reclaim budget.
-> 
-> Reorder the logic to compare count against nr_to_scan before
-> subtracting, so the loop exits as soon as the budget is met.
-> 
-> Assisted-by: Codex:gpt-5.6-sol
-> Signed-off-by: Longlong Xia <xialonglong@kylinos.cn>
-> ---
->  mm/slab_common.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 657fd75776ea..95ddbab290d4 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -2172,11 +2172,11 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
->  		count += drain_page_cache(krcp);
->  		kfree_rcu_monitor(&krcp->monitor_work.work);
->  
-> -		sc->nr_to_scan -= count;
->  		freed += count;
->  
-> -		if (sc->nr_to_scan <= 0)
-> +		if (count >= sc->nr_to_scan)
->  			break;
-> +		sc->nr_to_scan -= count;
+Hi Paul,
 
-thanks, this is indeed a problem.
-I think we could make the code more better, for example:
+I'd be interested in helping with one of these. Are there any items
+that are not already being worked on and would be useful for me to
+take on? I'm particularly interested in the Tree
+`synchronize_srcu_atomic()` fastpath, if that part is still open.
 
-1. remove `count` variable
-2. add count to freed directly (also change type to unsigned)
-3. check `if (freed >= sc->nr_to_scan)` then break.
-
-How does this sound to you?
-
--- 
 Thanks,
-Hao
+Kunwu
+
+
+August 26, 2026 at 7:49 AM, "Paul E. McKenney" <paulmck@kernel.org mailto=
+:paulmck@kernel.org?to=3D%22Paul%20E.%20McKenney%22%20%3Cpaulmck%40kernel=
+.org%3E > wrote:
+
+
+>=20
+>=20On Fri, Aug 21, 2026 at 12:53:22PM +0100, David Woodhouse wrote:
+>=20
+>=20>=20
+>=20> On Fri, 2026-08-21 at 11:22 +0800, Kunwu Chan wrote:
+> >=20
+>=20[ . . . ]
+>=20
+>=20>=20
+>=20> When applying this to current rcu/dev, the patch also needs to acco=
+unt
+> >  for the additional bool is_atomic argument to
+> >  check_init_srcu_struct(). Please rebase accordingly.
+> >=20=20
+>=20>  Ooh, shiny, I hadn't spotted that the atomic thing had landed. May=
+be I
+> >  should retract my 'if we get that' above... but let's see how it
+> >  survives.
+> >=20
+>=20It is starting to shape up. Here is what is left, that I know of, any=
+way:
+>=20
+>=20o A bit more work to get rcutorture to put up with atomic SRCU.
+>=20
+>=20o Tree synchronize_srcu_atomic() fastpath.
+>=20
+>=20o Disable preemption.
+>=20
+>=20o Reorganize commits to fix the Tiny hunks that got applied
+>  in Tree commits, and likely other similar issues.
+>=20
+>=20o More work on error checking for use of banned primitives
+>  with atomic SRCU.
+>=20
+>=20o Update documentation.
+>=20
+>=20Not that it matters, but atomic Tiny SRCU seems to be doing quite wel=
+l.
+>=20
+>=20>=20
+>=20> I also have more than just this patch to rebase onto rcu/dev =E2=80=
+=94 unlike
+> >  some, I'm not just hacking RCU for the fun of it; I get my jollies
+> >  elsewhere :)
+> >=20=20
+>=20>  Btw, the current commit c68271c3f83a message says "no index flip, =
+no
+> >  grace-period sequence update" but that isn't true of the implementat=
+ion
+> >  any more, is it? In fact, it *always* does those things, and doesn't
+> >  take the try-path optimisation by counting both epochs, that I'm doi=
+ng
+> >  here?
+> >=20
+>=20The current "dev" branch is here:
+>=20
+>=20dc5bf5c8fb26 ("fixup! srcutree: Add an atomic Tree SRCU").
+>=20
+>=20Tree SRCU always does an index flip, though a single index flip can
+> serve multiple concurrent calls to synchronze_srcu_atomic().
+>=20
+>=20Tiny SRCU has the fast path, but must advance the index anyway for th=
+e
+> benefit of get_state_synchronize_srcu() and friends. It just bumps it
+> in one shot.
+>=20
+>=20Tree SRCU will also have to bump the index, but will be able to
+> do so manually, without doing all the grace-period processing.
+>=20
+>=20>=20
+>=20> Thanks for the careful review.
+> >=20
+>=20What David said! ;-)
+>=20
+>=20 Thanx, Paul
+>
