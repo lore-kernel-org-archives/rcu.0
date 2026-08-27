@@ -1,33 +1,33 @@
-Received: from mta1.migadu.com (out-45.mta1.migadu.com [95.215.58.45])
+Received: from mta1.migadu.com (out-60.mta1.migadu.com [95.215.58.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F8845A2AD
-	for <rcu@vger.kernel.org>; Thu, 27 Aug 2026 13:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986D12FC037
+	for <rcu@vger.kernel.org>; Thu, 27 Aug 2026 13:41:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.60
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787838015; cv=none; b=Ch8VxmNLTFLle+ys6PtJUx2IXQTV4otXkdJIsFxbYGUNN/Ix1BbocTfb2uP7fEPFB+zxv4Ei+6rDaBW4SfGdKgH54b8tbkd2vQaOClaNcDs8Zudy3tSCtRaqMTINTsvvLffdh2zlCywnoMm1rJ/YfAncwOdeJWCGCjYe7mu2+00=
+	t=1787838118; cv=none; b=Elbtay6MVEAkk6i5I2IFx0DoY8V+Urrqx/Gmlx0FPbIws/jVbNUHHzR/5q+sMMWrS6HDL5c7fPbwCrl0v9rpRxkEih1BVAJv6b0XS3oAS0a3fm3qyNpyd2xvFKmB748HQBVG1rDZgUo54bDgnB+/xoGtKvNMrSlCjSC5FtQS3zo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787838015; c=relaxed/simple;
+	s=arc-20240116; t=1787838118; c=relaxed/simple;
 	bh=QbDr5AegvBQUfylRvluvNUQKq4sIMyDkgCg5Cj3a4Ks=;
 	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=DydQATZHYgY4jSlTkzyg8fScLtN7Ios3jZxlNi0zzZXmnLPAQ/clKul2Y/P+s3wzKUovNZTYKR5Uxxc1WWFa0uuGKk9wDpaUSUpfOPkG/hiIBcHO+qArhiAyzlLMyG+zQoG6+3anE9Qd5JR0ac9+6hVoNDTdX2RmkJ8E/09Bbkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IgQWXkEA; arc=none smtp.client-ip=95.215.58.45
+	 In-Reply-To:References; b=lXWcXca0e9aVm3jsfzTL+SUv2s88INlNVus8i5J4EBfWddQZvAJe8KPmKMnnKM/WHc99lLQgSUPOGpIdrCGvWEjm05NI9PrnPqCA5+/ztHLKQPyyinNnTxaxJ0que/2U1G4CqmW4N8TMogvmm97IzwQ0JGjE7OGGZcKPP/0JxSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KPvO3zH0; arc=none smtp.client-ip=95.215.58.60
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IgQWXkEA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KPvO3zH0"
 X-Envelope-To: rcu@vger.kernel.org
 DKIM-Signature: a=rsa-sha256; bh=QbDr5AegvBQUfylRvluvNUQKq4sIMyDkgCg5Cj3a4Ks=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1787838008; v=1; x=1788442808;
- b=IgQWXkEArlPCNUsbte/zrCTOHXkMAvFS2YBt7w/iGARKp9Q/COQRpUNhP6ekCuFUz1GqtOtM
- gOOOAEIFT5mukfw+A55pKihvOmwYCKZMx76u4umgUtNJqNA2ILU7TXLH/UMCM0i5A/0Q5Fl2V7U
- YTNt6wRZ8Sn9pIuuxLqAJwAs=
+ t=1787838114; v=1; x=1788442914;
+ b=KPvO3zH0ejQfUmJP6rRRBIulGpUTMVGlpDi3LlOCtvlLfip6z+yCiFiz58iRaG6ciWTzznOG
+ kgEAhDa0lxs82Sbj28ckqUVJI5Ph9MJjnSsoQRlsteKiQNZdh5aGCGdJSb1ggHs8XI553O0KvL6
+ NDafX/ivOjlH/P0qKxV6Vllc=
 X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 54c0bf2086df733c;
-	Thu, 27 Aug 2026 13:40:08 +0000
-X-Mizu-Trace-ID: 54c0bf2086df733c
+Received: by smtp.migadu.com with ESMTPS id 813e5b6e3fb05f2f;
+	Thu, 27 Aug 2026 13:41:54 +0000
+X-Mizu-Trace-ID: 813e5b6e3fb05f2f
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -35,11 +35,11 @@ List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Thu, 27 Aug 2026 13:40:08 +0000
+Date: Thu, 27 Aug 2026 13:41:54 +0000
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 From: "Zqiang" <qiang.zhang@linux.dev>
-Message-ID: <d981cbddec4ebac0ba00fa0fce85d04982a45c42@linux.dev>
+Message-ID: <b3964e625bd41303b4b40357d4b30aa23a536098@linux.dev>
 TLS-Required: No
 Subject: Re: [BUG] srcu: false-positive WARN in cleanup_srcu_struct() after
  78a38cbf6f20
