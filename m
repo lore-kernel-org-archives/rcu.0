@@ -1,130 +1,120 @@
-Received: from mta0.migadu.com (out-121.mta0.migadu.com [91.218.175.121])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2645B357CF7
-	for <rcu@vger.kernel.org>; Wed, 26 Aug 2026 23:53:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.121
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B130B3AFD0D
+	for <rcu@vger.kernel.org>; Thu, 27 Aug 2026 09:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787788427; cv=none; b=J+xAEAP+kPTvLMItpW+9f2RZr/Z4gbvcHmgHNpZgxun4fjbY+Ob/sIQB8rHAOFY1sRvdwH2v1vFeyfE+39i0vtXc4+7pbNgSZH1nfBuxTQ72Fom7f89TjaIcag7JEGXD+if06eXDn0K6XpD5YDJi5zaKMM8TfP2CchRk5lYqn7g=
+	t=1787821618; cv=none; b=iLbS5K5WDpaoHANHow2didtspUW09QYEoBc0mg5B2Efr80+FX++xZmF2mYz1AQ3Cp/lY3Vbznc5HT+xKFdo0xXmk8JLew0sxxWV636wqrtMdQVqzaJkwjDkvGVakWQHVK5C/EMp4EtugOWD1RBiXs9bClGQttoxqtL0EEyBwAjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787788427; c=relaxed/simple;
-	bh=jSlw6hAerUXDpVZLz8w/ZxRM7DxzgIEMkO8B3L+BcAg=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=pblYXBscx2nsb6M96tz9uXrokzLtgsYH3H8wulhBWeU0M7NAoMNptDV8p34k3vJnlpUrCxrhshwVhhrSs+r7X0pjPss/pdBvj71Xn3TZe8kwSdzjokU9GnFkWlSpNzmNfsakDTEOuM4g9LW9WlutSci/ULj206rNqo1V/llkEEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NKVoV0fz; arc=none smtp.client-ip=91.218.175.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1787821618; c=relaxed/simple;
+	bh=Dv5HfCA1mSh6i3Acx6oZ4tgPaqHqwItmYmm43jb19IE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BeffNqH7GD26w2fMGzBdtj5Uqv2JDbBxuTN+ZcFmlYLCDwTPgx0tyblarz9cjDkNMbQmcV6NO5RuXxJxnFzk4jWWo5Sqc8ZjiaXLmrlNNbaSc+P0mrNfAnhX94rw2q2j8t8moi4aB1noY3+QG4VitRdTfWlDngsYdsxWSKHeFDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RWIyBcZG; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=oYjW2WBg; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NKVoV0fz"
-X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=jSlw6hAerUXDpVZLz8w/ZxRM7DxzgIEMkO8B3L+BcAg=;
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1787788422; v=1; x=1788393222;
- b=NKVoV0fzlnXv+vDWTZNweeMDmbSYlK2rTQQyy+UWJlkxSPqVvrpj8iVql/SPLceU/uKpZi8r
- Yk3uUv62YGY3efd0ZIN8FQBBIZ0Zhc6zbtPpf7cMpN2Ro3JNG8qq3+gHVowndJErAg02WTQdwuz
- NYG4edp5ABjjd7ZcjSIXX12o=
-X-Envelope-To: rcu@vger.kernel.org
-Received: from webmail.migadu.com (2001:41d0:303:fc7a::)
-	by smtp.migadu.com with ESMTPS id 67c8cdd62d0ba66e;
-	Wed, 26 Aug 2026 23:53:32 +0000
-X-Mizu-Trace-ID: 67c8cdd62d0ba66e
-X-Migadu-Flow: FLOW_OUT
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RWIyBcZG";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="oYjW2WBg"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1787821610;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=UnIBDxp0KwBLclKxiCvoL0emivWc8/d/qvxTInSqzl0=;
+	b=RWIyBcZGz1Dl5EvDGaxrWzjavcUAaDmclPcPJdIsdFf/LudHYOlaJTwif5jrwNOJghO8Df
+	2OoCUObVkkYVY/a9rMjJiHgmhFoBC+enzCF2xsz0kjn5S2hulltjPK87bdgv+he9WXz9FE
+	51HqPgu88T0FqY6PXLxt/iqSBxRzhQU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-568-_AqyyoLRM3eWNPJSpQ8isw-1; Thu, 27 Aug 2026 05:06:43 -0400
+X-MC-Unique: _AqyyoLRM3eWNPJSpQ8isw-1
+X-Mimecast-MFC-AGG-ID: _AqyyoLRM3eWNPJSpQ8isw_1787821603
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-490a767b782so12099145e9.2
+        for <rcu@vger.kernel.org>; Thu, 27 Aug 2026 02:06:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1787821603; x=1788426403; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:to:from:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=UnIBDxp0KwBLclKxiCvoL0emivWc8/d/qvxTInSqzl0=;
+        b=oYjW2WBgwaPCifGU9A71LJ3LNtT3IRqfjNBW0EzIJpXU3VRDAu9QmknI+ZrTvwLIHf
+         +iKPhzarcZosnU80dN2Qb0B25u2NIDnC0Lql5EnPzoRycyrCOB9oVmuwC+NL8/M/8a5T
+         CFo4bWwYJ8jQkgBdfQ1Q9S5/E3OC9sZpBuT+hYXcFODxjVicy4JUmJ4ktrwd9qyduG8i
+         e12VaLHpT45UawLrcQcQ7pwfi++OdzXd0yy83lHfcUmc8kr1/XiB4tJt7Vn5crXZIGjh
+         40pipkaMmXPk7clzG6R4iLnmTzzT4KWmYANOUu9lc2JrFLn8k+dF4m5zvjdxQf6u4MM7
+         UkAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787821603; x=1788426403;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=UnIBDxp0KwBLclKxiCvoL0emivWc8/d/qvxTInSqzl0=;
+        b=k8AUix21V2KQ52TKvErHSKFBW1s/rLjrJ5NAZYIL5rWmLoy3ycP0tXOA4djLh6nDAs
+         595OgfkRxYNOOQdqQ99SvH1LuKZF5J8OGM6xwv9GamiqtXwF74g59EqwhUQxO8+Z7IyQ
+         6o8g1EetQia23dVXXn2t4syzJMF30F2xsIkg3317pSEB+jfcB0M+VE9j+82wI9i5QDZT
+         HBkVW5lw8aUJzXftkvUj7DF9e48q0hJ1vLvAHvWO9haQcgD6iOFe/vFO0Ru3W3KpKdCd
+         pCIgz0kriGlpCrYOlZtLfi6us1yxe+xFjo0rZhDLc9si0TGThFqOAg6VwtC/VED4yMc/
+         YHZQ==
+X-Forwarded-Encrypted: i=1; AHgh+RonU7lQ3fA+eVbKm5YNZ1SfGXE5WQ8GetQFY9rL+C6Ue7xP5rPioAoJlpLjRfIHz25LeEM=@vger.kernel.org
+X-Gm-Message-State: AFuF++mYLTDe8GOc3s27TFP9k5xNnB50sXXZWndjXv5Zk0nvjXtv/zVf
+	pRsdvizYlibx7MO58u0KfDwXKeakdIJlB27wXTLuN+gjnXzjgK5jLBjUCApf2N5Nn7Jpg4I8q1g
+	onawIwanXz3eXXWm0ZjcDcwma4jiA47myILiUrJ1bIvaV7c6/1CzFgA==
+X-Gm-Gg: AR+sD13eek1696pXJyk2Ck8phZ/ic/CMqcnlrNLB5xqw1hTKqQi9n2yUMKYimzuwb+z
+	M3NNF3clNkB62s32PmKlGC216yigYX4gy5dMVAHdatr5Wz0nAEoD8gp3FOqEBHuEOy32HXjowyV
+	HkcMDJrpfJQrj6Ppm0+iIWNaI2ooE6FsMUzvOJMO1Hue5MgM3XN3NCgnzROUDQwwBJTmbqIpvei
+	RQopMwibVOVmEY5uXWNO85//9w1LEvDmFaSS0k0J2fOFvRWz1hdb/9xDv/M+jYbZbJ1FOM8tyPc
+	HZw2V7WirK9csNcbFvhQroAFkxpWyeu/J3vL4nhpX8pd070F2kFZq+wbx+vPRAnx9U+wUAnAwpZ
+	XvdM8rCb5rGoLlbSO
+X-Received: by 2002:a05:600c:37c9:b0:49b:2796:be30 with SMTP id 5b1f17b1804b1-49b2796c07cmr65580715e9.11.1787821602726;
+        Thu, 27 Aug 2026 02:06:42 -0700 (PDT)
+X-Received: by 2002:a05:600c:37c9:b0:49b:2796:be30 with SMTP id 5b1f17b1804b1-49b2796c07cmr65579825e9.11.1787821602271;
+        Thu, 27 Aug 2026 02:06:42 -0700 (PDT)
+Received: from cshulyup.raanaii.csb ([2a00:a041:e223:1b00:cde9:6812:f4a4:646])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-499dd55dd4bsm54770655e9.3.2026.08.27.02.06.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Aug 2026 02:06:41 -0700 (PDT)
+From: Costa Shulyupin <costa.shul@redhat.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>,
+	rcu@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v1] doc: RCU: Fix typo
+Date: Thu, 27 Aug 2026 12:05:06 +0300
+Message-ID: <20260827090506.1172620-1-costa.shul@redhat.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 26 Aug 2026 23:53:32 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-From: "Zqiang" <qiang.zhang@linux.dev>
-Message-ID: <eb2132ad05cd3804a8f2a170de441d79afa793e9@linux.dev>
-TLS-Required: No
-Subject: Re: [BUG] srcu: false-positive WARN in cleanup_srcu_struct() after
- 78a38cbf6f20
-To: "Sunho Park" <shpark061104@gmail.com>, rcu@vger.kernel.org
-Cc: paulmck@kernel.org, linux-kernel@vger.kernel.org,
- syzbot+d4faf7db59e11f6fd1ab@syzkaller.appspotmail.com
-In-Reply-To: <9e216978-d884-4d56-b39f-d134f78a4999@gmail.com>
-References: <20260824105625.3725157-1-shpark061104@gmail.com>
- <494f3e0cdb3692bf13690f4cddd3b40098b51627@linux.dev>
- <24c0edd6-3cdc-4536-ac78-394bf785aad4@gmail.com>
- <0e74e6799bf042293fd1e34e2f242c56786c3de4@linux.dev>
- <9e216978-d884-4d56-b39f-d134f78a4999@gmail.com>
+Content-Type: text/plain; charset=true
+Content-Transfer-Encoding: 8bit
 
->=20
->=20On 8/26/26 22:13, Zqiang wrote:
->=20
->=20>=20
->=20> In this SRCU_SIZE_SMALL mode, when queue delayed work timer, the cb=
-list is always no-empty.
-> >  unless invoke start_poll_synchronize_srcu() to begin SRCU garce peri=
-od,
-> >  otherwise invoke call_srcu() or synchronize_srcu*() will insert call=
-back.
-> >=20
->=20Right, every grace period which armed the delay_work timer is started=
- by the real call_srcu(&kvm->srcu, &bus->rcu, __free_bus) in kvm_io_bus_r=
-egister_dev(). I missed one point: the invoke work which invoked the barr=
-ier callbacks is not queued by the nearest end of grace period. It was qu=
-eued by the timer of a previous end of GP, and it started only after the =
-last GP had ended. Meanwhile the srcu_gp_end() from the last GP armed ano=
-ther timer even though the work was already queued. The timeline is as be=
-low:
->=20
->=201. call_srcu(&kvm->srcu, &bus->rcu, __free_bus)
-> 2. One end of GP comes, arms a timer.
-> 3. The timer is fired and an invoke work is queued to rcu_gp_wq. The ti=
-mer is disabled now.
-> 4. Another call_srcu(&kvm->srcu, &bus->rcu, __free_bus)
-> 5. srcu_barrier() is called and queues barrier callbacks, waits for src=
-u_invoke_callbacks() to invoke them.
+strategem -> stratagem.
 
-Based on your description below, the 5.srcu_barrier() did not intercept t=
-he callback of 4.call_srcu(),
-this means that 4.call_srcu() and 5.srcu_barrier() concurrent calls, or c=
-alls after 5.srcu_barrier().
+Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+---
+ Documentation/RCU/Design/Requirements/Requirements.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The combination of srcu_barrier() and cleanup_srcu_struct() typically occ=
-urs on the module exit path.
-srcu_barrier() ensures that all previously inserted callbacks complete=EF=
-=BC=8Cso therefore, theoretically,
-there shouldn't be any callbacks left to execute after we finish executin=
-g srcu_barrier().=20
-and=20of course, there are also shouldn't be any ongoing or newly started=
- SRCU grace period and the
-WARN_ON() in cleanup_srcu_struct() is designed to detect it.
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+index 8101fe6229d5..b10e0484ae13 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -1442,7 +1442,7 @@ periods:
+    corresponding CPU's next scheduling-clock.
+ #. CPUs mentioned in the ``nohz_full`` kernel boot parameter can run
+    indefinitely in the kernel without scheduling-clock interrupts, which
+-   defeats the above need_resched() strategem. RCU will therefore
++   defeats the above need_resched() stratagem. RCU will therefore
+    invoke resched_cpu() on any ``nohz_full`` CPUs still holding out
+    after 109 milliseconds.
+ #. In kernels built with ``CONFIG_RCU_BOOST=y``, if a given task that
+-- 
+2.55.0
 
-If when the cleanup_srcu_struct() detects an incomplete SRCU grace period=
- or any srcu callbacks
-that have not yet been executed, this is a risk that needs to be reported=
-, even if the
-cleanup_srcu_struct() can intercept it internally.
-=20
-Therefore,=20we should investigate this issue to ensure that 5.srcu_barri=
-er() can intercept the step 4 callback.
-
-Thanks
-Zqiang
-
-
-> 6. The end of GP from step 4 comes, arms another timer.
-> 7. The invoke work queued in step 3 starts, srcu_invoke_callbacks() is =
-called. It starts invoking callbacks without subtracting the cblist len f=
-ield. It will call rcu_segcblist_add_len(&sdp->srcu_cblist, -len) after t=
-he invoking loop is over.
-> When I debugged, there were five __free_bus(the real callbacks) and one=
- barrier callback, so the cblist len field was 6.
-> 8. Barrier callback is invoked, still the cblist len field is not subtr=
-acted as srcu_invoke_callbacks()'s invoking loop is not over.
-> 9. srcu_barrier() wakes up by completion and cleanup_srcu_struct() is c=
-alled before the timer armed in step 6 expires.
-> At this point the cblist is physically empty (head =3D=3D NULL, all seg=
-len are 0) as all six callbacks have already been invoked. Only the cblis=
-t len field is stale(>0).
->=20
->=20Thanks
-> Sunho Park
->
