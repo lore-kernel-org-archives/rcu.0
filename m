@@ -1,83 +1,113 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FAD43FFD;
-	Thu, 27 Aug 2026 16:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FEE366075;
+	Thu, 27 Aug 2026 17:02:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787848638; cv=none; b=CNagmIOB4P5+L+vmTXXL4NBoFdtQOUtWZS11JTeDcEpPBlcZwOFcv3HOpt5XKkJl2kePRUpLjDjpcWwuc71WQ6WYhSiRWNYFpaJQHUP4zqEtAYtFFlkXoXvV+AwekutOFLx/g/wCp9qARff/8Bgzg4VidPaEsGrgGRXqPPgujOo=
+	t=1787850137; cv=none; b=SgMeXim+NSFEO6wl8CuNYCXLNh23DcgSUplp3IIrEqD2zsOgmB6dNq7+Y/oQfbFPDOil+N4rXoy53X/MPQupWwWC/yb2UtKn9uQGzvkm8KJAB9CB2XNe8gRgAlY0vvwXLuJIF9uG2ZcNuFRF99siQuo5osA6YrhVdybj8nozkp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787848638; c=relaxed/simple;
-	bh=AoKcWIAi3dlVaXhoM4ksXxXwZtRpod0+vGyJjRGzBYM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KH4ZX3UK74TqjTxxjQg39dU8qo5Jdq0JIpLvgZQNTlMWZoioA8zaeL8onKk4917pOIAqfo8ipvZ8zGeCcgSZEkYGQBE/xVUaiJiBmBKVGX+Xf5GKblr61ao7DQz7JBIddxiBGeYp1vBlKwH+l0RJzp4FxaE+G/p7pTrTkcGHSQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=OvxIsvp3; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1787850137; c=relaxed/simple;
+	bh=GhwDhOuJ5iCdI0aTMkGOuDyqy51ao91JlyyVXgOfHhc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ac8lMd4OrhvtfIJbL4rbY6dW4LL1xJwpHIYYcL6ccZeIEf4Xc5DnI7QdkkvR7zkQGxzu46QHfBmYG4wQdlyT6JJmG5QFOOFmqsuu/HSDhAciJZ+XjqE1RF+3BFSjfsxGVsrL2+DXHO4Xyf8ykHKo7gliVKIwslfLDvU9uUZppI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IwCptYRJ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OvxIsvp3"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
-	bh=VjWd7jawRMf1GjIFoqYNHQZJX5s6jHeoiKZeb9PnSfI=; b=OvxIsvp3XMWMaTYhanpLMCzui+
-	gRkWgYMnfwBPtpvmsgqY6oI4OvHlZsMf8ObRrZ37P5ENP+z0DFvynYkA7qAQVsDee5wlLZ36aHjuu
-	d7Le4EDh/09nb3b+4QXUXwMq+OE2jKTOvWhzn3XsR99YriFDKRCcziLU2yEENM8QgblTmj396Nlai
-	POe+k+taVKfwlGpZbHYD9YULXDzV3eOtSK5MAUPpaoUtj2j3qlDDuRZV6obkVE/CeiHxz9g+QrONK
-	HgFQ8tF0GgWwLR/AL9qUH3Rlbh9x+aBr8ZePSpXlw6AQ2jR5WFueveiZAIigx8ppHiYlz63PrpnG7
-	8O/NsvZg==;
-Received: from [50.53.43.113] (helo=[192.168.254.34])
-	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wzd6H-00000004MLq-1Ge0;
-	Thu, 27 Aug 2026 16:37:13 +0000
-Message-ID: <9f2abc12-a3c0-482a-b5d4-57b129db10fa@infradead.org>
-Date: Thu, 27 Aug 2026 09:37:11 -0700
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IwCptYRJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9EFE1F000E9;
+	Thu, 27 Aug 2026 17:02:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1787850127;
+	bh=WWuAugr4GhZS+rygnajCG04VHmetYx6vEJc+8qt5BAs=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=IwCptYRJDqA4cnGVlHa/18IrggpI6ek3E1bLH/s891nWjZvMTJtcJgI/B3JHSLyvU
+	 cNcAOFHogeVuanhlWWHmPxbmUHX5mfMwYODA9MeihVPTJK6l1Ylj1atZigVKqkca6P
+	 2YVkX2AxEZmVVy2TbE9h2XEX3GHwWNkZBLdk9oi3XS8upQoOWnIELiYELpA3oRYEY+
+	 CjHtIQ4jGIXIeLeW/H87+VpOvhWtS8QPCsfAWAuTSo54XGghl1Vu961qntJL0olFPH
+	 jqLR7nybgdYRAZZiZVvZ+qUbaMeEuP/kLHaR6qW761gzq9ka1hclcOsn7hIu+nz2Zg
+	 vVeCP5zNrJVbg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id EC620CE1496; Thu, 27 Aug 2026 10:02:06 -0700 (PDT)
+Date: Thu, 27 Aug 2026 10:02:06 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Kunwu Chan <kunwu.chan@gmail.com>
+Cc: dave@stgolabs.net, josh@joshtriplett.org, frederic@kernel.org,
+	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, boqun@kernel.org,
+	urezki@gmail.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Fix divide-by-zero with fwd_progress_div=1
+Message-ID: <3837e540-13dd-4723-bd5f-a109ce6733a7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260820094228.540304-1-kunwu.chan@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] doc: RCU: Fix typo
-To: Costa Shulyupin <costa.shul@redhat.com>,
- "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Jonathan Corbet <corbet@lwn.net>
-References: <20260827090506.1172620-1-costa.shul@redhat.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20260827090506.1172620-1-costa.shul@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260820094228.540304-1-kunwu.chan@linux.dev>
 
-
-
-On 8/27/26 2:05 AM, Costa Shulyupin wrote:
-> strategem -> stratagem.
+On Thu, Aug 20, 2026 at 05:42:28PM +0800, Kunwu Chan wrote:
+> From: Kunwu Chan <kunwu.chan@gmail.com>
 > 
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+> When fwd_progress_div=1, the forward-progress test computes:
+>   sd4 = (sd + div - 1) / div = sd
+>   dur = sd4 + torture_random(&trs) % (sd - sd4) = sd4 + % 0
+> 
+> The modulo operation with a zero divisor triggers an integer
+> division by zero (undefined behavior at the C level, #DE trap on x86),
+> causing a kernel Oops and panic. On x86_64, this manifests as:
+> 
+>   rcu_torture_fwd_prog_nr: Starting forward-progress test 0
+>   Oops: divide error: 0000 [#1] SMP PTI
+>   RIP: 0010:rcu_torture_fwd_prog+0x90b/0x1160
+>   R12: 0000000000000000
+> 
+> The existing guard only handles non-positive values. However,
+> fwd_progress_div=1 also makes the random range empty because
+> sd4 == sd.
+> 
+> Change the guard to reject values below 2. The forward-progress test
+> only reaches this calculation when stall_dur() is positive, so
+> sd = stall_dur() + 1 >= 2. For fwd_progress_div >= 2, sd4 < sd,
+> ensuring that sd - sd4 is at least 1.
+> 
+> Keep the existing fallback to the default value of 4 for invalid
+> values.
+> 
+> Verified with QEMU/KVM: a 138-second run with fwd_progress_div=1
+> completed 81 forward-progress test cycles without a crash.
+> 
+> Fixes: 1b27291b1ea4f ("rcutorture: Add forward-progress tests for RCU grace periods")
+> Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Thanks.
+Good eyes!  Queued for further review and testing, thank you!
+
+							Thanx, Paul
 
 > ---
->  Documentation/RCU/Design/Requirements/Requirements.rst | 2 +-
+>  kernel/rcu/rcutorture.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-> index 8101fe6229d5..b10e0484ae13 100644
-> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
-> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-> @@ -1442,7 +1442,7 @@ periods:
->     corresponding CPU's next scheduling-clock.
->  #. CPUs mentioned in the ``nohz_full`` kernel boot parameter can run
->     indefinitely in the kernel without scheduling-clock interrupts, which
-> -   defeats the above need_resched() strategem. RCU will therefore
-> +   defeats the above need_resched() stratagem. RCU will therefore
->     invoke resched_cpu() on any ``nohz_full`` CPUs still holding out
->     after 109 milliseconds.
->  #. In kernels built with ``CONFIG_RCU_BOOST=y``, if a given task that
-
--- 
-~Randy
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 54bec8e21e71..ed2407e888b4 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -3990,7 +3990,7 @@ static int __init rcu_torture_fwd_prog_init(void)
+>  	}
+>  	if (fwd_progress_holdoff <= 0)
+>  		fwd_progress_holdoff = 1;
+> -	if (fwd_progress_div <= 0)
+> +	if (fwd_progress_div < 2)
+>  		fwd_progress_div = 4;
+>  	rfp = kzalloc_objs(*rfp, fwd_progress);
+>  	fwd_prog_tasks = kzalloc_objs(*fwd_prog_tasks, fwd_progress);
+> 
+> base-commit: c68271c3f83a46de3fca48d3aa9e27c4dec8e58a
+> -- 
+> 2.43.0
+> 
