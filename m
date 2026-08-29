@@ -1,140 +1,103 @@
-Received: from mta1.migadu.com (out-199.mta1.migadu.com [95.215.58.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64EFE3A257E
-	for <rcu@vger.kernel.org>; Sat, 29 Aug 2026 13:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1454A86341;
+	Sat, 29 Aug 2026 23:08:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788009570; cv=none; b=hxaKS55D6hqCB5CJfd/vI/JzzeRKNZY4TXa2N3UwmhUj8HskI8Cai8D3GRopUAhrzAtnZPWWG7P34n85QiLXb6tl9ILPTKf+c6nDwIjB3/rieddn7AZSp7hmH0lVIIfrempKOeKt3eAzObFVL4ps/3RV4IkPcbB1Um7UO7HP4d4=
+	t=1788044936; cv=none; b=Nhq5ZmVhma/VZnN/qnPQ+9X3JaXMmTQQnasfnqt7Il8kVZtj3mAcYA2Z5E9t4MqnB0tGxGQ4TgJ/Pprwkk54udUC09yqRRAsfAh1cYmsBCXRrRnsLIvtkVXIbcZgxAPcrd4jXBQ39qBaL7coh6NvD34Ufpx7VFZVMz+nESIdpvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788009570; c=relaxed/simple;
-	bh=C14v2WGP1xxtMOJJJIjDSF8aD6pnzea40Q7Smx8wkHY=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=HzMQHio7bY08YL9faGSjBtXnbBz0AH5MKuo89seVjYpXVoVqbUnrs/1GFDe0M6oE3P71O7oyaAl9yRtr+HhVkjWAbZ4RqrL+3lPD6jqd7kWOIWEF+NDnylqgDT5KWtIixvCauWnTHyrEHt1vV7qlwupmnIK0fDHXg3JPWYbaKB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bThRVrbL; arc=none smtp.client-ip=95.215.58.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1788044936; c=relaxed/simple;
+	bh=LqCLwqKuWTL6vwDESXogvCGopr8QOkjSQ0447/MdRSw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lAGk458139ruDQbNU+Tqh8WzU6Qi/SVfBJtNjyWZ2rpMEFdOI9VD3J/fjJhGGYjvA92y4gHwxT2iH04GHSO/FX39nQfohpv8X/9FxnQZ5iIvfcsiwQkQc+D7h+plVEkKV+oncc6+VQhsq+wMBnUwD3uTPgqjlmBXDB1Usk2mOh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G/pJfjYi; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bThRVrbL"
-X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=C14v2WGP1xxtMOJJJIjDSF8aD6pnzea40Q7Smx8wkHY=;
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1788009565; v=1; x=1788614365;
- b=bThRVrbLOLNOEOLfpZE8x584jq/1zCxqYbno0D9yOFPYEHzG8hpugJoT5EHtD11c/y0jglR8
- 6J8yPaQWJkUkBhFbyk+Cx+Z2oEP/tcl8KdeVDD/C50eBUUK9OMt6vbau2gtF1mF5lCk3rc7YLdj
- CzSowpG6R8X4o39vRB4qk/3s=
-X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 46316813983bc88d;
-	Sat, 29 Aug 2026 13:19:25 +0000
-X-Mizu-Trace-ID: 46316813983bc88d
-X-Migadu-Flow: FLOW_OUT
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G/pJfjYi"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4F9D1F000E9;
+	Sat, 29 Aug 2026 23:08:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788044934;
+	bh=QKZbSL0ssByTYNKKs03JMxEKHIZPEmymi2q/wIpi4Ac=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=G/pJfjYiO+FZ4tBBxMJmw39q7IujzVRMGjW14LydGtZSqvDIEzaL+695cEKmGvYRu
+	 5UMu4Kf1/OiePY1w0b4YdKHza0siD37BnWiKwlK5qbHux/nI0wEtJbM2Oi5Mpvm+8+
+	 K4Jd7Iizm6LxsPQGSZdNB9oDL4hmDo0kUf8kxLKaPu8eAXYDybiGskSvq9WUjJcNfQ
+	 nN8QY2psYuTxXJIDBNipqPP4n4zSXzRUfY2dlqB2hvGgTubWgWDSnGUajklSc+GGjL
+	 I0EyjNvexGskhA2IZ7nxrKOaqagfkfmS2pqXZwnDXsNijDjg5cukNVe279utJpQWUn
+	 lBHYDwiPyMbtw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 6E009CE0540; Sat, 29 Aug 2026 16:08:54 -0700 (PDT)
+Date: Sat, 29 Aug 2026 16:08:54 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Zqiang <qiang.zhang@linux.dev>
+Cc: Sunho Park <shpark061104@gmail.com>, linux-kernel@vger.kernel.org,
+	syzbot+d4faf7db59e11f6fd1ab@syzkaller.appspotmail.com,
+	rcu@vger.kernel.org
+Subject: Re: [BUG] srcu: false-positive WARN in cleanup_srcu_struct() after
+ 78a38cbf6f20
+Message-ID: <d3314430-102b-4b27-825d-c8c976100c99@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <24c0edd6-3cdc-4536-ac78-394bf785aad4@gmail.com>
+ <0e74e6799bf042293fd1e34e2f242c56786c3de4@linux.dev>
+ <9e216978-d884-4d56-b39f-d134f78a4999@gmail.com>
+ <eb2132ad05cd3804a8f2a170de441d79afa793e9@linux.dev>
+ <f85c60a0-81d7-41a4-9926-f69cf10222d0@gmail.com>
+ <e6350377085ddd85d6ef00d8e9a67bd50c762d3c@linux.dev>
+ <698a4d8b6c559f9049ee6fa6b0bc99d45a3d7e44@linux.dev>
+ <d036078f31cd8f0fdf0b9185ce8cadef803cc375@linux.dev>
+ <28ac9afd-92dc-4c92-91f3-94f025977ca7@gmail.com>
+ <b3964e625bd41303b4b40357d4b30aa23a536098@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Sat, 29 Aug 2026 13:19:20 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-From: "Zqiang" <qiang.zhang@linux.dev>
-Message-ID: <1b9d3ddaa26ba6a8ac2ad4c586c2d19a5c1f927e@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH] srcu: Fix WARN_ON() for rcu_segcblist_n_cbs() in 
- cleanup_srcu_struct()
-To: "Sunho Park" <shpark061104@gmail.com>, paulmck@kernel.org
-Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, work@onurozkan.dev,
- rostedt@goodmis.org, mathieu.desnoyers@efficios.com, frederic@kernel.org,
- rcu@vger.kernel.org, linux-kernel@vger.kernel.org, "Sunho Park"
- <shpark061104@gmail.com>,
- syzbot+d4faf7db59e11f6fd1ab@syzkaller.appspotmail.com
-In-Reply-To: <20260827150208.2166775-1-shpark061104@gmail.com>
-References: <20260827150208.2166775-1-shpark061104@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b3964e625bd41303b4b40357d4b30aa23a536098@linux.dev>
 
->=20
->=20The WARN_ON() added by commit 78a38cbf6f20 ("srcu: Queue sdp->work
-> when the delay timer is successfully deleted") uses rcu_segcblist_n_cbs=
-()
-> to detect callbacks that srcu_barrier() failed to wait for. However, th=
-e
-> ->len counter is decremented only at the end of srcu_invoke_callbacks()=
-,
-> after the invoking loop has finished. Since srcu_barrier() can return
-> right after the barrier callback is invoked, cleanup_srcu_struct() can =
-see
-> a non-zero n_cbs even though the cblist is already physically empty,
-> falsely triggering the WARN_ON() together with a still-pending delay_wo=
-rk
-> timer.
->=20
->=20Use rcu_segcblist_empty(), which checks the actual head of the cblist=
-.
-> Callbacks that have genuinely not been invoked yet still leave the list
-> non-empty, so the WARN_ON() still catches callers that skip srcu_barrie=
-r()
-> or queue callbacks after it.
+On Thu, Aug 27, 2026 at 01:41:54PM +0000, Zqiang wrote:
+> > 
+> > On 8/27/26 21:40, Zqiang wrote:
+> > 
+> > > 
+> > > Now, I am trying to rephrase your problem in the following way:
+> > >  1- the step1 call_srcu() trigger SRCU grace period has been end and queue sdp->work.
+> > >  2- the step4 queue srcu callback has been intercepted by step5 srcu_barrier()
+> > >  and start a new SRCU grace period.
+> > >  3- this new SRCU grace period end, and invoke rcu_seq_end(&sup->srcu_gp_seq), queue a timer.
+> > >  4- the sdp->work begin run, and call srcu_segcblist_advance() with current sup->srcu_gp_seq.
+> > >  so the step4's srcu callback and step5's barrier calback both to be run.
+> > >  all callback finished, but the len not yet update.
+> > >  5- the srcu_barrier() return, begin call srcu_clean_up(), and then the srcu_clean_up
+> > >  find the a timer is still pending and the cb_len also not be zero, trigger WARN_ON()
+> > >  right?
+> > > 
+> > Exactly. The real callbacks are properly invoked as srcu_barrier() guarantees. The WARN is triggered only by the two transient states: a pending delay_work timer and a stale cblist len. So I think this is a false positive warning.
+> > 
+> > Sorry if my explanations were too wordy.
+> 
+> Would you like to send a patch to fix it ?
+> 
+> remove WARN_ON() or use rcu_segcblist_empty(&sdp->srcu_cblist) to replace rcu_segcblist_n_cbs(&sdp->srcu_cblist) ?
+> 
+> Let's hear Paul's opinion.
 
+Thank you both for your work on this!  On the choice between
+rcu_segcblist_empty() and rcu_segcblist_n_cbs(), if you are just testing
+for zero or for non-zero, rcu_segcblist_empty() is better.  It generates
+slightly better code, but the main thing is the improved readability.
 
-You should describe in detail how this scene was triggered like this=EF=
-=BC=9A
+I will take a closer look once you both are satisfied with it.
 
-1. call_srcu(&kvm->srcu, &bus->rcu, __free_bus) start a SRCU GP1.
+							Thanx, Paul
 
-2. The SRCU GP1 end, arms a timer and queue sdp->work, but this sdp->work=
- not yet run.
-
-3. Another call_srcu(&kvm->srcu, &bus->rcu, __free_bus) invoke srcu_segcb=
-list_advance()
-   to push step1 srcu callback to RCU_DONE_TAIL and start a SRCU GP2.
-=20
-4.=20srcu_barrier() is called and queues barrier callbacks after step3 sr=
-cu callback,
-   waits for srcu_invoke_callbacks() to invoke them.
-
-5. The SRCU GP2 end, also arms a timer, and the sdp->work by step2 queued=
- begin run,
-   the srcu_invoke_callbacks() invoke srcu_segcblist_advance() also push =
-step3 and step4
-   srcu callback to RCU_DONE_TAIL, all srcu callback execution completed,
-   but the not yet invoke rcu_segcblist_add_len() to update srcu_cblist's=
- len.
-
-6. The srcu_barrier() return, cleanup_srcu_struct() begin run, after then=
-, find
-   the step5 timer still pending and the srcu_cblist's len not zero, trig=
-ger
-   WARN_ON()
-=20=20=20
-Thanks
-Zqiang
-
-
->=20
-> Link: https://lore.kernel.org/rcu/e6350377085ddd85d6ef00d8e9a67bd50c762=
-d3c@linux.dev/T/#t
-> Reported-by: syzbot+d4faf7db59e11f6fd1ab@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3Dd4faf7db59e11f6fd1ab
-> Fixes: 78a38cbf6f20 ("srcu: Queue sdp->work when the delay timer is suc=
-cessfully deleted")
-> Signed-off-by: Sunho Park <shpark061104@gmail.com>
-> ---
->  kernel/rcu/srcutree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
->=20diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index ed204b3f4b84..ad27880dd690 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -704,7 +704,7 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
->  // Call srcu_barrier() before this cleanup_srcu_struct()
->  // to avoid triggering this WARN_ON().
->  if (WARN_ON(timer_delete_sync(&sdp->delay_work) &&
-> - rcu_segcblist_n_cbs(&sdp->srcu_cblist)) &&
-> + !rcu_segcblist_empty(&sdp->srcu_cblist)) &&
->  rcu_cpu_beenfullyonline(sdp->cpu))
->  queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
->  flush_work(&sdp->work);
-> --=20
->=202.43.0
->
+> Thanks
+> Zqiang
+> 
+> > 
+> > Thanks
+> > Sunho Park
+> >
