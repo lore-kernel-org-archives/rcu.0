@@ -1,169 +1,206 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B7D392807;
-	Tue,  1 Sep 2026 03:10:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101D446D09B
+	for <rcu@vger.kernel.org>; Tue,  1 Sep 2026 07:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788232219; cv=none; b=H1hrIVJCpqbp68wExnmvI2B7cj887khGa/ZlhRCKtuVYgU5JLPlrKcsJHqD3z2QoYOZahzj/077aDRQfDTQmDu15U96P4CKTfTNqqHzYDEQTZ8511U0mQaetbx69t+u+RbJeEobnXL2W7kbpkpzAlWELjJ1UzoPk6BtgKyASQx8=
+	t=1788248943; cv=none; b=pqb4UE43PtDaL+oGFWsqPJvA2emxa6644ZaguaNQht1wCTxV4aknr4z/SK1I6ITahErhyYpNQ85F1Trmh3xgJB1Hu9BZekO2ciE8HdIhm2uYH2wMqSkadJs9c52UcXjsgpLTr9ZUd0M0ftR0/EK1QLvlvjXg/su+20Uyfg9xmgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788232219; c=relaxed/simple;
-	bh=Qqr/cqvz7esR3oRutG3uVaAbwv2QbUPLSf3EGeKHWWc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FaO7/ro4Jx3JVllDBVxMz2Mt+mRmtO+sLFLpIP/vCnyxuV1KlfXHMl3SEfPHMSgQ3kgCZcsxwk26FLRuHA4DZNIeCUOll08tEl09fxetPQchfVmvToIE9t5KA16ZoEzXIYz5LHvsWu2waHbYUhSW7hGxyHVU7SRJntHIpUrcUOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=imWetiqs; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788248943; c=relaxed/simple;
+	bh=6XI3eg8IaD/wYB87LRoiYG7IH7ZCCHeePKHRPOP75Dw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dexoOUy5zNWL9L1XEHF9ZgQWOvHkofF438zEBH84Cwn8MmR+VrIWNfArwAe2r4LkZI1fM4bIudxANMnhvcl+hnh/dacJ6lYSxvVfG5T1X0Xk/vsxFyxngbWxdWPL1szaCakJIpGKNOV1WP4VQ0QWFKK9GlJ/ePKvNP6aC8/En/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WXzQc/Cm; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="imWetiqs"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 052C11F000E9;
-	Tue,  1 Sep 2026 03:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788232216;
-	bh=YLKBrTqOTNNklJANAjH/POw5+7rG2PRW69UPtKdnoo0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=imWetiqscS/clmFmln41qV1JWXBdbwRWK7uiwP8viDdz6zj53x4uQ13NJDd7OSx70
-	 CaJahMoF4soesOxbK9ncoTq6ERAIDsQqVnlJvsMx7UDpgE3v1RkZ3tuWZhmLrsUJuW
-	 cqnRzFoU8/Wb52UP1tlCAror6CP/VJ1fY2VHoxRsftKba9+uhTRAUf0WzMzJZdDduA
-	 VOxcynz5YrSTsq8w+4/SC8NHXlkWNR0vsHmZNqC6tdEVjlVoIJz4hZLrt6mnFhwavG
-	 7VgbRPr0mTtK3VfPqjfmY2eHanB/IV2qo54j1T9hUy+OSReTo2qEVhZMV2kW9u7Udk
-	 HC6HSLyG/+97w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 803F2CE0B65; Mon, 31 Aug 2026 20:10:15 -0700 (PDT)
-Date: Mon, 31 Aug 2026 20:10:15 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: KunWu Chan <kunwu.chan@gmail.com>
-Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] srcutiny: Add atomic SRCU operation checks and state
-Message-ID: <ce1789d4-7a78-456c-9e6e-e9af824e5285@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260831074937.2380914-1-kunwu.chan@linux.dev>
- <0eac36c5-acd2-4d8d-a498-f56a57cc3d6a@paulmck-laptop>
- <CAN_Opa_z4e8fLM0=+QV82r4oveKKUWitvNrBnsfJhXd+2-QQLQ@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WXzQc/Cm"
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2d6fe26ef1cso46469395ad.2
+        for <rcu@vger.kernel.org>; Tue, 01 Sep 2026 00:49:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788248941; x=1788853741; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=OhH+6P1yI44nri9QpXqL2U01mVLBeU0+majSA9ZCwVI=;
+        b=WXzQc/Cmcw7mlCQtIHv8pmi8agtx7EAfNy2Nvr1lD/CJVGfC8wvBAzBzzjq7TLAs/R
+         KbL9c1EMPLIYKLwRRtOUz3s/ko5meJmYnzawn/JVYfv9VOHz9rKpSsgva4uTm1XUQ2uG
+         Ejxs7r6zfMQReMXxn3nB9RQHHOD9mlj8rtaoszgSm1WYnoJ16jVcHQa2vhcaEiKK3Jhc
+         +ZiogzVvcM5spCnVLBAEIhK6xZcwLQPVaTGkzlNmdHcVGaljDTd0nXec7toMLXBCX7VC
+         X+RJNAXyHye+H9sIxj8HeUgW/zQ7ZYbNyG4scfqZ2kFqYEgBq6o8V6wXk7cw6v48Jfjh
+         rgAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788248941; x=1788853741;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=OhH+6P1yI44nri9QpXqL2U01mVLBeU0+majSA9ZCwVI=;
+        b=ntcolJ4hk14UYImqBAFZbJIGP8gbKfV/oR3FJ/xizVYHcuT2i+24KfEgwQE0leCPgb
+         Q+rRKi2dTFTIygeH50agtPIZngWi0EyvFkYuUWb5ygT8EHsDpTpQcqo2YHVcsQefhiC3
+         BuVU6zt9xYSFVOUPvEx4Y8P7woL51+zSQ7XnQv/8gPsBZuHy4ihiT3MxJwuwZpP21ZpZ
+         uTu1EweBc1FA+NF2issskzmon66fXjcN4zhMh29KCfDC1pD/Pz2e9+0sHU3t7aqJrgVx
+         /dr0Q/eyUNiyeZDSisYM2aydrscmZS+8EA8psE4mEoXIOaBkaiwcC8I7dJmQ7fFVHnD+
+         wBcQ==
+X-Gm-Message-State: AFuF++m3FWIene+MBrQWrXs9gPkk7CpWkLghcg6XH4ozzJRQAzI0UCNo
+	uX1Jou5/OZM8xr3+kuEKAEZfalAhbhG5I7OKJRqDAiBTifCu2IO3qgOO
+X-Gm-Gg: AYBFou2oOuIyzO4uMdJjNOKAqbu1aeb8a19RC6NsdqBJ/T78DH9+fa9MsceB+atmT2R
+	v0rVH0vpUMX8BFqeAfmOXGKzN8IBMDGylxmQqotYdkmAQg3qw6dtqtixcmuN/VcVbuwomyWZ+75
+	g0FaEUT8RJHsLUDHrxo3eO6ysG+EqDBhqGBK2ICzBGTRwfDEKC2EoqZcMnEaWyuaU5IX+DauSIb
+	z9vuuGGPhTHOCwGN02ydcQlvM6k5opgoEgt5FUbp7f1wUJz+b9jCXoMn7XE/5OxHdf3x5LbJrRD
+	C9FkT6im1wwMF2ELbbhI4ojU7kCeYMggGmnwWuX1zzgUZUd75Bo5pzUUYRbQVmufgLaKjfbpru/
+	CmbaHQldTUeMKgrRRM5PVhHC6A7dN+3MK1p05yMwSd6wF19VmkwEO3FCdoz+KBSI394ear00hCP
+	1qqy+Bqp5PJwUXmswcMZ4nH/E8+yIF9kDU8zCCWockI/hs0B9P5Q06KwurrvLbDB71o3Ohm0SNl
+	V92RPk=
+X-Received: by 2002:a17:90b:2552:b0:38e:9045:babe with SMTP id 98e67ed59e1d1-396d0f02a58mr48677714a91.7.1788248940660;
+        Tue, 01 Sep 2026 00:49:00 -0700 (PDT)
+Received: from kernel.tail6741c6.ts.net ([185.220.238.35])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3990c40d0c9sm4535507a91.7.2026.09.01.00.48.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2026 00:49:00 -0700 (PDT)
+From: Kunwu Chan <kunwu.chan@gmail.com>
+X-Google-Original-From: Kunwu Chan <kunwu.chan@linux.dev>
+To: jiangshanlai@gmail.com,
+	paulmck@kernel.org,
+	josh@joshtriplett.org,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com
+Cc: rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <kunwu.chan@gmail.com>
+Subject: [PATCH] srcutiny: Enable atomic SRCU flavor tracking
+Date: Tue,  1 Sep 2026 15:48:15 +0800
+Message-ID: <20260901074815.3145037-1-kunwu.chan@linux.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN_Opa_z4e8fLM0=+QV82r4oveKKUWitvNrBnsfJhXd+2-QQLQ@mail.gmail.com>
 
-On Tue, Sep 01, 2026 at 10:00:24AM +0800, KunWu Chan wrote:
-> On Tue, Sep 1, 2026 at 9:04 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Mon, Aug 31, 2026 at 03:49:37PM +0800, Kunwu Chan wrote:
-> > > From: Kunwu Chan <kunwu.chan@gmail.com>
-> > >
-> > > Add atomic SRCU operation checks and the associated state to Tiny
-> > > SRCU.
-> > >
-> > > An atomic SRCU domain does not use the normal SRCU callback and
-> > > grace-period machinery.  In particular, a callback queued with
-> > > call_srcu() would never be processed.  Use WARN_ON_ONCE() to reject
-> > > call_srcu() and srcu_barrier() on atomic SRCU domains.
-> > >
-> > > For synchronize_srcu(), redirect atomic SRCU domains to
-> > > synchronize_srcu_atomic().
-> > >
-> > > Add srcu_reader_flavor to the Tiny SRCU state for these checks.
-> > > Tiny SRCU does not currently set the flavor for atomic SRCU domains,
-> > > but keeping the flavor in the common state allows the operation
-> > > checks to enforce the restriction once atomic flavor tracking is
-> > > enabled.
-> > >
-> > > Also initialize srcu_atomic_gp_flag, which was previously left
-> > > uninitialized.
-> > >
-> > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-> > > ---
-> > >  include/linux/srcutiny.h |  1 +
-> > >  kernel/rcu/srcutiny.c    | 12 ++++++++++++
-> > >  2 files changed, 13 insertions(+)
-> > >
-> > > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> > > index 47a368f945e3..2b293336525a 100644
-> > > --- a/include/linux/srcutiny.h
-> > > +++ b/include/linux/srcutiny.h
-> > > @@ -20,6 +20,7 @@ struct srcu_struct {
-> > >       u8 srcu_gp_running;             /* GP workqueue running? */
-> > >       u8 srcu_gp_waiting;             /* GP waiting for readers? */
-> > >       u8 srcu_atomic_gp_flag;         /* Serialize atomic GP work.*/
-> > > +     u8 srcu_reader_flavor;          /* Values: SRCU_READ_FLAVOR_.*  */
-> > >       unsigned long srcu_idx;         /* Current reader array element in bit 0x2. */
-> > >       unsigned long srcu_idx_max;     /* Furthest future srcu_idx request. */
-> > >       struct swait_queue_head srcu_wq;
-> > > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> > > index 26ea4bfbeaf2..22f7716cbb0e 100644
-> > > --- a/kernel/rcu/srcutiny.c
-> > > +++ b/kernel/rcu/srcutiny.c
-> > > @@ -41,6 +41,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
-> > >       ssp->srcu_cb_tail = &ssp->srcu_cb_head;
-> > >       ssp->srcu_gp_running = false;
-> > >       ssp->srcu_gp_waiting = false;
-> > > +     ssp->srcu_atomic_gp_flag = 0;
-> >
-> > Good catch!  I will be folding this into the base commit with attribution
-> > on my next rebase:
-> >
-> > 9a2e9996ccec ("srcutiny: Add an atomic Tiny SRCU")
-> >
-> > >       ssp->srcu_idx = 0;
-> > >       ssp->srcu_idx_max = 0;
-> > >       INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
-> > > @@ -289,6 +290,9 @@ EXPORT_SYMBOL_GPL(srcu_defer_drain);
-> > >  void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
-> > >              rcu_callback_t func)
-> > >  {
-> > > +     if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
-> > > +             return;
-> > > +
-> > >       if (should_rcu_defer()) {
-> > >               /* A re-entrant call_srcu() during the drain would livelock it. */
-> > >               if (READ_ONCE(srcu_defer_draining) && !in_nmi()) {
-> > > @@ -319,6 +323,11 @@ void synchronize_srcu(struct srcu_struct *ssp)
-> > >  {
-> > >       struct rcu_synchronize rs;
-> > >
-> > > +     if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC)) {
-> > > +             synchronize_srcu_atomic(ssp);
-> > > +             return;
-> > > +     }
-> > > +
-> > >       srcu_lock_sync(&ssp->dep_map);
-> > >
-> > >       RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
-> > > @@ -415,6 +424,9 @@ EXPORT_SYMBOL_GPL(synchronize_srcu_atomic);
-> > >  /* Register any deferred callbacks, then wait for all in-flight ones. */
-> > >  void srcu_barrier(struct srcu_struct *ssp)
-> > >  {
-> > > +     if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
-> > > +             return;
-> > > +
-> > >       __srcu_defer_drain(ssp);
-> > >       synchronize_srcu(ssp);
-> > >  }
-> >
-> > The rest is good as far as it goes, but don't we need to set the value
-> > of ssp->srcu_reader_flavor somewhere for atomic srcu_struct structures?
-> >
-> 
-> Hi Paul,
-> 
-> Yes, agreed. I have the flavor tracking changes implemented locally
-> and am testing them now.
-> I’ll send the updated patch shortly.
-> 
-> I also have draft patches for the documentation and the fast path, as
-> well as rcutorture testing for
-> tiny atomic srcu , which I’ll send separately.
+From: Kunwu Chan <kunwu.chan@gmail.com>
 
-Sounds good, and I am looking forward to seeing them.
+Set srcu_reader_flavor to SRCU_READ_FLAVOR_ATOMIC in the Tiny SRCU
+atomic initialization paths, so that the entry-point checks added by
+the previous commit can identify atomic SRCU domains.
 
-I will admit that I am curious as to why Tiny Atomic SRCU needs different
-rcutorture testing than does Tree Atomic SRCU, but I will ask myself
-that question again when I see your patches.  ;-)
+For static initialization, add a flavor parameter to
+__SRCU_STRUCT_INIT() and pass SRCU_READ_FLAVOR_ATOMIC through
+DEFINE_SRCU_ATOMIC() and DEFINE_STATIC_SRCU_ATOMIC().
 
-							Thanx, Paul
+For dynamic initialization, initialize srcu_reader_flavor to zero in
+init_srcu_struct_fields() for the generic initialization path, and
+set it to SRCU_READ_FLAVOR_ATOMIC in init_srcu_struct_atomic().
+Handle both CONFIG_DEBUG_LOCK_ALLOC and non-debug initialization paths.
+
+Enable srcu_check_read_flavor() for Tiny SRCU, matching the Tree SRCU
+behavior, so that readers can verify that the requested flavor matches
+the SRCU domain.
+
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+---
+ include/linux/srcutiny.h | 39 +++++++++++++++++++++++++++++----------
+ kernel/rcu/srcutiny.c    |  1 +
+ 2 files changed, 30 insertions(+), 10 deletions(-)
+
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 2b293336525a..9dce4b5aa084 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -40,7 +40,7 @@ void srcu_drive_gp(struct work_struct *wp);
+ void srcu_tiny_irq_work(struct irq_work *irq_work);
+ void srcu_defer_drain(struct irq_work *irq_work);
+ 
+-#define __SRCU_STRUCT_INIT(name, __ignored, ___ignored, ____ignored)	\
++#define __SRCU_STRUCT_INIT(name, __ignored, ___ignored, flavor)		\
+ {									\
+ 	.srcu_wq = __SWAIT_QUEUE_HEAD_INITIALIZER(name.srcu_wq),	\
+ 	.srcu_cb_tail = &name.srcu_cb_head,				\
+@@ -49,6 +49,7 @@ void srcu_defer_drain(struct irq_work *irq_work);
+ 	.defer_cbs = LLIST_HEAD_INIT(name.defer_cbs),			\
+ 	.defer_iw = { .node = { .u_flags = IRQ_WORK_HARD_IRQ },		\
+ 		      .func = srcu_defer_drain },			\
++	.srcu_reader_flavor = flavor,					\
+ 	__SRCU_DEP_MAP_INIT(name)					\
+ }
+ 
+@@ -57,29 +58,43 @@ void srcu_defer_drain(struct irq_work *irq_work);
+  * Tree SRCU, which needs some per-CPU data.
+  */
+ #define DEFINE_SRCU(name) \
+-	struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
++	struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, 0)
+ #define DEFINE_STATIC_SRCU(name) \
+-	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
++	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, 0)
+ #define DEFINE_SRCU_FAST(name) DEFINE_SRCU(name)
+ #define DEFINE_STATIC_SRCU_FAST(name) \
+-	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
++	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, 0)
+ #define DEFINE_SRCU_FAST_UPDOWN(name) DEFINE_SRCU(name)
+ #define DEFINE_STATIC_SRCU_FAST_UPDOWN(name) \
+-	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
+-#define DEFINE_SRCU_ATOMIC(name) DEFINE_SRCU(name)
++	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, 0)
++#define DEFINE_SRCU_ATOMIC(name) \
++	struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, SRCU_READ_FLAVOR_ATOMIC)
+ #define DEFINE_STATIC_SRCU_ATOMIC(name) \
+-	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
++	static struct srcu_struct name = \
++		__SRCU_STRUCT_INIT(name, name, name, SRCU_READ_FLAVOR_ATOMIC)
+ 
+ // Dummy structure for srcu_notifier_head.
+ struct srcu_usage { };
+ #define __SRCU_USAGE_INIT(name) { }
+ #define __init_srcu_struct_fast __init_srcu_struct
+ #define __init_srcu_struct_fast_updown __init_srcu_struct
+-#define __init_srcu_struct_atomic __init_srcu_struct
++#define __init_srcu_struct_atomic(ssp, name, key) \
++({ \
++	int __ret = __init_srcu_struct(ssp, name, key); \
++	if (!__ret) \
++		(ssp)->srcu_reader_flavor = SRCU_READ_FLAVOR_ATOMIC; \
++	__ret; \
++})
+ #ifndef CONFIG_DEBUG_LOCK_ALLOC
+ #define init_srcu_struct_fast init_srcu_struct
+ #define init_srcu_struct_fast_updown init_srcu_struct
+-#define init_srcu_struct_atomic init_srcu_struct
++#define init_srcu_struct_atomic(ssp)					\
++	({								\
++		int __ret = init_srcu_struct(ssp);			\
++		if (!__ret)						\
++			(ssp)->srcu_reader_flavor = SRCU_READ_FLAVOR_ATOMIC;\
++		__ret;							\
++	})
+ #endif // #ifndef CONFIG_DEBUG_LOCK_ALLOC
+ 
+ void synchronize_srcu(struct srcu_struct *ssp);
+@@ -148,7 +163,11 @@ static inline void synchronize_srcu_expedited(struct srcu_struct *ssp)
+ void srcu_barrier(struct srcu_struct *ssp);
+ 
+ static inline void srcu_expedite_current(struct srcu_struct *ssp) { }
+-#define srcu_check_read_flavor(ssp, read_flavor) do { } while (0)
++#define srcu_check_read_flavor(ssp, read_flavor) \
++	({ \
++		u8 __f = (ssp)->srcu_reader_flavor; \
++		WARN_ON_ONCE(__f && !(__f & (read_flavor))); \
++	})
+ 
+ /* Defined here to avoid size increase for non-torture kernels. */
+ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 22f7716cbb0e..873b30ccf563 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -42,6 +42,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
+ 	ssp->srcu_gp_running = false;
+ 	ssp->srcu_gp_waiting = false;
+ 	ssp->srcu_atomic_gp_flag = 0;
++	ssp->srcu_reader_flavor = 0;
+ 	ssp->srcu_idx = 0;
+ 	ssp->srcu_idx_max = 0;
+ 	INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
+-- 
+2.43.0
+
