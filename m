@@ -1,43 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302BA3A75AC;
-	Tue,  1 Sep 2026 17:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF8C2BEFF5;
+	Tue,  1 Sep 2026 17:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788282670; cv=none; b=nt9Rd8YTKpRWJFjYoL5FGYaeBvlisAB/BhSv13cW4BaRKycnf530im2/FZs+E2Ic79d8h4jCCHxtoUxcUXkBDUW/lBj8HzkJIJSQIN0mZMZ0Y26RvqWwIFQGo9MHsqSq8gV9S6vrfF125+0QAtiAb4/p4aJwZ1BnrWv1Qm4fnIw=
+	t=1788284345; cv=none; b=DwX7E9JzBkgfwmgQjWKWfhQueGCWDf9717DziKUGkDQg8DUufM/SbQj5s4c64tbdLmSa6RsySiHcmokpQkBj9ZNdcB0g4qW57zGe+Lb7EBQxv7MaTo2kF5/itJ/ypOLhFxAmla+Ho6/IR0fAdo6/HS11DyO8Sdpor4IGh/Cq5p4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788282670; c=relaxed/simple;
-	bh=/jm5AOwYIqQIWhLo21ZDFhCCaYe2Y7dSrB3kfGUOdX8=;
+	s=arc-20240116; t=1788284345; c=relaxed/simple;
+	bh=LlF8QlYeHciUuUQzE1d/esXOQXeZNbku/VivTNVfMkE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MUfmY7WwtxeA3yutXNZUxqomTKacdZy5EfzjA2CDwLCzKIjcdPINtbwCVSacI5AniEsWtWm8Q0nIlMyl9GGeImNTm+qz6vMFsAjaWBANZDkkYyHZsWKNZRhv34cc+yA9Y5ICBZ2YA71St7QUkOcOSQ8EvHwpsYwNvzJk8k7wZkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WRHQvdWN; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=SeLpavZZXzd9VTf/yKhKuwGNyYcu639Z00KYZCNyJpUSfUsErI6IuNy9Bb27dMDdWYdoUYHB6i3xTF2HbzfBPWVWLmA9i0MGRSpPCngVWua+37wEHwmWCB0elvkiIsFLVmeL8GogW8G6zdIifOyQVndWyejP4Upc9iTH6GlVnSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eJo3Lg+T; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WRHQvdWN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD54A1F000E9;
-	Tue,  1 Sep 2026 17:11:08 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eJo3Lg+T"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84B221F000E9;
+	Tue,  1 Sep 2026 17:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788282668;
-	bh=bV8SkY08Hk2IqLvlCb3rS40sSs/Ce9eQ6pv+KzOZuVc=;
+	s=k20260515; t=1788284344;
+	bh=YNDgEdHXvcnDa008oy0P0vrmdKE+BwtoGrUWAusGpmg=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=WRHQvdWNrVNyd1k8ZRgDfdjIZ6oDEsojhwrhf7AR2LCLC96fob9gV4zGOa1Tk+Xr2
-	 ZboEUgjWGFo9lG5rY/E2OCspl0N0ChgwGcGdtL3bFHfrGwpAe2xGnMcXQe8Qzkw2pF
-	 sF4WnBHEsfMbZMhGo4N1V7mbSDfQoPC505nTu0vCX+RohOCjORIgUzGSpOdO/Jaf1m
-	 IC/9aYphWaAMLTPfh3Wv2SpRPA+hI2YeEg07Eax7C1blqVwf/D1afK4iJl9PBd32kt
-	 RZZbcFpH5/7xo5bvxqrz/eop/ziocqDL/Auis9LE0SQSCYCnKDE/ZUSmDTEf1OhXSn
-	 5NZI1nS5pUbaw==
+	b=eJo3Lg+T9EboUXHufZ6eTIHXqDz/LW3nV6g3PwSNa/z7DcS7K12XLyOx/hsmpxqP8
+	 NqKDZhYNa6FgT5AiXwTt3j4T7TnJIV5YV1Gd1um4N67gB8e7Pc9GcpHdqj8fRkkco9
+	 HAgaknb0k2fKh48UiESHTQ2a9Cq5ZbKg0K7KVoK2ouDhyrPpHQIdjJ9BW3eb2A4yCA
+	 uof46PHTz2OtOk3J/SO048GVuHShXsa3va3L/ZHIdfiRgx/5wBtwpCB8Vl/dofzZ5u
+	 h81hH5zRh7aw72srF52HB8zg0SztFCiARzUvDEP8ofApFxeFrZmoPQxUp5405XbOkE
+	 /YiiOG0rkUrqg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8E006CE09F8; Tue,  1 Sep 2026 10:11:08 -0700 (PDT)
-Date: Tue, 1 Sep 2026 10:11:08 -0700
+	id 44470CE09F8; Tue,  1 Sep 2026 10:39:04 -0700 (PDT)
+Date: Tue, 1 Sep 2026 10:39:04 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Kunwu Chan <kunwu.chan@gmail.com>
-Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] srcutiny: Enable atomic SRCU flavor tracking
-Message-ID: <d991297a-9bd4-4da2-89cd-002b6f2a3305@paulmck-laptop>
+To: Sunho Park <shpark061104@gmail.com>
+Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, work@onurozkan.dev,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	qiang.zhang@linux.dev, frederic@kernel.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+d4faf7db59e11f6fd1ab@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] srcu: Fix WARN_ON() for rcu_segcblist_n_cbs() in
+ cleanup_srcu_struct()
+Message-ID: <9df008d8-631a-4a45-b10d-80999d005185@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20260901074815.3145037-1-kunwu.chan@linux.dev>
+References: <20260830095605.3560267-1-shpark061104@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -46,152 +49,89 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260901074815.3145037-1-kunwu.chan@linux.dev>
+In-Reply-To: <20260830095605.3560267-1-shpark061104@gmail.com>
 
-On Tue, Sep 01, 2026 at 03:48:15PM +0800, Kunwu Chan wrote:
-> From: Kunwu Chan <kunwu.chan@gmail.com>
+On Sun, Aug 30, 2026 at 06:56:05PM +0900, Sunho Park wrote:
+> The WARN_ON() added by commit 78a38cbf6f20 ("srcu: Queue sdp->work
+> when the delay timer is successfully deleted") uses rcu_segcblist_n_cbs()
+> to detect callbacks that srcu_barrier() failed to wait for. However, the
+> ->len counter is decremented only at the end of srcu_invoke_callbacks(),
+> after the invoking loop has finished. Since srcu_barrier() can return
+> right after the barrier callback is invoked, cleanup_srcu_struct() can see
+> a non-zero n_cbs even though the cblist is already physically empty,
+> falsely triggering the WARN_ON() together with a still-pending delay_work
+> timer.
 > 
-> Set srcu_reader_flavor to SRCU_READ_FLAVOR_ATOMIC in the Tiny SRCU
-> atomic initialization paths, so that the entry-point checks added by
-> the previous commit can identify atomic SRCU domains.
+> This can be triggered as follows, as seen in the syzbot report against
+> kvm_destroy_vm() -> cleanup_srcu_struct(&kvm->srcu):
 > 
-> For static initialization, add a flavor parameter to
-> __SRCU_STRUCT_INIT() and pass SRCU_READ_FLAVOR_ATOMIC through
-> DEFINE_SRCU_ATOMIC() and DEFINE_STATIC_SRCU_ATOMIC().
+> 1. call_srcu(&kvm->srcu, &bus->rcu, __free_bus) starts SRCU grace
+>    period GP1.
 > 
-> For dynamic initialization, initialize srcu_reader_flavor to zero in
-> init_srcu_struct_fields() for the generic initialization path, and
-> set it to SRCU_READ_FLAVOR_ATOMIC in init_srcu_struct_atomic().
-> Handle both CONFIG_DEBUG_LOCK_ALLOC and non-debug initialization paths.
+> 2. GP1 ends: a delay timer is armed and sdp->work is queued, but
+>    sdp->work has not run yet.
 > 
-> Enable srcu_check_read_flavor() for Tiny SRCU, matching the Tree SRCU
-> behavior, so that readers can verify that the requested flavor matches
-> the SRCU domain.
+> 3. Another call_srcu(&kvm->srcu, &bus->rcu, __free_bus) call invokes
+>    srcu_segcblist_advance(), which moves the GP1 callback to
+>    RCU_DONE_TAIL, and starts SRCU grace period GP2.
 > 
-> Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-
-Much better!  Please see below for additional questions and comments.
-
-> ---
->  include/linux/srcutiny.h | 39 +++++++++++++++++++++++++++++----------
->  kernel/rcu/srcutiny.c    |  1 +
->  2 files changed, 30 insertions(+), 10 deletions(-)
+> 4. srcu_barrier() is called. It queues its barrier callback after the
+>    GP2 callback and waits for srcu_invoke_callbacks() to invoke it.
 > 
-> diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> index 2b293336525a..9dce4b5aa084 100644
-> --- a/include/linux/srcutiny.h
-> +++ b/include/linux/srcutiny.h
-> @@ -40,7 +40,7 @@ void srcu_drive_gp(struct work_struct *wp);
->  void srcu_tiny_irq_work(struct irq_work *irq_work);
->  void srcu_defer_drain(struct irq_work *irq_work);
->  
-> -#define __SRCU_STRUCT_INIT(name, __ignored, ___ignored, ____ignored)	\
-> +#define __SRCU_STRUCT_INIT(name, __ignored, ___ignored, flavor)		\
->  {									\
->  	.srcu_wq = __SWAIT_QUEUE_HEAD_INITIALIZER(name.srcu_wq),	\
->  	.srcu_cb_tail = &name.srcu_cb_head,				\
-> @@ -49,6 +49,7 @@ void srcu_defer_drain(struct irq_work *irq_work);
->  	.defer_cbs = LLIST_HEAD_INIT(name.defer_cbs),			\
->  	.defer_iw = { .node = { .u_flags = IRQ_WORK_HARD_IRQ },		\
->  		      .func = srcu_defer_drain },			\
-> +	.srcu_reader_flavor = flavor,					\
+> 5. GP2 ends: another delay timer is armed, and the sdp->work queued in
+>    step 2 begins to run. Its srcu_invoke_callbacks() call invokes
+>    srcu_segcblist_advance() again, moving the GP2 and barrier callbacks
+>    to RCU_DONE_TAIL as well, and then invokes all of them. However,
+>    rcu_segcblist_add_len(), which updates srcu_cblist's ->len, has not
+>    run yet at this point.
+> 
+> 6. srcu_barrier() returns once its callback has been invoked, and
+>    cleanup_srcu_struct() starts running. It finds the delay timer
+>    armed in step 5 still pending and srcu_cblist's ->len still
+>    non-zero (because step 5 has not reached rcu_segcblist_add_len()
+>    yet), and WARN_ON() fires even though every callback has actually
+>    been invoked.
+> 
+> Use rcu_segcblist_empty(), which checks the actual head of the cblist,
+> instead of rcu_segcblist_n_cbs(), which checks the racy ->len counter.
+> Callbacks that have genuinely not been invoked yet still leave the list
+> non-empty, so the WARN_ON() still catches callers that skip srcu_barrier()
+> or queue callbacks after it.
+> 
+> Link: https://lore.kernel.org/rcu/e6350377085ddd85d6ef00d8e9a67bd50c762d3c@linux.dev/T/#t
+> Reported-by: syzbot+d4faf7db59e11f6fd1ab@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=d4faf7db59e11f6fd1ab
+> Fixes: 78a38cbf6f20 ("srcu: Queue sdp->work when the delay timer is successfully deleted")
+> Suggested-by: Zqiang <qiang.zhang@linux.dev>
+> Signed-off-by: Sunho Park <shpark061104@gmail.com>
 
-Don't we also need to define srcu_reader_flavor?  Or is this patch
-supposed to be applied on top of your previous one?
-
->  	__SRCU_DEP_MAP_INIT(name)					\
->  }
->  
-> @@ -57,29 +58,43 @@ void srcu_defer_drain(struct irq_work *irq_work);
->   * Tree SRCU, which needs some per-CPU data.
->   */
->  #define DEFINE_SRCU(name) \
-> -	struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
-> +	struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, 0)
->  #define DEFINE_STATIC_SRCU(name) \
-> -	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
-> +	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, 0)
->  #define DEFINE_SRCU_FAST(name) DEFINE_SRCU(name)
->  #define DEFINE_STATIC_SRCU_FAST(name) \
-> -	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
-> +	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, 0)
->  #define DEFINE_SRCU_FAST_UPDOWN(name) DEFINE_SRCU(name)
->  #define DEFINE_STATIC_SRCU_FAST_UPDOWN(name) \
-> -	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
-> -#define DEFINE_SRCU_ATOMIC(name) DEFINE_SRCU(name)
-> +	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, 0)
-> +#define DEFINE_SRCU_ATOMIC(name) \
-> +	struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, SRCU_READ_FLAVOR_ATOMIC)
->  #define DEFINE_STATIC_SRCU_ATOMIC(name) \
-> -	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
-> +	static struct srcu_struct name = \
-> +		__SRCU_STRUCT_INIT(name, name, name, SRCU_READ_FLAVOR_ATOMIC)
->  
->  // Dummy structure for srcu_notifier_head.
->  struct srcu_usage { };
->  #define __SRCU_USAGE_INIT(name) { }
->  #define __init_srcu_struct_fast __init_srcu_struct
->  #define __init_srcu_struct_fast_updown __init_srcu_struct
-> -#define __init_srcu_struct_atomic __init_srcu_struct
-> +#define __init_srcu_struct_atomic(ssp, name, key) \
-> +({ \
-> +	int __ret = __init_srcu_struct(ssp, name, key); \
-> +	if (!__ret) \
-> +		(ssp)->srcu_reader_flavor = SRCU_READ_FLAVOR_ATOMIC; \
-> +	__ret; \
-> +})
->  #ifndef CONFIG_DEBUG_LOCK_ALLOC
->  #define init_srcu_struct_fast init_srcu_struct
->  #define init_srcu_struct_fast_updown init_srcu_struct
-> -#define init_srcu_struct_atomic init_srcu_struct
-> +#define init_srcu_struct_atomic(ssp)					\
-> +	({								\
-> +		int __ret = init_srcu_struct(ssp);			\
-> +		if (!__ret)						\
-> +			(ssp)->srcu_reader_flavor = SRCU_READ_FLAVOR_ATOMIC;\
-> +		__ret;							\
-> +	})
->  #endif // #ifndef CONFIG_DEBUG_LOCK_ALLOC
->  
->  void synchronize_srcu(struct srcu_struct *ssp);
-> @@ -148,7 +163,11 @@ static inline void synchronize_srcu_expedited(struct srcu_struct *ssp)
->  void srcu_barrier(struct srcu_struct *ssp);
->  
->  static inline void srcu_expedite_current(struct srcu_struct *ssp) { }
-> -#define srcu_check_read_flavor(ssp, read_flavor) do { } while (0)
-> +#define srcu_check_read_flavor(ssp, read_flavor) \
-> +	({ \
-> +		u8 __f = (ssp)->srcu_reader_flavor; \
-> +		WARN_ON_ONCE(__f && !(__f & (read_flavor))); \
-> +	})
-
-Why not make this a static inline function, along with
-__init_srcu_struct_atomic() and init_srcu_struct_atomic() above?
-That should simplify the code.
-
->  /* Defined here to avoid size increase for non-torture kernels. */
->  static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
-> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> index 22f7716cbb0e..873b30ccf563 100644
-> --- a/kernel/rcu/srcutiny.c
-> +++ b/kernel/rcu/srcutiny.c
-> @@ -42,6 +42,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
->  	ssp->srcu_gp_running = false;
->  	ssp->srcu_gp_waiting = false;
->  	ssp->srcu_atomic_gp_flag = 0;
-> +	ssp->srcu_reader_flavor = 0;
->  	ssp->srcu_idx = 0;
->  	ssp->srcu_idx_max = 0;
->  	INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
-> -- 
-> 2.43.0
-
-One of the purposes of Tiny SRCU is to be tiny, and one could argue
-that Tiny SRCU already has too much diagnostic code.  Should we include
-these patches at all?  If we should, shouldn't they be under something
-like CONFIG_PROVE_RCU?  Should some of the existing Tiny SRCU debugging
-code also be under something like CONFIG_PROVE_RCU?
-
-Thoughts?
+Queued for further review and testing, thank you!!!
 
 							Thanx, Paul
+
+> ---
+> v2: Describe the exact interleaving of call_srcu()/srcu_barrier()/
+>     srcu_invoke_callbacks() that triggers the false-positive WARN_ON(),
+>     per Zqiang. No code change from v1.
+> Link: https://lore.kernel.org/rcu/1b9d3ddaa26ba6a8ac2ad4c586c2d19a5c1f927e@linux.dev/T/#t
+> ---
+> 
+>  kernel/rcu/srcutree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index ed204b3f4b84..ad27880dd690 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -704,7 +704,7 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+>  		// Call srcu_barrier() before this cleanup_srcu_struct()
+>  		// to avoid triggering this WARN_ON().
+>  		if (WARN_ON(timer_delete_sync(&sdp->delay_work) &&
+> -			    rcu_segcblist_n_cbs(&sdp->srcu_cblist)) &&
+> +			    !rcu_segcblist_empty(&sdp->srcu_cblist)) &&
+>  		    rcu_cpu_beenfullyonline(sdp->cpu))
+>  			queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
+>  		flush_work(&sdp->work);
+> -- 
+> 2.43.0
+> 
