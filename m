@@ -1,49 +1,77 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4381A6803;
-	Wed,  2 Sep 2026 05:20:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4D5377AB5;
+	Wed,  2 Sep 2026 08:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788326435; cv=none; b=jR1JVXBXhQB+zmPt/vP053SorGDaTUie60X4Ic5M4Zk/oEbZSrk9c5FiMCNPa3kArG7YFgq1KJCzI6ITRqHheQfgXsKeTZkgNeq2/Ocr2TzQ1x5kY1OwkHIf+kJyMjOLpc3r0U/Rgpgo2zAHRqX2v2NMuSulTqFZFflH744pVl4=
+	t=1788337623; cv=none; b=aIvVaD7NEBZxoYlTJayBSKtTHcin/FRCWdb/857E1IZEyn3O3T3ann0hjiymhEFNKwvcl15Gm7OcG6197kzHK7WjLQZG6IynvWvfbZYMpo1zT2zmQ+06+EF1cvwgT1Ate3BLJBl1g91vLsUEM+JNnKUnns2x1eH/7ZJHxZMDwj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788326435; c=relaxed/simple;
-	bh=hb4rXLv4zfR/4V/O00l5Ek9Epx441ZmZrCPv7s8X6w4=;
+	s=arc-20240116; t=1788337623; c=relaxed/simple;
+	bh=PpSC7WmFvvGzbjKSzGjqBShR0Ro5S3tfapiRGnFI3a8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FqY78RLzF2WSsaAbQM69sVuq+WFW4eHooHBWPjyXG5emuvkbWQgVAMgZNWhidOkIJihYzq0R4Kf0wmLpTIrK06Y17OagClPobDQ9HHZtH4v7LtIGHzLpqBdrcy2yw7JeEVgwIZbze+TBjXhuBVd9LRJOFH3ExGwv7H6rQgEIQOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OMP3H8Ai; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=jgN95IwXZLSpFRwN1eSdcbLzlBBNXN8i2PibYrT7omsV5D8UuYManNSaMTJ0xbhW+BEHLdM+NKyyV1FBwm8c3ArDoHV+xlaa0dyzGDN+QztYREk0bgYL/0YB2rI+b5ymK97wiQ03/xH8P2VviCYM/NdLeUspfVQeLjAwzdWzjFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=J6naH9Bn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=C02zopcc; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OMP3H8Ai"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 375801F000E9;
-	Wed,  2 Sep 2026 05:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788326434;
-	bh=OluC6Rd/s+IZyA/7QHUT+V0KYFjYbghyL93gdq2GHdw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=OMP3H8AizOh53VPBmWcsx+wSzpDOQADWnzfFEHsHDg643GxXaVCa7LrSwJWixMRj2
-	 X8+pqZMDgY2dLuUHGgZJSxwTblncMGJoYFxDzDRrgJH4Qb6f3b2EW3X2B74p2lvjEg
-	 kCAuVEe70G++5qK0O7mcJKimNE7cJsyNFob4H5kWLArWih+JlCeaiU6uHXORiW5yJx
-	 Hky9M/NSjqcg0ZqN4PR85B9hIlH69l7THxr3orQ480V0COhfi3ezTUhHzbL6J9rdK7
-	 fNwL9RaXcaivUkJqHUSJOobiYORtAkdlwHcZsRnK7FyOsd8NW/GAUvJDXpf2Y8Uqqg
-	 rlHEUCbSWY+4A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id EFAE1CE0ABD; Tue,  1 Sep 2026 22:20:33 -0700 (PDT)
-Date: Tue, 1 Sep 2026 22:20:33 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: KunWu Chan <kunwu.chan@gmail.com>
-Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] srcutiny: Add atomic SRCU operation checks and state
-Message-ID: <eeba30f0-5a74-42ce-b559-dec079c8b84a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260831074937.2380914-1-kunwu.chan@linux.dev>
- <0eac36c5-acd2-4d8d-a498-f56a57cc3d6a@paulmck-laptop>
- <CAN_Opa_z4e8fLM0=+QV82r4oveKKUWitvNrBnsfJhXd+2-QQLQ@mail.gmail.com>
- <ce1789d4-7a78-456c-9e6e-e9af824e5285@paulmck-laptop>
- <CAN_Opa_AYw-KSA-u5=fjGLOP9z-Cf1Dk2Fba==MSLAX7TZSYWQ@mail.gmail.com>
- <e521bee4-e8ab-40a2-b22f-325d37fbcd63@paulmck-laptop>
- <CAN_Opa_7gKNuibT07tM=TcMYoTEzjeBO_=9WCoxVnY=-Jq2hcg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="J6naH9Bn";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="C02zopcc"
+Date: Wed, 2 Sep 2026 10:26:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1788337619;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WEqnheI2tBlF7SO0sf64PUL6mHxiLqhvbl7GyJKIBTY=;
+	b=J6naH9BnyWtg3g6o6dZR3V3d3c6FQRHNjFd0u84SpxI0O8rMGmDlqY4iG+YilAiOak98IO
+	T8FSjW2LKmCwTWqOO6FyrU2PYRAEyozqaaG51Hf26UJtSJZZv8OwsC7+U6PMgLsPFdxbZV
+	QbtHNaFwAxKXGhQidFsbWfTzTCYTtPUTki6F3tl/3wNYLSRJGA37ICKTvgaVnAowd5VF80
+	Do2qZYfiRf+I7ZUmglU3kgGvACV+QKC0guIg0YfOl6oSGMO7eT/+RO9/ntOZz2JFpDSG9Y
+	Zc/8//DaFQTxOwV6G2Mi65l9/FgnC40MNBkvIXnX3YiV9luUdwHOGsdsF+fnkg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1788337619;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WEqnheI2tBlF7SO0sf64PUL6mHxiLqhvbl7GyJKIBTY=;
+	b=C02zopccWkmJeuIV6juBBLA119+kxyAA7lVz+XDark9PG2cIfTKJSVJjD3Dpil0qyVN9DM
+	U/CR+XeCYZDbuICQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Onur =?utf-8?B?w5Z6a2Fu?= <work@onurozkan.dev>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Emil Tsalapatis <emil@etsalapatis.com>,
+	Matt Fleming <mfleming@cloudflare.com>,
+	"Harry Yoo (Oracle)" <harry@kernel.org>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, linux-rt-devel@lists.linux.dev
+Subject: Re: [PATCH v4 1/6] rcu: Make call_rcu() safe to call from any context
+Message-ID: <20260902082657.yPEhNFlo@linutronix.de>
+References: <20260810122758.183765-1-puranjay@kernel.org>
+ <20260810122758.183765-2-puranjay@kernel.org>
+ <20260826144636.3IRUXeFV@linutronix.de>
+ <CANk7y0hbwXL7nBDgjTgrneBejEgGrsZnc02RztG-aSBEEvAcwQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,171 +80,122 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN_Opa_7gKNuibT07tM=TcMYoTEzjeBO_=9WCoxVnY=-Jq2hcg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CANk7y0hbwXL7nBDgjTgrneBejEgGrsZnc02RztG-aSBEEvAcwQ@mail.gmail.com>
 
-On Wed, Sep 02, 2026 at 11:05:22AM +0800, KunWu Chan wrote:
-> On Wed, Sep 2, 2026 at 12:52 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+On 2026-09-01 14:53:56 [+0200], Puranjay Mohan wrote:
+> On Wed, Aug 26, 2026 at 3:46=E2=80=AFPM Sebastian Andrzej Siewior
+> > > +/*
+> > > + * Defer whenever interrupts are disabled, since a callback-list ope=
+ration may
+> > > + * be in flight on this CPU.  Not before the scheduler is up: irq_wo=
+rk is not
+> > > + * usable that early, and rcu_init() itself calls call_rcu().
+> > > + */
+> > > +static inline bool should_rcu_defer(void)
+> > > +{
+> > > +     return IS_ENABLED(CONFIG_RCU_DEFER) && irqs_disabled() &&
+> > > +            rcu_scheduler_active !=3D RCU_SCHEDULER_INACTIVE;
+> > > +}
 > >
-> > On Tue, Sep 01, 2026 at 04:29:05PM +0800, KunWu Chan wrote:
-> > > On Tue, Sep 1, 2026 at 11:10 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Tue, Sep 01, 2026 at 10:00:24AM +0800, KunWu Chan wrote:
-> > > > > On Tue, Sep 1, 2026 at 9:04 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > >
-> > > > > > On Mon, Aug 31, 2026 at 03:49:37PM +0800, Kunwu Chan wrote:
-> > > > > > > From: Kunwu Chan <kunwu.chan@gmail.com>
-> > > > > > >
-> > > > > > > Add atomic SRCU operation checks and the associated state to Tiny
-> > > > > > > SRCU.
-> > > > > > >
-> > > > > > > An atomic SRCU domain does not use the normal SRCU callback and
-> > > > > > > grace-period machinery.  In particular, a callback queued with
-> > > > > > > call_srcu() would never be processed.  Use WARN_ON_ONCE() to reject
-> > > > > > > call_srcu() and srcu_barrier() on atomic SRCU domains.
-> > > > > > >
-> > > > > > > For synchronize_srcu(), redirect atomic SRCU domains to
-> > > > > > > synchronize_srcu_atomic().
-> > > > > > >
-> > > > > > > Add srcu_reader_flavor to the Tiny SRCU state for these checks.
-> > > > > > > Tiny SRCU does not currently set the flavor for atomic SRCU domains,
-> > > > > > > but keeping the flavor in the common state allows the operation
-> > > > > > > checks to enforce the restriction once atomic flavor tracking is
-> > > > > > > enabled.
-> > > > > > >
-> > > > > > > Also initialize srcu_atomic_gp_flag, which was previously left
-> > > > > > > uninitialized.
-> > > > > > >
-> > > > > > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-> > > > > > > ---
-> > > > > > >  include/linux/srcutiny.h |  1 +
-> > > > > > >  kernel/rcu/srcutiny.c    | 12 ++++++++++++
-> > > > > > >  2 files changed, 13 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> > > > > > > index 47a368f945e3..2b293336525a 100644
-> > > > > > > --- a/include/linux/srcutiny.h
-> > > > > > > +++ b/include/linux/srcutiny.h
-> > > > > > > @@ -20,6 +20,7 @@ struct srcu_struct {
-> > > > > > >       u8 srcu_gp_running;             /* GP workqueue running? */
-> > > > > > >       u8 srcu_gp_waiting;             /* GP waiting for readers? */
-> > > > > > >       u8 srcu_atomic_gp_flag;         /* Serialize atomic GP work.*/
-> > > > > > > +     u8 srcu_reader_flavor;          /* Values: SRCU_READ_FLAVOR_.*  */
-> > > > > > >       unsigned long srcu_idx;         /* Current reader array element in bit 0x2. */
-> > > > > > >       unsigned long srcu_idx_max;     /* Furthest future srcu_idx request. */
-> > > > > > >       struct swait_queue_head srcu_wq;
-> > > > > > > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> > > > > > > index 26ea4bfbeaf2..22f7716cbb0e 100644
-> > > > > > > --- a/kernel/rcu/srcutiny.c
-> > > > > > > +++ b/kernel/rcu/srcutiny.c
-> > > > > > > @@ -41,6 +41,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
-> > > > > > >       ssp->srcu_cb_tail = &ssp->srcu_cb_head;
-> > > > > > >       ssp->srcu_gp_running = false;
-> > > > > > >       ssp->srcu_gp_waiting = false;
-> > > > > > > +     ssp->srcu_atomic_gp_flag = 0;
-> > > > > >
-> > > > > > Good catch!  I will be folding this into the base commit with attribution
-> > > > > > on my next rebase:
-> > > > > >
-> > > > > > 9a2e9996ccec ("srcutiny: Add an atomic Tiny SRCU")
-> > > > > >
-> > > > > > >       ssp->srcu_idx = 0;
-> > > > > > >       ssp->srcu_idx_max = 0;
-> > > > > > >       INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
-> > > > > > > @@ -289,6 +290,9 @@ EXPORT_SYMBOL_GPL(srcu_defer_drain);
-> > > > > > >  void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
-> > > > > > >              rcu_callback_t func)
-> > > > > > >  {
-> > > > > > > +     if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
-> > > > > > > +             return;
-> > > > > > > +
-> > > > > > >       if (should_rcu_defer()) {
-> > > > > > >               /* A re-entrant call_srcu() during the drain would livelock it. */
-> > > > > > >               if (READ_ONCE(srcu_defer_draining) && !in_nmi()) {
-> > > > > > > @@ -319,6 +323,11 @@ void synchronize_srcu(struct srcu_struct *ssp)
-> > > > > > >  {
-> > > > > > >       struct rcu_synchronize rs;
-> > > > > > >
-> > > > > > > +     if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC)) {
-> > > > > > > +             synchronize_srcu_atomic(ssp);
-> > > > > > > +             return;
-> > > > > > > +     }
-> > > > > > > +
-> > > > > > >       srcu_lock_sync(&ssp->dep_map);
-> > > > > > >
-> > > > > > >       RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
-> > > > > > > @@ -415,6 +424,9 @@ EXPORT_SYMBOL_GPL(synchronize_srcu_atomic);
-> > > > > > >  /* Register any deferred callbacks, then wait for all in-flight ones. */
-> > > > > > >  void srcu_barrier(struct srcu_struct *ssp)
-> > > > > > >  {
-> > > > > > > +     if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
-> > > > > > > +             return;
-> > > > > > > +
-> > > > > > >       __srcu_defer_drain(ssp);
-> > > > > > >       synchronize_srcu(ssp);
-> > > > > > >  }
-> > > > > >
-> > > > > > The rest is good as far as it goes, but don't we need to set the value
-> > > > > > of ssp->srcu_reader_flavor somewhere for atomic srcu_struct structures?
-> > > > > >
-> > > > >
-> > > > > Hi Paul,
-> > > > >
-> > > > > Yes, agreed. I have the flavor tracking changes implemented locally
-> > > > > and am testing them now.
-> > > > > I’ll send the updated patch shortly.
-> > > > >
-> > > > > I also have draft patches for the documentation and the fast path, as
-> > > > > well as rcutorture testing for
-> > > > > tiny atomic srcu , which I’ll send separately.
-> > > >
-> > > > Sounds good, and I am looking forward to seeing them.
-> > >
-> > > Hi Paul,
-> > > I’ve sent the flavor tracking changes as [1].
-> > > [1] https://lore.kernel.org/all/20260901074815.3145037-1-kunwu.chan@linux.dev/
-> > >
-> > > >
-> > > > I will admit that I am curious as to why Tiny Atomic SRCU needs different
-> > > > rcutorture testing than does Tree Atomic SRCU, but I will ask myself
-> > > > that question again when I see your patches.  ;-)
-> > >
-> > > You’re right that the existing SRCU torture configuration can exercise
-> > > the atomic path with rcutorture.reader_flavor=0x10. I had prepared
-> > > the Tiny atomic torture test as a separate draft, mainly adding local
-> > > configurations for convenience while validating the Tiny and Tree
-> > > atomic paths. There is no Tiny-specific torture model here.
-> > >
-> > > I can adjust the final rcutorture configuration and naming based on your
-> > > preference.
+> > Why does the description say that the defer part is for usage from NMI
+> > and the test here has irqs_disabled() instead of in_nmi()?
+>=20
+> We defer for both irq disabled sections, hard irq, and in_nmi() and
+> checking for irqs_disabled() covers all three.
+
+But it is wrong to talk about NMI and do this for other reasons not
+mentioning why this was needed/ made sense.
+Can this be fixed?
+Also what is the reasoning for doing it from any IRQ disabled region?
+
 > >
-> > The best approach is to add a section to this script:
+> > > +
+> > >  enum rcutorture_type {
+> > >       RCU_FLAVOR,
+> > >       RCU_TASKS_FLAVOR,
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index 21b6ce1dffb63..3bf3a250f9de8 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -3206,6 +3204,103 @@ __call_rcu_common(struct rcu_head *head, rcu_=
+callback_t func, bool lazy_in)
+> > >       local_irq_restore(flags);
+> > >  }
+> > >
+> > > +/*
+> > > + * Re-issue deferred callbacks straight to the enqueue so they canno=
+t defer
+> > > + * again.  ->defer_lock serializes the drainers: this CPU's irq_work,
+> > > + * rcu_defer_flush() and rcutree_migrate_callbacks().
+> > > + */
+> > > +static void __rcu_defer_drain(struct rcu_data *rdp)
+> > > +{
+> > > +     struct llist_node *node, *next;
+> > > +     unsigned long flags;
+> > > +
+> > > +     if (!IS_ENABLED(CONFIG_RCU_DEFER))
+> > > +             return;
+> > > +
+> > > +     raw_spin_lock_irqsave(&rdp->defer_lock, flags);
+> > > +     llist_for_each_safe(node, next, llist_del_all(&rdp->defer_head)=
+) {
+> > > +             struct rcu_head *head =3D (struct rcu_head *)node;
 > >
-> > tools/testing/selftests/rcutorture/bin/torture.sh
+> > Why do you need the lock. This is still not clear to me despite the
+> > comment. You can do llist_del_all() towards another list and then feed
+> > it into rcu_do_enqueue() one by one. And you use the LAZY part.
+>=20
+> Because rcu_barrier() can call this for each cpu and at the same time
+> rcu_defer_drain() can call it too, so this would cause a race where
+> the irq work can remove the callbacks (llist_del_all) and before it
+> can enqueue them, rcu_barrier will see that the list is already empty
+> and will not wait for these callbacks. We want the llist_del_all() and
+> rcu_do_enqueue() to happen atomically so rcu_barrier() can work
+> correctly.
+
+So you collect a bunch of callbacks and spent time re-arranging
+everything with irqs off.
+What is wrong with keeping it in the llist and consuming it like the
+regular rcu_segcblist?
+
 > >
-> > This would require adding a command-line parameter such as
-> > --do-atomic-srcu and friends.  The effect would be that people like
-> > me would run short tests of atomic SRCU frequently.
-> 
-> Thanks Paul. I’ll add an atomic SRCU option to
-> torture.sh so that it can be run as a short, frequent test.
+> > > +
+> > > +             /* Bounds a node self-linked by a double call_rcu(). */
+> > > +             head->next =3D NULL;
+> > > +             rcu_do_enqueue(head, head->func, false);
+> > > +     }
+> > > +     raw_spin_unlock_irqrestore(&rdp->defer_lock, flags);
+> > > +}
+> > =E2=80=A6
+> > > @@ -4231,6 +4330,9 @@ rcu_boot_init_percpu_data(int cpu)
+> > >       rdp->rcu_onl_gp_state =3D RCU_GP_CLEANED;
+> > >       rdp->last_sched_clock =3D jiffies;
+> > >       rdp->cpu =3D cpu;
+> > > +     init_llist_head(&rdp->defer_head);
+> > > +     raw_spin_lock_init(&rdp->defer_lock);
+> > > +     rdp->defer_work =3D IRQ_WORK_INIT_HARD(rcu_defer_drain);
+> >
+> > Why is this IRQ_WORK_INIT_HARD() instead, say, IRQ_WORK_INIT_LAZY()? Is
+> > there a requirement that the RCU callback needs to complete asap and not
+> > be delayed to the next tick? This would give kind of the LAZY part.
+> >
+>=20
+> In discussions with Paul, we concluded that we need HARD because in
+> low memory situations delaying rcu callbacks can be problematic. Given
+> that we are already deferring the callbacks, it would be nice to have
+> them enqueued asap. But if there are downsides to this we may change
+> it later.
 
-Very good, looking forward to seeing it!
+It does not look like you defer them for long at all. Every callback
+enqueued in an IRQ-off region will be immediately re-enqueued to the
+regular list the moment interrupts are enabled again.=20
+Except on architectures which don't implement irq-work interrupts where
+it will be delayed to the next HZ tick. And the next HZ tick does not
+sound like a long time either.
 
-> During my atomic SRCU testing, I noticed that kvm-recheck-rcu.sh
-> can report “Reader Batch close calls” even though the kernel reports
-> End of test: SUCCESS with no WARNING/BUG. The atomic GP rate is also
-> much higher than normal SRCU.
-> 
-> I’m still checking whether this is inherent to atomic SRCU, related to
-> my earlier fastpath change, or an interaction with the torture reader
-> delay. I’ll continue investigating this as part of the testing work.
+> > >       rcu_boot_init_nocb_percpu_data(rdp);
+> > >  }
+> > >
 
-The close calls can happen due to memory reordering.  But this is new
-code, so please do check them carefully.
-
-The high atomic grace-period rate is expected behavior.  On my x86
-laptop, I see about 75/second for Tree Atomic SRCU and about 300
-for Tiny.  But at your end, how high is high?
-
-						Thanx, Paul
+Sebastian
