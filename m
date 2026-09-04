@@ -1,146 +1,119 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mta0.migadu.com (out-38.mta0.migadu.com [91.218.175.38])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C55C448B8A;
-	Thu,  3 Sep 2026 10:56:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596913E639E
+	for <rcu@vger.kernel.org>; Fri,  4 Sep 2026 08:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788432982; cv=none; b=p2bhkmoNMIJyt3LO1sbqrwWoixmNUhGYKDn7jGsTVkzsLKmTMIHnY9pouhCj91G5JrLurbdAo2unwLj+k1vQvU6gY+1DBjCYCgJBKRTsNCaNYEK6axvE9DP+TyAMuM9dXTNVlrZpoCv+Pr6rJJsgzeDfQTz7x3SUnIHk2R/TDKI=
+	t=1788510623; cv=none; b=op8Rc0LHHrYK+sWbUZW219Npc1cIsJuA4hMpl+goIYearImJDXqt/ThCJ+OWAiw8puFNGLSe/Zuhi6+tsOGapmlPfkj+SJEYUcTMLQ4ggaNL/6vaYurp2NEO/pD20c26jA8BSirOblEaWWKADhRcF4RyG5I/NoinQwCXgqB+GrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788432982; c=relaxed/simple;
-	bh=nDEmNmutXLjaZGLlVFqfX7V6NeHabVUP8dqkU7KmXXk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hJ+n72aI0ggO0zsLumUQP0zHjcFrxVRTAbI/pV4nwOiORTKVvWjhFnV1abDTzMJtsBdTga5V3O5hjSMIoBRR5LvGl+ByLUnCKqvMS6D29KPTqJlIMthYXSS6QsXyMKcVVOLWUeNovWEGlY38s0e/YyC0ugNIUgSjr14fuiXG3o4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nE25zrDk; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788510623; c=relaxed/simple;
+	bh=L8pOajLjq6OOGJ6hOdj/9J4YnLULNmgvV3Ddj6iBbVU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=u5vHbzqKKeux3UAVYpBH7skkX/W0XlE4sdgubhPQoGoI2eu8fKGFhHTflUefibDVk+e7l2gTlpwKCDFSvLkP/6xljIWBb/AaARbQV/Pw1WelRvVsMuk4wR+ycCCQnALCWNfIaWdJPxIRMD/2meUqVb1pp4EvTz1rxG2yf9MLiW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SwyJQPQ/; arc=none smtp.client-ip=91.218.175.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nE25zrDk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AD961F000E9;
-	Thu,  3 Sep 2026 10:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788432981;
-	bh=JIWveMhOAoHYAD0EUwg0iSZcCXQHKJJVLy7Pa9YbeDo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=nE25zrDkEckyWuT3vwLQsJeReMmcAf/bRxyofcE5mdga5EtNZHwqWEr/AoIIa4Xfy
-	 LB9cJGXOheduuQXaEw1urrWpCwgZpfrHUa0ddVqnae+LblvwVpobWbtmq81NaLg2Q7
-	 pIDUG9Tgz6EYEqZYhXEboP9FaigUBaO1KUIv1ZE8e8Oo99fWytzoCliKnnpCeQN9qs
-	 P8qjqSHGdCGEAo/TS02CDm4Qg/u+tX6R1H4RMzepfNAnSWt9fTU5hldmygkm60xgHf
-	 C2sUBBz7sjUAXtNOePkQO9AuhWwB9uLzPYuc9T6KINyIKLXou5Gekmff1MV2dWpIfA
-	 FkCiLVUhC+qsw==
-Date: Thu, 3 Sep 2026 11:56:18 +0100
-From: Harry Yoo <harry@kernel.org>
-To: Longlong Xia <xialonglong2025@163.com>
-Cc: vbabka@kernel.org, akpm@linux-foundation.org, hao.li@linux.dev, 
-	cl@gentwo.org, rientjes@google.com, roman.gushchin@linux.dev, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, paulmck@kernel.org, 
-	rcu@vger.kernel.org, xialonglong@kylinos.cn
-Subject: Re: [PATCH v2] mm/slab_common: fix shrink budget underflow in
- kfree_rcu_shrink_scan
-Message-ID: <aplKpZt3r57_7_yX@nixos>
-References: <20260826075653.3304251-1-xialonglong2025@163.com>
- <apQsbGJDPPyXcn8R@dev>
- <baa22f03-e553-46cc-8c35-436363546605@163.com>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SwyJQPQ/"
+X-Envelope-To: rcu@vger.kernel.org
+DKIM-Signature: a=rsa-sha256; bh=L8pOajLjq6OOGJ6hOdj/9J4YnLULNmgvV3Ddj6iBbVU=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1788510619; v=1; x=1789115419;
+ b=SwyJQPQ/JsqB0G+VQvAHfhOqVMDhSiAIC4wNpuayZfNUeVrLxXBB47YPlyrxfXF8weTMjmWD
+ zMtG0x5ODFmBJzGTVqVb61iOkElSJupyRY8r1iV16nqYAs4x+/s4D9BsqoaCZ/mEJaMkYbOwXPG
+ MHZyIm6+6Ci6OKgaWZX8Yb0g=
+X-Envelope-To: rcu@vger.kernel.org
+Received: by smtp.migadu.com with ESMTPS id c4aafd7d2505d2d3;
+	Fri, 04 Sep 2026 08:30:11 +0000
+X-Mizu-Trace-ID: c4aafd7d2505d2d3
+X-Migadu-Flow: FLOW_OUT
+From: Ye Liu <ye.liu@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Cc: Ye Liu <liuye@kylinos.cn>,
+	David Hildenbrand <david@kernel.org>,
+	Miaohe Lin <linmiaohe@huawei.com>,
+	Naoya Horiguchi <nao.horiguchi@gmail.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	rcu@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>
+Subject: [PATCH 0/8] mm: introduce for_each_process_rcu and for_each_thread_rcu
+Date: Fri,  4 Sep 2026 16:29:52 +0800
+Message-Id: <20260904083001.553587-1-ye.liu@linux.dev>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <baa22f03-e553-46cc-8c35-436363546605@163.com>
 
-On Thu, Sep 03, 2026 at 05:13:15PM +0800, Longlong Xia wrote:
-> Thanks for the reply.
-> 
-> 在 2026/8/30 22:22, Harry Yoo 写道:
-> > On Wed, Aug 26, 2026 at 03:56:53PM +0800, Longlong Xia wrote:
-> > > From: Longlong Xia <xialonglong@kylinos.cn>
-> > Hi Longlong, I have a few questions.
-> > 
-> > > The kfree_rcu shrinker decremented sc->nr_to_scan (unsigned long)
-> > > and then tested the result with <= 0. When a single CPU's object
-> > > count exceeds the remaining budget, the subtraction wraps to a large
-> > > positive value and the <= 0 comparison, which is equivalent to == 0
-> > > for an unsigned type, never fires again.
-> > Since when (which commit) has it been broken?
-> > If it has been undiscovered for a very long time, why is that so?
-> 
-> Since the shrinker was first added: 9154244c1ab6 ("rcu/tree: Add a
-> shrinker to prevent OOM due to kfree_rcu() batching", v5.8);
-> 
+From: Ye Liu <liuye@kylinos.cn>
 
-I see.
+Introduce for_each_process_rcu(), for_each_thread_rcu() and
+for_each_process_thread_rcu() macros that combine the existing
+iteration macros with scoped_guard(rcu), so that the RCU read lock
+is automatically acquired before iteration and released when the
+loop exits — including via break, goto, or return.
 
-> > And how did you discover this?
-> 
-> While reviewing the kvfree_rcu() batching paths with the help of AI
-> tooling (hence the Assisted-by: tag in the patch), which flagged the
-> unsigned subtraction feeding a "<= 0" test.
+The rest of the series converts manual rcu_read_lock()/
+rcu_read_unlock() and guard(rcu)() pairs across mm/, kernel/, fs/,
+lib/ and security/ to use the new macros.
 
-Okay.
+Patch 1 may trigger checkpatch "Macros with complex values should be
+enclosed in parentheses" errors.  These are false positives — the
+scoped_guard() pattern is a control-flow construct, not a multi-
+statement macro, and the same idiom is used elsewhere in the kernel.
 
-> > > The scan loop then iterates
-> > > through every possible CPU instead of honouring the reclaim budget.
-> > Did you confirm this actually does happen? If so, how often does the
-> > kernel end up iterating through every possible CPUs, very rarely or
-> > almost always?
-> 
-> Yes, in two ways.
-> 
-> Experiment 1 -- deterministic, instrumented loop.  Per-CPU pr_info()
-> plus a test entry invoking kfree_rcu_shrink_scan() with a controlled
-> budget; 4-CPU QEMU guest, 400 objects queued on CPU0, budget 50:
->   buggy:   cpu=0 count=400 nr_to_scan_after_sub=18446744073709551266
->                 visits all 4 CPUs
->   patched: cpu=0 count=400 nr_to_scan=50 BREAK
-> 
->                stops at CPU0
-> 
-> Experiment 2 -- natural trigger, no kernel modification at all
-> (kprobes only).  Setup: 1 GiB QEMU guest, 4 possible CPUs, no swap.
-> 
->   1. Observation: three kprobes.  Scan entry/exit record nr_to_scan
->      and the return value; each kfree_rcu_monitor() hit inside a
->      scan is one CPU the loop processed.
-> 
->   2. Memory pressure: ~650 MiB of anonymous memory.
-> 
->   3. krc backlog: loaded the in-tree test_vmalloc module ,
-> 
->      which repeatedly vmalloc()s one page and frees it via kvfree_rcu();
-> 
->     10 million iterations over ~70s kept the per-CPU queues populated.
-> 
-> Result within ~70s: 262 natural invocations, all from kswapd0;
-> 171 of the 261 scans that found a backlog (66%) overshot the budget
-> (nr_to_scan = 128, freed up to 4479) and visited all 4 possible CPUs.
+Suggested by Michal Hocko for the oom_kill path [1].
 
-Thanks for confirming with the experiment.
+[1] https://lore.kernel.org/all/20260813092933.562028-1-ye.liu@linux.dev/
 
-> > Would this affect the kernel's reclamation behavior in some way?
-> 
-> The break was meant to cap the scan at the reclaim budget; once
-> the subtraction wraps, the cap is gone and one scan processes
-> every possible CPU, draining the whole backlog instead of a
-> budget-sized slice.
+Ye Liu (8):
+  mm: introduce for_each_process_rcu and for_each_thread_rcu
+  mm/oom_kill: convert process/thread iterators to for_each_*_rcu
+  mm/ksm: convert process iterator to for_each_process_rcu
+  mm/memory-failure: convert process iterator to for_each_process_rcu
+  kernel: convert process/thread iterators to for_each_*_rcu
+  fs: convert process/thread iterators to for_each_*_rcu
+  lib: convert process iterator to for_each_process_rcu
+  security/landlock: convert thread iterator to for_each_thread_rcu
 
-The fix logically makes sense to me. But I'm being cautious to
-introduce a functional change even when it was unintentional and
-'accidentally' worked. Especially when it has been like this from
-the beginning.
+ fs/proc/base.c               |  4 +---
+ fs/resctrl/rdtgroup.c        |  8 ++------
+ include/linux/sched/signal.h | 19 +++++++++++++++++++
+ kernel/cpu.c                 |  4 +---
+ kernel/freezer.c             |  4 +---
+ kernel/hung_task.c           |  7 ++-----
+ kernel/locking/lockdep.c     |  4 +---
+ kernel/rcu/update.c          |  4 +---
+ kernel/sched/core.c          |  3 +--
+ kernel/sched/debug.c         |  4 +---
+ kernel/trace/fgraph.c        |  8 ++------
+ kernel/unwind/deferred.c     |  3 +--
+ lib/is_single_threaded.c     |  5 +----
+ mm/ksm.c                     |  4 +---
+ mm/memory-failure.c          | 16 ++++------------
+ mm/oom_kill.c                | 20 +++++---------------
+ security/landlock/tsync.c    |  8 ++------
+ 17 files changed, 46 insertions(+), 79 deletions(-)
 
-IIUC it will almost always end up visiting all CPUs
-unless sum of objects exactly matches nr_to_scan at some point.
+Signed-off-by: Ye Liu <liuye@kylinos.cn>
 
-In most cases it will visit all CPUs because either 1) the counter
-overflows or 2) the number of objects was smaller than the budget.
-
-While I agree that the code doesn't work as intended, I don't think
-you have enough justification to change the behavior. I'd rather fix
-the code to match the current behavior rather than changing the
-behavior.
-
--- 
-Cheers,
-Harry / Hyeonggon
+--
+2.25.1
