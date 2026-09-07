@@ -1,128 +1,111 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E49A45FFB6;
-	Mon,  7 Sep 2026 12:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A88040911B;
+	Mon,  7 Sep 2026 13:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788784160; cv=none; b=uwyTvlsHS/UIs2V507blwL/IZemTs3C+XYb3iPL8t6H8VDlPG71v3pzGGbcyhGvUbnj0EUf77CEgLT9SAxilrlWOL9ft9RWQ3V9a4fccdxl6goCCePsynp40cs1vevsfZ68USdT8bpm22w1g07534B+3NFk9UpFUgJ3G/IaczG8=
+	t=1788788765; cv=none; b=cxuEm3lqHaFrVkQxq78HdXujtlFzvb2vT4srb72BVC3xrJx1Z6TS82lrZrSzeqODzS3bqQx4v2XcW5Rv7vKdT+TWwljpkhWGKjka5PwTZ+19Rmr5vmpDI4Dw0vZr3tvpCIW5zi4GV148ZUxvuMuyN1E1RVlzkTkRyzE9ydWf7Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788784160; c=relaxed/simple;
-	bh=4rNnuwidxDHWV2F70P8hly3lNLDXFmxjWe9qZFUPRR4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LKvyap8Yh+kHOcX7uZCnHtcodhXVeObpSBbUV50AIyd1YuPGuxMk1pFWXw55NzfjmKik5pOPeouFjEDU9lsJI5Uo0+u6Eb43+pXf046Axeny+TM//bQIN8ZSOMZjkX6cLej0MISFC9VhlifkHdM/RBgtvx2uh7Z+TtydezIDnXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SamNaLe7; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788788765; c=relaxed/simple;
+	bh=nSuMdgmBwloQI31EU0RD/YFKRdL9V3Nl1kng3CrloWQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i+qwAI0Ft6IQjxCXHzW4bgxDwGZf4A8SstrD5IdPHl1KZ7ZBQT7L1ja5yBS2h1QGEtq1GnDiUxBfYZAeZLHwim6oi5RSnqedlRBVIHHIivVUnX3slf0m/5R3ecZCWB1TWEP7ckW28LbRMVOUb3uiJ24wS2o7W4ZTUwrUcZkrsj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q1ypcO95; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SamNaLe7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54AD31F00A3A;
-	Mon,  7 Sep 2026 12:29:00 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q1ypcO95"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E1D91F00A3D;
+	Mon,  7 Sep 2026 13:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788784153;
-	bh=MkDAwsqxGaceGfRmb6vtMU2HC0ErrGFG0sZSl2jCjh0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=SamNaLe7XhM1e5/SCg2UgqFLGHgOX0ZA7pci54ayVgh1r8Aa55xnUGKXJAcXwXy5D
-	 tqGvIh/XnRv4Hr7k9h41IgEicJAdSCkZVXyjftuoH4uK+RSIEmBmOSABpe0xrbDE8b
-	 3qACI5xnCV9khLFq/VQhNPw5VtMvpDBkiIkCOQCN/Elv0GLgSAuqtU4KGpTPp8RW5X
-	 zcnz0ltm0IOaEnc8QEzYn8HP8eCs9CXs8E95BdP4T9MhQUB1AdMw6MTRom0KD24wt7
-	 nH4p7Uiva5uk0ptmQENNZ5ZMEh3OjS8AY1UoxR/HBNIh9NVkIDTyLYc1wUMeE/XfiY
-	 RYaMoruOloQsA==
-Date: Mon, 7 Sep 2026 13:28:57 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Ye Liu <ye.liu@linux.dev>
-Cc: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Ye Liu <liuye@kylinos.cn>, 
-	Justin Suess <utilityemal77@gmail.com>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack3000@gmail.com>, 
-	mhocko@suse.com, peterz@infradead.org, paulmck@kernel.org, mingo@redhat.com, 
-	rostedt@goodmis.org, jpoimboe@kernel.org, oleg@redhat.com, tglx@kernel.org, 
-	akpm@linux-foundation.org, david@kernel.org, linmiaohe@huawei.com, nao.horiguchi@gmail.com, 
-	rafael@kernel.org, sj@kernel.org, rientjes@google.com, shakeel.butt@linux.dev, 
-	xu.xin16@zte.com.cn, chengming.zhou@linux.dev, will@kernel.org, boqun@kernel.org, 
-	frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, 
-	josh@joshtriplett.org, urezki@gmail.com, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, tony.luck@intel.com, reinette.chatre@intel.com, x86@kernel.org, 
-	pavel@kernel.org, lance.yang@linux.dev, mhiramat@kernel.org, pmladek@suse.com, 
-	longman@redhat.com, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, 
-	qiang.zhang@linux.dev, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, 
-	vschneid@redhat.com, kprateek.nayak@amd.com, mark.rutland@arm.com, 
-	Dave.Martin@arm.com, james.morse@arm.com, babu.moger@amd.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v2 8/8] security/landlock: convert thread iterator to
- for_each_thread_rculock
-Message-ID: <ap6t3Dyf-tLJ4Yfw@gremlin>
-References: <20260907081334.1152889-1-ye.liu@linux.dev>
- <20260907081334.1152889-9-ye.liu@linux.dev>
+	s=k20260515; t=1788788758;
+	bh=RE4FQ58Xnrvw1EluWyJMlXRPk3pW+o4WrdUEe448vbk=;
+	h=From:To:Cc:Subject:Date;
+	b=Q1ypcO95/imOVd9j5B76HrWnrtdgc9m/hqEjPtM5dBx+f0FzsNApgmDJ1ZwN9dDaV
+	 12tsOKELeUqz9kd4Gl6NfmfCRVd/nicE7D9jxyCeKVjWYY64TX61gM5X1ciWOTV9+F
+	 /75m3ktpeATUG16TmP6s6DuBNTIB66pDMRGowtticq57/qspVxpCeuaaozopVnnJ6V
+	 SIC7Hh+k6fD0Joy0rbaAdh24AsxukHzyElW1UpbtDlcF5wY1xsRpYOsMpOeRx26qNZ
+	 eizMrYX9mdnyyK5kusQBRFNg+OqbZrwnWqUgFbSf9cCT9n94eRXVpkJRwKXOfJzipI
+	 FytG7wX2gAjMA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org,
+	rcu@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	"Alexei Starovoitov" <ast@kernel.org>,
+	"Daniel Borkmann" <daniel@iogearbox.net>,
+	"Andrii Nakryiko" <andrii@kernel.org>,
+	"Martin KaFai Lau" <martin.lau@linux.dev>,
+	"Eduard Zingerman" <eddyz87@gmail.com>,
+	"Kumar Kartikeya Dwivedi" <memxor@gmail.com>,
+	"Song Liu" <song@kernel.org>,
+	"Yonghong Song" <yonghong.song@linux.dev>,
+	"Harry Yoo (Oracle)" <harry@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH bpf-next 0/4] bpf: Add bpf_call_rcu() and bpf_call_rcu_tasks_trace()
+Date: Mon,  7 Sep 2026 06:45:47 -0700
+Message-ID: <20260907134552.1772405-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260907081334.1152889-9-ye.liu@linux.dev>
 
-On Mon, Sep 07, 2026 at 04:13:34PM +0800, Ye Liu wrote:
-> From: Ye Liu <liuye@kylinos.cn>
->
-> Replace guard(rcu)() + for_each_thread() with for_each_thread_rculock(),
-> which scopes the RCU read lock to the loop body via scoped_guard(rcu).
->
-> No functional change.
->
-> Signed-off-by: Ye Liu <liuye@kylinos.cn>
-> Reviewed-by: Justin Suess <utilityemal77@gmail.com>
-> Reviewed-by: Günther Noack <gnoack3000@gmail.com>
+BPF programs that manage their own objects have no way to run their own
+logic once an RCU grace period has elapsed.  bpf_obj_drop() defers a
+free, but returning an index to an allocator or unpinning a resource
+once readers are done has no equivalent.  sched_ext's BPF library works
+around this today by pushing freed nodes onto a list and having a
+userspace thread call membarrier(MEMBARRIER_CMD_GLOBAL) and then run a
+BPF program to reclaim them; it is the first intended user.
 
-LGTM so:
+Add:
 
-Reviewed-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+	int bpf_call_rcu(struct bpf_rcu_head *rh, void *map,
+			 int (*callback)(struct bpf_map *map, void *key,
+					 void *value));
 
-> ---
-> Changes in v2:
->   - Rename *_rcu to *_rculock
->  security/landlock/tsync.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
->
-> diff --git a/security/landlock/tsync.c b/security/landlock/tsync.c
-> index 0b71e158c3f5..a578af640aad 100644
-> --- a/security/landlock/tsync.c
-> +++ b/security/landlock/tsync.c
-> @@ -335,9 +335,7 @@ static size_t count_additional_threads(const struct tsync_works *works)
->
->  	caller = current;
->
-> -	guard(rcu)();
+and bpf_call_rcu_tasks_trace(), same signature, which also waits for
+sleepable programs.
 
-OK looked at the file and confirmed the function exits just after the below
-section so fine :)
+@rh is a struct bpf_rcu_head embedded in a value of @map, so the
+callback runs as callback(map, key, value) for the element it lives in
+and needs no cookie.  The field is only accepted in BPF_MAP_TYPE_ARRAY,
+and arming holds a reference on the calling program until the callback
+has run.  Patch 1 covers the lifetime rules.
 
-> -
-> -	for_each_thread(caller, thread) {
-> +	for_each_thread_rculock(caller, thread) {
->  		/* Skip current, since it is initiating the sync. */
->  		if (thread == caller)
->  			continue;
-> @@ -376,9 +374,7 @@ static bool schedule_task_work(struct tsync_works *works,
->
->  	caller = current;
->
-> -	guard(rcu)();
+This needs
 
-Similar here.
+  https://lore.kernel.org/all/20260810122758.183765-1-puranjay@kernel.org/
 
-> -
-> -	for_each_thread(caller, thread) {
-> +	for_each_thread_rculock(caller, thread) {
->  		/* Skip current, since it is initiating the sync. */
->  		if (thread == caller)
->  			continue;
-> --
-> 2.25.1
->
+for call_rcu() and call_srcu() to be safe from the contexts a BPF
+program can be called in.
 
---
-Cheers, Lorenzo
+Puranjay Mohan (4):
+  bpf: Add bpf_call_rcu() kfunc
+  selftests/bpf: Add tests for bpf_call_rcu()
+  bpf: Add bpf_call_rcu_tasks_trace() kfunc
+  selftests/bpf: Add a test for bpf_call_rcu_tasks_trace()
+
+ include/linux/bpf.h                           |   9 +
+ include/uapi/linux/bpf.h                      |   4 +
+ kernel/bpf/btf.c                              |   7 +
+ kernel/bpf/helpers.c                          | 104 ++++++++++
+ kernel/bpf/map_in_map.c                       |   4 +
+ kernel/bpf/map_iter.c                         |   6 +
+ kernel/bpf/syscall.c                          |  11 +-
+ kernel/bpf/verifier.c                         |  86 +++++++-
+ tools/include/uapi/linux/bpf.h                |   4 +
+ .../selftests/bpf/prog_tests/call_rcu.c       | 191 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/call_rcu.c  |  89 ++++++++
+ .../selftests/bpf/progs/call_rcu_fail.c       | 114 +++++++++++
+ 12 files changed, 626 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/call_rcu.c
+ create mode 100644 tools/testing/selftests/bpf/progs/call_rcu.c
+ create mode 100644 tools/testing/selftests/bpf/progs/call_rcu_fail.c
+
+
+base-commit: 1b7415bf70be95b9a1e7e87d544867881065613f
+-- 
+2.53.0-Meta
+
