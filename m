@@ -1,46 +1,36 @@
-Received: from mta1.migadu.com (out-3.mta1.migadu.com [95.215.58.3])
+Received: from mta0.migadu.com (out-142.mta0.migadu.com [91.218.175.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501883CAE8D
-	for <rcu@vger.kernel.org>; Mon,  7 Sep 2026 08:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67804440A35
+	for <rcu@vger.kernel.org>; Mon,  7 Sep 2026 08:15:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788768922; cv=none; b=jUvlIzbOIOMTv/LFpWLEjvHGhj9kpE/tPDH1pV4hK6kVvOU/Nvy/+lPUEydBwUpVtzf8/hMqNMstI/e0h2KjkprszYM/k4Wh5xAbQcR7GYmWBNQwbjlAZsIsB29wmJ664HrwtkW4y/r42c5akqu0jSxgzyzN0+lBmBom+4V+mGc=
+	t=1788768935; cv=none; b=lKVdg8wcMR2AtJFLC9XjytrnfSFSITRWuxEjJqvLpAbTZaHpVMDg1dM0s3GN6rgpAGLwy+NALqZrteKyUhWNeEDertT8DWjN6Ct5Bio2bvAw816fUwjvF9w9pfqpwlvg0Hw/7Kw5K+yvN9pr0JI7GexHx5O0P6J4R9svrFGkBDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788768922; c=relaxed/simple;
-	bh=dQwY3gP5992iA8WFv3nEtraOYZnGKkWp4+ZsJMlQB8A=;
+	s=arc-20240116; t=1788768935; c=relaxed/simple;
+	bh=4aeyyo7NniAcYqllECrNMdgEOmExFee2/DggJvrhUqI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Xcx1Lhy/XUbcbPrCVm8p5I/tX8T+xzzjjoRXAewrFe4bmlF3BOloWLedUndrvh+UE4pY+2r+awhdMLIYAVGvZf+sDRSl80RKK3Tex0UcAsDso49bqyHkWwjGm7wFdkacbElatRTRT8EjYxUrLVFQ8y+xfDmteuIp+gpX2cFAwXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gLPhPDDj; arc=none smtp.client-ip=95.215.58.3
+	 MIME-Version; b=bGITqvMZaDqVqnbf01b3wEbL1enTBWewiXVRCYVxNfgxB0uzIX0/Mdk/x8UPdKFO/rNZQ//5U6GhDq8Ojs2EGahLjy0dwg/G6w7v5vashweYaNOm9y1VhRFCzCAMQwC/NlfBCoEPM8pZ7LnVh6MFcdnmzsk2ig4DAWwSR+/2PVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WpbZB8vM; arc=none smtp.client-ip=91.218.175.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gLPhPDDj"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WpbZB8vM"
 X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=dQwY3gP5992iA8WFv3nEtraOYZnGKkWp4+ZsJMlQB8A=;
+DKIM-Signature: a=rsa-sha256; bh=4aeyyo7NniAcYqllECrNMdgEOmExFee2/DggJvrhUqI=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1788768918; v=1; x=1789373718;
- b=gLPhPDDj5LILH9XrPJwI6KC3TtpjjsjDRkMyRrYpv+MW3lkFBltvAzmfG2MThsTZ2jqc32DD
- HNkuUR5z6VW8HdLv6dSkniipkk6CpJjiVa1AYlTLgaVP9EAfFktT4eZ7ibaz+DlxJJM8xe1wzB4
- 6gCp5nc8r1+nRD+2ADa3HXis=
+ t=1788768930; v=1; x=1789373730;
+ b=WpbZB8vMV1atTAj+eChqlE5a8sbZp8ATsL8FJlR45iT1eCqql9Z7vil52XF+a6WIzfcKn4gf
+ R66TMNwf5wR7Ca9JpMJXHwOg5FmkuAqRSpAm1ZfBi61Xs31woef6EOwGW7XUH1M0pBBZKnneL8C
+ 654rUfJqyBaPq+fNHnFytbHg=
 X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id b383245cc3c82e7c;
-	Mon, 07 Sep 2026 08:15:06 +0000
-X-Mizu-Trace-ID: b383245cc3c82e7c
+Received: by smtp.migadu.com with ESMTPS id a35385b3d24bba3f;
+	Mon, 07 Sep 2026 08:15:28 +0000
+X-Mizu-Trace-ID: a35385b3d24bba3f
 X-Migadu-Flow: FLOW_OUT
 From: Ye Liu <ye.liu@linux.dev>
-To: Tony Luck <tony.luck@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	x86@kernel.org,
-	Christian Brauner <brauner@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jann Horn <jannh@google.com>,
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
-	"David Hildenbrand (arm)" <david@kernel.org>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Ye Liu <liuye@kylinos.cn>,
 	Michal Hocko <mhocko@suse.com>,
 	peterz@infradead.org,
@@ -49,11 +39,14 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	rostedt@goodmis.org,
 	jpoimboe@kernel.org,
 	mic@digikod.net,
+	oleg@redhat.com,
 	tglx@kernel.org,
+	david@kernel.org,
 	linmiaohe@huawei.com,
 	nao.horiguchi@gmail.com,
 	rafael@kernel.org,
 	gnoack3000@gmail.com,
+	ljs@kernel.org,
 	sj@kernel.org,
 	rientjes@google.com,
 	shakeel.butt@linux.dev,
@@ -68,6 +61,9 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	urezki@gmail.com,
 	juri.lelli@redhat.com,
 	vincent.guittot@linaro.org,
+	tony.luck@intel.com,
+	reinette.chatre@intel.com,
+	x86@kernel.org,
 	paul@paul-moore.com,
 	jmorris@namei.org,
 	serge@hallyn.com,
@@ -95,9 +91,9 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-security-module@vger.kernel.org
-Subject: [PATCH v2 6/8] fs: convert process/thread iterators to for_each_*_rculock
-Date: Mon,  7 Sep 2026 16:13:32 +0800
-Message-Id: <20260907081334.1152889-7-ye.liu@linux.dev>
+Subject: [PATCH v2 7/8] lib: convert process iterator to for_each_process_rculock
+Date: Mon,  7 Sep 2026 16:13:33 +0800
+Message-Id: <20260907081334.1152889-8-ye.liu@linux.dev>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260907081334.1152889-1-ye.liu@linux.dev>
 References: <20260907081334.1152889-1-ye.liu@linux.dev>
@@ -111,10 +107,9 @@ Content-Transfer-Encoding: 8bit
 
 From: Ye Liu <liuye@kylinos.cn>
 
-Replace the manual rcu_read_lock()/rcu_read_unlock() pairs combined
-with for_each_process() and for_each_process_thread() loops in fs/
-with the for_each_*_rculock() macros, which scope the RCU read lock
-to the loop body via scoped_guard(rcu).
+Replace the manual rcu_read_lock()/rcu_read_unlock() pair combined
+with for_each_process() loop in lib/ with for_each_process_rculock(),
+which scopes the RCU read lock to the loop body via scoped_guard(rcu).
 
 No functional change.
 
@@ -123,69 +118,31 @@ Acked-by: Michal Hocko <mhocko@suse.com>
 ---
 Changes in v2:
   - Rename *_rcu to *_rculock
- fs/proc/base.c        | 4 +---
- fs/resctrl/rdtgroup.c | 8 ++------
- 2 files changed, 3 insertions(+), 9 deletions(-)
+ lib/is_single_threaded.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 6a39de424f62..3de4f4557e4c 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -1160,8 +1160,7 @@ static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
- 	if (mm) {
- 		struct task_struct *p;
+diff --git a/lib/is_single_threaded.c b/lib/is_single_threaded.c
+index 8c98b20bfc41..4e7fe85454ab 100644
+--- a/lib/is_single_threaded.c
++++ b/lib/is_single_threaded.c
+@@ -26,8 +26,7 @@ bool current_is_single_threaded(void)
+ 		return true;
  
--		rcu_read_lock();
--		for_each_process(p) {
-+		for_each_process_rculock(p) {
- 			if (same_thread_group(task, p))
- 				continue;
- 
-@@ -1177,7 +1176,6 @@ static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
- 			}
- 			task_unlock(p);
- 		}
--		rcu_read_unlock();
- 		mmdrop(mm);
- 	}
- err_unlock:
-diff --git a/fs/resctrl/rdtgroup.c b/fs/resctrl/rdtgroup.c
-index 5dcbb0a964e8..b14df8b23f1a 100644
---- a/fs/resctrl/rdtgroup.c
-+++ b/fs/resctrl/rdtgroup.c
-@@ -709,14 +709,12 @@ int rdtgroup_tasks_assigned(struct rdtgroup *r)
- 
- 	lockdep_assert_held(&rdtgroup_mutex);
- 
+ 	ret = false;
 -	rcu_read_lock();
--	for_each_process_thread(p, t) {
-+	for_each_process_thread_rculock(p, t) {
- 		if (is_closid_match(t, r) || is_rmid_match(t, r)) {
- 			ret = 1;
- 			break;
- 		}
+-	for_each_process(p) {
++	for_each_process_rculock(p) {
+ 		if (unlikely(p->flags & PF_KTHREAD))
+ 			continue;
+ 		if (unlikely(p == task->group_leader))
+@@ -48,7 +47,5 @@ bool current_is_single_threaded(void)
  	}
+ 	ret = true;
+ found:
 -	rcu_read_unlock();
- 
+-
  	return ret;
  }
-@@ -826,15 +824,13 @@ static void show_rdt_tasks(struct rdtgroup *r, struct seq_file *s)
- 	struct task_struct *p, *t;
- 	pid_t pid;
- 
--	rcu_read_lock();
--	for_each_process_thread(p, t) {
-+	for_each_process_thread_rculock(p, t) {
- 		if (is_closid_match(t, r) || is_rmid_match(t, r)) {
- 			pid = task_pid_vnr(t);
- 			if (pid)
- 				seq_printf(s, "%d\n", pid);
- 		}
- 	}
--	rcu_read_unlock();
- }
- 
- static int rdtgroup_tasks_show(struct kernfs_open_file *of,
 -- 
 2.25.1
 
