@@ -1,64 +1,64 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65907438494
-	for <rcu@vger.kernel.org>; Mon,  7 Sep 2026 07:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154A142E40A
+	for <rcu@vger.kernel.org>; Mon,  7 Sep 2026 07:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788767949; cv=none; b=V8gj1MWDEB22CB+nmWtK0QSgteCqENYAPub/etivnzyEEw+6WtYaqQz4I07p0nPMYcsad1RlRo9/JsXrfz7FI/kvt8pcGcaFxBV+518pQQI9Tk2gymAyYeMioyXZwNsJwJkhVWEyz+Qrt8CyUd+4EQwtw81DChduPocZO6LECuU=
+	t=1788767952; cv=none; b=Z492uQpgCfgEK62dcDY4FTumu7b6BLRLQW2N+CEMm8cVF19qgyu97IatiTIdbMHGhWNKEwHT+o67Kof+NwukRiM0WMiBfqInBiwNhaIvKAUZvZIITRIQRbB0zz01+kRnzqs3t/qf6rxvBkdKlB4XGHy6bm8b5+zfHPEbwBT9B7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788767949; c=relaxed/simple;
-	bh=khDfC6/LWD0Q4/Opwx8ffd/lQkWbDpCYUNN+ihTrgFU=;
+	s=arc-20240116; t=1788767952; c=relaxed/simple;
+	bh=3OlCz+laqH6rl0bpjSr713iDWvV7K05sGtsflbnXZRY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ts67AV/piNCKQzFIG0h2X7NKFl6da/O3j+AnIUU/oztcLE/XnI/y5VtnxWqJg38vHouFyIhie7iUptOv+tVOz9XMQy3VHDqZoyfNz1ZsmjwbpONdT0gsAl6pG//B2ab97XRFnqVW0gLgFYxyDwT7XJPchKPUMQikB9C1aUWhkgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jSpatKAM; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version; b=e9QoqhZ4bcSIcS/UjHbA6WL0YEN/yfFqbHPWdImO4Jp2HrjkByFn8JIBqPd3/zFh2mdxToWge3m5wgd7Hg6GhOU+YU3CLdhwOYHCO4El8suZ40VrXGXcpJ06MQccv9omaLxwWj+4L/p9pLZS3WxATrZLrYenZ7Kzl0Wh4yDQH2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=r9p54H6B; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jSpatKAM"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2d032846c95so35597965ad.1
-        for <rcu@vger.kernel.org>; Mon, 07 Sep 2026 00:59:06 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="r9p54H6B"
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2d58efc7356so40724495ad.1
+        for <rcu@vger.kernel.org>; Mon, 07 Sep 2026 00:59:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788767945; x=1789372745; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1788767949; x=1789372749; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=9xsmNs6fEcfIC053Za2znwufqL6cSMJhGirj52zu9CU=;
-        b=jSpatKAMZMsJOBsLXeuroRKLvBwPbNOnw8jrl7vBChQGx8BtBmaaq8rgWR6L4bBqt0
-         gQFfFFikBZP7SJcLingRaJczSE7NHpLkXvdwgq/omONk78cI5ANL5rTxJeqxD7NuAx/h
-         glcOTVrTT/71ksL4c3+eYPhHHjda3Fz8q2IDHg52oX3CHwbekFepL6x65UDqsKcqPq9e
-         veUr/+0+1MnUkUaIAFP3yNiIZ+59ac16me0V4Oo0ppHcU4V2/paeGWtVvhgAJCDuYprM
-         DafQvYEQ+wV1qqISA+gjDSNAjuGP9f0zr1NBLerp1pA462/lNZznZFghzRVdRC6lHprd
-         xgRA==
+        bh=+pwFM3pOh2VpEH5TcABiF5v+6kZ668JjyW4E61muF/Q=;
+        b=r9p54H6BzCL6eiU5WZn0eK3f5oVJls2dtSt+S1p3oiTcKQGriZ8ILD8Be4Aa4kBdNC
+         KDc/YZyA4rpE3DYx27Ou9WXFXrE1HjtyIdMwayrTsjcarz7/1LXtXDDjSIaVDXo2v5oa
+         KrZ+xaxXoPmL1ub9T4B1P0+alM2CtKtTNzA/cAW9z0A06Kouh/0fHG4nojaoUoBuX/iC
+         NFDulwtWS0kNR+jDfg/FDwYBdEFvN/D5w8VSD6iF8Nq1uu7hgnjw0QRd8dGNUATGSoEc
+         tb+nwUZeP8LuQGtzEgfrR7KN0/5exKmYidVRLBy+gN7LfaBl0WW7alYcBJudgrmmOXPq
+         OLxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788767945; x=1789372745;
+        d=1e100.net; s=20251104; t=1788767949; x=1789372749;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=9xsmNs6fEcfIC053Za2znwufqL6cSMJhGirj52zu9CU=;
-        b=foAVAifp4r2y/g/mKzVlBl3lE3F5oJRoqi1I5QfEjPFabZ7tfcsCd9XD8T4bPxsK4U
-         ySOcfkOAidG/z7JYV5cZ4k/9dEP0CYzpPzvnsLtZ+FAnJOix6D+1LiyUQ4sZ0DODRWDv
-         ncSf5wbZb5JQG/VfDnydAkOc0aJ5bfKjkbe6uFRTXrxgsTrueA9w/9KED6vOQLur6EQc
-         1aXTI0tOb9aiHQ9PDdYqxVh+J36QQS7SrUlLkg9WkkIY0XShMDX4pggu/sGcnM0nwgTn
-         qZVX5//yFHwTofa4Y9qXrofONXDRQKB3Jql26aO27K8y7bG+jx4joZBVBQyuX3mjkNhh
-         cWBg==
-X-Forwarded-Encrypted: i=1; AKwUvBy0YspiTOPBgZJ9tEhRtQJbvd0Iikrg2X7fnV5/790KjnRy79sh00vliC0qND8l/0tvt1M=@vger.kernel.org
-X-Gm-Message-State: AFuF++ma9o15azYbd1P91ekrdHCr43rhBq2zi7Q5WNWw5quFkr2H5HT5
-	+k2l1z//Gbdpi6AS3+JJtLj+J9TcsnmtpOdmQr/R7FCjqO+fxjJAn+B8
-X-Gm-Gg: AYBFou37TYjUOetz4TufPKdda6ZEHIpBdAUA/V6gImlDB/oIAuRxXUst/HPqt8gSBHo
-	J/uhIwzH6lUbjKLJTUNr2a4Em1swRPIGagtb6QljbpL0EVwr6ijrnCadSVEO4k67qa3eyPrndSB
-	sAypshKa8hfgYyoVhiUtdw2oWpCDRtQV7XMxAvsroEFKYWz/yYRnIbJkopEblMFF9xnWv80lotk
-	9XVtRYuzMmtvwV/Pa4X0U4THDtbGX0ycGjog+No5KjWEkTA+V2sXxkUt/rC5o9VBy0A3rw44tBd
-	Gq5zhYZ4jzsKVR7JNgXVrYbHdK8r5AU94DEvDBUc+0BU8tMP+SQP9+C3R7wfo/svKuEGRAuYsOg
-	41022MwWqVrOYKSv22JU05+7zTSkr587GMaCFQH5QsXQuVP0MUVK6Q/XYQoMhrNw0HK73B3DZQ6
-	5jO3YcD3qVDzaR2W5B84F/uUIlsoIYCdO50gXNW0Ir5LOpjIODvH0lGOgdvQsRMiGZYHGuPzcga
-	j5OlWk=
-X-Received: by 2002:a17:903:1850:b0:2d6:e9f3:9305 with SMTP id d9443c01a7336-2db1232c660mr337912645ad.5.1788767944906;
-        Mon, 07 Sep 2026 00:59:04 -0700 (PDT)
+        bh=+pwFM3pOh2VpEH5TcABiF5v+6kZ668JjyW4E61muF/Q=;
+        b=NABRj1ZL1MULjIwCSg99uycfY1x2FEE7absuhsDvuBWnx4KVklRlN3iS/xRR+8ZUzf
+         VSEirg08IQKD9BNfF9f5LfFAyeVP4SPPcP1JRpwfvo60mgPmzEFCEk9PYvNEXQvUXgbC
+         8Fo4WQDhsc8IEqaLVRCIs+/9MEa8ke+vUtLpJB/3c01Ve8CuAKJrpCbsVQtza7o7tFsq
+         AxH+UEXwL/MQWHMR7XaGSiwdHP2ftuGFo3UyYEBSnH8zYCxOGriUMptb4kcMAy2Ux7hk
+         yBBPOHSjTYBeqwHToF59xcbRBDbAt8my0UmNxOlxLsraRAzDIJQMKC/ntv+romKXQ9zE
+         kT0g==
+X-Forwarded-Encrypted: i=1; AKwUvBzI+kQTLe1IIR9W3mCqriUPj5HzJ3SvodjujfzL0sSnzMyOXoPaN7GdC1QfZz/gblEQGAc=@vger.kernel.org
+X-Gm-Message-State: AFuF++l9PbNG3JII5jDdoG80OSWMRg4prRfXD3zYb+DleY96WVpHxu2L
+	kCufHGc+4/eo8oWU1ZzspW6wKD7oduqOpY0fIxFh6+eGnJa0sxWjc9+6
+X-Gm-Gg: AYBFou2ZBbCacdw28REhttD5bhw3L8pUbWWIHLfz2hw8IRmhzV4+kVlp400tJ65ROtD
+	gjDzvd54fb9k1rCEUTgO5CQNwhP70+Y7PT7HXGvZ841HtmsslnWsBK90DzK6UqwSiqnHQGE29q0
+	szE241KjVkE8LKhxYs9IYSxNmH13MGf5WH7cQHlXN2990YoEoaN3+GqGlVR1USea/1ybX7R5A9L
+	AxIF83jz6QTqviBRH4lmGY5f2x7BKLJaanN3xlRxPcyKQ44mgu2tFUdxO1mUGtY9A+GUNshpk6E
+	exkt9GGo16rS9ET+wCQfU6sYq8t0uMM9kQSWVXovQRcbzPKlgj45alHzt7uHrodbHpZdcp1P0UV
+	HmfoH9lbKYE/s73y4OOqjBmTOec6L+X3aMG8MnJkpvd+Rk+9WhY3x3QumhV8Eu8sg6qGWSaJ+/3
+	QPQLLuQcL92zkPLkDrBGop9ffE49ydzONOovRQ5N4UTurcePf9eD6GK61VcOWotwDBvFzRhcEr9
+	sHAZF4=
+X-Received: by 2002:a17:902:d492:b0:2d9:68b7:c324 with SMTP id d9443c01a7336-2db125cce1bmr292519975ad.3.1788767948538;
+        Mon, 07 Sep 2026 00:59:08 -0700 (PDT)
 Received: from kernel.tail6741c6.ts.net ([185.220.238.35])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2db14ae7637sm40945595ad.79.2026.09.07.00.59.01
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2db14ae7637sm40945595ad.79.2026.09.07.00.59.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2026 00:59:04 -0700 (PDT)
+        Mon, 07 Sep 2026 00:59:08 -0700 (PDT)
 From: Kunwu Chan <kunwu.chan@gmail.com>
 X-Google-Original-From: Kunwu Chan <kunwu.chan@linux.dev>
 To: paulmck@kernel.org,
@@ -69,9 +69,9 @@ Cc: rostedt@goodmis.org,
 	rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>
-Subject: [PATCH 06/13] srcutree: Make init_srcu_struct_atomic() prevent transition to big
-Date: Mon,  7 Sep 2026 15:58:22 +0800
-Message-ID: <20260907075829.2073224-7-kunwu.chan@linux.dev>
+Subject: [PATCH 07/13] srcutree: Don't transition atomic SRCU to big in srcu_gp_end()
+Date: Mon,  7 Sep 2026 15:58:23 +0800
+Message-ID: <20260907075829.2073224-8-kunwu.chan@linux.dev>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260907075829.2073224-1-kunwu.chan@linux.dev>
 References: <20260907075829.2073224-1-kunwu.chan@linux.dev>
@@ -85,86 +85,38 @@ Content-Transfer-Encoding: 8bit
 
 From: Kunwu Chan <kunwu.chan@gmail.com>
 
-The is_atomic parameter of init_srcu_struct_fields() exists so that
-atomic SRCU never transitions to big, but neither
-init_srcu_struct_atomic() nor its lockdep counterpart
-__init_srcu_struct_atomic() sets it.
+The transition-to-big code path in srcu_gp_end() calls
+init_srcu_struct_nodes() with GFP_KERNEL, which is illegal in the
+atomic context reachable from synchronize_srcu_atomic().  Atomic SRCU
+has no use for the srcu_node combining tree: it has neither callbacks
+nor srcu_barrier() operations, and its grace periods are serialized
+by ->srcu_atomic_gp_flag instead.
 
-On systems where srcutree.convert_to_big selects SRCU_SIZING_INIT,
-this needlessly allocates a full srcu_node combining tree for any
-dynamically initialized atomic srcu_struct, despite atomic SRCU
-having neither callbacks nor srcu_barrier() operations.
-
-Pass true from both atomic entry points, adding an is_atomic parameter
-to __init_srcu_struct_common().
+Skip this transition entirely for atomic SRCU, which is also defense
+in depth against any path that might wrongly set ->srcu_size_state for
+an atomic srcu_struct.
 
 Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 ---
- kernel/rcu/srcutree.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ kernel/rcu/srcutree.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 2af36db37fa9..01f224a56b41 100644
+index 01f224a56b41..74acd5645d4c 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -305,26 +305,27 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static, bool
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
+@@ -1074,8 +1074,9 @@ static void srcu_gp_end(struct srcu_struct *ssp, bool is_atomic)
+ 		raw_spin_unlock_irq_rcu_node(sup);
+ 	}
  
- static int
--__init_srcu_struct_common(struct srcu_struct *ssp, const char *name, struct lock_class_key *key)
-+__init_srcu_struct_common(struct srcu_struct *ssp, const char *name,
-+			  struct lock_class_key *key, bool is_atomic)
- {
- 	/* Don't re-initialize a lock while it is held. */
- 	debug_check_no_locks_freed((void *)ssp, sizeof(*ssp));
- 	lockdep_init_map(&ssp->dep_map, name, key, 0);
--	return init_srcu_struct_fields(ssp, false, false);
-+	return init_srcu_struct_fields(ssp, false, is_atomic);
- }
- 
- int init_srcu_struct_lockdep(struct srcu_struct *ssp, const char *name,
- 			     struct lock_class_key *key)
- {
- 	ssp->srcu_reader_flavor = 0;
--	return __init_srcu_struct_common(ssp, name, key);
-+	return __init_srcu_struct_common(ssp, name, key, false);
- }
- EXPORT_SYMBOL_GPL(init_srcu_struct_lockdep);
- 
- int __init_srcu_struct_fast(struct srcu_struct *ssp, const char *name, struct lock_class_key *key)
- {
- 	ssp->srcu_reader_flavor = SRCU_READ_FLAVOR_FAST;
--	return __init_srcu_struct_common(ssp, name, key);
-+	return __init_srcu_struct_common(ssp, name, key, false);
- }
- EXPORT_SYMBOL_GPL(__init_srcu_struct_fast);
- 
-@@ -332,14 +333,14 @@ int __init_srcu_struct_fast_updown(struct srcu_struct *ssp, const char *name,
- 				   struct lock_class_key *key)
- {
- 	ssp->srcu_reader_flavor = SRCU_READ_FLAVOR_FAST_UPDOWN;
--	return __init_srcu_struct_common(ssp, name, key);
-+	return __init_srcu_struct_common(ssp, name, key, false);
- }
- EXPORT_SYMBOL_GPL(__init_srcu_struct_fast_updown);
- 
- int __init_srcu_struct_atomic(struct srcu_struct *ssp, const char *name, struct lock_class_key *key)
- {
- 	ssp->srcu_reader_flavor = SRCU_READ_FLAVOR_ATOMIC;
--	return __init_srcu_struct_common(ssp, name, key);
-+	return __init_srcu_struct_common(ssp, name, key, true);
- }
- EXPORT_SYMBOL_GPL(__init_srcu_struct_atomic);
- 
-@@ -414,7 +415,7 @@ EXPORT_SYMBOL_GPL(init_srcu_struct_fast_updown);
- int init_srcu_struct_atomic(struct srcu_struct *ssp)
- {
- 	ssp->srcu_reader_flavor = SRCU_READ_FLAVOR_ATOMIC;
--	return init_srcu_struct_fields(ssp, false, false);
-+	return init_srcu_struct_fields(ssp, false, true);
- }
- EXPORT_SYMBOL_GPL(init_srcu_struct_atomic);
- 
+-	/* Transition to big if needed. */
+-	if (ss_state != SRCU_SIZE_SMALL && ss_state != SRCU_SIZE_BIG) {
++	/* Transition to big if needed, but never for atomic SRCU. */
++	if (!is_atomic && ss_state != SRCU_SIZE_SMALL &&
++	    ss_state != SRCU_SIZE_BIG) {
+ 		if (ss_state == SRCU_SIZE_ALLOC)
+ 			init_srcu_struct_nodes(ssp, GFP_KERNEL);
+ 		else
 -- 
 2.43.0
 
