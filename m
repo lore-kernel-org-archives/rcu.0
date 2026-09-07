@@ -1,57 +1,84 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE2A3BFE44;
-	Mon,  7 Sep 2026 08:36:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6384C449EB7
+	for <rcu@vger.kernel.org>; Mon,  7 Sep 2026 09:35:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788770184; cv=none; b=k4iaE1/6TuD8XqI/8VaUGh4yOoGATR++32BoCkeOsXqHEWcqL4TsmwdlXm3SrVzApfSM3wGyGJmhGpDYLnbJp3C/qqz+J/erc64Tmud/cCYDde5P5B/1beJkQP0TiaEIbCx+itBJP0QjdAc+nenMQyJca8jgLeHxHhrEEpdamFw=
+	t=1788773751; cv=none; b=HkdCPfY59u/uD0QB1pULTROzosMkaOoqCMfIYcO+/RK2Blu0Q5/PbYcD2xsR1aJ1b3IHUV/rYkvEuihW9ga7sTQN/5LRByyhZW39j2hoDfhPe8ODek+plqzV5T5zwG4bpy6+6cjzLrnIlORWIPt1gT/kDbuHRbyxFLKaNOmVGX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788770184; c=relaxed/simple;
-	bh=uMTvUCwc59sZReO8eeICFfbvfT5nEs56k9BYkw2vJjY=;
+	s=arc-20240116; t=1788773751; c=relaxed/simple;
+	bh=+1OruMYcQA77jLKl8fk/VE7hjZNXJ6hFvLeuBJHiyjQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DJlWmp0pkrNOmJXl/Msef9zazOyeTzleqBap+x+EKSWhju7Wc3KE63UwaRjAQyBziseiH0Ep19JuaFpsVD1Ucp9SYudHeHubsg6FKM5vUMMrgCmMzuse/GjRKtQOXRvPutBOE1YjWIRPBFJdJ13x43LbMYV+HWpAURIlFtxP19w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dt1YvAUg; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=hMOsuuBb/YZz/GLvSkaj6VTHy7JQh+6o0Rwz5uN+rPXf+S8iHgP/H4izyu6VCHC5C1UcdI8Bd+rXSXB0FVL0Lqjn9yxN0ba+zG8EU6wnxLOcAAPVs1X3PhczFX9TksTSE2WV+D1eH41BAUj1XsUKXKYm4tj3EtXWhOk72N7UB6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Yof+nleB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dt1YvAUg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC8F1F00A3D;
-	Mon,  7 Sep 2026 08:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788770183;
-	bh=nSKYKv9+IpmrXK+SaXRNeOF2fLG9l/6KPt7ur+clwx0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=dt1YvAUg6NQDSEDvgG9mbQNggE1DpbwJYzMW4bcdlZql+uP+sMxqkUWIYAXsCyIq5
-	 coopp1kNdFyVaxSNXMEYuqQdamxoZARBxr6/t2IIpNcq7WwRE/IdJAYLPCVwlAJaWH
-	 tA5XXCdJgaMjyMpblDZk2E8jRfJIlW4C3XdTPPmivDkJqXxdgp1VDXYfAUR4AvdZ/g
-	 HNsX23T6/YieZlixieteuyT8T5FyobPtxs21tLst44lvW5pzaO1hrglEyJ5O9AFNG8
-	 q/mvBXkYa3rmnye/abn6dOoOlhqDPg3K7lRJlgZIbKtr/PzWNIFK6M9D4REDm265Pf
-	 ALtpygYtu6h/Q==
-Date: Mon, 7 Sep 2026 09:36:07 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Yof+nleB"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1788773749;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+1OruMYcQA77jLKl8fk/VE7hjZNXJ6hFvLeuBJHiyjQ=;
+	b=Yof+nleBpP2swEpDaNCSG7LEh3TWggh5c1FlkA28pq+iuAeRgx3wxUT4EsKDoGv/orr1nu
+	8jw3zkUHv386ggNixvXiU+goEpQ50yYMl5aVEu2OgWd7Sl5W2kShSymXDj6NRDzzGla8dR
+	ZTH3JtVOeUXwAZodtV8m17ge7oGPd98=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-225-U96dqzotMg279n9Gg43hkw-1; Mon,
+ 07 Sep 2026 05:35:46 -0400
+X-MC-Unique: U96dqzotMg279n9Gg43hkw-1
+X-Mimecast-MFC-AGG-ID: U96dqzotMg279n9Gg43hkw_1788773744
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8E53B1801300;
+	Mon,  7 Sep 2026 09:35:43 +0000 (UTC)
+Received: from fedora (headnet04.pony-001.prod.iad2.dc.redhat.com [10.2.32.116])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id EA98D1955F11;
+	Mon,  7 Sep 2026 09:35:22 +0000 (UTC)
+Received: by fedora (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon,  7 Sep 2026 11:35:43 +0200 (CEST)
+Date: Mon, 7 Sep 2026 11:35:21 +0200
+From: Oleg Nesterov <oleg@redhat.com>
 To: Ye Liu <ye.liu@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Ye Liu <liuye@kylinos.cn>, Michal Hocko <mhocko@suse.com>, 
-	SJ Park <sj@kernel.org>, peterz@infradead.org, paulmck@kernel.org, mingo@redhat.com, 
-	rostedt@goodmis.org, jpoimboe@kernel.org, mic@digikod.net, oleg@redhat.com, 
-	tglx@kernel.org, linmiaohe@huawei.com, nao.horiguchi@gmail.com, rafael@kernel.org, 
-	gnoack3000@gmail.com, rientjes@google.com, shakeel.butt@linux.dev, xu.xin16@zte.com.cn, 
-	chengming.zhou@linux.dev, will@kernel.org, boqun@kernel.org, frederic@kernel.org, 
-	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, josh@joshtriplett.org, urezki@gmail.com, 
-	juri.lelli@redhat.com, vincent.guittot@linaro.org, tony.luck@intel.com, 
-	reinette.chatre@intel.com, x86@kernel.org, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, pavel@kernel.org, lance.yang@linux.dev, mhiramat@kernel.org, 
-	pmladek@suse.com, longman@redhat.com, mathieu.desnoyers@efficios.com, 
-	jiangshanlai@gmail.com, qiang.zhang@linux.dev, dietmar.eggemann@arm.com, 
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com, 
-	mark.rutland@arm.com, Dave.Martin@arm.com, james.morse@arm.com, babu.moger@amd.com, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, 
-	rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v2 3/8] mm/ksm: convert process iterator to
- for_each_process_rculock
-Message-ID: <ap53cJ9c4oN1wQao@gremlin>
+Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Marco Elver <elver@google.com>, Ye Liu <liuye@kylinos.cn>,
+	Tejun Heo <tj@kernel.org>, Christian Brauner <brauner@kernel.org>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Yi Tao <escape@linux.alibaba.com>, Michal Hocko <mhocko@suse.com>,
+	paulmck@kernel.org, mingo@redhat.com, rostedt@goodmis.org,
+	jpoimboe@kernel.org, mic@digikod.net, tglx@kernel.org,
+	akpm@linux-foundation.org, david@kernel.org, linmiaohe@huawei.com,
+	nao.horiguchi@gmail.com, rafael@kernel.org, gnoack3000@gmail.com,
+	ljs@kernel.org, sj@kernel.org, rientjes@google.com,
+	shakeel.butt@linux.dev, xu.xin16@zte.com.cn,
+	chengming.zhou@linux.dev, will@kernel.org, boqun@kernel.org,
+	frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com, josh@joshtriplett.org, urezki@gmail.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	tony.luck@intel.com, reinette.chatre@intel.com, x86@kernel.org,
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+	pavel@kernel.org, lance.yang@linux.dev, mhiramat@kernel.org,
+	pmladek@suse.com, longman@redhat.com,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev, dietmar.eggemann@arm.com, bsegall@google.com,
+	mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com,
+	mark.rutland@arm.com, Dave.Martin@arm.com, james.morse@arm.com,
+	babu.moger@amd.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+	rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v2 1/8] sched: introduce for_each_process_rculock and
+ for_each_thread_rculock
+Message-ID: <ap6FWZ9FYjkFKoH_@redhat.com>
 References: <20260907081334.1152889-1-ye.liu@linux.dev>
- <20260907081334.1152889-4-ye.liu@linux.dev>
+ <20260907081334.1152889-2-ye.liu@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -60,56 +87,24 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260907081334.1152889-4-ye.liu@linux.dev>
+In-Reply-To: <20260907081334.1152889-2-ye.liu@linux.dev>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-On Mon, Sep 07, 2026 at 04:13:29PM +0800, Ye Liu wrote:
-> From: Ye Liu <liuye@kylinos.cn>
+On 09/07, Ye Liu wrote:
 >
-> Replace the manual rcu_read_lock()/rcu_read_unlock() pair combined
-> with for_each_process() loop in mm/ksm.c with for_each_process_rculock(),
-> which scopes the RCU read lock to the loop body via scoped_guard(rcu).
->
-> No functional change.
+> Introduce for_each_process_rculock(), for_each_thread_rculock() and
+> for_each_process_thread_rculock() macros that acquire the RCU read
+> lock before the iteration starts and release it when the loop is left,
+> so that the RCU read-side critical section is scoped to the loop body
+> instead of an externally managed rcu_read_lock()/rcu_read_unlock()
+> pair.
 >
 > Signed-off-by: Ye Liu <liuye@kylinos.cn>
 > Acked-by: Michal Hocko <mhocko@suse.com>
-> Reviewed-by: SJ Park <sj@kernel.org>
 
-LGTM so:
+Thanks, I personally like the new _rculock suffix more ;)
 
-Reviewed-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+I see the comments about indentation from Lorenzo, I am fine either way.
 
-> ---
-> Changes in v2:
->   - Rename *_rcu to *_rculock
->  mm/ksm.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/mm/ksm.c b/mm/ksm.c
-> index 49d48d1e0998..69d30e80a090 100644
-> --- a/mm/ksm.c
-> +++ b/mm/ksm.c
-> @@ -3280,8 +3280,7 @@ void collect_procs_ksm(const struct folio *folio, const struct page *page,
->  		struct anon_vma *av = rmap_item->anon_vma;
->
->  		anon_vma_lock_read(av);
-> -		rcu_read_lock();
-> -		for_each_process(tsk) {
-> +		for_each_process_rculock(tsk) {
->  			struct anon_vma_chain *vmac;
->  			const unsigned long addr = rmap_item->address & PAGE_MASK;
->  			const unsigned long index = rmap_item->linear_page_index;
-> @@ -3298,7 +3297,6 @@ void collect_procs_ksm(const struct folio *folio, const struct page *page,
->  				}
->  			}
->  		}
-> -		rcu_read_unlock();
->  		anon_vma_unlock_read(av);
->  	}
->  }
-> --
-> 2.25.1
->
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
---
-Cheers, Lorenzo
