@@ -1,73 +1,73 @@
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F704F55C7
-	for <rcu@vger.kernel.org>; Mon,  7 Sep 2026 15:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E254F30E5
+	for <rcu@vger.kernel.org>; Mon,  7 Sep 2026 15:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788795779; cv=none; b=SloLkkchXwuDcm7J3XUuWkO0bVoaFmBJWE7OZKvZk9o3dqS6B25VKC/prJIFB9L9zPTN8pZrlOKGNGXHppwlHl0xIATG8uVCGH464r2kF1LqzWCUH+G73fr6eYvFrrKJESnoXDQrqoCHTl7D+hzJ4G55x56URsujndlopPjhuls=
+	t=1788795805; cv=none; b=q8g0XWQpemQ8nOh0IxgwwmFi7D3cT1CBkBnyh2ozbHGMLH8ZdawQc5O9hOZvR0tuhjIrKhoHUjLu5lSc8fl4gYYhTBSbtaSBWZck+JRrztBi53aq4f+77QAnTCS8EfYxqEW4yXPOPKHW2bhi97gXVwIrCHi6HT4sIDiQhACGu2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788795779; c=relaxed/simple;
-	bh=QtFPJiEMPSV8S29PeKQ6fcZP42NUa5u8vRMrfd5W/ac=;
+	s=arc-20240116; t=1788795805; c=relaxed/simple;
+	bh=MICC69rDhpY77nwXlWteXYHHthmexIfa62lpP2Cj7Co=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cSftdLqT+FEAsi69Q4/LMyK+4TpjVzvzDIeh6YpSkrJLWSGDQyr043pFrD67ME/ayZv5Spacgyto+/J4fJBEy0z8Eq9MG0c/2jPZH3WDT7dvCRLko7JtkDaeJhOSn47b8gs5ziPJNJLnmROcUgjFDByofm7TsqkMXl5NAn5timQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=u5XpV1py; arc=none smtp.client-ip=209.85.219.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=bZSDPUIl7NOJ7vaiEyiED8YBMYzLoszSeLuvjUkIV542ST4rK0TE1LT+V+3/ZfAcPMS/oCRglkh4k8hw6v4NEGXfUkADZty9x/vFhWsqvvxMuO6kkimPO/Klw9OLyJuG9enMjdR6QEEHsvpwyj3T5fwpxAMA39Vbt+f4DiQDXZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=Dcby7mMa; arc=none smtp.client-ip=209.85.222.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="u5XpV1py"
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-9103228ef53so42165396d6.0
-        for <rcu@vger.kernel.org>; Mon, 07 Sep 2026 08:42:56 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="Dcby7mMa"
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-9399ccafdbfso123807285a.0
+        for <rcu@vger.kernel.org>; Mon, 07 Sep 2026 08:43:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1788795776; x=1789400576; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1788795802; x=1789400602; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=K2bTzYuWDSR0jh+E6xDNAXwrxj96pyu9ESjj25Dc22Y=;
-        b=u5XpV1pyWPn+OPlByOIxZ/a2rHnc7iDCTmfm4h54GPexVCJAoRwfCrTxogIXRAhxXp
-         DlJKycZAJs9eBZWBy88+QzTKRvdCGMqkzbDHGiHfCNYV6dR3dYQpAabebm4ARI5VzkrR
-         U0guES+JYZiNFW+FdmiUFtCD5g5u2bXLYvjHWEKC8g0SXMiMbQvYaCh6HZHONw6OoRvj
-         ZipjISx4LvG5IiBC7116GrH6WdN+SwNJHuAwljjkSGdtfdz/rcKhaW+7D8mOX3ZjQt5b
-         BEILZVv91ew17kfj1nj8Xwtyto+EGPIav9Cs/Tq7csxl2I1pOLHOnuFtMDQ7AksHwEIo
-         o/JQ==
+        bh=9N6f/b+RDjU+5LdwC1W3FgNOtZzFd5njRslDhw37g/s=;
+        b=Dcby7mMa23igHcsyogt4hMcsQ+LF9/ES8wasSJN5liRTHzn6a+6B8eXPqKM0aOy1Uq
+         x9PaKWDzBn1NBHviEWZtE9wBpsyTU44o/5IhM4HkZHowaBVBQ7TwQxBmmNUaTpq31Z1R
+         3NHxEtcae0R7ht9bjMQLD5quH78Ei9I7pWfkkADIT42Fh3jUNU06bgnkfg3/E4MsGxdO
+         LXi0zYbnzstFxw5QmexR0S35KLzBUoQ/5kuCbBwEnHSnlN4Y0CtzlckZOBIq8p12pC6R
+         gvaFbq6dtBVtj4sZ/m8gBRTbhGEiaABmWOIhFYsKEQFGBbyytulKzhaZW5RJZqer41Am
+         SezA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788795776; x=1789400576;
+        d=1e100.net; s=20251104; t=1788795802; x=1789400602;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=K2bTzYuWDSR0jh+E6xDNAXwrxj96pyu9ESjj25Dc22Y=;
-        b=NiZBed8aLx7na0YnQjYpUe/WMRQscqW1J6Uq9ajehu93W6fASV6JD9v67yAwB7kEXU
-         pwvlx0TrC+rUnc0cd+tEz5o8BDmdfP4UcvX1D413SLkLDJlq1XQraYyWdoQQp6wKyU3Y
-         Ue7EAWjteRxC/N/XIKRzM/0TxVXi7p0vUsNg43cdgwPhgRlBANqNDFIqmMM5OeKby7fQ
-         UIF4DPODmcXVr8N6z9MUtGi9zu1W+IP5z1kipQEIF/tWmM+hwxvFNasc6mj7WQnh8iEL
-         FFXdMv9C6JM1bv2Swehwi10Ex4pfv3gdqjlyYjU9kmSjMYNdHQ4I2Pn3FtD7a6FDRW8G
-         rQPg==
-X-Forwarded-Encrypted: i=1; AKwUvBz14k9kPBy1chd/nnmtOP5uxMw7a2n/CLTzQqnrQGGnAxyYoobtvzDd/e28yboQU+5qenM=@vger.kernel.org
-X-Gm-Message-State: AFuF++lRRJ5+KwJ0LcXjc9fH9qJvjXUoSDDVPoHr/9CnhdgVK/ZJ0HxX
-	VawMHUW1J70qL297nq+8IXPx8JOpJEiiYO/pbQp+p1pGNleWjT6cgLNM2nFB4mnLZz0=
-X-Gm-Gg: AYBFou08ArI/G6l+gA2kdrM5n0nL2FU2GqHHXggpta01BxGk5VkDhE58cv4QiUL8jHM
-	SctbuNXjkexq3wKjuNobvvZQH9mpVVaQrWpuk4Oz2OJoZviNeiHS20cjCAq7oIW0cnbYKabxyVT
-	g3tdmG+mhMohLysL+2dpblFlgrWbqAqxFWRzOHk7llJ1oQSpvs3pszTlycqSSi8mL+6mnT+AYSA
-	/S6HWeYPe36UB/+375UiCqV3Wri/bgj78d5eAkQTyQbIKuNutGlA8wVRe5vPdVpXuuaJEOTNEd8
-	Rk2/8MxjiZpgNcy610bYXQVmiJgwOqZ2nGcFTlwjhVgTlA0ufw8q/tDrYU8BdAufilJvOLuk4SY
-	c9xCj6BarPaid9iTAUHV40fvR1D962Z9P5xc8q3OmvYzn7CNpLAU6fPa4e5F6en2fv91LOXJfeJ
-	bCM/dV0UDw+7TtotP8lncDjl4brAXPeJfqrJo/QewhsSDVmHcajufZ82T3VJUnmI3amMDPNKQPU
-	axh/68g9U8aAafxkZE1Zny9n09IzN3TndaFfRXsrwki
-X-Received: by 2002:a05:6214:ca4:b0:910:5235:14f1 with SMTP id 6a1803df08f44-910523515c6mr109464606d6.22.1788795775829;
-        Mon, 07 Sep 2026 08:42:55 -0700 (PDT)
+        bh=9N6f/b+RDjU+5LdwC1W3FgNOtZzFd5njRslDhw37g/s=;
+        b=ZiF7D+0dEFg8wP8T7mRVimQOyTZrN5sOsF8AWv7WLEig5ToD4Mpl0ohALL6yD7kUFY
+         ElftWnKA+xolW+DSUPclgmf9Y3I34Wdc8rUJPjGpQrvsyJvpugY3SpOE1uLboqZg/M9n
+         /CM7gohux6n6khd3DUkShk1quh8VZeAR7DKrxPzala+2nynKkvEXXyOWmMCpv0kISdHb
+         Gfz/Iu7fPvLYAcfsvQrBtc5qHKp8z1f9qH113yUVEQwlbAwZMQ/5kbPKw05Xe/B1/Tjz
+         xeKf/vTz0NuDjS0hbbn4PT38Q+JGyCDggn9ppSX6zcM/AVLnW+TL8eKgmvTPrSQoaBeC
+         2iFw==
+X-Forwarded-Encrypted: i=1; AKwUvBw8XMPFzUcCABdCwELOdLi27RXgLTj+kNfvacOVbxo4OcL/1MXuzYSB9QwFa4mCiGltGJ0=@vger.kernel.org
+X-Gm-Message-State: AFuF++k3aInnKhCi40Wu6ljuABZTGKxO8xK/0E+47zh7aGZ1EQzTo6Gr
+	NtHlJaIxRY8vyhQ93yZwDHGfXVA4LBGr8yoXyR63ghhHcNXBahGqYzGMMMSnzuVOURw=
+X-Gm-Gg: AYBFou1pqV7IdWgVl2dGGTtG0aiUZPfsS41Huc5guFJjePQW3DqCQZwli+eK1gS+dy7
+	Ik97ujaFRQcHasdm7woCo9OiZIVEPw6lfZUCsYN3doAjcg+S6JzCFKZXep10hKz9NALs1mfSmFB
+	fbvnELOGNUSH6xosWyau7f2dadcePTNmqvrDeI8ikeLx2IZAbamt7mlPSDF2ZoiK3Jm8DzYL/bq
+	71JmV7/kH6BEQq0tv3L02zj/6CPj+9jLOGsjEWlKgiCvzQg6JS4f72hsv4s1qBfLN2uaaSUdXWN
+	C9uJiHQoUelhvdj7rGHoqV4RVTGJUiHV1bquzQ4OCQFx3Il7frv22TjIu44jBFtEYVvZ/eKZ1nw
+	dPJWTus4pZaeryJnPodjFgzKQkpWuyY7pNadKOZX1GKne3oW1BC5mH58oyD9Ob+m6StYhne5Cl0
+	RE8uomAXZStTnaHs7TCrA43hbapXmXLbclpZ4PmOhRJRuMUnh8mmc/0T1wHNtVNUWjmMs+g6bHi
+	kLLvEfUfo9MCCOoq9YuFu8wmtPnAxrbTHUOj/4rfcEO
+X-Received: by 2002:a05:620a:1a10:b0:939:93f:3b41 with SMTP id af79cd13be357-93980341197mr2411106785a.16.1788795802336;
+        Mon, 07 Sep 2026 08:43:22 -0700 (PDT)
 Received: from gourry-fedora-PF4VCD3F (pool-173-79-60-52.washdc.fios.verizon.net. [173.79.60.52])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-910406625d9sm93010046d6.20.2026.09.07.08.42.54
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-910406bf8c3sm94620766d6.48.2026.09.07.08.43.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2026 08:42:55 -0700 (PDT)
-Date: Mon, 7 Sep 2026 11:42:53 -0400
+        Mon, 07 Sep 2026 08:43:21 -0700 (PDT)
+Date: Mon, 7 Sep 2026 11:43:19 -0400
 From: Gregory Price <gourry@gourry.net>
 To: Ye Liu <ye.liu@linux.dev>
-Cc: Michal Hocko <mhocko@suse.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Ye Liu <liuye@kylinos.cn>, SJ Park <sj@kernel.org>, 
-	peterz@infradead.org, paulmck@kernel.org, mingo@redhat.com, rostedt@goodmis.org, 
-	jpoimboe@kernel.org, mic@digikod.net, oleg@redhat.com, tglx@kernel.org, 
-	david@kernel.org, linmiaohe@huawei.com, nao.horiguchi@gmail.com, rafael@kernel.org, 
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	David Hildenbrand <david@kernel.org>, Ye Liu <liuye@kylinos.cn>, Michal Hocko <mhocko@suse.com>, 
+	SJ Park <sj@kernel.org>, peterz@infradead.org, paulmck@kernel.org, mingo@redhat.com, 
+	rostedt@goodmis.org, jpoimboe@kernel.org, mic@digikod.net, oleg@redhat.com, 
+	tglx@kernel.org, linmiaohe@huawei.com, nao.horiguchi@gmail.com, rafael@kernel.org, 
 	gnoack3000@gmail.com, ljs@kernel.org, rientjes@google.com, shakeel.butt@linux.dev, 
 	xu.xin16@zte.com.cn, chengming.zhou@linux.dev, will@kernel.org, boqun@kernel.org, 
 	frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, 
@@ -81,11 +81,11 @@ Cc: Michal Hocko <mhocko@suse.com>,
 	babu.moger@amd.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
 	linux-pm@vger.kernel.org, rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
 	linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v2 2/8] mm/oom_kill: convert process/thread iterators to
- for_each_*_rculock
-Message-ID: <ap7bdHdjGgmIzi_P@gourry-fedora-PF4VCD3F>
+Subject: Re: [PATCH v2 3/8] mm/ksm: convert process iterator to
+ for_each_process_rculock
+Message-ID: <ap7biSs63MDeB34i@gourry-fedora-PF4VCD3F>
 References: <20260907081334.1152889-1-ye.liu@linux.dev>
- <20260907081334.1152889-3-ye.liu@linux.dev>
+ <20260907081334.1152889-4-ye.liu@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -94,15 +94,14 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260907081334.1152889-3-ye.liu@linux.dev>
+In-Reply-To: <20260907081334.1152889-4-ye.liu@linux.dev>
 
-On Mon, Sep 07, 2026 at 04:13:28PM +0800, Ye Liu wrote:
+On Mon, Sep 07, 2026 at 04:13:29PM +0800, Ye Liu wrote:
 > From: Ye Liu <liuye@kylinos.cn>
 > 
-> Replace the manual rcu_read_lock()/rcu_read_unlock() pairs wrapping
-> for_each_process()/for_each_thread() loops with for_each_process_rculock()
-> and for_each_thread_rculock(), which scope the RCU read lock to the
-> loop body via scoped_guard(rcu).
+> Replace the manual rcu_read_lock()/rcu_read_unlock() pair combined
+> with for_each_process() loop in mm/ksm.c with for_each_process_rculock(),
+> which scopes the RCU read lock to the loop body via scoped_guard(rcu).
 > 
 > No functional change.
 > 
@@ -111,3 +110,4 @@ On Mon, Sep 07, 2026 at 04:13:28PM +0800, Ye Liu wrote:
 > Reviewed-by: SJ Park <sj@kernel.org>
 
 Reviewed-by: Gregory Price (Meta) <gourry@gourry.net>
+
