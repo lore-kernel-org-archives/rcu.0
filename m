@@ -1,152 +1,227 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7043B05B0;
-	Tue,  8 Sep 2026 20:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90953CAA51;
+	Tue,  8 Sep 2026 21:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788899345; cv=none; b=HSbqgm1+eysYE9PLJvf4hOIfKQzqSMYLqKMNy+U+/mdl2PwyFIm/rCqXR3mZtn6PYUkDVG7odgI7sddVPXHqKcqQwCDDeY4eG5EHADy9zvAc0zTTPtN6ZPlh5REk/GQxlKb6UYeNsQQTX/jnRVss6ceYWWQBPyA98KrhxveiD5E=
+	t=1788902054; cv=none; b=N5Tv7pPs5eDZQWs/aSNJCrUsNjKdS2oBx81P3Fn10riHwq2McHPmZxn8pSF5yWZTcAixCo0Tv54j4rbYGNXYH2P/j9nN44GJrDvXcbUF01NhXA0+md7oLQ/wdoGKZIlNC948FgxQBuY1MCbOhUyj1K3/l4qihBjC79rblcdJsOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788899345; c=relaxed/simple;
-	bh=wkB3TVnakfJAcjfXFDta8JYcQsg9hg4Qi6d1R1AaR/M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tIF0t8Lk9iQX5PHgAtweVd4HTEy13eBAdzXkZCT7nFxos+lyccscNhpGd2b7cvlacmedzFaMZ8dLLCcCOfY/V1D06qzdjlc3G3cyylIGHkRH2AKXNZC8p+iEeJx1cwdT2EkMfKTEoPgX4x2Qqdd/vR4wT9Ng60URd5p334bFg84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nlmQUng8; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788902054; c=relaxed/simple;
+	bh=K2VdkwF6zp148FGWJhRnpG8c7uXs4z0d4p/HdsVwRnU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=S8QlniVKLZ8zN0zSF3a15+3GZLTo8zXtGZNupLFZAuodKGaL7SLFzASXhP5j9OdR1Sl/l3EVfYIblsNI9L1y8uSrZxuBAmB2o8LzOcKHOuZ2vyD5npYQNm94IUokKdcNmCJRiB+Hr+tu0bCZ1bJP9fgfaXcNbjXaLFvTe+4TYI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=dL8xOZQm; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nlmQUng8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B1D91F00A3A;
-	Tue,  8 Sep 2026 20:29:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788899344;
-	bh=/dJPJeOSGvBvwBPr4h9ly4OoXEGhRaYu3+8uD1dUxQU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=nlmQUng88aq+xf9prtXEGHtqQkkVay1P6z8GsISN17fx+DQuq98W46R0FLaINf7Uw
-	 Kq89csuzB+GPy8nOMnlDKUlKLiuRvM2G1aXHAA2W8bo+rVzN5TM9RB9vWQ/2zgz6RT
-	 NkD2lkooUEiXv9gDW7OOgJHUGsPoF5hCIzBZkHwXVqJ7cXXgPqsasBHmuys8P5bXn4
-	 8dtrcQ1HZ1n2QeOp/Xz6urnGCPVDyNouyVds/NGV22GJsEhniv506qXHYjD2EJe65J
-	 AoumiEvhdyRqsV4U8ie0yOdKzBUpdQQJqANlnXnnOyjHOYgiBLM0FvA2tkw127mV5m
-	 ZSwnRd+vRTl8A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2367FCE1902; Tue,  8 Sep 2026 13:29:04 -0700 (PDT)
-Date: Tue, 8 Sep 2026 13:29:04 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Kunwu Chan <kunwu.chan@gmail.com>
-Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dL8xOZQm"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=+EA1kolrZQ8SMS8LLnZ/j5fMUNVo/PuLUBgtrWmB6NA=; b=dL8xOZQmdaNfJsc1+irSr/f8Wz
+	d0/5dnTvtxDEJqRZQhirJCTVs1QnC2tZ160ARuMvLYAODhjHKYP1qJNbg2GsKjrd0cK9Oi98EVHxD
+	oyczgZ+tSyOM2V/cQnKVUqtUxAwT/AE8IYzaSiZ55ihHfM0USx3XekAWNsAD3DfwheLqs/847vLIo
+	6q3GMLFxwOmS6YwLHI1/f061doLQsEg6I+0ezK3l86TOr88i4SspuL1UO0fPOKOr/iZHmNJ/MrfQs
+	zc14oQbhFV1/twLOWaidkSI3R8JTBSKfFYiHFQEWCOYH3BRyPmiBzLgE7BfEcMyHgDFBxnR3uSISg
+	UsXJXoiQ==;
+Received: from [2001:8b0:10b:5:a5ee:470e:c67a:1ec0] (helo=u09cd745991455d.ant.amazon.com)
+	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1x438l-0000000DTv3-1VsJ;
+	Tue, 08 Sep 2026 21:14:03 +0000
+Message-ID: <d622a6ed07845e5b7c5ab87446ff8b622b4b80eb.camel@infradead.org>
 Subject: Re: [PATCH 03/13] srcutree: Add reader-free fastpath to
  synchronize_srcu_atomic()
-Message-ID: <b7bc58aa-4b8a-4eaa-a7e8-8d338f34d14a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+From: David Woodhouse <dwmw2@infradead.org>
+To: paulmck@kernel.org, Kunwu Chan <kunwu.chan@gmail.com>
+Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org, 
+	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Tue, 08 Sep 2026 22:13:39 +0100
+In-Reply-To: <b7bc58aa-4b8a-4eaa-a7e8-8d338f34d14a@paulmck-laptop>
 References: <20260907075829.2073224-1-kunwu.chan@linux.dev>
- <20260907075829.2073224-4-kunwu.chan@linux.dev>
+	 <20260907075829.2073224-4-kunwu.chan@linux.dev>
+	 <b7bc58aa-4b8a-4eaa-a7e8-8d338f34d14a@paulmck-laptop>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+	boundary="=-MKK0lU9509FnhvYIaUth"
+User-Agent: Evolution 3.60.3-0ubuntu1~ppa10~24.04 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260907075829.2073224-4-kunwu.chan@linux.dev>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Sep 07, 2026 at 03:58:19PM +0800, Kunwu Chan wrote:
-> From: Kunwu Chan <kunwu.chan@gmail.com>
-> 
-> synchronize_srcu_atomic() is restricted to srcu_read_lock_atomic() and
-> srcu_read_unlock_atomic(), whose read-side critical sections disable
-> preemption.  In the common case where there are no readers at all, the
-> grace period therefore need not do the index flip.  Add a fastpath
-> that sums both ranks of the per-CPU ->srcu_ctrs[] counters and, if the
-> lock counts match the unlock counts on both ranks, ends the grace
-> period immediately, skipping the srcu_advance_state() scans, mirroring
-> the similar Tiny SRCU fastpath.
-> 
-> Correctness requires the counter-sum proof to follow the grace-period
-> anchor written by srcu_gp_start(); placing it before the anchor could
-> let this grace period miss a pre-existing reader and return without
-> waiting for it.  The smp_mb() between the unlock and lock sums pairs
-> with the smp_mb() in __srcu_read_lock().  The grace period is ended
-> manually under ->lock and ->srcu_atomic_gp_flag.
-> 
-> Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 
-Adding David Woodhouse on CC.
+--=-MKK0lU9509FnhvYIaUth
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-David, does this provide appropriate performance in your use case?
+On Tue, 2026-09-08 at 13:29 -0700, Paul E. McKenney wrote:
+> On Mon, Sep 07, 2026 at 03:58:19PM +0800, Kunwu Chan wrote:
+> > From: Kunwu Chan <kunwu.chan@gmail.com>
+> >=20
+> > synchronize_srcu_atomic() is restricted to srcu_read_lock_atomic() and
+> > srcu_read_unlock_atomic(), whose read-side critical sections disable
+> > preemption.=C2=A0 In the common case where there are no readers at all,=
+ the
+> > grace period therefore need not do the index flip.=C2=A0 Add a fastpath
+> > that sums both ranks of the per-CPU ->srcu_ctrs[] counters and, if the
+> > lock counts match the unlock counts on both ranks, ends the grace
+> > period immediately, skipping the srcu_advance_state() scans, mirroring
+> > the similar Tiny SRCU fastpath.
+> >=20
+> > Correctness requires the counter-sum proof to follow the grace-period
+> > anchor written by srcu_gp_start(); placing it before the anchor could
+> > let this grace period miss a pre-existing reader and return without
+> > waiting for it.=C2=A0 The smp_mb() between the unlock and lock sums pai=
+rs
+> > with the smp_mb() in __srcu_read_lock().=C2=A0 The grace period is ende=
+d
+> > manually under ->lock and ->srcu_atomic_gp_flag.
+> >
+> > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+>=20
+> Adding David Woodhouse on CC.
+>=20
+> David, does this provide appropriate performance in your use case?
 
-							Thanx, Paul
+Looks like it should; I've thrown it into the test. Thanks.
 
-> ---
->  kernel/rcu/srcutree.c | 48 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 7dd705eec573..533607de5728 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -2113,6 +2113,8 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
->  {
->  	unsigned long srcu_state;
->  	struct srcu_usage *sup = ssp->srcu_sup;
-> +	unsigned long rdm0, rdm1;
-> +	unsigned long unlocks0, unlocks1;
->  
->  	// Initialize.	Either init_srcu_struct() was invoked or
->  	// DEFINE_SRCU() or similar was used.  Therefore, no allocation
-> @@ -2149,6 +2151,52 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
->  	srcu_gp_start(ssp);
->  	raw_spin_unlock_irq_rcu_node(sup);
->  
-> +	//
-> +	// Fastpath:  If there are no readers at all, neither grace-period
-> +	// scan need wait, so both can be satisfied at once without doing
-> +	// the index flip.  The counter-sum proof is the same as that of
-> +	// srcu_readers_active_idx_check(), but spanning both indices.
-> +	// Atomic SRCU guarantees that all readers are of
-> +	// SRCU_READ_FLAVOR_ATOMIC, so the SLOWGP check never triggers and
-> +	// the ->srcu_reader_flavor masks returned by
-> +	// srcu_readers_unlock_idx() are unused.
-> +	//
-> +	// This proof must follow the grace-period anchor written by the
-> +	// srcu_gp_start() above, never precede it.  With the anchor first,
-> +	// a reader whose lock increment is missed by the sums below cannot
-> +	// have incremented its lock counter before the anchor, and therefore
-> +	// cannot be a pre-existing reader of this grace period.  Placing the
-> +	// proof before the anchor would let this grace period miss a
-> +	// pre-existing reader and return without waiting for it.
-> +	//
-> +	// The smp_mb() pairs with the smp_mb() in __srcu_read_lock()
-> +	// (store-buffering pattern), which guarantees that a lock is always
-> +	// counted if the corresponding unlock is counted, the same
-> +	// memory-ordering guarantee as is provided by
-> +	// srcu_readers_active_idx_check().
-> +	//
-> +	unlocks0 = srcu_readers_unlock_idx(ssp, 0, &rdm0);
-> +	unlocks1 = srcu_readers_unlock_idx(ssp, 1, &rdm1);
-> +	smp_mb(); /* A */
-> +	if (srcu_readers_lock_idx(ssp, 0, false, unlocks0) &&
-> +	    srcu_readers_lock_idx(ssp, 1, false, unlocks1)) {
-> +		// No readers, so end this grace period manually, skipping
-> +		// the index flip.  Advancing the sequence number via
-> +		// rcu_seq_start() in srcu_gp_start() above and rcu_seq_end()
-> +		// below keeps get_state_synchronize_srcu() and
-> +		// poll_state_synchronize_srcu() working, all under ->lock
-> +		// and ->srcu_atomic_gp_flag, which excludes concurrent
-> +		// sequence-number updates.
-> +		raw_spin_lock_irq_rcu_node(sup);
-> +		rcu_seq_end(&sup->srcu_gp_seq);
-> +		raw_spin_unlock_irq_rcu_node(sup);
-> +		WARN_ON_ONCE(!poll_state_synchronize_srcu(ssp, srcu_state));
-> +		atomic_set_release(&sup->srcu_atomic_gp_flag, 0);
-> +		preempt_enable();
-> +		non_block_end();
-> +		return;
-> +	}
-> +
->  	// Wait for it to complete, helping it along.
->  	while (!poll_state_synchronize_srcu(ssp, srcu_state)) {
->  		cpu_relax();
-> -- 
-> 2.43.0
-> 
+My version=C2=B9 didn't drive the GP at all, and just took the fast path if
+there were no readers. And because it didn't drive the GP, I *think*
+the "Correctness requires=E2=80=A6" part of the commit message cited above
+didn't apply?
+
+Driving the GP does mean a certain amount of serialization that my
+earlier bailout didn't incur, but I think that's probably only going to
+show up on a microbenchmark. Let's see.
+
+I *do* want the fast path used from synchronize_srcu_expedited()
+though, if possible. That's what solves Sean's *other* problem. Can we
+have that?
+
+=C2=B9 https://git.infradead.org/?p=3Dusers/dwmw2/linux.git;a=3Dcommitdiff;=
+h=3D0f1456f508
+  https://git.infradead.org/?p=3Dusers/dwmw2/linux.git;a=3Dcommitdiff;h=3D6=
+2ff5ac4ca
+
+--=-MKK0lU9509FnhvYIaUth
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCE8Ew
+ggWvMIIEl6ADAgECAhANkOKMSmGXhF5eMl0rsRhvMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYT
+AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAi
+BgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBHMjAeFw0yNDAzMTMwMDAwMDBaFw0zNDAz
+MTIyMzU5NTlaMGIxCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UE
+AxMxRGlnaUNlcnQgQXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTCCAiIw
+DQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAOfSIeC0vv1xPQ+dgSxbIIrkaru6skAWJYaGFzmv
+q4Kq+2wU2jxhcWlJg/JeP5jEkq/LM3pn5aaLao79j+XRmS7J1ZpJKUODJVoM4s9MQJhTMvo4qS5Z
+S64g6QR7Obkz3I1Lr3aWeSBmDDEyzue+NKtuWZ1Cxy3RdXo/w5HgRc3l2AercOM3Gt1XonTzEtTb
+Z/Hwc0Sn9Gz8RmGRK6Ka4hVDl8q/2l110KaV233Kh5etP0csXS8MIMdVRfRu3sc5hp13DG7lCKzK
+72a2GEpI8Wpl26G6I1/LMzz/98T+FqjTqxsdquk7Cj7m2vKGLW1BorpQH7WFGPdJQXJe1hfbfiZA
+CcVdCtl4nAacFacmsiArZBfX7AQGL7isvHUwwYFEtcApyGW4p2Lt+t8nvU0CANA6BHOpOz1xOP8W
+mAESbUriIjyuTUf3fJ9oDNCurVqhASMJCDaWI3lYX/QAoiAzt6akqbbZxo2ujW7mGGqc0KxqE2cs
+h2T79v7pC8aUtHBfwNrTR19GnZVxE0eQ7ViIQhR6mpSaUQFA9sG+cmD2G8TnCgYsLa0q8De6F61a
+CBevQGHNzrbZ3JAMneveYg/Jy1XxQHDRcvrMfWKe0jjcWbdKYlaGVPm5V1ILwYz7Yv5ewo3NUrxI
+GJiywe9qPhuJSDZs7VehTuI0FxGIsgKzVjgbAgMBAAGjggFcMIIBWDASBgNVHRMBAf8ECDAGAQH/
+AgEAMB0GA1UdDgQWBBT3m6JO05fF9DQPQw6Bhc6RkzKv+TAfBgNVHSMEGDAWgBTOw0q5mVXyuNtg
+v6l+vVa1lzan1jAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MHkGCCsGAQUFBwEBBG0wazAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEMG
+CCsGAQUFBzAChjdodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURS
+b290RzIuY3J0MEUGA1UdHwQ+MDwwOqA4oDaGNGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdp
+Q2VydEFzc3VyZWRJRFJvb3RHMi5jcmwwEQYDVR0gBAowCDAGBgRVHSAAMA0GCSqGSIb3DQEBDAUA
+A4IBAQA+b8Uw53sDspdZgukU+qzLyyHkcjlxGGhHlP+zrmDLKm1wEFvCRS2pili3Hy67i8N4N5NU
+vw5Rg6kv3lxb9S9Rktxk43k+tvm68pl7OxQE55ZjVY87P0lUPGwEqOOwLLyH02ZQcsfq5p5LrOH9
+0JvmvZ1yy73HS+VpDAqOlytE0NSvTIRqFFkKQGQwfjvtql9YflujuNNvJztjBaHKYZsnNSg+J38o
+jYq4TP3pSg3UdVH0PncVjPQyqxC9xef5Xae92Kbkzol3x7Nel3A1bwAkalrDMspvTHvey6LfiBks
+FIqviTnoy7fgjaRAJgHS+RXx/cmuRd3rUAclSVVrYu8RMIIHAzCCBOugAwIBAgIQAzUotrsybJHx
+HTjKOIVdIDANBgkqhkiG9w0BAQsFADBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQs
+IEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFzc3VyZWQgRzIgU01JTUUgUlNBNDA5NiBTSEEzODQg
+MjAyNCBDQTEwHhcNMjYwNzE4MDAwMDAwWhcNMjgwMTA0MjM1OTU5WjAeMRwwGgYDVQQDDBNkd213
+MkBpbmZyYWRlYWQub3JnMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA2pYux73kdbYX
+sWF8f1u6DJP91qcqaZetsyfPkZk0B+MmXmAEv0kVes5n15V2mbDThOnpoPFly0UugQO9JYqLfrtD
+tKD5yL58fgrDB9Dw+LQikgrHafl6YSCds5AvUu/8hw2J6noKrcOLJpKlKn9Fl/4IB9Q3JIdLx5aa
+EtTqMalIPqHFOlgrJ7s+aua8xbB8YQ9ahqYBXWRJNv3P/2b1DYtdrz1oqZPE3CcB8Pc6Gf2a1Tcm
+6TAgtEx7Cf1BFcrsrMz7TWHmGQITieNb2r9UYWSc2Gp+GtYFNJCgT0JJXKUBIauPMKBLteYrL8Fo
+ff/uY44dC/mDWjdCP/5x0qelPQjlBvWdHL5zvBTOj06rJ0m3HNI/hnIcDh0Qu2j9reb9rLVcdym6
+bWmBM4uDEB8Zv9Ph0KTBFSy1IosyakuD1j1Os30EzjGfbi0EUXIvnOcYbTBAbM5UAzrxEHMhBvoX
+Pvnx+OyvjJmc9tWxTX6AcSz+m40esbT17URBeZS18afgieiikm5TynlUYP1LciR3hSgGVzvGXnKO
+02VDFR5itGWdRKZ2W5wIShNfWfhSa0D0K5UdIDt5Qc7sjzwK1Yb1sY5Tu0uA5mhIS82q1ov83uxB
+sFkriNnhGv/M1NCDVLBiOMsHu73qUM+yKmgKLwF9Hfn9WI25glbAMI4S5r3hYzcCAwEAAaOCAfcw
+ggHzMB8GA1UdIwQYMBaAFPebok7Tl8X0NA9DDoGFzpGTMq/5MB0GA1UdDgQWBBRcYhqbcGzn1jrT
+JOZaB8O7qllDpzAwBgNVHREEKTAngRNkd213MkBpbmZyYWRlYWQub3JngRBkYXZpZEB3b29kaG91
+LnNlMBQGA1UdIAQNMAswCQYHZ4EMAQUBAjAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0lBBYwFAYIKwYB
+BQUHAwIGCCsGAQUFBwMEMIGpBgNVHR8EgaEwgZ4wTaBLoEmGR2h0dHA6Ly9jcmwzLmRpZ2ljZXJ0
+LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsME2gS6BJ
+hkdodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZT
+SEEzODQyMDI0Q0ExLmNybDCBjQYIKwYBBQUHAQEEgYAwfjAkBggrBgEFBQcwAYYYaHR0cDovL29j
+c3AuZGlnaWNlcnQuY29tMFYGCCsGAQUFBzAChkpodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20v
+RGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZTSEEzODQyMDI0Q0ExLmNydDANBgkqhkiG9w0B
+AQsFAAOCAgEAocabrh1cPd5s3vY5rnlBVQSTc7zs2ZWs67dAIltR+05WELrYClVzzUhMs/LOJPlr
+EUo45UDDomXq38DxFepaPd9+iNLjXfn33EX/IG44j04lU/oF/Rg9VeQILkYLbCZ/x9wOjNHZc4SN
+ydY7Dhvf/sT5aBz88u7D5+azZJ7Qf1U57wYseCH1Mt0nDrtr5y19IJ8D9xJJ33RFL6vfpHZBBAQ8
++3RqkKNxLoV2aFvQhxdhjNLDqTv3LjUIdicwPraN7JkxEu7CV2Lka7eRqJgkWL7SK0YmBjGpRafs
++icP/ON5RCCKTTb6VlX8eTG2sJJfsFhvJNCCt6xexbWzWtIrfP7NvPBvwBB737AyEGBZkS5aNizT
+McURJGTv9UKvBh1LF/+tNhYtLvPCN7oecGzhCHht9jcwSkygTo3Y6YlK3QgOu+ncmiBbfeuwlLZ1
+LxbYvG6hgNqXv7u6YyADbYajAQJXJ2OQen39pm3Q/AQSyLYG+B8lDglWsM8tYXPlEdrYJcksGK6F
+nqIX6Bumn43rBooLJdiZp4WmfWdL2pxe+LxRDjprmqu1WprixDxULSTOKJZoqTlugs6y3Bc+if+s
+gHnBBtz9WQ6MtPHkh7zONDAFIKcBmv8OqPQCx0F3Wv3OEybwMpXx0OsKgK8wLldaX1pXcMuyDgTL
+Sqs0AV0OHUgwggcDMIIE66ADAgECAhADNSi2uzJskfEdOMo4hV0gMA0GCSqGSIb3DQEBCwUAMGIx
+CzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UEAxMxRGlnaUNlcnQg
+QXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTAeFw0yNjA3MTgwMDAwMDBa
+Fw0yODAxMDQyMzU5NTlaMB4xHDAaBgNVBAMME2R3bXcyQGluZnJhZGVhZC5vcmcwggIiMA0GCSqG
+SIb3DQEBAQUAA4ICDwAwggIKAoICAQDali7HveR1thexYXx/W7oMk/3Wpyppl62zJ8+RmTQH4yZe
+YAS/SRV6zmfXlXaZsNOE6emg8WXLRS6BA70liot+u0O0oPnIvnx+CsMH0PD4tCKSCsdp+XphIJ2z
+kC9S7/yHDYnqegqtw4smkqUqf0WX/ggH1Dckh0vHlpoS1OoxqUg+ocU6WCsnuz5q5rzFsHxhD1qG
+pgFdZEk2/c//ZvUNi12vPWipk8TcJwHw9zoZ/ZrVNybpMCC0THsJ/UEVyuyszPtNYeYZAhOJ41va
+v1RhZJzYan4a1gU0kKBPQklcpQEhq48woEu15isvwWh9/+5jjh0L+YNaN0I//nHSp6U9COUG9Z0c
+vnO8FM6PTqsnSbcc0j+GchwOHRC7aP2t5v2stVx3KbptaYEzi4MQHxm/0+HQpMEVLLUiizJqS4PW
+PU6zfQTOMZ9uLQRRci+c5xhtMEBszlQDOvEQcyEG+hc++fH47K+MmZz21bFNfoBxLP6bjR6xtPXt
+REF5lLXxp+CJ6KKSblPKeVRg/UtyJHeFKAZXO8Zeco7TZUMVHmK0ZZ1EpnZbnAhKE19Z+FJrQPQr
+lR0gO3lBzuyPPArVhvWxjlO7S4DmaEhLzarWi/ze7EGwWSuI2eEa/8zU0INUsGI4ywe7vepQz7Iq
+aAovAX0d+f1YjbmCVsAwjhLmveFjNwIDAQABo4IB9zCCAfMwHwYDVR0jBBgwFoAU95uiTtOXxfQ0
+D0MOgYXOkZMyr/kwHQYDVR0OBBYEFFxiGptwbOfWOtMk5loHw7uqWUOnMDAGA1UdEQQpMCeBE2R3
+bXcyQGluZnJhZGVhZC5vcmeBEGRhdmlkQHdvb2Rob3Uuc2UwFAYDVR0gBA0wCzAJBgdngQwBBQEC
+MA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwgakGA1UdHwSB
+oTCBnjBNoEugSYZHaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZEcyU01J
+TUVSU0E0MDk2U0hBMzg0MjAyNENBMS5jcmwwTaBLoEmGR2h0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNv
+bS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsMIGNBggrBgEF
+BQcBAQSBgDB+MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wVgYIKwYBBQUH
+MAKGSmh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNB
+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
+x/Ko028sx6cK8KPPJDw8xx0AAAAAAAA=
+
+
+--=-MKK0lU9509FnhvYIaUth--
