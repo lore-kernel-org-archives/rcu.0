@@ -1,52 +1,50 @@
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B7048F017;
-	Tue,  8 Sep 2026 22:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A628395DAA;
+	Tue,  8 Sep 2026 22:26:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788905408; cv=none; b=lpfmEu+vhhqPhTfGOsGuIaS8U2H7dnegcp9tAyk7o2MwcQhxgM5tNbPHtjFj9SONie78FArd4bfMYdFilKN1PG0Nl0el21oDcwPeDUGFgsb1DbXIYo3mprCJNW1fCi21cpNbT0PxyZtjYcF++/Tw0tFQ0RmoJyqxOVkXTNLQAdM=
+	t=1788906398; cv=none; b=MOCznGS4wbS4H/Sq6W4G+eCfFztsT6E6BtwdjUK2HEvCYcWXkrb1rePBVU0k3PrMIQrLG77woHv5u/PZLxOn5e6uXSZNmTJOnoy+UF43wwB2P5sh2u1PofUdiW9WQ06EQSfxA463QzkBB9HZUAucacoBSdmvMtStZAcLyMFw3ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788905408; c=relaxed/simple;
-	bh=lW7tNfaog1QxEwCVOimeAPseJChsHB31CrLCR8LjaWk=;
+	s=arc-20240116; t=1788906398; c=relaxed/simple;
+	bh=5rHEvOWsmETAOQM1wtLm9ZYqJuoey5xHgA9oWFIxzbg=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VhwaTi3n/O2MKePrOl7/LwN1S9Rr2nmUCo0sWkm0Fr8THRsSd+U4O5QWmhrtsZnQMlf006L1Gy6R/tia0uT30SXRVV7MgzVtxdxHOcj6mYkCjZrWbuowuUVBMhBNzy2F00r7e4x+XRiGVSEqNiNvcJxPD9VK+TImHTZb9kjT66E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=iIhEpS+h; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:MIME-Version; b=oEhB7IUBVlIh8aZLGubchQUI8rItu9GLG7BbvauHjTbFrOZzSF2Oclgb5dC3ZoIpFcyaLv23+6R+kbp2JWNsOAm/P62Msb1brFCMvZy/v75Mg+QhliT2JAojfLkHmNgkau4ZYHExY9OxMR+0bHpGHMudSlK4W5+r83z9vNr87JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=G/6I/IvM; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iIhEpS+h"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="G/6I/IvM"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
 	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=wieqynRCAE5rJEK0uBZHAJhGCeCPCApA9jbPjxhcNEM=; b=iIhEpS+hV5Mp32ld3l5jtyS1KK
-	iZkeyR/EhxVjmAKeV9c6ZEgjXHLG9PRsqJpxXvwFcF+ci1lM5TTHamqTNHBnakqI1Y0gMgz3bMNQJ
-	tBdwdhtAq9IEMwZ5ES+YadBjED4LnRSbrV7XxqLE41lLaBLZWYNOT1+sMWel7SdoV9TY91gRiBP6w
-	6KSPvLSPZCe3UVYhjKC4b3vhMnoHLI2QgD7xjr1M7hLI7yhwwv1qppGKW0GwrklV2uEZkhsR/XNAB
-	UJPwvo1tca5hQ81sSDSOKTiY50ES9TlvriM38lCjahdAvBAEsZ88kdwh9/DfVYL7zE88yMzeImqdI
-	kgawTU9w==;
+	bh=5rHEvOWsmETAOQM1wtLm9ZYqJuoey5xHgA9oWFIxzbg=; b=G/6I/IvMnuPoDw7Sj7fwdJn+E7
+	H78HGLWx+6n3Fu4+4ccBUm/wZbpnZsr7gcoaj6bwLRSrEInZWpF1XwhiFJuxCmXeG3qvXZkfLjv3c
+	RxpyMOG53yZwV+XUHtgxh0thW0lQKaLNrEF0AXWyXaV4zGd1O0ukraQj9r4Tulqq5W8dbLKKPrG0Q
+	pjubDxqqgraaCG4mh2vPd3Lz6EJ13FshMvX9E4EK800AQaVIlE16uwXb2Pq0DNtkgYsPtbNncj6tx
+	ZfSBpX2ofU8iU7TzEzjhob6JZZ6U/CK5042KlU5TBsU30ZoBmCD+Evftr7N8flfQvJ6L0mE1WQKV7
+	pO2Tel9Q==;
 Received: from [2001:8b0:10b:5:a5ee:470e:c67a:1ec0] (helo=u09cd745991455d.ant.amazon.com)
 	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x440s-0000000E444-49aq;
-	Tue, 08 Sep 2026 22:09:59 +0000
-Message-ID: <c5e946d3af034749111d9292c57cf2e3d0df5416.camel@infradead.org>
+	id 1x44Gs-0000000EGrQ-2U6E;
+	Tue, 08 Sep 2026 22:26:30 +0000
+Message-ID: <0d4af6318ac67486858be1df8d436147b444a2d2.camel@infradead.org>
 Subject: Re: [PATCH 03/13] srcutree: Add reader-free fastpath to
  synchronize_srcu_atomic()
 From: David Woodhouse <dwmw2@infradead.org>
-To: paulmck@kernel.org
-Cc: Kunwu Chan <kunwu.chan@gmail.com>, jiangshanlai@gmail.com, 
-	josh@joshtriplett.org, rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
- 	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Tue, 08 Sep 2026 23:09:34 +0100
-In-Reply-To: <40a4a925-d984-4f0b-b594-2d0a5ca7bde0@paulmck-laptop>
+To: paulmck@kernel.org, Kunwu Chan <kunwu.chan@gmail.com>
+Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org, 
+	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Tue, 08 Sep 2026 23:26:06 +0100
+In-Reply-To: <b7bc58aa-4b8a-4eaa-a7e8-8d338f34d14a@paulmck-laptop>
 References: <20260907075829.2073224-1-kunwu.chan@linux.dev>
 	 <20260907075829.2073224-4-kunwu.chan@linux.dev>
 	 <b7bc58aa-4b8a-4eaa-a7e8-8d338f34d14a@paulmck-laptop>
-	 <d622a6ed07845e5b7c5ab87446ff8b622b4b80eb.camel@infradead.org>
-	 <40a4a925-d984-4f0b-b594-2d0a5ca7bde0@paulmck-laptop>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-BcyBV0V3PJc760MaZ4oo"
+	boundary="=-u/avwbMBUxHeKxLbHl1d"
 User-Agent: Evolution 3.60.3-0ubuntu1~ppa10~24.04 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -57,41 +55,117 @@ MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
 
---=-BcyBV0V3PJc760MaZ4oo
+--=-u/avwbMBUxHeKxLbHl1d
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 
-On Tue, 2026-09-08 at 14:54 -0700, Paul E. McKenney wrote:
->=20
-> And another option is to pull the fastpath up earlier, before
-> checking and/or acquiring ->srcu_atomic_gp_flag.=C2=A0 But this is a
-> bit more complicated from a concurrency viewpoint, at least if
-> we are to interact normally with get_state_synchronize_srcu() and
-> poll_state_synchronize_srcu().=C2=A0 For example:
->=20
-> 	srcu_state =3D get_state_synchronize_srcu(ssp);
-> 	synchronize_srcu_atomic(ssp);
-> 	WARN_ON_ONCE(!poll_state_synchronize_srcu(ssp, srcu_state));
->=20
-> Without at least some mucking with the grace-period mechanism, that
-> WARN_ON_ONCE() could trigger, which just might not be universally
-> considered to be a friendly act.=C2=A0 ;-)
->=20
-> So it would be very good to keep the fastpath where Kunwu put it, if
-> that works reasonably.
+T24gVHVlLCAyMDI2LTA5LTA4IGF0IDEzOjI5IC0wNzAwLCBQYXVsIEUuIE1jS2VubmV5IHdyb3Rl
+Ogo+IE9uIE1vbiwgU2VwIDA3LCAyMDI2IGF0IDAzOjU4OjE5UE0gKzA4MDAsIEt1bnd1IENoYW4g
+d3JvdGU6Cj4gPiBGcm9tOiBLdW53dSBDaGFuIDxrdW53dS5jaGFuQGdtYWlsLmNvbT4KPiA+IAo+
+ID4gc3luY2hyb25pemVfc3JjdV9hdG9taWMoKSBpcyByZXN0cmljdGVkIHRvIHNyY3VfcmVhZF9s
+b2NrX2F0b21pYygpIGFuZAo+ID4gc3JjdV9yZWFkX3VubG9ja19hdG9taWMoKSwgd2hvc2UgcmVh
+ZC1zaWRlIGNyaXRpY2FsIHNlY3Rpb25zIGRpc2FibGUKPiA+IHByZWVtcHRpb24uwqAgSW4gdGhl
+IGNvbW1vbiBjYXNlIHdoZXJlIHRoZXJlIGFyZSBubyByZWFkZXJzIGF0IGFsbCwgdGhlCj4gPiBn
+cmFjZSBwZXJpb2QgdGhlcmVmb3JlIG5lZWQgbm90IGRvIHRoZSBpbmRleCBmbGlwLsKgIEFkZCBh
+IGZhc3RwYXRoCj4gPiB0aGF0IHN1bXMgYm90aCByYW5rcyBvZiB0aGUgcGVyLUNQVSAtPnNyY3Vf
+Y3Ryc1tdIGNvdW50ZXJzIGFuZCwgaWYgdGhlCj4gPiBsb2NrIGNvdW50cyBtYXRjaCB0aGUgdW5s
+b2NrIGNvdW50cyBvbiBib3RoIHJhbmtzLCBlbmRzIHRoZSBncmFjZQo+ID4gcGVyaW9kIGltbWVk
+aWF0ZWx5LCBza2lwcGluZyB0aGUgc3JjdV9hZHZhbmNlX3N0YXRlKCkgc2NhbnMsIG1pcnJvcmlu
+Zwo+ID4gdGhlIHNpbWlsYXIgVGlueSBTUkNVIGZhc3RwYXRoLgo+ID4gCj4gPiBDb3JyZWN0bmVz
+cyByZXF1aXJlcyB0aGUgY291bnRlci1zdW0gcHJvb2YgdG8gZm9sbG93IHRoZSBncmFjZS1wZXJp
+b2QKPiA+IGFuY2hvciB3cml0dGVuIGJ5IHNyY3VfZ3Bfc3RhcnQoKTsgcGxhY2luZyBpdCBiZWZv
+cmUgdGhlIGFuY2hvciBjb3VsZAo+ID4gbGV0IHRoaXMgZ3JhY2UgcGVyaW9kIG1pc3MgYSBwcmUt
+ZXhpc3RpbmcgcmVhZGVyIGFuZCByZXR1cm4gd2l0aG91dAo+ID4gd2FpdGluZyBmb3IgaXQuwqAg
+VGhlIHNtcF9tYigpIGJldHdlZW4gdGhlIHVubG9jayBhbmQgbG9jayBzdW1zIHBhaXJzCj4gPiB3
+aXRoIHRoZSBzbXBfbWIoKSBpbiBfX3NyY3VfcmVhZF9sb2NrKCkuwqAgVGhlIGdyYWNlIHBlcmlv
+ZCBpcyBlbmRlZAo+ID4gbWFudWFsbHkgdW5kZXIgLT5sb2NrIGFuZCAtPnNyY3VfYXRvbWljX2dw
+X2ZsYWcuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IEt1bnd1IENoYW4gPGt1bnd1LmNoYW5AZ21h
+aWwuY29tPgo+IAo+IEFkZGluZyBEYXZpZCBXb29kaG91c2Ugb24gQ0MuCj4gCj4gRGF2aWQsIGRv
+ZXMgdGhpcyBwcm92aWRlIGFwcHJvcHJpYXRlIHBlcmZvcm1hbmNlIGluIHlvdXIgdXNlIGNhc2U/
+CgpDb21wYXJlZCB3aXRoIHRoZSBlYXJseSBiYWlsIHRoYXQgSSBoYWQgYmVmb3JlLCB0aGVyZSdz
+IGEgKnNsaWdodCoKc2hpZnQgaW50byB0aGUgaGlnaGVyLWxhdGVuY3kgYnVja2V0cyBhcyBleHBl
+Y3RlZCwgYnV0IGRlZmluaXRlbHkgbm90CmVub3VnaCB0aGF0IEkgY2FyZS4gV2UncmUgZG9pbmcg
+dGhpcyB3aG9sZSB0aGluZyB0byBlbGltaW5hdGUgdGhlCm11bHRpLW1pbGxpc2Vjb25kIHAxMDAg
+bGF0ZW5jaWVzIHRoYXQgaGFwcGVuIHdoZW4gd2UgaW52b2tlIHRoZQp3b3JrcXVldWUsIGFuZCB0
+aGUgZGlmZmVyZW5jZXMgd2UncmUgbG9va2luZyBhdCBpbiB0aGUgdGFibGUgYmVsb3cgYXJlCip3
+ZWxsKiBiZWxvdyB3aGF0IHdlIGNhcmUgYWJvdXQ6CgoKICDilIzilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilKzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilKzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilKzilIDilIDilIDilIDilIDilIDilIDilJAKICDi
+lIIgICBidWNrZXQgICAg4pSCICB0cnktZmlyc3QgKCMxMCkgIOKUgiAgICBLdW53dSAoIzExKSAg
+ICDilIIgICDOlCAgIOKUggogIOKUnOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUpAogIOKUgiBbMCwxwrVzKSAgICAg
+4pSCIDUsMzM4LDQ3NCAoNjAuOCUpIOKUgiA0LDk1Myw2NTcgKDU2LjglKSDilIIg4oiSNyUgICDi
+lIIKICDilJzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzi
+lIDilIDilIDilIDilIDilIDilIDilKQKICDilIIgWzEsMikgICAgICAg4pSCIDEsMDc3LDk5OCAg
+ICAgICAgIOKUgiAxLDA4NywxMzMgICAgICAgICDilIIg4omIICAgICDilIIKICDilJzilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDi
+lIDilIDilKQKICDilIIgWzIsNCkgICAgICAg4pSCIDgwMywyNDQgICAgICAgICAgIOKUgiA3OTAs
+NDg5ICAgICAgICAgICDilIIg4omIICAgICDilIIKICDilJzilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDilIDilKQKICDilIIg
+WzQsOCkgICAgICAg4pSCIDgxMSw3MDggICAgICAgICAgIOKUgiA4ODAsNjczICAgICAgICAgICDi
+lIIgKzglICAg4pSCCiAg4pSc4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pS84pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pS84pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pS84pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSkCiAg4pSCIFs4LDE2KSAgICAgIOKUgiAz
+NjYsMTgzICAgICAgICAgICDilIIgNTk3LDQ0MyAgICAgICAgICAg4pSCICs2MyUgIOKUggogIOKU
+nOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUpAogIOKUgiBbMTYsMzIpICAgICDilIIgMzM4LDczMSAgICAgICAgICAg
+4pSCIDM2MSwyNDMgICAgICAgICAgIOKUgiArNyUgICDilIIKICDilJzilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDilIDilKQK
+ICDilIIgWzMyLDY0KSAgICAg4pSCIDE0LDI5MCAgICAgICAgICAgIOKUgiAyOCw4MjMgICAgICAg
+ICAgICDilIIgw5cyLjAgIOKUggogIOKUnOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUpAogIOKUgiBbNjQsMTI4KSAg
+ICDilIIgMiw1NDkgICAgICAgICAgICAg4pSCIDMsNjU1ICAgICAgICAgICAgIOKUgiArNDMlICDi
+lIIKICDilJzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzi
+lIDilIDilIDilIDilIDilIDilIDilKQKICDilIIgWzEyOCwyNTYpICAg4pSCIDU1NSAgICAgICAg
+ICAgICAgIOKUgiA3ODMgICAgICAgICAgICAgICDilIIgKzQxJSAg4pSCCiAg4pSc4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSkCiAg4pSCIFsyNTYsNTEyKSAgIOKUgiA0NTYgICAgICAgICAgICAgICDilIIgNjI1ICAg
+ICAgICAgICAgICAg4pSCICszNyUgIOKUggogIOKUnOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUpAogIOKUgiBbNTEy
+wrVzKykgICAg4pSCIDEzICAgICAgICAgICAgICAgIOKUgiA4ICAgICAgICAgICAgICAgICDilIIg
+4omIICAgICDilIIKICDilJzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lLzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilLzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilLzilIDilIDilIDilIDilIDilIDilIDilKQKICDilIIgbWF4ICAgICAgICAg4pSCIDEu
+MDdtcyAgICAgICAgICAgIOKUgiAxLjU2bXMgICAgICAgICAgICDilIIgKzQ2JSAg4pSCCiAg4pSc
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSkCiAg4pSCIHRvdGFsIHdhbGtzIOKUgiA4LDc3Nyw1MTQgICAgICAgICDi
+lIIgOCw3MjMsNDUzICAgICAgICAg4pSCIOKIkjAuNiUg4pSCCiAg4pSU4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS04pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS04pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS04pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSY
+CgogICgxOTItQ1BVIFBSRUVNUFRfUlQgaG9zdCwgMTIgY29uY3VycmVudCBnZm5fdG9fcGZuX2Nh
+Y2hlIGludmFsaWRhdGlvbgogIHJlcHJvZHVjZXJzLCAzMDAtc2Vjb25kIHdpbmRvd3M7IGVhY2gg
+IndhbGsiIGlzIG9uZSBpbnZhbGlkYXRpb24gZHJhaW4KICB3aGljaCBpbmNsdWRlcyB0aGUgc3lu
+Y2hyb25pemVfc3JjdV9hdG9taWMoKSBjYWxsLiAjMTAvIzExIGFyZSBqdXN0CiAgbG9jYWwgYnVp
+bGQgbnVtYmVycy4pCg==
 
-Could we not just declare that synchronize_srcu_atomic() *isn't*
-guaranteed to drive a GP, so the above code isn't valid? Why poll for a
-thing that's atomic? Is that a likely use case?
 
-And you've already forbidden start_poll_synchronize_srcu() for atomic,
-haven't you?
-
-I concede that the same logic doesn't work quite as well for
-synchronize_srcu_expedited(), as it's an established API. Could we
-retcon that one?
-
---=-BcyBV0V3PJc760MaZ4oo
+--=-u/avwbMBUxHeKxLbHl1d
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -189,22 +263,22 @@ vFEOOmuaq7VamuLEPFQtJM4olmipOW6CzrLcFz6J/6yAecEG3P1ZDoy08eSHvM40MAUgpwGa/w6o
 MAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMTowOAYDVQQDEzFEaWdpQ2VydCBB
 c3N1cmVkIEcyIFNNSU1FIFJTQTQwOTYgU0hBMzg0IDIwMjQgQ0ExAhADNSi2uzJskfEdOMo4hV0g
 MA0GCWCGSAFlAwQCAQUAoIIBezAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJ
-BTEPFw0yNjA5MDgyMjA5MzRaMC8GCSqGSIb3DQEJBDEiBCD8vR8bZyZktg0pBz4lWHdLra0Zlw7Z
-eQ1yED53JRS5IzCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGln
+BTEPFw0yNjA5MDgyMjI2MDZaMC8GCSqGSIb3DQEJBDEiBCC2kf4C0znnZIV4/AUxni4rBvBLO9G8
+xQfn/2fKMG//ODCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGln
 aUNlcnQsIEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFzc3VyZWQgRzIgU01JTUUgUlNBNDA5NiBT
 SEEzODQgMjAyNCBDQTECEAM1KLa7MmyR8R04yjiFXSAwgYcGCyqGSIb3DQEJEAILMXigdjBiMQsw
 CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFz
 c3VyZWQgRzIgU01JTUUgUlNBNDA5NiBTSEEzODQgMjAyNCBDQTECEAM1KLa7MmyR8R04yjiFXSAw
-DQYJKoZIhvcNAQEBBQAEggIASA+PQb3GeKZxn7trZjFriTYk49M30OlNWat9/Z0Dm26lIGBUylh9
-Ar9XDtHuHG38HKr0IQQnXBaKrtqaK2czu5ewTDpTxw+mkeuZZi0xzZK6ZVoyRGh03lYusvJJF8tw
-6MWgcSjhpFGA494VYg9iQkL7y9gxwqWQHJHT9V/G8f/8BHdxUdALGEPgYsEkVBHfe7lnE52xg5T7
-NXf1iMa8cscLEjd6uOeRlMYgbsDIxhr+CnHrqOE9BAXYC4wtqNpXvTuUWe7PVE7m9/3Orn2CUyQi
-q3fDgcF4oj2lK78tDCMAt97hP5jeKht5/b6Zgl1GfEXQ4b3EqA9EaPGvrwvTiOt3EuXXxJiutCU3
-ZigezWBPhfsA+7eWBE7AaGT/69oAONt9/uKzCgJqQj+CUMbng4HZS/PtxIqqdBEC5nSF+e4XEpWK
-6gKqaPEeCPEdWNOSI0vZ5rHV4C+r/GGxksKgRKtj75uKHXZNaEeQcwtAP5ZXEcgXv5CAK6hU4sqv
-YzjS3KGqJ4Bgm4F/rILzsK1TV9/INCl6Cd8b+TLm8mdqOXzrctdcJqUeCRukxq7DM5hDOOj2mRlz
-iCMj0RoxF3h9KZ/b3RMdriZzhgL8gm4ey+KmvQ5hwfOdQ6SH2KUL7jNkpteIVFoknwqjcN6CeI1T
-KlMopLJCTX22G3NrFjoyfVgAAAAAAAA=
+DQYJKoZIhvcNAQEBBQAEggIAGHBbOwaUJ0yR5njPes+EbbtQL2dhNCXtrAanUZD7ndBIAn9eiFfg
+lckD63XBEB4tq01UAxeyy4ziarN2FurX7LZCPotFz6sun2hqA4scRBPmne+JVzPJif/3Y3/wtdvM
+ugk8oLHRoS/1o1IJcjmQdcBahBLIL7syGW2pJxK5cW15Gd9KnKgIqwb45hy5gccQ150uJyivguaM
+QfA/zgagl5snrS64GKc/wfnddyvJQvys6eMUvdn5RtzP7T4l/hudzavrIFCFTZFWBf3Bwt9CnLEe
+zxHdmVgNbYFQoiKcW0iTSXHmBjhXT5TdVeBGlOjf1Fvzvz9mxNOw9lNTF4gqPj+XdS5jrFyPc133
+uPaGMpQ+inE1UJaGWERIHZXdwAj1ydBuNCP9KIPtG+iJOgs/sOrwFthjF1zCmRFIkM3AZnljDDCB
+YMhESkV6KO39wEAuE5+dEZyYkSAw9RGz1I8Wq6ZmrLd0oU6H0+p9oT68FEGTpdga1XHI7Easovua
+hCYI9a08EqAzzniQiJI4BZLRabNs4VSYsDLzWfizxei0pqZA5S3JWyWZIc05w4pHiF6p1vnYHpVq
+1wvBKUNEbnG+CBnMxszQT2g1EBgjHSqs+nXYgZ5bZvq4dbjwPbr5VKGj5ohkHPuVyi+XdtcRybsK
+Cyx9WATx6vQrhCKABOpDAtoAAAAAAAA=
 
 
---=-BcyBV0V3PJc760MaZ4oo--
+--=-u/avwbMBUxHeKxLbHl1d--
