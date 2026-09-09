@@ -1,167 +1,120 @@
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699B5320393
-	for <rcu@vger.kernel.org>; Wed,  9 Sep 2026 03:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963AE58F097;
+	Wed,  9 Sep 2026 14:26:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788924957; cv=none; b=rhix7lb9Fbdju6CTlUOUndiil8NfBis753ktuLG29xTmFpoEco01UFSF1RiHxO05VFWpz4dXpbYSNUoAHcUfvsoI7rbkKgKKmmCCLt7q8avhuF3URMP91obgnWeGV6yyOyop+j82Toslr51f+NO/8IJyQEJWeFgZJ7GkRMyIAJI=
+	t=1788963972; cv=none; b=jnpGpQEO939rg3taDTC57t3PRDdaWceoqFAqJqWTgesEgvYN55vIHga6tja0E+A+ytf5YNNR4IFnGAPPdcWp+fC5zWcizJgFHZ+vBwcQ14/xB0JDTQAe23oJZuZyvPkeXG5x3AMuyqdGDlDwzuKIFuZZQbrnNMG2ePAkk+8Xj34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788924957; c=relaxed/simple;
-	bh=qgpnyyF/4Gf5v/qT00wUMXsFVueOpzRVzIQ/M7FjTSA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=P/KDRIUku6H44OOShTwUI3PRA34hpjAPUKouwj8s3+LRt9jPTBO58ABPeoYxWhimhdH69EKL9YxddZjIuwxeGU4bafwF2multxXRlDd46TFmoMOeo3pSbvNYNl3RgVezT7s37/HxCfykD0R8X4n5t4QOwIMx7p5XY8QKKEnzYjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TohjZNi6; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1788963972; c=relaxed/simple;
+	bh=OEF2nL1MB3cGdIs7kfsCD4xcMPxbuefmxRARW5/zukk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qnw/rbyPFoI4C8LyGGwGZdx4cYxzV+vRz5tTtU87U7J6htGQ+8ev44hIQiw2Sn1qeYnJCQzhT5kBc74k3N3E41Lv97Me7b9SSW3K8NMb6ATOuKJjuAx588pdQnj+FxAkNPEYXO8xseJ0OjcYl++PBb5HChnzvz6aKojqmTgFTdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dThimuQy; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TohjZNi6"
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2cfbbdfa60bso46765795ad.3
-        for <rcu@vger.kernel.org>; Tue, 08 Sep 2026 20:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788924956; x=1789529756; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=oYrPFDc8VCXN4ipBSlQL/si5rs5sJ/hlXymUwQCTqLY=;
-        b=TohjZNi6aPhWZ+UrA/Y69gQac5x7gLlXQA9i9REcZZcO8hozcdcvbmoVbwdfJNu6ex
-         5pA7p+v7JJi8dcYH3ol0ulMmPq9dCPGe40MH/WAp0HU5fnMrAGlwIV5iV0oIYz7nmJiO
-         AaQOdfnpqyKqEYJ2vZ/4JMvbe1J1pnw7MynQmN1EVr/Hc1gwdmPp5ICd7XnDAa6M+Cd7
-         Ajcz7Y7gJMZx+fAEwMj8GD1CjuRtXRT0Ndi885NDKt2Z9oJSMy4+8A7TnMDEqoCAxWPt
-         UqXrEQX7nugCuaofZA1v36tCfke+ck3XgbQa4JSRNXvuNnaVaPQX5UnxlFkGdphR5SVd
-         SDSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788924956; x=1789529756;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=oYrPFDc8VCXN4ipBSlQL/si5rs5sJ/hlXymUwQCTqLY=;
-        b=H3hDsIXl4ezA20eaXfdqw4X1tHFLoXDr6vEifKcv8w+xrOvEIZkujMuIMiK4y6Ek2l
-         97XSVkAAtgf8HNjoCg9iQg/z8ktiNFgKZRpO3f+1xabY07Z1cx2LXN4QOODRat4GLZtU
-         OMt8EHbmaZUVG/G4Mr3cBRI4Ic0qhbRyEUTevi78awA8tP7LJWhhcIRI8BPI1IoJfzaB
-         kqqSrMevuQonCzQcoCbqMtNV6S64v6E+LWU9KNa6KDe/Ao87qdWVJlO+YnwzLdgJspQL
-         lE5O2GSYO/jsTPOiUZiZ/d6JO8N2sZwqjzBAbKKnSPb3bkPBlO/X9hq3FzHBM466qM7S
-         AK5Q==
-X-Forwarded-Encrypted: i=1; AKwUvBzhtfzPfjTLkUNsZltJkwNuvAjaq9B/JM/vO4WGWRycNExsjFRg3pqzEHZHoWIHvB5QE2M=@vger.kernel.org
-X-Gm-Message-State: AFuF++nGnnLRS5+XKo/wGAhAJnwlO/ZfsLWt2Fj33UDEzzjtLoWTAZyj
-	XeR/MBTY947e1gw5x3OfdrsCCi6+nWQSPulCgr4TF8OtK+poLRNPbvlKdTwDpGnfq9U=
-X-Gm-Gg: AYBFou2q3kCCPZcQTlA6v2uxL9z9ZZjcX/ksjPwTgiw1wmoaSHSFY1CDefhw2iAbeVz
-	XzUXzawrj9ImYCry1iuzOMes/PiAKbCgj5mBISbFgdZCq/3ud22c0Vj3UK5IJq9IYetUTBSZ3LY
-	UqiiTmsS6QIlW6Iod15QXhMfNfC4zLlJ/jUIG13hm5Sq/GqCN2ywTPyz9VKNJqQMBvy7SkRHL9u
-	6mVlLAMExaG59jDRUkirGVS2quTaFZVUpn2i9cZnJw/gcwLtW5wDu1aDPzPJP5qTOdvHQtO+baR
-	Fx9mLKQVHK963YZf1eNKCDWUbqYU60ioOuNmmKUnPu4Ad378yOtdz6LJ1J7kXnW/teB6/OpPWc8
-	JainLFTCd3VHQ1WcVjB5+dcX+bn1+/G2EeSH6AWIT4iXSbBKmwmAV+DC1NplA8GEjvlN0tAj51J
-	c2+ZzYqlKounDrYnJ4K5EWKqcGFLFG+bcPP5PUJZmR5RxEI4Nu4hlbarstSMhjOWs0pqrbvg==
-X-Received: by 2002:a17:90b:2d0b:b0:398:c794:ca26 with SMTP id 98e67ed59e1d1-39b263167f7mr47665056a91.25.1788924955272;
-        Tue, 08 Sep 2026 20:35:55 -0700 (PDT)
-Received: from gmail.com ([185.220.238.35])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39ba0a7b2c3sm5291085a91.0.2026.09.08.20.35.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2026 20:35:54 -0700 (PDT)
-From: Kunwu Chan <kunwu.chan@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Kunwu Chan <kunwu.chan@gmail.com>,
-	paulmck@kernel.org,
-	jiangshanlai@gmail.com,
-	josh@joshtriplett.org,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/13] srcutree: Add reader-free fastpath to synchronize_srcu_atomic()
-Date: Wed,  9 Sep 2026 11:35:45 +0800
-Message-ID: <20260909033546.2432205-1-kunwu.chan@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0d4af6318ac67486858be1df8d436147b444a2d2.camel@infradead.org>
-References: 
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dThimuQy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D121A1F00A3D;
+	Wed,  9 Sep 2026 14:26:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788963971;
+	bh=yxp56WrwXULUr8wGNB8WwITIC6sJ1IaZ6YhzXAjDymc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=dThimuQyt/6ONTbtjVXNQCeU9T/1EWerh8NtJtv3HGLe0YrAGW7EQWb4US9HB7Dlc
+	 +yyvk4R4jvoXuYToJwGyj5TddxYDECi6MO1yUMMcfHYu3KAukrQnWorMHoHXgTNWTk
+	 OvC1iSyO5sOqrk7S484LpdWnTx17zoZqXpBRz0v2K3AjIUlJpPou9jtbK6JJoaCN8y
+	 EHzTWvEcg6EITpTGl84YpQqFnh8z3CTgwu75iJxLRCGbngR+m6QPNH6aykOsiM1KX+
+	 LXZW36JYMOM3nF0xIClM7Waydh9irjfw4ATu82rX36kvzw564uOCP5tPZ3YpDi94mU
+	 /dR3iOB21qjrg==
+Date: Wed, 9 Sep 2026 15:26:09 +0100
+From: Harry Yoo <harry@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Onur =?utf-8?B?w5Z6a2Fu?= <work@onurozkan.dev>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Davidlohr Bueso <dave@stgolabs.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Zqiang <qiang.zhang@linux.dev>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	Jiri Olsa <jolsa@kernel.org>, Emil Tsalapatis <emil@etsalapatis.com>, 
+	Matt Fleming <mfleming@cloudflare.com>, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-rt-devel@lists.linux.dev
+Subject: Re: [PATCH v4 1/6] rcu: Make call_rcu() safe to call from any context
+Message-ID: <aqFebI06nXUccuwt@thinkstation>
+References: <20260810122758.183765-1-puranjay@kernel.org>
+ <20260810122758.183765-2-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260810122758.183765-2-puranjay@kernel.org>
 
-On Tue, 08 Sep 2026 23:26:06 +0100 David Woodhouse <dwmw2@infradead.org> wrote:
-
-> On Tue, 2026-09-08 at 13:29 -0700, Paul E. McKenney wrote:
-> > On Mon, Sep 07, 2026 at 03:58:19PM +0800, Kunwu Chan wrote:
-> > > From: Kunwu Chan <kunwu.chan@gmail.com>
-> > > 
-> > > synchronize_srcu_atomic() is restricted to srcu_read_lock_atomic() and
-> > > srcu_read_unlock_atomic(), whose read-side critical sections disable
-> > > preemption.  In the common case where there are no readers at all, the
-> > > grace period therefore need not do the index flip.  Add a fastpath
-> > > that sums both ranks of the per-CPU ->srcu_ctrs[] counters and, if the
-> > > lock counts match the unlock counts on both ranks, ends the grace
-> > > period immediately, skipping the srcu_advance_state() scans, mirroring
-> > > the similar Tiny SRCU fastpath.
-> > > 
-> > > Correctness requires the counter-sum proof to follow the grace-period
-> > > anchor written by srcu_gp_start(); placing it before the anchor could
-> > > let this grace period miss a pre-existing reader and return without
-> > > waiting for it.  The smp_mb() between the unlock and lock sums pairs
-> > > with the smp_mb() in __srcu_read_lock().  The grace period is ended
-> > > manually under ->lock and ->srcu_atomic_gp_flag.
-> > > 
-> > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-> > 
-> > Adding David Woodhouse on CC.
-> > 
-> > David, does this provide appropriate performance in your use case?
+On Mon, Aug 10, 2026 at 05:27:50AM -0700, Puranjay Mohan wrote:
+> ---
+>  kernel/rcu/Kconfig |   6 +++
+>  kernel/rcu/rcu.h   |  11 ++++
+>  kernel/rcu/tree.c  | 131 +++++++++++++++++++++++++++++++++++++++++----
+>  kernel/rcu/tree.h  |   6 +++
+>  4 files changed, 143 insertions(+), 11 deletions(-)
 > 
-> Compared with the early bail that I had before, there's a *slight*
-> shift into the higher-latency buckets as expected, but definitely not
-> enough that I care. We're doing this whole thing to eliminate the
-> multi-millisecond p100 latencies that happen when we invoke the
-> workqueue, and the differences we're looking at in the table below are
-> *well* below what we care about:
-> 
-> 
->   ┌─────────────┬───────────────────┬───────────────────┬───────┐
->   │   bucket    │  try-first (#10)  │    Kunwu (#11)    │   Δ   │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [0,1µs)     │ 5,338,474 (60.8%) │ 4,953,657 (56.8%) │ −7%   │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [1,2)       │ 1,077,998         │ 1,087,133         │ ≈     │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [2,4)       │ 803,244           │ 790,489           │ ≈     │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [4,8)       │ 811,708           │ 880,673           │ +8%   │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [8,16)      │ 366,183           │ 597,443           │ +63%  │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [16,32)     │ 338,731           │ 361,243           │ +7%   │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [32,64)     │ 14,290            │ 28,823            │ ×2.0  │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [64,128)    │ 2,549             │ 3,655             │ +43%  │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [128,256)   │ 555               │ 783               │ +41%  │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [256,512)   │ 456               │ 625               │ +37%  │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ [512µs+)    │ 13                │ 8                 │ ≈     │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ max         │ 1.07ms            │ 1.56ms            │ +46%  │
->   ├─────────────┼───────────────────┼───────────────────┼───────┤
->   │ total walks │ 8,777,514         │ 8,723,453         │ −0.6% │
->   └─────────────┴───────────────────┴───────────────────┴───────┘
-> 
->   (192-CPU PREEMPT_RT host, 12 concurrent gfn_to_pfn_cache invalidation
->   reproducers, 300-second windows; each "walk" is one invalidation drain
->   which includes the synchronize_srcu_atomic() call. #10/#11 are just
->   local build numbers.)
-> 
+> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> index f15da8038d0ba..1a5fb3156c062 100644
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -175,6 +175,12 @@ config RCU_STALL_COMMON
+>  config RCU_NEED_SEGCBLIST
+>  	def_bool ( TREE_RCU || TREE_SRCU || TASKS_RCU_GENERIC )
+>  
+> +# The deferral (and the IRQ_WORK it uses) is only needed where call_rcu() /
+> +# call_srcu() can be invoked while a callback-list operation is in flight.
+> +config RCU_DEFER
+> +	def_bool HAVE_NMI || KPROBES || FUNCTION_TRACER || TRACEPOINTS
+> +	select IRQ_WORK
 
-Thanks, David, for testing this with your KVM workload and confirming 
-the current approach works well.
+nit: I don't think this config belongs to RCU.
+Do we really need this when majority of kernels enable those?
 
-I’ll keep looking into the fastpath for synchronize_srcu_expedited() 
-as well, while preserving the existing SRCU semantics.
+>  config RCU_FANOUT
+>  	int "Tree-based hierarchical RCU fanout value"
+>  	range 2 64 if 64BIT
+> @@ -3206,6 +3204,103 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+>  	local_irq_restore(flags);
+>  }
+>  
+> +/*
+> + * Stage @head for this CPU's irq_work to re-issue once interrupts are on.  Only
+> + * the drain side takes a lock, so this stays safe from NMI.
+> + */
+> +static void call_rcu_defer(struct rcu_head *head, rcu_callback_t func)
+> +{
+> +	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> +
+> +	/*
+> +	 * Instrumentation on the enqueue path can re-enter here from inside the
+> +	 * drain.  Re-queuing would livelock it, so drop the callback; an NMI
+> +	 * cannot loop, so let it through.
+> +
+> +	 */
+> +	if (READ_ONCE(rdp->defer_draining) && !in_nmi()) {
+> +		WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
+> +			  "call_rcu() re-entered during callback drain; leaking callback\n");
+> +		return;
+> +	}
+> +	head->func = func;
+> +	if (llist_add((struct llist_node *)head, &rdp->defer_head))
+> +		irq_work_queue(&rdp->defer_work);
 
-Thanks,
-KunWu
+Should RCU wait for the IRQ work to be processed during e.g.)
+rcu_barrier()?
 
+-- 
+Cheers,
+Harry / Hyeonggon
