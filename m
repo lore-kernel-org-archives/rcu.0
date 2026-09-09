@@ -1,44 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A17235957;
-	Wed,  9 Sep 2026 00:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B35683D73;
+	Wed,  9 Sep 2026 00:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788912410; cv=none; b=qSk2KREQeMcEs98U3Ng50wzkSEurQiBjb+NrZxeVGFmDEphZD8IsbElxwDy1mcZ5C2TxSZ/eA38gnecblMVUZsqLhnNRKreWvhAszIzBU2lxmHceraiadNOgWd7JksFyhujMgTMBHGfQoPl7zvRA6BaqEI3yXYnKucd7OdLMteA=
+	t=1788912677; cv=none; b=VsRVMcg7fjtc23cyvO3Ht4caZ9AL86gGolcAJ5QtVMpzVV2Gbu9uUiZEFk8ppawpIiTLS9x18httCyOYnFxn0WbdMyB3WgrdWoKF/QopOvyW4s2L966MIrIcLHeeRnkutBfE/6M4pJ7EBeN/QvpeekJiQOaUZJCXKXF4cs8aopg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788912410; c=relaxed/simple;
-	bh=juKFm/1JN7QV05Hb3rl/5WD6wJNhN4CvNwm8NgfVbwA=;
+	s=arc-20240116; t=1788912677; c=relaxed/simple;
+	bh=dJa9HUkaBal+up+nWV85PUu4RjYdWZg1/9F76Cc/Xlk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XVVBjP6tBObnvmqPW58bdjQbCsVIDmBXM9oayWeZjeF90/GE9irb4HrOqwBCLeyz1/43J6QbeDDsPy6kRkELI7Z688dNj50nnz0+JcdElud5F31/MhaQbiLKzEZdT+fhsS5ugKkStRrEi35u9G5OdzMqRWbnRavqfsGoriMPVFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b83pCAPA; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=kl/E/KFpLGU0Z6wzdvpyo2jDWOonHyAorB/EtfB9SaRiqOeaX5mIgw/V9nl+V2W19EGsj3a6acyzCPcoGvHaAaeJQ+jyLa3Bplu26PO+DHIW1KBsuAA1nICpWLyKXubkFOCAo5+3OnNhFONqo6FUFm2zFtygKg1XAmlXEAwgatw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K4hFyZrK; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b83pCAPA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D9C71F00A3A;
-	Wed,  9 Sep 2026 00:06:49 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K4hFyZrK"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44D521F00A3A;
+	Wed,  9 Sep 2026 00:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788912409;
-	bh=y/8n3hL9BgiOsN82LR3RpgTXRundN3xyANlTZFFJFKg=;
+	s=k20260515; t=1788912676;
+	bh=hDDl+iv7M1Xn+bEModfYMSZRSlYzD3+cA6nxyMkR0LU=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=b83pCAPAiSJS+qQcjx0vFXRL75ZZGEV1hJoYqIoRzDH2pyp1MBZmmYbotrTp74Avb
-	 oLw2Pdwv+bdLi7Oc6oGW0/ypszbbQ7cq97jOdEjH2F+v3OU7bOpycPj8/tDWgg5ZFC
-	 1w/P/TUVzU3qRaVbvTKuZRovqhOFtUNifvjAqC8GaSTt4TkXGby4eMxQtHlWVosuPN
-	 /MwNwSRZwlXqV7FPTVcN8z2qResVoVRnYqNKJ0nRtSQ2IMdSvpk31Ct8RQcCu85PQM
-	 K4dYucPF8Ctm9Wx442riHHmXw/H+q1jC/rsVCFZi9vNNt9IpTmOWkJno7QQs0B/1z+
-	 yc7crO5mM1V4g==
+	b=K4hFyZrK2WfJtpw2EzC5cV3aE6WZfC65dXbw3k7TKGl22Kr2U0fVzJnGrxOwkdv0O
+	 SnUhNY3EiOTmSHJh0hRLZLOy9QSPnYzCVUPhESevvjdtAx1tXkeAIQgduBNbLxVqay
+	 LmLAfkSh0wgpjyRn9lzrhHBYtMZaBIzr6LNMyxU4StIIVUbM/OCKR2KqEs/9cJa9Ao
+	 wKarPZYmaVd5yfq68j28/gySbFZ1IHtstjFQX2gstnowLpjmKH9zfDdmuR82fjBXeo
+	 ooDVo2ApUIAQff1Cxp2fECBRRuu+SsjQ+dtqFzHQbWSupq8mMNhf6CWxSH0jxNmUAB
+	 zdHbdBFrhnJ3Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E5602CE18F4; Tue,  8 Sep 2026 17:06:48 -0700 (PDT)
-Date: Tue, 8 Sep 2026 17:06:48 -0700
+	id 06908CE18F4; Tue,  8 Sep 2026 17:11:16 -0700 (PDT)
+Date: Tue, 8 Sep 2026 17:11:16 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Kunwu Chan <kunwu.chan@gmail.com>
 Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
 	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/13] srcutree: Remove debug pr_alert()s
-Message-ID: <0cca667b-ab3e-471e-b9d5-14f34e9feafd@paulmck-laptop>
+Subject: Re: [PATCH 13/13] srcu: Restrict atomic-SRCU non_block annotation to
+ task context
+Message-ID: <c055e8d7-806f-4028-b780-653133cca8ee@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20260907075829.2073224-1-kunwu.chan@linux.dev>
- <20260907075829.2073224-13-kunwu.chan@linux.dev>
+ <20260907075829.2073224-14-kunwu.chan@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -47,54 +48,80 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260907075829.2073224-13-kunwu.chan@linux.dev>
+In-Reply-To: <20260907075829.2073224-14-kunwu.chan@linux.dev>
 
-On Mon, Sep 07, 2026 at 03:58:28PM +0800, Kunwu Chan wrote:
+On Mon, Sep 07, 2026 at 03:58:29PM +0800, Kunwu Chan wrote:
 > From: Kunwu Chan <kunwu.chan@gmail.com>
 > 
-> Remove the debug pr_alert()s from srcu_gp_start() and
-> synchronize_srcu_atomic().
+> srcu_read_lock_atomic() and srcu_read_unlock_atomic() arm and disarm
+> might_sleep() checks via non_block_start()/non_block_end(), skipping
+> hardirq so the update does not land on the interrupted task's
+> ->non_block_count.
+> 
+> Inline softirqs run on the interrupted task's stack as well, so a
+> timer callback running atomic-SRCU readers races with the interrupted
+> task's own ->non_block_count updates, as KCSAN reports:
+> 
+> 	BUG: KCSAN: data-race in srcu_torture_read_lock / srcu_torture_read_unlock
+> 
+> 	write to 0xffffa00f818ea418 of 4 bytes by interrupt on cpu 0:
+> 		srcu_torture_read_lock+0x422/0x470
+> 		rcutorture_one_extend+0xdc/0x600
+> 		rcu_torture_one_read+0xd1/0x330
+> 		rcu_torture_timer+0x75/0x140
+> 		call_timer_fn+0xe6/0x2f0
+> 		...
+> 		run_timer_softirq+0xb7/0x130
+> 		handle_softirqs+0xfc/0x3f0
+> 		__irq_exit_rcu+0x8e/0x100
+> 
+> Use in_task() so the annotation is applied only in task context; it
+> is redundant elsewhere because might_sleep() already warns about
+> sleeping from atomic context.
 > 
 > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 
-Good point, we have gotten beyond where this debug code would be useful
-(famous last words!).  I have folded this into the original commit with
-attribution to prevent "&&&&" confusion.
+Again, good catch!  In theory, this should be squashed into the original,
+but I don't know of many people bisecting with KCSAN.  I might need to
+squash it later (of course with attribution), but at least for the time
+being, queued for testing and further review.
 
 							Thanx, Paul
 
 > ---
->  kernel/rcu/srcutree.c | 3 ---
->  1 file changed, 3 deletions(-)
+>  include/linux/srcu.h | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index a93bf803e2f7..a016c93d65cb 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -916,7 +916,6 @@ static void srcu_gp_start(struct srcu_struct *ssp)
->  {
->  	int state;
->  
-> -	/*&&&&*/pr_alert("%s() start: ->srcu_gp_seq: %lx ->srcu_gp_seq_needed: %lx\n", __func__, ssp->srcu_sup->srcu_gp_seq, ssp->srcu_sup->srcu_gp_seq_needed);
->  	lockdep_assert_held(&ACCESS_PRIVATE(ssp->srcu_sup, lock));
->  	WARN_ON_ONCE(ULONG_CMP_GE(ssp->srcu_sup->srcu_gp_seq, ssp->srcu_sup->srcu_gp_seq_needed));
->  	WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
-> @@ -2152,7 +2151,6 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
->  	// OK, we really have to do it ourselves.  Start the grace period.
->  	non_block_start();  // We must not voluntarily block!
->  	smp_store_release(&sup->srcu_gp_seq_needed, srcu_state); // See srcu_funnel_gp_start().
-> -	/*&&&&*/pr_alert("%s() start: ->srcu_gp_seq: %lx ->srcu_gp_seq_needed: %lx\n", __func__, ssp->srcu_sup->srcu_gp_seq, ssp->srcu_sup->srcu_gp_seq_needed);
->  	ASSERT_EXCLUSIVE_WRITER(ssp->srcu_sup->srcu_gp_seq);
->  	srcu_gp_start(ssp);
->  	raw_spin_unlock_irq_rcu_node(sup);
-> @@ -2208,7 +2206,6 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
->  		cpu_relax();
->  		srcu_advance_state(ssp, true);
->  	}
-> -	/*&&&&*/pr_alert("%s() end: ->srcu_gp_seq: %lx ->srcu_gp_seq_needed: %lx\n", __func__, ssp->srcu_sup->srcu_gp_seq, ssp->srcu_sup->srcu_gp_seq_needed);
->  	ASSERT_EXCLUSIVE_WRITER(sup->srcu_atomic_gp_flag);
->  	atomic_set_release(&sup->srcu_atomic_gp_flag, 0);
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index 0de21155abc1..403fbe57ab15 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -346,11 +346,13 @@ static inline int srcu_read_lock_atomic(struct srcu_struct *ssp)
+>  	/*
+>  	 * Arm might_sleep() to catch even a *potentially* sleeping call
+>  	 * in the section, not just an actual schedule: the atomic-domain
+> -	 * promise must hold on every path, contended or not. In hardirq
+> -	 * the annotation would land on the interrupted task; it is also
+> +	 * promise must hold on every path, contended or not. In hardirq,
+> +	 * softirq, or NMI the annotation would land on the interrupted
+> +	 * task, and can also result in data races against that task's
+> +	 * own non_block_start()/non_block_end() invocations; it is also
+>  	 * redundant there, so skip it.
+>  	 */
+> -	if (!in_hardirq())
+> +	if (in_task())
+>  		non_block_start();
+>  	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_ATOMIC);
+>  	retval = __srcu_read_lock(ssp);
+> @@ -562,7 +564,7 @@ static inline void srcu_read_unlock_atomic(struct srcu_struct *ssp, int idx)
+>  	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_ATOMIC);
+>  	srcu_lock_release(&ssp->dep_map);
+>  	__srcu_read_unlock(ssp, idx);
+> -	if (!in_hardirq())
+> +	if (in_task())
+>  		non_block_end();
 >  	preempt_enable();
+>  }
 > -- 
 > 2.43.0
 > 
