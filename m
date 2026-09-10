@@ -1,63 +1,47 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0ECF3914F8;
-	Thu, 10 Sep 2026 14:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827974A5C45;
+	Thu, 10 Sep 2026 15:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789051292; cv=none; b=pCHvFfU7G2G3VIlKWyFYRoJm3kwUb2CxlWYp65nFgCexGtwvrCC5XCtXO0ZxEGIIu43WtFWuFzXsm9EVtlN8MPnhR5hiMnrBwmflwLR4k1I1Ok2hcPXJjnNA9d5er+1JB6JJpL/fkx9DJSmS/Bc1PNMkJ2rnrVEidj2k8jVwPYI=
+	t=1789054668; cv=none; b=iiceRBQVVaShCGL4ns4W2G5M3vwJeyZd6Q0e+BdJAdxSzy1Gv/ZghEJe7GCcPjejq8Wz9K/6VwlfPqED6ZhyNfqvyGZ9x0Xm8F2EsF1R9V+uRK9R5faCkFntD91Q3HiGpCnNUxgJ9gYDgHdCx/YyOXjiQNXCEJgqXyFjt8r7Kis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789051292; c=relaxed/simple;
-	bh=XhCBkvqoMM39WPHjPYto/5lKDTBSRqUhy/eqexVLdXc=;
+	s=arc-20240116; t=1789054668; c=relaxed/simple;
+	bh=0k/4ax+osrPo62uCJ0EU4cIAtOvs8ABizI1aXz+Izp8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nh3rh8IHgsSfzj5r+eMdi3xlpBzCCGHIuHkE7E/Zi1JaNn7V35IdbEUkQ/Pz2EKMIDAouR9uJgBUlCZIJpU+qsUeS0B8TBYqLvC1coK6sm/0rQgSpVqf5eHqni+XlKcpH8KnsABjWWnJoXSciSiVVMWLTbigXxduzzDCl55po3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YpoWFeAW; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=pOT0H2tcpvt9y20csLYHB6txK1fO0gaHt3HgX6/nG9BlGAiVXBvgkYV8PW0aCtUmNDQtj6zXo4vOkYQGtJ+oTHMfQpj5bWiR6A4Qha72Tdlq8DtB1g0s5fet1G/b6OQtjGNy+M3VwpKiVTDBy5OPPpO9zcHybYkz+CpZpQO58js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VriTx0Z1; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YpoWFeAW"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1789051290; x=1820587290;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XhCBkvqoMM39WPHjPYto/5lKDTBSRqUhy/eqexVLdXc=;
-  b=YpoWFeAWs9/GtRTJicHXfhwev51nyXCCs53oAmPDIa9DrTb2ZcuTVCCS
-   iL964DaPj5YFaR85nLCsos+WqoaSCOpgIy6YkS2k/uLQ3BO0prFWVDY53
-   /Ym8wrm67e2khU+HmFz4VIBSYRo73mxzSBILPfy7q7NsgaZ8Kepsj6lya
-   /pDEexRGMv56VRh1rjzaeOZQWXoDJB2g90c6Ni+KzKopT5fJUEc9+ywXq
-   uwLOfc2DP/2MMKQZPgUV9yrnJUMMr2UEMV/RiFLc+KamYEGg27Liu9Gxx
-   CGWb0WDiwKkVIWD4sAhlW9ci8frUi1NeNVe2WfpRiBWMGmNWpVRLtSm+b
-   Q==;
-X-CSE-ConnectionGUID: KQgA8M+CToG2c9CiaTftYA==
-X-CSE-MsgGUID: m0hVlNUyQmeC5RYmWa6b8A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11901"; a="101021532"
-X-IronPort-AV: E=Sophos;i="6.27,95,1787036400"; 
-   d="scan'208";a="101021532"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2026 07:41:29 -0700
-X-CSE-ConnectionGUID: wPSlGokYQsuYOgEp9xRQwg==
-X-CSE-MsgGUID: pmxlIlzBTxCFVac71nW3RA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,95,1787036400"; 
-   d="scan'208";a="267381710"
-Received: from lkp-server02.sh.intel.com (HELO 0a3643a6ed9d) ([10.239.97.151])
-  by fmviesa006.fm.intel.com with ESMTP; 10 Sep 2026 07:41:26 -0700
-Received: from kbuild by 0a3643a6ed9d with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1x4fxf-0000000007Z-2G9Z;
-	Thu, 10 Sep 2026 14:41:15 +0000
-Date: Thu, 10 Sep 2026 22:34:21 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kunwu Chan <kunwu.chan@gmail.com>, jiangshanlai@gmail.com,
-	paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Kunwu Chan <kunwu.chan@gmail.com>
-Subject: Re: [PATCH] srcutree: Skip torture to-big transition for atomic SRCU
-Message-ID: <202609102247.8X7GUWSj-lkp@intel.com>
-References: <20260910041427.3579817-1-kunwu.chan@gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VriTx0Z1"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CB7A1F000FF;
+	Thu, 10 Sep 2026 15:37:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789054667;
+	bh=4uOGjkG74Wm+sX78i/4FEm2X06d3znZeXMj2+quY1Ho=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=VriTx0Z1+6noD0EQGTM7piUYegRAzgJglduCw1RaeMRZlbllz9xSu6yTnZ7UEl5vl
+	 whotd+qlDoIYpr4JsafDodioJXAfzTnoS+qbpjRJzc/OxjYEhx8gw8U9IWoPduEJES
+	 GsbH24vd4H2BQJcTReYZXQzsCboLjQmeaf1YRWd+PN/f0xlLAGjn4dssHdtwrJBrLm
+	 /Om5WFlQcP0nZgu6w4psdpdIBUGUPr4RBeLvFwz9r8GjzRCSJ2z40osegFFjsWW5Up
+	 fCb763Q961+NqPZqATF4UMLemfu+ZgJRqQsHx39Rylc93r7sclhafHytagYY0eqxXr
+	 ffcKt16uIxBdQ==
+Date: Thu, 10 Sep 2026 16:37:44 +0100
+From: Harry Yoo <harry@kernel.org>
+To: Matthias Goergens <matthias.goergens@gmail.com>
+Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org, 
+	joelagnelf@nvidia.com, josh@joshtriplett.org, boqun@kernel.org, urezki@gmail.com, 
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, 
+	qiang.zhang@linux.dev, corbet@lwn.net, skhan@linuxfoundation.org, rdunlap@infradead.org, 
+	surenb@google.com, vbabka@kernel.org, rcu@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] rcu: drain kfree_rcu sheaves from the userspace
+ barrier hook
+Message-ID: <aqLI21uo-UglU6XP@thinkstation>
+References: <20260910101112.1648978-1-matthias.goergens@gmail.com>
+ <20260910101112.1648978-2-matthias.goergens@gmail.com>
+ <aqKZXmlRGsmJPl3r@thinkstation>
+ <20260910134640.2044424-1-matthias.goergens@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -66,96 +50,67 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260910041427.3579817-1-kunwu.chan@gmail.com>
+In-Reply-To: <20260910134640.2044424-1-matthias.goergens@gmail.com>
 
-Hi Kunwu,
+Hi Matthias, thanks for reply.
 
-kernel test robot noticed the following build errors:
+Would you please wraparound the text when writing a reply?
+Each line becomes way too long on text based editors :-)
 
-[auto build test ERROR on rcu/rcu/dev]
-[also build test ERROR on linus/master v7.3-rc2 next-20260909]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Anyway, moving on to the topic...
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kunwu-Chan/srcutree-Skip-torture-to-big-transition-for-atomic-SRCU/20260910-121427
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git rcu/dev
-patch link:    https://lore.kernel.org/r/20260910041427.3579817-1-kunwu.chan%40gmail.com
-patch subject: [PATCH] srcutree: Skip torture to-big transition for atomic SRCU
-config: s390-allnoconfig (https://download.01.org/0day-ci/archive/20260910/202609102247.8X7GUWSj-lkp@intel.com/config)
-compiler: clang version 24.0.0git (https://github.com/llvm/llvm-project d3db069999553568848400c84cbf815c03f5470f)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260910/202609102247.8X7GUWSj-lkp@intel.com/reproduce)
+On Thu, Sep 10, 2026 at 09:46:40PM +0800, Matthias Goergens wrote:
+> Thanks. I ran into this while testing bcachefs performance changes.
+> The bcachefs ktest end checks write `do_rcu_barrier` before reading
+> `/proc/allocinfo`, with the expectation that allocations still
+> reported afterwards are leaks. Small objects released with
+> `kfree_rcu()` remained visible after repeated writes to the hook and
+> 20 seconds of waiting, so otherwise clean tests failed their leak
+> check.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202609102247.8X7GUWSj-lkp@intel.com/
+Thanks. Some background like this would be nice to be covered in the
+cover letter or commit message :-)
 
-All errors (new ones prefixed by >>):
+> Strictly, that ktest is assuming a stronger contract than the hook
+> currently documents: `do_rcu_barrier` promises an ordinary
+> `rcu_barrier()`, not a complete drain of objects still held in
+> `kfree_rcu()` batching. I nevertheless think the stronger behaviour
+> is useful for this test-only quiescence hook, because it lets
+> allocation-leak checks reliably separate deferred frees from genuine
+> leaks.
 
->> kernel/rcu/srcutree.c:2080:61: error: use of undeclared identifier 'SRCU_READ_FLAVOR_ATOMIC'
-    2080 |         if (SRCU_SIZING_IS_TORTURE() && ssp->srcu_reader_flavor != SRCU_READ_FLAVOR_ATOMIC)
-         |                                                                    ^~~~~~~~~~~~~~~~~~~~~~~
-   1 error generated.
+Ack.
+ 
+> I followed those allocations across repeated filesystem lifecycles.
+> Their number eventually fell when an RCU sheaf filled, so I have no
+> evidence that this path grows without bound or causes OOM.
 
+Ah, the reason I mentioned unbounded amount of objects was because
+the commit 16128b1f8c823438dc that introduced the knob explains
+what can go wrong (e.g OOMs during the test) without the
+rcutree.do_rcu_barrier.
 
-vim +/SRCU_READ_FLAVOR_ATOMIC +2080 kernel/rcu/srcutree.c
+> The problem I observed is limited to test isolation: the hook can
+> leave deferred frees behind and make them look like leaks. With the
+> proposed change, the same unmodified bcachefs workload passed the
+> leak check.
 
-  2031	
-  2032	void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
-  2033	{
-  2034		int cpu;
-  2035		int idx;
-  2036		unsigned long s0 = 0, s1 = 0;
-  2037		int ss_state = READ_ONCE(ssp->srcu_sup->srcu_size_state);
-  2038		int ss_state_idx = ss_state;
-  2039	
-  2040		idx = ssp->srcu_ctrp - &ssp->sda->srcu_ctrs[0];
-  2041		if (ss_state < 0 || ss_state >= ARRAY_SIZE(srcu_size_state_name))
-  2042			ss_state_idx = ARRAY_SIZE(srcu_size_state_name) - 1;
-  2043		pr_alert("%s%s Tree SRCU g%ld state %d (%s)",
-  2044			 tt, tf, rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq), ss_state,
-  2045			 srcu_size_state_name[ss_state_idx]);
-  2046		if (!ssp->sda) {
-  2047			// Called after cleanup_srcu_struct(), perhaps.
-  2048			pr_cont(" No per-CPU srcu_data structures (->sda == NULL).\n");
-  2049		} else {
-  2050			pr_cont(" per-CPU(idx=%d):", idx);
-  2051			for_each_possible_cpu(cpu) {
-  2052				unsigned long l0, l1;
-  2053				unsigned long u0, u1;
-  2054				long c0, c1;
-  2055				struct srcu_data *sdp;
-  2056	
-  2057				sdp = per_cpu_ptr(ssp->sda, cpu);
-  2058				u0 = data_race(atomic_long_read(&sdp->srcu_ctrs[!idx].srcu_unlocks));
-  2059				u1 = data_race(atomic_long_read(&sdp->srcu_ctrs[idx].srcu_unlocks));
-  2060	
-  2061				/*
-  2062				 * Make sure that a lock is always counted if the corresponding
-  2063				 * unlock is counted.
-  2064				 */
-  2065				smp_rmb();
-  2066	
-  2067				l0 = data_race(atomic_long_read(&sdp->srcu_ctrs[!idx].srcu_locks));
-  2068				l1 = data_race(atomic_long_read(&sdp->srcu_ctrs[idx].srcu_locks));
-  2069	
-  2070				c0 = l0 - u0;
-  2071				c1 = l1 - u1;
-  2072				pr_cont(" %d(%ld,%ld %c)",
-  2073					cpu, c0, c1,
-  2074					"C."[rcu_segcblist_empty(&sdp->srcu_cblist)]);
-  2075				s0 += c0;
-  2076				s1 += c1;
-  2077			}
-  2078			pr_cont(" T(%ld,%ld)\n", s0, s1);
-  2079		}
-> 2080		if (SRCU_SIZING_IS_TORTURE() && ssp->srcu_reader_flavor != SRCU_READ_FLAVOR_ATOMIC)
-  2081			srcu_transition_to_big(ssp);
-  2082	}
-  2083	EXPORT_SYMBOL_GPL(srcu_torture_stats_print);
-  2084	
+It'd be more convincing if this part is included in the changelog ;-)
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> I also found that this exact follow-on was discussed when
+> `kvfree_rcu_barrier()` was added in 2024: Paul proposed calling it
+> from `rcu_barrier_throttled()` for clean userspace benchmark
+> baselines, and Uladzislau agreed that adding it and documenting both
+> operations was safest:
+> https://lore.kernel.org/all/20240820155935.1167988-1-urezki@gmail.com/
+
+Didn't notice that, and makes sense given the purpose of the knob.
+
+> I will omit the `Fixes:` tag in v2 and present this as a strengthening
+> of the test interface.
+
+Makes sense to me.
+
+-- 
+Cheers,
+Harry / Hyeonggon
