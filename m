@@ -1,188 +1,183 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj2-f12.google.com (mail-pj2-f12.google.com [74.125.227.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C78E3DE43B;
-	Thu, 10 Sep 2026 09:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C47B3D953E
+	for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 10:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.140
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789031163; cv=none; b=gPNk1ymzsWPomgA+ALtCZrkZ4MN3NBterFGAMkrVsVX13ngQyiBAR57sbWEVlz1OZFJvdj0XZTRA304L1+Xrt9EXdZLY1rwm+Rftp7HkTdN7QuVgaQPYMlVw0Sxou2gMQa6zlTrdfxOY5Im0tdxXXr0U23UO19o2R4z3xTtS6wk=
+	t=1789035088; cv=none; b=IWXmSu2EulEo6/uNs9e7MA7atzmf0tEmN6EHUfRMSCLl5yPvILH9XqXuDXNFfe4B6Fk5frqahVK/RC8GUlK9r/cxycQiaas11j2XRhs7llIvEDCntVBKr4NQmpK2olfUIyGSFayeWizRN7Uvk+xihMm7c6DrrgMtKOcn7+/Z7Yo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789031163; c=relaxed/simple;
-	bh=1xueSEs1Lf1/iaVYDjuyvTMGzK9+IYhL8XIuERTyBuA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TdPQE1NNusQmW/yel0Em7Qi9QCGAfz9DNA4jSPXViXVtjlhmZsg6tuQuvnWAio4kvAsPp0hW7vQDP+MzZhnRt8l99hry8g/xuog6JA5/cG4A59QIrJKoHiSnhLYVwc1B/ZFoZx0w/1BUqW7bs2zYiu0ag8zmuvQpoGHBZeR2QCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wWMZPehr; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gVC5LMNq; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1789035088; c=relaxed/simple;
+	bh=I0hyD6QpnF7dhZ5CklyKlcMRFnfbUR0Huh6rVBxwZgA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rycNR5rjUot5dyzfk8qk0LeV40g4mGlYpOFxNJ2qc8Nmo4GfIM47aqO5sAYxL5Wjfo30aV1QoNtgzqXnn/liznfRk1dn6uhheBphhHSYQLh5eeEUhWE6SheZ4UaobDjWUr4o++NVZwS/jYVFZMkuIu23GjbARNZvmJWifTPXGzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dAr5fclo; arc=none smtp.client-ip=74.125.227.140
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wWMZPehr";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gVC5LMNq"
-Date: Thu, 10 Sep 2026 11:05:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1789031159;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ojT9pNL33Xeb8UjNXG8w6sJZoICmBryWtIIq+k4hPQM=;
-	b=wWMZPehrkZ8NjWyZmQ92P5Q7zhqVr0RHrZUGla3YpuherDKC0WgPptXEvOK1evbvBK96W5
-	QNS5s408Dw1pPaUcTzlecVi4XrMWvr9WIDmSCmGcmeR6VbiiVxlI/2EzUs2FIaJeIxyjq3
-	c7qrnfV4bRE+L8EvjA2vmUERsYGdvv2MdBlkFyBILx1FyjW99fUHIVUuXyokdoV9Qyxv16
-	nNbp8Wgzo2LbEIsZX+GxL9FMAC3EAwbjEoEEElXC9XIjXbM67Hly+boglbatpLnCclZ3Lc
-	/cKDmgqHsUgt+hOkGTOStoba7pom3243YkTmAKSu9QmpBJSp8eRPvaQ5C7hMZA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1789031159;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ojT9pNL33Xeb8UjNXG8w6sJZoICmBryWtIIq+k4hPQM=;
-	b=gVC5LMNqMPzB/TeKKTtexb6gNooOm4s8J8rOeDagddmlatGItL5XKaGgk5YqJ9eqiKyr9v
-	EWIIgzikXPW8LICg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Onur =?utf-8?B?w5Z6a2Fu?= <work@onurozkan.dev>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	Matt Fleming <mfleming@cloudflare.com>,
-	"Harry Yoo (Oracle)" <harry@kernel.org>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH v4 1/6] rcu: Make call_rcu() safe to call from any context
-Message-ID: <20260910090557.zz62jtMt@linutronix.de>
-References: <20260810122758.183765-1-puranjay@kernel.org>
- <20260810122758.183765-2-puranjay@kernel.org>
- <20260826144636.3IRUXeFV@linutronix.de>
- <CANk7y0hbwXL7nBDgjTgrneBejEgGrsZnc02RztG-aSBEEvAcwQ@mail.gmail.com>
- <20260902082657.yPEhNFlo@linutronix.de>
- <CANk7y0gMh6McuLnFwxGO-nH_g3TnstwTK2rtT5pq=b8qq9ykKQ@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dAr5fclo"
+Received: by mail-pj2-f12.google.com with SMTP id 98e67ed59e1d1-396ccafb750so2000751a91.1
+        for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 03:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789035079; x=1789639879; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=LOI+fb+5x5F9yCJx1orzgkASYHto5WjfhROpPhJVUF4=;
+        b=dAr5fcloy6j65qHPpqZP7N7Nloaue4HKn8r7hI3R9bVHpk8jJuQGcWvcx4BMxmKqZ9
+         jn484cz/Hc5Fkf9dap7aiAk3gV5FOSAHI2IxWIXGc+VGAnxNAKX9a216Wc3vmTlbFyL2
+         W7JjmnmkS5BliY8bxnXxsZbaS2mwi0p+68IoRl/XvSE4KlO98ouqg09YLaokOh+O3Xyw
+         2Rn0sfGF40bTR/TFLH1pm9nwDJL8/S9TbWDb3TQPpAO4+snSynz5bLAJ8pXm4/u+Z8ns
+         Bv62CD+4eBIzjPYdHc0BmFnJx1vdTTCqNYT63EvQv8ZHD4xV3gcuaXziLlSiMmkStjiK
+         H5Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1789035079; x=1789639879;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=LOI+fb+5x5F9yCJx1orzgkASYHto5WjfhROpPhJVUF4=;
+        b=bXRCp0yXXwrbbiZYXYY+tQq8xzM0zZO9hFLhM6Kk7Lbq3sCwjGdPQEFXWAVlvit8ql
+         xx5I7LdnXMJwt7Hv+uOA5IXvriXuyG/yLhwiAI57qO3rQVWUEHDedkIZTTBIpOW1Zals
+         ly3MDpxja+UnAu/txkOu4CYKsIjHSeMsxFQk0+xExELUyCCAiEO5iZ+g9LUKZjJRSNyk
+         rBBQqaJnAZTl6dslK4gBZUcERQFd2Sl5EQyWiP4D4k9j3Bs+msUoW/5jfxiFdtrM0lOx
+         Ly5OP1i7bp2s2fw+rOyr+RbKdE+Ouzs/9R1nF1dDFZmqgyv0ucTFkwtaWWxNEGKucpXC
+         5K5Q==
+X-Forwarded-Encrypted: i=1; AKwUvByHHhYlK11yNVmYQ7PnxnLIWBg+xeIqYj5W+tlwbJ4fJbDhA+K16GczD/OzLCQUlW2HV+0=@vger.kernel.org
+X-Gm-Message-State: AFuF++n0ExoUZrK0nHQeFOsUjJZ2ATjhwEbkkV9hGkde9MfuBH8x1JIL
+	q3smCMw7q5P0mOUVy7VUV0sKSZIcdAxxSHNBjMgqrfmMubrzA2tIbEUJ
+X-Gm-Gg: AYBFou1aFDK0pgLwx+0pw7uiDjWD5AMoYvNfHYVcbCpeWbGXtrch2oGQeJ1IvXz1/8a
+	tZwaf2d+Xrh+sY144Axxa6OpNMLqSIDGYpNMO8gRIfHppetLIocxWRr8DDKB8tqeX0A3qbxmZst
+	hr06VRWhftu96XvM0aOqcovhavHJdDQVzkpeJeYRW2r5Px1TM4jgGs1kSVbr6ve24uYZeHATYWZ
+	NRyCvK1qzozseZ+MLqiVr3picjOdxY5BAo7CfBTSA57BcNO+Oe9yxjxjhxJNjHVunRuMOSvVBKY
+	GdtOlfZml6PgSLNiNveCnS/ylONZugMILkaKtnBERscbuELCj+GuRu6NZ/DUlcVM/iOOLuT6b6j
+	UuTKQoGxfDZwpg6l4UjzXLXh6wzCoEnlUA9QYGwmtCZaVkmzN5JBzkOcTLcmGMHFw1HjRZMlOE5
+	7gYFUlbiGxJr4CrWt9w+X8Lv50vTdVyAci4UIZvSpn8Kc/1R84K9h8VYMC6GzxslM10Z1Q2a1nl
+	mcewdRhr9/WtIHVHZjW5/2yRnwT1A/qIEBbu0AyQhaOpjn7OApmGjjQpKjbuVGLxFFTt8P6JF3Z
+	7gQCzo0K9SMUiS3RCusX7LFQs3uCNXL39CdBTU3Vwb2sF14mj/avHdoyC2Mmyho=
+X-Received: by 2002:a17:90b:1d45:b0:38f:2168:b9cb with SMTP id 98e67ed59e1d1-39bac1d89b4mr16724648a91.9.1789035079142;
+        Thu, 10 Sep 2026 03:11:19 -0700 (PDT)
+Received: from spider.bream-herring.ts.net ([103.252.203.158])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39d7e8acf98sm4232116a91.15.2026.09.10.03.11.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2026 03:11:18 -0700 (PDT)
+From: Matthias Goergens <matthias.goergens@gmail.com>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	josh@joshtriplett.org,
+	boqun@kernel.org,
+	urezki@gmail.com
+Cc: rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev,
+	corbet@lwn.net,
+	skhan@linuxfoundation.org,
+	rdunlap@infradead.org,
+	harry@kernel.org,
+	surenb@google.com,
+	vbabka@kernel.org,
+	rcu@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/1] rcu: drain kfree_rcu sheaves from the userspace barrier hook
+Date: Thu, 10 Sep 2026 18:11:11 +0800
+Message-ID: <20260910101112.1648978-1-matthias.goergens@gmail.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CANk7y0gMh6McuLnFwxGO-nH_g3TnstwTK2rtT5pq=b8qq9ykKQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On 2026-09-02 15:14:20 [+0100], Puranjay Mohan wrote:
-> >
-> > But it is wrong to talk about NMI and do this for other reasons not
-> > mentioning why this was needed/ made sense.
-> > Can this be fixed?
-> > Also what is the reasoning for doing it from any IRQ disabled region?
->=20
-> So, the main reason for this patchset is to make call_(s)rcu() work
-> from BPF programs, and these BPF programs can run from any context
-> like an NMI perf event interrupt or maybe attached to a function
-> through ftrace which is in the call chain of call_rcu() itself.
+The rcutree.do_rcu_barrier test hook currently waits for ordinary RCU
+callbacks, but it can return while kfree_rcu() still retains an object in a
+partial per-CPU sheaf.  This defeats the hook's purpose of preventing deferred
+frees from one test spilling into the next.
 
-This I expected.
+The patch drains kfree_rcu sheaves and batches before retaining the hook's
+explicit ordinary rcu_barrier().  Four counterbalanced fresh-VM pairs with the
+full validation fixture reported 60 -> 60 active objects on the unpatched
+kernel and 60 -> 59 on the patched kernel.  An ordinary-callback regression
+test passed on both kernels.
 
-> call_rcu() takes locks with irqs disabled or it modifies lists
-> non-atomically with irqs disabled. This means that a BPF program that
-> runs from NMI with the lock already taken will deadlock, or if it runs
-> between these non-atomic list modifications, it will corrupt the
-> lists. A BPF program can also synchronously re-enter call_rcu() if it
-> is attached to a function in the call chain of call_rcu() that is
-> called with a lock taken. So, all these cases are detected with
-> irqs_disabled() and on detection we do stuff that doesn't require
-> taking any locks and is safe even if re-entered.
+The primary reproducer below removes that separate regression machinery.  One
+fresh control/treatment pair with this exact 41-line source reproduced the
+same 60 -> 60 versus 60 -> 59 split; both cells reached TEST SUCCESS with no
+problem-class kernel records.
 
-Attaching a BPF program to call_rcu() and re-entering sounds great. But
-there is nothing unique about call_rcu(), is there? We do have certain
-amount of functions which can be invoked from NMI and their usage is
-limited.
+Save the source as rcu_barrier_sheaf_repro.c and create a Makefile containing:
 
-Anyway. If this is the sole reason for stunt then it _has_ to be part of
-the commit message. Now it looks like an ooopsie where you talk about
-NMI and do hardirq check.
+  obj-m := rcu_barrier_sheaf_repro.o
 
-> > > > > +static void __rcu_defer_drain(struct rcu_data *rdp)
-> > > > > +{
-> > > > > +     struct llist_node *node, *next;
-> > > > > +     unsigned long flags;
-> > > > > +
-> > > > > +     if (!IS_ENABLED(CONFIG_RCU_DEFER))
-> > > > > +             return;
-> > > > > +
-> > > > > +     raw_spin_lock_irqsave(&rdp->defer_lock, flags);
-> > > > > +     llist_for_each_safe(node, next, llist_del_all(&rdp->defer_h=
-ead)) {
-> > > > > +             struct rcu_head *head =3D (struct rcu_head *)node;
-> > > >
-> > > > Why do you need the lock. This is still not clear to me despite the
-> > > > comment. You can do llist_del_all() towards another list and then f=
-eed
-> > > > it into rcu_do_enqueue() one by one. And you use the LAZY part.
-> > >
-> > > Because rcu_barrier() can call this for each cpu and at the same time
-> > > rcu_defer_drain() can call it too, so this would cause a race where
-> > > the irq work can remove the callbacks (llist_del_all) and before it
-> > > can enqueue them, rcu_barrier will see that the list is already empty
-> > > and will not wait for these callbacks. We want the llist_del_all() and
-> > > rcu_do_enqueue() to happen atomically so rcu_barrier() can work
-> > > correctly.
-> >
-> > So you collect a bunch of callbacks and spent time re-arranging
-> > everything with irqs off.
-> > What is wrong with keeping it in the llist and consuming it like the
-> > regular rcu_segcblist?
->=20
-> I don't understand your last point, all the collection and delayed
-> addition into rcu_segcblist is because it is not safe to do it
-> directly as I explained above.
+Build it with:
 
-That is correct. My point is the more callbacks you add, the more time
-you spend to re-add them here. It is not just the one NMI callback
-injected from NMI, it is everyone within interrupts disabled region.
-After each one you trigger an IRQ. And with LAZY-irq-work or on
-architectures which don't have an IRQ-work interrupt, you accumulate
-every callback from IRQ disabled region since the last HZ tick.
+  make -C /lib/modules/$(uname -r)/build M="$PWD" modules
 
-The question is why not have an additional list which is handled the
-same way in terms of grace period like the current one?
+Then, as root on a disposable test kernel:
 
-> > It does not look like you defer them for long at all. Every callback
-> > enqueued in an IRQ-off region will be immediately re-enqueued to the
-> > regular list the moment interrupts are enabled again.
-> > Except on architectures which don't implement irq-work interrupts where
-> > it will be delayed to the next HZ tick. And the next HZ tick does not
-> > sound like a long time either.
->=20
-> Yeah, I get your point, and when a CPU goes offline will its LAZY irq
-> works be drained or left in the queue? Because we want to make sure
-> this irq work is executed before a CPU goes offline.
+  insmod rcu_barrier_sheaf_repro.ko
+  awk '$1 == "rcu_barrier_sheaf_repro" { print $2 }' /proc/slabinfo
+  cat /sys/kernel/slab/rcu_barrier_sheaf_repro/sheaf_capacity
+  echo 1 > /sys/module/rcutree/parameters/do_rcu_barrier
+  awk '$1 == "rcu_barrier_sheaf_repro" { print $2 }' /proc/slabinfo
+  rmmod rcu_barrier_sheaf_repro
 
-Hmm. There is smpcfd_dying_cpu() running before rcutree_dying_cpu().
-smpcfd_dying_cpu() flushes irq-work near the end. On PREEMPT_RT we have
-this thread handling them and this one is parked smpboot_park_threads()
-a bit earlier. So here smpcfd_dying_cpu() will wake the parked thread
-which then waits until the CPU comes back on.
-We can't run the work directly due to the IRQ-off context. We could move
-them to another CPU but then the irq-work might expect to be run on the
-other CPU=E2=80=A6
-But we could flush the queue before parking at the very least I suppose=E2=
-=80=A6
+The first and second slabinfo readings are 60 and 60 without the patch, and
+60 and 59 with it.  kmem_cache_destroy() performs per-cache deferred-free
+cleanup when the module is removed, after the measurement.
 
-Sebastian
+// SPDX-License-Identifier: GPL-2.0
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/rcupdate.h>
+#include <linux/slab.h>
+
+struct repro_object {
+	struct rcu_head rcu;
+	unsigned long payload;
+};
+
+static struct kmem_cache *repro_cache;
+
+static int __init rcu_barrier_sheaf_repro_init(void)
+{
+	struct repro_object *object;
+
+	repro_cache = kmem_cache_create("rcu_barrier_sheaf_repro",
+					sizeof(*object), 0, SLAB_NO_MERGE, NULL);
+	if (!repro_cache)
+		return -ENOMEM;
+
+	object = kmem_cache_alloc(repro_cache, GFP_KERNEL);
+	if (!object) {
+		kmem_cache_destroy(repro_cache);
+		return -ENOMEM;
+	}
+
+	kfree_rcu(object, rcu);
+	return 0;
+}
+
+static void __exit rcu_barrier_sheaf_repro_exit(void)
+{
+	kmem_cache_destroy(repro_cache);
+}
+
+module_init(rcu_barrier_sheaf_repro_init);
+module_exit(rcu_barrier_sheaf_repro_exit);
+MODULE_LICENSE("GPL");
+MODULE_DESCRIPTION("Reproduce incomplete rcutree.do_rcu_barrier drains");
+
+Matthias Goergens (1):
+  rcu: drain kfree_rcu sheaves from the userspace barrier hook
+
+ .../admin-guide/kernel-parameters.txt         |  7 ++---
+ kernel/rcu/tree.c                             | 27 ++++++++++++-------
+ 2 files changed, 21 insertions(+), 13 deletions(-)
+
+
+base-commit: 50d05c7c76c96b90462f24debacca971d2e86713
+-- 
+2.55.0
