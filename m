@@ -1,112 +1,162 @@
-Received: from mail-oa2-f12.google.com (mail-oa2-f12.google.com [74.125.231.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676C34A0131
-	for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 13:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.231.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B2637757D;
+	Thu, 10 Sep 2026 14:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789048011; cv=none; b=iCtfDuHlonMcOYiBLqnWVz59L+gsyZJDmBOppCV4tjmKwhDIy8E5h5xh+lJK34M0syFAkjNScj9CLn7+ZqQcLM6OoG0QOiYUvMRw2mHHwatoOSant/a5rlyaC5ZbVxABwqIZZSifUYde8vNGzbUbLvkf0h1dcIi+ExVjfUYF8yU=
+	t=1789051278; cv=none; b=szHwF8oPQA5SFKs9bDkm1CdkFuCcNHW6n2zd9CfCX8AK8visflOGtRXBALO9QcmKuo3ZD4LDu8n7jx7i3uTAX6dZZsNAeAdOJxJ0OD3mDRnzvmTa8RMN//bsA2xjuQGfDpGW1hwvFeeu8BDnV4uuQ1rN2paJJR2XzszqFGlY9AM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789048011; c=relaxed/simple;
-	bh=UXHuXOhFDKFisF/9OmmcTV6G79e9pR0bjsa1Y/uydpw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QzUWfLKoMiVzd+C6ADIqMYwZ8hfmY5yFwr4+ttGbLBRytaVJDOurP7KHzTuD5dyTFFpY24Eoe5MVPC+1iVvXOJ2F+ys26iQMo4aBgtBN0t6H4Q6KRHvWLCZ9Z4hUlxOQjtNyQmxEnY2vc1ZO55dDNvSLJ1AnGnURSK7SwNrTp40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iSDi2czV; arc=none smtp.client-ip=74.125.231.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1789051278; c=relaxed/simple;
+	bh=QsXB8Xjq9BYSpWgqNkcjm1X1KWzVRNGHi48MteRdoPg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jhYIcHxX79LffQ06lKP3Z7BKQtO7m74t2SdKOCVBKa5Bh5bQpW88lS/mrTycEri48eXyhphFcfKXk6fs8owY1Z2TA9XMZuKoP8ldEhsvLXevXs404bsyfa/144f7b7QFmyYn+qVZKfmuWnHZ86y2VBR4+CWLSwrThfHAjOiG2Ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y2PJuokl; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iSDi2czV"
-Received: by mail-oa2-f12.google.com with SMTP id 586e51a60fabf-478cbd5b48aso1297183fac.2
-        for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 06:46:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789048008; x=1789652808; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=5ugE+BUq8sDK0fNpwmpU6SEIFPEB70ZUCPnwQzu3hcY=;
-        b=iSDi2czVrhGIJfpOLi0nmBaNgKP9pAmmMnWokn004OUVwM+Q7YpR/czFVjGO1ufWPV
-         8ZekuZaZXBfAWhgBIOu3kJ4NojyD+H/XAdq4pRgtZlqLoEsFDuRkMZQzPhO/NwvjhlPN
-         VVp0161wKj4VqvlJvEsbPKpW7cNpr/Gd7PW60bOzcl0Q/z5YDV+Hecqs8H5hG5GBVwes
-         fI1ai45ja7HqOe8+pXL3RBvntZx49oLm9BS4JfCNUE6FA/Fum5mBLJNBXu1lRzxDH0H4
-         BF+2WNB8ToN/ELp7TDZZttE0rxMjnKgRegy5VzfFIK2cW8OgXv9gzLgiP5cMASq3CjrA
-         3JtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789048008; x=1789652808;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=5ugE+BUq8sDK0fNpwmpU6SEIFPEB70ZUCPnwQzu3hcY=;
-        b=mmbGsQmJ23oRBNxUh+LbYk1z8L0zuaS91CdA5E46bvi/Dcpj2TMa8aSWIEZO8mRJL9
-         JW+GYmxkMJRSkF8R3fdguNQHG/HxkaxpWJBfrhRvjQpl5AVjJbQadz97V+92gv0Mvr7A
-         f10kQl35EaKikGGcQgdqNcv8fluNkYAQn4FH+wiAEGrNuBsXOYkta8q1eczb+DILb3/C
-         miWKlMFELPFRKLil7X1+gby1tjhHPyZy9SDtElltyL4ev6UDb33Vf8oouGLHfdqYMQqI
-         TQQc1R2Jnru9HbwR2fcApsCOfXVT5Rq8YzyGz8zmfHlZwEI2Kg4qgGM9DWLtrSyqSDHS
-         TvtQ==
-X-Forwarded-Encrypted: i=1; AKwUvBzZBZgBWD1MGYjrYUP9jzo2hmrS0Wy4h2F/6tLzrDOCyY/H44TFSHkUDotW6yEblysJPfU=@vger.kernel.org
-X-Gm-Message-State: AFuF++klyk2gP41sYE+t71rVrCNJYXkOErI4tYcgAiNOSaok8AVdG+Bg
-	Mnez0en1hcoDnFLgB+4+HM5KSZMqkdAwLP4syR6bCatLd0GT/wLW24Uu
-X-Gm-Gg: AYBFou3gaSGf4HOSOWWkekcz0vbjzjGmeZoB7kltKCfjaQ2Sc80Y4Hu4y2EmqWtO+mB
-	LVchPNzoCFtdXkFg7f2v2ghnwzG6B3yFy2UdJBuf7m3iY6nnQAYxeE230kj4CuAuYwrWZzCB4ko
-	TRgiNu7nEDEhKTCVKFG30zfm4W2wWxrUS9FT1abblC4+d5yOSLVVdKdGNv8sCWea9MZUYMK3Pq5
-	ZF521kMIF0xUrsCXryfNNcGGmE/s8Zz7zPUt82P5PbVrKNUZn+/9u+XHHmMutjD0Cw71zAYWA+t
-	AE9XFrrb9DlkIa+V3I2B+M/fhQLyLaf8PTtkbbBN5N+YcSJe2qiEfZguBW9jlsMNjVxzyZc7dC0
-	k+FCftnYstRw2MYRPzxE2BHpgIEvaCUMq+xcLLaZFgByyXi/sXTxUq+1pM7nuK3f5BRHE5FVvvk
-	xEB0/fH3Z8Uo/f+cLeBctJ7Kx+Jh56Q7iDhHYh/lArlcDM15s2LTXbvELq/m1uVN1FP4qk7DtxN
-	KZMY5zGwIfNu/6IAiE/kZ+5tWm6IaXxG9pI9s6z2ms3VzHS14GmnmzfUefDKxiDRyhHO9UWOl1r
-	8mI5nsaFt5S6yL2CAeOoTRAKz3RG/sgmrCx3D0zg9uaoT5OMR7xwP7/UqYvfbRA=
-X-Received: by 2002:a05:6870:d408:b0:475:a153:2dce with SMTP id 586e51a60fabf-47c5239a143mr4735595fac.36.1789048007972;
-        Thu, 10 Sep 2026 06:46:47 -0700 (PDT)
-Received: from spider.bream-herring.ts.net ([103.252.203.158])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4760cec8679sm15256534fac.5.2026.09.10.06.46.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2026 06:46:47 -0700 (PDT)
-From: Matthias Goergens <matthias.goergens@gmail.com>
-To: Harry Yoo <harry@kernel.org>
-Cc: Matthias Goergens <matthias.goergens@gmail.com>,
-	paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com,
-	josh@joshtriplett.org,
-	boqun@kernel.org,
-	urezki@gmail.com,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev,
-	corbet@lwn.net,
-	skhan@linuxfoundation.org,
-	rdunlap@infradead.org,
-	surenb@google.com,
-	vbabka@kernel.org,
-	rcu@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] rcu: drain kfree_rcu sheaves from the userspace barrier hook
-Date: Thu, 10 Sep 2026 21:46:40 +0800
-Message-ID: <20260910134640.2044424-1-matthias.goergens@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <aqKZXmlRGsmJPl3r@thinkstation>
-References: <20260910101112.1648978-1-matthias.goergens@gmail.com> <20260910101112.1648978-2-matthias.goergens@gmail.com> <aqKZXmlRGsmJPl3r@thinkstation>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y2PJuokl"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1789051276; x=1820587276;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QsXB8Xjq9BYSpWgqNkcjm1X1KWzVRNGHi48MteRdoPg=;
+  b=Y2PJuokldVmHehVp9gO6DG9IAbKgQSv6GRlYTL1r/PZXn6cCKFlJ/3fU
+   T3C8Nj8XJUpgI9sra4la56BXFxnCKRJttE/EVS8FjGtBzk6Nq7YHBO23z
+   KoiMujFMQ159OzE+EGfKTzxHhkXSZrzdCM6VPnGTiEqtJzpIIsW7dwj9x
+   pi5GMM1bujI5T/ZoKRub7Qr30eWrA5qGyctXlUTZdbDf8ZVSq1yW8uqhh
+   akvEOk6VTJv/q1ial2x9W+3M2orhz7QCeVYbw1lNxE5q1R6KDwYgzYz7K
+   E0qesWyrEWrKEfJqayJKdXTJ7mdn84JIFT2UoTSQUVPHvUdNZjPZNOw3l
+   A==;
+X-CSE-ConnectionGUID: M2I78R3DQ+m9f9qAgxC/yA==
+X-CSE-MsgGUID: YeDhKrSeQq6OnXIyWkxuVA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11901"; a="89266282"
+X-IronPort-AV: E=Sophos;i="6.27,95,1787036400"; 
+   d="scan'208";a="89266282"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2026 07:41:16 -0700
+X-CSE-ConnectionGUID: v0Cn7zqbQNahi46+Iq5wOg==
+X-CSE-MsgGUID: qHPrCUcoTSqQuSsa6LhKUg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,95,1787036400"; 
+   d="scan'208";a="301554075"
+Received: from lkp-server02.sh.intel.com (HELO 0a3643a6ed9d) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 10 Sep 2026 07:41:14 -0700
+Received: from kbuild by 0a3643a6ed9d with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1x4fxR-0000000007X-3cjP;
+	Thu, 10 Sep 2026 14:41:02 +0000
+Date: Thu, 10 Sep 2026 22:33:30 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kunwu Chan <kunwu.chan@gmail.com>, jiangshanlai@gmail.com,
+	paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com
+Cc: oe-kbuild-all@lists.linux.dev, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Kunwu Chan <kunwu.chan@gmail.com>
+Subject: Re: [PATCH] srcutree: Skip torture to-big transition for atomic SRCU
+Message-ID: <202609102229.DO9S18xW-lkp@intel.com>
+References: <20260910041427.3579817-1-kunwu.chan@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260910041427.3579817-1-kunwu.chan@gmail.com>
 
-Thanks. I ran into this while testing bcachefs performance changes. The bcachefs ktest end checks write `do_rcu_barrier` before reading `/proc/allocinfo`, with the expectation that allocations still reported afterwards are leaks. Small objects released with `kfree_rcu()` remained visible after repeated writes to the hook and 20 seconds of waiting, so otherwise clean tests failed their leak check.
+Hi Kunwu,
 
-Strictly, that ktest is assuming a stronger contract than the hook currently documents: `do_rcu_barrier` promises an ordinary `rcu_barrier()`, not a complete drain of objects still held in `kfree_rcu()` batching. I nevertheless think the stronger behaviour is useful for this test-only quiescence hook, because it lets allocation-leak checks reliably separate deferred frees from genuine leaks.
+kernel test robot noticed the following build errors:
 
-I followed those allocations across repeated filesystem lifecycles. Their number eventually fell when an RCU sheaf filled, so I have no evidence that this path grows without bound or causes OOM. The problem I observed is limited to test isolation: the hook can leave deferred frees behind and make them look like leaks. With the proposed change, the same unmodified bcachefs workload passed the leak check.
+[auto build test ERROR on rcu/rcu/dev]
+[also build test ERROR on linus/master v7.3-rc2 next-20260909]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-After tracing that behaviour, I wrote the private-cache module in the cover letter to reproduce it without bcachefs. I can publish the original bcachefs workload and results if anyone is interested.
+url:    https://github.com/intel-lab-lkp/linux/commits/Kunwu-Chan/srcutree-Skip-torture-to-big-transition-for-atomic-SRCU/20260910-121427
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git rcu/dev
+patch link:    https://lore.kernel.org/r/20260910041427.3579817-1-kunwu.chan%40gmail.com
+patch subject: [PATCH] srcutree: Skip torture to-big transition for atomic SRCU
+config: arm64-allnoconfig (https://download.01.org/0day-ci/archive/20260910/202609102229.DO9S18xW-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 16.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260910/202609102229.DO9S18xW-lkp@intel.com/reproduce)
 
-I also found that this exact follow-on was discussed when `kvfree_rcu_barrier()` was added in 2024: Paul proposed calling it from `rcu_barrier_throttled()` for clean userspace benchmark baselines, and Uladzislau agreed that adding it and documenting both operations was safest: https://lore.kernel.org/all/20240820155935.1167988-1-urezki@gmail.com/
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202609102229.DO9S18xW-lkp@intel.com/
 
-You are right about the `Fixes:` tag. `kvfree_rcu()` batching predates `do_rcu_barrier`, and the existing interface does what it documents, so the later sheaf commit is not the right introduction point. I will omit the `Fixes:` tag in v2 and present this as a strengthening of the test interface.
+All errors (new ones prefixed by >>):
 
--- 
-Matthias
+   kernel/rcu/srcutree.c: In function 'srcu_torture_stats_print':
+>> kernel/rcu/srcutree.c:2080:68: error: 'SRCU_READ_FLAVOR_ATOMIC' undeclared (first use in this function); did you mean 'SRCU_READ_FLAVOR_NMI'?
+    2080 |         if (SRCU_SIZING_IS_TORTURE() && ssp->srcu_reader_flavor != SRCU_READ_FLAVOR_ATOMIC)
+         |                                                                    ^~~~~~~~~~~~~~~~~~~~~~~
+         |                                                                    SRCU_READ_FLAVOR_NMI
+   kernel/rcu/srcutree.c:2080:68: note: each undeclared identifier is reported only once for each function it appears in
+
+
+vim +2080 kernel/rcu/srcutree.c
+
+  2031	
+  2032	void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
+  2033	{
+  2034		int cpu;
+  2035		int idx;
+  2036		unsigned long s0 = 0, s1 = 0;
+  2037		int ss_state = READ_ONCE(ssp->srcu_sup->srcu_size_state);
+  2038		int ss_state_idx = ss_state;
+  2039	
+  2040		idx = ssp->srcu_ctrp - &ssp->sda->srcu_ctrs[0];
+  2041		if (ss_state < 0 || ss_state >= ARRAY_SIZE(srcu_size_state_name))
+  2042			ss_state_idx = ARRAY_SIZE(srcu_size_state_name) - 1;
+  2043		pr_alert("%s%s Tree SRCU g%ld state %d (%s)",
+  2044			 tt, tf, rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq), ss_state,
+  2045			 srcu_size_state_name[ss_state_idx]);
+  2046		if (!ssp->sda) {
+  2047			// Called after cleanup_srcu_struct(), perhaps.
+  2048			pr_cont(" No per-CPU srcu_data structures (->sda == NULL).\n");
+  2049		} else {
+  2050			pr_cont(" per-CPU(idx=%d):", idx);
+  2051			for_each_possible_cpu(cpu) {
+  2052				unsigned long l0, l1;
+  2053				unsigned long u0, u1;
+  2054				long c0, c1;
+  2055				struct srcu_data *sdp;
+  2056	
+  2057				sdp = per_cpu_ptr(ssp->sda, cpu);
+  2058				u0 = data_race(atomic_long_read(&sdp->srcu_ctrs[!idx].srcu_unlocks));
+  2059				u1 = data_race(atomic_long_read(&sdp->srcu_ctrs[idx].srcu_unlocks));
+  2060	
+  2061				/*
+  2062				 * Make sure that a lock is always counted if the corresponding
+  2063				 * unlock is counted.
+  2064				 */
+  2065				smp_rmb();
+  2066	
+  2067				l0 = data_race(atomic_long_read(&sdp->srcu_ctrs[!idx].srcu_locks));
+  2068				l1 = data_race(atomic_long_read(&sdp->srcu_ctrs[idx].srcu_locks));
+  2069	
+  2070				c0 = l0 - u0;
+  2071				c1 = l1 - u1;
+  2072				pr_cont(" %d(%ld,%ld %c)",
+  2073					cpu, c0, c1,
+  2074					"C."[rcu_segcblist_empty(&sdp->srcu_cblist)]);
+  2075				s0 += c0;
+  2076				s1 += c1;
+  2077			}
+  2078			pr_cont(" T(%ld,%ld)\n", s0, s1);
+  2079		}
+> 2080		if (SRCU_SIZING_IS_TORTURE() && ssp->srcu_reader_flavor != SRCU_READ_FLAVOR_ATOMIC)
+  2081			srcu_transition_to_big(ssp);
+  2082	}
+  2083	EXPORT_SYMBOL_GPL(srcu_torture_stats_print);
+  2084	
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
