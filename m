@@ -1,61 +1,62 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B2637757D;
-	Thu, 10 Sep 2026 14:41:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0ECF3914F8;
+	Thu, 10 Sep 2026 14:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789051278; cv=none; b=szHwF8oPQA5SFKs9bDkm1CdkFuCcNHW6n2zd9CfCX8AK8visflOGtRXBALO9QcmKuo3ZD4LDu8n7jx7i3uTAX6dZZsNAeAdOJxJ0OD3mDRnzvmTa8RMN//bsA2xjuQGfDpGW1hwvFeeu8BDnV4uuQ1rN2paJJR2XzszqFGlY9AM=
+	t=1789051292; cv=none; b=pCHvFfU7G2G3VIlKWyFYRoJm3kwUb2CxlWYp65nFgCexGtwvrCC5XCtXO0ZxEGIIu43WtFWuFzXsm9EVtlN8MPnhR5hiMnrBwmflwLR4k1I1Ok2hcPXJjnNA9d5er+1JB6JJpL/fkx9DJSmS/Bc1PNMkJ2rnrVEidj2k8jVwPYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789051278; c=relaxed/simple;
-	bh=QsXB8Xjq9BYSpWgqNkcjm1X1KWzVRNGHi48MteRdoPg=;
+	s=arc-20240116; t=1789051292; c=relaxed/simple;
+	bh=XhCBkvqoMM39WPHjPYto/5lKDTBSRqUhy/eqexVLdXc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jhYIcHxX79LffQ06lKP3Z7BKQtO7m74t2SdKOCVBKa5Bh5bQpW88lS/mrTycEri48eXyhphFcfKXk6fs8owY1Z2TA9XMZuKoP8ldEhsvLXevXs404bsyfa/144f7b7QFmyYn+qVZKfmuWnHZ86y2VBR4+CWLSwrThfHAjOiG2Ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y2PJuokl; arc=none smtp.client-ip=198.175.65.20
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nh3rh8IHgsSfzj5r+eMdi3xlpBzCCGHIuHkE7E/Zi1JaNn7V35IdbEUkQ/Pz2EKMIDAouR9uJgBUlCZIJpU+qsUeS0B8TBYqLvC1coK6sm/0rQgSpVqf5eHqni+XlKcpH8KnsABjWWnJoXSciSiVVMWLTbigXxduzzDCl55po3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YpoWFeAW; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y2PJuokl"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YpoWFeAW"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1789051276; x=1820587276;
+  t=1789051290; x=1820587290;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=QsXB8Xjq9BYSpWgqNkcjm1X1KWzVRNGHi48MteRdoPg=;
-  b=Y2PJuokldVmHehVp9gO6DG9IAbKgQSv6GRlYTL1r/PZXn6cCKFlJ/3fU
-   T3C8Nj8XJUpgI9sra4la56BXFxnCKRJttE/EVS8FjGtBzk6Nq7YHBO23z
-   KoiMujFMQ159OzE+EGfKTzxHhkXSZrzdCM6VPnGTiEqtJzpIIsW7dwj9x
-   pi5GMM1bujI5T/ZoKRub7Qr30eWrA5qGyctXlUTZdbDf8ZVSq1yW8uqhh
-   akvEOk6VTJv/q1ial2x9W+3M2orhz7QCeVYbw1lNxE5q1R6KDwYgzYz7K
-   E0qesWyrEWrKEfJqayJKdXTJ7mdn84JIFT2UoTSQUVPHvUdNZjPZNOw3l
-   A==;
-X-CSE-ConnectionGUID: M2I78R3DQ+m9f9qAgxC/yA==
-X-CSE-MsgGUID: YeDhKrSeQq6OnXIyWkxuVA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11901"; a="89266282"
+  bh=XhCBkvqoMM39WPHjPYto/5lKDTBSRqUhy/eqexVLdXc=;
+  b=YpoWFeAWs9/GtRTJicHXfhwev51nyXCCs53oAmPDIa9DrTb2ZcuTVCCS
+   iL964DaPj5YFaR85nLCsos+WqoaSCOpgIy6YkS2k/uLQ3BO0prFWVDY53
+   /Ym8wrm67e2khU+HmFz4VIBSYRo73mxzSBILPfy7q7NsgaZ8Kepsj6lya
+   /pDEexRGMv56VRh1rjzaeOZQWXoDJB2g90c6Ni+KzKopT5fJUEc9+ywXq
+   uwLOfc2DP/2MMKQZPgUV9yrnJUMMr2UEMV/RiFLc+KamYEGg27Liu9Gxx
+   CGWb0WDiwKkVIWD4sAhlW9ci8frUi1NeNVe2WfpRiBWMGmNWpVRLtSm+b
+   Q==;
+X-CSE-ConnectionGUID: KQgA8M+CToG2c9CiaTftYA==
+X-CSE-MsgGUID: m0hVlNUyQmeC5RYmWa6b8A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11901"; a="101021532"
 X-IronPort-AV: E=Sophos;i="6.27,95,1787036400"; 
-   d="scan'208";a="89266282"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2026 07:41:16 -0700
-X-CSE-ConnectionGUID: v0Cn7zqbQNahi46+Iq5wOg==
-X-CSE-MsgGUID: qHPrCUcoTSqQuSsa6LhKUg==
+   d="scan'208";a="101021532"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2026 07:41:29 -0700
+X-CSE-ConnectionGUID: wPSlGokYQsuYOgEp9xRQwg==
+X-CSE-MsgGUID: pmxlIlzBTxCFVac71nW3RA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,95,1787036400"; 
-   d="scan'208";a="301554075"
+   d="scan'208";a="267381710"
 Received: from lkp-server02.sh.intel.com (HELO 0a3643a6ed9d) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 10 Sep 2026 07:41:14 -0700
+  by fmviesa006.fm.intel.com with ESMTP; 10 Sep 2026 07:41:26 -0700
 Received: from kbuild by 0a3643a6ed9d with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1x4fxR-0000000007X-3cjP;
-	Thu, 10 Sep 2026 14:41:02 +0000
-Date: Thu, 10 Sep 2026 22:33:30 +0800
+	id 1x4fxf-0000000007Z-2G9Z;
+	Thu, 10 Sep 2026 14:41:15 +0000
+Date: Thu, 10 Sep 2026 22:34:21 +0800
 From: kernel test robot <lkp@intel.com>
 To: Kunwu Chan <kunwu.chan@gmail.com>, jiangshanlai@gmail.com,
 	paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
 	mathieu.desnoyers@efficios.com
-Cc: oe-kbuild-all@lists.linux.dev, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Kunwu Chan <kunwu.chan@gmail.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kunwu Chan <kunwu.chan@gmail.com>
 Subject: Re: [PATCH] srcutree: Skip torture to-big transition for atomic SRCU
-Message-ID: <202609102229.DO9S18xW-lkp@intel.com>
+Message-ID: <202609102247.8X7GUWSj-lkp@intel.com>
 References: <20260910041427.3579817-1-kunwu.chan@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -81,26 +82,24 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Kunwu-Chan/srcutree-Skip-
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git rcu/dev
 patch link:    https://lore.kernel.org/r/20260910041427.3579817-1-kunwu.chan%40gmail.com
 patch subject: [PATCH] srcutree: Skip torture to-big transition for atomic SRCU
-config: arm64-allnoconfig (https://download.01.org/0day-ci/archive/20260910/202609102229.DO9S18xW-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 16.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260910/202609102229.DO9S18xW-lkp@intel.com/reproduce)
+config: s390-allnoconfig (https://download.01.org/0day-ci/archive/20260910/202609102247.8X7GUWSj-lkp@intel.com/config)
+compiler: clang version 24.0.0git (https://github.com/llvm/llvm-project d3db069999553568848400c84cbf815c03f5470f)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260910/202609102247.8X7GUWSj-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202609102229.DO9S18xW-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202609102247.8X7GUWSj-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   kernel/rcu/srcutree.c: In function 'srcu_torture_stats_print':
->> kernel/rcu/srcutree.c:2080:68: error: 'SRCU_READ_FLAVOR_ATOMIC' undeclared (first use in this function); did you mean 'SRCU_READ_FLAVOR_NMI'?
+>> kernel/rcu/srcutree.c:2080:61: error: use of undeclared identifier 'SRCU_READ_FLAVOR_ATOMIC'
     2080 |         if (SRCU_SIZING_IS_TORTURE() && ssp->srcu_reader_flavor != SRCU_READ_FLAVOR_ATOMIC)
          |                                                                    ^~~~~~~~~~~~~~~~~~~~~~~
-         |                                                                    SRCU_READ_FLAVOR_NMI
-   kernel/rcu/srcutree.c:2080:68: note: each undeclared identifier is reported only once for each function it appears in
+   1 error generated.
 
 
-vim +2080 kernel/rcu/srcutree.c
+vim +/SRCU_READ_FLAVOR_ATOMIC +2080 kernel/rcu/srcutree.c
 
   2031	
   2032	void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
