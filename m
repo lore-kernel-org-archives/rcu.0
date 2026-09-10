@@ -1,69 +1,69 @@
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FE7C489871
-	for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 18:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF4E958B6BB
+	for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 18:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789066289; cv=none; b=cIu+FBqK53kjuIv7B9/+qM2x/sj4iyr6bTrMNSl9HJTWPmQiyxWUixp++QZzXRG5NZmThkP37zIbtvCrRBQhd1dtzXNJjHYYt+0jl3b+eCazOye3KG3iS8OCX7yBRn/Elxxlzbpi6DNpDoVsxhBkNgitiS3ASBTU9opADFqPbxs=
+	t=1789066289; cv=none; b=Z9K+jNdzJVhiCYSD3xWI03U0uV5cPSO/yHHSoPrv5hTR3K5CjZ3rMhiXMVhh3NK08wauhlfUIn+226HVPNNE/IYqGdq1RPMa6v5/UET5+JKVLIsd0VyjVoJ8QZtelCh7JZL0+wqWd/w2ItrUakj+YZFzay9ms7g+7ad+JlrlOGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1789066289; c=relaxed/simple;
-	bh=8cFDFeD2IXPN8Vlj1EymtW9Bi32PSZwsbXS468MRSTs=;
+	bh=c9hUQ9kAAl2b2IbncqDZq1k2ejJxuc1g83EyvfAIkis=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=n3dcGSiVPe4Ql2Vk09fw9rc3lY3C4NkEJwQvzf8WOsTbDnNibeZnkWDD1ASK9xHrV9MtV3fz94Rz//Ydd0Wlps+0JBgy8QA2BdGRbxLo2rCCXI9Gk4p1k/G8roID7FbgmMT/opmn7d5IQZ1eNsSVmAVyQB7gTNvDpjW2YPTknkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=KlOv1PKW; arc=none smtp.client-ip=209.85.160.177
+	 In-Reply-To:To:Cc; b=QL5vhdGcZB6rqKqT4vL5MdQEh3POurdsHXVxeUDrB2DijbqV6EoB9yWpoIhpi9dAkrd/KtKSmyKPrynV0HVTja0nQZ8C8N/2kcQiFdBUYgybzgirMnwn0kQxauFcFCnxKtsjg+wg4d1GdKLOITq3LBo689H0806W8h+3QfwT5to=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=ZT+QHQOL; arc=none smtp.client-ip=209.85.219.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="KlOv1PKW"
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-5306baf6b53so1611101cf.1
+	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="ZT+QHQOL"
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-90e7c71f86eso312146d6.1
         for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 11:51:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda.com; s=google; t=1789066270; x=1789671070; darn=vger.kernel.org;
+        d=toxicpanda.com; s=google; t=1789066275; x=1789671075; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=hbVlQmHCpb9zv+5BDFsE+SK081jwlXFhk4tZhnaWY5k=;
-        b=KlOv1PKWx60TlqVMZSv8dWVjMDQUiRAE8Z2tHJcOR3nw4O8MzhPHzKjSrlmUOX5JXu
-         okpNE9DNfiNJWMttOHV8eTGoxKJfdQcG0jqzxYC3hRTNlHoECLjhwikuXLHWy5MHzD3+
-         cdQ0Gfw67t1Tx31YHrcQZOQTg54EYpys4e2QdgdwCEydMklmPqLpnWUtzsbZVvMHpgbi
-         Eqc7yuC2w25hccLexA5xygFZjzzwLhYO/ecLeBpVKq1vQvcS0DKz+fMangi98LgciNnn
-         hjpy+fW6LBIa0YYXyt1MbRKQ5qU626L5CvsOdzMRf90syl4RiBVnfQHhPWp/UpiSncVR
-         PbPQ==
+        bh=twz7P/UgrzFqFrDTfXn+06wBF94/L3aT/pnjRwe1Smk=;
+        b=ZT+QHQOLa6RGP+APk20ltNsal1w/dCUGd4vqqbR6Hed8n7USi7jymaRnDPfJKzWjeR
+         YddlC4IFv24U8i/3lE+gBq+f8CzWloCFwVLnzxWUX6sRQyS8B/44SfOw3UQ50QN39jZQ
+         1U1Rdjlv5nTN1jGfRs25YlzkPcs6ZkqLYAj4AnmtdaqD545UdHrNXOg8JVAKdcTgNUXa
+         bARuoRzSU4qm7HSuRhPOpBtmazV0NRsBtkyzCOD3E1N0N4q0335UD1u5+q6DI57z1C3U
+         k4D/pLxaeBOA8D5QRkH6BDIH+6N76IaFQ9YDMnXc67aMXaL0B4ygBBXqV9OCddN0CgIv
+         oNxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789066270; x=1789671070;
+        d=1e100.net; s=20251104; t=1789066275; x=1789671075;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=hbVlQmHCpb9zv+5BDFsE+SK081jwlXFhk4tZhnaWY5k=;
-        b=cUsRi8/ZhDiXX3eyz2nQJll0atha6UiLwOILslYPfadx9XJ1g6przN3S/tabi04sEI
-         moUCTzRLUbptC6tE9KhE7TiDLaIYH9qCVoV3CeH2jD29oNU+o+2OMhxI5obwBZLkl+t8
-         TEyxaffqVB1Pnfi8o3ioPINW2i3jXCCTg13mWZAtxaYf9v7Z/HPxYImObJnrozMqm2nn
-         aRjAyhrvrKCw+E0s0xalug8CX99OqWXCQqUQrbTfhxB5Jr+C9cQMjc0m+z7g6jCHKpM2
-         FZcp6LKATo6nU1aubjxjZPGCOdeuzWrOyXUKqZcnHecJ+GOC4F6f7ejafwnA4rj9DEQC
-         tk8g==
-X-Forwarded-Encrypted: i=1; AKwUvBzi2ai42IdOtKWvCHqIrFwECEIszmwsn3J+oUGMno4fIJ9jhQMPI2M//CE0m7nYIRGg2f8=@vger.kernel.org
-X-Gm-Message-State: AFuF++kyPoYaDBUBpFUGL52sbBABENgaLb7tXC6dsPMsOI+fgzu5d3+Q
-	G0xaSz3XQAIX4A06slkuUc6zYOY8d9GGgugLJURxgHs62FRdZdqVhITRNCP1rLyrT94=
-X-Gm-Gg: AYBFou2aB3F6RrOi4VhIp/KODZuZHE0u9oHkiS5OcKaZTPgZp0MsMlK89MC44gEAz8m
-	03zvP83uo8+fxQ+q6fNAOXIxKZUHEgwAXpLfdmDjzFb8K8NSDCNvHB7L4e1cYsb7jWFZLYmF8sN
-	AbEQUfLIEcSmMbknE+d34gtSfUD2ULmn6JoCrKTHAteD0nVAdAVx8uVHKqgwhFBBGaTRY0MySys
-	rOtBZWJunmNUAH9BlGMoy2W6VTB5zf3izKTjEmw/HqwnB0irptdZgAgKeeUDuw5Zou3l7yDSx8V
-	WDg50udkytYo8m26qHAhs7rPFtDy1it5pgifd9ObfIolh+uW0hIZfLj5sjQ+793aNmwz0fzYL3I
-	CmrqPRK+xJwezGWKtti1YHrltPdn7T/HJEWvFX+eK+xIzKPpFVtJecVUT4Py67Ka3md1tTJ0x5T
-	Esghbyyq1AuRlIJ1b79jVH0q0/b5EvYXnqphRt+tnFr6GKN3hWRMNpRyPBB7CxXyeflaTRmO1gH
-	nTGBrbvFi/zxSHomnYfW15tUNfdwRoD6Drd2QYHHrl1nL9tJTqZ8In6
-X-Received: by 2002:a05:622a:1309:b0:530:42e4:effc with SMTP id d75a77b69052e-530c87566f0mr10949261cf.41.1789066264886;
-        Thu, 10 Sep 2026 11:51:04 -0700 (PDT)
+        bh=twz7P/UgrzFqFrDTfXn+06wBF94/L3aT/pnjRwe1Smk=;
+        b=fbBAWrV7du379TNPaBu9olLL280GSnR+OQBZtP7bQOQ4SwVUMQzuvCh5RyV5bz4RD1
+         3MvPGu42agN+OW91kfOyXKgAgQuY9/q5n2qYmzyxPcxjn4Ah2Nk+jlYQ0L4k2OMVQrLi
+         qoYMy8H6IfNMe3kUP4mc20SWRk9ciMeU63WrJT39+CkKkmYP9J1LclqkYvZqHPWlXkYH
+         jBpUJGHfxhLtqMlL6YWxjHVsgQ/fmtRtrVXgS+CIWJRBrCkA1obETKqrBLePYQWFGL8a
+         hbbo3Pv9ryvNHELsCbmOsSPMHl8egFkKFgCuQCh9jhshQNEFnNGmMVYCqxpT0lsSbomQ
+         qgug==
+X-Forwarded-Encrypted: i=1; AKwUvBxn1bine0uW5iCIPJKPf44p+oklJpo5awiduk3SrpOV77yS36Qb50g7DGIpgf4vOXSOcOc=@vger.kernel.org
+X-Gm-Message-State: AFuF++lvmfJFZX3GDMKdS3Syhk27YasZo4FIz2PNB9Z9zzIF0NEPIFjU
+	6x7TQY2SFlKc+4Cz8eoA7e4zP3L6nwXJEGEN/bA7tYR3WJIg9aJ9+/oqwqsBQ2usAAo=
+X-Gm-Gg: AYBFou2aKCOUsA2dl9qFfkkSxZEWZNVErsnUFI3sKlXrS7Cx51vonLUdh+Zg+H8rUab
+	ABQPkAadobveFMRB3D756oHfFjjA7+HS1TZTtSww4I4anW4lG9Qq0IkwS6gpzUCkemprVW50j7Z
+	6Sk8MSRvmg0X8L7OhN+W4uV88qxVVJFyLYyUl35f0q1EEdecl1YmsH5mEWqoXQtgPF5my9ku4UA
+	GL5BSrl1xOZCWnL0fzUm+rt0s1JyzRTOCcTID2ewMwsUXwDLmS6srKDh3CHTXjH4dWXMt0+ahg0
+	GrOGmWFi3lyOSWht8/iSzDP25XDscoiFQrfOpHwz8VaPxImYj2oyQJ1vfGDbiRbkux4DjSorxLs
+	r90LKh08wXPX2M+JZAzmTffq+ufWfnP9+Pu3xQuEZnPCcJLKMI4rqROfpRwutb/RGP5t/te3+s4
+	CRmbcoPoj+Y8XGFdlFdf9ip2IKzuEPkxN5JffK71zC42hPTaqCDtAgAgXTETqdV4UoYuRMQ+5Jf
+	2031LXpHRbnuoUEpVWxOQDTrMNrpd+rT4y4KIpyBtBPMEUA89fp1w3k
+X-Received: by 2002:a05:620a:269d:b0:939:6de9:208b with SMTP id af79cd13be357-939ea2b3827mr16779985a.48.1789066274997;
+        Thu, 10 Sep 2026 11:51:14 -0700 (PDT)
 Received: from toxicpanda.com (ec2-34-228-114-98.compute-1.amazonaws.com. [34.228.114.98])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-530ca47efa2sm216291cf.11.2026.09.10.11.51.03
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-939e7f184f5sm49053285a.15.2026.09.10.11.51.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2026 11:51:04 -0700 (PDT)
+        Thu, 10 Sep 2026 11:51:14 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
-Date: Thu, 10 Sep 2026 18:50:30 +0000
-Subject: [PATCH RFC 07/13] x86/kprobes: Maintain Tasks RCU trampoline
- nesting in the optprobe template
+Date: Thu, 10 Sep 2026 18:50:35 +0000
+Subject: [PATCH RFC 12/13] rcutorture: Bracket Tasks RCU readers with
+ trampoline nesting
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -72,7 +72,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260910-b4-rcu-tasks-preempt-qs-v1-7-d4469f4cc101@toxicpanda.com>
+Message-Id: <20260910-b4-rcu-tasks-preempt-qs-v1-12-d4469f4cc101@toxicpanda.com>
 References: <20260910-b4-rcu-tasks-preempt-qs-v1-0-d4469f4cc101@toxicpanda.com>
 In-Reply-To: <20260910-b4-rcu-tasks-preempt-qs-v1-0-d4469f4cc101@toxicpanda.com>
 To: "Paul E. McKenney" <paulmck@kernel.org>, 
@@ -98,77 +98,46 @@ Cc: Andy Lutomirski <luto@kernel.org>,
  xen-devel@lists.xenproject.org, Josef Bacik <josef@toxicpanda.com>
 X-Mailer: b4 0.15.2
 
-The jump-optimized kprobe template calls optimized_callback() with
-preemption still enabled for its first few instructions, so bracket the
-call with an increment/decrement of current->rcu_tramp_nesting.  The
-template lives in .rodata and is memcpy()d into each optinsn slot without
-relocation processing, so the per-CPU reference to current_task must be
-an absolute %gs: address (R_X86_64_32S, relocated for KASLR like any
-other) rather than %rip-relative.  %rax has already been saved by
-SAVE_REGS_STRING and is dead after the call.
+rcutorture's tasks flavor models a Tasks RCU reader as "any stretch of
+kernel code", and rcu_read_delay() deliberately preempts inside it to
+check that a preemption does not end the read-side critical section.
+Once preemption outside a trampoline becomes a quiescent state that
+model no longer matches what Tasks RCU protects, and the readers would
+report false too-short grace periods.
 
-The slot itself is dynamically allocated text, so the instructions before
-the increment and after the decrement are covered by the irq-exit IP
-check.  64-bit only; 32-bit x86 does not take part.
+Have tasks_torture_read_lock()/unlock() raise and drop
+current->rcu_tramp_nesting so the reader models a trampoline, which is
+the thing Tasks RCU actually guards; the deliberate preemption inside it
+then continues to be, correctly, not a quiescent state.
 
 Assisted-by: LLM
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- arch/x86/kernel/kprobes/opt.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ kernel/rcu/rcutorture.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
-index 3f8fea52619f..f722520bb989 100644
---- a/arch/x86/kernel/kprobes/opt.c
-+++ b/arch/x86/kernel/kprobes/opt.c
-@@ -31,6 +31,7 @@
- #include <asm/set_memory.h>
- #include <asm/sections.h>
- #include <asm/nospec-branch.h>
-+#include <asm/asm-offsets.h>
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 794937e13e7c..df6dd708cea7 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1144,11 +1144,17 @@ static struct rcu_torture_ops trivial_preempt_ops = {
  
- #include "common.h"
- 
-@@ -101,6 +102,23 @@ static void synthesize_set_arg1(kprobe_opcode_t *addr, unsigned long val)
- 	*(unsigned long *)addr = val;
+ static int tasks_torture_read_lock(void)
+ {
++	/*
++	 * Model a trampoline: with CONFIG_RCU_TASKS_PREEMPT_QS a preemption is
++	 * otherwise a quiescent state and rcu_read_delay() preempts on purpose.
++	 */
++	rcu_tasks_trampoline_enter();
+ 	return 0;
  }
  
-+/*
-+ * Tasks RCU trampoline nesting, see rcu_tasks_trampoline_enter().  The
-+ * template is memcpy()d into the slot without relocation processing, so the
-+ * per-CPU reference must be absolute, not %rip-relative.
-+ */
-+#if defined(CONFIG_TASKS_RCU) && defined(CONFIG_X86_64)
-+#define OPTPROBE_RCU_TASKS_ENTER					\
-+			"	movq %gs:current_task, %rax\n"		\
-+			"	incl " __stringify(TASK_rcu_tramp_nesting) "(%rax)\n"
-+#define OPTPROBE_RCU_TASKS_EXIT					\
-+			"	movq %gs:current_task, %rax\n"		\
-+			"	decl " __stringify(TASK_rcu_tramp_nesting) "(%rax)\n"
-+#else
-+#define OPTPROBE_RCU_TASKS_ENTER
-+#define OPTPROBE_RCU_TASKS_EXIT
-+#endif
-+
- asm (
- 			".pushsection .rodata\n"
- 			".global optprobe_template_entry\n"
-@@ -114,6 +132,7 @@ asm (
- 			"optprobe_template_clac:\n"
- 			ASM_NOP3
- 			SAVE_REGS_STRING
-+			OPTPROBE_RCU_TASKS_ENTER
- 			"	movq %rsp, %rsi\n"
- 			".global optprobe_template_val\n"
- 			"optprobe_template_val:\n"
-@@ -122,6 +141,7 @@ asm (
- 			".global optprobe_template_call\n"
- 			"optprobe_template_call:\n"
- 			ASM_NOP5
-+			OPTPROBE_RCU_TASKS_EXIT
- 			/* Copy 'regs->flags' into 'regs->ss'. */
- 			"	movq 18*8(%rsp), %rdx\n"
- 			"	movq %rdx, 20*8(%rsp)\n"
+ static void tasks_torture_read_unlock(int idx)
+ {
++	rcu_tasks_trampoline_exit();
+ }
+ 
+ static void rcu_tasks_torture_deferred_free(struct rcu_torture *p)
 
 -- 
 2.55.0
