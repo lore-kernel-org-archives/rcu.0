@@ -1,177 +1,104 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pz2-f12.google.com (mail-pz2-f12.google.com [74.125.228.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4FF0390C90;
-	Thu, 10 Sep 2026 03:47:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4963A451F
+	for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 04:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789012062; cv=none; b=HEAiFMNYzfIgs8cwFv5c4sI5dTGEzYKREB3htSCG5+gD54bBXBncOt+pSU215Xk1KXamnmoY6icnokLnadtOX69qlNJreN3VfqNua6DGmoANUgRhYOKlh/xkyxUU5Jxsi632jAZ1RaWlpq7kxED+AvUk0nkKP8aNbeuxIbBE23E=
+	t=1789013681; cv=none; b=IC2biFd5OH71jHeK6KOgyUHV0lRj+2pHs7ZLv0lk/p3Ybd/RE9AMa6NGsWolScwvFocZbEEHLqx1weZtg8zOs5h3VfdwulncafdRuOz1/dytqJAuaiIZ1kU6SIFUvflcHeNDPY87EiGM95WIfVgjLk9X6qj6Ts5HrStVCPzewxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789012062; c=relaxed/simple;
-	bh=o71y1VS1O/gULbydwmdaQJygjLAA8aW4Ix7hUC36ruc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KqzLfPFgJU/4MtMoM25vHzFkH7g0chu1LD6koLnAFzDUYbCOA1Lh7KaevvGO92m/63+LrnT4Hc5gw1i51uJ1JOn2CEQQjay4PMpG+jv3WKfViuk81guJxuTy2jj0Z8pYjy3jhVGxwlQ+aCY2e0q+AzxnQZSKrohsq7IuManlrmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=idEcenwA; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789013681; c=relaxed/simple;
+	bh=S6Q8iTTI0AR4jZVr4beCsVhRfm/G5hTDYV+GbdTaCbg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HIYO6ZvzH5St1Ufp6zk4lWQUoYtWxF/MwT/x0mFYmjGMCMufdyNx9PouxBaXhKho3ObdXhzciIDkeLZyInCW/i6QrLioD01s2PLt4OADgQRH3lC+7NJl9RNthvRV16dRbv7lrrpDomCD8J9T0JfGdMXDipHH2iiZ7y1XG/QUrRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J5EvOzQG; arc=none smtp.client-ip=74.125.228.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="idEcenwA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CDE31F000FF;
-	Thu, 10 Sep 2026 03:47:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789012060;
-	bh=jsDpzZhNDxfmPf/zQV+jNP9bIQuqvgtrQtyVFB2Bdks=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=idEcenwAmabkl4/bvzL/I+ZkjSTxKgqTfU7hhDBuEQs8p1LY+IRSMEGVpNnuT3ndZ
-	 F47B/vdUwNT/Krc3+VTYTaZPSE47qW2p7Tl0Y+6XNpKmYy+4qJ9fe7Lyyao6rr8yK3
-	 6EpqwdC7AmJhAKxhX350zE5T4wbseXq68Hrmfl2Tbvy0H/+jqPZxtapIjT/FwgB+P3
-	 nPn3vKTsOdl6Kywl7IvD9SiNEZeWlnCkXK0eLvZ+NXn5m5HIz/WAqM5WhyOw2UQvMF
-	 4XIAZB6CLLhTk9nBu1Zx5Gc0SziZMDu637oaBsEwGJYdRUUt2Q+1Pqt0tmOhc22bcb
-	 C6Wkhy6ya6mMw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 07FB9CE0869; Wed,  9 Sep 2026 20:47:40 -0700 (PDT)
-Date: Wed, 9 Sep 2026 20:47:40 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: KunWu Chan <kunwu.chan@gmail.com>
-Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/13] rcutorture: Add atomic-SRCU support to torture.sh
-Message-ID: <9b0ac5fa-98ef-4ff0-9f96-9194f1eda442@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260907075829.2073224-1-kunwu.chan@linux.dev>
- <20260907075829.2073224-5-kunwu.chan@linux.dev>
- <fc49190e-6cec-435d-b853-db906a1e33e3@paulmck-laptop>
- <26b68ec0-2f21-4dc2-bfcf-20cbc38f4ceb@paulmck-laptop>
- <CAN_Opa-M=qs=ofqdQWikkVRh2mNzKMO5qrtOSn_jMyF+TkMKNQ@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J5EvOzQG"
+Received: by mail-pz2-f12.google.com with SMTP id d2e1a72fcca58-85469e25187so460572b3a.2
+        for <rcu@vger.kernel.org>; Wed, 09 Sep 2026 21:14:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789013678; x=1789618478; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=pBHlDeFtR9R/kfv9cflPbv5Eb5RRc7n7ypcv3mdlfb0=;
+        b=J5EvOzQGUVozpHX6M9eei74ST20jD4aSYWh6cqyrllsibyQAo1Bm6vxFQC6McxCrRm
+         3QVH+rqEcXBi3aG7BvkVRb7bxINsoC8q+opIzRDrKCgBHyIZGuhL5inL74nd0NnSz+dB
+         vf4i6unnIjooKesdY0s/UngJPJs/fNL+2CXySk3Fg0mCVuic8Bbn48ljWgyBmMPkidsU
+         SNrYluJvdYx2qbkrguy5sRV89iYR6j/qHQP67n9XNM6Kl+VQXNa4uGin0etXoEbOZCXo
+         MwPT3UV195AMNAIJD2yvbxunx+LZMFZU+XZEsX4OGJpCH1toNkhicuxgJhbww+o2wdHQ
+         +Whw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1789013678; x=1789618478;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=pBHlDeFtR9R/kfv9cflPbv5Eb5RRc7n7ypcv3mdlfb0=;
+        b=j2oGyBajoZivGipNu63mPauFVp/MP6AJxco7XKKlRiNzqgHIN/c+PQhXc7byQtLa3v
+         5+hxIet5q780XDbS6uuwODI983ikkqqPgV8ybElVgU2a4et5QAHbqIR8sAlZDwSq0s45
+         4HzSih54FnoDDboKCqrAOcIIYJjCsOgrRKfbw0op4eo0s49f0zChO2HSEqH88MsG1Ou+
+         9F/WZduT9ifNzJs8Db++1xnN6fU9//ohHNx+1OWyWpqo9sqHATEXTKw+KqvFAGCazz9o
+         L5Zi31HmA/C90JJSx08O6tNqV3jVsUztfeLwG0ovtbj8u7anEzkXqj5N2dpNEe7QHPPO
+         ucWw==
+X-Gm-Message-State: AFuF++nmlEhSD83swC43d1/LZMOMMRAg3iYRW5oSQfHKfYqhQQR8yU4X
+	AKM98S+vJxT3X2E+WYn/XVkGIE4G3GkUgGbFpF3I7PSjUhS9N12da2UV
+X-Gm-Gg: AYBFou14age6+MGp7eFMaanLLblBgxD2xjW79L6CXDqQI+fy/HaEKw4r7bJgeNmKbR5
+	jYMn/cw/mdLmauA8Zp80aEgGSP10+b068mp78OhcurZQ1GMXFb77jx0G414lZyNJm80IdPLvoFW
+	IA0en7aoyjBlt+KJ/ssdTjgFKI+thWz4Y8Cf4EpLsUX/V95KCawsv9xOUPTVt7YvHm+7QmcsCTZ
+	FTcopJizyb1kbr5MjyKsq4E/8mjJ74t3tmLTkNFmFtFg3QFpKgJXijBsp4RBNaK3kDlGyfcT8+z
+	ayafPQFMrNWHi5a4mDm3FsHyS0R0Wy1Y/UhX2yFzSQUmVWI/40TNwM/aKozesMprIx0PTs871qs
+	yyYOe5Nf94dX8t+e2rB3pac+aAm4d40HK0rJ2JW3gCz7DRYKdGy3e+XjTLZ6Q48KERpFLaGjnGF
+	1H5wTDOcAW0+XVuAxucVUaBw7X7rPaSDUdMYn305f/u9koCRNPy9ryu8eZ2LLRlJmll6U/L3HwW
+	fNNP8jlnkq/U+QrFQ==
+X-Received: by 2002:a05:6a00:aa85:b0:857:7384:b5fa with SMTP id d2e1a72fcca58-86948928444mr4650612b3a.22.1789013677382;
+        Wed, 09 Sep 2026 21:14:37 -0700 (PDT)
+Received: from kernel.tail6741c6.ts.net ([185.220.238.35])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-868c7a9e789sm1364304b3a.3.2026.09.09.21.14.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2026 21:14:36 -0700 (PDT)
+From: Kunwu Chan <kunwu.chan@gmail.com>
+To: jiangshanlai@gmail.com,
+	paulmck@kernel.org,
+	josh@joshtriplett.org,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com
+Cc: rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <kunwu.chan@gmail.com>
+Subject: [PATCH] srcutree: Skip torture to-big transition for atomic SRCU
+Date: Thu, 10 Sep 2026 12:14:27 +0800
+Message-ID: <20260910041427.3579817-1-kunwu.chan@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN_Opa-M=qs=ofqdQWikkVRh2mNzKMO5qrtOSn_jMyF+TkMKNQ@mail.gmail.com>
 
-On Thu, Sep 10, 2026 at 09:30:48AM +0800, KunWu Chan wrote:
-> On Thu, Sep 10, 2026 at 6:35 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Tue, Sep 08, 2026 at 04:34:41PM -0700, Paul E. McKenney wrote:
-> > > On Mon, Sep 07, 2026 at 03:58:20PM +0800, Kunwu Chan wrote:
-> > > > From: Kunwu Chan <kunwu.chan@gmail.com>
-> > > >
-> > > > Add the --do-atomic-srcu argument to torture.sh, which runs the
-> > > > SRCU-N, SRCU-P, and SRCU-T scenarios, thus covering both Tree SRCU
-> > > > (SRCU-N and SRCU-P) and Tiny SRCU (SRCU-T), with
-> > > > rcutorture.reader_flavor=0x10 appended to the boot parameters so
-> > > > that it takes precedence over each scenario's own reader-flavor
-> > > > setting.  This exercises srcu_read_lock_atomic(),
-> > > > srcu_read_unlock_atomic(), and synchronize_srcu_atomic().
-> > > >
-> > > > As with other torture.sh tests, the --do-kcsan argument runs a
-> > > > KCSAN+PROVE_LOCKING variant of this test.
-> > > >
-> > > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-> > >
-> > > Queued for testing and review, thank you!
-> >
-> > I did take the liberty of changing "do_atomic_srcu=no" to
-> > "do_atomic_srcu=yes" in order to increase test coverage.
-> >
-> 
-> Thanks, no problem.
-> 
-> I also found a couple of data races in other subsystems while running
-> the tests. I’m still validating the fixes locally and will Cc you if I
-> send patches for them.
+Atomic SRCU does not use the srcu_node combining tree.  Exclude it
+from the SRCU_SIZING_IS_TORTURE() transition in
+srcu_torture_stats_print().
 
-Sounds good!  Note that some maintainers are more friendly to such
-patches than others.  But it shouldn't hurt to send them.  ;-)
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+---
+ kernel/rcu/srcutree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Just please carefully check the design.  For example, blindly applying
-READ_ONCE() and WRITE_ONCE() is not a strategy to win.
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index d462102c6bb6..99d11fb4123a 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -2421,7 +2421,7 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
+ 		}
+ 		pr_cont(" T(%ld,%ld)\n", s0, s1);
+ 	}
+-	if (SRCU_SIZING_IS_TORTURE())
++	if (SRCU_SIZING_IS_TORTURE() && ssp->srcu_reader_flavor != SRCU_READ_FLAVOR_ATOMIC)
+ 		srcu_transition_to_big(ssp);
+ }
+ EXPORT_SYMBOL_GPL(srcu_torture_stats_print);
+-- 
+2.43.0
 
-							Thanx, Paul
-
-> Thanks,
-> KunWu
-> 
-> >                                                         Thanx, Paul
-> >
-> > > > ---
-> > > >  .../selftests/rcutorture/bin/torture.sh       | 24 +++++++++++++++++++
-> > > >  1 file changed, 24 insertions(+)
-> > > >
-> > > > diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-> > > > index f0083891ee81..8885812d866a 100755
-> > > > --- a/tools/testing/selftests/rcutorture/bin/torture.sh
-> > > > +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-> > > > @@ -68,6 +68,7 @@ do_clocksourcewd="${ifnotaarch64}"
-> > > >  do_rt=yes
-> > > >  do_rcutasksflavors="${ifnotaarch64}" # FIXME: Back to "yes" when SMP=n auto-avoided
-> > > >  do_srcu_lockdep=yes
-> > > > +do_atomic_srcu=no
-> > > >  do_rcu_rust=no
-> > > >
-> > > >  # doyesno - Helper function for yes/no arguments
-> > > > @@ -103,6 +104,7 @@ usage () {
-> > > >     echo "       --do-rcu-rust / --do-no-rcu-rust / --no-rcu-rust"
-> > > >     echo "       --do-scftorture / --do-no-scftorture / --no-scftorture"
-> > > >     echo "       --do-srcu-lockdep / --do-no-srcu-lockdep / --no-srcu-lockdep"
-> > > > +   echo "       --do-atomic-srcu / --do-no-atomic-srcu / --no-atomic-srcu"
-> > > >     echo "       --duration [ <minutes> | <hours>h | <days>d ]"
-> > > >     echo "       --guest-cpu-limit N"
-> > > >     echo "       --kcsan-kmake-arg kernel-make-arguments"
-> > > > @@ -148,6 +150,7 @@ do
-> > > >             do_kcsan=yes
-> > > >             do_clocksourcewd="${ifnotaarch64}"
-> > > >             do_srcu_lockdep=yes
-> > > > +           do_atomic_srcu=yes
-> > > >             ;;
-> > > >     --do-allmodconfig|--do-no-allmodconfig|--no-allmodconfig)
-> > > >             do_allmodconfig=`doyesno "$1" --do-allmodconfig`
-> > > > @@ -183,6 +186,7 @@ do
-> > > >             do_kcsan=no
-> > > >             do_clocksourcewd=no
-> > > >             do_srcu_lockdep=no
-> > > > +           do_atomic_srcu=no
-> > > >             ;;
-> > > >     --do-normal|--do-norm|--do-no-normal|--do-no-norm|--no-normal|--no-norm)
-> > > >             do_normal=`doyesno "$1" --do-normal`
-> > > > @@ -212,6 +216,9 @@ do
-> > > >     --do-srcu-lockdep|--do-no-srcu-lockdep|--no-srcu-lockdep)
-> > > >             do_srcu_lockdep=`doyesno "$1" --do-srcu-lockdep`
-> > > >             ;;
-> > > > +   --do-atomic-srcu|--do-no-atomic-srcu|--no-atomic-srcu)
-> > > > +           do_atomic_srcu=`doyesno "$1" --do-atomic-srcu`
-> > > > +           ;;
-> > > >     --duration)
-> > > >             checkarg --duration "(minutes)" $# "$2" '^[0-9][0-9]*\(m\|h\|d\|\)$' '^error'
-> > > >             mult=1
-> > > > @@ -497,6 +504,23 @@ then
-> > > >     torture_set "rcutorture" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "$configs_rcutorture" --trust-make
-> > > >  fi
-> > > >
-> > > > +# Test atomic SRCU across Tree SRCU (SRCU-N and SRCU-P) and Tiny SRCU
-> > > > +# (SRCU-T).  The reader flavor selects srcu_read_lock_atomic() and
-> > > > +# synchronize_srcu_atomic().  Tiny SRCU requires SMP=n, which aarch64
-> > > > +# does not support.
-> > > > +if test "$do_atomic_srcu" = "yes"
-> > > > +then
-> > > > +   torture_bootargs="rcutorture.reader_flavor=0x10"
-> > > > +   configs_atomic_srcu="SRCU-N SRCU-P"
-> > > > +   if test "$ifnotaarch64" = yes
-> > > > +   then
-> > > > +           configs_atomic_srcu="$configs_atomic_srcu SRCU-T"
-> > > > +   fi
-> > > > +   torture_set "atomic-srcu" tools/testing/selftests/rcutorture/bin/kvm.sh \
-> > > > +           --allcpus --duration "$duration_rcutorture" \
-> > > > +           --configs "$configs_atomic_srcu" --trust-make
-> > > > +fi
-> > > > +
-> > > >  if test "$do_locktorture" = "yes"
-> > > >  then
-> > > >     torture_bootargs="torture.disable_onoff_at_boot"
-> > > > --
-> > > > 2.43.0
-> > > >
