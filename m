@@ -1,69 +1,69 @@
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FD758E2CD
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D153A58E2DB
 	for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 18:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789066272; cv=none; b=S3iJ3g+I1ITrvz1tIfeb7J4KKnPnBN+uSorHMQIiiYnyHht/xDrCY/+nAJnKrj0hvvjKo6UcLD284ciOSvh2oUPUybP6DeQ0GdOuKuEQxfp4uuGx+5d9rYLycqZfHJbKNJXhayWZTgc8vevNF9UTTRSCrdMLX3NGWoRdgDZdk5Q=
+	t=1789066276; cv=none; b=BktnmbOpbarhvrW5wm3/OAMH0TfiZosabjAlBVYUGnAwVNYAs3jixQhXqrXpSFr25OV5sVWiEjm+dsv8oG/U57TWUGX15ANQk5OjD/lu4z5vQMaGAOsFO6wBSQY7zGULRclHzotUFp9XuS589dumlMrDpYtsnJ3F4aIVJ/zymzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789066272; c=relaxed/simple;
-	bh=bmu7zPpxbnsCSHBhyK2WDk3M9VMJMCkgBrW5uszUBuU=;
+	s=arc-20240116; t=1789066276; c=relaxed/simple;
+	bh=l7aVvY+ftiwQa148loQ0+qhD4xLi8gidpPUfzn723bw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=o4VVUT9zpRrm0I9JojCNR/XCE7RhMGsPxmrsR+UPWjoUwclZCWBesa85/MscyVA2jxOJSdWeUL9S5H0+qD06VGkeljDXvDpsMii70aliVjWWSnndm3KaEBs2ev6Six6J0K13wJSFqBP6X20EOJHFGzy1h7EqOGDZzBgWkXg+rTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=N6WQL5gZ; arc=none smtp.client-ip=209.85.160.172
+	 In-Reply-To:To:Cc; b=ktZvjEglzME9vXgx3OhGs78LFhcPed4u3Hu39V/dojDVIIIiNELae5a4zEkjMq3XNR0WbW9dov4h/EiSvLPTC9g9glcsBC+glFrcbXWbFvDQjHkmeyFNXNmFV7TmUn/YPzZFp+8MTIZN3CqeWVFTO8NmxB1WR+ahgvA0EmVNCsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=SJDudFZp; arc=none smtp.client-ip=209.85.219.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="N6WQL5gZ"
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-52d7a3defe8so1556811cf.0
-        for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 11:51:05 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="SJDudFZp"
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-90e8e70fa02so306496d6.3
+        for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 11:51:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda.com; s=google; t=1789066263; x=1789671063; darn=vger.kernel.org;
+        d=toxicpanda.com; s=google; t=1789066259; x=1789671059; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=sAaaOhrJ7Jcw63o+Xz8kKBY4jQKDr2HCsih3+9envV4=;
-        b=N6WQL5gZMClnsrkfEj+Hr3ZLy2BVKgqAHi5x62pDA/nP9WZXgF2d0gwGqqCQF2hNKw
-         6QHxECldF3kRcZweckcO8RGHwQ0Vehf9wUF2wxEVJCyztvyMfRYQz17LB5pHXs5KAEnT
-         vIm2LsRZ/lksvkmy/ig0s47igDed1knKewR37Kjc/Ror/afPQPI4j/hhiJAqzXfq7KGK
-         HHbmHvYqlEEvt0/qAsO7MeVwvEbJDjKwY8GrWviICmLy4WIoZl2jGILEZKN8yGMEPI/Z
-         nkqpBOBy/XkxNe8sP52Abt+4RQH/HfTevSa9mXBO8p0o69kmEME+aMLdeK6k1IvLaCJw
-         6K9g==
+        bh=aLCJ034DJzI4gEh3LNSHB0+4siN8J5WsqqEdRoq/eTA=;
+        b=SJDudFZpHbGasf1sYncdDjxTempqqp0DMTqYiTtMoOAfxLZIJ+NKJtvl9K06BHrIv2
+         h9NeMm2JG7vqI8f4ZC6lPNZVPZTlTFZgkIgDWIrCVSqW4A9a2C4KqPVxoKtoP4QN/WyG
+         cy/y2+rDGHhg8eKblNHSgWdLVhRteesNNWYMbTYEIGWNu9lDsTCaq3jvw2gVoEXOJJLd
+         sk8a+CuP/3RLRRWzcQN9Zlgzz0TWQis4sOnTufsIE/zPO2WXRbUNMo9ABPjkqkyY6435
+         x3NbkXa84+ZWjwklOnTVMPkEzTMcSeJhFSPAL0GyEQsmIa/w7a+T7+E/Ur0QxOgDGQvd
+         9bFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789066263; x=1789671063;
+        d=1e100.net; s=20251104; t=1789066259; x=1789671059;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=sAaaOhrJ7Jcw63o+Xz8kKBY4jQKDr2HCsih3+9envV4=;
-        b=TmApWzio9FAiVI3nptZV0nQyJulBlmAGBb7SsKwlVKYG4HcGQIyf0hpSq+/Y7fce/K
-         8ME1zTOMgQmpHAM0Whg87lFDCpFurSc7kROUuqsgCLKFxsSVys5obJV9l10SDag1aTfy
-         fAIm1aEWartg4A6C08a9euvGkpc5wmljf4GWC4pvjCIEDf2jUboGcuozQb08GUXQ06Ka
-         F2E/OoGQdH7MF//Bq8h7x9kqJTJ+V30A/gwTmK2D5lrH9o7fyr04SJBhdyPfi+9i95w9
-         Zip/5fUumNArAQhoPOUtJQh+YGhMlm9i0NTsxcKYOw5C1MIp/Bx5HtqT9mStzWRVuRyj
-         hTWg==
-X-Forwarded-Encrypted: i=1; AKwUvBztICmhvefWG11SwCkwMlAAgVao4ur7ArIibaD0/fZ4MIRnOR2H3gnXxjfKvBp6R6TWXqk=@vger.kernel.org
-X-Gm-Message-State: AFuF++l5xykhPAKOPtRDQbym8zhqE66Q7DHQ7nGc7+R9JBtPod7ATrXz
-	5L984er2y6A0h2Ynx+Eo8RjARf56LXDeSDAR3WfoeOLrPBh0Y19eXYr2A1N6qKyECWE=
-X-Gm-Gg: AYBFou0N7C1SU1Bb04V5jV1o2mDsAOnaXxPNAcOaPat+ogdvp2P26ZE2Ffq5NIXzUCP
-	5vRL0m4KB7zQr6P0jwl+Fx0axSNF9qd8Ev/bjCpI2a2STk/7xlrr8ECy4Swmvd0N5PBJuhh0VoG
-	IxB9s2YHEq7/demZe1e323mm9L+YtcZ2K2Ao0ZlA5j4ADKbLBRQHnqKK9IO/NJatKgL6Jnhg4aF
-	Ot/FXbCvDGXgLQFCb/+rSOZX04F+0mCpRSDV+ExgK06Pk0ql4DxUDysEMsO0uhsnXCU96s2ieEa
-	+EbVtQEt0g1/uUcwbOyeSpm8bsBINToIyDOGeLTcV0luiL7gosqbP9LsqERJdF4xHW8DDcJqPbi
-	JumAJicprbKKDTG6SWSfUuLipv3zXOL5EH3umGiw+nhT49TPKDUVWt0CYxa5+vmqUHzvSsJAoI1
-	f4MqhYV4q47jPyYpyfq5S1+uDYD6fCfQUKJuR6zuONCxS81HVZPceDi0dB22CNcKPyfjiCYmY4/
-	+A/mfddDPAeF2r3w0k5MRIP/wFDPza1XYo0jRs6gENyvw2if7683gNC
-X-Received: by 2002:a05:622a:1309:b0:530:42d4:4c98 with SMTP id d75a77b69052e-530c8756e8amr10238141cf.42.1789066262237;
-        Thu, 10 Sep 2026 11:51:02 -0700 (PDT)
+        bh=aLCJ034DJzI4gEh3LNSHB0+4siN8J5WsqqEdRoq/eTA=;
+        b=JwhbW41ZzQQDuBr05tc7Npmk3yJ7aoYgBzRfbeT8m3xbjX/dd6h5N//XHRhaoa3lmb
+         Bj++e4mrB3hJvw5mugPzHAWKs09XkF2RimjCbgadtn9mlIo39n1uZ7frlCcU0oNsTvFs
+         9w4N89PYx8H0wbX84u6OHZn1qz99yAq2Bi+/1vgUkNB0YCy/LqFNxzcTy9/se9fXsVo5
+         PqZNxnObEieX6tcNID2B8Uaht253BfUvQkXF85bH1Njr90G0oQM+FZIbjmkNcwRBTPw6
+         sIrPVaEie5iZBMGJ9ZUidw7iQT8F0x487KV4BliUvVJPLFtC+TKm9m76tksTA9a/q3To
+         ZycA==
+X-Forwarded-Encrypted: i=1; AKwUvBz6orSU4zxpjDt5WAaT66SonuCC+S6TpCtKzNjHaT25rt7pnIna4zkS/dMFDKGdxS5oja8=@vger.kernel.org
+X-Gm-Message-State: AFuF++nr2OCIMZZz7jVg4I9p96gjUA0WR11FuaGbCFAHwCmUwsstyLw6
+	/i7gjZvHrdiOCmo9wMRvZCGWGkl+KYLCQfsMzPXlPmwBhLYyE5EnGQRDJ0y0qyKm7po=
+X-Gm-Gg: AYBFou1omv5aYEYPdApOFwJyngVsdTFLxZqPhi++TZBuqhYRlO8586mKb1HEOHqI9+T
+	75EGISlqxEyOVOY15Onz26xxVww/agV68YCv39C9ggI3EGGNvrgqcByd3b5dbOr+HxLNGyVveRA
+	KgOH/bpJ/2qIC3ViIpoc5Y7uezbnYrzGxbwi6gwhpT+eVo9mmsxs2s46Gs8Mvl8mumrdNGqvdef
+	VjNh53zQENH++3MnhjKRdxQSy9ngjNNbOtU/M6Zc29xjNsL0Z2dX2zvLATG17lwAFOUTf2agcZA
+	Tq2Orza2ovTbFe4hP8rOPOZB0Yp55UWFZEPDn1xvtYFjGkXyV9Bo84Q02aTO1a0RFYminFlmguG
+	yD8WgtMtqWLU8gGpmT+dMMatcTryEZqS6KRwiRZtiCaI3teeUzHw+FiNhZE4qeauQW+bDoagCwc
+	t/jzKUokSpueH9yV1bgYvhNGjBpcdpRsbJ3tuBSUrt5AmiOeVYOFN7DVcclbP2BQXwoFZ7cZSJc
+	MBjvboRrUF1MBN301umqJlv2xiJJ2dwq2npBDQU85TPruUpPq9vmmaifMQchT0wU0E=
+X-Received: by 2002:a05:620a:6191:b0:939:a6e4:2267 with SMTP id af79cd13be357-939ea2bff00mr14491685a.50.1789066258414;
+        Thu, 10 Sep 2026 11:50:58 -0700 (PDT)
 Received: from toxicpanda.com (ec2-34-228-114-98.compute-1.amazonaws.com. [34.228.114.98])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-9120f45a780sm2547836d6.10.2026.09.10.11.51.01
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-939e807eba7sm47389685a.29.2026.09.10.11.50.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2026 11:51:01 -0700 (PDT)
+        Thu, 10 Sep 2026 11:50:57 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
-Date: Thu, 10 Sep 2026 18:50:29 +0000
-Subject: [PATCH RFC 06/13] x86/ftrace: Maintain Tasks RCU trampoline
- nesting in ftrace_caller
+Date: Thu, 10 Sep 2026 18:50:27 +0000
+Subject: [PATCH RFC 04/13] kprobes: Let Tasks RCU recognise tasks preempted
+ in an optprobe jump window
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -72,7 +72,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260910-b4-rcu-tasks-preempt-qs-v1-6-d4469f4cc101@toxicpanda.com>
+Message-Id: <20260910-b4-rcu-tasks-preempt-qs-v1-4-d4469f4cc101@toxicpanda.com>
 References: <20260910-b4-rcu-tasks-preempt-qs-v1-0-d4469f4cc101@toxicpanda.com>
 In-Reply-To: <20260910-b4-rcu-tasks-preempt-qs-v1-0-d4469f4cc101@toxicpanda.com>
 To: "Paul E. McKenney" <paulmck@kernel.org>, 
@@ -98,221 +98,127 @@ Cc: Andy Lutomirski <luto@kernel.org>,
  xen-devel@lists.xenproject.org, Josef Bacik <josef@toxicpanda.com>
 X-Mailer: b4 0.15.2
 
-Bracket the call out to the ftrace_ops callback in ftrace_caller and
-ftrace_regs_caller with an increment/decrement of
-current->rcu_tramp_nesting.  The instructions sit inside the region that
-create_trampoline() copies for per-ops dynamic trampolines, so those
-inherit them; the %rip-relative per-CPU reference to current_task is
-fixed up by text_poke_apply_relocation() like CALL_DEPTH_ACCOUNT's.
-%rdx is dead at both points (about to be loaded with the ops pointer on
-entry, restored by restore_mcount_regs on exit).
+kprobe_optimizer() is the one synchronize_rcu_tasks() user that is not
+about trampoline text: it waits for tasks that were preempted on an
+instruction boundary inside the bytes it is about to overwrite with the
+optimized jump, so that none of them resumes into the middle of the new
+instruction.  Such a task sits in ordinary kernel or module text with
+rcu_tramp_nesting == 0, and can only have got there via an irq-exit
+preemption.
 
-Two pieces of core text still run with the count at zero while holding
-the address of a Tasks-RCU-protected trampoline they are about to
-enter: the static stubs themselves, whose direct-call tails keep a BPF
-trampoline address on the stack until the final RET, and, under
-CONFIG_MITIGATION_RETHUNK, the return thunk that RET expands to.  Add an
-ftrace_static_tramp_end marker after ftrace_stub_direct_tramp and linker
-symbols around .text..__x86.return_thunk and .text..__x86.rethunk_safe,
-and provide arch_rcu_tasks_ip_in_trampoline() covering
-[ftrace_caller, ftrace_static_tramp_end) and both thunk ranges so the
-irq-exit check treats a task interrupted there as still inside a
-trampoline.
-
-The hook is built only under CONFIG_RCU_TASKS_PREEMPT_QS, which x86 does
-not select until a later patch.
+Add kprobe_in_optimized_region(), a lockless and conservative form of
+get_optimized_kprobe() that reports whether any registered kprobe lies
+within MAX_OPTIMIZED_LENGTH before the given address regardless of its
+optimization state, and have rcu_tasks_ip_in_trampoline() consult it so
+that a task interrupted there keeps holding off the Tasks RCU grace
+period once preemption becomes a quiescent state.
 
 Assisted-by: LLM
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- arch/x86/kernel/asm-offsets.c |  3 +++
- arch/x86/kernel/ftrace.c      | 37 +++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/ftrace_64.S   | 43 +++++++++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/vmlinux.lds.S |  4 ++++
- 4 files changed, 87 insertions(+)
+ include/linux/kprobes.h  |  8 +++++++-
+ include/linux/rcupdate.h |  4 +++-
+ kernel/kprobes.c         | 24 ++++++++++++++++++++++++
+ kernel/rcu/tasks.h       |  6 ++++++
+ 4 files changed, 40 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
-index 081816888f7a..4f3b1caa5a30 100644
---- a/arch/x86/kernel/asm-offsets.c
-+++ b/arch/x86/kernel/asm-offsets.c
-@@ -46,6 +46,9 @@ static void __used common(void)
- #ifdef CONFIG_STACKPROTECTOR
- 	OFFSET(TASK_stack_canary, task_struct, stack_canary);
- #endif
-+#ifdef CONFIG_TASKS_RCU
-+	OFFSET(TASK_rcu_tramp_nesting, task_struct, rcu_tramp_nesting);
-+#endif
- 
- 	BLANK();
- 	OFFSET(pbe_address, pbe, address);
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 17d6edfcb7e0..8f63cd4b543c 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -275,6 +275,43 @@ static inline void tramp_free(void *tramp)
- 	execmem_free(tramp);
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index e6de7ae55bda..74cc48c04417 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -530,11 +530,17 @@ static inline bool is_kprobe_insn_slot(unsigned long addr)
  }
+ #endif /* !CONFIG_KPROBES */
  
-+#ifdef CONFIG_RCU_TASKS_PREEMPT_QS
-+extern void ftrace_static_tramp_end(void);
-+extern char __return_thunk_start[], __return_thunk_end[];
-+extern char __rethunk_safe_start[], __rethunk_safe_end[];
-+
-+/*
-+ * See rcu_tasks_ip_in_trampoline().  Some core kernel text behaves like a
-+ * trampoline for Tasks RCU purposes because a task executing there with
-+ * rcu_tramp_nesting == 0 may still be about to enter a Tasks-RCU-protected
-+ * trampoline whose address it already holds:
-+ *
-+ *  - the static ftrace_caller / ftrace_regs_caller / ftrace_stub_direct_tramp
-+ *    stubs, which carry a direct-call target on the stack until their final
-+ *    RET, and
-+ *  - the return thunks that RET expands to under CONFIG_MITIGATION_RETHUNK,
-+ *    which run after leaving the stubs above and before landing in that
-+ *    target.
-+ */
-+bool arch_rcu_tasks_ip_in_trampoline(unsigned long ip)
+-#ifndef CONFIG_OPTPROBES
++#ifdef CONFIG_OPTPROBES
++bool kprobe_in_optimized_region(unsigned long addr);
++#else /* !CONFIG_OPTPROBES */
+ static inline bool is_kprobe_optinsn_slot(unsigned long addr)
+ {
+ 	return false;
+ }
++static inline bool kprobe_in_optimized_region(unsigned long addr)
 +{
-+	if (ip >= (unsigned long)ftrace_caller &&
-+	    ip <  (unsigned long)ftrace_static_tramp_end)
-+		return true;
-+#ifdef CONFIG_MITIGATION_RETPOLINE
-+	if (ip >= (unsigned long)__return_thunk_start &&
-+	    ip <  (unsigned long)__return_thunk_end)
-+		return true;
-+#endif
-+#ifdef CONFIG_MITIGATION_SRSO
-+	if (ip >= (unsigned long)__rethunk_safe_start &&
-+	    ip <  (unsigned long)__rethunk_safe_end)
-+		return true;
-+#endif
 +	return false;
 +}
-+#endif /* CONFIG_RCU_TASKS_PREEMPT_QS */
-+
- /* Defined as markers to the end of the ftrace default trampolines */
- extern void ftrace_regs_caller_end(void);
- extern void ftrace_caller_end(void);
-diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-index 62c1c93aa1c6..902472c41798 100644
---- a/arch/x86/kernel/ftrace_64.S
-+++ b/arch/x86/kernel/ftrace_64.S
-@@ -7,6 +7,7 @@
- #include <linux/cfi_types.h>
- #include <linux/linkage.h>
- #include <asm/asm-offsets.h>
-+#include <asm/percpu.h>
- #include <asm/ptrace.h>
- #include <asm/ftrace.h>
- #include <asm/nospec-branch.h>
-@@ -145,6 +146,27 @@ SYM_FUNC_END(ftrace_stub_graph)
+ #endif /* !CONFIG_OPTPROBES */
  
- #ifdef CONFIG_DYNAMIC_FTRACE
+ #ifdef CONFIG_KRETPROBES
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 0a408e36ea15..e9afbbb1b061 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -200,7 +200,9 @@ bool arch_rcu_tasks_ip_in_trampoline(unsigned long ip);
+  * cannot be preempted synchronously, only from an interrupt, so the irq-exit
+  * preemption path covers it by checking regs->ip with
+  * rcu_tasks_ip_in_trampoline() and holding the count elevated across
+- * preempt_schedule_irq() when it matches.
++ * preempt_schedule_irq() when it matches.  The same check covers the one
++ * non-trampoline user, kprobe jump optimization, which waits for tasks
++ * preempted inside the instruction bytes it is about to overwrite.
+  *
+  * Only current writes the count and only current (or an interrupt on the same
+  * CPU) reads it, so plain accesses suffice.
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 6337da5cab9e..76f146edb0e5 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -511,6 +511,30 @@ static struct kprobe *get_optimized_kprobe(kprobe_opcode_t *addr)
+ 	return NULL;
+ }
  
-+/*
-+ * Tasks RCU trampoline nesting, see rcu_tasks_trampoline_enter().  These live
-+ * inside the region copied into dynamic trampolines; the %rip-relative per-CPU
-+ * reference is fixed up by text_poke_apply_relocation() in create_trampoline().
-+ * The increment must precede the function_trace_op load: between that load and
-+ * the call, the ops pointer in %rdx is protected only by Tasks RCU.
++/**
++ * kprobe_in_optimized_region - Could @addr be inside bytes a jump-optimized
++ *	kprobe replaces?
++ * @addr: kernel text address, typically an interrupted instruction pointer
++ *
++ * kprobe_optimizer() relies on synchronize_rcu_tasks() to wait for tasks that
++ * were preempted on an instruction boundary inside the region about to be
++ * overwritten by the optimized jump; such a task must not report a Tasks RCU
++ * quiescent state when it is preempted (see rcu_tasks_ip_in_trampoline()).
++ * This is the lockless, conservative form of get_optimized_kprobe(): it does
++ * not care whether the kprobe found is, or ever will be, optimized.  May be
++ * called from any context with preemption disabled.
 + */
-+.macro RCU_TASKS_TRAMP_ENTER reg:req
-+#ifdef CONFIG_TASKS_RCU
-+	movq PER_CPU_VAR(current_task), \reg
-+	incl TASK_rcu_tramp_nesting(\reg)
-+#endif
-+.endm
++bool kprobe_in_optimized_region(unsigned long addr)
++{
++	int i;
 +
-+.macro RCU_TASKS_TRAMP_EXIT reg:req
-+#ifdef CONFIG_TASKS_RCU
-+	movq PER_CPU_VAR(current_task), \reg
-+	decl TASK_rcu_tramp_nesting(\reg)
-+#endif
-+.endm
++	for (i = 1; i < MAX_OPTIMIZED_LENGTH / sizeof(kprobe_opcode_t); i++)
++		if (get_kprobe((kprobe_opcode_t *)addr - i))
++			return true;
++	return false;
++}
++NOKPROBE_SYMBOL(kprobe_in_optimized_region);
 +
- SYM_FUNC_START(__fentry__)
- 	ANNOTATE_NOENDBR
- 	CALL_DEPTH_ACCOUNT
-@@ -163,6 +185,8 @@ SYM_FUNC_START(ftrace_caller)
- 	leaq MCOUNT_REG_SIZE+8(%rsp), %rcx
- 	movq %rcx, RSP(%rsp)
- 
-+	RCU_TASKS_TRAMP_ENTER %rdx
+ /* Optimization staging list, protected by 'kprobe_mutex' */
+ static LIST_HEAD(optimizing_list);
+ static LIST_HEAD(unoptimizing_list);
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index a801ec4a951b..a55dc2a20fb7 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1114,6 +1114,9 @@ bool __weak arch_rcu_tasks_ip_in_trampoline(unsigned long ip)
+  *    deliberately does not consult is_ftrace_trampoline() and friends: text
+  *    being torn down may already be unregistered there while a task still
+  *    stands on it;
++ *  - inside the bytes following a registered kprobe that jump optimization
++ *    may overwrite, which kprobe_optimizer() protects with
++ *    synchronize_rcu_tasks();
+  *  - in core text the architecture flags via arch_rcu_tasks_ip_in_trampoline().
+  *
+  * A false positive only defers the quiescent state to the task's next
+@@ -1121,6 +1124,9 @@ bool __weak arch_rcu_tasks_ip_in_trampoline(unsigned long ip)
+  */
+ bool rcu_tasks_ip_in_trampoline(unsigned long ip)
+ {
++	if (kprobe_in_optimized_region(ip))
++		return true;
 +
- SYM_INNER_LABEL(ftrace_caller_op_ptr, SYM_L_GLOBAL)
- 	ANNOTATE_NOENDBR
- 	/* Load the ftrace_ops into the 3rd parameter */
-@@ -181,6 +205,8 @@ SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
- 	ANNOTATE_NOENDBR
- 	call ftrace_stub
- 
-+	RCU_TASKS_TRAMP_EXIT %rdx
-+
- 	/* Handlers can change the RIP */
- 	movq RIP(%rsp), %rax
- 	movq %rax, MCOUNT_REG_SIZE(%rsp)
-@@ -209,6 +235,8 @@ SYM_FUNC_START(ftrace_regs_caller)
- 
- 	CALL_DEPTH_ACCOUNT
- 
-+	RCU_TASKS_TRAMP_ENTER %rdx
-+
- SYM_INNER_LABEL(ftrace_regs_caller_op_ptr, SYM_L_GLOBAL)
- 	ANNOTATE_NOENDBR
- 	/* Load the ftrace_ops into the 3rd parameter */
-@@ -246,6 +274,8 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_GLOBAL)
- 	ANNOTATE_NOENDBR
- 	call ftrace_stub
- 
-+	RCU_TASKS_TRAMP_EXIT %rdx
-+
- 	/* Copy flags back to SS, to restore them */
- 	movq EFLAGS(%rsp), %rax
- 	movq %rax, MCOUNT_REG_SIZE(%rsp)
-@@ -328,6 +358,19 @@ SYM_FUNC_START(ftrace_stub_direct_tramp)
- 	RET
- SYM_FUNC_END(ftrace_stub_direct_tramp)
- 
-+/*
-+ * [ftrace_caller, ftrace_static_tramp_end) is treated as trampoline text by
-+ * rcu_tasks_ip_in_trampoline(): after RCU_TASKS_TRAMP_EXIT the stubs may
-+ * still hold a direct-call target (a BPF trampoline) on the stack until the
-+ * final RET, and that target's lifetime is guarded by Tasks RCU.  With
-+ * return thunks the RET itself runs elsewhere; arch_rcu_tasks_ip_in_trampoline()
-+ * covers the thunk text too.
-+ */
-+SYM_CODE_START_NOALIGN(ftrace_static_tramp_end)
-+	UNWIND_HINT_UNDEFINED
-+	ANNOTATE_NOENDBR
-+SYM_CODE_END(ftrace_static_tramp_end)
-+
- #else /* ! CONFIG_DYNAMIC_FTRACE */
- 
- SYM_FUNC_START(__fentry__)
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index 2438b89a4620..e546283dc267 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -151,7 +151,9 @@ SECTIONS
- 		 * definition.
- 		 */
- 		. = srso_alias_untrain_ret | (1 << 2) | (1 << 8) | (1 << 14) | (1 << 20);
-+		__rethunk_safe_start = .;
- 		*(.text..__x86.rethunk_safe)
-+		__rethunk_safe_end = .;
- #endif
- 		ALIGN_ENTRY_TEXT_END
- 
-@@ -162,7 +164,9 @@ SECTIONS
- 		SOFTIRQENTRY_TEXT
- #ifdef CONFIG_MITIGATION_RETPOLINE
- 		*(.text..__x86.indirect_thunk)
-+		__return_thunk_start = .;
- 		*(.text..__x86.return_thunk)
-+		__return_thunk_end = .;
- #endif
- 		STATIC_CALL_TEXT
- 		*(.gnu.warning)
+ 	if (core_kernel_text(ip))
+ 		return arch_rcu_tasks_ip_in_trampoline(ip);
+ 	return !is_module_text_address(ip);
 
 -- 
 2.55.0
