@@ -1,97 +1,98 @@
-Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com [74.125.225.140])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EA0381E97
-	for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 04:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.225.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C423B14C4
+	for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 04:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.51
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789014467; cv=pass; b=AzkDGmue+vC/PQXOO7s/nlNfpKtepTvd7DgW6WmxOk3123w8/YtX8dGxT8ORAP4PKhkzbKc5rGMG5LFPyg0VYUNS7kwKbTHihhqMo1utHgRzG3FfPe4KpfO/BMi4UO7X1N/8wXzC3tF4KU1Ni02lNmp4FO0KxJo52TTTnSyALgg=
+	t=1789014683; cv=pass; b=uel4VPXoKdp02dPv+wvHmmuiBMJbluAn0pzbPSb2hBZFd1cx3qZwssBSxZ/7j9zWd9rrTIg4NUp8ZxY26pFSmXu5E9glpTyCbhjcHwHtV6yhxPKjRfT8gJM4tildW2rqTfeMmzj9Mprs1jLBFKOlsY0tCUW7gH7c5sw2a4WBspo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789014467; c=relaxed/simple;
-	bh=MYU9OpzBZLsQzkXTlej2bdd+H+Auq3i+G/TlNIgBvxg=;
+	s=arc-20240116; t=1789014683; c=relaxed/simple;
+	bh=nGWKaqyr24Wy2YZw8DdG/uOhViINSSIsWNtLN5gDkYQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aaEKFruSrUr9TiFl8kxgoa0Cw5YE0EvWpbPl3v6wbJOnPDMZ07dRHUAZv1RPQkDIfbMJuamvI8zSiCSJbk0QlN6vKnkyA88iq98FrVZltXUoaLF+mEYSMLMkzYin3Xd4U6v64oZCYdM07Js0ttIj0NfKEqtnwVgPHLIWtqPd8JA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WiWlEfyW; arc=pass smtp.client-ip=74.125.225.140
+	 To:Cc:Content-Type; b=M6NEAlrhUDEBML3prWKSrHWVs0Jtb0DKjKpbpO8Y0thbZ9cqZdEP/FZyC0AInYV0l9yryYDRmDPNuJON5X/B0SXw2jClklJGgcesJT6ecLwq54dc/+OSYwAWKVBLl1bln8eFH83zqJPjuZphjwvs27F9S9QPiFqZVQrjbnMZh+8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l3SODCeV; arc=pass smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WiWlEfyW"
-Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49cd38e0e5dso10706195e9.2
-        for <rcu@vger.kernel.org>; Wed, 09 Sep 2026 21:27:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789014464; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l3SODCeV"
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-49ccfae359fso56122255e9.3
+        for <rcu@vger.kernel.org>; Wed, 09 Sep 2026 21:31:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789014680; cv=none;
         d=google.com; s=arc-20260327;
-        b=IOIcUisay/pGFomCSmuH5v7Buv+uwbE8ICyhNbvHntVg8IQgHNquSOR7ugrgwpsS6X
-         F4/sqGqCmA5Fhlc+yt4a381F35c56UMqPg42JaqK9Kg+VclwBsJXNENaX1MseMWXTlgQ
-         iyyE51DobuHy4nwlRgz3wqRjUCSYD5U+jTE/5Z4NC5oCd4b34naZyVCt8QnUSF7LWJqT
-         RRNhH798Ie/+johWSe7bs53IaS34WD/jNIKJYUYTDhyR3bdTC9oDZ3CViBSsR9APDx46
-         LNVCEDXurPazZob5C4NCHUcGDUvZ8hhddGVs1PQlYRfKGAoDNDaJzzM3QmMPB1eTWzok
-         hW7g==
+        b=IeFXkhczBtnfsZVBqHu9IVXj7dDaBUQ2WeDdyNkkjNw80KDyr+PNOp+Kg87ThFn760
+         AJQR7/8d3avY9Li91qiZ6W3mPov1DNm4hRlg33yV5fO8qoUQPmEGRFsQKug9OMO9bwVe
+         ont4YEXipIyOFj2FmsipST8KGWwZYwv7RcDwkSmeOVLbYWYPNr8VADq36ZO40Zev01ss
+         9lvZXBq+MI0XUUUyrcf6YXFzTcsS+rLyebGtYSLn/MVYSNcIiwbPhvVmCbEvNKnp/2ah
+         JHpbgQHMTb+zQ7hlblmzitbSgdt3bSvm6Fmv+LBNIohyoQqKbLwr1d6VD2S/N2FTd3sv
+         KViA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=Tmt580Wcn8Bj1vHX81UjDGhgKre8nawir61F+yXmA4Y=;
-        fh=f9r8JvIAkFVW2HWjy+Jmg+PwuExNDImxZ5MMImETXuo=;
-        b=i5G5EGa2tZ7e+MPdUVOr3rB1xkFvs/PXRkCPvs/Uwpp6SHmQ22vR6vDK+BQm1kjje8
-         IZD+dpAU0VQODDXCe/hvOo5OZSqaiWM3E6assVB/fWAG+kF0Y3AKDDdZVmRCyxOf+kjW
-         FbeWtNFlHAttqNcqEs+sSYtgoQWZW6YfhLY/I6jDlzJUkAeylSnbz3uf1qZc+ntW8t6r
-         DwbKe5rze2iErpwCJFBDmIcyTEBUJoBoITvGyTkI7R4YqFyeIJvRkbA0igLSCb+dbGYA
-         juYnY2d5ETaW2x0N3BAKF8VGri2BvSeAXSHRaEcovWobG3Qc/RQmfG6uLzL40GE1NCBK
-         A4Yw==;
+        bh=ogeS1d1lUjwpzULBQnx1xn71a+aSrJ9QM6Mrgrln7po=;
+        fh=/Dbx0vPnooMmy9MkPu782pTZUVG4rmSxblTFZmV91/k=;
+        b=rdlByBbxDSAxZtpgvAJncJiUz4wKxGqSirIl51cwaAP+fOLWYyiDHNtTUVGEexdpEJ
+         me1Bg2HHDk0uxCY9VZwOeKwMysIPKcURVL7Ah2WqwTgMVmOVfwTywLPqGuSWddAhvx9I
+         wL9kJuyQ2hVrfpfGEleLXX0R7cekucxSXUAEFW1yGZM8IjNaDuuFB8YFSuQrU5QavtAZ
+         sPWrlf96lMq5zqzIftbJ95WVxvcL5z5umJRhlnxHTXtkfqgx1+BzUFoHXwro9hMEUHvN
+         rOHitveVUNLUbAovan3Vpoyma6QaoOTjYjnTcUE00Co+qGEj7Nj97Obm3SXlwHPpSSc8
+         8lxw==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789014464; x=1789619264; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1789014680; x=1789619480; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=Tmt580Wcn8Bj1vHX81UjDGhgKre8nawir61F+yXmA4Y=;
-        b=WiWlEfyWxuGErSH0HUXX/lBKE7MB+JX2SBCZu+ONUddVoT6VNGNPOqNIa09ov8r/oT
-         CYwTtXr5jqGjNaL1zAx16s92F3bikzeTsQ4PrMvKdV86sgliO6zBvUa0+a89kY94alIq
-         SawSehRpz9mFgBfwGTT6l3pdfnBu7l33lX7ImT90+XRensBJiMgG15KP5nB5u85f/AyD
-         tglY1/2l4q6gleVUK6N62qZszGTeeYp+ATqvmHYH030KIomwg9ToU489h06Zd95gftiy
-         RLbdPZivkuXvaUCaiFeydCLpIOJmkaDVfR1vBSX5TyIMjugPqCVulA2UMX1GC4PcCM54
-         VTWQ==
+        bh=ogeS1d1lUjwpzULBQnx1xn71a+aSrJ9QM6Mrgrln7po=;
+        b=l3SODCeVhF2OXWYpnGgog9bWquVvBQh3oK8QsdseMroxMuwi/lExmnvfAHKqj74Fqt
+         mAuNcwnhS5on3gjlHRDr0H4R9MUh29ieJ/YbqCR1ay6MSWJnRCzLMkMioMOtCO9DVzFQ
+         OK9fsdMZCKT+RocQApMDrnqWR7b5or5wA+yQBWygD6MgcLno8sHXjhN9uQMiJPLk3Hkl
+         /LHK5F3F/vfI/jJEYmTSYQYzLoo5FUWLqbBcUeNjOlX9va/erg51o1Fzdj3WDDY8ylTm
+         JrPwEfXFo6U4owmLnEQTzkdwoxSD8qJmvPk+9t2HKDS2pVNOhKFvSJkCXg1/4TuYnTVc
+         Uu3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789014464; x=1789619264;
+        d=1e100.net; s=20251104; t=1789014680; x=1789619480;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=Tmt580Wcn8Bj1vHX81UjDGhgKre8nawir61F+yXmA4Y=;
-        b=O0WxkjxE4mkYBlKmOZLst4ZmqF5ro5SozRrjMzx8Ud+v6wXy+trdwMDEMurmN9Dt1e
-         TzfU1PbDWixpRYC+ssDRhYDoRIO0N7/L/i/TwRBUxb+0b2rgP939exgff/9MUYInE+CX
-         j+oOHnqZcd5WVzNwiQQ6cdd8HXrGy8uCYTuFX822G/MTfC21IqkuIz+FiooSojHy35um
-         XVLYzbtb/V1SGrAJ91iOpgfCKHOHwNC4AgkJYzDS1e3U2GtHbTHEHF1OAlEtAE80SJ49
-         auKer9TkZBgS+wv4xA2EMM9UnOCiglLvpHsN0CUxDgi2QjqsH066ud125GxyPLKEH0EK
-         x/BA==
-X-Forwarded-Encrypted: i=1; AKwUvBzNr9HVj5Kbbgamg1pmYb7xpJ9LrijzwLbl4hrhfP8q1lhEWiJedpDWm38n/gyB2Go7Vm4=@vger.kernel.org
-X-Gm-Message-State: AFuF++kSGQiFTZUPjKhE8Ezi8Y0Jv0oXhZmesyH25upXoGDMGaXhklJ3
-	dXUecUIZwzJqLUrhg7ByEM1O6eJp8qdAGHtF5eYBhjaknLaspgQNMjtAV5sEk3hZYNKDA9Nwxj0
-	pt5+QjIjlhNJhTmky/kJYHRrIbT+Tcso=
-X-Gm-Gg: AYBFou0/dCGdhYARHJ4oa0YskuAJj0vHVCmoFZ+H70y3U2KCmiHXGqou+A/D6/nu7uk
-	1VeYsrKysLyol9VszhM1at7m6J1lC/SX1cIusCmN+t4Tn90J/a9e0iAFtZpYHRZmMovqJaBa1Jd
-	UCVvGOupqW2fVepnWestK+UhRmIo73c8973CPtlPC2Fqvscj0MyJBzpYNP4hHMYx0pgT8MevVWb
-	ORFwNe36cEzRYBt719EOqR9bha+lrb29rIjQdwAP34bqfJPY/sr19EQ5i6jSZ+40kR8PWyVejeZ
-	m/Updvwv/O+kAMIdbFFkogi7Y8vG3P9u4WZhYDOcnZNcvi0eMDLZOTbfiaf8khOnt9frIjk2e+O
-	B23XixomOeoq+Qg==
-X-Received: by 2002:a05:600c:5307:b0:49c:f617:7cf with SMTP id
- 5b1f17b1804b1-49d25871d73mr98713615e9.0.1789014463535; Wed, 09 Sep 2026
- 21:27:43 -0700 (PDT)
+        bh=ogeS1d1lUjwpzULBQnx1xn71a+aSrJ9QM6Mrgrln7po=;
+        b=XAjUvF8H+J+9iDyl7joIyQaFfmp21XnYYe+XYqMeFDZOdoWBJ8/1N7cUuB7Ffd/mOk
+         qlUflJjA3+9ohiPCLRwv7Pxawowo8IG9CwL0HlbMvNEXWJGUK/ZND7ZfUH1R0acQ5bqT
+         xMHqCPr0KtTXiGpWLECS6zLZzzGJQhniHbqDnwvPYQsL/0Xmo7LRXsSU1nV00h2O3RpF
+         3E0TYU6vty8odtKorqlNVFRb8TN8els8Xw40kQ5PlRxBpEzCWqz6XK1dV9C1SoJfR/sI
+         TKJgmsUR/uywcaDIeA/CqYgJehRiFLxKfrBE83gcFkGdyQyWu68hM3iUGNUy1WfpPTOs
+         tpYQ==
+X-Forwarded-Encrypted: i=1; AKwUvBzAqd3wykQLhqr5j0+oU+cTwGbtAEkF2nBxPtvTByy76RE9Fx/kh5QVvjcH0AUFp1XSaTE=@vger.kernel.org
+X-Gm-Message-State: AFuF++m6dFPh4mSoSV9XcIgDVW8dgsad5Y45u7WNaxADAeFA2styMtF7
+	gUZ8oV9yjcyuH+n+bk5pocp5FivpLn8uTQ7voKTuayiUYuBode2SqsQhjicm1AuOoqC73/4YvHr
+	isu0peRUd/O9iYOTjwA1684F8ceUA7sY=
+X-Gm-Gg: AYBFou3OncalF+NDJyXZda+GZuQAVVhSeko7GdL4e9Coui+Em5q8rNiJVKFZY5AtjNd
+	zE0gezkhbyyLdWYP7Z1pGF0TxkQ3hkFsMeamj+d2vic1FnINgCwyc0LpkPwL+gzRqVw9Soo2vpa
+	Rx9+RPpr5zmbmizgM8i5euY15SiwFVEKJ1c/yPVyBVdWubcrd8/wcjJLBRjGIYHrWbvBPO5NcPk
+	w7wdxRbRRnan6DXo/jquQTVZxYoDy8pPh0uYRqHXMIMidRFkQqlbgGuTpX4/HJjq/FOCKWTHfyB
+	E/tMaoxhGMDeDGwlKRHI9na07lTUTohBHtxAsBc6gTqyAT3eF4yugejTfvNUkbNgmke+01fUR4S
+	zo2/AGol33fYxiw==
+X-Received: by 2002:a05:600c:3495:b0:499:726b:7375 with SMTP id
+ 5b1f17b1804b1-49cf8279f41mr341820965e9.14.1789014678976; Wed, 09 Sep 2026
+ 21:31:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cb71412b-a688-4c70-9365-3f6bd40c9244@paulmck-laptop>
- <20260909024515.2429893-1-kunwu.chan@gmail.com> <8d5c8d6f-6788-43bc-b5e3-c8bca8e984be@paulmck-laptop>
- <CAN_Opa-FsrNsQM5WPCGBkQ43ECps36e_KyTzG9niEnm6KpdBEw@mail.gmail.com> <f093346c-4eaa-4faf-9a18-f1ec43247290@paulmck-laptop>
-In-Reply-To: <f093346c-4eaa-4faf-9a18-f1ec43247290@paulmck-laptop>
+References: <20260907075829.2073224-1-kunwu.chan@linux.dev>
+ <20260907075829.2073224-5-kunwu.chan@linux.dev> <fc49190e-6cec-435d-b853-db906a1e33e3@paulmck-laptop>
+ <26b68ec0-2f21-4dc2-bfcf-20cbc38f4ceb@paulmck-laptop> <CAN_Opa-M=qs=ofqdQWikkVRh2mNzKMO5qrtOSn_jMyF+TkMKNQ@mail.gmail.com>
+ <9b0ac5fa-98ef-4ff0-9f96-9194f1eda442@paulmck-laptop>
+In-Reply-To: <9b0ac5fa-98ef-4ff0-9f96-9194f1eda442@paulmck-laptop>
 From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Thu, 10 Sep 2026 12:27:31 +0800
-X-Gm-Features: AcwNN1XhvE57L4UNELOYOl-j5GVVFtVed7RTvIvW9yPwvKk4l63MZgA59RSJkHY
-Message-ID: <CAN_Opa8OybZ6Ea9LCKPGN3Ntx-ObJ+owTawnP_vvgFzqQe=s8Q@mail.gmail.com>
-Subject: Re: [PATCH 07/13] srcutree: Don't transition atomic SRCU to big in srcu_gp_end()
+Date: Thu, 10 Sep 2026 12:31:06 +0800
+X-Gm-Features: AcwNN1U5qVrUjk9gb4KVFN6vmzZjDt3Kofz7nE6PKHWOW0MsHwSNHKCgtQc9pws
+Message-ID: <CAN_Opa-gc=hUpiTSgKpSepzTaUNnHaWaw+CcH5WiBbzHTpf3UA@mail.gmail.com>
+Subject: Re: [PATCH 04/13] rcutorture: Add atomic-SRCU support to torture.sh
 To: paulmck@kernel.org
 Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org, 
 	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org, 
@@ -99,132 +100,155 @@ Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 10, 2026 at 11:46=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
+On Thu, Sep 10, 2026 at 11:47=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
 rg> wrote:
 >
-> On Thu, Sep 10, 2026 at 11:18:20AM +0800, KunWu Chan wrote:
-> > On Thu, Sep 10, 2026 at 8:13=E2=80=AFAM Paul E. McKenney <paulmck@kerne=
+> On Thu, Sep 10, 2026 at 09:30:48AM +0800, KunWu Chan wrote:
+> > On Thu, Sep 10, 2026 at 6:35=E2=80=AFAM Paul E. McKenney <paulmck@kerne=
 l.org> wrote:
 > > >
-> > > On Wed, Sep 09, 2026 at 10:45:14AM +0800, Kunwu Chan wrote:
-> > > > On Tue, 8 Sep 2026 16:38:19 -0700 "Paul E. McKenney" <paulmck@kerne=
-l.org> wrote:
-> > > >
-> > > > > On Mon, Sep 07, 2026 at 03:58:23PM +0800, Kunwu Chan wrote:
-> > > > > > From: Kunwu Chan <kunwu.chan@gmail.com>
-> > > > > >
-> > > > > > The transition-to-big code path in srcu_gp_end() calls
-> > > > > > init_srcu_struct_nodes() with GFP_KERNEL, which is illegal in t=
-he
-> > > > > > atomic context reachable from synchronize_srcu_atomic().  Atomi=
-c SRCU
-> > > > > > has no use for the srcu_node combining tree: it has neither cal=
-lbacks
-> > > > > > nor srcu_barrier() operations, and its grace periods are serial=
-ized
-> > > > > > by ->srcu_atomic_gp_flag instead.
-> > > > > >
-> > > > > > Skip this transition entirely for atomic SRCU, which is also de=
-fense
-> > > > > > in depth against any path that might wrongly set ->srcu_size_st=
-ate for
-> > > > > > an atomic srcu_struct.
-> > > > > >
-> > > > > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+> > > On Tue, Sep 08, 2026 at 04:34:41PM -0700, Paul E. McKenney wrote:
+> > > > On Mon, Sep 07, 2026 at 03:58:20PM +0800, Kunwu Chan wrote:
+> > > > > From: Kunwu Chan <kunwu.chan@gmail.com>
 > > > > >
-> > > > > Again, given that we have this commit, is this patch needed?
+> > > > > Add the --do-atomic-srcu argument to torture.sh, which runs the
+> > > > > SRCU-N, SRCU-P, and SRCU-T scenarios, thus covering both Tree SRC=
+U
+> > > > > (SRCU-N and SRCU-P) and Tiny SRCU (SRCU-T), with
+> > > > > rcutorture.reader_flavor=3D0x10 appended to the boot parameters s=
+o
+> > > > > that it takes precedence over each scenario's own reader-flavor
+> > > > > setting.  This exercises srcu_read_lock_atomic(),
+> > > > > srcu_read_unlock_atomic(), and synchronize_srcu_atomic().
 > > > > >
-> > > > > 4e01d5320a2f ("srcutree: Suppress to-big transition for atomic SR=
-CU")
+> > > > > As with other torture.sh tests, the --do-kcsan argument runs a
+> > > > > KCSAN+PROVE_LOCKING variant of this test.
 > > > > >
-> > > > > And again, if so, please tell me what I am missing.
+> > > > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 > > > >
-> > > > Yes, this is a separate transition path. That commit suppresses the
-> > > > initialization-time transition, while this patch prevents the trans=
-ition
-> > > > from srcu_gp_end(), which can otherwise call
-> > > > init_srcu_struct_nodes(..., GFP_KERNEL) for an atomic SRCU.
-> > > >
-> > > > So this is defense in depth for the atomic path.
+> > > > Queued for testing and review, thank you!
 > > >
-> > > Fair point.  But is there any additional pathway other than the
-> > > SRCU_SIZING_IS_TORTURE() check at the end of srcu_torture_stats_print=
-()?
+> > > I did take the liberty of changing "do_atomic_srcu=3Dno" to
+> > > "do_atomic_srcu=3Dyes" in order to increase test coverage.
+> > >
 > >
-> > I checked all transition-to-big pathways for atomic SRCU.
-> > Atomic SRCU can reach srcu_gp_end(), but its srcu_size_state remains
-> > SRCU_SIZE_SMALL,
-> > so the transition condition there cannot be satisfied.
+> > Thanks, no problem.
 > >
-> > The contention path is also unreachable:
-> > synchronize_srcu_atomic() calls srcu_gp_start() directly and never
-> > goes through srcu_gp_start_if_needed().
-> > The other callers of that path reject atomic SRCU.
-> >
-> > The only remaining explicit transition is SRCU_SIZING_IS_TORTURE() in
-> > srcu_torture_stats_print(),
-> > which currently lacks an atomic exclusion. I'll send a follow-up patch
-> > to add a srcu_reader_flavor check there.
+> > I also found a couple of data races in other subsystems while running
+> > the tests. I=E2=80=99m still validating the fixes locally and will Cc y=
+ou if I
+> > send patches for them.
 >
-> Very good!
+> Sounds good!  Note that some maintainers are more friendly to such
+> patches than others.  But it shouldn't hurt to send them.  ;-)
 >
-> > So I agree the srcu_gp_end() patch can be dropped.
+> Just please carefully check the design.  For example, blindly applying
+> READ_ONCE() and WRITE_ONCE() is not a strategy to win.
 >
-> It might not hurt to have a WARN_ON_ONCE() there, just in case someone
-> implements another pathway.
 
-Thanks, Paul. I'll send a v2 of this patch separately, dropping
-this patch change and adding the WARN_ON_ONCE() before the
-transition check:
-+ WARN_ON_ONCE(ssp->srcu_reader_flavor =3D=3D SRCU_READ_FLAVOR_ATOMIC &&
-    ss_state !=3D SRCU_SIZE_SMALL);
-
-if (ss_state !=3D SRCU_SIZE_SMALL &&
-   ss_state !=3D SRCU_SIZE_BIG) { ... ....
+Thanks for the reminder, Paul. I=E2=80=99ll keep that in mind and make sure=
+ to
+check the design carefully.
 
 Thanks,
 Kunwu
 
->
 >                                                         Thanx, Paul
 >
 > > Thanks,
-> > Kunwu
+> > KunWu
 > >
-> > >
 > > >                                                         Thanx, Paul
 > > >
-> > > > Thanks,
-> > > > KunWu
-> > > >
+> > > > > ---
+> > > > >  .../selftests/rcutorture/bin/torture.sh       | 24 +++++++++++++=
+++++++
+> > > > >  1 file changed, 24 insertions(+)
 > > > > >
-> > > > >                                                     Thanx, Paul
+> > > > > diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/=
+tools/testing/selftests/rcutorture/bin/torture.sh
+> > > > > index f0083891ee81..8885812d866a 100755
+> > > > > --- a/tools/testing/selftests/rcutorture/bin/torture.sh
+> > > > > +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+> > > > > @@ -68,6 +68,7 @@ do_clocksourcewd=3D"${ifnotaarch64}"
+> > > > >  do_rt=3Dyes
+> > > > >  do_rcutasksflavors=3D"${ifnotaarch64}" # FIXME: Back to "yes" wh=
+en SMP=3Dn auto-avoided
+> > > > >  do_srcu_lockdep=3Dyes
+> > > > > +do_atomic_srcu=3Dno
+> > > > >  do_rcu_rust=3Dno
 > > > > >
-> > > > > > ---
-> > > > > >  kernel/rcu/srcutree.c | 5 +++--
-> > > > > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > > > >
-> > > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > > > index 01f224a56b41..74acd5645d4c 100644
-> > > > > > --- a/kernel/rcu/srcutree.c
-> > > > > > +++ b/kernel/rcu/srcutree.c
-> > > > > > @@ -1074,8 +1074,9 @@ static void srcu_gp_end(struct srcu_struc=
-t *ssp, bool is_atomic)
-> > > > > >           raw_spin_unlock_irq_rcu_node(sup);
-> > > > > >   }
-> > > > > >
-> > > > > > - /* Transition to big if needed. */
-> > > > > > - if (ss_state !=3D SRCU_SIZE_SMALL && ss_state !=3D SRCU_SIZE_=
-BIG) {
-> > > > > > + /* Transition to big if needed, but never for atomic SRCU. */
-> > > > > > + if (!is_atomic && ss_state !=3D SRCU_SIZE_SMALL &&
-> > > > > > +     ss_state !=3D SRCU_SIZE_BIG) {
-> > > > > >           if (ss_state =3D=3D SRCU_SIZE_ALLOC)
-> > > > > >                   init_srcu_struct_nodes(ssp, GFP_KERNEL);
-> > > > > >           else
-> > > > > > --
-> > > > > > 2.43.0
-> > > > > >
+> > > > >  # doyesno - Helper function for yes/no arguments
+> > > > > @@ -103,6 +104,7 @@ usage () {
+> > > > >     echo "       --do-rcu-rust / --do-no-rcu-rust / --no-rcu-rust=
+"
+> > > > >     echo "       --do-scftorture / --do-no-scftorture / --no-scft=
+orture"
+> > > > >     echo "       --do-srcu-lockdep / --do-no-srcu-lockdep / --no-=
+srcu-lockdep"
+> > > > > +   echo "       --do-atomic-srcu / --do-no-atomic-srcu / --no-at=
+omic-srcu"
+> > > > >     echo "       --duration [ <minutes> | <hours>h | <days>d ]"
+> > > > >     echo "       --guest-cpu-limit N"
+> > > > >     echo "       --kcsan-kmake-arg kernel-make-arguments"
+> > > > > @@ -148,6 +150,7 @@ do
+> > > > >             do_kcsan=3Dyes
+> > > > >             do_clocksourcewd=3D"${ifnotaarch64}"
+> > > > >             do_srcu_lockdep=3Dyes
+> > > > > +           do_atomic_srcu=3Dyes
+> > > > >             ;;
+> > > > >     --do-allmodconfig|--do-no-allmodconfig|--no-allmodconfig)
+> > > > >             do_allmodconfig=3D`doyesno "$1" --do-allmodconfig`
+> > > > > @@ -183,6 +186,7 @@ do
+> > > > >             do_kcsan=3Dno
+> > > > >             do_clocksourcewd=3Dno
+> > > > >             do_srcu_lockdep=3Dno
+> > > > > +           do_atomic_srcu=3Dno
+> > > > >             ;;
+> > > > >     --do-normal|--do-norm|--do-no-normal|--do-no-norm|--no-normal=
+|--no-norm)
+> > > > >             do_normal=3D`doyesno "$1" --do-normal`
+> > > > > @@ -212,6 +216,9 @@ do
+> > > > >     --do-srcu-lockdep|--do-no-srcu-lockdep|--no-srcu-lockdep)
+> > > > >             do_srcu_lockdep=3D`doyesno "$1" --do-srcu-lockdep`
+> > > > >             ;;
+> > > > > +   --do-atomic-srcu|--do-no-atomic-srcu|--no-atomic-srcu)
+> > > > > +           do_atomic_srcu=3D`doyesno "$1" --do-atomic-srcu`
+> > > > > +           ;;
+> > > > >     --duration)
+> > > > >             checkarg --duration "(minutes)" $# "$2" '^[0-9][0-9]*=
+\(m\|h\|d\|\)$' '^error'
+> > > > >             mult=3D1
+> > > > > @@ -497,6 +504,23 @@ then
+> > > > >     torture_set "rcutorture" tools/testing/selftests/rcutorture/b=
+in/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "$configs_r=
+cutorture" --trust-make
+> > > > >  fi
 > > > > >
-> > > >
-> > > > Sent using hkml (https://github.com/sjp38/hackermail)
+> > > > > +# Test atomic SRCU across Tree SRCU (SRCU-N and SRCU-P) and Tiny=
+ SRCU
+> > > > > +# (SRCU-T).  The reader flavor selects srcu_read_lock_atomic() a=
+nd
+> > > > > +# synchronize_srcu_atomic().  Tiny SRCU requires SMP=3Dn, which =
+aarch64
+> > > > > +# does not support.
+> > > > > +if test "$do_atomic_srcu" =3D "yes"
+> > > > > +then
+> > > > > +   torture_bootargs=3D"rcutorture.reader_flavor=3D0x10"
+> > > > > +   configs_atomic_srcu=3D"SRCU-N SRCU-P"
+> > > > > +   if test "$ifnotaarch64" =3D yes
+> > > > > +   then
+> > > > > +           configs_atomic_srcu=3D"$configs_atomic_srcu SRCU-T"
+> > > > > +   fi
+> > > > > +   torture_set "atomic-srcu" tools/testing/selftests/rcutorture/=
+bin/kvm.sh \
+> > > > > +           --allcpus --duration "$duration_rcutorture" \
+> > > > > +           --configs "$configs_atomic_srcu" --trust-make
+> > > > > +fi
+> > > > > +
+> > > > >  if test "$do_locktorture" =3D "yes"
+> > > > >  then
+> > > > >     torture_bootargs=3D"torture.disable_onoff_at_boot"
+> > > > > --
+> > > > > 2.43.0
+> > > > >
