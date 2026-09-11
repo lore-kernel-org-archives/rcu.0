@@ -1,60 +1,57 @@
-Received: from mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from mta0.migadu.com (out-244.mta0.migadu.com [91.218.175.244])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CC6C44604E
-	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 07:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C824582D8
+	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 07:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.244
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789113501; cv=none; b=p3pMtEx0dmTFpgKPD3EIOBo3Nir3rKgkTl72WhHZX/w6XT4lANB117rLq7/ROo9OCm1LA4xndTXiXE+ecEcJWiKHr2NIkXLVcri733GgJSetQMPhaTtDKpEf8l7dJ2h4Vm+YpiHN6tt+XgIlVDzQFTXFOAhM+WV8Ll0ll1aPQ4w=
+	t=1789113520; cv=none; b=luqaD0JOINebtpc8c/sCzqLEQitVw2cmm9PYRJGXXxJSLm95+nYnYo65XvlDEr8zhVz+P3l8cUPa7PQOw+rAxjirqazZE6LvPpGg/qdRxGY31smE80Qti3BOZj9bUQGpFwjf0+Amz3EFG3gyBfsiRRwnBntMusDUyXKtC3QtnjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789113501; c=relaxed/simple;
-	bh=2z6K28VZFghAvaOC2rxcV8P37YjNcXnY9WqrSWMHQ/k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=HyQhLPFIw4L5kuV8gwz0gyWTp96o+Y+qKhV4uxdm+TDdyiY+J+JJzj0rRiPfHZQcjCijcxb8CQebHe2Hgp3HX/NBaCpJSQifMveJqbmBjYKs63sQsfxM59/dePUl6ErrFaJuuDQymMQFoKIneTmnYSkZjdlgE0nou7jGOzJFWYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=czgAtOF3; arc=none smtp.client-ip=91.218.175.179
+	s=arc-20240116; t=1789113520; c=relaxed/simple;
+	bh=Go12g+R4uFq+BJOyGZXb1onOnQjq2C3kX1LePEwX1Iw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ZP82Pga/VZUi+qWdIoFVPissfJMa2TIxPwWVGQWLELcFbhZ0GBoyfpN9CSaqr92Z5hbe42s27MbCZfCGKnXAXcJa+3AtOf3zdIbsc5ntKnxKrQULEOBLUhhC+Fi8AeMVXAgWhphd382e1qqNqHaXYhKxfEMLyvk6fK942bYBlcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YDo04jKQ; arc=none smtp.client-ip=91.218.175.244
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="czgAtOF3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YDo04jKQ"
 X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=2z6K28VZFghAvaOC2rxcV8P37YjNcXnY9WqrSWMHQ/k=;
+DKIM-Signature: a=rsa-sha256; bh=Go12g+R4uFq+BJOyGZXb1onOnQjq2C3kX1LePEwX1Iw=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1789113497; v=1; x=1789718297;
- b=czgAtOF3JlWxuaKbHd6nJn+3vEEx++yytKytXfhgizpNlKXoBu0iIPbhZbr1uCfHrYUvkPQD
- pkP6XMVK5eXLDp8cDD9X27POKFZ1M6XVUvSlRcXc7oWwe48CfuZxUSc6jmc7O3rXoKS75h0w7Ex
- c/9gvUSCt+YiV0IBUdtl2XfQ=
+ t=1789113515; v=1; x=1789718315;
+ b=YDo04jKQh3Y3S/7i66rcYtGSc3d7mvbF64LTRqP+Bg0FwPAfDTuo6bmkKDAwMAxUsAZx7or2
+ zMu+dH4a9q3u1OXnj6JEFkEU58VsCzOFCH1suvqM1aJ/NisObpY0vo7gaGIpYNr5XcjgYdsh60x
+ t3glJoKXrukMfMOVzZIr/wDI=
 X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 08c4df989fc31bb8;
-	Fri, 11 Sep 2026 07:58:16 +0000
-X-Mizu-Trace-ID: 08c4df989fc31bb8
+Received: by smtp.migadu.com with ESMTPS id 7120d82fe4ac0fd4;
+	Fri, 11 Sep 2026 07:58:35 +0000
+X-Mizu-Trace-ID: 7120d82fe4ac0fd4
 X-Migadu-Flow: FLOW_OUT
 From: Ye Liu <ye.liu@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@suse.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+To: "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Marco Elver <elver@google.com>,
 	Oleg Nesterov <oleg@redhat.com>,
-	Thomas Gleixner <tglx@kernel.org>
-Cc: Ye Liu <liuye@kylinos.cn>,
-	David Hildenbrand <david@kernel.org>,
-	Miaohe Lin <linmiaohe@huawei.com>,
-	Naoya Horiguchi <nao.horiguchi@gmail.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack3000@gmail.com>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	SJ Park <sj@kernel.org>,
+	Ye Liu <liuye@kylinos.cn>,
+	Michal Hocko <mhocko@suse.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Christian Brauner <brauner@kernel.org>
+Cc: SJ Park <sj@kernel.org>,
 	Gregory Price <gourry@gourry.net>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	rcu@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	paulmck@kernel.org,
+	mingo@redhat.com,
+	rostedt@goodmis.org,
+	jpoimboe@kernel.org,
+	mic@digikod.net,
+	tglx@kernel.org,
+	akpm@linux-foundation.org,
+	david@kernel.org,
+	linmiaohe@huawei.com,
+	nao.horiguchi@gmail.com,
+	rafael@kernel.org,
+	gnoack3000@gmail.com,
 	rientjes@google.com,
 	shakeel.butt@linux.dev,
 	xu.xin16@zte.com.cn,
@@ -90,101 +87,98 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	mark.rutland@arm.com,
 	Dave.Martin@arm.com,
 	james.morse@arm.com,
-	babu.moger@amd.com
-Subject: [PATCH v3 00/15] sched: introduce for_each_process_rculock and for_each_thread_rculock
-Date: Fri, 11 Sep 2026 15:57:45 +0800
-Message-Id: <20260911075800.491472-1-ye.liu@linux.dev>
+	babu.moger@amd.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	rcu@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Subject: [PATCH v3 01/15] sched: introduce for_each_process_rculock and for_each_thread_rculock
+Date: Fri, 11 Sep 2026 15:57:46 +0800
+Message-Id: <20260911075800.491472-2-ye.liu@linux.dev>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20260911075800.491472-1-ye.liu@linux.dev>
+References: <20260911075800.491472-1-ye.liu@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 From: Ye Liu <liuye@kylinos.cn>
 
 Introduce for_each_process_rculock(), for_each_thread_rculock() and
-for_each_process_thread_rculock() macros that combine the existing
-iteration macros with scoped_guard(rcu), so that the RCU read lock
-is automatically acquired before iteration and released when the
-loop exits — including via break, goto, or return.
-
-The rest of the series converts manual rcu_read_lock()/
-rcu_read_unlock() and guard(rcu)() pairs across mm/, kernel/, fs/,
-lib/ and security/ to use the new macros.
-
-Suggested by Michal Hocko for the oom_kill path [2].
+for_each_process_thread_rculock() macros that acquire the RCU read
+lock before the iteration starts and release it when the loop is left,
+so that the RCU read-side critical section is scoped to the loop body
+instead of an externally managed rcu_read_lock()/rcu_read_unlock()
+pair.
 
 Signed-off-by: Ye Liu <liuye@kylinos.cn>
-
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: SJ Park <sj@kernel.org>
+Reviewed-by: Gregory Price (Meta) <gourry@gourry.net>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Reviewed-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 ---
-Changes since v2 [3]:
-  - Split the kernel/ patch into per-subsystem patches, as the
-    combined patch could not be applied (Peter Zijlstra, Steven
-    Rostedt).
-  - Move changelog below the --- separator so it is excluded from
-    the commit message (Lorenzo Stoakes).
-  - Indent loop body in macro definitions to show scoped_guard
-    scope (Lorenzo Stoakes).
+Changes in v3:
+  - Indent loop body to show scoped_guard scope (Lorenzo Stoakes)
 
-Changes since v1 [1]:
-  - Rename macros from *_rcu to *_rculock, as suggested by Steven
-    Rostedt and acked by Thomas Gleixner, to avoid confusion with
-    existing *_rcu() list iterators that expect the caller to hold
-    the RCU read lock.
-  - Improve the comment on for_each_process_thread_rculock() to
-    document that 'break' only exits the inner loop and 'goto' is
-    needed to exit both loops (Thomas Gleixner).
-  - Rename the stale 'unlock:' label to 'out:' in hung_task.c, as
-    noted by Günther Noack.
-  - Clarify in patch 4 that page_pgoff() is safe outside the RCU
-    read-side critical section (SJ Park).
-  - CC all relevant maintainers on every patch (Lorenzo Stoakes).
-  - Drop the mm: prefix from patch 1, as the macros are in
-    include/linux/sched/signal.h (Michal Hocko).
-
-[1] https://lore.kernel.org/all/20260904083001.553587-1-ye.liu@linux.dev/
-[2] https://lore.kernel.org/all/20260813092933.562028-1-ye.liu@linux.dev/
-[3] https://lore.kernel.org/all/20260907081334.1152889-1-ye.liu@linux.dev/
-
-Ye Liu (15):
-  sched: introduce for_each_process_rculock and for_each_thread_rculock
-  mm/oom_kill: convert process/thread iterators to for_each_*_rculock
-  mm/ksm: convert process iterator to for_each_process_rculock
-  mm/memory-failure: convert process iterator to for_each_process_rculock
-  cpu/hotplug: convert thread iterator to for_each_thread_rculock
-  freezer: convert thread iterator to for_each_thread_rculock
-  hung_task: convert process/thread iterators to for_each_*_rculock
-  locking/lockdep: convert process/thread iterators to for_each_*_rculock
-  rcu: convert process/thread iterator to for_each_process_thread_rculock
-  sched: convert process/thread iterators to for_each_*_rculock
-  tracing/fgraph: convert process/thread iterator to for_each_process_thread_rculock
-  unwind: convert process/thread iterator to for_each_process_thread_rculock
-  fs: convert process/thread iterators to for_each_*_rculock
-  lib: convert process iterator to for_each_process_rculock
-  security/landlock: convert thread iterator to for_each_thread_rculock
-
- fs/proc/base.c               |  4 +---
- fs/resctrl/rdtgroup.c        |  8 ++------
+Changes in v2:
+  - Rename macros from *_rcu to *_rculock (Steven Rostedt, Thomas Gleixner)
+  - Improve comment on for_each_process_thread_rculock() double loop
+  - Change prefix from mm: to sched: (Michal Hocko)
  include/linux/sched/signal.h | 26 ++++++++++++++++++++++++++
- kernel/cpu.c                 |  4 +---
- kernel/freezer.c             |  4 +---
- kernel/hung_task.c           | 11 ++++-------
- kernel/locking/lockdep.c     |  4 +---
- kernel/rcu/update.c          |  4 +---
- kernel/sched/core.c          |  3 +--
- kernel/sched/debug.c         |  4 +---
- kernel/trace/fgraph.c        |  8 ++------
- kernel/unwind/deferred.c     |  3 +--
- lib/is_single_threaded.c     |  5 +----
- mm/ksm.c                     |  4 +---
- mm/memory-failure.c          | 16 ++++------------
- mm/oom_kill.c                | 20 +++++---------------
- security/landlock/tsync.c    |  8 ++------
- 17 files changed, 55 insertions(+), 81 deletions(-)
+ 1 file changed, 26 insertions(+)
 
---
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 584ae88b435e..ea23c7e9db33 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -2,6 +2,7 @@
+ #ifndef _LINUX_SCHED_SIGNAL_H
+ #define _LINUX_SCHED_SIGNAL_H
+ 
++#include <linux/cleanup.h>
+ #include <linux/rculist.h>
+ #include <linux/signal.h>
+ #include <linux/sched.h>
+@@ -663,6 +664,31 @@ extern bool current_is_single_threaded(void);
+ #define for_each_process_thread(p, t)	\
+ 	for_each_process(p) for_each_thread(p, t)
+ 
++/*
++ * Variants of for_each_process(), for_each_thread() and
++ * for_each_process_thread() that automatically acquire and release the
++ * RCU read lock via scoped_guard(rcu).  The lock is held for the
++ * duration of the loop and released on exit, including via break,
++ * goto, or return.
++ */
++#define for_each_process_rculock(p) \
++	scoped_guard(rcu) \
++		for (p = &init_task ; (p = next_task(p)) != &init_task ; )
++
++#define for_each_thread_rculock(p, t) \
++	scoped_guard(rcu) \
++		__for_each_thread((p)->signal, t)
++
++/*
++ * Double loop: 'break' only exits the inner for_each_thread() loop.
++ * Use 'goto' to exit both loops; the RCU read lock is released
++ * automatically when the scoped_guard scope is left.
++ */
++#define for_each_process_thread_rculock(p, t) \
++	scoped_guard(rcu) \
++		for_each_process(p) \
++			for_each_thread(p, t)
++
+ typedef int (*proc_visitor)(struct task_struct *p, void *data);
+ void walk_process_tree(struct task_struct *top, proc_visitor, void *);
+ 
+-- 
 2.25.1
+
