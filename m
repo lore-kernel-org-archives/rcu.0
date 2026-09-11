@@ -1,95 +1,95 @@
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com [74.125.225.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E855835AC0C
-	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 01:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6FC2FFDEA
+	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 02:12:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.225.140
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789091425; cv=pass; b=VGxQkBdKfVZ61jMKnBqucbKVdnphSJkt4USYe/5ocROqljeA9TM3RuqlZ7mQWof65Wh/sQzMKu7Dfwzcl8yiDZzBGFbjUDTFU7hL0JFfXokYfLTK7NSRnHELod0R9TKloL3zDqjD1q90TelSIY7UoPw9dOB5nRniT4qiQ9/lN/o=
+	t=1789092772; cv=pass; b=T3Sa6artDFDQDdiZkTYRIkaK0ea1U/SLVKaI8tqR6kfRjfHw+/bLGvjnb/ja2kg47FMLS16OPwmbSfRWuIeNzbDvM4aKaaYpNThrm/Nb8GNTtDJO8KjYxw5/OqtFNpE7QZpby/eT6zuYWrJz7UipLuYbzMWdfOoN0tO3pEd7koA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789091425; c=relaxed/simple;
-	bh=vx+ssvLQ/2n0xT68XYMop9NM0klSBbbzW7GdOKIDDYo=;
+	s=arc-20240116; t=1789092772; c=relaxed/simple;
+	bh=W8TGsM/T9bEot6PcFlfqO+Xuq7MZR+MtW3iaazVspZQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L37nfJDDmcJGvO/iYxvy8jL+nQBGzibpxDDoXjhpUgyf+UIylzXG4ruDwwz4ORSlwDbSoQMNZ2XfNxWF6d3s57Gn2xPDXhtRTRGzfOmVlflMZg+S9rfV/iv/q3ZIOjW4OKJDiW4icmc8SLu+Umi1fpamuxpNqNveGtnwsJTiY60=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eVzV5k0q; arc=pass smtp.client-ip=209.85.128.48
+	 To:Cc:Content-Type; b=lIyBmmxKsPLKdWxcfgMkAW2xbeZ3eGgDR8H65l3CWldYuSW8eDzq+Su7hGDulrVUPRbs0NOmdn9zmWFvxUJB7AKXi5Inn4Fnbl6EMru7AEcp10I+VZnNv1XIB55FjGBLMuSbD/9tEcaaTxz4zmrgzSYYRtE1COgHNC4hGZaqXyE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=s4OKw39c; arc=pass smtp.client-ip=74.125.225.140
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eVzV5k0q"
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-49b965570d7so4872915e9.0
-        for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 18:50:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789091422; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="s4OKw39c"
+Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49b94fce6e8so3243525e9.2
+        for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 19:12:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789092770; cv=none;
         d=google.com; s=arc-20260327;
-        b=AkTFIDcQU9g4v0xdOXKcPcqhfDJBRaZtDjU84O0t1Pnt4LNZe47fy63Evq/vCGbQJS
-         vuEFrhojwu0ZtId9CmkpXX99kehG55z6EidDPt+w5Yqf5IU1Q3WiGr8Q+WbVhhvFaDhm
-         3padPvosvxwu/tAbR6uXa2IqKz4UPXFBRo0pLzMTqHainIEk6h7oQd/vMN/u0KKeqcKC
-         98gmmchCWYGK1EOki52LI6b6Eo8mGU/y2gucdZBfjcl/vyjJCp9pHmQTOCRfKsk+GU7Z
-         8U2gRQVDKG1PXzHl+WPqPAikCkwAvDjjgrcgj/ASOXKdzRS9OZNVYv4iAycp+0cRN/S2
-         49TA==
+        b=Gsx5aSGF99jT0xlSPf1ki7RsCQQycK1I3vBm8nDE1qlwODhta20cr6LEtBsQ0wHqV9
+         w2MU6xlP6Oolo6uPAuyRHuUBtOArozVijg8AZD82aoBhZaoSKYifYArcLEo0h0//kh4Q
+         2TwsHtYhMmYS3hpSOjBLF7A6itEvu6tf1QHqBQ5i9C4TMjfPa8srIXi28YJZyTnKNmw8
+         stjxqF/r49OyB8i5Kz0sUO0c4tVuE9m5nrpi6/zUagdwqhLNY7cm+G6YsJRNVCs9sGHX
+         X1Ur7LpTeKfr9DVY2ue3Os2jylxYlHW2xP0DyAGFLlirqYVnFFqaGvppDlrHrFEdj1Dh
+         6GRg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=QCPrKmDOLjswZ/G8gb4hedrH78EI5NhsoNyjf+nq07k=;
-        fh=kMYYv4I+X66g9vyycUtXPSnjqGOzWqHTzq8SkjkFAvw=;
-        b=gs/TvYxqQdAWNOsmI/LLtNGd3XTr//AmXF7q7UBdefbDiKwt8AF/ccgCd2/tQnbePh
-         qymHr+Ql3ZdoZ+fOk3fF4K2spa6ZFCW444pIafJuNz0M/9cRL0iqTmpuXxLgAFIeWq1F
-         u2wAHFkQxuG+zlcmvXJO6pVHwnS8vV+E8V+QhUi4eFZTfzWyOs0Mak2PQ8FvXzdibF3O
-         7joMPfYKXcBhheGtd6m5OzsEaE8GjJGf+OyPAP/VVXK1NuUj61ZoJ1CkbmAUcxR99zfR
-         XvQLUO4NX8nFJr8Fb6hLVRXlVMj5lhzV1DzOoCHPIFPFTei9QCFR4pYkdR87tIAZ1OEY
-         5Osg==;
+        bh=8mOo+6Yi+Vdbpiw8piBG3s4SxJcYL8u3WjZfAF02iRQ=;
+        fh=Gb+72wGxt7slJJ+fiTmerJbRVl+LHELOWGrqdBx+DFM=;
+        b=RtqIGWQEJDmLsadownfZf2/xGMj4vRrIhuwzqkZON/9E4aIPR0sAfsZ7UQsITmVcS5
+         Io4/COwqRKxU4EzeO6iTRBRzvmYiLzOrIk6YauBxAFjs42mAq8zw/68mo707kyhjUcXG
+         i+MU+CYoDBPO+GyZviuu92udxJFwQQbDbp9mulQIRSJP3mnKNdcb3xvTQdvHwA+VjmYD
+         FMMD6CviOF+KJFWgoSolpS43KMCtxMrz5rx4Byk0dJJHvs9b6LCukHPueydl+cb9mhak
+         m2hMCBdIGw9LviLjd9n5ZBbq8hyK5+NAKtVpW637dMTgR1IURHy3DHrutYXXxCLmXfYy
+         Q7tw==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789091422; x=1789696222; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1789092770; x=1789697570; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=QCPrKmDOLjswZ/G8gb4hedrH78EI5NhsoNyjf+nq07k=;
-        b=eVzV5k0qLx5hWDYWn+5hQQSM4bmYBZUR1AS2DJy38sbB/YC5dlIiyJYg9+fGVvsc76
-         9pZ7hgvHuqkd8Ie/+F52HaBZ6lEmN3TPqZHhjt7RRhomD20izRz94rdrh5/SRrF1i5PO
-         LZyz99alU1BVd7/8abqIvjqzQx+kWKr5GUiticqmITAiGq+IDSoN8wKdW6VYFxlXY5Fq
-         BIX9Z18Ic9/okrd0wXE7yObWbj35xC8qGekJ5OaRdg/NEWKuwX37Fq8jjMgYFNZO5OfF
-         Q6lmMsoNK1hpL0cHoMhvityBEg/zMMtCULxwu2A5YpyUlD4eBBYj7+Yavu8aGkYzoP8s
-         WlGA==
+        bh=8mOo+6Yi+Vdbpiw8piBG3s4SxJcYL8u3WjZfAF02iRQ=;
+        b=s4OKw39cO7ThIstQ/RUpBdz5fAzXES5IB9EKfXWknP+tL2gZgUTMl2xJ+vm5y3OD8b
+         KPkZ9HGcfrcKPXS5RnLcTeDaQpRhATaQgYMUYUtXmjEJXDFjJMZFNR5HhwoEnBcv2wIz
+         b7qqfxReTsfusE2A+PmFaxCyQu0ZkjQdkGn0jewXgO+xUPI3Apy2NU0Y+FKPCXLGN4Hp
+         jndQpS/XdmbXJHNhiC7vkyaM2AB5YUh6bfadBonj+ouyCDLFqR43H7N15+UydLyTngIT
+         D0gNmDQ/A/sLL3D8ODjRqbgqL5dizAMThEw6oYh+DLvb/+qmKu0T3yRpdyvfF3lL6LA9
+         S+wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789091422; x=1789696222;
+        d=1e100.net; s=20251104; t=1789092770; x=1789697570;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=QCPrKmDOLjswZ/G8gb4hedrH78EI5NhsoNyjf+nq07k=;
-        b=p8sUAxRVzu3ebLaH7YjQB5+oOj+T6KA9PcgV6NvbhaMULHJw2n/bRRWZwGhQIntiNE
-         SMzmklcf1l9hpWSqOt9D8oI0unRZ4Nm3EqEdsgReouPLN9hmLwp/DQO2bRsZZj/Nt+L2
-         ftyr68gw9fZnFrdCyzY0r8B03AeXaZ9Q6phmBX4iHqBsp42O4cijJ6R+F4eANz4J6Qq+
-         KW9sOxx51189AXHXKHrOz1pOLYc8sRX6U+LfB5EVf92N2YyIJsbPs3dL0+peUdNrQ7Fj
-         zjUmzNfkFVg/hSqV0FWqc2wxrEy8LFvWSBo3hefgg96XJoWQWzv403jaY7mfw130wKwk
-         zVhg==
-X-Forwarded-Encrypted: i=1; AKwUvByjDbTgTQ1ucTG/kdByTfTCRSvz0BUoCRUdAakb2k4yMpo7j5L/hB7YgtTCsA/UTY42A2s=@vger.kernel.org
-X-Gm-Message-State: AFuF++m5HKa6eLos68rg+X1Cj4kNfvmmAu2YbrR9CjOdjtA50drs4PYz
-	VQcTFYmqqmzuiZRQ4sNy1ULpZC/FGrLIAMtASA4VL3zZcFuXLOWP4Y4IiUK2hcE0UpkA3jBxuIg
-	vHf6/TqmT7GcBJ6gHwICh/kRxN/+tq0o=
-X-Gm-Gg: AYBFou1YfxR9VFaAkSFa98MAOm461EdRjaYyuSRuI4zT/Z3GZBDBrwuLriY+eGBr91c
-	cYKGt7FN/oirj83D9O/sT4g6YKMFxWgBxS0Y8MNTCN/gCQ3xGUWa9h4Zk2O27z5sKA8BS7loNVG
-	9K2+/SUP2NIwAUdd9Df1QOLukJnP3MWHW1obvre3J3IWOyyspQ8aU1fOcRMsnrI5FiawOq4Labx
-	W7UhraxZdaQ2KwEXRIu8LdQ64PQYLS6WY14+we/RsyyGHK3QmEqpAkmFAunXRNIGpbf+7l6iob4
-	4Llnz8FBYOCt0N8Jbu9i42tBqMqaahqT02/2vdE556AqiHV0oqkbifmdXUlBVLiP6aDpT/sjstG
-	Dk8fKy7+4NusFv00=
-X-Received: by 2002:a05:600c:4f84:b0:49c:fc6e:8cb9 with SMTP id
- 5b1f17b1804b1-49e619dbe1dmr16170215e9.29.1789091421145; Thu, 10 Sep 2026
- 18:50:21 -0700 (PDT)
+        bh=8mOo+6Yi+Vdbpiw8piBG3s4SxJcYL8u3WjZfAF02iRQ=;
+        b=K/LwbBpDuQ8gr90OKSR1QrsZQBvYRoOFI1rIFkGBWbP4c6pvQMT0ALFX00Ti0lplXd
+         viGXa+dDlOP8MQKHgsqUBFYOKO8yvV02WtUgUg5Ac1vVflGcTLv9Bblmz7pnrUpdXWpl
+         /zc8MKoOGcdwYImJlO/PQ2C1Zwo1g+d/xJfKN/2l5hiQ8R7HiVjYBu3QkC0llj2346Ug
+         +Oj8MnZmXheMCdIaopKxnrouLeXU0Z+YMpuIjGgAztVmviOmfOSluS0lk5/6aiyuIPTF
+         pr8nqEc7uQzMuHcP9V2SYiH73GNmv383AIqeDtJbXR78B6xeaPBNJAiow+/O0E4pm/yF
+         VLHA==
+X-Forwarded-Encrypted: i=1; AKwUvByTNQxwXnsrxhwvJcbiXYeR+9fnSZr0y35V4O8rCAi8nyG8VzR2/rnzq81CHGlAuY97p5M=@vger.kernel.org
+X-Gm-Message-State: AFuF++nESDHEcWvPr7aEdx5dAPqPKCAY2FiOSg5gM0CgWJ9d2OXtFWYI
+	cL8ItCI4j9PBKb5A2H5EVQaiKoDgA8DvJjLM7EUfHh8uiLFb1opfxTlYoGAhVCoDYf+LblZK+fE
+	e0H/Pj/834WKLNU1ObZK1hOsnqHc/uns=
+X-Gm-Gg: AYBFou0gK+tns6DkBI1zlCiwGSaLMIPNjHcaSE60pmIUELcG/edGGd68HsgUNbm+d6+
+	2UAdh01cphNVp4JsjtyRcmBXBKwWe69HZmix53L4uUPNJ7Es4FlCBp1Wuo6/H89qe1caxttWMxa
+	kGZSII/8dN5wkvRIZd7TJjkh6QsUrTOrmtghONp00lFSiBiZ9zOeq4RVycf8iv02UTOqPZ0UDdG
+	R/qhvt3+GK5MDIT9xfU3RwpvHGmGBSQlroewJ+YJcDk4gWLzPK0vdJHAL1YkEzZBiE4urFrPpZj
+	wYRB5muWpLUlJ/oN+awE5s6J0QSfaIadjOUqjD+tziamsLdOBcSYgDhgCetLI8tJvB6bS0hGRVk
+	E0FVFJsmJpRk4Yw==
+X-Received: by 2002:a05:600c:b96:b0:49d:1916:59c7 with SMTP id
+ 5b1f17b1804b1-49e619831a9mr19159215e9.7.1789092768884; Thu, 10 Sep 2026
+ 19:12:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260910084629.3695383-1-kunwu.chan@gmail.com> <d1bf830e-8755-4eef-a8f6-35612640a478@paulmck-laptop>
-In-Reply-To: <d1bf830e-8755-4eef-a8f6-35612640a478@paulmck-laptop>
+References: <20260910041427.3579817-1-kunwu.chan@gmail.com> <8d55847a-9e4d-4f1e-95bc-4dc77bea73c3@paulmck-laptop>
+In-Reply-To: <8d55847a-9e4d-4f1e-95bc-4dc77bea73c3@paulmck-laptop>
 From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Fri, 11 Sep 2026 09:50:09 +0800
-X-Gm-Features: AcwNN1VvrNWvy6Z_lG_xJ7XlHcRflo55ggo_837jUIbeAoVb3xV3EQxAkPXSWis
-Message-ID: <CAN_Opa_X1Gq4DxMhZvM_8XPg96Anw6UWW2EnndtVJ6vPYKE0YQ@mail.gmail.com>
-Subject: Re: [PATCH v2] srcutree: Add WARN_ON_ONCE() for atomic SRCU in srcu_gp_end()
+Date: Fri, 11 Sep 2026 10:12:37 +0800
+X-Gm-Features: AcwNN1V14Y3VGCOr55XZJ1Ue8Iw5GojN4B1xvmAJNoEM2UoU3zWAXHkGGTlTvRo
+Message-ID: <CAN_Opa-jjwUOds2QqCbgozKjzYT=wzQV+k7ak0Wpk3Un78aq3g@mail.gmail.com>
+Subject: Re: [PATCH] srcutree: Skip torture to-big transition for atomic SRCU
 To: paulmck@kernel.org
 Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org, 
 	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org, 
@@ -97,75 +97,61 @@ Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 11, 2026 at 12:58=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
+On Fri, Sep 11, 2026 at 12:53=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
 rg> wrote:
 >
-> On Thu, Sep 10, 2026 at 04:46:29PM +0800, Kunwu Chan wrote:
-> > Atomic SRCU remain in the small size state, so add a
-> > WARN_ON_ONCE() before the transition check to catch any future
-> > code path that might violate this invariant.
+> On Thu, Sep 10, 2026 at 12:14:27PM +0800, Kunwu Chan wrote:
+> > Atomic SRCU does not use the srcu_node combining tree.  Exclude it
+> > from the SRCU_SIZING_IS_TORTURE() transition in
+> > srcu_torture_stats_print().
 > >
 > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 > > ---
-> > Changes since v1:
-> > - Drop the !is_atomic guard from v1 and add WARN_ON_ONCE() instead,
-> >   per Paul McKenney's suggestion.
-> > - v1: https://lore.kernel.org/rcu/20260907075829.2073224-8-kunwu.chan@l=
-inux.dev/
-> > ---
-> >  kernel/rcu/srcutree.c | 2 ++
-> >  1 file changed, 2 insertions(+)
+> >  kernel/rcu/srcutree.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > >
 > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 84c022ec8e09..68441c32cebf 100644
+> > index d462102c6bb6..99d11fb4123a 100644
 > > --- a/kernel/rcu/srcutree.c
 > > +++ b/kernel/rcu/srcutree.c
-> > @@ -1074,6 +1074,8 @@ static void srcu_gp_end(struct srcu_struct *ssp, =
-bool is_atomic)
+> > @@ -2421,7 +2421,7 @@ void srcu_torture_stats_print(struct srcu_struct =
+*ssp, char *tt, char *tf)
+> >               }
+> >               pr_cont(" T(%ld,%ld)\n", s0, s1);
 > >       }
-> >
-> >       /* Transition to big if needed. */
-> > +     WARN_ON_ONCE(ssp->srcu_reader_flavor =3D=3D SRCU_READ_FLAVOR_ATOM=
-IC &&
-> > +                     ss_state !=3D SRCU_SIZE_SMALL);
+> > -     if (SRCU_SIZING_IS_TORTURE())
+> > +     if (SRCU_SIZING_IS_TORTURE() && ssp->srcu_reader_flavor !=3D SRCU=
+_READ_FLAVOR_ATOMIC)
+> >               srcu_transition_to_big(ssp);
+> >  }
 >
-> Also much better, but we also need to avoid doing the transition in this
-> case, because doing that transition breaks atomic SRCU.  On way to make
-> this happen is something like this:
+> Much better, thank you!
 >
->         if (ssp->srcu_reader_flavor =3D=3D SRCU_READ_FLAVOR_ATOMIC && ss_=
-state !=3D SRCU_SIZE_SMALL) {
->                 WARN_ON_ONCE(1);
->         } else if (ss_state !=3D SRCU_SIZE_SMALL && ss_state !=3D SRCU_SI=
-ZE_BIG) {
->                 if (ss_state =3D=3D SRCU_SIZE_ALLOC)
->                         init_srcu_struct_nodes(ssp, GFP_KERNEL);
+> Could you also please add an "else" clause with a WARN_ON_ONCE()
+> for ssp->srcu_reader_flavor =3D=3D SRCU_READ_FLAVOR_ATOMIC?
 >
+> This is after all a user error where someone said to torture atomic SRCU
+> but also said to transition to big.
 
-Thanks, Paul. Good point. The original !is_atomic guard in v1
-already prevented the transition for atomic SRCU. I was mainly
-thinking of the WARN as a diagnostic, since this state should not
-occur with the current code. I agree that retaining the protection
-against the transition is safer if the invariant is ever violated.
+Thanks, Paul.
+Agreed. I'll add the warning in the next version:
+if (SRCU_SIZING_IS_TORTURE()) {
+        if (WARN_ON_ONCE(ssp->srcu_reader_flavor =3D=3D
+                         SRCU_READ_FLAVOR_ATOMIC))
+                return;
+        srcu_transition_to_big(ssp);
+}
 
-> Other approaches might take advantage of the fact that WARN_ON_ONCE()
-> returns the value of its argument, allowing WARN_ON_ONCE() to be used
-> as a condition in an "if" statement.
->
-
-I prefer the first approach. Using !WARN_ON_ONCE() directly in the
-existing condition would make it rather long and less readable,
-while the explicit if/else keeps the control flow clear.
+This keeps atomic SRCU out of the to-big transition while exposing
+the invalid torture configuration.
 
 Thanks,
 Kunwu
 
+>
 >                                                         Thanx, Paul
 >
-> >       if (ss_state !=3D SRCU_SIZE_SMALL && ss_state !=3D SRCU_SIZE_BIG)=
- {
-> >               if (ss_state =3D=3D SRCU_SIZE_ALLOC)
-> >                       init_srcu_struct_nodes(ssp, GFP_KERNEL);
+> >  EXPORT_SYMBOL_GPL(srcu_torture_stats_print);
 > > --
 > > 2.43.0
 > >
