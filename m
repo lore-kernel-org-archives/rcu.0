@@ -1,46 +1,45 @@
-Received: from mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from mta0.migadu.com (out-240.mta0.migadu.com [91.218.175.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A196B42E433
-	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 08:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0917A45D910
+	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 08:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789113684; cv=none; b=b3wHedkXcqOTyBDxILDoDw94eIJJJhDMULqSqoElucv2Kz/cjyPIm0pKwKiuPMSB0IOqO95TNRe0VJwl5JZ3fkGAsFmYuqTxwCQ+Oyf3cDSRmYA7eRj7oRoiDo08DmNvm2JDOWcTRmpXcXoRrKJpkp2fVotB3DG07ciUbR87FaA=
+	t=1789113700; cv=none; b=nxgL4MSXhkZq870aP9lAAH8riBbnCwl5d3WJHjJvW8hm1GDczn2ejR3NdcNnw2SO9aRHsj2VLislLQZLhqG2Fc3rc+e/AsvYEzudM6XI6qiM1Gs6xFMs6kcdLFI1T+o1h6KPeUBc2AkdllTvf544ArhK3/BIGAhCvXlJzqsRkjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789113684; c=relaxed/simple;
-	bh=0hlRYPmyXV54QvYh0kyMJR49RsE/MghM4TVAvWeaXWw=;
+	s=arc-20240116; t=1789113700; c=relaxed/simple;
+	bh=IUi1QxJJO9OkJwG+5y62kZo0PP6tS0vKjCkbB/pQE7o=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=q8CY3/I0s5s8HlzebtMhLsi9Eh/DoS3RhG/ZkAMOtF9GLlAUqk7g9YIuePr+viF8YQcKzX1FrR4vPFjsKise/Ze4xoIFp1rj0A/YDeU832RGbJExrtWfuPzOiXvD59CslFfkLHdukKacOD2DkMyzSantbaMql+bRNM8UqFB1nLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K0T4axFF; arc=none smtp.client-ip=91.218.175.171
+	 MIME-Version; b=hP0rFjqH0ChnbkaVQRvCK7R5m4K7SaPnWDf6H6+hiNTL2UIM3cCWZ4USdOxqIaVo4xrLvVB5AaCH9multAlPaoma6eSzNd3R0R5VnxB7Lhc95TB6p0qDu0PhNCbS/WPXfppwFgQUHvAo5iNkfWybDtlPcJkC1xRAJ96fXzXNoKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ITKbw41G; arc=none smtp.client-ip=91.218.175.240
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K0T4axFF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ITKbw41G"
 X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=0hlRYPmyXV54QvYh0kyMJR49RsE/MghM4TVAvWeaXWw=;
+DKIM-Signature: a=rsa-sha256; bh=IUi1QxJJO9OkJwG+5y62kZo0PP6tS0vKjCkbB/pQE7o=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1789113678; v=1; x=1789718478;
- b=K0T4axFFAV3j7dfLX72ytjaA4PfYKcc7fDPwlpRoDhS5ZtKFLL72iTWfjc5JT7ObaS5kfWfY
- SF2ow5NZ3X/1EZmte6oABZ5GCFHu6htIjR1bkG25/nEvSny+T9P/ph9hxk3E+OM8taNI1ShcJdp
- A/0fvg7g+ehqYaK9EjeNApMw=
+ t=1789113696; v=1; x=1789718496;
+ b=ITKbw41GIqoryyNdtt8qpmC83viNLQyMmuoZW8dWz8JcJc0unVQ8J/nZdm9KxTFgnButgmGJ
+ wiCYmtwrdxbb97eNtf9+weSiTGw+PYTAPRWcmIxdXGmrRf7AdeO2fEl1oddISNtk4J+GRgfSs0j
+ TvtyaW+rSUFOPeoVoko6zkWc=
 X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id e4dd3759505df11b;
-	Fri, 11 Sep 2026 08:01:17 +0000
-X-Mizu-Trace-ID: e4dd3759505df11b
+Received: by smtp.migadu.com with ESMTPS id e9627d939de7aa3b;
+	Fri, 11 Sep 2026 08:01:34 +0000
+X-Mizu-Trace-ID: e9627d939de7aa3b
 X-Migadu-Flow: FLOW_OUT
 From: Ye Liu <ye.liu@linux.dev>
-To: Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Ye Liu <liuye@kylinos.cn>,
 	Michal Hocko <mhocko@suse.com>,
 	SJ Park <sj@kernel.org>,
 	Lorenzo Stoakes <ljs@kernel.org>,
 	Oleg Nesterov <oleg@redhat.com>,
+	peterz@infradead.org,
 	paulmck@kernel.org,
-	rostedt@goodmis.org,
+	mingo@redhat.com,
 	jpoimboe@kernel.org,
 	mic@digikod.net,
 	tglx@kernel.org,
@@ -62,6 +61,8 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	joelagnelf@nvidia.com,
 	josh@joshtriplett.org,
 	urezki@gmail.com,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
 	tony.luck@intel.com,
 	reinette.chatre@intel.com,
 	x86@kernel.org,
@@ -70,7 +71,6 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	serge@hallyn.com,
 	pavel@kernel.org,
 	lance.yang@linux.dev,
-	mhiramat@kernel.org,
 	pmladek@suse.com,
 	longman@redhat.com,
 	mathieu.desnoyers@efficios.com,
@@ -92,9 +92,9 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-security-module@vger.kernel.org
-Subject: [PATCH v3 10/15] sched: convert process/thread iterators to for_each_*_rculock
-Date: Fri, 11 Sep 2026 15:57:55 +0800
-Message-Id: <20260911075800.491472-11-ye.liu@linux.dev>
+Subject: [PATCH v3 11/15] tracing/fgraph: convert process/thread iterator to for_each_process_thread_rculock
+Date: Fri, 11 Sep 2026 15:57:56 +0800
+Message-Id: <20260911075800.491472-12-ye.liu@linux.dev>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260911075800.491472-1-ye.liu@linux.dev>
 References: <20260911075800.491472-1-ye.liu@linux.dev>
@@ -108,10 +108,10 @@ Content-Transfer-Encoding: 8bit
 
 From: Ye Liu <liuye@kylinos.cn>
 
-Replace the manual rcu_read_lock()/rcu_read_unlock() and guard(rcu)
-pairs combined with for_each_process_thread() loops in kernel/sched/
-with for_each_process_thread_rculock(), which scopes the RCU read
-lock to the loop body via scoped_guard(rcu).
+Replace the manual rcu_read_lock()/rcu_read_unlock() pair combined
+with for_each_process_thread() loop in kernel/trace/fgraph.c with
+for_each_process_thread_rculock(), which scopes the RCU read lock
+to the loop body via scoped_guard(rcu).
 
 No functional change.
 
@@ -126,44 +126,37 @@ Changes in v3:
 
 Changes in v2:
   - Rename *_rcu to *_rculock
- kernel/sched/core.c  | 3 +--
- kernel/sched/debug.c | 4 +---
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ kernel/trace/fgraph.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 0697ed0f1c3d..fd5bdd2cb798 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2005,8 +2005,7 @@ static void uclamp_sync_util_min_rt_default(void)
- 	smp_mb__after_spinlock();
- 	read_unlock(&tasklist_lock);
- 
--	guard(rcu)();
--	for_each_process_thread(g, p)
-+	for_each_process_thread_rculock(g, p)
- 		uclamp_update_util_min_rt_default(p);
- }
- 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 72236db67983..cdae165b98f7 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -1029,14 +1029,12 @@ static void print_rq(struct seq_file *m, struct rq *rq, int rq_cpu)
- #endif
- 		   "\n");
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index 40d373d65f9b..f797ce119223 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -1057,11 +1057,10 @@ static int alloc_retstack_tasklist(unsigned long **ret_stack_list)
+ 		}
+ 	}
  
 -	rcu_read_lock();
--	for_each_process_thread(g, p) {
-+	for_each_process_thread_rculock(g, p) {
- 		if (task_cpu(p) != rq_cpu)
- 			continue;
+-	for_each_process_thread(g, t) {
++	for_each_process_thread_rculock(g, t) {
+ 		if (start == end) {
+ 			ret = -EAGAIN;
+-			goto unlock;
++			goto free;
+ 		}
  
- 		print_task(m, rq, p);
+ 		if (t->ret_stack == NULL) {
+@@ -1074,9 +1073,6 @@ static int alloc_retstack_tasklist(unsigned long **ret_stack_list)
+ 			t->ret_stack = ret_stack_list[start++];
+ 		}
  	}
+-
+-unlock:
 -	rcu_read_unlock();
- }
- 
- void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
+ free:
+ 	for (i = start; i < end; i++)
+ 		kmem_cache_free(fgraph_stack_cachep, ret_stack_list[i]);
 -- 
 2.25.1
 
