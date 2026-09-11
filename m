@@ -1,163 +1,190 @@
-Received: from mail-qk2-f12.google.com (mail-qk2-f12.google.com [74.125.230.204])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B8D33515CD
-	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 14:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.230.204
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F8542E421;
+	Fri, 11 Sep 2026 15:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789135845; cv=none; b=aIthOWeu+71RaRCeahj2UCTpJLszbevtpOgWLnxKZqKAOIJYbBzVxSBHd/dWMhIzaCnU5QaaK4F9XQu/mcKVorPyj8v8UJQOHAmSc4+q/E9C/cISy/ysqLc+DKmyCpKkatzPZkqN4Dak+BXOoxYhpUHGyxW2W+Jl58nYXGMDRlA=
+	t=1789141478; cv=none; b=m/wWoOYiXqVbJMi0X+yt9jjEZtz/1FFmlfxV6FsHJndEKeePRrq/2qB1WxhCefPSHgnwoLOoXULPndNltrssaT6P0FI24HPYJOVYcKv7OENn4yT4J++Wwj9mXoKot3dsIya7WJ+aX/3g1eGyjeGP0y07v2C3+w9gwF+x0tHj1HE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789135845; c=relaxed/simple;
-	bh=K9+ZKIgsGRgsc959M4tS0rMKOB/eZlOXTQ8Ho0gK2m4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=V4eL5g276WlbKBcTPRHZ91z71N8+WjbxppyrjhjT//4GEOZPBGnOT1QaATZ2KtNjbUa5BPHJ1FOEbOhhl6kzjt1N2of6pRArah0PzABKDoZDWIqIXvinziar5uYrSQPr/KwzQSFhK/MxK1bcPKeJxPevxTLuZ7E22NX5mQSAE5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=DlojXtNQ; arc=none smtp.client-ip=74.125.230.204
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toxicpanda.com
+	s=arc-20240116; t=1789141478; c=relaxed/simple;
+	bh=dIrbDnzgyXhHod8pRVMH4sZvy6JWr/7Wtzlgh1Obah8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JvusU2PUaP4uVuK8gIz7VNP1z+l2KR96Os/qLcsMvAva8RrE2x+3G/Xlhod3m4nlqmNx6pWshjZLVavfu3SeGGsb2KOoZsiNttZ3ewTMLnMk6wxf87hZkFf2lFsIlHaNUTRqtADYdO/v+bUGDT4XTcFODCohVQdeUAyWNDdexW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lmee9QMr; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="DlojXtNQ"
-Received: by mail-qk2-f12.google.com with SMTP id d75a77b69052e-52fb76798a2so3010921cf.1
-        for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 07:10:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda.com; s=google; t=1789135842; x=1789740642; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=qrCxqh0lkRJGK/msNx4sQvIno2OGGDXwsMjyZ+inPRg=;
-        b=DlojXtNQUMI+4RY2899Vd4IPmVGYjdfubWPeJfZpIUvjJBU3wym3CQSinEvyvDr9pK
-         082SvIG7BLzZLFY79cZL8B70om+Olx3fXxpAcQQR1qCc591L7hzuznE4vhfcDug9oYzN
-         Nr2s2ZDFpiRGrI4U6t3n8BBycDUuL98yWwZaNenafr0YfxKl8p5iZtwwD+H5tGylC0ct
-         r0vS+8Sfrp3pA0mXnjnnJCktcs+aqWnZCuT0uONmPA/cwW3Lx0yD3xB0L3dhCTO7sASw
-         wE1kkzSkDG1EJ1nLU/KszNnGOj1bg3TQDvvf/zzzO5i6M4HjgFs7HaRiQ3jZqZRXMvvx
-         Cg3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789135842; x=1789740642;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=qrCxqh0lkRJGK/msNx4sQvIno2OGGDXwsMjyZ+inPRg=;
-        b=WBVycrVGO3Qr5Zoe09W9WAOOLwFcUzOtU7JIfcsS8B5oHauhzUb5Yf/6H29mEA9Y84
-         zla07rX/m1K1acPe23YA58In9jEQor4Rur3inNdzSnzMqTYFG6TBofXw2FvYVCwjE9Q3
-         sFLKoLNiwa80dW9u/0fdYFFGsl+eZHkc/Qx5hxrCwIt4jZ1tOl59IZhwMfKqxtM9ROlL
-         hZzGMpIU81VP9KLgvn8AG2StGqjNHfqgQOp9sgKdSlCFDn+pxvc5xTvix6ipRpd9WRBT
-         QJvOeVopEhPoQyRQ8B8xbrxwMpCcwujq2RBAI+Xgp51EiiY9lK6Y9vPlZz3os3TrGihc
-         GBcg==
-X-Forwarded-Encrypted: i=1; AKwUvBwZNMBsBxc6US1Ct18bSVfwtGNWRPkfvDdvufKiHOT5Q+4+esUXSLq20ySwNzmcxHxZ620=@vger.kernel.org
-X-Gm-Message-State: AFuF++lw0+sfKNcFXikalGXRm/zzQAyHNu3fCfK0qSDGKr8FQTUSDEUL
-	GMQVXdCRevyftBXVygPm+GGORtlvfGCJOoXByTGZLmMJFWi8FsC1vuDeMUYsBH14/L8=
-X-Gm-Gg: AYBFou0nN/S6T+5uMRPVGyEMFgmNHE5tCVhn5s/fbGrsmCTdUfkB3SVLFmiyiqS4jk5
-	GVWYesBpYZwqDLIlDKCF4g0/VyHM4u/YKxw5hc0j6QS6s7IvTtHsDZaKSw0k2TCW/l69j0MId/D
-	+KZHxGn+oZsG7LJU93M8inXNU0qBztlClHiaht4+eckMQV12WKIirkwqUe4V4x00viwMjXriibX
-	bSW7fCTeNlsUj8ZB7IFirp01afrqwiOD+LWpMY5LEFDOgufm2UGWxpM0/qASP056RQq4Jk4Vt/q
-	gkFwi7hSjISXQwz/0rKAN4vGHOOB9MpLfR8hoWl15BXPw0HeufJpXVCQ5m+iDA/3HESYtEUD2Cc
-	74ytAjfHiwUxR26Hei+a0h5/8dsZLm3XDqiA0qleoly1YLsaz73qlgl8s3gKe4PkA0U2bGcShjb
-	3fFywi3ET0wIy1uluc+Yk62a+MSPJt9kKNTSFPN/hTJJ+1x3Ob7a3kRNbDnwLEENzIG3oJA88MY
-	qDx4UtfF6LkI9bz93m6ZqQ+G5K5uDpfiA96o2sqfIx4UfiYJt8K8M9Y
-X-Received: by 2002:a05:622a:53c5:b0:51c:b98c:f772 with SMTP id d75a77b69052e-530c86f6195mr51379741cf.15.1789135827987;
-        Fri, 11 Sep 2026 07:10:27 -0700 (PDT)
-Received: from toxicpanda.com (ec2-34-228-114-98.compute-1.amazonaws.com. [34.228.114.98])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-530ca460a32sm20960711cf.9.2026.09.11.07.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2026 07:10:27 -0700 (PDT)
-From: Josef Bacik <josef@toxicpanda.com>
-Date: Fri, 11 Sep 2026 14:08:53 +0000
-Subject: [PATCH RFC v2 15/15] rcu-tasks: Kick running holdouts through the
- scheduler
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lmee9QMr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7064F1F000FF;
+	Fri, 11 Sep 2026 15:44:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789141476;
+	bh=1B/r3anMNhgtOBMW1KxIb2EhbjZvlBVjZ1VTOFwKWAk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=Lmee9QMr5Ft/bSPcW2z86IcfA3NUku51rdmD53b9lmn32AkaJhEqeI+M9G4E6zwrG
+	 UUdSwmk35IVrniaEEiz5eob74j7ZBka+Ccj6oYkwyTGbPbixBdWoSodUgaDM927AN1
+	 iXYKtvnAhMTKFbx1I/SiM2PKx5zlFDdkIpUr11lIlZVuyqRsGZAYgmx6ahW2mU5Sup
+	 3m+ry/Ozu/2QpSHF/54DrLpe3KTnsvUZi+R4P08z/USqsCTVJLXFhfx0EU84BZnrAM
+	 qMqVd6AuHfRejiNAKjTaRrAFLDWWvuObwzjbYlEYjJLhOLWOs66MlPIWVS/RiJ0O/v
+	 bz8F4LEHI9Csg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 3AD70CE1902; Fri, 11 Sep 2026 08:44:36 -0700 (PDT)
+Date: Fri, 11 Sep 2026 08:44:36 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Matthias Goergens <matthias.goergens@gmail.com>
+Cc: urezki@gmail.com, harry@kernel.org, frederic@kernel.org,
+	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+	josh@joshtriplett.org, boqun@kernel.org, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev, corbet@lwn.net, skhan@linuxfoundation.org,
+	rdunlap@infradead.org, surenb@google.com, vbabka@kernel.org,
+	rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] rcu: make userspace barrier hook drain kvfree_rcu
+ work
+Message-ID: <7050515d-eadf-4050-9c54-7a202d552b88@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <6092a9d0-0125-4da4-ac48-85ccaeb83beb@paulmck-laptop>
+ <20260911034059.3569914-1-matthias.goergens@gmail.com>
+ <20260911034059.3569914-2-matthias.goergens@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260911-b4-rcu-tasks-preempt-qs-v2-15-eaaa61ed2da4@toxicpanda.com>
-References: <20260911-b4-rcu-tasks-preempt-qs-v2-0-eaaa61ed2da4@toxicpanda.com>
-In-Reply-To: <20260911-b4-rcu-tasks-preempt-qs-v2-0-eaaa61ed2da4@toxicpanda.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>, 
- Frederic Weisbecker <frederic@kernel.org>, 
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
- Joel Fernandes <joelagnelf@nvidia.com>, Boqun Feng <boqun@kernel.org>, 
- Thomas Gleixner <tglx@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
- Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- x86@kernel.org, Catalin Marinas <catalin.marinas@arm.com>, 
- Will Deacon <will@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
- Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: Andy Lutomirski <luto@kernel.org>, 
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
- Juergen Gross <jgross@suse.com>, Luis Chamberlain <mcgrof@kernel.org>, 
- Ihor Solodrai <ihor.solodrai@linux.dev>, linux-kernel@vger.kernel.org, 
- rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- xen-devel@lists.xenproject.org, Josef Bacik <josef@toxicpanda.com>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openssh-sha256; t=1789135737; l=1790;
- i=josef@toxicpanda.com; h=from:subject:message-id;
- bh=K9+ZKIgsGRgsc959M4tS0rMKOB/eZlOXTQ8Ho0gK2m4=;
- b=U1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgUBr36M/n0nWN0DNbnxwzIiCZez6MG
- JiruuNaSCI/zXsAAAAGcGF0YXR0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5AAAA
- QFxu9w6oKo935Kq6bYpzSj4sd/pud6qAfpTImYrmpDnci7BPIoYh09XWotebu7q/uE6z/VGg6k/
- nk0bYtqCcqAg=
-X-Developer-Key: i=josef@toxicpanda.com; a=openssh;
- fpr=SHA256:C8kOX2QUJCMqnCX+KEeoqRAjLo9L+ELOSH2NSAJHqGA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260911034059.3569914-2-matthias.goergens@gmail.com>
 
-A holdout that is running on a CPU with nothing else runnable is only
-preempted if the tick acts on rcu_request_urgent_qs_task()'s flag, and
-there may be no tick.  Now that a preemption outside a trampoline is a
-quiescent state, have check_holdout_task() call resched_cpu() on a
-running holdout as well, so the scheduler IPIs it and it goes through
-__schedule() and reports (or, if it is inside a trampoline, does not
-report) its own state with purely local ordering.  Nothing reads a
-running task's rcu_tramp_nesting remotely.
+On Fri, Sep 11, 2026 at 11:40:59AM +0800, Matthias Goergens wrote:
+> The bcachefs ktest allocation-leak check writes rcutree.do_rcu_barrier
+> before reading /proc/allocinfo. While testing bcachefs performance
+> changes, small objects released with kfree_rcu() remained visible after
+> repeated writes to the hook and 20 seconds of waiting, causing otherwise
+> clean tests to fail their leak check.
+> 
+> The test assumes a stronger contract than the hook currently documents:
+> rcu_barrier() waits for ordinary callbacks, but does not flush objects
+> still held in kfree_rcu() batching or per-CPU SLUB sheaves. The retained
+> population eventually fell as a sheaf filled; there is no evidence here
+> of unbounded growth or OOM.
+> 
+> Changing the hook to drain kvfree_rcu() work let the same unmodified
+> bcachefs workload pass its allocation check. All eight checkpoints in
+> one VM, after 50 through 400 option changes, reported zero retained
+> reconcile_scan objects. This motivated the separate private-cache test
+> used to isolate the incomplete drain from bcachefs.
+> 
+> Calling kvfree_rcu_barrier() from rcu_barrier_throttled() was proposed
+> when kvfree_rcu_barrier() was added in 2024, to restore a clean baseline
+> between userspace benchmark runs. The discussion concluded that keeping
+> the existing hook name, adding the second operation and documenting both
+> was the safest compatibility choice, but the follow-up was not added.
+> 
+> Add that drain and document the stronger test interface. Always retain
+> the existing start-rate limit and perform the kvfree_rcu() drain: an
+> unrelated ordinary barrier does not establish that this work completed.
+> 
+> Retain the entry ordinary-barrier sequence snapshot. After draining,
+> skip the final ordinary barrier only if that snapshot is complete,
+> preserving the memory barrier on the completion path. Otherwise, invoke
+> rcu_barrier() explicitly. This keeps the ordinary-callback guarantee
+> independent of whether kvfree_rcu_barrier() embeds an ordinary barrier.
+> 
+> Clarify that the documented completion guarantee covers work queued
+> before the request, without preventing new work from being queued.
+> 
+> Earlier validation of the unconditional-drain version used four fresh
+> VM pairs with a private-cache fixture: controls retained the queued
+> object (60 to 60 active objects), and treatments drained it (60 to 59).
+> An ordinary-callback test passed on both kernels. Those runs predated
+> the guarded skip and do not validate that change. No elapsed-time
+> improvement is claimed.
+> 
+> Link: https://lore.kernel.org/all/20240820155935.1167988-1-urezki@gmail.com/
+> Signed-off-by: Matthias Goergens <matthias.goergens@gmail.com>
 
-Only under CONFIG_RCU_TASKS_PREEMPT_QS; other architectures are
-unchanged.
+Queued for further review and testing, thank you!
 
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Assisted-by: LLM
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- kernel/rcu/tasks.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+							Thanx, Paul
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index ba432bd922e2..02d2592ab7a3 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1038,8 +1038,18 @@ static bool rcu_tasks_preempted_qs(struct task_struct *t)
- {
- 	return task_call_func(t, rcu_tasks_switched_out_clean, NULL);
- }
-+
-+/* Make a running holdout pass through __schedule() soon, tick or no tick. */
-+static void rcu_tasks_kick_running(struct task_struct *t)
-+{
-+	int cpu = task_cpu(t);
-+
-+	if (task_curr(t) && cpu_online(cpu))
-+		resched_cpu(cpu);
-+}
- #else
- static bool rcu_tasks_preempted_qs(struct task_struct *t) { return false; }
-+static void rcu_tasks_kick_running(struct task_struct *t) { }
- #endif
- 
- /* Per-task initial processing. */
-@@ -1219,6 +1229,7 @@ static void check_holdout_task(struct task_struct *t,
- 		return;
- 	}
- 	rcu_request_urgent_qs_task(t);
-+	rcu_tasks_kick_running(t);
- 	if (!needreport)
- 		return;
- 	if (*firstreport) {
-
--- 
-2.55.0
-
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  9 ++++--
+>  kernel/rcu/tree.c                             | 30 ++++++++++++-------
+>  2 files changed, 26 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 68647ff4bdd2..914b65ae9413 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5699,9 +5699,12 @@ Kernel parameters
+>  			there is an ongoing too-long CSD-lock wait.
+>  
+>  	rcutree.do_rcu_barrier=	[KNL]
+> -			Request a call to rcu_barrier().  This is
+> -			throttled so that userspace tests can safely
+> -			hammer on the sysfs variable if they so choose.
+> +			Wait for deferred kfree_rcu() frees and ordinary
+> +			call_rcu() callbacks queued before this request to
+> +			complete.  This does not prevent new work from being
+> +			queued concurrently.  Requests are throttled so that
+> +			userspace tests can safely hammer on the sysfs
+> +			variable if they so choose.
+>  			If triggered before the RCU grace-period machinery
+>  			is fully active, this will error out with EAGAIN.
+>  
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 96848fc1f02b..93b71682306c 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3989,12 +3989,12 @@ EXPORT_SYMBOL_GPL(rcu_barrier);
+>  static unsigned long rcu_barrier_last_throttle;
+>  
+>  /**
+> - * rcu_barrier_throttled - Do rcu_barrier(), but limit to one per second
+> + * rcu_barrier_throttled - Drain deferred RCU frees, but rate-limit starts
+>   *
+> - * This can be thought of as guard rails around rcu_barrier() that
+> - * permits unrestricted userspace use, at least assuming the hardware's
+> - * try_cmpxchg() is robust.  There will be at most one call per second to
+> - * rcu_barrier() system-wide from use of this function, which means that
+> + * This can be thought of as guard rails around the deferred-free barriers
+> + * that permit unrestricted userspace use, at least assuming the hardware's
+> + * try_cmpxchg() is robust.  There will be at most one drain operation started
+> + * per sixteenth of a second from use of this function, which means that
+>   * callers might needlessly wait a second or three.
+>   *
+>   * This is intended for use by test suites to avoid OOM by flushing RCU
+> @@ -4016,14 +4016,24 @@ static void rcu_barrier_throttled(void)
+>  	while (time_in_range(j, old, old + HZ / 16) ||
+>  	       !try_cmpxchg(&rcu_barrier_last_throttle, &old, j)) {
+>  		schedule_timeout_idle(HZ / 16);
+> -		if (rcu_seq_done(&rcu_state.barrier_sequence, s)) {
+> -			smp_mb(); /* caller's subsequent code after above check. */
+> -			return;
+> -		}
+>  		j = jiffies;
+>  		old = READ_ONCE(rcu_barrier_last_throttle);
+>  	}
+> -	rcu_barrier();
+> +	/*
+> +	 * kfree_rcu() can retain objects outside the ordinary callback lists in
+> +	 * per-CPU SLUB sheaves and kvfree_rcu batches.  Always drain those queues:
+> +	 * an ordinary barrier does not establish that this work was drained.
+> +	 */
+> +	kvfree_rcu_barrier();
+> +	/*
+> +	 * A completed barrier can still cover ordinary callbacks queued before
+> +	 * our entry snapshot.  Otherwise, retain an explicit ordinary barrier
+> +	 * without depending on the implementation of kvfree_rcu_barrier().
+> +	 */
+> +	if (rcu_seq_done(&rcu_state.barrier_sequence, s))
+> +		smp_mb(); /* caller's subsequent code after above check. */
+> +	else
+> +		rcu_barrier();
+>  }
+>  
+>  /*
+> -- 
+> 2.55.0
+> 
