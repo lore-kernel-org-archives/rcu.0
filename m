@@ -1,118 +1,110 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj2-f12.google.com (mail-pj2-f12.google.com [74.125.227.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A28377011;
-	Fri, 11 Sep 2026 16:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAC349DBA8
+	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 16:10:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.140
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789142761; cv=none; b=IG1Gctvzu1MqtwXs0PjP9a9+BkwVj+TSw1JJvKfPvoV3g3jY3fq0VVwLlWEgu3uqRTVZA2dEVNG9NujuxI5nbeav3bEiA3VEvzXuzORfVtqhOyLEIqfEg9o86KlH6A6DHSQJGyGfdvtnjoXUT/giZYK5BUetR0rRYXYVGuHTta4=
+	t=1789143052; cv=none; b=jpSvZey5INLl9Qq3Ab8zzMDznmjveZd9iMOf+x8ibHJIqCOouiGF4hqGnCKLru6eIPzfhjHOrMkPbrDFHF3rSiRhz79sEv6poByB5H+TWoeUskGwDQ+SknSQtG1LQhexmk/wNv9qQbF60JOCLVMKh9rmDvjSLR7zyxc8rxqNTvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789142761; c=relaxed/simple;
-	bh=y623zKvj5WFK6vh5rxBcAJnlnTCbTFJ9npK9Jcvpquo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g/SILuMxH6NNUY4y1VXl5DdmpbzD1D9KYxvtvxIXs+eIUwMmy0eXjdybXLX+AZ5T7u2F+0Niss0s/eBXJqYCAWUV1lxl6xaEWN0LcQ2rHvCuXPwIhir1nlTWOQbOUIZ7Z4SXLIPEBVk7UTwJQGJQRMYyegPtm4TfWUPIK4IhzFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fk8BwnwX; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789143052; c=relaxed/simple;
+	bh=vIUJ6WCC40ZhDzscPwqF9HgcJE/QKSKO2ELm3aI9oE4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r0q5AAnLiZmHvD39g8gEarFZLjKgTNQ9QbZjNcimNim+FmLkMQgtHOY1TCfgxU4MsWKX7NqSyepAYptykQYFpkttPp3JdEL4h0C2t3XzOkqCWWqPH3kcsBdOZcLIEtdgNFBEtLD0yCio8r69f4T3ofSBe6N/Y8qzy7PObPwk24g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RYcCZJ7R; arc=none smtp.client-ip=74.125.227.140
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fk8BwnwX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB6AF1F000FF;
-	Fri, 11 Sep 2026 16:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789142760;
-	bh=2wrOYazY8nQ3ZFXBOJB+1T1IM8luOPP12v0FzLgIrEM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=Fk8BwnwXMbAajPQfNAkdjM7GxQ05ezHyEjLMSYuUNBGC8V971DgzQAgb+XfbtwtSi
-	 YRUZVNEphDjSzzmYj2i0Kd35FtAlji7d8EjEu2/1mL20AdGMDo+4Qyb5b5KJ8QQckq
-	 mIvY6X0LebJ3EvIdZQYGEZ5Sb/2KwJPD3uhvxEyeEgpY3UxJ17ewDFEmx2CxhT6HA3
-	 rnK24yViqITBG7CjQjMYa1ZtbmpzBENqQwNFUsyh0eKws4ja0X5eTMy6A6k1LXXDic
-	 xAnbS3MfSpgSrnY1xM5yHQBBU3rclPmmDisubHLbptUyRXG85kko9WMKbOjYfjxME1
-	 MfRu6bopojR8Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B3CDBCE1902; Fri, 11 Sep 2026 09:05:59 -0700 (PDT)
-Date: Fri, 11 Sep 2026 09:05:59 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Peng Donglin <dolinux.peng@gmail.com>
-Cc: joelagnelf@nvidia.com, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	qiang.zhang@linux.dev, rostedt@goodmis.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Donglin Peng <pengdonglin@xiaomi.com>
-Subject: Re: [PATCH v2] rcu: Align stall warning 'idle=' output with
- documentation
-Message-ID: <ea36a1e2-2940-4385-9b1d-fb197f1b562a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260105032112.1156359-1-dolinux.peng@gmail.com>
- <483ad434-4512-442e-ae6c-4108d5af5e49@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RYcCZJ7R"
+Received: by mail-pj2-f12.google.com with SMTP id 98e67ed59e1d1-39b2ad83dc6so1141058a91.0
+        for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 09:10:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789143050; x=1789747850; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=8qHku/lkcMyCUoex8XaxjopWRu7Z+oJaV2o4dRNVD6k=;
+        b=RYcCZJ7RkRuP7ETlxBZjxrRzZhe0uotpInOEdm+VB5R//Qk+8b+h77ujKKMKTxx8GU
+         U2gPVnlvQrWrtxa63BCo1F44H4mgwz0lZcoY+1c2huwjQs0MeVZdNcT4fi/rYBzu/iqz
+         0MseUkwe0ezWQk7JP6Z1kDozfWpIbXXIpxA4JCvGRAldj4TF/PLfWFqLBpQmgwtjcnJK
+         6ztFO2vo4d6wSHyFkG1esul85aZh2akFGWqrkzCAHwRzYoiI9mAfIXZ2bwZHbagWBAJM
+         1F1b7hUBpieBjzFOHAy+lGIxtlZ2LkUN24777YJGZDkMPX+vjqRY3x+gbUdMif/2H7sV
+         WbZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1789143050; x=1789747850;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=8qHku/lkcMyCUoex8XaxjopWRu7Z+oJaV2o4dRNVD6k=;
+        b=U398FHKeE7S33chXli5TsDlC1jR3YvaAlqb4U+XkMOXYalGph3yg755TL8coPA8fJn
+         4RheHShGv6AHpb5ILVKlJJz/qAE70f3RcNdGPuRdEXJDpsRDKZM6MiBJ8rbGH/dFz6qW
+         Nm7BoYg2vQy91jq6gZOUzfeYGoC+iI49BrN0ujuEB/M/cq8JvXt/2ZKAeHts+ofiVe/b
+         VHLAAUFQVflwE6yMjnPjYK+1I0Qb/Kwtxs2JpeuZX4gc0LOhvLIAnbKPwlW7iMAvZRLW
+         LDh5twmuYhUrWCg1lnTr//wByBUeZY8J+xpSFgLEOFYBCP01EE7hfU81iLMhLhGDw0A6
+         QhRw==
+X-Forwarded-Encrypted: i=1; AKwUvBwFGVRpXI1A4ufDupW8IsjNkd4AA3wmrNBygPIyuUXM0fKgBz71nIf9mDIhziRouea/lZI=@vger.kernel.org
+X-Gm-Message-State: AFuF++n04Y+6bMILy9KYOd6rGEH2R+ufBbkzD3qsj14tqLNcstjsB5V5
+	bxudTJDZVZheGGVV467lRrq4FtwWceU2RDAB8ghx2pu3Egj8TMTkX66IoAcqVQ==
+X-Gm-Gg: AYBFou32yiOE+ECYzIphS79UtGC71OuDaq0lAnkA69D9yJNvhWI43p2odf4KPwsOoc1
+	mt8YuCt2TpvCeM6DLKQ6wDBHrlRWzfb0iwYncft1f58dEMTyeVEvueFMHGmo1m8LvJidqrd78mS
+	zFKPjkLPXM31b8oNjgNOqvMl6o58RqjbOELeP9p3VIInpJUyiNT2MOeWNNnyKkYBCm/4J5dxQbt
+	zQpEslYDuzr8tjuyXFe6q1IrZA899krsdyUfWJpjirfJAS0CFHxkbjt4enFtPOlZ1jb3Lpy+k8k
+	b7Rjp1++W+O3f6wiuttinv5030hp4xpD8VVqfw9vttY0vHjgDMxAl+qS8plsDnSNPCKvH+WNn1T
+	ErYnuT9AyRSEIWH52b2trecCTIzLaPS3G9f7+h2WKpXp11DcxRrD46yw+cuC+QcTQ8GCMSCI61y
+	nK4084/pkAPqnXTOtC+ByOmW5Mb47oYwKz7q8su64r+GNpiXe+RkwEkE9F86WRaPtCrp1dYaxVz
+	QAmqZLN3/n3ygy926c=
+X-Received: by 2002:a17:90b:1d44:b0:38e:57a3:f218 with SMTP id 98e67ed59e1d1-39d9c234a8emr8446766a91.13.1789143050047;
+        Fri, 11 Sep 2026 09:10:50 -0700 (PDT)
+Received: from kernel.tail6741c6.ts.net ([185.220.238.35])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39d951d6b08sm5966320a91.8.2026.09.11.09.10.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2026 09:10:49 -0700 (PDT)
+From: Kunwu Chan <kunwu.chan@gmail.com>
+To: paulmck@kernel.org,
+	jiangshanlai@gmail.com,
+	josh@joshtriplett.org
+Cc: rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>
+Subject: [PATCH] srcutiny: Add lockdep and early-boot checks to synchronize_srcu_atomic()
+Date: Sat, 12 Sep 2026 00:09:13 +0800
+Message-ID: <20260911160913.2859713-1-kunwu.chan@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <483ad434-4512-442e-ae6c-4108d5af5e49@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 04, 2026 at 08:24:05PM +0800, Peng Donglin wrote:
-> On 1/5/26 11:21, Donglin Peng wrote:
-> > From: Donglin Peng <pengdonglin@xiaomi.com>
-> > 
-> > The RCU stall warning message includes an "idle=" field to indicate
-> > the dyntick-idle state of a CPU. According to Documentation/RCU/stallwarn.rst,
-> > the hexadecimal number before the first '/' represents the low-order 16
-> > bits of the dynticks counter. An even value denotes that the CPU is in
-> > dyntick-idle mode, while an odd value indicates otherwise.
-> > 
-> > This was valid until commit 171476775d32 ("context_tracking: Convert state to atomic_t"),
-> > which merged the context-tracking state and dynticks counter into a
-> > single atomic variable. In the new layout, the dynticks counter occupies
-> > the higher bits starting from CT_RCU_WATCHING_START.
-> > 
-> > However, the current stall warning code prints the value from
-> > `ct_rcu_watching_cpu()`, which returns `atomic_read(&ct->state) &
-> > CT_RCU_WATCHING_MASK`. This masks out (clears) the lower state bits,
-> > resulting in a value that is always even. This obscures the CPU's true
-> > idle state and makes the output inconsistent with the documentation.
-> > 
-> > To restore consistency between the code's output and the documentation,
-> > shift the atomic value right by CT_RCU_WATCHING_START bits before printing.
-> > This extracts and displays only the relevant dynticks counter portion,
-> > allowing the parity (even/odd) to correctly reflect the CPU's dyntick-idle
-> > state.
-> > 
-> > Fixes: 171476775d32 ("context_tracking: Convert state to atomic_t")
-> > Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
-> > Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
-> > ---
-> > v2:
-> >   - Use CT_RCU_WATCHING_START to replace ilog2(CT_RCU_WATCHING) to clean
-> >     up the code, thanks to Zqiang.
-> >   - Clarify the commit message.
-> > ---
-> >   kernel/rcu/tree_stall.h | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > index b67532cb8770..fd9d7fd6e17c 100644
-> > --- a/kernel/rcu/tree_stall.h
-> > +++ b/kernel/rcu/tree_stall.h
-> > @@ -555,7 +555,7 @@ static void print_cpu_stall_info(int cpu)
-> >   			rdp->rcu_iw_pending ? (int)min(delta, 9UL) + '0' :
-> >   				"!."[!delta],
-> >   	       ticks_value, ticks_title,
-> > -	       ct_rcu_watching_cpu(cpu) & 0xffff,
-> > +	       (ct_rcu_watching_cpu(cpu) >> CT_RCU_WATCHING_START) & 0xffff,
-> >   	       ct_nesting_cpu(cpu), ct_nmi_nesting_cpu(cpu),
-> >   	       rdp->softirq_snap, kstat_softirqs_cpu(RCU_SOFTIRQ, cpu),
-> >   	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
-> 
-> Gentle ping on this patch. Thanks!
+Add the RCU_LOCKDEP_WARN and early-boot check that the Tree version
+gained, srcu_lock_sync() was already present.
 
-The advantage of the current code is that the CT_STATE_KERNEL,
-CT_STATE_IDLE, CT_STATE_USER, and CT_STATE_GUEST information is visible
-in the lower two bits of that hex number.
+Suggested-by: Zqiang <qiang.zhang@linux.dev>
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+---
+ kernel/rcu/srcutiny.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Now, if you wanted to print that information symbolically and then
-shift down the counter, that might well be a valuable improvement.
-Given corresponding updates to stallwarn.rst, of course.
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 99f8bfd98b04..76411562366f 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -361,6 +361,12 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
+ 
+ 	srcu_lock_sync(&ssp->dep_map);
+ 
++	RCU_LOCKDEP_WARN(lockdep_is_held(ssp),
++			 "Illegal synchronize_srcu_atomic() in same-type SRCU read-side critical section");
++
++	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
++		return;
++
+ 	if (IS_ENABLED(CONFIG_PREEMPTION))
+ 		synchronize_rcu(); // Needed for RCU Tasks Trace to imply RCU grace period.
+ 				   // And in Tiny RCU, it is near zero cost and doesn't block.
+-- 
+2.43.0
 
-Or am I missing something subtle here?
-
-							Thanx, Paul
