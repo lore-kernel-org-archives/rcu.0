@@ -1,113 +1,124 @@
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4544246BCD
-	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 04:03:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C923B05BC;
+	Fri, 11 Sep 2026 04:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789099383; cv=none; b=uSdoP96Odon2w9Osjd8LUzZ03YtCKi0dHPaEOeX6iO8QhstkKh8ymYdPSPqpZwIZwc9QQEjJMALEPnRL+uUIVOXbTJ2aXiRWGVvsNHNSbY1pdqzOaU/oNn5a8yYruUoMQtFqH1nWzflU7bJVueIyh7KkxIYomgmR6gNxYZYnFsU=
+	t=1789099622; cv=none; b=r0KrIDfMphBlWkWNQM2/uti2G8Ngez+cpMjcAoWq4O+GeqI9ENVfyVF0Kf1rHFe/L3i9tFZGD/yC0X5Ze7mQyOKoroAedzPKaS8ARkKoVpElonGiVqhaHam3cehrXNUQEEzOa5xfTo1vFgGMZoNJCZFidrA8paeJq+5KwNnc9Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789099383; c=relaxed/simple;
-	bh=ao6jIEmzwRgXagY/+AxCAmTno2+Fkib62A5EHCGLXaQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=piJ3goDoZ9N7OC9bsPplJ7dByq2tLSRob8u+ABmAHSRuh385uG/rWpOzUIH1/eimLlQpVpW5ilMbU/1MvDnKK0evjB2txGbR6Dle78p8mzRJ4pVF8Xg2lqkjs5j6rXcYhhInHraCuuFUvk7k5SlnZ0ah8Gs/Wcuu1wyXaNb9B3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nMto2o+z; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1789099622; c=relaxed/simple;
+	bh=2w+nxZMaymHIbHfOL5y5/ASn0HihPMGfJ9QEL0BeZb0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cFeiriVUmO0Zq8v8r1hXuf07yGERVQ/DEFhuN0etZ46IxWBKDCWRvv2UKqptTJCwDPRN40C7PJ9QJytKbDFZLi8IYSwT2+uJSjl2PK4odiQLWJGPzgj9z4bHvoWqTnpoiq5IbBIizvoy9uTds47K0BEZzOIjaVvWuthU90sQ8Og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LXc7B4ar; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nMto2o+z"
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-ca12086c06eso522524a12.0
-        for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 21:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789099381; x=1789704181; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=gEmUfzt/yqm9NkLjHUuAbAdVi/+qAz+6lDYXudPuDNM=;
-        b=nMto2o+zYEie1SfUgxtCKPt7+CmntHiCIFWwLDVeQGy2/oOOPtHuvElDnqB2wynF9z
-         bjK/SmilBXqY45o66e0DCJJOG6f2BkXIeW+DLrHnBKK2bbHfWyAz2sNmERXFdvNDS//7
-         +0CgXUOxwDlfpH40kLLKmxtePq4Q+Fi4YU1PqZwSFnNpLItX/fnjcSmIWM59Wtmmawzo
-         6x3Rc2RgnQeDvIOjv26zzOwrP+wVaMW5wkuwLlPwAO1pQysuLpf/CLxlAxB4ad3txSel
-         jUiVGlgUSYkXZ7yXvlq3d6+Nc5FAOGVsYKO9OayQLZO3d2OVmCRSnnOA9adNVvr+xv9V
-         6AnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789099381; x=1789704181;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=gEmUfzt/yqm9NkLjHUuAbAdVi/+qAz+6lDYXudPuDNM=;
-        b=s4UUqRi3sPOrMYPyeIeBCPS3Yqa0eqx5CGbG5uIBeoA+qR2UCdAv/3s5yjH3NkmSYF
-         W5qTIbDwlPOwahkU1Jv8w0d6cuazwbakSJ7Fo4G5gjtRQRGUjWr09TeZJhCvxdEmcPlZ
-         lr2jU3CFh1W1ZjhHZZn8YCTHy9D1z0DvJ85NZdicw/BeQWosh99RnASGciAYlFH0TA8n
-         mj7kG2AnqlB8t2QxdVwK4z0Xb1vAg5W91aCkt+iXMITYqFFjSt/AA7ZKk7moqBsW++h3
-         cEautNPGCf4YbeuwI/Mvo9Absb2AzmBoX3caRy+lmQJFy+BSUGQH8CyaPP1Y64kjShml
-         nIqQ==
-X-Forwarded-Encrypted: i=1; AKwUvBzNtbcwbsjsCmYnzf+p+TGByUkhoyD4vZIs2zfgZ4UBNz7KHiQOAt6Of190H5GI3Rny/FQ=@vger.kernel.org
-X-Gm-Message-State: AFuF++kt0CMUjKx7ZaxCZKRegXqzpBUw24EdyR4V1zEq086s7et7RRsZ
-	8RV9HsCDTMnhBM9tzHI0LyjUJ9G2VE/fVHbY8VRWLD1eXIq6P/vtSGa3
-X-Gm-Gg: AYBFou2Z8podlGWDQqq1OY4e5mJxLZQiyxCEkgNtjpAtMtb1P4ZucQkIcA32eA8Mobj
-	u5HvK3b/UcOl+Yr8kOw+/DzwEWT/PSbuykleYenYtMSHjoDfGkGdBM5bei1Zy6PIymgqafe/4A5
-	R2C61HKH1peZ9qxwlcmIAUz08mmlSdziNzgUWE8gNvwFWtLmgZCFr2HI+WBvMFbZSyc7745tePS
-	qizF4n5Xe7+s5kLyNCszHnKK2RSa+aaZle0LNKDIIw2NDaQDAC+K97u9dRZPeyJoK6LtyxJqADe
-	OxfK6tV52fFon0GE9Kw15LfuO6GJ9A9XPRvXGSVBNLTrMEnR1V9N8ECRIjKJF4asco/SlTqxsgC
-	T6+Xp2TlTjpZ4YD2fLHQIBd0Vkgl7qq909AKwZzmO+CpHBndzArV7TFsE9WAtXJgKBqJ//0hG/E
-	NGCgdrpjhZoeCMV4HszGWeO5EcQ3fLaBk4HXSg5TQUMzZy2MrwxUWJUGdtZ2wYdoC2VT/SeDEV2
-	ZCDxSumOVjykC4Tgg==
-X-Received: by 2002:a05:6300:618d:b0:3cc:f008:8123 with SMTP id adf61e73a8af0-3daed153d75mr4492761637.8.1789099380642;
-        Thu, 10 Sep 2026 21:03:00 -0700 (PDT)
-Received: from kernel.tail6741c6.ts.net ([185.220.238.35])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cc4c6599249sm480320a12.28.2026.09.10.21.02.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2026 21:03:00 -0700 (PDT)
-From: Kunwu Chan <kunwu.chan@gmail.com>
-To: jiangshanlai@gmail.com,
-	paulmck@kernel.org
-Cc: josh@joshtriplett.org,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <kunwu.chan@gmail.com>
-Subject: [PATCH v2] srcutree: Skip torture to-big transition for atomic SRCU
-Date: Fri, 11 Sep 2026 12:02:51 +0800
-Message-ID: <20260911040251.618430-1-kunwu.chan@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LXc7B4ar"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E01A1F000FF;
+	Fri, 11 Sep 2026 04:07:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789099620;
+	bh=2PcDT+PMPmPDLuTC1DqX4YBtp96s8KgMt+vlAfga/kI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=LXc7B4arMjwlFRxTZ0pxYn8fHXJT3Z3N8wV4ZoORQ4nmhOSj57ywurIhd04mQN0k5
+	 JB/A5AkLI77RYvku9gQtjcE82nNSCHwEYRLiygFXbC8X6UyAdyVsg6RrKr1inoF1cS
+	 /3Y9LDgA1kvENsshU86UGiWh5+hBzMx97sbx663FV+SpYHf/CJUk9Mv5WDUTK/O/Gq
+	 hGu3jf3xwoSxLAJ08Y6QN8eqIjpMyj7Y1EK6C1e0UWmDHFlI1kBT0FyfH4JXBnaLb4
+	 Od6XK7RCeRSgEYiF5FoUJ6GfgztqRKR5IMUPS6Fg7/NKYKicQXtobcQ4UDQR1T/qmM
+	 Y7X3a6JmnNGnw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D694BCE157A; Thu, 10 Sep 2026 21:06:59 -0700 (PDT)
+Date: Thu, 10 Sep 2026 21:06:59 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: KunWu Chan <kunwu.chan@gmail.com>
+Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] srcutree: Add WARN_ON_ONCE() for atomic SRCU in
+ srcu_gp_end()
+Message-ID: <de04ba08-c7bb-4aa6-bf9d-8df75e400f0c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260910084629.3695383-1-kunwu.chan@gmail.com>
+ <d1bf830e-8755-4eef-a8f6-35612640a478@paulmck-laptop>
+ <CAN_Opa_X1Gq4DxMhZvM_8XPg96Anw6UWW2EnndtVJ6vPYKE0YQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN_Opa_X1Gq4DxMhZvM_8XPg96Anw6UWW2EnndtVJ6vPYKE0YQ@mail.gmail.com>
 
-Atomic SRCU does not use the srcu_node combining tree. Exclude it
-from the SRCU_SIZING_IS_TORTURE() transition in
-srcu_torture_stats_print(), and warn if such a transition is requested.
+On Fri, Sep 11, 2026 at 09:50:09AM +0800, KunWu Chan wrote:
+> On Fri, Sep 11, 2026 at 12:58 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Thu, Sep 10, 2026 at 04:46:29PM +0800, Kunwu Chan wrote:
+> > > Atomic SRCU remain in the small size state, so add a
+> > > WARN_ON_ONCE() before the transition check to catch any future
+> > > code path that might violate this invariant.
+> > >
+> > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+> > > ---
+> > > Changes since v1:
+> > > - Drop the !is_atomic guard from v1 and add WARN_ON_ONCE() instead,
+> > >   per Paul McKenney's suggestion.
+> > > - v1: https://lore.kernel.org/rcu/20260907075829.2073224-8-kunwu.chan@linux.dev/
+> > > ---
+> > >  kernel/rcu/srcutree.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > index 84c022ec8e09..68441c32cebf 100644
+> > > --- a/kernel/rcu/srcutree.c
+> > > +++ b/kernel/rcu/srcutree.c
+> > > @@ -1074,6 +1074,8 @@ static void srcu_gp_end(struct srcu_struct *ssp, bool is_atomic)
+> > >       }
+> > >
+> > >       /* Transition to big if needed. */
+> > > +     WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC &&
+> > > +                     ss_state != SRCU_SIZE_SMALL);
+> >
+> > Also much better, but we also need to avoid doing the transition in this
+> > case, because doing that transition breaks atomic SRCU.  On way to make
+> > this happen is something like this:
+> >
+> >         if (ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC && ss_state != SRCU_SIZE_SMALL) {
+> >                 WARN_ON_ONCE(1);
+> >         } else if (ss_state != SRCU_SIZE_SMALL && ss_state != SRCU_SIZE_BIG) {
+> >                 if (ss_state == SRCU_SIZE_ALLOC)
+> >                         init_srcu_struct_nodes(ssp, GFP_KERNEL);
+> >
+> 
+> Thanks, Paul. Good point. The original !is_atomic guard in v1
+> already prevented the transition for atomic SRCU. I was mainly
+> thinking of the WARN as a diagnostic, since this state should not
+> occur with the current code. I agree that retaining the protection
+> against the transition is safer if the invariant is ever violated.
+> 
+> > Other approaches might take advantage of the fact that WARN_ON_ONCE()
+> > returns the value of its argument, allowing WARN_ON_ONCE() to be used
+> > as a condition in an "if" statement.
+> >
+> 
+> I prefer the first approach. Using !WARN_ON_ONCE() directly in the
+> existing condition would make it rather long and less readable,
+> while the explicit if/else keeps the control flow clear.
 
-Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
----
-Changes:
--add warn on an invalid atomic SRCU sizing configuration.
--v1: https://lore.kernel.org/rcu/20260910041427.3579817-1-kunwu.chan@gmail.com/
----
- kernel/rcu/srcutree.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Very good, looking forward to seeing what you come up with.
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 68441c32cebf..60c102a4d057 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -2422,8 +2422,10 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
- 		}
- 		pr_cont(" T(%ld,%ld)\n", s0, s1);
- 	}
--	if (SRCU_SIZING_IS_TORTURE())
--		srcu_transition_to_big(ssp);
-+	if (SRCU_SIZING_IS_TORTURE()) {
-+		if (!WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
-+			srcu_transition_to_big(ssp);
-+	}
- }
- EXPORT_SYMBOL_GPL(srcu_torture_stats_print);
- 
--- 
-2.43.0
+							Thanx, Paul
 
+> Thanks,
+> Kunwu
+> 
+> >                                                         Thanx, Paul
+> >
+> > >       if (ss_state != SRCU_SIZE_SMALL && ss_state != SRCU_SIZE_BIG) {
+> > >               if (ss_state == SRCU_SIZE_ALLOC)
+> > >                       init_srcu_struct_nodes(ssp, GFP_KERNEL);
+> > > --
+> > > 2.43.0
+> > >
