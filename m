@@ -1,54 +1,54 @@
-Received: from mta0.migadu.com (out-125.mta0.migadu.com [91.218.175.125])
+Received: from mta0.migadu.com (out-168.mta0.migadu.com [91.218.175.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B9745C6EE
-	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 07:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.125
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CE045FFA9
+	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 07:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789113564; cv=none; b=RFUJ2TogMD4zdnYNB+igjGbT3Fpugxs5DNRhR6B/xFYN0aYAM4ZsRW3sHC2+Zo/PtUSAOz0aBFVPjPrN7/C3lbEBUGKL6P86tJZCQckp8Y5oc6s+cd1V0zswRS/xPEAhXJl2+1hmkTbnf9JTbTpLIZl5KtaXWvCRB2S/qRqEy5M=
+	t=1789113575; cv=none; b=KeP/hIVzHY6i02vU7Zm0Fh1mLS8nsXXJ5aI3Wk1DLde4rhBsHfN+Z2+ANAax7jciFksCIugbfnNp4FDJquFwiP6ANVQoDIwpZ8wUEt6TJOUXezPRwtIER8Ym35fuAqnkqgQ2Pi+0gEf97gXCcWuO7nKXPpTrdWklUSAxBaQG884=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789113564; c=relaxed/simple;
-	bh=0l6apGFhEMmIZSU/2v9JnhqbwzgAnZO6eQl/TQrNqjs=;
+	s=arc-20240116; t=1789113575; c=relaxed/simple;
+	bh=hw2TjBAqEOVWc+zu96DY/c0ZeYo5WpD38F+07ZSfH/w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QCX99aSClRkT5DWxuPKGxWDVkiUp1/aejU27zI8KCoSOmSQsbeptUpdAs9Ythck/jAOf08YU+ifpYmUEjgG/PB22r9jc0ZypJNv3AK6imCCjmFAC006HB1rhcGzaZ3aDiiO1DfujPr3Zk+vS5lXGwwbhd7Uk+RryDjbcJNkKAnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KnEcOPqB; arc=none smtp.client-ip=91.218.175.125
+	 MIME-Version; b=C0rgS/L+7SqoSaMiNyOKap5KcNiBoyt3qVUqWut2qFJxK7Ag8zfl+uYfbrZw2B3WtYpPDcdG4nIxyRlkwLhZUFAYFntb12fjSvTTCujxsGrIrmnulTxwCe7C/nlgOmJOMy4i++/wiNVObzeQ6iCNbweYcmXqfho5bfHCPD08/DU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D65qpbOS; arc=none smtp.client-ip=91.218.175.168
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KnEcOPqB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D65qpbOS"
 X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=0l6apGFhEMmIZSU/2v9JnhqbwzgAnZO6eQl/TQrNqjs=;
+DKIM-Signature: a=rsa-sha256; bh=hw2TjBAqEOVWc+zu96DY/c0ZeYo5WpD38F+07ZSfH/w=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1789113560; v=1; x=1789718360;
- b=KnEcOPqB29IjWgp5jthU8JbZQa2v3D0SIW/x4p91ktzgWaHzFTJXCLupscoIm3krB/uo/qf4
- CveAx/UMZEtGXjGCoz4L5CzclBGBbpVM2DWgluhxFSSKospT58neG0dvynVp+8ueLx2smALKNmk
- GCEaHPmLpyqorFWiG7XG9oog=
+ t=1789113571; v=1; x=1789718371;
+ b=D65qpbOSyBxEKN3XOVZrQzcIrNiHdrCIiKIFKQ5w9q6yoj6XymHoRvuxPsguJWTKmV1OwcYo
+ 3eIfb9i8n2UKi1KwJ/Cd7hNNEHwD83Rzm37VXBKrskmn8DtRRwcfwHYJ0bu+tou4jg4sTTOX4f5
+ 8yEp4uVIzM4G8Fo7s/ZTfots=
 X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 45b1a7c312529d85;
-	Fri, 11 Sep 2026 07:59:19 +0000
-X-Mizu-Trace-ID: 45b1a7c312529d85
+Received: by smtp.migadu.com with ESMTPS id 31e1e1833329852b;
+	Fri, 11 Sep 2026 07:59:30 +0000
+X-Mizu-Trace-ID: 31e1e1833329852b
 X-Migadu-Flow: FLOW_OUT
 From: Ye Liu <ye.liu@linux.dev>
-To: Miaohe Lin <linmiaohe@huawei.com>,
-	Andrew Morton <akpm@linux-foundation.org>
+To: Thomas Gleixner <tglx@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
 Cc: Ye Liu <liuye@kylinos.cn>,
 	Michal Hocko <mhocko@suse.com>,
-	Lorenzo Stoakes <ljs@kernel.org>,
 	SJ Park <sj@kernel.org>,
-	Gregory Price <gourry@gourry.net>,
-	peterz@infradead.org,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
 	paulmck@kernel.org,
 	mingo@redhat.com,
 	rostedt@goodmis.org,
 	jpoimboe@kernel.org,
 	mic@digikod.net,
-	oleg@redhat.com,
-	tglx@kernel.org,
+	akpm@linux-foundation.org,
 	david@kernel.org,
+	linmiaohe@huawei.com,
 	nao.horiguchi@gmail.com,
 	rafael@kernel.org,
 	gnoack3000@gmail.com,
+	gourry@gourry.net,
 	rientjes@google.com,
 	shakeel.butt@linux.dev,
 	xu.xin16@zte.com.cn,
@@ -92,9 +92,9 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-security-module@vger.kernel.org
-Subject: [PATCH v3 04/15] mm/memory-failure: convert process iterator to for_each_process_rculock
-Date: Fri, 11 Sep 2026 15:57:49 +0800
-Message-Id: <20260911075800.491472-5-ye.liu@linux.dev>
+Subject: [PATCH v3 05/15] cpu/hotplug: convert thread iterator to for_each_thread_rculock
+Date: Fri, 11 Sep 2026 15:57:50 +0800
+Message-Id: <20260911075800.491472-6-ye.liu@linux.dev>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260911075800.491472-1-ye.liu@linux.dev>
 References: <20260911075800.491472-1-ye.liu@linux.dev>
@@ -108,106 +108,48 @@ Content-Transfer-Encoding: 8bit
 
 From: Ye Liu <liuye@kylinos.cn>
 
-Replace the manual rcu_read_lock()/rcu_read_unlock() pairs combined
-with for_each_process() loop in mm/memory-failure.c with
-for_each_process_rculock(), which scopes the RCU read lock to the
-loop body via scoped_guard(rcu).
+Replace the manual rcu_read_lock()/rcu_read_unlock() pair combined
+with for_each_thread() loop in kernel/cpu.c with for_each_thread_rculock(),
+which scopes the RCU read lock to the loop body via scoped_guard(rcu).
 
-In collect_procs_file(), the page_pgoff() call now falls outside the
-RCU read-side critical section.  This is safe because page_pgoff()
-only reads folio->index and does not traverse any RCU-protected
-structures.
+No functional change.
 
 Signed-off-by: Ye Liu <liuye@kylinos.cn>
 Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 Reviewed-by: SJ Park <sj@kernel.org>
-Reviewed-by: Gregory Price (Meta) <gourry@gourry.net>
+Reviewed-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 ---
+Changes in v3:
+  - Split from kernel/ patch in v2 (Peter Zijlstra, Steven Rostedt)
+
 Changes in v2:
   - Rename *_rcu to *_rculock
-  - Clarify page_pgoff() safety outside RCU lock (SJ Park)
- mm/memory-failure.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ kernel/cpu.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index a8b03e2920ba..7d93deb1f7b3 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -555,8 +555,7 @@ static void collect_procs_anon(const struct folio *folio,
- 		return;
- 
- 	pgoff = page_pgoff(folio, page);
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index b3c8553d7bd6..00638d2abc0f 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1254,8 +1254,7 @@ void clear_tasks_mm_cpumask(int cpu)
+ 	 * full-fledged tasklist_lock.
+ 	 */
+ 	WARN_ON(cpu_online(cpu));
 -	rcu_read_lock();
--	for_each_process(tsk) {
-+	for_each_process_rculock(tsk) {
- 		struct vm_area_struct *vma;
- 		struct anon_vma_chain *vmac;
- 		struct task_struct *t = task_early_kill(tsk, force_early);
-@@ -572,7 +571,6 @@ static void collect_procs_anon(const struct folio *folio,
- 			add_to_kill_anon_file(t, page, vma, to_kill, addr);
- 		}
- 	}
--	rcu_read_unlock();
- 	anon_vma_unlock_read(av);
- }
- 
-@@ -589,9 +587,8 @@ static void collect_procs_file(const struct folio *folio,
- 	pgoff_t pgoff;
- 
- 	i_mmap_lock_read(mapping);
--	rcu_read_lock();
- 	pgoff = page_pgoff(folio, page);
--	for_each_process(tsk) {
-+	for_each_process_rculock(tsk) {
- 		struct task_struct *t = task_early_kill(tsk, force_early);
- 		unsigned long addr;
- 
-@@ -611,7 +608,6 @@ static void collect_procs_file(const struct folio *folio,
- 			add_to_kill_anon_file(t, page, vma, to_kill, addr);
- 		}
- 	}
--	rcu_read_unlock();
- 	i_mmap_unlock_read(mapping);
- }
- 
-@@ -635,8 +631,7 @@ static void collect_procs_fsdax(const struct page *page,
- 	struct task_struct *tsk;
- 
- 	i_mmap_lock_read(mapping);
--	rcu_read_lock();
--	for_each_process(tsk) {
-+	for_each_process_rculock(tsk) {
- 		struct task_struct *t = tsk;
+-	for_each_process(p) {
++	for_each_process_rculock(p) {
+ 		struct task_struct *t;
  
  		/*
-@@ -653,7 +648,6 @@ static void collect_procs_fsdax(const struct page *page,
- 				add_to_kill_fsdax(t, page, vma, to_kill, pgoff);
- 		}
+@@ -1268,7 +1267,6 @@ void clear_tasks_mm_cpumask(int cpu)
+ 		arch_clear_mm_cpumask_cpu(cpu, t->mm);
+ 		task_unlock(t);
  	}
 -	rcu_read_unlock();
- 	i_mmap_unlock_read(mapping);
- }
- #endif /* CONFIG_FS_DAX */
-@@ -2288,8 +2282,7 @@ static void collect_procs_pfn(struct pfn_address_space *pfn_space,
- 	struct address_space *mapping = pfn_space->mapping;
- 
- 	i_mmap_lock_read(mapping);
--	rcu_read_lock();
--	for_each_process(tsk) {
-+	for_each_process_rculock(tsk) {
- 		struct task_struct *t = tsk;
- 
- 		t = task_early_kill(tsk, true);
-@@ -2303,7 +2296,6 @@ static void collect_procs_pfn(struct pfn_address_space *pfn_space,
- 				add_to_kill_pgoff(t, vma, to_kill, pgoff);
- 		}
- 	}
--	rcu_read_unlock();
- 	i_mmap_unlock_read(mapping);
  }
  
+ /* Take this CPU down. */
 -- 
 2.25.1
 
