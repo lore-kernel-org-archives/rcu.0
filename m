@@ -1,38 +1,39 @@
-Received: from mta0.migadu.com (out-42.mta0.migadu.com [91.218.175.42])
+Received: from mta0.migadu.com (out-92.mta0.migadu.com [91.218.175.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3414456E03
-	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 07:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAC5A45D5E2
+	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 07:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789113534; cv=none; b=q6abixi21Q1hXA9NeERZk+s0L3+PPRlBUsjUddI5nVOH/Bc9wNNTOaSWcodQH1xo8hgYBQVg4eW14dX9ziAyj5DkfgMJteVOqXLrTDxR96ljixan75ElEZUgduUXkJw00Jukd9pmesN8cfnmJygxukSxoeU8zeIWWBAsfEOmSxk=
+	t=1789113551; cv=none; b=AO2YWs+k2zmQozhT2L7GOU8e/vvPK10T9y4IYg7w/Ykh67jSWEWx+ACfqb2DPKO+EG46WMzCfBDaYRhm/VjRRQmBnEftvVxsr7mwHvD8RfYXvJf1dVQP2IMY3xwnUi7U23r4Vs09cNHtWGauBUwqMJOtXLxDXNSpvoRd3FaMzu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789113534; c=relaxed/simple;
-	bh=ZzvApGiwGsUs4MczJymZslP+9Pni4p9V/rT4UlhT+jA=;
+	s=arc-20240116; t=1789113551; c=relaxed/simple;
+	bh=QXWV2YjR1N2qilXRn4ZL7vqePEkKN4kK8nW2DqNMaW0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bWvtEJblX4uzktRoRrNbxAzs+1HtMbayYm42GjQ48GRjRQGd+lh3R5tA3wR6ucMvVBZc0LM6yI6g4MuPNjyXlQUEK+gLZZtubEkiCOHqQSjV5Uvoi8vzv2eNiLgKRwuXNjvKXLYeXzo8yjAK+zI0QrD3ztIBZXbioLyX5fV6ojY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g/N/a6wE; arc=none smtp.client-ip=91.218.175.42
+	 MIME-Version; b=ZukPqpQgoanWqwcFalkK9wm71zW2NTzTxDvqqkI5ceQzi/0xMYQJLiWXbIJeo+pOacCOSP6TLJ09bKc8RHIqaIpChAKXkZ3R0DsCjsTqjDAB7DrLMu9Rf4SBSCF+yV3LoPIH7M3QjQtegdrXVY2DvCmpc9mhm5FJpXL8GPxbMos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VMFbb681; arc=none smtp.client-ip=91.218.175.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g/N/a6wE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VMFbb681"
 X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=ZzvApGiwGsUs4MczJymZslP+9Pni4p9V/rT4UlhT+jA=;
+DKIM-Signature: a=rsa-sha256; bh=QXWV2YjR1N2qilXRn4ZL7vqePEkKN4kK8nW2DqNMaW0=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1789113530; v=1; x=1789718330;
- b=g/N/a6wEWW1JgQaQextQ6/VTXs8j7sxSClSluCc0Z8w9fyHpPjuwVISX4Jzbq1YHxOTjn2mB
- keyopv/53ltGIoG1L0JfzLAStmQABybqjvFWHQhfPVnKvHWSuuJy1gfwWaOgAx2nTiy1xzxd8Zl
- lFp8mAFppfFXLA5wkO1Pd9dk=
+ t=1789113545; v=1; x=1789718345;
+ b=VMFbb681nsr3Q2UeYWmN12jBTTR+wN3QxH7ZniVkfk9Pxn4IGGhxdxSxhdNej97M2YWbwsHS
+ Atr1+MiFXn8CdACLwAr3gmcBMDF9nck0ER4klm1CoC7Hef3votFxB7a7njSLRrATAh6LWW6JVg2
+ UR8kA0nzR/cspdFLDgo8PXjc=
 X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 6843b9e642dbf692;
-	Fri, 11 Sep 2026 07:58:50 +0000
-X-Mizu-Trace-ID: 6843b9e642dbf692
+Received: by smtp.migadu.com with ESMTPS id 70c9cc29d1278767;
+	Fri, 11 Sep 2026 07:59:05 +0000
+X-Mizu-Trace-ID: 70c9cc29d1278767
 X-Migadu-Flow: FLOW_OUT
 From: Ye Liu <ye.liu@linux.dev>
-To: Michal Hocko <mhocko@suse.com>,
-	Andrew Morton <akpm@linux-foundation.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>
 Cc: Ye Liu <liuye@kylinos.cn>,
+	Michal Hocko <mhocko@suse.com>,
 	SJ Park <sj@kernel.org>,
 	Gregory Price <gourry@gourry.net>,
 	Lorenzo Stoakes <ljs@kernel.org>,
@@ -44,7 +45,6 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	mic@digikod.net,
 	oleg@redhat.com,
 	tglx@kernel.org,
-	david@kernel.org,
 	linmiaohe@huawei.com,
 	nao.horiguchi@gmail.com,
 	rafael@kernel.org,
@@ -92,9 +92,9 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-security-module@vger.kernel.org
-Subject: [PATCH v3 02/15] mm/oom_kill: convert process/thread iterators to for_each_*_rculock
-Date: Fri, 11 Sep 2026 15:57:47 +0800
-Message-Id: <20260911075800.491472-3-ye.liu@linux.dev>
+Subject: [PATCH v3 03/15] mm/ksm: convert process iterator to for_each_process_rculock
+Date: Fri, 11 Sep 2026 15:57:48 +0800
+Message-Id: <20260911075800.491472-4-ye.liu@linux.dev>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260911075800.491472-1-ye.liu@linux.dev>
 References: <20260911075800.491472-1-ye.liu@linux.dev>
@@ -108,111 +108,46 @@ Content-Transfer-Encoding: 8bit
 
 From: Ye Liu <liuye@kylinos.cn>
 
-Replace the manual rcu_read_lock()/rcu_read_unlock() pairs wrapping
-for_each_process()/for_each_thread() loops with for_each_process_rculock()
-and for_each_thread_rculock(), which scope the RCU read lock to the
-loop body via scoped_guard(rcu).
+Replace the manual rcu_read_lock()/rcu_read_unlock() pair combined
+with for_each_process() loop in mm/ksm.c with for_each_process_rculock(),
+which scopes the RCU read lock to the loop body via scoped_guard(rcu).
 
 No functional change.
 
 Signed-off-by: Ye Liu <liuye@kylinos.cn>
 Acked-by: Michal Hocko <mhocko@suse.com>
 Reviewed-by: SJ Park <sj@kernel.org>
+Acked-by: David Hildenbrand (Arm) <david@kernel.org>
 Reviewed-by: Gregory Price (Meta) <gourry@gourry.net>
 Reviewed-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 ---
 Changes in v2:
   - Rename *_rcu to *_rculock
- mm/oom_kill.c | 20 +++++---------------
- 1 file changed, 5 insertions(+), 15 deletions(-)
+ mm/ksm.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 5f372f6e26fa..ef2e1c423c1d 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -94,8 +94,7 @@ static bool oom_cpuset_eligible(struct task_struct *start,
- 	bool ret = false;
- 	const nodemask_t *mask = oc->nodemask;
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 49d48d1e0998..69d30e80a090 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -3280,8 +3280,7 @@ void collect_procs_ksm(const struct folio *folio, const struct page *page,
+ 		struct anon_vma *av = rmap_item->anon_vma;
  
--	rcu_read_lock();
--	for_each_thread(start, tsk) {
-+	for_each_thread_rculock(start, tsk) {
- 		if (mask) {
- 			/*
- 			 * If this is a mempolicy constrained oom, tsk's
-@@ -114,7 +113,6 @@ static bool oom_cpuset_eligible(struct task_struct *start,
- 		if (ret)
- 			break;
- 	}
--	rcu_read_unlock();
- 
- 	return ret;
- }
-@@ -368,11 +366,9 @@ static void select_bad_process(struct oom_control *oc)
- 	else {
- 		struct task_struct *p;
- 
+ 		anon_vma_lock_read(av);
 -		rcu_read_lock();
--		for_each_process(p)
-+		for_each_process_rculock(p)
- 			if (oom_evaluate_task(p, oc))
- 				break;
--		rcu_read_unlock();
- 	}
- }
- 
-@@ -430,14 +426,12 @@ static void dump_tasks(struct oom_control *oc)
- 		struct task_struct *p;
- 		int i = 0;
- 
--		rcu_read_lock();
--		for_each_process(p) {
-+		for_each_process_rculock(p) {
- 			/* Avoid potential softlockup warning */
- 			if ((++i & 1023) == 0)
- 				touch_softlockup_watchdog();
- 			dump_task(p, oc);
+-		for_each_process(tsk) {
++		for_each_process_rculock(tsk) {
+ 			struct anon_vma_chain *vmac;
+ 			const unsigned long addr = rmap_item->address & PAGE_MASK;
+ 			const unsigned long index = rmap_item->linear_page_index;
+@@ -3298,7 +3297,6 @@ void collect_procs_ksm(const struct folio *folio, const struct page *page,
+ 				}
+ 			}
  		}
 -		rcu_read_unlock();
+ 		anon_vma_unlock_read(av);
  	}
  }
- 
-@@ -894,8 +888,7 @@ static bool task_will_free_mem(struct task_struct *task)
- 	 * are dying as well to make sure that a) nobody pins its mm and
- 	 * b) the task is also reapable by the oom reaper.
- 	 */
--	rcu_read_lock();
--	for_each_process(p) {
-+	for_each_process_rculock(p) {
- 		if (!process_shares_mm(p, mm))
- 			continue;
- 		if (same_thread_group(task, p))
-@@ -904,7 +897,6 @@ static bool task_will_free_mem(struct task_struct *task)
- 		if (!ret)
- 			break;
- 	}
--	rcu_read_unlock();
- 
- 	return ret;
- }
-@@ -960,8 +952,7 @@ static void __oom_kill_process(struct task_struct *victim, const char *message)
- 	 * That thread will now get access to memory reserves since it has a
- 	 * pending fatal signal.
- 	 */
--	rcu_read_lock();
--	for_each_process(p) {
-+	for_each_process_rculock(p) {
- 		if (!process_shares_mm(p, mm))
- 			continue;
- 		if (same_thread_group(p, victim))
-@@ -982,7 +973,6 @@ static void __oom_kill_process(struct task_struct *victim, const char *message)
- 			continue;
- 		do_send_sig_info(SIGKILL, SEND_SIG_PRIV, p, PIDTYPE_TGID);
- 	}
--	rcu_read_unlock();
- 
- 	if (can_oom_reap)
- 		queue_oom_reaper(victim);
 -- 
 2.25.1
 
