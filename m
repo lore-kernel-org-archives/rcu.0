@@ -1,44 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C82310645;
-	Fri, 11 Sep 2026 16:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C89409114;
+	Fri, 11 Sep 2026 16:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789144829; cv=none; b=iB90O3rfnqh7Yjvf9HC4RKMWja6BtCBSsdT3iZ1Eundo/AA0osBwH9Ss1AxK+490IqDLny5EAEcEa6nQ7utTEO60vyJHkLp5lVveRKtPNHNWcfqWSmeqv1ZsR7YCpTjUxtqU1s0FKkx1dJnRYC2tfRFpSfwuOsy0wXT/+mX6jus=
+	t=1789145241; cv=none; b=FzONl/UyRYaUV72MsH1qVnpd5enjHRSCJgDyzrB1AL9tvB292RSGnBPLoJ6fGKzeczWC08wMZNA3mKhZ5pUoVFpD2BpmxN9QyvJCLCgbnndFPNYtu9uqqSBcBda3RIt1i8rXj95iR2qbCDpBQHojydETySBRNCfUF7H++6Fbkmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789144829; c=relaxed/simple;
-	bh=VIhEce5lvBsBBt6I0w3GqfJd4+m4wrIZFReO17foSGQ=;
+	s=arc-20240116; t=1789145241; c=relaxed/simple;
+	bh=voWdrvM/LYp5hHaXOElkpjdoJ5lFxMk2nrH2By134rQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zm9gsnhknp4doiHPPg3lgadUWvHrpEizQXgGr8ddOYYZu+Q6+GCjljXHunQgnHZ1z2t0w4FqoN+QDSjGDGmLkbApLJ7L5GqwLWyrGaSVjvahF1CuGimNvXtYAyP71eiQGqN1oFm1z9x2XEuknbcL1A8xqxr22YH+G1EhO7C+hTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TEAAiDZM; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=FK3tQOIPsvX/yMTLCGbNr4VeN9xFlPQbfhtxbGOcoMOwlgH9CoBrDsTRnvcmUKUMV0QBLkSM3eXIqruQS6F03JTqxYxpavZoSmUGLljH2NuXQHMXPlYPbSJpET8TOvFO8/m3ZS1YxwBAlRrorEEDB1xETPa+LPvIW6W6jRitqLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZKYEB+L6; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TEAAiDZM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EC7F1F000FF;
-	Fri, 11 Sep 2026 16:40:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZKYEB+L6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C91451F000FF;
+	Fri, 11 Sep 2026 16:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789144827;
-	bh=OA0i/kBHnkoajcnH37M80fYwsnLdmhWQ9PKyv6erE5Y=;
+	s=k20260515; t=1789145239;
+	bh=av0409fTTGSs5Ag4uYjjV1dx8L7s5AjNobnmggEroqE=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=TEAAiDZMYWilpwEo1TsYSgNuYWYdo/ixWZV7GZ8MlkaRqPc8Xo5asLvMLgcAblpJ2
-	 YSULJaynNiBFRAqaPAArgazKU2Rzwu/00GUkVhgNS0gaKoJGKBDWXxzrrTEqkVAG3v
-	 IhCfhZCr0/SM7zvJlrw8PGEM2yyHPoznOR21rPr1xG9Hl3lvxD7UoZJ1tUDXoPx6z7
-	 +9LUXSYE+1GXf/zbl1pcjz5nMtb4+FlzRdlPkM1qHCyO0WTSgaQkxH0hN8pA/YrG/a
-	 g9hxY+Qva2DgvkwxyyKQLucT8WnfRhddSrM6UB3Gx2K1g6g/LOxfaX4Oy7vfWnwy1Y
-	 /b8TlNs+Rfo9w==
+	b=ZKYEB+L6vK8prUY2zQoT8sqcvlfQWfROMhD9d3Ll7RwcFrrwUCwBiPaRBfiO/e3iL
+	 eINLgiNA0kLNdarzZNe7NEgFJ7BwZMt5VWNimBkr7KdGI1Kd6Cf/fRD+EHJVHMb9p2
+	 UQIKrfG9iu346jm1vJO59CvwEWeNiHkmOZ/TXgdw01211lzDSQQwl3S767sOpC2P53
+	 MIiO7+HNLgJI9jYUGsPeQK6HBUJJwoLP4FATzq6tp1PhnN5Th8qUTyjXJGrIFfuqc5
+	 hai2BIv8rjI5dz/jOQyvrzKcBvi9Ls727hc6VguuUIIb4QluMnMHh6y9rrWvhuHdTq
+	 tyP0OO/jztQPA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 27186CE1902; Fri, 11 Sep 2026 09:40:27 -0700 (PDT)
-Date: Fri, 11 Sep 2026 09:40:27 -0700
+	id 8FD68CE1902; Fri, 11 Sep 2026 09:47:19 -0700 (PDT)
+Date: Fri, 11 Sep 2026 09:47:19 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Kunwu Chan <kunwu.chan@gmail.com>
 Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
 	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] srcutree: Skip torture to-big transition for atomic
- SRCU
-Message-ID: <a57d7d28-ff5b-4db6-8353-8cec10c8ba5d@paulmck-laptop>
+	linux-kernel@vger.kernel.org, Zqiang <qiang.zhang@linux.dev>
+Subject: Re: [PATCH] srcutree: Add lockdep and early-boot checks to
+ synchronize_srcu_atomic()
+Message-ID: <0cf7b133-d2fd-4298-adba-70a2b86d1892@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20260911040251.618430-1-kunwu.chan@gmail.com>
+References: <20260911093515.2802551-1-kunwu.chan@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -47,44 +47,47 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260911040251.618430-1-kunwu.chan@gmail.com>
+In-Reply-To: <20260911093515.2802551-1-kunwu.chan@gmail.com>
 
-On Fri, Sep 11, 2026 at 12:02:51PM +0800, Kunwu Chan wrote:
-> Atomic SRCU does not use the srcu_node combining tree. Exclude it
-> from the SRCU_SIZING_IS_TORTURE() transition in
-> srcu_torture_stats_print(), and warn if such a transition is requested.
+On Fri, Sep 11, 2026 at 05:35:15PM +0800, Kunwu Chan wrote:
+> Add the lockdep annotation, same-type SRCU nesting warning, and
+> early-boot check used by __synchronize_srcu().
 > 
+> Suggested-by: Zqiang <qiang.zhang@linux.dev>
 > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 
-Queued for testing and review, thank you!
+Queued for review and testing, thank you both!
+
+Interestingly enough, it is now the case that there is a grace-period
+wait that can be placed in a normal RCU read-side critical section.
+Does this mean that we should also adjust the --do-srcu-lockdep testing
+in tools/testing/selftests/rcutorture/bin/torture.sh?
 
 							Thanx, Paul
 
 > ---
-> Changes:
-> -add warn on an invalid atomic SRCU sizing configuration.
-> -v1: https://lore.kernel.org/rcu/20260910041427.3579817-1-kunwu.chan@gmail.com/
-> ---
->  kernel/rcu/srcutree.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  kernel/rcu/srcutree.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
 > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 68441c32cebf..60c102a4d057 100644
+> index 6a9c432a3bd0..6c729e805fb3 100644
 > --- a/kernel/rcu/srcutree.c
 > +++ b/kernel/rcu/srcutree.c
-> @@ -2422,8 +2422,10 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
->  		}
->  		pr_cont(" T(%ld,%ld)\n", s0, s1);
->  	}
-> -	if (SRCU_SIZING_IS_TORTURE())
-> -		srcu_transition_to_big(ssp);
-> +	if (SRCU_SIZING_IS_TORTURE()) {
-> +		if (!WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
-> +			srcu_transition_to_big(ssp);
-> +	}
->  }
->  EXPORT_SYMBOL_GPL(srcu_torture_stats_print);
+> @@ -2123,6 +2123,14 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
+>  	unsigned long rdm0, rdm1;
+>  	unsigned long unlocks0, unlocks1;
 >  
+> +	srcu_lock_sync(&ssp->dep_map);
+> +
+> +	RCU_LOCKDEP_WARN(lockdep_is_held(ssp),
+> +			 "Illegal synchronize_srcu_atomic() in same-type SRCU read-side critical section");
+> +
+> +	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
+> +		return;
+> +
+>  	// Initialize.	Either init_srcu_struct() was invoked or
+>  	// DEFINE_SRCU() or similar was used.  Therefore, no allocation
+>  	// will be done here.
 > -- 
 > 2.43.0
 > 
