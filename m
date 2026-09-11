@@ -1,158 +1,112 @@
-Received: from mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from mail-pj2-f12.google.com (mail-pj2-f12.google.com [74.125.227.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7C637F31F
-	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 08:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8603639DBD0
+	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 09:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.140
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789113770; cv=none; b=YFcaTsC2yEcoIq7vpZhxFuw7XtGiPyOak2e9iALTVX3pUzDI2Ck1Zq8ZAsgwtW+EDBTrX8D/tzFacNUnDCS88CGrixTzhOfVZ4wCflc4SkRSQzhvBIIJVXektpjK4QuGAxpBWCujAwc+iAYVhELF/XOYPHO0luQk44Gn9A+gw4Y=
+	t=1789119330; cv=none; b=jdU9A0HhdM3RUGpYEtcXqA5yB8ieanZ90JTY7aMIQNHVYYniW6ML/R1/W1n5Wng77Y85x4UxP4chvP5re3ad91q5c/awlcIhtouQu33vbRHHGgBoSG2E/ut4jsZYBbS6Axcb37uXJWmccImnDfXNomZmpRWivHVinhDG5iS+R+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789113770; c=relaxed/simple;
-	bh=gyEXa0FlQB4fnI8+b4wbMTxt20ejFsCIXyGvnAfz3fw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NOz56qYtmX5fElL6gk/OlNVZ7NHRN65ImQHxYHOEhmQqnOVgU5eINNNMKCdN+11bKxarKVEmEbT/cslHBfrKSbPW3a5frLA0J4ovHp11+syYDcjrMU4IQM4N3zX8LnY6vWUezkBF4TqI08KKzt9uPzFXpB1JUW40qdK53E8xmw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IrxlTkHG; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1789119330; c=relaxed/simple;
+	bh=kqWs3gslUippxzNOyNWeD+9l2TgXs+ueYRgqDLPCDfQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r8G0NhVelEY7/qPdbAy/E1yy2ZIJMbnvdxcS92WfNoDQeiSrxYYja2lf6Wv5JD2LM2gS5HY/o+UtsxhpLNGr7gJkWFdXvgwfnfJItqmbw8ojjloIcOAP78CCsnddqJLcCLQlwM3GFR4nEaFnnd50NrKmR9ESdmAN4Wk4KTAUYjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g2gmZUvU; arc=none smtp.client-ip=74.125.227.140
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IrxlTkHG"
-X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=gyEXa0FlQB4fnI8+b4wbMTxt20ejFsCIXyGvnAfz3fw=;
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1789113763; v=1; x=1789718563;
- b=IrxlTkHGp3cBFICxJ74x8FHozgFM9E1bm69zaff8sloIkZpR2vWsfVUpIM26W7FvO9CzmmP6
- 7bBPeobXxt/R4zkdHt0oBw22fzO7d5vJreo/2QYwar1FhOQ0GppcCZ+WZ+879JKaHVK3SQ/f6cD
- s0sH5Okj4GHAVuaqATj1rfIQ=
-X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id fec14dc499d20683;
-	Fri, 11 Sep 2026 08:02:42 +0000
-X-Mizu-Trace-ID: fec14dc499d20683
-X-Migadu-Flow: FLOW_OUT
-From: Ye Liu <ye.liu@linux.dev>
-To: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>
-Cc: Ye Liu <liuye@kylinos.cn>,
-	Justin Suess <utilityemal77@gmail.com>,
-	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack3000@gmail.com>,
-	Gregory Price <gourry@gourry.net>,
-	SJ Park <sj@kernel.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	mhocko@suse.com,
-	peterz@infradead.org,
-	paulmck@kernel.org,
-	mingo@redhat.com,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g2gmZUvU"
+Received: by mail-pj2-f12.google.com with SMTP id 98e67ed59e1d1-396ccc09d65so539273a91.3
+        for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 02:35:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789119329; x=1789724129; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=RPaVl76vMKtxyEaYdRMge2DXsMWSeY/qgY/dx2nMKuA=;
+        b=g2gmZUvUowKzWsTtoRx8chvMFZgN9ye8ys5OVuZVoStX1enw3wKZV7dQecCk7UkGLd
+         6xLl9/lJ8XD5KxY8jgQiVY2KA+aDwGQeVRmiRkrA1ihmFxFdDhwNPUh728/TEzNMipXd
+         q/a6f+hfO3jnv9e/u0HqWdW1OxQzrr+qrQfezbQArQX88HLIgDBoHR3wb3tzayIRy9j8
+         rD94c0n83K/t1LPI2mEqDe5ofO1jw4QmxvceZUE+nae3+mc6/9LYACNcfPkM5KWvXLQZ
+         cdrsqoz1c+BR9Hb+Mf39rLw+k5YbvN8SMtLrWkKj0W+4EfVAFGjjBJFI6UvVXsJZ1xpr
+         7eHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1789119329; x=1789724129;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=RPaVl76vMKtxyEaYdRMge2DXsMWSeY/qgY/dx2nMKuA=;
+        b=KBHWDvkY5wy2He2oPaqXAyaCNapt3oAlQKUfCNd2gGxGjo520F87iUX9m08WcX8wOW
+         sRMHSmjUdjTM3Rt3gsgNtbZcCOYRtShZ7Fe4eH3drvdkOTxh1BOGrN+BtPNcNs2cO1yh
+         eO3JlQJq3b6iITTceBq0T79SDT/nayaBvT1VuZxSvMu+DZ900PKEzXDXAjhDtFiDBN+m
+         Qtppsm0hiN5vyHKJpGDy3c+13c1sFDPhyX9Y3zKYeYyTDik+6+YHdd0PZIgu3vXsjuj2
+         mUdMV27v8r4hzu/9rrksD1Y38Mudn09JMsJGGHltm3htHHOn6g11J67bDgh1JqmSMVpP
+         FtXQ==
+X-Forwarded-Encrypted: i=1; AKwUvBzrayInMdhllW0B8QsH5fnpFBM9mTxtONicJ5MbzGpAQicao1IzkZTXPz1V5y9MO+PCqnc=@vger.kernel.org
+X-Gm-Message-State: AFuF++mZwwwHHKsqG6QChaYGoCNFLkCTBOGLK1yTI+Zkg3u7g3p4mis0
+	/5kI/r4BOkfz49wiqo/BCzyUJRY4m9GPDLa20NKARLmNprsa90dFAY/S
+X-Gm-Gg: AYBFou2yvKj5l5dIReU/uFTnMjZS5Cl89WUHbYIJoYqGiDX1rWv+uyJc5pz8Fmak7H5
+	4fSCy35ImxFjdq5uE7Z3Vaq3EtTi6i3XMm/jyJdS5eVOF+T7FZ1y4KQPx/ZIck3TEkb6AgPjbMN
+	gnW/A4j2kUE2w/BOOYOPQFMNsdLGkGlbGdPZ/gz6U9dRXIDV/O+Qx/sfNpXR84BJMZRZTZ7BcFk
+	l0NHin6BZH3i+SvDvnGEk0pwNZmrOQjc8Bx2laIQ02Apm5yZr5v57QVEMO9a68gVhulZ1INmLWH
+	r1z7acNUIT+KmaWTa+O6/p2Vp9WrygvtW0o9ojIgK8WHUcTaKd6cAZAYwhDVosjSNeHWh9uRt19
+	LsijiD/vExrAw7vu9mTEwSrRlU2xiCG7X6GvTWoe+Oh6zwg2mew9tP4GbA6Elwp3UxiAW6+rYPC
+	bmP/WUgUCVdDqIZSff8uFsp3rE2tWuXLNZ/qDijuS+GQm+zQ+ni5s/4hRZB8e4x1vgAK7qfehNB
+	+spMya3PzZJ6IuJMg==
+X-Received: by 2002:a17:90a:ec8c:b0:396:635a:9b10 with SMTP id 98e67ed59e1d1-39d9bf0af3fmr6071321a91.11.1789119328350;
+        Fri, 11 Sep 2026 02:35:28 -0700 (PDT)
+Received: from kernel.tail6741c6.ts.net ([185.220.238.35])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39d95713602sm4240809a91.11.2026.09.11.02.35.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2026 02:35:27 -0700 (PDT)
+From: Kunwu Chan <kunwu.chan@gmail.com>
+To: jiangshanlai@gmail.com,
+	paulmck@kernel.org
+Cc: josh@joshtriplett.org,
 	rostedt@goodmis.org,
-	jpoimboe@kernel.org,
-	oleg@redhat.com,
-	tglx@kernel.org,
-	akpm@linux-foundation.org,
-	david@kernel.org,
-	linmiaohe@huawei.com,
-	nao.horiguchi@gmail.com,
-	rafael@kernel.org,
-	rientjes@google.com,
-	shakeel.butt@linux.dev,
-	xu.xin16@zte.com.cn,
-	chengming.zhou@linux.dev,
-	will@kernel.org,
-	boqun@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com,
-	josh@joshtriplett.org,
-	urezki@gmail.com,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	tony.luck@intel.com,
-	reinette.chatre@intel.com,
-	x86@kernel.org,
-	pavel@kernel.org,
-	lance.yang@linux.dev,
-	mhiramat@kernel.org,
-	pmladek@suse.com,
-	longman@redhat.com,
 	mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev,
-	dietmar.eggemann@arm.com,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	kprateek.nayak@amd.com,
-	mark.rutland@arm.com,
-	Dave.Martin@arm.com,
-	james.morse@arm.com,
-	babu.moger@amd.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
 	rcu@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Subject: [PATCH v3 15/15] security/landlock: convert thread iterator to for_each_thread_rculock
-Date: Fri, 11 Sep 2026 15:58:00 +0800
-Message-Id: <20260911075800.491472-16-ye.liu@linux.dev>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260911075800.491472-1-ye.liu@linux.dev>
-References: <20260911075800.491472-1-ye.liu@linux.dev>
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>
+Subject: [PATCH] srcutree: Add lockdep and early-boot checks to synchronize_srcu_atomic()
+Date: Fri, 11 Sep 2026 17:35:15 +0800
+Message-ID: <20260911093515.2802551-1-kunwu.chan@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Ye Liu <liuye@kylinos.cn>
+Add the lockdep annotation, same-type SRCU nesting warning, and
+early-boot check used by __synchronize_srcu().
 
-Replace guard(rcu)() + for_each_thread() with for_each_thread_rculock(),
-which scopes the RCU read lock to the loop body via scoped_guard(rcu).
-
-No functional change.
-
-Signed-off-by: Ye Liu <liuye@kylinos.cn>
-Reviewed-by: Justin Suess <utilityemal77@gmail.com>
-Reviewed-by: Günther Noack <gnoack3000@gmail.com>
-Reviewed-by: Gregory Price (Meta) <gourry@gourry.net>
-Reviewed-by: SJ Park <sj@kernel.org>
-Reviewed-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+Suggested-by: Zqiang <qiang.zhang@linux.dev>
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 ---
-Changes in v2:
-  - Rename *_rcu to *_rculock
- security/landlock/tsync.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ kernel/rcu/srcutree.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/security/landlock/tsync.c b/security/landlock/tsync.c
-index 0b71e158c3f5..a578af640aad 100644
---- a/security/landlock/tsync.c
-+++ b/security/landlock/tsync.c
-@@ -335,9 +335,7 @@ static size_t count_additional_threads(const struct tsync_works *works)
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 6a9c432a3bd0..6c729e805fb3 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -2123,6 +2123,14 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
+ 	unsigned long rdm0, rdm1;
+ 	unsigned long unlocks0, unlocks1;
  
- 	caller = current;
- 
--	guard(rcu)();
--
--	for_each_thread(caller, thread) {
-+	for_each_thread_rculock(caller, thread) {
- 		/* Skip current, since it is initiating the sync. */
- 		if (thread == caller)
- 			continue;
-@@ -376,9 +374,7 @@ static bool schedule_task_work(struct tsync_works *works,
- 
- 	caller = current;
- 
--	guard(rcu)();
--
--	for_each_thread(caller, thread) {
-+	for_each_thread_rculock(caller, thread) {
- 		/* Skip current, since it is initiating the sync. */
- 		if (thread == caller)
- 			continue;
++	srcu_lock_sync(&ssp->dep_map);
++
++	RCU_LOCKDEP_WARN(lockdep_is_held(ssp),
++			 "Illegal synchronize_srcu_atomic() in same-type SRCU read-side critical section");
++
++	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
++		return;
++
+ 	// Initialize.	Either init_srcu_struct() was invoked or
+ 	// DEFINE_SRCU() or similar was used.  Therefore, no allocation
+ 	// will be done here.
 -- 
-2.25.1
+2.43.0
 
