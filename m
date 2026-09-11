@@ -1,190 +1,201 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F8542E421;
-	Fri, 11 Sep 2026 15:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF98949F133;
+	Fri, 11 Sep 2026 15:51:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789141478; cv=none; b=m/wWoOYiXqVbJMi0X+yt9jjEZtz/1FFmlfxV6FsHJndEKeePRrq/2qB1WxhCefPSHgnwoLOoXULPndNltrssaT6P0FI24HPYJOVYcKv7OENn4yT4J++Wwj9mXoKot3dsIya7WJ+aX/3g1eGyjeGP0y07v2C3+w9gwF+x0tHj1HE=
+	t=1789141874; cv=none; b=AT0bHEZH/U9C5UC6Z1gCDkajgX4rgkBR8h1FrF1BAa2Hr++vsmGU6nGoZJ9RnN/XyVy6gEUPsVTQZTBNKvhckclzwzFsHxvCyyJkDnnz22DMeWmwCo9c7SRKp58XuznIebhS9CuTUhTNEtU92rURcl26KiGAb4UczHTf6xjx2RU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789141478; c=relaxed/simple;
-	bh=dIrbDnzgyXhHod8pRVMH4sZvy6JWr/7Wtzlgh1Obah8=;
+	s=arc-20240116; t=1789141874; c=relaxed/simple;
+	bh=5GqXCRQPg02XvaO+WCvWjNFBP1Vc/HK91BiNOPEF2tc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JvusU2PUaP4uVuK8gIz7VNP1z+l2KR96Os/qLcsMvAva8RrE2x+3G/Xlhod3m4nlqmNx6pWshjZLVavfu3SeGGsb2KOoZsiNttZ3ewTMLnMk6wxf87hZkFf2lFsIlHaNUTRqtADYdO/v+bUGDT4XTcFODCohVQdeUAyWNDdexW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lmee9QMr; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=gu8bs2mLzH1Iy9WCE3EDZbOtGA4Sazd/hLGzcRGqAuAxsl8yV4Bu4Fpyk8Ok/3PXXunbznTVQg91RJLOr6rpQNp3BlXRsWujy+EJXBs0tToDNpksJvs0o3c+aB270iIMD54pbFmsOeAW63SPD8uh8wn29Hm2piShVq4t8CVRnXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SN8OrhYp; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lmee9QMr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7064F1F000FF;
-	Fri, 11 Sep 2026 15:44:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SN8OrhYp"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52F2A1F00893;
+	Fri, 11 Sep 2026 15:51:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789141476;
-	bh=1B/r3anMNhgtOBMW1KxIb2EhbjZvlBVjZ1VTOFwKWAk=;
+	s=k20260515; t=1789141872;
+	bh=w7nkNDNXqHHm15vNCtuumvyo5jG8awmkb4dbuf4iER0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=Lmee9QMr5Ft/bSPcW2z86IcfA3NUku51rdmD53b9lmn32AkaJhEqeI+M9G4E6zwrG
-	 UUdSwmk35IVrniaEEiz5eob74j7ZBka+Ccj6oYkwyTGbPbixBdWoSodUgaDM927AN1
-	 iXYKtvnAhMTKFbx1I/SiM2PKx5zlFDdkIpUr11lIlZVuyqRsGZAYgmx6ahW2mU5Sup
-	 3m+ry/Ozu/2QpSHF/54DrLpe3KTnsvUZi+R4P08z/USqsCTVJLXFhfx0EU84BZnrAM
-	 qMqVd6AuHfRejiNAKjTaRrAFLDWWvuObwzjbYlEYjJLhOLWOs66MlPIWVS/RiJ0O/v
-	 bz8F4LEHI9Csg==
+	b=SN8OrhYp18ssR4Tf17ijCf3C9rJ458BcdQTrBevoz3ltbu9RoxWswg19Am1zLxeMq
+	 cpETjvLNvAVopMRAnGVWLUpvW8hVvc1ABHLDwM7bvFGOVauzkVoYRdVpvaymp5FNkd
+	 j3ZwIYN03wAvry6pxMebXvuNLYBZZrpj33ga1rFl9zeYB1L+bMmmCOS2X3bz3lyDYE
+	 ywBIZ867xf/VFmSojr3MD470JNNFOjyEVOTV9gHAp+Y+ZnmIiGWapq4HUwi4s9y4CU
+	 q6vcR8nv18KNbhYBADvkddHPsruTIpUhfZcZVsDSaX0g2DJZmXv6Pra+CAzYzRgewo
+	 QGM1uH1yD4gnw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3AD70CE1902; Fri, 11 Sep 2026 08:44:36 -0700 (PDT)
-Date: Fri, 11 Sep 2026 08:44:36 -0700
+	id 1BF07CE1902; Fri, 11 Sep 2026 08:51:12 -0700 (PDT)
+Date: Fri, 11 Sep 2026 08:51:12 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Matthias Goergens <matthias.goergens@gmail.com>
-Cc: urezki@gmail.com, harry@kernel.org, frederic@kernel.org,
-	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
-	josh@joshtriplett.org, boqun@kernel.org, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev, corbet@lwn.net, skhan@linuxfoundation.org,
-	rdunlap@infradead.org, surenb@google.com, vbabka@kernel.org,
-	rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+To: Kunwu Chan <kunwu.chan@gmail.com>
+Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] rcu: make userspace barrier hook drain kvfree_rcu
- work
-Message-ID: <7050515d-eadf-4050-9c54-7a202d552b88@paulmck-laptop>
+Subject: Re: [PATCH 01/13] litmus: Add SRCU fastpath anchor-before-scan test
+Message-ID: <e5b02d91-feb6-4dd7-b67e-8faaa662a610@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <6092a9d0-0125-4da4-ac48-85ccaeb83beb@paulmck-laptop>
- <20260911034059.3569914-1-matthias.goergens@gmail.com>
- <20260911034059.3569914-2-matthias.goergens@gmail.com>
+References: <35d6d803-41d9-48d6-a8d0-b8d0f6f67efd@paulmck-laptop>
+ <20260909030253.2430897-1-kunwu.chan@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260911034059.3569914-2-matthias.goergens@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260909030253.2430897-1-kunwu.chan@gmail.com>
 
-On Fri, Sep 11, 2026 at 11:40:59AM +0800, Matthias Goergens wrote:
-> The bcachefs ktest allocation-leak check writes rcutree.do_rcu_barrier
-> before reading /proc/allocinfo. While testing bcachefs performance
-> changes, small objects released with kfree_rcu() remained visible after
-> repeated writes to the hook and 20 seconds of waiting, causing otherwise
-> clean tests to fail their leak check.
+On Wed, Sep 09, 2026 at 11:02:51AM +0800, Kunwu Chan wrote:
+> On Tue, 8 Sep 2026 16:58:31 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> The test assumes a stronger contract than the hook currently documents:
-> rcu_barrier() waits for ordinary callbacks, but does not flush objects
-> still held in kfree_rcu() batching or per-CPU SLUB sheaves. The retained
-> population eventually fell as a sheaf filled; there is no evidence here
-> of unbounded growth or OOM.
+> > On Mon, Sep 07, 2026 at 03:58:17PM +0800, Kunwu Chan wrote:
+> > > From: Kunwu Chan <kunwu.chan@gmail.com>
+> > > 
+> > > synchronize_srcu_atomic() may end its grace period immediately when
+> > > its scan of the per-CPU lock counters finds no readers.  Correctness
+> > > requires the grace-period anchor written by srcu_gp_start() to precede
+> > > the smp_mb() ordering the lock scan.  This ordering ensures that any
+> > > reader whose lock increment is missed by the scan cannot have
+> > > incremented its lock counter before the grace-period anchor, and
+> > > therefore cannot be a pre-existing reader of this grace period.
+> > > 
+> > > This litmus test models the key ordering between the grace-period
+> > > anchor and the lock counter scan, where "seq" models the
+> > > grace-period anchor in ->srcu_gp_seq and "ctr" models the per-CPU
+> > > ->srcu_ctrs[].srcu_locks counter.  P0 writes the anchor before the
+> > > smp_mb() and the lock scan.  P1 models the reader-side counter
+> > > increment, with the smp_mb() of __srcu_read_lock() following the
+> > > increment.  P2 models an observer that sees the reader's increment
+> > > before seeing the anchor.
+> > > 
+> > > The outcome is forbidden by LKMM, and herd7 reports "Never".  See
+> > > SRCU-fastpath-scan-before-anchor.litmus for the reversed ordering,
+> > > which permits this outcome.
+> > > 
+> > > Tested with herd7 7.58 using linux-kernel.cfg.
+> > > 
+> > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+> > 
+> > Litmus tests!  Very nice!!!  
+> > 
+> > Could you please put both of these in Documentation/litmus-tests, in a
+> > new "srcu" subdirectory?
+> > 
+> > One thing for your consideration is use of the "filter" clause for the
+> > first term of your "exists" clause.  Not a big deal at all for this small
+> > of a litmus test, but the idea is that this litmus test only cares about
+> > the 0:r2=0 case:  If that condition does not hold, then P0() and P1()
+> > aren't the beginning and end of a valid SRCU read-side critical section.
+> > 
+> > Use of the "filter" allows herd7 to abandon a given execution early,
+> > so it is a big deal for larger litmus tests.
+> > 
+> > Again, what you have is fine (or will be when moved to the other
+> > directory), just pointing out the additional feature.
+> > 
+> > If you would like to see a use case, please see:
+> > 
+> > Documentation/litmus-tests/locking/RM-fixed.litmus
 > 
-> Changing the hook to drain kvfree_rcu() work let the same unmodified
-> bcachefs workload pass its allocation check. All eight checkpoints in
-> one VM, after 50 through 400 option changes, reported zero retained
-> reconcile_scan objects. This motivated the separate private-cache test
-> used to isolate the incomplete drain from bcachefs.
+> Thanks, Paul.
+> I’ll move both tests to Documentation/litmus-tests/srcu/ and use a "filter" 
+> clause for the first test as suggested.
 > 
-> Calling kvfree_rcu_barrier() from rcu_barrier_throttled() was proposed
-> when kvfree_rcu_barrier() was added in 2024, to restore a clean baseline
-> between userspace benchmark runs. The discussion concluded that keeping
-> the existing hook name, adding the second operation and documenting both
-> was the safest compatibility choice, but the follow-up was not added.
-> 
-> Add that drain and document the stronger test interface. Always retain
-> the existing start-rate limit and perform the kvfree_rcu() drain: an
-> unrelated ordinary barrier does not establish that this work completed.
-> 
-> Retain the entry ordinary-barrier sequence snapshot. After draining,
-> skip the final ordinary barrier only if that snapshot is complete,
-> preserving the memory barrier on the completion path. Otherwise, invoke
-> rcu_barrier() explicitly. This keeps the ordinary-callback guarantee
-> independent of whether kvfree_rcu_barrier() embeds an ordinary barrier.
-> 
-> Clarify that the documented completion guarantee covers work queued
-> before the request, without preventing new work from being queued.
-> 
-> Earlier validation of the unconditional-drain version used four fresh
-> VM pairs with a private-cache fixture: controls retained the queued
-> object (60 to 60 active objects), and treatments drained it (60 to 59).
-> An ordinary-callback test passed on both kernels. Those runs predated
-> the guarded skip and do not validate that change. No elapsed-time
-> improvement is claimed.
-> 
-> Link: https://lore.kernel.org/all/20240820155935.1167988-1-urezki@gmail.com/
-> Signed-off-by: Matthias Goergens <matthias.goergens@gmail.com>
+> I’ll send the two litmus tests as a separate follow-up series, so this won’t 
+> hold up the current atomic SRCU series.
 
-Queued for further review and testing, thank you!
+That sounds good, thank you!
+
+> I’d also like to continue maintaining the SRCU litmus tests as they evolve. 
+> If you think a MAINTAINERS entry for the SRCU litmus tests would be appropriate, 
+> I’d be happy to prepare that as well.
+
+Why don't we take a longer-term approach and work to get you up to speed
+for maintainership of SRCU, rather than just for a couple of litmus tests?
 
 							Thanx, Paul
 
-> ---
->  .../admin-guide/kernel-parameters.txt         |  9 ++++--
->  kernel/rcu/tree.c                             | 30 ++++++++++++-------
->  2 files changed, 26 insertions(+), 13 deletions(-)
+> Thanks,
+> KunWu
 > 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 68647ff4bdd2..914b65ae9413 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5699,9 +5699,12 @@ Kernel parameters
->  			there is an ongoing too-long CSD-lock wait.
->  
->  	rcutree.do_rcu_barrier=	[KNL]
-> -			Request a call to rcu_barrier().  This is
-> -			throttled so that userspace tests can safely
-> -			hammer on the sysfs variable if they so choose.
-> +			Wait for deferred kfree_rcu() frees and ordinary
-> +			call_rcu() callbacks queued before this request to
-> +			complete.  This does not prevent new work from being
-> +			queued concurrently.  Requests are throttled so that
-> +			userspace tests can safely hammer on the sysfs
-> +			variable if they so choose.
->  			If triggered before the RCU grace-period machinery
->  			is fully active, this will error out with EAGAIN.
->  
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 96848fc1f02b..93b71682306c 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3989,12 +3989,12 @@ EXPORT_SYMBOL_GPL(rcu_barrier);
->  static unsigned long rcu_barrier_last_throttle;
->  
->  /**
-> - * rcu_barrier_throttled - Do rcu_barrier(), but limit to one per second
-> + * rcu_barrier_throttled - Drain deferred RCU frees, but rate-limit starts
->   *
-> - * This can be thought of as guard rails around rcu_barrier() that
-> - * permits unrestricted userspace use, at least assuming the hardware's
-> - * try_cmpxchg() is robust.  There will be at most one call per second to
-> - * rcu_barrier() system-wide from use of this function, which means that
-> + * This can be thought of as guard rails around the deferred-free barriers
-> + * that permit unrestricted userspace use, at least assuming the hardware's
-> + * try_cmpxchg() is robust.  There will be at most one drain operation started
-> + * per sixteenth of a second from use of this function, which means that
->   * callers might needlessly wait a second or three.
->   *
->   * This is intended for use by test suites to avoid OOM by flushing RCU
-> @@ -4016,14 +4016,24 @@ static void rcu_barrier_throttled(void)
->  	while (time_in_range(j, old, old + HZ / 16) ||
->  	       !try_cmpxchg(&rcu_barrier_last_throttle, &old, j)) {
->  		schedule_timeout_idle(HZ / 16);
-> -		if (rcu_seq_done(&rcu_state.barrier_sequence, s)) {
-> -			smp_mb(); /* caller's subsequent code after above check. */
-> -			return;
-> -		}
->  		j = jiffies;
->  		old = READ_ONCE(rcu_barrier_last_throttle);
->  	}
-> -	rcu_barrier();
-> +	/*
-> +	 * kfree_rcu() can retain objects outside the ordinary callback lists in
-> +	 * per-CPU SLUB sheaves and kvfree_rcu batches.  Always drain those queues:
-> +	 * an ordinary barrier does not establish that this work was drained.
-> +	 */
-> +	kvfree_rcu_barrier();
-> +	/*
-> +	 * A completed barrier can still cover ordinary callbacks queued before
-> +	 * our entry snapshot.  Otherwise, retain an explicit ordinary barrier
-> +	 * without depending on the implementation of kvfree_rcu_barrier().
-> +	 */
-> +	if (rcu_seq_done(&rcu_state.barrier_sequence, s))
-> +		smp_mb(); /* caller's subsequent code after above check. */
-> +	else
-> +		rcu_barrier();
->  }
->  
->  /*
-> -- 
-> 2.55.0
+> > 
+> > 							Thanx, Paul
+> > 
+> > > ---
+> > >  .../SRCU-fastpath-anchor-before-scan.litmus   | 56 +++++++++++++++++++
+> > >  1 file changed, 56 insertions(+)
+> > >  create mode 100644 tools/memory-model/litmus-tests/SRCU-fastpath-anchor-before-scan.litmus
+> > > 
+> > > diff --git a/tools/memory-model/litmus-tests/SRCU-fastpath-anchor-before-scan.litmus b/tools/memory-model/litmus-tests/SRCU-fastpath-anchor-before-scan.litmus
+> > > new file mode 100644
+> > > index 000000000000..8200a75e15ef
+> > > --- /dev/null
+> > > +++ b/tools/memory-model/litmus-tests/SRCU-fastpath-anchor-before-scan.litmus
+> > > @@ -0,0 +1,56 @@
+> > > +C SRCU-fastpath-anchor-before-scan
+> > > +
+> > > +(*
+> > > + * Result: Never
+> > > + *
+> > > + * The synchronize_srcu_atomic() fastpath may end its grace period
+> > > + * immediately when its scan of the per-CPU lock counters finds no
+> > > + * readers.  Correctness requires the grace-period anchor written by
+> > > + * srcu_gp_start() to precede the smp_mb() ordering the lock scan.
+> > > + * This ordering ensures that any reader whose lock increment is missed
+> > > + * by the scan cannot have incremented its lock counter before the
+> > > + * grace-period anchor, and therefore cannot be a pre-existing reader
+> > > + * of this grace period.
+> > > + *
+> > > + * This litmus test models the key ordering between the grace-period
+> > > + * anchor and the lock counter scan, where "seq" models the
+> > > + * grace-period anchor in ->srcu_gp_seq and "ctr" models the per-CPU
+> > > + * ->srcu_ctrs[].srcu_locks counter.  P0 writes the anchor before the
+> > > + * smp_mb() and the lock scan.  P1 models the reader-side counter
+> > > + * increment, with the smp_mb() of __srcu_read_lock() following the
+> > > + * increment.  P2 models an observer that sees the reader's increment
+> > > + * before seeing the anchor.
+> > > + *
+> > > + * The outcome is forbidden by LKMM, and herd7 reports "Never".  See
+> > > + * SRCU-fastpath-scan-before-anchor.litmus for the reversed ordering,
+> > > + * which permits this outcome.
+> > > + *)
+> > > +
+> > > +{}
+> > > +
+> > > +P0(int *seq, int *ctr)
+> > > +{
+> > > +	int r2;
+> > > +
+> > > +	WRITE_ONCE(*seq, 1);
+> > > +	smp_mb();
+> > > +	r2 = READ_ONCE(*ctr);
+> > > +}
+> > > +
+> > > +P1(int *ctr)
+> > > +{
+> > > +	WRITE_ONCE(*ctr, 1);
+> > > +	smp_mb();
+> > > +}
+> > > +
+> > > +P2(int *seq, int *ctr)
+> > > +{
+> > > +	int r3;
+> > > +	int r4;
+> > > +
+> > > +	r3 = READ_ONCE(*ctr);
+> > > +	smp_mb();
+> > > +	r4 = READ_ONCE(*seq);
+> > > +}
+> > > +
+> > > +exists (0:r2 = 0 /\ 2:r3 = 1 /\ 2:r4 = 0)
+> > > -- 
+> > > 2.43.0
+> > > 
+> > 
 > 
+> Sent using hkml (https://github.com/sjp38/hackermail)
