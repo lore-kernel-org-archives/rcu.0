@@ -1,224 +1,113 @@
-Received: from mail-pj2-f12.google.com (mail-pj2-f12.google.com [74.125.227.140])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBEC3EEADF
-	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 03:41:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4544246BCD
+	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 04:03:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789098071; cv=none; b=uEB7tk2UX8HcHmqOaJiYijvESD06gqivtZ2t4UNEqS4Gps0tN+XYHxiReL0eziwBfsneoDTcsFcq907A2cdHZpvjwRr8sSWCUjOnX/aioIdTvimOb39yCYoD3Nx/7ngXJ+35YdLfcIeGW5VNpdlctLIsVm8v3P3UGA36+B9q2gk=
+	t=1789099383; cv=none; b=uSdoP96Odon2w9Osjd8LUzZ03YtCKi0dHPaEOeX6iO8QhstkKh8ymYdPSPqpZwIZwc9QQEjJMALEPnRL+uUIVOXbTJ2aXiRWGVvsNHNSbY1pdqzOaU/oNn5a8yYruUoMQtFqH1nWzflU7bJVueIyh7KkxIYomgmR6gNxYZYnFsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789098071; c=relaxed/simple;
-	bh=sHzRETS9PiweXRrgLV9bDFaHahGUpuvqfaDfXNBZXnA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VWdXhRK184PN/KwxR56Y6r97gf5UDLfU2MyqKNmDhlAxoCYEPqApYBqQ4Am8cBBBaRqTAdx65TwJL9IlCcDpqU4380aoBj8PExAnQ1+JY8T7nEeI4tOESEhuQQ80L+ZFznunJ0gNChnoiG6FhR1fkD4yn9Ce1MGZUnQVts2UR7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Epl4KKc3; arc=none smtp.client-ip=74.125.227.140
+	s=arc-20240116; t=1789099383; c=relaxed/simple;
+	bh=ao6jIEmzwRgXagY/+AxCAmTno2+Fkib62A5EHCGLXaQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=piJ3goDoZ9N7OC9bsPplJ7dByq2tLSRob8u+ABmAHSRuh385uG/rWpOzUIH1/eimLlQpVpW5ilMbU/1MvDnKK0evjB2txGbR6Dle78p8mzRJ4pVF8Xg2lqkjs5j6rXcYhhInHraCuuFUvk7k5SlnZ0ah8Gs/Wcuu1wyXaNb9B3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nMto2o+z; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Epl4KKc3"
-Received: by mail-pj2-f12.google.com with SMTP id 98e67ed59e1d1-39b2ad83dc6so467422a91.0
-        for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 20:41:10 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nMto2o+z"
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-ca12086c06eso522524a12.0
+        for <rcu@vger.kernel.org>; Thu, 10 Sep 2026 21:03:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789098070; x=1789702870; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=uimiES6hPReHTTa4bHIqRbXrOxmMJ+VmsCD/x7Fg6Is=;
-        b=Epl4KKc3TtsGdeIXHqtJntDjpZLj0YiuAmLwP99i7X/c2IXE75QTQ1U4YBmyzbely8
-         E0lscgtjST0Co87lDyqvqDbljdSTJzk99NW1Y6MHZ1WspYkzs/0DtBbvE5uV6qspFxtM
-         HS78oa9IpjvkXWwm38VXySqJWWj/cJG3gBhPepWDzDPbBzIw3OIFXnncI2qliWHhvrni
-         ns+vopE9CyfO92EIRkwRmSUrU3NAo5g5LMBXXGJoorJpn0jHtRSzDSXcry6g70Fwe+cV
-         BNnh7nz8CM4jI23+W9m31Nk+M/rhWjcQOvo3NBM/zDLWCB9aotlClQ6/RNA21P8UTSpp
-         DNNg==
+        d=gmail.com; s=20251104; t=1789099381; x=1789704181; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=gEmUfzt/yqm9NkLjHUuAbAdVi/+qAz+6lDYXudPuDNM=;
+        b=nMto2o+zYEie1SfUgxtCKPt7+CmntHiCIFWwLDVeQGy2/oOOPtHuvElDnqB2wynF9z
+         bjK/SmilBXqY45o66e0DCJJOG6f2BkXIeW+DLrHnBKK2bbHfWyAz2sNmERXFdvNDS//7
+         +0CgXUOxwDlfpH40kLLKmxtePq4Q+Fi4YU1PqZwSFnNpLItX/fnjcSmIWM59Wtmmawzo
+         6x3Rc2RgnQeDvIOjv26zzOwrP+wVaMW5wkuwLlPwAO1pQysuLpf/CLxlAxB4ad3txSel
+         jUiVGlgUSYkXZ7yXvlq3d6+Nc5FAOGVsYKO9OayQLZO3d2OVmCRSnnOA9adNVvr+xv9V
+         6AnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789098070; x=1789702870;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=uimiES6hPReHTTa4bHIqRbXrOxmMJ+VmsCD/x7Fg6Is=;
-        b=jqfO6XyB1FnHy/vPE2NRPrJRWifLWM2OA4i/YIfOZ16n5gSrS9dvq2hWUDiDNyv4+S
-         LYSOg4hFKyvWZNSoD+xa+deTrvpYNT/7jiWUIm92Gvle72w3fdjdLX+XqAGoRz2Mn+FY
-         UWQK0kZvWYYGAG7efKjeE+MuvftlTsYOnBBYIWziNNx1eDlXSfzcQ2OLH5hkYHI5tVcB
-         8uhPbrkIKa6xFaPR2iQD475zF4bSIIdh1pIqRyrV19huiIBFIPfqeTaRyNT0g7Ge58RX
-         j5mT7HtKmglcIZrZ204tk4ZE2fxX2K46hPYdjDbzRIdY7yle1pnGyzs4okLHSxg5nmzL
-         SAfw==
-X-Forwarded-Encrypted: i=1; AKwUvBypQB5uantWBShfnPDby8FOPSF75czMZGNHjTErJQjcdaf4crqKOfxW+Y6DJ2SdCgei7mw=@vger.kernel.org
-X-Gm-Message-State: AFuF++kKPHonphYzT8FhJ5cnebtXPi82iElbG2cXYRtPjOYAfvpc2p1P
-	W9x4EOp+abkR4UrfYXLQA6IcBiNjjxedzphhwJ1H9IIMbVwQXSQ15hDn
-X-Gm-Gg: AYBFou1h3OetiPnNRhIwV+EaLJwI+21+KXcbk7oDUrFdVsmdSail/cRSGZP1d0rkBi7
-	y9VzHqGuaj9D3BjGhrA/ucq0dnoE1E9uk+J6Zpw03naXSpeAuBq4UPYBXt8L4UNNE6x+6NuWm5J
-	Ojnen0cPx8uaeAixoPj50EHsbl+npytE4mIichXmi/RBhbN+4F288ZvnrbuZtTSRnsNtTDEqRxj
-	iDUJhaNWClgZWrdP26iSMs3ysd/yYTavjsLypX5ynhXjecDyGKNfqYrOR/RPnyOCS9ixfmxF+bN
-	PNRyBE2fGdjr9zPZZf7OMf5akua9+oTLX5Jghv0ZJ3FIgUUpOT9jnO/ObBCQ7Qb0PIsfWDJWDHc
-	fouiEkOuOmGUE1tc8s3RYf3yHphf6u3chrwanPVANLp2vbm3kce8ZNVz1YSl0jHBTQpw4blIMb1
-	F7RqV+QyQBtW+Ea9MTIM0/2xyZuUErOw8L1vgplopoRi90jYD5DMMac22EKoPdh2Ixz41sK4iGN
-	PiFnSPBNkUdrn72/SoF3ignPtVwiW6/A+meXpxBdk9JU78TkzAlqnuyQThNdCtJ9fsnVc8+IC7E
-	Gz1Let11AsrnumjjqcPs0gTsR8+KvobwoY5rXi8JIvOb25Ro6CJQjrLRKcct3o0=
-X-Received: by 2002:a17:90b:134f:b0:399:1b08:28de with SMTP id 98e67ed59e1d1-39d9beb0be4mr3669832a91.7.1789098069618;
-        Thu, 10 Sep 2026 20:41:09 -0700 (PDT)
-Received: from spider.bream-herring.ts.net ([103.252.203.158])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39d9afa367bsm558148a91.0.2026.09.10.20.41.05
+        d=1e100.net; s=20251104; t=1789099381; x=1789704181;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=gEmUfzt/yqm9NkLjHUuAbAdVi/+qAz+6lDYXudPuDNM=;
+        b=s4UUqRi3sPOrMYPyeIeBCPS3Yqa0eqx5CGbG5uIBeoA+qR2UCdAv/3s5yjH3NkmSYF
+         W5qTIbDwlPOwahkU1Jv8w0d6cuazwbakSJ7Fo4G5gjtRQRGUjWr09TeZJhCvxdEmcPlZ
+         lr2jU3CFh1W1ZjhHZZn8YCTHy9D1z0DvJ85NZdicw/BeQWosh99RnASGciAYlFH0TA8n
+         mj7kG2AnqlB8t2QxdVwK4z0Xb1vAg5W91aCkt+iXMITYqFFjSt/AA7ZKk7moqBsW++h3
+         cEautNPGCf4YbeuwI/Mvo9Absb2AzmBoX3caRy+lmQJFy+BSUGQH8CyaPP1Y64kjShml
+         nIqQ==
+X-Forwarded-Encrypted: i=1; AKwUvBzNtbcwbsjsCmYnzf+p+TGByUkhoyD4vZIs2zfgZ4UBNz7KHiQOAt6Of190H5GI3Rny/FQ=@vger.kernel.org
+X-Gm-Message-State: AFuF++kt0CMUjKx7ZaxCZKRegXqzpBUw24EdyR4V1zEq086s7et7RRsZ
+	8RV9HsCDTMnhBM9tzHI0LyjUJ9G2VE/fVHbY8VRWLD1eXIq6P/vtSGa3
+X-Gm-Gg: AYBFou2Z8podlGWDQqq1OY4e5mJxLZQiyxCEkgNtjpAtMtb1P4ZucQkIcA32eA8Mobj
+	u5HvK3b/UcOl+Yr8kOw+/DzwEWT/PSbuykleYenYtMSHjoDfGkGdBM5bei1Zy6PIymgqafe/4A5
+	R2C61HKH1peZ9qxwlcmIAUz08mmlSdziNzgUWE8gNvwFWtLmgZCFr2HI+WBvMFbZSyc7745tePS
+	qizF4n5Xe7+s5kLyNCszHnKK2RSa+aaZle0LNKDIIw2NDaQDAC+K97u9dRZPeyJoK6LtyxJqADe
+	OxfK6tV52fFon0GE9Kw15LfuO6GJ9A9XPRvXGSVBNLTrMEnR1V9N8ECRIjKJF4asco/SlTqxsgC
+	T6+Xp2TlTjpZ4YD2fLHQIBd0Vkgl7qq909AKwZzmO+CpHBndzArV7TFsE9WAtXJgKBqJ//0hG/E
+	NGCgdrpjhZoeCMV4HszGWeO5EcQ3fLaBk4HXSg5TQUMzZy2MrwxUWJUGdtZ2wYdoC2VT/SeDEV2
+	ZCDxSumOVjykC4Tgg==
+X-Received: by 2002:a05:6300:618d:b0:3cc:f008:8123 with SMTP id adf61e73a8af0-3daed153d75mr4492761637.8.1789099380642;
+        Thu, 10 Sep 2026 21:03:00 -0700 (PDT)
+Received: from kernel.tail6741c6.ts.net ([185.220.238.35])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cc4c6599249sm480320a12.28.2026.09.10.21.02.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2026 20:41:09 -0700 (PDT)
-From: Matthias Goergens <matthias.goergens@gmail.com>
-To: paulmck@kernel.org,
-	urezki@gmail.com,
-	harry@kernel.org
-Cc: frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com,
-	josh@joshtriplett.org,
-	boqun@kernel.org,
+        Thu, 10 Sep 2026 21:03:00 -0700 (PDT)
+From: Kunwu Chan <kunwu.chan@gmail.com>
+To: jiangshanlai@gmail.com,
+	paulmck@kernel.org
+Cc: josh@joshtriplett.org,
 	rostedt@goodmis.org,
 	mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev,
-	corbet@lwn.net,
-	skhan@linuxfoundation.org,
-	rdunlap@infradead.org,
-	surenb@google.com,
-	vbabka@kernel.org,
 	rcu@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/1] rcu: make userspace barrier hook drain kvfree_rcu work
-Date: Fri, 11 Sep 2026 11:40:59 +0800
-Message-ID: <20260911034059.3569914-2-matthias.goergens@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260911034059.3569914-1-matthias.goergens@gmail.com>
-References: <6092a9d0-0125-4da4-ac48-85ccaeb83beb@paulmck-laptop>
- <20260911034059.3569914-1-matthias.goergens@gmail.com>
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <kunwu.chan@gmail.com>
+Subject: [PATCH v2] srcutree: Skip torture to-big transition for atomic SRCU
+Date: Fri, 11 Sep 2026 12:02:51 +0800
+Message-ID: <20260911040251.618430-1-kunwu.chan@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-The bcachefs ktest allocation-leak check writes rcutree.do_rcu_barrier
-before reading /proc/allocinfo. While testing bcachefs performance
-changes, small objects released with kfree_rcu() remained visible after
-repeated writes to the hook and 20 seconds of waiting, causing otherwise
-clean tests to fail their leak check.
+Atomic SRCU does not use the srcu_node combining tree. Exclude it
+from the SRCU_SIZING_IS_TORTURE() transition in
+srcu_torture_stats_print(), and warn if such a transition is requested.
 
-The test assumes a stronger contract than the hook currently documents:
-rcu_barrier() waits for ordinary callbacks, but does not flush objects
-still held in kfree_rcu() batching or per-CPU SLUB sheaves. The retained
-population eventually fell as a sheaf filled; there is no evidence here
-of unbounded growth or OOM.
-
-Changing the hook to drain kvfree_rcu() work let the same unmodified
-bcachefs workload pass its allocation check. All eight checkpoints in
-one VM, after 50 through 400 option changes, reported zero retained
-reconcile_scan objects. This motivated the separate private-cache test
-used to isolate the incomplete drain from bcachefs.
-
-Calling kvfree_rcu_barrier() from rcu_barrier_throttled() was proposed
-when kvfree_rcu_barrier() was added in 2024, to restore a clean baseline
-between userspace benchmark runs. The discussion concluded that keeping
-the existing hook name, adding the second operation and documenting both
-was the safest compatibility choice, but the follow-up was not added.
-
-Add that drain and document the stronger test interface. Always retain
-the existing start-rate limit and perform the kvfree_rcu() drain: an
-unrelated ordinary barrier does not establish that this work completed.
-
-Retain the entry ordinary-barrier sequence snapshot. After draining,
-skip the final ordinary barrier only if that snapshot is complete,
-preserving the memory barrier on the completion path. Otherwise, invoke
-rcu_barrier() explicitly. This keeps the ordinary-callback guarantee
-independent of whether kvfree_rcu_barrier() embeds an ordinary barrier.
-
-Clarify that the documented completion guarantee covers work queued
-before the request, without preventing new work from being queued.
-
-Earlier validation of the unconditional-drain version used four fresh
-VM pairs with a private-cache fixture: controls retained the queued
-object (60 to 60 active objects), and treatments drained it (60 to 59).
-An ordinary-callback test passed on both kernels. Those runs predated
-the guarded skip and do not validate that change. No elapsed-time
-improvement is claimed.
-
-Link: https://lore.kernel.org/all/20240820155935.1167988-1-urezki@gmail.com/
-Signed-off-by: Matthias Goergens <matthias.goergens@gmail.com>
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 ---
- .../admin-guide/kernel-parameters.txt         |  9 ++++--
- kernel/rcu/tree.c                             | 30 ++++++++++++-------
- 2 files changed, 26 insertions(+), 13 deletions(-)
+Changes:
+-add warn on an invalid atomic SRCU sizing configuration.
+-v1: https://lore.kernel.org/rcu/20260910041427.3579817-1-kunwu.chan@gmail.com/
+---
+ kernel/rcu/srcutree.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 68647ff4bdd2..914b65ae9413 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5699,9 +5699,12 @@ Kernel parameters
- 			there is an ongoing too-long CSD-lock wait.
- 
- 	rcutree.do_rcu_barrier=	[KNL]
--			Request a call to rcu_barrier().  This is
--			throttled so that userspace tests can safely
--			hammer on the sysfs variable if they so choose.
-+			Wait for deferred kfree_rcu() frees and ordinary
-+			call_rcu() callbacks queued before this request to
-+			complete.  This does not prevent new work from being
-+			queued concurrently.  Requests are throttled so that
-+			userspace tests can safely hammer on the sysfs
-+			variable if they so choose.
- 			If triggered before the RCU grace-period machinery
- 			is fully active, this will error out with EAGAIN.
- 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 96848fc1f02b..93b71682306c 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3989,12 +3989,12 @@ EXPORT_SYMBOL_GPL(rcu_barrier);
- static unsigned long rcu_barrier_last_throttle;
- 
- /**
-- * rcu_barrier_throttled - Do rcu_barrier(), but limit to one per second
-+ * rcu_barrier_throttled - Drain deferred RCU frees, but rate-limit starts
-  *
-- * This can be thought of as guard rails around rcu_barrier() that
-- * permits unrestricted userspace use, at least assuming the hardware's
-- * try_cmpxchg() is robust.  There will be at most one call per second to
-- * rcu_barrier() system-wide from use of this function, which means that
-+ * This can be thought of as guard rails around the deferred-free barriers
-+ * that permit unrestricted userspace use, at least assuming the hardware's
-+ * try_cmpxchg() is robust.  There will be at most one drain operation started
-+ * per sixteenth of a second from use of this function, which means that
-  * callers might needlessly wait a second or three.
-  *
-  * This is intended for use by test suites to avoid OOM by flushing RCU
-@@ -4016,14 +4016,24 @@ static void rcu_barrier_throttled(void)
- 	while (time_in_range(j, old, old + HZ / 16) ||
- 	       !try_cmpxchg(&rcu_barrier_last_throttle, &old, j)) {
- 		schedule_timeout_idle(HZ / 16);
--		if (rcu_seq_done(&rcu_state.barrier_sequence, s)) {
--			smp_mb(); /* caller's subsequent code after above check. */
--			return;
--		}
- 		j = jiffies;
- 		old = READ_ONCE(rcu_barrier_last_throttle);
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 68441c32cebf..60c102a4d057 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -2422,8 +2422,10 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
+ 		}
+ 		pr_cont(" T(%ld,%ld)\n", s0, s1);
  	}
--	rcu_barrier();
-+	/*
-+	 * kfree_rcu() can retain objects outside the ordinary callback lists in
-+	 * per-CPU SLUB sheaves and kvfree_rcu batches.  Always drain those queues:
-+	 * an ordinary barrier does not establish that this work was drained.
-+	 */
-+	kvfree_rcu_barrier();
-+	/*
-+	 * A completed barrier can still cover ordinary callbacks queued before
-+	 * our entry snapshot.  Otherwise, retain an explicit ordinary barrier
-+	 * without depending on the implementation of kvfree_rcu_barrier().
-+	 */
-+	if (rcu_seq_done(&rcu_state.barrier_sequence, s))
-+		smp_mb(); /* caller's subsequent code after above check. */
-+	else
-+		rcu_barrier();
+-	if (SRCU_SIZING_IS_TORTURE())
+-		srcu_transition_to_big(ssp);
++	if (SRCU_SIZING_IS_TORTURE()) {
++		if (!WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
++			srcu_transition_to_big(ssp);
++	}
  }
+ EXPORT_SYMBOL_GPL(srcu_torture_stats_print);
  
- /*
 -- 
-2.55.0
+2.43.0
 
