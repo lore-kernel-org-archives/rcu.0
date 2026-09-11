@@ -1,49 +1,45 @@
-Received: from mta0.migadu.com (out-113.mta0.migadu.com [91.218.175.113])
+Received: from mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F09CA3803C3
-	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 08:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A196B42E433
+	for <rcu@vger.kernel.org>; Fri, 11 Sep 2026 08:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789113662; cv=none; b=KvXnufpvHst9tBzdVWbBpQyOnzojS9dDNKa/+t2HuoKqr94kFHRAM5ALc5iOiAmvM+WrP2XzyjWqpijpWt/uhBug2kHlAtAOAJf3megOA0KIH50t235lERWE0oGe3yNvKZgR8plFW0dg63aKTN5W5l2AROWDqhQCdv4r1BZv4Ok=
+	t=1789113684; cv=none; b=b3wHedkXcqOTyBDxILDoDw94eIJJJhDMULqSqoElucv2Kz/cjyPIm0pKwKiuPMSB0IOqO95TNRe0VJwl5JZ3fkGAsFmYuqTxwCQ+Oyf3cDSRmYA7eRj7oRoiDo08DmNvm2JDOWcTRmpXcXoRrKJpkp2fVotB3DG07ciUbR87FaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789113662; c=relaxed/simple;
-	bh=vF8dJvwfO0k4j+Rhq4+Quj7N58x+aoewGF5Ku9uTa1M=;
+	s=arc-20240116; t=1789113684; c=relaxed/simple;
+	bh=0hlRYPmyXV54QvYh0kyMJR49RsE/MghM4TVAvWeaXWw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WA9zceVkt5cU6ShBu7uft3cqVs6dFszFNdLr7a6ByJJVWisO1gAaCKFwWTeupWadSUzcmXtuK2hKiOv14M6bOv3hTvsjm7oWQ4GHDwHzzoenqregEJuDTQYwlisKWnJQZpErybxDBKePHnvhWuUxdrfzNr4+p79hl3YatvptWVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=A6hbrXjd; arc=none smtp.client-ip=91.218.175.113
+	 MIME-Version; b=q8CY3/I0s5s8HlzebtMhLsi9Eh/DoS3RhG/ZkAMOtF9GLlAUqk7g9YIuePr+viF8YQcKzX1FrR4vPFjsKise/Ze4xoIFp1rj0A/YDeU832RGbJExrtWfuPzOiXvD59CslFfkLHdukKacOD2DkMyzSantbaMql+bRNM8UqFB1nLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K0T4axFF; arc=none smtp.client-ip=91.218.175.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="A6hbrXjd"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K0T4axFF"
 X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=vF8dJvwfO0k4j+Rhq4+Quj7N58x+aoewGF5Ku9uTa1M=;
+DKIM-Signature: a=rsa-sha256; bh=0hlRYPmyXV54QvYh0kyMJR49RsE/MghM4TVAvWeaXWw=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1789113658; v=1; x=1789718458;
- b=A6hbrXjdaYwOiLJSDe7TOU9PsjCWf5OW+mLhRmRQxMucHYFrxyHpVebShWu9ekIdqL0jHu83
- TA8an366u9lAd/jZ67vI2+RiKBrsdTjyTFz3XvwcPjegGOcrs3Gv9NmU3ygz50zPPXMnFPI6ASa
- blmtB2Ak94TtPCXxOrLUEMWU=
+ t=1789113678; v=1; x=1789718478;
+ b=K0T4axFFAV3j7dfLX72ytjaA4PfYKcc7fDPwlpRoDhS5ZtKFLL72iTWfjc5JT7ObaS5kfWfY
+ SF2ow5NZ3X/1EZmte6oABZ5GCFHu6htIjR1bkG25/nEvSny+T9P/ph9hxk3E+OM8taNI1ShcJdp
+ A/0fvg7g+ehqYaK9EjeNApMw=
 X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 92b4a417acb68777;
-	Fri, 11 Sep 2026 08:00:58 +0000
-X-Mizu-Trace-ID: 92b4a417acb68777
+Received: by smtp.migadu.com with ESMTPS id e4dd3759505df11b;
+	Fri, 11 Sep 2026 08:01:17 +0000
+X-Mizu-Trace-ID: e4dd3759505df11b
 X-Migadu-Flow: FLOW_OUT
 From: Ye Liu <ye.liu@linux.dev>
-To: "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>
+To: Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>
 Cc: Ye Liu <liuye@kylinos.cn>,
 	Michal Hocko <mhocko@suse.com>,
 	SJ Park <sj@kernel.org>,
 	Lorenzo Stoakes <ljs@kernel.org>,
 	Oleg Nesterov <oleg@redhat.com>,
-	peterz@infradead.org,
-	mingo@redhat.com,
+	paulmck@kernel.org,
 	rostedt@goodmis.org,
 	jpoimboe@kernel.org,
 	mic@digikod.net,
@@ -60,8 +56,12 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	xu.xin16@zte.com.cn,
 	chengming.zhou@linux.dev,
 	will@kernel.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
+	boqun@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	josh@joshtriplett.org,
+	urezki@gmail.com,
 	tony.luck@intel.com,
 	reinette.chatre@intel.com,
 	x86@kernel.org,
@@ -92,9 +92,9 @@ Cc: Ye Liu <liuye@kylinos.cn>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-security-module@vger.kernel.org
-Subject: [PATCH v3 09/15] rcu: convert process/thread iterator to for_each_process_thread_rculock
-Date: Fri, 11 Sep 2026 15:57:54 +0800
-Message-Id: <20260911075800.491472-10-ye.liu@linux.dev>
+Subject: [PATCH v3 10/15] sched: convert process/thread iterators to for_each_*_rculock
+Date: Fri, 11 Sep 2026 15:57:55 +0800
+Message-Id: <20260911075800.491472-11-ye.liu@linux.dev>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260911075800.491472-1-ye.liu@linux.dev>
 References: <20260911075800.491472-1-ye.liu@linux.dev>
@@ -108,10 +108,10 @@ Content-Transfer-Encoding: 8bit
 
 From: Ye Liu <liuye@kylinos.cn>
 
-Replace the manual rcu_read_lock()/rcu_read_unlock() pair combined
-with for_each_process_thread() loop in kernel/rcu/update.c with
-for_each_process_thread_rculock(), which scopes the RCU read lock
-to the loop body via scoped_guard(rcu).
+Replace the manual rcu_read_lock()/rcu_read_unlock() and guard(rcu)
+pairs combined with for_each_process_thread() loops in kernel/sched/
+with for_each_process_thread_rculock(), which scopes the RCU read
+lock to the loop body via scoped_guard(rcu).
 
 No functional change.
 
@@ -126,30 +126,44 @@ Changes in v3:
 
 Changes in v2:
   - Rename *_rcu to *_rculock
- kernel/rcu/update.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/sched/core.c  | 3 +--
+ kernel/sched/debug.c | 4 +---
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 2a778b8ab4ad..d8e0b5896db9 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -548,15 +548,13 @@ void synchronize_rcu_trivial_preempt(void)
- 	struct task_struct *t;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 0697ed0f1c3d..fd5bdd2cb798 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2005,8 +2005,7 @@ static void uclamp_sync_util_min_rt_default(void)
+ 	smp_mb__after_spinlock();
+ 	read_unlock(&tasklist_lock);
  
- 	smp_mb(); // Order prior accesses before grace-period start.
--	rcu_read_lock(); // Protect task list.
--	for_each_process_thread(g, t) {
-+	for_each_process_thread_rculock(g, t) {
- 		if (t == current)
- 			continue;  // Don't deadlock on ourselves!
- 		// Order later rcu_read_lock() on other tasks after QS.
- 		while (smp_load_acquire(&t->rcu_trivial_preempt_nesting))
+-	guard(rcu)();
+-	for_each_process_thread(g, p)
++	for_each_process_thread_rculock(g, p)
+ 		uclamp_update_util_min_rt_default(p);
+ }
+ 
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 72236db67983..cdae165b98f7 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -1029,14 +1029,12 @@ static void print_rq(struct seq_file *m, struct rq *rq, int rq_cpu)
+ #endif
+ 		   "\n");
+ 
+-	rcu_read_lock();
+-	for_each_process_thread(g, p) {
++	for_each_process_thread_rculock(g, p) {
+ 		if (task_cpu(p) != rq_cpu)
  			continue;
+ 
+ 		print_task(m, rq, p);
  	}
 -	rcu_read_unlock();
  }
- EXPORT_SYMBOL_GPL(synchronize_rcu_trivial_preempt);
- #endif // #if IS_ENABLED(CONFIG_TRIVIAL_PREEMPT_RCU)
+ 
+ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 -- 
 2.25.1
 
