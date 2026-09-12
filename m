@@ -1,141 +1,133 @@
-Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAFA739FCCA;
-	Sat, 12 Sep 2026 21:14:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.75.144.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510A439061C;
+	Sat, 12 Sep 2026 22:28:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789247668; cv=none; b=UQpdZKH7PJrnurbkov8N6Bxg4vsqf5A9eIgmv+7uEo79Pv9jea97Zbrv+jpsQipFO0bockzKUR3gABZtKTHKY0PcMPTDQQZCND3lHTzGm8cgg1fS0dOeCRHpDvdYpX1NE1yA0NhTfwv9EB+ueDc2A8qyZnKohFV16MAn+Ni2mFA=
+	t=1789252098; cv=none; b=DEBjkGNkfVKtlwH/oXtYKE+ngemfHtK9Zm6imB/U0IfOlZaYf7y/HrneiEqudpEel+JfP5KNE/Xvs2L3Kzl+zAd5FipZoenNtm5/E+/oraoBM3EHXzOJEne74Ujqe7bMbMdrdIPHIigZ4+V0HQbmdwSp+jaWhK6yRp2gS2ZK/9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789247668; c=relaxed/simple;
-	bh=HO87r9mgs61dhwtUbn1a1DZMPkYcXRvxOba7oeZ7ukQ=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=cTH82/Vpf/mdk2tQOCYQoqH/RecEBEHOk9Z5GQJDUXFBGkN1dVt5E+0sIN+P6qXHeDT0znw/sXt8our1f7x+xjlXQUVFV5z3HDmn1//MUcEOgvpuvnOPexbQC2WWTPM53BWgwi0WgjiBb9wvttsxTOK02uhmYuJWcSddkD6QZ4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.helo=mail.mainlining.org; arc=none smtp.client-ip=5.75.144.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.helo=mail.mainlining.org
-Date: Sat, 12 Sep 2026 22:11:56 +0100
-From: Bradley Morgan <brads@mainlining.org>
-To: paulmck@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
- David Laight <david.laight.linux@gmail.com>
-CC: frederic@kernel.org, neeraj.upadhyay@kernel.org, boqun@kernel.org,
- joelagnelf@nvidia.com, rcu@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>,
- linux-arch@vger.kernel.org, Vineet Gupta <vgupta@kernel.org>,
- linux-snps-arc@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org, Guo Ren <guoren@kernel.org>,
- linux-csky@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
- Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- linux-sh@vger.kernel.org, Chris Zankel <chris@zankel.net>,
- Max Filippov <jcmvbkbc@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] lib: Add two-byte cmpxchg emulation function
-In-Reply-To: <17a92c0b-8062-48ae-b5fa-f61a3e0ff24c@paulmck-laptop>
-References: <20260911192540.20983-1-brads@mainlining.org> <20260911192540.20983-2-brads@mainlining.org> <20260911231017.550f8cd1@pumpkin> <d0ef7beb-6952-49cc-9b33-e7542e831ba6@paulmck-laptop> <20260912103047.1b95bb03@pumpkin> <17a92c0b-8062-48ae-b5fa-f61a3e0ff24c@paulmck-laptop>
-Message-ID: <4B2AAF0A-0467-4AC7-B206-29178F653AE8@mainlining.org>
+	s=arc-20240116; t=1789252098; c=relaxed/simple;
+	bh=lDRrW++5YLemAPMEHTJ8XYtBLQevZUNJYnHc0kqwsp4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mKfTs5cxBiOPRTLpd1qs8ShdfPYmsdceD0FzHPiEfx7dF286kgoAZ9z+X+zQKYz810/s6+xUCmpT6keLskqX5AbgTxSRTcXe7VGB8BL02q4IFPWOclMUh2HJMGAX6qaysWNsSbfhMMmHD9zMHSor6iX+bPqH4aOtU2ixMS8zRgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CAY8iaMR; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CAY8iaMR"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7CDB1F000FF;
+	Sat, 12 Sep 2026 22:28:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789252096;
+	bh=FUSC3/6wZp614V0HmSolX31ACddFJPOtZM6hstYDymE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=CAY8iaMRIgUEVj2m8qO5yp0DxUv+P5XvE2wHuZpVgEs1aEJozyptLJbfPwIDKU9cG
+	 nZ8lr7em4IssfJNCHthk1CBckof4zi6MPqWd2jJVXxGnpw499vSiEhg0xj7sJOYZgY
+	 8C/0OqEOoxtby2igBkVtTcnZDnI6giwDd39+A3lwn/gzgznfonBDHsvuJ+lNWa/070
+	 UYnUHAEQ18maKO95GoFBGluciXa8xqJjOpILbWWdTFyb/lqEmdWzQ78VurvGX1Z7Sv
+	 KjOJN8mcAIANRvNl//XI9HifNzupXh1acBkdTfKFwO0hryPFkxTNHR9mulXJ+sQ3Rw
+	 OD+q87PDNaJpg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 9A778CE17BD; Sat, 12 Sep 2026 15:28:16 -0700 (PDT)
+Date: Sat, 12 Sep 2026 15:28:16 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Boqun Feng <boqun@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>, Jiri Olsa <jolsa@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, x86@kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Puranjay Mohan <puranjay@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, Juergen Gross <jgross@suse.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Ihor Solodrai <ihor.solodrai@linux.dev>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	xen-devel@lists.xenproject.org
+Subject: Re: [PATCH RFC v2 08/15] bpf, x86: Maintain Tasks RCU trampoline
+ nesting in the BPF trampoline
+Message-ID: <8fbfb3fc-cf5d-4dfb-b144-bc021faa13ff@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260911-b4-rcu-tasks-preempt-qs-v2-0-eaaa61ed2da4@toxicpanda.com>
+ <20260911-b4-rcu-tasks-preempt-qs-v2-8-eaaa61ed2da4@toxicpanda.com>
+ <DLD0OHX8C4ME.VNR49VC2UYH4@gmail.com>
+ <14cb8a91-497d-49f5-aa20-c6cb8b9a27fc@paulmck-laptop>
+ <DLDICNLENSRI.2R6EJ0ZFJE45T@gmail.com>
+ <8c51a669-eb6b-455b-a829-b537da5209f8@paulmck-laptop>
+ <DLDLDGTSBHA0.32TYNBSKKPFXH@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DLDLDGTSBHA0.32TYNBSKKPFXH@gmail.com>
 
-On 12 September 2026 19:58:02 BST, "Paul E. McKenney" <paulmck@kernel.org>
-wrote:
->On Sat, Sep 12, 2026 at 10:30:47AM +0100, David Laight wrote:
->> On Fri, 11 Sep 2026 16:09:16 -0700
->> "Paul E. McKenney" <paulmck@kernel.org> wrote:
->> 
->> > On Fri, Sep 11, 2026 at 11:10:17PM +0100, David Laight wrote:
->> > > On Fri, 11 Sep 2026 19:25:34 +0000
->> > > Bradley Morgan <brads@mainlining.org> wrote:
->> > >   
->> > > > cmpxchg_emu_u8() emulates one-byte cmpxchg() in terms of four-byte
->> > > > cmpxchg() for the architectures lacking native one-byte atomics.
->> > > > The same architectures also lack native two-byte cmpxchg(), where
->> > > > such an operation is not supported and either fails to compile via
->> > > > BUILD_BUG() or fails to link, because the bad pointer sentinels
->> > > > these architectures declare are never defined.
->> > > > 
->> > > > Add cmpxchg_emu_u16(), the two-byte sibling. It reads the
->enclosing
->> > > > word with READ_ONCE(), splices the two target bytes through a
->union
->> > > > and loops on cmpxchg() of the full word until the compare
->succeeds.
->> > > > Like cmpxchg_emu_u8() it is fully ordered.
->> > > > 
->> > > > The Kconfig symbol gating this file is renamed from
->> > > > ARCH_NEED_CMPXCHG_1_EMU to ARCH_NEED_CMPXCHG_1_2_EMU, as it now
->> > > > selects both the one-byte and the two-byte emulation.
->> > > > 
->> > > > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
->> > > > Signed-off-by: Bradley Morgan <brads@mainlining.org>
->> > > > ---
->> > > >  arch/Kconfig                |  2 +-
->> > > >  arch/arc/Kconfig            |  2 +-
->> > > >  arch/arm/Kconfig            |  2 +-
->> > > >  arch/csky/Kconfig           |  2 +-
->> > > >  arch/sh/Kconfig             |  2 +-
->> > > >  arch/xtensa/Kconfig         |  2 +-
->> > > >  include/linux/cmpxchg-emu.h |  1 +
->> > > >  lib/Makefile                |  2 +-
->> > > >  lib/cmpxchg-emu.c           | 35
->++++++++++++++++++++++++++++++++---
->> > > >  9 files changed, 40 insertions(+), 10 deletions(-)
->> > > >   
->> > > ...  
->> > > > diff --git a/include/linux/cmpxchg-emu.h
->b/include/linux/cmpxchg-emu.h
->> > > > index 998deec67740..fee8171fa05e 100644
->> > > > --- a/include/linux/cmpxchg-emu.h
->> > > > +++ b/include/linux/cmpxchg-emu.h
->> > > > @@ -11,5 +11,6 @@
->> > > >  #define __LINUX_CMPXCHG_EMU_H
->> > > >  
->> > > >  uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t
->new);
->> > > > +uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old,
->uintptr_t new);  
->> > > 
->> > > Why uintptr_t? Shouldn't it just be u16?
->> > > (Which probably means the code would better if it was just 'unsigned
->int')  
->> > 
->> > I suspect that Bradley is just following my cmpxchg_emu_u8() example,
->> > which also returns uintptr_t.
->> > 
->> > I remember that *something* broke when I made this be u8, but I cannot
->> > recall what the problem was.
->> > 
->> > Bradley, could you please try making it be u16 as David suggests just
->to
->> > see what happens?  Who knows?  Maybe it was a compiler issue that has
->> > since been fixed.  Or maybe the macros and asms using cmpxchg_emu_u8()
->> > need that uintptr_t for some reason.
->> 
->> I think the uintptr (unsigned long) cast is needed to stop a compile
->> error when exchanging pointers.
->> But that is an issue with the #define not the called functions.
->> 
->> Possibly changing the #define to have:
->> 	unsigned long ul_old = (unsigned long)(old);
->> Or even, with the type check from:
->> 	unsigned long ul_old = (unsigned long)(0 ? *(ptr) : (old));
->> (with the same for 'new')
->> and the removing all the casts where the value are used might be better.
->
->It does sound worth a try, especially since we have the uintptr_t version
->to fall back on should that fail, or in case it somehow makes things
->more complicated.
->
->But we have been living with uintptr_t for some years with the 8-bit
->code, so this should be able to be a follow-on patch.
->
->							Thanx, Paul
-I'll try u16 and then add another patch tryna fix the issue.
---- Thanks!
-https://lore.kernel.org/all/EE579805-42F2-4C58-B752-F28779EEB717@grrlz.net/
+On Sat, Sep 12, 2026 at 12:40:55PM -0700, Alexei Starovoitov wrote:
+> On Sat Sep 12, 2026 at 11:03 AM PDT, Paul E. McKenney wrote:
+> >
+> > In the old kernels, yes, we have current->trc_reader_nesting++.
+> > In the newer kernels, Tasks Trace RCU is instead implemented in terms
+> > of SRCU-fast, which instead increments per-CPU counters.  Which among
+> > other thins is a bit faster and does not need to hook into the scheduler.
+> 
+> old kernels? I'm confused.
+> rcu_read_lock_trace() in bpf-next is doing t->trc_reader_nesting++
+> and then calls __srcu_read_lock_fast().
+> 
+> Are you talking about some RCU branch that you target for next merge window?
+
+No, I was thinking of rcu_read_lock_tasks_trace(), forgetting that
+rcu_read_lock_trace() is still used.  (For good reason, just be clear.)
+Your comments are quite correct for rcu_read_lock_trace().
+
+Hmmm...  Josep's using t->trc_reader_nesting would break for
+partially overlapping RCU Tasks and rcu_read_lock_trace() readers.
+
+But yes, your #5 makes sense:  Deprecate RCU Tasks, upgrade RCU Tasks
+Trace to check for preemption from within trampolines, and move RCU
+Tasks users over to the rcu_read_lock_trace() variant of RCU Tasks Trace.
+(Or am I still missing your point?)
+
+Josef, thoughts?
+
+							Thanx, Paul
+
+> > So we have several ways forward:
+> >
+> > 1.	Revert the implementation of RCU Tasks Trace in terms of
+> > 	SRCU-fast, and use the existing current->trc_reader_nesting++,
+> > 	as you suggest.
+> >
+> > 2.	Deprecate RCU Tasks Trace entirely in favor of RCU Tasks
+> > 	augmented by rcu_tasks_trampoline_enter() and friends, as
+> > 	I was suggesting.
+> >
+> > 3.	Implement rcu_tasks_trampoline_enter() in terms of SRCU-fast,
+> > 	keeping the speedup, and put a synchronize_srcu() in the
+> > 	RCU Tasks grace-period mechanism.  This again deprecates
+> > 	RCU Tasks Trace entirely in favor of the augmented RCU Tasks.
+> >
+> > 4.	It is always good to explicitly state the apparent status quo,
+> > 	which involves redundant trampoline entry/exit overhead.
+> >
+> > 5.	As always, your additional ideas here!
+> >
+> > 							Thanx, Paul
+> 
