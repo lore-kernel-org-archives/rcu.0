@@ -1,137 +1,157 @@
-Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm2-f13.google.com (mail-wm2-f13.google.com [74.125.225.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E684BEE2A;
-	Sat, 12 Sep 2026 10:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.75.144.95
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789209102; cv=none; b=PJHt56CZaqiogyRNuY1SH/emhgrXN0aVeba5rvJ+cLCFSMbW/ZWV9THUVYl5zVTn0jhQARMIDz/ZoKiWNtRGRQ8eV6sWCmzrOFVnwR4aIAA9Agrq9saQjOeIoTcbJB0aG0fBXDSuuLYSh11ZwJFRMGLWF8aHm3GZMu7Ozy+Gdn4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789209102; c=relaxed/simple;
-	bh=e5kZ0aoENwpriGEe0youjd9NbKIMnneVpfZH4WKrAZY=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=iOnmIecFYTGen9JOtpGZBr8kPKDUVub16E5PjX8hPAZPhHBFDjoPf58F/J4Day5GwUk3OyNRaapfO0zA1x96kqVJXodnde4t3bEJ4vhXo64yjGsmK+ODYmkT+2mcmDIQxgfbBxNx/9X/vZaUO1BRnu8oGH5j/P5jCODsSRGvkIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.helo=mail.mainlining.org; arc=none smtp.client-ip=5.75.144.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.helo=mail.mainlining.org
-Date: Sat, 12 Sep 2026 11:29:03 +0100
-From: Bradley Morgan <brads@mainlining.org>
-To: David Laight <david.laight.linux@gmail.com>,
- "Paul E. McKenney" <paulmck@kernel.org>
-CC: frederic@kernel.org, neeraj.upadhyay@kernel.org, boqun@kernel.org,
- joelagnelf@nvidia.com, rcu@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>,
- linux-arch@vger.kernel.org, Vineet Gupta <vgupta@kernel.org>,
- linux-snps-arc@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org, Guo Ren <guoren@kernel.org>,
- linux-csky@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
- Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- linux-sh@vger.kernel.org, Chris Zankel <chris@zankel.net>,
- Max Filippov <jcmvbkbc@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] lib: Add two-byte cmpxchg emulation function
-In-Reply-To: <20260912103047.1b95bb03@pumpkin>
-References: <20260911192540.20983-1-brads@mainlining.org> <20260911192540.20983-2-brads@mainlining.org> <20260911231017.550f8cd1@pumpkin> <d0ef7beb-6952-49cc-9b33-e7542e831ba6@paulmck-laptop> <20260912103047.1b95bb03@pumpkin>
-Message-ID: <970C9FF6-1D56-48CA-8C2E-1DD332391229@mainlining.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630C23BE643
+	for <rcu@vger.kernel.org>; Sat, 12 Sep 2026 12:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.225.141
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789216669; cv=pass; b=IC1Gnafj9xxFbvoh/cR0NmEAQhx/6PjoXQaWUpx4mYHpYY1KOp1+MrwsJ3JJDKOk/wfIB3U5lznWBE94XfhpVm0jgFoE+LgLWLwXSHwh/Qo/psXQjNSIQudu54a3u90ao5GxX2HhOfNQ9qL5G+S6tS4G0XS6garsZ6Y81fN4Tmg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789216669; c=relaxed/simple;
+	bh=yeTMH9kFHpJvnqz5I7d+elC/gLVahWKunVAWMBOjsZc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g8wLlrL0h+2zsr70I/HsE6BOyE1rAGffXxb6Ddir7JenUMhgVDxGVdVT7CWMJL6WBjFnGzxMM4xkD1d5EKr4Jglx81QpZKWJYpkHJg6+N34/5GTGcIy24uSjMopdFXz8LxB61fkKI1ODbLuvGkh3vyTx67B9S2dUjgLshaa0c4g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FY1P5tnC; arc=pass smtp.client-ip=74.125.225.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FY1P5tnC"
+Received: by mail-wm2-f13.google.com with SMTP id 5b1f17b1804b1-49e6b885ef8so2327665e9.1
+        for <rcu@vger.kernel.org>; Sat, 12 Sep 2026 05:37:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789216665; cv=none;
+        d=google.com; s=arc-20260327;
+        b=n+eFF80lhw449RbNtboknOEt7EiypSMdwNmPZuxajvZ5etgEBkg7K4iOcx0KdSS7KH
+         Qxpt9jz25Y6POz2dIMbZZGu/nlBCd08LtbiK5eMXt1S0oO8EwYD2QMijN3SBY1MvMQNN
+         UEFBbiopBgcXp2F4Uxul+R2+c+StUTWoIx4KgAzikx0UqTquqlLZFNnpVs2xqnXdhvMe
+         k4anz0LQD8FQ0GgJqwwuGlO4Q4J+hLF68Ymp9gDzCrLMseeO3iROJ7EPn+lfjzP2xrTx
+         l0xJH+JDx9+278F4ToJDXdp3rzBSWGbZB7wMrnoi2GqbbfOYT99RbCXU+fUeY5/foNA+
+         Br9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=uOoVDEs7Uwz1aej+iBOpVf4z5QYFzaJI+ngfP48MEa4=;
+        fh=R7A7RLvbOSHXZPVfT6UOeH75SGVhfNjPfwy79KRgyc8=;
+        b=Zb8hzfpC/UAMLj98xnkgOpayWyHmqq3bs8lrkVSx+QKvBjXm2NYHmQ9IrkB3Tyvw6Q
+         4lPD0EFPTfaHAQRCFsTcjIrDJP6akZfAkmR+FmqIxFsrkIdyJgvCcUP4lLmjqw2LNkqd
+         7f+c3nsV/4DaJW+5GLXyNTHvnyptNecMEq9wwtx32N6V9OiQY53aGsp1m76QgZDtuxgI
+         6WfBbyG5UEv1qg6I1abMbBr81qFW6Vyk4VL5y8KBj5Zmq7G0DlKy11qCjvGJD01L+oWR
+         0QFEx1/cs3xVUx6PDK8mFJZhysTVxPIEeCWXoVIwMmq+0k3ICll/kgZ6cKJ+D3wij8C7
+         3MaQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789216665; x=1789821465; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=uOoVDEs7Uwz1aej+iBOpVf4z5QYFzaJI+ngfP48MEa4=;
+        b=FY1P5tnCiXld4fbU9y3Wz+TFWrjMnudBnJbsO9yhH6MQWfxI+6UVT20XgG11e3k9Z9
+         7xy2F3ppyuL/xXVJfgxCcPrd2E3x7ZSC8O9HVA62MJUKCFoDabOQbLbW7Vdv/oqDwqU0
+         /rtGfo695ENBR5zUyfQW6QkhQ0rqK3Qa5LgscLWpOMENBeCg2aKQxzrrwyyR1wKniKRN
+         cmZtmxc65s8OvO2arOulpfZhniiCXPmvmBE9lZxwDpAZDFLOVzk/upFucCy/GJi+Uh88
+         JsoHnth1R/v+D9CYowYsY6fZNCDfvh13FnmFMz5SovaYXdFTCadMN5VBvrgupbdrC/4l
+         YyZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1789216665; x=1789821465;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=uOoVDEs7Uwz1aej+iBOpVf4z5QYFzaJI+ngfP48MEa4=;
+        b=JNW/7G103kM3VDn9ysdH4uIrgbcIhf07Y+FCXK7kh42Y5b7LB+hgkuF+UmLkOfyh8w
+         lywHwSaLxHUuyifUoRmRHxw87UATtVGgsAA03MF2VxKQqxKbCcExNeIPGpmZUHj72jRV
+         GlHwpL73HDKD1Tg1SS2p0B4o0I4e+w/62MiaF/Vue3xos1jJCSthN9D+lbsbUTKYOSx8
+         AgINno6RNKVOPdaa605s2GMmNzj1KLQHqk8Gg53KoFf4iMvYrdI4wqH6E5BCwoIXEMkv
+         af0tVqsYxi5J5zPZjKP442GCfR1ShLGnnsR94OA7YjW1XGaGVYu8tNTnofrZaknNYdGA
+         mlTg==
+X-Forwarded-Encrypted: i=1; AKwUvBxpfSEAeskDCW2lQFPW6KB6VyqLnzCQ27g545Apg3H/aSfE8C3edTQcawQYx7ZJfgDRJZ0=@vger.kernel.org
+X-Gm-Message-State: AFuF++mNbUa+tY5AAZ/LnvQ5x4vP4L1AYfzRjyO1haK452nmq/1f6fVr
+	DZIY7nTGW5ro73xmddmmjYA5zbAfUbGpHrTGMwWfMpoTBjc4DBt/UYDAhz1uJmcC5bPPNOj1vzY
+	/yzvWnTi2L/pCc5IcNEPxJTGQr7khBHycBooe
+X-Gm-Gg: AYBFou2n10exhI2lJB1cdMe0JKYN/4XqRDnb6ognLQGjVugkJzULHeZgISh0WlKhOtV
+	GH7nFKZbJelML23ejGW7+g/4bgwTynzHCwArRroNhWTtPkjYEgFiyPClgbqMn0I5DVpteZun9NV
+	k+c0UDRHFOICAxuSNQDCOaGToTK2duPLKGSKnF9N+/TS7VyTvBxO2vHrvBk2HCTpkIwMcG/em1C
+	NeKRM+9vLEvzPCgtO3XIiAAtptoulXGmQYdEA24FY/RECQ8Upm/f9ITPSZCSofunDmlLEOZp3Z7
+	Enx/+hIw9gRIGKMK8XrKOX+XRDcBx+XtjmifmjX6BZuVulC8qkClewtYEI416LEJBLnUByBTJc4
+	fLzEPpIo5ARgV+A==
+X-Received: by 2002:a05:600d:6501:10b0:49c:fa21:e73b with SMTP id
+ 5b1f17b1804b1-49e619c0bc0mr66674725e9.17.1789216665157; Sat, 12 Sep 2026
+ 05:37:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <20260911093515.2802551-1-kunwu.chan@gmail.com> <0cf7b133-d2fd-4298-adba-70a2b86d1892@paulmck-laptop>
+In-Reply-To: <0cf7b133-d2fd-4298-adba-70a2b86d1892@paulmck-laptop>
+From: KunWu Chan <kunwu.chan@gmail.com>
+Date: Sat, 12 Sep 2026 20:37:33 +0800
+X-Gm-Features: AcwNN1XEaUmULXfMYv71uEC_YjUFE0KO5ywjshlJVOo2yB1GNxlsDPPW2QEtODk
+Message-ID: <CAN_Opa-uuim=aiOuAmHYUoD5S=vBREemj-dCvcunF-4zNdp1=A@mail.gmail.com>
+Subject: Re: [PATCH] srcutree: Add lockdep and early-boot checks to synchronize_srcu_atomic()
+To: paulmck@kernel.org
+Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org, 
+	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Zqiang <qiang.zhang@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12 September 2026 10:30:47 BST, David Laight
-<david.laight.linux@gmail.com> wrote:
->On Fri, 11 Sep 2026 16:09:16 -0700
->"Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Sat, Sep 12, 2026 at 12:47=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
+rg> wrote:
 >
->> On Fri, Sep 11, 2026 at 11:10:17PM +0100, David Laight wrote:
->> > On Fri, 11 Sep 2026 19:25:34 +0000
->> > Bradley Morgan <brads@mainlining.org> wrote:
->> >   
->> > > cmpxchg_emu_u8() emulates one-byte cmpxchg() in terms of four-byte
->> > > cmpxchg() for the architectures lacking native one-byte atomics.
->> > > The same architectures also lack native two-byte cmpxchg(), where
->> > > such an operation is not supported and either fails to compile via
->> > > BUILD_BUG() or fails to link, because the bad pointer sentinels
->> > > these architectures declare are never defined.
->> > > 
->> > > Add cmpxchg_emu_u16(), the two-byte sibling. It reads the enclosing
->> > > word with READ_ONCE(), splices the two target bytes through a union
->> > > and loops on cmpxchg() of the full word until the compare succeeds.
->> > > Like cmpxchg_emu_u8() it is fully ordered.
->> > > 
->> > > The Kconfig symbol gating this file is renamed from
->> > > ARCH_NEED_CMPXCHG_1_EMU to ARCH_NEED_CMPXCHG_1_2_EMU, as it now
->> > > selects both the one-byte and the two-byte emulation.
->> > > 
->> > > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
->> > > Signed-off-by: Bradley Morgan <brads@mainlining.org>
->> > > ---
->> > >  arch/Kconfig                |  2 +-
->> > >  arch/arc/Kconfig            |  2 +-
->> > >  arch/arm/Kconfig            |  2 +-
->> > >  arch/csky/Kconfig           |  2 +-
->> > >  arch/sh/Kconfig             |  2 +-
->> > >  arch/xtensa/Kconfig         |  2 +-
->> > >  include/linux/cmpxchg-emu.h |  1 +
->> > >  lib/Makefile                |  2 +-
->> > >  lib/cmpxchg-emu.c           | 35
->++++++++++++++++++++++++++++++++---
->> > >  9 files changed, 40 insertions(+), 10 deletions(-)
->> > >   
->> > ...  
->> > > diff --git a/include/linux/cmpxchg-emu.h
->b/include/linux/cmpxchg-emu.h
->> > > index 998deec67740..fee8171fa05e 100644
->> > > --- a/include/linux/cmpxchg-emu.h
->> > > +++ b/include/linux/cmpxchg-emu.h
->> > > @@ -11,5 +11,6 @@
->> > >  #define __LINUX_CMPXCHG_EMU_H
->> > >  
->> > >  uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t
->new);
->> > > +uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t
->new);  
->> > 
->> > Why uintptr_t? Shouldn't it just be u16?
->> > (Which probably means the code would better if it was just 'unsigned
->int')  
->> 
->> I suspect that Bradley is just following my cmpxchg_emu_u8() example,
->> which also returns uintptr_t.
->> 
->> I remember that *something* broke when I made this be u8, but I cannot
->> recall what the problem was.
->> 
->> Bradley, could you please try making it be u16 as David suggests just to
->> see what happens?  Who knows?  Maybe it was a compiler issue that has
->> since been fixed.  Or maybe the macros and asms using cmpxchg_emu_u8()
->> need that uintptr_t for some reason.
+> On Fri, Sep 11, 2026 at 05:35:15PM +0800, Kunwu Chan wrote:
+> > Add the lockdep annotation, same-type SRCU nesting warning, and
+> > early-boot check used by __synchronize_srcu().
+> >
+> > Suggested-by: Zqiang <qiang.zhang@linux.dev>
+> > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 >
->I think the uintptr (unsigned long) cast is needed to stop a compile
->error when exchanging pointers.
->But that is an issue with the #define not the called functions.
+> Queued for review and testing, thank you both!
 >
->Possibly changing the #define to have:
->	unsigned long ul_old = (unsigned long)(old);
->Or even, with the type check from:
->	unsigned long ul_old = (unsigned long)(0 ? *(ptr) : (old));
->(with the same for 'new')
->and the removing all the casts where the value are used might be better.
->
->David
->
->> 
->> 							Thanx, Paul
->
->
-Hmm. Okie dokie, noted for V2, thanks for the review, 
+> Interestingly enough, it is now the case that there is a grace-period
+> wait that can be placed in a normal RCU read-side critical section.
+> Does this mean that we should also adjust the --do-srcu-lockdep testing
+> in tools/testing/selftests/rcutorture/bin/torture.sh?
 
-I'm sure arch code is just implementing this function, so I hope nothing
-went wrong with the arch code.
---- Thanks!
-https://lore.kernel.org/all/EE579805-42F2-4C58-B752-F28779EEB717@grrlz.net/
+Thanks, Paul. Good point.
+
+I=E2=80=99ll check the current `--do-srcu-lockdep` coverage, including the
+case where `synchronize_srcu_atomic()` is called from a normal RCU
+read-side critical section, and follow up with the necessary torture
+testing changes.
+
+Thanks,
+Kunwu
+
+>
+>                                                         Thanx, Paul
+>
+> > ---
+> >  kernel/rcu/srcutree.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index 6a9c432a3bd0..6c729e805fb3 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -2123,6 +2123,14 @@ void synchronize_srcu_atomic(struct srcu_struct =
+*ssp)
+> >       unsigned long rdm0, rdm1;
+> >       unsigned long unlocks0, unlocks1;
+> >
+> > +     srcu_lock_sync(&ssp->dep_map);
+> > +
+> > +     RCU_LOCKDEP_WARN(lockdep_is_held(ssp),
+> > +                      "Illegal synchronize_srcu_atomic() in same-type =
+SRCU read-side critical section");
+> > +
+> > +     if (rcu_scheduler_active =3D=3D RCU_SCHEDULER_INACTIVE)
+> > +             return;
+> > +
+> >       // Initialize.  Either init_srcu_struct() was invoked or
+> >       // DEFINE_SRCU() or similar was used.  Therefore, no allocation
+> >       // will be done here.
+> > --
+> > 2.43.0
+> >
