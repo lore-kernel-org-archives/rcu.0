@@ -1,376 +1,192 @@
-Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com [74.125.225.140])
+Received: from mail-oi2-f12.google.com (mail-oi2-f12.google.com [74.125.231.204])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3D347CC94
-	for <rcu@vger.kernel.org>; Sat, 12 Sep 2026 13:17:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.225.140
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789219082; cv=pass; b=M3BGn9i3EJq58aPd3Oti2p5tBjrtMiSdf77eBWphEutGcHKV+OwtGnSrbN0it2GxacyziOpktbELzeT+zZmkPYirXYMW4SGwY8DDYM4caZBMlX01zl6pVttNKtr0Q+/moFWEVOMbmnxwUbnuqBF2gg4+AZJnJ3Q62qCbf0scoOU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789219082; c=relaxed/simple;
-	bh=BsiF8+r5vgUuRparDjgrLB9w7U/qShYtdjOD3d2tROQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DWI/1yacDYtBwb6M2GWJDyMixKHCA1Vbgn22IsGMFqh6M16xzd0tK9L0oBDefJljXII9xIvT4NUdnCp6eg2gztuC43By24qlaLIiG8Ahv1PcYzydUTms0nvhMcPDjPrm+IJBesVN26i75VnmO25mWWgW4cG5haNLo/t1pQeVmKo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pa93kqwP; arc=pass smtp.client-ip=74.125.225.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F6703546FA
+	for <rcu@vger.kernel.org>; Sat, 12 Sep 2026 17:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.231.204
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789233533; cv=none; b=Tp8ItkiaIGh4/skl+LtoJQ0UngULicLVzRmUeMeThibzxCxKd0v7FQ0HKBWlHws1gc/hhu43AH6pxr5mflfzC9R30xtZxGacve4rQk/lyw7K9a1w6oUKlGDbX0IhIPkYZXDDty3I+l/418mrUFtJfbeDKz5vcPtWbqs1R4gi0rY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789233533; c=relaxed/simple;
+	bh=jBtZBjDlT8Qi3VYpNIp72jmf1UAXzlM9TkhK/45vnWc=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=LNZAlxdod/wN58/GCJL9jX3cWOxeq0hO5YAVMQmp4HoCjU4srChlKD2mXvL9b27xgXNCrIxYwmcBBlTjWJjMZKpYGg2dH9kqCPiNeNhQNDLL7NjdrjkbIsT4YLgUt4VZ6PazaacHW8GinI0ldWlmzWO+3hEtlOAp05cWKeJF2+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LLufjg9t; arc=none smtp.client-ip=74.125.231.204
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pa93kqwP"
-Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49e69b9e16aso4519875e9.1
-        for <rcu@vger.kernel.org>; Sat, 12 Sep 2026 06:17:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789219078; cv=none;
-        d=google.com; s=arc-20260327;
-        b=O4nNJ4q4quRRncagaimicHriGbNf1SXOfqqmDq+H1Jiz2IEWdGsXMpkDGgy+rVpWkD
-         fTGP53NUIpdm+IjP122KAgtov0b4B9+WtVHh3AVVCL/FjXCbon9ZYgsMEaqKjFpN2YUc
-         tf6H0w3fJYMa0kpLHJKPUcpTlPkvPLsNRU2ipE8L+fnmHHSGHtxh7CV5pbOqWpSKP2zN
-         dIgEyS5acZAIcQ2A7I+gXIDzFN0sqTda+ZIunBzxzlgFXNn5+m/tt6W4DzSYZQ3Kf86t
-         G/XFqW/WyL7FTKGBA/NnubMHXgJ83f5aoUVgYkjGKDsrtf1obAKOA1XbDJNnKgifqrKh
-         YQnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=QPi8mMYl+gIyOrC3hZ2sXqCE+u6Vau0Qj07zs3k7gBA=;
-        fh=B2s8JMrI+ab9b+Yuy8afjOioMB2BFde1sv488ewx2C0=;
-        b=o5TLvl8qsCTdtENWlsQNbAnaTB4giV1cY/OkaZ8GQAR9n1cQuD73SVWFk97hi/Kvlg
-         VIqQtTOuqjqr4LOuHWjuiFkhnZ1LU2Q1TWuCa81cOLZfBpDquCgBRFgcfd40X09XILhq
-         ixXXeqWiltq+DcETsoCVNE17zVu3+AGx/bn8pkp32y3SNNd42USrs//LoGp4ofXydYBR
-         GDcCyeiryopv/pOxZq/4+WRbdTR1wIEewsxfrzX1XQ1+Inm3m84nXxiuiLR32hdqrZkh
-         +oduIvn7D8svadgE/94Z/ZbsNWDhJR/p/ugyK7wh3WVkYzASybJksOaKKwOhqXpDG20D
-         Km1A==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LLufjg9t"
+Received: by mail-oi2-f12.google.com with SMTP id 5614622812f47-4b37a3ed715so463744b6e.3
+        for <rcu@vger.kernel.org>; Sat, 12 Sep 2026 10:18:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789219078; x=1789823878; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=QPi8mMYl+gIyOrC3hZ2sXqCE+u6Vau0Qj07zs3k7gBA=;
-        b=Pa93kqwPH/SeNFjsdCZVBPfFpttIy3qoCOSQS4W2ZvJJvB+3DIOxuYM8ZjkscBohkj
-         mROx2kk1SCZfxZ9K5T1LzkevowV8Tc7JpvYO7yLCT7fsya2tDRRCCCIhjrbdQNV0o3Vc
-         wjLQ6+y1V8qrCxzgcg7YX6g5tgc3qtxoBoIk82jyU1za6wLQ3qxA528iwf7AMOmKJ0qy
-         nAbwwXoqayiMtCsL2vKk+TZrp9xMvh/SZv0ZJvFFGNeZYucsq20DPsMT+cJnnRlXyyW7
-         0Oh6I//FZAMOXskxT6t4IYFdUp+ZZkpSGwUnTUVSdPLgyB2cofbDqkmwl5x1xLlxr3Q3
-         88FA==
+        d=gmail.com; s=20251104; t=1789233531; x=1789838331; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-type:content-transfer-encoding:mime-version:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=M1c6suOtzZ2rRuH1TXxQJyOcddxpg3oryXf9dCc4tZI=;
+        b=LLufjg9tkDHfboL43zM8EhB8/3TC5sqvSGrfLsnHpXY5oKIZhyLB12Mpf/1tRBn0Qt
+         aUTmkwDr6K1fXlg42wE3St71lnXgY16DGhmZZsHQvWDX2pFVJrt5xBash1IGri8ujw+K
+         Dos33rufshNrGVyoXmhoAMIEpr8fIqzOJFk56h7oRwrJuSCYgqjWRXrzK1ZwBBeWgsiL
+         mr9G3buIXNvAzpRm2IDzqETuhVXtEVWc5aDnZYcYd8lkAR3CX8wWFuJv8SBGHhH90wdt
+         z0lgJu+7pvtMQKcaKQ+3nUEpjKi4ykmWxRmG4eJoqROjAOq8cGeK8F7PH7wAPuFFmXFw
+         9uoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789219078; x=1789823878;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
+        d=1e100.net; s=20251104; t=1789233531; x=1789838331;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-type:content-transfer-encoding:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=QPi8mMYl+gIyOrC3hZ2sXqCE+u6Vau0Qj07zs3k7gBA=;
-        b=re4D8/OEA5380PbTGcOsPA00o06BLgbTHh1gylmXVCof1pGtcm34ACmlQ5LTUEDtR3
-         DqYQFzEsF5xqrQpw6ZOP+QDHPrFzcAdXgaxQV7OXYwa/s0WeW7Zr4kSCzU4x/hKGSbuv
-         0uwyVuFzXlW4Xjol2fq3EeM40rgM8vlGtB7OsLhG9KeB+nj7ug1UHM+TWapaGZIIXC3E
-         M8px5yMjKaKMNMRJ+usYBEl12BRAENqQxFIwl+VxfTKQsjnuIyPWJ2Dela1g7qie7rpB
-         v8SAhImHVdhaHvMKTjl/EwWtZI3JsAq5/LSfBk/M/AbTv8RDo3aaQBrbmmT2DP4oLcaO
-         xEgw==
-X-Forwarded-Encrypted: i=1; AKwUvByY1ZrC0+t0br8Dadtujyl1MJY70JRHhPchRMQTE6pJdZYF/8lt4mLyelWjmecfSd3M1WE=@vger.kernel.org
-X-Gm-Message-State: AFuF++nv7seZwjZ7Vdgmst18wry5gBmscKtCJEmb836YVeSdmba3xTZg
-	PAWVywqsi31M0m448c4sRmKUuR8/liGrTU5iXhYv5jRTB9JdMlVVVEpsmg0dSwtqOUsOEF3UAV4
-	+wzB43lZTroC0b+YaQrJKoDvo/8tKrzQ=
-X-Gm-Gg: AYBFou01LKylNWleA0P1Jj/KlxpGLYY/MJCFobE1/HP5szg2tAOR27VMjV0U/EmoXG1
-	BpaSz7q1e55o1QJERXfzkLhtezjNfQWy7lZVseBMEXZEsa9W2IrdzAxVuB+IlagdKCpy4AhGPH5
-	U5e63bHWIeF/m7a49/JoasraKb04tGg6rF54N5iHZRqVm6CDVLEDmcp9iS9O1M01mGw4tcBfjl4
-	UynTag5EfZPZpgaro5jinKx0963zu9kqZvLKU1dZuX45xtVeZv0f5G04UrgX4oxTJ7824Cd6LX8
-	8ozK/KXKrUxRWk/REMRJ5kwq0KQCKy9fzJP1UnOpn5QhGhDEA7IxGYcxOlS0JEH4aCzwOlEGK7z
-	ydRRsLrfz6zM=
-X-Received: by 2002:a05:600c:6216:b0:49c:d019:70c5 with SMTP id
- 5b1f17b1804b1-49e6ca350camr24650915e9.0.1789219077551; Sat, 12 Sep 2026
- 06:17:57 -0700 (PDT)
+        bh=M1c6suOtzZ2rRuH1TXxQJyOcddxpg3oryXf9dCc4tZI=;
+        b=HQNJjD2nDpVvnUfENs4L89T2aZ6gMIceT73ihFMzTBi9XM7XFYZDQy0MZSQSo2IQsP
+         Msr7KLg4OdB1DfDC5GoaWDVJFOjOrZbVV4p2I2+pg5LiRFMGIj2d+jhmkh5+657PxCIn
+         oskXkgLpH2Pb3GtpEAKK2DK+1JcIsjyr4p0XBuh1C6Y+LZwhqfaMDpdJZHNXT4ghUEZE
+         qhOXX3SNywEKgUTqFEeqb6Eb1eR7rWQ/SJI7k4EZrm7dVET4hNLMumwNmNqcZua4kaXY
+         ejfx9DJZk5C6R0psxDNHmk0HoMSKHEFnc9Gw6xK+bhQn0rLHt6JP48qtwh56P3qfSHCL
+         eHCA==
+X-Forwarded-Encrypted: i=1; AKwUvBxsuMzzpH9NhAZArtlsP4ueuCVQ9YsJDiA4/EhelyJEjZMjb8xiBRpijfFwBNCuNg0Y9DY=@vger.kernel.org
+X-Gm-Message-State: AFuF++k0K+7Pftq1gZgrZmj3lhyMAfF3zKEJW2IZ416IA8FtpuvGrnfQ
+	kiuPEfuCrq5NmnZspcDATYzRjoIIfOUCyrZvEeZQvY9dJpmBVs4YdLy1
+X-Gm-Gg: AYBFou2aSHANX4G++BDIXV8qoVPVuE4OE3DkDPbLngJwyn4SvgvxdzUl8PMGT9YvKWG
+	K0CD8+BPIdhBfJuR8es2V25/ECKjLs3ZpkOjGu5aMpRoVV+JFi6kV51OeITztKMSISZTrA3gjQd
+	nn60VC0iyyQSeZnDi3RZgQeG/xCs4PQWTPMae4+rHeDHROja6cuz9Y798xuHYmMIdvzKAaj+3KZ
+	kzriKyipPPg28v+snjw5hyTe3kvxOZ3VXOHhm3D9KlPn73g5tOKY2FKUWJGLXkNoYYbdU5jWqNj
+	db7OIuRcviQ7s2qxJCBnLDluhKQJ84NEiuzcGuKIdMU9ACIvwdrrDamojZRukNgBQJFAX6EvpPB
+	3GxVn3h1TkY0J7QLhd4/EG7fzFEdHQtEVPbzHiFqo2lWyhl6/3pTLT4ML4ztOX6qDflVXzPGX8n
+	u0X0ZGEOiVzV+Ml/RoSdR7DiSrNvYNwNFQk208R50H4ivae7qOzrTgN0cdGjWBBBD7wqrf7GAVC
+	25hdZEycyJs4ZpcLC0Wbf8FRBWLwTsYv7JTA6AFiJ8uVqj0DDIPnnSqO73ib5hjbQ==
+X-Received: by 2002:a05:6808:3503:b0:4b3:8323:8cd8 with SMTP id 5614622812f47-4c4a751294bmr2617971b6e.5.1789233530981;
+        Sat, 12 Sep 2026 10:18:50 -0700 (PDT)
+Received: from localhost ([2a03:2880:10ff:72::])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-4c3315b19afsm5495263b6e.10.2026.09.12.10.18.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Sep 2026 10:18:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20260907075829.2073224-1-kunwu.chan@linux.dev>
- <c201584b58aec856342e0f23f8df9f81baccba1d@linux.dev> <CAN_Opa-cvXVJeMxniuarq+2mE9EepjzTCgii1bW6mmSnaCKKxQ@mail.gmail.com>
- <4298908f242e82d54e0f462307ee18fa777b0935@linux.dev>
-In-Reply-To: <4298908f242e82d54e0f462307ee18fa777b0935@linux.dev>
-From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Sat, 12 Sep 2026 21:17:45 +0800
-X-Gm-Features: AcwNN1WZzQfgiUds4j9elCw2mdpkAUcvPuBlha1DBx4yXy8ULrk4CMRYin5AjcY
-Message-ID: <CAN_Opa_AVXF=+0FbTccTQU_vrQ798Y0HBynmH8qpKickDnS55Q@mail.gmail.com>
-Subject: Re: [PATCH 00/13] srcu: Round out atomic SRCU support
-To: Zqiang <qiang.zhang@linux.dev>
-Cc: paulmck@kernel.org, rostedt@goodmis.org, mathieu.desnoyers@efficios.com, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, jiangshanlai@gmail.com, 
-	josh@joshtriplett.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Sat, 12 Sep 2026 10:18:48 -0700
+Message-Id: <DLDICNLENSRI.2R6EJ0ZFJE45T@gmail.com>
+Cc: "Josef Bacik" <josef@toxicpanda.com>, "Frederic Weisbecker"
+ <frederic@kernel.org>, "Neeraj Upadhyay" <neeraj.upadhyay@kernel.org>,
+ "Joel Fernandes" <joelagnelf@nvidia.com>, "Boqun Feng" <boqun@kernel.org>,
+ "Thomas Gleixner" <tglx@kernel.org>, "Peter Zijlstra"
+ <peterz@infradead.org>, "Steven Rostedt" <rostedt@goodmis.org>, "Masami
+ Hiramatsu" <mhiramat@kernel.org>, "Mark Rutland" <mark.rutland@arm.com>,
+ "Jiri Olsa" <jolsa@kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko"
+ <andrii@kernel.org>, <x86@kernel.org>, "Catalin Marinas"
+ <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>, "Puranjay
+ Mohan" <puranjay@kernel.org>, "Xu Kuohai" <xukuohai@huaweicloud.com>, "Andy
+ Lutomirski" <luto@kernel.org>, "Josh Triplett" <josh@joshtriplett.org>,
+ "Uladzislau Rezki" <urezki@gmail.com>, "Mathieu Desnoyers"
+ <mathieu.desnoyers@efficios.com>, "Lai Jiangshan" <jiangshanlai@gmail.com>,
+ "Zqiang" <qiang.zhang@linux.dev>, "Juergen Gross" <jgross@suse.com>, "Luis
+ Chamberlain" <mcgrof@kernel.org>, "Ihor Solodrai"
+ <ihor.solodrai@linux.dev>, <linux-kernel@vger.kernel.org>,
+ <rcu@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+ <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <xen-devel@lists.xenproject.org>
+Subject: Re: [PATCH RFC v2 08/15] bpf, x86: Maintain Tasks RCU trampoline
+ nesting in the BPF trampoline
+From: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+To: <paulmck@kernel.org>
+X-Mailer: aerc
+References: <20260911-b4-rcu-tasks-preempt-qs-v2-0-eaaa61ed2da4@toxicpanda.com> <20260911-b4-rcu-tasks-preempt-qs-v2-8-eaaa61ed2da4@toxicpanda.com> <DLD0OHX8C4ME.VNR49VC2UYH4@gmail.com> <14cb8a91-497d-49f5-aa20-c6cb8b9a27fc@paulmck-laptop>
+In-Reply-To: <14cb8a91-497d-49f5-aa20-c6cb8b9a27fc@paulmck-laptop>
 
-On Sat, Sep 12, 2026 at 8:41=E2=80=AFAM Zqiang <qiang.zhang@linux.dev> wrot=
-e:
+On Fri Sep 11, 2026 at 10:10 PM PDT, Paul E. McKenney wrote:
+> On Fri, Sep 11, 2026 at 08:27:56PM -0700, Alexei Starovoitov wrote:
+>> On Fri Sep 11, 2026 at 7:08 AM PDT, Josef Bacik wrote:
+>> > Emit an increment of current->rcu_tramp_nesting once the trampoline's
+>> > frame is set up and a decrement before the final register restore, so
+>> > that a task preempted while running fentry/fexit/fmod_ret/LSM programs
+>> > or the __bpf_tramp_enter()/__bpf_tramp_exit() glue is not treated as
+>> > Tasks-RCU quiescent.  Drop the count around the call to the original
+>> > function: that may run arbitrarily long without sleeping and must not =
+pin
+>> > a Tasks RCU grace period, and the trampoline frame above it is held by
+>> > im->pcref rather than by Tasks RCU (see bpf_tramp_image_put()).  The
+>> > fmod_ret early-exit branch and the ip_after_call -> ip_epilogue poke b=
+oth
+>> > skip the decrement/increment pair around the original call, so the cou=
+nt
+>> > stays balanced on every path.
+>> >
+>> > The sequence is "mov r11, gs:[current_task]; inc/dec dword [r11 + off]=
+";
+>> > r11 is scratch at every emission point and (u32)&current_task is a val=
+id
+>> > sign-extended %gs-absolute with the current per-CPU layout, the same f=
+orm
+>> > the JIT already uses for this_cpu_off.  The image is dynamically
+>> > allocated text, so the instructions outside the bracketed region are
+>> > covered by the irq-exit IP check.
+>> >
+>> > Assisted-by: LLM
+>> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> > ---
+>> >  arch/x86/net/bpf_jit_comp.c | 43 ++++++++++++++++++++++++++++++++++++=
++++++++
+>> >  1 file changed, 43 insertions(+)
+>> >
+>> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> > index 2853e87797a7..a375c1b7bd50 100644
+>> > --- a/arch/x86/net/bpf_jit_comp.c
+>> > +++ b/arch/x86/net/bpf_jit_comp.c
+>> > @@ -722,6 +722,31 @@ static void emit_indirect_jump(u8 **pprog, int bp=
+f_reg, u8 *ip)
+>> >  	*pprog =3D prog;
+>> >  }
+>> > =20
+>> > +/*
+>> > + * Tasks RCU trampoline nesting, see rcu_tasks_trampoline_enter().
+>> > + *
+>> > + *   mov r11, QWORD PTR gs:[current_task]
+>> > + *   inc/dec DWORD PTR [r11 + offsetof(struct task_struct, rcu_tramp_=
+nesting)]
+>> > + *
+>> > + * r11 (AUX_REG) is scratch in the trampoline at every point this is =
+emitted.
+>> > + */
+>> > +static void emit_rcu_tasks_tramp_nesting(u8 **pprog, bool enter)
+>> > +{
+>> > +#ifdef CONFIG_TASKS_RCU
+>> > +	u8 *prog =3D *pprog;
+>> > +
+>> > +	/* mov r11, gs:[abs32] */
+>> > +	EMIT2(0x65, 0x4C);
+>> > +	EMIT3(0x8B, 0x1C, 0x25);
+>> > +	EMIT((u32)(unsigned long)&current_task, 4);
+>> > +	/* inc/dec dword ptr [r11 + disp32] */
+>> > +	EMIT3(0x41, 0xFF, enter ? 0x83 : 0x8B);
+>> > +	EMIT(offsetof(struct task_struct, rcu_tramp_nesting), 4);
+>> > +
+>> > +	*pprog =3D prog;
+>> > +#endif
+>>=20
+>> It's not a lot of overhead, but I feel it will be the death by thousand =
+cuts.
+>> rcu_read_lock_trace() in bpf_prog_enter_sleepable is doing the same thin=
+g...
+>> increamenting a variable inside current.
+>> Can they be combined? Like treat current->trc_reader_nesting > 0 as
+>>  current->rcu_tramp_nesting > 0 ?
+>> Or replace one with the other?
+>> Two current->foo++ operations look redundant.
+>>=20
+>> bpf trampoline is already quite heavy. I'd like to find ways to reduce
+>> its overhead instead of adding more.
 >
-> >
-> > On Thu, Sep 10, 2026 at 8:16 PM Zqiang <qiang.zhang@linux.dev> wrote:
-> >
-> > >
-> > > From: Kunwu Chan <kunwu.chan@gmail.com>
-> > >
-> > >  This series rounds out atomic SRCU support with a reader-free fastpa=
-th,
-> > >  some atomic-context fixes, and additional test coverage.
-> > >
-> > >  The core change is a reader-free fastpath for synchronize_srcu_atomi=
-c().
-> > >  Atomic SRCU's read-side critical sections disable preemption, so whe=
-n
-> > >  the summed lock and unlock counts match for both ranks,
-> > >  synchronize_srcu_atomic() can end the grace period immediately, with=
-out
-> > >  the index flip or the srcu_advance_state() scans. Correctness depend=
-s
-> > >  on the grace-period anchor written by srcu_gp_start() preceding the
-> > >  lock-count scan; two LKMM litmus tests (patches 1-2) verify that
-> > >  ordering.
-> > >
-> > >  For synchronize_srcu_atomic(), the following items maybe also
-> > >  need to be added:
-> > >
-> > Hi Zqiang
-> > Sent as: https://lore.kernel.org/rcu/20260911093515.2802551-1-kunwu.cha=
-n@gmail.com/
-> >
-> > Did a small late_initcall that enters an atomic read-side critical sect=
-ion and
-> > calls synchronize_srcu_atomic(). srcu_lock_sync() catches it:
-> >  WARNING: possible recursive locking detected
-> >  swapper/0/1 is trying to acquire lock: (&ss) at:
-> > synchronize_srcu_atomic+0x28/0x380
-> >  but task is already holding lock: (&ss) at:
-> > srcu_lockdep_test_init+0xd0/0x170
-> >  *** DEADLOCK ***
-> > Rcutorture SRCU-N/P also pass.
->
-> Hi, kunwu
->
-> You can add srcu_atomic lockdep test to rcutorture to verify
-> your change, and I also saw that Paul suggested the same thing :)
->
+> Replace rcu_read_lock_trace() with Josef's rcu_tasks_trampoline_enter)?
 
-Hi Zqiang,
-Thanks for the suggestion. This is very helpful.
+If necessary...
+what I don't understand why we need another rcu_tasks_trampoline_enter-like=
+ counter.
+Can existing rcu_read_lock_trace() current be used ?
+It's already doing current->trc_reader_nesting++
+so use that as a signal ?
 
-I saw Paul's suggestion too. I'll use your example as a starting
-point, verify the atomic SRCU lockdep cases, and check the
---do-srcu-lockdep handling in torture.sh, including the normal RCU
-read-side case Paul mentioned.
-
-I'll add a Suggested-by tag for your contribution when I post the
-changes.
-
-Thanks,
-Kunwu
-
-> For example, as shown below (I am not test or verify it):
->
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index d795e07a12ad..d4f7399acbd5 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -4662,6 +4662,17 @@ static DECLARE_RWSEM(rwsem7);
->  static DECLARE_RWSEM(rwsem8);
->  static DECLARE_RWSEM(rwsem9);
->
-> +static DEFINE_RAW_SPINLOCK(spin0);
-> +static DEFINE_RAW_SPINLOCK(spin1);
-> +static DEFINE_RAW_SPINLOCK(spin2);
-> +static DEFINE_RAW_SPINLOCK(spin3);
-> +static DEFINE_RAW_SPINLOCK(spin4);
-> +static DEFINE_RAW_SPINLOCK(spin5);
-> +static DEFINE_RAW_SPINLOCK(spin6);
-> +static DEFINE_RAW_SPINLOCK(spin7);
-> +static DEFINE_RAW_SPINLOCK(spin8);
-> +static DEFINE_RAW_SPINLOCK(spin9);
-> +
->  DEFINE_STATIC_SRCU(srcu0);
->  DEFINE_STATIC_SRCU(srcu1);
->  DEFINE_STATIC_SRCU(srcu2);
-> @@ -4673,6 +4684,17 @@ DEFINE_STATIC_SRCU(srcu7);
->  DEFINE_STATIC_SRCU(srcu8);
->  DEFINE_STATIC_SRCU(srcu9);
->
-> +DEFINE_STATIC_SRCU_ATOMIC(srcu0_atomic);
-> +DEFINE_STATIC_SRCU_ATOMIC(srcu1_atomic);
-> +DEFINE_STATIC_SRCU_ATOMIC(srcu2_atomic);
-> +DEFINE_STATIC_SRCU_ATOMIC(srcu3_atomic);
-> +DEFINE_STATIC_SRCU_ATOMIC(srcu4_atomic);
-> +DEFINE_STATIC_SRCU_ATOMIC(srcu5_atomic);
-> +DEFINE_STATIC_SRCU_ATOMIC(srcu6_atomic);
-> +DEFINE_STATIC_SRCU_ATOMIC(srcu7_atomic);
-> +DEFINE_STATIC_SRCU_ATOMIC(srcu8_atomic);
-> +DEFINE_STATIC_SRCU_ATOMIC(srcu9_atomic);
-> +
->  static int srcu_lockdep_next(const char *f, const char *fl, const char *=
-fs, const char *fu, int i,
->                              int cyclelen, int deadlock)
->  {
-> @@ -4702,6 +4724,13 @@ static void rcu_torture_init_srcu_lockdep(void)
->                                           &rwsem5, &rwsem6, &rwsem7, &rws=
-em8, &rwsem9 };
->         struct srcu_struct *srcus[] =3D { &srcu0, &srcu1, &srcu2, &srcu3,=
- &srcu4,
->                                         &srcu5, &srcu6, &srcu7, &srcu8, &=
-srcu9 };
-> +
-> +       raw_spinlock_t *spins[] =3D { &spin0, &spin1, &spin2, &spin3, &sp=
-in4, &spin5,
-> +                                       &spin6, &spin7, &spin8, &spin9};
-> +       struct srcu_struct *srcus_atomic[] =3D {&srcu0_atomic, &srcu1_ato=
-mic, &srcu2_atomic,
-> +                                               &srcu3_atomic, &srcu4_ato=
-mic, &srcu5_atomic,
-> +                                               &srcu6_atomic, &srcu7_ato=
-mic, &srcu8_atomic,
-> +                                               &srcu9_atomic};
->         int testtype;
->
->         if (!test_srcu_lockdep)
-> @@ -4812,11 +4841,48 @@ static void rcu_torture_init_srcu_lockdep(void)
->         }
->  #endif // #ifdef CONFIG_TASKS_TRACE_RCU
->
-> +        if (testtype =3D=3D 4) {
-> +                pr_info("%s: test_srcu_lockdep =3D %05d: SRCU_ATOMIC %d-=
-way %sdeadlock.\n",
-> +                        __func__, test_srcu_lockdep, cyclelen, deadlock =
-? "" : "non-");
-> +                if (deadlock && cyclelen =3D=3D 1)
-> +                        pr_info("%s: Expect hang.\n", __func__);
-> +                for (i =3D 0; i < cyclelen; i++) {
-> +                        j =3D srcu_lockdep_next(__func__, "srcu_read_loc=
-k_atomic", "synchronize_srcu_atomic",
-> +                                              "srcu_read_unlock_atomic",=
- i, cyclelen, deadlock);
-> +                        idx =3D srcu_read_lock_atomic(srcus_atomic[i]);
-> +                        if (j >=3D 0)
-> +                                synchronize_srcu_atomic(srcus_atomic[j])=
-;
-> +                        srcu_read_unlock_atomic(srcus_atomic[i], idx);
-> +                }
-> +                return;
-> +        }
-> +
-> +        if (testtype =3D=3D 1) {
-> +                pr_info("%s: test_srcu_lockdep =3D %05d: SRCU_ATOMIC/raw=
-_spinlock %d-way %sdeadlock.\n",
-> +                        __func__, test_srcu_lockdep, cyclelen, deadlock =
-? "" : "non-");
-> +                for (i =3D 0; i < cyclelen; i++) {
-> +                        pr_info("%s: srcu_read_lock_atomic(%d), raw_spin=
-_lock(%d), raw_spin_unlock(%d), srcu_read_unlock_atomic(%d)\n",
-> +                                __func__, i, i, i, i);
-> +                        idx =3D srcu_read_lock_atomic(srcus_atomic[i]);
-> +                        raw_spin_lock(spins[i]);
-> +                        raw_spin_unlock(spins[i]);
-> +                        srcu_read_unlock_atomic(srcus_atomic[i], idx);
-> +
-> +                        j =3D srcu_lockdep_next(__func__, "raw_spin_lock=
-", "synchronize_srcu_atomic",
-> +                                              "raw_spin_unlock", i, cycl=
-elen, deadlock);
-> +                        raw_spin_lock(spins[i]);
-> +                        if (j >=3D 0)
-> +                                synchronize_srcu_atomic(srcus_atomic[j])=
-;
-> +                        raw_spin_unlock(spins[i]);
-> +                }
-> +                return;
-> +        }
-> +
->  err_out:
->         pr_info("%s: test_srcu_lockdep =3D %05d does nothing.\n", __func_=
-_, test_srcu_lockdep);
->         pr_info("%s: test_srcu_lockdep =3D DNNL.\n", __func__);
->         pr_info("%s: D: Deadlock if nonzero.\n", __func__);
-> -       pr_info("%s: NN: Test number, 0=3DSRCU, 1=3DSRCU/mutex, 2=3DSRCU/=
-rwsem, 3=3DSRCU/Tasks Trace RCU.\n", __func__);
-> +       pr_info("%s: NN: Test number, 0=3DSRCU, 1=3DSRCU/mutex, 2=3DSRCU/=
-rwsem, 3=3DSRCU/Tasks Trace RCU, 4=3DSRCU_ATOMIC, 5=3DSRCU_ATOMIC/raw_spinl=
-ock.\n", __func__);
->         pr_info("%s: L: Cycle length.\n", __func__);
->         if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU))
->                 pr_info("%s: NN=3D3 disallowed because kernel is built wi=
-th CONFIG_TASKS_TRACE_RCU=3Dn\n", __func__);
->
->
-> Thanks
-> Zqiang
->
->
->
->
->
-> >
-> > Thanks, Kunwu
-> >
-> > >
-> > > srcu_lock_sync(&ssp->dep_map);
-> > >
-> > >  RCU_LOCKDEP_WARN(lockdep_is_held(ssp),
-> > >  "Illegal synchronize_srcu() in same-type SRCU read-side critical sec=
-tion");
-> > >
-> > >  if (rcu_scheduler_active =3D=3D RCU_SCHEDULER_INACTIVE)
-> > >  return;
-> > >
-> > >  Thanks
-> > >  Zqiang
-> > >
-> > >  The series is:
-> > >
-> > >  1-2 LKMM litmus tests for the reader-free fastpath ordering.
-> > >  3 srcutree: add the reader-free fastpath.
-> > >  4 rcutorture: add --do-atomic-srcu to torture.sh.
-> > >  5-7 srcutree: honor and propagate is_atomic so atomic SRCU never
-> > >  transitions to big.
-> > >  8 srcutree: forbid srcu_expedite_current() on atomic SRCU.
-> > >  9 rcutorture: disable srcu_expedite_current() for atomic SRCU.
-> > >  10 srcutree: skip callback scheduling for atomic SRCU grace periods.
-> > >  11 srcutree: drop the srcu_barrier() sleep for atomic SRCU.
-> > >  12 srcutree: remove leftover debug pr_alert()s.
-> > >  13 srcu: restrict the non_block annotation to task context, fixing a
-> > >  KCSAN data race.
-> > >
-> > >  The KCSAN race in patch 13 is a data race on the interrupted task's
-> > >  ->non_block_count when a timer callback runs atomic-SRCU readers in
-> > >  inline softirq context.
-> > >
-> > >  Tested with herd7 7.58 (litmus tests), torture.sh --do-atomic-srcu, =
-and
-> > >  torture.sh --do-atomic-srcu --do-kcsan (KCSAN+PROVE_LOCKING).
-> > >
-> > >  Kunwu Chan (13):
-> > >  litmus: Add SRCU fastpath anchor-before-scan test
-> > >  litmus: Add SRCU fastpath scan-before-anchor test
-> > >  srcutree: Add reader-free fastpath to synchronize_srcu_atomic()
-> > >  rcutorture: Add atomic-SRCU support to torture.sh
-> > >  srcutree: Honor is_atomic in check_init_srcu_struct()
-> > >  srcutree: Make init_srcu_struct_atomic() prevent transition to big
-> > >  srcutree: Don't transition atomic SRCU to big in srcu_gp_end()
-> > >  srcutree: Forbid srcu_expedite_current() on atomic SRCU
-> > >  rcutorture: Disable srcu_expedite_current() for atomic SRCU
-> > >  srcutree: Skip callback scheduling for atomic SRCU grace periods
-> > >  srcutree: Remove srcu_barrier() sleep for atomic SRCU
-> > >  srcutree: Remove debug pr_alert()s
-> > >  srcu: Restrict atomic-SRCU non_block annotation to task context
-> > >
-> > >  include/linux/srcu.h | 10 +-
-> > >  kernel/rcu/rcutorture.c | 1 +
-> > >  kernel/rcu/srcutree.c | 95 ++++++++++++++-----
-> > >  tools/memory-model/litmus-tests/README | 16 ++++
-> > >  .../SRCU-fastpath-anchor-before-scan.litmus | 56 +++++++++++
-> > >  .../SRCU-fastpath-scan-before-anchor.litmus | 53 +++++++++++
-> > >  .../selftests/rcutorture/bin/torture.sh | 24 +++++
-> > >  7 files changed, 229 insertions(+), 26 deletions(-)
-> > >  create mode 100644 tools/memory-model/litmus-tests/SRCU-fastpath-anc=
-hor-before-scan.litmus
-> > >  create mode 100644 tools/memory-model/litmus-tests/SRCU-fastpath-sca=
-n-before-anchor.litmus
-> > >
-> > >  base-commit: ef15070f96c5f07de3a9b593c36f6e83bc9e3d58
-> > >  --
-> > >  2.43.0
-> > >
-> >
