@@ -1,125 +1,123 @@
-Received: from mail-wm2-f13.google.com (mail-wm2-f13.google.com [74.125.225.141])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630C23BE643
-	for <rcu@vger.kernel.org>; Sat, 12 Sep 2026 12:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.225.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B9C47ACE9
+	for <rcu@vger.kernel.org>; Sat, 12 Sep 2026 12:41:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.52
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789216669; cv=pass; b=IC1Gnafj9xxFbvoh/cR0NmEAQhx/6PjoXQaWUpx4mYHpYY1KOp1+MrwsJ3JJDKOk/wfIB3U5lznWBE94XfhpVm0jgFoE+LgLWLwXSHwh/Qo/psXQjNSIQudu54a3u90ao5GxX2HhOfNQ9qL5G+S6tS4G0XS6garsZ6Y81fN4Tmg=
+	t=1789216882; cv=pass; b=LAob7s+/8L01dleW6TsK9h0U72ywrqyVEAo0SzSbze0AdNpaaBO9kBU7A27psyvnxvrByk8mRFQgSREEPYgJr0QztV+gyluH5vrhgd3YXi71iKMuGsGBLJzTPmz0i0QDaa8H9CHv7wrErBiaP8wt/qkDZhEiOBjte8fisPYUbqs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789216669; c=relaxed/simple;
-	bh=yeTMH9kFHpJvnqz5I7d+elC/gLVahWKunVAWMBOjsZc=;
+	s=arc-20240116; t=1789216882; c=relaxed/simple;
+	bh=ljQce7QZbvSQsSjeQRo2qnnTep+8IGO0siKl5j67fFA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g8wLlrL0h+2zsr70I/HsE6BOyE1rAGffXxb6Ddir7JenUMhgVDxGVdVT7CWMJL6WBjFnGzxMM4xkD1d5EKr4Jglx81QpZKWJYpkHJg6+N34/5GTGcIy24uSjMopdFXz8LxB61fkKI1ODbLuvGkh3vyTx67B9S2dUjgLshaa0c4g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FY1P5tnC; arc=pass smtp.client-ip=74.125.225.141
+	 To:Cc:Content-Type; b=rJId1x9aZLEHoKW8qHkO5Ujl48vouT1/4QRcgNdizHUHCmb4jNmug7GLSzQTHW9eJ3OS+DXwf31SJS84OuVjx/r6+a98elaahbSyyF/up/8tJ/MPmxImF/2VStsb/J5O2p3YCzkpiBzu2B5AHpa1mRfeeyLyWHHSEK/YB5Q11tk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IOoIKsJ+; arc=pass smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FY1P5tnC"
-Received: by mail-wm2-f13.google.com with SMTP id 5b1f17b1804b1-49e6b885ef8so2327665e9.1
-        for <rcu@vger.kernel.org>; Sat, 12 Sep 2026 05:37:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789216665; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IOoIKsJ+"
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-485850cbac3so899775f8f.3
+        for <rcu@vger.kernel.org>; Sat, 12 Sep 2026 05:41:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789216879; cv=none;
         d=google.com; s=arc-20260327;
-        b=n+eFF80lhw449RbNtboknOEt7EiypSMdwNmPZuxajvZ5etgEBkg7K4iOcx0KdSS7KH
-         Qxpt9jz25Y6POz2dIMbZZGu/nlBCd08LtbiK5eMXt1S0oO8EwYD2QMijN3SBY1MvMQNN
-         UEFBbiopBgcXp2F4Uxul+R2+c+StUTWoIx4KgAzikx0UqTquqlLZFNnpVs2xqnXdhvMe
-         k4anz0LQD8FQ0GgJqwwuGlO4Q4J+hLF68Ymp9gDzCrLMseeO3iROJ7EPn+lfjzP2xrTx
-         l0xJH+JDx9+278F4ToJDXdp3rzBSWGbZB7wMrnoi2GqbbfOYT99RbCXU+fUeY5/foNA+
-         Br9Q==
+        b=X1fbjnkI/VQ8HGZT35fqW8BQ554KbQ8uvSKfzFw6n+EnFfNyrGme4a50BMqB5C7aMe
+         jCgqaryaNu6Ce0NuEp5bpvS+kd+De+7Sre8aNcLoZbJtcZiPimvKzCAnUaL9ZTHBSaVO
+         lrq+fyg3MArZO8QJn+PqqENNLWfaGSeWB7q+WlX0v4Cg9wbU3rJags5IsOuByo8VX/z1
+         oT4P4UP5czv5MqBnTA4KfTIdkTWaLuTulmdNTqfmHNKqa5LYQRpShMjODp5X1l64nmZg
+         tHdv9awZOj1vTrJMuXvx6nRNybEkvwKNJBH9POLPuNYTa6/87xHl1mP95yAOq1uEuzeV
+         vLTw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=uOoVDEs7Uwz1aej+iBOpVf4z5QYFzaJI+ngfP48MEa4=;
-        fh=R7A7RLvbOSHXZPVfT6UOeH75SGVhfNjPfwy79KRgyc8=;
-        b=Zb8hzfpC/UAMLj98xnkgOpayWyHmqq3bs8lrkVSx+QKvBjXm2NYHmQ9IrkB3Tyvw6Q
-         4lPD0EFPTfaHAQRCFsTcjIrDJP6akZfAkmR+FmqIxFsrkIdyJgvCcUP4lLmjqw2LNkqd
-         7f+c3nsV/4DaJW+5GLXyNTHvnyptNecMEq9wwtx32N6V9OiQY53aGsp1m76QgZDtuxgI
-         6WfBbyG5UEv1qg6I1abMbBr81qFW6Vyk4VL5y8KBj5Zmq7G0DlKy11qCjvGJD01L+oWR
-         0QFEx1/cs3xVUx6PDK8mFJZhysTVxPIEeCWXoVIwMmq+0k3ICll/kgZ6cKJ+D3wij8C7
-         3MaQ==;
+        bh=eMkrmsdzvhlrfqjThqc4QsEj+XaqWtVZO9BiCBmcgwc=;
+        fh=jeM5wlbnVXSGSAM2mr1kJTaacYC50p1BKNBWBV0AAEM=;
+        b=nNmJLha/7aNEfRoLQsJ2/S8VhYfl7Y/D0gLF/738n7UljRC0vBF1/k0LynCSBVx5hL
+         uNdiD0VqnPCi8Ysx7oW0ery+8w1efHPsZFgR2Z9d5s9pjjFdGe0Ezv/6L6yoWIMscqZN
+         IxmcljRb935ZrtZVltuAciv/DfnoK8qChBjzuHQauh8pgo5tmVNdyIQG+ZO4PBDEFznb
+         E8AiTThHVS1gZfnLXRecpEWsA6Q7s2n7/QzUXUFOsBXWhm7XV0NmZG7CA7XiKYTHAXMI
+         Vso0X5HMpQsVn5kAT1ybucya8bSueP/TfmQam3cfXZHuU8cTnVG9uoSxhzThioE09BZE
+         ZicA==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789216665; x=1789821465; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1789216879; x=1789821679; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=uOoVDEs7Uwz1aej+iBOpVf4z5QYFzaJI+ngfP48MEa4=;
-        b=FY1P5tnCiXld4fbU9y3Wz+TFWrjMnudBnJbsO9yhH6MQWfxI+6UVT20XgG11e3k9Z9
-         7xy2F3ppyuL/xXVJfgxCcPrd2E3x7ZSC8O9HVA62MJUKCFoDabOQbLbW7Vdv/oqDwqU0
-         /rtGfo695ENBR5zUyfQW6QkhQ0rqK3Qa5LgscLWpOMENBeCg2aKQxzrrwyyR1wKniKRN
-         cmZtmxc65s8OvO2arOulpfZhniiCXPmvmBE9lZxwDpAZDFLOVzk/upFucCy/GJi+Uh88
-         JsoHnth1R/v+D9CYowYsY6fZNCDfvh13FnmFMz5SovaYXdFTCadMN5VBvrgupbdrC/4l
-         YyZw==
+        bh=eMkrmsdzvhlrfqjThqc4QsEj+XaqWtVZO9BiCBmcgwc=;
+        b=IOoIKsJ+x7VaK8tzdnhgtcVouGypOQzV927qTMDECkFvJvgKhRnHz8eAtXOEixHSaz
+         eWc1e35nENKnItsuLIMFLlG68FoD94gUMaTKv0RBCTHyyUruawAvaV7rStK0OoMtMaj5
+         fDJncKIOVN0HvxFVvHkH6z07i/lGE38hXk0eMoPzew7xkCElVHQkfw7fNJXGpFhV8JFd
+         MVPSBAc9nGOgvpP4+Oex+8V9SnQoJe8Jyxq3Hc2T06Se4bFzbXfOXol13SY/aA/MQ2K4
+         leTBon8aErsvCOuL+EpuM4bT1zxt9NLGzlj0RTx6rkmJeWLUe7qoPY+i24NlzlNfWhf6
+         Xe3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789216665; x=1789821465;
+        d=1e100.net; s=20251104; t=1789216879; x=1789821679;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=uOoVDEs7Uwz1aej+iBOpVf4z5QYFzaJI+ngfP48MEa4=;
-        b=JNW/7G103kM3VDn9ysdH4uIrgbcIhf07Y+FCXK7kh42Y5b7LB+hgkuF+UmLkOfyh8w
-         lywHwSaLxHUuyifUoRmRHxw87UATtVGgsAA03MF2VxKQqxKbCcExNeIPGpmZUHj72jRV
-         GlHwpL73HDKD1Tg1SS2p0B4o0I4e+w/62MiaF/Vue3xos1jJCSthN9D+lbsbUTKYOSx8
-         AgINno6RNKVOPdaa605s2GMmNzj1KLQHqk8Gg53KoFf4iMvYrdI4wqH6E5BCwoIXEMkv
-         af0tVqsYxi5J5zPZjKP442GCfR1ShLGnnsR94OA7YjW1XGaGVYu8tNTnofrZaknNYdGA
-         mlTg==
-X-Forwarded-Encrypted: i=1; AKwUvBxpfSEAeskDCW2lQFPW6KB6VyqLnzCQ27g545Apg3H/aSfE8C3edTQcawQYx7ZJfgDRJZ0=@vger.kernel.org
-X-Gm-Message-State: AFuF++mNbUa+tY5AAZ/LnvQ5x4vP4L1AYfzRjyO1haK452nmq/1f6fVr
-	DZIY7nTGW5ro73xmddmmjYA5zbAfUbGpHrTGMwWfMpoTBjc4DBt/UYDAhz1uJmcC5bPPNOj1vzY
-	/yzvWnTi2L/pCc5IcNEPxJTGQr7khBHycBooe
-X-Gm-Gg: AYBFou2n10exhI2lJB1cdMe0JKYN/4XqRDnb6ognLQGjVugkJzULHeZgISh0WlKhOtV
-	GH7nFKZbJelML23ejGW7+g/4bgwTynzHCwArRroNhWTtPkjYEgFiyPClgbqMn0I5DVpteZun9NV
-	k+c0UDRHFOICAxuSNQDCOaGToTK2duPLKGSKnF9N+/TS7VyTvBxO2vHrvBk2HCTpkIwMcG/em1C
-	NeKRM+9vLEvzPCgtO3XIiAAtptoulXGmQYdEA24FY/RECQ8Upm/f9ITPSZCSofunDmlLEOZp3Z7
-	Enx/+hIw9gRIGKMK8XrKOX+XRDcBx+XtjmifmjX6BZuVulC8qkClewtYEI416LEJBLnUByBTJc4
-	fLzEPpIo5ARgV+A==
-X-Received: by 2002:a05:600d:6501:10b0:49c:fa21:e73b with SMTP id
- 5b1f17b1804b1-49e619c0bc0mr66674725e9.17.1789216665157; Sat, 12 Sep 2026
- 05:37:45 -0700 (PDT)
+        bh=eMkrmsdzvhlrfqjThqc4QsEj+XaqWtVZO9BiCBmcgwc=;
+        b=Xr+25pRwY42FfEpMXRD/+ofwDCNKtclbrgnHZXkaX3sRCh7WgYqrcxi5LCqJLx5NoS
+         w7JkfYdPn2VlxHb/DSKQfJn4tJqCshd5VZQgWWpyrAyZxuC4iFPujOhMGsU+8a+Z+owT
+         vRrD7FPq0xEuelQsTWwThMCf0df9zBlZkYLyXwbAoWOTxP+zLSyRmU4uV336z+vURn+h
+         fZndWwmdZNL1kCIqUPqBr6tMP0nc08839ykB3yImvNyEswMN0TQ/MZ5H7UNUUBaw4Cel
+         TUfmcx4osDw0nfpZsF6jqWZu3I4XUF5zKpQvu7+13xXZ9UT4qG5BnGCscqUt06RYpvSl
+         o2+Q==
+X-Forwarded-Encrypted: i=1; AKwUvByGVLj0G9sWvWL0nhbgLsVBxNIxHl85YxYvNRqw1aS1hSnxUZnYTv2xxwIlByxP00NXxTg=@vger.kernel.org
+X-Gm-Message-State: AFuF++mQXdsU8qGRt4d/DqXLF3UXzE8Hf8a9d0Q54lnaWeElBmUCJraH
+	a0vFj/0dGOfFPRCDV1eEjk2B1xambr1TK8rasWnqZfcmcEXIDUz/4/ijR+WRPmylnZ400HxEJsO
+	biDfUD+mRla7PdlodynGAigk2rFz4I1w=
+X-Gm-Gg: AYBFou2WTRyByiaKcP5x3Iu0da798s0l58m3o5qMsON/JAu3YO38Bc4KJStfStV8cIF
+	E+ETx1tGOBPnroks7yTPyaHVyJcL7c0brglxQXZ4BgHnCsQomCpBdOna8/kEaZGZrtO3UwbWAwi
+	+d/9vFdciREhGJMVVK0ziIh6By6gK90RrrhfXm373Rti7dRWl4GfCa6z/NkhqxEG/dD+jcw6PP4
+	0i5Kjvfh0UNXhf8qfaf9AD3IYW4Utddge74rB6cEHDzTBYU5CA56/oBh0TsP0tQiyiLLQ4CgSX4
+	0u6p2Hauafy3r67KCNaSo/ZoOqLuGralCun8iSjcTryh1X8DcliUy9iYbEq+d/ayphh+TODKKsx
+	yc5WG4TyWhbfMYg==
+X-Received: by 2002:a05:600c:4455:b0:49d:174e:2a1e with SMTP id
+ 5b1f17b1804b1-49e619c00a8mr98934575e9.19.1789216878599; Sat, 12 Sep 2026
+ 05:41:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260911093515.2802551-1-kunwu.chan@gmail.com> <0cf7b133-d2fd-4298-adba-70a2b86d1892@paulmck-laptop>
-In-Reply-To: <0cf7b133-d2fd-4298-adba-70a2b86d1892@paulmck-laptop>
+References: <20260911072125.2268530-1-kunwu.chan@gmail.com> <71507136-1439-4ee0-b176-e45ed3f60429@paulmck-laptop>
+In-Reply-To: <71507136-1439-4ee0-b176-e45ed3f60429@paulmck-laptop>
 From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Sat, 12 Sep 2026 20:37:33 +0800
-X-Gm-Features: AcwNN1XEaUmULXfMYv71uEC_YjUFE0KO5ywjshlJVOo2yB1GNxlsDPPW2QEtODk
-Message-ID: <CAN_Opa-uuim=aiOuAmHYUoD5S=vBREemj-dCvcunF-4zNdp1=A@mail.gmail.com>
-Subject: Re: [PATCH] srcutree: Add lockdep and early-boot checks to synchronize_srcu_atomic()
+Date: Sat, 12 Sep 2026 20:41:07 +0800
+X-Gm-Features: AcwNN1V7di3Qqso44IU6NZjZqKJSd5euIhD-AGL6x4f6Gkeg8fSwXoYBrEqOkMA
+Message-ID: <CAN_Opa9H_XoQUgS5wX=5RUhavt4Ueqkw-4UFwt8-qjALPwAwfw@mail.gmail.com>
+Subject: Re: [PATCH v3] srcutree: Don't transition atomic SRCU to big in srcu_gp_end()
 To: paulmck@kernel.org
 Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org, 
 	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Zqiang <qiang.zhang@linux.dev>
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Sep 12, 2026 at 12:47=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
+On Sat, Sep 12, 2026 at 12:37=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
 rg> wrote:
 >
-> On Fri, Sep 11, 2026 at 05:35:15PM +0800, Kunwu Chan wrote:
-> > Add the lockdep annotation, same-type SRCU nesting warning, and
-> > early-boot check used by __synchronize_srcu().
+> On Fri, Sep 11, 2026 at 03:21:25PM +0800, Kunwu Chan wrote:
+> > Atomic SRCU must remain in the small size state. Warn if this
+> > invariant is violated and avoid transitioning to big in that case.
 > >
-> > Suggested-by: Zqiang <qiang.zhang@linux.dev>
 > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 >
-> Queued for review and testing, thank you both!
+> Very good, queued for further testing and review, thank you!
 >
-> Interestingly enough, it is now the case that there is a grace-period
-> wait that can be placed in a normal RCU read-side critical section.
-> Does this mean that we should also adjust the --do-srcu-lockdep testing
-> in tools/testing/selftests/rcutorture/bin/torture.sh?
+> I folded the new "if" statement onto one line because some years back the
+> Linux kernel liberated itself from the 80-column constraint imposed by IB=
+M
+> back in 1928.  We can now have up to 100 characters in a line of code.  ;=
+-)
 
-Thanks, Paul. Good point.
-
-I=E2=80=99ll check the current `--do-srcu-lockdep` coverage, including the
-case where `synchronize_srcu_atomic()` is called from a normal RCU
-read-side critical section, and follow up with the necessary torture
-testing changes.
+Thanks, Paul. And thanks for sharing that interesting bit of kernel
+history! I didn't know about the IBM 80-column constraint from 1928.
+I had assumed that 80 columns was still the current convention, so
+it's good to know we can use up to 100 now. ;-)
 
 Thanks,
 Kunwu
@@ -128,30 +126,43 @@ Kunwu
 >                                                         Thanx, Paul
 >
 > > ---
-> >  kernel/rcu/srcutree.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
+> > Changes since v2:
+> > - Also prevent the transition when the atomic SRCU size-state
+> >   invariant is violated, per Paul McKenney's suggestion.
+> > -v2: https://lore.kernel.org/rcu/20260910084629.3695383-1-kunwu.chan@gm=
+ail.com/
+> >
+> > Changes since v1:
+> > - Drop the !is_atomic guard from v1 and add WARN_ON_ONCE() instead,
+> >   per Paul McKenney's suggestion.
+> > - v1: https://lore.kernel.org/rcu/20260907075829.2073224-8-kunwu.chan@l=
+inux.dev/
+> > ---
+> >  kernel/rcu/srcutree.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
 > >
 > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 6a9c432a3bd0..6c729e805fb3 100644
+> > index 84c022ec8e09..07db4e459b30 100644
 > > --- a/kernel/rcu/srcutree.c
 > > +++ b/kernel/rcu/srcutree.c
-> > @@ -2123,6 +2123,14 @@ void synchronize_srcu_atomic(struct srcu_struct =
-*ssp)
-> >       unsigned long rdm0, rdm1;
-> >       unsigned long unlocks0, unlocks1;
+> > @@ -1073,8 +1073,11 @@ static void srcu_gp_end(struct srcu_struct *ssp,=
+ bool is_atomic)
+> >               raw_spin_unlock_irq_rcu_node(sup);
+> >       }
 > >
-> > +     srcu_lock_sync(&ssp->dep_map);
-> > +
-> > +     RCU_LOCKDEP_WARN(lockdep_is_held(ssp),
-> > +                      "Illegal synchronize_srcu_atomic() in same-type =
-SRCU read-side critical section");
-> > +
-> > +     if (rcu_scheduler_active =3D=3D RCU_SCHEDULER_INACTIVE)
-> > +             return;
-> > +
-> >       // Initialize.  Either init_srcu_struct() was invoked or
-> >       // DEFINE_SRCU() or similar was used.  Therefore, no allocation
-> >       // will be done here.
+> > -     /* Transition to big if needed. */
+> > -     if (ss_state !=3D SRCU_SIZE_SMALL && ss_state !=3D SRCU_SIZE_BIG)=
+ {
+> > +     /* Transition to big if needed, but never for atomic SRCU. */
+> > +     if (ssp->srcu_reader_flavor =3D=3D SRCU_READ_FLAVOR_ATOMIC &&
+> > +         ss_state !=3D SRCU_SIZE_SMALL) {
+> > +             WARN_ON_ONCE(1);
+> > +     } else if (ss_state !=3D SRCU_SIZE_SMALL && ss_state !=3D SRCU_SI=
+ZE_BIG) {
+> >               if (ss_state =3D=3D SRCU_SIZE_ALLOC)
+> >                       init_srcu_struct_nodes(ssp, GFP_KERNEL);
+> >               else
 > > --
 > > 2.43.0
+> >
 > >
