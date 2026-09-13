@@ -1,82 +1,82 @@
 Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com [74.125.225.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64C853E3C5A
-	for <rcu@vger.kernel.org>; Sun, 13 Sep 2026 10:23:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E341939A04D
+	for <rcu@vger.kernel.org>; Sun, 13 Sep 2026 10:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.225.140
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789294999; cv=pass; b=Aekl+12Ijt/vvNOK8fX+AY+csEMhuZKNw/mrLGBQ3ahXVEzZJtsQcZ297moITXk6JeFh9AH2ojgZH+gBaaptrODOtIq4TLG+6XCQHofHYKP3QrW+mQaVaAAVTD4WIFdfOf1YU2SGihYXXXRoT/0YLvDDM8Swwo0nWu407rGjQok=
+	t=1789295832; cv=pass; b=PIwSyds4wSMnEMIUSGjFY2w8K9g1QCfSFYq5rrJ5VBOOnInbmKTk4RLIYnaWM4yvakpwqACMD1LPwMiqZZ9cRG5MzKVdDhcskO0FTKK58HIyoVdBnZOSA274ymetjtPmuSh7NnZGPnV9Wk/CUx9hDXo4VEl94sdY+/SK0Aut6Rk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789294999; c=relaxed/simple;
-	bh=/da4xkkbWlUHDywNO7yl9JugHyvKv1izVJBOYQ0OiJw=;
+	s=arc-20240116; t=1789295832; c=relaxed/simple;
+	bh=Ux37VI2c1wSwiZ8dHTjel1794F0ZgvKwAVH9rjWnONc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AFHQxCA9JWz4FaekTurFY180NRh52mg3+dF/tql3pLRG8l364GHqe3rYAO5O+OkUTPbz8gZnLfcX+SuVuRpxAh8msWDlPnkoO7yD8PENWBKfySvEXI/CnoVOziM8nYGiAxwfOo9m0GLshQt+0P2fJyY1D4CgqVkbSVYI/OeC7sQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=skQSwERv; arc=pass smtp.client-ip=74.125.225.140
+	 To:Cc:Content-Type; b=DFwnaExflpyD7vqRnGViSsL1rAGJpryoDEP9nmILtD7Gra+Oza++kuyyLqGPkDZkj77ppc0LbhITah8vkOKZ9dEhDICk6yd7fKwZXOcJxHoCkPEjGE1FLjqzo/BOqBJw75DIhdK3xKcwrCIUfXzO5P5BlJXDcA6ErZd3nKDO6Uc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ewphxwql; arc=pass smtp.client-ip=74.125.225.140
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="skQSwERv"
-Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49b912d37b6so4652805e9.0
-        for <rcu@vger.kernel.org>; Sun, 13 Sep 2026 03:23:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789294994; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ewphxwql"
+Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49cd6185db7so6275055e9.1
+        for <rcu@vger.kernel.org>; Sun, 13 Sep 2026 03:37:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789295829; cv=none;
         d=google.com; s=arc-20260327;
-        b=NzjPbYPHl1dmu0AeJxeJTFYX6LMNxEgq2hsOXAXmqkMO0pYzNt+Xi5LciyIwWYPjFD
-         a3RlInOhIy83+r5a8xImG8Qs0bg4AEvYdbn2AwQFXMyQYuGsNPIX7Dnz+BMAqS18kIiP
-         QR0pF3QwbMtJdKtHczQe1Dn4pmh1+krQKn9HIzMMU82oiQmmJ9rvI1KD+6/StlpcjJ9z
-         LWq55R82cI5iTzRxiVXkfGqTQOIeVAANQcaB52ugur5DomFD6g34PMkLQF5TrSVqfIql
-         89BS0lBeR5x2VxTadU5P11CQ1CAZaygGOIUCRvC0fCtke+H1poSVTXC+Sr/7/SNeiovS
-         b9Cg==
+        b=WuvOvipIFRt5kpfFjyZ3m2LRk/cOM0mGKS+s84OAonbYy6jHl6ZfT67+aH0tQWock8
+         n1MOzrbhIC+sdwpbFlmFRPORqYxbPUHUGDXGXV1IEpmeeoaX5mb/URgTwECkSumicaec
+         DzfiWPqBcYpjuVuGsYfEz4JrDHR6zyQpthrT9fF69f4t0DYQbQLHfCIvECGL8SbcmTb/
+         lJyWIXaQyg/6o9pC8ojhOyqg609iazoBJeKMQIPq3k34RZ72BQyvaHBYE19o0l9tb+Wh
+         zT3RAZiztySsIVdg4jwlU5uVct/dvErx+shHKD+hC7p5ONHE8GgMEQbCWeGgNrZQOSH3
+         GbHg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=VeM8lzHtsZzkcva1GsyD3J3hMDsbPZApqdfMt/qqPl0=;
-        fh=mnFEiEApRg2G/EDx6lRe1P+ekVZupWGPbNp9jw7EeM0=;
-        b=VCOS+8lYePOczoPu084YsGlAtioH/9gwPNTW0fy32VpkW0ph4LldZZlU5Hvd8BQYwQ
-         XeNH+AwbCT034EeWaDzeXUIRbEH+GoqziF7Sst0XCqws4CoMrUESlSpn4Eagm0TkPwtq
-         Diapk3VDcG1PGumL6133jrlgGVfs7OU0ZZ99hgPJv9s7psT1QZ5Xk8EpQuMfkx8E3x7b
-         WN/T3RDcOnYG1WLER3nHjMP1C4GBzkL6QkuiI9CLVi3j5ZmLjFk5tb0CUvpjwT7HxmQP
-         rQZHxkeNnJhQaPICr37sKjLDOXq3v+m4InBwEfIMSxU4muoywnDQUWF90XHdNgcFDlR6
-         Ot1g==;
+        bh=X7ARN7xp6ZIy41Zr31Y3kGwxP50Dd95gKJiCWdq2eeg=;
+        fh=/nJBNHBx/SmtzuKu3Hc3+I+H2SLmvhN7UvV0wxqiBrI=;
+        b=I8aVuE/fN8otc28EuHfs54KMInQiyY5NYINUX/pE5kV8I0iKN6O83tiCWoWZCcuilq
+         e2wG/obfSX+V4DHxOUh8bexBgxfmX6oHogUS+XWm90CbMGGegTLXU25FvVMNeyKvs6T/
+         Bs4vR4xGNpHnpZlXL4MxEFGYM27KGYMjNZcqpkHaO9KMu1wqghUCc/FFQwsjqVofDBxU
+         P15ty8nahKrqS5gSVcMu9molrXv8fM7zh2qR2K2Zn1Fc8tmkY4Y/1bT2L9+jv9hSxplB
+         s5iCbYkv1LWQG/1Xj/ot02RiVSV/sLxD+Jzy3RNifbw8SpblVSbiMquXb7hnyUBeotat
+         3/yg==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789294994; x=1789899794; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1789295829; x=1789900629; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=VeM8lzHtsZzkcva1GsyD3J3hMDsbPZApqdfMt/qqPl0=;
-        b=skQSwERvYlWccqJGkZx6nj/wjIhO4THnr2OGkrGl9cq+PiSVo++5k3ISUoDiPPTk1E
-         6dy7lOXqMFsKSUQYEM01dp21F5lJ+Y1pXBhhld1LDyIslRK6ZGbEofZHnQ2y3dtQ9W7w
-         RJbc6zj8uVg52cUe9fkIeOVwKCNYN+9Db4xEss6/eSpztrvfeusF4PqmOLhGQfdxyDFe
-         jg7RuW0iy1BTFwMfBEjPKRjUD8pfbAhqCmECKq8Jt54/zfWLK885l5y1i2SLH4deH4nu
-         Ys5my4AXgysGNf30YSqUUE201RZr43AjTHo9OzjmelaijGQlHDvVZhQztn0SmIHcmisd
-         YJ8g==
+        bh=X7ARN7xp6ZIy41Zr31Y3kGwxP50Dd95gKJiCWdq2eeg=;
+        b=ewphxwqlkp2UOWqCqWuhpy47SGXpSPYEUTta2w6P398+XOGV0Vu8os3BWPvrLuiC3U
+         Rue2L7wMZoCI8iZM3b87yqYt4PxtXxAFElV57UZVFCrHwnwUmPYbNTuV4uLDtYGju5yo
+         w5bYkDH+FQNs/96MWl2Cf3aMq/K1GUdPk8DgT6ivxzWBw72v7947nLisy9ZF9inrpkpE
+         S+8y+vcEY3IQTFZsrsbipPg3M1Ry8EXxSuv0QVuHjAFDX7lEbipXfaesvreFqt5kN7+p
+         bFnWFOIxFfsNmI/dqoBOM6pUurz/XQU+J9+VI45tuKxb+yk+XlnOvxGZw0Ft0acYwZ5Q
+         tcjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789294994; x=1789899794;
+        d=1e100.net; s=20251104; t=1789295829; x=1789900629;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=VeM8lzHtsZzkcva1GsyD3J3hMDsbPZApqdfMt/qqPl0=;
-        b=LCTcKU5Rpcx+QdgJrVcszQ4eHEeq+b0ChqLF62nnDaDEmfYcplZuEqIOcXlt7NayEw
-         WlqvYnLmXB/soge/7/Xqj3o1Vwt4vzO1Fjyf9MHsP3jrYPfPK23QOuFsEaM96OlmZ7gB
-         3Dw0NEIBcbc8mTZ28Bh39eqhWnMkyVeqWrYQCfSDKoA15f9LYSKP4I+c/vCsYb2fkEOo
-         RwvUl8hdA2qj0iGlCfDMaqqQd7lw/jW+MwDze53pws405IlT0LEEEf6kIYwVDV+vFbFb
-         ouuBN/OAJ8kE3+1pFf6FC7+qvCKKxAqP7WP+DH/+TgDDgN6WHbbJP890fORrfejX52Xg
-         cyxQ==
-X-Forwarded-Encrypted: i=1; AKwUvBwYJrt2BMKFP2B9dZkECqkBKp3ol7jPbmiPdGZ48pRiSbwB+49PniC8wQjCFjVq15P+6v0=@vger.kernel.org
-X-Gm-Message-State: AFuF++kKaeDxXzdhPASD4o738Z4Vi1IVtXvTNkQxcpKj94NfcIMbOLDI
-	s5KQVESVn9a604nudkh9KHTYjtu8h3e6zkGmd2u/jEDgd0ItXM/yUvf9HR56y7TsOF5eBVc0+bC
-	GnR8QEItZfqZqZ8Tp+o0J82yP7iXiVJU=
-X-Gm-Gg: AYBFou2wiCwMmUtwulv0jK+goMDaSXZZ7+JjeERQdIZJda7r7QnGzEH0B0VnQaiNeEX
-	Dj7ZjZukU2sdyoZfv/oZR8FvDwdlZViFfnrqFKGzzRPvh9yWpVfVfTq1iWVMfRd8f7boeMLYt8x
-	UNDU7Wc7ShBaE2yHL2DoopY3ivYhvAe04jgis9J09RxMpWYwGEybAPPwvajhSo1LBOgKRxhItxx
-	anKv/l8YDii7bt0doH7DTfpPXCBJAJxuzqP1js5kKXZrXoCBymqzJTHVG41vGIvyICE9qYTUXzW
-	Qf/AvnzUbRU0Ik8J86RkOKa6BSLDXLluuyr5URVUD0FPCiZACO3ZUXdEBOLFNWdEJKMOMMnZmQd
-	FThlxG7lLYogGVg==
-X-Received: by 2002:a05:600c:540e:b0:49e:6692:27fd with SMTP id
- 5b1f17b1804b1-49e66922810mr204293965e9.2.1789294994225; Sun, 13 Sep 2026
- 03:23:14 -0700 (PDT)
+        bh=X7ARN7xp6ZIy41Zr31Y3kGwxP50Dd95gKJiCWdq2eeg=;
+        b=ky2Gg13geuKFt19Te862z47dRUdOCUQL+5Dr/6zRQYH8nt9E4hj3lwHsAm8dmxPlqg
+         BonHUq52oSupRau+1+iGmKLXP8lrDsab8oXPZdAI4b2bNcVttkET4glw2tQ17bJe+HLn
+         xkgsJEvwdSKylftTns5ciFtq9J9eaOSiWsVWG2LjE4dWKH3Z2lP+okLZhVFzJnipr+02
+         SuCvBfSFNKbkegAyFb1yP0nTsU4Kv7AdzKctCMw2IxnwqPo4NbXAfGrYVPEP8ows71dy
+         ZRiG4uNRCDRF6lvHGqD+GfaEOaMVGWml9k04iMV54/6h4PgYwzteFZR4+dCt7+pOBWao
+         WvUw==
+X-Forwarded-Encrypted: i=1; AKwUvBwk20Info6k81bEAReOl5BsAymU7ODlCYtHnPwtqtTt5el2LccRhz3xSo2UgSWtvdAL9NA=@vger.kernel.org
+X-Gm-Message-State: AFuF++kGySlk/lb67QrGLs92458MgcCog7+iqM56665KfDakBm8D369p
+	qCfjWLrtXaspt5hNGl1/LlmRTAIMeYwVmMhVz8Qep1YNN/SvjOc1DXTZDvgVMBayms15kTSxvg2
+	pAV4qsJp7QIEd/u/A2CvqCZ8EAGEI+QE=
+X-Gm-Gg: AYBFou1wM3GJ4RmpCAqU9WGtdlKuiBc/bLCzwEKhwAdSyXmqpcDnHUJnfx2guz6VjEG
+	U0tr+gOW5wNEmupGlpaNcNPAB+faVML2jcDt3F/OIZopGfWIoITw9JYp9/4bB4TvXCzHX+WZtKL
+	cf3rgDuM1ocJ2NX9eOMSlnfskMLFevGeOiq1yWOTrE7Y/tuX64F+LoHpc8VpeGqgkkqERixaJMA
+	MJyjUj6FZzrvfmwEZBmFxW5B37IToP+Dsar3H1UE5SAWcVgxiDszU7syR7hFHx9orC53p5byADn
+	hpXPB8qxiclb8VQJQtFUmC1Zfou21C5CaR4nXlC8uiSqtit54RoY0d+UGOKsCcZ5225Z8xbDubY
+	WNBecK8KSW3HIkXUo9XvHATrO
+X-Received: by 2002:a05:600c:630d:b0:49e:6836:5386 with SMTP id
+ 5b1f17b1804b1-49e75fbfce0mr19008255e9.0.1789295829093; Sun, 13 Sep 2026
+ 03:37:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -85,118 +85,185 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20260911093515.2802551-1-kunwu.chan@gmail.com>
  <0cf7b133-d2fd-4298-adba-70a2b86d1892@paulmck-laptop> <CAN_Opa-uuim=aiOuAmHYUoD5S=vBREemj-dCvcunF-4zNdp1=A@mail.gmail.com>
- <e6be6641-731c-4b21-ad4e-c05bedc388d6@paulmck-laptop>
-In-Reply-To: <e6be6641-731c-4b21-ad4e-c05bedc388d6@paulmck-laptop>
+ <e6be6641-731c-4b21-ad4e-c05bedc388d6@paulmck-laptop> <32e952728ea1a9c25c2b56de468f43a32104b8a8@linux.dev>
+In-Reply-To: <32e952728ea1a9c25c2b56de468f43a32104b8a8@linux.dev>
 From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Sun, 13 Sep 2026 18:23:01 +0800
-X-Gm-Features: AcwNN1WLPFwN4p6tzjGquIodVYiq-ve1ku2FdgLQ3j_nNSAf-QvPE_xuEryTmjk
-Message-ID: <CAN_Opa88oCHV+TGUmAzDLdfnmZ78oT+_vFttkMQEQ8uHuW8-ZQ@mail.gmail.com>
+Date: Sun, 13 Sep 2026 18:36:56 +0800
+X-Gm-Features: AcwNN1Xcymg8ur4V1pWxX4_V1hiMPq5gnVXccuzkPn0_fSw8O-LpBGdDkj6GCEI
+Message-ID: <CAN_Opa9v-6Kx2tUFkT4YiOVM_tgZuUVOkbwieOrC6WfbNj_=kA@mail.gmail.com>
 Subject: Re: [PATCH] srcutree: Add lockdep and early-boot checks to synchronize_srcu_atomic()
-To: paulmck@kernel.org, Zqiang <qiang.zhang@linux.dev>
-Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org, 
-	mathieu.desnoyers@efficios.com, rcu@vger.kernel.org, 
+To: Zqiang <qiang.zhang@linux.dev>
+Cc: paulmck@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org, 
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com, rcu@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Sep 13, 2026 at 2:50=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
+On Sun, Sep 13, 2026 at 2:21=E2=80=AFPM Zqiang <qiang.zhang@linux.dev> wrot=
+e:
 >
-> On Sat, Sep 12, 2026 at 08:37:33PM +0800, KunWu Chan wrote:
-> > On Sat, Sep 12, 2026 at 12:47=E2=80=AFAM Paul E. McKenney <paulmck@kern=
-el.org> wrote:
-> > >
-> > > On Fri, Sep 11, 2026 at 05:35:15PM +0800, Kunwu Chan wrote:
-> > > > Add the lockdep annotation, same-type SRCU nesting warning, and
-> > > > early-boot check used by __synchronize_srcu().
-> > > >
-> > > > Suggested-by: Zqiang <qiang.zhang@linux.dev>
-> > > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-> > >
-> > > Queued for review and testing, thank you both!
-> > >
-> > > Interestingly enough, it is now the case that there is a grace-period
-> > > wait that can be placed in a normal RCU read-side critical section.
-> > > Does this mean that we should also adjust the --do-srcu-lockdep testi=
-ng
-> > > in tools/testing/selftests/rcutorture/bin/torture.sh?
 > >
-> > Thanks, Paul. Good point.
+> > On Sat, Sep 12, 2026 at 08:37:33PM +0800, KunWu Chan wrote:
 > >
-> > I=E2=80=99ll check the current `--do-srcu-lockdep` coverage, including =
-the
-> > case where `synchronize_srcu_atomic()` is called from a normal RCU
-> > read-side critical section, and follow up with the necessary torture
-> > testing changes.
+> > >
+> > > On Sat, Sep 12, 2026 at 12:47 AM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+> > >
+> > >  On Fri, Sep 11, 2026 at 05:35:15PM +0800, Kunwu Chan wrote:
+> > >  > Add the lockdep annotation, same-type SRCU nesting warning, and
+> > >  > early-boot check used by __synchronize_srcu().
+> > >  >
+> > >  > Suggested-by: Zqiang <qiang.zhang@linux.dev>
+> > >  > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+> > >
+> > >  Queued for review and testing, thank you both!
+> > >
+> > >  Interestingly enough, it is now the case that there is a grace-perio=
+d
+> > >  wait that can be placed in a normal RCU read-side critical section.
+> > >  Does this mean that we should also adjust the --do-srcu-lockdep test=
+ing
+> > >  in tools/testing/selftests/rcutorture/bin/torture.sh?
+> > >
+> > >  Thanks, Paul. Good point.
+> > >
+> > >  I=E2=80=99ll check the current `--do-srcu-lockdep` coverage, includi=
+ng the
+> > >  case where `synchronize_srcu_atomic()` is called from a normal RCU
+> > >  read-side critical section, and follow up with the necessary torture
+> > >  testing changes.
+> > >
+> > Sounds good!
+> >
+> > Perhaps you and Zqiang can work together on this. Co-developed-by,
+> > for example.
 >
-> Sounds good!
+> Hi, Paul and KunWu
+
+Hi Zqiang,
+
+Thanks for pointing out these cases.
+
 >
-> Perhaps you and Zqiang can work together on this.  Co-developed-by,
-> for example.
+> Should we also consider the following situations ?
+>
+>
+> idx =3D srcu_read_lock_atomic(srcu)
+>
+> by interrupt run hardirq context:
+>    synchronize_rcu_atomic(srcu)
+>
+> srcu_read_unlock_atomic(srcu, idx)
 
-Thanks, Paul. I'am happy to do that.
+For the same-CPU interrupt case, the existing check in
+synchronize_srcu_atomic() already catches it:
 
-@Zqiang, your suggestions on the additional lockdep cases got me
-started, and these are now incorporated as testtypes 4 and 5.
-Paul's observation that synchronize_srcu_atomic() can legitimately
-be called from a normal RCU read-side critical section led to an
-additional regression test (testtype 6).
+    synchronize_srcu_atomic(ssp)
+      RCU_LOCKDEP_WARN(lockdep_is_held(ssp),
+        "Illegal synchronize_srcu_atomic() in same-type SRCU ...");
 
-In particular, testtype 6 verifies that calling
-synchronize_srcu_atomic() from within rcu_read_lock()/rcu_read_unlock()
-does not produce a false-positive lockdep warning.
+lockdep_is_held() resolves to __lock_is_held() (lockdep.c:5612),
+which checks current->held_locks[]. The interrupt handler runs with
+the same current, so it sees the SRCU dep_map acquired by
+srcu_read_lock_atomic().
 
-The atomic SRCU same-type nesting cases are covered by testtype 4
-and are expected to trigger the RCU_LOCKDEP_WARN() in
-synchronize_srcu_atomic().
+>
+>
+> or:
+>
+>
+>
+>            CPU0:                                                         =
+         CPU1:
+>
+> idx =3D srcu_read_lock_atomic(srcu)
+>
+> smp_call_function_single(CPU1, som_func, NULL, 1)
+> to send IPI to CPU1, and sync wait complete.
+>                                                                    hardir=
+q context or ide task context:
+>
+>                                                                          =
+ some_func()
+>                                                                          =
+ ->synchronize_rcu_atomic(srcu)
+>
+> srcu_read_unlock_atomic(srcu, idx)
 
-The changes are in rcutorture.c and srcu_lockdep.sh; torture.sh
-does not need to change. The testing changes are basically complete.
+The cross-CPU case is different. current->held_locks[] is part of
+struct task_struct (sched.h:1302), so the existing
+__lock_is_held() check can only see the current task's held locks.
+It cannot see the SRCU read-side lock held by the task running on
+another CPU. The same limitation applies to the
+lock_is_held(&rcu_lock_map) check in synchronize_srcu() at
+srcutree.c:1665.
 
-@Zqiang, I'm happy to add:
-Co-developed-by: Zqiang <qiang.zhang@linux.dev>
-Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+>
+>
+> Add WARN_ON(irqs_disabled()) to synchronize_rcu_atomic() ?
+>
+> Any thoughts?
 
-if you're OK with that.
+WARN_ON(irqs_disabled()) wouldn't help with the cross-CPU case:
+CPU1 could be running in process context with interrupts enabled, so
+the WARN would not trigger. It would also add a false positive for
+legitimate hardirq calls. synchronize_srcu_atomic() omits
+might_sleep() (compare __synchronize_srcu() at srcutree.c:1676)
+because it is designed to work in contexts where sleeping is not
+allowed, including hardirq context.
+
+Whether a general cross-CPU read-side-hold check is feasible is an
+open question. It would need to account for the read-side state across
+CPUs without adding too much overhead to the SRCU read-side fast path.
+
+I'm happy to discuss and explore whether there is a reasonable way to
+handle this cross-CPU case.
 
 Thanks,
 Kunwu
 
 >
->                                                         Thanx, Paul
+> Thanks
+> Zqiang
 >
-> > Thanks,
-> > Kunwu
+>
+> >
+> >  Thanx, Paul
 > >
 > > >
-> > >                                                         Thanx, Paul
+> > > Thanks,
+> > >  Kunwu
 > > >
-> > > > ---
-> > > >  kernel/rcu/srcutree.c | 8 ++++++++
-> > > >  1 file changed, 8 insertions(+)
-> > > >
-> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > index 6a9c432a3bd0..6c729e805fb3 100644
-> > > > --- a/kernel/rcu/srcutree.c
-> > > > +++ b/kernel/rcu/srcutree.c
-> > > > @@ -2123,6 +2123,14 @@ void synchronize_srcu_atomic(struct srcu_str=
-uct *ssp)
-> > > >       unsigned long rdm0, rdm1;
-> > > >       unsigned long unlocks0, unlocks1;
-> > > >
-> > > > +     srcu_lock_sync(&ssp->dep_map);
-> > > > +
-> > > > +     RCU_LOCKDEP_WARN(lockdep_is_held(ssp),
-> > > > +                      "Illegal synchronize_srcu_atomic() in same-t=
-ype SRCU read-side critical section");
-> > > > +
-> > > > +     if (rcu_scheduler_active =3D=3D RCU_SCHEDULER_INACTIVE)
-> > > > +             return;
-> > > > +
-> > > >       // Initialize.  Either init_srcu_struct() was invoked or
-> > > >       // DEFINE_SRCU() or similar was used.  Therefore, no allocati=
-on
-> > > >       // will be done here.
-> > > > --
-> > > > 2.43.0
-> > > >
+> > >
+> > >  Thanx, Paul
+> > >
+> > >  > ---
+> > >  > kernel/rcu/srcutree.c | 8 ++++++++
+> > >  > 1 file changed, 8 insertions(+)
+> > >  >
+> > >  > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > >  > index 6a9c432a3bd0..6c729e805fb3 100644
+> > >  > --- a/kernel/rcu/srcutree.c
+> > >  > +++ b/kernel/rcu/srcutree.c
+> > >  > @@ -2123,6 +2123,14 @@ void synchronize_srcu_atomic(struct srcu_st=
+ruct *ssp)
+> > >  > unsigned long rdm0, rdm1;
+> > >  > unsigned long unlocks0, unlocks1;
+> > >  >
+> > >  > + srcu_lock_sync(&ssp->dep_map);
+> > >  > +
+> > >  > + RCU_LOCKDEP_WARN(lockdep_is_held(ssp),
+> > >  > + "Illegal synchronize_srcu_atomic() in same-type SRCU read-side c=
+ritical section");
+> > >  > +
+> > >  > + if (rcu_scheduler_active =3D=3D RCU_SCHEDULER_INACTIVE)
+> > >  > + return;
+> > >  > +
+> > >  > // Initialize. Either init_srcu_struct() was invoked or
+> > >  > // DEFINE_SRCU() or similar was used. Therefore, no allocation
+> > >  > // will be done here.
+> > >  > --
+> > >  > 2.43.0
+> > >  >
+> > >
+> >
