@@ -1,128 +1,175 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mta0.migadu.com (out-152.mta0.migadu.com [91.218.175.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68B74BEE58;
-	Sun, 13 Sep 2026 03:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78CD03BFAF7
+	for <rcu@vger.kernel.org>; Sun, 13 Sep 2026 06:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789268859; cv=none; b=VFDNccYLOTNDTf7SKYhhkKtUY7jnnTzF3Bwwm63Ooo1U5l3N5l6GkLlny/VHcAOyShNOhGaiiftPE6ifn/KmvkZ4Zm5yQ0qagkL68vZP63w1Iky84d5OtxqYJagLDZ/UxjM4O4Ez1JXU2Wpye/b0u4H2pqEaLA/UGiV9UFNJo7A=
+	t=1789280510; cv=none; b=J3sZhhKGOUUs23Z4l+T9DZ00GnhSUTCwjfndiLabfxKjPyc8jRkQl5u38rWLsdmnJ4JalKQZInRphRzxmPKgUA0lqU52VbrAQNB43R9rvwW+dtvlIWcL7skIp7RI/KzPFdI4QNqv/lliuKnzBgnxUNrkhtYSIS+OCZN373OkN2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789268859; c=relaxed/simple;
-	bh=W/3xtVk0o34kiF+8UCp7ZVY3yI8DFhfYs6U4DoIP7kQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p+NYXX825vfP+PNksME/SY1d7YfDW6/B2gL+eOqlV2voEHUrbzQj5KXhWcYu7LgLwJ6ZdGB0teNR531oewrH9Sac2hGqwLVOn1FE5AGp3og7bpR3UfLz7t26evlI0DnikpS0OxwG0CH281R1bZuNhbI7hoXGJqfSs3IiF+clvBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CuSv2pXm; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789280510; c=relaxed/simple;
+	bh=DKUbiJiE/sOu0abbPdCv3nvnAnk9qZMEAt+zFGYu3OE=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=eLJayKnC3JcFollCza1qBHjQd1ZWBO6wM3voKxhu+OdRwCky8LFAEHNJxbBcaSzzYZKZRmaPO9Ymx+5NFRd3Wfd/9TR6jCEAVQP7/Z8HvNqE53hTCZVcLyBIdMPxco+eBSQd7FYceqD/3MBc2xt4yqR+R5ms86UJWlmCl0JXtV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dcw8oWZF; arc=none smtp.client-ip=91.218.175.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CuSv2pXm"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 524621F000FF;
-	Sun, 13 Sep 2026 03:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789268857;
-	bh=KdhlkMkoM3bS0HNmhu6FPeXNMD9uLWI8hS4d5wSjOX4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=CuSv2pXmX2je4sRvmHKKZCalCD4vMRFoFyu9Z7kjqib0HJZ0R96u12SmyJngVxR2d
-	 CSNggnMjRbuvaNfpOxA6kKMng4amlgHfCnKyRffj3AMRXMMXauRj9OaXw5P8g9hq4g
-	 0Z6jqwCBeRqIaINZKgWOtW/1/1bcaqhLqkyXwoXoLd2+dn2NIgd0vZi2yb8bASDNLv
-	 piKOj5Fgnde2tv2VXvS/Qdfwbv8zZb8k7djWMTU3jTaLAmygk5QLxZBQxBQre6yGdu
-	 +uOGZV0+QeWDGdOrI+TtWo4puMNcmdgECkEQg0EnCDjhQv4usxIOb1Vf5UzttNUsW+
-	 4U1q7S5+5p0zA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 15EE5CE0ABC; Sat, 12 Sep 2026 20:07:37 -0700 (PDT)
-Date: Sat, 12 Sep 2026 20:07:37 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Josef Bacik <josef@toxicpanda.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Boqun Feng <boqun@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>, Jiri Olsa <jolsa@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, X86 ML <x86@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Juergen Gross <jgross@suse.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Ihor Solodrai <ihor.solodrai@linux.dev>,
-	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	xen-devel@lists.xenproject.org
-Subject: Re: [PATCH RFC v2 08/15] bpf, x86: Maintain Tasks RCU trampoline
- nesting in the BPF trampoline
-Message-ID: <509e8eff-2a9c-4927-956c-73708ee4fe5a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20260911-b4-rcu-tasks-preempt-qs-v2-0-eaaa61ed2da4@toxicpanda.com>
- <20260911-b4-rcu-tasks-preempt-qs-v2-8-eaaa61ed2da4@toxicpanda.com>
- <DLD0OHX8C4ME.VNR49VC2UYH4@gmail.com>
- <14cb8a91-497d-49f5-aa20-c6cb8b9a27fc@paulmck-laptop>
- <DLDICNLENSRI.2R6EJ0ZFJE45T@gmail.com>
- <8c51a669-eb6b-455b-a829-b537da5209f8@paulmck-laptop>
- <DLDLDGTSBHA0.32TYNBSKKPFXH@gmail.com>
- <8fbfb3fc-cf5d-4dfb-b144-bc021faa13ff@paulmck-laptop>
- <CAADnVQLQs-+-cu2R3QrHppcxOQt9m7Hi+grr4fOnw8m73kQn0Q@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dcw8oWZF"
+X-Envelope-To: rcu@vger.kernel.org
+DKIM-Signature: a=rsa-sha256; bh=DKUbiJiE/sOu0abbPdCv3nvnAnk9qZMEAt+zFGYu3OE=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1789280505; v=1; x=1789885305;
+ b=dcw8oWZFIfrt126nsBaxlH2pWfP7vlJyOHPUpEIN5wwRhu4V7FhmfCEtyvDKZpZoklYEDAJC
+ MA8Au7woDdYGewZonrtJt9+F1bnv3CxkoSKbs5+adIbWpG/VDbyXp9lvDxFtoPRp3XHin54+N1X
+ nwGxlM9KaHLW5L5QVmNtjrI8=
+X-Envelope-To: rcu@vger.kernel.org
+Received: by smtp.migadu.com with ESMTPS id 22ff5bd08d6f44c3;
+	Sun, 13 Sep 2026 06:21:44 +0000
+X-Mizu-Trace-ID: 22ff5bd08d6f44c3
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLQs-+-cu2R3QrHppcxOQt9m7Hi+grr4fOnw8m73kQn0Q@mail.gmail.com>
+Date: Sun, 13 Sep 2026 06:21:44 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+From: "Zqiang" <qiang.zhang@linux.dev>
+Message-ID: <32e952728ea1a9c25c2b56de468f43a32104b8a8@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH] srcutree: Add lockdep and early-boot checks to 
+ synchronize_srcu_atomic()
+To: paulmck@kernel.org, "KunWu Chan" <kunwu.chan@gmail.com>
+Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, rostedt@goodmis.org,
+ mathieu.desnoyers@efficios.com, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <e6be6641-731c-4b21-ad4e-c05bedc388d6@paulmck-laptop>
+References: <20260911093515.2802551-1-kunwu.chan@gmail.com>
+ <0cf7b133-d2fd-4298-adba-70a2b86d1892@paulmck-laptop>
+ <CAN_Opa-uuim=aiOuAmHYUoD5S=vBREemj-dCvcunF-4zNdp1=A@mail.gmail.com>
+ <e6be6641-731c-4b21-ad4e-c05bedc388d6@paulmck-laptop>
 
-On Sat, Sep 12, 2026 at 04:59:02PM -0700, Alexei Starovoitov wrote:
-> On Sat, Sep 12, 2026 at 3:28 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>=20
+>=20On Sat, Sep 12, 2026 at 08:37:33PM +0800, KunWu Chan wrote:
+>=20
+>=20>=20
+>=20> On Sat, Sep 12, 2026 at 12:47 AM Paul E. McKenney <paulmck@kernel.o=
+rg> wrote:
+> >=20
+>=20>  On Fri, Sep 11, 2026 at 05:35:15PM +0800, Kunwu Chan wrote:
+> >  > Add the lockdep annotation, same-type SRCU nesting warning, and
+> >  > early-boot check used by __synchronize_srcu().
+> >  >
+> >  > Suggested-by: Zqiang <qiang.zhang@linux.dev>
+> >  > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+> >=20
+>=20>  Queued for review and testing, thank you both!
+> >=20
+>=20>  Interestingly enough, it is now the case that there is a grace-per=
+iod
+> >  wait that can be placed in a normal RCU read-side critical section.
+> >  Does this mean that we should also adjust the --do-srcu-lockdep test=
+ing
+> >  in tools/testing/selftests/rcutorture/bin/torture.sh?
+> >=20=20
+>=20>  Thanks, Paul. Good point.
+> >=20=20
+>=20>  I=E2=80=99ll check the current `--do-srcu-lockdep` coverage, inclu=
+ding the
+> >  case where `synchronize_srcu_atomic()` is called from a normal RCU
+> >  read-side critical section, and follow up with the necessary torture
+> >  testing changes.
+> >=20
+>=20Sounds good!
+>=20
+>=20Perhaps you and Zqiang can work together on this. Co-developed-by,
+> for example.
+
+Hi, Paul and KunWu
+
+Should we also consider the following situations ?
+
+
+idx =3D srcu_read_lock_atomic(srcu)
+
+by interrupt run hardirq context:
+   synchronize_rcu_atomic(srcu)
+
+srcu_read_unlock_atomic(srcu, idx)
+
+
+or:
+
+
+
+           CPU0:                                                         =
+         CPU1:=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+
+idx=20=3D srcu_read_lock_atomic(srcu)
+
+smp_call_function_single(CPU1, som_func, NULL, 1)
+to send IPI to CPU1, and sync wait complete.
+                                                                   hardir=
+q context or ide task context:
+
+                                                                         =
+ some_func()
+                                                                         =
+ ->synchronize_rcu_atomic(srcu)=20=20
+
+srcu_read_unlock_atomic(srcu,=20idx)
+
+
+Add WARN_ON(irqs_disabled()) to synchronize_rcu_atomic() ?
+
+Any thoughts?
+
+Thanks
+Zqiang
+
+
+>=20
+>=20 Thanx, Paul
+>=20
+>=20>=20
+>=20> Thanks,
+> >  Kunwu
+> >=20=20
+>=20>=20
+>=20>  Thanx, Paul
+> >=20
+>=20>  > ---
+> >  > kernel/rcu/srcutree.c | 8 ++++++++
+> >  > 1 file changed, 8 insertions(+)
+> >  >
+> >  > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> >  > index 6a9c432a3bd0..6c729e805fb3 100644
+> >  > --- a/kernel/rcu/srcutree.c
+> >  > +++ b/kernel/rcu/srcutree.c
+> >  > @@ -2123,6 +2123,14 @@ void synchronize_srcu_atomic(struct srcu_st=
+ruct *ssp)
+> >  > unsigned long rdm0, rdm1;
+> >  > unsigned long unlocks0, unlocks1;
+> >  >
+> >  > + srcu_lock_sync(&ssp->dep_map);
+> >  > +
+> >  > + RCU_LOCKDEP_WARN(lockdep_is_held(ssp),
+> >  > + "Illegal synchronize_srcu_atomic() in same-type SRCU read-side c=
+ritical section");
+> >  > +
+> >  > + if (rcu_scheduler_active =3D=3D RCU_SCHEDULER_INACTIVE)
+> >  > + return;
+> >  > +
+> >  > // Initialize. Either init_srcu_struct() was invoked or
+> >  > // DEFINE_SRCU() or similar was used. Therefore, no allocation
+> >  > // will be done here.
+> >  > --
+> >  > 2.43.0
+> >  >
 > >
-> > On Sat, Sep 12, 2026 at 12:40:55PM -0700, Alexei Starovoitov wrote:
-> > > On Sat Sep 12, 2026 at 11:03 AM PDT, Paul E. McKenney wrote:
-> > > >
-> > > > In the old kernels, yes, we have current->trc_reader_nesting++.
-> > > > In the newer kernels, Tasks Trace RCU is instead implemented in terms
-> > > > of SRCU-fast, which instead increments per-CPU counters.  Which among
-> > > > other thins is a bit faster and does not need to hook into the scheduler.
-> > >
-> > > old kernels? I'm confused.
-> > > rcu_read_lock_trace() in bpf-next is doing t->trc_reader_nesting++
-> > > and then calls __srcu_read_lock_fast().
-> > >
-> > > Are you talking about some RCU branch that you target for next merge window?
-> >
-> > No, I was thinking of rcu_read_lock_tasks_trace(), forgetting that
-> > rcu_read_lock_trace() is still used.  (For good reason, just be clear.)
-> > Your comments are quite correct for rcu_read_lock_trace().
-> >
-> > Hmmm...  Josep's using t->trc_reader_nesting would break for
-> > partially overlapping RCU Tasks and rcu_read_lock_trace() readers.
-> >
-> > But yes, your #5 makes sense:  Deprecate RCU Tasks, upgrade RCU Tasks
-> > Trace to check for preemption from within trampolines, and move RCU
-> > Tasks users over to the rcu_read_lock_trace() variant of RCU Tasks Trace.
-> > (Or am I still missing your point?)
-> 
-> Pretty much. This way bpf trampoline stays as-is. No extra overhead there.
-> rcu tasks users (faultable tracepoints and what else ? )
-> switch to rcu_read_lock_trace().
-> The only difference for faultable tracepoints is
-> extra t->trc_reader_nesting++.
-
-Let's see what the other tracing guys think.
-
-> I have studied the rest of the patches in the series,
-> so this proposal can be completely off the mark.
-
-This last is highly ambiguous.  Help?  ;-)
-
-							Thanx, Paul
+>
