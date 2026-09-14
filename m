@@ -1,65 +1,64 @@
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pj2-f12.google.com (mail-pj2-f12.google.com [74.125.227.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C0741F5D8
-	for <rcu@vger.kernel.org>; Mon, 14 Sep 2026 09:34:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126DE423784
+	for <rcu@vger.kernel.org>; Mon, 14 Sep 2026 09:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.140
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789378498; cv=none; b=Z0+iWhj76APAGyeCqlw60FCav10jOp5O4IAfYLQfnoHBfsEqra5TytTA/vvJM523WGKEmyCyu7MG8x4364Ux5FEqVgOeJbH+9OS1tcIncU/nNC/KHFkVuudhOJZX+SBRKFvJHfMO1d2AC0QW358bDuJQRhJTKF7Ks6alP3War4Y=
+	t=1789378502; cv=none; b=b6KqZaiJEW/3HRm5UbB9NDGJWGJOmNHWv4SzjQv4FWeceWzx6hJRWNCBFROsGFwRlsAwpS9C74v0NL1Do+bkH+lgK8SQoYIhVT1Oho65w6wfDZdsFIKriVaixjmPHAIy/5Qpr5KIW4VfOghpkut+vts8Ixrq8BntQ+I5FpcjqbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789378498; c=relaxed/simple;
-	bh=JFMGR3cxE4ehfOWdnWdPRDKltW26+/+24XyQ31ipOHU=;
+	s=arc-20240116; t=1789378502; c=relaxed/simple;
+	bh=5Vk7KcRU9V4X/ipHU254D4BIdjqisl9bj3wEmszSWIQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WPivdTRYzE1sOHFRKXT/ZVpj5oqHD+hUVS2Ke1BlbTGbFzVrkzktd8rySa/64ZvpBWjjPt6UZqSvFJInPrptXUpgz64C2XIfF1vYz0wEVMnJlavtW2eRb0ZOi3V/TJXoBLvHchcwrbMYzYkctmEcyzaLIKd+qF5rVhIajWe41dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=arwYoqiT; arc=none smtp.client-ip=209.85.214.176
+	 MIME-Version; b=uZM/zI9fof0fMii9sl7zg2dPw9iVnY4u3cpBRxjKeOglxTNFiLJ+T04Sc5ObAxQhuXNxDabJMB+IIb6BiKQSNoluezl4Hynl9WHSJQElcQsQyy1WTocGmQrQKdVBcCoagkFFAr7CPQSauIQUy9KP7icQQD5aHSNKtPp81qLKspE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EnQMCKXC; arc=none smtp.client-ip=74.125.227.140
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="arwYoqiT"
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2caced6038eso28668255ad.0
-        for <rcu@vger.kernel.org>; Mon, 14 Sep 2026 02:34:57 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EnQMCKXC"
+Received: by mail-pj2-f12.google.com with SMTP id d9443c01a7336-2d91c22d27dso8363905ad.1
+        for <rcu@vger.kernel.org>; Mon, 14 Sep 2026 02:35:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789378497; x=1789983297; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=1sLm0cRCwoEOt+wRLHqXO/oJXjLUglwx1i1oC6fe9Yg=;
-        b=arwYoqiTleIbbj4hK4RJGjINaHIFkxS3CAYZEQkHLuJEztYH81WLW2y0aHfJlRnwMH
-         SrPBC3tCJCq6LqU8P7fRZsRTmZrntkW3XMvi427OrbpCRmyhnt5oVZRfwPzcFQ85cS5d
-         mupVqv2/h0bGbGu0ELJxtnOT0xBm6pFE9DUo5GbXSSR9FQfJN1WTdAW4apAsvJJ1lM+I
-         HB+nUwU1xScHyynsDhYUZ5teaYCYvz/iEj9onBqwe6QIDEtT+RG19AIGWa078+QlEQgj
-         Ej9Sd497IbFpzaPrHg2fE3hps5CPvClic+c462aj28CaJ2x7Xz8aVDwdjN5i5WtwL88C
-         g0cw==
+        d=gmail.com; s=20251104; t=1789378500; x=1789983300; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=QPEcLs4lXFeouUcd3VfYmQWKBkCZIqO2a7zYwGl971s=;
+        b=EnQMCKXColTIR8yjhvIKNne1T7ZsYwSY6+LvLApZgm/tPjbsWM/0jszsOI1eUL/czV
+         fpTsWxr+04Sd5YO+te/v44Hq0FSzpVwNKYR7wAJDkIJcsoHJcJ8mLRQMk+q1ftQ/I62k
+         qhtRGmjozceFitqDE3UC4tRkq50TSODErnFMcSYLt/3UGNCdBn6DMyQPj2jsdNoWufme
+         9E9CY2D/2P79Y46FPVp3Dv9EpB0sn0lMA6Dl7QJekjIVQOYSFKTXaRNHn8Hk59zatfA/
+         QzvLU5reG2hEh1w/2wtLPsVC5oBTtVRip954oU2En6cTXTvuZ4a9gG8jtj0WQPK2oEat
+         C2yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789378497; x=1789983297;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=1sLm0cRCwoEOt+wRLHqXO/oJXjLUglwx1i1oC6fe9Yg=;
-        b=V0HTRhMG6g1/tvrBuRYFV4mDIyEOLlJT/HT7SFtA1pH4S+BGPWpEUddEogn8zsd2mt
-         tYXnVztwviCLOLL7sD97uak1TR4gOUlCBu35keFuFuRQLHAHGdvxsN9jm/oIurQrSp6X
-         4Vpq/p4ZAk9icoQKDHSLHVtycrDc3ME3y0gPLTgks/iBF/Nl+UZOrkHndHfv4q+cc8Zn
-         dlRmwWB7T4qAdRj4KJx3Ih9M1sfCNYJi+4BCE7mX9gaAyHHdphRYuSIgS5rvK8FAjkZn
-         ++sqN/sdQvOoXoa7KW/JE2rn260unD/QfHzu80/ODGMk4c0+6bUoHB8SQVYEoJq/l2IY
-         gVLw==
-X-Forwarded-Encrypted: i=1; AKwUvBxYUjEFqI9UsfQsunEOBYAbavGZYtGB1xWn6+sJjJocx1gYFOh+bsVgKAkUVT8+x0izi/Q=@vger.kernel.org
-X-Gm-Message-State: AFuF++kJZLQpi1yWBLEY2LWkAwMjhvoEXD97yCh3UVb7gZIYqlRMeM+j
-	bLkjP7gSxXJs8vtpA/GtKpyacXbs0sjU3tF23rSWoKjxdsMhBtqO/MDw
-X-Gm-Gg: AYBFou2R+VOPHxbqzZoFtXP20JmIpPNV8LUl6voHNmEaiA6i9DhPyJ9yIwqg5xof1Tt
-	joyRKzU8snHeHKKtFNmv8ehRgNZ9RtZHUOX8Zn8PJflCil14L29ubYutswFXsj0O+Zr9OA3sEBe
-	UzcZy1HUffj3X+zwhaQPI31fbfaI0bxPUQGc4D0fXSVRAhkzghpmRNnRmCNkwh+nv7sAUtr14Gp
-	qIqKTelG5T3hFn/g1+cId5dw0cEcmZlK4RSANz85m+tBuePMvyegCGCtiTy6Yk3FUEFL6zfiFgS
-	c1oZaYenF8pHIPuE0njf5d3D3iHzYnzDtOQvFvIH8+qto1Wa9A7BMyi8gP+n5I/wSP331uZU9kr
-	MnKce55JbKVCZXS7MXKa1zxbGlWliVNWIaszbh3XTUfx8qdOAsO3Y+9yP0ZkSDjgCwpsAA2oxm6
-	5Kc4UwGeXOyUWlSRJ8nn8El2AelQsaHliK7IKwDjSULL0JfQ3kV/X9XPg0UT4JHBXjmq0XorXD/
-	/m4ISC+QoA61XzDXQ==
-X-Received: by 2002:a17:902:f786:b0:2d8:d4d2:d138 with SMTP id d9443c01a7336-2dd5f1bc196mr71500385ad.20.1789378496559;
-        Mon, 14 Sep 2026 02:34:56 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1789378500; x=1789983300;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=QPEcLs4lXFeouUcd3VfYmQWKBkCZIqO2a7zYwGl971s=;
+        b=imT3F+dQNUgMrDYmDAwfNinAldIe9MoFV1/eoudrnjWoy6pPe+nF5vAcqTwcBM1n66
+         P8aJqyzBlO4akGxpl2BeEv8kwJSIpv8EgK4rZJlR0Qc8ls8aMowgcyYf8Ve+gTM+aJr+
+         U5ylN4HpM90LZi/TRpa22fWp+e4eF7jdARfOoTqYPyhA7Ou/Xwck0fNi7jr4+FY01I2Z
+         h8mZiiOkCQZbCnU2EADjiRs9VIFFYqTfdcGuKjtECUebX1eYF+9//N0NOUX0hM6ehR+r
+         Z4Ceg262VLCcGFHHUX1Famj10vs3dgNRxIlAJHIuHyCwiWqD+8MD4PMt1tHi/5mmhB9P
+         YftA==
+X-Forwarded-Encrypted: i=1; AKwUvBy8dZBke6wGIqaQhDLAT7h702LotFjM3j8IaHfwNy8FrJQTUOPxO2BBd4pu85qb4mLViu4=@vger.kernel.org
+X-Gm-Message-State: AFuF++n5yxMuvP3mKQuy1kDBtUAM3pdTCPEZRVqMa4Jv6GdwfzLvzbNW
+	Mi/aVCCaCt+4adR3hN1z8CmzzBvFL7gEpVvWJUqC0b+/ASKCw3XfuhmH
+X-Gm-Gg: AYBFou2WXXR0WM9JgYI+vfl8B2DaT2U3HC6gYso3VfzMcCRZDKC/sDJzR+gpLS2zRfP
+	6gttaXoTfCrFOMtN9Id3sK9mSRIv3Fa2o558nojCjkYlI7/P3auRkocUtxUZEj1IxOPxXZIVUu+
+	RLbNs2p+Ak499iWTLAOUSMqKeNwnd/g568eZnw9vZU6nlPSZpBT0TDO2zgoRRy55YYIGVH5KLVp
+	MffUo1Os4aAeNK4AZ1han1Wa0eueP7625fEr+ZkeG9IJbggNZ+snSL3xVr5W42zhyzEleNWjnHH
+	E/z0BCBPenuNumKgWq9mYpN6YriG00L8S4nU9G2ZAM0PMbAbhV1L9yPt6ALGBr/4SQRqatj8ygA
+	UsHiBmsS/YRQMdTKqolErykghFnePMgK826JW6Yg7rL6kidlgZbqWREVvxHoWaVtiD2TnzfRvtr
+	tVL8I43AznpieiOEoFmLlm8gEWoRSeZoDGAk3HbLJsRuGiAtiYqeZ9fcNCxQRqEyGbcW2HecfdN
+	CsbpCyQNl9Mxr2tCQ==
+X-Received: by 2002:a17:903:40c9:b0:2d5:3f5f:e645 with SMTP id d9443c01a7336-2dd6c6eb731mr39207435ad.12.1789378500232;
+        Mon, 14 Sep 2026 02:35:00 -0700 (PDT)
 Received: from kernel.tail6741c6.ts.net ([185.220.238.35])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2dd2cfc2d3bsm46109865ad.48.2026.09.14.02.34.52
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2dd2cfc2d3bsm46109865ad.48.2026.09.14.02.34.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2026 02:34:56 -0700 (PDT)
+        Mon, 14 Sep 2026 02:34:59 -0700 (PDT)
 From: Kunwu Chan <kunwu.chan@gmail.com>
 To: jiangshanlai@gmail.com,
 	paulmck@kernel.org
@@ -70,9 +69,9 @@ Cc: josh@joshtriplett.org,
 	linux-kernel@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>
-Subject: [PATCH 2/5] selftests/rcutorture: Wire atomic SRCU into srcu_lockdep.sh
-Date: Mon, 14 Sep 2026 17:34:16 +0800
-Message-ID: <20260914093419.1474829-3-kunwu.chan@gmail.com>
+Subject: [PATCH 3/5] srcutree: Preserve IRQ state in synchronize_srcu_atomic() callchain
+Date: Mon, 14 Sep 2026 17:34:17 +0800
+Message-ID: <20260914093419.1474829-4-kunwu.chan@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260914093419.1474829-1-kunwu.chan@gmail.com>
 References: <20260914093419.1474829-1-kunwu.chan@gmail.com>
@@ -82,79 +81,187 @@ List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add testtypes 4 (atomic SRCU same-type deadlock) and 5 (atomic SRCU
-+ raw_spinlock dependency cycle) to the deadlock-detection loop.
-Add a separate loop for testtype 6 (rcu_read_lock() →
-synchronize_srcu_atomic()), which also verifies via console.log that
-no lockdep warning is triggered.
+synchronize_srcu_atomic() may be called with interrupts disabled, but
+its callchain uses raw_spin_lock_irq_rcu_node() /
+raw_spin_unlock_irq_rcu_node(), which unconditionally enables
+interrupts on unlock. This can incorrectly change the caller's IRQ
+state.
+
+Use the irqsave/irqrestore variants for the locks in this callchain
+so that the caller's IRQ state is preserved.
 
 Co-developed-by: Zqiang <qiang.zhang@linux.dev>
 Signed-off-by: Zqiang <qiang.zhang@linux.dev>
 Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 ---
- .../selftests/rcutorture/bin/srcu_lockdep.sh  | 39 ++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+ kernel/rcu/srcutree.c | 42 +++++++++++++++++++++++-------------------
+ 1 file changed, 23 insertions(+), 19 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
-index 4e98c697def4..72791499dd96 100755
---- a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
-+++ b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
-@@ -44,7 +44,7 @@ nerrs=0
- # Test lockdep's handling of deadlocks.
- for d in 0 1
- do
--	for t in 0 1 2
-+	for t in 0 1 2 4 5
- 	do
- 		for c in 1 2 3
- 		do
-@@ -79,6 +79,43 @@ do
- 	done
- done
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 6c729e805fb3..d32615d54177 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -985,6 +985,7 @@ static void srcu_gp_end(struct srcu_struct *ssp, bool is_atomic)
+ 	bool cbs;
+ 	bool last_lvl;
+ 	int cpu;
++	unsigned long flags;
+ 	unsigned long gpseq;
+ 	int idx;
+ 	unsigned long mask;
+@@ -999,7 +1000,7 @@ static void srcu_gp_end(struct srcu_struct *ssp, bool is_atomic)
+ 		mutex_lock(&sup->srcu_cb_mutex);
  
-+# Verify that synchronize_srcu_atomic() does not trigger lockdep
-+# warnings when called inside rcu_read_lock().
-+for c in 1 2 3
-+do
-+	err=
-+	val=$((6*10+c))
-+	tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 5s \
-+		--configs "SRCU-P" \
-+		--kconfig "CONFIG_FORCE_NEED_SRCU_NMI_SAFE=y" \
-+		--bootargs "rcutorture.test_srcu_lockdep=$val" \
-+		--trust-make --datestamp "$ds/$val" > "$T/kvm.sh.out" 2>&1
-+	ret=$?
-+	mv "$T/kvm.sh.out" "$RCUTORTURE/res/$ds/$val"
-+	if ! grep -q '^CONFIG_PROVE_LOCKING=y' .config
-+	then
-+		echo "rcu_torture_init_srcu_lockdep:Error: CONFIG_PROVE_LOCKING" \
-+				"disabled in rcutorture SRCU-P scenario"
-+		err=1
-+	fi
-+	if test "$ret" -ne 0
-+	then
-+		err=1
-+		echo -n Unexpected failure for > "$RCUTORTURE/res/$ds/$val/kvm.sh.err"
-+	elif grep -qE "WARNING: possible (recursive locking|circular locking dependency)" \
-+		"$RCUTORTURE/res/$ds/$val/SRCU-P/console.log"
-+	then
-+		err=1
-+		echo -n Unexpected lockdep warning for > "$RCUTORTURE/res/$ds/$val/kvm.sh.err"
-+	fi
-+	if test -n "$err"
-+	then
-+		grep "rcu_torture_init_srcu_lockdep: test_srcu_lockdep = " "$RCUTORTURE/res/$ds/$val/SRCU-P/console.log" | sed -e 's/^.*rcu_torture_init_srcu_lockdep://' >> "$RCUTORTURE/res/$ds/$val/kvm.sh.err"
-+		cat "$RCUTORTURE/res/$ds/$val/kvm.sh.err"
-+		nerrs=$((nerrs+1))
-+	fi
-+done
-+
- # Test lockdep-enabled testing of mixed SRCU readers.
- for val in 0x1 0xf
- do
+ 	/* End the current grace period. */
+-	raw_spin_lock_irq_rcu_node(sup);
++	raw_spin_lock_irqsave_rcu_node(sup, flags);
+ 	idx = rcu_seq_state(sup->srcu_gp_seq);
+ 	WARN_ON_ONCE(idx != SRCU_STATE_SCAN2);
+ 	if (srcu_gp_is_expedited(ssp))
+@@ -1010,7 +1011,7 @@ static void srcu_gp_end(struct srcu_struct *ssp, bool is_atomic)
+ 	gpseq = rcu_seq_current(&sup->srcu_gp_seq);
+ 	if (ULONG_CMP_LT(sup->srcu_gp_seq_needed_exp, gpseq))
+ 		WRITE_ONCE(sup->srcu_gp_seq_needed_exp, gpseq);
+-	raw_spin_unlock_irq_rcu_node(sup);
++	raw_spin_unlock_irqrestore_rcu_node(sup, flags);
+ 	if (!is_atomic)
+ 		mutex_unlock(&sup->srcu_gp_mutex);
+ 	/* A new grace period can start at this point.  But only one. */
+@@ -1048,12 +1049,12 @@ static void srcu_gp_end(struct srcu_struct *ssp, bool is_atomic)
+ 	if (!(gpseq & counter_wrap_check))
+ 		for_each_possible_cpu(cpu) {
+ 			sdp = per_cpu_ptr(ssp->sda, cpu);
+-			raw_spin_lock_irq_rcu_node(sdp);
++			raw_spin_lock_irqsave_rcu_node(sdp, flags);
+ 			if (ULONG_CMP_GE(gpseq, sdp->srcu_gp_seq_needed + 100))
+ 				sdp->srcu_gp_seq_needed = gpseq;
+ 			if (ULONG_CMP_GE(gpseq, sdp->srcu_gp_seq_needed_exp + 100))
+ 				sdp->srcu_gp_seq_needed_exp = gpseq;
+-			raw_spin_unlock_irq_rcu_node(sdp);
++			raw_spin_unlock_irqrestore_rcu_node(sdp, flags);
+ 		}
+ 
+ 	/* Callback initiation done, allow grace periods after next. */
+@@ -1061,16 +1062,16 @@ static void srcu_gp_end(struct srcu_struct *ssp, bool is_atomic)
+ 		mutex_unlock(&sup->srcu_cb_mutex);
+ 
+ 	/* Start a new grace period if needed. */
+-	raw_spin_lock_irq_rcu_node(sup);
++	raw_spin_lock_irqsave_rcu_node(sup, flags);
+ 	gpseq = rcu_seq_current(&sup->srcu_gp_seq);
+ 	if (!rcu_seq_state(gpseq) &&
+ 	    ULONG_CMP_LT(gpseq, sup->srcu_gp_seq_needed)) {
+ 		WARN_ON_ONCE(ssp->srcu_reader_flavor & SRCU_READ_FLAVOR_ATOMIC);
+ 		srcu_gp_start(ssp);
+-		raw_spin_unlock_irq_rcu_node(sup);
++		raw_spin_unlock_irqrestore_rcu_node(sup, flags);
+ 		srcu_reschedule(ssp, 0);
+ 	} else {
+-		raw_spin_unlock_irq_rcu_node(sup);
++		raw_spin_unlock_irqrestore_rcu_node(sup, flags);
+ 	}
+ 
+ 	/* Transition to big if needed, but never for atomic SRCU. */
+@@ -1221,10 +1222,11 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+ static bool try_check_zero(struct srcu_struct *ssp, int idx, int trycount)
+ {
+ 	unsigned long curdelay;
++	unsigned long flags;
+ 
+-	raw_spin_lock_irq_rcu_node(ssp->srcu_sup);
++	raw_spin_lock_irqsave_rcu_node(ssp->srcu_sup, flags);
+ 	curdelay = !srcu_get_delay(ssp);
+-	raw_spin_unlock_irq_rcu_node(ssp->srcu_sup);
++	raw_spin_unlock_irqrestore_rcu_node(ssp->srcu_sup, flags);
+ 
+ 	for (;;) {
+ 		if (srcu_readers_active_idx_check(ssp, idx))
+@@ -2024,6 +2026,7 @@ EXPORT_SYMBOL_GPL(srcu_batches_completed);
+  */
+ static void srcu_advance_state(struct srcu_struct *ssp, bool is_atomic)
+ {
++	unsigned long flags;
+ 	int idx;
+ 
+ 	if (!is_atomic)
+@@ -2041,10 +2044,10 @@ static void srcu_advance_state(struct srcu_struct *ssp, bool is_atomic)
+ 	 */
+ 	idx = rcu_seq_state(smp_load_acquire(&ssp->srcu_sup->srcu_gp_seq)); /* ^^^ */
+ 	if (idx == SRCU_STATE_IDLE) {
+-		raw_spin_lock_irq_rcu_node(ssp->srcu_sup);
++		raw_spin_lock_irqsave_rcu_node(ssp->srcu_sup, flags);
+ 		if (ULONG_CMP_GE(ssp->srcu_sup->srcu_gp_seq, ssp->srcu_sup->srcu_gp_seq_needed)) {
+ 			WARN_ON_ONCE(rcu_seq_state(ssp->srcu_sup->srcu_gp_seq));
+-			raw_spin_unlock_irq_rcu_node(ssp->srcu_sup);
++			raw_spin_unlock_irqrestore_rcu_node(ssp->srcu_sup, flags);
+ 			if (!is_atomic)
+ 				mutex_unlock(&ssp->srcu_sup->srcu_gp_mutex);
+ 			return;
+@@ -2054,7 +2057,7 @@ static void srcu_advance_state(struct srcu_struct *ssp, bool is_atomic)
+ 			WARN_ON_ONCE(ssp->srcu_reader_flavor & SRCU_READ_FLAVOR_ATOMIC);
+ 			srcu_gp_start(ssp);
+ 		}
+-		raw_spin_unlock_irq_rcu_node(ssp->srcu_sup);
++		raw_spin_unlock_irqrestore_rcu_node(ssp->srcu_sup, flags);
+ 		if (idx != SRCU_STATE_IDLE) {
+ 			if (!is_atomic)
+ 				mutex_unlock(&ssp->srcu_sup->srcu_gp_mutex);
+@@ -2070,10 +2073,10 @@ static void srcu_advance_state(struct srcu_struct *ssp, bool is_atomic)
+ 			return; /* readers present, retry later. */
+ 		}
+ 		srcu_flip(ssp);
+-		raw_spin_lock_irq_rcu_node(ssp->srcu_sup);
++		raw_spin_lock_irqsave_rcu_node(ssp->srcu_sup, flags);
+ 		rcu_seq_set_state(&ssp->srcu_sup->srcu_gp_seq, SRCU_STATE_SCAN2);
+ 		ssp->srcu_sup->srcu_n_exp_nodelay = 0;
+-		raw_spin_unlock_irq_rcu_node(ssp->srcu_sup);
++		raw_spin_unlock_irqrestore_rcu_node(ssp->srcu_sup, flags);
+ 	}
+ 
+ 	if (rcu_seq_state(READ_ONCE(ssp->srcu_sup->srcu_gp_seq)) == SRCU_STATE_SCAN2) {
+@@ -2120,6 +2123,7 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
+ {
+ 	unsigned long srcu_state;
+ 	struct srcu_usage *sup = ssp->srcu_sup;
++	unsigned long flags;
+ 	unsigned long rdm0, rdm1;
+ 	unsigned long unlocks0, unlocks1;
+ 
+@@ -2150,9 +2154,9 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
+ 	}
+ 
+ 	// One last check for others doing our work for us under the lock.
+-	raw_spin_lock_irq_rcu_node(sup);
++	raw_spin_lock_irqsave_rcu_node(sup, flags);
+ 	if (poll_state_synchronize_srcu(ssp, srcu_state)) {
+-		raw_spin_unlock_irq_rcu_node(sup);
++		raw_spin_unlock_irqrestore_rcu_node(sup, flags);
+ 		atomic_set(&sup->srcu_atomic_gp_flag, 0);
+ 		preempt_enable();
+ 		return;
+@@ -2163,7 +2167,7 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
+ 	smp_store_release(&sup->srcu_gp_seq_needed, srcu_state); // See srcu_funnel_gp_start().
+ 	ASSERT_EXCLUSIVE_WRITER(ssp->srcu_sup->srcu_gp_seq);
+ 	srcu_gp_start(ssp);
+-	raw_spin_unlock_irq_rcu_node(sup);
++	raw_spin_unlock_irqrestore_rcu_node(sup, flags);
+ 
+ 	//
+ 	// Fastpath:  If there are no readers at all, neither grace-period
+@@ -2201,9 +2205,9 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
+ 		// poll_state_synchronize_srcu() working, all under ->lock
+ 		// and ->srcu_atomic_gp_flag, which excludes concurrent
+ 		// sequence-number updates.
+-		raw_spin_lock_irq_rcu_node(sup);
++		raw_spin_lock_irqsave_rcu_node(sup, flags);
+ 		rcu_seq_end(&sup->srcu_gp_seq);
+-		raw_spin_unlock_irq_rcu_node(sup);
++		raw_spin_unlock_irqrestore_rcu_node(sup, flags);
+ 		WARN_ON_ONCE(!poll_state_synchronize_srcu(ssp, srcu_state));
+ 		atomic_set_release(&sup->srcu_atomic_gp_flag, 0);
+ 		preempt_enable();
 -- 
 2.43.0
 
