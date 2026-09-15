@@ -1,129 +1,135 @@
-Received: from mail-pz2-f12.google.com (mail-pz2-f12.google.com [74.125.228.12])
+Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com [74.125.225.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23323AE707
-	for <rcu@vger.kernel.org>; Tue, 15 Sep 2026 09:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E543F4822
+	for <rcu@vger.kernel.org>; Tue, 15 Sep 2026 09:24:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.140
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789462807; cv=none; b=c7iGHELRki6YKMwUDO1srrM5bScJsRxJEmb1yB8cNtLcyVwOshyW/Kca11tPGpKbXda0F+Ngxygc0TcL1j88qd4pRLOsg44Zg8FD7ANNgdtbFVtFmQ/PC8uyGtg1fPcKGpxM3MZqSgkRRmXkYUI0JGJ8+KyP4675Q6vwpclsu7A=
+	t=1789464248; cv=none; b=r+7vKp/LBXpFl+x7tvPqp9dBII5o/oTID6z3nKXdQJyxnSsbm3iu41Dhh6XL4H1GdQzPb+CGQY42dEUpysMsNK3mzToMckEhUu0zW7lkB8ynJahjbkv1a3L5bS2bJdVQEJm6oNiBqKYSVYWlqcv3U94gw7qsQAZQujdEwPq+BtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789462807; c=relaxed/simple;
-	bh=Ma9vhHsFT3GKyy+r48cmE2rj/TqIbzPQu2RdVnWvcYE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=i/vS8VpYtPcVrha3nzrhb+VuS08O6+VyyK3aWbtOBlOFO3XBBXY7srMCp2cL5gQ2CWQW9cmLctHU7ZLMSeMjl8Louh91z3NxMj3J+zkWbrSA2cUQMb0/IE1qYHeuQVZigOtMb9aLPuEXakRcPaxfD7Pr4Q9bd89TuH/p5XUDJ8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D0JbWlCl; arc=none smtp.client-ip=74.125.228.12
+	s=arc-20240116; t=1789464248; c=relaxed/simple;
+	bh=Xbm7hC2sIniT4/hXQr3ANkVc+vI1px3ZGag7Yl7bcss=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cIsDcaPM6HGcbVNJ/JqsUUTIbZ2iKW7j23nZ+575FNxYrajpyJf1gkvQKJqI9SeMFhGKQhzA2EAyXGw/BihkHHxNg0Yr5G9wjMhaVbdZ4Nee9GwWmobP7SSaQAbzrd+gpvMfFc5XYrQgNuO9tx4XRYB0+wqjhGoB20eATOn2Xao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=crdDg8/K; arc=none smtp.client-ip=74.125.225.140
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D0JbWlCl"
-Received: by mail-pz2-f12.google.com with SMTP id d2e1a72fcca58-86b90133ae8so2347555b3a.1
-        for <rcu@vger.kernel.org>; Tue, 15 Sep 2026 02:00:05 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="crdDg8/K"
+Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49cc9f581c4so10211785e9.0
+        for <rcu@vger.kernel.org>; Tue, 15 Sep 2026 02:24:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789462805; x=1790067605; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=DATieKM+IrnhcJS92QKz+qmlrQJPe8M5vyN/L8cE7Fk=;
-        b=D0JbWlClNDmDa011ZH0fFPk2HE9Kmr2i0nD5CzDQEXNQhcRYU2jmqvH2RCS3FFWBE7
-         V5OhEA1f2ALmJecP9siepqnzquJi+THFsyPdZMYw9+4gFOOCixa1n4/Qb8tkoQJZPhJn
-         jhKtSCs0sOUULU7LMXO+LaKwmBFKmKvDRwpm+xyG+YMRE3vznOdXoT7i0a/ZnVcJOss3
-         vArLUNhMmSDu9416w3EwwzUmxsSOEV4iDERmfgCSobFMfpAWx8Jm3j61DALWyyg4pKPd
-         MctkCE1Q6VddeBrWZPLW5BCrbD16E+kstlBjv6FvPbpgbLZYxmhSaaDaAAcVwFoSCwx8
-         Genw==
+        d=gmail.com; s=20251104; t=1789464244; x=1790069044; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=aLdhT2Q1x0+krLh05Drnda1oX9PUv34jY/LmETe5rwQ=;
+        b=crdDg8/KJVXkItsyrr7T2DYuQ82oQhp1H8esuXueNrwy65dwloqlFRim0gwHhmcxls
+         FZ2C5sr1NvFi9ZOhJouD8/oe7RhJcohELWooc4SrCkep9sBf4MT2KWfTj8XujpioVPmP
+         L0Z2rwmtSgRDgOg9wOZVE9BZA5Hd3Hy4faXblIumemvgeWzKlorGrEh/BrYCi5lJhzDY
+         JsiQ2416IcMJY9JaCY8kZMjqpGzPe1gjXbIPxzX10rxhylCJG3+uWtrvYGB/QWDHVj3R
+         hAQGjdWi/Q5zm+qeqAfWzivJivRdKXJD4h0cjEMtYh+2Kt5JEsdpqD62uPQaaXcapDge
+         bpCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789462805; x=1790067605;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=DATieKM+IrnhcJS92QKz+qmlrQJPe8M5vyN/L8cE7Fk=;
-        b=eWHgosNyshLu5CSNIg0sHxynZosf4V9qlv9te6zPD4+9z32VSq8xI2Gs1qLMy9PmfF
-         D0FZtpmHXWLsHiPVlxhHnNb73+7AJyF+rZn41ssqXmg/mBO90f3XwkORYgoqlUgXetIz
-         Hb16UpI7/gdCPI5ZqTvmmZx3dLNof+sQAbSDjQ+uPLzKevb6aPmK7Iyr962J+Lozy3/6
-         fs6SX8aX4IKUkdY7yMDDraxvenIFGQjktou6pKBs4NIxoSvr55cBRhcXAqTYl9aN8Yfp
-         qdRnkSpY9W/fwIYNFfYDAEdZDOhl1Cc/7dv6xvd2EE8rJccoiIASgXKj1kY0Eo6rha8/
-         q1wg==
-X-Forwarded-Encrypted: i=1; AKwUvBxkHGCRi9zQ8BN1DFWPSt9F8JgohM7i3z7LrHnlWRTm/ZA9J2zkuCAPyWRnnJyeAuHc9bo=@vger.kernel.org
-X-Gm-Message-State: AFuF++n2K19wQNxuimgxBTZpikSld4exuVFkJLma/erMBUsf7ZJyTHQB
-	DEiWQQZd3emk7DQqc7fZd6+lpvJkOD76RD6pRRUcyeUjpXxL3EST9fFt
-X-Gm-Gg: AYBFou1Iw0lZ9zqYW/Q6Yc67TYpM4NzR2YJnbGvCog+CANZtkrrWZW+sFpQoanYONz+
-	Iixetav5Hb1Lu7eYl9n336GxVHIbscPvFEwHNKUKJmuprB6wBAneSf6sjD0varhYBFuzPx5juWQ
-	GEtfLYVSOWmz3Rxb8Aa+Ad8UfX+ffgOJb8zuauuSIIO1WT5Y9sT8YnBMEyfUjfACCtQL9UmpxlJ
-	RJakTD2ReD/R0eu9mBAqDUOyka8CP9B2g1Id4tNp9OGLEwF69Bo03VllDq90Mh3kd1WjXPqVcVh
-	T6kQgn7PMtbQMTMD2RRJ/jsV6N65EYr2JpGBXcL87Y8os8S7jYi12vStjDu/JVFNsBmdCAE9tMn
-	xdf5i8Dcy/f7elUhnSQrcMmHSoUR1b+66e3PDsuCox+V0vQB2+ajVum/wX2Ditq2qFK09LGLmBQ
-	5Z/oVQepQkVl9gl4VZDJ2dIWaqk0Dg/Fc5bel3sfoZEletJCbziku7TvlZH9e4nfP6XePsURBJz
-	z8SKGw2+GtTe+R6P01q4ILQA9iStEHBvW25boC5f+A5ImQ=
-X-Received: by 2002:a05:6a00:94c9:b0:848:2ab3:ddeb with SMTP id d2e1a72fcca58-86f858ed348mr12207289b3a.14.1789462804931;
-        Tue, 15 Sep 2026 02:00:04 -0700 (PDT)
-Received: from localhost.localdomain ([2605:bc80:3010:503:f816:3eff:fe99:6bb3])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cc4c6550df9sm6124342a12.16.2026.09.15.02.00.04
+        d=1e100.net; s=20260707; t=1789464244; x=1790069044;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=aLdhT2Q1x0+krLh05Drnda1oX9PUv34jY/LmETe5rwQ=;
+        b=oSYJYRzLyXGON5xZEJgtXYVCFkqC+SgJz1Xiwoh9Otw50ZMpVngXWCJi9RaAcRSBP1
+         AsUjsSGVB2eyzh/y6GnYb4z2ebYrtUbhZ2mU2DRn2zDPGm0K/wH4ilkaJCTksxxDc3c5
+         B239ijkxIbX+0nes40ixUiro5WKev0oxZwVHroXZuYFT7nCv5txGpwQfUp/z39xzR8Ai
+         0naCumGGNpPOzHy4Zf3TFC8w1wWyjXa/JoBmPlNRA2ESOh9R3qmfvetcCZpO5aT0KZ/m
+         RrlNZfPaQvXOeoBrZQhdMqZmF3RnB7lUjrVVrUXyR+QNJvIqMN1UeEydg9zU+JaOyCdp
+         4bGQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwGF09BPlQBuxJQJOnt7Xr5DMDgcnnJ1rPKMgL8EkUaY4KhdGhFnyo+EILws6GVd3961aE=@vger.kernel.org
+X-Gm-Message-State: AFuF++lMND76bE5AsrJp6UHE+oLTeB1fB4M8NATeP2CTjlYF+VA9j8Hk
+	nTUaZpFAlhtMkh+QcWfnKvuZzXhVh7EP0ShmSb73j8QoioyucqOM8Uvs
+X-Gm-Gg: AYBFou0llkY14hHU1MiLb9Lvjg3uK4UvkUKwVoCAPJvg1LiecaDOSkRWrAyhcnXHvYS
+	KOSaHKo/S0wdzzPIbOEsvhCTLP4jHFPuxJT0D0VNYAuqdg8gjCH1a2h5wHQyLDHv+R2J3v3kes6
+	vRbBfk7FzRLRxv+VUxeRkLtGPedKqKF6KYKH2Q+I87GkaZa3vWGuPJQy4gIv3foxdD0WXG8Cp7e
+	IC5G7Z4SKurEV8WGVn74GygOatjNFX1w4VN1qlEr2DVYhl1V9YNZcV7A98CCGqTbxHDOqidrKNp
+	+AvxPLC626AIARMA9xDhIGGdbHrWMzAZhmYybVE4PBvc+u+g2fNsgSleqOrx74fGZfFzIR1NNCV
+	nTcclNHQYTnpweibpMPVPxdBXM0AePZZhm/Sx7/KlVWPDXo60lBcdOKBaTfbCpfc9gbMsAObAdn
+	kCKHTb2R0ucC1+yivsA6NPaVE5ClHEbGcZI6oa1avu9Ppxi33cKo28cPkH0sV0Gz2imEz+D5OJR
+	8+Q5c9j8xYaEwxbSshasyu9e+QhB37RUs9G
+X-Received: by 2002:a05:600c:c162:b0:49e:65f2:db64 with SMTP id 5b1f17b1804b1-49e7d72b000mr36925425e9.5.1789464243970;
+        Tue, 15 Sep 2026 02:24:03 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e7ef9228fsm49333445e9.15.2026.09.15.02.24.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2026 02:00:04 -0700 (PDT)
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-To: paulmck@kernel.org,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lance@osuosl.org
-Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH v2] rcutorture: kvm-again.sh: Fix re-run failure on ppc64
-Date: Tue, 15 Sep 2026 08:59:49 +0000
-Message-Id: <20260915085949.3708122-1-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 15 Sep 2026 02:24:03 -0700 (PDT)
+Date: Tue, 15 Sep 2026 10:24:01 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Yury Norov <ynorov@nvidia.com>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Matthew Wilcox
+ <willy@infradead.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
+ <mingo@redhat.com>, Will Deacon <will@kernel.org>, Boqun Feng
+ <boqun@kernel.org>, Waiman Long <longman@redhat.com>, Dennis Zhou
+ <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter
+ <cl@gentwo.org>, "Paul E. McKenney" <paulmck@kernel.org>, Frederic
+ Weisbecker <frederic@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
+ Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang@linux.dev>, Onur =?UTF-8?B?w5Z6a2Fu?=
+ <work@onurozkan.dev>, Kees Cook <kees@kernel.org>, Joel Granados
+ <joel.granados@kernel.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Thomas Gleixner <tglx@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
+ <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, K Prateek
+ Nayak <kprateek.nayak@amd.com>, Mike Rapoport <rppt@kernel.org>, "Liam R.
+ Howlett" <liam@infradead.org>, Lorenzo Stoakes <ljs@kernel.org>, Vlastimil
+ Babka <vbabka@kernel.org>, Jann Horn <jannh@google.com>, Pedro Falcato
+ <pfalcato@suse.de>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
+ <jasowangio@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Eugenio
+ =?UTF-8?B?UMOpcmV6?= <eperezma@redhat.com>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, Nathan
+ Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org,
+ virtualization@lists.linux.dev, linux-rt-devel@lists.linux.dev,
+ llvm@lists.linux.dev, Yury Norov <yury.norov@gmail.com>
+Subject: Re: [PATCH 00/17] Treewide: enforce static storage for object
+ initializers
+Message-ID: <20260915102401.3c56aa95@pumpkin>
+In-Reply-To: <20260914231418.b15ec01f7225cf460f6e515a@linux-foundation.org>
+References: <20260915030336.1192299-1-ynorov@nvidia.com>
+	<20260914231418.b15ec01f7225cf460f6e515a@linux-foundation.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Discovered in the Open Source Lab of Oregon State University when running
-torture.sh on a ppc64le VM.  Two bugs were exposed:
+On Mon, 14 Sep 2026 23:14:18 -0700
+Andrew Morton <akpm@linux-foundation.org> wrote:
 
-1. The kvm-transform.sh call hard-coded "bzImage" as the kernel image
-   name.  On ppc64, the boot image is vmlinux, not bzImage, so the
-   re-run failed to find the image.  Fix this by extracting the QEMU
-   binary from the qemu-cmd file and passing it to identify_boot_image()
-   to obtain the correct architecture-specific image name, the same way
-   kvm.sh already does.
+> On Mon, 14 Sep 2026 23:03:18 -0400 Yury Norov <ynorov@nvidia.com> wrote:
+> 
+> > Declaration macros that statically initialize embedded locks require static
+> > storage when lockdep is enabled. Automatic objects must use runtime
+> > initialization so lockdep receives a persistent class key.
+> > 
+> > For automatic local objects, lockdep cannot use the lock address as a persistent
+> > class key and reports "INFO: trying to register non-static key" before disabling
+> > itself.  
+> 
+> So why haven't we been buried in reports about this warning coming out?
+> 
 
-2. The rm -f invocation on re-run listed vmlinux among the files to
-   delete.  On ppc64 vmlinux is the boot image, so deleting it broke
-   the re-run on that architecture.  Drop vmlinux from the list.
+Are there any code changes outside of testing?
 
-Tested on a local x86_64 machine and on a PPC VM of the Open Source Lab
-of Oregon State University.
-
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
----
-Changes in v2:
- - Remove blank line between qemu_binary and boot_image assignments
-   for cleaner style.
-
- tools/testing/selftests/rcutorture/bin/kvm-again.sh | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-index b5239b52cb5d..cacc9f2b230d 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-@@ -189,7 +189,7 @@ then
- 		echo "Cannot copy from $oldrun to $rundir."
- 		usage
- 	fi
--	rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
-+	rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out} "$rundir"/log
- 	touch "$rundir/log"
- 	echo $scriptname $args | tee -a "$rundir/log"
- 	echo $oldrun > "$rundir/re-run"
-@@ -217,7 +217,10 @@ do
- 	qemu_cmd_dir="`dirname "$i"`"
- 	kernel_dir="`echo $qemu_cmd_dir | sed -e 's/\.[0-9]\+$//'`"
- 	jitter_dir="`dirname "$kernel_dir"`"
--	kvm-transform.sh "$kernel_dir/bzImage" "$qemu_cmd_dir/console.log" "$jitter_dir" "$dur" "$bootargs" < $T/qemu-cmd > $i
-+	qemu_binary="`grep -v '^#' $T/qemu-cmd | awk 'NF { print $1; exit }'`"
-+	boot_image="`identify_boot_image "$qemu_binary"`"
-+	kvm-transform.sh "$kernel_dir/`basename $boot_image`" "$qemu_cmd_dir/console.log" "$jitter_dir" "$dur" "$bootargs" < $T/qemu-cmd > $i
- 	if test -n "$arg_remote"
- 	then
- 		echo "# TORTURE_KCONFIG_GDB_ARG=''" >> $i
---
-2.43.0
+David
