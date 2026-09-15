@@ -1,130 +1,135 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7771D3B0AED;
-	Tue, 15 Sep 2026 14:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2DE63C1D65;
+	Tue, 15 Sep 2026 14:36:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789481878; cv=none; b=m17/Qa5hc3Hh85VJBX6MvileRRby2A0maRDAEzsvxLaXu38wy0uHVKUI2t42gkMQpC0gkNJLB+Nfhk5GHAPNyzNChu6F+Lo9lG07Rsklzm78Ak1Wz7C7+aU87QlCh6jqNnOmw20llqe1m7smJMDOdhZbNCQsSgYZPH6tuP5cePo=
+	t=1789483007; cv=none; b=Lp/HdRLpVA2nwoyq3v/YYIcUES6yieLBchJaS4wq5+rCousd7ZkLUBq3NxKM1RE1eIcEgqY1EfmtAnDlgtF+E276N4XWKo0KOpakCQ2Of8IHBNFZEK4z4ixucrqdnaBlTyg8qfDbxio/4G1W1LmXWZPVrXxTMaVM8EJ19gtdSKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789481878; c=relaxed/simple;
-	bh=jKmKjY2sjPRLjEh0wzQXbnulhf+a/ZQFsEMtVhHBMBs=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=o4mc5vVj35SdQ7X5u6e+3Gl9BfOaezaAHnZeaiA1+GQ4P+DVRjh8DNV/IBxSc7nofUObsuFdH8mMt4qepwwx9FaxP/rUDAoBdC9E9techUuRH4HCLXZt2lILMF/KLEdhApYdlakdX5Y5bagWWq4FnLs/ERQxY024GgRn0Vlkd2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L8QviNNr; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789483007; c=relaxed/simple;
+	bh=bwyJyi6CfYi5E8dzVCKRC/kIx/HUd1x5lOVaz5HbkRw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A0DzFmu21nt9xko9z8QeQRX8D+3tKNc8X/zqTS5fAQUFAHiV13TbQWG0g59Pr2xAo83LmChP6QV6K2UP1XKrF9BWccDZ152BnUTSHtkdxGRshyvDdd3mQ9N3+sCHW3u0gLjIgj2b8fMn5RPSCUPkEWEDN72jijwa5rZMzGTQ9go=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ea3oBm1V; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L8QviNNr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6F7A1F00893;
-	Tue, 15 Sep 2026 14:17:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ea3oBm1V"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E0121F00893;
+	Tue, 15 Sep 2026 14:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789481877;
-	bh=37WI6Bj/Ggz3/9zO2SR1BHA0D09BihoVO8j7O418CP4=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date;
-	b=L8QviNNrTmMpIqQxxWm+1VskqSUHJhnuf0/rYUwn4D42ISdoJmFjdazUlkGx8ggjD
-	 X9a5oqOjNa/CDI0U1C0R5QjHTXlgPr/67Rld+0Hyr0uJ/7kc3460S3rv7/jkol6ScQ
-	 +IDquEBZlfhgOQp6PB69iJ4aD7kdmPXVcZA+RIUuxHxgEsToRDVkNmvLsX0odMc+Rw
-	 nuEvkdqjxbWUYQZihz9u2BVhArW2qXa3JsNJNFwxqYCKBT6wR0d7kywT/XE6mpf1b3
-	 xzVVYFhiewYfFNfuT8Uq0rEA4UxyGjpPPEsrojRib0d1ehB27wSNo+4fQ7hHW5u7Gn
-	 OzxzjqzdwP2cg==
-Content-Type: multipart/mixed; boundary="===============0488351286812016447=="
+	s=k20260515; t=1789483005;
+	bh=/jA1u2yP/XVG+JRqTDYsiyod65lWx6jO2/SklnCOUMU=;
+	h=From:To:Cc:Subject:Date;
+	b=Ea3oBm1V+tW7HE0FGlpkbByQLTRkYfHZpC9U/DayZwplrDcAeuQHrl5Fhbtlwq+YF
+	 OE41IOz9MjpVYvpT0SNjpvnMZL8wSRlNhgyVK/BEIbzhw+Ooh+vH7N7V2u3XiOx4Gk
+	 PV5TbMKAFe3SCKgSUE7Vbh5VTEaQ898K0EpMhmMNBTV1rvNcmjFthYDuk6/pEByNLK
+	 xgJo8cRcYkOq3zD0PcBk/1NT7s4JpP/1aLt41kJFsTyVtiwLMsOwDTeI6L4b4RL0us
+	 QUDtfc+GijLnCbX2IfbL/EkDbtoaK9bu//Bd3qEdbYrZUFBpuAmTAaeGhSZl1aukg7
+	 OINc3PikxSvOg==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org,
+	rcu@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	"Alexei Starovoitov" <ast@kernel.org>,
+	"Daniel Borkmann" <daniel@iogearbox.net>,
+	"Andrii Nakryiko" <andrii@kernel.org>,
+	"Martin KaFai Lau" <martin.lau@linux.dev>,
+	"Eduard Zingerman" <eddyz87@gmail.com>,
+	"Kumar Kartikeya Dwivedi" <memxor@gmail.com>,
+	"Song Liu" <song@kernel.org>,
+	"Yonghong Song" <yonghong.song@linux.dev>,
+	"Harry Yoo (Oracle)" <harry@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH bpf-next v3 0/4] bpf: Add bpf_call_rcu() and bpf_call_rcu_tasks_trace()
+Date: Tue, 15 Sep 2026 07:36:34 -0700
+Message-ID: <20260915143640.36292-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <99771250491ac7c5568e688eacca866676565a40f18f1189b8937472f4aba91e@mail.kernel.org>
-In-Reply-To: <20260915-b4-rcu-tasks-preempt-qs-v3-13-0ad30c4c5ee7@toxicpanda.com>
-References: <20260915-b4-rcu-tasks-preempt-qs-v3-13-0ad30c4c5ee7@toxicpanda.com>
-Subject: Re: [PATCH RFC v3 13/13] x86, arm64: Build Tasks RCU on Tasks Trace readers in trampolines
-From: bot+bpf-ci@kernel.org
-To: josef@toxicpanda.com,paulmck@kernel.org,frederic@kernel.org,neeraj.upadhyay@kernel.org,joelagnelf@nvidia.com,boqun@kernel.org,tglx@kernel.org,peterz@infradead.org,rostedt@goodmis.org,mhiramat@kernel.org,mark.rutland@arm.com,jolsa@kernel.org,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,x86@kernel.org,catalin.marinas@arm.com,will@kernel.org,puranjay@kernel.org,xukuohai@huaweicloud.com,paulmck@kernel.org,frederic@kernel.org,neeraj.upadhyay@kernel.org,joelagnelf@nvidia.com,boqun@kernel.org,tglx@kernel.org,peterz@infradead.org,rostedt@goodmis.org,mhiramat@kernel.org,mark.rutland@arm.com,jolsa@kernel.org,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,x86@kernel.org,catalin.marinas@arm.com,will@kernel.org,puranjay@kernel.org,xukuohai@huaweicloud.com
-Cc: luto@kernel.org,josh@joshtriplett.org,urezki@gmail.com,mathieu.desnoyers@efficios.com,jiangshanlai@gmail.com,qiang.zhang@linux.dev,jgross@suse.com,mcgrof@kernel.org,ihor.solodrai@linux.dev,linux-kernel@vger.kernel.org,rcu@vger.kernel.org,linux-trace-kernel@vger.kernel.org,bpf@vger.kernel.org,linux-arm-kernel@lists.infradead.org,xen-devel@lists.xenproject.org,luto@kernel.org,josh@joshtriplett.org,urezki@gmail.com,mathieu.desnoyers@efficios.com,jiangshanlai@gmail.com,qiang.zhang@linux.dev,jgross@suse.com,mcgrof@kernel.org,ihor.solodrai@linux.dev,linux-kernel@vger.kernel.org,rcu@vger.kernel.org,linux-trace-kernel@vger.kernel.org,bpf@vger.kernel.org,linux-arm-kernel@lists.infradead.org,xen-devel@lists.xenproject.org,josef@toxicpanda.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,mason@kernel.org,ihor.solodrai@linux.dev
-Date: Tue, 15 Sep 2026 14:17:53 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 
---===============0488351286812016447==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Changelog:
+v2: https://lore.kernel.org/all/20260915114240.3269184-1-puranjay@kernel.org/
+Changes in v3:
+- Move the bpf_call_rcu_tasks_trace() verifier bits from patch 1 to
+  patch 3; patch 1 alone emitted "resolve_btfids: unresolved symbol
+  bpf_call_rcu_tasks_trace" (Sashiko)
+- Poll the callback counter with an acquire load (Sashiko)
+- teardown: v2 only checked that the program was eventually freed, which
+  passes even if nothing was ever armed.  Also assert that the chain ran,
+  and read the -EPERM back through an independent .bss fd
+- Use kern_sync_rcu() instead of open coding the grace-period wait
+- Return -EBADF rather than -ENOENT when the calling program is going
+  away, matching bpf_task_work_schedule()
+- mismatch_map now pins the bpf_rcu_head label the new code emits; it
+  passed with that branch removed.  Add a two_heads test, and wait for
+  each grace period separately in the chain test
+- Commit messages: correct the -EPERM parity claim, explain the inline
+  callback state and the struct size, motivate the tasks trace flavour
+v1: https://lore.kernel.org/all/20260907134552.1772405-1-puranjay@kernel.org/
+Changes in v2:
+- Rebase on bpf-next/master
+- Use rcu_read_lock_dont_migrate() over open coding (Alexei)
+- Improve re-arming selftest to detect failure (Sashiko)
 
-> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-> index 8101fe6229d57..34b81512cc5f3 100644
-> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
-> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-> @@ -2756,6 +2756,26 @@ synchronize_rcu(), and rcu_barrier(), respectively. In
->  three APIs are therefore implemented by separate functions that check
->  for voluntary context switches.
->
-> +Architectures that select ``CONFIG_HAVE_RCU_TRAMPOLINE_READERS`` keep the
-> +same three APIs but implement the grace period differently
-> +(``CONFIG_TASKS_RCU_TRAMPOLINE_READERS``).  There, every trampoline whose
-> +lifetime Tasks RCU guards enters a Tasks Trace RCU read-side critical
-> +section (rcu_read_lock_trace() or its assembly equivalent) before calling
-> +out and leaves it before returning, so a task anywhere inside such a
-> +call-out is an ordinary Tasks Trace reader whether or not it is
-> +preempted.  The few trampoline instructions outside that reader can only
-> +be occupied by a task that was interrupted there, so the grace period
-> +additionally waits for each CPU to pass through a context switch, and the
-> +irq-exit preemption path, the only switch that can catch a task inside
-> +such text (rcu_tasks_trampoline_text()), briefly makes such a task a
-> +holdout until it is next seen elsewhere.  On such kernels an involuntary
-> +context switch outside trampoline text *is* a Tasks-RCU quiescent state,
-> +a Tasks RCU grace period no longer depends on how long any task runs
-> +without sleeping, cond_resched_tasks_rcu_qs() is unnecessary, and the
-> +obligation moves to the trampolines: anything that relies on
-> +synchronize_rcu_tasks() to protect code a task may be preempted in must
-> +take the Tasks Trace reader (see register_ftrace_direct()).
-                                                               ^^^^^
+BPF programs that manage their own objects have no way to run their own
+logic once an RCU grace period has elapsed.  bpf_obj_drop() defers a
+free, but returning an index to an allocator or unpinning a resource
+once readers are done has no equivalent.  sched_ext's BPF library works
+around this today by pushing freed nodes onto a list and having a
+userspace thread call membarrier(MEMBARRIER_CMD_GLOBAL) and then run a
+BPF program to reclaim them; it is the first intended user.
 
-Does this paragraph describe the complete set of options? The series
-itself includes kernel/kprobes.c:kprobe_optimizer(), which relies on
-synchronize_rcu_tasks() to protect instructions a task may be preempted
-in, but instead of taking a Tasks Trace reader it registers an address
-predicate and calls rcu_tasks_wait_irq_preempted(kprobe_in_optimized_region)
-before synchronize_rcu_tasks().
+Add:
 
-kernel/kprobes.c:526-539 documents that alternative: "kprobe_optimizer()
-relies on synchronize_rcu_tasks() to wait for tasks that ... the
-quiescent-state check asks this instead."
+	int bpf_call_rcu(struct bpf_rcu_head *rh, void *map,
+			 int (*callback)(struct bpf_map *map, void *key,
+					 void *value));
 
-Since this paragraph is the single place in Documentation/RCU that
-describes the new contract for HAVE_RCU_TRAMPOLINE_READERS architectures,
-a subsystem author reading it would conclude there is one way to comply
-and would get no pointer to rcu_tasks_wait_irq_preempted() or
-rcu_tasks_trampoline_text() for code that cannot take a reader.
+and bpf_call_rcu_tasks_trace(), same signature, which also waits for
+sleepable programs.
 
-Could the paragraph mention the rcu_tasks_wait_irq_preempted() escape
-hatch, or soften to "must take the Tasks Trace reader or otherwise make
-its text known to the quiescent-state check"?
+@rh is a struct bpf_rcu_head embedded in a value of @map, so the
+callback runs as callback(map, key, value) for the element it lives in
+and needs no cookie.  The field is only accepted in BPF_MAP_TYPE_ARRAY,
+and arming holds a reference on the calling program until the callback
+has run.  Patch 1 covers the lifetime rules.
 
-> diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
-> index 4b30f701225fd..7082686cbd66d 100644
-> --- a/Documentation/RCU/checklist.rst
-> +++ b/Documentation/RCU/checklist.rst
-> @@ -252,7 +252,12 @@ over a rather long period of time, but improvements are always welcome!
->  	a.	If the updater uses synchronize_rcu_tasks() or
->  		call_rcu_tasks(), then the readers must refrain from
->  		executing voluntary context switches, that is, from
-> -		blocking.
-> +		blocking.  On architectures that select
-> +		CONFIG_HAVE_RCU_TRAMPOLINE_READERS a reader must in
-> +		addition be a Tasks Trace RCU reader (that is what the
-> +		trampolines there do around their call-outs); an
-> +		arbitrary stretch of preemptible kernel code is not
-> +		protected.
-                        ^^^^^^^^^
+This needs
 
-Same question here. This text also states the obligation in absolute
-terms ("a reader must in addition be a Tasks Trace RCU reader"), with
-no mention of the rcu_tasks_wait_irq_preempted() alternative that
-kprobe_optimizer() uses.
+  https://lore.kernel.org/all/20260810122758.183765-1-puranjay@kernel.org/
 
-[ ... ]
+for call_rcu() and call_srcu() to be safe from the contexts a BPF
+program can be called in.
+
+Puranjay Mohan (4):
+  bpf: Add bpf_call_rcu() kfunc
+  selftests/bpf: Add tests for bpf_call_rcu()
+  bpf: Add bpf_call_rcu_tasks_trace() kfunc
+  selftests/bpf: Add a test for bpf_call_rcu_tasks_trace()
+
+ include/linux/bpf.h                           |  10 +
+ include/uapi/linux/bpf.h                      |   4 +
+ kernel/bpf/btf.c                              |   7 +
+ kernel/bpf/helpers.c                          | 104 ++++++-
+ kernel/bpf/map_in_map.c                       |   4 +
+ kernel/bpf/map_iter.c                         |   6 +
+ kernel/bpf/syscall.c                          |  11 +-
+ kernel/bpf/verifier.c                         |  84 +++++-
+ tools/include/uapi/linux/bpf.h                |   4 +
+ .../selftests/bpf/prog_tests/call_rcu.c       | 275 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/call_rcu.c  | 109 +++++++
+ .../selftests/bpf/progs/call_rcu_fail.c       | 114 ++++++++
+ 12 files changed, 728 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/call_rcu.c
+ create mode 100644 tools/testing/selftests/bpf/progs/call_rcu.c
+ create mode 100644 tools/testing/selftests/bpf/progs/call_rcu_fail.c
 
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+base-commit: 5ef40d69b38a93bc9951dadb1a15c85c597e1a40
+-- 
+2.53.0-Meta
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/34975311706
---===============0488351286812016447==--
