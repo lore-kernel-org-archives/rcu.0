@@ -1,141 +1,184 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B9CB4A3F05;
-	Tue, 15 Sep 2026 11:43:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B163B4A49B2;
+	Tue, 15 Sep 2026 12:02:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789472604; cv=none; b=MZpShexa9WR2a8m21VMCTPj3kLLIOY1WTzmOiHa44vikg8YzJCjtdHk7uXOLXhWjbgMYedRbiBR9EkWXmwPvUgPwr5FJUPMKgaUcA8AbUIrneF7v+jIvNTAvY9eYcim3Q1JqwYg5baLJnj1f8hr6tjabR5TxFNUc+WnRItk3GyM=
+	t=1789473746; cv=none; b=PGERsdSR91cqzbAV0/OmjFWiZfMyWlwM6udfp+1GAQ99c6vyhODi1yfoxIm3jycnWOFzytqBErxBOUOebu4cYCkuFZBllKKlJi7vcMK0DreKC9ztBVwnd0tt41ysC0ygFVyy9qu1D8plAqrkfDNfDVUgtwaojBQtR/7Sb5l6UaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789472604; c=relaxed/simple;
-	bh=rLAq/x/+esDuzuHTdmKrk+QwJOM40c7GhAbhRT9q7Gg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Y4GjnboOz8tPXY98HWheEUYwrtgcGnmO4bmbbodtfrq7RJ7/4qlUiYR0tdH2QDPIH0g0wsNc06KNHOrcOjeYH5U5wZ9MFhh4ly0EedEejkQndwl6NdrxK31BObwN/0d1ADnVW8Qmg0JPZmSAZHWN2TZ4VlB5SjtU0aOJS4RsSmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mF74CQHF; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789473746; c=relaxed/simple;
+	bh=5Q7bKR1kUQkWAcFCYbVvVw5E9gpJvn/9AsCxZHzfDl4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=clohUmrlmVrtND54ldHZboDGcB6AJ7cuHrAY3AoXJ7mOE1pibU2h6CSG6yUTN8DsWBCcGkx5vf3LIfpCcz1Yr04OO+WdfXTsRXMMeiZV6unsKqBFiSmK2sygZnZlf/r2JsA/I1KNvIIXF1uto4YRuT35p89/o0wGP5+fuRquAiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HS7H1T4Q; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mF74CQHF"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C25071F000FF;
-	Tue, 15 Sep 2026 11:43:22 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HS7H1T4Q"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B45BD1F000FF;
+	Tue, 15 Sep 2026 12:02:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789472602;
-	bh=5Ryf2SDEOeoJbEOncSk+MqlMCvAIckmP18wmTWPjCTA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=mF74CQHFh8tchEQmzOmekJ1nVWAl8Xny8FVjZHevBPMmITQffgHcahYnvZn3MvfIb
-	 aks+huViUEGUxN7TYNR8ARqEqoh4MTlbsceJMRyBqYtrMDO+8tO6d0oN1Msxqjsx5E
-	 QIiuCjMFYcBlo0izeLwCqSei8YX5xs0Ne1XB6YoIGcFXpq4pfcAcqyRvjjOsEgD5up
-	 zM51pYVR9yQVwmItgj03rMEVwK/e6pQx+DQn9OZd1qnJR/wCJBmscoWFJtMp9Vy/kF
-	 UmcB6+Rk+TpGM6ehnuIJsAiW0idgq71/nMDOQkDsbct+OsnK9bBVjsd1MvPQp6r2oD
-	 Dx4g7nb9nj65g==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: bpf@vger.kernel.org,
-	rcu@vger.kernel.org
-Cc: Puranjay Mohan <puranjay@kernel.org>,
-	"Alexei Starovoitov" <ast@kernel.org>,
-	"Daniel Borkmann" <daniel@iogearbox.net>,
-	"Andrii Nakryiko" <andrii@kernel.org>,
-	"Martin KaFai Lau" <martin.lau@linux.dev>,
-	"Eduard Zingerman" <eddyz87@gmail.com>,
-	"Kumar Kartikeya Dwivedi" <memxor@gmail.com>,
-	"Song Liu" <song@kernel.org>,
-	"Yonghong Song" <yonghong.song@linux.dev>,
-	"Harry Yoo (Oracle)" <harry@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH bpf-next v2 4/4] selftests/bpf: Add a test for bpf_call_rcu_tasks_trace()
-Date: Tue, 15 Sep 2026 04:42:37 -0700
-Message-ID: <20260915114240.3269184-5-puranjay@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260915114240.3269184-1-puranjay@kernel.org>
-References: <20260915114240.3269184-1-puranjay@kernel.org>
+	s=k20260515; t=1789473744;
+	bh=N0PvebQTQvGBPiT349SA2Guqt05+I7WzXNZZfsnSr1A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=HS7H1T4Qyfy+OkM1pY5/ZT+fLZ9xAd9kDZ4nuvKW0KM78kKsi8OWdXmzLLGQl0lR+
+	 /rNwvlM8c6r9IPgIsMTvI6eo5RcnPGn3tH92+s+NJT0g49NVeHMPKCli4qHOfiTEoJ
+	 PPdGdpT7/mRU1E3N1umIWkz4BDucN+ls30Me9NXMOH6Q1bBYzSBrj5CZEihqV2CHMP
+	 Ozam2IUN4uGUluVixgex6Sda+lcpTwe+mDqHBi8IM51q0A+YdnO9RCnblevxatO+qT
+	 kMrJsJiv2Un6cujazGa2VDieBPQD5m5NGlxpwAG6rcrDiNWhaIhMWM3nruLuU16Bp6
+	 lRnOOKEg+OPFw==
+Date: Tue, 15 Sep 2026 14:02:21 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Mukesh Kumar Chaurasiya (IBM)" <mkchauras@gmail.com>
+Cc: paulmck@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+	josh@joshtriplett.org, boqun@kernel.org, urezki@gmail.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, qiang.zhang@linux.dev, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Guard deferred QS on kernel exit behind
+ need_deferred_qs() check
+Message-ID: <aqkzzeXsVd91X4mZ@localhost.localdomain>
+References: <20260915102241.1344738-1-mkchauras@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260915102241.1344738-1-mkchauras@gmail.com>
 
-Run the same functional test against the tasks trace flavour.
+Le Tue, Sep 15, 2026 at 03:52:41PM +0530, Mukesh Kumar Chaurasiya (IBM) a écrit :
+> ct_kernel_exit() unconditionally calls rcu_preempt_deferred_qs(current)
+> on every return to userspace.
 
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/call_rcu.c | 12 ++++++++----
- tools/testing/selftests/bpf/progs/call_rcu.c    | 17 +++++++++++++++++
- 2 files changed, 25 insertions(+), 4 deletions(-)
+When nohz_full is active, right?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/call_rcu.c b/tools/testing/selftests/bpf/prog_tests/call_rcu.c
-index d21807d5d347c..7afbf79bda9a8 100644
---- a/tools/testing/selftests/bpf/prog_tests/call_rcu.c
-+++ b/tools/testing/selftests/bpf/prog_tests/call_rcu.c
-@@ -24,9 +24,10 @@ static bool wait_for_callbacks(struct call_rcu *skel, int expected)
- 	return false;
- }
- 
--static void test_call_rcu_run(void)
-+static void test_call_rcu_run(bool trace)
- {
- 	LIBBPF_OPTS(bpf_test_run_opts, opts);
-+	struct bpf_program *prog;
- 	struct call_rcu *skel;
- 	struct elem elem;
- 	__u32 key = 1;
-@@ -36,7 +37,8 @@ static void test_call_rcu_run(void)
- 	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
- 		return;
- 
--	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.arm), &opts);
-+	prog = trace ? skel->progs.arm_trace : skel->progs.arm;
-+	err = bpf_prog_test_run_opts(bpf_program__fd(prog), &opts);
- 	if (!ASSERT_OK(err, "test_run") || !ASSERT_EQ(opts.retval, 0, "retval"))
- 		goto out;
- 
-@@ -55,7 +57,7 @@ static void test_call_rcu_run(void)
- 		ASSERT_EQ(elem.val, 0, "value_cleared");
- 
- 	/* The head is disarmed before the callback runs, so it can be reused. */
--	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.arm), &opts);
-+	err = bpf_prog_test_run_opts(bpf_program__fd(prog), &opts);
- 	if (!ASSERT_OK(err, "test_run_again"))
- 		goto out;
- 	ASSERT_EQ(skel->bss->arm_err, 0, "rearm_err");
-@@ -197,7 +199,9 @@ static void test_call_rcu_inner_map(void)
- void test_call_rcu(void)
- {
- 	if (test__start_subtest("run"))
--		test_call_rcu_run();
-+		test_call_rcu_run(false);
-+	if (test__start_subtest("run_tasks_trace"))
-+		test_call_rcu_run(true);
- 	if (test__start_subtest("chain"))
- 		test_call_rcu_chain();
- 	if (test__start_subtest("teardown"))
-diff --git a/tools/testing/selftests/bpf/progs/call_rcu.c b/tools/testing/selftests/bpf/progs/call_rcu.c
-index 414be225979ec..6a7b316d9ef8b 100644
---- a/tools/testing/selftests/bpf/progs/call_rcu.c
-+++ b/tools/testing/selftests/bpf/progs/call_rcu.c
-@@ -65,6 +65,23 @@ int arm(void *ctx)
- 	return 0;
- }
- 
-+SEC("syscall")
-+int arm_trace(void *ctx)
-+{
-+	__u32 key = 1;
-+	struct elem *e;
-+
-+	e = bpf_map_lookup_elem(&arr, &key);
-+	if (!e)
-+		return 1;
-+
-+	e->val = 0xdeadbeef;
-+	/* No lock needed: the enclosing rcu_read_lock_trace() already blocks the grace period. */
-+	arm_err = bpf_call_rcu_tasks_trace(&e->rh, &arr, reclaim);
-+	busy_err = bpf_call_rcu_tasks_trace(&e->rh, &arr, reclaim);
-+	return 0;
-+}
-+
- SEC("iter/bpf_map_elem")
- int dump(struct bpf_iter__bpf_map_elem *ctx)
- {
+> On the common fast path nothing is
+> actually deferred, so this is a needless write to
+> current->rcu_read_unlock_special
+
+When nothing is to be deferred, rcu_preempt_deferred_qs() does nothing, right?
+
+And if some nohz_full workloads involve rare syscalls, they usually run a single
+task, so no preemption that would trigger a deferred qs.
+
+
+> -- a word that lives on the task_struct
+> and is therefore subject to cross-CPU cache-line traffic.
+> 
+> On weakly-ordered architectures such as ppc64le, rcu_read_lock() and
+> rcu_read_unlock() already issue lwsync/isync barriers and touch that
+> same cache line in the syscall body.  Bouncing it again at syscall exit
+> adds measurable overhead, particularly on workloads with a high syscall
+> rate (e.g. SELinux-heavy workloads where every AVC check issues a
+> system call).
+> 
+> Introduce rcu_ct_kernel_exit_qs() which wraps the deferred-QS call with
+> a rcu_preempt_need_deferred_qs() guard, matching the pattern already
+> used in rcu_flavor_sched_clock_irq():
+> 
+>   notrace void rcu_ct_kernel_exit_qs(void)
+>   {
+>           if (rcu_preempt_need_deferred_qs(current))
+>                   rcu_preempt_deferred_qs(current);
+>   }
+> 
+> The declaration is added to <linux/rcutree.h> and a stub no-op is added
+> to <linux/rcutiny.h> so that TINY_RCU builds are unaffected.
+> 
+> ct_kernel_exit() is updated to call rcu_ct_kernel_exit_qs() in place of
+> the direct rcu_preempt_deferred_qs() call.  Semantics are identical when
+> a deferred QS is actually pending; only the unnecessary write on the
+> fast path is eliminated.
+> 
+> Signed-off-by: Mukesh Kumar Chaurasiya (IBM) <mkchauras@gmail.com>
+> ---
+>  include/linux/rcutiny.h   |  1 +
+>  include/linux/rcutree.h   |  1 +
+>  kernel/context_tracking.c |  2 +-
+>  kernel/rcu/tree.c         | 19 +++++++++++++++++++
+>  4 files changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> index e56ded733b1b..dcad641eb2c2 100644
+> --- a/include/linux/rcutiny.h
+> +++ b/include/linux/rcutiny.h
+> @@ -120,6 +120,7 @@ static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+>  	return false;
+>  }
+>  static inline void rcu_preempt_deferred_qs(struct task_struct *t) { }
+> +static inline void rcu_ct_kernel_exit_qs(void) { }
+>  void rcu_scheduler_starting(void);
+>  static inline void rcu_end_inkernel_boot(void) { }
+>  static inline bool rcu_inkernel_boot_has_ended(void) { return true; }
+> diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+> index 16a04202888b..d623f2a7d3fc 100644
+> --- a/include/linux/rcutree.h
+> +++ b/include/linux/rcutree.h
+> @@ -87,6 +87,7 @@ static inline void rcu_irq_exit_check_preempt(void) { }
+>  
+>  struct task_struct;
+>  void rcu_preempt_deferred_qs(struct task_struct *t);
+> +void rcu_ct_kernel_exit_qs(void);
+>  
+>  void exit_rcu(void);
+>  
+> diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+> index a743e7ffa6c0..011018214c6d 100644
+> --- a/kernel/context_tracking.c
+> +++ b/kernel/context_tracking.c
+> @@ -118,7 +118,7 @@ static void noinstr ct_kernel_exit(bool user, int offset)
+>  	lockdep_assert_irqs_disabled();
+>  	trace_rcu_watching(TPS("End"), ct_nesting(), 0, ct_rcu_watching());
+>  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+> -	rcu_preempt_deferred_qs(current);
+> +	rcu_ct_kernel_exit_qs();
+>  
+>  	// instrumentation for the noinstr ct_kernel_exit_state()
+>  	instrument_atomic_write(&ct->state, sizeof(ct->state));
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 96848fc1f02b..c23478f70c17 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -368,6 +368,25 @@ notrace void rcu_momentary_eqs(void)
+>  }
+>  EXPORT_SYMBOL_GPL(rcu_momentary_eqs);
+>  
+> +/**
+> + * rcu_ct_kernel_exit_qs - report deferred QS on syscall/exception exit if needed
+> + *
+> + * Called from ct_kernel_exit() on every return to userspace.  Guards the
+> + * rcu_preempt_deferred_qs() call with rcu_preempt_need_deferred_qs() so that
+> + * on the common fast path -- where nothing is deferred -- we avoid the
+> + * cache-line traffic on current->rcu_read_unlock_special that the unconditional
+> + * call causes.  This is particularly significant on weakly-ordered architectures
+> + * (e.g. ppc64le) where rcu_read_lock/unlock issue lwsync/isync barriers and
+> + * already touch that cache line in the syscall body.
+> + *
+> + * Follows the same pattern used by rcu_flavor_sched_clock_irq().
+> + */
+> +notrace void rcu_ct_kernel_exit_qs(void)
+> +{
+> +	if (rcu_preempt_need_deferred_qs(current))
+> +		rcu_preempt_deferred_qs(current);
+> +}
+> +
+
+rcu_preempt_deferred_qs() already has a rcu_preempt_need_deferred_qs() fast
+path. Am I missing something?
+
+Thanks.
+
+
+>  /**
+>   * rcu_is_cpu_rrupt_from_idle - see if 'interrupted' from idle
+>   *
+> -- 
+> 2.55.0
+> 
+
 -- 
-2.53.0-Meta
-
+Frederic Weisbecker
+SUSE Labs
