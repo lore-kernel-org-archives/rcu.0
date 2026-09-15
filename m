@@ -1,170 +1,126 @@
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pz2-f43.google.com (mail-pz2-f43.google.com [74.125.228.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B5045D91C;
-	Tue, 15 Sep 2026 08:23:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C2224756A3
+	for <rcu@vger.kernel.org>; Tue, 15 Sep 2026 08:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789460604; cv=none; b=gM2CuRcLL+lZnAQwXG0X3v8HFsgQoBXDzRL2crerV9MfoMQFeJ9AvwpKXGab5JvsL1eILL1IrkatgKrRi4t/QIfINqaKBfzG9/GI5AZOI2k/lSEuA5ZYSeTV/RSQZfL3nXVIlJYNxwMNr5BaKUwz7feqIKLdLbvPWR52AYRtsZA=
+	t=1789461936; cv=none; b=ub6nQb4QOyKX4GWiC4+QSdY+lMvGhbZowKGbFaecvKoDcLRHsMDD4jpPgABRZnkfsH0FMzLv5AYa/qw4ks+Slsi+EMuQBd0n3jMin/3R6eqNHZ06iIqJpIt25AbvCSUM0A+IXYLwk1+Hnv/wqGZLTlVJFDIYmm+eoJaI8Y03SsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789460604; c=relaxed/simple;
-	bh=Q6hjAE+9q8egGVVb02CPWb1wLjOusvGxKkXCzWLChHg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kCzpDxx8cXiQnx8vYFQFzW5b4fcdNVscnHBsUfKYs5EjS4p15M0rVszAu9qHnXhJ/t494tehcec0rcZfuVbLOzurCXdljD6a3gwMO9zV2O31MN4S6vvYNRNFHm3j2nzSuxtELkWOoYg6d9GZTjn2Hjs6JdZ04q+xC5ZY3jBXqDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ipzJcm8I; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1789461936; c=relaxed/simple;
+	bh=pBVQUYDEIa449zGkcGqUxCzep0SQppBBLbV02Ru7awY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JY+YlrIrBDwU3ipIUpyN7tGIHg9d/PX7zruwHMDyr7eEXwq4+SL/N14DWzARJLC9p7zvHkVuF9i2R/9WW4hQndEBULkyKG2jdc+c/t3YS6HcOnRKdd/PCcQtBKK+mNZ0PPHqeaMwVYZJCl6Iqwerck7x4uGh95fh1CGMcZ8P7z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iK82ENZw; arc=none smtp.client-ip=74.125.228.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ipzJcm8I"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=GLQ264WxN6wDQzABD1f2vOcHnnY8r7L3wdbiMWb63xA=; b=ipzJcm8I1ST/GUt421dYmJnfyI
-	vMJ7fwLPm50oqJU0jqpXgWe24q407KlTdH7SXHQr7TDXrJ0cM1tEYBnW9xuMF681fSZbRWEhC0xLD
-	6pneXq40+9I4oviAF01pBkAh9+iexFHZvr8Q0AJ9eQUZ1IpxpzGhf4HDVrlwFQYzTx+rlpPRZqXIS
-	bi5aWaDAYx9YdPtSyaz9+cEy9G45/haDccskEkn/nT4u1JIUGIvbu/z3wOp8oYMS5UFYrgQZ3LkKc
-	D4oDDw5Avnj0AUqbEB+wgK/erFclXrfrCAUd2232oXhxiftApCzjDlcWbdLgQanaRy0SwbWde3WVp
-	73UWs78A==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1x6ORS-00000006QWi-1bHr;
-	Tue, 15 Sep 2026 08:23:04 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id F1FDF3012C6; Tue, 15 Sep 2026 10:23:00 +0200 (CEST)
-Date: Tue, 15 Sep 2026 10:23:00 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Yury Norov <ynorov@nvidia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun@kernel.org>, Waiman Long <longman@redhat.com>,
-	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@gentwo.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Onur =?iso-8859-1?Q?=D6zkan?= <work@onurozkan.dev>,
-	Kees Cook <kees@kernel.org>,
-	Joel Granados <joel.granados@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Mike Rapoport <rppt@kernel.org>,
-	"Liam R. Howlett" <liam@infradead.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	Vlastimil Babka <vbabka@kernel.org>, Jann Horn <jannh@google.com>,
-	Pedro Falcato <pfalcato@suse.de>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowangio@gmail.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Clark Williams <clrkwllms@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	rcu@vger.kernel.org, virtualization@lists.linux.dev,
-	linux-rt-devel@lists.linux.dev, llvm@lists.linux.dev,
-	Yury Norov <yury.norov@gmail.com>
-Subject: Re: [PATCH 01/17] locking/mutex: assert static storage for
- DEFINE_MUTEX()
-Message-ID: <20260915082300.GV4121339@noisy.programming.kicks-ass.net>
-References: <20260915030336.1192299-1-ynorov@nvidia.com>
- <20260915030336.1192299-2-ynorov@nvidia.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iK82ENZw"
+Received: by mail-pz2-f43.google.com with SMTP id d2e1a72fcca58-85469e25400so2334257b3a.0
+        for <rcu@vger.kernel.org>; Tue, 15 Sep 2026 01:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789461934; x=1790066734; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=+zi0InBQk+d9zqvUf20Lgt1upBg3iykRVf2Yi8TjmXE=;
+        b=iK82ENZw3HG1bf7WPkGF1tVcn1yqqCAjazQmDOUhF+1SIeVrlaBY+JrbHIoHqRFPzq
+         C3gZkWINHxp++mqMyztuZmUAu63fS/eHQ175bTKZGshhy6FvEJ4mmTYyMvb586oORSZl
+         OrCfZ3d5ekfatIeQfLrqpdy/KeDBss+vlvsNOdjyF6dVVHd7VaWJl4e4qjyJotIEsT/E
+         84142cLZCsSft4F6nEjUliDQ6S9qwwbsp8vzBFFH6SzbJ8BaPBTdfLrnwPrchyAdGKPe
+         GOPHHuwD7tCeIqXUNG0jSc32Huk8PqFP9P6Hh/r6DfOMYD2vX9R7GB/sgfYXOiXniO2c
+         5OLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789461934; x=1790066734;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=+zi0InBQk+d9zqvUf20Lgt1upBg3iykRVf2Yi8TjmXE=;
+        b=A1+5GaIeSyWX7zxh2tkLnq4HItJVnFI2OD+GNJLe48HYnkQEHeKjyaHsezuVH5fIf9
+         EcU+FTJTXjVC2up/nVvHrXibFtcGhQFIFIVxvgzM4tcPtzfF103jBXyvr3gskv5H+ekP
+         MfDtwVaBcYQXeVuVz0scsAhlXtTzV7GBKkQIgs2MUNtBJ44YJH6L5CWmTd00swe6HbTP
+         4ninvhEHE9dHXK9upCkwhbg/C9MNLzfFwTgJuBv16Hnsebqy+u9LSXV2xChKaDbG5bOh
+         ATqcPIqVOvJ11s6szNveRKpNJLB6eDY5I7Fja7mWWYVXUrtvE2puWewKiE7ygcmRmdu6
+         DhOw==
+X-Forwarded-Encrypted: i=1; AKwUvBxEXqes57KwOJb+pJbjVIXCaty6kCZPdZzMEEcGm9BSYKBeia7hVsy4JSynmsGiKSVw19c=@vger.kernel.org
+X-Gm-Message-State: AFuF++nKt6geG4swBG5B3qKKj0PC7FukBFHOTwbIXHlFbWm/G+OOgrzC
+	/3NVo3q9JIGMTSfEnM5bQXv1zO5LfDEizrPg62IVsywGPmWGwxJynXx5
+X-Gm-Gg: AYBFou3yhP3lMcykaF85cEMwblxM8ojiHNSESR3m7BqhEfWlnKd+yWOqUgtMftbNqAL
+	XGIe1NW3jow+pg48gzP2U7FcvqN4mtwRMExLtJrQCVYaYwTloAnN2X4+D2wAZZfzkOKyioxsGPZ
+	CVZFk6ppmg6UMBQcF2SISeEhpPCUTiB+z9+4zRo3KVT3ZewYszpblNh19sn8XsOboH48B91oEkm
+	kh1js3p6U7SpdN4Mr+I2AZ/Ln+zPvefbUPz+fGh+PRKParKF0WwYLkI7IYPljtDoGMnEvH/0meE
+	CP6oHe57iDOi7vDkoKxROTs0rIw+Kl/eWAXCn+GT05nScVdmTZKTET/FNuo8ObyKO9uCK5QiGXn
+	OIrBIBHQpyb2bjMXvpuG4l/ZRHf3VQ6X/2JdASR+LTRghiUhCxXAFn3gR6AmCkSZhdEEOvQyWkD
+	q9xldyH6ktOB/GLOJ+oEhFqhqZ8VJFisP+HJxKnQ3mMTS6U5T1WH+QOYf8KeNgZzOVi/VNfrtFA
+	jasA51mmkMxbJnoalC80/Z3GkMTeWOB0Hn8Z+P9kkNJFqU=
+X-Received: by 2002:a05:6a00:3e0c:b0:86a:881e:ea38 with SMTP id d2e1a72fcca58-86f858ee0f6mr16380664b3a.12.1789461934301;
+        Tue, 15 Sep 2026 01:45:34 -0700 (PDT)
+Received: from localhost.localdomain ([2605:bc80:3010:503:f816:3eff:fe99:6bb3])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-86b292bd2fcsm5752803b3a.30.2026.09.15.01.45.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2026 01:45:33 -0700 (PDT)
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+To: paulmck@kernel.org,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lance@osuosl.org
+Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH] rcutorture: kvm-again.sh: Fix re-run failure on ppc64
+Date: Tue, 15 Sep 2026 08:45:28 +0000
+Message-Id: <20260915084528.3707627-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260915030336.1192299-2-ynorov@nvidia.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 14, 2026 at 11:03:19PM -0400, Yury Norov wrote:
-> DEFINE_MUTEX() uses a static lock initializer whose lockdep class key
-> requires a persistent object address. Reject automatic local declarations
-> with ASSERT_STATIC_STORAGE(), in both the regular and PREEMPT_RT variants.
-> Align the VMA and memblock tools stubs with the kernel declaration.
-> 
-> The two automatic mutexes in the WireGuard allowedips selftests already
-> call mutex_init(). Replace their redundant static initializers with plain
-> struct mutex declarations.
-> 
-> Assisted-by: OpenAI Codex
-> Signed-off-by: Yury Norov <ynorov@nvidia.com>
-> ---
->  drivers/net/wireguard/selftest/allowedips.c | 4 ++--
->  include/linux/mutex.h                       | 7 +++++--
->  tools/testing/memblock/linux/mutex.h        | 8 ++++++--
->  tools/testing/vma/include/dup.h             | 5 ++++-
->  4 files changed, 17 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/wireguard/selftest/allowedips.c b/drivers/net/wireguard/selftest/allowedips.c
-> index 3e857e6fb627..ecb2908228e7 100644
-> --- a/drivers/net/wireguard/selftest/allowedips.c
-> +++ b/drivers/net/wireguard/selftest/allowedips.c
-> @@ -257,7 +257,7 @@ static __init bool randomized_test(void)
->  	u8 ip[16], mutate_mask[16], mutated[16];
->  	struct wg_peer **peers, *peer;
->  	struct horrible_allowedips h;
-> -	DEFINE_MUTEX(mutex);
-> +	struct mutex mutex;
->  	struct allowedips t;
->  	bool ret = false;
->  
-> @@ -499,7 +499,7 @@ bool __init wg_allowedips_selftest(void)
->  	struct allowedips_node *iter_node;
->  	bool success = false;
->  	struct allowedips t;
-> -	DEFINE_MUTEX(mutex);
-> +	struct mutex mutex;
->  	struct in6_addr ip;
->  	size_t i = 0, count = 0;
->  	__be64 part;
+Discovered in the Open Source Lab of Oregon State University when running
+torture.sh on a ppc64le VM.  Two bugs were exposed:
 
-This should probably be a separate patch.
+1. The kvm-transform.sh call hard-coded "bzImage" as the kernel image
+   name.  On ppc64, the boot image is vmlinux, not bzImage, so the
+   re-run failed to find the image.  Fix this by extracting the QEMU
+   binary from the qemu-cmd file and passing it to identify_boot_image()
+   to obtain the correct architecture-specific image name, the same way
+   kvm.sh already does.
 
-> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-> index 734048c02f4f..2f2d95f3097c 100644
-> --- a/include/linux/mutex.h
-> +++ b/include/linux/mutex.h
-> @@ -11,6 +11,7 @@
->  #ifndef __LINUX_MUTEX_H
->  #define __LINUX_MUTEX_H
->  
-> +#include <linux/compiler.h>
->  #include <asm/current.h>
->  #include <linux/list.h>
->  #include <linux/spinlock_types.h>
-> @@ -84,7 +85,8 @@ do {									\
->  		__DEP_MAP_MUTEX_INITIALIZER(lockname) }
->  
->  #define DEFINE_MUTEX(mutexname) \
-> -	struct mutex mutexname = __MUTEX_INITIALIZER(mutexname)
-> +	struct mutex mutexname = __MUTEX_INITIALIZER(mutexname);	\
-> +	ASSERT_STATIC_STORAGE(mutexname)
+2. The rm -f invocation on re-run listed vmlinux among the files to
+   delete.  On ppc64 vmlinux is the boot image, so deleting it broke
+   the re-run on that architecture.  Drop vmlinux from the list.
 
-My tree no has ASSERT_STATIC_STORAGE. Please repost when that lands?
+Tested on a local x86_64 machine and on a PPC VM of the Open Source Lab
+of Oregon State University.
+
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+ tools/testing/selftests/rcutorture/bin/kvm-again.sh | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+index b5239b52cb5d..cacc9f2b230d 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+@@ -189,7 +189,7 @@ then
+ 		echo "Cannot copy from $oldrun to $rundir."
+ 		usage
+ 	fi
+-	rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
++	rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out} "$rundir"/log
+ 	touch "$rundir/log"
+ 	echo $scriptname $args | tee -a "$rundir/log"
+ 	echo $oldrun > "$rundir/re-run"
+@@ -217,7 +217,10 @@ do
+ 	qemu_cmd_dir="`dirname "$i"`"
+ 	kernel_dir="`echo $qemu_cmd_dir | sed -e 's/\.[0-9]\+$//'`"
+ 	jitter_dir="`dirname "$kernel_dir"`"
+-	kvm-transform.sh "$kernel_dir/bzImage" "$qemu_cmd_dir/console.log" "$jitter_dir" "$dur" "$bootargs" < $T/qemu-cmd > $i
++	qemu_binary="`grep -v '^#' $T/qemu-cmd | awk 'NF { print $1; exit }'`"
++
++	boot_image="`identify_boot_image "$qemu_binary"`"
++	kvm-transform.sh "$kernel_dir/`basename $boot_image`" "$qemu_cmd_dir/console.log" "$jitter_dir" "$dur" "$bootargs" < $T/qemu-cmd > $i
+ 	if test -n "$arg_remote"
+ 	then
+ 		echo "# TORTURE_KCONFIG_GDB_ARG=''" >> $i
+--
+2.43.0
