@@ -1,37 +1,35 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC064EDCAC;
-	Thu, 17 Sep 2026 16:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F453CD8BF;
+	Thu, 17 Sep 2026 18:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789664146; cv=none; b=sKGfc1VQ7Hqpjja4M9c7kNlgIJM6arlC07C0SGw+94sbXTr7eR8Q7SaC6PS/QwJbuAWkqrjAYqQqy1YgWIWcHDz5aC5B96Wgv5F6zXgpIS9cnkDm1ecklYbaB9FMYYoohW/k2o4jc4gJLIQBSgMR5P2n30S5VdVFhV6kB52dMhc=
+	t=1789670741; cv=none; b=Cz39GdhoVmCu//xZybCoknhIko7vE77ICjS6lvEPQn8tejKiaL4O7jiwQK4BvaLMmRx48kfcD471iWDOO5MVWiVCAm0pBpsYyMHdWRxjR80QSK67aCzexXV59WNDd/gIEXzenGoad+uB/Hyv/WMxUfggratY3mUvQQ4jcBfjWl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789664146; c=relaxed/simple;
-	bh=aWceE8YCDQTZLXjvs2oWn+fK7kFnCIQzMI9JUWzQi5I=;
+	s=arc-20240116; t=1789670741; c=relaxed/simple;
+	bh=dGPj631yJf05MB7oAsxBuAZXm3ahp193vFT2rP7+F8Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cxDCNVQJe+PmVwABEKwx1l5IKgVcNCVfOVHYu+eIkc6Sist52g5LtHdy6paL9THPFzQR0bj+Vx3B5jekgSyPMIb4kLXp2oFYXjpqTJKWyFcDk6WKLsjoDFnJSJfUo7RxbcgmclyE5qQGfo7Tt0U6iu/YXXR4qKplJDJVKiOP/Lw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T9OE8qLz; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=tdEo1M41tIse2zOGq2z8PK9Xp24WbO9eTiK8+QzOoTxF8gUPyNS4JwQHCh/vBPSJVfljMBmO2VXdELJNgAi88c+QhvW0Ex+frHZiMX9kktwQDY3tjlo4iYmT8+meowiv4GUMAqNTqQc1VyYLt8INDiDH+vAzMYA7P9jUOhJSh7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h33H9Gdu; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T9OE8qLz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45EB21F00893;
-	Thu, 17 Sep 2026 16:55:45 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h33H9Gdu"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43C4C1F00893;
+	Thu, 17 Sep 2026 18:45:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789664145;
-	bh=kimfGEK+WeQrCTnIb5ePzNtWXHK0EcqiD+euMxaQ0do=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=T9OE8qLzP1qfh6XFbx+1FEoAjXMXA5nopSdvlfyoaHtqeRG7yuIX6hvGsZ2fZDZHC
-	 LlZHivU+VHSNOyLlTJD9LcDm74HSY0oBYS6V98tfaqWPsGPg0x3pT212aZxB1cTj2h
-	 H5i+iwmISzuUJTFqG0ROiZDclaI7Dsm5HDgAJBJ1MUlStbHa5H1eEUO5Q0pdnLLmRn
-	 bfDIUKXG/xV9fr8ZZBBKeo2cOSk+IR2Blsw1i4L2ofdwxlH5VeRL80zT4LC59Fh7Zv
-	 2QJ/t3AdkTEG0yssMOFKDF+buK2RR78k+s/SfH4SFxaON89u5sImLoK7VX3+tMuq4b
-	 4hANaNhRy05TA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 0461BCE1716; Thu, 17 Sep 2026 09:55:45 -0700 (PDT)
-Date: Thu, 17 Sep 2026 09:55:44 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
+	s=k20260515; t=1789670740;
+	bh=VUqmoZ9tkjprNUAzv5MpNYkWxkSqU7Rla2JQs5OrKPE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=h33H9GduZ2Nbb//sSFkLLwqVDqBIdeknn/eumej5e7rnzoQFxi4MlgOnM2Gt6j7GB
+	 iE3tvUHRv+ixjLq+DWgWPyT7DoF/CYAC3R4euNtsJ2N4LHOUWTuAenMrDCqNT8k0zG
+	 U59UbDrs8tfw88NjPBWxAmzoXD7fWC5AStfO6GkpqIyMxP60IaZf1VURFo7L1a2N31
+	 CZ97fG48sVdVZAt67BzNGDjQ2uyRlnAdjFzsJJASWRSNkAFHDnymfoO1wKmIi3sYQ/
+	 uiC5mOc8yyM/Z/8oOa/Nnm/1UaEfhLKvQNS2zEGERuhrZ7oxaz7OX2ScghU6oH5ZC+
+	 c1PYnG1LmvA9g==
+Date: Thu, 17 Sep 2026 20:45:36 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Josef Bacik <josef@toxicpanda.com>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
 	Boqun Feng <boqun@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
@@ -59,9 +57,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	xen-devel@lists.xenproject.org
 Subject: Re: [PATCH RFC v3 03/13] rcu-tasks: Add a Tasks RCU implementation
  for reader-marked trampolines
-Message-ID: <5734196a-22ab-428e-9565-d7ba787d3eb1@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <aqqONH8flTIpOUqT@localhost.localdomain>
+Message-ID: <aqw1UNGO3cQxvCco@pavilion.home>
+References: <edc7cca2-a5c5-455c-8969-ea05dbdb08f7@paulmck-laptop>
+ <aqqONH8flTIpOUqT@localhost.localdomain>
  <91687748-0781-4133-baed-43cf82f35ff5@paulmck-laptop>
  <aqqpRoTfywUuTgoC@localhost.localdomain>
  <aqqsAUVV8a1yrQzX@localhost.localdomain>
@@ -70,42 +68,37 @@ References: <aqqONH8flTIpOUqT@localhost.localdomain>
  <8b73e1b3-0580-4ba9-b2e0-6363e429808d@paulmck-laptop>
  <aqvZwfUVsiEI7q7y@localhost.localdomain>
  <8fea176a-0ca0-4a70-8cf9-8240a22359e4@paulmck-laptop>
- <c51591e0e96c837bcd762c207e5e1869.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <c51591e0e96c837bcd762c207e5e1869.josef@toxicpanda.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8fea176a-0ca0-4a70-8cf9-8240a22359e4@paulmck-laptop>
 
-On Thu, Sep 17, 2026 at 04:35:19PM +0000, Josef Bacik wrote:
-> On Thu, 17 Sep 2026 08:40:10 -0700, Paul E. McKenney wrote:
-> > On Thu, Sep 17, 2026 at 02:14:57PM +0200, Frederic Weisbecker wrote:
-> > > You're right. So we'll indeed need to reuse the deferred qs points here.
-> >
-> > Except this is getting a bit involved.
-> >
-> > Don't get me wrong, if Josef is happy to take this on, far be it from me
-> > to stand in his way.  But if not, we should be willing to treat this
-> > optimization as a follow-on effort, whether by Josef or someone else.
+Le Thu, Sep 17, 2026 at 08:40:10AM -0700, Paul E. McKenney a écrit :
+> > > Trampolines that transfer control to tracing code could supply the needed
+> > > cleanup call.  But last I checked, there were trampolines that transferred
+> > > directly back to the original code, with no opportunity for cleaning up.
+> > > 
+> > > Or am I still missing a trick here?
+> > 
+> > You're right. So we'll indeed need to reuse the deferred qs points here.
 > 
-> Follow-on works for me. For what it's worth 03/13 is already fairly
-> close to what Frederic describes, just outside the core flavor: no
-> task-list scan (the GP waits per CPU for a pass through __schedule() or
-> an EQS), the irq-exit preemption path checks the interrupted IP and
-> queues the task as a holdout before the switch, and the holdout is keyed
-> on where the task was interrupted so nothing is needed from the
-> trampoline tail. Moving that IP check into the tick / rcu_exp_handler() /
-> deferred-QS paths and reusing the blocked-tasks list is something I'm
-> happy to look at once this has settled.
+> Except this is getting a bit involved.
 > 
-> v4 will pick up Alexei's ask (reader emitted by the BPF JIT around the
-> fentry and fexit regions rather than in the glue) and the idle-CPU hole
-> Sashiko found.
+> Don't get me wrong, if Josef is happy to take this on, far be it from me
+> to stand in his way.  But if not, we should be willing to treat this
+> optimization as a follow-on effort, whether by Josef or someone else.
 
-Even better!  ;-)
+Sure, I guess I can try the follow-on, especially if it leads to removing
+all this RCU tasks black magic.
 
-							Thanx, Paul
+Thanks.
+
+-- 
+Frederic Weisbecker
+SUSE Labs
