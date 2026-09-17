@@ -1,34 +1,36 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F453CD8BF;
-	Thu, 17 Sep 2026 18:45:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841CD3DB62F;
+	Thu, 17 Sep 2026 19:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789670741; cv=none; b=Cz39GdhoVmCu//xZybCoknhIko7vE77ICjS6lvEPQn8tejKiaL4O7jiwQK4BvaLMmRx48kfcD471iWDOO5MVWiVCAm0pBpsYyMHdWRxjR80QSK67aCzexXV59WNDd/gIEXzenGoad+uB/Hyv/WMxUfggratY3mUvQQ4jcBfjWl4=
+	t=1789673142; cv=none; b=ioLA6fslS4KjcWknNAqioVqW1xtw7hbZb3/xCPJSG6+trsYKBssgdgxPFFu73qBshAyzL0jMA/0LNM5cbOqJyWlquyDpBNTH4ono4xfKrDL+Q24dOTn12A9UDlU91fxnBtCUdkozlWj3D1mTjFA/4VZVE3mBw0FUsnaMcDT7q/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789670741; c=relaxed/simple;
-	bh=dGPj631yJf05MB7oAsxBuAZXm3ahp193vFT2rP7+F8Y=;
+	s=arc-20240116; t=1789673142; c=relaxed/simple;
+	bh=czLAL7LaYAdyalBpZ9DcSYNxTnYXR7ho600OIJotag8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tdEo1M41tIse2zOGq2z8PK9Xp24WbO9eTiK8+QzOoTxF8gUPyNS4JwQHCh/vBPSJVfljMBmO2VXdELJNgAi88c+QhvW0Ex+frHZiMX9kktwQDY3tjlo4iYmT8+meowiv4GUMAqNTqQc1VyYLt8INDiDH+vAzMYA7P9jUOhJSh7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h33H9Gdu; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=cB9Fr/R5k17DQkSLMl17WzaONQaDaPKrsbK9i+LZiGZj75UtQaCYjE7d7hJ45QvK7aX+TOGzH7r4wcuRbjc8fSTAMmv8QIDFudppFkU0tuhlMO+BKDXmP5Yvh0VEZWPrlwDXJZ0V6awWGReO0DZbN3T5bAs4ECEGhHkyn9YSZEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZmJyLGnY; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h33H9Gdu"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43C4C1F00893;
-	Thu, 17 Sep 2026 18:45:39 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZmJyLGnY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05E491F000FF;
+	Thu, 17 Sep 2026 19:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789670740;
-	bh=VUqmoZ9tkjprNUAzv5MpNYkWxkSqU7Rla2JQs5OrKPE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=h33H9GduZ2Nbb//sSFkLLwqVDqBIdeknn/eumej5e7rnzoQFxi4MlgOnM2Gt6j7GB
-	 iE3tvUHRv+ixjLq+DWgWPyT7DoF/CYAC3R4euNtsJ2N4LHOUWTuAenMrDCqNT8k0zG
-	 U59UbDrs8tfw88NjPBWxAmzoXD7fWC5AStfO6GkpqIyMxP60IaZf1VURFo7L1a2N31
-	 CZ97fG48sVdVZAt67BzNGDjQ2uyRlnAdjFzsJJASWRSNkAFHDnymfoO1wKmIi3sYQ/
-	 uiC5mOc8yyM/Z/8oOa/Nnm/1UaEfhLKvQNS2zEGERuhrZ7oxaz7OX2ScghU6oH5ZC+
-	 c1PYnG1LmvA9g==
-Date: Thu, 17 Sep 2026 20:45:36 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
+	s=k20260515; t=1789673141;
+	bh=6ZHuttUZCZV4Q8v2OQevWMSgjgpr+6xpv1ywa/+PiNQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=ZmJyLGnYRfFoBTzswnP6QdP7lKNX+3Ys095RUqDUlO0tsNO6mp4CvE8vzXJshuXn3
+	 xPFaDeRb2lcvGNDMeQAUSCw/Rg+CJ9n0q4PX8I1RTGAt+Xo3pxykRcqTvcWblVj5h9
+	 6+hFH6z4eRU+l6RfZ+MRN0rjwcm87Nc8Izl8PAbUP7xB845hooRtpCO93tjcAS3JAs
+	 DTb/96iIH3u0adZnc6wfmhiAMA/a8K1oYVoa34Q2L55mtv4tc1KbrzuTbxZidisC0S
+	 7GQbNlj3RmNxpKB49XH1ngw38N9/b1jZSSzgmucNSbV+mc3gCV8a5GAyELDmojUOW0
+	 ZtTl62/MsQchQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id BA399CE1771; Thu, 17 Sep 2026 12:25:40 -0700 (PDT)
+Date: Thu, 17 Sep 2026 12:25:40 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
 Cc: Josef Bacik <josef@toxicpanda.com>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
@@ -57,9 +59,9 @@ Cc: Josef Bacik <josef@toxicpanda.com>,
 	xen-devel@lists.xenproject.org
 Subject: Re: [PATCH RFC v3 03/13] rcu-tasks: Add a Tasks RCU implementation
  for reader-marked trampolines
-Message-ID: <aqw1UNGO3cQxvCco@pavilion.home>
-References: <edc7cca2-a5c5-455c-8969-ea05dbdb08f7@paulmck-laptop>
- <aqqONH8flTIpOUqT@localhost.localdomain>
+Message-ID: <33b8e33a-3fad-4b33-9ae7-3948f0e6d3aa@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <aqqONH8flTIpOUqT@localhost.localdomain>
  <91687748-0781-4133-baed-43cf82f35ff5@paulmck-laptop>
  <aqqpRoTfywUuTgoC@localhost.localdomain>
  <aqqsAUVV8a1yrQzX@localhost.localdomain>
@@ -68,6 +70,7 @@ References: <edc7cca2-a5c5-455c-8969-ea05dbdb08f7@paulmck-laptop>
  <8b73e1b3-0580-4ba9-b2e0-6363e429808d@paulmck-laptop>
  <aqvZwfUVsiEI7q7y@localhost.localdomain>
  <8fea176a-0ca0-4a70-8cf9-8240a22359e4@paulmck-laptop>
+ <aqw1UNGO3cQxvCco@pavilion.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -77,28 +80,27 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8fea176a-0ca0-4a70-8cf9-8240a22359e4@paulmck-laptop>
+In-Reply-To: <aqw1UNGO3cQxvCco@pavilion.home>
 
-Le Thu, Sep 17, 2026 at 08:40:10AM -0700, Paul E. McKenney a écrit :
-> > > Trampolines that transfer control to tracing code could supply the needed
-> > > cleanup call.  But last I checked, there were trampolines that transferred
-> > > directly back to the original code, with no opportunity for cleaning up.
+On Thu, Sep 17, 2026 at 08:45:36PM +0200, Frederic Weisbecker wrote:
+> Le Thu, Sep 17, 2026 at 08:40:10AM -0700, Paul E. McKenney a écrit :
+> > > > Trampolines that transfer control to tracing code could supply the needed
+> > > > cleanup call.  But last I checked, there were trampolines that transferred
+> > > > directly back to the original code, with no opportunity for cleaning up.
+> > > > 
+> > > > Or am I still missing a trick here?
 > > > 
-> > > Or am I still missing a trick here?
+> > > You're right. So we'll indeed need to reuse the deferred qs points here.
 > > 
-> > You're right. So we'll indeed need to reuse the deferred qs points here.
+> > Except this is getting a bit involved.
+> > 
+> > Don't get me wrong, if Josef is happy to take this on, far be it from me
+> > to stand in his way.  But if not, we should be willing to treat this
+> > optimization as a follow-on effort, whether by Josef or someone else.
 > 
-> Except this is getting a bit involved.
-> 
-> Don't get me wrong, if Josef is happy to take this on, far be it from me
-> to stand in his way.  But if not, we should be willing to treat this
-> optimization as a follow-on effort, whether by Josef or someone else.
+> Sure, I guess I can try the follow-on, especially if it leads to removing
+> all this RCU tasks black magic.
 
-Sure, I guess I can try the follow-on, especially if it leads to removing
-all this RCU tasks black magic.
+That sounds most excellent, thank you!
 
-Thanks.
-
--- 
-Frederic Weisbecker
-SUSE Labs
+							Thanx, Paul
