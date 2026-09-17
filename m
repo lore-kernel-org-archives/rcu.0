@@ -1,37 +1,35 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841CD3DB62F;
-	Thu, 17 Sep 2026 19:25:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC93455177;
+	Thu, 17 Sep 2026 20:20:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789673142; cv=none; b=ioLA6fslS4KjcWknNAqioVqW1xtw7hbZb3/xCPJSG6+trsYKBssgdgxPFFu73qBshAyzL0jMA/0LNM5cbOqJyWlquyDpBNTH4ono4xfKrDL+Q24dOTn12A9UDlU91fxnBtCUdkozlWj3D1mTjFA/4VZVE3mBw0FUsnaMcDT7q/U=
+	t=1789676425; cv=none; b=lPu6RL+yAVbNRL7FlnDVEPoLlzgF7WXmFob8gerdC4YyzrgxXnQ899PvMffN66qGzgSWPPAE8JUJUhteYlixiXW9SAz6Jt3e6nW1Z8KyWlR0nUJnr0bTUR80PoXjt+Vy7KEpokR52GrjTFVpZDT8DmmEewGpGkFHGiCVu0OcRIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789673142; c=relaxed/simple;
-	bh=czLAL7LaYAdyalBpZ9DcSYNxTnYXR7ho600OIJotag8=;
+	s=arc-20240116; t=1789676425; c=relaxed/simple;
+	bh=oWjwb4nFaXRFt4yVJZJpkvsMNBPQafOQTmA09ILhaLA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cB9Fr/R5k17DQkSLMl17WzaONQaDaPKrsbK9i+LZiGZj75UtQaCYjE7d7hJ45QvK7aX+TOGzH7r4wcuRbjc8fSTAMmv8QIDFudppFkU0tuhlMO+BKDXmP5Yvh0VEZWPrlwDXJZ0V6awWGReO0DZbN3T5bAs4ECEGhHkyn9YSZEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZmJyLGnY; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=qtfkcdcS7B1N0mzrKnfU9jZbRv7DcC6XbEoramUFdfPIoW8icP6F6bqZf8vNiUmq449doiQLHwLdj5kv8At6mJ8azoNXi8fjoMqL+NC41mirZ+h+WOfa3kCHYrWll1aoasKCMPiyLrhaTRQR/lFZhoRBMLaVRzYBDZxYWCMKrSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FgWzVoH4; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZmJyLGnY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05E491F000FF;
-	Thu, 17 Sep 2026 19:25:41 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FgWzVoH4"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B03F1F000FF;
+	Thu, 17 Sep 2026 20:20:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789673141;
-	bh=6ZHuttUZCZV4Q8v2OQevWMSgjgpr+6xpv1ywa/+PiNQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=ZmJyLGnYRfFoBTzswnP6QdP7lKNX+3Ys095RUqDUlO0tsNO6mp4CvE8vzXJshuXn3
-	 xPFaDeRb2lcvGNDMeQAUSCw/Rg+CJ9n0q4PX8I1RTGAt+Xo3pxykRcqTvcWblVj5h9
-	 6+hFH6z4eRU+l6RfZ+MRN0rjwcm87Nc8Izl8PAbUP7xB845hooRtpCO93tjcAS3JAs
-	 DTb/96iIH3u0adZnc6wfmhiAMA/a8K1oYVoa34Q2L55mtv4tc1KbrzuTbxZidisC0S
-	 7GQbNlj3RmNxpKB49XH1ngw38N9/b1jZSSzgmucNSbV+mc3gCV8a5GAyELDmojUOW0
-	 ZtTl62/MsQchQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BA399CE1771; Thu, 17 Sep 2026 12:25:40 -0700 (PDT)
-Date: Thu, 17 Sep 2026 12:25:40 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Josef Bacik <josef@toxicpanda.com>,
+	s=k20260515; t=1789676420;
+	bh=RXB70s8tC0N4djKhk6YxK6M2sEK0IClm9i5YiNUGtD8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=FgWzVoH4Tdgc3xbhEiQn7a6FJ/07+ERma5xsfx6CkqdFWA+dhVut+XxWCw+O3cdHo
+	 353RpR9YS4TSztc8wrKkHDyD3hOLYGP+SFrzV6RR38x+cCsWQrL4Tkx0apZ1LOlbjD
+	 Pw+ePTdyDbLqc4xmPt8BS1hyD5vEys0JA49NovRKLhSpDUz7u0bVIDfae91KAFjAWu
+	 Lc2oIXJ0sLEUOn/7zsKrlGx2h278H2Ocj/FRGNmzwEbvq6nCQj5a4GNBMRZ3Brx1y7
+	 Mq5DVlrP4IJn0NFAcN7hGMfB3aMSFA7idC83SWUP1zSgwwVqHLkW2tXu3aIDr+xk1O
+	 XIViCSjFySfOA==
+Date: Thu, 17 Sep 2026 22:20:17 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
 	Boqun Feng <boqun@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
@@ -59,18 +57,9 @@ Cc: Josef Bacik <josef@toxicpanda.com>,
 	xen-devel@lists.xenproject.org
 Subject: Re: [PATCH RFC v3 03/13] rcu-tasks: Add a Tasks RCU implementation
  for reader-marked trampolines
-Message-ID: <33b8e33a-3fad-4b33-9ae7-3948f0e6d3aa@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <aqqONH8flTIpOUqT@localhost.localdomain>
- <91687748-0781-4133-baed-43cf82f35ff5@paulmck-laptop>
- <aqqpRoTfywUuTgoC@localhost.localdomain>
- <aqqsAUVV8a1yrQzX@localhost.localdomain>
- <6afb0afe-e7b8-46b4-9fea-2c7cf4791044@paulmck-laptop>
- <aqq0cwvRDsorGwgc@localhost.localdomain>
- <8b73e1b3-0580-4ba9-b2e0-6363e429808d@paulmck-laptop>
- <aqvZwfUVsiEI7q7y@localhost.localdomain>
- <8fea176a-0ca0-4a70-8cf9-8240a22359e4@paulmck-laptop>
- <aqw1UNGO3cQxvCco@pavilion.home>
+Message-ID: <aqxLgT41UyA-bV5J@pavilion.home>
+References: <20260915-b4-rcu-tasks-preempt-qs-v3-0-0ad30c4c5ee7@toxicpanda.com>
+ <20260915-b4-rcu-tasks-preempt-qs-v3-3-0ad30c4c5ee7@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -80,27 +69,73 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <aqw1UNGO3cQxvCco@pavilion.home>
+In-Reply-To: <20260915-b4-rcu-tasks-preempt-qs-v3-3-0ad30c4c5ee7@toxicpanda.com>
 
-On Thu, Sep 17, 2026 at 08:45:36PM +0200, Frederic Weisbecker wrote:
-> Le Thu, Sep 17, 2026 at 08:40:10AM -0700, Paul E. McKenney a écrit :
-> > > > Trampolines that transfer control to tracing code could supply the needed
-> > > > cleanup call.  But last I checked, there were trampolines that transferred
-> > > > directly back to the original code, with no opportunity for cleaning up.
-> > > > 
-> > > > Or am I still missing a trick here?
-> > > 
-> > > You're right. So we'll indeed need to reuse the deferred qs points here.
-> > 
-> > Except this is getting a bit involved.
-> > 
-> > Don't get me wrong, if Josef is happy to take this on, far be it from me
-> > to stand in his way.  But if not, we should be willing to treat this
-> > optimization as a follow-on effort, whether by Josef or someone else.
-> 
-> Sure, I guess I can try the follow-on, especially if it leads to removing
-> all this RCU tasks black magic.
+Le Tue, Sep 15, 2026 at 01:17:30PM +0000, Josef Bacik a écrit :
+> +static void rcu_tasks_tramp_hold(struct task_struct *t)
+> +{
+> +	unsigned long flags;
+> +
+> +	if (t->rcu_tasks_holdout)
+> +		return;
+> +	raw_spin_lock_irqsave(&rcu_tasks_tramp_lock, flags);
+> +	list_add_tail(&t->rcu_tasks_holdout_list, &rcu_tasks_tramp_holdouts);
+> +	WRITE_ONCE(t->rcu_tasks_holdout, true);
+> +	raw_spin_unlock_irqrestore(&rcu_tasks_tramp_lock, flags);
+> +}
+> +
+> +static void rcu_tasks_tramp_release(struct task_struct *t)
+> +{
+> +	unsigned long flags;
+> +
+> +	if (likely(!t->rcu_tasks_holdout))
+> +		return;
+> +	raw_spin_lock_irqsave(&rcu_tasks_tramp_lock, flags);
+> +	list_del_init(&t->rcu_tasks_holdout_list);
+> +	WRITE_ONCE(t->rcu_tasks_holdout, false);
+> +	raw_spin_unlock_irqrestore(&rcu_tasks_tramp_lock, flags);
+> +}
+> +
+> +/**
+> + * rcu_tasks_irq_resched_enter - Tasks RCU hook for the irq-exit reschedule check
+> + * @ip: instruction pointer of the interrupted (task-level) context
+> + *
+> + * Called with interrupts disabled when an interrupt returning to kernel
+> + * mode is about to preempt_schedule_irq(), the one context switch that can
+> + * catch a task inside unmarked trampoline text.  Record where the task is
+> + * parked for as long as it is (rcu_tasks_wait_irq_preempted() looks at
+> + * that), and if it is inside such text make it a holdout before
+> + * __schedule() reports the quiescent event; if it is not, this is as good
+> + * as a voluntary switch for ending an earlier hold.
+> + */
+> +void rcu_tasks_irq_resched_enter(unsigned long ip)
+> +{
+> +	struct task_struct *t = current;
+> +	struct rcu_tasks_percpu *rtpcp = this_cpu_ptr(rcu_tasks.rtpcpu);
+> +
+> +	lockdep_assert_irqs_disabled();
+> +	WRITE_ONCE(t->rcu_tasks_irq_ip, ip);
+> +	t->rcu_tasks_exit_cpu = smp_processor_id();
+> +	raw_spin_lock_rcu_node(rtpcp);
+> +	list_add(&t->rcu_tasks_exit_list, &rtpcp->rtp_exit_list);
+> +	raw_spin_unlock_rcu_node(rtpcp);
 
-That sounds most excellent, thank you!
+I don't think we can do that. This is too much unconditional overhead
+on the hot preemption path. rcu_tasks_trampoline_text() should be
+a condition here.
 
-							Thanx, Paul
+And do we really need to maintain both lists? I understand that they
+have different purposes.
+
+->rcu_tasks_exit_list is to track preempted tasks on trampoline
+->rcu_tasks_holdout_list is to track preempted tasks on trampoline until
+                         they ever voluntary schedule()
+
+Can the latter replace the former? I see it's used on kprobes and others
+but I haven't checked the details yet.
+
+Thanks.
+
+-- 
+Frederic Weisbecker
+SUSE Labs
