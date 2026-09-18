@@ -1,151 +1,143 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed2-f12.google.com (mail-ed2-f12.google.com [74.125.228.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8023822AB;
-	Fri, 18 Sep 2026 07:21:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789716086; cv=none; b=AoodoNTFhPfAppf+qUgog/OAGk1K1OcBMG95HWANPFCkgaf5abgZZ3wTQsmqs0TBOGkdhixfhiGlzCMLe54v3ZMQqbN0UR+IpxQ3OA7EQhl5pjmJrkEJ3JWmdMmJvC82ok2s/JbU9yC45I5i6Bt7GSOaQ5WC+PD9dqEriqBY9TA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789716086; c=relaxed/simple;
-	bh=Iy7bkh5vIebmNDnBZ9FlcoTjXHFsR7t/BHeRh/TiS5U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ote9+Kva0NZM9RgNhrTe1T3ou2Y9/aHZKNdZ4Wvjw3lZtwgjOcPowMPdiQ7B0IablGM1O2Jv1SCfM6hlpo/CzGVq/bpzksK5uh3SdnceeKt5PSO9L+zQGFy4mOMbhUcE9D4RAMl2CTMWi6wKWs/kkvwIRdVD9kqOXwv9SXIx9Xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NIyTlj5N; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFC84D9F67
+	for <rcu@vger.kernel.org>; Fri, 18 Sep 2026 10:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.228.76
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789729136; cv=pass; b=BKpD0AB2kiRv8OL/VbtFnCBqXR127VF0PV5lLlymQ+yTPPLw7cnepumYs1Fq6JHldSiIdfo2MINJWkNcPcDXv9Ugi+jPmY6UC4RnsRIgkDZD23GFKfhxN/5K8xpBn9fl+mUpzP7q3GSzgBAddKEigMi4Od6dT+TBxSB55OgUwvQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789729136; c=relaxed/simple;
+	bh=PU4xhmlWx858BmE7gAAS85VxJCPseREW97uqiUcKVyg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KzoKFXiv7O370oLkitrVHqv8qd69c/j6lQitY2nl0YminajhY7Q57XWhhbewkD4FD6VWKpDX60CW1WiVRKjatgycnGCRgP0hsVSOz9uavNo+r/nnbWnVEsCv9tjbBFncFr8JOfnAer3TfEHEclihTBJNina0+HMA3sOkzZCsb6k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=qg9uBU6W; arc=pass smtp.client-ip=74.125.228.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NIyTlj5N"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDEC21F000FF;
-	Fri, 18 Sep 2026 07:21:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789716084;
-	bh=obg8mrHZCzteuKsjo7uKdsL8y41j6SI2KsHB7Htsuzk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=NIyTlj5NJMuaPvyQ0XBnI1g4RrH1i2vsqeU5lgtPy1mcmGtvatA8gdIG2GifZnvBT
-	 8Rsiih3bsJlYTSvo6buCgjlOkIXwIumRxGoV5i3swZs+YbwhwPxVw/NylyqbgWvUFm
-	 2pzeZO4Ic3AtUaTeL/lJWqjQmBDOxnf6O4XctyuNRsyUUdd6ce89XQxHZAw0eHCMG1
-	 vTl+7z+qj2O0FweW32GKRGefz09ejUwtNWjgeiXKAjkwHUABi28uBAC83Zp7Mivq21
-	 VwNzwVrfZ5UdW+Vb+SqPxPixX/bOhscg1YZ5skM5x9iClqTW9d4n+l+ZKEIVSJdtDW
-	 NwZ6DaeJ040oA==
-Date: Fri, 18 Sep 2026 09:21:18 +0200
-From: Joel Granados <joel.granados@kernel.org>
-To: Yury Norov <ynorov@nvidia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Matthew Wilcox <willy@infradead.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, Boqun Feng <boqun@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Christoph Lameter <cl@gentwo.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang@linux.dev>, Onur =?utf-8?B?w5Z6a2Fu?= <work@onurozkan.dev>, 
-	Kees Cook <kees@kernel.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
-	Thomas Gleixner <tglx@kernel.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Mike Rapoport <rppt@kernel.org>, "Liam R. Howlett" <liam@infradead.org>, 
-	Lorenzo Stoakes <ljs@kernel.org>, Vlastimil Babka <vbabka@kernel.org>, 
-	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowangio@gmail.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, wireguard@lists.zx2c4.com, 
-	netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	rcu@vger.kernel.org, virtualization@lists.linux.dev, linux-rt-devel@lists.linux.dev, 
-	llvm@lists.linux.dev, Yury Norov <yury.norov@gmail.com>
-Subject: Re: [PATCH 17/17] sysctl: assert static storage for
- DEFINE_CTL_TABLE_POLL()
-Message-ID: <av3s3fgets23siaqxbtyu5gvcekqpq2nmyey6oa6o6amfj6jbi@zomsnfvvxtf4>
-References: <20260915030336.1192299-1-ynorov@nvidia.com>
- <20260915031334.1194975-12-ynorov@nvidia.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qg9uBU6W"
+Received: by mail-ed2-f12.google.com with SMTP id 4fb4d7f45d1cf-6a8038a9f10so798170a12.1
+        for <rcu@vger.kernel.org>; Fri, 18 Sep 2026 03:58:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789729133; cv=none;
+        d=google.com; s=arc-20260327;
+        b=d2TEOS90NZxG3l5luh0Z2vBulCCWKlUkoiI9f3g7dM+/G6fv20dSN6uqvXxyYwpCgu
+         UUTzuA1ux5ntep37sJoM4AqCbRN1Aj8193SQa45ZfiLc+NuQ9h5SgjRokPXG9CzEt8NQ
+         jT9m+JEzQgUf9Ai9GsJ7O7Ru2c9K2V8s11r1HjyuIeLRMFzvQH4tKmDFiDTAyjRksiSj
+         kipvshrkMMdfAoaPXuQIbe1tp/2RRF0qPVuJ6fGGlokz1qp/mNKwmPb3jDqTMrfBI9UG
+         2kZFuIuM2Fui3r2JVL/ijiCvJVH1I35JaHwXE8Gvbq+G3vr9e2vjS9KZrM80CGy8TYLG
+         YCew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=TMlA0tagVtBjA8CCzucBdpIo0a7MTz4RNAsPRQEaGLQ=;
+        fh=2u2uSlRerU4c74QJrOK2xzPN5Ud56kHmuymBgEd6q1Q=;
+        b=o7niJxK4YtGCnhQZ+GWEKoV+WqEMMDWCMsHV1iBXX3K3gAZZ+6DSSVbHjbtHfHcshP
+         dwTDC44Adp+4UGwph1+rF5HsuIxA/aWjKhgno31LugfZZds3nVqSp9mUGPHMafQOzxbi
+         OsRUX70oW4CswrVYV3XoakKaZD75LqdBba1eR7g6/kqaUFVJ2rtjMNFa3LnHxc+kVARv
+         9W4e0C7niM+slRu/B5SDwyAJA+dnz8hgw9g+X7X6ElBStOICOhqUPW7//VF/VRe+99vZ
+         NZyrNzaHQF3KdYLKnYUhbyThFSiCML9/P+wsKPHeOyoCOekGhURcWIyfyZK4IIZSwzl0
+         GMuA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789729133; x=1790333933; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=TMlA0tagVtBjA8CCzucBdpIo0a7MTz4RNAsPRQEaGLQ=;
+        b=qg9uBU6Wbtt/PrcgcTz3vqvEsOLvMhziTScyWWiwCcA5pOLloCJ2fNDO6ZNrcVDLAl
+         IsThsX0TApaEVuyzKvbSLLqMilhqC83YiuF82mS3GpjdB+RlNhFWZWcPpTTFN+JKyQtj
+         ADoHc5GAQmqkBOSeAVoS2lvzr55HXljR3XiakLZVfwlbo9YQA4AhD7HNJSeMUFkDrLFH
+         loGtB/FV0XiYupgEIgYuA4ViqTUI5ycGfyndulT3AxT9Vtaw97orDzYDwcMFEl8YT7ud
+         DRJMc30zJRpPlG2ppQGaeYEPX0LO6eJAQNcR7sJesIvEZRtV3WFKqLY8Xk8HsgqjATIK
+         g2Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789729133; x=1790333933;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=TMlA0tagVtBjA8CCzucBdpIo0a7MTz4RNAsPRQEaGLQ=;
+        b=0VnA35AJ80iC5b4uIBQX2wpnw5L8XFEN57Po51MHW37hp6Q7ah0dfmxGbu5rsZOAS9
+         njF3wxXTV6BawXlxy2qEP3rXAyclFRe0q8QUtbM3nrzm+Az8FT+BiaojqTKdqFtSR3rc
+         PVOxSsLggBiwgbm4R8Tto7pfy1Z8gLD5r/8gsfgNbEPfRLIyeUjiEMqQtgSQmJTJq8SC
+         5d7Iiq8+V15ZIgUMWxd7ivCkoippjJB4Ul8eI9/fq9woffpqVVsOCZg8dFH/mMxMHiui
+         2ylHwmvk7mz4Bf1OjIfBFiCVHdZ5h9wY5t58hjhPikMZgoBDlYPSc0JA7t6CCsPO0hm7
+         RG5A==
+X-Forwarded-Encrypted: i=1; AKwUvBw9JSGVH+JTQ4cTpe2TeNRGNQEbSsTdEvEDJyqEbJkOsZkMjKDhyLdmrX4Itkbu4BsPcF4=@vger.kernel.org
+X-Gm-Message-State: AFuF++lni79ZV23+6BogjV9UwW6tlZ65fvplZLiHtJ/s9/+kkYkKxxQY
+	Aa8I3ILaOcVfqMNHQmMOa5Apo0HnB8erhkNMP/flGAZLvYdPgMApQGUA4mBBHHQkqCdVv5hzaNT
+	OdnJqhhk3Bi9t4XierITJRhqsrwqyfaE=
+X-Gm-Gg: AYBFou3+xZ3q2qnyAREDlhWDBDn/9/OqzcpN+1tLzwI4udtyX2gWqlecdi7dUc0kWFN
+	xrTCOYtR7d19BWssPP7XJBiMLaHAV9rQoZHC7UHxjs9p+mIe4dxmQaT39/eW1AODkbxvTNh+/pt
+	hrXcGOuilo7VezfUgPgo4GhZVBBYDPF9YG/NbykeqGo9e6SKF1nK7D2jF/X5ikYOu96BKntSIjm
+	n5w6z0oWz0DUYaqul7qZwuaPNaNavDnq1M6egHKgdDJikBnEFJkiRZyHDkTHt+M24l+4QN0OUtw
+	O1a0EqyoQfSyBG9pmzbJfFMmb8KDrUn496lJ4KImsOSaCDJ5CO6y8FbfgWuOUI3TIhqgXI4=
+X-Received: by 2002:a05:6402:3044:b0:6a9:a137:9ab with SMTP id
+ 4fb4d7f45d1cf-6aa5637c07emr846362a12.20.1789729132429; Fri, 18 Sep 2026
+ 03:58:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ds2q3rrmscwpm7nx"
-Content-Disposition: inline
-In-Reply-To: <20260915031334.1194975-12-ynorov@nvidia.com>
-
-
---ds2q3rrmscwpm7nx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20260915154248.3612028-1-puranjay@kernel.org> <20260915154248.3612028-2-puranjay@kernel.org>
+ <210f1bfa-e6ae-4d1e-a920-a6c8c9b4269f@gmail.com>
+In-Reply-To: <210f1bfa-e6ae-4d1e-a920-a6c8c9b4269f@gmail.com>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Fri, 18 Sep 2026 11:58:40 +0100
+X-Gm-Features: AcwNN1XZfTXkkKX_3JGi9RfSU461tgxxBg-bsGDiIbVR7bDjvuhObthNgEN_2_c
+Message-ID: <CANk7y0gzipiJrObW0fbh0gP2DgKeZAUvCNuvaOdJrGWgE81LkQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/4] bpf: Add bpf_call_rcu() kfunc
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, rcu@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, "Harry Yoo (Oracle)" <harry@kernel.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 14, 2026 at 11:13:32PM -0400, Yury Norov wrote:
-> DEFINE_CTL_TABLE_POLL() statically initializes an embedded wait queue.
-> An automatic local poll object cannot provide the persistent lockdep
-> class key expected by its wait queue lock.
->=20
-> Add ASSERT_STATIC_STORAGE() to reject automatic declarations while
-> preserving file-scope and static local definitions. Leave the underlying
-> initializer available for embedded objects.
->=20
-> Assisted-by: OpenAI Codex
-> Signed-off-by: Yury Norov <ynorov@nvidia.com>
-> ---
->  include/linux/sysctl.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-> index e5d7226ab6f5..be79359346af 100644
-> --- a/include/linux/sysctl.h
-> +++ b/include/linux/sysctl.h
-> @@ -22,6 +22,7 @@
->  #ifndef _LINUX_SYSCTL_H
->  #define _LINUX_SYSCTL_H
-> =20
-> +#include <linux/compiler.h>
->  #include <linux/list.h>
->  #include <linux/rcupdate.h>
->  #include <linux/wait.h>
-> @@ -216,7 +217,8 @@ static inline void *proc_sys_poll_event(struct ctl_ta=
-ble_poll *poll)
->  	.wait =3D __WAIT_QUEUE_HEAD_INITIALIZER(name.wait) }
-> =20
->  #define DEFINE_CTL_TABLE_POLL(name)					\
-> -	struct ctl_table_poll name =3D __CTL_TABLE_POLL_INITIALIZER(name)
-> +	struct ctl_table_poll name =3D __CTL_TABLE_POLL_INITIALIZER(name);	\
-> +	ASSERT_STATIC_STORAGE(name)
-> =20
->  /* A sysctl table is an array of struct ctl_table: */
->  struct ctl_table {
-> --=20
-> 2.53.0
->=20
+On Wed, Sep 16, 2026 at 7:41=E2=80=AFPM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
+>
+> On 9/15/26 4:42 PM, Puranjay Mohan wrote:
+> > BPF programs that manage their own objects have no way to run their own
+> > logic once an RCU grace period has elapsed.  bpf_obj_drop() defers a
+> > free, but returning an index to an allocator or unpinning a resource
+> > once readers are done has no equivalent.  sched_ext's BPF library works
+> > around this today by pushing freed nodes onto a list and having a
+> > userspace thread call membarrier(MEMBARRIER_CMD_GLOBAL) and then run a
+> > BPF program to reclaim them.
+> >
+> > Add:
+> >
+> >       int bpf_call_rcu(struct bpf_rcu_head *rh, void *map,
+> >                        int (*callback)(struct bpf_map *map, void *key,
+> >                                        void *value));
+> >
+> > @rh is a struct bpf_rcu_head embedded in a value of @map, so the
+> > callback runs as callback(map, key, value) for the element it lives in
+> > and needs no cookie.  A head can only be armed once, which bounds
+> > outstanding work by the number of elements.
+> >
+> > struct bpf_rcu_head holds the callback state inline rather than a
+> > pointer to it, as bpf_timer, bpf_wq and bpf_task_work do, because there
+> > is nothing to cancel and so nothing that has to outlive the map value.
+>
+> I tried to fully embed structure back when implementing bpf_task_work,
+> Alexei rejected that approach, because some of the structures (irq_work) =
+I used
+> are not in our control and might change. I think this applies here: `stru=
+ct rcu_head rcu`.
+>
+> Link: https://lore.kernel.org/bpf/CAADnVQJy0tAj9jkLrD1cBFkLK-DayjG6uNGZ3O=
+BQh4V5Zt=3DWnQ@mail.gmail.com/
 
-This looks OK for sysctl and the two users of DEFINE_CTL_TABLE_POLL in
-utsname_sysctl.c (hostname_poll and domainname_poll)
+I agree with your analysis. Although struct rcu_head is unlikely to
+change but still, I will change this to a heap allocated version where
+we only keep a pointer and not the structure inline.
 
-Reviewed-by: Joel Granados <joel.granados@kernel.org>
-
-Best
-
---ds2q3rrmscwpm7nx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmqs5mgACgkQupfNUreW
-QU+Slwv/V1va9Xy3ewVVGpZbKof7lX0SuxpAV+wYGoQU9hE6Ofexe2lgpstvBg5q
-R4BplT9ThJvF8d3hzCkPNWmWHuXW19VfnmKKdy7zNHYo8lyVLEyFmOlw+3sZ6czr
-e7JVfspT2rWbf/0oF8GiQvMCV31pFqQty+c4bb5ZV64xBCKqIxBX9DMXYOstdt1z
-hRlSyBTjYabun1LJPo7Nkj/puYlCklMcipRzJNONXZgWt0LFRsCYSZRrAdk2ISeP
-y7e87NG2DiVBd/d58WvPvdwdpmhX4vHSNXdSbeLwTn26F3bg7yaNsXd2sCSVTu/o
-4S0G/bMFUP/e2oNe/wtaO+XBnDhJYPk3DGvYkFf/C8DFyCVi36tjb4SrQv3D0QV9
-PGWE2Hek8KHr3W4oRbZIQm6zMUwg9/fu4speRR5+1xnuBlVsRXtEOQgEr/DkWYHw
-8SYHe3rOXtaFsbMWdItXR1CRib516haep77aGjErq93c3ViZF1JEEMBQdXjqjWmm
-LKs/7uqR
-=5LAv
------END PGP SIGNATURE-----
-
---ds2q3rrmscwpm7nx--
+Thanks
