@@ -1,99 +1,104 @@
-Received: from mail-qk2-f41.google.com (mail-qk2-f41.google.com [74.125.230.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9436750B8A5
-	for <rcu@vger.kernel.org>; Fri, 18 Sep 2026 15:48:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.230.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183B7503BD6;
+	Fri, 18 Sep 2026 16:03:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789746521; cv=none; b=hxvC9jc9mHJ5sql1agi7hqSG3Ylo0YbrZIXeCS2QXM1CRimztSitk2EZcAG+sdQXq6X6naQg9A8lg5tMNCNgWO0TJWpy98p2gQh1ooFqxD4undz3B3HUQoMxUW1Tv/gZi5SHe1dmKzWx7eal8e6+EENUNdb8iTdb2Uwkbbj/KyQ=
+	t=1789747413; cv=none; b=JcfWRWUxuZIz2Cl519TuW55utkHaaIv2x8rW/8vlpSc31ZI56cHsd6ww4G8m+CZYyeqnYRy8fvcSU+61e2bLsax2X4q27dl96yHY4ChhG6yCGHieNdXNQr7NRmFOsH/9+FEBBjAuZuw75NIsQWYVEwsGGdHF/pgnuLZn08IiMbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789746521; c=relaxed/simple;
-	bh=DCEr206mu1fTBop+5gRQZ8IwHub77AxoSPqpcC21zvQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qBR0tGGBU7BiCXQaxc0OCTopk58ChEKiAwhtXN+KktgGxoF0qSk9pB4sGecMny2UJM0fyfoMZaozurMIOkfdJO2/lyTz493sq/nu41KG+yCVIAwaK4U2OTESRmkLBGApUK2V+1Qefw3s2yxjIgYufU6vlH/TSruvl58nWSuoZHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=I9s5XHNo; arc=none smtp.client-ip=74.125.230.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toxicpanda.com
+	s=arc-20240116; t=1789747413; c=relaxed/simple;
+	bh=DB4URamTeFXA1F7Asd/w5fTl+Omd1qMaNbg2C0oPT+g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kDGgH/IcYldhN30UhnHKqLuhCvPI9qL3vCJIoMUY5DyFYdj5letiSvQUfczVLYX6jRGeqP4HxtqNjz7EEpLmvIqpzytPgrqyMyTtPHbz35tLriIK8eSP+h+vl7xT588ahYA5lEZDRdRTC9IjQ9f3fd5ij91YKayiwET7TCDQDAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h/H6NXfs; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="I9s5XHNo"
-Received: by mail-qk2-f41.google.com with SMTP id af79cd13be357-93910ad2273so114021685a.0
-        for <rcu@vger.kernel.org>; Fri, 18 Sep 2026 08:48:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda.com; s=google; t=1789746518; x=1790351318; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=DCEr206mu1fTBop+5gRQZ8IwHub77AxoSPqpcC21zvQ=;
-        b=I9s5XHNoEQAFEpTiKyUBYmi7CvbyYdxKeEMHiUca/70eL3sTULcbyqRvJlF1MqjBmj
-         RNzbAVNCEgJGEal+4RQ8ntr6PLGbP5z0gyXE9+uQdVlhjR63am/plu/wsecYJ1g8pgrd
-         mN34vX4oVkezFjW2UX+PvtK9YaHdkmJQpUK+qnt3y8zAgXrz/eOUSDhwfv4FczHnuvfK
-         9bpOKTWN5zAa+caPL7hRG7ksELAMXLMBBNFR9k170p0AshyaULuWiiDbJ+pBipkBsDFm
-         t9twEAM+LGJWDqQqdM7XW7GAXnxyZrYecfyLLJC7WOzmrH5aK5KlP8q2EFVPzghqa/r5
-         mIKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789746518; x=1790351318;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:subject:cc:to:from:message-id:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=DCEr206mu1fTBop+5gRQZ8IwHub77AxoSPqpcC21zvQ=;
-        b=vA+9T2p2bTw3JmmKEnV4sfHI9XgAk+9n+v+wbnEta5yMzRPhaoxGKVUcx/OEHvDgF7
-         x1lCkFV2CUvxDEWrtTzaayY3tSKy9X2GogyknJshjgyLrtfPWZwRmldMAl/SWd4i34ok
-         01DIznOSG88pSstX0pJpqv5ZH5FsQq8JYmTBOej6o4olSrWNDqpQWZDo5KOZ+dpyrj55
-         lHkFt5jxQGTkMPnDA5O6ufCpFkeDhO8ygtz/XqjXIGe+yLVQ9gp4uvU+CG+rc8gDDVLS
-         hY+6PgaXgCUp5dvGI0hoYLDoa4sIdm3eC/qpH8T0CFGOCF63CRWwOaVd//s95hYL0svM
-         +UVQ==
-X-Forwarded-Encrypted: i=1; AKwUvBzyzGG0Z0vZN4Smx4JMKCO3uPoOucWeLcyRaf5ZXJz4TfiTtUgq2OLdEDB7aawb3FJtWDM=@vger.kernel.org
-X-Gm-Message-State: AFuF++nwhgx6DhlhklLPEzM3VVwcdcXk6/gsPl4UVQcUAZCsFeYcmx+U
-	Irqdn8Q4PlDUc7JK/OJo9gT62j1BC2GR0t+aACTVog/gwhVAtTwxwm8NLpACC9y3ZeHGpzM0ed0
-	cM1mj
-X-Gm-Gg: AYBFou0GPYLE/NHb4pmXE8ETYjH3z1Ortsr2wFCLaRc0mYOJ8C1LC6iITqEIzBPgekG
-	dnDSexXHL5f2EsIM5dbr3zxGQdP7g1we46Ng+36kTsXvTTLGepwTkgp7fvOQLPjQPrEH06prBMC
-	QmkaHV1mPfA7HYN94CWJ6Ru+nnnavh845hXr1P5d752ZJomGtvMik2tlwG5bD/CSzPeMu/ZCah2
-	faZ4+HXj0OZc6TqAjFf3STBC/E2OkbglTyDkT0/ycmZ59PX8YOacjE956eiXjmgzmnp4zkhWQWv
-	1EKdNSpyq5QmCvd8qQOg8uVW+oeKHzbkIGAZI07OrtBLgP6JkYF8u4hyQZ7M3y8H2Kf1WNL4r1j
-	aOfrrET9Y8f1EKJ2UmLacOgpbdVAWwCP14hCWYgY9XSo0Ek+Ma+LzDTSGrrM8+dVLpHhFE8Cnqt
-	+5BRz0W2q8jIFVo+SdHFFssG+tlhY4iO6Pt7hWYoTRp7j/Y8DXDtJ/wv1gVlmfjcPB/2/7wjwXs
-	slwRKI6tddvEwF564Pq3mVuY909lzUQ/cOeoPbuC0cgFSkrFTlWtfgdgyFexRHx7q0=
-X-Received: by 2002:a05:620a:2795:b0:939:6de8:43dd with SMTP id af79cd13be357-93bdc9fd82amr447343685a.49.1789746518332;
-        Fri, 18 Sep 2026 08:48:38 -0700 (PDT)
-Received: from toxicpanda.com (ec2-34-228-114-98.compute-1.amazonaws.com. [34.228.114.98])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-93be0ccabecsm172276485a.6.2026.09.18.08.48.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2026 08:48:37 -0700 (PDT)
-Date: Fri, 18 Sep 2026 15:48:20 +0000
-Message-ID: <adc0426b5f4c8137c1f97d7b148d7adb.josef@toxicpanda.com>
-From: Josef Bacik <josef@toxicpanda.com>
-To: sashiko-reviews@lists.linux.dev
-Cc: linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH RFC v4 02/13] rcu-tasks: Add a Tasks RCU implementation for reader-marked trampolines
-In-Reply-To: <20260918151031.2E0941F000FF@smtp.kernel.org>
-References: <20260918-b4-rcu-tasks-preempt-qs-v4-0-63f0e9d69661@toxicpanda.com> <20260918-b4-rcu-tasks-preempt-qs-v4-2-63f0e9d69661@toxicpanda.com> <20260918151031.2E0941F000FF@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h/H6NXfs"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B17761F00898;
+	Fri, 18 Sep 2026 16:03:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789747411;
+	bh=uhfWBas+aqtYA6p5h+wAL5uuGsiab2VRuj8D1/t4R24=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=h/H6NXfsdvz/KKlkEF4Ez3OoVcqzU8D0r+lC6mbZ/sVBOtPg1IBdWjQVrXMRR0MdV
+	 WKCHdLtWaMAu4LqPDfPUgPFiaAJ50PYIsaToPHvOLBbnbmmLfaFusDSzuBa+VHJ4p/
+	 4PSWdzWXwNERKPCRSJ+jkh0MBLid1BWzeTrkPeYqgpmle41W2HSotCcVxrJ/BkEsx4
+	 rDUQTZNu79asEOlRh2qFfuqevxNRSTzSygPZf5kkxurTp5uc+mVdMEjs9t7om4d483
+	 2qNd8J8Waz4QWql6JlIO1IElBKpXAspEW5O9YkSefdEJwSUnqRawXqWbvELH+FiV9w
+	 RkvJsC6BZd2pQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 6ECFDCE08CF; Fri, 18 Sep 2026 09:03:31 -0700 (PDT)
+Date: Fri, 18 Sep 2026 09:03:31 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org,
+	rcu@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+	"Harry Yoo (Oracle)" <harry@kernel.org>
+Subject: Re: [PATCH bpf-next v4 1/4] bpf: Add bpf_call_rcu() kfunc
+Message-ID: <ede9d515-a103-461e-8244-656af641c6c9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260915154248.3612028-1-puranjay@kernel.org>
+ <20260915154248.3612028-2-puranjay@kernel.org>
+ <210f1bfa-e6ae-4d1e-a920-a6c8c9b4269f@gmail.com>
+ <CANk7y0gzipiJrObW0fbh0gP2DgKeZAUvCNuvaOdJrGWgE81LkQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANk7y0gzipiJrObW0fbh0gP2DgKeZAUvCNuvaOdJrGWgE81LkQ@mail.gmail.com>
 
-On Fri, 18 Sep 2026 15:10:30 +0000, sashiko-bot@kernel.org wrote:
-> However, the per-cpu rtp_exit_list list head cannot be statically
-> initialized and is dynamically initialized via cblist_init_generic() from
-> a core_initcall. Since core_initcalls are executed much later by the
-> kernel_init thread, any preemption before that phase will attempt to
-> list_add() to a zero-initialized (null) rtp_exit_list.
+On Fri, Sep 18, 2026 at 11:58:40AM +0100, Puranjay Mohan wrote:
+> On Wed, Sep 16, 2026 at 7:41 PM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+> >
+> > On 9/15/26 4:42 PM, Puranjay Mohan wrote:
+> > > BPF programs that manage their own objects have no way to run their own
+> > > logic once an RCU grace period has elapsed.  bpf_obj_drop() defers a
+> > > free, but returning an index to an allocator or unpinning a resource
+> > > once readers are done has no equivalent.  sched_ext's BPF library works
+> > > around this today by pushing freed nodes onto a list and having a
+> > > userspace thread call membarrier(MEMBARRIER_CMD_GLOBAL) and then run a
+> > > BPF program to reclaim them.
+> > >
+> > > Add:
+> > >
+> > >       int bpf_call_rcu(struct bpf_rcu_head *rh, void *map,
+> > >                        int (*callback)(struct bpf_map *map, void *key,
+> > >                                        void *value));
+> > >
+> > > @rh is a struct bpf_rcu_head embedded in a value of @map, so the
+> > > callback runs as callback(map, key, value) for the element it lives in
+> > > and needs no cookie.  A head can only be armed once, which bounds
+> > > outstanding work by the number of elements.
+> > >
+> > > struct bpf_rcu_head holds the callback state inline rather than a
+> > > pointer to it, as bpf_timer, bpf_wq and bpf_task_work do, because there
+> > > is nothing to cancel and so nothing that has to outlive the map value.
+> >
+> > I tried to fully embed structure back when implementing bpf_task_work,
+> > Alexei rejected that approach, because some of the structures (irq_work) I used
+> > are not in our control and might change. I think this applies here: `struct rcu_head rcu`.
+> >
+> > Link: https://lore.kernel.org/bpf/CAADnVQJy0tAj9jkLrD1cBFkLK-DayjG6uNGZ3OBQh4V5Zt=WnQ@mail.gmail.com/
+> 
+> I agree with your analysis. Although struct rcu_head is unlikely to
+> change but still, I will change this to a heap allocated version where
+> we only keep a pointer and not the structure inline.
 
-No, cblist_init_generic() is not run from the core_initcall. It is run
-from rcu_init() -> tasks_cblist_init_generic(), which start_kernel()
-calls with interrupts still disabled (the function asserts as much) and
-well before its local_irq_enable(). The core_initcall only spawns the
-grace-period kthread. So the per-CPU rtp_exit_list heads exist before
-the first interrupt can be taken, let alone an irq-exit preemption; the
-classic flavor's exit_tasks_rcu_start() already depends on the same
-ordering for the same list.
+You can always use a union, as is done elsewhere in some cases.
 
-Thanks,
+That would preserve independence from the rcu_head definition, while
+avoiding the need for memory allocation.
 
-Josef
+							Thanx, Paul
