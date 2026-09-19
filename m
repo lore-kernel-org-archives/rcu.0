@@ -1,42 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1042F363F;
-	Sat, 19 Sep 2026 00:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1A22F7EE6;
+	Sat, 19 Sep 2026 00:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789777743; cv=none; b=mJY7sGa/aofiXqAQApLNhdAb7q4akFV6ePFRqC0qlNk6SX5tvhVynxR5/An1EyCZkQ0Qnb57S8+Pa244eljiZGS6Ttq9/lmPCUya43xRD2RVXv8P3LsMIjSjNWv5ZI/5/W8qR90J8DMVGkwnkoHyyXNGkLQhge1kPXUY3NCtyow=
+	t=1789777745; cv=none; b=J96vgdLQeOiayWYuU6ObQ5AGfjtmbTTkD53vDI7f0PtWQHMFYvFFr3enGsjOjcJfdl7COOg/BwYiDYaZFtfBPtuG9YWMZ4CjqwNkGinPCKi+o2wefysEoiPjfyf8kiLoLKkEo3qh4vdCJYKgH0vs2xr48YeN7a8A0dxs6SP1oIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789777743; c=relaxed/simple;
-	bh=nvQoIx6gQv7E8qFHeuFQhcavJagoOVl+wEtK788m0n4=;
+	s=arc-20240116; t=1789777745; c=relaxed/simple;
+	bh=wpzhTNE6Vj0jlng9k4hEaQfN3qQ4FYgzLuPJpIXV6ew=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fiO2fdPzQNwmnKxhPqkjJIvxCqO/i3ryczjdobEf9ftu+Yajn7eKmLuW9Yw70VC9NKzFqLrHDIBTW7fMwTYdjLJiSU5ycoUm8yaJLcjYSkEw6+YF3Duhx0RSoccvGBNC6TNxVmME1uUi+gVlCtB1hLSLH4ULrR21H0ugvBg0KXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L6sB1J4b; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=pYXiusp0lLq+M1MlHDkLAWjzlktJQD3RoXw+P7OciBkahh26D+N9KibpPafOsCjGXm+xE5JFs4ix1hl95EL+rjlexm61iKFf9mK78vgMy06ZVN2NSx6K8FkkJu+RJ0P983Cib5SQNU70zsX9T3W20TIv1B4TUBhUQKrS3YtFgSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GVk6qkR+; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L6sB1J4b"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97C441F0089B;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GVk6qkR+"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D20F01F0089C;
 	Sat, 19 Sep 2026 00:29:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1789777741;
-	bh=vi8oZSe+Z3oE+eSrcJD3Q70KafHoa5cA6muPToPn83w=;
+	bh=Qy3p8GOfYcm8rh4QOnYYu1Kfrm68bdM+E5jFiTkaQT8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=L6sB1J4bLtWEk1CrZvQgwgTsL5sJyaJisGISas1lm0FceIIWrTMFwyxcu0UO0PBtU
-	 DJHApWG9e894jYf9vvA4DYxiWxNeABnQ0DhYmrp8FGqummXpFe28yb1Qo81gk9eF8r
-	 Zv8ZWDQqH70N6zV7q3+TwhSjxVwMfCccw5sH8ZJrIqADovLRgf4K7VLzlZwdmOo8wf
-	 gxNpDiNCk9Y+q2wiHwm1jT/GrDdfkYyNIoM3WueMeGa/L0GCWXuzmxlri/Ml4u2E1m
-	 dgdcWOGureWkSeYfMyoGUHXBP0fVXRshFbWkGQ6+QPZzAe1bBFP42lu6Fs2Y1JDEft
-	 n5fN+d6ZGcwXg==
+	b=GVk6qkR+CbyZqIGW3Qh84nVu1uoQ6EClEx1SsCWue0W0NEU4R2A2UF5HrfxB/45GG
+	 dakIJa9PovOvbiuVU7LRJV8t5GrbAYsnMCRrV13537CNO5SZY2YqMl598ztVcUOI/Y
+	 3BHoPg++bMhBYlsIRqu+/abgJWkF/b80GkzXlH2TpkX0t1UT3DD+X5T4mZsBeU3Wc3
+	 9RKg5p9HMhQCNkElBNsP6j/rrazJZ0AauEVoXlML1yb4HUCTbLaEbq5MI2jvZL/IfZ
+	 5ymG9+LQUdhYP270gS6O+Kv0YQJaLxQJ7/659Bja5BzkTksmAUHazG3QLLtUy5v32a
+	 j/3yMV6NjFWpQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4FF6CCE17C1; Fri, 18 Sep 2026 17:29:01 -0700 (PDT)
+	id 5A4FCCE1886; Fri, 18 Sep 2026 17:29:01 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 4/9] rcu: Add running and boosted indications to RCU task stall dump
-Date: Fri, 18 Sep 2026 17:28:55 -0700
-Message-Id: <20260919002900.3134117-4-paulmck@kernel.org>
+	Karl Mehltretter <kmehltretter@gmail.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH 8/9] rcuref: Fix the rcuread_is_dead reference in rcuref_read() kernel-doc
+Date: Fri, 18 Sep 2026 17:28:59 -0700
+Message-Id: <20260919002900.3134117-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <7dc2d858-44cc-4efa-8e94-1fe27d691f2b@paulmck-laptop>
 References: <7dc2d858-44cc-4efa-8e94-1fe27d691f2b@paulmck-laptop>
@@ -48,86 +50,33 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, rcu_print_task_stall() will dump out the PID, RCU reader
-nesting level, the rcu_special structure's flags, and whether or not
-that reader is on the ->blkd_tasks list.  When debugging RCU priority
-boosting, it is also good to know whether the stalled RCU reader is
-currently running and whether it is currently being RCU priority boosted.
-This commit therefore adds this information to the output.
+From: Karl Mehltretter <kmehltretter@gmail.com>
 
-[ paulmck: Apply kernel test robot feedback. ]
+The kernel-doc comment of rcuref_read() refers to rcuread_is_dead, which
+does not exist. The name is rcuref_is_dead. Say rcuref_is_dead.
 
+Fixes: 3efa66ce6ee1 ("rcuref: Provide rcuref_is_dead()")
+Assisted-by: LLM
+Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ include/linux/rcuref.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 93ba31a619b6..5dded1e89197 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -11,6 +11,7 @@
- #include <linux/kvm_para.h>
- #include <linux/rcu_notifier.h>
- #include <linux/smp.h>
-+#include <linux/rtmutex.h>
- 
- //////////////////////////////////////////////////////////////////////////////
- //
-@@ -305,6 +306,8 @@ struct rcu_stall_chk_rdr {
- 	int nesting;
- 	union rcu_special rs;
- 	bool on_blkd_list;
-+	bool rcu_rdr_running;
-+	int rcu_rdr_boosted;
- };
- 
- /*
-@@ -313,6 +316,7 @@ struct rcu_stall_chk_rdr {
+diff --git a/include/linux/rcuref.h b/include/linux/rcuref.h
+index 2fb2af6d9824..01fee161b67c 100644
+--- a/include/linux/rcuref.h
++++ b/include/linux/rcuref.h
+@@ -34,7 +34,7 @@ static inline void rcuref_init(rcuref_t *ref, unsigned int cnt)
+  * indicate that it is safe to schedule the object, protected by this reference
+  * counter, for deconstruction.
+  * If you want to know if the reference counter has been marked DEAD (as
+- * signaled by rcuref_put()) please use rcuread_is_dead().
++ * signaled by rcuref_put()) please use rcuref_is_dead().
   */
- static int check_slow_task(struct task_struct *t, void *arg)
+ static inline unsigned int rcuref_read(rcuref_t *ref)
  {
-+	struct rcu_node *rnp;
- 	struct rcu_stall_chk_rdr *rscrp = arg;
- 
- 	if (task_curr(t))
-@@ -320,6 +324,19 @@ static int check_slow_task(struct task_struct *t, void *arg)
- 	rscrp->nesting = t->rcu_read_lock_nesting;
- 	rscrp->rs = t->rcu_read_unlock_special;
- 	rscrp->on_blkd_list = !list_empty(&t->rcu_node_entry);
-+	rscrp->rcu_rdr_running = task_curr(t);
-+	rscrp->rcu_rdr_boosted = 0;
-+	if (rscrp->on_blkd_list) {
-+		rnp = READ_ONCE(t->rcu_blocked_node);
-+		raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
-+		if (rnp == READ_ONCE(t->rcu_blocked_node)) {
-+			if (rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t)
-+				rscrp->rcu_rdr_boosted = 1;
-+		} else {
-+			rscrp->rcu_rdr_boosted = 2;
-+		}
-+		raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
-+	}
- 	return 0;
- }
- 
-@@ -357,12 +374,14 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- 		if (task_call_func(t, check_slow_task, &rscr))
- 			pr_cont(" P%d", t->pid);
- 		else
--			pr_cont(" P%d/%d:%c%c%c%c",
-+			pr_cont(" P%d/%d:%c%c%c%c%c%c",
- 				t->pid, rscr.nesting,
- 				".b"[rscr.rs.b.blocked],
- 				".q"[rscr.rs.b.need_qs],
- 				".e"[rscr.rs.b.exp_hint],
--				".l"[rscr.on_blkd_list]);
-+				".l"[rscr.on_blkd_list],
-+				".R"[rscr.rcu_rdr_running],
-+				".B?"[rscr.rcu_rdr_boosted]);
- 		lockdep_assert_irqs_disabled();
- 		put_task_struct(t);
- 		ndetected++;
 -- 
 2.40.1
 
