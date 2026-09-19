@@ -1,59 +1,59 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439013F329E;
-	Sat, 19 Sep 2026 11:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD7F3F329E;
+	Sat, 19 Sep 2026 11:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789818174; cv=none; b=PnhRGys6lKEGYmni/rEC2UQuVZedzhim654Iv2EkF5ruWOofPBFjeVPUkccxngwl1TqpQkxa6fPyBZewToEf6kt8BSLJSTI4Gq3+TTyTJQbubzcEeJydRaXP1A/IIt+Z6O17Nlg4qLlTgbVVQAJtgiIoKYcc/apNlyWza/3szec=
+	t=1789818223; cv=none; b=ESER2XMWr8S0URWaA5/ORmnShKdq80A5hWRsZQUa+YcjjnhJo7CCukdU10jTLYbZgrNPEq0WfoxnQM4baEdi1xT0ABaYxQ3TGFpNYLhnStxeXBbd1afpJROrRhmJSsg1q7gCsjA8OgDnJv8g5w0EWdo/vIn2Csl4Cq6+qPymleM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789818174; c=relaxed/simple;
-	bh=TbJgtL5/olH9VmtiEh2YQ+l2218B8ZLS+vkDuoMcV/k=;
+	s=arc-20240116; t=1789818223; c=relaxed/simple;
+	bh=Vxw1QV3VZJN5Eg6rt97VtREf4Pmpu0Db4x/ZdKJrgVk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gh0RpDALJI7ZzFC6rHllm24Mf7WrF39VKvbVWljXQiZ2ge+4T8BJe/eRzSPM7GTf/A+0cjgeXC60SR32jmgMrxs8I+SGcwVQOLRkSuR4R22yII5hJ3gemQSQIE2bL+AVP8hXMcgwP+aPNtXi/IxF0w4R+oyR8HbKFMtf+pkSRKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZgJfpJGd; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=X6XVjs5FXYzZcXGVTp/1SpBBUcIIMolVcWaXPG0A7Zxe0EL+svccadrv1O0y7G9cO3EGM3Q+gekUO5GJHRzPcq2NNI/qXp4tpRp9VeSQb8bo7uZ0kfo5Ztx5xq1c2bBUP3CpIfeLUS89T8lweTwtpkBDGw8QZyHuh2+BDwqcj4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hTZyA4A0; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZgJfpJGd"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FB7A1F000FF;
-	Sat, 19 Sep 2026 11:42:52 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hTZyA4A0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E6CD1F000FF;
+	Sat, 19 Sep 2026 11:43:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789818172;
-	bh=45SzqYtoSQF6mtZSsxJAVtpiAQ3di9qtlyXPs1hzkZA=;
+	s=k20260515; t=1789818221;
+	bh=Q568QRVoqzIIZ66bmcYqQSYYi0DWlXxn2rWdRr531+s=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=ZgJfpJGdKOxiELK9mt37/P4+25j9CVUY9sW1kFxu4eKIbcTERPj5LW7Gaul9slSP+
-	 CkLgJ2UWPVSE7VSLWQYutv+1FTu2iZdN0qZSBurk7221sD0/nZFwwSGhUFvwLAsW8C
-	 q7LWYvISxISSA+xFc5+3mnJh7bX8HitKDN03LeGFRxlGXSZGEUUI/1C6j+gJL/JzWg
-	 RMU4FKetkQWMtY3srnT5xNuDOnWSMml62NWelyIAyICWchZDOEqQbCNkkMIsVrCkAA
-	 MJkwOmSZ8TeL7jRtqMExl8S2cP/ySvzJhB6FMHq4qaRtF5DD0clfSgAwVSdl4mWJir
-	 5T66FLu25EPVg==
+	b=hTZyA4A0jtUxYyzz3LIf5wzAZQj/vs/mucVhBNVDX34Il2QsOlXks/+aQlh1GD1fp
+	 UL+irnpGtL9UAJ9+vfVsqGBgIFdxOvr998Stik+Fng9bt5NOA3G8nMEUbsSoLIJzkM
+	 7cPZ4GuT9IovCqCiR7DPaImCGg7rQsPzhb7xCynojlbfm7ItAVX4Pi+ekM9X/2qzoe
+	 ichMITIl1xpCaCLEsKSmdUwDXrJLU/HCTjVgJ9wCWngvd8qr48uVFUn5ggqxYG7b2v
+	 VMWLvUX4c9kVMAw7sbyEqWzK+QixTmH/RgVKxIXm2cy2WcOuRWWd9E23BRwt5BJ4ds
+	 0oGE0jNyXWiug==
 Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 97D6BF40066;
-	Sat, 19 Sep 2026 07:42:51 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Sat, 19 Sep 2026 07:42:51 -0400
-X-ME-Sender: <xms:O3WuajYybJjcqNpjCVFaKFQb72HtTrgk8EXGZrwnYEAB7u4pYd9jqg>
-    <xme:O3Wuaqi29GMNIxuDGfsdqE2Rrfp_2523oA0Cr_BU6u2EVSuucB1YvOS49VtpH3DH5
-    yNtRkHCPFcwrcBOIhVmfbpE9lhDPaCXnYpOPqoUNGOmVfw3qip07Q>
-X-ME-Received: <xmr:O3WualfDxUc4gu0rlqW-ty0Bd5SRybpOAtsmUlDtjI7om8gOCt6KVTXjsyg0>
-X-ME-Proxy-Cause: dmFkZTF3x1CvYRRybs9POrTbuRdoeE0Zs2PORdbMgfxFraCj4a8fzEBNs4WSFh7TIUq5Jm
-    3jBllg2NjT2uhRGdpfZBj+wQjS75e1/aioaQyfW8on5qC/CtVJQI6eHfXjzShSVoOwTFEx
-    G9AhV1PHy/5qC4XF9h0qoSNQYYjK8EkK6OUd4wJ4fF6H1sdIqaAEKEX+m/S5Dqqwq9Z/N1
-    7WgyK+/skR4iT2UTDpKCAb17KGvcfH3jMdb+jPpkd4FW2tA/S3S8A5Cddnf9mXG6lMtii0
-    XaT/CygVaGuqzqhDrrAn8uhjy+h3gURKglRIp1966jYznCOp4bCk4wN2B/rNUz9ZQqD2Fv
-    nVA9if3scOqNMd4LeotHf+mgVKH8hiR3qy+5dKM8wgdfCiePd+Oe68I0lLy3i+mqmhAPoj
-    ONEBM9TnKBnXQorh5HBujG8isi+pDIanmeADwEOYV0ba639pnQqyUFKeykasUVZF4sGXpw
-    56Dobk0qsOkrQXPqSQYlRBw6UDH3nLpfFqu8Eaja81OAYtMx9/J1Xboa3ABVROgr8JoEIv
-    x7Nt/iyIAizP1dEpxqwN+gUqFd/xW0KFvGGJihTeJV/3+jUimIXY5S+jJ4zybdiP6EiWfB
-    AkgVUKfHQTpMKSk96ProFHgxkgSKEvTx3L2NlpS5Ts9kXmr49TVBpbtYiw0Q
-X-ME-Proxy: <xmx:O3WuapnUUhXvHddkIO_ttnUv0AH91ibbZwdngbJ4oGcq6TMBo96IAQ>
-    <xmx:O3WuaqwcQqfXsi5ukcJzEs5XFZpbqVxyLIq_EMiXerSMEl0XJstVrQ>
-    <xmx:O3Wuasxc5pht6rgdE5G1CG9wpoKpS3Y0xRkZI3jnlvYIDVl2aQ3ScA>
-    <xmx:O3WuaqXVbh6Xnk6q3zPb4fUcAAl__LbBvLmKwadr_r3gzdXzl2SURQ>
-    <xmx:O3WuajSB6aBsSw4biflSr3dV2dbbJUUSmQV52wbc4n-_rqZAn2txa2zi>
+	by mailfauth.phl.internal (Postfix) with ESMTP id A4E43F40066;
+	Sat, 19 Sep 2026 07:43:40 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Sat, 19 Sep 2026 07:43:40 -0400
+X-ME-Sender: <xms:bHWuahDqQ9KlGwK8wgLPwhDGoQUshDh3SIDxYeiTB5YYa9woVr42rw>
+    <xme:bHWual6HX4TU0nPc3-07S1RD7I2P5DCLSy76MbfZ6-CmWLuwAKkPT3qIfFrOKTVK4
+    aV06LvSklo4Q5-_AeZnyAxPdaOm9-Wc9LrAE6rop9bbiJKxwDfsYw>
+X-ME-Received: <xmr:bHWuao044_tcgIhZFmqF3kDUoK4mfC5x737E2j9qdCZSIDQEcY9rIqDND6lQ>
+X-ME-Proxy-Cause: dmFkZTF3MsUIpyhJdWg+saxeUY9t+jx5LL1fCi1A49URGTjCHZqEq1Gg09QlUl2p39NhqW
+    aM9uyBubZ6hZtA7ET4o7F1MwQtQ0HIOA8H4C+z3ude4FgehQcT4iud3kcVBXzHR/h4oIX5
+    rpD4MQX1EHbcNvzGmurO5xzquiemg1qLsbiHPQLeE4OrIANXjK+0YKv/+XsX8QTuv48+kX
+    GN/36+fKYiAubkcePP3w7rjaDPWWZRmmut3wriHQO1fOriSTAnZjqs6z4pvjJxEZlZtmwv
+    vkPlos2wsfbPPo9A9LrG2hJOyXyxLLBLDJ2sixco7PaXtwhPyAy4OsFzIaX1ODI929ADRO
+    wcmffcJvzajGkAOKfybxeHPv6I8rCC2Sq6wxarw5OGlVaKDFHTgEy5tkIQwy/a8SWKuozP
+    htlU6g4gTL0ZrWVW51QzII+TqXzFDqaWmpg+ForoLWvvJmdQ9QLSh/L5SDgh76S+WbsznB
+    07PoVfAgRkSZHZS95x0eJIM1m0KizFjhx39llwGqRUUrzHvKBQ9brM7qIMCe/1zEWE1j3O
+    BK1pPfu+LySBjA9ywXXlj1pH3f6Y5fAixZ/ARWu2haEJr0amRUPl0BGaAkMu6fq0zLTtua
+    vxMdODfKyn9KhRr43Haaaap4KCTz9nT9Eor46rvR6ReoMhfP9LdjzmWNxv5A
+X-ME-Proxy: <xmx:bHWuaplh9zEhWNKM3ui3HYcn7s4pTj2SeGkBElVMZ15b0BXWs-SpUw>
+    <xmx:bHWuau4O-sfxHzmnmlGNZAFIJuReT2D_5wd1Bo700FV-tovnW1USTw>
+    <xmx:bHWuakl79AP8JGSrHITZUaq0tZK15uYr4jPC6swuGcDXfcTmJay2Jg>
+    <xmx:bHWuahX3FcV3ShIlgm63fPc-GPFx1I85jHkbqlwV0yiTlF71KsyARQ>
+    <xmx:bHWualQFeUGNbgPYq04k6XKAhllrckXeHXL0C6ji7a-qjX3u4OD95Rmd>
 Feedback-ID: i8dbe485b:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 19 Sep 2026 07:42:50 -0400 (EDT)
-Date: Sat, 19 Sep 2026 12:42:48 +0100
+ 19 Sep 2026 07:43:40 -0400 (EDT)
+Date: Sat, 19 Sep 2026 12:43:38 +0100
 From: Boqun Feng <boqun@kernel.org>
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
@@ -64,9 +64,10 @@ Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
 	Bradley Morgan <brads@mainlining.org>
 Subject: Re: [PATCH 19/28] hazptr: Permit detaching hazard pointers from
  contexts
-Message-ID: <aq51OA4zu-p-nWyy@MacBook-0RXW5>
+Message-ID: <aq51aoHIICSA6376@MacBook-0RXW5>
 References: <e9669b34-12c2-4cf2-a887-315f581f0789@paulmck-laptop>
  <20260919000056.3132131-19-paulmck@kernel.org>
+ <aq51OA4zu-p-nWyy@MacBook-0RXW5>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -75,131 +76,138 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260919000056.3132131-19-paulmck@kernel.org>
+In-Reply-To: <aq51OA4zu-p-nWyy@MacBook-0RXW5>
 
-On Fri, Sep 18, 2026 at 05:00:47PM -0700, Paul E. McKenney wrote:
-> From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+On Sat, Sep 19, 2026 at 12:42:48PM +0100, Boqun Feng wrote:
+> On Fri, Sep 18, 2026 at 05:00:47PM -0700, Paul E. McKenney wrote:
+> > From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > 
+> > Provide a new hazptr_detach() function that detaches a given hazard
+> > pointer from its acquisition context.  This context might be a task or
+> > an interrupt handler.
+> > 
+> > [ paulmck: s/hazptr_detach_from_task/hazptr_detach/ per Mathieu. ]
+> > 
+> > Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Boqun Feng <boqun@kernel.org>
+> > Cc: <rcu@vger.kernel.org>
+> > Cc: <lkmm@lists.linux.dev>
+> > ---
+> >  include/linux/hazptr.h | 55 ++++++++++++++++++++++++++++--------------
+> >  1 file changed, 37 insertions(+), 18 deletions(-)
+> > 
+> > diff --git a/include/linux/hazptr.h b/include/linux/hazptr.h
+> > index b121f7779cda..8197a51b9f7a 100644
+> > --- a/include/linux/hazptr.h
+> > +++ b/include/linux/hazptr.h
+> > @@ -98,6 +98,41 @@ bool hazptr_slot_is_backup(struct hazptr_ctx *ctx, struct hazptr_slot *slot)
+> >  	return slot == &ctx->backup_slot.slot;
+> >  }
+> >  
+> > +/* Internal helper. */
+> > +static inline
+> > +void hazptr_promote_to_backup_slot(struct hazptr_ctx *ctx, struct hazptr_slot *slot)
+> > +{
+> > +	struct hazptr_slot *backup_slot;
+> > +
+> > +	backup_slot = hazptr_chain_backup_slot(ctx);
+> > +	/*
+> > +	 * Move hazard pointer from the per-CPU slot to the
+> > +	 * backup slot. This requires hazard pointer
+> > +	 * synchronize to iterate on per-CPU slots with
+> > +	 * load-acquire before iterating on the overflow list.
+> > +	 */
+> > +	WRITE_ONCE(backup_slot->addr, slot->addr);
+> > +	/*
+> > +	 * store-release orders store to backup slot addr before
+> > +	 * store to per-CPU slot addr.
+> > +	 */
+> > +	smp_store_release(&slot->addr, NULL);
+> > +	/* Use the backup slot for context. */
+> > +	ctx->slot = backup_slot;
+> > +}
+> > +
 > 
-> Provide a new hazptr_detach() function that detaches a given hazard
-> pointer from its acquisition context.  This context might be a task or
-> an interrupt handler.
+> Probably needs a function doc for hazptr_detach(), how about the
+> following?
 > 
-> [ paulmck: s/hazptr_detach_from_task/hazptr_detach/ per Mathieu. ]
-> 
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Boqun Feng <boqun@kernel.org>
-> Cc: <rcu@vger.kernel.org>
-> Cc: <lkmm@lists.linux.dev>
-> ---
->  include/linux/hazptr.h | 55 ++++++++++++++++++++++++++++--------------
->  1 file changed, 37 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/linux/hazptr.h b/include/linux/hazptr.h
-> index b121f7779cda..8197a51b9f7a 100644
-> --- a/include/linux/hazptr.h
-> +++ b/include/linux/hazptr.h
-> @@ -98,6 +98,41 @@ bool hazptr_slot_is_backup(struct hazptr_ctx *ctx, struct hazptr_slot *slot)
->  	return slot == &ctx->backup_slot.slot;
->  }
->  
-> +/* Internal helper. */
-> +static inline
-> +void hazptr_promote_to_backup_slot(struct hazptr_ctx *ctx, struct hazptr_slot *slot)
-> +{
-> +	struct hazptr_slot *backup_slot;
-> +
-> +	backup_slot = hazptr_chain_backup_slot(ctx);
-> +	/*
-> +	 * Move hazard pointer from the per-CPU slot to the
-> +	 * backup slot. This requires hazard pointer
-> +	 * synchronize to iterate on per-CPU slots with
-> +	 * load-acquire before iterating on the overflow list.
-> +	 */
-> +	WRITE_ONCE(backup_slot->addr, slot->addr);
-> +	/*
-> +	 * store-release orders store to backup slot addr before
-> +	 * store to per-CPU slot addr.
-> +	 */
-> +	smp_store_release(&slot->addr, NULL);
-> +	/* Use the backup slot for context. */
-> +	ctx->slot = backup_slot;
-> +}
-> +
 
-Probably needs a function doc for hazptr_detach(), how about the
-following?
-
-/*
- * hazptr_detach: Detach the hazptr from its acquisition context.
- *
- * By default hazptr_acquire() expects to be released from its
- * acquisition context. However there are cases where the acquisition
- * context sends (in other words, transfers the ownership of) the hazptr
- * to another context, e.g.
- * 
- * 	hazptr_acquire(ctx, gp);
- * 	hazptr_detach(ctx);
- * 	defer_work->hp = ctx;
- * 	queue_work(..., defer_work);
- * 	<in defer_work->func()>
- * 	hazptr_release(ctx);
- *
- * Use hazptr_detach() before sending the hazptr across contexts.
- *
- * It's safe to detach an "already-detatched" hazptr.
- */
-
-Thoughts?
+Obivioulsy I'm missing patch #24, never mind then :)
 
 Regards,
 Boqun
 
-> +static inline
-> +void hazptr_detach(struct hazptr_ctx *ctx)
-> +{
-> +	struct hazptr_slot *slot;
-> +
-> +	guard(preempt)();
-> +	slot = ctx->slot;
-> +	if (unlikely(hazptr_slot_is_backup(ctx, slot)))
-> +		return;
-> +	hazptr_promote_to_backup_slot(ctx, slot);
-> +}
-> +
->  static inline
->  void hazptr_note_context_switch(void)
->  {
-> @@ -106,27 +141,11 @@ void hazptr_note_context_switch(void)
->  
->  	for (idx = 0; idx < NR_HAZPTR_PERCPU_SLOTS; idx++) {
->  		struct hazptr_slot_item *item = &percpu_slots->items[idx];
-> -		struct hazptr_slot *slot = &item->slot, *backup_slot;
-> -		struct hazptr_ctx *ctx;
-> +		struct hazptr_slot *slot = &item->slot;
->  
->  		if (!slot->addr)
->  			continue;
-> -		ctx = item->ctx.ctx;
-> -		backup_slot = hazptr_chain_backup_slot(ctx);
-> -		/*
-> -		 * Move hazard pointer from the per-CPU slot to the
-> -		 * backup slot. This requires hazard pointer
-> -		 * synchronize to iterate on per-CPU slots with
-> -		 * load-acquire before iterating on the overflow list.
-> -		 */
-> -		WRITE_ONCE(backup_slot->addr, slot->addr);
-> -		/*
-> -		 * store-release orders store to backup slot addr before
-> -		 * store to per-CPU slot addr.
-> -		 */
-> -		smp_store_release(&slot->addr, NULL);
-> -		/* Use the backup slot for context. */
-> -		ctx->slot = backup_slot;
-> +		hazptr_promote_to_backup_slot(item->ctx.ctx, slot);
->  	}
->  }
->  
-> -- 
-> 2.40.1
+> /*
+>  * hazptr_detach: Detach the hazptr from its acquisition context.
+>  *
+>  * By default hazptr_acquire() expects to be released from its
+>  * acquisition context. However there are cases where the acquisition
+>  * context sends (in other words, transfers the ownership of) the hazptr
+>  * to another context, e.g.
+>  * 
+>  * 	hazptr_acquire(ctx, gp);
+>  * 	hazptr_detach(ctx);
+>  * 	defer_work->hp = ctx;
+>  * 	queue_work(..., defer_work);
+>  * 	<in defer_work->func()>
+>  * 	hazptr_release(ctx);
+>  *
+>  * Use hazptr_detach() before sending the hazptr across contexts.
+>  *
+>  * It's safe to detach an "already-detatched" hazptr.
+>  */
 > 
+> Thoughts?
+> 
+> Regards,
+> Boqun
+> 
+> > +static inline
+> > +void hazptr_detach(struct hazptr_ctx *ctx)
+> > +{
+> > +	struct hazptr_slot *slot;
+> > +
+> > +	guard(preempt)();
+> > +	slot = ctx->slot;
+> > +	if (unlikely(hazptr_slot_is_backup(ctx, slot)))
+> > +		return;
+> > +	hazptr_promote_to_backup_slot(ctx, slot);
+> > +}
+> > +
+> >  static inline
+> >  void hazptr_note_context_switch(void)
+> >  {
+> > @@ -106,27 +141,11 @@ void hazptr_note_context_switch(void)
+> >  
+> >  	for (idx = 0; idx < NR_HAZPTR_PERCPU_SLOTS; idx++) {
+> >  		struct hazptr_slot_item *item = &percpu_slots->items[idx];
+> > -		struct hazptr_slot *slot = &item->slot, *backup_slot;
+> > -		struct hazptr_ctx *ctx;
+> > +		struct hazptr_slot *slot = &item->slot;
+> >  
+> >  		if (!slot->addr)
+> >  			continue;
+> > -		ctx = item->ctx.ctx;
+> > -		backup_slot = hazptr_chain_backup_slot(ctx);
+> > -		/*
+> > -		 * Move hazard pointer from the per-CPU slot to the
+> > -		 * backup slot. This requires hazard pointer
+> > -		 * synchronize to iterate on per-CPU slots with
+> > -		 * load-acquire before iterating on the overflow list.
+> > -		 */
+> > -		WRITE_ONCE(backup_slot->addr, slot->addr);
+> > -		/*
+> > -		 * store-release orders store to backup slot addr before
+> > -		 * store to per-CPU slot addr.
+> > -		 */
+> > -		smp_store_release(&slot->addr, NULL);
+> > -		/* Use the backup slot for context. */
+> > -		ctx->slot = backup_slot;
+> > +		hazptr_promote_to_backup_slot(item->ctx.ctx, slot);
+> >  	}
+> >  }
+> >  
+> > -- 
+> > 2.40.1
+> > 
