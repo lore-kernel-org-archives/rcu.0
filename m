@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78BA26A1AC;
-	Sat, 19 Sep 2026 00:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F7F62E1F0E;
+	Sat, 19 Sep 2026 00:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789776062; cv=none; b=FeldEbjK9WGuwhOj6RVyNlS5QWnGQOuCUWubz7RfW8DJAfwgQMBy8oZDr7hYZ8SDro6h19dPmuWzsK0vonF2kiCffOZziSfLJhhStuGVovnKypejcBQNs4wjMV8uZVH+elrz32IeFFnQj+PrEGMeXEr7ScDxnA92H3oOISwZAu4=
+	t=1789776062; cv=none; b=TukRogRPpIrdPuRzsd+HDc1mmXmyi+ajxC0vYTw3A3kvN/2gZo/FAJLyEZOe+rTKaZOZ3FQf9yFsnTJwXH+NMCtc/ytP754D0GA3an+biZ68ReYMOEiFaSUNse91+xgcYYbwciq16tdaX0u5EJ7ToCEYCYFPPR3jMrObhTgYsLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1789776062; c=relaxed/simple;
-	bh=VCVMz1AmcrwnnPk7zKIIGoO7evWk11L6/SA1wsDcR88=;
+	bh=wTqnzWv4HcmzQNu1Ciof+W30xKQFFl3O6JrB+4Yt/Jg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IRhOVS4TuhP4cNSRx/r3+FvjySXDG6uqHLoLTSfXxxb9eoCnQuVJvQKNZhil6Q40bBL52g8n/Hnq+XCnLhCppggBEcXD4OL8MfUethlANz+j0yUuGwiwymbDfOHaFAlzP7AlhH1f5JlsIL/DBrowPzdUrjoXTQqTQhNippUObDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WDZHw7ZZ; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=V38y+rw9KQvLVpjUmBTkLeLkVI2GQfauaSaClvC121gtyF+bvDK0gtfn+upQASXkCSz7YjIibwtKaFej/qlpsfGUrIqshxYGOrAZLO4VFjAv5AHYwwWgYAqfLAttq7SEIgFjYoQ454CDOCLlmP4arbAQ5Guj+lOxmsrT+jmUHIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PXR7IHKM; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WDZHw7ZZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4BA91F008A6;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PXR7IHKM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE4ED1F008A2;
 	Sat, 19 Sep 2026 00:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1789776059;
-	bh=cNq/1X0FOP/AzhVHpp3kQaCZowngQghQCIMmMwINQAg=;
+	bh=ZlY1fRfzlngUScnswdrpmctWm7EvrHXSppPy3a62Huw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=WDZHw7ZZbVucyY3OFUbC9U/eGp/c8eS6kp0SCBwvJbGARyRO0OQRSSQgpUgSluJ6Y
-	 Gex/1FqQwgVIJH9RJTYVZvZO7oxjnsIVx5gdPIXwAUNPfrULC+IdJqLkOYrtjuAjcu
-	 NLItfS/mEvfU5or098hP1QoVcAkP7bQX9BIH39v1szxtKOXu+n7CLNNzTj7yk7XHyH
-	 jve27ihv10J8JHVHx5/SpyLUjomScGCO+X09n8bGJ864bc8AyoQvcC1S+G7xhOH27w
-	 IAiQGhV6E8e4WFr5dikEm30eboBklhOPeNvUs2a/XCu7XovOArSgMElsqKtTOo8hUm
-	 MR6BOSmsZe/BA==
+	b=PXR7IHKMG8PWoy95xLvpoBCO9oPsojUOx4nGTUpf5U96LLoMWwI/1oLWQlm89+DqH
+	 DtTjbNhLT6RYSn2Q6WuuRuNv0lvuVLFepOOEVKuJcHsWm3Mz+6hp5X8vuQzCbmsSAl
+	 4yoPCN8LZtg7l5eUw+/vRXJ6GpIwk2sPTqiPcP4gZptQnoKaaG3Ufi78yDKGtq3UiP
+	 CdtAdkQNezrdXBJLJDrIloRfKQnkRI2rsJLikuEwTHfhQYqx4zknrb0mAlyFbBIVEa
+	 5P+1eZzmCHOigeVS4w0Lp1Y+P4LpVLrAt5jIXREBwcDCs/0kt4Xg200Th8UK638VQJ
+	 eQUjyN1gNyjjQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5D5FACE0ABD; Fri, 18 Sep 2026 17:00:59 -0700 (PDT)
+	id 60459CE0AC0; Fri, 18 Sep 2026 17:00:59 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -41,9 +41,9 @@ Cc: kernel-team@meta.com,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Bradley Morgan <brads@mainlining.org>,
 	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 07/28] torture: Add a stutter_will_wait() function
-Date: Fri, 18 Sep 2026 17:00:35 -0700
-Message-Id: <20260919000056.3132131-7-paulmck@kernel.org>
+Subject: [PATCH 08/28] hazptrtorture: Use mnemonic local variables for context information
+Date: Fri, 18 Sep 2026 17:00:36 -0700
+Message-Id: <20260919000056.3132131-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <e9669b34-12c2-4cf2-a887-315f581f0789@paulmck-laptop>
 References: <e9669b34-12c2-4cf2-a887-315f581f0789@paulmck-laptop>
@@ -55,15 +55,12 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds a stutter_will_wait() function that returns true if a
-call to stutter_wait() at that same time would have waited.  Of course,
-the passage of time means that the return value might become immediately
-stale, so this should be periodically polled on the one hand, or used
-only for heuristic purposes on the other.
-
-The initial use case for this function is to clean up references to
-objects that might otherwise be held across the stutter interval, which
-could result in false-positive failures.
+This commit introduces can_sleep and short_spin local variables to
+hazptr_read_delay(). The can_sleep variable records whether unconstrained
+sleeping is feasible, and the short_spin variable checks for the NMI
+handlers, IRQ handlers, or disabled interrupts/softirqs suggesting short
+spin times.  While in the area, it disables the reader_sleep_us module
+parameter when invoked where sleeping is not permitted.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Boqun Feng <boqun@kernel.org>
@@ -71,63 +68,42 @@ Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: <rcu@vger.kernel.org>
 Cc: <lkmm@lists.linux.dev>
 ---
- include/linux/torture.h |  1 +
- kernel/torture.c        | 23 +++++++++++++++++++++--
- 2 files changed, 22 insertions(+), 2 deletions(-)
+ kernel/rcu/hazptrtorture.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/torture.h b/include/linux/torture.h
-index 66d2d444428a..b8e5d0f3c2d8 100644
---- a/include/linux/torture.h
-+++ b/include/linux/torture.h
-@@ -98,6 +98,7 @@ void torture_shutdown_absorb(const char *title);
- int torture_shutdown_init(int ssecs, void (*cleanup)(void));
+diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
+index e9ba25f156ac..c0ebabdcc72e 100644
+--- a/kernel/rcu/hazptrtorture.c
++++ b/kernel/rcu/hazptrtorture.c
+@@ -204,23 +204,25 @@ static struct hazptr_torture *hazptr_torture_read_lock(struct hazptr_ctx **hcpp)
  
- /* Task stuttering, which forces load/no-load transitions. */
-+bool stutter_will_wait(void);
- bool stutter_wait(const char *title);
- int torture_stutter_init(int s, int sgap);
+ static void hazptr_read_delay(struct torture_random_state *rrsp)
+ {
++	const bool can_sleep = !preempt_count() && !irqs_disabled();
+ 	const unsigned long shortdelay_us = 200;
+ 	unsigned long longdelay_ms = 300;
++	const bool short_spin = irqs_disabled() || irq_count();
  
-diff --git a/kernel/torture.c b/kernel/torture.c
-index 8c4e6b2fe8ba..93caaa8b807e 100644
---- a/kernel/torture.c
-+++ b/kernel/torture.c
-@@ -732,6 +732,26 @@ static ktime_t stutter_till_abs_time;
- static int stutter;
- static int stutter_gap;
+ 	 // We want a short delay sometimes to make a reader delay the grace
+ 	 // period, and we want a long delay occasionally to trigger
+ 	 // force_quiescent_state.
  
-+static bool _stutter_will_wait(ktime_t *till_ns)
-+{
-+	*till_ns = READ_ONCE(stutter_till_abs_time);
-+	if (*till_ns && ktime_before(ktime_get(), *till_ns))
-+		return true;
-+	return false;
-+}
-+
-+/*
-+ * Will stutter_wait() actually stutter?  The returned result is of
-+ * course immediately stale due to the passage of time.
-+ */
-+bool stutter_will_wait(void)
-+{
-+	ktime_t till_ns;
-+
-+	return _stutter_will_wait(&till_ns);
-+}
-+EXPORT_SYMBOL_GPL(stutter_will_wait);
-+
- /*
-  * Block until the stutter interval ends.  This must be called periodically
-  * by all running kthreads that need to be subject to stuttering.
-@@ -742,8 +762,7 @@ bool stutter_wait(const char *title)
- 	ktime_t till_ns;
- 
- 	cond_resched_tasks_rcu_qs();
--	till_ns = READ_ONCE(stutter_till_abs_time);
--	if (till_ns && ktime_before(ktime_get(), till_ns)) {
-+	if (_stutter_will_wait(&till_ns)) {
- 		torture_hrtimeout_ns(till_ns, 0, HRTIMER_MODE_ABS, NULL);
- 		ret = true;
+ 	if (!(torture_random(rrsp) % (nrealreaders * 2000 * longdelay_ms))) {
+-		if ((preempt_count() & HARDIRQ_MASK) || softirq_count())
++		if (short_spin)
+ 			longdelay_ms = 5; /* Avoid triggering BH limits. */
+ 		mdelay(longdelay_ms);
  	}
+ 	if (!(torture_random(rrsp) % (nrealreaders * 2 * shortdelay_us)))
+ 		udelay(shortdelay_us);
+-	if (!preempt_count() && !(torture_random(rrsp) % (nrealreaders * 500)))
++	if (can_sleep && !(torture_random(rrsp) % (nrealreaders * 500)))
+ 		torture_preempt_schedule();  /* QS only if preemptible. */
+-	if (reader_sleep_us > 0)
++	if (can_sleep && reader_sleep_us > 0)
+ 		torture_hrtimeout_us(reader_sleep_us, 0, NULL);
+ }
+ 
 -- 
 2.40.1
 
