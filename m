@@ -1,43 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DE830F7FB;
-	Sat, 19 Sep 2026 00:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456BF318ED6;
+	Sat, 19 Sep 2026 00:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789777983; cv=none; b=NJbGtvIb0KdkwodafIFT2Ukq6F6sisKQTuJivce+e+LRR3rARH5IOUlN0UoPII8ZnXoirw3+3/ExZtSRl2fSXbMYefvc8Ym3mZHJxz6QqBPzTK469TZnNJ173qn43Pk0xKh2zdcvD7CuFM9r9rfTF/TOto4keRAIJxN1lEitVx8=
+	t=1789777984; cv=none; b=b0Njz4ea0iIGK4jsEsxadsnL4KQ7d34vWIrD/beHdHVggIBbffKDGj040UVwoMN9NWISdmOqt4mrjioKc2O2MwJNGnRWHF7VhvfiQtGmqITYtvjI0k/JPGdmYQ5g40/qZez3UK9pPqqzf3SlW9LZCzhvOMDA6iPCfBZrudnlMCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789777983; c=relaxed/simple;
-	bh=bWQMjqP+nsqMQnX9kr3nf6L6PxMdijiuwoNeU0e1hNE=;
+	s=arc-20240116; t=1789777984; c=relaxed/simple;
+	bh=XZFZEL98EQBO/Tm8IToe2dBkQ5Z13dCI5PqipJytN+c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oR3xvccZyLcH6a4dyCeMfw0GRJyRCqhmhDCwNrAj3jbfITxkvjp2Cic9lhzh6yT2MvxApyCYj7bB46CEYvaTin8L3LEec79CDliYodW29+YkRMgdxMsjOgKlLhzX7NOkwQ2Q691QsRGgmVRxBAYLSY5fgT2pRpZ0Cr5cwd3gEs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IEXjp8Me; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=sLjnoUa0z4Gp0/vd7O0vDQfpxzYlq2U5O3nWiEx1P5pvwSkDjitMGDz1FBsVcOREoerOO8ZaYFeqNKWV46U9Q66/Q9HU29qGFXN2xD+0rtV6+xNR1Fqy3IUn+ns6maofR502/XcikPHMQMPnW9Nun0W4+Lwj2xK/qaUYcb1H66I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FkD7iXKK; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IEXjp8Me"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDA3A1F00898;
-	Sat, 19 Sep 2026 00:32:59 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FkD7iXKK"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45E531F0089B;
+	Sat, 19 Sep 2026 00:33:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789777979;
-	bh=7fC/rvpTz6KY8HQNuutCBSh5FydVFzj8Ras4JUDvRqE=;
+	s=k20260515; t=1789777980;
+	bh=adqt1kmOUfzjeqZOkMgAXlPhDVlCUYVFluy5ttZjIek=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=IEXjp8MeL2BF2f4loi7gp4PiLPfZ+1xVLzULW9hGXxvtcxW2WpjqgBdJI7FlxnWkr
-	 xDQk0Yvbn7+wXMKTuuqHYn4IuRjSeYhiu//Cdt/xyF5iXWkOIVW0jUJX9id4+zeAht
-	 v5v5d1YtSWihjhAnCHQjOVvKmwLZH3XXBWEd0Bpb/csiyBa9FEnva6SP4DXG7wXrls
-	 mqtVCf4Tr1zcw991WcKoDzjYgJ4LRFzqfuTu5BvnekY9W47mdNbzvrRh8WFiNAyQYx
-	 xqhG3wegRF3iL1yRFtcRhlnH1yGyj7Au40I67LZxdheUgKQXUHNQDFDuVcE+Y1rEs/
-	 dG54UaAQmITTw==
+	b=FkD7iXKKmMgv/DJEM/cVFudyRvz3XV7KT7t+hnhel6A4tktOjyExMj+ayJD+iB3Dg
+	 CqbcX+Bg/Ss70XLokJpQTHVzLCYiKeo2tX5jZuTsplyHkJDBFbmPMr7dEKTsFILlbu
+	 vUE39PALTERynXobjiHKPMSIgRnu+xX5KSP7eORgC7OML2zyibrFe7nUEqHN4AMgSE
+	 UNE6yYbxgXgUosjMKEpeqfna81lWr8ESLvqQ23WpfFzmSS1Y0VNEyD5C5DxV70L0Nw
+	 Z8wL2VBurJWBNACdOjPbbCBL61u7+YTyF6XVnRplIMNB3AmhJmIbYSc3dIf9++l7SB
+	 izGTDazIbNnLw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 94732CE178A; Fri, 18 Sep 2026 17:32:59 -0700 (PDT)
+	id A1B77CE1855; Fri, 18 Sep 2026 17:32:59 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	Puranjay Mohan <puranjay@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH 2/7] rcu: Make Tiny call_rcu() safe to call from any context
-Date: Fri, 18 Sep 2026 17:32:53 -0700
-Message-Id: <20260919003258.3134343-2-paulmck@kernel.org>
+Subject: [PATCH 7/7] selftests/bpf: Add a call_srcu() re-entry reproducer
+Date: Fri, 18 Sep 2026 17:32:58 -0700
+Message-Id: <20260919003258.3134343-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <2a742578-120a-421d-9305-5de0b22bda33@paulmck-laptop>
 References: <2a742578-120a-421d-9305-5de0b22bda33@paulmck-laptop>
@@ -51,201 +52,194 @@ Content-Transfer-Encoding: 8bit
 
 From: Puranjay Mohan <puranjay@kernel.org>
 
-Give Tiny call_rcu() the same treatment as Tree RCU.  When interrupts are
-disabled and the scheduler is up, stage the callback on a lockless list
-that an irq_work re-issues later.  One global list and irq_work suffice
-since Tiny RCU is uniprocessor, and there is no CPU-offline drain.
+Re-enter call_srcu() from a BPF program to exercise its any-context
+safety, via call_rcu_tasks_trace(), which is call_srcu() on
+rcu_tasks_trace_srcu_struct.
 
-The re-issue runs with interrupts disabled and can be re-entered by
-instrumentation, so a draining flag drops a deferring call_rcu() seen
-mid-drain (unless from an NMI), as in Tree RCU.  Gated by CONFIG_RCU_DEFER,
-though the deferral state is unconditional.
+An fentry program on rcu_segcblist_enqueue() fires mid-enqueue: that
+function is reached from srcu_gp_start_if_needed() with the srcu_data
+->lock held.  The program does a task-storage delete, whose only deferred
+work is call_rcu_tasks_trace(), re-entering the enqueue on the same CPU.
+The handler matches on TID and fires once; pinning the thread removes the
+migration window between picking the srcu_data and taking its lock.
 
-Interrupts stay off for the whole batch, but the re-issue is a tail append
-with no locks.  TINY_RCU implies !SMP, where arch_irq_work_has_interrupt()
-is false, so the drain always waits for the tick and a batch is whatever
-one tick's worth of interrupts-disabled call_rcu()s staged.  As in Tree
-RCU the drain clears ->next before re-issuing, which bounds a node
-self-linked by a double call_rcu(): rcu_do_enqueue()'s duplicate path
-returns without clearing it.  A longer cycle is not bounded; a double
-call_rcu() stays undefined.
+Without the fix the nested call re-takes the same sdp lock and
+self-deadlocks; with it the nested __call_srcu() sees interrupts disabled
+and defers via irq_work, so the delete returns and the test passes.
 
-The idle-task reschedule moves out of the enqueue helper so that a drain
-does it once for the batch rather than once per callback, which would
-otherwise take the runqueue lock N times with interrupts disabled.
+The test skips where it does not apply: Tiny RCU has no
+rcu_segcblist_enqueue() to attach to, and a UP+PREEMPT kernel pairs Tree
+RCU with Tiny SRCU, so the attach succeeds but call_srcu() never reaches
+the enqueue.  Tiny SRCU is told apart by srcu_expedite_current(), which it
+stubs out, so on Tree SRCU a zero hit count fails rather than skips and the
+reproducer cannot quietly stop reproducing.
 
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tiny.c | 127 +++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 104 insertions(+), 23 deletions(-)
+ .../selftests/bpf/prog_tests/rcu_reentry.c    | 93 +++++++++++++++++++
+ .../testing/selftests/bpf/progs/rcu_reentry.c | 51 ++++++++++
+ 2 files changed, 144 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rcu_reentry.c
 
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index dccccd6be941..656b6a682e31 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -11,6 +11,8 @@
-  */
- #include <linux/completion.h>
- #include <linux/interrupt.h>
-+#include <linux/irq_work.h>
-+#include <linux/llist.h>
- #include <linux/notifier.h>
- #include <linux/rcupdate_wait.h>
- #include <linux/kernel.h>
-@@ -42,8 +44,100 @@ static struct rcu_ctrlblk rcu_ctrlblk = {
- 	.gp_seq		= 0 - 300UL,
- };
- 
-+/*
-+ * The callback list is only accessed with interrupts disabled, so a call_rcu()
-+ * that arrives with interrupts off stages the callback on a lockless list that
-+ * an irq_work re-issues later.  One global list and irq_work suffice, as Tiny
-+ * RCU is uniprocessor.
-+ */
-+static void rcu_defer_drain(struct irq_work *iw);
-+static LLIST_HEAD(rcu_defer_list);
-+static struct irq_work rcu_defer_iw = IRQ_WORK_INIT_HARD(rcu_defer_drain);
-+static bool rcu_defer_draining;
+diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_reentry.c b/tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
+new file mode 100644
+index 000000000000..de23a14b3d40
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
+@@ -0,0 +1,93 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Exercise re-entry into call_srcu() from BPF; see progs/rcu_reentry.c. */
++#define _GNU_SOURCE
++#include <sched.h>
++#include <test_progs.h>
++#include "task_local_storage_helpers.h"
++#include "trace_helpers.h"
++#include "rcu_reentry.skel.h"
 +
-+/*
-+ * Also called by __rcu_defer_drain() to re-issue a deferred callback, so it
-+ * must not re-check the deferral condition.
-+ */
-+static void rcu_do_enqueue(struct rcu_head *head, rcu_callback_t func)
++/* Tiny RCU has no rcu_segcblist_enqueue() to attach to. */
++static bool have_attach_target(void)
 +{
-+	static atomic_t doublefrees;
-+	unsigned long flags;
++	unsigned long long addr;
 +
-+	if (debug_rcu_head_queue(head)) {
-+		if (atomic_inc_return(&doublefrees) < 4) {
-+			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->func);
-+			mem_dump_obj(head);
-+		}
++	return kallsyms_find("rcu_segcblist_enqueue", &addr) == 0;
++}
++
++/* Tiny SRCU stubs out srcu_expedite_current(); Tree SRCU exports it. */
++static bool have_tree_srcu(void)
++{
++	unsigned long long addr;
++
++	return kallsyms_find("srcu_expedite_current", &addr) == 0;
++}
++
++void test_rcu_reentry(void)
++{
++	struct rcu_reentry *skel;
++	int err, pidfd = -1, map_fd;
++	cpu_set_t set, old_set;
++	bool affinity_saved;
++	__u64 val = 1;
++	int cpu;
++
++	if (!have_attach_target()) {
++		test__skip();
 +		return;
 +	}
 +
-+	head->func = func;
-+	head->next = NULL;
-+
-+	local_irq_save(flags);
-+	*rcu_ctrlblk.curtail = head;
-+	rcu_ctrlblk.curtail = &head->next;
-+	local_irq_restore(flags);
-+}
-+
-+/* Force scheduling for rcu_qs() when enqueuing from the idle task. */
-+static void rcu_resched_if_idle(void)
-+{
-+	if (unlikely(is_idle_task(current)))
-+		resched_cpu(0);
-+}
-+
-+static void __rcu_defer_drain(void)
-+{
-+	struct llist_node *node, *next;
-+	bool drained = false;
-+	unsigned long flags;
-+
-+	if (!IS_ENABLED(CONFIG_RCU_DEFER))
++	skel = rcu_reentry__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
 +		return;
 +
-+	/* Re-issued newest-first; nothing depends on call_rcu() ordering. */
-+	local_irq_save(flags);
-+	llist_for_each_safe(node, next, llist_del_all(&rcu_defer_list)) {
-+		struct rcu_head *head = (struct rcu_head *)node;
++	err = rcu_reentry__attach(skel);
++	if (!ASSERT_OK(err, "skel_attach"))
++		goto out;
 +
-+		/* Bounds a node self-linked by a double call_rcu(). */
-+		head->next = NULL;
-+		rcu_do_enqueue(head, head->func);
-+		drained = true;
-+	}
-+	local_irq_restore(flags);
++	/* Keep the re-entry on a single CPU; a cpuset may exclude CPU 0. */
++	affinity_saved = !sched_getaffinity(0, sizeof(old_set), &old_set);
++	cpu = sched_getcpu();
++	if (!ASSERT_GE(cpu, 0, "getcpu"))
++		goto out;
++	CPU_ZERO(&set);
++	CPU_SET(cpu, &set);
++	if (!ASSERT_OK(sched_setaffinity(0, sizeof(set), &set), "setaffinity"))
++		goto out;
 +
-+	if (drained)
-+		rcu_resched_if_idle();
-+}
++	pidfd = sys_pidfd_open(getpid(), 0);
++	if (!ASSERT_GE(pidfd, 0, "pidfd_open"))
++		goto restore;
++	map_fd = bpf_map__fd(skel->maps.task_stg);
++	err = bpf_map_update_elem(map_fd, &pidfd, &val, BPF_NOEXIST);
++	if (!ASSERT_OK(err, "boot_create"))
++		goto restore;
 +
-+/* Only the irq_work drain can be re-fed by its own re-issue; see Tree RCU. */
-+static void rcu_defer_drain(struct irq_work *iw)
-+{
-+	WRITE_ONCE(rcu_defer_draining, true);
-+	__rcu_defer_drain();
-+	WRITE_ONCE(rcu_defer_draining, false);
-+}
++	/* Arm the handler for this thread, then trigger call_rcu_tasks_trace(). */
++	skel->bss->target_pid = syscall(__NR_gettid);
++	err = bpf_map_delete_elem(map_fd, &pidfd);
++	if (!ASSERT_OK(err, "boot_delete"))
++		goto restore;
 +
-+static void call_rcu_defer(struct rcu_head *head, rcu_callback_t func)
-+{
-+	/* A re-entrant call_rcu() during the drain would livelock it; drop it. */
-+	if (READ_ONCE(rcu_defer_draining) && !in_nmi()) {
-+		WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
-+			  "call_rcu() re-entered during callback drain; leaking callback\n");
-+		return;
-+	}
-+	head->func = func;
-+	if (llist_add((struct llist_node *)head, &rcu_defer_list))
-+		irq_work_queue(&rcu_defer_iw);
-+}
-+
- void rcu_barrier(void)
- {
-+	/* Register any deferred callbacks so the wait below covers them. */
-+	__rcu_defer_drain();
- 	wait_rcu_gp(call_rcu_hurry);
- }
- EXPORT_SYMBOL(rcu_barrier);
-@@ -157,29 +251,19 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
-  */
- void call_rcu(struct rcu_head *head, rcu_callback_t func)
- {
--	static atomic_t doublefrees;
--	unsigned long flags;
--
--	if (debug_rcu_head_queue(head)) {
--		if (atomic_inc_return(&doublefrees) < 4) {
--			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->func);
--			mem_dump_obj(head);
--		}
-+	if (should_rcu_defer()) {
-+		call_rcu_defer(head, func);
- 		return;
- 	}
- 
--	head->func = func;
--	head->next = NULL;
 +	/*
-+	 * Only reachable from an NMI when deferral is off: before the scheduler
-+	 * is up, or with CONFIG_RCU_DEFER=n.  The enqueue can then race.
++	 * Only Tree SRCU reaches rcu_segcblist_enqueue() from call_srcu(); a
++	 * UP+PREEMPT kernel pairs Tree RCU with Tiny SRCU, so the attach
++	 * succeeds but nothing fires.  On Tree SRCU it must fire.
 +	 */
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
- 
--	local_irq_save(flags);
--	*rcu_ctrlblk.curtail = head;
--	rcu_ctrlblk.curtail = &head->next;
--	local_irq_restore(flags);
--
--	if (unlikely(is_idle_task(current))) {
--		/* force scheduling for rcu_qs() */
--		resched_cpu(0);
--	}
-+	rcu_do_enqueue(head, func);
-+	rcu_resched_if_idle();
- }
- EXPORT_SYMBOL_GPL(call_rcu);
- 
-@@ -211,10 +295,7 @@ unsigned long start_poll_synchronize_rcu(void)
- {
- 	unsigned long gp_seq = get_state_synchronize_rcu();
- 
--	if (unlikely(is_idle_task(current))) {
--		/* force scheduling for rcu_qs() */
--		resched_cpu(0);
--	}
-+	rcu_resched_if_idle();
- 	return gp_seq;
- }
- EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
++	if (!skel->bss->hits) {
++		if (have_tree_srcu())
++			ASSERT_GT(skel->bss->hits, 0, "prog_fired");
++		else
++			test__skip();
++		goto restore;
++	}
++	ASSERT_EQ(skel->bss->get_errs, 0, "nested_storage_get");
++	ASSERT_EQ(skel->bss->del_errs, 0, "nested_storage_delete");
++restore:
++	if (affinity_saved)
++		sched_setaffinity(0, sizeof(old_set), &old_set);
++out:
++	if (pidfd >= 0)
++		close(pidfd);
++	rcu_reentry__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/rcu_reentry.c b/tools/testing/selftests/bpf/progs/rcu_reentry.c
+new file mode 100644
+index 000000000000..47a36f704cf3
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/rcu_reentry.c
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Re-enter call_srcu() from a BPF program.  fentry on rcu_segcblist_enqueue()
++ * fires inside call_srcu()'s enqueue (reached from srcu_gp_start_if_needed()
++ * with the srcu_data ->lock held); the handler then calls call_rcu_tasks_trace()
++ * -- itself call_srcu() on rcu_tasks_trace_srcu_struct -- re-entering the same
++ * srcu_data on the same CPU.
++ */
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, __u64);
++} task_stg SEC(".maps");
++
++int target_pid;
++int hits;
++int get_errs;
++int del_errs;
++int done;
++
++SEC("fentry/rcu_segcblist_enqueue")
++int BPF_PROG(reenter)
++{
++	struct task_struct *cur;
++
++	if (done || !target_pid)
++		return 0;
++
++	cur = bpf_get_current_task_btf();
++	if (cur->pid != target_pid)
++		return 0;
++
++	/* Issue the nested call exactly once, so the test is deterministic. */
++	done = 1;
++	__sync_fetch_and_add(&hits, 1);
++
++	/* Re-enter via a task-storage delete, which calls call_rcu_tasks_trace(). */
++	if (!bpf_task_storage_get(&task_stg, cur, 0, BPF_LOCAL_STORAGE_GET_F_CREATE))
++		__sync_fetch_and_add(&get_errs, 1);
++	else if (bpf_task_storage_delete(&task_stg, cur))
++		__sync_fetch_and_add(&del_errs, 1);
++
++	return 0;
++}
 -- 
 2.40.1
 
