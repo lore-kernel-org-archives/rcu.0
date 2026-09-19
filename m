@@ -1,61 +1,45 @@
 Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE7C1AC45D;
-	Sat, 19 Sep 2026 11:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1065D35CB91;
+	Sat, 19 Sep 2026 11:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.75.144.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789816428; cv=none; b=O194tsqh1S2ovR4WZLbiGeYCZoxobljo44JI7xPHtXhrViCXJKyF9YqO5GAPUF8xPFql7gIkD0qbFuy7W1BaY2WFpScSGB1aBopTLEg4jBsgvmX5O3rAHz/gLNg2jMq5rxbwqSZviy2j7Xbm1t1Jgtk4y3FzLlxd7xWqIdFH2d8=
+	t=1789816713; cv=none; b=SZowcaMv/ra/Ixzd4IJdpFX1l7hcBSWZAYRp5xB8lb7MRI2AiMthYXthIGGxHZhwYuW8eY2vfRXv6fu8VyPqSMVjWl10/pkU1vQL9Rkm5zmk5xRPKQNV7w9UQ1fonwJoJy4GW9YWOhW0pNwjbK/QwcYWKNJ7LlXsjZfYdU3Z6EY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789816428; c=relaxed/simple;
-	bh=M3mUGm4v2KRpWjL4/pRD+832nDkI/PFIBfvcqFi2014=;
+	s=arc-20240116; t=1789816713; c=relaxed/simple;
+	bh=X/KMhtPuaMlPEv0rbZG2bsyP9v63pjKOD1jGeKYNdMw=;
 	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=Mg3ms8k1buVnvadsbihfH3v0ge5NwLUo2FLmzmWRVVuisPVdoAcL9s4N11441enKFpdTvwBDXdeZG7OYY9Y2IqmKJ27MuPRF7Q9XhCe6K5qUc9WzMIx40vhLcIHls0P6zU/xZcIC9r9CaLNbzMwJNT+tgv6dq4h0QuW8lfTL90k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=iQT1lm0T; dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=jH3tVQ0I; arc=none smtp.client-ip=5.75.144.95
+	 MIME-Version:Content-Type; b=CAFbpAk6+x24mjXQzMc6n+YKMzq50KDarZtw9+cP73Pd9ttlZ+SlYOqJPdXpB99gRCQa9pAaAyqSYPNMKphzygB1G+V9ZA0O0yzG2Kpelw0cCDiEJbh9L9X2hCLbcCXqA5kBmruCuTkiOzgTdDBKqqMpUuDvwES6czRPhth2To0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=raJcMdI3; dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=OFjAUCWz; arc=none smtp.client-ip=5.75.144.95
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="iQT1lm0T";
-	dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="jH3tVQ0I"
+	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="raJcMdI3";
+	dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="OFjAUCWz"
 DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1789816321; bh=2ozZqxYt0zj86HyHFpk2lsb
-	NyjDODjlLt4d3XvAUuWo=; b=iQT1lm0TJoX+h5TfdGExoUrwR3v3NHWL3c+QiQPnftCOnkm74O
-	gK6cSRCMI682GBmpjWnu/M6hcMryp9AXTtgZ5RZd7KFM8zDpCVgZkH1tv281QyzoVhdvTGC3O0F
-	8nVjPwXQaeIP69CyR+SXSp5HG8KLAyBumrVwbJfjU7Wx0Rs2sYKtMllk1dUta55PSJOBcDcidFU
-	RHq6cZMjpvXrDCIiBvaA4DSXLewRrkTS6BpF84lGdEXQ+KXAydUCx4+g6K0ZKKGd7wjg320whkW
-	3rnZSWlu+OtvJTUmtwKJuXjkWeJDjWb7Wc1pM+0zUKfRDH5iHN2oSUy6B5dr0bQ0x4A==;
+	h=Message-ID:Subject:To:From:Date; t=1789816696; bh=oNCf2PohaIMiDCK4YFeaz2d
+	CZsq4STxl19+ykDcY+yw=; b=raJcMdI3Jk5CPJJh3/ZFHXgALSdVYatsk+KZQWoF6cY78koEu6
+	P6vWE7Yk6gXREeP3C1HzUaUQvP1eQ6oOXpd/+jmdL55N7EmxHoqMR+NgnfbBz92nSGE4sXdDN/I
+	2Wg+ELkN2akjY+fNNeOJver6gBppCzNNM1vhhu91/R1K2/LjOs9id4jyu6o2elFEmRxM6zvO5dO
+	M+ST3wdjT0SDKXgLFqelGg5aEVuSjMdS/B3p2xCOWKXbzMMsXlXglqk/swE+cPrF2fjdrKBWswA
+	Q2hSRR1egNdre/35r7WDCSsbtyyFCn5I4TWMhZNV29s7Fm0y/1cILtTSdfUfPGflEEg==;
 DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1789816322; bh=2ozZqxYt0zj86HyHFpk2lsb
-	NyjDODjlLt4d3XvAUuWo=; b=jH3tVQ0I2wxZe8pGylesroBQtPDqRVcZ0nKl3roTny+UsxEoNS
-	TFrf7QjrGQJK9E2l0xuz543RT6E6/n81+0DA==;
-Date: Sat, 19 Sep 2026 12:12:02 +0100
+	h=Message-ID:Subject:To:From:Date; t=1789816696; bh=oNCf2PohaIMiDCK4YFeaz2d
+	CZsq4STxl19+ykDcY+yw=; b=OFjAUCWzGJOHiB+wRW61m6BcK/EVdI7RZTgx6MyuV+z9gW3hiE
+	77QkjDxtTov1Oto5XADdZFoEn5zUO803NkBg==;
+Date: Sat, 19 Sep 2026 12:18:17 +0100
 From: Bradley Morgan <brads@mainlining.org>
 To: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
  linux-kernel@vger.kernel.org
 CC: kernel-team@meta.com, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Boqun Feng <boqun@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
  lkmm@lists.linux.dev, Zqiang <qiang.zhang@linux.dev>,
- Wang Lian <lianux.mm@gmail.com>, Kunwu Chan <kunwu.chan@gmail.com>,
- Nicholas Piggin <npiggin@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Alan Stern <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
- Mateusz Guzik <mjguzik@gmail.com>,
- Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>, linux-mm@kvack.org
-Subject: Re: [PATCH 01/28] hazptr: Implement Hazard Pointers
-In-Reply-To: <20260919000056.3132131-1-paulmck@kernel.org>
-References: <e9669b34-12c2-4cf2-a887-315f581f0789@paulmck-laptop> <20260919000056.3132131-1-paulmck@kernel.org>
-Message-ID: <65321E46-473C-48B6-922C-122E14FB745D@mainlining.org>
+ Wang Lian <lianux.mm@gmail.com>, Kunwu Chan <kunwu.chan@gmail.com>
+Subject: Re: [PATCH 28/28] torture.sh: Add hazptr torturing
+In-Reply-To: <20260919000056.3132131-28-paulmck@kernel.org>
+References: <e9669b34-12c2-4cf2-a887-315f581f0789@paulmck-laptop> <20260919000056.3132131-28-paulmck@kernel.org>
+Message-ID: <CDA33B6C-128C-445C-B869-A9ABB8E02EC3@mainlining.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -66,584 +50,145 @@ Content-Type: text/plain;
  charset=utf-8
 Content-Transfer-Encoding: 8bit
 
-On 19 September 2026 01:00:29 BST, "Paul E. McKenney" <paulmck@kernel.org>
+On 19 September 2026 01:00:56 BST, "Paul E. McKenney" <paulmck@kernel.org>
 wrote:
->From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>This commit adds hazard-pointer torturing to the torture.sh script
+>as a default-on option.  This uses the same duration as rcutorture.
+>While in the area, change kvm.sh to tolerate the empty-string arguments
+>that torture.sh can generate, for example, if a given test needs no
+>boot arguments.
 >
->This API provides existence guarantees of objects through Hazard
->Pointers [1] (hazptr).
->
-
-Hi, could I add my tag here?
-
->Its main benefit over RCU is that it allows fast reclaim of
->HP-protected pointers without needing to wait for a grace period.
->
->This implementation has 4 statically allocated hazard pointer slots per
->cpu for the fast path, and relies on a on-stack backup slot allocated by
->the hazard pointer user as fallback in case no per-cpu slot is
->available.
->
->It integrates with the scheduler to migrate per-CPU slots to the backup
->slot on context switch. This ensures that the per-CPU slots won't be
->used by blocked or preempted tasks holding on hazard pointers for a long
->time.
->
->References:
->
->[1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
->     lock-free objects," in IEEE Transactions on Parallel and
->     Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
->
->Link: https://lpc.events/event/19/contributions/2082/
->Link: https://lore.kernel.org/lkml/j3scdl5iymjlxavomgc6u5ndg3svhab6ga23dr36o4f5mt333w@7xslvq6b6hmv/
->Link: https://lpc.events/event/18/contributions/1731/
->Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->Cc: Nicholas Piggin <npiggin@gmail.com>
->Cc: Michael Ellerman <mpe@ellerman.id.au>
->Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->Cc: "Paul E. McKenney" <paulmck@kernel.org>
->Cc: Will Deacon <will@kernel.org>
->Cc: Peter Zijlstra <peterz@infradead.org>
->Cc: Boqun Feng <boqun@kernel.org>
->Cc: Alan Stern <stern@rowland.harvard.edu>
->Cc: John Stultz <jstultz@google.com>
->Cc: Linus Torvalds <torvalds@linux-foundation.org>
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Cc: Frederic Weisbecker <frederic@kernel.org>
->Cc: Joel Fernandes <joel@joelfernandes.org>
->Cc: Josh Triplett <josh@joshtriplett.org>
->Cc: Uladzislau Rezki <urezki@gmail.com>
->Cc: Steven Rostedt <rostedt@goodmis.org>
->Cc: Lai Jiangshan <jiangshanlai@gmail.com>
->Cc: Zqiang <qiang.zhang1211@gmail.com>
->Cc: Ingo Molnar <mingo@redhat.com>
->Cc: Waiman Long <longman@redhat.com>
->Cc: Mark Rutland <mark.rutland@arm.com>
->Cc: Thomas Gleixner <tglx@linutronix.de>
->Cc: Vlastimil Babka <vbabka@suse.cz>
->Cc: maged.michael@gmail.com
->Cc: Mateusz Guzik <mjguzik@gmail.com>
->Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
->Cc: <rcu@vger.kernel.org>
->Cc: <linux-mm@kvack.org>
->Cc: <lkmm@lists.linux.dev>
 >Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>Cc: Boqun Feng <boqun@kernel.org>
+>Cc: Bradley Morgan <brads@mainlining.org>
+
+Why CC? Well thanks, this'll benefit my new PowerPC box :) (manifesting!)
+
+Reviewed-by: Bradley Morgan <brads@mainlining.org>
+
+
 >---
-> include/linux/hazptr.h | 197 +++++++++++++++++++++++++++++++++
-> init/main.c            |   2 +
-> kernel/Makefile        |   2 +-
-> kernel/hazptr.c        | 242 +++++++++++++++++++++++++++++++++++++++++
-> kernel/sched/core.c    |   2 +
-> 5 files changed, 444 insertions(+), 1 deletion(-)
-> create mode 100644 include/linux/hazptr.h
-> create mode 100644 kernel/hazptr.c
+> tools/testing/selftests/rcutorture/bin/kvm.sh |  4 +++
+> .../selftests/rcutorture/bin/torture.sh       | 26 ++++++++++++++++++-
+> 2 files changed, 29 insertions(+), 1 deletion(-)
 >
->diff --git a/include/linux/hazptr.h b/include/linux/hazptr.h
->new file mode 100644
->index 000000000000..b121f7779cda
->--- /dev/null
->+++ b/include/linux/hazptr.h
->@@ -0,0 +1,197 @@
->+// SPDX-License-Identifier: LGPL-2.1-or-later
->+//
->+// SPDX-FileCopyrightText: 2024 Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->+
->+#ifndef _LINUX_HAZPTR_H
->+#define _LINUX_HAZPTR_H
->+
->+/*
->+ * hazptr: Hazard Pointers
->+ *
->+ * This API provides existence guarantees of objects through hazard
->+ * pointers.
->+ *
->+ * Its main benefit over RCU is that it allows fast reclaim of
->+ * HP-protected pointers without needing to wait for a grace period.
->+ *
->+ * References:
->+ *
->+ * [1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
->+ *      lock-free objects," in IEEE Transactions on Parallel and
->+ *      Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
->+ */
->+
->+#include <linux/percpu.h>
->+#include <linux/types.h>
->+#include <linux/cleanup.h>
->+#include <linux/sched.h>
->+
->+/* 4 slots (each sizeof(hazptr_slot_item)) fit in a single 64-byte cache line. */
->+#define NR_HAZPTR_PERCPU_SLOTS	4
->+#define HAZPTR_WILDCARD		((void *) 0x1UL)
->+
->+/*
->+ * Hazard pointer slot.
->+ */
->+struct hazptr_slot {
->+	void *addr;
->+};
->+
->+struct hazptr_overflow_list;
->+
->+struct hazptr_backup_slot {
->+	struct hlist_node overflow_node;
->+	struct hazptr_slot slot;
->+	/* Overflow list where the backup slot is added. */
->+	struct hazptr_overflow_list *overflow_list;
->+};
->+
->+struct hazptr_ctx {
->+	struct hazptr_slot *slot;
->+	/* Backup slot in case all per-CPU slots are used. */
->+	struct hazptr_backup_slot backup_slot;
->+	struct hlist_node preempt_node;
->+};
->+
->+struct hazptr_slot_ctx {
->+	struct hazptr_ctx *ctx;
->+};
->+
->+struct hazptr_slot_item {
->+	struct hazptr_slot slot;
->+	struct hazptr_slot_ctx ctx;
->+};
->+
->+struct hazptr_percpu_slots {
->+	struct hazptr_slot_item items[NR_HAZPTR_PERCPU_SLOTS];
->+} ____cacheline_aligned;
->+
->+DECLARE_PER_CPU(struct hazptr_percpu_slots, hazptr_percpu_slots);
->+
->+void *__hazptr_acquire(struct hazptr_ctx *ctx, void * const *addr_p);
->+
->+/*
->+ * hazptr_synchronize: Wait until @addr is released from all slots.
->+ *
->+ * Wait to observe that each slot contains a value that differs from
->+ * @addr before returning.
->+ * Should be called from preemptible context.
->+ */
->+void hazptr_synchronize(void *addr);
->+
->+/*
->+ * hazptr_chain_backup_slot: Chain backup slot into overflow list.
->+ *
->+ * Set backup slot address to @addr, and chain it into the overflow
->+ * list.
->+ */
->+struct hazptr_slot *hazptr_chain_backup_slot(struct hazptr_ctx *ctx);
->+
->+/*
->+ * hazptr_unchain_backup_slot: Unchain backup slot from overflow list.
->+ */
->+void hazptr_unchain_backup_slot(struct hazptr_ctx *ctx);
->+
->+static inline
->+bool hazptr_slot_is_backup(struct hazptr_ctx *ctx, struct hazptr_slot *slot)
->+{
->+	return slot == &ctx->backup_slot.slot;
->+}
->+
->+static inline
->+void hazptr_note_context_switch(void)
->+{
->+	struct hazptr_percpu_slots *percpu_slots = this_cpu_ptr(&hazptr_percpu_slots);
->+	unsigned int idx;
->+
->+	for (idx = 0; idx < NR_HAZPTR_PERCPU_SLOTS; idx++) {
->+		struct hazptr_slot_item *item = &percpu_slots->items[idx];
->+		struct hazptr_slot *slot = &item->slot, *backup_slot;
->+		struct hazptr_ctx *ctx;
->+
->+		if (!slot->addr)
->+			continue;
->+		ctx = item->ctx.ctx;
->+		backup_slot = hazptr_chain_backup_slot(ctx);
->+		/*
->+		 * Move hazard pointer from the per-CPU slot to the
->+		 * backup slot. This requires hazard pointer
->+		 * synchronize to iterate on per-CPU slots with
->+		 * load-acquire before iterating on the overflow list.
->+		 */
->+		WRITE_ONCE(backup_slot->addr, slot->addr);
->+		/*
->+		 * store-release orders store to backup slot addr before
->+		 * store to per-CPU slot addr.
->+		 */
->+		smp_store_release(&slot->addr, NULL);
->+		/* Use the backup slot for context. */
->+		ctx->slot = backup_slot;
->+	}
->+}
->+
->+/*
->+ * hazptr_acquire: Load pointer at address and protect with hazard pointer.
->+ *
->+ * Load @addr_p, and protect the loaded pointer with hazard pointer.
->+ * When using hazptr_acquire from interrupt handlers, the acquired slots
->+ * need to be released before returning from the interrupt handler.
->+ *
->+ * Returns a non-NULL protected address if the loaded pointer is non-NULL.
->+ * Returns NULL if the loaded pointer is NULL.
->+ *
->+ * On success the protected hazptr slot is stored in @ctx->slot.
->+ */
->+static inline
->+void *hazptr_acquire(struct hazptr_ctx *ctx, void * const *addr_p)
->+{
->+	struct hazptr_percpu_slots *percpu_slots;
->+	struct hazptr_slot_item *slot_item;
->+	struct hazptr_slot *slot;
->+	void *addr;
->+
->+	guard(preempt)();
->+	percpu_slots = this_cpu_ptr(&hazptr_percpu_slots);
->+	slot_item = &percpu_slots->items[0];
->+	slot = &slot_item->slot;
->+	if (unlikely(slot->addr))
->+		return __hazptr_acquire(ctx, addr_p);
->+	WRITE_ONCE(slot->addr, HAZPTR_WILDCARD);	/* Store B */
->+
->+	/* Memory ordering: Store B before Load A. */
->+	smp_mb();
->+
->+	/*
->+	 * Load @addr_p after storing wildcard to the hazard pointer slot.
->+	 */
->+	addr = READ_ONCE(*addr_p);	/* Load A */
->+
->+	/*
->+	 * We don't care about ordering of Store C. It will simply
->+	 * replace the wildcard by a more specific address. If addr is
->+	 * NULL, we simply store NULL into the slot.
->+	 */
->+	WRITE_ONCE(slot->addr, addr);	/* Store C */
->+	slot_item->ctx.ctx = ctx;
->+	ctx->slot = slot;
->+	return addr;
->+}
->+
->+/* Release the protected hazard pointer from @slot. */
->+static inline
->+void hazptr_release(struct hazptr_ctx *ctx, void *addr)
->+{
->+	struct hazptr_slot *slot;
->+
->+	if (!addr)
->+		return;
->+	guard(preempt)();
->+	slot = ctx->slot;
->+	smp_store_release(&slot->addr, NULL);
->+	if (unlikely(hazptr_slot_is_backup(ctx, slot)))
->+		hazptr_unchain_backup_slot(ctx);
->+}
->+
->+void hazptr_init(void);
->+
->+#endif /* _LINUX_HAZPTR_H */
->diff --git a/init/main.c b/init/main.c
->index 2613d3f9b3ce..d9d936707c19 100644
->--- a/init/main.c
->+++ b/init/main.c
->@@ -108,6 +108,7 @@
-> #include <linux/time_namespace.h>
-> #include <linux/unaligned.h>
-> #include <linux/vdso_datastore.h>
->+#include <linux/hazptr.h>
-> #include <net/net_namespace.h>
+>diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+>index 32c319997638..2f386cf536e3 100755
+>--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
+>+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+>@@ -98,6 +98,7 @@ usage () {
 > 
-> #include <asm/io.h>
->@@ -1075,6 +1076,7 @@ void start_kernel(void)
-> 	workqueue_init_early();
+> while test $# -gt 0
+> do
+>+	echo Argument: :$1:
+> 	case "$1" in
+> 	--allcpus)
+> 		cpus=$TORTURE_ALLOTED_CPUS
+>@@ -271,6 +272,9 @@ do
+> 	--trust-make)
+> 		TORTURE_TRUST_MAKE="y"
+> 		;;
+>+	"")
+>+		# torture.sh can pass empty arguments.  Ignore them.
+>+		;;
+> 	*)
+> 		echo Unknown argument $1
+> 		usage
+>diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+>index f0083891ee81..2824dab14d41 100755
+>--- a/tools/testing/selftests/rcutorture/bin/torture.sh
+>+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+>@@ -43,6 +43,7 @@ fi
+> configs_rcutorture=
+> configs_locktorture=
+> configs_scftorture=
+>+configs_hazptr=
+> kcsan_kmake_args=
 > 
-> 	rcu_init();
->+	hazptr_init();
-> 	kvfree_rcu_init();
+> # Default compression, duration, and apportionment.
+>@@ -69,6 +70,7 @@ do_rt=yes
+> do_rcutasksflavors="${ifnotaarch64}" # FIXME: Back to "yes" when SMP=n
+> auto-avoided
+> do_srcu_lockdep=yes
+> do_rcu_rust=no
+>+do_hazptr=yes
 > 
-> 	/* Trace events are available after this */
->diff --git a/kernel/Makefile b/kernel/Makefile
->index 1e1a31673577..8961c8660d0d 100644
->--- a/kernel/Makefile
->+++ b/kernel/Makefile
->@@ -7,7 +7,7 @@ obj-y     = fork.o exec_domain.o exec_state.o panic.o \
-> 	    cpu.o exit.o softirq.o resource.o \
-> 	    sysctl.o capability.o ptrace.o user.o \
-> 	    signal.o sys.o umh.o workqueue.o pid.o task_work.o \
->-	    extable.o params.o \
->+	    extable.o params.o hazptr.o \
-> 	    kthread.o sys_ni.o nsproxy.o nstree.o nscommon.o \
-> 	    notifier.o ksysfs.o cred.o reboot.o \
-> 	    async.o range.o smpboot.o ucount.o regset.o ksyms_common.o
->diff --git a/kernel/hazptr.c b/kernel/hazptr.c
->new file mode 100644
->index 000000000000..a9d3d68a1525
->--- /dev/null
->+++ b/kernel/hazptr.c
->@@ -0,0 +1,242 @@
->+// SPDX-License-Identifier: LGPL-2.1-or-later
->+//
->+// SPDX-FileCopyrightText: 2024 Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->+
->+/*
->+ * hazptr: Hazard Pointers
->+ */
->+
->+#include <linux/hazptr.h>
->+#include <linux/percpu.h>
->+#include <linux/spinlock.h>
->+#include <linux/mutex.h>
->+#include <linux/list.h>
->+#include <linux/export.h>
->+
->+struct hazptr_overflow_list {
->+	raw_spinlock_t lock;		/* Lock protecting overflow list and list generation. */
->+	struct hlist_head head;		/* Overflow list head. */
->+	uint64_t gen;			/* Overflow list generation. */
->+};
->+
->+/*
->+ * Flip between two lists to guarantee list scan forward progress even
->+ * with frequent generation counter increments. The list additions are
->+ * always done on a different list than the one used for scan. The scan
->+ * successively iterates on both lists. Therefore, only list removals
->+ * can cause the iteration to retry, and the number of removals is
->+ * limited to the number of list elements.
->+ */
->+struct hazptr_overflow_list_flip {
->+	struct mutex lock;		/* Mutex protecting add_idx from concurrent updates. */
->+	unsigned int add_idx;		/* Index of current flip-list to add to. */
->+	struct hazptr_overflow_list array[2];
->+};
->+
->+static DEFINE_PER_CPU(struct hazptr_overflow_list_flip, percpu_overflow_list_flip);
->+
->+DEFINE_PER_CPU(struct hazptr_percpu_slots, hazptr_percpu_slots);
->+EXPORT_PER_CPU_SYMBOL_GPL(hazptr_percpu_slots);
->+
->+static
->+struct hazptr_slot *hazptr_get_free_percpu_slot(struct hazptr_ctx *ctx)
->+{
->+	struct hazptr_percpu_slots *percpu_slots = this_cpu_ptr(&hazptr_percpu_slots);
->+	unsigned int idx;
->+
->+	for (idx = 0; idx < NR_HAZPTR_PERCPU_SLOTS; idx++) {
->+		struct hazptr_slot_item *item = &percpu_slots->items[idx];
->+		struct hazptr_slot *slot = &item->slot;
->+
->+		if (!slot->addr) {
->+			item->ctx.ctx = ctx;
->+			return slot;
->+		}
->+	}
->+	/* All slots are in use. */
->+	return NULL;
->+}
->+
->+/*
->+ * Hazard pointer acquire slow path.
->+ * Called with preemption disabled.
->+ */
->+void *__hazptr_acquire(struct hazptr_ctx *ctx, void * const *addr_p)
->+{
->+	struct hazptr_slot *slot = hazptr_get_free_percpu_slot(ctx);
->+	void *addr;
->+
->+	/*
->+	 * If all the per-CPU slots are already in use, fallback
->+	 * to the backup slot.
->+	 */
->+	if (unlikely(!slot))
->+		slot = hazptr_chain_backup_slot(ctx);
->+	WRITE_ONCE(slot->addr, HAZPTR_WILDCARD);	/* Store B */
->+
->+	/* Memory ordering: Store B before Load A. */
->+	smp_mb();
->+
->+	/*
->+	 * Load @addr_p after storing wildcard to the hazard pointer slot.
->+	 */
->+	addr = READ_ONCE(*addr_p);	/* Load A */
->+
->+	/*
->+	 * We don't care about ordering of Store C. It will simply
->+	 * replace the wildcard by a more specific address. If addr is
->+	 * NULL, we simply store NULL into the slot.
->+	 */
->+	WRITE_ONCE(slot->addr, addr);	/* Store C */
->+	ctx->slot = slot;
->+	if (!addr && hazptr_slot_is_backup(ctx, slot))
->+		hazptr_unchain_backup_slot(ctx);
->+	return addr;
->+}
->+EXPORT_SYMBOL_GPL(__hazptr_acquire);
->+
->+/*
->+ * Perform piecewise iteration on overflow list waiting until "addr" is
->+ * not present. Raw spinlock is released and taken between each list
->+ * item and busy loop iteration. The overflow list generation is checked
->+ * each time the lock is taken to validate that the list has not changed
->+ * before resuming iteration or busy wait. If the generation has
->+ * changed, retry the entire list traversal.
->+ */
->+static
->+void hazptr_synchronize_overflow_list(struct hazptr_overflow_list *overflow_list, void *addr)
->+{
->+	struct hazptr_backup_slot *backup_slot;
->+	uint64_t snapshot_gen;
->+	unsigned long flags;
->+
->+	raw_spin_lock_irqsave(&overflow_list->lock, flags);
->+retry:
->+	snapshot_gen = overflow_list->gen;
->+	hlist_for_each_entry(backup_slot, &overflow_list->head, overflow_node) {
->+		/* Busy-wait if node is found. */
->+		for (;;) {
->+			void *load_addr = smp_load_acquire(&backup_slot->slot.addr);	/* Load B */
->+
->+			if (load_addr != addr && load_addr != HAZPTR_WILDCARD)
->+				break;
->+			raw_spin_unlock_irqrestore(&overflow_list->lock, flags);
->+			cpu_relax();
->+			raw_spin_lock_irqsave(&overflow_list->lock, flags);
->+			if (overflow_list->gen != snapshot_gen)
->+				goto retry;
->+		}
->+		raw_spin_unlock_irqrestore(&overflow_list->lock, flags);
->+		/*
->+		 * Release raw spinlock, validate generation after
->+		 * re-acquiring the lock.
->+		 */
->+		raw_spin_lock_irqsave(&overflow_list->lock, flags);
->+		if (overflow_list->gen != snapshot_gen)
->+			goto retry;
->+	}
->+	raw_spin_unlock_irqrestore(&overflow_list->lock, flags);
->+}
->+
->+static
->+void hazptr_synchronize_cpu_slots(int cpu, void *addr)
->+{
->+	struct hazptr_percpu_slots *percpu_slots = per_cpu_ptr(&hazptr_percpu_slots, cpu);
->+	unsigned int idx;
->+
->+	for (idx = 0; idx < NR_HAZPTR_PERCPU_SLOTS; idx++) {
->+		struct hazptr_slot_item *item = &percpu_slots->items[idx];
->+
->+		/* Busy-wait if node is found. */
->+		smp_cond_load_acquire(&item->slot.addr, VAL != addr && VAL != HAZPTR_WILDCARD); /* Load B */
->+	}
->+}
->+
->+/*
->+ * hazptr_synchronize: Wait until @addr is released from all slots.
->+ *
->+ * Wait to observe that each slot contains a value that differs from
->+ * @addr before returning.
->+ * Should be called from preemptible context.
->+ */
->+void hazptr_synchronize(void *addr)
->+{
->+	int cpu;
->+
->+	/*
->+	 * Busy-wait should only be done from preemptible context.
->+	 */
->+	lockdep_assert_preemption_enabled();
->+
->+	/*
->+	 * Store A precedes hazptr_scan(): it unpublishes addr (sets it to
->+	 * NULL or to a different value), and thus hides it from hazard
->+	 * pointer readers.
->+	 */
->+	if (!addr)
->+		return;
->+	/* Memory ordering: Store A before Load B. */
->+	smp_mb();
->+	/* Scan all CPUs slots. */
->+	for_each_possible_cpu(cpu) {
->+		struct hazptr_overflow_list_flip *overflow_list_flip = per_cpu_ptr(&percpu_overflow_list_flip, cpu);
->+		unsigned int scan_idx;
->+
->+		/* Scan CPU slots. */
->+		hazptr_synchronize_cpu_slots(cpu, addr);
->+
->+		/*
->+		 * Scan backup slots in percpu overflow lists.
->+		 * Forward progress is guaranteed by scanning one list
->+		 * while new elements are added into the other list.
->+		 */
->+		guard(mutex)(&overflow_list_flip->lock);
->+		scan_idx = overflow_list_flip->add_idx ^ 1;
->+		hazptr_synchronize_overflow_list(&overflow_list_flip->array[scan_idx], addr);
->+		/* Flip current list. */
->+		WRITE_ONCE(overflow_list_flip->add_idx, scan_idx);
->+		hazptr_synchronize_overflow_list(&overflow_list_flip->array[scan_idx ^ 1], addr);
->+	}
->+}
->+EXPORT_SYMBOL_GPL(hazptr_synchronize);
->+
->+struct hazptr_slot *hazptr_chain_backup_slot(struct hazptr_ctx *ctx)
->+{
->+	struct hazptr_overflow_list_flip *overflow_list_flip = this_cpu_ptr(&percpu_overflow_list_flip);
->+	unsigned int list_idx = READ_ONCE(overflow_list_flip->add_idx);
->+	struct hazptr_overflow_list *overflow_list = &overflow_list_flip->array[list_idx];
->+	struct hazptr_slot *slot = &ctx->backup_slot.slot;
->+
->+	slot->addr = NULL;
->+	guard(raw_spinlock_irqsave)(&overflow_list->lock);
->+	overflow_list->gen++;
->+	hlist_add_head(&ctx->backup_slot.overflow_node, &overflow_list->head);
->+	ctx->backup_slot.overflow_list = overflow_list;
->+	return slot;
->+}
->+EXPORT_SYMBOL_GPL(hazptr_chain_backup_slot);
->+
->+void hazptr_unchain_backup_slot(struct hazptr_ctx *ctx)
->+{
->+	struct hazptr_overflow_list *overflow_list = ctx->backup_slot.overflow_list;
->+
->+	guard(raw_spinlock_irqsave)(&overflow_list->lock);
->+	overflow_list->gen++;
->+	hlist_del(&ctx->backup_slot.overflow_node);
->+}
->+EXPORT_SYMBOL_GPL(hazptr_unchain_backup_slot);
->+
->+void __init hazptr_init(void)
->+{
->+	int cpu;
->+
->+	for_each_possible_cpu(cpu) {
->+		struct hazptr_overflow_list_flip *overflow_list_flip = per_cpu_ptr(&percpu_overflow_list_flip, cpu);
->+
->+		mutex_init(&overflow_list_flip->lock);
->+		for (int i = 0; i < 2; i++) {
->+			raw_spin_lock_init(&overflow_list_flip->array[i].lock);
->+			INIT_HLIST_HEAD(&overflow_list_flip->array[i].head);
->+		}
->+	}
->+}
->diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->index f78275192036..b77152edafd9 100644
->--- a/kernel/sched/core.c
->+++ b/kernel/sched/core.c
->@@ -59,6 +59,7 @@
-> #include <linux/profile.h>
-> #include <linux/psi.h>
-> #include <linux/rcuwait_api.h>
->+#include <linux/hazptr.h>
-> #include <linux/rseq.h>
-> #include <linux/sched/wake_q.h>
-> #include <linux/scs.h>
->@@ -7123,6 +7124,7 @@ static void __sched notrace __schedule(int sched_mode)
-> 	local_irq_disable();
-> 	rcu_note_context_switch(preempt);
-> 	migrate_disable_switch(rq, prev);
->+	hazptr_note_context_switch();
+> # doyesno - Helper function for yes/no arguments
+> function doyesno () {
+>@@ -89,6 +91,7 @@ usage () {
+> 	echo "       --do-all"
+> 	echo "       --do-allmodconfig / --do-no-allmodconfig / --no-allmodconfig"
+> 	echo "       --do-clocksourcewd / --do-no-clocksourcewd / --no-clocksourcewd"
+>+	echo "       --do-hazptr / --do-no-hazptr / --no-hazptr"
+> 	echo "       --do-kasan / --do-no-kasan / --no-kasan"
+> 	echo "       --do-kcsan / --do-no-kcsan / --no-kcsan"
+> 	echo "       --do-kvfree / --do-no-kvfree / --no-kvfree"
+>@@ -117,6 +120,11 @@ do
+> 		compress_concurrency=$2
+> 		shift
+> 		;;
+>+	--config-hazptr|--configs-hazptr)
+>+		checkarg --configs-hazptr "(list of config files)" "$#" "$2" '^[^/]\+$' '^--'
+>+		configs_hazptr="$configs_hazptr $2"
+>+		shift
+>+		;;
+> 	--config-rcutorture|--configs-rcutorture)
+> 		checkarg --configs-rcutorture "(list of config files)" "$#" "$2" '^[^/]\+$' '^--'
+> 		configs_rcutorture="$configs_rcutorture $2"
+>@@ -147,6 +155,7 @@ do
+> 		do_kasan=yes
+> 		do_kcsan=yes
+> 		do_clocksourcewd="${ifnotaarch64}"
+>+		do_hazptr=yes
+> 		do_srcu_lockdep=yes
+> 		;;
+> 	--do-allmodconfig|--do-no-allmodconfig|--no-allmodconfig)
+>@@ -155,6 +164,9 @@ do
+> 	--do-clocksourcewd|--do-no-clocksourcewd|--no-clocksourcewd)
+> 		do_clocksourcewd=`doyesno "$1" --do-clocksourcewd`
+> 		;;
+>+	--do-hazptr|--do-no-hazptr|--no-hazptr)
+>+		do_hazptr=`doyesno "$1" --do-hazptr`
+>+		;;
+> 	--do-kasan|--do-no-kasan|--no-kasan)
+> 		do_kasan=`doyesno "$1" --do-kasan`
+> 		;;
+>@@ -182,6 +194,7 @@ do
+> 		do_kasan=no
+> 		do_kcsan=no
+> 		do_clocksourcewd=no
+>+		do_hazptr=no
+> 		do_srcu_lockdep=no
+> 		;;
+> 	--do-normal|--do-norm|--do-no-normal|--do-no-norm|--no-normal|--no-norm)
+>@@ -343,7 +356,7 @@ function torture_one {
+> 		boottag="--bootargs"
+> 		cur_bootargs="$torture_bootargs"
+> 	fi
+>-	"$@" $boottag "$cur_bootargs" --datestamp "$ds/results-$curflavor" > $T/$curflavor.out 2>&1
+>+	"$@" "${boottag}" "$cur_bootargs" --datestamp "$ds/results-$curflavor" > $T/$curflavor.out 2>&1
+> 	retcode=$?
+> 	resdir="`grep '^Results directory: ' $T/$curflavor.out | tail -1 | sed -e 's/^Results directory: //'`"
+> 	if test -z "$resdir"
+>@@ -704,6 +717,17 @@ then
+> 	fi
+> fi
 > 
-> 	/*
-> 	 * Make sure that signal_pending_state()->signal_pending() below
+>+# Calculate hazptr defaults and apportion time
+>+if test -z "$configs_hazptr"
+>+then
+>+	configs_hazptr=CFLIST
+>+fi
+>+if test "$do_hazptr" = "yes"
+>+then
+>+	torture_bootargs=""
+>+	torture_set "hazptr" tools/testing/selftests/rcutorture/bin/kvm.sh --torture hazptr --allcpus --duration "$duration_rcutorture" --configs "$configs_hazptr" --trust-make
+>+fi
+>+
+> echo " --- " $scriptname $args
+> echo " --- " Done `date` | tee -a $T/log
+> ret=0
 >
 
 --- Thanks!
