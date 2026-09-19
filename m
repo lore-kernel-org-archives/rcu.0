@@ -1,45 +1,72 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj2-f43.google.com (mail-pj2-f43.google.com [74.125.227.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F273164B7;
-	Sat, 19 Sep 2026 00:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 674C1547078
+	for <rcu@vger.kernel.org>; Sat, 19 Sep 2026 01:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789778241; cv=none; b=QKbWI3CaCl87SqMaqSJ4vGzQWnKSwg+xpuufn3qQxjdEOgOA4gk6AJJD5/t1wQkyZp8HrMJcXU7GjK5F4YB/1ZpSOSFs3xV6GUgaYwG5jvYDHwLrd3TSa9gFxdejh3caci5ftdX8WImHp7Z8ykUfRtCc9CasljLuXFX8mdePqjI=
+	t=1789779987; cv=none; b=T7DHJgm2jo1PE+gZukBgo5EYn7Hmy/0s1okc6KizBWklt42fhhti+kzngLsXZmDNPpMLIzeaybHHvVoYSN6Z39BtWAGjz26V31MAQsSvextbF4Y3hE2GlIIVD4OeC+dbigAE8KdG/xUCRiEtHdxAcB9aQxoue8/bjEdSVc2o7i8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789778241; c=relaxed/simple;
-	bh=jzYj/9GytYa4D4Xf5PlhYm8fh2+ECkLvvvA9zPeH8Tg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=j1nR5c1WyJ2jH4IKq/GgP58zNpkc9g0mjBFLFoGflMgXRReviiT+79eicnqEcPA2gGTXgj1ZIetjWYOy9F6CDQUlenqbFBM2bDle7X/cLX75QQ4jqpxvs3AQL4a5w0DNb9jIE2c9mnO+4GWJR9ysUzrjNBPSCMSOnu5cpCom8XQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aPzOVgGN; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789779987; c=relaxed/simple;
+	bh=UgK6zDG18uoS3J6tXdJQ0E5iNtWkMbqUJLbK7n7U0Yg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Fbft6V/bDRGmbEB/AS9nZMbxb09d3pKn8jYy45WQmlX/fQ+ZmBb1hOUVzaGblMwDW4F8mU8Gy9oq84Bl0Sf75Yd3DxHXE6g3/XQP+F4SyLgB9mydEAahYxTy7RBfM0zaAFY78zgqpN0DpWBEKHc/hwEBRpCffiJ1RokDHwrmuh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IOzO7w+z; arc=none smtp.client-ip=74.125.227.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aPzOVgGN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C228F1F00899;
-	Sat, 19 Sep 2026 00:37:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789778239;
-	bh=+Ze4F/gsALayP+EUcv1giEsWJO6Vr9f7rxAhQt9e9eY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=aPzOVgGNciJ1CwqVKOCsHwykbP4nejtMysioW8JsILM5h63qz3QzP1c9oseUHon0z
-	 W7dPk3shCM+2ZDQUEo/JMd+Itd+zrWm8TxKXuxKsSS/TqdYT2S6hkEwo3H6R1qY1w4
-	 OLMR9C+htAy4e93KdhJfjL+FDRJSb+/FaTPpGgzR3CbBzn4YGDOo6ip2Bj7tXI9sA0
-	 CwQdJ/aD2jKlkJlQGfg8FelCE3SHzmIGlh1rwfzZcDVB61gIPWo37QN4XhCXmql0xK
-	 tRULPsD6pbBK+4dK+2HXukf2O745inNZ9XasBw7oFaTeT2t+v3A9bdG9/kEWG3fzLO
-	 fKrE6E/xp/0gQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8228ACE17BD; Fri, 18 Sep 2026 17:37:19 -0700 (PDT)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 3/3] torture:  Allow specifying alternative ssh command to kvm-remote.sh
-Date: Fri, 18 Sep 2026 17:37:17 -0700
-Message-Id: <20260919003717.3134738-3-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <860880d0-fb46-4039-a47c-33dd42a215d1@paulmck-laptop>
-References: <860880d0-fb46-4039-a47c-33dd42a215d1@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IOzO7w+z"
+Received: by mail-pj2-f43.google.com with SMTP id d9443c01a7336-2d90ba1d807so16443325ad.3
+        for <rcu@vger.kernel.org>; Fri, 18 Sep 2026 18:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789779976; x=1790384776; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=6LTqB6a9B9UKh0x9TDelgFRYjmXFU1lhcgKSzwgGYlw=;
+        b=IOzO7w+zMUQPuZ6R16Syig5vMisEhJB4FDEhV3jJh+WkZ2eob5m4pOMlWeLWBZ1aDx
+         mQRSjzf/mLgOOLWtyXgMmS05xH1p99gXkESLbaupFnfGa+X7qhLNaRh5VbsbE0EzQ0ch
+         YttZHvEeEVI8YyH4KTKuFMLXhqzH3C1UDwn8tn+SW5gkO/Em3+fR58QkNC6vqTkkS8X2
+         9XL59bHcIoo8/uhzOXRDOjazj2vq+UzN+B2iCGQsMMEp+uw1+qY9Wkm3gocL7Y1D4L0C
+         aNm7fJDzW08m6bJ50KfrUUf5bgSJLTPX1w+YtUh7aO2qegr7GpOgTRLY9nB9OcUqiXUb
+         eJ+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789779976; x=1790384776;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=6LTqB6a9B9UKh0x9TDelgFRYjmXFU1lhcgKSzwgGYlw=;
+        b=QUSqz20GvzLXqfstMJtIzPrQGWMsyRK1CMn4a2EyLekOw4icNbH5F5hY1MrPRcvsnS
+         aX9yHqTzQiNPhkKOEIQI3dCcoPHeUqe8pBXRokq4mVwwHaP1eIR1Ta2J9qRLkDp//Qqp
+         aO80efKP0WWtLlDDGgWXt9E/2Wp4D0KytTAkMQKPHhjsw5FBdcABihwhF82HvYOj5oGB
+         xOcZsAEHa7gbieOYictPsrdgS6k17t3htdAUh8o0Q2LXC0sBWMcCgr8Y7VsCgvOkk1h2
+         iYciK4mAH0bCq4mFyil5I9DTbH/t1ppjvekVccnYaySzRfYBu8PZWh6YrXc44ikl+pHq
+         1SFg==
+X-Forwarded-Encrypted: i=1; AKwUvByOF5wNlt56dFdRS53GaOTD3WJ7bUyqknpXKHLmdk2MooXzMWlEERt5OALVIXf0DlJ3Z5E=@vger.kernel.org
+X-Gm-Message-State: AFuF++klvMy81S5UP2fG3+G3ogF97P36Fmi6A2WTL/lNigcg1L5pDzqc
+	wb99DIWrom2A2uqYPEw0hwpGuB4pBnTuXL32ZXhUZVtI1sTKeF/NpMLV
+X-Gm-Gg: AYBFou2Fc43SwgwbuxFCPHrDc21Mo6M3OT+ari7lOUWWKhPIu1NXZEPc3I/HI9ceE54
+	sa7xlCfYJJOG1ekx2H/s8TCm+LwIDMmsJDL2KTGTGmjXoq8hGu2BMbZJ+bnmozlGR4ILvtvf2OX
+	53v5sifm7ID1bKVdiAa/MPk8gEfYsULqa36gHDJd2M8ciCPFcFOCT6s+11QQVpLOYIjuuDMbOYX
+	HaqH5TQoGKe2o7lVd1wnun9jsUMATrTVOyLLVLtFGFxerhCgjJH+0JXh2WQXLP1xI/gEp3BDH2h
+	VpqNeM/DguLX/knM1rAK8v6/a/G0B0SHs2h+bLTHNdgFsgAy0bVQUMpuhEigdUjWfypNYMvstbN
+	9Mvx+a3htHcCbbnocLGDkc5NalbMjE1seieEEcEcE4UnmQluJi1dK98MuYGdYQkab0hVsIwzpYG
+	Zmr6lmUfsrdIC9iV1fzij8Y1fF7QGwkp9yxIxzRqywigiGZeCJ6WT3katYo7fuTFa9bt17kl/eg
+	nMfpq1ImGyC0HDEfkPtdmDGqMn3B7cgsQomVLbOHylpYVA=
+X-Received: by 2002:a17:903:2acc:b0:2dd:c132:dc27 with SMTP id d9443c01a7336-2ddc132dc8bmr18159265ad.47.1789779975721;
+        Fri, 18 Sep 2026 18:06:15 -0700 (PDT)
+Received: from localhost.localdomain ([2605:bc80:3010:503:f816:3eff:fe99:6bb3])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2df3140fd2fsm1651805ad.61.2026.09.18.18.06.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2026 18:06:15 -0700 (PDT)
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+To: paulmck@kernel.org,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lance@osuosl.org
+Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH v3] rcutorture: kvm-again.sh: Fix re-run failure on ppc64
+Date: Sat, 19 Sep 2026 01:06:06 +0000
+Message-Id: <20260919010606.2916865-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -48,100 +75,88 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some environments require use of alternative commands to access the
-test hosts.  This commit therefore adds a KVM_REMOTE_SSH environment
-variable for this purpose.  If this variable is unset, ssh is used.
-Any alternative ssh command must support the usual ssh arguments,
-including the command to be executed remotely.  In some cases, you may
-need a wrapper script to make the alternative ssh-like command look
-enough like ssh to satisfy kvm-remote.sh.
+Discovered in the Open Source Lab of Oregon State University when running
+torture.sh on a ppc64le VM.  Two bugs were exposed:
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+1. The kvm-transform.sh call hard-coded "bzImage" as the kernel image
+   name.  On ppc64, the boot image is vmlinux, not bzImage, so the
+   re-run failed to find the image.  Fix this by extracting the QEMU
+   binary from the qemu-cmd file and passing it to identify_boot_image()
+   to obtain the correct architecture-specific image name, the same way
+   kvm.sh already does.
+
+2. The rm -f invocation on re-run listed vmlinux among the files to
+   delete.  On ppc64 vmlinux is the boot image, so deleting it broke
+   the re-run on that architecture.  Drop vmlinux from the unconditional
+   list, and instead conditionally delete it only when the boot image
+   basename is not vmlinux.
+
+In addition, identify qemu_binary before the copy step so that on
+non-PowerPC systems (where vmlinux is not the boot image) the vmlinux
+file can be removed immediately after the run directory is copied,
+saving storage before any tests run.  This also eliminates the
+per-iteration re-computation of qemu_binary and boot_image inside
+the qemu-cmd transform loop.
+
+Tested on a local x86_64 machine and on a PPC VM of the Open Source Lab
+of Oregon State University.
+
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 ---
- .../selftests/rcutorture/bin/kvm-remote.sh    | 22 ++++++++++++++-----
- 1 file changed, 16 insertions(+), 6 deletions(-)
+Changes in v3:
+ - Identify qemu_binary and boot_image earlier, before the copy step,
+   so that vmlinux can be removed right after copying the run directory
+   on non-PowerPC systems, saving storage.  This also eliminates the
+   per-iteration re-computation of qemu_binary and boot_image inside
+   the qemu-cmd transform loop.
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/bin/kvm-again.sh | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-index 48a8052d5dae..a8397f86e49d 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-@@ -6,6 +6,11 @@
- # Usage: kvm-remote.sh "systems" [ <kvm.sh args> ]
- #	 kvm-remote.sh "systems" /path/to/old/run [ <kvm-again.sh args> ]
- #
-+# The caller may set the KVM_REMOTE_SSH environment in order to specify
-+# an alternative ssh command, which is necessary in some environments
-+# for authentication purposes.  This alternative ssn command must support
-+# ssh's usual arguments.
-+#
- # Copyright (C) 2021 Facebook, Inc.
- #
- # Authors: Paul E. McKenney <paulmck@kernel.org>
-@@ -13,6 +18,11 @@
- scriptname=$0
- args="$*"
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+index b5239b52cb5d..9060b3dc8926 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+@@ -180,6 +180,9 @@ fi
  
-+if test -z "${KVM_REMOTE_SSH}"
-+then
-+	KVM_REMOTE_SSH=ssh; export KVM_REMOTE_SSH
-+fi
+ echo ---- Re-run results directory: $rundir
+ 
++qemu_binary="$(find "$oldrun" -maxdepth 2 -name 'qemu-cmd' -type f 2>/dev/null | head -1 | xargs -r grep -v '^#' 2>/dev/null | awk 'NF { print $1; exit }')"
++boot_image="`identify_boot_image "$qemu_binary"`"
 +
- if ! test -d tools/testing/selftests/rcutorture/bin
+ if test "$oldrun" != "$rundir"
  then
- 	echo $scriptname must be run from top-level directory of kernel source tree.
-@@ -137,7 +147,7 @@ chmod +x $T/bin/kvm-remote-*.sh
- # Check first to avoid the need for cleanup for system-name typos
- for i in $systems
- do
--	ssh -o BatchMode=yes $i getconf _NPROCESSORS_ONLN > $T/ssh.stdout 2> $T/ssh.stderr
-+	${KVM_REMOTE_SSH} -o BatchMode=yes $i getconf _NPROCESSORS_ONLN > $T/ssh.stdout 2> $T/ssh.stderr
- 	ret=$?
- 	if test "$ret" -ne 0
+ 	# Copy old run directory tree over and adjust.
+@@ -189,7 +192,7 @@ then
+ 		echo "Cannot copy from $oldrun to $rundir."
+ 		usage
+ 	fi
+-	rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
++	rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out} "$rundir"/log
+ 	touch "$rundir/log"
+ 	echo $scriptname $args | tee -a "$rundir/log"
+ 	echo $oldrun > "$rundir/re-run"
+@@ -197,6 +200,10 @@ then
  	then
-@@ -158,14 +168,14 @@ echo Build-products tarball: `du -h $T/binres.tgz` | tee -a "$oldrun/remote-log"
- for i in $systems
- do
- 	echo Downloading tarball to $i `date` | tee -a "$oldrun/remote-log"
--	cat $T/binres.tgz | ssh -o BatchMode=yes $i "cd /tmp; tar -xzf -"
-+	cat $T/binres.tgz | ${KVM_REMOTE_SSH} -o BatchMode=yes $i "cd /tmp; tar -xzf -"
- 	ret=$?
- 	tries=0
- 	while test "$ret" -ne 0
- 	do
- 		echo Unable to download $T/binres.tgz to system $i, waiting and then retrying.  $tries prior retries. | tee -a "$oldrun/remote-log"
- 		sleep 60
--		cat $T/binres.tgz | ssh -o BatchMode=yes $i "cd /tmp; tar -xzf -"
-+		cat $T/binres.tgz | ${KVM_REMOTE_SSH} -o BatchMode=yes $i "cd /tmp; tar -xzf -"
- 		ret=$?
- 		if test "$ret" -ne 0
- 		then
-@@ -191,7 +201,7 @@ checkremotefile () {
- 
- 	while :
- 	do
--		ssh -o BatchMode=yes $1 "test -f \"$2\""
-+		${KVM_REMOTE_SSH} -o BatchMode=yes $1 "test -f \"$2\""
- 		ret=$?
- 		if test "$ret" -eq 255
- 		then
-@@ -239,7 +249,7 @@ startbatches () {
- 		then
- 			continue # System still running last test, skip.
- 		fi
--		ssh -o BatchMode=yes "$i" "cd \"$resdir/$ds\"; touch remote.run; PATH=\"$T/bin:$PATH\" nohup kvm-remote-$curbatch.sh > kvm-remote-$curbatch.sh.out 2>&1 &" 1>&2
-+		${KVM_REMOTE_SSH} -o BatchMode=yes "$i" "cd \"$resdir/$ds\"; touch remote.run; PATH=\"$T/bin:$PATH\" nohup kvm-remote-$curbatch.sh > kvm-remote-$curbatch.sh.out 2>&1 &" 1>&2
- 		ret=$?
- 		if test "$ret" -ne 0
- 		then
-@@ -281,7 +291,7 @@ do
- 		if test "$ret" -eq 1
- 		then
- 			echo " ---" Collecting results from $i `date` | tee -a "$oldrun/remote-log"
--			( cd "$oldrun"; ssh -o BatchMode=yes $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval */qemu-affinity; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
-+			( cd "$oldrun"; ${KVM_REMOTE_SSH} -o BatchMode=yes $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval */qemu-affinity; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
- 			break;
- 		fi
- 		if test "$ret" -eq 255
+ 		$arg_link "$oldrun/../../bin" "$rundir/../.."
+ 	fi
++	if test "`basename "$boot_image"`" != vmlinux
++	then
++		rm -f "$rundir"/*/vmlinux
++	fi
+ else
+ 	# Check for a run having already happened.
+ 	find "$rundir" -name console.log -print > $T/oldrun-console.log
+@@ -217,7 +224,7 @@ do
+ 	qemu_cmd_dir="`dirname "$i"`"
+ 	kernel_dir="`echo $qemu_cmd_dir | sed -e 's/\.[0-9]\+$//'`"
+ 	jitter_dir="`dirname "$kernel_dir"`"
+-	kvm-transform.sh "$kernel_dir/bzImage" "$qemu_cmd_dir/console.log" "$jitter_dir" "$dur" "$bootargs" < $T/qemu-cmd > $i
++	kvm-transform.sh "$kernel_dir/`basename $boot_image`" "$qemu_cmd_dir/console.log" "$jitter_dir" "$dur" "$bootargs" < $T/qemu-cmd > $i
+ 	if test -n "$arg_remote"
+ 	then
+ 		echo "# TORTURE_KCONFIG_GDB_ARG=''" >> $i
 -- 
-2.40.1
+2.43.0
 
