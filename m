@@ -1,91 +1,99 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E184E2FC876;
-	Sat, 19 Sep 2026 00:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E5F30FF30;
+	Sat, 19 Sep 2026 00:33:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789777973; cv=none; b=UdZgYcxKq1lclQjc962tnZztxFrl4h+B7DjacOoVMUEhtwRJl5uKuWJyJlrXx+iGnjbZoZqb7Io9oLQ5J7jkbl2ve6FVZNZhl2eEbyUvBiddMD4sZhuAw5LcwTL6Ho55zUNbca6wWVnun2q7ogYXAAB1GLK2E+7Wa5g46lSYT44=
+	t=1789777982; cv=none; b=oBYbg09dy+lk/eYP1h3gmodVkPFq72zdnqFo+pbuKWA17rIOcrwQPS4lxGc07zkMbLsO/WCZdr8Vlg1pYs+t0rx1C4He+eJr+wgKxlaxBW+BbBwrgjU/yhs7M/O3dbu0qhqddJ+dyPfpGxnI699iJpV5+3NdA8HMkXg4AdztF3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789777973; c=relaxed/simple;
-	bh=Iftd8at/7oaXqRTVa45PAd0S1uHu1vNRznOzCZhazS4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Unag6qG7nLU1vLIPGVOyMU8lC9nX5UKJyHMTPLmhxfqqRsKfSo4OFEg0J/NAKc+RGXLfI4bfemdj0kFsJPKH0cbc43EdAMb0WdPTh//skZUEKUTRN4qTU7IkHiHhNXNpES0IvEhLj7iuvPXD1fiuLLKL/WdQe9H7y8ZxRkw5K1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lAzoFWlO; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789777982; c=relaxed/simple;
+	bh=n0wXEqeHdLP6Qo6Z3/eXapPH/ktUiP+z3Yy6S5TGSeI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=MybkYxoKznouZhFsYJdicZUcC+zkCr7kaUnv3Jb0N3T8Ea/efzU5HjbeGrpRKzOVl7/WF6z1cR9M6n+wsEMBVK9gT4+jmhlGny+SIMMWj4+YBkLueSK0x7WpvQaXUwRf7H73OZfNAjQ1+qOkWZuPTWdADlTsdoiV9+vaE+lcKe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hUKwQ73+; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lAzoFWlO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F12B1F000FF;
-	Sat, 19 Sep 2026 00:32:51 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hUKwQ73+"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB8B61F0089F;
+	Sat, 19 Sep 2026 00:32:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789777971;
-	bh=n3IHhrJ6drkRPdLAI7XId5OHkSWGwfO9t55O96NgUSc=;
-	h=Date:From:To:Cc:Subject:Reply-To;
-	b=lAzoFWlOCiFPVw0oKN1sC+DbCVJ0bK7B8nT0D027n2hnyNMlAcR6F0prFekiPdn62
-	 RWyuRSdqxvUykEBHOJczuseLnYywEL3olHzT2fYUvOCtPMwCE4DYsMnMfsVv9Dyvvq
-	 zueay33PGdLjW1MCfmT3PsKoCjIshdJvXZcfuO8a9vX9NmQ+kftaqIK9BW623uSBnF
-	 MXr5hBKaxlfxatJMG8S5993hIsY729VZIHgwT4Dc/QD4/fdaI9tsWK9A9AGm3Rp5DG
-	 WVROp+4d7ahzR+HR7Fp1IA/CsnpwM7At5lsNu03DWAK5SU5w0CbPbi4Mg6Y1JLdpjJ
-	 n4a54VgdPpMNQ==
+	s=k20260515; t=1789777980;
+	bh=pSJdq6HplgsYvMXOfz6oCI9s5z06svO8jCcVkObHeLM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=hUKwQ73+zNNqnGpB9VLKdFItYg+UI114O/mLY/xwhGAG38gnOGylAQ13cgAeS41fC
+	 Ga/dYV3YJ/lox9iyIpQImLtfkrfb4q6wZxxy36MJvXc0otjeSTT8c16+Xp9dTXYQXU
+	 o8uyo72tKLzTWu+1lBRKT15XSC0owM3p0YMof4gBGjAE4aOxDdXw69tfW/ImY4Aixg
+	 rnJr9CmR96GvIeUGKR/1oWihG84sxGDZPyl8Ghr0dofq6qDkQIlEfe++Y2vLLQSCT4
+	 pC7yV50yOzd4Wer9zqkDL/ow1XzlgKkCk6UNnoPGA+9YR/kgWFL8uCoRETq/sHhSyr
+	 3mRDhSEvy0A5Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 33B91CE1775; Fri, 18 Sep 2026 17:32:51 -0700 (PDT)
-Date: Fri, 18 Sep 2026 17:32:51 -0700
+	id 9C829CE1853; Fri, 18 Sep 2026 17:32:59 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH 0/7] Allow call_{s,}rcu() from NMI and BPF environments
-Message-ID: <2a742578-120a-421d-9305-5de0b22bda33@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 5/7] rcutorture:  Disable fragile readers during overload testing
+Date: Fri, 18 Sep 2026 17:32:56 -0700
+Message-Id: <20260919003258.3134343-5-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <2a742578-120a-421d-9305-5de0b22bda33@paulmck-laptop>
+References: <2a742578-120a-421d-9305-5de0b22bda33@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+Vanilla RCU readers, when either non-preemptible or preemptible with
+priority-boosting enabled, can handle heavy overload conditions.
+Other RCU implementations are more fragile.  This commit adds an
+rcu_torture_ops structure field named ->rdrs_handle_load that is set
+for non-fragile configurations of vanilla RCU, but cleared otherwise.
+It also refrains from running fragile readers concurrently with overload
+testing, thus avoiding false-positive overload-testing failures.
 
-This series enables call_rcu() and call_srcu() to be invoked in NMI
-handlers and from BPF programs attached to these functions.  The
-individual patches are as follows:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/rcutorture.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-1.	Make call_rcu() safe to call from any context, courtesy of
-	Puranjay Mohan.
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 794937e13e7c..7e08be857f01 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -440,6 +440,7 @@ struct rcu_torture_ops {
+ 	int debug_objects;
+ 	int start_poll_irqsoff;
+ 	int have_up_down;
++	int rdrs_handle_load;
+ 	const char *name;
+ };
+ 
+@@ -648,6 +649,7 @@ static struct rcu_torture_ops rcu_ops = {
+ 	.extendables		= RCUTORTURE_MAX_EXTEND,
+ 	.debug_objects		= 1,
+ 	.start_poll_irqsoff	= 1,
++	.rdrs_handle_load	= !IS_ENABLED(CONFIG_PREEMPT_RCU) || IS_ENABLED(CONFIG_RCU_BOOST),
+ 	.name			= "rcu"
+ };
+ 
+@@ -2534,8 +2536,10 @@ static bool rcu_torture_one_read_start(struct rcu_torture_one_read_state *rtorsp
+ 	rtorsp->p = rcu_dereference_check(rcu_torture_current,
+ 					  !cur_ops->readlock_held || cur_ops->readlock_held() ||
+ 					  (rtorsp->readstate & RCUTORTURE_RDR_UPDOWN));
+-	if (rtorsp->p == NULL) {
+-		/* Wait for rcu_torture_writer to get underway */
++	if ((!cur_ops->rdrs_handle_load && atomic_read(&rcu_fwd_cb_nodelay)) || rtorsp->p == NULL) {
++		// Wait for rcu_torture_writer to get underway and
++		// (if readers cannot handle heavy loads) for any
++		// forward-progress testing to complete.
+ 		rcutorture_one_extend(&rtorsp->readstate, 0, trsp, rtorsp->rtrsp);
+ 		return false;
+ 	}
+-- 
+2.40.1
 
-2.	Make Tiny call_rcu() safe to call from any context, courtesy of
-	Puranjay Mohan.
-
-3.	Make call_srcu() safe to call from any context, courtesy of
-	Puranjay Mohan.
-
-4.	Make Tiny call_srcu() safe to call from any context, courtesy
-	of Puranjay Mohan.
-
-5.	Disable fragile readers during overload testing.
-
-6.	Exercise ->call() from NMI context, courtesy of Puranjay Mohan.
-
-7.	Add a call_srcu() re-entry reproducer, courtesy of Puranjay Mohan.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/Documentation/admin-guide/kernel-parameters.txt      |    7 
- b/include/linux/srcutiny.h                             |   12 -
- b/include/linux/srcutree.h                             |    4 
- b/kernel/rcu/Kconfig                                   |    6 
- b/kernel/rcu/rcu.h                                     |   11 +
- b/kernel/rcu/rcutorture.c                              |    8 
- b/kernel/rcu/srcutiny.c                                |   93 ++++++++-
- b/kernel/rcu/srcutree.c                                |  170 ++++++++++++++++-
- b/kernel/rcu/tiny.c                                    |  127 ++++++++++--
- b/kernel/rcu/tree.c                                    |  131 ++++++++++++-
- b/kernel/rcu/tree.h                                    |    6 
- b/tools/testing/selftests/bpf/prog_tests/rcu_reentry.c |   93 +++++++++
- b/tools/testing/selftests/bpf/progs/rcu_reentry.c      |   51 +++++
- kernel/rcu/rcu.h                                       |    3 
- kernel/rcu/rcutorture.c                                |  150 ++++++++++++++-
- kernel/rcu/tree.c                                      |    2 
- 16 files changed, 824 insertions(+), 50 deletions(-)
