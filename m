@@ -1,73 +1,50 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7D1332EBC
-	for <rcu@vger.kernel.org>; Sat, 19 Sep 2026 18:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B9B37F8BA;
+	Sat, 19 Sep 2026 18:18:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789841382; cv=none; b=cGqt2hsiLKUbnbPb1aRt5MVeAIIPu7a38IQL0Ibu50lSUZWGJYZqxBTZ5UXwGkXzVzDiKCgy6svB4/aTjkuZ/nlLAsV6JcKm90Im5648A9PKc5OzkBv2EhOYFdGJ1WlI5qsUnLynkMSwLPE9nHS8CIZ8H+6WUXnsfjJnNjSHND4=
+	t=1789841913; cv=none; b=HvbPQ4LlywA9VXZ+m4j522zob5hzDkSt/uHnUpjBrWxMQ1ZTFXo/pJ9HM32C+CF0HTqeyQkyY5zmhB9Yd1WgC5jV3nDlx4LVzBIa+nKqSfsJEmcZj6v7wRDFg4ou4MU1JICvFp3nARoVePDzGIM1hPteEQ7j28fqmqHlTQy3pQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789841382; c=relaxed/simple;
-	bh=nzrPoy2aSo8Rg+S+rEM2UaTaCM46de/cfEGGM7scxIA=;
+	s=arc-20240116; t=1789841913; c=relaxed/simple;
+	bh=hJ3wA6wLwUK3w8BKiqUYmor+iYzZ9BPed8AZHsmu54M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aJgIdwwD9Bn9D8Y5zWyTi74NAU5+np1xIqqDy/Cv9HtJnY/UDtzKfosxbyj8rC8iTQCSkCp66dHJnAw7m3SYrjpidTgxZx/UksJ9u/x89mH5Eqyiw9x4t5mSg0CvAJKW27Hyh4MvYbgAxewCXI2IM03Gv7eRh9JIa1PT7dhniuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EZQknuCp; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=hg1UA8iOLq3skaU2NhVTxzic37pp7oMRMgR1I8hRhp+9DZ201pprwH3yYBukXK7pNf3jU8dVryL/sLcHutVTGZCPbgwZdjm/7OQ+7bceCeDo5o2kvJe2mFPiX0F8PFHlYHip5D+BSuWD+gBliA4sPT9nWyFg0FmQPM1UwBEkBgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C/8IJ+cP; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EZQknuCp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3D041F00893;
-	Sat, 19 Sep 2026 18:09:39 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C/8IJ+cP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3508B1F000FF;
+	Sat, 19 Sep 2026 18:18:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789841381;
-	bh=pRkKN54/lEpILJ2Lc3rIPCovoIruayWHBPFvaiFZSfg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=EZQknuCpAn6VhFkE11h8jenhrI4HVTY2xd86t8bn8u2hDTJoIbcri7TdMgMyiG7o4
-	 gi3B1uaAlUbAAMawl7VGy2i/ZPVfFxrrW2fJOu2h3r37bnHViO006b6ANVJVNRGfh9
-	 Xcv+CrPGJ/hABAO/tJf3P9gHgoGMHvhmneQSO5QgIMC83+clnuxzTY9ZkQ3TM1grjN
-	 R8g89Ta3fdG8wqGMv5ZB2GBFaj7ZeOFv0oND6dHY7+iQhZz5GjpjAmaRXM5GmKgxfR
-	 yS3Pp0FQqQii90SmnkXB0bN9qeFbRMEDVM+ExfEWjVEE58fYVwnqczlxqe5co57ZbS
-	 ZuDKmHiJxA3qw==
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 1AF8AF40067;
-	Sat, 19 Sep 2026 14:09:39 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Sat, 19 Sep 2026 14:09:39 -0400
-X-ME-Sender: <xms:48-uaj03fZEj7cHpDWORJbyQPbpM96eqi3yckBVPvXmAMTh0iUKvcg>
-    <xme:48-uahX0KaNHfxdjAFUI-eGl79_eHiYORDtpmExPDJWpoVoC8-qCe5z9Pcw9kGm7K
-    _O7CBQg_VzzakRHxjlV8hIBvV4dwGMCfkIhutAaXc97LdyKSxpLmw>
-X-ME-Received: <xmr:48-uagFg5KGN_N0j3RUZMEwwK2VEDFa0gAcoMD7jqA1fkex0018SNFkmDrcX>
-X-ME-Proxy-Cause: dmFkZTGOMHCFM13kMXhSuxN+36n1aHNShRaReTqrePSRKG4sq5ma7+YBTXTUakJSy0zQLM
-    e7xl+opaW4Eklevv6jRqJbW6Ywolp4n2PLcr7z/kaFXF/JfmFMj42KNPrSbAy7BXxgXzKi
-    K4Sf05jy08LVD0d/b1J3hn9fSSOeAwDxxhF1N6NgIYS5pxn06yIyU1et2HdSGwkwcXGE4i
-    MkaDamDvlYs8CbIfaCWEJZfxMLEbM4jNoxyPEVb/dusx2FueAsQu218naoj+uCejFkf0gZ
-    0vYG0lXFuDvS4tBfEB5M9pQQx6pvb0gUCQVXBb+ThkiDYPQir7M3OLR/P59q2sABs//mH8
-    j9hsOWIHebLFbWTuuJePNyDqBriGyy6d/HcNofBWa9p99Z+Sml24G4SHR3qrMwDVhvKlaE
-    wvYpp/p3L/t1CwR12MkQWvyCTcZtnvb5M9AojI42S3EkUafdT5Gkm9/OrC3ZgJAUGgfCaJ
-    rl0qLVJo/mjhZ65KxURcNR42IhwuCvrN2mQHcR3BA0e4YRCNpCvwHEPmp0/K7JhOAPXNbm
-    FZvDwo6b7d5c2sle6FZSI042g5+Uud+HZasRlgd5pM+QWrZD6qduHhCKKGCX9Mxb5RleqH
-    WfuLDhk2yZTzIS6HMJ4PMorpBl+Z8liW7G58uEKydyqW98XrqeN00SygaH5A
-X-ME-Proxy: <xmx:48-uajn_Whc5-eia00WIRXUd6GjcVIpOpqC-uG_gWU6S1ZclEt5JHw>
-    <xmx:48-uapGN3GadguAI3fAx8RCw2-ssIQFR9PoWpQ9eKAKXwRJYUTg9Qw>
-    <xmx:48-uapurA1ETP5KWKlcHPoEvrIWmA-a4K0tVn5Av0WYKlLtgIEG6pA>
-    <xmx:48-uakhZUpTK8dS_zOmc5xiaZvK-f4pbjQvNRIuUA_1VKyA4_dAKbw>
-    <xmx:48-uam37EVW_RTtA8S3tGycD3SLOkHcLTEGYnsOYXnBjlrb1OV8kfmdO>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 19 Sep 2026 14:09:38 -0400 (EDT)
-Date: Sat, 19 Sep 2026 19:09:36 +0100
-From: Boqun Feng <boqun@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Bradley Morgan <brads@mainlining.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+	s=k20260515; t=1789841909;
+	bh=pyIemgWwjEQt3L+L8axqzmGHSvJ7AdeLk598yESsBGI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=C/8IJ+cPchuSvWh2/MxbtZPVyL1SjYKc4WXhx6R5cZ8sO849empy9OJwygnCknBX9
+	 LS0Iqqfn6V5Z1h0JG1qUVKf9ea2HYVT30qIGRHdnP1XZ8UWHJ4YpkgHmC2HkV5s0gX
+	 mx0/oSOBh7QA3iOZ0E/hOerVDWNOt+SOJUGUJsSea826IzlwZFx6EKFYhiXVOWrygb
+	 dFgoRw90kA2b19NGTt6Z1+i6jE++aYpKXWkfZJmT3MCxltSlIRdRsx4YKWYg7FmUUl
+	 v57bGYi8C3acUYW1teyDCheNQDUiXJTOBLdtqRjHN/XWQW65fUQ6bmgFxOj15iYWL/
+	 ai9pfvIYdXxCw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E6C70CE1579; Sat, 19 Sep 2026 11:18:28 -0700 (PDT)
+Date: Sat, 19 Sep 2026 11:18:28 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Bradley Morgan <brads@mainlining.org>, rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	Steven Rostedt <rostedt@goodmis.org>, lkmm@lists.linux.dev,
-	Zqiang <qiang.zhang@linux.dev>, Wang Lian <lianux.mm@gmail.com>,
-	Kunwu Chan <kunwu.chan@gmail.com>,	Nicholas Piggin <npiggin@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Boqun Feng <boqun@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+	lkmm@lists.linux.dev, Zqiang <qiang.zhang@linux.dev>,
+	Wang Lian <lianux.mm@gmail.com>, Kunwu Chan <kunwu.chan@gmail.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
 	Michael Ellerman <mpe@ellerman.id.au>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Will Deacon <will@kernel.org>,	Peter Zijlstra <peterz@infradead.org>,
-	Alan Stern <stern@rowland.harvard.edu>,	John Stultz <jstultz@google.com>,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	John Stultz <jstultz@google.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
@@ -75,18 +52,21 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Waiman Long <longman@redhat.com>,	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,	Vlastimil Babka <vbabka@suse.cz>,
- maged.michael@gmail.com,	Mateusz Guzik <mjguzik@gmail.com>,
-	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,	linux-mm@kvack.org
+	Waiman Long <longman@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+	linux-mm@kvack.org
 Subject: Re: [PATCH 01/28] hazptr: Implement Hazard Pointers
-Message-ID: <aq7P4LUkXsJmB2h4@MacBook-0RXW5>
+Message-ID: <c67ddf7a-6f79-4145-858a-291df86e5274@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <e9669b34-12c2-4cf2-a887-315f581f0789@paulmck-laptop>
  <20260919000056.3132131-1-paulmck@kernel.org>
  <CAHk-=wj9knmxXD01=top1DQ9_aqrN2a3kpWRS5DQv6QLwLOztg@mail.gmail.com>
  <6B1FC39D-6EB0-433A-8E49-E5EFC9379AD7@mainlining.org>
  <CAHk-=wjyniJy-CX1muCrsZp-i-sLGRYeRYEPN7sw9orRZUCwag@mail.gmail.com>
- <e6177659-ee74-4dad-8fb8-ac2a755c5c1f@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -95,84 +75,102 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e6177659-ee74-4dad-8fb8-ac2a755c5c1f@efficios.com>
+In-Reply-To: <CAHk-=wjyniJy-CX1muCrsZp-i-sLGRYeRYEPN7sw9orRZUCwag@mail.gmail.com>
 
-On Sat, Sep 19, 2026 at 01:09:15PM -0400, Mathieu Desnoyers wrote:
-> On 2026-09-19 13:00, Linus Torvalds wrote:
-> > On Sat, 19 Sept 2026 at 09:35, Bradley Morgan <brads@mainlining.org> wrote:
-> > > 
-> > > I think hazard pointers are good, what test do YOU suggest we do here?
-> > 
-> > I want to see a single real-world example of "look, this speeds this
-> > real load up by 10%, and the kernel code was actually cleaned up in
-> > the process because hazard pointers are great".
-> > 
-> > Not a microbenchmark that tests just the hazard pointers themselves,
-> > but a real kernel feature that has been converted to hazard pointers,
-> > and in the process actually shows improvement.
-> > 
-> > The ONLY reason for hazard pointers to ever be merged is if they
-> > actually buy us something real.
-> > 
-> > So I want to see that 'real" thing.
-> AFAIR, Boqun wanted to use hazard pointers to cleanup/speed up an
-
-Right, that's why I send this series:
-
-	https://lore.kernel.org/lkml/20250625031101.12555-1-boqun.feng@gmail.com/
-
-The gist of that work is basically:
-
-	On my system (a 96-cpu VMs), the results of:
-
-		time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1: mq
-
-	are (with lockdep enabled):
-
-		(without the patchset, i.e. using RCU)
-		real    0m1.039s
-		user    0m0.001s
-		sys     0m0.069s
-
-		(with the patchset, i.e. using hazptr)
-		real    0m0.053s
-		user    0m0.000s
-		sys     0m0.051s
-
-i.e. almost 20x speed-up.
-
-One important thing that I want to point out is in that series, I
-avoided the busy-waiting in hazptr_synchronize() and made multiple
-hazptr_synchronize()s share the same scan. And I do want to see this in
-the new code. But unfortunately with the new implementation, we don't
-have that part yet. And that's what holds me from trying lockdep
-integration for this new implementation.
-
-I could have improved my skill of time management, because I know at
-certain point I said "I will finish the scan thread work for your
-implementation", but it'll be helpful if you or someone can help get
-that done.
-
-> hot lockdep reclaim path. Boqun, Paul, how is this effort going ?
+On Sat, Sep 19, 2026 at 10:00:06AM -0700, Linus Torvalds wrote:
+> On Sat, 19 Sept 2026 at 09:35, Bradley Morgan <brads@mainlining.org> wrote:
+> >
+> > I think hazard pointers are good, what test do YOU suggest we do here?
 > 
-> I suspect we should wait until that lockdep user of hazptr is ready for
-> upstreaming and propose both at the same time, because a synchronization
-> infrastructure without any significant in tree user is not really
-> relevant, right ?
+> I want to see a single real-world example of "look, this speeds this
+> real load up by 10%, and the kernel code was actually cleaned up in
+> the process because hazard pointers are great".
 > 
-
-The other thing we could also do is what I did in shazptr, getting the
-numbers with rcuscale, that can tell use the actual waiting time for a
-hazptr_synchronize().
-
-Regards,
-Boqun
-
-> Thanks,
+> Not a microbenchmark that tests just the hazard pointers themselves,
+> but a real kernel feature that has been converted to hazard pointers,
+> and in the process actually shows improvement.
 > 
-> Mathieu
+> The ONLY reason for hazard pointers to ever be merged is if they
+> actually buy us something real.
 > 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
+> So I want to see that 'real" thing.
+> 
+> I want to see how easy/hard it is to actually convert a real current
+> user, and I want to see how it actually results in measurable
+> improvements in performance.
+> 
+> Something *core*. Something that everybody uses. Because I'm not in
+> the least interested in a new subtle feature that interacts with the
+> scheduler and is only used for some random driver or (to pick the only
+> example I have ever seen) AppArmor.
+
+Just a historical note for those who were not around at the time.
+
+Linus had a similar healthy skepticism of RCU back in the day, and
+we (well, mostly Dipankar Sarma) did deliver the required use cases
+and performance results.  It took about two years, with the earliest
+discussions at OLS 2000.
+
+And I won't be sending a hazard-pointer pull request to Linus unless and
+until we have something convincing.  And if I turn out to be easier to
+convince than Linus is, I am sure that he will let me know.  ;-)
+
+> Now, obviously, the thing that would impress me is something like the
+> dcache. If *that* can be converted, and it shows real improvements on
+> some real benchmark, then I'm sold.
+
+And yes, the reason that I am pushing this is that some corner cases are
+stressing RCU a bit, and perhaps hazard pointers can do a better job of
+addressing these situations.  And maybe dcache is one of those corner
+cases, but it would not be first on my list, in part because hazard
+pointers tends to have a bit higher read-side overhead than does RCU.
+And I don't see a way that hazard pointers could eliminate dcache's use
+of seqlock.
+
+The most obvious potential hazard-pointers use case is where someone
+wanted to use per-CPU reference counts, but couldn't due to the high
+memory footprint of all those per-CPU counters.  With a key word being
+"potential" because I don't know of such a use case.
+
+But if one shows up on an emergency basis, I want at least a prototype
+of a ready solution.  After all, the Linux kernel is a *lot* less
+bug-tolerant than it was in the early RCU days.
+
+> Now, I don't really expect that kind of major test-case, but I do
+> expect *something* meaningful. Not a driver. Not a test module. Real
+> code.
+> 
+> IOW: "Show me the money".
+> 
+> Because the kernel is *not* some kind of acadmic project. Never has been.
+> 
+> I simply don't want to merge something that is touted as an
+> alterantive to RCU - which we obviously depend on very very heavily -
+> without something *major* that actually uses it and shows the
+> real-world advantages.
+> 
+> The discussion about hazard pointers in the kernel has been around for
+> a few years by now. If there isn't some real core feature that was
+> converted to show that, then I think that's already a failure
+> indication.
+
+That is of course completely fair.
+
+And there are a couple of potential hazard-pointers use cases that have a
+reasonable chance of working out.  If something compelling does show up,
+you will of course see a pull request.  If not, maybe I maintain hazard
+pointers out of tree for a few more years and then drop it.  (At which
+point, Murphy being who he is, a use case would promptly appear.)
+
+> I'm hoping that those patches and numbers already exist, and I just
+> haven't seen them.
+
+There are some, but not yet compelling.  This is still a work in progress.
+
+So why bother you with premature hazard-pointer patches?
+
+Because if a hazard-pointers-shaped problem does show up in the kernel
+somewhere outside of my admittedly narrow field of view, it would be
+good if you were aware.
+
+							Thanx, Paul
