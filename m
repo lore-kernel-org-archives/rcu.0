@@ -1,43 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B4F30F927;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D39316190;
 	Sat, 19 Sep 2026 00:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789778241; cv=none; b=DLQQuXcXG1goslAEDx7zCqxvFvLZtEdFzb0l19pS3Ldy+sRkOGANukj8IV4Ad4dYY6K5N0w8SO1gtioIG07VQ1i4S76qOnPRbG4qf85SUiN/irjE1l2Qjt0mbQf0cWChoCkO+gLiy9WmurXTes1IeqNLuRGyytMtYB6o5GuPowg=
+	t=1789778241; cv=none; b=OJpUcSqwjW8YAPBCOaLjC3fU2MVhg13/AJA6ehq/GI6fbMb6k8VeXtkFSmUGvM6lQLeAkMSQBqrMUGtRwQ5QnC0U4QZE73j3wqH8AVEkEjr4cA7B/czAfAp/bownvUdhGAKY6KgZ7ChMZ//uqf/oJ+qcQvto0T3po/xCcXJj6LI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1789778241; c=relaxed/simple;
-	bh=FmqJrAZgf83uWhr/O2RrdoQyz5q7T6Z9BbrpOHP6EgQ=;
+	bh=Arz9E3aSQFsoY3+ttRcyI3U2xIGUyr03JzGHIesIHc0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZE6qqDR4BL+nriNaXw/S92WkaBQ4uC9dH1nPbe+UAZop4cULQRdVvekl9LEFbnnFo5dJN5gi/ugsFYi+XvudEOc7KLdfv/mzpkDjZ1BIrWDAN/z4CJRiAzNsq+DzKm31q3C0SCbskyD6XYZhNHO0PTnDV1KU3Et0mLa26uDCiPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PAJhZJ+5; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=bdATH3VrGqTfdShrFtVyCrG6yuZk/4yJ1ZJPeEoXUqBNHo5CaEMw0tVrf8pNpZ2mku8qyeCqYAgukXBDgtLRut59DxrPRdL6ca7NlyhwJjminiIjX/UbT1zJjYiXlhOaJxfqB/TQbCL3voaUcZZfqvMdRebByqJvTfxk+UiahCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SpWxc6cO; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PAJhZJ+5"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA9D01F000FF;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SpWxc6cO"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCF281F00898;
 	Sat, 19 Sep 2026 00:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1789778239;
-	bh=G4eCcOJO+aKSpFNAvfrukSyyzmqc1ax8rCz74+sYbfk=;
+	bh=7mqgeJCsBYJMP4GR85bBjLltzffKn3WDJgl+ZC3WYEQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=PAJhZJ+5keQU68Wf1+43UBBr7N+5AOJwYI5xuw/q0feHxBBwAiMU/k6/AmALMNr9t
-	 4Bv7+MPoAVY8CQEZKW5Clg0xCwsCtHMzHlH8bHDGqaSco0IqtleQMNDijdfFFU4hO/
-	 nuAP/UQppMfw8JJZ22/I5pBqplJW4fUT8lF67bTMDYQQ19+6I57xLI3YP0J2IEmM5f
-	 05oh6+L59xvaNpHwHX9NINFF64KxpjQg79jvHyQFkyuZzNTWY6CxA2znUuJm715HXT
-	 xEyY3StHaJmsmb6JtJwRglAXpiI20gKkMucv2wD/3eDJgrSn7V/tdGEizOI69H5wyM
-	 1wStLxyc0S3XQ==
+	b=SpWxc6cOGknnipZAmi3iW5ZlM0/lsDj6cA5tkKffXVheCnsyCCj4+ehygZzpGKrWR
+	 zdLmnxWNqGTyF9W8D0rcWrOGg8sPOeauroKzJyRSa4MAD76CpJpuLyPdfzhnKFZEUa
+	 u5RdN2C4Zz4OV1vggAb1dGvIodb0G/NTaB4f9GpGwzzuJmSxdDbMutrVcabZz0SBfm
+	 RU/GYP8ODceQ0CaEAK+CZ1XQsNO6gZGJRk3bI0eb5WwUTuL3BF5syLbadI8NIjNAw6
+	 yk/MVpx3QScY+jNZfqYQxJiJdUgLHojFnzt8D5RGsopUSuO/YyQrZbCBg+gGeJ81O3
+	 pRN6O5wN1czGA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 7C83CCE1775; Fri, 18 Sep 2026 17:37:19 -0700 (PDT)
+	id 7F8EECE178A; Fri, 18 Sep 2026 17:37:19 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	Kunwu Chan <kunwu.chan@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
 	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH 1/3] rcutorture: Fix divide-by-zero with fwd_progress_div=1
-Date: Fri, 18 Sep 2026 17:37:15 -0700
-Message-Id: <20260919003717.3134738-1-paulmck@kernel.org>
+Subject: [PATCH 2/3] rcutorture: Synchronously wait for all rcu_torture_irq() callbacks to complete
+Date: Fri, 18 Sep 2026 17:37:16 -0700
+Message-Id: <20260919003717.3134738-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <860880d0-fb46-4039-a47c-33dd42a215d1@paulmck-laptop>
 References: <860880d0-fb46-4039-a47c-33dd42a215d1@paulmck-laptop>
@@ -49,56 +49,53 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Kunwu Chan <kunwu.chan@gmail.com>
+From: Zqiang <qiang.zhang@linux.dev>
 
-When fwd_progress_div=1, the forward-progress test computes:
-  sd4 = (sd + div - 1) / div = sd
-  dur = sd4 + torture_random(&trs) % (sd - sd4) = sd4 + % 0
+The rcu_torture_reader() drives RCU readers from interrupt context via
+smp_call_function_single(cpu, rcu_torture_irq, NULL, 0) with wait=0, to
+runs rcu_torture_irq() on a remote CPU. this is async, nothing waits for
+the remote handler to run.
 
-The modulo operation with a zero divisor triggers an integer
-division by zero (undefined behavior at the C level, #DE trap on x86),
-causing a kernel Oops and panic. On x86_64, this manifests as:
+On shutdown, torture_stop_kthread() only waits for each reader kthread to
+return, and the reader's timer_delete_sync() only drains its timer. Neither
+waits for a rcu_torture_irq() which still pending or executing on a remote
+CPU, so it can run after all readers have exited and rcu_torture_cleanup()
+has already advanced.
 
-  rcu_torture_fwd_prog_nr: Starting forward-progress test 0
-  Oops: divide error: 0000 [#1] SMP PTI
-  RIP: 0010:rcu_torture_fwd_prog+0x90b/0x1160
-  R12: 0000000000000000
+1. rcu_torture_irq() may issue cur_ops->call(rhp, rcu_torture_timer_cb)
+   after cur_ops->cb_barrier() has been waiting for all outstanding
+   callbacks complete. once the module is unloaded, fires into freed
+   module text, a use-after-free happen.
 
-The existing guard only handles non-positive values. However,
-fwd_progress_div=1 also makes the random range empty because
-sd4 == sd.
+2. rcu_torture_irq() may still be inside rcu_torture_one_read(), holding
+   a read-side critical section, when cur_ops->cleanup() tears the flavor
+   down (e.g. cleanup_srcu_struct()), triggering an active-reader warning
+   or use-after-free of the torn-down structure.
 
-Change the guard to reject values below 2. The forward-progress test
-only reaches this calculation when stall_dur() is positive, so
-sd = stall_dur() + 1 >= 2. For fwd_progress_div >= 2, sd4 < sd,
-ensuring that sd - sd4 is at least 1.
+This commit therefore issue a kick_all_cpus_sync() after all readers
+kthread have returned and before cur_ops->cb_barrier(), synchronous IPI
+round trip to every CPU guarantees that every rcu_torture_irq() which
+previously issued by any reader has completed.
 
-Keep the existing fallback to the default value of 4 for invalid
-values.
-
-Verified with QEMU/KVM: a 138-second run with fwd_progress_div=1
-completed 81 forward-progress test cycles without a crash.
-
-Fixes: 1b27291b1ea4f ("rcutorture: Add forward-progress tests for RCU grace periods")
-Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+Signed-off-by: Zqiang <qiang.zhang@linux.dev>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/rcutorture.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 182d47975efd..79807475b672 100644
+index 79807475b672..51ed35f5aab1 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -4024,7 +4024,7 @@ static int __init rcu_torture_fwd_prog_init(void)
+@@ -4491,6 +4491,8 @@ rcu_torture_cleanup(void)
+ 		for (i = 0; i < nrealreaders; i++)
+ 			torture_stop_kthread(rcu_torture_reader,
+ 					     reader_tasks[i]);
++		if (irqreader && cur_ops->irq_capable)
++			kick_all_cpus_sync();
+ 		kfree(reader_tasks);
+ 		reader_tasks = NULL;
  	}
- 	if (fwd_progress_holdoff <= 0)
- 		fwd_progress_holdoff = 1;
--	if (fwd_progress_div <= 0)
-+	if (fwd_progress_div < 2)
- 		fwd_progress_div = 4;
- 	rfp = kzalloc_objs(*rfp, fwd_progress);
- 	fwd_prog_tasks = kzalloc_objs(*fwd_prog_tasks, fwd_progress);
 -- 
 2.40.1
 
