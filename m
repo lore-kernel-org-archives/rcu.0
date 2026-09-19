@@ -1,44 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456BF318ED6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C54931B833;
 	Sat, 19 Sep 2026 00:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789777984; cv=none; b=b0Njz4ea0iIGK4jsEsxadsnL4KQ7d34vWIrD/beHdHVggIBbffKDGj040UVwoMN9NWISdmOqt4mrjioKc2O2MwJNGnRWHF7VhvfiQtGmqITYtvjI0k/JPGdmYQ5g40/qZez3UK9pPqqzf3SlW9LZCzhvOMDA6iPCfBZrudnlMCY=
+	t=1789777984; cv=none; b=fWz6ejA/r4EZOZL27XtELCxzwGYJMqzrZs8Fk6i4hraUpNI/EZMcMBIzrCIOVYOZVAdp5J5J9gP4HU8YfHKrsSZTIfJhjUXrYCcwVqtUbkdfJjW2rzjYJgN4qAq2vweT4cUgOJCdG6yZuFSQUDVDVzV84hNZtgNASMTqcGXkDI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1789777984; c=relaxed/simple;
-	bh=XZFZEL98EQBO/Tm8IToe2dBkQ5Z13dCI5PqipJytN+c=;
+	bh=9G4mP/ZrR//lKp+zIuLMczbDjY3Y1stqMD0cSIHxH2k=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sLjnoUa0z4Gp0/vd7O0vDQfpxzYlq2U5O3nWiEx1P5pvwSkDjitMGDz1FBsVcOREoerOO8ZaYFeqNKWV46U9Q66/Q9HU29qGFXN2xD+0rtV6+xNR1Fqy3IUn+ns6maofR502/XcikPHMQMPnW9Nun0W4+Lwj2xK/qaUYcb1H66I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FkD7iXKK; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=ib7xpyXYRa+igx/Vbv/oIiBNAYrW+rpRCN9gl1p9buG+JW1PYCYX/iOHOWbQfiZv5g1S6IPOgHmP/aegO0ll35YcOxkdbnLC7IRYzsIf9d1fR6QmScORMoRj1JFW25tmEzYk4bQyhDFeqdjvFoWckKum+hoiaHu04nOHzv3TXEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jq1TQIcf; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FkD7iXKK"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45E531F0089B;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jq1TQIcf"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 458901F0089A;
 	Sat, 19 Sep 2026 00:33:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1789777980;
-	bh=adqt1kmOUfzjeqZOkMgAXlPhDVlCUYVFluy5ttZjIek=;
+	bh=dKCULlm09R3ndWz7QQBomW9sVQDejdgvWJ7Wx0dX9N8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=FkD7iXKKmMgv/DJEM/cVFudyRvz3XV7KT7t+hnhel6A4tktOjyExMj+ayJD+iB3Dg
-	 CqbcX+Bg/Ss70XLokJpQTHVzLCYiKeo2tX5jZuTsplyHkJDBFbmPMr7dEKTsFILlbu
-	 vUE39PALTERynXobjiHKPMSIgRnu+xX5KSP7eORgC7OML2zyibrFe7nUEqHN4AMgSE
-	 UNE6yYbxgXgUosjMKEpeqfna81lWr8ESLvqQ23WpfFzmSS1Y0VNEyD5C5DxV70L0Nw
-	 Z8wL2VBurJWBNACdOjPbbCBL61u7+YTyF6XVnRplIMNB3AmhJmIbYSc3dIf9++l7SB
-	 izGTDazIbNnLw==
+	b=jq1TQIcf/qrM6ZoQJJbgq82bLrAjmx7+7u8Tz5X4p1/8DZ10LkUdEF2Ar3QjuyZQL
+	 94S39A88yeIGt4cY9vVCZKXVioDQ5zSPugUcB0bmlOVWh6K+aMBulpSYDNEgQ8hyST
+	 gUAp7+td1SnCzb8A2nrwkVGlAmV8w9wlhE/6pEyMbfsUFXCsnXKEbD4fMAy4w8TZkd
+	 iVgjq8ObuMk4IlKfSu2A576V61f1ad2k5meS+PvJ2dNDivr/uHLNJLHx5lFKYAj7oH
+	 Yvbf2ab2TUEP22mOiEUxffuCh4HEfDmX5T4jhQmg3cih1TbQ69cpqeF795PUFPMAJO
+	 VRCxZSPP6p2Uw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A1B77CE1855; Fri, 18 Sep 2026 17:32:59 -0700 (PDT)
+	id 9F397CE1854; Fri, 18 Sep 2026 17:32:59 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	Puranjay Mohan <puranjay@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH 7/7] selftests/bpf: Add a call_srcu() re-entry reproducer
-Date: Fri, 18 Sep 2026 17:32:58 -0700
-Message-Id: <20260919003258.3134343-7-paulmck@kernel.org>
+Subject: [PATCH 6/7] rcutorture: Exercise ->call() from NMI context
+Date: Fri, 18 Sep 2026 17:32:57 -0700
+Message-Id: <20260919003258.3134343-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <2a742578-120a-421d-9305-5de0b22bda33@paulmck-laptop>
 References: <2a742578-120a-421d-9305-5de0b22bda33@paulmck-laptop>
@@ -52,194 +51,328 @@ Content-Transfer-Encoding: 8bit
 
 From: Puranjay Mohan <puranjay@kernel.org>
 
-Re-enter call_srcu() from a BPF program to exercise its any-context
-safety, via call_rcu_tasks_trace(), which is call_srcu() on
-rcu_tasks_trace_srcu_struct.
+call_rcu() and call_srcu() are now safe to invoke from NMI, but
+rcutorture never does, leaving the deferral path untested.
 
-An fentry program on rcu_segcblist_enqueue() fires mid-enqueue: that
-function is reached from srcu_gp_start_if_needed() with the srcu_data
-->lock held.  The program does a task-storage delete, whose only deferred
-work is call_rcu_tasks_trace(), re-entering the enqueue on the same CPU.
-The handler matches on TID and fires once; pinning the thread removes the
-migration window between picking the srcu_data and taking its lock.
+Add an ->nmi_capable flag to rcu_torture_ops.  For flavors that set it,
+arm a per-CPU hardware perf counter whose overflow handler submits a
+callback via ->call().  The handler acts only when in_nmi(), so only a
+genuine NMI exercises the deferral path.  One preallocated callback per
+CPU is kept in flight, guarded by an atomic, to avoid allocating in NMI.
+The counter uses a fixed sample period rather than a frequency: a
+frequency-based event sets TICK_DEP_BIT_PERF_EVENTS and would pin the tick
+for the whole run on NO_HZ_FULL kernels.
 
-Without the fix the nested call re-takes the same sdp lock and
-self-deadlocks; with it the nested __call_srcu() sees interrupts disabled
-and defers via irq_work, so the delete returns and the test passes.
+Report the count issued from NMI ("nmi-calls:") and the count invoked
+("nmi-cbs:").  rcu_torture_cleanup() disables the counters and then calls
+cb_barrier(), which drains every deferred callback, so the two counts must
+then match; a mismatch fails the test.  This relies on
+rcu_barrier()/srcu_barrier() flushing deferred callbacks, as added earlier
+in the series.
 
-The test skips where it does not apply: Tiny RCU has no
-rcu_segcblist_enqueue() to attach to, and a UP+PREEMPT kernel pairs Tree
-RCU with Tiny SRCU, so the attach succeeds but call_srcu() never reaches
-the enqueue.  Tiny SRCU is told apart by srcu_expedite_current(), which it
-stubs out, so on Tree SRCU a zero hit count fails rather than skips and the
-reproducer cannot quietly stop reproducing.
+Set ->nmi_capable on the NMI-safe flavors: rcu, srcu, srcud, and
+tasks-tracing (call_srcu() under the hood).  Tasks and Tasks Rude are left
+alone, as call_rcu_tasks_generic() is not yet NMI-safe.
+
+Enabled by default; the nmi_calls parameter disables it, which helps rule
+NMI handling in or out when triaging a failure.  Requires
+CONFIG_PERF_EVENTS and a hardware PMU: without one nothing is issued from
+NMI and the end-of-test check compares zero against zero, so a pass does
+not by itself mean the path ran.  That is the case under kvm.sh, which
+boots qemu with -cpu kvm64 and no vPMU; rcu_torture_nmi_cleanup() says so
+on the console.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/bpf/prog_tests/rcu_reentry.c    | 93 +++++++++++++++++++
- .../testing/selftests/bpf/progs/rcu_reentry.c | 51 ++++++++++
- 2 files changed, 144 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
- create mode 100644 tools/testing/selftests/bpf/progs/rcu_reentry.c
+ .../admin-guide/kernel-parameters.txt         |   7 +
+ kernel/rcu/rcutorture.c                       | 150 +++++++++++++++++-
+ 2 files changed, 155 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_reentry.c b/tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
-new file mode 100644
-index 000000000000..de23a14b3d40
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Exercise re-entry into call_srcu() from BPF; see progs/rcu_reentry.c. */
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <test_progs.h>
-+#include "task_local_storage_helpers.h"
-+#include "trace_helpers.h"
-+#include "rcu_reentry.skel.h"
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 68647ff4bdd2..fd9acc3fd9b7 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6173,6 +6173,13 @@ Kernel parameters
+ 			stress RCU, they don't participate in the actual
+ 			test, hence the "fake".
+ 
++	rcutorture.nmi_calls= [KNL]
++			Enable issuing RCU callbacks from an NMI, on the
++			RCU flavors that support it, to exercise the
++			any-context callback path.  Requires
++			CONFIG_PERF_EVENTS and a hardware PMU; without
++			both, nothing is issued.  Defaults to enabled.
 +
-+/* Tiny RCU has no rcu_segcblist_enqueue() to attach to. */
-+static bool have_attach_target(void)
-+{
-+	unsigned long long addr;
-+
-+	return kallsyms_find("rcu_segcblist_enqueue", &addr) == 0;
-+}
-+
-+/* Tiny SRCU stubs out srcu_expedite_current(); Tree SRCU exports it. */
-+static bool have_tree_srcu(void)
-+{
-+	unsigned long long addr;
-+
-+	return kallsyms_find("srcu_expedite_current", &addr) == 0;
-+}
-+
-+void test_rcu_reentry(void)
-+{
-+	struct rcu_reentry *skel;
-+	int err, pidfd = -1, map_fd;
-+	cpu_set_t set, old_set;
-+	bool affinity_saved;
-+	__u64 val = 1;
-+	int cpu;
-+
-+	if (!have_attach_target()) {
-+		test__skip();
-+		return;
-+	}
-+
-+	skel = rcu_reentry__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	err = rcu_reentry__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	/* Keep the re-entry on a single CPU; a cpuset may exclude CPU 0. */
-+	affinity_saved = !sched_getaffinity(0, sizeof(old_set), &old_set);
-+	cpu = sched_getcpu();
-+	if (!ASSERT_GE(cpu, 0, "getcpu"))
-+		goto out;
-+	CPU_ZERO(&set);
-+	CPU_SET(cpu, &set);
-+	if (!ASSERT_OK(sched_setaffinity(0, sizeof(set), &set), "setaffinity"))
-+		goto out;
-+
-+	pidfd = sys_pidfd_open(getpid(), 0);
-+	if (!ASSERT_GE(pidfd, 0, "pidfd_open"))
-+		goto restore;
-+	map_fd = bpf_map__fd(skel->maps.task_stg);
-+	err = bpf_map_update_elem(map_fd, &pidfd, &val, BPF_NOEXIST);
-+	if (!ASSERT_OK(err, "boot_create"))
-+		goto restore;
-+
-+	/* Arm the handler for this thread, then trigger call_rcu_tasks_trace(). */
-+	skel->bss->target_pid = syscall(__NR_gettid);
-+	err = bpf_map_delete_elem(map_fd, &pidfd);
-+	if (!ASSERT_OK(err, "boot_delete"))
-+		goto restore;
-+
-+	/*
-+	 * Only Tree SRCU reaches rcu_segcblist_enqueue() from call_srcu(); a
-+	 * UP+PREEMPT kernel pairs Tree RCU with Tiny SRCU, so the attach
-+	 * succeeds but nothing fires.  On Tree SRCU it must fire.
-+	 */
-+	if (!skel->bss->hits) {
-+		if (have_tree_srcu())
-+			ASSERT_GT(skel->bss->hits, 0, "prog_fired");
-+		else
-+			test__skip();
-+		goto restore;
-+	}
-+	ASSERT_EQ(skel->bss->get_errs, 0, "nested_storage_get");
-+	ASSERT_EQ(skel->bss->del_errs, 0, "nested_storage_delete");
-+restore:
-+	if (affinity_saved)
-+		sched_setaffinity(0, sizeof(old_set), &old_set);
-+out:
-+	if (pidfd >= 0)
-+		close(pidfd);
-+	rcu_reentry__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/rcu_reentry.c b/tools/testing/selftests/bpf/progs/rcu_reentry.c
-new file mode 100644
-index 000000000000..47a36f704cf3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/rcu_reentry.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
+ 	rcutorture.nocbs_nthreads= [KNL]
+ 			Set number of RCU callback-offload togglers.
+ 			Zero (the default) disables toggling.
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 7e08be857f01..4d1be2a49f01 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -48,6 +48,7 @@
+ #include <linux/tick.h>
+ #include <linux/rcupdate_trace.h>
+ #include <linux/nmi.h>
++#include <linux/perf_event.h>
+ 
+ #include "rcu.h"
+ 
+@@ -115,6 +116,7 @@ torture_param(int, leakpointer, 0, "Leak pointer dereferences from readers");
+ torture_param(int, n_barrier_cbs, 0, "# of callbacks/kthreads for barrier testing");
+ torture_param(int, n_up_down, 32, "# of concurrent up/down hrtimer-based RCU readers");
+ torture_param(int, nfakewriters, 4, "Number of RCU fake writer threads");
++torture_param(bool, nmi_calls, true, "Exercise ->call() from NMI on nmi_capable flavors");
+ torture_param(int, nreaders, -1, "Number of RCU reader threads");
+ torture_param(bool, nwriters, 1, "Number of RCU writer threads (0 or 1)");
+ torture_param(int, object_debug, 0, "Enable debug-object double call_rcu() testing");
+@@ -216,6 +218,8 @@ static long n_rcu_torture_boost_failure;
+ static long n_rcu_torture_boosts;
+ static atomic_long_t n_rcu_torture_timers;
+ static atomic_long_t n_rcu_torture_irqs;
++static atomic_long_t n_rcu_torture_nmi_call;
++static atomic_long_t n_rcu_torture_nmi_cb;
+ static long n_barrier_attempts;
+ static long n_barrier_successes; /* did rcu_barrier test succeed? */
+ static unsigned long n_read_exits;
+@@ -433,6 +437,7 @@ struct rcu_torture_ops {
+ 	bool (*is_task_rcu_boosted)(void);
+ 	long cbflood_max;
+ 	int irq_capable;
++	int nmi_capable;
+ 	int can_boost;
+ 	int extendables;
+ 	int slow_gps;
+@@ -650,6 +655,7 @@ static struct rcu_torture_ops rcu_ops = {
+ 	.debug_objects		= 1,
+ 	.start_poll_irqsoff	= 1,
+ 	.rdrs_handle_load	= !IS_ENABLED(CONFIG_PREEMPT_RCU) || IS_ENABLED(CONFIG_RCU_BOOST),
++	.nmi_capable		= 1,
+ 	.name			= "rcu"
+ };
+ 
+@@ -944,6 +950,7 @@ static struct rcu_torture_ops srcu_ops = {
+ 	.debug_objects	= 1,
+ 	.have_up_down	= IS_ENABLED(CONFIG_TINY_SRCU)
+ 				? 0 : SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_FAST_UPDOWN,
++	.nmi_capable	= 1,
+ 	.name		= "srcu"
+ };
+ 
+@@ -1007,6 +1014,7 @@ static struct rcu_torture_ops srcud_ops = {
+ 	.debug_objects	= 1,
+ 	.have_up_down	= IS_ENABLED(CONFIG_TINY_SRCU)
+ 				? 0 : SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_FAST_UPDOWN,
++	.nmi_capable	= 1,
+ 	.name		= "srcud"
+ };
+ 
+@@ -1271,6 +1279,7 @@ static struct rcu_torture_ops tasks_tracing_ops = {
+ 	.cbflood_max	= 50000,
+ 	.irq_capable	= 1,
+ 	.slow_gps	= 1,
++	.nmi_capable	= 1,
+ 	.name		= "tasks-tracing"
+ };
+ 
+@@ -2663,6 +2672,124 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+ 
+ static DEFINE_TORTURE_RANDOM_PERCPU(rcu_torture_timer_rand);
+ 
 +/*
-+ * Re-enter call_srcu() from a BPF program.  fentry on rcu_segcblist_enqueue()
-+ * fires inside call_srcu()'s enqueue (reached from srcu_gp_start_if_needed()
-+ * with the srcu_data ->lock held); the handler then calls call_rcu_tasks_trace()
-+ * -- itself call_srcu() on rcu_tasks_trace_srcu_struct -- re-entering the same
-+ * srcu_data on the same CPU.
++ * Exercise ->call() from NMI context for flavors that set ->nmi_capable.  A
++ * per-CPU hardware perf counter overflows into an NMI, and its handler submits
++ * a preallocated callback via ->call().  One callback per CPU is in flight at a
++ * time (guarded by an atomic) to avoid allocating in NMI.
 + */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
++#ifdef CONFIG_PERF_EVENTS
++static struct perf_event_attr rcu_torture_nmi_attr = {
++	.type		= PERF_TYPE_HARDWARE,
++	.config		= PERF_COUNT_HW_CPU_CYCLES,
++	.size		= sizeof(struct perf_event_attr),
++	.pinned		= 1,
++	.disabled	= 1,
++	/*
++	 * A fixed period rather than .freq: a frequency-based event bumps
++	 * nr_freq_events, which sets TICK_DEP_BIT_PERF_EVENTS and would pin the
++	 * tick for the whole run on NO_HZ_FULL kernels.
++	 */
++	.sample_period	= 20 * 1000 * 1000,
++};
 +
-+char _license[] SEC("license") = "GPL";
++/* One in-flight callback per CPU; ->inuse is released by the callback. */
++struct rcu_torture_nmi_cb {
++	struct rcu_head rh;
++	atomic_t inuse;
++};
 +
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, __u64);
-+} task_stg SEC(".maps");
++static struct perf_event **rcu_torture_nmi_events;
++static int rcu_torture_nmi_hp_state;
++static DEFINE_PER_CPU(struct rcu_torture_nmi_cb, rcu_torture_nmi_cb);
 +
-+int target_pid;
-+int hits;
-+int get_errs;
-+int del_errs;
-+int done;
-+
-+SEC("fentry/rcu_segcblist_enqueue")
-+int BPF_PROG(reenter)
++static void rcu_torture_nmi_invoked(struct rcu_head *rhp)
 +{
-+	struct task_struct *cur;
++	struct rcu_torture_nmi_cb *rtncp = container_of(rhp, struct rcu_torture_nmi_cb, rh);
 +
-+	if (done || !target_pid)
++	atomic_long_inc(&n_rcu_torture_nmi_cb);
++	atomic_set(&rtncp->inuse, 0);
++}
++
++static void rcu_torture_nmi_overflow(struct perf_event *event,
++				     struct perf_sample_data *data,
++				     struct pt_regs *regs)
++{
++	struct rcu_torture_nmi_cb *rtncp = this_cpu_ptr(&rcu_torture_nmi_cb);
++
++	if (!in_nmi())
++		return;
++	if (cur_ops->call && !atomic_xchg(&rtncp->inuse, 1)) {
++		atomic_long_inc(&n_rcu_torture_nmi_call);
++		cur_ops->call(&rtncp->rh, rcu_torture_nmi_invoked);
++	}
++}
++
++static int rcu_torture_nmi_online(unsigned int cpu)
++{
++	struct perf_event *event;
++
++	event = perf_event_create_kernel_counter(&rcu_torture_nmi_attr, cpu, NULL,
++						 rcu_torture_nmi_overflow, NULL);
++	if (IS_ERR(event))
 +		return 0;
-+
-+	cur = bpf_get_current_task_btf();
-+	if (cur->pid != target_pid)
-+		return 0;
-+
-+	/* Issue the nested call exactly once, so the test is deterministic. */
-+	done = 1;
-+	__sync_fetch_and_add(&hits, 1);
-+
-+	/* Re-enter via a task-storage delete, which calls call_rcu_tasks_trace(). */
-+	if (!bpf_task_storage_get(&task_stg, cur, 0, BPF_LOCAL_STORAGE_GET_F_CREATE))
-+		__sync_fetch_and_add(&get_errs, 1);
-+	else if (bpf_task_storage_delete(&task_stg, cur))
-+		__sync_fetch_and_add(&del_errs, 1);
-+
++	rcu_torture_nmi_events[cpu] = event;
++	perf_event_enable(event);
 +	return 0;
 +}
++
++static int rcu_torture_nmi_offline(unsigned int cpu)
++{
++	struct perf_event *event = rcu_torture_nmi_events[cpu];
++
++	if (event) {
++		rcu_torture_nmi_events[cpu] = NULL;
++		perf_event_disable(event);
++		perf_event_release_kernel(event);
++	}
++	return 0;
++}
++
++/* Drive the counters from hotplug callbacks so coverage survives onoff. */
++static void rcu_torture_nmi_init(void)
++{
++	int ret;
++
++	if (!nmi_calls || !cur_ops->nmi_capable || !cur_ops->call)
++		return;
++	rcu_torture_nmi_events = kcalloc(nr_cpu_ids, sizeof(*rcu_torture_nmi_events),
++					 GFP_KERNEL);
++	if (!rcu_torture_nmi_events)
++		return;
++	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "rcutorture/nmi:online",
++				rcu_torture_nmi_online, rcu_torture_nmi_offline);
++	if (ret < 0) {
++		kfree(rcu_torture_nmi_events);
++		rcu_torture_nmi_events = NULL;
++		return;
++	}
++	rcu_torture_nmi_hp_state = ret;
++}
++
++static void rcu_torture_nmi_cleanup(void)
++{
++	if (!rcu_torture_nmi_events)
++		return;
++	if (rcu_torture_nmi_hp_state > 0) {
++		cpuhp_remove_state(rcu_torture_nmi_hp_state);
++		rcu_torture_nmi_hp_state = 0;
++	}
++	kfree(rcu_torture_nmi_events);
++	rcu_torture_nmi_events = NULL;
++	if (!atomic_long_read(&n_rcu_torture_nmi_call))
++		pr_alert("%s: nmi_calls set but no ->call() ever issued from NMI, so NMI ->call() went untested (no PMU, or NMIs unavailable here).\n",
++			 __func__);
++}
++#else /* #ifdef CONFIG_PERF_EVENTS */
++static void rcu_torture_nmi_init(void) { }
++static void rcu_torture_nmi_cleanup(void) { }
++#endif /* #else #ifdef CONFIG_PERF_EVENTS */
++
+ /*
+  * RCU torture reader from timer handler.  Dereferences rcu_torture_current,
+  * incrementing the corresponding element of the pipeline array.  The
+@@ -3051,6 +3178,9 @@ rcu_torture_stats_print(void)
+ 		data_race(n_barrier_attempts),
+ 		data_race(n_rcu_torture_barrier_error));
+ 	pr_cont("read-exits: %ld ", data_race(n_read_exits)); // Statistic.
++	pr_cont("nmi-calls: %ld nmi-cbs: %ld ",
++		atomic_long_read(&n_rcu_torture_nmi_call),
++		atomic_long_read(&n_rcu_torture_nmi_cb));
+ 	pr_cont("nocb-toggles: %ld:%ld ",
+ 		atomic_long_read(&n_nocb_offload), atomic_long_read(&n_nocb_deoffload));
+ 	pr_cont("gpwraps: %ld\n", n_gpwraps);
+@@ -3199,7 +3329,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ 		 "read_exit_delay=%d read_exit_burst=%d "
+ 		 "reader_flavor=%x "
+ 		 "nocbs_nthreads=%d nocbs_toggle=%d "
+-		 "test_nmis=%d "
++		 "test_nmis=%d nmi_calls=%d "
+ 		 "preempt_duration=%d preempt_interval=%d n_up_down=%d\n",
+ 		 torture_type, tag, nrealreaders, nwriters, nrealfakewriters,
+ 		 stat_interval, verbose, test_no_idle_hz, shuffle_interval,
+@@ -3213,7 +3343,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ 		 read_exit_delay, read_exit_burst,
+ 		 reader_flavor,
+ 		 nocbs_nthreads, nocbs_toggle,
+-		 test_nmis,
++		 test_nmis, nmi_calls,
+ 		 preempt_duration, preempt_interval, n_up_down);
+ }
+ 
+@@ -4287,6 +4417,7 @@ rcu_torture_cleanup(void)
+ 	int i;
+ 
+ 	if (torture_cleanup_begin()) {
++		rcu_torture_nmi_cleanup();
+ 		if (cur_ops->cb_barrier != NULL) {
+ 			pr_info("%s: Invoking %pS().\n", __func__, cur_ops->cb_barrier);
+ 			cur_ops->cb_barrier();
+@@ -4329,6 +4460,7 @@ rcu_torture_cleanup(void)
+ 		kfree(reader_tasks);
+ 		reader_tasks = NULL;
+ 	}
++	rcu_torture_nmi_cleanup();
+ 	kfree(rcu_torture_reader_mbchk);
+ 	rcu_torture_reader_mbchk = NULL;
+ 
+@@ -4358,6 +4490,19 @@ rcu_torture_cleanup(void)
+ 		pr_info("%s: Invoking %pS().\n", __func__, cur_ops->cb_barrier);
+ 		cur_ops->cb_barrier();
+ 	}
++
++	/*
++	 * cb_barrier() above drained every deferred callback, so the count
++	 * issued from NMI must equal the count invoked.
++	 */
++	if (atomic_long_read(&n_rcu_torture_nmi_call) !=
++	    atomic_long_read(&n_rcu_torture_nmi_cb)) {
++		pr_alert("%s: NMI ->call() lost a callback: issued %ld invoked %ld\n",
++			 __func__, atomic_long_read(&n_rcu_torture_nmi_call),
++			 atomic_long_read(&n_rcu_torture_nmi_cb));
++		atomic_inc(&n_rcu_torture_error);
++	}
++
+ 	if (cur_ops->cleanup != NULL)
+ 		cur_ops->cleanup();
+ 
+@@ -4790,6 +4935,7 @@ rcu_torture_init(void)
+ 		firsterr = -ENOMEM;
+ 		goto unwind;
+ 	}
++	rcu_torture_nmi_init();
+ 	for (i = 0; i < nrealreaders; i++) {
+ 		rcu_torture_reader_mbchk[i].rtc_chkrdr = -1;
+ 		firsterr = torture_create_kthread(rcu_torture_reader, (void *)i,
 -- 
 2.40.1
 
