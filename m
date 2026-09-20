@@ -1,37 +1,37 @@
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B294772AC;
-	Sun, 20 Sep 2026 21:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BD3367B97;
+	Sun, 20 Sep 2026 21:37:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789940245; cv=none; b=iYsyQyOZ7rA4aAuBZz1q6WporLkzwAmbZjPNW+v5uyxMtlvl52aitGMzXwTIkdlqYj5yQqhA3c5re6AjAC/LKNssQ2adh4tu46BikTFuF3pu1Czo1wnPwpeJaPOBoF7fK/U/iAHg9JLG/SIgKlmg1ysJO4wO4VUmhrakTg2En7M=
+	t=1789940254; cv=none; b=TqHBtyweEMnzBDksvhqNK5N+6SAAwq/8/68Nxay3LtLPLOW2nVBWruBBoB/pD3THLkRAbgUgVEm7K2JA+CQw/DL3UCkweUJPPSpTqfiAEy5ETOuo8UJ2q4XXc+up5hWf6JaPBR8mCqaEnaOP3OL0FbcvOnhBz4I7oBbn87JMuHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789940245; c=relaxed/simple;
-	bh=el9WAUIJ63lwtLCW11K89rMt7bxmO//ekmd05po6ey8=;
+	s=arc-20240116; t=1789940254; c=relaxed/simple;
+	bh=kGZ4qoeRByhQjUsG/+/8AQggZcX5GquINXhGjbNwVio=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Uz8dfZbNksOQzAJnG4blF6/fjIWd0KiNhxl+VS725poszuQVLcawb61D0q60iVy5xAB0OGybIsRzO4fhhvkvIedw5Mp5l0/NBlxDdkx3BJmujbqfmXEzm+a9yN6zaZav4czq+sCtktxUBxIil4qC3JRbBqTReZrcFeGcEaSuep0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=YdQWIXc9; arc=none smtp.client-ip=90.155.50.34
+	 MIME-Version:Content-Type; b=hyuyG5a4HJHr/jxF7dzHeNobKZbGT2QpKe0z4VXl4LebqNGJ05Mu85wdDKD2wlzKniXE2FkC2BEwaVds4mmB4Q2LU18WcRdl+hWThj7jSwEGbekXLS6c97rQiT7yrNscBbsxEB4sxoT36G+36jhxlUiXAW9//idAsTf/2CO+Gh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XLfL2Qkc; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YdQWIXc9"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XLfL2Qkc"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description;
-	bh=62Ih9ymwIJU5b1gyiXDeF0z+bk/RYv/UkPhSOWe66p8=; b=YdQWIXc9GqjIpfJzMVBbxjBbVX
-	1iaQQrDQ1NygOicYQ7ANlDfQ/d4JCRg+BH5XiWtnn/uH5vRFzDgg7ZU9Hkvhg7jCUq5hZ6hFz2gAE
-	7zEuuZo+zzmKT924LLC8W4GOKFhBi1bnYKLl0KEEn/qFia4QFm/VTX/EGvK2Gv7+zV+BQ7ImO8Os3
-	/YZSNt8kJq0NcDXGsm2X15fhMWFv7xTgTVm/viP8ei9Ij6NeT4GVYdsKq1DbYAK8kn0L63CD6p8Nx
-	DHS7D99DFKtNFXiAez2405D4vOpSA+UA9W+X1rtqsb7W4fBIPOIy38VaEqR2iDVBq1SNi7scOwEVq
-	ykutoQeQ==;
+	bh=PCP+XmpTdCIagw/n69ORbTHLgBJ9slFq50pCKS0eX+8=; b=XLfL2QkcZmg05QyM80gwwfRFlS
+	b9QSkbhgA6FCDhr619h7XYzpxsuoaeVqJpjYENToLQ9UZTT4hdA3uJYDQdMTRBegH4ocpmAkfH5jd
+	9oo3HS15zyud+4IbcetWyezu07yVhXg7X1WdMRETmUTVzx8y8OY58jW2hAfSt4uYvGwagBt4aMvlV
+	MMmu2dbQh0XVhTj7Kg9dyOtBmY4pARD9WGHk7UtJ1OPYcZBjqetlUwNmwQbZqyJuSjCzLfO4RYr6g
+	BpfaFWDsSaFO2LX0Eg50Um3LhHVYL7rfJD91idIA4bO9GHNRpGd9zal+YwR2+8QM2+UZ12YpXvR3/
+	a6TGjB9A==;
 Received: from [2001:8b0:10b:1::425] (helo=i7.infradead.org)
 	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8OwU-0000000BLpw-37jE;
-	Sun, 20 Sep 2026 21:19:23 +0000
+	id 1x8OwU-0000000BLpt-21Xm;
+	Sun, 20 Sep 2026 21:19:22 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.99.4 #2 (Red Hat Linux))
-	id 1x8OwU-00000003tcn-2Afy;
+	id 1x8OwU-00000003tcS-0yXK;
 	Sun, 20 Sep 2026 22:19:22 +0100
 From: David Woodhouse <dwmw2@infradead.org>
 To: kvm@vger.kernel.org
@@ -64,9 +64,9 @@ Cc: linux-kernel@vger.kernel.org,
 	David Matlack <dmatlack@google.com>,
 	nh-open-source@amazon.com,
 	David Woodhouse <dwmw@amazon.co.uk>
-Subject: [PATCH 07/17] KVM: pfncache: Add guest-mode pinning (GUEST_USES_PFN successor)
-Date: Sun, 20 Sep 2026 21:49:35 +0100
-Message-ID: <20260920211920.928306-8-dwmw2@infradead.org>
+Subject: [PATCH 02/17] KVM: x86/xen: Extract delivery of event to vCPU into a separate helper
+Date: Sun, 20 Sep 2026 21:49:30 +0100
+Message-ID: <20260920211920.928306-3-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260920211920.928306-1-dwmw2@infradead.org>
 References: <20260920211920.928306-1-dwmw2@infradead.org>
@@ -81,460 +81,231 @@ Content-Transfer-Encoding: 8bit
 Sender: David Woodhouse <dwmw2@infradead.org>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+From: Sean Christopherson <seanjc@google.com>
 
-Reinstate support for caches whose pfn a vCPU uses directly from guest
-mode (stuffed into hardware control structures such as vmcs02 fields),
-addressing the reasons the original KVM_GUEST_USES_PFN was removed as
-incomplete/broken¹²:
+Move the marking of an event as pending in the target vCPU's vcpu_info
+into a separate helper, __kvm_xen_set_evtchn_fast(), invoked after the
+shared_info processing is complete and its RCU read-side critical
+section has been exited. This makes both halves easier to read.
 
- - The kick now comes with a guarantee. The original
-   KVM_REQ_OUTSIDE_GUEST_MODE kick did "absolutely nothing to
-   guarantee KVM refreshes the cache before re-entering the guest"¹.
-   Now, a vCPU pins with a cmpxchg which succeeds only while GPC_VALID
-   holds; the invalidation walk reads the pin in the same atomic word
-   it already reads to veto in-flight publishes, so no pin can slip
-   between its check and the zap; and re-pinning requires GPC_VALID,
-   which requires a refresh, which cannot complete until
-   invalidate_range_end(). The vCPU is forced out (with WAIT) and
-   physically cannot re-enter with the stale mapping.
+No functional change intended.
 
- - The service request is per-cache, given at init³
-   (kvm_gpc_init_for_vcpu()), so e.g. nVMX can request
-   KVM_REQ_GET_NESTED_STATE_PAGES for vmcs12 pages rather than KVM
-   guessing. The force-out (KVM_REQ_OUTSIDE_GUEST_MODE, which carries
-   KVM_REQUEST_WAIT) is common; the per-cache request says what the
-   vCPU must do before re-entering.
-
- - No special-casing of non-blockable invalidations. The original
-   stripped KVM_REQUEST_WAIT for the OOM reaper on the assumption that
-   a reaped task's vCPUs are already stopped; that assumption is false
-   for process_mrelease(), which requires only SIGNAL_GROUP_EXIT, and
-   the strip opened the very use-after-free window the kick exists to
-   prevent⁴. The wait is unconditionally safe:
-   kvm_make_vcpus_request_mask() runs with preemption disabled and
-   spin-waits for IPI acks; it never sleeps.
-
- - Pin lifecycle has single-writer discipline. Only the pinning vCPU
-   sets its pin (cmpxchg-while-VALID) and only that vCPU clears it (on
-   unpin or request service, before re-pinning) — except that a
-   mutator's xchg of the whole state word to zero may consume a live
-   pin, in which case it inherits the kick-and-wait duty before
-   mutating anything the guest may be using. A stale pin left by a
-   kicked vCPU costs at most a spurious request bit: the force-out
-   only IPIs and waits for targets actually in guest mode.
-
-No users yet; the nVMX conversion⁵ builds on this.
-
-¹ https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com
-² https://lore.kernel.org/all/ZQiR8IpqOZrOpzHC@google.com
-³ https://lore.kernel.org/all/agJnqh7ACEkB-ftx@google.com
-⁴ per Jann Horn's analysis in ²
-⁵ https://lore.kernel.org/all/20260102142429.896101-1-griffoul@gmail.com
-
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+[dwmw2: rebased onto the RCU conversion of the GPC locking; the
+ read_trylock() failure path in the original no longer exists. The
+ caller's kvm->srcu section now extends across the helper call, since
+ kvm_gpc_check() on the vcpu_info cache consults the memslot
+ generation and the irqfd path enters holding only irq_srcu; in Sean's
+ series that was covered by a guard(srcu) spanning the whole function,
+ which this series does not carry.]
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 Assisted-by: Claude:claude-mythos-5
 ---
- arch/x86/kvm/xen.c        |   4 +-
- include/linux/kvm_host.h  |  55 ++++++++++++-
- include/linux/kvm_types.h |  28 +++++--
- virt/kvm/pfncache.c       | 168 ++++++++++++++++++++++++++++++++++++--
- 4 files changed, 235 insertions(+), 20 deletions(-)
+ arch/x86/kvm/xen.c | 155 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 98 insertions(+), 57 deletions(-)
 
 diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index 16b76379dcec..b6643b889320 100644
+index ea907f5fa5f8..1364fe8ee751 100644
 --- a/arch/x86/kvm/xen.c
 +++ b/arch/x86/kvm/xen.c
-@@ -2388,7 +2388,7 @@ void kvm_xen_init_vcpu(struct kvm_vcpu *vcpu)
- 
- 	kvm_gpc_init(&vcpu->arch.xen.runstate_cache, vcpu->kvm);
- 	kvm_gpc_init(&vcpu->arch.xen.runstate2_cache, vcpu->kvm);
--	__kvm_gpc_init(&vcpu->arch.xen.vcpu_info_cache, vcpu->kvm, true);
-+	__kvm_gpc_init(&vcpu->arch.xen.vcpu_info_cache, vcpu->kvm, true, NULL, 0);
- 	kvm_gpc_init(&vcpu->arch.xen.vcpu_time_info_cache, vcpu->kvm);
- }
- 
-@@ -2409,7 +2409,7 @@ void kvm_xen_init_vm(struct kvm *kvm)
- {
- 	mutex_init(&kvm->arch.xen.xen_lock);
- 	xa_init(&kvm->arch.xen.evtchn_ports);
--	__kvm_gpc_init(&kvm->arch.xen.shinfo_cache, kvm, true);
-+	__kvm_gpc_init(&kvm->arch.xen.shinfo_cache, kvm, true, NULL, 0);
- }
- 
- void kvm_xen_destroy_vm(struct kvm *kvm)
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 7b2dbbd6b104..0ee1479b135b 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1475,13 +1475,64 @@ int kvm_vcpu_write_guest(struct kvm_vcpu *vcpu, gpa_t gpa, const void *data,
-  * the caller before init).
-  */
- void __kvm_gpc_init(struct gfn_to_pfn_cache *gpc, struct kvm *kvm,
--		    bool never_dirty);
-+		    bool never_dirty, struct kvm_vcpu *vcpu, u32 vcpu_req);
- 
- static inline void kvm_gpc_init(struct gfn_to_pfn_cache *gpc, struct kvm *kvm)
- {
--	__kvm_gpc_init(gpc, kvm, false);
-+	__kvm_gpc_init(gpc, kvm, false, NULL, 0);
- }
- 
-+/**
-+ * kvm_gpc_init_for_vcpu - initialize a cache whose pfn a vCPU may pin for
-+ *                         direct use from guest mode.
-+ *
-+ * @gpc:  struct gfn_to_pfn_cache object.
-+ * @vcpu: the vCPU which will pin and directly access this cache.
-+ * @req:  service request to post to @vcpu when the cache is invalidated
-+ *        while pinned. The invalidation separately forces @vcpu out of
-+ *        guest mode (KVM_REQ_OUTSIDE_GUEST_MODE, with WAIT) and does not
-+ *        complete until it has left; @req says what the vCPU must then do
-+ *        before re-entering. Its handler must re-establish the mapping
-+ *        (via a refresh, which cannot complete until the invalidation
-+ *        ends) and re-pin before the pfn may be used from guest mode
-+ *        again, or exit to userspace.
-+ */
-+static inline void kvm_gpc_init_for_vcpu(struct gfn_to_pfn_cache *gpc,
-+					 struct kvm_vcpu *vcpu, u32 req)
-+{
-+	__kvm_gpc_init(gpc, vcpu->kvm, false, vcpu, req);
-+}
-+
-+/**
-+ * kvm_gpc_pin_for_guest - pin a valid cache's pfn for use from guest mode.
-+ *
-+ * @gpc: struct gfn_to_pfn_cache object (initialized with
-+ *       kvm_gpc_init_for_vcpu()).
-+ *
-+ * Marks the cache as being used directly by the vCPU in guest mode, so
-+ * that an invalidation will kick the vCPU (with the request given at init
-+ * time) and wait for it to be out of guest mode before completing.
-+ * Succeeds only while the cache is valid: on success the pfn is
-+ * guaranteed to remain mapped and unreclaimed until the pin is released
-+ * or the vCPU is kicked. Must be called by @gpc->vcpu itself.
-+ *
-+ * Returns false if the cache is not currently valid; the caller must
-+ * refresh and retry, or bail.
-+ */
-+bool kvm_gpc_pin_for_guest(struct gfn_to_pfn_cache *gpc);
-+
-+/**
-+ * kvm_gpc_unpin_for_guest - release a guest-mode pin.
-+ *
-+ * @gpc: struct gfn_to_pfn_cache object.
-+ *
-+ * Must be called by @gpc->vcpu itself, after it has left guest mode (or
-+ * before entering it), when the pfn is no longer stuffed into any
-+ * hardware control structure. Idempotent: a pin already consumed by a
-+ * mutator's teardown is harmless to release again.
-+ */
-+void kvm_gpc_unpin_for_guest(struct gfn_to_pfn_cache *gpc);
-+
- /**
-  * kvm_gpc_activate - prepare a cached kernel mapping and HPA for a given guest
-  *                    physical address.
-diff --git a/include/linux/kvm_types.h b/include/linux/kvm_types.h
-index 22393f97266a..bdee01f22a2d 100644
---- a/include/linux/kvm_types.h
-+++ b/include/linux/kvm_types.h
-@@ -87,21 +87,34 @@ struct gfn_to_pfn_cache {
- 	unsigned long uhva;
- 	struct kvm_memory_slot *memslot;
- 	struct kvm *kvm;
-+	/*
-+	 * A cache initialized with kvm_gpc_init_for_vcpu() may be pinned for
-+	 * direct use from guest mode (its pfn stuffed into hardware control
-+	 * structures such as vmcs02 fields) by setting GPC_GUEST_USING while
-+	 * GPC_VALID holds. When such a cache is invalidated, @vcpu is kicked
-+	 * out of guest mode with @vcpu_req, whose handler must re-pin (via a
-+	 * refresh which cannot complete until the invalidation ends) or exit.
-+	 */
-+	struct kvm_vcpu *vcpu;
-+	u32 vcpu_req;
- 	struct list_head list;
- 	struct mutex refresh_lock;
- 	void *khva;
- 	kvm_pfn_t pfn;
- 	bool active;
- 	/*
--	 * GPC_VALID, GPC_BECOMING_VALID and GPC_INVALIDATING live in a
--	 * single atomic word so that a refresh can publish
--	 * (BECOMING_VALID => VALID) with a single conditional RMW, an
-+	 * GPC_VALID, GPC_BECOMING_VALID, GPC_INVALIDATING and
-+	 * GPC_GUEST_USING live in a single atomic word so that a refresh can
-+	 * publish (BECOMING_VALID => VALID) with a single conditional RMW, an
- 	 * invalidation can veto that publish by clearing both of those bits
- 	 * (setting INVALIDATING in the same operation if VALID was set, to
--	 * record that its grace period is still owed), and a mutator can
--	 * consume the whole state with one xchg to learn whether it must
--	 * wait for readers before touching anything they see. See the
--	 * comments in pfncache.c.
-+	 * record that its grace period is still owed) and observe in the same
-+	 * read whether a vCPU has the pfn pinned for guest-mode use
-+	 * (GUEST_USING, set by the vCPU with a cmpxchg only while VALID
-+	 * holds, cleared only by that vCPU or by a mutator's xchg), and a
-+	 * mutator can consume the whole state with one xchg to learn whether
-+	 * it must wait for readers and/or kick the pinning vCPU before
-+	 * touching anything they see. See the comments in pfncache.c.
- 	 *
- 	 * 'active' deliberately stays separate: the invalidation and
- 	 * mutation paths operate on the word without having to care about
-@@ -129,6 +142,7 @@ struct gfn_to_pfn_cache {
-  * VALID clear.
-  */
- #define GPC_INVALIDATING	0x4
-+#define GPC_GUEST_USING		0x8
- 
- #ifdef KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE
- /*
-diff --git a/virt/kvm/pfncache.c b/virt/kvm/pfncache.c
-index 2fe50dfa3fc1..e15d9a475fed 100644
---- a/virt/kvm/pfncache.c
-+++ b/virt/kvm/pfncache.c
-@@ -25,7 +25,9 @@
- void gfn_to_pfn_cache_invalidate_start(struct kvm *kvm, unsigned long start,
- 				       unsigned long end)
- {
-+	DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
- 	struct gfn_to_pfn_cache *gpc;
-+	bool evict_vcpus = false;
- 	bool cleared = false;
- 
- 	spin_lock(&kvm->gpc_lock);
-@@ -91,10 +93,60 @@ void gfn_to_pfn_cache_invalidate_start(struct kvm *kvm, unsigned long start,
- 
- 			if (old & GPC_VALID)
- 				cleared = true;
-+
-+			/*
-+			 * If a vCPU has the pfn pinned for direct use from
-+			 * guest mode, it must be forced out of guest mode
-+			 * before the invalidation may complete. The pin bit
-+			 * was set with a cmpxchg only while GPC_VALID held,
-+			 * so this same read of 'old' cannot miss it. It is
-+			 * NOT cleared here: only the vCPU itself (on request
-+			 * service, before re-pinning) or a mutator's xchg
-+			 * (which inherits the kick duty) may clear it. A
-+			 * stale pin costs at most a spurious request bit:
-+			 * kvm_make_vcpus_request_mask() only IPIs and waits
-+			 * for targets actually in guest mode.
-+			 */
-+			if (old & GPC_GUEST_USING) {
-+				if (!evict_vcpus) {
-+					evict_vcpus = true;
-+					bitmap_zero(vcpu_bitmap, KVM_MAX_VCPUS);
-+				}
-+				__set_bit(gpc->vcpu->vcpu_idx, vcpu_bitmap);
-+				/*
-+				 * Set this cache's own service request (what
-+				 * the vCPU must do before re-entering); the
-+				 * force-out below is common to all of them.
-+				 */
-+				__kvm_make_request(gpc->vcpu_req, gpc->vcpu);
-+			}
- 		}
+@@ -1807,6 +1807,93 @@ static void kvm_xen_check_poller(struct kvm_vcpu *vcpu, int port)
  	}
- 	spin_unlock(&kvm->gpc_lock);
+ }
  
++/* Called with kvm->srcu held, as kvm_gpc_check() consults the memslots. */
++static void __kvm_xen_set_evtchn_fast(struct kvm_vcpu *vcpu, int port_word_bit)
++{
++	struct gfn_to_pfn_cache *gpc = &vcpu->arch.xen.vcpu_info_cache;
++	bool has_64bit_shinfo = kvm_xen_has_64bit_shinfo(vcpu->kvm);
++	unsigned long vi_pending_sel_ofs;
++	bool inject_upcall = false;
++	bool kick_vcpu = false;
++	bool old;
++	int idx;
++
++	vi_pending_sel_ofs = has_64bit_shinfo ?
++		offsetof(struct vcpu_info, evtchn_pending_sel) :
++		offsetof(struct compat_vcpu_info, evtchn_pending_sel);
++
++	/* Now switch to the vCPU's vcpu_info to set the index and pending_sel */
++	idx = srcu_read_lock_atomic(&vcpu->kvm->gpc_srcu);
++	if (!kvm_gpc_check(gpc, sizeof(struct vcpu_info))) {
++		/*
++		 * Could not access the vcpu_info. Set the bit in-kernel and
++		 * prod the vCPU to deliver it for itself. Note that an MSI is
++		 * *not* an acceptable substitute here even if the vCPU has an
++		 * upcall vector: the pending bit only exists in
++		 * evtchn_pending_sel so far, and the vCPU has to be forced
++		 * out of the guest so that kvm_xen_inject_pending_events()
++		 * can refresh the cache and propagate it to the guest.
++		 */
++		if (!test_and_set_bit(port_word_bit, &vcpu->arch.xen.evtchn_pending_sel))
++			kick_vcpu = true;
++		goto out_unlock;
++	}
++	inject_upcall = true;
++
 +	/*
-+	 * Force pinned vCPUs out of guest mode before waiting for the
-+	 * kernel readers below and before the caller zaps the page tables.
-+	 * The request includes KVM_REQUEST_WAIT (enforced at init), so this
-+	 * does not return until the vCPUs have left guest mode; they cannot
-+	 * re-enter with the stale mapping, because re-pinning requires
-+	 * GPC_VALID, which requires a refresh, which cannot complete until
-+	 * invalidate_range_end().
++	 * Explicitly use a 32-bit btsl instead of test_and_set_bit(), which
++	 * would use btsq on x86-64. The vcpu_info is guest-controlled and only
++	 * required to be 32-bit aligned, so a 64-bit access could generate a
++	 * split-lock #AC.
 +	 *
-+	 * This is safe on unblockable (OOM reaper) ranges too, with no
-+	 * special-casing: kvm_make_vcpus_request_mask() runs with
-+	 * preemption disabled and spin-waits for IPI acks; it never sleeps.
-+	 * Do not be tempted to skip the wait for !blockable ranges on the
-+	 * assumption that a reaped task's vCPUs are already stopped: that
-+	 * is false for process_mrelease(), which only requires
-+	 * SIGNAL_GROUP_EXIT, and a vCPU still in guest mode after this
-+	 * walk returns is exactly the use-after-free this kick exists to
-+	 * prevent.
++	 * Note, this does not apply to the test_and_set_bit() on pending_bits
++	 * in the caller: that is in the per-VM shared_info, which is page
++	 * aligned, so the access is guaranteed to be 64-bit aligned.
 +	 */
-+	if (evict_vcpus)
-+		kvm_make_vcpus_request_mask(kvm, KVM_REQ_OUTSIDE_GUEST_MODE,
-+					    vcpu_bitmap);
++	old = GEN_BINARY_RMWcc(LOCK_PREFIX "btsl",
++			       *(u32 *)(gpc->khva + vi_pending_sel_ofs),
++			       c, "Ir", port_word_bit);
++	if (!old) {
++		struct vcpu_info *vi = gpc->khva;
 +
- 	/*
- 	 * Readers may still be using the old mapping, having sampled
- 	 * GPC_VALID before it was cleared. Wait for them all to drain
-@@ -122,7 +174,7 @@ void gfn_to_pfn_cache_invalidate_start(struct kvm *kvm, unsigned long start,
- 	 * so the grace period never blocks in reclaim either.)
- 	 */
- 	if (cleared)
--		synchronize_srcu_expedited(&kvm->gpc_srcu);
-+		synchronize_srcu_atomic(&kvm->gpc_srcu);
- 
- 	/*
- 	 * Note the GPC_INVALIDATING markers set above are deliberately NOT
-@@ -190,6 +242,100 @@ bool kvm_gpc_check(struct gfn_to_pfn_cache *gpc, unsigned long len)
- 	return true;
- }
- 
-+/*
-+ * A mutator's xchg of the state word to zero may have consumed a live
-+ * GPC_GUEST_USING pin. Clearing that bit obliges the clearer to do what
-+ * the invalidation walk would have done: post the cache's service
-+ * request and force the vCPU out of guest mode, waiting until it has
-+ * left, before mutating or tearing down what the guest may be using.
-+ *
-+ * The service request is posted unconditionally: consuming a pin means
-+ * whatever physical address the vCPU had latched (e.g. into a hardware
-+ * control structure) is stale, and only the request handler makes that
-+ * good. That holds even when the pinning vCPU is the caller itself —
-+ * a vCPU refreshing its own pinned cache may re-map at a different pfn,
-+ * and without the request nothing would rewrite the stale address
-+ * before the next guest entry. Only the waited force-out is skipped in
-+ * that case: a vCPU running a refresh is by definition not in guest
-+ * mode. (The vCPU's own unpin is the one silent path, in
-+ * kvm_gpc_unpin_for_guest(), because unpinning asserts the address is
-+ * no longer latched anywhere.)
-+ */
-+static void gpc_kick_pinned_vcpu(struct gfn_to_pfn_cache *gpc, int old_state)
-+{
-+	DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
++		/* No need for compat handling */
++		BUILD_BUG_ON(offsetof(struct vcpu_info, evtchn_upcall_pending) !=
++			     offsetof(struct compat_vcpu_info, evtchn_upcall_pending));
 +
-+	if (!(old_state & GPC_GUEST_USING))
-+		return;
-+	if (WARN_ON_ONCE(!gpc->vcpu))
-+		return;
++		WRITE_ONCE(vi->evtchn_upcall_pending, 1);
++		kick_vcpu = true;
++	}
 +
-+	__kvm_make_request(gpc->vcpu_req, gpc->vcpu);
++out_unlock:
++	srcu_read_unlock_atomic(&vcpu->kvm->gpc_srcu, idx);
 +
-+	if (kvm_get_running_vcpu() == gpc->vcpu)
++	/*
++	 * Deliver the upcall or kick the vCPU only after dropping the GPC
++	 * read lock. Both paths end up in kvm_vcpu_kick(), and the MSI
++	 * delivery also walks the APIC map and takes APIC locks; none of
++	 * that wants to be nested inside the GPC read-side critical
++	 * section, which must be no longer than the accesses to gpc->khva
++	 * above. Invalidation waits for a grace period, so holding the
++	 * read lock across the kick would extend how long a memory
++	 * invalidation is blocked.
++	 */
++	if (!kick_vcpu)
 +		return;
 +
 +	/*
-+	 * As in the invalidation walk: force the vCPU out of guest mode and
-+	 * wait until it has left (KVM_REQ_OUTSIDE_GUEST_MODE carries
-+	 * KVM_REQUEST_WAIT). A plain kvm_vcpu_kick() would not wait.
++	 * For the per-vCPU lapic vector, deliver it as MSI — but only if the
++	 * vcpu_info was actually updated above. If it wasn't, the vCPU must
++	 * be kicked instead (see above).
 +	 */
-+	bitmap_zero(vcpu_bitmap, KVM_MAX_VCPUS);
-+	__set_bit(gpc->vcpu->vcpu_idx, vcpu_bitmap);
-+	kvm_make_vcpus_request_mask(gpc->kvm, KVM_REQ_OUTSIDE_GUEST_MODE,
-+				    vcpu_bitmap);
++	if (inject_upcall && vcpu->arch.xen.upcall_vector) {
++		kvm_xen_inject_vcpu_vector(vcpu);
++		return;
++	}
++
++	kvm_make_request(KVM_REQ_UNBLOCK, vcpu);
++	kvm_vcpu_kick(vcpu);
 +}
 +
-+bool kvm_gpc_pin_for_guest(struct gfn_to_pfn_cache *gpc)
-+{
-+	int old, new;
-+
-+	WARN_ON_ONCE(!gpc->vcpu);
-+	WARN_ON_ONCE(gpc->vcpu && kvm_get_running_vcpu() != gpc->vcpu);
-+
-+	/*
-+	 * Set GPC_GUEST_USING only while GPC_VALID holds: the pin then
-+	 * cannot race with an invalidation, because the invalidation walk
-+	 * reads the whole state word in one atomic operation — either it
-+	 * sees VALID (and this pin, if set) and kicks; or the publish which
-+	 * set VALID has not happened and the walk's veto of
-+	 * GPC_BECOMING_VALID prevents it. The acquire pairs with the
-+	 * release-publish so the pinned pfn/khva are the published ones.
-+	 */
-+	old = atomic_read_acquire(&gpc->state);
-+	do {
-+		if (!(old & GPC_VALID))
-+			return false;
-+		new = old | GPC_GUEST_USING;
-+	} while (!atomic_try_cmpxchg(&gpc->state, &old, new));
-+
-+	return true;
-+}
-+EXPORT_SYMBOL_FOR_KVM_INTERNAL(kvm_gpc_pin_for_guest);
-+
-+void kvm_gpc_unpin_for_guest(struct gfn_to_pfn_cache *gpc)
-+{
-+	/*
-+	 * Only the pinning vCPU itself may unpin — except on teardown
-+	 * paths (vCPU destruction), which run with no running-vCPU
-+	 * context but with the vCPU necessarily out of guest mode.
-+	 */
-+	WARN_ON_ONCE(gpc->vcpu && kvm_get_running_vcpu() &&
-+		     kvm_get_running_vcpu() != gpc->vcpu);
-+
-+	/*
-+	 * The vCPU's last access to the pfn must be visible before the pin
-+	 * is seen clear by an invalidator deciding it need not kick
-+	 * (atomic_andnot() alone is unordered). In practice the VM-exit
-+	 * which preceded this call already serialized the guest's accesses,
-+	 * but the API should not depend on its callers' exit paths. A pin
-+	 * already consumed by a mutator's xchg makes this a harmless no-op.
-+	 */
-+	smp_mb__before_atomic();
-+	atomic_andnot(GPC_GUEST_USING, &gpc->state);
-+}
-+EXPORT_SYMBOL_FOR_KVM_INTERNAL(kvm_gpc_unpin_for_guest);
-+
- static void *gpc_map(kvm_pfn_t pfn)
+ /*
+  * The return value from this function is propagated to kvm_set_irq() API,
+  * so it returns:
+@@ -1821,10 +1908,9 @@ int kvm_xen_set_evtchn_fast(struct kvm_xen_evtchn *xe, struct kvm *kvm)
  {
- 	if (pfn_valid(pfn))
-@@ -405,7 +551,7 @@ static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa, unsigned l
- 	bool unmap_old = false;
- 	unsigned long old_uhva;
- 	kvm_pfn_t old_pfn;
--	bool must_drain;
-+	int old_state;
- 	void *old_khva;
- 	int ret;
+ 	struct gfn_to_pfn_cache *gpc = &kvm->arch.xen.shinfo_cache;
+ 	bool has_64bit_shinfo = kvm_xen_has_64bit_shinfo(kvm);
+-	unsigned long *pending_bits, *mask_bits, vi_pending_sel_ofs;
++	unsigned long *pending_bits, *mask_bits;
+ 	struct kvm_vcpu *vcpu;
+ 	int port_word_bit;
+-	bool kick_vcpu = false;
+ 	int vcpu_idx, idx, gpc_idx, rc;
  
-@@ -498,10 +644,10 @@ static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa, unsigned l
- 	 * reader-visible fields (uhva, gpa, memslot, and later pfn/khva) be
- 	 * mutated or the old mapping torn down.
- 	 */
--	must_drain = atomic_xchg(&gpc->state, 0) &
--		     (GPC_VALID | GPC_INVALIDATING);
--	if (must_drain)
--		synchronize_srcu_expedited(&gpc->kvm->gpc_srcu);
-+	old_state = atomic_xchg(&gpc->state, 0);
-+	gpc_kick_pinned_vcpu(gpc, old_state);
-+	if (old_state & (GPC_VALID | GPC_INVALIDATING))
-+		synchronize_srcu_atomic(&gpc->kvm->gpc_srcu);
+ 	vcpu_idx = READ_ONCE(xe->vcpu_idx);
+@@ -1853,16 +1939,12 @@ int kvm_xen_set_evtchn_fast(struct kvm_xen_evtchn *xe, struct kvm *kvm)
+ 		pending_bits = (unsigned long *)&shinfo->evtchn_pending;
+ 		mask_bits = (unsigned long *)&shinfo->evtchn_mask;
+ 		port_word_bit = xe->port / 64;
+-
+-		vi_pending_sel_ofs = offsetof(struct vcpu_info, evtchn_pending_sel);
+ 	} else {
+ 		struct compat_shared_info *shinfo = gpc->khva;
+ 		pending_bits = (unsigned long *)&shinfo->evtchn_pending;
+ 		mask_bits = (unsigned long *)&shinfo->evtchn_mask;
+ 		port_word_bit = xe->port / 32;
  
- 	old_pfn = gpc->pfn;
- 	old_khva = (void *)PAGE_ALIGN_DOWN((uintptr_t)gpc->khva);
-@@ -599,7 +745,7 @@ int kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, unsigned long len)
+-		vi_pending_sel_ofs = offsetof(struct compat_vcpu_info, evtchn_pending_sel);
+-
+ 		/* test_and_set_bit() needs 64-bit alignment, but that's OK */
+ 		BUILD_BUG_ON(offsetof(struct compat_shared_info, evtchn_pending) & 7);
+ 	}
+@@ -1878,64 +1960,23 @@ int kvm_xen_set_evtchn_fast(struct kvm_xen_evtchn *xe, struct kvm *kvm)
+ 		rc = 0; /* It was already raised */
+ 	} else if (test_bit(xe->port, mask_bits)) {
+ 		rc = -ENOTCONN; /* Masked */
+-		kvm_xen_check_poller(vcpu, xe->port);
+ 	} else {
+-		bool old;
+-
+ 		rc = 1; /* Delivered to the bitmap in shared_info. */
+-		/* Now switch to the vCPU's vcpu_info to set the index and pending_sel */
+-		gpc = &vcpu->arch.xen.vcpu_info_cache;
+-
+-		if (!kvm_gpc_check(gpc, sizeof(struct vcpu_info))) {
+-			/*
+-			 * Could not access the vcpu_info. Set the bit in-kernel
+-			 * and prod the vCPU to deliver it for itself.
+-			 */
+-			if (!test_and_set_bit(port_word_bit, &vcpu->arch.xen.evtchn_pending_sel))
+-				kick_vcpu = true;
+-			goto out_gpc_srcu;
+-		}
+-
+-		/*
+-		 * Explicitly use a 32-bit btsl instead of test_and_set_bit(),
+-		 * which would use btsq on x86-64. The vcpu_info is guest-
+-		 * controlled and only required to be 32-bit aligned, so a
+-		 * 64-bit access could generate a split-lock #AC.
+-		 *
+-		 * Note, this does not apply to the test_and_set_bit() on
+-		 * pending_bits above: that is in the per-VM shared_info, which
+-		 * is page aligned, so the access is guaranteed to be 64-bit
+-		 * aligned.
+-		 */
+-		old = GEN_BINARY_RMWcc(LOCK_PREFIX "btsl",
+-				       *(u32 *)(gpc->khva + vi_pending_sel_ofs),
+-				       c, "Ir", port_word_bit);
+-		if (!old) {
+-			struct vcpu_info *vi = gpc->khva;
+-
+-			/* No need for compat handling */
+-			BUILD_BUG_ON(offsetof(struct vcpu_info, evtchn_upcall_pending) !=
+-				     offsetof(struct compat_vcpu_info, evtchn_upcall_pending));
+-
+-			WRITE_ONCE(vi->evtchn_upcall_pending, 1);
+-			kick_vcpu = true;
+-		}
+-
+-		/* For the per-vCPU lapic vector, deliver it as MSI. */
+-		if (kick_vcpu && vcpu->arch.xen.upcall_vector) {
+-			kvm_xen_inject_vcpu_vector(vcpu);
+-			kick_vcpu = false;
+-		}
+ 	}
+ 
+  out_gpc_srcu:
+ 	srcu_read_unlock_atomic(&kvm->gpc_srcu, gpc_idx);
+-	srcu_read_unlock(&kvm->srcu, idx);
+ 
+-	if (kick_vcpu) {
+-		kvm_make_request(KVM_REQ_UNBLOCK, vcpu);
+-		kvm_vcpu_kick(vcpu);
+-	}
++	/*
++	 * Both of these can kick the vCPU, so keep them outside the GPC
++	 * read-side critical section; invalidation waits for a grace period.
++	 */
++	if (rc == -ENOTCONN)
++		kvm_xen_check_poller(vcpu, xe->port);
++	else if (rc == 1)
++		__kvm_xen_set_evtchn_fast(vcpu, port_word_bit);
++
++	srcu_read_unlock(&kvm->srcu, idx);
+ 
+ 	return rc;
  }
- 
- void __kvm_gpc_init(struct gfn_to_pfn_cache *gpc, struct kvm *kvm,
--		    bool never_dirty)
-+		    bool never_dirty, struct kvm_vcpu *vcpu, u32 vcpu_req)
- {
- 	mutex_init(&gpc->refresh_lock);
- 
-@@ -610,6 +756,8 @@ void __kvm_gpc_init(struct gfn_to_pfn_cache *gpc, struct kvm *kvm,
- 	gpc->active = false;
- 	atomic_set(&gpc->state, 0);
- 	gpc->never_dirty = never_dirty;
-+	gpc->vcpu = vcpu;
-+	gpc->vcpu_req = vcpu_req;
- }
- 
- static int __kvm_gpc_activate(struct gfn_to_pfn_cache *gpc, gpa_t gpa, unsigned long uhva,
-@@ -667,6 +815,7 @@ void kvm_gpc_deactivate(struct gfn_to_pfn_cache *gpc)
- 	struct kvm *kvm = gpc->kvm;
- 	kvm_pfn_t old_pfn;
- 	void *old_khva;
-+	int old_state;
- 
- 	guard(mutex)(&gpc->refresh_lock);
- 
-@@ -687,8 +836,9 @@ void kvm_gpc_deactivate(struct gfn_to_pfn_cache *gpc)
- 		 * readers outstanding — it left GPC_INVALIDATING set to say
- 		 * so — and the unmap below must not run under those readers.
- 		 */
--		if (atomic_xchg(&gpc->state, 0) &
--		    (GPC_VALID | GPC_INVALIDATING))
-+		old_state = atomic_xchg(&gpc->state, 0);
-+		gpc_kick_pinned_vcpu(gpc, old_state);
-+		if (old_state & (GPC_VALID | GPC_INVALIDATING))
- 			synchronize_srcu_atomic(&kvm->gpc_srcu);
- 
- 		/*
 -- 
 2.55.0
 
