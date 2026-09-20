@@ -1,214 +1,128 @@
-Received: from LO2P265CU024.outbound.protection.outlook.com (mail-uksouthazon11021092.outbound.protection.outlook.com [52.101.95.92])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4CD52BDC0F;
-	Sun, 20 Sep 2026 15:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.95.92
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789919866; cv=fail; b=PUxIYsngiAnISjALMjE9FTx8S232HGUdOuhBVjOlBTUt/ASIb5m1c1yk61J5vyyAOvWHf6kytipDR+o48scKD6DjpiUKHN5596GagW8U1R6shZjJJsBMOFucsiQj80AXFspWyWz0t5657wJ4VhgZ38n4Dx/Nk1ZcwMycvDE/tXo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789919866; c=relaxed/simple;
-	bh=vqC5oYyTNgIW+WKHAg5iBtq3HF/94lrEvbNL7k9JFiI=;
-	h=Content-Type:Date:Message-Id:To:Cc:Subject:From:References:
-	 In-Reply-To:MIME-Version; b=Z8Zdo5ahj/NPfM2DY5udSg+KLHon7Uo5dEuQZV3dY4AMr5+pVuehhFItiSMlrlbx8IbQbXFDgSrMy/yDp88R2oPY7k9G0BM2NSFYRrk1F599hiOWcoQyg3oEU+2bUItHNgdVplPzw0CooYpwO4d3z+o7FmmZNuWA8T9Rvcbc7RM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net; spf=pass smtp.mailfrom=garyguo.net; dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b=sesO1D7N; arc=fail smtp.client-ip=52.101.95.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1DD3E316D;
+	Sun, 20 Sep 2026 21:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789939192; cv=none; b=JXY+fMESEwmxGw2U07xphfGVQhgJz7DSVWMnVVId9T2qokoM5MyqlrgvvmxqcqY+u1+hU+lMKItMxJpTWzuNcrZGO1WHQzIFMBrpEKGnla6mDLGVd8FysbF/uXV/KwW6/WDN9HDU7pyH5FiEK3kADlehW0+swnFm4zRKq0+p42I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789939192; c=relaxed/simple;
+	bh=9paFBKgt2Xh4dbX3zPgVeuCk+bn6tmDjT2og+4+WNLs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=i+C827fPoX+hGvQBYsyWCAjyNvM7FxTDcLK5jKeCnVdiI3Ra2+yHk93IXGVBfnf7D9N+nf9Vyrxfzh89+xyWd/Rx7uaz157nQxhP2ALeb9Hfiy+XoiH5SYOn63QCgqB08RqgNKhkqqdqjeBBgUPzz2OzOZy/vgR3wsoko82yKjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=inhBhE8G; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b="sesO1D7N"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=LFi7wLc/p4hNXTApQtQGb6Z4PxWG2ted3TcKF5ldsdfaU3eGGbRbMkmHSqlca+ug9cBN4UezojRRLmca9exP/5LEJwbPiy3rfT4Em9P0g6ufIKgN1EWi7mrn0/x2WQFKllrzVN7Xj5fECgyJG1I3O38s7i5zubr+GJFubQ0N8u1VD7kS2V/PpWb0sA7GwSjkpocn8gbkcwjIGGUDX8BxQFlP/NfbLVcGT2fsXkdmxQ63FRh54J5IanGM1tXR2832MEwhJYIFMkIxucmKsKut40316CsJ1ygNvuAUOOwRBUVVSsoIBFENJoccLL8j+bHvVJSOZSIfoNLfHFGhVfmrOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vqC5oYyTNgIW+WKHAg5iBtq3HF/94lrEvbNL7k9JFiI=;
- b=aubKa7JTWARrfaXM6y5EB6k4ERHNTuEcBJeZwZi1dzWDRaWTbR/M1Y7dK0gliZGD+/ffBn2r5PUrSGysqCotYp0f7kbyUBPF/YoO0yJyFTYM1mvCMVE6/+eZhZCLTPOM7UkkZCbmNV8UopJjA95J+8peEvJGRRbcQcyrUo5z9FCp6I4EfIDfUw3XnRa39/tuJf3D/diI8BTEI7gm2D15ir4/MyKftAodoT+lQdZgivxccxJbuZ2F578hl4fW0EXj5toiw2F0PfGf43nepN6ohMo4FXP4TQwv4/HLtlezK+IgD+IntjCciJxW9zCYEFolXlySwkbikE+0s3u11CeIhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
- dkim=pass header.d=garyguo.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vqC5oYyTNgIW+WKHAg5iBtq3HF/94lrEvbNL7k9JFiI=;
- b=sesO1D7Nb2bX74lpU76SlMV08w6cZsywDPBGAEjAdP7vc4qfKXLsj0eR7RNbNPpu593ABfA1gWxqVrOEeCUaqCZgVzekjOiqWP40LBAYjek4XY1RXEvMaaBLIYoHPNB3RjX+iC8P4P7aGxyBnhb8/kkdQfaSh162h+MC7garWUU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=garyguo.net;
-Received: from LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:4b4::24)
- by CW1P265MB7573.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1d9::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.428.16; Sun, 20 Sep
- 2026 15:57:40 +0000
-Received: from LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM
- ([fe80::c07d:488c:d4aa:2a4a]) by LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM
- ([fe80::c07d:488c:d4aa:2a4a%4]) with mapi id 15.21.0428.011; Sun, 20 Sep 2026
- 15:57:40 +0000
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sun, 20 Sep 2026 16:57:40 +0100
-Message-Id: <DLK9MW1N86KD.2GRWUAD2NX4FU@garyguo.net>
-To: "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>, "Gary Guo"
- <gary@garyguo.net>, "Paul E. McKenney" <paulmck@kernel.org>,
- <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Cc: <kernel-team@meta.com>, "Boqun Feng" <boqun@kernel.org>, "Steven
- Rostedt" <rostedt@goodmis.org>, <lkmm@lists.linux.dev>, "Zqiang"
- <qiang.zhang@linux.dev>, "Wang Lian" <lianux.mm@gmail.com>, "Kunwu Chan"
- <kunwu.chan@gmail.com>, "Bradley Morgan" <brads@mainlining.org>, "Bradley
- Morgan" <include@grrlz.net>
-Subject: Re: [PATCH 26/28] hazptr: Implement two-phase wildcard scan
-From: "Gary Guo" <gary@garyguo.net>
-X-Mailer: aerc 0.22.0
-References: <e9669b34-12c2-4cf2-a887-315f581f0789@paulmck-laptop>
- <20260919000056.3132131-26-paulmck@kernel.org>
- <DLK84KYP9NRK.2254MY7D9AU11@garyguo.net>
- <51044724-7c3d-4200-b0d3-540a31d95804@efficios.com>
-In-Reply-To: <51044724-7c3d-4200-b0d3-540a31d95804@efficios.com>
-X-ClientProxiedBy: LO4P123CA0015.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:150::20) To LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:4b4::24)
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="inhBhE8G"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description;
+	bh=4+3o1bExF4BNEXjTcoPtkYQQz1PPLY+gtYFWu9neyKI=; b=inhBhE8GD2OjMo0+nhGXIkolcd
+	7F2wLQSmssvK5ksDzHs6QY2kzYeKQ7/Vx/bphhd8cOOuWWDC8gvoswHVvLBvQ7gj/BQUR06zIA1Cg
+	tZlVunL5D/MlkwyY8mqASXXG5EFtoFTbSTGvm9fARDtYwP3LPGt8VPVQP0Otk3iMXSk7hIMPzWM9z
+	FRs3nXOmNW7ZIp+lkGfQINivgkBwY19tbcTjozE64De16WANp3OKDvZKQDt78msW6PiiBudAlRwyh
+	SlBL1w01My2EuuJGQSxzhC0yHb8cyQscwWdRBeRCDsZIP9k9UIK5h9pw13Co+bet51t674MwsguFz
+	WnMKSGJg==;
+Received: from [2001:8b0:10b:1::425] (helo=i7.infradead.org)
+	by desiato.infradead.org with esmtpsa (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1x8OwW-0000000BdxW-4955;
+	Sun, 20 Sep 2026 21:19:26 +0000
+Received: from dwoodhou by i7.infradead.org with local (Exim 4.99.4 #2 (Red Hat Linux))
+	id 1x8OwU-00000003tcb-1NPW;
+	Sun, 20 Sep 2026 22:19:22 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org,
+	linux-rt-devel@lists.linux.dev,
+	linux-kselftest@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paul Durrant <paul@xen.org>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Fred Griffoul <fgriffo@amazon.co.uk>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Kunwu Chan <kunwu.chan@linux.dev>,
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Clark Williams <clrkwllms@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Michal Hocko <mhocko@suse.com>,
+	Nikita Kalyazin <kalyazin@amazon.com>,
+	Keir Fraser <keirf@google.com>,
+	David Matlack <dmatlack@google.com>,
+	nh-open-source@amazon.com,
+	David Woodhouse <dwmw@amazon.co.uk>
+Subject: [PATCH 04/17] KVM: x86/xen: Don't dirty track "vCPU info" page
+Date: Sun, 20 Sep 2026 21:49:32 +0100
+Message-ID: <20260920211920.928306-5-dwmw2@infradead.org>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260920211920.928306-1-dwmw2@infradead.org>
+References: <20260920211920.928306-1-dwmw2@infradead.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LOZP265MB8551:EE_|CW1P265MB7573:EE_
-X-MS-Office365-Filtering-Correlation-Id: 64f9d6ac-68b4-4dc3-ac14-08df172fe667
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|23010399003|1800799024|366016|7416014|376014|10070799003|10067099003|4143699003|56012099006|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	ovy/Zs3a8yuepaoZpTnL3JSXTjFNkq9W+pPB8MWEV+151O9W0h5iA0Mx8J9FJv6poMkLBw7jSDJ8+AyQJfgGI4KgDTcOS46otOQ87CZYWeJAINeKxTaGVmOS/9HA5eTxyeKYXtPZ+Jm5ww8RTk0MFdQLevxHRAId0yQgNVo24xRx/Fq1OouIvrvXbahL/RTEOD6mDU+i5ObksDSedczG2lAkRGRo8xM8uMlsqR6w6L4iHPP8J8hLjR0kubBJG7NYwjmW8Vci/CVHO7wof/2eiUGlUwIx8a8Fhck3j8jVqlKf8sVBKVS+8saGcV6Lz67JKk0elr2REY/fX04HOohMVbMwWCc4n/WLz1nfyaK6vU+fC313iyUWvk8z+1MafjtIDyz40sAd4ON4laIbQT0259FCwF+mCWrFWEYUYnVO4iC2CazeBDrtT0g7qXJ0uuCML9tj8x8GGm738FdE44yukFJQCMoHv0pMea7Yye5lghEO1nTT35diPRK4pfTbxj7fozoz94WwkqROAEDMZnYa8ZQFmv00vuvK6tjtzmCmHY7as+E3ZTNuN4Cc/zUd0t7kmuZjLHx729FCLRLYp3RIFdEovCcelBGt7EIxBfILVXyLgsNJyQ0Sq9N78Yt8dG0sYbiVIfvmuaHMq3/jdigtkv07KAdT8uFpZ6EAPBiruls=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(1800799024)(366016)(7416014)(376014)(10070799003)(10067099003)(4143699003)(56012099006)(18002099003)(22082099003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?OUhLZXk1SkxlUnI1L0xzeUJyUXNwUGY0MkZwRHNsNUhwN09LVXdxS3Y1SzJG?=
- =?utf-8?B?N1hIY0ZlNFRHTFpzQmk4RFRVeVZoTWpFc2Y4RU5idG56UVZ5THlUczVVQjdR?=
- =?utf-8?B?ZUphREp2ZVZKVHpRVWxKb3RYbmlGQ1E2UlBucm05a0RlazhxSEpzN1d6WlYz?=
- =?utf-8?B?Um5BSFBQM21KY1BxS2JoMlFaZTkxby91NlNvRHA0YVVqWkVUcWZ0eU1WYmZB?=
- =?utf-8?B?Z2F5RVR3d1lReTRJOEZQSDR0b0FVWWgwbEFxSk40d2dWYXM3N2cycDRBWGNL?=
- =?utf-8?B?ZTZaRVN6bUZ5NUM4Z2ZtRGp2NE04Q3RUb1F3b2xqZUc1N0VydUpKYTJ4ZmFK?=
- =?utf-8?B?NG9xMVo3MFV0RXFNQzlwYk5DWm5jaUlkQ3o4L1gxa1NwWkkrc0IyL3R4NHo2?=
- =?utf-8?B?U1drY0VubXI2WiswcGRZeEM3RnFCUER4eGF3WEMrWFZHQ2svNmp2bkNLMTBj?=
- =?utf-8?B?L21nL3I5Z21BK0d1RGg5QnRjbkZvTUFOZGFsb09lc1ZMQm9LYjRGQm5BZEFp?=
- =?utf-8?B?aXNxMzdXTXJvamEzSE1IY0MyblNkVklGNTFKR2g2Z2V5Wkszalp2YWFlc3Fq?=
- =?utf-8?B?Zm1YSU1kWjF5c0FkK3EyN3Y5YThsWDQ2dUR0NVBaazJUaHNlcHlKZU9wRTMx?=
- =?utf-8?B?a28zU2FyQVFaMGVwNDZhcXZKenh6M1I3QkVSSGZHMm9UYkhWT0M5YmkzMzMx?=
- =?utf-8?B?bWcwUGNmYWN5OWdXdStOZUplUklPbnRNK2dveUI4R214TVdIdDdVRFJ2d1Ix?=
- =?utf-8?B?ZHRBM1RDQzNMVkRvYkx2bGVKcmRsN3ZjV3RUbEhWRlg2MkozWTJjbXR1dEs2?=
- =?utf-8?B?YThQZGlWWUpYUzRQTlRSRldxQVpWS3FDSWNYOXF4bFRQeUxRWHFiQzA3cmxI?=
- =?utf-8?B?eEpmWmwxOFNwcXJXVlV4T1o5UktuOSs5SXJTUjlnQlNFL2Q2ZjlJUzcwck1j?=
- =?utf-8?B?RWVHOUxLYk8xY1dEOUptVXMvUUJmRTNGbWxUNyt2TlYyK2srTGdlMjN5MTR3?=
- =?utf-8?B?SnJKTzFicHNOZS8rZVJxSTJYVjhOQmhERyswRGFpUlNEdGYzaGdPek56Sk5T?=
- =?utf-8?B?bDJsRUp6aUY3cThBQWw5Z3FkWjNIaGNIU1plU000aTlRRU1ZU1R3ZmRNeVBP?=
- =?utf-8?B?UHhKMDg2V3FlZ2IzdmxhVXNZVnlmZGQ4OTltTVlxcmFYcDlmQUd6c1p1T3h3?=
- =?utf-8?B?aXlqMkpXbEt5SHUrbkR6a01zR2pWc1FzUHNVNytNbFpYd2pBUkdQZHlWWnMz?=
- =?utf-8?B?THhtOWdWR202ckV2NnZ0MzY0UU83aVFheHN3dTVTUE5kSmlLYkRnSHdoMm1n?=
- =?utf-8?B?QWdTbmNGamFjMktia3dTN3Zjbk1QdDJoQjFZNVdrenRHRHgzMlpsWWZ3ajhl?=
- =?utf-8?B?aDlKdnMwbnRHd1FRcFRvVFJGcUkxQ2xWSkRrL2RNVTF0ZnpFUkFURklSVHRV?=
- =?utf-8?B?ektNWG9TeWJJclh0cmVWaVU4dExRc0FNazRDSHc4bkY4aXgwNEIzNWp4NUpB?=
- =?utf-8?B?UW5FNUlPcXF3aHVEeHNMd09yL1RKaTc3aUwvdkRsS1J6YlJIUXVGMVNKT001?=
- =?utf-8?B?YWV3MDI4MFVYb2tjS3p6QzVXdUpYUndWVS9Qc0tkMXhxdUhIbzNpOTJ4ZUVQ?=
- =?utf-8?B?MEZpdkpUSEpJVklTZDRhcWgwSG9UL1Q0Z1NkN1RJdWcyZ2Y1R3RRODZQckhx?=
- =?utf-8?B?MXdCWGI2MHJ3Z1hkcjh1TUp2ek84TEFmY0FhYXFUNTlERXJKNDF0RXYzdFNv?=
- =?utf-8?B?b1RmemV1VkJWZUVEV2ZMZHRJMFM3ai9qSjA1RUhUb05tZEJzcUZDVzJLVE9W?=
- =?utf-8?B?Z1pxUVNhZytHYlJ1YUY0QVhtUzhwY3N6UkxDKzU5QUpqYW1GQlBhcHdrMFRF?=
- =?utf-8?B?Um9jTHArUGIrL3prSGF6T20xQlJ5K01IR2tvRVhmTkNyd0tRbWlaRnVSWmtn?=
- =?utf-8?B?eHk2Z1llNTI0K1NhUXdkZVgybjg5ckJDbm8wVDQ0MVp3TnFZQ3JBNyt3Vk9Y?=
- =?utf-8?B?REF5TkpaU3NyVjNnRE9HcGxucDBxMFBuY0RRa2NQSE55MDZuTWNDeEpUaC8z?=
- =?utf-8?B?aWtZalEvYTlBNjNCMEpvdGVaZkk2bWk4Q2d2a0pYTVZQLzJ5NnFYVEhIRi9T?=
- =?utf-8?B?Z0phNWlraE9Va2J3bXdJR1RsU1VyYUZ4Nm9UYUYxT25jd0kxL3ZhQkQ2MWdk?=
- =?utf-8?B?bXhXQUorL1FQZjRLMG5wOU9IWkFaL1dMSzlqdG5qRHRXaHVZV0ZTNE5jNTV6?=
- =?utf-8?B?TUY3VGp6SzI4VW1tWE1nSnFEaTB1OHZDL1FLSmJwUUlKZ3hoZGZQSElMejAv?=
- =?utf-8?B?N2pZUHFGT0dEWks0WHhuSytKWW1aei9HRDNEUjRPSVR5TzdNaXRnQT09?=
-X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64f9d6ac-68b4-4dc3-ac14-08df172fe667
-X-MS-Exchange-CrossTenant-AuthSource: LOZP265MB8551.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2026 15:57:40.7207
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7F596VerL1wcJTZDo+g+Tp+N5ZTYL/IkaXOqi7gwucOohyWa95TFxcM17iRGZnjei0akR0ubkqYFdAfb7NVYqw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CW1P265MB7573
+Content-Transfer-Encoding: 8bit
+Sender: David Woodhouse <dwmw2@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 
-On Sun Sep 20, 2026 at 4:44 PM BST, Mathieu Desnoyers wrote:
-> On 2026-09-20 10:46, Gary Guo wrote:
->> On Sat Sep 19, 2026 at 1:00 AM BST, Paul E. McKenney wrote:
->>> From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>>
->>> Implement a two-phase wildcard scan to guarantee forward progress of
->>> synchronize_hazptr() even if there is a steady stream of ill-timed
->>> readers which populate wildcards into per-CPU slots.
->>=20
->> Hmm, I am not sure that I understand the problem here. The per-CPU slot =
-is
->> scanned only once per CPU, and patch 1 already introduces flipping of th=
-e
->> overflow list. What prevents the forward progress?
->
-> A steady stream of readers acquiring and releasing various hazard
-> pointers happening concurrently with the percpu slots checks, being
-> unlucky enough that each of the slot is constantly in a "wildcard"
-> state, thus preventing forward progress of the synchronize, just with
-> a steady stream of individually time-bound readers.
+From: Sean Christopherson <seanjc@google.com>
 
-Oh, so the issue is that we cannot progress over a single slot, because wit=
-h
-ill-timing a new iteration of the inner loop of "smp_cond_load_acquire" cou=
-ld
-see a new reader while waiting for the slot to be released?
+Give the Xen per-vCPU info page the same treatment as the per-VM shared
+info page, and never mark it dirty, as KVM clearly relies on userspace to
+assume the page is always dirty.  While the page is marked dirty on writes
+via kvm_xen_inject_pending_events(), it's not marked dirty when written by
+__kvm_xen_set_evtchn_fast().
 
-So, in essence, the flipping is used to prevent ABA problem on percpu slots=
-?
+Furthermore, as was the case with the shared info page, writes in the event
+channel fastpath may be done without an active vCPU, e.g. when called via
+timer callback or irqfd injection.  I.e. attempting to fix the fastpath
+would run afoul of the same issue that was fixed by commit 55749769fe60
+("KVM: x86: Fix wall clock writes in Xen shared_info not to mark page
+dirty").
 
->
->>=20
->> I think having a shared global read by all CPUs sounds really undesirabl=
-e,
->> especially that it gets flipped for each hazptr_synchronize -- this mean=
-s that
->> in the pathological case where there are a steady stream of hazptr_synch=
-ronize
->> calls, each fast-path hazptr_acquire will have a cache miss reading
->> hazptr_wildcard.
->
-> There is a straightforward optimization we can do if this happen to
-> cause performance issues: only do the flip when the synchronize
-> encounters a wildcard retry delay beyond a specified threshold.
-> So we ensure synchronize observe the absence of both wildcard
-> values in each cpu slots, and only flip the current wildcard on retry
-> delay.
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Assisted-by: Claude:claude-mythos-5
+---
+ arch/x86/kvm/xen.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Another option would be avoid using WILDCARD if possible. IIRC the wildcard=
- is
-used to ensure forward progress on the reader side, so it avoids the possib=
-ility
-of READ_ONCE(*addr_p) changing before and after protecting.
-
-One option would be to first use the typical hazard pointer impl that read =
-the
-pointer twice, and when that fails, use the wildcard protection. This would=
- mean
-that in the common case where the hazptr_acquire does not race with a point=
-er
-update, the WILDCARD protection is not used at all.
-
-Best,
-Gary
-
->
-> This would prevent the common "frequent" synchronize case you
-> mention from causing cache misses on the read-side.
->
-> But I preferred to keep it simple and wait until we hit this
-> level of synchronize call throughput until adding that extra
-> complexity.
->
-> Thanks,
->
-> Mathieu
+diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+index 198d7babf964..16b76379dcec 100644
+--- a/arch/x86/kvm/xen.c
++++ b/arch/x86/kvm/xen.c
+@@ -682,7 +682,6 @@ void kvm_xen_inject_pending_events(struct kvm_vcpu *v)
+ 		WRITE_ONCE(vi->evtchn_upcall_pending, 1);
+ 	}
+ 
+-	kvm_gpc_mark_dirty_in_slot(gpc);
+ 	srcu_read_unlock_atomic(&v->kvm->gpc_srcu, idx);
+ 
+ 	/* For the per-vCPU lapic vector, deliver it as MSI. */
+@@ -2389,7 +2388,7 @@ void kvm_xen_init_vcpu(struct kvm_vcpu *vcpu)
+ 
+ 	kvm_gpc_init(&vcpu->arch.xen.runstate_cache, vcpu->kvm);
+ 	kvm_gpc_init(&vcpu->arch.xen.runstate2_cache, vcpu->kvm);
+-	kvm_gpc_init(&vcpu->arch.xen.vcpu_info_cache, vcpu->kvm);
++	__kvm_gpc_init(&vcpu->arch.xen.vcpu_info_cache, vcpu->kvm, true);
+ 	kvm_gpc_init(&vcpu->arch.xen.vcpu_time_info_cache, vcpu->kvm);
+ }
+ 
+-- 
+2.55.0
 
