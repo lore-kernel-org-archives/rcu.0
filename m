@@ -1,37 +1,37 @@
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819D03E44F9;
-	Sun, 20 Sep 2026 21:35:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715BD4766A8;
+	Sun, 20 Sep 2026 21:36:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789940158; cv=none; b=rMBmVyiXNubQ5B//zayVYJD3AyVoal5zfTxjgsNdWe7Ju2G2DUmzBdcPAUkuE1Xa8MtcNsBzGp7TmEllg9/Sbza/SNIafwgrEA5J+tjGJRhLjNC9BPW73gMcCCQ2X5GVKX/WK8sT3WjFvi62j1osZOysuAreOe/88COqO/2DRyk=
+	t=1789940170; cv=none; b=RCNOKvEWkbAMSz8q+7lvWeBzjJuCLASF5jZFbakTeQ6ANQRz9WeBUsdjaF6Ab6zlFvr3OePuVf1XN9xTuQcgT83ztm5CXsppEHHg40k0tcxZm14LrKN/BQQKZFW70Ydn6JlYrpSgcfa6pbxlQg5uGCTs0dAfJhvROuArxj1Wydc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789940158; c=relaxed/simple;
-	bh=tvqGI96/y5AnMPFlYj3CtgYHw88DXLx8Mwf27ngrY3g=;
+	s=arc-20240116; t=1789940170; c=relaxed/simple;
+	bh=5TkRQFBf1wsCYl+8lB06JENVKL0r7aN40tEkJvYxW6c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TK4aEBfHdDVL5UsHi46B6tmth4IxZtH9UqAuUNSR9Jplspc0SS13sIZLy4+GO5BSEJAj/k1LFtzlY2FUm4YayWXQPruuzDXfHkV8+bKL9SsyOuu0EbaidfO8CEp6qZyUgalztT83nxhNi5X7ceK4fft0ACezAbaRAmSDoJORRck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ZL6U2+RS; arc=none smtp.client-ip=90.155.50.34
+	 MIME-Version; b=qm27sWMxDqpGzS6XVt/ktPAiAV3e6qCdCo23G9PP8XZ810pLJ4ijhi/Dvjp1SOpQlFmzdqXbvVuqAKi1YpPvfipnAGZF5Tvoifhp1PyvKsesFryrxK39TeAJqYsXMHNkSgNHkTMGFjYHjOU0qkx/+b8+hCRrAO8wZU9TMkTByJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=YJ8buXWM; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZL6U2+RS"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YJ8buXWM"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=HzPCG1mzDh8DdrBIPa7Nweb/5zxIoHMov0yDcro/4Mo=; b=ZL6U2+RSxLT1536poMuTWbIUBq
-	Qz4XcUqwGnvYGk7eNggz1o7E1JWeeZoMMy8abSHSxmDvHHupU8XskEosqnXUnsNLc8hmUVKPXd1zg
-	GZstG8c9idf9UxR3E/P1VK/uRZBl6nxh+ZA9ZA4HN43LzM6RJU4mMnzCTbVIo3rGhHJ//uu7RfmLM
-	3WOHxkA6KC7+47k1MTubwD7dO/ZqOWBemSa2jlom0JzhkYdWzd+5KDMaOiriaTbrkA22yyAwSQtX5
-	QdxrCIyrx9W/vVhV8rgS3Higc6NOnOBUo7x4r9Xv90uBtAPt4DCRJstTQj0qCfmevyYn5153TP/sA
-	YtAmIVww==;
+	bh=4V+Q7xBg2WLqkZ+WGPzpCFKVps1K9DYH9Q5Ag+pAVxU=; b=YJ8buXWMw08v1qizTGeglAH7Sb
+	q86Tyyw0anIGPZbeYDIiRuiD2Gir+M0cHOW5PjPRfrQqG41/o5LpSkxEiPR0UiuNh7c0jjIPksI26
+	qS/7GZgNlScK6aHGN6sRKLkYEdioWdH/kCCdWrQ9Fn+iRBN37COHRPaJRnP+uvOCFRqexJ1eFcdUY
+	bTZxD9HAlmndA5IfWRNU3kNaweKtSgRipD0Wcw/H6Zb5USs8VJsQTMOztopNx17nWEvHNvHYQ12iF
+	NDE/SZ3+nIsdNeD/nVSh7j3PYKiHcEftGeZX0iw8bkgqfaKF+3OyGdU8WvcETl+W8QD1c2iBJZgKn
+	H8GfFWoQ==;
 Received: from [2001:8b0:10b:1::425] (helo=i7.infradead.org)
 	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8OwV-0000000BLq4-0AVs;
+	id 1x8OwV-0000000BLq9-0MSa;
 	Sun, 20 Sep 2026 21:19:23 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.99.4 #2 (Red Hat Linux))
-	id 1x8OwU-00000003tdB-3PFb;
+	id 1x8OwU-00000003tdF-3aOr;
 	Sun, 20 Sep 2026 22:19:22 +0100
 From: David Woodhouse <dwmw2@infradead.org>
 To: kvm@vger.kernel.org
@@ -64,9 +64,9 @@ Cc: linux-kernel@vger.kernel.org,
 	David Matlack <dmatlack@google.com>,
 	nh-open-source@amazon.com,
 	David Woodhouse <dwmw@amazon.co.uk>
-Subject: [PATCH 13/17] KVM: x86: Move nested GPC lock helpers to x86.h as kvm_gpc_lock_page()
-Date: Sun, 20 Sep 2026 21:49:41 +0100
-Message-ID: <20260920211920.928306-14-dwmw2@infradead.org>
+Subject: [PATCH 14/17] KVM: nSVM: Use a gfn_to_pfn_cache for the vmcb12 page
+Date: Sun, 20 Sep 2026 21:49:42 +0100
+Message-ID: <20260920211920.928306-15-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260920211920.928306-1-dwmw2@infradead.org>
 References: <20260920211920.928306-1-dwmw2@infradead.org>
@@ -82,229 +82,128 @@ X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-Move the SRCU lock/activate/retry helpers for accessing a page of L1
-guest memory through a gfn_to_pfn_cache from vmx/nested.c to x86.h, so
-that nested SVM can use them too.
+Replace the transient map/unmap of the vmcb12 page on every nested
+VMRUN (control/save copy-in) and nested VM-exit (state copy-back) with
+a gfn_to_pfn_cache keyed on vmcb12_gpa. With unmanaged guest memory
+the transient map is a memremap/memunmap cycle on every L1<->L2
+transition; the cache persists the kernel mapping for as long as the
+gPA and its translation are unchanged.
 
-There is nothing nesting-specific about these helpers: they lock a
-gfn_to_pfn_cache as a mapping of a given whole guest page, activating
-or re-keying it as required. Name them kvm_gpc_lock_page() and
-kvm_gpc_unlock() accordingly; they are candidates for hoisting into
-the generic GPC API in kvm_host.h when a non-x86 user appears (the
-Hyper-V VP assist and enlightened VMCS pages are likely candidates).
+No pinning is needed, unlike the nVMX APIC pages: SVM never hands an
+L1-owned physical address to the CPU in vmcb02 (the merged MSRPM and
+the IOPM are kernel-owned pages), so the vmcb12 page is only ever
+accessed by KVM itself, under the SRCU read lock, with the usual
+check/refresh protocol.
 
-No functional change.
+Dirty marking moves from unconditional-at-unmap to the actual write
+paths: the SVM_EXIT_ERR reflection in the VMRUN consistency-check
+failure path, and the copy-back at nested VM-exit.
+
+The SMM enter/leave and VMLOAD/VMSAVE emulation paths keep the
+transient map: they are cold, and VMLOAD/VMSAVE takes an arbitrary
+gPA from RAX which would thrash a single-slot cache.
 
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 Assisted-by: Claude:claude-mythos-5
 ---
- arch/x86/kvm/vmx/nested.c | 60 +++++++++------------------------------
- arch/x86/kvm/x86.h        | 33 +++++++++++++++++++++
- 2 files changed, 47 insertions(+), 46 deletions(-)
+ arch/x86/kvm/svm/nested.c | 26 +++++++++++++++++++-------
+ arch/x86/kvm/svm/svm.h    |  3 +++
+ 2 files changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 105ff6cbfe58..b9f12313c960 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -320,38 +320,6 @@ static void vmx_switch_vmcs(struct kvm_vcpu *vcpu, struct loaded_vmcs *vmcs)
- 	kvm_reset_dirty_registers(vcpu);
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index acc423b13445..a8ee0a03d9f7 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -1088,12 +1088,13 @@ static int nested_svm_copy_vmcb12_to_cache(struct kvm_vcpu *vcpu, u64 vmcb12_gpa
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+ 	struct vmcb *vmcb12;
+ 	int r = 0;
++	int idx;
+ 
+-	CLASS(kvm_vcpu_map_local, m)(vcpu, gpa_to_gfn(vmcb12_gpa));
+-	if (m.ret)
++	idx = kvm_gpc_lock_page(&svm->nested.vmcb12_cache, vmcb12_gpa);
++	if (idx < 0)
+ 		return -EFAULT;
+ 
+-	vmcb12 = m.map.hva;
++	vmcb12 = svm->nested.vmcb12_cache.khva;
+ 	nested_copy_vmcb_control_to_cache(svm, &vmcb12->control);
+ 	nested_copy_vmcb_save_to_cache(svm, &vmcb12->save);
+ 
+@@ -1104,9 +1105,11 @@ static int nested_svm_copy_vmcb12_to_cache(struct kvm_vcpu *vcpu, u64 vmcb12_gpa
+ 		vmcb12->control.event_inj = 0;
+ 		vmcb12->control.event_inj_err = 0;
+ 		svm_set_gif(svm, false);
++		kvm_gpc_mark_dirty_in_slot(&svm->nested.vmcb12_cache);
+ 		r = -EINVAL;
+ 	}
+ 
++	kvm_gpc_unlock(&svm->nested.vmcb12_cache, idx);
+ 	return r;
  }
  
--/*
-- * Map a single page of L1 guest memory at @gpa and enter an SRCU read-side
-- * critical section protecting the mapping. Returns the SRCU index (>= 0) to
-- * pass to nested_gpc_unlock(), or a negative error code. While locked, the
-- * cache's khva and pfn are guaranteed to remain valid: an invalidation
-- * cannot complete until the reader drains.
-- */
--static int nested_gpc_lock(struct gfn_to_pfn_cache *gpc, gpa_t gpa)
--{
--	int idx, err;
--
--	if (!PAGE_ALIGNED(gpa))
--		return -EINVAL;
--retry:
--	idx = srcu_read_lock_atomic(&gpc->kvm->gpc_srcu);
--	if (!kvm_gpc_check(gpc, PAGE_SIZE) || gpc->gpa != gpa) {
--		srcu_read_unlock_atomic(&gpc->kvm->gpc_srcu, idx);
--		err = kvm_gpc_activate(gpc, gpa, PAGE_SIZE);
--		if (err)
--			return err;
--
--		goto retry;
--	}
--
--	return idx;
--}
--
--static void nested_gpc_unlock(struct gfn_to_pfn_cache *gpc, int idx)
--{
--	srcu_read_unlock_atomic(&gpc->kvm->gpc_srcu, idx);
--}
--
- /*
-  * Map a page of L1 memory, pin it for direct use by the guest (i.e. by
-  * the CPU while running the L2 guest, via a physical address in vmcs02),
-@@ -366,24 +334,24 @@ static int nested_gpc_hpa(struct gfn_to_pfn_cache *gpc, gpa_t gpa, hpa_t *hpa)
- 	int idx;
+@@ -1251,12 +1254,14 @@ static int nested_svm_vmexit_update_vmcb12(struct kvm_vcpu *vcpu)
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+ 	struct vmcb *vmcb02 = svm->nested.vmcb02.ptr;
+ 	struct vmcb *vmcb12;
++	int idx;
  
- 	do {
--		idx = nested_gpc_lock(gpc, gpa);
-+		idx = kvm_gpc_lock_page(gpc, gpa);
- 		if (idx < 0)
- 			return idx;
+-	CLASS(kvm_vcpu_map_local, m)(vcpu, gpa_to_gfn(svm->nested.vmcb12_gpa));
+-	if (m.ret)
+-		return m.ret;
++	idx = kvm_gpc_lock_page(&svm->nested.vmcb12_cache,
++				  svm->nested.vmcb12_gpa);
++	if (idx < 0)
++		return idx;
  
- 		/*
- 		 * The pin can fail only if an invalidation cleared the
--		 * valid bit after nested_gpc_lock() checked it; go back
-+		 * valid bit after kvm_gpc_lock_page() checked it; go back
- 		 * around to refresh (which will not complete until the
- 		 * invalidation is over) and try again.
- 		 */
- 		if (kvm_gpc_pin_for_guest(gpc))
- 			break;
+-	vmcb12 = m.map.hva;
++	vmcb12 = svm->nested.vmcb12_cache.khva;
  
--		nested_gpc_unlock(gpc, idx);
-+		kvm_gpc_unlock(gpc, idx);
- 	} while (1);
+ 	vmcb12->save.es     = vmcb02->save.es;
+ 	vmcb12->save.cs     = vmcb02->save.cs;
+@@ -1311,6 +1316,9 @@ static int nested_svm_vmexit_update_vmcb12(struct kvm_vcpu *vcpu)
+ 				       vmcb12->control.exit_int_info_err,
+ 				       KVM_ISA_SVM);
  
- 	*hpa = pfn_to_hpa(gpc->pfn);
--	nested_gpc_unlock(gpc, idx);
-+	kvm_gpc_unlock(gpc, idx);
++	kvm_gpc_mark_dirty_in_slot(&svm->nested.vmcb12_cache);
++	kvm_gpc_unlock(&svm->nested.vmcb12_cache, idx);
++
  	return 0;
  }
  
-@@ -393,7 +361,7 @@ static int nested_gpc_hpa(struct gfn_to_pfn_cache *gpc, gpa_t gpa, hpa_t *hpa)
-  * posted interrupts not configured for this L2), -EWOULDBLOCK if it is
-  * active but currently invalidated (only a sleeping refresh would make
-  * it usable). Does not pin; the mapping is stable only until
-- * nested_gpc_unlock().
-+ * kvm_gpc_unlock().
-  */
- static int nested_gpc_try_lock_if_active(struct gfn_to_pfn_cache *gpc)
- {
-@@ -890,7 +858,7 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
- 			return true;
- 	}
+@@ -1494,6 +1502,8 @@ int svm_allocate_nested(struct vcpu_svm *svm)
+ 	if (!svm->nested.msrpm)
+ 		goto err_free_vmcb02;
  
--	idx = nested_gpc_lock(&vmx->nested.msr_bitmap_cache, vmcs12->msr_bitmap);
-+	idx = kvm_gpc_lock_page(&vmx->nested.msr_bitmap_cache, vmcs12->msr_bitmap);
- 	if (idx < 0)
- 		return false;
- 
-@@ -974,7 +942,7 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
- 
- 	nested_vmx_merge_pmu_msr_bitmaps(vcpu, msr_bitmap_l1, msr_bitmap_l0);
- 
--	nested_gpc_unlock(&vmx->nested.msr_bitmap_cache, idx);
-+	kvm_gpc_unlock(&vmx->nested.msr_bitmap_cache, idx);
- 
- 	vmx->nested.force_msr_bitmap_recalc = false;
- 
-@@ -4286,7 +4254,7 @@ static int vmx_complete_nested_posted_interrupt(struct kvm_vcpu *vcpu)
- 	vmx->nested.pi_pending = false;
- 
- 	if (!pi_test_and_clear_on(pi_desc)) {
--		nested_gpc_unlock(&vmx->nested.pi_desc_cache, pi_idx);
-+		kvm_gpc_unlock(&vmx->nested.pi_desc_cache, pi_idx);
- 		return 0;
- 	}
- 
-@@ -4294,7 +4262,7 @@ static int vmx_complete_nested_posted_interrupt(struct kvm_vcpu *vcpu)
- 	if (max_irr > 0) {
- 		vapic_idx = nested_gpc_lock_if_active(&vmx->nested.virtual_apic_cache);
- 		if (vapic_idx < 0) {
--			nested_gpc_unlock(&vmx->nested.pi_desc_cache, pi_idx);
-+			kvm_gpc_unlock(&vmx->nested.pi_desc_cache, pi_idx);
- 			goto mmio_needed;
- 		}
- 		vapic_page = vmx->nested.virtual_apic_cache.khva;
-@@ -4302,7 +4270,7 @@ static int vmx_complete_nested_posted_interrupt(struct kvm_vcpu *vcpu)
- 		__kvm_apic_update_irr(pi_desc->pir, vapic_page, &max_irr);
- 
- 		kvm_gpc_mark_dirty_in_slot(&vmx->nested.virtual_apic_cache);
--		nested_gpc_unlock(&vmx->nested.virtual_apic_cache, vapic_idx);
-+		kvm_gpc_unlock(&vmx->nested.virtual_apic_cache, vapic_idx);
- 
- 		status = vmcs_read16(GUEST_INTR_STATUS);
- 		if ((u8)max_irr > ((u8)status & 0xff)) {
-@@ -4313,7 +4281,7 @@ static int vmx_complete_nested_posted_interrupt(struct kvm_vcpu *vcpu)
- 	}
- 
- 	kvm_gpc_mark_dirty_in_slot(&vmx->nested.pi_desc_cache);
--	nested_gpc_unlock(&vmx->nested.pi_desc_cache, pi_idx);
-+	kvm_gpc_unlock(&vmx->nested.pi_desc_cache, pi_idx);
++	kvm_gpc_init(&svm->nested.vmcb12_cache, svm->vcpu.kvm);
++
+ 	svm->nested.initialized = true;
  	return 0;
  
- mmio_needed:
-@@ -4472,7 +4440,7 @@ static bool vmx_has_nested_events(struct kvm_vcpu *vcpu, bool for_injection)
- 	vapic = vmx->nested.virtual_apic_cache.khva;
- 	vppr = *((u32 *)(vapic + APIC_PROCPRI));
+@@ -1513,6 +1523,8 @@ void svm_free_nested(struct vcpu_svm *svm)
+ 	svm_vcpu_free_msrpm(svm->nested.msrpm);
+ 	svm->nested.msrpm = NULL;
  
--	nested_gpc_unlock(&vmx->nested.virtual_apic_cache, idx);
-+	kvm_gpc_unlock(&vmx->nested.virtual_apic_cache, idx);
- 
- 	max_irr = vmx_get_rvi();
- 	if ((max_irr & 0xf0) > (vppr & 0xf0))
-@@ -4489,12 +4457,12 @@ static bool vmx_has_nested_events(struct kvm_vcpu *vcpu, bool for_injection)
- 		if (pi_test_on(pi_desc)) {
- 			max_irr = pi_find_highest_vector(pi_desc);
- 			if (max_irr > 0 && (max_irr & 0xf0) > (vppr & 0xf0)) {
--				nested_gpc_unlock(&vmx->nested.pi_desc_cache, idx);
-+				kvm_gpc_unlock(&vmx->nested.pi_desc_cache, idx);
- 				return true;
- 			}
- 		}
- 
--		nested_gpc_unlock(&vmx->nested.pi_desc_cache, idx);
-+		kvm_gpc_unlock(&vmx->nested.pi_desc_cache, idx);
- 	}
- 
- 	return false;
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 0f5919b092e4..e3d9889a245d 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -14,6 +14,39 @@
- 
- #define KVM_MAX_MCE_BANKS 32
- 
-+/*
-+ * Map a single page of L1 guest memory at @gpa into a gfn_to_pfn_cache
-+ * and enter an SRCU read-side critical section protecting the mapping.
-+ * Returns the SRCU index (>= 0) to pass to kvm_gpc_unlock(), or a
-+ * negative error code. While locked, the cache's khva and pfn are
-+ * guaranteed to remain valid: an invalidation cannot complete until the
-+ * reader drains.
-+ */
-+static inline int kvm_gpc_lock_page(struct gfn_to_pfn_cache *gpc, gpa_t gpa)
-+{
-+	int idx, err;
++	kvm_gpc_deactivate(&svm->nested.vmcb12_cache);
 +
-+	if (!PAGE_ALIGNED(gpa))
-+		return -EINVAL;
-+retry:
-+	idx = srcu_read_lock_atomic(&gpc->kvm->gpc_srcu);
-+	if (!kvm_gpc_check(gpc, PAGE_SIZE) || gpc->gpa != gpa) {
-+		srcu_read_unlock_atomic(&gpc->kvm->gpc_srcu, idx);
-+		err = kvm_gpc_activate(gpc, gpa, PAGE_SIZE);
-+		if (err)
-+			return err;
-+
-+		goto retry;
-+	}
-+
-+	return idx;
-+}
-+
-+static inline void kvm_gpc_unlock(struct gfn_to_pfn_cache *gpc, int idx)
-+{
-+	srcu_read_unlock_atomic(&gpc->kvm->gpc_srcu, idx);
-+}
-+
- int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops);
- void kvm_x86_vendor_exit(void);
+ 	__free_page(virt_to_page(svm->nested.vmcb02.ptr));
+ 	svm->nested.vmcb02.ptr = NULL;
  
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index e958943b8162..cd0755919062 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -218,6 +218,9 @@ struct svm_nested_state {
+ 	u64 last_vmcb12_gpa;
+ 	u64 last_bus_lock_rip;
+ 
++	/* Cached mapping of the vmcb12 page, keyed on vmcb12_gpa */
++	struct gfn_to_pfn_cache vmcb12_cache;
++
+ 	/*
+ 	 * The MSR permissions map used for vmcb02, which is the merge result
+ 	 * of vmcb01 and vmcb12
 -- 
 2.55.0
 
