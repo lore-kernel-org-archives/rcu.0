@@ -1,197 +1,122 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CBE31B10B;
-	Mon, 21 Sep 2026 14:31:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8BA54A6885;
+	Mon, 21 Sep 2026 16:09:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790001104; cv=none; b=bre0EEhe5Z4bUqOBXWuf/v1Lljsfj+NIctX8l8uhatv4Lq6owl5h33DubaLWq7DAPTGv/7AWD+lSBUIj+O95HQpNf2sBE6eA4m5JB22tWMEQY5Aa6/hul497fwAS12Nc2uqVVu4lcb66v/0W+XQG8Dbg4XtZ+T6nWcpnv/5w3xE=
+	t=1790006942; cv=none; b=gv5/aPv9QxTECoHxEnv30YOEvUoJNCAG5BIRM/FSH00ntQblaIjTIlwOqkHzCOA0XS5xE1MXc2dXZJx6E5WBRIyNUS0QHj22MkK/DFBK9PYaPvDy0MrhefC+A+lbhxYO0W3lCuYUO5Lp2IMhfF/XCa4vHJHE4h/VvK58HNUu7SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790001104; c=relaxed/simple;
-	bh=BaK+ror1WcG9uNimQK0Mo7rl2cctQ8gmMLV7BMQMOB4=;
-	h=Message-ID:Subject:From:To:Cc:Date:in-reply-to:Content-Type:
-	 MIME-Version; b=Q3nOrZYN7pTSA0QQu2eiU4bOxatHA/jathjmDFm2z6C+K6nKQtN8z266ZiynCRm00D+LZo926+iWiq2m2lpdltW9MBAfjpwI6XH9qm22OajMgZd9yO7MspeWJdDGuyql3oobkfngN/HPzq4Qntheumo0v3BPlTVl93oflgHZa4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=d13Zxk6f; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+	s=arc-20240116; t=1790006942; c=relaxed/simple;
+	bh=+Ca6tglu5oyhC46HUGwjSP8wMmqDs5loib6dloR0A38=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=joRKh5azkr/peNGsgUUtAhd2Og1PwFwJqGLe3SzeEdkTEwVHUABTfuza5WgvE2ez+REsqA2gfj7bqCZlM80jWSLycCHJz+Smpl3mjFcegMAup9HtoMX72HBjBRUISIbfplzGU/iegOenD2iR8ITvm6oGPoxMlzYqFg8j+EvShwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I6lco+9i; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d13Zxk6f"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:in-reply-to:
-	Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:References;
-	bh=BaK+ror1WcG9uNimQK0Mo7rl2cctQ8gmMLV7BMQMOB4=; b=d13Zxk6fSrZ05MhpgougqU+YTH
-	RJXyD/8+OJ89mV5b/WR2gMm2HEICgzULEEQFNqGJGOaS3uaaL0Fsmex/49CM9zRodwEcI1c7eY8yO
-	LuIwgbXiVuqnsoYOskXkR1o3XMEEwgqg62dlz5BR/oPebRrrMqhzity7hyiMlo0AdFkWHIo+4n80F
-	f7e+oQHc6ugDrm8xYact7ltXO6E4OqPVXcKlngFFMnIdJHTENpTtTjR9SxWCyWta/nKgKOwZlnV1R
-	1bl3D3LDr0N+M55BQRVDmldaVQc9ifUg7ek5luqAtPRTd6lSA5KtkANIaGpodZT68YIuyvxd48DiN
-	yN+bk/MQ==;
-Received: from [54.239.6.188] (helo=edge-m2-r3-110.e-iad50.amazon.com)
-	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8f3T-00000004OYy-3JE2;
-	Mon, 21 Sep 2026 14:31:40 +0000
-Message-ID: <2a6d520d7663eb637b2ebd5d079a2e5082dd1d2b.camel@infradead.org>
-Subject: Re: [PATCH 11/17] KVM: nVMX: Use pinned pfncache for L1 APIC
- virtualization pages
-From: David Woodhouse <dwmw2@infradead.org>
-To: sashiko-bot@kernel.org
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	pbonzini@redhat.com, seanjc@google.com, paul@xen.org, paulmck@kernel.org, 
-	nh-open-source@amazon.com
-Date: Mon, 21 Sep 2026 16:31:37 +0200
-in-reply-to: <20260920215738.E90CB1F000FF@smtp.kernel.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-erIkMXqIH0BsonHupxFm"
-User-Agent: Evolution 3.62.0-0ubuntu1~ppa1~24.04 
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I6lco+9i"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 562381F00893;
+	Mon, 21 Sep 2026 16:09:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790006941;
+	bh=FOTV0PHDPjv7T4ZC0QP6/caxtiiGCzPPnekS36QsNyQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=I6lco+9iUwAqO3zjgvumlLA5C/VhfXUwEk6SUo3gSkM4oTj4GvL0t3U4GwpiU+aFj
+	 MuMQAuyChxeRaQp9gYkR2DtCDN4T1OrLkPS/ojp2WE1cPoM0iooDGXYr3uoSn+xBaF
+	 1C4QW+Ll5f789AvK2JwPuRCnzDwI7zwh/Z6gxDafAIWJqj29JrwN5sDfbpFTNBIxuQ
+	 RI0QQS1cRnfDeaKYL1XiMw7v1/N4mZbcxHYmuzsbK6XXOfv/eU0pbJM+zgoumIdeIW
+	 Nle6h3WO6Yslfm1dRJRE7tO9hPI5pG+0mtAOpVKKRdAa4lPpCtQWILF8WzQSn3IXYA
+	 79HqW3QApVSLQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 1541ECE086B; Mon, 21 Sep 2026 09:09:01 -0700 (PDT)
+Date: Mon, 21 Sep 2026 09:09:01 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Ye Liu <ye.liu@linux.dev>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Ye Liu <liuye@kylinos.cn>, Michal Hocko <mhocko@suse.com>,
+	SJ Park <sj@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>, akpm@linux-foundation.org,
+	peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
+	jpoimboe@kernel.org, mic@digikod.net, tglx@kernel.org,
+	david@kernel.org, linmiaohe@huawei.com, nao.horiguchi@gmail.com,
+	rafael@kernel.org, gnoack3000@gmail.com, gourry@gourry.net,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org, rcu@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, rientjes@google.com,
+	shakeel.butt@linux.dev, xu.xin16@zte.com.cn,
+	chengming.zhou@linux.dev, will@kernel.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, tony.luck@intel.com,
+	reinette.chatre@intel.com, x86@kernel.org, paul@paul-moore.com,
+	jmorris@namei.org, serge@hallyn.com, pavel@kernel.org,
+	lance.yang@linux.dev, mhiramat@kernel.org, pmladek@suse.com,
+	longman@redhat.com, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, qiang.zhang@linux.dev,
+	dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, kprateek.nayak@amd.com, mark.rutland@arm.com,
+	Dave.Martin@arm.com, james.morse@arm.com, babu.moger@amd.com
+Subject: Re: [PATCH v4 09/15] rcu: convert process/thread iterator to
+ for_each_process_thread_rculock
+Message-ID: <f0c6954c-1e43-4a01-9c9d-11d38edc1e2c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260921092101.89285-1-ye.liu@linux.dev>
+ <20260921092101.89285-10-ye.liu@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260921092101.89285-10-ye.liu@linux.dev>
 
+On Mon, Sep 21, 2026 at 05:20:55PM +0800, Ye Liu wrote:
+> From: Ye Liu <liuye@kylinos.cn>
+> 
+> Replace the manual rcu_read_lock()/rcu_read_unlock() pair combined
+> with for_each_process_thread() loop in kernel/rcu/update.c with
+> for_each_process_thread_rculock(), which scopes the RCU read lock
+> to the loop body via scoped_guard(rcu).
+> 
+> No functional change.
+> 
+> Signed-off-by: Ye Liu <liuye@kylinos.cn>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Reviewed-by: SJ Park <sj@kernel.org>
+> Reviewed-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
---=-erIkMXqIH0BsonHupxFm
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-On Sun, 2026-09-20 at 21:57 +0000, sashiko-bot@kernel.org wrote:
-> [Severity: High]
-> Does this allow an untrusted L1 guest to crash the VM by triggering a
-> KVM_EXIT_INTERNAL_ERROR? The L1 guest can write a non-page-aligned
-> address to the APIC_ACCESS_ADDR field in vmcs12 and execute VMLAUNCH.
-
-No, that would be caught by nested_vmx_check_apic_access_controls()
-which calls page_address_valid() and requires page alignment. So the
-VMLAUNCH should fail.
-
-(... s/should/does/ fail, as I made my friend throw up a self-test to
-prove it. Want that added to the existing tests?)
-
-> [Severity: Medium]
-> Will this nested lock cause an AB-BA circular locking dependency
-> warning from lockdep?
-
-No, RCU isn't really a 'lock'; those nest just fine (unlike the special
-case I just fixed in EVTCHNOP_send which was spinning inside the read
-section, waiting for something that could never complete until it
-*left* the read section =E2=80=94 a completely different kind of deadlock).
-
---=-erIkMXqIH0BsonHupxFm
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCE8Ew
-ggWvMIIEl6ADAgECAhANkOKMSmGXhF5eMl0rsRhvMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYT
-AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAi
-BgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBHMjAeFw0yNDAzMTMwMDAwMDBaFw0zNDAz
-MTIyMzU5NTlaMGIxCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UE
-AxMxRGlnaUNlcnQgQXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTCCAiIw
-DQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAOfSIeC0vv1xPQ+dgSxbIIrkaru6skAWJYaGFzmv
-q4Kq+2wU2jxhcWlJg/JeP5jEkq/LM3pn5aaLao79j+XRmS7J1ZpJKUODJVoM4s9MQJhTMvo4qS5Z
-S64g6QR7Obkz3I1Lr3aWeSBmDDEyzue+NKtuWZ1Cxy3RdXo/w5HgRc3l2AercOM3Gt1XonTzEtTb
-Z/Hwc0Sn9Gz8RmGRK6Ka4hVDl8q/2l110KaV233Kh5etP0csXS8MIMdVRfRu3sc5hp13DG7lCKzK
-72a2GEpI8Wpl26G6I1/LMzz/98T+FqjTqxsdquk7Cj7m2vKGLW1BorpQH7WFGPdJQXJe1hfbfiZA
-CcVdCtl4nAacFacmsiArZBfX7AQGL7isvHUwwYFEtcApyGW4p2Lt+t8nvU0CANA6BHOpOz1xOP8W
-mAESbUriIjyuTUf3fJ9oDNCurVqhASMJCDaWI3lYX/QAoiAzt6akqbbZxo2ujW7mGGqc0KxqE2cs
-h2T79v7pC8aUtHBfwNrTR19GnZVxE0eQ7ViIQhR6mpSaUQFA9sG+cmD2G8TnCgYsLa0q8De6F61a
-CBevQGHNzrbZ3JAMneveYg/Jy1XxQHDRcvrMfWKe0jjcWbdKYlaGVPm5V1ILwYz7Yv5ewo3NUrxI
-GJiywe9qPhuJSDZs7VehTuI0FxGIsgKzVjgbAgMBAAGjggFcMIIBWDASBgNVHRMBAf8ECDAGAQH/
-AgEAMB0GA1UdDgQWBBT3m6JO05fF9DQPQw6Bhc6RkzKv+TAfBgNVHSMEGDAWgBTOw0q5mVXyuNtg
-v6l+vVa1lzan1jAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MHkGCCsGAQUFBwEBBG0wazAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEMG
-CCsGAQUFBzAChjdodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURS
-b290RzIuY3J0MEUGA1UdHwQ+MDwwOqA4oDaGNGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdp
-Q2VydEFzc3VyZWRJRFJvb3RHMi5jcmwwEQYDVR0gBAowCDAGBgRVHSAAMA0GCSqGSIb3DQEBDAUA
-A4IBAQA+b8Uw53sDspdZgukU+qzLyyHkcjlxGGhHlP+zrmDLKm1wEFvCRS2pili3Hy67i8N4N5NU
-vw5Rg6kv3lxb9S9Rktxk43k+tvm68pl7OxQE55ZjVY87P0lUPGwEqOOwLLyH02ZQcsfq5p5LrOH9
-0JvmvZ1yy73HS+VpDAqOlytE0NSvTIRqFFkKQGQwfjvtql9YflujuNNvJztjBaHKYZsnNSg+J38o
-jYq4TP3pSg3UdVH0PncVjPQyqxC9xef5Xae92Kbkzol3x7Nel3A1bwAkalrDMspvTHvey6LfiBks
-FIqviTnoy7fgjaRAJgHS+RXx/cmuRd3rUAclSVVrYu8RMIIHAzCCBOugAwIBAgIQAzUotrsybJHx
-HTjKOIVdIDANBgkqhkiG9w0BAQsFADBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQs
-IEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFzc3VyZWQgRzIgU01JTUUgUlNBNDA5NiBTSEEzODQg
-MjAyNCBDQTEwHhcNMjYwNzE4MDAwMDAwWhcNMjgwMTA0MjM1OTU5WjAeMRwwGgYDVQQDDBNkd213
-MkBpbmZyYWRlYWQub3JnMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA2pYux73kdbYX
-sWF8f1u6DJP91qcqaZetsyfPkZk0B+MmXmAEv0kVes5n15V2mbDThOnpoPFly0UugQO9JYqLfrtD
-tKD5yL58fgrDB9Dw+LQikgrHafl6YSCds5AvUu/8hw2J6noKrcOLJpKlKn9Fl/4IB9Q3JIdLx5aa
-EtTqMalIPqHFOlgrJ7s+aua8xbB8YQ9ahqYBXWRJNv3P/2b1DYtdrz1oqZPE3CcB8Pc6Gf2a1Tcm
-6TAgtEx7Cf1BFcrsrMz7TWHmGQITieNb2r9UYWSc2Gp+GtYFNJCgT0JJXKUBIauPMKBLteYrL8Fo
-ff/uY44dC/mDWjdCP/5x0qelPQjlBvWdHL5zvBTOj06rJ0m3HNI/hnIcDh0Qu2j9reb9rLVcdym6
-bWmBM4uDEB8Zv9Ph0KTBFSy1IosyakuD1j1Os30EzjGfbi0EUXIvnOcYbTBAbM5UAzrxEHMhBvoX
-Pvnx+OyvjJmc9tWxTX6AcSz+m40esbT17URBeZS18afgieiikm5TynlUYP1LciR3hSgGVzvGXnKO
-02VDFR5itGWdRKZ2W5wIShNfWfhSa0D0K5UdIDt5Qc7sjzwK1Yb1sY5Tu0uA5mhIS82q1ov83uxB
-sFkriNnhGv/M1NCDVLBiOMsHu73qUM+yKmgKLwF9Hfn9WI25glbAMI4S5r3hYzcCAwEAAaOCAfcw
-ggHzMB8GA1UdIwQYMBaAFPebok7Tl8X0NA9DDoGFzpGTMq/5MB0GA1UdDgQWBBRcYhqbcGzn1jrT
-JOZaB8O7qllDpzAwBgNVHREEKTAngRNkd213MkBpbmZyYWRlYWQub3JngRBkYXZpZEB3b29kaG91
-LnNlMBQGA1UdIAQNMAswCQYHZ4EMAQUBAjAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0lBBYwFAYIKwYB
-BQUHAwIGCCsGAQUFBwMEMIGpBgNVHR8EgaEwgZ4wTaBLoEmGR2h0dHA6Ly9jcmwzLmRpZ2ljZXJ0
-LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsME2gS6BJ
-hkdodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZT
-SEEzODQyMDI0Q0ExLmNybDCBjQYIKwYBBQUHAQEEgYAwfjAkBggrBgEFBQcwAYYYaHR0cDovL29j
-c3AuZGlnaWNlcnQuY29tMFYGCCsGAQUFBzAChkpodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20v
-RGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZTSEEzODQyMDI0Q0ExLmNydDANBgkqhkiG9w0B
-AQsFAAOCAgEAocabrh1cPd5s3vY5rnlBVQSTc7zs2ZWs67dAIltR+05WELrYClVzzUhMs/LOJPlr
-EUo45UDDomXq38DxFepaPd9+iNLjXfn33EX/IG44j04lU/oF/Rg9VeQILkYLbCZ/x9wOjNHZc4SN
-ydY7Dhvf/sT5aBz88u7D5+azZJ7Qf1U57wYseCH1Mt0nDrtr5y19IJ8D9xJJ33RFL6vfpHZBBAQ8
-+3RqkKNxLoV2aFvQhxdhjNLDqTv3LjUIdicwPraN7JkxEu7CV2Lka7eRqJgkWL7SK0YmBjGpRafs
-+icP/ON5RCCKTTb6VlX8eTG2sJJfsFhvJNCCt6xexbWzWtIrfP7NvPBvwBB737AyEGBZkS5aNizT
-McURJGTv9UKvBh1LF/+tNhYtLvPCN7oecGzhCHht9jcwSkygTo3Y6YlK3QgOu+ncmiBbfeuwlLZ1
-LxbYvG6hgNqXv7u6YyADbYajAQJXJ2OQen39pm3Q/AQSyLYG+B8lDglWsM8tYXPlEdrYJcksGK6F
-nqIX6Bumn43rBooLJdiZp4WmfWdL2pxe+LxRDjprmqu1WprixDxULSTOKJZoqTlugs6y3Bc+if+s
-gHnBBtz9WQ6MtPHkh7zONDAFIKcBmv8OqPQCx0F3Wv3OEybwMpXx0OsKgK8wLldaX1pXcMuyDgTL
-Sqs0AV0OHUgwggcDMIIE66ADAgECAhADNSi2uzJskfEdOMo4hV0gMA0GCSqGSIb3DQEBCwUAMGIx
-CzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UEAxMxRGlnaUNlcnQg
-QXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTAeFw0yNjA3MTgwMDAwMDBa
-Fw0yODAxMDQyMzU5NTlaMB4xHDAaBgNVBAMME2R3bXcyQGluZnJhZGVhZC5vcmcwggIiMA0GCSqG
-SIb3DQEBAQUAA4ICDwAwggIKAoICAQDali7HveR1thexYXx/W7oMk/3Wpyppl62zJ8+RmTQH4yZe
-YAS/SRV6zmfXlXaZsNOE6emg8WXLRS6BA70liot+u0O0oPnIvnx+CsMH0PD4tCKSCsdp+XphIJ2z
-kC9S7/yHDYnqegqtw4smkqUqf0WX/ggH1Dckh0vHlpoS1OoxqUg+ocU6WCsnuz5q5rzFsHxhD1qG
-pgFdZEk2/c//ZvUNi12vPWipk8TcJwHw9zoZ/ZrVNybpMCC0THsJ/UEVyuyszPtNYeYZAhOJ41va
-v1RhZJzYan4a1gU0kKBPQklcpQEhq48woEu15isvwWh9/+5jjh0L+YNaN0I//nHSp6U9COUG9Z0c
-vnO8FM6PTqsnSbcc0j+GchwOHRC7aP2t5v2stVx3KbptaYEzi4MQHxm/0+HQpMEVLLUiizJqS4PW
-PU6zfQTOMZ9uLQRRci+c5xhtMEBszlQDOvEQcyEG+hc++fH47K+MmZz21bFNfoBxLP6bjR6xtPXt
-REF5lLXxp+CJ6KKSblPKeVRg/UtyJHeFKAZXO8Zeco7TZUMVHmK0ZZ1EpnZbnAhKE19Z+FJrQPQr
-lR0gO3lBzuyPPArVhvWxjlO7S4DmaEhLzarWi/ze7EGwWSuI2eEa/8zU0INUsGI4ywe7vepQz7Iq
-aAovAX0d+f1YjbmCVsAwjhLmveFjNwIDAQABo4IB9zCCAfMwHwYDVR0jBBgwFoAU95uiTtOXxfQ0
-D0MOgYXOkZMyr/kwHQYDVR0OBBYEFFxiGptwbOfWOtMk5loHw7uqWUOnMDAGA1UdEQQpMCeBE2R3
-bXcyQGluZnJhZGVhZC5vcmeBEGRhdmlkQHdvb2Rob3Uuc2UwFAYDVR0gBA0wCzAJBgdngQwBBQEC
-MA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwgakGA1UdHwSB
-oTCBnjBNoEugSYZHaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZEcyU01J
-TUVSU0E0MDk2U0hBMzg0MjAyNENBMS5jcmwwTaBLoEmGR2h0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNv
-bS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsMIGNBggrBgEF
-BQcBAQSBgDB+MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wVgYIKwYBBQUH
-MAKGSmh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNB
-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
-c20iQN8THi308HKpJtTuQqwAAAAAAAA=
-
-
---=-erIkMXqIH0BsonHupxFm--
+> ---
+>  kernel/rcu/update.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 2a778b8ab4ad..d8e0b5896db9 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -548,15 +548,13 @@ void synchronize_rcu_trivial_preempt(void)
+>  	struct task_struct *t;
+>  
+>  	smp_mb(); // Order prior accesses before grace-period start.
+> -	rcu_read_lock(); // Protect task list.
+> -	for_each_process_thread(g, t) {
+> +	for_each_process_thread_rculock(g, t) {
+>  		if (t == current)
+>  			continue;  // Don't deadlock on ourselves!
+>  		// Order later rcu_read_lock() on other tasks after QS.
+>  		while (smp_load_acquire(&t->rcu_trivial_preempt_nesting))
+>  			continue;
+>  	}
+> -	rcu_read_unlock();
+>  }
+>  EXPORT_SYMBOL_GPL(synchronize_rcu_trivial_preempt);
+>  #endif // #if IS_ENABLED(CONFIG_TRIVIAL_PREEMPT_RCU)
+> -- 
+> 2.25.1
+> 
