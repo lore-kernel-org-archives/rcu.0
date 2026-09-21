@@ -1,47 +1,47 @@
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DF4478E56;
-	Mon, 21 Sep 2026 14:17:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CBE31B10B;
+	Mon, 21 Sep 2026 14:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790000228; cv=none; b=dJ7rcNLzeYMHfNWuvl7jYXgg5F7shE3hJA/mJ7OG3m+BvYONwRAEycutibH+uL6Q+4wgkdDRohFuLj2OARimWWP3J6tAsvGXpUSej5G7RPYsjvckCh1BNw9KF9CgjExcsYQLaQKEBQLH4GGyg3neJ2CIFqLYK2BZjXmeZGLZxcc=
+	t=1790001104; cv=none; b=bre0EEhe5Z4bUqOBXWuf/v1Lljsfj+NIctX8l8uhatv4Lq6owl5h33DubaLWq7DAPTGv/7AWD+lSBUIj+O95HQpNf2sBE6eA4m5JB22tWMEQY5Aa6/hul497fwAS12Nc2uqVVu4lcb66v/0W+XQG8Dbg4XtZ+T6nWcpnv/5w3xE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790000228; c=relaxed/simple;
-	bh=VxPgw7TqHxNsUYbyjxsPVYtoYeZ513ZKxEdNjRdpnaw=;
+	s=arc-20240116; t=1790001104; c=relaxed/simple;
+	bh=BaK+ror1WcG9uNimQK0Mo7rl2cctQ8gmMLV7BMQMOB4=;
 	h=Message-ID:Subject:From:To:Cc:Date:in-reply-to:Content-Type:
-	 MIME-Version; b=StbUVv/2/bMGvVG+J4dt5e8xuTRyrLKHKKRiASNydaRAJo+HYMv5eHf1bSWNWpqLkddN56IWVNe48HDXodfOkd7E+L4RoYq8lDu/TqkHbOssYHrOJjcRsYeq+PeOVlQ+wddRSj1qDDuJVEGsIU7qleXvvYGx51rwkQou3uNhUIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hND9vOsS; arc=none smtp.client-ip=90.155.50.34
+	 MIME-Version; b=Q3nOrZYN7pTSA0QQu2eiU4bOxatHA/jathjmDFm2z6C+K6nKQtN8z266ZiynCRm00D+LZo926+iWiq2m2lpdltW9MBAfjpwI6XH9qm22OajMgZd9yO7MspeWJdDGuyql3oobkfngN/HPzq4Qntheumo0v3BPlTVl93oflgHZa4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=d13Zxk6f; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hND9vOsS"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d13Zxk6f"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:in-reply-to:
 	Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:References;
-	bh=VxPgw7TqHxNsUYbyjxsPVYtoYeZ513ZKxEdNjRdpnaw=; b=hND9vOsSDwHag1soPaknulsBUT
-	REZyUgkpa3A7ojqOg2PvR6VDuEmfFdJ0f9Ukg+AYnCc1WNJRYqiYWj7Gs+29lKOuN0+iVCOAzVe7M
-	C0T4AWxmG3PGYzJenw5KCN6BdLMnXVh8ryIatlvEYU2qFKBJdhQMjUVuAFzYXRG1sRnGvbOscL40v
-	90vntpPMYV2rY1xsAE84W279+gLWEdYzObk67gHuJk8VtPP00/AZWxFBBK4Lg0nFIg0+IQX18yiFJ
-	tjY/CrgD2pwnV/9c3kuojm1dTeSLwMr6ZkpGVdQqsu8Qa7o/pyOBxo0hhtN8VqxrTHJ8Fn2LONw5y
-	rbFXZwJg==;
+	bh=BaK+ror1WcG9uNimQK0Mo7rl2cctQ8gmMLV7BMQMOB4=; b=d13Zxk6fSrZ05MhpgougqU+YTH
+	RJXyD/8+OJ89mV5b/WR2gMm2HEICgzULEEQFNqGJGOaS3uaaL0Fsmex/49CM9zRodwEcI1c7eY8yO
+	LuIwgbXiVuqnsoYOskXkR1o3XMEEwgqg62dlz5BR/oPebRrrMqhzity7hyiMlo0AdFkWHIo+4n80F
+	f7e+oQHc6ugDrm8xYact7ltXO6E4OqPVXcKlngFFMnIdJHTENpTtTjR9SxWCyWta/nKgKOwZlnV1R
+	1bl3D3LDr0N+M55BQRVDmldaVQc9ifUg7ek5luqAtPRTd6lSA5KtkANIaGpodZT68YIuyvxd48DiN
+	yN+bk/MQ==;
 Received: from [54.239.6.188] (helo=edge-m2-r3-110.e-iad50.amazon.com)
 	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8epL-00000004LCt-15U2;
-	Mon, 21 Sep 2026 14:17:03 +0000
-Message-ID: <ff980ee262d5349e02f9c5a509c6b0cab1653631.camel@infradead.org>
-Subject: Re: [PATCH 07/17] KVM: pfncache: Add guest-mode pinning
- (GUEST_USES_PFN successor)
+	id 1x8f3T-00000004OYy-3JE2;
+	Mon, 21 Sep 2026 14:31:40 +0000
+Message-ID: <2a6d520d7663eb637b2ebd5d079a2e5082dd1d2b.camel@infradead.org>
+Subject: Re: [PATCH 11/17] KVM: nVMX: Use pinned pfncache for L1 APIC
+ virtualization pages
 From: David Woodhouse <dwmw2@infradead.org>
 To: sashiko-bot@kernel.org
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
 	pbonzini@redhat.com, seanjc@google.com, paul@xen.org, paulmck@kernel.org, 
 	nh-open-source@amazon.com
-Date: Mon, 21 Sep 2026 16:17:01 +0200
-in-reply-to: <20260920215320.84B701F000FF@smtp.kernel.org>
+Date: Mon, 21 Sep 2026 16:31:37 +0200
+in-reply-to: <20260920215738.E90CB1F000FF@smtp.kernel.org>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-3WoC2uP+6BndPOxo1ODc"
+	boundary="=-erIkMXqIH0BsonHupxFm"
 User-Agent: Evolution 3.62.0-0ubuntu1~ppa1~24.04 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -52,27 +52,33 @@ MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
 
---=-3WoC2uP+6BndPOxo1ODc
+--=-erIkMXqIH0BsonHupxFm
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2026-09-20 at 21:53 +0000, sashiko-bot@kernel.org wrote:
-> [Severity: Critical]
-> Does the early skip condition in this loop fail to check for
-> GPC_GUEST_USING?
+On Sun, 2026-09-20 at 21:57 +0000, sashiko-bot@kernel.org wrote:
+> [Severity: High]
+> Does this allow an untrusted L1 guest to crash the VM by triggering a
+> KVM_EXIT_INTERNAL_ERROR? The L1 guest can write a non-page-aligned
+> address to the APIC_ACCESS_ADDR field in vmcs12 and execute VMLAUNCH.
 
-No. GPC_GUEST_USING can only be set while GPC_VALID is, and whoever
-clears GPC_VALID is responsible for kicking any vCPU that was using it
-(and waiting). The vCPU can't re-enter guest mode without servicing
-that kicked request, so can't re-pin without a full refresh.
+No, that would be caught by nested_vmx_check_apic_access_controls()
+which calls page_address_valid() and requires page alignment. So the
+VMLAUNCH should fail.
 
-> [Severity: Critical]
-> does this zeroing of the state in kvm_gpc_deactivate() hide the
-> GPC_GUEST_USING pin from concurrent invalidators?
+(... s/should/does/ fail, as I made my friend throw up a self-test to
+prove it. Want that added to the existing tests?)
 
-It kicks any vCPU just like the normal invalidate path.
+> [Severity: Medium]
+> Will this nested lock cause an AB-BA circular locking dependency
+> warning from lockdep?
 
---=-3WoC2uP+6BndPOxo1ODc
+No, RCU isn't really a 'lock'; those nest just fine (unlike the special
+case I just fixed in EVTCHNOP_send which was spinning inside the read
+section, waiting for something that could never complete until it
+*left* the read section =E2=80=94 a completely different kind of deadlock).
+
+--=-erIkMXqIH0BsonHupxFm
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -170,22 +176,22 @@ vFEOOmuaq7VamuLEPFQtJM4olmipOW6CzrLcFz6J/6yAecEG3P1ZDoy08eSHvM40MAUgpwGa/w6o
 MAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMTowOAYDVQQDEzFEaWdpQ2VydCBB
 c3N1cmVkIEcyIFNNSU1FIFJTQTQwOTYgU0hBMzg0IDIwMjQgQ0ExAhADNSi2uzJskfEdOMo4hV0g
 MA0GCWCGSAFlAwQCAQUAoIIBezAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJ
-BTEPFw0yNjA5MjExNDE3MDFaMC8GCSqGSIb3DQEJBDEiBCDJjIDsQnISa8lz2goQWk9zw8+lcNfF
-6hTQKAb016colTCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGln
+BTEPFw0yNjA5MjExNDMxMzdaMC8GCSqGSIb3DQEJBDEiBCDOTRESQDhcpcu3zFt1jlDAwdmTxWqV
+/h+TuYgxjyvMtjCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGln
 aUNlcnQsIEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFzc3VyZWQgRzIgU01JTUUgUlNBNDA5NiBT
 SEEzODQgMjAyNCBDQTECEAM1KLa7MmyR8R04yjiFXSAwgYcGCyqGSIb3DQEJEAILMXigdjBiMQsw
 CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFz
 c3VyZWQgRzIgU01JTUUgUlNBNDA5NiBTSEEzODQgMjAyNCBDQTECEAM1KLa7MmyR8R04yjiFXSAw
-DQYJKoZIhvcNAQEBBQAEggIAGcUe6+YFwvxiJWwiqNOEk5xK3HpmeroD4F8WOwhY7lIPwrLJ+Iyw
-/c+GhY0iutynSXsd/zf4jMr+w+Yjo4uxcj2DsRRZTMYxdLheN1LQX90yMWKg3vRwxcMdilWcAUpj
-E/HGgYnCdnNw2ajxM/+p1XlZRioGCrddplZRlEqqEiT13oWAM+Cat6h8WibFKd4J/giiQHjggpB3
-p9X8nWqgR+ShpeL1rvKDsDyx7VDe3CQjD9RTg7NC9jDZ49C2J3zsyMrn3UZT03hA4KaZheAfxPbW
-jXetv1PfCjXHjhVzGxTsHQsEVI5BeL712sztIF1PX3iAFv7n1vnXmYVgsrrQknQlNNWcgSfSj67J
-7GHlkcs59jta6G9anW7jSP1pvjdX8tYd74DtH1eUlFpTigO+0gt6OGChMHYUytXkA25XCPdQdNGu
-Z8NOTjGDRfZ8JfhtLjq+0mAD57EIA2fkHT0Cf9da7VVbXZajRjMEjVlCWD8KDOxf3cIg/Qr+Ljdx
-vPj7YmThXqo+jwTX2T2islVMtSdx5tZj6ieM9Lnvr8eb/LsEphjCazWeo0EcPA+o/MWjAfGx51ci
-OeIeHQ8E5i9s+9TsQE84+1cWMX7zqgickap0cQLa/zb03nV6+cAMrbfR4k8Y9sW1kevwJWYw4ISN
-K2xbGSpPlDGrCI+j2e2ujU4AAAAAAAA=
+DQYJKoZIhvcNAQEBBQAEggIAkeAi23GmDV1dJQoMHj77RFx9v72YsvQg2nTESYQBBLcjTrvoreK7
+RXDu1+HZOrGS7oVHSI3mvppDibUZrkgqksQ1LkxziNe2UqraSJWLjSvJTDGDFFqmWEQ517sY6GjD
+sPXnxhdPr/+eZlxB86jsA4Xhlgmg8n81gnFzsz3ihhby5E4CLO6gOteo7wFJXxPKKSr06mDpc87q
+KPAY7o919FR3kqU9gMXS2bSjOuwPxdog1UGaiVfQkyX0LCI6xjWKIs0cN0Wc4iH2Nu0rc9tTbiEN
+VJvH1itnJ6IsqOZ9eKrvbVKSjNQe11YA8iy+4/yVAsea7lrjMzGclY+yN4qUJdrPQLtu9+YdHdYO
+9hcoCIrGkq+EBwKdLAyYjYYV3nHMfmriYP5PW8499Iteo82iLE5HS3mSthn6eCgRWU9Vq2uScfl5
++6TgRcqwkFpETbLwzSR5nCVHaJQPyGihqdBtlm1Na9sMlnK1/kvxAOecQ4jMMO8aWqvay3eb+DOn
+MlDAoliJYY2F8eIliXJLFbRXYbZh/M4+sNWLRg7kWmu8QMFu3k5jYds1aPMM76hbYMF7dHzGTsu5
+uChIC46Hgs/b1DvcjtIymuaTSLWnEyfyn3zoBmKO/mIy17V1vJM1rnL6c+tG02jVv3NsGLaiTXNo
+c20iQN8THi308HKpJtTuQqwAAAAAAAA=
 
 
---=-3WoC2uP+6BndPOxo1ODc--
+--=-erIkMXqIH0BsonHupxFm--
