@@ -1,179 +1,119 @@
-Received: from mail-ed2-f35.google.com (mail-ed2-f35.google.com [74.125.228.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0668542E8C8
-	for <rcu@vger.kernel.org>; Mon, 21 Sep 2026 20:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.228.99
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790022098; cv=pass; b=gEnmv74+Yp3HPdqX3Gm7vKPjh/GBtWLzo1Un3zlE7iqNynXzYSnyED4+Oa/2BvFMOqxR4zwpVQ+7nMSveFEWhyNNMuEpWDRN8Vav/oSX8T31W9E8mi3NoYcGr64d2dWZiG6LnqYoC+JZ+0o8gMZVcwf2yg8CMmn4SbZ7apmcXFQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790022098; c=relaxed/simple;
-	bh=HL0EylvTbIIIOAHary5gB77Cp4l7ZXs2o2z9aqarAwo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VO8+Xkkdibpi+q7IrGUx64k8SLzejP2PvgxFtOx+Pjft7EyTK4K0fFSesNwYRG21Zi4Fe/onpt0U/T4GEPDFFSZHyp3hi1A5UJrVfoJ3Njb0j6+N/wc2pujknJPjcdP6im1aWk1UjtTOyAnGK4v1Ugdy95NR3ouhUKlcJy6bUJk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q2cPv2MP; arc=pass smtp.client-ip=74.125.228.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0979A3EEAE7
+	for <rcu@vger.kernel.org>; Mon, 21 Sep 2026 20:27:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790022454; cv=none; b=Ne6bmA1scwGKLwsAtlAGc7D481IRB+wJIw5Hld+XhW3wO4o36+VdCUA1+uI39KfETaba0txbyttyiz7ho0UW++UrkrOktIbPYC6+r8lrlen6A549n3IScBed6kcQI3xNZFCqMzA94BP/5Al8vY3i+sUBnhjG3p0MAI08FDrRpy0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790022454; c=relaxed/simple;
+	bh=lVMLTEzECyAPw2fdvqa22EmMfdMZE0q0QYzqRNSogsg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AyhqBvLLOZO2Oy/7U+O8tAJaTanK7VH7kc/kCP/MF8vWcyiGNU9ABembkBJ4MeqUhz3QwHawrgD4MziWvZ8S6tJr6C29xAZXhXiOYsViu2998VF31hlTVuDSxrsBXmbQrwadR708U1fwpWdn1qpoVs7p64UxSqE3CwsOttO4NVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DJNWeBg0; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q2cPv2MP"
-Received: by mail-ed2-f35.google.com with SMTP id 4fb4d7f45d1cf-6a605844571so4127151a12.3
-        for <rcu@vger.kernel.org>; Mon, 21 Sep 2026 13:21:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1790022095; cv=none;
-        d=google.com; s=arc-20260327;
-        b=a3xnx8jEIXbI3+AW7TnB/wIkCj2lB8Y34fxyXzsWgLKCk4JA3nQlNqKae14IXBDHQi
-         calddHMrwgjvoD6/amNvjazQsLIK70GM2A5e5c5lws82hrFG588MkogA6eJKryeqSKFz
-         x2v3Y7inYqn+r9OqaNoaWdCWlrARVtAP6GjzpFJSfJDSSHADyb4NpHU18u0PtbKFvsDE
-         78KlIW2eVCbhP27D/uWWvZhacHBChfIOkrzAngfRze9drr44cwCfUePEJxkRAq5a7JHw
-         ygrRl2NgXSihn+D/waRYG0XKEP+UkqQi6mM+iDxrwJvs0bpO53hNuX5dbgFuVckgoikv
-         44/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=U+5XYYOAqVDSxwqETI3n8kHqel13Z3MatM6vyfeBUH8=;
-        fh=qhPv6uiMdwWrVGcjmCUUWy9c7Iwy2hdfDqhUl3TWsPo=;
-        b=JljRMV3zWWEiRYoL4w0U0hdXSF5v2mBLTPgrBS4QftXHRbZwYvgBixBc2gKR9D19/h
-         plTkl1mxvJzJt+rN+fBe6BfBwcKrabvx0rB/9wpZb9Y9pXK/qCtxDU/3oBSGFBkMq3+P
-         4uYZh2iP712+ZhdSjSRqXaRT29Sb30FZIEtitbZ6QXVEiqj634woOa7YITBjavmyaqQV
-         KSzBfaxYhQC3OeaQ9xSvTPAjL3L+6PcipX23+Z0fMUdHozH5WYtdKE9F4JFHQAhSZ/ma
-         KNQykca7YpAzohaUq5u58ILRYX1uGWcU6VgnoG1+ddwLK5NJCN5f+5umG+lwoXqWLme8
-         ZGTQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790022095; x=1790626895; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=U+5XYYOAqVDSxwqETI3n8kHqel13Z3MatM6vyfeBUH8=;
-        b=Q2cPv2MPpIG00WN3pYPNgVdxPPTXsHF178Vgvkri5Oe3j+7XSLEjbTRLz1eKjhL36s
-         sYJQJAwb0pofVuuwhCFvYZyXsDRWwuvy82hB6jvFdAqchH3HRQZQmFTImNONyiSbXSWa
-         xjT4ECFLwM4i+nbXiwtc/IT1PgBp8N+k/5xMBNlqrfGfSZfSK4JH0zYvMifAo9HdV9gl
-         s3aCSQYkSjwBkwkGjNK2yngf/424fDmAs7hNPRXwF023zB+I7d7qlirOaM3a++BaYOUQ
-         SdEwyUtc5rQs26+0+jn3+T/oscO/QRS8yH1BZSXFXHk0ahfNcxuNHvjNI85lZq2MxjjY
-         tFjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790022095; x=1790626895;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=U+5XYYOAqVDSxwqETI3n8kHqel13Z3MatM6vyfeBUH8=;
-        b=z6rL97ouEhXuFk2VwhMqahTXKx9hCe6x63+ZGXWQhshEjqzD4wqL5jVTUd8tmtDBSV
-         A2XJxPx18+6yiNqkwel5GyV2GQHJ4Dv+syxWq+ihxyRkKepGpVkfoskmBi5VwwExuPay
-         9PhPsumprCQhXhLFhuU/1PypT4YhORDg7HfqaeCH01dp3Y3xpcwhhjuMbF255Y0SsjlF
-         SWg5Sj01uD2N6UdxR71wj+6VqiOapu1IRFoVJ8on5BpPoU9CfbmYqITO+L2EG4YXtmip
-         HvBgI8iis/LmBggDP/xxQV6/FP9dp3+tzL3j9NIG6ZgHvzC3EFg30wsHtvh90WiS2G9b
-         864w==
-X-Forwarded-Encrypted: i=1; AKwUvBwyDnOPlASXmof7pWyNwmJTVgyXoivAOy2jMGC7F5RS3wY7/2k3kIccH6sxYpVC+SVrVdg=@vger.kernel.org
-X-Gm-Message-State: AFuF++kSUd/RR0E4O120hsJoKkRDcX9aIHkONrZzyx/R2o/U0AIPv7yV
-	7o+4NtLGsbHmNiWhjLG9LiBfsaW+zH4919vMeBiFqPu8xEAM2bRFNeSBpHPheKzJqLynrQ5YT1a
-	61sKGlXl7q8dEthUG5m6OmV9/ZnFPnMk=
-X-Gm-Gg: AYBFou32x9aiPynWv8fu0TEpDNtbub+K4fkDZFwUAsJrBL7esCbM9i7A2ZTyAXE/0pw
-	hzP93hgjbjh81+IczPQrVvA2SkkM+ApRxmB+H8MZn6WTy5ELbHvm3docIJkGEb9oq+hq7r1rRTr
-	4vz5lftVI3oGqQc1w5AmeM5ZLBkzx17vu+JHxSOHw8iWViXhVrRrhKkVmb7YwlRlVezlIywsbgx
-	RdtQ/RCxrlMnnLz3AXtZo9nu1jCkNTZPJ4bSz1XxA27urzE1CdSCNnF18xOECGGms3Y88NIrLRK
-	DuvrGFwB3hcU6xlTU8Kw5qUeoRDpPuUZJD3LQ3o+IebHql2i/Ugmc0kMjGJXxb/J/k514A==
-X-Received: by 2002:a05:6402:2355:b0:6a9:d93f:2a4c with SMTP id
- 4fb4d7f45d1cf-6aa545f836emr9135400a12.3.1790022094908; Mon, 21 Sep 2026
- 13:21:34 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DJNWeBg0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55C1A1F000FF;
+	Mon, 21 Sep 2026 20:27:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790022452;
+	bh=6fypJfejMBtyOArPmo/Mio9hy4mmRnjDwcPnlc07K/0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=DJNWeBg0pDsbLKpCZyADmShb8Yvdm5Q4S+qOAb4aO5hoFqOU1jKJJoqilDSsko6fU
+	 8vE8yGLP+Teu8/qXF7xp0OT+TwXIA82QIiSyDqQ21Io2uiq3+kVEMCz3+Py32lyQ53
+	 viGgmnBILiggy5XL2J3NpGb/EqgptcKjhEjx5rEW4qjkUJ72G91OGQ4o0SHIpkwDQ0
+	 CJMvagUewscsG2nDS2A6n19d+hTwdt4IRBCSPqtUwODJZyXpLxKrzmd8MWCJz+Wd/U
+	 /KOT6hSBvqNQnQG3Yq0QFXcqOLUrR3BiwHamm6MtN8fwJ60Xcf4FyVVDYs7czvbeXB
+	 DcEYSSsV4scTA==
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 7A87EF4006A;
+	Mon, 21 Sep 2026 16:27:31 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Mon, 21 Sep 2026 16:27:31 -0400
+X-ME-Sender: <xms:M5Oxaucw4yd8ZDb0PTxouxQOOyhvw8bB644sgY088Foeg6azNnSYRQ>
+    <xme:M5OxatIRLI6muTMUuoGvhFDnGuO6r8pZVO7QbQEP5EcbFuST81OeEGOtm-wyorI5f
+    Rju_QazScxE-e17JMT558MKmkW1a3RxJVqnnMNQYoDhj9f2bggRaLg>
+X-ME-Received: <xmr:M5Oxajxy3isfhBoNiKa-67MlDK3bLXDYIVINEbRp1LchXBM_la4UkaeNGroAhUYJiKJr8RYB7cU4YdWF9PZNmv3lJZz7jk61Fg6ov4Jx08lyfcYjHwCF6Zgo>
+X-ME-Proxy-Cause: dmFkZTGJAjzjXr64oM6M6P1fVzuCB86SV7tatmH4h7suiBpHoD8t9OHKbPqxsPHbw1nmDm
+    1JuqZqPYqtjR7DLOgZqgipipaP3CERsEtABzoJHu9CHFK5WqJPiVKxyZ+QXJGasbszXRsX
+    95I8tyDlJvfTGPXxqaX7SgWGq4PiV9o4Ohzke5+gOU8w850ZIblm8lUX+MBzRo8lSlDASw
+    +38/ByqXs1qhovCTo4nCGnLaYWwXy4fZkqQphmn4YzNPRdjK6J5mZnmbNL+1TnCs1VOQtJ
+    D3IwRNcAb0cNYIUm57rxn/wapJtblwtAQep+wKnbzDR8vPD1eLh+TuKPo6/6Gq4oKMffmJ
+    ry0Pt/xekgxZGDox6tb47OIyvFnx+v5fvXtC/IPpdsod0Ij8x/X2PP27zXz3/c5ZXChIlp
+    SurCSQhcgXXjkENh7FOMU/tvEVi7i6XHBQr0qgvolUJ4/9Ymq83b8fjjvtmFV5TXB8L/lJ
+    UEC1OUPLJAxoT2H/3PVThWKvTgn2UiV970Q9IGC8p3qZ4V+aRtJa4HH+1KaGNHvuG28hhr
+    xJ+GMFem2jLXb94rgZvYJIrHsxaKhf8//IljtS+dAzn6Wo0UlkprOLsazeMSiORbdXrCwz
+    1Y/Ykca3jDe+oFJRWMlDjYYyQW6bEPUhk9NLCiYQ3BMgxVt91zFflC4ldcbw
+X-ME-Proxy: <xmx:M5OxartBSvGqzM3B9HqwjW87GzG0enNGhm4FPZUXi9nYaYTpRqVZZQ>
+    <xmx:M5OxauD6Fv-IRwZVUdMg9Dv4WF0UhIttCXKzuSg0gHzO_U_-h_d1Lg>
+    <xmx:M5OxalH4eUDos5nodRj7n8xOZrI_WrljBSUcuhJgNWd2GokfkqCKPg>
+    <xmx:M5OxamC5WaXXoruMzxGR4RaK4OdwI-y5XjSIl8Y8RvYqJ8PnnSjGug>
+    <xmx:M5OxajkvtViFwhcXBBrBv52cjRGFKpabkJ65z_vecyOVsYURvbAw6o_W>
+Feedback-ID: i8dbe485b:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 21 Sep 2026 16:27:30 -0400 (EDT)
+Date: Mon, 21 Sep 2026 22:27:29 +0200
+From: Boqun Feng <boqun@kernel.org>
+To: Kunwu Chan <kunwu.chan@gmail.com>
+Cc: jiangshanlai@gmail.com, paulmck@kernel.org, josh@joshtriplett.org,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] srcu: Add lockdep coverage for atomic SRCU and fix
+ IRQ-state bug
+Message-ID: <arGTMdkrE3oMcBq3@MacBook-0RXW5>
+References: <20260914093419.1474829-1-kunwu.chan@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260921191407.1742386-4-puranjay@kernel.org> <41b3ffb9922beb0c24d302a85752d4f82ed168fec13f6b1926e34274d9e31338@mail.kernel.org>
-In-Reply-To: <41b3ffb9922beb0c24d302a85752d4f82ed168fec13f6b1926e34274d9e31338@mail.kernel.org>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Mon, 21 Sep 2026 21:21:21 +0100
-X-Gm-Features: AcwNN1XPjU1fOESZgtZBq0kBMbCasuLeG6oILzP9OmaEMLjg5Ejgd9Ky--3Ydvk
-Message-ID: <CANk7y0ijFB95gtQVRdjCb7uXGrKyjOpBnyjL+YZWrvFR4aOxcQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/4] bpf: Add bpf_call_rcu_tasks_trace() kfunc
-To: bot+bpf-ci@kernel.org
-Cc: bpf@vger.kernel.org, rcu@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, memxor@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	harry@kernel.org, paulmck@kernel.org, martin.lau@kernel.org, mason@kernel.org, 
-	ihor.solodrai@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20260914093419.1474829-1-kunwu.chan@gmail.com>
 
-On Mon, Sep 21, 2026 at 9:18=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
->
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index 8a01dd4058a03..301b35bd85c8a 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -4838,21 +4838,10 @@ static void bpf_rcu_run_callback(struct rcu_hea=
-d *rcu)
-> >       bpf_prog_put(prog);
-> >  }
-> >
-> > -/**
-> > - * bpf_call_rcu - Invoke a BPF callback after an RCU grace period
-> > - * @rh: struct bpf_rcu_head in a BPF map value
-> > - * @map__const_map: bpf_map that embeds struct bpf_rcu_head in the val=
-ues
-> > - * @callback: BPF subprogram, invoked as callback(map, key, value) for=
- the value holding @rh
-> > - * @aux: bpf_prog_aux of the caller, implicitly set by the verifier
-> > - *
-> > - * Return: 0, -EBUSY if @rh is already queued, -EPERM if @map is held =
-by neither a process
-> > - * nor bpffs, or -EBADF if the calling program is going away.
-> > - */
-> > -__bpf_kfunc int bpf_call_rcu(struct bpf_rcu_head *rh, void *map__const=
-_map,
-> > -                          bpf_rcu_callback_t callback, struct bpf_prog=
-_aux *aux)
-> > +static int __bpf_call_rcu(struct bpf_rcu_head *rh, struct bpf_map *map=
-, void *callback,
-> > +                       struct bpf_prog_aux *aux, bool trace)
-> >  {
-> >       struct bpf_rcu_head_kern *rhk =3D (void *)rh;
-> > -     struct bpf_map *map =3D map__const_map;
-> >       struct bpf_prog *prog;
-> >
-> >       BUILD_BUG_ON(sizeof(struct bpf_rcu_head_kern) > sizeof(struct bpf=
-_rcu_head));
->
-> This isn't a bug, but why does __bpf_call_rcu() take 'void *callback'
-> instead of keeping 'bpf_rcu_callback_t callback' like the kfunc
-> wrappers? The two call sites both receive a typed bpf_rcu_callback_t and
-> pass it into the void * parameter, which is an implicit
-> function-pointer-to-object-pointer conversion (accepted by gcc/clang only
-> because the kernel doesn't build with -Wpedantic). Keeping
-> 'bpf_rcu_callback_t callback' would preserve type checking at the two
-> call sites and match the cast pattern used elsewhere in this file
-> (helpers.c:bpf_timer_set_callback, bpf_wq_set_callback_impl) without
-> costing anything.
->
-> > @@ -4872,13 +4861,50 @@ __bpf_kfunc int bpf_call_rcu(struct bpf_rcu_hea=
-d *rh, void *map__const_map,
-> >               return -EBADF;
-> >       }
-> >
-> > -     rhk->callback_fn =3D (bpf_callback_t)(void *)callback;
-> > +     rhk->callback_fn =3D (bpf_callback_t)callback;
-> >       rhk->map =3D map;
-> >       rhk->prog =3D prog;
-> > -     call_rcu(&rhk->rcu, bpf_rcu_run_callback);
-> > +     if (trace)
-> > +             call_rcu_tasks_trace(&rhk->rcu, bpf_rcu_run_callback);
-> > +     else
-> > +             call_rcu(&rhk->rcu, bpf_rcu_run_callback);
-> >       return 0;
-> >  }
->
-> This isn't a bug, but would passing the call_rcu variant (or naming the
-> flag 'tasks_trace') read better than a bare 'bool trace' parameter? The
-> only behavioural difference between the two kfuncs is which queueing
-> function is used, but it's carried through a 'bool trace' flag that the
-> reader has to trace to the bottom of the helper to interpret. The name
-> 'trace' is also ambiguous in a BPF file where 'trace' usually means
-> tracing programs rather than RCU-tasks-trace.
->
+On Mon, Sep 14, 2026 at 05:34:14PM +0800, Kunwu Chan wrote:
+> The atomic SRCU fastpath enables synchronize_srcu_atomic() to be called                                   
+> from contexts with interrupts disabled. This series extends the                                          
+> rcutorture lockdep tests to cover the atomic SRCU path and fixes an                                       
+> IRQ-state preservation bug discovered along the way.                                                      
+>                                                                                                        
+> Patch 1-2 add lockdep test coverage for atomic SRCU:                                                      
+> - testtype 4: same-type atomic SRCU deadlock                                                            
+> - testtype 5: atomic SRCU + raw spinlock dependency cycle                                               
+> - testtype 6: rcu_read_lock() -> synchronize_srcu_atomic()                                               
+>   legitimate nesting, must not trigger lockdep warning                                                  
+>                                                                                                        
+> Patch 3 fixes a bug where the synchronize_srcu_atomic() call chain                                        
+> unconditionally re-enables interrupts on unlock, by switching to the                                      
+> irqsave/irqrestore variants throughout the call chain.                                                    
+>                                                                                                        
+> Patch 4 fixes a pre-existing double nerrs count in the script.                                            
+>                                                                                                        
+> Patch 5 adds testtype 7: cross-CPU IRQ context mismatch detection,                                        
+> where an atomic SRCU reader held with IRQs enabled on one CPU is                                          
+> paired with synchronize_srcu_atomic() via IPI on another CPU.
+>  
 
-No, I think "trace" is good enough, the readers know what this means
-so we don't need to over explain here. Of Course if others think
-otherwise I will send another version for this.
+Acked-by: Boqun Feng <boqun@kernel.org>
+
+Regards,
+Boqun
+
+> Kunwu Chan (5):
+>   rcutorture: Add atomic SRCU lockdep support
+>   selftests/rcutorture: Wire atomic SRCU into srcu_lockdep.sh
+>   srcutree: Preserve IRQ state in synchronize_srcu_atomic() callchain
+>   selftests/rcutorture: Fix double nerrs count in srcu_lockdep.sh
+>   rcutorture: Add atomic SRCU cross-CPU IRQ context mismatch test
+> 
+>  kernel/rcu/rcutorture.c                       | 109 +++++++++++++++++-
+>  kernel/rcu/srcutree.c                         |  42 ++++---
+>  .../selftests/rcutorture/bin/srcu_lockdep.sh  |  77 ++++++++++++-
+>  3 files changed, 205 insertions(+), 23 deletions(-)
+> 
+> -- 
+> 2.43.0
+> 
+> 
