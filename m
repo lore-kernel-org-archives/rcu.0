@@ -1,159 +1,153 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E42C4FDA6B;
-	Mon, 21 Sep 2026 18:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1DF511239;
+	Mon, 21 Sep 2026 19:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790016655; cv=none; b=VwJy2cyETgKAoi4iV7mZAk5KvZinSccXWFWRJhJhkXg3g3wwgfvUtSNN8dtIf7jRq6jVQkQEAlwOIXGcbSiOpFij2znWLx2a/ueN7Vm2iVuA4mAKaTsPuA93z1xz3kZ63vrhcEppC/dVpXIsdwrf6nehJFJlTl7/PeNENMDhAE8=
+	t=1790018053; cv=none; b=TwfyzXQ+HTkoAb9BHjpDFLMujajW2GfmeK0LDpfw/TlNHCjF4bVTr7Cyho0ovd18ynBc/QoTN6AikTTyQDMuq2XQ7B6y7/GlTWJzA8QwRpw+W8CG1OjT8jmCmWzS+6k1FpqW1K45xdeok8qV1QmRDKu2jPVkTFOWmoeq9IQX2OE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790016655; c=relaxed/simple;
-	bh=p9vye9Fn0omqERqkD37y+L1HgqTR2av/DqQTxodGdhg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QXiCj+fbu4ekXvnI2iRtZV+FAQFP7ijOk9Sgc8Wcu9avfMmmxJ6oxcMDt8+0l/LEyBZlKretdcV2AEqbrQz8yVUJzbxxQ4+2vDrmqlRg0ZD4gR2/Dn/uWYMkQ7tjPKI+ZTPjMt5tyg/BTppdT/TBiQdvMNgyvUK9ajBtcRHG7Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bJ9PM8tZ; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790018053; c=relaxed/simple;
+	bh=C7uF4hzH+MlY7IqoBvHWbdkqBBqEiGIA85oq+nh4Ol4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QRyJmZZ62HVNz68GLuhzuustAzKw82ruV9Tts8dbikPPjjJSJAfPeMeKB6Dzohjek9d7ixyk2Sl11Li3HV4OeD9j76fPWg1vyUGmYFdFLv+x/HwFY9PVU5xHk1MnoNEc56z9kinmjrjpBA+nnxPBXkWbSzIdH2CHi8NGTE0oUQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SOUX57yZ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bJ9PM8tZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02C3E1F000FF;
-	Mon, 21 Sep 2026 18:50:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SOUX57yZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F31981F00893;
+	Mon, 21 Sep 2026 19:14:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790016654;
-	bh=ORjA4AxqThj6VTeZiT/jrtg6yNBkGJ64/nYD9YDquxo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=bJ9PM8tZiGRVPYCFuS05geBu6n15rijUhOKvxNMwzwQp+vbWm3n8K2FVx12gEAnAB
-	 r7U5zr7RnMj9j8GRGxVkdBds35a9fWV6O8KPjgsKK6bTS/hberfFiCAZeiHHNYWcuD
-	 qDYwIFiG5WirUSzyY++Qg+6C0TlfI+QlQ9Cvtlht6PNqj66UZvKcllq5EYladN5AMn
-	 TFilCwbbVTjC7pdDkXA3v0bXB+YzylJZb3NuH8gjFdFE2o2ngyR44RDveH93mnu+4M
-	 yngGOBJXyjwmG0VreHoc/Lfdk0A8uZuyaSA5gwmUafgrD+Oja+zl1jJ3umAj1ZVJLR
-	 eDU/Ilec2XVhA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B90E4CE0E8C; Mon, 21 Sep 2026 11:50:53 -0700 (PDT)
-Date: Mon, 21 Sep 2026 11:50:53 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Boqun Feng <boqun@kernel.org>
-Cc: Puranjay Mohan <puranjay12@gmail.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH 1/7] rcu: Make call_rcu() safe to call from any context
-Message-ID: <fd572a7e-86f4-4ef3-8ebc-abeced7a6159@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <2a742578-120a-421d-9305-5de0b22bda33@paulmck-laptop>
- <20260919003258.3134343-1-paulmck@kernel.org>
- <aq6XFyrR3OiSvKl9@MacBook-0RXW5>
- <CANk7y0g5EU8T8cLiU=+tLiZCcMEhZOjhnvs4uzD8Z=8GwN+7LA@mail.gmail.com>
- <arF30s1AAAkmq0DB@MacBook-0RXW5>
+	s=k20260515; t=1790018052;
+	bh=81jOZj+4d4X4V5/bgmxVSYhfYYhbUzgNRrSHGKFIaiM=;
+	h=From:To:Cc:Subject:Date;
+	b=SOUX57yZ79fm9/wF85SHPspjk/JWaht8/65qaCT6kkOPtgBvyX2v+qx+7szkwQcGr
+	 e0c88JlrOmCPJmqsqUGif7zgXBXP432el3RBef5UU33i9xEJBQxi1oguD9wqYIpkhO
+	 RXBCzgtisXzzBcuP/acQAB/TAQk/iDHBuaeBaveOJsj1SLa2YXz3yvTP4cLF6T3Zk9
+	 lF4uPCKl/cpfDlsM5Tzi7r6ivLv/46e+16qJU9oUq685gIBr2xT9n1Z6cECCTRbpSz
+	 IwjiFYfJBKr5EMmgWAn7U4UqocEzoNoOOwCHROYQKBU2RONzdazx87iURCblvciDJW
+	 9F8j9BPHItxqw==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org,
+	rcu@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	"Alexei Starovoitov" <ast@kernel.org>,
+	"Daniel Borkmann" <daniel@iogearbox.net>,
+	"Andrii Nakryiko" <andrii@kernel.org>,
+	"Martin KaFai Lau" <martin.lau@linux.dev>,
+	"Eduard Zingerman" <eddyz87@gmail.com>,
+	"Kumar Kartikeya Dwivedi" <memxor@gmail.com>,
+	"Song Liu" <song@kernel.org>,
+	"Yonghong Song" <yonghong.song@linux.dev>,
+	"Harry Yoo (Oracle)" <harry@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH bpf-next v5 0/4] bpf: Add bpf_call_rcu() and bpf_call_rcu_tasks_trace()
+Date: Mon, 21 Sep 2026 12:14:01 -0700
+Message-ID: <20260921191407.1742386-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <arF30s1AAAkmq0DB@MacBook-0RXW5>
 
-On Mon, Sep 21, 2026 at 08:30:42PM +0200, Boqun Feng wrote:
-> On Mon, Sep 21, 2026 at 07:12:02PM +0100, Puranjay Mohan wrote:
-> > On Sat, Sep 19, 2026 at 3:07 PM Boqun Feng <boqun@kernel.org> wrote:
-> > >
-> > > On Fri, Sep 18, 2026 at 05:32:52PM -0700, Paul E. McKenney wrote:
-> > > > From: Puranjay Mohan <puranjay@kernel.org>
-> > > >
-> > >
-> > > Hi,
-> > >
-> > > Sorry for a bit late repsonse.
-> > >
-> > > > RCU's per-CPU callback list is only touched with interrupts disabled: the
-> > > > enqueue runs under local_irq_save() (and the nocb locks when offloaded),
-> > > > as do callback invocation and grace-period work.  A call_rcu() that
-> > > > arrives with interrupts already disabled, whether from an NMI or from
-> > > > instrumentation that re-enters RCU, can interrupt one of those and corrupt
-> > > > the list or deadlock.
-> > > >
-> > > > Defer instead: stage the callback on a per-CPU llist and raise an irq_work
-> > > > that re-issues it once interrupts are on, straight to the enqueue so it
-> > > > cannot defer again.  The gate is bare irqs_disabled(), so callers that
-> > > > merely hold interrupts off are deferred too and pay one irq_work hop.
-> > > > Skip it while the scheduler is down (RCU_SCHEDULER_INACTIVE): irq_work is
-> > > > not usable that early, rcu_init() already calls call_rcu(), and the per-CPU
-> > > > deferral state is not initialised until rcu_init_one() runs later in it.
-> > > >
-> > > > rcu_barrier() drains every CPU's ->defer_head before it scans the lists,
-> > > > and rcutree_migrate_callbacks() drains an outgoing CPU's.  A drain
-> > > > re-issues onto the draining CPU, so a barrier moves other CPUs' staged
-> > > > callbacks onto
-> > > > its own ->cblist; call_rcu() promises no CPU affinity for invocation.
-> > > > ->defer_lock is held across llist_del_all() and the whole re-issue so the
-> > > > drainers
-> > > > serialize: one that finds the list empty can conclude that everything
-> > > > staged before it is already on a callback list.  Interrupts stay off for
-> > > > the batch.  Where the arch has an irq_work self-IPI that is what one
-> > > > interrupts-disabled region could stage, normally a single callback; where
-> > > > arch_irq_work_has_interrupt() is false the drain waits for the tick, so
-> > > > several regions can accumulate first.
-> > > >
-> > > > The drain clears ->next before re-issuing.  A double call_rcu() on a head
-> > > > that is already debug-object-active self-links the staged node, and
-> > > > rcu_do_enqueue()'s duplicate path returns without clearing it, so the
-> > > > drain would spin.  A re-add behind other staged callbacks makes a longer
-> > > > cycle, which that does not bound; a double call_rcu() stays undefined.
-> > > > llist_del_all() yields newest-first, so a batch is re-issued in reverse
-> > > > call order; nothing depends on call_rcu() ordering.  The re-issue drops
-> > > > the lazy hint, since staging records only ->func, so a deferred callback
-> > > > loses its batching on CONFIG_RCU_LAZY.  kasan_record_aux_stack() moves to
-> > >
-> > > I'm not sure this is a good idea, because it effectively remove LAZY
-> > > support when DEFER is enabled. Since the goal of this patchset supports
-> > > BPF and NMI, would it be nicer that we skip the whole defer logic if the
-> > > callback is LAZY? Alternatively, you can have two llist (one for hurry
-> > > and one for lazy).
-> > 
-> > I had made this trade-off of removing the Lazy tag as I thought it is
-> > not necessary to support lazy when call_rcu() is called from nmi and
-> > bpf based instrumentation as they should not be frequent. But I like
-> 
-> Ah, I missed that you only defer if irqs_disabled() is true, so this is
-> much better than I used to think. So..
-> 
-> > the idea of two lists (skipping the defer logic is not possible as it
-> > could lead to deadlocks/corruption). I will also investigate if we can
-> > put the Lazy tag on the ->next pointer. But will it be acceptable if I
-> > do that as a follow up? I want to get the base support fully validated
+Changelog:
+v4: https://lore.kernel.org/all/20260915154248.3612028-1-puranjay@kernel.org/
+Changes in v5:
+- Rename the "hash_map" subtest to "bad_map" so that it matches its
+  helper test_call_rcu_bad_map() (bpf-ci)
+- Bump the callback counter after chain_err in the selftest callback.
+  Userspace polls that counter and then reads chain_err, so it could
+  still see the initial value before the re-arm had stored one, which
+  let the chain subtest's assertion pass without checking anything
+- Say in patch 1 why embedding struct rcu_head in a uapi struct is
+  acceptable here (Mykyta, Paul, Alexei)
+- Rebase on bpf-next/master
+v3: https://lore.kernel.org/all/20260915143640.36292-1-puranjay@kernel.org/
+Changes in v4:
+- Drop an unrelated hunk in bpf_async_update_prog_callback() that turned
+  PTR_ERR(prog) into -EBADF.  That is the shared bpf_timer/bpf_wq path
+  and bpf_prog_inc_not_zero() returns -ENOENT, so it would have changed
+  the errno bpf_timer_set_callback() and bpf_wq_set_callback() report to
+  userspace (Sashiko).  No other changes from v3
+v2: https://lore.kernel.org/all/20260915114240.3269184-1-puranjay@kernel.org/
+Changes in v3:
+- Move the bpf_call_rcu_tasks_trace() verifier bits from patch 1 to
+  patch 3; patch 1 alone emitted "resolve_btfids: unresolved symbol
+  bpf_call_rcu_tasks_trace" (Sashiko)
+- Poll the callback counter with an acquire load (Sashiko)
+- teardown: v2 only checked that the program was eventually freed, which
+  passes even if nothing was ever armed.  Also assert that the chain ran,
+  and read the -EPERM back through an independent .bss fd
+- Use kern_sync_rcu() instead of open coding the grace-period wait
+- Return -EBADF rather than -ENOENT when the calling program is going
+  away, matching bpf_task_work_schedule()
+- mismatch_map now pins the bpf_rcu_head label the new code emits; it
+  passed with that branch removed.  Add a two_heads test, and wait for
+  each grace period separately in the chain test
+- Commit messages: correct the -EPERM parity claim, explain the inline
+  callback state and the struct size, motivate the tasks trace flavour
+v1: https://lore.kernel.org/all/20260907134552.1772405-1-puranjay@kernel.org/
+Changes in v2:
+- Rebase on bpf-next/master
+- Use rcu_read_lock_dont_migrate() over open coding (Alexei)
+- Improve re-arming selftest to detect failure (Sashiko)
 
-I agree that you need a lazy flag that indicates that all deferred
-callbacks in this llist are lazy.  As soon as the first non-lazy callback
-arrives, the flag must be cleared.  Because this is the way laziness
-works without deferral, correct?
+BPF programs that manage their own objects have no way to run their own
+logic once an RCU grace period has elapsed.  bpf_obj_drop() defers a
+free, but returning an index to an allocator or unpinning a resource
+once readers are done has no equivalent.  sched_ext's BPF library works
+around this today by pushing freed nodes onto a list and having a
+userspace thread call membarrier(MEMBARRIER_CMD_GLOBAL) and then run a
+BPF program to reclaim them; it is the first intended user.
 
-Then in the irq-work handler, enqueue them all lazily if the flag is
-still set, or non-lazily otherwise.  If the flag is not set, enqueue
-them lazily.  Either way, set the lazy flag.
+Add:
 
-Of course, as described, this is quite racy.  To make it work, the
-enqueuing and the clearing of the flag for that first non-lazy
-callback must be atomic.  Which can be accomplished by having this
-be the low-order bit of the llist_head structure's ->first pointer,
-as opposed to the llist_node structure's ->next pointer.
+	int bpf_call_rcu(struct bpf_rcu_head *rh, void *map,
+			 int (*callback)(struct bpf_map *map, void *key,
+					 void *value));
 
-Or am I missing something subtle here?
+and bpf_call_rcu_tasks_trace(), same signature, which also waits for
+sleepable programs.
 
-And of course, either way, this requires llist primitives that clear
-that low-order bit at the appropriate places.
+@rh is a struct bpf_rcu_head embedded in a value of @map, so the
+callback runs as callback(map, key, value) for the element it lives in
+and needs no cookie.  The field is only accepted in BPF_MAP_TYPE_ARRAY,
+and arming holds a reference on the calling program until the callback
+has run.  Patch 1 covers the lifetime rules.
 
-> .. definitely a follow-up would do, thank you!
+This needs
 
-Very much agreed on this being a follow-up item!
+  https://lore.kernel.org/all/20260810122758.183765-1-puranjay@kernel.org/
 
-							Thanx, Paul
+for call_rcu() and call_srcu() to be safe from the contexts a BPF
+program can be called in.
 
-> Regards,
-> Boqun
-> 
-> > with the BPF side changes. I also have more optimizations planned as
-> > suggested by Sebastian.
-> > 
-> > Thanks,
-> > Puranjay
-> > 
+Puranjay Mohan (4):
+  bpf: Add bpf_call_rcu() kfunc
+  selftests/bpf: Add tests for bpf_call_rcu()
+  bpf: Add bpf_call_rcu_tasks_trace() kfunc
+  selftests/bpf: Add a test for bpf_call_rcu_tasks_trace()
+
+ include/linux/bpf.h                           |  10 +
+ include/uapi/linux/bpf.h                      |   4 +
+ kernel/bpf/btf.c                              |   7 +
+ kernel/bpf/helpers.c                          | 102 +++++++
+ kernel/bpf/map_in_map.c                       |   4 +
+ kernel/bpf/map_iter.c                         |   6 +
+ kernel/bpf/syscall.c                          |  11 +-
+ kernel/bpf/verifier.c                         |  84 +++++-
+ tools/include/uapi/linux/bpf.h                |   4 +
+ .../selftests/bpf/prog_tests/call_rcu.c       | 275 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/call_rcu.c  | 110 +++++++
+ .../selftests/bpf/progs/call_rcu_fail.c       | 114 ++++++++
+ 12 files changed, 728 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/call_rcu.c
+ create mode 100644 tools/testing/selftests/bpf/progs/call_rcu.c
+ create mode 100644 tools/testing/selftests/bpf/progs/call_rcu_fail.c
+
+
+base-commit: 15972a29ac91dbbf4d33246962b7fcc7b1dea7ed
+-- 
+2.53.0-Meta
+
