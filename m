@@ -1,61 +1,47 @@
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CB04AA030;
-	Mon, 21 Sep 2026 14:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DF4478E56;
+	Mon, 21 Sep 2026 14:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789999850; cv=none; b=kyUQlCjk3iEHeR2TOh4F4SfNRn+exdKdqMIIY+G2hZ1VmsgJmbldZUkTzUBhlgur/9skHIdcMLX78qLncRS68SeNFsER0pni3CCtYir4KPZ7kjJbKEIIXA9X7c4/nm99L3Mb28Dh+kFeWwmp62u2OMu/TnJo0QtSVHaRAbLugp8=
+	t=1790000228; cv=none; b=dJ7rcNLzeYMHfNWuvl7jYXgg5F7shE3hJA/mJ7OG3m+BvYONwRAEycutibH+uL6Q+4wgkdDRohFuLj2OARimWWP3J6tAsvGXpUSej5G7RPYsjvckCh1BNw9KF9CgjExcsYQLaQKEBQLH4GGyg3neJ2CIFqLYK2BZjXmeZGLZxcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789999850; c=relaxed/simple;
-	bh=FnOQIN5WVGUk4rSKIf5BXL3fcJCn02DqB+bDnjVfiVY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=olhIo5B4avd3BI8+qCdhZKMmYnQe1wlfVCSrPOeT3JvXKD82eZNkS1iEnl030zKn5TPT+cj2ikm+HXRaWM0zLcTWvAvoC/e/Jax4iw79ZunQ+htyWzkZUri+LvolUIhtxAgp9ZwEb0rbgQYKxnyuRD4shJZ0fJKhKcoBoLOSq+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=vCB5zu+a; arc=none smtp.client-ip=90.155.50.34
+	s=arc-20240116; t=1790000228; c=relaxed/simple;
+	bh=VxPgw7TqHxNsUYbyjxsPVYtoYeZ513ZKxEdNjRdpnaw=;
+	h=Message-ID:Subject:From:To:Cc:Date:in-reply-to:Content-Type:
+	 MIME-Version; b=StbUVv/2/bMGvVG+J4dt5e8xuTRyrLKHKKRiASNydaRAJo+HYMv5eHf1bSWNWpqLkddN56IWVNe48HDXodfOkd7E+L4RoYq8lDu/TqkHbOssYHrOJjcRsYeq+PeOVlQ+wddRSj1qDDuJVEGsIU7qleXvvYGx51rwkQou3uNhUIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hND9vOsS; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vCB5zu+a"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hND9vOsS"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FnOQIN5WVGUk4rSKIf5BXL3fcJCn02DqB+bDnjVfiVY=; b=vCB5zu+ako2myIcgWVbC9kQhH5
-	JuoNi6CqKsFsa3yymq2RZYLhxtrUX/nQKX9uLUySa0d2okalN/B/AM/zJD7httsHCDGJM7rRzf7qa
-	gb+kvlwUuCUntwzcWb7Nte/hs3rjS3pYIoh4ahSCgi24hjqaaor7DBpP2XhZhlABdzAwJHgiKxsf4
-	MW4nsHKtXzjMYGMKn2osQ1El2wvuAY5hH3GOvMrw6btCXKTJffOfZtWRE7oCLDyVc3HrA8upqjlDY
-	HYzwjF8Z3MjzZFLl6W+Bu6YQ0JpcSQScMtV3VUD1N15bc+ZDwKJwSt3gIxvg4wIkA5zxG3nLgCp4y
-	KHDCDgLw==;
+	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:in-reply-to:
+	Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:References;
+	bh=VxPgw7TqHxNsUYbyjxsPVYtoYeZ513ZKxEdNjRdpnaw=; b=hND9vOsSDwHag1soPaknulsBUT
+	REZyUgkpa3A7ojqOg2PvR6VDuEmfFdJ0f9Ukg+AYnCc1WNJRYqiYWj7Gs+29lKOuN0+iVCOAzVe7M
+	C0T4AWxmG3PGYzJenw5KCN6BdLMnXVh8ryIatlvEYU2qFKBJdhQMjUVuAFzYXRG1sRnGvbOscL40v
+	90vntpPMYV2rY1xsAE84W279+gLWEdYzObk67gHuJk8VtPP00/AZWxFBBK4Lg0nFIg0+IQX18yiFJ
+	tjY/CrgD2pwnV/9c3kuojm1dTeSLwMr6ZkpGVdQqsu8Qa7o/pyOBxo0hhtN8VqxrTHJ8Fn2LONw5y
+	rbFXZwJg==;
 Received: from [54.239.6.188] (helo=edge-m2-r3-110.e-iad50.amazon.com)
 	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8ej9-00000004Jhf-1if0;
-	Mon, 21 Sep 2026 14:10:39 +0000
-Message-ID: <9fa88946c5ba6a81a971ca51e51c12a2b05ab4fa.camel@infradead.org>
-Subject: Re: [PATCH 00/17] KVM: Use atomic SRCU for gfn-to-pfn cache,
- reinstate guest mode for x86 nesting
+	id 1x8epL-00000004LCt-15U2;
+	Mon, 21 Sep 2026 14:17:03 +0000
+Message-ID: <ff980ee262d5349e02f9c5a509c6b0cab1653631.camel@infradead.org>
+Subject: Re: [PATCH 07/17] KVM: pfncache: Add guest-mode pinning
+ (GUEST_USES_PFN successor)
 From: David Woodhouse <dwmw2@infradead.org>
-To: kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, linux-kselftest@vger.kernel.org, Paolo
- Bonzini	 <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>,
- Paul Durrant	 <paul@xen.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, Fred
- Griffoul	 <fgriffo@amazon.co.uk>, "Paul E. McKenney" <paulmck@kernel.org>,
- Kunwu Chan	 <kunwu.chan@linux.dev>, Kunwu Chan <kunwu.chan@gmail.com>,
- Zqiang	 <qiang.zhang@linux.dev>, Boqun Feng <boqun.feng@gmail.com>, Neeraj
- Upadhyay	 <neeraj.upadhyay@kernel.org>, Joel Fernandes
- <joelagnelf@nvidia.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Josh
- Triplett <josh@joshtriplett.org>, Mathieu Desnoyers	
- <mathieu.desnoyers@efficios.com>, Sebastian Andrzej Siewior	
- <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, Steven
- Rostedt	 <rostedt@goodmis.org>, Jason Gunthorpe <jgg@ziepe.ca>, Michal
- Hocko	 <mhocko@suse.com>, Nikita Kalyazin <kalyazin@amazon.com>, Keir
- Fraser	 <keirf@google.com>, David Matlack <dmatlack@google.com>, 
+To: sashiko-bot@kernel.org
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
+	pbonzini@redhat.com, seanjc@google.com, paul@xen.org, paulmck@kernel.org, 
 	nh-open-source@amazon.com
-Date: Mon, 21 Sep 2026 16:10:35 +0200
-In-Reply-To: <20260920211920.928306-1-dwmw2@infradead.org>
-References: <20260920211920.928306-1-dwmw2@infradead.org>
+Date: Mon, 21 Sep 2026 16:17:01 +0200
+in-reply-to: <20260920215320.84B701F000FF@smtp.kernel.org>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-3jH0PuYwZ3FIcpY+3xNi"
+	boundary="=-3WoC2uP+6BndPOxo1ODc"
 User-Agent: Evolution 3.62.0-0ubuntu1~ppa1~24.04 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -66,40 +52,27 @@ MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
 
---=-3jH0PuYwZ3FIcpY+3xNi
+--=-3WoC2uP+6BndPOxo1ODc
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2026-09-20 at 21:49 +0100, David Woodhouse wrote:
->=20
-> There have been previous series which attempt to deal with various parts
-> of GPC locking, and the steal time one has definitely been posted before
-> a few times, but let's just call this v1:
-> https://git.infradead.org/?p=3Dusers/dwmw2/linux.git;a=3Dshortlog;h=3Dref=
-s/heads/gpc-srcu
+On Sun, 2026-09-20 at 21:53 +0000, sashiko-bot@kernel.org wrote:
+> [Severity: Critical]
+> Does the early skip condition in this loop fail to check for
+> GPC_GUEST_USING?
 
-I think I'd actually posted more of the previous RCU work than I
-remembered, so perhaps this ought to have been a v4 of
-https://lore.kernel.org/all/20260805195528.3853473-1-dwmw@amazon.co.uk/
-but the entertaining parts of it probably stand alone now with the
-atomic SRCU.
+No. GPC_GUEST_USING can only be set while GPC_VALID is, and whoever
+clears GPC_VALID is responsible for kicking any vCPU that was using it
+(and waiting). The vCPU can't re-enter guest mode without servicing
+that kicked request, so can't re-pin without a full refresh.
 
-On the Sashiko feedback, much of it is down to lack of visibility of
-atomic SRCU, and some parts are now fixed in my tree for what I shall
-call v2 unless someone really objects to the above omission.
+> [Severity: Critical]
+> does this zeroing of the state in kvm_gpc_deactivate() hide the
+> GPC_GUEST_USING pin from concurrent invalidators?
 
-The interesting one is the EVTCHNOP_send deadlock, spinning on -EAGAIN
-while in a kvm->srcu read section which prevents the memslot update
-from ever completing. I've made it raise a REQ which completes it from
-outside the read section, and added a selftest.
+It kicks any vCPU just like the normal invalidate path.
 
-The MSR bitmap cache in patch 10 did lose the read-only mapping
-support; I've added a readonly option to the GPC.
-
-The iteration count in patch 17's commit message did indeed say 100k
-where the code only does 10k. Fixed the former.
-
---=-3jH0PuYwZ3FIcpY+3xNi
+--=-3WoC2uP+6BndPOxo1ODc
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -197,22 +170,22 @@ vFEOOmuaq7VamuLEPFQtJM4olmipOW6CzrLcFz6J/6yAecEG3P1ZDoy08eSHvM40MAUgpwGa/w6o
 MAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMTowOAYDVQQDEzFEaWdpQ2VydCBB
 c3N1cmVkIEcyIFNNSU1FIFJTQTQwOTYgU0hBMzg0IDIwMjQgQ0ExAhADNSi2uzJskfEdOMo4hV0g
 MA0GCWCGSAFlAwQCAQUAoIIBezAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJ
-BTEPFw0yNjA5MjExNDEwMzVaMC8GCSqGSIb3DQEJBDEiBCBAHl4cfzJH+HMLE/Hhq9pi2aKsLdll
-8QPyT82PtBeJ7jCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGln
+BTEPFw0yNjA5MjExNDE3MDFaMC8GCSqGSIb3DQEJBDEiBCDJjIDsQnISa8lz2goQWk9zw8+lcNfF
+6hTQKAb016colTCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGln
 aUNlcnQsIEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFzc3VyZWQgRzIgU01JTUUgUlNBNDA5NiBT
 SEEzODQgMjAyNCBDQTECEAM1KLa7MmyR8R04yjiFXSAwgYcGCyqGSIb3DQEJEAILMXigdjBiMQsw
 CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFz
 c3VyZWQgRzIgU01JTUUgUlNBNDA5NiBTSEEzODQgMjAyNCBDQTECEAM1KLa7MmyR8R04yjiFXSAw
-DQYJKoZIhvcNAQEBBQAEggIAblvMZ78GgK2qa/nG+2Tg9m9pLt9EMZY5aC7hUova7IyajQiKoFlK
-9PjHe+uNRAcpIKkmWE8CiLaHKq8/vHAgsB0Xtmr8CvugKZv8mYgc2BzAEQX/bmuvy4yl+PRZ5L98
-uz23va/KUBrI93Q9QgS9P5Tfniy8JGquDonGg6QqbrPIJ7C4MBP1u9cw7riosUpt0IF9uweFOUmF
-e1savl3avplyCAvnjcJHQizLu6Q2cySqTDmYfoL0OchLtf0iudNw/vc/cOwhFf0Rn60Vt3OuUIl6
-vUyVQKvS5UStJwN/062nV2bTNBOorlafWTPvqhqskBBNwDdIM6B+nHQAJrTgSioaRAKjZdU/OOZD
-6cZeFsWlFzZ6TXbYdGt/r6HfJ3KSfen9LMLVR4i3tqHZ4i0BB5IR0vKxydtSvLxkCDUuWkcRC77g
-n5c4NHF7Z2Q5WwTJwd9dmvPfAaLg/mOcdArcZ2fxfda2UTa038NurciR1z4DYJmWrtFRuQLvx6X8
-6q3sQ9C4iioEnEPgoVXpK7bjcblZkMuL+SZ3gUtYm6IXfwjOlDRVPHtWLz2y+h+Io2Srg+UyA5tK
-Y7Wj27lEB75FFN1LamrFV5asYt+o031jxFRBcLjAkR2X0mSoD8kTUVg6nTEESw+J7dzEfnapGkKB
-V82nhoCEuh/XTtRU6qbqrlMAAAAAAAA=
+DQYJKoZIhvcNAQEBBQAEggIAGcUe6+YFwvxiJWwiqNOEk5xK3HpmeroD4F8WOwhY7lIPwrLJ+Iyw
+/c+GhY0iutynSXsd/zf4jMr+w+Yjo4uxcj2DsRRZTMYxdLheN1LQX90yMWKg3vRwxcMdilWcAUpj
+E/HGgYnCdnNw2ajxM/+p1XlZRioGCrddplZRlEqqEiT13oWAM+Cat6h8WibFKd4J/giiQHjggpB3
+p9X8nWqgR+ShpeL1rvKDsDyx7VDe3CQjD9RTg7NC9jDZ49C2J3zsyMrn3UZT03hA4KaZheAfxPbW
+jXetv1PfCjXHjhVzGxTsHQsEVI5BeL712sztIF1PX3iAFv7n1vnXmYVgsrrQknQlNNWcgSfSj67J
+7GHlkcs59jta6G9anW7jSP1pvjdX8tYd74DtH1eUlFpTigO+0gt6OGChMHYUytXkA25XCPdQdNGu
+Z8NOTjGDRfZ8JfhtLjq+0mAD57EIA2fkHT0Cf9da7VVbXZajRjMEjVlCWD8KDOxf3cIg/Qr+Ljdx
+vPj7YmThXqo+jwTX2T2islVMtSdx5tZj6ieM9Lnvr8eb/LsEphjCazWeo0EcPA+o/MWjAfGx51ci
+OeIeHQ8E5i9s+9TsQE84+1cWMX7zqgickap0cQLa/zb03nV6+cAMrbfR4k8Y9sW1kevwJWYw4ISN
+K2xbGSpPlDGrCI+j2e2ujU4AAAAAAAA=
 
 
---=-3jH0PuYwZ3FIcpY+3xNi--
+--=-3WoC2uP+6BndPOxo1ODc--
