@@ -1,191 +1,129 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DAD4429CEC;
-	Tue, 22 Sep 2026 08:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F78645628F;
+	Tue, 22 Sep 2026 09:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790067114; cv=none; b=Kv7Hz5M7B4jyTEagiEDSvBidot+wS+bGtyiCcnjqVeCpAa3T6fcVSUqnR1knzg6+/b4JYzqAoI/70FI62Mdz4R2zLr1xJdXIKrmJL19BYBdKvO+M+P/SjHv+ISrE7fK7tCUzwU7T68bRVOTzyXM42RyhevTrKDgxu4Z/54x/U4M=
+	t=1790069165; cv=none; b=PgRBE0RIkuDlMhXFLAbXCiDH44ErXQvHkLOOo25Y9AbjJclX+3U7LgykfUtD7jSSJ/F3Xrmjjpcnq12fVDZpml0GaA09htDNam+eHSL8a4hwLpmNJl3eZE/n+gKHgSkmyy4WHQ0eJJTFsT6VKooMelsm9vbgjsBurxf8UoZp/uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790067114; c=relaxed/simple;
-	bh=2Z5Qn60EBb1PnLpPsZn1SPhgCYhV7AGPoEY5wZRgjYE=;
+	s=arc-20240116; t=1790069165; c=relaxed/simple;
+	bh=/czamlANrYy0od3lmrtj/LjJRZu5G+OvdYZ/I8xRYFU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k0WakB9ziIQa7M17hMuaLac4wK/UtSYjWFmmnyWav/VfR9TTbu0Tpm2LaAxUw7Xd3MTxZisGYD5r8m7ckzSGeN+RdGTeVKcahjSwduAcgkUTzNM7vSmY0rms6X0tqbmADIt3AMGvO2k6tXDzH5Vo8Lbw4iedVBFxBVZCvTy061Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lbvCQH93; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=NFzR7w0Gm+pd9/NbvJ3RTiSG4Xj08F93Q8Kys+nocCXoToDjCt+kvXZ5ByyrOqiLgBCUbytk5mJwCcblTDSPxUvWsCsZ0U4ECvSRqHnGjQKhPtCDrzEjk5TFdZntDiB1wklJRHBAWVXh3Zf1zTwZJay0ojQDW0wdGrW2Gq+Bhz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kKEof/d/; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lbvCQH93"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 517431F00899;
-	Tue, 22 Sep 2026 08:51:52 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kKEof/d/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC091F000FF;
+	Tue, 22 Sep 2026 09:26:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790067112;
-	bh=Rf220kPvSZHePWxrXLumbg4sIvzSq9oPJ6+CYXZV+kY=;
+	s=k20260515; t=1790069163;
+	bh=rnUA/meXTogPz3GsOPNeYu661jZ5us8UlNuxG2VZ7Jg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=lbvCQH93gnMPeu+WxM9t8m930LaMWZVLPFyqWebUHcC6bzlwpxg/ZYiqIFWXUPvtp
-	 zQpoQT3vlwF24pE3KPr44lAWD2XIoes+tYKF68WvqV42MNbH/glIiADbC9pFTJcHi1
-	 TdM78Oi/KQfrTsHkbfEx4QlbJldl0T1LxAFUKeo6kUfo1A7Ba3py33ZPfbZGsMEmNe
-	 V7UZCnuDEsz6EFotxHh1UgoZ2HVXSEX2K6gRFNKN9O3FvMswA8snbq7fb3we1LG3H6
-	 laO/7FrBPBzHD2PHsO3sEOTxc9lk6M8lo9GAURe7ohhbvvndXp48a0nlmrsIBhGsH+
-	 vJU/EqUe5xUig==
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 6AF62F40066;
-	Tue, 22 Sep 2026 04:51:51 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Tue, 22 Sep 2026 04:51:51 -0400
-X-ME-Sender: <xms:p0GyallCIJ245yua978p68HSdMpENIh5TPbVfd2MoRD4cY87cXh4vg>
-    <xme:p0GyanqbhN4H1_Yl9w6MKcrGGUJbCPLXBftJ7w90BduMbHSviNnuTxLS48-O89jeW
-    1-0wfiOvWfdE_7D6yRh2fj9O5qLDLsIMP09dsURWUytZJp58xjRKA>
-X-ME-Received: <xmr:p0GyakllK-AKhk0O7c9iGw4_dmJ2PmLMJnoTIOBwf9F99t_Eh3lmTMPTdpnIbSvlEPkZ7OWEHup5C5NIeL4I1rMOyxyzdPrkJGN-Sk49YJqSMxq3ecVSeXaa>
-X-ME-Proxy-Cause: dmFkZTEy36KmC5z4mpGoh+ErYZsOWD36SPeiGtyIfXZzW33o1dun4y/KdVBmMRSlhAXBIC
-    MsPpfyHDf4nuPxptFgu9Y8O7f+lHMGV33upldO6ejgKpDORUtbLS4jZ9TxFLdGEhSskNdh
-    31JTNaS5eYfbZA8V5oNXxXU0Uswv/eqJAhy3YHj5FLwE76vQLSmLL5lpPb9niaxvJBxQFM
-    Zk0Y36KK135SVAHo0J6iIlNRKatzbdORnIPB6tgdaVzv606Ufa1xsD4U/KQTAXrU6/3O53
-    7S7hajYvAtweWv8iLUY9XKzwivWkyZ5liKtKtDyr0qFrSRtDb//2hnSIgysFO3fnNPluiX
-    ng7LS8vOL4mVzGd3AH8mqcYXGPZX5h2XInrGbDCuu5K3XR6QMwtgtSoX4u+wfkhTdKf0Cm
-    XlyWt6aVO9jlDH7K4oHQPd7Sd1/xyen65RwC9c3TZa/2sOwrG2qLQG3MbmPrWs/F5WhqoN
-    LmV6zmQFOx3VRm7ivI14DSg3lEOTFghBcVvAu7LU4vekPAd8rGamaT/u3XTKVlmqzFJI62
-    Y4ncMUx9YfMmaTYcuupDSEW93QJdaoc+lzYxbE4wnHIi3OCie0+f6lXnF9vTSVKLugO/8H
-    HHGkEMjbqGLooP3tBy72emz5FZnYsaeiH1W6lYxV2OgHukFsEoOOxVnOZ0Yg
-X-ME-Proxy: <xmx:p0GyaoaBxzRD8nC1j0Z65NG67pGEoCg4xtA_ydAzU44860hqcPVlpw>
-    <xmx:p0GyaoENiXKtHslCfa4oPWhTrMZs-3JQQKB5re090vwsWNq8c0dUog>
-    <xmx:p0GyajMOV5oX6N1hpD8JLlc_IM76rie_RhtUCXxgfbRBSsClSm5hHA>
-    <xmx:p0Gyamwal0lyR6aHFMlS3Lq_QYi-Ctrbu6_3aIFKemyHYNunBGHFLw>
-    <xmx:p0GyaomQDK6YGp85hzl7Fs_2E-_gaZnS58KJNdh8kUFg0qFAAeXn9Ter>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 22 Sep 2026 04:51:50 -0400 (EDT)
-Date: Tue, 22 Sep 2026 10:51:49 +0200
-From: Boqun Feng <boqun@kernel.org>
-To: Kunwu Chan <kunwu.chan@gmail.com>
-Cc: stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-	peterz@infradead.org, npiggin@gmail.com, dhowells@redhat.com,
-	j.alglave@ucl.ac.uk, luc.maranget@inria.fr, paulmck@kernel.org,
-	corbet@lwn.net, mingo@redhat.com, dave@stgolabs.net,
-	josh@joshtriplett.org, frederic@kernel.org,
-	neeraj.upadhyay@kernel.org, urezki@gmail.com, akiyks@gmail.com,
-	dlustig@nvidia.com, joelagnelf@nvidia.com,
-	skhan@linuxfoundation.org, rdunlap@infradead.org,
-	longman@redhat.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev, include@grrlz.net,
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	lkmm@lists.linux.dev, linux-doc@vger.kernel.org,
-	rcu@vger.kernel.org, lianux.mm@gmail.com
-Subject: Re: [RFC/WIP PATCH 2/4] locking/lockdep: use hazptr to wait for
- dynamic key lookups
-Message-ID: <arJBpQyOQf3AJ4cA@MacBook-0RXW5>
-References: <20260922070950.4173245-1-kunwu.chan@gmail.com>
- <20260922070950.4173245-3-kunwu.chan@gmail.com>
+	b=kKEof/d/QGqqvEMieqPcq+iNbah4miWQ+uYdxMOhLMYpA+UGfhL7Rj4Zwp+2u9HzE
+	 vr9LclbaTGguy8ICWkSRUpb0+uOiBBA9uEx8/DitWMMHhbIDUVYyqDXYTge07CuQYi
+	 ICq9pc4ldXl82zrkQWBoiyDFCEhfwRFtDamwwtvxrawKTgjy4iTdMK2UPWySGypleG
+	 OK9v9ed/WPwqqSyRCPofNx7UeEUyu672bKbH5G0HbXp6OHFlaThk/fIuL2WJSQ78OX
+	 D7Y2GjecVdut0Y2AQPjA7f9E06kCgkoLp8EKs/d+HV9JCqiuu348mREXpUXdbd72gB
+	 D5451IcxHeBZQ==
+Date: Tue, 22 Sep 2026 11:26:00 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>, Boqun Feng <boqun@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 02/13] rcu-tasks: Add a Tasks RCU implementation for
+ reader-marked trampolines
+Message-ID: <arJJqAjqy1dWnPkn@localhost.localdomain>
+References: <20260922-b4-rcu-tasks-preempt-qs-v5-0-410f57770bad@toxicpanda.com>
+ <20260922-b4-rcu-tasks-preempt-qs-v5-2-410f57770bad@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20260922070950.4173245-3-kunwu.chan@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260922-b4-rcu-tasks-preempt-qs-v5-2-410f57770bad@toxicpanda.com>
 
-On Tue, Sep 22, 2026 at 03:09:48PM +0800, Kunwu Chan wrote:
-> lockdep_unregister_key() waits for is_dynamic_key() callers with
-> synchronize_rcu_expedited(), which sends IPIs to every online CPU.
-> Have is_dynamic_key() mark the hash bucket with a hazard pointer
-> and use hazptr_synchronize() to wait specifically for those
-> traversals.
+Le Tue, Sep 22, 2026 at 02:23:21AM +0000, Josef Bacik a écrit :
+> Tasks RCU waits for every task to pass through a voluntary context
+> switch, usermode or idle, because a preempted task might be sitting in a
+> trampoline that is about to be freed and nothing marks it as such.  With
+> PREEMPT_LAZY that is a poor fit for servers: cond_resched() is a no-op,
+> so a CPU-bound kthread only ever leaves the CPU by preemption, and one
+> such kthread holds every synchronize_rcu_tasks() caller -- ftrace and
+> BPF trampoline teardown under their mutexes, the kprobe jump optimizer
+> under text_mutex and cpus_read_lock() -- hostage for as long as it runs.
 > 
-> The hash bucket address from keyhashentry() is stable, making it a
-> suitable hazptr synchronize target.  The rest of the key hashlist
-> lifetime (hlist_del_rcu/call_rcu) remains RCU-based.
+> Following the discussion on v2, take the other road: let the
+> architecture make its trampolines Tasks Trace RCU readers.  When an
+> architecture selects HAVE_RCU_TRAMPOLINE_READERS it promises that every
+> trampoline whose lifetime Tasks RCU guards enters rcu_read_lock_trace()
+> (or its assembly equivalent) before calling out and leaves it before
+> returning, so a task anywhere inside such a call-out, preempted or not,
+> is an ordinary Tasks Trace reader.
 > 
-> This adapts the lockdep use case from Boqun Feng's hazard-pointer
-> series to the current hazptr API.
+> That leaves the few instructions of trampoline text before the reader is
+> entered and after it is left (plus, in a later patch, the bytes a kprobe
+> jump optimization is about to overwrite). A task can only linger there
+> by being interrupted there, and such text never calls anything that
+> schedules, so instead of tracking tasks we track CPUs: every pass
+> through __schedule() is a per-CPU quiescent event, except that the one
+> context switch that can catch a task at an arbitrary instruction -- a
+> preemption from irq exit -- first records the interrupted IP in the task
+> and parks it on a per-CPU list for the duration (reusing the fields and
+> lists the classic flavor keeps for its exit-path bookkeeping), and, if
+> the IP is inside such "unmarked" text, puts the task on a short holdout
+> list; the task takes itself off at its next context switch outside such
+> a preemption or irq-exit check that finds it elsewhere. Usermode (the
+> existing tick hook, or a nohz_full CPU in an RCU extended quiescent
+> state) and idle count as well. rcu_tasks_trampoline_text() does the
+> classification: anything outside core and module text, plus an arch hook
+> for things like static ftrace stubs and return thunks.
 > 
-> Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-> ---
->  kernel/locking/lockdep.c | 30 ++++++++++++++++++++----------
->  1 file changed, 20 insertions(+), 10 deletions(-)
+> The grace period, run by the existing rcu_tasks kthread so that
+> call_rcu_tasks(), synchronize_rcu_tasks() and rcu_barrier_tasks() keep
+> their names and callers, is: wait for every online CPU to context switch
+> or be seen in an RCU extended quiescent state (nudging stragglers with
+> resched_cpu() after a jiffy), drain the holdout list as it stood,
+> synchronize_rcu_tasks_trace() for everything inside the readers, then
+> one more CPU pass and drain for tasks that have since left the reader
+> into the trailing instructions. That is bounded by a few jiffies,
+> preempt-off latency and an SRCU grace period rather than by the longest
+> stretch any task runs without sleeping, needs no per-task scan, and
+> makes cond_resched_tasks_rcu_qs() unnecessary on such architectures.
+> Unlike the classic flavor it also waits for an idle task caught in a
+> trampoline, since an idle CPU only counts while RCU is not watching it.
+> rcu_tasks_wait_irq_preempted() walks the parked lists for the one caller
+> (the kprobe jump optimizer, later in the series) that makes ordinary
+> text unsafe to be parked in and so has to wait out tasks that were
+> preempted there before it said so.
 > 
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index c56a7f91d72e..f67d847f9abf 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -58,6 +58,7 @@
->  #include <linux/context_tracking.h>
->  #include <linux/console.h>
->  #include <linux/kasan.h>
-> +#include <linux/hazptr.h>
->  
->  #include <asm/sections.h>
->  
-> @@ -1280,14 +1281,24 @@ static bool is_dynamic_key(const struct lock_class_key *key)
->  
->  	hash_head = keyhashentry(key);
->  
-> -	rcu_read_lock();
-> -	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-> -		if (k == key) {
-> -			found = true;
-> -			break;
-> +	/*
-> +	 * The traversal is protected by a hazard pointer rather
-> +	 * than an RCU read-side critical section.
-> +	 */
-> +	{
-> +		struct hazptr_ctx ctx;
-> +		void *bucket = hash_head;
-> +		void *addr;
-> +
-> +		addr = hazptr_acquire(&ctx, &bucket);
-> +		hlist_for_each_entry_rcu(k, hash_head, hash_entry, 1) {
-> +			if (k == key) {
-> +				found = true;
-> +				break;
-> +			}
->  		}
-> +		hazptr_release(&ctx, addr);
-
-This looks good to me. However, we probably want to use scoped_guard()
-here, that means cleanup.h support for hazptr.
-
-The other thing that could be added is a debug option that force we
-skip the fast path, so we always go into the show path in
-hazptr_acquire(). This occurs to me because the slow path here means
-acquiring a lock inside lockdep code, it should work, but I just want to
-be careful. So something like:
-
-	void *hazptr_acquire(..)
-	{
-		...
-		if (IS_ENABLED(CONFIG_HAZPTR_ACQUIRE_FORCE_SLOWPATH) ||
-		    unlikely(slot->addr))
-			return __hazptr_acquire(ctx, addr_p);
-		...
-	}
-
-Thoughts?
-
-Regards,
-Boqun
-
->  	}
-> -	rcu_read_unlock();
->  
->  	return found;
->  }
-> @@ -6683,11 +6694,10 @@ void lockdep_unregister_key(struct lock_class_key *key)
->  	 *
->  	 * Some operations like __qdisc_destroy() will call this in a debug
->  	 * kernel, and the network traffic is disabled while waiting, hence
-> -	 * the delay of the wait matters in debugging cases. Currently use a
-> -	 * synchronize_rcu_expedited() to speed up the wait at the cost of
-> -	 * system IPIs. TODO: Replace RCU with hazptr for this.
-> +	 * the delay of the wait matters in debugging cases. Replace the
-> +	 * expedited RCU wait with hazptr_synchronize().
->  	 */
-> -	synchronize_rcu_expedited();
-> +	hazptr_synchronize(keyhashentry(key));
->  }
->  EXPORT_SYMBOL_GPL(lockdep_unregister_key);
->  
-> -- 
-> 2.43.0
+> The classic implementation is untouched and remains the default; the
+> new one is built only as CONFIG_TASKS_RCU_TRAMPOLINE_READERS when the
+> architecture opts in and uses the generic irq entry code, whose
+> reschedule check gains the rcu_tasks_irq_resched() call.  Nothing
+> selects it yet.
 > 
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Assisted-by: LLM
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+One review might have fell into the cracks: https://lore.kernel.org/lkml/aqxLgT41UyA-bV5J@pavilion.home/
+
+-- 
+Frederic Weisbecker
+SUSE Labs
