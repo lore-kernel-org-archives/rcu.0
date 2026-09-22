@@ -1,62 +1,64 @@
-Received: from mail-pz2-f12.google.com (mail-pz2-f12.google.com [74.125.228.12])
+Received: from mail-pj2-f12.google.com (mail-pj2-f12.google.com [74.125.227.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90F24E5323
-	for <rcu@vger.kernel.org>; Tue, 22 Sep 2026 07:10:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC3E74F96A7
+	for <rcu@vger.kernel.org>; Tue, 22 Sep 2026 07:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.140
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790061008; cv=none; b=Y2LwFRmGTxt+3MzsmOdO5YpGmkfEazBoKCLXkw08NTfe/WgpTM6bVTBSl6C1LVBs91d5v/DPlu4ZsWXc/+LS1g6CDMiWDTvO6fTJnlVayjGsuaud/KraDGPc/dw1r2uphiCHlVQBCYGxUkC1TzWyxGU7IIVfLSU3iptsd5vboUc=
+	t=1790061019; cv=none; b=oVvsdsnvwbZgScjTh92IY7orR4pPrM++nNvqUD2ybcV0OSbdaGRFpi5LJcJIdkbabt45I0xQ4P0d27tSRSvWs2BM675iqvNs/E3kztPfltuoSrMv9jRZtlVAQmorSfmZl4saNDxTN2XKHJj+09PLo4CcjB9T7ZsTbf4690NKzIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790061008; c=relaxed/simple;
-	bh=IT4Omxoh3UL/os4MBcvDO0Y3uwCbEQ/6SyGtTM/wD+k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MMNHTbMo37jCbigTvnnJIm0whs4+qAZfCSWNYT/161VPYOTdL9TdMD6t47JUz9DrSl1MI42VMX6f+VF/fpCV6wzfAVM1sj0JxkiD4/yEZ0kOnBOeEGMKG1A6lBwP4bduf2zIilNVaOxmWQCtXrB99kJ+/kybCIALA9uOO0Mfcow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yp5YMgxX; arc=none smtp.client-ip=74.125.228.12
+	s=arc-20240116; t=1790061019; c=relaxed/simple;
+	bh=72LNOQJjrtL3qWz6jvLkQ4Fallgw3xB29OlIJrXyRUo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=XPH1v4u/ZxXUktdIoUbsCUs5/XZrLzqsoVWBgPkdDbu2MWTPByIvJVURP+F4yfzuVwKNKncD2+/RoD3mpeaUg4GCkAjpY1InGvzxXR0A5dLs1Pv4xv4cAnlRL24Ys16ufowsrw6wc5RBsY4NiWAzWpoMOybKOvHa9rbyuxXzew4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=rfbmh/8b; arc=none smtp.client-ip=74.125.227.140
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yp5YMgxX"
-Received: by mail-pz2-f12.google.com with SMTP id 41be03b00d2f7-cc1cea50dc3so2759855a12.3
-        for <rcu@vger.kernel.org>; Tue, 22 Sep 2026 00:10:05 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rfbmh/8b"
+Received: by mail-pj2-f12.google.com with SMTP id 98e67ed59e1d1-396ccdaea76so1645529a91.0
+        for <rcu@vger.kernel.org>; Tue, 22 Sep 2026 00:10:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790061005; x=1790665805; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=l6nOkseLD4E1uvlk7kwNFkZGEal1mrhs8j7yziX25N0=;
-        b=Yp5YMgxX9CYvhky9D6dAN4YK1p9JHW++s5+DVfDoeJueUsfWlEhSkXkcZ/CLrBnXOZ
-         rjeZRA8zVPJsidXFHGRy3F8ujH2SMX/+4ty5p2fTITtHMaS2RZGUjampVJpNeImv91Cd
-         tBMDhWB0wpJ5Hrq15gi4JetzN3Y9AiuCKMvGdNO6vL4QkMXDolD3fqm1eXzXkJ1pQqEQ
-         FjWH2eBytgqlq0w9z1rnmYM9jI0otm5qFJh8TvSp+iR1cWg59jbEwg/9+S2NK43vYaAj
-         5lXTo1zQbgFBQQ4GLemYfAo4C1LXj6i4tK1qz5yxtqBqcFjQwSfHsucb/N9eWwQG3QJ2
-         ub2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790061005; x=1790665805;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1790061017; x=1790665817; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=l6nOkseLD4E1uvlk7kwNFkZGEal1mrhs8j7yziX25N0=;
-        b=clXfN2uxcEtqm8/1S5wVSI5g0843hQj7Bgkh+xhCezjl6P9uBabPSLt+r9p9upRO0F
-         DS4xwEGmMd9mQeYJuVon5Y9YghUH4IjgwcjOXSYz7ClHlJixcMyxpLvPGj117jwuwrqi
-         fnjj0XQSb9QpLPZ5HKEnb9ESCoQVxc93S7ulBDQyLdi7JTIS/lTNGJEsmu/8LipUoywX
-         QuH+75b8RaFc86XV6ZTvWTo8Op0dx0R8vOYSL4MSCBARHQme9Xphx0uabgOFSuP/svmp
-         d3WZqB4Bmr4bsQg/qyNTHMg1tbckLAk2NJth7d3RyHtbbP6eO3sL8ZGB063M0EW0Kku9
-         ahJw==
-X-Forwarded-Encrypted: i=1; AKwUvBxcsklbot9FlkQzB1j76ZdePQ6Y5FQ+uFZKjV/bAW2ZOmBMtTsC2J34YNXV8x8mVEVZR4g=@vger.kernel.org
-X-Gm-Message-State: AFuF++ljx/2Jea8YAZGmCAR5MA4qAaYbq1eYaGPh+v35qziZcMwpFJYG
-	zzOqWPs9gON3kYSVSogy14Nl3jdBZWxLNFvjv48ZiBH7ciCpZdUNxdsw
-X-Gm-Gg: AYBFou0EERgJjyfZ6+AnzsjYNOR9bimNK+7HWL/pVQteVe8ScJ7NGUHbNvKkvcONLPp
-	FgER9gs59uabC6mdFovWilDQPkRo6WrbvbOfXkTL5VLqaQCx0EKTPx8RtKljcrxBI64oSUaASkW
-	FxwNEb8wOQsL6iX/yVOwOKsnppA68ZQRqdF1NqVpki8m8q3mKmsD37/9Worz2EP6BtRGUvXFlaT
-	2wQWO/1tfasUo87P25K2xY1qRyzlOcBmK1d59zjG9Q5/XSOC8VetfqDrEBwv5eoo37eWJ1Uhwp3
-	lJt4GQdSRnG2Ed9FB3vOV6i+5FE3mf2GmVo9vrc0MHebp6dZdJ7Okf9JRtj5X7CICkncxC+7tnU
-	q1OOZoSt+B7Ymx3SEPyCQBSsWfLNvWZSz3Zua5vTMuN3tdofCGuOu5mcQODwqQFbjWrAN0Gv8B4
-	ZcMzYXWsPiHcGral+b1+JmA1i6wbSPgJ62v2jErZUo+EO+L3MA9ZbpstddugIboO3XdL+8qLjci
-	KY9gJ0fi8pnbqG58w==
-X-Received: by 2002:a17:90b:5404:b0:3a0:2900:f577 with SMTP id 98e67ed59e1d1-3a07324277emr253812a91.51.1790061004682;
-        Tue, 22 Sep 2026 00:10:04 -0700 (PDT)
+        bh=zci1WHdZ5lBidKxN/C/mCTiN5fZd/8DPxW3bn9MBBYQ=;
+        b=rfbmh/8brNWO8si/SpVurmORLwjgrRwxYSeeShImvTFn2mP8VTCSfZbttojnSDTjR6
+         sMAGLDJ1Gu6jRJsD/aef2nUOZFdhn2e7OzV1TVg0RDUJGWz/jT/5H4ZbowSOqaZjeQC0
+         PFzAut1vTOdjScf8xdbpn1894TyQZvXGTKjaaWqd6OkpDz3fN891Q1C7i14AuAajcWAz
+         WsoLaDB6P3qbmmLpqXQbFafIOFWVRjP5iiQ4YjBmku628VOJe5G477dX4QTA783n0SdO
+         HwWqr/0vYQV4WvZuJ6kPEM2V3XF0RLrRZoVUm9Y3Ow4lKlhpWn9MMPaAhLN95wr/ZHoz
+         noOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790061017; x=1790665817;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=zci1WHdZ5lBidKxN/C/mCTiN5fZd/8DPxW3bn9MBBYQ=;
+        b=LkAHp66R26fvAjYdNf/D2fgnwF+ON2u348L22htoHDDHfr4W6cCit0NToV7tTzW/OY
+         6IkMs9F51r4yV0crILS6GI0JRUxuvPZvpgMcBkbEAocYpsPumsujJIRHrn75jI3iN8/h
+         +ip/udPzCG+TwiSNQfAA0ntQdp1ZGBKzvTXcHxXUz7SeOZhENALYN9M+gLAf5jf/o0W1
+         WiznMC/96GI8Rq6mYm7DU4SrAOwZqt58shZTntZxUXeX6Klhhg31k1Aw5Y0zzGZrKXRc
+         Yq5mxtounqEcLPiNaWc3Hk95F+yOlVkqv1W50ZM4R1t9K7MYtlGfeSXivRnQX9S1qrHs
+         8DAQ==
+X-Forwarded-Encrypted: i=1; AKwUvBx2kJoklpBnrtIW8oq/U4PkJq0LAiCAWS/KjHQ6iif8xGyVUubOazSrHhD8qYrvlXr8+5Q=@vger.kernel.org
+X-Gm-Message-State: AFuF++nd7WxzlmdfgFDxZmlS5zaalGwDSkiMkwBqOC1oB/4KkJwVo0p4
+	8X91gAj7KgJjKh+Ues1suqpwLDgy6+U4tsP1wzoU1XfEkB54UOv/3g5u
+X-Gm-Gg: AYBFou11GzxP7k4DsGFf78U8H7WR/LUv59V989oxUGzptK1ImZKBPrGEPGYgh9k3XGN
+	IffoMSR6J42bUFX9h6hbOLlTq7ZDyufxYROH5gFkY30Hrn+jgsYBntquMuVnXlAkh2Ht468apBr
+	2advl24JHebK2Nii42VwVOEtFcT7wr7vIQ8Z07CqDeSgrXKosmCfrnMUQrQeqYl2c1vdd0hU7gF
+	Ay+F5xUYqqPmv5D57sXVdEVxPsxYMwS0O/S+DL31PjbN9G7vohfdDFiA4gXmHNUQkIZHyhDVL22
+	ju1SzjrhS/x0cZO/EoSAhtsoIjldesZzc0j5DI94VF+FS1pmNUGf19UsTmmNmVDutvVevGe5MH6
+	jNu/OcEuPg0wYdZ0qwjwOvqQuZwoW93clBprO0u4t9O2Ho1kz4NW8jWrR+xVKXhvNF/xYwWbefT
+	Bh9A0xAMtN44jblc2seF6mn9csX/0ww+UzjUjE8XDqq12wykXtGK9KBsADwmbBic6UsnB2CsE7C
+	C4TfBHT+3aUCvDeBw==
+X-Received: by 2002:a17:90b:1d46:b0:3a0:2900:f55e with SMTP id 98e67ed59e1d1-3a0736a923dmr127880a91.29.1790061016560;
+        Tue, 22 Sep 2026 00:10:16 -0700 (PDT)
 Received: from kernel.tail6741c6.ts.net ([185.220.238.42])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a067409854sm3079414a91.7.2026.09.22.00.09.55
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a067409854sm3079414a91.7.2026.09.22.00.10.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2026 00:10:04 -0700 (PDT)
+        Tue, 22 Sep 2026 00:10:16 -0700 (PDT)
 From: Kunwu Chan <kunwu.chan@gmail.com>
 To: stern@rowland.harvard.edu,
 	parri.andrea@gmail.com,
@@ -93,10 +95,12 @@ Cc: akiyks@gmail.com,
 	linux-doc@vger.kernel.org,
 	rcu@vger.kernel.org,
 	lianux.mm@gmail.com
-Subject: [RFC/WIP PATCH 0/4] hazptr: add shared scan path and lockdep use case
-Date: Tue, 22 Sep 2026 15:09:46 +0800
-Message-ID: <20260922070950.4173245-1-kunwu.chan@gmail.com>
+Subject: [RFC/WIP PATCH 1/4] hazptr: add shared-scan kthread
+Date: Tue, 22 Sep 2026 15:09:47 +0800
+Message-ID: <20260922070950.4173245-2-kunwu.chan@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260922070950.4173245-1-kunwu.chan@gmail.com>
+References: <20260922070950.4173245-1-kunwu.chan@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -105,47 +109,336 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi all,
+Batch concurrent hazptr_synchronize() callers into a shared scan
+cycle, avoiding redundant scans of the per-CPU slots.
 
-This RFC/WIP extends the current v3 hazptr implementation [1] and
-adapts the lockdep use case from Boqun Feng's earlier hazptr series [2]
-to the current hazptr API.
+Queue waiters to a kthread and let each scan cycle make one pass
+over all CPUs.  Each waiter tracks per-CPU progress for both
+wildcard generations, allowing multiple waiters to share the same
+scan.
 
-[1] https://lore.kernel.org/all/20260919000056.3132131-26-paulmck@kernel.org/
-[2] https://lore.kernel.org/lkml/20250625031101.12555-1-boqun.feng@gmail.com/
+Flip the wildcard before scanning.  New acquires then use the new
+generation, so the old-generation mask makes forward progress even
+under a steady stream of readers.  Waiters that remain blocked are
+retried after a short delay.
 
-The lockdep conversion replaces the expedited RCU wait in
-lockdep_unregister_key() with hazptr_synchronize() for dynamic-key
-lookups.
+Fall back to the existing direct two-phase scan if the scan kthread
+is unavailable or waiter state cannot be allocated.
 
-The series also adds a shared-scan kthread for concurrent
-hazptr_synchronize() callers, rcuscale support, and an LKMM test
-for the acquire-before-scan ordering.
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+---
+ kernel/hazptr.c | 274 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 274 insertions(+)
 
-I tested the lockdep path on a 96-CPU ARM64 KVM guest with Boqun's
-original mq workload [2]. With a multiqueue virtio-net device
-(`-device virtio-net-pci,mq=on,vectors=6`), tc mq add/del x100
-completed in 850 ms with hazptr and 860 ms with expedited RCU.
-The rmmod workload similarly showed no measurable difference
-(1360 ms vs. 1380 ms over 10 runs). There were no crashes or hangs
-in these tests.
-
-This is still RFC/WIP. I would appreciate feedback on the shared-scan
-design and the lockdep conversion.
+diff --git a/kernel/hazptr.c b/kernel/hazptr.c
+index d3d1050d92cf..ce553a61b119 100644
+--- a/kernel/hazptr.c
++++ b/kernel/hazptr.c
+@@ -12,6 +12,10 @@
+ #include <linux/mutex.h>
+ #include <linux/list.h>
+ #include <linux/export.h>
++#include <linux/completion.h>
++#include <linux/kthread.h>
++#include <linux/slab.h>
++#include <linux/swait.h>
  
-Kunwu Chan (4):
-  hazptr: add shared-scan kthread
-  locking/lockdep: use hazptr to wait for dynamic key lookups
-  rcuscale: add hazptr scale type
-  Documentation/litmus-tests: add hazptr acquire-before-scan test
-
- .../hazptr/hazptr-acquire-before-scan.litmus  |  49 ++++
- kernel/hazptr.c                               | 274 ++++++++++++++++++
- kernel/locking/lockdep.c                      |  30 +-
- kernel/rcu/rcuscale.c                         |  65 ++++-
- 4 files changed, 407 insertions(+), 11 deletions(-)
- create mode 100644 Documentation/litmus-tests/hazptr/hazptr-acquire-before-scan.litmus
-
+ /*
+  * The current hazard pointer wildcard. Flips between 1UL and 2UL to guarantee
+@@ -209,12 +213,251 @@ void hazptr_scan_period(void *addr, void *scan_wildcard)
+ 	}
+ }
+ 
++/*
++ * Batch hazptr_synchronize() callers through a shared scan kthread.
++ */
++
++struct hazptr_waiter {
++	struct list_head node;
++	void *addr;
++	struct completion done;
++	/*
++	 * Per-wildcard-generation progress masks.  A CPU bit is
++	 * cleared when the scan observes neither @addr nor that
++	 * generation's wildcard on the CPU.
++	 */
++	unsigned long *cpu_mask;	/* 2 * BITS_TO_LONGS(nr_cpu_ids) */
++};
++
++/* Return waiter @w's progress mask for wildcard generation @gen. */
++static unsigned long *hazptr_waiter_mask(struct hazptr_waiter *w, int gen)
++{
++	return w->cpu_mask + gen * BITS_TO_LONGS(nr_cpu_ids);
++}
++
++struct hazptr_scan_state {
++	struct task_struct *kthread;
++	struct swait_queue_head wq;
++	bool wakeup;
++	struct mutex lock;
++	struct list_head pending;
++	struct list_head scanning;	/* kthread only */
++};
++static struct hazptr_scan_state hazptr_scan;
++
++/*
++ * Check a CPU's overflow lists.  A backup slot can hold a wildcard
++ * because __hazptr_acquire() writes the wildcard to any slot,
++ * including backup slots from hazptr_chain_backup_slot().
++ *
++ * @addr:     address the waiter is waiting on
++ * @old_wc:   wildcard value of the pre-flip generation
++ * @new_wc:   wildcard value of the post-flip generation
++ * @has_old:  set if any overflow slot holds @old_wc
++ * @has_new:  set if any overflow slot holds @new_wc
++ *
++ * Returns true if @addr is present.
++ */
++static bool hazptr_ovf_list_blocked(int cpu, void *addr,
++				    void *old_wc, void *new_wc,
++				    bool *has_old, bool *has_new)
++{
++	struct hazptr_overflow_list_flip *ovf = per_cpu_ptr(&percpu_overflow_list_flip, cpu);
++	bool found_addr = false;
++	int i;
++
++	for (i = 0; i < 2; i++) {
++		struct hazptr_overflow_list *list = &ovf->array[i];
++		struct hazptr_backup_slot *b;
++		unsigned long flags;
++
++		raw_spin_lock_irqsave(&list->lock, flags);
++		hlist_for_each_entry(b, &list->head, overflow_node) {
++			/* Pairs with smp_store_release in hazptr_release(). */
++			void *val = smp_load_acquire(&b->slot.addr);
++
++			if (val == addr)
++				found_addr = true;
++			else if (val == old_wc)
++				*has_old = true;
++			else if (val == new_wc)
++				*has_new = true;
++		}
++		raw_spin_unlock_irqrestore(&list->lock, flags);
++	}
++	return found_addr;
++}
++
++/*
++ * Move pending waiters to ->scanning, flip the wildcard, then make
++ * one pass over all CPUs.  Clear per-waiter bits for CPUs that no
++ * longer hold the waiter address or the corresponding wildcard.
++ *
++ * After the flip, new acquires use the new wildcard.  The old
++ * generation therefore makes forward progress and is fully cleared
++ * after enough scan cycles.
++ */
++static void hazptr_scan_do_cycle(void)
++{
++	void *old_wc, *new_wc;
++	unsigned int old_idx, new_idx;
++	int cpu;
++	struct hazptr_waiter *w, *n;
++	LIST_HEAD(done);
++
++	mutex_lock(&hazptr_wildcard_lock);
++
++	mutex_lock(&hazptr_scan.lock);
++	list_splice_tail_init(&hazptr_scan.pending, &hazptr_scan.scanning);
++	mutex_unlock(&hazptr_scan.lock);
++
++	if (list_empty(&hazptr_scan.scanning)) {
++		mutex_unlock(&hazptr_wildcard_lock);
++		return;
++	}
++
++	old_wc = READ_ONCE(hazptr_wildcard);
++	new_wc = flip_wildcard(old_wc);
++	WRITE_ONCE(hazptr_wildcard, new_wc);
++	old_idx = (unsigned long)old_wc - 1;
++	new_idx = 1 - old_idx;
++
++	/*
++	 * One pass over all CPUs for the per-CPU slots, checking
++	 * overflow lists for the remaining waiters.
++	 */
++	for_each_possible_cpu(cpu) {
++		struct hazptr_percpu_slots *slots = per_cpu_ptr(&hazptr_percpu_slots, cpu);
++		void *vals[NR_HAZPTR_PERCPU_SLOTS];
++		bool has_old = false, has_new = false;
++		unsigned int idx;
++
++		for (idx = 0; idx < NR_HAZPTR_PERCPU_SLOTS; idx++) {
++			/* Pairs with smp_store_release in hazptr_release(). */
++			vals[idx] = smp_load_acquire(&slots->items[idx].slot.addr);
++			if (vals[idx] == old_wc)
++				has_old = true;
++			else if (vals[idx] == new_wc)
++				has_new = true;
++		}
++
++		list_for_each_entry(w, &hazptr_scan.scanning, node) {
++			bool has_addr = false;
++
++			if (!test_bit(cpu, hazptr_waiter_mask(w, old_idx)) &&
++			    !test_bit(cpu, hazptr_waiter_mask(w, new_idx)))
++				continue;	/* Both bits already clear. */
++			for (idx = 0; idx < NR_HAZPTR_PERCPU_SLOTS; idx++) {
++				if (vals[idx] == w->addr) {
++					has_addr = true;
++					break;
++				}
++			}
++			if (!has_addr)
++				has_addr = hazptr_ovf_list_blocked(cpu, w->addr,
++					old_wc, new_wc, &has_old, &has_new);
++			if (has_addr)
++				continue;
++			if (!has_old)
++				__clear_bit(cpu, hazptr_waiter_mask(w, old_idx));
++			if (!has_new)
++				__clear_bit(cpu, hazptr_waiter_mask(w, new_idx));
++		}
++	}
++
++	mutex_unlock(&hazptr_wildcard_lock);
++
++	/* Complete waiters whose masks are both empty. */
++	list_for_each_entry_safe(w, n, &hazptr_scan.scanning, node) {
++		if (bitmap_empty(hazptr_waiter_mask(w, 0), nr_cpu_ids) &&
++		    bitmap_empty(hazptr_waiter_mask(w, 1), nr_cpu_ids))
++			list_move(&w->node, &done);
++	}
++
++	list_for_each_entry_safe(w, n, &done, node) {
++		list_del_init(&w->node);
++		complete(&w->done);
++	}
++}
++
++/*
++ * Shared scan kthread for hazptr_synchronize() waiters.
++ */
++static int hazptr_scan_kthread(void *unused)
++{
++	for (;;) {
++		bool idle;
++
++		swait_event_idle_exclusive(hazptr_scan.wq,
++					   READ_ONCE(hazptr_scan.wakeup));
++
++		hazptr_scan_do_cycle();
++
++		mutex_lock(&hazptr_scan.lock);
++		idle = list_empty(&hazptr_scan.pending) &&
++		      list_empty(&hazptr_scan.scanning);
++		if (idle)
++			WRITE_ONCE(hazptr_scan.wakeup, false);
++		mutex_unlock(&hazptr_scan.lock);
++
++		if (idle)
++			continue;
++		/* Waiters still blocked: retry after a polling delay. */
++		schedule_timeout_idle(1);
++	}
++	return 0;
++}
++
++/*
++ * Queue @addr for scan-thread processing, then sleep until the scan
++ * thread observes that @addr is no longer held by any hazard pointer.
++ * Returns false if the waiter masks cannot be allocated, in which
++ * case the caller falls back to the direct scan.
++ */
++static bool hazptr_synchronize_queued(void *addr)
++{
++	struct hazptr_waiter waiter = {
++		.addr = addr,
++	};
++	unsigned long *masks;
++	unsigned int mask_longs = BITS_TO_LONGS(nr_cpu_ids);
++
++	masks = kcalloc(2, mask_longs * sizeof(unsigned long), GFP_KERNEL);
++	if (!masks)
++		return false;
++	bitmap_fill(masks, nr_cpu_ids);
++	bitmap_fill(masks + mask_longs, nr_cpu_ids);
++	waiter.cpu_mask = masks;
++
++	init_completion(&waiter.done);
++	INIT_LIST_HEAD(&waiter.node);
++
++	/* Enqueue and wake the scan kthread. */
++	mutex_lock(&hazptr_scan.lock);
++	list_add_tail(&waiter.node, &hazptr_scan.pending);
++	if (!READ_ONCE(hazptr_scan.wakeup)) {
++		WRITE_ONCE(hazptr_scan.wakeup, true);
++		swake_up_one(&hazptr_scan.wq);
++	}
++	mutex_unlock(&hazptr_scan.lock);
++
++	/* Sleep until the scan thread completes this waiter. */
++	wait_for_completion(&waiter.done);
++	kfree(masks);
++	return true;
++}
++
+ /*
+  * hazptr_synchronize: Wait until @addr is released from all slots.
+  *
+  * Wait to observe that each slot contains a value that differs from
+  * @addr before returning.
+  * Should be called from preemptible context.
++ *
++ * If the scan kthread is running, the caller is queued and the scan
++ * thread performs the work, allowing multiple concurrent callers to
++ * share a single scan cycle.  Otherwise, the existing direct
++ * two-phase scan is used as a fallback.
+  */
+ void hazptr_synchronize(void *addr)
+ {
+@@ -235,6 +478,13 @@ void hazptr_synchronize(void *addr)
+ 	/* Memory ordering: Store A before Load B. */
+ 	smp_mb();
+ 
++	/* Use the scan thread if available. */
++	/* Pairs with smp_store_release in hazptr_scan_init(). */
++	if (smp_load_acquire(&hazptr_scan.kthread) &&
++	    hazptr_synchronize_queued(addr))
++		return;
++
++	/* Fallback: direct two-phase wildcard scan. */
+ 	guard(mutex)(&hazptr_wildcard_lock);
+ 	scan_wildcard = flip_wildcard(hazptr_wildcard);
+ 	hazptr_scan_period(addr, scan_wildcard);
+@@ -282,3 +532,27 @@ void __init hazptr_init(void)
+ 		}
+ 	}
+ }
++
++/*
++ * Initialize the scan kthread.  On failure falls back to the direct
++ * scan (busy-wait) path at synchronize time.
++ * core_initcall ensures the scheduler is ready before kthread_run.
++ */
++static int __init hazptr_scan_init(void)
++{
++	struct task_struct *t;
++
++	init_swait_queue_head(&hazptr_scan.wq);
++	mutex_init(&hazptr_scan.lock);
++	INIT_LIST_HEAD(&hazptr_scan.pending);
++	INIT_LIST_HEAD(&hazptr_scan.scanning);
++
++	t = kthread_run(hazptr_scan_kthread, NULL, "hazptr_scan");
++	if (!IS_ERR(t))
++		/* Pairs with smp_load_acquire in hazptr_synchronize(). */
++		smp_store_release(&hazptr_scan.kthread, t);
++	else
++		pr_warn("hazptr: scan thread failed, using direct scan\n");
++	return 0;
++}
++core_initcall(hazptr_scan_init);
 -- 
 2.43.0
 
