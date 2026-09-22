@@ -1,375 +1,350 @@
-Received: from mail-pz2-f21.google.com (mail-pz2-f21.google.com [74.125.228.21])
+Received: from mail-qk2-f12.google.com (mail-qk2-f12.google.com [74.125.230.204])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D872F0C7E
-	for <rcu@vger.kernel.org>; Tue, 22 Sep 2026 01:53:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C615822FF22
+	for <rcu@vger.kernel.org>; Tue, 22 Sep 2026 02:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.230.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790041983; cv=none; b=S87lJy9XPIYcIhPOnC3SCQi5eQpgmG1FvgAarp77FcpBkggM0ZvX+N/neJaM/AJfuuPg9w891KenGEN04MEwwczogL4hf7dM4RqqebxmYznrBE41vF/ovGc4nhXEdpSjlIiNxBPFDx8lVajfidNCNIJq61hWBvgrTS3TeHQJktQ=
+	t=1790043462; cv=none; b=f8ej++YWxhQVhPaUlmAsVATf+PAvmecEFHQxhMMDlN7tVYQrIqglsD6RT+jwd0aODy3132/wnM6aSs1aUAN/uAwpwBmD/T0VQI3Ecy5EVR0wMMVMODaUKjDMjfzj/m0De7UIio41rYs5nFoovqzk8XpdpezUeR1KNjtKIhvjldo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790041983; c=relaxed/simple;
-	bh=844BbKCjuK44YIRNTaW+OIbFc5ErzLKeSHq/FS1o2yE=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=m2Wxem6gzOjZ9NByVhfMnGxPK5F9OM3A0pzg5Os5U+UvQfz/AqraMgnjQJYEm95R6pAd1N+GBnSa2OteeuZVmQ2KPdve+JzEpPU1DByikEavzrWjuRN4uJmv6/k53Isx6LumBaGwWw3zSAFI+noqeiIMhXU6ul1/mKTMh0ICN2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vu4j0ZQm; arc=none smtp.client-ip=74.125.228.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1790043462; c=relaxed/simple;
+	bh=Lun0LDlv1NRasQcxE3cO2Jn1N9Nm2f7VrQlujNHSP0s=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=b7XJCmOCm1TxmgYntTsN9/j3HXt52J7uP/NIveU8HkBEAdeOWpu2FDa1JAQG/Gs+qXjVX0eWlCTKCKPiJWCSvF+IfZMyStlXqiqtAAQyVEqlvDA0aU2Onl9asjLjCruZBMAW7ds3Iy6B14fp2UioiZoWcgCfWBO2SMf/TJi9QuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=EEqS3niA; arc=none smtp.client-ip=74.125.230.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vu4j0ZQm"
-Received: by mail-pz2-f21.google.com with SMTP id 41be03b00d2f7-cc4cacd3409so4025400a12.2
-        for <rcu@vger.kernel.org>; Mon, 21 Sep 2026 18:53:02 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="EEqS3niA"
+Received: by mail-qk2-f12.google.com with SMTP id af79cd13be357-939109fafddso237153885a.0
+        for <rcu@vger.kernel.org>; Mon, 21 Sep 2026 19:17:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790041981; x=1790646781; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-type:content-transfer-encoding:mime-version:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=seqMOpxiRBW7YE0oJ3UyuQPvImrdU7NqfNAkSFs7Tu0=;
-        b=Vu4j0ZQm7UGCLA9BsGySLu6EHnPxXBqWRgv1MGgU2Gzo6seCTAGvV7FoJNbjDVZFF7
-         vTqWvI/72FN6rr4fzZMyQZcmLtCDO7Y8bCxjvJ91eG/KhQ/Kk6qFZAdUSOp/3rfwI4C7
-         q+J2/UF50IGTlPf3Y+qJlpgSL/OnNb3GxLwOvr9UVwXgfWDws0q1UE+F+larBXVg+bg4
-         shk14wvWdxpZWAIcOvHjGzLEzfb793Im4PpF3LAFWVNpX/o1mOhykNZQGQ8pXh/1jaCg
-         R8LOEu/wAr6leRjzAm0IJ2wJvyvvihM3NnroHMvZuggC/PIFiXt9nO+sjs6HSnrVXNUn
-         TgFQ==
+        d=toxicpanda.com; s=google; t=1790043453; x=1790648253; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=7yngsc33kpqZ/ZfiC2TEEvVYs9QbDT9O0cYlk8EaRyg=;
+        b=EEqS3niAOWa3cQrHy2ZTjQg+xHItLAXwhoQtEhfJAASfNXD2rnSzS4pUCylSaNZguT
+         zmTOevaBGETQ/Ihwq4T5KsJO03CUVWOueh4XfJWIWv2//9pQ5kQtYmFRIfshJxpJv/L5
+         LpakF0S5oMU1gwBi7BLV/Pc8PskGOKZP59MEXmTYDq+ePGHQNRacKoiL/ncjxbolsro7
+         dj6QnQAWh0geaqeeIg+1/Mf+sh2JK2yqh3ZaOQpvfePeI4rRb41+tPPv6S82OtD/lRLS
+         CoD0f/XN226F1RS7Nk8y5CsoZrdT704wO1BbM40NBg41seqX4PdMA9NNy2h41vF9rHcJ
+         5rOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790041981; x=1790646781;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-type:content-transfer-encoding:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=seqMOpxiRBW7YE0oJ3UyuQPvImrdU7NqfNAkSFs7Tu0=;
-        b=ApU8QP1I3eOrr+8DYcAcioNQVkjil3bcISx76vJNyFmmcilePXuCJBOncKGRlpMpO5
-         W2Xl9v9F6NcxknsuQqEeXIJdbO7gY9tR9AYVJr/QiZiqjQ5zvDN7hcSssZmKLsiVUXqz
-         ZqA3to0C6KYnk3KJTNvuV1R/gXP2Rsv5Hf4OHhFY5aA6ZRUeaSs3v9ivi2i13MooOmRQ
-         l1wiOyFRCg7yqcrdibQIngUVM2dLa7BafKyH1FpFzoiF8exoio02pZhMySPMCzQ5efzL
-         vn5I9ZzDiGi4nXwzrSl6bhZ1CYSsg3eFxUFUvoKontnOJHdOpwxlF/F4Bo46R+QuRxVm
-         GwCQ==
-X-Forwarded-Encrypted: i=1; AKwUvBy0VFh8AEMITjeHjpMbZADoCp4Ijbvq4P9W7ZoLOATgT9oEUgvZ5RRb7HwhqeUuYmW7rcs=@vger.kernel.org
-X-Gm-Message-State: AFuF++ll3YLjbMZ+CyhmAfzIKtg1ZgN8OT+yzLMbNFt+XiEKfvYb0KrV
-	4KueLHc1pYeAHVurSJPM8mZ6bmzgb29IJ0Ka01e/DcWobtCkAQXefWoK
-X-Gm-Gg: AYBFou39bOm+Ue9+SSMuUUBqZaab2AuYanewA2I19dM59B6Stb8ciy7NpQklOiVBemr
-	fpG05VjQG1+oChMRUlO+E/VWBGvGjWlVyt20tp+gMcZUtZgQDRoeEisK1sehCpnWdbhBhdYwGwi
-	TXU+wNrCOavsIahnhUvCjJSq1u6+ot1hVPQ8vNCWeILFS5rNTW6Jc3pLlYE+B6etMi/5U+aViYl
-	qIKFaFqRUoXVhuIrlHJW0AY/iPodnyawLeIa7LvKeqbn8fKrXMgdU3Ygfb5nKFe7dT2aJFd15CB
-	fPTxXdLXcM/o3JWp5sQrbtSomhjly448cpC4fjZf77p8+fsPkYvHa7LlJYGEK2BWSdhYEQdSLxp
-	IVsmr54NwIFMeDtbYL54A96vPbqWFtoxiWoDYuHBxufXOS3YkJjkrYM0ZH7AgR4keOmft862y+F
-	rzD4jVD6DkR/7rmiWShKGyT8G62C0g+2dpS8aXed9iydSZssaNdlHxLO7TP53d24OX+LoqbS70Z
-	vCQ09aI7PBnIvGZOHh9J+N/BsAghUuX7qaKx7OioFoxrXm6q4bnQmYy1vr6v7z4qB2dmar4qOap
-	WPohoNtDtrRIFQ==
-X-Received: by 2002:a05:6300:68ca:20b0:3dd:a197:edfa with SMTP id adf61e73a8af0-3dda197f7e9mr8111865637.73.1790041981393;
-        Mon, 21 Sep 2026 18:53:01 -0700 (PDT)
-Received: from localhost ([153.61.198.251])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cc756a30002sm67370a12.13.2026.09.21.18.53.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2026 18:53:01 -0700 (PDT)
+        d=1e100.net; s=20260707; t=1790043453; x=1790648253;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=7yngsc33kpqZ/ZfiC2TEEvVYs9QbDT9O0cYlk8EaRyg=;
+        b=x2LFKyTbMBEH/e4XHMSNidImMIbLfDphPmeQb0ZR8bfXigoBkbzH5KZVGLqpTbMExz
+         K1Xt7xmJxAhnSDsM1zPZGLWXCjvHB2C5hpI5letbfYRjYMI8TB65zqwkwIDJ7K1q+Xcl
+         ZUjfWV9SbIdYXldsgYVX+hAmgSq5Rvz5vL4gOc+d6Z9TMxrIRBHc93CoXweSnIqHvUWt
+         VxB1v1Y2Q9KCFendsZUnvA+6eAMe1e/oQoB9PW0CrF3AWHzCHZsy7iGTXBTi7LuvJJv9
+         TcuNIsBdRB3dJbGvahZWwY8PQMt/3KHKqSMg6viUgpPiH8uMyUEtubWwCluOfJFoaWt/
+         5FMw==
+X-Forwarded-Encrypted: i=1; AKwUvBwMiFNEs5vS4sG+AmlcxHSAJMuJ308TRoWQyVVtzOOKDmYXOpgQazi9MTQQami2NCej76o=@vger.kernel.org
+X-Gm-Message-State: AFuF++n551qtlH5kidp3nQise4qEQYI822wFebEHDa0XpR2xqhNC9g60
+	GXn34HvP+i2yM5czaLlJnaKZFXQpiNSq8qDHDKRiiYBZ8Ckp821vRfcwItwhxqRilVM=
+X-Gm-Gg: AYBFou1smoD1bPag1eJ2wQhek9iX4JTjNGd+LyfesnbTuJLGQ6vWRzfnRU3LU+OFyHt
+	iHU2vmz04QZAKsb8fsTqvrC6Q1ntPrK7cOGfwgtR/og1Pvcje+LVSXQP01a+TawKICAkyMykUKg
+	1yMpPr3yHB3/dUrdmVpBJES9OAr6kCZL0+1eymqFoCL35F9ndLE2cbX1kXXmxVnomAlS1p3U7L5
+	aoYVxGr1jzBmMCH4pdPHtQklFc39XFEXQXO5Op70NO+2ifjVHSrN+lYpduJ379RiXa7OzoRdweO
+	p/H3cmhMFyRzMJDjuB+hyPL4SZVB5MmqLtQcacSUVqlNhegzgcTSWoT9zY40vmxvDJqTqOCOw64
+	ut/D99uD6llFB98G5/YsSGhs/LVMUcS65LI1wldaCG3Fmxm/g1Wh4mrFLndlZSyR702JB24HjV1
+	PNw4rd2fDR1MCvrLWVj9Emvs6iEFZpFsDaUnS5Siy3hmvbVo6LqOKCZh/oNmO6c7+eYrC32vkPA
+	Tdc8FmiVuUwO5c=
+X-Received: by 2002:a05:620a:404b:b0:939:f188:6d97 with SMTP id af79cd13be357-93c15e4935fmr353334985a.48.1790043452487;
+        Mon, 21 Sep 2026 19:17:32 -0700 (PDT)
+Received: from toxicpanda.com ([153.61.196.250])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-93c1d03b89bsm20446685a.9.2026.09.21.19.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2026 19:17:31 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH v5 00/13] rcu-tasks: build Tasks RCU on Tasks Trace readers
+ in trampolines
+Date: Tue, 22 Sep 2026 02:16:36 +0000
+Message-Id: <20260922-b4-rcu-tasks-preempt-qs-v5-0-feaf7a32168c@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 22 Sep 2026 01:53:00 +0000
-Message-Id: <DLLGX9F9UG4Q.2YJWNSO4FXT1P@gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/4] bpf: Add bpf_call_rcu() kfunc
-From: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-To: "Puranjay Mohan" <puranjay@kernel.org>, <bpf@vger.kernel.org>,
- <rcu@vger.kernel.org>
-Cc: "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
- <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>, "Martin
- KaFai Lau" <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>,
- "Kumar Kartikeya Dwivedi" <memxor@gmail.com>, "Song Liu" <song@kernel.org>,
- "Yonghong Song" <yonghong.song@linux.dev>, "Harry Yoo (Oracle)"
- <harry@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>
-X-Mailer: aerc 0.20.1-349-gb940a4174a3e-dirty
-References: <20260921191407.1742386-1-puranjay@kernel.org>
- <20260921191407.1742386-2-puranjay@kernel.org>
-In-Reply-To: <20260921191407.1742386-2-puranjay@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAblsWoC/4XPwU6EMBAG4FfZ9GzdFqZd8eR7GA/DdJDqLmDLk
+ jUb3t0WLyRCPP7Tzte/dxE5eI7i+XAXgScffd+lYB4Oglrs3ll6l7IoVGFVpZWsQQa6yhHjZ5R
+ DYL4Mo/yKEpRuGjBgDZ1E2k5Hjb8t8uvbb47X+oNpzFy+UWNkWQfsqM2j83Cs4bgMtx7IG62PY
+ x++l7KTzvL/vSYtlXQAtmqASCv9MvY3TwN2Dh+pv4hcbirWmN7HioQxIlrNrnAIm1i5xsw+ViZ
+ MoSsVARnm0yYGa+xpH4OE2bJRXDlbWfv3m/M8/wCHDGV77gEAAA==
+X-Change-ID: 20260910-b4-rcu-tasks-preempt-qs-401ff45465c7
+To: "Paul E. McKenney" <paulmck@kernel.org>, 
+ Frederic Weisbecker <frederic@kernel.org>, 
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+ Joel Fernandes <joelagnelf@nvidia.com>, Boqun Feng <boqun@kernel.org>, 
+ Thomas Gleixner <tglx@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ x86@kernel.org, Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+ Xu Kuohai <xukuohai@huaweicloud.com>, 
+ "Paul E. McKenney" <paulmck@kernel.org>, 
+ Frederic Weisbecker <frederic@kernel.org>, 
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+ Joel Fernandes <joelagnelf@nvidia.com>, Boqun Feng <boqun@kernel.org>, 
+ Thomas Gleixner <tglx@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ x86@kernel.org, Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+ Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: Andy Lutomirski <luto@kernel.org>, 
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+ Juergen Gross <jgross@suse.com>, Luis Chamberlain <mcgrof@kernel.org>, 
+ Ihor Solodrai <ihor.solodrai@linux.dev>, linux-kernel@vger.kernel.org, 
+ rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ xen-devel@lists.xenproject.org, Andy Lutomirski <luto@kernel.org>, 
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+ Juergen Gross <jgross@suse.com>, Luis Chamberlain <mcgrof@kernel.org>, 
+ Ihor Solodrai <ihor.solodrai@linux.dev>, linux-kernel@vger.kernel.org, 
+ rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ xen-devel@lists.xenproject.org, Josef Bacik <josef@toxicpanda.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=openssh-sha256; t=1790043414; l=12509;
+ i=josef@toxicpanda.com; h=from:subject:message-id;
+ bh=Lun0LDlv1NRasQcxE3cO2Jn1N9Nm2f7VrQlujNHSP0s=;
+ b=U1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgUBr36M/n0nWN0DNbnxwzIiCZez6MG
+ JiruuNaSCI/zXsAAAAGcGF0YXR0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5AAAA
+ QCy+K/VPDPjFXXQoMumAgwGrCCnuSOd34VYBogHqbuvsVSYgEOGOHk+6J4iv/lyG08jRDdsEHRU
+ 11xeh2HoKIQU=
+X-Developer-Key: i=josef@toxicpanda.com; a=openssh;
+ fpr=SHA256:C8kOX2QUJCMqnCX+KEeoqRAjLo9L+ELOSH2NSAJHqGA
 
-On Mon Sep 21, 2026 at 7:14 PM UTC, Puranjay Mohan wrote:
-> BPF programs that manage their own objects have no way to run their own
-> logic once an RCU grace period has elapsed.  bpf_obj_drop() defers a
-> free, but returning an index to an allocator or unpinning a resource
-> once readers are done has no equivalent.  sched_ext's BPF library works
-> around this today by pushing freed nodes onto a list and having a
-> userspace thread call membarrier(MEMBARRIER_CMD_GLOBAL) and then run a
-> BPF program to reclaim them.
->
-> Add:
->
-> 	int bpf_call_rcu(struct bpf_rcu_head *rh, void *map,
-> 			 int (*callback)(struct bpf_map *map, void *key,
-> 					 void *value));
->
-> @rh is a struct bpf_rcu_head embedded in a value of @map, so the
-> callback runs as callback(map, key, value) for the element it lives in
-> and needs no cookie.  A head can only be armed once, which bounds
-> outstanding work by the number of elements.
->
-> struct bpf_rcu_head holds the callback state inline rather than a
-> pointer to it, as bpf_timer, bpf_wq and bpf_task_work do, because there
-> is nothing to cancel and so nothing that has to outlive the map value.
-> That avoids an allocation and a state machine on the arming path at the
-> cost of 64 bytes per element, 48 of which are used today.  Embedding
-> struct rcu_head ties part of a uapi struct to a definition outside of
-> BPF, which is acceptable here only because it is two pointers, a
-> callback and its argument, with no room to grow.
->
-> An RCU callback cannot be cancelled, so everything it touches has to
-> stay alive until it runs:
->
->   - The callback is the program's text, so arming takes a program
->     reference as bpf_timer, bpf_wq and bpf_task_work do, dropped once
->     the callback returns.  bpf_prog_inc_not_zero() also fails the arm
->     with -EBADF once the program is dying.
->
->   - The map is held by that reference through used_maps.  An inner map
->     is not, so bpf_rcu_head is rejected in one.
->
->   - The field is only accepted in BPF_MAP_TYPE_ARRAY, whose elements
->     are never freed individually.  A hash element can be deleted and
->     recycled while a callback is queued on it.
->
->   - The head is disarmed before the callback runs so it can be armed
->     again from there, which takes a new program reference before the
->     running callback drops its own.  Arming therefore fails with -EPERM
->     once the map is held by neither a process nor bpffs, which is what
->     bpf_timer and bpf_wq do at init time; bpf_task_work uses -EBUSY and
->     additionally cancels, which is not possible here.
->
-> bpf_iter hands a program a writable pointer to the live element, which
-> would let it overwrite a queued head, so bpf_iter_attach_map() rejects
-> maps carrying one.
->
-> The callback is verified non-sleepable even when the caller is
-> sleepable, and RCU invokes it with BH disabled.
->
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->  include/linux/bpf.h            | 10 +++++
->  include/uapi/linux/bpf.h       |  4 ++
->  kernel/bpf/btf.c               |  7 +++
->  kernel/bpf/helpers.c           | 75 +++++++++++++++++++++++++++++++
->  kernel/bpf/map_in_map.c        |  4 ++
->  kernel/bpf/map_iter.c          |  6 +++
->  kernel/bpf/syscall.c           | 11 ++++-
->  kernel/bpf/verifier.c          | 81 +++++++++++++++++++++++++++++++++-
->  tools/include/uapi/linux/bpf.h |  4 ++
->  9 files changed, 199 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index fd22db8bc6c50..e7c5e203edddb 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -215,6 +215,7 @@ enum btf_field_type {
->  	BPF_UPTR       =3D (1 << 11),
->  	BPF_RES_SPIN_LOCK =3D (1 << 12),
->  	BPF_TASK_WORK  =3D (1 << 13),
-> +	BPF_RCU_HEAD   =3D (1 << 14),
->  };
-> =20
->  enum bpf_cgroup_storage_type {
-> @@ -269,6 +270,7 @@ struct btf_record {
->  	int wq_off;
->  	int refcount_off;
->  	int task_work_off;
-> +	int rcu_head_off;
->  	struct btf_field fields[];
->  };
-> =20
-> @@ -374,6 +376,8 @@ static inline const char *btf_field_type_name(enum bt=
-f_field_type type)
->  		return "bpf_refcount";
->  	case BPF_TASK_WORK:
->  		return "bpf_task_work";
-> +	case BPF_RCU_HEAD:
-> +		return "bpf_rcu_head";
->  	default:
->  		WARN_ON_ONCE(1);
->  		return "unknown";
-> @@ -414,6 +418,8 @@ static inline u32 btf_field_type_size(enum btf_field_=
-type type)
->  		return sizeof(struct bpf_refcount);
->  	case BPF_TASK_WORK:
->  		return sizeof(struct bpf_task_work);
-> +	case BPF_RCU_HEAD:
-> +		return sizeof(struct bpf_rcu_head);
->  	default:
->  		WARN_ON_ONCE(1);
->  		return 0;
-> @@ -448,6 +454,8 @@ static inline u32 btf_field_type_align(enum btf_field=
-_type type)
->  		return __alignof__(struct bpf_refcount);
->  	case BPF_TASK_WORK:
->  		return __alignof__(struct bpf_task_work);
-> +	case BPF_RCU_HEAD:
-> +		return __alignof__(struct bpf_rcu_head);
->  	default:
->  		WARN_ON_ONCE(1);
->  		return 0;
-> @@ -480,6 +488,7 @@ static inline void bpf_obj_init_field(const struct bt=
-f_field *field, void *addr)
->  	case BPF_KPTR_PERCPU:
->  	case BPF_UPTR:
->  	case BPF_TASK_WORK:
-> +	case BPF_RCU_HEAD:
->  		break;
->  	default:
->  		WARN_ON_ONCE(1);
-> @@ -925,6 +934,7 @@ enum bpf_arg_type {
->  	ARG_PTR_TO_RB_NODE,	/* pointer to bpf_rb_node */
->  	ARG_PTR_TO_WORKQUEUE,	/* pointer to bpf_wq */
->  	ARG_PTR_TO_TASK_WORK,	/* pointer to bpf_task_work */
-> +	ARG_PTR_TO_RCU_HEAD,	/* pointer to bpf_rcu_head */
->  	ARG_PTR_TO_IRQ_FLAG,	/* pointer to saved IRQ flags on the stack */
->  	ARG_PTR_TO_RES_SPIN_LOCK,	/* pointer to bpf_res_spin_lock */
->  	ARG_PTR_TO_CTX_OUT,	/* hook output argument passed through from ctx */
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 6330b7d745c57..eafeba23f5da7 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -7611,6 +7611,10 @@ struct bpf_task_work {
->  	__u64 __opaque;
->  } __attribute__((aligned(8)));
-> =20
-> +struct bpf_rcu_head {
-> +	__u64 __opaque[8];
-> +} __attribute__((aligned(8)));
-> +
->  struct bpf_wq {
->  	__u64 __opaque[2];
->  } __attribute__((aligned(8)));
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 314ecb0e593b0..4a1fa4fbdf4e8 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -3696,6 +3696,7 @@ static int btf_get_field_type(const struct btf *btf=
-, const struct btf_type *var_
->  		{ BPF_TIMER, "bpf_timer", true },
->  		{ BPF_WORKQUEUE, "bpf_wq", true },
->  		{ BPF_TASK_WORK, "bpf_task_work", true },
-> +		{ BPF_RCU_HEAD, "bpf_rcu_head", true },
->  		{ BPF_LIST_HEAD, "bpf_list_head", false },
->  		{ BPF_LIST_NODE, "bpf_list_node", false },
->  		{ BPF_RB_ROOT, "bpf_rb_root", false },
-> @@ -3881,6 +3882,7 @@ static int btf_find_field_one(const struct btf *btf=
-,
->  	case BPF_RB_NODE:
->  	case BPF_REFCOUNT:
->  	case BPF_TASK_WORK:
-> +	case BPF_RCU_HEAD:
->  		ret =3D btf_find_struct(btf, var_type, off, sz, field_type,
->  				      info_cnt ? &info[0] : &tmp);
->  		if (ret < 0)
-> @@ -4176,6 +4178,7 @@ struct btf_record *btf_parse_fields(const struct bt=
-f *btf, const struct btf_type
->  	rec->wq_off =3D -EINVAL;
->  	rec->refcount_off =3D -EINVAL;
->  	rec->task_work_off =3D -EINVAL;
-> +	rec->rcu_head_off =3D -EINVAL;
->  	for (i =3D 0; i < cnt; i++) {
->  		field_type_size =3D btf_field_type_size(info_arr[i].type);
->  		if (info_arr[i].off + field_type_size > value_size) {
-> @@ -4219,6 +4222,10 @@ struct btf_record *btf_parse_fields(const struct b=
-tf *btf, const struct btf_type
->  			WARN_ON_ONCE(rec->task_work_off >=3D 0);
->  			rec->task_work_off =3D rec->fields[i].offset;
->  			break;
-> +		case BPF_RCU_HEAD:
-> +			WARN_ON_ONCE(rec->rcu_head_off >=3D 0);
-> +			rec->rcu_head_off =3D rec->fields[i].offset;
-> +			break;
->  		case BPF_REFCOUNT:
->  			WARN_ON_ONCE(rec->refcount_off >=3D 0);
->  			/* Cache offset for faster lookup at runtime */
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 501c7ce35cba9..8a01dd4058a03 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -4805,6 +4805,80 @@ __bpf_kfunc int bpf_task_work_schedule_resume(stru=
-ct task_struct *task, struct b
->  	return bpf_task_work_schedule(task, tw, map__const_map, callback, aux, =
-TWA_RESUME);
->  }
-> =20
-> +typedef int (*bpf_rcu_callback_t)(struct bpf_map *map, void *key, void *=
-value);
-> +
-> +/* Actual type for struct bpf_rcu_head */
-> +struct bpf_rcu_head_kern {
-> +	struct rcu_head rcu;
-> +	bpf_callback_t callback_fn;
-> +	struct bpf_map *map;
-> +	struct bpf_prog *prog;
-> +	u32 armed;
-> +} __aligned(8);
-> +
-> +static void bpf_rcu_run_callback(struct rcu_head *rcu)
-> +{
-> +	struct bpf_rcu_head_kern *rh =3D container_of(rcu, struct bpf_rcu_head_=
-kern, rcu);
-> +	bpf_callback_t callback_fn =3D rh->callback_fn;
-> +	struct bpf_prog *prog =3D rh->prog;
-> +	struct bpf_map *map =3D rh->map;
-> +	void *value, *key;
-> +	u32 idx;
-> +
-> +	value =3D (void *)rh - map->record->rcu_head_off;
-> +	key =3D map_key_from_value(map, value, &idx);
-> +
-> +	/* Pairs with the arming cmpxchg(): rh may be re-armed as soon as this =
-store lands. */
-> +	smp_store_release(&rh->armed, 0);
-> +
-> +	rcu_read_lock_dont_migrate();
-> +	callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0);
-> +	rcu_read_unlock_migrate();
-> +
-> +	bpf_prog_put(prog);
-> +}
-> +
-> +/**
-> + * bpf_call_rcu - Invoke a BPF callback after an RCU grace period
-> + * @rh: struct bpf_rcu_head in a BPF map value
-> + * @map__const_map: bpf_map that embeds struct bpf_rcu_head in the value=
-s
-> + * @callback: BPF subprogram, invoked as callback(map, key, value) for t=
-he value holding @rh
-> + * @aux: bpf_prog_aux of the caller, implicitly set by the verifier
-> + *
-> + * Return: 0, -EBUSY if @rh is already queued, -EPERM if @map is held by=
- neither a process
-> + * nor bpffs, or -EBADF if the calling program is going away.
-> + */
-> +__bpf_kfunc int bpf_call_rcu(struct bpf_rcu_head *rh, void *map__const_m=
-ap,
-> +			     bpf_rcu_callback_t callback, struct bpf_prog_aux *aux)
-> +{
-> +	struct bpf_rcu_head_kern *rhk =3D (void *)rh;
-> +	struct bpf_map *map =3D map__const_map;
-> +	struct bpf_prog *prog;
-> +
-> +	BUILD_BUG_ON(sizeof(struct bpf_rcu_head_kern) > sizeof(struct bpf_rcu_h=
-ead));
-> +	BUILD_BUG_ON(__alignof__(struct bpf_rcu_head_kern) !=3D __alignof__(str=
-uct bpf_rcu_head));
-> +	BTF_TYPE_EMIT(struct bpf_rcu_head);
-> +
-> +	/* A queued callback cannot be cancelled, so a self-rearming one would =
-pin prog and map. */
-> +	if (!atomic64_read(&map->usercnt))
-> +		return -EPERM;
-> +
-> +	if (cmpxchg(&rhk->armed, 0, 1))
-> +		return -EBUSY;
-> +
-> +	prog =3D bpf_prog_inc_not_zero(aux->prog);
-> +	if (IS_ERR(prog)) {
-> +		WRITE_ONCE(rhk->armed, 0);
-> +		return -EBADF;
-> +	}
+v1: https://lore.kernel.org/all/20260910-b4-rcu-tasks-preempt-qs-v1-0-d4469f4cc101@toxicpanda.com/
+v2: https://lore.kernel.org/all/20260911-b4-rcu-tasks-preempt-qs-v2-0-eaaa61ed2da4@toxicpanda.com/
+v3: https://lore.kernel.org/all/20260915-b4-rcu-tasks-preempt-qs-v3-0-0ad30c4c5ee7@toxicpanda.com/
+v4: https://lore.kernel.org/all/20260918-b4-rcu-tasks-preempt-qs-v4-0-63f0e9d69661@toxicpanda.com/
 
-can we drop prog_inc and remove prog pointer from rhk ?
-with something like if (prog->has_call_rcu) rcu_barrier() during prog unloa=
-d?
+v4->v5:
+- Dropped the RFC tag.
+- JIT emitters: *_off naming and offsetof() for the srcu_ctr counters
+  instead of hardcoded 0/8 (Alexei); note the open-coded copies at
+  rcu_read_lock_trace().
+v3->v4:
+- BPF: the reader is emitted by the x86-64/arm64 JIT around the
+  fentry/fmod_ret and fexit regions instead of taken in the C glue (Alexei).
+- An idle CPU only counts as quiescent while in an RCU EQS (Sashiko).
+- Dropped the rcu_read_lock_trace() lockdep/inline patch; BPF CI bot nits.
+v2->v3:
+- Reworked per Alexei and Paul: trampolines take rcu_read_lock_trace(),
+  and Tasks RCU on x86-64/arm64 becomes a per-CPU pass plus a Tasks Trace
+  grace period instead of a new per-task counter.
+v1->v2:
+- Sashiko/AI review fixes, Paul's and Steve's comments (see v2 changelog).
+
+What it does now:
+
+Every trampoline whose lifetime Tasks RCU guards (ftrace_caller and its
+copies, the optprobe template, BPF trampolines, out-of-line direct-call
+trampolines) takes rcu_read_lock_trace() around its call-out, open-coded
+in asm / by the JIT. That leaves the few trampoline instructions outside
+the reader, the static ftrace stubs and x86 return thunks that carry a
+trampoline address, and the kprobe jump-optimization window. A task can
+only linger in those by being interrupted there, so on x86-64 and arm64
+the Tasks RCU grace period becomes: wait for every CPU to pass through
+__schedule() or sit in an EQS (the irq-exit preemption checks the
+interrupted IP first and briefly makes a task caught in such text a
+holdout), then synchronize_rcu_tasks_trace(), then one more pass for the
+trailing instructions. It runs from the existing rcu_tasks kthread, so
+call_rcu_tasks() and friends keep their names and callers; there is no
+task-list scan and no dependence on voluntary context switches, and
+cond_resched_tasks_rcu_qs() becomes unnecessary there. Other
+architectures keep the classic implementation.
+
+Testing is still QEMU: x86-64 PREEMPT_LAZY (PREEMPT_RCU=n) and
+PREEMPT_DYNAMIC, PROVE_RCU, lockdep. synchronize_rcu_tasks() against a
+30s in-kernel spinner is 20-70ms (classic: 29.7s), ftrace instance
+teardown ~0.2s, optprobe register+unregister ~0.6s, the direct samples
+cycle in about a second, and fentry+fexit attach/hammer/detach on
+do_sys_openat2 and hrtimer_interrupt runs and detaches in 50-100ms with
+the return-to-user reader assertion quiet. arm64 is build-tested;
+hardware numbers for both are still owed.
+
+Notes:
+ - This is the alternate-gp_func-on-the-rcu_tasks-kthread form; folding
+   the IP check into core RCU along the lines Frederic sketched is left as
+   the follow-on Paul suggested.
+ - The open-coded reader is ~9 instructions each side in ftrace_caller and
+   at four points in the BPF trampoline. rcu_read_lock_tasks_trace() would
+   be shorter but needs a slot for the cookie; also a possible follow-on.
+ - CONFIG_TASKS_TRACE_RCU_NO_MB depends on RCU_EXPERT, so non-expert
+   x86/arm64 builds get the smp_mb() in the reader despite
+   ARCH_WANTS_NO_INSTR; the asm follows the C here.
+
+--- Original email (v1) ---
+
+Tasks RCU only treats a voluntary context switch, usermode or idle as a
+quiescent state, because a preempted task may be sitting in a trampoline
+that is about to be freed. That was a fine trade when PREEMPT_NONE
+servers compiled Tasks RCU away and PREEMPT desktops rarely ran
+long-lived in-kernel loops. PREEMPT_LAZY changes both halves at once:
+Tasks RCU is now real on server configs, and cond_resched() is a no-op,
+so a CPU-bound kthread or kworker only ever loses the CPU by being
+preempted, which is exactly the event Tasks RCU refuses to count.
+
+The way this showed up for us was a cgroup writeback worker draining a
+very large cgwb for around eleven minutes on an arm64 box. Nothing wrong
+with that on its own, but a BPF program detach on another CPU went
+bpf_trampoline_update() -> ftrace_shutdown() -> synchronize_rcu_tasks()
+while holding trampoline_mutex, forty-odd tasks piled up behind the
+mutex, and the hung task detector panicked the machine. The kprobe jump
+optimizer is worse in principle: it does synchronize_rcu_tasks() under
+kprobe_mutex, text_mutex and cpus_read_lock(), so one long-running
+kthread can stall static key updates and CPU hotplug for its whole run.
+The current answer is to find each such loop and add
+cond_resched_tasks_rcu_qs() to it, which is the kind of annotation
+PREEMPT_LAZY was supposed to let us stop writing.
+
+This series tries the other direction: have the trampolines say when a
+task is inside them, so that a preemption anywhere else can be a
+quiescent state.
+
+ - task_struct grows an int, rcu_tramp_nesting. Every trampoline whose
+   lifetime Tasks RCU guards increments it before calling out and
+   decrements it before returning: ftrace_caller and its dynamic copies,
+   the BPF trampoline (which drops it again around the call to the
+   original function, since im->pcref covers that), the x86 optprobe
+   template, and out-of-line register_ftrace_direct() trampolines. Only
+   current writes it and nested users are balanced, so it is a plain
+   non-atomic inc/dec, one load of current plus one RMW per entry/exit.
+
+ - The inc/dec are inside the trampoline, so there is a window of a few
+   instructions on each side where the count is zero but the task is in
+   (or on its way into) trampoline text. Nothing there can be preempted
+   synchronously, only from an interrupt, so the irq-exit preemption path
+   looks at regs->ip and holds the count across preempt_schedule_irq()
+   when the IP is somewhere the counter cannot cover: outside core and
+   module text (all the dynamically allocated trampolines and slots), in
+   the static ftrace stubs or the x86 return thunks that still hold a
+   direct-call target, in a module that hosts its own direct trampoline,
+   or inside the bytes after a kprobe that the jump optimizer may be
+   about to rewrite (the one synchronize_rcu_tasks() user that is not
+   about trampolines at all).
+
+ - With those in place, rcu_tasks_classic_qs() also clears the holdout
+   flag on a preemption when the count is zero, on architectures that
+   opt in. x86-64 and arm64 do so here. Everyone else keeps the
+   voluntary-only rule and is untouched apart from the (unused) field.
+
+A running holdout already gets poked via rcu_request_urgent_qs_task(),
+which makes the next tick set NEED_RESCHED, so with this the resulting
+preemption retires it and a Tasks RCU grace period is bounded by roughly
+a tick plus the longest preempt-off section rather than by the longest
+stretch without a voluntary schedule().
+
+Patches 1-12 are scaffolding and change no behaviour on their own; patch
+13 flips the rule and selects the option for the two architectures.
+
+Testing so far is QEMU only: x86-64, PREEMPT_LAZY with PREEMPT_RCU=n,
+PROVE_RCU and lockdep, with and without PREEMPT_DYNAMIC. A kthread
+spinning in-kernel for 30s with the function tracer, an ftrace kprobe,
+an optimized kprobe and fentry/fexit programs attached:
+synchronize_rcu_tasks() goes from 29.7s to 0.1-0.3s, tearing down a
+DYNAMIC ftrace_ops (tracefs instance function -> nop) from 27s to
+0.2-0.8s, and the ftrace-direct sample modules load, fire and unload in
+about 2.5s each while the spinner runs, with no warnings and the new
+return-to-user assertion quiet. arm64 is build-tested only at this
+point; real hardware numbers for both are the obvious next step and I
+did not want to sit on the idea waiting for them.
+
+Things I would particularly like opinions on:
+
+ - Whether hooking rcu_tasks_classic_qs() is the right place, or whether
+   Paul would rather see this expressed differently inside Tasks RCU.
+ - return_to_handler and the rethook/kretprobe trampolines are not
+   instrumented. Their C callees take the ftrace recursion lock before
+   touching any ops and the trampolines themselves are static text, so I
+   believe they do not need it, but I would like Steven and Masami to
+   confirm.
+ - The register_ftrace_direct() contract change: out-of-line direct
+   trampolines now have to maintain the count themselves (the samples
+   are converted). I do not know of out-of-tree users beyond BPF, but
+   this is the one place an existing user could be silently weakened.
+ - Whether arm64 folks are comfortable with the ldr/add/str in
+   ftrace_caller and the BPF trampoline, and with treating all of
+   ftrace_caller as trampoline text for the IP check.
+ - If this holds up, cond_resched_tasks_rcu_qs() and
+   rcu_softirq_qs_periodic() become unnecessary on the opted-in
+   architectures; I have not touched them here.
+
+Based on v7.3-rc2+ (893e11787f78).
+
+---
+Josef Bacik (13):
+      entry: Pass pt_regs to irqentry_exit_cond_resched()
+      rcu-tasks: Add a Tasks RCU implementation for reader-marked trampolines
+      kprobes: Expose the optprobe jump window to Tasks RCU
+      ftrace: Mark modules hosting direct-call trampolines for Tasks RCU
+      x86/ftrace: Take a Tasks Trace reader around ftrace_caller's call-out
+      x86/kprobes: Take a Tasks Trace reader in the optprobe template
+      bpf, x86: Take a Tasks Trace reader in the trampoline around its call-outs
+      arm64: ftrace: Take a Tasks Trace reader around ftrace_caller's call-out
+      bpf, arm64: Take a Tasks Trace reader in the trampoline around its call-outs
+      samples: ftrace: Make the direct-call trampolines Tasks Trace readers
+      rcutorture: Make Tasks RCU readers Tasks Trace readers where required
+      rcu-tasks-trace: Assert no reader is held on return to userspace
+      x86, arm64: Build Tasks RCU on Tasks Trace readers in trampolines
+
+ .../RCU/Design/Requirements/Requirements.rst       |  24 ++
+ Documentation/RCU/checklist.rst                    |   7 +-
+ arch/arm64/Kconfig                                 |   1 +
+ arch/arm64/kernel/asm-offsets.c                    |   8 +
+ arch/arm64/kernel/entry-ftrace.S                   |  74 ++++
+ arch/arm64/kernel/ftrace.c                         |  20 +
+ arch/arm64/net/bpf_jit_comp.c                      |  93 ++++
+ arch/x86/Kconfig                                   |   1 +
+ arch/x86/kernel/asm-offsets.c                      |   8 +
+ arch/x86/kernel/ftrace.c                           |  43 ++
+ arch/x86/kernel/ftrace_64.S                        |  69 +++
+ arch/x86/kernel/kprobes/opt.c                      |  44 ++
+ arch/x86/kernel/vmlinux.lds.S                      |   4 +
+ arch/x86/net/bpf_jit_comp.c                        | 107 +++++
+ arch/x86/xen/enlighten_pv.c                        |   2 +-
+ include/linux/irq-entry-common.h                   |  15 +-
+ include/linux/kprobes.h                            |   8 +-
+ include/linux/module.h                             |   7 +
+ include/linux/rcupdate.h                           |  24 +-
+ include/linux/rcupdate_trace.h                     |  13 +
+ include/linux/sched.h                              |   1 +
+ kernel/entry/common.c                              |  14 +-
+ kernel/fork.c                                      |   1 +
+ kernel/kprobes.c                                   |  50 +++
+ kernel/rcu/Kconfig                                 |  28 +-
+ kernel/rcu/rcutorture.c                            |  10 +
+ kernel/rcu/tasks.h                                 | 476 ++++++++++++++++++++-
+ kernel/rcu/update.c                                |   2 +
+ kernel/trace/ftrace.c                              |  39 ++
+ samples/ftrace/ftrace-direct-modify.c              |   9 +
+ samples/ftrace/ftrace-direct-multi-modify.c        |   9 +
+ samples/ftrace/ftrace-direct-multi.c               |   5 +
+ samples/ftrace/ftrace-direct-too.c                 |   5 +
+ samples/ftrace/ftrace-direct.c                     |   5 +
+ samples/ftrace/ftrace-direct.h                     | 126 ++++++
+ 35 files changed, 1329 insertions(+), 23 deletions(-)
+---
+base-commit: 893e11787f78e43b534e252249ac3fff4d1333f8
+change-id: 20260910-b4-rcu-tasks-preempt-qs-401ff45465c7
+
+Best regards,
+--  
+Josef Bacik <josef@toxicpanda.com>
 
