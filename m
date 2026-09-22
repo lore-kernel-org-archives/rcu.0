@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688754AB1A4;
-	Tue, 22 Sep 2026 20:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCB214AB1A9;
+	Tue, 22 Sep 2026 20:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790107362; cv=none; b=sIKYWy+x6LhKNsoPJwUKkToAx22iSGYZnXW5+JTzWyRQcUApEOYHnrEoEtuTmBL34LTWt/qVlBQ6uiDOwMj5ABRUFIhFCOxAaOTDSYgaROVgY0zVpcq0X7SA08AQJpNKmNKWIVsaA0VVYLPhlxxuCqEcrkrcMqWrA6PuZVkBBsg=
+	t=1790107366; cv=none; b=o5B4KnYt4cE3dPo8rFF0stUHktZyDguTzD1n9chAoP3SzSmnHZ6m/1gpnMzAs8EdC2i9cqixvfScOQYdTZ+MpSM7URtiojzAh3IC54j3a0JCjDcasevB1Z0QAlQQSUCYLgr+2UUWMmE/cP7VJp7+3gX4ujGPy8Sj+M4YAkuT1yE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790107362; c=relaxed/simple;
-	bh=xgKrU6dieXlBaV3BL9kxlyn5RpsNFYUYOeG6Acu3jSY=;
+	s=arc-20240116; t=1790107366; c=relaxed/simple;
+	bh=LAPA7xqA2U7MEd+JgTXdlcCsPBSF+auiDYwNe9nHqag=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ITALDsZknz3sV0grI1lnz7esV/s8uUMaUnKJxSsEiXO9asskGSwGyYgw4NXhOaxSkuvPe2ddvXmpTkVNoXR3GurafV71aVNBPaW6vVmgmu3iEL0/B3GHikzRa0JOYG/5qcHJqTw6xjMORxyvQ7WyhQ9+z5qb3S0AnHwPZlVEUu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D0Xj3Mjg; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=PEO7hnkm3upy8UP1YJ/U/xBYchBiWJ+G74UZBQZwo0k9yQF9VUijrZMxEo5Iwi+mpLTGy1YCLmd1P+xDszGedteIUuvwOuGtY6RFbtSiMn0E/oqjtc6kdBCXZZiubObgXqoew1b1SJHgaAATuPUkQyt+AbV7yRANFmpHyWocE4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UH3sNPnb; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D0Xj3Mjg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B30691F000FF;
-	Tue, 22 Sep 2026 20:02:31 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UH3sNPnb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8407D1F00893;
+	Tue, 22 Sep 2026 20:02:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790107352;
-	bh=JVFDztn+8X9+W2VSJukPUHz/F8sM8vvXBkEypBRsFjM=;
+	s=k20260515; t=1790107355;
+	bh=WZeH+GiJcegsCVwr2UtTb50H93rnt6Qn3Fqnd4NKr9o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=D0Xj3MjgQNsHT4hXQc/mQM3SDnr1Mf5n4eArjYYHzmooOoYH1tS2B0q+/JFkUuB7f
-	 PsWKfGn0/vZar5N30VnyZyN6lHcapadyTJJHW6EpdYvENhPYk3N+b2P7iTwE+3hgBB
-	 P22RN18T3UKkWYQM05YTjQWlOFp/w+XhojWtW//NZFa/ncWbQLhahfmIBPbZ9lRgFS
-	 dkOLsM2Tk+NPfkYbNDl1VCNcgeIg3U+AwXG2cs/atiwxaYrg37QlOGdXgC+vrm6eUS
-	 48C1YXbm7y1jItWLLwFzTqe+uGEvySVS46pZZFsaUa4+6A4gVcaXim5WgH/4yeIuhW
-	 R03NWRIScsOug==
+	b=UH3sNPnbyQwEM7B/H8JDAS0YpuBohzIEC8RvJsg5tLebbUjS5muM3chXXFzoWgqRo
+	 zFT20nhemgTJOZlCjVPB8bbAnout28fC8cRFf0dZjG52R3/RFZUFJs0Ric7/2Rb96I
+	 QHvjnAn9F+pURAYyqY7ZuioI+nYcOalVNQ0klG2copVcRY8S5l15TLE3FrzrOa1c0N
+	 ei3r7GaHbHDXal2I8Nx+9R7Fg+BKVDxaADH+N1EcjcIt8CaQEHlte47oe52dIkhfyz
+	 /Zzk5QeEzwIZ17AbGE8P+b8/acJnK9z/0C0ZGs62rHip5mNDjeqPptXtCWpWFK6F+e
+	 FVMtZLaibxLmQ==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: bpf@vger.kernel.org,
 	rcu@vger.kernel.org
@@ -40,9 +40,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	"Yonghong Song" <yonghong.song@linux.dev>,
 	"Harry Yoo (Oracle)" <harry@kernel.org>,
 	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH bpf-next v6 2/4] selftests/bpf: Add tests for bpf_call_rcu()
-Date: Tue, 22 Sep 2026 13:00:51 -0700
-Message-ID: <20260922200208.3203834-3-puranjay@kernel.org>
+Subject: [PATCH bpf-next v6 3/4] bpf: Add bpf_call_rcu_tasks_trace() kfunc
+Date: Tue, 22 Sep 2026 13:00:52 -0700
+Message-ID: <20260922200208.3203834-4-puranjay@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260922200208.3203834-1-puranjay@kernel.org>
 References: <20260922200208.3203834-1-puranjay@kernel.org>
@@ -54,526 +54,152 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Cover the callback running after a grace period with the right map, key
-and value, -EBUSY on a second arm, reuse of the head once disarmed, a
-callback arming itself again, and teardown with a callback queued.
+Sleepable BPF programs hold rcu_read_lock_trace(), not rcu_read_lock(),
+so a plain RCU grace period does not wait for them.  A program whose
+readers are sleepable needs this flavour to defer reclaim safely.
 
-struct bpf_rcu_head is not the first member of the map value, so the
-callback's recovery of the value from the head is exercised.  arm()
-wraps both arms in an RCU read section, otherwise a grace period may
-elapse between them and the second one legitimately succeeds.
+call_rcu_tasks_trace() is call_srcu() on rcu_tasks_trace_srcu_struct and
+SRCU invokes callbacks with BH disabled, so the callback is still not
+sleepable.  It does run from a kworker rather than softirq or the
+rcuc/rcuo kthread, so a callback must not assume anything about current.
 
-Negative tests: a hash map created with the same BTF, the map used as an
-inner map, and an iterator attach, all checked for -EOPNOTSUPP; plus
-verifier rejection of a mismatched map, a map with no bpf_rcu_head, a
-head at the wrong offset, a head on the stack, and a sleepable callback.
+Only the queueing call differs, so the two share struct bpf_rcu_head and
+all of the verifier plumbing.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- .../selftests/bpf/prog_tests/call_rcu.c       | 271 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/call_rcu.c  |  93 ++++++
- .../selftests/bpf/progs/call_rcu_fail.c       | 114 ++++++++
- 3 files changed, 478 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/call_rcu.c
- create mode 100644 tools/testing/selftests/bpf/progs/call_rcu.c
- create mode 100644 tools/testing/selftests/bpf/progs/call_rcu_fail.c
+ kernel/bpf/helpers.c  | 57 +++++++++++++++++++++++++++++++------------
+ kernel/bpf/verifier.c |  7 ++++--
+ 2 files changed, 47 insertions(+), 17 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/call_rcu.c b/tools/testing/selftests/bpf/prog_tests/call_rcu.c
-new file mode 100644
-index 0000000000000..bfa6512b9052a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/call_rcu.c
-@@ -0,0 +1,271 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2026 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include "call_rcu.skel.h"
-+#include "call_rcu_fail.skel.h"
-+
-+struct elem {
-+	__u64 pad;
-+	struct bpf_rcu_head rh;
-+	__u64 val;
-+};
-+
-+/*
-+ * Force the grace period, then poll: the callback still has to be invoked
-+ * afterwards, and call_rcu() is lazy on a CONFIG_RCU_LAZY kernel.
-+ */
-+static bool wait_for_callbacks(struct call_rcu *skel, int expected)
-+{
-+	int i, got = 0;
-+
-+	kern_sync_rcu();
-+	for (i = 0; i < 3000; i++) {
-+		got = __atomic_load_n(&skel->bss->callbacks, __ATOMIC_ACQUIRE);
-+		if (got >= expected)
-+			return true;
-+		usleep(10000);
-+	}
-+	return ASSERT_GE(got, expected, "callbacks");
-+}
-+
-+static void test_call_rcu_run(void)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, opts);
-+	struct call_rcu *skel;
-+	struct elem elem;
-+	__u32 key = 1;
-+	int err;
-+
-+	skel = call_rcu__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.arm), &opts);
-+	if (!ASSERT_OK(err, "test_run") || !ASSERT_EQ(opts.retval, 0, "retval"))
-+		goto out;
-+
-+	ASSERT_EQ(skel->bss->arm_err, 0, "arm_err");
-+	ASSERT_EQ(skel->bss->busy_err, -EBUSY, "busy_err");
-+
-+	if (!wait_for_callbacks(skel, 1))
-+		goto out;
-+
-+	ASSERT_EQ(skel->bss->cb_key, key, "cb_key");
-+	ASSERT_EQ(skel->bss->cb_val, 0xdeadbeef, "cb_val");
-+	ASSERT_EQ(skel->bss->cb_max_entries, bpf_map__max_entries(skel->maps.arr), "cb_map");
-+
-+	err = bpf_map__lookup_elem(skel->maps.arr, &key, sizeof(key), &elem, sizeof(elem), 0);
-+	if (ASSERT_OK(err, "lookup"))
-+		ASSERT_EQ(elem.val, 0, "value_cleared");
-+
-+	/* The head is disarmed before the callback runs, so it can be reused. */
-+	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.arm), &opts);
-+	if (!ASSERT_OK(err, "test_run_again"))
-+		goto out;
-+	ASSERT_EQ(skel->bss->arm_err, 0, "rearm_err");
-+	wait_for_callbacks(skel, 2);
-+out:
-+	call_rcu__destroy(skel);
-+}
-+
-+static void test_call_rcu_chain(void)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, opts);
-+	struct call_rcu *skel;
-+
-+	skel = call_rcu__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	skel->bss->chain = 1;
-+	if (!ASSERT_OK(bpf_prog_test_run_opts(bpf_program__fd(skel->progs.arm), &opts), "test_run"))
-+		goto out;
-+
-+	if (!wait_for_callbacks(skel, 1))
-+		goto out;
-+	ASSERT_EQ(skel->bss->chain_err, 0, "chain_err");
-+	wait_for_callbacks(skel, 2);
-+out:
-+	call_rcu__destroy(skel);
-+}
-+
-+/*
-+ * A callback that keeps re-arming must stop once the map loses its last user
-+ * reference, or it pins the program for good.  Hold an independent fd on .bss
-+ * so the refusal is still readable after the skeleton is gone.
-+ */
-+static void test_call_rcu_teardown(void)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, opts);
-+	int i, err, fd = 0, bss_fd = -1;
-+	struct bpf_prog_info pinfo = {};
-+	struct bpf_map_info minfo = {};
-+	__u32 len, prog_id, zero = 0;
-+	struct call_rcu *skel;
-+	char *buf = NULL;
-+	size_t off, vsz;
-+
-+	skel = call_rcu__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	len = sizeof(pinfo);
-+	if (!ASSERT_OK(bpf_prog_get_info_by_fd(bpf_program__fd(skel->progs.arm), &pinfo, &len),
-+		       "prog_info"))
-+		goto out;
-+	prog_id = pinfo.id;
-+
-+	len = sizeof(minfo);
-+	if (!ASSERT_OK(bpf_map_get_info_by_fd(bpf_map__fd(skel->maps.bss), &minfo, &len),
-+		       "bss_info"))
-+		goto out;
-+	bss_fd = bpf_map_get_fd_by_id(minfo.id);
-+	if (!ASSERT_GE(bss_fd, 0, "bss_fd"))
-+		goto out;
-+
-+	vsz = bpf_map__value_size(skel->maps.bss);
-+	off = (char *)&skel->bss->chain_err - (char *)skel->bss;
-+	buf = malloc(vsz);
-+	if (!ASSERT_OK_PTR(buf, "buf"))
-+		goto out;
-+
-+	skel->bss->chain = INT_MAX;
-+	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.arm), &opts);
-+	if (!ASSERT_OK(err, "test_run") || !ASSERT_EQ(opts.retval, 0, "retval"))
-+		goto out;
-+	if (!ASSERT_EQ(skel->bss->arm_err, 0, "arm_err"))
-+		goto out;
-+	/* The chain has to be running before the map reference goes away. */
-+	if (!wait_for_callbacks(skel, 2))
-+		goto out;
-+
-+	call_rcu__destroy(skel);
-+	skel = NULL;
-+
-+	for (i = 0; i < 3000; i++) {
-+		fd = bpf_prog_get_fd_by_id(prog_id);
-+		if (fd < 0)
-+			break;
-+		close(fd);
-+		usleep(10000);
-+	}
-+	if (!ASSERT_EQ(fd, -ENOENT, "prog_freed"))
-+		goto out;
-+
-+	if (ASSERT_OK(bpf_map_lookup_elem(bss_fd, &zero, buf), "bss_lookup"))
-+		ASSERT_EQ(*(int *)(buf + off), -EPERM, "chain_refused");
-+out:
-+	free(buf);
-+	if (bss_fd >= 0)
-+		close(bss_fd);
-+	call_rcu__destroy(skel);
-+}
-+
-+static void test_call_rcu_bad_map(void)
-+{
-+	LIBBPF_OPTS(bpf_map_create_opts, opts);
-+	struct call_rcu *skel;
-+	int fd;
-+
-+	skel = call_rcu__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	opts.btf_fd = bpf_object__btf_fd(skel->obj);
-+	opts.btf_key_type_id = bpf_map__btf_key_type_id(skel->maps.arr);
-+	opts.btf_value_type_id = bpf_map__btf_value_type_id(skel->maps.arr);
-+
-+	fd = bpf_map_create(BPF_MAP_TYPE_HASH, "rcu_hash", sizeof(__u32),
-+			    bpf_map__value_size(skel->maps.arr), 1, &opts);
-+	ASSERT_EQ(fd, -EOPNOTSUPP, "hash_rejected");
-+	if (fd >= 0)
-+		close(fd);
-+
-+	call_rcu__destroy(skel);
-+}
-+
-+/* Iterating would hand the program a writable pointer to the head. */
-+static void test_call_rcu_iter(void)
-+{
-+	LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo = {};
-+	struct bpf_link *link;
-+	struct call_rcu *skel;
-+
-+	skel = call_rcu__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	linfo.map.map_fd = bpf_map__fd(skel->maps.arr);
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+
-+	link = bpf_program__attach_iter(skel->progs.dump, &opts);
-+	if (!ASSERT_ERR_PTR(link, "iter_rejected"))
-+		bpf_link__destroy(link);
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 8a01dd4058a03..301b35bd85c8a 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -4838,21 +4838,10 @@ static void bpf_rcu_run_callback(struct rcu_head *rcu)
+ 	bpf_prog_put(prog);
+ }
+ 
+-/**
+- * bpf_call_rcu - Invoke a BPF callback after an RCU grace period
+- * @rh: struct bpf_rcu_head in a BPF map value
+- * @map__const_map: bpf_map that embeds struct bpf_rcu_head in the values
+- * @callback: BPF subprogram, invoked as callback(map, key, value) for the value holding @rh
+- * @aux: bpf_prog_aux of the caller, implicitly set by the verifier
+- *
+- * Return: 0, -EBUSY if @rh is already queued, -EPERM if @map is held by neither a process
+- * nor bpffs, or -EBADF if the calling program is going away.
+- */
+-__bpf_kfunc int bpf_call_rcu(struct bpf_rcu_head *rh, void *map__const_map,
+-			     bpf_rcu_callback_t callback, struct bpf_prog_aux *aux)
++static int __bpf_call_rcu(struct bpf_rcu_head *rh, struct bpf_map *map, void *callback,
++			  struct bpf_prog_aux *aux, bool trace)
+ {
+ 	struct bpf_rcu_head_kern *rhk = (void *)rh;
+-	struct bpf_map *map = map__const_map;
+ 	struct bpf_prog *prog;
+ 
+ 	BUILD_BUG_ON(sizeof(struct bpf_rcu_head_kern) > sizeof(struct bpf_rcu_head));
+@@ -4872,13 +4861,50 @@ __bpf_kfunc int bpf_call_rcu(struct bpf_rcu_head *rh, void *map__const_map,
+ 		return -EBADF;
+ 	}
+ 
+-	rhk->callback_fn = (bpf_callback_t)(void *)callback;
++	rhk->callback_fn = (bpf_callback_t)callback;
+ 	rhk->map = map;
+ 	rhk->prog = prog;
+-	call_rcu(&rhk->rcu, bpf_rcu_run_callback);
++	if (trace)
++		call_rcu_tasks_trace(&rhk->rcu, bpf_rcu_run_callback);
 +	else
-+		ASSERT_EQ(libbpf_get_error(link), -EOPNOTSUPP, "iter_errno");
-+
-+	call_rcu__destroy(skel);
-+}
-+
-+static void test_call_rcu_inner_map(void)
++		call_rcu(&rhk->rcu, bpf_rcu_run_callback);
+ 	return 0;
+ }
+ 
++/**
++ * bpf_call_rcu - Invoke a BPF callback after an RCU grace period
++ * @rh: struct bpf_rcu_head in a BPF map value
++ * @map__const_map: bpf_map that embeds struct bpf_rcu_head in the values
++ * @callback: BPF subprogram, invoked as callback(map, key, value) for the value holding @rh
++ * @aux: bpf_prog_aux of the caller, implicitly set by the verifier
++ *
++ * Return: 0, -EBUSY if @rh is already queued, -EPERM if @map is held by neither a process
++ * nor bpffs, or -EBADF if the calling program is going away.
++ */
++__bpf_kfunc int bpf_call_rcu(struct bpf_rcu_head *rh, void *map__const_map,
++			     bpf_rcu_callback_t callback, struct bpf_prog_aux *aux)
 +{
-+	LIBBPF_OPTS(bpf_map_create_opts, opts);
-+	struct call_rcu *skel;
-+	int fd;
-+
-+	skel = call_rcu__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	opts.inner_map_fd = bpf_map__fd(skel->maps.arr);
-+	fd = bpf_map_create(BPF_MAP_TYPE_ARRAY_OF_MAPS, "rcu_outer",
-+			    sizeof(__u32), sizeof(__u32), 1, &opts);
-+	ASSERT_EQ(fd, -EOPNOTSUPP, "inner_map_rejected");
-+	if (fd >= 0)
-+		close(fd);
-+
-+	call_rcu__destroy(skel);
++	return __bpf_call_rcu(rh, map__const_map, callback, aux, false);
 +}
 +
-+/* Two heads in the same map must be independent. */
-+static void test_call_rcu_two_heads(void)
++/**
++ * bpf_call_rcu_tasks_trace - Invoke a BPF callback after an RCU tasks trace grace period
++ * @rh: struct bpf_rcu_head in a BPF map value
++ * @map__const_map: bpf_map that embeds struct bpf_rcu_head in the values
++ * @callback: BPF subprogram, invoked as callback(map, key, value) for the value holding @rh
++ * @aux: bpf_prog_aux of the caller, implicitly set by the verifier
++ *
++ * Waits for sleepable BPF programs too.  The callback itself is not sleepable either way.
++ *
++ * Return: 0, -EBUSY if @rh is already queued, -EPERM if @map is held by neither a process
++ * nor bpffs, or -EBADF if the calling program is going away.
++ */
++__bpf_kfunc int bpf_call_rcu_tasks_trace(struct bpf_rcu_head *rh, void *map__const_map,
++					 bpf_rcu_callback_t callback, struct bpf_prog_aux *aux)
 +{
-+	LIBBPF_OPTS(bpf_test_run_opts, opts);
-+	struct call_rcu *skel;
-+
-+	skel = call_rcu__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	if (!ASSERT_OK(bpf_prog_test_run_opts(bpf_program__fd(skel->progs.arm_both), &opts),
-+		       "test_run"))
-+		goto out;
-+	if (!ASSERT_EQ(skel->bss->arm_err, 0, "arm_err"))
-+		goto out;
-+	if (!wait_for_callbacks(skel, 2))
-+		goto out;
-+	ASSERT_EQ(skel->bss->cb_keys, 0x3, "both_keys");
-+out:
-+	call_rcu__destroy(skel);
++	return __bpf_call_rcu(rh, map__const_map, callback, aux, true);
 +}
 +
-+void test_call_rcu(void)
-+{
-+	if (test__start_subtest("run"))
-+		test_call_rcu_run();
-+	if (test__start_subtest("chain"))
-+		test_call_rcu_chain();
-+	if (test__start_subtest("two_heads"))
-+		test_call_rcu_two_heads();
-+	if (test__start_subtest("teardown"))
-+		test_call_rcu_teardown();
-+	if (test__start_subtest("bad_map"))
-+		test_call_rcu_bad_map();
-+	if (test__start_subtest("iter"))
-+		test_call_rcu_iter();
-+	if (test__start_subtest("inner_map"))
-+		test_call_rcu_inner_map();
-+	RUN_TESTS(call_rcu_fail);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/call_rcu.c b/tools/testing/selftests/bpf/progs/call_rcu.c
-new file mode 100644
-index 0000000000000..94d92cee88a70
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/call_rcu.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2026 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+/* rh is not at offset 0, so the callback's value recovery is exercised. */
-+struct elem {
-+	__u64 pad;
-+	struct bpf_rcu_head rh;
-+	__u64 val;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 2);
-+	__type(key, __u32);
-+	__type(value, struct elem);
-+} arr SEC(".maps");
-+
-+__u32 cb_key;
-+__u64 cb_keys;
-+__u64 cb_val;
-+__u32 cb_max_entries;
-+int callbacks;
-+int arm_err;
-+int busy_err;
-+int chain;		/* set by userspace: number of times to re-arm from the callback */
-+int chain_err;
-+
-+static int reclaim(struct bpf_map *map, void *key, void *value)
-+{
-+	struct elem *e = value;
-+
-+	cb_key = *(__u32 *)key;
-+	__sync_fetch_and_or(&cb_keys, 1ULL << cb_key);
-+	cb_val = e->val;
-+	cb_max_entries = map->max_entries;
-+	e->val = 0;
-+
-+	if (chain > 0) {
-+		chain--;
-+		chain_err = bpf_call_rcu(&e->rh, &arr, reclaim);
-+	}
-+
-+	__sync_fetch_and_add(&callbacks, 1);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int arm(void *ctx)
-+{
-+	__u32 key = 1;
-+	struct elem *e;
-+
-+	e = bpf_map_lookup_elem(&arr, &key);
-+	if (!e)
-+		return 1;
-+
-+	e->val = 0xdeadbeef;
-+	/* Keep a grace period from elapsing between the two arms. */
-+	bpf_rcu_read_lock();
-+	arm_err = bpf_call_rcu(&e->rh, &arr, reclaim);
-+	busy_err = bpf_call_rcu(&e->rh, &arr, reclaim);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int arm_both(void *ctx)
-+{
-+	__u32 key0 = 0, key1 = 1;
-+	struct elem *e0, *e1;
-+
-+	e0 = bpf_map_lookup_elem(&arr, &key0);
-+	e1 = bpf_map_lookup_elem(&arr, &key1);
-+	if (!e0 || !e1)
-+		return 1;
-+
-+	e0->val = 0xdeadbeef;
-+	e1->val = 0xdeadbeef;
-+	arm_err = bpf_call_rcu(&e0->rh, &arr, reclaim);
-+	arm_err |= bpf_call_rcu(&e1->rh, &arr, reclaim);
-+	return 0;
-+}
-+
-+SEC("iter/bpf_map_elem")
-+int dump(struct bpf_iter__bpf_map_elem *ctx)
-+{
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/call_rcu_fail.c b/tools/testing/selftests/bpf/progs/call_rcu_fail.c
-new file mode 100644
-index 0000000000000..bf60a27731fb3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/call_rcu_fail.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2026 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+const void *user_ptr = NULL;
-+
-+struct elem {
-+	__u64 pad;
-+	struct bpf_rcu_head rh;
-+	__u64 val;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, struct elem);
-+} arr SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, struct elem);
-+} arr2 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} plain SEC(".maps");
-+
-+__u32 key = 0;
-+
-+static int reclaim(struct bpf_map *map, void *key, void *value)
-+{
-+	return 0;
-+}
-+
-+static int sleepable_reclaim(struct bpf_map *map, void *key, void *value)
-+{
-+	struct elem *e = value;
-+
-+	bpf_copy_from_user(&e->val, sizeof(e->val), user_ptr);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+__failure __msg("bpf_rcu_head pointer in R1") __msg("doesn't match map pointer in R2")
-+int mismatch_map(void *ctx)
-+{
-+	struct elem *e;
-+
-+	e = bpf_map_lookup_elem(&arr, &key);
-+	if (!e)
-+		return 0;
-+	bpf_call_rcu(&e->rh, &arr2, reclaim);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+__failure __msg("map 'plain' has no valid bpf_rcu_head")
-+int no_rcu_head(void *ctx)
-+{
-+	__u64 *val;
-+
-+	val = bpf_map_lookup_elem(&plain, &key);
-+	if (!val)
-+		return 0;
-+	bpf_call_rcu((struct bpf_rcu_head *)val, &plain, reclaim);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+__failure __msg("doesn't point to 'struct bpf_rcu_head' that is at 8")
-+int wrong_offset(void *ctx)
-+{
-+	struct elem *e;
-+
-+	e = bpf_map_lookup_elem(&arr, &key);
-+	if (!e)
-+		return 0;
-+	bpf_call_rcu((struct bpf_rcu_head *)&e->pad, &arr, reclaim);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+__failure __msg("R1 type=fp expected=map_value")
-+int rcu_head_on_stack(void *ctx)
-+{
-+	struct bpf_rcu_head rh;
-+
-+	bpf_call_rcu(&rh, &arr, reclaim);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+__failure __msg("sleepable helper bpf_copy_from_user") __msg("in non-sleepable prog")
-+int sleepable_callback(void *ctx)
-+{
-+	struct elem *e;
-+
-+	e = bpf_map_lookup_elem(&arr, &key);
-+	if (!e)
-+		return 0;
-+	bpf_call_rcu(&e->rh, &arr, sleepable_reclaim);
-+	return 0;
-+}
+ static int make_file_dynptr(struct file *file, u32 flags, bool may_sleep,
+ 			    struct bpf_dynptr_kern *ptr)
+ {
+@@ -5175,6 +5201,7 @@ BTF_ID_FLAGS(func, bpf_stream_print_stack, KF_IMPLICIT_ARGS | KF_SPINLOCK_SAFE)
+ BTF_ID_FLAGS(func, bpf_task_work_schedule_signal, KF_IMPLICIT_ARGS)
+ BTF_ID_FLAGS(func, bpf_task_work_schedule_resume, KF_IMPLICIT_ARGS)
+ BTF_ID_FLAGS(func, bpf_call_rcu, KF_IMPLICIT_ARGS)
++BTF_ID_FLAGS(func, bpf_call_rcu_tasks_trace, KF_IMPLICIT_ARGS)
+ BTF_ID_FLAGS(func, bpf_dynptr_from_file)
+ BTF_ID_FLAGS(func, bpf_dynptr_file_discard, KF_RELEASE)
+ BTF_ID_FLAGS(func, bpf_timer_cancel_async)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 64db47964ff9f..a7c9e2d8965d5 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -578,7 +578,7 @@ static bool is_async_cb_sleepable(struct bpf_verifier_env *env, struct bpf_insn
+ 	if (bpf_helper_call(insn) && insn->imm == BPF_FUNC_timer_set_callback)
+ 		return false;
+ 
+-	/* bpf_call_rcu callbacks are never sleepable. */
++	/* bpf_call_rcu and bpf_call_rcu_tasks_trace callbacks are never sleepable. */
+ 	if (bpf_pseudo_kfunc_call(insn) && insn->off == 0 && is_call_rcu_kfunc(insn->imm))
+ 		return false;
+ 
+@@ -12629,6 +12629,7 @@ enum special_kfunc_type {
+ 	KF_bpf_task_work_schedule_signal,
+ 	KF_bpf_task_work_schedule_resume,
+ 	KF_bpf_call_rcu,
++	KF_bpf_call_rcu_tasks_trace,
+ 	KF_bpf_arena_alloc_pages,
+ 	KF_bpf_arena_free_pages,
+ 	KF_bpf_arena_reserve_pages,
+@@ -12723,6 +12724,7 @@ BTF_ID(func, __bpf_trap)
+ BTF_ID(func, bpf_task_work_schedule_signal)
+ BTF_ID(func, bpf_task_work_schedule_resume)
+ BTF_ID(func, bpf_call_rcu)
++BTF_ID(func, bpf_call_rcu_tasks_trace)
+ BTF_ID(func, bpf_arena_alloc_pages)
+ BTF_ID(func, bpf_arena_free_pages)
+ BTF_ID(func, bpf_arena_reserve_pages)
+@@ -12796,7 +12798,8 @@ static bool is_bpf_rbtree_add_kfunc(u32 func_id)
+ 
+ static bool is_call_rcu_kfunc(u32 func_id)
+ {
+-	return func_id == special_kfunc_list[KF_bpf_call_rcu];
++	return func_id == special_kfunc_list[KF_bpf_call_rcu] ||
++	       func_id == special_kfunc_list[KF_bpf_call_rcu_tasks_trace];
+ }
+ 
+ static bool is_task_work_add_kfunc(u32 func_id)
 -- 
 2.53.0-Meta
 
