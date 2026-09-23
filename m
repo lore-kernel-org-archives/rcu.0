@@ -1,82 +1,82 @@
-Received: from mail-wr2-f12.google.com (mail-wr2-f12.google.com [74.125.225.76])
+Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com [74.125.225.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754F02236FD
-	for <rcu@vger.kernel.org>; Wed, 23 Sep 2026 04:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.225.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 121AF3955CA
+	for <rcu@vger.kernel.org>; Wed, 23 Sep 2026 04:40:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.225.140
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790136936; cv=pass; b=Kmd1TMY0OPYgPj2G9tmufbf9xGWZIEuPZvLXWuu/mdyFJ5L7aItc9ouFVUQIdUzLN6udkZtR+WYQNokfVFx1gMJAYiiownS3Ts24StFmzfoopvqRIt2jF3eIdTgld8DZwNoCjHtYr0rx7GMwD0k2c+qUVTn2WDKHmVpS2cQc8E4=
+	t=1790138444; cv=pass; b=II3K1maYFz/ZpRUNkBA3Gh78ID5zlrIXRjSjl81zqkZ+U1JoU5sbNej4yqD50X9k3okh8PBMIl0+hqpyWekzQWb0T0ZYmHnmmEO2bDN/TZyCke95OvC3cyAmm4PywZaBzlxnMC/LEB6wUcLQHGWwXuFP943rfNHPPvN8bbKM/vY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790136936; c=relaxed/simple;
-	bh=oUewmwn77TqWmsD8jxMMcsLsXwJkucdFvCNJu5PgVaU=;
+	s=arc-20240116; t=1790138444; c=relaxed/simple;
+	bh=DfwslUgXH9iUiGASTRA0OnW94V4DmVUUOxWiW01jeOg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rtHInkcVYBh43Ib+Y+5WNdPxSBYEuRtrvnbYzjoxI6IPZ2mxGJhJn7NMhbS7zq14k92BGh7FQDEeFUza5QPkkrHD6vK3JpB2cR/8wgFkzlHSGsqPKASeOWQqsLsEjxbda0xbbI+7R5BTulwyWG+kQ/ZNT9bK71Ip05RPYtdLgkc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FwzOicOX; arc=pass smtp.client-ip=74.125.225.76
+	 To:Cc:Content-Type; b=EHzSYbBkFG3Ps0d9rj0fliApLZkZ0PHCt0e3soxmirq+G0oksJzv4sidOvdS6ecN1DsGwANh80DXgkpwckLTeh736uLNsdeAyMH6GOEZ2zvY7M7rc+ldoeALQa6z+ofOZtlKvf3Bl9PJ/zLqzhgpKPM5dCSaDO+CcYjsqLMIGAI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ma+vLV0T; arc=pass smtp.client-ip=74.125.225.140
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FwzOicOX"
-Received: by mail-wr2-f12.google.com with SMTP id ffacd0b85a97d-4843f22dc83so385084f8f.1
-        for <rcu@vger.kernel.org>; Tue, 22 Sep 2026 21:15:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1790136933; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ma+vLV0T"
+Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49ccfd61ecaso3194955e9.3
+        for <rcu@vger.kernel.org>; Tue, 22 Sep 2026 21:40:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1790138439; cv=none;
         d=google.com; s=arc-20260327;
-        b=JQIlbj3kYBhjGvcihtXN7/Ki6i4rRH3sJ1LpBZMhnovVdjf8DLODHVKXwjtqIVDlXW
-         DZitf/SRCASRJtZoxPfH1u2HRkQSgSwZsyHnGAiaOi6u6D+dmLleyoK/mWibzJx2e/w2
-         fvCEKt9difmMxUBmnjx9T72UZiGbYtizE4lqqihuvcSzjzub/veYUVGQ1gdaYLF9tYp2
-         aQtDk/yC4hm7qaQmkWwsNu3ZPruHXRUbm9Zp+FuJ7balgz5RaOySglN75xdm5uJPrgcq
-         T7m2HfdtX7+goGGx5fb0MtIX6yD+LkB+4mpi9shWxBTfCeEtis/zo4HiSsJlPUgb7V3B
-         d34A==
+        b=NO81K43Eik3Avb/u0hTQtkqXBdStwVtfL6T1PyK0Z1jv+myDqfeboL9Z7MF07WBaO/
+         pnsSacASTgIT1mo9MoKfQ/6KY/c0+KOKnUu+oBP/gH1Jp2aWqzGwygh32X20Dn4674eo
+         cdqefWEQloUhbsp74uTndWIZ4mgIcXYF3HX0qhnvIAEqZfVBJSLQDscHDPujOeFBn9mr
+         6IB3XIoObPGigDzfI+seLzNJJTf6GIB7BvYbm8qzruR+VVYqQsVi2OzKiHSRJcG3Q/bX
+         uLYMC8LSWS0pwULVcm4O4DtKAjkg3OgX/rQggtlSTAIlIOgN+qF/dwcz1KP8JJ1jtQj/
+         yhmA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=i36f7xtnWKpVJBn7KVPs9Rgrmv9naoWJLljKyz9tnJM=;
-        fh=rX+k8JJi+guxLDW3BQUchTcAn+KmVOA6NBFZ16BflVk=;
-        b=cfyzuEv4V02IqMtn97H2GxkmJZEg0TB19LXH63+BQdF8nhrHsi+zFRwX8pJzVNjozq
-         RVHsABcyN8ifb6lzzz8KdQJHZyFl8ZUIJ7qzaoD1TRBQ9EIG6lTY0/i2ni3rMTmqzwyr
-         fwNA5RjrZzucLaOZP0FC9Pkf5tK6I81Qr19wRtmp0TYc/0GWIQGE9cq/VpsRRmq0Rdnr
-         tAGqMrDgbQmM/ZDqk4v8SMSnPf9m4PFmElrkqweo5gA0xfHQw6pQ5oDUG1V6Pa2mp4Sb
-         5gr3pglO/T6o7/e6z1wTQKHtHCPO01lKZo8wiBjuWakXtARBg+GcBTWnMKlI+1ijvcsr
-         YT3Q==;
+        bh=3v8KouzydVZ2wFebRu1KMgQMureFqXEgF0puCqWitK4=;
+        fh=+XQkmssIatYr3uOOWPGqB8BPK+sYtk6W9rQFjqf9h6Y=;
+        b=E2IuOoEToa0bAsf1jI7vBFhtFrEvt2g3kS5SHvmgkbcjtmhF+k2oWHxfc7ARyzNKAN
+         9QApSJKypji6cuEf/yfV1k1Pu2xtWo5ChuTX7iUqF5n4Lk+F31+kYbNBd8mO7pmAnOEs
+         p6QmvT2tsIw7psrHee4EeEhrqcg/tCK8bw5i1Pf4rb2DgeJz+aQpy2O6qUUW7rn7NszA
+         DXfcmyf+mmTv3h/8paRjFEt2fgcXHNpE4tAPcL+6OKdQiY7QBpkXKOH+YVxP/eGsMg/t
+         B77F9XLn2j5cX1WS/PLn3b+0OigtnT+35SCUs9AAn3NGBmz/RucRH/MyDjKwBy5oqMyH
+         QCPg==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790136933; x=1790741733; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1790138439; x=1790743239; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=i36f7xtnWKpVJBn7KVPs9Rgrmv9naoWJLljKyz9tnJM=;
-        b=FwzOicOXBvQWomnpL+aYG0N+i5jLMO8MrDsiVI8l1fVS6XdW9fDMl1F8zGPSRyu1l6
-         9pXV3H5lJPr/F6LU6XohEkHofNQNHW+AI/wfR3LWzUa8/qCs4rmigEc7HPdLaowwehw/
-         8m3gECfEYmr3+ncR4W7x4fdVYGE9EqBTLckDN+i1iTbZc0gNk7Xcmc1JPgOOQBs0pNq3
-         2YwQnj97ivnt6ArNZvaCwLeAO+TBECusObiifCgVDruPsc6JGbU0VDLU/1z6Qo+bk9gB
-         bho5bmJJXRvC54EGqGbs5HXmdV2r2uCM2ZMPREqsnCKBi8GXCWzWlZ46L7takwwiqtSc
-         TcNA==
+        bh=3v8KouzydVZ2wFebRu1KMgQMureFqXEgF0puCqWitK4=;
+        b=Ma+vLV0TuoWry0i8mVdWA/tHf/iTFMMvvQ65wn42+GXlWOaW3kiRewWZJI0+gCJmoR
+         7ylHevOKLYA43YeWy0g0/aEVf4736xnOq8jaC+wZVYIMUEpBuj/+8iBrU9FtHY417/S/
+         MRgg0lnYdhon4C4ifCuAg/+2fNUaLlEImSFehh7DIzkLRr4RxKcVV2psBC1ZZuidSl4d
+         4iH9CKwN/LKTccY84U4aRcBKMwAWy4lovF2p8sFn1PnDn23TPd3RJD0GJAr6lMHYcO5a
+         oPj8skzoX27FghRV154G8/B9eq2YR0fs0RzNRnLmRbztsaTrcqPaS93WifyheEiLAWWU
+         TZDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790136933; x=1790741733;
+        d=1e100.net; s=20260707; t=1790138439; x=1790743239;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=i36f7xtnWKpVJBn7KVPs9Rgrmv9naoWJLljKyz9tnJM=;
-        b=HjkqyegEqaan3gtS1CnyvyU9AEvtM/jpAsX3EXs1b+TW4itbACP3o5cemyvTj0fZvG
-         +ZAR8nfI4WrpVhPqweEPnDM41rTNIpcn4uB/btbm9rLsygx1ok+by1VYkJfQiDJeR8Nu
-         JydGymwEUg/BO/qx3xPP1GQclQIBNTdNlcrE3EVPtJoIUUq3XG52Yg1OGO0Pk/euV+jl
-         8yK5Y9g/i5gUxsZBlSURQwEnwPSgHAWQw0vPBpMqDEW6Yra3MB4cy8julnTa26dQNDQN
-         MLleP5zvTMakQ0Fm62qG3yWbTf9Lf0x7LD778N5wNL58eo0Czspe7w666BqQ6JpLeS/F
-         q41g==
-X-Forwarded-Encrypted: i=1; AKwUvBz8s2or77m1zyIN2VI9/nPOVVdWO53MBVAPDYkXyeMBr3uy0kS2TcEqwMemwl7iMVPScEY=@vger.kernel.org
-X-Gm-Message-State: AFuF++kLvI9vVNS+KIVvY0/rtn7gQP06adtfN5aee6xplS6RjEY2NBYC
-	THnPxrrsaqGWkITh0lrhGHIwbPyDFB4+iV12K/zVOSJhTUw44SrhnRzL/P7ioUGqrQYlITA2ZsT
-	9LPmgnFIAq7gHF/y1IEGGhkMkz8O045c=
-X-Gm-Gg: AYBFou2k6290SAy7bOIsnbO5tm0zAIfUdeJNaVDJFvGEweXJz/zfKJ4CAf3fqCnJJAQ
-	g3BOfnxOFRgdbIAFjTE2lq4g5AxafInfC4mm2YAjGqzm8/DQoKm0xyZgPzPSDxshVo6l0SapOq8
-	uAA4DTaSoCs316tqSkbw+6r657O8a3nC307L0AB8sA0M8YieG4TluIEuBkjObk1ZyVYxP2rZI6R
-	TGkAloBjo2mtjl4sFIQCI/3DF9YETWBPNt10YigNbi464e8xUNrvhiYKZVzOGJLFUswd4Ex5eTb
-	GA0EJCXBhSm/s/F6X8dqjjx0v9PT5M1cKlEJIFc+o2iH64Zc8Dp3H50sJ/T/tAI5hR8dYHGLZUv
-	YV0NCuRbkfYJYaQ==
-X-Received: by 2002:a05:600c:46cf:b0:49d:797:8488 with SMTP id
- 5b1f17b1804b1-49fdeff7112mr14786765e9.1.1790136932220; Tue, 22 Sep 2026
- 21:15:32 -0700 (PDT)
+        bh=3v8KouzydVZ2wFebRu1KMgQMureFqXEgF0puCqWitK4=;
+        b=bFSF0hqXfqvBk8AFlgQMyoWxuJD3ekerrn3INEwyasfJ2OfpjkFvExLkQqw1ivmY3y
+         C7WMJbkRnCjlHoBdX6IwxKnnkHdP62Jmh22CAxwjy0+j+VPt8ONlGAyGD6/SP+cnebyW
+         f41eaqNJnGaC2PLC2VUvJcd+nIv92zgrItz5HofG3J7q/OovSUHfxGG+c2gak6cTk9LD
+         mmeyjVCU0A/9e7s5sUFX0Ej6pwRdtWH33TKQ5nrquJ9uvLiC7wUe1B6WcNqIueH45crD
+         eIehwhJ95bTeX+b6uL54LnNrX87fDIyXEongRFA2YBYQzN3Xyx15V6eIKHiMO4v1IXOY
+         77Ig==
+X-Forwarded-Encrypted: i=1; AKwUvBxXHzRj1oc8FabbeNEAkltEbnXwgtSTD88zrYDG1mFQuo49SpmE8arpHbovybh88zjXX/s=@vger.kernel.org
+X-Gm-Message-State: AFuF++k3USEjYLl94HtSCGSAoszV+BC86Zv12D8Ah5C537jQ2zzgr7T4
+	T14t4471VX6gcHfFpr9js9vVHZ84QHQpmA50iXCm24bxcRV+xIsgpS9EAiX5J+KDism/ecpWeJM
+	FlEHHrj9gcstfZUpyxOBAsPXr5Lk1IlE=
+X-Gm-Gg: AYBFou31gptwvTKjo0hsBTDzFgw6pgGlHkn1+XENKOyinOcaOdvZ+463XtXh7XCTQL4
+	fMuD1gfdXJHMkDKXGR77x1dKepQPwLj/0dxWhFSm8zSMBwwE1S9O2sTwztqsSEz51bFpPh36adn
+	E9jvomuxCcAuHX76ltZ46Nl62QwfSFbOBhvGHnP0EeRyyIlDHovjANn4XiPiHVmvOaNjQp2mclq
+	N9T8v4kU2VNDqSQe1Ks5dkyBIgufoqwUUSH1IsAdjQatM+ZHHKfSxLKga1ZfccoAfkgfdIrwvda
+	GxTJlPfuxiS+rFvgSRZCcIyYmlCumtJ6LgHuJobdRAhkgUJHU9Gy1YSlJkJTSKJtw5uIyL541Jx
+	mjYcA64uzuEtj5g==
+X-Received: by 2002:a05:600c:4704:b0:49e:799e:c1c3 with SMTP id
+ 5b1f17b1804b1-49fdf12d3dbmr12321785e9.17.1790138438843; Tue, 22 Sep 2026
+ 21:40:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -84,14 +84,13 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20260922070950.4173245-1-kunwu.chan@gmail.com>
- <20260922070950.4173245-3-kunwu.chan@gmail.com> <arJBpQyOQf3AJ4cA@MacBook-0RXW5>
-In-Reply-To: <arJBpQyOQf3AJ4cA@MacBook-0RXW5>
+ <20260922070950.4173245-4-kunwu.chan@gmail.com> <arI0bexTH7CL66Dc@MacBook-0RXW5>
+In-Reply-To: <arI0bexTH7CL66Dc@MacBook-0RXW5>
 From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Wed, 23 Sep 2026 12:15:21 +0800
-X-Gm-Features: AclHuK_nckJ12y6T2Aoov6rc7a6r-smUS_AxTu-iCekyh8CIGeC66Dch7H_GWTo
-Message-ID: <CAN_Opa9fyOApv8u-WxcdHDgYDLkOkv4tKLacGsuHgnz7GdNVTQ@mail.gmail.com>
-Subject: Re: [RFC/WIP PATCH 2/4] locking/lockdep: use hazptr to wait for
- dynamic key lookups
+Date: Wed, 23 Sep 2026 12:40:27 +0800
+X-Gm-Features: AclHuK_6rmoBk0Xrp8rz2DECfqwOHj3oChdP_Pi51R31FmxB0rmW3v9rvLOe0xk
+Message-ID: <CAN_Opa-B+ipfSyvzBCtJf7jbiKjBFT1i=-8y9LCj+dCiRh=Z_w@mail.gmail.com>
+Subject: Re: [RFC/WIP PATCH 3/4] rcuscale: add hazptr scale type
 To: Boqun Feng <boqun@kernel.org>
 Cc: stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org, 
 	peterz@infradead.org, npiggin@gmail.com, dhowells@redhat.com, 
@@ -107,102 +106,73 @@ Cc: stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 22, 2026 at 4:51=E2=80=AFPM Boqun Feng <boqun@kernel.org> wrote=
+On Tue, Sep 22, 2026 at 3:55=E2=80=AFPM Boqun Feng <boqun@kernel.org> wrote=
 :
 >
-> On Tue, Sep 22, 2026 at 03:09:48PM +0800, Kunwu Chan wrote:
-> > lockdep_unregister_key() waits for is_dynamic_key() callers with
-> > synchronize_rcu_expedited(), which sends IPIs to every online CPU.
-> > Have is_dynamic_key() mark the hash bucket with a hazard pointer
-> > and use hazptr_synchronize() to wait specifically for those
-> > traversals.
+> On Tue, Sep 22, 2026 at 03:09:49PM +0800, Kunwu Chan wrote:
+> > Add hazptr reader and synchronize operations so that synchronize
+> > latency can be measured alongside RCU and SRCU.
 > >
-> > The hash bucket address from keyhashentry() is stable, making it a
-> > suitable hazptr synchronize target.  The rest of the key hashlist
-> > lifetime (hlist_del_rcu/call_rcu) remains RCU-based.
-> >
-> > This adapts the lockdep use case from Boqun Feng's hazard-pointer
-> > series to the current hazptr API.
+> > The read side acquires the hazard pointer in readlock() and holds
+> > it until readunlock(), matching the RCU/SRCU reader model.  The
+> > address of a static object serves as the synchronize target, which
+> > is stable and never reclaimed.  Both normal and expedited sync map
+> > to hazptr_synchronize(), since hazptr has no expedited concept.
 > >
 > > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 > > ---
-> >  kernel/locking/lockdep.c | 30 ++++++++++++++++++++----------
-> >  1 file changed, 20 insertions(+), 10 deletions(-)
+> >  kernel/rcu/rcuscale.c | 65 ++++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 64 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > index c56a7f91d72e..f67d847f9abf 100644
-> > --- a/kernel/locking/lockdep.c
-> > +++ b/kernel/locking/lockdep.c
-> > @@ -58,6 +58,7 @@
-> >  #include <linux/context_tracking.h>
-> >  #include <linux/console.h>
-> >  #include <linux/kasan.h>
+> > diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> > index 1097ec15879c..072ddf9526c3 100644
+> > --- a/kernel/rcu/rcuscale.c
+> > +++ b/kernel/rcu/rcuscale.c
+> > @@ -39,6 +39,7 @@
+> >  #include <linux/torture.h>
+> >  #include <linux/vmalloc.h>
+> >  #include <linux/rcupdate_trace.h>
 > > +#include <linux/hazptr.h>
+> >  #include <linux/sched/debug.h>
 > >
-> >  #include <asm/sections.h>
+> >  #include "rcu.h"
+> > @@ -418,6 +419,66 @@ static struct rcu_scale_ops tasks_tracing_ops =3D =
+{
 > >
-> > @@ -1280,14 +1281,24 @@ static bool is_dynamic_key(const struct lock_cl=
-ass_key *key)
+> >  #endif // #else // #ifdef CONFIG_TASKS_TRACE_RCU
 > >
-> >       hash_head =3D keyhashentry(key);
-> >
-> > -     rcu_read_lock();
-> > -     hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-> > -             if (k =3D=3D key) {
-> > -                     found =3D true;
-> > -                     break;
-> > +     /*
-> > +      * The traversal is protected by a hazard pointer rather
-> > +      * than an RCU read-side critical section.
-> > +      */
-> > +     {
-> > +             struct hazptr_ctx ctx;
-> > +             void *bucket =3D hash_head;
-> > +             void *addr;
+> > +#if IS_ENABLED(CONFIG_HAZPTR_TORTURE_TEST)
 > > +
-> > +             addr =3D hazptr_acquire(&ctx, &bucket);
-> > +             hlist_for_each_entry_rcu(k, hash_head, hash_entry, 1) {
-> > +                     if (k =3D=3D key) {
-> > +                             found =3D true;
-> > +                             break;
-> > +                     }
-> >               }
-> > +             hazptr_release(&ctx, addr);
+> > +static int hazptr_scale_obj; /* Stable, non-NULL, never reclaimed. */
 >
-> This looks good to me. However, we probably want to use scoped_guard()
-> here, that means cleanup.h support for hazptr.
+> You can probaly make hazptr_scale_obj an arrary, and let an updater
+> either randomly or round-robin select an object to wait, it'll reflect
+> better to a real world workload.
 >
-
-Thanks for the suggestions. That makes sense.
-
-I'll add a DEFINE_CLASS wrapper for hazptr so is_dynamic_key() can use
-scoped_guard().
-
-> The other thing that could be added is a debug option that force we
-> skip the fast path, so we always go into the show path in
-> hazptr_acquire(). This occurs to me because the slow path here means
-> acquiring a lock inside lockdep code, it should work, but I just want to
-> be careful. So something like:
+> > +static void *hazptr_scale_ptr =3D &hazptr_scale_obj;
+> > +
+> > +struct hazptr_scale_state {
+> > +     struct hazptr_ctx ctx;
+> > +     void *addr;
+> > +};
+> > +static DEFINE_PER_CPU(struct hazptr_scale_state, hazptr_scale_state);
+> > +
+> > +static int hazptr_scale_read_lock(void)
+> > +{
+> > +     struct hazptr_scale_state *state =3D this_cpu_ptr(&hazptr_scale_s=
+tate);
+> > +
+> > +     preempt_disable();
 >
->         void *hazptr_acquire(..)
->         {
->                 ...
->                 if (IS_ENABLED(CONFIG_HAZPTR_ACQUIRE_FORCE_SLOWPATH) ||
->                     unlikely(slot->addr))
->                         return __hazptr_acquire(ctx, addr_p);
->                 ...
->         }
->
-> Thoughts?
+> I think you can drop the preempt_disable() and preempt_enable() below,
+> since the new hazptr_acquire()/hazptr_release() work without them (i.e.
+> the hazptr acquisition no longer requires preemption disable).
 
-Agreed on the slow path. I'll add CONFIG_HAZPTR_ACQUIRE_FORCE_SLOWPATH to
-always enter __hazptr_acquire(), and exercise it with lockdep-heavy
-workloads under
-CONFIG_PROVE_LOCKING.
-The existing hazptrtorture module can also cover the forced-slowpath
-path for additional
-stress, including per-CPU slot contention that can trigger the backup-slot =
-lock.
+Thanks, Boqun. Both points make sense.
+
+I'll drop the explicit preempt_disable()/preempt_enable() and use an array =
+of
+objects with round-robin selection on the updater side.
 
 Thanks,
 Kunwu
@@ -211,31 +181,67 @@ Kunwu
 > Regards,
 > Boqun
 >
-> >       }
-> > -     rcu_read_unlock();
+> > +     state->addr =3D hazptr_acquire(&state->ctx, &hazptr_scale_ptr);
+> > +     return 0;
+> > +}
+> > +
+> > +static void hazptr_scale_read_unlock(int idx)
+> > +{
+> > +     struct hazptr_scale_state *state =3D this_cpu_ptr(&hazptr_scale_s=
+tate);
+> > +
+> > +     udelay(10);
+> > +     hazptr_release(&state->ctx, state->addr);
+> > +     preempt_enable();
+> > +}
+> > +
+> > +static unsigned long hazptr_scale_completed(void)
+> > +{
+> > +     return 0;
+> > +}
+> > +
+> > +static void hazptr_scale_sync(void)
+> > +{
+> > +     hazptr_synchronize(hazptr_scale_ptr);
+> > +}
+> > +
+> > +static void hazptr_scale_sync_exp(void)
+> > +{
+> > +     hazptr_synchronize(hazptr_scale_ptr);
+> > +}
+> > +
+> > +static struct rcu_scale_ops hazptr_scale_ops =3D {
+> > +     .ptype          =3D 0,
+> > +     .readlock       =3D hazptr_scale_read_lock,
+> > +     .readunlock     =3D hazptr_scale_read_unlock,
+> > +     .get_gp_seq     =3D hazptr_scale_completed,
+> > +     .gp_diff        =3D NULL,
+> > +     .sync           =3D hazptr_scale_sync,
+> > +     .exp_sync       =3D hazptr_scale_sync_exp,
+> > +     .name           =3D "hazptr",
+> > +};
+> > +
+> > +#define HAZPTR_SCALE_OPS &hazptr_scale_ops,
+> > +#else
+> > +#define HAZPTR_SCALE_OPS
+> > +#endif
+> > +
+> >  static unsigned long rcuscale_seq_diff(unsigned long new, unsigned lon=
+g old)
+> >  {
+> >       if (!cur_ops->gp_diff)
+> > @@ -1110,7 +1171,9 @@ rcu_scale_init(void)
+> >       long i;
+> >       long j;
+> >       static struct rcu_scale_ops *scale_ops[] =3D {
+> > -             &rcu_ops, &srcu_ops, &srcud_ops, TASKS_OPS TASKS_RUDE_OPS=
+ TASKS_TRACING_OPS
+> > +             &rcu_ops, &srcu_ops, &srcud_ops,
+> > +             TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
+> > +             HAZPTR_SCALE_OPS
+> >       };
 > >
-> >       return found;
-> >  }
-> > @@ -6683,11 +6694,10 @@ void lockdep_unregister_key(struct lock_class_k=
-ey *key)
-> >        *
-> >        * Some operations like __qdisc_destroy() will call this in a deb=
-ug
-> >        * kernel, and the network traffic is disabled while waiting, hen=
-ce
-> > -      * the delay of the wait matters in debugging cases. Currently us=
-e a
-> > -      * synchronize_rcu_expedited() to speed up the wait at the cost o=
-f
-> > -      * system IPIs. TODO: Replace RCU with hazptr for this.
-> > +      * the delay of the wait matters in debugging cases. Replace the
-> > +      * expedited RCU wait with hazptr_synchronize().
-> >        */
-> > -     synchronize_rcu_expedited();
-> > +     hazptr_synchronize(keyhashentry(key));
-> >  }
-> >  EXPORT_SYMBOL_GPL(lockdep_unregister_key);
-> >
+> >       if (!torture_init_begin(scale_type, verbose))
 > > --
 > > 2.43.0
 > >
