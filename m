@@ -1,216 +1,215 @@
-Received: from mail-wr2-f10.google.com (mail-wr2-f10.google.com [74.125.225.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24FB049EC6C
-	for <rcu@vger.kernel.org>; Wed, 23 Sep 2026 11:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7AFB5187FB;
+	Wed, 23 Sep 2026 12:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790163004; cv=none; b=hWv6u5UAlC/7jsymcAcmOLSFTnwZsESyi192JjuNRSFmmth/Gmcm6qBf3D5KLBQ+PnJ4jsI0VRosBxxOj71p1YGZhu2/iwSv39vy9wZlb8XTC+g82bFvfzV6xOB6uvDCfFovc555w3p39Y230NwSnMp2eqK9uyRvoHiSot4SjSA=
+	t=1790165137; cv=none; b=aN87mCJcSEJTKCCOUqyEB4Dft0aamo82Km7ZFNXL3Ln8k6tR3H0YXmW01GuB1h7dgnitObQpMF1v2Nu3nLyTitiSO4O2qc5TTaXM21qzZNztL9ILQICjhO+aF1nAuQLGffyyjPLhvyyUj/20MOVoTNGxtOgjGO7DEVjSnbW3Hs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790163004; c=relaxed/simple;
-	bh=opWqWSXnGRjYbUf5OxwbuCPUUj3bvnft5t6/JcjWp8k=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=kslVipJpyBBc4ZLmjIrSgxcVwvYVZ49TikSL4CN5VmoEOFdEZtjVP+Yqhhy9bTqh3VGNpllQCJ9Qipb2yjeL3bZdkXi9IQO8YiL8uiSsTi8MYU6UAcRHR2DzG9svZ9/0MiI5euh0u3kbjzUKnLI2MWQFm//zQo0pusvlguAKVMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YKwmrzHO; arc=none smtp.client-ip=74.125.225.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1790165137; c=relaxed/simple;
+	bh=FW4C2V0KtHR9j1IruA5FAlVuV2IBxi0wWUmf6CifxD4=;
+	h=Message-ID:Subject:From:To:Cc:Date:in-reply-to:Content-Type:
+	 MIME-Version; b=URq/FgWjBC7SkO5kB1IEmUsbqWt2rdSDo/q/PLys4hdl4RAeW9Si9RABJpcPn/8ucC+/u9C6oWry60UgAnVE5umEvL+ap64Hg/F/QaJ+DAu0tBDugA9YndpbcZTkzgVbpDWG4DAPSPeCrS3w4fzFMtxLvhG2+2wDl3XvYCHcEsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sJuS/4zY; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YKwmrzHO"
-Received: by mail-wr2-f10.google.com with SMTP id ffacd0b85a97d-484372811e5so165418f8f.0
-        for <rcu@vger.kernel.org>; Wed, 23 Sep 2026 04:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790162995; x=1790767795; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-type:content-transfer-encoding:mime-version:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=5TJi5pYYgXT5a+4BNFFHNYyeAaTkJJY7o8Za71zVW8k=;
-        b=YKwmrzHOa8Jv1ydKrAvZTY/oA2BVptcvSs0NzieSMnhhSzRPBP3itghlC8DdbNmo6y
-         TsHMHp13WPapCmW7KMnsR9Pw8FB6cd+STLcdgRrzLFOC1iVUTgXscIN9qg7Yl5MciA/B
-         sApYddJeG2H3s4FoSWlCv11oYR+6NsKLzhOzoLakNt9T8HtrmhmLrT7+IMIG6ayTHUNp
-         eK/SvtScLuH0Di4ocfk1qIKyZD5HXjGV3m+TBXzJnh767dn/7kiQc7XdMTDa59rHNh7x
-         syspQfzoKMflix+pJmkJDBzzIrw2fv3Q/GZP+lxElsImzmJmTQasZHWrLtuC5A1ZkKIW
-         LxIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790162995; x=1790767795;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-type:content-transfer-encoding:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=5TJi5pYYgXT5a+4BNFFHNYyeAaTkJJY7o8Za71zVW8k=;
-        b=QYbFBTNZQD1JPLmDbMf+4uRjRXOCTO1c2cSwo3grQVsSeSggkJcXFtRWtm+P8nE0To
-         Zag4vPGX2ulvX936YdQfutO6a4qh+o96tF1zdFyRdrBYWEbpIgfkcg1KiUQBfZXDiLF4
-         L+T587p/uKqHTW1QGRahRozyZ0UY+F4f4T3s0Dqceq5faPi5YwD8H7glxPAN9jL9LZrV
-         9J1fFZLKOT2hCwzoHLmr7jTgXuyFrJIBU8uUw03It9+7Ysuz3ajcMVAvhs8bLgAFSmrn
-         28dTSUL6ifc7Hv9T4a9VCT1r5PGFSjtWHFZwiWLyqo7RIXg0yc/a94ANpAID6QSilakJ
-         lppg==
-X-Forwarded-Encrypted: i=1; AKwUvByZ6QG8OmYBQGsStMU7sM4ILY9KGhKHZbJKBeFfdMJWT32J47pO8Velr6rtxdqqiPY4YmA=@vger.kernel.org
-X-Gm-Message-State: AFuF++nWkhC+B903zSDoFfxrgSDakhR6tIpnl3l7DB49sfmDDrlxzrZe
-	2svUkOkvjLBq6tN3HPzgl4k6jKO/NYl3xU2FfWv3ewrtKkFthM3Zyy1+
-X-Gm-Gg: AYBFou3YelLwOsh58lak0CXlhGq0vOIMzenWS3Rdty+8+FAi7o9/VKKo1lSUtgTAEwD
-	ULcKP0igH2Wq6ip0y9PU02sp6pCZjaegIHuk/Yfmhs14W0l24qLU7klL/PMaNmF19Suz5Dwen+d
-	q1vdH3SmJ2g7Opt9W0wE8uFFV6gmc0A0BpGJ15VTVjKnWeUn2z8FY0LZ/I664De8wkTFuZB/aaz
-	wvFT0dMZQC8FUhJPri9kco+iG2l27KHQZv7nbs7CgyD+vQCHx6TAc2YPSUCM3RMyDziLXb+QEgz
-	H4MIpVm4+csB1f/nrmjnRJtWW5zR4ezzJpGBKjZ9afPyhdT3jxKnHHa1fXh55bho0gf6QREuL9I
-	c+K9m2yjyIG9MRHQgmSRLW2Muwbx08o4OdHURDIPfNJL17D3DZUXQF75ENxNMZjen6c2YsDqF4n
-	rGlcVnonJN6DcmNcR7+q/eLHO8r4IWV8PemS4PHsqNIRwYIR4ub2324/NHABfJQv92ZyEcL3/zr
-	PhstmzQ/rLzPEj/S4cORnQuL2ykmEfJGZGI5VWce2vq4DvyfYusk8Qupw1REmrxygKD9z/065av
-	jIA+IVw0T69DtTMS8AS/ByULd94SlpdOoOZh8LJxdZd5iq3N
-X-Received: by 2002:a05:6000:1886:b0:487:172:6293 with SMTP id ffacd0b85a97d-48867060a67mr3901721f8f.3.1790162994662;
-        Wed, 23 Sep 2026 04:29:54 -0700 (PDT)
-Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4886876c119sm6797699f8f.15.2026.09.23.04.29.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2026 04:29:54 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sJuS/4zY"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:in-reply-to:
+	Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:References;
+	bh=bv44Eq/IwFacWRBSw0kcZCfcz6oe4eRlvH8apxKPluI=; b=sJuS/4zY54oRTrM94n9XGZ0GkG
+	1QUyolWZZyFtqcQ4PvWQNOU5zm0PpHCeljdqfRd3JGrWdjMFD4mGc97AkQaA+606TViU9hdskOoNM
+	Amvmue4leZsNihBd61ubB3zKYZE9zHXP23/mW4vRkibzxx8j+uVQMkeInA9KF0zhK1qEkpQN3ZMvh
+	uYLj6M/fPg1/cB4GwWgOx33JEvWgbEcYzyG5i6+dtM16hmRhVSAGL1d4IIVbkdPPnxe9a7N/C1Yxz
+	fEaAa5HdP4YWJ+DC5xIUNk0Cz18FQXPjo5yRLlodb4lhtMXeexVOYNiPbw/Frh0TmIYHtDZSOo10x
+	+dPC9CYw==;
+Received: from [54.239.6.185] (helo=freeip.amazon.com)
+	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1x9Liy-0000000D0b0-20qG;
+	Wed, 23 Sep 2026 12:05:20 +0000
+Message-ID: <7efbc8e2ecbf397fc8e44327d13e9a7021b97212.camel@infradead.org>
+Subject: Re: [PATCH 00/17] KVM: Use atomic SRCU for gfn-to-pfn cache,
+ reinstate guest mode for x86 nesting
+From: David Woodhouse <dwmw2@infradead.org>
+To: Kunwu Chan <kunwu.chan@gmail.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
+	pbonzini@redhat.com, seanjc@google.com, paul@xen.org, paulmck@kernel.org, 
+	kunwu.chan@linux.dev, nh-open-source@amazon.com
+Date: Wed, 23 Sep 2026 14:05:18 +0200
+in-reply-to: <20260923095435.591542-1-kunwu.chan@gmail.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+	boundary="=-isMiZyYAk8DuxxStIRAk"
+User-Agent: Evolution 3.62.0-0ubuntu1~ppa1~24.04 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+
+
+--=-isMiZyYAk8DuxxStIRAk
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 23 Sep 2026 13:29:53 +0200
-Message-Id: <DLMNTHW945RO.TLPGJHZRWHUY@gmail.com>
-Subject: Re: [PATCH bpf-next v6 0/4] bpf: Add bpf_call_rcu() and
- bpf_call_rcu_tasks_trace()
-From: "Kumar Kartikeya Dwivedi" <memxor@gmail.com>
-To: "Puranjay Mohan" <puranjay12@gmail.com>, "Andrii Nakryiko"
- <andrii.nakryiko@gmail.com>
-Cc: <bpf@vger.kernel.org>, <rcu@vger.kernel.org>, "Alexei Starovoitov"
- <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "Andrii
- Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau" <martin.lau@linux.dev>,
- "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>,
- "Yonghong Song" <yonghong.song@linux.dev>, "Harry Yoo (Oracle)"
- <harry@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>
-X-Mailer: aerc 0.21.0
-References: <20260922200208.3203834-1-puranjay@kernel.org>
- <CAEf4BzaifaWk+oHu-berWcKuS6Y5WfkcFTKZW-iMCPxG0=5i0w@mail.gmail.com>
- <CANk7y0g8Mh-je_o_nyXQ3zsGVeAsz2qMfgDtv4j-MXhAJ7PcMA@mail.gmail.com>
-In-Reply-To: <CANk7y0g8Mh-je_o_nyXQ3zsGVeAsz2qMfgDtv4j-MXhAJ7PcMA@mail.gmail.com>
 
-On Wed Sep 23, 2026 at 12:37 PM CEST, Puranjay Mohan wrote:
-> On Wed, Sep 23, 2026 at 12:41=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->>
->> On Tue, Sep 22, 2026 at 1:02=E2=80=AFPM Puranjay Mohan <puranjay@kernel.=
-org> wrote:
->> >
->> > Changelog:
->> > v5: https://lore.kernel.org/all/20260921191407.1742386-1-puranjay@kern=
-el.org/
->> > Changes in v6:
->> > - Size struct bpf_rcu_head at 48 bytes rather than 64, matching what t=
-he
->> >   inline state uses (Alexei)
->> > - Trim patch 1's changelog: drop the reasoning about possible future
->> >   layouts and about what the other async kfuncs return
->> > - Rebase on bpf-next/master
->> >
->> > v4: https://lore.kernel.org/all/20260915154248.3612028-1-puranjay@kern=
-el.org/
->> > Changes in v5:
->> > - Rename the "hash_map" subtest to "bad_map" so that it matches its
->> >   helper test_call_rcu_bad_map() (bpf-ci)
->> > - Bump the callback counter after chain_err in the selftest callback.
->> >   Userspace polls that counter and then reads chain_err, so it could
->> >   still see the initial value before the re-arm had stored one, which
->> >   let the chain subtest's assertion pass without checking anything
->> > - Say in patch 1 why embedding struct rcu_head in a uapi struct is
->> >   acceptable here (Mykyta, Paul, Alexei)
->> > - Rebase on bpf-next/master
->> > v3: https://lore.kernel.org/all/20260915143640.36292-1-puranjay@kernel=
-.org/
->> > Changes in v4:
->> > - Drop an unrelated hunk in bpf_async_update_prog_callback() that turn=
-ed
->> >   PTR_ERR(prog) into -EBADF.  That is the shared bpf_timer/bpf_wq path
->> >   and bpf_prog_inc_not_zero() returns -ENOENT, so it would have change=
-d
->> >   the errno bpf_timer_set_callback() and bpf_wq_set_callback() report =
-to
->> >   userspace (Sashiko).  No other changes from v3
->> > v2: https://lore.kernel.org/all/20260915114240.3269184-1-puranjay@kern=
-el.org/
->> > Changes in v3:
->> > - Move the bpf_call_rcu_tasks_trace() verifier bits from patch 1 to
->> >   patch 3; patch 1 alone emitted "resolve_btfids: unresolved symbol
->> >   bpf_call_rcu_tasks_trace" (Sashiko)
->> > - Poll the callback counter with an acquire load (Sashiko)
->> > - teardown: v2 only checked that the program was eventually freed, whi=
-ch
->> >   passes even if nothing was ever armed.  Also assert that the chain r=
-an,
->> >   and read the -EPERM back through an independent .bss fd
->> > - Use kern_sync_rcu() instead of open coding the grace-period wait
->> > - Return -EBADF rather than -ENOENT when the calling program is going
->> >   away, matching bpf_task_work_schedule()
->> > - mismatch_map now pins the bpf_rcu_head label the new code emits; it
->> >   passed with that branch removed.  Add a two_heads test, and wait for
->> >   each grace period separately in the chain test
->> > - Commit messages: correct the -EPERM parity claim, explain the inline
->> >   callback state and the struct size, motivate the tasks trace flavour
->> > v1: https://lore.kernel.org/all/20260907134552.1772405-1-puranjay@kern=
-el.org/
->> > Changes in v2:
->> > - Rebase on bpf-next/master
->> > - Use rcu_read_lock_dont_migrate() over open coding (Alexei)
->> > - Improve re-arming selftest to detect failure (Sashiko)
->> >
->> > BPF programs that manage their own objects have no way to run their ow=
-n
->> > logic once an RCU grace period has elapsed.  bpf_obj_drop() defers a
->> > free, but returning an index to an allocator or unpinning a resource
->> > once readers are done has no equivalent.  sched_ext's BPF library work=
+On Wed, 2026-09-23 at 17:54 +0800, Kunwu Chan wrote:
+> Thanks, this is very helpful. I've put the results together below.
+
+That looks correct. I had my friend dig out the missing parts from runs
+I haven't posted, and do the runs it hadn't run.
+
+128-way Ice Lake, PREEMPT_DYNAMIC production-like config:
+
+  rwlock                                   avg 0.59=C2=B5s   max  330=C2=B5=
 s
->> > around this today by pushing freed nodes onto a list and having a
->> > userspace thread call membarrier(MEMBARRIER_CMD_GLOBAL) and then run a
->> > BPF program to reclaim them; it is the first intended user.
->> >
->> > Add:
->> >
->> >         int bpf_call_rcu(struct bpf_rcu_head *rh, void *map,
->> >                          int (*callback)(struct bpf_map *map, void *ke=
-y,
->> >                                          void *value));
->> >
->> > and bpf_call_rcu_tasks_trace(), same signature, which also waits for
->> > sleepable programs.
->> >
->> > @rh is a struct bpf_rcu_head embedded in a value of @map, so the
->> > callback runs as callback(map, key, value) for the element it lives in
->> > and needs no cookie.  The field is only accepted in BPF_MAP_TYPE_ARRAY=
-,
->>
->> Isn't restricting this to BPF_MAP_TYPE_ARRAY unnecessarily restrictive
->> in practice? Do other APIs of similar kind have this limitation? E.g.,
->> bpf_task_work_schedule() or timer, I don't think they limit user to
->> just ARRAY maps, it's way too inflexible.
->
-> Right, bpf_timer and bpf_task_work take HASH/LRU_HASH/ARRAY. They can
-> because they can cancel: on element delete bpf_obj_free_fields() calls
+  synchronize_srcu_expedited() drain       avg 3.65=C2=B5s   max 4383=C2=B5=
+s
+  synchronize_srcu_atomic(), no fastpath   avg 8.04=C2=B5s   max 6034=C2=B5=
+s
+  synchronize_srcu_atomic() + fastpath     avg 3.59=C2=B5s   max  326=C2=B5=
+s
 
-bpf_obj_cancel_fields(). bpf_obj_free_fields() is no longer called except w=
-hen
-the object is being freed finally.
+192-way Granite Rapids, PREEMPT_RT production config:
 
-> bpf_task_work_cancel_and_free(), which reaches task_work_cancel(), so
-> a pending callback never runs against a recycled element.
-> A queued RCU callback cannot be cancelled. rcu_barrier() is the only
-> thing that waits for one, and it sleeps, so it is not callable from an
-> element delete. Array elements are never freed individually, which is
-> what makes it safe.
+  rwlock                                   avg  4.4=C2=B5s   max 3854=C2=B5=
+s
+  synchronize_srcu_expedited() drain       avg  8.6=C2=B5s   max  810=C2=B5=
+s
+  synchronize_srcu_atomic(), no fastpath   avg 12.0=C2=B5s   max  620=C2=B5=
+s
+  synchronize_srcu_atomic() + fastpath     avg  ~3=C2=B5s    max  801=C2=B5=
+s
 
-If cancel is a noop, can you not simply skip it on map update?
+The max values here are noisy and can vary by 2x per (300s) run. The
+averages are fairly clean, and I think I have per-bucket breakdowns for
+all of them if you really want to dig into it.
 
-It is a bit unfortunate we can't provide cancel semantics, it will be yet
-another divergence from how all other async callbacks work...sigh.
+Astute readers will note that rwlock actually wins on average on the
+"production-like" config, that the max is in the same ballpark as the
+srcu_atomic+fastpath too, and wonder why we bothered... the point is
+not just that rwlocks are the wrong thing to use for PREEMPT_RT, but
+also that all we're benchmarking in the above tables is the
+*invalidation* not the read side, which scales a *lot* better in the
+SRCU model and doesn't bounce cache lines around.
 
->
-> I can think of a complicated way to support hash maps but that would
-> need making the state dynamically allocated and finding a way to
-> cancel the callbacks. But I would do it as a follow-up if there is a
-> real use case.
+--=-isMiZyYAk8DuxxStIRAk
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-That would mean allocation and frees, it is already quite expensive as is f=
-or a
-call_rcu() primitive (with the refcount bumps and atomics).
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCE8Ew
+ggWvMIIEl6ADAgECAhANkOKMSmGXhF5eMl0rsRhvMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYT
+AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAi
+BgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBHMjAeFw0yNDAzMTMwMDAwMDBaFw0zNDAz
+MTIyMzU5NTlaMGIxCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UE
+AxMxRGlnaUNlcnQgQXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTCCAiIw
+DQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAOfSIeC0vv1xPQ+dgSxbIIrkaru6skAWJYaGFzmv
+q4Kq+2wU2jxhcWlJg/JeP5jEkq/LM3pn5aaLao79j+XRmS7J1ZpJKUODJVoM4s9MQJhTMvo4qS5Z
+S64g6QR7Obkz3I1Lr3aWeSBmDDEyzue+NKtuWZ1Cxy3RdXo/w5HgRc3l2AercOM3Gt1XonTzEtTb
+Z/Hwc0Sn9Gz8RmGRK6Ka4hVDl8q/2l110KaV233Kh5etP0csXS8MIMdVRfRu3sc5hp13DG7lCKzK
+72a2GEpI8Wpl26G6I1/LMzz/98T+FqjTqxsdquk7Cj7m2vKGLW1BorpQH7WFGPdJQXJe1hfbfiZA
+CcVdCtl4nAacFacmsiArZBfX7AQGL7isvHUwwYFEtcApyGW4p2Lt+t8nvU0CANA6BHOpOz1xOP8W
+mAESbUriIjyuTUf3fJ9oDNCurVqhASMJCDaWI3lYX/QAoiAzt6akqbbZxo2ujW7mGGqc0KxqE2cs
+h2T79v7pC8aUtHBfwNrTR19GnZVxE0eQ7ViIQhR6mpSaUQFA9sG+cmD2G8TnCgYsLa0q8De6F61a
+CBevQGHNzrbZ3JAMneveYg/Jy1XxQHDRcvrMfWKe0jjcWbdKYlaGVPm5V1ILwYz7Yv5ewo3NUrxI
+GJiywe9qPhuJSDZs7VehTuI0FxGIsgKzVjgbAgMBAAGjggFcMIIBWDASBgNVHRMBAf8ECDAGAQH/
+AgEAMB0GA1UdDgQWBBT3m6JO05fF9DQPQw6Bhc6RkzKv+TAfBgNVHSMEGDAWgBTOw0q5mVXyuNtg
+v6l+vVa1lzan1jAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MHkGCCsGAQUFBwEBBG0wazAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEMG
+CCsGAQUFBzAChjdodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURS
+b290RzIuY3J0MEUGA1UdHwQ+MDwwOqA4oDaGNGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdp
+Q2VydEFzc3VyZWRJRFJvb3RHMi5jcmwwEQYDVR0gBAowCDAGBgRVHSAAMA0GCSqGSIb3DQEBDAUA
+A4IBAQA+b8Uw53sDspdZgukU+qzLyyHkcjlxGGhHlP+zrmDLKm1wEFvCRS2pili3Hy67i8N4N5NU
+vw5Rg6kv3lxb9S9Rktxk43k+tvm68pl7OxQE55ZjVY87P0lUPGwEqOOwLLyH02ZQcsfq5p5LrOH9
+0JvmvZ1yy73HS+VpDAqOlytE0NSvTIRqFFkKQGQwfjvtql9YflujuNNvJztjBaHKYZsnNSg+J38o
+jYq4TP3pSg3UdVH0PncVjPQyqxC9xef5Xae92Kbkzol3x7Nel3A1bwAkalrDMspvTHvey6LfiBks
+FIqviTnoy7fgjaRAJgHS+RXx/cmuRd3rUAclSVVrYu8RMIIHAzCCBOugAwIBAgIQAzUotrsybJHx
+HTjKOIVdIDANBgkqhkiG9w0BAQsFADBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQs
+IEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFzc3VyZWQgRzIgU01JTUUgUlNBNDA5NiBTSEEzODQg
+MjAyNCBDQTEwHhcNMjYwNzE4MDAwMDAwWhcNMjgwMTA0MjM1OTU5WjAeMRwwGgYDVQQDDBNkd213
+MkBpbmZyYWRlYWQub3JnMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA2pYux73kdbYX
+sWF8f1u6DJP91qcqaZetsyfPkZk0B+MmXmAEv0kVes5n15V2mbDThOnpoPFly0UugQO9JYqLfrtD
+tKD5yL58fgrDB9Dw+LQikgrHafl6YSCds5AvUu/8hw2J6noKrcOLJpKlKn9Fl/4IB9Q3JIdLx5aa
+EtTqMalIPqHFOlgrJ7s+aua8xbB8YQ9ahqYBXWRJNv3P/2b1DYtdrz1oqZPE3CcB8Pc6Gf2a1Tcm
+6TAgtEx7Cf1BFcrsrMz7TWHmGQITieNb2r9UYWSc2Gp+GtYFNJCgT0JJXKUBIauPMKBLteYrL8Fo
+ff/uY44dC/mDWjdCP/5x0qelPQjlBvWdHL5zvBTOj06rJ0m3HNI/hnIcDh0Qu2j9reb9rLVcdym6
+bWmBM4uDEB8Zv9Ph0KTBFSy1IosyakuD1j1Os30EzjGfbi0EUXIvnOcYbTBAbM5UAzrxEHMhBvoX
+Pvnx+OyvjJmc9tWxTX6AcSz+m40esbT17URBeZS18afgieiikm5TynlUYP1LciR3hSgGVzvGXnKO
+02VDFR5itGWdRKZ2W5wIShNfWfhSa0D0K5UdIDt5Qc7sjzwK1Yb1sY5Tu0uA5mhIS82q1ov83uxB
+sFkriNnhGv/M1NCDVLBiOMsHu73qUM+yKmgKLwF9Hfn9WI25glbAMI4S5r3hYzcCAwEAAaOCAfcw
+ggHzMB8GA1UdIwQYMBaAFPebok7Tl8X0NA9DDoGFzpGTMq/5MB0GA1UdDgQWBBRcYhqbcGzn1jrT
+JOZaB8O7qllDpzAwBgNVHREEKTAngRNkd213MkBpbmZyYWRlYWQub3JngRBkYXZpZEB3b29kaG91
+LnNlMBQGA1UdIAQNMAswCQYHZ4EMAQUBAjAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0lBBYwFAYIKwYB
+BQUHAwIGCCsGAQUFBwMEMIGpBgNVHR8EgaEwgZ4wTaBLoEmGR2h0dHA6Ly9jcmwzLmRpZ2ljZXJ0
+LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsME2gS6BJ
+hkdodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZT
+SEEzODQyMDI0Q0ExLmNybDCBjQYIKwYBBQUHAQEEgYAwfjAkBggrBgEFBQcwAYYYaHR0cDovL29j
+c3AuZGlnaWNlcnQuY29tMFYGCCsGAQUFBzAChkpodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20v
+RGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZTSEEzODQyMDI0Q0ExLmNydDANBgkqhkiG9w0B
+AQsFAAOCAgEAocabrh1cPd5s3vY5rnlBVQSTc7zs2ZWs67dAIltR+05WELrYClVzzUhMs/LOJPlr
+EUo45UDDomXq38DxFepaPd9+iNLjXfn33EX/IG44j04lU/oF/Rg9VeQILkYLbCZ/x9wOjNHZc4SN
+ydY7Dhvf/sT5aBz88u7D5+azZJ7Qf1U57wYseCH1Mt0nDrtr5y19IJ8D9xJJ33RFL6vfpHZBBAQ8
++3RqkKNxLoV2aFvQhxdhjNLDqTv3LjUIdicwPraN7JkxEu7CV2Lka7eRqJgkWL7SK0YmBjGpRafs
++icP/ON5RCCKTTb6VlX8eTG2sJJfsFhvJNCCt6xexbWzWtIrfP7NvPBvwBB737AyEGBZkS5aNizT
+McURJGTv9UKvBh1LF/+tNhYtLvPCN7oecGzhCHht9jcwSkygTo3Y6YlK3QgOu+ncmiBbfeuwlLZ1
+LxbYvG6hgNqXv7u6YyADbYajAQJXJ2OQen39pm3Q/AQSyLYG+B8lDglWsM8tYXPlEdrYJcksGK6F
+nqIX6Bumn43rBooLJdiZp4WmfWdL2pxe+LxRDjprmqu1WprixDxULSTOKJZoqTlugs6y3Bc+if+s
+gHnBBtz9WQ6MtPHkh7zONDAFIKcBmv8OqPQCx0F3Wv3OEybwMpXx0OsKgK8wLldaX1pXcMuyDgTL
+Sqs0AV0OHUgwggcDMIIE66ADAgECAhADNSi2uzJskfEdOMo4hV0gMA0GCSqGSIb3DQEBCwUAMGIx
+CzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UEAxMxRGlnaUNlcnQg
+QXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTAeFw0yNjA3MTgwMDAwMDBa
+Fw0yODAxMDQyMzU5NTlaMB4xHDAaBgNVBAMME2R3bXcyQGluZnJhZGVhZC5vcmcwggIiMA0GCSqG
+SIb3DQEBAQUAA4ICDwAwggIKAoICAQDali7HveR1thexYXx/W7oMk/3Wpyppl62zJ8+RmTQH4yZe
+YAS/SRV6zmfXlXaZsNOE6emg8WXLRS6BA70liot+u0O0oPnIvnx+CsMH0PD4tCKSCsdp+XphIJ2z
+kC9S7/yHDYnqegqtw4smkqUqf0WX/ggH1Dckh0vHlpoS1OoxqUg+ocU6WCsnuz5q5rzFsHxhD1qG
+pgFdZEk2/c//ZvUNi12vPWipk8TcJwHw9zoZ/ZrVNybpMCC0THsJ/UEVyuyszPtNYeYZAhOJ41va
+v1RhZJzYan4a1gU0kKBPQklcpQEhq48woEu15isvwWh9/+5jjh0L+YNaN0I//nHSp6U9COUG9Z0c
+vnO8FM6PTqsnSbcc0j+GchwOHRC7aP2t5v2stVx3KbptaYEzi4MQHxm/0+HQpMEVLLUiizJqS4PW
+PU6zfQTOMZ9uLQRRci+c5xhtMEBszlQDOvEQcyEG+hc++fH47K+MmZz21bFNfoBxLP6bjR6xtPXt
+REF5lLXxp+CJ6KKSblPKeVRg/UtyJHeFKAZXO8Zeco7TZUMVHmK0ZZ1EpnZbnAhKE19Z+FJrQPQr
+lR0gO3lBzuyPPArVhvWxjlO7S4DmaEhLzarWi/ze7EGwWSuI2eEa/8zU0INUsGI4ywe7vepQz7Iq
+aAovAX0d+f1YjbmCVsAwjhLmveFjNwIDAQABo4IB9zCCAfMwHwYDVR0jBBgwFoAU95uiTtOXxfQ0
+D0MOgYXOkZMyr/kwHQYDVR0OBBYEFFxiGptwbOfWOtMk5loHw7uqWUOnMDAGA1UdEQQpMCeBE2R3
+bXcyQGluZnJhZGVhZC5vcmeBEGRhdmlkQHdvb2Rob3Uuc2UwFAYDVR0gBA0wCzAJBgdngQwBBQEC
+MA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwgakGA1UdHwSB
+oTCBnjBNoEugSYZHaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZEcyU01J
+TUVSU0E0MDk2U0hBMzg0MjAyNENBMS5jcmwwTaBLoEmGR2h0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNv
+bS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsMIGNBggrBgEF
+BQcBAQSBgDB+MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wVgYIKwYBBQUH
+MAKGSmh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNB
+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
+4gi/OaccjdBuQ/ayz3W5HIUAAAAAAAA=
+
+
+--=-isMiZyYAk8DuxxStIRAk--
