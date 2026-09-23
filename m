@@ -1,286 +1,630 @@
-Received: from mail-wm2-f4.google.com (mail-wm2-f4.google.com [74.125.225.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642F83C37AF
-	for <rcu@vger.kernel.org>; Wed, 23 Sep 2026 16:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3AF35616DD;
+	Wed, 23 Sep 2026 16:58:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790182412; cv=none; b=fS9RD24o2WkbiYKwUEzq3IUEMfAyn+ZR2m363hqxyepIit3A4ojjpqZBZBYuK1Sq0S96KxQRM4BsEDaiPz+Bgi4/4LK9I54K6v0ToDEF/uQTHCgfmWEoH/wLqyvIL70M3SVZGBbofDCy9txoSzuWP6MxokIPhCFAMmBtuQAZjAE=
+	t=1790182690; cv=none; b=HDI5HViHkAyEBWIL3asenqrGK54XUqbLcyhpRFUAXjAUw79pOKYqueei6AqJGqwfAKs0k95ALm61sEkCYnbjd564RmL8SHWUBZroR9C2ez3sFIYRT8poZA7QWkC9CK29qjmuBCpLE/cwZgwssaUED+Al9/NZDEF1SbbkG3hyHVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790182412; c=relaxed/simple;
-	bh=p/0KZ68LGr2iJJaK0QtwantBUJwpkmc/lQxRK1SBwvI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=Pi92xzmy9fYYuHvzJykCNluWKNSjcWY/RjIROBZjPUqQh8KZvWqhi9/rOKsBd9/pEFnSWv143YZ/Hh+1RN9MKj9cfQnDjMS5f8TWsZLGCks+FWvruBPV6RuznLY1HrbUhxch119rIJ4pl1URbCr5q2Mph57fERnBlAfW+kYdgoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bgq4g0Bo; arc=none smtp.client-ip=74.125.225.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1790182690; c=relaxed/simple;
+	bh=WoqWEem1rEI836zQzhQfFJqP4pi5Ym9GLOuDUXA0trw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L1Nwrq4sJaWuxnUjiGlpNaLNBjE6KCs5DTGkqBECHUaM+RQet5SVZChhaF6PCVBHgul4/rzZqFaEYZ3DKpv6eHp8CIE7LF+/CFWAILPZuuie4xZx2OM3r0COXeNHvnJsGHwvf1bckvMCZplTwhHks84A0Wshd2SldVo1eahSpkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h1j8dcyh; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bgq4g0Bo"
-Received: by mail-wm2-f4.google.com with SMTP id 5b1f17b1804b1-49cd71f9909so2320115e9.1
-        for <rcu@vger.kernel.org>; Wed, 23 Sep 2026 09:53:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790182409; x=1790787209; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-type:content-transfer-encoding:mime-version:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=ed3QXESutta5PNgIuWlBBjkorsQK7Sz7FQtCM4TE32s=;
-        b=bgq4g0BoqaCqSt5G1eNc1DZXIF4Owmeg157qMKh39k5eZdJ3KnNZi2+cLlDrDd36qu
-         YcAiCFzNFWTWCxfw8zv0onxTyX9jqxtbwLT0+xFunQclVVagTkGEs8VJsQUyAuWDozbU
-         tF5NRSJ6lrtoVJMs/TVaAbX27FhwxJ838/nOUdnNHP3RGaOJawIGrL17c2bPyGlHg+1R
-         IMMyDskVOtGgrwMgBrvTnngVrpxM0RoLR5k9Dnk+w+5mDdaX22cXS4Q3Wc7ZQ1lgM6+o
-         3m6AI9I0PYRoC1i9N5zr6HwcX9BzpP9EKEh6nUPS0y0TnElcdyJH2R3zstgsJV8K7vag
-         xxoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790182409; x=1790787209;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-type:content-transfer-encoding:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=ed3QXESutta5PNgIuWlBBjkorsQK7Sz7FQtCM4TE32s=;
-        b=AtGcLH3CEi9TbtFMV3tb4BtkR1mNZv6iy/4a1dPAlxnqEgkGQECRdilfKsqst/h0gY
-         4mn1N51P/7OIgTTGK9bhLi7DuiL5++vvy7g3gBnXTNizHoEXKmLHPg8aL+r1ksiJdrKK
-         07CL78TW8dQRk8bfkoizBX0gZVXaFY9ery/XOyx1TWkF5hquGkaKJBe8eL8Wh51YaMqV
-         V3cnr1X6QOTiBS/zCtQ5kvGlPL6U/dajSCbYm7xQy+zBwTFIoIGhrExm3pUepnqpjlZr
-         zqXbx2DbH4Ac13v+erLh7RweoU7HEAr2U0Xr+nTj0aCDan2Q4k+MTih/WvLpH8tbWRHm
-         xCcA==
-X-Forwarded-Encrypted: i=1; AKwUvBwa6trBu0aktjhbblFtPkNjh4aGtt30l1pk8Ep5d8Fd2wJbRY4/iI5kyofIMDO4kFUe5RM=@vger.kernel.org
-X-Gm-Message-State: AFuF++nkaCgDXDsoeGemUu8DTewSQa2CjYusT/loNsufOH2nl+CdYxvG
-	rTZmgOume/TcuQewUX6TmQjm4UDKrfT+YbjwbVCuv3bANpB/2TjbnoWQ
-X-Gm-Gg: AYBFou1aJSSi3DXbOWblnOH10+sQsaMMgDzuGS2bLlAW5UkRTOrpaVhL6SbmCzUBcOl
-	Bexur5ki5IOyNHegrUYKC3/rFPsMnBEGZ6lg74IjffxPEVPmlj+FVCbhSbxiNLecvbgaZhlxE9g
-	NY22QAaAhCKJp/ohLRVGPOKZQ6xOh3glFqu3p7RNRQed+QJWk9WAh/do8/1cOOFQo6JDIvrWsjK
-	EedXN9p52eBrgzAjCBvAnKLS7DAAKLHyLFi/Zc8n3mJInIKfgIu75sfE+gETGWjlpqGhc/A194e
-	iZuBkeC4swiagxwl+jnlgnpql1X1pFWHLEYtibOLzBDy2gwomXRa2xVPz30GC/J/LCKvzS3Tv/K
-	5XZf47R2Z3AE3anrleRGbQ/Qja+dIie8GOzCIMVEE4k56PYOmjPTFpRRAAh0Upqz/oJ1FypxpkZ
-	vdvdcXhGmcG/TgZ2bGSL74xhRSHyugFIBo1zG41JkoCXd4i2I7bXNWZ2ZEY8YssDz4hyLd8StdZ
-	ilkmQRSNiZSQfu4yBixxDzcrjR531nDwCYHA6Q6YmdBt+pL1wQyFsn1bWpniUa0xVCln1GA/S1L
-	6H/Zsq/y+p7HDbPCW9HiTK745El0YbUKIbegQSgcqrFYElBB
-X-Received: by 2002:a05:600c:c493:b0:49f:ce78:3564 with SMTP id 5b1f17b1804b1-49fdee0a323mr46208655e9.21.1790182408356;
-        Wed, 23 Sep 2026 09:53:28 -0700 (PDT)
-Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49fde1c0f6csm107711875e9.3.2026.09.23.09.53.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2026 09:53:27 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h1j8dcyh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 904A41F000FF;
+	Wed, 23 Sep 2026 16:58:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790182687;
+	bh=UYUMhqujWDfQOfDJQx1XrfJtM1IEUP7Jd+1gqVWGvH0=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=h1j8dcyhG/SQEYEWXNsqOS6e0Zizu03d4EjCve5nFHa8rAp++6498s7MiNat3PUKF
+	 /4CKiP6zgv8jruvxj5FW9jMQ5CtIoCtPi4aZbMa5lwZd4y7W3oaVuXT3dTb86K5uiw
+	 BX6DvNQ4/lASjUa3iTyNf2Chps23XPyLRVDEjVtS6M2M040HQjTT8zV5Gsqn6ghJ//
+	 TmQraekb84PpJ5g9DGp0tv4Ez5olMFzW1ARuhoMrt9SKKjSvZhH356xmpe+RAcQVLy
+	 oFlqtacX2ocNi2WKEzr9wEmrlK6ZeS+JQ5yQ1k06cAAeCuxkJ4BDzTNOhq44TZA4+h
+	 tqhsk9ichkrfg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 46B70CE1598; Wed, 23 Sep 2026 09:58:02 -0700 (PDT)
+Date: Wed, 23 Sep 2026 09:58:02 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>, Boqun Feng <boqun@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kprobes: Make optprobe optimizer multi-generational and
+ asynchronous
+Message-ID: <7807d622-b76e-4c7a-b9e2-42667defe918@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260923164510.f3bbddefea4423f8f1bfecb8@kernel.org>
+ <179017148080.466588.9116221556625712980.stgit@devnote2>
+ <20260924001216.60407f86076bfc26daf4401a@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 23 Sep 2026 18:53:27 +0200
-Message-Id: <DLMUP8JM4L3U.1A9R0QUFFIQV9@gmail.com>
-Cc: "Puranjay Mohan" <puranjay12@gmail.com>, <bpf@vger.kernel.org>,
- <rcu@vger.kernel.org>, "Alexei Starovoitov" <ast@kernel.org>, "Daniel
- Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>,
- "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard Zingerman"
- <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong Song"
- <yonghong.song@linux.dev>, "Harry Yoo (Oracle)" <harry@kernel.org>, "Paul
- E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH bpf-next v6 0/4] bpf: Add bpf_call_rcu() and
- bpf_call_rcu_tasks_trace()
-From: "Kumar Kartikeya Dwivedi" <memxor@gmail.com>
-To: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
-X-Mailer: aerc 0.21.0
-References: <20260922200208.3203834-1-puranjay@kernel.org>
- <CAEf4BzaifaWk+oHu-berWcKuS6Y5WfkcFTKZW-iMCPxG0=5i0w@mail.gmail.com>
- <CANk7y0g8Mh-je_o_nyXQ3zsGVeAsz2qMfgDtv4j-MXhAJ7PcMA@mail.gmail.com>
- <DLMNTHW945RO.TLPGJHZRWHUY@gmail.com>
- <CAEf4BzaR=oQz13GVxM+DjLkyjCjFmETvj9=bAuccLNKCXHJPaw@mail.gmail.com>
-In-Reply-To: <CAEf4BzaR=oQz13GVxM+DjLkyjCjFmETvj9=bAuccLNKCXHJPaw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260924001216.60407f86076bfc26daf4401a@kernel.org>
 
-On Wed Sep 23, 2026 at 6:45 PM CEST, Andrii Nakryiko wrote:
-> On Wed, Sep 23, 2026 at 4:29=E2=80=AFAM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
->>
->> On Wed Sep 23, 2026 at 12:37 PM CEST, Puranjay Mohan wrote:
->> > On Wed, Sep 23, 2026 at 12:41=E2=80=AFAM Andrii Nakryiko
->> > <andrii.nakryiko@gmail.com> wrote:
->> >>
->> >> On Tue, Sep 22, 2026 at 1:02=E2=80=AFPM Puranjay Mohan <puranjay@kern=
-el.org> wrote:
->> >> >
->> >> > Changelog:
->> >> > v5: https://lore.kernel.org/all/20260921191407.1742386-1-puranjay@k=
-ernel.org/
->> >> > Changes in v6:
->> >> > - Size struct bpf_rcu_head at 48 bytes rather than 64, matching wha=
-t the
->> >> >   inline state uses (Alexei)
->> >> > - Trim patch 1's changelog: drop the reasoning about possible futur=
-e
->> >> >   layouts and about what the other async kfuncs return
->> >> > - Rebase on bpf-next/master
->> >> >
->> >> > v4: https://lore.kernel.org/all/20260915154248.3612028-1-puranjay@k=
-ernel.org/
->> >> > Changes in v5:
->> >> > - Rename the "hash_map" subtest to "bad_map" so that it matches its
->> >> >   helper test_call_rcu_bad_map() (bpf-ci)
->> >> > - Bump the callback counter after chain_err in the selftest callbac=
-k.
->> >> >   Userspace polls that counter and then reads chain_err, so it coul=
-d
->> >> >   still see the initial value before the re-arm had stored one, whi=
-ch
->> >> >   let the chain subtest's assertion pass without checking anything
->> >> > - Say in patch 1 why embedding struct rcu_head in a uapi struct is
->> >> >   acceptable here (Mykyta, Paul, Alexei)
->> >> > - Rebase on bpf-next/master
->> >> > v3: https://lore.kernel.org/all/20260915143640.36292-1-puranjay@ker=
-nel.org/
->> >> > Changes in v4:
->> >> > - Drop an unrelated hunk in bpf_async_update_prog_callback() that t=
-urned
->> >> >   PTR_ERR(prog) into -EBADF.  That is the shared bpf_timer/bpf_wq p=
-ath
->> >> >   and bpf_prog_inc_not_zero() returns -ENOENT, so it would have cha=
-nged
->> >> >   the errno bpf_timer_set_callback() and bpf_wq_set_callback() repo=
-rt to
->> >> >   userspace (Sashiko).  No other changes from v3
->> >> > v2: https://lore.kernel.org/all/20260915114240.3269184-1-puranjay@k=
-ernel.org/
->> >> > Changes in v3:
->> >> > - Move the bpf_call_rcu_tasks_trace() verifier bits from patch 1 to
->> >> >   patch 3; patch 1 alone emitted "resolve_btfids: unresolved symbol
->> >> >   bpf_call_rcu_tasks_trace" (Sashiko)
->> >> > - Poll the callback counter with an acquire load (Sashiko)
->> >> > - teardown: v2 only checked that the program was eventually freed, =
-which
->> >> >   passes even if nothing was ever armed.  Also assert that the chai=
-n ran,
->> >> >   and read the -EPERM back through an independent .bss fd
->> >> > - Use kern_sync_rcu() instead of open coding the grace-period wait
->> >> > - Return -EBADF rather than -ENOENT when the calling program is goi=
-ng
->> >> >   away, matching bpf_task_work_schedule()
->> >> > - mismatch_map now pins the bpf_rcu_head label the new code emits; =
-it
->> >> >   passed with that branch removed.  Add a two_heads test, and wait =
-for
->> >> >   each grace period separately in the chain test
->> >> > - Commit messages: correct the -EPERM parity claim, explain the inl=
-ine
->> >> >   callback state and the struct size, motivate the tasks trace flav=
-our
->> >> > v1: https://lore.kernel.org/all/20260907134552.1772405-1-puranjay@k=
-ernel.org/
->> >> > Changes in v2:
->> >> > - Rebase on bpf-next/master
->> >> > - Use rcu_read_lock_dont_migrate() over open coding (Alexei)
->> >> > - Improve re-arming selftest to detect failure (Sashiko)
->> >> >
->> >> > BPF programs that manage their own objects have no way to run their=
- own
->> >> > logic once an RCU grace period has elapsed.  bpf_obj_drop() defers =
-a
->> >> > free, but returning an index to an allocator or unpinning a resourc=
-e
->> >> > once readers are done has no equivalent.  sched_ext's BPF library w=
-orks
->> >> > around this today by pushing freed nodes onto a list and having a
->> >> > userspace thread call membarrier(MEMBARRIER_CMD_GLOBAL) and then ru=
-n a
->> >> > BPF program to reclaim them; it is the first intended user.
->> >> >
->> >> > Add:
->> >> >
->> >> >         int bpf_call_rcu(struct bpf_rcu_head *rh, void *map,
->> >> >                          int (*callback)(struct bpf_map *map, void =
-*key,
->> >> >                                          void *value));
->> >> >
->> >> > and bpf_call_rcu_tasks_trace(), same signature, which also waits fo=
-r
->> >> > sleepable programs.
->> >> >
->> >> > @rh is a struct bpf_rcu_head embedded in a value of @map, so the
->> >> > callback runs as callback(map, key, value) for the element it lives=
- in
->> >> > and needs no cookie.  The field is only accepted in BPF_MAP_TYPE_AR=
-RAY,
->> >>
->> >> Isn't restricting this to BPF_MAP_TYPE_ARRAY unnecessarily restrictiv=
-e
->> >> in practice? Do other APIs of similar kind have this limitation? E.g.=
-,
->> >> bpf_task_work_schedule() or timer, I don't think they limit user to
->> >> just ARRAY maps, it's way too inflexible.
->> >
->> > Right, bpf_timer and bpf_task_work take HASH/LRU_HASH/ARRAY. They can
->> > because they can cancel: on element delete bpf_obj_free_fields() calls
->>
->> bpf_obj_cancel_fields(). bpf_obj_free_fields() is no longer called excep=
-t when
->> the object is being freed finally.
->>
->> > bpf_task_work_cancel_and_free(), which reaches task_work_cancel(), so
->> > a pending callback never runs against a recycled element.
->> > A queued RCU callback cannot be cancelled. rcu_barrier() is the only
->> > thing that waits for one, and it sleeps, so it is not callable from an
->> > element delete. Array elements are never freed individually, which is
->> > what makes it safe.
->>
->> If cancel is a noop, can you not simply skip it on map update?
->>
->> It is a bit unfortunate we can't provide cancel semantics, it will be ye=
-t
->> another divergence from how all other async callbacks work...sigh.
->>
->> >
->> > I can think of a complicated way to support hash maps but that would
->> > need making the state dynamically allocated and finding a way to
->> > cancel the callbacks. But I would do it as a follow-up if there is a
->> > real use case.
->>
->> That would mean allocation and frees, it is already quite expensive as i=
-s for a
->> call_rcu() primitive (with the refcount bumps and atomics).
->
-> maybe so, but as is ARRAY is a severe limitation and makes a lot of
-> cases either unusable or requiring extra sequential ID allocation
-> logic to remap some HASH map entry to index in an ARRAY map, just so
-> you can call rcu callback for a given kernel object stored in HASH
-> map.
->
-> E.g., think about keep as set of sockets, or tasks, or whatnot in HASH
-> or RHASHTABLE (especially the latter one with support for resizing).
-> How would you do bpf_call_rcu() for them with unduly complications,
-> limitations and a lot of waste (unlike HASH you can't have lazy memory
-> allocation).
+On Thu, Sep 24, 2026 at 12:12:16AM +0900, Masami Hiramatsu wrote:
+> Ah, I forgot to add "RFC" to the tag.
+> 
+> BTW, if the RCU synchronization takes too long, all other similar code --
+> calling RCU synchronization under mutex/locks --- are fundamentally having
+> the same issue. If that is correct, we should start adding lockdep check
+> for such synchronizations, to clarify which one needs to be fixed.
 
-Yeah, I don't disagree. We would also need to support storing them in more =
-map
-types to make it woth with arenas (which was one of the motivations for the
-feature).
+Just to be clear, the issue is RCU Tasks specifically, whose grace
+periods can take minutes.  RCU, SRCU, RCU Tasks Trace, and RCU Tasks
+Rude have grace periods that complete well within two minutes, avoiding
+triggering the two-minute hung-task timeout.
 
-Perhaps it is better to make cancel a noop / unsupported and skip it when a=
- map
-element is deleted. That will be the easiest path to enabling it, but it do=
-es
-create (perhaps surprising) divergence from some of the other async callbac=
-k
-primitives.
+Josef is making RCU Tasks go faster by more closely specializing it for
+its trampoline-removal use case.  His approach also could eventually
+remove some hundreds of lines of code from RCU, once all architectures
+are adjusted.
 
-That said, I do think performance should be a consideration for this API; m=
-aybe
-unlike other ones, I would expect that this could be called very frequently=
-. I
-had concerns about prog refcount increment as well, but didn't really bring=
- it
-up since it is something that can be addressed after the fact (maybe using =
-pcpu
-refs). But once we promise supporting cancellation, it is hard to walk that
-back. I think it's less of a concern for other async cb types. In practice,
-except to support map semantics I don't know if anyone will use cancellatio=
-n API
-either, the kernel side never grew such support.
+"Why not both?"  ;-)
 
-Anyway, overall the best path to me seems to be just enabling it as is and
-declaring bpf_obj_cancel_fields() on this noop. Existing synchronization sh=
-ould
-be enough to ensure callback stops getting issued once element is finally f=
-reed
-back to kernel allocator.
+							Thanx, Paul
+
+> Thanks,
+> 
+> On Wed, 23 Sep 2026 22:51:20 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Currently, kprobe_optimizer() holds kprobe_mutex, text_mutex, and
+> > cpus_read_lock() simultaneously while executing synchronize_rcu_tasks().
+> > Under PREEMPT_LAZY and server workloads with long-running CPU-bound kernel
+> > tasks or heavy cgroup writeback loops, synchronize_rcu_tasks() can block
+> > for seconds to minutes. Because text_mutex and cpus_read_lock() are held
+> > during this entire wait, any concurrent static key updates, module
+> > loading/unloading, CPU hotplug, or tracing updates stall, frequently
+> > triggering hung-task detector panics.
+> > 
+> > Instead of penalizing the kernel preemption path with invasive hooks and
+> > global hash lookups, decouple kprobe jump optimization from synchronous
+> > waiting entirely:
+> > 
+> > 1. Replace synchronize_rcu_tasks() with call_rcu_tasks(). Locks
+> >    (text_mutex and cpus_read_lock()) are held only for the brief moment
+> >    needed to patch instructions via arch_unoptimize_kprobes() and
+> >    arch_optimize_kprobes() (microseconds), and are completely released
+> >    while waiting for the Tasks RCU grace period.
+> > 
+> > 2. Introduce a fixed ring of generations (optprobe_gens[OPTPROBE_GEN_MAX])
+> >    to avoid any dynamic memory allocation (kmalloc) or -ENOMEM failure
+> >    modes.
+> > 
+> > 3. The last generation slot in the array is reserved as a "waiting room"
+> >    and is not dispatched to RCU until another in-flight generation has
+> >    finished. While a generation is waiting for its Tasks RCU grace period,
+> >    any newly registered or unregistered probes accumulate in the waiting
+> >    room generation without blocking or requiring additional slots.
+> > 
+> > 4. When the Tasks RCU callback fires, it marks the generation as ready
+> >    and wakes up the optimizer thread to finalize optimization (poking
+> >    the jump instructions) and free cleaned probe slots. Once finalized,
+> >    the generation is marked idle, allowing the waiting room generation
+> >    to be dispatched next.
+> > 
+> > 5. Flushing via wait_for_kprobe_optimizer() waits asynchronously for all
+> >    in-flight and queued generations to drain without stalling other
+> >    kernel subsystems.
+> > 
+> > On non-preemptive kernels or configs where CONFIG_TASKS_RCU=n,
+> > call_rcu_tasks() transparently aliases to call_rcu(), preserving full
+> > portability.
+> > 
+> > Assisted-by: LLM
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > ---
+> >  kernel/kprobes.c |  319 ++++++++++++++++++++++++++++++++++++++----------------
+> >  1 file changed, 225 insertions(+), 94 deletions(-)
+> > 
+> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > index 6337da5cab9e..1e25980303c4 100644
+> > --- a/kernel/kprobes.c
+> > +++ b/kernel/kprobes.c
+> > @@ -42,6 +42,7 @@
+> >  #include <linux/execmem.h>
+> >  #include <linux/cleanup.h>
+> >  #include <linux/wait.h>
+> > +#include <linux/rcupdate.h>
+> >  
+> >  #include <asm/sections.h>
+> >  #include <asm/cacheflush.h>
+> > @@ -66,7 +67,7 @@ static struct hlist_head kprobe_table[KPROBE_TABLE_SIZE];
+> >  /* NOTE: change this value only with 'kprobe_mutex' held */
+> >  static bool kprobes_all_disarmed;
+> >  
+> > -/* This protects 'kprobe_table' and 'optimizing_list' */
+> > +/* This protects 'kprobe_table' and 'optprobe_gens' */
+> >  static DEFINE_MUTEX(kprobe_mutex);
+> >  static DEFINE_PER_CPU(struct kprobe *, kprobe_instance);
+> >  
+> > @@ -511,10 +512,32 @@ static struct kprobe *get_optimized_kprobe(kprobe_opcode_t *addr)
+> >  	return NULL;
+> >  }
+> >  
+> > -/* Optimization staging list, protected by 'kprobe_mutex' */
+> > -static LIST_HEAD(optimizing_list);
+> > -static LIST_HEAD(unoptimizing_list);
+> > -static LIST_HEAD(freeing_list);
+> > +#define OPTPROBE_GEN_MAX 2
+> > +
+> > +struct optprobe_generation {
+> > +	struct list_head optimizing_list;
+> > +	struct list_head unoptimizing_list;
+> > +	struct list_head freeing_list;
+> > +	struct rcu_head rcu;
+> > +	bool in_flight;
+> > +	bool ready;
+> > +};
+> > +
+> > +/*
+> > + * Generational ring of optprobes.
+> > + *
+> > + * Incoming probe requests are queued into the waiting room generation
+> > + * (optprobe_gens[optprobe_cur_gen]). When dispatched, the generation
+> > + * unoptimizes its probes, invokes call_rcu_tasks(), and optprobe_cur_gen
+> > + * advances to the next slot.
+> > + *
+> > + * To ensure an idle generation is always available to collect incoming
+> > + * requests without dynamic allocation, the last available generation slot
+> > + * is never dispatched until another generation has finished.
+> > + */
+> > +static struct optprobe_generation optprobe_gens[OPTPROBE_GEN_MAX];
+> > +static int optprobe_cur_gen;
+> > +static bool optprobe_flush_requested;
+> >  
+> >  static void optimize_kprobe(struct kprobe *p);
+> >  static struct task_struct *kprobe_optimizer_task;
+> > @@ -530,50 +553,78 @@ static DECLARE_COMPLETION(optimizer_completion);
+> >  
+> >  #define OPTIMIZE_DELAY 5
+> >  
+> > +static bool optprobe_has_queued_probes(void)
+> > +{
+> > +	struct optprobe_generation *gen = &optprobe_gens[optprobe_cur_gen];
+> > +
+> > +	return !list_empty(&gen->optimizing_list) ||
+> > +	       !list_empty(&gen->unoptimizing_list);
+> > +}
+> > +
+> > +static int optprobe_active_gens_count(void)
+> > +{
+> > +	int count = 0;
+> > +	int i;
+> > +
+> > +	for (i = 0; i < OPTPROBE_GEN_MAX; i++) {
+> > +		if (optprobe_gens[i].in_flight || optprobe_gens[i].ready)
+> > +			count++;
+> > +	}
+> > +	return count;
+> > +}
+> > +
+> >  /*
+> > - * Optimize (replace a breakpoint with a jump) kprobes listed on
+> > - * 'optimizing_list'.
+> > + * The last generation must not be fired until another generation is done.
+> > + * (Thus the last generation acts as the waiting room.)
+> >   */
+> > -static void do_optimize_kprobes(void)
+> > +static bool optprobe_can_fire(void)
+> >  {
+> > -	lockdep_assert_held(&text_mutex);
+> > -	/*
+> > -	 * The optimization/unoptimization refers 'online_cpus' via
+> > -	 * stop_machine() and cpu-hotplug modifies the 'online_cpus'.
+> > -	 * And same time, 'text_mutex' will be held in cpu-hotplug and here.
+> > -	 * This combination can cause a deadlock (cpu-hotplug tries to lock
+> > -	 * 'text_mutex' but stop_machine() can not be done because
+> > -	 * the 'online_cpus' has been changed)
+> > -	 * To avoid this deadlock, caller must have locked cpu-hotplug
+> > -	 * for preventing cpu-hotplug outside of 'text_mutex' locking.
+> > -	 */
+> > -	lockdep_assert_cpus_held();
+> > +	return optprobe_active_gens_count() < OPTPROBE_GEN_MAX - 1;
+> > +}
+> >  
+> > -	/* Optimization never be done when disarmed */
+> > -	if (kprobes_all_disarmed || !kprobes_allow_optimization ||
+> > -	    list_empty(&optimizing_list))
+> > -		return;
+> > +static bool optprobe_has_ready_gens(void)
+> > +{
+> > +	int i;
+> > +
+> > +	for (i = 0; i < OPTPROBE_GEN_MAX; i++) {
+> > +		if (READ_ONCE(optprobe_gens[i].ready))
+> > +			return true;
+> > +	}
+> > +	return false;
+> > +}
+> >  
+> > -	arch_optimize_kprobes(&optimizing_list);
+> > +static bool optprobe_optimizer_busy(void)
+> > +{
+> > +	return optprobe_has_queued_probes() || (optprobe_active_gens_count() > 0);
+> >  }
+> >  
+> >  /*
+> >   * Unoptimize (replace a jump with a breakpoint and remove the breakpoint
+> > - * if need) kprobes listed on 'unoptimizing_list'.
+> > + * if need) kprobes listed on 'unopt_list'.
+> >   */
+> > -static void do_unoptimize_kprobes(void)
+> > +static void do_unoptimize_kprobes(struct list_head *unopt_list,
+> > +				  struct list_head *free_list)
+> >  {
+> >  	struct optimized_kprobe *op, *tmp;
+> >  
+> >  	lockdep_assert_held(&text_mutex);
+> > -	/* See comment in do_optimize_kprobes() */
+> > +	/*
+> > +	 * The optimization/unoptimization refers 'online_cpus' via
+> > +	 * stop_machine() and cpu-hotplug modifies the 'online_cpus'.
+> > +	 * And same time, 'text_mutex' will be held in cpu-hotplug and here.
+> > +	 * This combination can cause a deadlock (cpu-hotplug tries to lock
+> > +	 * 'text_mutex' but stop_machine() can not be done because
+> > +	 * the 'online_cpus' has been changed)
+> > +	 * To avoid this deadlock, caller must have locked cpu-hotplug
+> > +	 * for preventing cpu-hotplug outside of 'text_mutex' locking.
+> > +	 */
+> >  	lockdep_assert_cpus_held();
+> >  
+> > -	if (!list_empty(&unoptimizing_list))
+> > -		arch_unoptimize_kprobes(&unoptimizing_list, &freeing_list);
+> > +	if (!list_empty(unopt_list))
+> > +		arch_unoptimize_kprobes(unopt_list, free_list);
+> >  
+> > -	/* Loop on 'freeing_list' for disarming and removing from kprobe hash list */
+> > -	list_for_each_entry_safe(op, tmp, &freeing_list, list) {
+> > +	/* Loop on 'free_list' for disarming and removing from kprobe hash list */
+> > +	list_for_each_entry_safe(op, tmp, free_list, list) {
+> >  		/* Switching from detour code to origin */
+> >  		op->kp.flags &= ~KPROBE_FLAG_OPTIMIZED;
+> >  		/* Disarm probes if marked disabled and not gone */
+> > @@ -586,17 +637,20 @@ static void do_unoptimize_kprobes(void)
+> >  			 * (reclaiming is done by do_free_cleaned_kprobes().)
+> >  			 */
+> >  			hlist_del_rcu(&op->kp.hlist);
+> > -		} else
+> > +		} else {
+> >  			list_del_init(&op->list);
+> > +		}
+> >  	}
+> >  }
+> >  
+> > -/* Reclaim all kprobes on the 'freeing_list' */
+> > -static void do_free_cleaned_kprobes(void)
+> > +/* Reclaim all kprobes on the 'free_list' */
+> > +static void do_free_cleaned_kprobes(struct list_head *free_list)
+> >  {
+> >  	struct optimized_kprobe *op, *tmp;
+> >  
+> > -	list_for_each_entry_safe(op, tmp, &freeing_list, list) {
+> > +	list_for_each_entry_safe(op, tmp, free_list, list) {
+> > +		struct kprobe *_p;
+> > +
+> >  		list_del_init(&op->list);
+> >  		if (WARN_ON_ONCE(!kprobe_unused(&op->kp))) {
+> >  			/*
+> > @@ -608,11 +662,10 @@ static void do_free_cleaned_kprobes(void)
+> >  
+> >  		/*
+> >  		 * The aggregator was holding back another probe while it sat on the
+> > -		 * unoptimizing/freeing lists.  Now that the aggregator has been fully
+> > +		 * unoptimizing/freeing lists. Now that the aggregator has been fully
+> >  		 * reverted we can safely retry the optimization of that sibling.
+> >  		 */
+> > -
+> > -		struct kprobe *_p = get_optimized_kprobe(op->kp.addr);
+> > +		_p = get_optimized_kprobe(op->kp.addr);
+> >  		if (unlikely(_p))
+> >  			optimize_kprobe(_p);
+> >  
+> > @@ -622,67 +675,119 @@ static void do_free_cleaned_kprobes(void)
+> >  
+> >  static void kick_kprobe_optimizer(void);
+> >  
+> > -/* Kprobe jump optimizer */
+> > -static void kprobe_optimizer(void)
+> > +static void optprobe_generation_rcu_cb(struct rcu_head *rcu)
+> >  {
+> > -	guard(mutex)(&kprobe_mutex);
+> > +	struct optprobe_generation *gen;
+> > +
+> > +	gen = container_of(rcu, struct optprobe_generation, rcu);
+> > +	WRITE_ONCE(gen->ready, true);
+> > +	wake_up(&kprobe_optimizer_wait);
+> > +}
+> > +
+> > +static void optprobe_finalize_generation(struct optprobe_generation *gen)
+> > +{
+> > +	lockdep_assert_held(&kprobe_mutex);
+> >  
+> >  	scoped_guard(cpus_read_lock) {
+> >  		guard(mutex)(&text_mutex);
+> >  
+> > -		/*
+> > -		 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
+> > -		 * kprobes before waiting for quiesence period.
+> > -		 */
+> > -		do_unoptimize_kprobes();
+> > +		/* Optimization never be done when disarmed */
+> > +		if (!kprobes_all_disarmed && kprobes_allow_optimization &&
+> > +		    !list_empty(&gen->optimizing_list))
+> > +			arch_optimize_kprobes(&gen->optimizing_list);
+> > +	}
+> > +
+> > +	/* Free cleaned kprobes after quiescence period */
+> > +	do_free_cleaned_kprobes(&gen->freeing_list);
+> > +
+> > +	gen->in_flight = false;
+> > +	WRITE_ONCE(gen->ready, false);
+> > +}
+> > +
+> > +static void optprobe_dispatch_generation(void)
+> > +{
+> > +	struct optprobe_generation *gen;
+> > +
+> > +	lockdep_assert_held(&kprobe_mutex);
+> > +
+> > +	if (!optprobe_can_fire() || !optprobe_has_queued_probes())
+> > +		return;
+> > +
+> > +	gen = &optprobe_gens[optprobe_cur_gen];
+> > +
+> > +	scoped_guard(cpus_read_lock) {
+> > +		guard(mutex)(&text_mutex);
+> >  
+> >  		/*
+> > -		 * Step 2: Wait for quiesence period to ensure all potentially
+> > -		 * preempted tasks to have normally scheduled. Because optprobe
+> > -		 * may modify multiple instructions, there is a chance that Nth
+> > -		 * instruction is preempted. In that case, such tasks can return
+> > -		 * to 2nd-Nth byte of jump instruction. This wait is for avoiding it.
+> > -		 * Note that on non-preemptive kernel, this is transparently converted
+> > -		 * to synchronoze_sched() to wait for all interrupts to have completed.
+> > +		 * Unoptimize kprobes and collect cleaned (unused and disarmed)
+> > +		 * kprobes before waiting for quiescence period.
+> >  		 */
+> > -		synchronize_rcu_tasks();
+> > +		do_unoptimize_kprobes(&gen->unoptimizing_list, &gen->freeing_list);
+> > +	}
+> > +
+> > +	/* Advance cur_gen to the next generation slot */
+> > +	optprobe_cur_gen = (optprobe_cur_gen + 1) % OPTPROBE_GEN_MAX;
+> > +
+> > +	gen->in_flight = true;
+> > +	WRITE_ONCE(gen->ready, false);
+> >  
+> > -		/* Step 3: Optimize kprobes after quiesence period */
+> > -		do_optimize_kprobes();
+> > +	call_rcu_tasks(&gen->rcu, optprobe_generation_rcu_cb);
+> > +}
+> >  
+> > -		/* Step 4: Free cleaned kprobes after quiesence period */
+> > -		do_free_cleaned_kprobes();
+> > +/* Kprobe jump optimizer */
+> > +static void kprobe_optimizer(void)
+> > +{
+> > +	int i;
+> > +
+> > +	guard(mutex)(&kprobe_mutex);
+> > +
+> > +	/* Step 1: Finalize any generation whose Tasks RCU grace period completed */
+> > +	for (i = 0; i < OPTPROBE_GEN_MAX; i++) {
+> > +		if (READ_ONCE(optprobe_gens[i].ready))
+> > +			optprobe_finalize_generation(&optprobe_gens[i]);
+> >  	}
+> >  
+> > -	/* Step 5: Kick optimizer again if needed. But if there is a flush requested, */
+> > -	if (completion_done(&optimizer_completion))
+> > -		complete(&optimizer_completion);
+> > +	/* Step 2: Dispatch waiting room generation if allowed */
+> > +	optprobe_dispatch_generation();
+> >  
+> > -	if (!list_empty(&optimizing_list) || !list_empty(&unoptimizing_list))
+> > -		kick_kprobe_optimizer();	/*normal kick*/
+> > +	/* Step 3: Check completion if flush was requested */
+> > +	if (!optprobe_optimizer_busy()) {
+> > +		if (optprobe_flush_requested) {
+> > +			optprobe_flush_requested = false;
+> > +			complete_all(&optimizer_completion);
+> > +		}
+> > +	} else if (optprobe_has_queued_probes() && optprobe_can_fire()) {
+> > +		/* Probes remain and can be fired immediately (e.g. retried siblings) */
+> > +		kick_kprobe_optimizer();
+> > +	}
+> >  }
+> >  
+> >  static int kprobe_optimizer_thread(void *data)
+> >  {
+> >  	while (!kthread_should_stop()) {
+> > -		/* To avoid hung_task, wait in interruptible state. */
+> > +		/* Wait until there is work to do or a generation is ready */
+> >  		wait_event_interruptible(kprobe_optimizer_wait,
+> > -			   atomic_read(&optimizer_state) != OPTIMIZER_ST_IDLE ||
+> > -			   kthread_should_stop());
+> > +			atomic_read(&optimizer_state) != OPTIMIZER_ST_IDLE ||
+> > +			optprobe_has_ready_gens() ||
+> > +			kthread_should_stop());
+> >  
+> >  		if (kthread_should_stop())
+> >  			break;
+> >  
+> >  		/*
+> > -		 * If it was a normal kick, wait for OPTIMIZE_DELAY.
+> > -		 * This wait can be interrupted by a flush request.
+> > +		 * If it was a normal kick and no generation is ready to finalize,
+> > +		 * wait for OPTIMIZE_DELAY to batch incoming requests.
+> > +		 * This wait can be interrupted by a flush request or a ready generation.
+> >  		 */
+> > -		if (atomic_read(&optimizer_state) == 1)
+> > +		if (atomic_read(&optimizer_state) == OPTIMIZER_ST_KICKED &&
+> > +		    !optprobe_has_ready_gens()) {
+> >  			wait_event_interruptible_timeout(
+> >  				kprobe_optimizer_wait,
+> >  				atomic_read(&optimizer_state) == OPTIMIZER_ST_FLUSHING ||
+> > +				optprobe_has_ready_gens() ||
+> >  				kthread_should_stop(),
+> >  				OPTIMIZE_DELAY);
+> > +		}
+> >  
+> >  		if (kthread_should_stop())
+> >  			break;
+> > @@ -707,12 +812,11 @@ static void wait_for_kprobe_optimizer_locked(void)
+> >  {
+> >  	lockdep_assert_held(&kprobe_mutex);
+> >  
+> > -	while (!list_empty(&optimizing_list) || !list_empty(&unoptimizing_list)) {
+> > +	while (optprobe_optimizer_busy()) {
+> >  		init_completion(&optimizer_completion);
+> > -		/*
+> > -		 * Set state to OPTIMIZER_ST_FLUSHING and wake up the thread if it's
+> > -		 * idle. If it's already kicked, it will see the state change.
+> > -		 */
+> > +		optprobe_flush_requested = true;
+> > +
+> > +		/* Wake up optimizer thread */
+> >  		if (atomic_xchg_acquire(&optimizer_state,
+> >  			OPTIMIZER_ST_FLUSHING) != OPTIMIZER_ST_FLUSHING)
+> >  			wake_up(&kprobe_optimizer_wait);
+> > @@ -734,10 +838,28 @@ void wait_for_kprobe_optimizer(void)
+> >  bool optprobe_queued_unopt(struct optimized_kprobe *op)
+> >  {
+> >  	struct optimized_kprobe *_op;
+> > +	int i;
+> >  
+> > -	list_for_each_entry(_op, &unoptimizing_list, list) {
+> > -		if (op == _op)
+> > -			return true;
+> > +	for (i = 0; i < OPTPROBE_GEN_MAX; i++) {
+> > +		list_for_each_entry(_op, &optprobe_gens[i].unoptimizing_list, list) {
+> > +			if (op == _op)
+> > +				return true;
+> > +		}
+> > +	}
+> > +
+> > +	return false;
+> > +}
+> > +
+> > +static bool optprobe_queued_freeing(struct optimized_kprobe *op)
+> > +{
+> > +	struct optimized_kprobe *_op;
+> > +	int i;
+> > +
+> > +	for (i = 0; i < OPTPROBE_GEN_MAX; i++) {
+> > +		list_for_each_entry(_op, &optprobe_gens[i].freeing_list, list) {
+> > +			if (op == _op)
+> > +				return true;
+> > +		}
+> >  	}
+> >  
+> >  	return false;
+> > @@ -780,7 +902,7 @@ static void optimize_kprobe(struct kprobe *p)
+> >  	if (WARN_ON_ONCE(!list_empty(&op->list)))
+> >  		return;
+> >  
+> > -	list_add(&op->list, &optimizing_list);
+> > +	list_add(&op->list, &optprobe_gens[optprobe_cur_gen].optimizing_list);
+> >  	kick_kprobe_optimizer();
+> >  }
+> >  
+> > @@ -813,7 +935,7 @@ static void unoptimize_kprobe(struct kprobe *p, bool force)
+> >  				 * in the freeing list for release afterwards.
+> >  				 */
+> >  				force_unoptimize_kprobe(op);
+> > -				list_move(&op->list, &freeing_list);
+> > +				list_move(&op->list, &optprobe_gens[optprobe_cur_gen].freeing_list);
+> >  			}
+> >  		} else {
+> >  			/* Dequeue from the optimizing queue */
+> > @@ -828,7 +950,7 @@ static void unoptimize_kprobe(struct kprobe *p, bool force)
+> >  		/* Forcibly update the code: this is a special case */
+> >  		force_unoptimize_kprobe(op);
+> >  	} else {
+> > -		list_add(&op->list, &unoptimizing_list);
+> > +		list_add(&op->list, &optprobe_gens[optprobe_cur_gen].unoptimizing_list);
+> >  		kick_kprobe_optimizer();
+> >  	}
+> >  }
+> > @@ -860,20 +982,17 @@ static void kill_optimized_kprobe(struct kprobe *p)
+> >  	struct optimized_kprobe *op;
+> >  
+> >  	op = container_of(p, struct optimized_kprobe, kp);
+> > -	if (!list_empty(&op->list))
+> > -		/* Dequeue from the (un)optimization queue */
+> > -		list_del_init(&op->list);
+> > -	op->kp.flags &= ~KPROBE_FLAG_OPTIMIZED;
+> > -
+> > -	if (kprobe_unused(p)) {
+> > -		/*
+> > -		 * Unused kprobe is on unoptimizing or freeing list. We move it
+> > -		 * to freeing_list and let the kprobe_optimizer() remove it from
+> > -		 * the kprobe hash list and free it.
+> > -		 */
+> > -		if (optprobe_queued_unopt(op))
+> > -			list_move(&op->list, &freeing_list);
+> > +	if (!list_empty(&op->list)) {
+> > +		if (kprobe_unused(p)) {
+> > +			if (optprobe_queued_unopt(op))
+> > +				list_move(&op->list, &optprobe_gens[optprobe_cur_gen].freeing_list);
+> > +			else if (!optprobe_queued_freeing(op))
+> > +				list_del_init(&op->list);
+> > +		} else {
+> > +			list_del_init(&op->list);
+> > +		}
+> >  	}
+> > +	op->kp.flags &= ~KPROBE_FLAG_OPTIMIZED;
+> >  
+> >  	/* Don't touch the code, because it is already freed. */
+> >  	arch_remove_optimized_kprobe(op);
+> > @@ -1073,11 +1192,23 @@ static void __disarm_kprobe(struct kprobe *p, bool reopt)
+> >  
+> >  static void __init init_optprobe(void)
+> >  {
+> > +	int i;
+> > +
+> >  #ifdef __ARCH_WANT_KPROBES_INSN_SLOT
+> >  	/* Init 'kprobe_optinsn_slots' for allocation */
+> >  	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
+> >  #endif
+> >  
+> > +	for (i = 0; i < OPTPROBE_GEN_MAX; i++) {
+> > +		INIT_LIST_HEAD(&optprobe_gens[i].optimizing_list);
+> > +		INIT_LIST_HEAD(&optprobe_gens[i].unoptimizing_list);
+> > +		INIT_LIST_HEAD(&optprobe_gens[i].freeing_list);
+> > +		optprobe_gens[i].in_flight = false;
+> > +		optprobe_gens[i].ready = false;
+> > +	}
+> > +	optprobe_cur_gen = 0;
+> > +	optprobe_flush_requested = false;
+> > +
+> >  	init_waitqueue_head(&kprobe_optimizer_wait);
+> >  	atomic_set(&optimizer_state, OPTIMIZER_ST_IDLE);
+> >  	kprobe_optimizer_task = kthread_run(kprobe_optimizer_thread, NULL,
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
