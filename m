@@ -1,147 +1,122 @@
-Received: from mail-ej2-f12.google.com (mail-ej2-f12.google.com [74.125.228.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1415D388371
-	for <rcu@vger.kernel.org>; Thu, 24 Sep 2026 09:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0997D38DC68;
+	Thu, 24 Sep 2026 11:33:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790242320; cv=none; b=r6gw25VTQY0+0aeGmbAwzJ7xvCwk+lwgmbpLICMzZy6+qRrjJvLoDSadUloEzmmD4sderm2eVPUJXxDISCXDAsRUlCmcZoD5ZmZ8SBGWFn/KZ0JHwjQ1OWBwa3XQxg9RFuJ1Ko3yq+YrcGUbAeD5m5FLyIFn0W+LmTg3n9nFdZE=
+	t=1790249599; cv=none; b=j9vzXRnsvgSLs2EedRGCYstkmCqv6Zuy3t/5CYs6II1JzaJ3G9Bu/I5p/gSoexbnWIHk1HTLaNwmKsboSY+X87MyYpLj59uj5y152RM+3MOSna3AD+tC7p/CwP81frDFYhG/vcZQ+qj7Q/YCm6OVLt7JrkeQFPIx5TzK+ijB/pA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790242320; c=relaxed/simple;
-	bh=nzvl7mqCF4ztoD1AQhrEHtx+ggc5PpKtO7mNFBUOwCs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iQw6hKCfOp3hZ1PaN5Y0x2vCJYzJ2jvBDjiljhB0jXUFsq8pN7JGUXB2zk7PRhsXubCiwBk2Y7puz5DnU/7Rv0Wn8h3addN0U91bYdhvReHyHfJb6wRU0FEvKLyZy9/qAGrR9b1df+suwJZiLYDljAaMBPzEj60ukwD3wVfdeiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f47e3Cim; arc=none smtp.client-ip=74.125.228.140
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1790249599; c=relaxed/simple;
+	bh=bi4A9oP6oNMDEiR09MQYo1/7+Q8TAO2XFMTYuwz/r3c=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=LEtSpcAZ5PE5gFTPn9EByIdLvbRWc8QzzXqQpqovsMEmdO5Li4ZbE+NMHG/288CWzK7G6zdmz5uB187brPJSgQQkIRg0W2Rvhg6ENNCXDclVoyvasytZCBmr8Ekyaqjf0r5jakDoSh0qVfPHn0R97FV5x4o5gv8vNJTj2TKWDs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K2XHoE6F; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f47e3Cim"
-Received: by mail-ej2-f12.google.com with SMTP id a640c23a62f3a-c294496989aso233612966b.3
-        for <rcu@vger.kernel.org>; Thu, 24 Sep 2026 02:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790242317; x=1790847117; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=IVufKMPB9vejpNzxTLukLIifCoBhEi//kGkahD5KaUo=;
-        b=f47e3Cimiq/4GG/lBAVvrd1xly4gsc9O4dK5YuRxulEjBDmz6olRWnVL0TveIpkiFi
-         uvz9xeCMA/3K7vbu4v8AkF2hbW22qq03Z1KfDkRBCz3oirpIYrLJ5Eq9hlHH0/Xdd6Am
-         3ZqWTqIJGfI8CznfuuD4iMZhodEHg1gqpWSdKBKURrElNF3CArEFI51tvz+2ULuz4R/L
-         /Wl20E2CvTIOGWZZUEEJAjFbrW6q8rKCxTw2goPBhAEWE6qHH3oCYtOE+r4UGkxwHeDa
-         yEx5wECT6uohnRGbonOnbM2ctn+iJeYV3ur8BsFYaYNDdchZfsDgLtqYGiXc/Wpw7ga0
-         +NbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790242317; x=1790847117;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=IVufKMPB9vejpNzxTLukLIifCoBhEi//kGkahD5KaUo=;
-        b=zr/UeuvDWJ6od7hM3GhD8Ps0VRcXQH452Ma/+kzulIrLWqMnUd8rVMY3IFW6KdX4ls
-         dpo6q5JPTcNGm13vOPN48VQGwRJ1Y9ZKEYtA30QGRQkdGTVtwuMxrFZP64drIetK3rtl
-         81I3k9sClHc4Rwvs0BkuP6lRzB0hqfHDK6W1Q1UQUDLSgsS58Sp2lSo05iSSyz0Zw3yJ
-         +8KxvsuwLiCucKNzc9fCVFwJYPqLCfkhqvRFN9oxa97W6OezsW+NoQglPPL2j8fdFXyr
-         ybdIhU0ia4jJi9cnQdEOmbuH2wmb3DAtrQsSlzSicD1wEq1B9HqyJZAx7IOkV4UbDWnv
-         5isw==
-X-Forwarded-Encrypted: i=1; AKwUvBwoAF/odX1np+zBE7Am5fYJ4sZKZh2+Ka4FoiEjrJ5EvWOksvjXQ/a9ZcPZa5PKb98i/GI=@vger.kernel.org
-X-Gm-Message-State: AFuF++nC2KX7TNh4gpHLf8hOefx99fgRaZ1iD+smAg9Dd9tybXjWdD4A
-	oOrTfNG6wQhKCUHjsB0uUom8CmhAFP9pdgePTa6G0kldq/rDuumA19f3
-X-Gm-Gg: AYBFou1ljhw+aXMR8YlpM8B5sWRnEKJHL8yLo18TYJLZGRDIxwR8k38YZJ5Ikw0ha8P
-	YQB2CFbYs1rP1Ybd/pouK1LL+tvPkaPu2cUTGp7oa+KCbOIeYwVT6AMYMIP7AING63ZhV8egP7k
-	3UvCQiysXVQB2383gFF6phe1EFt++nbmdX9UVrMiYQ1VO5IgGnROI/Qxsz3nz4+FwNl534tcYv2
-	GqxjKU5glZGQc+J8o6SSAmY+O/aj8yQI7KH0IEcI1W09MfFT6N1gzYYj9zyW3HAZA/SNfKhcgX0
-	aGr7psL9Px3RkR3FzNJ449emynoDnXT4xpwxwCDXyxhEMktpKhSevhIeve8FwX9HnA9Cfs+23IY
-	jj0U7mndbNJ6rBJwOpMZwoAM7MJgegyxwAFIkV1lT2QHLZPpUOEO98MLPcdGEipFZQtN06LJYRJ
-	kI6CM+2s3wn77ilD2ecMf1y0xBcBRbQnZXZorJiO8twJD/y4ZVNZqSySfUsVlzDz2LvbHIQsdgu
-	TJNyGzOwXiXGjb1TJj0eTUnJzW1DfwySWPcU5n0EAJwQ36tK0p8yE8Poyn7Jya00GYK76dRWOoB
-	NPD1
-X-Received: by 2002:a17:907:9812:b0:c26:1648:a06e with SMTP id a640c23a62f3a-c2ac253f94cmr137512666b.41.1790242317135;
-        Thu, 24 Sep 2026 02:31:57 -0700 (PDT)
-Received: from andreayoga.localdomain (93-42-14-189.ip84.fastwebnet.it. [93.42.14.189])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c2aae675d59sm270080366b.42.2026.09.24.02.31.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2026 02:31:55 -0700 (PDT)
-Date: Thu, 24 Sep 2026 11:31:50 +0200
-From: Andrea Parri <parri.andrea@gmail.com>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Josef Bacik <josef@toxicpanda.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>, Boqun Feng <boqun@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kprobes: Make optprobe optimizer multi-generational and
- asynchronous
-Message-ID: <arTuBodyGqQ0mErI@andreayoga.localdomain>
-References: <20260923164510.f3bbddefea4423f8f1bfecb8@kernel.org>
- <179017148080.466588.9116221556625712980.stgit@devnote2>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K2XHoE6F"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1790249595; x=1821785595;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bi4A9oP6oNMDEiR09MQYo1/7+Q8TAO2XFMTYuwz/r3c=;
+  b=K2XHoE6FgimUriwpllOuNFRofZ3tYJvZ04clhieswYlcpsd1zI8yDBPZ
+   +elZn6SIX65RZsMapoTGjb5yjxNgNq/PLyLuQyoQ5X+qNeOTvU4SATsFm
+   5Bd9Jf+7xdEdeQZTSkKTF2LJILJZXyYXhiWuUDbhUsM4b2HswXt7LmChA
+   94qQs2oF831NfScdYBWjJutHA1L2+IdF6ShLok15WXsNHz+YwdWV3MFso
+   STIp/BVq0PI1z++I41KmHBf7jYhZU3eM1q3Zpwn75xhv2wmDoxbcrgPWg
+   iNdbySD5Bl900p3eADvZiHLIdfwhpu8qwJ00IzHSfXhO2LB8eG2NGUUbv
+   w==;
+X-CSE-ConnectionGUID: +Ocl9J/+TWe6YBQX0MEd3g==
+X-CSE-MsgGUID: 5Yug119FS8S6uNy+c9Z1Gw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11914"; a="89877578"
+X-IronPort-AV: E=Sophos;i="6.27,120,1787036400"; 
+   d="scan'208";a="89877578"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2026 04:33:13 -0700
+X-CSE-ConnectionGUID: dF85Lm6WRf22zoxZNwTU5w==
+X-CSE-MsgGUID: 846Iiz+NT06RMKm4RjbHsw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,120,1787036400"; 
+   d="scan'208";a="270487899"
+Received: from ly-workstation.sh.intel.com (HELO ly-workstation) ([10.239.182.64])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2026 04:33:11 -0700
+Date: Thu, 24 Sep 2026 19:33:08 +0800
+From: kernel test robot <yi1.lai@intel.com>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+	yi1.lai@intel.com
+Subject: [linus:master] [rcu]  ec5ee5417b:  stress-ng.ramfs.ops_per_sec 25.7%
+ improvement
+Message-ID: <202609241934.228b4a14-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <179017148080.466588.9116221556625712980.stgit@devnote2>
-
-Hi Masami,
-
-> -	/* Step 5: Kick optimizer again if needed. But if there is a flush requested, */
-> -	if (completion_done(&optimizer_completion))
-> -		complete(&optimizer_completion);
-> +	/* Step 2: Dispatch waiting room generation if allowed */
-> +	optprobe_dispatch_generation();
->  
-> -	if (!list_empty(&optimizing_list) || !list_empty(&unoptimizing_list))
-> -		kick_kprobe_optimizer();	/*normal kick*/
-> +	/* Step 3: Check completion if flush was requested */
-> +	if (!optprobe_optimizer_busy()) {
-> +		if (optprobe_flush_requested) {
-> +			optprobe_flush_requested = false;
-> +			complete_all(&optimizer_completion);
-> +		}
-
-Removing the completion_done() check also fixes a hang in the current
-code: completion_done() is only true once the completion has been
-completed, so complete() is never called while a flusher waits.  For
-example, "echo 0 > /proc/sys/debug/kprobes-optimization" with an
-optimized kprobe never returns.  I posted a fix for that separately [1].
-
-[...]
+Content-Transfer-Encoding: 8bit
 
 
-> -	while (!list_empty(&optimizing_list) || !list_empty(&unoptimizing_list)) {
-> +	while (optprobe_optimizer_busy()) {
->  		init_completion(&optimizer_completion);
 
-This part is still racy, though.  The flusher drops kprobe_mutex while
-it sleeps, and the sysctl handler and the debugfs "enabled" file do not
-otherwise serialize against each other.  A second flusher can then run
-init_completion() on the wait queue the first one is sleeping on: the
-first waiter is dropped from the queue, and complete_all() wakes only
-the second one.
+Hello,
 
-With this patch the window is wider, since kprobe_mutex is released
-while the Tasks RCU grace period runs and optprobe_optimizer_busy()
-stays true until the generation is finalized.
+kernel test robot noticed a 25.7% improvement of stress-ng.ramfs.ops_per_sec on:
 
-The fix in [1] replaces the completion with a counter of optimizer
-passes, bumped at the end of each pass and signalled with
-wake_up_var_locked(), both under kprobe_mutex; the flusher samples the
-count and waits with wait_var_event_mutex() until it changes.
-Something similar should fit here, with the counter bumped at the end
-of each kprobe_optimizer() call and the flusher re-checking
-optprobe_optimizer_busy() under kprobe_mutex as it does now.
 
-[1] https://lore.kernel.org/all/20260924092142.199198-1-parri.andrea@gmail.com/
+commit: ec5ee5417b00278fa050b38d878b76f1365420fb ("rcu: Advance callbacks for expedited GP completion in rcu_core()") https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 
-Thanks,
-  Andrea
+testcase: stress-ng
+config: x86_64-rhel-9.4
+compiler: gcc-14
+test machine: 256 threads 2 sockets Intel(R) Xeon(R) 6768P  CPU @ 2.4GHz (Granite Rapids) with 64G memory
+parameters:
+
+  nr_threads: 100%
+  testtime: 60s
+  test: ramfs
+  cpufreq_governor: performance
+
+
+Details are as below:
+-------------------------------------------------------------------------------------------------->
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20260924/202609241934.228b4a14-lkp@intel.com
+
+=========================================================================================
+compiler/cpufreq_governor/kconfig/nr_threads/rootfs/tbox_group/test/testcase/testtime:
+  gcc-14/performance/x86_64-rhel-9.4/100%/debian-13-x86_64-20250902.cgz/lkp-gnr-2sp4/ramfs/stress-ng/60s
+
+commit: 
+  fde2b18817 ("rcu: Detect expedited grace period completion in rcu_pending()")
+  ec5ee5417b ("rcu: Advance callbacks for expedited GP completion in rcu_core()")
+
+fde2b18817e4f32b ec5ee5417b00278fa050b38d878
+---------------- --------------------------- 
+         %stddev     %change         %stddev
+             \          |                \  
+    427110           +25.7%     537009        stress-ng.ramfs.ops
+      7124           +25.7%       8957        stress-ng.ramfs.ops_per_sec
+      6004 ±  2%    +561.7%      39731        stress-ng.time.involuntary_context_switches
+    685.50            -5.1%     650.33        stress-ng.time.percent_of_cpu_this_job_got
+    405.23            -5.4%     383.53        stress-ng.time.system_time
+    776758           +19.9%     931227        stress-ng.time.voluntary_context_switches
+
+
+Disclaimer:
+Results have been estimated based on internal Intel analysis and are provided
+for informational purposes only. Any difference in system hardware or software
+design or configuration may affect actual performance.
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
