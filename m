@@ -1,95 +1,97 @@
-Received: from mail-wm2-f13.google.com (mail-wm2-f13.google.com [74.125.225.141])
+Received: from mail-wr2-f12.google.com (mail-wr2-f12.google.com [74.125.225.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E939315D40
-	for <rcu@vger.kernel.org>; Thu, 24 Sep 2026 01:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.225.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3BEA29993F
+	for <rcu@vger.kernel.org>; Thu, 24 Sep 2026 01:04:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.225.76
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790211608; cv=pass; b=UmCqCrzkBKO6Epmx2KRaiLSH5691B2I02GkyMmhVlXg7J+ixflbo3AVcN0UByrCKUSCCTE8RbYyqSBNiru4oUI+CIZ/DoqIQyfGqBdTXwfS+iPfHuuQ8s2EHIQ8ZqZ5yUq821vwuAVlHnVW6tcDaO9OWZDrEXvKlzbZGfUllgl4=
+	t=1790211862; cv=pass; b=k5owPrrljoXklWJ8WzCIKbNaW7TxbFX7jGVBLtikKnRSqNpOFyFK9s9WuoilfxxhVfyVmy/4MQg8iB5ZSsjKeXdMCz4bsqADT2EeZ61gbDdeBOt3/ROP1OAHkfCjzLqXYGfho1Av2tj7pCXfZVuHBHEBaoIKMpxp38C+Oxs/a4k=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790211608; c=relaxed/simple;
-	bh=weQSHwJX6+Zi4YVgDDoPF4gRyx/1zGcOiGl+bq9XZKA=;
+	s=arc-20240116; t=1790211862; c=relaxed/simple;
+	bh=e7NYzYowAH42T4CIyLla37LCOTvpZlsNv4w1YShEB0s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G9t6MoZvxWBfai7D/hHWpPEzAbLyQpHZcKSyoBtVRW+6rrK9bAetytESczyTOLObYRvaFIHfemtK1Aap2zhokEZqFWbtlhxC2YKuB9/256aaNZxFYkpalHoaOZUiXCDI+pkLg1bkr4XEpqGuRcyULLw9VUe7VYsAXagzBlUblbo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SQTuVaU8; arc=pass smtp.client-ip=74.125.225.141
+	 To:Cc:Content-Type; b=D3y/ktLVrc/w9n0jKxI+LpCTSU3PFgl01wBfZixodaJ+e91GhlRsOeUTNvTy2y/2ADSxXXvPSUdbvp7JWOwHZbOt+hSGddwk5R87nKM6WwIozVXWip1zkQ4O8Lt2lnrBA1Va+eB1AMJeFXmBdzYZm+zB6jFxSP7N8pVKtN0l9c4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ajy0EMXt; arc=pass smtp.client-ip=74.125.225.76
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SQTuVaU8"
-Received: by mail-wm2-f13.google.com with SMTP id 5b1f17b1804b1-49e721b5503so13369625e9.0
-        for <rcu@vger.kernel.org>; Wed, 23 Sep 2026 18:00:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1790211605; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ajy0EMXt"
+Received: by mail-wr2-f12.google.com with SMTP id ffacd0b85a97d-482f6350f88so1049182f8f.2
+        for <rcu@vger.kernel.org>; Wed, 23 Sep 2026 18:04:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1790211859; cv=none;
         d=google.com; s=arc-20260327;
-        b=iD8wH2Zv2RBbWDP5XlnQXMGbjG3qv9qgTPZTogC1iUBDl11a+uogtfw+clg9OX/A9J
-         niddwXujUJCpGjWcuplOlXh6+hFJA+jgtggmuvc0VvMOoq1n8UnSTr9GiYjLfTqwDZtH
-         MmKr+NvRAk8fp3CH49SlO5bOiNGyvAxiLHQJ3xQtOANXJdDqH6H9BNLTPNE4xKqZSfk5
-         rzyBpfkbSgZxYhFJnAF4ulEtvTgeIcY5OPLDtob316tkARH+I7v2MgHGo12aWNJ+2xEk
-         f8akBZEJx6b6GxtypJmW/jUiI1tYm5Vy8ddqGnFBjK3CgF+ovDG1uXNVYybjaK2EXQSc
-         ZOWQ==
+        b=cXEUijawnGFGdOXrrklg2W6ptC4vbcMG6YJcE/g2QI95409IbzEi7b2Hh1/fw6J5hg
+         99qFn8OFfwSZCfw23CN6wVM88vtgSf0WILghefxjQa1wz8+Xc+K5j1XML1wN3SqvP2o0
+         Zvg4I6AEC6Sl9w4A8FyV1HYEISR9OTGKm0PkpIvMocxXv2vCaAWtXVd8tCsKJTa6S9xQ
+         n4uyebCEog3r2ymEHF6Qda5SpRG6COOyCRkQDxdp/uYpQU7f4/Upi2V5uk0NzQKkGi9Q
+         b0qJns0CfTr9LPD7Rp1ZT3M8HFVyqI0xPYh/KRREzExlVYsLlmg/FZ6COnWvj6nsEq3A
+         ar7Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=weQSHwJX6+Zi4YVgDDoPF4gRyx/1zGcOiGl+bq9XZKA=;
-        fh=kP9d4Et4jqcomIrhgB4F8o+zOxFCnZuq0cCrl3fXH8A=;
-        b=HoBKcJ48L+PF/Icf8zi1ut4aeBBd4d1eGSEcaAgQC2Bt0EFa6HZ/TlKWaiQlZDh65j
-         de/aqLeXYEBVlPXCyQHWTgDZPiefbtDHp5vWqc6R02YVzVLdnXi6LufCMAH4UhA9DXOp
-         C1fF5Fo/itKs6Nd8teYgg3UxIvS+21uUlU/GVMRPKJBwsp7d/bMpGwVfO47Ujs3zlTom
-         E+JMPu6vqlfX2tKnoO+tVKzrU4yNepP5oiZFC5JMA6wZQRWGR7csd5XvOiXQRtaYRXBt
-         1tpZuI3Rg2Gvvd6/2LNB7Ox1ZVsK80KoyY4CZUupvXtpT7bIbxCyD8PnKxzYzHQI1WdY
-         Q3IQ==;
+        bh=e7NYzYowAH42T4CIyLla37LCOTvpZlsNv4w1YShEB0s=;
+        fh=iGvPZAw1sg06tp7FVstXM0vijW+2lbzQrvkyepBWUTE=;
+        b=j79HNbHEcDEIXDO5cw0lIhUM0YZ4K5PjdABw7kD6vCUWA2JX3azehPT/l0hNu4305k
+         WBUDku3jkzIts3ebRf6aw1rqTLuXIxbqXcaloM1RZIXG1xgmCXFuWoUXwi0NpxWX0L65
+         5NbDPPAhvT/yptyX2REfPt5rp050coqsMHRWY9omfU4yGOi8/p7IzwzVejv/VrF7+7Fk
+         SjbPTwVczWckkqJLHd9irugOX73A8z/cf8tAWgi+yX7rAsHePVK1Ly/xG6YaWAD+Fi7m
+         I5Qm4UBzOvXdSL5Vvy+HZgpVWmM4hk+f+FSHuPl/DF/2001pdCcaYFnIVCbgBRaHY/1c
+         oI8w==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790211605; x=1790816405; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1790211859; x=1790816659; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=weQSHwJX6+Zi4YVgDDoPF4gRyx/1zGcOiGl+bq9XZKA=;
-        b=SQTuVaU8K2ebV/ogDVM1AhmXfjKolLY34gxb6WtyNi9OlOfuYgZkbg0sQzDex23ucz
-         eRmqWM1g+CSI8+l48VfC0V7Fi4CQXVPXEykW8bt8vreWNFFwp2ey0Fgjv+KCw05sMLiM
-         g66vZZgAZRRLl3n9T4aR6I9KbNnD1Oak5htU1z9UZynL4ayHVlT4lcN+dwiUgXsfPt4Q
-         9H7W14ozQMbvf4Xd9qUJwX3LRiyi6enOwVPsg1G65pOZye5XsQ+Us+yrAKJoTe1WL2VM
-         bRqpsrlidMyNrxTL2Nh9ZXB2GTW+TWPiX1iTzSdab8Wgs2+5liD/3MyFnOZGy85nFe/o
-         Ok6A==
+        bh=e7NYzYowAH42T4CIyLla37LCOTvpZlsNv4w1YShEB0s=;
+        b=ajy0EMXtWXEEtuEzs0fhJaHHzTOIefavKgLWDDqenNKEF592vNluon8kjHRz53ZWeg
+         T+cSyPPQoj5F8jyZFK1Ee7puNyQLV+PVASSq8d7XDnmrf1yfL8JrU4R8j8DGw1DAnpD8
+         neChnzF5hLluCtW6ZInxgguX6oVyKkIXtpQ2t2oOXcFNPMbWaSRkL6tTOSjmuZlHN5M0
+         +2d6ZhV6JieiXYs9qK04hilhRB0dG8DzkLQFuS02GKwvKicGf1TUpgAqS+HabX41kjzo
+         alx5DyBXS0hF9OC2ysqJ5aZlqNUHL4M+wS4BnFrUPVek3ojlVc66fdKIlZyKmSlYwftG
+         JOTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790211605; x=1790816405;
+        d=1e100.net; s=20260707; t=1790211859; x=1790816659;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=weQSHwJX6+Zi4YVgDDoPF4gRyx/1zGcOiGl+bq9XZKA=;
-        b=b6BS7i//9DwGL71jNqFRTXP9uTY8qmlIMJf7yfqgOSNSTVDe6IxGQj2rbRj66eq5xc
-         q6gr5xPC1OCMHlvZjD+P2+4VRh7WGvTwioPdbK/f8Yk8tddS9SGVWDvRYbBq+Kmb4ABd
-         yS9wvTH+kluAbhhBNEwxq2FAf920E6DdSjU3BcZMVvHCMvZ2e32aFAELQVihydCBcyIw
-         ipTG9+/9IvK5bai0rKRyxEu5dFpPnqEmDUkWR7vmrdG4UvlG208T1wOTOuJamop7h5II
-         NQDqPhEb3AsbND7utSFHyn1jh+LfIuryD6oX5y3yjWreYpzIi9dHZ5HPqvtFrdCh7w9Z
-         bUgw==
-X-Forwarded-Encrypted: i=1; AKwUvBzei6leXl5eeYwhwg/Fbn6NwXY8DWEsXzNOtcXAlRq7rk2T91sQD+/Xsmya0jcsH6PEBp0=@vger.kernel.org
-X-Gm-Message-State: AFuF++mWsDuIdOVS9UKiR6LNSd7kyeCiWBueQo5RtqRtjEGaymUlKqO6
-	nVtdqOXDbSeYodSAjODRW3bdXd4a2PBRjekI0zLe36hDsCrslmSGmfU8zzADYj11rYSZ7m0yy7b
-	zkVN2mRml2d6gDGRtGKu4XhcvsZv2AJqQefRrb+M=
-X-Gm-Gg: AYBFou2DRbo+wNUdaK/+X+SIBp84XX6dyTZBipI1pztuO7pNwLm276SU0kADUaXQdsO
-	CmQIvCsxN2IiHI1Z9AzDOx4Jpr2+GbNYgihtfG9bf7oHPqbibrfimhxkpIya6+bVOOpTStwc91x
-	Dhlw+Ett+MicI1TGFQBnnbi6bCQNbtnrYW8rKBBfZXvGcUX1iSseQKt1scFznO+qyUVYgeijhbr
-	wsUXJNGZSGvTSV47KJ8N1Quff/hq+G+91JcE3pgN8g8aSo3lisDoEQT/e3dciL4KKQ861wlymnQ
-	gHUObhk2JoeKY3Yw5EzvnOO7qO3+yuS8KDpn/2rKCyRA9qww41bdC6Tn8w78pWJBOZqtg5bvIHS
-	cvQY4c5bxCs2uBCiwHW3shcU=
-X-Received: by 2002:a05:600d:6502:10b0:49e:7cfc:a9b7 with SMTP id
- 5b1f17b1804b1-49fe67bc27amr7942695e9.18.1790211604454; Wed, 23 Sep 2026
- 18:00:04 -0700 (PDT)
+        bh=e7NYzYowAH42T4CIyLla37LCOTvpZlsNv4w1YShEB0s=;
+        b=GYOr2pYu7ZySJ8b+pASXAYa+DuqBUlPeC6M+WJaes4N+A/MFMNtcS+YnMiTPPjzxPD
+         kco7c5rSC2gSijFHk/dWn3RaRo+nJWOVIWXiUJRIQpVWjIPhqVxDKOmesV4lh0jmRtE9
+         W6WxsOul9ai+q3ydp5DE96TqD23veqa2F/rpuF6+gZozeJF95ern3lFsAc7YnwK48tZf
+         v5aA4O7CUpJwrBS5bsEx/luNRkpiRnkWluVrS6wxvndYJP1ZOXYWVgh/rv+f7S7wYtux
+         yPZWbhPPgVkFVjb8BqXKXp9rg+skyHcFMNAZwsTVZ08LxLWHOm9DOeAIBu1SDQpyMgDa
+         nx9Q==
+X-Forwarded-Encrypted: i=1; AKwUvBwV5B/N7epMNPYLJWUSMEoYRo/G11WgTk9a5Tq0xmNvAjqSD5rLJ+K8CiLL6BcBnQZUXg8=@vger.kernel.org
+X-Gm-Message-State: AFuF++kp0QtO0/XIObfQ9eB9JY/A994SVhSpLYrdTHyAsqSrnSjqgM4j
+	0Y92RZ30ZQsWr3fGcxzmYoeSbAu0r9uK8PkZG9YM1+sRRJm7xFd9Bsw4pWultHR0uHBQW39/nCy
+	zztB4uKV+0YUIus87X95B6mZqJx5A/Wk=
+X-Gm-Gg: AYBFou2e2HsDCyAlL4yYHja7Zt0GIYrEhr9KCj7ywbGQOL19vuSo08O88miYN8bDeJ2
+	cRCVmN+tAuBNJBMWdFZnzwT7ZMhfHsYTR36k3DN3L79/ynAcx62FZgCIcz/HlCa2qt1QSVseYpw
+	9nY2b2NZzhzdgOlV1Zi600jbhcNlaxmanTG6B5Qzt4DBqdugL8oOk3J0naScbvWe8kAWmMBfP2c
+	juvU2kOuSEoe2oRmr7n6Ln17ZrRUkHAQ1oPg4Fkk6OllSS3VntFWFOEMQivvvVwyAhuO0ZNSLk7
+	4iW/YAIUaud3naJyQz+R6XSnJUs/N78sc0KzNwvwtpHSVUw6bGzCWopqYudcKfe1JreGsWZF4Lm
+	3iNQHcDKK4DDd
+X-Received: by 2002:a05:600c:1c0d:b0:49f:ce73:7ac with SMTP id
+ 5b1f17b1804b1-49fe67106d6mr15096175e9.35.1790211858543; Wed, 23 Sep 2026
+ 18:04:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAN_Opa-xVAzFAJVU3rwCsiBzVpQYqUYWzgpBBP7EaX3K+ASk1g@mail.gmail.com>
- <558719203d9a99a825fcd8efabf656b6f4686736.camel@infradead.org>
-In-Reply-To: <558719203d9a99a825fcd8efabf656b6f4686736.camel@infradead.org>
+References: <20260923095435.591542-1-kunwu.chan@gmail.com> <7efbc8e2ecbf397fc8e44327d13e9a7021b97212.camel@infradead.org>
+ <CAN_Opa-tDcZOEk=Mt5MAqUTkg2as5G79uBkxkUaJif8b5QpXYQ@mail.gmail.com>
+ <1cb9c1d40f246ddbe24c9fb930d6dce16aaa25a1.camel@infradead.org>
+ <CAN_Opa-xVAzFAJVU3rwCsiBzVpQYqUYWzgpBBP7EaX3K+ASk1g@mail.gmail.com> <19595BD7-98B3-46F0-8B47-DAFF304C5A7A@infradead.org>
+In-Reply-To: <19595BD7-98B3-46F0-8B47-DAFF304C5A7A@infradead.org>
 From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Thu, 24 Sep 2026 08:59:53 +0800
-X-Gm-Features: AclHuK8fUDRH7s-fYkijF1IIzzG_aohdjam8kOl0HL0U3OqUCAOP2SJpVGW9qV0
-Message-ID: <CAN_Opa99E2AWnUhi27ZQGL9oP7Q504EAJ_J2qbP_rP1x_4fO9A@mail.gmail.com>
+Date: Thu, 24 Sep 2026 09:04:07 +0800
+X-Gm-Features: AclHuK9lgR6kmKYPwa1ltvDPz79B4tIYoVe6PMK2Mrf54spd1LXi9d__ShA6Me4
+Message-ID: <CAN_Opa9r1ZbZjLQ_jHSaFQ=8Q-QPrDNxqOrN=feCNz=3N3kNGw@mail.gmail.com>
 Subject: Re: [PATCH 00/17] KVM: Use atomic SRCU for gfn-to-pfn cache,
  reinstate guest mode for x86 nesting
 To: David Woodhouse <dwmw2@infradead.org>
@@ -97,66 +99,46 @@ Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
 	pbonzini@redhat.com, seanjc@google.com, paul@xen.org, paulmck@kernel.org, 
 	kunwu.chan@linux.dev, nh-open-source@amazon.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 
-T24gVGh1LCBTZXAgMjQsIDIwMjYgYXQgNTo1NuKAr0FNIERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJA
-aW5mcmFkZWFkLm9yZz4gd3JvdGU6DQo+DQo+IE9uIFRodSwgMjAyNi0wOS0yNCBhdCAwMDoyNiAr
-MDgwMCwgS3VuV3UgQ2hhbiB3cm90ZToNCj4gPiBUaGUgcGFyYWxsZWwgaW50ZXJydXB0IGRlbGl2
-ZXJ5IGNhc2Ugc291bmRzIHBhcnRpY3VsYXJseSBpbnRlcmVzdGluZy4NCj4gPiBQbGVhc2UgZG9u
-J3QgZ28gdG8gYW55IHRyb3VibGUgaWYgdGhlIG9sZCByZXN1bHRzIGFyZSBub3QgYXZhaWxhYmxl
-Lg0KPg0KPiBUaGUgb2xkIHJlc3VsdHMgd2VyZSBvbiB0aGUgb3JpZ2luYWwgUkNVLWJhc2VkIChu
-b3QgU1JDVSkgdmVyc2lvbiwgc28NCj4gSSByZWRpZCB0aGVtIHdpdGggdGhlIGxhdGVzdCwgb24g
-dGhlIDE5Mi13YXkgUFJFRU1QVF9SVCBHTlIgYm94Lg0KPg0KPiBJdCdzIGEgYml0IG9mIGEgbWlj
-cm9iZW5jaG1hcms6IE4gdkNQVXMgc3Bpbm5pbmcgaW4gZ3Vlc3QgbW9kZSwgd2l0aCBODQo+IG1v
-cmUgc2VuZGVyIHRocmVhZHMsIGVhY2ggZGVsaXZlcmluZyBpbnRlcnJ1cHRzIGFzIGZhc3QgYXMg
-aXQgY2FuIHRvDQo+IGl0cyBvd24gcGFpcmVkIHZDUFUgdGhyZWFkLiBUaGUgdkNQVSBpc24ndCBl
-dmVuIGFja25vd2xlZGdpbmcgdGhlDQo+IGludGVycnVwdCwgYnV0IHRoZSBsb2NrZWQgYnRzbCB3
-aWxsIHN0aWxsIGJlIGRpcnR5aW5nIHRoZSBjYWNoZSBsaW5lcw0KPiBvZiB0aGUgc2hhcmVkIGlu
-Zm8gZXZ0Y2huX3BlbmRpbmcgYml0bWFwIGV2ZW4gdG8gZmluZCB0aGF0IHRoZSBiaXQgaXMNCj4g
-YWxyZWFkeSBzZXQgKHF2KS4NCj4NCj4gVGhlIHJ3bG9jayB2ZXJzaW9uIGdldHMgdXAgdG8gOC05
-TSBkZWxpdmVyaWVzIHBlciBzZWNvbmQgYW5kIHRoZW4NCj4gc3RhcnRzIHRvIHJlZ3Jlc3MgcGFz
-dCBhYm91dCAzMiBwYXJhbGxlbCB2Q1BVcy4gV2hpbGUgU1JDVSBzdGFydHMgb2ZmDQo+IGZhc3Rl
-ciwgYW5kIGdldHMgbW9yZSBzby4NCj4NCj4gRGVsaXZlcmllcy9zZWMsIHNwcmVhZCBsYXlvdXQ6
-DQo+ICAg4pSM4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSs4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSs4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSs4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSQDQo+ICAg4pSCIHZDUFVzIOKUgiAgcndsb2NrICDilIIgYXRvbWlj
-IFNSQ1Ug4pSCIHJhdGlvIOKUgg0KPiAgIOKUnOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUpA0KPiAgIOKUgiAxICAgICDilIIg
-MS4wMk0gICAg4pSCIDEuMTNNICAgICAgIOKUgiAxLjHDlyAg4pSCDQo+ICAg4pSc4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSk
-DQo+ICAg4pSCIDIgICAgIOKUgiAxLjg3TSAgICDilIIgMi4yN00gICAgICAg4pSCIDEuMsOXICDi
-lIINCj4gICDilJzilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilLzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzilIDi
-lIDilIDilIDilIDilIDilIDilKQNCj4gICDilIIgNCAgICAg4pSCIDMuNTlNICAgIOKUgiA0LjU3
-TSAgICAgICDilIIgMS4zw5cgIOKUgg0KPiAgIOKUnOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUpA0KPiAgIOKUgiA4ICAgICDi
-lIIgNy4wNk0gICAg4pSCIDkuMTNNICAgICAgIOKUgiAxLjPDlyAg4pSCDQo+ICAg4pSc4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS84pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSkDQo+ICAg4pSCIDE2ICAgIOKUgiA4Ljc1TSAgICDilIIgMTYuOE0gICAgICAg4pSCIDEuOcOX
-ICDilIINCj4gICDilJzilIDilIDilIDilIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilLzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilLzi
-lIDilIDilIDilIDilIDilIDilIDilKQNCj4gICDilIIgMzIgICAg4pSCIDguNTJNICAgIOKUgiAz
-My4zTSAgICAgICDilIIgMy45w5cgIOKUgg0KPiAgIOKUnOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-vOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUpA0KPiAgIOKUgiA2NCAg
-ICDilIIgNi43NU0gICAg4pSCIDYzLjdNICAgICAgIOKUgiA5LjTDlyAg4pSCDQo+ICAg4pSU4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pS04pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS04pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pS04pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSYDQo+DQo+IFRoaXMgaXMgd2l0aCB0aGUgcG9ydCBudW1iZXJzIG9mIGVhY2ggb2YgdGhl
-IE4gQ1BVcyBkZWxpYmVyYXRlbHkgc3ByZWFkDQo+IG91dCBpbnRvIGRpZmZlcmVudCBjYWNoZSBs
-aW5lcyAod2hpY2ggYXJndWFibHkgd2Ugb3VnaHQgdG8gZG8gZm9yDQo+IHByb2R1Y3Rpb24gZ3Vl
-c3RzLCBidXQgd2UgZG9uJ3QpLiBJZiBJIGxldCB0aGVtIGFsbCBwYWNrIHdpdGgNCj4gc2VxdWVu
-dGlhbCBwb3J0IyBhbGxvY2F0aW9uLCBpdCBtYWtlcyBubyBkaWZmZXJlbmNlIHRvIHJ3bG9jayBi
-dXQgdGhlDQo+IFNSQ1UgdmFyaWFudCBoaXRzIGEgc2NhbGluZyBjbGlmZiBhcm91bmQgTj0xNiB0
-b28gKDE3LjJNIEAzMiwgMTQuME0NCj4gQDY0KS4gQnV0IGhleSwgYXMgSSBzYWlkOiBtaWNyb2Jl
-bmNobWFyay4NCg0KUmVzZW5kLg0KDQpIaSBEYXZpZCwNCg0KVGhhbmtzIGZvciB0YWtpbmcgdGhl
-IHRpbWUgdG8gcmVydW4gdGhpcy4gVGhpcyBpcyBleGFjdGx5IHRoZSBraW5kIG9mDQpkYXRhIEkg
-d2FzIGhvcGluZyB0byBnZXQsIGFuZCB0aGUgc2NhbGluZyBhdCAzMiBhbmQgNjQgdkNQVXMgaXMN
-CnBhcnRpY3VsYXJseSB1c2VmdWwuDQoNClRoZSBjYWNoZS1saW5lIGxheW91dCBjb21wYXJpc29u
-IGlzIGFsc28gYSB1c2VmdWwgZGF0YSBwb2ludC4gSSdsbCBrZWVwDQp0aGUgbWljcm9iZW5jaG1h
-cmsgbGltaXRhdGlvbiBpbiBtaW5kIHdoZW4gdXNpbmcgdGhlc2UgcmVzdWx0cy4NCg0KVGhhbmtz
-IGFnYWluIGZvciB0aGUgZXh0cmEgd29yay4NCg0KVGhhbmtzLA0KS3Vud3UNCg==
+On Thu, Sep 24, 2026 at 12:46=E2=80=AFAM David Woodhouse <dwmw2@infradead.o=
+rg> wrote:
+>
+> On 23 September 2026 18:26:32 CEST, KunWu Chan <kunwu.chan@gmail.com> wro=
+te:
+> >On Thu, Sep 24, 2026 at 12:07=E2=80=AFAM David Woodhouse <dwmw2@infradea=
+d.org> wrote:
+> >>
+> >> On Wed, 2026-09-23 at 23:58 +0800, KunWu Chan wrote:
+> >> >
+> >> > You mentioned that the SRCU read side scales a lot better and avoids
+> >> > cacheline bouncing. If you happen to have any existing measurements =
+of
+> >> > the reader side, such as throughput or reader-side latency, I would =
+be
+> >> > very interested in seeing them. That would be useful for understandi=
+ng
+> >> > the reader-side benefit you mentioned.
+> >> >
+> >> > Of course, no need to rerun anything just for this. I was mainly
+> >> > wondering whether you already had such data from the existing testin=
+g.
+> >>
+> >> Most of the KVM gfn-to-pfn-cache usage is per-vCPU so doesn't get much
+> >> parallelism. The main case is interrupt delivery to Xen guests' event
+> >> channels, and I did some benchmarking of parallel interrupt delivery.
+> >> I'll see if I still have those results, or tell my friend to go and
+> >> repeat some meaningful tests.
+> >
+> >Thanks David, that would be very helpful.
+> >
+> >The parallel interrupt delivery case sounds particularly interesting.
+> >Please don't go to any trouble if the old results are not available.
+> >I really appreciate you checking, and I also appreciate your friend's
+> >help with the measurements.
+>
+> It's no trouble; my friend is remarkably compliant once I've held its met=
+hodology to account and probed at its conclusions.
+>
+
+Haha, fair enough. Thanks again to both of you for indulging me. :-)
