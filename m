@@ -1,122 +1,293 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0997D38DC68;
-	Thu, 24 Sep 2026 11:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51063793C3;
+	Thu, 24 Sep 2026 16:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790249599; cv=none; b=j9vzXRnsvgSLs2EedRGCYstkmCqv6Zuy3t/5CYs6II1JzaJ3G9Bu/I5p/gSoexbnWIHk1HTLaNwmKsboSY+X87MyYpLj59uj5y152RM+3MOSna3AD+tC7p/CwP81frDFYhG/vcZQ+qj7Q/YCm6OVLt7JrkeQFPIx5TzK+ijB/pA=
+	t=1790266662; cv=none; b=WHxGTc8SxpexuiJHhfKSuSaMLFG9b7MQdm9GoMnVpT4Zpjb/Z+KHi0s193B4T/TRzGbOkl8tH60eZ0dHpKj8aKfCikPnuQTtZDKNIsBCcvnaaAoZaFiMjY2rdHuECFLr8jqDKQvzMzEGhn32c5TheVetZYkDzaSe+y9Sx8TeKSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790249599; c=relaxed/simple;
-	bh=bi4A9oP6oNMDEiR09MQYo1/7+Q8TAO2XFMTYuwz/r3c=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=LEtSpcAZ5PE5gFTPn9EByIdLvbRWc8QzzXqQpqovsMEmdO5Li4ZbE+NMHG/288CWzK7G6zdmz5uB187brPJSgQQkIRg0W2Rvhg6ENNCXDclVoyvasytZCBmr8Ekyaqjf0r5jakDoSh0qVfPHn0R97FV5x4o5gv8vNJTj2TKWDs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K2XHoE6F; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1790266662; c=relaxed/simple;
+	bh=54j6jm9bBfedLrJ77nc05dsO/9GGqZr7GBq9pImLWco=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=Gu0EdhhNBun9PSEizzNj0ldcGrLv+oAzXgXu9HrrcLgxbC240TfxZF7J02wnDcdtRkWLnXSd65S4fq/FhbIg/km04RDrZ2o9AXQEbYTMk9YnOdGpq+OqcDtzv/ahKAJw4q1/IHYOR3NbMMHnHXS1y+AFRJfxvnvAIuZ/hlAJQEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iwE+7vle; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K2XHoE6F"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1790249595; x=1821785595;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=bi4A9oP6oNMDEiR09MQYo1/7+Q8TAO2XFMTYuwz/r3c=;
-  b=K2XHoE6FgimUriwpllOuNFRofZ3tYJvZ04clhieswYlcpsd1zI8yDBPZ
-   +elZn6SIX65RZsMapoTGjb5yjxNgNq/PLyLuQyoQ5X+qNeOTvU4SATsFm
-   5Bd9Jf+7xdEdeQZTSkKTF2LJILJZXyYXhiWuUDbhUsM4b2HswXt7LmChA
-   94qQs2oF831NfScdYBWjJutHA1L2+IdF6ShLok15WXsNHz+YwdWV3MFso
-   STIp/BVq0PI1z++I41KmHBf7jYhZU3eM1q3Zpwn75xhv2wmDoxbcrgPWg
-   iNdbySD5Bl900p3eADvZiHLIdfwhpu8qwJ00IzHSfXhO2LB8eG2NGUUbv
-   w==;
-X-CSE-ConnectionGUID: +Ocl9J/+TWe6YBQX0MEd3g==
-X-CSE-MsgGUID: 5Yug119FS8S6uNy+c9Z1Gw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11914"; a="89877578"
-X-IronPort-AV: E=Sophos;i="6.27,120,1787036400"; 
-   d="scan'208";a="89877578"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2026 04:33:13 -0700
-X-CSE-ConnectionGUID: dF85Lm6WRf22zoxZNwTU5w==
-X-CSE-MsgGUID: 846Iiz+NT06RMKm4RjbHsw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,120,1787036400"; 
-   d="scan'208";a="270487899"
-Received: from ly-workstation.sh.intel.com (HELO ly-workstation) ([10.239.182.64])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2026 04:33:11 -0700
-Date: Thu, 24 Sep 2026 19:33:08 +0800
-From: kernel test robot <yi1.lai@intel.com>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-	yi1.lai@intel.com
-Subject: [linus:master] [rcu]  ec5ee5417b:  stress-ng.ramfs.ops_per_sec 25.7%
- improvement
-Message-ID: <202609241934.228b4a14-lkp@intel.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iwE+7vle"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 375811F00893;
+	Thu, 24 Sep 2026 16:17:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790266660;
+	bh=/vir7cOOalrm3uAtBCr/uUQaicGXlCKvmJG7+GwiX1g=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date;
+	b=iwE+7vleCFfMnAijc6nhK/b+R0CA8Ynie7k007PULFTJSSXletRWl3GgzUiPQUtKd
+	 l7wYcPCT3oOc/WzZlXp9MaV4eOcDUqmfrZ2L5sl2V2N/PiNG6TaOcMk5q7vFNAaXMq
+	 v6LwPMgkO+jU2Avkw9xKX3IMLz2PgfKt6r3KHZJiQHjk+npatXy2gKRMxij0z/WXym
+	 5wRrjm3GavyMYYh+/H2SEnPcjEKL6+jQBohI0ZWGQ6qMWyo/549lo2PxPZiqMvgjV+
+	 nBwIimYQdYDvDcQwTHqObEbK4cK04/yG+3iIF/gAgGFD19AOyoW8NJyIVn15iJYoiF
+	 VrVTgi/AD/4+w==
+Content-Type: multipart/mixed; boundary="===============3199754947234595145=="
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Message-Id: <6469f266e0c06de407583746d4f533a03a002fa8d7871124196b0bb568fe38fa@mail.kernel.org>
+In-Reply-To: <179017148080.466588.9116221556625712980.stgit@devnote2>
+References: <179017148080.466588.9116221556625712980.stgit@devnote2>
+Subject: Re: [PATCH] kprobes: Make optprobe optimizer multi-generational and asynchronous
+From: bot+bpf-ci@kernel.org
+To: mhiramat@kernel.org,josef@toxicpanda.com,paulmck@kernel.org,frederic@kernel.org,ast@kernel.org,rostedt@goodmis.org
+Cc: boqun@kernel.org,mhiramat@kernel.org,mark.rutland@arm.com,peterz@infradead.org,tglx@kernel.org,daniel@iogearbox.net,andrii@kernel.org,puranjay@kernel.org,rcu@vger.kernel.org,bpf@vger.kernel.org,linux-trace-kernel@vger.kernel.org,linux-arm-kernel@lists.infradead.org,linux-kernel@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,mason@kernel.org,ihor.solodrai@linux.dev
+Date: Thu, 24 Sep 2026 16:17:38 +0000 (UTC)
+
+--===============3199754947234595145==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 6337da5cab9e..1e25980303c4 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+
+[ ... ]
+
+> @@ -530,50 +553,78 @@ static DECLARE_COMPLETION(optimizer_completion);
+>
+>  #define OPTIMIZE_DELAY 5
+>
+> +static bool optprobe_has_queued_probes(void)
+> +{
+> +	struct optprobe_generation *gen = &optprobe_gens[optprobe_cur_gen];
+> +
+> +	return !list_empty(&gen->optimizing_list) ||
+> +	       !list_empty(&gen->unoptimizing_list);
+> +}
+
+Does this logic need to check gen->freeing_list as well?
+
+optprobe_dispatch_generation() returns early when this is false:
+
+    if (!optprobe_can_fire() || !optprobe_has_queued_probes())
+        return;
+
+But ops can reach cur_gen->freeing_list without leaving anything on the
+other two lists. unoptimize_kprobe(ap, true) on an op queued for
+unoptimization does:
+
+    force_unoptimize_kprobe(op);
+    list_move(&op->list, &optprobe_gens[optprobe_cur_gen].freeing_list);
+
+This is reached from add_new_kprobe() when a probe with a post_handler
+is registered at the same address, and from __arm_kprobe() for an
+overlapping optprobe. kill_optimized_kprobe() also list_move()s an
+unused, queued op there.
+
+If that op was the only entry on cur_gen->unoptimizing_list, the kick
+issued when it was queued produces a kprobe_optimizer() pass that
+dispatches nothing. optprobe_optimizer_busy() is then false and nothing
+kicks again. The op stays on freeing_list until some unrelated probe is
+queued, possibly indefinitely.
+
+While the op sits on freeing_list:
+
+- kprobe_queued(ap) stays true, so a later __disarm_kprobe() skips
+  arch_disarm_kprobe(). The int3 then stays in the text after the
+  probes at that address are disabled or unregistered.
+
+- The unused aggregator stays in kprobe_table and is not freed.
+
+- wait_for_kprobe_optimizer() returns immediately because
+  optprobe_optimizer_busy() is false. This contradicts the commit
+  message, which says flushing "waits asynchronously for all in-flight
+  and queued generations to drain".
+
+- Registering again at that address goes through reuse_unused_kprobe()
+  -> optimize_kprobe(). That sets KPROBE_FLAG_OPTIMIZED again (the
+  force path cleared it) and hits WARN_ON_ONCE(!list_empty(&op->list)),
+  leaving OPTIMIZED set with no jump installed.
+
+Should optprobe_has_queued_probes() also check
+!list_empty(&gen->freeing_list), so that dispatch and the flush loop
+account for these ops?
+
+[ ... ]
+
+> @@ -622,67 +675,119 @@ static void do_free_cleaned_kprobes(void)
+>
+>  static void kick_kprobe_optimizer(void);
+>
+> +static void optprobe_generation_rcu_cb(struct rcu_head *rcu)
+> +{
+> +	struct optprobe_generation *gen;
+> +
+> +	gen = container_of(rcu, struct optprobe_generation, rcu);
+> +	WRITE_ONCE(gen->ready, true);
+> +	wake_up(&kprobe_optimizer_wait);
+> +}
+> +
+> +static void optprobe_finalize_generation(struct optprobe_generation *gen)
+> +{
+> +	lockdep_assert_held(&kprobe_mutex);
+> +
+> +	scoped_guard(cpus_read_lock) {
+> +		guard(mutex)(&text_mutex);
+> +
+> +		/* Optimization never be done when disarmed */
+> +		if (!kprobes_all_disarmed && kprobes_allow_optimization &&
+> +		    !list_empty(&gen->optimizing_list))
+> +			arch_optimize_kprobes(&gen->optimizing_list);
+> +	}
+> +
+> +	/* Free cleaned kprobes after quiescence period */
+> +	do_free_cleaned_kprobes(&gen->freeing_list);
+> +
+> +	gen->in_flight = false;
+> +	WRITE_ONCE(gen->ready, false);
+> +}
+> +
+> +static void optprobe_dispatch_generation(void)
+> +{
+> +	struct optprobe_generation *gen;
+> +
+> +	lockdep_assert_held(&kprobe_mutex);
+> +
+> +	if (!optprobe_can_fire() || !optprobe_has_queued_probes())
+> +		return;
+> +
+> +	gen = &optprobe_gens[optprobe_cur_gen];
+> +
+> +	scoped_guard(cpus_read_lock) {
+> +		guard(mutex)(&text_mutex);
+> +
+> +		/*
+> +		 * Unoptimize kprobes and collect cleaned (unused and disarmed)
+> +		 * kprobes before waiting for quiescence period.
+> +		 */
+> +		do_unoptimize_kprobes(&gen->unoptimizing_list, &gen->freeing_list);
+> +	}
+> +
+> +	/* Advance cur_gen to the next generation slot */
+> +	optprobe_cur_gen = (optprobe_cur_gen + 1) % OPTPROBE_GEN_MAX;
+> +
+> +	gen->in_flight = true;
+> +	WRITE_ONCE(gen->ready, false);
+> +
+> +	call_rcu_tasks(&gen->rcu, optprobe_generation_rcu_cb);
+> +}
+
+Now that kprobe_mutex is dropped during the Tasks RCU grace period, can
+an aggregator probe that was unoptimized but is still in use be freed
+while a task is still preempted inside its detour buffer?
+
+When an op on the unoptimizing list is not unused (for example, it is
+disabled but its child probe is still registered, as after
+disable_kprobe() through __disable_trace_kprobe()),
+do_unoptimize_kprobes() takes the else branch:
+
+    } else {
+        list_del_init(&op->list);
+    }
+
+After optprobe_dispatch_generation() returns, the op is on no generation
+list, and nothing ties its lifetime to the pending call_rcu_tasks()
+grace period. kprobe_optimizer() then drops kprobe_mutex, so unregister
+can run during the grace period:
+
+  unregister_kprobes()
+    __unregister_kprobe_top(p)
+      /* list_is_singular(&ap->list) && kprobe_disarmed(ap) is true,
+         since kprobe_disarmed() is kprobe_disabled(p) &&
+         list_empty(&op->list) */
+      hlist_del_rcu(&ap->hlist);
+    synchronize_rcu();
+    __unregister_kprobe_bottom(p)
+      free_aggr_kprobe(ap)
+        arch_remove_optimized_kprobe(op);  /* frees the detour slot */
+        kfree(op);
+
+Sequence with CONFIG_OPTPROBES=y and CONFIG_PREEMPTION=y:
+
+1. Task T enters op->optinsn.insn, through the jump or through
+   setup_detour_execution(), and is preempted there. The x86 template
+   runs with IRQs enabled, and optimized_callback() reads op->kp.flags
+   before preempt_disable(). T can also be preempted in the copied
+   instructions.
+
+2. disable_kprobe(child) calls unoptimize_kprobe(ap, false), which
+   queues ap on cur_gen->unoptimizing_list.
+
+3. kprobe_optimizer() calls optprobe_dispatch_generation().
+   arch_unoptimize_kprobes() runs, then the list_del_init() above, then
+   call_rcu_tasks(), and kprobe_mutex is released.
+
+4. unregister_kprobe(child) runs hlist_del_rcu(), then
+   synchronize_rcu(), then free_aggr_kprobe(), which does kfree(op).
+
+5. T resumes in the freed or dirty detour slot. If it was preempted in
+   the template, it then calls optimized_callback(op, regs), and
+   kprobe_disabled(&op->kp) reads freed memory.
+
+synchronize_rcu() does not wait for a task preempted outside
+rcu_read_lock(). The detour slot is freed with dirty=1 and can be
+reclaimed and reused through collect_garbage_slots(), which also uses
+only synchronize_rcu(). kill_kprobe() -> kill_optimized_kprobe() ->
+arch_remove_optimized_kprobe() during module unload has the same window.
+
+In the parent commit, kprobe_optimizer() held kprobe_mutex across
+synchronize_rcu_tasks(), so step 4 could not start until every such task
+had passed a voluntary context switch. The commit message says these
+grace periods can last seconds to minutes, which makes this window wide.
+
+Should ops that were unoptimized but are still in use stay attached to
+the in-flight generation until optprobe_finalize_generation() runs? Or
+should the unregister and kill paths treat such an op as not yet
+disarmed until its generation has finished?
+
+[ ... ]
+
+> @@ -707,12 +812,11 @@ static void wait_for_kprobe_optimizer_locked(void)
+>  {
+>  	lockdep_assert_held(&kprobe_mutex);
+>
+> -	while (!list_empty(&optimizing_list) || !list_empty(&unoptimizing_list)) {
+> +	while (optprobe_optimizer_busy()) {
+>  		init_completion(&optimizer_completion);
+> -		/*
+> -		 * Set state to OPTIMIZER_ST_FLUSHING and wake up the thread if it's
+> -		 * idle. If it's already kicked, it will see the state change.
+> -		 */
+> +		optprobe_flush_requested = true;
+> +
+> +		/* Wake up optimizer thread */
+>  		if (atomic_xchg_acquire(&optimizer_state,
+>  			OPTIMIZER_ST_FLUSHING) != OPTIMIZER_ST_FLUSHING)
+>  			wake_up(&kprobe_optimizer_wait);
+
+Andrea Parri raised a concern on 2026-09-24 about a race condition in
+this code (https://lore.kernel.org/all/arTuBodyGqQ0mErI@andreayoga.localdomain/).
+
+The flusher drops kprobe_mutex while it sleeps, and the sysctl handler
+and the debugfs "enabled" file do not otherwise serialize against each
+other. A second flusher can then run init_completion() on the wait queue
+the first one is sleeping on: the first waiter is dropped from the
+queue, and complete_all() wakes only the second one. Andrea notes that
+with this patch the window is wider, since kprobe_mutex is released
+while the Tasks RCU grace period runs and optprobe_optimizer_busy()
+stays true until the generation is finalized.
+
+Andrea suggests replacing the completion with a counter of optimizer
+passes bumped at the end of each pass and signalled with
+wake_up_var_locked().
+
+Should this race be addressed before the patch is applied?
 
 
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-Hello,
-
-kernel test robot noticed a 25.7% improvement of stress-ng.ramfs.ops_per_sec on:
-
-
-commit: ec5ee5417b00278fa050b38d878b76f1365420fb ("rcu: Advance callbacks for expedited GP completion in rcu_core()") https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-
-testcase: stress-ng
-config: x86_64-rhel-9.4
-compiler: gcc-14
-test machine: 256 threads 2 sockets Intel(R) Xeon(R) 6768P  CPU @ 2.4GHz (Granite Rapids) with 64G memory
-parameters:
-
-  nr_threads: 100%
-  testtime: 60s
-  test: ramfs
-  cpufreq_governor: performance
-
-
-Details are as below:
--------------------------------------------------------------------------------------------------->
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20260924/202609241934.228b4a14-lkp@intel.com
-
-=========================================================================================
-compiler/cpufreq_governor/kconfig/nr_threads/rootfs/tbox_group/test/testcase/testtime:
-  gcc-14/performance/x86_64-rhel-9.4/100%/debian-13-x86_64-20250902.cgz/lkp-gnr-2sp4/ramfs/stress-ng/60s
-
-commit: 
-  fde2b18817 ("rcu: Detect expedited grace period completion in rcu_pending()")
-  ec5ee5417b ("rcu: Advance callbacks for expedited GP completion in rcu_core()")
-
-fde2b18817e4f32b ec5ee5417b00278fa050b38d878
----------------- --------------------------- 
-         %stddev     %change         %stddev
-             \          |                \  
-    427110           +25.7%     537009        stress-ng.ramfs.ops
-      7124           +25.7%       8957        stress-ng.ramfs.ops_per_sec
-      6004 ±  2%    +561.7%      39731        stress-ng.time.involuntary_context_switches
-    685.50            -5.1%     650.33        stress-ng.time.percent_of_cpu_this_job_got
-    405.23            -5.4%     383.53        stress-ng.time.system_time
-    776758           +19.9%     931227        stress-ng.time.voluntary_context_switches
-
-
-Disclaimer:
-Results have been estimated based on internal Intel analysis and are provided
-for informational purposes only. Any difference in system hardware or software
-design or configuration may affect actual performance.
-
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/36019837684
+--===============3199754947234595145==--
