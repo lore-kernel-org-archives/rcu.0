@@ -1,110 +1,96 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE4C3AFD11;
-	Fri, 25 Sep 2026 13:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CDDB440632;
+	Fri, 25 Sep 2026 14:23:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790343573; cv=none; b=cfl3enPjXjZ12vfktR6g3/6zmTX8cDowXd/aUQAax+VCmD36tIOCbKymomZtME5MMPUaix8fnp4uXCb5EovmJK016M9mfzMCwoMshlUFAZDuBMUzZ4oXgq6ROn7U6kOHZmQuau7FNMOBdSTddkAuhsSvO0Ve1MKOrUcDj8rZUxI=
+	t=1790346240; cv=none; b=fExl4YP4QN6wbNe9oaS/tuHSshjCBiN9FjfWCkYwDbusA46JnUHIr5vEojIuo/tAnWwSdkpRntSWCcEm92Up4lr3feJ3/oScUfbUAwbf/k3KhVmaJw0XBXDjAWA3J4ROdfuf/eiObXFKvsjXutPRDbVG9ovfE8goJf4/OIP+BoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790343573; c=relaxed/simple;
-	bh=NeDzbfi/0L/e7kRZBImkmKMZ2661LpX+oOGKlYbsAWI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RcsU2HHGH8r5hNDmYZfCIsbqZSZzaui9oJ8bVYyWQV0Km9Q2uG3gQqDb1Fw8bnjdxV6A0uQdNM5V/BtKHQXxVqW5RI2DvPVuV5D5RJRFDxHNN4CXpK8s2PvTHum12caDlH7av2SmQqNiXwW6U93/TRuOHsja9GMGzNzk1weD+B8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AQ01KGHx; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790346240; c=relaxed/simple;
+	bh=MumCk2iQV8NfZ4FIye7VSM07PHu0TroAPaJIbu0QsCo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YYL3iHWW9XCu0cRy/03O00NZ4+idAYDqF3Jo5vTb2GVfWEAbbC/FMbTq4NVD3pG5bdrf1sjDl1A4otopfzNguvsbJzdrPmQIp0nOXAEPK+uUxY7c3i4eMbIF64Dqhtn5i/rBQsBcdMDWF1CzBXdvgmrVtAaJDxumLhPf5pMw7OU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Uv++AnLt; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AQ01KGHx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4B471F000FF;
-	Fri, 25 Sep 2026 13:39:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790343569;
-	bh=1zNEpb6b9KuMaOumLhxSNPy3dsi7OBGukBp3aBjkQNc=;
-	h=From:To:Cc:Subject:Date;
-	b=AQ01KGHxvzsWJ1Hwm/XBJ+M+nrmK06xcGOQxMfImbOAfQlkEU2D3dT1siNcc+l6KG
-	 mnsAk2j/x/QobfGMEuEMYPPHqaWGEYP0wMHMtxnUOk72PpioJhzm5BKf5gjHAYa5RJ
-	 Xrwq6rkTJHA2+bfMJpkQlRrUFVCrUkM1XjneT61ioGzFOmaZxVURwjwRz/IfRm3ltR
-	 3KLU5V8v3lJ0BYToNkIZdnR4/ww+INWJAU1cIzVAlcLMOqmQ8a69K1eex9S0jevZPd
-	 6xseFEvP72obToID+oMVfVB7VVblzS3vG/irb5ypBezjZwivbtUc+NZqBWM75O7Dth
-	 VhF7A02s4TzYw==
-From: Arnd Bergmann <arnd@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>,
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Uv++AnLt"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29BEC1F000FF;
+	Fri, 25 Sep 2026 14:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
+	s=korg; t=1790346238;
+	bh=gPQw0BITWNXX7SKrbkyHcPnZ8F5JrYYZZ0WWmA2r42g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Uv++AnLtGnniFK5YSTNIX9gVqOtVjJDGfby40Lq4zqDeDFWbXVarO/ZyLtNcLBNCc
+	 Z2eLUo0Iot+3Fv90Wbf434Zu9XeYIpgkxXj9vxSqD7/l23smbMGi7vh7KEPga6TCD9
+	 WOcxsAi+bUb94xioBJoxRw34s2ptPSqJUgXgm8hI=
+Date: Fri, 25 Sep 2026 16:23:53 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: "Benjamin Robin (Schneider Electric)" <benjamin.robin@bootlin.com>
+Cc: stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Andrea Righi <arighi@nvidia.com>,
-	Cheng-Yang Chou <yphbchou0911@gmail.com>,
-	Gustavo Luiz Duarte <gustavold@gmail.com>,
-	Kunwu Chan <kunwu.chan@gmail.com>,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: include rtmutex_common.h in tree_stall.h
-Date: Fri, 25 Sep 2026 15:39:04 +0200
-Message-ID: <20260925133922.1356404-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.53.0
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, miguel.gazquez@bootlin.com,
+	thomas.petazzoni@bootlin.com, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 6.18.y 1/2] rculist: add list_splice_rcu() for private
+ lists
+Message-ID: <2026092540-jokester-certify-1339@gregkh>
+References: <20260925-cve-2026-52988-6-18-v1-0-680b24895415@bootlin.com>
+ <20260925-cve-2026-52988-6-18-v1-1-680b24895415@bootlin.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260925-cve-2026-52988-6-18-v1-1-680b24895415@bootlin.com>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Sep 25, 2026 at 09:52:23AM +0200, Benjamin Robin (Schneider Electric) wrote:
+> From: Pablo Neira Ayuso <pablo@netfilter.org>
+> 
+> [ Upstream commit f902877b635551513729bdf9a8d1422c4aab7741 ]
+> 
+> This patch adds a helper function, list_splice_rcu(), to safely splice
+> a private (non-RCU-protected) list into an RCU-protected list.
+> 
+> The function ensures that only the pointer visible to RCU readers
+> (prev->next) is updated using rcu_assign_pointer(), while the rest of
+> the list manipulations are performed with regular assignments, as the
+> source list is private and not visible to concurrent RCU readers.
+> 
+> This is useful for moving elements from a private list into a global
+> RCU-protected list, ensuring safe publication for RCU readers.
+> Subsystems with some sort of batching mechanism from userspace can
+> benefit from this new function.
+> 
+> The function __list_splice_rcu() has been added for clarity and to
+> follow the same pattern as in the existing list_splice*() interfaces,
+> where there is a check to ensure that the list to splice is not
+> empty. Note that __list_splice_rcu() has no documentation for this
+> reason.
+> 
+> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> ---
+>  include/linux/rculist.h | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
 
-The added call to rt_mutex_owner() makes this fail to build in
-some configurations:
-
-In file included from kernel/rcu/tree.c:5121:
-kernel/rcu/tree_stall.h:333:8: error: call to undeclared function 'rt_mutex_owner'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-  333 |                         if (rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t)
-      |                             ^
-kernel/rcu/tree_stall.h:333:48: error: comparison between pointer and integer ('int' and 'struct task_struct *') [-Werror,-Wpointer-integer-compare]
-  333 |                         if (rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t)
-      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~
-In file included from kernel/rcu/tree.c:5124:
-In file included from kernel/rcu/tree_plugin.h:14:
-kernel/rcu/../locking/rtmutex_common.h:231:35: error: conflicting types for 'rt_mutex_owner'
-  231 | static inline struct task_struct *rt_mutex_owner(struct rt_mutex_base *lock)
-      |                                   ^
-kernel/rcu/tree_stall.h:333:8: note: previous implicit declaration is here
-  333 |                         if (rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t)
-      |                             ^
-
-There are already a couple of inclusions of "../locking/rtmutex_common.h",
-so assume this is safe to do here.
-
-Fixes: 1eccf02fb8d5 ("rcu: Add running and boosted indications to RCU task stall dump")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-I wonder if it would be better to either move the rt_mutex_owner()
-definition into a global header like include/linux/rtmutex.h, or to
-move the code out of tree_stall.h into a .c file, as this feels like a
-layering violation.
----
- kernel/rcu/tree_stall.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 5dded1e89197..803a56af3259 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -12,6 +12,7 @@
- #include <linux/rcu_notifier.h>
- #include <linux/smp.h>
- #include <linux/rtmutex.h>
-+#include "../locking/rtmutex_common.h"
- 
- //////////////////////////////////////////////////////////////////////////////
- //
--- 
-2.53.0
+You did not sign off on this commit :(
 
