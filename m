@@ -1,44 +1,46 @@
 Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64EF6377A83;
-	Sun, 27 Sep 2026 20:00:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD4C547059;
+	Sun, 27 Sep 2026 20:03:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.75.144.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790539222; cv=none; b=IyPvwlzaDHFCKGEqjk2dK1eN1WGo3iv0m9KQO7jXPTBFpRncgf7NyU+kOZatv4XWu7ZqJpLBJUikBlXqA2i4yv4RzhOHDebojo665cryTkkUFSdPzkCGb97fhEXH5y0/E7CmhqTi9ChNkMA4eSSUWpiaU80si6kTMEXZm4C6rsg=
+	t=1790539432; cv=none; b=ahikjSD9ZAWmRwsfOV64z4+lxIQmHFeqqKppgzQI8tGFuKetzmUDI0QlLjLslhlm6TH75B1wil0zZWr9PUxAQ0xFwgj+tJFUIllytBl1D1FEt4c0TH5EXIcFJXPocbzvYm8h+suNFyETcXI4NxxJQvCEIjABVGQpnnjtF9QdPaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790539222; c=relaxed/simple;
-	bh=SeLQSuQGwU9qsys0t0pYmDOpg2+fG+NoUyO9dpYvIBU=;
+	s=arc-20240116; t=1790539432; c=relaxed/simple;
+	bh=qW6h8WAnNsfCgvtFtQyNP/MRWuvgMahJGJpAevIuHGM=;
 	h=Date:From:To:CC:Subject:In-Reply-To:Message-ID:MIME-Version:
-	 Content-Type; b=YEzpiD5hOej+G9CC7PefTRxJfSMLGrMlj8Fr8PY94D3SV/JwiTfvsY1t4cX6PRjRVlj5+aGRapUavhbzFkTzGeUsedTJd+FIx7MU/cuXJN7Ag25GO+Z6UpAfi3PZuSBW+LrdOFkqM8/+/UDwg4ZpYdpNoayF6+nceSPvtFhBkVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=Ly5VTmK9; dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=KqcH46cf; arc=none smtp.client-ip=5.75.144.95
+	 Content-Type; b=L8SM+JQWFL/rNhT2y/divwwkn2oNyY3v1FmeKaEFfHb2jG3etSKTMzjhyx57FJkNLeYLdbRK++y53ASRuh99lLz01f8UPPD17ggHvh5rUfttC3bwwHqIcnrx7rpdp4c8n88FAVJKv+5lupdQFzc+t++ScmZPAFMxth4VZUdWk2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=fZjc/hUH; dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=bprcjxUA; arc=none smtp.client-ip=5.75.144.95
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="Ly5VTmK9";
-	dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="KqcH46cf"
+	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="fZjc/hUH";
+	dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="bprcjxUA"
 DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1790539207; bh=EWRD9Z8tz8/kpl/2wpMTdBB
-	fWlCLUqMDxxOx7tDpxME=; b=Ly5VTmK9EBVV2x+YmeIAf2sdf4u7VIf8kk5LTeiUr5uX6MIuIA
-	/ydpjk5sYOXB+6SWjBXO+FAaIFFm7GFGDiQSbbOFiE1rXXv8YvHj5hlU8op2ACo/QT+WJlzAlhW
-	AM+Ze2xxo//eXbbNRddyTO8sM7Rgabq9DzRA1YJ9Q7pPel23km2EAuao4A9NaeH14ADC2nS5S3q
-	P5vq1bW5dObjWD0bGxAjM/WEYcG1Ud72DJVkXbFuoHLG9VyJOU0AatMnoGNGAIuUzNxndJOIncm
-	i9VSMd5ZqguL39keUBO5NMok779mgESzKwGMVLA8FhGQDPnf3ekrFJS61+nv70FZcEA==;
+	h=Message-ID:Subject:To:From:Date; t=1790539416; bh=nTZ5j6ad5AfeTmRJMTWImqn
+	XR9Fm8cNjGi6bLGNXi94=; b=fZjc/hUHiYX9LAFOL2B3IzqeBf/NZOr7bF4jwsU4A7OrrahUrg
+	/cfc1XyhXzDdx/1D7Xl33SBJwpCYPA5/NocbjBfXJ9uruVOhHK7iIfhQbsM+GoENGeS3aN8LobI
+	6iu5awoGNhCBj9fValE531hMWK2TeUH4ecch3euKU0NxQr4Xl4AJfu1fjWMRkF0tsBa3XCvSFy2
+	URexe8NZRQW1SzpYIQL44dcMraWE3L6XbWRKD/EC8oCIb1CimELYTjtGRDZy4B0lB0z/HgvAndr
+	IN5Se1kCLjUIoYq9Jw+x9GmJlU05RqVwuUWKtorxIqCStsd11A3hy2fJVzXjjiEAo1A==;
 DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1790539207; bh=EWRD9Z8tz8/kpl/2wpMTdBB
-	fWlCLUqMDxxOx7tDpxME=; b=KqcH46cfSCtarNybUafavHnVd7XP3v/Z6osk4Znk+MtouN7ABM
-	IorbIz08mba34TNJ+D/oeS9gx1FkrpOiDMCQ==;
-Date: Sun, 27 Sep 2026 21:00:07 +0100
+	h=Message-ID:Subject:To:From:Date; t=1790539416; bh=nTZ5j6ad5AfeTmRJMTWImqn
+	XR9Fm8cNjGi6bLGNXi94=; b=bprcjxUA+EzOaG+D8Ea2H1hm5QmygqeZ90aEA3nehL+cP+qlBt
+	H5HJTlm7HiHLv0WiQUxeoUtbEGRBptvMGnDg==;
+Date: Sun, 27 Sep 2026 21:03:36 +0100
 From: Bradley Morgan <brads@mainlining.org>
-To: kunwu.chan@gmail.com
-CC: boqun@kernel.org, dave@stgolabs.net, frederic@kernel.org,
- jiangshanlai@gmail.com, joelagnelf@nvidia.com, josh@joshtriplett.org,
- linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- neeraj.upadhyay@kernel.org, paulmck@kernel.org, qiang.zhang@linux.dev,
- rcu@vger.kernel.org, rostedt@goodmis.org, urezki@gmail.com
-Subject: Re: [PATCH] rcuscale: add srcu_atomic scale type
-In-Reply-To: <20260927100359.3903688-1-kunwu.chan@gmail.com>
-Message-ID: <A425E486-AAE4-4A48-89CA-959A28094A51@mainlining.org>
+To: arnd@kernel.org
+CC: arighi@nvidia.com, arnd@arndb.de, boqun@kernel.org, frederic@kernel.org,
+ gustavold@gmail.com, jiangshanlai@gmail.com, joelagnelf@nvidia.com,
+ josh@joshtriplett.org, kunwu.chan@gmail.com, linux-kernel@vger.kernel.org,
+ mathieu.desnoyers@efficios.com, neeraj.upadhyay@kernel.org,
+ paulmck@kernel.org, qiang.zhang@linux.dev, rcu@vger.kernel.org,
+ rostedt@goodmis.org, tglx@kernel.org, tj@kernel.org, urezki@gmail.com,
+ yphbchou0911@gmail.com
+Subject: Re: [PATCH] rcu: include rtmutex_common.h in tree_stall.h
+In-Reply-To: <20260925133922.1356404-1-arnd@kernel.org>
+Message-ID: <CCDC929F-9556-4F8E-8B98-073F931F254B@mainlining.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -49,87 +51,66 @@ Content-Type: text/plain;
  charset=utf-8
 Content-Transfer-Encoding: 8bit
 
-On 27 September 2026 11:03:59 BST, Kunwu Chan <kunwu.chan@gmail.com> wrote:
->Add support for scaling atomic SRCU grace periods using
->srcu_read_lock_atomic()/srcu_read_unlock_atomic() and
->synchronize_srcu_atomic().
+On 25 September 2026 14:39:04 BST, Arnd Bergmann <arnd@kernel.org> wrote:
+>From: Arnd Bergmann <arnd@arndb.de>
 >
+>The added call to rt_mutex_owner() makes this fail to build in
+>some configurations:
+>
+>In file included from kernel/rcu/tree.c:5121:
+>kernel/rcu/tree_stall.h:333:8: error: call to undeclared function
+>'rt_mutex_owner'; ISO C99 and later do not support implicit function
+>declarations [-Wimplicit-function-declaration]
+>  333 |                         if (rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t)
+>      |                             ^
+>kernel/rcu/tree_stall.h:333:48: error: comparison between pointer and
+>integer ('int' and 'struct task_struct *')
+>[-Werror,-Wpointer-integer-compare]
+>  333 |                         if (rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t)
+>      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~
+>In file included from kernel/rcu/tree.c:5124:
+>In file included from kernel/rcu/tree_plugin.h:14:
+>kernel/rcu/../locking/rtmutex_common.h:231:35: error: conflicting types
+>for 'rt_mutex_owner'
+>  231 | static inline struct task_struct *rt_mutex_owner(struct rt_mutex_base *lock)
+>      |                                   ^
+>kernel/rcu/tree_stall.h:333:8: note: previous implicit declaration is here
+>  333 |                         if (rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t)
+>      |                             ^
+>
+>There are already a couple of inclusions of "../locking/rtmutex_common.h",
+>so assume this is safe to do here.
+>
+>Fixes: 1eccf02fb8d5 ("rcu: Add running and boosted indications to RCU task stall dump")
+>Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Ummm. Ok then!
+Looks "ok" 
 
 Reviewed-by: Bradley Morgan <brads@mainlining.org>
 
+Perhaps Paul could suggest another alternative M
 
->Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 >---
-> kernel/rcu/rcuscale.c | 47 ++++++++++++++++++++++++++++++++++++++++++-
-> 1 file changed, 46 insertions(+), 1 deletion(-)
+>I wonder if it would be better to either move the rt_mutex_owner()
+>definition into a global header like include/linux/rtmutex.h, or to
+>move the code out of tree_stall.h into a .c file, as this feels like a
+>layering violation.
+>---
+> kernel/rcu/tree_stall.h | 1 +
+> 1 file changed, 1 insertion(+)
 >
->diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
->index 5aca31c3c01d..86f1a912ebee 100644
->--- a/kernel/rcu/rcuscale.c
->+++ b/kernel/rcu/rcuscale.c
->@@ -264,6 +264,51 @@ static struct rcu_scale_ops srcu_ops = {
-> 	.name		= "srcu"
-> };
+>diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+>index 5dded1e89197..803a56af3259 100644
+>--- a/kernel/rcu/tree_stall.h
+>+++ b/kernel/rcu/tree_stall.h
+>@@ -12,6 +12,7 @@
+> #include <linux/rcu_notifier.h>
+> #include <linux/smp.h>
+> #include <linux/rtmutex.h>
+>+#include "../locking/rtmutex_common.h"
 > 
->+static struct srcu_struct srcu_atomic_ctlp;
->+
->+static int srcu_scale_atomic_read_lock(void)
->+{
->+	return srcu_read_lock_atomic(&srcu_atomic_ctlp);
->+}
->+
->+static void srcu_scale_atomic_read_unlock(int idx)
->+{
->+	srcu_read_unlock_atomic(&srcu_atomic_ctlp, idx);
->+}
->+
->+static void srcu_scale_atomic_synchronize(void)
->+{
->+	synchronize_srcu_atomic(&srcu_atomic_ctlp);
->+}
->+
->+static void srcu_atomic_scale_init(void)
->+{
->+	init_srcu_struct_atomic(&srcu_atomic_ctlp);
->+}
->+
->+static void srcu_atomic_scale_cleanup(void)
->+{
->+	cleanup_srcu_struct(&srcu_atomic_ctlp);
->+}
->+
->+static unsigned long srcu_atomic_scale_completed(void)
->+{
->+	return srcu_batches_completed(&srcu_atomic_ctlp);
->+}
->+
->+static struct rcu_scale_ops srcu_atomic_ops = {
->+	.ptype		= SRCU_FLAVOR,
->+	.init		= srcu_atomic_scale_init,
->+	.cleanup	= srcu_atomic_scale_cleanup,
->+	.readlock	= srcu_scale_atomic_read_lock,
->+	.readunlock	= srcu_scale_atomic_read_unlock,
->+	.get_gp_seq	= srcu_atomic_scale_completed,
->+	.gp_diff	= rcu_seq_diff,
->+	.exp_completed	= srcu_atomic_scale_completed,
->+	.sync		= srcu_scale_atomic_synchronize,
->+	.name		= "srcu_atomic"
->+};
->+
-> static struct srcu_struct srcud;
-> 
-> static void srcu_sync_scale_init(void)
->@@ -1176,7 +1221,7 @@ rcu_scale_init(void)
-> 	long i;
-> 	long j;
-> 	static struct rcu_scale_ops *scale_ops[] = {
->-		&rcu_ops, &srcu_ops, &srcud_ops,
->+		&rcu_ops, &srcu_ops, &srcu_atomic_ops, &srcud_ops,
-> 		TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
-> 		HAZPTR_SCALE_OPS
-> 	};
+> //////////////////////////////////////////////////////////////////////////////
+> //
 >
 
 --- Thanks!
