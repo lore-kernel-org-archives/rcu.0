@@ -1,59 +1,59 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C5037C926;
-	Sun, 27 Sep 2026 17:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF25537C924
+	for <rcu@vger.kernel.org>; Sun, 27 Sep 2026 17:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790529855; cv=none; b=HIvBa2C//p69s6YmpjaPQ4mA44Dhz37aIYpC780pLs/WN3VX6J6WsG0NkMMVB28sDmKqyyDUp3Be3XMhbHxIHiqCSmMHnO6pH4UQAxK6P0AebccuhBx7OYirzg9fPFASYeL5GpWdk9vxiAfCzpRCjP5f+9AT5JRhw4jcM+6k1e4=
+	t=1790529994; cv=none; b=AiGgS8eE8htgxG4zw7JT0NEyOrPXVnKVuAt95fl8WZWC3n84hkaV5LkLCdNz81ymeQ40ApUjEKeceMyltHRssRPtVMDj1OCDGxnH1hJdHQNcE2T6a6d+xXw6LCs7hoXUV5cJvfwUdFRb+KT9Rjr/h9yo96iD2Zz8pfpuZOmE29M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790529855; c=relaxed/simple;
-	bh=MeGrK8YfWvafmUOL0X4RjmHpY1j4mqMYXco+hIrf4tQ=;
+	s=arc-20240116; t=1790529994; c=relaxed/simple;
+	bh=u7TkxzW3x4juS+OVk4UuUwfeHl9Utob1vgraqXPTrB0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qpWBiwCY/PMKZy4zlRtHiLCW+DckSm+biV7SqOAZ8ZNs7tVgBCX4d8TE6poPrUsy7SLkhfriohkGbknmVwV9ndyXlSUV3E7HUGGwuKgXBUwX1urxdkk9PVbHAcNO2k/WcMISSFyobLoSuHchIFKg2UZg5nBzwku1MTzIi5oDT+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aAdIBVmZ; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=U5CR2RJeSu2bmD9GfRoOnPN7dkwbUBJk77fYajLKfge+Gf9TuVkK9PtmBKUPaEprVmJu5AnjjXdI94QfXT3VM5ZxluCQw7R6NxhYPIx7OLVOxDkLi4BzyHcajKqaqgQ4/t4QTBQfSO0Ylj5oxhf2ZQshnpHiL2ZcTaTv7rUyaYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MqW9Sd1M; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aAdIBVmZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 168681F00898;
-	Sun, 27 Sep 2026 17:24:13 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MqW9Sd1M"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17F6B1F000FF;
+	Sun, 27 Sep 2026 17:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790529854;
-	bh=XAG9Mub6do0/YvxTQaP+O+8WLPpaLUk8c/BmeAvudk0=;
+	s=k20260515; t=1790529993;
+	bh=TuuaDpekgfgDG1xsd5kQIZDXGrc07KFH/CrVSLpmawc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=aAdIBVmZ6Q5iiC+LASB41gq5o2ChQlYoUSxgdtzle7GW4AgTp+1+FWXbJl5tGxfxo
-	 +QHoIg/SpsYizAwExWvrLEZQ3xF7OWX6KtG8vVkCBqi58ng/lnLaFncx9BoM5Wn0Ns
-	 CueU7ylwGzIu5bDwml5tCA3W2wtKdnPwGYfNEhQVS1Xvt4ahbXtzmj7+wtZfbqE0ms
-	 0cVbrGdVlo7WXW8Rx3qH2Z1NmfVEfubiKWDv9b+axv1nLkWdSoErxDadmtYgwFq4K3
-	 YyIctoYbNl4iAVIZLXBo42N09M4U7lM+MW2FtUxJLcNpNcGtaR9G/MCCSztwJ6bzWF
-	 II0X/MI+4AeGw==
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 1703EF40067;
-	Sun, 27 Sep 2026 13:24:13 -0400 (EDT)
+	b=MqW9Sd1Mgc2XcmVUMggmcQ5NkOmifOx9I/UQGPTyVM92+fYAOWHjt473hcfNoY7cj
+	 ah73PUmxjrVxszCYl1cGxQcBRTu+NKcQlwVEQX0WuUIixVfZr5EquRmOSsBxnaKzK/
+	 YDgWiQrHlcVCgZnb6bnsK0Si2JqhWJBXCCD9oAhFvGZtruIURWKaFWhabYe+G6YfVx
+	 0uU3VOcsPvbyp/0tIBZDAIoKRLDg9xUbuSZu7u06GgjXwfQh5k1Re4C3KJxTt6AdYs
+	 lzw+9+KGvgMbOr9njvowVfn+KnSj1IZc5dnJ3WcVG93IIjOg0iY0M57sf0bhS/flzs
+	 NaPpq+y9pPJ6g==
+Received: from phl-compute-07.internal (phl-compute-07.internal [10.202.2.47])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 4051DF40066;
+	Sun, 27 Sep 2026 13:26:32 -0400 (EDT)
 Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Sun, 27 Sep 2026 13:24:13 -0400
-X-ME-Sender: <xms:PVG5ao1rMqG5cpIXbYq2VVYDdx5If-MnjFtFDfHPI1PMiRoQ9n_h-g>
-    <xme:PVG5avF2zDtkJiw8r4r69447DHRTLcWUOdBq0Xw-VJ8KCyjsVf5MxWv6W92u6luXC
-    QFH91-6l-Ui0Bqx7b80cXm8JJpsIujPKshDczpcmcehSGU7kD7CH_A>
-X-ME-Received: <xmr:PVG5ajF72k9PUjFaXEjCS5ZJXu1aJFo_qPIDSaljeI9lWdzp1csW-Qn1z0DL>
-X-ME-Proxy-Cause: dmFkZTEz5mB8zCIAGCXrp7RUiQQUepCvMede+Cw3EQaTvRN4+kzAs2UKWiCyLj5YPSAzxV
-    oorBmKvazoIR2yMYiy8gtEKa6np8jUnVSeTMen12syz7ijzssnssAU34xDELZK4+jRdQ9h
-    tGYvlJ8bwxnjtSoSimkcdgpG3xWUzI7XIn8ssWVRAShtYonCwXbVZsDxyqXor4T5h0vcC8
-    7/KmnXdf9LRpr9Kih1Np+izA8faBt8LrCARacC/2j0DyP4OwGmmZAhXfpAkFIM8Em6HKN/
-    HMkc2OUGVQeOzVy+h+c2bxrL0rmDDhsONNT9/Kwomvp98q+8gg8U17SpzWeiSiiyyA49Ft
-    g1/aCMUFn2pWQhdD2U7AeexX7LTOWBeGq5w3FRXFu5G69As45oZgzb25/4WSDwrx+4/jbj
-    aQQXLsLFnXTv+cZ8EHqPCckIgqd9WV4wTX80EbA09Et/esqi6sdH/5HLEdWF8tLhRUPXKz
-    DKgqsjfVzqmpj5FI0NiDfAMTgJTi441wmzi1wIfH4nSkrCXAtHAeWoKesL3J/6hoGehU+6
-    Eit2dYPHWNaGBmN+lrhCIs5XvZbD0fBIVNL8bZ7K4x8g8YorYEfDzycWSpLaeFECh8pr9j
-    7XoMhr0J/f+jFcrNrCPdjIZeC4hSNO6te3FocHNGshmF50k/tX/Qrwcd+t3w
-X-ME-Proxy: <xmx:PVG5ai5alIyW7n8bNCwLXIBe3sh2HmXYbbH4JIQOy1sdDV6OZvWozQ>
-    <xmx:PVG5aoyOtbH5xpF3Y6yXsf0aQl8kTzd9bLy8Uv_w8EWDszh1IleF5Q>
-    <xmx:PVG5ahMv_KapEYxYcqB7w_es9ekOSv-gV_UnZtOYT3LlcF13hfQJLw>
-    <xmx:PVG5aulMrwwPGoj4riIakcS_n__r7Yc0KCz-DozL6WZfjZtM65ZVQw>
-    <xmx:PVG5amTLKuwCpC_N_PYSeFGk-K68XmK2ezysm2ZY2v5k5nYOpMKfol4M>
+  by phl-compute-07.internal (MEProxy); Sun, 27 Sep 2026 13:26:32 -0400
+X-ME-Sender: <xms:yFG5agQWDTsP5n8jo6vDFzXuwr-TcodWS7WWdl86tuwnwGVpqKFOtg>
+    <xme:yFG5apz1wYqmXeIW4lktC72m82_ArdeXs9qXUm9Mm6aQ8ZPEM0cXs2jHoUrnPlrHw
+    SKQJRzb0ojwy9x-bMCJ7IKTpNPTD7FiV_Exvb70MeeLqIWvbTxYdg>
+X-ME-Received: <xmr:yFG5agAM042Yp9cAZd_GIP_sN2L-1ifcNviRft9omAC5WpFsvoYoljI_xw3n>
+X-ME-Proxy-Cause: dmFkZTF2wYukihSOr307lfKZHsXSU41dCS/+c7pM1vG1Ie3zgbM85D04/zRSSOZocH4w95
+    SYQwC1Aax+ksTT5qFIOeCIAqu2VtGNONzEJXyJvSH6I8HN71yP5sjf/6VHzagOzvqVy1FX
+    nIBFdWVlI+S9SiuxiWGqBnPw5qa4SYX2WZKXuxi7rCkb0ZQ7Mb0ORUyLT6GbaItL+/kDFR
+    NNicQNdX+26Sk2fxcqqAzcEJc0z0uPNE08whGuESuh7HiuZh60M961WaBytJ8uy7om7YZs
+    InOwEhfcW9WgeZKV0ybWZSq7EuY7pYRvN2IBNNMbfbzATO+6YvKqEBqBZTRW7kXpGzmqSr
+    pqmhT5teSJnkmU0xQCFbzWbAxfIX8qFSwD2lgmMZ9h41VsV6ijJW0mcudUaK9glqXtXaFj
+    wole5IL0AdhiCpr3b1pD4mrG+0Jfhui6aOS5Tom9O8CzNEi76puj0aZe5QDwv2pOBAO5h4
+    /DRhg2/W4zvMXxIZijAotf/tZZr6k/iIUSXthAy5f+pTvtyB6X22mz9JG0HclYSPl2ObKC
+    n2CpyrHTvwowyQBSwq+635tni+mFzZMg4gJKJMjJzE+VUFXfA1d1zehTqujuWZwF5dvqPB
+    mlub6jZJG64V0F237ooidcHiKjBES8emAEmbomLzp7Q94uUfGWsXH21yaydw
+X-ME-Proxy: <xmx:yFG5alH8V0JrDPLYkCbKC07Ws_ulZApEgMy5szsyzBTKivgWlBLDBg>
+    <xmx:yFG5anMJ8atfAtV6k4c376SW_9JV5TbTmnfF-hHVyOPk93hlLGNtLA>
+    <xmx:yFG5am4Nr0GVNUJ3EM8sIaFptdCL8jrHVE25cHBom9GY-iQW8jHHGw>
+    <xmx:yFG5aqi7gYSq2WjpbUwf_8Vu6NFotUGX-DS0IWAn8qigDoWY2ZtN7w>
+    <xmx:yFG5areMV7rHdM52PwAHkgQ5mGXv6sjarlE5OBn6YCKo1ZYdxzHziUw9>
 Feedback-ID: i8dbe485b:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 27 Sep 2026 13:24:12 -0400 (EDT)
-Date: Sun, 27 Sep 2026 19:24:11 +0200
+ 27 Sep 2026 13:26:31 -0400 (EDT)
+Date: Sun, 27 Sep 2026 19:26:30 +0200
 From: Boqun Feng <boqun@kernel.org>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: "Paul E . McKenney" <paulmck@kernel.org>, linux-kernel@vger.kernel.org,
@@ -61,7 +61,7 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>, linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org, lkmm@lists.linux.dev
 Subject: Re: [PATCH hazptr 4/4] hazptr: Introduce "try acquire" fast path,
  fallback to overflow list
-Message-ID: <arlROwtdFs3YyUt_@MacBook-0RXW5>
+Message-ID: <arlRxkYsNzEKFqgO@MacBook-0RXW5>
 References: <20260927155134.4740-1-mathieu.desnoyers@efficios.com>
  <20260927155134.4740-5-mathieu.desnoyers@efficios.com>
  <arlHFVT5EzcX4d1-@MacBook-0RXW5>
@@ -78,82 +78,33 @@ In-Reply-To: <5c78c338-1be6-456b-b963-bcfc62748aab@efficios.com>
 
 On Sun, Sep 27, 2026 at 01:15:39PM -0400, Mathieu Desnoyers wrote:
 [...]
-> > > @@ -196,16 +197,13 @@ void hazptr_scan_cpu_slots_period(void *addr, void *scan_wildcard)
-> > >   	for_each_possible_cpu(cpu) {
-> > >   		/*
-> > >   		 * Scan CPU slots.
-> > > -		 * Forward progress against recurring wildcards is guaranteed
-> > > -		 * by scanning for one wildcard while new elements use the
-> > > -		 * other wildcard value (1UL vs 2UL).
-> > >   		 * Forward progress against recurring single hazard pointer
-> > >   		 * values is guaranteed by the fact that a hazard pointer
-> > >   		 * is not reclaimed nor reused until the scan for that hazard
-> > >   		 * pointer completes, which prevents a steady flow of readers
-> > >   		 * to acquire that same hazard pointer value.
+> > > With this change, the scan on per-CPU slots don't need to expect a
+> > > wildcard anymore, because none can be produced by readers. Wildcards are
+> > > only expected within overflow lists.
+> > > 
 > > 
-> > (Not a comment to this patch, but I think it's worth bringing up)
+> > Ok, I was missing something, but I think it's better to call it out.
+> > Wildcards can only exist in the overflow lists when the context is not
+> > preemptible. In other words, there won't be a preempted readers blocking
+> > the synchronize_hazptr() with a wilcard in the overflow list.
+> 
+> Exactly ! Wildcard slots only exist during the short time-frame of the
+> preempt-off read-side code region (few instructions). And with this
+> patch, this does not even happen very often, because the fast path don't
+> rely on the wildcards.
+> 
 > > 
-> > I want to point out this is not true for the lockdep use case, because
-> > the we need to protect a hash list deletion there, and we use the
-> > address of the hash bucket there. It's proven fine in practice because
-> > the readers are rare (we only call the reader is_dynamic_key() in
-> > register_lock_class(), that is every time you have a new lock class to
-> > register).
+> > So no more design trade-off question from me :)
 > > 
-> > Maybe what we want to say here is that "if the users guarantee no steady
-> > flow of the same hazard pointer value, we guarantee forward progress".
-> > Thoughts?
 > 
-> AFAIU, your approach to protect lockdep linked lists is to use the
-> address of the hash bucket to protect the traversal. As this address is
-> invariant (global array item address), that address should be fine
-> to fulfill hazptr requirements, but it has downsides: rather than
-> protecting the specific nodes being retired, the whole hash chain is
-> protected. This means that, as you point out, many readers retiring
-> nodes from a given bucket (except the first node) could end up holding a
-> continuous stream of hazptr for a given hazptr value, preventing
-> progress of hazptr synchronize.
-> 
-> It's also coarser: per-bucket rather than per-node.
-> 
-> Am I missing something here ?
+> Are you sure ? Scrolling down....
 > 
 
-No, you got it right, but as I said, we can use it in lockdep since the
-readers are relatively rare, so not an issue here.
-
-> One honest question: is this pattern something we expect to
-> see often ? If so, then we may want to introduce a notion of
-
-I honestly don't know. But in my opinion, we'd better focus on finding
-more typical usage of hazptr (i.e. protecting actual object). So ...
-
-> hazptr protection "period" flip (similar to some RCU implementations),
-> where we tag the low bit of the slot pointer (0 vs 1), and alternate
-> between the two periods in synchronize. This would prevent a steady-flow
-> of same-value readers from preventing synchronize forward progress.
-> 
-> Thoughts ?
-> 
-
-... I will say let's add it only if we have more users of this pattern.
+I do feel with scan thread support and call_hazptr() support, we will
+need to tweak the design and implementation some more, but right now it
+does look good to me :)
 
 Regards,
 Boqun
 
-> Thanks,
-> 
-> Mathieu
-> 
-> > 
-> > The rest looks good to me.
-> > 
-> > Regards,
-> > Boqun
-> > 
-> 
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
+[...]
