@@ -1,182 +1,180 @@
-Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE95B4DAF8A;
-	Mon, 28 Sep 2026 14:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.75.144.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05AF54D09F5;
+	Mon, 28 Sep 2026 15:17:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790607409; cv=none; b=bhXKA/I7BVykiTGNBXfYYxCJc2qOcKSoOjMZ3kBxDcyAzfSaBpGcby31agtvgN77zuVP3+V97AhlKZdC5LvwzmDLohTWiIXrAesToF9kHzfNmmG2fcr0GiZ2NZhiLlcbZSEKe24Xz1NAuztCz/R7A1elTQ7kNOsNmUs4CT7AwF4=
+	t=1790608653; cv=none; b=gOJv3B4FoUSAoQhYgDjlFi2Bhk0KfZklXKJblNPaYs3mf8s/WXZ1zpqE0TUPt/ZXyHPah4ft35APNqdgMyXNIc0VKjsRRIkZ03X5T37DlALQQbLmrWUyJPhrr5DQ0F54oNcwEcVgjAkxMfyiFAZ3/HyebuGQpTDvde94LvnMmhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790607409; c=relaxed/simple;
-	bh=fUeatMRMiIOHg5krjb9OIAPsw1RQHZXlxfjBh3wQQ04=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=NnacHAn8+go/nyiv4LSS/EKLQe7U7zntp/Y+6QcXEWN4jiTO88iz8+iR8uR0sqt7YR+8i44PNkwYzDmNGkZ4ECMlh8YTknEJSGz7nJZgHT33Iq1N633A91hGx1Pa/v8s8u3DLVzcExXI5yCT6Bwq6m5o8C1Lz/lyzr0GTzODrzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=deNQUxFb; dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=RGOhEb3q; arc=none smtp.client-ip=5.75.144.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
+	s=arc-20240116; t=1790608653; c=relaxed/simple;
+	bh=S1D34cwHw1BqFkF7bcWEE/S56n4pkNJ75qlEE9Upi+8=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=qaK35gNFwtV7/JKsUdXzdBPrEQMbvNr14yoGYs8kqXCyIerFZgjeMwlxW0l+46ovcySi0xC2oc75QCpLPGoJNMlknwM7jJotqodnlsTxKDsi2pMNUiIiIyfEXzHxB3+q1/hXpd0M+zOqBZf8k25dlw0Gm1NwwDCZCMYgvsMQqgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JmAmvovt; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="deNQUxFb";
-	dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="RGOhEb3q"
-DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1790607377; bh=EJjNlAPWHW78XMfRn5dDceQ
-	7HSZ/FsFaRy7xG40Oko4=; b=deNQUxFbg53bjjB2ieNUbDRqZlvvtbBhxP9+DHRh75nOHi+lRl
-	swqs7wG/PVlk5DkX5GXQ956TeVRogmSZz+m0iQizIxTH2i1RyR0V8ET1gJGN7QwasbdnNY6RDv1
-	eq2fFdMa8hkDNsNQcDR0zzNubm5bMQffVeu/O2NbOv2jKYvxu7qwISbgDGTMfjENZeOFswUuFao
-	9w7Qc+KWh0fiLXNByH5z+8OFe55PLXEFzvwSiFBvpOg0MQgc6jk9SQk65n4LEF9U7jHuEZVj5eP
-	YGtKRsp6/PUxc3Yup9RArzU1uysBJn1QldIScnsiyP2UhX4IV0SEECaupUidRktgB3A==;
-DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1790607377; bh=EJjNlAPWHW78XMfRn5dDceQ
-	7HSZ/FsFaRy7xG40Oko4=; b=RGOhEb3qwHdMvPsmIWS6M6JPrwesGTYbhtVxKr0yZC3XQqtYNM
-	yLoK7vrTRqw4dimY/gFxqDuuen+HoHlJnOBw==;
-Date: Mon, 28 Sep 2026 15:56:18 +0100
-From: Bradley Morgan <brads@mainlining.org>
-To: Gary Guo <gary@garyguo.net>, Boqun Feng <boqun@kernel.org>
-CC: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- "Paul E . McKenney" <paulmck@kernel.org>, linux-kernel@vger.kernel.org,
- rcu@vger.kernel.org, lkmm@lists.linux.dev
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_hazptr_4/4=5D_hazptr=3A_Introduce_=22try?=
- =?US-ASCII?Q?_acquire=22_fast_path=2C_fallback_to_overflow_list?=
-In-Reply-To: <DLQX09XGAHDL.1LSFQH13SU7XR@garyguo.net>
-References: <20260927155134.4740-1-mathieu.desnoyers@efficios.com> <20260927155134.4740-5-mathieu.desnoyers@efficios.com> <arlHFVT5EzcX4d1-@MacBook-0RXW5> <5c78c338-1be6-456b-b963-bcfc62748aab@efficios.com> <DLQGJZK4LIAO.3TAY3HZ6PR76Z@garyguo.net> <arovltfvFzv2FFjO@MacBook-0RXW5> <DLQX09XGAHDL.1LSFQH13SU7XR@garyguo.net>
-Message-ID: <0F2DDE5F-DFA6-41FD-98A2-3B64DC2961CB@mainlining.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmAmvovt"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E457E1F000FF;
+	Mon, 28 Sep 2026 15:17:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790608651;
+	bh=bazDgST6Pt6E2LsRD74JROMaFIS21Sj5P+1074D68A8=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date;
+	b=JmAmvovtrpFq0t+2g8XEldaaplldzoQDGQLwcK/lEkLEYagPT15fXVcKBuFCMCRO0
+	 1yOyHU4L5rN6uJ0GSl7MHy4o7JE9yMEj27BgFuIndJJQZBU6bFViWuJPUqrUPTG8iV
+	 PuaGLM7KUMC92psVXQ30d9DnSisi3L2St25Elj90czRRY4XeQwQDwPCY8tQu4wUwL7
+	 /NYowiG9rj5Sq2BxTFFWOAHGnve7YHzZwswkicLmB1mGHT9c8TcdtA4dJDrvbuYnt8
+	 ZbMrd6Nd+TZZw+wwSYZoESNTHK+cvGEs3KnNTj3SFLtZVOO2Qj9+FK87jNPuECp7SZ
+	 JDMLYmonCC3jQ==
+Content-Type: multipart/mixed; boundary="===============9154150229869040598=="
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8bit
+Message-Id: <ac5eda3b03141b04642ec2196f06800c2b840d0dd9919df6a232a9c6e1575c89@mail.kernel.org>
+In-Reply-To: <179060576723.372125.8212099501235098804.stgit@devnote2>
+References: <179060576723.372125.8212099501235098804.stgit@devnote2>
+Subject: Re: [RFC PATCH 1/3] rcu/tasks: Export call_rcu_tasks_rude()
+From: bot+bpf-ci@kernel.org
+To: mhiramat@kernel.org,paulmck@kernel.org,frederic@kernel.org,neeraj.upadhyay@kernel.org,joelagnelf@nvidia.com,josh@joshtriplett.org,boqun@kernel.org,urezki@gmail.com,tgraf@suug.ch,herbert@gondor.apana.org.au,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,eddyz87@gmail.com,memxor@gmail.com,rostedt@goodmis.org,mhiramat@kernel.org,akpm@linux-foundation.org
+Cc: mathieu.desnoyers@efficios.com,jiangshanlai@gmail.com,qiang.zhang@linux.dev,john.fastabend@gmail.com,martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,jolsa@kernel.org,emil@etsalapatis.com,ihor.solodrai@linux.dev,rcu@vger.kernel.org,linux-kernel@vger.kernel.org,linux-crypto@vger.kernel.org,bpf@vger.kernel.org,linux-trace-kernel@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,mason@kernel.org,ihor.solodrai@linux.dev
+Date: Mon, 28 Sep 2026 15:17:29 +0000 (UTC)
 
-On 28 September 2026 12:32:34 BST, Gary Guo <gary@garyguo.net> wrote:
->On Mon Sep 28, 2026 at 10:12 AM BST, Boqun Feng wrote:
->> On Sun, Sep 27, 2026 at 11:39:00PM +0100, Gary Guo wrote:
->>> On Sun Sep 27, 2026 at 6:15 PM BST, Mathieu Desnoyers wrote:
->>> > On 2026-09-27 12:40, Boqun Feng wrote:
->>> >
->>> >> I want to point out this is not true for the lockdep use case,
->because
->>> >> the we need to protect a hash list deletion there, and we use the
->>> >> address of the hash bucket there. It's proven fine in practice
->because
->>> >> the readers are rare (we only call the reader is_dynamic_key() in
->>> >> register_lock_class(), that is every time you have a new lock class
->to
->>> >> register).
->>> >> 
->>> >> Maybe what we want to say here is that "if the users guarantee no
->steady
->>> >> flow of the same hazard pointer value, we guarantee forward
->progress".
->>> >> Thoughts?
->>> >
->>> > AFAIU, your approach to protect lockdep linked lists is to use the
->>> > address of the hash bucket to protect the traversal. As this address
->is 
->>> > invariant (global array item address), that address should be fine
->>> > to fulfill hazptr requirements, but it has downsides: rather than
->>> > protecting the specific nodes being retired, the whole hash chain is
->>> > protected. This means that, as you point out, many readers retiring
->>> > nodes from a given bucket (except the first node) could end up
->holding a
->>> > continuous stream of hazptr for a given hazptr value, preventing
->>> > progress of hazptr synchronize.
->>> >
->>> > It's also coarser: per-bucket rather than per-node.
->>> >
->>> > Am I missing something here ?
->>> >
->>> > One honest question: is this pattern something we expect to
->>> > see often ? If so, then we may want to introduce a notion of
->>> > hazptr protection "period" flip (similar to some RCU
->implementations),
->>> > where we tag the low bit of the slot pointer (0 vs 1), and alternate
->>> > between the two periods in synchronize. This would prevent a
->steady-flow
->>> > of same-value readers from preventing synchronize forward progress.
->>> 
->>> Slightly off topic, but I have a use-case in mind (in case you're not
->already
->>> aware) where the address is fixed like the lockdep class, but it does
->not suffer
->>> the forward progress guarantee.
->>> 
->>> I have been wanting to use hazptr for revocable for quite a while (I
->think I
->>> chatted with Boqun about this last LPC). For the revocable use case,
->the
->>> protected pointer is fixed, however there is an additional boolean flag
->to
->>> determine if the resource been revoked or not.
->>> 
->>> Something like this:
->>> 
->>>     void *revocable_try_access(struct revocable *rev) {
->>>         struct hazptr_ctx ctx = {};
->>>         if (READ_ONCE(rev->revoked))
->>>             return NULL;
->>>         // note the & cancels out with the * in acquire, so the address
->is fixed.
->>>         hazptr_acquire(&ctx, &rev);
->>>         if (READ_ONCE(rev->revoked))
->>>             return NULL;
->>>         return rev->res;
->>>     }
->>> 
->>>     void revocable_revoke(struct revocable *rev) {
->>>         WRITE_ONCE(rev->revoked, true);
->>>         hazptr_synchronize(&rev);
->>>     }
->>> 
->>> So while the address is fixed, we have a different field to do the
->unpublishing
->>> part.
->>> 
->>> For some context, the current Rust revocable implementation uses RCU,
->but this
->>> is limiting the case where it can be used. The current C revocable
->series in
->>> https://lore.kernel.org/all/20260912123529.7951-1-tzungbi@kernel.org/
->uses SRCU.
->>> 
->>> I think this use case is a good one for hazptr, in fact, I have
->encouraged Alvin
->>> Sun to try it out and you can see an implementation (Rust) in here:
->>>
->https://lore.kernel.org/rust-for-linux/20260326-b4-tyr-debugfs-v1-6-074badd18716@linux.dev/
->>> Although, over the course of the year, we have been reducing the amount
->of
->>> revocable usage and shifting to represent things with lifetime..
->>> 
->>
->> Paul asked me for the Rust usage a few days ago, and since we moved to
->> a lifetime based approach [1], which is better IMO, I don't think
->> switching to hazptr will should observable difference here, especially
->> for a real workload improvement. It's still worth trying to see how
->> hazptr in Rust would work for this, but it's less a sufficient condition
->> to merge hazptr from my understanding. Of course I could be wrong.
->>
->> [1]:
->https://lore.kernel.org/rust-for-linux/20260517000149.3226762-1-dakr@kernel.org/
+--===============9154150229869040598==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 44c07a66edff..dca61b52dc8c 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -198,7 +198,11 @@ void rcu_tasks_torture_stats_print(char *tt, char *tf);
 >
->What we get rid of is to use `Revocable` (or `DevRes`) to protect
->resources
->where we _know_ that the resource is alive (for example, in device private
->data,
->because it's teared down by driver-core on unbind).
+>  # ifdef CONFIG_TASKS_RUDE_RCU
+>  void synchronize_rcu_tasks_rude(void);
+> +void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
+>  void rcu_tasks_rude_torture_stats_print(char *tt, char *tf);
+> +# else
+> +# define call_rcu_tasks_rude call_rcu
+> +# define synchronize_rcu_tasks_rude synchronize_rcu
+>  # endif
 >
->However, there are cases where we can still have the `Revocable` pattern,
->for
->example when a class device is exposed to userspace and the bus device is
->unbinding. This is a pretty recurring pattern too, and cannot be handled
->via
->lifetime alone. This is what motivates the C revocable series.
->
->Best,
->Gary
->
-Would you like me to try and draft a hazptr rust file? I mean, I'm not a
-expert at it, but I'll throw my hat into the ring 
---- Thanks!
-"I'm not a very positive person" - Linus torvalds
+>  #define rcu_note_voluntary_context_switch(t) rcu_tasks_qs(t, false)
+
+[ ... ]
+
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 627295396cd9..f0b524d5f3f5 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+
+[ ... ]
+
+> @@ -1376,14 +1376,12 @@ DEFINE_RCU_TASKS(rcu_tasks_rude, rcu_tasks_rude_wait_gp, call_rcu_tasks_rude,
+>   *
+>   * See the description of call_rcu() for more detailed information on
+>   * memory ordering guarantees.
+> - *
+> - * This is no longer exported, and is instead reserved for use by
+> - * synchronize_rcu_tasks_rude().
+>   */
+> -static void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func)
+> +void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func)
+>  {
+>  	call_rcu_tasks_generic(rhp, func, &rcu_tasks_rude);
+>  }
+> +EXPORT_SYMBOL_GPL(call_rcu_tasks_rude);
+
+Do call_rcu_tasks_rude() and synchronize_rcu_tasks_rude() actually provide
+the same grace period guarantee?
+
+On architectures that select ARCH_WANTS_NO_INSTR (x86, arm64, riscv, s390,
+loongarch), synchronize_rcu_tasks_rude() returns without waiting at all
+unless CONFIG_FORCE_TASKS_RUDE_RCU is set:
+
+kernel/rcu/tasks.h:synchronize_rcu_tasks_rude() {
+	if (!IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR) ||
+	    IS_ENABLED(CONFIG_FORCE_TASKS_RUDE_RCU))
+		synchronize_rcu_tasks_generic(&rcu_tasks_rude);
+}
+
+That option depends on RCU_EXPERT and defaults to n.
+
+But call_rcu_tasks_rude() never takes that shortcut. Every callback goes
+through this path:
+
+call_rcu_tasks_rude()
+  -> call_rcu_tasks_generic()
+    -> rcu_tasks_one_gp()
+      -> rcu_tasks_rude_wait_gp()
+        -> schedule_on_each_cpu()
+
+which always waits.
+
+The rest of the series relies on these two functions being equivalent.
+Commit f0b3c7fc5f82 ("fprobe: Switch fprobe and BPF kprobe-multi to
+Tasks-Rude RCU") replaces synchronize_rcu() with
+synchronize_rcu_tasks_rude() in unregister_fprobe() and in the error path
+of register_fprobe_ips().
+
+On a default x86 or arm64 build (FPROBE selects FUNCTION_GRAPH_TRACER,
+which depends on FUNCTION_TRACER, which selects TASKS_RUDE_RCU),
+unregister_fprobe() then returns without waiting for handlers that are
+still running. Example path:
+
+trace_fprobe_release()
+  -> unregister_trace_fprobe()
+    -> __unregister_trace_fprobe()
+      -> unregister_fprobe(&tf->fp)
+        -> unregister_fprobe_async() + synchronize_rcu_tasks_rude() [no-op]
+          -> free_trace_fprobe(tf)
+            -> kfree(tf)
+
+Meanwhile another CPU can be inside fprobe_ftrace_entry() or
+fprobe_return(), holding fp from READ_ONCE(node->fp) or from the shadow
+stack, and calling fp->entry_handler / fp->exit_handler, which uses
+container_of() to reach the freed trace_fprobe. The same thing happens when
+the samples/fprobe module unloads after unregister_fprobe().
+
+Before the series, synchronize_rcu() waited for these preempt-disabled
+sections, because consolidated RCU waits for preempt-disabled regions where
+RCU is watching.
+
+Other points:
+
+(1) The commit message says callers "cannot safely wait on
+    synchronize_rcu_tasks_rude()" and need an async variant. On these
+    architectures that wait is a no-op, so the premise is wrong, and the
+    synchronize_rcu_tasks_rude() kerneldoc ("Control will return to the
+    caller some time after a rude rcu-tasks grace period has elapsed") does
+    not match its implementation.
+
+(2) Every grace period needed by a call_rcu_tasks_rude() callback now
+    queues work on and context-switches every online CPU, including idle
+    and nohz_full CPUs. For the synchronous API that cost was deliberately
+    removed on these architectures. Once the series moves fprobe/kprobe-multi
+    teardown and rhashtable resizing onto this API, the cost is paid on
+    every teardown and resize.
+
+(3) The removed comment ("This is no longer exported, and is instead
+    reserved for use by synchronize_rcu_tasks_rude()") recorded a
+    deliberate decision to retire the async Rude API. The changelog does
+    not explain why that decision is being reversed.
+
+Options include making call_rcu_tasks_rude() match
+synchronize_rcu_tasks_rude(), for example falling back to call_rcu() under
+the same ARCH_WANTS_NO_INSTR condition. Alternatively the series could keep
+using call_rcu()/synchronize_rcu(): these already cover preempt-disabled
+readers on noinstr architectures, and rcu_read_lock_sched_notrace() can
+replace rcu_read_lock() in the handlers.
+
+
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/36438713281
+--===============9154150229869040598==--
