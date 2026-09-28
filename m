@@ -1,47 +1,68 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91FB0366575;
-	Mon, 28 Sep 2026 16:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D764EDCA1;
+	Mon, 28 Sep 2026 16:25:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790611812; cv=none; b=iY5o0Kc0Y2psCyw0iKNh9MTdMxuLosRvt1noSR+ansWr9k0cdCFJPPY46SYx4d0jzBGBd5Z/jvmZDcro6Aroakb26a5HrApqqY7uE7axKAc2iVET5+MIjnFrVecDhp2+/cKrOiTXJ1yK7+QIzGqyjssSsSmExwZmGCDsQ3asvKE=
+	t=1790612705; cv=none; b=UnejwnnQnjl7mLCWUBn+mn4X2ZHzQXaOtw9wuCbJ1r2i/34W3zcUyT1AET8tkmFsgVGz8Wen0P4Myl8sIrFfi9QmOktKmjSozlxM5xNwe23KuALUnAqQOashNfRalwz/QwleAwb458Kb9X4I5hDNcXmfDKI2yziZ/3vkWFiS2e4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790611812; c=relaxed/simple;
-	bh=olNMz5YZQDlY1bi55VVy7KXyye4u3+GKfiXGVCkelC4=;
+	s=arc-20240116; t=1790612705; c=relaxed/simple;
+	bh=ksO5vdNwiO16/3z2z3UhStET95CFAPW2S0pDFRnRBbg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fGrr92k4o8GgOJKnoBdKB08OKn7sCRNqH4vL93jHxMTg158nlKixG+DpI92OgVPmb8n89XzQH1sDU01gptkCEINACalC0+hcx3MZafvFDIoh5xL7BckcQ5Diafckowz0NIz4IKlUmI5U4gRruHNzFtDSHEDXegoqIsRrYi4XkN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ICso0gr+; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=KLgCVhllTOJofaEznwTmINLkSpxX9Cc9FZ9l5u1J7gtObESf+ACekMelW6w876qKJXJN1yW1MKr7pgfKOSbL/vq43s06z4ksWK/8wxCaVgVM9T/hfh+7kdszYWHI3bZqO87KIVWpESbTFiweO9tU+qreSeTzDOU+7P9XueXKir8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f5CHnQyN; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ICso0gr+"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 285321F000FF;
-	Mon, 28 Sep 2026 16:10:11 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f5CHnQyN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FBCE1F00893;
+	Mon, 28 Sep 2026 16:25:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790611811;
-	bh=39jJMoh2t7NHIz08n8lMVjXlTS/HZlmaisj6W0jHknw=;
+	s=k20260515; t=1790612702;
+	bh=9HcBleETp0MDSzH0J4NabctHRFmmeu+mI+U5rmWUvFA=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=ICso0gr+BVEr54WZEqW/7K+E5OkfbRgp4i22aHPIoyftRw+URJb5lWscZabIsH5CV
-	 tGxNVK9LgA+MWq/ZH6A0hxaeB2572AP2uVCBNNsNkUCml+TWwaxZHMHK8PYO7kK3P8
-	 d7n8gEw14cCge6LrkPZ5KDuVN5XRhfRGFHeEqpgbIp/5WEIolBflftwFX9FJ0ePtW1
-	 DRVgNCCQqWmFKtomDH8BfuEJmOrsph/Xposbt0K3Ld7gudxlKJk8RVY9APOrSDZvNz
-	 1Z3awJdITNWJ/xFKkSUgp4ElCIbYfFtGyAaY7PJm/XWtpUbseoV+rYxw6NokTcNU/D
-	 mmYFJ1tYkmrJQ==
+	b=f5CHnQyNP8sbdymYVvvJ9mO57B5WXyyU7yslASru9n2q+0vhE2xzbbjqkfQweUz1Q
+	 rCyXYdGwBGU26O23WrCfbVOEIjPaHKW0HqXX4ehERrLvAJ9ynw6o/TcuLCytNJCh7d
+	 01z70s5XXw8Ij2U7iNQkOSMlLz40Tz9vJQK3a7drsu911nzGgJp5+r6sqSjjv2iaRH
+	 gLb+dox2ZgcSTpBI0EpUQn/fJWEeLydhYxb7dNXlId/Y264tOMeqR8rGlR44yJmpUd
+	 av7ME15bdqEvO0x8VfRQK4lifCv/vDRXRI4MVlovijLvyhyxvDJNwaLfy+/WEEZ+ek
+	 cdkBhpsJaVu/g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C7551CE0832; Mon, 28 Sep 2026 09:10:10 -0700 (PDT)
-Date: Mon, 28 Sep 2026 09:10:10 -0700
+	id 1396BCE0832; Mon, 28 Sep 2026 09:25:02 -0700 (PDT)
+Date: Mon, 28 Sep 2026 09:25:02 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
+Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Thomas Graf <tgraf@suug.ch>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] fprobe: Protect fprobe_return() with guard(rcu)()
-Message-ID: <1c2a58be-0c8d-45b1-a803-85480e976e11@paulmck-laptop>
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Emil Tsalapatis <emil@etsalapatis.com>,
+	Ihor Solodrai <ihor.solodrai@linux.dev>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Chris Mason <clm@meta.com>
+Subject: Re: [RFC PATCH 0/3] fprobe, rcu/tasks, rhashtable: Switch fprobe and
+ BPF kprobe-multi to Tasks-Rude RCU
+Message-ID: <f593867e-dcef-4f68-b609-a253f489f7b8@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <179055575009.241711.6358052647499787191.stgit@devnote2>
- <179055575973.241711.6618845269004184577.stgit@devnote2>
+References: <179060575297.372125.10581329083761385407.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -50,66 +71,111 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <179055575973.241711.6618845269004184577.stgit@devnote2>
+In-Reply-To: <179060575297.372125.10581329083761385407.stgit@devnote2>
 
-On Mon, Sep 28, 2026 at 09:35:59AM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Mon, Sep 28, 2026 at 11:29:13PM +0900, Masami Hiramatsu (Google) wrote:
+> Hi,
 > 
-> In fprobe_return(), the shadow-stack iteration and exit_handler
-> invocations were protected by preempt_disable_notrace().
-> However, unregister_fprobe() and unregister_fprobe_async() (used
-> by BPF kprobe-multi) rely on standard RCU grace periods (synchronize_rcu()
-> and call_rcu()) to wait until the fprobe is no longer in use before
-> freeing it.
+> Here is an RFC patch series which removes standard RCU read lock
+> (guard(rcu) and rcu_read_lock()) from fprobe callback paths
+> by switching fprobe and BPF multi-kprobe to Tasks-Rude RCU.
 > 
-> In preemptible kernels (CONFIG_PREEMPT_RCU=y), standard RCU grace
-> periods do not wait for pure preempt_disable_notrace() critical
-> sections. Consequently, an unregistered fprobe may be freed while
-> a concurrent CPU executing fprobe_return() is still running
-> fp->exit_handler(), causing a use-after-free.
+> Motivation & Problem
+> ====================
+> 
+> Currently, fprobe entry and exit callbacks (fprobe_fgraph_entry,
+> fprobe_return, and fprobe_ftrace_entry) execute in the tracing hot
+> path where preemption is disabled.
+> 
+> However, fprobe was forced to wrap hash lookups with guard(rcu)() and
+> rcu_read_lock() because:
+> 
+> - rhashtable defers bucket table deallocation using standard RCU
+> - unregister_fprobe() and BPF waited for a standard RCU grace period
+> 
+> Taking standard RCU read locks in the tracing fast path introduces
+> several drawbacks:
+> 
+> 1. Unnecessary Runtime Overhead:
+>    Every probe hit manipulates current->rcu_read_lock_nesting with
+>    memory barriers, and rcu_read_unlock() adds conditional branches
+>    to check for special quiescent processing.
+>    On debug kernels with CONFIG_PROVE_RCU=y or CONFIG_LOCKDEP=y,
+>    this additionally acquires and releases lockdep maps on every hit,
+>    introducing severe lockdep hashing overhead and tracer recursion risks.
+> 
+> 2. Fragile Dependency on rcu_is_watching():
+>    Standard RCU treats idle CPUs (and user-space on nohz_full CPUs) as
+>    Extended Quiescent States (EQS). If a function is traced while
+>    rcu_is_watching() is false, standard RCU is blind to the read-side
+>    critical section. In such contexts, synchronize_rcu() does not wait
+>    for the reader (risking Use-After-Free), and lockdep emits an
+>    "RCU-illegal: rcu_read_lock() used while not watching!" warning.
+>    To avoid this, ftrace callbacks normally require FTRACE_OPS_FL_RCU,
+>    adding extra trampoline check overhead.
+> 
+> 3. Asymmetric Synchronization with fprobe_return():
+>    fprobe_return() executes under preempt_disable_notrace() without
+>    holding rcu_read_lock(). Prior to this series, unregister_fprobe()
+>    only waited on synchronize_rcu(), which does NOT wait for pure
+>    preempt-disabled sections, leaving a potential Use-After-Free window
+>    during probe unregistration.
+> 
+> I've tried to fix the last UAF with simply introducing guard(rcu)()[1]
+> but Sashiko found the 2nd problem [2]. So I decided to implement this
+> series.
 
-Actually, standard RCU grace periods wait for preemption-disabled regions
-of code regardless of kernel configuration.  So if the original code
-below was broken, that indicates a bug in RCU.
+Unless I am missing something subtle, Sashiko needs to be taught a
+little bit more about RCU.  Preemption-disabled regions of code really
+are valid RCU readers.  If you have a reproducer showing that this is
+not the case in some situation, that would be a bug in RCU.
 
-So do you have a reproducer for this?
+Adding Roman Gushchin and Chris Mason on CC for their thoughts.
 
 							Thanx, Paul
 
-> To resolve this, protect fprobe_return() with guard(rcu)() matching
-> fprobe_fgraph_entry(). This ensures both synchronous unregister_fprobe()
-> and asynchronous unregister_fprobe_async() safely wait for in-flight
-> exit_handlers to complete via standard RCU grace periods.
+> [1] https://lore.kernel.org/all/179055575009.241711.6358052647499787191.stgit@devnote2/
+> [2] https://lore.kernel.org/all/20260928005114.9C9FC1F000FF@smtp.kernel.org/
 > 
-> Reported-by: Sashiko <sashiko-bot@kernel.org>
-> Closes: https://sashiko.dev/#/bug/linux-e46bcd68-4a56-4f19-a255-e3772980e5e3
-> Fixes: 657b594b2084 ("fprobe: Fix unregister_fprobe() to wait for RCU grace period")
-> Cc: stable@vger.kernel.org
-> Assisted-by: LLM
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Solution: Tasks-Rude RCU
+> ========================
+> 
+> Because fprobe callbacks already run strictly within preempt-disabled
+> contexts, we can transition fprobe and its deferred table reclamation
+> to Tasks-Rude RCU:
+> 
+> - Tasks-Rude RCU detects grace periods via schedule_on_each_cpu(),
+>   forcing a schedule on every online CPU. This guarantees that all
+>   preempt-disabled sections that began prior to the grace period have
+>   completed before memory is reclaimed.
+> - Unlike standard RCU, Tasks-Rude RCU does not rely on dyntick-idle /
+>   EQS tracking. It does NOT require rcu_is_watching() to be true and
+>   does not trigger lockdep warnings in pre-RCU/idle execution paths.
+> - Within fprobe, guard(rcu)() is replaced with guard(rcu_sched_notrace)(),
+>   reducing the lookup lock to pure, non-tracing preempt counter
+>   increments without lockdep or RCU state manipulation.
+> 
+> Feedback and suggestions from RCU, BPF, and tracing maintainers are welcome!
+> 
+> Thank you,
+> 
 > ---
->  kernel/trace/fprobe.c |    3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> base-commit: 5bfa9f1a9dcb6ecb607adbc1c0226605c972935b
 > 
-> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> index 9f2d98181779..c3e1580bc648 100644
-> --- a/kernel/trace/fprobe.c
-> +++ b/kernel/trace/fprobe.c
-> @@ -671,7 +671,7 @@ static void fprobe_return(struct ftrace_graph_ret *trace,
->  	size_words = SIZE_IN_LONG(size);
->  	ret_ip = ftrace_regs_get_instruction_pointer(fregs);
->  
-> -	preempt_disable_notrace();
-> +	guard(rcu)();
->  
->  	curr = 0;
->  	while (size_words > curr) {
-> @@ -687,7 +687,6 @@ static void fprobe_return(struct ftrace_graph_ret *trace,
->  		}
->  		curr += size;
->  	}
-> -	preempt_enable_notrace();
->  }
->  NOKPROBE_SYMBOL(fprobe_return);
->  
+> Masami Hiramatsu (Google) (3):
+>       rcu/tasks: Export call_rcu_tasks_rude()
+>       rhashtable: Add use_tasks_rude parameter to defer bucket table free
+>       fprobe: Switch fprobe and BPF kprobe-multi to Tasks-Rude RCU
 > 
+> 
+>  include/linux/rcupdate.h         |    6 +++
+>  include/linux/rhashtable-types.h |    2 +
+>  kernel/bpf/syscall.c             |    2 +
+>  kernel/rcu/tasks.h               |    8 ++---
+>  kernel/trace/fprobe.c            |   66 +++++++++++++++++++++-----------------
+>  lib/rhashtable.c                 |    5 ++-
+>  6 files changed, 54 insertions(+), 35 deletions(-)
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
