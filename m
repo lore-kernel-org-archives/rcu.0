@@ -1,75 +1,47 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5ED14E77FE;
-	Mon, 28 Sep 2026 15:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91FB0366575;
+	Mon, 28 Sep 2026 16:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790609537; cv=none; b=nt9pnjxT7Vxedztdeq0e75ns8N9xrVCIV+1i6zuIiR/ntRr9CCCBEyKLeyFRrlOBnFQqgqpChPBGyxDQ37lYbYcounslSuG5DPEbc9jkPrVoCXdsJl6Z8/4xu5pI6s49uTuxSKHy4AepK5MUM+lvDMvMKv/y1iGBS/GO4pgTfNM=
+	t=1790611812; cv=none; b=iY5o0Kc0Y2psCyw0iKNh9MTdMxuLosRvt1noSR+ansWr9k0cdCFJPPY46SYx4d0jzBGBd5Z/jvmZDcro6Aroakb26a5HrApqqY7uE7axKAc2iVET5+MIjnFrVecDhp2+/cKrOiTXJ1yK7+QIzGqyjssSsSmExwZmGCDsQ3asvKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790609537; c=relaxed/simple;
-	bh=ntpxkvkUTTw0VO100ZA1zeUxr46OPt10yDVvtgdqXfA=;
+	s=arc-20240116; t=1790611812; c=relaxed/simple;
+	bh=olNMz5YZQDlY1bi55VVy7KXyye4u3+GKfiXGVCkelC4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uhJSnQ1yJZapoHEUi6fiusaoEer1BGCcD5U4l4shFEh5kRZfs3LGOcPmqAhFYIR2dfY5rSE2hrkqhc01fCdlzKFqeDDoOjXB1nKGNd2c4+AtkJdso+Bdjbs6LhYDQKt5ykKG5hA5ucd+R+wf30hNC7ZBQL+evGUSLAJBQeEiZio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XTZvBkIS; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=fGrr92k4o8GgOJKnoBdKB08OKn7sCRNqH4vL93jHxMTg158nlKixG+DpI92OgVPmb8n89XzQH1sDU01gptkCEINACalC0+hcx3MZafvFDIoh5xL7BckcQ5Diafckowz0NIz4IKlUmI5U4gRruHNzFtDSHEDXegoqIsRrYi4XkN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ICso0gr+; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XTZvBkIS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6F631F000FF;
-	Mon, 28 Sep 2026 15:32:14 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ICso0gr+"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 285321F000FF;
+	Mon, 28 Sep 2026 16:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790609535;
-	bh=RZ9WA2ykHvGEyuJHbovdsGi/6qSj45jtXA79JrlEcCg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=XTZvBkISzr474Zrpuc1T2S4Ee8SyZkMMbisMtPO+BYsJSepLkD0Ws6J4iZ5rLcWum
-	 J+yluaFVX3CFencgd9vUdPCfLHFODJKr7sPLW/0rgdpS/9tlquEGZoJPPGd96nn4qV
-	 aswPRYVOdeBbsX1+AajnQKHaCkZL4ECuvjXMLoO7CBj3SV+LAf+9u/wqdF7hQ80/OU
-	 w+roD5V7V7MJpI/IDfHufqIVDdByO/U0hFWn+SmODw/dzeU4/1KvZEoM9JyBXBxIWX
-	 YvOmVvcBXVVUqKRIlaoXskpRULOQGU1hEzOTP4ZtOsIflzCUxfK3INliI1MYw2GHd7
-	 Oy3028w/1pBKg==
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfauth.phl.internal (Postfix) with ESMTP id A57C2F40068;
-	Mon, 28 Sep 2026 11:32:13 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-03.internal (MEProxy); Mon, 28 Sep 2026 11:32:13 -0400
-X-ME-Sender: <xms:fYi6akmsatnwTTU1ehgcboBBVGYR8XCs09lRyFUB6fGnJPLB97C5AA>
-    <xme:fYi6av3uOGsnwrwxy1whc8gqnqYE8ocjsXTOEvr-3TLpOsWOkLLDWQUl5b-yStJ8v
-    rG73um7gCZqZoB9v6snNHVVL-vGBiqKsYhA_3KjESWUTurHpMfiWJM>
-X-ME-Received: <xmr:fYi6ak1g9AdaPJ-xEtQhzi1sp_6Ft2i648EKOMPMFWpz-t1aaAWentqrDf18>
-X-ME-Proxy-Cause: dmFkZTFv+luSSQR1rVkkY244nY3PGCdvQ4HGsOm4gQyyjHU6LnVfxNPuMl9U+fnlQzvYkD
-    B4s2ZrJsH+VJ9jBortm/ytfrL66qBDzSes0sgLOcgPz7HzOUyergtAPYur0rNAIQb2wLxl
-    LvayQYf/e+0Nxox3ythtkc2rSnpbzaqU8sIxJiU8IwGseoHHLPF2DaNSOrhqq0jkpcK/lT
-    RbLxr6EpZHBnE+lUbUa0A7gkJEetinA5jcALDVCqd3uVesAXWhiBYs0N9enpRn89++r5Ug
-    eofTicdHomr127teag8qiWQ/033tJnApSEOuMmouNkWYI2ZQ/uRKa59dwqsaWCOZ54qeKW
-    neQ7Bjm0sbgDMdJNX3s4GcDkAsgQ7iTjbq7UDx7EKyxlZPC1vYO1QlgpLU4V3MOu9mwBiX
-    oBQ4MHsXm6otMwLzVLrT3VSmrjthRPwQqHL4cIrvUNaSxY0EshF+Au2Kb8SC6cJIvvOF22
-    9UZVy8Qf8yQf8dKdtTcYMA3fAiJQbR3z8byluocoGKQCxSYPFpXWOOnzcMLWV+NdF0YLUs
-    4rhPDORQIPa0LT68ewGZYnem1QaObScGUNUj0n/dUjs5VwoqMqut12/rcycwMplBmsqnN0
-    J02hu1L+nNaA7hs4c6E3iSzYfXbuIibhXYPr427T83jm4DzPbeJymStu17ng
-X-ME-Proxy: <xmx:fYi6ahoPQrGMju6JGw_sFvwM6DUUWL7jX5h9pXVSauwh1QjekWMl5A>
-    <xmx:fYi6agifx9Fxz5rWnrbIu2EzuK0oCV28ZvpPNfvR3p5gPL_dtDZj-A>
-    <xmx:fYi6at-bzEN1ZcxUM1_GBJyJzQwLoLmHDKUlN_5GsPOr1I-BSTtZTw>
-    <xmx:fYi6asXnPEetGWabHVQ2r-qPtdev0tjNgpxX4VfZm7zIam7sDCBExg>
-    <xmx:fYi6ahBjZ57kHnC3FbinkI440bPFxkJwazUnopH90j8myaUXYPIs0Q0o>
-Feedback-ID: i8dbe485b:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 28 Sep 2026 11:32:12 -0400 (EDT)
-Date: Mon, 28 Sep 2026 17:32:11 +0200
-From: Boqun Feng <boqun@kernel.org>
-To: Gary Guo <gary@garyguo.net>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	linux-kernel@vger.kernel.org, Bradley Morgan <brads@mainlining.org>,
-	rcu@vger.kernel.org, lkmm@lists.linux.dev
-Subject: Re: [PATCH hazptr 4/4] hazptr: Introduce "try acquire" fast path,
- fallback to overflow list
-Message-ID: <arqIe2d8Koj857Kt@MacBook-0RXW5>
-References: <20260927155134.4740-1-mathieu.desnoyers@efficios.com>
- <20260927155134.4740-5-mathieu.desnoyers@efficios.com>
- <arlHFVT5EzcX4d1-@MacBook-0RXW5>
- <5c78c338-1be6-456b-b963-bcfc62748aab@efficios.com>
- <DLQGJZK4LIAO.3TAY3HZ6PR76Z@garyguo.net>
- <arovltfvFzv2FFjO@MacBook-0RXW5>
- <DLQX09XGAHDL.1LSFQH13SU7XR@garyguo.net>
+	s=k20260515; t=1790611811;
+	bh=39jJMoh2t7NHIz08n8lMVjXlTS/HZlmaisj6W0jHknw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=ICso0gr+BVEr54WZEqW/7K+E5OkfbRgp4i22aHPIoyftRw+URJb5lWscZabIsH5CV
+	 tGxNVK9LgA+MWq/ZH6A0hxaeB2572AP2uVCBNNsNkUCml+TWwaxZHMHK8PYO7kK3P8
+	 d7n8gEw14cCge6LrkPZ5KDuVN5XRhfRGFHeEqpgbIp/5WEIolBflftwFX9FJ0ePtW1
+	 DRVgNCCQqWmFKtomDH8BfuEJmOrsph/Xposbt0K3Ld7gudxlKJk8RVY9APOrSDZvNz
+	 1Z3awJdITNWJ/xFKkSUgp4ElCIbYfFtGyAaY7PJm/XWtpUbseoV+rYxw6NokTcNU/D
+	 mmYFJ1tYkmrJQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C7551CE0832; Mon, 28 Sep 2026 09:10:10 -0700 (PDT)
+Date: Mon, 28 Sep 2026 09:10:10 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] fprobe: Protect fprobe_return() with guard(rcu)()
+Message-ID: <1c2a58be-0c8d-45b1-a803-85480e976e11@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <179055575009.241711.6358052647499787191.stgit@devnote2>
+ <179055575973.241711.6618845269004184577.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -78,48 +50,66 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DLQX09XGAHDL.1LSFQH13SU7XR@garyguo.net>
+In-Reply-To: <179055575973.241711.6618845269004184577.stgit@devnote2>
 
-On Mon, Sep 28, 2026 at 12:32:34PM +0100, Gary Guo wrote:
-[...]
-> >> For some context, the current Rust revocable implementation uses RCU, but this
-> >> is limiting the case where it can be used. The current C revocable series in
-> >> https://lore.kernel.org/all/20260912123529.7951-1-tzungbi@kernel.org/ uses SRCU.
-> >> 
-> >> I think this use case is a good one for hazptr, in fact, I have encouraged Alvin
-> >> Sun to try it out and you can see an implementation (Rust) in here:
-> >> https://lore.kernel.org/rust-for-linux/20260326-b4-tyr-debugfs-v1-6-074badd18716@linux.dev/
-> >> Although, over the course of the year, we have been reducing the amount of
-> >> revocable usage and shifting to represent things with lifetime..
-> >> 
-> >
-> > Paul asked me for the Rust usage a few days ago, and since we moved to
-> > a lifetime based approach [1], which is better IMO, I don't think
-> > switching to hazptr will should observable difference here, especially
-> > for a real workload improvement. It's still worth trying to see how
-> > hazptr in Rust would work for this, but it's less a sufficient condition
-> > to merge hazptr from my understanding. Of course I could be wrong.
-> >
-> > [1]: https://lore.kernel.org/rust-for-linux/20260517000149.3226762-1-dakr@kernel.org/
+On Mon, Sep 28, 2026 at 09:35:59AM +0900, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> What we get rid of is to use `Revocable` (or `DevRes`) to protect resources
-> where we _know_ that the resource is alive (for example, in device private data,
-> because it's teared down by driver-core on unbind).
+> In fprobe_return(), the shadow-stack iteration and exit_handler
+> invocations were protected by preempt_disable_notrace().
+> However, unregister_fprobe() and unregister_fprobe_async() (used
+> by BPF kprobe-multi) rely on standard RCU grace periods (synchronize_rcu()
+> and call_rcu()) to wait until the fprobe is no longer in use before
+> freeing it.
 > 
-> However, there are cases where we can still have the `Revocable` pattern, for
-> example when a class device is exposed to userspace and the bus device is
-> unbinding. This is a pretty recurring pattern too, and cannot be handled via
-> lifetime alone. This is what motivates the C revocable series.
+> In preemptible kernels (CONFIG_PREEMPT_RCU=y), standard RCU grace
+> periods do not wait for pure preempt_disable_notrace() critical
+> sections. Consequently, an unregistered fprobe may be freed while
+> a concurrent CPU executing fprobe_return() is still running
+> fp->exit_handler(), causing a use-after-free.
+
+Actually, standard RCU grace periods wait for preemption-disabled regions
+of code regardless of kernel configuration.  So if the original code
+below was broken, that indicates a bug in RCU.
+
+So do you have a reproducer for this?
+
+							Thanx, Paul
+
+> To resolve this, protect fprobe_return() with guard(rcu)() matching
+> fprobe_fgraph_entry(). This ensures both synchronous unregister_fprobe()
+> and asynchronous unregister_fprobe_async() safely wait for in-flight
+> exit_handlers to complete via standard RCU grace periods.
 > 
-
-Not trying to discourage switching to hazptr in `Revocable`, but I think
-the only shortcoming of RCU there is "unable to sleep while referencing
-a `Revocable`", right? Certainly hazptr can help on that but so does
-SRCU. I'm unsure hazptr can show observable advantages against SRCU
-here. But I could be wrong.
-
-Regards,
-Boqun
-
-> Best,
-> Gary
+> Reported-by: Sashiko <sashiko-bot@kernel.org>
+> Closes: https://sashiko.dev/#/bug/linux-e46bcd68-4a56-4f19-a255-e3772980e5e3
+> Fixes: 657b594b2084 ("fprobe: Fix unregister_fprobe() to wait for RCU grace period")
+> Cc: stable@vger.kernel.org
+> Assisted-by: LLM
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  kernel/trace/fprobe.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index 9f2d98181779..c3e1580bc648 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -671,7 +671,7 @@ static void fprobe_return(struct ftrace_graph_ret *trace,
+>  	size_words = SIZE_IN_LONG(size);
+>  	ret_ip = ftrace_regs_get_instruction_pointer(fregs);
+>  
+> -	preempt_disable_notrace();
+> +	guard(rcu)();
+>  
+>  	curr = 0;
+>  	while (size_words > curr) {
+> @@ -687,7 +687,6 @@ static void fprobe_return(struct ftrace_graph_ret *trace,
+>  		}
+>  		curr += size;
+>  	}
+> -	preempt_enable_notrace();
+>  }
+>  NOKPROBE_SYMBOL(fprobe_return);
+>  
+> 
