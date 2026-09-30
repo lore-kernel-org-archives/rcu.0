@@ -1,52 +1,47 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39864F55B6;
-	Wed, 30 Sep 2026 16:53:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F405187DE;
+	Wed, 30 Sep 2026 16:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790787218; cv=none; b=lSAQtXJHOmGuG7wIQERWsxyDCz43Q1aqb/ital5QPmwaA9UaghbHfpX2nFFOcL7Q61SjRF5miqW3UWkslBZSpXkq7uhUFqVdta+jTwCfxmqG4XUE8abyGBrNloalVo1YzsPuXjWeZv67fWbwWqrq1Rxp3GBSdLFP9YIGNtg/+3c=
+	t=1790787351; cv=none; b=ZMy7uTMv4+6+V22FASfudsUp05cYmUKBbAyfDTYOg3+47HKbbwc/3mfc90vWFNBzJIMlD79PebFUrCRT31KbaTUVR64U7weMTqWAt26eNJ1rlZcXFsTeq/s3zUIdHrDF8RxcSa2sRKnFn29vP5u1+HBfe1gVczcU/AdJfutWmSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790787218; c=relaxed/simple;
-	bh=PXU4L/rhm7gTrQUiqwILtc2ZR5FLni97ze7G8bRA0k4=;
+	s=arc-20240116; t=1790787351; c=relaxed/simple;
+	bh=XpTP6/6qBRzPJ+YzxtRCV4YvNQy0L2llC9O3oYN1+Uo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rROvmGJtIKN9rP8g+i6GgzDUFwACvnbq2MPPNnziIJ/PBOgOcs6s1E93tiTdpcvcTFSOMVboRhhFGmUZin7kmCjVrf6ohNa4r48YAXfqOXi2jr5jpkJKNS11yOUvBc4z8uwNg0k2oDeBMjIq/B5CXymOpvqVIwBEEk1WfUrUNhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mXoyolM8; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=UlggdMv2IAQfmhkAD8zU+xJfxMorPV8XP9WGCnHfwQhHq2X9jvZYM8bbVHGdep7yDFWa0h6RYeaV19YDhOqfDHNMIYrXPMTugOKr5cTK7izxJG1EBNdOxpl/rYKOV3ctXXOlgRw6cQ/fAuktf92T9e/1nnPMuqgv9jbuheawC50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RT/kZFbN; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mXoyolM8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AACB1F00898;
-	Wed, 30 Sep 2026 16:53:37 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RT/kZFbN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA14C1F0089A;
+	Wed, 30 Sep 2026 16:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790787217;
-	bh=x8atLu14VZuHnVjacMM8nUMcUY8ko2513gAda/zTqsU=;
+	s=k20260515; t=1790787349;
+	bh=6kOQREggUPmUfErKbWpShQw/0dZzXXRX2f2tagdB6rs=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=mXoyolM8I0YXURclZsKkzWgM+19QI52Y/9Y9kzKpynw/CIB2iGYkqFWt2Cvi4VmO8
-	 0svbJ8csZsNn88qvbffyq/xOjYCTpiTWSPA+69jT67Ma1jhIb6JV+ogRYv/BEFOMk3
-	 3HtpFuoN2m0HaJjVccsIoBZHueUZM3Esue1hbRkw4q/y8C2dX4X7B5q+9Dtg8HAKPN
-	 Addo/FBZQqgqAeMmAusXwvdu7LFAHoOe1xlctNNLFtjB4Vlf9VShYwV0SNE8K7zL9V
-	 iDT05A+ANSv6cMq8GmzPNJ50XdQ9NDe3D+vob6FHN/+tt7cn+Mf6V4gFfZ2TPvALPa
-	 CC43Uqmkik3FQ==
+	b=RT/kZFbNnegr4ZFhIf9q1I1dqGA6Q17R+ijfl28Yse7IpY512zcMIxub9EfV36fZa
+	 GMCOHZWZL36WRbkiI0hOcoA6InIKaoguxBOeBa9gmQAW7JyoazCMxBcdCWnaiResgW
+	 pDzIfGPYEQBFIh+Pi0W/Vjx0miuk5w/JihiH4LwJr3oz/37MHKHnNhNO70dWy2HyFH
+	 8Br6ECJ+xIXovjxLwIP912zS3/VMkmks+XwZ/icigKDtaocyYqhDjXNkfrTgRcZrk8
+	 vJWjyreG2uPMaqSGSANNIBbA+O+taPtB1fx3qGDPX0pbl4ClKIIODpZBdJgO9JW0I6
+	 zRPF88ck9I9xQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D1D62CE097C; Wed, 30 Sep 2026 09:53:36 -0700 (PDT)
-Date: Wed, 30 Sep 2026 09:53:36 -0700
+	id 66A72CE097C; Wed, 30 Sep 2026 09:55:49 -0700 (PDT)
+Date: Wed, 30 Sep 2026 09:55:49 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Boqun Feng <boqun@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-kernel@vger.kernel.org, Bradley Morgan <brads@mainlining.org>,
-	Gary Guo <gary@garyguo.net>, rcu@vger.kernel.org,
-	lkmm@lists.linux.dev, Lian Wang <lianux.mm@gmail.com>,
-	Kunwu Chan <kunwu.chan@gmail.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Boqun Feng <boqun@kernel.org>, linux-kernel@vger.kernel.org,
+	Bradley Morgan <brads@mainlining.org>, Gary Guo <gary@garyguo.net>,
+	rcu@vger.kernel.org, lkmm@lists.linux.dev
 Subject: Re: [PATCH hazptr 4/4] hazptr: Introduce "try acquire" fast path,
  fallback to overflow list
-Message-ID: <739312fc-c60b-4e80-a30d-ffdd8ce2d380@paulmck-laptop>
+Message-ID: <254e4bf2-f632-4a95-8853-86c7cd0db8f1@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20260927155134.4740-1-mathieu.desnoyers@efficios.com>
  <20260927155134.4740-5-mathieu.desnoyers@efficios.com>
  <arlHFVT5EzcX4d1-@MacBook-0RXW5>
  <5c78c338-1be6-456b-b963-bcfc62748aab@efficios.com>
- <arlROwtdFs3YyUt_@MacBook-0RXW5>
- <e26f28e9-e83c-4b39-85f5-928a8097019f@efficios.com>
- <arlddI54CR7gNqCO@MacBook-0RXW5>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -55,154 +50,50 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <arlddI54CR7gNqCO@MacBook-0RXW5>
+In-Reply-To: <5c78c338-1be6-456b-b963-bcfc62748aab@efficios.com>
 
-On Sun, Sep 27, 2026 at 08:16:20PM +0200, Boqun Feng wrote:
-> On Sun, Sep 27, 2026 at 01:36:54PM -0400, Mathieu Desnoyers wrote:
-> > On 2026-09-27 13:24, Boqun Feng wrote:
-> > > On Sun, Sep 27, 2026 at 01:15:39PM -0400, Mathieu Desnoyers wrote:
-> > > [...]
-> > > > > > @@ -196,16 +197,13 @@ void hazptr_scan_cpu_slots_period(void *addr, void *scan_wildcard)
-> > > > > >    	for_each_possible_cpu(cpu) {
-> > > > > >    		/*
-> > > > > >    		 * Scan CPU slots.
-> > > > > > -		 * Forward progress against recurring wildcards is guaranteed
-> > > > > > -		 * by scanning for one wildcard while new elements use the
-> > > > > > -		 * other wildcard value (1UL vs 2UL).
-> > > > > >    		 * Forward progress against recurring single hazard pointer
-> > > > > >    		 * values is guaranteed by the fact that a hazard pointer
-> > > > > >    		 * is not reclaimed nor reused until the scan for that hazard
-> > > > > >    		 * pointer completes, which prevents a steady flow of readers
-> > > > > >    		 * to acquire that same hazard pointer value.
-> > > > > 
-> > > > > (Not a comment to this patch, but I think it's worth bringing up)
-> > > > > 
-> > > > > I want to point out this is not true for the lockdep use case, because
-> > > > > the we need to protect a hash list deletion there, and we use the
-> > > > > address of the hash bucket there. It's proven fine in practice because
-> > > > > the readers are rare (we only call the reader is_dynamic_key() in
-> > > > > register_lock_class(), that is every time you have a new lock class to
-> > > > > register).
-> > > > > 
-> > > > > Maybe what we want to say here is that "if the users guarantee no steady
-> > > > > flow of the same hazard pointer value, we guarantee forward progress".
-> > > > > Thoughts?
-> > > > 
-> > > > AFAIU, your approach to protect lockdep linked lists is to use the
-> > > > address of the hash bucket to protect the traversal. As this address is
-> > > > invariant (global array item address), that address should be fine
-> > > > to fulfill hazptr requirements, but it has downsides: rather than
-> > > > protecting the specific nodes being retired, the whole hash chain is
-> > > > protected. This means that, as you point out, many readers retiring
-> > > > nodes from a given bucket (except the first node) could end up holding a
-> > > > continuous stream of hazptr for a given hazptr value, preventing
-> > > > progress of hazptr synchronize.
-> > > > 
-> > > > It's also coarser: per-bucket rather than per-node.
-> > > > 
-> > > > Am I missing something here ?
-> > > > 
+On Sun, Sep 27, 2026 at 01:15:39PM -0400, Mathieu Desnoyers wrote:
+> On 2026-09-27 12:40, Boqun Feng wrote:
+> > On Sun, Sep 27, 2026 at 11:51:31AM -0400, Mathieu Desnoyers wrote:
+> > > Introduce a "try acquire" hazard pointer fast path, which performs an
+> > > early load of the address to store it into the hazard pointer slot, and
+> > > then re-loads that address after a barrier to check whether it has
+> > > changed meanwhile.
 > > > 
-> > > No, you got it right, but as I said, we can use it in lockdep since the
-> > > readers are relatively rare, so not an issue here.
-
-This sort of tradeoff is made in hazard-pointer use cases in other
-projects, with use of explicit counts of the incoming links to a given
-node being one such trick.  The explicit count counts the links, and
-hazard pointers counts the readers.  This approach usually ends up
-also restricting the order in which nodes can be removed.
-
-Just like SRCU partitions the readers coming from the RCU end.  ;-)
-
-> > > > One honest question: is this pattern something we expect to
-> > > > see often ? If so, then we may want to introduce a notion of
+> > > On comparison failure, rather than re-try, guarantee forward progress by
+> > > falling back to the __hazptr_acquire slow path on failure.
 > > > 
-> > > I honestly don't know. But in my opinion, we'd better focus on finding
-> > > more typical usage of hazptr (i.e. protecting actual object). So ...
+> > > The acquire slow path attempts a try-acquire for any available per-CPU
+> > > slot. If that fails, it chains the backup slot into the overflow list,
+> > > therefore guaranteeing forward progress for both hazard pointer
+> > > read-side and synchronize:
 > > > 
-> > > > hazptr protection "period" flip (similar to some RCU implementations),
-> > > > where we tag the low bit of the slot pointer (0 vs 1), and alternate
-> > > > between the two periods in synchronize. This would prevent a steady-flow
-> > > > of same-value readers from preventing synchronize forward progress.
-> > > > 
-> > > > Thoughts ?
-> > > > 
+> > > - Readers set the wildcard, and then proceed to set the more
+> > >    specific address to replace the wildcard.
 > > > 
-> > > ... I will say let's add it only if we have more users of this pattern.
+> > > - One synchronize alternates between two overflow list periods,
+> > >    scanning each one while readers are added to the other period,
+> > >    thus preventing a steady flow of readers from preventing
+> > >    synchronize forward progress.
+> > > 
+> > > With this change, the scan on per-CPU slots don't need to expect a
+> > > wildcard anymore, because none can be produced by readers. Wildcards are
+> > > only expected within overflow lists.
 > > > 
 > > 
-> > I am concerned about this because many uses of RCU in the Linux
-> > kernel protects linked list traversals. Turning a RCU-protected list
-> > traversal into a hazptr protected traversal is not as simple as
-> > acquiring each hazptr hand in hand.
+> > Ok, I was missing something, but I think it's better to call it out.
+> > Wildcards can only exist in the overflow lists when the context is not
+> > preemptible. In other words, there won't be a preempted readers blocking
+> > the synchronize_hazptr() with a wilcard in the overflow list.
 > 
-> I actually don't think converting RCU usage into hazptr would be a good
-> starting point for finding good hazptr usage. RCU readers are faster,
-> and a lot of existing RCU users do want the reader side to be as fast as
-> possible. So even though this is a problem, but I don't think that's an
-> urgent problem to resolve. Of course, if one can find a faster hazptr
-> reader implemenation, then it may be a different story.
+> Exactly ! Wildcard slots only exist during the short time-frame of the
+> preempt-off read-side code region (few instructions). And with this
+> patch, this does not even happen very often, because the fast path don't
+> rely on the wildcards.
 
-The usual hazard-pointers linked-list traversal includes a retry check
-at each node.  So yes, we should first be looking for hazard-pointer
-use cases where RCU doesn't have such a great advantage.  ;-)
-
-> > Your own use-case for lockdep is indeed a linked list traversal,
-> > and you need to use a work-around: protect the address of the
-> > hash bucket head.
-> 
-> So the lockdep usage is IMO a very special case, but it does show the
-> advantages of hazptr.
-> 
-> > I'm just wondering if this work-around will end up being the
-> > "blessed" way for protecting linked list traversals with hazptr,
-> > or whether we should consider alternatives ?
-> 
-> It depends on how many uses of the linked list traversals really care
-> about the reader side performance. I'm not sure we can easily find
-> another one like lockdep. Hence I think we should only add the
-> optimization when we find more of such a usage. Make sense?
-> 
-> Personally, I also want to see a refcount-like usage for hazptr, that'll
-> be very exciting for me :D
-
-Me too!  The easiest cases will be those having a try-acquire rather
-than an unconditional acquisition.
+One advantage of getting rid of the wildcards completely is that it
+brings out hazard-pointers resistance to blocking.  Even vCPU preemption
+would not do more than block reclamation of the nodes referenced by the
+preempted vCPU's current hazard pointers.
 
 							Thanx, Paul
-
-> Regards,
-> Boqun
-> 
-> > This ties into finding additional usage for hazptr, because linked
-> > lists are so prevalent in the kernel.
-> > 
-> > Thanks,
-> > 
-> > Mathieu
-> > 
-> > > Regards,
-> > > Boqun
-> > > 
-> > > > Thanks,
-> > > > 
-> > > > Mathieu
-> > > > 
-> > > > > 
-> > > > > The rest looks good to me.
-> > > > > 
-> > > > > Regards,
-> > > > > Boqun
-> > > > > 
-> > > > 
-> > > > 
-> > > > -- 
-> > > > Mathieu Desnoyers
-> > > > EfficiOS Inc.
-> > > > https://www.efficios.com
-> > 
-> > 
-> > -- 
-> > Mathieu Desnoyers
-> > EfficiOS Inc.
-> > https://www.efficios.com
