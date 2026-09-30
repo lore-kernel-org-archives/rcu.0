@@ -1,144 +1,117 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from fout-b3-smtp.messagingengine.com (fout-b3-smtp.messagingengine.com [202.12.124.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA3E233946;
-	Wed, 30 Sep 2026 00:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF0EF37E5CB;
+	Wed, 30 Sep 2026 07:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790729226; cv=none; b=vBGwJ7QMMshIcOhcPaB9unvvZGsOPVfaHwSd1g0OZdkeFVgNWz2ptKlee9BpBUYQl67OwVYKXRIzKALUyWTPHwtuT2lhhhthKic6KxIbWy+/CJG7bsdbOiLunfpbZXp1MfYOSt5n+fo9FYaC8tUWlVh2MjgJcprTGUyrbSj1Cvw=
+	t=1790752100; cv=none; b=UbVSATCkS5+dco4gCuqQUlNkftGm2Ekz9DhJ6G6i1mlh4OgY+WuZdvk+CZ1TQndEGxP958sXDk5lQiefpEjApCsTTeE3Ug9fgwAk1sW3u3m12BzM6xWgTY1kBkKbllZK8cXO1yZ0iVHaFnoVB6iHsXmVJfT1wPs2usNyRHaJU7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790729226; c=relaxed/simple;
-	bh=+MxMzL3RpnsFtR5WILMbL9TwTQ4Uohp4sirwWv16cU8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W0OwfrMVGcPPSNttW/PmEwO+hX7TEAWs1jj/bXC/tpa6YSGGk4sDa3AkZfqZIvQ57H9eanSBkpTaN/krWhc6fycUATsabwybrXqEmcn2nJhLBalVvPvk/oHY/Hm+Hdr1QmUzc7c82w+BCMhgT3zCwEKkNPRF8DZi37Z7oyr52no=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eGk++RPO; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790752100; c=relaxed/simple;
+	bh=TBlTn7Swx/IDcLWNPdYyMUtPOHyjsbXmi2tLCe4pZok=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=PZY5vkwoeBM4yYjAFl0sfksUKHRAzclpZ320YyldoXknXGsEidWkCO8z3BAXyixYQCaAIg4dpTu0aFhfmVATpM1AectMYWXDA5IvyBw37UZt8aO5kNiLXsyBVkeX9lJIlhuvR11dxzchSHyxStLOjJmVAPThRCsQ6KyVe/X8Mcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=R1MsTqL/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=pc7nJ4VZ; arc=none smtp.client-ip=202.12.124.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eGk++RPO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9600C1F000FF;
-	Wed, 30 Sep 2026 00:47:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790729224;
-	bh=Am8OxNONJgTLo3G8DeEXLxC1m5XuRbF8FELmFw472+U=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=eGk++RPOmangxt8Q8E0OedqVhJI5xjrVDP1X5LlknCp1cJ+DIhpKVvGxYapUPSTlb
-	 18Xu27Oflp1HjV6Z3O+TPeV4MRHlHpxhmPg1T899jC06BKlOz9MbU5xbBjC58u8Keg
-	 gbiQA3P2wPnysJRSZWdRoP0O0qB3hbRiEjctqj8D+M5Xl7aIZq/oQWw5F8ZahVtNX/
-	 bvQL9t5LeMuhvNiN7xN5jRRBHcBZG5TCHBWuoUmjEs6+4nTwjj1KCsgpji6jMvhrvn
-	 2oTcdrIDaVbaA8G07jem8Ydoxq4AisIvKbpOejr8AyMkKzp+wfwtqCVc8zEdaf9Qti
-	 DcdFrtV7kEdzw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4621DCE3A55; Tue, 29 Sep 2026 17:47:04 -0700 (PDT)
-Date: Tue, 29 Sep 2026 17:47:04 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Thomas Graf <tgraf@suug.ch>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	Ihor Solodrai <ihor.solodrai@linux.dev>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Chris Mason <clm@meta.com>
-Subject: Re: [RFC PATCH 0/3] fprobe, rcu/tasks, rhashtable: Switch fprobe and
- BPF kprobe-multi to Tasks-Rude RCU
-Message-ID: <d8b48afa-6d56-4450-b575-62363e170d39@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <179060575297.372125.10581329083761385407.stgit@devnote2>
- <f593867e-dcef-4f68-b609-a253f489f7b8@paulmck-laptop>
- <20260929082828.cd9844b5e632a23fd8308dbf@kernel.org>
- <b39d3368-fc5c-49a6-b47e-c58224a23e07@paulmck-laptop>
- <CAEf4BzZGdpbX5TdtgbDvDZEsj4wDQiLX94dz-wKfM9aCQJHzzg@mail.gmail.com>
- <41b37fed-af5c-4559-9e4e-696ef8ccfdd0@paulmck-laptop>
- <20260930093526.53be607c55184faf05e8d1f8@kernel.org>
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="R1MsTqL/";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="pc7nJ4VZ"
+Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
+	by mailfout.stl.internal (Postfix) with ESMTP id A43561D00704;
+	Wed, 30 Sep 2026 03:08:14 -0400 (EDT)
+Received: from ams-imap-03 ([10.64.2.23])
+  by ams-compute-02.internal (MEProxy); Wed, 30 Sep 2026 03:08:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1790752093;
+	 x=1790838493; bh=njI/jFH+TtCBf3BQoyzAR5vi2zmQd1x9VdhSoFl2afs=; b=
+	R1MsTqL/1ut4iBGFaKXUcIDzlnT0RyHW7mNjPG81pwmCoysg+AUeO8eLc9a3PC/1
+	7rXazjHwQ2ESU7r3uUu+tdf69EP6G5wwOAoRj9DG9afrtp5+KWAZranL+2DTbNXG
+	j2ZoVrj2T4eSj19TobR0jkjrcWxd75RT7rXkHNrKEWPEn2CFVyPrYfCMzPOD+fZM
+	N5mC0IoHEt4b+VVNFnEvG2/QFfB485pKNGodCLgs6zqVZztV8U9b626YxchERVRu
+	ifFaq89Hn6IIRafqrE8TMaF18vLypfzkOZeNW71WSSZS5OhTk8YqVSNyCxD/VeBw
+	hCN02yP09eeIPPeOn97IOw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1790752093; x=
+	1790838493; bh=njI/jFH+TtCBf3BQoyzAR5vi2zmQd1x9VdhSoFl2afs=; b=p
+	c7nJ4VZGjaeO3p8OLj9VjH81ACycgLvrgPSOKQur4+igmt9XkiA5Uc5W4Aoxuop6
+	uv+OPtDv8u2mSjabrYxjwZ1pr349Ljt4tdvBI3M6l7swUGGrgSvz4DMEOqb5QJsa
+	/oAm12YgB/QNkuyfVoZYy9Y5cDcs5WLegvo0AOfVdUiu5tWeMF6KGle7zoGq0MKY
+	9gGf+ycb0grWRClhFi+163qb2DeefKSXEo68kodeZokwhhEZwFKH5U4fCB3Zp+cc
+	R9nYI/V0H+lb+wbn1oiqWNv+ySr0cbbQq+nUvODlfPQEFwJ1AS7d4nXhU3VqNpq5
+	EtpYwDFR4T/VvIopOv25Q==
+X-ME-Sender: <xms:WLW8atJuoxJltFboIhLWYMnFe7kSOfnSUJrDxBwz_ykxo9IcvmpQ6Q>
+    <xme:WLW8aj-vTeZ03hFY3-Xg47_ZCI_AT7cHj1dMzqR1YUyX-o7qzm25EeaAKKxze5OAO
+    MjvtjU5yrEJy1ivuAeZlnjw4TPCmngJVzEJ6IMLT5bphIw3iaBo9Nuw>
+X-ME-Proxy-Cause: dmFkZTE/qmoaW/yaevqpZlFLiOkHibAY/OhomJ39Nf0lZl2LXlicP6VAHpSHvBtP2roPJ7
+    I/ibhAj5LlO2zGUAttDQSH1Hvlptb+IEGQoNDQVsQBFpbyw8yazf5V6Z/xUHUF7z1JUTVG
+    EU8nZqgzK0HOoikbQ6GCZnT1r0KAwGAcCDJSgk2GEaVD51x2rgh+4UK1ad7sFLSoRPoUzK
+    3Th8oQ4hyYBwX5SfJNVI+6a0qRTJzv7JJvfrCs8nq9CSHd/flqeSHIh0qWhDJcE/6XS9XQ
+    Ig+lGaYCwxdDcBy6hX8F18j7BfE0YukAB2Vuqp/418793tCwmvdoGDfTMUNHrsyLkknSqQ
+    CG2AgU9lihaL/N6UPhqQmdwCxJJNYO4JuTcuJOWqq4FtO4NFf6AGATzvgT5VgP2cvr3gok
+    oZYjlOvm2mVQ06P2wPmHs2iGEe2/Hadlgerxsbt5Ytv6trRItDVV1sqmPlomfVGds8BfGL
+    Iglk73Wr0xMmmz4kAEiheo5SvsSmBN/pKHF22GItBqV7SmtsnEASTfjuyYzw2wBq/UQ1f9
+    wHqqxMqzipcyXDaI/CBh+PELKLXX13Sk7KxPnl5ws9vnH5xSzL+yo1llic7NVryFt0y1xF
+    tWQBvBbl5mqqA8xa+tAc1AsAntBeddL5xh+898ff9FcqHf5JZ9JiwCHoZj3w
+X-ME-Proxy: <xmx:W7W8aj7Lo2klBcwdNO6_2YbO7MbJSY-yG0726-7b-qQNwYtqPB3Syw>
+    <xmx:W7W8auqFy3dXrh00WfEh9fYfmMHozZL_gP5TsBT-5nTgt8I-1mxxcA>
+    <xmx:W7W8aoiPsxcBdnMFUombFp_2-qIVnDwPrGHRdTCTB3WfMybG9URMcw>
+    <xmx:W7W8ausz3LSz1C_d5Tt6_-VTTdSEGp4etmpEpQeya7WEI6G0FTfNCA>
+    <xmx:XbW8avcIOhfYmTeCA8Uq2u4tevvyoxP7CeAZJwGaY3z5m98VB7XfqB8z>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.ams.internal (Postfix, from userid 501)
+	id BFAB032A008A; Wed, 30 Sep 2026 03:08:08 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260930093526.53be607c55184faf05e8d1f8@kernel.org>
+X-ThreadId: AwqD3_Df3fEc
+Date: Wed, 30 Sep 2026 09:07:48 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Paul E. McKenney" <paulmck@kernel.org>, "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Frederic Weisbecker" <frederic@kernel.org>,
+ "Neeraj Upadhyay" <neeraj.upadhyay@kernel.org>,
+ "Joel Fernandes" <joelagnelf@nvidia.com>,
+ "Josh Triplett" <josh@joshtriplett.org>, "Boqun Feng" <boqun@kernel.org>,
+ "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+ "Steven Rostedt" <rostedt@goodmis.org>,
+ "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+ "Lai Jiangshan" <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ "Thomas Gleixner" <tglx@kernel.org>, "Tejun Heo" <tj@kernel.org>,
+ "Andrea Righi" <arighi@nvidia.com>,
+ "Cheng-Yang Chou" <yphbchou0911@gmail.com>,
+ "Gustavo Luiz Duarte" <gustavold@gmail.com>,
+ "Kunwu Chan" <kunwu.chan@gmail.com>, rcu <rcu@vger.kernel.org>,
+ linux-kernel@vger.kernel.org
+Message-Id: <b00b3c05-2faf-40fa-a978-7d7f35db47b9@app.fastmail.com>
+In-Reply-To: <21dd141a-03d7-49e6-a83b-f4dda898cedf@paulmck-laptop>
+References: <20260925133922.1356404-1-arnd@kernel.org>
+ <21dd141a-03d7-49e6-a83b-f4dda898cedf@paulmck-laptop>
+Subject: Re: [PATCH] rcu: include rtmutex_common.h in tree_stall.h
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-On Wed, Sep 30, 2026 at 09:35:26AM +0900, Masami Hiramatsu wrote:
-> On Mon, 28 Sep 2026 17:41:57 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > > > > Thanks for the clarification!
-> > > > > So I think we can replace rcu_read_lock() with rcu_read_lock_sched_notrace()?
-> > > > > (also, maybe we need to add rcu_is_watching() check)
-> > > >
-> > > > That would work, and yes, you are quite right that if !rcu_is_watching(),
-> > > > RCU is studiously ignoring you completely, no matter what your preemption
-> > > > state is.
-> > > >
-> > > > > Current code may involves lockdep in fprobe, that is not good.
-> > > >
-> > > > Agreed, that could be problematic in any number of contexts.  ;-)
-> > > >
-> > > > > BTW, if we want to trace some code in extended quiescent state, do we
-> > > > > still need this Tasks-Rude RCU?
-> > > >
-> > > > Well, you need something other than vanilla RCU, anyway.  And Tasks Rude
-> > > > RCU is one candidate, though it is also a candidate that might annoy
-> > > > people wishing to minimize IPIs.
-> > > 
-> > > Would RCU Tasks Trace be a better candidate given uprobes and
-> > > sleepable BPF depends on it? Would it work here?
-> 
-> Hmm, those can be sleepable, but this is not. fprobe is based on ftrace
-> so the callbacks are non preemptive.
-> 
-> > 
-> > Quite possibly!  Of course, there might be corner-case ftrace/BPF issues
-> > that you and Masami would know better than would I.
-> > 
-> > David Woodhouse suggests the new Atomic SRCU for a vaguely similar
-> > purpose:
-> > 
-> > https://lore.kernel.org/all/20260920211920.928306-1-dwmw2@infradead.org/
-> > 
-> > Now that Tasks Trace RCU is implemented in terms of SRCU-fast, there
-> > might not be all that much air between David's suggestion and yours.
-> 
-> OK, let me check it. But at a glance, this atomic SRCU is still a bit
-> heavier than rcu_sched_notrace, for fprobe. It involves smp_mb and lockdep. 
+On Tue, Sep 29, 2026, at 23:07, Paul E. McKenney wrote:
+> On Fri, Sep 25, 2026 at 03:39:04PM +0200, Arnd Bergmann wrote:
+>
+> Good catch, and thank you!!!
+>
+> What I am going to do in the name of bisectability is to merge this into
+> the commit that added that call to rt_mutex_owner(), which attribution:
+>
+> 1eccf02fb8d5 ("rcu: Add running and boosted indications to RCU task stall dump")
 
-True, it is heavier weight.
+Sounds good to me. Don't worry too much about attribution, you can always
+treat my oneline fixes as bug reports. I just try to make it easy to apply
+as-is in case you are not rebasing your patches.
 
-> So if all of these rcu_read_lock() in fprobe are replaced with
-> rcu_read_lock_sched_notrace(), isn't it enough to switch the
-> synchronize_rcu() to synchronize_rcu_tasks_rude() for avoiding
-> `if (!rcu_is_watching()) return;` ?
-
-Yes, for all fprobes where rcu_is_watching(), agreed.
-
-							Thanx, Paul
-
-> (Note, most of replacement will be done by [1])
-> [1] https://lore.kernel.org/all/179064115227.394389.16910234241400391996.stgit@devnote2/
-> 
-> Thank you,
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+    Arnd
