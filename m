@@ -1,30 +1,30 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732F64CE67E;
-	Wed, 30 Sep 2026 12:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A49FD4BF952;
+	Wed, 30 Sep 2026 12:39:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790771875; cv=none; b=BUDG+2wJMNpV+mx4rGDp54NEwMwZ0KjOe2qYUpwXr5v/CkZ5fOdrxhDhpI4ClCe9JwUt0sj4Nqk2oYCG/Lwd7TFiQyhr0zSJ0n0h1yf/UWU6LSUxhaK8wTv13c/KQuZn1UMio1LIqKdpSVfPUBujfH/xS0Pvf0KJiExy5Kdte4w=
+	t=1790771952; cv=none; b=leKfLeje7FRXedid+FQ3Kf9PI2QYlDkBid8m35VO0MdXC3y6ZefYDV1w43ynURCdyKUsXuaDH2xyPUsba6gHOjPOU6MO5b01T3qXkGdFcXVzOOkzJW6b4Y/4ewHKH0r2Pfwb2cJrmE+UE4S6Me8tCf6dnfJ5yq9O17oJfa1uq4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790771875; c=relaxed/simple;
+	s=arc-20240116; t=1790771952; c=relaxed/simple;
 	bh=4hiPjEszyAaLpT9ecg8Fx8DWAGaetAhdRrOlpJOrvbs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lekvG8M4VL8kgv2NztN3YecsR+jaqt5zWaU6S2JqcsAvKeKk20dCbTygEJ3hFjIc5ph7BVoi9OlSfG/QJ/wnxj3eMCnPGuYNS1JbMJeIuo4NJWfaa35gezbuwpZ9ZECOD3JKnEIsKe1HzDxm6sFGPFeSHfcoEXGfzcHpdZBKhmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kz6obxPX; arc=none smtp.client-ip=100.103.45.18
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Hm0fRI5hXk6Fe079OvSwNn/ZoGMJs8bySkjcnlqvNsjFmKuhhk3w8xmLA6TJ8geAxMo0Dg/H3omg2YG0hOI0axY3Ha3llTibqWRF6pIZtzBbpAUsLIXgf1MA/CRTFSrWfcvKY7KilegN/79KdtkRonG7NYwDEpwPvGwpmMqeYSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gF1oTeP6; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kz6obxPX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54A6B1F000FF;
-	Wed, 30 Sep 2026 12:37:50 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gF1oTeP6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 693961F000FF;
+	Wed, 30 Sep 2026 12:39:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790771874;
+	s=k20260515; t=1790771950;
 	bh=Hlaiv+oT5Ce6LSMQaIVLOoOP+S+iI50Q6hkVwSrOAME=;
 	h=From:To:Cc:Subject:Date;
-	b=Kz6obxPX+CnD24dhp3bVEn9lsdjOlHBCWFVa+zmn3A7gTrCL/pRB/g0rA1Vuel2rX
-	 CHd6Ri0lYggpyjEaIKMyQrMblppb41M3bCmL4kX+shfgtU8IFMAzQTTpkFyZcLLgQe
-	 5upNhRqCQSWGmRzY2M/lholzsPsrdxSs20JeZIq+BTshRzhAgqO+g18Howop2zIaBm
-	 PAEuP7bnchd5PAq8DfLeTQodJ8Lbvb68JuE2mAiTOxZz6W/Rnj+y1jZlpd86Cxlwe7
-	 7jtwfj16MSmcQgeYzb6kCVpatv5qwJsI2tPWNmTGxW5mc0wisfuwbMxJYyqof4JgeN
-	 tlWzJwRSg/qkQ==
+	b=gF1oTeP67VmGmSvt8J/YNDJmpFie7zIJlc5psFdYc1JhvwvwNVma5YEmWt8ZBoO8R
+	 wtXPaN6F+heCr6YLefoJgzdAD4139ZOfjagfX4ncua5/9J/SP5wjVeBISnsb6OZY/l
+	 xi+e9emrNeSNaXvjjDN6S5ZT+lbNrOvKHeuzQhQkw8kqH9DMlfh9DL9BkqK5QGlpV6
+	 SWZTuEw6TxUdaswy4dZKk+Eah1HmFkWdaF2uPzVUvu9VHYMNB9F+U8yBHQmzt8zWLC
+	 FNc9wfjkcvm8Xj3Wy/lEP3G20BvKK4zbRkszeOpUlZhkflq8xDMw+TNgCbqu+8w0f1
+	 rP0rBFuefSnOw==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Josef Bacik <josef@toxicpanda.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
@@ -46,8 +46,8 @@ Cc: Boqun Feng <boqun@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	Andrea Parri <parri.andrea@gmail.com>
 Subject: [PATCH v3 0/1] kprobes: Make optprobe optimizer multi-generational and asynchronous
-Date: Wed, 30 Sep 2026 21:37:47 +0900
-Message-ID: <179077186716.424323.12884899073547396948.stgit@devnote2>
+Date: Wed, 30 Sep 2026 21:39:04 +0900
+Message-ID: <179077194409.424772.11709189894572687187.stgit@devnote2>
 X-Mailer: git-send-email 2.43.0
 User-Agent: StGit/0.19
 Precedence: bulk
