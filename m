@@ -1,182 +1,273 @@
-Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A0B750B437;
-	Wed, 30 Sep 2026 20:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.75.144.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EACB6282F1B;
+	Thu,  1 Oct 2026 00:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790800475; cv=none; b=ZBjLLkMl2C0NAjjfM4O8dATQz4cZAyEPxsHIM/Ilrw20WJsRxMr9xDZcuBnEG6B0jKz5TztYquY3s5juqFFjqPpO7cNim4x1J7ILcPiRDyg9skrYLLZKlpXqO/OOFXT647db8I7GCP8YAtmBDO58nNzXTYMs4pH+WcfhEXaxRnk=
+	t=1790814039; cv=none; b=W1A9TBddwXSeEvZ1UiKjeggy4EnVyLEbfsXBImkLpUtP2Zbeum8+7UDksE5jU0bdxNwmuBHuhDrsV2ishkk7zyd/kpFyDfXSxNqOF40IEWS9cFxtZokoKBqYqdqsUtVIUsA/2k845+HCKgXy9YvFl2q33Dj53m7x/MW8PP0ZJmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790800475; c=relaxed/simple;
-	bh=C7y5OtHbGwWwmj2uRXLub5VAFwozpHuhH91uJdCYLtQ=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=UpGcnhqwmulz5YFmXLNmJPxajMQuOozEbiKXWE1gjvU+9KEPc60w1e7T8q7m5YhtYSyml8zQg4maA1csaPknLOJPwrQAb0gjTwvJF/ge89Sol7rGbIqskRfZSPbrNlBNyN3hw3JbhgiYc+FaRlCRCjzPk8hIUbe1espSv3jM6a0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=SIMWi99V; dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=thh9x4fE; arc=none smtp.client-ip=5.75.144.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
+	s=arc-20240116; t=1790814039; c=relaxed/simple;
+	bh=5Hvk4XLGOwLuU8uqdTaJZYxBVG2ZeEuhv6EGbDeiJYA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hzcvZsfibvsz9/pdHePLZclw7LHLR9mbzWU+rQo//4Nf4wIRmCKvAw2MSYt6jn2K/ov4TVbvu7/mIAG97XvXSLXWQgX9IXLHbbRwbrYntFaqmxRtVHRPErvpfEmWFO4zjdeLXSsSgqEaQL/jYOlrhjImO0P0pHIYP8p1A12WlUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OG8UYunf; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="SIMWi99V";
-	dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="thh9x4fE"
-DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1790800451; bh=ryPpT3XG51E8OKO6oqRYAPa
-	qc2mnjZBJT7psFp8t0Jo=; b=SIMWi99Vus6VgGS1RG5YdJgS1xEcTzi134G0KFV5lFRiTTABgf
-	w0VB7M6jDxloY6luA3hzdwpMUqIAggGrKUjM5d5E3rVIF8PUBdA35OebfPy6H2pLKCFSmXilSRU
-	93rONWo6nlSqJOnIC3aJlhriwO49lQJDkrRU1dauy8TmeTcC3kwhefQawKdFQV6DErTELQkyUw+
-	qDQIoL/X4LGtAgYpLbDwvFlGttttrBs0rQcXd+XoLsV67AuzXZcufEJ+t5VwWU4/kMPA23vPCR4
-	c0LwV+4WYs8tyJZkVtPLXvbe416f/Cfa/Nj9QYwUGbPq0bOw+3TNTWUkUEPd3OVqoXA==;
-DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1790800451; bh=ryPpT3XG51E8OKO6oqRYAPa
-	qc2mnjZBJT7psFp8t0Jo=; b=thh9x4fEn7/o50JwsPmnXs7Yo88sxlBWotgRtffXNka1DlTN2h
-	DK31av8lGStiP9AFGv1xbNSvoOmxuoXeChDw==;
-Date: Wed, 30 Sep 2026 21:34:10 +0100
-From: Bradley Morgan <brads@mainlining.org>
-To: paulmck@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
- syzbot <syzbot@kernel.org>
-CC: syzkaller-bugs@googlegroups.com, Lai Jiangshan <jiangshanlai@gmail.com>,
- Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
- =?ISO-8859-1?Q?Onur_=D6zkan?= <work@onurozkan.dev>,
- Zqiang <qiang.zhang@linux.dev>, linux-kernel@vger.kernel.org,
- mathieu.desnoyers@efficios.com, rostedt@goodmis.org, syzbot@lists.linux.dev,
- Sunho Park <shpark061104@gmail.com>
-Subject: Re: [PATCH] srcu: Drop spurious WARN_ON() in cleanup_srcu_struct()
-In-Reply-To: <e95cac05-59f0-473a-bc42-1fc69c10976e@paulmck-laptop>
-References: <428f095d-02a5-433a-ae71-632f682e05af@mail.kernel.org> <e95cac05-59f0-473a-bc42-1fc69c10976e@paulmck-laptop>
-Message-ID: <6BEDE45A-F8B7-4F8C-BC5C-E4091A56F6E7@mainlining.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OG8UYunf"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F9EC1F000FF;
+	Thu,  1 Oct 2026 00:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790814037;
+	bh=nvDkk7KAzeKLGpwf+aZU4NHqfAjJib2nahVIAwKSaI0=;
+	h=From:To:Cc:Subject:Date;
+	b=OG8UYunfY1IEU4lR5Hh9s7ga1Pc/J1NiPAmri6YrecIezcaO5fn9eiJXLc+P9Zkp+
+	 q9inJqWEhkI2LSQVWVmg5LIwTf5y3pmtJWnS0PYhKi9l7yBzyyYhdugSMrCvJP0DFy
+	 8IlbuWvrw2bQXODXq4hwYMo7453sHCnKvkTVVEl+m+38qByDagHXAqySOwhKV96ica
+	 EdQY1f9+ByweiOTIG6vZc0oYE4hosv5Mpyzznh4bkI52QNAc49GeyYrKSi58rwqAS9
+	 1pZdSLT8MLNK2x2M4hPb0mns1ormSvqmHKoGbLLGULtJl+iV4j2vYYVXpWXzXZ93gb
+	 TN82nJ/R2RLaw==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Josef Bacik <josef@toxicpanda.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: Boqun Feng <boqun@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	rcu@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Andrea Parri <parri.andrea@gmail.com>
+Subject: [PATCH v4 0/1] kprobes: Make optprobe optimizer multi-generational and asynchronous
+Date: Thu,  1 Oct 2026 09:20:31 +0900
+Message-ID: <179081403098.474106.12959530220684805449.stgit@devnote2>
+X-Mailer: git-send-email 2.43.0
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On 30 September 2026 21:29:51 BST, "Paul E. McKenney" <paulmck@kernel.org>
-wrote:
->Adding Sunho Park on CC for his fix:
->
->b7e310c3e43e ("srcu: Fix WARN_ON() for rcu_segcblist_n_cbs() in
->cleanup_srcu_struct()")
+Hi,
 
-Already done? Aw no
+Here is the 4th version of the patch for making the optprobe optimizer
+multi-generational and asynchronous.
 
->
->On Wed, Sep 30, 2026 at 06:45:09PM +0000, syzbot wrote:
->> From: Bradley Morgan <brads@mainlining.org>
->> 
->> In cleanup_srcu_struct(), commit 78a38cbf6f20 ("srcu: Queue sdp->work
->when
->> the delay timer is successfully deleted") added logic to queue sdp->work
->if
->> timer_delete_sync(&sdp->delay_work) successfully canceled a pending
->timer
->> while callbacks remained pending on sdp->srcu_cblist. However, it
->wrapped
->> this check in a WARN_ON() under the assumption that callers invoking
->> srcu_barrier() prior to cleanup_srcu_struct() would prevent the warning
->> from triggering.
->> 
->> This warning can be spuriously triggered during valid teardown paths
->where
->> srcu_barrier() is properly invoked before cleanup_srcu_struct(), such as
->> when releasing blk-mq tag sets:
->> 
->> WARNING: kernel/rcu/srcutree.c:707 at cleanup_srcu_struct+0x3d6/0x8b0
->> kernel/rcu/srcutree.c:706
->> Call Trace:
->>  <TASK>
->>  blk_mq_free_tag_set+0x617/0x790 block/blk-mq.c:4976
->>  scsi_mq_free_tags+0x16/0x30 drivers/scsi/scsi_lib.c:2167
->>  scsi_remove_host+0x243/0x730 drivers/scsi/hosts.c:193
->>  uas_disconnect+0x135/0x3e0 drivers/usb/storage/uas.c:1236
->>  usb_unbind_interface+0x295/0x9f0 drivers/usb/core/driver.c:461
->>  device_release_driver_internal+0x4f5/0x880 drivers/base/dd.c:1372
->>  bus_remove_device+0x444/0x560 drivers/base/bus.c:664
->>  device_del+0x524/0x8f0 drivers/base/core.c:3965
->>  usb_disconnect+0x346/0x9a0 drivers/usb/core/hub.c:2350
->>  hub_event+0x1bbb/0x4d30 drivers/usb/core/hub.c:5966
->>  process_scheduled_works+0xc3d/0x1630 kernel/workqueue.c:3479
->>  worker_thread+0xa47/0xfb0 kernel/workqueue.c:3560
->>  kthread+0x38b/0x480 kernel/kthread.c:436
->>  ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
->>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
->>  </TASK>
->> 
->> This false positive occurs due to a race between callback invocation and
->> the teardown thread. First, sdp->delay_work can legitimately remain
->armed:
->> when an SRCU grace period completes, srcu_gp_end() arms sdp->delay_work
->> with a delay, and if callbacks are later scheduled with zero delay via
->> srcu_schedule_cbs_sdp(sdp, 0), queue_work_on() queues sdp->work directly
->> without deleting sdp->delay_work. Second, in srcu_invoke_callbacks(),
->> callbacks (including the one queued by srcu_barrier()) are extracted
->into a
->> local list and executed, but sdp->srcu_cblist length is only decremented
->> via rcu_segcblist_add_len(&sdp->srcu_cblist, -len) after all callbacks
->> finish executing. When srcu_barrier_cb() executes, it wakes the waiting
->> srcu_barrier() thread, which proceeds immediately to
->cleanup_srcu_struct().
->> At that point, the worker thread is still executing callbacks and has
->not
->> yet decremented the callback count, so
->timer_delete_sync(&sdp->delay_work)
->> returns 1 and rcu_segcblist_n_cbs(&sdp->srcu_cblist) is non-zero, firing
->> the WARN_ON(). Immediately thereafter, flush_work(&sdp->work) waits for
->the
->> worker to finish, and the subsequent check on rcu_segcblist_n_cbs()
->> correctly sees no remaining callbacks.
->> 
->> Because WARN_ON() must not be used for conditions that can legitimately
->> happen, and pr_err() should be used instead if an actual error needs to
->be
->> reported (which is not applicable here as this is normal recovery
->> behavior), remove the WARN_ON() check and its accompanying comment. Keep
->> the queue_work_on() recovery logic so that flush_work() properly waits
->for
->> remaining callbacks to complete. Genuine callback leaks remain caught by
->> the subsequent authoritative
->> WARN_ON(rcu_segcblist_n_cbs(&sdp->srcu_cblist)) check performed after
->work
->> has been flushed.
->> 
->> Fixes: 78a38cbf6f20 ("srcu: Queue sdp->work when the delay timer is
->successfully deleted")
->> Assisted-by: Gemini:gemini-3.8-flash Gemini:gemini-3.1-pro-preview
->syzbot
->> Reported-by: syzbot+02b37e31e64ea5cb6d29@syzkaller.appspotmail.com
->> Closes: https://syzkaller.appspot.com/bug?extid=02b37e31e64ea5cb6d29
->> Link:
->https://syzkaller.appspot.com/ai_job?id=5a402d0b-b407-49a6-b0f3-b06197c1398f
->> Signed-off-by: Bradley Morgan <brads@mainlining.org>
->> 
->> ---
->> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->> index ed204b3f4..7f30a5587 100644
->> --- a/kernel/rcu/srcutree.c
->> +++ b/kernel/rcu/srcutree.c
->> @@ -701,10 +701,8 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
->>  	for_each_possible_cpu(cpu) {
->>  		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
->>  
->> -		// Call srcu_barrier() before this cleanup_srcu_struct()
->> -		// to avoid triggering this WARN_ON().
->> -		if (WARN_ON(timer_delete_sync(&sdp->delay_work) &&
->> -			    rcu_segcblist_n_cbs(&sdp->srcu_cblist)) &&
->> +		if (timer_delete_sync(&sdp->delay_work) &&
->> +		    rcu_segcblist_n_cbs(&sdp->srcu_cblist) &&
->>  		    rcu_cpu_beenfullyonline(sdp->cpu))
->>  			queue_work_on(sdp->cpu, rcu_gp_wq, &sdp->work);
->>  		flush_work(&sdp->work);
->> 
->> 
->> base-commit: 72d3fcf802c45d00b300f25b848a93c3a2bd7c7e
->> -- 
->> See https://goo.gle/syzbot-ai-patches for information about AI-generated
->patches.
->> The person who has signed off on the patch is responsible for
->> addressing comments.
->> syzbot engineers can be reached at syzkaller@googlegroups.com.
+The previous version is here:
 
---- Thanks!
-"I'm not a very positive person" - Linus torvalds
+  https://lore.kernel.org/all/179077194409.424772.11709189894572687187.stgit@devnote2/
+
+In this version:
+- Fix double hlist_del_rcu() / LIST_POISON2 dereference on cooling probes
+  (reported by Sashiko AI review[1]):
+  - In optprobe_finalize_generation(), do not unhash unused probes before
+    moving them to cur_gen's freeing list; defer unhashing to
+    do_unoptimize_kprobes() when cur_gen is dispatched.
+  - In do_unoptimize_kprobes(), use hlist_del_init_rcu() instead of
+    hlist_del_rcu() for idempotent and safe unhashing.
+
+[1] https://lore.kernel.org/all/20260930130018.997401F000FF@smtp.kernel.org/
+
+=== How the Asynchronous Multi-Generational Optimizer Works ===
+
+1. Background & Motivation
+--------------------------
+Previously, kprobe_optimizer() executed synchronously:
+- It acquired kprobe_mutex, text_mutex, and cpus_read_lock().
+- It then called synchronize_rcu_tasks() while holding all three locks.
+- Under PREEMPT_LAZY / PREEMPT kernels and CPU-heavy server workloads,
+  synchronize_rcu_tasks() can stall for seconds to minutes waiting for
+  voluntary context switches on all online CPUs.
+- Holding text_mutex and cpus_read_lock() throughout this wait blocked
+  CPU hotplug, module loading/unloading, static keys, and all subsequent
+  kprobe registrations, frequently triggering hung-task watchdogs.
+
+The actual instruction modification (text-patching) takes only
+microseconds. The new optimizer completely decouples instruction patching
+from the Tasks RCU grace period wait using call_rcu_tasks(), dropping all
+locks during the wait.
+
+2. Architecture: Fixed Generational Ring
+----------------------------------------
+To ensure jump optimization never fails with -ENOMEM during tracing,
+a fixed ring of generation slots is used:
+
+  static struct optprobe_generation optprobe_gens[OPTPROBE_GEN_MAX];
+  (OPTPROBE_GEN_MAX = 2)
+
+Each generation struct contains 4 probe lists and tracking state:
+- optimizing_list:
+    Probes waiting to be optimized (jump installed). Text-patching is
+    deferred until after the generation's Tasks RCU grace period.
+- unoptimizing_list:
+    Probes waiting to be unoptimized (jump replaced with breakpoint)
+    prior to entering the grace period.
+- cooling_list:
+    In-use probes whose jumps were unoptimized, cooling down during the
+    Tasks RCU grace period. Holding them on this list keeps
+    list_empty(&op->list) false, preventing concurrent unregister_kprobes()
+    from prematurely freeing the aggregator or detour buffer before
+    preempted tasks exit.
+- freeing_list:
+    Cleaned/unused aggregator probes whose detour slots and memory
+    will be reclaimed after the Tasks RCU grace period completes.
+- rcu:
+    The rcu_head passed to call_rcu_tasks().
+- in_flight / ready:
+    State flags indicating if the generation is currently waiting on
+    Tasks RCU, or if the callback has fired and finalization is pending.
+
+3. The "Waiting Room" Invariant
+-------------------------------
+optprobe_cur_gen points to the current active ingress generation.
+All new optimization, unoptimization, and forced-cleanup requests from
+register_kprobe(), unregister_kprobe(), and kill_optimized_kprobe() are
+queued into optprobe_gens[optprobe_cur_gen].
+
+To ensure an idle generation slot is always available to absorb incoming
+requests without dynamic allocation, the last available generation slot
+is never dispatched while an earlier generation is still in flight
+(optprobe_can_fire() checks active_gens < OPTPROBE_GEN_MAX - 1).
+It acts as a non-blocking "waiting room".
+
+4. Execution Flow of the Optimizer Thread
+-----------------------------------------
+The dedicated optimizer kthread sleeps on kprobe_optimizer_wait and wakes
+when kicked, when a flush is requested, or when an RCU callback completes.
+
+                [ Probes Queued in cur_gen ]
+                            |
+               kprobe_optimizer_thread()
+                            |
+            (batching delay: OPTIMIZE_DELAY)
+                            |
+             kprobe_optimizer() [holds kprobe_mutex]
+             +------------------------------+
+             |                              |
+             v                              v
+   [ Step 1: Finalize ]           [ Step 2: Dispatch ]
+   (for ready generations)        (for cur_gen if can_fire)
+             |                              |
+   - Hold text_mutex & cpus_lock  - Hold text_mutex & cpus_lock
+   - arch_optimize_kprobes()      - arch_unoptimize_kprobes()
+   - do_free_cleaned_kprobes()    - Move in-use to cooling_list
+   - Drain cooling_list           - Advance cur_gen
+   - Drop text_mutex & cpus_lock  - Drop text_mutex & cpus_lock
+   - gen->in_flight = false       - call_rcu_tasks(&gen->rcu)
+             +------------------------------+
+                            |
+                            v
+                  [ Step 3: Notify ]
+                  - If progress:
+                      optimizer_passes++
+                      wake_up_var_locked(optimizer_passes)
+                  - Self-kick if more probes queued
+
+Step 1: Finalize Ready Generations (optprobe_finalize_generation)
+  Runs for any generation where the Tasks RCU callback marked ready = true:
+  1. Briefly acquires text_mutex and cpus_read_lock().
+  2. Calls arch_optimize_kprobes(&gen->optimizing_list) to patch the
+     relative jump into target instructions.
+  3. Releases text_mutex and cpus_read_lock().
+  4. Calls do_free_cleaned_kprobes(&gen->freeing_list) to release detour
+     buffers and free unused aggregator probes.
+  5. Drains gen->cooling_list:
+     - Probes unregistered while in flight (kprobe_unused()) are moved
+       to cur_gen's freeing_list for the next pass.
+     - Probes still in use have their disarming finalized via
+       list_del_init(&op->list), and are queued for re-optimization if
+       still enabled.
+  6. Clears in_flight = false and ready = false, returning the slot to
+     the idle pool.
+
+Step 2: Dispatch the Waiting Room (optprobe_dispatch_generation)
+  If the waiting room has queued probes and active_gens < OPTPROBE_GEN_MAX - 1:
+  1. Briefly acquires text_mutex and cpus_read_lock().
+  2. Calls do_unoptimize_kprobes(): executes arch_unoptimize_kprobes() to
+     replace relative jumps with breakpoints.
+  3. Probes that are unused are moved to gen->freeing_list and removed
+     from the kprobe hash table (hlist_del_rcu).
+  4. Probes still in use are moved to gen->cooling_list.
+  5. Releases text_mutex and cpus_read_lock().
+  6. Advances optprobe_cur_gen to the next generation slot.
+  7. Marks gen->in_flight = true, gen->ready = false.
+  8. Calls call_rcu_tasks(&gen->rcu, optprobe_generation_rcu_cb) and
+     immediately returns. kprobe_mutex is completely released while
+     Tasks RCU runs asynchronously in the background.
+
+Step 3: Pass Completion & Flusher Notification
+  1. If any generation was finalized or dispatched (progress was made),
+     increments optimizer_passes and wakes waiters sleeping on
+     wait_for_kprobe_optimizer().
+  2. If the waiting room still has queued probes and another generation
+     can fire immediately (e.g. sibling probes retrying optimization),
+     it kicks itself for another pass.
+
+5. Concurrency & Preemption Safety (The cooling_list)
+-----------------------------------------------------
+Under CONFIG_PREEMPTION=y, a task can be preempted inside an optprobe detour
+buffer (or the detour template). When a probe is disabled, its jump is
+reverted to an int3 breakpoint, but the detour buffer cannot be freed until
+all preempted tasks have executed a voluntary context switch (Tasks RCU).
+
+Because kprobe_mutex is dropped during the grace period, concurrent
+unregister_kprobes() could run. Previously, unregister_kprobes() checked
+kprobe_disarmed(ap), which evaluates:
+  kprobe_disabled(p) && list_empty(&op->list)
+
+If unoptimized in-use probes were simply detached (list_del_init),
+kprobe_disarmed() would become true prematurely, allowing
+free_aggr_kprobe() to free the detour buffer and kfree(op) while a
+preempted task was still inside the detour buffer.
+
+By placing unoptimized in-use probes onto gen->cooling_list:
+- They are kept off unoptimizing_list so arch_unoptimize_kprobes() will
+  never be called twice on them.
+- list_empty(&op->list) remains false throughout the Tasks RCU grace period.
+- unregister_kprobes() sees !kprobe_disarmed() and defers deleting the
+  aggregator.
+- When optprobe_finalize_generation() runs after the grace period, it
+  safely reclaims or disarms them without any use-after-free window.
+
+6. Flush Synchronization (Andrea Parri's Wait Queue Fix)
+--------------------------------------------------------
+When wait_for_kprobe_optimizer() flushes the optimizer:
+- It checks optprobe_optimizer_busy():
+    optprobe_has_queued_probes() || (optprobe_active_gens_count() > 0)
+- Instead of using a completion (which suffered from concurrent-waiter
+  init_completion() clobber races), it monitors the monotonic counter
+  optimizer_passes.
+- If work can be dispatched or a generation is ready, it wakes the
+  optimizer thread. Otherwise, if a generation is merely in flight, it
+  avoids redundant wakeups.
+- It sleeps via wait_var_event_mutex(&optimizer_passes, ..., &kprobe_mutex).
+  This cleanly releases kprobe_mutex while sleeping and wakes only when
+  actual progress is made, preventing CPU-bound spinloops until all
+  in-flight and queued generations drain.
+
+
+Thank you,
+
+---
+base-commit: 72d3fcf802c45d00b300f25b848a93c3a2bd7c7e
+
+Masami Hiramatsu (Google) (1):
+      kprobes: Make optprobe optimizer multi-generational and asynchronous
+
+
+ kernel/kprobes.c |  421 +++++++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 319 insertions(+), 102 deletions(-)
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
