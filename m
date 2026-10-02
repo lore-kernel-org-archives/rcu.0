@@ -1,68 +1,68 @@
-Received: from mail-dy2-f43.google.com (mail-dy2-f43.google.com [74.125.229.43])
+Received: from mail-dy2-f41.google.com (mail-dy2-f41.google.com [74.125.229.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018FB493D3D
-	for <rcu@vger.kernel.org>; Fri,  2 Oct 2026 13:10:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.229.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BA24A0904
+	for <rcu@vger.kernel.org>; Fri,  2 Oct 2026 13:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.229.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790946647; cv=none; b=Uu3dyeUeuNk4KEdyZurf1CS/KXHh2IlfKeLrP9+O3Gf0vew3yhQUNB6wq4f3P6P0/xRmHF23Wx3QQbVSDmtnxzstFX9LjxKSQ6uLsKlGh6oA/aTsfTFf+1ZBJhcZQ/9sl9RStkhRKIBb/bRDJHMC5IdEo3wrGZLuJQK2E+cS6vM=
+	t=1790946659; cv=none; b=i+9E/Tii25Vkh+i2GhNwgEDv8Ht3z03I6lHU7XTmp3siblZ2Pu9bouW33Qlw/tRbyidLJRUcvVPXYvGZ/Wg/4p5ooPRq+vj9Lb5lrMio+BiBVdcnJAEcW3Ejx9b9WaJXU4B9iOS5ZgGvWRTw2XgI4qtoZhX7Q9i9tTdDWWXWgjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790946647; c=relaxed/simple;
-	bh=VYu2s7V7tuI3j4DSs+/I3dDcWFXXgIVo+r3pYJ3vuXo=;
+	s=arc-20240116; t=1790946659; c=relaxed/simple;
+	bh=B/PGz6LNoxyMJXSvm2Y7rvBul0DR1BHjLOBRublbAmI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=MxoI0oVe1J5MhVlH8vt1kHHP9zwlrzM+42onDrFRKbU8lZrcS6MAMK9f4quwwH4G+vYFVzWTbKB+fTuRrtacqutMFGdlzD1vqifsfK74SOX4aLAGC4q5xzHYXl/oigvPNjudNZmAS4GakPgf/j26RmBgE6BoUs8YhAY6v1EsjDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=njXxYPHL; arc=none smtp.client-ip=74.125.229.43
+	 In-Reply-To:To:Cc; b=O8Yrh6sXquqBtYSJDVXvcId5W0mziT8bXCNDVt0llaOYY//UaFpV50Ohz/92Bzj2mqNcFijf1UAQrDrRRF1HxpHFpv//SsyBZ4DRsG42oevr80nsKDgTypzZhsz9asIuu3w3m/PrdmI50MyygWz0RwM9aHmLTSJxiWsiCHOn2Sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VDUDtk3X; arc=none smtp.client-ip=74.125.229.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="njXxYPHL"
-Received: by mail-dy2-f43.google.com with SMTP id 5a478bee46e88-340f56c44b0so3276379eec.1
-        for <rcu@vger.kernel.org>; Fri, 02 Oct 2026 06:10:41 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VDUDtk3X"
+Received: by mail-dy2-f41.google.com with SMTP id 5a478bee46e88-34daf1b9a1fso1484901eec.2
+        for <rcu@vger.kernel.org>; Fri, 02 Oct 2026 06:10:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790946639; x=1791551439; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1790946648; x=1791551448; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=H/ZMPlbFfkEDnolicQDHcuBaOmTguhoV9ZPfz4BueHg=;
-        b=njXxYPHLqlSTQCfmWxQTS56u/FqU4t33udH4Chlz/GQlAv1PrH9HnyDl5bryrcE8DA
-         Juk3p/UC21lfWhNwJwnRRwYHEbZnPig6JLeZBygz5WIYUQ2gwvOPNewuqVrlMUEC2rnT
-         KOdOLt8tO6oCN07SgGEbrRpKSQnE3qIIvZM+dReiXsVo4nL7FPP/JviAqTWX855dAP9B
-         Tsy9POz16W8zlJUCPhqzdQRxvqT/XK2aRLYPUMu9jDQXws/0RCqAmWQCQ2k58ULprlKl
-         Dt/N99OeSgjgqw8Jeq7KfGSx9/kBG5s8rzpdHe9/ECCTmHgpAv9U7sKFKg9kkLdeYp6t
-         zorA==
+        bh=Vc4iYyv6tWLj8r1nvSvlZLe5EJOT0uZgiQee0jN66cY=;
+        b=VDUDtk3XMCb34cMkzkKzrnkcLzMa5AZ19+ANoPmYaB7ZCeG6TBswVs1VpcCqkRGGv8
+         5P5uWksh7GLhLAUNdurPwu0xkMByCtbkL0qflLDAjbRGCceo+F4KYWz8Rt9l7UVVRXgE
+         JQ5JqJ7Nyi+XMm1byzrmATEhO+gSz4E5CfyXWikWNmvctHj2Fba+GdMx5OTZ17hlUZJB
+         K395sCYxXteotAzIEmC9qM/qFCK+YWf3G8EdA48NKGNvLTZl9FOmmRD/+9eF1mTtQyLg
+         siOM75Om7CI5OqwfLW20SF7wDgFy2dhnjtOhH7Q3KcXXB5XGCoZZOiyl6OzSZCHXKGXx
+         GQVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790946639; x=1791551439;
+        d=1e100.net; s=20260707; t=1790946648; x=1791551448;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=H/ZMPlbFfkEDnolicQDHcuBaOmTguhoV9ZPfz4BueHg=;
-        b=U7s0FWQG5X0cgQUSJN1o5QnDNbYkGmVzlFVrDzGCwZPG2ThPM/2YxkC1ZXPJhRbisK
-         8xzIM+MJMLHrs+ypbOj/+VT/I2JzdjXE3kxRD5xYHGvpstqm9bTPqBS7MM8ymXTndi8O
-         ZQ50jQxsLmYNMX5deEupByHrA0AkI78aaFte+SyfH1z9CidYWJgjwNKwtOOEb8aHYTL4
-         JRdLPeb3wfMyJgQheOLJkuTLDFDqAw5YtjYQoQD5Q7suCsa/dU35TyLxmQvZH+XfC+m1
-         MlubFR4mbdshIMVcwcXtfzkyYMqV6uemJPdsUKdNw17igJvfpXmpajrw/YZWl2zWkU2Z
-         1meg==
-X-Forwarded-Encrypted: i=1; AKwUvBw+Cnj9N697ievxLmI+a+IP3KihGLg9xOGpyfjh+MSlCt2zrLCOc7A6BQiSu/2hxQaDeGE=@vger.kernel.org
-X-Gm-Message-State: AFq9FYKl21qZUg77SNK/whOA2YNq0yoDtixWh1mYUDqhdFCPJp4/t21j
-	4dOXkBjhL1x3oax4DVnLUebrozD0UjJrui27asAQq3If0odXB5IMIsZx
-X-Gm-Gg: AYBFou3peg32YAXOlKk8A/wnCakpzCaq/XX9LQhBzlJUsYHR9qKSkj9zhbnwJMRMhwu
-	ED34gUrj7e4fMaU2YZ0OQSQtR9kBzDr4FdegEIq2E1SEreId1BGyk4sewr8AMHEFw7K1jLu8y9B
-	xCgijqiYjPZv6AeZYDa6m4/yyLlS0p3ifxSPvJyvRszvJ5bwdwJccC8s4VzGotXRzVVFg9hJLuV
-	ySrTjj0EZczCfN0+i8GZyOr8cTUFbtB+yl+MgQrOXDv2H/wf5WiiSNGbarvgt1jgwT5YJttXWWg
-	SNQ98l39Y94ofpPkC8/KVb/8THh4fJCIvcxCrwEY96k/0G/0T03bISMGrhjSbomzUljHCBO5QK5
-	0mbieUX/ZW4RWQbh0STi0s+EqHwZ003R4D5WWE+cL+caIFNH5rfXLraRKOeuFU+i2V1bxBcemFP
-	xZC/k8cd/0GwBN1f2ThFDwMd90EnJ3ZrVL7gI13WcMs58otp+Y7lPZ0hztNfTwuryXLQ==
-X-Received: by 2002:a05:7300:3f11:b0:346:7c2c:1d25 with SMTP id 5a478bee46e88-34f219c110amr3175792eec.41.1790946639090;
-        Fri, 02 Oct 2026 06:10:39 -0700 (PDT)
+        bh=Vc4iYyv6tWLj8r1nvSvlZLe5EJOT0uZgiQee0jN66cY=;
+        b=v+1CAQzinTHRw7Xgjks7tyJZW/tWvuMYxei1Yqii7Z23JBx1IoXk6nbgk6c78rMZn+
+         zpuAfmG4VIvNLK3C7Xtw+U71IhtvCedOXAK2Eadc38eNWAsxfoKVJxIiZGwCdJ0Oqi5S
+         oAGflHRuBwCdrzKn9R5OmkP77ZMWHxp3GkczDQwW9qCwcRQZtIMk4DD08SFZNNpQqHID
+         wU5RLmVWbAUPWVqrGP4KzkjujwnDBJjEttreAo5yAd2LdNvP8jc3yCtJBgbrdBS1uCdp
+         zgnjH5vLJDmC+CZeEgtYFJNoohHqZ02MoAJiwELhyVcWwhTbSgufsoWUkbMS7ZSCgBdz
+         rJVg==
+X-Forwarded-Encrypted: i=1; AKwUvBxlF5ZEekzk8jMOlslC08X/JgInFWYpXXLnThfYW06qUD+Ez9q5saulBqEcYKjdguxWABw=@vger.kernel.org
+X-Gm-Message-State: AFuF++mTXKYOjKs+O582F0MldITj5OAXiI/07kZpkAZgsyBQdcxuGShd
+	JluUpwDvzragVLoMExuHv4ivRPWVGXbzkUs4WmuKpOaB4v2OBhFDb7j+
+X-Gm-Gg: AYBFou1MGQo8qTNm9obLUpvyEqZnffE44CXx4E1+R9dv684nChfEHoXUYyukF/zQ6Uq
+	WAuiB6Smx06zM9zRp1bUsuUyk5mKWne3ZUKKRoDGFXjofD0e9SjIG3gA1ctCgWZw1FhsSAGI2lx
+	HUqpW5wZpMKgd+Jzw2P8k2KZB7DafWawDRwTdCFzARo6c1C0KlNuZqTmxnLEEK/5qYPJDB8FRWS
+	P9WR/tDS6T9zBS8r31xCQ+AD657AMMe5pLa28vn7c90fxr1LVML3yEDjOBpruiT2Fe4SxNTySmR
+	f+DRE+GDeMDw29MSfxo6Dtqyw/gUdQ4eJkCcqolJLmh96KZVo/O7ZzFQxogkygwwyq3t+pieRAl
+	R1aouDT5RdWyBT9u4ibNLgcupdmFwEaBzb2Wgj77y0c0g6eIWHej3EZwFPQWn+wQoKXWLyA0vCq
+	e0K8xtqnWA1B9g4MA+3wCZMdhbrMh/oOshPcCfDe6NiwWlVzjJrlvnm4NcFYbX66CbFQ==
+X-Received: by 2002:a05:693c:4094:b0:350:869:d106 with SMTP id 5a478bee46e88-350086a0117mr2867906eec.34.1790946647593;
+        Fri, 02 Oct 2026 06:10:47 -0700 (PDT)
 Received: from [127.0.1.1] ([23.254.208.9])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-34f0672c739sm7309347eec.3.2026.10.02.06.10.31
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-34f0672c739sm7309347eec.3.2026.10.02.06.10.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2026 06:10:38 -0700 (PDT)
+        Fri, 02 Oct 2026 06:10:47 -0700 (PDT)
 From: Qiliang Yuan <odys.yuan@gmail.com>
-Date: Fri, 02 Oct 2026 21:10:21 +0800
-Subject: [PATCH v5 01/12] sched/isolation: Enforce nohz_full as a subset of
- isolcpus=domain at boot
+Date: Fri, 02 Oct 2026 21:10:22 +0800
+Subject: [PATCH v5 02/12] sched/isolation: Add runtime housekeeping mask
+ updates with boot snapshots
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -71,7 +71,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261002-wujing-dhm-v5-1-78a6996d87ad@gmail.com>
+Message-Id: <20261002-wujing-dhm-v5-2-78a6996d87ad@gmail.com>
 References: <20261002-wujing-dhm-v5-0-78a6996d87ad@gmail.com>
 In-Reply-To: <20261002-wujing-dhm-v5-0-78a6996d87ad@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -96,108 +96,429 @@ Cc: Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
  linux-kselftest@vger.kernel.org, Qiliang Yuan <odys.yuan@gmail.com>
 X-Mailer: b4 0.13.0
 
-HK_TYPE_KERNEL_NOISE and HK_TYPE_DOMAIN are configured independently
-when nohz_full=/isolcpus=nohz and isolcpus=domain are passed as
-separate boot parameters, or when nohz_full=/isolcpus=nohz is passed
-without isolcpus=domain at all.  Nothing stops a CPU from ending up
-tick-suppressed (nohz_full) while still scheduled as part of the
-normal, non-isolated sched domain, which defeats the point of
-isolating it from kernel noise in the first place.
+The housekeeping cpumasks for kernel noise (HK_TYPE_KERNEL_NOISE) and
+managed interrupts (HK_TYPE_MANAGED_IRQ) are computed once at boot from
+the nohz_full= and isolcpus=managed_irq arguments.  Dynamic CPU
+isolation driven by cpuset isolated partitions needs to update these
+masks after boot.
 
-A CPU with the tick stopped must always be excluded from the normal
-scheduler domain: HK_TYPE_KERNEL_NOISE's housekeeping set has to stay
-a superset of HK_TYPE_DOMAIN's.  Checking this while __setup()
-parameters are still being parsed is order-dependent: rejecting
-nohz_full= the moment it is seen, before a later isolcpus=domain on
-the same command line has been parsed yet, would discard a
-perfectly valid combination just because of argument order.
+Add housekeeping_update_types() to recompute one or more housekeeping
+masks as (boot snapshot & ~isolated), publish them via RCU and free the
+old masks after a grace period.
 
-Check the invariant once in housekeeping_init() instead, which runs
-after every __setup() cmdline parameter has been parsed regardless of
-order.  Disable HK_TYPE_KERNEL_NOISE rather than panicking or leaving
-the inconsistency in place: this gives the same end state as not
-having passed nohz_full=/isolcpus=nohz at all.
+Introduce HK_TYPE_KERNEL_NOISE_BOOT and HK_TYPE_MANAGED_IRQ_BOOT to
+record the immutable boot configuration.  Anchoring every update on the
+boot snapshot keeps the runtime mask a subset of the boot set and lets
+de-isolation restore the boot configuration exactly.
 
-housekeeping_cpumask() only dereferences the real per-type masks once
-housekeeping_overridden is enabled; before that every call returns
-cpu_possible_mask regardless of housekeeping.flags.  Enable the static
-key before the subset check runs, not after: checking first would
-compare cpu_possible_mask against itself for both sides and never
-reject anything.
+When neither nohz_full=/isolcpus=nohz nor isolcpus=managed_irq was
+given at boot, no boot snapshot exists for the corresponding type, so
+cpu_possible_mask is the implicit boot set and the type is enabled on
+the first runtime call.  housekeeping_cpumask() already falls back to
+cpu_possible_mask for a type with no flag bit set, so this needs no
+special-casing in the trial-mask computation; it only needs the
+type's housekeeping_enabled() check not to gate out the first call,
+which the HK_TYPE_KERNEL_NOISE check already did but the
+HK_TYPE_MANAGED_IRQ one did not, silently skipping managed-IRQ
+isolation whenever no boot parameter was present.  HK_TYPE_KERNEL_NOISE
+additionally calls sched_tick_offload_init() on first enable to
+allocate the tick offload percpu data that would otherwise only be
+allocated by housekeeping_init() when nohz_full= is present at boot.
+Remove __init from sched_tick_offload_init() and guard it with a
+tick_work_cpu check so it is safe to call at runtime.
+
+housekeeping_init() may now reject nohz_full=/isolcpus=nohz and clear
+HK_FLAG_KERNEL_NOISE for violating the isolcpus=domain subset
+invariant.  Clear HK_FLAG_KERNEL_NOISE_BOOT in that same path: DHM's
+runtime first-enable anchors on the boot snapshot whenever that flag
+is set, and the rejected configuration must not become the anchor.
 
 Signed-off-by: Qiliang Yuan <odys.yuan@gmail.com>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 12 ++++++++++++
- kernel/sched/isolation.c                        | 24 ++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ include/linux/sched/isolation.h |  32 +++++-
+ kernel/sched/core.c             |   4 +-
+ kernel/sched/isolation.c        | 209 +++++++++++++++++++++++++++++++++++-----
+ kernel/sched/sched.h            |   2 +-
+ 4 files changed, 220 insertions(+), 27 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index e75344f4e0cde..cd4fb6d752a6c 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2810,6 +2810,11 @@ Kernel parameters
- 			  so to protect individual CPUs the 'cpumask' file has to
- 			  be configured manually after bootup.
- 
-+			  When 'domain' is configured through a separate
-+			  isolcpus= or nohz_full= invocation, every 'nohz'
-+			  CPU must also be a 'domain' CPU; a combination that
-+			  violates this is rejected at boot with a warning.
+diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+index cf0fd03dd7a24..70602a74c1410 100644
+--- a/include/linux/sched/isolation.h
++++ b/include/linux/sched/isolation.h
+@@ -14,10 +14,26 @@ enum hk_type {
+ 	 * is always a subset of HK_TYPE_DOMAIN_BOOT.
+ 	 */
+ 	HK_TYPE_DOMAIN,
+-	/* Inverse of boot-time isolcpus=managed_irq argument */
+-	HK_TYPE_MANAGED_IRQ,
+-	/* Inverse of boot-time nohz_full= or isolcpus=nohz arguments */
 +
- 			domain
- 			  Isolate from the general SMP balancing and scheduling
- 			  algorithms. Note that performing domain isolation this way
-@@ -4564,6 +4569,13 @@ Kernel parameters
- 			Note that this argument takes precedence over
- 			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
- 
-+			When isolcpus=domain is also given, every CPU in
-+			this list (or in isolcpus=nohz) must also be in
-+			the isolcpus=domain list: a tick-suppressed CPU
-+			must always be excluded from the normal scheduler
-+			domain.  A combination that violates this is
-+			rejected at boot with a warning.
++	/*
++	 * Inverse of the boot-time nohz_full= or isolcpus=nohz arguments.
++	 * When neither is given, DHM still records cpu_possible_mask here so
++	 * that kernel-noise isolation can be enabled purely at runtime.
++	 */
++	HK_TYPE_KERNEL_NOISE_BOOT,
++	/*
++	 * A subset of HK_TYPE_KERNEL_NOISE_BOOT: it may exclude additional
++	 * CPUs isolated at runtime via cpuset isolated partitions.
++	 */
+ 	HK_TYPE_KERNEL_NOISE,
 +
- 	noinitrd	[Deprecated,RAM] Tells the kernel not to load any configured
- 			initial RAM disk. Currently this parameter applies to
- 			initrd only, not to initramfs. But it applies to both
++	/* Inverse of the boot-time isolcpus=managed_irq argument */
++	HK_TYPE_MANAGED_IRQ_BOOT,
++	/*
++	 * A subset of HK_TYPE_MANAGED_IRQ_BOOT: it may exclude additional
++	 * CPUs isolated at runtime via cpuset isolated partitions.
++	 */
++	HK_TYPE_MANAGED_IRQ,
+ 	HK_TYPE_MAX,
+ 
+ 	/*
+@@ -40,10 +56,13 @@ enum hk_type {
+ DECLARE_STATIC_KEY_FALSE(housekeeping_overridden);
+ extern int housekeeping_any_cpu(enum hk_type type);
+ extern const struct cpumask *housekeeping_cpumask(enum hk_type type);
++extern const struct cpumask *housekeeping_cpumask_rcu(enum hk_type type);
+ extern bool housekeeping_enabled(enum hk_type type);
+ extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
+ extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
+ extern int housekeeping_update(struct cpumask *isol_mask);
++extern int housekeeping_update_types(unsigned long type_mask,
++				     struct cpumask *isol_mask);
+ extern void __init housekeeping_init(void);
+ 
+ #else
+@@ -58,6 +77,11 @@ static inline const struct cpumask *housekeeping_cpumask(enum hk_type type)
+ 	return cpu_possible_mask;
+ }
+ 
++static inline const struct cpumask *housekeeping_cpumask_rcu(enum hk_type type)
++{
++	return cpu_possible_mask;
++}
++
+ static inline bool housekeeping_enabled(enum hk_type type)
+ {
+ 	return false;
+@@ -72,6 +96,8 @@ static inline bool housekeeping_test_cpu(int cpu, enum hk_type type)
+ }
+ 
+ static inline int housekeeping_update(struct cpumask *isol_mask) { return 0; }
++static inline int housekeeping_update_types(unsigned long type_mask,
++					    struct cpumask *isol_mask) { return 0; }
+ static inline void housekeeping_init(void) { }
+ #endif /* CONFIG_CPU_ISOLATION */
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 1fe40de6ebe3c..6c67874e639a5 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5960,8 +5960,10 @@ static void sched_tick_stop(int cpu)
+ }
+ #endif /* CONFIG_HOTPLUG_CPU */
+ 
+-int __init sched_tick_offload_init(void)
++int sched_tick_offload_init(void)
+ {
++	if (tick_work_cpu)
++		return 0;
+ 	tick_work_cpu = alloc_percpu(struct tick_work);
+ 	BUG_ON(!tick_work_cpu);
+ 	return 0;
 diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 156025ef81b75..c6a41095a9002 100644
+index c6a41095a9002..7725514ac290e 100644
 --- a/kernel/sched/isolation.c
 +++ b/kernel/sched/isolation.c
-@@ -171,8 +171,32 @@ void __init housekeeping_init(void)
- 	if (!housekeeping.flags)
- 		return;
+@@ -13,10 +13,12 @@
+ #include "sched.h"
  
-+	/*
-+	 * housekeeping_cpumask() only dereferences the real per-type masks
-+	 * once housekeeping_overridden is live; before that it always
-+	 * returns cpu_possible_mask regardless of housekeeping.flags, which
-+	 * would make the subset check below vacuously pass for every type.
-+	 * Enable it first so the check actually sees the parsed masks.
-+	 */
- 	static_branch_enable(&housekeeping_overridden);
+ enum hk_flags {
+-	HK_FLAG_DOMAIN_BOOT	= BIT(HK_TYPE_DOMAIN_BOOT),
+-	HK_FLAG_DOMAIN		= BIT(HK_TYPE_DOMAIN),
+-	HK_FLAG_MANAGED_IRQ	= BIT(HK_TYPE_MANAGED_IRQ),
+-	HK_FLAG_KERNEL_NOISE	= BIT(HK_TYPE_KERNEL_NOISE),
++	HK_FLAG_DOMAIN_BOOT	  = BIT(HK_TYPE_DOMAIN_BOOT),
++	HK_FLAG_DOMAIN		  = BIT(HK_TYPE_DOMAIN),
++	HK_FLAG_KERNEL_NOISE_BOOT = BIT(HK_TYPE_KERNEL_NOISE_BOOT),
++	HK_FLAG_KERNEL_NOISE	  = BIT(HK_TYPE_KERNEL_NOISE),
++	HK_FLAG_MANAGED_IRQ_BOOT  = BIT(HK_TYPE_MANAGED_IRQ_BOOT),
++	HK_FLAG_MANAGED_IRQ	  = BIT(HK_TYPE_MANAGED_IRQ),
+ };
  
-+	/*
-+	 * A nohz_full CPU must always run on an isolated sched domain:
-+	 * reject nohz_full=/isolcpus=nohz unless isolcpus=domain covers
-+	 * at least the same CPUs.  Checked here, after all __setup()
-+	 * cmdline parsing has run, so the outcome does not depend on
-+	 * which of the two parameters came first on the command line.
-+	 */
-+	if ((housekeeping.flags & HK_FLAG_KERNEL_NOISE) &&
-+	    !cpumask_subset(housekeeping_cpumask(HK_TYPE_DOMAIN),
-+			    housekeeping_cpumask(HK_TYPE_KERNEL_NOISE))) {
-+		pr_warn("Housekeeping: nohz_full=/isolcpus=nohz must be a subset "
-+			"of isolcpus=domain, disabling nohz_full\n");
-+		housekeeping.flags &= ~HK_FLAG_KERNEL_NOISE;
-+		if (!housekeeping.flags)
-+			return;
+ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
+@@ -36,25 +38,40 @@ bool housekeeping_enabled(enum hk_type type)
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_enabled);
+ 
++/*
++ * Types that can change at runtime via cpuset isolated partitions.
++ * Boot-only types (DOMAIN_BOOT) are always safe to read without lockdep.
++ */
++static bool housekeeping_type_can_change(enum hk_type type)
++{
++	switch (type) {
++	case HK_TYPE_DOMAIN:
++	case HK_TYPE_KERNEL_NOISE:
++	case HK_TYPE_MANAGED_IRQ:
++		return true;
++	default:
++		return false;
++	}
++}
++
+ static bool housekeeping_dereference_check(enum hk_type type)
+ {
+-	if (IS_ENABLED(CONFIG_LOCKDEP) && type == HK_TYPE_DOMAIN) {
+-		/* Cpuset isn't even writable yet? */
+-		if (system_state <= SYSTEM_SCHEDULING)
+-			return true;
++	if (!IS_ENABLED(CONFIG_LOCKDEP) || !housekeeping_type_can_change(type))
++		return true;
+ 
+-		/* CPU hotplug write locked, so cpuset partition can't be overwritten */
+-		if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_write_held())
+-			return true;
++	/* Cpuset isn't even writable yet? */
++	if (system_state <= SYSTEM_SCHEDULING)
++		return true;
+ 
+-		/* Cpuset lock held, partitions not writable */
+-		if (IS_ENABLED(CONFIG_CPUSETS) && lockdep_is_cpuset_held())
+-			return true;
++	/* CPU hotplug write locked, so cpuset partition can't be overwritten */
++	if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_write_held())
++		return true;
+ 
+-		return false;
+-	}
++	/* Cpuset lock held, partitions not writable */
++	if (IS_ENABLED(CONFIG_CPUSETS) && lockdep_is_cpuset_held())
++		return true;
+ 
+-	return true;
++	return false;
+ }
+ 
+ static inline struct cpumask *housekeeping_cpumask_dereference(enum hk_type type)
+@@ -77,12 +94,26 @@ const struct cpumask *housekeeping_cpumask(enum hk_type type)
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_cpumask);
+ 
++const struct cpumask *housekeeping_cpumask_rcu(enum hk_type type)
++{
++	const struct cpumask *mask = NULL;
++
++	if (static_branch_unlikely(&housekeeping_overridden)) {
++		if (READ_ONCE(housekeeping.flags) & BIT(type))
++			mask = rcu_dereference(housekeeping.cpumasks[type]);
++	}
++	if (!mask)
++		mask = cpu_possible_mask;
++	return mask;
++}
++EXPORT_SYMBOL_GPL(housekeeping_cpumask_rcu);
++
+ int housekeeping_any_cpu(enum hk_type type)
+ {
+ 	int cpu;
+ 
+ 	if (static_branch_unlikely(&housekeeping_overridden)) {
+-		if (housekeeping.flags & BIT(type)) {
++		if (READ_ONCE(housekeeping.flags) & BIT(type)) {
+ 			cpu = sched_numa_find_closest(housekeeping_cpumask(type), smp_processor_id());
+ 			if (cpu < nr_cpu_ids)
+ 				return cpu;
+@@ -164,6 +195,132 @@ int housekeeping_update(struct cpumask *isol_mask)
+ 	return 0;
+ }
+ 
++/**
++ * housekeeping_update_types - Update housekeeping masks for specified types
++ * @type_mask: Bitmask of housekeeping types to update
++ * @isol_mask: CPUs being added to the isolation set
++ *
++ * For each type in @type_mask, compute the trial mask as
++ * (boot snapshot & ~@isol_mask), validate it against @cpu_online_mask,
++ * then swap the RCU mask pointer and free the old mask after
++ * synchronize_rcu().  Anchoring on the immutable boot snapshot
++ * (HK_TYPE_*_BOOT) keeps the runtime mask a subset of the boot set and
++ * lets de-isolation restore the boot configuration exactly.
++ *
++ * The updated mask only takes effect for subsystems as CPUs cycle
++ * through hotplug; callers isolate CPUs via the CPU hotplug machinery so
++ * that tick, RCU and interrupt state is reconfigured by the existing
++ * online/offline callbacks rather than reconfigured in place.
++ *
++ * HK_TYPE_KERNEL_NOISE and HK_TYPE_MANAGED_IRQ also support runtime
++ * first-enable: when neither nohz_full=/isolcpus=nohz nor
++ * isolcpus=managed_irq was given at boot, no boot snapshot exists for
++ * the type, so cpu_possible_mask is the implicit boot set and the type
++ * flag is set in housekeeping.flags on the first call.
++ *
++ * Return: 0 on success, -ENOMEM on allocation failure, -EINVAL if
++ * a trial mask has no online CPUs.
++ */
++int housekeeping_update_types(unsigned long type_mask,
++			      struct cpumask *isol_mask)
++{
++	struct cpumask *trials[HK_TYPE_MAX] = {};
++	struct cpumask *old_masks[HK_TYPE_MAX] = {};
++	enum hk_type type;
++	int ret = 0;
++
++	for_each_set_bit(type, &type_mask, HK_TYPE_MAX) {
++		const struct cpumask *base;
++
++		if (type == HK_TYPE_DOMAIN_BOOT)
++			continue;
++		if (!housekeeping_enabled(type)) {
++			/*
++			 * HK_TYPE_KERNEL_NOISE and HK_TYPE_MANAGED_IRQ support
++			 * runtime first-enable for DHM isolated partitions
++			 * created without nohz_full=/isolcpus=managed_irq at
++			 * boot.  All other types must be boot-enabled.
++			 */
++			if (type != HK_TYPE_KERNEL_NOISE && type != HK_TYPE_MANAGED_IRQ)
++				continue;
++		}
++
++		/*
++		 * Compute the trial mask relative to the immutable boot
++		 * snapshot, never relative to the current (already shrunk)
++		 * mask.  Using the current mask would let it shrink
++		 * monotonically across isolation/de-isolation cycles and would
++		 * never recover CPUs once de-isolated.  Anchoring on the boot
++		 * snapshot keeps the runtime mask a subset of the boot set and
++		 * lets de-isolation restore exactly the boot configuration.
++		 *
++		 * HK_TYPE_KERNEL_NOISE additionally supports runtime
++		 * first-enable: when no nohz_full=/isolcpus=nohz was given at
++		 * boot, no boot snapshot exists, so cpu_possible_mask is the
++		 * implicit boot set.
++		 */
++		if (type == HK_TYPE_KERNEL_NOISE &&
++		    !(housekeeping.flags & HK_FLAG_KERNEL_NOISE_BOOT))
++			base = cpu_possible_mask;
++		else if (type == HK_TYPE_KERNEL_NOISE)
++			base = housekeeping_cpumask(HK_TYPE_KERNEL_NOISE_BOOT);
++		else if (type == HK_TYPE_MANAGED_IRQ)
++			base = housekeeping_cpumask(HK_TYPE_MANAGED_IRQ_BOOT);
++		else
++			base = housekeeping_cpumask(type);
++		trials[type] = kmalloc(cpumask_size(), GFP_KERNEL);
++		if (!trials[type]) {
++			ret = -ENOMEM;
++			goto err_free;
++		}
++		cpumask_andnot(trials[type], base, isol_mask);
++		if (!cpumask_intersects(trials[type], cpu_online_mask)) {
++			ret = -EINVAL;
++			goto err_free;
++		}
 +	}
 +
- 	if (housekeeping.flags & HK_FLAG_KERNEL_NOISE)
- 		sched_tick_offload_init();
- 	/*
++	if (!housekeeping.flags) {
++		ret = -EINVAL;
++		goto err_free;
++	}
++
++	for_each_set_bit(type, &type_mask, HK_TYPE_MAX) {
++		if (!trials[type])
++			continue;
++		old_masks[type] = housekeeping_cpumask_dereference(type);
++		/* First-time runtime enable: register the type now. */
++		if (!housekeeping_enabled(type)) {
++			WRITE_ONCE(housekeeping.flags,
++				   housekeeping.flags | BIT(type));
++			/*
++			 * HK_TYPE_KERNEL_NOISE first-enable at runtime
++			 * (zero-boot-param path): tick offload percpu data
++			 * was never allocated at boot since nohz_full= was
++			 * absent.  Allocate it now before CPUs cycle through
++			 * hotplug and sched_tick_stop() dereferences
++			 * tick_work_cpu.
++			 */
++			if (type == HK_TYPE_KERNEL_NOISE)
++				WARN_ON_ONCE(sched_tick_offload_init());
++		}
++		rcu_assign_pointer(housekeeping.cpumasks[type], trials[type]);
++		trials[type] = NULL;
++	}
++
++	synchronize_rcu();
++
++	for_each_set_bit(type, &type_mask, HK_TYPE_MAX)
++		kfree(old_masks[type]);
++
++	return 0;
++
++err_free:
++	for_each_set_bit(type, &type_mask, HK_TYPE_MAX)
++		kfree(trials[type]);
++	return ret;
++}
++
+ void __init housekeeping_init(void)
+ {
+ 	enum hk_type type;
+@@ -192,7 +349,15 @@ void __init housekeeping_init(void)
+ 			    housekeeping_cpumask(HK_TYPE_KERNEL_NOISE))) {
+ 		pr_warn("Housekeeping: nohz_full=/isolcpus=nohz must be a subset "
+ 			"of isolcpus=domain, disabling nohz_full\n");
+-		housekeeping.flags &= ~HK_FLAG_KERNEL_NOISE;
++		/*
++		 * Clear HK_TYPE_KERNEL_NOISE_BOOT too, not just the live
++		 * type: DHM's housekeeping_update_types() anchors runtime
++		 * isolation on this boot snapshot when it is set, and the
++		 * rejected boot configuration must not become that anchor.
++		 * Clearing both leaves the system in the same state as if
++		 * nohz_full=/isolcpus=nohz had never been passed.
++		 */
++		housekeeping.flags &= ~(HK_FLAG_KERNEL_NOISE | HK_FLAG_KERNEL_NOISE_BOOT);
+ 		if (!housekeeping.flags)
+ 			return;
+ 	}
+@@ -343,7 +508,7 @@ static int __init housekeeping_nohz_full_setup(char *str)
+ {
+ 	unsigned long flags;
+ 
+-	flags = HK_FLAG_KERNEL_NOISE;
++	flags = HK_FLAG_KERNEL_NOISE | HK_FLAG_KERNEL_NOISE_BOOT;
+ 
+ 	return housekeeping_setup(str, flags);
+ }
+@@ -362,7 +527,7 @@ static int __init housekeeping_isolcpus_setup(char *str)
+ 		 */
+ 		if (!strncmp(str, "nohz,", 5)) {
+ 			str += 5;
+-			flags |= HK_FLAG_KERNEL_NOISE;
++			flags |= HK_FLAG_KERNEL_NOISE | HK_FLAG_KERNEL_NOISE_BOOT;
+ 			continue;
+ 		}
+ 
+@@ -374,7 +539,7 @@ static int __init housekeeping_isolcpus_setup(char *str)
+ 
+ 		if (!strncmp(str, "managed_irq,", 12)) {
+ 			str += 12;
+-			flags |= HK_FLAG_MANAGED_IRQ;
++			flags |= HK_FLAG_MANAGED_IRQ | HK_FLAG_MANAGED_IRQ_BOOT;
+ 			continue;
+ 		}
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index e656c7059bf86..a640accf1d890 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -3018,7 +3018,7 @@ extern void post_init_entity_util_avg(struct task_struct *p);
+ 
+ #ifdef CONFIG_NO_HZ_FULL
+ extern bool sched_can_stop_tick(struct rq *rq);
+-extern int __init sched_tick_offload_init(void);
++extern int sched_tick_offload_init(void);
+ 
+ /*
+  * Tick may be needed by tasks in the runqueue depending on their policy and
 
 -- 
 2.43.0
