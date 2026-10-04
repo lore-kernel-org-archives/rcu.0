@@ -1,171 +1,149 @@
-Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A5C37F012;
-	Sat,  3 Oct 2026 23:52:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.75.144.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03E491FB1;
+	Sun,  4 Oct 2026 00:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791071566; cv=none; b=IJZijdydEqKD7Hrdv4Os3N+vXuW7wvIH/eQ55h8MK4WEzmPYZXYd7f03dcTZA4iWqFFA5S/RkzCyEepivhDtsZWRndYy9f+jDTC5XpzsMOAGFX/PIwA9ZVur9mQBnkjGXWdVInTc9bqQxrpsh2VhKZ24hahwEfmZOSUBxu+t36Q=
+	t=1791073024; cv=none; b=AK3lFYpA3mqTvuvPOnS2R0ti0wjTktVdF/u81JT9cCsbNZc2jIolMkLt1a0XnJrHbT8ELxq7tLuMpxR5Y6hxVZ8+kTqs+cClyjXCL0ty1vprOFUaLBRWhvVS1Cazgd8qC0rsvn5/2ZRTDUQmEoEHVvWHHtYrdKhEsxdCedYMZQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791071566; c=relaxed/simple;
-	bh=7a0XDAvS3fDy1cmZWgqS5qcFXOa0J7fpuJbx+nPX9QQ=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=HDEtd+9itopN5MQUn4W8rFmyo4YIK+2veVEM6hYV/Jzn6UHDmolFvZC6aUnl+yDKs0NvyW6kJIoPYQ5n9QG4jIta2wnHg9rL908D1RFsIu4ig8SJImTDhMTxynflGvc1bPgbWa+6TAQe+5s7EXwRC+QNY1wQxuIGmTaY5uKS9UE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=j3QD72du; dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=PyP2IyK4; arc=none smtp.client-ip=5.75.144.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
+	s=arc-20240116; t=1791073024; c=relaxed/simple;
+	bh=QwPx0hRDcObW7PfhIUc5+6PwUltypAH+jdVDo3Om/gE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RK1oXY/2FRaPTCrvmUZ1lXUW6+7cVTJj/Huxhv7hn/+wP8wzDFrICkzbM2Kc7MdneQhYmqBj+1GxmudvMSYKCysHQMqHcko43jgSaFPXySwhLj6SS9EIBYgSDb5e8V5z4Y2jIXBL75vOvUVmTuDym0fLwsA7Boo78P6NbFb9DEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U/yKHVeL; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="j3QD72du";
-	dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="PyP2IyK4"
-DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1791071536; bh=wYBv3z5a4HfOvjY83WOizp+
-	yR6aTEneKp2ZCD0fxCYE=; b=j3QD72duUBsqYdHOpQCr34HNIO5hEdrSBKpaI+mHaKOXDI9C7m
-	5/emW2OJ2ERwzQ2NtRr2Q64HRjTHzIsl+//5EwxSyFBKfAQ50Z9ETr73fUnFE0BxO96LS0dcgtq
-	EG8d9FUCaArxoEmaGMi9kukCYJ5dDUGSgCrv+nGIbWcu0wzJxKqOnIyWvB+EN29R+f0Sh5hJV+i
-	6/5oJCRAlCx670qEn8RDFif/6qPH5C5687C+/JG10WcrefD9pWbQDLWSIoVCpF4Rq74w1kwGB0v
-	gOq/Lmhv8Ks6XVNJroAQxeEEezjGP25nDNjAFvFQfhq16vDg4nHwd9CEyys3/+VnsPg==;
-DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1791071536; bh=wYBv3z5a4HfOvjY83WOizp+
-	yR6aTEneKp2ZCD0fxCYE=; b=PyP2IyK4svEUXvrS7w+dpkGVsEHyaHrFwGgLlKvwdKo5EkSB/w
-	tZcd58UwNc1/UGvuBPZBr7LRu3Euau8LJOCQ==;
-Date: Sun, 04 Oct 2026 00:52:14 +0100
-From: Bradley Morgan <brads@mainlining.org>
-To: paulmck@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>
-CC: kunwu.chan@gmail.com, boqun@kernel.org, dave@stgolabs.net,
- frederic@kernel.org, jiangshanlai@gmail.com, joelagnelf@nvidia.com,
- josh@joshtriplett.org, linux-kernel@vger.kernel.org,
- mathieu.desnoyers@efficios.com, neeraj.upadhyay@kernel.org,
- qiang.zhang@linux.dev, rcu@vger.kernel.org, rostedt@goodmis.org,
- urezki@gmail.com
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U/yKHVeL"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6E531F0089B;
+	Sun,  4 Oct 2026 00:17:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791073022;
+	bh=f0X55k1JjyZmnpTVYm2uh+cKq8TEASg4b9fJw48Vv8k=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=U/yKHVeL8XHRcEr60nsO4bv/yZckU6MfB/7U1Ftr3bJR8xPDT2YttyctjtK0qCVef
+	 D04+Kzbq2m/UClrBSH2Ytqkc9NyYfDw96s3CCOMIZdePz3/VLsODTJLkxEhoO22tf4
+	 VWJQnGN7xcjsdYbkyL84vRR+xARl3zzhkn1VWgLeNYlHoVJDZq9gcsh/GwqQJfbVpJ
+	 wqybdEO7RECabHL0K9JkID0fTAv93KNaGfHt/g775R3d6XuVYaaaHERUzTnZNfBGp5
+	 nG/97tdBz1RCL2I6d9JOKbLvRE+9QqckO54Dp4XjF1LHXSb9BuSL1WPbGicktG8gqi
+	 pRD0wPFQ7i3Tg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 7AB35CE39A4; Sat,  3 Oct 2026 17:17:02 -0700 (PDT)
+Date: Sat, 3 Oct 2026 17:17:02 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Kunwu Chan <kunwu.chan@gmail.com>
+Cc: dave@stgolabs.net, josh@joshtriplett.org, frederic@kernel.org,
+	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, boqun@kernel.org,
+	urezki@gmail.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
 Subject: Re: [PATCH v2] rcuscale: add srcua scale type
-In-Reply-To: <463c8f04-e08b-49b7-b16f-e65def841cb6@paulmck-laptop>
-References: <20261003161720.240855-1-kunwu.chan@gmail.com> <A3BA2086-5718-45BB-8B3E-35C1D2CA7B63@mainlining.org> <463c8f04-e08b-49b7-b16f-e65def841cb6@paulmck-laptop>
-Message-ID: <8E7E9F8D-D6B3-4F04-A0FA-2AEA8BF5DE1F@mainlining.org>
+Message-ID: <e148f43b-b41c-410f-b699-e7b033f91029@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20261003161720.240855-1-kunwu.chan@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261003161720.240855-1-kunwu.chan@gmail.com>
 
-On 4 October 2026 00:43:48 BST, "Paul E. McKenney" <paulmck@kernel.org>
-wrote:
->On Sat, Oct 03, 2026 at 06:52:44PM +0100, Bradley Morgan wrote:
->> On 3 October 2026 17:17:19 BST, Kunwu Chan <kunwu.chan@gmail.com> wrote:
->> >Add support for scaling atomic SRCU grace periods using
->> >srcu_read_lock_atomic()/srcu_read_unlock_atomic() and
->> >synchronize_srcu_atomic().
->> >
->> >Suggested-by: Paul E. McKenney <paulmck@kernel.org>
->> >Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
->> 
->> 1: why didn't u cc me
->> 2: why did you ommit my tag? I tend to review based on correctness, cuz
->idk pauls preferences, once I do I'll be a better rcu reviewer.
->
->Take it easy, Bradley.
->
->Many in the Linux kernel community consider it polite to drop a tag
->from (or, as in this case, avoid adding a tag to) a patch that changed
->significantly.  On the CC issue, you did find the patch the first time
->without him CCing you.  ;-)
->
->Kunwu did nothing wrong here.
+On Sun, Oct 04, 2026 at 12:17:19AM +0800, Kunwu Chan wrote:
+> Add support for scaling atomic SRCU grace periods using
+> srcu_read_lock_atomic()/srcu_read_unlock_atomic() and
+> synchronize_srcu_atomic().
+> 
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 
-I'm annoyed but not mad, no grudges taken..
+Queued for testing and further review, thank you!!!
 
->
->							Thanx, Paul
->
->> >---
->> >Changes since v1:
->> >- Rename srcu_atomic_ctlp to srcua and reuse srcu_ctlp for
->> >  SRCU operations, as suggested by Paul.
->> >- Reuse the existing SRCU cleanup and completed helpers by
->> >  initializing srcu_ctlp in srcu_atomic_scale_init().
->> >- Add .stats using srcu_scale_stats().
->> >- Use "srcua" to match the existing "srcu" and "srcud" scale
->> >  type names.
->> >- Use synchronize_srcu_atomic() for both normal and expedited
->> >  scale tests.
->> >
->> >v1:
->https://lore.kernel.org/all/20260927100359.3903688-1-kunwu.chan@gmail.com/
->> >Tested with kvm.sh --torture rcuscale scale_type=srcua on x86_64 and
->> >arm64, alongside gp_exp=1 and PROVE_LOCKING=y: no warnings or lockdep
->> >splats.
->> >---
->> > kernel/rcu/rcuscale.c | 41 ++++++++++++++++++++++++++++++++++++++++-
->> > 1 file changed, 40 insertions(+), 1 deletion(-)
->> >
->> >diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
->> >index 1097ec15879c..b172882824ac 100644
->> >--- a/kernel/rcu/rcuscale.c
->> >+++ b/kernel/rcu/rcuscale.c
->> >@@ -293,6 +293,44 @@ static struct rcu_scale_ops srcud_ops = {
->> > 	.name		= "srcud"
->> > };
->> > 
->> >+static struct srcu_struct srcua;
->> >+
->> >+static int srcu_scale_atomic_read_lock(void)
->> >+{
->> >+	return srcu_read_lock_atomic(srcu_ctlp);
->> >+}
->> >+
->> >+static void srcu_scale_atomic_read_unlock(int idx)
->> >+{
->> >+	srcu_read_unlock_atomic(srcu_ctlp, idx);
->> >+}
->> >+
->> >+static void srcu_scale_atomic_synchronize(void)
->> >+{
->> >+	synchronize_srcu_atomic(srcu_ctlp);
->> >+}
->> >+
->> >+static void srcu_atomic_scale_init(void)
->> >+{
->> >+	srcu_ctlp = &srcua;
->> >+	init_srcu_struct_atomic(srcu_ctlp);
->> >+}
->> >+
->> >+static struct rcu_scale_ops srcua_ops = {
->> >+	.ptype		= SRCU_FLAVOR,
->> >+	.init		= srcu_atomic_scale_init,
->> >+	.cleanup	= srcu_sync_scale_cleanup,
->> >+	.readlock	= srcu_scale_atomic_read_lock,
->> >+	.readunlock	= srcu_scale_atomic_read_unlock,
->> >+	.get_gp_seq	= srcu_scale_completed,
->> >+	.gp_diff	= rcu_seq_diff,
->> >+	.exp_completed	= srcu_scale_completed,
->> >+	.sync		= srcu_scale_atomic_synchronize,
->> >+	.exp_sync	= srcu_scale_atomic_synchronize,
->> >+	.stats		= srcu_scale_stats,
->> >+	.name		= "srcua"
->> >+};
->> >+
->> > #ifdef CONFIG_TASKS_RCU
->> > 
->> > /*
->> >@@ -1110,7 +1148,8 @@ rcu_scale_init(void)
->> > 	long i;
->> > 	long j;
->> > 	static struct rcu_scale_ops *scale_ops[] = {
->> >-		&rcu_ops, &srcu_ops, &srcud_ops, TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
->> >+		&rcu_ops, &srcu_ops, &srcua_ops, &srcud_ops,
->> >+		TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
->> > 	};
->> > 
->> > 	if (!torture_init_begin(scale_type, verbose))
->> >
->> >base-commit: d21906b0aa1e9573cdb5e7acaca44966b9d1dcd2
->> >
->> 
->> --- Thanks!
->> "I'm not a very positive person" - Linus torvalds
+							Thanx, Paul
 
---- Thanks!
-"I'm not a very positive person" - Linus torvalds
+> ---
+> Changes since v1:
+> - Rename srcu_atomic_ctlp to srcua and reuse srcu_ctlp for
+>   SRCU operations, as suggested by Paul.
+> - Reuse the existing SRCU cleanup and completed helpers by
+>   initializing srcu_ctlp in srcu_atomic_scale_init().
+> - Add .stats using srcu_scale_stats().
+> - Use "srcua" to match the existing "srcu" and "srcud" scale
+>   type names.
+> - Use synchronize_srcu_atomic() for both normal and expedited
+>   scale tests.
+> 
+> v1: https://lore.kernel.org/all/20260927100359.3903688-1-kunwu.chan@gmail.com/
+> Tested with kvm.sh --torture rcuscale scale_type=srcua on x86_64 and
+> arm64, alongside gp_exp=1 and PROVE_LOCKING=y: no warnings or lockdep
+> splats.
+> ---
+>  kernel/rcu/rcuscale.c | 41 ++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 40 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index 1097ec15879c..b172882824ac 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -293,6 +293,44 @@ static struct rcu_scale_ops srcud_ops = {
+>  	.name		= "srcud"
+>  };
+>  
+> +static struct srcu_struct srcua;
+> +
+> +static int srcu_scale_atomic_read_lock(void)
+> +{
+> +	return srcu_read_lock_atomic(srcu_ctlp);
+> +}
+> +
+> +static void srcu_scale_atomic_read_unlock(int idx)
+> +{
+> +	srcu_read_unlock_atomic(srcu_ctlp, idx);
+> +}
+> +
+> +static void srcu_scale_atomic_synchronize(void)
+> +{
+> +	synchronize_srcu_atomic(srcu_ctlp);
+> +}
+> +
+> +static void srcu_atomic_scale_init(void)
+> +{
+> +	srcu_ctlp = &srcua;
+> +	init_srcu_struct_atomic(srcu_ctlp);
+> +}
+> +
+> +static struct rcu_scale_ops srcua_ops = {
+> +	.ptype		= SRCU_FLAVOR,
+> +	.init		= srcu_atomic_scale_init,
+> +	.cleanup	= srcu_sync_scale_cleanup,
+> +	.readlock	= srcu_scale_atomic_read_lock,
+> +	.readunlock	= srcu_scale_atomic_read_unlock,
+> +	.get_gp_seq	= srcu_scale_completed,
+> +	.gp_diff	= rcu_seq_diff,
+> +	.exp_completed	= srcu_scale_completed,
+> +	.sync		= srcu_scale_atomic_synchronize,
+> +	.exp_sync	= srcu_scale_atomic_synchronize,
+> +	.stats		= srcu_scale_stats,
+> +	.name		= "srcua"
+> +};
+> +
+>  #ifdef CONFIG_TASKS_RCU
+>  
+>  /*
+> @@ -1110,7 +1148,8 @@ rcu_scale_init(void)
+>  	long i;
+>  	long j;
+>  	static struct rcu_scale_ops *scale_ops[] = {
+> -		&rcu_ops, &srcu_ops, &srcud_ops, TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
+> +		&rcu_ops, &srcu_ops, &srcua_ops, &srcud_ops,
+> +		TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
+>  	};
+>  
+>  	if (!torture_init_begin(scale_type, verbose))
+> 
+> base-commit: d21906b0aa1e9573cdb5e7acaca44966b9d1dcd2
+> -- 
+> 2.43.0
+> 
