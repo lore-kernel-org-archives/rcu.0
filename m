@@ -1,341 +1,233 @@
-Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010042.outbound.protection.outlook.com [52.101.193.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8715E371041;
-	Mon,  5 Oct 2026 09:05:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.75.144.95
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791191153; cv=none; b=LXiycqEwQfIUSaxSLT3AiSzCTYS5FX4pDFcVDKP9StE2UWF67GydjoWYl9WbQVHfn0ZzRmD+/qzHbvdjX95jqa0gV5FkF6yC6H+brMMZh/5S+Wd4nkpseSpScbYAUgtPGW1dBBBXgG40gmZl0Hbrx+Z7tW/iiKel0OpsF9bTb54=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791191153; c=relaxed/simple;
-	bh=3OG0luuyz1JPVwQPmv+to+Bxr8043Jt01r7uy/yzgTI=;
-	h=Date:From:To:CC:Subject:In-Reply-To:Message-ID:MIME-Version:
-	 Content-Type; b=tK0GRpNUyBh45jGEXF2+WzNJ51Vri6MTxyD9hsJZO2jLZjVG+xJhcRH4gBKORgXYnyv2wLjFvinKp4g1+S4r/YeTJEXhRGMNarX7TiLax95/ftsmXMeSacWTeJ4Wb88HhhCZZnsBbaFCTltdI1eWIyu4DSgKtDNgFe8Fm9ebkNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=C6MsBXLP; dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=YmfJLWNx; arc=none smtp.client-ip=5.75.144.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC518248867;
+	Mon,  5 Oct 2026 12:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791204996; cv=fail; b=lMfIksFCeTDK2PRpVCM2NFLa1dbWVwT/Ip/6OUMfNkFRyVO8wTlialvkjOZDyb0UbjmGYw4ObhO/SwJ+A4ZUp8gzzUvWkjzQWmbByziwAvEY8uhWW0p+s/OIbmhHrxQUAcYhddyvF74IYETbFE8yDHjr6BnkKYMkRmh/3bCUKQw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791204996; c=relaxed/simple;
+	bh=reybL2doTeJhOmv+aJD9erxT+aE6e8miXIbwgJl/uSc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=WGgLFgQhv2zkVyqOLFKH8hdW1EqU2XbdILQUABC37S90J4su1Z8DJpoBau9tLpeP5IWj9xZBQXSFh9tLUCGOL5VPUxX5+W5GoUF7hpj0Q3zc4F8KFXv9y14Nptq3EX+YghaGHLH3Q1Xt1DkJsNAs8VoaVL8O4ENJ6oDeWNlt0oo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DatXNvYv; arc=fail smtp.client-ip=52.101.193.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="C6MsBXLP";
-	dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="YmfJLWNx"
-DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1791191112; bh=P6/KVlhkMPwKZhFrwlLaZXw
-	8Ki4qiLnbuA0NLKbRUrg=; b=C6MsBXLPeGvqRo8q1buLyxKHMyBnf5nwDEDLl6qeeKXc6ebsAy
-	nX7M9KObTbqLv509Tb42Y8Y+jOUFJv5oKnwOz+VT7bVBG0LYu3l95i0H7dB9x86Knnl4yyBLRQ2
-	GI0v+N/V/relXsSIPR9n3xl6vAUrDJQjZIpPvSIGD5aNO40lStnfgIv/p7sb9B1cW5JnJZpetrF
-	ULeRnnDvp4C7+KGeguTQivenO+oONu57JfrkTq/pVfcAB/68eRMxC//UfY10e4o7W8zzphH6dKn
-	abRzKFGknUAse0aJfu0tlKf1Jg5FCQ4y7wJvH1OmvTKRGxHf6YfNUdVCxDJdbqd4U9g==;
-DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1791191112; bh=P6/KVlhkMPwKZhFrwlLaZXw
-	8Ki4qiLnbuA0NLKbRUrg=; b=YmfJLWNxJGnOAGk0Rn0vw1qrQkFnPilyi7ixKJToena4KXF02M
-	WbwZLgZ3mQapeddI8DgKJYlycJPXznEhZIDw==;
-Date: Mon, 05 Oct 2026 10:05:13 +0100
-From: Bradley Morgan <brads@mainlining.org>
-To: joelagnelf@nvidia.com
-CC: boqun@kernel.org, dave@stgolabs.net, frederic@kernel.org,
- jiangshanlai@gmail.com, josh@joshtriplett.org, linux-kernel@vger.kernel.org,
- mathieu.desnoyers@efficios.com, neeraj.upadhyay@kernel.org,
- paulmck@kernel.org, qiang.zhang@linux.dev, rcu@vger.kernel.org,
- rostedt@goodmis.org, urezki@gmail.com
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_rcuscale=3A_Consolidate_per-?=
- =?US-ASCII?Q?writer_arrays_into_struct_writer=5Fstate?=
-In-Reply-To: <20261005005642.2312272-1-joelagnelf@nvidia.com>
-Message-ID: <79863FBF-8E54-41F4-A198-44472F5CEA8A@mainlining.org>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="DatXNvYv"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Ni+/mkX1e62PVR+q+5QZJC9Cz/VUPf4ZCWZevbznh9XwfJ7WcJfSPuyT4FnvRLFe5vke8Ox1XD1s7wPDPlPnYBo5R50Te+ws5mCB7di2VkYwaMCED4qWdk0xx3zGbZHGx3RlmLadAYvsuicukWqMK20GzQO/WD0cRC+viCTkdMz/tfuDCdHlikMyDRDP1sZNpSHd0o751vRWY4aCQ5oe0UsztEtkx5rpkNIqdLilxaQP4o4ZIXeGPSNI56mBXSDBII3PcXYglk3eX4/e3OrKbwi+KVMXkt7cvPTELlBh/GhX6TCXqVtgY9AaIMLzOEvS27RgqqYuAhbpBqjm4y+6cQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=reybL2doTeJhOmv+aJD9erxT+aE6e8miXIbwgJl/uSc=;
+ b=Zlh5QiKH/0dnPSDgetdoHI1aRbexVkeEJw66HQLHaukrZZ5Jk6CMwcYfR9afSG6Um+s378Fx9y+z8oHYa4GzERggZip5DiImXgiz36csajIj+kGI0a8q6UZQOfYOqlMRFK9kn56Zq+ydwAzO3To6WzeK4pBHs1s0NiGvPBeFMNq3aWe3i2NdkSSBbTPOw0G79N/wFsKYA12AX9TBMY0IqkXX+cotguzg9+xYyfQh8Ljj/vnvXVDE27wsfC7ojn53ZOm5dihJ+qi+Bshignx7v4usVERdHC9+qBoXiAUrD+J2NDlv7glvDxYfmb7ePqUadGjWTdm0AAyCwRbNFORwnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=reybL2doTeJhOmv+aJD9erxT+aE6e8miXIbwgJl/uSc=;
+ b=DatXNvYvFqDh2Afi31Gh7fdeERnhJaMKny0oK7TFMjx8l5yJW51+blYi5uk6+SrMYMUuueHl5ZcN71oIjau4cyPESeJfbpUVQmp2fAZgKLMvL162iq7NNDoQf7ApEJifv1TrWLHBI2ymNY16DKc3swEbt0AY25FxM9nj/RPxHVLI7ONu8QyaQp5cC2LH6+xsrE2c8kmZwhPQKmn+WEvhyzd5ZKFxEGPYhQfOXukfki/d0su8mo9hkgugI0haC0sMreODUs0wDIa8B1P8bpnKec0QVhhg+u7Pbd+HIlV42k/Rb/+oPClkEu+9Ge/nYXKoIKhCMQi0vZ+6voxswoiSqA==
+Received: from CY5PR12MB6479.namprd12.prod.outlook.com (2603:10b6:930:34::17)
+ by IA1PR12MB6161.namprd12.prod.outlook.com (2603:10b6:208:3eb::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.451.23; Mon, 5 Oct
+ 2026 12:56:30 +0000
+Received: from CY5PR12MB6479.namprd12.prod.outlook.com
+ ([fe80::229a:704f:1349:5056]) by CY5PR12MB6479.namprd12.prod.outlook.com
+ ([fe80::229a:704f:1349:5056%4]) with mapi id 15.21.0472.015; Mon, 5 Oct 2026
+ 12:56:30 +0000
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: Cunlong Li <shenxiaogll@gmail.com>
+CC: Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>, "Paul E. McKenney"
+	<paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, Neeraj
+ Upadhyay <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, Steven
+ Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers
+	<mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	Cunlong Li <shenxiaogll@gmail.com>
+Subject: Re: [PATCH] rcu: Enable runtime reset of the RCU stall panic count
+Thread-Topic: [PATCH] rcu: Enable runtime reset of the RCU stall panic count
+Thread-Index: AQHdU526ny8tIQKGAkCWrNqZ8LpGfbbu6qay
+Date: Mon, 5 Oct 2026 12:56:30 +0000
+Message-ID: <00F6D386-FE41-42E3-9B89-07381A49E061@nvidia.com>
+References: <20261004-rcu-v1-1-3799a44367f1@gmail.com>
+In-Reply-To: <20261004-rcu-v1-1-3799a44367f1@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR12MB6479:EE_|IA1PR12MB6161:EE_
+x-ms-office365-filtering-correlation-id: d75e9520-f84e-42ac-fbc8-08df22e01388
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|376014|23010399003|7416014|366016|5023799004|10067099003|11063799006|56012099006|3023799007|6133799003|22082099003|18002099003|38070700021;
+x-microsoft-antispam-message-info:
+ VLBwd010gW19xMuKhWyGi4n8CaJb7o+JSMmeiOjgCyla0uLN3ntQQsezcn9ME0QCzN6NIe8vtcVZhnivnYCwI3F1PPA01yMIXocb8UD9L7Qc9jFY2YLjYEXcHs7V36wRknk38H9zWD96KVoZUlt4X1KWKYmf5z26/BXhR7r8pstNWtc/RwLjO+ZDuebZHArMKtzqfaMsyLX1zUj7VjPpPg+SKjwGzzP+nGH7/VYxzaEftoZNJ3Ktm+ZEgWeeigmeoxqey1t/7EsPZXCMo2XUoxLJ+0BoCohHYJmdRXAfZBxTLp0rhPzX0fLZ/4APevt1m7DyF1o/TOzo5a7smH3J/OHfLNEBWeHfsY7IC0JzBFCSNhkj9cpN20MgkL9ICvVTrbB0PfeeLG5PM+9CI81PRVUB2m+vNzlG/T4B3Ef8DQTqdS0L/4o1mZFpPikPZlcHYJsfgnU+aEa5/5n7pF+kL86InPUxZCaFWVo0hoYl2KqDTnSuwHoJe1P53q1xzkPP8LFOhlj9RnqLUS2sIAl9ZrrMHTQoN3HMTfaV9d/2xKVa/dEqC6V+FHMbU74nrRj0j2ITr586KxU3Zc3vQZqOFz51CNJbD2bIvlp8RUB79/fSqh8MMVcimdd7oEfe3foWH/qRbdLfQDaWfvzah1MNio9nQChC5FDcdIZRXTYixpu8OkRBBoimzxAdDTxqMsQdfwnw7nQWmCn2cU3Ym6Z5leLc6+/9+jZ0AGXSDv3XhME=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(23010399003)(7416014)(366016)(5023799004)(10067099003)(11063799006)(56012099006)(3023799007)(6133799003)(22082099003)(18002099003)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?akN0YnZSTkxlMmNzZm9lZzJOU0FBZ3NOTmNqc3NsVW9sMWpZTmU0MzZIaDRv?=
+ =?utf-8?B?SENqZncvMkZwMEs2M0dMaCtIa0lSTGE0c0xPcmxBSmNPWWtPc0V2SWh6S29m?=
+ =?utf-8?B?VVJlV0FhSUNxS1B3R2NVdi9UWlB0WWlWdWVYOTd0ZEFmY2hpYlRFZ1ptbjZ0?=
+ =?utf-8?B?WW5VMmlsd01UZEhGa3h6QVVsUm1GSlVkaFZhVkpBTXZVQkdnNlczV29zUm5o?=
+ =?utf-8?B?bU5Qd3NnU3VWY3NBMjY0Z1ZLdXF0VGNDWXZ4WFpvOUZvYy93Qlh4aWx6Q2N4?=
+ =?utf-8?B?T1FybDNmWlFFSVlNOVUwTDJvM2dncHJDbG5QSG5taGhJalZueDdPaEFLQkFB?=
+ =?utf-8?B?NlA2eFR4UDN3YUxhVG9OSUhEUnNvRUpKb2tuR3Z4VU9mM0l1UGZST0VEeXJF?=
+ =?utf-8?B?OENYcGFiUDBYeGVNcWtBZ1d6Z1BRUEJWRnlaRDhkbXcvV0VUSHV4c1dPU3VS?=
+ =?utf-8?B?Mk10ZkxvOUNBamcrRVVIL0hUY0N5MmowaDhybVdWS0gvTzNqQUxxamcvVWJq?=
+ =?utf-8?B?ZjFFcytKM0lyYjV2ZmlpMUVLcTNLdUhSSkJ3c1R0WEhlOW9pcVRWTzl2NTQy?=
+ =?utf-8?B?WlZpeTdiNXYwTUk2OEsrQkU5bWNsYmNJd0RjRS9TV0tqSTlqR0V0UmU2WXl5?=
+ =?utf-8?B?WjFUcnhzVXAvZXUzMzh5SVpzTjA5anc4RlBVZHVCR0JaM3ZxT3hVVGF5bEx2?=
+ =?utf-8?B?Y2owZjNNYitHcThmeHRNcmllR2lva1lWNUljY3EvMlBRZG01OGlCVTdRNllB?=
+ =?utf-8?B?ZW41Wmc5SFBrOEh2WDR4K2lXcllwMDVaRUJWdldBT3Z0d1BpNlJ1ZmRzTFIy?=
+ =?utf-8?B?UW5KUENaWVR4Q1Y5RGYrSWFENDdpUSt5MnFJNDZrUmZRYmlnZnRMNWVJdXAw?=
+ =?utf-8?B?V1dMdGRUQk1BTndFZ0llT05DN1I2UUVNdlVIbzBYZm01YUJxK2lybWh1a3Ro?=
+ =?utf-8?B?eTN2L05uUWF2YjFOUkNIc09VWjY0dHVDQjlzaVNnajhTT00rc1RSd0VQbGE3?=
+ =?utf-8?B?VCtqTkRrLzg4cWFNZzN0N3U3ZnI0YVhYNTBUM2lLOXlhaDk3bnhGb1NXdUJr?=
+ =?utf-8?B?MkRUQ3l1Z2tkYnl0aWM0SE0rUjY3K2hWSnZqaUVscmNhRElLb3RGWWtQRHha?=
+ =?utf-8?B?NkhqYVV0YUVZWnY2Ymd0blpaYTFXVlB3WGF5c1JtUTc2NC9yRnlSTnordVJG?=
+ =?utf-8?B?SU1OTmVWQjJTc01qVmk0bGV2S0ZDcXRHWDl4VjlHTDJhUkFoeDRpekZRWWZM?=
+ =?utf-8?B?cGMyVlJSczkzUjNKUzU1WHFFdWoxWGd3SzJRVit4SFZRWmpZNGJYcm1nZTNr?=
+ =?utf-8?B?Zlg5MURRL21xeHVuM0lqdDdWOVpERTlmZHpwVk9EeUM4YWpGVXB6Wi8yVTN2?=
+ =?utf-8?B?Z2ZVVWI2Y1BMZ2s0d1J5K0lWejZncmVMUUxEVEFaRWlUYWhnU0FSMWYvMFdY?=
+ =?utf-8?B?VDRpMFp2MWVMQUxINitUZmtiQjRMNldqMTlVYlUxcjMydksrQ2srcy9Feis5?=
+ =?utf-8?B?TjB1RUhRcnMyQkdnSUdmVXpKMjVGNVpydVBmVitXMGMyb3NnSVczMXFwcDJS?=
+ =?utf-8?B?K3JjVC9NVVZHeGJRTEFRVUdsYlBGMUU3M0VlVFVrSy83UFUvdG1RK3IrOGpF?=
+ =?utf-8?B?amNKQTI5WVJGZnRHUGl1dnZYdlNHbVk2NGRtaGwzRWhueEJaRHJxV0VrQjhp?=
+ =?utf-8?B?YnpKMUNCc3hJWUhOR3lPZWxvdjl2VlJaL2d0UzFWS01UVjdpVXgyNTNRSXZh?=
+ =?utf-8?B?VXd5dnN2bm1BVDNQR3VXdmNKTkRNSmpSQXJONlU0ZWFGbG54RnZzcHRMeS96?=
+ =?utf-8?B?bnF0anAwckNwQkcyZFpna05zSEhPREFwQjU3LzJGMDRkaWcwUE1DNkNRaDU1?=
+ =?utf-8?B?cDRxekJsZ3paSFl1MVdWa1dRSHBqQkpPNStkVEk3ODdZcG1KVEhuY01FRXdq?=
+ =?utf-8?B?RG9HR0tTYUpvR3FLQnZVeDB4U0RRaS9PL0RvUllaTDZrQ1FXMGVuN2k1bS9C?=
+ =?utf-8?B?Smh5eGJoTVpYV1F2K0pEVC9DUlJ4OC90QlhFblNxS1JoUithRVd4K0VYcUtn?=
+ =?utf-8?B?Z2dQN3ZaM3FYdGFxdnRWRWpRM3BEcjQ1SGdZV21lTHZDMXl4citmUkU0YzlC?=
+ =?utf-8?B?dUwwK0hHbk5lU2NRa3JqN3M5UjhxUDlYR3pPWkxEcmpRM2RjSVFKS3ZGSFAr?=
+ =?utf-8?B?aU5NRUtpamYzYnd2dWN6RmM0ZWtpdDVWdU1YNyszM3diYWJpdVhuSlZpVW9Y?=
+ =?utf-8?B?U1crUm5EOHhxbkxmS2dadWs1U1dSRXRQRHd5R2RDTmZBT3RBNWlsS01KU0k4?=
+ =?utf-8?B?MjQ2emF2ekNOWDByVmIvZVlzb0NXbzczRmlTWWpucTBoakR6bXMrQT09?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6479.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d75e9520-f84e-42ac-fbc8-08df22e01388
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2026 12:56:30.5336
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qaY7Yp3dputrv36z03X78HnDnkFVlH6YYnQ+hRoVkuO4oqPPsnOVxWSFykuo+jryrPqbV44pOxDrWDgMyQr0Hw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6161
 
-On 5 October 2026 01:56:41 BST, Joel Fernandes <joelagnelf@nvidia.com>
-wrote:
->The writer kthreads keep their state in five parallel arrays indexed by
->writer number: writer_tasks, writer_durations, writer_n_durations,
->writer_done and writer_freelists.  Each must be allocated, NULL-checked,
->freed and cleared separately, and the cleanup path needs several
->guards to cope with any one of them being missing.
->
->Collapse them into a single array of struct writer_state, holding the
->task pointer, the duration buffer, the measurement count, the done flag
->and the existing struct writer_freelist.
->
->This reduces initialization to one allocation and one out-of-memory
->check, and cleanup to a single kfree().  As a side effect, this also
->fixes a leak: cleanup only ran its frees under "if (writer_tasks)", so
->if the writer_tasks allocation failed while a later allocation (for
->example writer_durations or writer_n_durations) still succeeded, those
->already-allocated arrays were never freed.  With a single allocation,
->that partial-allocation state can no longer occur.
-
-All I've gotta say here, is one huge thank you, this cleanup WASS needed.
-
-Reviewed-by: Bradley Morgan <brads@mainlining.org>
-
-Also I ran basic tests:
-
-Tested-by: Bradley Morgan <brads@mainlining.org> # Power10 
-
->
->Assisted-by: Codex
->Fixes: 8704baab9bc8 ("rcutorture: Add RCU grace-period performance tests")
->Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
->---
-> kernel/rcu/rcuscale.c | 127 ++++++++++++++++++------------------------
-> 1 file changed, 55 insertions(+), 72 deletions(-)
->
->diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
->index 1097ec15879c..f0bca5dcc754 100644
->--- a/kernel/rcu/rcuscale.c
->+++ b/kernel/rcu/rcuscale.c
->@@ -115,17 +115,21 @@ struct writer_freelist {
-> 	struct writer_mblock *ws_mblocks;
-> };
-> 
->+struct writer_state {
->+	struct writer_freelist wst_fl;
->+	struct task_struct *wst_task;
->+	u64 *wst_durations;
->+	int wst_n_durations;
->+	bool wst_done;
->+};
->+
-> static int nrealreaders;
-> static int nrealwriters;
-> static int nrealexp;
->-static struct task_struct **writer_tasks;
-> static struct task_struct **reader_tasks;
-> static struct task_struct **exp_tasks;
-> 
->-static u64 **writer_durations;
->-static bool *writer_done;
->-static struct writer_freelist *writer_freelists;
->-static int *writer_n_durations;
->+static struct writer_state *writer_states;
-> static atomic_t n_rcu_scale_reader_started;
-> static atomic_t n_rcu_scale_writer_started;
-> static atomic_t n_rcu_scale_writer_finished;
->@@ -504,9 +508,9 @@ static struct writer_mblock *rcu_scale_alloc(long me)
-> 	struct writer_freelist *wflp;
-> 	struct writer_mblock *wmbp;
-> 
->-	if (WARN_ON_ONCE(!writer_freelists))
->+	if (WARN_ON_ONCE(!writer_states))
-> 		return NULL;
->-	wflp = &writer_freelists[me];
->+	wflp = &writer_states[me].wst_fl;
-> 	if (llist_empty(&wflp->ws_lhp)) {
-> 		// ->ws_lhp is private to its rcu_scale_writer task.
-> 		wmbp = container_of(llist_del_all(&wflp->ws_lhg), struct writer_mblock, wmb_node);
->@@ -560,8 +564,9 @@ rcu_scale_writer(void *arg)
-> 	u64 t;
-> 	DEFINE_TORTURE_RANDOM(tr);
-> 	u64 *wdp;
->-	u64 *wdpp = writer_durations[me];
->-	struct writer_freelist *wflp = &writer_freelists[me];
->+	struct writer_state *wsp = &writer_states[me];
->+	u64 *wdpp = wsp->wst_durations;
->+	struct writer_freelist *wflp = &wsp->wst_fl;
-> 	struct writer_mblock *wmbp = NULL;
-> 
-> 	VERBOSE_SCALEOUT_STRING("rcu_scale_writer task started");
->@@ -631,7 +636,7 @@ rcu_scale_writer(void *arg)
-> 			started = true;
-> 		if (!done && i >= MIN_MEAS && time_after(jiffies, jdone)) {
-> 			done = true;
->-			WRITE_ONCE(writer_done[me], true);
->+			WRITE_ONCE(wsp->wst_done, true);
-> 			sched_set_normal(current, 0);
-> 			pr_alert("%s%s rcu_scale_writer %ld has %d measurements\n",
-> 				 scale_type, SCALE_FLAG, me, MIN_MEAS);
->@@ -649,7 +654,7 @@ rcu_scale_writer(void *arg)
-> 						cur_ops->get_gp_seq();
-> 				}
-> 				if (shutdown_secs) {
->-					writer_tasks[me] = NULL;
->+					wsp->wst_task = NULL;
-> 					smp_mb(); /* Assign before wake. */
-> 					rcu_scale_cleanup();
-> 					kernel_power_off();
->@@ -665,10 +670,10 @@ rcu_scale_writer(void *arg)
-> 
-> 			if (!atomic_xchg(&dumped, 1)) {
-> 				for (i = 0; i < nrealwriters; i++) {
->-					if (writer_done[i])
->+					if (writer_states[i].wst_done)
-> 						continue;
-> 					pr_info("%s: Task %ld flags writer %d:\n", __func__, me, i);
->-					sched_show_task(writer_tasks[i]);
->+					sched_show_task(writer_states[i].wst_task);
-> 				}
-> 				if (cur_ops->stats)
-> 					cur_ops->stats();
->@@ -676,7 +681,7 @@ rcu_scale_writer(void *arg)
-> 		}
-> 		if (!selfreport && time_after(jiffies, jdone + HZ * (70 + me))) {
-> 			pr_info("%s: Writer %ld self-report: started %d done %d/%d->%d i %d jdone %lu.\n",
->-				__func__, me, started, done, writer_done[me], atomic_read(&n_rcu_scale_writer_finished), i, jiffies - jdone);
->+				__func__, me, started, done, wsp->wst_done, atomic_read(&n_rcu_scale_writer_finished), i, jiffies - jdone);
-> 			selfreport = true;
-> 		}
-> 		if (gp_succeeded && started && !alldone && i < MAX_MEAS - 1)
->@@ -687,7 +692,7 @@ rcu_scale_writer(void *arg)
-> 		rcu_scale_free(wmbp);
-> 		cur_ops->gp_barrier();
-> 	}
->-	writer_n_durations[me] = i_max + 1;
->+	wsp->wst_n_durations = i_max + 1;
-> 	torture_kthread_stopping("rcu_scale_writer");
-> 	return 0;
-> }
->@@ -1031,13 +1036,11 @@ rcu_scale_cleanup(void)
-> 		reader_tasks = NULL;
-> 	}
-> 
->-	if (writer_tasks) {
->+	if (writer_states) {
-> 		for (i = 0; i < nrealwriters; i++) {
-> 			torture_stop_kthread(rcu_scale_writer,
->-					     writer_tasks[i]);
->-			if (!writer_n_durations)
->-				continue;
->-			j = writer_n_durations[i];
->+					     writer_states[i].wst_task);
->+			j = writer_states[i].wst_n_durations;
-> 			pr_alert("%s%s writer %d gps: %d\n",
-> 				 scale_type, SCALE_FLAG, i, j);
-> 			ngps += j;
->@@ -1051,14 +1054,12 @@ rcu_scale_cleanup(void)
-> 			 rcuscale_seq_diff(b_rcu_gp_test_finished,
-> 					   b_rcu_gp_test_started));
-> 		for (i = 0; i < nrealwriters; i++) {
->-			if (!writer_durations)
->-				break;
->-			if (!writer_n_durations)
->-				continue;
->-			wdpp = writer_durations[i];
->+			struct writer_state *wsp = &writer_states[i];
->+
->+			wdpp = wsp->wst_durations;
-> 			if (!wdpp)
-> 				continue;
->-			for (j = 0; j < writer_n_durations[i]; j++) {
->+			for (j = 0; j < wsp->wst_n_durations; j++) {
-> 				wdp = &wdpp[j];
-> 				pr_alert("%s%s %4d writer-duration: %5d %llu\n",
-> 					scale_type, SCALE_FLAG,
->@@ -1066,34 +1067,23 @@ rcu_scale_cleanup(void)
-> 				if (j % 100 == 0)
-> 					schedule_timeout_uninterruptible(1);
-> 			}
->-			kfree(writer_durations[i]);
->-			if (writer_freelists) {
->+			kfree(wdpp);
->+			if (wsp->wst_fl.ws_mblocks) {
-> 				int ctr = 0;
-> 				struct llist_node *llnp;
->-				struct writer_freelist *wflp = &writer_freelists[i];
-> 
->-				if (wflp->ws_mblocks) {
->-					llist_for_each(llnp, wflp->ws_lhg.first)
->-						ctr++;
->-					llist_for_each(llnp, wflp->ws_lhp.first)
->-						ctr++;
->-					WARN_ONCE(ctr != gp_async_max,
->-						  "%s: ctr = %d gp_async_max = %d\n",
->-						  __func__, ctr, gp_async_max);
->-					kfree(wflp->ws_mblocks);
->-				}
->+				llist_for_each(llnp, wsp->wst_fl.ws_lhg.first)
->+					ctr++;
->+				llist_for_each(llnp, wsp->wst_fl.ws_lhp.first)
->+					ctr++;
->+				WARN_ONCE(ctr != gp_async_max,
->+					  "%s: ctr = %d gp_async_max = %d\n",
->+					  __func__, ctr, gp_async_max);
->+				kfree(wsp->wst_fl.ws_mblocks);
-> 			}
-> 		}
->-		kfree(writer_tasks);
->-		writer_tasks = NULL;
->-		kfree(writer_durations);
->-		writer_durations = NULL;
->-		kfree(writer_n_durations);
->-		writer_n_durations = NULL;
->-		kfree(writer_done);
->-		writer_done = NULL;
->-		kfree(writer_freelists);
->-		writer_freelists = NULL;
->+		kfree(writer_states);
->+		writer_states = NULL;
-> 	}
-> 
-> 	/* Do torture-type-specific cleanup operations.  */
->@@ -1187,37 +1177,30 @@ rcu_scale_init(void)
-> 				goto unwind;
-> 		}
-> 	}
->-	writer_tasks = kzalloc_objs(writer_tasks[0], nrealwriters);
->-	writer_durations = kcalloc(nrealwriters, sizeof(*writer_durations), GFP_KERNEL);
->-	writer_n_durations = kzalloc_objs(*writer_n_durations, nrealwriters);
->-	writer_done = kzalloc_objs(writer_done[0], nrealwriters);
->-	if (gp_async) {
->-		if (gp_async_max <= 0) {
->-			pr_warn("%s: gp_async_max = %d must be greater than zero.\n",
->-				__func__, gp_async_max);
->-			WARN_ON_ONCE(IS_BUILTIN(CONFIG_RCU_TORTURE_TEST));
->-			firsterr = -EINVAL;
->-			goto unwind;
->-		}
->-		writer_freelists = kzalloc_objs(writer_freelists[0],
->-						nrealwriters);
->+	writer_states = kzalloc_objs(writer_states[0], nrealwriters);
->+	if (gp_async && gp_async_max <= 0) {
->+		pr_warn("%s: gp_async_max = %d must be greater than zero.\n",
->+			__func__, gp_async_max);
->+		WARN_ON_ONCE(IS_BUILTIN(CONFIG_RCU_TORTURE_TEST));
->+		firsterr = -EINVAL;
->+		goto unwind;
-> 	}
->-	if (!writer_tasks || !writer_durations || !writer_n_durations || !writer_done ||
->-	    (gp_async && !writer_freelists)) {
->+	if (!writer_states) {
-> 		SCALEOUT_ERRSTRING("out of memory");
-> 		firsterr = -ENOMEM;
-> 		goto unwind;
-> 	}
-> 	for (i = 0; i < nrealwriters; i++) {
->-		writer_durations[i] =
->-			kcalloc(MAX_MEAS, sizeof(*writer_durations[i]),
->-				GFP_KERNEL);
->-		if (!writer_durations[i]) {
->+		struct writer_state *wsp = &writer_states[i];
->+
->+		wsp->wst_durations = kcalloc(MAX_MEAS, sizeof(*wsp->wst_durations),
->+					     GFP_KERNEL);
->+		if (!wsp->wst_durations) {
-> 			firsterr = -ENOMEM;
-> 			goto unwind;
-> 		}
->-		if (writer_freelists) {
->-			struct writer_freelist *wflp = &writer_freelists[i];
->+		if (gp_async) {
->+			struct writer_freelist *wflp = &wsp->wst_fl;
-> 
-> 			init_llist_head(&wflp->ws_lhg);
-> 			init_llist_head(&wflp->ws_lhp);
->@@ -1235,7 +1218,7 @@ rcu_scale_init(void)
-> 			}
-> 		}
-> 		firsterr = torture_create_kthread(rcu_scale_writer, (void *)i,
->-						  writer_tasks[i]);
->+						  wsp->wst_task);
-> 		if (torture_init_error(firsterr))
-> 			goto unwind;
-> 	}
->
-
---- Thanks!
-"I'm not a very positive person" - Linus torvalds
+DQoNCj4gT24gT2N0IDMsIDIwMjYsIGF0IDk6MTTigK9QTSwgQ3VubG9uZyBMaSA8c2hlbnhpYW9n
+bGxAZ21haWwuY29tPiB3cm90ZToNCj4gDQo+IO+7v1RoZSBrZXJuZWwucGFuaWNfb25fcmN1X3N0
+YWxsIGFuZCBrZXJuZWwubWF4X3JjdV9zdGFsbF90b19wYW5pYyBzeXNjdGxzDQo+IGNvdW50IFJD
+VSBDUFUgc3RhbGxzIHNpbmNlIHN5c3RlbSBib290LCBhbmQgaW52b2tlIHBhbmljKCkgb25jZQ0K
+PiBtYXhfcmN1X3N0YWxsX3RvX3BhbmljIHN0YWxscyBoYXZlIGVsYXBzZWQuICBUaGlzIGNvdW50
+IGlzIG5ldmVyIHJlc2V0LA0KPiBzbyBzdGFsbHMgY2F1c2VkIGJ5IHRyYW5zaWVudCBpbmNpZGVu
+dHMga2VlcCBjb25zdW1pbmcgdGhlIGJ1ZGdldCBvZiBhDQo+IGxvbmctcnVubmluZyBzeXN0ZW0s
+IGFuZCBhIGxhdGVyIHVucmVsYXRlZCBzdGFsbCBjYW4NCg0KUGxlYXNlIHByb3ZpZGUgZXhhbXBs
+ZXMgb2Ygc3BlY2lmaWMgdHJhbnNpZW50IGV2ZW50cyB5b3UgcmFuIGludG8sIGFuZCByZWNvdmVy
+ZWQgZnJvbT8NCg0KPiBpbW1lZGlhdGVseQ0KPiB0cmlnZ2VyIHBhbmljKCkgaW5zdGVhZCBvZiBh
+bGxvd2luZyB0aGUgaW50ZW5kZWQgZnJlc2ggd2luZG93IG9mDQo+IHN0YWxscy4NCj4gDQo+IFRo
+aXMgY29tbWl0IHRoZXJlZm9yZSBpbnRyb2R1Y2VzIHRoZSBrZXJuZWwucmN1X3N0YWxsX3Bhbmlj
+X2NvdW50DQo+IHN5c2N0bC4gIFJlYWRpbmcgdGhpcyBmaWxlIHJlcG9ydHMgdGhlIG51bWJlciBv
+ZiBzdGFsbHMgY291bnRlZCBzbyBmYXIsDQo+IGFuZCB3cml0aW5nIDAgdG8gaXQgcmVzZXRzIHRo
+ZSBjb3VudC4gIFRoaXMgYWxsb3dzIHRoZSBjdW11bGF0aXZlIHN0YWxsDQo+IGhpc3RvcnkgdG8g
+YmUgY2xlYXJlZCBhZnRlciBhbiBpbmNpZGVudCBoYXMgYmVlbiByZXNvbHZlZCwgYW5kIGFsc28N
+Cj4gYWxsb3dzIHVzZXJzcGFjZSB0byBjbGVhciB0aGUgY291bnQgcGVyaW9kaWNhbGx5LCBzbyB0
+aGF0IHBhbmljKCkgaXMNCj4gb25seSB0cmlnZ2VyZWQgYnkgYSBidXJzdCBvZiBzdGFsbHMgb2Nj
+dXJyaW5nIHdpdGhpbiBhIHNob3J0IHBlcmlvZC4NCg0KQ291bGQgeW91IHByb3ZpZGUgZGV0YWls
+cyBvZiBzdWNoIGFuIGluY2lkZW50IHRoYXQgZ290IHJlc29sdmVkIHdpdGhvdXQgcmVxdWlyaW5n
+IGEgcmVib290Pw0KDQoNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEN1bmxvbmcgTGkgPHNoZW54aWFv
+Z2xsQGdtYWlsLmNvbT4NCg0KSWYgdGhlIGNvbW1pdCBpcyBBSSBhc3Npc3RlZCwgcGxlYXNlIGFk
+ZCBhbiBhc3Npc3RlZCB0YWcuDQoNClRoYW5rcywNCg0KSm9lbA0KDQo+IC0tLQ0KPiBEb2N1bWVu
+dGF0aW9uL2FkbWluLWd1aWRlL3N5c2N0bC9rZXJuZWwucnN0IHwgMTUgKysrKysrKysrKysrKyst
+DQo+IGtlcm5lbC9yY3UvdHJlZV9zdGFsbC5oICAgICAgICAgICAgICAgICAgICAgfCAyOCArKysr
+KysrKysrKysrKysrKysrKysrKysrKy0tDQo+IDIgZmlsZXMgY2hhbmdlZCwgNDAgaW5zZXJ0aW9u
+cygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Fk
+bWluLWd1aWRlL3N5c2N0bC9rZXJuZWwucnN0IGIvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9z
+eXNjdGwva2VybmVsLnJzdA0KPiBpbmRleCBmZmVhNjFkNDQ4ZWIuLjY0ZmUyOTg1ZTM1OCAxMDA2
+NDQNCj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9zeXNjdGwva2VybmVsLnJzdA0K
+PiArKysgYi9Eb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL3N5c2N0bC9rZXJuZWwucnN0DQo+IEBA
+IC05NTksNyArOTU5LDIwIEBAIG1heF9yY3Vfc3RhbGxfdG9fcGFuaWMNCj4gV2hlbiBgYHBhbmlj
+X29uX3JjdV9zdGFsbGBgIGlzIHNldCB0byAxLCB0aGlzIHZhbHVlIGRldGVybWluZXMgdGhlDQo+
+IG51bWJlciBvZiB0aW1lcyB0aGF0IFJDVSBjYW4gc3RhbGwgYmVmb3JlIHBhbmljKCkgaXMgY2Fs
+bGVkLg0KPiANCj4gLVdoZW4gYGBwYW5pY19vbl9yY3Vfc3RhbGxgYCBpcyBzZXQgdG8gMCwgdGhp
+cyB2YWx1ZSBpcyBoYXMgbm8gZWZmZWN0Lg0KPiArV2hlbiBgYHBhbmljX29uX3JjdV9zdGFsbGBg
+IGlzIHNldCB0byAwLCB0aGlzIHZhbHVlIGhhcyBubyBlZmZlY3QuDQo+ICsNCj4gK3JjdV9zdGFs
+bF9wYW5pY19jb3VudA0KPiArPT09PT09PT09PT09PT09PT09PT09DQo+ICsNCj4gK0luZGljYXRl
+cyB0aGUgbnVtYmVyIG9mIFJDVSBDUFUgc3RhbGxzIHRoYXQgaGF2ZSBiZWVuIGNvdW50ZWQgc2lu
+Y2UNCj4gK3N5c3RlbSBib290IG9yIHNpbmNlIHRoZSBjb3VudGVyIHdhcyByZXNldC4gV2hlbiBg
+YHBhbmljX29uX3JjdV9zdGFsbGBgDQo+ICtpcyBzZXQgdG8gMSwgdGhpcyBjb3VudCBpcyBjb21w
+YXJlZCBhZ2FpbnN0IGBgbWF4X3JjdV9zdGFsbF90b19wYW5pY2BgDQo+ICt0byBkZWNpZGUgd2hl
+dGhlciBwYW5pYygpIHNob3VsZCBiZSBjYWxsZWQuDQo+ICsNCj4gK1dyaXRpbmcgMCB0byB0aGlz
+IGZpbGUgcmVzZXRzIHRoZSBjb3VudGVyIHRvIHplcm8sIHdoaWNoIHJlc3RhcnRzIHRoZQ0KPiAr
+YGBtYXhfcmN1X3N0YWxsX3RvX3BhbmljYGAgd2luZG93IG9mIHN0YWxscy4gVGhpcyBhbGxvd3Mg
+c3lzdGVtDQo+ICthZG1pbmlzdHJhdG9ycyB0byBjbGVhciB0aGUgY3VtdWxhdGl2ZSBzdGFsbCBj
+b3VudCBhZnRlciBhbiBpbmNpZGVudA0KPiAraGFzIGJlZW4gcmVzb2x2ZWQsIHdpdGhvdXQgcmVx
+dWlyaW5nIGEgc3lzdGVtIHJlc3RhcnQuDQo+IA0KPiBwZXJmX2NwdV90aW1lX21heF9wZXJjZW50
+DQo+ID09PT09PT09PT09PT09PT09PT09PT09PT0NCj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9yY3Uv
+dHJlZV9zdGFsbC5oIGIva2VybmVsL3JjdS90cmVlX3N0YWxsLmgNCj4gaW5kZXggMDkxZTc4NTBh
+YjZlLi5hODBmMDNlMWM3ZWEgMTAwNjQ0DQo+IC0tLSBhL2tlcm5lbC9yY3UvdHJlZV9zdGFsbC5o
+DQo+ICsrKyBiL2tlcm5lbC9yY3UvdHJlZV9zdGFsbC5oDQo+IEBAIC0xOSw2ICsxOSwyMCBAQA0K
+PiAvKiBwYW5pYygpIG9uIFJDVSBTdGFsbCBzeXNjdGwuICovDQo+IHN0YXRpYyBpbnQgc3lzY3Rs
+X3BhbmljX29uX3JjdV9zdGFsbCBfX3JlYWRfbW9zdGx5Ow0KPiBzdGF0aWMgaW50IHN5c2N0bF9t
+YXhfcmN1X3N0YWxsX3RvX3BhbmljIF9fcmVhZF9tb3N0bHk7DQo+ICtzdGF0aWMgdW5zaWduZWQg
+bG9uZyBzeXNjdGxfcmN1X3N0YWxsX3BhbmljX2NvdW50Ow0KPiArDQo+ICsvKiBSZXNldCB0aGUg
+UkNVIHN0YWxsIHBhbmljIGNvdW50IHdoZW4gd3JpdHRlbiB0by4gKi8NCj4gK3N0YXRpYyBpbnQg
+cHJvY19kb19yY3Vfc3RhbGxfcGFuaWNfY291bnQoY29uc3Qgc3RydWN0IGN0bF90YWJsZSAqdGFi
+bGUsIGludCB3cml0ZSwNCj4gKyAgICAgICAgICAgICAgICAgICAgIHZvaWQgKmJ1ZmZlciwgc2l6
+ZV90ICpsZW5wLCBsb2ZmX3QgKnBwb3MpDQo+ICt7DQo+ICsgICAgaWYgKCF3cml0ZSkNCj4gKyAg
+ICAgICAgcmV0dXJuIHByb2NfZG91bG9uZ3ZlY19taW5tYXgodGFibGUsIHdyaXRlLCBidWZmZXIs
+IGxlbnAsIHBwb3MpOw0KPiArDQo+ICsgICAgV1JJVEVfT05DRShzeXNjdGxfcmN1X3N0YWxsX3Bh
+bmljX2NvdW50LCAwKTsNCj4gKyAgICAqcHBvcyArPSAqbGVucDsNCj4gKw0KPiArICAgIHJldHVy
+biAwOw0KPiArfQ0KPiANCj4gc3RhdGljIGNvbnN0IHN0cnVjdCBjdGxfdGFibGUgcmN1X3N0YWxs
+X3N5c2N0bF90YWJsZVtdID0gew0KPiAgICB7DQo+IEBAIC0zOSw2ICs1MywxMyBAQCBzdGF0aWMg
+Y29uc3Qgc3RydWN0IGN0bF90YWJsZSByY3Vfc3RhbGxfc3lzY3RsX3RhYmxlW10gPSB7DQo+ICAg
+ICAgICAuZXh0cmExICAgICAgICA9IFNZU0NUTF9PTkUsDQo+ICAgICAgICAuZXh0cmEyICAgICAg
+ICA9IFNZU0NUTF9JTlRfTUFYLA0KPiAgICB9LA0KPiArICAgIHsNCj4gKyAgICAgICAgLnByb2Nu
+YW1lICAgID0gInJjdV9zdGFsbF9wYW5pY19jb3VudCIsDQo+ICsgICAgICAgIC5kYXRhICAgICAg
+ICA9ICZzeXNjdGxfcmN1X3N0YWxsX3BhbmljX2NvdW50LA0KPiArICAgICAgICAubWF4bGVuICAg
+ICAgICA9IHNpemVvZihzeXNjdGxfcmN1X3N0YWxsX3BhbmljX2NvdW50KSwNCj4gKyAgICAgICAg
+Lm1vZGUgICAgICAgID0gMDY0NCwNCj4gKyAgICAgICAgLnByb2NfaGFuZGxlciAgICA9IHByb2Nf
+ZG9fcmN1X3N0YWxsX3BhbmljX2NvdW50LA0KPiArICAgIH0sDQo+IH07DQo+IA0KPiBzdGF0aWMg
+aW50IF9faW5pdCBpbml0X3JjdV9zdGFsbF9zeXNjdGwodm9pZCkNCj4gQEAgLTE2MSw3ICsxODIs
+NyBAQCBlYXJseV9pbml0Y2FsbChjaGVja19jcHVfc3RhbGxfaW5pdCk7DQo+IC8qIElmIHNvIHNw
+ZWNpZmllZCB2aWEgc3lzY3RsLCBwYW5pYywgeWllbGRpbmcgY2xlYW5lciBzdGFsbC13YXJuaW5n
+IG91dHB1dC4gKi8NCj4gc3RhdGljIHZvaWQgcGFuaWNfb25fcmN1X3N0YWxsKGNvbnN0IHN0cnVj
+dCBjcHVtYXNrICpzdGFsbGVkX21hc2spDQo+IHsNCj4gLSAgICBzdGF0aWMgaW50IGNwdV9zdGFs
+bDsNCj4gKyAgICB1bnNpZ25lZCBsb25nIGNvdW50Ow0KPiANCj4gICAgLyoNCj4gICAgICogQXR0
+ZW1wdCB0byBraWNrIG91dCB0aGUgQlBGIHNjaGVkdWxlciBpZiBpdCdzIGluc3RhbGxlZCBhbmQg
+ZGVmZXINCj4gQEAgLTE3MCw3ICsxOTEsMTAgQEAgc3RhdGljIHZvaWQgcGFuaWNfb25fcmN1X3N0
+YWxsKGNvbnN0IHN0cnVjdCBjcHVtYXNrICpzdGFsbGVkX21hc2spDQo+ICAgIGlmIChzY3hfcmN1
+X2NwdV9zdGFsbChzdGFsbGVkX21hc2spKQ0KPiAgICAgICAgcmV0dXJuOw0KPiANCj4gLSAgICBp
+ZiAoKytjcHVfc3RhbGwgPCBzeXNjdGxfbWF4X3JjdV9zdGFsbF90b19wYW5pYykNCj4gKyAgICAv
+KiBBIGxvc3QgUk1XIHVwZGF0ZSBvbmx5IGRlbGF5cyB0aGUgcGFuaWMgYnkgb25lIHN0YWxsLiAq
+Lw0KPiArICAgIGNvdW50ID0gUkVBRF9PTkNFKHN5c2N0bF9yY3Vfc3RhbGxfcGFuaWNfY291bnQp
+ICsgMTsNCj4gKyAgICBXUklURV9PTkNFKHN5c2N0bF9yY3Vfc3RhbGxfcGFuaWNfY291bnQsIGNv
+dW50KTsNCj4gKyAgICBpZiAoY291bnQgPCAodW5zaWduZWQgbG9uZylSRUFEX09OQ0Uoc3lzY3Rs
+X21heF9yY3Vfc3RhbGxfdG9fcGFuaWMpKQ0KPiAgICAgICAgcmV0dXJuOw0KPiANCj4gICAgaWYg
+KHN5c2N0bF9wYW5pY19vbl9yY3Vfc3RhbGwpDQo+IA0KPiAtLS0NCj4gYmFzZS1jb21taXQ6IGNl
+MWUwMjIzZDhhZDQyMTEyNzVjODJhMTdlZDZkNDNhYjgxZTEzZDkNCj4gY2hhbmdlLWlkOiAyMDI2
+MTAwMy1yY3UtMzc1NDk2ZDc3MDRlDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IC0tDQo+IEN1bmxv
+bmcgTGkgPHNoZW54aWFvZ2xsQGdtYWlsLmNvbT4NCj4gDQo=
