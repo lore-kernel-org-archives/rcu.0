@@ -1,176 +1,272 @@
-Received: from LO2P265CU024.outbound.protection.outlook.com (mail-uksouthazon11021141.outbound.protection.outlook.com [52.101.95.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 587773C8724;
-	Tue,  6 Oct 2026 08:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.95.141
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791273691; cv=fail; b=RJ+AiTc59bHXPd34CMmUh8MPYQVvJQJimj/C891fuzeQtPfidrT96MzYiWH0TopZTjIed+UE08JNwuoH5BPq9g0qLujMbJv95GpPfJFluXfRl9NGgog7BM0fqOY0BzRnyr9RBlV2PIlkseUWGUUMSO8nFg9hs9gISJ4tyzCqQtI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791273691; c=relaxed/simple;
-	bh=k0J6vSnbHVUseq3sVwyfiraBmrAgFFShWudOG0R7J68=;
-	h=Content-Type:Date:Message-Id:Subject:From:To:Cc:References:
-	 In-Reply-To:MIME-Version; b=papIPX8uSB5VpooGZLZ/ZTnEDt7shGsOE6hIRjC+XhzMKP1qJZt2JLGmgxtJZvU6yPmTLzv5Fv8pZLzWSW8sC087ERmqOdKNHr0yQXGi8L2gyif2edabaeyazlt/YPI9FeuaHvKvo33dwu6Z9/dXlJMnlqfyk1MjIGBP+STSPQM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net; spf=pass smtp.mailfrom=garyguo.net; dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b=e+NQMuX2; arc=fail smtp.client-ip=52.101.95.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE93D3D75DE
+	for <rcu@vger.kernel.org>; Tue,  6 Oct 2026 11:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791287695; cv=none; b=ihFRhIhs/OQJNvv8bY+mQubKPGuG3M0eMTLL7wIMPXbFcH9QqM0rvl/8vas1TZ6Zh4W0krEq9VwFcQ8oF1D//ZBX6LQkcI12F0/qeS83GoMYgRVcUdaZW9mumQQGrpQ/7zUm9cgS9FKht4aKKaaJ0Jh8sfVjlyfg0hdmcBpv4Dk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791287695; c=relaxed/simple;
+	bh=ec5S30qPeZpFcFjUgJJIOgR9OI8o4nySH5I+NYVFb+w=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Disposition; b=KrUIty0R6kSvhYB7lSwM3D28AubUVSsDaYGTaybsWfxK8B0S52bwAL7LTMv+PXnmX/QUXjHRJIHRFdcxnF5v4A/LkOmQYcLbkEoe7pauhmE91cZpYPh2w8TFdwrfsj79MqXR2S2Ux992vQ4SLifv966cJLcpnp2Vy9FLx9UI800=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JWpRIsl5; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b="e+NQMuX2"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hApbEdJg/Uv3oDWIPdkXeJdpN7DIWiDXViWNjCmIkV8LNIA9CSlteTaGZkXUzrGzsz+0WowakAszrL5kkcftNP5q1ifG+unNDvrZCsBA3s8EjT9V8vDca/vd8AR5iJHqXWcYw3xD/w2ap+rLsMT9n9bgrX9jA8fTzwDsZQw2ZfetouVg1C1LnwWXLGdXNGJYeSC0dKhcNdLdJEXlkKEgcVs1LCoOxxa7xZzfNYRobW+LtxRP/fNRevw61hMw6Bw6O2pc/JyN/9G5igEgDDXC5S6mGrtHngf3IrDb7OLsBsrfaHcoHYZ5ooTg7KifCfp8wIul7gxaZ+mJTTFfEyW4bw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BE9HxxPNYs75AN+DUINh3qATOrRVbQSnM1h+y0N25Io=;
- b=u99E7tIftEj1icIJDbjod9ictQATULpR5fiH9NPw7ohCWa5exnfS4M0ff1avuwPMXm0GpcmCgl8WJktCS7UrEA29lUhXMHIvYBiJhSAgZeP96w7dgOZ62SSUjIeRriNpPQS3+wNW5JXUL0smB2DLVRIga/JoOiE/vLmvq15qdu3iFMegg8BoMZqBzusAxoobXAhmXuTZmYfyeKxyVhh5TiFmmAibxtlgNz3oMAqmuiCCtBOYHhxqAM4qo0flD6jcIoho7jdPfmxZ5nV8gIZEHsCRCNnlIwZLSg23wzi/IO/UJEDEtdjbFjP6VF1GFSCrF6oaNpwYU/LH8eOL9fmBdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
- dkim=pass header.d=garyguo.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BE9HxxPNYs75AN+DUINh3qATOrRVbQSnM1h+y0N25Io=;
- b=e+NQMuX2YLquQDZ8W3SvK1CeEhcTxRNYLXYMywMbsKKyCmxh9MleNOz573hSJCnCvXq4JC+NjFHJ6GsQPa48IZYmkUFsCdarlcD5z1XlxeLoR4+AKx43t2Lz4egRwFmLDAZehgMFnLdFJ14ZUPgHwR4KhYhZ6vyxSPtyRohEriI=
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=garyguo.net;
-Received: from LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:4ab::19)
- by CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:3a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.496.15; Tue, 6 Oct
- 2026 08:01:25 +0000
-Received: from LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM
- ([fe80::f60b:1537:68d7:4fc1]) by LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM
- ([fe80::f60b:1537:68d7:4fc1%6]) with mapi id 15.21.0472.016; Tue, 6 Oct 2026
- 08:01:24 +0000
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 06 Oct 2026 10:01:23 +0200
-Message-Id: <DLXLIXXAPVD3.1XAPJZQAQGE7G@garyguo.net>
-Subject: Re: [PATCH hazptr 4/4] hazptr: Introduce "try acquire" fast path,
- fallback to overflow list
-From: "Gary Guo" <gary@garyguo.net>
-To: "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>, "Paul E .
- McKenney" <paulmck@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, "Boqun Feng" <boqun@kernel.org>,
- "Bradley Morgan" <brads@mainlining.org>, "Gary Guo" <gary@garyguo.net>,
- <rcu@vger.kernel.org>, <lkmm@lists.linux.dev>
-X-Mailer: aerc 0.22.0
-References: <20260927155134.4740-1-mathieu.desnoyers@efficios.com>
- <20260927155134.4740-5-mathieu.desnoyers@efficios.com>
-In-Reply-To: <20260927155134.4740-5-mathieu.desnoyers@efficios.com>
-X-ClientProxiedBy: VI1PR0102CA0059.eurprd01.prod.exchangelabs.com
- (2603:10a6:803::36) To LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:4ab::19)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JWpRIsl5"
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-38759bcd877so728371a91.2
+        for <rcu@vger.kernel.org>; Tue, 06 Oct 2026 04:54:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1791287692; x=1791892492; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:content-type
+         :mime-version:mail-followup-to:references:in-reply-to:message-id
+         :date:subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=InkVEEPwk9G9xH08bG50UczMC9CsJoX2e/6UdOdqPB4=;
+        b=JWpRIsl5lQTj901UMmC7UoTNdnc0WAWSknAiCHrYA360VWcaUyfwO4VsEbp0VdshSz
+         AQ1fXSa3kx3h/pOnWyflf7pCzwtzTkD4KitG8PYoGUHiGbxcyyfz8PrGQ33ijLETKKXy
+         DIoKz53ZA+MdseUep3NPvzI5lr2fbirgILb2kUp4XpUOXY93YyQmj2bYtj86SO1LYEPu
+         Sn+irnfeoWMjdumcFphuv5Ho1bcEzylGZirobfOE3XgsDET89UPFKvCcxBJEfNh7klrk
+         iVAX3Zd+bEzw3cnIoIVnW2K0vK5y4oOCFKfBWPEvBYbxu52f4u6Q/Q9raiOuoh4uVDNz
+         eApA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791287692; x=1791892492;
+        h=content-transfer-encoding:content-disposition:content-type
+         :mime-version:mail-followup-to:references:in-reply-to:message-id
+         :date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=InkVEEPwk9G9xH08bG50UczMC9CsJoX2e/6UdOdqPB4=;
+        b=l0kjznbhumVpmvZ6bN3WgDhMMooEsQ6+VTMIibZZZHryfdHvchzk5GequyYj67EpOF
+         wTSG01lonwhQM4QBj6GzBGW8Op5dvCTk9pmmhY5JnfgsU8zlqniUWW12s9a6T7MQxzHt
+         nP6HSiLs2RIGcOHKXTbly63nempc+r0hoIyIJesekfGvGEYT/X4phvLgAuCDO9YAGjYH
+         jaEXVAElQ/dJZH3o+j/JYLyEZkD2MKCxDCU5W59m1snU8QUR2FAxSnONQqk+fAchVFs3
+         kf7d7nf4wrz7y9PcWYcCFV41kJnl4bWXQpcq390jQXauxhFeTnO0YKqsRupSiVESFtvK
+         9S7w==
+X-Forwarded-Encrypted: i=1; AKwUvBxEzcyvON5pxY1MMFzA2x/8EIHxHctBc9FlRILxA64T3ccvJtDndbigtHM4/pOSsW0imps=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJIS8Ru4ZcS0kYW14rDezs2tIjloCETiyG7BZJzFN0g/NixFXgH
+	c8pJxFaH2YAcIt8B5+HHj4Zf8x0X5MTWbAPfHOXV1ej1Vukpabn69tR+
+X-Gm-Gg: AYBFou2H/urOQpvXTCBMBCPkVU5MtNj8SaRYfEdQdFtdJs3C8cznGc/8lx7lY4xrfYO
+	64fhn2tkc36+BOpmWN/fZ1ECzChkDXA9gZzN1d4vWMU12522D7JUQe5rhEhdsIhdnCbKDsd8AAX
+	w/XtfS/F7hjZPigLMKM3a6Yqf9+W4l50KiTSurxZu8ZtQ6rjlBZAHT9bQgQpM8MvBM+iAyyNuMR
+	MLdWJ/ArVeZIeP1EbIkK1GyVHzXocvL4hchHbNCYrWENjGiU0sXKzFnRiEUrPhtHWg6Ei6aVEOY
+	BGzdHuSQK7Ki7lWd/RjqNcXb3yeWRElJgV5t9rhG8WKT48jI99nBycVNHGmu+G5gS4q1GblZy6U
+	VtS1ecXf+sqUVmkxRWYIVLgn6g2cB+KvTgE223A1tVeypMLWlJF/58ax5OkpAI66qJxZEQGMbnI
+	5Bvg/QuhnorcVfZi857VuwhSl0jgC/hWF8k7X9LJquyZn1CZexiWQnixOOo27HC5yFw7S9GkCne
+	POHGgJpeXI=
+X-Received: by 2002:a17:90b:4c8b:b0:3a7:a42:c364 with SMTP id 98e67ed59e1d1-3a87379dcb3mr692290a91.51.1791287691963;
+        Tue, 06 Oct 2026 04:54:51 -0700 (PDT)
+Received: from localhost.localdomain ([8.139.245.4])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a8543b0c1fsm5749910a91.14.2026.10.06.04.54.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2026 04:54:51 -0700 (PDT)
+From: Cunlong Li <shenxiaogll@gmail.com>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH] rcu: Enable runtime reset of the RCU stall panic count
+Date: Tue,  6 Oct 2026 19:54:44 +0800
+Message-ID: <asThhHxoFP2L25Nc@63b45mr6s164qmn>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00F6D386-FE41-42E3-9B89-07381A49E061@nvidia.com>
+References: <20261004-rcu-v1-1-3799a44367f1@gmail.com> <00F6D386-FE41-42E3-9B89-07381A49E061@nvidia.com>
+Mail-Followup-To: Cunlong Li <shenxiaogll@gmail.com>, Joel Fernandes <joelagnelf@nvidia.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LOAP265MB8560:EE_|CWXP265MB1799:EE_
-X-MS-Office365-Filtering-Correlation-Id: e82351a0-578a-42b1-86b8-08df23800462
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|23010399003|376014|18002099003|22082099003|10067099003|4143699003|56012099006;
-X-Microsoft-Antispam-Message-Info:
-	cqMusLkleccOUYjV5jy/gMEAxIf7T+vvLIJwyPiuUgb1kN1DRJnfcI63iZbaZiwjIa+/EUYQzV1rgylxOzqYMm+y09LDRtFLwSPGAFJMwbfF6dJAzVzb8ekme3J2cR5D5FBjUArGKxBLA/MSHsgc91HS9b9ubTQKxdTnSdsnMRQeGT9CbGTTgcpr7C9Ewc274imDDTxjbwSL9tIwc85Pa/BKo10YeJkf3vuhlIxog6w9ZwULxwvbxJq2KTIBon95AxOmnaY9hMPXBBt2yIWA9BK5ZS5u4gaOMYGKPXzy/0g1/Y1UZvXvcaxFMEzUk36YRFvXO2Crby5+vT7RRQAPUUijJMMBScrSGbVpjgTC+ptRbfqNT4POd9sywekIRv6+6UTn+7UR5EVJgIiHxCPKTvch820oTdeP4SWQ8obci7GzVpLqWD3T3CEy9mmJv34xjSt7o0pFf0tB8ejvUUTTMKEMazFBVKHg7RjOlhQbb3Ley+U922v52JM5jDTKgd2N4Govr0ovOAnIDbT7kb9C/MgF0qqkNlu0nb+dzZwtcmLqTgyUejL0RZ3xSC0GW23C6oNtxyRN+WHp2+/kqAuz24XxEmGckeZzOYXCtD9+mSZzuOi1HodFA7mWO+S1McI1
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(23010399003)(376014)(18002099003)(22082099003)(10067099003)(4143699003)(56012099006);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZkpXRnpyaU44UGIrNEtadGF4bU0vblhtS2lXMWpPS1hrNFZrSllmRmdhSHQ4?=
- =?utf-8?B?c0E1RldRNnJsQktwejAvSElWTnRvQnJBREoydE0zVVNiRkVvSXVCMHFLd296?=
- =?utf-8?B?NDBoSkVpNXdaWTJDSVFlSTdObFdmMURoYXV1VTRsZVh1RDdIQk5YNi94TVdo?=
- =?utf-8?B?L1I4ZVpSckpXZTVudXF4c3dkekpCeTA0UW5iWWRYR3JDb1k1dGh0TFozcnoy?=
- =?utf-8?B?SVBsNGM0d2M3VnlMaHZtWHVXWUc3Nk43V1lQZHJxMVBqcStoYjNEMnpwRTJr?=
- =?utf-8?B?czhEWFFMZElQYWNlS1VmMkdWQ242L2ZkUGtGeE4weXlTWE9LMFB6WWVCTmtO?=
- =?utf-8?B?aU9JUC9hNVF4RThYNTlkQysxaWovMElvOUlpSzJ0c0JDb2dxL3U3eEVYQTBL?=
- =?utf-8?B?QWtNNzZLSVFXMk5YcStrdDk1ei91S1NGa0VnM01yQVMxZnFOTXNlejQzM2VG?=
- =?utf-8?B?V3ROdGFzdE54bE9qTlZEamRVQklHUC9aWktGbUlJL0VQaU03R1N1SExwZEFm?=
- =?utf-8?B?ejhwaVNveU0yWnZUVTJ4UDJ6bHlTSFpMVkdSbFlvVE9Vc01EY0k0bGxTdkJT?=
- =?utf-8?B?VWVjeGFpRDlDTzFmeWhMTlcxaUh0cHJwUWRNLzZNeTY1WktYcWtwUHNpeXZB?=
- =?utf-8?B?cXVncnhiV3JodzVKNGdmdmRMSTZwYTE3RWJDL0twRlc4M1EyWis4RzhONm9u?=
- =?utf-8?B?UkkyNDZkNHhyVjNwSXQwRmpJcmR0a2JwN2pTU2d3Q2EzSmwyRTRaOGVpY1hJ?=
- =?utf-8?B?ak4zUy9FeFYyU0xJTXo5bnl5UW9VbzFZUGh4TUE0eGFEQlp5YlpTUUVZdERF?=
- =?utf-8?B?Y1hJcjNycWo5bDZpNmg5V2lWUllKb2pDaFpHVm1KSWkwc2wrZHhEcmFEdDB0?=
- =?utf-8?B?UnNtS2l5OHYzQlhZZVZ2bG9BdSt5MWN2VlVWU0J0cHhsWXMrM05NakhxTHkv?=
- =?utf-8?B?WXpBWVpmVnNnUVJreU1acXlYczNiTlA0TnczdnpJOXVJbkY1ZGZZQjBPcjNL?=
- =?utf-8?B?VHozSnAxMjRUQ0NEMWdYS3NXR1FEcDcxa1I1ZTM3TU5OTjkvR0tIT1htWm4r?=
- =?utf-8?B?NWZBYVMxWnhPcm92ZGNkZzNyd2l1dUxEUnIzcUlGcm9qUjZJVHNTWXJDSG1w?=
- =?utf-8?B?NlViWkl3dDc3NkR3cUJDanh5bWx4azM2QzlSQ2dBdmlza3dJd1JrUGVCNVR0?=
- =?utf-8?B?SFo0c2N6emtGWnlNMFdOTjlvNW5OSXJTT3B6TTNBKzVGY3pQNW11OVNZa3pn?=
- =?utf-8?B?K1BEek85U3BtS21YK3lvanh0MFM3eUF5NGxTYkZyRS9QeHZpbW9va1h5RVIy?=
- =?utf-8?B?b0VtRS9La2dOSXdVQm5mVkJ5Q05DdTBMZXEyYmJndXp5QTFVZ2NQYjJRVzhu?=
- =?utf-8?B?TjV5a24vRDlMWHUxOTFodDlSN2QxRWhjN05yWFRNWTlXRWlBMU1Sd0FnYmoy?=
- =?utf-8?B?VVhoVVdaZWI0MVVtVnYxU3BYOGVoSEtDdzdOQjl5V2NRdmpqY051NkpGMSsx?=
- =?utf-8?B?THpyWDBrNCtlN1dYQ2FJSE9qOFhWTUxwMVovY2lTWVlqOENiMnNtZ3VveW4w?=
- =?utf-8?B?bGxsR1U1ZG05RmN0RnFpNm9jR1ZLOUxDU0kzKzNLcDJvRGNwQmlpR08vOFo1?=
- =?utf-8?B?SzNXZG83dWx2MGovbDQxandSMHdvK3FmbWFIM1ZVVW9tWmxPb0VGaitsZjVE?=
- =?utf-8?B?VHRyUmt4WVhSZEs3UFVmVW8zYWNvWitQL0RqOHVPMzZqRVZnUHRva08ra2tv?=
- =?utf-8?B?MWxpN0FSQ3Nha05HcC9wdFIyRWRTcWJIcE5wK1RiRW04aDNGbUNuSmhLWnJN?=
- =?utf-8?B?b0p2ekNMZUpsVXpWQ1JsdFZPUzA0dzJSZXprcFQ0OEdmRFR6bXdqK1FPbUQx?=
- =?utf-8?B?ZUVaWWhhbjd6WCt2NHpZa1FnTlB4M1I2bUx1cW9SU0ZTbUhZdXZGakRWb01W?=
- =?utf-8?B?QTN1T1JOcGZZTlJRcTh5QSt3M1hmTXBRMStQS3MzNTJ3VlB5a1R2MmVZRVZP?=
- =?utf-8?B?c3BWckVpdHpuRlZQS2NxOEQvOXBIOGhBSExQMS9DWWpxZ05sOURkOE5EaHFJ?=
- =?utf-8?B?TnJTYklLR1dFWmpJYWNTUndKbm9TaVRpKzlPd0UraUlsQXExamJTcHQxTXd0?=
- =?utf-8?B?bFZOVzhKU0wySWxMRjh4NUpSK0JTbkVPYTFkejRJaFJHeGlTQnh4ZHI0RXdM?=
- =?utf-8?B?dDhWQlNMWmhKdVFaaGxNNkpHTDYzclJtTTJnTmYwOUtkVFhDaGpqZWJ0Sk94?=
- =?utf-8?B?cDRKZUg5L3hTTlhyaDdmdk5IZkdxWHM1ZHdJQ2NFMGZrVXVGVVdGcTQ4UDZL?=
- =?utf-8?Q?8gPXSv1u/oUMnOw6rf?=
-X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: e82351a0-578a-42b1-86b8-08df23800462
-X-MS-Exchange-CrossTenant-AuthSource: LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2026 08:01:24.7981
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PdrZPT/i8nN4bptm3U0uzsoWUDRBlEQfdravZr6WRslnSLQrNHECRVaoB8qiY4tUCggkeJ861Ih01uVS4hKUow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB1799
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-On Sun Sep 27, 2026 at 5:51 PM CEST, Mathieu Desnoyers wrote:
-> Introduce a "try acquire" hazard pointer fast path, which performs an
-> early load of the address to store it into the hazard pointer slot, and
-> then re-loads that address after a barrier to check whether it has
-> changed meanwhile.
->
-> On comparison failure, rather than re-try, guarantee forward progress by
-> falling back to the __hazptr_acquire slow path on failure.
->
-> The acquire slow path attempts a try-acquire for any available per-CPU
-> slot. If that fails, it chains the backup slot into the overflow list,
-> therefore guaranteeing forward progress for both hazard pointer
-> read-side and synchronize:
->
-> - Readers set the wildcard, and then proceed to set the more
->   specific address to replace the wildcard.
->
-> - One synchronize alternates between two overflow list periods,
->   scanning each one while readers are added to the other period,
->   thus preventing a steady flow of readers from preventing
->   synchronize forward progress.
->
-> With this change, the scan on per-CPU slots don't need to expect a
-> wildcard anymore, because none can be produced by readers. Wildcards are
-> only expected within overflow lists.
->
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Hi Joel, thanks for the review!
 
-Suggested-by: Gary Guo <gary@garyguo.net>
-Link: https://lore.kernel.org/lkmm/DLK9MW1N86KD.2GRWUAD2NX4FU@garyguo.net/
-Reviewed-by: Gary Guo <gary@garyguo.net>
+On Mon, Oct 05, 2026 at 12:56:30PM +0000, Joel Fernandes wrote:
+> 
+> 
+> > On Oct 3, 2026, at 9:14 PM, Cunlong Li <shenxiaogll@gmail.com> wrote:
+> > 
+> > ﻿The kernel.panic_on_rcu_stall and kernel.max_rcu_stall_to_panic sysctls
+> > count RCU CPU stalls since system boot, and invoke panic() once
+> > max_rcu_stall_to_panic stalls have elapsed.  This count is never reset,
+> > so stalls caused by transient incidents keep consuming the budget of a
+> > long-running system, and a later unrelated stall can
+> 
+> Please provide examples of specific transient events you ran into, and recovered from?
+> 
+> > immediately
+> > trigger panic() instead of allowing the intended fresh window of
+> > stalls.
+> > 
+> > This commit therefore introduces the kernel.rcu_stall_panic_count
+> > sysctl.  Reading this file reports the number of stalls counted so far,
+> > and writing 0 to it resets the count.  This allows the cumulative stall
+> > history to be cleared after an incident has been resolved, and also
+> > allows userspace to clear the count periodically, so that panic() is
+> > only triggered by a burst of stalls occurring within a short period.
+> 
+> Could you provide details of such an incident that got resolved without requiring a reboot?
 
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Boqun Feng <boqun@kernel.org>
-> Cc: Bradley Morgan <brads@mainlining.org>
-> Cc: Gary Guo <gary@garyguo.net>
-> Cc: <rcu@vger.kernel.org>
-> Cc: <lkmm@lists.linux.dev>
-> ---
->  include/linux/hazptr.h |  47 +++++++++++--------
->  kernel/hazptr.c        | 103 ++++++++++++++++++++---------------------
->  2 files changed, 76 insertions(+), 74 deletions(-)
+The motivation comes from our customer systems running codex on Ubuntu
+24.04, with a memory limit of ~8G and zram enabled for swap.  When the
+agent's memory footprint grows, the box spends long stretches in direct
+reclaim (zram makes reclaim CPU-heavy), and we get a continuous stream
+of RCU stall warnings.  In the incidents we have seen so far, the
+warnings kept coming and the systems stayed hung, so we would like to
+enable panic_on_rcu_stall so that the box reboots and the service
+recovers automatically.  However, we do not actually know whether some
+of those stalls were transient, i.e. whether the systems would have
+recovered on their own once the memory pressure subsided.  If they
+were, a panic would kill an otherwise recoverable system, which is
+what we would like to avoid.
 
+We have not yet been able to reproduce this in the lab.  But transient,
+self-recovering stalls are not a hypothetical: the commit that
+introduced max_rcu_stall_to_panic, dfe564045c65 ("rcu: Panic after
+fixed number of stalls"), states the premise outright:
+
+    Some stalls are transient, so that system fully recovers.  This
+    commit therefore allows users to configure the number of stalls
+    that must happen in order to trigger kernel panic.
+
+As described in the commit message, since the counter is never reset,
+stalls caused by transient incidents keep consuming the budget of
+max_rcu_stall_to_panic, and a later unrelated stall can immediately
+trigger panic() instead of allowing the intended fresh window of
+stalls.  This is what motivated the patch.
+
+> 
+> 
+> > 
+> > Signed-off-by: Cunlong Li <shenxiaogll@gmail.com>
+> 
+> If the commit is AI assisted, please add an assisted tag.
+
+Yes, it is AI-assisted, and I will state that in the v2 commit
+message.
+
+Thanks,
+Cunlong
+
+> 
+> Thanks,
+> 
+> Joel
+> 
+> > ---
+> > Documentation/admin-guide/sysctl/kernel.rst | 15 ++++++++++++++-
+> > kernel/rcu/tree_stall.h                     | 28 ++++++++++++++++++++++++++--
+> > 2 files changed, 40 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> > index ffea61d448eb..64fe2985e358 100644
+> > --- a/Documentation/admin-guide/sysctl/kernel.rst
+> > +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> > @@ -959,7 +959,20 @@ max_rcu_stall_to_panic
+> > When ``panic_on_rcu_stall`` is set to 1, this value determines the
+> > number of times that RCU can stall before panic() is called.
+> > 
+> > -When ``panic_on_rcu_stall`` is set to 0, this value is has no effect.
+> > +When ``panic_on_rcu_stall`` is set to 0, this value has no effect.
+> > +
+> > +rcu_stall_panic_count
+> > +=====================
+> > +
+> > +Indicates the number of RCU CPU stalls that have been counted since
+> > +system boot or since the counter was reset. When ``panic_on_rcu_stall``
+> > +is set to 1, this count is compared against ``max_rcu_stall_to_panic``
+> > +to decide whether panic() should be called.
+> > +
+> > +Writing 0 to this file resets the counter to zero, which restarts the
+> > +``max_rcu_stall_to_panic`` window of stalls. This allows system
+> > +administrators to clear the cumulative stall count after an incident
+> > +has been resolved, without requiring a system restart.
+> > 
+> > perf_cpu_time_max_percent
+> > =========================
+> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > index 091e7850ab6e..a80f03e1c7ea 100644
+> > --- a/kernel/rcu/tree_stall.h
+> > +++ b/kernel/rcu/tree_stall.h
+> > @@ -19,6 +19,20 @@
+> > /* panic() on RCU Stall sysctl. */
+> > static int sysctl_panic_on_rcu_stall __read_mostly;
+> > static int sysctl_max_rcu_stall_to_panic __read_mostly;
+> > +static unsigned long sysctl_rcu_stall_panic_count;
+> > +
+> > +/* Reset the RCU stall panic count when written to. */
+> > +static int proc_do_rcu_stall_panic_count(const struct ctl_table *table, int write,
+> > +                     void *buffer, size_t *lenp, loff_t *ppos)
+> > +{
+> > +    if (!write)
+> > +        return proc_doulongvec_minmax(table, write, buffer, lenp, ppos);
+> > +
+> > +    WRITE_ONCE(sysctl_rcu_stall_panic_count, 0);
+> > +    *ppos += *lenp;
+> > +
+> > +    return 0;
+> > +}
+> > 
+> > static const struct ctl_table rcu_stall_sysctl_table[] = {
+> >    {
+> > @@ -39,6 +53,13 @@ static const struct ctl_table rcu_stall_sysctl_table[] = {
+> >        .extra1        = SYSCTL_ONE,
+> >        .extra2        = SYSCTL_INT_MAX,
+> >    },
+> > +    {
+> > +        .procname    = "rcu_stall_panic_count",
+> > +        .data        = &sysctl_rcu_stall_panic_count,
+> > +        .maxlen        = sizeof(sysctl_rcu_stall_panic_count),
+> > +        .mode        = 0644,
+> > +        .proc_handler    = proc_do_rcu_stall_panic_count,
+> > +    },
+> > };
+> > 
+> > static int __init init_rcu_stall_sysctl(void)
+> > @@ -161,7 +182,7 @@ early_initcall(check_cpu_stall_init);
+> > /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
+> > static void panic_on_rcu_stall(const struct cpumask *stalled_mask)
+> > {
+> > -    static int cpu_stall;
+> > +    unsigned long count;
+> > 
+> >    /*
+> >     * Attempt to kick out the BPF scheduler if it's installed and defer
+> > @@ -170,7 +191,10 @@ static void panic_on_rcu_stall(const struct cpumask *stalled_mask)
+> >    if (scx_rcu_cpu_stall(stalled_mask))
+> >        return;
+> > 
+> > -    if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
+> > +    /* A lost RMW update only delays the panic by one stall. */
+> > +    count = READ_ONCE(sysctl_rcu_stall_panic_count) + 1;
+> > +    WRITE_ONCE(sysctl_rcu_stall_panic_count, count);
+> > +    if (count < (unsigned long)READ_ONCE(sysctl_max_rcu_stall_to_panic))
+> >        return;
+> > 
+> >    if (sysctl_panic_on_rcu_stall)
+> > 
+> > ---
+> > base-commit: ce1e0223d8ad4211275c82a17ed6d43ab81e13d9
+> > change-id: 20261003-rcu-375496d7704e
+> > 
+> > Best regards,
+> > --
+> > Cunlong Li <shenxiaogll@gmail.com>
+> > 
