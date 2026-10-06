@@ -1,272 +1,276 @@
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012019.outbound.protection.outlook.com [52.101.48.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE93D3D75DE
-	for <rcu@vger.kernel.org>; Tue,  6 Oct 2026 11:54:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791287695; cv=none; b=ihFRhIhs/OQJNvv8bY+mQubKPGuG3M0eMTLL7wIMPXbFcH9QqM0rvl/8vas1TZ6Zh4W0krEq9VwFcQ8oF1D//ZBX6LQkcI12F0/qeS83GoMYgRVcUdaZW9mumQQGrpQ/7zUm9cgS9FKht4aKKaaJ0Jh8sfVjlyfg0hdmcBpv4Dk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791287695; c=relaxed/simple;
-	bh=ec5S30qPeZpFcFjUgJJIOgR9OI8o4nySH5I+NYVFb+w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=KrUIty0R6kSvhYB7lSwM3D28AubUVSsDaYGTaybsWfxK8B0S52bwAL7LTMv+PXnmX/QUXjHRJIHRFdcxnF5v4A/LkOmQYcLbkEoe7pauhmE91cZpYPh2w8TFdwrfsj79MqXR2S2Ux992vQ4SLifv966cJLcpnp2Vy9FLx9UI800=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JWpRIsl5; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3213E765A;
+	Tue,  6 Oct 2026 12:21:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791289302; cv=fail; b=ouYpbrry8gjp4vB760CWT9g2Y3rG2ISwe9Cl1c6ApFxTqrnO1i5RORRPfPhmP5/KP2xLJ+7eZOMZGcpuX7CPj+2fLue2zoamohQegA4x/DwJecdfuOn7UQEO2z94HVRSPpj9V4AmC9jkIjB2L6u3ZBbFIwcxzqEq41Jz1e15sBo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791289302; c=relaxed/simple;
+	bh=5wk+mF8VEM8dT0LniEWYsyqsIHCQI4gJEmY4E5zs1rA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=dFL1SZdsEa5LMqA3YERj1NyQkJgJq/X/fB5a3ttxEwsVq639FNv8KdRHpFqG87M4SYr55a1w0G9NRF/QCmS0k/Vt/kLtTUP0hpqKwUz4rel9uF7Aaaree/4h6tpP/HxOfIhF5zljylhc0yV2LxtyDzssken+pPe6V7n3p1xms2A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PPkIDFqm; arc=fail smtp.client-ip=52.101.48.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JWpRIsl5"
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-38759bcd877so728371a91.2
-        for <rcu@vger.kernel.org>; Tue, 06 Oct 2026 04:54:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791287692; x=1791892492; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:content-type
-         :mime-version:mail-followup-to:references:in-reply-to:message-id
-         :date:subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=InkVEEPwk9G9xH08bG50UczMC9CsJoX2e/6UdOdqPB4=;
-        b=JWpRIsl5lQTj901UMmC7UoTNdnc0WAWSknAiCHrYA360VWcaUyfwO4VsEbp0VdshSz
-         AQ1fXSa3kx3h/pOnWyflf7pCzwtzTkD4KitG8PYoGUHiGbxcyyfz8PrGQ33ijLETKKXy
-         DIoKz53ZA+MdseUep3NPvzI5lr2fbirgILb2kUp4XpUOXY93YyQmj2bYtj86SO1LYEPu
-         Sn+irnfeoWMjdumcFphuv5Ho1bcEzylGZirobfOE3XgsDET89UPFKvCcxBJEfNh7klrk
-         iVAX3Zd+bEzw3cnIoIVnW2K0vK5y4oOCFKfBWPEvBYbxu52f4u6Q/Q9raiOuoh4uVDNz
-         eApA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791287692; x=1791892492;
-        h=content-transfer-encoding:content-disposition:content-type
-         :mime-version:mail-followup-to:references:in-reply-to:message-id
-         :date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=InkVEEPwk9G9xH08bG50UczMC9CsJoX2e/6UdOdqPB4=;
-        b=l0kjznbhumVpmvZ6bN3WgDhMMooEsQ6+VTMIibZZZHryfdHvchzk5GequyYj67EpOF
-         wTSG01lonwhQM4QBj6GzBGW8Op5dvCTk9pmmhY5JnfgsU8zlqniUWW12s9a6T7MQxzHt
-         nP6HSiLs2RIGcOHKXTbly63nempc+r0hoIyIJesekfGvGEYT/X4phvLgAuCDO9YAGjYH
-         jaEXVAElQ/dJZH3o+j/JYLyEZkD2MKCxDCU5W59m1snU8QUR2FAxSnONQqk+fAchVFs3
-         kf7d7nf4wrz7y9PcWYcCFV41kJnl4bWXQpcq390jQXauxhFeTnO0YKqsRupSiVESFtvK
-         9S7w==
-X-Forwarded-Encrypted: i=1; AKwUvBxEzcyvON5pxY1MMFzA2x/8EIHxHctBc9FlRILxA64T3ccvJtDndbigtHM4/pOSsW0imps=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJIS8Ru4ZcS0kYW14rDezs2tIjloCETiyG7BZJzFN0g/NixFXgH
-	c8pJxFaH2YAcIt8B5+HHj4Zf8x0X5MTWbAPfHOXV1ej1Vukpabn69tR+
-X-Gm-Gg: AYBFou2H/urOQpvXTCBMBCPkVU5MtNj8SaRYfEdQdFtdJs3C8cznGc/8lx7lY4xrfYO
-	64fhn2tkc36+BOpmWN/fZ1ECzChkDXA9gZzN1d4vWMU12522D7JUQe5rhEhdsIhdnCbKDsd8AAX
-	w/XtfS/F7hjZPigLMKM3a6Yqf9+W4l50KiTSurxZu8ZtQ6rjlBZAHT9bQgQpM8MvBM+iAyyNuMR
-	MLdWJ/ArVeZIeP1EbIkK1GyVHzXocvL4hchHbNCYrWENjGiU0sXKzFnRiEUrPhtHWg6Ei6aVEOY
-	BGzdHuSQK7Ki7lWd/RjqNcXb3yeWRElJgV5t9rhG8WKT48jI99nBycVNHGmu+G5gS4q1GblZy6U
-	VtS1ecXf+sqUVmkxRWYIVLgn6g2cB+KvTgE223A1tVeypMLWlJF/58ax5OkpAI66qJxZEQGMbnI
-	5Bvg/QuhnorcVfZi857VuwhSl0jgC/hWF8k7X9LJquyZn1CZexiWQnixOOo27HC5yFw7S9GkCne
-	POHGgJpeXI=
-X-Received: by 2002:a17:90b:4c8b:b0:3a7:a42:c364 with SMTP id 98e67ed59e1d1-3a87379dcb3mr692290a91.51.1791287691963;
-        Tue, 06 Oct 2026 04:54:51 -0700 (PDT)
-Received: from localhost.localdomain ([8.139.245.4])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a8543b0c1fsm5749910a91.14.2026.10.06.04.54.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2026 04:54:51 -0700 (PDT)
-From: Cunlong Li <shenxiaogll@gmail.com>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PPkIDFqm"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=GFZkP4Q7f6iO99TZAYUpOWRUpWyYq4SyYEHJo7G48rqRY1K9COytm4Lc3zUSANIjZypTDMfsezphTM5yK/GKe+EgfEVXbBv4Pm+q+VyvH1D/bwZPd1hSnBTOyS6QrE2VbY5HmAcfP8hXBbNZJvCcGPhjl4hyVnITV5b/LXJ0XnHXnANl3P1wkjPwpb0m0fUWa7qJ3+C1GBDXSj+62ywaqkA+L/phrldSjDtdIEujYpDRn98dJcjwqOpO9JZOsRiboztHLo40Crg5LeRn0IoYP1MycEtWS1FzIX2cVi8HDmKirLBgxi4QNpzFim53vDYuJwWwD/vfhJniQz0LqG+dMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5wk+mF8VEM8dT0LniEWYsyqsIHCQI4gJEmY4E5zs1rA=;
+ b=lqRVg6jmlbYi4E9/IM+QodruRYO+FbPrno8/uVH0FFFJxW23AJtg/BL0WL63YIb8TCnQoSDcELvYEo8XYFX76dRnL4oeq75gG83DmZ6wskpgVL5yPn1ih6tFuaxcdodEA6vDDjIkNS8dYtpy+48v0LK0t+jtosReyBJkAEuwRxIAeBaTwFSMKB42cntupD69vxpDE+oG0R0Sl0VnLvcEOifVBw9Ol8irJYU77ZwRzwfo6RFCNUFRUOwdsy6Kw/rVHJhNygENpqz5bm+I7j1egeh20QJldhbv79HwI7nPxABUvKK/IB5OwClYVnuCnF8Osuua4A9MSq8DkkRBL3aA3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5wk+mF8VEM8dT0LniEWYsyqsIHCQI4gJEmY4E5zs1rA=;
+ b=PPkIDFqm+OM1Tz6ijUx1VIA8j1QbCOTTEhKYJbgGvyyelS93x1lY6ejvLAxsDDIibgykfrazHjL+RDNDAQvsCZ79545JR2ycUL+XAUwd5z59BXVv1mPiGHG3b50HFMFgpu1uIqaLy+UWZQQo0GJ6upvrDkM5RGiY9S9VkJqcaAjQjQ/EAQmUQewkJD4EH5gLuMbypvMSXRIdhOYz2kcAuuf0yt11bwpHu0XzgIxLMz9L3LJdpTKdRus4saJFXfNyLw28HM0Y6FtxqjcYFf77GAOj4exZasfAsmt1iWyvswK1uOpCcPVsF3Vk4kjcxTSy1JLvCo3KZptg/lwt7+hBHQ==
+Received: from CY5PR12MB6479.namprd12.prod.outlook.com (2603:10b6:930:34::17)
+ by MW6PR12MB8900.namprd12.prod.outlook.com (2603:10b6:303:244::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.451.24; Tue, 6 Oct
+ 2026 12:21:36 +0000
+Received: from CY5PR12MB6479.namprd12.prod.outlook.com
+ ([fe80::229a:704f:1349:5056]) by CY5PR12MB6479.namprd12.prod.outlook.com
+ ([fe80::229a:704f:1349:5056%4]) with mapi id 15.21.0472.015; Tue, 6 Oct 2026
+ 12:21:36 +0000
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: Cunlong Li <shenxiaogll@gmail.com>
+CC: Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>, "Paul E. McKenney"
+	<paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, Neeraj
+ Upadhyay <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, Steven
+ Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers
+	<mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>
 Subject: Re: [PATCH] rcu: Enable runtime reset of the RCU stall panic count
-Date: Tue,  6 Oct 2026 19:54:44 +0800
-Message-ID: <asThhHxoFP2L25Nc@63b45mr6s164qmn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00F6D386-FE41-42E3-9B89-07381A49E061@nvidia.com>
-References: <20261004-rcu-v1-1-3799a44367f1@gmail.com> <00F6D386-FE41-42E3-9B89-07381A49E061@nvidia.com>
-Mail-Followup-To: Cunlong Li <shenxiaogll@gmail.com>, Joel Fernandes <joelagnelf@nvidia.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Thread-Topic: [PATCH] rcu: Enable runtime reset of the RCU stall panic count
+Thread-Index: AQHdU526ny8tIQKGAkCWrNqZ8LpGfbbu6qaygAGBEgCAAAeCUg==
+Date: Tue, 6 Oct 2026 12:21:36 +0000
+Message-ID: <0E307B01-A0E6-425D-8AAB-3B63AF087848@nvidia.com>
+References: <20261004-rcu-v1-1-3799a44367f1@gmail.com>
+ <00F6D386-FE41-42E3-9B89-07381A49E061@nvidia.com>
+ <asThhHxoFP2L25Nc@63b45mr6s164qmn>
+In-Reply-To: <asThhHxoFP2L25Nc@63b45mr6s164qmn>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR12MB6479:EE_|MW6PR12MB8900:EE_
+x-ms-office365-filtering-correlation-id: 5f5157e7-6639-4d7c-7539-08df23a45d8b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|7416014|376014|366016|23010399003|56012099006|18002099003|3023799007|4143699003|6133799003|10067099003|11063799006|5023799004|22082099003|38070700021;
+x-microsoft-antispam-message-info:
+ Da2hLaXbRZ9fMrdbcMu2O2Nb/uNYdgfEqIw0baADqQECcpF982knrUER5E6hLTa+a5d1InkFeCAnSYTyQPeFQ9gGz0U4H3pfVQXoOKP7Abf6S98pbzXI+55JCLEhqXscx7pFnxyLDpWsVDPMMkGEQ2EtuWFIxQ+jvdiBjxqyo1I00N14UMo9Tgztz5s9CNjNRQdBN9Lih02ZB5WjlXE3sonZER2dMGWp4ibVaw5j5W16tlEJRmdlhFeKBnxi9CWslkERyHFYbiZRCdZFdk+5BH1sgzprAcpgk+4QOqzXPVZ+rYjLdhaJKYb7a9Ld4ERMN7KOzG2wp1VLHTUrSpqiA2IuCuDHNF3nrG5uXOIOJkdFRTvRA2Csb0pYuG87VsQ7Zeg7cxEWlk0/7nnAou1tPtUteccLWzTxKStZICZ0wpWDcxMb3O7LeiaKvYl4IRDgFDCZYrGreRfj3dqO7nWWjh8L5nuPGeDrYV5sbNPcy/bPQLzHIr/3AyonOl3DBSDmsoeTih3PjFNbXaAE3o0fObnNDn+6s9EYkAmRwtQlQOR+nmUfFHi6EgI9LxyOorpwqwW+nxuL1Ouj2UNH2VLHtpHvp55pV2uc/FysaBIK6Y9tc4cLP9hAX3J2t0jKjOHtiSQ8YFbaj7bPmV7H/vOCMmiztlTvRBunQh7pvE2Ecx5K+QwlxYqJpkitMLK3lQqKtCJaHseEQlMIlcq6YuWgd60HHRjQ3JvL42xdePLgjX8=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(23010399003)(56012099006)(18002099003)(3023799007)(4143699003)(6133799003)(10067099003)(11063799006)(5023799004)(22082099003)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?VWxVakJ0NmZ6V0ZPRXRDT1RFQlZNczdxZWJFR3FMWjIxaUpDa3FCOGQ5VXhx?=
+ =?utf-8?B?UUwzSjVINmtab0ZnL0JQeXNZMXpOUmRXdWdGSEF2dzRIZTBFSXNxRjc0M2ls?=
+ =?utf-8?B?R3Y4TzhQQzFmQngzU0dKUjZqMkgxeFpKcldER0NvRGwrZzNNV0QwdkhNK2xP?=
+ =?utf-8?B?TW5lbU9WdGdaWXEwekR1VisyUUZZcWFmQU1NWE5QWlVYbTVRZlRYY3AwM0Zw?=
+ =?utf-8?B?WXYrdHNXYVBnZEJYc2E0elBXN0FIWXdHbEtVRndiaHJEa0h1STliWnVJKzRM?=
+ =?utf-8?B?Uy9lNkNnUnBVd3FnRHQya0UxcGN5NDEwT1FsR2cyb1B3TGtOcW1lVWN1WHdS?=
+ =?utf-8?B?SW5JLzY2R3pJK3RETHEweDJRWENoN2VVTVRLelBNOHlSSzEyRUpOTUp0anpH?=
+ =?utf-8?B?Q0hVbmwzRUU0dFNqbGVzcWlqV3owZE0zWisrRStEU25KYWs4V2RZeHFiRWVF?=
+ =?utf-8?B?VjhZcnVYYWMrS2pDOWxQK2YwQXljZmU2amFBaVBlMnl1WndhWjV0cmVxS1dE?=
+ =?utf-8?B?OU9NRjFhclV5Z1F6bHVDYTJ1UGwwYnBucVJsTWhyR1E4STQ2bjAvWElzWlMw?=
+ =?utf-8?B?Nmc3TG9YM3NEV2ROeGNqLzRPaDRHTzFsbXdNbGQ3MGM1cHhBYWkvVzZESXZO?=
+ =?utf-8?B?TFdxS3d6bHBlckpJOG1GczZlWVVDVUNrdEJhMGhxZzJmd09tWGhIZE1rQmN5?=
+ =?utf-8?B?ZmR2UHAzMUdhQWI4cTJPZUlQZHh1Ui8rR0ZDMENQK0l5RVhKNS9wcmFlUm5F?=
+ =?utf-8?B?QnhjbEdoa0xMNW1VaWVSclMzUkFQT1RPT0Y4QS9remRvSjhPZlFTQ2V6WHE3?=
+ =?utf-8?B?Z29VdlJWeElKalVjSlJvWW1nM3VsZ0EvMGVIZkE4MWF5UGZici8yY0ZjVU5t?=
+ =?utf-8?B?M01qMUdDUnZpMlNSZ3FwY1Z1MkIraEJsZGNyTmhnZS9iKzZ2Q1JqdjNSU0h3?=
+ =?utf-8?B?NU9TU202SWhLdFFwVUwzNG9MN0dyenQ1TitDV2VPc0lkdGc2Vmc0T0RhemRT?=
+ =?utf-8?B?RGdBUnBzUHBYTHJNczJNKzl4L3cyVWUvNE4xMExaUVBYdWZ2OFZVSjl0UzBm?=
+ =?utf-8?B?Vm9tcW1xeThzWUh5WldXbElMOFUyaEVrTGdsRHpEckVIdEdjaHNwT2RWczVY?=
+ =?utf-8?B?ajZhQVpTMzloeFJ3R1dEVXBEc3lnZkU1eUYzT0VWcXJIeU1WZGlLNXBmTEhj?=
+ =?utf-8?B?US9jSkliYTNQNWpLM1NwWlpCSmp5aWZWbE9oWW96bm1ZSHV5a3RQV1VWZWNM?=
+ =?utf-8?B?UDFmcXlYRXdTRUNER3luK2wrcjF1UUw4OVhhOXJxV0ZmaE5EMiszam1ndHU2?=
+ =?utf-8?B?c3dwcWtMN0VIb1c5bitDbFdhL0R2UFRIWEJrSFFoaHdRVEZtSXBVNDA3VldM?=
+ =?utf-8?B?aDRLNUxQOExwQXAzUnZZd2hLSHl2b3pPU3VUNWlDZHVwc3Bkc3BoNlpzWHdF?=
+ =?utf-8?B?cW11VkdYQ0VnWnRnVUtRbGZHYTdIajdWTTJFb09DdDVKY1AwenFGVlJBUVBp?=
+ =?utf-8?B?RW50b0lKVWlhblBTQXREbWxDRmozaHlJTDc0TVZkYXo1Y2dIZHoxMit6U3Vp?=
+ =?utf-8?B?ZVVCN0F5UUxFazJROTVWL0JqQ1FMWmhNRDRweElMVGJPd2UzZ0Q5bDJ2Rjgr?=
+ =?utf-8?B?NWVEbWYzNVI1MlgyM2lBeHVPZ2dqQnBhYjdSanpxRHRUdEdtT2h5WmlXLzNw?=
+ =?utf-8?B?Ky9YZEhvRWJCc25lZnZiZTB0UFdnbmk0MGZyTkx6L0drNkZLUUQyZTlMWnlO?=
+ =?utf-8?B?d0wxblpHUzNuelp2L2dLYmlUeFl2TklSZmUzWWh6WmdvandLdk43U09ac0JO?=
+ =?utf-8?B?UG9QVjIxN29vaG5MRXV2YXYxcjBiTnJlNVpHWE42a251OVE5Ry9nOWhpd2JS?=
+ =?utf-8?B?TnVJemhCL0dnaGppRmV0T0t0QWllbTZhYnRIQTZkTzZheU9QMnp5V0VrY2Ex?=
+ =?utf-8?B?SHBUeDhWQlRxZVBQVjRlY0NDMDBpMmhGQTFhZGl6L3ZlTk5vdjQwaU0wOHB5?=
+ =?utf-8?B?SUYrTzR6RVpvck0xSElZQnQyQWhQTHZkMWMyRTlrK28wcGVFc28yWFhxSTRq?=
+ =?utf-8?B?d1RMcGZRMEFNVVdxYzVmcTM3K0lSdGlMOHQwWmVMSkhSZktRUTdUZHJpam1P?=
+ =?utf-8?B?WTRBWldmZDFsVXk0VTRMKzhLMXZGOGhwazgvNXBSQjdERCsxMnQ1L0ZQblJU?=
+ =?utf-8?B?QWExS0xuTUtHRXU4REdoZytqVjYzMkZwdFE2WDdKMjV3WUtFUHJwUVdnaWYx?=
+ =?utf-8?B?WHlQMlc5ZC9xV28rNjM2TW45QWRmREE2RXdtL1doZ0tXN0FoQXA5UkdIUlQz?=
+ =?utf-8?B?UXNJdzdxeDJzVXgvZnZTbGlMYjFIYnFKZ2Q4elM1WHJkYkcySEdMQT09?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6479.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f5157e7-6639-4d7c-7539-08df23a45d8b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2026 12:21:36.0505
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rIE+4G+dbIbc7FXLcWFzSikv5NO9xOUahKPym7sWschq+qqQyT1y1NF/Wx5+ezeMLyRPRAmwkFOIBUUsxUpaSQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8900
 
-Hi Joel, thanks for the review!
-
-On Mon, Oct 05, 2026 at 12:56:30PM +0000, Joel Fernandes wrote:
-> 
-> 
-> > On Oct 3, 2026, at 9:14 PM, Cunlong Li <shenxiaogll@gmail.com> wrote:
-> > 
-> > ﻿The kernel.panic_on_rcu_stall and kernel.max_rcu_stall_to_panic sysctls
-> > count RCU CPU stalls since system boot, and invoke panic() once
-> > max_rcu_stall_to_panic stalls have elapsed.  This count is never reset,
-> > so stalls caused by transient incidents keep consuming the budget of a
-> > long-running system, and a later unrelated stall can
-> 
-> Please provide examples of specific transient events you ran into, and recovered from?
-> 
-> > immediately
-> > trigger panic() instead of allowing the intended fresh window of
-> > stalls.
-> > 
-> > This commit therefore introduces the kernel.rcu_stall_panic_count
-> > sysctl.  Reading this file reports the number of stalls counted so far,
-> > and writing 0 to it resets the count.  This allows the cumulative stall
-> > history to be cleared after an incident has been resolved, and also
-> > allows userspace to clear the count periodically, so that panic() is
-> > only triggered by a burst of stalls occurring within a short period.
-> 
-> Could you provide details of such an incident that got resolved without requiring a reboot?
-
-The motivation comes from our customer systems running codex on Ubuntu
-24.04, with a memory limit of ~8G and zram enabled for swap.  When the
-agent's memory footprint grows, the box spends long stretches in direct
-reclaim (zram makes reclaim CPU-heavy), and we get a continuous stream
-of RCU stall warnings.  In the incidents we have seen so far, the
-warnings kept coming and the systems stayed hung, so we would like to
-enable panic_on_rcu_stall so that the box reboots and the service
-recovers automatically.  However, we do not actually know whether some
-of those stalls were transient, i.e. whether the systems would have
-recovered on their own once the memory pressure subsided.  If they
-were, a panic would kill an otherwise recoverable system, which is
-what we would like to avoid.
-
-We have not yet been able to reproduce this in the lab.  But transient,
-self-recovering stalls are not a hypothetical: the commit that
-introduced max_rcu_stall_to_panic, dfe564045c65 ("rcu: Panic after
-fixed number of stalls"), states the premise outright:
-
-    Some stalls are transient, so that system fully recovers.  This
-    commit therefore allows users to configure the number of stalls
-    that must happen in order to trigger kernel panic.
-
-As described in the commit message, since the counter is never reset,
-stalls caused by transient incidents keep consuming the budget of
-max_rcu_stall_to_panic, and a later unrelated stall can immediately
-trigger panic() instead of allowing the intended fresh window of
-stalls.  This is what motivated the patch.
-
-> 
-> 
-> > 
-> > Signed-off-by: Cunlong Li <shenxiaogll@gmail.com>
-> 
-> If the commit is AI assisted, please add an assisted tag.
-
-Yes, it is AI-assisted, and I will state that in the v2 commit
-message.
-
-Thanks,
-Cunlong
-
-> 
-> Thanks,
-> 
-> Joel
-> 
-> > ---
-> > Documentation/admin-guide/sysctl/kernel.rst | 15 ++++++++++++++-
-> > kernel/rcu/tree_stall.h                     | 28 ++++++++++++++++++++++++++--
-> > 2 files changed, 40 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-> > index ffea61d448eb..64fe2985e358 100644
-> > --- a/Documentation/admin-guide/sysctl/kernel.rst
-> > +++ b/Documentation/admin-guide/sysctl/kernel.rst
-> > @@ -959,7 +959,20 @@ max_rcu_stall_to_panic
-> > When ``panic_on_rcu_stall`` is set to 1, this value determines the
-> > number of times that RCU can stall before panic() is called.
-> > 
-> > -When ``panic_on_rcu_stall`` is set to 0, this value is has no effect.
-> > +When ``panic_on_rcu_stall`` is set to 0, this value has no effect.
-> > +
-> > +rcu_stall_panic_count
-> > +=====================
-> > +
-> > +Indicates the number of RCU CPU stalls that have been counted since
-> > +system boot or since the counter was reset. When ``panic_on_rcu_stall``
-> > +is set to 1, this count is compared against ``max_rcu_stall_to_panic``
-> > +to decide whether panic() should be called.
-> > +
-> > +Writing 0 to this file resets the counter to zero, which restarts the
-> > +``max_rcu_stall_to_panic`` window of stalls. This allows system
-> > +administrators to clear the cumulative stall count after an incident
-> > +has been resolved, without requiring a system restart.
-> > 
-> > perf_cpu_time_max_percent
-> > =========================
-> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > index 091e7850ab6e..a80f03e1c7ea 100644
-> > --- a/kernel/rcu/tree_stall.h
-> > +++ b/kernel/rcu/tree_stall.h
-> > @@ -19,6 +19,20 @@
-> > /* panic() on RCU Stall sysctl. */
-> > static int sysctl_panic_on_rcu_stall __read_mostly;
-> > static int sysctl_max_rcu_stall_to_panic __read_mostly;
-> > +static unsigned long sysctl_rcu_stall_panic_count;
-> > +
-> > +/* Reset the RCU stall panic count when written to. */
-> > +static int proc_do_rcu_stall_panic_count(const struct ctl_table *table, int write,
-> > +                     void *buffer, size_t *lenp, loff_t *ppos)
-> > +{
-> > +    if (!write)
-> > +        return proc_doulongvec_minmax(table, write, buffer, lenp, ppos);
-> > +
-> > +    WRITE_ONCE(sysctl_rcu_stall_panic_count, 0);
-> > +    *ppos += *lenp;
-> > +
-> > +    return 0;
-> > +}
-> > 
-> > static const struct ctl_table rcu_stall_sysctl_table[] = {
-> >    {
-> > @@ -39,6 +53,13 @@ static const struct ctl_table rcu_stall_sysctl_table[] = {
-> >        .extra1        = SYSCTL_ONE,
-> >        .extra2        = SYSCTL_INT_MAX,
-> >    },
-> > +    {
-> > +        .procname    = "rcu_stall_panic_count",
-> > +        .data        = &sysctl_rcu_stall_panic_count,
-> > +        .maxlen        = sizeof(sysctl_rcu_stall_panic_count),
-> > +        .mode        = 0644,
-> > +        .proc_handler    = proc_do_rcu_stall_panic_count,
-> > +    },
-> > };
-> > 
-> > static int __init init_rcu_stall_sysctl(void)
-> > @@ -161,7 +182,7 @@ early_initcall(check_cpu_stall_init);
-> > /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
-> > static void panic_on_rcu_stall(const struct cpumask *stalled_mask)
-> > {
-> > -    static int cpu_stall;
-> > +    unsigned long count;
-> > 
-> >    /*
-> >     * Attempt to kick out the BPF scheduler if it's installed and defer
-> > @@ -170,7 +191,10 @@ static void panic_on_rcu_stall(const struct cpumask *stalled_mask)
-> >    if (scx_rcu_cpu_stall(stalled_mask))
-> >        return;
-> > 
-> > -    if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
-> > +    /* A lost RMW update only delays the panic by one stall. */
-> > +    count = READ_ONCE(sysctl_rcu_stall_panic_count) + 1;
-> > +    WRITE_ONCE(sysctl_rcu_stall_panic_count, count);
-> > +    if (count < (unsigned long)READ_ONCE(sysctl_max_rcu_stall_to_panic))
-> >        return;
-> > 
-> >    if (sysctl_panic_on_rcu_stall)
-> > 
-> > ---
-> > base-commit: ce1e0223d8ad4211275c82a17ed6d43ab81e13d9
-> > change-id: 20261003-rcu-375496d7704e
-> > 
-> > Best regards,
-> > --
-> > Cunlong Li <shenxiaogll@gmail.com>
-> > 
+DQoNCj4gT24gT2N0IDYsIDIwMjYsIGF0IDc6NTXigK9BTSwgQ3VubG9uZyBMaSA8c2hlbnhpYW9n
+bGxAZ21haWwuY29tPiB3cm90ZToNCj4gDQo+IO+7v0hpIEpvZWwsIHRoYW5rcyBmb3IgdGhlIHJl
+dmlldyENCj4gDQo+PiBPbiBNb24sIE9jdCAwNSwgMjAyNiBhdCAxMjo1NjozMFBNICswMDAwLCBK
+b2VsIEZlcm5hbmRlcyB3cm90ZToNCj4+IA0KPj4gDQo+Pj4+IE9uIE9jdCAzLCAyMDI2LCBhdCA5
+OjE04oCvUE0sIEN1bmxvbmcgTGkgPHNoZW54aWFvZ2xsQGdtYWlsLmNvbT4gd3JvdGU6DQo+Pj4g
+DQo+Pj4g77u/VGhlIGtlcm5lbC5wYW5pY19vbl9yY3Vfc3RhbGwgYW5kIGtlcm5lbC5tYXhfcmN1
+X3N0YWxsX3RvX3BhbmljIHN5c2N0bHMNCj4+PiBjb3VudCBSQ1UgQ1BVIHN0YWxscyBzaW5jZSBz
+eXN0ZW0gYm9vdCwgYW5kIGludm9rZSBwYW5pYygpIG9uY2UNCj4+PiBtYXhfcmN1X3N0YWxsX3Rv
+X3BhbmljIHN0YWxscyBoYXZlIGVsYXBzZWQuICBUaGlzIGNvdW50IGlzIG5ldmVyIHJlc2V0LA0K
+Pj4+IHNvIHN0YWxscyBjYXVzZWQgYnkgdHJhbnNpZW50IGluY2lkZW50cyBrZWVwIGNvbnN1bWlu
+ZyB0aGUgYnVkZ2V0IG9mIGENCj4+PiBsb25nLXJ1bm5pbmcgc3lzdGVtLCBhbmQgYSBsYXRlciB1
+bnJlbGF0ZWQgc3RhbGwgY2FuDQo+PiANCj4+IFBsZWFzZSBwcm92aWRlIGV4YW1wbGVzIG9mIHNw
+ZWNpZmljIHRyYW5zaWVudCBldmVudHMgeW91IHJhbiBpbnRvLCBhbmQgcmVjb3ZlcmVkIGZyb20/
+DQo+PiANCj4+PiBpbW1lZGlhdGVseQ0KPj4+IHRyaWdnZXIgcGFuaWMoKSBpbnN0ZWFkIG9mIGFs
+bG93aW5nIHRoZSBpbnRlbmRlZCBmcmVzaCB3aW5kb3cgb2YNCj4+PiBzdGFsbHMuDQo+Pj4gDQo+
+Pj4gVGhpcyBjb21taXQgdGhlcmVmb3JlIGludHJvZHVjZXMgdGhlIGtlcm5lbC5yY3Vfc3RhbGxf
+cGFuaWNfY291bnQNCj4+PiBzeXNjdGwuICBSZWFkaW5nIHRoaXMgZmlsZSByZXBvcnRzIHRoZSBu
+dW1iZXIgb2Ygc3RhbGxzIGNvdW50ZWQgc28gZmFyLA0KPj4+IGFuZCB3cml0aW5nIDAgdG8gaXQg
+cmVzZXRzIHRoZSBjb3VudC4gIFRoaXMgYWxsb3dzIHRoZSBjdW11bGF0aXZlIHN0YWxsDQo+Pj4g
+aGlzdG9yeSB0byBiZSBjbGVhcmVkIGFmdGVyIGFuIGluY2lkZW50IGhhcyBiZWVuIHJlc29sdmVk
+LCBhbmQgYWxzbw0KPj4+IGFsbG93cyB1c2Vyc3BhY2UgdG8gY2xlYXIgdGhlIGNvdW50IHBlcmlv
+ZGljYWxseSwgc28gdGhhdCBwYW5pYygpIGlzDQo+Pj4gb25seSB0cmlnZ2VyZWQgYnkgYSBidXJz
+dCBvZiBzdGFsbHMgb2NjdXJyaW5nIHdpdGhpbiBhIHNob3J0IHBlcmlvZC4NCj4+IA0KPj4gQ291
+bGQgeW91IHByb3ZpZGUgZGV0YWlscyBvZiBzdWNoIGFuIGluY2lkZW50IHRoYXQgZ290IHJlc29s
+dmVkIHdpdGhvdXQgcmVxdWlyaW5nIGEgcmVib290Pw0KPiANCj4gVGhlIG1vdGl2YXRpb24gY29t
+ZXMgZnJvbSBvdXIgY3VzdG9tZXIgc3lzdGVtcyBydW5uaW5nIGNvZGV4IG9uIFVidW50dQ0KPiAy
+NC4wNCwgd2l0aCBhIG1lbW9yeSBsaW1pdCBvZiB+OEcgYW5kIHpyYW0gZW5hYmxlZCBmb3Igc3dh
+cC4gIFdoZW4gdGhlDQo+IGFnZW50J3MgbWVtb3J5IGZvb3RwcmludCBncm93cywgdGhlIGJveCBz
+cGVuZHMgbG9uZyBzdHJldGNoZXMgaW4gZGlyZWN0DQo+IHJlY2xhaW0gKHpyYW0gbWFrZXMgcmVj
+bGFpbSBDUFUtaGVhdnkpLCBhbmQgd2UgZ2V0IGEgY29udGludW91cyBzdHJlYW0NCj4gb2YgUkNV
+IHN0YWxsIHdhcm5pbmdzLiAgSW4gdGhlIGluY2lkZW50cyB3ZSBoYXZlIHNlZW4gc28gZmFyLCB0
+aGUNCj4gd2FybmluZ3Mga2VwdCBjb21pbmcgYW5kIHRoZSBzeXN0ZW1zIHN0YXllZCBodW5nLCBz
+byB3ZSB3b3VsZCBsaWtlIHRvDQo+IGVuYWJsZSBwYW5pY19vbl9yY3Vfc3RhbGwgc28gdGhhdCB0
+aGUgYm94IHJlYm9vdHMgYW5kIHRoZSBzZXJ2aWNlDQo+IHJlY292ZXJzIGF1dG9tYXRpY2FsbHku
+ICBIb3dldmVyLCB3ZSBkbyBub3QgYWN0dWFsbHkga25vdyB3aGV0aGVyIHNvbWUNCj4gb2YgdGhv
+c2Ugc3RhbGxzIHdlcmUgdHJhbnNpZW50LCBpLmUuIHdoZXRoZXIgdGhlIHN5c3RlbXMgd291bGQg
+aGF2ZQ0KPiByZWNvdmVyZWQgb24gdGhlaXIgb3duIG9uY2UgdGhlIG1lbW9yeSBwcmVzc3VyZSBz
+dWJzaWRlZC4gIElmIHRoZXkNCj4gd2VyZSwgYSBwYW5pYyB3b3VsZCBraWxsIGFuIG90aGVyd2lz
+ZSByZWNvdmVyYWJsZSBzeXN0ZW0sIHdoaWNoIGlzDQo+IHdoYXQgd2Ugd291bGQgbGlrZSB0byBh
+dm9pZC4NCj4gDQo+IFdlIGhhdmUgbm90IHlldCBiZWVuIGFibGUgdG8gcmVwcm9kdWNlIHRoaXMg
+aW4gdGhlIGxhYi4gIEJ1dCB0cmFuc2llbnQsDQo+IHNlbGYtcmVjb3ZlcmluZyBzdGFsbHMgYXJl
+IG5vdCBhIGh5cG90aGV0aWNhbDogdGhlIGNvbW1pdCB0aGF0DQo+IGludHJvZHVjZWQgbWF4X3Jj
+dV9zdGFsbF90b19wYW5pYywgZGZlNTY0MDQ1YzY1ICgicmN1OiBQYW5pYyBhZnRlcg0KPiBmaXhl
+ZCBudW1iZXIgb2Ygc3RhbGxzIiksIHN0YXRlcyB0aGUgcHJlbWlzZSBvdXRyaWdodDoNCj4gDQo+
+ICAgIFNvbWUgc3RhbGxzIGFyZSB0cmFuc2llbnQsIHNvIHRoYXQgc3lzdGVtIGZ1bGx5IHJlY292
+ZXJzLiAgVGhpcw0KPiAgICBjb21taXQgdGhlcmVmb3JlIGFsbG93cyB1c2VycyB0byBjb25maWd1
+cmUgdGhlIG51bWJlciBvZiBzdGFsbHMNCj4gICAgdGhhdCBtdXN0IGhhcHBlbiBpbiBvcmRlciB0
+byB0cmlnZ2VyIGtlcm5lbCBwYW5pYy4NCj4gDQo+IEFzIGRlc2NyaWJlZCBpbiB0aGUgY29tbWl0
+IG1lc3NhZ2UsIHNpbmNlIHRoZSBjb3VudGVyIGlzIG5ldmVyIHJlc2V0LA0KPiBzdGFsbHMgY2F1
+c2VkIGJ5IHRyYW5zaWVudCBpbmNpZGVudHMga2VlcCBjb25zdW1pbmcgdGhlIGJ1ZGdldCBvZg0K
+PiBtYXhfcmN1X3N0YWxsX3RvX3BhbmljLCBhbmQgYSBsYXRlciB1bnJlbGF0ZWQgc3RhbGwgY2Fu
+IGltbWVkaWF0ZWx5DQo+IHRyaWdnZXIgcGFuaWMoKSBpbnN0ZWFkIG9mIGFsbG93aW5nIHRoZSBp
+bnRlbmRlZCBmcmVzaCB3aW5kb3cgb2YNCj4gc3RhbGxzLiAgVGhpcyBpcyB3aGF0IG1vdGl2YXRl
+ZCB0aGUgcGF0Y2guDQoNCk9rLCBhZGQgYWxsIHRoaXMgdG8gY29tbWl0IG1lc3NhZ2UuIFVzZSBj
+YXNlIGp1c3RpZmljYXRpb24gaXMgYSBtdXN0IGFzIHdlIHdlaWdoIGluIGFkZGl0aW9uYWwgY29t
+cGxleGl0eS4NCg0KPiANCj4+IA0KPj4gDQo+Pj4gDQo+Pj4gU2lnbmVkLW9mZi1ieTogQ3VubG9u
+ZyBMaSA8c2hlbnhpYW9nbGxAZ21haWwuY29tPg0KPj4gDQo+PiBJZiB0aGUgY29tbWl0IGlzIEFJ
+IGFzc2lzdGVkLCBwbGVhc2UgYWRkIGFuIGFzc2lzdGVkIHRhZy4NCj4gDQo+IFllcywgaXQgaXMg
+QUktYXNzaXN0ZWQsIGFuZCBJIHdpbGwgc3RhdGUgdGhhdCBpbiB0aGUgdjIgY29tbWl0DQo+IG1l
+c3NhZ2UuDQoNCk9LLg0KDQpUaGFua3MsDQoNCkpvZWwgDQoNCj4gDQo+IFRoYW5rcywNCj4gQ3Vu
+bG9uZw0KPiANCj4+IA0KPj4gVGhhbmtzLA0KPj4gDQo+PiBKb2VsDQo+PiANCj4+PiAtLS0NCj4+
+PiBEb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL3N5c2N0bC9rZXJuZWwucnN0IHwgMTUgKysrKysr
+KysrKysrKystDQo+Pj4ga2VybmVsL3JjdS90cmVlX3N0YWxsLmggICAgICAgICAgICAgICAgICAg
+ICB8IDI4ICsrKysrKysrKysrKysrKysrKysrKysrKysrLS0NCj4+PiAyIGZpbGVzIGNoYW5nZWQs
+IDQwIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+Pj4gDQo+Pj4gZGlmZiAtLWdpdCBh
+L0RvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUvc3lzY3RsL2tlcm5lbC5yc3QgYi9Eb2N1bWVudGF0
+aW9uL2FkbWluLWd1aWRlL3N5c2N0bC9rZXJuZWwucnN0DQo+Pj4gaW5kZXggZmZlYTYxZDQ0OGVi
+Li42NGZlMjk4NWUzNTggMTAwNjQ0DQo+Pj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlk
+ZS9zeXNjdGwva2VybmVsLnJzdA0KPj4+ICsrKyBiL0RvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUv
+c3lzY3RsL2tlcm5lbC5yc3QNCj4+PiBAQCAtOTU5LDcgKzk1OSwyMCBAQCBtYXhfcmN1X3N0YWxs
+X3RvX3BhbmljDQo+Pj4gV2hlbiBgYHBhbmljX29uX3JjdV9zdGFsbGBgIGlzIHNldCB0byAxLCB0
+aGlzIHZhbHVlIGRldGVybWluZXMgdGhlDQo+Pj4gbnVtYmVyIG9mIHRpbWVzIHRoYXQgUkNVIGNh
+biBzdGFsbCBiZWZvcmUgcGFuaWMoKSBpcyBjYWxsZWQuDQo+Pj4gDQo+Pj4gLVdoZW4gYGBwYW5p
+Y19vbl9yY3Vfc3RhbGxgYCBpcyBzZXQgdG8gMCwgdGhpcyB2YWx1ZSBpcyBoYXMgbm8gZWZmZWN0
+Lg0KPj4+ICtXaGVuIGBgcGFuaWNfb25fcmN1X3N0YWxsYGAgaXMgc2V0IHRvIDAsIHRoaXMgdmFs
+dWUgaGFzIG5vIGVmZmVjdC4NCj4+PiArDQo+Pj4gK3JjdV9zdGFsbF9wYW5pY19jb3VudA0KPj4+
+ICs9PT09PT09PT09PT09PT09PT09PT0NCj4+PiArDQo+Pj4gK0luZGljYXRlcyB0aGUgbnVtYmVy
+IG9mIFJDVSBDUFUgc3RhbGxzIHRoYXQgaGF2ZSBiZWVuIGNvdW50ZWQgc2luY2UNCj4+PiArc3lz
+dGVtIGJvb3Qgb3Igc2luY2UgdGhlIGNvdW50ZXIgd2FzIHJlc2V0LiBXaGVuIGBgcGFuaWNfb25f
+cmN1X3N0YWxsYGANCj4+PiAraXMgc2V0IHRvIDEsIHRoaXMgY291bnQgaXMgY29tcGFyZWQgYWdh
+aW5zdCBgYG1heF9yY3Vfc3RhbGxfdG9fcGFuaWNgYA0KPj4+ICt0byBkZWNpZGUgd2hldGhlciBw
+YW5pYygpIHNob3VsZCBiZSBjYWxsZWQuDQo+Pj4gKw0KPj4+ICtXcml0aW5nIDAgdG8gdGhpcyBm
+aWxlIHJlc2V0cyB0aGUgY291bnRlciB0byB6ZXJvLCB3aGljaCByZXN0YXJ0cyB0aGUNCj4+PiAr
+YGBtYXhfcmN1X3N0YWxsX3RvX3BhbmljYGAgd2luZG93IG9mIHN0YWxscy4gVGhpcyBhbGxvd3Mg
+c3lzdGVtDQo+Pj4gK2FkbWluaXN0cmF0b3JzIHRvIGNsZWFyIHRoZSBjdW11bGF0aXZlIHN0YWxs
+IGNvdW50IGFmdGVyIGFuIGluY2lkZW50DQo+Pj4gK2hhcyBiZWVuIHJlc29sdmVkLCB3aXRob3V0
+IHJlcXVpcmluZyBhIHN5c3RlbSByZXN0YXJ0Lg0KPj4+IA0KPj4+IHBlcmZfY3B1X3RpbWVfbWF4
+X3BlcmNlbnQNCj4+PiA9PT09PT09PT09PT09PT09PT09PT09PT09DQo+Pj4gZGlmZiAtLWdpdCBh
+L2tlcm5lbC9yY3UvdHJlZV9zdGFsbC5oIGIva2VybmVsL3JjdS90cmVlX3N0YWxsLmgNCj4+PiBp
+bmRleCAwOTFlNzg1MGFiNmUuLmE4MGYwM2UxYzdlYSAxMDA2NDQNCj4+PiAtLS0gYS9rZXJuZWwv
+cmN1L3RyZWVfc3RhbGwuaA0KPj4+ICsrKyBiL2tlcm5lbC9yY3UvdHJlZV9zdGFsbC5oDQo+Pj4g
+QEAgLTE5LDYgKzE5LDIwIEBADQo+Pj4gLyogcGFuaWMoKSBvbiBSQ1UgU3RhbGwgc3lzY3RsLiAq
+Lw0KPj4+IHN0YXRpYyBpbnQgc3lzY3RsX3BhbmljX29uX3JjdV9zdGFsbCBfX3JlYWRfbW9zdGx5
+Ow0KPj4+IHN0YXRpYyBpbnQgc3lzY3RsX21heF9yY3Vfc3RhbGxfdG9fcGFuaWMgX19yZWFkX21v
+c3RseTsNCj4+PiArc3RhdGljIHVuc2lnbmVkIGxvbmcgc3lzY3RsX3JjdV9zdGFsbF9wYW5pY19j
+b3VudDsNCj4+PiArDQo+Pj4gKy8qIFJlc2V0IHRoZSBSQ1Ugc3RhbGwgcGFuaWMgY291bnQgd2hl
+biB3cml0dGVuIHRvLiAqLw0KPj4+ICtzdGF0aWMgaW50IHByb2NfZG9fcmN1X3N0YWxsX3Bhbmlj
+X2NvdW50KGNvbnN0IHN0cnVjdCBjdGxfdGFibGUgKnRhYmxlLCBpbnQgd3JpdGUsDQo+Pj4gKyAg
+ICAgICAgICAgICAgICAgICAgIHZvaWQgKmJ1ZmZlciwgc2l6ZV90ICpsZW5wLCBsb2ZmX3QgKnBw
+b3MpDQo+Pj4gK3sNCj4+PiArICAgIGlmICghd3JpdGUpDQo+Pj4gKyAgICAgICAgcmV0dXJuIHBy
+b2NfZG91bG9uZ3ZlY19taW5tYXgodGFibGUsIHdyaXRlLCBidWZmZXIsIGxlbnAsIHBwb3MpOw0K
+Pj4+ICsNCj4+PiArICAgIFdSSVRFX09OQ0Uoc3lzY3RsX3JjdV9zdGFsbF9wYW5pY19jb3VudCwg
+MCk7DQo+Pj4gKyAgICAqcHBvcyArPSAqbGVucDsNCj4+PiArDQo+Pj4gKyAgICByZXR1cm4gMDsN
+Cj4+PiArfQ0KPj4+IA0KPj4+IHN0YXRpYyBjb25zdCBzdHJ1Y3QgY3RsX3RhYmxlIHJjdV9zdGFs
+bF9zeXNjdGxfdGFibGVbXSA9IHsNCj4+PiAgIHsNCj4+PiBAQCAtMzksNiArNTMsMTMgQEAgc3Rh
+dGljIGNvbnN0IHN0cnVjdCBjdGxfdGFibGUgcmN1X3N0YWxsX3N5c2N0bF90YWJsZVtdID0gew0K
+Pj4+ICAgICAgIC5leHRyYTEgICAgICAgID0gU1lTQ1RMX09ORSwNCj4+PiAgICAgICAuZXh0cmEy
+ICAgICAgICA9IFNZU0NUTF9JTlRfTUFYLA0KPj4+ICAgfSwNCj4+PiArICAgIHsNCj4+PiArICAg
+ICAgICAucHJvY25hbWUgICAgPSAicmN1X3N0YWxsX3BhbmljX2NvdW50IiwNCj4+PiArICAgICAg
+ICAuZGF0YSAgICAgICAgPSAmc3lzY3RsX3JjdV9zdGFsbF9wYW5pY19jb3VudCwNCj4+PiArICAg
+ICAgICAubWF4bGVuICAgICAgICA9IHNpemVvZihzeXNjdGxfcmN1X3N0YWxsX3BhbmljX2NvdW50
+KSwNCj4+PiArICAgICAgICAubW9kZSAgICAgICAgPSAwNjQ0LA0KPj4+ICsgICAgICAgIC5wcm9j
+X2hhbmRsZXIgICAgPSBwcm9jX2RvX3JjdV9zdGFsbF9wYW5pY19jb3VudCwNCj4+PiArICAgIH0s
+DQo+Pj4gfTsNCj4+PiANCj4+PiBzdGF0aWMgaW50IF9faW5pdCBpbml0X3JjdV9zdGFsbF9zeXNj
+dGwodm9pZCkNCj4+PiBAQCAtMTYxLDcgKzE4Miw3IEBAIGVhcmx5X2luaXRjYWxsKGNoZWNrX2Nw
+dV9zdGFsbF9pbml0KTsNCj4+PiAvKiBJZiBzbyBzcGVjaWZpZWQgdmlhIHN5c2N0bCwgcGFuaWMs
+IHlpZWxkaW5nIGNsZWFuZXIgc3RhbGwtd2FybmluZyBvdXRwdXQuICovDQo+Pj4gc3RhdGljIHZv
+aWQgcGFuaWNfb25fcmN1X3N0YWxsKGNvbnN0IHN0cnVjdCBjcHVtYXNrICpzdGFsbGVkX21hc2sp
+DQo+Pj4gew0KPj4+IC0gICAgc3RhdGljIGludCBjcHVfc3RhbGw7DQo+Pj4gKyAgICB1bnNpZ25l
+ZCBsb25nIGNvdW50Ow0KPj4+IA0KPj4+ICAgLyoNCj4+PiAgICAqIEF0dGVtcHQgdG8ga2ljayBv
+dXQgdGhlIEJQRiBzY2hlZHVsZXIgaWYgaXQncyBpbnN0YWxsZWQgYW5kIGRlZmVyDQo+Pj4gQEAg
+LTE3MCw3ICsxOTEsMTAgQEAgc3RhdGljIHZvaWQgcGFuaWNfb25fcmN1X3N0YWxsKGNvbnN0IHN0
+cnVjdCBjcHVtYXNrICpzdGFsbGVkX21hc2spDQo+Pj4gICBpZiAoc2N4X3JjdV9jcHVfc3RhbGwo
+c3RhbGxlZF9tYXNrKSkNCj4+PiAgICAgICByZXR1cm47DQo+Pj4gDQo+Pj4gLSAgICBpZiAoKytj
+cHVfc3RhbGwgPCBzeXNjdGxfbWF4X3JjdV9zdGFsbF90b19wYW5pYykNCj4+PiArICAgIC8qIEEg
+bG9zdCBSTVcgdXBkYXRlIG9ubHkgZGVsYXlzIHRoZSBwYW5pYyBieSBvbmUgc3RhbGwuICovDQo+
+Pj4gKyAgICBjb3VudCA9IFJFQURfT05DRShzeXNjdGxfcmN1X3N0YWxsX3BhbmljX2NvdW50KSAr
+IDE7DQo+Pj4gKyAgICBXUklURV9PTkNFKHN5c2N0bF9yY3Vfc3RhbGxfcGFuaWNfY291bnQsIGNv
+dW50KTsNCj4+PiArICAgIGlmIChjb3VudCA8ICh1bnNpZ25lZCBsb25nKVJFQURfT05DRShzeXNj
+dGxfbWF4X3JjdV9zdGFsbF90b19wYW5pYykpDQo+Pj4gICAgICAgcmV0dXJuOw0KPj4+IA0KPj4+
+ICAgaWYgKHN5c2N0bF9wYW5pY19vbl9yY3Vfc3RhbGwpDQo+Pj4gDQo+Pj4gLS0tDQo+Pj4gYmFz
+ZS1jb21taXQ6IGNlMWUwMjIzZDhhZDQyMTEyNzVjODJhMTdlZDZkNDNhYjgxZTEzZDkNCj4+PiBj
+aGFuZ2UtaWQ6IDIwMjYxMDAzLXJjdS0zNzU0OTZkNzcwNGUNCj4+PiANCj4+PiBCZXN0IHJlZ2Fy
+ZHMsDQo+Pj4gLS0NCj4+PiBDdW5sb25nIExpIDxzaGVueGlhb2dsbEBnbWFpbC5jb20+DQo+Pj4g
+DQo=
