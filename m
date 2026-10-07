@@ -1,46 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD93641169F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD7DC3B8D7B;
 	Wed,  7 Oct 2026 21:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791407051; cv=none; b=inB+BxGGfgas1bIv7tPmjf4DUxDuIA0ND19VB6lb0cm2/1F1cnOP+KV179staZ0UY1uvIyv8MUvNAX+iXW5ZJ2xdpk6rv6n8YO48jX+eae02ca1jT/B6BY1nXjjqOo6s+/th5F5XpbG38p/7dDsM49Q5pKKh1yheZYAiM6OfsPU=
+	t=1791407051; cv=none; b=K9RGiD0dqny/41js9AliuO9dsoJASpfzek64TkUPLlOIyAEQTkNFCuRoKWHjQhfScU0G9WGnN9nLtgpXM1f+Sn1StHrnqIkfeVTzU2TQIm4WdHyalX7QYZk/AIrJn3STT5Z6Pj3R2oGouY5FOC5pKoIj9oO5eVu/eZ56EvDHbt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1791407051; c=relaxed/simple;
-	bh=+NcX+b7yDvu4BE/EyrG89DSdiDt727HpSAk6yvMU9ow=;
+	bh=Z1Bl2OHJNSWILDEkHE5LymTzzIcGpeTeeeuL3zkDolY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dhag8yOCQzzryXvN7XwvOjsyTdgB5cUKzNmdVlh1Tcb64gVBfXE3RiqAV2k66pZUIJ/PJSm5S4JdxXSzAsbfAC7P1x82+koqfd06V2EAWNF0Dia0zxQR6n2vPibnNos0qsK4GfMcl9Soc6QmipwfCxBwTkI2oYMsLWHSkNWIV0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HT185MR2; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=Tti+xsbYHvDA655Q4Js6KxrufxN3InPDG5QzRL2egh9JGiTFIoxC8XDzXMlz5I5je5ylgfmPPxudWPzfb1dwJBPOSdAlxERWIag6qzxdiOmuwHci4BPd6FsDoA09Emj29gKTHulSG8jDl6d85TWiHYlIpOomrAri6PIfr3mJ0Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=le0tRfju; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HT185MR2"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B75541F0089D;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="le0tRfju"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC5581F0089C;
 	Wed,  7 Oct 2026 21:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1791407049;
-	bh=rOzvgu2DgJgVMTpRb75TJD+Wb3bbc+jBfZKtCo1gXbE=;
+	bh=CqzpfhkzFjTdigES5c5QxM6R+iypMFs7n1ILt6v8tcw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=HT185MR27bFugOkVsb2OBoyzRP3/XwX77/H5eUL0rYMZpllIzTEuB9wJrnsyHi0Rv
-	 YjPSCFJ4sTVVjvB6UOcI5wL5FY/UotAISg4j97GeWG0iT2pG8tttn+srdEfQB24jZl
-	 n+6OSpMKnVRNwoLoQz7P2vHHLDp08EmuLQVHgpQ8lAD1LPi708aS82cnCfpHj5sduS
-	 qJ0HTxVJ32bR7gcdX+sf/grtxsxb1uSKa6c+O4nWEukYFvotb/wtIOvbo/EQhzNvfX
-	 cwLv/8CzPzQc1FYYXavypuRp8SXX99WSnih4jQMTR5xyfcaX/moHqZ5usYoiyPpp1J
-	 BkK7Zp5gcjX+A==
+	b=le0tRfjuT+MIv9KlfZkZDnK6d9kI8VB7w67C5AhBgCGnlrZ6980mTUXLyL5ddrOYN
+	 5u1TtuN3mGzhPVeDvKgutMFUTupcBXKZqRN51PbY4pXUsMDEFgjoTCG3woo/QvI63m
+	 JorDNOWj2dJsKtjn8p5tU6gslGb7Gh1Pc/VxXU+uPDOyY4QV6DzSxxit3bbOrK5RSE
+	 +w+E5/lKkI7BKtuIfWMVHJJNbk1+MisbszrCIs3g+I/nquAySIt7TM1/monOkqJN4U
+	 DnPJ92pLhVnNhtLymd2IuHRZtQWr5P0VjwXRHEdlZVh49SrvVHI5b7xqK8H4mmBM4c
+	 Sfg20fHodF6fA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5AADFCE26CA; Wed,  7 Oct 2026 14:04:09 -0700 (PDT)
+	id 580E3CE1DC2; Wed,  7 Oct 2026 14:04:09 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	Kunwu Chan <kunwu.chan@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Boqun Feng <boqun@kernel.org>,
+	Zhouyi Zhou <zhouzhouyi@gmail.com>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2 5/8] rcutorture: Add atomic SRCU lockdep support
-Date: Wed,  7 Oct 2026 14:04:05 -0700
-Message-Id: <20261007210408.1983713-5-paulmck@kernel.org>
+Subject: [PATCH v2 4/8] rcutorture: Fix kvm-again.sh re-run failure on ppc64
+Date: Wed,  7 Oct 2026 14:04:04 -0700
+Message-Id: <20261007210408.1983713-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <f9cb7abd-db60-43f6-9392-27fe29abb75b@paulmck-laptop>
 References: <f9cb7abd-db60-43f6-9392-27fe29abb75b@paulmck-laptop>
@@ -52,144 +50,84 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Kunwu Chan <kunwu.chan@gmail.com>
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
-Add three testtypes covering atomic SRCU lockdep behavior:
+Discovered in the Open Source Lab of Oregon State University when running
+torture.sh on a ppc64le VM.  Two bugs were exposed:
 
-  testtype 4: atomic SRCU same-type deadlock
-  testtype 5: atomic SRCU + raw spinlock dependency cycle
-  testtype 6: synchronize_srcu_atomic() inside rcu_read_lock()
+1. The kvm-transform.sh call hard-coded "bzImage" as the kernel image
+   name.  On ppc64, the boot image is vmlinux, not bzImage, so the
+   re-run failed to find the image.  Fix this by extracting the QEMU
+   binary from the qemu-cmd file and passing it to identify_boot_image()
+   to obtain the correct architecture-specific image name, the same way
+   kvm.sh already does.
 
-Co-developed-by: Zqiang <qiang.zhang@linux.dev>
-Signed-off-by: Zqiang <qiang.zhang@linux.dev>
-Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-Acked-by: Boqun Feng <boqun@kernel.org>
+2. The rm -f invocation on re-run listed vmlinux among the files to
+   delete.  On ppc64 vmlinux is the boot image, so deleting it broke
+   the re-run on that architecture.  Drop vmlinux from the unconditional
+   list, and instead conditionally delete it only when the boot image
+   basename is not vmlinux.
+
+In addition, identify qemu_binary before the copy step so that on
+non-PowerPC systems (where vmlinux is not the boot image) the vmlinux
+file can be removed immediately after the run directory is copied,
+saving storage before any tests run.  This also eliminates the
+per-iteration re-computation of qemu_binary and boot_image inside
+the qemu-cmd transform loop.
+
+Tested on a local x86_64 machine and on a PPC VM of the Open Source Lab
+of Oregon State University.
+
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 84 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 83 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/kvm-again.sh | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 51ed35f5aab17..35dc61d871b98 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -4662,6 +4662,17 @@ static DECLARE_RWSEM(rwsem7);
- static DECLARE_RWSEM(rwsem8);
- static DECLARE_RWSEM(rwsem9);
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+index b5239b52cb5da..9060b3dc89262 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+@@ -180,6 +180,9 @@ fi
  
-+static DEFINE_RAW_SPINLOCK(spin0);
-+static DEFINE_RAW_SPINLOCK(spin1);
-+static DEFINE_RAW_SPINLOCK(spin2);
-+static DEFINE_RAW_SPINLOCK(spin3);
-+static DEFINE_RAW_SPINLOCK(spin4);
-+static DEFINE_RAW_SPINLOCK(spin5);
-+static DEFINE_RAW_SPINLOCK(spin6);
-+static DEFINE_RAW_SPINLOCK(spin7);
-+static DEFINE_RAW_SPINLOCK(spin8);
-+static DEFINE_RAW_SPINLOCK(spin9);
-+
- DEFINE_STATIC_SRCU(srcu0);
- DEFINE_STATIC_SRCU(srcu1);
- DEFINE_STATIC_SRCU(srcu2);
-@@ -4673,6 +4684,17 @@ DEFINE_STATIC_SRCU(srcu7);
- DEFINE_STATIC_SRCU(srcu8);
- DEFINE_STATIC_SRCU(srcu9);
+ echo ---- Re-run results directory: $rundir
  
-+DEFINE_STATIC_SRCU_ATOMIC(srcu0_atomic);
-+DEFINE_STATIC_SRCU_ATOMIC(srcu1_atomic);
-+DEFINE_STATIC_SRCU_ATOMIC(srcu2_atomic);
-+DEFINE_STATIC_SRCU_ATOMIC(srcu3_atomic);
-+DEFINE_STATIC_SRCU_ATOMIC(srcu4_atomic);
-+DEFINE_STATIC_SRCU_ATOMIC(srcu5_atomic);
-+DEFINE_STATIC_SRCU_ATOMIC(srcu6_atomic);
-+DEFINE_STATIC_SRCU_ATOMIC(srcu7_atomic);
-+DEFINE_STATIC_SRCU_ATOMIC(srcu8_atomic);
-+DEFINE_STATIC_SRCU_ATOMIC(srcu9_atomic);
++qemu_binary="$(find "$oldrun" -maxdepth 2 -name 'qemu-cmd' -type f 2>/dev/null | head -1 | xargs -r grep -v '^#' 2>/dev/null | awk 'NF { print $1; exit }')"
++boot_image="`identify_boot_image "$qemu_binary"`"
 +
- static int srcu_lockdep_next(const char *f, const char *fl, const char *fs, const char *fu, int i,
- 			     int cyclelen, int deadlock)
- {
-@@ -4702,6 +4724,12 @@ static void rcu_torture_init_srcu_lockdep(void)
- 					  &rwsem5, &rwsem6, &rwsem7, &rwsem8, &rwsem9 };
- 	struct srcu_struct *srcus[] = { &srcu0, &srcu1, &srcu2, &srcu3, &srcu4,
- 					&srcu5, &srcu6, &srcu7, &srcu8, &srcu9 };
-+	raw_spinlock_t *spins[] = { &spin0, &spin1, &spin2, &spin3, &spin4,
-+				    &spin5, &spin6, &spin7, &spin8, &spin9 };
-+	struct srcu_struct *srcus_atomic[] = { &srcu0_atomic, &srcu1_atomic, &srcu2_atomic,
-+					       &srcu3_atomic, &srcu4_atomic, &srcu5_atomic,
-+					       &srcu6_atomic, &srcu7_atomic, &srcu8_atomic,
-+					       &srcu9_atomic };
- 	int testtype;
- 
- 	if (!test_srcu_lockdep)
-@@ -4812,11 +4840,65 @@ static void rcu_torture_init_srcu_lockdep(void)
- 	}
- #endif // #ifdef CONFIG_TASKS_TRACE_RCU
- 
-+	if (testtype == 4) {
-+		pr_info("%s: test_srcu_lockdep = %05d: SRCU_ATOMIC %d-way %sdeadlock.\n",
-+			__func__, test_srcu_lockdep, cyclelen, deadlock ? "" : "non-");
-+		if (deadlock && cyclelen == 1)
-+			pr_info("%s: Expect hang.\n", __func__);
-+		for (i = 0; i < cyclelen; i++) {
-+			j = srcu_lockdep_next(__func__, "srcu_read_lock_atomic",
-+					      "synchronize_srcu_atomic",
-+					      "srcu_read_unlock_atomic", i,
-+					      cyclelen, deadlock);
-+			idx = srcu_read_lock_atomic(srcus_atomic[i]);
-+			if (j >= 0)
-+				synchronize_srcu_atomic(srcus_atomic[j]);
-+			srcu_read_unlock_atomic(srcus_atomic[i], idx);
-+		}
-+		return;
-+	}
-+
-+	if (testtype == 5) {
-+		pr_info("%s: test_srcu_lockdep = %05d: SRCU_ATOMIC/raw_spinlock %d-way %sdeadlock.\n",
-+			__func__, test_srcu_lockdep, cyclelen, deadlock ? "" : "non-");
-+		for (i = 0; i < cyclelen; i++) {
-+			pr_info("%s: srcu_read_lock_atomic(%d), raw_spin_lock(%d), raw_spin_unlock(%d), srcu_read_unlock_atomic(%d)\n",
-+				__func__, i, i, i, i);
-+			idx = srcu_read_lock_atomic(srcus_atomic[i]);
-+			raw_spin_lock(spins[i]);
-+			raw_spin_unlock(spins[i]);
-+			srcu_read_unlock_atomic(srcus_atomic[i], idx);
-+
-+			j = srcu_lockdep_next(__func__, "raw_spin_lock",
-+					      "synchronize_srcu_atomic",
-+					      "raw_spin_unlock", i, cyclelen,
-+					      deadlock);
-+			raw_spin_lock(spins[i]);
-+			if (j >= 0)
-+				synchronize_srcu_atomic(srcus_atomic[j]);
-+			raw_spin_unlock(spins[i]);
-+		}
-+		return;
-+	}
-+
-+	if (testtype == 6) {
-+		pr_info("%s: test_srcu_lockdep = %05d: synchronize_srcu_atomic() inside rcu_read_lock() %d-way.\n",
-+			__func__, test_srcu_lockdep, cyclelen);
-+		for (i = 0; i < cyclelen; i++) {
-+			rcu_read_lock();
-+			synchronize_srcu_atomic(srcus_atomic[i]);
-+			rcu_read_unlock();
-+		}
-+		return;
-+	}
-+
- err_out:
- 	pr_info("%s: test_srcu_lockdep = %05d does nothing.\n", __func__, test_srcu_lockdep);
- 	pr_info("%s: test_srcu_lockdep = DNNL.\n", __func__);
- 	pr_info("%s: D: Deadlock if nonzero.\n", __func__);
--	pr_info("%s: NN: Test number, 0=SRCU, 1=SRCU/mutex, 2=SRCU/rwsem, 3=SRCU/Tasks Trace RCU.\n", __func__);
-+	pr_info("%s: NN: Test number, 0=SRCU, 1=SRCU/mutex, 2=SRCU/rwsem, 3=SRCU/Tasks Trace RCU, 4=SRCU_ATOMIC, ",
-+		__func__);
-+	pr_cont("5=SRCU_ATOMIC/raw_spinlock, 6=synchronize_srcu_atomic inside rcu_read_lock.\n");
- 	pr_info("%s: L: Cycle length.\n", __func__);
- 	if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU))
- 		pr_info("%s: NN=3 disallowed because kernel is built with CONFIG_TASKS_TRACE_RCU=n\n", __func__);
+ if test "$oldrun" != "$rundir"
+ then
+ 	# Copy old run directory tree over and adjust.
+@@ -189,7 +192,7 @@ then
+ 		echo "Cannot copy from $oldrun to $rundir."
+ 		usage
+ 	fi
+-	rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
++	rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out} "$rundir"/log
+ 	touch "$rundir/log"
+ 	echo $scriptname $args | tee -a "$rundir/log"
+ 	echo $oldrun > "$rundir/re-run"
+@@ -197,6 +200,10 @@ then
+ 	then
+ 		$arg_link "$oldrun/../../bin" "$rundir/../.."
+ 	fi
++	if test "`basename "$boot_image"`" != vmlinux
++	then
++		rm -f "$rundir"/*/vmlinux
++	fi
+ else
+ 	# Check for a run having already happened.
+ 	find "$rundir" -name console.log -print > $T/oldrun-console.log
+@@ -217,7 +224,7 @@ do
+ 	qemu_cmd_dir="`dirname "$i"`"
+ 	kernel_dir="`echo $qemu_cmd_dir | sed -e 's/\.[0-9]\+$//'`"
+ 	jitter_dir="`dirname "$kernel_dir"`"
+-	kvm-transform.sh "$kernel_dir/bzImage" "$qemu_cmd_dir/console.log" "$jitter_dir" "$dur" "$bootargs" < $T/qemu-cmd > $i
++	kvm-transform.sh "$kernel_dir/`basename $boot_image`" "$qemu_cmd_dir/console.log" "$jitter_dir" "$dur" "$bootargs" < $T/qemu-cmd > $i
+ 	if test -n "$arg_remote"
+ 	then
+ 		echo "# TORTURE_KCONFIG_GDB_ARG=''" >> $i
 -- 
 2.40.1
 
