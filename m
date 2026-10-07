@@ -1,42 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD89640FD9B;
-	Wed,  7 Oct 2026 21:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B729C411F9F;
+	Wed,  7 Oct 2026 21:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791407051; cv=none; b=SDFzDyF9JvkL9xpGU0rvI7B5MB0FAKD2cY5RePV/Kp0WIpmUiem+8zEnYmPnK67ND7Ll3dj2pQXJUxPA4NF2Tfp+kreGj8GDMRA+tZXy+MGr684pnUGjQIaEqAVc0fa5OvwndSLINmYPXjYSRz7FMBtePrxrmdioBkaC8cfjkA8=
+	t=1791407051; cv=none; b=aegcFSMyZhCYwIbAoBm70Fvfyybn5INIsbLekAQk6C5jxNSCv8YHZZTw/0RtMqJEyRIXhBey3RdGU6N3/lAEM7h8BHMbGsvJIler31KZV3hXqcH5kQQll4V95awwHi+e05eOCgF8eib5osS0w+d7nPs2PjEvM69Z9glbc8L+ZR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1791407051; c=relaxed/simple;
-	bh=oJIHJ+z4tZ6+hkFkS1+/2XXJJ5MyCooor3V2AZYN6+I=;
+	bh=pWp5JbnYYpt64L1wGXymLGY9t0chYN2RvBc6rHJQzhk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fmPbUImuCfUfHzCvAtEgPKSXsyuInzRV8JCGmHTYKCoITpbQ1cEncPNj9BHdODhsHkXWqgoyK3pt2vzNu5JNxu0ubWA/zVWU0jp2DR518KGH5G9lvTYDNNsoQkT3G1N5qHF+kDtUT2urw8v7lDM1upXKoUq58IQbwjIt9AUIK8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cfIOHlrK; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=AtdIOTuHZb6h90EPhezPlebLkvgLP6VU/+/le8nvLHFysXCY2kpgpl+WSSFSRD9poowUWxDSG6J3MSNt2VcJJq96jQaFESd8OzeGcQnGwCsfsTkTrZXvJSMBg/2LbkexmP2ZhRqll2WX96Q8b7v2RP0ElV+9GFfP6rmkPnbq+yE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BmJhHPZ1; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cfIOHlrK"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DF4D1F00899;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BmJhHPZ1"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D786C1F008A0;
 	Wed,  7 Oct 2026 21:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1791407049;
-	bh=Ne9BOFbSMUw42loHLJcaipGKKqg9l7oH73ciTuvEmfk=;
+	bh=ECYm3BBMedbNXUWfWZ6kwF4nXV9MDEYykiWwhcoVANY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=cfIOHlrKAMsH+dear2zqtQP3sKeMTusJ7uxqMPQD7dqu0CT6QUyQtGEcBWmJuX2sw
-	 gyrLn1XTCQBXzCdE5Bqr43pqJJZSCZLCIP/wEiGQyceoJrlDGr07pjxwrZtKwkOnks
-	 oZXFe5vgIsZZWSvNB0GLU4QHgJ1SDHOzB/n3hbD3/1HGR/6zWbqiAc3rbRxh+P0uBE
-	 S//QV1fqTkLgtB++YS4isNP1GGF94rGJ9pFRljoOGndlHi1JIMoPY1gyRVPZgCxEna
-	 7laOfC4FSEI7FlSxQVySKoPZAwEiXyr6QfBdldAaF+20kvGWbxT5aRh7KePb+cfkfk
-	 uAVVL8lWObgzw==
+	b=BmJhHPZ1F03H2Ui0nyj96LApbySPWXGYhqOPjrYeJ9gQT+hbtnS0BUFDRn1lLllHQ
+	 IRHJcdShZgzx8mIawJeTgu/jyHWd6qe60VANd+iFumD0r660NC4hny4WKSoqdgmTJa
+	 u5/BfaWjFKaX8APw1FwCrjxBlY9Tu59n/iM649dq/sBb2huB9E8ME6ttqVJlqVqexJ
+	 UbtY7G5EKzh3fKBZ8b3DgecfG8845mBQAWEPWy3DHc9NFBJEHG6PU7o9BoHo2/SLj3
+	 vT+m/rTcGKulh3HVNxqqJgoYqIJy1O5mqowLdPWolJq9ZYLOuQCYYSFeJavS8ilNeJ
+	 kxBlk3BhMn8qw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5522CCE1735; Wed,  7 Oct 2026 14:04:09 -0700 (PDT)
+	id 5FF4FCE272D; Wed,  7 Oct 2026 14:04:09 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2 3/8] torture:  Allow specifying alternative ssh command to kvm-remote.sh
-Date: Wed,  7 Oct 2026 14:04:03 -0700
-Message-Id: <20261007210408.1983713-3-paulmck@kernel.org>
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	Boqun Feng <boqun@kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 7/8] selftests/rcutorture: Fix double nerrs count in srcu_lockdep.sh
+Date: Wed,  7 Oct 2026 14:04:07 -0700
+Message-Id: <20261007210408.1983713-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <f9cb7abd-db60-43f6-9392-27fe29abb75b@paulmck-laptop>
 References: <f9cb7abd-db60-43f6-9392-27fe29abb75b@paulmck-laptop>
@@ -48,100 +50,43 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some environments require use of alternative commands to access the
-test hosts.  This commit therefore adds a KVM_REMOTE_SSH environment
-variable for this purpose.  If this variable is unset, ssh is used.
-Any alternative ssh command must support the usual ssh arguments,
-including the command to be executed remotely.  In some cases, you may
-need a wrapper script to make the alternative ssh-like command look
-enough like ssh to satisfy kvm-remote.sh.
+From: Kunwu Chan <kunwu.chan@gmail.com>
 
+When CONFIG_PROVE_LOCKING is missing, the deadlock-detection loop
+and the mixed-SRCU-readers section each increment nerrs once in
+the configuration check and again in the common error path,
+counting the same error twice.
+
+Remove the stray increments so that each error advances nerrs
+by one.
+
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+Acked-by: Boqun Feng <boqun@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-remote.sh    | 22 ++++++++++++++-----
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-index 48a8052d5dae3..a8397f86e49dc 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-@@ -6,6 +6,11 @@
- # Usage: kvm-remote.sh "systems" [ <kvm.sh args> ]
- #	 kvm-remote.sh "systems" /path/to/old/run [ <kvm-again.sh args> ]
- #
-+# The caller may set the KVM_REMOTE_SSH environment in order to specify
-+# an alternative ssh command, which is necessary in some environments
-+# for authentication purposes.  This alternative ssn command must support
-+# ssh's usual arguments.
-+#
- # Copyright (C) 2021 Facebook, Inc.
- #
- # Authors: Paul E. McKenney <paulmck@kernel.org>
-@@ -13,6 +18,11 @@
- scriptname=$0
- args="$*"
- 
-+if test -z "${KVM_REMOTE_SSH}"
-+then
-+	KVM_REMOTE_SSH=ssh; export KVM_REMOTE_SSH
-+fi
-+
- if ! test -d tools/testing/selftests/rcutorture/bin
- then
- 	echo $scriptname must be run from top-level directory of kernel source tree.
-@@ -137,7 +147,7 @@ chmod +x $T/bin/kvm-remote-*.sh
- # Check first to avoid the need for cleanup for system-name typos
- for i in $systems
- do
--	ssh -o BatchMode=yes $i getconf _NPROCESSORS_ONLN > $T/ssh.stdout 2> $T/ssh.stderr
-+	${KVM_REMOTE_SSH} -o BatchMode=yes $i getconf _NPROCESSORS_ONLN > $T/ssh.stdout 2> $T/ssh.stderr
- 	ret=$?
- 	if test "$ret" -ne 0
+diff --git a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+index 72791499dd96b..3acaffe52c784 100755
+--- a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
++++ b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+@@ -56,7 +56,6 @@ do
+ 			if ! grep -q '^CONFIG_PROVE_LOCKING=y' .config
+ 			then
+ 				echo "rcu_torture_init_srcu_lockdep:Error: CONFIG_PROVE_LOCKING disabled in rcutorture SRCU-P scenario"
+-				nerrs=$((nerrs+1))
+ 				err=1
+ 			fi
+ 			if test "$d" -ne 0 && test "$ret" -eq 0
+@@ -126,7 +125,6 @@ do
+ 	if ! grep -q '^CONFIG_PROVE_LOCKING=y' .config
  	then
-@@ -158,14 +168,14 @@ echo Build-products tarball: `du -h $T/binres.tgz` | tee -a "$oldrun/remote-log"
- for i in $systems
- do
- 	echo Downloading tarball to $i `date` | tee -a "$oldrun/remote-log"
--	cat $T/binres.tgz | ssh -o BatchMode=yes $i "cd /tmp; tar -xzf -"
-+	cat $T/binres.tgz | ${KVM_REMOTE_SSH} -o BatchMode=yes $i "cd /tmp; tar -xzf -"
- 	ret=$?
- 	tries=0
- 	while test "$ret" -ne 0
- 	do
- 		echo Unable to download $T/binres.tgz to system $i, waiting and then retrying.  $tries prior retries. | tee -a "$oldrun/remote-log"
- 		sleep 60
--		cat $T/binres.tgz | ssh -o BatchMode=yes $i "cd /tmp; tar -xzf -"
-+		cat $T/binres.tgz | ${KVM_REMOTE_SSH} -o BatchMode=yes $i "cd /tmp; tar -xzf -"
- 		ret=$?
- 		if test "$ret" -ne 0
- 		then
-@@ -191,7 +201,7 @@ checkremotefile () {
- 
- 	while :
- 	do
--		ssh -o BatchMode=yes $1 "test -f \"$2\""
-+		${KVM_REMOTE_SSH} -o BatchMode=yes $1 "test -f \"$2\""
- 		ret=$?
- 		if test "$ret" -eq 255
- 		then
-@@ -239,7 +249,7 @@ startbatches () {
- 		then
- 			continue # System still running last test, skip.
- 		fi
--		ssh -o BatchMode=yes "$i" "cd \"$resdir/$ds\"; touch remote.run; PATH=\"$T/bin:$PATH\" nohup kvm-remote-$curbatch.sh > kvm-remote-$curbatch.sh.out 2>&1 &" 1>&2
-+		${KVM_REMOTE_SSH} -o BatchMode=yes "$i" "cd \"$resdir/$ds\"; touch remote.run; PATH=\"$T/bin:$PATH\" nohup kvm-remote-$curbatch.sh > kvm-remote-$curbatch.sh.out 2>&1 &" 1>&2
- 		ret=$?
- 		if test "$ret" -ne 0
- 		then
-@@ -281,7 +291,7 @@ do
- 		if test "$ret" -eq 1
- 		then
- 			echo " ---" Collecting results from $i `date` | tee -a "$oldrun/remote-log"
--			( cd "$oldrun"; ssh -o BatchMode=yes $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval */qemu-affinity; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
-+			( cd "$oldrun"; ${KVM_REMOTE_SSH} -o BatchMode=yes $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval */qemu-affinity; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
- 			break;
- 		fi
- 		if test "$ret" -eq 255
+ 		echo "rcu_torture_init_srcu_lockdep:Error: CONFIG_PROVE_LOCKING disabled in rcutorture SRCU-P scenario"
+-		nerrs=$((nerrs+1))
+ 		err=1
+ 	fi
+ 	if test "$val" = 0xf && test "$ret" -eq 0
 -- 
 2.40.1
 
