@@ -1,44 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3CA3EC2FF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4DE3EFFC9;
 	Wed,  7 Oct 2026 20:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791405914; cv=none; b=hdTJ+GGX6IXOFCirNVqR27KeTULgqUzKXMjWHAnHL+ACUIU1KSbR3mCBuA1d2p+o9tK4EU+uC9OyAh24pQlWQrCL1X6h9Tj1AsGuV8svY3OX9V1eLOJO6kud7oZcnoT6Usafxdp4C3orpsyhC7NhAoRZMlpxnWBVGNeu53Tqzxc=
+	t=1791405915; cv=none; b=EogTvanod+xVDjH0bkOduG9WeFsMvUTuY5sMWDRC3VWRrkq9XVedM0Bek7YDG6yPoWzkgwpjafsDBw43tEEgmrS6Lq7GsXZAHj6j6b+NH0ge86Cplk2H+E58baQPX1JkueJthSIXdIoHitnSjONJ/Zamz7nnqfHCsXsW6jzPm4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791405914; c=relaxed/simple;
-	bh=z/4rr+KDx1LEWNRbAPN0WayNMm7IGVD7gz/AhBku0zY=;
+	s=arc-20240116; t=1791405915; c=relaxed/simple;
+	bh=BYZMJyO/+mj3bePILNqEL4iPB++fzFXIP/7p8MXrsns=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lVTdHI5H8bp47PpCfrd5Vjo6+tPK1XqvCxxC5suWDcg1iC2rrwBI0cAPEM2iYCknHDLBes2mADtSeBOjSSOe9mFgBs4liHzLTeNe3AIy0F65q7qfyF3dYxiIDGioyB7kgB4oOFnzR/lhSBECd+3gGRyCZyZ3rifVWkYqtLbuGu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NtLRyixv; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=QoHBh/Rn/oEo0RLXJAXDxkXdnKTQbqHCKSXW0nM3DY84Y36FHJzU+6FKPmzBHLVf0O1wFKd+5TOBqOwnCr4vgpis3k4KFEpppb+P5brfezfjKEzA7YJQazjzo8eafiIG0YMZJzFSVuxPQ6ga5NbgtTytteNYELnGqsT5F8Tc8nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eqnJbMxd; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NtLRyixv"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 961311F00899;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eqnJbMxd"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 824971F00898;
 	Wed,  7 Oct 2026 20:45:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1791405913;
-	bh=/iNO+8ie2nrE8OqoU3fGnSkJAbqrW9dj3DKud6f8rf8=;
+	bh=JU5z0TM0EOoGd+7UOEnpGgtmwUn17x1HpqFrPRnvV4A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=NtLRyixvuXvJTMyPUI7nFHPiDmAOUbzuILc+zvOIHObS7fj/ufAJmfpxIfncX0iOU
-	 jIXelyatatj1cMw4BLFJx8kiNqqXdqoQKzxYNIciuN8llc+epyCECwDZ6RcJ2NUTsL
-	 U4wgjvMutxNGV765UNG1DmWXZorze7xkcNN1dVM6W1ZQz8X2WRkRjQV+gl/fSUUPSK
-	 tKWak8a/88jGJ0vi3YJoEv77StLd2+pNrDOg9errBn9Ir2uuuBfBcy78eiRGBXTsSV
-	 z3huXV4BY5jOyF5P4p9JWzJbPKgLpc5WnTWUhKGqSX/jRQl0nlpVv9tdb2f3J9uX86
-	 AHQ21rgDNMITQ==
+	b=eqnJbMxdZIDSm4SlUyl2i3P3CPQYQBJWn+3SbEAyXVbw6dreC1aSz/PlF6/n5HoAA
+	 LHt1/08a2VWa9H/LeuYSbLF4Umsogj1lyp0qSFTV9RX4A0BT7dPg38ENos8MtakNeT
+	 ptF6p7zYg/U6DplTuGN1cHhgxYv0N78TjCq934Wn+yZBCF6uZ2b8ZSWpLOKmVohJbN
+	 DTCCAjvR9gpgl4r0sMG0fodHDTnjWL+kbUliAqhlgsZBeoyPJBiuc+W/8/q+qLiOyo
+	 +cmu/xhTC5ewKkB5jXg4ZVL8PfgKlMQou+0hJ/J5Z7BDL7CWCTGNXLvd7lVRYjmBlU
+	 yP+yc5JLkNSfg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2C13DCE1DC2; Wed,  7 Oct 2026 13:45:13 -0700 (PDT)
+	id 2946ECE1735; Wed,  7 Oct 2026 13:45:13 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Bradley Morgan <brads@mainlining.org>,
-	Kunwu Chan <kunwu.chan@gmail.com>
-Subject: [PATCH v2 04/10] rcu: Add running and boosted indications to RCU task stall dump
-Date: Wed,  7 Oct 2026 13:45:05 -0700
-Message-Id: <20261007204511.1982646-4-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 03/10] rcu: Don't panic on already-ended RCU CPU stalls
+Date: Wed,  7 Oct 2026 13:45:04 -0700
+Message-Id: <20261007204511.1982646-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop>
 References: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop>
@@ -50,107 +48,76 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, rcu_print_task_stall() will dump out the PID, RCU reader
-nesting level, the rcu_special structure's flags, and whether or not
-that reader is on the ->blkd_tasks list.  When debugging RCU priority
-boosting, it is also good to know whether the stalled RCU reader is
-currently running and whether it is currently being RCU priority boosted.
-This commit therefore adds this information to the output.
+The current RCU CPU stall-warning code can say "INFO: Stall ended before
+state dump start" but then panic the system anyway.  This commit therefore
+avoids panicking the system if the stall has already ended.
 
-[ paulmck: Apply kernel test robot feedback. ]
-[ paulmck: Apply feedback from Arnd Bergmann and kernel test robot. ]
+However, the sched_ext scheduler will still be ejected, as it might have
+been the cause of the almost stall.  This can easily be changed if needed.
 
-Link: https://lore.kernel.org/all/20260925133922.1356404-1-arnd@kernel.org/
-Link: https://lore.kernel.org/all/202609261005.GrnaXBXT-lkp@intel.com/
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Bradley Morgan <brads@mainlining.org>
-Reviewed-by: Kunwu Chan <kunwu.chan@gmail.com>
-Tested-by: Kunwu Chan <kunwu.chan@gmail.com>
 ---
- kernel/rcu/tree_plugin.h |  2 --
- kernel/rcu/tree_stall.h  | 24 ++++++++++++++++++++++--
- 2 files changed, 22 insertions(+), 4 deletions(-)
+ kernel/rcu/tree_exp.h   |  2 +-
+ kernel/rcu/tree_stall.h | 12 +++++++++---
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 743c16247fc05..ae5d21bae7bc0 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -11,8 +11,6 @@
-  *	   Paul E. McKenney <paulmck@linux.ibm.com>
-  */
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 81d42b6e2e312..01bdbd7e28cca 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -678,7 +678,7 @@ static void synchronize_rcu_expedited_wait(void)
  
--#include "../locking/rtmutex_common.h"
--
- static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
- {
- 	/*
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 93ba31a619b67..803a56af3259f 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -11,6 +11,8 @@
- #include <linux/kvm_para.h>
- #include <linux/rcu_notifier.h>
- #include <linux/smp.h>
-+#include <linux/rtmutex.h>
-+#include "../locking/rtmutex_common.h"
+ 		nbcon_cpu_emergency_exit();
  
- //////////////////////////////////////////////////////////////////////////////
- //
-@@ -305,6 +307,8 @@ struct rcu_stall_chk_rdr {
- 	int nesting;
- 	union rcu_special rs;
- 	bool on_blkd_list;
-+	bool rcu_rdr_running;
-+	int rcu_rdr_boosted;
- };
- 
- /*
-@@ -313,6 +317,7 @@ struct rcu_stall_chk_rdr {
-  */
- static int check_slow_task(struct task_struct *t, void *arg)
- {
-+	struct rcu_node *rnp;
- 	struct rcu_stall_chk_rdr *rscrp = arg;
- 
- 	if (task_curr(t))
-@@ -320,6 +325,19 @@ static int check_slow_task(struct task_struct *t, void *arg)
- 	rscrp->nesting = t->rcu_read_lock_nesting;
- 	rscrp->rs = t->rcu_read_unlock_special;
- 	rscrp->on_blkd_list = !list_empty(&t->rcu_node_entry);
-+	rscrp->rcu_rdr_running = task_curr(t);
-+	rscrp->rcu_rdr_boosted = 0;
-+	if (rscrp->on_blkd_list) {
-+		rnp = READ_ONCE(t->rcu_blocked_node);
-+		raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
-+		if (rnp == READ_ONCE(t->rcu_blocked_node)) {
-+			if (rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t)
-+				rscrp->rcu_rdr_boosted = 1;
-+		} else {
-+			rscrp->rcu_rdr_boosted = 2;
-+		}
-+		raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
-+	}
- 	return 0;
+-		panic_on_rcu_stall(&rcu_exp_stall_cpumask);
++		panic_on_rcu_stall(&rcu_exp_stall_cpumask, NULL, 0);
+ 	}
  }
  
-@@ -357,12 +375,14 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- 		if (task_call_func(t, check_slow_task, &rscr))
- 			pr_cont(" P%d", t->pid);
- 		else
--			pr_cont(" P%d/%d:%c%c%c%c",
-+			pr_cont(" P%d/%d:%c%c%c%c%c%c",
- 				t->pid, rscr.nesting,
- 				".b"[rscr.rs.b.blocked],
- 				".q"[rscr.rs.b.need_qs],
- 				".e"[rscr.rs.b.exp_hint],
--				".l"[rscr.on_blkd_list]);
-+				".l"[rscr.on_blkd_list],
-+				".R"[rscr.rcu_rdr_running],
-+				".B?"[rscr.rcu_rdr_boosted]);
- 		lockdep_assert_irqs_disabled();
- 		put_task_struct(t);
- 		ndetected++;
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 091e7850ab6ec..93ba31a619b67 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -159,7 +159,8 @@ static int __init check_cpu_stall_init(void)
+ early_initcall(check_cpu_stall_init);
+ 
+ /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
+-static void panic_on_rcu_stall(const struct cpumask *stalled_mask)
++static void panic_on_rcu_stall(const struct cpumask *stalled_mask,
++			       unsigned long *gsp, unsigned long gp_seq)
+ {
+ 	static int cpu_stall;
+ 
+@@ -170,6 +171,11 @@ static void panic_on_rcu_stall(const struct cpumask *stalled_mask)
+ 	if (scx_rcu_cpu_stall(stalled_mask))
+ 		return;
+ 
++	if (gsp && rcu_seq_current(gsp) != gp_seq) {
++		pr_err("INFO: Stall ended before panic check.\n");
++		return;
++	}
++
+ 	if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
+ 		return;
+ 
+@@ -703,7 +709,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 
+ 	nbcon_cpu_emergency_exit();
+ 
+-	panic_on_rcu_stall(&rcu_stall_cpumask);
++	panic_on_rcu_stall(&rcu_stall_cpumask, &rcu_state.gp_seq, gp_seq);
+ 
+ 	rcu_force_quiescent_state();  /* Kick them all. */
+ }
+@@ -758,7 +764,7 @@ static void print_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 
+ 	cpumask_clear(&rcu_stall_cpumask);
+ 	cpumask_set_cpu(smp_processor_id(), &rcu_stall_cpumask);
+-	panic_on_rcu_stall(&rcu_stall_cpumask);
++	panic_on_rcu_stall(&rcu_stall_cpumask, &rcu_state.gp_seq, gp_seq);
+ 
+ 	/*
+ 	 * Attempt to revive the RCU machinery by forcing a context switch.
 -- 
 2.40.1
 
