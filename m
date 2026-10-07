@@ -1,43 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87F741228D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88E0412BEF;
 	Wed,  7 Oct 2026 20:45:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791405916; cv=none; b=Z2pafemSB8PP8/Ty0rQ/uBXpOrVCPwtpewUBCZzU59SDiqzTCmqm90bB4cSWcg2tjDrYUeXfW6PO+eMRzr07R8iS+JJzBhP0JRkbsD1kYrlzG5J29qm/v21MgZwtD6wBLxK1lrSFyRNdiXMipvuwLW+eJHzCeUOr7kzaP3fG3oY=
+	t=1791405917; cv=none; b=rO+WYHLOuRryzQpRRCZkoyG+OmHHHJRwurxo8hFrS3DAs7z1oph6i61MivJ9yOF0NtLjEZ6Li7AFgRjJb73ZqLCnJrIbSsHciGIaqWV24dom3pTlFUlv+iuYMc9UVxnT/QljmL7Mc/YcsWf42MIcxE3oalWzugnDkZVEFkLN2yo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791405916; c=relaxed/simple;
-	bh=K0+q8CNJltUV/5Fpv4xwTXNBh0Tg0aSyC5R1MgOItdc=;
+	s=arc-20240116; t=1791405917; c=relaxed/simple;
+	bh=HBY+5i+42NmzqXCHp7HTDjDtSnrAZ4HitIXf0Qi59XU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KUBXHOLDP2lI24q1c68ZUHioEYkMxYcm3oqZHwnszmKJXQxRfuLSQa9HbsyzhAPHrUyvUmuHkIobQvI17fYH/0PTNEtOhseMNXVaeG+ThTxrqV25BvpRqWHLPYNPAzGnkGFqdY0bQTnSR9/Kl5heFUG5mfrSu1RRvUNFMoRAATI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AT4zozMs; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=G1jtQxln/jKCRZZnkuGn62hzStWWx6Yg6WGPiY5qtb91JFsfohkj0kbVw3J9pNU9z09/BBCBvXf5STazKru9qj1o2NY5ITrIXwvLczR4te2Y3zP8bhNTykldSp69oq1Ny2R7XUedidz4ebJQXuX1XNHWHhaT57Dy+9/io4DCM8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IKRRVPiZ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AT4zozMs"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C55C21F0089E;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IKRRVPiZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC7EB1F008A0;
 	Wed,  7 Oct 2026 20:45:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1791405913;
-	bh=eI4lOap5+rbii2ag4BJx5IFRKupEwXV+Eq5mrRdE/cY=;
+	bh=wGTlmj/Armtt/ti+zn4vcxr0SUJC7DX9CyrS7eVER3U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=AT4zozMsc5902tE8JQZHafrQs/HEQCa5se6NebWwXlCLQeO16viFW++0+JUeMg0Uf
-	 zuKYxswSTyIIveIZ6+YGp1uwrBuQq1IpxJkj1QYr14S9YsjJDGK4y9NYnB8/MjmN3H
-	 KnOiVxDwVEF6eBvwcmF8Y00IWI775eUlcuP6A8/O+AqMCgWqwN/EEfLHlbv41jrC8k
-	 EXpA9xU2YVGZb8mJG+MVcRQXXPWj2FtIk/wqU4dhq98K7VKLK2ZP3Ckc3Eyf0hF60P
-	 N2OVimcQR6iJFduiJMX0jv00aOnzlGXqKxzfzo8iXlITfZsotwmQrfTLZ3MaRpkCxP
-	 eByqeBugrDwyQ==
+	b=IKRRVPiZFcbfEEiaqEu9JIT4fH0WPMqCnzqUkkjgZ8Q/ko67nTXsTQ6Vb/HLS4VAi
+	 O54yTGKeQP9E4fw32TI4P7BomXXXvWaLRtTjFgf860ZN7rEyitTZk5GqNkJB5V2nUD
+	 Ga3n6BtPwn24tbKzg5wyAQLSnmfwfr5y4kvVW89u3aQHWmSNpqqc2u8K3nLIwjCLeY
+	 9FR+cUqHpJ/R5KwEg5BcDP5Hw8bQDsFhn9W/TQimHTEbGzjt5hVVogZWqjtTb7dWa7
+	 56/QYysnuoPK+dOcvS3pfSJCX623toh3dyM1YvIJggsrUih5wX2U9PFhhFiUzZi9jY
+	 l5hclnpAUwd7Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 339CDCE272D; Wed,  7 Oct 2026 13:45:13 -0700 (PDT)
+	id 3B1CCCE274F; Wed,  7 Oct 2026 13:45:13 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	Matthias Goergens <matthias.goergens@gmail.com>,
+	Ricardo Ribalda <ribalda@chromium.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2 07/10] rcu: Make userspace barrier hook drain kvfree_rcu work
-Date: Wed,  7 Oct 2026 13:45:08 -0700
-Message-Id: <20261007204511.1982646-7-paulmck@kernel.org>
+Subject: [PATCH v2 10/10] rcu: Drop the address space qualifier from the dereference macros
+Date: Wed,  7 Oct 2026 13:45:11 -0700
+Message-Id: <20261007204511.1982646-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop>
 References: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop>
@@ -49,132 +51,113 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Matthias Goergens <matthias.goergens@gmail.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-The bcachefs ktest allocation-leak check writes rcutree.do_rcu_barrier
-before reading /proc/allocinfo. While testing bcachefs performance
-changes, small objects released with kfree_rcu() remained visible after
-repeated writes to the hook and 20 seconds of waiting, causing otherwise
-clean tests to fail their leak check.
+The RCU dereference macros end with a cast that is meant to hand back a
+plain kernel pointer from a __rcu pointer.
 
-The test assumes a stronger contract than the hook currently documents:
-rcu_barrier() waits for ordinary callbacks, but does not flush objects
-still held in kfree_rcu() batching or per-CPU SLUB sheaves. The retained
-population eventually fell as a sheaf filled; there is no evidence here
-of unbounded growth or OOM.
+For that it uses:
+	((typeof(*p) __force __kernel *)(local))
 
-Changing the hook to drain kvfree_rcu() work let the same unmodified
-bcachefs workload pass its allocation check. All eight checkpoints in
-one VM, after 50 through 400 option changes, reported zero retained
-reconcile_scan objects. This motivated the separate private-cache test
-used to isolate the incomplete drain from bcachefs.
+The problem is that typeof preserves every qualifier, including the
+address space qualifiers (__rcu).
 
-Calling kvfree_rcu_barrier() from rcu_barrier_throttled() was proposed
-when kvfree_rcu_barrier() was added in 2024, to restore a clean baseline
-between userspace benchmark runs. The discussion concluded that keeping
-the existing hook name, adding the second operation and documenting both
-was the safest compatibility choice, but the follow-up was not added.
+Recent versions of smatch[1] care about this and throw tens of warnings
+like this one:
+  ./include/trace/events/vb2.h:46:1: warning: incorrect type in assignment (different address spaces)
+  ./include/trace/events/vb2.h:46:1:    expected struct tracepoint_func *it_func_ptr
+  ./include/trace/events/vb2.h:46:1:    got struct tracepoint_func __rcu *
 
-Add that drain and document the stronger test interface. Always retain
-the existing start-rate limit and perform the kvfree_rcu() drain: an
-unrelated ordinary barrier does not establish that this work completed.
+Use a new macro TYPEOF_NO_ADDRESS_SPACE() for the result type. This new
+macro strips all the qualifiers when running with sparse (so const and
+volatile are gone). But keeps all the qualifiers when running with the
+compiler, caring about const/volatile mismatch.
 
-Retain the entry ordinary-barrier sequence snapshot. After draining,
-skip the final ordinary barrier only if that snapshot is complete,
-preserving the memory barrier on the completion path. Otherwise, invoke
-rcu_barrier() explicitly. This keeps the ordinary-callback guarantee
-independent of whether kvfree_rcu_barrier() embeds an ordinary barrier.
+[1] https://github.com/error27/smatch/commit/e53027a4e816a772403baafa83c09e4a94c1cb8f
 
-Clarify that the documented completion guarantee covers work queued
-before the request, without preventing new work from being queued.
-
-Earlier validation of the unconditional-drain version used four fresh
-VM pairs with a private-cache fixture: controls retained the queued
-object (60 to 60 active objects), and treatments drained it (60 to 59).
-An ordinary-callback test passed on both kernels. Those runs predated
-the guarded skip and do not validate that change. No elapsed-time
-improvement is claimed.
-
-Link: https://lore.kernel.org/all/20240820155935.1167988-1-urezki@gmail.com/
-Signed-off-by: Matthias Goergens <matthias.goergens@gmail.com>
+Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
+Link: https://lore.kernel.org/r/20260825-unqual-v1-1-7024fb81b4f9@chromium.org
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt         |  9 ++++--
- kernel/rcu/tree.c                             | 30 ++++++++++++-------
- 2 files changed, 26 insertions(+), 13 deletions(-)
+ include/linux/compiler.h | 17 +++++++++++++++++
+ include/linux/rcupdate.h | 10 +++++-----
+ 2 files changed, 22 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 68647ff4bdd24..914b65ae94134 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5699,9 +5699,12 @@ Kernel parameters
- 			there is an ongoing too-long CSD-lock wait.
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index cb2f6050bdf7d..70cb31d605384 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -239,6 +239,23 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+ # define TYPEOF_UNQUAL(exp) __typeof__(exp)
+ #endif
  
- 	rcutree.do_rcu_barrier=	[KNL]
--			Request a call to rcu_barrier().  This is
--			throttled so that userspace tests can safely
--			hammer on the sysfs variable if they so choose.
-+			Wait for deferred kfree_rcu() frees and ordinary
-+			call_rcu() callbacks queued before this request to
-+			complete.  This does not prevent new work from being
-+			queued concurrently.  Requests are throttled so that
-+			userspace tests can safely hammer on the sysfs
-+			variable if they so choose.
- 			If triggered before the RCU grace-period machinery
- 			is fully active, this will error out with EAGAIN.
++/*
++ * TYPEOF_NO_ADDRESS_SPACE() - typeof() without the address space qualifiers
++ *
++ * No operator strips only the address space qualifiers: typeof() keeps every
++ * qualifier and TYPEOF_UNQUAL() drops every qualifier, const and volatile
++ * included.
++ *
++ * Approximate one by dropping the qualifiers for sparse only, as it is the
++ * only one that knows about address spaces. The compiler keeps seeing the fully
++ * qualified type, so a missing const or volatile will still throw a warning.
++ */
++#ifdef __CHECKER__
++# define TYPEOF_NO_ADDRESS_SPACE(exp) TYPEOF_UNQUAL(exp)
++#else
++# define TYPEOF_NO_ADDRESS_SPACE(exp) __typeof__(exp)
++#endif
++
+ #endif /* __KERNEL__ */
  
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 338737b9781cb..f60252390d5de 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3988,12 +3988,12 @@ EXPORT_SYMBOL_GPL(rcu_barrier);
- static unsigned long rcu_barrier_last_throttle;
- 
+ #if defined(CONFIG_CFI) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 44c07a66edfff..3f74ae6d6e1f2 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -488,7 +488,7 @@ static __always_inline bool lockdep_assert_rcu_helper(bool c, const struct __ctx
+ context_unsafe(								\
+ 	typeof(*p) *local = (typeof(*p) *__force)(p);			\
+ 	rcu_check_sparse(p, __rcu);					\
+-	((typeof(*p) __force __kernel *)(local))			\
++	((TYPEOF_NO_ADDRESS_SPACE(*p) __force __kernel *)(local))	\
+ )
  /**
-- * rcu_barrier_throttled - Do rcu_barrier(), but limit to one per second
-+ * rcu_barrier_throttled - Drain deferred RCU frees, but rate-limit starts
-  *
-- * This can be thought of as guard rails around rcu_barrier() that
-- * permits unrestricted userspace use, at least assuming the hardware's
-- * try_cmpxchg() is robust.  There will be at most one call per second to
-- * rcu_barrier() system-wide from use of this function, which means that
-+ * This can be thought of as guard rails around the deferred-free barriers
-+ * that permit unrestricted userspace use, at least assuming the hardware's
-+ * try_cmpxchg() is robust.  There will be at most one drain operation started
-+ * per sixteenth of a second from use of this function, which means that
-  * callers might needlessly wait a second or three.
-  *
-  * This is intended for use by test suites to avoid OOM by flushing RCU
-@@ -4015,14 +4015,24 @@ static void rcu_barrier_throttled(void)
- 	while (time_in_range(j, old, old + HZ / 16) ||
- 	       !try_cmpxchg(&rcu_barrier_last_throttle, &old, j)) {
- 		schedule_timeout_idle(HZ / 16);
--		if (rcu_seq_done(&rcu_state.barrier_sequence, s)) {
--			smp_mb(); /* caller's subsequent code after above check. */
--			return;
--		}
- 		j = jiffies;
- 		old = READ_ONCE(rcu_barrier_last_throttle);
- 	}
--	rcu_barrier();
-+	/*
-+	 * kfree_rcu() can retain objects outside the ordinary callback lists in
-+	 * per-CPU SLUB sheaves and kvfree_rcu batches.  Always drain those queues:
-+	 * an ordinary barrier does not establish that this work was drained.
-+	 */
-+	kvfree_rcu_barrier();
-+	/*
-+	 * A completed barrier can still cover ordinary callbacks queued before
-+	 * our entry snapshot.  Otherwise, retain an explicit ordinary barrier
-+	 * without depending on the implementation of kvfree_rcu_barrier().
-+	 */
-+	if (rcu_seq_done(&rcu_state.barrier_sequence, s))
-+		smp_mb(); /* caller's subsequent code after above check. */
-+	else
-+		rcu_barrier();
- }
+  * unrcu_pointer - mark a pointer as not being RCU protected
+@@ -503,7 +503,7 @@ context_unsafe(								\
+ ({ \
+ 	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+ 	rcu_check_sparse(p, space); \
+-	((typeof(*p) __force __kernel *)(local)); \
++	((TYPEOF_NO_ADDRESS_SPACE(*p) __force __kernel *)(local)); \
+ }) )
+ #define __rcu_dereference_check(p, local, c, space) \
+ ({ \
+@@ -511,19 +511,19 @@ context_unsafe(								\
+ 	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+ 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_check() usage"); \
+ 	rcu_check_sparse(p, space); \
+-	((typeof(*p) __force __kernel *)(local)); \
++	((TYPEOF_NO_ADDRESS_SPACE(*p) __force __kernel *)(local)); \
+ })
+ #define __rcu_dereference_protected(p, local, c, space) \
+ ({ \
+ 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
+ 	rcu_check_sparse(p, space); \
+-	((typeof(*p) __force __kernel *)(p)); \
++	((TYPEOF_NO_ADDRESS_SPACE(*p) __force __kernel *)(p)); \
+ })
+ #define __rcu_dereference_raw(p, local) \
+ ({ \
+ 	/* Dependency order vs. p above. */ \
+ 	typeof(p) local = READ_ONCE(p); \
+-	((typeof(*p) __force __kernel *)(local)); \
++	((TYPEOF_NO_ADDRESS_SPACE(*p) __force __kernel *)(local)); \
+ })
+ #define rcu_dereference_raw(p) __rcu_dereference_raw(p, __UNIQUE_ID(rcu))
  
- /*
 -- 
 2.40.1
 
