@@ -1,163 +1,126 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88E0412BEF;
-	Wed,  7 Oct 2026 20:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009C5414A1E;
+	Wed,  7 Oct 2026 20:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791405917; cv=none; b=rO+WYHLOuRryzQpRRCZkoyG+OmHHHJRwurxo8hFrS3DAs7z1oph6i61MivJ9yOF0NtLjEZ6Li7AFgRjJb73ZqLCnJrIbSsHciGIaqWV24dom3pTlFUlv+iuYMc9UVxnT/QljmL7Mc/YcsWf42MIcxE3oalWzugnDkZVEFkLN2yo=
+	t=1791406744; cv=none; b=gE+0dSTUtAHSbCwnLpBmG63JueoD6aUN1JhsyR5WwxgyQ1+mCHBpzdwGPoDbUIE8wR+/X7XzrPtJX3qx59BMd7nK3LVd+5iAjXhOhfr0e1fyghaomtzFVIlxsK0WD5wdII77r6J95bqwFe8GNn9WGfW4Dl40BHJI4pnZlSi3md4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791405917; c=relaxed/simple;
-	bh=HBY+5i+42NmzqXCHp7HTDjDtSnrAZ4HitIXf0Qi59XU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=G1jtQxln/jKCRZZnkuGn62hzStWWx6Yg6WGPiY5qtb91JFsfohkj0kbVw3J9pNU9z09/BBCBvXf5STazKru9qj1o2NY5ITrIXwvLczR4te2Y3zP8bhNTykldSp69oq1Ny2R7XUedidz4ebJQXuX1XNHWHhaT57Dy+9/io4DCM8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IKRRVPiZ; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791406744; c=relaxed/simple;
+	bh=wKyE33HxrwKl1Ni4/kIVXZMqQ4Lb1uRnBSHG9jL4KWo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=enhFJv1U9GAiSU/qYVt4Jtr5sGFkNe3oEemTQJg7HpDZcwmhEon6RTBqZDzUdNijzaRPlOgTWo+Zsr0PM2W8mCona13pa4KgB3lZg9UsdOEpGlR4OQyHfP2y7Gj37AGkC9GwpC8b67A6NPdaSldFAnE3ZxO+M6vqfyrki0un8qU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kqUJtdKa; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IKRRVPiZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC7EB1F008A0;
-	Wed,  7 Oct 2026 20:45:13 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kqUJtdKa"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E73011F000FF;
+	Wed,  7 Oct 2026 20:59:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791405913;
-	bh=wGTlmj/Armtt/ti+zn4vcxr0SUJC7DX9CyrS7eVER3U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=IKRRVPiZFcbfEEiaqEu9JIT4fH0WPMqCnzqUkkjgZ8Q/ko67nTXsTQ6Vb/HLS4VAi
-	 O54yTGKeQP9E4fw32TI4P7BomXXXvWaLRtTjFgf860ZN7rEyitTZk5GqNkJB5V2nUD
-	 Ga3n6BtPwn24tbKzg5wyAQLSnmfwfr5y4kvVW89u3aQHWmSNpqqc2u8K3nLIwjCLeY
-	 9FR+cUqHpJ/R5KwEg5BcDP5Hw8bQDsFhn9W/TQimHTEbGzjt5hVVogZWqjtTb7dWa7
-	 56/QYysnuoPK+dOcvS3pfSJCX623toh3dyM1YvIJggsrUih5wX2U9PFhhFiUzZi9jY
-	 l5hclnpAUwd7Q==
+	s=k20260515; t=1791406741;
+	bh=WOtFdMoTAacvdqJWG4/KPzJUD+bY66zZCYOoBmZ8CDo=;
+	h=Date:From:To:Cc:Subject:Reply-To;
+	b=kqUJtdKa2cCGfSZSCimwsMLv3/8uS4aNoMybcrlEiclqCU+SoDVYX9DK2/oBNgopH
+	 0f7r+YSzCK13xnt19Tyc3qoATxMvzM2zLjba5ojDQp2rq7Ut7RA+AH/EaEnMeDuQf8
+	 hcwaXxV5FkQNsrPCWIuMFP3JhpA66L/X2z2zlIGMGvviHH7++6nC+lBRwtx1uk882r
+	 uQIOKlHEM9zjC5cUIcqtWjpZoBv8mLZ+UYqvCiYERqxVZ2bjpaFSIANIkEnFj+rvqx
+	 a1nddwvw47+J3WM5EdlJrhnZCmffjQvC2RUFbMwqrP+gNAI0y1o7DZlkm/SoFKHDYg
+	 xh1WoX1sYnJsw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3B1CCCE274F; Wed,  7 Oct 2026 13:45:13 -0700 (PDT)
+	id AD12ACE0D79; Wed,  7 Oct 2026 13:59:01 -0700 (PDT)
+Date: Wed, 7 Oct 2026 13:59:01 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	Ricardo Ribalda <ribalda@chromium.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2 10/10] rcu: Drop the address space qualifier from the dereference macros
-Date: Wed,  7 Oct 2026 13:45:11 -0700
-Message-Id: <20261007204511.1982646-10-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop>
-References: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH v2 0/21] Add atomic SRCU &c for v7.4
+Message-ID: <546c81a7-f677-4d8e-a304-746b227058b0@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Ricardo Ribalda <ribalda@chromium.org>
+Hello!
 
-The RCU dereference macros end with a cast that is meant to hand back a
-plain kernel pointer from a __rcu pointer.
+This series adds an atomic SRCU and some additional adjustments:
 
-For that it uses:
-	((typeof(*p) __force __kernel *)(local))
+1.	Make a Tiny SRCU grace period imply an RCU grace period.
 
-The problem is that typeof preserves every qualifier, including the
-address space qualifiers (__rcu).
+2.	Suppress srcu_advance_state() mutex_lock in atomic.
 
-Recent versions of smatch[1] care about this and throw tens of warnings
-like this one:
-  ./include/trace/events/vb2.h:46:1: warning: incorrect type in assignment (different address spaces)
-  ./include/trace/events/vb2.h:46:1:    expected struct tracepoint_func *it_func_ptr
-  ./include/trace/events/vb2.h:46:1:    got struct tracepoint_func __rcu *
+3.	Suppress to-big transition for atomic SRCU.
 
-Use a new macro TYPEOF_NO_ADDRESS_SPACE() for the result type. This new
-macro strips all the qualifiers when running with sparse (so const and
-volatile are gone). But keeps all the qualifiers when running with the
-compiler, caring about const/volatile mismatch.
+4.	Add an atomic Tree SRCU.
 
-[1] https://github.com/error27/smatch/commit/e53027a4e816a772403baafa83c09e4a94c1cb8f
+5.	Add an atomic Tiny SRCU.
 
-Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
-Link: https://lore.kernel.org/r/20260825-unqual-v1-1-7024fb81b4f9@chromium.org
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- include/linux/compiler.h | 17 +++++++++++++++++
- include/linux/rcupdate.h | 10 +++++-----
- 2 files changed, 22 insertions(+), 5 deletions(-)
+6.	Add support for testing synchronize_srcu_atomic().
 
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index cb2f6050bdf7d..70cb31d605384 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -239,6 +239,23 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
- # define TYPEOF_UNQUAL(exp) __typeof__(exp)
- #endif
- 
-+/*
-+ * TYPEOF_NO_ADDRESS_SPACE() - typeof() without the address space qualifiers
-+ *
-+ * No operator strips only the address space qualifiers: typeof() keeps every
-+ * qualifier and TYPEOF_UNQUAL() drops every qualifier, const and volatile
-+ * included.
-+ *
-+ * Approximate one by dropping the qualifiers for sparse only, as it is the
-+ * only one that knows about address spaces. The compiler keeps seeing the fully
-+ * qualified type, so a missing const or volatile will still throw a warning.
-+ */
-+#ifdef __CHECKER__
-+# define TYPEOF_NO_ADDRESS_SPACE(exp) TYPEOF_UNQUAL(exp)
-+#else
-+# define TYPEOF_NO_ADDRESS_SPACE(exp) __typeof__(exp)
-+#endif
-+
- #endif /* __KERNEL__ */
- 
- #if defined(CONFIG_CFI) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 44c07a66edfff..3f74ae6d6e1f2 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -488,7 +488,7 @@ static __always_inline bool lockdep_assert_rcu_helper(bool c, const struct __ctx
- context_unsafe(								\
- 	typeof(*p) *local = (typeof(*p) *__force)(p);			\
- 	rcu_check_sparse(p, __rcu);					\
--	((typeof(*p) __force __kernel *)(local))			\
-+	((TYPEOF_NO_ADDRESS_SPACE(*p) __force __kernel *)(local))	\
- )
- /**
-  * unrcu_pointer - mark a pointer as not being RCU protected
-@@ -503,7 +503,7 @@ context_unsafe(								\
- ({ \
- 	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
- 	rcu_check_sparse(p, space); \
--	((typeof(*p) __force __kernel *)(local)); \
-+	((TYPEOF_NO_ADDRESS_SPACE(*p) __force __kernel *)(local)); \
- }) )
- #define __rcu_dereference_check(p, local, c, space) \
- ({ \
-@@ -511,19 +511,19 @@ context_unsafe(								\
- 	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
- 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_check() usage"); \
- 	rcu_check_sparse(p, space); \
--	((typeof(*p) __force __kernel *)(local)); \
-+	((TYPEOF_NO_ADDRESS_SPACE(*p) __force __kernel *)(local)); \
- })
- #define __rcu_dereference_protected(p, local, c, space) \
- ({ \
- 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
- 	rcu_check_sparse(p, space); \
--	((typeof(*p) __force __kernel *)(p)); \
-+	((TYPEOF_NO_ADDRESS_SPACE(*p) __force __kernel *)(p)); \
- })
- #define __rcu_dereference_raw(p, local) \
- ({ \
- 	/* Dependency order vs. p above. */ \
- 	typeof(p) local = READ_ONCE(p); \
--	((typeof(*p) __force __kernel *)(local)); \
-+	((TYPEOF_NO_ADDRESS_SPACE(*p) __force __kernel *)(local)); \
- })
- #define rcu_dereference_raw(p) __rcu_dereference_raw(p, __UNIQUE_ID(rcu))
- 
--- 
-2.40.1
+7.	Disable preemption across synchronize_srcu_atomic().
 
+8.	Use IRQ_WORK_INIT_HARD for srcu's irq_work, courtesy of Sebastian
+	Andrzej Siewior.
+
+9.	Warn if Tiny SRCU readers are preempted.
+
+10.	Explicitly note DEFINE_SRCU() needs for srcu_barrier().
+
+11.	Add atomic-SRCU support to torture.sh, courtesy of Kunwu Chan.
+
+12.	Add reader-free fastpath to synchronize_srcu_atomic(), courtesy
+	of Kunwu Chan.
+
+13.	Skip callback scheduling for atomic SRCU grace periods, courtesy
+	of Kunwu Chan.
+
+14.	Remove srcu_barrier() sleep for atomic SRCU, courtesy of Kunwu
+	Chan.
+
+15.	Restrict atomic-SRCU non_block annotation to task context,
+	courtesy of Kunwu Chan.
+
+16.	Make init_srcu_struct_atomic() prevent transition to big,
+	courtesy of Kunwu Chan.
+
+17.	Don't transition atomic SRCU to big in srcu_gp_end(), courtesy
+	of Kunwu Chan.
+
+18.	Skip torture to-big transition for atomic SRCU, courtesy of
+	Kunwu Chan.
+
+19.	Add lockdep and early-boot checks to synchronize_srcu_atomic(),
+	courtesy of Kunwu Chan.
+
+20.	Add lockdep and early-boot checks to synchronize_srcu_atomic(),
+	courtesy of Kunwu Chan.
+
+21.	Preserve IRQ state in synchronize_srcu_atomic() callchain,
+	courtesy of Kunwu Chan.
+
+Changes since v1:
+https://lore.kernel.org/all/13d6be93-8d9d-47a2-beb0-99c8a90938d4@paulmck-laptop/
+
+o	Added patches 19-21.
+
+o	Dropped old patch 9 in favor of an urgent RFC pull request.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/srcu.h                              |   81 ++++
+ b/include/linux/srcutiny.h                          |    6 
+ b/include/linux/srcutree.h                          |    9 
+ b/kernel/rcu/rcutorture.c                           |   46 ++
+ b/kernel/rcu/srcutiny.c                             |    2 
+ b/kernel/rcu/srcutree.c                             |   23 -
+ b/tools/testing/selftests/rcutorture/bin/torture.sh |   24 +
+ include/linux/srcu.h                                |   10 
+ include/linux/srcutree.h                            |    6 
+ kernel/rcu/srcutiny.c                               |   94 +++++
+ kernel/rcu/srcutree.c                               |  333 ++++++++++++++++----
+ 11 files changed, 548 insertions(+), 86 deletions(-)
