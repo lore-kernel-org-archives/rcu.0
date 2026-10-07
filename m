@@ -1,85 +1,104 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E30B3B8D7B;
-	Wed,  7 Oct 2026 21:04:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A98E7374A08;
+	Wed,  7 Oct 2026 21:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791407043; cv=none; b=by47r2rs0gTRUri57sIBGBBwJgio8vQYnjcp37sPI1ytHC33yqnyKoAgy479bPrLwuKDt0TNXTcn3Xl2qV4OvrbEZ5avThCZ9ljT1e3cZvN15MdO3ndWNF5ogUFgDl6Xim2YuVk6tZ5lzV5WCCS2MZ58ZZqUcfrYZVxKGk610II=
+	t=1791407050; cv=none; b=NJN4sOfKbMHGGjwiP+x97r6B0Y92+by/UThGgGqlQOid3klvhVGWfRX7KR1oanMDPj9T/PKmjgMM71AAQtBQgREQb+9G6UF7PYCcq/bq+IK0iLKHsYyfp4GpheYxJtpvJJyJw/blxL/5m3R7leMNYF63dMhI9hNGYPj+BR5qEcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791407043; c=relaxed/simple;
-	bh=AwocqbOL6RvUCuJ+C9nxRUt8pj7Oy4xDXehIsc9IyMg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=m53vfvUHxzGIjY696Og9jKrSHpzmGqFsAHyin+wR//ulYjn+/Y7OxDXmzYPPx4f89t1vgTKhpivtCaK0PzK7djK30U8YIfoH0+pi3TCwIJdOMA8G/ytWs8JCQc0lSFJT6R9L/d961foamPV4jAWoaw9YTYKLMLulAlpZ26XXyZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aXRHyTcL; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791407050; c=relaxed/simple;
+	bh=WtMjVXboO3SA/QrwmQvp6WzTsW+TZtghOId6pS7D2Jw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=OdVLX5vH72vUt8UVA8GaBNcMk6PaDIfL8uykiMP5Lv6lHq4zy3YNhnrjXL+pp7tSx0doVkKkMPne1X9+IkFU+/rIpXFPKxvnd6pBAKMKbTzzlFhK/kxM5P+AGLN23njww8Y7uOEqqsSa4pAJAwgrNhAgvoObw0ZPH9UrHexqpw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SFVMBgOo; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aXRHyTcL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 856FE1F00893;
-	Wed,  7 Oct 2026 21:04:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SFVMBgOo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FC441F00893;
+	Wed,  7 Oct 2026 21:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791407042;
-	bh=z00JDNuVlW7ZADmqoiRqosEpafug+NQNPSQOamOzknw=;
-	h=Date:From:To:Cc:Subject:Reply-To;
-	b=aXRHyTcLJ2znEFteux7jrcahnJh9dG35/t3K+si0mQ8/rEtMQWSxwByRgJztqkwqi
-	 8PgUSE4YuCmAb8o/V/eKkXQit+aFUDJRshdJIKXB3wIFUVMmVpWfpojmyjEybfnnJH
-	 VbP4vJh1uzbkaAnR4/K+0YbdtHCpZl52TfI1pC4xPXAm0L5itxrr5YE1pnJfE7zCN2
-	 T5Kz5y0tO1xSMoaZVkNyLQL8x4dSbdMLHltb0SpPpuS51SFwkPrMk1+tBMqZmLinuv
-	 qqN7pQ/Jc+g8CNj2PatHtgvU2UbJuY6TsZn5PdWcVWyV97mk7tgWt4ubGWf8ybZ6NB
-	 26blJJNZxXodQ==
+	s=k20260515; t=1791407049;
+	bh=t+wcEBMEjxLX0pabaMBPIBCJDpnYqEbIdFDm8n5HC1o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=SFVMBgOoYm6XT5A0PCy4+rwNI2fWHkHMHV/IgUMmn+KJLSNbU5OVBlv/HhJKOaY7M
+	 FCQANPX05EAEq7YPd9zect0iViOtIqfHKKZoAeuF7zdesn0B4bs5ZPuaGmWPHcaqqZ
+	 vkI9tF+6N+ixkFoqN9L2R+6DhqPL11xpVFKol61Htk0QT+wHMvZ1cl2iAEYsZ8JfgZ
+	 03Qor4ov6e5s6TIYeE8vY0iBko7mcvWR+oXh22tLPQ0rICFNn5HoNybFSvArb78mxP
+	 NQBwPyuSyPiyAa/hRnjTJz8fSXHTxiyCaYAfmY5I6iIHKnXHHVOOgrG6MNTeD83tEw
+	 P0k/l/KPyPUgg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 328B5CE0D79; Wed,  7 Oct 2026 14:04:02 -0700 (PDT)
-Date: Wed, 7 Oct 2026 14:04:02 -0700
+	id 4F736CE0D79; Wed,  7 Oct 2026 14:04:09 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH 0/8] Torture-test updates for v7.4
-Message-ID: <f9cb7abd-db60-43f6-9392-27fe29abb75b@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 1/8] rcutorture: Fix divide-by-zero with fwd_progress_div=1
+Date: Wed,  7 Oct 2026 14:04:01 -0700
+Message-Id: <20261007210408.1983713-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <f9cb7abd-db60-43f6-9392-27fe29abb75b@paulmck-laptop>
+References: <f9cb7abd-db60-43f6-9392-27fe29abb75b@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+From: Kunwu Chan <kunwu.chan@gmail.com>
 
-This series adds some torture-test updates:
+When fwd_progress_div=1, the forward-progress test computes:
+  sd4 = (sd + div - 1) / div = sd
+  dur = sd4 + torture_random(&trs) % (sd - sd4) = sd4 + % 0
 
-1.	Fix divide-by-zero with fwd_progress_div=1, courtesy of Kunwu
-	Chan.
+The modulo operation with a zero divisor triggers an integer
+division by zero (undefined behavior at the C level, #DE trap on x86),
+causing a kernel Oops and panic. On x86_64, this manifests as:
 
-2.	Synchronously wait for all rcu_torture_irq() callbacks to
-	complete, courtesy of Zqiang.
+  rcu_torture_fwd_prog_nr: Starting forward-progress test 0
+  Oops: divide error: 0000 [#1] SMP PTI
+  RIP: 0010:rcu_torture_fwd_prog+0x90b/0x1160
+  R12: 0000000000000000
 
-3.	Allow specifying alternative ssh command to kvm-remote.sh.
+The existing guard only handles non-positive values. However,
+fwd_progress_div=1 also makes the random range empty because
+sd4 == sd.
 
-4.	Fix kvm-again.sh re-run failure on ppc64, courtesy of Zhouyi Zhou.
+Change the guard to reject values below 2. The forward-progress test
+only reaches this calculation when stall_dur() is positive, so
+sd = stall_dur() + 1 >= 2. For fwd_progress_div >= 2, sd4 < sd,
+ensuring that sd - sd4 is at least 1.
 
-5.	Add atomic SRCU lockdep support, courtesy of Kunwu Chan.
+Keep the existing fallback to the default value of 4 for invalid
+values.
 
-6.	Wire atomic SRCU into srcu_lockdep.sh, courtesy of Kunwu Chan.
+Verified with QEMU/KVM: a 138-second run with fwd_progress_div=1
+completed 81 forward-progress test cycles without a crash.
 
-7.	Fix double nerrs count in srcu_lockdep.sh, courtesy of Kunwu Chan.
+Fixes: 1b27291b1ea4f ("rcutorture: Add forward-progress tests for RCU grace periods")
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-8.	Add atomic SRCU cross-CPU IRQ context mismatch test, courtesy
-	of Kunwu Chan.
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 182d47975efd1..79807475b6724 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -4024,7 +4024,7 @@ static int __init rcu_torture_fwd_prog_init(void)
+ 	}
+ 	if (fwd_progress_holdoff <= 0)
+ 		fwd_progress_holdoff = 1;
+-	if (fwd_progress_div <= 0)
++	if (fwd_progress_div < 2)
+ 		fwd_progress_div = 4;
+ 	rfp = kzalloc_objs(*rfp, fwd_progress);
+ 	fwd_prog_tasks = kzalloc_objs(*fwd_prog_tasks, fwd_progress);
+-- 
+2.40.1
 
-Changes since v1:
-https://lore.kernel.org/all/860880d0-fb46-4039-a47c-33dd42a215d1@paulmck-laptop/
-
-o	Add patches 4-8.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/kernel/rcu/rcutorture.c                                |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-again.sh    |   11 +
- b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh   |   22 ++
- b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh |   39 +++++
- kernel/rcu/rcutorture.c                                  |  113 ++++++++++++++-
- tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh   |   38 ++++-
- 6 files changed, 211 insertions(+), 14 deletions(-)
