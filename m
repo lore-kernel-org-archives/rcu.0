@@ -1,44 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E462D411FB1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87F741228D;
 	Wed,  7 Oct 2026 20:45:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791405916; cv=none; b=bxalMroJG8mSZQYXy08ZC9isRdAewD1fJ5ISFB+ENF7nLCjlfNEvvSA2uVy0sJsm4IvnHgzdgtO0aEUmtGCFOmPcHEO83KimQ06s6GjehnF1iyvAdJhMyOF3lyKtiLNUNw0BG+CurTsi2fb4orPSAXMUgpv6DvJK/tebi4VrwR8=
+	t=1791405916; cv=none; b=Z2pafemSB8PP8/Ty0rQ/uBXpOrVCPwtpewUBCZzU59SDiqzTCmqm90bB4cSWcg2tjDrYUeXfW6PO+eMRzr07R8iS+JJzBhP0JRkbsD1kYrlzG5J29qm/v21MgZwtD6wBLxK1lrSFyRNdiXMipvuwLW+eJHzCeUOr7kzaP3fG3oY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1791405916; c=relaxed/simple;
-	bh=ngzssN2UBUf0qOB2JuRMxV46RPxwQq+1FbIFEPDF3g4=;
+	bh=K0+q8CNJltUV/5Fpv4xwTXNBh0Tg0aSyC5R1MgOItdc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ugchK2k6NcRfUPswcfBvbgIPlnMMVBmZq4+qLv0VfPce+pXQH4XujSQ2GpXr3AJnkdjCVQENYY4u89tq6T8eLoKcmESG3cTUdIoXcaLst09t1MIcVSB/Xf3i1mo0uZYZn8AzXxP4EJi/DgZoAT4j/q/iJJNOQxk0gHf4wvw/SzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VW85xQrh; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=KUBXHOLDP2lI24q1c68ZUHioEYkMxYcm3oqZHwnszmKJXQxRfuLSQa9HbsyzhAPHrUyvUmuHkIobQvI17fYH/0PTNEtOhseMNXVaeG+ThTxrqV25BvpRqWHLPYNPAzGnkGFqdY0bQTnSR9/Kl5heFUG5mfrSu1RRvUNFMoRAATI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AT4zozMs; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VW85xQrh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8EAA1F0089A;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AT4zozMs"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C55C21F0089E;
 	Wed,  7 Oct 2026 20:45:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1791405913;
-	bh=ly9arS0/WlmuK91h3tr4oHgSbTiK3NPyiNaNFFRcmnQ=;
+	bh=eI4lOap5+rbii2ag4BJx5IFRKupEwXV+Eq5mrRdE/cY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=VW85xQrh91CW4fQrn8TMTFByLerCAXRedNC1KZtWF8OAfQ7Od5o2Y+7XkR206WedG
-	 UO6jSw+7LrCXYhsjMWFXPD4EkjLHiT5FgFqnWPYMGCMVB5+x5P504w9Uau9J9JJDSc
-	 AyYEgequPByde0hMdOGi59G7Mwfe9RxAkMH4SClcVtf8aM9STPD1vuuvRecXJEbjdd
-	 lQOOjuzxyuMHNzo50d333+qj3XbM0iviksYwcsfnrNr1CGCC7eeaPpXXLwRYP/Sz1D
-	 TMUUQFfP0kUOYpC5RKrVyqLMk9/uwFfuigLifZhw1+IpJCvqDtT5i74T2876zfLcjl
-	 ntv9EVkilt9mg==
+	b=AT4zozMsc5902tE8JQZHafrQs/HEQCa5se6NebWwXlCLQeO16viFW++0+JUeMg0Uf
+	 zuKYxswSTyIIveIZ6+YGp1uwrBuQq1IpxJkj1QYr14S9YsjJDGK4y9NYnB8/MjmN3H
+	 KnOiVxDwVEF6eBvwcmF8Y00IWI775eUlcuP6A8/O+AqMCgWqwN/EEfLHlbv41jrC8k
+	 EXpA9xU2YVGZb8mJG+MVcRQXXPWj2FtIk/wqU4dhq98K7VKLK2ZP3Ckc3Eyf0hF60P
+	 N2OVimcQR6iJFduiJMX0jv00aOnzlGXqKxzfzo8iXlITfZsotwmQrfTLZ3MaRpkCxP
+	 eByqeBugrDwyQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 389AACE2744; Wed,  7 Oct 2026 13:45:13 -0700 (PDT)
+	id 339CDCE272D; Wed,  7 Oct 2026 13:45:13 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Breno Leitao <leitao@debian.org>,
-	David Dai <david.dai@linux.dev>
-Subject: [PATCH v2 09/10] rcu-tasks: Disable callback contend/collapse messages by default
-Date: Wed,  7 Oct 2026 13:45:10 -0700
-Message-Id: <20261007204511.1982646-9-paulmck@kernel.org>
+	Matthias Goergens <matthias.goergens@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 07/10] rcu: Make userspace barrier hook drain kvfree_rcu work
+Date: Wed,  7 Oct 2026 13:45:08 -0700
+Message-Id: <20261007204511.1982646-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop>
 References: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop>
@@ -50,110 +49,132 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-New workloads can do large bursts of call_rcu_tasks() invocations in a
-short time period, followed by a quiet time period long enough to drain
-all of the callbacks, followed by another burst of call_rcu_tasks()
-invocations.  This can cause RCU Tasks to switch back and forth between
-queuing callbacks only on CPU 0 (during quiet periods) and on all CPUs
-(during bursts).
+From: Matthias Goergens <matthias.goergens@gmail.com>
 
-Which is fine.  Except for the fact that each cycle from CPU-0-only to
-all-CPUs queuing and back generates three console messages, one announcing
-the shift to all-CPUs queuing, another announcing the start of the shift
-back to CPU-0-only queuing, and the third announcing completion of this
-shift after an RCU grace period.  And these console messages can overrun
-console-log communications channels and obscure other console-message-based
-debugging information.  And the only known use for these console messages
-is debugging RCU Tasks itself.
+The bcachefs ktest allocation-leak check writes rcutree.do_rcu_barrier
+before reading /proc/allocinfo. While testing bcachefs performance
+changes, small objects released with kfree_rcu() remained visible after
+repeated writes to the hook and 20 seconds of waiting, causing otherwise
+clean tests to fail their leak check.
 
-This commit therefore adds a rcupdate.rcu_task_collapse_debug module
-parameter that defaults to false (suppressing these console messages).
-Those debugging or otherwise playing with RCU Tasks callback queuing
-auto-adjustment can set this parameter to the value true.
+The test assumes a stronger contract than the hook currently documents:
+rcu_barrier() waits for ordinary callbacks, but does not flush objects
+still held in kfree_rcu() batching or per-CPU SLUB sheaves. The retained
+population eventually fell as a sheaf filled; there is no evidence here
+of unbounded growth or OOM.
 
-[ paulmck: Apply Breno Leitao feedback. ]
+Changing the hook to drain kvfree_rcu() work let the same unmodified
+bcachefs workload pass its allocation check. All eight checkpoints in
+one VM, after 50 through 400 option changes, reported zero retained
+reconcile_scan objects. This motivated the separate private-cache test
+used to isolate the incomplete drain from bcachefs.
 
-Reported-by: Breno Leitao <leitao@debian.org>
-Reported-by: David Dai <david.dai@linux.dev>
+Calling kvfree_rcu_barrier() from rcu_barrier_throttled() was proposed
+when kvfree_rcu_barrier() was added in 2024, to restore a clean baseline
+between userspace benchmark runs. The discussion concluded that keeping
+the existing hook name, adding the second operation and documenting both
+was the safest compatibility choice, but the follow-up was not added.
+
+Add that drain and document the stronger test interface. Always retain
+the existing start-rate limit and perform the kvfree_rcu() drain: an
+unrelated ordinary barrier does not establish that this work completed.
+
+Retain the entry ordinary-barrier sequence snapshot. After draining,
+skip the final ordinary barrier only if that snapshot is complete,
+preserving the memory barrier on the completion path. Otherwise, invoke
+rcu_barrier() explicitly. This keeps the ordinary-callback guarantee
+independent of whether kvfree_rcu_barrier() embeds an ordinary barrier.
+
+Clarify that the documented completion guarantee covers work queued
+before the request, without preventing new work from being queued.
+
+Earlier validation of the unconditional-drain version used four fresh
+VM pairs with a private-cache fixture: controls retained the queued
+object (60 to 60 active objects), and treatments drained it (60 to 59).
+An ordinary-callback test passed on both kernels. Those runs predated
+the guarded skip and do not validate that change. No elapsed-time
+improvement is claimed.
+
+Link: https://lore.kernel.org/all/20240820155935.1167988-1-urezki@gmail.com/
+Signed-off-by: Matthias Goergens <matthias.goergens@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Breno Leitao <leitao@debian.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  7 +++++++
- kernel/rcu/tasks.h                              | 15 ++++++++++++---
- 2 files changed, 19 insertions(+), 3 deletions(-)
+ .../admin-guide/kernel-parameters.txt         |  9 ++++--
+ kernel/rcu/tree.c                             | 30 ++++++++++++-------
+ 2 files changed, 26 insertions(+), 13 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 914b65ae94134..6cc6d45b59d68 100644
+index 68647ff4bdd24..914b65ae94134 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -6405,6 +6405,13 @@ Kernel parameters
- 			period to instead use normal non-expedited
- 			grace-period processing.
+@@ -5699,9 +5699,12 @@ Kernel parameters
+ 			there is an ongoing too-long CSD-lock wait.
  
-+	rcupdate.rcu_task_collapse_debug= [KNL]
-+			Enable debugging prints that record when RCU Tasks
-+			and RCU Tasks Trace expand to per-CPU callback
-+			queuing and collapse back to CPU-0 queuing.
-+			This is default-disabled due to the fact that
-+			some workloads can make it quite noisy.
-+
- 	rcupdate.rcu_task_collapse_lim= [KNL]
- 			Set the maximum number of callbacks present
- 			at the beginning of a grace period that allows
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 627295396cd91..fcac7361ec51e 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -178,6 +178,8 @@ static int rcu_task_contend_lim __read_mostly = 100;
- module_param(rcu_task_contend_lim, int, 0444);
- static int rcu_task_collapse_lim __read_mostly = 10;
- module_param(rcu_task_collapse_lim, int, 0444);
-+static bool rcu_task_collapse_debug __read_mostly;
-+module_param(rcu_task_collapse_debug, bool, 0644);
- static int rcu_task_lazy_lim __read_mostly = 32;
- module_param(rcu_task_lazy_lim, int, 0444);
+ 	rcutree.do_rcu_barrier=	[KNL]
+-			Request a call to rcu_barrier().  This is
+-			throttled so that userspace tests can safely
+-			hammer on the sysfs variable if they so choose.
++			Wait for deferred kfree_rcu() frees and ordinary
++			call_rcu() callbacks queued before this request to
++			complete.  This does not prevent new work from being
++			queued concurrently.  Requests are throttled so that
++			userspace tests can safely hammer on the sysfs
++			variable if they so choose.
+ 			If triggered before the RCU grace-period machinery
+ 			is fully active, this will error out with EAGAIN.
  
-@@ -390,7 +392,8 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
- 			WRITE_ONCE(rtp->percpu_enqueue_shift, 0);
- 			WRITE_ONCE(rtp->percpu_dequeue_lim, rcu_task_cpu_ids);
- 			smp_store_release(&rtp->percpu_enqueue_lim, rcu_task_cpu_ids);
--			pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
-+			if (data_race(rcu_task_collapse_debug))
-+				pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
- 		}
- 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 338737b9781cb..f60252390d5de 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3988,12 +3988,12 @@ EXPORT_SYMBOL_GPL(rcu_barrier);
+ static unsigned long rcu_barrier_last_throttle;
+ 
+ /**
+- * rcu_barrier_throttled - Do rcu_barrier(), but limit to one per second
++ * rcu_barrier_throttled - Drain deferred RCU frees, but rate-limit starts
+  *
+- * This can be thought of as guard rails around rcu_barrier() that
+- * permits unrestricted userspace use, at least assuming the hardware's
+- * try_cmpxchg() is robust.  There will be at most one call per second to
+- * rcu_barrier() system-wide from use of this function, which means that
++ * This can be thought of as guard rails around the deferred-free barriers
++ * that permit unrestricted userspace use, at least assuming the hardware's
++ * try_cmpxchg() is robust.  There will be at most one drain operation started
++ * per sixteenth of a second from use of this function, which means that
+  * callers might needlessly wait a second or three.
+  *
+  * This is intended for use by test suites to avoid OOM by flushing RCU
+@@ -4015,14 +4015,24 @@ static void rcu_barrier_throttled(void)
+ 	while (time_in_range(j, old, old + HZ / 16) ||
+ 	       !try_cmpxchg(&rcu_barrier_last_throttle, &old, j)) {
+ 		schedule_timeout_idle(HZ / 16);
+-		if (rcu_seq_done(&rcu_state.barrier_sequence, s)) {
+-			smp_mb(); /* caller's subsequent code after above check. */
+-			return;
+-		}
+ 		j = jiffies;
+ 		old = READ_ONCE(rcu_barrier_last_throttle);
  	}
-@@ -511,7 +514,9 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
- 			smp_store_release(&rtp->percpu_enqueue_lim, 1);
- 			rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
- 			gpdone = false;
--			pr_info("Starting switch %s to CPU-0 callback queuing.\n", rtp->name);
-+			if (data_race(rcu_task_collapse_debug))
-+				pr_info("Starting switch %s to CPU-0 callback queuing.\n",
-+					rtp->name);
- 		}
- 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
- 	}
-@@ -519,7 +524,9 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
- 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
- 		if (rtp->percpu_enqueue_lim < rtp->percpu_dequeue_lim) {
- 			WRITE_ONCE(rtp->percpu_dequeue_lim, 1);
--			pr_info("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
-+			if (data_race(rcu_task_collapse_debug))
-+				pr_info("Completing switch %s to CPU-0 callback queuing.\n",
-+					rtp->name);
- 		}
- 		if (rtp->percpu_dequeue_lim == 1) {
- 			for (cpu = rtp->percpu_dequeue_lim; cpu < rcu_task_cpu_ids; cpu++) {
-@@ -704,6 +711,8 @@ static void __init rcu_tasks_bootup_oddness(void)
- 		pr_info("\tTasks-RCU CPU stall info multiplier clamped to %d (rcu_task_stall_info_mult).\n", rtsimc);
- 		rcu_task_stall_info_mult = rtsimc;
- 	}
-+	if (rcu_task_collapse_debug)
-+		pr_info("\tTasks-RCU callback contend/collapse debug enabled.\n");
- #endif /* #ifdef CONFIG_TASKS_RCU */
- #ifdef CONFIG_TASKS_RCU
- 	pr_info("\tTrampoline variant of Tasks RCU enabled.\n");
+-	rcu_barrier();
++	/*
++	 * kfree_rcu() can retain objects outside the ordinary callback lists in
++	 * per-CPU SLUB sheaves and kvfree_rcu batches.  Always drain those queues:
++	 * an ordinary barrier does not establish that this work was drained.
++	 */
++	kvfree_rcu_barrier();
++	/*
++	 * A completed barrier can still cover ordinary callbacks queued before
++	 * our entry snapshot.  Otherwise, retain an explicit ordinary barrier
++	 * without depending on the implementation of kvfree_rcu_barrier().
++	 */
++	if (rcu_seq_done(&rcu_state.barrier_sequence, s))
++		smp_mb(); /* caller's subsequent code after above check. */
++	else
++		rcu_barrier();
+ }
+ 
+ /*
 -- 
 2.40.1
 
