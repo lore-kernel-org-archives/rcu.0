@@ -1,44 +1,91 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1222264AB;
-	Tue,  6 Oct 2026 23:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3988B36197F
+	for <rcu@vger.kernel.org>; Wed,  7 Oct 2026 02:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791330029; cv=none; b=JUn6u1leTWwJV/xQMcIo8MYa7tK+91ZnTDNpbKPa8Ed/1ydRpGzFyhJA1J/AozQWu0jJFxsX18fp7uEraz0gsEWHWJBAg987fYImnEn5LPV61tpOgTWBnGeRsKC+nrWl3griQXA/5JjV4ZtBT4PDiZFFXY0f3UBPPAI69Udth6g=
+	t=1791341808; cv=none; b=c+T1eyCn9aleX1DpjeSOoZAPHrkj96cWHk9XpSq1hu25HegkyfDVbqMPuZHyO+JnLWEEv1f+gUalWZ+BnnCHT3DrsDAND+/LP+Dt92I3A8OF6PbkZhp1HF5nbxKaK7ssCEGLSZPAl3H9o26OvzhTpGB1l/khF66H/cD5kYV2iZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791330029; c=relaxed/simple;
-	bh=Ng2c8hVROoYWoNchJMFJzak2mYULwuEmntVEYkvgI/E=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=YOg0/f9pOeX+xSRrbDub4AeiENRe4UEIYWeDJHnNHujGMUDnFEkLG7xs6WH6RoahPpCyunQcwWF4Za9JH0cGYTuKIvABZi5bCzXg2s/sr5jcZLFzFNwwkB8GylJy038TYpYsif/fkOoKNJJ0TOWf3Z7HOYG09yfzNrLKg/VF5RA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LMvWQyTo; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791341808; c=relaxed/simple;
+	bh=aTGbHorcC7spW+tVRUG766lW2N40Ap2NyU66RpBUSzk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Disposition; b=DLLlkB/tVLzPRWjxCyrZhKoYtk1Ot/Y+xcYtWoqsGWl2PWXmw6yVgXLpVU5R0Tdzz17//G2WRhzGvFRFzhPWT8BTjrlXqwJsevuH2g/U+S7MAkxiLtwkKtgQU4DvwalkOHOd98CRGIckApZY5qJrbUiicr061ykvFbEHpmCw7Vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=o065dOHQ; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LMvWQyTo"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02DF21F0089B;
-	Tue,  6 Oct 2026 23:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791330028;
-	bh=JA5qZeRZjxBKgrhAgdN67aWKQ4BLjX80WKLhiuAVuBc=;
-	h=Date:From:To:Cc:Subject:Reply-To;
-	b=LMvWQyTokqSgYU81H9BZXaNt5XIP0VTS/PqhtlKmYnFA6JzyLqCc3u0Rn3KXskeoG
-	 Ng15ctU8wX9Rgpy84ec56ot/orn79+/o0e/1KctVwhXGZF3oXuU3jlIo7Qm5QSkY0Y
-	 n107w4RkuT4Apdk1zw3iEAdKsNARzLLRl3gKQGWrI8dt/V1D/8G9UMBRNFakdsd7ei
-	 AM8WYAkEOYkfXogeR3zKmis4tlv2cuW+7/cfygxcTOO+l7l+Jj2/A3N2f4VSogkNG1
-	 ZZzJGfRXN4AKJo6EWrTaJX2kxBVS8JNJDWnkbjR5TAmPfb7Ed+goz5UPS9OslNDUhM
-	 7et7G4R1+MUEQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B1E2FCE3A08; Tue,  6 Oct 2026 16:40:27 -0700 (PDT)
-Date: Tue, 6 Oct 2026 16:40:27 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Boqun Feng <boqun@kernel.org>, Kunwu Chan <kunwu.chan@gmail.com>,
-	Wang Lian <lianux.mm@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
-	Bradley Morgan <brads@mainlining.org>, rcu@vger.kernel.org,
-	lkmm@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Joel Fernandes <joelagnelf@nvidia.com>
-Subject: [BUG] Splat during modest hazptrtorture run
-Message-ID: <1f885062-4905-4d9c-9293-615c145d2d6b@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="o065dOHQ"
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2e6038cebefso2887025ad.0
+        for <rcu@vger.kernel.org>; Tue, 06 Oct 2026 19:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1791341806; x=1791946606; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:content-type
+         :mime-version:mail-followup-to:references:in-reply-to:message-id
+         :date:subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=JfwUS945YBdly7tT5sHJsRnusEwHVI6ntMLloizipfE=;
+        b=o065dOHQ1whVJXQK9NV6DfVVYRTUi6B1XsP8/B2y1+R7MSwboHHvcSE+WreQ3YN/So
+         mP2F36RWrp1JJdJQ0kNGtf70xTGqimrVA/SsBOgTMVo+PeHTlMhgZT82+8lGGO9zyK6D
+         n03t4rh/VWxXV/9zrPNfQ33QSbndRV910TWSaXiRKTN3eLoB99Whtp4Mj3MU13GjG8nK
+         Ab0hHLr3g0MpQRYkfBRnWa1FSAt9+kWeTfXRvoG65wDh6bu1Hxcy84e+3+5a5XIybZfj
+         MSNsUeV5V6ErvytYWvR7lNFe4f+6LmRmqmEBdhpF5CKrkKc/F2Yrq7wh4nC0+/Zi+Os4
+         Zq1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791341806; x=1791946606;
+        h=content-transfer-encoding:content-disposition:content-type
+         :mime-version:mail-followup-to:references:in-reply-to:message-id
+         :date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=JfwUS945YBdly7tT5sHJsRnusEwHVI6ntMLloizipfE=;
+        b=gk4JVpbtLV0FO+DgvcsRXP6SCXnVciSVN0qZH1f59mISgOkoYJG9uuRh69Kn6WtJ9m
+         OftnemkzsRNPphfo/0/suoJ/eOSagF59i3nK7CnNWxfwWHFHmKb5SlxIzOJrUNXAXLiv
+         bQ+XPuWu3o7kl/YIqGzgXxaVL6rG/dNPes6Lcf1atoaNynuuV/Iu47HisSFMMl0rq2k/
+         dV1MVuSQq6yanDWuiHOPkcxcGw41z48jnZ2hxjuKNkng3QIFJuzvWoZ47/CjOBBBPxam
+         XRI2osmt3HNZQWcQ4xUUt0ZvGN9T+8vyz02o12o0JBFCNaHMHV8Bz41W6zuhQRlqFc+8
+         Hf/w==
+X-Forwarded-Encrypted: i=1; AKwUvBzCDgKOqQ6SY6imBmXtegROGWpW9NWgleOoR4TA0jwxejcd7njhGW+XtWWdHET/NDtxsOw=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJ1ZUa2AqQscSCogt6flMEgXKQc5A8f2AHCXg5VZrcnX9qAEhD/
+	bWDcoMGsnjKWZBk+lS8wMc7qhw47lj1H/ypqwU5IqRdUFYoWezwd35/J1X+uwVlY
+X-Gm-Gg: AYBFou17iig5i9aVzEGQNFM4TKUeZwmqC+T/6Nxl6IllP7LMktJCgPIukIysFt/8Itt
+	Sg75fIp/5OrPCk65pb1ail0m/VDE4/V8j7mahfP83CQV5Oy08TASclMtVl488wnmw44nt3OLevU
+	POM6ag5aZU1+mkbPgHNHYsWoKxH8vcJqFjHXpwzIhJ49nyE34YUi9SnyJXoeAKqqez9vt3AArgS
+	cG6U1HQuUN3GLL9VuAt1P7StI2vBeQBPn5hB7RWHY4kTSYrjYOtZH69X9TYLVyPhWBfzQ27h69k
+	pjic/3aXxT1F8LrmwturWo7TuX+nimlsvzA/Jsqqkv+5kky+GFaH4UHcBn3OsiDTpCuGA+7xXq2
+	CT17nT7RcxjJoDKKFVIR6+NVoRGqgJjV4awND0JcbYrRKJJ5pTBdJLGmDB0WhcTnQfcn2LlFJtU
+	OLXI1xQ9ZXZHFl55H1RCAn2QLH70YrVBv2o89V0cFpSHHFMRwrM1XRL+XJKWxnyLMBwpQb/XNYq
+	S+HA5ucUQ==
+X-Received: by 2002:a17:902:7206:b0:2dd:ad74:ac7e with SMTP id d9443c01a7336-2e6003c3090mr7227615ad.25.1791341806478;
+        Tue, 06 Oct 2026 19:56:46 -0700 (PDT)
+Received: from localhost.localdomain ([8.139.245.4])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2e60f6626afsm812225ad.44.2026.10.06.19.56.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2026 19:56:46 -0700 (PDT)
+From: Cunlong Li <shenxiaogll@gmail.com>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH] rcu: Enable runtime reset of the RCU stall panic count
+Date: Wed,  7 Oct 2026 10:56:39 +0800
+Message-ID: <asW059of9u0ohxQI@63b45mr6s164qmn>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <53383f19-3d54-405b-85af-f597b69befe6@nvidia.com>
+References: <20261004-rcu-v1-1-3799a44367f1@gmail.com> <00F6D386-FE41-42E3-9B89-07381A49E061@nvidia.com> <asThhHxoFP2L25Nc@63b45mr6s164qmn> <A522703D-CBCE-4F3A-9CA2-968BA382166C@nvidia.com> <asT08QHOiIJrfIIZ@63b45mr6s164qmn> <53383f19-3d54-405b-85af-f597b69befe6@nvidia.com>
+Mail-Followup-To: Cunlong Li <shenxiaogll@gmail.com>, Joel Fernandes <joelagnelf@nvidia.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -47,54 +94,43 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+On Tue, Oct 06, 2026 at 05:27:51PM -0400, Joel Fernandes wrote:
+> 
+> 
+> On 10/6/2026 9:17 AM, Cunlong Li wrote:
+> >> It sounds like you do know that it is likely transient - but based on this description and the below, it sounds like you have not yet found a use of this patch.
+> >>
+> >>
+> > To be precise, we worry that some of the stalls were transient, so a
+> > panic reboot would affect the users.  But we have no hard evidence
+> > either way: every incident ended in a forced reset, and the dmesg was
+> > lost.  Going forward, we plan to enable the NMI and kdump to keep
+> > investigating the cause of the RCU stalls. We will also monitor dmesg
+> > to confirm whether transient RCU stalls actually occur.
+> 
+> 
+> Right, I just worry that if you're not seeing recoverable/transient stalls and
+> you start using this patch, then you might be causing side-effects that don't
+> really help your problem and might be masking the real issue. It would be good
+> to debug this further, and fix the right way IMO.
+> 
+> If you show that this patch indeed helps your problem, we can consider it for
+> 7.5, but there's little bit of time. :-)
 
-This is all new code, so the bug could be anywhere.  So you all need
-to know.  ;-)
+Hi Joel,
 
-I got this from the NOPREEMPT variant of hazptr during a nominal
-"--duration 60" run of torture.sh on x86 with the guest OS split across
-two NUMA nodes:
+Understood, thanks.  We will keep monitoring dmesg for the root cause.
+Once we observe self-recovering RCU stalls, we will resubmit the patch
+with the evidence.
 
-[  137.765104] WARNING: kernel/rcu/hazptrtorture.c:658 at hazptr_torture_stats_print+0x25b/0x4f0, CPU#1: hazptr_torture_/136
-[  137.768647] Modules linked in:
-[  137.768891] CPU: 1 UID: 0 PID: 136 Comm: hazptr_torture_ Not tainted 7.3.0-rc5-00661-ga1f1e4890d1d-dirty #193 PREEMPTLAZY
-[  137.769683] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-6.el9 11/05/2023
-[  137.770319] RIP: 0010:hazptr_torture_stats_print+0x25b/0x4f0
-[  137.770735] Code: 48 83 c4 20 e8 86 44 fe ff 41 83 fd 01 7e 23 48 c7 c6 6e 85 17 b0 48 c7 c7 db 27 17 b0 e8 6d 44 fe ff f0 ff 05 76 6e 0a 02 90 <0f> 0b 90 4c 8b 64 24 70 48 c7 c7 73 85 17 b0 e8 51 44 fe ff 48 8b
-[  137.772061] RSP: 0018:ffffa738004ffdf0 EFLAGS: 00010202
-[  137.772435] RAX: 0000000000000004 RBX: ffffa738004ffe08 RCX: 0000000000000027
-[  137.772950] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
-[  137.773455] RBP: ffffa738004ffe60 R08: 4000000000001236 R09: ffffffffb01727df
-[  137.773980] R10: 0000000020212121 R11: 0000000020212121 R12: 0000000000000000
-[  137.774479] R13: 0000000000000002 R14: 000000000002ffd6 R15: 0000000000034f03
-[  137.775000] FS:  0000000000000000(0000) GS:ffff999c2e502000(0000) knlGS:0000000000000000
-[  137.775578] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  137.776001] CR2: 0000000000000000 CR3: 0000000008830000 CR4: 00000000000006f0
-[  137.776512] Call Trace:
-[  137.776700]  <TASK>
-[  137.776863]  ? __pfx_hazptr_torture_stats+0x10/0x10
-[  137.777207]  hazptr_torture_stats+0x25/0x70
-[  137.777508]  kthread+0xd9/0x110
-[  137.777751]  ? __pfx_kthread+0x10/0x10
-[  137.778017]  ret_from_fork+0x1bd/0x220
-[  137.778285]  ? __pfx_kthread+0x10/0x10
-[  137.778560]  ret_from_fork_asm+0x1a/0x30
-[  137.778849]  </TASK>
-[  137.779007] ---[ end trace 0000000000000000 ]---
+Thanks,
+Cunlong
 
-I have not yet seen this during a PREEMPT run.  Line 658 of
-hazptrtorture.c is the WARN_ON_ONCE() below:
-
-	if (i > 1) {
-		pr_cont("%s", "!!! ");
-		atomic_inc(&n_hazptr_torture_error);
-		WARN_ON_ONCE(i > 1); // Too-short grace period
-	}
-
-Any thoughts on what might be causing this?
-
-For that matter, can anyone else reproduce this?
-
-								Thanx, Paul
+> 
+> Thanks,
+> 
+> Joel Fernandes
+> 
+> 
