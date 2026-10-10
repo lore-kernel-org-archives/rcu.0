@@ -1,333 +1,360 @@
-Received: from LO0P265CU003.outbound.protection.outlook.com (mail-uksouthazon11022113.outbound.protection.outlook.com [52.101.96.113])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0191C3D5C32;
-	Fri,  9 Oct 2026 21:56:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.96.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C9038F649
+	for <rcu@vger.kernel.org>; Sat, 10 Oct 2026 03:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.54
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791582968; cv=fail; b=eitlwzCBWPhTDApfKzcKYprwkRoWkTs51NOqif8ydb3TJDLEhdjQM5cnLNKlBnfaymDCduTYbC+5a4DAd60+Q3t1xGZnIMk7daAY8ubYktsnQv7we3xpo+JxkKK3EsKSQhBN/cSn2k5yrdgTK01uBFWWyk136rjPkHworTEL+zE=
+	t=1791601627; cv=pass; b=N71m5fz4FapjmkIXg0/G/gOQm4ik396ZMKW7hbnVFR3dSFT7DRp8h78LrYXRk4HDYjY4SJShV2Cc/Kj7fOwYF2DLCoCL+Flpm95jPUTjWm125nKr2Dx/Obwp3FpKGDippX+7RAfkv0WgMO8poynpH9PLF3DQIXYXs4HQIh6KqMQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791582968; c=relaxed/simple;
-	bh=46eeMNJOr9Oa6r0zsdcjF0nx+83fZvXyugEHOQKZ5gA=;
-	h=Content-Type:Date:Message-Id:To:Cc:Subject:From:References:
-	 In-Reply-To:MIME-Version; b=djboJUoUGV6JnxKAjkYXPVyyrsjD+a+R7T5dg8lRLJJUgveEsN/2I3xfhYX+PyDr7mNEVpcUdnhYPx71kFr94PIPVLicv2ZrRvSEbHcYLw1uIlUchSTzt4rx6Tjplgf2hcCHQCRl+FAzwqZZpj6mo/MqzIQ9ZuWM+gceWddmTms=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net; spf=pass smtp.mailfrom=garyguo.net; dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b=l3QQTq4n; arc=fail smtp.client-ip=52.101.96.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
+	s=arc-20240116; t=1791601627; c=relaxed/simple;
+	bh=R6kdKGPzHjoG5KZKNq2uo8LKEj9Go4FuT1d2+2J7s5E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LIkdy6kJOvPGo3Q0p4RaVK/xD0Sv9hl9gd2whhJTJCVvlkmdcKTWX2Mul8B3bL1iuUDfl/JcnoPyPhpDNH4ovyCR60r0JHmdZ4JIMi6b53HrDk3OIfNwGDp+uDcueFgChW1bELdCN8NJy9i1ltchB9n/TUIKOqKO2IKwwJdZolw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=sPUNvBga; arc=pass smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b="l3QQTq4n"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=r8r67xD0daZ8TM+DWhGJeiL33ih0z+9yYaMDB0o1WI6tal9xOZ1PuffYoh1VSO4nrYI+9bhlWlpxdbNKSgCt3jmLjHa87o2oQPiTcOy6UE8xR2L5gT5tJt+B448lm308yR8OtoW3zpAV9RrPNd5nRQlHdiMJTfxHhJM4bHoceo2t65dfLadEVG7+s0zrfOaAesW5j+m9VmGaPB0mEOMn9KqZOLiOesyCupASgcETJ0oJwNgSk5r2Ajr9WaGmDRxFj+L6BEmUV1kfO/7BXb9lG2oB99p05LKsGsNs1ne1wn4cTe8K0yarTMUOXNbDhCZIkA/zxOdAmnEcw8UqytKgdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Dh4YcTw8JbaNUhW/j/fMV1f/mSLIk4EOiM7Jyoi4eX4=;
- b=sjcFxc6oDathWllHCk3/f+KnNCV63KmB0s8a/HsvLuTVSbE5vpUC93sCLLoQeAfvesqa7i2GchN9CvU7IMSJ77e9qiYvzt6TsgyQC7zkOMMcWyUkJxezgw8lWRqBUi+F4sqNUfe68PpQ1VhDrhY+RMK4OJHwhv43Z3gPuRCCUanH0csFqJa2MbrpY6tskvNlW1k0QHZnWSZ0rBkAOWie65DIS/azhCb1vaRL/+Br8IHvlVzatQpB+djq9WkMRF+k4Kh2FoZl7eAGIgHp1ZXVaaA7jb8UYI84rOqm4GMknk3Yjdln2jNCwGGv3CEWj/7ueRLur2OqkIxAtcCs3tCWjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
- dkim=pass header.d=garyguo.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dh4YcTw8JbaNUhW/j/fMV1f/mSLIk4EOiM7Jyoi4eX4=;
- b=l3QQTq4nvoEmPKX0BYeFNJWQ2l5DkKIm9v1hFZDTm2aFphuhOt8aI/kv7LY96f74P5K5tG9aAdSRZG/CoQblPOP0n/YsFi4XyfErEHouXllj82hzlatDShy3YCvPNelmoSqAsmAIZ7RmzS8qGp2ydV8oXjOrakjN3ZnnMTc8iyA=
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=garyguo.net;
-Received: from LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:4ab::19)
- by CWLP265MB6184.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:182::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.496.18; Fri, 9 Oct
- 2026 21:56:02 +0000
-Received: from LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM
- ([fe80::f60b:1537:68d7:4fc1]) by LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM
- ([fe80::f60b:1537:68d7:4fc1%6]) with mapi id 15.21.0496.015; Fri, 9 Oct 2026
- 21:56:02 +0000
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 09 Oct 2026 22:55:58 +0100
-Message-Id: <DM0N5L0LG9P0.6IFXMJX60P92@garyguo.net>
-To: "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>, "Paul E .
- McKenney" <paulmck@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, "Linus Torvalds"
- <torvalds@linux-foundation.org>, "Boqun Feng" <boqun.feng@gmail.com>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, "Sebastian Andrzej Siewior"
- <bigeasy@linutronix.de>, "Will Deacon" <will@kernel.org>, "Peter Zijlstra"
- <peterz@infradead.org>, "Alan Stern" <stern@rowland.harvard.edu>, "John
- Stultz" <jstultz@google.com>, "Frederic Weisbecker" <frederic@kernel.org>,
- "Joel Fernandes" <joel@joelfernandes.org>, "Josh Triplett"
- <josh@joshtriplett.org>, "Uladzislau Rezki" <urezki@gmail.com>, "Steven
- Rostedt" <rostedt@goodmis.org>, "Lai Jiangshan" <jiangshanlai@gmail.com>,
- "Zqiang" <qiang.zhang1211@gmail.com>, "Ingo Molnar" <mingo@redhat.com>,
- "Waiman Long" <longman@redhat.com>, "Mark Rutland" <mark.rutland@arm.com>,
- "Thomas Gleixner" <tglx@linutronix.de>, "Vlastimil Babka" <vbabka@suse.cz>,
- <maged.michael@gmail.com>, "Mateusz Guzik" <mjguzik@gmail.com>, "Gary Guo"
- <gary@garyguo.net>, <rcu@vger.kernel.org>, <linux-mm@kvack.org>,
- <lkmm@lists.linux.dev>, "Nikita Popov" <github@npopov.com>,
- <llvm@lists.linux.dev>, "Lian Wang" <lianux.mm@gmail.com>, "Kunwu Chan"
- <kunwu.chan@gmail.com>
-Subject: Re: [PATCH hazptr v2 2/4] ptreq.h: Introduce ptr_eq() to preserve
- address dependency
-From: "Gary Guo" <gary@garyguo.net>
-X-Mailer: aerc 0.22.0
-References: <20261009182142.6311-1-mathieu.desnoyers@efficios.com>
- <20261009182142.6311-3-mathieu.desnoyers@efficios.com>
-In-Reply-To: <20261009182142.6311-3-mathieu.desnoyers@efficios.com>
-X-ClientProxiedBy: LO4P123CA0537.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:2c5::17) To LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:4ab::19)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sPUNvBga"
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4a02667ccebso2581765e9.0
+        for <rcu@vger.kernel.org>; Fri, 09 Oct 2026 20:07:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1791601623; cv=none;
+        d=google.com; s=arc-20260327;
+        b=FMPdetHxHx9lkxk/2QC+QiU/sCo/ivl7neon7O/YinE0R8oqWXO+c4eNCejwpTXFpJ
+         Li46gJqf9lVE+X1GMNgdmZ5hGGUURbxJaCGDNItWTjLVSsLeFG9IYB8Xda50n4lbRc7N
+         YcLvr9gQbf40o1KCs3KhwU67coD1HMk/97imiGFknSwVf9atH6FqYaJFvzIS7YoJLPrl
+         5mJGc38h3r/KBdaIDmBXunf6FXWpYggveVt0GwzlCIw0LxDXTIpmYqIVrGljRvzKYstY
+         wwlLLftTSRhKyWHXYgDA1BI6MWwOnHRkHhZrEFJZRQz8HUv1XzPrmgMLXdnMZHr2v+PL
+         a5Bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=DqBvVGuFj0GZrAgGWRG+Z1DSJ+1TnkbYLAFeT5xo12I=;
+        fh=R3wJGABKies5GOEzoHVQUlk3TgPzIqSUI/ZBMnB0XVw=;
+        b=XXvmT/Hdv1lW02c1tKs9ovy5r1/o7ellfJib7hIXBjJXvAB/DIuQypwB+G2f16fEVM
+         bR7euWE9Gnbhzq15p0b2j94cdFwSUgSUM4yublaE8hADqr8hCqgv4xXz7M8QlYKi4kVU
+         SV/UpIOY7d/77q/p43Bbn0aFux9uDWSq/2K5/+Zi1GNenH+LXKYqge4n0/fFpt6eyf4l
+         6dv3sSUut93Szf5Hgxab746fzaeWtzfZ8Q5nhTnvC0fOA4hfQJ6OEt+oLdQxbBdmbXOb
+         0eCpuOaxucz5W4h4taAzOxNNvml+fu4KS7F+LShLM/1S0KmxH+sTcNVmaCdg1boGm0Ds
+         3KgQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1791601623; x=1792206423; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=DqBvVGuFj0GZrAgGWRG+Z1DSJ+1TnkbYLAFeT5xo12I=;
+        b=sPUNvBgaLCkSRBNytttrTwdYEnhRQ60ZUO3A6pleOplw9/XkWo7FWyZNWmpEAXsLje
+         nnT9jAG+grc2Oq6wAx2spJfQSYGXEhDzHQwn2ZzufM5xHmhaZZrI8BpqYb2uKreRza4e
+         bRCMO5OVUe2QsPBkdDO/7V16ATF7++ASWdc+IL8rvxw99OBhmin/OhONkHvuQ7y67okf
+         dOYc/adrro23l8tJ/CwiMoXJ628GXT+BhN12OQMGsTO48tVErBA6wHqL3zwnNAtGmd26
+         E9SBAG4AVluaIgJ6RsZjj99r3zM+9i/P9ESp3/ayJT12EfAWnfue27NP4JG/szw7tF9i
+         D/EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791601623; x=1792206423;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=DqBvVGuFj0GZrAgGWRG+Z1DSJ+1TnkbYLAFeT5xo12I=;
+        b=LWNsjPI6afMphj/9nUxJoaQog1IoMdysNhFSl5ygGgnGOWK64+vP29mVp1ufTJGgDq
+         bIzDiotvqbx4w92jZH00EkjmJDqhgODb4NMBg7EU7jEti1M4DvxyFT1TbgXp8/3vq5ho
+         PA5eZAUl9knriWVMD2SFf/ez3LnxPPEvypD9edSioEuWYWVRdHo8pgZmc5g328QVpID5
+         iNF0LBbvWl9KvPrSxDz9BV981nJEE7muy5aWAaq+iScuNfwmza4mqi/G5Y2hyJdYDBBm
+         /GyMRcShu+i5yJtjzp0lPXIoVYMYHQmDJfoTKOhsxJSXRYwWQtAPzrTlYCRWXRtkqRXH
+         sj9w==
+X-Forwarded-Encrypted: i=1; AKwUvBxs+ugrx5v8EUrFggIhObjYnt32kTRLTcH6FZ0CmehIaXgj/G4om+E3iujD1ijzOyXDZ24=@vger.kernel.org
+X-Gm-Message-State: AFq9FYL7aqfjsvPrbEmFQCYZ0oyin8gkSwIng/QvAxQUDacUFk+/Da1l
+	IbxBYAP4Q/CMge601CKhoaHP/vfexD347ednarsg7b55uvYjAxWNV433dG2e0hpUVcvtEmB/jvj
+	A/MUJp5raMQ3XuQPUFPQKbxje9/1Ho8E=
+X-Gm-Gg: AYBFou3/jqrB41kqfw7zw80ac4F+TUC8kFNYs0zbl4h1pgwd/c/A7UYjc1/GbySAtNP
+	AXqhv/WLSF4f4XNwY4NHKRxEOk7XvuL+Dm9dRpiLp/RVJ5f1a07LtnN3BUvAqF9H4v1A1xRbbzF
+	ggMbPFV1JQmOqrRLSH6o6KnssXYx65gkFkWPq7m3GOZcw3+q1WYDyFAFNr4LQ0VIA/LefaA2NVR
+	cXN7Wz7RdtB5dKh+5Td82leoIHqWNvv5W42OJoHDwVEQe4Sv1WqRa3BW9kkS+CMRxiVvTeHtCMp
+	todfydB+yjvgawY3lzF+D7vhPCoRKnAboFyqXgOI6+2y0Qhk47du3EY3
+X-Received: by 2002:a05:600c:548e:b0:4a0:1aa0:7cfa with SMTP id
+ 5b1f17b1804b1-4a18e4aa724mr72284475e9.12.1791601623170; Fri, 09 Oct 2026
+ 20:07:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LOAP265MB8560:EE_|CWLP265MB6184:EE_
-X-MS-Office365-Filtering-Correlation-Id: 19e20ae1-a5e7-4a6a-233b-08df26501c54
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|23010399003|366016|1800799024|56012099006|4143699003|10067099003|18002099003|22082099003|6133799003|3023799007;
-X-Microsoft-Antispam-Message-Info:
-	xwRm4U2dhMOkdXaI1PH9ZFAjLsSJ3Y/kmQk49jKfxIZHut9asaA+uBsDwEoEHZz5uQSXQSkNLKW/JWbBONVxzRvOXP93wNcTeXojRO8h8h1vwn3qGf09Emsqo2vbxFHwgQMhJImNHQ6SE+HCQRNHkyx8IUSq19LmOjmYfVih8YbCzA7W1JAq4xfu+c+SWPYId/wvmUsDlZgGhPhHBNll+R4lwJpDkp/bFK7Cp6A8aMBmDVstnZVjz1h4PWz5KeHem4pE2igNHqHuTf0q8elKI/w+XyFVEN//QiU+eF48ftywP8SSW4bd3dFqzUyrTnI6ijclQ7shwOUQD+3BiPGKQnnmuwO2rhsXPagJFwoptea5kl0RhT5fmaSdsX4QSspqmI/iLKynzA8iBfbCOJ8cm/G0rByZ0g2PIrGvin/KAJmUqJQ//ZP0bjhWFnk7FlGw4Mi6lXWyK+XMzLv88UGxaTDE5p7dYoF68e4UfWqfVncAdDE+MOD56EpDHfgQf9w0p1EFFbAH4vdg7/xezveHUe/G5gZGtI3FEYHnCuG9Z+A9LlsbRAC33SdjVz/FC7aP0ZLyf/0OD5PHR+avCkoQzajCQ7+XTz6TcdMnKGmwpV3HszXop/VJ2s5biGKyCfdF092L2ZL0bR0qtfopECchMqbutBxX0FkP9mTZyVmS8Yg=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(23010399003)(366016)(1800799024)(56012099006)(4143699003)(10067099003)(18002099003)(22082099003)(6133799003)(3023799007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SGE2V0toT05mL1FRWnY3TlFYTE1UcCswdGV3blhlSE5KSWFELzRmUE8vOGlZ?=
- =?utf-8?B?L0tBR3p4cWI5ZXd2bnhQV0c4VFlNamRXb0FMWFJVWDFJYUMyWE9rM3BrRjd6?=
- =?utf-8?B?QW9aclMzUXliaTM3NSt6TEZJazJZSXd4ZjNBcGcydXdKa1hVUnYzKzZBZlJU?=
- =?utf-8?B?YnVZbDFMVVk3QVlmbzNqT2E3THJNb3FVMTlNUkJoUW1NYkV5R1Z1WXdsNFV2?=
- =?utf-8?B?OEZDQit0OEhlRGRxRDlVekYvQ1c0bGFwRzFYUEVZK0pnQm5SQnMrVDhYZ2Nq?=
- =?utf-8?B?ZDJSNUg2MXB6cUxBZytPWVByclpXSVN6WTBHSjM1ZTlEaCs0WUFYVzZ3OVkx?=
- =?utf-8?B?ck1hVGRtNWxqNVVmZHJiSk16RTY5SERmNGxRMnJ5WGxPSDhCcmZQWDFpTWZt?=
- =?utf-8?B?Y0lubXMyYWMvSi9BSzdkUCtEL2NqMVpVdzg1YytFemdvdWJFZGJYbVZWN3pD?=
- =?utf-8?B?NXFDVzg1aXBiTUwwaS9sNUFJa21WSW1TSVVReldrZEhwYzl0R0lFb3JoaExv?=
- =?utf-8?B?VVVsM3NQYmo5NFo0Tjgwa0daRkc4NEdReFNFcUtFSDVJK253bEk1VkNIZ2lV?=
- =?utf-8?B?SmgzNFJJTG5ReGdjZithdEQvNnU0blF5cUxibllvS0ZPKzhpazVXeU4rK0xN?=
- =?utf-8?B?NHdMcS9COTJWcGc0djQrOVBuTWZiOHY5emNDWTc1ei83OU1PbXg5a1UyV1Zo?=
- =?utf-8?B?cTNjTzVpZTE0Q05UMVIraFFMYXZZNU9tcCs5ZVh5SityL3JJM3R1bFE2dXpY?=
- =?utf-8?B?VjM1a2g4bzV2NWQwYzdQN0kyVldTVVY5aC9LZ2Y0ZXRNdVF3QUNwVWFCc3Fu?=
- =?utf-8?B?T1JhOUI5TmdLclR1Yk5LQWdrWG1tTkRYT05QWExVLzAwYTdGTzVEelVjajVF?=
- =?utf-8?B?alJQMU9XMFhCMmJQOW5ITGdtR1I1dDd0ODVjS3VaZDVjdWdSWUJXdkdvQmJw?=
- =?utf-8?B?bVZnZjFQTjBZcmdpTnNIYzc4MUJTZmgxYVBURmNrckk1MU0yQmE3TFFOSGJG?=
- =?utf-8?B?cDdwSU1sUldVK3ZDZFArSW1MOFVXMXVqMFVmaFA0UVJiYzVmcElOSDhFaG52?=
- =?utf-8?B?clFENFRMYW55NlhRYmNLZWlzQ1NUZStlakg4dEhBYW5ZNFllbWprYkZEaUM4?=
- =?utf-8?B?NzBKK1J3Vk9kVEhETmxObFRtUHY1TXFuVy9oV1RYUExIVVVpUEdnNDRLKzE4?=
- =?utf-8?B?NTBybzdyZlNZaFg2bUE3dityVENLNTc1b2xqQUpwSStnSUZCdVpGRHZaZy9C?=
- =?utf-8?B?emluell4Z2RHSWJzMHA1LzZOclNvZkQ2blBscHl3WHlNVkcyU1RYbHI4KzFU?=
- =?utf-8?B?cUJDNnJMUnlYQ29ES0x1SGo5cGFRRk1nOGRkOHJYZCtNNXRQZXVvQ2g0R3RI?=
- =?utf-8?B?WkJOWG9BcjJuUkV4VEVrZVE3QUJybEkrVGQydXhoZnM5SE9KT2xDS3VCMHp0?=
- =?utf-8?B?Q2FZK1VLdldPQlVJYXBpSGovb1JaOXB4VTNuTjBDSkNUcENQN0hSd05zUkNS?=
- =?utf-8?B?d2YveEE5QW42Si96Yy9GRTZLQTAzV0hOWlhlNk5GbDRVRFY2aEtCc2huWE9j?=
- =?utf-8?B?U045aVJWU3Z0dlRNaGowSTFXNjJoVUN5SGJqWXVnejBOZU9QMENzQS96YUVx?=
- =?utf-8?B?ZXFXMzM4UGdsc3p2cWEzcU1acldhZlRIRmx1b2NseTd2TlMremxvcGxhOE9P?=
- =?utf-8?B?ZWlzSlBTbFhWVzdCenpnRkM2b25razdEcDRQV05SSnVRd3d6YzNhUStMMllq?=
- =?utf-8?B?ZWZlZFcwVDNpTDdGU2xaWmNzNFk0THZNUXFYOWF6a3VhTURlazRkUnhtekhh?=
- =?utf-8?B?aHJlUjk1Q3pURXlKbDJnamFCZEEwNkhZenU5bXAxTTFhUFRydVVHV2NTTC93?=
- =?utf-8?B?MVRwOXJZMS9McUZUS3o4ZEhRSUJScnphZ09TRkprNWVud0o4T2tUUlUzcGZy?=
- =?utf-8?B?RXdtdmRtUVBVTzV5dWZoMU43eG9mZlJiaXFyMjR6ZE12ZFhmZnV4N1E5Mmhr?=
- =?utf-8?B?NUh5RUNxOGt4L1M2V04wNTNDbDNaeGhUWmRLbG1jdkh1aVk1OGRkWmtiWTc0?=
- =?utf-8?B?S01OakE1Q0ZQMW5ZQ1RzYlowZkloT3BDeG1lS1c5OWRhZTd0SmFXbTZXVFhq?=
- =?utf-8?B?Lzd3UGRvbWkyZHBwd0J0TENHOGpOaHh6SVV4WGZFS0U4NlNoK01KVkM2K0xn?=
- =?utf-8?B?VjRLRlF0Tm9GZWVMYkZGZEN4S3J5WThMbVVFWHBtUnlwVkpkb21lM1NzRWtK?=
- =?utf-8?B?MWtOb0s0Ny96MnQ5S05WL0FYb29ZRVY0MTRlTU5nc1E1UWpTSGovdlZrYVQ2?=
- =?utf-8?Q?yFXglUqAtC/Fw4k48N?=
-X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19e20ae1-a5e7-4a6a-233b-08df26501c54
-X-MS-Exchange-CrossTenant-AuthSource: LOAP265MB8560.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2026 21:56:02.5485
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HFPUYYWwsv3nCiaJRAowTMwdXGNnG/Z3HxTRRavqlevQcYKyZKE8lzO/CVtPc7vo+FvNXvC9cqo788ERUJHiNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB6184
+References: <20261005171529.1378809-1-kunwu.chan@gmail.com>
+ <20261005171529.1378809-3-kunwu.chan@gmail.com> <bedc399a-151c-42e5-b33e-d78221702fa5@efficios.com>
+In-Reply-To: <bedc399a-151c-42e5-b33e-d78221702fa5@efficios.com>
+From: KunWu Chan <kunwu.chan@gmail.com>
+Date: Sat, 10 Oct 2026 11:06:52 +0800
+X-Gm-Features: AclHuK8NpqoYHGNF8qem9_9ttNaOwl-7fp6vIe9jVutVGCveZrXPQMrRKkOozbM
+Message-ID: <CAN_Opa99g5MiWp6L8d_c=eUNcfxH8eb1Am6MKRjx+zjUTYXs0w@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 02/15] hazptr: use Bloom filter for shared scan waiters
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: paulmck@kernel.org, corbet@lwn.net, mingo@redhat.com, frederic@kernel.org, 
+	neeraj.upadhyay@kernel.org, josh@joshtriplett.org, urezki@gmail.com, 
+	dave@stgolabs.net, lianux.mm@gmail.com, stern@rowland.harvard.edu, 
+	parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org, 
+	boqun@kernel.org, npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk, 
+	luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com, 
+	joelagnelf@nvidia.com, skhan@linuxfoundation.org, rdunlap@infradead.org, 
+	longman@redhat.com, rostedt@goodmis.org, jiangshanlai@gmail.com, 
+	qiang.zhang@linux.dev, brads@mainlining.org, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, lkmm@lists.linux.dev, linux-doc@vger.kernel.org, 
+	rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri Oct 9, 2026 at 7:21 PM BST, Mathieu Desnoyers wrote:
-> Compiler CSE and SSA GVN optimizations can cause the address dependency
-> of addresses returned by rcu_dereference to be lost when comparing those
-> pointers with either constants or previously loaded pointers.
+On Tue, Oct 6, 2026 at 1:51=E2=80=AFPM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-> Introduce ptr_eq() to compare two addresses while preserving the address
-> dependencies for later use of the address. It should be used when
-> comparing an address returned by rcu_dereference().
+> On 2026-10-05 13:15, Kunwu Chan wrote:
+> > Replace the per-waiter exact-match scan with a shared Bloom filter
+> > built during the second drain pass: each observed non-wildcard
+> > address sets three bits, so a waiter whose address hashes to an
+> > unset bit can be completed without another slot walk.
+> >
+> > A Bloom filter has no false negatives, so an address absent from
+> > the final drain scan cannot be held by an observed slot; false
+> > positives only delay completion to a later scan cycle.
+> >
+> > The filter uses a one-page bitmap with three multiply-shift hash
+> > functions.  It lives in the hazptr_scan_state and is only touched
+> > by the scan kthread, so waiter state remains on the caller's stack
+> > and no dynamic allocation is needed.
+> >
+> > Suggested-by: Boqun Feng <boqun@kernel.org>
 >
-> This is needed to prevent the compiler CSE and SSA GVN optimizations
-> from using @a (or @b) in places where the source refers to @b (or @a)
-> based on the fact that after the comparison, the two are known to be
-> equal, which does not preserve address dependencies and allows the
-> following misordering speculations:
+> I actually suggested that to Boqun in the first place. Feel
+> free to add my suggested-by tag as well. :)
 >
-> - If @b is a constant, the compiler can issue the loads which depend
->   on @a before loading @a.
-> - If @b is a register populated by a prior load, weakly-ordered
->   CPUs can speculate loads which depend on @a before loading @a.
+> Did you run your Bloom filter in a test program on the side to
+> see how it behaves with pointers, and confirm that the false
+> positive rate is not too high due to hashing algorithm/constants
+> concerns ?
 >
-> The same logic applies with @a and @b swapped.
+
+Hi Mathieu,
+
+I ran a standalone test using the hash functions and constants from
+the patch, with random,
+page-aligned, cacheline-aligned, sequential, and two synthetic
+kernel-like address patterns.
+
+With 768 inserted addresses, the measured false-positive rates were
+0.025%=E2=80=930.034% across
+these patterns, compared with an ideal Bloom-filter estimate of about
+0.031%. I also tested larger
+ insertion counts as stress cases. The results were consistent across
+three seeds,
+with only minor variation for the random distribution.
+
+These are synthetic address distributions rather than measurements
+from actual kernel waiter
+ addresses, but they provide an initial check of the hash functions
+against several structured
+address patterns.
+
+Thanks,
+Kunwu
+
+> Thanks!
 >
-> The header "linux/ptreq.h" is the expected include target. It
-> contains the documentation of the ptr_eq() API.
+> Mathieu
 >
-> An architecture specific implementation of the pointer comparison
-> can be implemented by each architecture as asm/ptreq.h. The x86
-> implementation is provided initially. If no implementation header is
-> present for the architecture, an arch-agnostic fallback based on
-> OPTIMIZER_HIDE_VAR is included from asm-generic.
+> > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+> > ---
+> >   kernel/hazptr.c | 93 +++++++++++++++++++++++++++++++++++++++++++-----=
+-
+> >   1 file changed, 83 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/kernel/hazptr.c b/kernel/hazptr.c
+> > index 9e274a691af5..900ba35de2cb 100644
+> > --- a/kernel/hazptr.c
+> > +++ b/kernel/hazptr.c
+> > @@ -7,6 +7,7 @@
+> >    */
+> >
+> >   #include <linux/hazptr.h>
+> > +#include <linux/bitops.h>
+> >   #include <linux/percpu.h>
+> >   #include <linux/spinlock.h>
+> >   #include <linux/mutex.h>
+> > @@ -16,6 +17,7 @@
+> >   #include <linux/kthread.h>
+> >   #include <linux/swait.h>
+> >   #include <linux/sched.h>
+> > +#include <linux/bitmap.h>
+> >
+> >   /*
+> >    * The current hazard pointer wildcard. Flips between 1UL and 2UL to =
+guarantee
+> > @@ -213,6 +215,55 @@ void hazptr_scan_period(void *addr, void *scan_wil=
+dcard)
+> >       }
+> >   }
+> >
+> > +/* Number of hash functions for the Bloom filter. */
+> > +#define HAZPTR_BLOOM_HASHES 3
+> > +
+> > +/* Number of bits in the Bloom filter bitmap: one page. */
+> > +#define HAZPTR_BLOOM_NBITS (PAGE_SIZE * 8)
+> > +
+> > +struct hazptr_bloom {
+> > +     unsigned long map[PAGE_SIZE / sizeof(unsigned long)];
+> > +};
+> > +
+> > +/*
+> > + * Multiply @addr by a per-hash odd constant and use the high bits
+> > + * as the Bloom filter index.
+> > + */
+> > +static unsigned long hazptr_bloom_hash(void *addr, unsigned int i)
+> > +{
+> > +     static const u64 mult[HAZPTR_BLOOM_HASHES] =3D {
+> > +             0x9E3779B97F4A7C15ULL,
+> > +             0xC2B2AE3D27D4EB4FULL,
+> > +             0x165667B19E3779F9ULL,
+> > +     };
+> > +     u64 hash =3D (u64)(unsigned long)addr * mult[i];
+> > +
+> > +     return hash >> (64 - ilog2(HAZPTR_BLOOM_NBITS));
+> > +}
+> > +
+> > +static void hazptr_bloom_reset(struct hazptr_bloom *bloom)
+> > +{
+> > +     bitmap_zero(bloom->map, HAZPTR_BLOOM_NBITS);
+> > +}
+> > +
+> > +static void hazptr_bloom_add(struct hazptr_bloom *bloom, void *addr)
+> > +{
+> > +     unsigned int i;
+> > +
+> > +     for (i =3D 0; i < HAZPTR_BLOOM_HASHES; i++)
+> > +             __set_bit(hazptr_bloom_hash(addr, i), bloom->map);
+> > +}
+> > +
+> > +static bool hazptr_bloom_contains(const struct hazptr_bloom *bloom, vo=
+id *addr)
+> > +{
+> > +     unsigned int i;
+> > +
+> > +     for (i =3D 0; i < HAZPTR_BLOOM_HASHES; i++)
+> > +             if (!test_bit(hazptr_bloom_hash(addr, i), bloom->map))
+> > +                     return false;
+> > +     return true;
+> > +}
+> > +
+> >   struct hazptr_waiter {
+> >       struct list_head node;
+> >       void *addr;
+> > @@ -226,17 +277,26 @@ struct hazptr_scan_state {
+> >       struct mutex lock;
+> >       struct list_head pending;
+> >       struct list_head scanning;      /* kthread only */
+> > +     struct hazptr_bloom bloom;      /* kthread only */
+> >   };
+> >   static struct hazptr_scan_state hazptr_scan;
+> >
+> >   /*
+> > - * Check per-CPU slots before overflow-list slots to match the
+> > - * acquisition ordering of promoted slots.
+> > + * Walk all slots and return true if @watch is present.  If @bloom
+> > + * is non-NULL, record observed non-wildcard addresses in it.
+> > + *
+> > + * Per-CPU slots are examined before overflow-list slots on each CPU
+> > + * to preserve the acquisition ordering required by the promote path:
+> > + * synchronize must observe the per-CPU slot release before the
+> > + * overflow-list entry can be missed.
+> >    */
+> > -static bool hazptr_value_present(void *val)
+> > +static bool hazptr_scan_walk(void *watch, struct hazptr_bloom *bloom)
+> >   {
+> >       int cpu;
+> >
+> > +     if (bloom)
+> > +             hazptr_bloom_reset(bloom);
+> > +
+> >       for_each_possible_cpu(cpu) {
+> >               struct hazptr_percpu_slots *percpu_slots =3D per_cpu_ptr(=
+&hazptr_percpu_slots, cpu);
+> >               struct hazptr_overflow_list_flip *overflow_list_flip =3D =
+per_cpu_ptr(&percpu_overflow_list_flip, cpu);
+> > @@ -244,10 +304,14 @@ static bool hazptr_value_present(void *val)
+> >
+> >               for (idx =3D 0; idx < NR_HAZPTR_PERCPU_SLOTS; idx++) {
+> >                       struct hazptr_slot_item *item =3D &percpu_slots->=
+items[idx];
+> > +                     void *v;
+> >
+> >                       /* Pairs with smp_store_release in hazptr_release=
+(). */
+> > -                     if (smp_load_acquire(&item->slot.addr) =3D=3D val=
+)
+> > +                     v =3D smp_load_acquire(&item->slot.addr);
+> > +                     if (v =3D=3D watch)
+> >                               return true;
+> > +                     if (bloom && v && !is_wildcard(v))
+> > +                             hazptr_bloom_add(bloom, v);
+> >               }
+> >               for (int i =3D 0; i < 2; i++) {
+> >                       struct hazptr_overflow_list *list =3D &overflow_l=
+ist_flip->array[i];
+> > @@ -256,11 +320,16 @@ static bool hazptr_value_present(void *val)
+> >
+> >                       raw_spin_lock_irqsave(&list->lock, flags);
+> >                       hlist_for_each_entry(b, &list->head, overflow_nod=
+e) {
+> > +                             void *v;
+> > +
+> >                               /* Pairs with smp_store_release in hazptr=
+_release(). */
+> > -                             if (smp_load_acquire(&b->slot.addr) =3D=
+=3D val) {
+> > +                             v =3D smp_load_acquire(&b->slot.addr);
+> > +                             if (v =3D=3D watch) {
+> >                                       raw_spin_unlock_irqrestore(&list-=
+>lock, flags);
+> >                                       return true;
+> >                               }
+> > +                             if (bloom && v && !is_wildcard(v))
+> > +                                     hazptr_bloom_add(bloom, v);
+> >                       }
+> >                       raw_spin_unlock_irqrestore(&list->lock, flags);
+> >               }
+> > @@ -276,7 +345,7 @@ static bool hazptr_value_present(void *val)
+> >    */
+> >   static void hazptr_drain_wildcard(void *wc)
+> >   {
+> > -     while (hazptr_value_present(wc))
+> > +     while (hazptr_scan_walk(wc, NULL))
+> >               cond_resched();
+> >   }
+> >
+> > @@ -309,12 +378,16 @@ static void hazptr_scan_do_cycle(void)
+> >       WRITE_ONCE(hazptr_wildcard, scan_wildcard);
+> >       old_wildcard =3D flip_wildcard(scan_wildcard);
+> >
+> > -     /* Pass 2: drain the old wildcard. */
+> > -     hazptr_drain_wildcard(old_wildcard);
+> > +     /*
+> > +      * Pass 2: drain the old wildcard while collecting observed
+> > +      * addresses into the Bloom filter.
+> > +      */
+> > +     while (hazptr_scan_walk(old_wildcard, &hazptr_scan.bloom))
+> > +             cond_resched();
+> >
+> > -     /* Complete waiters whose address is no longer held by any slot. =
+*/
+> > +     /* Complete waiters whose address is not in the filter. */
+> >       list_for_each_entry_safe(w, n, &hazptr_scan.scanning, node) {
+> > -             if (!hazptr_value_present(w->addr))
+> > +             if (!hazptr_bloom_contains(&hazptr_scan.bloom, w->addr))
+> >                       list_move(&w->node, &done);
+> >       }
+> >
 >
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Alan Stern <stern@rowland.harvard.edu>
-> Cc: John Stultz <jstultz@google.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Uladzislau Rezki <urezki@gmail.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Zqiang <qiang.zhang1211@gmail.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: maged.michael@gmail.com
-> Cc: Mateusz Guzik <mjguzik@gmail.com>
-> Cc: Gary Guo <gary@garyguo.net>
-> Cc: rcu@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: lkmm@lists.linux.dev
-> Cc: Nikita Popov <github@npopov.com>
-> Cc: llvm@lists.linux.dev
-> Cc: Lian Wang <lianux.mm@gmail.com>
-> Cc: Kunwu Chan <kunwu.chan@gmail.com>
-> ---
-> Changes since v1:
-> - Move to linux/ptreq.h, implement x86-specific comparison
->   and asm-generic header (fallback).
 >
-> Changes since v0:
-> - Include feedback from Alan Stern.
-> ---
->  arch/x86/include/asm/ptreq.h | 16 +++++++++
->  include/asm-generic/Kbuild   |  1 +
->  include/asm-generic/ptreq.h  | 16 +++++++++
-
-I agree with Boqun that this should be ptr_eq. There is no need to save tha=
-t
-character :)
-
->  include/linux/ptreq.h        | 63 ++++++++++++++++++++++++++++++++++++
->  4 files changed, 96 insertions(+)
->  create mode 100644 arch/x86/include/asm/ptreq.h
->  create mode 100644 include/asm-generic/ptreq.h
->  create mode 100644 include/linux/ptreq.h
->
-> diff --git a/arch/x86/include/asm/ptreq.h b/arch/x86/include/asm/ptreq.h
-> new file mode 100644
-> index 000000000000..593b45f80451
-> --- /dev/null
-> +++ b/arch/x86/include/asm/ptreq.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_PTREQ_H
-> +#define _ASM_X86_PTREQ_H
-> +
-> +#include <linux/types.h>
-> +#include <asm/asm.h>
-> +
-> +static __always_inline
-> +bool ptr_eq(const volatile void *a, const volatile void *b)
-> +{
-> +	bool ret;
-> +	asm(__ASM_SIZE(cmp) " %1,%2" : "=3D@ccz" (ret) : "r" (a), "r" (b));
-> +	return ret;
-> +}
-> +
-> +#endif	/* _ASM_X86_PTREQ_H */
-> diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
-> index 2bc00c67dc54..e1d95dea09d5 100644
-> --- a/include/asm-generic/Kbuild
-> +++ b/include/asm-generic/Kbuild
-> @@ -47,6 +47,7 @@ mandatory-y +=3D percpu.h
->  mandatory-y +=3D percpu_types.h
->  mandatory-y +=3D pgalloc.h
->  mandatory-y +=3D preempt.h
-> +mandatory-y +=3D ptreq.h
->  mandatory-y +=3D rqspinlock.h
->  mandatory-y +=3D runtime-const.h
->  mandatory-y +=3D rwonce.h
-> diff --git a/include/asm-generic/ptreq.h b/include/asm-generic/ptreq.h
-> new file mode 100644
-> index 000000000000..db5a88628b1e
-> --- /dev/null
-> +++ b/include/asm-generic/ptreq.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __ASM_GENERIC_PTREQ_H
-> +#define __ASM_GENERIC_PTREQ_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/compiler.h>
-> +
-> +static __always_inline
-> +bool ptr_eq(const volatile void *a, const volatile void *b)
-
-I suppose this is `const volatile` to take advantage of implicit conversion=
- that
-adds cv-qualifiers to be added implicitly. Might worth a mention in somewhe=
-re
-(commit message maybe) because I was confused for a second on why this need=
-s
-to be volatile.
-
-> +{
-> +	OPTIMIZER_HIDE_VAR(a);
-> +	OPTIMIZER_HIDE_VAR(b);
-> +	return a =3D=3D b;
-> +}
-
-One thought on inline assembly. For RISC-V, branching with comparison is a
-single instruction, but there's no instruction for obtaining the boolean fo=
-r
-a =3D=3D b.
-
-One option is to do
-
-    static __always_inline
-    bool ptr_eq_likely(const volatile void *a, const volatile void *b) {
-        asm goto ("bne %0, %1, %l2" : : "r" (a), "r" (b) :: not_eq);
-        return true;
-    not_eq:
-        return likely(false);
-    }
-
-and then the optimizer can turn a ptr_eq call + a branch to a single
-instruction. This, however, would require likely + unlikely variants.
-
-Alternatively, we can just not have all the complexity, and just emit one e=
-xtra
-instruction:
-
-    static __always_inline
-    bool ptr_eq(const volatile void *a, const volatile void *b) {
-        unsigned long diff;
-        asm("xor %0, %1, %2" : "=3Dr" (diff) : "r" (a), "r" (b));
-        return diff =3D=3D 0;
-    }
-
-Thoughts?
-
-Best,
-Gary
-
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
