@@ -1,63 +1,71 @@
-Received: from BL2PR02CU003.outbound.protection.outlook.com (mail-eastusazon11011057.outbound.protection.outlook.com [52.101.52.57])
+Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013045.outbound.protection.outlook.com [40.107.201.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91DA71A9F96;
-	Sun, 11 Oct 2026 00:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.52.57
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262E417BB21;
+	Sun, 11 Oct 2026 00:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.45
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791678017; cv=fail; b=XMOBBMpKm2PpiYG+dWJkfXIZy73v5X23jzaGGAT+llZ/g6ZtMvSt893N/gbXj3nd/Jf3DIqXGXMlovgdVdFe7qL15rsr7NfLxN1MqWQ9BGUNXqE+QMP/ZabpfbkqTD8KzixuvawI7+5Q5qj1s1nYEVE/9C0N4d4xdNW+f83Y8Mw=
+	t=1791679577; cv=fail; b=Avy/WkeQMoRwQXrYvsbxpVI0YhAbsr02AOQCCkKSvNfHAHMI0Qqcibi+nzeMqkO7TqZH2MczAkW9E6uLIp/2DHHjAqVrDn31XPlHJWhI8f0VsbnfckO8Bej+AzFryarmB+DN5I3vDWqkmEoUPaThOEbPoHvgdFvruNypJpdGZVc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791678017; c=relaxed/simple;
-	bh=JNz3FmxR8Dhn3ZeMSs2hHOMnYiHe+UciB/zOJqprReA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=n5StoQc7I8KRXvb1BG6swuEBDpSFWAgra+ROaAbZCPgn1cWy9ZaUfyKgK1QNrtg88t9JepNFrWsT28t9ZgDyOlXXkuUNJ7rrUFsfSTs8TS63UutlIi6swDor9oD5UZRRDprji4XwSLkzS3HVpWYsYKa/z42B+UqhpNpbOqhIcI4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DQimtYtK; arc=fail smtp.client-ip=52.101.52.57
+	s=arc-20240116; t=1791679577; c=relaxed/simple;
+	bh=P0FX4F2mIJPuMw/UxSwEjW48nBLqaYBH1MX2bsJctOQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Cxhs8oPGtB4MJ4QnRxPoI4NiApnbqsmSU+mdGQfqjvlQhQR0QgZ45aKEhiKva7VhJ4omwaaTZUPLYq21BCuI7BJ4/sVlxVJCrjaIeHQzda+iUuLWhun8ynugzV1F7VOvQrnaNPDcq5GhAvDG80bRChTqZcsCP4fqzigzEW+t/s8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nAhRZFfr; arc=fail smtp.client-ip=40.107.201.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="DQimtYtK"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nAhRZFfr"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=wA33EOUeXGAdUkxk7Dx2WR+uuK6yfFOTaaULsDrbtLOG0iNrB1iUuDWJMseA6qMmoTVyI0f1QnomvC6cklsw3hChXCOK4yHdYfft2Ox3En68ODTtcL8xJcvYgny/jpxo3jEOt25AHORL9wz+n6BlBYiP6JvrD093W2rhHJf8bsDrKQgYU3xFecAl7KB1CG+iXJ8RojRbf3yfoGzLOE702MsyeMvP03Yed0gfdlcU6rOG/s6e2Sev2t/Qixp+TyaZwEKnDflHw6TGgASs89BsrPuMz8ZZJ0BCRv8Ztab6Cs5ZqKZpOphslgngzn3PYVm7Iw8l+ANMm1FCUwFfI6ACTA==
+ b=aXo8cgKS2TztwtwI14N2nVoA8OEUK8+1mgLfCano2mMfhXPG1mAwFkpl6g7IMNJq+Gwgx0ShNUD791UxtrPfbofKAH2LfBwGbPN30K+x0f3toBaYRLkjWQtzsBG1/jqOryldtNwcOZZ/Hj67ivikDVAaL0Y30g7MyGSlcZhfdHiEZdhqp0ItXmg6m4xh9niu21bJ3f4BYJs2ysGnASpNoWPkEkvbqwE7lRNTJYeKX0mgyLL9k0fFrWcFeYrTrTxiXkhzoKCZAsi1K6O3vwZtBaiy7EhxoN7mctaa2S3TJioCFGTF1XFdrXuz1cwC9IKaXSud2Msrq5vAV8XR/fzL5A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MRW53ZzfHNBGh2Lb9u8d228Pp9P70bk2fdcuGS9ixdE=;
- b=wTMhfcgDXF8iI+/wYWBuJOF3x0JShcYYmZr3iD1OY5Y6QplS0lm3SaQ52EDIrStNbJHEbFvPhiry2E2xRWkjVKjoK0hU15MNjTWOPEqz4eaQojyK1MBUrpX1aI2xUKvY9lpLWZ6jTcqjRRVQFVh9wXBG3cvlCxeAQ4zbbRILCsCPN5HpfWB8jVJNZrAhCC8usiu5rSkUNrETaJWRY6lUvA6oivk3oquUlzB1LeWK1hEv2i+oBwyj1vLLyLyvdQ11fKN9wGY/Sb+KR2WP0YyXoA7HaqRJFwq8bGBrPQsIqc7BBWb3wdxQ2Pu1hCqVFSHKQhPkPz8PS6rSPpL8ptqEJQ==
+ bh=pZagbk3k4KX50LvFVjBCy9VrphaRcx9bhc1cFLh+Tog=;
+ b=gtQZQIgxocAszglYMYQINj7H7Zp40lM5REvxGqxrI7EcPGHprjz+Bjp5i3yKcxLsNX2+OvSFVsTh7JpwjwEDuz3kxKLDlEmu5t4Rjyx5gVFh05p2gtPPvoUOuU0qp8V8iatYdKatFNNzDCVIBay7XdjHYHn3mpGC2De/ahgMCCo9Y8aN+Ua8OyAK+V1Zyn+onrlPWQOISe60nQygLNRLuMbLnBYqn96w1IEaCs3FJAkrU5BpxFEGyDUskmZXSVlHmqg2NVuV7xi5MdGz43WKc/Bd/To+YTWrLI2REezyJcm7cmHG35zXOTq7SlrsgaUbPGz9eU1HQsjbrWyYDug41w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MRW53ZzfHNBGh2Lb9u8d228Pp9P70bk2fdcuGS9ixdE=;
- b=DQimtYtKhyIV0BcdQca0jzw3d64IbJ2tmzfPmfqqRY5OiS5avBIO+8hTNiNJKwHVr9dGqwCYz1EFk+1E8nAIArhNekK8fsEkt+hVUAeZJQAIKsUkPfTL7SLlCVSA0J+QMj3gMPZJf7pI/XHbBt1SQ/PLxtQJZmMLAjbfDR5lQe62y/py3MklCLNEdaLQHyzMczp30AHqFTTIEV6esJoZbWW2ZDjfXTLqwKPMTN4hsxTwA+g5wOeob455+uFx5Nt9aV0t80heegcbeVNJudJ+ogfFfzJkSAg9GptiWuS5v4y5BElzllC7XCrtuap0xmnnSXop9+BHdmfcAOuzDaPemQ==
+ bh=pZagbk3k4KX50LvFVjBCy9VrphaRcx9bhc1cFLh+Tog=;
+ b=nAhRZFfrNkIhQcUsDKN9CVQJi4lkn1RTToq5GuKcJb9K46+W4joHsb4n9trYwV7IY3rYOamUeg1bu74xbBW4akwcZQVPqfHFABnPnIyh14lGrtvTzIzMY9j90b9ZSZtB4/vluZHVyguS+H4OZsRZPmMNUhVVaYqSpqwHzJVnpXkczDVXEo1vYSbtWwfy8rToU3DMISUJoaItTVxLfew1vPJbCJOK8Z2PIDgkAEBelU8HoGGFJH5RwyHcx5qO8WZwJkIqTC/OJ4mWilt0+zd22t6YWjE2Po32i+QZWHRreJxV3Op+/aYxmlHbFWFBMrKpKT++VZiE0V2pNW/FQYB1Vg==
 Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- CH1PR12MB9597.namprd12.prod.outlook.com (2603:10b6:610:2ae::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.496.19; Sun, 11 Oct
- 2026 00:20:09 +0000
+ DM4PR12MB6399.namprd12.prod.outlook.com (2603:10b6:8:b7::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.496.20; Sun, 11 Oct 2026 00:46:09 +0000
 Received: from DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
  ([fe80::88a9:f314:c95f:8b33%6]) with mapi id 15.21.0496.019; Sun, 11 Oct 2026
- 00:20:09 +0000
-Date: Sat, 10 Oct 2026 20:20:06 -0400
+ 00:46:08 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Zqiang <qiang.zhang@linux.dev>
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	urezki@gmail.com, boqun@kernel.org, kunwu.chan@gmail.com,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tools/rcu: Add new APIs to rcu-updaters.sh
-Message-ID: <20261011002006.GA2604508@joelbox>
-References: <20261010083107.15086-1-qiang.zhang@linux.dev>
- <FCDF3652-74F1-4EA4-B39E-3F74F1EAF5B5@nvidia.com>
- <88e9dca361959a297f854200cba0c5c80d26877a@linux.dev>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88e9dca361959a297f854200cba0c5c80d26877a@linux.dev>
-X-ClientProxiedBy: BN0PR04CA0142.namprd04.prod.outlook.com
- (2603:10b6:408:ed::27) To DS0PR12MB6486.namprd12.prod.outlook.com
+To: linux-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>
+Cc: rcu@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: [PATCH] doc: Document atomic SRCU in Design/Requirements/Requirements.rst
+Date: Sat, 10 Oct 2026 20:45:52 -0400
+Message-ID: <20261011004553.2905142-1-joelagnelf@nvidia.com>
+X-Mailer: git-send-email 2.54.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: DS7P220CA0104.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:8:25d::19) To DS0PR12MB6486.namprd12.prod.outlook.com
  (2603:10b6:8:c5::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -66,152 +74,118 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|CH1PR12MB9597:EE_
-X-MS-Office365-Filtering-Correlation-Id: af29d2e7-1e2c-4c45-d099-08df272d68b6
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6486:EE_|DM4PR12MB6399:EE_
+X-MS-Office365-Filtering-Correlation-Id: dadfb3b0-479f-4e5d-27a5-08df273109e7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|23010399003|376014|56012099006|11063799006|4143699003|261009223027099003|10067099003|22082099003|18002099003|6133799003|3023799007;
+	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|23010399003|11063799006|5023799004|921020|56012099006|18002099003|6133799003|261009223027099003|10067099003;
 X-Microsoft-Antispam-Message-Info:
-	0uA83HVP99cawz/70gAcmQAZplZdk4Rv1GHT7KggCHaVl3Mww5iH28ZUHmxYgrKr9M2LR3q5GPQ9uauTMrha04mpSS3KbSRMYR23ZuKv0x77dKoKC1AtzMBm+UZd75Wzb9AecvxBFp2EGip5t0Cn/z/UB1hFUgTDXXOf3GlJk/ijTcKFs5BqPI/oE4hb8waRNwB8evj4JeUvCb2OLlmJEtL+uNdn8UHxDj40xlLMV4+LEI2uWUZw8279T52iZkMbW6zO0sjhkGMHPtXZKo79FuyAVT0ycP43MufZUm11edReNYPB4GNp3h9Hkw+veGfY7qY38UEsg27/UaUgxm3qEh+YQViYiIgz6pcFB7AAWVjzvW4mL/rvLyYLwG7URV14bMOWtx/l5VJ59BYxLcuW/nCWvIR+91wt/pJSK0kgtwchM4SGRoF1OWKuAJLRX4+KLev/gKJQFfm2jnxCXQw5SQXcMVDpskU3h7Hjerlz4XLd7IabmupcvLEQuDk9+SVp9aPccNO1y+NxfeHBzx2VpJteqfL0YFwax0EewbE+gXIoJLzF/nToh8PIotWQVV+u35QIemAIIi7peSAMw8X0zIVMrDyFdrzu0xpdVf2G6zQVtposcssBPlVgvj4Yi2ECQknDRAW60osSYVnHMQT7PK5LByMQ0pfu8XAbkD2ZxfY=
+	MXrwlB+eraXIGxnblbppGk8Nw/xPCXm5QxiLOJnp+noxbc9URb2ggJNGJdkOlFaEIP1sFihDOz0QywzDfoKZMkouBTAdPWuL5oApYC8IeimTWF1CUjhla5aKJu7RbJfB9UNvBwu8ZSn4qKjkSv7yTkrJv6PoTl088gqmMH9lrBXqOi3cdYIwe6CaV0rOrclhBoaiTySjpFjHaPsctZOBO7aFtkyn0+RWi94bCiyVw7xwGj8nHvX5LP11G+CsGKWevMW1ZU53A1tFIsxHRUai2l8lSviFchxvkC094jOub2h1KsHcs4HUFzFL1esTcYZiAyr/jV+sLUYtYjVHjuPRWSgtfa+vpDsXTT3GpXcTL1FaUuEWI2QwbFdGmTqLs/HxbprhJ+EHSwbcUO6aL/RWWhp8ch+afFU+CCsM1tnUW6+42+jiJAZADrZbTocxcxSCTdk6BD89rlBh5GQksPNkXXAUSTVXjjPvbGhL4OdSIfrf76tk9t4mnzk53PSMBXlD3FN7rJuyTGTAipFHjIcksRyyVGerxPF0uPiYKlIiZgJOWUaaDccDU3w9AN1SSzNvot4VGyIyVFEtgj+cqMHIRM0v3jKToa7goO8DaFcjWwuGDQILdJt0mjF2vIYFqm522WXWnUQZfDVVNbFHDVSNMC9YQMsWEhcNLPR05Wc0uGzVENgRDkBeefEvE7h35AVZDU/8FM4niL/3PunPJoLgww==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(23010399003)(376014)(56012099006)(11063799006)(4143699003)(261009223027099003)(10067099003)(22082099003)(18002099003)(6133799003)(3023799007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(23010399003)(11063799006)(5023799004)(921020)(56012099006)(18002099003)(6133799003)(261009223027099003)(10067099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?0KWa2O9b0+iuZJfQiJ+78H/Vgp2dqZZpGVjhu1ceuGWQioOuewqle9JbVcZ1?=
- =?us-ascii?Q?+sR26i+Mg6O4mfDxNiEXzI2PfLwAjND+IIjTRBRZvD57vA9YBecrAH9M+0GG?=
- =?us-ascii?Q?VDHj2EmkDj3b7enebSMPjObkECJHGn2GL0Tf86VMnAr2h6e5cXHMAykv99yw?=
- =?us-ascii?Q?5JEIqYGSumrs/8RKIaFW9q8HhZ8Wpcg7pi13XMFCmPSGbertWFGU28HyNJxW?=
- =?us-ascii?Q?qK0J1H+BlICIr+gky46douNKA7VIIrpF9c+v4nuRh6bietffBHHsrLBMDyTx?=
- =?us-ascii?Q?U6/5tnHxb5ksnZaMje8UDmb1uA+cxpLGRzHF9KFUcOB7Ot2aBZtAgqBdotQR?=
- =?us-ascii?Q?Zt0mPlLubx178EbrHQBZct2VOJPJ9utBcUnp+30dU0kgVRfNA7KE5sLt1Wzu?=
- =?us-ascii?Q?E6dScVhGu5ExJSgV9FjB0h5IQUXwemIK9TiCzvX09DtoX3w2STouEKgCoUJ+?=
- =?us-ascii?Q?Gww7KVTjf90L4d0Z5M5B7PekbMQMkIXO2+kXaCKVcjzNtGsCri88aitQpkEJ?=
- =?us-ascii?Q?tGe6tccwP09cU1BHWu5sAQa8kI2Q0ZJFnYrHMxjt8nanuIX9skbum4YD+o6G?=
- =?us-ascii?Q?Gw0qTDgaaFuiaLlSODHU+9/LJ+TefrBYUgp2r19DTCMBpd/LaWsPND/dqJ+H?=
- =?us-ascii?Q?p1Q9KEtPr9e+9pIlyq1AZefdPydqhxq6ukPxU3Vaiv7EcVbxW95SulPr+dyb?=
- =?us-ascii?Q?nw8+qNe807FYAPxqYHrzst7PScxumOMy3rJL333eSGBI9graR/4teVTmlBx3?=
- =?us-ascii?Q?VkcdRm6G7xR8KjqpJ8Cw0OqPe8vD1VCFPkLCA3AnMYN4vP3Q4R7dzxw3Yhmy?=
- =?us-ascii?Q?u9MiVQFxKZyGuAU/06WxvleBUfQmazFoej3Sa/G0sOPdut8mnKa5E8no7en+?=
- =?us-ascii?Q?PATjGFhiFefIPXvK/HCj6IZ3VXdiBFJ6gtEscN1rNr7ewZ9Kg8cQ0q0PlDn6?=
- =?us-ascii?Q?SOdTdQaz5pg8RvjjJqSwh97/8TPaluNSYKx+cOIljE6Xdj0ej1YWHgNpHIo5?=
- =?us-ascii?Q?fdfmosL0eMtyhZlr9vcUNXCVio7yD75bzNVrL/AzJcsPyze0MVmOkjXno/RF?=
- =?us-ascii?Q?6+V+KTN6vkvQvE4OkKjdZxomrUo1KDBlR2aHd8ZHOFcyOhRe4HlmabN4v8C9?=
- =?us-ascii?Q?FD+8KT/7J8nHQqDLJumhi5WG7hNLW/dXJo5jzkrpwUDQZ4WNeEejrMeVW0SQ?=
- =?us-ascii?Q?AfZvHejsdWc2X/mfDflmsI2maeaPOj75gCsxzg3QOrT3vYf+RBCQ5/svSQ9r?=
- =?us-ascii?Q?4oIz0S/meEtnRzk6L53cZyV/B+/4XvnmX9gYEZpnLRFwdTFYcJWQfds1n/lU?=
- =?us-ascii?Q?fBpCbeEHys/8eB0EtEh/CHB919CuIg9vHYpEQcDYmxjzVhGmtYlDoVmYJlnr?=
- =?us-ascii?Q?vCbi+U3HiTq3GSrlAoEQCNzSq5PpYMg4azX1F+hjlP9xVF/y1NW7nAHrI1sM?=
- =?us-ascii?Q?aug6sruq8gXpW9AET/ERRQV/ipOO3KaWTpIsZHKi1XGQRiEJwUDkNWxllbno?=
- =?us-ascii?Q?fT42a6zvAZvZGKwLHIYp8sG5mjqGnusP3mmdBsTEbDCCO7A17vjFznnlddHb?=
- =?us-ascii?Q?EQWKQhuAzTLrTMvLiM2l5KJ/0DkWZLO/o0ZwI+gYmOxgsAPprdNB0/dzWFpS?=
- =?us-ascii?Q?fOBkbWLo+q4AdE3w5K3lp0BMe/TvIvbQb1d+tIZZc38mM3jNlyj/sylcIdDO?=
- =?us-ascii?Q?thpTb9R4rm1RItgBfCuYATjSqpVb+24nH/IcScmgBaNV5HvVAAl1ErZg4wgT?=
- =?us-ascii?Q?djOuR31Z8Q=3D=3D?=
+	=?us-ascii?Q?LqAc8oJuTCVbutR6C5GG+zEiteOAdVLEMOazE2Pjm4/HS1M9mfP3jOJ+SEaI?=
+ =?us-ascii?Q?s3+2ZSnyUEivJsa8glnX/kjnOtfj+amxaqiKIMk0ioK+gXjiZVrb9/CKCNwn?=
+ =?us-ascii?Q?XGfoYX+g+JDkwkC70s5RGzOTEQqFIUTtdAhFphYexjaIKqjat4s/vULnd0lk?=
+ =?us-ascii?Q?a8ghJTapzlqZ7OHS7TwSHUHHCX5mdkW6YZN7OhM40HXFkhVNhgvNk8kotMqH?=
+ =?us-ascii?Q?w6Qnzlv4gBgwUJ1Rg27EGWZBgnwWh73nEZ+mQivFPFi3MDWP/LpvQnbGbJer?=
+ =?us-ascii?Q?uI93KWo2BEBouFM5wYGpam1Du+JIwrLW6QH/iQJsmV2Dv6+sijA/jdELz4jD?=
+ =?us-ascii?Q?dTjBbdDIOL1UnrR3OEgCeSoqt0Pm3yN4o4vXQQlYVFYvuqLmoFkl985EfdRn?=
+ =?us-ascii?Q?t3pt6vTZkP+nTCtnL8EjMvcjnd+9wGqDtYicFB6FZ7+ki5ov0zuNht+Ge8p3?=
+ =?us-ascii?Q?3azkBnt2c5dzyWQwr0W7r42YPuWwImmcIhLNkQ9o7r0gaNrUnGLszVSUZzOu?=
+ =?us-ascii?Q?6T+CiBdkDsOVHvNXDLTgkOac4NjHvBPbZUf6Ktl1eB5kzhMlGlQR2V07jRnx?=
+ =?us-ascii?Q?FFqTYIJcdg+cqekjlj7MMOqbDRszdjdkOLoygNqn9O/H1I1QLqVyDPBNVeOC?=
+ =?us-ascii?Q?tKgfSxve65vg3VRSR9WMWX6pGQx6mqpALO7GcOuBvgHxSdaLEIYaC2shrnNW?=
+ =?us-ascii?Q?aW4uIbZI/EK8ke4JiSSNA2Nz4xaJgBOjII9cyOr8p61kLEfMvMotZxNX6h2K?=
+ =?us-ascii?Q?2gvxC8XOzf9JQR0gaKEGM4eFG2gw9rGTTYbaGTeSRbTpjwLBrl24HYYKcFUO?=
+ =?us-ascii?Q?ASq1CNlmN2lfTnpH/7zvETYm3iCvYNjI3Lzj6lFXKsZwwPuNdX3M6C14sff9?=
+ =?us-ascii?Q?rFLbr7G2XDk+wLhv/yWUbFfBaAPAI6/6+EEhMQzUQr2gxfTrPAvDlXQ1G7zF?=
+ =?us-ascii?Q?ZOKhsUYW9yhH46K9VNNEK700/EG8UyjpdoZQYXGnmmUID507HePcwQBaSWox?=
+ =?us-ascii?Q?0yxzgEzGMTNnJFbO6NI0F4hoM/GAKhJJX9C60G+tL5xiOLpfuskAlkStaZV8?=
+ =?us-ascii?Q?0KQLFETo2vNui2GdqKsynfoMCCV42oaLkixHZEZA4K+5IcAYxEq4Tf3vMHCO?=
+ =?us-ascii?Q?a+bEzd4MQnxRjHrC0qe70cbSCoOscQN++g/ZCrHpC8nKspjAS82na7WplWKr?=
+ =?us-ascii?Q?xbYmOcaxxotb36PgF1bURDdrC2DOPXrnBVjiC3dd13UBnWMOWbvLwBL6GVqf?=
+ =?us-ascii?Q?kbi/h3MNfbDGYp/xRGRtU1qHjCLsZJgv8vmO8Sz8sBqLMR7hZzjJSO3dmpl3?=
+ =?us-ascii?Q?LGn/kwSu46YJGWDl+rbST47CuQpSy6h8rl5IBjjHt7q7wdB9+wIAKRywhKjl?=
+ =?us-ascii?Q?WUcW6C8xAXLP9aIL6SaYEOHfHf82tnDDZ8Fr6OjAG4HS2WeRpaUN8XvK9CS6?=
+ =?us-ascii?Q?OTpFGFTrc+N2IJ2m0E/DRZ8cqll44gIq7hka4lVlgbWNHBf7ZCWSZCTsh49T?=
+ =?us-ascii?Q?a7axxdc4tSPpgbwu+FILpOwDPPffLnMhno11zgDEMUFvlMHh2dPq+5mE+E8G?=
+ =?us-ascii?Q?hzQG0KB2NunkNjypkf+LnjWZBbgLOxUAEUDZl96IETBebScx0Ta8vxs2UvAV?=
+ =?us-ascii?Q?jczmO2NpAdHw9eKJC4v/SKaPa9a/2p8V3auzTfuDEew80emjqvz6IwXPQvuA?=
+ =?us-ascii?Q?KcmQssBPCwZSPDlA37KbyBNZLGo8Loff8WWEIPX2BgjmcR0ufGVa1cbU/5da?=
+ =?us-ascii?Q?yoDDGGqNLQ=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: af29d2e7-1e2c-4c45-d099-08df272d68b6
+X-MS-Exchange-CrossTenant-Network-Message-Id: dadfb3b0-479f-4e5d-27a5-08df273109e7
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2026 00:20:09.5059
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2026 00:46:08.4846
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3dlgGZW8cS2Oe04+HAbL34MDQdq0quKCTeDbV/fp7fgGgjPKugY6e6HARaoiU1qKu0Er+wDZ2tZazBEBWwwOBg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH1PR12MB9597
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1ve2STpk7u96LtT0rsagXNdPvqc9UmDUONdEdNlFiv3mK40JD/o+qXS4pffywPb09OsVbWUAU/woP5kYAN90CA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6399
 
-On Sat, Oct 10, 2026 at 12:17:31PM +0000, Zqiang wrote:
-> > 
-> > > 
-> > > On Oct 10, 2026, at 4:31 AM, Zqiang <qiang.zhang@linux.dev> wrote:
-> > >  
-> > >  The following commit introduces some new APIs:
-> > >  
-> > >  commit 'dab06d6f9379 ("srcutree: Add an atomic Tree SRCU")'
-> > >  commit '8df13f01608e ("rcu: Add full-sized polling for cond_sync_exp_full()")'
-> > >  commit 'd96c52fe4907 (rcu: Add polled expedited grace-period primitives)'
-> > >  
-> > >  synchronize_srcu_atomic(), cond_synchronize_rcu_expedited() and
-> > >  cond_synchronize_rcu_expedited_full().
-> > >  
-> > >  Sample output when running rcutorture:
-> > >  
-> > >  @counts[synchronize_srcu]: 48
-> > >  @counts[synchronize_rcu_expedited]: 74
-> > >  @counts[synchronize_rcu]: 102
-> > >  @counts[poll_state_synchronize_rcu_full]: 443
-> > >  @counts[call_rcu]: 2498
-> > >  @counts[synchronize_srcu_atomic]: 8717
-> > >  @counts[poll_state_synchronize_srcu]: 14849
-> > >  
-> > >  @counts[call_srcu]: 22
-> > >  @counts[synchronize_rcu]: 103
-> > >  @counts[start_poll_synchronize_rcu]: 1093
-> > >  @counts[cond_synchronize_rcu_expedited]: 5339
-> > >  @counts[cond_synchronize_rcu_expedited_full]: 5375
-> > >  @counts[synchronize_rcu_expedited]: 8134
-> > >  @counts[get_state_synchronize_rcu_full]: 17248
-> > >  @counts[get_state_synchronize_rcu]: 17266
-> > >  @counts[call_rcu]: 119168
-> > >  
-> > >  This commit therefore add thems to rcu-updaters.sh script.
-> > >  
-> > >  Signed-off-by: Zqiang <qiang.zhang@linux.dev>
-> > >  ---
-> > > 
-> > Nice, Thanks!, Could you update the documentation too and include in this series?
-> 
-> Hi, Joel
-> 
-> I have already send patch for the Doc API update separately.
-> 
+Atomic SRCU (srcu_read_lock_atomic(), srcu_read_unlock_atomic(),
+synchronize_srcu_atomic(), init_srcu_struct_atomic(), and friends)
+added readers that do not sleep or block, plus an update side that spins
+rather than sleeping.
 
-Yep, I see it now.
+These are missing from Requirements.rst. Add them.
 
-Applying this and other one for 7.5.
+Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+---
+ .../RCU/Design/Requirements/Requirements.rst  | 28 +++++++++++++++----
+ 1 file changed, 23 insertions(+), 5 deletions(-)
 
-Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+index 8101fe6229d5..d43668595872 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -2686,11 +2686,13 @@ The `SRCU API
+ <https://lwn.net/Articles/609973/#RCU%20Per-Flavor%20API%20Table>`__
+ includes srcu_read_lock(), srcu_read_unlock(),
+ srcu_dereference(), srcu_dereference_check(), synchronize_srcu(),
+-synchronize_srcu_expedited(), call_srcu(), srcu_barrier(),
+-and srcu_read_lock_held(). It also includes DEFINE_SRCU(),
+-DEFINE_STATIC_SRCU(), DEFINE_SRCU_FAST(), DEFINE_STATIC_SRCU_FAST(),
+-init_srcu_struct(), and init_srcu_struct_fast() APIs for defining and
+-initializing ``srcu_struct`` structures.
++synchronize_srcu_expedited(), synchronize_srcu_atomic(), call_srcu(),
++srcu_barrier(), and srcu_read_lock_held(). It also includes
++DEFINE_SRCU(), DEFINE_STATIC_SRCU(), DEFINE_SRCU_FAST(),
++DEFINE_STATIC_SRCU_FAST(), DEFINE_SRCU_ATOMIC(),
++DEFINE_STATIC_SRCU_ATOMIC(), init_srcu_struct(),
++init_srcu_struct_fast(), and init_srcu_struct_atomic() APIs for
++defining and initializing ``srcu_struct`` structures.
+ 
+ More recently, the SRCU API has added polling interfaces:
+ 
+@@ -2710,6 +2712,22 @@ certain types of buffer-cache algorithms having multi-stage age-out
+ mechanisms.  The idea is that by the time the block has aged completely
+ from the cache, an SRCU grace period will be very likely to have elapsed.
+ 
++A more recent addition to the SRCU API is the atomic flavor:
++srcu_read_lock_atomic(), srcu_read_unlock_atomic(), and
++synchronize_srcu_atomic(). An atomic-SRCU reader runs with preemption
++disabled, must invoke srcu_read_lock_atomic() and
++srcu_read_unlock_atomic() on the same CPU from the same context, and
++must never sleep nor block on anything that might itself depend on
++memory allocation, which allows synchronize_srcu_atomic() to spin
++rather than sleep while waiting for pre-existing readers. This
++requires that all other SRCU usage be excluded from a given atomic
++``srcu_struct`` structure: every reader must use
++srcu_read_lock_atomic() and srcu_read_unlock_atomic() rather than
++srcu_read_lock() or any other SRCU reader flavor, and the structure
++must not be passed to call_srcu(), synchronize_srcu(),
++synchronize_srcu_expedited(), start_poll_synchronize_srcu(),
++srcu_barrier(), or srcu_expedite_current().
++
+ Tasks RCU
+ ~~~~~~~~~
+ 
+-- 
+2.54.0
 
-thanks,
-
-Joel Fernandes
-
-
-
-> Thanks
-> Zqiang
-> 
-> > 
-> > > 
-> > > tools/rcu/rcu-updaters.sh | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >  
-> > >  diff --git a/tools/rcu/rcu-updaters.sh b/tools/rcu/rcu-updaters.sh
-> > >  index 8a5df3f22550..a0f03a144f6a 100755
-> > >  --- a/tools/rcu/rcu-updaters.sh
-> > >  +++ b/tools/rcu/rcu-updaters.sh
-> > >  @@ -34,6 +34,7 @@ bpftrace -e 'kprobe:kvfree_call_rcu,
-> > >  kprobe:synchronize_rcu_tasks_trace,
-> > >  kprobe:synchronize_srcu,
-> > >  kprobe:synchronize_srcu_expedited,
-> > >  + kprobe:synchronize_srcu_atomic,
-> > >  kprobe:get_state_synchronize_rcu,
-> > >  kprobe:get_state_synchronize_rcu_full,
-> > >  kprobe:start_poll_synchronize_rcu,
-> > >  @@ -44,6 +45,8 @@ bpftrace -e 'kprobe:kvfree_call_rcu,
-> > >  kprobe:poll_state_synchronize_rcu_full,
-> > >  kprobe:cond_synchronize_rcu,
-> > >  kprobe:cond_synchronize_rcu_full,
-> > >  + kprobe:cond_synchronize_rcu_expedited,
-> > >  + kprobe:cond_synchronize_rcu_expedited_full,
-> > >  kprobe:start_poll_synchronize_srcu,
-> > >  kprobe:poll_state_synchronize_srcu,
-> > >  kprobe:rcu_gp_init
-> > > 
-> > Ack on this patch.
-> > 
-> > > 
-> > > --
-> > >  2.17.1
-> > >
-> >
