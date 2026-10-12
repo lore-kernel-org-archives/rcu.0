@@ -1,64 +1,64 @@
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454CE3F4DCA
-	for <rcu@vger.kernel.org>; Mon, 12 Oct 2026 20:55:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 375B24DE719
+	for <rcu@vger.kernel.org>; Mon, 12 Oct 2026 20:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791838517; cv=none; b=TUI70w8c/d9eJ75UEFYvnnmK2hthnThPkTZq6/sZND52niabEmOpJwgLyHbN7m1ylDPNDNze25ZPODA0PzMe04NKGT+CXgvElIzHX0591dxfQk5M9X4tYmPAv8DmpXy9RLz4sec+NaBeE89xyKmul4zPHQ8WOZslh77beKAor20=
+	t=1791838518; cv=none; b=UmvbR+ilbf5cHkP7kor+hljpy138oTA82aQakeS3nB2x9GhVyZT5SnKOlfB7P/NIAoqWWm8s6tMet/gErDizEAGU2FKknj+ejUEaEtzDG39YSU8e5Gj7X+VxPZXQz3tmkiNBPAmFbjkDQW0Sco9+RZ70zKFWQNINpJAggnD/ohc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791838517; c=relaxed/simple;
-	bh=FqN2Oq8OSwYSRwvXe8D/xIiMKP0E983eVJRjmt3gZoU=;
+	s=arc-20240116; t=1791838518; c=relaxed/simple;
+	bh=h0PplBiawVa7S4Amkyri+VVGvaJkaMBRAxOzxD4sNhU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Kaq1XH4NBYJQp2KKLDkREjLkkxy6M8v/nnJ29ZUMTGHH9BQFqMxMW6i4dtUh4QQfc9B8LovuABNimv9kRA04bI0dwpeuCl1XJmvLPSANQMz1Jf2u7P3YAEtpEwCt/c7JNmH67tsCg8Xt0im0aCnsZpR29Rpq/je4DgKuAmfXVrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=Y6vdWMxy; arc=none smtp.client-ip=209.85.128.41
+	 MIME-Version; b=s7pK9a1TLMtEPyCYuGVZhHga2CZO0HUP06jx8TVFeFzsx4e+Etq/W5FWkheZOu0sDvvA1xuHdZ4p5v3HupZWHGbPTxGfbmzfsDD5xX8ayv3cnXzUH+Jj4K3ygjVHxzVHKluM7yISdAzwSg/fF6O91B9ulK0RNZYrg9eor4lgkSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=EAxlLg/r; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="Y6vdWMxy"
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4a022fee0caso20158615e9.1
-        for <rcu@vger.kernel.org>; Mon, 12 Oct 2026 13:55:16 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="EAxlLg/r"
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-486e8faff03so960290f8f.1
+        for <rcu@vger.kernel.org>; Mon, 12 Oct 2026 13:55:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1791838512; x=1792443312; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1791838510; x=1792443310; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=u+9SFNU2toYET7V9kae+GOxpqVvlHel3XOqT/2H6Lgo=;
-        b=Y6vdWMxyzMa91z635rX9qqkyo6p5RIbEdqTtnwCpAcyviCUns/6dVoeZX75vsHTA4H
-         olA6AvNVdUTpfGZA5+NYeQHzM0HWKaAGxNWKQj+rAOgQwS2/yPpBnG6yETGmviL9VWB8
-         T4Q6apipkn82riAjHxJw7omCkqEidorQWcQ/9EfFlp5qrkid39dPhluDJrzMzFft6BEg
-         dzgY8rDIMGQR8s/AL47xSk8gMoNsmymQrkMZ2t64ywgNsS/6sz5LbF27b85cDinFtWW3
-         EqyeCaEt7wvEP6SdjZZvfKETFnmgmCRuJhKDYIwH+6PArxMjZfNMZYP1vBiThrNEbJEN
-         bqmA==
+        bh=zoshf0ayjIN/zktQbCOgmhPRix1kYVIFgS6hIX67uLk=;
+        b=EAxlLg/rA/rWDEK+pNmNcuCs+2o8ET638Ur5t7IwLX5/ReuQbiIEjZU9G+hL2pJSJn
+         kLIgFXGJ1tvY5wIIFlNy1pKMD53hadXi2fImC5jv/i0r46fjSHyOmDtPFyVIm08W663R
+         ky4/pKQ11FHKCOS51MIa233YaLn4IKNpmCr8WIgjIU+w1WpDmCgQq0CbXLY2y4iNgCVw
+         gRCHwlTz0/RJzNc8YnJHeJ9ZeVYopdImO3K9aoG5ZYSHwBM+Gzs9AbEK98rX0whJzM+o
+         3rSgOGD/imilguoQKTnVLR7v54yBS/kdUDjHgfpgPhtIg/LTqkF7AZIVwnXNRJSUJia8
+         btig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791838512; x=1792443312;
+        d=1e100.net; s=20260707; t=1791838510; x=1792443310;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=u+9SFNU2toYET7V9kae+GOxpqVvlHel3XOqT/2H6Lgo=;
-        b=zd4SAtM3IFg+wdhceJou873rq89SI5/y/T4IUBlXx52YgPR34kJNkSDifb+Nng8mvq
-         KHes3DFzdNIegmwUc2AKn3/fos0t7gvqYEPVmW1XQcPRa7jVamjOx3mFAn5SdzBgdFDj
-         Q/H/JHNf0eQ9Ouq6SSH/5DtPOrJOKoUT6HCSfKe0AWdrwvfg3mj2DSNoJW2klxKAQiiU
-         NALnBOJ2zmQY+yBLnOn6rOfKeafaH5z4v+M0NsR82xc3T86ERHTaaYkmSI5MHvMTV9Pb
-         E3IevMYXGNenP36YhZdx72lap59m7NMX/lvXVHm7sWcd0+gQr3iMPtONhMTugmugapYk
-         /EhA==
-X-Forwarded-Encrypted: i=1; AKwUvBwwiL0HHH6y3cQ0QMjNbmVcVKm+WV9UIwEPZm0QixvXAPjiZS2LE1eRDfpDqgzu0qy/y50=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJvdRxbte5o5hpbeE6WLZdz0yboHseIcueanglAFbFkqAhSKYDW
-	nDqyk67WqUT7YLRB7HMja4hrS2jW2nWBQBzgIpKZkLoWIJVq5VfZPTEDRzTRrvXd7WA=
-X-Gm-Gg: AYBFou1pYzqHMQGNGqslNufxFipPXZqY/IqtNAG3/KFpm1OfwUCRYW9Yi5jDSlB6KG3
-	vthZW3T5p50G67tECod/dEOQmeHEi9thE5OIhBk1qSbku1FersLymvw2eAQTBWU5bPZNxSUPogE
-	m0VQG1He0A87TxsvlaCwUYBXCkQgh7JmDNS1ANrvNLWlJn0GJKmbZWUhSEARjN/Y44Q001Nsd1B
-	+LOaMSBjq8FVXPf9JPVjkecBVEveH+pd/B6exD8gn6xB8YLpoavEamHCABG/IkGwPdS0xuz/RBn
-	vOfIO4TTzU26y9wygb/ZPW3UXR0or9SgZGXrMhETpQNaHFgr5jzF9EIUpJn8b9xWtlHelTIroFA
-	koQ4TEj0yY+Hs7V6SJ0P0xHZ1MaWIZlT8qgZ8xSSynaX05UAoO5LWN/lQduw11tI0tu7rte9hzO
-	BpGn2aI8gP61OZX1ezC0l0eeN7RlYPoO3U9yMuAesoH+C5mNz+4wsz8AKJ32Bf+QQF+EituRgDl
-	bNHixkfhpa6p32JK9OKZx+PsDAi7XsVn/vJA+182ePkv6ot4Okya9Cg1fr0l3at3oyv/qvb4xE=
-X-Received: by 2002:a05:600c:3488:b0:4a1:7690:d878 with SMTP id 5b1f17b1804b1-4a18e4b8028mr210808095e9.17.1791838512348;
-        Mon, 12 Oct 2026 13:55:12 -0700 (PDT)
+        bh=zoshf0ayjIN/zktQbCOgmhPRix1kYVIFgS6hIX67uLk=;
+        b=mtOs+emzOjVLlqRtehup6VPlkUXdDAkN+HvmP+fCD+s5/CLDFC6qEz6Sqwqvi1rKAf
+         8Atez3nRu6ryIqWr5LeNG/fbY3xbzaGUSGSt32M/V2khLT9wJaL3OAMA9BIdgO4r74FP
+         b0+oWFTTjyfRNL1ExtEW+1b66df8kpxgV4i14Q3QpAv29AIrvNED0YlKYwtQHkMSdOCs
+         6q9UEg1WaJUqpP30xr194H1wRPSLwwww9LqDoFmYEmVC1xw4wNpkKq+M+p8q+l77xVNX
+         9oPL8hcaqtMEftnRYf2wTIPodgPhM9Me83dfBBRKE0oT22sdfCX/LuZ+vsgGc0F8S0bv
+         FNNA==
+X-Forwarded-Encrypted: i=1; AKwUvBy++6FKOO3Li+8zrr9IBeSQeWDFJqmT40eer7Iu0GRjLgJLJ2p4OH4l7cCZe03ZjQ5R8/U=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJ3O2GGeImacX3t+Tiffu949iSIJvPX1az0Mm98fS2p/+L3L/zP
+	QQlleH3EZiHVAo7yViHPZn3ViDD62VTzYYjV7mRv+Km6D4anduKPjBbUe6OXyCBPp8s=
+X-Gm-Gg: AYBFou1SUZfv/ByI04MiWJQzoiCAuqSZn2PvN1vR6RxbgcPWAnihYow65cTFrAt9z0Q
+	yo8FZVKz1bmzv2+WxVP2p8V59Dwae8/EQSgEV7f41K16wV6e4KRCG1ErfPNNap9IUiuQYsP8OMz
+	9AAe+VRZv+Nbqc+adnmVMQBc4jAvb6pkMzV03Vyjf8Tic3X+ewTnQ324pzqPoz/c/4QX9IVtmi7
+	8iUWktVyBSZW8LPh6DwWuZl3VNIJ8/XxkOwy5FCwvVyraqsYOqxIY88iOHfbpKVHGarbrj206tP
+	cFQuje/GXIpPwMIqB3u8eCnbvvBCHge4+hSY5bt9V4k5iF16ldL7hC0g3sKpigZfxCJ+LsB2RGT
+	t4BTTvubAlWdmfHrZjVZaLzh5eb4NtixBgCI1cXeS2zMGK7oXdx1VvJxlt5fNLOZXzqENJy8rBv
+	JSRBibl76eC/Qar49CRQLb90qTPRHL6GILJILXgY0xat63oM1RVVWhpaXI8+qh3SNDMGdOkZgAt
+	I6lTpfaMaoge7X7cWec7Mo6MV/l4+TfbnjbYLV0boZFODh9mRQsZZEgJfGRpoHxFinHrTi5rKg=
+X-Received: by 2002:adf:ed50:0:b0:48c:7caa:12cd with SMTP id ffacd0b85a97d-48dbaae379dmr12995250f8f.22.1791838510474;
+        Mon, 12 Oct 2026 13:55:10 -0700 (PDT)
 Received: from raven.intern.cm-ag (p200300dc6f04b700023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f04:b700:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48de0514ab1sm1895744f8f.0.2026.10.12.13.55.10
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48de0514ab1sm1895744f8f.0.2026.10.12.13.55.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2026 13:55:11 -0700 (PDT)
+        Mon, 12 Oct 2026 13:55:10 -0700 (PDT)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: akpm@linux-foundation.org,
 	kasong@tencent.com,
@@ -82,9 +82,9 @@ To: akpm@linux-foundation.org,
 	linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH 5/5] mm/mglru: reschedule between memcg reclaim attempts
-Date: Mon, 12 Oct 2026 22:54:47 +0200
-Message-ID: <20261012205447.2717801-6-max.kellermann@ionos.com>
+Subject: [PATCH 4/5] mm/mglru: avoid redundant rotations of young memcgs
+Date: Mon, 12 Oct 2026 22:54:46 +0200
+Message-ID: <20261012205447.2717801-5-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261012205447.2717801-1-max.kellermann@ionos.com>
 References: <20261012205447.2717801-1-max.kellermann@ionos.com>
@@ -96,50 +96,49 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-shrink_one() can return immediately for empty or protected memcgs, and
-try_to_shrink_lruvec() can break out before reaching its
-cond_resched().  A scan through many memcgs can repeatedly rotate
-entries without giving other runnable tasks a scheduling opportunity.
+Concurrent reclaimers can request promotion after another reclaimer
+has already moved a memcg into the young generation.  Requeueing it
+into a random bin again adds list mutations without advancing the
+old-generation scan.
 
-Call cond_resched_tasks_rcu_qs() (as the existing shrink_lruvec() loop
-does) after shrink_one(), while the memcg reference still pins the
-cursor and before reacquiring the RCU read lock.  Also call it between
-bins and nulls-marker retries, covering scans that skip every entry.
+Therefore, skip `MEMCG_LRU_YOUNG` when the memcg is already in the
+default segment of the current young generation.
+
+In my micro benchmark, this increases the request rate by 36% and
+reduces the average duration of each write request by 27%.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- mm/vmscan.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ mm/vmscan.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 922c59eb9629..c9d53546dc10 100644
+index 69976df5d537..922c59eb9629 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -5194,6 +5194,9 @@ static void shrink_many(struct pglist_data *pgdat, struct scan_control *sc)
- 	gen = get_memcg_gen(READ_ONCE(pgdat->memcg_lru.seq));
- 	bin = first_bin = get_random_u32_below(MEMCG_NR_BINS);
- restart:
-+	/* Yield between bins/retries that contain only skipped entries. */
-+	cond_resched_tasks_rcu_qs();
-+
- 	op = 0;
- 	memcg = NULL;
+@@ -4445,6 +4445,14 @@ static void lru_gen_rotate_memcg(struct lruvec *lruvec, int op)
+ 	else
+ 		VM_WARN_ON_ONCE(true);
  
-@@ -5224,6 +5227,14 @@ static void shrink_many(struct pglist_data *pgdat, struct scan_control *sc)
- 
- 		op = shrink_one(lruvec, sc);
- 
++	if (op == MEMCG_LRU_YOUNG && old == new && lruvec->lrugen.seg == seg)
 +		/*
-+		 * Empty or protected memcgs can bypass the
-+		 * rescheduling points in page reclaim.  The memcg
-+		 * reference pins our cursor while we yield outside
-+		 * the RCU read-side critical section.
++		 * This memcg is already in the young generation and
++		 * reshuffling it again cannot help the scan of the
++		 * old generation.
 +		 */
-+		cond_resched_tasks_rcu_qs();
++		goto unlock;
 +
- 		rcu_read_lock();
+ 	WRITE_ONCE(lruvec->lrugen.seg, seg);
+ 	WRITE_ONCE(lruvec->lrugen.gen, new);
  
- 		if (should_abort_scan(lruvec, sc))
+@@ -4458,6 +4466,7 @@ static void lru_gen_rotate_memcg(struct lruvec *lruvec, int op)
+ 	if (!pgdat->memcg_lru.nr_memcgs[old] && old == get_memcg_gen(pgdat->memcg_lru.seq))
+ 		WRITE_ONCE(pgdat->memcg_lru.seq, pgdat->memcg_lru.seq + 1);
+ 
++unlock:
+ 	spin_unlock_irqrestore(&pgdat->memcg_lru.lock, flags);
+ }
+ 
 -- 
 2.47.3
 
