@@ -1,90 +1,120 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5FE37A848
-	for <rcu@vger.kernel.org>; Wed, 14 Oct 2026 04:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06C14368D47
+	for <rcu@vger.kernel.org>; Wed, 14 Oct 2026 06:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791953215; cv=none; b=ESPUTFsHJi3TDzbyZefoHuWjk8PCyQA+9HpaBKK93xc4CR56FXwIDgJmuSQ+nscVYyL0Vvu94lm+dVA3S4WW9S8wR8x1v3vtlOgQJjYyOD7bMt4GsU6RzWkvptyJ9cva4PfINoelV06vWNqlZ3G66NAAQA+lm/bZVQ4Ia1UovW8=
+	t=1791959519; cv=none; b=bqWVc1+ikJj1tK9xexrx/sxbX7dIqHOQZiOhTejrt00OQ6rfm7RUzV1VaKp3YLq2QGl79jQnC0uT7LrSTTVPbZemPNyOm1tkEqAAnZqInlY4Mn2XNaoLdfynj+Lkasf8PY6IgJfCiKLRoy4rzFHCMTePCG1TZrw5LG8FHjdGtn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791953215; c=relaxed/simple;
-	bh=YdcDYQHnvG8d50ez60dcr6M46F9miUwHHwv/BLN639I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L2N8pN+iy90u6sWGhpCN/z1Y2MCUaRKzkFxefpHndS0S+T6pDKY8lSJFflKleKYDaFOzvKQdb7IExu1Ym/ydYYXZS18/B61G1i2oel4W8pqA4kfJ+3kU4Lsdt6dZi+ZVEW4RNckIo45X8Ng1Cg4imM3Gdj8eHLYVp9gxWrCeVZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ynn2eBTU; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791959519; c=relaxed/simple;
+	bh=74FdFCacJw6GbUv7++ML8NImEqMMG42aWZE8nEd1flk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ECXmGQYGY6LtEEl+aLGLh9wjIL6TMDgL8ipMeCj7JXcREVnJ2bojnVHX/s/ePM1B7cEQ9q4Lx4rMvyOyQmqoMsZ3X0KiL04/ZGl70pXTqBbEt8gNoFPjNnAl3o35WOyuOBCqRMacGtTVEpC6ioN797/61ZgdXnfme+ypbId4kEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QT5GEC3Q; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ynn2eBTU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 175741F0089E
-	for <rcu@vger.kernel.org>; Wed, 14 Oct 2026 04:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791953214;
-	bh=GOBAAntqs+1udpw3fkkHGyAvF+q+wF+2NHy3MJ/XtcE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=Ynn2eBTUc3w60hIV2e288f6OYMHEdO4qJI26rrf1lVAyKpxPGrnZc9kownP87KKEQ
-	 IKXLYw2lhm+Zz71F6eJlpA8jpO3TpRM0TOy2uPC0cbVt5CkQNuCG0p1g+BXPq2y69y
-	 n0ODVYMgK27HfizdR5eHGEpwpba/qsVKtsQPhsWVqr/jmjfssBYWqtCKElsXthRTqm
-	 /4GKAluI8u73xS2JfxrGL+x/rrHH7zE04N/qRwfxqlMY1Yw3xs6kDMX1MUk8opBGt/
-	 qvA7JKnLRpEoQ2BI7MwlYGVwy6Otke0zyYx4dv3UNgctuvPafrPLXnhjmC0VisP06z
-	 OXyI54Vx0BOaQ==
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-93cb9e9405fso192507585a.2
-        for <rcu@vger.kernel.org>; Tue, 13 Oct 2026 21:46:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvByvysPEc7YaCjk0j+iY7IboJ4yG5FfrOwRF6vfox8rXFOqLY1ayrrqWkAF/WoZtxrdJNVI=@vger.kernel.org
-X-Gm-Message-State: AFq9FYIpY2sAZeVA+4U1sZvPLxMl4o2PhrZRFWsRf09G9tBZvjX13fsq
-	esu4SNB1BdQZ/fhKZR6WuHq8ZjM1xFD7nMSwyyYTG/bsg1qfwyG4/wOZkqwelZE2hVvtRcFIUZ2
-	VrpqDStlaauYJyVFDrsA9IKcUlnyk/pY=
-X-Received: by 2002:a05:620a:370c:b0:93e:7944:b874 with SMTP id
- af79cd13be357-93ebd244676mr2342724585a.33.1791953213386; Tue, 13 Oct 2026
- 21:46:53 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QT5GEC3Q"
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-cd61a2dfd7aso186329a12.1
+        for <rcu@vger.kernel.org>; Tue, 13 Oct 2026 23:31:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1791959517; x=1792564317; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=7QZtp9jIzAG926bhFvO9p+OcazsRqTm/bshkZwZ0Cl4=;
+        b=QT5GEC3QwQh/8DO8DJXvBkspteJj3MGyWcFDjx+7dR2sUfFF2Eq8tTuzdKDJS4DtON
+         Xd70Ji/y5udz25PHfgB387WBtEBdwQoaZO9zFS4PEE097AbSi/UXh4O0A/yMp3yjGHOa
+         8KKeyKdt92pW0GWUj5fYRrO9NSbJGOU2zJd6icwSV3rKh6jagcOZZbVdKuTx65kDMNn/
+         6ICMUmXzK+Ef1b8vExGmjCPfd46ao/tOc7GzB9iQwzavdcuym3bltxJkSQEcG7PX0BRs
+         UROlb1Rgs5B+hghvh41YKff6qD0MRmbr9KImov3BYC7Lu4yFulp+sb9Y5L4V/foEej3o
+         AJmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791959517; x=1792564317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=7QZtp9jIzAG926bhFvO9p+OcazsRqTm/bshkZwZ0Cl4=;
+        b=fLtJqAqmMgacO+Gd59eSi1YU24+0YOJ63ID2J6a/BA1HRWgW1pZlGOBnDMeoK6yqcm
+         u5Oo/7ISHuxb/CR2eyiR4U/Y5yX8DmQAfhT4Iphi0U1U4Oe0tEd/ubtPp7I6lFfYXx0u
+         BSpiev3nHaO21eRUyG2ildMtCqRIbkCEEOidOz/Nv4ECTlu2WDPYqkzrvFBuM8W/ihVe
+         SFFciyz7Ei85wPN5f/fgCnmcFdnthJYzGz2Lf8FR85PZca4spIFg6HMfqNS8K5oR5DXg
+         iIxzUVwAs9R8X9npnT8ja8IwqeXcJv+DPh8w16XceUHu1yWh/sSwjDH1+Wm07qAUNfp4
+         aO3w==
+X-Gm-Message-State: AFq9FYIgAfnVPjBD8g4vcc1Lc7/2GhIU7uC8Ow85oue2+9ssbFAdfNsv
+	Mp9iDnbZB5s3QFbpLBLPpb1ifgc3xLKFjlv7VTxGrba4Qmq/KyB0sKZn
+X-Gm-Gg: AYBFou2EBsfSXuUKEyCTUNFQQxbhLIj7rTHddxEV7HZst/ThplSp8SI2S5LTRmxo6K/
+	uERVMmegahZ8UGCqmJ5/kLAH1cHjdb+KJxDza7A4ps1KOenO2JYutcnPoShjk3vFruJzG82YYRF
+	89BH6rnPf8RgGgo3c+Edz3b+z8MHAQMZ8M6wagcaHQVP6EDUpjHWflvM7G1Sp6qRxIvcaTsV0kC
+	rRPj9FEhzaPDgzXFcgU988gjVutvK/YE9D/9h9fXRSizZ+ZueoDL1YguOMSeOqboqrhEFUD8jr1
+	vty1cFUSgGf9N8QbEXQ1Z8RErXG555TAS6GeTnNeLNqmdmox72E6YhqtkJtw8VrzWOYga6U7hry
+	OQEH0Qq7tq6pIxU5IHcP5WKTrO3kXft77cohaRZPzT6oKGLb47C2gmrMTcmYYUaRnFTXT6pDw91
+	oqWp67Nmb+qWrUSHIV93rfWzaVTQMqiYuXOdecPRjzec/Wj0EC8GMTmqthfIec+v2lf5t6jpAwb
+	hNo4BGsT1UIrMrCEQ==
+X-Received: by 2002:a05:6a20:e211:b0:3e1:5086:35cc with SMTP id adf61e73a8af0-3e16c011dd1mr12605891637.39.1791959517270;
+        Tue, 13 Oct 2026 23:31:57 -0700 (PDT)
+Received: from embedsky001.tail6d6b2f.ts.net ([183.34.68.117])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cd5dadd0986sm5405054a12.18.2026.10.13.23.31.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2026 23:31:56 -0700 (PDT)
+From: Yonghao Zhang <hyz3367@gmail.com>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	josh@joshtriplett.org,
+	boqun@kernel.org,
+	urezki@gmail.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev,
+	corbet@lwn.net,
+	skhan@linuxfoundation.org,
+	rdunlap@infradead.org
+Cc: rcu@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Yonghao Zhang <hyz3367@gmail.com>
+Subject: [PATCH] doc: Fix stale RCU_GP_WAIT_FQS value in stallwarn.rst
+Date: Wed, 14 Oct 2026 14:31:30 +0800
+Message-Id: <20261014063130.3691735-1-hyz3367@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20261012205447.2717801-1-max.kellermann@ionos.com>
- <20261012205447.2717801-4-max.kellermann@ionos.com> <a64f6a98-de70-4004-aac0-312cb05aaf92@linux.dev>
- <CAKPOu+83bH2CRtiAio+1VTTQrYFF9th5XfG5wL45ujEavPS3Dg@mail.gmail.com>
-In-Reply-To: <CAKPOu+83bH2CRtiAio+1VTTQrYFF9th5XfG5wL45ujEavPS3Dg@mail.gmail.com>
-From: Barry Song <baohua@kernel.org>
-Date: Wed, 14 Oct 2026 12:46:42 +0800
-X-Gmail-Original-Message-ID: <CAGsJ_4y_c3TZb5=rNK-sQ5bJWozL42bGo_zgvAtY6hW5eoMcmQ@mail.gmail.com>
-X-Gm-Features: AclHuK_pOHHzKZZH_dTCG6g8kkCM2rEF8JtYxcMjCWMOy51d0raKwsKHCVbMgDI
-Message-ID: <CAGsJ_4y_c3TZb5=rNK-sQ5bJWozL42bGo_zgvAtY6hW5eoMcmQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] mm/mglru: cache the last memcg node, make tail
- insertion constant time
-To: Max Kellermann <max.kellermann@ionos.com>
-Cc: Ridong Chen <ridong.chen@linux.dev>, akpm@linux-foundation.org, kasong@tencent.com, 
-	qi.zheng@linux.dev, shakeel.butt@linux.dev, axelrasmussen@google.com, 
-	yuanchu@google.com, weixugc@google.com, baoquan.he@linux.dev, 
-	baolin.wang@linux.alibaba.com, david@kernel.org, ljs@kernel.org, 
-	liam@infradead.org, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, 
-	mhocko@suse.com, hannes@cmpxchg.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 14, 2026 at 11:58=E2=80=AFAM Max Kellermann
-<max.kellermann@ionos.com> wrote:
->
-> On Wed, Oct 14, 2026 at 5:31=E2=80=AFAM Ridong Chen <ridong.chen@linux.de=
-v> wrote:
-> > I've also submitted an RFC patch that addresses this issue.
->
-> Oh, interesting!  I did not know but your patch, but it looks very
-> similar to mine (but without the hlist_nulls refactoring so yours
-> comes with some code duplicating the hlist_nulls header).
->
-> Too bad your RFC went nowhere, that would have saved us from a
-> production incident...  Anyway, even if neither gets merged, I'll keep
-> my patches on our internal kernel fork, because they do help a lot
-> with our workload.
+The sample "kthread starved" splat in stallwarn.rst shows
+RCU_GP_WAIT_FQS(3), which was correct when the example was captured,
+but has been stale since commit fea3f222d352 ("rcu: Record ->gp_state
+for both phases of grace-period initialization") inserted
+RCU_GP_ONOFF (3) and RCU_GP_INIT (4) ahead of it, shifting
+RCU_GP_WAIT_FQS from 3 to 5.
 
-Hi Max, Ridong,
+Update the sample output to show (5), matching the current tree.h
+values and the later "kthread timer wakeup" example in the same file.
 
-Let me discuss this with you and Ridong, run some tests, and get back
-to you. I'd be very interested in getting this optimization upstream.
-I'm also happy to discuss it with Ridong privately, as that's easier
-for me.
+Fixes: fea3f222d352 ("rcu: Record ->gp_state for both phases of grace-period initialization")
+Signed-off-by: Yonghao Zhang <hyz3367@gmail.com>
+---
+ Documentation/RCU/stallwarn.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best Regards
-Barry
+diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+index b888e13c02a4..049694b9c681 100644
+--- a/Documentation/RCU/stallwarn.rst
++++ b/Documentation/RCU/stallwarn.rst
+@@ -379,7 +379,7 @@ If the relevant grace-period kthread has been unable to run prior to
+ the stall warning, as was the case in the "All QSes seen" line above,
+ the following additional line is printed::
+ 
+-	rcu_sched kthread starved for 23807 jiffies! g7075 f0x0 RCU_GP_WAIT_FQS(3) ->state=0x1 ->cpu=5
++	rcu_sched kthread starved for 23807 jiffies! g7075 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x1 ->cpu=5
+ 	Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
+ 
+ Starving the grace-period kthreads of CPU time can of course result
+-- 
+2.34.1
+
