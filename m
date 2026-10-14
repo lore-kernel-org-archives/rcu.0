@@ -1,94 +1,114 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543563E63B0;
-	Wed, 14 Oct 2026 16:07:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0CD47F76B;
+	Wed, 14 Oct 2026 21:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791994073; cv=none; b=I6wFBDRcfBd1mxhTJE7QeQjQHjSM9wOfB/ryLRvQYjjVeomm83v33VEKnoCVQxpZtzdo2hgrl0vMggnsvkNxMicR3c68cu7pIzM8TivmLrMZ3W/OwQZXRKxQwUIi1kd/hOQ0Smke3NuPt1XbdZhOHI7tXeVPvSWMIYqAiFCFH5c=
+	t=1792011988; cv=none; b=k9Wdr0v45JQrPA6Zxgx+9HPQCyVRgX1TvoGLjq75EG2N4lwJEP9RnD2Yn57aaG2pF3nO2Hjw2IpojbxCBOIP07DPinBTRefj9W3gS0aMjqlo2uaV1RYhWi4vmedIa5pYb6GHnysjvBPvMharLKEQ76ZJVgWsozZBrSiIxwM8tGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791994073; c=relaxed/simple;
-	bh=cKQp2zYdXfAM2EUMuoluYMhFB1N13KvmaTbSXbueCms=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CZSZcvlS1ybyA/vN4qPb83v732R2U6GzYAvxg9iuGXhiQ2hybGmn1v0cQ2c7/tT9iBR6Czmo76SI8/MyiSZqzRxLBeFBx9trf4H5/J531pLUf7EF/qjYeo/9Y05MyunAB8Gxi/HzFMwPEW+Gn5I0KpV5Jr995PJta157XWB+xs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ctv5cG/4; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1792011988; c=relaxed/simple;
+	bh=9YvjMi+IGukXYciHtarb7mrA0Mlg1FhHJ0GUS9WSqtU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lc8OcHmBXWHPCeHmjOnSfV+4vGkxj5ukjk6bPAm84e7D3Q5zifP3G+3OuQDfzCjHoiuxjzhJ7tl8tDAAAkWzV+oZ09jWecdrLOaPY8OD3tf6PPYaT4Kgv93/UoqTsky2MSYt+AEJBHxjtme9t9mGFzHGmMQDTvpigKmI0z9DQCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ry8b4mdY; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ctv5cG/4"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=DLzp1ryIGd1RjVH5bVRYOBEKh9UYcCUZqKJJaxxYGJo=; b=Ctv5cG/4tdpLi8nkrRjSlwNrnU
-	A8bBKiRB1yG9MHCQyAYtwBjs/Rxp/0EdPvkQqEqt7U22cm+fEga8G02RNLvXPvY7dbiIXJ4kLVo7C
-	SMrOVLrlCJdjQZzUrsy4ggocPZklGGLnnRQyv/qbceMJg/JEg7Y6Sr6+CoyvIf4CviFF96oF8qcLI
-	5XdQ/EXYhfhd3aAf5C1wB4cDae9ohDw8HZem42RWclJGMvA0DC9M3JX4Dnq9+fHvYdpPgOm5iBqCe
-	DXqaofTdNHxcF3+8RxeHp21RF7YCWIvzpsSgR4v269ej/RWw/aE1UWmsjQnErFbOq3UZiWY/aSBvm
-	s2Yr/NDQ==;
-Received: from [50.53.43.113] (helo=[192.168.254.34])
-	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xH1W5-0000000FwNU-3TzT;
-	Wed, 14 Oct 2026 16:07:45 +0000
-Message-ID: <363ea835-81bd-4045-bf1e-f5a460fd698b@infradead.org>
-Date: Wed, 14 Oct 2026 09:07:44 -0700
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ry8b4mdY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB3BF1F000C4;
+	Wed, 14 Oct 2026 21:06:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792011986;
+	bh=9khNzu4tgqIL3/vt10n8GH15saWvLf36F2PkdZ1w4jM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=Ry8b4mdYuy6sLN+HSRlfSngSxuWsO6QcIPTGoObRzwUWYVrcn60OXeX5W61vreGZN
+	 bQ/hbIXgDeoqhdm4Dx1KlwBwRDYCTKYiTBKfiTifXKHZT2i4fZzi/tRg7gIAdQRkpY
+	 9muzABGW7aK37/sPx/XV8fyC09BuZ71pqYJg9K7rompgrWFlHBPpb6pZQ4tx6LUlj6
+	 qIPomxMtjCx+tthoa4n5Y1XyYkY+aaG5hDJZfaMUoloX0Yfj9UjJgTfSSIGL108+g1
+	 7tdofCH22BT1Q6Exj4cCALFIqgD8gyqvoZhvxG8QZ7uG3E8TKp6VeIrB5Qj8N609yz
+	 AQTdjgjOOk+2A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 99529CE0C55; Wed, 14 Oct 2026 14:06:26 -0700 (PDT)
+Date: Wed, 14 Oct 2026 14:06:26 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: linux-kernel@vger.kernel.org, Boqun Feng <boqun@kernel.org>,
+	Bradley Morgan <brads@mainlining.org>, Gary Guo <gary@garyguo.net>,
+	rcu@vger.kernel.org, lkmm@lists.linux.dev,
+	Lian Wang <lianux.mm@gmail.com>, Kunwu Chan <kunwu.chan@gmail.com>
+Subject: Re: [PATCH hazptr v3 0/4] Hazard pointer updates
+Message-ID: <2cf703a6-7828-4735-98af-1a6fe93abd3f@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20261011194902.97364-1-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] doc: Fix stale RCU_GP_WAIT_FQS value in stallwarn.rst
-To: Yonghao Zhang <hyz3367@gmail.com>, paulmck@kernel.org,
- frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
- josh@joshtriplett.org, boqun@kernel.org, urezki@gmail.com,
- rostedt@goodmis.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
- qiang.zhang@linux.dev, corbet@lwn.net, skhan@linuxfoundation.org
-Cc: rcu@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20261014063130.3691735-1-hyz3367@gmail.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20261014063130.3691735-1-hyz3367@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261011194902.97364-1-mathieu.desnoyers@efficios.com>
 
-
-
-On 10/13/26 11:31 PM, Yonghao Zhang wrote:
-> The sample "kthread starved" splat in stallwarn.rst shows
-> RCU_GP_WAIT_FQS(3), which was correct when the example was captured,
-> but has been stale since commit fea3f222d352 ("rcu: Record ->gp_state
-> for both phases of grace-period initialization") inserted
-> RCU_GP_ONOFF (3) and RCU_GP_INIT (4) ahead of it, shifting
-> RCU_GP_WAIT_FQS from 3 to 5.
+On Sun, Oct 11, 2026 at 03:48:46PM -0400, Mathieu Desnoyers wrote:
+> Hi Paul,
 > 
-> Update the sample output to show (5), matching the current tree.h
-> values and the later "kthread timer wakeup" example in the same file.
+> This series applies on top of "hazptr: handle NULL address in
+> hazptr_detach" you have in your rcu dev tree.
 > 
-> Fixes: fea3f222d352 ("rcu: Record ->gp_state for both phases of grace-period initialization")
-> Signed-off-by: Yonghao Zhang <hyz3367@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Thanks.
-
-> ---
->  Documentation/RCU/stallwarn.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> This first patch addresses a race identified by Boqun Feng in the
+> two-phase wildcard scheme. (no change since the last series)
 > 
-> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-> index b888e13c02a4..049694b9c681 100644
-> --- a/Documentation/RCU/stallwarn.rst
-> +++ b/Documentation/RCU/stallwarn.rst
-> @@ -379,7 +379,7 @@ If the relevant grace-period kthread has been unable to run prior to
->  the stall warning, as was the case in the "All QSes seen" line above,
->  the following additional line is printed::
->  
-> -	rcu_sched kthread starved for 23807 jiffies! g7075 f0x0 RCU_GP_WAIT_FQS(3) ->state=0x1 ->cpu=5
-> +	rcu_sched kthread starved for 23807 jiffies! g7075 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x1 ->cpu=5
->  	Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
->  
->  Starving the grace-period kthreads of CPU time can of course result
+> Patches 2-3 are prerequisites for using ptr_eq() in the 4th patch.
+> Those were discussed at length in a prior version of hazard pointer
+> patches.
+> 
+> Since the last series, I have renamed ptreq.h to ptr_eq.h, addressing
+> the feedback received from Boqun and Gary.
+> 
+> Patch 4 introduces a "try acquire" helper to allow the fast path
+> to not rely on wildcards, while keeping the wildcard forward
+> progress guarantees in the acquire slow path, used on fast path
+> failure.
 
--- 
-~Randy
+I have pulled this in for additional review and testing, thank you!
+(With Bradley's Reviewed-by on 4/4.)  Still subject to rebase, which means
+that I can easily replace it with an updated series from you, if you wish.
+
+But in the meantime, some additional testing.  ;-)
+
+							Thanx, Paul
+
+> Thanks,
+> 
+> Mathieu
+> 
+> Mathieu Desnoyers (4):
+>   hazptr: Fix two-phase hazptr_synchronize race with detach
+>   ptr_eq.h: Introduce ptr_eq() to preserve address dependency
+>   Documentation: RCU: Refer to ptr_eq()
+>   hazptr: Introduce "try acquire" fast path, fallback to overflow list
+> 
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Boqun Feng <boqun@kernel.org>
+> Cc: Bradley Morgan <brads@mainlining.org>
+> Cc: Gary Guo <gary@garyguo.net>
+> Cc: <rcu@vger.kernel.org>
+> Cc: <lkmm@lists.linux.dev>
+> Cc: Lian Wang <lianux.mm@gmail.com>
+> Cc: Kunwu Chan <kunwu.chan@gmail.com>
+> 
+>  Documentation/RCU/rcu_dereference.rst |  38 +++++++-
+>  arch/x86/include/asm/ptr_eq.h         |  16 +++
+>  include/asm-generic/Kbuild            |   1 +
+>  include/asm-generic/ptr_eq.h          |  16 +++
+>  include/linux/hazptr.h                |  48 +++++----
+>  include/linux/ptr_eq.h                |  63 ++++++++++++
+>  kernel/hazptr.c                       | 135 +++++++++++++++-----------
+>  7 files changed, 237 insertions(+), 80 deletions(-)
+>  create mode 100644 arch/x86/include/asm/ptr_eq.h
+>  create mode 100644 include/asm-generic/ptr_eq.h
+>  create mode 100644 include/linux/ptr_eq.h
+> 
+> -- 
+> 2.43.0
+> 
