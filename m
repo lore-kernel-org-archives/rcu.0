@@ -1,164 +1,172 @@
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mta0.migadu.com (out-205.mta0.migadu.com [91.218.175.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF93E39023D
-	for <rcu@vger.kernel.org>; Wed, 14 Oct 2026 03:29:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791948555; cv=pass; b=s5Hzypuf8iJtBzcg542pBfKTlVKN0/G1LvGfqPdqaCqZ+J/b2CKfqXa/WKDRhxOat7NfL244NTM8+b2rEgTecSbobP593hp+nQG+b1UxcykPR5XC60Krqc6M6hn1TFpXpMaXh5PX+GFQdyutQaKMTx46TNcI4nTpS/xK86tD5Ns=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791948555; c=relaxed/simple;
-	bh=y8f3NArIgEMVykQ8UPcZVmembmuVMbH9zJsVPQ/zXO0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Bp9Gk8B33Vyt2RnC27J2E2D/t0CHa7n92y/ls6UCEShuW8C7TFRwlaLzUBmArMtDKn+2SYOho8XPqdDQjUOSEWB4HngBa7edwBXMNTWdjrC5xLLDckoUNJE/fhvUxlzsNbUfseqXjMYXZpf9//MgEJulmc63p7wZWxMbx53nByU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m9D9wcfh; arc=pass smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6F9391E5B
+	for <rcu@vger.kernel.org>; Wed, 14 Oct 2026 03:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.205
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791948704; cv=none; b=WyM2NE1SEbPqDT7hwSeSKJDggADV6cv3jBoCmIAyF4oPGgjuU0ED94gECWq+VbtsCxSMb2yGoiPD1XCFqxAJAXz47wll3GqaBFj7l3b0301Q3BIJj36EJksXdYXdcnSMtTrVRcBrXskNmK5VEpLnZYycvcLNzqZvNoD/bPSSIYQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791948704; c=relaxed/simple;
+	bh=7nLeFA/bAdRYnvnosyy/9MVUz4nRvM/yvpEd+4hsF5Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=lxgjx8zdd/lbiy8uy48xcCxYCrjz+daW+oaEdvFNxBTm1ST+CKVLiSW63hqll0ifTjiLiC84Ucs7TF5Ogb7LXivSulvFpIyIKdu18lfBehn0Hn7113XhaFlbn/sAXeIS8wYPrX+pV6F7W8n8FHerjrHsG9bunpMuH0QjsKVB/1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dqsuMLWK; arc=none smtp.client-ip=91.218.175.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m9D9wcfh"
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-6acba4bf65eso4790785a12.1
-        for <rcu@vger.kernel.org>; Tue, 13 Oct 2026 20:29:13 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1791948552; cv=none;
-        d=google.com; s=arc-20260327;
-        b=EfWLOwZEwhb9YyBMpsXRCTI9k1ApEykXdmS4RNsLKthLHOGopolTSQ892msqJLIyaw
-         3d78pPSz6hTQ5XT5aTD4Y7JzhGac/Wvd1+YxBtOgAkjNVQ5HFPbftrmipyezKRH8nv4n
-         L43ERyXoiuLVbvJc0j2UrjcxDjGI1epf1a9aYqDemCIZXS7XlIyi6JPZiYRIYXjFFLrU
-         pTbTiugwrMRhBkHH2XyrL1ZaBaD0w5n9W8Zapk/8fbl8or2kxWVjRmnXSn5OVJcEaRbf
-         nhVQXX5OrPkWr9wtCUu9BJFWl8m+Z7goDtHFRXtA9lLkt0VMLdnd+F0fJUt7kjEJ9TW9
-         i69g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=4KsaoaK9H/7EPqTqddbEdGkjTfIPX78T4YiSu6f0Mn0=;
-        fh=ywbQii1DXr7oghEiwGxkVIEMu1H0rEC5hi9N4Grpedg=;
-        b=f5qdgdUZuw2MyO2WSrTqWRmlgP3a2Q1njh8zSuO2Eeqx/GjSoedkoJDnoKrcgMbmGz
-         3h/5GmfteDEXhVugwTlwsfOekxY08ueGzTsyU0CqZEWZNuQE9WDpRWORKPrLwD0C6tiQ
-         xBEutZN5Q15GoxuLtMFiCfzoD2nZyTWPyfThh/JswrJE99dtDdnLqiApIVoTaWIL+oSL
-         0jzvZHEOoUw1w6SZG3Qlh32qlwker3fUARt4w4AnPL8uR0p1BCjIXItgkO03t4DQQ4BJ
-         IZ5beWv6X5tbhM9eYXSW75Z8frhxW6rboRW/uxxeJUtuceWvKNY07G+SUXPPIj3b2Y6n
-         JWBA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791948552; x=1792553352; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=4KsaoaK9H/7EPqTqddbEdGkjTfIPX78T4YiSu6f0Mn0=;
-        b=m9D9wcfhF0gbsRXTQbkoIAZaZqIQIDZsm3R/Kb7hrGALKSqcdTnfZ08BRegEdjApjN
-         MFJZYVQwzeVMLroFh5ltBP7/ypyNFOFRLF+yZepDJ4VOZmEM58KlMi1OFhFGtuZm3pZP
-         GqwPfxnjGDXthvzcO7Z4Du08GImFVZAPUEelNmMJemseq5w2SoobNpxLS2YEumRh5mMs
-         Q/ykb/B6gotBJaV9UXYoqVly2eNFcSv6Bf5iEhzcpKWN/eys2mcOhBxf8ugUD0RJwRMb
-         fY5Cbn/xCXid3fhvAr3T9bjvWZzrcnwYacaYjkVKZbmknMqYR5VxXvXdXY7F5FaUuCyH
-         ywDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791948552; x=1792553352;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=4KsaoaK9H/7EPqTqddbEdGkjTfIPX78T4YiSu6f0Mn0=;
-        b=pA6AcYAGolepv3J3rs/hsJbiWkSY3C53GinYf1KtNJR59HgvnkpcFox/ZXqVpx2dJt
-         N/EJhZ1abzVvJqnPf9PZvSaazF+4jNNyAglQ6lyMdQnvbG3E4e1juKxX9XG3wkvqifAO
-         svCdH5Ci4eyT/Gtl+n9S05dsvLkP+Op7imx20kMxFUbaoivnCFTYzzt1P1OtjxGys/6L
-         e48mb/jHJW4ag/fA5MEm0z0eBu6LIjXnzmX8MiVD4bzPKYT1F/Hge3jGS1Y7NMX+oIpT
-         yGIbntqRJ3NkakXpcfczeLjKSQ/nJ2rGVTG4cDfEGKfVfeIZ9I6ckzVRNKrRPqFeqU7W
-         XOqQ==
-X-Forwarded-Encrypted: i=1; AKwUvBz5AaN1hVN7+sGpiuh67JykkPKCUatu/dtHIOhQtYy9I81Ln4MWSDWzkUqHyB8t2njcU/8=@vger.kernel.org
-X-Gm-Message-State: AFq9FYKtngRuRCO9rha+m3gX313ZAaqtBjqmDC4ALlxnFBOLSRQIsPp3
-	FYnEznWLkAZ00QitO7A3hlhLj0CMnbO+utIaffb+FImFr5ZcD0izFT9sH9Jjt2mR+u28tWbHfUh
-	bR4VvDVFr9hug1e/18OnuLhRL+djG5gA=
-X-Gm-Gg: AYBFou2hMLS6S3aChOpzKFRKJbP+LZXYFgK8HinbsS7ycpqEUH22k2UdOssUvB825ky
-	/lpV3qbjG0LAJZDLczUcXGfcvLso3JF2LyEZ81OKveGGlcygXVzhylsoxeVrOhz8liWlg5tKJmP
-	IbiBVQcAG5w38tRDG/exeHjhlLeHTq//tPHryaPl8tarZKeMYzDgTzqLV8dEWqRbug1zQC3+mnN
-	aalIjjdHLApQUfu3+qh/q2FLO+y/65Won18IYNDzAGpqGR1enfH2Bi5o1ULxveYwA02WXTrY4Yu
-	KA4J84AFgM1X6n2hv1NoLrXYrcwyHDE2M4cy+1od/qJ2zIcBDEOvoGoT
-X-Received: by 2002:a05:6402:448d:b0:6ac:c1fc:8a98 with SMTP id
- 4fb4d7f45d1cf-6b17c28e3camr12080163a12.42.1791948551636; Tue, 13 Oct 2026
- 20:29:11 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dqsuMLWK"
+X-Envelope-To: rcu@vger.kernel.org
+DKIM-Signature: a=rsa-sha256; bh=7nLeFA/bAdRYnvnosyy/9MVUz4nRvM/yvpEd+4hsF5Q=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1791948699; v=1; x=1792553499;
+ b=dqsuMLWKV1Bh36Oi/Q9HJSIYL5K0M/MnheGi/uUI2/s0Bf4viMF6g/31p69WzwuggTpixiRu
+ UAyFCQaPzJoyFTsso3Kl4Ppe1FBLNTMB7dBaTEQJKs/z5lh5hbAL+Z4Eyk11EGxlzPFvNDlkgCV
+ aVLaF3xR2ntQ7nkVPQEk7Q00=
+X-Envelope-To: rcu@vger.kernel.org
+Received: by smtp.migadu.com with ESMTPS id a6e6d0226f5ae1d2;
+	Wed, 14 Oct 2026 03:31:38 +0000
+X-Mizu-Trace-ID: a6e6d0226f5ae1d2
+X-Migadu-Flow: FLOW_OUT
+Message-ID: <a64f6a98-de70-4004-aac0-312cb05aaf92@linux.dev>
+Date: Wed, 14 Oct 2026 11:31:29 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20261010083107.15086-1-qiang.zhang@linux.dev>
-In-Reply-To: <20261010083107.15086-1-qiang.zhang@linux.dev>
-From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Wed, 14 Oct 2026 11:28:59 +0800
-X-Gm-Features: AclHuK9wwJHzzzqurxhjL6sACS69pspDCcm-93pfiE3cU9MYx9jyO3qr0weTxdo
-Message-ID: <CAN_Opa86yuhp19Mafu61KbSUr6C8YGeFqG2DSfMJhzuST58B=w@mail.gmail.com>
-Subject: Re: [PATCH] tools/rcu: Add new APIs to rcu-updaters.sh
-To: Zqiang <qiang.zhang@linux.dev>
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org, 
-	joelagnelf@nvidia.com, urezki@gmail.com, boqun@kernel.org, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/5] mm/mglru: cache the last memcg node, make tail
+ insertion constant time
+To: Max Kellermann <max.kellermann@ionos.com>, akpm@linux-foundation.org,
+ kasong@tencent.com, qi.zheng@linux.dev, shakeel.butt@linux.dev,
+ baohua@kernel.org, axelrasmussen@google.com, yuanchu@google.com,
+ weixugc@google.com, baoquan.he@linux.dev, baolin.wang@linux.alibaba.com,
+ david@kernel.org, ljs@kernel.org, liam@infradead.org, vbabka@kernel.org,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, hannes@cmpxchg.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+References: <20261012205447.2717801-1-max.kellermann@ionos.com>
+ <20261012205447.2717801-4-max.kellermann@ionos.com>
+From: Ridong Chen <ridong.chen@linux.dev>
+In-Reply-To: <20261012205447.2717801-4-max.kellermann@ionos.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Reviewed-by: Kunwu Chan <chentao@kylinos.cn>
 
-On Sat, Oct 10, 2026 at 4:31=E2=80=AFPM Zqiang <qiang.zhang@linux.dev> wrot=
-e:
->
-> The following commit introduces some new APIs:
->
-> commit 'dab06d6f9379 ("srcutree: Add an atomic Tree SRCU")'
-> commit '8df13f01608e ("rcu: Add full-sized polling for cond_sync_exp_full=
-()")'
-> commit 'd96c52fe4907 (rcu: Add polled expedited grace-period primitives)'
->
-> synchronize_srcu_atomic(), cond_synchronize_rcu_expedited() and
-> cond_synchronize_rcu_expedited_full().
->
-> Sample output when running rcutorture:
->
-> @counts[synchronize_srcu]: 48
-> @counts[synchronize_rcu_expedited]: 74
-> @counts[synchronize_rcu]: 102
-> @counts[poll_state_synchronize_rcu_full]: 443
-> @counts[call_rcu]: 2498
-> @counts[synchronize_srcu_atomic]: 8717
-> @counts[poll_state_synchronize_srcu]: 14849
->
-> @counts[call_srcu]: 22
-> @counts[synchronize_rcu]: 103
-> @counts[start_poll_synchronize_rcu]: 1093
-> @counts[cond_synchronize_rcu_expedited]: 5339
-> @counts[cond_synchronize_rcu_expedited_full]: 5375
-> @counts[synchronize_rcu_expedited]: 8134
-> @counts[get_state_synchronize_rcu_full]: 17248
-> @counts[get_state_synchronize_rcu]: 17266
-> @counts[call_rcu]: 119168
->
-> This commit therefore add thems to rcu-updaters.sh script.
->
-> Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+
+On 10/13/2026 4:54 AM, Max Kellermann wrote:
+> Rotating or onlining a memcg currently uses hlist_nulls_add_tail_rcu()
+> which walks the destination bin to find its tail while holding
+> `memcg_lru.lock` with interrupts disabled.  With thousands of cgroups,
+> this takes a long time and causes severe lock contention.
+> 
+> Cache a pointer to each bin's last node, making tail insertion O(1).
+> This requires remembering the bin number (but the new struct field
+> occupies a hole, so it does not grow).
+> 
+> In a micro benchmark that creates 1500 cgroups and repeatedly writes
+> `1024M swappiness=0` to `memory.reclaim` in 8 threads, the request
+> rate increases by a factor of 9.5 and the average duration of each
+> write request is reduced by 89%.
+> 
+> All writes return EAGAIN in both runs; the benchmark measures the cost
+> of reclaim attempts that cannot meet their requested target, not
+> reclaimed throughput.
+> 
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 > ---
->  tools/rcu/rcu-updaters.sh | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/tools/rcu/rcu-updaters.sh b/tools/rcu/rcu-updaters.sh
-> index 8a5df3f22550..a0f03a144f6a 100755
-> --- a/tools/rcu/rcu-updaters.sh
-> +++ b/tools/rcu/rcu-updaters.sh
-> @@ -34,6 +34,7 @@ bpftrace -e 'kprobe:kvfree_call_rcu,
->              kprobe:synchronize_rcu_tasks_trace,
->              kprobe:synchronize_srcu,
->              kprobe:synchronize_srcu_expedited,
-> +            kprobe:synchronize_srcu_atomic,
->              kprobe:get_state_synchronize_rcu,
->              kprobe:get_state_synchronize_rcu_full,
->              kprobe:start_poll_synchronize_rcu,
-> @@ -44,6 +45,8 @@ bpftrace -e 'kprobe:kvfree_call_rcu,
->              kprobe:poll_state_synchronize_rcu_full,
->              kprobe:cond_synchronize_rcu,
->              kprobe:cond_synchronize_rcu_full,
-> +            kprobe:cond_synchronize_rcu_expedited,
-> +            kprobe:cond_synchronize_rcu_expedited_full,
->              kprobe:start_poll_synchronize_srcu,
->              kprobe:poll_state_synchronize_srcu,
->              kprobe:rcu_gp_init
-> --
-> 2.17.1
->
+>   include/linux/mmzone.h |  4 ++++
+>   mm/vmscan.c            | 24 +++++++++++++++++++++---
+>   2 files changed, 25 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 94f9c3ff5416..9c1c1f153d1f 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -586,6 +586,8 @@ struct lru_gen_folio {
+>   	u8 gen;
+>   	/* the list segment this lru_gen_folio belongs to */
+>   	u8 seg;
+> +	/* the memcg bin, protected by memcg_lru.lock */
+> +	u8 bin;
+>   	/* per-node lru_gen_folio list for global reclaim */
+>   	struct hlist_nulls_node list;
+>   };
+> @@ -683,6 +685,8 @@ struct lru_gen_memcg {
+>   	unsigned long nr_memcgs[MEMCG_NR_GENS];
+>   	/* per-node lru_gen_folio list for global reclaim */
+>   	struct hlist_nulls_head	fifo[MEMCG_NR_GENS][MEMCG_NR_BINS];
+> +	/* last entry in each bin, or NULL if empty */
+> +	struct hlist_nulls_node *tail[MEMCG_NR_GENS][MEMCG_NR_BINS];
+>   	/* protects the above */
+>   	spinlock_t lock;
+>   };
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 3d4bc12cf18e..69976df5d537 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -4384,21 +4384,37 @@ static void lru_gen_add_memcg(struct lru_gen_memcg *memcg_lru,
+>   			      int gen, int bin, bool at_head)
+>   {
+>   	struct hlist_nulls_head *head = &memcg_lru->fifo[gen][bin];
+> +	struct hlist_nulls_node *last = memcg_lru->tail[gen][bin];
+>   
+>   	lockdep_assert_held(&memcg_lru->lock);
+>   
+> -	if (at_head)
+> +	lrugen->bin = bin;
+> +
+> +	if (at_head || !last)
+>   		hlist_nulls_add_head_rcu(&lrugen->list, head);
+>   	else
+> -		hlist_nulls_add_tail_rcu(&lrugen->list, head);
+> +		hlist_nulls_add_behind_rcu(&lrugen->list, last);
+> +
+> +	if (!at_head || !last)
+> +		memcg_lru->tail[gen][bin] = &lrugen->list;
+>   }
+>   
+>   static void lru_gen_del_memcg(struct lru_gen_memcg *memcg_lru,
+>   			      struct lru_gen_folio *lrugen,
+>   			      int gen)
+>   {
+> +	const int bin = lrugen->bin;
+> +	struct hlist_nulls_head *head = &memcg_lru->fifo[gen][bin];
+> +
+>   	lockdep_assert_held(&memcg_lru->lock);
+>   
+> +	/* pprev points to head->first for the only entry, otherwise prev->next. */
+> +	if (memcg_lru->tail[gen][bin] == &lrugen->list)
+> +		memcg_lru->tail[gen][bin] = lrugen->list.pprev == &head->first
+> +			? NULL
+> +			: container_of(lrugen->list.pprev, struct hlist_nulls_node, next);
+> +
+> +	/* Keep next intact for readers that still hold this entry. */
+>   	hlist_nulls_del_init_rcu(&lrugen->list);
+>   }
+>   
+> @@ -5883,8 +5899,10 @@ void lru_gen_init_pgdat(struct pglist_data *pgdat)
+>   	spin_lock_init(&pgdat->memcg_lru.lock);
+>   
+>   	for (i = 0; i < MEMCG_NR_GENS; i++) {
+> -		for (j = 0; j < MEMCG_NR_BINS; j++)
+> +		for (j = 0; j < MEMCG_NR_BINS; j++) {
+>   			INIT_HLIST_NULLS_HEAD(&pgdat->memcg_lru.fifo[i][j], i);
+> +			pgdat->memcg_lru.tail[i][j] = NULL;
+> +		}
+>   	}
+>   }
+>   
+
+Hi Max,
+
+I've also submitted an RFC patch that addresses this issue.
+
+https://lore.kernel.org/all/20251119083722.1365680-1-chenridong@huaweicloud.com/
+
+-- 
+Best regards
+Ridong
+
