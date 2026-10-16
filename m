@@ -1,87 +1,89 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E98A5172CB
-	for <rcu@vger.kernel.org>; Fri, 16 Oct 2026 16:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A9954DACE
+	for <rcu@vger.kernel.org>; Fri, 16 Oct 2026 17:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.75.144.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792169434; cv=none; b=JCeroGGEyd0+709rIW+5035tD3COMn6YNorWC0IDMi3ObuqeNxc9tcJcLPRknh/LFITwAss3LX8RGnD/2v009iTF/0JBe01EoQXkLyjM527GztP7/ZxyDfa4Pt5J6q8UI64KlIfEyZJ4WUukbilz9L2AnyDeQ4FXxr2CwPGnloA=
+	t=1792172507; cv=none; b=kovstOEjjTxRspzmxaWCKkpnQjdRX3Gu7dUxYc4aPZ4CAziDAaAIRpWmNnLoQuMPTRw1EbCuFPitXzVSSm6FcxV9XH/Zknm0KDNjjqjA6a4lOW287jtRn4JQ+r7CQPj++6p7g+jcRcsKA11x0eHjGfvbSrWdpWkwtiadFLvBg2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792169434; c=relaxed/simple;
-	bh=KVMSLGPRO2+7PVAHB/n0RyjWbbJzhjMW/9+O3nUaQl0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SZDXKGokjmT53cUNcRDKd9Ey8rZ8HtzTwzYYUmMXX5YwSvA65DW5B8tQY0oOstHGeRyUN+CMvxjyzRi1xzDQBE/+3MTQVzWM6r8+byxI6EPM4kxWMOq00aYZ9j2/CfhinwoWmtDJbjqP2Wz+MsqK90dVZ/1VivDSc9jI/tbwk5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XSgrZu34; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1792172507; c=relaxed/simple;
+	bh=3ArrR3ssE5EdoCZnb27zZj+71DbXxmczVzpLhgu1ls0=;
+	h=Date:From:To:CC:Subject:In-Reply-To:Message-ID:MIME-Version:
+	 Content-Type; b=LrKv93rgTHNDOlMz3kpetkS0pHk+w9ytTkBzn7vi1iCcDwY5JurpFycAs3DqPRBfzuQmF3+64PvBCYxKn4hH2LuaRKJBwpHvKJC1vKF3Z1B3+DjGcIdagdOigzc8wuI0gJyOUL956KIZOVKrfcqc2Bh/idAFy2M4h4ddUXlq4oE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=CsRT9Tsl; dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=xD+6eykA; arc=none smtp.client-ip=5.75.144.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XSgrZu34"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75C4B1F000C7;
-	Fri, 16 Oct 2026 16:50:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792169432;
-	bh=/cI+PMB6gO5WFUYroeEAdKvBdqsQC/M7jhQ4SzXUUbM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=XSgrZu34hkvMSDqO2dND1QkBU47EmwTD8xW7UxpQnzpEexCF0jfQ97anCxaKqYiiu
-	 YfGhsC52u4pCwKwki0t9ItLNNQlFhY/CHVrQtcGJ+7IKuukffxm+XaCmbss+5rwuvc
-	 QtPU03Opq1rkp0HG9xUTndgixU7s/LcxIktnEWrl9eDO2qijSpeX6BSdUke+x24kEm
-	 0pdD5FYx5tvtFAF9+a/229VAd6zuveLdo+f2qdxL2Rz9KeFtzRYsMYgwMI+lzNiJqN
-	 6uE6GsCB5oMImnpR2axXUaz/MvN2sUmvP+yFILEUrpitwoOrMLh9e8QHmD0dj4DyUB
-	 K6nAlwDz5hegQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3F017CE08CF; Fri, 16 Oct 2026 09:50:32 -0700 (PDT)
-Date: Fri, 16 Oct 2026 09:50:32 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Boqun Feng <boqun@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>
+	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="CsRT9Tsl";
+	dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="xD+6eykA"
+DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
+	h=Message-ID:Subject:To:From:Date; t=1792172499; bh=2yw9LtDL+UyYQiO3ffkAfX1
+	tHOB+RXVNy+Ve3LB7tbU=; b=CsRT9TslftsNwheoSlRIAq4dLc3adsUCV2TBrCyMaBw8GUL5bK
+	jFbbYdmtFcllamf2JYH17/NgfQOcj1ZoSAXhihRptXrKYX1GxJmv+vBuAUthabGZwLdADR61YaE
+	LN4fd9BouPnTLUPsmTNZWDgNou1keTYR4C/OK0rlOn34DRqUcFRBCe5opsB5XkPsXLc3cz/FXSY
+	Xafm4zwJPAR2K6Br2RAwiNMGHvn0HqRZ0ZDN6wfIj85WcmY7WD4avZ606SC8usxcVb/8+NayI6+
+	huP1Id/0SFJelPqBYKQPa8A2kH+EfZuMB5qJog3rjp+1443RVNzXU8qlWDDL/66WggQ==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
+	h=Message-ID:Subject:To:From:Date; t=1792172499; bh=2yw9LtDL+UyYQiO3ffkAfX1
+	tHOB+RXVNy+Ve3LB7tbU=; b=xD+6eykAm3N20mcYWbCWlUHJyycRmN/R/Tvo+Au0eOVwop50AT
+	oFYvlaUMAd3cIbtDfC9YPmGcgnyiW6qJcTAw==;
+Date: Fri, 16 Oct 2026 18:41:40 +0100
+From: Bradley Morgan <brads@mainlining.org>
+To: puranjay@kernel.org
+CC: boqun@kernel.org, frederic@kernel.org, joelagnelf@nvidia.com,
+ josh@joshtriplett.org, paulmck@kernel.org, rcu@vger.kernel.org,
+ rostedt@goodmis.org
 Subject: Re: [PATCH] rcutorture: Ignore KBUILD_OUTPUT in kvm.sh
-Message-ID: <d3d15a05-149c-4027-9e97-6adfb4659be0@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20261016102657.2347381-1-puranjay@kernel.org>
- <b18525e9-0508-42f3-8640-3177c5581926@paulmck-laptop>
- <CANk7y0i3CELP=xfu8vr4O4_-8ui9v4Odc3VimaSsw1nT16ub6A@mail.gmail.com>
+In-Reply-To: <20261016102657.2347381-1-puranjay@kernel.org>
+Message-ID: <EA49C261-FD53-4403-9EAF-0C2EF111099B@mainlining.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANk7y0i3CELP=xfu8vr4O4_-8ui9v4Odc3VimaSsw1nT16ub6A@mail.gmail.com>
 
-On Fri, Oct 16, 2026 at 04:22:03PM +0100, Puranjay Mohan wrote:
-> On Fri, Oct 16, 2026 at 4:12 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, Oct 16, 2026 at 03:26:56AM -0700, Puranjay Mohan wrote:
-> > > kvm.sh builds the kernel in the source tree, and kvm-build.sh and
-> > > configinit.sh expect .config and the build products to land there.
-> > > With KBUILD_OUTPUT set in the environment, make instead writes them to
-> > > that directory and fails with "The source tree is not clean" or, worse,
-> > > clobbers an unrelated build.  Unset it so kvm.sh works from such shells.
-> > >
-> > > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> >
-> > Good point!
-> >
-> > Should it (non-fatally) complain if KBUILD_OUTPUT is set in order to avoid
-> > silently surprising any users expecting build products to go elsewhere?
+On 16 October 2026 11:26:56 BST, Puranjay Mohan <puranjay@kernel.org>
+wrote:
+>kvm.sh builds the kernel in the source tree, and kvm-build.sh and
+>configinit.sh expect .config and the build products to land there.
+>With KBUILD_OUTPUT set in the environment, make instead writes them to
+>that directory and fails with "The source tree is not clean" or, worse,
+>clobbers an unrelated build.  Unset it so kvm.sh works from such shells.
+
+I also have seem to faced this.
+
+Reviewed-by: Bradley Morgan <brads@mainlining.org>
+
+Tested-by: Bradley Morgan <brads@mainlining.org> # Power10
+
+
+>
+>Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+>---
+> tools/testing/selftests/rcutorture/bin/kvm.sh | 4 ++++
+> 1 file changed, 4 insertions(+)
+>
+>diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+>index 86dd5c131d226..ee8266156254b 100755
+>--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
+>+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+>@@ -22,6 +22,10 @@ cd `dirname $scriptname`/../../../../../
+> # This script knows only English.
+> LANG=en_US.UTF-8; export LANG
 > 
-> I guess I am the only one!! :p
+>+# The kernel is built in-tree below, so an out-of-tree KBUILD_OUTPUT in the
+>+# environment would send .config and the build products somewhere else.
+>+unset KBUILD_OUTPUT
+>+
+> dur=$((30*60))
+> dryrun=""
+> RCUTORTURE="`pwd`/tools/testing/selftests/rcutorture"; export RCUTORTURE
+>
 
-Well, the only one who has complained thus far.  ;-)
-
-> If you think we should do it I will send v2.
-
-Please!
-
-The other alternative would be to make these scripts correctly handle
-KBUILD_OUTPUT.  Which is probably the "right" thing to do, but might
-or might not be a reasonable thing to do.
-
-Thoughts?
-
-							Thanx, Paul
+--- Thanks!
+"I'm not a very positive person" - Linus torvalds
