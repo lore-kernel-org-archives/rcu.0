@@ -1,274 +1,282 @@
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377DF3A1A22
-	for <rcu@vger.kernel.org>; Fri, 16 Oct 2026 03:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720E33FFF9D
+	for <rcu@vger.kernel.org>; Fri, 16 Oct 2026 08:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.54
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792120231; cv=pass; b=G7TRfkCGrnTjJNj2zbYsY/c6E343X69AIVWQ7FrFKm1IwaD6kR4VENUv0tTy/TL3/fbpoVAgPrz2TOgoSW/sgkZDr2hI6cF3lY79kKSB/9r0AJ0ymuV1JxsXvJ1Cjq8/mck0SKj+XQtiU2Rma5MoOmKerzcLuXRdF7xVyW8hWCc=
+	t=1792139077; cv=pass; b=j2Af5pynllYb3e6DsBJwpGO/N/KUoBMnCYqc8i42CUkenIeSReHUaETWclppvT+E/1uj3e4ttKW2I2bmVNl+44oikn58kQvUUNusM7pCtk51zUDTXY/URrDzunjU+sTYPIqpg+W2WGDexmlXeoK/LSjah7wwj56fRQQzNWqSgaM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792120231; c=relaxed/simple;
-	bh=WVQ/j1d2JaRchY/iDZaPslSfywaOQoJpll8D3v4G/LQ=;
+	s=arc-20240116; t=1792139077; c=relaxed/simple;
+	bh=zFZtjuMJCKAH5rWRVMQCBJBw5Fu75jP8ohWlhoXBSfo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L87obhKVbim910V0lpsXUwxaovqJgZqn8nszhNSPxYgFj8Z3bhOScU2CdQyYXAAq45k4ZmsxZXzjC45O1pcfGBDoB1Zdjd/lFQFWJNzRlIfEs78hDQXfAvEfd6694M5ww1i/axByXjTqpGqmbuLVivR6Ye2P36KZuWEMnSKi9RE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HDQUGevn; arc=pass smtp.client-ip=209.85.128.46
+	 To:Cc:Content-Type; b=dWtKVhV2WAmEpLuD07bSHmeY9KKeLv2wkcVYuPId4zfl/zdKf2UwS9CMoXr5P8wHcCV0+25XHvwYwD8XB0+M76+SnAs/LjwMQsVoTCUYSrVUWqTjn7Z7YQpgKaeHRipbooJ0WXj5geY3GMaQDt+6wzjbMUKm5r3pPxEDKao2SXc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wsu4ti1e; arc=pass smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HDQUGevn"
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-49e73611928so3230445e9.1
-        for <rcu@vger.kernel.org>; Thu, 15 Oct 2026 20:10:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1792120227; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wsu4ti1e"
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4a17baef589so25921005e9.0
+        for <rcu@vger.kernel.org>; Fri, 16 Oct 2026 01:24:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1792139074; cv=none;
         d=google.com; s=arc-20260327;
-        b=nSs2J1zDkwR3z6v13XbBot9/8TftK5RVDwuBC4reHEH4dCp9dYrQXKi19FhfrlERX+
-         lgR342SzK5wF/nR7HK3He1y0NAtmM7+u9Fy5AnCl3ybmMTyHnclMFHxW9iow07hXbBdX
-         GKpeR5lxtcmqwxtOTV7P+s0lfe7WL0Oq+VLkA1vpvf1SI1WiNZyWHS/ZHVWrBWWnVDOx
-         P404DqtMFF3rTr/RSMxPX0yq97nNjEtpIA2J11ImrjZ7tGdk4Q/g/tijcE8cxNa4420p
-         FllUjwas/SyIPaGnzAw1YtyXT0nuqkK+pmUolxbBKzHTMpCi3XibEhV0zNd+cpUQwIVg
-         kcxg==
+        b=PZqzp65sWSV1L5oXggJW76aODYJHdcXOHLUrhiQOgrRKHBpQ3Qwv2+cbUbYJW6GEkB
+         mQA8QnmHuyd9YLePQqbCL1nEzwTy22PtVz3gn6oNFTg4H8oa9uJg3qSn7zjo25Dm25si
+         kDCMEuWwU1CgZKK0kPYOV4wf8rFqpLuwZXMbdZdkhUhxSxTC+9En1KaC5wGSiyR9HMm5
+         NqE8xXK2zVkctBG6Qov9Im6vbeiK9rHR+uVGgCMtuQ1wjPbxYM+7/DCZUAID2MxD8bJp
+         Tcg5IHUMGPAjdLXl5Ro99Qj2Ose/Ibw568hTHwzDY4v/NdbViEjRpZSwkkxqexlNcm4/
+         oJ0g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=xlTg1ZA1llUS+f5Z9F7BKuAG/CC4v+1NC0B32dFPZWI=;
-        fh=5t3EoghO/d76DlaASBdVQ/slZnyixy6IAc/XomLr41c=;
-        b=Lix/Th7GTaDMGFQ6EedZ+Y12jTvwEV2qyBVSNuFk5gmhCTR/UDSb4ijoMFfA61DQRi
-         dI5HNlvZdj6OjKYNZGq2cOVS5pOUZC8ToqHD8AAbVzNSY7S7tSmyrVGdQT9U9bohWz8e
-         /EEQXYZw7FTorfZDr1DJJXr/ss0Rfks5tGxCk2jETGYSHyWsQUy0uRpbEW7zuDsaBF7q
-         33a26CeQXR8Lkda56aGkeEDv4JKMzp41OeXFk5/cSaHRtfRJK2oswfQXo2cOCvJx1Ctr
-         RcDOsZbWFINOEftBiEXdDIGohzgkC2lwVr3FfYMXvEq2BmVaJHPNlFUkcfvWhsOIIkg8
-         PWiw==;
+        bh=E8gxo2ExdAcC67lQx6KTJbVCAq98YK23bGoiwCanXEA=;
+        fh=q0rQv56H0SK1Z9TB+lzK814CEnO8xVf+7xlCNtkq2zc=;
+        b=Mko06IDRo1WqwemdN0VTiyu+58ozj5HWZyYYae2QAcP/6aBxF/2lKJn4m99j4v4bhr
+         iBu04e/lyQFi9tV+HhtXbAn4IB3ivmoTvcb/S98uyWRHfpZw0dB/bEpjmBO1MNpSb5Pv
+         Q3wVAChKvMtHmgecol5cXI7XMzqe5RE3Abl2nNtcgFTGPCD8ERTlR8nY7zt3zA4Meuhf
+         PVvLe0h6/KMQMf0AcdmJPbEPkUZ6tvWKrsnmrn8WncwbU8zgkiL7hEX47Y/Ise50brX8
+         DpZrNboMJAugKnXgEMg4KNp6YX1b73g3fbf5FF3VNIEYCqOm9LTcW4qQ+Enq5V7/uggd
+         R3og==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792120227; x=1792725027; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1792139074; x=1792743874; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=xlTg1ZA1llUS+f5Z9F7BKuAG/CC4v+1NC0B32dFPZWI=;
-        b=HDQUGevnZicrjXUQrDR0JNaZLlrGx1TGZvw2y7u6iZekbSseMFxveLn8swWGq1zjpN
-         Js73iJYQq9ZzzQGA7t6FwrpLoiTljo1i7FMyylM9qou4b2YHQY3+A+DbS277bj+id060
-         gv9udJfWoYoqykpiW101e2yQGd7YHD/ZRoitndm/YTiTTn5seJ4m1AL+WcpqF34o91eD
-         JRkDs7XB5apZEcKSpZam0EbpxK5fYBDAwdFB3tYwQEwmJjuvWVyZjEmS+pBrWoY6asai
-         kgp5AXsLMkPNgkc+eZa/tph9BCWt3keKTyZFOFEmQYdxIKD6TF3u0ptyDx/5GAltlH3g
-         FQIA==
+        bh=E8gxo2ExdAcC67lQx6KTJbVCAq98YK23bGoiwCanXEA=;
+        b=Wsu4ti1ePP0d7doCMycz1W/aBkhlYYhV+NgNAAHZ58vK28dT7jgKi3bsTOlHFd6rlJ
+         0QQ9CkbanVZOlWhNlDxA1/cCnO6ExwvTnIP08CNCq5zPTJEF7IkPpWjVUfnHSzXeEsVB
+         fN79kKSTPR5LvnR7PhQtClGLkI0RsHCt1TTKTRTRj8WaiH1oTAbiiWauHlrhkY4ktIAX
+         t8OfaZJmrMAdKjVe3G5jZ8ApsA3NN5hNQ4YAEnxn1d0vX0gCJeRe1zpcLxMQg882m6ZZ
+         UcSIbzezUaM419w5TLa/wr1C9+Iw+z4dhpo6GkodK73RBywm866jMq2k5GzWwS90KQ1C
+         eghw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792120227; x=1792725027;
+        d=1e100.net; s=20260707; t=1792139074; x=1792743874;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=xlTg1ZA1llUS+f5Z9F7BKuAG/CC4v+1NC0B32dFPZWI=;
-        b=CMTz2jHAKTu+lNOJWdY/rG58CglJWhK55xS9KOYKS9X7laSVfRTqp17DVRGH09wi2F
-         t9TZ6u/n/dTL04x8lGl+1zPC8C46YPEI71ytoHCgZDwDrzAx6mZ2yTZGYpSfGhL4nqUZ
-         QHkPS4b+eQ3hpTlagSk5lVKIg4EVgcb2swG+frDwdCW77CA1Mcksq2R2/nX64TxDKmAA
-         y6myiK3JeAt6npMzXp6uiAS66ZRxJmAWZGlPJVdjLJ8R68M3Da8DZu5l68959A86bcIp
-         YRmipQH5YvgMA41AdAcpPoJMT8aFvD2joagQ5aQIKUKZ6nEaR1yaX91vCWi9DRCCtlRd
-         E1FA==
-X-Forwarded-Encrypted: i=1; AKwUvBzFhCqZ8qTLFw/AI6S11omfQYCjVa+wCtJKFqZfr9tl0Upqljk4tOYmwUcPx8xzlhi1rkQ=@vger.kernel.org
-X-Gm-Message-State: AFq9FYIE6DoS3Xp+NtwD0/FV0+5fFYdrfI+TU8+WC8MX/CJ3zVSBfgQS
-	4nGX4fpkdjmEpjTZVPcC/Iiph5PArAWb/F3zHbTbTCunkdIAbiyEx7R07V9YEBkF4Xd0WDllhoH
-	u5ISuRZ2lLDNOHfGWK4S972aDrD29V7E=
-X-Gm-Gg: AYBFou2SmvmrItoGx1N3Cv7dFCeDcRoiOs4Nt4PDnLGa2kN0ncPBtI8uCIFCZeRJGTd
-	biB2xPO4WKYhs9Z2YqNFvSg6d+e1doKker8wIN0VEhx5u3dz6W95nHDc9pC6yecz0xvYlZztHV/
-	C7HbN/QxtYvAtFmBMNL7rLuhznjoBj201iUXepqt+ADXCsGnAFxmXTLalV3dEHyFn5xQB/XpLIs
-	Eo4zTwXCbBdy1VMVzFTtWLI4DSHoMivC0LZAbifT5IKCAVvK2ORs/RSbTTWkDx6zZZstxektt6w
-	FhUV6FAm2gQrZSDhQWcVuSGMfhCK69mkczmDz6ghkkQCyrulk6RGNvPo28MvpkNtSeE=
-X-Received: by 2002:a05:600d:82f3:b0:4a0:ec5:46d9 with SMTP id
- 5b1f17b1804b1-4a1c65b9d1cmr49895815e9.0.1792120227297; Thu, 15 Oct 2026
- 20:10:27 -0700 (PDT)
+        bh=E8gxo2ExdAcC67lQx6KTJbVCAq98YK23bGoiwCanXEA=;
+        b=AkILSxk64S6kCAa7mm33OfmK0PuABSkBcvnFMhZtjfi5ZMzOvOdXk1b71UXX+kHYqz
+         bN1EUhv/6w7df9V2J2yaoKXm3uurrSjuPLFJTVIZeluLGo5+dINpu9OABK5vHxkGBHq4
+         3CqAVe0qhX3b5iqEPDA5Zl0tUkoc0PEQt1Pkb5aWSoznESPX+QXfAnJqWS0KFFh28ZXH
+         oDX/d1/ElBMIoTQPd0qOZuEtaZ+LkdwYm7NDCCup3/w3NobdirFW8LnymL27GYDqD/59
+         Y/2kWQDmLH7CooknUId3Vdx2C5cQjr0S0LdQ02sscKtp6r9D6R2aYCQqs83CNqXAP7jy
+         OKCA==
+X-Forwarded-Encrypted: i=1; AKwUvBzJDpuu73u+D/4nmYcslOFtnr6uK1xYVovFO3lJyOhwL7ZR3H7vRznX5j2hE0LCHYllFXI=@vger.kernel.org
+X-Gm-Message-State: AFq9FYKBkLn9qaxqWi7PUEKPXwzA4zdwPzx0Fo2MhBUwchl1wAR3b0kL
+	zrfyZ/KeUxLVCsgK5JkmBNcVESNqzB829hBPkbU7X3FrktUTDKqjrOGnccPZB03gENfvQPx2ytg
+	T6Cuq4ipeNqyA26TWUveyssVecQ49b/E=
+X-Gm-Gg: AYBFou15KDuNPYUbzrciqevujm9vrdNmF3yDn/wZKKOeTDfopVM65fSS7yOuvEEmWLi
+	WBbTXPdBJEog3TCxjh1UJzc0/r9Oc/FlT5finGccfTX/HF02ViK07QJCjzhuaNldtd0SRy77p6e
+	A0G7k0Xi7Jj8DtvPBFjsRwm6EwaPkAHTf+3Sbgkv2UPV1NetUyIbS0cvp9RsvHCTgBYsTvylbrR
+	WirTOJXm8dOYA0hCo95ZEfEB8sZygWFw0xLeh18I3jLav4n4+0qD7sQewNGGB456b5xlrKpcaK8
+	M3QrAYJP1fgC6tiNXMr5YCLsHaw8vL3ahzRfMxQ18ZXSmoK6D/XqMLeN
+X-Received: by 2002:a05:600d:82c1:b0:4a1:6a10:4dc8 with SMTP id
+ 5b1f17b1804b1-4a1bd175fa1mr146577265e9.28.1792139073577; Fri, 16 Oct 2026
+ 01:24:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20261005171529.1378809-1-kunwu.chan@gmail.com>
- <20261005171529.1378809-9-kunwu.chan@gmail.com> <as3aMmPdCHCXW6Ci@U-YXDQC754-96.local>
-In-Reply-To: <as3aMmPdCHCXW6Ci@U-YXDQC754-96.local>
+References: <20261011194902.97364-1-mathieu.desnoyers@efficios.com> <20261011194902.97364-2-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20261011194902.97364-2-mathieu.desnoyers@efficios.com>
 From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Fri, 16 Oct 2026 11:10:14 +0800
-X-Gm-Features: AclHuK-luj00YvB6W0gzUZaHST8ZYYHX_eNK_3NZlyZFFvQwwdxXevqOtbkN0mU
-Message-ID: <CAN_Opa9V-nXQ8-PyntDGaQDw4jQs0Z99J07pdApH3+EoTHyTcQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 08/15] locking/lockdep: use hazptr to wait for
- dynamic key lookups
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: paulmck@kernel.org, corbet@lwn.net, mingo@redhat.com, frederic@kernel.org, 
-	neeraj.upadhyay@kernel.org, josh@joshtriplett.org, urezki@gmail.com, 
-	dave@stgolabs.net, lianux.mm@gmail.com, stern@rowland.harvard.edu, 
-	parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org, 
-	boqun@kernel.org, npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk, 
-	luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com, 
-	joelagnelf@nvidia.com, skhan@linuxfoundation.org, rdunlap@infradead.org, 
-	longman@redhat.com, rostedt@goodmis.org, mathieu.desnoyers@efficios.com, 
-	qiang.zhang@linux.dev, brads@mainlining.org, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, lkmm@lists.linux.dev, linux-doc@vger.kernel.org, 
-	rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+Date: Fri, 16 Oct 2026 16:24:21 +0800
+X-Gm-Features: AclHuK_PTuneKkOgmgJaVDS6GjsvRFKMkj_6VcBtfZcfMgJ14F3yG1rp3naG8VE
+Message-ID: <CAN_Opa-zH=+By+Qrsrg3W0prQPNv17xCCh_n0CzfimUB9__obA@mail.gmail.com>
+Subject: Re: [PATCH hazptr v3 1/4] hazptr: Fix two-phase hazptr_synchronize
+ race with detach
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>, linux-kernel@vger.kernel.org, 
+	Boqun Feng <boqun@kernel.org>, Bradley Morgan <brads@mainlining.org>, Gary Guo <gary@garyguo.net>, 
+	rcu@vger.kernel.org, lkmm@lists.linux.dev, Lian Wang <lianux.mm@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 13, 2026 at 3:40=E2=80=AFPM Lai Jiangshan <jiangshanlai@gmail.c=
-om> wrote:
->
-> On Tue, Oct 06, 2026 at 01:15:22AM +0800, Kunwu Chan wrote:
-> > lockdep_unregister_key() waits for is_dynamic_key() callers with
-> > synchronize_rcu_expedited(), which requires system-wide coordination.
-> > Make is_dynamic_key() protect the hash bucket with a hazard pointer
-> > and use hazptr_synchronize() to wait for traversals of that bucket.
-> >
-> > The hash bucket returned by keyhashentry() has a stable address, so
-> > it can be used as the hazptr synchronization target.  Keep the key
-> > hashlist lifetime RCU-based with hlist_del_rcu() and call_rcu().
-> >
-> > Protect the traversal with the hazptr scoped_guard() added earlier
-> > in this series.
-> >
-> > This adapts the lockdep use case from Boqun Feng's shazptr series
-> > to the current hazptr API.
-> >
-> > Link: https://lore.kernel.org/lkml/20250625031101.12555-1-boqun.feng@gm=
-ail.com/
->
-> Hello,
->
-> I think this is a misuse of hazard pointers.
->
-> The bucket has a permanent, static address; its lifetime does not
-> need hazard-pointer protection. Instead, this patch combines a
-> hazard pointer with that address to construct a read-side/synchronize
-> mechanism in the same category as RCU. However, this construction
-> lacks the generation distinction needed to separate pre-existing
-> readers from subsequent readers.
->
-> The object being removed is the key, but the synchronization target
-> is the bucket. Unlinking the key does not prevent new lookups from
-> acquiring the same bucket address, including lookups for unrelated
-> keys that hash to that bucket.
->
-> This breaks the forward-progress argument used by the underlying
-> hazptr implementation: after removing an object from publication,
-> there should not be a continuing stream of new readers acquiring
-> that same object. Here, the bucket is never unpublished.
->
-> For example, let B be the bucket containing key K:
->
->   Updater                    Reader                 Scan kthread
->   -------                    ------                 ------------
->   Unlink K from B
->   hazptr_synchronize(B)
->                              Acquire B
->                                                     Observe B;
->                                                     retain waiter
->                              Release B
->                              Acquire B again
->                                                     Observe B;
->                                                     retain waiter
->                              Release B
->                              ...                    ...
->
-> Every reader critical section can finish, and the scan kthread
-> can keep running, while the updater waits indefinitely. Readers
-> that could have observed K may already have completed; later
-> lookups alone can keep the waiter pending.
->
-> RCU does not need the reader population to become empty. Its
-> generation (grace-period) machinery allows pre-existing readers to
-> drain without letting a continuous stream of subsequent readers
-> indefinitely extend that wait. This address-based construction has
-> no equivalent distinction.
->
-> So this is not merely protecting a different object with hazptr:
-> it is using hazptr as a different synchronization primitive without
-> providing the corresponding progress guarantee.
->
-> I think we should retain the RCU wait here. If the intention is to
-> implement bucket-scoped read-side synchronization, that needs an
-> explicit protocol to distinguish the readers being drained from
-> new arrivals; a permanent bucket address is not sufficient.
->
-> Sorry for the lengthy reply, which was written with the help of an AI
-> agent. I noticed this issue when this use case was first proposed, but
-> I struggled to articulate my concerns clearly back then. Well, now we
-> have AI. :)
->
+Hi Mathieu,
 
-Hi Lai, thanks for pointing this out.
-And thanks Boqun, Mathieu, and Paul for the helpful replies.
+Scanning all per-CPU slots before the overflow lists
+addresses the race where a backup slot can be moved to
+a list that has already been scanned.
 
-I'll look into adding an RCU-stall-like mechanism to detect
-long-lived pointer waiters, and work with Boqun and Mathieu
-to find a more suitable scenario to exercise this case.
+Using a separate overflow-list phase also decouples list
+selection from the wildcard phase.
+
+
+Reviewed-by: Kunwu Chan <chentao@kylinos.cn>
 
 Thanks,
 Kunwu
 
-> Thanks
-> Lai
+On Mon, Oct 12, 2026 at 3:49=E2=80=AFAM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-> > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-> > ---
-> >  kernel/locking/lockdep.c | 25 +++++++++++++++----------
-> >  1 file changed, 15 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > index c56a7f91d72e..d1ce5ace7fbf 100644
-> > --- a/kernel/locking/lockdep.c
-> > +++ b/kernel/locking/lockdep.c
-> > @@ -58,6 +58,7 @@
-> >  #include <linux/context_tracking.h>
-> >  #include <linux/console.h>
-> >  #include <linux/kasan.h>
-> > +#include <linux/hazptr.h>
-> >
-> >  #include <asm/sections.h>
-> >
-> > @@ -1280,14 +1281,19 @@ static bool is_dynamic_key(const struct lock_cl=
-ass_key *key)
-> >
-> >       hash_head =3D keyhashentry(key);
-> >
-> > -     rcu_read_lock();
-> > -     hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-> > -             if (k =3D=3D key) {
-> > -                     found =3D true;
-> > -                     break;
-> > +     {
-> > +             struct hazptr_ctx ctx;
-> > +             void *bucket =3D hash_head;
-> > +
-> > +             scoped_guard(hazptr, &ctx, &bucket) {
-> > +                     hlist_for_each_entry_rcu(k, hash_head, hash_entry=
-, 1) {
-> > +                             if (k =3D=3D key) {
-> > +                                     found =3D true;
-> > +                                     break;
-> > +                             }
-> > +                     }
-> >               }
-> >       }
-> > -     rcu_read_unlock();
-> >
-> >       return found;
-> >  }
-> > @@ -6683,11 +6689,10 @@ void lockdep_unregister_key(struct lock_class_k=
-ey *key)
-> >        *
-> >        * Some operations like __qdisc_destroy() will call this in a deb=
-ug
-> >        * kernel, and the network traffic is disabled while waiting, hen=
-ce
-> > -      * the delay of the wait matters in debugging cases. Currently us=
-e a
-> > -      * synchronize_rcu_expedited() to speed up the wait at the cost o=
-f
-> > -      * system IPIs. TODO: Replace RCU with hazptr for this.
-> > +      * the delay of the wait matters in debugging cases. Replace the
-> > +      * expedited RCU wait with hazptr_synchronize().
-> >        */
-> > -     synchronize_rcu_expedited();
-> > +     hazptr_synchronize(keyhashentry(key));
-> >  }
-> >  EXPORT_SYMBOL_GPL(lockdep_unregister_key);
-> >
-> > --
-> > 2.43.0
-> >
+> Boqun Feng pointed out that a detach happening concurrently with
+> hazptr_synchronize can miss a slot. Indeed, scanning the per-CPU
+> slots needs to be done *before* scanning the overflow lists. Fix the
+> implementation accordingly.
+>
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Reported-by: Boqun Feng <boqun@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Boqun Feng <boqun@kernel.org>
+> Cc: Bradley Morgan <brads@mainlining.org>
+> Cc: Gary Guo <gary@garyguo.net>
+> Cc: <rcu@vger.kernel.org>
+> Cc: <lkmm@lists.linux.dev>
+> Cc: Lian Wang <lianux.mm@gmail.com>
+> Cc: Kunwu Chan <kunwu.chan@gmail.com>
+> ---
+> Changes since v0:
+> - Load the new overflow list phase word in "hazptr_chain_backup_slot".
+> - Rename the lock to hazptr_phase_lock to make it clear that it
+>   protects both the wildcard and the overflow list phases.
+> ---
+>  kernel/hazptr.c | 50 +++++++++++++++++++++++++++++++++++++++----------
+>  1 file changed, 40 insertions(+), 10 deletions(-)
+>
+> diff --git a/kernel/hazptr.c b/kernel/hazptr.c
+> index d3d1050d92cf..13faa5ba7677 100644
+> --- a/kernel/hazptr.c
+> +++ b/kernel/hazptr.c
+> @@ -13,6 +13,8 @@
+>  #include <linux/list.h>
+>  #include <linux/export.h>
+>
+> +static DEFINE_MUTEX(hazptr_phase_lock);        /* Protect the wildcard a=
+nd list phase flip. */
+> +
+>  /*
+>   * The current hazard pointer wildcard. Flips between 1UL and 2UL to gua=
+rantee
+>   * hazptr_synchronize forward progress even with a steady stream of read=
+ers.
+> @@ -20,10 +22,12 @@
+>   * This also affects the overflow list selection: the current list used =
+by
+>   * readers is array[(unsigned long) hazptr_wildcard - 1].
+>   */
+> -static DEFINE_MUTEX(hazptr_wildcard_lock);     /* Protect the wildcard f=
+lip. */
+>  void *hazptr_wildcard =3D (void *) 1UL;
+>  EXPORT_SYMBOL_GPL(hazptr_wildcard);
+>
+> +/* The current overflow list phase. */
+> +static unsigned int hazptr_overflow_list_phase;
+> +
+>  struct hazptr_overflow_list {
+>         raw_spinlock_t lock;            /* Lock protecting overflow list =
+and list generation. */
+>         struct hlist_head head;         /* Overflow list head. */
+> @@ -53,6 +57,12 @@ void *flip_wildcard(void *wildcard)
+>         return ((unsigned long) wildcard =3D=3D 1UL) ? (void *) 2UL : (vo=
+id *) 1UL;
+>  }
+>
+> +static
+> +unsigned int flip_list_phase(unsigned int phase)
+> +{
+> +       return 1 - phase;
+> +}
+> +
+>  static
+>  bool is_wildcard(void *addr)
+>  {
+> @@ -178,15 +188,12 @@ void hazptr_synchronize_cpu_slots(int cpu, void *ad=
+dr, void *scan_wildcard)
+>  }
+>
+>  static
+> -void hazptr_scan_period(void *addr, void *scan_wildcard)
+> +void hazptr_scan_cpu_slots_period(void *addr, void *scan_wildcard)
+>  {
+> -       unsigned int scan_idx =3D (unsigned long) scan_wildcard - 1;
+>         int cpu;
+>
+>         /* Scan all CPUs slots. */
+>         for_each_possible_cpu(cpu) {
+> -               struct hazptr_overflow_list_flip *overflow_list_flip =3D =
+per_cpu_ptr(&percpu_overflow_list_flip, cpu);
+> -
+>                 /*
+>                  * Scan CPU slots.
+>                  * Forward progress against recurring wildcards is guaran=
+teed
+> @@ -199,6 +206,17 @@ void hazptr_scan_period(void *addr, void *scan_wildc=
+ard)
+>                  * to acquire that same hazard pointer value.
+>                  */
+>                 hazptr_synchronize_cpu_slots(cpu, addr, scan_wildcard);
+> +       }
+> +}
+> +
+> +static
+> +void hazptr_scan_overflow_list_period(void *addr, unsigned int scan_idx)
+> +{
+> +       int cpu;
+> +
+> +       /* Scan all CPUs overflow lists. */
+> +       for_each_possible_cpu(cpu) {
+> +               struct hazptr_overflow_list_flip *overflow_list_flip =3D =
+per_cpu_ptr(&percpu_overflow_list_flip, cpu);
+>
+>                 /*
+>                  * Scan backup slots in percpu overflow lists.
+> @@ -218,6 +236,7 @@ void hazptr_scan_period(void *addr, void *scan_wildca=
+rd)
+>   */
+>  void hazptr_synchronize(void *addr)
+>  {
+> +       unsigned int scan_list_phase;
+>         void *scan_wildcard;
+>
+>         /*
+> @@ -235,18 +254,29 @@ void hazptr_synchronize(void *addr)
+>         /* Memory ordering: Store A before Load B. */
+>         smp_mb();
+>
+> -       guard(mutex)(&hazptr_wildcard_lock);
+> +       guard(mutex)(&hazptr_phase_lock);
+> +
+> +       /* Scan per-CPU slots. */
+>         scan_wildcard =3D flip_wildcard(hazptr_wildcard);
+> -       hazptr_scan_period(addr, scan_wildcard);
+> -       WRITE_ONCE(hazptr_wildcard, scan_wildcard);     /* Flip the curre=
+nt wildcard. */
+> -       hazptr_scan_period(addr, flip_wildcard(scan_wildcard));
+> +       hazptr_scan_cpu_slots_period(addr, scan_wildcard);
+> +       WRITE_ONCE(hazptr_wildcard, scan_wildcard);                     /=
+* Flip the current wildcard. */
+> +       hazptr_scan_cpu_slots_period(addr, flip_wildcard(scan_wildcard));
+> +
+> +       /*
+> +        * Scan overflow lists *after* scanning per-CPU slots. See
+> +        * hazptr_promote_to_backup_slot() for scan ordering requirement.
+> +        */
+> +       scan_list_phase =3D flip_list_phase(hazptr_overflow_list_phase);
+> +       hazptr_scan_overflow_list_period(addr, scan_list_phase);
+> +       WRITE_ONCE(hazptr_overflow_list_phase, scan_list_phase);        /=
+* Flip the current list phase. */
+> +       hazptr_scan_overflow_list_period(addr, flip_list_phase(scan_list_=
+phase));
+>  }
+>  EXPORT_SYMBOL_GPL(hazptr_synchronize);
+>
+>  struct hazptr_slot *hazptr_chain_backup_slot(struct hazptr_ctx *ctx)
+>  {
+>         struct hazptr_overflow_list_flip *overflow_list_flip =3D this_cpu=
+_ptr(&percpu_overflow_list_flip);
+> -       unsigned int list_idx =3D (unsigned long) READ_ONCE(hazptr_wildca=
+rd) - 1;
+> +       unsigned int list_idx =3D READ_ONCE(hazptr_overflow_list_phase);
+>         struct hazptr_overflow_list *overflow_list =3D &overflow_list_fli=
+p->array[list_idx];
+>         struct hazptr_slot *slot =3D &ctx->backup_slot.slot;
+>
+> --
+> 2.43.0
+>
