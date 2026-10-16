@@ -1,33 +1,34 @@
 Received: from smtpout.efficios.com (smtpout.efficios.com [158.69.130.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFA45485CF9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E748D4DA9AD;
 	Fri, 16 Oct 2026 13:33:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=158.69.130.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792157617; cv=none; b=i7cWnnA+3puTYixpJYkqNhhcAN6AOH5FtCe8jeo2HwYZeGAJQLlEOpIxIVVohBvIPkybnBbMngS4EKlsOLsh9GiHIO+TOdfTbd7j8UIVBf5Jce7tH4ZzCS6eTBp2N3IO/TqYxbQP7dL0DGdATS39zgtaUH7t5ujwC4Yrlp9q2fI=
+	t=1792157618; cv=none; b=Bn6jy+vGKNXFk4LzD6PTqMy8nhqPy/oav/0DPxUR9WzI85vOBXPGYsSs5I7BDxuXiLeANDQSgxmjJCJW3bZaT+c2pJLqp1iDnkDWXyUvi2tjm2LJrFTLRYRfEJ340urDINDk7ZO/a12Q6alTog2yk/B0hYTJIItaAOCEPjCFbCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792157617; c=relaxed/simple;
-	bh=7IbiRO3iW64RObNE6YKL1HPSnO5Mdyi6ohyFHjNlVwY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YpDKlPQhFJxh06oIedyxi7P9dxrxOGyxlTjzGE5weseB90oWhDGYYQ9bXIUjMXgeoujIhIF7OO1xPOoIA68P2IgofHYAkvnrQmxhhMNH/xdSgm+UXGt5UbGKd9l3POPZhZAMIApdUVc8Q0fpX4qO8UMSWmYHfaGOjs4TWRkGaaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=VftIvztM; arc=none smtp.client-ip=158.69.130.18
+	s=arc-20240116; t=1792157618; c=relaxed/simple;
+	bh=dzH/WX+gEG5AHOY4FDdXLNfIkkTM2J3q3ki8HKPcXKA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=GirpGP3UuJVJ2dWdoH9v+8xCRKbisBm3q8vXtnpMh8l2aLMy9xyLkIg15boyv77S4cEUYdD+xG5hR3Kn0zrIGWZHHBEncAMHwwWh7T5Av5w+ALzGEj7c3CiKJoNrKjhzpb5206lvTAcNRa99JSkAC9J9Y87IGdmocn7QmIhA/0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=B199JQYR; arc=none smtp.client-ip=158.69.130.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="VftIvztM"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="B199JQYR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
 	s=smtpout1; t=1792157607;
-	bh=KpRmAWxDpNspBMya+3VjBh2v+baGxypFrk7XaBx4Was=;
-	h=From:To:Cc:Subject:Date:From;
-	b=VftIvztM/p77pLiM4DNiu23vILhN5X/3cSdqLL4AjkjrlgINpmL+m4s7gwOGwyArd
-	 HsLOOzrciZ1Of9XW/fwUiyX545suh5AOBHMJZNSAAr6uauLTaacV/yLwTacPrLGpOl
-	 nB1NITCFco4ueREV57K0SMIdEwer0NDyZJQgCTdpyYUKqz5LPOKgHPeZBB/YcDypUo
-	 qi2mL4BftTrpMWkRJ9DRuSEcDtS3jcfDs9+tL1JSsbKvpsfzc8IwypcXFQ4TqXuaoN
-	 QZIREQT/8C9H8r43aNv2HkZZvzx9Fd8KoMARcPB7OBKBO0snDsNLdgSzdBAQmAdmi8
-	 7pRNH9LW68hoA==
+	bh=iSlfPNzsynis7COBrZAsw8t2pngsoLZVwm5wcaTG2Ig=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=B199JQYRwN1Ee6VC9ktSqMK8sYq3om8NsBXKbGWPGEwhnGkeNmfFlc0Fw2tApHTRy
+	 lg7JisD8vhlP0caiHfyVEotwY4mbthYH7w2CblLHRHOw91pbnkgBhivqsujZgvfMEE
+	 9lBO+ytVeepBXkcT9Bk0D7dXKL1Pe27GOwxfpSMCA5WvH+UdA3HMeWG+lsmc4D7Z/Z
+	 pHxhN1vbp840HJ3/PGIuLi8nZQNoCUP0ReBinrFErQ+MWboMsivspmgrZLPyv3keKU
+	 bcx/85tShbCK5xBjUEWdEMdOZL/RvTt7ccqY43VU4/+jRNYtZrHzeVlEVKY/b3Ermy
+	 uCAq/vWYmPS1Q==
 Received: from thinkos.internal.efficios.com (unknown [IPv6:2606:6d00:100:4000:52b6:7728:7602:8919])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4j5m9L6FyMznnZ;
-	Fri, 16 Oct 2026 09:33:26 -0400 (EDT)
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4j5m9M23lcznrg;
+	Fri, 16 Oct 2026 09:33:27 -0400 (EDT)
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>
 Cc: linux-kernel@vger.kernel.org,
@@ -55,10 +56,12 @@ Cc: linux-kernel@vger.kernel.org,
 	Ingo Molnar <mingo@kernel.org>,
 	Thomas Gleixner <tglx@kernel.org>,
 	rcu@vger.kernel.org
-Subject: [RFC PATCH 00/12] RCU pseudo-transactions
-Date: Fri, 16 Oct 2026 09:33:07 -0400
-Message-Id: <20261016133319.433617-1-mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH 02/12] rcu_txn: Add KUnit tests
+Date: Fri, 16 Oct 2026 09:33:09 -0400
+Message-Id: <20261016133319.433617-3-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20261016133319.433617-1-mathieu.desnoyers@efficios.com>
+References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -67,249 +70,548 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Test the RCU pseudo-transactions: commits of one and of several records,
+the three steps of a commit as a reader observes them, typed slots,
+growth and reservation of a transaction, cancellation, the sticky
+allocation failure, reading back one's own writes, and misuse of a
+handle.
 
-Earlier this year, I came up with a neat trick which reduces the mental
-challenge of adapting data structures to RCU.  It turns out that it also
-widens the applicability of RCU to additional classes of data
-structures.
+The steps of a commit are staged by hand through lib/rcu_txn_internal.h,
+since rcu_txn_commit() runs them back to back.
 
-This is done by a low-overhead abstraction which I'm naming
-"RCU Pseudo-Transactions" [1, 2]. I name this "pseudo" because unlike
-classic transactions, the writers exclude each other, readers get no
-snapshot, and there is no abort.
+A misuse reports through WARN_ON_ONCE(), which the tests suppress and
+count.  Where the architecture does not keep a WARN_ON_ONCE()'s once
+state in its bug table (no __WARN_FLAGS), it fires once per boot whether
+it is suppressed or not, so the count is only checked to be at most one
+there.
 
-How it works:
-
-- Reader (rcu_txn_dereference()):
-  - Load (rcu_dereference()) pointer from slot.
-  - Fast path (no proxy installed): unlikely low-bit tag test and
-    conditional branch (not taken).
-  - Slow path (proxy installed): low-bit tag test, taken branch,
-    the proxy points at the slot's record, select old or new via the
-    group selector word (0/1) (load-acquire).  Still wait-free.
-  - Pointer constraint: Slots must hold pointers which are at least
-    2-byte aligned when using the low bit as tag and must not use
-    the low bit for anything else. NULL is handled as a plain value.
-
-- Updater (caller provides mutual exclusion):
-  - Allocate a transaction descriptor (gfp flags provided by the caller).
-  - Append records to the descriptor.  (each slot appears at most once
-    per transaction)
-  - Commit (works in atomic context):
-    - Install proxy pointers into each slot. (store-release)
-    - Commit (flip group selector from 0 to 1). (store-release)
-    - Settle (each slot loses the proxy, gets the new pointer value).
-      (store-release)
-  - kfree_rcu the transaction descriptor.
-
-Here are the key highlights:
-
-- It enables atomic publication of multiple pointers observed by
-  concurrent RCU readers. It removes the tricky "but what if a
-  reader observes this intermediate state" conundrum typically present
-  when porting a data structure to RCU.  A reader that loads one slot
-  before the commit and another after it sees old then new values,
-  never the reverse along a chain of dependent loads (or with an acquire
-  between them).
-
-- It allows composing data structures: a node can be published
-  atomically into many data structures (e.g. hash bucket list and
-  LRU list).
-
-- It removes ordering requirements on multiple object publication
-  with respect to RCU traversal order.
-
-- Can be used as a building block for fine-grained data structure
-  locking (see the second example in this series).
-
-- It enables RCU traversals of cyclic graphs with arbitrary traversal
-  order.
-
-- It allows replacing sequence locks and reader-writer locks in many
-  use-cases, providing read-side wait-free progress guarantees, in
-  scenarios where readers need a coherent walk rather than a snapshot of
-  several fields.
-
-- It removes the need to copy data structure nodes for updates:
-  multiple pointer (and data field) updates can be performed
-  in-place on memory that cannot be reallocated.
-
-I have presented it at LPC [1] and uploaded an article [2] detailing
-the idea as a defensive publication.  There are no patent claims on this
-work.
-
-In this RFC, I'm presenting a port of rcu_txn to the Linux kernel,
-along with a list and hlist API built on top of it. You will also
-find composed hash bucket list and LRU list examples near the end
-of the series. I've implemented one example with a single mutex, and the
-other using RCU for neighborhood lookup and fine-grained per-node
-locking.
-
-I considered various alternatives such as Paul McKenney's "existence
-guarantees" work (2015), seqlock, rwlocks, RLU, MV-RLU, and k-CAS (all
-discussed in the paper), but RCU pseudo-transactions performed better
-than the alternatives in my benchmarks due to smaller cache footprint
-and fewer read-side fast path instructions.  I have applied this to a
-partial port of the dentry cache to userspace; compared to a straight
-userspace port of the current kernel scheme, the rcu_txn variant shows
-up to 6.75x speedup for reverse walk under concurrent renames, and up to
-21.56x speedup on writer throughput when scaling to 8 writers with 184
-concurrent readers under a leaf name exchange workload (see LPC slides).
-
-About the development process of this feature: I have used an LLM coding
-assistant (Claude) throughout the development of this feature. The novel
-ideas are my own, and I have carefully followed its progress, guided it
-towards acceptable solutions when it was hitting walls, and reviewed the
-resulting code.
-
-Origin story: I came up with this idea while working on a userspace RCU
-trie data structure which I named Fractal Trie (still in development),
-and I needed to be able to atomically publish parent/child pointer
-updates on nodes which were controlled by the application (therefore not
-mine to reallocate).
-
-The series is based on v7.3-rc7.
-
-- Patch 1: rcu_txn core API.
-- Patch 2: KUnit tests for the core API.
-- Patch 3: Bloom filter so appending a record to a large transaction
-           does not require an O(n) scan for an existing record for that
-           slot (O(n^2) overall).
-- Patch 4: rcu_txn_adopt, debug config option for internal consistency
-           checks.
-- Patches 5-6: composable singly and doubly linked lists on top of rcu_txn.
-- Patch 7: documentation.
-- Patch 8: litmus tests.
-- Patch 9: list writer stress test.
-- Patch 10: test of commit in atomic context.
-- Patches 11-12: usage example for composed data structures: a cache
-                 whose nodes are present in both a bucket hlist and an
-                 LRU list, one variant with a single mutex, the other
-                 with RCU neighborhood lookup and per-node locking.
-
-There are a few areas where I suspect this abstraction could help in the
-Linux kernel, namely the VFS layer and mm_struct VMA tree / per-VMA
-locking.  I'm interested to hear whether this is useful in other
-subsystems.
-
-I'd specifically like feedback on:
-
-- Where this should live (kernel/rcu/, lib/?),
-
-- Naming and API shape (descriptor + records),
-
-- Whether the Bloom filter threshold should be a config knob,
-
-- Subsystems where this could apply.
-
-Enjoy!
-
-Mathieu
-
-References:
-[1] "RCU Pseudo-Transactions: Bridging the gap between RCU and STM",
-    Mathieu Desnoyers,
-    Linux Plumbers Conference 2026 Refereed Track, October 2026.
-    https://lpc.events/event/20/contributions/2348/
-
-[2] "RCU Pseudo-Transactions and the Single-Writer Flip-Latch:
-    Atomic Multi-Slot Publication for Read-Copy-Update Data Structures",
-    Mathieu Desnoyers, October 2026.
-    https://www.efficios.com/pub/rcu-txn/mathieu-desnoyers-rcu-pseudo-transactions.pdf
-
-Mathieu Desnoyers (12):
-  rcu_txn: Add single-writer RCU pseudo-transactions
-  rcu_txn: Add KUnit tests
-  rcu_txn: Skip the record lookup with a Bloom filter
-  rcu_txn: Add CONFIG_DEBUG_RCU_TXN
-  rcu_txn: Add an hlist edited through transactions
-  rcu_txn: Add a doubly-linked list coherent in both directions
-  Documentation/RCU: Describe RCU pseudo-transactions
-  Documentation/litmus-tests: Add RCU pseudo-transaction tests
-  rcu_txn: Test a list writer against concurrent readers
-  rcu_txn: Test a commit from atomic context
-  samples: Add a cache on RCU pseudo-transactions under one mutex
-  samples: Add a cache on RCU pseudo-transactions with a lock per node
-
- Documentation/RCU/index.rst                   |    1 +
- Documentation/RCU/rcu_txn.rst                 |  255 ++
- Documentation/litmus-tests/README             |   37 +
- .../rcu/RCU-txn+install+once-install.litmus   |   55 +
- .../litmus-tests/rcu/RCU-txn+install.litmus   |   66 +
- .../RCU-txn+list+step-back+once-flip.litmus   |   78 +
- .../RCU-txn+list+step-back+once-settle.litmus |   78 +
- .../rcu/RCU-txn+list+step-back.litmus         |   85 +
- ...-txn+monotonic+acquire+once-resolve.litmus |   79 +
- .../rcu/RCU-txn+monotonic+acquire.litmus      |   81 +
- .../RCU-txn+monotonic+dep+once-flip.litmus    |   77 +
- .../RCU-txn+monotonic+dep+once-settle.litmus  |   77 +
- .../rcu/RCU-txn+monotonic+dep.litmus          |   83 +
- .../rcu/RCU-txn+monotonic+unordered.litmus    |   84 +
- .../rcu/RCU-txn+publish+once-install.litmus   |   60 +
- .../rcu/RCU-txn+publish+once-settle.litmus    |   60 +
- .../litmus-tests/rcu/RCU-txn+publish.litmus   |   71 +
- .../rcu/RCU-txn+remove+nolock.litmus          |   64 +
- .../rcu/RCU-txn+remove+nosync.litmus          |   64 +
- .../rcu/RCU-txn+remove+once-install.litmus    |   65 +
- .../litmus-tests/rcu/RCU-txn+remove.litmus    |   72 +
- .../rcu/RCU-txn+sync+free+nolock.litmus       |   55 +
- .../rcu/RCU-txn+sync+free+nosync.litmus       |   55 +
- .../litmus-tests/rcu/RCU-txn+sync+free.litmus |   60 +
- MAINTAINERS                                   |   11 +
- include/linux/rcu_txn.h                       | 1036 ++++++++
- include/linux/rcu_txn_bloom.h                 |  110 +
- include/linux/rcu_txn_hlist.h                 |  486 ++++
- include/linux/rcu_txn_list.h                  |  544 +++++
- kernel/rcu/Kconfig.debug                      |   16 +
- lib/Kconfig                                   |    3 +
- lib/Kconfig.debug                             |   13 +
- lib/Makefile                                  |    2 +
- lib/rcu_txn.c                                 |  142 ++
- lib/rcu_txn_internal.h                        |  129 +
- lib/tests/Makefile                            |    1 +
- lib/tests/rcu_txn_kunit.c                     | 2150 +++++++++++++++++
- samples/Kconfig                               |   13 +
- samples/Makefile                              |    1 +
- samples/rcu_txn/Makefile                      |    2 +
- samples/rcu_txn/rcu_txn_cache_mutex.c         |  354 +++
- samples/rcu_txn/rcu_txn_cache_node_lock.c     |  713 ++++++
- 42 files changed, 7488 insertions(+)
- create mode 100644 Documentation/RCU/rcu_txn.rst
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+install+once-install.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+install.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+list+step-back+once-flip.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+list+step-back+once-settle.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+list+step-back.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+monotonic+acquire+once-resolve.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+monotonic+acquire.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+monotonic+dep+once-flip.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+monotonic+dep+once-settle.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+monotonic+dep.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+monotonic+unordered.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+publish+once-install.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+publish+once-settle.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+publish.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+remove+nolock.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+remove+nosync.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+remove+once-install.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+remove.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+sync+free+nolock.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+sync+free+nosync.litmus
- create mode 100644 Documentation/litmus-tests/rcu/RCU-txn+sync+free.litmus
- create mode 100644 include/linux/rcu_txn.h
- create mode 100644 include/linux/rcu_txn_bloom.h
- create mode 100644 include/linux/rcu_txn_hlist.h
- create mode 100644 include/linux/rcu_txn_list.h
- create mode 100644 lib/rcu_txn.c
- create mode 100644 lib/rcu_txn_internal.h
+Assisted-by: LLM
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+---
+ MAINTAINERS               |   1 +
+ lib/Kconfig.debug         |  13 ++
+ lib/tests/Makefile        |   1 +
+ lib/tests/rcu_txn_kunit.c | 463 ++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 478 insertions(+)
  create mode 100644 lib/tests/rcu_txn_kunit.c
- create mode 100644 samples/rcu_txn/Makefile
- create mode 100644 samples/rcu_txn/rcu_txn_cache_mutex.c
- create mode 100644 samples/rcu_txn/rcu_txn_cache_node_lock.c
 
-
-base-commit: 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a5dc2eda633f..5126f4ece4e7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -22859,6 +22859,7 @@ L:	rcu@vger.kernel.org
+ S:	Maintained
+ F:	include/linux/rcu_txn*.h
+ F:	lib/rcu_txn*
++F:	lib/tests/rcu_txn_kunit.c
+ 
+ RCUTORTURE TEST FRAMEWORK
+ M:	"Paul E. McKenney" <paulmck@kernel.org>
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 6b24a2c89b84..5a93d2afdd96 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2844,6 +2844,19 @@ config LIST_PRIVATE_KUNIT_TEST
+ 
+ 	  If unsure, say N.
+ 
++config RCU_TXN_KUNIT_TEST
++	tristate "KUnit Test for single-writer RCU pseudo-transactions" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	select RCU_TXN
++	default KUNIT_ALL_TESTS
++	help
++	  This builds the KUnit test suite of the single-writer RCU
++	  pseudo-transactions defined in include/linux/rcu_txn.h.  It tests
++	  the commit of a transaction as readers observe it, and the
++	  lifecycle of a transaction handle, including its misuse.
++
++	  If unsure, say N.
++
+ config HASHTABLE_KUNIT_TEST
+ 	tristate "KUnit Test for Kernel Hashtable structures" if !KUNIT_ALL_TESTS
+ 	depends on KUNIT
+diff --git a/lib/tests/Makefile b/lib/tests/Makefile
+index 3cac3b63a752..d9d41a5da87d 100644
+--- a/lib/tests/Makefile
++++ b/lib/tests/Makefile
+@@ -44,6 +44,7 @@ obj-$(CONFIG_OVERFLOW_KUNIT_TEST) += overflow_kunit.o
+ obj-$(CONFIG_PRANDOM_KUNIT_TEST) += random32_kunit.o
+ obj-$(CONFIG_PRINTF_KUNIT_TEST) += printf_kunit.o
+ obj-$(CONFIG_RANDSTRUCT_KUNIT_TEST) += randstruct_kunit.o
++obj-$(CONFIG_RCU_TXN_KUNIT_TEST) += rcu_txn_kunit.o
+ obj-$(CONFIG_SCANF_KUNIT_TEST) += scanf_kunit.o
+ obj-$(CONFIG_SEQ_BUF_KUNIT_TEST) += seq_buf_kunit.o
+ obj-$(CONFIG_SIPHASH_KUNIT_TEST) += siphash_kunit.o
+diff --git a/lib/tests/rcu_txn_kunit.c b/lib/tests/rcu_txn_kunit.c
+new file mode 100644
+index 000000000000..e5323e21157b
+--- /dev/null
++++ b/lib/tests/rcu_txn_kunit.c
+@@ -0,0 +1,463 @@
++// SPDX-License-Identifier: LGPL-2.1-or-later
++/*
++ * KUnit tests of the single-writer RCU pseudo-transactions
++ *
++ * Copyright (C) 2026 Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
++ */
++
++#include <kunit/test.h>
++#include <linux/bug.h>
++#include <linux/rcu_txn.h>
++#include <linux/rcupdate.h>
++#include <linux/string.h>
++
++#include "../rcu_txn_internal.h"	/* the steps of a commit */
++
++/* Bit 0 of the proxy pointer: no value below carries it. */
++#define TAG	1UL
++
++/* Opaque slot values with the tag bit clear. */
++#define T(n)	((void *)(((unsigned long)(n) + 1) << 8))
++
++/*
++ * A WARN_ON_ONCE() of the engine reports once per boot, so a later run of the
++ * suite sees none.  Where the architecture keeps the once state in its bug
++ * table, KUnit counts every suppressed occurrence instead.
++ */
++#ifdef __WARN_FLAGS
++# define EXPECT_ONE_WARNING(test)					\
++	KUNIT_EXPECT_SUPPRESSED_WARNING_COUNT(test, 1)
++#else
++# define EXPECT_ONE_WARNING(test)					\
++	KUNIT_EXPECT_LE(test, KUNIT_SUPPRESSED_WARNING_COUNT(), 1)
++#endif
++
++/*
++ * Each test is the only writer of the structures it builds.  It reads them
++ * as a writer, through the forms that take a lockdep condition, passing true,
++ * and outside of any RCU read-side critical section.
++ *
++ * A test that reads as a reader instead, as read_slot() below does, checks
++ * what it read only after rcu_read_unlock(): a failed KUNIT_EXPECT_*()
++ * allocates with GFP_KERNEL, which may sleep.
++ */
++
++/* Load @slot and resolve it, as a reader does. */
++static void *read_slot(void __rcu **slot)
++{
++	void *v;
++
++	rcu_read_lock();
++	v = rcu_txn_resolve(rcu_dereference(*slot), TAG);
++	rcu_read_unlock();
++	return v;		/* a test value: never dereferenced */
++}
++
++/*
++ * One record: the commit stores the new target directly.  No proxy is ever
++ * installed, so the descriptor is freed at once.
++ */
++static void rcu_txn_test_single_record(struct kunit *test)
++{
++	void __rcu *slot = RCU_INITIALIZER(T(0));
++	struct rcu_txn txn;
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	KUNIT_EXPECT_TRUE(test, rcu_txn_reserve(&txn, 4));
++	rcu_txn_record(&txn, &slot, T(0), T(1), TAG);
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(slot), T(1));
++	KUNIT_EXPECT_FALSE(test,
++			   rcu_txn_is_proxy(rcu_access_pointer(slot), TAG));
++}
++
++/*
++ * Two records or more: the commit installs every proxy, flips the group and
++ * settles every slot to new.
++ */
++static void rcu_txn_test_multi_record(struct kunit *test)
++{
++	void __rcu *s1 = RCU_INITIALIZER(T(0));
++	void __rcu *s2 = RCU_INITIALIZER(T(1));
++	void __rcu *s3 = RCU_INITIALIZER(T(2));
++	struct rcu_txn txn;
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	rcu_txn_reserve(&txn, 4);
++	rcu_txn_record(&txn, &s1, T(0), T(10), TAG);
++	rcu_txn_record(&txn, &s2, T(1), T(11), TAG);
++	rcu_txn_record(&txn, &s3, T(2), T(12), TAG);
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s1), T(10));
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s2), T(11));
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s3), T(12));
++}
++
++/*
++ * The three steps of a commit, by hand: an installed proxy resolves to old,
++ * the flip makes it resolve to new, and the settle leaves the new target in the
++ * slot.
++ */
++static void rcu_txn_test_commit_steps(struct kunit *test)
++{
++	void __rcu *slot = RCU_INITIALIZER(T(0));
++	struct rcu_txn_group group;
++	struct rcu_txn_record rec;
++
++	__rcu_txn_group_init(&group);
++	__rcu_txn_record_set(&rec, &slot, T(0), T(1), TAG);
++	__rcu_txn_record_install(&group, &rec);
++	KUNIT_EXPECT_TRUE(test,
++			  rcu_txn_is_proxy(rcu_access_pointer(slot), TAG));
++	KUNIT_EXPECT_PTR_EQ(test, read_slot(&slot), T(0));
++	__rcu_txn_group_commit(&group);
++	KUNIT_EXPECT_TRUE(test,
++			  rcu_txn_is_proxy(rcu_access_pointer(slot), TAG));
++	KUNIT_EXPECT_PTR_EQ(test, read_slot(&slot), T(1));
++	__rcu_txn_record_settle(&rec);
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(slot), T(1));
++}
++
++struct item {
++	struct item __rcu *next;
++	int key;
++};
++
++/*
++ * A typed __rcu pointer as a slot: rcu_txn_slot() hands its address to the
++ * engine and rcu_txn_dereference_check() reads it back with its type, through a
++ * proxy or not.
++ */
++static void rcu_txn_test_typed_slot(struct kunit *test)
++{
++	struct item a = { .key = 1 }, b = { .key = 2 }, c = { .key = 3 };
++	struct item __rcu *head = RCU_INITIALIZER(&a);
++	struct rcu_txn_group group;
++	struct rcu_txn_record rec;
++	struct rcu_txn txn;
++	struct item *it;
++
++	/* Through an installed proxy, before and after the flip. */
++	__rcu_txn_group_init(&group);
++	__rcu_txn_record_set(&rec, rcu_txn_slot(&head), &a, &b, TAG);
++	__rcu_txn_record_install(&group, &rec);
++	it = rcu_txn_dereference_check(head, TAG, true);
++	KUNIT_EXPECT_PTR_EQ(test, it, &a);
++	__rcu_txn_group_commit(&group);
++	it = rcu_txn_dereference_check(head, TAG, true);
++	KUNIT_EXPECT_PTR_EQ(test, it, &b);
++	__rcu_txn_record_settle(&rec);
++
++	/* Two typed slots in one transaction: head -> c -> b. */
++	rcu_txn_init(&txn, GFP_KERNEL);
++	rcu_txn_record(&txn, rcu_txn_slot(&head), &b, &c, TAG);
++	rcu_txn_record(&txn, rcu_txn_slot(&c.next), NULL, &b, TAG);
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++	it = rcu_txn_dereference_check(head, TAG, true);
++	KUNIT_EXPECT_EQ(test, it->key, 3);
++	it = rcu_txn_dereference_check(it->next, TAG, true);
++	KUNIT_EXPECT_EQ(test, it->key, 2);
++	KUNIT_EXPECT_NULL(test, rcu_txn_dereference_check(it->next, TAG, true));
++}
++
++/* Record @nr edges on distinct slots.  Returns false if a record() failed. */
++static bool record_all(struct rcu_txn *txn, void __rcu **slots, unsigned int nr)
++{
++	bool all_recorded = true;
++	unsigned int i;
++
++	for (i = 0; i < nr; i++) {
++		RCU_INIT_POINTER(slots[i], T(i));
++		if (!rcu_txn_record(txn, &slots[i], T(i), T(100 + i), TAG))
++			all_recorded = false;
++	}
++	return all_recorded;
++}
++
++static bool all_settled(void __rcu **slots, unsigned int nr)
++{
++	unsigned int i;
++
++	for (i = 0; i < nr; i++)
++		if (rcu_access_pointer(slots[i]) != T(100 + i))
++			return false;
++	return true;
++}
++
++/*
++ * Record more edges than the first capacity without a reserve(): the
++ * descriptor grows, and the commit settles the whole set.
++ */
++static void rcu_txn_test_grow(struct kunit *test)
++{
++	enum { NR = 3 * RCU_TXN_CAP + 1 };
++	void __rcu *slots[NR];
++	struct rcu_txn txn;
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	KUNIT_EXPECT_TRUE(test, record_all(&txn, slots, 1));
++	KUNIT_EXPECT_GE(test, txn.cap, RCU_TXN_CAP);
++	rcu_txn_cancel(&txn);
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	KUNIT_EXPECT_TRUE(test, record_all(&txn, slots, NR));
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++	KUNIT_EXPECT_TRUE(test, all_settled(slots, NR));
++}
++
++/*
++ * reserve() gives the handle room for its bound, and recording up to the bound
++ * does not move the records.  Recording past it grows the descriptor.
++ */
++static void rcu_txn_test_reserve(struct kunit *test)
++{
++	enum { NR = 2 * RCU_TXN_CAP + 1 };
++	struct rcu_txn_record *records;
++	void __rcu *slots[NR];
++	struct rcu_txn txn;
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	KUNIT_EXPECT_TRUE(test, rcu_txn_reserve(&txn, 2));
++	KUNIT_EXPECT_GE(test, txn.cap, 2);
++	records = txn.records;
++	KUNIT_EXPECT_TRUE(test, record_all(&txn, slots, 2));
++	KUNIT_EXPECT_PTR_EQ(test, txn.records, records);
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++	KUNIT_EXPECT_TRUE(test, all_settled(slots, 2));
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	rcu_txn_reserve(&txn, 2);
++	KUNIT_EXPECT_TRUE(test, record_all(&txn, slots, NR));
++	KUNIT_EXPECT_GE(test, txn.cap, NR);
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++	KUNIT_EXPECT_TRUE(test, all_settled(slots, NR));
++}
++
++/* A single-record transaction installs no proxy, and may use a zero tag. */
++static void rcu_txn_test_zero_tag(struct kunit *test)
++{
++	void __rcu *slot = RCU_INITIALIZER(T(0));
++	struct rcu_txn txn;
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	kunit_warning_suppress(test) {
++		rcu_txn_record(&txn, &slot, T(0), T(1), 0);
++		KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++		KUNIT_EXPECT_SUPPRESSED_WARNING_COUNT(test, 0);
++	}
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(slot), T(1));
++}
++
++/*
++ * A cancelled transaction publishes nothing and consumes the handle, which
++ * commits as usual once initialized again.
++ */
++static void rcu_txn_test_cancel(struct kunit *test)
++{
++	void __rcu *s1 = RCU_INITIALIZER(T(0));
++	void __rcu *s2 = RCU_INITIALIZER(T(1));
++	struct rcu_txn txn;
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	rcu_txn_record(&txn, &s1, T(0), T(10), TAG);
++	rcu_txn_record(&txn, &s2, T(1), T(11), TAG);
++	rcu_txn_cancel(&txn);
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s1), T(0));
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s2), T(1));
++	KUNIT_EXPECT_NULL(test, txn.desc);
++	KUNIT_EXPECT_NULL(test, txn.records);
++	KUNIT_EXPECT_EQ(test, txn.state, RCU_TXN_DONE);
++
++	/* A handle that recorded nothing. */
++	rcu_txn_init(&txn, GFP_KERNEL);
++	rcu_txn_cancel(&txn);
++	KUNIT_EXPECT_EQ(test, txn.state, RCU_TXN_DONE);
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	rcu_txn_record(&txn, &s1, T(0), T(10), TAG);
++	rcu_txn_record(&txn, &s2, T(1), T(11), TAG);
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s1), T(10));
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s2), T(11));
++}
++
++/*
++ * The sticky OOM state, set by hand: no allocation of this size fails on
++ * demand.  Later records do nothing, and commit() and cancel() both release
++ * the handle without publishing.
++ */
++static void rcu_txn_test_oom(struct kunit *test)
++{
++	void __rcu *s1 = RCU_INITIALIZER(T(0));
++	void __rcu *s2 = RCU_INITIALIZER(T(1));
++	struct rcu_txn txn;
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	rcu_txn_record(&txn, &s1, T(0), T(10), TAG);
++	txn.state = RCU_TXN_OOM;
++	kunit_warning_suppress(test) {
++		KUNIT_EXPECT_FALSE(test, rcu_txn_reserve(&txn, 8));
++		KUNIT_EXPECT_FALSE(test,
++				   rcu_txn_record(&txn, &s2, T(1), T(11), TAG));
++		KUNIT_EXPECT_FALSE(test,
++				   rcu_txn_record_chain(&txn, &s2, T(1), T(11),
++							TAG));
++		KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), -ENOMEM);
++		KUNIT_EXPECT_SUPPRESSED_WARNING_COUNT(test, 0);
++	}
++	KUNIT_EXPECT_NULL(test, txn.desc);
++	KUNIT_EXPECT_EQ(test, txn.state, RCU_TXN_DONE);
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s1), T(0));
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s2), T(1));
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	rcu_txn_record(&txn, &s1, T(0), T(10), TAG);
++	rcu_txn_record(&txn, &s2, T(1), T(11), TAG);
++	txn.state = RCU_TXN_OOM;
++	rcu_txn_cancel(&txn);
++	KUNIT_EXPECT_NULL(test, txn.desc);
++	KUNIT_EXPECT_EQ(test, txn.state, RCU_TXN_DONE);
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s1), T(0));
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(s2), T(1));
++
++	/* declare_disjoint() leaves a handle whose reserve() failed as it is. */
++	rcu_txn_init(&txn, GFP_KERNEL);
++	txn.state = RCU_TXN_OOM;
++	kunit_warning_suppress(test) {
++		rcu_txn_declare_disjoint(&txn);
++		KUNIT_EXPECT_SUPPRESSED_WARNING_COUNT(test, 0);
++	}
++	KUNIT_EXPECT_FALSE(test, txn.disjoint);
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), -ENOMEM);
++}
++
++/*
++ * load() returns the transaction's pending value of a recorded slot, and
++ * record_chain() fuses a second store to it into the same record.
++ */
++static void rcu_txn_test_ryw_chain(struct kunit *test)
++{
++	enum { NR = 6 };
++	void __rcu *other = RCU_INITIALIZER(T(50));
++	void __rcu *slots[NR];
++	struct rcu_txn txn;
++	unsigned int i;
++
++	for (i = 0; i < NR; i++)
++		RCU_INIT_POINTER(slots[i], T(i));
++	rcu_txn_init(&txn, GFP_KERNEL);
++	for (i = 0; i < NR; i++) {
++		void *v = rcu_txn_load(&txn, &slots[i], TAG);
++
++		KUNIT_EXPECT_PTR_EQ(test, v, T(i));
++		rcu_txn_record_chain(&txn, &slots[i], v, T(20 + i), TAG);
++	}
++	/* Every slot is recorded: loads return the pending values. */
++	for (i = 0; i < NR; i++) {
++		void *v = rcu_txn_load(&txn, &slots[i], TAG);
++
++		KUNIT_EXPECT_PTR_EQ(test, v, T(20 + i));
++		rcu_txn_record_chain(&txn, &slots[i], v, T(100 + i), TAG);
++	}
++	KUNIT_EXPECT_EQ(test, txn.nr, NR);		/* fused */
++	KUNIT_EXPECT_PTR_EQ(test, rcu_txn_load(&txn, &other, TAG), T(50));
++	for (i = 0; i < NR; i++)		/* nothing is published yet */
++		KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(slots[i]), T(i));
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++	KUNIT_EXPECT_TRUE(test, all_settled(slots, NR));
++}
++
++/*
++ * A handle declared disjoint skips the lookup: record_chain() appends, and
++ * load() returns the committed value.
++ */
++static void rcu_txn_test_disjoint(struct kunit *test)
++{
++	void __rcu *a = RCU_INITIALIZER(T(0));
++	void __rcu *b = RCU_INITIALIZER(T(1));
++	struct rcu_txn txn;
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	rcu_txn_declare_disjoint(&txn);
++	rcu_txn_record_chain(&txn, &a, rcu_txn_load(&txn, &a, TAG), T(10), TAG);
++	rcu_txn_record_chain(&txn, &b, rcu_txn_load(&txn, &b, TAG), T(11), TAG);
++	KUNIT_EXPECT_EQ(test, txn.nr, 2);
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(a), T(10));
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(b), T(11));
++}
++
++/*
++ * A handle that commit() consumed must be initialized again.  Each entry
++ * point warns and does nothing.
++ */
++static void rcu_txn_test_consumed_handle(struct kunit *test)
++{
++	void __rcu *slot = RCU_INITIALIZER(T(0));
++	struct rcu_txn txn;
++
++	rcu_txn_init(&txn, GFP_KERNEL);
++	rcu_txn_record(&txn, &slot, T(0), T(1), TAG);
++	KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), 0);
++
++	kunit_warning_suppress(test) {
++		KUNIT_EXPECT_FALSE(test, rcu_txn_reserve(&txn, 4));
++		EXPECT_ONE_WARNING(test);
++	}
++	kunit_warning_suppress(test) {
++		bool recorded = rcu_txn_record(&txn, &slot, T(1), T(2), TAG);
++
++		KUNIT_EXPECT_FALSE(test, recorded);
++		EXPECT_ONE_WARNING(test);
++	}
++	kunit_warning_suppress(test) {
++		KUNIT_EXPECT_FALSE(test,
++				   rcu_txn_record_chain(&txn, &slot, T(1), T(2),
++							TAG));
++		EXPECT_ONE_WARNING(test);
++	}
++	kunit_warning_suppress(test) {
++		KUNIT_EXPECT_PTR_EQ(test, rcu_txn_load(&txn, &slot, TAG), T(1));
++		EXPECT_ONE_WARNING(test);
++	}
++	kunit_warning_suppress(test) {
++		rcu_txn_declare_disjoint(&txn);
++		KUNIT_EXPECT_FALSE(test, txn.disjoint);
++		EXPECT_ONE_WARNING(test);
++	}
++	kunit_warning_suppress(test) {
++		rcu_txn_cancel(&txn);
++		EXPECT_ONE_WARNING(test);
++	}
++	kunit_warning_suppress(test) {
++		KUNIT_EXPECT_EQ(test, rcu_txn_commit(&txn), -EINVAL);
++		EXPECT_ONE_WARNING(test);
++	}
++	KUNIT_EXPECT_PTR_EQ(test, rcu_access_pointer(slot), T(1));
++}
++
++static struct kunit_case rcu_txn_test_cases[] = {
++	KUNIT_CASE(rcu_txn_test_single_record),
++	KUNIT_CASE(rcu_txn_test_multi_record),
++	KUNIT_CASE(rcu_txn_test_commit_steps),
++	KUNIT_CASE(rcu_txn_test_typed_slot),
++	KUNIT_CASE(rcu_txn_test_grow),
++	KUNIT_CASE(rcu_txn_test_reserve),
++	KUNIT_CASE(rcu_txn_test_zero_tag),
++	KUNIT_CASE(rcu_txn_test_cancel),
++	KUNIT_CASE(rcu_txn_test_oom),
++	KUNIT_CASE(rcu_txn_test_ryw_chain),
++	KUNIT_CASE(rcu_txn_test_disjoint),
++	KUNIT_CASE(rcu_txn_test_consumed_handle),
++	{}
++};
++
++static struct kunit_suite rcu_txn_test_suite = {
++	.name = "rcu_txn",
++	.test_cases = rcu_txn_test_cases,
++};
++
++kunit_test_suite(rcu_txn_test_suite);
++
++MODULE_DESCRIPTION("KUnit tests of the single-writer RCU pseudo-transactions");
++MODULE_LICENSE("GPL");
 -- 
 2.47.3
 
