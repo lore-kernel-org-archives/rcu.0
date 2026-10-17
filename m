@@ -1,190 +1,193 @@
-Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com [74.125.82.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90943CA497
-	for <rcu@vger.kernel.org>; Sat, 17 Oct 2026 17:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D17F3BED24;
+	Sat, 17 Oct 2026 17:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792257305; cv=none; b=cqgITDkz5B4kcqLBTxKW33WCQYmxvL5tZa2nKeSlW2xH2offJYGWFgCzZq4y7jJOopyNfIofeX89+ipJ+rv0LQq2fcQGcUuc81BXBGH1r2fzYigdmg5XJ01OxW2uQj9UFk/PiHlfP5VbTfjEbDx0if74hPDa1IlQ6c72ih2aVEs=
+	t=1792259187; cv=none; b=kF2KkPGtdGRtdZaggAANu3KnjvuNd/KK+GDlA7crXL3sbYk/aa77tYG/XofiBC9/6Z5oolncX11m2CwOOzsXw79/yDJu5Kg8NSMCka08M9T5mK/cdBmp2NBnv60OohEK8NUHdPbmW/ExDXVCdVA0T81sZb9Typ+DVv1kk/FvR5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792257305; c=relaxed/simple;
-	bh=GxArOIvto1pp6qoIBJI22Cq3xg1jqH/+vydnFspY9XU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=sVj4TNKlUPj/58gIBwzmrxTjaSI0vQugC8dafwm3nmzEViuA/Nx2j+L79OxoXzIj0f2UXlsldYga96jW7chm8onWutieyCRpn6GFtNKVLZQChEvlaGubEg2zaqCNpVzkN/Er2Q5vI1QZtgVH2mzLi7PBlpXGt2kH15K0RTE8drs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dKULd+D8; arc=none smtp.client-ip=74.125.82.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+	s=arc-20240116; t=1792259187; c=relaxed/simple;
+	bh=KOaBp4nd1XKsU9HC9msPo9YG2SVuNl+qaCV8G/wEFJw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jmPWNPq5j/x4VWv3zbHSSBPBYtFSDyeyDZLdecb/5d/mptw+cFamXENFPkhrBRD/rg5rnBSSpIDClVDigGc0EDvuWdUlDpdXv6rMqOu/SqIPdn/1HGc5kkrJHGyfiGC9UaU2aFqKvJQ0TqSLrpVMG4OAhotF4sMBiYj7JJuw1hQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IBOUBKFl; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dKULd+D8"
-Received: by mail-dy1-f197.google.com with SMTP id 5a478bee46e88-35cbea41088so1385815eec.1
-        for <rcu@vger.kernel.org>; Sat, 17 Oct 2026 10:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1792257303; x=1792862103; darn=vger.kernel.org;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=6twbsj7fCGE7RjYCr+/3f8wBcq2w9//V4MEqCuNPeO4=;
-        b=dKULd+D8SdtT3mcyAmhpvalwjPl3IpdzNPkLMXsPYqQbkyEQZwif8e2YyGKug0sAB3
-         MSrYx2X0Q1xdii94IRYUJXj9aVC2DuRMqTS5vNKR1DN+c33epkdyUIjVZhHws9bEWVmn
-         PDi2FcZzEtrcaTiBNcAZGdYvYVxy/Yv6f962n3PzoaLz0GgN+ZUqTZCc6V60KK7IM/wM
-         xmjMPfeK7ol056xCsyHEKe7DHEokWqlvD3bs3cJz/9K9CxLv5aDPi+heS+ntXCr8nRNU
-         7tQodB4MGV6hk1k+qGIkGJxD21XxWxIyyQEGGhlmxcJbiEqIQInyGO0Pxdves9MhibEX
-         8R6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792257303; x=1792862103;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=6twbsj7fCGE7RjYCr+/3f8wBcq2w9//V4MEqCuNPeO4=;
-        b=V9KEQGLwSkH0sXLUx7eplF3sWTVtyeib+dSswJ9KAdidwaVcyWTGXcA9RI3V58zuTO
-         R3k8RXfdnnvdQ3wGBdhVfqw+ojgS7pTCmi1SQDeVaGwiXJmyvY81RaceoqRfoY0d6T1S
-         ubAnzVxtsctVu+Q1UaQWlDIV1o78k7MHEAgHHUcSb2e++LMixyKK/gjCBjbp/5+gyA5O
-         tCjRrnVXl/p3tW2U146rIBIo8/NME3cBiYv4RI3GwnSgImldQ0//phfTFUhMvDQTHXyl
-         5vyRMUqyJscuS+nJKNSGhlIZQ4f/OctKI1uJCYzqWebH5FNdBuvQouIus70Vl5JOcqoS
-         rc/g==
-X-Forwarded-Encrypted: i=1; AKwUvBzzglckMb6ABi2Ut0LAGUBGE7SQiZklBbrZRRc2BT8QoBh9YSEe98q7AQdvNyfMw8iYB9I=@vger.kernel.org
-X-Gm-Message-State: AFq9FYIZl9eUuN/NyvVHoptes50WvRC7tzCJfT1DKG3kuqfxx2H6spEH
-	7dZJ/97aciNIpCJl8YBM3yhn05iAX+4Y7fvxWRaHNMjkGNe39LJszuKRdCyZI3QOZNNwB28zHN2
-	z1/Uoc2ZspQ==
-X-Received: from dyep10.prod.google.com ([2002:a05:7300:428a:b0:353:8237:7213])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:7301:dd91:b0:35b:17b9:ebc8
- with SMTP id 5a478bee46e88-361a1f50cbcmr3847175eec.19.1792257301577; Sat, 17
- Oct 2026 10:15:01 -0700 (PDT)
-Date: Sat, 17 Oct 2026 10:14:37 -0700
-In-Reply-To: <20261017171437.2066343-1-irogers@google.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IBOUBKFl"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33E1C1F000C6;
+	Sat, 17 Oct 2026 17:46:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792259186;
+	bh=OM0K60xAtoa1I1MC//eZua9IoNpax99vorD1YIT8BKM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=IBOUBKFlO/0hEa/8P0dpMPjlO+yvXvmncXz10hDYgZdwtAV0ft74qhquc9ZOzEagv
+	 vKAoj0puKA4MGfZQCRtrKarzEZyoNp4fEgYJdDPx7TZBZ+nP/EI9GgYP8Sdmc7iGOh
+	 +P6jATGK5b6fR/9470u0QNeRAMLRSfbFOINjljE5G9vN4CwNZ9dX2RbJ0St3Z8s3OA
+	 8cWF0VwZ7pRqVDqb+mAC/3VIGJCWN3K3IstRs+biee6iLQUPjkVcuC4w8U6YtIY7zK
+	 qnnnKJPTaGl03GwyTH6nwn+blrFVCSqrlldtKRmx6fidezts6Sl5jf4hpyCqErQYiu
+	 gdoHrszq4zORw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D4E6CCE0C55; Sat, 17 Oct 2026 10:46:25 -0700 (PDT)
+Date: Sat, 17 Oct 2026 10:46:25 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Bradley Morgan <brads@mainlining.org>
+Cc: Zqiang <qiang.zhang@linux.dev>, boqun@kernel.org, frederic@kernel.org,
+	joelagnelf@nvidia.com, linux-kernel@vger.kernel.org,
+	neeraj.upadhyay@kernel.org, rcu@vger.kernel.org, urezki@gmail.com
+Subject: Re: [PATCH] rcu-tasks: Warn on too-short RCU Tasks Rude grace period
+Message-ID: <3fc682be-c0ed-48b2-ae91-af80d1535520@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <D155FA7E-8E99-4D4F-92A8-74472834F25A@mainlining.org>
+ <8d7f265cd1320bf7996bcffea07ffdea69cfd625@linux.dev>
+ <2247C12C-EE02-46CC-922F-D6A62D1E77C1@mainlining.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20261017054555.1655407-1-irogers@google.com> <20261017171437.2066343-1-irogers@google.com>
-X-Mailer: git-send-email 2.56.0.212.g129ede20d9-goog
-Message-ID: <20261017171437.2066343-7-irogers@google.com>
-Subject: [PATCH v2 6/6] perf lock contention: Filter events before creating lock_stat
-From: Ian Rogers <irogers@google.com>
-To: irogers@google.com, acme@kernel.org, namhyung@kernel.org
-Cc: adrian.hunter@intel.com, james.clark@linaro.org, jolsa@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	mingo@redhat.com, peterz@infradead.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2247C12C-EE02-46CC-922F-D6A62D1E77C1@mainlining.org>
 
-In report_lock_contention_begin_event(), lock_stat_findnew() was
-called before checking filters.nr_types (-Y), filters.nr_addrs (-L),
-and match_callstack_filter() (-S).
+On Sat, Oct 17, 2026 at 12:16:48PM +0100, Bradley Morgan wrote:
+> On 17 October 2026 00:41:00 BST, Zqiang <qiang.zhang@linux.dev> wrote:
+> >> 
+> >> On 15 October 2026 10:46:19 BST, Zqiang <qiang.zhang@linux.dev> wrote:
+> >> 
+> >> > 
+> >> > The RCU Tasks Rude grace period is implemented by invoking the
+> >> > schedule_on_each_cpu() with an empty work function, which forces
+> >> > a context switch on every online CPU and guarantees that all
+> >> > rude-tasks read-side critical sections have completed. However,
+> >> > schedule_on_each_cpu() can fail (via alloc_percpu() returning
+> >> > -ENOMEM) and returns immediately, in which case those context
+> >> > switches never happen, too-short grace period happen.
+> >> > 
+> >> > This commit therefore wraps the schedule_on_each_cpu() call in
+> >> > WARN_ONCE() so that this failure is reported as a "Too-short
+> >> > grace period" warning.
+> >> > 
+> >> NAK, this seems like a edge case, and potentially panicking the system
+> >> with panic on oops doesn't seem right to me, because we would reserve
+> >that
+> >> for when something definitely goes really wrong and we need to notify
+> >> the user.
+> >> 
+> >> I don't believe this patch should go in for this reason, it's a heavy
+> >edge
+> >> case, that doesn't *have* nessesarily need to be accounted for.
+> >
+> >Indeed, this is a rare event, so I use WARN_ONCE() to mark it, the
+> >WARN_ONCE()
+> >not panicking system unless you set warn_on_oops true, this can help us
+> >troubleshoot
+> >UAF issues caused by a too short tasks-rude grace period.
+> >
+> >or maybe we can use DEFINE_PER_CPU(struct work_struct, rude_work) to
+> >replace
+> >alloc_percpu(struct work_struct) queue to all online CPUs.
+> >
+> >Anyway, Thank you for your reply. I would also like to hear the opinions
+> >of others.
+> 
+> Fair enough, but me and Paul done some discussions:
+> 
+> Here is the TL;DR
+> 
+> My ^W^Wai slop^W^W tool helped me with this: if the too short grace
+> happens,
+> it falls back.
+> 
+> 
+> root@p10-linux-brads:~/linux# git diff kernel/rcu
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 627295396cd9..65bb7d4ed632 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -1344,15 +1344,23 @@ void exit_tasks_rcu_finish(void) { }
+>  // Ordering is provided by the scheduler's context-switch code.
+> 
+>  // Empty function to allow workqueues to force a context switch.
+> -static void rcu_tasks_be_rude(struct work_struct *work)
+> +static void __maybe_unused rcu_tasks_be_rude(struct work_struct *work)
+>  {
+>  }
+> 
+>  // Wait for one rude RCU-tasks grace period.
+> +static void rcu_tasks_rude_ipi(void *info)
+> +{
+> +}
+> +
+>  static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
+>  {
+> +       int cpu;
+>         rtp->n_ipis += cpumask_weight(cpu_online_mask);
+> -       schedule_on_each_cpu(rcu_tasks_be_rude);
+> +       cpus_read_lock();
+> +       for_each_online_cpu(cpu)
+> +               smp_call_function_single(cpu, rcu_tasks_rude_ipi, NULL, 1);
+> +       cpus_read_unlock();
+>  }
+> 
+>  static void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
+> root@p10-linux-brads:~/linux#
+> 
+> On POWERPC, this passes 12 hours of rcutorture on the RUDE01 config.
 
-When a filtered-out lock event (such as a mutex contention when
-running with -Y spinlock) shared the same aggregation key as a
-subsequent matching event (for example, contention on the mutex's
-internal wait_lock spinlock from the same caller), the first event
-created the lock_stat entry with the filtered-out lock's flags and the
-second event reused that entry, causing non-spinlock entries to appear
-in -Y spinlock output.
+That is surprising, given that when I run your patch shown above on my
+x86 laptop, rcutorture reports a too-short grace period within 20 seconds.
 
-Check the type, address, and callstack filters before looking up or
-creating the lock_stat entry.
+							Thanx, Paul
 
-Fixes: b4a7eff93c39 ("perf lock contention: Add -Y/--type-filter option")
-Assisted-by: Antigravity:gemini-3.1-pro
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/builtin-lock.c | 61 +++++++++++++++++++++------------------
- 1 file changed, 33 insertions(+), 28 deletions(-)
-
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index feaf1cfd08cf..a031709a2cc2 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -975,6 +975,7 @@ static int report_lock_contention_begin_event(struct perf_sample *sample)
- 	struct machine *machine = &session->machines.host;
- 	struct map *kmap;
- 	struct symbol *sym;
-+	u64 *callstack = NULL;
- 
- 	ret = get_key_by_aggr_mode(&key, addr, sample);
- 	if (ret < 0)
-@@ -1010,33 +1011,6 @@ static int report_lock_contention_begin_event(struct perf_sample *sample)
- 		}
- 	}
- 
--	ls = lock_stat_find(key);
--	if (!ls) {
--		char buf[128];
--		const char *name = "";
--
--		switch (aggr_mode) {
--		case LOCK_AGGR_ADDR:
--			sym = machine__find_kernel_symbol(machine, key, &kmap);
--			if (sym)
--				name = sym->name;
--			break;
--		case LOCK_AGGR_CALLER:
--			name = buf;
--			if (lock_contention_caller(sample, buf, sizeof(buf)) < 0)
--				name = "Unknown";
--			break;
--		case LOCK_AGGR_CGROUP:
--		case LOCK_AGGR_TASK:
--		default:
--			break;
--		}
--
--		ls = lock_stat_findnew(key, name, flags);
--		if (!ls)
--			return -ENOMEM;
--	}
--
- 	if (filters.nr_types) {
- 		bool found = false;
- 
-@@ -1066,7 +1040,7 @@ static int report_lock_contention_begin_event(struct perf_sample *sample)
- 	}
- 
- 	if (needs_callstack()) {
--		u64 *callstack = get_callstack(sample, max_stack_depth);
-+		callstack = get_callstack(sample, max_stack_depth);
- 		if (callstack == NULL)
- 			return 0;
- 
-@@ -1074,7 +1048,38 @@ static int report_lock_contention_begin_event(struct perf_sample *sample)
- 			free(callstack);
- 			return 0;
- 		}
-+	}
-+
-+	ls = lock_stat_find(key);
-+	if (!ls) {
-+		char buf[128];
-+		const char *name = "";
-+
-+		switch (aggr_mode) {
-+		case LOCK_AGGR_ADDR:
-+			sym = machine__find_kernel_symbol(machine, key, &kmap);
-+			if (sym)
-+				name = sym->name;
-+			break;
-+		case LOCK_AGGR_CALLER:
-+			name = buf;
-+			if (lock_contention_caller(sample, buf, sizeof(buf)) < 0)
-+				name = "Unknown";
-+			break;
-+		case LOCK_AGGR_CGROUP:
-+		case LOCK_AGGR_TASK:
-+		default:
-+			break;
-+		}
-+
-+		ls = lock_stat_findnew(key, name, flags);
-+		if (!ls) {
-+			free(callstack);
-+			return -ENOMEM;
-+		}
-+	}
- 
-+	if (callstack) {
- 		if (ls->callstack == NULL)
- 			ls->callstack = callstack;
- 		else
--- 
-2.56.0.212.g129ede20d9-goog
-
+> If you plan on submitting this into a patch, please add my authorship, or
+> my c-d-b. 
+> 
+> Feel free to rcutorture test it ;d
+> 
+> BTW: have you reproduced this on your own system?
+> 
+> >
+> >Thanks
+> >Zqiang
+> >
+> >
+> >> 
+> >> Zqiang, have you reproduced this OOM on your own system, if so, could
+> >you
+> >> tell me more details, you may turn my frown into a smiley face ;)
+> >> 
+> >> > 
+> >> > Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+> >> > ---
+> >> >  kernel/rcu/tasks.h | 3 ++-
+> >> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >> > 
+> >> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> >> > index fcac7361ec51..91c25717402e 100644
+> >> > --- a/kernel/rcu/tasks.h
+> >> > +++ b/kernel/rcu/tasks.h
+> >> > @@ -1361,7 +1361,8 @@ static void rcu_tasks_be_rude(struct work_struct
+> >*work)
+> >> >  static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
+> >> >  {
+> >> >  rtp->n_ipis += cpumask_weight(cpu_online_mask);
+> >> > - schedule_on_each_cpu(rcu_tasks_be_rude);
+> >> > + WARN_ONCE(schedule_on_each_cpu(rcu_tasks_be_rude),
+> >> > + "%s: Too-short grace period, OOM is now expected behavior!!!\n",
+> >rtp->name);
+> >> > 
+> >> Good message, makes sense. But I don't think this is right, see above.
+> >> 
+> >> > 
+> >> > }
+> >> >  
+> >> >  static void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t
+> >> >  func);
+> >> > 
+> >> --- Thanks!
+> >> "I'm not a very positive person" - Linus torvalds
+> >>
+> 
+> --- Thanks!
+> "I'm not a very positive person" - Linus torvalds
