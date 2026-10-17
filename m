@@ -1,166 +1,236 @@
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012010.outbound.protection.outlook.com [52.101.43.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dy1-f198.google.com (mail-dy1-f198.google.com [74.125.82.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE22248E0E7;
-	Sat, 17 Oct 2026 15:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792249363; cv=fail; b=uKVeAPdff8QFIv/1hWVFMdU/BApSVyMu3EpnnZm1c5L5a0b8ZCf8R//16X0fO1rquP5qMtP7FIwGGd1xVrL88nX8xlbrAu/75DBxay16RalQLIjiC564nA8MXJUNQ7ut6T53fB1G8u9Xyf79WM3XICSgju51z4Wh7NIfGqASI2w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792249363; c=relaxed/simple;
-	bh=3fjbTfDEKc2X3flF3hquABb+OfIN4lR1DpTMLJUZghk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=vEDa1B4sS37LE819JhmkaR2ygWZw7HiiOdf2ZfzDAaKLYjM7VmgBXqmVMljCYwWhSnA454RDfwqNAi+O6kt+xacVWU2xpJ5VE7Cr2Ea8/GpUsnfDGtQ3a7e0LteAdSxNcrWpdhEHbkOntVmZ/AqLdjKRz6lkLurSu7ambZGZgQ0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=tIc6cgH+; arc=fail smtp.client-ip=52.101.43.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B370D3BD651
+	for <rcu@vger.kernel.org>; Sat, 17 Oct 2026 17:14:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.198
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1792257293; cv=none; b=iK2k/cQshpw3eTiHyLGqXeZlt6ICgP5bQsspL4NGpf6dGLLw8W2XnChL2APfxD1DQ/611dEujrluOnDb3ju0lXPgAG+9ZVGCMOAdTnzpvFGNBZ2D9G/VLVVccOVGznP9tKJIiAtxtRcKgwXKqNA6hgxr29JG+pOYppiqDKqQBBQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1792257293; c=relaxed/simple;
+	bh=RPqCQDxjE3n++2VgM6o+8e4cV0MBPujj1BtwrxM7pGg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=k2N8VjQeZi9ZHRn5cYQ1vqrF4De34FfMftrh07he0G35UI5viwxngxiNN9j2sT8Rgxm2/wvD/e8nFPhouwJD3xCCgpqC8p9q567RXc1jL0lQWwwbAmqEi4vKc65zT50Xle8VtEIbrseJ/MACg8LqjBLmcXK8yeFg2KWc0WcpiaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bG4KvOZX; arc=none smtp.client-ip=74.125.82.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="tIc6cgH+"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=MpkjEI3rz4q0l6hLIQCLC6kzGr+W+ZivO8zVkoh/HjwSJ53WYp4mylS3kCmhQniiQr7AK1Ck1yC4cLFv47+yNxWRQIZEFGkdD569+ZtWPYHMzpMxvhqP0LZP5vy0wM9V8BYylYKMQoWz6K4VFjhhB/+GLIzhILaGDh6ze6nOe+z0osZz0wRc88jKdy4NhrGTyhBliUrgbprN36Tf3Eo6JfLw8+9pMmCNLDVxipb9NoPkvbklzF30+MHDC96blwFWrJ2ts1wjzJynmmG2lN3XMcq/DQP56iStCAs7RH59lpqu9Cdr2jedcKfZF+YIqZ0hQoTQ9OmmRF7zDZzZ4O2CVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3fjbTfDEKc2X3flF3hquABb+OfIN4lR1DpTMLJUZghk=;
- b=ITkRfpAqGxZ33Ct6HRw45akuMUxFBmThicSOzsYgzwaeAv68aXqTSqg9AFb4SHnTDRVnIBCLTfT2IOEtMkd/+0uM84svdUfvbH/y8IOSKz358/bQAIMISy1aZn/hlavWOyIVwV5kb6nkHCY7U8H1lAyX7ae1JjJeyyKwLulOqtnmdKRpyVYaU7HYSGqAe/LseEq1kdGzjU4hD5NQrnYaUgFzW6+5bMj+6iJFFJrDstU7siDqYef4lI+CBXJz2O6bWqDQU2J4HtBd0ssyfrP2lzbihwS81KX1b5RI+98FeekGA41kdt5uuEb5txgbZ0jPmNW2WR/gJ7GFVNJbKqTm4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3fjbTfDEKc2X3flF3hquABb+OfIN4lR1DpTMLJUZghk=;
- b=tIc6cgH+XzltES3TOmcBUCDK3J/tDKvYRwSkCjfFuisLbIPK6xtGH2VvLALYMR1scSzBGLiOkHp9TsyxZrULMNBRlPRVR1X+QtS+m2TQ+47c3RPEt0i2XSqigmdwYBUPWc4s2RsJzpuEE0F9YQLw7Me40ZTmK8NC4BW7I3Zbea61LWvF9cgGc7RHjtKLYfZpcYNQ4Jf3wkREtrDNOS73MJ64zku5CbW6tKBjKO88Rs0bW+u1djrbIb0o2ESfUn3AJNbwKIxqAXpbVl3B4PMji8ReGOn0dblg/1cCtQLKwRkcDJt2LwB5cUknISTk2Enhl5jDP0F5ixjDwHCzErBuRQ==
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com (2603:10b6:8:c5::21) by
- DM6PR12MB4298.namprd12.prod.outlook.com (2603:10b6:5:21e::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.522.12; Sat, 17 Oct 2026 15:02:38 +0000
-Received: from DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33]) by DS0PR12MB6486.namprd12.prod.outlook.com
- ([fe80::88a9:f314:c95f:8b33%6]) with mapi id 15.21.0496.021; Sat, 17 Oct 2026
- 15:02:37 +0000
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Zqiang <qiang.zhang@linux.dev>
-CC: "paulmck@kernel.org" <paulmck@kernel.org>, "frederic@kernel.org"
-	<frederic@kernel.org>, "neeraj.upadhyay@kernel.org"
-	<neeraj.upadhyay@kernel.org>, "urezki@gmail.com" <urezki@gmail.com>,
-	"boqun@kernel.org" <boqun@kernel.org>, "rcu@vger.kernel.org"
-	<rcu@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "qiang.zhang@linux.dev"
-	<qiang.zhang@linux.dev>
-Subject: Re: [PATCH] rcu-tasks: Warn on too-short RCU Tasks Rude grace period
-Thread-Topic: [PATCH] rcu-tasks: Warn on too-short RCU Tasks Rude grace period
-Thread-Index: AQHdXIoOw8oKAMF5GkqWWPIoLDAGl7cB2AQs
-Date: Sat, 17 Oct 2026 15:02:37 +0000
-Message-ID: <970F52C9-3198-4BD1-B1A9-6A4B24F550AA@nvidia.com>
-References: <20261015094619.8773-1-qiang.zhang@linux.dev>
-In-Reply-To: <20261015094619.8773-1-qiang.zhang@linux.dev>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS0PR12MB6486:EE_|DM6PR12MB4298:EE_
-x-ms-office365-filtering-correlation-id: 0fe5dad0-6233-4c67-5eee-08df2c5faeca
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|23010399003|10070799003|1800799024|366016|376014|56012099006|38070700021|11063799006|18002099003|22082099003|10067099003;
-x-microsoft-antispam-message-info:
- 6i+qUGKaxDZhDoaVsV6zwoDRdWCgR+Z+qgBKca6b2h70JLgsbJ35+c0qELjFC+WTRfiCEE1X0NqJtpqNAzRV1S6gpqU11dYqXTlGzgea3A+WvXeE9aCUYmeWecQM4jpI0nryuRq29B01+MaoZRrBDZcVBVTWwPaXU1eyRiGmwZiRP22rJNDzCje+0Tlcfidd05Eg+dTEpFhTcGL0t4FO/SSfoGf1Fg/MxsHPOOHNYxuGotmdMBMwys3w0CpVukT0j/gnfzQ7KAEwrsF5PVxBEXLG2UNMIh9JQkS/05kESmV3QYRQJgPbCp4xi0+usIOJMwHXKU82+bgxTjIPQdfh1TQKqh02JD6KxYJx3YaJvebO250+BITFoOYNeI/6oYUagug6T5EfSPDyAjO5HCdi5gSv0Jc26w1PHQgkgTC2eQ2g3Jg3U6sxAdunUrnk9W2YUdDzCda6kiQqzUeN9CHc8JYNuBMKw9eyXogIEQN8D4WQbx8NMmMAikKhyOW0El+gHUoUPq8W4VguXF39qMYBij5CXd4oOgi+BLA0K67GPps94lYNGIF1uBYOBAIiHS2FfwojBnVYHlx+Exg42lGMpf4AxC+JJvmHfmLhqjM9+O8xr1iwq0UOmfA4CIYTuT99KNvNbp5NWqyxW0veV+8OFw63QYaK1ogjXx4iH/Zucm9ZzyehfqoNPbH1pZ9yZ4KAs7SSljflEyy33KDyTs9IGTxNN6XuqnKN9T72SVqYAfU=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6486.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(10070799003)(1800799024)(366016)(376014)(56012099006)(38070700021)(11063799006)(18002099003)(22082099003)(10067099003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 2
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?MWgyUGp3QnBKQ0ZKelJTZ1FkOGYwRThpR1EzUmVRZm8zUHJRL1ZJaHpjNVZj?=
- =?utf-8?B?Z0gzVERLMStORDU2MzIyT25zQ1lZLzRENUp2VnVRaUhrOTdGWVNtWE9lZjdY?=
- =?utf-8?B?NkZseU1SdCs0NTB2VTRlOHlzTDNvU2V6T1lmWnJ0R1IzcE1XbktsVTB5ZFcy?=
- =?utf-8?B?dGNNeWVUYmxrNmVmRjVzTzhWSHovOStobG1NdXpaaStzTEJzM0xaS2pRRUI4?=
- =?utf-8?B?SE1WYjNQTDBuOHlPZHNsWnNnZ3pwV2lNN3M3RCtvbENMU2FpSGRaRWpMYkdq?=
- =?utf-8?B?bElNbDdQcXlaVjRGZTlQN2pQK2JWYmVieFdaM0hjT0ZFWUNlTVlIeHV1dTl3?=
- =?utf-8?B?bEcwS2hOaUxSTTJpVElpVk56b3NaZ3V5aGFSWjNRa2VTOFE3VTQyVUtIT1Aw?=
- =?utf-8?B?VGo4czFFODlGZy9NMjkwY0ZhNTJzRFVMbEI3TG5hK3pZTTJjaHhBczE1TUps?=
- =?utf-8?B?dWUvR3RwTEVVTk1ZQ043TDEwdFhtQ2wxekNQdFJFQldZVmtyQ2NZdDJvQk9v?=
- =?utf-8?B?SVd3ZU1GYytsVTlHSUFWNU4vTlJCTHJlZFpaZnhrMDREZXBZWFZxVlkrcERP?=
- =?utf-8?B?UHpNcEkydncrMEZEUVF5M3luWHJ6ZUZSZFZTc2k1Tk84RlVsVE5RRTBtMXNQ?=
- =?utf-8?B?WFpuNmh4Ulc4ekFWL1MvenhmWkVuOVJzL2R4Q3FZWUdVcldFUGdhOEhqSkNv?=
- =?utf-8?B?OUtoU0dXUTdzTmpDZGF3OE1jVm9UYTdQa0ZsS1dIUXVTZGkrRHZpb0dzMzUy?=
- =?utf-8?B?L0VwTXF6N3kyMERFVDBLeTRKNGduMHBrNkJiZ0lyV295OFlDQWtwM1cvNi9v?=
- =?utf-8?B?TkVsU3lsYXNwMVh3d1M0UGhUVkZtRzRVOW9qVW1KMGlmMG1nQTFYd0ZOZ0NS?=
- =?utf-8?B?ZFlKOGhScFFva0JCbW90UlB3Rzg5Y1BEb2lCbnllbmdROW9EZ2NndU1OK1Ji?=
- =?utf-8?B?bUpRdTZCbXZVOHRTdXY5b0dxbmY3N0w2L0UvR2VGSlRGS1ZsdE40WDNXVERm?=
- =?utf-8?B?ZS9zK3Y1Z0V4emo5ajR6dEYrY1RRME1Xa1pabWl0d1h2RDdWZ1NOUjdsWTVv?=
- =?utf-8?B?b0VEYTJMMlRoMFZpZS9CUlNyVXN3c09Wb083MkQ4QTBBUGlBM2Z5UHAwblpn?=
- =?utf-8?B?K3RJQjJOY2ZiamN1ZjNBSzUvMVliNWN2N015Y3ZuUnQrU25sNmJKSXFYVEFE?=
- =?utf-8?B?bWl1WEJHY1dYY2QwN3NxaFQwaGgvemJvNWdEMXk3a2VFZHlqNTZaclN6Ujcz?=
- =?utf-8?B?ZWpkNjNacHl0Q2JabVl5Rk5NeS9ZZ1k5ZlZEbDVLL1FXd3daK3dobGM1QXZM?=
- =?utf-8?B?Q0RWcnJ3dTBHTEtQZndGcU56bXpYWWF4dXUyL3M0VjVxUThyMi9VWXZuWFg0?=
- =?utf-8?B?VDlYZklidnhXQnFreWRpbFBGR2ZMc0llUHJPbnViVGVabFJqME01bUt1Q1N5?=
- =?utf-8?B?dURvV3FUTkVkREVhK1EwWFZrNUJkbmFzNlZYUHRiczlkSFM5V2xEMnNaeUlO?=
- =?utf-8?B?M2VKWldpVUJ2RFBlSGdnTEc1RzB6TnBiVTJoLzA3cWNucDY3ZHhTM2tCTmFC?=
- =?utf-8?B?WGc0M1ZQTGYyWFNiZ0NxSnhrc3NnVDJFbDdVZ3Z4MFhLYU01Vmd0RVlXeEhl?=
- =?utf-8?B?REh4Y0ZDYjU5dUlxZXhaQjFSOEhJV2xoeHB3dnVLUDlla0kxZnBRSDEzMWUz?=
- =?utf-8?B?SGpZRW1XUWR0bzFHbHE4TEpqVGQrbXhzaVRDSy8wMnk3Q08xZHBhUWxhVjRz?=
- =?utf-8?B?bEZtV2ZHdlpWdEs5NzVXSGRXZThuYTRYOHZCVnZiM1hpRHZlenJuUWJHdnoy?=
- =?utf-8?B?OS9mTDliMk8wOEVUeDFsUDRENzloZEZlSUJRVlVJcWtkRGVwOEorUS9Qbjlm?=
- =?utf-8?B?eFZrN29OZjF3ZEVLdzJrZTN6Ri9vYldZMXhIVU1QKy82TU5GcnUrclRZRVN6?=
- =?utf-8?B?UGU4V3ZkK1Jmekl5L09QbzhVY0ZhWnk4VGxNUDNIK213aC90MklhUTNIL0J2?=
- =?utf-8?B?MGtEN3pEdUMrRFQvcUZSdVVwYkVITUJtL3k0RnBaak5iR3RVSkNpNUR0ME02?=
- =?utf-8?B?VTZ5aUdubUhXS2RCS2RnREtqWDJjZVFhSTJxaVNQaFFyajJKZGNrL21JWFZT?=
- =?utf-8?B?am5zY0x5REZ3Q0NQOFJJVmlhaHVJVThaYnV5WXBpa1pkQ3c2aDlXeE1WYTNE?=
- =?utf-8?B?Sm5qL2RvQUcxN0NIczFWQkFtbldGUlpFdzloQ05xLzBOa1B3WVhUSkxMTEdJ?=
- =?utf-8?B?blBPK2FsK0RPMDZscFBURkthcmZ3azg4TEd3Skw2Q2ExK014blVyS2RxOTFP?=
- =?utf-8?B?K3FJM2NHeFdXR2NXYnp4bnpscEtKM2hiVHptUG1semlYdDRXQ1dWb2VPMG9H?=
- =?utf-8?Q?hKQWJeYahdKQFTTi4gpfxNfpl1RGJKQN77yF6R7jAooXT?=
-x-ms-exchange-antispam-messagedata-1: lDzRD7BOAf60Zw==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bG4KvOZX"
+Received: by mail-dy1-f198.google.com with SMTP id 5a478bee46e88-3510d0baf63so2347057eec.1
+        for <rcu@vger.kernel.org>; Sat, 17 Oct 2026 10:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1792257290; x=1792862090; darn=vger.kernel.org;
+        h=content-type:cc:to:from:subject:message-id:references:mime-version
+         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=I0+uAxPvAKtTv0jimWUt+98k1pt+pzeo/v/v6OmosKA=;
+        b=bG4KvOZXJkeXG2FNGrfn6Kj7rv0bYfOOc1UL2zRI7508D9Gdpjv/xFjrcZUNHx0vgz
+         Tyb1cvkOJNkKpxmFBT80lZUqwuYKiV5LCIKqlFPdwwSDYQhrvzIJdHGYX2aTCY0FGmw9
+         lOsJflWj2nLojccwShUdUtYDzd00pBDtI8ty9tOua3zPuCan1LQ0V4GNPg0B6vWAEdEx
+         V2qIfrQ308nCI7FhhvRN/JS/xWV8CnJmSzwmaT0jXV5R6hZjOj+1gYm8vYBAd+KsOFw3
+         rcymIHY7Mnk66hzlz9xOLboylJb4SS5oCgZWwWcnUgUd+ksqS3ryyLXWW3M5thG4V6pd
+         NiNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792257290; x=1792862090;
+        h=content-type:cc:to:from:subject:message-id:references:mime-version
+         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=I0+uAxPvAKtTv0jimWUt+98k1pt+pzeo/v/v6OmosKA=;
+        b=0gNAQzaVBUHVu7WLUlL35XG3N+rLqMlyyKFHUSO6VtaCrMSIf3eQp7BDH0yKuujUnS
+         Lz0Vlp4dnx2tgGIsitczJVIfk6MtP/zsrCXBI6GKpuLswmKdL4s/LDFvs9Wrjg1S297e
+         f95Xg1tzP+nhzuyk3eCJUZmy6ZELJBhpZ7CxlXNU9Pm6g25KILziaJxh46twqHICx7/E
+         u0rxVhPEOBNwVZs/xZU3WME+LctZz3OlzfuBciUA/DDuulKw/hog87c66is7y8zTvkCb
+         oWian6jX4ecCQgDF/4pF1Qu7sbDVUZppmh7Wbh0WotfyAfbTnCXjvr6rK3Xfgqtpgmsk
+         uAvQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwTbKs0q9XWUwG31TOYxRlIio8FuMg6R0i1RnqUtbLD9N5nCtywCEVJrkeXYBA664Yr5Gw=@vger.kernel.org
+X-Gm-Message-State: AFq9FYIItrecicObMQQMJJH+o21na/VIIiq9g38gLJ3o6a82q29si2rI
+	QbtBTeTWclHm5cgK8HQaFqUUzSbqu6ho80OkgqycVWnSfXU70WwXDXc+JJjZeohyeBHRGJ+yr1s
+	gp7HlGPXz0A==
+X-Received: from dlbrn12.prod.google.com ([2002:a05:7022:150c:b0:15e:caa1:d304])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:701b:4281:20b0:145:152:b547
+ with SMTP id a92af1059eb24-1850c5f792emr4688826c88.1.1792257289477; Sat, 17
+ Oct 2026 10:14:49 -0700 (PDT)
+Date: Sat, 17 Oct 2026 10:14:31 -0700
+In-Reply-To: <20261017054555.1655407-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6486.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fe5dad0-6233-4c67-5eee-08df2c5faeca
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Oct 2026 15:02:37.5866
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wHbgBwRTb6OCHIrEItv1S2Nk97BgvhJD2GgaBPFzO4ScV7q9JHzGWyWOH2noIcwOSWMV7uBQPzXOYV7jvPWyJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4298
+Mime-Version: 1.0
+References: <20261017054555.1655407-1-irogers@google.com>
+X-Mailer: git-send-email 2.56.0.212.g129ede20d9-goog
+Message-ID: <20261017171437.2066343-1-irogers@google.com>
+Subject: [PATCH v2 0/6] perf bpf-filter / lock contention: Add lock_held()
+ sample filter and RCU/SRCU support
+From: Ian Rogers <irogers@google.com>
+To: irogers@google.com, acme@kernel.org, namhyung@kernel.org
+Cc: adrian.hunter@intel.com, james.clark@linaro.org, jolsa@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	mingo@redhat.com, peterz@infradead.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-DQoNCj4gT24gT2N0IDE1LCAyMDI2LCBhdCA1OjQ24oCvQU0sIFpxaWFuZyA8cWlhbmcuemhhbmdA
-bGludXguZGV2PiB3cm90ZToNCj4gDQo+IO+7v1RoZSBSQ1UgVGFza3MgUnVkZSBncmFjZSBwZXJp
-b2QgaXMgaW1wbGVtZW50ZWQgYnkgaW52b2tpbmcgdGhlDQo+IHNjaGVkdWxlX29uX2VhY2hfY3B1
-KCkgd2l0aCBhbiBlbXB0eSB3b3JrIGZ1bmN0aW9uLCB3aGljaCBmb3JjZXMNCj4gYSBjb250ZXh0
-IHN3aXRjaCBvbiBldmVyeSBvbmxpbmUgQ1BVIGFuZCBndWFyYW50ZWVzIHRoYXQgYWxsDQo+IHJ1
-ZGUtdGFza3MgcmVhZC1zaWRlIGNyaXRpY2FsIHNlY3Rpb25zIGhhdmUgY29tcGxldGVkLiBIb3dl
-dmVyLA0KPiBzY2hlZHVsZV9vbl9lYWNoX2NwdSgpIGNhbiBmYWlsICh2aWEgYWxsb2NfcGVyY3B1
-KCkgcmV0dXJuaW5nDQo+IC1FTk9NRU0pIGFuZCByZXR1cm5zIGltbWVkaWF0ZWx5LCBpbiB3aGlj
-aCBjYXNlIHRob3NlIGNvbnRleHQNCj4gc3dpdGNoZXMgbmV2ZXIgaGFwcGVuLCB0b28tc2hvcnQg
-Z3JhY2UgcGVyaW9kIGhhcHBlbi4NCj4gDQo+IFRoaXMgY29tbWl0IHRoZXJlZm9yZSB3cmFwcyB0
-aGUgc2NoZWR1bGVfb25fZWFjaF9jcHUoKSBjYWxsIGluDQo+IFdBUk5fT05DRSgpIHNvIHRoYXQg
-dGhpcyBmYWlsdXJlIGlzIHJlcG9ydGVkIGFzIGEgIlRvby1zaG9ydA0KPiBncmFjZSBwZXJpb2Qi
-IHdhcm5pbmcuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBacWlhbmcgPHFpYW5nLnpoYW5nQGxpbnV4
-LmRldj4NCj4gLS0tDQo+IGtlcm5lbC9yY3UvdGFza3MuaCB8IDMgKystDQo+IDEgZmlsZSBjaGFu
-Z2VkLCAyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9r
-ZXJuZWwvcmN1L3Rhc2tzLmggYi9rZXJuZWwvcmN1L3Rhc2tzLmgNCj4gaW5kZXggZmNhYzczNjFl
-YzUxLi45MWMyNTcxNzQwMmUgMTAwNjQ0DQo+IC0tLSBhL2tlcm5lbC9yY3UvdGFza3MuaA0KPiAr
-KysgYi9rZXJuZWwvcmN1L3Rhc2tzLmgNCj4gQEAgLTEzNjEsNyArMTM2MSw4IEBAIHN0YXRpYyB2
-b2lkIHJjdV90YXNrc19iZV9ydWRlKHN0cnVjdCB3b3JrX3N0cnVjdCAqd29yaykNCj4gc3RhdGlj
-IHZvaWQgcmN1X3Rhc2tzX3J1ZGVfd2FpdF9ncChzdHJ1Y3QgcmN1X3Rhc2tzICpydHApDQo+IHsN
-Cj4gICAgcnRwLT5uX2lwaXMgKz0gY3B1bWFza193ZWlnaHQoY3B1X29ubGluZV9tYXNrKTsNCj4g
-LSAgICBzY2hlZHVsZV9vbl9lYWNoX2NwdShyY3VfdGFza3NfYmVfcnVkZSk7DQo+ICsgICAgV0FS
-Tl9PTkNFKHNjaGVkdWxlX29uX2VhY2hfY3B1KHJjdV90YXNrc19iZV9ydWRlKSwNCj4gKyAgICAg
-ICAgICAiJXM6IFRvby1zaG9ydCBncmFjZSBwZXJpb2QsIE9PTSBpcyBub3cgZXhwZWN0ZWQgYmVo
-YXZpb3IhISFcbiIsIHJ0cC0+bmFtZSk7DQoNCklzIHRoYXQgdGhlIGJlc3QgZXJyb3IgbWVzc2Fn
-ZT8gT09NIGlzIGV4cGVjdGVkIHdoZW4gZ3JhY2UgcGVyaW9kcyBkbyBub3QgY29uY2x1ZGUuDQoN
-ClRoYW5rcy4NCg0KPiB9DQo+IA0KPiBzdGF0aWMgdm9pZCBjYWxsX3JjdV90YXNrc19ydWRlKHN0
-cnVjdCByY3VfaGVhZCAqcmhwLCByY3VfY2FsbGJhY2tfdCBmdW5jKTsNCj4gLS0NCj4gMi4xNy4x
-DQo+IA0K
+This series adds a new BPF sample filter predicate, `lock_held(<lock>)`
+(along with `lock_held_read(<lock>)` / `lock_held_shared(<lock>)`,
+`lock_held_write(<lock>)` / `lock_held_exclusive(<lock>)`, and `:R` / `:W`
+mode suffixes), to `perf record --filter`, allowing perf event samples to
+be recorded only when a specified kernel lock is held (or not held with
+`!`) by the running kernel thread or CPU. It also extends both
+`lock_held()` and `perf lock contention --use-bpf` to support RCU and
+SRCU, and fixes a pre-existing `lock_stat` filtering bug in `perf lock
+contention`.
+
+For example:
+
+  # perf record -a -g -e cycles --filter 'lock_held(&cgroup_mutex)' -- ...
+  # perf record -a -g -e cycles --filter 'lock_held_read(&mmap_lock)' -- ...
+  # perf record -a -g -e cycles --filter 'lock_held(&mmap_lock:W)' -- ...
+  # perf record -a -g -e cycles --filter 'lock_held_read(rcu)' -- ...
+  # perf lock contention -a -b -Y rcu,srcu -- sleep 1
+
+Supported `<lock>` specifications match `perf lock contention`:
+- Global/static kernel lock symbols (with or without leading `&`, e.g.
+  `lock_held(&cgroup_mutex)` or `lock_held(cgroup_mutex)`)
+- Hexadecimal kernel lock addresses
+- Slab cache names prefixed with `&` (e.g. `lock_held(&dentry)`,
+  `lock_held_read(&dentry)`)
+- Well-known per-process, semi-global, and RCU locks: `mmap_lock`,
+  `siglock`, `rq_lock`, `zone_lock`, `rcu`, `rcu-trace`
+- Lock types and flags: `mutex`, `spinlock`, `rwsem`, `rwsem:R`,
+  `rwsem:W`, `rwlock`, `rwlock:R`, `rwlock:W`, `rt-mutex`,
+  `percpu-rwsem`, `pcpu-sem:W`, `srcu`, `srcu:R`, `srcu:W`, `rcu:R`,
+  `rcu:W`, `semaphore`
+
+Limitations and weaknesses in determining whether a lock is held:
+- Inlined lock/unlock operations:
+  - When the kernel is configured to inline spinlock or rwlock operations
+    (`CONFIG_INLINE_SPIN_LOCK`, `CONFIG_INLINE_READ_LOCK`,
+    `CONFIG_INLINE_WRITE_LOCK`, `!CONFIG_UNINLINE_SPIN_UNLOCK`,
+    `CONFIG_INLINE_*_UNLOCK*`, etc.), `_raw_spin_lock*` /
+    `_raw_spin_unlock*` and `_raw_read_lock*` / `_raw_write_lock*` are
+    inlined into callers and have no BTF function entry points for
+    `fentry`/`fexit` to attach to. `configure_lock_progs()` verifies that
+    both acquire and release entry points exist in BTF before enabling a
+    lock family.
+  - Fast-path `percpu_down_read()` / `percpu_up_read()` and
+    `srcu_read_lock_fast()` / `srcu_read_unlock_fast()` are inlined
+    per-CPU counter increments without function calls, so only
+    `percpu_down_write()` / `percpu_up_write()` and out-of-line
+    `__srcu_read_lock*()` / `__srcu_read_unlock*()` can be hooked.
+  - On `!CONFIG_PREEMPT_RCU` kernels, `rcu_read_lock()` compiles to
+    `preempt_disable()` and does not maintain
+    `current->rcu_read_lock_nesting` in `task_struct`, so `lock_held(rcu)`
+    read-side inspection requires `CONFIG_PREEMPT_RCU`.
+- Lack of an inspectable owner field on non-exclusive / spinning locks:
+  - While `struct mutex`, `struct rt_mutex`, and write-locked
+    `struct rw_semaphore` store the owning `task_struct *` in `lock->owner`
+    (allowing `perf_sample_filter` to inspect kernel memory directly on
+    sample overflow when filtering by lock address), spinlocks, rwlocks,
+    semaphores, SRCU, and reader-locked `rw_semaphore`s (where
+    `__up_read()` does not clear `sem->owner` when `!CONFIG_DEBUG_RWSEMS`)
+    do not maintain an authoritative per-task owner pointer.
+  - Tracking these locks (as well as slab-cache and lock-type filters)
+    relies on `fexit` (acquire) and `fentry` (release) BPF hooks
+    maintaining the `held_locks` BPF hash map:
+    - Any such lock already held before `perf record` attaches its BPF
+      programs will not be present in `held_locks` until it is released
+      and re-acquired.
+    - The attached `fentry`/`fexit` hooks execute on every kernel lock
+      acquire and release for the hooked lock family across the system,
+      adding tracing overhead outside of perf sample handling.
+
+Patch overview:
+1. "perf lock contention: Share common BPF and lock type definitions in
+   lock_data.h": Moves `lock_type_table` to `util/lock-contention.c` and
+   `LCB_F_*` flags, CO-RE structs, and common BPF lock helpers
+   (`get_lock_owner`, `get_current_mmap_lock`, `get_current_siglock`,
+   `get_lock_addr`, `check_lock_type`, `do_collect_lock_syms`,
+   `do_slab_cache_iter`) into `tools/perf/util/bpf_skel/lock_data.h`.
+2. "perf bpf-filter: Add lock_held() sample filter": Implements
+   `lock_held()`, `lock_held_read()`/`lock_held_shared()`,
+   `lock_held_write()`/`lock_held_exclusive()`, and `:R`/`:W` mode
+   suffixes using direct lock owner inspection where possible (`mutex`,
+   `rt_mutex`, write-locked `rw_semaphore`) and a `held_locks` BPF map
+   updated by selectively attached `fentry`/`fexit` hooks.
+3. "perf test: Add tests for lock_held() BPF sample filter": Adds unit
+   tests in `tests/parse-events.c` and shell tests in
+   `tests/shell/record_bpf_filter.sh`.
+4. "perf bpf-filter: Extend lock_held() to support RCU, Tasks Trace RCU,
+   and SRCU": Supports `rcu` (`rcu:R` via direct
+   `current->rcu_read_lock_nesting` inspection with zero tracing hooks;
+   `rcu:W` via `synchronize_rcu*()` / `rcu_barrier()` hooks),
+   `rcu-trace` (via `current->trc_reader_nesting`), and `srcu`
+   (`srcu:R` via `__srcu_read_lock*` / `__srcu_read_unlock*`; `srcu:W`
+   via `synchronize_srcu*()` / `srcu_barrier()`).
+5. "perf lock contention: Extend BPF lock contention to RCU and SRCU":
+   Extends `perf lock contention --use-bpf` to track RCU and SRCU
+   grace-period and barrier waits (`-Y rcu`, `-Y srcu`, `-L rcu`).
+6. "perf lock contention: Filter events before creating lock_stat":
+   Fixes `report_lock_contention_begin_event()` in `builtin-lock.c` to
+   apply `-Y`, `-L`, and `-S` filters before calling
+   `lock_stat_findnew()`.
+
+Changes in v2:
+- Guard `BPF_CORE_READ(mutex, owner.counter)` with `bpf_core_field_exists`
+  and fall back to `struct rt_mutex_base` in `get_lock_owner()` so CO-RE
+  relocation succeeds on `CONFIG_PREEMPT_RT=y` kernels.
+- Add `CONFIG_DEBUG_LOCK_ALLOC=y` lock entry points
+  (`_mutex_lock_nest_lock`, `_mutex_lock_killable`,
+  `_mutex_trylock_nest_lock`, `_down_write_nest_lock`,
+  `_raw_spin_lock_nest_lock`, `_rt_mutex_lock_nest_lock`) to
+  `sample_filter.bpf.c` and `lock_progs[]`.
+- Verify in `supported_lock_prog_groups()` that both acquire and all
+  unlock BTF entry points exist for a lock family before enabling its
+  tracing hooks, preventing acquire-only attachment when spinlock/rwlock
+  unlock functions are inlined.
+- Enable `LOCK_PROG_PERCPU_RWSEM` alongside `LOCK_PROG_RWSEM_WRITE` when
+  a symbol name ends in `rwsem` (such as `cgroup_threadgroup_rwsem`).
+- Gate `record_lock_acquired(ctx, LCB_F_READ)` in `fexit_downgrade_write`
+  on `track_rwsem_read` and verify non-zero read/write counts in
+  `record_lock_released_addr()` before decrementing aggregate slab/type
+  counts.
+- Adjust stack skip depth by 2 for `fentry` RCU/SRCU programs in
+  `lock_contention.bpf.c` and recognize `synchronize_rcu*`,
+  `synchronize_srcu*`, `rcu_barrier`, and `srcu_barrier` in
+  `machine__is_lock_function()`.
+- Add patch 6 fixing `report_lock_contention_begin_event()` to check
+  type, address, and callstack filters before creating `lock_stat`
+  entries.
+
+Assisted-by: Antigravity:gemini-3.1-pro
+
+Ian Rogers (6):
+  perf lock contention: Share common BPF and lock type definitions in
+    lock_data.h
+  perf bpf-filter: Add lock_held() sample filter
+  perf test: Add tests for lock_held() BPF sample filter
+  perf bpf-filter: Extend lock_held() to support RCU, Tasks Trace RCU,
+    and SRCU
+  perf lock contention: Extend BPF lock contention to RCU and SRCU
+  perf lock contention: Filter events before creating lock_stat
+
+ tools/perf/Documentation/perf-lock.txt        |    7 +-
+ tools/perf/Documentation/perf-record.txt      |   51 +-
+ tools/perf/builtin-lock.c                     |   88 +-
+ tools/perf/tests/parse-events.c               |  121 ++
+ tools/perf/tests/shell/lock_contention.sh     |   14 +
+ tools/perf/tests/shell/record_bpf_filter.sh   |  123 ++
+ tools/perf/util/bpf-filter.c                  | 1188 ++++++++++++++++-
+ tools/perf/util/bpf-filter.h                  |   13 +
+ tools/perf/util/bpf-filter.l                  |   31 +-
+ tools/perf/util/bpf-filter.y                  |   46 +-
+ tools/perf/util/bpf_lock_contention.c         |  167 ++-
+ .../perf/util/bpf_skel/lock_contention.bpf.c  |  427 +++---
+ tools/perf/util/bpf_skel/lock_data.h          |  368 ++++-
+ tools/perf/util/bpf_skel/sample-filter.h      |   71 +
+ tools/perf/util/bpf_skel/sample_filter.bpf.c  | 1096 +++++++++++++++
+ tools/perf/util/bpf_skel/vmlinux/vmlinux.h    |    7 +
+ tools/perf/util/lock-contention.c             |   22 +
+ tools/perf/util/lock-contention.h             |   15 +
+ tools/perf/util/machine.c                     |   11 +
+ tools/perf/util/parse-events.c                |    3 +-
+ 20 files changed, 3507 insertions(+), 362 deletions(-)
+
+-- 
+2.56.0.212.g129ede20d9-goog
+
