@@ -1,281 +1,220 @@
-Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CAA4CF489;
-	Sat, 17 Oct 2026 20:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.75.144.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 068472472AE;
+	Sun, 18 Oct 2026 00:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792267707; cv=none; b=uxsUq0z8cOsB40FWs/1+eqvZQvmJODEYi4/tBmwa2LOUCZ7EAKH+BIdVwyXezCvaAOKMg10bNzHTm4UrZSHHA1yIJftVPmqLTIp3pqtrjV2OAMEJgKdpFSrEC8G4FJjLdYu2KV6ZldCUGb4nv0d28Mjdvc7Otfb7P0vNv2dxa1c=
+	t=1792283129; cv=none; b=WjWaVQtGsmYggLrRbzk2E/BA5KI76MYk5GL7gDzpAUXW46jLdNMOSBJl85dEJKOa93zQGz8PV84cUdUWUl/5HOOdieGYqWGNrlqqml7TC2FwWGmgN3ia7qmN+QafzKdE8oERCoB1xdv7zCgtT2driJIXp9raCDyryowKVsQuIqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792267707; c=relaxed/simple;
-	bh=SgxPrBIkYCcPi30gyGH4MQTBEMSNpjs9yE/2MFe/s4g=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=n2Hpu0tCesBC5MPi/xIEtngC1uicoOxPz8+9WD4Ei9qRMWLCyFe5N65o+N9Wk3GjWS4eaGLLCducdSW4M8RDVghlM8FDB264JOjnVUQTB8uP0sgDa60Q3nDekTc0wxRbCOfcsjnjmVFB3Xu1Lc7peB39ZbPPVeB3EHOtA6RTzpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=pTdYhPl+; dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=juc68V3q; arc=none smtp.client-ip=5.75.144.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
+	s=arc-20240116; t=1792283129; c=relaxed/simple;
+	bh=0iTlyyb80tJ+ZXrZ9oijfrFxGUcpJypCtmeNET/Zq7E=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=mekKJ2n+aQakJJGiZfgHyB/hTbkjfk1U3F0iOO4ti37ADDAZ6iZ9c0TE28y0Ma9+XuXD1lVCK6BpwRLc1VR53DD54Ty63vSx0idfsEZ8AtytFCRg8fvLv1oSuSQ5FdcJ9jL36k5jTSzTu2NBTgWDfdov+nVrNOMlYOBaXSXznAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OFHBLsBw; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="pTdYhPl+";
-	dkim=permerror (0-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="juc68V3q"
-DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1792267703; bh=yJCb7x6Wu2ieI/lhWZQWGE6
-	i7B6nkQk7onSe4PgkTEQ=; b=pTdYhPl+NELM4pRNAQ6x9GPt/fr/uQeTwwQQda7xgp3lIzHVDa
-	QzlCq+jcg1VpFahy29klJBjAQYmXFJrrwGSmuChH7SMdwZTmqSFaD/sh1HjwLzCXhQM1oTBEAqh
-	ipPXBPGmIv8FkdfoiRRrol2FArELbrIodrWSL/JQxWgp4lCIjh0cuoiu4LeVNnruqO1wYJBbK3j
-	iCrydEDZxFw+mlJHTQ5vOhTBuI/sZ2FNnWrQ1fJPVcMzt/1yXsymfoxKtcDfKe3yGwr6KiztumJ
-	wkiYvfApvvLmonfLB+BUEVXaulMTo2l8FiGGjJGFJVP24KN3+ElVgK2KWP4e+Gy5hbA==;
-DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1792267703; bh=yJCb7x6Wu2ieI/lhWZQWGE6
-	i7B6nkQk7onSe4PgkTEQ=; b=juc68V3qa0mzmmjElu/dKfqgrzkJmv3Kq9Own+6gDMUfj7ZnS0
-	kzX8wKRUmtpqnwKYEIZSqHMEFbWN3GO45ZDg==;
-Date: Sat, 17 Oct 2026 21:08:24 +0100
-From: Bradley Morgan <brads@mainlining.org>
-To: paulmck@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>
-CC: Zqiang <qiang.zhang@linux.dev>, boqun@kernel.org, frederic@kernel.org,
- joelagnelf@nvidia.com, linux-kernel@vger.kernel.org,
- neeraj.upadhyay@kernel.org, rcu@vger.kernel.org, urezki@gmail.com
-Subject: Re: [PATCH] rcu-tasks: Warn on too-short RCU Tasks Rude grace period
-In-Reply-To: <82551705-77de-48d3-b310-ba23a5549903@paulmck-laptop>
-References: <D155FA7E-8E99-4D4F-92A8-74472834F25A@mainlining.org> <8d7f265cd1320bf7996bcffea07ffdea69cfd625@linux.dev> <2247C12C-EE02-46CC-922F-D6A62D1E77C1@mainlining.org> <3fc682be-c0ed-48b2-ae91-af80d1535520@paulmck-laptop> <0E5D0BB2-BEF1-430A-B30C-C53F4254214F@mainlining.org> <82551705-77de-48d3-b310-ba23a5549903@paulmck-laptop>
-Message-ID: <5568467D-34D6-4735-9F01-43B2CB8C207F@mainlining.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OFHBLsBw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8487E1F000C4;
+	Sun, 18 Oct 2026 00:25:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792283127;
+	bh=fZ+3MtclH7KdZVW1BOOkqeYkmKjrlG0xiTX/foFj0mg=;
+	h=Date:From:To:Cc:Subject:Reply-To;
+	b=OFHBLsBw+Kq1C55a1kWHlPeZqj0B1eprlqSR+q/AQqdUgmvAY6Koo/69WN0lYm8F+
+	 R/WDsEXrMD20Gvha6oDKaHNVOypVb5Ye++spiviZBB6KLeVZPksDoSWhh86wDEYH6r
+	 4c1yBAQ+r4X9kLVqgEE5ntkN2U+j32D5HUHeKokJZjyYTFTMQ/6rDtb5MPS3fj+ZwS
+	 GEQOVgII077v84N1kzFkI+LrZ5csKk12yhqjzGaG/cE2OECjntHxt2bfbUJbWb6/3N
+	 +Xmuz+UlQwTAerFaPB4NpZ0X6amPaUy51p9o6KcCvjhJaDPolewK5mZJxOwi0mSvic
+	 fRXp3NuDBjiRQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 3B922CE1ADC; Sat, 17 Oct 2026 17:25:27 -0700 (PDT)
+Date: Sat, 17 Oct 2026 17:25:27 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rcu@vger.kernel.org,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Kunwu Chan <kunwu.chan@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+	Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [GIT PULL] RCU updates for v7.4
+Message-ID: <720d335d-17f1-48e7-b5e6-49352712cdca@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 17 October 2026 21:04:37 BST, "Paul E. McKenney" <paulmck@kernel.org>
-wrote:
->On Sat, Oct 17, 2026 at 06:49:41PM +0100, Bradley Morgan wrote:
->> On 17 October 2026 18:46:25 BST, "Paul E. McKenney" <paulmck@kernel.org>
->> wrote:
->> >On Sat, Oct 17, 2026 at 12:16:48PM +0100, Bradley Morgan wrote:
->> >> On 17 October 2026 00:41:00 BST, Zqiang <qiang.zhang@linux.dev>
->wrote:
->> >> >> 
->> >> >> On 15 October 2026 10:46:19 BST, Zqiang <qiang.zhang@linux.dev>
->> >wrote:
->> >> >> 
->> >> >> > 
->> >> >> > The RCU Tasks Rude grace period is implemented by invoking the
->> >> >> > schedule_on_each_cpu() with an empty work function, which forces
->> >> >> > a context switch on every online CPU and guarantees that all
->> >> >> > rude-tasks read-side critical sections have completed. However,
->> >> >> > schedule_on_each_cpu() can fail (via alloc_percpu() returning
->> >> >> > -ENOMEM) and returns immediately, in which case those context
->> >> >> > switches never happen, too-short grace period happen.
->> >> >> > 
->> >> >> > This commit therefore wraps the schedule_on_each_cpu() call in
->> >> >> > WARN_ONCE() so that this failure is reported as a "Too-short
->> >> >> > grace period" warning.
->> >> >> > 
->> >> >> NAK, this seems like a edge case, and potentially panicking the
->> >system
->> >> >> with panic on oops doesn't seem right to me, because we would
->reserve
->> >> >that
->> >> >> for when something definitely goes really wrong and we need to
->notify
->> >> >> the user.
->> >> >> 
->> >> >> I don't believe this patch should go in for this reason, it's a
->heavy
->> >> >edge
->> >> >> case, that doesn't *have* nessesarily need to be accounted for.
->> >> >
->> >> >Indeed, this is a rare event, so I use WARN_ONCE() to mark it, the
->> >> >WARN_ONCE()
->> >> >not panicking system unless you set warn_on_oops true, this can help
->us
->> >> >troubleshoot
->> >> >UAF issues caused by a too short tasks-rude grace period.
->> >> >
->> >> >or maybe we can use DEFINE_PER_CPU(struct work_struct, rude_work) to
->> >> >replace
->> >> >alloc_percpu(struct work_struct) queue to all online CPUs.
->> >> >
->> >> >Anyway, Thank you for your reply. I would also like to hear the
->> >opinions
->> >> >of others.
->> >> 
->> >> Fair enough, but me and Paul done some discussions:
->> >> 
->> >> Here is the TL;DR
->> >> 
->> >> My ^W^Wai slop^W^W tool helped me with this: if the too short grace
->> >> happens,
->> >> it falls back.
->> >> 
->> >> 
->> >> root@p10-linux-brads:~/linux# git diff kernel/rcu
->> >> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
->> >> index 627295396cd9..65bb7d4ed632 100644
->> >> --- a/kernel/rcu/tasks.h
->> >> +++ b/kernel/rcu/tasks.h
->> >> @@ -1344,15 +1344,23 @@ void exit_tasks_rcu_finish(void) { }
->> >>  // Ordering is provided by the scheduler's context-switch code.
->> >> 
->> >>  // Empty function to allow workqueues to force a context switch.
->> >> -static void rcu_tasks_be_rude(struct work_struct *work)
->> >> +static void __maybe_unused rcu_tasks_be_rude(struct work_struct
->*work)
->> >>  {
->> >>  }
->> >> 
->> >>  // Wait for one rude RCU-tasks grace period.
->> >> +static void rcu_tasks_rude_ipi(void *info)
->> >> +{
->> >> +}
->> >> +
->> >>  static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
->> >>  {
->> >> +       int cpu;
->> >>         rtp->n_ipis += cpumask_weight(cpu_online_mask);
->> >> -       schedule_on_each_cpu(rcu_tasks_be_rude);
->> >> +       cpus_read_lock();
->> >> +       for_each_online_cpu(cpu)
->> >> +               smp_call_function_single(cpu, rcu_tasks_rude_ipi,
->NULL,
->> >1);
->> >> +       cpus_read_unlock();
->> >>  }
->> >> 
->> >>  static void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t
->> >func);
->> >> root@p10-linux-brads:~/linux#
->> >> 
->> >> On POWERPC, this passes 12 hours of rcutorture on the RUDE01 config.
->> >
->> >That is surprising, given that when I run your patch shown above on my
->> >x86 laptop, rcutorture reports a too-short grace period within 20
->seconds.
->> 
->> Odd! I definitely ran it for 12 hours, on PowerPC, so this is certainly
->odd
->
->Those who care are free run it themselves on the systems of their choice.
+Hello, Linus,
 
+Once the merge window opens, please pull this RCU update:
 
-root@p10-linux-brads:~/linux/tools/testing/selftests/rcutorture/res/2026.10.15-19.45.43/RUDE01#
-uname -a && uname
-Linux p10-linux-brads 7.0.0-34-generic #34-Ubuntu SMP PREEMPT_DYNAMIC Wed
-Sep  2 16:05:10 UTC 2026 ppc64le GNU/Linux
-Linux
-root@p10-linux-brads:~/linux/tools/testing/selftests/rcutorture/res/2026.10.15-19.45.43/RUDE01#
-tail -n 20 console.log
-[43269.029077][   T73] tasks-rude-torture: rcu_torture_read_exit: Start of
-episode
-[43269.033954][   T73] tasks-rude-torture: rcu_torture_read_exit: End of
-episode
-[43282.341070][   T73] tasks-rude-torture: rcu_torture_read_exit: Start of
-episode
-[43282.345268][   T73] tasks-rude-torture: rcu_torture_read_exit: End of
-episode
-[43295.653087][   T73] tasks-rude-torture: rcu_torture_read_exit: Start of
-episode
-[43295.657260][   T73] tasks-rude-torture: rcu_torture_read_exit: End of
-episode
-[43308.965081][   T73] tasks-rude-torture: rcu_torture_read_exit: Start of
-episode
-[43308.969151][   T73] tasks-rude-torture: rcu_torture_read_exit: End of
-episode
-[43322.277071][   T73] tasks-rude-torture: rcu_torture_read_exit: Start of
-episode
-[43322.281345][   T73] tasks-rude-torture: rcu_torture_read_exit: End of
-episode
-[43335.589160][   T73] tasks-rude-torture: rcu_torture_read_exit: Start of
-episode
-[43335.593159][   T73] tasks-rude-torture: rcu_torture_read_exit: End of
-episode
-[43348.901077][   T73] tasks-rude-torture: rcu_torture_read_exit: Start of
-episode
-[43348.905165][   T73] tasks-rude-torture: rcu_torture_read_exit: End of
-episode
-[43362.213069][   T73] tasks-rude-torture: rcu_torture_read_exit: Start of
-episode
-[43362.217298][   T73] tasks-rude-torture: rcu_torture_read_exit: End of
-episode
-[43375.525085][   T73] tasks-rude-torture: rcu_torture_read_exit: Start of
-episode
-[43375.529207][   T73] tasks-rude-torture: rcu_torture_read_exit: End of
-episode
-[43388.837074][   T73] tasks-rude-torture: rcu_torture_read_exit: Start of
-episode
-[43388.841160][   T73] tasks-rude-torture: rcu_torture_read_exit: End of
-episode
-root@p10-linux-brads:~/linux/tools/testing/selftests/rcutorture/res/2026.10.15-19.45.43/RUDE01#
+  git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu.2026.10.12b
+  # HEAD: d9011419496a3dc6b455b5308846684c63c18de5: Merge branches 'misc.2026.10.06a' and 'torture.2026.10.12a' into HEAD (2026-10-12 16:53:20 -0700)
 
-I certainly ran it :(
+----------------------------------------------------------------
+RCU updates:
 
+Execution contexts and call_rcu() and call_srcu():
+ * Make call_rcu() and call_srcu invocable from NMI handlers and while
+   holding scheduler locks (using irq-work handlers).
+ * Add rcutorture and BPF tests calling these functions from these
+   contexts.
+ * Disable rcutorture overload testing for RCU readers that are "fragile",
+   that is, that do not either disable preemption or have some form of
+   RCU priority boosting.
 
->
->							Thanx, Paul
->
->> >> If you plan on submitting this into a patch, please add my
->authorship,
->> >or
->> >> my c-d-b. 
->> >> 
->> >> Feel free to rcutorture test it ;d
->> >> 
->> >> BTW: have you reproduced this on your own system?
->> >> 
->> >> >
->> >> >Thanks
->> >> >Zqiang
->> >> >
->> >> >
->> >> >> 
->> >> >> Zqiang, have you reproduced this OOM on your own system, if so,
->could
->> >> >you
->> >> >> tell me more details, you may turn my frown into a smiley face ;)
->> >> >> 
->> >> >> > 
->> >> >> > Signed-off-by: Zqiang <qiang.zhang@linux.dev>
->> >> >> > ---
->> >> >> >  kernel/rcu/tasks.h | 3 ++-
->> >> >> >  1 file changed, 2 insertions(+), 1 deletion(-)
->> >> >> > 
->> >> >> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
->> >> >> > index fcac7361ec51..91c25717402e 100644
->> >> >> > --- a/kernel/rcu/tasks.h
->> >> >> > +++ b/kernel/rcu/tasks.h
->> >> >> > @@ -1361,7 +1361,8 @@ static void rcu_tasks_be_rude(struct
->> >work_struct
->> >> >*work)
->> >> >> >  static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
->> >> >> >  {
->> >> >> >  rtp->n_ipis += cpumask_weight(cpu_online_mask);
->> >> >> > - schedule_on_each_cpu(rcu_tasks_be_rude);
->> >> >> > + WARN_ONCE(schedule_on_each_cpu(rcu_tasks_be_rude),
->> >> >> > + "%s: Too-short grace period, OOM is now expected
->behavior!!!\n",
->> >> >rtp->name);
->> >> >> > 
->> >> >> Good message, makes sense. But I don't think this is right, see
->> >above.
->> >> >> 
->> >> >> > 
->> >> >> > }
->> >> >> >  
->> >> >> >  static void call_rcu_tasks_rude(struct rcu_head *rhp,
->> >rcu_callback_t
->> >> >> >  func);
->> >> >> > 
->> >> >> --- Thanks!
->> >> >> "I'm not a very positive person" - Linus torvalds
->> >> >>
->> >> 
->> >> --- Thanks!
->> >> "I'm not a very positive person" - Linus torvalds
->> 
->> --- Thanks!
->> "I'm not a very positive person" - Linus torvalds
+SRCU updates:
+ * Add an atomic SRCU where readers run with preemption disabled and
+   grace periods can be invoked from atomic contexts.  David Woodhouse
+   has a patch series exploiting this for GPC.
+ * Add torture and lockdep tests for atomic SRCU.
+ * Add numerous optimizations for atomic SRCU based on the fact that it
+   does not have callbacks, for example, eliminating any transition to
+   "big" srcu_struct structures even on systems that configure these to
+   happen at initialization time.
 
---- Thanks!
-"I'm not a very positive person" - Linus torvalds
+Additional torture-test updates:
+ * Fix a divide-by-zero bug in forward-progress testing.
+ * Synchronously wait for all IRQ-queued callbacks to complete.
+ * Allow alternative "ssh" commands to be specified for use by
+   kvm-remote.sh.
+ * Fix kvm-again.sh re-run failure on PowerPC.
+ * Add additional lockdep testing for atomic SRCU.
+ * Fix error double-counting in srcu_lockdep.sh.
+ * Add atomic SRCU cross-CPU IRQ context mismatch testing, with the
+ * trick being that the atomic SRCU readers context must be at least as
+   strict as that of the atomic SRCU grace-period wait.  So for example,
+   if the readers have IRQs disabled, so must the grace-period wait.
+
+Miscellaneous updates:
+ * Update stallwarn.rst documentation for the re-implementation of RCU
+   Tasks Trace in terms of SRCU.
+ * Fix the lazy-callback shrink scanner budget computation so that it
+   honors the reclaim budget.
+ * Avoid panicking on RCU CPU stalls that end before the warning can
+   be printed.
+ * Add "running" and "boosted" indications to the RCU task stall warning
+   output.
+ * People have been (incorrectly) relying on rcu_barrier() to wait for
+   kfree_rcu() callbacks and processing.  But it turns out to be easier to
+   fix rcu_barrier() to meet their expectations than to fix their code to
+   live within the earlier rcu_barrier() specification.  So rcu_barrier()
+   now waits on kfree_rcu() callbacks and processing.
+ * Disable RCU Tasks console output that track when this RCU flavor
+   switches between per-CPU and global callback queuing.  New use cases
+   appeared that generated enough console traffic to cause trouble, and
+   no one seemed to care about these messages.  For those needing those
+   messages, there is a new rcupdate.rcu_task_collapse_debug kernel boot
+   parameter.
+ * Fix __rcu pointer attribute handling to eliminate false positives.
+ * Fix typos and drop redundant #include directives.
+
+----------------------------------------------------------------
+Bradley Morgan (1):
+      rcu: Drop the private tick-internal.h include from tree.c
+
+Hemanth Selam (1):
+      rcu: Fix typo "upto" in comment
+
+Karl Mehltretter (1):
+      rcuref: Fix the rcuread_is_dead reference in rcuref_read() kernel-doc
+
+Kunwu Chan (16):
+      rcutorture: Add atomic-SRCU support to torture.sh
+      srcutree: Add reader-free fastpath to synchronize_srcu_atomic()
+      srcutree: Skip callback scheduling for atomic SRCU grace periods
+      srcutree: Remove srcu_barrier() sleep for atomic SRCU
+      srcu: Restrict atomic-SRCU non_block annotation to task context
+      srcutree: Make init_srcu_struct_atomic() prevent transition to big
+      srcutree: Don't transition atomic SRCU to big in srcu_gp_end()
+      srcutree: Skip torture to-big transition for atomic SRCU
+      srcutree: Add lockdep and early-boot checks to synchronize_srcu_atomic()
+      srcutiny: Add lockdep and early-boot checks to synchronize_srcu_atomic()
+      srcutree: Preserve IRQ state in synchronize_srcu_atomic() callchain
+      rcutorture: Fix divide-by-zero with fwd_progress_div=1
+      rcutorture: Add atomic SRCU lockdep support
+      selftests/rcutorture: Wire atomic SRCU into srcu_lockdep.sh
+      selftests/rcutorture: Fix double nerrs count in srcu_lockdep.sh
+      rcutorture: Add atomic SRCU cross-CPU IRQ context mismatch test
+
+Longlong Xia (1):
+      rcu: fix shrink budget underflow in lazy_rcu_shrink_scan
+
+Matthias Goergens (1):
+      rcu: Make userspace barrier hook drain kvfree_rcu work
+
+Paul E. McKenney (16):
+      doc: Update stallwarn.rst based on RCU Tasks Trace as SRCU
+      rcu: Don't panic on already-ended RCU CPU stalls
+      rcutorture:  Disable fragile readers during overload testing
+      srcutiny: Make a Tiny SRCU grace period imply an RCU grace period
+      srcutree: Suppress srcu_advance_state() mutex_lock in atomic
+      srcutree: Suppress to-big transition for atomic SRCU
+      rcu: Add running and boosted indications to RCU task stall dump
+      rcu-tasks: Disable callback contend/collapse messages by default
+      srcutree: Add an atomic Tree SRCU
+      srcutiny: Add an atomic Tiny SRCU
+      rcutorture: Add support for testing synchronize_srcu_atomic()
+      srcutree: Disable preemption across synchronize_srcu_atomic()
+      srcutree: Warn if Tiny SRCU readers are preempted
+      srcutree: Explicitly note DEFINE_SRCU() needs for srcu_barrier()
+      torture:  Allow specifying alternative ssh command to kvm-remote.sh
+      Merge branches 'misc.2026.10.06a' and 'torture.2026.10.12a' into HEAD
+
+Puranjay Mohan (6):
+      rcu: Make call_rcu() safe to call from any context
+      rcu: Make Tiny call_rcu() safe to call from any context
+      srcu: Make call_srcu() safe to call from any context
+      srcu: Make Tiny call_srcu() safe to call from any context
+      rcutorture: Exercise ->call() from NMI context
+      selftests/bpf: Add a call_srcu() re-entry reproducer
+
+Ricardo Ribalda (1):
+      rcu: Drop the address space qualifier from the dereference macros
+
+Sebastian Andrzej Siewior (1):
+      srcu: Use IRQ_WORK_INIT_HARD for srcu's irq_work
+
+Sunho Park (1):
+      srcu: Fix WARN_ON() for rcu_segcblist_n_cbs() in cleanup_srcu_struct()
+
+Zhouyi Zhou (1):
+      rcutorture: Fix kvm-again.sh re-run failure on ppc64
+
+Zqiang (1):
+      rcutorture: Synchronously wait for all rcu_torture_irq() callbacks to complete
+
+ Documentation/RCU/stallwarn.rst                    |  22 +-
+ Documentation/admin-guide/kernel-parameters.txt    |  23 +-
+ include/linux/compiler.h                           |  17 +
+ include/linux/rcupdate.h                           |  10 +-
+ include/linux/rcuref.h                             |   2 +-
+ include/linux/srcu.h                               |  83 +++-
+ include/linux/srcutiny.h                           |  18 +-
+ include/linux/srcutree.h                           |  19 +-
+ kernel/rcu/Kconfig                                 |   6 +
+ kernel/rcu/rcu.h                                   |  14 +
+ kernel/rcu/rcutorture.c                            | 317 ++++++++++++-
+ kernel/rcu/srcutiny.c                              | 189 +++++++-
+ kernel/rcu/srcutree.c                              | 504 ++++++++++++++++++---
+ kernel/rcu/tasks.h                                 |  15 +-
+ kernel/rcu/tiny.c                                  | 127 +++++-
+ kernel/rcu/tree.c                                  | 164 ++++++-
+ kernel/rcu/tree.h                                  |   6 +
+ kernel/rcu/tree_exp.h                              |   2 +-
+ kernel/rcu/tree_nocb.h                             |   3 +-
+ kernel/rcu/tree_plugin.h                           |   2 -
+ kernel/rcu/tree_stall.h                            |  36 +-
+ .../testing/selftests/bpf/prog_tests/rcu_reentry.c |  93 ++++
+ tools/testing/selftests/bpf/progs/rcu_reentry.c    |  51 +++
+ .../testing/selftests/rcutorture/bin/kvm-again.sh  |  11 +-
+ .../testing/selftests/rcutorture/bin/kvm-remote.sh |  22 +-
+ .../selftests/rcutorture/bin/srcu_lockdep.sh       |  77 +++-
+ tools/testing/selftests/rcutorture/bin/torture.sh  |  24 +
+ 27 files changed, 1677 insertions(+), 180 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/rcu_reentry.c
+ create mode 100644 tools/testing/selftests/bpf/progs/rcu_reentry.c
