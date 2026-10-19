@@ -1,59 +1,105 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.44
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792428281;
-	b=iWLmcz5ornypCRTLuzORfNg1Q0/+HKTA9iMdOc8xKWUVKSIjHxWdgPCNd4fSrc0qLPIC
-	 3+YMBEANougTMJvAMqOoSQTZZTBrH0pe7oHx1nm22BZ+/R0fi2Z2+H1PvmTwYxZBQAfbv
-	 7LnC/uPXbDPWadfM0Pjw99nu44KARH19IvSS89ImtRMaQxQYJjzGZb++5iJ8FC8ihukzK
-	 GaYVP5Gslz0k6mPm33ml4xFOtUT7pvCj7RUTL+8xTC/wTlpdID7htA2IsAeeytwtLxPOr
-	 9av6IAKaJl69rIZ+Afz1Y/Lx9gxOpZadNzV0N1W8G+vZH7Xod9vBqh7UjbN3AtDB/Gw==
+	t=1792431161;
+	b=N9VjDenTd6wPFpdVuVXtt9MijJuOjp6ltPP0gu3+BOjgF4qrlGd3dnlri03PoWauGxsO
+	 UD6C0U1cy8wfaEqAcBQnbhp48ogXJXr1KZr9OLOXlXD9aP2IBToOSqy0XVkQ6V7kcwF7Z
+	 Ee6QqXlT7iGyOMXA+RH/LzJAa0C/ZVL1XP+MOKLtGK2Z6gvwj6qzTQ61ZhVT36svyPvkT
+	 WD1qAagOxavWaQPIvCgTylbT8JAfhXQ94bLtjzkgmGpPiYiHwJ0EulAgHh4HSQ4uD0xPS
+	 IcQWWWDp/HseciPR3JkcvK6eV1Cf6w52K/JY/6hRjGvkNnKQuBA1xWNsRM5LZLgxFAA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792428281;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=KAotcb89D4hecifdLk1/qMYE4+oOkQbgn1TxucAlack=;
-	b=ylVmHiVjUv5PkQUrtUKgoL/wPDVRPxirOB3aromupajv/7V2Dq0lD0PxMtVJKoQzpT50
-	 KQTl4q2ASjMAXNVYMODsAIuCGW/ORwpM+baXELToqgw0qJ+SgYamwc3GdvLUOS2FEtqw3
-	 CzWIYGftZ2zXN/48fH0UNQqZqUR5cxFWyCT+hJ1HKlS0GXnZLW1YpuLMdYbukRKcagOLz
-	 UW9hJ7psFKK6zqINJqqAEVYgzlVNfwevMjPM3mmcZbahe0A4zuBECz2hTOSZxjy+b+WO5
-	 gGa9rYRvN0vuz4pHcf+7z79H1eTbxEZ4c4JWKJoeaILG+/W/ktmHNd7rSDTST6Tmgog==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792431161;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=eLclega7SUgAlrP/YHd7B9RgRT5ZefPwtKid3vUTNJk=;
+	b=20yHKxUVQg3CrEDa15CIz4DOba4CS2mxqyjBDFcjluJm8Y+QI6tv44v7/IrcTY8nWnLc
+	 nNA5XQgGo10jcoMMpWrijgBN2AQwF7DigbNk1gOObMtUgiS/blCHOwKONLXWv3gm2Vyvd
+	 RELbnddSTW/vdxPZsamjGUiz8FmY0nGTaLYoXJQMutlUUUrB/iPj2lPhYHZ2JVp/ZMUOy
+	 G5SqhAlDR5U1y9T5qEaCoMpTcaqSwEmi0rLWYSCkbWRyuibof2upxNoTE4kIe+oZ9s71C
+	 +2KXsQe36SLH8W8/MWp5gJoRV9BHI8YDDsfo6ZMEcw14NwuK3/QZy+OKprhwNabyjVg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="TyZTK/Nj";
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=k915gHaf;
+	arc=none smtp.remote-ip=209.85.221.44
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97F2606A320;
-	Mon, 19 Oct 2026 16:44:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96983606A31A
+	for <rcu@vger.kernel.org>; Mon, 19 Oct 2026 17:32:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 96983606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TyZTK/Nj
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EDB61F000C4;
-	Mon, 19 Oct 2026 16:44:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792428280;
-	bh=KAotcb89D4hecifdLk1/qMYE4+oOkQbgn1TxucAlack=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=TyZTK/Nj7KAGHnYmed9f1KZ9jupGg8uUu/Gpaem5iBmpngGRyl9E8i6WsX3dRN4EP
-	 az2321s1aEjcmdiDunDjk6AIXq4PWvzVlNOCol5pg/kyP+LjUmcmqyElv6WW+zGIyq
-	 Od4ZjhdPu3GjMdcIxcY92CAG+oGTAIN1nt1NEQNYX6dupFv9t368CCOq/6LqI5iqB2
-	 E6lRa2SSfTzssQsS6apsAXAWGl+5GCtjvedUM/2eDN0CocQtk+8Siq1ZDxwmnGyePh
-	 u24TRF6Ahy0SYfxxBXs0p8VVV1JfTriBoDuw8mrBqgoEtE7Ttlqr8Tbx7H9xOfQDm4
-	 WDrIhXQoWB6WA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4222FCE09FC; Mon, 19 Oct 2026 09:44:40 -0700 (PDT)
-Date: Mon, 19 Oct 2026 09:44:40 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zqiang <qiang.zhang@linux.dev>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
-	urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org,
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=k915gHaf
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-48df0fa43c5so1783855f8f.0
+        for <rcu@vger.kernel.org>; Mon, 19 Oct 2026 10:32:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792431160; x=1793035960; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=eLclega7SUgAlrP/YHd7B9RgRT5ZefPwtKid3vUTNJk=;
+        b=k915gHafF+/iVY/Q6ZAmfO8fDiMdadtiXExpN9lHP3BIJ5J9oBa9HMzI2CIExOdhIW
+         oSSBVatxd/t4grE6McdzII8L6581JtFWOjIlzFMN/ZWwUWaZjKfepLWzMwm510DEJ/Gr
+         +/ZWVpPVziRHvxrnVtZH9L8ybidr1t6e6SP67UgHaCKOG+AUWhzvad8CkKjA5LPJcKgD
+         wYR0jjAEGt8neGKxTaKH713B5bGB+Cg4/HSLycS0yElemRXMKATPeE7wVHgj/S0XAIGs
+         w8cHTr6VcgVKAC7i4Pqd6hHvNxjVF+/406KJd4h7OsTy/Djy8HpKUC/b4QDDsaVeSifh
+         74Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792431160; x=1793035960;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=eLclega7SUgAlrP/YHd7B9RgRT5ZefPwtKid3vUTNJk=;
+        b=WpWkEnEsQs7IKZzD/hS86ygUg9v/NP1wJtNsGbpCoJpd4DlTljkbfCL5XdIt6xFkPh
+         9YJjxJfZgBoJ5WYUoOvVRvUGzkeT01QtNqt9e7jUmiQovuJusWyc75y869EBmiEW3v8l
+         WjQMvqIC67ngRuNoIKRjlwsPEslvO9cTIc10ulp/ZfP76xyQAh5AmSNNLkNU7fu6WFLV
+         mkyHFPpPDynCFyYhBe2WtXhTUlc0kw/n2NjGfvexx0ujdPZUlCH2CXECQ0yFmCIEbWhm
+         3BFb21oSyNORtwNj6/wfCo5cX8KyvhFg1SCmlD5utwFJDM4/t0MVfarsajHtOraUjUsx
+         gKxA==
+X-Forwarded-Encrypted: i=1; AKwUvByDRb35mCFVKBpHA6NhmsswJXV3UJt6zsyjw5ShwqNxJn05Kpwtm2vJDBEDzzAvj3Pb5JQ=@vger.kernel.org
+X-Gm-Message-State: AFq9FYLDTWHzShF7sPbJotzDhZ3oC8iHtUQ7njJ6Z4zBzNkROa1oD10J
+	b15FmloihRufIC14sOtwcqh1ZCWZclGO3Yexvgx7mOhXCh/v7TTxlxMG
+X-Gm-Gg: AYBFou1n5HN6aDl7uq8LHScW+gIZPLk9et3ylRWj/hooBEjab59lENcIIifMAJXRcvp
+	kiyHXR1PuSp4QpuN8X2mYoCwLtyt4HgH4scetsrQ7Bu7V4LSvH1lkfVr6KYlwUMuRWLsD45Rk3Y
+	1rGCE1mOghhc4lkErnug7zsLUi+/lZkVtdDzNja9tfrSt+ypA9ajQF/vVbv1lp7NNtXQcR07Er9
+	hJ8UOKUgcSbN6K4PcqlXu/KZYl6gHS8vEM+JcARxMxyd2QvW697Dga8vM0iQuoZ5SZFr3FW1zLz
+	9bC9sPXNpNk6ihA7b2lnQDpno8N4T4WkLoavDcLM+PN0Fi1Am7dy1uOTR2QwseiEK9M4shLgQWC
+	EaMN5zbgywEwASA5SfJ/fN4twl6Mnibe762yQTN7GMcWvyo1ELyziesF8ZMq0mFB4PnwfwD/vue
+	EWuMtFgDGi0AXgXv/37xcTpE8ZTGebfPbTqSxc9AxFGcjiBydtK+gP+KfAIBEi4mxpcyhl3VVnR
+	d5qn1GnyfY+Y4lzFENuGFYw/BytTRFqg65pGZwdjfQ=
+X-Received: by 2002:a05:6000:46cd:b0:48c:69b3:6114 with SMTP id ffacd0b85a97d-48dfadf34cemr19629395f8f.3.1792431159687;
+        Mon, 19 Oct 2026 10:32:39 -0700 (PDT)
+Received: from andreayoga.wind3.hub ([151.76.51.95])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e1d823b7esm253426f8f.40.2026.10.19.10.32.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2026 10:32:39 -0700 (PDT)
+From: Andrea Parri <parri.andrea@gmail.com>
+To: Bradley Morgan <brads@mainlining.org>
+Cc: Andrea Parri <parri.andrea@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] doc: Update recent RCU/SRCU API additions to
- whatisRCU.rst
-Message-ID: <25bb1aa8-7563-4fca-a17b-5a7d168b5c23@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20261019122209.15604-1-qiang.zhang@linux.dev>
- <20261019122209.15604-2-qiang.zhang@linux.dev>
+Subject: Re: [PATCH RFC -rcu/dev] hazptrtorture: Release all deferred hazard pointers before stopping
+Date: Mon, 19 Oct 2026 19:32:28 +0200
+Message-ID: <20261019173230.73558-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <AFA8DFD1-7D1C-49FD-BE53-95747FE4302C@mainlining.org>
+References: <20261019162005.12888-1-parri.andrea@gmail.com> <AFA8DFD1-7D1C-49FD-BE53-95747FE4302C@mainlining.org>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -63,90 +109,61 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261019122209.15604-2-qiang.zhang@linux.dev>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Oct 19, 2026 at 08:22:09PM +0800, Zqiang wrote:
-> The following commit introduces some new RCU/SRCU APIs:
-> 
-> Commit 'd3f52f53a562 ("srcu: Create an SRCU-fast-updown API")'
-> Commit 'dab06d6f9379 ("srcutree: Add an atomic Tree SRCU")'
-> Commit 'cacadb630375 ("srcu: Add guards for notrace variants of SRCU-fast readers")'
-> Commit 'fa8a2d55139f ("srcu: Add lock guard for srcu_fast_updown flavor")'
-> Commit '954c0d741299 ("srcu: Add guards for SRCU-fast readers")'
-> 
-> This commit therefore update thems and some missing RCU related APIs
-> to whatisRCU.rst.
-> 
-> Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+On Mon, Oct 19, 2026 at 05:22:54PM +0100, Bradley Morgan wrote:
+> On 19 October 2026 17:20:03 BST, Andrea Parri <parri.andrea@gmail.com>
+> wrote:
 
-Thank you, for both patches:
+[...]
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> >Fixes: f23d7b47ced9 ("hazptrtorture: Add kthread to release deferred hazard pointers")
+> >Assisted-by: LLM
+>
+> Why not put this into a series?
 
-> ---
->  Documentation/RCU/whatisRCU.rst | 24 +++++++++++++++++++++---
->  1 file changed, 21 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-> index e6767baff2d3..fe9dc3948690 100644
-> --- a/Documentation/RCU/whatisRCU.rst
-> +++ b/Documentation/RCU/whatisRCU.rst
-> @@ -1084,8 +1084,9 @@ RCU::
->  	rcu_dereference			call_rcu
->  	rcu_dereference_check		call_rcu_hurry
->  	rcu_dereference_protected	kfree_rcu
-> -	rcu_read_lock_held		kvfree_rcu
-> -	rcu_read_lock_any_held		kfree_rcu_mightsleep
-> +	rcu_dereference_all		kvfree_rcu
-> +	rcu_read_lock_held		kfree_rcu_mightsleep
-> +	rcu_read_lock_any_held		kvfree_rcu_mightsleep
->  	rcu_pointer_handoff		cond_synchronize_rcu
->  	unrcu_pointer			cond_synchronize_rcu_full
->  					cond_synchronize_rcu_expedited
-> @@ -1209,13 +1210,23 @@ SRCU::
->  	srcu_read_lock_nmisafe		start_poll_synchronize_srcu
->  	srcu_read_unlock_nmisafe	start_poll_synchronize_srcu_expedited
->  	srcu_read_lock_notrace		poll_state_synchronize_srcu
-> -	srcu_read_unlock_notrace
-> +	srcu_read_unlock_notrace	synchronize_srcu_atomic
->  	srcu_down_read
->  	srcu_up_read
->  	srcu_down_read_fast
->  	srcu_up_read_fast
-> +	srcu_read_lock_fast_updown
-> +	srcu_read_unlock_fast_updown
-> +	srcu_read_lock_atomic
-> +	srcu_read_unlock_atomic
->  	guard(srcu)()
-> +	guard(srcu_fast)()
-> +	guard(srcu_fast_notrace)()
-> +	guard(srcu_fast_updown)()
->  	scoped_guard(srcu)
-> +	scoped_guard(srcu_fast)
-> +	scoped_guard(srcu_fast_notrace)
-> +	scoped_guard(srcu_fast_updown)
->  	srcu_read_lock_held
->  	srcu_dereference
->  	srcu_dereference_check
-> @@ -1229,9 +1240,16 @@ SRCU: Initialization/cleanup/ordering::
->  	DEFINE_STATIC_SRCU
->  	DEFINE_SRCU_FAST        // for srcu_read_lock_fast() and friends
->  	DEFINE_STATIC_SRCU_FAST // for srcu_read_lock_fast() and friends
-> +	DEFINE_SRCU_FAST_UPDOWN		// for srcu_read_lock_fast_updown() and friends
-> +	DEFINE_STATIC_SRCU_FAST_UPDOWN	// for srcu_read_lock_fast_updown() and friends
-> +	DEFINE_SRCU_ATOMIC		// for srcu_read_lock_atomic() and friends
-> +	DEFINE_STATIC_SRCU_ATOMIC	// for srcu_read_lock_atomic() and friends
->  	init_srcu_struct
->  	init_srcu_struct_fast
-> +	init_srcu_struct_fast_updown
-> +	init_srcu_struct_atomic
->  	cleanup_srcu_struct
-> +	smp_mb__after_srcu_read_lock
->  	smp_mb__after_srcu_read_unlock
->  
->  All: lockdep-checked RCU utility APIs::
-> -- 
-> 2.17.1
-> 
+The two patches fix unrelated bugs, touch different files, and apply in
+either order, so I posted them separately.  But both are for -rcu/dev,
+and the test notes in the hazptr patch rely on this one.  I'll send the
+next version as a two-patch series with this patch first, unless Paul
+prefers separate submissions.
+
+[...]
+
+> >+	/*
+> >+	 * Run until hazptr_torture_cleanup() stops this kthread, not just
+> >+	 * until torture_must_stop(): the writer can be waiting in ->sync()
+> >+	 * for a deferred hazard pointer while it is being stopped.
+> >+	 */
+>
+> Could this be shorter?
+
+Yes.  The comment in hazptr_torture_cleanup() already says why, so this
+one can just point there:
+
+	/* Keep going until hazptr_torture_cleanup() stops us, see there. */
+
+[...]
+
+> >+	/* The readers have stopped, so nothing new can be deferred. */
+> >+	for_each_possible_cpu(cpu)
+>
+> Is the comment needed? I don't know if it's nessesary.
+
+I'd keep it.  A reader can defer after the last pass in the loop, and
+kthread_stop() can then end the loop without another pass, so this
+pass is needed; the comment says why one pass is enough.
+
+> >+	/*
+> >+	 * Stop do_pending only after the writer and the readers: the writer
+> >+	 * may be waiting on hazard pointers that readers deferred.
+> >+	 */
+>
+> May we shorten this? Feel free to bikeshed that one.
+
+Sure:
+
+	/* The writer may wait on hazard pointers that readers deferred. */
+
+Thanks for the review,
+  Andrea
