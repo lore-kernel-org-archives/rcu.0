@@ -1,102 +1,64 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=5.75.144.95
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792426816;
-	b=YUQdygnY1FU53yXSVt8c0bpWkAX7FsD05K1l1aCO0bQUCsa5D/CEfK9zvlkNyD0Kui3f
-	 zfdEaq305aGs7izXqap1SXr8NF7a6a72EpvWPNk9F8LiHIR0WMBGbVi2zICS9GicaKp/5
-	 /FKtybbwGPM1a2x6q5hkUBpWGwtRtFq/b6IKR38m+qeifFC6ACVb8WPooK5lU/XLD0t+u
-	 5qC7HGaKJIa/C9CmLluy3xMExvbNEsmBvoXjATO1T3KXQK9sa+AfWLzBFOyXunYd4N9pT
-	 qWfoxrKOkBhvjm2/poWccS8TPptCOXlJm/Emr6CvSjZsrValjd4DJMQlRONmRBgVy3w==
+	t=1792426917;
+	b=lsTdmLFvrF2Cmm4e/INr3AgxLPJeTYjWAAvbf60h+/GtqK9l/yMJSz6T+7nU8RUbp9R0
+	 7Oovo/U84zajg1gasQ8Rzyz0QzlpZpCSYQhCqs/tgo0AY22UmwdCEshmJMmmpA6P9uF9r
+	 eItG2gHq6ZhNL8SAhfw4oX1B1ZIl6SlpP3AEz1JUTseDYYM5eVgprdPmlPXLQ9stbZ7az
+	 F7S2qEhM91TFG3/iWmN1/fGhYHVwsOuZoyhGEaT0luELXo8N6sVDPBKXOO2Id7NB48cAa
+	 TWoSAzm1arHizV91aGQYbQVgGAXahc5vOa6ujsBla2nlBH+zMGmrSG3mCRnd9I7hJyw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792426816;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	a=rsa-sha256; c=relaxed/relaxed; t=1792426917;
+	h=DMARC-Filter:DKIM-Signature:DKIM-Signature:Date:From:To:CC:Subject:
+	 In-Reply-To:References:Message-ID:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=wMCaBZ3cPYlo3WgUgRBvzFpHfELTk+gUNHqJ34/c1Vk=;
-	b=TeVFfabaArpQ0jT7G1G5xBAFPlnV2KaUxMGDhlSpdfH9rk7iqFcR9eRWU2uRHBdZ9uXc
-	 ZEZ29it3/cjxU1vddS1/h33vsun0N31uDuhCihZ8KTvdFNsOJZl1jevX5jqSbAlSwj5in
-	 okIdsshiNlMAJGvra+ULUMY+40L+b+zLjIO1Ahbzzs6jhsAplke1LI64LrPk2R4ka89TA
-	 ETMgNsbL2LOxGV+xfEjAIIwqFJQZ1Hu0qV5CXLV+CWoSbKHUzXgXk0B0oR6/n7zo1Nysy
-	 ejVCSHJrq5WEe2XWnNX1Y8BpFOaS16sFATQfFNNrWfu3YwUnKrFirPP1DbKNFfUEA8g==
+	bh=cAPcpsII7gFpyShVm3rNkMnNdzBtBeLEAij9GqgyYDg=;
+	b=kIb5cQ8AV+SvsQhU4FX4zXtHB5S5S5f0j5ksKL8kQtybs9vS2p11tObgReU2CIa9pJbH
+	 FYqtOetTf699u9Lg1SAuB8bKAPS02Vg16HHiP0pUiMT/IRda8nyGds3aqTlYYFNQyJGaI
+	 /XNPRTSmKTEGbhNa5cnFmiTaNuPxTuSaszEa0q72C1++lhzoqHRtIjOGhLz1cMPq8UhR5
+	 21lEzOKWtVv4dgEmfElbpsMmVJW2vPeKjiRfUCj00X/VbxgHsH4Jm17NxFO+/L9hm3kZf
+	 /jTZ4xnxn6mN1SZutbihQNZdJEDBvMFxZhzCXmfDZ1REPh8MClCznV1e+hO9KGfcEsQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=kBhIyW3T;
-	arc=none smtp.remote-ip=209.85.221.49
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=mainlining.org;
+	spf=pass smtp.mailfrom=mainlining.org;
+	dkim=pass header.d=mainlining.org header.i=@mainlining.org header.a=rsa-sha256 header.s=202507r header.b=FUWR54s5;
+	dkim=pass header.d=mainlining.org header.i=@mainlining.org header.a=ed25519-sha256 header.s=202507e header.b=Xhq5Nehv;
+	arc=none smtp.remote-ip=5.75.144.95
+Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FFB7606A319
-	for <rcu@vger.kernel.org>; Mon, 19 Oct 2026 16:20:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4FFB7606A319
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF9A606A31D;
+	Mon, 19 Oct 2026 16:21:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AFF9A606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=kBhIyW3T
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-48c4649b35bso1875623f8f.3
-        for <rcu@vger.kernel.org>; Mon, 19 Oct 2026 09:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792426815; x=1793031615; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=wMCaBZ3cPYlo3WgUgRBvzFpHfELTk+gUNHqJ34/c1Vk=;
-        b=kBhIyW3TiN0ufg80lIEwriNI8BTYAVYkZeiHdeXGtvzPKYLqGuhXZounou1/JGRAFr
-         AbBTU1hsWNGW/w+PDZda+gCxvY7g9SSfox/ScCidEZ2Lf4WfW4m2zvsIOgDQHDT3v+8Q
-         /PZscyY0xC9mWd35+C4B6ZiJXjjWDsz0gYbwbhsW0bMk4IAvUgzgQzZFnyMOmACEqVuu
-         DMAq67Ram89P9e+ja6jK/Rx5Odo4jEFnOBKPTsFQv5k3kVxRlSuvQB1ogUCSQAjhboSv
-         IGykHsrfE+uFlE5ruIts2KUcM+wkdD09vsripNS/1fbFuA+tYY3sGYgKynnTgu3bnOQL
-         zr6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792426815; x=1793031615;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=wMCaBZ3cPYlo3WgUgRBvzFpHfELTk+gUNHqJ34/c1Vk=;
-        b=tKe19dGk8g4yBWi79Dh1HIFBPo6inPoQDYzxjnzdq3g+I1MOJJE7gjmv4ORfcjOdFT
-         Gzqxour5m9J99e5MscnsG9rSqO6VGuc4qpSOWssqkf4pw6rA4LVQQzB9IaWeWUy00Ty0
-         j0skq4BpzbQEKl8qiQIXkqRaDWRXgQUUvWtsDsTLSfo31NdCuHjJjtJM/t5iMpXssgZQ
-         WY5EKd213t1NAfaJWJRensNB/5DikN88rHPHRHcVM7ve/zqLne4CAeIxROcXxju1Ts9F
-         jUeFaj65AuIQsQq6ITKqejJeLQbzCGtvwL1kBnlxN+CzHlZHAa/s+v7DL8WiAegGPTAC
-         FE4Q==
-X-Forwarded-Encrypted: i=1; AKwUvBy6ZMqAciW71F/GXwmKmedB1onln7u8ol5eqZcZNI81/k1slRTr2nsNSjIqxy5yhxZlqyg=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJqzkUDh3kUOun30bLazUYqX+vUv8Hi674RHooUfp1oqV2KnKYk
-	8RQa133RCrL98eVUqUkSHkRjWuawt8TCW4wuLLOH3SDWNe/da2PKtXn2
-X-Gm-Gg: AYBFou0lQRS/ojFXPYolQm6MyytVQgNwULbR9O287jBLcmYBjVCfHZn4sncEakEVBnq
-	2ca+vc3kFNQya7FH52OEhD+bEswP3PHKpknzIaW/livzXa7BeyE3zzmucULm0S2IDihNqishztU
-	ohOYsMw5gjPLmKJIceh+HKYATkzlUmtmhfBinsQxUzRL+nnddFJ9KcW47hKIj8KW4csLfz9SgpV
-	zeLmrPHk2oMj2FVXHhkW3q2EfsmOvUHNKbrPqGrS4t7rX2NOCcYjuK7DDdYxsxwkI5El2kHZCrF
-	y/29iP9bsHADrh85tf/9gC1HooR4h8iqSuG3t8mk5hGi+DyHeHxMAAGolu5hKtn0DdAZNW81PiG
-	7do/MZDYRMtO6Cef0rZwQ5QPy2tjdMFyJ9cm4iobcyhntEHungqItFi2v+DSyRgaKTwLsy2ePqo
-	efFay5tdHC74B1jkM4wHDUlzQzsLuc4fE4rN6Dd2Tud6ShiOBKajmCaqNPWjS7U1uEgOKuogG9f
-	hwSxUTwplg0k8QPst3OrfNrTi5ltJ71Bg2YRjXhKpM=
-X-Received: by 2002:a05:6000:41c7:b0:48d:f50b:2af8 with SMTP id ffacd0b85a97d-48e07fad0dfmr16383672f8f.46.1792426814532;
-        Mon, 19 Oct 2026 09:20:14 -0700 (PDT)
-Received: from andreayoga.wind3.hub ([151.76.51.95])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48dfd4ec8dfsm25165890f8f.26.2026.10.19.09.20.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2026 09:20:14 -0700 (PDT)
-From: Andrea Parri <parri.andrea@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Andrea Parri <parri.andrea@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Bradley Morgan <brads@mainlining.org>,
-	Kunwu Chan <kunwu.chan@gmail.com>,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RFC -rcu/dev] hazptrtorture: Release all deferred hazard pointers before stopping
-Date: Mon, 19 Oct 2026 18:20:03 +0200
-Message-ID: <20261019162005.12888-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key, unprotected) header.d=mainlining.org header.i=@mainlining.org header.a=rsa-sha256 header.s=202507r header.b=FUWR54s5;
+	dkim=pass header.d=mainlining.org header.i=@mainlining.org header.a=ed25519-sha256 header.s=202507e header.b=Xhq5Nehv
+DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
+	h=Message-ID:Subject:To:From:Date; t=1792426902; bh=cAPcpsII7gFpyShVm3rNkMn
+	NdzBtBeLEAij9GqgyYDg=; b=FUWR54s5TRC3GUWV9gRsHsFJXvB+KrBA38U2cQuRxcqjFRJGME
+	yUWZRbykzgneW62aOD/nsxIoYlIbAB+pv05RttjaEFuzhLtFnNSjXtxyC5FzmLkZl2FxO82t5sI
+	h28Mp62dLQydjh1LJmR3JzL44INu3sZcUaH5Odbri0nG21leZMhVYhNb3FvuML8Y5MWNlwunW1R
+	l5yM4GFk/IYNXPRtcLxHfO5VhRpD1ekY07tXmG0LzkoDWLl2uwpMeHCwb65F3fRUbIaaZ4jhIun
+	FthubCKpjXtCvvib2dw5fm1oq+OQmjP4a3hrkj+lTJO/LK7bRDohcbPPvs3VohUgN5w==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
+	h=Message-ID:Subject:To:From:Date; t=1792426902; bh=cAPcpsII7gFpyShVm3rNkMn
+	NdzBtBeLEAij9GqgyYDg=; b=Xhq5NehvAlASS45T3DhRitdm2oWikXsVVuURa8Z3kiKsRraWPX
+	6A0cc1MbC1ANImgmHrj/50UzF+x18vNFnZCA==;
+Date: Mon, 19 Oct 2026 17:21:43 +0100
+From: Bradley Morgan <brads@mainlining.org>
+To: Andrea Parri <parri.andrea@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>
+CC: Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>,
+ Kunwu Chan <kunwu.chan@gmail.com>, rcu@vger.kernel.org, lkmm@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_RFC_-rcu/dev=5D_hazptr=3A_Record_p?=
+ =?US-ASCII?Q?er-CPU_slot_owner_after_claiming_the_slot?=
+In-Reply-To: <20261019161852.12783-1-parri.andrea@gmail.com>
+References: <20261019161852.12783-1-parri.andrea@gmail.com>
+Message-ID: <B645B8F7-3073-448B-938E-9223A4E4A10F@mainlining.org>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -106,108 +68,159 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 8bit
 
-hazptrtorture can hang at shutdown when deferral is enabled, as in the
-PREEMPT scenario: the writer stays in ->sync() and kthread_stop() on it
-never returns, until kvm.sh kills QEMU:
+On 19 October 2026 17:18:48 BST, Andrea Parri <parri.andrea@gmail.com>
+wrote:
+>An interrupt that uses a hazard pointer while the interrupted task is
+>in the acquire slow path can leave its own context recorded as the
+>owner of the per-CPU slot the task then publishes into.  The next
+>context switch promotes the task's pointer with the interrupt's
+>context.
+>
+>hazptr_get_free_percpu_slot() records the owner when it picks an empty
+>slot, but only Store B in __hazptr_try_acquire() claims the slot.  An
+>interrupt in between picks the same slot, as the lowest free one:
+>
+>  Task on CPU 0                        IRQ on CPU 0
+>  -------------                        ------------
+>  hazptr_acquire(ctx)
+>    fast path fails
+>    __hazptr_acquire(ctx)
+>      picks item k (empty)
+>      item k->ctx.ctx = ctx
+>                                       hazptr_acquire(irq_ctx)
+>                                         claims item k
+>                                         item k->ctx.ctx = irq_ctx
+>                                       hazptr_release(irq_ctx)
+>                                         clears slot k
+>      __hazptr_try_acquire()
+>        Store B into slot k
+>      (item k still names irq_ctx)
+>  sleeps holding the pointer
+>  hazptr_note_context_switch()
+>    promotes item k with irq_ctx
+>
+>The task gets there with k > 0 when it already holds an outer hazard
+>pointer in slot 0; no other task can, as its slot is promoted when it
+>is switched out.
+>
+>The task gets there with k == 0 when the fast path leaves slot 0
+>empty: either its ptr_eq() check fails because an updater changed the
+>pointer, or the pointer is NULL and an updater publishes a non-NULL one
+>before the slow path loads it.
+>
+>The promotion moves the task's pointer into irq_ctx's backup slot,
+>which nothing unchains, so hazptr_synchronize() on that pointer never
+>returns.  The task's ctx->slot still names slot k, so its
+>hazptr_release() clears whatever another reader on that CPU has since
+>published there.
+>
+>If the interrupt detaches instead, as hazptr_torture_acquire() does,
+>the promotion chains irq_ctx's backup slot a second time while it is
+>still linked.  The overflow list then loops on that node, or follows
+>LIST_POISON1 once hazptr_unchain_backup_slot() removes it.
+>
+>Record the owner after __hazptr_try_acquire() succeeds, as the fast
+>path in hazptr_acquire() does.  This should be safe because an
+>interrupt that used the slot has released or detached it by the time
+>the task resumes, and only hazptr_note_context_switch() reads the
+>owner, which cannot run before the task enables preemption.
+>
+>Fixes: 50b568234163 ("hazptr: Implement Hazard Pointers")
+>Assisted-by: LLM
 
-    [ 1800.899278] hazptr-torture: Stopping hazptr_torture_do_pending task
-    [ 1800.899447] hazptr-torture: Stopping hazptr_torture_writer task
-    [ 1812.713870] hazptr-torture: rtc: 00000000225df70a ver: 12436 HTWS_SYNC tfle: 0 rta: 12437 rtaf: 0 rtf: 12427 onoff: 48783/48783:48786/48786 3,254:3,280 611671:731494 (HZ=1000) acq: 5720353149 rel: 5720210186 acqirq: 571927 relirq: 714778 reldefer: 714139 relundefer 714114
-    [ 1812.713971] hazptr-torture: hazptr_torture_stats is stopping
+Awesome! 
 
-    Summary: Potential hang (QEMU killed)
-    !!! PID 1393523 hung at 1980 vs. 1800 seconds
+Acked-by: Bradley Morgan <brads@mainlining.org>
 
-hazptr_torture_cleanup() stops the do_pending kthread before the writer
-and the readers.  Once torture_must_stop(), do_pending makes one last
-pass and leaves its loop, but unless stutter_will_wait(), that pass
-releases the deferred hazard pointers of a single CPU.
 
-Readers can also still defer after that pass, from the iteration they
-are in when torture_must_stop() becomes true.  Stopped readers hold no
-hazard pointer, so the writer waits on one of the 25 deferred hazard
-pointers above (reldefer - relundefer) that nothing releases.
+>Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
+>---
+>
+>Notes:
+>    With this patch, hazptrtorture's NOPREEMPT scenario passes a 30-minute
+>    run on x86_64 with 8 CPUs.  PREEMPT runs clean for 30 minutes but can
+>    hang at shutdown, in hazptrtorture's release of deferred hazard
+>    pointers; that hang does not involve this patch, and is addressed by
+>    "hazptrtorture: Release all deferred hazard pointers before stopping",
+>    posted separately.
+>    
+>    With that fix also applied, 30-minute runs pass for PREEMPT, for
+>    NOPREEMPT with torture_type=hazptr, for PREEMPT with
+>    torture_type=hazptr-stack, and for PREEMPT with CONFIG_HAZPTR_DEBUG=n.
+>    
+>    PREEMPT and NOPREEMPT also pass without this patch: their readers hold
+>    one hazard pointer each, so they reach the slow path only when the
+>    ptr_eq() check fails or the pointer is NULL, which happens only before
+>    the writer publishes its first element and after it stops.
+>    
+>    A KUnit reproducer, with a test-only hook in __hazptr_try_acquire()
+>    between the free-slot check and Store B, fails on 940793b926aa and
+>    passes with this patch.  I can post it if useful.
+>
+> kernel/hazptr.c | 21 +++++++++++++--------
+> 1 file changed, 13 insertions(+), 8 deletions(-)
+>
+>diff --git a/kernel/hazptr.c b/kernel/hazptr.c
+>index 3ca73b56a5c25..b15b84ebd4ceb 100644
+>--- a/kernel/hazptr.c
+>+++ b/kernel/hazptr.c
+>@@ -54,19 +54,16 @@ unsigned int flip_list_phase(unsigned int phase)
+> }
+> 
+> static
+>-struct hazptr_slot *hazptr_get_free_percpu_slot(struct hazptr_ctx *ctx)
+>+struct hazptr_slot_item *hazptr_get_free_percpu_slot_item(void)
+> {
+> 	struct hazptr_percpu_slots *percpu_slots = this_cpu_ptr(&hazptr_percpu_slots);
+> 	unsigned int idx;
+> 
+> 	for (idx = 0; idx < NR_HAZPTR_PERCPU_SLOTS; idx++) {
+> 		struct hazptr_slot_item *item = &percpu_slots->items[idx];
+>-		struct hazptr_slot *slot = &item->slot;
+> 
+>-		if (!slot->addr) {
+>-			item->ctx.ctx = ctx;
+>-			return slot;
+>-		}
+>+		if (!item->slot.addr)
+>+			return item;
+> 	}
+> 	/* All slots are in use. */
+> 	return NULL;
+>@@ -78,6 +75,7 @@ struct hazptr_slot *hazptr_get_free_percpu_slot(struct hazptr_ctx *ctx)
+>  */
+> void *__hazptr_acquire(struct hazptr_ctx *ctx, void * const *addr_p)
+> {
+>+	struct hazptr_slot_item *item;
+> 	struct hazptr_slot *slot;
+> 	void *addr;
+> 
+>@@ -85,10 +83,17 @@ void *__hazptr_acquire(struct hazptr_ctx *ctx, void * const *addr_p)
+> 	 * In case we are called due to nested use of hazard pointers,
+> 	 * try a slot protection with per-CPU slots.
+> 	 */
+>-	slot = hazptr_get_free_percpu_slot(ctx);
+>-	if (likely(slot)) {
+>+	item = hazptr_get_free_percpu_slot_item();
+>+	if (likely(item)) {
+>+		slot = &item->slot;
+> 		addr = __hazptr_try_acquire(ctx, addr_p, slot);
+> 		if (addr) {
+>+			/*
+>+			 * Record the owner only once Store B has claimed the
+>+			 * slot, as hazptr_acquire() does: an interrupt may
+>+			 * have used this slot since it was chosen.
+>+			 */
+>+			item->ctx.ctx = ctx;
+> 			ctx->slot = slot;
+> 			return addr;
+> 		}
+>
+>
 
-Keep do_pending running until hazptr_torture_cleanup() stops it, after
-the writer and the readers, releasing the deferred hazard pointers of
-all CPUs on each pass once torture_must_stop() and once more on exit.
-It now also sleeps between those passes, and kthread_stop() wakes it.
-
-This should be safe because readers defer only from their own loop,
-which they have left once torture_stop_kthread() returns for them, and
-the hazptr_torture_acquire() IPI runs synchronously within that loop.
-
-With this change, a 30-minute PREEMPT run on x86_64 with 8 CPUs ends
-with "End of test: SUCCESS" and with as many hazard pointers released
-from the pending lists as were deferred (reldefer: 960658 relundefer
-960658).
-
-Fixes: f23d7b47ced9 ("hazptrtorture: Add kthread to release deferred hazard pointers")
-Assisted-by: LLM
-Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
----
- kernel/rcu/hazptrtorture.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
-index 7c8b5899fb011..5153720074644 100644
---- a/kernel/rcu/hazptrtorture.c
-+++ b/kernel/rcu/hazptrtorture.c
-@@ -547,18 +547,25 @@ static int hazptr_torture_do_pending(void *arg)
- 	DEFINE_TORTURE_RANDOM(rand);
- 
- 	VERBOSE_TOROUT_STRING("hazptr_torture_do_pending task started");
--	do {
--		if (stutter_will_wait()) {
-+	/*
-+	 * Run until hazptr_torture_cleanup() stops this kthread, not just
-+	 * until torture_must_stop(): the writer can be waiting in ->sync()
-+	 * for a deferred hazard pointer while it is being stopped.
-+	 */
-+	while (!kthread_should_stop()) {
-+		if (torture_must_stop() || stutter_will_wait()) {
- 			for_each_possible_cpu(cpu)
- 				hazptr_torture_do_one_pending(cpu, &rand);
- 		} else {
- 			cpu = cpumask_next_wrap(cpu, cpu_possible_mask);
- 			hazptr_torture_do_one_pending(cpu, &rand);
- 		}
--		if (!torture_must_stop())
--			torture_hrtimeout_ms(kthread_do_pending_ms, USEC_PER_MSEC, &rand);
-+		torture_hrtimeout_ms(kthread_do_pending_ms, USEC_PER_MSEC, &rand);
- 		// Omit stutter_wait() because this function needs to do cleanup.
--	} while (!torture_must_stop());
-+	}
-+	/* The readers have stopped, so nothing new can be deferred. */
-+	for_each_possible_cpu(cpu)
-+		hazptr_torture_do_one_pending(cpu, &rand);
- 	torture_kthread_stopping("hazptr_torture_do_pending");
- 	return 0;
- }
-@@ -773,7 +780,6 @@ hazptr_torture_cleanup(void)
- 		return;
- 	}
- 
--	torture_stop_kthread(hazptr_torture_do_pending, do_pending_task);
- 	torture_stop_kthread(hazptr_torture_preempt, preempt_task);
- 	torture_stop_kthread(hazptr_torture_writer, writer_task);
- 
-@@ -785,6 +791,12 @@ hazptr_torture_cleanup(void)
- 		reader_tasks = NULL;
- 	}
- 
-+	/*
-+	 * Stop do_pending only after the writer and the readers: the writer
-+	 * may be waiting on hazard pointers that readers deferred.
-+	 */
-+	torture_stop_kthread(hazptr_torture_do_pending, do_pending_task);
-+
- 	torture_stop_kthread(hazptr_torture_stats, stats_task);
- 
- 	/* Do torture-type-specific cleanup operations.  */
-
--- 
-2.53.0
-
+--- Thanks!
+"I'm not a very positive person" - Linus torvalds
