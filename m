@@ -1,67 +1,96 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792522149;
-	b=J/Cw2q1NgzeIZQutNeoOCxYQrr+iWIAsg6HOQheLg267W0Rx6OtR/vp6+M1u6ZHh+NSA
-	 fB5WnazG73OhYuyIkMoZWKL3zon3whBUTFFfs8wvr+P1T/CnvkfxsG4McIeIM2iHO71Q9
-	 jaPQtxX7TJBvMQVYlIPRlNQC+CcY/JufHTOXous3B5lAOxxeJuUlH7GZ0YUm1ZcbvRFgc
-	 jN3R75PmztJagv3OTJFgYQHVHHNw1fXmz5kidsgKY8cdauIvY46yW1/lPAfMrwVAizQAU
-	 LvLohzeYUA+nFi1bYPIKJBIXkvV5zUTO65IHc3Edyjyq+W0m1ifgdk3p1Ll0X8xDP0Q==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792522149;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=61+e+z9lnj6B3jVuxnAy0csTPT5IQym/RO7PRxMGcPo=;
-	b=D+/ffMe8+4kc9m1+UtrzOED/w45AfbzV4BUN1rgplpVGG2RJBW3+2BTISOmnUFzkMhjJ
-	 WWtpI+X/h7k1Kg9L/5Vdee0WR7ovDvGzwZxL/oLyr6ucrhrEuiorZSfv91hONPIdj7ivl
-	 cfSWHapsbZLzoG5HTe6JJTFzNIR6hAXJXfmf7Oi3IiKBwZOYkwts9lqFZBVv6vvC74lC2
-	 zdwcEIq1+KtXu/3c1tWR/F7LuGAyk7GHIEvWnTPsXihVzud7g/SncJZk76fsBsxBG5Hnn
-	 73C7YLQn+S4rt9c3VWbZH0iP2UmcmShPwUsrEruDYsX2QK+2Piy5OTmVfpdzEG+TK/A==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=G2dGw3QT;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.191.106
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792523480;
+	b=pqm4YJzlOrDAAiudWdRTCrznZHAUZSTALw6Zu/exw4n+NZy9VH22NJu6aNSQsFoTPY4/
+	 edKLwN9o9EKBPXMX9NaeTMnOjMLN+ax9n37hxwpkmMRIw1XAcjih1uts/ZhtJp47pe4kp
+	 cUCCweJVzf6Up0jzZZ8CAYf2uPCiWdB45c9ipEdTvfnL2BMJfJwJ7p01rHAFLq1awllgG
+	 ZUPejUXvW8+mi6/i5bOPiGEX4tcbLiLaJScJ0hfMo/9yHQJ7ZpcU1xIFnu0ljzqzRnfxN
+	 ZPqlLAeiVikqdrvB+ZHO2qsCLlnjdKzzh0Ppw1u30Wz0USlps3rjUA5idFRX2n3+BZw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792523480;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Message-ID:Date:
+	 User-Agent:Subject:To:Cc:References:From:Content-Language:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
+	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
+	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=t33Y0nOrNqRmsedIeFJU52K4SHEO1Sh7k3v2A8kNejw=;
+	b=RSt8J4KY66kbx2iJ7hZrp2XNGt16Xms0CXXBPuj988wnTP/26NtO5fLhnR6WolABo9p2
+	 J0JfCTepJK7mvD7W20dQuGj98B7/EtNfYzRsjONGHEiGrK6SMaSRM0l23XPs0Vc2caRmV
+	 ZB3iVAUpHp9trDlbrKp1UEpmTj/ZcPUsoF6rRkhqQgNeUPO8satxuMIIONhEV2QRvJC+4
+	 Egf07ivXkbwQDqOKgfFHAVY0wwk6rNuEGYUEFG75RlE3ou6fgKi1hVLPOOcbh7ah7aHkX
+	 uIhEHY8Cn8hK+9kq+ryXN2yqS/qQcgRZWMSy4qLwdTnEh0Hn/0WcZ1k6KAeEgW+Qqgw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=efficios.com;
+	spf=pass smtp.mailfrom=efficios.com;
+	dkim=pass header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=selector1 header.b=JO0zdDnb;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.191.106
+Received: from YQZPR01CU011.outbound.protection.outlook.com (mail-canadaeastazon11020106.outbound.protection.outlook.com [52.101.191.106])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2006A606A320;
-	Tue, 20 Oct 2026 18:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA638606A31B;
+	Tue, 20 Oct 2026 19:11:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CA638606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=G2dGw3QT
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 979F91F000CC;
-	Tue, 20 Oct 2026 18:49:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792522148;
-	bh=61+e+z9lnj6B3jVuxnAy0csTPT5IQym/RO7PRxMGcPo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=G2dGw3QThP0zv0jOoL+Vgc2f8VxdIgYzAC80hMQT2elKtaAkKBpqIOLkeC1F2e8eq
-	 zTyVsyx9xY08UgVb8N9kF4xwL9nQMowaPt/aBZbsHxhN2ysLzrV6ONJXL851plssUp
-	 PGFlT7Jb4By88yVPcTQRs4XA0r8QN4EByS0VfwxMpDubDtT5Mbnu8iDfpvXBE4tncX
-	 k83WSkGF/nCcoBsw1rv5/+AvpzOC7qL7K4xYrPzJAZ4CzN2PiI5ca5Zs2TxyM428Xn
-	 h3Nfb3UWcXz3TWyUcO84/+SANrLij+wn9AuWVQh0JbpVm+9m6zFALHpbqCi3ZYKI53
-	 SLVULm6HLHGIQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 47566CE09E8; Tue, 20 Oct 2026 11:49:08 -0700 (PDT)
-Date: Tue, 20 Oct 2026 11:49:08 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Andrea Parri <parri.andrea@gmail.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Bradley Morgan <brads@mainlining.org>,
-	Kunwu Chan <kunwu.chan@gmail.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC -rcu/dev] hazptrtorture: Release all deferred hazard
- pointers before stopping
-Message-ID: <3e7abe29-df1f-4cb6-884f-dd0a70c5311f@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20261019162005.12888-1-parri.andrea@gmail.com>
+	dkim=pass (2048-bit key, unprotected) header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=selector1 header.b=JO0zdDnb
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=bjBVI+F7Q5GohVzpLbZGxoRPEDrE8Lnbyb67F+wovIT3CnflAFAxZ2kq9FP5kc0aQTz/MSwM83WCnv4xkwkr9bI8eT1Qgg2kUbpeuWJ6k7isCMB6jYr9SnBZ9gjyrb5Hs0/CW/4RpGsK1PDGbL3xjJSNibSrBL1J3rsb/n76bQqcDUaC0zXwiDs1Eqbd/Vlizn1CRzkH+gkv+OwKOk//fY0U1aQGShtt2C9cI7p1o9Pio6/rBe4BYyR7FONLP33Egct+gRpDE0bXt/YWd6z3IhlUbVe+sv/T7sP8Xp8frI7BJZjpL4ngw2bCfOTiGrS2rQMNFBFd6kfemqvhLBd8RQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=t33Y0nOrNqRmsedIeFJU52K4SHEO1Sh7k3v2A8kNejw=;
+ b=OWeWVWMoFkMsez2j7wf96yJfoOymv0imHR0UmLMDcFXfNk8SfXS5JdAYyfoxFKKp5UTcCqbrKh6464hjR++dAW4R/SuuPLouTuSX35Bj572g2Bkm82vKuN2T0U0lL+L/zaYeZi8XxLnyqTdPX+jAeu7Aksp6teiyYQJA4zJDIxoTTE1sFeHHobwCUkPU+cA5uPgSmkgvLzBS2q5U3eVHCKgBY12wEiJ4TWVMwrYbNqNSLIzVadop3T5djT3OV3Gzj+nl1u4tb1PLu2EqTw5QaF29B6ihqDP8A4jiuB4346eYN+HL9JOxZewB9jVYo9Z25m20GD4hTYeNjUvGH4zDfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
+ dkim=pass header.d=efficios.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t33Y0nOrNqRmsedIeFJU52K4SHEO1Sh7k3v2A8kNejw=;
+ b=JO0zdDnb0PfTNynxTaG1NKvxopenf9XLsovn5OFVB8lX/Kl5h8v6S3PDKVM+N5r32cdbKUXkn0CC1b0vU/9o+AC5CBU28uu+hlFcRq/zONbUVPykZVJEn1vef1/8WNOcvvJp72XzHkQZqyaYzwc39UJtJilIF2IYKyXso9m34bs/cDEQyFk1++s+Oenrv3GvPG7Tfl6ZN89CYpel6K+WxQaPeGQVX6oYjXjGQFlMwSFbLU+3NRJoHY4bZhf9qYSDGnTENvmoh8e2AIKycfiRU0UunfIcUMCUACAlHfKQNfenkWimjfyoHMMAczwZhwT2uTSpIhzg8j93+NJ59vp66A==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=efficios.com;
+Received: from YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:1d0::10) by YQBPR0101MB8446.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:55::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.15; Tue, 20 Oct
+ 2026 19:11:14 +0000
+Received: from YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::6b9e:a901:67c5:7ddc]) by YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::6b9e:a901:67c5:7ddc%6]) with mapi id 15.21.0546.012; Tue, 20 Oct 2026
+ 19:11:14 +0000
+Message-ID: <4defa4de-ab42-4809-9645-100cad68972b@efficios.com>
+Date: Tue, 20 Oct 2026 15:11:13 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC -rcu/dev] hazptr: Record per-CPU slot owner after
+ claiming the slot
+To: Andrea Parri <parri.andrea@gmail.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>,
+ Bradley Morgan <brads@mainlining.org>, Kunwu Chan <kunwu.chan@gmail.com>,
+ rcu@vger.kernel.org, lkmm@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20261019161852.12783-1-parri.andrea@gmail.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <20261019161852.12783-1-parri.andrea@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT4PR01CA0027.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:fe::6) To YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:1d0::10)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -71,132 +100,225 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261019162005.12888-1-parri.andrea@gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: YT6PR01MB491026:EE_|YQBPR0101MB8446:EE_
+X-MS-Office365-Filtering-Correlation-Id: 41683807-5875-4819-1477-08df2edde95f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|376014|23010399003|56012099006|5023799004|261009223027099003|261009221227099003|10067099003|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	51Z2fOdkrvZq4oZdlEHvBRmFNu8JZJb3IFdHdnHdWc/b3hNwEvN3FZBpSJWdx9hN8uXTn/eMHcN+WTPBEtn1ixJorxikw6JFLT8to28s+fKiYxWHZpzIKL0K4KSc2ixFy//JK96pEx9Gb5/ePM6fT4DZI3XUdyS2bcZp0YYZEDYg29sVPaWH+PKIEfR1aKionGPPqkUdKTwmylBQwFz5rEu6OOn6aSLG4Y4o91FwXQ/fZWXlq5KGIQOxIK5D6d5tDP6Q+LMldjVnpdJMHfiaioyw+OM3Ciui66RXHdYvDdm7iLpCqAGD1J/b0Ai1OteMfEdByciZ1KdncN0z4dVx5Q+FXC7Tc0MY5e/L8umvCDGl/jAPxV6Kc4ghjtawqEW1FyQ8VSwq9LBkAJPA1H/fSjJHd0Guf6SWT0ribiy8u7P8SPfdkUm3GGm6H/yeNDOh8M/roJOkCGhQ3ji0SzayAfchO6CD3pApFy3KROw+Z/GXJTR9aiw18YlG1bQ6DMmyfeseZxhOO+VI/yiULTamhOiFLmROJn2FGGdeMYpL/Gm7HuCJyEubDlo1XBSWIZpZF5eo9/fDQgKUXVgSCXHENlDl4Nl+Y9XBIp4Xg/ms6Ic=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(23010399003)(56012099006)(5023799004)(261009223027099003)(261009221227099003)(10067099003)(22082099003)(18002099003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?V1JYUHFQYTllU1VtNFYwQktkYWRabHAvM21sOURlL2I2NDk4QzJIenBQWGRr?=
+ =?utf-8?B?TE5QMGlGMWY2dEk4aFlLRzdwL3YzOExMeGlSOHZkS1I3SDM4bEFGcW9ibXRr?=
+ =?utf-8?B?M01sVDFUaHFUQUY2U29iZGNVc0l3c2FjR2wycHBucThtM3NETHl0UDgrcHJr?=
+ =?utf-8?B?SnJtWmxlYVc5ZjFtcitWckltMmVia2YrU3NzUGZLYXVhWjNMTllDQkhrSEdo?=
+ =?utf-8?B?Z05BYVdTekQyeStUTDZDUkxGWXdxV3M4dlErWW1VKzJjbjM4b1ViNzhhVHZt?=
+ =?utf-8?B?LzdCNEVCTFlXWXlWTVJnVktkckUwY0ZpMHd5WFZSZnN3blVhV3RtWkdTQ2tM?=
+ =?utf-8?B?MS9kMW5mZTFtUjZWZUlXdXVEMWpvV2FjOXYzcVY2MnlyRDd2REZyT2p2bDJx?=
+ =?utf-8?B?TDFIVlZKdnk3c2lUT1JLbjZyU0xNMkNwMDhZd1pLWnJVNDd5QWp6VUF1ajhV?=
+ =?utf-8?B?bnNScUMzcFVMUWhzbVJoUTdnd2VEWUVVL1RzeURkclVGWm81QU5WaC84S0ho?=
+ =?utf-8?B?Y3VIcm8rZHVXc01XdHZIcWF5bm1wK1ZuYm9lZ3p6MEI2K1hReWFvV0RMMnpr?=
+ =?utf-8?B?a3pqUXhIK2xpb2pNZ0JmRmVmR21namFQSjNRZm5oS2xUZmU5eWREcFhMQlZ1?=
+ =?utf-8?B?Vmo4SXhLQVNwTlBOZ01rNzBsbTB0cFpVYXpXcnpyZVlvb3pXVXB6WDd5RE1r?=
+ =?utf-8?B?K0sxa2FSTUEvTXU3dW1jYndaaGVNWDFrZjJXZmlFUkhMakNOeFEybjJTdkZo?=
+ =?utf-8?B?SnFjWFdaSkdQdzhOeDdMYkp6L1JuKzJhYkEvWlhGN3oyek5LeCtHVnFIc0U0?=
+ =?utf-8?B?TENHQ01KWTh0aEhiTTZlTzNCM1BpREtDWjZlOUhXSWpzZkFQSFRKMHp1cnBk?=
+ =?utf-8?B?NVpidVNYZzQ1OXdmcHFnUHhmM1c2eFR2RHY0d3Fta2xqeklqMU5BK0dZSGFy?=
+ =?utf-8?B?WDUreVFzRklpdU1ySDRpOU9pTEtIMVJGN0FFNkFDMjZNS2lYRTBBT2hGTisw?=
+ =?utf-8?B?STM0NTlIelJjNUFoSHZDdFJraTZ1eTZPam9qVkp1MEdHMklXUERQSzh5UVhB?=
+ =?utf-8?B?R0IrYlBzdlNsT3pVSnhsU20zK09weHdOK0xUenpvU0huTHpMM3h6cFJQakdV?=
+ =?utf-8?B?cU8xMW1LbWplWDZJdUg5YTdQYjAwRXBxNzdGRE9Oa3JOaTdyQzdoT1hLR2R4?=
+ =?utf-8?B?dGdtcEJHNjhhYzlrU3lkL3N2THFiYVEyS0gzVlh0VWxMR083V1VCWEtBd3Y4?=
+ =?utf-8?B?TjJKeGo2UVAxbk5BajZRTlNiR3pZSE4wVUdQZHdsY1dsTmdrVkhtcXBXVnhD?=
+ =?utf-8?B?WlFkaDRPUFg3bXRwaDdSVG00S1d6enBnQkl3ajZDdnhCSWtlNzNDTVNLSVJx?=
+ =?utf-8?B?SWVsZUZyZC85Vnl0eDlYajdKWlRCaFQwbVhRTjZLWFJPODN0bEhHYnV1eDVu?=
+ =?utf-8?B?blFPNy9waVNLSE9tbElhNDFibjI4NHQ4K1QvY1VDY2tkMWl2bkVFOFBmZ0tG?=
+ =?utf-8?B?dkZaTXVjOEQ5VVkvVnlyUitGNmtjRGpXNU9SWEhieUxSa1VJakt5cWlsYlJn?=
+ =?utf-8?B?b3FncEFPUnBlbmVocng1SnFYbEdieW5hY0Zqdnd3OU5XaFNQSHNzT1Uzc1hU?=
+ =?utf-8?B?SW5GeC9aa2tUbnRKb3h5bVB6QXZ5MGdIWWpCOE5oSTVicUVYeDBMczZwK3Bi?=
+ =?utf-8?B?V3NJdTJNN1FDYm5xUmdmR25OSnRkTXdSTERLSXE3SldkYlVqeEw4ZXVudlVQ?=
+ =?utf-8?B?UndIbFltS05jOU95WkNIOFA4dFNEVEFXSWQ2YmdrZFJLcS9BbVpDUSthanRP?=
+ =?utf-8?B?SHdsYVc5RGdTVWVBb1RFN3EwTjZMVngvTzJKQnVrS2w3NUFDK2k4SjJtZEhN?=
+ =?utf-8?B?Ny9USytlTmd5djBQRTF4cFozR1QwelB4T29hQXc1MXI2RFVtdGFETi9QRlN4?=
+ =?utf-8?B?WkdpS3J1M0RVQkJTa3JDbTFldmJJZkVCa1Z4NTk2RWFKcGx5aFZubnBYQWpM?=
+ =?utf-8?B?SWVtYitqbEtPU2hKTVQzc2gybjNnYkVmT0VIUFRxbldEcWErejBGYWtLWDZT?=
+ =?utf-8?B?RHJxSUFWY0JsL0F5Y2h6ekVDU2I3ZXpDOFQvcFhLRitjeFFUbzZtUm96SDY0?=
+ =?utf-8?B?eDRMM2pQd1Arc1BySzJvWUNhZGRLaVo5bElUcHNnVER1cWZpM2gxUUVGWGZl?=
+ =?utf-8?B?bGZmWVBQbDR5alZ0dElja29XQitqQU9FZjBEci9xcW1wc3V0a0ZnY2NBTkRl?=
+ =?utf-8?B?RUd3Y3Z1ajR6MHg4MmlabUdaSWVrNUdRcnhiMmtIcXg5WWgwalRWMTR3bTlH?=
+ =?utf-8?B?RlhHTjN1YVJTcWY4K1o5QWl0MUFrQmEwajgzdDhVb3p3SUVaUHNYdVdjUUtV?=
+ =?utf-8?Q?+KWQCS2NqP6rOYxM=3D?=
+X-OriginatorOrg: efficios.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41683807-5875-4819-1477-08df2edde95f
+X-MS-Exchange-CrossTenant-AuthSource: YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2026 19:11:14.8606
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8/jw8q9oOWLqIoMpq7LgkXVuwU2WyyqCUgxMuysDo1VBNsR9cU+DNGyohMV25jFwEmBoKlv2mO5yKmo5ippzemDRuxaELHHvFO6BZ0Tf73g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: YQBPR0101MB8446
 
-On Mon, Oct 19, 2026 at 06:20:03PM +0200, Andrea Parri wrote:
-> hazptrtorture can hang at shutdown when deferral is enabled, as in the
-> PREEMPT scenario: the writer stays in ->sync() and kthread_stop() on it
-> never returns, until kvm.sh kills QEMU:
+On 2026-10-19 12:18, Andrea Parri wrote:
+> An interrupt that uses a hazard pointer while the interrupted task is
+> in the acquire slow path can leave its own context recorded as the
+> owner of the per-CPU slot the task then publishes into.  The next
+> context switch promotes the task's pointer with the interrupt's
+> context.
 > 
->     [ 1800.899278] hazptr-torture: Stopping hazptr_torture_do_pending task
->     [ 1800.899447] hazptr-torture: Stopping hazptr_torture_writer task
->     [ 1812.713870] hazptr-torture: rtc: 00000000225df70a ver: 12436 HTWS_SYNC tfle: 0 rta: 12437 rtaf: 0 rtf: 12427 onoff: 48783/48783:48786/48786 3,254:3,280 611671:731494 (HZ=1000) acq: 5720353149 rel: 5720210186 acqirq: 571927 relirq: 714778 reldefer: 714139 relundefer 714114
->     [ 1812.713971] hazptr-torture: hazptr_torture_stats is stopping
+> hazptr_get_free_percpu_slot() records the owner when it picks an empty
+> slot, but only Store B in __hazptr_try_acquire() claims the slot.  An
+> interrupt in between picks the same slot, as the lowest free one:
 > 
->     Summary: Potential hang (QEMU killed)
->     !!! PID 1393523 hung at 1980 vs. 1800 seconds
+>    Task on CPU 0                        IRQ on CPU 0
+>    -------------                        ------------
+>    hazptr_acquire(ctx)
+>      fast path fails
+>      __hazptr_acquire(ctx)
+>        picks item k (empty)
+>        item k->ctx.ctx = ctx
+>                                         hazptr_acquire(irq_ctx)
+>                                           claims item k
+>                                           item k->ctx.ctx = irq_ctx
+>                                         hazptr_release(irq_ctx)
+>                                           clears slot k
+>        __hazptr_try_acquire()
+>          Store B into slot k
+>        (item k still names irq_ctx)
+>    sleeps holding the pointer
+>    hazptr_note_context_switch()
+>      promotes item k with irq_ctx
+
+You are correct. Writing directly to item->ctx.ctx before having
+reserved the slot address (store B) fails to prevent the nested
+irq handler from using that slot as well and causing confusion between
+the two contexts.
+
+Thanks for catching this !
+
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+
 > 
-> hazptr_torture_cleanup() stops the do_pending kthread before the writer
-> and the readers.  Once torture_must_stop(), do_pending makes one last
-> pass and leaves its loop, but unless stutter_will_wait(), that pass
-> releases the deferred hazard pointers of a single CPU.
+> The task gets there with k > 0 when it already holds an outer hazard
+> pointer in slot 0; no other task can, as its slot is promoted when it
+> is switched out.
 > 
-> Readers can also still defer after that pass, from the iteration they
-> are in when torture_must_stop() becomes true.  Stopped readers hold no
-> hazard pointer, so the writer waits on one of the 25 deferred hazard
-> pointers above (reldefer - relundefer) that nothing releases.
+> The task gets there with k == 0 when the fast path leaves slot 0
+> empty: either its ptr_eq() check fails because an updater changed the
+> pointer, or the pointer is NULL and an updater publishes a non-NULL one
+> before the slow path loads it.
 > 
-> Keep do_pending running until hazptr_torture_cleanup() stops it, after
-> the writer and the readers, releasing the deferred hazard pointers of
-> all CPUs on each pass once torture_must_stop() and once more on exit.
-> It now also sleeps between those passes, and kthread_stop() wakes it.
+> The promotion moves the task's pointer into irq_ctx's backup slot,
+> which nothing unchains, so hazptr_synchronize() on that pointer never
+> returns.  The task's ctx->slot still names slot k, so its
+> hazptr_release() clears whatever another reader on that CPU has since
+> published there.
 > 
-> This should be safe because readers defer only from their own loop,
-> which they have left once torture_stop_kthread() returns for them, and
-> the hazptr_torture_acquire() IPI runs synchronously within that loop.
+> If the interrupt detaches instead, as hazptr_torture_acquire() does,
+> the promotion chains irq_ctx's backup slot a second time while it is
+> still linked.  The overflow list then loops on that node, or follows
+> LIST_POISON1 once hazptr_unchain_backup_slot() removes it.
 > 
-> With this change, a 30-minute PREEMPT run on x86_64 with 8 CPUs ends
-> with "End of test: SUCCESS" and with as many hazard pointers released
-> from the pending lists as were deferred (reldefer: 960658 relundefer
-> 960658).
+> Record the owner after __hazptr_try_acquire() succeeds, as the fast
+> path in hazptr_acquire() does.  This should be safe because an
+> interrupt that used the slot has released or detached it by the time
+> the task resumes, and only hazptr_note_context_switch() reads the
+> owner, which cannot run before the task enables preemption.
 > 
-> Fixes: f23d7b47ced9 ("hazptrtorture: Add kthread to release deferred hazard pointers")
+> Fixes: 50b568234163 ("hazptr: Implement Hazard Pointers")
 > Assisted-by: LLM
 > Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
-
-Thank you for digging into this!  Some questions and comments interspersed
-below.
-
-							Thanx, Paul
-
 > ---
->  kernel/rcu/hazptrtorture.c | 24 ++++++++++++++++++------
->  1 file changed, 18 insertions(+), 6 deletions(-)
 > 
-> diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
-> index 7c8b5899fb011..5153720074644 100644
-> --- a/kernel/rcu/hazptrtorture.c
-> +++ b/kernel/rcu/hazptrtorture.c
-> @@ -547,18 +547,25 @@ static int hazptr_torture_do_pending(void *arg)
->  	DEFINE_TORTURE_RANDOM(rand);
->  
->  	VERBOSE_TOROUT_STRING("hazptr_torture_do_pending task started");
-> -	do {
-> -		if (stutter_will_wait()) {
-> +	/*
-> +	 * Run until hazptr_torture_cleanup() stops this kthread, not just
-> +	 * until torture_must_stop(): the writer can be waiting in ->sync()
-> +	 * for a deferred hazard pointer while it is being stopped.
-> +	 */
-> +	while (!kthread_should_stop()) {
-> +		if (torture_must_stop() || stutter_will_wait()) {
->  			for_each_possible_cpu(cpu)
->  				hazptr_torture_do_one_pending(cpu, &rand);
->  		} else {
->  			cpu = cpumask_next_wrap(cpu, cpu_possible_mask);
->  			hazptr_torture_do_one_pending(cpu, &rand);
->  		}
-> -		if (!torture_must_stop())
-> -			torture_hrtimeout_ms(kthread_do_pending_ms, USEC_PER_MSEC, &rand);
-> +		torture_hrtimeout_ms(kthread_do_pending_ms, USEC_PER_MSEC, &rand);
-
-Is the theory here that a kthread_stop() will wake up this sleep anyway?
-And if so, would that work if the kthread_stop() already happened?
-
-(I do recall adding the torture_must_stop() checks due to delays at
-kthread_stop() time, but perhaps things have changed since then.)
-
->  		// Omit stutter_wait() because this function needs to do cleanup.
-> -	} while (!torture_must_stop());
-> +	}
-> +	/* The readers have stopped, so nothing new can be deferred. */
-> +	for_each_possible_cpu(cpu)
-> +		hazptr_torture_do_one_pending(cpu, &rand);
-
-Very good!
-
-But given these two lines, do we need the changes to the loop?
-
->  	torture_kthread_stopping("hazptr_torture_do_pending");
->  	return 0;
->  }
-> @@ -773,7 +780,6 @@ hazptr_torture_cleanup(void)
->  		return;
->  	}
->  
-> -	torture_stop_kthread(hazptr_torture_do_pending, do_pending_task);
->  	torture_stop_kthread(hazptr_torture_preempt, preempt_task);
->  	torture_stop_kthread(hazptr_torture_writer, writer_task);
->  
-> @@ -785,6 +791,12 @@ hazptr_torture_cleanup(void)
->  		reader_tasks = NULL;
->  	}
->  
-> +	/*
-> +	 * Stop do_pending only after the writer and the readers: the writer
-> +	 * may be waiting on hazard pointers that readers deferred.
-> +	 */
-> +	torture_stop_kthread(hazptr_torture_do_pending, do_pending_task);
-> +
-
-And this change looks good.
-
->  	torture_stop_kthread(hazptr_torture_stats, stats_task);
->  
->  	/* Do torture-type-specific cleanup operations.  */
+> Notes:
+>      With this patch, hazptrtorture's NOPREEMPT scenario passes a 30-minute
+>      run on x86_64 with 8 CPUs.  PREEMPT runs clean for 30 minutes but can
+>      hang at shutdown, in hazptrtorture's release of deferred hazard
+>      pointers; that hang does not involve this patch, and is addressed by
+>      "hazptrtorture: Release all deferred hazard pointers before stopping",
+>      posted separately.
+>      
+>      With that fix also applied, 30-minute runs pass for PREEMPT, for
+>      NOPREEMPT with torture_type=hazptr, for PREEMPT with
+>      torture_type=hazptr-stack, and for PREEMPT with CONFIG_HAZPTR_DEBUG=n.
+>      
+>      PREEMPT and NOPREEMPT also pass without this patch: their readers hold
+>      one hazard pointer each, so they reach the slow path only when the
+>      ptr_eq() check fails or the pointer is NULL, which happens only before
+>      the writer publishes its first element and after it stops.
+>      
+>      A KUnit reproducer, with a test-only hook in __hazptr_try_acquire()
+>      between the free-slot check and Store B, fails on 940793b926aa and
+>      passes with this patch.  I can post it if useful.
 > 
-> -- 
-> 2.53.0
+>   kernel/hazptr.c | 21 +++++++++++++--------
+>   1 file changed, 13 insertions(+), 8 deletions(-)
 > 
+> diff --git a/kernel/hazptr.c b/kernel/hazptr.c
+> index 3ca73b56a5c25..b15b84ebd4ceb 100644
+> --- a/kernel/hazptr.c
+> +++ b/kernel/hazptr.c
+> @@ -54,19 +54,16 @@ unsigned int flip_list_phase(unsigned int phase)
+>   }
+>   
+>   static
+> -struct hazptr_slot *hazptr_get_free_percpu_slot(struct hazptr_ctx *ctx)
+> +struct hazptr_slot_item *hazptr_get_free_percpu_slot_item(void)
+>   {
+>   	struct hazptr_percpu_slots *percpu_slots = this_cpu_ptr(&hazptr_percpu_slots);
+>   	unsigned int idx;
+>   
+>   	for (idx = 0; idx < NR_HAZPTR_PERCPU_SLOTS; idx++) {
+>   		struct hazptr_slot_item *item = &percpu_slots->items[idx];
+> -		struct hazptr_slot *slot = &item->slot;
+>   
+> -		if (!slot->addr) {
+> -			item->ctx.ctx = ctx;
+> -			return slot;
+> -		}
+> +		if (!item->slot.addr)
+> +			return item;
+>   	}
+>   	/* All slots are in use. */
+>   	return NULL;
+> @@ -78,6 +75,7 @@ struct hazptr_slot *hazptr_get_free_percpu_slot(struct hazptr_ctx *ctx)
+>    */
+>   void *__hazptr_acquire(struct hazptr_ctx *ctx, void * const *addr_p)
+>   {
+> +	struct hazptr_slot_item *item;
+>   	struct hazptr_slot *slot;
+>   	void *addr;
+>   
+> @@ -85,10 +83,17 @@ void *__hazptr_acquire(struct hazptr_ctx *ctx, void * const *addr_p)
+>   	 * In case we are called due to nested use of hazard pointers,
+>   	 * try a slot protection with per-CPU slots.
+>   	 */
+> -	slot = hazptr_get_free_percpu_slot(ctx);
+> -	if (likely(slot)) {
+> +	item = hazptr_get_free_percpu_slot_item();
+> +	if (likely(item)) {
+> +		slot = &item->slot;
+>   		addr = __hazptr_try_acquire(ctx, addr_p, slot);
+>   		if (addr) {
+> +			/*
+> +			 * Record the owner only once Store B has claimed the
+> +			 * slot, as hazptr_acquire() does: an interrupt may
+> +			 * have used this slot since it was chosen.
+> +			 */
+> +			item->ctx.ctx = ctx;
+>   			ctx->slot = slot;
+>   			return addr;
+>   		}
+> 
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
