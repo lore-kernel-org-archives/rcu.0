@@ -1,63 +1,106 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.47
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792635643;
-	b=4WPEzy8V0OOog8xDDA1x2fgPQFqliTsQTDuFH9cR7wQ0MaOF9i69RdPRRmFNNj/NewZ/
-	 kQxZHiDNSEcdRor7bIUDa4fXkbUz6BnWr670YO4Tn1d9I0jHvGHchXamlTltD9QRwG8MG
-	 4afGzFzt165WcFAjsNCfyyJlqNmj+r/ATuI4dyjBLTpHp0bkTNwEA13GHzFz8GL9njSk/
-	 e0WE7DcvQITRb6/7LEHzKxTOD8QXRPSBnwzPJ1Mab2pap4xpO9+LxIwQa8ynFOwQPFPCd
-	 f/DfTJ2ZMVSx9VmVGOg5v7OwYmGySGJ8PQB+iDTwsKKvwxVVjq8q8G+xxCyenaLcjtA==
+	t=1792673770;
+	b=3CzO/kuVQLtDkJF1v6uQzkCXeH377vIGR4JO7S+/VwnR5JKrZ67jEVQ/1+s0rlt7flMb
+	 ImaaRljtMRgEmOJe3V503VF7+tsYaJ2CTuKz6v4Ru/ZjyEq0PTDVDSRVxiDTzqbfirIDr
+	 F4pg1P+ZngLRvlVs1SoVvLMshFt4JhjY2RD/F+DKgBPwVn059WWMFaT9DzAvq/piBKC0k
+	 ibVfAoCyL6lvNtjqcMcLL+1zAzaEacBlnvRlsMBfiPp+z/pKoefznkBltgxj02c9/rNaM
+	 +asVX5q1dHv5NmozzjSVh7+DPEqBzOCppdZYHA7kTQeocGV+0bKFt57CAn2Vw6QkOkQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792635643;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=VS++8lfv+iUGyzWiCyTunJ6v+1pwljGGEpWgSHzeWGA=;
-	b=09MFGQojuQ5mGfOAgTX8QBo9QstavnzbFeoz638bOpdpfd6SIHyjSpVkEnq1excfS469
-	 Qlbf/CgXtCtY3+Kqp2p/DBP8z77R6v6BGDNU2rZAhQj5opnXVK4sYLH/HuuELcKmhExDH
-	 nHh6dVr49Z9KvhGrdnNp4bChb1MyiehU7CtwaxIJwRBWKR9/4hFzm9uDR59O2wnqxEvdG
-	 wsa3wd7hewERa0A0AJRcDlpHEMKLkEQr9VxIZJNzjgt5NQtDLNjs+h/hCSTDM744K+3cR
-	 9Z+PzaLSHybN9ggUPEdNaD8rkKiWXWs0ZBZvN+oq5fCgM8P9PnF3FsxzKNWd0drmdnw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792673770;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=BxAszWFWayro4K+gUV/BNDo0hBYhXBl8nloyFNvLDqE=;
+	b=FZkYBnVbsF+oM/45jnmsURrSxL+jGBc6tMvlRLcsTSh4M9pi7AzX/zigUuTUFqA2en1m
+	 uMSxNoH91m5FX5526jQwuspJCklgv9qggF7jb3t/2YGMPOOqcvQdBEdMPfziEc0EgSknr
+	 h3t9P6cBmEpyNSSO97o6JOaVKD1OWyk0CB4T72ojqKkIyg/I8jWnsu3/uEVX3SeMUXLZm
+	 pfkMJdyxssmA3GO1U0J3FCnis2/hVQjK/3x7hUY0AckcQRK3BBw1GhY9PGIcaZJUSITtZ
+	 XNnRE5OL8pn5UD9HWRhf/NFqF/89OahDN/9k8qwsg4AAGEz6wR6ZTwnksFd1W0iDIwg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=I01uq+M4;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=FxT+8apG;
+	arc=none smtp.remote-ip=209.85.221.47
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A208606A321;
-	Thu, 22 Oct 2026 02:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F34606A31A
+	for <rcu@vger.kernel.org>; Thu, 22 Oct 2026 12:56:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C8F34606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=I01uq+M4
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFE2A1F000C4;
-	Thu, 22 Oct 2026 02:20:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792635642;
-	bh=VS++8lfv+iUGyzWiCyTunJ6v+1pwljGGEpWgSHzeWGA=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=I01uq+M4MF2R+13xVFh0pwHiuZaQA1pZxaI3GUHbdqOAMJmd7Zsh9hiubNEeE1eCF
-	 BPY4MlkuWPOOrHhPHru3hQTSrvq6Im8B5TfnxFGOnT7vjkJT8NQFAJZDn5iVo2jrYX
-	 nCPwZdgO4AX/CNx8f9kX9eodI+XO6q/xNhckRw45CcZWN7oHE1qwJdh7F5/zVNVpKH
-	 AmvPGF/P4N4NMiq+ZBWtygbmz+JrPrzll5so+U0/+/IZZ+2ZVfM/1Hx1TmlZmvWoDQ
-	 AI5h6TrviajeqLa98HjtdKuoRvm5w5M06l+mlj4F/ThJxN56RKKEc7bj7kSFQYxh3G
-	 ACiOASFnEhucQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 6BAA4CE1E08; Wed, 21 Oct 2026 19:20:42 -0700 (PDT)
-Date: Wed, 21 Oct 2026 19:20:42 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Andrea Parri <parri.andrea@gmail.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>,
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=FxT+8apG
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-48441a2ba1bso1285337f8f.1
+        for <rcu@vger.kernel.org>; Thu, 22 Oct 2026 05:56:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792673768; x=1793278568; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=BxAszWFWayro4K+gUV/BNDo0hBYhXBl8nloyFNvLDqE=;
+        b=FxT+8apG6u9Udu2Y7ewgHrSdQIF64jXXdpOEW+BDNOYIafG7QJ4ahFHFGMIYQ0PIHl
+         Vkpu1qnPqEcA2nEfzL7zXYJtJT9xryWiG3PuvABh4F6Ig0gU1FiVX3dGG1B2SNbzbAIk
+         Zdb1Juvv1kF73hCwsC61b0tDG52SnP6Eh2hnbhxWZ4cLMtt2hHuFeLyTMpmjvyjyNF1p
+         TjafKEhevYYvfRYF5oVSEWmIdDjyvbldjLasm7P1Pz0XWyiOdzw2ofhD2eS0vaBqpcyb
+         /lpkbwTmssoyB/PwMTvwIGx1XlKv9bzN0GrWZJdr/2ys0ph834wXTGK+4rKYvYm+vOK1
+         mENA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792673768; x=1793278568;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=BxAszWFWayro4K+gUV/BNDo0hBYhXBl8nloyFNvLDqE=;
+        b=SCObP/9WmLtaKkmCqszLJ33oI9kRIZDIGCxCYDcpSdMW75Es6v3aNjrDgl05o6U1DW
+         LZ4Ln0v+kFPqAdhk585AOOXXuUDbtaQic0Q3HmkCtONsQfUElBUoI0q8+slfFWM0oxVp
+         /a2VEXXeT+5qE/7HgWiWQXxiUhMXE8pbc1g3yizXNqlH7eYGyNjk9jsxFQS/Ho8z8N2W
+         7vgIGP6Jcuc/Nj05Ood1shHkyHxJ0PTWw2Ji6MCHXbgVY9gTo5cj0iZ9j7F8yvSSL65r
+         lql7yL1mXM6ed9ybrCXVD5cYG9lSeUcWxX0SbQFfJRKmks9pletlUVjY/e64V5TwLkTL
+         J2Cw==
+X-Forwarded-Encrypted: i=1; AKwUvBwvDmydWQe3r+FcTOM6PkBj0QCpUX7MELAXtCOv88tDgVQccxIWXUt18vOxsSsSj+kC25A=@vger.kernel.org
+X-Gm-Message-State: AFq9FYLuftdn5tig5AumhABvGzJi66ElWqO9rbhUkeVEI5dqKjM491AX
+	6Ci/RESP0Nqam87ISVgBWsWJPZugFdCduVPpsoN8oaMJ1yxhOD4oKXrD
+X-Gm-Gg: AYBFou1u13SsEvYGnb8c5cjKHt24tg4eoRNQ48v+m5UImw+YX4AG4OnrroK7HSm5aTd
+	cmYnrsHU2NDXO4w3stwB8ifKCA6fBoGMZ8Wea0b4or+LQqaI2pSSRyMNFFZmJgV/UtJLqsLI5vs
+	0upoLqjGIFfUlBJ/l2UcghiXa3e1kfXWcHGMMN5Qq8BGJXFbhQOMoUu52ZfILaIEZ+Tv8JYLWGX
+	bzBQHvCHXjwXhphN5GmNeRq2tnzCOXJTXLNp7TEN+J1MWzdQKlnmOWIllc+2E/Dh/PBybLgpxec
+	CVO0uQBH2ZcJBMhloKVYgQxuU2BS8TAlJ+ePEaOgBKd56wwJEN2osi25yX76syi8Nnow1NdRuoE
+	aluFLQSiDW36xaYSVic7OGXX58E2u3DGmjfaTULVgrHFhugiK54tFB6nPceEEUj+IAJL5ey+KfU
+	Z96RlHmLetYoI/JdyNf1/+327aGGMn1DzVr/uDgioy6dfr92g1t77IyURs3/Tz9gxGYNBEZxXp5
+	wosYuGKiSSeeeAVvkvxNhm2pmBcJt+aFskYtdZdDYRwYxvEpX+bhpYws+pQxaWtZSoQ6cbTYSvz
+	7NvANU9lVOcZ8jflR+Yx+HO1
+X-Received: by 2002:a05:6000:200c:b0:48a:f8fb:cd49 with SMTP id ffacd0b85a97d-48e264d53efmr11230735f8f.22.1792673767956;
+        Thu, 22 Oct 2026 05:56:07 -0700 (PDT)
+Received: from andreayoga.wind3.hub ([151.76.51.95])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e2a034fc2sm8187818f8f.5.2026.10.22.05.56.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2026 05:56:05 -0700 (PDT)
+From: Andrea Parri <parri.andrea@gmail.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Andrea Parri <parri.andrea@gmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
 	Bradley Morgan <brads@mainlining.org>,
-	Kunwu Chan <kunwu.chan@gmail.com>, rcu@vger.kernel.org,
-	lkmm@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC -rcu/dev] hazptr: Record per-CPU slot owner after
- claiming the slot
-Message-ID: <e0145c14-9d6a-4c91-816c-57dabd98879b@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20261019161852.12783-1-parri.andrea@gmail.com>
- <4defa4de-ab42-4809-9645-100cad68972b@efficios.com>
- <fa16d2b1-594e-494b-8cfc-9b8c13f2c223@paulmck-laptop>
- <20261021090753.20442-1-parri.andrea@gmail.com>
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC -rcu/dev] hazptrtorture: Release all deferred hazard pointers before stopping
+Date: Thu, 22 Oct 2026 14:55:55 +0200
+Message-ID: <20261022125556.3559773-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <45a6159e-1bcd-45d4-af25-baddf729ac54@paulmck-laptop>
+References: <20261019162005.12888-1-parri.andrea@gmail.com> <3e7abe29-df1f-4cb6-884f-dd0a70c5311f@paulmck-laptop> <20261021090652.20333-1-parri.andrea@gmail.com> <45a6159e-1bcd-45d4-af25-baddf729ac54@paulmck-laptop>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -67,44 +110,66 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261021090753.20442-1-parri.andrea@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 21, 2026 at 11:07:52AM +0200, Andrea Parri wrote:
-> On Tue, Oct 20, 2026 at 02:12:09PM -0700, Paul E. McKenney wrote:
-> 
-> [...]
-> 
-> > Thank you all!  Queued for testing and further review.
-> 
-> Thank you!
-> 
-> > Andrea, on your KUNIT reproducer, is there any chance that this code
-> > can be folded into the existing hazptrtorture.c work so that it just
-> > gets tested automatically?
-> 
-> Yes, though not as it is: the KUnit test relies on a test-only hook
-> in __hazptr_try_acquire(), which I would rather not add to hazptr.h.
-> hazptrtorture already has the interrupt side, in
-> hazptr_torture_acquire(), but its readers rarely reach
-> __hazptr_acquire(), where the race is.
-> 
-> So v1 of the hazptrtorture series will add, as patches 2 and 3:
-> 
->   - two CONFIG_HAZPTR_DEBUG checks of the recorded slot owner, in
->     hazptr_release_debug() and hazptr_note_context_switch(), and
-> 
->   - a nest_acquire module parameter (default 2) that makes readers
->     take a second, nested hazard pointer through __hazptr_acquire().
-> 
-> Without the fix, PREEMPT and NOPREEMPT then report the race about 6
-> seconds after boot; with nest_acquire=0, they run 10 minutes without
-> a report.  The nesting costs about 30% of the readers' loop
-> iterations, so it could instead default to zero and be enabled from
-> the scenario files, if you prefer.
+On Wed, Oct 21, 2026 at 09:50:11AM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 21, 2026 at 11:06:51AM +0200, Andrea Parri wrote:
 
-This sounds like a good approach, and I am looking forward to seeing
-what you come up with.
+[...]
 
-							Thanx, Paul
+> >   - If kthread_stop() has already happened, i.e., it comes between
+> >     the kthread_should_stop() check and set_current_state(), the
+> >     wakeup is lost, but KTHREAD_SHOULD_STOP stays set: do_pending
+> >     sleeps for one full period and the loop then exits.  That is
+> >     kthread_do_pending_ms plus up to 1ms of fuzz, so 3-4ms by
+> >     default.
+>
+> Very good.  Except that if someone sets a very long sleep time, that
+> could result in excessive delay for kthread exit, right?  Or am I missing
+> a turn in there somewhere?
+
+You are not missing anything: in that case, do_pending sleeps for one
+full kthread_do_pending_ms period, however long it is.
+
+> > For comparison, without this patch do_pending leaves its loop at
+> > torture_must_stop() and waits in torture_kthread_stopping(), which
+> > sleeps in TASK_UNINTERRUPTIBLE for HZ/20 at a time, so it has the
+> > same lost-wakeup window with a 50ms bound instead.
+>
+> But that is a fixed wait, without the possibility of a user extending
+> it, correct?
+
+Correct, torture_kthread_stopping() always sleeps for HZ/20 at a time.
+
+[...]
+
+> Should we stop the writer before stopping the readers?  Or would that
+> open up some other issue?
+
+hazptr_torture_cleanup() already stops the writer before the readers,
+and that order is what lets the writer wait on hazard pointers that
+readers defer while it is being stopped.  If you mean the other way
+around, stopping the readers first, I believe that works:
+
+  - Stop the readers, then do_pending, then the writer.
+
+  - Keep the do_pending loop as it is in -rcu/dev, including the
+    torture_must_stop() check before the sleep, and move this patch's
+    final all-CPU pass after torture_kthread_stopping(), so that it
+    runs once the readers have stopped.
+
+The writer can then still wait in ->sync() on a deferred hazard
+pointer, but only until that final pass, and nothing waits on the
+writer.  The readers do not need the writer to stop: they leave their
+loop at torture_must_stop(), after at most one stutter_wait().
+
+With that order, the long sleep above can still happen, but only if
+do_pending passed its torture_must_stop() check before the test began
+stopping, and had not yet gone to sleep when kthread_stop() came,
+after all the readers had stopped.
+
+Would you prefer that?  If so, I will rework this patch along those
+lines for v1, and rerun the tests.
+
+Thanks,
+  Andrea
