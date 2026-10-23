@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792779763;
-	b=NcI7+on27WeKedxizoTKBo1SV0S7F0FEvBjiIyQnjBBxdkPvi5zeXOwXPETCu4THRjRp
-	 6wf2sRx2Nb+TXN+gbQvxmZhzdPzSGcAiOxlzvDJm6cWAD8rcIicXUwbVWRZri5d6cHdYh
-	 R4Kv+iFyCzlUA3v8KPaUQCXsCvtk1XV9BH2jlyD9+MuVnB5RNGk0+dSK7RMnCgEAcDP+d
-	 +/7s5li6eMCt3LNWXq8ewNgmY1owN/f1M7DppOzgyV7MwHqaaW0lz/V8HB8nZVoZD3VDS
-	 WsESIULnM5GRI02kvNu/qWmX5wz0aEmwaAzdBV6OVTRhBSLyJBHbvqtwAGBB8+NKe4w==
+	t=1792779767;
+	b=cyA1VdgZ9UD8IkSv6CO2y/gZGB82iWsnkYBzDq0GvXEu41Y0uRKmC/Id0LXfNrh84niZ
+	 zr2GxwoWFQn69Mki/5OdHBRx933yJegzP7lCkmunFyov6Zo9P7qJ3ep9GRasHCmdExR5j
+	 Mdor07owsU/cobp+HKwqkk7/qxcNvIq6L0Ag8E3iApy7q2+1xFTfV+3Ou/bSuFUuHLlvD
+	 Y0y/mQ/MGV+Ehly2KDuLqLL9fuMs6Dtm2BJDc1RIZca+MttE8zcteLs1+0xjFS8LHChY6
+	 nTCiDjES8nJzkferVmpG9bUWbwXOIaEnn9pUypZUfLwb8qgqSS4I+4HbEhJwAyn3Pyg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792779763;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792779767;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=yYq10eYq/2sDfCrmy2T/D5Xx4pO5Ls6Vz/IH1WaR3gI=;
-	b=VS8Ob9SOCxqdxLvK2tiHQv6n8C7R3wNuqsadiylZBZmjcVBAnaHp0+iiXiM2PARX+HD/
-	 2gQRBYC0SvgkQNB0clN3/pkrX3SILqi0WqXGACn55oEQNW5rxH5oTMT5uu+HvT8EjiNiI
-	 lGDcF1YtvbRbACCFbJxP5bhNbKulnu1WWn/Q/F0cr4u2DzC/sgrHmE2gniZJb2IMqaMEB
-	 0nin1cga1f2MU6Mn0PLY5YLEZl8k7zKWYaJG3M/l5R1UIXr69yYykBa91DXW3YY/GkJuZ
-	 DH6Jv0Dl/4gOkg9CPk/fUxNsmMj5oowl1kZ5F04btLTMpuKWMAytOfq11E6i33m2Uqw==
+	bh=lJY9ZhGrvJNDaz8g4A3YC4KMVFIsobuybhRgdKYZ8EU=;
+	b=qRNV8aJrvnltcnpiOEJulTClmDUqjIcW1qgu9J/qyMwXiup9Q3a9dd8ItBSJUSyvDmUe
+	 B9/gADLzNvQr21JV1BlQR0ErMD5FpUa1VlLPgal/hQagB8MhJoLSvQB0/BP8C5wnuKWTL
+	 y4VfyZrKsXpiHvVIifhSL3WZVZtInq2Svet1PzoidTdyqsZdYA1FHnJYp1y9nR3sQeT0Y
+	 6K/w2azJHTxennEdp6gicFBaINUp29432VfiSLXRarb1+fagPOS+LcPM9BqXqzwC/s3tf
+	 B0WtT7gXleWvtd+6BtLLUtAdfXoLE5BB/l/280gAbZ35I8ZLjRqBru16irpCVypdb0A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SFRaPYt8;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aQ0wrNft;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE63606A320;
-	Fri, 23 Oct 2026 18:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C20606A31F;
+	Fri, 23 Oct 2026 18:22:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SFRaPYt8
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 166C21F031E8;
-	Fri, 23 Oct 2026 18:22:43 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aQ0wrNft
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E60E21F01828;
+	Fri, 23 Oct 2026 18:22:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792779763;
-	bh=yYq10eYq/2sDfCrmy2T/D5Xx4pO5Ls6Vz/IH1WaR3gI=;
+	s=k20260515; t=1792779767;
+	bh=lJY9ZhGrvJNDaz8g4A3YC4KMVFIsobuybhRgdKYZ8EU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=SFRaPYt8MZsyIUMP3op10Mh/0o9j3kQI4fwxEc1FUrKdE4HORbaf9twRyEVmDUCbx
-	 zSbEMp5Z7siIgbPFmZkgIDyerXBALDXU2sF7KPvSZmk311xCvOqJ3cWHPFn9FWvTyG
-	 6/KuL7PTNKNmOvyAXS/5CYD5UwiKINvqXmj0A3dnQLgBiWskhuC6YWIOFE4jbEw1qP
-	 d2l7E7ByKfJiHziUNGrEJqkRwDSmeo/RSrYPMET5BlZtSxsFedLoynRwaoKl/Lxqcq
-	 MpySb419LvJ/jJfkZngEtxQQE1QtzhyHuM/q51CFY502JLTTtGm32F06+6Fq/69jSa
-	 Uzk5d2GS8271Q==
+	b=aQ0wrNftnvstPMduKFRvp/lGW2Ka3l+YI1rkhSe9uzIC6mSdoBgux8RHXKrfy/UIT
+	 7okeDyBDyhnxcI3eiKKRtlQ9o83FHV4f1RJhUG/WMUdkW/GEyAqoAKGgvKSSq/jRjh
+	 XObWVDtRnN4bai2z/x1hFawU6A0COcbQ5ti5MNMtXB+LIY8LdfQExKIyp8R1C++hb3
+	 E3WUEuTCmrbmDigNcuUNnLPUD6NDb++bWDQS7q+Pf5KXYcQNuGT7Ew9q9VRlyl9MQ2
+	 q10lU4A29SOuvfC/jHr94J+mImkzi7hxnPiHfqDtovj0h8flvN1hOXRq0eS1tZdpIn
+	 5QypKYBdXZk/w==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -66,12 +66,12 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	Thomas Gleixner <tglx@kernel.org>,
 	rcu@vger.kernel.org
-Subject: Re: [RFC PATCH 09/12] rcu_txn: Test a list writer against concurrent readers
-Date: Fri, 23 Oct 2026 11:22:15 -0700
-Message-ID: <20261023182218.479327-6-puranjay@kernel.org>
+Subject: Re: [RFC PATCH 10/12] rcu_txn: Test a commit from atomic context
+Date: Fri, 23 Oct 2026 11:22:16 -0700
+Message-ID: <20261023182218.479327-7-puranjay@kernel.org>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261016133319.433617-10-mathieu.desnoyers@efficios.com>
-References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com> <20261016133319.433617-10-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20261016133319.433617-11-mathieu.desnoyers@efficios.com>
+References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com> <20261016133319.433617-11-mathieu.desnoyers@efficios.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -83,59 +83,57 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 16, 2026 at 09:33:16AM -0400, Mathieu Desnoyers wrote:
+On Fri, Oct 16, 2026 at 09:33:17AM -0400, Mathieu Desnoyers wrote:
 [...]
 
-> +			/*
-> +			 * Invariant (2).  Skipped for the first step, whose
-> +			 * predecessor is the head.
-> +			 */
-> +			if (insert_only && prev_key) {
-> +				struct rcu_txn_list_node *back =
-> +						rcu_txn_list_prev_rcu(p);
-> +
-> +				r->cross_checks++;
-> +				if (back != &head->node &&
-> +				    container_of(back, struct cn,
-> +						 node)->key < prev_key)
-> +					r->cross_violations++;
-> +			}
+> The test is only meaningful on a PREEMPT_RT kernel with lockdep,
+> PROVE_RAW_LOCK_NESTING and DEBUG_ATOMIC_SLEEP.  It passes there, and
+> fails as expected when a spinlock_t is taken under the bit spinlock.
+>
+> The last two cases release a descriptor that installed no proxy, which
+> has to be kfree_rcu() on PREEMPT_RT.  They would pass with a kfree() as
+> well: a kfree() under a bit spinlock on PREEMPT_RT was reported by
+> neither lockdep nor the might_sleep() checks when tried.
 
-In an insert-only phase, once a reader has stepped from A to p, A stays
-before p, so p's prev can only be A or a node inserted between them,
-never the head.  The back != &head->node exemption can therefore only
-hide failures, and it hides exactly the tear this check is for when the
-insertion is at the front: head->next == E, E->next == F, then
-F->prev == head.  prev_key already skips the first step, so I'd count
-back == &head->node as a violation.
+This matters on !PREEMPT_RT too: there, a one-record commit or a cancel
+under a raw spinlock calls kfree(), which lockdep can flag (see my reply
+to patch 1).  The test can't catch that as written.
 
 [...]
 
-> +	for (i = 0; i < CONC_READERS; i++) {
-> +		readers[i].conc = c;
-> +		readers[i].task = kthread_run(conc_reader_fn, &readers[i],
-> +					      "rcu_txn_reader/%d", i);
-> +		if (IS_ERR(readers[i].task)) {
-> +			readers[i].task = NULL;
-> +			ok = false;
-> +		}
-> +	}
+> +	/* One record. */
+> +	rcu_txn_init(&txn, GFP_KERNEL);
+> +	KUNIT_ASSERT_TRUE(test, rcu_txn_reserve(&txn, 2));
+> +	hlist_bl_lock(&bucket);
+> +	rcu_txn_record(&txn, &s1, T(20), T(40), TAG);
+> +	err = rcu_txn_commit(&txn);
+> +	hlist_bl_unlock(&bucket);
 
-If the writer oopses, KUnit fails the test and frees c and the readers
-array while these threads are still walking the list.  Registering the
-stop with kunit_add_action_or_reset(), and calling
-kunit_release_action() where they're stopped now, would avoid the
-use-after-free.
+On !PREEMPT_RT, this case and the cancel after it are the two that reach
+kfree(), and they only run under the bit spinlock, which lockdep doesn't
+track.  The raw spinlock case only commits two records, which go through
+kfree_rcu().  Even under a raw spinlock, a single call rarely trips it,
+because lockdep only sees barn->lock once the per-CPU sheaf is full.
+Running the one-record and cancel cases under raw_spin_lock_irqsave() in
+a loop would catch it.  That is probably also why the kfree() you tried
+on PREEMPT_RT went unreported, though I haven't checked RT.
 
 [...]
 
-> +	for (key = 1; key <= CONC_KEY_MAX; key++)
-> +		if (c->live[key])
-> +			conc_del(c, key);
+> +/* Did the kernel report something since @tainted and @locks were sampled? */
+> +static void expect_no_report(struct kunit *test, bool tainted, int locks)
+> +{
+> +	KUNIT_EXPECT_EQ(test, test_taint(TAINT_WARN), tainted);
+> +	KUNIT_EXPECT_EQ(test, debug_locks, locks);
+> +}
 
-A failed conc_del() here leaks the node without anyone noticing.  The
-readers are already stopped at this point, so the leftovers could just
-be kfree()d.
+These compare against the state at the start of the test, so if
+lockdep is already off, or TAINT_WARN already set, the matching check
+can't fail.  I ran into that: once one of my raw-spinlock cases
+splatted, the two bulk cases after it passed even though each splats
+when run alone.  A kunit_skip() when PROVE_RAW_LOCK_NESTING is off, or
+debug_locks is already 0, or TAINT_WARN is already set, would make that
+visible.
 
 Thanks,
 Puranjay
