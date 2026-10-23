@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792779752;
-	b=GMlFRA1Y9tRNSGVMj97XorIbzwzFNel/9bzzZSBOQbQp4Qymnzh0gU5LAgyvBrJlF8Vs
-	 wBurDvQhjiWJmjwlVAi/6rux2TyA4XQdmgrVZVLTrRlAcboXxSV7DT5jNeYy/6WzH17IL
-	 2AYbxUaSfbb0tdL1v1BqTbAIj6eaGlXOgmm2S/MQ4mOVvPd45WRVhEJuF5lbdtlhslHBM
-	 M5pTIKdy8s1aE7FCrC5FAj2GRICltaGsxKe0fefZB+sq5xvhTf8pP9zk5Il+yPW3jXugL
-	 wRIHkLvDbewUBzro7I6e6Z5Uz/bYY68RdfivUqz/Eg3xTiu0cQYk4jEWMUW9rUx1ISQ==
+	t=1792779763;
+	b=NcI7+on27WeKedxizoTKBo1SV0S7F0FEvBjiIyQnjBBxdkPvi5zeXOwXPETCu4THRjRp
+	 6wf2sRx2Nb+TXN+gbQvxmZhzdPzSGcAiOxlzvDJm6cWAD8rcIicXUwbVWRZri5d6cHdYh
+	 R4Kv+iFyCzlUA3v8KPaUQCXsCvtk1XV9BH2jlyD9+MuVnB5RNGk0+dSK7RMnCgEAcDP+d
+	 +/7s5li6eMCt3LNWXq8ewNgmY1owN/f1M7DppOzgyV7MwHqaaW0lz/V8HB8nZVoZD3VDS
+	 WsESIULnM5GRI02kvNu/qWmX5wz0aEmwaAzdBV6OVTRhBSLyJBHbvqtwAGBB8+NKe4w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792779752;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792779763;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=ux8gxm/hxbCvtY7jdFuUJx87hpOn03D8mRXv9n3JWCY=;
-	b=EulUCN7rLycjBkjLfPmuo9W3RLyOraoGZ6HS30icUCMG+kQ5gzx6nxg3sFMOrA8kihfA
-	 nfITKPxur0HnBgPsiJhRpCK8p2+334chKdW1ILBLGH0VI1qGGqpW24Npd2JJTyovs2bi5
-	 XbM3ld8tFBuP8T6VECZSA/jMMmfYDj7a8isr8hChqaHqvyysyy6ykrNkqWsp1OrwW3N1G
-	 wOtyh142HrBc3TY7OSd2ETE6dTOUh7Nzx6HZWkSgkWI/rNbq0nB2qWE8DC8DMdwOzSUdn
-	 wQnUjLoOkPLZ6DLdEUb1R+u1jprhWb5mfI9t0hhP1EqbNJJIe9oJ0ZKJnGU/sCYzEYQ==
+	bh=yYq10eYq/2sDfCrmy2T/D5Xx4pO5Ls6Vz/IH1WaR3gI=;
+	b=VS8Ob9SOCxqdxLvK2tiHQv6n8C7R3wNuqsadiylZBZmjcVBAnaHp0+iiXiM2PARX+HD/
+	 2gQRBYC0SvgkQNB0clN3/pkrX3SILqi0WqXGACn55oEQNW5rxH5oTMT5uu+HvT8EjiNiI
+	 lGDcF1YtvbRbACCFbJxP5bhNbKulnu1WWn/Q/F0cr4u2DzC/sgrHmE2gniZJb2IMqaMEB
+	 0nin1cga1f2MU6Mn0PLY5YLEZl8k7zKWYaJG3M/l5R1UIXr69yYykBa91DXW3YY/GkJuZ
+	 DH6Jv0Dl/4gOkg9CPk/fUxNsmMj5oowl1kZ5F04btLTMpuKWMAytOfq11E6i33m2Uqw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Vs9OrPq2;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SFRaPYt8;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710A1606A31A;
-	Fri, 23 Oct 2026 18:22:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE63606A320;
+	Fri, 23 Oct 2026 18:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Vs9OrPq2
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB69B1F01825;
-	Fri, 23 Oct 2026 18:22:31 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SFRaPYt8
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 166C21F031E8;
+	Fri, 23 Oct 2026 18:22:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792779752;
-	bh=ux8gxm/hxbCvtY7jdFuUJx87hpOn03D8mRXv9n3JWCY=;
+	s=k20260515; t=1792779763;
+	bh=yYq10eYq/2sDfCrmy2T/D5Xx4pO5Ls6Vz/IH1WaR3gI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Vs9OrPq2oETYyq5xseqQeXyIhroI29AKaUP7j3arF+VVUb5WiBov9P0RKHbix/5c0
-	 eV/Sm00XpELM+IEu8GRuCJKWWdP4UA8bAUnAP9n/kac9U8iBDBAZAVaIyWtCTN00l2
-	 dVkK3XWPddPisYYTpseZIp4lJcaYecihYULEEAcGwPfe0/6bemeTbhpB7hpuEZZ/AL
-	 JLxDM4pHpmtHbl1/K8I+raleVd0oxir+TcC4TBKV7TMDCRAxRseprnXrGWe+ivbmxr
-	 GSwI7qhYAACptVMQOEWRFdgGrJTCn3ZEcoabPt/N0PzuBu6LylxkCEYlKTHtt1rTCt
-	 DheUevjFpL+hA==
+	b=SFRaPYt8MZsyIUMP3op10Mh/0o9j3kQI4fwxEc1FUrKdE4HORbaf9twRyEVmDUCbx
+	 zSbEMp5Z7siIgbPFmZkgIDyerXBALDXU2sF7KPvSZmk311xCvOqJ3cWHPFn9FWvTyG
+	 6/KuL7PTNKNmOvyAXS/5CYD5UwiKINvqXmj0A3dnQLgBiWskhuC6YWIOFE4jbEw1qP
+	 d2l7E7ByKfJiHziUNGrEJqkRwDSmeo/RSrYPMET5BlZtSxsFedLoynRwaoKl/Lxqcq
+	 MpySb419LvJ/jJfkZngEtxQQE1QtzhyHuM/q51CFY502JLTTtGm32F06+6Fq/69jSa
+	 Uzk5d2GS8271Q==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -66,12 +66,12 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	Thomas Gleixner <tglx@kernel.org>,
 	rcu@vger.kernel.org
-Subject: Re: [RFC PATCH 04/12] rcu_txn: Add CONFIG_DEBUG_RCU_TXN
-Date: Fri, 23 Oct 2026 11:22:12 -0700
-Message-ID: <20261023182218.479327-3-puranjay@kernel.org>
+Subject: Re: [RFC PATCH 09/12] rcu_txn: Test a list writer against concurrent readers
+Date: Fri, 23 Oct 2026 11:22:15 -0700
+Message-ID: <20261023182218.479327-6-puranjay@kernel.org>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261016133319.433617-5-mathieu.desnoyers@efficios.com>
-References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com> <20261016133319.433617-5-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20261016133319.433617-10-mathieu.desnoyers@efficios.com>
+References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com> <20261016133319.433617-10-mathieu.desnoyers@efficios.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -83,60 +83,59 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 16, 2026 at 09:33:11AM -0400, Mathieu Desnoyers wrote:
+On Fri, Oct 16, 2026 at 09:33:16AM -0400, Mathieu Desnoyers wrote:
 [...]
 
-> @@ -261,6 +291,7 @@ static inline bool rcu_txn_is_proxy(const void *v, unsigned long tag)
->   */
->  static inline struct rcu_txn_record *__rcu_txn_untag(void *v, unsigned long tag)
->  {
-> +	RCU_TXN_WARN_ON(!rcu_txn_is_proxy(v, tag));
->  	return (struct rcu_txn_record *)((unsigned long)v - tag);
->  }
+> +			/*
+> +			 * Invariant (2).  Skipped for the first step, whose
+> +			 * predecessor is the head.
+> +			 */
+> +			if (insert_only && prev_key) {
+> +				struct rcu_txn_list_node *back =
+> +						rcu_txn_list_prev_rcu(p);
+> +
+> +				r->cross_checks++;
+> +				if (back != &head->node &&
+> +				    container_of(back, struct cn,
+> +						 node)->key < prev_key)
+> +					r->cross_violations++;
+> +			}
 
-This can never fire: the only caller, rcu_txn_resolve(), has just
-checked rcu_txn_is_proxy(v, tag).  I'd drop it.
+In an insert-only phase, once a reader has stepped from A to p, A stays
+before p, so p's prev can only be A or a node inserted between them,
+never the head.  The back != &head->node exemption can therefore only
+hide failures, and it hides exactly the tear this check is for when the
+insertion is at the front: head->next == E, E->next == F, then
+F->prev == head.  prev_key already skips the first step, so I'd count
+back == &head->node as a violation.
 
 [...]
 
-> +	RCU_TXN_WARN_ON(__rcu_txn_holds_proxy(old_ptr, tag));
-> +	RCU_TXN_WARN_ON(__rcu_txn_holds_proxy(new_ptr, tag));
+> +	for (i = 0; i < CONC_READERS; i++) {
+> +		readers[i].conc = c;
+> +		readers[i].task = kthread_run(conc_reader_fn, &readers[i],
+> +					      "rcu_txn_reader/%d", i);
+> +		if (IS_ERR(readers[i].task)) {
+> +			readers[i].task = NULL;
+> +			ok = false;
+> +		}
+> +	}
+
+If the writer oopses, KUnit fails the test and frees c and the readers
+array while these threads are still walking the list.  Registering the
+stop with kunit_add_action_or_reset(), and calling
+kunit_release_action() where they're stopped now, would avoid the
+use-after-free.
 
 [...]
 
-> @@ -715,6 +893,9 @@ static inline bool __rcu_txn_chain(struct rcu_txn *t, void __rcu **slot,
->  	r = __rcu_txn_find_ryw(t, slot);
->  	if (!r)
->  		return rcu_txn_record(t, slot, old_ptr, new_ptr, tag);
-> +	RCU_TXN_WARN_ON(r->tag != tag);
-> +	/* The caller must have read its own write. */
-> +	RCU_TXN_WARN_ON(r->ptr[1] != old_ptr);
->  	r->ptr[1] = new_ptr;		/* committed old preserved */
->  	return true;
->  }
+> +	for (key = 1; key <= CONC_KEY_MAX; key++)
+> +		if (c->live[key])
+> +			conc_del(c, key);
 
-The append path checks new_ptr for the tag, but the chain path doesn't.
-With CONFIG_DEBUG_RCU_TXN, chaining a tagged value onto an
-already-recorded slot of a non-disjoint handle and committing gives no
-warning, and leaves the tagged value in the slot, where every later
-reader treats it as a proxy.  Passing the same slot, value and tag
-through the append path warns once:
-
-    # rcu_txn_test_exp_chain_tagged: append path: 1 warnings
-    # rcu_txn_test_exp_chain_tagged: chain path + commit: 0 warnings, slot now 0000000000000301 (tagged: 1)
-
-The same check in the chain path catches it:
-
---- a/include/linux/rcu_txn.h
-+++ b/include/linux/rcu_txn.h
-@@ -905,6 +905,7 @@ static inline bool __rcu_txn_chain(struct rcu_txn *t, void __rcu **slot,
- 	RCU_TXN_WARN_ON(r->tag != tag);
- 	/* The caller must have read its own write. */
- 	RCU_TXN_WARN_ON(r->ptr[1] != old_ptr);
-+	RCU_TXN_WARN_ON(__rcu_txn_holds_proxy(new_ptr, tag));
- 	r->ptr[1] = new_ptr;		/* committed old preserved */
- 	return true;
- }
+A failed conc_del() here leaks the node without anyone noticing.  The
+readers are already stopped at this point, so the leftovers could just
+be kfree()d.
 
 Thanks,
 Puranjay
