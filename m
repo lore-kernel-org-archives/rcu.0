@@ -1,58 +1,62 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792783394;
-	b=yEDtvnOVt69G7nZbjBd1WHpn4KtZ+SETLt42mG5PzPtViZ692trt7cL6d1jmJSWhaWk0
-	 uj3Gbn79ZFCakHwA/D3141Q0HThPCmj5k7BtD0u3kZG3e4VnBNUjyEkLzQesFYZxyuNtS
-	 rZOMkLUl05y1W6suu6ve7HHxc8v3WbZ8QM2XAXirnnSEOjdSFEdG8vDgozpMtylETBl7z
-	 o4KAZseE3kzqnMxmALXSotW7ads2Rr+sla3bEMKxqLO9tBEuwt0ng1JIVMOKRjXwi95BN
-	 vkE1VD2c4DKijDvm22KKZYeTueejUPOG9UAxGNC23wd0vo9qVQ1PKDpVYwLqMisDr/g==
+	t=1792783858;
+	b=2CSxUIBIGhikKnKjna1aSMJYyOz47dZvzGmEKOMXW/J9BQbFybwGvz9f2ynpu1AhhYXv
+	 P7EuDzKbBCBt12uBP4idv7Od1NpeVJ/v5CuIqXr6WYjn/24HUhNzQWXtxQRE3Yqv/6Kme
+	 cF4RrotxF857jlyLyMUdZDL6Eg+0dtUoR+JyTY8POacqsPyrWSez9/IC7p4mUqGzzpb1J
+	 2X+6XzjmQPyEm/+XtmdQli+IqS/yHgMHoNyo//6z6BYerEXVwqGBhWecCEM+NElq3pXU9
+	 L8G2lRjekL1UGezWkuuw7RU8RNaT7fJhJxkryO3mCDByJZA09xsTrDI0gDINpjR++wg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792783394;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792783858;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
 	 In-Reply-To;
-	bh=K4phAtbqJvDEUeL3XNrRdi4DSZI1CWHLSNHnV35OQ1g=;
-	b=UDjnSCgr3PSrL6W0Ddsm0qZaTMPwxpcYV50iFnkBXgJN7+EG2WqBZqkLNiiSUTN3wc1Y
-	 cyezzvt3SKVOIe4q87GW2Br/5yY6+5m99QLH2PwFjxwOHx9RBRUqWbq+g81HXZAUAfNgr
-	 bbDwYzqhtz0GXqxNcLmirDJsxB4Wu4YhbnqesFajf+A1S5Z4fBcR+6a/OVC8FruU6VpdW
-	 Hklk70GCooevhj4w53KI3eGrXP9jreucqKQa7WjswP/T4TuKiUqMieklkEQIpc4ruak1i
-	 UdeSIOpWzDuhc61X4GymVrYMkJx7LQCaJDpkFUaXa6XPMIASgPr1GPGWpbzIQDS0GYg==
+	bh=Z5A5H/6hBx61gn3hQVbAYiqZMDDREX1Nyo1gzCyekRA=;
+	b=v6syEOOKu9yUGnKw+s+16eiyaTSch+S+J+83wq3J4cjIXBpU4Ux/cPb88grs6N2364ng
+	 ANMujodhymdCkS+vBijhsUEFKy26wDsFB3njlBvlSnHt5zB9kZpI+LDQPw4UEztGKzNC8
+	 zp1Qs/PDvubZAmey5S76UFuT+vo1tvRpaapUzjLWWLPhrD4jZEl3Gf33qAOCTwuuWqeUP
+	 P7Xsn+VLujXlzMyIMyiE1+GasS/uvy15CRrEWTxpbQf/i/q4pD6nzbB3pt4TNtOaQ97vn
+	 GC41a1M6XPOZq1m8c57mwAqjv4wB9S7WtvrVoRVtt4Kn5PE7NvLueoIEmrRwgfptpvQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TdcmMsoc;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iQWPKE5s;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFA0606A31B;
-	Fri, 23 Oct 2026 19:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BE49606A31A;
+	Fri, 23 Oct 2026 19:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TdcmMsoc
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6545C1F01825;
-	Fri, 23 Oct 2026 19:23:13 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iQWPKE5s
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0509E1F01825;
+	Fri, 23 Oct 2026 19:30:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792783393;
-	bh=K4phAtbqJvDEUeL3XNrRdi4DSZI1CWHLSNHnV35OQ1g=;
+	s=k20260515; t=1792783858;
+	bh=Z5A5H/6hBx61gn3hQVbAYiqZMDDREX1Nyo1gzCyekRA=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=TdcmMsoc8lCuiSLRaK36Qy6MhQM4jE0M0hnuxF85iViaj4Cxv3zrC60bk+rfRhdGP
-	 3OPyU36URP3ex6M+Ztcb1CsZvZQtHNASCrp/aKQkcwQmRIDrJD6vcEr8+tL5rSpBzl
-	 nW55VjLwFKkQojrRMKnWfKrYXAsO8JaafWx59vo2scNguVpD00vXggVnRrQ71DBR6c
-	 4UM1H7J/MBsXecA1ha2MRdtm2l7E240AGUqHWeamFGQdLp/SYHMswizjHVNNqeeZwK
-	 xiXIJNrkxSCdOVCfKUyYEAh2olugz8wcqhLMsr8HWymMsRBvCad6TorGrEKoC/6YJy
-	 YvNSwXIkgJctg==
+	b=iQWPKE5sQfOcRQ/4jknn+XhK+CGVTDVg85umOMMBRzZrn4PliEycBefCLNJrtbnRu
+	 AS8PpQwoL47x3+NdPE+cn4WQLsS9OGTfiwfHFcInbpLoQN8fexkseiRP1t/X88zUuT
+	 U2Mxy6rxSR0M0uagSx6ar5+DGUMml15hsty4UuUO34A+BpsOcIVUq00J/3BnZxSHGD
+	 mJK69dFV+sE3+al50YuaoNgsSCmI5TVPPeHITzUipXQhOYBDsAucUrzwUUdZ/N3tLf
+	 W3wH8RmQU5AKLPPIwr50WZ+KKlTxGmvmesA6zreNKbJuI3xOEOGfblDpZnJ+d2mrDx
+	 Ixk33pxvHrCtg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1524BCE0540; Fri, 23 Oct 2026 12:23:13 -0700 (PDT)
-Date: Fri, 23 Oct 2026 12:23:13 -0700
+	id BB1DDCE0811; Fri, 23 Oct 2026 12:30:57 -0700 (PDT)
+Date: Fri, 23 Oct 2026 12:30:57 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zqiang <qiang.zhang@linux.dev>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
-	urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcutorture: Avoid create fwd_prog_tasks for
- tasks-rude and srcu-atomic
-Message-ID: <5cb8b0cb-c7ea-4f2c-a9f9-3ccbab1bddc3@paulmck-laptop>
+To: Kunwu Chan <kunwu.chan@gmail.com>
+Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, work@onurozkan.dev,
+	frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com, boqun@kernel.org, urezki@gmail.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	qiang.zhang@linux.dev, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
+Subject: Re: [PATCH 7/9] srcu: Detect duplicate callback enqueue at
+ registration
+Message-ID: <60e6148e-b7e1-4f2f-a665-24567305956f@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20261023093716.25717-1-qiang.zhang@linux.dev>
+References: <20261023101841.2910719-1-kunwu.chan@gmail.com>
+ <20261023101841.2910719-8-kunwu.chan@gmail.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -64,75 +68,94 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261023093716.25717-1-qiang.zhang@linux.dev>
+In-Reply-To: <20261023101841.2910719-8-kunwu.chan@gmail.com>
 
-On Fri, Oct 23, 2026 at 05:37:16PM +0800, Zqiang wrote:
-> When running the tasks-rude and srcu-atomic tests, the fwd_prog_tasks
-> kthread is created because the default value of fwd_progress is 1.
-> however, the two RCU flavors not support ->call():
+On Fri, Oct 23, 2026 at 06:18:39PM +0800, Kunwu Chan wrote:
+> Move the duplicate-callback check from srcu_do_enqueue() to
+> __call_srcu() entry so that detected duplicate registrations
+> are rejected before they reach the deferred-list enqueue path.
+> Report the callback address, function symbol, and object
+> information, rate-limited to the first three occurrences.
 > 
-> 1. tasks-rude: commit b428a9de9bba ("rcutorture: Stop testing RCU Tasks
->    Rude asynchronous APIs") removed .call and .cb_barrier from tasks-rude,
->    but left the .cbflood_max = 50000.
-> 
-> 2. srcu-atomic: srcu_torture_init_forbidden_apis() sets ->call to NULL
->    for SRCU_READ_FLAVOR_ATOMIC runs, but leaves ->cbflood_max untouched.
-> 
-> In both cases, the non-zero ->cbflood_max fools the check above into
-> creating the fwd_prog_tasks kthreads, even though those kthreads cannot
-> possibly carry out any forward-progress test:
-> 
-> 1. The rcu_torture_fwd_prog_cr() returns immediately due to cur_ops->call
->    is NULL:
-> 
-> [   68.022674] rcu_torture_fwd_prog_cr: No ->call(), so no forward-progress test 0
-> [  129.462046] rcu_torture_fwd_prog_cr: No ->call(), so no forward-progress test 0
-> [  190.902123] rcu_torture_fwd_prog_cr: No ->call(), so no forward-progress test 0
-> [  252.343809] rcu_torture_fwd_prog_cr: No ->call(), so no forward-progress test 0
-> 
-> 2. The rcu_torture_fwd_prog_nr() is never even invoked, because its caller
->    requires cur_ops->stall_dur, and neither tasks-rude nor srcu-atomic
->    provide ->stall_dur (only rcu_ops does).
-> 
-> Therefore, creating fwd_prog_tasks kthreads is pointless, this commit adds
-> ->call and ->cb_barrier to the forward-progress check, rejecting flavors
-> that lack the cbflood_max set and a positive ->stall_dur.
-> 
-> simple verification output:
-> 
-> [    3.062959][    T1] srcu-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
-> [    2.922323][    T1] tasks-rude-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
-> 
-> Suggested-by: Joel Fernandes <joelagnelf@nvidia.com> 
-> Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Getting the stackof the call_srcu() once double-enqueue is detected
+would be a very good thing!
 
-It would nevertheless be good to run tests demonstrating that
-forward-progress testing happens and does not happen on the same
-rcu_torture_ops structures as before.  Just in case I lost my
-way through that boolean expression.  ;-)
+One question below.
 
 > ---
->  kernel/rcu/rcutorture.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  kernel/rcu/srcutree.c | 20 ++++++++++++++------
+>  1 file changed, 14 insertions(+), 6 deletions(-)
 > 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 968343be4e0d..92ff197f4789 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -4007,9 +4007,8 @@ static int __init rcu_torture_fwd_prog_init(void)
->  	} else if (fwd_progress < 0) {
->  		fwd_progress = nr_cpu_ids;
->  	}
-> -	if ((!cur_ops->sync && !cur_ops->call) ||
-> -	    (!cur_ops->cbflood_max && (!cur_ops->stall_dur || cur_ops->stall_dur() <= 0)) ||
-> -	    cur_ops == &rcu_busted_ops) {
-> +	if (!cur_ops->sync || ((!cur_ops->call || !cur_ops->cb_barrier || !cur_ops->cbflood_max) &&
-> +	    (!cur_ops->stall_dur || cur_ops->stall_dur() <= 0))) {
->  		VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test");
->  		fwd_progress = 0;
->  		return 0;
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 1993ddbdb828..3838d9fdf532 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/smp.h>
+>  #include <linux/delay.h>
+>  #include <linux/module.h>
+> +#include <linux/mm.h>
+>  #include <linux/slab.h>
+>  #include <linux/srcu.h>
+>  
+> @@ -1511,12 +1512,6 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+>  static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
+>  			    rcu_callback_t func, bool do_norm)
+>  {
+> -	if (debug_rcu_head_queue(rhp)) {
+> -		/* Probable double call_srcu(), so leak the callback. */
+> -		WRITE_ONCE(rhp->func, srcu_leak_callback);
+> -		WARN_ONCE(1, "call_srcu(): Leaked duplicate callback\n");
+> -		return;
+> -	}
+>  	rhp->func = func;
+>  	(void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
+>  }
+> @@ -1529,6 +1524,8 @@ static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
+>  static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+>  			rcu_callback_t func, bool do_norm)
+>  {
+> +	static atomic_t doublefrees;
+> +
+>  	/* Misaligned rcu_head! */
+>  	WARN_ON_ONCE((unsigned long)rhp & (sizeof(void *) - 1));
+>  
+> @@ -1539,6 +1536,16 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+>  	if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
+>  		return; // Leak the callback rather than corrupt SRCU state.
+>  
+> +	if (debug_rcu_head_queue(rhp)) {
+> +		if (atomic_inc_return(&doublefrees) < 4) {
+
+Why this hard-coded 4?  Why not 3 or 5?  Should this be adjustable via
+Kconfig or kernel boot parameter?  Or, alternatively, should the below
+pr_err() instead be pr_err_ratelimited()?
+
+> +			pr_err("%s(): Duplicate call_srcu() CB %p->%pS()\n",
+> +			       __func__, rhp, rhp->func);
+> +			mem_dump_obj(rhp);
+
+Does any of this automatically dump out the stack that was recorded
+in earlier patches in this series?
+
+> +		}
+> +		WRITE_ONCE(rhp->func, srcu_leak_callback);
+> +		return;
+> +	}
+> +
+>  	/* Record the caller: the irq_work's stack says nothing about it. */
+>  	kasan_record_aux_stack(rhp);
+>  
+> @@ -1554,6 +1561,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+>  		if (READ_ONCE(sndp->draining) && !in_nmi()) {
+>  			WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
+>  				  "call_srcu() re-entered during callback drain; leaking callback\n");
+> +			debug_rcu_head_unqueue(rhp);
+>  			return;
+>  		}
+>  		sdp = this_cpu_ptr(ssp->sda);
 > -- 
-> 2.17.1
+> 2.43.0
 > 
