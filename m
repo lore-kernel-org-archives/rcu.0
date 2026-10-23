@@ -1,48 +1,48 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792784325;
-	b=xKyOaK4KFaU1T8uFozJVJaCLQN0/CNYxPEBrNxwhvTeP3zQkPhjthdvMgghYcKxLm49v
-	 9rHVfXyn2bij/sS2tejjU8zuwr5hwpHAve+kRjZBUlRTQjiqE7I7P5GvQX4qbnGHiocKa
-	 4DiOHWqHKKhZXBrRb4DCnnjqatd76BeNOreN5le284GTeqJMi1Ki4SjBTkh0otE/kJKr9
-	 wdFLcrYjBtE0ie9xdcI7Q5q3EmplA4mcwoz68MwTMSI2cF/MXwH5PoRzHXZZtVNu8YmH8
-	 TKRz06AC96wkRDLitDq0l71mF5mOLUWjUhAE212yr6rYo9LGUrcDT3YzD6Gx2cPCQow==
+	t=1792784379;
+	b=KS86BQDkhw+PHepuuZIs/nyUfmzJcB2gk4s7J+rmNVwtS2gq/l/7uRblAqYvTBS+v5u8
+	 GvDXRfhH5LYYnwg0KO/lMd4LDtm69fz7icuV8HPR53TwY54qHR3RjOVUSdgPl2HBfouUv
+	 Hnu/03vx5ThmQgYzHRenbjDIagl0GeHFf4yOoKXSyZEsMF9WJkc0hn/4/IZosXxj7ADRY
+	 fFnJTLP9rzwmbrkrz9KYzaCSpeKXF6/4FtPnKtPAE0gks4alpA8XoLnbFAJPgcoeeqWLL
+	 b4BSfiIMypQDAksyUwX1lrDGIS3ANUafhN0u6Vu2QMzjNScoeVOCuSLcPYqruljpR8A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792784325;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792784379;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
 	 In-Reply-To;
-	bh=7CHhHPSWY+FFf8ngDqbLFkrA9k0bCJf56is/f1ol2IM=;
-	b=dI/14shThT6KJCWebBWSMt3kRIIHn6dahBDRrWA+jnNDK7q16sFXnU+jDhI0AT5mSySS
-	 E/tYQOzyfWcvanarGssDp5gIoGg2VqP0cZHRDpx2QIgphGs3avsufjJhnremHEyn6KGks
-	 5gOxsfANsQV1Bzsb4gzIHmJbgiiW9MhU8oHixeKaHV9dzYlL+RrwVg8A1Y5FliRuhsATj
-	 bv2KUxsxk3maqQP67Axe1oaxYMKpdFMh7hNw9MlLj1PXCZ90SyVRxvwJVARARKBo69nJZ
-	 3xmNEKW21m+p6ti3fLMEouC6mU/59rD6JwVfkSuNYI/eOT2jR8k/FhV6u4+M2zKGlYA==
+	bh=q/2SS9XQmwic+Dg4Zqt0Jyhl3mLXtly5YAjEKl7UD+4=;
+	b=fUy7R7JCZ5bR3FPHaa8OMJ5RXodxH5AI0639oHVGdp6/or19yWPjcu7WUuFU7dGmQHik
+	 sLloQ3trvxXt5OCIagVyElwo9XqQv0V7CKvaVCmkndsirEnsH57EPmEx9OUiRzxI6+Kdd
+	 kLnnvMI8ZqIWwFQF516hBW4tbbJDkM7TWAPx+aIVhUTqAhS32RWMfIt/srb3HAmw5BN4q
+	 IR6J7n+FqAELDhmO+kjeq2QoUr19EfzJk6NlwmYaK2vAY2GwCekWuEck6C7OQ3bG+B0yg
+	 GBbbeaJFK8W9+eaby9P3blcZYBWhxywzRiqgTT4lNY86739N1rw0RtdXNYz8KdFdRKg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=V3UEdUZm;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=e0mDcTSJ;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95E4D606A31A;
-	Fri, 23 Oct 2026 19:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1416606A31A;
+	Fri, 23 Oct 2026 19:39:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=V3UEdUZm
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 314841F01825;
-	Fri, 23 Oct 2026 19:38:45 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=e0mDcTSJ
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AE921F01825;
+	Fri, 23 Oct 2026 19:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792784325;
-	bh=7CHhHPSWY+FFf8ngDqbLFkrA9k0bCJf56is/f1ol2IM=;
+	s=k20260515; t=1792784378;
+	bh=q/2SS9XQmwic+Dg4Zqt0Jyhl3mLXtly5YAjEKl7UD+4=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=V3UEdUZmnzQSycrPUuS40yOguOL+z3iZJtjSH/dt3K5xOl23VTRZtywF+rzOs/VHD
-	 4j7WAcmGPTElMPDAT+58heLKq9NsH+CQdktVlbiLrUW8VfxY7gYi60OJMy3+0NgFF8
-	 Vk66M+MSjtkQB9hDgYnV3Cvd4un6XQkRCYSzomPP8vKZV1c//UeiOMLkl3V4xfk/7T
-	 ZApWZ+qXQKMujxP6T46oNxvn4Ue82KspO3PvsIsBHd3Dg/w1XGRYBFkzJgZnv9oEpx
-	 SAcuVLvD7EQg9hQko3dFSumFvyexC3W+tuh/FVx45w5yNYXV8iCvtwsSYU5Z6xuP5e
-	 HpFNm7te7EFJQ==
+	b=e0mDcTSJsYEocCfjVfHNi8U6/Sk5rlV9EbKOoDAcjtHOmpbp6DjbD+o2nCCNH1KWy
+	 H8TSaiqSPg+6pgz9ONj7cf7Jf3TbouTHoiiy+vCXuXLBXre6vgv66vD1GWt550jLu5
+	 EClsQo2KL3UwPjrEa1tNnNh5IGs1qz8W6fShi/5k+IVmqEHQez5BIeS/Li9GYWHCt7
+	 pIVlyORlk+PuhAYvxIvJulqCmy4f0rJZrHqeq3SOCalwfSLYrqF3cRrYYbm9e1vxAF
+	 VlOPcE+ANk5CJZCZ4H+JYvSDFkUaADmU1ouvFFjxbhFytuKPmyFyRrrGN45xRvECh+
+	 cZZb4dG5dARxA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E38F2CE0811; Fri, 23 Oct 2026 12:38:44 -0700 (PDT)
-Date: Fri, 23 Oct 2026 12:38:44 -0700
+	id 6158DCE0811; Fri, 23 Oct 2026 12:39:38 -0700 (PDT)
+Date: Fri, 23 Oct 2026 12:39:38 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Kunwu Chan <kunwu.chan@gmail.com>
 Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, work@onurozkan.dev,
@@ -51,13 +51,11 @@ Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, work@onurozkan.dev,
 	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
 	qiang.zhang@linux.dev, rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
-Subject: Re: [PATCH 7/9] srcu: Detect duplicate callback enqueue at
- registration
-Message-ID: <b5c84b27-5e66-44f1-b95a-d7c1655df69d@paulmck-laptop>
+Subject: Re: [PATCH 4/9] srcu: Validate callback arguments
+Message-ID: <259b7f31-40dd-45eb-965b-8db04a6e7d07@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20261023101841.2910719-1-kunwu.chan@gmail.com>
- <20261023101841.2910719-8-kunwu.chan@gmail.com>
- <60e6148e-b7e1-4f2f-a665-24567305956f@paulmck-laptop>
+ <20261023101841.2910719-5-kunwu.chan@gmail.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -69,101 +67,59 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <60e6148e-b7e1-4f2f-a665-24567305956f@paulmck-laptop>
+In-Reply-To: <20261023101841.2910719-5-kunwu.chan@gmail.com>
 
-On Fri, Oct 23, 2026 at 12:30:57PM -0700, Paul E. McKenney wrote:
-> On Fri, Oct 23, 2026 at 06:18:39PM +0800, Kunwu Chan wrote:
-> > Move the duplicate-callback check from srcu_do_enqueue() to
-> > __call_srcu() entry so that detected duplicate registrations
-> > are rejected before they reach the deferred-list enqueue path.
-> > Report the callback address, function symbol, and object
-> > information, rate-limited to the first three occurrences.
-> > 
-> > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+On Fri, Oct 23, 2026 at 06:18:36PM +0800, Kunwu Chan wrote:
+> Check callback-head alignment and reject NULL callback
+> functions in the SRCU callback registration paths.
 > 
-> Getting the stackof the call_srcu() once double-enqueue is detected
-> would be a very good thing!
-> 
-> One question below.
-> 
-> > ---
-> >  kernel/rcu/srcutree.c | 20 ++++++++++++++------
-> >  1 file changed, 14 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 1993ddbdb828..3838d9fdf532 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -27,6 +27,7 @@
-> >  #include <linux/smp.h>
-> >  #include <linux/delay.h>
-> >  #include <linux/module.h>
-> > +#include <linux/mm.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/srcu.h>
-> >  
-> > @@ -1511,12 +1512,6 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> >  static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
-> >  			    rcu_callback_t func, bool do_norm)
-> >  {
-> > -	if (debug_rcu_head_queue(rhp)) {
-> > -		/* Probable double call_srcu(), so leak the callback. */
-> > -		WRITE_ONCE(rhp->func, srcu_leak_callback);
-> > -		WARN_ONCE(1, "call_srcu(): Leaked duplicate callback\n");
-> > -		return;
-> > -	}
-> >  	rhp->func = func;
-> >  	(void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
-> >  }
-> > @@ -1529,6 +1524,8 @@ static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
-> >  static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
-> >  			rcu_callback_t func, bool do_norm)
-> >  {
-> > +	static atomic_t doublefrees;
-> > +
-> >  	/* Misaligned rcu_head! */
-> >  	WARN_ON_ONCE((unsigned long)rhp & (sizeof(void *) - 1));
-> >  
-> > @@ -1539,6 +1536,16 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
-> >  	if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
-> >  		return; // Leak the callback rather than corrupt SRCU state.
-> >  
-> > +	if (debug_rcu_head_queue(rhp)) {
-> > +		if (atomic_inc_return(&doublefrees) < 4) {
-> 
-> Why this hard-coded 4?  Why not 3 or 5?  Should this be adjustable via
-> Kconfig or kernel boot parameter?  Or, alternatively, should the below
-> pr_err() instead be pr_err_ratelimited()?
-> 
-> > +			pr_err("%s(): Duplicate call_srcu() CB %p->%pS()\n",
-> > +			       __func__, rhp, rhp->func);
-> > +			mem_dump_obj(rhp);
-> 
-> Does any of this automatically dump out the stack that was recorded
-> in earlier patches in this series?
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 
-As in shouldn't there be a kasan_print_aux_stacks() in there somewhere?
-I did not see an call from mem_dump_obj(), but I could easily have
-missed it.
+For 4/9-6/9:
 
-							Thanx, Paul
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-> > +		}
-> > +		WRITE_ONCE(rhp->func, srcu_leak_callback);
-> > +		return;
-> > +	}
-> > +
-> >  	/* Record the caller: the irq_work's stack says nothing about it. */
-> >  	kasan_record_aux_stack(rhp);
-> >  
-> > @@ -1554,6 +1561,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
-> >  		if (READ_ONCE(sndp->draining) && !in_nmi()) {
-> >  			WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
-> >  				  "call_srcu() re-entered during callback drain; leaking callback\n");
-> > +			debug_rcu_head_unqueue(rhp);
-> >  			return;
-> >  		}
-> >  		sdp = this_cpu_ptr(ssp->sda);
-> > -- 
-> > 2.43.0
-> > 
+> ---
+>  kernel/rcu/srcutiny.c | 7 +++++++
+>  kernel/rcu/srcutree.c | 7 +++++++
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> index 3ee28885b96f..98864977bed2 100644
+> --- a/kernel/rcu/srcutiny.c
+> +++ b/kernel/rcu/srcutiny.c
+> @@ -291,6 +291,13 @@ EXPORT_SYMBOL_GPL(srcu_defer_drain);
+>  void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+>  	       rcu_callback_t func)
+>  {
+> +	/* Misaligned rcu_head! */
+> +	WARN_ON_ONCE((unsigned long)rhp & (sizeof(void *) - 1));
+> +
+> +	/* Avoid NULL dereference if callback is NULL. */
+> +	if (WARN_ON_ONCE(!func))
+> +		return;
+> +
+>  	/* Record the caller: the irq_work's stack says nothing about it. */
+>  	kasan_record_aux_stack(rhp);
+>  
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 46fe2f0cef85..1993ddbdb828 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -1529,6 +1529,13 @@ static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
+>  static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+>  			rcu_callback_t func, bool do_norm)
+>  {
+> +	/* Misaligned rcu_head! */
+> +	WARN_ON_ONCE((unsigned long)rhp & (sizeof(void *) - 1));
+> +
+> +	/* Avoid NULL dereference if callback is NULL. */
+> +	if (WARN_ON_ONCE(!func))
+> +		return;
+> +
+>  	if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
+>  		return; // Leak the callback rather than corrupt SRCU state.
+>  
+> -- 
+> 2.43.0
+> 
