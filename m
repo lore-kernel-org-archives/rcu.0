@@ -1,65 +1,101 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.175
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792748449;
-	b=OedvIdGcLtyh77mxTE4waro/JMw9AB1YYRK3lOVDPjntqp+B/dGxG947f0nX6LO7qlJr
-	 CChJC+7kfqT7PqmWVu8Qn/3fGuMQTXsZSRa5xBnFk7HKfbJ+e2w8EVKyj+ndxjHZgWZB4
-	 GIFa4Ss7hfJA45WvFvhH+0NnvIZYKggXATOlVv9LAKAbgTFHFzNdG0ICaMhfld+Q3MCmi
-	 mK5fU1B/GBxkbTVOlMsuaLMyyEGLU+CyWa616L64G3+wzVcxwbL8g3qs1l/cTS+bzWk0h
-	 oPRypu/q9MaRlzsO5UNJOppuYprLVq0mRqyTpZ8/AM7VrU/dZUAxD80igWsGfRLR3PA==
+	t=1792750738;
+	b=RmjiqAnUXhRR5FKO8V3ku04qJXpR1n+6enG/6z9hCO71GJdwkkoIrMIYlFkqXyjMM7t+
+	 +MU/8BP5pun2lLsav0rU5gzX1NzMxE8VdKM5yaxB+VfGu5o+8H9nWoca3HvuZwEAL0g8f
+	 ZgdzveWBc6xtgrOwYCePSJl+QDHsPigO1EkuyRA6WNq4Dk6yWa/10t6nuB3t3E70Y/wGe
+	 yRBySdBowNdMacJKnzThJcL1hswDXiLCkUtkM1UsAZjUA7uTFtZU1zP7GDtGhYtfAzV0/
+	 XudWkgxb/rZzx2tg+h/RmmnijRLYJFOKobVf5ImL4x5pHeSxKmch3I06pRDCUtfTT4g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792748449;
-	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
-	 X-Mizu-Trace-ID:X-Migadu-Flow:From:To:Cc:Subject:Date:Message-Id:
-	 X-Mailer;
-	bh=uquWcNQkXiniRBpFeipMHVKjDSQOfoDEc/iXj86smJU=;
-	b=o2+cnlA25KqTRu+c589tDqAbR69iQYOiY2lUPVzR+f+cKNSxC5sFsbeqOmjQAQtojmkp
-	 yj8Ug4Kbq+rsbzRic+petsSVO7v9EW2UM9hOgM/LWWjh6xF/FtXcplbwygb45zDbsWWzi
-	 /+w9yqYiPWae4tdvK4Fxlo6iSe8p5qsjBxMsnFlaURt9mCRNsxj58BTRIa5Wj7azfR1JN
-	 FuUx7/xc0bPLrdA0iWEC+YH5+/vnonvskUOlM+vYI2O+YvblRmnKU6gKHh6QuX/moCzhu
-	 yU6+hcWCFLkBdnFB99Gb6T8Ex+r1zqWvM8kAgkfSC6A0AdgPyhXjhKYHtT8H19ScjoA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792750738;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=EiRKif/CjX01ct6IZOevu5Hw8STctFNztvjIHwXGraI=;
+	b=Hw9PYYutZRQcNdqMOfegM332Xnjf6L4G0UPrziqq3MBSfc6XfFgu1dOW7iFL7jVDQE4Q
+	 lc5U7UtJxydVDiprKpSeFaGwOAOJd7WHGgnmjtRr+RaX6mnq3K/vtOSSL3JMsOhFPEbTw
+	 cjnr7JXSUAwoClJQ/z5XJBsrrw8b7hst39iSgIREErnMGerT5fnaAKqKXIdIFkNtDT8hO
+	 QEKnu4YqRKnRPa8pqVdlGRvwm2j5I1BYD/8ykOBKGtZh8pB6IDxMO7uBN4jzxvYt6DHe1
+	 mefUT1UzJ1yvTDP/RTU9nCN/LssD1Hqicik4QZgg+01An/WFcxwu4NMje71HDboehVA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.dev;
-	spf=pass smtp.mailfrom=linux.dev;
-	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=tVJ1MFFh;
-	arc=none smtp.remote-ip=95.215.58.51
-Received: from mta1.migadu.com (out-51.mta1.migadu.com [95.215.58.51])
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=NtXZYYB1;
+	arc=none smtp.remote-ip=74.125.82.175
+Received: from mail-dy1-f175.google.com (mail-dy1-f175.google.com [74.125.82.175])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE365606A31A
-	for <rcu@vger.kernel.org>; Fri, 23 Oct 2026 09:40:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BE365606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FA5606A31D
+	for <rcu@vger.kernel.org>; Fri, 23 Oct 2026 10:18:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 32FA5606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=tVJ1MFFh
-X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=kDwNEdz0JjqvowwQuAeWm+wDsipeAOrPZIoLUGlOzP0=;
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1792748447; v=1; x=1793353247;
- b=tVJ1MFFhWEBmjuD7Rcs8ahC+j2o7q6XvZGxo1Zuh898wIPsf+yh5E3IMSfkgbhBKg6Ta0qmT
- RPmMWEblXiNHErNCWUlMibaoUR+RUm0hXwJLnlqlh27Wsb472d1bdUb6u/+M5drHZSrGKysbMOF
- Hv9+3PPWvI0XNpoHYsBrgNbY=
-X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 16891d252154ae9d;
-	Fri, 23 Oct 2026 09:40:47 +0000
-X-Mizu-Trace-ID: 16891d252154ae9d
-X-Migadu-Flow: FLOW_OUT
-From: Zqiang <qiang.zhang@linux.dev>
-To: paulmck@kernel.org,
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=NtXZYYB1
+Received: by mail-dy1-f175.google.com with SMTP id 5a478bee46e88-35ef6b49813so1027129eec.0
+        for <rcu@vger.kernel.org>; Fri, 23 Oct 2026 03:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792750737; x=1793355537; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=EiRKif/CjX01ct6IZOevu5Hw8STctFNztvjIHwXGraI=;
+        b=NtXZYYB1icV/lPS3+rQgreOmR84b11YSHmAYylCI56Ct5xzx2yCVwaJDet8CdjUmIT
+         7RFXyA6k01QFQl/spqK9lgNFRsSkmkjtBM2LwkasA4gn+052pYC5eNc6899TdUHjAFBM
+         OPbn4+rPp2EvQ2k5vcgaL6F7RGAiz/50Y/J+NY7zaiAtlIXcRGl0vIHqcBPWSqVTZbFh
+         cNQw0ykeA0vwtWHwdIr5WjX+YkbEq9rX7Pkim/7nqMIMrcarQnwb+9iEju8AiLnSqFRk
+         oBYPj56oX9BWrFTeY0EKtCt94aFaQMiPwVnDVjvvZyjpCoe9uAqCT3YIQiMbC8tHpTMC
+         BsVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792750737; x=1793355537;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=EiRKif/CjX01ct6IZOevu5Hw8STctFNztvjIHwXGraI=;
+        b=F4mAbRWWHFT7gwdcS5hJun3PwhGbPVgSSRrjfCcPvmPo69PkYbnzMoEtBcMbjglLZJ
+         aT09YzvSVJhv6Pcu38cZKcqOE8nAxHjvVxWweFOzT55aVpX/5PhRn5Yn2DsxLGIo6QNb
+         ycOkSTRMFFBf5T8bLUugZWd0RmNtampISD8YjhEO0WI0I44o9dWSqdjsgghQ+lvNJG/2
+         VRPLnaG7vo+NGS1ifBPAfHLtqSUKSuNtkwp+cQd4avNDXYt0esxunaOU7utXVUIR/fN/
+         JgaT7kMczCCGJqqh7clRgOWiHs/JjjR46pG0PoVDq/AtNXk54wz64oc1gtY11Xpv22K5
+         fVYg==
+X-Forwarded-Encrypted: i=1; AKwUvBwr3HSiaMTqPpz4B3l4mhQGoHzwGWPfKQweSN6nDplC2NCtWDCXixtGemvI8Uu991aSsRs=@vger.kernel.org
+X-Gm-Message-State: AFq9FYLbfrvDRNEoGQENVruNEzLutT/xjMXx2aSBpaMrhB/b5UwtVr9N
+	nFkA0S77p4/u9+IP2CHVeocFOLULfpn4isCM/OpzJTs28eiaYu9fxeMR
+X-Gm-Gg: AYBFou1E/Q74JXiKR7tbceG5NukhURgI4wPUmExZp1UyYOVWbVTuAxWDa5Ar5922Do4
+	VbTT9RsSIzMiCO9nk999ig36Mn51xFU73LA+TBM3flGXjsOhN5d/YXwSm+D+ypeHV2gLcrqH04v
+	qVW9uqCI1AjL3yPkkqVCzyk96joYzdF66anAajkPMWy8nRobiSoz06KtrZCZQIPjcEcjyt3UUZM
+	lijcMdpUvmXgOrJ8tC9etyGzUK2bnGOB8GOSz4aVIoMEpbKHnTZyWr0bNEc4WZyJc/1oeX7z7b+
+	Qf4ZZdPOr4Mm4FeDyrDIGdKxkUyNxnDcAX95xvlTMH73tq2UXvuTklk3aol+ttmBh7+LG4Y1j4V
+	PvPfBGqdUhekcWnWZbvkeMcYWMCwninwL+4KePwOrLIubayTdLz1CvKvWhLqLTViCjf8zxlIYZT
+	YTu9HAgTUMI4klf2DudPRrgUARlaiPPMKttv86p9rJ+3B7X3/XPNsiF27xaZT/wLgoLSC6jGJML
+	P8YCxawzS0RfczuC7Sz/OnPlcZNhOrxp6B9h9TTup6/7sIGtq08vHKomqEMsN6LEd/SX5+dCw==
+X-Received: by 2002:a05:7300:e9cf:20b0:361:8d52:e148 with SMTP id 5a478bee46e88-369d90c8111mr2746649eec.4.1792750736987;
+        Fri, 23 Oct 2026 03:18:56 -0700 (PDT)
+Received: from kernel.tail6741c6.ts.net ([185.220.238.37])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-369d9deef9bsm5852176eec.22.2026.10.23.03.18.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2026 03:18:55 -0700 (PDT)
+From: Kunwu Chan <kunwu.chan@gmail.com>
+To: jiangshanlai@gmail.com,
+	paulmck@kernel.org,
+	josh@joshtriplett.org,
+	work@onurozkan.dev,
 	frederic@kernel.org,
 	neeraj.upadhyay@kernel.org,
 	joelagnelf@nvidia.com,
-	urezki@gmail.com,
-	boqun@kernel.org
-Cc: qiang.zhang@linux.dev,
+	boqun@kernel.org,
+	urezki@gmail.com
+Cc: rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	qiang.zhang@linux.dev,
 	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rcutorture: Make tasks-tracing support duplicate call testing
-Date: Fri, 23 Oct 2026 17:40:39 +0800
-Message-Id: <20261023094039.29696-1-qiang.zhang@linux.dev>
-X-Mailer: git-send-email 2.17.1
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <kunwu.chan@gmail.com>
+Subject: [PATCH 0/9] rcu: Improve callback diagnostics and validation
+Date: Fri, 23 Oct 2026 18:18:32 +0800
+Message-ID: <20261023101841.2910719-1-kunwu.chan@gmail.com>
+X-Mailer: git-send-email 2.43.0
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -68,85 +104,80 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Currently, Tasks-tracing has been reimplemented by SRCU-fast, it supports
-the detection of duplicate calls with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y.
-This commit therefore set tasks_tracing_ops.debug_objects to 1, enabling
-rcutorture's duplicate-call test for the tasks-tracing flavor.
+Hi,
 
-Signed-off-by: Zqiang <qiang.zhang@linux.dev>
----
+This series improves callback diagnostics and validation across RCU,
+SRCU, and RCU Tasks.
 
-Simple output from rcutorture:
+Patches 1-3 record callback registration stacks for KASAN in Tree
+SRCU, Tiny SRCU, and Tiny RCU, matching the existing behavior in
+Tree RCU.  This preserves the original registration site in KASAN
+reports when callbacks are deferred through irq_work.
 
-[    4.120772][    T1] call_srcu(): Leaked duplicate callback
-[    4.120776][    T1] WARNING: kernel/rcu/srcutree.c:1516 at __call_srcu+0x463/0x580, CPU#7: swapper/0/1
-[    4.122665][    T1] Modules linked in:
-[    4.123026][    T1] CPU: 7 UID: 0 PID: 1 Comm: swapper/0 Tainted: G        W           7.3.0-rc1+ #110 PREEMPT(full)  8fac67ca5e4b530c23977b2e660a83979ea107db
-[    4.124328][    T1] Tainted: [W]=WARN
-[    4.124687][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-[    4.125583][    T1] RIP: 0010:__call_srcu+0x463/0x580
-[    4.126056][    T1] Code: 00 00 5b 41 5c 41 5d 41 5e 41 5f 5d e9 16 99 9f 03 80 3c 02 00 0f 85 e8 00 00 00 49 c7 46 08 70 cf 4e b4 48 8d 3d ad da d5 06 <67> 48 0f b9 3a eb a6 48 8d 3d af da d5 06 67 48 0f b9 3a eb 98 0f
-[    4.127823][    T1] RSP: 0000:ffff888100e87a78 EFLAGS: 00010246
-[    4.128389][    T1] RAX: dffffc0000000000 RBX: 1ffff110201d0f54 RCX: 0000000000000001
-[    4.129111][    T1] RDX: 1ffff110201d0f8f RSI: ffffffffb8ae6d60 RDI: ffffffffbb255590
-[    4.129842][    T1] RBP: ffff888100e87b28 R08: ffff888100e87c70 R09: ffffffffb818a820
-[    4.130572][    T1] R10: fffffbfff76449ac R11: ffffffffbb224d67 R12: 0000000000000001
-[    4.131296][    T1] R13: 00000000ffffffea R14: ffff888100e87c70 R15: ffffffffba4c4220
-[    4.132061][    T1] FS:  0000000000000000(0000) GS:ffff888239af2000(0000) knlGS:0000000000000000
-[    4.132903][    T1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    4.133536][    T1] CR2: 0000000000000000 CR3: 000000008a8ea000 CR4: 00000000000026f0
-[    4.134283][    T1] Call Trace:
-[    4.134607][    T1]  <TASK>
-[    4.134898][    T1]  ? __pfx_rcu_torture_err_cb+0x10/0x10
-[    4.135425][    T1]  ? __pfx___call_srcu+0x10/0x10
-[    4.135870][    T1]  ? __pfx__printk+0x10/0x10
-[    4.136301][    T1]  call_srcu+0x17/0x20
-[    4.136685][    T1]  call_rcu_tasks_trace+0x1a/0x20
-[    4.137143][    T1]  rcu_torture_init+0x3033/0x3800
-[    4.137617][    T1]  ? __kvm_handle_async_pf+0x21/0xb0
-[    4.138094][    T1]  ? __pfx_native_sched_clock+0x1/0x10
-[    4.138608][    T1]  ? __pfx_rcu_torture_init+0x10/0x10
-[    4.139109][    T1]  ? add_device_randomness+0xcb/0x110
-[    4.139637][    T1]  ? __this_cpu_preempt_check+0x17/0x20
-[    4.140160][    T1]  ? lockdep_hardirqs_on+0xde/0x160
-[    4.140653][    T1]  ? _raw_spin_unlock_irqrestore+0x6e/0x80
-[    4.141211][    T1]  ? _raw_spin_unlock_irqrestore+0x53/0x80
-[    4.141772][    T1]  ? __pfx_rcu_torture_leak_cb+0x10/0x10
-[    4.142291][    T1]  ? add_device_randomness+0xcb/0x110
-[    4.142828][    T1]  ? __pfx_add_device_randomness+0x10/0x10
-[    4.143397][    T1]  ? __pfx_srcu_leak_callback+0x10/0x10
-[    4.143937][    T1]  ? __pfx_rcu_torture_init+0x10/0x10
-[    4.144440][    T1]  do_one_initcall+0xd9/0x620
-[    4.144878][    T1]  ? __pfx_do_one_initcall+0x10/0x10
-[    4.145390][    T1]  ? __kasan_kmalloc+0x86/0xa0
-[    4.145963][    T1]  ? __kmalloc_noprof+0x2c9/0x610
-[    4.146576][    T1]  kernel_init_freeable+0xb00/0x11a0
-[    4.147214][    T1]  ? __pfx_kernel_init+0x10/0x10
-[    4.147804][    T1]  kernel_init+0x28/0x170
-[    4.148308][    T1]  ret_from_fork+0x7be/0xaf0
-[    4.148880][    T1]  ? __pfx_ret_from_fork+0x10/0x10
-[    4.149512][    T1]  ? __kasan_check_read+0x15/0x20
-[    4.150111][    T1]  ? __switch_to+0x1b0/0xeb0
-[    4.150778][    T1]  ? __switch_to_asm+0x39/0x70
-[    4.151324][    T1]  ? __pfx_kernel_init+0x10/0x10
-[    4.151910][    T1]  ret_from_fork_asm+0x1a/0x30
+Patches 4-6 add rcu_head alignment and NULL callback-function
+checks to SRCU, Tiny RCU, and RCU Tasks, consistent with the
+existing checks in Tree RCU.
+
+Patches 7-9 detect duplicate callback enqueue attempts at
+registration time, report the callback address, function symbol,
+and object information, and limit diagnostics to the first three
+occurrences.  In Tree SRCU, moving the check from srcu_do_enqueue()
+to __call_srcu() rejects detected duplicate registrations before
+they reach the deferred-list enqueue path.
+
+The duplicate-enqueue checks rely on the existing RCU head
+debug-object mechanism and are effective only when
+CONFIG_DEBUG_OBJECTS_RCU_HEAD is enabled.  They provide
+diagnostics, not full protection against concurrent registration
+of the same rcu_head, which violates the API contract.
+
+Tested by rcutorture with KASAN enabled: SRCU-N, SRCU-P, SRCU-T,
+SRCU-U, TINY01, TINY02, and TREE03, each for 3 minutes.  All
+configurations completed with exitcode 0.
+
+The KASAN aux stack was verified with a custom UAF module: the
+"Last potentially related work creation" line in the KASAN report
+identified the original __call_srcu() registration site.
+
+A targeted Tree SRCU test module exercised duplicate enqueue
+detection on both the direct and irqs-off deferred paths with
+CONFIG_DEBUG_OBJECTS_RCU_HEAD=y.  Both paths rejected the
+duplicate at __call_srcu() entry without list corruption or
+hangs.
+
+A targeted Tiny SRCU test module exercised NULL callback
+rejection, duplicate enqueue detection, and post-callback
+rcu_head reuse with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y.  The
+first two tests produced the expected diagnostics, and the
+callback and reuse tests completed without hangs or stale
+debug-object state.
+
+RCU Tasks duplicate enqueue detection was verified by code
+inspection; no targeted runtime test has been performed for
+that path.
  
- kernel/rcu/rcutorture.c | 1 +
- 1 file changed, 1 insertion(+)
+Kunwu Chan (9):
+  srcu: Record callback registration stack for KASAN
+  srcutiny: Record callback registration stack for KASAN
+  rcu: Record callback registration stack for Tiny RCU
+  srcu: Validate callback arguments
+  rcu: Validate callback arguments in Tiny RCU
+  rcu-tasks: Validate callback arguments
+  srcu: Detect duplicate callback enqueue at registration
+  srcutiny: Detect duplicate callback enqueue
+  rcu-tasks: Detect duplicate callback enqueue
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 1bbf8192786a..c0c8fbdb5508 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1313,6 +1313,7 @@ static struct rcu_torture_ops tasks_tracing_ops = {
- 	.irq_capable	= 1,
- 	.slow_gps	= 1,
- 	.nmi_capable	= 1,
-+	.debug_objects	= 1,
- 	.name		= "tasks-tracing"
- };
- 
+ kernel/rcu/srcutiny.c | 30 ++++++++++++++++++++++++++++++
+ kernel/rcu/srcutree.c | 32 ++++++++++++++++++++++++++------
+ kernel/rcu/tasks.h    | 22 ++++++++++++++++++++++
+ kernel/rcu/tiny.c     | 11 +++++++++++
+ 4 files changed, 89 insertions(+), 6 deletions(-)
+
+
+base-commit: 940793b926aa94bf65ec404043050888e3053188
 -- 
-2.17.1
+2.43.0
 
