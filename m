@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792779760;
-	b=5N3pTRTubqHY+z3tA+fuU1Za7+oWM8zBqUCRY1bUhCc+bWrWjB4+dwb8pMYF5d8ANVMv
-	 Q+jVEYIV3hVTihQK4vRCVRtoREC0+UUHOi7WnShK8UjA+WKdmUOw0wU+SgW0PMu1M0Hyz
-	 2ItTXCHulGZ1nKBbBRC9zFSrdvAEjIwV0Xh/kLoCwfx62L48Mcm0Z0GcvdUCf+SNr8xGx
-	 AKPYAc9moc3YbYhMFhJaA0JYNBX+1ShmNESkF0JSXw1KWdQQRuligubqiOpwaCwwr1Zwf
-	 58RoRcObEfOqnueQ2HOaOHavFytUfOg045Pi4dy7swh7PfKlkiUQgAy1723jx1+m7kw==
+	t=1792779756;
+	b=wCq7roSjntbye0zMji3bXD9sNapXP4qMQyzvAKP2vr3d4NF15da0suOBWztD8lIY8t9h
+	 mQjzaGEzWG3l0N0XAkKWD5PJEVQby5VCwIGSLM0lkl3ELyAuF9P8cuLq9B1dnE5FprI7g
+	 yaCCpCwc60jvXV3I9Y9/HsT4vBM++QC3O1UGpjNCyn1OMvw24GNVObUCZvnGA58Tw31G3
+	 4XAe1kPG6foM6+g9w4vfOTPhIpy0aI9wY4qmTgVWPEcjQho/vSM1anB1iKUSMbdVPvjmS
+	 C2ejxD6qTSaqvB3IL37ifwatszsJ+7koKmNQF5cC72+ycTPmvapEptrHM8tLCt39ktg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792779760;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792779756;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=6SXiqpe6w+67sdJ4QQlvuBS0/A18+RKyVDMsnp0My1M=;
-	b=4mgaCGUJANWhrmPKdLil6lisQICzTrE5iuGREURy5zPfrKYoPAgJXwFunBMFxv54XSxu
-	 EBa8I6zr3gTMKyfEfmR9IRiQMlEp50TCIrDziNq9T5T8wu3BG2/qt22+ChBG+kKq2Rvsi
-	 1cqnTuDQs1JncXm3VIQhLjWFu0MhOgerOzoOq4t7zVwiRtfZCk2gbOK+8JiFwe586XWM+
-	 YCefrGsaOVsYebZ1fs3lTPnUu37GKCsRHLWpBHCNqRarAAP8db7sweupzOxSEYjYIayOu
-	 2mqWzOfThJBwx6L2e1Nx9gdCoXl74YQ5vpVQY/lpq/CI6lDh4KpNwhwWzKj0s30jN8A==
+	bh=8fNDUJmW+BqiGz1BXZNGCbbtDikGNmxpdsyN7sK/sCA=;
+	b=YJ2OOoAhG6oPX1AMhQ/GhhEVSYiUL6hGcOlZ/9+Y9NNN6KSfO8YOeGXJ4KlrBMik9uYo
+	 DsMJG7Pz6OMPrVc3gdK5maOHDEZyMWSzmTmr7QBXDEVNx2Qyasp8vb5eJImtc47ckEn+D
+	 OUWjI8xaWP1rCmFoeV8hJfd8lfqlTwlW3x9YHtsfBLZNGMCnKDhwgCvmynP/61N+NnMiK
+	 dkFxwBmd61HWXN7wub57dKsgAHIF40karHnvK02NJRFe+mY+xiF1oKpqojIDz2U3ajrn2
+	 7NBsC2sB9VO8o87WHHO/ZAgiknLp4/mTF2Ew1jShL1lIbhFKL/a+SZL8GU0or8DS1tg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="JfrI/I1h";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EeZAsJ44;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEC8606A321;
-	Fri, 23 Oct 2026 18:22:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A970606A322;
+	Fri, 23 Oct 2026 18:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JfrI/I1h
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A0921F031E3;
-	Fri, 23 Oct 2026 18:22:39 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EeZAsJ44
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C6361F01825;
+	Fri, 23 Oct 2026 18:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792779759;
-	bh=6SXiqpe6w+67sdJ4QQlvuBS0/A18+RKyVDMsnp0My1M=;
+	s=k20260515; t=1792779755;
+	bh=8fNDUJmW+BqiGz1BXZNGCbbtDikGNmxpdsyN7sK/sCA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=JfrI/I1hiCPjwlVIUvTxEjlxrkLABrRPIHYoOchnn0aSskGeUWJpuXk4tqbVbkVcl
-	 Qr56q7u8NKQBBU3wrQ/2i4ccgcNzffHPsNu9Hjdo0P1PxJKatXS7yh+AxEHSJhOxDp
-	 AZmoqscU7qELqiTOvw9yGW8xf4X50Fdhv9nJYUST72jIvVsEmmI8ZwPUTYYdrepUN/
-	 dEUWa0LGkZcGOE8ov++OWjsNp3D/X7x8wihj02aZfp0UvRUNkk9apz/KqPFdqpJClD
-	 Jv7lXDzcF1Ff2iBmTeJEtA3cxWMP0feznijqS7RI3Zz3vnWVhktschyCEvBmxYlXWk
-	 HKAgIS/7JiyTg==
+	b=EeZAsJ44WMwEbGTdY400Waqq18i7SJ+8+oje7d3M9uY5aVibaGKuvr0PpgwPT2eXC
+	 nIxxEjjDHKBHIluPWWAbYall4+G/fzMmLiPoNAH4Db0BPdfOCSm+8klOIigeph2d37
+	 b1s3kCOSvNYT2y/dEM2ddqOUrghhXT2mRTuhFp9vy0PXc1X9DEJTGfoQvFGDvEuy+R
+	 CEwX/HY8clKgEzCFS/3bX9h7aFC9LOtgjVsPCMh8bMTGbKViqFbNpGtV/bJZ/es6O/
+	 P0Uerrqf4sZGMx4gzu8b02xTL/Nj0vuvFmIUuN/BUBT9LPKpRX9rP5rgaSoSZACT9V
+	 vehic5XJrQG4g==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -66,12 +66,12 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	Thomas Gleixner <tglx@kernel.org>,
 	rcu@vger.kernel.org
-Subject: Re: [RFC PATCH 06/12] rcu_txn: Add a doubly-linked list coherent in both directions
-Date: Fri, 23 Oct 2026 11:22:14 -0700
-Message-ID: <20261023182218.479327-5-puranjay@kernel.org>
+Subject: Re: [RFC PATCH 05/12] rcu_txn: Add an hlist edited through transactions
+Date: Fri, 23 Oct 2026 11:22:13 -0700
+Message-ID: <20261023182218.479327-4-puranjay@kernel.org>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261016133319.433617-7-mathieu.desnoyers@efficios.com>
-References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com> <20261016133319.433617-7-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20261016133319.433617-6-mathieu.desnoyers@efficios.com>
+References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com> <20261016133319.433617-6-mathieu.desnoyers@efficios.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -83,53 +83,41 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 16, 2026 at 09:33:13AM -0400, Mathieu Desnoyers wrote:
+On Fri, Oct 16, 2026 at 09:33:12AM -0400, Mathieu Desnoyers wrote:
 [...]
 
-> +/*
-> + * rcu_txn_list: a circular doubly-linked list whose forward and backward
-> + * chains stay mutually coherent under concurrent RCU readers.  A reader may
-> + * iterate in either direction, or reverse direction mid-traversal, and never
-> + * observe the two directions disagree.
-> + *
-
-This overstates it a bit: a reader can read P->next == N and then, once
-an insertion of E between them commits, read N->prev == E.  The commit
-message puts it accurately ("never finds the new value of an edge and
-then the old value of the other"), so I'd use that wording here too.
+> + *   - Every node an operation is anchored on must still be in the list as the
+> + *     transaction leaves it.  A single-writer delete leaves no deletion mark:
+> + *     nothing in a deleted anchor distinguishes it from a live one.
 
 [...]
 
-> + * See rcu_txn_list_add_after_prepare().  Six edges switch together: the two
-> + * that unlink @elem, the two that link it after @pos, and @elem's own next and
-> + * prev, so that a reader standing on @elem leaves it by its old neighbours
-> + * until the commit and by its new ones from then on.  The add forms cannot
-
-That has a consequence for iterators, which should be documented: a
-reader standing on the moved node can skip or revisit nodes that never
-moved.  With H -> A -> B -> C, a reader on A when A moves after C steps
-straight to H and never sees B or C, and a reader on C when C moves to
-the front walks A and B again.  I checked both with sequential KUnit
-cases.  LRU second chances are exactly this pattern.
-
-[...]
-
-> +/* Move @elem to the head of the list (just after @head). */
-> +static inline int rcu_txn_list_move_rcu(struct rcu_txn_list_node *elem,
-> +					struct rcu_txn_list_head *head,
-> +					gfp_t gfp)
+> +static inline void rcu_txn_hlist_del_rcu(struct rcu_txn_hlist_node *elem)
 > +{
-> +	return rcu_txn_list_move_after_rcu(elem, &head->node, gfp);
+> +	struct rcu_txn_hlist_node __rcu **ppv = __rcu_txn_hlist_pprev(elem);
+> +	struct rcu_txn_hlist_node *next = __rcu_txn_hlist_load(&elem->next);
+> +
+> +	rcu_assign_pointer(*ppv, next);
+> +	if (next)
+> +		RCU_INIT_POINTER(next->pprev, ppv);
 > +}
 
-This looks like list_move(), whose kerneldoc is literally "delete from
-one list and add as another's head", and nothing here says @head has to
-be @elem's own list.  If it isn't, a reader standing on @elem follows
-its new ->next into the other list and never gets back to its own
-head, so rcu_txn_list_for_each_entry_rcu() never terminates and treats
-the other list's head as an entry.  Either document on every move form
-that the destination must be in the same list, or give readers a way
-to detect it, like hlist_nulls does.
+hlist_del_rcu() poisons pprev, so a double delete faults straight away.
+Here pprev keeps pointing at the old slot, so a second del_rcu() quietly
+overwrites whatever that slot holds now with the node's stale ->next.
+For example, 1 -> 2 -> 3, del_rcu(2), add_behind_rcu(4, 1), del_rcu(2)
+leaves 1 -> 3 with node 4 gone, and nothing warns, even with
+CONFIG_DEBUG_RCU_TXN.  Had 3 been deleted and freed in between, the
+second delete would link it back in and write to it.
+
+dcache relies on d_unhashed(), i.e. a NULL pprev, which __d_drop() sets.
+Could the _rcu delete and replace clear pprev the way
+hlist_del_init_rcu() does, and could there be an
+rcu_txn_hlist_unhashed()?  For the _prepare forms, del_prepare and
+replace_prepare could record pprev -> NULL through
+__rcu_txn_hlist_record_pprev().  That costs at most one record, though a
+lone delete or replace of a bucket's last node would no longer be a
+one-record commit.
 
 Thanks,
 Puranjay
