@@ -1,74 +1,74 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.197
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.199
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792782366;
-	b=HFxKGmgAgKKIZg5hZGBH3Yu5BHr6Qo4mSbOBC2GvqN8UveUG9e69RR2qFtSDmnr6M2xj
-	 hjCM27PqyuLvgyMYeuWnfMUQQehzkiwHc71hfVXbfNJS0dNWfx+Pjy6PknKQRcuj6HxiK
-	 5MlOOgiXO/6TMmvbG8PJjdvZXSO81/QymOT83Kbc3OqcvkRGezR2/0MeNZ2/2BAC1coaJ
-	 fPllCRt5uW20yoErA/Gz/uQKYq2WL5rwQVyaAW469cDot2knvCJA5iL7VM18hFn34uHGX
-	 qHn2sktdn2ROihyIC0DBI6KumXjQl0Vo4bRS7crOjVTSCJdUWngkTSvmuG+JjPAKZfg==
+	t=1792782369;
+	b=Hg7NZTd2z8BzY140ZDsKZafV5xiyA3IB936LkMs+2n8lOwkWLdInX/ruHTc04HZGzMIQ
+	 HevYofouqmOzPJxsv8fM2OCldwoRMToiO+SgNeeszFRoHY7GW+PNCmvt5yWwlKF0upGN4
+	 vepdZN0yJo1Hewy9G2WfhWL2E+lSQUPMRFYEb4jlYtxmkIGQEaBfoB/++yYAird+FjX9Y
+	 4dTJ6P4wqWEte4Z1iSw4S/ueEIQAzf8fAU5S2720eTzmAtTfLKcIjUSOsya08yyVuD0do
+	 JtZS/jIHO9QAQQ7wPr3Th7eVhcB+sxxAHUIA/KL/SuNx6LZY0ResPZqjF3Oo5BfuxLA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792782366;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792782369;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:Date:In-Reply-To:
 	 Mime-Version:References:X-Mailer:Message-ID:Subject:From:To:Cc:
 	 Content-Type;
-	bh=O3MLcVpvSLEppgS59oKT4vTeHqiCTAcmRuUuPH2KdWw=;
-	b=epPjDG30ulLUqggGboCJD3vifH4/Fd5ZP6dui3swsvlyj0WMAoaYN/hSK2m0qqjf1bK7
-	 kweVKza0dK5KCRS3Dfk2dQegmFYIp2m8pNO2LR5nuUMKGrkp+upavg5V/Y/ucBUvGmMID
-	 sImK29XeI3YzhVtqCJkFpQcZPqH5rtPKdtzKXtOLZuHRNsvQU2FFPbllEKGPVyANajTGr
-	 nt0c5f0ZW6g1ToEyxIsWXN/aiPix50MMAVH3jMJLPUaygq7v4kpXtLrPaklgcKZbdLV+8
-	 yNEyqKXUDMddI2LrUepQz5hbgV3pmsVsExJnPpjtG2VgqeN4zcEfEypCnEKoL+fWAKg==
+	bh=vb7f6vAkRYTChnspFzlOhx/ZS3V5rub8XJZ0s8BrIgE=;
+	b=yOU9kXEk5qXca/DdEv8eWa+rGvikXyzeFsqUea4JMXQ1sOEKVUcmyxMi9k+7SgrApG9G
+	 yLgIqCr6cmhPyfjZhb5ZpLUnop/CoBu+blre7U2ojEE3itGGI4cL1E571c8TMnHAN0ge2
+	 t5jYkA7dXKveZhlc8tWcq6IFnoIU7c5jiFJDA1vN8d9ptL38+te4MZBkPaloi3CKORdhI
+	 0ELULkd/wUZgEU6u55UQUoyYcibMqjkkfQjse0zZ/wEdszD6T7W5e7Ms/pG9+dlPRvRWb
+	 mg8hicZ/7a4M/lexz2LeDCXCDVJN48tskNGcWf54yJnA2VGnIg+ajsLZ0JexYvYPLJg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=google.com;
 	spf=pass smtp.mailfrom=flex--irogers.bounces.google.com;
-	dkim=pass header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20251104 header.b="K/Ta2d3r";
-	arc=none smtp.remote-ip=74.125.82.197
-Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com [74.125.82.197])
+	dkim=pass header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20251104 header.b=Gh4Jmkit;
+	arc=none smtp.remote-ip=74.125.82.199
+Received: from mail-dy1-f199.google.com (mail-dy1-f199.google.com [74.125.82.199])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7803606A32A
-	for <rcu@vger.kernel.org>; Fri, 23 Oct 2026 19:06:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E7803606A32A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7800606A322
+	for <rcu@vger.kernel.org>; Fri, 23 Oct 2026 19:06:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D7800606A322
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20251104 header.b=K/Ta2d3r
-Received: by mail-dy1-f197.google.com with SMTP id 5a478bee46e88-35c3c370b17so1798382eec.0
-        for <rcu@vger.kernel.org>; Fri, 23 Oct 2026 12:06:04 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20251104 header.b=Gh4Jmkit
+Received: by mail-dy1-f199.google.com with SMTP id 5a478bee46e88-3548cdfd2fbso1697794eec.1
+        for <rcu@vger.kernel.org>; Fri, 23 Oct 2026 12:06:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1792782364; x=1793387164; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1792782368; x=1793387168; darn=vger.kernel.org;
         h=content-type:cc:to:from:subject:message-id:references:mime-version
          :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=O3MLcVpvSLEppgS59oKT4vTeHqiCTAcmRuUuPH2KdWw=;
-        b=K/Ta2d3rNg2FmIpSS5lHcOrmfMk4pdUOAWwtfhtIR1jWjdyU3CKt1WQls2Ud6tMZvz
-         bLBT8yBMXe/S/T/TzqsHlONxbLQ81dM0hU7Cue6xlPqV8y6fX2SBevrC79moM9I4AXR7
-         65GBFhSn1MZuYEdnghkj3gsVL+ihtNH3z7IJWfd+QO/2p3iEhD2WmIMLRs4NuV/rVhIU
-         Q2+16xEeCuGOuLc5jxxd9J6D/qMV+MoXNnTJV/MGu4HGP+dEpg7vb4ZGVmdXusLxQQv+
-         2la4cg0hh9uB+XRY4HQJpLnXuktJIPZDluy44j1JiwLYdlX1Dj454BxccjCUP+nS9tps
-         tSUg==
+        bh=vb7f6vAkRYTChnspFzlOhx/ZS3V5rub8XJZ0s8BrIgE=;
+        b=Gh4JmkitTeGZPAF58tJHt2rHrMjLtDSteN50INCTGHmGyAwfU4aYyLEVWM953K+eK0
+         Fbu76bh1H0yauMGFrQDXii5WULP4V6UWMX51YgSk3KMZQsczem7HH6YI3fBH2q+TsoxU
+         GViBnXqpXxQslpl1hvpMAueBza2X1kGlE9HmRf2AEknH+I4TbCqRTCTv6BO3zu/ONU5z
+         f30FdQHF+7ORSGznxfPuFUftEG9HR8RM68CMW99zoBnvj7GaGVcxI+FB+fHt0hjujeZ5
+         MplizEBpyH74sIoc26gBM7bujou/YaPKl3ZIvrxXoUHk1xxoU/B3EfHmkiP159arOg6W
+         8ptQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792782364; x=1793387164;
+        d=1e100.net; s=20260707; t=1792782368; x=1793387168;
         h=content-type:cc:to:from:subject:message-id:references:mime-version
          :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=O3MLcVpvSLEppgS59oKT4vTeHqiCTAcmRuUuPH2KdWw=;
-        b=pe/nOf4M8pHNkM5sF83uz5CQHQdau3J8WyudPyq/5WMwTX4ZWeyuumqUJ9Ab2y2xt1
-         NE8zKYX7K0jaZ8l6RW9c5iztMmOatCAw3sTrW7Fwc3oP5Qd5+FyLYjscxMKfM4zHHZbq
-         A3E1hZtu40cDoXtg3NVoiwxW7XIS2jeQvC0gArsIABHOEAYKBcvKXTUtj+9YxuC6uioN
-         wVJOklZ/kV0kwBnfqXpXjoft3jXIhz570V02Vkn+VNENIcsJzVwZ4Gg5V23cz5qNZL3h
-         GxA8unPK3x2kOIUrVZj2gqfaSfC9qqoMKdFpkLwlSnB8Zgl1a8YJcbtUPpY73pIMEDTv
-         UdfA==
-X-Forwarded-Encrypted: i=1; AKwUvBzB651RpqN3rX5MZ0o3XQg67JwAoQ9+i5bWR+EXm/crHINwQyBszro9MrXKTGaFhhUhBJs=@vger.kernel.org
-X-Gm-Message-State: AFq9FYL6mtJqQKuwE3wCjDp72tA8a6grrhKKyGroXK16rZze7fJDw4DW
-	pgHixgftRVG5TB4rGa/q5Kv+vXHBGhAP1iUgFJUtn8Aig8Ya65wBEHU3Th2zOHnr0J/CzZCEiz5
-	g3/ng8QnmzA==
-X-Received: from dlbsj2-n1.prod.google.com ([2002:a05:7022:f902:10b0:158:5d29:90be])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:701b:454d:20b0:165:dd90:1f54
- with SMTP id a92af1059eb24-195c74c48cdmr3769878c88.47.1792782363705; Fri, 23
- Oct 2026 12:06:03 -0700 (PDT)
-Date: Fri, 23 Oct 2026 12:05:48 -0700
+        bh=vb7f6vAkRYTChnspFzlOhx/ZS3V5rub8XJZ0s8BrIgE=;
+        b=Pk/90QBUt25YgdnvLAzJuCQ1pWZ0/Kikv3nRqVZLuOfwsG8pHXYT8GLXrPcSVook6c
+         EMai0KPGzLVJjpaaMhMWWWrHjhi+hMzkyMbEMdhQqS5jdiZXWMSJueQ6W8yFncnFPurz
+         bkdYiZbeUVXg/qEVba6l/3C3RNDJAX/AaBiRKvJpvX0qkfYyZumGitwzAtfTXDV1KHCC
+         3D4rgst/MMZ1LmaFIOls6sJqrJdrPVpcxA4TcM8Dp3Zif5MVSlFD65gJCSBeV8skIx5m
+         Y8vCiK6nEC/GFQDF0ANyrvYVzsGSCdgrGnW810kqqtvtuLpQA2Xkc2vE0NGVEEjuCXJB
+         Wwlg==
+X-Forwarded-Encrypted: i=1; AKwUvBxpc/E7SXcNMb7dwZ3ENqt0LUDpbvp/SYP5v5UnMTt1Ml9Ml934izuqp2ME8TFAttwcSGc=@vger.kernel.org
+X-Gm-Message-State: AFq9FYKPu8K3cBT6RO3j/pDsn9b9KsT90U6NnbgmbZRaymFwaxTATK70
+	RNCtae2I3XvjpRewlBJM6xFLSAYlihmfHmfl0X0dR9mH0mpF4EmvNazOIDndsYdwFzMpbBrGcu9
+	NJRKNCu+qYA==
+X-Received: from dlam20-n1.prod.google.com ([2002:a05:701b:2094:10b0:195:e16b:fdd2])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:7022:3b89:b0:166:9e0d:3b56
+ with SMTP id a92af1059eb24-196d8d12153mr2616810c88.38.1792782367649; Fri, 23
+ Oct 2026 12:06:07 -0700 (PDT)
+Date: Fri, 23 Oct 2026 12:05:50 -0700
 In-Reply-To: <20261023190558.3050796-1-irogers@google.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -81,8 +81,9 @@ Precedence: list
 Mime-Version: 1.0
 References: <20261022203003.1779152-1-irogers@google.com> <20261023190558.3050796-1-irogers@google.com>
 X-Mailer: git-send-email 2.56.0.307.g5fe7bd680c-goog
-Message-ID: <20261023190558.3050796-2-irogers@google.com>
-Subject: [PATCH v7 01/11] perf bpf-filter: Fix bpf_link leak by using PERF_EVENT_IOC_SET_BPF
+Message-ID: <20261023190558.3050796-4-irogers@google.com>
+Subject: [PATCH v7 03/11] perf lock contention: Share common BPF and lock type
+ definitions in lock_data.h
 From: Ian Rogers <irogers@google.com>
 To: irogers@google.com, acme@kernel.org, namhyung@kernel.org
 Cc: adrian.hunter@intel.com, ddhariwal@google.com, eranian@google.com, 
@@ -91,113 +92,742 @@ Cc: adrian.hunter@intel.com, ddhariwal@google.com, eranian@google.com,
 	rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-In perf_bpf_filter__prepare(), the unpinned filter path attaches
-skel->progs.perf_sample_filter to each FD(evsel, x, y) using
-bpf_program__attach_perf_event_opts() and ignores the returned
-struct bpf_link *, leaking the allocated struct bpf_link_perf and its
-BPF_PERF_EVENT link fd.
+Move lock_type_table, LCB_F_* flags, and the common BPF lock helpers
+(get_lock_owner, get_current_mmap_lock, get_current_siglock,
+get_lock_addr, check_lock_type, do_collect_zone_lock,
+do_collect_lock_syms, do_slab_cache_iter) and shared CO-RE structs into
+tools/perf/util/bpf_skel/lock_data.h and tools/perf/util/lock-contention.[ch]
+so they can be reused by BPF sample filtering.
 
-Furthermore, bpf_program__attach_perf_event_opts() is designed for
-callers that transfer ownership of the perf_event fd to the returned
-bpf_link: when bpf_link__destroy() is called, bpf_link_perf_detach()
-unconditionally disables and closes perf_link->perf_event_fd. Because
-evsel->core.fd owns FD(evsel, x, y) and closes them in evlist__close(),
-destroying the returned bpf_link would double-close the perf_event file
-descriptors.
-
-Fix this by attaching the program directly with
-ioctl(FD(evsel, x, y), PERF_EVENT_IOC_SET_BPF, fd), matching the pinned
-filter path right above it in perf_bpf_filter__prepare(). In the
-kernel, PERF_EVENT_IOC_SET_BPF takes a reference on the BPF program and
-_free_event() -> perf_event_free_bpf_prog() automatically detaches and
-releases it when the perf_event fd is closed. This also avoids enabling
-the event prematurely, allowing pe_opts (.dont_enable = true) and the
-LIBBPF_CURRENT_VERSION_GEQ(1, 7) guard to be dropped.
-
-Before (built with EXTRA_CFLAGS="-fsanitize=address"):
-  # perf record -e cycles --filter 'period > 1000' -- true
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.024 MB perf.data ]
-
-  =================================================================
-  ==51328==ERROR: LeakSanitizer: detected memory leaks
-
-  Direct leak of 1568 byte(s) in 28 object(s) allocated from:
-      #0 0x7ffbe76ef24f in calloc (/lib64/libasan.so.8+0xef24f)
-      #1 0x625df7 in bpf_program__attach_perf_event_opts (tools/perf/perf+0x625df7)
-      #2 0xbeddc0 in perf_bpf_filter__prepare util/bpf-filter.c:507
-      #3 0x8f3def in evlist__apply_filters util/evlist.c:1421
-      #4 0x44bbcf in record__open tools/perf/builtin-record.c:1469
-      #5 0x453f9e in __cmd_record tools/perf/builtin-record.c:2594
-      #6 0x45dadb in cmd_record tools/perf/builtin-record.c:4427
-      #7 0x5df56b in run_builtin tools/perf/perf.c:383
-      #8 0x5dfa0e in handle_internal_command tools/perf/perf.c:436
-      #9 0x5dfddc in run_argv tools/perf/perf.c:480
-      #10 0x5e0333 in main tools/perf/perf.c:581
-
-  SUMMARY: AddressSanitizer: 1568 byte(s) leaked in 28 allocation(s).
-
-After (built with EXTRA_CFLAGS="-fsanitize=address"):
-  # perf record -e cycles --filter 'period > 1000' -- true
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.024 MB perf.data ]
-
-Reported-by: Namhyung Kim <namhyung@kernel.org>
-Closes: https://lore.kernel.org/linux-perf-users/20261020053226.55936-1-namhyung@kernel.org/
-Fixes: 56ec9457a4a2 ("perf bpf filter: Implement event sample filtering")
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/bpf-filter.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
+ tools/perf/builtin-lock.c                     |  27 --
+ .../perf/util/bpf_skel/lock_contention.bpf.c  | 235 +-------------
+ tools/perf/util/bpf_skel/lock_data.h          | 303 ++++++++++++++++++
+ tools/perf/util/lock-contention.c             |  19 ++
+ tools/perf/util/lock-contention.h             |  13 +
+ 5 files changed, 338 insertions(+), 259 deletions(-)
 
-diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
-index 72e83ac1d6a4..506414e5c407 100644
---- a/tools/perf/util/bpf-filter.c
-+++ b/tools/perf/util/bpf-filter.c
-@@ -40,6 +40,7 @@
-  * The 'dropped' map is to keep how many samples it dropped by the filter and
-  * it will be reported as lost samples.
-  */
-+#include <errno.h>
- #include <stdlib.h>
- #include <fcntl.h>
- #include <sys/ioctl.h>
-@@ -423,16 +424,8 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
- {
- 	int i, x, y, fd, ret;
- 	struct sample_filter_bpf *skel = NULL;
--	struct bpf_program *prog;
--	struct bpf_link *link;
- 	struct perf_bpf_filter_entry *entry;
- 	bool needs_idx_hash = !target__has_cpu(target);
--#if LIBBPF_CURRENT_VERSION_GEQ(1, 7)
--	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts,
--			    .dont_enable = true);
--#else
--	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
--#endif
- 
- 	entry = calloc(MAX_FILTERS, sizeof(*entry));
- 	if (entry == NULL)
-@@ -501,14 +494,13 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
- 		goto err;
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index d5c0d55cb82d..feaf1cfd08cf 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -1477,33 +1477,6 @@ static void sort_result(void)
  	}
+ }
  
--	prog = skel->progs.perf_sample_filter;
-+	fd = bpf_program__fd(skel->progs.perf_sample_filter);
- 	for (x = 0; x < xyarray__max_x(evsel->core.fd); x++) {
- 		for (y = 0; y < xyarray__max_y(evsel->core.fd); y++) {
--			link = bpf_program__attach_perf_event_opts(prog, FD(evsel, x, y),
--								   &pe_opts);
--			if (IS_ERR(link)) {
-+			ret = ioctl(FD(evsel, x, y), PERF_EVENT_IOC_SET_BPF, fd);
-+			if (ret < 0) {
-+				ret = -errno;
- 				pr_err("Failed to attach perf sample-filter program\n");
--				ret = PTR_ERR(link);
- 				goto err;
- 			}
- 		}
+-static const struct {
+-	unsigned int flags;
+-	/*
+-	 * Name of the lock flags (access), with delimeter ':'.
+-	 * For example, rwsem:R of rwsem:W.
+-	 */
+-	const char *flags_name;
+-	/* Name of the lock (type), for example, rwlock or rwsem. */
+-	const char *lock_name;
+-} lock_type_table[] = {
+-	{ 0,				"semaphore",	"semaphore" },
+-	{ LCB_F_SPIN,			"spinlock",	"spinlock" },
+-	{ LCB_F_SPIN | LCB_F_READ,	"rwlock:R",	"rwlock" },
+-	{ LCB_F_SPIN | LCB_F_WRITE,	"rwlock:W",	"rwlock" },
+-	{ LCB_F_READ,			"rwsem:R",	"rwsem" },
+-	{ LCB_F_WRITE,			"rwsem:W",	"rwsem" },
+-	{ LCB_F_RT,			"rt-mutex",	"rt-mutex" },
+-	{ LCB_F_RT | LCB_F_READ,	"rwlock-rt:R",	"rwlock-rt" },
+-	{ LCB_F_RT | LCB_F_WRITE,	"rwlock-rt:W",	"rwlock-rt" },
+-	{ LCB_F_PERCPU | LCB_F_READ,	"pcpu-sem:R",	"percpu-rwsem" },
+-	{ LCB_F_PERCPU | LCB_F_WRITE,	"pcpu-sem:W",	"percpu-rwsem" },
+-	{ LCB_F_MUTEX,			"mutex",	"mutex" },
+-	{ LCB_F_MUTEX | LCB_F_SPIN,	"mutex",	"mutex" },
+-	/* alias for optimistic spinning only */
+-	{ LCB_F_MUTEX | LCB_F_SPIN,	"mutex:spin",	"mutex-spin" },
+-};
+-
+ static const char *get_type_flags_name(unsigned int flags)
+ {
+ 	flags &= LCB_F_TYPE_MASK;
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 0d9c6f55050e..c70c3955e559 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -8,23 +8,9 @@
+ 
+ #include "lock_data.h"
+ 
+-/* for collect_lock_syms().  4096 was rejected by the verifier */
+-#define MAX_CPUS  1024
+-
+-/* for collect_zone_lock().  It should be more than the actual zones. */
+-#define MAX_ZONES  10
+-
+ /* for do_lock_delay().  Arbitrarily set to 1 million. */
+ #define MAX_LOOP  (1U << 20)
+ 
+-/* lock contention flags from include/trace/events/lock.h */
+-#define LCB_F_SPIN	(1U << 0)
+-#define LCB_F_READ	(1U << 1)
+-#define LCB_F_WRITE	(1U << 2)
+-#define LCB_F_RT	(1U << 3)
+-#define LCB_F_PERCPU	(1U << 4)
+-#define LCB_F_MUTEX	(1U << 5)
+-
+ /* callstack storage  */
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
+@@ -159,22 +145,6 @@ struct {
+ 	__uint(max_entries, 1);
+ } lock_delays SEC(".maps");
+ 
+-struct rw_semaphore___old {
+-	struct task_struct *owner;
+-} __attribute__((preserve_access_index));
+-
+-struct rw_semaphore___new {
+-	atomic_long_t owner;
+-} __attribute__((preserve_access_index));
+-
+-struct mm_struct___old {
+-	struct rw_semaphore mmap_sem;
+-} __attribute__((preserve_access_index));
+-
+-struct mm_struct___new {
+-	struct rw_semaphore mmap_lock;
+-} __attribute__((preserve_access_index));
+-
+ struct cas_ctx {
+ 	struct contention_data *data;
+ 	u64 duration;
+@@ -182,8 +152,6 @@ struct cas_ctx {
+ 	int min_done;
+ };
+ 
+-extern struct kmem_cache *bpf_get_kmem_cache(u64 addr) __ksym __weak;
+-
+ /* control flags */
+ const volatile int has_cpu;
+ const volatile int has_task;
+@@ -222,8 +190,6 @@ int data_map_full;
+ struct task_struct *bpf_task_from_pid(s32 pid) __ksym __weak;
+ void bpf_task_release(struct task_struct *p) __ksym __weak;
+ 
+-static inline __u32 check_lock_type(__u64 lock, __u32 flags);
+-
+ static inline __u64 get_current_cgroup_id(void)
+ {
+ 	struct task_struct *task;
+@@ -347,85 +313,6 @@ static inline int update_task_data(struct task_struct *task)
+ 	return 0;
+ }
+ 
+-#ifndef __has_builtin
+-# define __has_builtin(x) 0
+-#endif
+-
+-static inline struct task_struct *get_lock_owner(__u64 lock, __u32 flags)
+-{
+-	struct task_struct *task;
+-	__u64 owner = 0;
+-
+-	if (flags & LCB_F_MUTEX) {
+-		struct mutex *mutex = (void *)lock;
+-		owner = BPF_CORE_READ(mutex, owner.counter);
+-	} else if (flags == LCB_F_READ || flags == LCB_F_WRITE) {
+-	/*
+-	 * Support for the BPF_TYPE_MATCHES argument to the
+-	 * __builtin_preserve_type_info builtin was added at some point during
+-	 * development of clang 15 and it's what is needed for
+-	 * bpf_core_type_matches.
+-	 */
+-#if __has_builtin(__builtin_preserve_type_info) && __clang_major__ >= 15
+-		if (bpf_core_type_matches(struct rw_semaphore___old)) {
+-			struct rw_semaphore___old *rwsem = (void *)lock;
+-			owner = (unsigned long)BPF_CORE_READ(rwsem, owner);
+-		} else if (bpf_core_type_matches(struct rw_semaphore___new)) {
+-			struct rw_semaphore___new *rwsem = (void *)lock;
+-			owner = BPF_CORE_READ(rwsem, owner.counter);
+-		}
+-#else
+-		/* assume new struct */
+-		struct rw_semaphore *rwsem = (void *)lock;
+-		owner = BPF_CORE_READ(rwsem, owner.counter);
+-#endif
+-	}
+-
+-	if (!owner)
+-		return NULL;
+-
+-	task = (void *)(owner & ~7UL);
+-	return task;
+-}
+-
+-static inline __u32 check_lock_type(__u64 lock, __u32 flags)
+-{
+-	struct task_struct *curr;
+-	struct mm_struct___old *mm_old;
+-	struct mm_struct___new *mm_new;
+-	struct sighand_struct *sighand;
+-
+-	switch (flags) {
+-	case LCB_F_READ:  /* rwsem */
+-	case LCB_F_WRITE:
+-		curr = bpf_get_current_task_btf();
+-		if (curr->mm == NULL)
+-			break;
+-		mm_new = (void *)curr->mm;
+-		if (bpf_core_field_exists(mm_new->mmap_lock)) {
+-			if (&mm_new->mmap_lock == (void *)lock)
+-				return LCD_F_MMAP_LOCK;
+-			break;
+-		}
+-		mm_old = (void *)curr->mm;
+-		if (bpf_core_field_exists(mm_old->mmap_sem)) {
+-			if (&mm_old->mmap_sem == (void *)lock)
+-				return LCD_F_MMAP_LOCK;
+-		}
+-		break;
+-	case LCB_F_SPIN:  /* spinlock */
+-		curr = bpf_get_current_task_btf();
+-		sighand = curr->sighand;
+-
+-		if (sighand && &sighand->siglock == (void *)lock)
+-			return LCD_F_SIGHAND_LOCK;
+-		break;
+-	default:
+-		break;
+-	}
+-	return 0;
+-}
+-
+ static inline long delay_callback(__u64 idx, void *arg)
+ {
+ 	__u64 target = *(__u64 *)arg;
+@@ -908,99 +795,16 @@ int contention_end(u64 *ctx)
+ 	return 0;
+ }
+ 
+-extern struct rq runqueues __ksym;
+-
+ const volatile __u64 contig_page_data_addr;
+ const volatile __u64 node_data_addr;
+ const volatile int nr_nodes;
+ const volatile int sizeof_zone;
+ 
+-struct rq___old {
+-	raw_spinlock_t lock;
+-} __attribute__((preserve_access_index));
+-
+-struct rq___new {
+-	raw_spinlock_t __lock;
+-} __attribute__((preserve_access_index));
+-
+-static void collect_zone_lock(void)
+-{
+-	__u64 nr_zones, zone_off;
+-	__u64 lock_addr, lock_off;
+-	__u32 lock_flag = LOCK_CLASS_ZONE_LOCK;
+-
+-	zone_off = offsetof(struct pglist_data, node_zones);
+-	lock_off = offsetof(struct zone, lock);
+-
+-	if (contig_page_data_addr) {
+-		struct pglist_data *contig_page_data;
+-
+-		contig_page_data = (void *)(long)contig_page_data_addr;
+-		nr_zones = BPF_CORE_READ(contig_page_data, nr_zones);
+-
+-		for (int i = 0; i < MAX_ZONES; i++) {
+-			__u64 zone_addr;
+-
+-			if (i >= nr_zones)
+-				break;
+-
+-			zone_addr = contig_page_data_addr + (sizeof_zone * i) + zone_off;
+-			lock_addr = zone_addr + lock_off;
+-
+-			bpf_map_update_elem(&lock_syms, &lock_addr, &lock_flag, BPF_ANY);
+-		}
+-	} else if (nr_nodes > 0) {
+-		struct pglist_data **node_data = (void *)(long)node_data_addr;
+-
+-		for (int i = 0; i < nr_nodes; i++) {
+-			struct pglist_data *pgdat = NULL;
+-			int err;
+-
+-			err = bpf_core_read(&pgdat, sizeof(pgdat), &node_data[i]);
+-			if (err < 0 || pgdat == NULL)
+-				break;
+-
+-			nr_zones = BPF_CORE_READ(pgdat, nr_zones);
+-			for (int k = 0; k < MAX_ZONES; k++) {
+-				__u64 zone_addr;
+-
+-				if (k >= nr_zones)
+-					break;
+-
+-				zone_addr = (__u64)(void *)pgdat + (sizeof_zone * k) + zone_off;
+-				lock_addr = zone_addr + lock_off;
+-
+-				bpf_map_update_elem(&lock_syms, &lock_addr, &lock_flag, BPF_ANY);
+-			}
+-		}
+-	}
+-}
+-
+ SEC("raw_tp/bpf_test_finish")
+ int BPF_PROG(collect_lock_syms)
+ {
+-	__u64 lock_addr, lock_off;
+-	__u32 lock_flag;
+-
+-	if (bpf_core_field_exists(struct rq___new, __lock))
+-		lock_off = offsetof(struct rq___new, __lock);
+-	else
+-		lock_off = offsetof(struct rq___old, lock);
+-
+-	for (int i = 0; i < MAX_CPUS; i++) {
+-		struct rq *rq = bpf_per_cpu_ptr(&runqueues, i);
+-
+-		if (rq == NULL)
+-			break;
+-
+-		lock_addr = (__u64)(void *)rq + lock_off;
+-		lock_flag = LOCK_CLASS_RQLOCK;
+-		bpf_map_update_elem(&lock_syms, &lock_addr, &lock_flag, BPF_ANY);
+-	}
+-
+-	collect_zone_lock();
+-
+-	return 0;
++	return do_collect_lock_syms(&lock_syms, contig_page_data_addr,
++				    node_data_addr, nr_nodes, sizeof_zone);
+ }
+ 
+ SEC("raw_tp/bpf_test_finish")
+@@ -1010,43 +814,10 @@ int BPF_PROG(end_timestamp)
+ 	return 0;
+ }
+ 
+-/*
+- * bpf_iter__kmem_cache added recently so old kernels don't have it in the
+- * vmlinux.h.  But we cannot add it here since it will cause a compiler error
+- * due to redefinition of the struct on later kernels.
+- *
+- * So it uses a CO-RE trick to access the member only if it has the type.
+- * This will support both old and new kernels without compiler errors.
+- */
+-struct bpf_iter__kmem_cache___new {
+-	struct kmem_cache *s;
+-} __attribute__((preserve_access_index));
+-
+ SEC("iter/kmem_cache")
+ int slab_cache_iter(void *ctx)
+ {
+-	struct kmem_cache *s = NULL;
+-	struct slab_cache_data d;
+-	const char *nameptr;
+-
+-	if (bpf_core_type_exists(struct bpf_iter__kmem_cache)) {
+-		struct bpf_iter__kmem_cache___new *iter = ctx;
+-
+-		s = iter->s;
+-	}
+-
+-	if (s == NULL)
+-		return 0;
+-
+-	nameptr = s->name;
+-	bpf_probe_read_kernel_str(d.name, sizeof(d.name), nameptr);
+-
+-	d.id = ++slab_cache_id << LCB_F_SLAB_ID_SHIFT;
+-	if (d.id >= LCB_F_SLAB_ID_END)
+-		return 0;
+-
+-	bpf_map_update_elem(&slab_caches, &s, &d, BPF_NOEXIST);
+-	return 0;
++	return do_slab_cache_iter(ctx, &slab_caches, &slab_cache_id);
+ }
+ 
+ char LICENSE[] SEC("license") = "Dual BSD/GPL";
+diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
+index 652e114e6b87..91d464ac18bd 100644
+--- a/tools/perf/util/bpf_skel/lock_data.h
++++ b/tools/perf/util/bpf_skel/lock_data.h
+@@ -45,6 +45,14 @@ struct contention_task_data {
+ #define LCB_F_SLAB_ID_END	(1U << 26)
+ #define LCB_F_SLAB_ID_MASK	0x03FF0000U
+ 
++/* lock contention flags from include/trace/events/lock.h */
++#define LCB_F_SPIN	(1U << 0)
++#define LCB_F_READ	(1U << 1)
++#define LCB_F_WRITE	(1U << 2)
++#define LCB_F_RT	(1U << 3)
++#define LCB_F_PERCPU	(1U << 4)
++#define LCB_F_MUTEX	(1U << 5)
++
+ #define LCB_F_TYPE_MAX		(1U << 7)
+ #define LCB_F_TYPE_MASK		0x0000007FU
+ 
+@@ -76,4 +84,299 @@ struct slab_cache_data {
+ 	char name[SLAB_NAME_MAX];
+ };
+ 
++/*
++ * Common BPF CO-RE structures and helper functions shared between
++ * lock_contention.bpf.c and sample_filter.bpf.c. Guarded by __BPF__
++ * because lock_data.h is also included by userspace code.
++ */
++#ifdef __BPF__
++
++/* for collect_lock_syms(). 4096 was rejected by the verifier */
++#define MAX_CPUS  1024
++
++/* for collect_zone_lock(). It should be more than the actual zones. */
++#define MAX_ZONES  10
++
++extern struct kmem_cache *bpf_get_kmem_cache(u64 addr) __ksym __weak;
++extern struct rq runqueues __ksym __weak;
++
++#ifndef __has_builtin
++# define __has_builtin(x) 0
++#endif
++
++struct rw_semaphore___old {
++	struct task_struct *owner;
++} __attribute__((preserve_access_index));
++
++struct rw_semaphore___new {
++	atomic_long_t owner;
++} __attribute__((preserve_access_index));
++
++struct mm_struct___old {
++	struct rw_semaphore mmap_sem;
++} __attribute__((preserve_access_index));
++
++struct mm_struct___new {
++	struct rw_semaphore mmap_lock;
++} __attribute__((preserve_access_index));
++
++struct rq___old {
++	raw_spinlock_t lock;
++} __attribute__((preserve_access_index));
++
++struct rq___new {
++	raw_spinlock_t __lock;
++} __attribute__((preserve_access_index));
++
++/*
++ * bpf_iter__kmem_cache added recently so old kernels don't have it in the
++ * vmlinux.h.  But we cannot add it here since it will cause a compiler error
++ * due to redefinition of the struct on later kernels.
++ *
++ * So it uses a CO-RE trick to access the member only if it has the type.
++ * This will support both old and new kernels without compiler errors.
++ */
++struct bpf_iter__kmem_cache___new {
++	struct kmem_cache *s;
++} __attribute__((preserve_access_index));
++
++static __always_inline struct task_struct *get_lock_owner(__u64 lock, __u32 flags)
++{
++	struct task_struct *task;
++	__u64 owner = 0;
++
++	if (flags & LCB_F_MUTEX) {
++		struct mutex *mutex = (void *)lock;
++
++		owner = BPF_CORE_READ(mutex, owner.counter);
++	} else if (flags == LCB_F_READ || flags == LCB_F_WRITE) {
++	/*
++	 * Support for the BPF_TYPE_MATCHES argument to the
++	 * __builtin_preserve_type_info builtin was added at some point during
++	 * development of clang 15 and it's what is needed for
++	 * bpf_core_type_matches.
++	 */
++#if __has_builtin(__builtin_preserve_type_info) && __clang_major__ >= 15
++		if (bpf_core_type_matches(struct rw_semaphore___old)) {
++			struct rw_semaphore___old *rwsem = (void *)lock;
++
++			owner = (unsigned long)BPF_CORE_READ(rwsem, owner);
++		} else if (bpf_core_type_matches(struct rw_semaphore___new)) {
++			struct rw_semaphore___new *rwsem = (void *)lock;
++
++			owner = BPF_CORE_READ(rwsem, owner.counter);
++		}
++#else
++		/* assume new struct */
++		struct rw_semaphore *rwsem = (void *)lock;
++
++		owner = BPF_CORE_READ(rwsem, owner.counter);
++#endif
++	}
++
++	if (!owner)
++		return NULL;
++
++	task = (void *)(owner & ~7UL);
++	return task;
++}
++
++static __always_inline __u64 get_current_mmap_lock(__u64 curr)
++{
++	struct task_struct *task = (void *)curr;
++	struct mm_struct___new *mm_new = NULL;
++	struct mm_struct___old *mm_old = NULL;
++	__u64 mm;
++
++	if (!curr)
++		return 0;
++
++	mm = (__u64)BPF_CORE_READ(task, mm);
++	if (!mm)
++		return 0;
++
++	if (bpf_core_field_exists(mm_new->mmap_lock))
++		return mm + bpf_core_field_offset(mm_new->mmap_lock);
++
++	if (bpf_core_field_exists(mm_old->mmap_sem))
++		return mm + bpf_core_field_offset(mm_old->mmap_sem);
++
++	return 0;
++}
++
++static __always_inline __u64 get_current_siglock(__u64 curr)
++{
++	struct task_struct *task = (void *)curr;
++	struct sighand_struct *sighand = NULL;
++	__u64 sh;
++
++	if (!curr)
++		return 0;
++
++	sh = (__u64)BPF_CORE_READ(task, sighand);
++	if (!sh)
++		return 0;
++
++	return sh + bpf_core_field_offset(sighand->siglock);
++}
++
++/*
++ * Read the 1st function argument (`lock` / `sem` / `ssp`) as a 64-bit scalar.
++ *
++ * Using `bpf_get_func_arg()` rather than reading `ctx[0]` directly ensures the
++ * BPF verifier tracks the address as a `SCALAR_VALUE` instead of a typed
++ * `PTR_TO_BTF_ID`, which is required when passing the address to kfuncs such
++ * as `bpf_get_kmem_cache(u64 addr)`.
++ */
++static __always_inline __u64 get_lock_addr(void *ctx)
++{
++	__u64 lock_addr = 0;
++
++	bpf_get_func_arg(ctx, 0, &lock_addr);
++	return lock_addr;
++}
++
++static __always_inline __u32 check_lock_type(__u64 lock, __u32 flags)
++{
++	__u64 curr;
++
++	switch (flags) {
++	case LCB_F_READ:  /* rwsem */
++	case LCB_F_WRITE:
++		curr = bpf_get_current_task();
++		if (get_current_mmap_lock(curr) == lock)
++			return LCD_F_MMAP_LOCK;
++		break;
++	case LCB_F_SPIN:  /* spinlock */
++		curr = bpf_get_current_task();
++		if (get_current_siglock(curr) == lock)
++			return LCD_F_SIGHAND_LOCK;
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++static __always_inline void do_collect_zone_lock(void *lock_syms_map,
++						 __u64 contig_page_data_addr,
++						 __u64 node_data_addr,
++						 int nr_nodes,
++						 int sizeof_zone)
++{
++	__u64 nr_zones, zone_off;
++	__u64 lock_addr, lock_off;
++	__u32 lock_flag = LOCK_CLASS_ZONE_LOCK;
++
++	zone_off = offsetof(struct pglist_data, node_zones);
++	lock_off = offsetof(struct zone, lock);
++
++	if (contig_page_data_addr) {
++		struct pglist_data *contig_page_data;
++
++		contig_page_data = (void *)(long)contig_page_data_addr;
++		nr_zones = BPF_CORE_READ(contig_page_data, nr_zones);
++
++		for (int i = 0; i < MAX_ZONES; i++) {
++			__u64 zone_addr;
++
++			if (i >= nr_zones)
++				break;
++
++			zone_addr = contig_page_data_addr + (sizeof_zone * i) + zone_off;
++			lock_addr = zone_addr + lock_off;
++
++			bpf_map_update_elem(lock_syms_map, &lock_addr, &lock_flag, BPF_ANY);
++		}
++	} else if (node_data_addr && nr_nodes > 0) {
++		struct pglist_data **node_data = (void *)(long)node_data_addr;
++
++		for (int i = 0; i < nr_nodes; i++) {
++			struct pglist_data *pgdat = NULL;
++			int err;
++
++			err = bpf_core_read(&pgdat, sizeof(pgdat), &node_data[i]);
++			if (err < 0)
++				break;
++			if (pgdat == NULL)
++				continue;
++
++			nr_zones = BPF_CORE_READ(pgdat, nr_zones);
++			for (int k = 0; k < MAX_ZONES; k++) {
++				__u64 zone_addr;
++
++				if (k >= nr_zones)
++					break;
++
++				zone_addr = (__u64)(void *)pgdat + (sizeof_zone * k) + zone_off;
++				lock_addr = zone_addr + lock_off;
++
++				bpf_map_update_elem(lock_syms_map, &lock_addr, &lock_flag, BPF_ANY);
++			}
++		}
++	}
++}
++
++static __always_inline int do_collect_lock_syms(void *lock_syms_map,
++						__u64 contig_page_data_addr,
++						__u64 node_data_addr,
++						int nr_nodes,
++						int sizeof_zone)
++{
++	__u64 lock_addr, lock_off;
++	__u32 lock_flag;
++
++	if (bpf_core_field_exists(struct rq___new, __lock))
++		lock_off = offsetof(struct rq___new, __lock);
++	else
++		lock_off = offsetof(struct rq___old, lock);
++
++	if (&runqueues) {
++		for (int i = 0; i < MAX_CPUS; i++) {
++			struct rq *rq = bpf_per_cpu_ptr(&runqueues, i);
++
++			if (rq == NULL)
++				break;
++
++			lock_addr = (__u64)(void *)rq + lock_off;
++			lock_flag = LOCK_CLASS_RQLOCK;
++			bpf_map_update_elem(lock_syms_map, &lock_addr, &lock_flag, BPF_ANY);
++		}
++	}
++
++	do_collect_zone_lock(lock_syms_map, contig_page_data_addr,
++			     node_data_addr, nr_nodes, sizeof_zone);
++
++	return 0;
++}
++
++static __always_inline int do_slab_cache_iter(void *ctx, void *slab_caches_map,
++					      __u32 *slab_cache_id)
++{
++	struct kmem_cache *s = NULL;
++	struct slab_cache_data d = {};
++	const char *nameptr;
++
++	if (bpf_core_type_exists(struct bpf_iter__kmem_cache)) {
++		struct bpf_iter__kmem_cache___new *iter = ctx;
++
++		s = iter->s;
++	}
++
++	if (s == NULL)
++		return 0;
++
++	nameptr = s->name;
++	bpf_probe_read_kernel_str(d.name, sizeof(d.name), nameptr);
++
++	d.id = ++(*slab_cache_id) << LCB_F_SLAB_ID_SHIFT;
++	if (d.id >= LCB_F_SLAB_ID_END)
++		return 0;
++
++	bpf_map_update_elem(slab_caches_map, &s, &d, BPF_NOEXIST);
++	return 0;
++}
++
++#endif /* __BPF__ */
++
+ #endif /* UTIL_BPF_SKEL_LOCK_DATA_H */
+diff --git a/tools/perf/util/lock-contention.c b/tools/perf/util/lock-contention.c
+index 119a7206f3cd..f6e68d740860 100644
+--- a/tools/perf/util/lock-contention.c
++++ b/tools/perf/util/lock-contention.c
+@@ -6,6 +6,7 @@
+ #include "symbol.h"
+ 
+ #include <limits.h>
++#include <stdlib.h>
+ #include <string.h>
+ 
+ #include <linux/hash.h>
+@@ -22,6 +23,24 @@ struct callstack_filter {
+ static LIST_HEAD(callstack_filters);
+ struct hlist_head *lockhash_table;
+ 
++const struct perf_lock_type lock_type_table[] = {
++	{ 0,				"semaphore",	"semaphore" },
++	{ LCB_F_SPIN,			"spinlock",	"spinlock" },
++	{ LCB_F_SPIN | LCB_F_READ,	"rwlock:R",	"rwlock" },
++	{ LCB_F_SPIN | LCB_F_WRITE,	"rwlock:W",	"rwlock" },
++	{ LCB_F_READ,			"rwsem:R",	"rwsem" },
++	{ LCB_F_WRITE,			"rwsem:W",	"rwsem" },
++	{ LCB_F_RT,			"rt-mutex",	"rt-mutex" },
++	{ LCB_F_RT | LCB_F_READ,	"rwlock-rt:R",	"rwlock-rt" },
++	{ LCB_F_RT | LCB_F_WRITE,	"rwlock-rt:W",	"rwlock-rt" },
++	{ LCB_F_PERCPU | LCB_F_READ,	"pcpu-sem:R",	"percpu-rwsem" },
++	{ LCB_F_PERCPU | LCB_F_WRITE,	"pcpu-sem:W",	"percpu-rwsem" },
++	{ LCB_F_MUTEX,			"mutex",	"mutex" },
++	{ LCB_F_MUTEX | LCB_F_SPIN,	"mutex",	"mutex" },
++	/* alias for optimistic spinning only */
++	{ LCB_F_MUTEX | LCB_F_SPIN,	"mutex:spin",	"mutex-spin" },
++};
++
+ int parse_call_stack(const struct option *opt __maybe_unused, const char *str,
+ 		     int unset __maybe_unused)
+ {
+diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
+index 59c94190b092..68e9bd77e8a9 100644
+--- a/tools/perf/util/lock-contention.h
++++ b/tools/perf/util/lock-contention.h
+@@ -129,6 +129,19 @@ struct thread_stat {
+ #define LCB_F_PERCPU	(1U << 4)
+ #define LCB_F_MUTEX	(1U << 5)
+ 
++struct perf_lock_type {
++	unsigned int flags;
++	/*
++	 * Name of the lock flags (access), with delimiter ':'.
++	 * For example, rwsem:R or rwsem:W.
++	 */
++	const char *flags_name;
++	/* Name of the lock (type), for example, rwlock or rwsem. */
++	const char *lock_name;
++};
++
++extern const struct perf_lock_type lock_type_table[14];
++
+ struct evlist;
+ struct machine;
+ struct target;
 -- 
 2.56.0.307.g5fe7bd680c-goog
 
