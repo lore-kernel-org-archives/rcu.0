@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792779767;
-	b=cyA1VdgZ9UD8IkSv6CO2y/gZGB82iWsnkYBzDq0GvXEu41Y0uRKmC/Id0LXfNrh84niZ
-	 zr2GxwoWFQn69Mki/5OdHBRx933yJegzP7lCkmunFyov6Zo9P7qJ3ep9GRasHCmdExR5j
-	 Mdor07owsU/cobp+HKwqkk7/qxcNvIq6L0Ag8E3iApy7q2+1xFTfV+3Ou/bSuFUuHLlvD
-	 Y0y/mQ/MGV+Ehly2KDuLqLL9fuMs6Dtm2BJDc1RIZca+MttE8zcteLs1+0xjFS8LHChY6
-	 nTCiDjES8nJzkferVmpG9bUWbwXOIaEnn9pUypZUfLwb8qgqSS4I+4HbEhJwAyn3Pyg==
+	t=1792779771;
+	b=nF9NSJLvIK4usSZFhduXgh2Hj2YPHh/nTSuQ36UcG2ZnNt52tQRwuUfY89eZ9OaTZ6LS
+	 UupmWEvNaw2cjiqH//k3GUBwB5Wtw+LQrQq17TJYZqJDvg06LZgqeeRIPXQjO1riBiDKS
+	 SD5CiqNS40TW+/tV3BK3wr8t5B1uSry6FQ+1Y4nQcT5TlMT7vr/+KgP4wGeHKzp7HEFx0
+	 F0ND2RgqjIMPrh+OzyI2dJ48QtW0MagJco4dTyIw/QvdBx28MmgQ0jBFQyATAfsjy1KFk
+	 pMKKY3P9OgKpft+j9K6/JQ60P9W2FHxonD4jzjUuKXHgplOAB69Sn72YfLWFFGD/kbg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792779767;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792779771;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=lJY9ZhGrvJNDaz8g4A3YC4KMVFIsobuybhRgdKYZ8EU=;
-	b=qRNV8aJrvnltcnpiOEJulTClmDUqjIcW1qgu9J/qyMwXiup9Q3a9dd8ItBSJUSyvDmUe
-	 B9/gADLzNvQr21JV1BlQR0ErMD5FpUa1VlLPgal/hQagB8MhJoLSvQB0/BP8C5wnuKWTL
-	 y4VfyZrKsXpiHvVIifhSL3WZVZtInq2Svet1PzoidTdyqsZdYA1FHnJYp1y9nR3sQeT0Y
-	 6K/w2azJHTxennEdp6gicFBaINUp29432VfiSLXRarb1+fagPOS+LcPM9BqXqzwC/s3tf
-	 B0WtT7gXleWvtd+6BtLLUtAdfXoLE5BB/l/280gAbZ35I8ZLjRqBru16irpCVypdb0A==
+	bh=zNgvRqEwNDdSIYPf4jbzPDLOK2oWn7WXDcf5UXvEQ+4=;
+	b=LnxVTg0pFdhvuLdgCaS2PfcEC+t5FqV7kSw4ufLYxfyMznWn9KK0f2Vh3BD0334UNm2p
+	 msCjA//RtDa559awkq2NuwUdMUjHKXPCprU+fsjnvJiilQVupBBTFZGAbSWhaUn6QKkGq
+	 Dy+o+tnTEvtSDazbK8x+xtqbnCdX+PzRwpl61tjju1L5BlMPL01EecLKt2/bqfBgW85c7
+	 Jw+PW9tqcRj+9yjwGpeojZZx6c+JLaBufEWOBX65N+pggk0fBFoI502TpFXlyKXsCoddn
+	 9Wb3/Gn4RLPjPnVDGVrknvDBM27+6ZnsHIqHissUrLIITKVDS5bdpmew+F860eVfiVA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aQ0wrNft;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RQjzQfD7;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C20606A31F;
-	Fri, 23 Oct 2026 18:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D45606A31A;
+	Fri, 23 Oct 2026 18:22:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aQ0wrNft
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E60E21F01828;
-	Fri, 23 Oct 2026 18:22:46 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RQjzQfD7
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C21611F031E2;
+	Fri, 23 Oct 2026 18:22:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792779767;
-	bh=lJY9ZhGrvJNDaz8g4A3YC4KMVFIsobuybhRgdKYZ8EU=;
+	s=k20260515; t=1792779770;
+	bh=zNgvRqEwNDdSIYPf4jbzPDLOK2oWn7WXDcf5UXvEQ+4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=aQ0wrNftnvstPMduKFRvp/lGW2Ka3l+YI1rkhSe9uzIC6mSdoBgux8RHXKrfy/UIT
-	 7okeDyBDyhnxcI3eiKKRtlQ9o83FHV4f1RJhUG/WMUdkW/GEyAqoAKGgvKSSq/jRjh
-	 XObWVDtRnN4bai2z/x1hFawU6A0COcbQ5ti5MNMtXB+LIY8LdfQExKIyp8R1C++hb3
-	 E3WUEuTCmrbmDigNcuUNnLPUD6NDb++bWDQS7q+Pf5KXYcQNuGT7Ew9q9VRlyl9MQ2
-	 q10lU4A29SOuvfC/jHr94J+mImkzi7hxnPiHfqDtovj0h8flvN1hOXRq0eS1tZdpIn
-	 5QypKYBdXZk/w==
+	b=RQjzQfD7AMVcx+96y/2v8XoWsgktFFTVb1OWHrf3CoTeqD64COap/MzBUUbxq5gaS
+	 efev38Ue/psZMZIuGkcXTerWQS2lxxJXvt62Zcq4Z7SpFQ3b68UU8BWOG3EfDg05bJ
+	 SKH3fKSQ6HrGiMB2IwcS4OxIaqeDDdQBPkeUi5MIoZOmwU/Iybds8X8xesSMTsOFFg
+	 3Br5W3Me9pSJenqtRjHiDumS8hSX6GIgCJ2xEOEWgWnYwTzr1xnfH+Ot7A25+MkKdO
+	 jybiXiAprrDIp3RFW9RXUClz/+Bs99UL+ARo+tKRtUltbD8Wq3+2YeNBprwdik6jat
+	 LS+ZCdStUeLyw==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -66,12 +66,12 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	Thomas Gleixner <tglx@kernel.org>,
 	rcu@vger.kernel.org
-Subject: Re: [RFC PATCH 10/12] rcu_txn: Test a commit from atomic context
-Date: Fri, 23 Oct 2026 11:22:16 -0700
-Message-ID: <20261023182218.479327-7-puranjay@kernel.org>
+Subject: Re: [RFC PATCH 12/12] samples: Add a cache on RCU pseudo-transactions with a lock per node
+Date: Fri, 23 Oct 2026 11:22:17 -0700
+Message-ID: <20261023182218.479327-8-puranjay@kernel.org>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261016133319.433617-11-mathieu.desnoyers@efficios.com>
-References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com> <20261016133319.433617-11-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20261016133319.433617-13-mathieu.desnoyers@efficios.com>
+References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com> <20261016133319.433617-13-mathieu.desnoyers@efficios.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -83,57 +83,45 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 16, 2026 at 09:33:17AM -0400, Mathieu Desnoyers wrote:
+On Fri, Oct 16, 2026 at 09:33:19AM -0400, Mathieu Desnoyers wrote:
 [...]
 
-> The test is only meaningful on a PREEMPT_RT kernel with lockdep,
-> PROVE_RAW_LOCK_NESTING and DEBUG_ATOMIC_SLEEP.  It passes there, and
-> fails as expected when a spinlock_t is taken under the bit spinlock.
->
-> The last two cases release a descriptor that installed no proxy, which
-> has to be kfree_rcu() on PREEMPT_RT.  They would pass with a kfree() as
-> well: a kfree() under a bit spinlock on PREEMPT_RT was reported by
-> neither lockdep nor the might_sleep() checks when tried.
+> +		rcu_read_lock();
+> +		e = lru_entry(rcu_txn_list_prev_rcu(&cache_lru.head.node));
+> +		if (!e) {
+> +			rcu_read_unlock();
+> +			rcu_txn_cancel(&txn);
+> +			break;
+> +		}
+> +		if (chances < CACHE_CHANCES && READ_ONCE(e->referenced)) {
+> +			WRITE_ONCE(e->referenced, false);
+> +			cache_move_front(&txn, e);
+> +			chances++;
+> +		} else {
+> +			evicted = __cache_unlink(&txn, e->key, e, NULL);
 
-This matters on !PREEMPT_RT too: there, a one-record commit or a cancel
-under a raw spinlock calls kfree(), which lockdep can flag (see my reply
-to patch 1).  The test can't catch that as written.
-
-[...]
-
-> +	/* One record. */
-> +	rcu_txn_init(&txn, GFP_KERNEL);
-> +	KUNIT_ASSERT_TRUE(test, rcu_txn_reserve(&txn, 2));
-> +	hlist_bl_lock(&bucket);
-> +	rcu_txn_record(&txn, &s1, T(20), T(40), TAG);
-> +	err = rcu_txn_commit(&txn);
-> +	hlist_bl_unlock(&bucket);
-
-On !PREEMPT_RT, this case and the cancel after it are the two that reach
-kfree(), and they only run under the bit spinlock, which lockdep doesn't
-track.  The raw spinlock case only commits two records, which go through
-kfree_rcu().  Even under a raw spinlock, a single call rarely trips it,
-because lockdep only sees barn->lock once the per-CPU sheaf is full.
-Running the one-record and cancel cases under raw_spin_lock_irqsave() in
-a loop would catch it.  That is probably also why the kfree() you tried
-on PREEMPT_RT went unreported, though I haven't checked RT.
+I think there's an eviction race here.  cache_lock_entry() re-plans
+from e's current links, but doesn't check that e is still the tail.  If
+W1 gives e a second chance (clears referenced, moves it to the front)
+while W2 has already read e as the tail, W2 then sees referenced
+cleared, locks e at the front and evicts the entry W1 just saved.  Only
+the policy suffers.  Checking p->next == &cache_lru.head.node for
+evictions would close it, but then cache_lock_entry() has to return
+false when the check fails rather than retry, or the writer spins until
+e is back at the tail.
 
 [...]
 
-> +/* Did the kernel report something since @tainted and @locks were sampled? */
-> +static void expect_no_report(struct kunit *test, bool tainted, int locks)
-> +{
-> +	KUNIT_EXPECT_EQ(test, test_taint(TAINT_WARN), tainted);
-> +	KUNIT_EXPECT_EQ(test, debug_locks, locks);
-> +}
+> +	atomic_long_inc(&nr_lost);		/* another writer was first */
+> +	kfree(new);
 
-These compare against the state at the start of the test, so if
-lockdep is already off, or TAINT_WARN already set, the matching check
-can't fail.  I ran into that: once one of my raw-spinlock cases
-splatted, the two bulk cases after it passed even though each splats
-when run alone.  A kunit_skip() when PROVE_RAW_LOCK_NESTING is off, or
-debug_locks is already 0, or TAINT_WARN is already set, would make that
-visible.
+Nit: an allocation failure in cache_unlink() or cache_link() also ends
+up here, so it's counted as a lost race as well as a failure.
+
+Two more small things, which apply to the mutex sample in patch 11 as
+well: a bad lookup (nr_bad) prints the same "the hash table and the list
+disagree" as a cache_check() failure, and a kthread_run() failure is
+skipped silently, so a run in which no thread started reports no error.
 
 Thanks,
 Puranjay
