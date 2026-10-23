@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792779756;
-	b=wCq7roSjntbye0zMji3bXD9sNapXP4qMQyzvAKP2vr3d4NF15da0suOBWztD8lIY8t9h
-	 mQjzaGEzWG3l0N0XAkKWD5PJEVQby5VCwIGSLM0lkl3ELyAuF9P8cuLq9B1dnE5FprI7g
-	 yaCCpCwc60jvXV3I9Y9/HsT4vBM++QC3O1UGpjNCyn1OMvw24GNVObUCZvnGA58Tw31G3
-	 4XAe1kPG6foM6+g9w4vfOTPhIpy0aI9wY4qmTgVWPEcjQho/vSM1anB1iKUSMbdVPvjmS
-	 C2ejxD6qTSaqvB3IL37ifwatszsJ+7koKmNQF5cC72+ycTPmvapEptrHM8tLCt39ktg==
+	t=1792779752;
+	b=GMlFRA1Y9tRNSGVMj97XorIbzwzFNel/9bzzZSBOQbQp4Qymnzh0gU5LAgyvBrJlF8Vs
+	 wBurDvQhjiWJmjwlVAi/6rux2TyA4XQdmgrVZVLTrRlAcboXxSV7DT5jNeYy/6WzH17IL
+	 2AYbxUaSfbb0tdL1v1BqTbAIj6eaGlXOgmm2S/MQ4mOVvPd45WRVhEJuF5lbdtlhslHBM
+	 M5pTIKdy8s1aE7FCrC5FAj2GRICltaGsxKe0fefZB+sq5xvhTf8pP9zk5Il+yPW3jXugL
+	 wRIHkLvDbewUBzro7I6e6Z5Uz/bYY68RdfivUqz/Eg3xTiu0cQYk4jEWMUW9rUx1ISQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792779756;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792779752;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=8fNDUJmW+BqiGz1BXZNGCbbtDikGNmxpdsyN7sK/sCA=;
-	b=YJ2OOoAhG6oPX1AMhQ/GhhEVSYiUL6hGcOlZ/9+Y9NNN6KSfO8YOeGXJ4KlrBMik9uYo
-	 DsMJG7Pz6OMPrVc3gdK5maOHDEZyMWSzmTmr7QBXDEVNx2Qyasp8vb5eJImtc47ckEn+D
-	 OUWjI8xaWP1rCmFoeV8hJfd8lfqlTwlW3x9YHtsfBLZNGMCnKDhwgCvmynP/61N+NnMiK
-	 dkFxwBmd61HWXN7wub57dKsgAHIF40karHnvK02NJRFe+mY+xiF1oKpqojIDz2U3ajrn2
-	 7NBsC2sB9VO8o87WHHO/ZAgiknLp4/mTF2Ew1jShL1lIbhFKL/a+SZL8GU0or8DS1tg==
+	bh=ux8gxm/hxbCvtY7jdFuUJx87hpOn03D8mRXv9n3JWCY=;
+	b=EulUCN7rLycjBkjLfPmuo9W3RLyOraoGZ6HS30icUCMG+kQ5gzx6nxg3sFMOrA8kihfA
+	 nfITKPxur0HnBgPsiJhRpCK8p2+334chKdW1ILBLGH0VI1qGGqpW24Npd2JJTyovs2bi5
+	 XbM3ld8tFBuP8T6VECZSA/jMMmfYDj7a8isr8hChqaHqvyysyy6ykrNkqWsp1OrwW3N1G
+	 wOtyh142HrBc3TY7OSd2ETE6dTOUh7Nzx6HZWkSgkWI/rNbq0nB2qWE8DC8DMdwOzSUdn
+	 wQnUjLoOkPLZ6DLdEUb1R+u1jprhWb5mfI9t0hhP1EqbNJJIe9oJ0ZKJnGU/sCYzEYQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EeZAsJ44;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Vs9OrPq2;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A970606A322;
-	Fri, 23 Oct 2026 18:22:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710A1606A31A;
+	Fri, 23 Oct 2026 18:22:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EeZAsJ44
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C6361F01825;
-	Fri, 23 Oct 2026 18:22:35 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Vs9OrPq2
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB69B1F01825;
+	Fri, 23 Oct 2026 18:22:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792779755;
-	bh=8fNDUJmW+BqiGz1BXZNGCbbtDikGNmxpdsyN7sK/sCA=;
+	s=k20260515; t=1792779752;
+	bh=ux8gxm/hxbCvtY7jdFuUJx87hpOn03D8mRXv9n3JWCY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=EeZAsJ44WMwEbGTdY400Waqq18i7SJ+8+oje7d3M9uY5aVibaGKuvr0PpgwPT2eXC
-	 nIxxEjjDHKBHIluPWWAbYall4+G/fzMmLiPoNAH4Db0BPdfOCSm+8klOIigeph2d37
-	 b1s3kCOSvNYT2y/dEM2ddqOUrghhXT2mRTuhFp9vy0PXc1X9DEJTGfoQvFGDvEuy+R
-	 CEwX/HY8clKgEzCFS/3bX9h7aFC9LOtgjVsPCMh8bMTGbKViqFbNpGtV/bJZ/es6O/
-	 P0Uerrqf4sZGMx4gzu8b02xTL/Nj0vuvFmIUuN/BUBT9LPKpRX9rP5rgaSoSZACT9V
-	 vehic5XJrQG4g==
+	b=Vs9OrPq2oETYyq5xseqQeXyIhroI29AKaUP7j3arF+VVUb5WiBov9P0RKHbix/5c0
+	 eV/Sm00XpELM+IEu8GRuCJKWWdP4UA8bAUnAP9n/kac9U8iBDBAZAVaIyWtCTN00l2
+	 dVkK3XWPddPisYYTpseZIp4lJcaYecihYULEEAcGwPfe0/6bemeTbhpB7hpuEZZ/AL
+	 JLxDM4pHpmtHbl1/K8I+raleVd0oxir+TcC4TBKV7TMDCRAxRseprnXrGWe+ivbmxr
+	 GSwI7qhYAACptVMQOEWRFdgGrJTCn3ZEcoabPt/N0PzuBu6LylxkCEYlKTHtt1rTCt
+	 DheUevjFpL+hA==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: "Paul E . McKenney" <paulmck@kernel.org>,
@@ -66,12 +66,12 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	Thomas Gleixner <tglx@kernel.org>,
 	rcu@vger.kernel.org
-Subject: Re: [RFC PATCH 05/12] rcu_txn: Add an hlist edited through transactions
-Date: Fri, 23 Oct 2026 11:22:13 -0700
-Message-ID: <20261023182218.479327-4-puranjay@kernel.org>
+Subject: Re: [RFC PATCH 04/12] rcu_txn: Add CONFIG_DEBUG_RCU_TXN
+Date: Fri, 23 Oct 2026 11:22:12 -0700
+Message-ID: <20261023182218.479327-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261016133319.433617-6-mathieu.desnoyers@efficios.com>
-References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com> <20261016133319.433617-6-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20261016133319.433617-5-mathieu.desnoyers@efficios.com>
+References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com> <20261016133319.433617-5-mathieu.desnoyers@efficios.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -83,41 +83,60 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 16, 2026 at 09:33:12AM -0400, Mathieu Desnoyers wrote:
+On Fri, Oct 16, 2026 at 09:33:11AM -0400, Mathieu Desnoyers wrote:
 [...]
 
-> + *   - Every node an operation is anchored on must still be in the list as the
-> + *     transaction leaves it.  A single-writer delete leaves no deletion mark:
-> + *     nothing in a deleted anchor distinguishes it from a live one.
+> @@ -261,6 +291,7 @@ static inline bool rcu_txn_is_proxy(const void *v, unsigned long tag)
+>   */
+>  static inline struct rcu_txn_record *__rcu_txn_untag(void *v, unsigned long tag)
+>  {
+> +	RCU_TXN_WARN_ON(!rcu_txn_is_proxy(v, tag));
+>  	return (struct rcu_txn_record *)((unsigned long)v - tag);
+>  }
+
+This can never fire: the only caller, rcu_txn_resolve(), has just
+checked rcu_txn_is_proxy(v, tag).  I'd drop it.
 
 [...]
 
-> +static inline void rcu_txn_hlist_del_rcu(struct rcu_txn_hlist_node *elem)
-> +{
-> +	struct rcu_txn_hlist_node __rcu **ppv = __rcu_txn_hlist_pprev(elem);
-> +	struct rcu_txn_hlist_node *next = __rcu_txn_hlist_load(&elem->next);
-> +
-> +	rcu_assign_pointer(*ppv, next);
-> +	if (next)
-> +		RCU_INIT_POINTER(next->pprev, ppv);
-> +}
+> +	RCU_TXN_WARN_ON(__rcu_txn_holds_proxy(old_ptr, tag));
+> +	RCU_TXN_WARN_ON(__rcu_txn_holds_proxy(new_ptr, tag));
 
-hlist_del_rcu() poisons pprev, so a double delete faults straight away.
-Here pprev keeps pointing at the old slot, so a second del_rcu() quietly
-overwrites whatever that slot holds now with the node's stale ->next.
-For example, 1 -> 2 -> 3, del_rcu(2), add_behind_rcu(4, 1), del_rcu(2)
-leaves 1 -> 3 with node 4 gone, and nothing warns, even with
-CONFIG_DEBUG_RCU_TXN.  Had 3 been deleted and freed in between, the
-second delete would link it back in and write to it.
+[...]
 
-dcache relies on d_unhashed(), i.e. a NULL pprev, which __d_drop() sets.
-Could the _rcu delete and replace clear pprev the way
-hlist_del_init_rcu() does, and could there be an
-rcu_txn_hlist_unhashed()?  For the _prepare forms, del_prepare and
-replace_prepare could record pprev -> NULL through
-__rcu_txn_hlist_record_pprev().  That costs at most one record, though a
-lone delete or replace of a bucket's last node would no longer be a
-one-record commit.
+> @@ -715,6 +893,9 @@ static inline bool __rcu_txn_chain(struct rcu_txn *t, void __rcu **slot,
+>  	r = __rcu_txn_find_ryw(t, slot);
+>  	if (!r)
+>  		return rcu_txn_record(t, slot, old_ptr, new_ptr, tag);
+> +	RCU_TXN_WARN_ON(r->tag != tag);
+> +	/* The caller must have read its own write. */
+> +	RCU_TXN_WARN_ON(r->ptr[1] != old_ptr);
+>  	r->ptr[1] = new_ptr;		/* committed old preserved */
+>  	return true;
+>  }
+
+The append path checks new_ptr for the tag, but the chain path doesn't.
+With CONFIG_DEBUG_RCU_TXN, chaining a tagged value onto an
+already-recorded slot of a non-disjoint handle and committing gives no
+warning, and leaves the tagged value in the slot, where every later
+reader treats it as a proxy.  Passing the same slot, value and tag
+through the append path warns once:
+
+    # rcu_txn_test_exp_chain_tagged: append path: 1 warnings
+    # rcu_txn_test_exp_chain_tagged: chain path + commit: 0 warnings, slot now 0000000000000301 (tagged: 1)
+
+The same check in the chain path catches it:
+
+--- a/include/linux/rcu_txn.h
++++ b/include/linux/rcu_txn.h
+@@ -905,6 +905,7 @@ static inline bool __rcu_txn_chain(struct rcu_txn *t, void __rcu **slot,
+ 	RCU_TXN_WARN_ON(r->tag != tag);
+ 	/* The caller must have read its own write. */
+ 	RCU_TXN_WARN_ON(r->ptr[1] != old_ptr);
++	RCU_TXN_WARN_ON(__rcu_txn_holds_proxy(new_ptr, tag));
+ 	r->ptr[1] = new_ptr;		/* committed old preserved */
+ 	return true;
+ }
 
 Thanks,
 Puranjay
