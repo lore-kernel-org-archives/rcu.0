@@ -1,101 +1,69 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.46
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792982199;
-	b=xiEIXOKDfxqQ6D5fCbJRW0o5grjqqXGHg0ReVQkN3a+eggSjuMQD+hYvxG1wISGrrr8v
-	 erzf+YOBUdHnczmJYBA4uZX7jBMxcArJuf5Xk8+zSsmVnPExsjnK02prSW8Hgba627DaV
-	 oycyXWvX8kCuJCjAe4YFH+txJkRDqTxyI5CdH1ey8R4/3w+fDb+zcNI8MU0MtfZDD7hyP
-	 eHrfkdt+bQQtrs2K5AoHR0+0N1irpwjkugl8GF30bybWEOvRPNV1DwFlfey8jMESPv5IG
-	 6JFxfagRoN6sxXZwFcEe1/BJc1UoE4U+DeDPHVpAsI3WqzCUxZ/rrJKjeYw1J3fpnPQ==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792982199;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
-	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
-	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=m7bdFtJP67PmJcIrwn/29KIkZ+QLRrIFYKFNL3qAIvE=;
-	b=cPYi/n8GSgUC1/qR1SMeI6V0VpB2vYyjNbQkNpujrPJuEcbuHd/meYMmY5qqujViBz9V
-	 I6UA0XvPiXM8IA7wUC95qWIE9HegooNMNWb6xg0Zkl/BvntDSbJlpIimCDa14G2shy5X8
-	 dqdVDzrElcfcFDPE3rJ4G/HFX2MaZsJnIueQa/kfntWM4A5O78Fd228tDTIdetVYZc4by
-	 BYOWECOAvY2mnwKTwFVUpHT3XQ6GCVj1c2yteQzdPl0552i+iuWOZVsYjFO56pXzXmL4d
-	 cQ0vQbIZFB3OjYq+69eeL8Le/n2ahEOsLNVQQfWpp82v+1rMX3JAoFxFjw3arpGFPpw==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=H56zD1lj;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.46
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=14.137.139.52
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793016085;
+	b=pdlpOB7Nt0OzC/MCOoZVSIeS0I5Z6TacPORXheA/DuXJaGg9j4fS+xMVJx5MmZv7O/+9
+	 VmzK9iVv9IL8LqhMPaqrnPkKd03Zjt8BWoxMcYP7eT1UyAPq/rJKq9iAnd1n3mBRs7rnL
+	 Opa27XTlGx0voRIElvkEgemmz3wkU+Y1o+l7NnKEQYduvhJ/DlRh/a6rtGsFB8thyy4VW
+	 I5pbknmMZc02N1fELKyL7zcbskk8dJxODUz3cs8dc5SzRokaPmP++EcxJ8LHGpbLdU1eY
+	 dmBcXIQJL9KGSoUjGrEgP+kTcOYWXVF+QBvPzZMx5cniV4qGjeQ7z00GWe6SH4RXpUQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793016085;
+	h=DMARC-Filter:dkim-signature:Received:Received:Received:From:To:CC:
+	 Subject:In-Reply-To:References:Date:Message-ID:User-Agent:
+	 MIME-Version:Content-Type:X-Originating-IP:X-ClientProxiedBy;
+	bh=9ecD0lIw5S2Wwx8/HWKybPtToBKIEJwvPma+Hr4KRfk=;
+	b=GkiJyEOyR3EBB4n+Q42fKE2rkJnnkorNAkDiP1Msf5R+aI2Ltx62NFl4mRtH2rGBM4gm
+	 9hgqZYgBNXU2/9O4aa68auI9NqABzmSH7w9VHvsL1/uWY02JfbFRSJasJmIAHN3W3Orav
+	 dVMtRmMtfFPw442PuXpR0VEZefSiwVImtHqzRWi1IZBmjITbmytCi3tekaxGWVIBQw8Cn
+	 0+WCkniiAYa/EaBsHZkl9HvclSPHDTOdQ4WjrNpP2ENAxah8y8qcowoUyY1rZlNrEMVpj
+	 MDc6TQoxvza+i5OYcitnvuFPDhxLZdDBurshzyxb1/7TWMjT98rFr+6ccHu1W7rRGHA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=huawei.com;
+	spf=pass smtp.mailfrom=huawei.com;
+	dkim=pass header.d=huawei.com header.i=@huawei.com header.a=rsa-sha256 header.s=dkim header.b=BgG15WAl;
+	arc=none smtp.remote-ip=14.137.139.52
+Received: from framsgout01.his.huawei.com (framsgout01.his.huawei.com [14.137.139.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4FA606A31A
-	for <rcu@vger.kernel.org>; Mon, 26 Oct 2026 02:36:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AE4FA606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019E760A2629;
+	Mon, 26 Oct 2026 12:01:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 019E760A2629
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=H56zD1lj
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4a214c5c4c0so18372585e9.3
-        for <rcu@vger.kernel.org>; Sun, 25 Oct 2026 19:36:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1792982197; cv=none;
-        d=google.com; s=arc-20260327;
-        b=D1hyU/9Qk7lbuSBJWDkxhO+vlmzQBmLgY81zH+Y978QQcdcURs1vBWYGcZbXFOsOal
-         qGiaAchfhnAKcacr2CJnBgoIcORBaZJiulBmhpQ2WT3DbkyBmPvtndEDKc8yl77Ohkqs
-         TZ5qaBr9aQX41bT3cwby5Ewg+ktYvqoQpRIkIDEupqVUiBkLulcmoHonVzIB5d7FApMD
-         RumNZ8QFoYaJdpnLweux2Q2cXTuEvxYF2/rKO/aD7OHbxq5et1vgb7Ag8al0oN8MSI0Z
-         P8K6f5qJVpk10rxa1GuucojabjczEqDKQCInP/iS1lK5DLeQuIdJCEZJJJzyKtMln6fG
-         havg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=m7bdFtJP67PmJcIrwn/29KIkZ+QLRrIFYKFNL3qAIvE=;
-        fh=1UHMKQtkKiqvwz8qWhIa6h17ZjI5SG9xqRvG2hDTpI4=;
-        b=QQIpvqhEocQeGTDLiIuGytoKjle2MwaKO4yio2ucqa806+/XioNP6qgO3K0vZUZfvB
-         JAShZCR321Uo2ljuSJRR/BPUxZH1Jw2HbV5rGLvelkVyjf0WbWPFOtOz4YJodkeV54PC
-         sZzBZuHkLYR/Veq7hCUybioyHJDbpSy3VKMZyP2iAoXDHjrla/bfXHvFbCPNMwg5mYQ4
-         +w5t7B4ZcTgdiGezdB9kQrsZg6MPJFbCGRXzdq+sCmyU+eXulhcAFttJE7eQahytfLDl
-         vEKQw37MwVsol3VzVkpxft+n4sJgAl8UuB4CNAeFNf/r8jGM8BJ2V+gVz4zlmfJqWfXj
-         DnWw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792982197; x=1793586997; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=m7bdFtJP67PmJcIrwn/29KIkZ+QLRrIFYKFNL3qAIvE=;
-        b=H56zD1ljg6nalLm7c2rQvN4GUx6rNYneRDaac6bfGoSP8dBCWXlw48E3Nly2rV6rmF
-         vsQtI0+XLURwSFo4lU8vbgD+gk6D3t1eOoGxjYxQ2l5qxoFIU317HH/FZxNn17CjFTc5
-         FOY9iYajY4oM9hXIutL6GUF9tsBw02MP7y81XCLr3xuEGYcq9wY7rG/hEhMW7jjmiOIK
-         0wTBESEgOCp7DPNR1x8YfEioQTlPYMhjsJks/zyUCEsxpxacGdYNjdBSqd82fa1aKwf1
-         LiV1ADnh2RN8f21CSNoaqrYPHXNOuUrT3CuXdcKnDjiQC76Wpx0Pj+kUR6Sw6rytAucP
-         DS5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792982197; x=1793586997;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=m7bdFtJP67PmJcIrwn/29KIkZ+QLRrIFYKFNL3qAIvE=;
-        b=eURt6Qkx0Mi2tAueuRJdDqOXNrlRorE2IN1yVSm24mIQrE5qYvdRyvJ95e0TYzs7JQ
-         jcSSimOLvvViMeACo+t1eR0L3z/zxsMwE3SZkbvtmL89O+Ef8GRRoGz/ATsdO/J1LSXJ
-         FzkTAUqySibzLBYtAfXyNia9Y5Sv91+Msy+4LKXaEA9cak5czPE1hrVfn7kGn4la22kB
-         0WMHJkgQjLhyZ8uKUYaT/mHfW7Bv88k03j72RhcTsgjIw92qBCw83+BiyBoJxH7JiqQK
-         4a6FXrmvCMmY/JdACDNQIRKOVKZaFhfIg3s2JL/2Nn0eRltCwBrrTn1MROtE5QEEoMbt
-         w6HA==
-X-Forwarded-Encrypted: i=1; AKwUvBzJlou7+ECFioRyk74mzCVr82FFhRPgyhPkLnA5BJ21UK7JoRIWoWXq6CNCrIkQMvaLjLU=@vger.kernel.org
-X-Gm-Message-State: AFq9FYIePDnVnkxzV5hw1bfmDRC51bZlM7dV0QKQDrWxo+uHGWWD9Fvy
-	qHNivcRSyp1TFVzOmMb5pNAMF/I0Zx+7TlYdNMf/4WJL2suv+jU+es/tU5BuYRw3Y01ETSaRC5F
-	RNZQMgIXmuFvH+TWFa1mZqwK55oqYcyY=
-X-Gm-Gg: AYBFou17DgFczN/q12kfCKdvOaATjGcAKVoS9k2RA0sBVO0wBLW0YSiAKGwN98qM0Yd
-	eEhDY+c/TWGjc2IuRfEHe0DVaOlymmioNm8PDzXLgQc/KjUXegNA7dFSSI1bb/025c0MBumK3pF
-	mJPGmWn+vLjcwbuWJtzH0vAOEG2AQyEoZc6wJX87dRbiqeT8M/eh+tZVEXwIcJoCU5I76Y+LUbi
-	mW6zMXquVTyQQRMexQr9TyvyPlboZbhFnVTmMVGXbDhnHCYrSJAiQBBQ3ZnY4J+ZQtGRDTOzWnU
-	bp0x1qY7a5YfcofRU3wtQnZ8mDBqA6We1rJw8pidzy4+68uUAwOfEGmH6+/c+7fVxhPcak6g2mN
-	+QZEVGVFtEP9CGku/9rB5stB31ngRpooHzc1UQEcP6eBEv/fgHEkTIqgJYOtY2iHTmv/BsHtV+Q
-	u2CuUXsV4D1QtHRV7p
-X-Received: by 2002:a05:600c:c16f:b0:4a1:9663:7633 with SMTP id
- 5b1f17b1804b1-4a35ac8c226mr89777325e9.11.1792982196838; Sun, 25 Oct 2026
- 19:36:36 -0700 (PDT)
+	dkim=pass (1024-bit key, unprotected) header.d=huawei.com header.i=@huawei.com header.a=rsa-sha256 header.s=dkim header.b=BgG15WAl
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=9ecD0lIw5S2Wwx8/HWKybPtToBKIEJwvPma+Hr4KRfk=;
+	b=BgG15WAliRz3Ine17uRm8Co86FujUmmEztKSEfBl2soUDwTMF8+DyduV+aGWbdW/J1m0EfOfz
+	Qpt9vnFXFDTDdmv+RwLv4qDie/Ykc/ixVH+CiWM9Nlb5Q4JySS9BQf9nRadRxDNMQcdcSjkhs4S
+	BRC8ov3SblpF0ZLcLJTv/VI=
+Received: from mail.maildlp.com (unknown [172.18.224.107])
+	by framsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4jCsfL4N9bz14K1y;
+	Mon, 26 Oct 2026 20:01:14 +0800 (CST)
+Received: from frapema500004.china.huawei.com (unknown [7.182.19.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2E54F4058B;
+	Mon, 26 Oct 2026 20:01:19 +0800 (CST)
+Received: from M2403003457HW (10.224.107.168) by
+ frapema500004.china.huawei.com (7.182.19.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.46; Mon, 26 Oct 2026 13:01:18 +0100
+From: Kai Ma <kai.ma1@huawei.com>
+To: <paulmck@kernel.org>
+CC: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	<linux-kernel@vger.kernel.org>, Boqun Feng <boqun@kernel.org>, "Bradley
+ Morgan" <brads@mainlining.org>, Gary Guo <gary@garyguo.net>,
+	<rcu@vger.kernel.org>, <lkmm@lists.linux.dev>, Lian Wang
+	<lianux.mm@gmail.com>, Kunwu Chan <kunwu.chan@gmail.com>
+Subject: Re: [PATCH hazptr v3 0/4] Hazard pointer updates
+In-Reply-To: <2cf703a6-7828-4735-98af-1a6fe93abd3f@paulmck-laptop>
+References: <20261011194902.97364-1-mathieu.desnoyers@efficios.com>
+	<2cf703a6-7828-4735-98af-1a6fe93abd3f@paulmck-laptop>
+Date: Mon, 26 Oct 2026 13:01:18 +0100
+Message-ID: <87cxsw4qnl.fsf@huawei.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -105,127 +73,90 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261023101841.2910719-1-kunwu.chan@gmail.com>
- <20261023101841.2910719-9-kunwu.chan@gmail.com> <384fa5e2-1cac-4ff4-bea9-173188d4128f@paulmck-laptop>
-In-Reply-To: <384fa5e2-1cac-4ff4-bea9-173188d4128f@paulmck-laptop>
-From: KunWu Chan <kunwu.chan@gmail.com>
-Date: Mon, 26 Oct 2026 10:36:25 +0800
-X-Gm-Features: AclHuK8B25k5dqPJzw8ONzyOTgQYH4Q7lrxiBt9o0JQQPFEOY1Tg2UTbjen-WaA
-Message-ID: <CAN_Opa_UiE9W3s1Y_NngjZKdy2vFm0=kk3oG2B9mdBX+L6EOoA@mail.gmail.com>
-Subject: Re: [PATCH 8/9] srcutiny: Detect duplicate callback enqueue
-To: paulmck@kernel.org
-Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, work@onurozkan.dev, 
-	frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, 
-	boqun@kernel.org, urezki@gmail.com, rostedt@goodmis.org, 
-	mathieu.desnoyers@efficios.com, qiang.zhang@linux.dev, rcu@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: frapema100007.china.huawei.com (7.182.19.38) To
+ frapema500004.china.huawei.com (7.182.19.21)
 
-On Sat, Oct 24, 2026 at 3:31=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Fri, Oct 23, 2026 at 06:18:40PM +0800, Kunwu Chan wrote:
-> > Detect duplicate callback enqueue attempts at call_srcu()
-> > entry, before the deferred list can be corrupted.
-> >
-> > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->
-> Same questions as for the previous patch.  ;-)
+"Paul E. McKenney" <paulmck@kernel.org> writes:
 
-Same changes applied: pr_err_ratelimited() and dump_stack.
+> On Sun, Oct 11, 2026 at 03:48:46PM -0400, Mathieu Desnoyers wrote:
+>> Hi Paul,
+>> 
+>> This series applies on top of "hazptr: handle NULL address in
+>> hazptr_detach" you have in your rcu dev tree.
+>> 
+>> This first patch addresses a race identified by Boqun Feng in the
+>> two-phase wildcard scheme. (no change since the last series)
+>> 
+>> Patches 2-3 are prerequisites for using ptr_eq() in the 4th patch.
+>> Those were discussed at length in a prior version of hazard pointer
+>> patches.
+>> 
+>> Since the last series, I have renamed ptreq.h to ptr_eq.h, addressing
+>> the feedback received from Boqun and Gary.
+>> 
+>> Patch 4 introduces a "try acquire" helper to allow the fast path
+>> to not rely on wildcards, while keeping the wildcard forward
+>> progress guarantees in the acquire slow path, used on fast path
+>> failure.
+>
+> I have pulled this in for additional review and testing, thank you!
+> (With Bradley's Reviewed-by on 4/4.)  Still subject to rebase, which means
+> that I can easily replace it with an updated series from you, if you
+> wish.
+
+Hi Paul, Mathieu, and everyone,
+
+I've been following the hazard pointer work and have done some testing
+on earlier versions. I'd be interested in getting more involved,
+particularly in concurrency correctness testing.
+
+If there are WIP patches or early design discussions where additional
+review or testing would be useful, could you please CC me? I'd
+appreciate the opportunity to get involved earlier and help identify
+potential concurrency issues.
 
 Thanks,
-Kunwu
+Kai
 
+> But in the meantime, some additional testing.  ;-)
 >
->                                                         Thanx, Paul
+> 							Thanx, Paul
 >
-> > ---
-> >  kernel/rcu/srcutiny.c | 19 +++++++++++++++++++
-> >  1 file changed, 19 insertions(+)
-> >
-> > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> > index 98864977bed2..4400fd2b41b7 100644
-> > --- a/kernel/rcu/srcutiny.c
-> > +++ b/kernel/rcu/srcutiny.c
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/irq_work.h>
-> >  #include <linux/kasan.h>
-> >  #include <linux/llist.h>
-> > +#include <linux/mm.h>
-> >  #include <linux/mutex.h>
-> >  #include <linux/preempt.h>
-> >  #include <linux/rcupdate_wait.h>
-> > @@ -178,6 +179,7 @@ void srcu_drive_gp(struct work_struct *wp)
-> >       while (lh) {
-> >               rhp =3D lh;
-> >               lh =3D lh->next;
-> > +             debug_rcu_head_unqueue(rhp);
-> >               debug_rcu_head_callback(rhp);
-> >               local_bh_disable();
-> >               rhp->func(rhp);
-> > @@ -235,6 +237,8 @@ static void srcu_gp_start_if_needed(struct srcu_str=
-uct *ssp)
-> >   * Also called by __srcu_defer_drain() to re-issue a deferred callback=
-, so it
-> >   * must not re-check the deferral condition.
-> >   */
-> > +static void srcu_leak_callback(struct rcu_head *rhp) { }
-> > +
-> >  static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *=
-rhp,
-> >                           rcu_callback_t func)
-> >  {
-> > @@ -272,6 +276,8 @@ static void __srcu_defer_drain(struct srcu_struct *=
-ssp)
-> >       llist_for_each_safe(node, next, llist_del_all(&ssp->defer_cbs)) {
-> >               struct rcu_head *rhp =3D (struct rcu_head *)node;
-> >
-> > +             /* Bounds a node self-linked by a double call_srcu(). */
-> > +             rhp->next =3D NULL;
-> >               srcu_do_enqueue(ssp, rhp, rhp->func);
-> >       }
-> >       local_irq_restore(flags);
-> > @@ -291,6 +297,8 @@ EXPORT_SYMBOL_GPL(srcu_defer_drain);
-> >  void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
-> >              rcu_callback_t func)
-> >  {
-> > +     static atomic_t doublefrees;
-> > +
-> >       /* Misaligned rcu_head! */
-> >       WARN_ON_ONCE((unsigned long)rhp & (sizeof(void *) - 1));
-> >
-> > @@ -298,6 +306,16 @@ void call_srcu(struct srcu_struct *ssp, struct rcu=
-_head *rhp,
-> >       if (WARN_ON_ONCE(!func))
-> >               return;
-> >
-> > +     if (debug_rcu_head_queue(rhp)) {
-> > +             if (atomic_inc_return(&doublefrees) < 4) {
-> > +                     pr_err("%s(): Duplicate call_srcu() CB %p->%pS()\=
-n",
-> > +                            __func__, rhp, rhp->func);
-> > +                     mem_dump_obj(rhp);
-> > +             }
-> > +             WRITE_ONCE(rhp->func, srcu_leak_callback);
-> > +             return;
-> > +     }
-> > +
-> >       /* Record the caller: the irq_work's stack says nothing about it.=
- */
-> >       kasan_record_aux_stack(rhp);
-> >
-> > @@ -306,6 +324,7 @@ void call_srcu(struct srcu_struct *ssp, struct rcu_=
-head *rhp,
-> >               if (READ_ONCE(srcu_defer_draining) && !in_nmi()) {
-> >                       WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
-> >                                 "call_srcu() re-entered during callback=
- drain; leaking callback\n");
-> > +                     debug_rcu_head_unqueue(rhp);
-> >                       return;
-> >               }
-> >               rhp->func =3D func;
-> > --
-> > 2.43.0
-> >
+>> Thanks,
+>> 
+>> Mathieu
+>> 
+>> Mathieu Desnoyers (4):
+>>   hazptr: Fix two-phase hazptr_synchronize race with detach
+>>   ptr_eq.h: Introduce ptr_eq() to preserve address dependency
+>>   Documentation: RCU: Refer to ptr_eq()
+>>   hazptr: Introduce "try acquire" fast path, fallback to overflow list
+>> 
+>> Cc: Paul E. McKenney <paulmck@kernel.org>
+>> Cc: Boqun Feng <boqun@kernel.org>
+>> Cc: Bradley Morgan <brads@mainlining.org>
+>> Cc: Gary Guo <gary@garyguo.net>
+>> Cc: <rcu@vger.kernel.org>
+>> Cc: <lkmm@lists.linux.dev>
+>> Cc: Lian Wang <lianux.mm@gmail.com>
+>> Cc: Kunwu Chan <kunwu.chan@gmail.com>
+>> 
+>>  Documentation/RCU/rcu_dereference.rst |  38 +++++++-
+>>  arch/x86/include/asm/ptr_eq.h         |  16 +++
+>>  include/asm-generic/Kbuild            |   1 +
+>>  include/asm-generic/ptr_eq.h          |  16 +++
+>>  include/linux/hazptr.h                |  48 +++++----
+>>  include/linux/ptr_eq.h                |  63 ++++++++++++
+>>  kernel/hazptr.c                       | 135 +++++++++++++++-----------
+>>  7 files changed, 237 insertions(+), 80 deletions(-)
+>>  create mode 100644 arch/x86/include/asm/ptr_eq.h
+>>  create mode 100644 include/asm-generic/ptr_eq.h
+>>  create mode 100644 include/linux/ptr_eq.h
+>> 
+>> -- 
+>> 2.43.0
+>> 
+
+-- 
+Kai Ma
