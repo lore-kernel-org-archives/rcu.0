@@ -1,87 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.177
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792955942;
-	b=cYyCdh9QCboKxaMw3W+hO3n++OBzdOoW99yUEFxcNGFugJSHQ93GDB3vzZSSi0vVhAcK
-	 ciz4x8pJNS5/19dvux05BC1DleD1wKtA36KJOHVIAdlY4Uwc2i2MsdoIucJm39uaiANwC
-	 DSWZsoejjNVt5C24dlRI6xjqXPKivvlGC8d+3Pzxjx8D3RUhFoXLrzfqb7GX2+UcB5YYU
-	 QZHhEuQAo5/WLL64IQa8Gt1Ml42FWaINH/JitYeOQz5eLhLNCvdUbi5/kWTflklzan/ig
-	 yeNHzvY2tSJHQ2oEcVf4dKbhk3MWAHQb2p+IvxKSFoPVf0b4Wc/t7p/y8cRk5xDbYDA==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792955942;
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=209.85.128.46
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1792980152;
+	b=NCPI/JnyUyq8MFEU+ruGLDdR18nG7dCMIueD+vNWIMvExaaAlHR3Amd4qJ0JboULBrwO
+	 Vgn9JLopz8zbse4ujNqjQJPRVs5kVtpl6iqWKUwwsyoQY6bte90M7XOOecgynJOeNMvbQ
+	 0goAHQ558IlAC/yMy7pPUCdXTqkh+tOcukgXquuWY/tn5+HG2ch5qip5flA2X82b/zn6a
+	 J6tAW73zZdPmKGDqYFrVM7ao6LJlsLxthaiDxuGTgwdln1M1YjV/4LXPIaRzOd5zXULio
+	 QToRovmdDL38rYMfpWMHP1Xi63bhzW1SDwXYEIds9pmsJZwGi6RmybFG8i2K5YvwFIQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792980152;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Sender:Message-ID:Date:MIME-Version:User-Agent:Content-Language:To:
-	 From:Subject:Autocrypt:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=Byu/Ivu2c/RQxf7NoTMxN/pvEQ2Ryga8K2B0J0WdHLg=;
-	b=wV57gawWfw+1RXJv990XLXZj0F6iiCsW8+IR6KmvgcEDAIHUOFkEfJPbm6/6OPcWC7ct
-	 c2TXC9YjIAohvxO5P4SX8ecQjhk6/x+o5T5LTMiI4E5UizL35YBRulnLknAP+PhEo0nTv
-	 nrbSGLt73pzpSiqw2xrYOjw9QRR7ziTVTeqXRmg8YG7LGHwhFXVZp89qxbghhTEQqpQUC
-	 r/4WEKb/cJu2Zz/lIMc89H0NXyIo5OJ80DxD4HVKMDWQ/BgLdJA5wZHZkbEzV3JHuHVS3
-	 Uunbbj3TVIRyhTtyelex4WHKclHw/AEvAKMa4BXrTsWHxH8W5Kuviijsdv+Ze+Y3K4A==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=roeck-us.net;
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=t0CJXdu2WvJswBCkzhrCpBJfhXZWXSL2ZyWgfmtZNMk=;
+	b=erLjUIctIdhiMxoo/5MH9Y4jjr7j4QPqTJI++xp/GWWxABOM+EJzo25OhTcKByRSL0cC
+	 MwlqMdb3HCLaoEh4hDSseeFowrcXPdS8gGSZzuvD2JnAB83Bs5UnyYshMcn1n03+36+mS
+	 3+AP2kyx7FkKDZP5Gznffsl/cqUJnHYb2vK6yIsZLDpXfYCGEbARrpGgIA6Og7SfxSmBf
+	 G0Bue6ELbMeH7Nb/U5GZe5+txxHcC8q5BS97etDQX4muvYHA0/GlrZEsLrZiL65lhVDXk
+	 XHPtYkoXC7gdclm/h/8d/nOnOz2A+F5HTjxiv/yQ1E//06Uur6eB/oQHv8vlryRH5SQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=LH4HKIAq;
-	arc=none smtp.remote-ip=209.85.210.177
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=BU2bBXlM;
+	arc=fail smtp.remote-ip=209.85.128.46
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F911606A321
-	for <rcu@vger.kernel.org>; Sun, 25 Oct 2026 19:19:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6F911606A321
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC217606A31D
+	for <rcu@vger.kernel.org>; Mon, 26 Oct 2026 02:02:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DC217606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=LH4HKIAq
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-8a070755c8cso961990b3a.0
-        for <rcu@vger.kernel.org>; Sun, 25 Oct 2026 12:19:02 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=BU2bBXlM
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4a35a60499eso11481385e9.0
+        for <rcu@vger.kernel.org>; Sun, 25 Oct 2026 19:02:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1792980150; cv=none;
+        d=google.com; s=arc-20260327;
+        b=WXU4Eif7gJSduRbgtshdefuJKmuuWZ22Nb1KCUs4nrrDOf6S0AWemHY+h/d5bRlbe7
+         wswqaGL2OMpv0VPdSytq+5YSY+1v6tFhukfIHCvIwGeeO4O4z/YzYS2TtMG4kI4sqjQD
+         o6NHyzd8Oh0DBQ1TGL7RCbNSiagCDPQl/m438sUYEsmIf349dD5nEwJmPRiVehqnwamX
+         KorgXDOW1Q3tSiDlFPe8TkW+fEubD6QYP/VhEH9iJi1apwvpInoh9hkVAvO5Qp6lYWv/
+         KaigMYOzor30DbqR0msPNfVB/bFYGmUMs3FLuWb48UouT0TOgVjBgiCZ7UJgIw9EJZ9a
+         5OUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=t0CJXdu2WvJswBCkzhrCpBJfhXZWXSL2ZyWgfmtZNMk=;
+        fh=W3eeQrk6oeDhJZtCh7vdAkXbS/KUmAF2MB9rZLoreNE=;
+        b=p5E6BQV+xxa0H2NjlETHeCYIt3g4fLeHSPnu2rh5CvCfsAp3Bmb/TdW3sYBx+m+gV+
+         hla12+3hm/w00XQgn4J7G4PJQwkWqdA89Tft9P+Gl+XMBkdQo0/Q9QTZmZzH162PWrcs
+         It8rJei7y059rXLQVa+1+ghM4fr6EWiZzkqn94g57IpftTNYRWUV5b00JKQERiPJTT4F
+         Se3DlGexgNTK1k5XmoFMTiewEvvz9aBfpP4CLsya/7odeoztZaWxpaobvHe2eKI1aCgN
+         iRHtfLclvSEgUATgRjXLezAchfVGNODm4wc5B/qXqIMyKJruyiWd21jQGsqQy/gL6nZt
+         CfeQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792955942; x=1793560742; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:autocrypt:subject:from:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Byu/Ivu2c/RQxf7NoTMxN/pvEQ2Ryga8K2B0J0WdHLg=;
-        b=LH4HKIAq454DMkN8kSv0tkEn9xxcxcTgd+1RD3rzi+LVJ+JIHhmN5APLQ2qeOX9Y1+
-         A2ikD5jD/Xwn240gmnW1fFkgYMPwcRlH0BvKQlf6eT2guHs8JDP3NXgoUZuf8VHDRE9g
-         OzOqai3e1cxE390XkqXg/MUQBgXwETteJz7ydewtXGtUL3/Zl8nGOSVeLMjg/jDy3i9X
-         O2w4OXOpFVPWlzQ02RvLZKeCCDI2YiqyAtynpl5Y2uQMVFjyLks92v5k7lyWUa5BKzsH
-         wYgiVAXWAK8M7+4swsFnPDq+OIDUA/YHXaTbVk1ccKbsyo41GpPQ2G28upANRBZp4Uv4
-         IYvA==
+        d=gmail.com; s=20251104; t=1792980150; x=1793584950; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=t0CJXdu2WvJswBCkzhrCpBJfhXZWXSL2ZyWgfmtZNMk=;
+        b=BU2bBXlMIMOBsdtITAutKT4CP7ymX2MVgduiijANnolzYH20SxfRwfbhKIiIaDMO7e
+         0TEmRSfGLW5FdcnNVcay1bmqqh+Lou/SfByA/GSIFW1nJeCnAfzGDPRUsZiV1TpgloAc
+         CY/lzNgZhXjGmfiym427FflSMhE5Wwf2GyJ58tUMbR8YXJ2NFfzsciIgY4YFer+xVC9B
+         qrPueRmFxtS4axzOGFCOXnBk90OJ7oT/6aG20j5QK6EpfRc7I5vn4TJFW5hi1zCFJsET
+         s4VKU6sE+B6K1tlIgh3T3MOj0OLgyC2AkfkEf5/Palf9PuSPsxV8pi3//zqMNS2TUxe2
+         0cPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792955942; x=1793560742;
-        h=content-transfer-encoding:content-type:cc:autocrypt:subject:from:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=Byu/Ivu2c/RQxf7NoTMxN/pvEQ2Ryga8K2B0J0WdHLg=;
-        b=1Egc1wIUm8eSRPZ/mIDRWoAV4INIqphYbaq1A/YwIJsC4bMq6bF/8IAxmc3ehMRSY2
-         z/EAZWqJqWUj/liAcVG+abz7ozmkzO/DTqbhTbH65IKIdkbtP56EDgErb6ZHe4DwkXRQ
-         6Cbw10QbQs4FolPKumxX6c/I84XrQUr0EdLJLlGNEhAqQtTDchT9pwDAbi64pLbIl+IT
-         0d+UPqDpoBYq4L7FHw2aNwbVE0E2rTd8tYDC8gAZHRV8VfBbBPedNztS5ZsBeovkom+n
-         vhAOOEsSp6titV1yE93+F22gZXZh0pc0xulXXbOUM3j8GpnR8sHoEohcjrLAXS8VioHq
-         o4tA==
-X-Forwarded-Encrypted: i=1; AKwUvBwPjNzHBikYtMCugHum6YfiGATrR2Lk0WFdrZG6z44ark5tMdNjMJrGoA/mIFA10J9vB50=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJgHcF8ZmliZ1IcsYv5AiXqVsZDF5aKyBeEkX7fneINxrw1rTeH
-	GSHYYDL33wpRzFDY6DVnLE+C7PTBMlbyN+ZCuQJG6qXwR6jSg53bRSUYPS12Rg==
-X-Gm-Gg: AYBFou18vO8GMmVB1TKRcF6tjUHTKvndZ9Al7/rUgdI6d/h/cbgtpM8MCGdR1TSuRSd
-	kJgmdFaluWLSgrjK7tT7ZW2hMxP415iFi9U8qrq4QfYHvEz13Qn8Vj2SLLwPOKG3nx7QK4Pc5oD
-	yU0VVOEqiBt0uQFYKx9uN72YYvD4UQpTVf+QNRzyGVtTWY7PUPb3bytlk4E/hE0N+SfMIQALcDG
-	0c7REzCDGWqAC6HF/thoZbGZ8RKKzmSCnOmzgLPdDLE1+Tk3dzHnBsK5WIDxE4llmEa9ufd5sq+
-	GIODAefnlJiU6unfruOf2RJSZmpNGU5UZK7TODjX9W9r05q2wVE7wLhIfPbxMJaxHBHmpO9WgBI
-	1ECQMDZqGWfeCBqspzEadXzqVqlp7/klaHubCLYPvYcHVKbJZeGn9SAhbzUjFpU+bwtFOEcmx/w
-	nY8HtFIsxzmGYj5wbASzMoILPQ0g6vsZCs3R2xXl6rTP1npG7catJzsA4skb7nLAKa9TykckOBV
-	g3wblflhYC3dj7TQadZDoR1TPuwoEIQdfnjNE/vnb2sgcV5YrYC3ERNodHLB7lRCuExqGnEJXFo
-	XX9Lq69+A2Nphy9iShYcZzOcPTjXRw==
-X-Received: by 2002:a17:90b:2646:b0:3ac:9a03:20bc with SMTP id 98e67ed59e1d1-3adeae6db08mr4191584a91.47.1792955941713;
-        Sun, 25 Oct 2026 12:19:01 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:da43:aeff:fecc:bfd5? ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3adebaca7casm5711641a91.4.2026.10.25.12.19.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Oct 2026 12:19:00 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <49da816c-8082-46f1-bb12-f0d6187bb06a@roeck-us.net>
-Date: Sun, 25 Oct 2026 12:18:59 -0700
+        d=1e100.net; s=20260707; t=1792980150; x=1793584950;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=t0CJXdu2WvJswBCkzhrCpBJfhXZWXSL2ZyWgfmtZNMk=;
+        b=loMUWfaR7F2vrX6dABtXnEd/XqwheTN00ZynbmYKT8QChWqndJSao/7DESivljUfK7
+         dQ7OIaLDMvVIGnUmdOQJJ3MShAYkFfJf8mPYBnB6ole4Sz+ClttSbQxWlRbJJMyCy0Xq
+         iPjSj3csubJPhkj67B7vPlxb5RFQEWJMKfaAEeXwUsttBoTSLYaw0NYWXQqjbQA+o3Zg
+         SV9nJqK2D+8IQYNrCxWaUUtBTzFjtIjRIncKVuq+Vk3hJl3IYzaHwCbbAahbhv8MWAVW
+         iaRr9jNPzEJAeD8yoQcNpm7V0gqWiuaub/7X9G/xHmCH9najPOx+t6qJcCVR9bGS6IpE
+         p/zw==
+X-Forwarded-Encrypted: i=1; AKwUvBx7LNZ7RUgaElylUEoAYZtbhQp0khYGmLXYjx2YGnvl+J9JlrnNon2Io1ZnnNdmReiTOPU=@vger.kernel.org
+X-Gm-Message-State: AFq9FYL/Wb8T400c6wdwGNnfikPbnzMoe8lX7vwK52GpjFBUNCNh33qP
+	RNRN8Wfb+5S9zQUPYlM13GDZonA7SDTweFZE4JWd+ZKTWTTdEJX1c2+GDzlYlrCx1qw72K75SPL
+	qOFyvCzuCHo60yv4plpI5J/VnoPNjXb4=
+X-Gm-Gg: AYBFou3qzgPGCqaI85YVOJL8Ytl6Eghownry85wIFudR8AsaPxYz9l7hYppNex6PoVB
+	e29WfPVXrtPIT9Uk8ro0/fISbeoXeJquIzgF6u+I0XIAMkR7rmSTagVQk91SW18JuvQdbQumnvc
+	FykdXGuPml+DHPd/UCHu6YBTEJF09dwbb/tn1NDvuO89f2+TDxW1ofvb9VWMkoOtvrOvn5YBKc/
+	urt06Yt8sWYFKj6y08XNBNtK/2YKfNuX0j4ehyRj5H/oZq8xwcqw/b0oxfqXEANwWNRAMNcW0h5
+	16ORsHPhUqHuFC4rnp0kdMZuS8D6Yojs9FpIQHa+3ELR0E0pDpFGBRrz1+TcSlyx1hyaCv10WXv
+	OvSthlHfQMAtCJhb3IzClJRLQg9oPIMeMLoR7Xd1F0v50uNCbpK6Lj6Gcwmmj3ZfdJxgOTg==
+X-Received: by 2002:a05:600c:198e:b0:4a2:84c:52f3 with SMTP id
+ 5b1f17b1804b1-4a35ac9d1c2mr108316275e9.6.1792980149797; Sun, 25 Oct 2026
+ 19:02:29 -0700 (PDT)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -91,122 +104,89 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: stable <stable@vger.kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Tinyconfig build failures in v6.6.y and v6.12.y due to "srcu: Use
- irq_work to start GP in tiny SRCU"
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- np3900V20aS7eD9K8GTU0TGC1pyz6IVJwIE=
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, rcu@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20261023101841.2910719-1-kunwu.chan@gmail.com>
+ <20261023101841.2910719-2-kunwu.chan@gmail.com> <ee221d82-c064-4db8-bf85-3acc2e70b983@paulmck-laptop>
+In-Reply-To: <ee221d82-c064-4db8-bf85-3acc2e70b983@paulmck-laptop>
+From: KunWu Chan <kunwu.chan@gmail.com>
+Date: Mon, 26 Oct 2026 10:02:18 +0800
+X-Gm-Features: AclHuK_r8Qh5VqYW8mGbk1vYXEbW83hcBOqPAIwNMkxZsLHjr4eexVTG0QM4lCc
+Message-ID: <CAN_Opa-qWaG6aminLu6k2Wn2iCBc_fLKFRmY=dpHEX3XuUwwyg@mail.gmail.com>
+Subject: Re: [PATCH 1/9] srcu: Record callback registration stack for KASAN
+To: paulmck@kernel.org
+Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, work@onurozkan.dev, 
+	frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, 
+	boqun@kernel.org, urezki@gmail.com, rostedt@goodmis.org, 
+	mathieu.desnoyers@efficios.com, qiang.zhang@linux.dev, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Sat, Oct 24, 2026 at 3:41=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Fri, Oct 23, 2026 at 06:18:33PM +0800, Kunwu Chan wrote:
+> > Record the callback registration stack in __call_srcu()
+> > for KASAN diagnostics involving SRCU callbacks.
+> >
+> > Suggested-by: Zqiang <qiang.zhang@linux.dev>
+> > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>
+> For 1/9-3/9, looks good if there is a kasan_print_aux_stacks() called
+> somewhere from 7/9-9/9.  I am not seeing it, but then again, I do not
+> claim to be a KASAN expert.
+>
 
-I see lots of tinyconfig build failures in v6.6.y and v6.12.y.
-Current release candidates are also affected.
+Thanks Paul.
+kasan_print_aux_stacks() is called by the existing KASAN report path
+in mm/kasan/report.c (describe_object_stacks), not by the RCU patches.
+Patches 1-3 record the aux stack with kasan_record_aux_stack(),
+and KASAN prints it when reporting a use-after-free.
 
-Example from v6.12.y:
+I verified this under QEMU with CONFIG_KASAN_GENERIC=3Dy.
+The KASAN report included:
 
-Building csky:tinyconfig ... failed
---------------
-Error log:
-/opt/kernel/gcc-14.4.0-2.47-nolibc/csky-linux/bin/csky-linux-ld: kernel/rcu/srcutiny.o: in function `cleanup_srcu_struct':
-srcutiny.c:(.text+0x2a): undefined reference to `irq_work_sync'
-/opt/kernel/gcc-14.4.0-2.47-nolibc/csky-linux/bin/csky-linux-ld: kernel/rcu/srcutiny.o: in function `srcu_gp_start_if_needed':
-srcutiny.c:(.text+0x60): undefined reference to `irq_work_queue'
-/opt/kernel/gcc-14.4.0-2.47-nolibc/csky-linux/bin/csky-linux-ld: kernel/rcu/srcutiny.o: in function `start_poll_synchronize_srcu':
-srcutiny.c:(.text+0xb8): undefined reference to `irq_work_sync'
-/opt/kernel/gcc-14.4.0-2.47-nolibc/csky-linux/bin/csky-linux-ld: srcutiny.c:(.text+0xc8): undefined reference to `irq_work_queue'
-make[3]: *** [scripts/Makefile.vmlinux:34: vmlinux] Error 1
-
-Bisect points to commit 58dd6e92725f ("srcu: Use irq_work to start GP in tiny SRCU")
-in v6.12.y. Reverting this commit fixes the problem.
-
-Problem is that IRQ_WORK is not enabled with tinyconfig in v6.6.y
-and v6.12.y. In later kernels it is enabled due to the unrelated
-commit af92793e52c3a ("slab: Introduce kmalloc_nolock() and
-kfree_nolock().") which adds "select IRQ_WORK" to "config SLUB".
-
-Adding "select IRQ_WORK" to "config TINY_SRCU" also fixes the build
-problem, but I don't know if that is an acceptable / desirable solution.
-If so, it should probably be added to the mainline kernel since the code
-only builds there accidentally. I'll leave that up to RCU and stable
-release maintainers to decide.
-
-Bisect log is attached for reference.
+Last potentially related work creation:
+ kasan_save_stack+0x33/0x60
+ kasan_record_aux_stack+0x8c/0xa0
+ call_srcu+0xb2/0x390
+ test_init+0x71/0xff0 [kasan_aux_stack_test]
 
 Thanks,
-Guenter
+Kunwu
 
----
-# bad: [9fb48106e91d81010e61a7fa0b09aa6081ff1a2f] Linux 6.12.114-rc2
-# good: [7fdb7c1824a1f9979d648d7ae28ac446bcee9c6e] Linux 6.12.113
-git bisect start 'HEAD' 'v6.12.113'
-# bad: [fbf5bbbfe00526982e83b55a3aebed9096503646] netfs: Clean up some whitespace in trace header
-git bisect bad fbf5bbbfe00526982e83b55a3aebed9096503646
-# good: [27d90b6cd0a460f1f3a9678ef45312b803a0ccb5] mpls: Add mpls_route_input().
-git bisect good 27d90b6cd0a460f1f3a9678ef45312b803a0ccb5
-# bad: [86baeb912a990effd375019875fcf39fdabf56b5] net: phonet: do not BUG_ON() in pn_socket_autobind() on failed bind
-git bisect bad 86baeb912a990effd375019875fcf39fdabf56b5
-# bad: [78543c82d93b6bb10c7d6527138b7c99ecb2c2c3] net: stmmac: fix oops when split header is enabled
-git bisect bad 78543c82d93b6bb10c7d6527138b7c99ecb2c2c3
-# bad: [5c95382ad671b086e361c5bb94678754512bfc59] media: chips-media: wave5: Fix Null reference while testing fluster
-git bisect bad 5c95382ad671b086e361c5bb94678754512bfc59
-# good: [4e2cee549890df21dc0d06f9bbc2df98e8dbc60b] irqwork: Move data struct to a types header
-git bisect good 4e2cee549890df21dc0d06f9bbc2df98e8dbc60b
-# bad: [568deb5ecc2624ea189ecda36162962725bd6827] wifi: iwlwifi: fix 22000 series SMEM parsing
-git bisect bad 568deb5ecc2624ea189ecda36162962725bd6827
-# bad: [d0b39dc7649b68bdeaa17c71c76d58eab59a35c7] btrfs: fix zero size inode with non-zero size after log replay
-git bisect bad d0b39dc7649b68bdeaa17c71c76d58eab59a35c7
-# bad: [7dabc9bec015ccad262d8cc37e8c00328f555691] btrfs: tree-log: don't use token set/get accessors in fill_inode_item(
-)
-git bisect bad 7dabc9bec015ccad262d8cc37e8c00328f555691
-# bad: [58dd6e92725f9afc375ccb11d3ef04fab0a4b4af] srcu: Use irq_work to start GP in tiny SRCU
-git bisect bad 58dd6e92725f9afc375ccb11d3ef04fab0a4b4af
-# first bad commit: [58dd6e92725f9afc375ccb11d3ef04fab0a4b4af] srcu: Use irq_work to start GP in tiny SRCU
-
+>                                                         Thanx, Paul
+>
+> > ---
+> >  kernel/rcu/srcutree.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index 2b0e2b2d2c18..46fe2f0cef85 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -20,6 +20,7 @@
+> >  #include <linux/percpu.h>
+> >  #include <linux/preempt.h>
+> >  #include <linux/irq_work.h>
+> > +#include <linux/kasan.h>
+> >  #include <linux/llist.h>
+> >  #include <linux/rcupdate_wait.h>
+> >  #include <linux/sched.h>
+> > @@ -1530,6 +1531,10 @@ static void __call_srcu(struct srcu_struct *ssp,=
+ struct rcu_head *rhp,
+> >  {
+> >       if (WARN_ON_ONCE(ssp->srcu_reader_flavor =3D=3D SRCU_READ_FLAVOR_=
+ATOMIC))
+> >               return; // Leak the callback rather than corrupt SRCU sta=
+te.
+> > +
+> > +     /* Record the caller: the irq_work's stack says nothing about it.=
+ */
+> > +     kasan_record_aux_stack(rhp);
+> > +
+> >       if (should_rcu_defer()) {
+> >               struct srcu_defer *sndp =3D this_cpu_ptr(&srcu_defer);
+> >               struct srcu_data *sdp;
+> > --
+> > 2.43.0
+> >
