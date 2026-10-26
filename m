@@ -1,94 +1,65 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.196.61
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793057115;
-	b=hYm/w2sjmn0nd0wibe6F48rLrY8GHmJev9tzM+odHqfZkojmuQeCeV04xV5fPBVEIz45
-	 MnQnR3fNwY7brUQnNM8/HatLMgj9FhBElprbpwl1d2YxItlL091Oq4zooX1R+Y7jmVzaa
-	 Djl8KLpOVZF5X2qs1msPOkmx+cvbGrJSU1VnnTY6mt7AgxGvsYTi0+YBxjDN2pQWmFpgr
-	 J+TbsWyiRwioFupJE39+aEt2AEcsOZ9ULoAgM1IwrQ8zEm/2QAKsWj1f+f82NsHhhZjP8
-	 1bXrYC5cQL5jhIN+n3DRGssmRJ+0VwRW9YnLVVN4RrurWI21UrhenmrUDsqMpQ6tPbw==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793057115;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:Content-Type:Content-Disposition:
-	 In-Reply-To:X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=JKu42Gq0F2cuholGR+kFuVVKpQuKZgF9Hyn7L+99cAM=;
-	b=W04ypp+zR5Gru2raQkUEFfOi4BLdbyPN5FwGu3wL5IK0q/Rbcla2afHqqDvJuOFZOTx4
-	 AKfhzq1uqQ+24Z6N1CszvoaAFMQivWau8cghX6FrCT4QQ2MnklB67XPQrFSPsxw5+WKy8
-	 ZTdJv/sNugSR2BH9skRYGzK98cteE7UQOaWC6SxxQimGO2K/i+SNYGxV5a823A/o9j3D3
-	 MuaXA3Bk2Vhg8QGhQC553+DpJmMu1VWQ8BxgPCbtc8/yjWIYAyvkEuSrscM3pUTfwx5/J
-	 UYzcD0BZNX0yA5pgs4GOngI8stwp9dbpmVxWW08blKNMOL/7Hh+XgVKqL3sZZEFGYUg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nvidia.com;
-	spf=fail smtp.mailfrom=nvidia.com;
-	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=MLpaAZxf;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.196.61
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013061.outbound.protection.outlook.com [40.93.196.61])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793057466;
+	b=Lk6rPF4FlAui6n7AmaEa/pSrf7NiuogO0NyJLmcOybMsjqqMnRk4o2PWDopNnWWP7lmT
+	 b2leI6Q1SrDwIeKWG3Iq1Zt9Q0Zv89Rrx7nUPLAVTuAF3R2xK2HJ2G/NEdfglTbScPJAG
+	 ZR5WAi6w7xMR7n+6kkZGqDrgcPjmrx87JuwO1tckgctC5GzxAAlhpyD2IOBzyF71EaGYK
+	 cSk0RWeNHJUVUN3TyGkki73b07v3IFoFlx23GFkHiknq5ZNA9gjoSq+CAn51uVTI3Bo3B
+	 aZ3XLBVwxO1UwNh8KZNAqp6k9S+3OVAWPF0zZkxxKemdTZ/N9OzdWfm47EAzsJo3KCg==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793057466;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=BXMaxfxl8pUfKyjU+RYdBrxevhEHCmwAm3DkCRJuUXM=;
+	b=VK1JC2AGddsJZXTvCILXFsu2rlc97mmhP/6IIfA404ZVFtOUhjnJacpU7KFt3sQYTv66
+	 iGnFd2et2+QrJ8FsTQIntBHSPYYY0ntGQQSoQb4/t57o071NGq8hNE8crKu1ExYSfPiI/
+	 OXEEva5duRCpX0Bg3PADxrGZsE2caNLtgaUgNPLzmGmiwm6fsqBKz2jBBt/+pNzRX+jkt
+	 q0JCiyipSrDcEs2XQe2ebwsmTbOFz7m699hdLexmeRMINmxNE2z/FXCo6LMOi4wG3KMU+
+	 wDSQfDlws+9yqW/gtaRFBPUNNPgdsHPPQi4V3pWoMLT/wytG/7ZQhe7zVmsf30sfbWA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=b827CWyl;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C4D606A31F;
-	Mon, 26 Oct 2026 23:25:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 10C4D606A31F
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96CF3606A323;
+	Mon, 26 Oct 2026 23:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=MLpaAZxf
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=vqzVnMUd/u7GlZQoZxdGRBhMAjzBTBUEFu+kha4ZvrBgPjwrOQ9rRHi5b/hkGINl1SoOH9Oukguji4UYuMbFJEnM9YYOOSaKaFEVvJopanmR4h3ELw4zKaqXix9JZv1YOcfx5yb6ULLoheLgZeC7/kJdmTGhkmjP9TRdAEWBaIWLKqc28p3DvieKYAZW7qlJI6hwUlRcpUye8odWEfR0R0iDPhJx98Su8JhNT7cR+CnnOwWnRTpIiaQNuZl+G6VuMBD+5/h9i6eOMqT7g3a/wbMDVtBPsasS13wnysch+ftP9b9e+i3Kv/fdI0JMs3tqXnxna12CPOaP6heG3BKBZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JKu42Gq0F2cuholGR+kFuVVKpQuKZgF9Hyn7L+99cAM=;
- b=HvPZwOe/oycgb6eUgTcJrf9LY/3XcWrtuq5Yyo9nFx2veMH6q6jMe01+JW3LNpYkzZRrkipTkAFA+xRM3QfoLX6vsja4QXIYZzo9njhzJ8yoc/luj6/cSf1pBzQ+smJNr2PoENtMeKnb/ekNfclfsdZqLEtcmUYG3j4vUyWT53DCBOb06n3iWpFADOv6RZCRrfxLyYw6LUt53Mf646Sb3uA+SQbDaxEIj52ong8Y53mbwd6+KB9bfu5UCa5o0jbVtRIvXGhp1+2slKkIckBnyL6SpBeBbOdAP8zRhyXBufn4VJEvWUBQ1refokr57u/UL0nKNZHf2plADMnOz0XwPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JKu42Gq0F2cuholGR+kFuVVKpQuKZgF9Hyn7L+99cAM=;
- b=MLpaAZxfYenjTsSOYX8lFE8buSHchcre00ijcESbruY0s7QEh2WZQtK9URyASg63gT3QzhDG+AsCSiJiLjCBJ4abiSSlHSMLxgKVUuWLxAlVjGC7fw1Ha1ZgrPaRs4iaS2gCjNt2A+o+93Pk6CH+57FoOCyBtSX5v/XDijwYB1z0ZJ+G7lMPHq+J8enHDWXvifIjdNkMpCN8MTnP5UyUx7usiXAFmpEn2lVTTMDrFs8Eq1R/wgQbDIXgtHn4OnDNH8F+Vc556+TExO37H4aCUrgmyUC5VLJeFVvt3PQRC+9p9QntCmgVsrhWM7vbnQ1bykHG0QPEmbC5Yr6s/9r5dw==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM4PR12MB7742.namprd12.prod.outlook.com (2603:10b6:8:102::18)
- by MN0PR12MB5907.namprd12.prod.outlook.com (2603:10b6:208:37b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.22; Mon, 26 Oct
- 2026 23:25:12 +0000
-Received: from DM4PR12MB7742.namprd12.prod.outlook.com
- ([fe80::8df:c519:298a:94f6]) by DM4PR12MB7742.namprd12.prod.outlook.com
- ([fe80::8df:c519:298a:94f6%6]) with mapi id 15.21.0546.021; Mon, 26 Oct 2026
- 23:25:12 +0000
-Date: Mon, 26 Oct 2026 19:25:05 -0400
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Sasha Levin <sashal@kernel.org>
-Cc: stable <stable@vger.kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	rcu@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: Re: Tinyconfig build failures in v6.6.y and v6.12.y due to "srcu:
- Use irq_work to start GP in tiny SRCU"
-Message-ID: <20261026232505.GA1044084@joelbox>
-References: <49da816c-8082-46f1-bb12-f0d6187bb06a@roeck-us.net>
- <2026-10-26-1-daily-reply-0001-srcu-tiny-irq-work-revert@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2026-10-26-1-daily-reply-0001-srcu-tiny-irq-work-revert@kernel.org>
-X-ClientProxiedBy: CP6P284CA0053.BRAP284.PROD.OUTLOOK.COM
- (2603:10d6:103:1ab::19) To DM4PR12MB7742.namprd12.prod.outlook.com
- (2603:10b6:8:102::18)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=b827CWyl
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FF101F031E0;
+	Mon, 26 Oct 2026 23:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793057466;
+	bh=BXMaxfxl8pUfKyjU+RYdBrxevhEHCmwAm3DkCRJuUXM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=b827CWyl3P7PTW++NzPzVAN4jcqAt1OMlwu3Tg4YdVJZHb+t3k6vkPdataGUHC09H
+	 m5uQjB9F/3YYYC2eIakeohWLgXrBMDbRf9xqVel5D8pwiPsvFCkSYDSrzAJi5FdbI0
+	 X2h/JDXw7wymz0h+4g2s4f8SzJP7Tmpnf5/fXzo9iWw9O3s2zAIzQYINpwRLkty60B
+	 H34hzkXG+djeZcKcE1ndF9LWu1Jh3vNDmq0wOmjmWLprtvJTGF8bTGojj7HNAyN6r7
+	 FaUTgi4vbpouFmDaHeQM0agJtbU4gt/ECf3ntna2xYtvU92+EzqSXo9OjMcQTOVPiB
+	 RBuCrmeXavPaA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 2F65ACE0C35; Mon, 26 Oct 2026 16:31:06 -0700 (PDT)
+Date: Mon, 26 Oct 2026 16:31:06 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: KunWu Chan <kunwu.chan@gmail.com>
+Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, work@onurozkan.dev,
+	frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com, boqun@kernel.org, urezki@gmail.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	qiang.zhang@linux.dev, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
+Subject: Re: [PATCH 7/9] srcu: Detect duplicate callback enqueue at
+ registration
+Message-ID: <c259fb39-153a-41f2-9d82-cba4255e65e8@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20261023101841.2910719-1-kunwu.chan@gmail.com>
+ <20261023101841.2910719-8-kunwu.chan@gmail.com>
+ <60e6148e-b7e1-4f2f-a665-24567305956f@paulmck-laptop>
+ <b5c84b27-5e66-44f1-b95a-d7c1655df69d@paulmck-laptop>
+ <CAN_Opa9MvTvLemY5DYNHu-yXy9xZvJJiLXigknP-qM=bK0Xw7w@mail.gmail.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -98,77 +69,133 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB7742:EE_|MN0PR12MB5907:EE_
-X-MS-Office365-Filtering-Correlation-Id: a1b717cf-e827-439a-19b0-08df33b861f3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|23010399003|376014|261026140227099003|11063799006|4143699003|56012099006|261022105027099003|10067099003|18002099003|22082099003|261026121527099003;
-X-Microsoft-Antispam-Message-Info:
-	pBbzROVWPSf3JyzSPoNNEGqSuIcthg49x1XxSIDAc2WDzfwPWunJXX2YJIHT6pN5YZp7s41+ww3QwwhlYp2W+0Vq3Ml+XU67bcppDqsQbizKeaPPXcb7RYpnUO+dHM777kxg4vc3sUiyPvrau+lf7LUN7ClHIyRKmqpjwHgckmZMtNqakZRZozsFTjBgu2dagtiEeOJoVR6jtF2G0/sYrSgcmnvd3i0/gUPvOhPP2xYZ2cDE+ttuitKQbWl0ASMMl0/Ms8lJd1IwsvBNwlfyeHnhcAWfk3lljpICmUFEN1VGaeVlpD0ewEl5bxX73Mj5tXL7xX+fRaQLfPN5O4U9Udh6Mzh54ISe8IFkkAKM2jTkUOuEPQIsan2OB/lwoK9RRRJCMdcYAzKRZ7zEXTw1SgG+M7ulv6Rbg61kNUKWaeIUeU6ewigg0/sKzp88JbyE/LO0bRvupu1dpXsvG8NP0r9mfGBDwJV3bVEWB+2fUGuVOB3lqxX5bJwfSkU1Wn9Eguh6xGN6mopaOL0GhPoZyLT+h/bVnsVSP2b/K1mZiqjNiy3vc1zLZAZITqIjnts2n9o0HwGmtpWjnhSjADKzoAxXq41NMoYDWZf4T1K2pncNURJ+BZinyC+S8DZ5Lrrd1J+aRPGWkK/Av07z2jMun1zBp92jBQRBveHv+Psl2b0=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB7742.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(23010399003)(376014)(261026140227099003)(11063799006)(4143699003)(56012099006)(261022105027099003)(10067099003)(18002099003)(22082099003)(261026121527099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Nw+vMoXk4UTtJgnidz6xZ6s+/HHiDDn2j93ijJZrq+0muVsm1RW8X60RKe49?=
- =?us-ascii?Q?obffQ04+amLiAxLRAtAMfkGqK1S35+QgZRZw3mSZGMunor+aGGn0dgVY5Apw?=
- =?us-ascii?Q?xEZ6q2aWEIqOfnmWKCxMQcWHkuhFLx18xui4tR5GLWC++Q/JLwYEISv0WQN0?=
- =?us-ascii?Q?1l7jkR2bWM/p9sTXh+Mnm6XbBN6HyXCy6Li46xRksVqaUvzH9HTeZMUTVZCY?=
- =?us-ascii?Q?e53Vz5K0l8lnT6JlR1UzJozlMsCJQCMorWSO3lfg7kd1vnbSGdLAjVWf3bH4?=
- =?us-ascii?Q?Owo2mALVFTy/jv5PF71uhKbbIQTG1aptmKo+s8dEbBvchBWB7DpNRADOJ+0I?=
- =?us-ascii?Q?cq6vwnvpK6b9mYecxZZLqvPACUQpitR494h5QYnlytsThcXBml5qxHpURk8t?=
- =?us-ascii?Q?ZqE+xCYa7J/J1UNDCQOy/Sunfj/w0jGS/vDHf9P5GJ9eEvYrZL9LcVAOLAZe?=
- =?us-ascii?Q?ZIvcloJBjJiU2m0BNg5qIjtvPuhiSAO+Gm2d1BczW5DOKsQJ9RbCmzS0C+yZ?=
- =?us-ascii?Q?q/AdBcXHUYMxrOXT6byVT/dcAXyP63Zxf63bYcs9i4xjKM0Up4wEK93PZ0GJ?=
- =?us-ascii?Q?Ojiv3FfkTTZigicHh/r8hhr3IXtnJzVmRMkJGBmHmmzZssQ13WXZj2lHm1mN?=
- =?us-ascii?Q?6saZ1DroQ7CqurOXLe1GSZXaj+eGzhQ+oi4zOM2nH8b9o2UTzYFV6SVDY7DM?=
- =?us-ascii?Q?DTmPF/iSTwnAuWIw32v5d54YgNOyUZv3OM5peLHLRZ7oXYdr1txcbc6SjlJl?=
- =?us-ascii?Q?s71TToGNhdtHwQcoookHL0dG80F0X+CHRsqVN+9q3DNLoI19MSXkGSqHgWxE?=
- =?us-ascii?Q?XjK8ucvAsGV0TqwBIw8RbyQuL3UzX/xDOgRBch2HPcGP6Admviqop/+qkkP/?=
- =?us-ascii?Q?bOZ8jbIx6hSRaavVDXv47IKJHpdk36ybU1xnLa2zY+dlS+FBYIV/bMFtHuSQ?=
- =?us-ascii?Q?tfO/pvRl7dWPUNEH/aZCujxsKWu00MhSOlfpvCFIGoVzw4IF9n0L/5YNLJEt?=
- =?us-ascii?Q?5zySMymwCTqX2NwmJnoHa7GyuTx7m7/QrCqODi+2GGDuqgEuIaLEr8Y8/mIL?=
- =?us-ascii?Q?CaReBcCFvEeieFdhsRDLrzSgIZL+0NR/vJ0B6z551Eo8gPP62rO8tnbWJ1/b?=
- =?us-ascii?Q?4M28zp7b5tI5RoVjw6o9xAQ1xxgwlJwfHjOgPaGOvVrbiliJRKKObzqBRqOs?=
- =?us-ascii?Q?aczsxiqjnKtLAppMC7CsAwGqpstzO12lJX5YelQ/Pfv0JSt+QPipL0WRHmTz?=
- =?us-ascii?Q?FDOzYv7MBK/FbJ1Msf5BvmeObn5jpe7qOI7Zbb9K5R43bNpIzvv3Mye8wsNg?=
- =?us-ascii?Q?FjTx1w2OUktDLnCI4DkLXThAEs+MKj7I6kjV0lv2kR8KINVh1JrI68uYplSy?=
- =?us-ascii?Q?0AIWePZx6togwSFN2d+bDTsvV3nSEDF01TZCkOY+1aSeRxtNW2qABEiiZUfC?=
- =?us-ascii?Q?hJ6675G0bjPjGEzXDi3ODtOyekcwFKE7B70RuPFIkiCPhlQ+1HkcEEmE6R/7?=
- =?us-ascii?Q?VWJtj4THKkehQQWpqVfvDTOyrQg/8eiX9+V2KK9kzP4Vc6rLrz3oAd6GbxEG?=
- =?us-ascii?Q?BQrGkqESva7YdI/tG4wfi2gc5tHJfizHLqD692D8X54cHwra3to+DiAON7FZ?=
- =?us-ascii?Q?+3eAf8Axy1UcXwaCu4Ji4Jze/skZl9FkzkfmIwl3I1tIwWtleMIacBZH4nGA?=
- =?us-ascii?Q?hWEeo9EZOEuwQgoM/5PAYkwnMvFDpMYBQCyRlG0PhPPlm95FoNGqDOrJaAw5?=
- =?us-ascii?Q?dqLKkgfoQQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1b717cf-e827-439a-19b0-08df33b861f3
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB7742.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2026 23:25:12.1290
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LlP4I3IeiIy3YLPhLqBOOvFYXFLLWtpHzoGLzee+8oQf8NtWZg4yzVPCYy0HilTo5z+BkSQLo9L6NIJsGASZiA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5907
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN_Opa9MvTvLemY5DYNHu-yXy9xZvJJiLXigknP-qM=bK0Xw7w@mail.gmail.com>
 
-On Mon, Oct 26, 2026 at 06:55:52PM -0400, Sasha Levin wrote:
-> > Bisect points to commit 58dd6e92725f ("srcu: Use irq_work to start GP in tiny SRCU")
-> > in v6.12.y. Reverting this commit fixes the problem.
+On Mon, Oct 26, 2026 at 10:35:02AM +0800, KunWu Chan wrote:
+> Thanks Paul for the detailed review.
 > 
-> Queued the revert for 6.12 and 6.6, thanks.
+> On Sat, Oct 24, 2026 at 3:38 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Fri, Oct 23, 2026 at 12:30:57PM -0700, Paul E. McKenney wrote:
+> > > On Fri, Oct 23, 2026 at 06:18:39PM +0800, Kunwu Chan wrote:
+> > > > Move the duplicate-callback check from srcu_do_enqueue() to
+> > > > __call_srcu() entry so that detected duplicate registrations
+> > > > are rejected before they reach the deferred-list enqueue path.
+> > > > Report the callback address, function symbol, and object
+> > > > information, rate-limited to the first three occurrences.
+> > > >
+> > > > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> > >
+> > > Getting the stackof the call_srcu() once double-enqueue is detected
+> > > would be a very good thing!
 > 
-> > Adding "select IRQ_WORK" to "config TINY_SRCU" also fixes the build
-> > problem, but I don't know if that is an acceptable / desirable solution.
-> > If so, it should probably be added to the mainline kernel since the code
-> > only builds there accidentally.
+> I'm also working on the rcutorture support and will send it out separately.
+
+Looking forward to it!
+
+							Thanx, Paul
+
+> > > One question below.
+> > >
+> > > > ---
+> > > >  kernel/rcu/srcutree.c | 20 ++++++++++++++------
+> > > >  1 file changed, 14 insertions(+), 6 deletions(-)
+> > > >
+> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > index 1993ddbdb828..3838d9fdf532 100644
+> > > > --- a/kernel/rcu/srcutree.c
+> > > > +++ b/kernel/rcu/srcutree.c
+> > > > @@ -27,6 +27,7 @@
+> > > >  #include <linux/smp.h>
+> > > >  #include <linux/delay.h>
+> > > >  #include <linux/module.h>
+> > > > +#include <linux/mm.h>
+> > > >  #include <linux/slab.h>
+> > > >  #include <linux/srcu.h>
+> > > >
+> > > > @@ -1511,12 +1512,6 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+> > > >  static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
+> > > >                         rcu_callback_t func, bool do_norm)
+> > > >  {
+> > > > -   if (debug_rcu_head_queue(rhp)) {
+> > > > -           /* Probable double call_srcu(), so leak the callback. */
+> > > > -           WRITE_ONCE(rhp->func, srcu_leak_callback);
+> > > > -           WARN_ONCE(1, "call_srcu(): Leaked duplicate callback\n");
+> > > > -           return;
+> > > > -   }
+> > > >     rhp->func = func;
+> > > >     (void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
+> > > >  }
+> > > > @@ -1529,6 +1524,8 @@ static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
+> > > >  static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+> > > >                     rcu_callback_t func, bool do_norm)
+> > > >  {
+> > > > +   static atomic_t doublefrees;
+> > > > +
+> > > >     /* Misaligned rcu_head! */
+> > > >     WARN_ON_ONCE((unsigned long)rhp & (sizeof(void *) - 1));
+> > > >
+> > > > @@ -1539,6 +1536,16 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+> > > >     if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
+> > > >             return; // Leak the callback rather than corrupt SRCU state.
+> > > >
+> > > > +   if (debug_rcu_head_queue(rhp)) {
+> > > > +           if (atomic_inc_return(&doublefrees) < 4) {
+> > >
+> > > Why this hard-coded 4?  Why not 3 or 5?  Should this be adjustable via
+> > > Kconfig or kernel boot parameter?  Or, alternatively, should the below
+> > > pr_err() instead be pr_err_ratelimited()?
 > 
-> That one is for Joel and the RCU maintainers to take up in mainline.
-
-Thank you for the suggestion, I will add it for 7.5.
-
-thanks,
-
-Joel Fernandes
-
+> Regarding the hard-coded limit, I followed the existing code in tree.c when
+> choosing 4. Thanks for pointing this out. I'll switch to pr_err_ratelimited()
+> in v2 and make the same change in tree.c as well, so the two paths are
+> consistent.
+> > >
+> > > > +                   pr_err("%s(): Duplicate call_srcu() CB %p->%pS()\n",
+> > > > +                          __func__, rhp, rhp->func);
+> > > > +                   mem_dump_obj(rhp);
+> > >
+> > > Does any of this automatically dump out the stack that was recorded
+> > > in earlier patches in this series?
+> >
+> 
+> I'll also add dump_stack() to all three duplicate-enqueue patches
+> to capture the current stack when a duplicate is detected.
+> 
+> > As in shouldn't there be a kasan_print_aux_stacks() in there somewhere?
+> > I did not see an call from mem_dump_obj(), but I could easily have
+> > missed it.
+> >
+> 
+> As for kasan_print_aux_stacks(), as mentioned in my reply to patch 1,
+> it is called by the existing KASAN report path, which prints the auxiliary
+> stack recorded by patches 1-3. It does not need to be called directly
+> from these patches.
+> 
+> Thanks,
+> Kunwu
+> 
+> >                                                         Thanx, Paul
+> >
+> > > > +           }
+> > > > +           WRITE_ONCE(rhp->func, srcu_leak_callback);
+> > > > +           return;
+> > > > +   }
+> > > > +
+> > > >     /* Record the caller: the irq_work's stack says nothing about it. */
+> > > >     kasan_record_aux_stack(rhp);
+> > > >
+> > > > @@ -1554,6 +1561,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+> > > >             if (READ_ONCE(sndp->draining) && !in_nmi()) {
+> > > >                     WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
+> > > >                               "call_srcu() re-entered during callback drain; leaking callback\n");
+> > > > +                   debug_rcu_head_unqueue(rhp);
+> > > >                     return;
+> > > >             }
+> > > >             sdp = this_cpu_ptr(ssp->sda);
+> > > > --
+> > > > 2.43.0
+> > > >
