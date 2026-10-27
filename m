@@ -1,63 +1,101 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.182
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793057494;
-	b=Ou8xlfLXh4yb9HlZqhfoN8P5hPvYNcUN0LEAh3HALBrjPEx0hClDUevbOK00zgJvIluV
-	 pApKvegq1lnPRZa9GEphY1E8URyBzienPU1BQNzbq3bkFpKEPy8caWqy5zPenprBFySd6
-	 5AtYlQxc+I/yooeHH6rYcxxXfacTtcCNHDTzvGIf1HOwsqZ1ubwpzZZZJt7AwSqs5/YkJ
-	 xul9h8onT0aXINojgU0YnMEQlxLWABSnBULDx2c/p78xmkeT4SufGXmIJjKZ3pF8FSbBn
-	 jwTX18E1QZwF2mCwsXYnfceIgCgEsN2UsxD/SocXlW+QtUxOLfle9ibGEtyqhC2Grrw==
+	t=1793085000;
+	b=bGVbdFxXtLm97MpcNEUHiiwPynYf/BXCfD7/sU1f6iM/Rw4bi1nWTXw2vEclCL0bn5eB
+	 rD0Wp8FmAwk5Asisw16gjQnNGKAjKvt58K2xlEAX9zOTmvhG//o/v7sxhOMZ+A1sMfbc0
+	 q0LqD4VZzXTV3wXSIwZr8zSxKynjU78bppN43KH8pjokYN8UjnbC4kUPqb65T2LXv6C1O
+	 SFecBOWo/MU86UAQHldozmhisAxEsfsWsS1U2Hff38TY1IQz+w+44mwMyWw6sErorcKF0
+	 E5HxKsexibZ3YsgXF5kC1TdOnK9VRDK2ntqXrar48B25e0FQzdxVjffaoMba5rREsAA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793057494;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To;
-	bh=MvmshXKsgvlL7yA7pYzz7rQMYWGPWsd1FbsLikdog2M=;
-	b=yCytJBfX9/Qq36JIGvXbjDYT2ay+8s08zK+DfV4sTJlvvq1mj6dloEzuHKR0mcBDrfva
-	 wuW2u3kBExr/ytz2nDrTVgrFiDqKxjvXTazYAwQvr91V9Y+9GKX1hzJigKx881nW62ZiK
-	 2lc9YoWa5MGUvuPtEWmNGe9BrGjxY5iX+Uyq2okjVe77cwrPoRZiVo79VKmgsjzFMPo83
-	 33e4vJnlgVr4HeYByBdtyKFXs+32fhXNqzNWjMlZ/cnbFWd+I1aOUH7KfxJTi98WYR6ap
-	 rlosR+QbevB9FGCvJnQXp/H6dIIM2r9/duiU++5hwd/wk9sHFtTZ4qPXIcUaKO7Wt3w==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793085000;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=C2zQrivhWq2xS7rGadMgkWdZZAgjXLYRNp3PSXeLbqM=;
+	b=dvmK/g63GW/GAu7uyC4ze8p6T99bLeij1rmPtdw2/YXJYr9D4OmpCPgpnc8dIzI+CwKo
+	 rktGBJAoaffHlj+M8TpJxzDo/53xsQ10cChfJwZ5vHbJ1jhCRLdpv64ZLTBVV7k/FweVS
+	 04O+GH+ffq6W606WbGM8BzKuppE6drq6VQU3kLB+HCiRLAeHkU16pHiYIbqAGKOiNOEWk
+	 ej0DXP+B/XF6uxJCUQy8Ac7OWHKXpbfkdBDFeB/UVg2NJGIa0DL0TAsgEsJ0ly+0ozcMh
+	 /Houh2WpE39S0hLwntaDOTIYCFcJA2cm8b1yBySbIgD3WWaH3QJUF6opJkhCHC44F/A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZDSLj8Yf;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=egN0oQ5f;
+	arc=none smtp.remote-ip=209.85.210.182
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EA3606A31E;
-	Mon, 26 Oct 2026 23:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0095606A31A
+	for <rcu@vger.kernel.org>; Tue, 27 Oct 2026 07:09:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D0095606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZDSLj8Yf
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3C501F01828;
-	Mon, 26 Oct 2026 23:31:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793057493;
-	bh=MvmshXKsgvlL7yA7pYzz7rQMYWGPWsd1FbsLikdog2M=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=ZDSLj8Yf+Ge+XCP/KMRmBx6M8o0oZuPjSB/2+1unK6AeHelFmU2kMvWnLveQ202UL
-	 ANqzxZ6hKwMExJsiv8YSXsZ6UxjC6Col7lK8ZNj1jkvSaJCiNVTBLkCGsM+Jy1qKZc
-	 I1EIM/QVGiTcpPj63M1ehXEnOowwGfs0z2gp9ENeh7RYb4ZPri4+OGd+9QEwMf8TrX
-	 7TGWsoOtU4FCUIrq9CPmFF0yOSD2VYCiDpNj/qzGYIDI7gq3lj7QTDfPD11vIcffy2
-	 WAnrl67T47k6PL8Od6wEOmeF79sQNfBxzP9sa4MHSbKG+aIB3kyp33f7yJ2UAyfDlD
-	 RhSTmZmcpGaZQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 87CCACE0C35; Mon, 26 Oct 2026 16:31:33 -0700 (PDT)
-Date: Mon, 26 Oct 2026 16:31:33 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: KunWu Chan <kunwu.chan@gmail.com>
-Cc: jiangshanlai@gmail.com, josh@joshtriplett.org, work@onurozkan.dev,
-	frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com, boqun@kernel.org, urezki@gmail.com,
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-	qiang.zhang@linux.dev, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
-Subject: Re: [PATCH 9/9] rcu-tasks: Detect duplicate callback enqueue
-Message-ID: <004be859-71a2-42f9-af3d-958ad70f38f5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20261023101841.2910719-1-kunwu.chan@gmail.com>
- <20261023101841.2910719-10-kunwu.chan@gmail.com>
- <cdd3f35d-9e9a-4b87-bea7-59ff3e1a7390@paulmck-laptop>
- <CAN_Opa_eWF27jfz_HfXjUEw_raQb-j8Q1TMHLr9cx0P=N2-s6Q@mail.gmail.com>
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=egN0oQ5f
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-8a089dfee18so377486b3a.1
+        for <rcu@vger.kernel.org>; Tue, 27 Oct 2026 00:09:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1793084999; x=1793689799; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=C2zQrivhWq2xS7rGadMgkWdZZAgjXLYRNp3PSXeLbqM=;
+        b=egN0oQ5f3P4k9liFx0lazyZgm7QoUXhnN/1UbwQhc+0aUl7uD79Np68WD90AhuU7Pf
+         ikWfRnV7+O/2d+wKRCzBf6BKAWUUTHKGig5HfJ8cPK39I7o6N3XuBe35K4/aJfUNOEZL
+         jwxsV5kIZXUR/kiYDRA/jDloF8DEMX58jSyvA6qeOSL7EvqFFhtT9Peen1r6vJ/3UL+Y
+         kkV/vPr6bg/s9/7k85fLoUc0xoPQYQNk5gwV2kg6XmonQfeeqkJByXDBRxeCiyJb/+Hj
+         VkDzzEW9bisy4ZhVujcu5X/Colswjr1HrQuzEX4ZdoqY8TaCgBhIIgAXeosZFYBDG/aC
+         Xhtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793084999; x=1793689799;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=C2zQrivhWq2xS7rGadMgkWdZZAgjXLYRNp3PSXeLbqM=;
+        b=LznWqn43hkwIQY394edajrHQ4pCnCdvKb8en2VIzf5aFIVb2Ds2Y1cl049wfN8kbmA
+         hT7ai0yjWQMAZdjVub/DCKPsxfYcgSNOXxtmMoG/aMCr/BBXkP3/gpbuIwCkMkUrvZs6
+         61lxqNHUbGLJXv0UVMiTx1U01aG3StyfWbY2pSZ9rTy04WSeQ50wa2a+Hb17BF5x1TB7
+         hQb2PFIcuBpFTQ80XfmsnJhz8c2BAUpIcHLdkslUEigLYsksQFkK1Dg3+5zanj2h08Cb
+         shCYJsuyEPMqUc3EesrWzUZoQtuNxD2+LduaBqE8NezUInjH4FfwmVrey/2HrBy9hO0g
+         dK8g==
+X-Forwarded-Encrypted: i=1; AKwUvBzZEKVXtIqUycBRhYRoc8b6QvdpQiM+NHnd1W9b3Rds7f1H8Hs/Dfe+t3AjxWnyYpMunZU=@vger.kernel.org
+X-Gm-Message-State: AFq9FYK0ucvME4xEfcenPla9u7WLbKEeao+EOXoj8HIIHNfNFpN+MMll
+	t0yzIup3kX9aPAq9thZSi45R7iPvI/hyAB+yfX3GJDESdMlm7M5UIFAR
+X-Gm-Gg: AYBFou2uHTx3KeRjrgiEeAeonC0JnYOtKfwU7s+zolkZ3yC10Bqh2iv/2OCzC4DrtKk
+	v6GepCDwb/j22gxTaf1XiQq5BzP1iVbour5qpbyrhyemCFV1qGknupKmz3jvJsCNADNAJqMh+Wa
+	CrXfeIJ23oov8O82Lrw93htUS531bMx7K1Og944PFesxaL6q+jNfAJtJg7rNNiMhiTFFnv/xKN2
+	muGXSUr23YgSuudXkoPmL3y8v9LyhZCos3TibcReyiXufG3Iq8C8f0xgzrHGXu7UlSe5FN5tK/2
+	0EdBsS/2B29pNS5kON6jj9yzF2aDHUJejtaCSyMr4AHaEj7imSDNdYq3LBGaFNai97ftDrbQv4z
+	DuS9SjHnXF6QSiii/3+wivGQ20QB2kTeCBZJHLt7kQvdCblPmVXNeMqrA5Q4IL2c9w48AcGEiKx
+	QipAZTjANEXsE7856fsUvw6m8JQVHBifSfA5MUG3q1WlIGHWLYY/P13cgQpu2RsDGWbS2fZezOl
+	cnXjHYzqcRtC2EOsPD7sXyf6CsKgVDEDxUWVH7BsuWIViCxbRrVNmYFDui8cuNu4lxLiqFf4Q==
+X-Received: by 2002:a05:6a20:e290:b0:3e2:9b9e:7efb with SMTP id adf61e73a8af0-3e8eaea247fmr1321044637.50.1793084998943;
+        Tue, 27 Oct 2026 00:09:58 -0700 (PDT)
+Received: from kernel.tail6741c6.ts.net ([185.220.238.37])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cd8ccc21274sm2277512a12.8.2026.10.27.00.09.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2026 00:09:58 -0700 (PDT)
+From: Kunwu Chan <kunwu.chan@gmail.com>
+To: jiangshanlai@gmail.com,
+	paulmck@kernel.org,
+	josh@joshtriplett.org,
+	work@onurozkan.dev,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	boqun@kernel.org,
+	urezki@gmail.com
+Cc: rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	qiang.zhang@linux.dev,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <kunwu.chan@gmail.com>
+Subject: [PATCH v2 00/10] rcu: Improve callback diagnostics and validation
+Date: Tue, 27 Oct 2026 15:09:13 +0800
+Message-ID: <20261027070923.3054462-1-kunwu.chan@gmail.com>
+X-Mailer: git-send-email 2.43.0
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -67,88 +105,72 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN_Opa_eWF27jfz_HfXjUEw_raQb-j8Q1TMHLr9cx0P=N2-s6Q@mail.gmail.com>
 
-On Mon, Oct 26, 2026 at 10:36:02AM +0800, KunWu Chan wrote:
-> On Sat, Oct 24, 2026 at 3:31 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, Oct 23, 2026 at 06:18:41PM +0800, Kunwu Chan wrote:
-> > > Detect duplicate callback enqueue attempts in the generic
-> > > RCU Tasks callback registration path.
-> > >
-> > > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> >
-> > And the same questions for this patch as well.  ;-)
-> 
-> Same changes applied: pr_err_ratelimited() and dump_stack.
+Hi,
 
-Very good, thank you!
+This series improves callback diagnostics and validation across RCU,
+SRCU, and RCU Tasks.
 
-							Thanx, Paul
+Patches 1-3 record callback registration stacks for KASAN in Tree
+SRCU, Tiny SRCU, and Tiny RCU.  KASAN prints the recorded auxiliary
+stack when reporting a use-after-free.
 
-> Thanks,
-> Kunwu
-> 
-> >
-> >                                                         Thanx, Paul
-> >
-> > > ---
-> > >  kernel/rcu/tasks.h | 15 +++++++++++++++
-> > >  1 file changed, 15 insertions(+)
-> > >
-> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > index 5d7f234795b4..49b716feb31d 100644
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> > > @@ -6,6 +6,7 @@
-> > >   */
-> > >
-> > >  #ifdef CONFIG_TASKS_RCU_GENERIC
-> > > +#include <linux/mm.h>
-> > >  #include "rcu_segcblist.h"
-> > >
-> > >  ////////////////////////////////////////////////////////////////////////
-> > > @@ -339,9 +340,12 @@ static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp)
-> > >  }
-> > >
-> > >  // Enqueue a callback for the specified flavor of Tasks RCU.
-> > > +static void rcu_tasks_leak_callback(struct rcu_head *rhp) { }
-> > > +
-> > >  static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
-> > >                                  struct rcu_tasks *rtp)
-> > >  {
-> > > +     static atomic_t doublefrees;
-> > >       int chosen_cpu;
-> > >       unsigned long flags;
-> > >       bool havekthread = smp_load_acquire(&rtp->kthread_ptr);
-> > > @@ -358,6 +362,16 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
-> > >       if (WARN_ON_ONCE(!func))
-> > >               return;
-> > >
-> > > +     if (debug_rcu_head_queue(rhp)) {
-> > > +             if (atomic_inc_return(&doublefrees) < 4) {
-> > > +                     pr_err("%s(): Duplicate call_rcu_%s() CB %p->%pS()\n",
-> > > +                            __func__, rtp->name, rhp, rhp->func);
-> > > +                     mem_dump_obj(rhp);
-> > > +             }
-> > > +             WRITE_ONCE(rhp->func, rcu_tasks_leak_callback);
-> > > +             return;
-> > > +     }
-> > > +
-> > >       rhp->next = NULL;
-> > >       rhp->func = func;
-> > >       local_irq_save(flags);
-> > > @@ -586,6 +600,7 @@ static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu
-> > >       raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-> > >       len = rcl.len;
-> > >       for (rhp = rcu_cblist_dequeue(&rcl); rhp; rhp = rcu_cblist_dequeue(&rcl)) {
-> > > +             debug_rcu_head_unqueue(rhp);
-> > >               debug_rcu_head_callback(rhp);
-> > >               local_bh_disable();
-> > >               rhp->func(rhp);
-> > > --
-> > > 2.43.0
-> > >
+Patches 4-6 add rcu_head alignment and NULL callback-function checks.
+
+Patches 7-10 detect duplicate callback enqueue attempts before
+queueing, using the RCU head debug-object mechanism.  A duplicate
+registration is rejected at entry and __ratelimit() controls the
+diagnostic output group (pr_err, mem_dump_obj, dump_stack).
+Detection requires CONFIG_DEBUG_OBJECTS_RCU_HEAD.
+
+Changes since v1:
+- Patches 7-9: __ratelimit() + dump_stack() instead of hard-coded limit
+- Patch 10 (new): same change for Tree RCU's rcu_do_enqueue()
+- Patch 9: fixed log format to avoid pseudo-function names
+- Tags: Reviewed-by (4-6), Suggested-by (7-10)
+- v1: https://lore.kernel.org/all/20261023101841.2910719-1-kunwu.chan@gmail.com/
+
+
+Testing:
+  rcutorture with KASAN (SRCU-N, SRCU-P, SRCU-T, SRCU-U, TINY01,
+  TINY02, TREE03, 3min each): all exitcode 0.
+
+  KASAN aux stack (QEMU, CONFIG_KASAN_GENERIC=y):
+    Last potentially related work creation:
+     kasan_save_stack+0x33/0x60
+     kasan_record_aux_stack+0x8c/0xa0
+     call_srcu+0xb2/0x390
+
+  Duplicate enqueue (QEMU, CONFIG_DEBUG_OBJECTS_RCU_HEAD=y):
+    call_srcu(): Duplicate call_srcu() CB ... ->cb
+    dump_stack_lvl+0x47/0x60
+    call_rcu_tasks_generic(): Duplicate CB for RCU Tasks, ... ->cb
+    dump_stack_lvl+0x47/0x60
+    rcu_do_enqueue(): Double-freed CB ... ->cb  slab kmalloc-16 ...
+
+
+Kunwu Chan (10):
+  srcu: Record callback registration stack for KASAN
+  srcutiny: Record callback registration stack for KASAN
+  rcu: Record callback registration stack for Tiny RCU
+  srcu: Validate callback arguments
+  rcu: Validate callback arguments in Tiny RCU
+  rcu-tasks: Validate callback arguments
+  srcu: Detect duplicate callback enqueue at registration
+  srcutiny: Detect duplicate callback enqueue
+  rcu-tasks: Detect duplicate callback enqueue
+  rcu: Improve duplicate callback diagnostics
+
+ kernel/rcu/srcutiny.c | 34 ++++++++++++++++++++++++++++++++++
+ kernel/rcu/srcutree.c | 36 ++++++++++++++++++++++++++++++------
+ kernel/rcu/tasks.h    | 27 +++++++++++++++++++++++++++
+ kernel/rcu/tiny.c     | 11 +++++++++++
+ kernel/rcu/tree.c     |  9 +++++++--
+ 5 files changed, 109 insertions(+), 8 deletions(-)
+
+
+base-commit: 940793b926aa94bf65ec404043050888e3053188
+-- 
+2.43.0
+
