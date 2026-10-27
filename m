@@ -1,82 +1,82 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.177
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793085042;
-	b=L6lPUYww1Aq7ldbP/uVMOix2Z8WlDk9TOTn3ajcxiWyeNqe/ZxKvkiabqkTbEw6Jkas2
-	 YTVPpASZCsTJYUqMmhpyNVM2t+aFbg6w0QdFo7UbN48X+1u2l0sQ5evUbroBANdpqryA+
-	 olbdash0UrV+GK1MWdam+9mvvfZii294BqIYlzyZD6hNVc35zBSyq9Fd6xkeFMzT/erv3
-	 AjRabAKGV2ahdT3Kn0h1P5S+LjkDZ3C8bbtJfaqVFYAfv8823HMEYhpgax+rjVQomcyOT
-	 cbB8I75D9aYbZ8ZmouBiycu0A6LNFySujNXL13bhT7W/5doOwgQUkQXBpJkjEy5oFxw==
+	t=1793085048;
+	b=vrnPwYFOLGFAynkTx96BekB2EzCAVYZ3MV1M4v2FMRYYcsqM/9IRL5LHQSuiQiHbirG1
+	 toY5OWIcE3In12VnoKVGCL28icmcyBtiJT/2r0HEdzDUYJZGB6+yaMUHYphRCLIj3revR
+	 8GVqQ9tGNPr1WGu4wMfmwh6f3varT88XIuXaDWcMfo7aCnl7Zxdf1aN+YPHD8Rm3AI7kh
+	 y54uBVT1IOd4xQvPePFKSk0/3UpvZO56Uq6LqqwVs1sSCPFBRJU7FPOar55FQ4ksGQfRd
+	 fAJD/FVfK3I3z8S38riLVsqHoOG6zVum4F3s2xT6xNKUypAG0A8xSf71xAIeAqmchKw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793085042;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793085048;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=OxH7CoGZzoMgyGL01lqgix9fdQuQFlpvLB0r4SdF5hI=;
-	b=se2I8CmQs6f3ZXYcWRBD2Xw2YXkxPC0niBoaFzDSHI/izf+FI8fKmRqfOHrWLdFn5pP1
-	 NrA8AyBg61kXAveLhgOMTAcxNtj2BxUIyc9bOmi3cwDOPvM/wTqkaT5P5FCAc/vY3GORy
-	 fgU3gLR19+BoOTIduA+T4qrxANmxaHNIKOKzptMP0neSsHdrlh3pi2JWhUvrsQKdghvTI
-	 WPuFcfh49gR3h/CQtJvXaRzj6JFa44+kpmZ23MVKYu4pOIcmqHMl3mSVLizBNjhs7oEpz
-	 JQ88I4oqcodnmHZ19X7MCnMKua2mhld/TVU7H8koEoilMmQjHN76nwEBQRrxFVCeiLA==
+	bh=s86LnAWFmWP59VgheQcHJpguzX26fuGNoKB7W+R3clE=;
+	b=YMtdxljRrd7p7ttnCyaA/edCYABIIeY/rPeK4S8lPjgo/cNtyFV/abkT+uFBh2ljUMeB
+	 bhfJLvuhHJteSe3S2QXa8yiIZl8Dl9HtGHJezfeU4AJDbbGmdmGUzw+/ymytC0ltY++UZ
+	 GU5aHBhSLmxptaoqBvXAzlKXY8MwCHa/wXnLw5VlYs/mQDZ6XE2nX97V3uo87UyT0Ta1c
+	 VX+69mC8S9ST0IAoODP6LKsH4+KsrO79K12CwBzP+ejLVCwNYq57rlCWxk9INaWTRj5Iw
+	 LUe8WT19Qx1ATC/khkzQI68tUygVwiZBHtnwnD4jKklFToib5Dmh3HkzFUhQaF1/gSA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=c0q55t24;
-	arc=none smtp.remote-ip=209.85.210.170
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=DWAEdlFC;
+	arc=none smtp.remote-ip=209.85.210.177
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27FA1606A31E
-	for <rcu@vger.kernel.org>; Tue, 27 Oct 2026 07:10:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 27FA1606A31E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C27A606A31A
+	for <rcu@vger.kernel.org>; Tue, 27 Oct 2026 07:10:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6C27A606A31A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=c0q55t24
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-881269371acso307588b3a.0
-        for <rcu@vger.kernel.org>; Tue, 27 Oct 2026 00:10:42 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=DWAEdlFC
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-8a064fac8cbso2308252b3a.1
+        for <rcu@vger.kernel.org>; Tue, 27 Oct 2026 00:10:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1793085041; x=1793689841; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1793085048; x=1793689848; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=OxH7CoGZzoMgyGL01lqgix9fdQuQFlpvLB0r4SdF5hI=;
-        b=c0q55t24VkuzSYewJ6och5i8auUNWEhK3q1xa+PLYTisR66TT0bivoRPCf3pZN/7pY
-         xt+3AHssmHRuYvwg8TAfwD6P7ha6V3lLgBdiKzCvA69lv4TW3r2T4OjegSsGm6t9XXKp
-         Z/XkvqJ+I9LZr/0wfmfHWbvV6bQv3GuNHuIezqebgHQAi5c9+6VhWAR/lXav9sk5VkbM
-         8pD5cVGssrptTOB9k1iB4K9oFWphDkTGxCUA2KdqiqIfXkc+PNR3pPyRp14VdC1LxkmN
-         a+aLsiygOzcKHr+bNdn1DNTHNc1JzOAwN8udVJ/cz96EwCKBKotuo5IzxmWBa4luCWgF
-         20Wg==
+        bh=s86LnAWFmWP59VgheQcHJpguzX26fuGNoKB7W+R3clE=;
+        b=DWAEdlFC3+yN2oI9TavrfsZxuJTSD12sq+7ZpsG+Gs7zHAGEe82AvbQTGBQvDK4PJK
+         Lsuz+xxHVk+6NC+QsqQrqjUmDKGPJa/MLocM69v1lXQDeZZ1ulMmcJQSQ3YsY4rTiQ5o
+         vGdBUmnP4UyH/hxj9OlnRfGmd9eqKwgzd6bBksPiU5xoeGpuKeiGfvsnzBdfjBZD8vjN
+         sp8CW8cmgnI44qdfr0JPNNH4c67Xmhp6o3AoGxjI0Kkvj9Qq3gAS8r3UQFNGaUIUilDv
+         rLxiXVRvHg8jGIXQoB/+0W3Djuaasc83juJbNm5T31TBxNHnHu09w6GCg1ZUbUd9Hino
+         NUuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793085041; x=1793689841;
+        d=1e100.net; s=20260707; t=1793085048; x=1793689848;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=OxH7CoGZzoMgyGL01lqgix9fdQuQFlpvLB0r4SdF5hI=;
-        b=F77m7IiKG5Dt1rKcm0DTD3A8FEFRJ5Q2MlrJ7FZ+VHSz6cgEDJIHc0UH3dYiaQqfRw
-         ET8p0UWjyF5yHqfl1Pfr7fKAKLb7dC/dOpFrZ32PuJX0Zt5oretU7n96x33Wfb65iRBy
-         Y7XZOwovr+VZi9RZYYMknrdU5N61PtKS97cnTNxUMHInkCqD/PmHwyTM3tE6+tjIcbDj
-         TDmgb2mKXl8sx8y2NqTw1EP5MKz5W2i+KRaaFUONQKkwKJT86X2LPFqHY2xZBEMkCnwr
-         GAgl1gMHU+pwjptLBwfXYl4uXz3zIzIPHKos4KyfvlX2vuHWRWcs4LomGVvTLtgk94Kx
-         IKew==
-X-Forwarded-Encrypted: i=1; AKwUvBx6DFmGAAsCSFDoA5MUSzdnrpITifjUO+HFfjKJ7LQzB2fr0uSXrJMuxiirRoyKnB6cSc4=@vger.kernel.org
-X-Gm-Message-State: AFq9FYKJYIzHL0slLVUTGg4VWjKK76UGPfjfAaoxBr1x6HvCpBAiv8TX
-	KisW7jWDCLMUBymxdObrMH2MbqSzYyk1PFldNoA9jNcybFuVSLaMrSJL
-X-Gm-Gg: AYBFou0s8U0/jjrHauCdiuLGRvEeI9CvkQO80AL+E2XJI3/9YR7kAgqVN7vEuwdyGnT
-	Fxpv69Uzeyn4SflcRkMFVXnXowQgs7CQokjfuwIWeawJH/U382IqThVTJNsyY4FlKroSMtIX863
-	U1xjMQ8hgM13FL7Mg9y1AbLpsYXCKNtxesRJmLQMTYXXuH51+viSr+vpRl1OjW4vMGzyTZpZVml
-	5XYsccvY+wEfIdSprXZccrtm3D+56AJv/aO2EXLhBlVpIRUaiwvTSyMNs5aUQFpgFukPQEEVv9b
-	bIATWyWR4/Fg8NzAl+z2UUj8i4GtV3B0y/nt5+NjlBgM/CFJV5pwDkkRUWG2bxB+eiIyWcQk+yb
-	vgsi++u+81iNgO13Umyqbi9qs0fPL4tGIcsE8P2WCcs6d4oj+Whs8bl/OSQD/pvw29pBDo0CQOs
-	arR+rSZdqP9hOMvcaIvEEUV6NXXuAOXVom919dsVys3/ZViaN9+/evBhRvpmjdkiQOKJGU9sL62
-	xmzI9DlF5BZ8MVX2D6d1qLYC3UPLC/6DQAyTBQTZuR5vjyZP0CTG9XI40UOdHxDLJd0Rd0Kig==
-X-Received: by 2002:a05:6a21:3b92:b0:3e2:78bf:63d6 with SMTP id adf61e73a8af0-3e8eae8a1c0mr1343122637.46.1793085041329;
-        Tue, 27 Oct 2026 00:10:41 -0700 (PDT)
+        bh=s86LnAWFmWP59VgheQcHJpguzX26fuGNoKB7W+R3clE=;
+        b=UgkO2EgRjyJon6sGY/ocPBcNLeJUuYfUeWBpmktuEso0V+ICdWrFmgBeF9umGSSW33
+         V+YMRV8lXNEiii5nVYtvmY0aI+GAFm2YW+TGwYVKfovh8F5OwXTmPlZc5/OBO/j4YuoI
+         RGGUryWC+eS/wXrc4Hb4YHtarh0HFC5Y7JuWNIDpkZnIlCyhM1/GctVFEp1oY/yC1zAd
+         jZJT1XEToT32rroya3apdAD3el359esrVNu7k8bWxG6KAg9QjDJnJHi+7vA5CXzN+gji
+         HUbaw0wKoMwABQGha/UP+6U7QdeIukk50YkOXZaK+m43GIiKPE/2ZrLqBArBvUQUrZSR
+         WBEQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwOeQifkE3YS6hB4IY3kVYBhpUYYbFj3g+1WCgLP/XmSMjzu4yhD06hKuGMslRP7VwXtKM=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJu42niMlRQQGxWWQjtpYArDR4ss2aKrH6MwvQ6gB9sEqTv43w8
+	A0N87ZdrrfSCgKwaSP8T5Pr50LtuegbALh9AvtJqLAk6jACw4f41gy3r
+X-Gm-Gg: AYBFou07Ji2gy0nmlQM4qZGk/Iuwep8v2M0WWnnsQwCZIyId9PrpjbUNdTT/leWv+Ef
+	OG5bfhO2/IyWMjSxiI/SckgebuWOQRa0MIy9wlzZ0YmvjEqBM+nljW6LmUikq099Mr7z0JW6C0D
+	nOg5mb029PwZUWBrM9MPOK0i48WphqAs0kbVu9LbBvn80jkFvuSsl6mK5y3Xp1OW79BPyWQ88z9
+	2LsbI+sF/I4kY4uCemK0HMFLc+ydpbxFQGGu12mE7TCq/QjARCtNY9wnVrCvHHvlvX1rcBRtLC2
+	WuFMvdrXM5lavVRh6lNQnBZo4a+AzEiM4Fg/XZjgeT4DEat1xPO9H9E6vI53QQUp24FvRYYqPSV
+	0Xh/k6Umkd7bvZxygANpMdb2AlF4JrMZ4UFX/nBfXuWxU20/dcYQregsuqTKx/9BHoGJvIIZ+1d
+	gR73HlaaGGJME423dqtOOYOuyaqnnimr2UrYdkdWmSry0hDQHWoBSk2mbMAf1bayPG3LblS7hvt
+	hpOjOCW8b6tpajP5/i8csOsCS5eg0fzkLn2jI1KtUSwfy3ws7K1ndQtL0axUQ/qqJDm0Gx3hg==
+X-Received: by 2002:a05:6300:2786:20b0:3e8:d18d:c68c with SMTP id adf61e73a8af0-3e8d18dc748mr2680636637.62.1793085047559;
+        Tue, 27 Oct 2026 00:10:47 -0700 (PDT)
 Received: from kernel.tail6741c6.ts.net ([185.220.238.37])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cd8ccc21274sm2277512a12.8.2026.10.27.00.10.34
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cd8ccc21274sm2277512a12.8.2026.10.27.00.10.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2026 00:10:40 -0700 (PDT)
+        Tue, 27 Oct 2026 00:10:47 -0700 (PDT)
 From: Kunwu Chan <kunwu.chan@gmail.com>
 To: jiangshanlai@gmail.com,
 	paulmck@kernel.org,
@@ -94,9 +94,9 @@ Cc: rostedt@goodmis.org,
 	linux-kernel@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH v2 04/10] srcu: Validate callback arguments
-Date: Tue, 27 Oct 2026 15:09:17 +0800
-Message-ID: <20261027070923.3054462-5-kunwu.chan@gmail.com>
+Subject: [PATCH v2 05/10] rcu: Validate callback arguments in Tiny RCU
+Date: Tue, 27 Oct 2026 15:09:18 +0800
+Message-ID: <20261027070923.3054462-6-kunwu.chan@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261027070923.3054462-1-kunwu.chan@gmail.com>
 References: <20261027070923.3054462-1-kunwu.chan@gmail.com>
@@ -112,50 +112,31 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Check callback-head alignment and reject NULL callback
-functions in the SRCU callback registration paths.
+functions in Tiny RCU's call_rcu() path.
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 ---
- kernel/rcu/srcutiny.c | 7 +++++++
- kernel/rcu/srcutree.c | 7 +++++++
- 2 files changed, 14 insertions(+)
+ kernel/rcu/tiny.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index 3ee28885b96f..98864977bed2 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -291,6 +291,13 @@ EXPORT_SYMBOL_GPL(srcu_defer_drain);
- void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 	       rcu_callback_t func)
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index bd22fa43108d..ef0b0474f207 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -252,6 +252,13 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
+  */
+ void call_rcu(struct rcu_head *head, rcu_callback_t func)
  {
 +	/* Misaligned rcu_head! */
-+	WARN_ON_ONCE((unsigned long)rhp & (sizeof(void *) - 1));
++	WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
 +
 +	/* Avoid NULL dereference if callback is NULL. */
 +	if (WARN_ON_ONCE(!func))
 +		return;
 +
  	/* Record the caller: the irq_work's stack says nothing about it. */
- 	kasan_record_aux_stack(rhp);
- 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 46fe2f0cef85..1993ddbdb828 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1529,6 +1529,13 @@ static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
- static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 			rcu_callback_t func, bool do_norm)
- {
-+	/* Misaligned rcu_head! */
-+	WARN_ON_ONCE((unsigned long)rhp & (sizeof(void *) - 1));
-+
-+	/* Avoid NULL dereference if callback is NULL. */
-+	if (WARN_ON_ONCE(!func))
-+		return;
-+
- 	if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
- 		return; // Leak the callback rather than corrupt SRCU state.
+ 	kasan_record_aux_stack(head);
  
 -- 
 2.43.0
