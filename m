@@ -1,13 +1,13 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=40.107.130.4
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.70.32
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793118906;
-	b=FvjoU9pkKp93Z0CUFU5EgzgGxqlS/ITEKhOn8YUJeB2r0JDY1I6n4dcoSY3HLzV+2L0h
-	 lIsMmp9rKSLTNnknGVHEHdp1XKG6WGw1ZNYf/JOSM3h5wJbKv3PhfBbCnwTVisNLoQNNA
-	 2w/3CETpDkz5fYrhufErZ8dBpKSkNjM01lFt9C4VdY8GGefs/wm0+WFQ6N7rL0KW5yQcs
-	 IciDbUK0MCRJzWkwjxfnuEXkZuxbJcuUVAQuwPym+uIc/fypVlKscDLOcpE3V+x/4F+hi
-	 LhKGEB8Q0rnR9E8Qo4W83yLVSKwDybAH6h4wsF2BcHtMwau8uhFZm5FFZrBCEHATknA==
+	t=1793118903;
+	b=XFSwUbtHap2jQIMgjtm8uxAeS0AO5ybbiVB5ZHXE0h+5CPzGIEWmgtkfU4MpWzMdNlq5
+	 PjjZgwaBOyeZTiEZzOMEsflDaOBHRQ1gbdL5HszSlQ6qk4HweY3PO5s9Mdje7RIeK621k
+	 G4w6goFLoh8vBcld+zgguJJPV7cG6+oiIlEvTVzKecMo1ozJwT5Nqbhh1jKAFdF3JJpaW
+	 vAvgIx310g5ZCOms+9adN6MyqDHc1j24a4mhM6IuEDmVlvwbWjBY9PH317TY7z1vUeKEz
+	 QIh0OHNRTkbuOndpWxROIxIfeo59IGSIICMnAzJkGlkxnzHjBCaWLrtGxxl2Boz7oVw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793118906;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793118903;
 	h=DMARC-Filter:DKIM-Signature:Received:Received:From:Date:Subject:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
 	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
@@ -25,60 +25,59 @@ ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
 	 X-MS-Exchange-CrossTenant-UserPrincipalName:
 	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=jZAvvvHun6aalGq5kU3xbJGdnoWrIc1LoWTmjMlrfpA=;
-	b=QJWT2/Ea2V7D6qzJ6h0g2lZkTni5gLvTJ/PtyrqJvV3VHCeYUzDS4vSkv3nO/bPk5vaZ
-	 1CZRK06sb9pyvNsQPiz6O73nMv69X0z8pjmDOXMqjlZoc9Ywf/aQfpVo4KjzvMZvxMlZL
-	 c2p/LWAXsVOKlo1tKCnKcnyhrkLiEYwDDatXnsjv2JcRaW9IDYnBBwXkV1qx+lotogOqz
-	 poZTGrrLWmnDELbRQzgbjkVjmLxx4cp3F1v7ZRyahkNvyRPUJldaJZT7nFy1ylv+AWhZB
-	 2SP8pOZLKqNuzBeyrMFCFUJNoybIcRaZGnI0G0ta83L1Nl5xAr+Yh99MMW8c4Tp7nUA==
+	bh=+8DRXoUs270oIsrA0zx7bkkTJUXxnQQL0lAGR3RwAuo=;
+	b=Je5T8mrqnKuT2rd3110Nidukii4tegjp7i0gcYZyTkmuQ14iL9ybhr0LjTc8AYM2jtx+
+	 M59pKZxekadifcdrSOfazpAW9J4tuW41ajQXw2j3154GgKSTtUDCKhAllJb477hqwM/Z/
+	 OhY77UUxKJXIXdRRtkx8ZzFuBPtr85exspzysxAb3zuiEh5pXMDMBT9ATzC+m1xK9yEML
+	 OQZEmR8SZ81v2mV19N7mR6WH6alasu1BGYEXbu1vRBPORogR5zqrcHsfmsd7NmGPfifay
+	 F4vjV0drMw538fTNK0ctCwQArseMn2SeJPoKb+KbYOkCPZTubKuk/dx7C7133pcvnzg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=est.tech;
 	spf=pass smtp.mailfrom=est.tech;
-	dkim=pass header.d=est.tech header.i=@est.tech header.a=rsa-sha256 header.s=selector1 header.b=S78x6J7p;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=40.107.130.4
-Received: from MRWPR03CU001.outbound.protection.outlook.com (mail-francesouthazon11011004.outbound.protection.outlook.com [40.107.130.4])
+	dkim=pass header.d=est.tech header.i=@est.tech header.a=rsa-sha256 header.s=selector1 header.b=ckbU0IUP;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.70.32
+Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazon11011032.outbound.protection.outlook.com [52.101.70.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A34F606A320;
-	Tue, 27 Oct 2026 16:35:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6A34F606A320
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 088AB606A331;
+	Tue, 27 Oct 2026 16:35:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 088AB606A331
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=est.tech
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=est.tech
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=est.tech header.i=@est.tech header.a=rsa-sha256 header.s=selector1 header.b=S78x6J7p
+	dkim=pass (2048-bit key, unprotected) header.d=est.tech header.i=@est.tech header.a=rsa-sha256 header.s=selector1 header.b=ckbU0IUP
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=dqq1wciStRazrrVS3ROLro2uA6yVZBlJQtVZmogVHeGWiYuPHaETSAnQn2MoFC1HmloFXEH/xX2Znn/bCK/jFFd2JdDt7uHtKIa0M+Mey13TEYbuVe/ghAkGp8Fhb9du+p4ytz6MfsFKw3XFuLzkS+oGkQCPtTEUIIHz0CEX0/qhn3r4UVN7/VE9IMHiGx4kW+sZebo9PuNBxMlxO2SFIZ6pqbmHu2qaCNZGyF6klP1d+urzQUwdUX1DfBMtNpDKBYB7IQW6IVbJQLbjISWVPBEz43EgieLyzs63I8Xgl+x2Fn+iNXHaZ5rtPPdacqqK6YE4zqM3vnjHkcb8x8vwRQ==
+ b=PYtMwxPhGXCMLhU1LK33rmORLxoyy6pyKgTVKcSjj7Wg5QC+xdPTmwM/4wO/Or3Y4GeDt2imjmp83pVNZ3f2COm3mJMe7hfT/k1rcasG4dTPANHvKUFe2d6gBwTXAXt8VoZ6g3umquw2CZbfgiSvxMyWj4GjPJ3XfJefPgo37gf23vnjIHwtCLXjtt8oQoadqwImyFgQcmeu9N4F1fMGGY/P48pBsWQxH/CeSeOotqGEpRumMj6qp/GqoMI0bq63uFLzhoN7LiL4yLjGJyYIwjyrIwdjGdfjKvo1zi6w0RJgD5ZiHa/sQlUXOfoHFJgmM2AbW3zJOUK8KG+cArUBcA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jZAvvvHun6aalGq5kU3xbJGdnoWrIc1LoWTmjMlrfpA=;
- b=EPVbDM0/WTu7nNI/0GLrxaQ1SqoZnjU/TDXYSgx4Z15oNMgp1nG/++wbGUjUACmdqF15sIMh8RSPUcN8po3Li3DmTzGAudE/epaA30JUeqCX5HsipwJMvRs4Sux1NeckY6B+fI3xfLNYTOOoUGWPV73Daao5CsqI8xU7VRWogIgU7z/hzTxCi3bc+KZ/q5izeatDSZo2vb7rO/Ch2kHHukHRUEAeerpRJHnsmVUuorHaurCKlCkKHbwVJMXp+O0JTsWQBlQyPd/bYO0V0IKbQGw/HA/uGD//lalW354hi1DiWzCyRNopeFeueAa9pVwIvLH16cEPITuYt9lWsfCtXw==
+ bh=+8DRXoUs270oIsrA0zx7bkkTJUXxnQQL0lAGR3RwAuo=;
+ b=T9pzH/YifZAyKX5AtbRN3Bo3489IeSvhbWT71kWZls/Lo2L6d9Tvq2bDPPynvUzT611tyjfePSZjmRgKyq+S99XPY/Hr0gJSMsJjFtmBmVzHfSrJm9m1jAfMxp5SZlYbAvv1+kNotZsCS/Qk4bm6c/EEuS690GIAZ7otmX7R37crw3kTnBIB7Dd0ga8t/A8oxIeIim6FIv4GFTUK9vlAutw5ZDx1hb51vkG/VDZkWavyZnltCL9NwxY0OpbgY+EB0kexZEyTyDZCoUHSEZ8MlT1QsOR22d7jzuUqge/6fRA2irgMsR1X74OBOrv8ub3kIVVSdFzKuGl1CB3Fw4iJkQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=est.tech; dmarc=pass action=none header.from=est.tech;
  dkim=pass header.d=est.tech; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=est.tech; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jZAvvvHun6aalGq5kU3xbJGdnoWrIc1LoWTmjMlrfpA=;
- b=S78x6J7pzZK+Grs+p2XwhAVoM273emPqJVXRuFB+Wl8cRvW6+EuP++U15O1KuvEf10OJ1JFlq/GQufmTUKdY4srrBHoLmey4lXjxYnLTej7E2wEZJi2xQ0WVM/kknSwLihyIv3BEqYDwb2w6rpyAvmumpitNMPmMxYWVpkXW7pmACfaaPw7Mt2siKH4u15CM7KyCX/aK5F+R/v4VIr/N46aLGw2feObgBJR/U4jp+Poo+45Pvv+6//BGV2DZYqNFnRvfatnDeM9lVbNZ0pSjIrP9me63cQOvm/G9/WP59aYmqOicQb4SH9FCZN7Jfb5jVlxJd5TL4lmn83+ml49FJQ==
+ bh=+8DRXoUs270oIsrA0zx7bkkTJUXxnQQL0lAGR3RwAuo=;
+ b=ckbU0IUPDSu7K4RryORqJHxUuuABU+C0dtBj5huddh0UYbwRXmPXfi5mJk3FkX+kKN5d1yqb238iE4qDRz4AGn81dt3zkfQesbj0KTW5oxEKcWcqH5mpWCBv4cuK4VjdDLefNHW4+MFDLD+zcFT1umg7LDkS9qyZ3hEeuKBi6cvwRyXpBC7b3oKHGLZCcs2XT3Tw3o2UVY5kGXl5ovI8mmNmOlbG2gPhINiALP3soFNuWaChR91zGSmASVTmS2j1rZWOxXbymuwcazG7W4tzGd96xjuGqWfFRoppk1fs7JdVjARF+i4vZDA7aMfUNATPTVyUuu0TEiBOB4uX9SSBmA==
 Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=est.tech;
 Received: from FRWP189MB3398.EURP189.PROD.OUTLOOK.COM (2603:10a6:d10:1a3::22)
  by VE1P189MB1135.EURP189.PROD.OUTLOOK.COM (2603:10a6:800:148::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.22; Tue, 27 Oct
- 2026 16:35:02 +0000
+ 2026 16:34:57 +0000
 Received: from FRWP189MB3398.EURP189.PROD.OUTLOOK.COM
  ([fe80::4658:dbd6:d572:896a]) by FRWP189MB3398.EURP189.PROD.OUTLOOK.COM
  ([fe80::4658:dbd6:d572:896a%4]) with mapi id 15.21.0546.021; Tue, 27 Oct 2026
- 16:35:02 +0000
+ 16:34:57 +0000
 From: Yunseong Kim <yunseong.kim@est.tech>
-Date: Tue, 27 Oct 2026 17:34:09 +0100
-Subject: [PATCH RFC 2/2] x86/kcov: allow instrumenting noisy objects for
- early boot coverage
+Date: Tue, 27 Oct 2026 17:34:08 +0100
+Subject: [PATCH RFC 1/2] kcov: collect early boot coverage of init_task
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261027-early-kcov-v1-2-6f2f053255ad@est.tech>
+Message-Id: <20261027-early-kcov-v1-1-6f2f053255ad@est.tech>
 References: <20261027-early-kcov-v1-0-6f2f053255ad@est.tech>
 In-Reply-To: <20261027-early-kcov-v1-0-6f2f053255ad@est.tech>
 To: Jonathan Corbet <corbet@lwn.net>, 
@@ -115,15 +114,15 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-modules@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org, 
  linux-kbuild@vger.kernel.org, Yunseong Kim <yunseong.kim@est.tech>
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1793118887; l=3249;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1793118887; l=25011;
  i=yunseong.kim@est.tech; s=20260824; h=from:subject:message-id;
- bh=XFup3h7UWloVBflNudxisL9cA+gOhcl+s7k8IxtKVKQ=;
- b=21InQGEVzGa/xXsjiaQcAKIzvWuhynLYuI5/cWIYRBiNPwLmEGn/X2vBrjeMyDVkYE3/ErMMk
- OB3Wg8bZZk0D/b1kYnHii2X+SjhEDjib8INCLs9Yn6hsXkxGtJ7ZXpv
+ bh=74AyX/SIebeUnsLU/FH1d1NaaQfZYIzUZIuz0aQkm2A=;
+ b=wBwQNDDH3z43dCpgbChDCAYKQDA3F4L3SgycpHczA+RbM56Kz9bs0ZCPdWnUseteoklw5+L15
+ qem5EY9//vqBiReHYu72u81conkzCUsNp1wIty6Oq2/yTGETNI/ISdd
 X-Developer-Key: i=yunseong.kim@est.tech; a=ed25519;
  pk=nfdmjNawkxBHo9UNdzLNBEht8sYmXp0MYUsa/hwC7vw=
-X-ClientProxiedBy: LO4P123CA0017.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:150::22) To FRWP189MB3398.EURP189.PROD.OUTLOOK.COM
+X-ClientProxiedBy: LO4P123CA0429.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18b::20) To FRWP189MB3398.EURP189.PROD.OUTLOOK.COM
  (2603:10a6:d10:1a3::22)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -136,143 +135,690 @@ Precedence: list
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: FRWP189MB3398:EE_|VE1P189MB1135:EE_
-X-MS-Office365-Filtering-Correlation-Id: fd0c8e78-ddfc-4148-774b-08df34483fa4
+X-MS-Office365-Filtering-Correlation-Id: 1d1f6c1d-2409-4973-8ca8-08df34483cac
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|7416014|376014|23010399003|921020|261026121527099003|5023799004|56012099006|11063799006|261009223027099003|261021123027099003|261022075727099003|261022105027099003|261021121427099003|22082099003|18002099003|6133799003|10067099003|261026140227099003;
+	BCL:0;ARA:13230040|366016|1800799024|7416014|376014|23010399003|921020|261026121527099003|260925021911599003|260925021311599003|260925022911599003|5023799004|56012099006|11063799006|261009223027099003|261021123027099003|261022075727099003|261022115727099003|261022105027099003|261022113327099003|261021135927099003|261021121427099003|261021130227099003|261021133027099003|261026135527099003|22082099003|18002099003|6133799003|10067099003|261026140227099003|3023799007|261026130827099003;
 X-Microsoft-Antispam-Message-Info:
-	QTu7N3PHQb36IBbIPETx1Bfo2DSurdJHbifEnc6xTyDtDxHpAsWzVlaqs862Do/GOoti+BPm9zuCrNN8caBIEN7InRM4iDXszD7vwITPKphMq++TTTOKOrdCuegExqrP7GsGoCoo4NpQm689r2j9iHbebUNpp4MzYzQ4AzJYa+UTUBErd0jvnYTfSeteNp46iVdFqgcetx6E17uk2tGuAszQE+ciVgWLXxP/uBq3hliHLwj4Bd8zur1N/59xsZGXR8Vzs2XW0d4RqzOej7XaBUykQXMmBYjhA8PIMT3qtUyNWvMBTmAj5bDjkZcnhCNYggE/6xUG4MDSFixnif4IS2SfKTvnnkeRIH1jhNBI3gf80BglW1+9dKa0T49OLJ2C25G2/i/LAYa9CIwBfOKprzqEylXds7d+hTNKlBLw6bmd5+8STtOrxjO7cwyBXgwsGCyWQwta2v5nppYulH67HJlefvJcCoDqEkU1eXIK7+UTAjIFOkRONk05X+xwPNU+W8O7p2xprMkxhSTCWApiHd4P6ZnGk2Hm6yc5P0DepJTO222Iw90JJAT+KxOqCJ5NnMmExSEWdWVgs/pOs85JmqGAiJ/1M5HARIqq0+GYOcuba2YBw+pQ8j3R2Yvi6Rf/mdZeExFvGmeDIGp7YjuX8bSt6zY+7fuBUGJyiO3UDER3+inEeAypq2A03AgkViJ43Lvedmwn371bjjl56JuIsg==
+	vzDueyUTerJBzTg/LS/K4KPQbxXyOXY0MStBtBgKhVADG14AxaIZaSwCK5MkaT3Z6hMqE/pjcJlofn4Fc2xW5g1SUeaz+Zg6C7sqZvWyTHxartCMuDfeWkpkE7itrra5bWA6lVAElxEVTevMJ8+eff44qpjotYtBMLmSuo1wsaMMZE2AiIwwf+x9QPsKm5EHnLmMq4Gw3jiF8yEUY3CBHA9WALMel3WGgYKMrFNrE7zIZ/Bq8ad5I4WCUPcBv0g5Dj1EuZMIzrBSNsckRzIEYc43VIExgPUrZC40En/O9LFZNKRC8OxHGxLMqXCmyb+9gOyJqKIudHXh3HhivybusgtlOZnXE4XVkOCK5C27jYMh2CLVsS+9qShFe/6Nfa1wf04iKLnht+bgRmbOKff+Mf8Hscn8ZPgfupWtu+PfZjjgmtl3xl5ls0ryWaoXohq30dbvVk0kvbQM0mH01DYMWZpprQrTekH0h1zlOJARnNXP+9IJfvS/2iUFzV928SP+9xGP6p7Ufexg8xnDrsgdp+yFFyV3w7mhVsbVAPFkr8InEV9Hd/Ia4hQyx23qZRhmMcZSmRuIf9afHz5Yq3+D04Oo4Ux9k/7dQ0jv6cLti3b7rYgGfq3jf9t8NZ+c5brIMhB5Id20j2Dw+cC6DvBYYcSo1p5/958h7BEmzPTqY09gdvQHEmuCrAZAqZhXKESyy2wusffmx5lgZdy6iCNoMA==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:FRWP189MB3398.EURP189.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(23010399003)(921020)(261026121527099003)(5023799004)(56012099006)(11063799006)(261009223027099003)(261021123027099003)(261022075727099003)(261022105027099003)(261021121427099003)(22082099003)(18002099003)(6133799003)(10067099003)(261026140227099003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:FRWP189MB3398.EURP189.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(23010399003)(921020)(261026121527099003)(260925021911599003)(260925021311599003)(260925022911599003)(5023799004)(56012099006)(11063799006)(261009223027099003)(261021123027099003)(261022075727099003)(261022115727099003)(261022105027099003)(261022113327099003)(261021135927099003)(261021121427099003)(261021130227099003)(261021133027099003)(261026135527099003)(22082099003)(18002099003)(6133799003)(10067099003)(261026140227099003)(3023799007)(261026130827099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eTNCZEo1cm9JK2ZsckVjSFV4dXNXejJTLzJ6YzFFZjRzMkIxd1JMMkdDR2ty?=
- =?utf-8?B?aXkzQ2d1WGRnb2grWlI2Nkt5Y0k0T2pvUTFiOWdPV2crOWNTc2JqeGcwSzEx?=
- =?utf-8?B?TFRjeUhjTXdLalZEL0xETitmeHUvTFZxTVp0TlAyai9tQnpVaFgvYko2M0xO?=
- =?utf-8?B?VnNwYVJLSWwvdVNrdjc1NU1VRkg0WUd6REtHZEpHQ2ZFNk9aUnpESFdpc1pU?=
- =?utf-8?B?SjBHYkJBUGZLaGM5Qy9RZnFWNnlLWUpzeTBZbjQvUklwcDlKVW9tdWxXL253?=
- =?utf-8?B?d3BjeGExeHA2YlhHenNpNWdocVMrNHdWaFZuS3Y0a3pSWE0yOTFYaXc4L0NL?=
- =?utf-8?B?bE9YQTZSbXlEd3dVbHg4ODhQYUtPTVRJbERObU9tczJPTnptV1lYU09ManJH?=
- =?utf-8?B?VE9tNFdlL2QrMUZaOHZ3c1BOR1lpTFpXU0kxUXdhSUpsZ0xibDlSWTFnSUZl?=
- =?utf-8?B?anNWck9VRWRYby9EcytIWGc2UjZNeWVyN2UxR2tBY1RJQ0Z3V2JSUlhoc3Jk?=
- =?utf-8?B?SDIzUFJyVEMrWnkvMytxUm1ySWZtckh5Tm5Hd1NFK1NFcjlUcnphZU91dzJY?=
- =?utf-8?B?SngxK3VNaGNmdGc0aHJFanpNV3FIRGEvVzlZTUF1bHdMamV3emV4RGhCT254?=
- =?utf-8?B?dlZlMlVTTVROL09wMCtlUENDZEhOWjdCREp0cGx1bWVnWTNFSldQdVdvVmVn?=
- =?utf-8?B?M2tMWU53OEpodWtrUGtNQXBxWno1N2NpMFhpSi8zNTA2SXJObE1tbHYvZVo0?=
- =?utf-8?B?bmlMeng2dmQrNklqN2FRQ05Hc240VGkxbFRqNmFXNDIxdENNMXBsc2RVVWRU?=
- =?utf-8?B?UFBhSS9hT2VYaTl5OFJzamxPSWJscG9IZkNLUDdwMmRQUmU1Uk1FdUhqTitI?=
- =?utf-8?B?V0N4Zk9RakRGdHdweGl2K3o1eFZCQlk3QVg1clZVb3QvY1RtVmRwS3RLVVZQ?=
- =?utf-8?B?VHZxUjkzK1FoVmhhNnlQNVZQVGcwWCtERldHK2pOclNRczNNNE5LRVZ5aEc2?=
- =?utf-8?B?bk1FaFFwVjk2SktWd1dwLy9EL3pDNGtkak1UZ01DNEJXZjJrc1U5SEJKbzho?=
- =?utf-8?B?ZFZTaDA0N0d2VDhLZFNQVlpQQU53WUJ4WVBHOVFUTjBFS0NSVEpuQnY3SDFF?=
- =?utf-8?B?cUFPc1ZGMjRxRytwOUlDYnFROTV5UERpVVg0U1JGRlpvcmZLMFVEWkl4aVhr?=
- =?utf-8?B?b3pVY1RSNmpMZ3VuVjZDcUYzV0czWDg0SHJqVEZJeFA1YmVteDRWekpIdEUz?=
- =?utf-8?B?TUxFNHptK3J2cGJNY0VTc1lkZU80VEQ3ZmpsOUZDN29WYXZZMXhOZDl3dUpH?=
- =?utf-8?B?TXBmT2tqdEVIZURBbTZISWlMQVFLeTlCSzNVM2wxYlZhdmd2L3p6VnhZRVZh?=
- =?utf-8?B?UjU5RW56SnlteUY2N29Rb0NUZDNoUnNZTTVVYnBZNTk3eVN1TTNwenovWms2?=
- =?utf-8?B?R2loNGZzRmpUZVF1NFpPbHZ3VlNzVDNFMExhR0pDTE9EYk95aC9pN1FVUlhV?=
- =?utf-8?B?RkFBODMvS1NWeHA4cDd0VTZTT0hYS2ZKdEsrQzFWMnFVOHFXbDJ4a25sbFBS?=
- =?utf-8?B?OUpPVUNCOFBOOUplM1VpVmlvN1gvbGNmbCtGY0EyTitMOTZ6S25xNm5DTW9V?=
- =?utf-8?B?aE81a01hc0lpZmhyMHFIcUNqZGY0RHBtSXh2L1hPVEppNnFkQkdNcmFQYjRR?=
- =?utf-8?B?c2d0UThUN3EwdVc1OE9XS1Q5REx3Tk9TRGppcUVobDFOcGpFaUg0NVY2WXpu?=
- =?utf-8?B?MFRvYUpwWnIrWVlPYm1mMjhabE9kNmV2eFVBNjU0c2VoUUhVL2VBRk9zVnlZ?=
- =?utf-8?B?UTluNFpoWHdBZVFtRzJzKzFoZmkvcHplYTRLb0ZId29LbEdiSkdqaEVCMHlq?=
- =?utf-8?B?SGtoN3NhWmdmdWQ4Y0Jzb1EwTFJVVlFSNVplYkMvWnNKSnR4d0lmcW45RmVn?=
- =?utf-8?B?RHY3NjZUUzZ0bWYrRnlSb2RHQjZaVmtSc3I1MVgwTGlEeGVaTnYwSkwrbTA0?=
- =?utf-8?B?TnQ3SEJFUlNyZTQ0dG5QRU5IaTRETElnMVNmVkphWGg5MDdJTnFpenV2WDZz?=
- =?utf-8?B?UmtHaXhRWDc2QU1sMlZ5RW5GQTAzcHdyVmdaQktCT3BYU2RpUmFMNkdsczJV?=
- =?utf-8?B?WUJESFEwYWhxTjRmL1ZkTVoxSmlJeU94VTNKejRMaTJDVHU3b0RlaElIazNa?=
- =?utf-8?B?bkhQWDE0d21PZ1lIVmUyQkhrV0kyaGNiZm1sRkhGejFZcURYZWk2bUg5UkZQ?=
- =?utf-8?B?ZWsyN042NjhqbEdmTFlvY1RFSGk4WHVGbFNXMno3QVhkR3hrTUV3WTBDeUVK?=
- =?utf-8?B?bExhclZsZ3pDNWtKZEw3RzF4SjlzSW5Rck9jdFNqZmR3S1MrckxrZz09?=
+	=?utf-8?B?WnE3SG1hY1dnaGpUUG9PNjJuNytJNUgxZ3ZNQXh5NmlYYVd2RnErRzVLUjZr?=
+ =?utf-8?B?THY1OGJmRW9qY3JPb0NjdWJ5TGEybWkxSVB2SVVjWEdsZmRZMTVqWUpzM3dU?=
+ =?utf-8?B?NEZSdGptazlEZ1prTGVFSGwrTGF0VXJCeXE2azZyZllVMHlDSW5vRVB2SzJN?=
+ =?utf-8?B?QXlGd2RJdE0zbXhxdkNydEtuN1hudzdSaWVQZnJPVlEzY2xHQU9Zd0Q2SHlF?=
+ =?utf-8?B?WjdTbzkzenNVVm0yMTlKWjlhb1JJSkFnOEUrY0RTZFFicFl3eVZSaVhsb3NV?=
+ =?utf-8?B?aXY2YzlpQithSC9QQ1BocU1NZnZkZkMvNFJGbmxDNmc1ZWpCWnI2WUhzQW1Z?=
+ =?utf-8?B?TXhNeldjMlNLeU5KYmVVK1BRT3N5NVVsQWQrbk9zSlRYYkx1alRROHZySG1u?=
+ =?utf-8?B?MmhkeHl3TmI5NXhXU0Z2SW5Wb0hvRjNnQ05wamV1VksvT21pSENReDlqa0E0?=
+ =?utf-8?B?WWtoa2V3SEZmb216YnFvczNNYjhPVkNRMVNXakY4eHAzNEphcVI4QzVucEFv?=
+ =?utf-8?B?QldnWkVsVndMdzArc3FLbFhzalZvOUhvUWJTak8yRkE4aXZzRnRyM3kvdW5n?=
+ =?utf-8?B?ZXlmaFJmai9MclpEbWVSTHR1L3Y1R08vUXJ5ZWduWXc5cnA2WUpMR1o2Sng4?=
+ =?utf-8?B?ZWhCdEF6ZVljYmRmRU82QzJtcHpGVGRGMkgxMGlUNk9SbDdpTnJzOTQzOFZs?=
+ =?utf-8?B?TTd2Y2kyZ1V3TE9QMnpiYmdHM2k1YmdKSU5tOW44Ujh2aGgzMGhMUjFXUTRk?=
+ =?utf-8?B?OUF5ZHluTzJNeHRGSjhQNXVwMUkxOWRPaG03a1pTYUsvTVBJWlJDeHJnclFJ?=
+ =?utf-8?B?Y1dOa0VRVkcyZUxDa0J5aTR2RXpuZU1VWmg3a1FNcThwc3V0KytpTk1ldTEr?=
+ =?utf-8?B?UzllaTBubldqSDVwOEoweWQ2MVVTSkZvSFdBWVk3S3hybGJEdDgyN2tzYlV5?=
+ =?utf-8?B?ZmxPMTN0RnNNRnUvUXNQL2dEdXd3aUxhWDZndk1tUCtrMS9KdDA2bmxYOFNr?=
+ =?utf-8?B?cUhOVHZzRHRTeFA2RFk5VzFZMXhBQWJYbm41ajNZdXpZL3dTcHZlblRFR0g3?=
+ =?utf-8?B?TTBVYWFkc3ZFUmx5TTlrVlZYNHBIaS9IWktWR0NZL25XTUc5WndLbFdVUWVS?=
+ =?utf-8?B?Qzl0Vk1NQTZTMmZ3VExhYWZ2U2lLVkdJMGFNeDNxcCt2cnVZV2d3cXNTZG5n?=
+ =?utf-8?B?bDJpbVkzL0xhMHdsRjVVaW14Vjk3TXhUZkdHQnc0Tm1qemtlYnBnZitlZnd5?=
+ =?utf-8?B?NzZvS0Y1VFE2ZHRnTlBmeGx3RmdYaVM3R2RuVG5rSnZ2bVFYWnBLUnV3c25U?=
+ =?utf-8?B?MUYvaGdaMFVlbnpzK0R5UjE5ZzFRYjA1d3hvblZFT291WXJabThBV2J3bEZO?=
+ =?utf-8?B?bXdqeEc5cWx0OHhON3dzRGVkcVdPS2lNSHdaeUhhcGlrTlhQcnBkR2NUbXJO?=
+ =?utf-8?B?UXozWWtlcXJiQWgwbjhBVHN6TmRlRklCMWVSaXVhcTR1UUtRd2EvRHFBUjZQ?=
+ =?utf-8?B?bWVldk1ZWkttOHBFR1hzRUoyQVd2eGtETERQdjNHWENCeDFkTkp1aWpVUVRi?=
+ =?utf-8?B?enhqTlhWUGRMckZsL29yUGlYNEd6eG10NTVkNGFsbVowYUppSmpXYi9DR0My?=
+ =?utf-8?B?bVNJWUNEQkxTVVZsRjIxVmEwdDB6TzhXQ0FFWWVsalFXUGtSK1prM1FSZi9s?=
+ =?utf-8?B?RmtOS0ZLQzBZUWhtM3Z1VEZFWk95VzRqQit3Tkd3ZHVLUm5IRm0xQk05Rjd1?=
+ =?utf-8?B?aFZhVUNYdkJwTGV6YktGQS9URXo1emtEYXBmVFE2dkFUaUYxQk1nNHI2WXBt?=
+ =?utf-8?B?Y0JZc2hEOGp0OUZiRlpJUXJFYUk2bHorQWQvWnhXbkxMb3AzSzh5ZzBwWGRI?=
+ =?utf-8?B?QnkzVUJEb2wrcUVFMEZPeWlCNXJvRXQvMHZycTlZUVduRDZ2RWpIajdXL3di?=
+ =?utf-8?B?ZHJTeHFqVlFEL1haVEdLRktvdUNBczdaYTJmdUZMajhnUUZ0R3dIWEJiUXpK?=
+ =?utf-8?B?MUc1dXFMbGJYMVB5N1lwSU9mbWJuVWIxc1ljc0FjWW9KQkdFZDBDZlpBVDJ3?=
+ =?utf-8?B?b3VFWjBzNklUU3FaOUVkVm5mMmdmSGg5RmhQV1FHWUpScUl0TEJCZWMwODBj?=
+ =?utf-8?B?UE1VbDk1QUpET1lDWDVNSWtlemNaMzBZVVZxS0xXUmF2cEJNWHlFTUlkck5C?=
+ =?utf-8?B?VVRBSnRRd0NFNDVOREJpVi9OTFYrUEt4Tzc1ZGhOakJjVmFFdFFySkFuZmRa?=
+ =?utf-8?B?SE9pL0tsbFErUjc3Y2NCY1Fpcy82QUJhVGtTeW5BQWRkRUhCbzlZcHRiSWU3?=
+ =?utf-8?B?djQ5UnhjSzMvd0lDVkNDVys1S2NtN3dXQ0Q4azlnU2s2OVFTUTEvUT09?=
 X-OriginatorOrg: est.tech
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd0c8e78-ddfc-4148-774b-08df34483fa4
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d1f6c1d-2409-4973-8ca8-08df34483cac
 X-MS-Exchange-CrossTenant-AuthSource: FRWP189MB3398.EURP189.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2026 16:35:02.0795
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2026 16:34:57.7319
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: d2585e63-66b9-44b6-a76e-4f4b217d97fd
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9UoDXaGbTsjbnfmeD6lNiwRCbDlR7PmmTmUWoB8oAvL47/P+Ce3r05M/oqitw3YZwj3Ncbxk/Hhp1WmYRzlIhw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: dv64r5flH08HD9ddutDiZ9HmDBdYnRL+PdA4HPN+/gzAB3XpYGXivIUK8cIWycrJmkU+8CWD47MtxZoZRN/DQg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1P189MB1135
 
-A few x86 objects are excluded from KCOV only because their coverage
-is noise for syscall fuzzing: the APIC code (interrupts land in random
-places), delay.o, and the stack trace, dumpstack and unwinder objects.
+KCOV only collects coverage once a task has opened
+/sys/kernel/debug/kcov, so everything that runs while the kernel boots
+is invisible to it. The boot path is hard to follow from the source:
+what start_kernel() really executes depends on the configuration, the
+architecture, the firmware and the command line, and much of it is in
+inlined helpers. Early ftrace does not fill the gap: function tracing
+only starts in early_trace_init(), works at function granularity, and
+cannot see inlined code or the many objects built without ftrace
+hooks.
 
-Use $(kcov-noisy) for them, so that CONFIG_KCOV_INSTRUMENT_NOISY=y
-includes them in early boot coverage. With the option off nothing
-changes.
+Add CONFIG_EARLY_KCOV. With it, every PC executed by init_task from
+right after early parameter parsing in start_kernel() (that is, after
+setup_arch()) until the start of rest_init() is recorded with
+KCOV_TRACE_PC semantics:
 
-The objects excluded because the kernel does not boot or hangs when
-they are instrumented (head64.o, cpu/common.o, perf_event.o, tlb.c,
-mem_encrypt*.c, pgprot.c) stay excluded, as do machine_kexec_64.o and
-physaddr.o, which must not use KCOV during kexec once load_segments()
-has invalidated the GS base.
+ - early_kcov_init() allocates a memblock buffer, attaches it to
+   init_task and enables KCOV_MODE_TRACE_PC. The size defaults to
+   CONFIG_EARLY_KCOV_SIZE_MB (256) and can be changed with
+   early_kcov_size=; 0 disables the collection.
+ - early_kcov_stop() disables collection at the start of rest_init().
+ - A late_initcall frees the unused tail of the buffer and exposes the
+   rest as /sys/kernel/debug/early_kcov, in the usual KCOV layout
+   (word 0 is the number of PCs, the PCs have the KASLR offset
+   removed). This is done there because memblock memory can only be
+   returned once deferred struct page init has completed. If the file
+   cannot be created, the buffer is freed right away.
+ - Writing to the file removes it and frees the buffer. debugfs does
+   not support unlink, so "rm" is not possible; the removal is done
+   from a work item because debugfs_remove() waits for the write to
+   return.
 
-With FRED, the system vector wrappers in apic.c are not noinstr and run
-before the hardirq count is raised, so with this change interrupt PCs
-such as the LAPIC timer can be recorded as if init_task executed them.
-The same already happens for the wrappers in irq.c, smp.c and others.
+__sanitizer_cov_trace_pc() is not changed, so KCOV users that do not
+enable CONFIG_EARLY_KCOV are not affected.
+
+Many objects are excluded from KCOV because their coverage is noise
+for syscall fuzzing: the scheduler, RCU, locking, the page and slab
+allocators, parts of lib/. For boot coverage they matter; without them
+sched_init() and build_all_zonelists() do not show up at all. Add
+CONFIG_KCOV_INSTRUMENT_NOISY, which depends on CONFIG_EARLY_KCOV, and a
+kcov-noisy kbuild helper, and use the helper for those generic
+objects. With the option off the build is unchanged. Objects excluded
+because instrumenting them is unsafe are left alone.
+
+Boot loops run the same blocks millions of times, so a full boot
+records a lot of PCs: on a 2G two-node x86_64 guest, 16.9M PCs
+(129 MiB) with KCOV_INSTRUMENT_ALL and 31.7M PCs (242 MiB) with
+KCOV_INSTRUMENT_NOISY as well, for about 11k distinct PCs. The volume
+grows with the amount of memory.
+
+Document early_kcov_size= and the debugfs interface in
+kernel-parameters.txt and Documentation/dev-tools/kcov.rst.
 
 Signed-off-by: Yunseong Kim <yunseong.kim@est.tech>
 ---
- arch/x86/kernel/Makefile      | 12 ++++++------
- arch/x86/kernel/apic/Makefile |  2 +-
- arch/x86/lib/Makefile         |  2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt |  17 +++
+ Documentation/dev-tools/kcov.rst                |  60 ++++++++
+ include/linux/kcov.h                            |  13 ++
+ init/main.c                                     |   4 +
+ kernel/Makefile                                 |   6 +-
+ kernel/kcov.c                                   | 184 ++++++++++++++++++++++++
+ kernel/locking/Makefile                         |   2 +-
+ kernel/module/Makefile                          |   2 +-
+ kernel/rcu/Makefile                             |   2 +-
+ kernel/sched/Makefile                           |   2 +-
+ lib/Kconfig.debug                               |  45 ++++++
+ lib/Makefile                                    |  14 +-
+ mm/Makefile                                     |  20 +--
+ scripts/Kbuild.include                          |   6 +
+ 14 files changed, 353 insertions(+), 24 deletions(-)
 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 31f46fd005278..44cfd3781c30a 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -37,12 +37,12 @@ KMSAN_SANITIZE_nmi.o					:= n
- KCOV_INSTRUMENT_head$(BITS).o				:= n
- # These are called from save_stack_trace() on debug paths,
- # and produce large amounts of uninteresting coverage.
--KCOV_INSTRUMENT_stacktrace.o				:= n
--KCOV_INSTRUMENT_dumpstack.o				:= n
--KCOV_INSTRUMENT_dumpstack_$(BITS).o			:= n
--KCOV_INSTRUMENT_unwind_orc.o				:= n
--KCOV_INSTRUMENT_unwind_frame.o				:= n
--KCOV_INSTRUMENT_unwind_guess.o				:= n
-+KCOV_INSTRUMENT_stacktrace.o				:= $(kcov-noisy)
-+KCOV_INSTRUMENT_dumpstack.o				:= $(kcov-noisy)
-+KCOV_INSTRUMENT_dumpstack_$(BITS).o			:= $(kcov-noisy)
-+KCOV_INSTRUMENT_unwind_orc.o				:= $(kcov-noisy)
-+KCOV_INSTRUMENT_unwind_frame.o				:= $(kcov-noisy)
-+KCOV_INSTRUMENT_unwind_guess.o				:= $(kcov-noisy)
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 2e8ee12e06de1..fb1f2def7eb3b 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1404,6 +1404,23 @@ Kernel parameters
+ 			is useful for tracking down temporary early mappings
+ 			which are not unmapped.
  
- # Disable KCOV to prevent crashes during kexec: load_segments() invalidates
- # the GS base, which KCOV relies on for per-CPU data.
-diff --git a/arch/x86/kernel/apic/Makefile b/arch/x86/kernel/apic/Makefile
-index 581db89477f92..146cbd766c924 100644
---- a/arch/x86/kernel/apic/Makefile
-+++ b/arch/x86/kernel/apic/Makefile
-@@ -5,7 +5,7 @@
++	early_kcov_size=nn[KMG]
++			[KNL,EARLY] When CONFIG_EARLY_KCOV is enabled, set the
++			size of the buffer that records the code coverage
++			(KCOV_TRACE_PC) of the boot task from right after
++			early parameter parsing in start_kernel() (that is,
++			after setup_arch()) until rest_init(). The size is
++			rounded up to a page and must be less than 2^32
++			words and fit in the address space; larger values
++			are rejected and the default is kept. 0 disables
++			early boot coverage.
++			PCs that do not fit in the buffer are not recorded.
++			The coverage is read from /sys/kernel/debug/early_kcov,
++			see Documentation/dev-tools/kcov.rst. The unused part
++			of the buffer is freed at the end of boot, the rest
++			when the file is written to.
++			Default: CONFIG_EARLY_KCOV_SIZE_MB
++
+ 	earlycon=	[KNL,EARLY] Output early console device and options.
  
- # Leads to non-deterministic coverage that is not a function of syscall inputs.
- # In particular, smp_apic_timer_interrupt() is called in random places.
+ 			When used with no options, the early console is
+diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
+index 1a739290c8ecc..8d449084ecd8d 100644
+--- a/Documentation/dev-tools/kcov.rst
++++ b/Documentation/dev-tools/kcov.rst
+@@ -383,3 +383,63 @@ local tasks spawned by the process and the global task that handles USB bus #1:
+ 		perror("close"), exit(1);
+ 	return 0;
+     }
++
++Early boot coverage
++-------------------
++
++KCOV can also record the code executed while the kernel boots, before any
++task can open the ``kcov`` file. To enable it, configure the kernel with::
++
++        CONFIG_KCOV=y
++        CONFIG_KCOV_INSTRUMENT_ALL=y
++        CONFIG_EARLY_KCOV=y
++
++Every PC executed by the boot task (``init_task``) from right after early
++parameter parsing in ``start_kernel()`` until the start of ``rest_init()`` is
++recorded with the same semantics as ``KCOV_TRACE_PC``. ``setup_arch()`` runs
++before that point and is not covered. Coverage ends before the initcalls run.
++
++The buffer is allocated from memblock. Its size defaults to
++``CONFIG_EARLY_KCOV_SIZE_MB`` and can be changed with the ``early_kcov_size=``
++boot parameter, where ``early_kcov_size=0`` disables the collection. Boot loops
++execute the same blocks millions of times, so a full x86_64 boot records tens of
++millions of PCs. If the buffer fills up, the remaining PCs are not recorded and
++the kernel log says so::
++
++        kcov: Early boot coverage stopped. Recorded 2097151 / 2097151 PCs (buffer full, coverage truncated; increase early_kcov_size=)
++
++After boot, the coverage can be read from ``/sys/kernel/debug/early_kcov``. It
++has the same layout as the buffer of the ``kcov`` file: the first word (an
++``unsigned long``) is the number of recorded PCs, followed by the PCs in
++execution order. No ``ioctl()`` or ``mmap()`` is needed. As with the ``kcov``
++file, the KASLR offset is subtracted from the PCs, so they must be resolved
++against ``vmlinux``, not ``/proc/kallsyms``. On a 64-bit kernel::
++
++        cat /sys/kernel/debug/early_kcov > early_kcov.raw
++        od -An -v -t x8 -w8 -j8 early_kcov.raw | awk '{ print "0x" $1 }' |
++                sort -u | addr2line -f -e vmlinux
++
++The unused part of the buffer is freed at the end of boot. The rest stays
++allocated until the file is written to: writing anything to it removes the file
++and frees the buffer::
++
++        echo 1 > /sys/kernel/debug/early_kcov
++
++Like the per-task coverage, early boot coverage skips interrupt context. Some
++interrupt entry code runs before the hardirq count is raised, for example the
++x86 FRED system vector wrappers, and is recorded as if ``init_task`` executed it.
++If such an interrupt arrives in the middle of recording a PC, one of the two
++PCs can be lost.
++
++Many objects are built without KCOV instrumentation because their coverage is
++not a function of syscall inputs: the scheduler, RCU, locking, the page and slab
++allocators and parts of ``lib/``. They run during boot too. To include them in
++the early boot coverage, set::
++
++        CONFIG_KCOV_INSTRUMENT_NOISY=y
++
++which instruments every object whose Makefile excludes it from KCOV with
++``KCOV_INSTRUMENT_foo.o := $(kcov-noisy)`` (or ``KCOV_INSTRUMENT :=
++$(kcov-noisy)`` for a whole directory). Objects that cannot be instrumented
++safely keep ``KCOV_INSTRUMENT := n``. As this option degrades the coverage
++signal for syscall fuzzing, it depends on ``CONFIG_EARLY_KCOV``.
+diff --git a/include/linux/kcov.h b/include/linux/kcov.h
+index 895b761b2db15..b9b1a2c71df8f 100644
+--- a/include/linux/kcov.h
++++ b/include/linux/kcov.h
+@@ -107,4 +107,17 @@ static inline void kcov_remote_start_usb_softirq(u64 id) {}
+ static inline void kcov_remote_stop_softirq(void) {}
+ 
+ #endif /* CONFIG_KCOV */
++
++#ifdef CONFIG_EARLY_KCOV
++/*
++ * Coverage of init_task from right after early parameter parsing in
++ * start_kernel() until rest_init().
++ */
++void early_kcov_init(void);
++void early_kcov_stop(void);
++#else
++static inline void early_kcov_init(void) {}
++static inline void early_kcov_stop(void) {}
++#endif /* CONFIG_EARLY_KCOV */
++
+ #endif /* _LINUX_KCOV_H */
+diff --git a/init/main.c b/init/main.c
+index 27f4cb392349d..958b4d476de7f 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -35,6 +35,7 @@
+ #include <linux/percpu.h>
+ #include <linux/kmod.h>
+ #include <linux/kprobes.h>
++#include <linux/kcov.h>
+ #include <linux/kmsan.h>
+ #include <linux/ksysfs.h>
+ #include <linux/vmalloc.h>
+@@ -749,6 +750,7 @@ static noinline void __ref __noreturn rest_init(void)
+ 	struct task_struct *tsk;
+ 	int pid;
+ 
++	early_kcov_stop();
+ 	rcu_scheduler_starting();
+ 	/*
+ 	 * We need to spawn init first so that it obtains pid 1, however
+@@ -1084,6 +1086,8 @@ void start_kernel(void)
+ 	print_kernel_cmdline(saved_command_line);
+ 	/* parameters may set static keys */
+ 	parse_early_param();
++	/* Needs early_kcov_size= and must run before memblock is retired */
++	early_kcov_init();
+ 	after_dashes = parse_args("Booting kernel",
+ 				  static_command_line, __start___param,
+ 				  __stop___param - __start___param,
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 4ff92e24680c5..b9e4f06e02ad0 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -27,14 +27,14 @@ endif
+ 
+ # Prevents flicker of uninteresting __do_softirq()/__local_bh_disable_ip()
+ # in coverage traces.
+-KCOV_INSTRUMENT_softirq.o := n
++KCOV_INSTRUMENT_softirq.o := $(kcov-noisy)
+ # Avoid KCSAN instrumentation in softirq ("No shared variables, all the data
+ # are CPU local" => assume no data races), to reduce overhead in interrupts.
+ KCSAN_SANITIZE_softirq.o = n
+ # These are called from save_stack_trace() on slub debug path,
+ # and produce insane amounts of uninteresting coverage.
+-KCOV_INSTRUMENT_extable.o := n
+-KCOV_INSTRUMENT_stacktrace.o := n
++KCOV_INSTRUMENT_extable.o := $(kcov-noisy)
++KCOV_INSTRUMENT_stacktrace.o := $(kcov-noisy)
+ # Don't self-instrument.
+ KCOV_INSTRUMENT_kcov.o := n
+ # If sanitizers detect any issues in kcov, it may lead to recursion
+diff --git a/kernel/kcov.c b/kernel/kcov.c
+index 35420f0ac524d..e9f2b5cbb0060 100644
+--- a/kernel/kcov.c
++++ b/kernel/kcov.c
+@@ -25,6 +25,9 @@
+ #include <linux/kcov.h>
+ #include <linux/refcount.h>
+ #include <linux/log2.h>
++#include <linux/kmemleak.h>
++#include <linux/memblock.h>
++#include <linux/workqueue.h>
+ #include <asm/setup.h>
+ 
+ #define kcov_debug(fmt, ...) pr_debug("%s: " fmt, __func__, ##__VA_ARGS__)
+@@ -1098,6 +1101,187 @@ struct kcov_common_handle_id kcov_common_handle(void)
+ }
+ EXPORT_SYMBOL(kcov_common_handle);
+ 
++#ifdef CONFIG_EARLY_KCOV
++/*
++ * Early boot coverage.
++ *
++ * Every PC executed by init_task from right after early parameter parsing in
++ * start_kernel() (that is, after setup_arch()) until the start of rest_init()
++ * is recorded, with the same semantics as KCOV_TRACE_PC, into a buffer
++ * allocated from memblock. The buffer uses the regular kcov layout: area[0] is
++ * the number of recorded PCs, followed by the PCs. It is exported via
++ * /sys/kernel/debug/early_kcov; writing to that file removes it and frees the
++ * buffer.
++ */
++#define EARLY_KCOV_DEFAULT_SIZE	((unsigned long)CONFIG_EARLY_KCOV_SIZE_MB << 20)
++
++/* Requested buffer size in bytes, 0 disables early coverage. */
++static unsigned long early_kcov_size __initdata = EARLY_KCOV_DEFAULT_SIZE;
++/* Buffer that was attached to init_task, kept for the debugfs reader. */
++static unsigned long *early_kcov_area;
++/* Size of early_kcov_area in unsigned longs. */
++static unsigned long early_kcov_nr_entries;
++static struct dentry *early_kcov_dentry;
++
++static int __init early_kcov_size_setup(char *arg)
++{
++	/* task_struct::kcov_size is an unsigned int number of longs. */
++	const u64 max = round_down(min_t(u64, ULONG_MAX,
++					 (u64)UINT_MAX * sizeof(unsigned long)),
++				   PAGE_SIZE);
++	unsigned long long size;
++	char *end;
++
++	if (!arg)
++		return -EINVAL;
++
++	/* Range check before narrowing, memparse() returns a 64-bit value. */
++	size = memparse(arg, &end);
++	if (end == arg || size > max)
++		return -EINVAL;
++
++	early_kcov_size = PAGE_ALIGN(size);
++	return 0;
++}
++early_param("early_kcov_size", early_kcov_size_setup);
++
++void __init early_kcov_init(void)
++{
++	unsigned long *area;
++	unsigned long nr_entries;
++
++	if (!early_kcov_size) {
++		pr_info("Early boot coverage disabled\n");
++		return;
++	}
++
++	area = memblock_alloc(early_kcov_size, PAGE_SIZE);
++	if (!area) {
++		pr_warn("Failed to allocate %lu bytes for early boot coverage\n",
++			early_kcov_size);
++		return;
++	}
++
++	nr_entries = early_kcov_size / sizeof(unsigned long);
++	/* The first word is the number of PCs, see __sanitizer_cov_trace_pc(). */
++	area[0] = 0;
++	early_kcov_area = area;
++	early_kcov_nr_entries = nr_entries;
++
++	init_task.kcov_size = nr_entries;
++	init_task.kcov_area = area;
++	/* See comment in check_kcov_mode(). */
++	barrier();
++	WRITE_ONCE(init_task.kcov_mode, KCOV_MODE_TRACE_PC);
++
++	pr_info("Early boot coverage started (%lu bytes, %lu PCs max)\n",
++		early_kcov_size, nr_entries - 1);
++}
++
++void __init early_kcov_stop(void)
++{
++	unsigned long nr_pcs;
++
++	if (!early_kcov_area)
++		return;
++
++	WRITE_ONCE(init_task.kcov_mode, KCOV_MODE_DISABLED);
++	barrier();
++	init_task.kcov_area = NULL;
++	init_task.kcov_size = 0;
++
++	nr_pcs = READ_ONCE(early_kcov_area[0]);
++	pr_info("Early boot coverage stopped. Recorded %lu / %lu PCs%s\n",
++		nr_pcs, early_kcov_nr_entries - 1,
++		nr_pcs >= early_kcov_nr_entries - 1 ?
++		" (buffer full, coverage truncated; increase early_kcov_size=)" :
++		"");
++}
++
++static ssize_t early_kcov_read(struct file *file, char __user *buf,
++			       size_t count, loff_t *ppos)
++{
++	unsigned long nr_words;
++
++	/* Coverage collection has stopped, the buffer does not change. */
++	nr_words = min(READ_ONCE(early_kcov_area[0]) + 1, early_kcov_nr_entries);
++
++	return simple_read_from_buffer(buf, count, ppos, early_kcov_area,
++				       nr_words * sizeof(unsigned long));
++}
++
++static void early_kcov_release(struct work_struct *work)
++{
++	unsigned long size = early_kcov_nr_entries * sizeof(unsigned long);
++
++	if (!early_kcov_dentry)
++		return;
++
++	/* Waits for readers that are still in early_kcov_read(). */
++	debugfs_remove(early_kcov_dentry);
++	early_kcov_dentry = NULL;
++
++	kmemleak_free_part_phys(__pa(early_kcov_area), size);
++	free_reserved_area(early_kcov_area, (void *)early_kcov_area + size, -1,
++			   "early boot coverage");
++	early_kcov_area = NULL;
++	early_kcov_nr_entries = 0;
++}
++static DECLARE_WORK(early_kcov_release_work, early_kcov_release);
++
++static ssize_t early_kcov_write(struct file *file, const char __user *buf,
++				size_t count, loff_t *ppos)
++{
++	/*
++	 * Removing the file from here would deadlock: debugfs_remove() waits
++	 * for this write to return.
++	 */
++	schedule_work(&early_kcov_release_work);
++	return count;
++}
++
++static const struct file_operations early_kcov_fops = {
++	.read		= early_kcov_read,
++	.write		= early_kcov_write,
++	.llseek		= default_llseek,
++};
++
++static int __init early_kcov_late_init(void)
++{
++	unsigned long size, used;
++
++	if (!early_kcov_area)
++		return 0;
++
++	/*
++	 * Deferred struct page init has completed by now, so memblock memory
++	 * can be handed to the page allocator: drop the unused tail of the
++	 * buffer.
++	 */
++	size = early_kcov_nr_entries * sizeof(unsigned long);
++	used = PAGE_ALIGN((READ_ONCE(early_kcov_area[0]) + 1) *
++			  sizeof(unsigned long));
++	if (used < size) {
++		memblock_free((void *)early_kcov_area + used, size - used);
++		early_kcov_nr_entries = used / sizeof(unsigned long);
++		pr_info("Freed %lu KiB of unused early boot coverage buffer\n",
++			(size - used) >> 10);
++	}
++
++	early_kcov_dentry = debugfs_create_file("early_kcov", 0600, NULL, NULL,
++						&early_kcov_fops);
++	if (IS_ERR(early_kcov_dentry)) {
++		/* Nobody can read the coverage, do not keep it around. */
++		early_kcov_dentry = NULL;
++		memblock_free(early_kcov_area, used);
++		early_kcov_area = NULL;
++		early_kcov_nr_entries = 0;
++	}
++	return 0;
++}
++late_initcall(early_kcov_late_init);
++#endif /* CONFIG_EARLY_KCOV */
++
+ #ifdef CONFIG_KCOV_SELFTEST
+ static void __init selftest(void)
+ {
+diff --git a/kernel/locking/Makefile b/kernel/locking/Makefile
+index cee1901d4cff8..9041cbbec9aae 100644
+--- a/kernel/locking/Makefile
++++ b/kernel/locking/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # Any varying coverage in these files is non-deterministic
+ # and is generally not a function of system call inputs.
 -KCOV_INSTRUMENT		:= n
 +KCOV_INSTRUMENT		:= $(kcov-noisy)
  
- obj-$(CONFIG_X86_LOCAL_APIC)	+= apic.o apic_common.o apic_noop.o ipi.o vector.o init.o
- obj-y				+= hw_nmi.o
-diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
-index 2dba7f83ef97c..151ecee2229f3 100644
---- a/arch/x86/lib/Makefile
-+++ b/arch/x86/lib/Makefile
-@@ -4,7 +4,7 @@
- #
+ CONTEXT_ANALYSIS_mutex.o := y
+ CONTEXT_ANALYSIS_rtmutex_api.o := y
+diff --git a/kernel/module/Makefile b/kernel/module/Makefile
+index 50ffcc413b545..6d163116d2840 100644
+--- a/kernel/module/Makefile
++++ b/kernel/module/Makefile
+@@ -5,7 +5,7 @@
  
- # Produces uninteresting flaky coverage.
--KCOV_INSTRUMENT_delay.o	:= n
-+KCOV_INSTRUMENT_delay.o	:= $(kcov-noisy)
+ # These are called from save_stack_trace() on slub debug path,
+ # and produce insane amounts of uninteresting coverage.
+-KCOV_INSTRUMENT_main.o := n
++KCOV_INSTRUMENT_main.o := $(kcov-noisy)
  
- # KCSAN uses udelay for introducing watchpoint delay; avoid recursion.
- KCSAN_SANITIZE_delay.o := n
+ obj-y += main.o
+ obj-y += strict_rwx.o
+diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
+index 0cfb009a99b9f..fd23c1dad641b 100644
+--- a/kernel/rcu/Makefile
++++ b/kernel/rcu/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # Any varying coverage in these files is non-deterministic
+ # and is generally not a function of system call inputs.
+-KCOV_INSTRUMENT := n
++KCOV_INSTRUMENT := $(kcov-noisy)
+ 
+ ifeq ($(CONFIG_KCSAN),y)
+ KBUILD_CFLAGS += -g -fno-omit-frame-pointer
+diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
+index b1f1a367034ff..4b4db5cca9b08 100644
+--- a/kernel/sched/Makefile
++++ b/kernel/sched/Makefile
+@@ -9,7 +9,7 @@ ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
+ 
+ # These files are disabled because they produce non-interesting flaky coverage
+ # that is not a function of syscall inputs. E.g. involuntary context switches.
+-KCOV_INSTRUMENT := n
++KCOV_INSTRUMENT := $(kcov-noisy)
+ 
+ # Disable KCSAN to avoid excessive noise and performance degradation. To avoid
+ # false positives ensure barriers implied by sched functions are instrumented.
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 6759087154edd..40bf654ec7515 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2233,6 +2233,51 @@ config KCOV_INSTRUMENT_ALL
+ 	  filesystem fuzzing with AFL) then you will want to enable coverage
+ 	  for more specific subsets of files, and should say n here.
+ 
++config EARLY_KCOV
++	bool "Collect code coverage of the early boot path"
++	depends on KCOV && DEBUG_FS
++	help
++	  Record every PC executed by the boot task (init_task) from right
++	  after early parameter parsing in start_kernel() until rest_init(),
++	  with KCOV_TRACE_PC semantics, and export it via
++	  /sys/kernel/debug/early_kcov. Writing to that file removes it and
++	  frees the buffer. This shows which code a given configuration and
++	  machine actually run during boot. Only instrumented code is
++	  recorded, so this is mostly useful with KCOV_INSTRUMENT_ALL.
++	  See Documentation/dev-tools/kcov.rst.
++
++	  This reserves EARLY_KCOV_SIZE_MB of memory during boot and slows
++	  down the boot. If unsure, say n.
++
++config EARLY_KCOV_SIZE_MB
++	int "Default early boot coverage buffer size in MiB"
++	depends on EARLY_KCOV
++	range 0 2048
++	default 256
++	help
++	  Size of the early boot coverage buffer, rounded up to a page. It
++	  can be overridden with early_kcov_size=. 0 disables the collection
++	  unless early_kcov_size= is given.
++
++	  Each recorded PC takes one word. With KCOV_INSTRUMENT_ALL an x86_64
++	  boot records about 17M PCs (130 MiB), and 30M to 40M PCs (240 to
++	  310 MiB) with KCOV_INSTRUMENT_NOISY, growing with the amount of
++	  memory. PCs that do not fit are not recorded.
++
++config KCOV_INSTRUMENT_NOISY
++	bool "Also instrument code excluded only for noisy coverage"
++	depends on EARLY_KCOV && KCOV_INSTRUMENT_ALL
++	help
++	  Some code (scheduler, RCU, locking, page and slab allocators,
++	  rbtree, stack unwinding, ...) is excluded from KCOV instrumentation
++	  because its coverage is not a function of system call inputs and
++	  only adds noise to coverage-guided fuzzing. Code that is excluded
++	  because it cannot be instrumented safely is not affected.
++
++	  Say y to instrument the noisy code as well, so that the early boot
++	  coverage shows the complete execution path. This degrades the
++	  coverage signal for syscall fuzzing, so say n for fuzzing kernels.
++
+ config KCOV_IRQ_AREA_SIZE
+ 	hex "Size of interrupt coverage collection area in words"
+ 	depends on KCOV
+diff --git a/lib/Makefile b/lib/Makefile
+index a2afe954805cb..f81096084d18d 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -13,13 +13,13 @@ endif
+ # These files are disabled because they produce lots of non-interesting and/or
+ # flaky coverage that is not a function of syscall inputs. For example,
+ # rbtree can be global and individual rotations don't correlate with inputs.
+-KCOV_INSTRUMENT_string.o := n
+-KCOV_INSTRUMENT_rbtree.o := n
+-KCOV_INSTRUMENT_list_debug.o := n
+-KCOV_INSTRUMENT_debugobjects.o := n
+-KCOV_INSTRUMENT_dynamic_debug.o := n
+-KCOV_INSTRUMENT_fault-inject.o := n
+-KCOV_INSTRUMENT_find_bit.o := n
++KCOV_INSTRUMENT_string.o := $(kcov-noisy)
++KCOV_INSTRUMENT_rbtree.o := $(kcov-noisy)
++KCOV_INSTRUMENT_list_debug.o := $(kcov-noisy)
++KCOV_INSTRUMENT_debugobjects.o := $(kcov-noisy)
++KCOV_INSTRUMENT_dynamic_debug.o := $(kcov-noisy)
++KCOV_INSTRUMENT_fault-inject.o := $(kcov-noisy)
++KCOV_INSTRUMENT_find_bit.o := $(kcov-noisy)
+ 
+ # string.o implements standard library functions like memset/memcpy etc.
+ # Use -ffreestanding to ensure that the compiler does not try to "optimize"
+diff --git a/mm/Makefile b/mm/Makefile
+index 2a3ec53d62eef..d272f2bb4c3db 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -20,16 +20,16 @@ KCSAN_INSTRUMENT_BARRIERS := y
+ # These files are disabled because they produce non-interesting and/or
+ # flaky coverage that is not a function of syscall inputs. E.g. slab is out of
+ # free pages, or a task is migrated between nodes.
+-KCOV_INSTRUMENT_slab_common.o := n
+-KCOV_INSTRUMENT_slub.o := n
+-KCOV_INSTRUMENT_page_alloc.o := n
+-KCOV_INSTRUMENT_debug-pagealloc.o := n
+-KCOV_INSTRUMENT_kmemleak.o := n
+-KCOV_INSTRUMENT_memcontrol.o := n
+-KCOV_INSTRUMENT_memcontrol-v1.o := n
+-KCOV_INSTRUMENT_mmzone.o := n
+-KCOV_INSTRUMENT_vmstat.o := n
+-KCOV_INSTRUMENT_failslab.o := n
++KCOV_INSTRUMENT_slab_common.o := $(kcov-noisy)
++KCOV_INSTRUMENT_slub.o := $(kcov-noisy)
++KCOV_INSTRUMENT_page_alloc.o := $(kcov-noisy)
++KCOV_INSTRUMENT_debug-pagealloc.o := $(kcov-noisy)
++KCOV_INSTRUMENT_kmemleak.o := $(kcov-noisy)
++KCOV_INSTRUMENT_memcontrol.o := $(kcov-noisy)
++KCOV_INSTRUMENT_memcontrol-v1.o := $(kcov-noisy)
++KCOV_INSTRUMENT_mmzone.o := $(kcov-noisy)
++KCOV_INSTRUMENT_vmstat.o := $(kcov-noisy)
++KCOV_INSTRUMENT_failslab.o := $(kcov-noisy)
+ 
+ CFLAGS_init-mm.o += -Wno-override-init
+ 
+diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+index 8c311b997e246..8b1f540e8c3e7 100644
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -52,6 +52,12 @@ basetarget = $(basename $(notdir $@))
+ # real prerequisites without phony targets
+ real-prereqs = $(filter-out $(PHONY), $^)
+ 
++###
++# KCOV_INSTRUMENT value for code that is excluded from KCOV only because its
++# coverage is noise for syscall fuzzing, see CONFIG_KCOV_INSTRUMENT_NOISY.
++# Usage: KCOV_INSTRUMENT_foo.o := $(kcov-noisy)
++kcov-noisy = $(if $(CONFIG_KCOV_INSTRUMENT_NOISY),,n)
++
+ ###
+ # Escape single quote for use in echo statements
+ escsq = $(subst $(squote),'\$(squote)',$1)
 
 -- 
 2.47.3
