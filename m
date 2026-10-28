@@ -1,107 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.189.91
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.41
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793150009;
-	b=Lw6dcSa91dY6uaiQ4I5ZwzxZ92FJ9cLS/sn/RFfcITbvijwKYv45dvi9UfdBtYI+yOMy
-	 JMxizPmf+rozjWVcPMA/1WctCABQNgth4yV8LLzzss0XlptyA8xdBRYWmZT734s608dcy
-	 4REqe1T/3idPDWcWg+p3EtMbKFPQJ7qG+61eND5ehlxPE1YJPhivX7YSAmwSmJSeDOWrX
-	 LnP5+yRGG58tWp6K4LcnLba9yWJi7CwrKEQfywa9vCvz9MD7GfcfcOw+QbdKZzkP6wGTS
-	 76KCHuXFrZ5eQCF8x5khTNiKk+XaHpmfeYBuVnllZWjtPeAsHONb1j26h8rOEKrKOLw==
+	t=1793153860;
+	b=J6nkpFQ0fj2zqGoPoJrqgKNdkqinQaACtdb2q4+qaL4B5VpIKej+KFTOsWlM/AuhQZdo
+	 XG+eUHUtebRAnmprqHhAO9Kpqo1cbQ3/esx09NqI7lJRTWCiu1+gxxTjSu4Kp07I/Z9SV
+	 MgQ0gWXlChp6XEvX11iqWUD4gbuMJ+UsfwPHQ55eyxJN53kPFw4d8iogwcmricNlALWcR
+	 LEZ+BK7M+Bcb8CwKMzQ0MYJ0mDg5UGckq3wRd/UYtMwT2SXGWXv68oIoHgUTzyHrTHlsI
+	 Iq40bTzGUrSYUO8dzOTqQe09MuG81uFOsAq6eN5fbqEDXofQ88q5QyJV1p7BSCRZOZA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793150009;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:Message-ID:Date:
-	 User-Agent:Subject:From:To:Cc:References:Content-Language:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
-	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:
-	 X-MS-Exchange-AntiSpam-MessageData-1:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=U7kYcdMvpcd+3FTaKs0FxIPKZn834tJ44FXw7xrdjX8=;
-	b=zMom8TL/JBnMY0b4cAlDrUAqLH96MVBuLSlGjq4rS4HK0Qh9qn/Zk0k7pB2TcIZkKOTJ
-	 UetldLLYGJW5Uc1tBDe+U9jhghVqr1brV2oVmWcCcZxsogJ1fQ8TA/UwfweaIz/+T/bh3
-	 DKwqf+R/oN6Fz+Sbdt6ui6RazOtaD1l9lvym4/pmvtC8t3aGLjVn3mJtePE8HNEf8PidG
-	 mh8N8nc1JFE4d7wQKR6lfNgn2vKs6FR2mkWfU1npXdHR2GFv3xjPER7vWt5B9s+kBzNM/
-	 X3yrxjEXqWNL2T6FLIMO+CR4bX9hmU5na8rlo+9P9k6p6GDU6yy5WSnFx8zI/TuAbYA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793153860;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=75/rV3MuGn+QlyFkS3b8E6MzH+wxlD9J56EXGGNEdag=;
+	b=K9hnABHzSXGM9qir8npGPCMVaWan4iAsM+1WYG2TvpiPESjpqfBUCIggWoVlFbTaCXh0
+	 0RW9wVxlaEv+ZyutEU4sSeqhLw4XEEnADVGAkRo9o0Hnx25X2t+X2qttaYIyFzZavYqWk
+	 tJF9dIgumi7W8bxZj7e6o7ntxv7rL9vCF4MRZUuKBQX/AmyxHINzWYzX3p89wxED8w+gh
+	 tB64nnEK++ZkFmF9v25prDu/dMXL21VUMWAjpJdVxHIj+i92kGdvaz4CM02PFhQNO/qFn
+	 CSsRCAeUghp/AExLrB4r9Wrth3TJYjq88eyxdChpnQOsSWDjab4P+lTpHr4MmVl58rA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=efficios.com;
-	spf=pass smtp.mailfrom=efficios.com;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.189.91
-Received: from YT3PR01CU008.outbound.protection.outlook.com (mail-canadacentralazon11020091.outbound.protection.outlook.com [52.101.189.91])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=jehQ+UIv;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.41
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F104F606A31A;
-	Wed, 28 Oct 2026 01:13:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F104F606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=XUOFrR7aZjCb5fxyFtyezz4X/3nsMqM0Pt4yX2qSJyvMb+CpbbutiU196f4wA8C84+yBM0kVC4T5tt8COM+jW5t7ZCLYUnaAJR+ygU0dZ5L5cRIDe9L+Ygc9ijMnw0srcKTAh5oQTWogNi8clBZy9sNB63Qo0fw9XhHGHXfcn/lXx6bvs4x9zR4sfM3NLxnB3wu/qYO3dOM5/ZpAuO7IeZ1P8hldahm0Vof/qGbjqJ8gKFIXqSVD4lHlVoh5PApB3tUAlgH5L9DVCkzigoTJEGHPFlaSNj8QHQE/5w/SUdS/D44xkL6UhuSAXLUghJUwvQvMXE8QqzrP0Rpqn4WciQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U7kYcdMvpcd+3FTaKs0FxIPKZn834tJ44FXw7xrdjX8=;
- b=uuoe5UPi7d+VlCMZRS8UJMOPqPmaEZ/NMtVgQ/9XpJt/0y8pWLnd0/y2hi0eh5uCxLGoHu4wCGo0W3318ryBA/WxYIDzrzPrI3FvU0WRd4a0M7VN+SRsimdHmkCWEp8wtcy52ML8QvQAsrirylYCyVWujbw1hFHq+uuMLdcDIuOLZow/jC6hTJkWEPDgdx5a1bRn9Dcl3cKfzM5eA/C4l008TqF3+kgkHFe7kmHuBP701zV3iwXw44A9YmfPjivA74SW/Hc6VbtfjSE1eLLsgP/GPrvtkH08kRM3Tn1nqnDwZoqC4KMd1voesTPSOuL4kdsChyn0BndNAtgjojvpVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
- dkim=pass header.d=efficios.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U7kYcdMvpcd+3FTaKs0FxIPKZn834tJ44FXw7xrdjX8=;
- b=l9mu2wW6BPW4NO1MFrUzgLjAL0VZwx5Zn9nveZexq3cKF4CEYzU52vUt4Tm75dZS6Ux2FPbIJ+mrYRudqbEHd/Mg94Tvaybg31Bk4Ii87Br+nAwbpfSTKtGWQscpWzvgdWUK81hplZ1WVazMvUiIqhs3gGBHM2zn1lgb/xWE78fwSu2l5Z+uFvHediVALJXFARz+BeSiAHTMDNGBLg63NsE1VdX5J3gJ15S56HrSf2/Hj7qsK+HtLL1qO6SunhmnEX+NfQjkw87+blWDK1sb5bJ6MCGyeAllf05MTJeTpWh52G7mMtswxYngLBqdP9+7ZSEGlrprWsXOoI77lem5Lg==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=efficios.com;
-Received: from YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:1d0::10) by YQ1PR01MB552502.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:d6::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.569.8; Wed, 28 Oct
- 2026 01:13:25 +0000
-Received: from YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::6b9e:a901:67c5:7ddc]) by YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::6b9e:a901:67c5:7ddc%6]) with mapi id 15.21.0546.021; Wed, 28 Oct 2026
- 01:13:24 +0000
-Message-ID: <9667c08c-333e-4fe5-9812-c5ccaa183e36@efficios.com>
-Date: Tue, 27 Oct 2026 21:13:17 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 00/12] RCU pseudo-transactions
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>, linux-kernel@vger.kernel.org,
- Boqun Feng <boqun@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Christian Brauner
- <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Liam R . Howlett" <liam@infradead.org>, Lorenzo Stoakes <ljs@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>,
- Andrew Ballance <andrewjballance@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Ingo Molnar <mingo@kernel.org>,
- Thomas Gleixner <tglx@kernel.org>, rcu@vger.kernel.org
-References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com>
- <20261023181940.457424-1-puranjay@kernel.org>
- <f785237c-ee5e-4ad3-8ee9-79474f5f45c8@efficios.com>
-Content-Language: en-US
-In-Reply-To: <f785237c-ee5e-4ad3-8ee9-79474f5f45c8@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQBPR0101CA0301.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:6d::10) To YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:1d0::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF0B606A325
+	for <rcu@vger.kernel.org>; Wed, 28 Oct 2026 02:17:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EAF0B606A325
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=jehQ+UIv
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4a35ac4475dso3048405e9.2
+        for <rcu@vger.kernel.org>; Tue, 27 Oct 2026 19:17:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1793153858; cv=none;
+        d=google.com; s=arc-20260327;
+        b=lRuO/dlr/pjTWJ2cr3K1iN07qH0a4FqZ7/1U6+2BOd6NtulF4cjyRHxTngLCI+LJ5N
+         0VwlSUVbC0SfPlnZNA/UeLdUdU4DED1gXUfiPW4NML3oh5b764lOladg3LKDhN6h98hE
+         E4hmRznHiB8AaSJdWxBfHSNAdcockUE4PZiMeCZaynDICrs9sqREMMJCcDk6MDuf90PC
+         8r5jJTykGBtzok3wnzrcxGvlJGKFP9elgFREqtumeTyQTm8JHxlzpRCuD4c1BrX2hVop
+         cAWJLJZM94rxVUszblKIOkznuCCElagNp8ET9vxFnT7MGVnMBZzF8bZ2Rfqspcgv++pU
+         Sr2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=75/rV3MuGn+QlyFkS3b8E6MzH+wxlD9J56EXGGNEdag=;
+        fh=NUIoA0PFPQq55pP6Hqkj3tKBerIsAVILserpE5PFbF4=;
+        b=fy0K7JuGKmxF1peGkxWi4+Szd8ofx/JrxYYIuKjSz2RF86p2WDlmwWaGLEnuUvA+iO
+         6rOsQHkPIHfzrgFL65GvRY7Nxz/d56lEfUz3P98uB7IzAl8LWVrtN6a4/eYQdC8exl/s
+         R39Qu7whxatNxh/b3IMAh70Di4OU/65x/2+Ch5SiR5xK4246u6aakDfHTYOIvwc2VMSb
+         PeiC5iCv3UyipALWiVqt62CZmG68ivMqkCnO0Uzu+6ZmrdZrwdPETy2bvl0GTOVA1Sxb
+         tMRL9JqJkvl7Ifn53zwERd3alOEXaV6/TwpSI/C/V37ReA0OxOXMp/Bgj0aY+sKXg9L/
+         dAEA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793153858; x=1793758658; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=75/rV3MuGn+QlyFkS3b8E6MzH+wxlD9J56EXGGNEdag=;
+        b=jehQ+UIvvhz/ikT+6UkrkYGYoAMsZppHqw6XC2bXKio8sXZYxwoz8WVrcr0BKFefM/
+         Ra7nmTUNgvcAb/rwtBwg5MQz5tknhGe4tjCsUbMR9lgZFG/sSs02Waz9gtdQhJRG8wn/
+         oGue+ho22hpsgYEUKnvNSIOgo/E61bNVcBG9eVqHkD966NL2dTPBey7QGAREzGBLucrf
+         tKwNGF2e+ATBu4IhLuwrtGlry9tNlYHR8SNjsk169ZR3ePpFgqCWnFuBOWWwc2Qtgjw1
+         ccznn/47kSSwuqe1NItoYPPX0Wq8EZAvjr86o1uZemjqMy5GUoUgWy5EmDCwQ5ico+4/
+         0xZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793153858; x=1793758658;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=75/rV3MuGn+QlyFkS3b8E6MzH+wxlD9J56EXGGNEdag=;
+        b=0aqnwueW1Cocjpq5obo/kb2lWbJr7HNI/P+timuaVoTVs9MdVJtiSEEI/GN1PKFuqe
+         w7uToKKlUUFljRJO95W1JCkXmfB9UUeILqkGJtZ7KJWR2dJfgSZJqLwS5GA5HsfdXxxB
+         7aqAF1sJh50oQAc6WIz2xvXMrfkFLJcCOlpYas0/K9IO5CRgj9VeyO4CUmA8n3VboUTu
+         VF4nfpd8RxQXPslNG8BDabqKHczbSm8xumzjyUohnE0V4TFkWqb2b6BMACpQ7jBWHxnR
+         jl/HcQqXI5+EhRYTWSb3na6YOTLKQXQqDzYXLELmRfpYiHzCvP2QVDNwiF1DzXvge1Q5
+         vdoA==
+X-Forwarded-Encrypted: i=1; AKwUvBzOg3vmpMZYH02A99B/TX7JjZyfMIWP2RKz6uErzYR/K8cIqqIoEVpiR6b39wVQ+SzTnoo=@vger.kernel.org
+X-Gm-Message-State: AFq9FYI1OYucOvYvBk300NxYwL9oiMPNfID6jfaXaBjJpvfuyuc6hKnk
+	q1VN8wp9eagoKJ5nFqQh+V4PwSaVJDmQ9P6F82XKSX32DvlgK8JmSn6cMo9SqVpcdti+CzuXrps
+	PhWzo8IP1DNh0u5DeNCLFAyPlZzcp1FE=
+X-Gm-Gg: AYBFou00GxNa89/WdFsWVPkZmX02bu2YJaGfGBm/41TobcHyvmyrtxJTQ5I9+6+JLZX
+	4VUqe5YzWLmmD/5wPvQ5Q3D9yp5ZJj9gNuBSftt+wOq5YtEeE3o03d5mWQBVdAmugYv7kuwhH9N
+	Tse1voJmIpIGJWSATrzbZeQ0qDM3UotJhC5WzoZKHYyJS5eKMFMgpJI9vM1aCUGwMXBYuwJMa3Q
+	O51fd/87Z+B1tFUU0CFR0MXPep3E8XsXj9MmNkk7eTGtXkLNfnrPkKZSvqkrSJ223JnTYw8FJT9
+	+sHCRxuzr5/6FuzfQAlUVtGQVu3t1pYvxVkX6d7qFbQRSy06uUtdmgDRXCzsus74A58M1v9tFC4
+	I3xWh1hBvN571GJQhBjT0UXyjABLNTt6NJtG1UIEKk1RJL3Ucda7npYXyVAtlPyqvM4Ht9A==
+X-Received: by 2002:a05:600c:6989:b0:4a0:1b14:e283 with SMTP id
+ 5b1f17b1804b1-4a9640f38bcmr17926875e9.1.1793153857997; Tue, 27 Oct 2026
+ 19:17:37 -0700 (PDT)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -111,121 +104,122 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: YT6PR01MB491026:EE_|YQ1PR01MB552502:EE_
-X-MS-Office365-Filtering-Correlation-Id: 56284bbd-3ef5-42d1-e198-08df3490aa50
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|23010399003|376014|10070799003|7416014|4143699003|56012099006|261026140227099003|261026121527099003|261022105027099003|261021121427099003|10067099003|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	sdZs+bqf10BJE30WNTPQuN1BmRhDgIh9sr/yjFI0xRMEA7NmLl78KXEQ58OW/ms4/GReDCiwhjM4hh8hJfF1SwDXTHYh3tvxDq0pupUxgEN0ZMbE12lVvu33emP4jXz36Nk6yztH6mQ1642T+B78ft8nhtLLfBCAW+yS796TuPL0TPlW+fF9+y+qavZTwwoWQySH2N7qLDOiBXsyBjKN8GHmLQ0BG18lSUno0GlRVwW2lKpVRfjbFA6pwTtZl7qaX8tClj3ZhfxxRGvYUjssQhqiA1QED1lp+i00qQXQKt3ssrgbpGdqmy+OCTbvmKwp9PnxLoDe/KdTOkvFn6DuzSAUQaTPMR6A9fOWAazYgeYqwOtlzeyd5ADHpkW7CQI/dpbTsYsQwdEN+ER9UtJI/DqfATURE6E9iAAYLop2RjBe90D7Tsxuxd+cpwHj5wz56I3GiLMI0GJkwQd6IHf//urY3S8wfX+eDvEHqihiAB6QIGaYwu6IEiCAY79l4KGxYRn7G+Ao+Igy3BQT6+J7yucpX8FXIJXkj6Qm8Kd+3ITBkmEUST1g1gQ82DYm1rSQE0EY34vaB9vp28TwKzE6l443pHVETN1wUyq+pCj2onE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(23010399003)(376014)(10070799003)(7416014)(4143699003)(56012099006)(261026140227099003)(261026121527099003)(261022105027099003)(261021121427099003)(10067099003)(22082099003)(18002099003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WmU3ZmJ1UHUxU09FRllMQlI5eE0rNW9CMTd2M1FGT2FHQ0xoN2U3SE11NkMy?=
- =?utf-8?B?K2xVRVp4ZzVUY2tFVnB2YWRqemtEbjNsOStjbFdmbDdyYXZqZWR0bzZsbXV2?=
- =?utf-8?B?UG5SaTI4SU0zMEJpMno2MWkybzBuR2paUTNVc1ZzVHZPemJRODV6SmRVSFZa?=
- =?utf-8?B?UERuOE9ZYitGZW1IVFQ5YVJNZTRaSTRsdkVkNzhLaVA3TGlobXNZbHVJZVZQ?=
- =?utf-8?B?c3lZZEJnbkJXMWFIZkhUNnhLemJBcVYvYmtGT1NtTHVKREZqL1Y2ZVp2bHpF?=
- =?utf-8?B?WWd1M1FKYlkvYUd5K1ZQbGszbkcvNjVvemM3c2hVcFJ1WHlDWURWUndHblFv?=
- =?utf-8?B?bnlsT1cyVytTV1R2UCtzSnRET1NIMlgzQ1libDA5WC9EbDczUU9TNk0vKzRm?=
- =?utf-8?B?aFB1RGF1NXE5emUvRjRCOC9iRkVPUjVYa1FjM2lIYkZzZHNlMmhJcEN4Ny8w?=
- =?utf-8?B?YXdTTkF1V2t4ZnliWTFWVC84VUd2eERiRkFxYlFBeElIL1Z2UzlWR25kZEhI?=
- =?utf-8?B?a2NLRkFFUjY3aEhod3VISmRQenRtSDBRbUo1OUJ3TjBVT3V0YmVodDF3d2w4?=
- =?utf-8?B?Qk5qNFNUNzAvdGUrSC91OU9XU2czakF6NlFPNUFZN09MRE5peTdjL0c1WjhD?=
- =?utf-8?B?MTFBbDdETlVuSU9neFJtK0I1SHhZc2NJeHJvMSthS043QmhmSTNGZ2ZzN1pC?=
- =?utf-8?B?c21YYnVzLzlCTmJpUUJQa29YT1FYRTdqbkFSRTRPMmplclRJT0V6d1EvLzI4?=
- =?utf-8?B?TEc0d2RMTWdjSEpXeWdiNkdjdDJhL1BPUmJtQjBUWjZIUFVFRWFkYjFxNUNn?=
- =?utf-8?B?RFpvVElUYjZTOWhWdEZZT3ZMWjlnTDNRZGRkSDlmZUNUVE5rWG40YzJlb2hZ?=
- =?utf-8?B?cjRVUnlsa09HUnpTRUNFUWhNeVhlWHFjYTJ4QmJqUVI1YlhweFZzRUZFRStH?=
- =?utf-8?B?VHZsb2FtcjFuSHk1bzVINUNXUDRDZE8wUUxLQ3Bwei9hYm5iTnpjVDVVdWFo?=
- =?utf-8?B?d2U3WDg4NnIvTGN1MFZKWHc3VndvMWE5SXB4cnhGVGZpVUFSN3B6V2hScHdw?=
- =?utf-8?B?YXlPYmRIS3YxbHdwb2lXNVBoN3pJbUc0b1RXcVVKNk52UDVRa3BjQjV0VFJG?=
- =?utf-8?B?dTA5YTltVjA5SnIyS05MeDMxOHEzK2dROWdLdWJaTG1zNC9aNnYxa2F5NnRQ?=
- =?utf-8?B?ei91dVh0RnF5dnpMcklRV1kxWlFGOUQ4bkl6WG4rNExzVXJDMGlsZHhFS1c2?=
- =?utf-8?B?K21xN2s3RjdmSUs2dEhYM1ZMdkNaZ2c0UWQ5cUlaT25OK0xORTB3NVN6MFdB?=
- =?utf-8?B?VFI0RXNBb1dveU1POTJaSm1GZGx2UGtGc1hUb1ZvUzBoVHhyZFBJR1Q3TGxG?=
- =?utf-8?B?ZHFYd0FYWFpxbTBFSlZYN2hkNzhsRm4rcXJ0QUVMYmorL0FhRjN5dkdmRzQy?=
- =?utf-8?B?K3ZLRUFONnlRMGNDLy9JZVRlVm8zVzBNSzBzaW5FSTU5QUFJaDlsQUd1dGdO?=
- =?utf-8?B?cnF4V1kzODg5MS9FY2hVbmtrVHRqR2FpeE9mbVpBWW9NbDFaOEhmQ1hEZG1J?=
- =?utf-8?B?cnMyakd6Zm93WHFtVFlBdHRjQkk0UW1XUk5TQ2hFa0hmTXAzaTZ0dHk4VU5Q?=
- =?utf-8?B?TmNBUmR0VkdSU0RzT2JJWk80S25BREYvVG5JeEFHVjdKWWVJaUhKS3lVUitF?=
- =?utf-8?B?c2QxcXBOTVJRdDYvVmxoa0J5aXZPRHJnUE1rdmVrUUpLTXdJcXFOWWpuWW9m?=
- =?utf-8?B?dGE5alN0K0xyL3RVdVl5ZXNYQ2l0cUpRMCtLU20rUHc5ZUEvM0syajgwdmk3?=
- =?utf-8?B?Um9ZWGlpdFJ1V2R1NXRCazlqbWNSczMveVJwMWpKUVhwM3llNjhGK0ErTjFZ?=
- =?utf-8?B?eEJaRjBjUWwxTkgydTlDTi94OWlDemNOSEtJbEl1NWZiM1RIZytkM1ZuM0Vi?=
- =?utf-8?B?T1ViUnlEeVpwa1FjdWFJbXlDQWJTa0Yxa1phaEszNlc1ajR3WWZnWjlxUzMz?=
- =?utf-8?B?REtBYlgyeGNXaFBkc1hEaUFicTRXU2wxbXdBQVNZUDl4R1pmNGxGN1ZjOXF1?=
- =?utf-8?B?QWVoUTNMRjVpRlhLaXMyWEUyT1E4dnJ0b1BEZmZaUGJJT3ppRWt3NTNVeWdQ?=
- =?utf-8?B?OHkyN2xGOExhUEVlN3pBS1VnZG5OVldJUHdxNHpwUXRnRVFHVHpZSit1R05p?=
- =?utf-8?B?Qkt3WnRVaVQ0a3hkUlNxd0s2UzMvYURETXIzOWR4VloxN3ZXbmh1YVB1M0o1?=
- =?utf-8?B?TGpiVHJoTWk1bHFHeHRpLzdCNEtZZmxtL2k5dmd2U2huaUZrZ3c5RXNlSXhi?=
- =?utf-8?B?OWJtU0g0Y1FkaVlmTUROMFNWdkVzRThoOHk0a2dNVHdxV2xYQzQ0UVQ2MXFz?=
- =?utf-8?Q?b33/Kgzc2RW//WgGtuo1cgBuBPH+IQgdb17veEy8k2R3V?=
-X-MS-Exchange-AntiSpam-MessageData-1: MK0fK5JafS+StxeMWLHZupeXMVVqSstDy9Y=
-X-OriginatorOrg: efficios.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56284bbd-3ef5-42d1-e198-08df3490aa50
-X-MS-Exchange-CrossTenant-AuthSource: YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2026 01:13:24.8246
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3tXdGTMUNBTrkpfadz99PklqyaZSfYNarSyOFpn0AVLgyx5I/3y2D7/RTopFS4bG42l4AXQC9H5GPAfd5gScXYzXRIpZUZv2Ypml33h8byA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YQ1PR01MB552502
+References: <20261027070923.3054462-1-kunwu.chan@gmail.com> <20261027231315.GA3580680@joelbox>
+In-Reply-To: <20261027231315.GA3580680@joelbox>
+From: KunWu Chan <kunwu.chan@gmail.com>
+Date: Wed, 28 Oct 2026 10:17:25 +0800
+X-Gm-Features: AclHuK89zdU2dhzaFrjvPFZJZcFsH9NI5CzwsDVal3jyUsdF9giWMS2YSMVjliQ
+Message-ID: <CAN_Opa9n-iqRgQczQ5_ZpTMHFbjmW-6+ZYsCgCYdNfuprXLyFw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/10] rcu: Improve callback diagnostics and validation
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: jiangshanlai@gmail.com, paulmck@kernel.org, josh@joshtriplett.org, 
+	work@onurozkan.dev, frederic@kernel.org, neeraj.upadhyay@kernel.org, 
+	boqun@kernel.org, urezki@gmail.com, rostedt@goodmis.org, 
+	mathieu.desnoyers@efficios.com, qiang.zhang@linux.dev, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2026-10-27 15:57, Mathieu Desnoyers wrote:
-[...]
-> 
-> E) Use a preallocated per-cpu rcu-txn slab, synchronize txn descriptor reclaim with
->     RCU (steady state) and hazard pointers (OOM)
-> 
-> This is basically just pushing idea (D) further to remove the need for sleepable callers.
-> We surround the rcu txn proxy pointer resolve with both a RCU read-side critical section
-> and a hazard pointer slab address guard, thus protecting the use of the txn descriptor
-> with two types of critical sections. The resolve would run with interrupts disabled.
-> The "resolve" path of txn proxy is not a fast path, so we don't mind the extra overhead
-> too much.
-> 
-> On the "remove" side, we typically have plenty of preallocated rcu-txn from the slab.
-> In the common case, we keep using RCU deferral to free the rcu-txn in batches. This
-> would implement a custom per-cpu pending list to enable the following "stealing"
-> scheme.
-> 
-> In the rare cases where a user empties the slab, we move to a more aggressive
-> mechanism based on synchronize_hazptr: we "steal" the batched in-flight RCU txn
-> reclaims so we can fast-track their reclaim after a hazptr synchronize. This would
-> all be using busy-wait and the only contexts we'd wait against have irqs disabled.
-> 
-> The motivation for handling the steady-state with RCU is throughput (no synchronize_hazptr
-> on the typical "remove" case). Hazard pointers then handle the OOM corner case without
-> requiring sleepable callers.
+On Wed, Oct 28, 2026 at 7:13=E2=80=AFAM Joel Fernandes <joelagnelf@nvidia.c=
+om> wrote:
+>
+> On Tue, Oct 27, 2026 at 03:09:13PM +0800, Kunwu Chan wrote:
+> > Hi,
+> >
+> > This series improves callback diagnostics and validation across RCU,
+> > SRCU, and RCU Tasks.
+> >
+> > Patches 1-3 record callback registration stacks for KASAN in Tree
+> > SRCU, Tiny SRCU, and Tiny RCU.  KASAN prints the recorded auxiliary
+> > stack when reporting a use-after-free.
+> >
+> > Patches 4-6 add rcu_head alignment and NULL callback-function checks.
+> >
+> > Patches 7-10 detect duplicate callback enqueue attempts before
+> > queueing, using the RCU head debug-object mechanism.  A duplicate
+> > registration is rejected at entry and __ratelimit() controls the
+> > diagnostic output group (pr_err, mem_dump_obj, dump_stack).
+> > Detection requires CONFIG_DEBUG_OBJECTS_RCU_HEAD.
+> >
+> > Changes since v1:
+> > - Patches 7-9: __ratelimit() + dump_stack() instead of hard-coded limit
+> > - Patch 10 (new): same change for Tree RCU's rcu_do_enqueue()
+> > - Patch 9: fixed log format to avoid pseudo-function names
+> > - Tags: Reviewed-by (4-6), Suggested-by (7-10)
+> > - v1: https://lore.kernel.org/all/20261023101841.2910719-1-kunwu.chan@g=
+mail.com/
+> >
+> >
+> > Testing:
+> >   rcutorture with KASAN (SRCU-N, SRCU-P, SRCU-T, SRCU-U, TINY01,
+> >   TINY02, TREE03, 3min each): all exitcode 0.
+> >
+> >   KASAN aux stack (QEMU, CONFIG_KASAN_GENERIC=3Dy):
+> >     Last potentially related work creation:
+> >      kasan_save_stack+0x33/0x60
+> >      kasan_record_aux_stack+0x8c/0xa0
+> >      call_srcu+0xb2/0x390
+> >
+> >   Duplicate enqueue (QEMU, CONFIG_DEBUG_OBJECTS_RCU_HEAD=3Dy):
+> >     call_srcu(): Duplicate call_srcu() CB ... ->cb
+> >     dump_stack_lvl+0x47/0x60
+> >     call_rcu_tasks_generic(): Duplicate CB for RCU Tasks, ... ->cb
+> >     dump_stack_lvl+0x47/0x60
+> >     rcu_do_enqueue(): Double-freed CB ... ->cb  slab kmalloc-16 ...
+> >
+> >
+> > Kunwu Chan (10):
+> >   srcu: Record callback registration stack for KASAN
+> >   srcutiny: Record callback registration stack for KASAN
+> >   rcu: Record callback registration stack for Tiny RCU
+> >   srcu: Validate callback arguments
+> >   rcu: Validate callback arguments in Tiny RCU
+> >   rcu-tasks: Validate callback arguments
+> >   srcu: Detect duplicate callback enqueue at registration
+> >   srcutiny: Detect duplicate callback enqueue
+> >   rcu-tasks: Detect duplicate callback enqueue
+> >   rcu: Improve duplicate callback diagnostics
+>
+>
+> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
 
-Well it turns out that this approach has potential, but the hazard pointer
-machinery is way overkill for this. We can replace my use of hazptr above by
-a very simple RCU domain with the following characteristics:
+Thanks, Joel.
 
-- All RCU txn proxy resolves are RCU readers running with irqoff, protected by a
-   per-cpu counter (incremented on read lock and again on unlock),
-- There is at most one reader per cpu at any time,
-- We use a synchronize RCU on that domain on OOM for the pending slab reclaim
-   "steal" to do reclaim synchronously. This domain's synchronize RCU waits for
-   each CPU until it observes either an even counter or a counter transition.
-- We disable preemption across rcu txn (e.g. list insert, remove).
+>
+> All look good to me, applying for further testing and review for 7.5. Did=
+ you
+> also test double-call-srcu and confirm intended behavior? Thanks!
+>
 
-So we'd keep using call_rcu to handle the steady-state reclaim of rcu txn,
-but use this specialized irqoff RCU domain for the empty slab case.
+Yes, I tested double call_srcu() under QEMU with
+CONFIG_DEBUG_OBJECTS_RCU_HEAD=3Dy.
+Both Tree SRCU (direct and deferred paths) and Tiny SRCU triggered the expe=
+cted
+duplicate-enqueue diagnostic with the callback symbol and dump_stack() outp=
+ut.
 
-Thoughts ?
+BTW, I'm working on follow-up rcutorture support for
+duplicate-callback testing and
+KASAN aux-stack verification.
 
-Thanks,
+Thanks for review.
+Kunwu
 
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+> thanks,
+>
+> Joel Fernandes
+>
+>
+> >
+> >  kernel/rcu/srcutiny.c | 34 ++++++++++++++++++++++++++++++++++
+> >  kernel/rcu/srcutree.c | 36 ++++++++++++++++++++++++++++++------
+> >  kernel/rcu/tasks.h    | 27 +++++++++++++++++++++++++++
+> >  kernel/rcu/tiny.c     | 11 +++++++++++
+> >  kernel/rcu/tree.c     |  9 +++++++--
+> >  5 files changed, 109 insertions(+), 8 deletions(-)
+> >
+> >
+> > base-commit: 940793b926aa94bf65ec404043050888e3053188
+> > --
+> > 2.43.0
+> >
