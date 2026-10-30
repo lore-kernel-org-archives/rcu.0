@@ -1,109 +1,52 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=91.218.175.52
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793285345;
-	b=DGwX97GV+wqufc28JGbPQx4uc+83kj1oWIVn2l9yY+C2srHWJ1UDXAVzLeHecU6CV6eW
-	 C2ozo0lMjG8+JzBSZxq0yskpyKZMY1ScWoWothvdq+qV+tT9BKbm9+LTButAJRvT0RyJJ
-	 UKiZ6WSaqjD7+Ds7U1YEHJqdamyiXMXto/BI6LGGD3BTCRuP4k+U3Xol4Hilcpo3J+HHx
-	 4soPbdSCF3ybdzmHUBk5JXFPR+LZLbEB1K89h2fHXUqLEmX6U+mk0QYVp4GW6PGwxT6mX
-	 GC3MmmQBKj4UMtsVCATLKoJv7EA8PcKlbszf2biIkxrqVubMfJwbyKT+/tUmI8DxFYQ==
+	t=1793362487;
+	b=YZE9Os8XU33MVrYIEgY9B133sPZf6bRfLFhfgX6aV+2o0OOD2bQWdtARU6FoIxVIabmb
+	 BGhjKbwOWQt3aMef7ZnflOVk0/AD5ZhvMlIJlsen5j71S3O0HG5wbZ+sVX96lLoLkYnsn
+	 JqObPMURWnazFuH164bLHBEgNAcrf4tZIZE4FRH4Yjn7vEc+xkA6ONt85CFCx5hQqhM8e
+	 T5D8V2ME1a9lH68AT3GmCCYdVBxU2YOEzAYPm6ko+DWGDzhFRx6sP/3xIVa1xUeSXjwDj
+	 5yNqnZsPUSlgdCE5GDlfKZP4HdwNnaDoAcXt+rmGBzkooZhzUsUbq4RBQfi2q8UmZWw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793285345;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=11yI6X7RNJHkj59+rMm7KEGQ4tLy1r9EmEZe830OAuk=;
-	b=sPJClapVdNV/wzMLwIYyHJww2S3yp/clpkcovCVsAbnE8W2N1oivEOGuDUO0veb1djCL
-	 7HL06Q6SIAh1g0g88Wwn9CWbW/bJlO0lWxssbsOP8YUOOHozWg8dQAAvczokZFo9kz5VV
-	 BuYD7xL7tV1dQrOCAgJvlKA89U+9ef+26SuHOt5hdh055CYQusZ/GxmoAzqGk2XUF+907
-	 6jdAO1v16+615UkrwUbOodN2J+5GQy9Z86b8kE3Iy5IEWRoklXHacuTFm5LSpBtYjbaPD
-	 FaD2xWL6f1fo6iApdoh3qizl+Gz9DwN/hebwl+rLHM/EnCEeCbM3Vrxm+bmdP7OOOWg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793362487;
+	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
+	 X-Mizu-Trace-ID:X-Migadu-Flow:MIME-Version:Date:Content-Type:
+	 Content-Transfer-Encoding:From:Message-ID:TLS-Required:Subject:To:Cc:
+	 In-Reply-To:References;
+	bh=h2ip5SvFQXMjskOPscXy3MGP8bE0cs7x1URhQqE3CrM=;
+	b=Q31fgtieO3Qh15pHXCvPnLCsP6cQWts4WGQw00UE0rrEd+900LdNkZHDQxLi8NDNEEyB
+	 BC42yp0BJFjr4YclLR5/lf/2TM/ceS4lbygvVHly0CIzzDE6dUUnuK0LpuY7HUeHmznjX
+	 43g/5852JU+tvkMSZII+91J8jzg35Yamxg+1oxwD0ILHChp2spW5JqPg3SRgVMvslQxGT
+	 mw16Owp3yRaeqfZum0aqqg3HjM2ZpUhBTWPz17+1Frmz5SJwUJ8V0Q99MNBpzZ6xzmpI5
+	 ElXbWiOF9OfXW99zKVvI4mPtbbhI67wGi6qb9GrJ6EBR+Ul9qYy4Lg5SNvyDeByyYGA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=0TeGZj1R;
-	arc=none smtp.remote-ip=209.85.128.53
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dmarc=pass header.from=linux.dev;
+	spf=pass smtp.mailfrom=linux.dev;
+	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=q98j0faV;
+	arc=none smtp.remote-ip=91.218.175.52
+Received: from mta0.migadu.com (out-52.mta0.migadu.com [91.218.175.52])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D96606A31A
-	for <rcu@vger.kernel.org>; Thu, 29 Oct 2026 14:49:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D0D96606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85439606A326
+	for <rcu@vger.kernel.org>; Fri, 30 Oct 2026 12:14:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 85439606A326
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=0TeGZj1R
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4a35d5d4a20so24624185e9.2
-        for <rcu@vger.kernel.org>; Thu, 29 Oct 2026 07:49:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793285343; x=1793890143; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=11yI6X7RNJHkj59+rMm7KEGQ4tLy1r9EmEZe830OAuk=;
-        b=0TeGZj1RI2pN5ABAf4mEdDDeNwNE7CrId/GUs9l/thGCPn1vFl28WjdxxCcyeimOI6
-         8+z3KRqsr8f7VU+qYRmOMTypLTMPdAoJwdVWhgUM1KiotqdCnmTeglgTYWBYoYd9DvKl
-         191H31PcMqXhntcOO2497/3eGiPerhVU/liztQ0LUbify1L9H98xjU2vdE3m1rgenuT/
-         nzSNN3RtRc2vTN4MkoXvjxsUo625Di8BQN0z71E/Zzma9SMsyHdx9MLRKpdiXttoVtru
-         y5Xqf7y/mDIkJYVMmMQgy6OCMyh9I6dwFkdR4aR6t2g6e/xCHDBBdkbPThZ1IYAUWebg
-         Nt7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793285343; x=1793890143;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=11yI6X7RNJHkj59+rMm7KEGQ4tLy1r9EmEZe830OAuk=;
-        b=cPvQUEiP+sTdIEdoXfzP0fnJuJulpk+QnYNEPQRU8BUjOfNW3Ffq5EmrUeljkdVfJM
-         FQOlFevi0ZKmVp7UV+rE8gZlFcE/4sDiEjmtph4HMQcnrc8CB/E/ZBskDlL2BifJGZgx
-         3iplE57egAym91eMtoKppAOYLlGPjZCfim88HaK4S2nnWjkpeSV2nOo+WBGisjGPiY8X
-         NuyeLpXGA1QWmz8o0v1LXIIKQ9ZZkR4A+QyQDOrckhRKV/QUGi6w1zC7+C9N3ec/Aken
-         6nG5KMwgG6BmUM2Nx4eP+8nSnNrSkk6GhgXpUlipTZfayOLsrrlgmxBeONM62iL4REIo
-         wTwg==
-X-Forwarded-Encrypted: i=1; AKwUvBxdkxvVAy9e7aHpG2NIJE4rxci3uzxA7AdLmDF7Slgm1IKb5WSt7uGr5EPxaOrVdlPdpWg=@vger.kernel.org
-X-Gm-Message-State: AFq9FYKg2qdF2H1UtJ5ECmWqIB41ASi0m/JgCgB9nbDjj9M8YCMEjtcY
-	bPzFezvLvcv48VGkXJbzwQ3kP8yqfAcE4/XneswZpS5f2Nq1tDLPYSBF
-X-Gm-Gg: AYBFou3s3wzPsSJnbMfxASd53WtsSMOBUhdkmt5Jw6zlLBiMJPrAYjiJxH6HwQlBan9
-	rvK06CmkapmYR4OMccWUU5Po+ODmPsgippXegbAp5feD9g3JDjSr6YRBcJ2egUZckPJ4c4NmUPo
-	+DcC5dnfE3cc+vuqdjM6z76+PCsMxjp9hTDc1Jtv7Jw9YkTCc+YhOk7zvcXeicB6nMqSree1TxE
-	6LwZi41BfBXm5ILlo39b3zNi0gtEUcAwXAKlxHQkH5H5phpDwPnNCujQLmIc/o2YjJW/IoT8Qi9
-	hk7vHbSg96Ql5QcdBlCXBlvfBiFzlbje2ycy2Ay3cHaxqAP8rms0nzF/oNJmikgbQgL7goeXQB3
-	uLtfvGyCgrqqr4pQgnsaKTTgpzme7mdxb6RznZCi706QAAtTCbo3+MWIQoGeNk1ND9pO2XAFkxL
-	uCo+mUGkzeWQSjZYlBK8OWVZDgn1wLOzpZseSo1bX4nukunUlUiErHR5mZdaDF2DObnrD4Wufp2
-	KF8Wv8Vpq1K2rZX7GBxF6SOIxu8/CWV2RFunqcvdVYqpgCYXCT26A0yXBeqiP0cr6reUOz4bvo0
-	VH7iQYyvRuhwQ/w7cHDev0QPdCBPLp535BEAOm/Qwh3xCZdlS5002OdhcU5V1V3KgVmZIhn11fe
-	JhjXH
-X-Received: by 2002:a05:600c:1d1a:b0:4a3:59c9:a747 with SMTP id 5b1f17b1804b1-4a966c4111amr126768575e9.17.1793285343088;
-        Thu, 29 Oct 2026 07:49:03 -0700 (PDT)
-Received: from andreayoga.localdomain ([151.57.246.226])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4aa7f322c46sm66634665e9.2.2026.10.29.07.49.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2026 07:49:02 -0700 (PDT)
-From: Andrea Parri <parri.andrea@gmail.com>
-To: KunWu Chan <kunwu.chan@gmail.com>
-Cc: Andrea Parri <parri.andrea@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Gary Guo <gary@garyguo.net>,
-	Bradley Morgan <brads@mainlining.org>,
-	rcu@vger.kernel.org,
-	lkmm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -rcu/dev 0/4] hazptrtorture: Fix shutdown hang and catch slot owner race
-Date: Thu, 29 Oct 2026 15:48:53 +0100
-Message-ID: <20261029144855.213308-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <CAN_Opa8OyyuveYo7VyfQb4rDtUmw_m-25OSXSqwpzfOnGqwEpQ@mail.gmail.com>
-References: <20261027163811.2470569-1-parri.andrea@gmail.com> <CAN_Opa8OyyuveYo7VyfQb4rDtUmw_m-25OSXSqwpzfOnGqwEpQ@mail.gmail.com>
+	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=q98j0faV
+X-Envelope-To: rcu@vger.kernel.org
+DKIM-Signature: a=rsa-sha256; bh=HCRBN2Dk48Rcr6GaXJ+oqaIPUyAM1rumz9TPvTLc5b8=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1793362484; v=1; x=1793967284;
+ b=q98j0faVFE3L4eZwCTVkdjEkvxFeGPMpErXgdQ/V4ut1+C47ljzXQwzS8NjA4boc9aFAH6JI
+ MQPIYDCAmts/RzJwaLm+DbhxU+cSRSc4nGYfEbWl1fqAhBK0RgoIxbDBOvG9nK5GuB6VrzJEfoG
+ p5HzlaW67kKbQv9P1HGFCxfQ=
+X-Envelope-To: rcu@vger.kernel.org
+Received: by smtp.migadu.com with ESMTPS id e7652bde6c35a393;
+	Fri, 30 Oct 2026 12:14:44 +0000
+X-Mizu-Trace-ID: e7652bde6c35a393
+X-Migadu-Flow: FLOW_OUT
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -113,34 +56,118 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date: Fri, 30 Oct 2026 12:14:43 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+From: "Zqiang" <qiang.zhang@linux.dev>
+Message-ID: <746fe313c43392e69e99e4f9e9301abda3800a28@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH v2] rcutorture: Avoid create fwd_prog_tasks for
+ tasks-rude and srcu-atomic
+To: paulmck@kernel.org
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+ urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <5cb8b0cb-c7ea-4f2c-a9f9-3ccbab1bddc3@paulmck-laptop>
+References: <20261023093716.25717-1-qiang.zhang@linux.dev>
+ <5cb8b0cb-c7ea-4f2c-a9f9-3ccbab1bddc3@paulmck-laptop>
 
-On Thu, Oct 29, 2026 at 05:58:27PM +0800, KunWu Chan wrote:
-> I ran into both issues independently while developing new shared-scan
-> hazptr series and its torture-test scenarios.
+>=20
+>=20On Fri, Oct 23, 2026 at 05:37:16PM +0800, Zqiang wrote:
+>=20
+>=20>=20
+>=20> When running the tasks-rude and srcu-atomic tests, the fwd_prog_tas=
+ks
+> >  kthread is created because the default value of fwd_progress is 1.
+> >  however, the two RCU flavors not support ->call():
+> >=20=20
+>=20>  1. tasks-rude: commit b428a9de9bba ("rcutorture: Stop testing RCU =
+Tasks
+> >  Rude asynchronous APIs") removed .call and .cb_barrier from tasks-ru=
+de,
+> >  but left the .cbflood_max =3D 50000.
+> >=20=20
+>=20>  2. srcu-atomic: srcu_torture_init_forbidden_apis() sets ->call to =
+NULL
+> >  for SRCU_READ_FLAVOR_ATOMIC runs, but leaves ->cbflood_max untouched=
+.
+> >=20=20
+>=20>  In both cases, the non-zero ->cbflood_max fools the check above in=
+to
+> >  creating the fwd_prog_tasks kthreads, even though those kthreads can=
+not
+> >  possibly carry out any forward-progress test:
+> >=20=20
+>=20>  1. The rcu_torture_fwd_prog_cr() returns immediately due to cur_op=
+s->call
+> >  is NULL:
+> >=20=20
+>=20>  [ 68.022674] rcu_torture_fwd_prog_cr: No ->call(), so no forward-p=
+rogress test 0
+> >  [ 129.462046] rcu_torture_fwd_prog_cr: No ->call(), so no forward-pr=
+ogress test 0
+> >  [ 190.902123] rcu_torture_fwd_prog_cr: No ->call(), so no forward-pr=
+ogress test 0
+> >  [ 252.343809] rcu_torture_fwd_prog_cr: No ->call(), so no forward-pr=
+ogress test 0
+> >=20=20
+>=20>  2. The rcu_torture_fwd_prog_nr() is never even invoked, because it=
+s caller
+> >  requires cur_ops->stall_dur, and neither tasks-rude nor srcu-atomic
+> >  provide ->stall_dur (only rcu_ops does).
+> >=20=20
+>=20>  Therefore, creating fwd_prog_tasks kthreads is pointless, this com=
+mit adds
+> >  ->call and ->cb_barrier to the forward-progress check, rejecting fla=
+vors
+> >  that lack the cbflood_max set and a positive ->stall_dur.
+> >=20=20
+>=20>  simple verification output:
+> >=20=20
+>=20>  [ 3.062959][ T1] srcu-torture: rcu_torture_fwd_prog_init: Disabled=
+, unsupported by RCU flavor under test
+> >  [ 2.922323][ T1] tasks-rude-torture: rcu_torture_fwd_prog_init: Disa=
+bled, unsupported by RCU flavor under test
+> >=20=20
+>=20>  Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>=20
+>=20>  Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+> >=20
+>=20Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+>=20
+>=20It would nevertheless be good to run tests demonstrating that
+> forward-progress testing happens and does not happen on the same
+> rcu_torture_ops structures as before. Just in case I lost my
+> way through that boolean expression. ;-)
 
-Thank you for testing these, and for the arm64 data points!
+Ok, I see. thanks Paul ;-) .
 
-[...]
-
-> Paul's concern about `torture_must_stop()` is valid: `fullstop` can make the
-> drainer exit before the readers have stopped, so its exit-time flush is not
-> necessarily final. The reader-exit approach looks worth testing against both
-> the forced-slowpath case and the PREEMPT scenario Andrea reported.
-
-do_pending does leave its loop then, but v1's for_each_possible_cpu()
-pass comes after torture_kthread_stopping(), which returns only once
-hazptr_torture_cleanup() stops do_pending, after the readers.  Either
-way, I have been testing Paul's suggestion of a pass after each
-reader's loop, without v1's pass in do_pending.
-
-[...]
-
-> These tests independently reproduced both issues in my setup. I'll check the
-> final cleanup approach against the forced-slowpath scenario as the
-> series settles.
-
-That would be very helpful, thank you.
-
-Thanks,
-  Andrea
+>=20
+>=20>=20
+>=20> ---
+> >  kernel/rcu/rcutorture.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> >=20=20
+>=20>  diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> >  index 968343be4e0d..92ff197f4789 100644
+> >  --- a/kernel/rcu/rcutorture.c
+> >  +++ b/kernel/rcu/rcutorture.c
+> >  @@ -4007,9 +4007,8 @@ static int __init rcu_torture_fwd_prog_init(vo=
+id)
+> >  } else if (fwd_progress < 0) {
+> >  fwd_progress =3D nr_cpu_ids;
+> >  }
+> >  - if ((!cur_ops->sync && !cur_ops->call) ||
+> >  - (!cur_ops->cbflood_max && (!cur_ops->stall_dur || cur_ops->stall_d=
+ur() <=3D 0)) ||
+> >  - cur_ops =3D=3D &rcu_busted_ops) {
+> >  + if (!cur_ops->sync || ((!cur_ops->call || !cur_ops->cb_barrier || =
+!cur_ops->cbflood_max) &&
+> >  + (!cur_ops->stall_dur || cur_ops->stall_dur() <=3D 0))) {
+> >  VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, unsuppor=
+ted by RCU flavor under test");
+> >  fwd_progress =3D 0;
+> >  return 0;
+> >  --=20
+>=20>  2.17.1
+> >
+>
