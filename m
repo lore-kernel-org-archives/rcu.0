@@ -1,55 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793567023;
-	b=DyncJ+U4GdQsPKSvicij3r3aNfAA1fi4fnxq0X06SczYQCziEz8R58aRfAVfpcnSzHUx
-	 8iPX1tI+J65Mr3+WSSeYPJ1W3N+G/S4MWj37qvtrFG9GOBKMiJ3NM73xTzE9w1B6OTgql
-	 U6T0Sq+0jrdXh3XLLFJJgq2A+KaejPUM4konkVPsCAlO46nMLqLHbAZhmo+vt5GzQcv3e
-	 x86UIkp3wkEeabwdBWMnHGrYmAIRmhUZ47UJ/KgR7LJzPvD/gVAyEE5WBf+gqffJpWV5N
-	 3t/wihqK0E0eo00IE1lZIRjGcERjurA2Slbi1NTEApTobkQKnV2K6+1G9fawKB1iEXA==
+	t=1793567238;
+	b=Wf126zF+Gnvdpq5ZP88TiMI94+1blzrB+98bYDsGqP00RmCQhnIH0IMhw0SBEqHtEXTo
+	 QOsYkq+s1/fq4LI3LAGZKz9pW9cHSbJ43gxLqDGGa7IrLiSfd9qRn83dLwPIHbNtfo7Fd
+	 /coP9ro6CzassE4Q3xI4aYWsuxBmzdKnuoCMYWMUk3krRJuSrFsiAERJ+CLhcY6Klvn9r
+	 nwSys5I+hfsRHVzX0BXsib7D0QmUY3uZgQImxrdbJ0WSxEP6LRbW+RMqAoe7jbxFqgwOg
+	 8krUcbq8WRDgJl0N0HPgt/A7B7qCHPH/SJSAxQYfnYvpFeJcui38+eb3gJ02X83O4KA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793567023;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793567238;
 	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
 	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=L1KaEDjFsWvGvMrTGkRaCJc21/TfVIdv9OIWGbl/AE8=;
-	b=ING4Wzvzfb/IaecUxcIv8zsiIvSPnmNmFwkzJCZI5sp65YShxX+3ZP0Fa6zKgksVE+C/
-	 QLyYqJ/2uVd7X0kOkIjHj24b8RlRtxkbpA1oX1v0WaqcC04uppOB+EkCWOStU2hJHLRmz
-	 10HIEfXXFVLhEo9JGwzYt4xF647dObp+Fwz7J7JvzrgeRqIcgYK8cq6KvJqu0BJi1kSot
-	 ZQyVqFEed7upEzqi845svEmT+S/bK+bEJFnyOeml/QkuESiFMeGNS3BfXXr3wQhkF1ZCE
-	 9yk+2m5JHGPRJKy6s894/Jzj36jSW7d0O733r3n+CDFasYMRsFv9DJ7mfiI1xrjGCuQ==
+	bh=uBtK4Uii2Z/syuVxoiWD5aDotjazeSSHixcnfiiNqGs=;
+	b=Wz30XSoKqtCDrM7zRrms7VPeOdHncc0DhENE6Pv/OjPLahXeq1Ant1kCXFwOjKy6CfFC
+	 EQC5X1ZLfn4zKh9hvsSDN31jOoSI19Pm/hoUdrkdi54EyuUiPaouoFuDp5G6ueWlk1ytT
+	 l2X6v/DU9XOe+UGWLlwipgYeSkL3WOcjqowvlN07XoS6ms+YloJ+sCKNe0fj0bMw+t+D3
+	 Bv4w6gzMZB0VoLkMClA0Llw33FPJs5uVs2f4vaKlCFEVPQWEr0WiRLjFONFibmHHeCtPB
+	 MLUBtLFGBWimaX8Qv2s7UTX9g6OL317CX0oKu1znLY5hw/WRbUK8PAVoWI3fF0dDiQg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gvwTgqIY;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UkSf1Zmn;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E479606A324
-	for <rcu@vger.kernel.org>; Sun,  1 Nov 2026 21:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8306606A324
+	for <rcu@vger.kernel.org>; Sun,  1 Nov 2026 21:07:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gvwTgqIY
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB6AB1F00919
-	for <rcu@vger.kernel.org>; Sun,  1 Nov 2026 21:03:41 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UkSf1Zmn
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 592C61F00A15
+	for <rcu@vger.kernel.org>; Sun,  1 Nov 2026 21:07:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793567022;
-	bh=L1KaEDjFsWvGvMrTGkRaCJc21/TfVIdv9OIWGbl/AE8=;
+	s=k20260515; t=1793567237;
+	bh=uBtK4Uii2Z/syuVxoiWD5aDotjazeSSHixcnfiiNqGs=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=gvwTgqIYDW+tJS7jRZZJWwI4QJsl7v5vBak1kRtEShonyvInS54zHny1lMpSit+Mj
-	 p6kBhVrhBTX0K7zn8aH51Os/5aF8JUjREEGPExzSIMamDOlzUESChvzcN6AWg215AS
-	 rZ9bP7cukma9Tl4S6vIIiTBt9npzW9HT4FwuABVtNIPBfPd8c7IoZy11wzs5+43Qqf
-	 q/F/Y7MOHH7tQB/aT+mT4U/OVQROvONBb+4ZITL4N07WUyJAQmHgD/UwxXEpzCHVBT
-	 CNZyT6bF9E8U2pYGPUvmvFj1PvXH64kMbxlvbtLF9XmHGwDGa0XNbIPoRd2Sk/zG1w
-	 wbchhqOSafBTg==
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-91986c5cb75so25839546d6.0
-        for <rcu@vger.kernel.org>; Sun, 01 Nov 2026 13:03:41 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvBwPu2FixDSR9110t7YffB+xMMXqbB9DAOabneSvlHKjWSIFSIjNVnJD5OkaDCgDIKt9Fto=@vger.kernel.org
-X-Gm-Message-State: AFq9FYLum0QpG7GyH48+Kwt/cMdGZ75eOidXk8yQ1h83iWVzYVhc9T1Y
-	pbjpJe7sXWhVkanuG95UaxMlCe4Fqc35M7w1XUxhuEraOeUrRUOLVgS0YVhnT0TerJWryJc2Xdd
-	CqCMomETXQH9ibMfUY0EUesiZPWryCP0=
-X-Received: by 2002:a05:620a:2806:b0:93f:5892:e5fd with SMTP id
- af79cd13be357-94421585e50mr1455648685a.1.1793567021240; Sun, 01 Nov 2026
- 13:03:41 -0800 (PST)
+	b=UkSf1Zmnp1uyNO50H1VYvb3iB4ZDRd8wGoFOrJrwYZqw00pRSHWM8+PJc4/YovtRU
+	 PsmfuCx1bT0MPZ2sQyIh66wgZYOFZK67li56HxijDNOL5r9d/V7Dl0wh2j/OlPZ0WH
+	 iOFRwTb3/en71nrtIFF3rJ9fVCCGzCF85hf7NRP+Z7ywgWLGKPdt14/UUJEtGOBeha
+	 eSSy1YnuX/HHWDe+G6VeKhj1JTee8ap+6y4CMEwj44pyyBvaqdWvzZZMFdz0x7Rh0c
+	 b1k4tz532PgYeCUtCjILwWjHerrGaBcm/0AdUxZUuLeHmAS7c/8cDz4BpdGbP7y4tK
+	 EquQO09hI/t9A==
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-93f30660e69so170440685a.0
+        for <rcu@vger.kernel.org>; Sun, 01 Nov 2026 13:07:17 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvByogo8+2CEnD9rMarjpU0kPujb9v1pQN+IZdeHlyNcfgWX7BnevwKowZCDObpRKEnasA4k=@vger.kernel.org
+X-Gm-Message-State: AFq9FYLkdMBpCNUuwW14YnXHi4cHahOLkSjHVD8gQmudxaMqFHhAVv9U
+	BguuG1uzE9LmXImwZnpQdLho8I4aKG30Pb7sOP4mLj1rRJwhuyeobOAmQv40OCISiDxxDfNF9FS
+	LGyO/b5tnNSBbjNk95n6bAkdU3Jdb/V0=
+X-Received: by 2002:a05:620a:688e:b0:93e:c12c:4412 with SMTP id
+ af79cd13be357-944217f079dmr1343599285a.78.1793567236722; Sun, 01 Nov 2026
+ 13:07:16 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -59,48 +59,44 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261012205447.2717801-1-max.kellermann@ionos.com> <20261012205447.2717801-3-max.kellermann@ionos.com>
-In-Reply-To: <20261012205447.2717801-3-max.kellermann@ionos.com>
+References: <20261012205447.2717801-1-max.kellermann@ionos.com>
+ <20261012205447.2717801-2-max.kellermann@ionos.com> <7037ee68-5dcb-46ed-a73f-ed6ea58915f4@paulmck-laptop>
+In-Reply-To: <7037ee68-5dcb-46ed-a73f-ed6ea58915f4@paulmck-laptop>
 From: Barry Song <baohua@kernel.org>
-Date: Mon, 2 Nov 2026 05:03:30 +0800
-X-Gmail-Original-Message-ID: <CAGsJ_4zQh9HrvgaqD32_A=bSdqmPqP4oV_SxMXMEDBrHe4jjhg@mail.gmail.com>
-X-Gm-Features: AclHuK8OqXgKSVdL2WuIVJgz5P-HEa2lSTPqglBGQNxXGO5x-V4zhAlTU4Zabl8
-Message-ID: <CAGsJ_4zQh9HrvgaqD32_A=bSdqmPqP4oV_SxMXMEDBrHe4jjhg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mm/vmscan: move code to lru_gen_{add,del}_memcg()
-To: Max Kellermann <max.kellermann@ionos.com>
-Cc: akpm@linux-foundation.org, kasong@tencent.com, qi.zheng@linux.dev, 
-	shakeel.butt@linux.dev, axelrasmussen@google.com, yuanchu@google.com, 
-	weixugc@google.com, baoquan.he@linux.dev, baolin.wang@linux.alibaba.com, 
-	david@kernel.org, ljs@kernel.org, liam@infradead.org, vbabka@kernel.org, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, hannes@cmpxchg.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Date: Mon, 2 Nov 2026 05:07:05 +0800
+X-Gmail-Original-Message-ID: <CAGsJ_4znEifrb_5vVbkVENmTdVLeGgOyfaYqptNXk15kQ6xr-Q@mail.gmail.com>
+X-Gm-Features: AclHuK_GLhoQTQql-sHZc5DrMSM4g6S1w1l6RaNWA69ZyNHwnlgREaXUECvpfuY
+Message-ID: <CAGsJ_4znEifrb_5vVbkVENmTdVLeGgOyfaYqptNXk15kQ6xr-Q@mail.gmail.com>
+Subject: Re: [PATCH 1/5] include/linux/rculist_nulls: add hlist_nulls_add_behind_rcu()
+To: paulmck@kernel.org
+Cc: Max Kellermann <max.kellermann@ionos.com>, akpm@linux-foundation.org, kasong@tencent.com, 
+	qi.zheng@linux.dev, shakeel.butt@linux.dev, axelrasmussen@google.com, 
+	yuanchu@google.com, weixugc@google.com, baoquan.he@linux.dev, 
+	baolin.wang@linux.alibaba.com, david@kernel.org, ljs@kernel.org, 
+	liam@infradead.org, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, 
+	mhocko@suse.com, hannes@cmpxchg.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 13, 2026 at 4:55=E2=80=AFAM Max Kellermann <max.kellermann@iono=
-s.com> wrote:
+On Thu, Oct 15, 2026 at 7:58=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
 >
-> Preparation for the following patch that adds tail caching.
+> On Mon, Oct 12, 2026 at 10:54:43PM +0200, Max Kellermann wrote:
+> > Move some code from hlist_nulls_add_tail_rcu() to the new function
+> > hlist_nulls_add_behind_rcu() for callers that already know the last
+> > node of an `hlist_nulls` list, to allow constant-time appends.
+> >
+> > Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 >
-> For simplicity, hlist_nulls_del_init_rcu() is now always used, which
-> is also valid during rotation, because the entry is immediately
-> reinserted under `memcg_lru.lock`.
+> I am assuming that this commit should take the same path as the rest
+> of them.  So:
+
+I guess it would still go through Andrew's mm tree.
+
 >
-> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-> ---
->  mm/vmscan.c | 36 ++++++++++++++++++++++++++++--------
->  1 file changed, 28 insertions(+), 8 deletions(-)
+> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+>
 
-[...]
-> +       lru_gen_del_memcg(&pgdat->memcg_lru, &lruvec->lrugen, old);
-> +       lru_gen_add_memcg(&pgdat->memcg_lru, &lruvec->lrugen, new, bin,
-> +                         op =3D=3D MEMCG_LRU_HEAD || op =3D=3D MEMCG_LRU=
-_OLD);
-
-T.J. series[1] removed MEMCG_LRU_OLD, i guess you will need some rebase.
-
-[1] https://lore.kernel.org/linux-mm/20261028010611.3929937-1-tjmercier@goo=
-gle.com/
-
-Best,
-Barry
++1
+Reviewed-by: Barry Song <baohua@kernel.org>
