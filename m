@@ -1,55 +1,61 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793567238;
-	b=Wf126zF+Gnvdpq5ZP88TiMI94+1blzrB+98bYDsGqP00RmCQhnIH0IMhw0SBEqHtEXTo
-	 QOsYkq+s1/fq4LI3LAGZKz9pW9cHSbJ43gxLqDGGa7IrLiSfd9qRn83dLwPIHbNtfo7Fd
-	 /coP9ro6CzassE4Q3xI4aYWsuxBmzdKnuoCMYWMUk3krRJuSrFsiAERJ+CLhcY6Klvn9r
-	 nwSys5I+hfsRHVzX0BXsib7D0QmUY3uZgQImxrdbJ0WSxEP6LRbW+RMqAoe7jbxFqgwOg
-	 8krUcbq8WRDgJl0N0HPgt/A7B7qCHPH/SJSAxQYfnYvpFeJcui38+eb3gJ02X83O4KA==
+	t=1793569849;
+	b=fX6rbibF8KxNx6kVMv4gd57MJMXPRBMJkm1yhOnvNn2DIZWvnigSutiS9PPJG1+4SGy0
+	 IE9Is3QaEYD6rXQ7VYJf1KmIReyNhrElxVb+Xp3rhvlY70MIYQuSNGeCc0vtrMf31o8Ph
+	 co3Klof3+elEqdtANaRHhA1jFO+fC4HKSkk/7wCyQL7DOqNSHEt5/ibnE7p8PUI81kAkc
+	 MQZFyRI9yqwQW+h/X/B9Moc3GNJIro21JDylBk4t6OO7MSYaUYHBk4g2fWCSpDDCESmGm
+	 GMH4Rth/LIz5MVsIanvwqxTl1hGOJS7IWowWL4ILtSkBCmAKfMq1ucC1FAf8f4RnryQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793567238;
-	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=uBtK4Uii2Z/syuVxoiWD5aDotjazeSSHixcnfiiNqGs=;
-	b=Wz30XSoKqtCDrM7zRrms7VPeOdHncc0DhENE6Pv/OjPLahXeq1Ant1kCXFwOjKy6CfFC
-	 EQC5X1ZLfn4zKh9hvsSDN31jOoSI19Pm/hoUdrkdi54EyuUiPaouoFuDp5G6ueWlk1ytT
-	 l2X6v/DU9XOe+UGWLlwipgYeSkL3WOcjqowvlN07XoS6ms+YloJ+sCKNe0fj0bMw+t+D3
-	 Bv4w6gzMZB0VoLkMClA0Llw33FPJs5uVs2f4vaKlCFEVPQWEr0WiRLjFONFibmHHeCtPB
-	 MLUBtLFGBWimaX8Qv2s7UTX9g6OL317CX0oKu1znLY5hw/WRbUK8PAVoWI3fF0dDiQg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793569849;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-Id:
+	 In-Reply-To:References:X-Mailer:Mime-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=1rpLIWcyWHAMoTm8HDUZRR/yftBEok5XqQa7jTiyf8Q=;
+	b=4H/nft48HpgMvex0YGh6YvbDX4bgLNG/Vyz3Arwje8py3j9jA2SVZslvLadRCvxqvM2E
+	 bmVmwRmVvUDaia7sypfdl78owLTsnbpfSf69h155rCzL46RgEskUnr2MCd2m1y7e20zgt
+	 a35vy0rPzJzA/O0AxSFFNHCohRCsZdJV6+gczXePFbkxyfnpnjqYc3Yw9Et8Vp3jMNWE1
+	 2FyDM6FjjAQBqbWCN5/Xkf3XLtIYTn/QFSqRRGdjOCuRk0squz1jkUklrDb3nUy//iZU2
+	 tOWDA3DY5BdecIMjPs5JgmNGlxtxpfcnhzYvJbC350qP/uUcASNCkF/MvTCZy6j9HMw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UkSf1Zmn;
+	dkim=pass header.d=linux-foundation.org header.i=@linux-foundation.org header.a=rsa-sha256 header.s=korg header.b=Fbwn3Tr+;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8306606A324
-	for <rcu@vger.kernel.org>; Sun,  1 Nov 2026 21:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7D9606A324;
+	Sun,  1 Nov 2026 21:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UkSf1Zmn
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 592C61F00A15
-	for <rcu@vger.kernel.org>; Sun,  1 Nov 2026 21:07:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793567237;
-	bh=uBtK4Uii2Z/syuVxoiWD5aDotjazeSSHixcnfiiNqGs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=UkSf1Zmnp1uyNO50H1VYvb3iB4ZDRd8wGoFOrJrwYZqw00pRSHWM8+PJc4/YovtRU
-	 PsmfuCx1bT0MPZ2sQyIh66wgZYOFZK67li56HxijDNOL5r9d/V7Dl0wh2j/OlPZ0WH
-	 iOFRwTb3/en71nrtIFF3rJ9fVCCGzCF85hf7NRP+Z7ywgWLGKPdt14/UUJEtGOBeha
-	 eSSy1YnuX/HHWDe+G6VeKhj1JTee8ap+6y4CMEwj44pyyBvaqdWvzZZMFdz0x7Rh0c
-	 b1k4tz532PgYeCUtCjILwWjHerrGaBcm/0AdUxZUuLeHmAS7c/8cDz4BpdGbP7y4tK
-	 EquQO09hI/t9A==
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-93f30660e69so170440685a.0
-        for <rcu@vger.kernel.org>; Sun, 01 Nov 2026 13:07:17 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvByogo8+2CEnD9rMarjpU0kPujb9v1pQN+IZdeHlyNcfgWX7BnevwKowZCDObpRKEnasA4k=@vger.kernel.org
-X-Gm-Message-State: AFq9FYLkdMBpCNUuwW14YnXHi4cHahOLkSjHVD8gQmudxaMqFHhAVv9U
-	BguuG1uzE9LmXImwZnpQdLho8I4aKG30Pb7sOP4mLj1rRJwhuyeobOAmQv40OCISiDxxDfNF9FS
-	LGyO/b5tnNSBbjNk95n6bAkdU3Jdb/V0=
-X-Received: by 2002:a05:620a:688e:b0:93e:c12c:4412 with SMTP id
- af79cd13be357-944217f079dmr1343599285a.78.1793567236722; Sun, 01 Nov 2026
- 13:07:16 -0800 (PST)
+	dkim=pass (1024-bit key, unprotected) header.d=linux-foundation.org header.i=@linux-foundation.org header.a=rsa-sha256 header.s=korg header.b=Fbwn3Tr+
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF8C01F00A02;
+	Sun,  1 Nov 2026 21:50:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux-foundation.org; s=korg; t=1793569848;
+	bh=1rpLIWcyWHAMoTm8HDUZRR/yftBEok5XqQa7jTiyf8Q=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=Fbwn3Tr+FrE2+twWvc96h6eL4CmfV+55YRhlwCU67jh+2ijXjc+sS1d6Vs72iSVnt
+	 9pThhklCkVEpSZevtZfIcg1fa6R/6r51jf56V4MNhNwT1CtWLVsdiI92zpPMX2BsIT
+	 tczuWds92tQZEf8i+WAhNaHBo8mIGCmU9QZMuCAM=
+Date: Sun, 1 Nov 2026 13:50:47 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Max Kellermann <max.kellermann@ionos.com>
+Cc: Ridong Chen <ridong.chen@linux.dev>, kasong@tencent.com,
+ qi.zheng@linux.dev, shakeel.butt@linux.dev, baohua@kernel.org,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ baoquan.he@linux.dev, baolin.wang@linux.alibaba.com, david@kernel.org,
+ ljs@kernel.org, liam@infradead.org, vbabka@kernel.org, rppt@kernel.org,
+ surenb@google.com, mhocko@suse.com, hannes@cmpxchg.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH 3/5] mm/mglru: cache the last memcg node, make tail
+ insertion constant time
+Message-Id: <20261101135047.61fc3f209b3235ed6fc96183@linux-foundation.org>
+In-Reply-To: <CAKPOu+83bH2CRtiAio+1VTTQrYFF9th5XfG5wL45ujEavPS3Dg@mail.gmail.com>
+References: <20261012205447.2717801-1-max.kellermann@ionos.com>
+	<20261012205447.2717801-4-max.kellermann@ionos.com>
+	<a64f6a98-de70-4004-aac0-312cb05aaf92@linux.dev>
+	<CAKPOu+83bH2CRtiAio+1VTTQrYFF9th5XfG5wL45ujEavPS3Dg@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -58,45 +64,40 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-References: <20261012205447.2717801-1-max.kellermann@ionos.com>
- <20261012205447.2717801-2-max.kellermann@ionos.com> <7037ee68-5dcb-46ed-a73f-ed6ea58915f4@paulmck-laptop>
-In-Reply-To: <7037ee68-5dcb-46ed-a73f-ed6ea58915f4@paulmck-laptop>
-From: Barry Song <baohua@kernel.org>
-Date: Mon, 2 Nov 2026 05:07:05 +0800
-X-Gmail-Original-Message-ID: <CAGsJ_4znEifrb_5vVbkVENmTdVLeGgOyfaYqptNXk15kQ6xr-Q@mail.gmail.com>
-X-Gm-Features: AclHuK_GLhoQTQql-sHZc5DrMSM4g6S1w1l6RaNWA69ZyNHwnlgREaXUECvpfuY
-Message-ID: <CAGsJ_4znEifrb_5vVbkVENmTdVLeGgOyfaYqptNXk15kQ6xr-Q@mail.gmail.com>
-Subject: Re: [PATCH 1/5] include/linux/rculist_nulls: add hlist_nulls_add_behind_rcu()
-To: paulmck@kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>, akpm@linux-foundation.org, kasong@tencent.com, 
-	qi.zheng@linux.dev, shakeel.butt@linux.dev, axelrasmussen@google.com, 
-	yuanchu@google.com, weixugc@google.com, baoquan.he@linux.dev, 
-	baolin.wang@linux.alibaba.com, david@kernel.org, ljs@kernel.org, 
-	liam@infradead.org, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, 
-	mhocko@suse.com, hannes@cmpxchg.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Oct 15, 2026 at 7:58=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Mon, Oct 12, 2026 at 10:54:43PM +0200, Max Kellermann wrote:
-> > Move some code from hlist_nulls_add_tail_rcu() to the new function
-> > hlist_nulls_add_behind_rcu() for callers that already know the last
-> > node of an `hlist_nulls` list, to allow constant-time appends.
-> >
-> > Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
->
-> I am assuming that this commit should take the same path as the rest
-> of them.  So:
+On Wed, 14 Oct 2026 05:58:28 +0200 Max Kellermann <max.kellermann@ionos.com> wrote:
 
-I guess it would still go through Andrew's mm tree.
+> On Wed, Oct 14, 2026 at 5:31 AM Ridong Chen <ridong.chen@linux.dev> wrote:
+> > I've also submitted an RFC patch that addresses this issue.
+> 
+> Oh, interesting!  I did not know but your patch, but it looks very
+> similar to mine (but without the hlist_nulls refactoring so yours
+> comes with some code duplicating the hlist_nulls header).
+> 
+> Too bad your RFC went nowhere, that would have saved us from a
+> production incident...  Anyway, even if neither gets merged, I'll keep
+> my patches on our internal kernel fork, because they do help a lot
+> with our workload.
 
->
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
->
+hm, this was a bit of a fail, sorry about that.
 
-+1
-Reviewed-by: Barry Song <baohua@kernel.org>
+We had a fairly modest RFC-stage patch which would have addressed the
+issues you've encountered in 6.18.x.  That got waylaid into more
+ambitious re-engineering project which wouldn't have been backportable
+and now this series which also won't be backportable.
+
+So.  Can someone please propose a nice simple quick-fix which we can
+backport into the -stable stream while we work on the larger
+rearchitecting projects?
+
+I think that might be Max's [5/5]?  Max, do you know whether that patch
+alone will fix up 6.18.x, or do we also need to addressed that lengthy
+spinlocked tail insertion?
+
+If you think [5/5] is sufficient for -stable then please propose that as
+a standalone cc:stable thing then we can look at the broader changes on
+top.
+
