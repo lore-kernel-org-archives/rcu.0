@@ -1,100 +1,52 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=209.85.218.41
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1793608398;
-	b=TSBelc8IodedS6jj1z1pfHEZPElS1IAJQQrh2WX7EgMwpEq72OUwXHTOdRDovcffeTrn
-	 9I4eV1Q3pH+Dcpq2UkulKmMOGwu6K8BJt2uB/DpsUgGL7BH/rzmsotcXtaVzhVE7z+MFk
-	 /Eo7ugHviyBXROYgYhgzckmJBxbAuDqmneC8sjyKrXEQsX93+syThUbgLfUXuXwYr/e1F
-	 MZzCIhqCJWPwMWOxeBbmO2car3izcSssVR9G/vVjcs2z7iCXidzfJC1ZW9J0ihfcg3jKE
-	 EN8Wfi2InwemFURAN0X2armrmwxPp6UqJBKKGzUENiZ1NTmfAe29hKt83OHEYl2fkeQ==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793608398;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
-	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
-	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=j53l0fksxsxqGVEYV0vEjuguCQNdT4wT6diFHQR+URA=;
-	b=vCYvB3+u0zBBuCqu89Aw4f1Alc7VkIorto3YRz+XbIfubwXiK9iuMmIwQCZEEim8SVaQ
-	 +98dnsmfAxELx3BHZPo+avQo93VaNoBNxteQtHwQJOsh2prUpHQ815QMv5nM0+C2/mDRC
-	 TfuHxkjtbfplbxG4wbYoxKaR+ikPTuix6n+aSgIc8oD1b05QlA+9qtSV2Xz98z8j8RP2r
-	 dYbPICDautHnYJqXVhq7a0Qz8Rn+Z/5q6LvpUPRTWvpEJhM0ZswX/lCvkkhDBQ3930MUs
-	 bLrx0gIwAS6PwE8bd2MEbCdQVBzIcFdAvdulWXbr2ExxRz1iq8GXTASAOb4y+g10pwA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=ionos.com;
-	spf=pass smtp.mailfrom=ionos.com;
-	dkim=pass header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=fSzrvNNN;
-	arc=fail smtp.remote-ip=209.85.218.41
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.125
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793627439;
+	b=GVuMPoxtagYoc+LgKcO4M6109tkkqQo204JPLvmQ0RNonbugbAiEbZwVdvye8HYC9ZKm
+	 ea96fxqfjE2WgWvjI+14JF1hCyt9lpS6ku8/+Hzo84pFL+Hej82g2zJH1imHSGGnrIObg
+	 zOmdNreJyQQucUkt5w5p4WbB5j+E1olxcpQE2F8bOdQlcDw5onqmYouwKO6jl2pgdMMeg
+	 oP39f4WjSnpMCx33rolDscna3gpu45zlC4P0LM6NIFhCAUfF7Erm3vJEVNZyUVo+vVer7
+	 2EWcfJ4QCSU21g8YEEWpEVVb8eVrLtPTVzdziz/O+AYClWE1j92CB348Zd+AYZVEA8g==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793627439;
+	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
+	 X-Mizu-Trace-ID:X-Migadu-Flow:MIME-Version:Date:Content-Type:
+	 Content-Transfer-Encoding:From:Message-ID:TLS-Required:Subject:To:Cc:
+	 In-Reply-To:References;
+	bh=8meHEOpZpex7a+m8qpfj00KhkKtCPdGHF054UBWCRs4=;
+	b=pMh003hUmUJ3jdFcifjgtQm8SRiPR/nDtjCDqE93SUuLccphx6lIyx8MqqhfQKeNJdcu
+	 I8X8HKW5ELjnnLDi9MtHUIYkyEUYwT1dbXC1yOnSb0341EhcFSDsnJItKP1e/8W7klTjj
+	 xCWvR2yGOo48aBUv9YjN6+6yNUA2cZakl/b+LnhL97FdpJFKymnQfBhsPMg3dReNGvQxg
+	 bFtYz2fwZOPjV0NoV6bFQOsvC3MFwhTMpx0iMPzCEkJKCr+9rm3JfIsP+z70Ryy75IGcB
+	 HiBbB/TT0TO9hM+Wv7SWNuRmN6HfJi5Fzooq5i2ZyAUJ4hU37VY6ac/BlULscUWvD7A==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=linux.dev;
+	spf=pass smtp.mailfrom=linux.dev;
+	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=deqWApB+;
+	arc=none smtp.remote-ip=95.215.58.125
+Received: from mta1.migadu.com (out-125.mta1.migadu.com [95.215.58.125])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83941606A324
-	for <rcu@vger.kernel.org>; Mon,  2 Nov 2026 08:33:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 83941606A324
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2813606A33C
+	for <rcu@vger.kernel.org>; Mon,  2 Nov 2026 13:50:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E2813606A33C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=fSzrvNNN
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-c315869241fso374630166b.0
-        for <rcu@vger.kernel.org>; Mon, 02 Nov 2026 00:33:12 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1793608391; cv=none;
-        d=google.com; s=arc-20260327;
-        b=i4m7BnC4nPYGomyGxIa1tdEcmpzH7ntjCNRAqTY+GlI6qzzjtFjXhl2v78cKgXxGax
-         5sV2LIMapcni6MjJ4cA56W8uymNsoaWlVVDNVKHDAQNSQxBNRgUmFjF+LO97BcsJ/BiX
-         ySCQOXcHc+7Zi68nTLVg5fZZ2jsQMh+muwvvwmpY6d25i+V0Vq07qUlFOWAkAUc27cr2
-         5WrRZkRranG2kuA1vhtZt3ckp8OQv+wLGoZ3Xxg9XCsRjBZCTV9RE8fbLE8Zw6wP1Zqt
-         6n2FnDEA+SGjk3sTsSLksLSmrZXwFiOG1fEO1CIBE/NgNj1qL0gl6NGlzQH0zfDiXx0n
-         Q+9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=j53l0fksxsxqGVEYV0vEjuguCQNdT4wT6diFHQR+URA=;
-        fh=Q1BDw/0PJABLaHjvQuKR24Xyx8WwuASRqSYd4ke9mXQ=;
-        b=P5oDJCOm9e45oU7EuNo8zejHcs13iTWVkGSBpqm8KZsh+GOrgOUNOrvTAJg6ethtWp
-         yyHUdDW/aM372gRVX4P6AY44V0KkMCgAeSOiRH3Bp9sE3LkON8cNbKsmJr0qMokFQLpP
-         IlfMVpied7IWOjrUNBAzl5F0pcOTEAoHiNBzxYD1I6md/K8yIDJFdVWHDEFDG6f12oO8
-         o0xpo7THElTUpV7K7FCZ110LlWGY32Azb0IHhD5JLafLYERAlb1hIaFlJ8g6O/eHIvQk
-         8dvQ6V9BjQKDhW5E5DgZsT/bLF9hi20Dti/8BBEzo4p1zeNtcKMJIulmshci6Z+t2rX5
-         KJGw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1793608391; x=1794213191; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=j53l0fksxsxqGVEYV0vEjuguCQNdT4wT6diFHQR+URA=;
-        b=fSzrvNNNe6qGjbB/Oh6/Pf453D9h6ZLRf/22TDRlhmWWblEtYSofQJ9UEV6XS1YRZp
-         lfMPwEPRZbB3TiK3uCsz7PEcq75HVKepsbyvtdifteH5kA29ZwMFUuM6p2rvgdZhD8no
-         Nh0qSfX2C6dT+KGld4QUc+MdVncLKBXnRDcK01UFqvFjk6qfk12GAI2r+4c1B/iyn9BI
-         VX8+WPDh1fyNWUKN4AzhAsh81ULz0xKq8cymxV0QKdiQ9IJb6jvZCw08WktpZ6jMaWrd
-         QFTLj+o3V2+BWhlPxJ5+ov+BM6K49+ZJ8dP6efkyl2gS/z4tdmch7qoEOHZPh1l8mmHM
-         h7Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793608391; x=1794213191;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=j53l0fksxsxqGVEYV0vEjuguCQNdT4wT6diFHQR+URA=;
-        b=Ty+o7ihwgYUyhTcSmcRirRQykrYp+S2eKrWJYO/gpH9BiqwjlHkv0OiJMA3kYr2zaa
-         LmE5oB3iS6puFIAvaHQIkYnwDjnsqm9D03lsIvGpyuqpN8j2fGt7u007IvCmGCxMJBSL
-         MshGdqgypAtUso07z2bDzz4NWzrpH4QvCcvq+JJWZPzU9B4ST4NngCwhKRuycpoNVgBW
-         VudIEOkxzJmV76JUave1z4l5CWomONZYufqvvP8CICV91xr4fTnJ+DppTG8VsvndGjiz
-         iyKqrCgcO58mt1PbtimFbD1kav6YSTJJhsoHczAg9u9Gc4d1266oT4+nZfZAvHE3eg8T
-         GPTQ==
-X-Forwarded-Encrypted: i=1; AKwUvBwwOrhLYt75wrRC51qQ3l2ZoaB7adN0AxoHKcGrb/yhh4u+HUThRGotDtKDZIPePVJVO9Y=@vger.kernel.org
-X-Gm-Message-State: AFq9FYKxT1IMDIGs91vFPEjUuJYD0Qdf0LQBQVO1+GUy2FxdJzEXri80
-	JYsK8/daNEud71k8+cfZwADQL7Scl5RMUjOra3qDKXlk81BtAiij+7urmWyMK57HZ+bkqfWO+WB
-	+0ANmYqIhI+V60GzjeGy+THbz5YxAK1WyHRF+YFkIWw==
-X-Gm-Gg: AYBFou0Urs7gY3XLc3/mDztALgIINlXXAf8O4ER3eGPdv2OSTaHPrcOBtM2Cork3//H
-	f1kp1V0M3VwCLB8HFcn4gLN92JeP6JKXD3c8fto04fF5V4xQUVAV1II1OI3W2VL+TyVGZYi14fV
-	XiI/wrVsbROWdPC75YUg3quPSMxDaz8DpbslK8lwpQS1BGDfuTA8bQen6mcp8A9H7D0kxavmMzi
-	Sm6s5zJZOHxuE5wHqRnLbPFQv/EpBhRkWg1mNxHH5XwZrLSUubKEhqkwvjVFncnDUzx6GpO/Ymk
-	jJ58xkfVzrQ6Op5pfKWkI352WEHtxV19cJx/w/ZVyOoGeZRguX7En309K2FWBPyMaX/MpGgqrZY
-	dF32IsEgbAkQUxJHLnFwiVXu/pIWycY2ZuXGzd6rGpaEZopCC1Sr6ZSCkSNaQElvx/Q==
-X-Received: by 2002:a17:907:d64a:b0:c3e:f39b:2298 with SMTP id
- a640c23a62f3a-c4ca7a0dca5mr747330466b.16.1793608390908; Mon, 02 Nov 2026
- 00:33:10 -0800 (PST)
+	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=deqWApB+
+X-Envelope-To: rcu@vger.kernel.org
+DKIM-Signature: a=rsa-sha256; bh=RB61Oyd6TaDgmIcXFReBRiPX33wW2YoBNo1nIWnrj1c=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1793627435; v=1; x=1794232235;
+ b=deqWApB+XKofM2IiEUK8KvDIRt2a3QLXbYAYUaj05+sXDfmRov9cmB/EKQKVPrtLIgq4IqI0
+ jS+Vj7zr2ct4RQFCUmOhV9Zx7GUcD0blaU3cQcGwQScueKYOhHPTX1Sv78vJtYdi9qejJlIsIpk
+ m6JunUfc4VJziXGNNjYC1EAo=
+X-Envelope-To: rcu@vger.kernel.org
+Received: by smtp.migadu.com with ESMTPS id 05c097b2d1638e62;
+	Mon, 02 Nov 2026 13:50:18 +0000
+X-Mizu-Trace-ID: 05c097b2d1638e62
+X-Migadu-Flow: FLOW_OUT
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -104,43 +56,237 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261012205447.2717801-1-max.kellermann@ionos.com>
- <20261012205447.2717801-6-max.kellermann@ionos.com> <CAGsJ_4wbQtQ8zfokd44_QM39J_02xDVJoeTK20+jo03_NxAx8Q@mail.gmail.com>
-In-Reply-To: <CAGsJ_4wbQtQ8zfokd44_QM39J_02xDVJoeTK20+jo03_NxAx8Q@mail.gmail.com>
-From: Max Kellermann <max.kellermann@ionos.com>
-Date: Mon, 2 Nov 2026 09:32:58 +0100
-X-Gm-Features: AclHuK-7lS1S6JyZadszv7IFLH9vh-tuiPb0pQtxfKPOHSoMU2Adf-ZEzxFVxhQ
-Message-ID: <CAKPOu+-NG4sOXVb6xTzVtJJLK4LMag+5GWwY6=7mgSKnp4ZNqQ@mail.gmail.com>
-Subject: Re: [PATCH 5/5] mm/mglru: reschedule between memcg reclaim attempts
-To: Barry Song <baohua@kernel.org>
-Cc: akpm@linux-foundation.org, kasong@tencent.com, qi.zheng@linux.dev, 
-	shakeel.butt@linux.dev, axelrasmussen@google.com, yuanchu@google.com, 
-	weixugc@google.com, baoquan.he@linux.dev, baolin.wang@linux.alibaba.com, 
-	david@kernel.org, ljs@kernel.org, liam@infradead.org, vbabka@kernel.org, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, hannes@cmpxchg.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 02 Nov 2026 13:50:17 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+From: "Zqiang" <qiang.zhang@linux.dev>
+Message-ID: <2b7d3fd6bc409170cb5207d74eb9ded4a5874b53@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH v2] rcutorture: Avoid create fwd_prog_tasks for
+ tasks-rude and srcu-atomic
+To: "Joel Fernandes" <joelagnelf@nvidia.com>
+Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
+ urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <ACA82057-9E74-41CD-8EEE-1D59E98D2D41@nvidia.com>
+References: <ACA82057-9E74-41CD-8EEE-1D59E98D2D41@nvidia.com>
 
-On Mon, Nov 2, 2026 at 2:15=E2=80=AFAM Barry Song <baohua@kernel.org> wrote=
-:
-> I'd appreciate it if you could provide more details in the
-> changelog. Without this patch, are we seeing an RCU stall,
-> a soft lockup, or something else, right?
+>=20
+>=20>=20
+>=20> On Oct 30, 2026, at 8:14 AM, Zqiang <qiang.zhang@linux.dev> wrote:
+> >=20=20
+>=20>=20=20
+>=20>=20
+>=20> >=20
+>=20> >=20
+>=20> >=20
+>=20>  On Fri, Oct 23, 2026 at 05:37:16PM +0800, Zqiang wrote:
+> >=20=20
+>=20>=20=20
+>=20>  When running the tasks-rude and srcu-atomic tests, the fwd_prog_ta=
+sks
+> >  kthread is created because the default value of fwd_progress is 1.
+> >  however, the two RCU flavors not support ->call():
+> >=20=20
+>=20>  1. tasks-rude: commit b428a9de9bba ("rcutorture: Stop testing RCU =
+Tasks
+> >  Rude asynchronous APIs") removed .call and .cb_barrier from tasks-ru=
+de,
+> >  but left the .cbflood_max =3D 50000.
+> >=20=20
+>=20>  2. srcu-atomic: srcu_torture_init_forbidden_apis() sets ->call to =
+NULL
+> >  for SRCU_READ_FLAVOR_ATOMIC runs, but leaves ->cbflood_max untouched=
+.
+> >=20=20
+>=20>  In both cases, the non-zero ->cbflood_max fools the check above in=
+to
+> >  creating the fwd_prog_tasks kthreads, even though those kthreads can=
+not
+> >  possibly carry out any forward-progress test:
+> >=20=20
+>=20>  1. The rcu_torture_fwd_prog_cr() returns immediately due to cur_op=
+s->call
+> >  is NULL:
+> >=20=20
+>=20>  [ 68.022674] rcu_torture_fwd_prog_cr: No ->call(), so no forward-p=
+rogress test 0
+> >  [ 129.462046] rcu_torture_fwd_prog_cr: No ->call(), so no forward-pr=
+ogress test 0
+> >  [ 190.902123] rcu_torture_fwd_prog_cr: No ->call(), so no forward-pr=
+ogress test 0
+> >  [ 252.343809] rcu_torture_fwd_prog_cr: No ->call(), so no forward-pr=
+ogress test 0
+> >=20=20
+>=20>  2. The rcu_torture_fwd_prog_nr() is never even invoked, because it=
+s caller
+> >  requires cur_ops->stall_dur, and neither tasks-rude nor srcu-atomic
+> >  provide ->stall_dur (only rcu_ops does).
+> >=20=20
+>=20>  Therefore, creating fwd_prog_tasks kthreads is pointless, this com=
+mit adds
+> >  ->call and ->cb_barrier to the forward-progress check, rejecting fla=
+vors
+> >  that lack the cbflood_max set and a positive ->stall_dur.
+> >=20=20
+>=20>  simple verification output:
+> >=20=20
+>=20>  [ 3.062959][ T1] srcu-torture: rcu_torture_fwd_prog_init: Disabled=
+, unsupported by RCU flavor under test
+> >  [ 2.922323][ T1] tasks-rude-torture: rcu_torture_fwd_prog_init: Disa=
+bled, unsupported by RCU flavor under test
+> >=20=20
+>=20>  Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
+> >  Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+> >=20=20
+>=20>=20
+>=20> >=20
+>=20> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> > >=20=20
+>=20> >  It would nevertheless be good to run tests demonstrating that
+> > >  forward-progress testing happens and does not happen on the same
+> > >  rcu_torture_ops structures as before. Just in case I lost my
+> > >  way through that boolean expression. ;-)
+> > >=20
+>=20>=20=20
+>=20>  Ok, I see. thanks Paul ;-) .
+> >=20
+>=20So let me know Zqiang once you are confident on the testing from and =
+I will apply it for 7.5.
 
-As I said in reply to Andrew already, I havn't proved that [5/5] alone
-reliably makes the stalls/lockups go away. I guess they are gone
-already by fixing the underlying linked-list performance problem. I
-thought [5/5] was useful as an additional scheduling point (similar
-calls exist already in mm/), but I'm no MM expert, so view this last
-patch as a rather uneducated suggestion by a MM newbie.
 
---=20
-Max Kellermann
-Principal Architect
-Hosting Technology
+Hello, Joel
 
-cm4all | Im Mediapark 6a | 50670 K=C3=B6ln | Germany
-General information about the company can be found here:
-https://www.cm4all.com/impressum
-A member of the IONOS Group
+I have make simple testing for all rcu flavor:
+
+rcu:
+
+[    3.871868][  T158] rcu-torture: rcu_torture_fwd_progress task started
+[    3.874347][    T1] tasks-torture: rcu_torture_fwd_prog_init: Disabled=
+, unsupported by RCU flavor under test
+[    3.862128][    T1] tasks-tracing-torture: Creating rcu_torture_fwd_pr=
+og task
+[    3.857800][    T1] tasks-rude-torture: rcu_torture_fwd_prog_init: Dis=
+abled, unsupported by RCU flavor under test
+[    3.435733][    T1] busted-torture: rcu_torture_fwd_prog_init: Disable=
+d, unsupported by RCU flavor under test
+
+srcu:
+
+[    3.676067][    T1] srcu-torture: srcu_torture_init normal SRCU
+[    3.691425][    T1] srcu-torture: Creating rcu_torture_fwd_prog task
+
+[    3.467289][    T1] srcu-torture: srcu_torture_init NMI-safe SRCU
+[    3.482983][    T1] srcu-torture: Creating rcu_torture_fwd_prog task
+
+[    3.457597][    T1] srcu-torture: srcu_torture_init fast SRCU
+[    3.475676][    T1] srcu-torture: Creating rcu_torture_fwd_prog task
+
+[    3.381378][    T1] srcu-torture: srcu_torture_init fast-up/down SRCU
+[    3.397417][    T1] srcu-torture: Creating rcu_torture_fwd_prog task
+
+[    3.479642][    T1] srcu-torture: srcu_torture_init atomic SRCU
+[    3.488532][    T1] srcu-torture: rcu_torture_fwd_prog_init: Disabled,=
+ unsupported by RCU flavor under test
+
+srcud:
+
+[    3.898271][    T1] srcud-torture: srcud_torture_init normal SRCU
+[    3.915141][    T1] srcud-torture: Creating rcu_torture_fwd_prog task
+
+[    3.586829][    T1] srcud-torture: srcud_torture_init NMI-safe SRCU
+[    3.604943][  T146] srcud-torture: rcu_torture_fwd_progress task start=
+ed
+
+[    3.617095][    T1] srcud-torture: srcud_torture_init fast SRCU
+[    3.635608][    T1] srcud-torture: Creating rcu_torture_fwd_prog task
+
+[    3.915194][    T1] srcud-torture: srcud_torture_init fast-up/down SRC=
+U
+[    3.933086][    T1] srcud-torture: Creating rcu_torture_fwd_prog task
+
+[    3.866575][    T1] srcud-torture: srcud_torture_init atomic SRCU
+[    3.883949][    T1] srcud-torture: rcu_torture_fwd_prog_init: Disabled=
+, unsupported by RCU flavor under test
+
+srcud-busted:
+
+[    3.382474][    T1] busted_srcud-torture: srcu_torture_init normal SRC=
+U
+[    3.389525][    T1] busted_srcud-torture: rcu_torture_fwd_prog_init: D=
+isabled, unsupported by RCU flavor under test
+
+[    3.423111][    T1] busted_srcud-torture: srcu_torture_init NMI-safe S=
+RCU
+[    3.432941][    T1] busted_srcud-torture: rcu_torture_fwd_prog_init: D=
+isabled, unsupported by RCU flavor under test
+
+[    3.364002][    T1] busted_srcud-torture: srcu_torture_init fast SRCU
+[    3.372654][    T1] busted_srcud-torture: rcu_torture_fwd_prog_init: D=
+isabled, unsupported by RCU flavor under test
+
+[    3.860358][    T1] busted_srcud-torture: srcu_torture_init fast-up/do=
+wn SRCU
+[    3.870796][    T1] busted_srcud-torture: rcu_torture_fwd_prog_init: D=
+isabled, unsupported by RCU flavor under test
+
+[    3.364909][    T1] busted_srcud-torture: srcu_torture_init atomic SRC=
+U
+[    3.372280][    T1] busted_srcud-torture: rcu_torture_fwd_prog_init: D=
+isabled, unsupported by RCU flavor under test
+
+trivial:
+
+[    3.858080][    T1] trivial-torture: rcu_torture_fwd_prog_init: Disabl=
+ed, unsupported by RCU flavor under test
+[    3.689060][    T1] trivial-preempt-torture: rcu_torture_fwd_prog_init=
+: Disabled, unsupported by RCU flavor under test
+
+
+
+Thanks
+Zqiang
+
+>=20
+>=20thanks,
+>=20
+>=20Joel Fernandes
+>=20
+>=20>=20
+>=20> >=20
+>=20> >=20
+>=20> >=20
+>=20>=20=20
+>=20>  ---
+> >  kernel/rcu/rcutorture.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> >=20=20
+>=20>  diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> >  index 968343be4e0d..92ff197f4789 100644
+> >  --- a/kernel/rcu/rcutorture.c
+> >  +++ b/kernel/rcu/rcutorture.c
+> >  @@ -4007,9 +4007,8 @@ static int __init rcu_torture_fwd_prog_init(vo=
+id)
+> >  } else if (fwd_progress < 0) {
+> >  fwd_progress =3D nr_cpu_ids;
+> >  }
+> >  - if ((!cur_ops->sync && !cur_ops->call) ||
+> >  - (!cur_ops->cbflood_max && (!cur_ops->stall_dur || cur_ops->stall_d=
+ur() <=3D 0)) ||
+> >  - cur_ops =3D=3D &rcu_busted_ops) {
+> >  + if (!cur_ops->sync || ((!cur_ops->call || !cur_ops->cb_barrier || =
+!cur_ops->cbflood_max) &&
+> >  + (!cur_ops->stall_dur || cur_ops->stall_dur() <=3D 0))) {
+> >  VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, unsuppor=
+ted by RCU flavor under test");
+> >  fwd_progress =3D 0;
+> >  return 0;
+> >  --
+> >  2.17.1
+> >=20=20
+>=20>=20
+>=20> >=20
+>=20> >=20
+>=20> >
+> >
+>
