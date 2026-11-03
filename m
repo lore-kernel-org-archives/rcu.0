@@ -1,113 +1,69 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=5.75.144.95
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793705844;
-	b=v+pnsAuHtMYv+Vq8h2UdodsoidxjUNOF7VxLFXCGlYP0a1rRM7JtnhOkTcUEC+GM9T2P
-	 DlIGFxaqwzVaF1ZzFh3qTqjZWi6uX3SuMfK9KyFoYirqSNgv4ck0czqSZA6lbwOzZjKlj
-	 57fStj4AUHPvPKfApi1kZFUUiNBMIbTUcFJ19iBioTLRCzK9o73zsmUdtekcOsz6jvjgf
-	 4QHhOj+Lalug7VvMoNmmzWgqDroWTODlwqG/u0NOI5ActjMD70VSu5lrUfksU27ySnrJt
-	 gEet5tSGZd3kU44KeN4eFHNgfLnuZt4Qze4h0lWsyoc4SmA8b0ZdEgUCnv3Ovmd1nfA==
+	t=1793705845;
+	b=10yJqPc42MLsfkJ2KfLe9U5bwb4oj91GISltomiz8oVs7yW0WyHrLExoLfek4P2SzMSt
+	 /MZdNEUnP63Vyir7Iyj2hcT6HEz49xB68vbclIICtUAFqzyKljktcv/3kvZg5z6pnU47h
+	 gQcbZUIrrdbCYbSosI6bLGPigkaEwpT+Pt4fWsOsQjrjZf7ZC41MdwEqhTmw1I42FlRYT
+	 TFg68wKBZELcJ94eYe2E9fiDxh320htawR7k+90CO1WRkb+iaFi4MsVX39hPA7tmdSH76
+	 Uz7gwHeH97ILAkIk7PMtTrVzahzoZdj59Mpfo9dcz50zMq9lYLbgxJwjtpc32HBlw5Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793705844;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=0bwrQXRz1nV2S/H83UR+VWVa5zJUqJhABatAjcFjujw=;
-	b=UOf1ktfQ68piDGOw9urkwpgkq6PKoMwLm3J6rH/plnr6+xZCh6jqiOjdXcCzLbvt2/gk
-	 pst9Ru9kWWy/Z/MRqWO4JgTYP0VVgUo+NnjIRCgKsDNWzYEs6eh2R6SiWu0El8zSV0bwH
-	 Oluh+KeQRs0imE+rhVS5BQGJ5NYQ2okCnmJxqoEWAVouKLYRIeharUlax82JFVk2ogiS0
-	 Bz7ovyk2C5FEUwOOloOJJjUbWBgZkuaAs7LSnKHL/dChJVHm2X1Ivs6SbQ+jhskTTqkiY
-	 Sdh3rnaDNUEo9phh1khsLZDTeAOdlOuLxfVaus9LU1YhkNR+cXKFUfvIs5ZE0T9MToA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793705845;
+	h=DMARC-Filter:DKIM-Signature:DKIM-Signature:Date:From:To:CC:Subject:
+	 In-Reply-To:References:Message-ID:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=x9m6GCcLCiW97zxS0be7/9dfneEiZ6K72D6PhIO7xlM=;
+	b=ox1tprpXQOH3+22ACLmaUrgsGXM6uz3WHpMHXqyKiKZjGiy9SG4Ya1SU2+HWQ5GEvvoT
+	 6iyilfJb/wryD0wCmatfIVCtVoToK6hFtXptQYykij05m1SeODYkuI/8900eddBRhYju8
+	 ByP0F9yUY+eaat8a1suqLdfL4Fwmg21sWD9okr6iVF4ubF1kawozhUZY/jNkmKvPyPf+f
+	 AZ6nFd7RIIlapYGSw4mIK6/COfyXgXxIIHzDu7mcqBfg8vokC4/iN4gAiSphOIOs10n01
+	 Tzzft2yBNPZlSB9m8YRjpodSvWd1eJUdwCr9XYEzT+wALWrgqKA2GglHUypAldfbI8w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=ionos.com;
-	spf=pass smtp.mailfrom=ionos.com;
-	dkim=pass header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=Op1fG3nb;
-	arc=none smtp.remote-ip=209.85.128.46
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=mainlining.org;
+	spf=pass smtp.mailfrom=mainlining.org;
+	dkim=pass header.d=mainlining.org header.i=@mainlining.org header.a=rsa-sha256 header.s=202507r header.b=Q56jiJwP;
+	dkim=pass header.d=mainlining.org header.i=@mainlining.org header.a=ed25519-sha256 header.s=202507e header.b=2rn+wuq5;
+	arc=none smtp.remote-ip=5.75.144.95
+Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09396082BC6
-	for <rcu@vger.kernel.org>; Tue,  3 Nov 2026 11:37:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E09396082BC6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A36606A331;
+	Tue,  3 Nov 2026 11:37:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 43A36606A331
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=Op1fG3nb
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4a1fbd52ab6so30573925e9.0
-        for <rcu@vger.kernel.org>; Tue, 03 Nov 2026 03:37:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1793705842; x=1794310642; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=0bwrQXRz1nV2S/H83UR+VWVa5zJUqJhABatAjcFjujw=;
-        b=Op1fG3nbG/RdYrz9q5mhMvv1lShzStkFtX9ySl30ncpCUWzvrwAc2vodSKoukMeDX0
-         rBH0VPll5+OIEbLOkYAupsayDFJ0cNZRURefAPC3UdkqVsY4RaUqRhnfbz6S8WhyKqeO
-         Q+YQM4SONCXqQruwrARZ094Dot/WVIe4bxgzFJI2OmRJSDbRg34N+512RnMYiwELgjpj
-         Ki/t1yy0CSlMnHvF3mSXImL3SYXzxOLq4V76yG52EtEy15tHfGu6AUJIe84jB4NUQlgm
-         8f6iTzSHXAhLzW7Z2F1sugQe2UJIfY/SX7bqqp/SLk6NSpuhWXiw0+Gln5IS++mWv0Uz
-         ZPzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793705842; x=1794310642;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=0bwrQXRz1nV2S/H83UR+VWVa5zJUqJhABatAjcFjujw=;
-        b=nqjTtUP9Rb45QHyYaPtdm1x0t0Xsue4zYK8gRBWw4RHeCPFDUovWpwvs6Nxyt94Xjw
-         9OfvaZLVNNn264ZPkctWHLUClcZz6TaODEhrzobDzSrH3S6kkF7XtryLyCMwletWIjKb
-         SX/mHf85kuhsqow59EG6SeEUWHNxU+Qpw97Z3mvCoLGiKCXDmpiOhH4BLUEvZzdivnVN
-         18CWpWd2/GVeR/BQUnwVLsLpDEV0rskU9ra/lu5dbVTnqcq3URdheR82bUu0YEo3+iBB
-         nCGVVJSMXawkLcZzGH/se525LCdKk8PC6ICbV2tGys1KmdpIHsGOWHR+zAdsivYxFYBA
-         d0xA==
-X-Forwarded-Encrypted: i=1; AKwUvByzk6AR3ovDdNSvyA3ECIiG6wR0OwjPUKsQyFl3iiUN8raFkfjp7x5/2TZYak66ySw4em4=@vger.kernel.org
-X-Gm-Message-State: APuU4Z9VduXFSlgaMSxptitJomKA++Wr/gyI/fDxJQWg+S1yzN0hiAMa
-	bpVqDM2Pj8jkbYiORFTVgVURbxhCc/MLJ9QYBnaxRjv9jNtwPg/RoVkLtcvTzaAB3A4=
-X-Gm-Gg: AYBFou3Nhfa6RGqzGmRXZzyPpTSsfhiqbRFUXWwfN2um6XN669bg6vJBHE0w1xzDhiN
-	JHmJj3ELX4UuMTK8lGnRNQIKuaTKFA8R0RqZl+6aImjFepZsYlxFwsuKKoH7D41mImdARkBZdpC
-	W0SqKuosc216MOAjTMB5Bei02VCrQNHBV57z8iOx40NMlELpscFjL1XCcZE+m0Ie8TRxsMKSL92
-	cvmMpsJRl5InmziLtQLp/qct5+051KbMUT6JoQ4FvONYDD/99YbPHv4F91XXGa7c7StV2XM+8fM
-	8L6rq8E3qcXBjXOf744QPcmMYLj1KF5wGHCbZd+kAaP7Pnt+FUGPAa8287LUIzz8p9FEXAgULNd
-	2XQWA77QLt0dhDvAkwTNjbbbup7bz8G6pfktW0JVWsU8Lv2y791ejBEYQhe9Kc0L4aH9DKjmNS2
-	XdKvhzNZJyCvVMcmMbe32vjCa/hYIpyxr6D8CvNNAjN8+4b3OinDH/nrAoqLn0CUhO+ejOfoRE0
-	AJauxbXBwsXadr5Y//HCGbZIznMTBUyRX689ZfKZLBK+EHaIJnUzd4d3xb9L883VsJJHAGTWudi
-	Pd22o4amwExVf446uw0anJTc2Ja3ud2ltpkF1ZMs+O1Y4U25OupgJo4r3BHkDqh86l/vm+9FxVM
-	U+8W7S8YeaJ7ksrIaxqwFW5o+ba+dOQ==
-X-Received: by 2002:a05:600c:a00d:b0:4a1:83f0:7c91 with SMTP id 5b1f17b1804b1-4ac185bc336mr278107635e9.18.1793705842252;
-        Tue, 03 Nov 2026 03:37:22 -0800 (PST)
-Received: from raven.intern.cm-ag (p200300dc6f04b700023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f04:b700:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e71b78f95sm23000997f8f.28.2026.11.03.03.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2026 03:37:21 -0800 (PST)
-From: Max Kellermann <max.kellermann@ionos.com>
-To: akpm@linux-foundation.org,
-	kasong@tencent.com,
-	qi.zheng@linux.dev,
-	shakeel.butt@linux.dev,
-	baohua@kernel.org,
-	axelrasmussen@google.com,
-	yuanchu@google.com,
-	weixugc@google.com,
-	baoquan.he@linux.dev,
-	baolin.wang@linux.alibaba.com,
-	david@kernel.org,
-	ljs@kernel.org,
-	liam@infradead.org,
-	vbabka@kernel.org,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	hannes@cmpxchg.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v2 1/5] include/linux/rculist_nulls: add hlist_nulls_add_behind_rcu()
-Date: Tue,  3 Nov 2026 12:37:06 +0100
-Message-ID: <20261103113711.1832834-2-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261103113711.1832834-1-max.kellermann@ionos.com>
-References: <20261103113711.1832834-1-max.kellermann@ionos.com>
+	dkim=pass (2048-bit key, unprotected) header.d=mainlining.org header.i=@mainlining.org header.a=rsa-sha256 header.s=202507r header.b=Q56jiJwP;
+	dkim=pass header.d=mainlining.org header.i=@mainlining.org header.a=ed25519-sha256 header.s=202507e header.b=2rn+wuq5
+DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
+	h=Message-ID:Subject:To:From:Date; t=1793705800; bh=x9m6GCcLCiW97zxS0be7/9d
+	fneEiZ6K72D6PhIO7xlM=; b=Q56jiJwPT8mdmV91F3pZ6pzw22MDZ18lxnuLz75f+vZK7SOamE
+	mSN/iHu0KWKEy6HS69aa11w7/LwzXsbGOUtL5lZi2Srdzw9GPsurb1MqNlbK1vbKC5hvfvlG5oL
+	FO0TMp1gFzCl2l2+zaPyC7vOk1ZmO2VbUvl5YNOSD33t8CMWqUFSYbiaOOvLOBVsY+C+57yV55L
+	901lM5cmxDQSL5CcRXAokl9M9XuBhexlKWjbyfw5MnCPn0/QGKfkEnUep5/LHXBAjxaZb8EmLCo
+	T23JyEBHidO69NAU1ZhTYNHMsyUXsP2+C8lFqafT4JMdqa6gwN6nKd6gTObKvTrRGaw==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
+	h=Message-ID:Subject:To:From:Date; t=1793705800; bh=x9m6GCcLCiW97zxS0be7/9d
+	fneEiZ6K72D6PhIO7xlM=; b=2rn+wuq5LzvshBYkjZYh7GxAzg0J1K2E4yiK2xXXARfJn7tlaK
+	WmzzBZyC6wIOMvhLIeGgZzUeUmYDryggY5DA==;
+Date: Tue, 03 Nov 2026 11:36:42 +0000
+From: Bradley Morgan <brads@mainlining.org>
+To: paulmck@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+ Andrea Parri <parri.andrea@gmail.com>
+CC: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Gary Guo <gary@garyguo.net>, Kunwu Chan <kunwu.chan@gmail.com>,
+ rcu@vger.kernel.org, lkmm@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_-rcu/dev_1/4=5D_hazptrtorture=3A_Releas?=
+ =?US-ASCII?Q?e_all_deferred_hazard_pointers_before_stopping?=
+In-Reply-To: <178eaa0b-e7bd-455e-ac3c-f1115d731a52@paulmck-laptop>
+References: <20261027163811.2470569-1-parri.andrea@gmail.com> <20261027163811.2470569-2-parri.andrea@gmail.com> <eb59edbb-c6e8-49c6-a426-c55cdb792853@paulmck-laptop> <9da03ed6-fea2-44df-8aee-f7a61a1d35ce@paulmck-laptop> <178eaa0b-e7bd-455e-ac3c-f1115d731a52@paulmck-laptop>
+Message-ID: <359B417A-8412-45E0-A061-C4A11E606F0E@mainlining.org>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -117,72 +73,300 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 8bit
 
-Move some code from hlist_nulls_add_tail_rcu() to the new function
-hlist_nulls_add_behind_rcu() for callers that already know the last
-node of an `hlist_nulls` list, to allow constant-time appends.
+On 3 November 2026 04:50:51 GMT, "Paul E. McKenney" <paulmck@kernel.org>
+wrote:
+>On Wed, Oct 28, 2026 at 04:51:12PM -0700, Paul E. McKenney wrote:
+>> On Wed, Oct 28, 2026 at 10:26:18AM -0700, Paul E. McKenney wrote:
+>> > On Tue, Oct 27, 2026 at 05:38:03PM +0100, Andrea Parri wrote:
+>> > > hazptrtorture can hang at shutdown when deferral is enabled, as in
+>the
+>> > > PREEMPT scenario: the writer stays in ->sync() and kthread_stop() on
+>it
+>> > > never returns, until kvm.sh kills QEMU:
+>> > > 
+>> > >     [ 1800.899278] hazptr-torture: Stopping
+>hazptr_torture_do_pending task
+>> > >     [ 1800.899447] hazptr-torture: Stopping hazptr_torture_writer
+>task
+>> > >     [ 1812.713870] hazptr-torture: rtc: 00000000225df70a ver: 12436
+>HTWS_SYNC tfle: 0 rta: 12437 rtaf: 0 rtf: 12427 onoff:
+>48783/48783:48786/48786 3,254:3,280 611671:731494 (HZ=1000) acq:
+>5720353149 rel: 5720210186 acqirq: 571927 relirq: 714778 reldefer: 714139
+>relundefer 714114
+>> > >     [ 1812.713971] hazptr-torture: hazptr_torture_stats is stopping
+>> > > 
+>> > >     Summary: Potential hang (QEMU killed)
+>> > >     !!! PID 1393523 hung at 1980 vs. 1800 seconds
+>> > > 
+>> > > hazptr_torture_cleanup() stops the do_pending kthread first, then
+>the
+>> > > writer, then the readers.  Once torture_must_stop(), do_pending
+>makes
+>> > > one last pass and leaves its loop, but unless stutter_will_wait(),
+>that
+>> > > pass releases the deferred hazard pointers of a single CPU.
+>> > > 
+>> > > Readers can also still defer after that pass, from the iteration
+>they
+>> > > are in when torture_must_stop() becomes true.  Readers that have
+>left
+>> > > their loop hold no hazard pointer, so the writer waits on one of the
+>25
+>> > > deferred hazard pointers above (reldefer - relundefer) that nothing
+>> > > releases.
+>> > > 
+>> > > Stop the readers before do_pending, and do_pending before the
+>writer.
+>> > > do_pending still leaves its loop at torture_must_stop(), and now
+>> > > releases the deferred hazard pointers of all CPUs once
+>> > > torture_kthread_stopping() returns, that is, once
+>> > > hazptr_torture_cleanup() stops it, after the readers.  The writer
+>can
+>> > > still wait in ->sync(), but only until then.
+>> > > 
+>> > > This should be safe because readers defer only from their own loop,
+>> > > which they have left once torture_stop_kthread() returns for them,
+>and
+>> > > the hazptr_torture_acquire() IPI runs synchronously within that
+>loop.
+>> > > The readers do not need the writer to stop: they leave their loop at
+>> > > torture_must_stop(), after at most one stutter_wait().
+>> > > 
+>> > > do_pending keeps the torture_must_stop() check before its sleep.  A
+>> > > kthread_stop() that comes after that check and before the sleep
+>starts
+>> > > still delays do_pending's exit by a full kthread_do_pending_ms
+>sleep,
+>> > > however long that is.  With the readers stopped first, this happens
+>> > > only if do_pending passed the check before the test began stopping
+>and
+>> > > had not yet gone to sleep when kthread_stop() came, after all the
+>> > > readers had stopped.
+>> > > 
+>> > > With this change, a 30-minute PREEMPT run on x86_64 with 8 CPUs ends
+>> > > with "End of test: SUCCESS" and with as many hazard pointers
+>released
+>> > > from the pending lists as were deferred (reldefer: 983727 relundefer
+>> > > 983727).
+>> > > 
+>> > > The hang was found with the help of an LLM.
+>> > > 
+>> > > Fixes: f23d7b47ced9 ("hazptrtorture: Add kthread to release deferred
+>hazard pointers")
+>> > > Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
+>> > 
+>> > Again, thank you!
+>> > 
+>> > Please see the question below.
+>> > 
+>> > 							Thanx, Paul
+>> > 
+>> > > ---
+>> > >  kernel/rcu/hazptrtorture.c | 13 +++++++++++--
+>> > >  1 file changed, 11 insertions(+), 2 deletions(-)
+>> > > 
+>> > > diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
+>> > > index 7c8b5899fb011..c46083a8af093 100644
+>> > > --- a/kernel/rcu/hazptrtorture.c
+>> > > +++ b/kernel/rcu/hazptrtorture.c
+>> > > @@ -560,6 +560,9 @@ static int hazptr_torture_do_pending(void *arg)
+>> > >  		// Omit stutter_wait() because this function needs to do cleanup.
+>> > >  	} while (!torture_must_stop());
+>> > 
+>> > The torture_must_stop() function expands to this condition:
+>> > 
+>> > 	torture_must_stop_irq() || kthread_should_stop()
+>> > 
+>> > The torture_must_stop_irq() function expands to this condition:
+>> > 
+>> > 	READ_ONCE(fullstop) != FULLSTOP_DONTSTOP
+>> > 
+>> > And the fullstop variable is set to FULLSTOP_RMMOD by
+>> > torture_cleanup_begin() (unless it has already been set to
+>> > FULLSTOP_SHUTDOWN).
+>> > 
+>> > And torture_cleanup_begin() is invoked by hazptr_torture_cleanup()
+>> > right at the beginning, before reaching any of the calls to
+>> > torture_stop_kthread().
+>> > 
+>> > So doesn't the above torture_must_stop() instead need to be
+>> > kthread_should_stop()?
+>> > 
+>> > As it is, hazptr_torture_do_pending() will still stop before the
+>> > hazptr_torture_reader() instances do, correct?
+>> > 
+>> > Or am I missing something subtle here?
+>> 
+>> Well, one thing that I am missing is that changing from
+>> torture_must_stop() to kthread_should_stop() might cause trouble
+>> if rcutorture execution is terminated by system shutdown.
+>> 
+>> So my next suggestion is that this be added just after
+>> hazptr_torture_reader() exits its do-while loop:
+>> 
+>> 	for_each_possible_cpu(cpu)
+>> 		hazptr_torture_do_one_pending(cpu, &rand);
+>> 
+>> Thoughts?
+>
+>How about like this?
+>
+>						Thanx, Paul
+>
+>------------------------------------------------------------------------
+>
+>commit 863f3c68c5dce601456368a9152de0239421cef9
+>Author: Andrea Parri <parri.andrea@gmail.com>
+>Date:   Tue Oct 27 17:38:03 2026 +0100
+>
+>    hazptrtorture: Release all deferred hazard pointers before stopping
+>    
+>    hazptrtorture can hang at shutdown when deferral is enabled, as in the
+>    PREEMPT scenario: the writer stays in ->sync() and kthread_stop() on it
+>    never returns, until kvm.sh kills QEMU:
+>    
+>        [ 1800.899278] hazptr-torture: Stopping hazptr_torture_do_pending task
+>        [ 1800.899447] hazptr-torture: Stopping hazptr_torture_writer task
+>        [ 1812.713870] hazptr-torture: rtc: 00000000225df70a ver: 12436 HTWS_SYNC tfle: 0 rta: 12437 rtaf: 0 rtf: 12427 onoff: 48783/48783:48786/48786 3,254:3,280 611671:731494 (HZ=1000) acq: 5720353149 rel: 5720210186 acqirq: 571927 relirq: 714778 reldefer: 714139 relundefer 714114
+>        [ 1812.713971] hazptr-torture: hazptr_torture_stats is stopping
+>    
+>        Summary: Potential hang (QEMU killed)
+>        !!! PID 1393523 hung at 1980 vs. 1800 seconds
+>    
+>    hazptr_torture_cleanup() stops the kthreads in random order, which
+>    means that there could be a reader thread still running after
+>    the do_pending kthread does its last cleanup pass.  If the writer
+>    is still running at that point, any remaining deferred hazard
+>    pointers will never be cleaned up and the writer can wait forever
+>    if it is unlucky enough to be waiting on one of the deferred
+>    hazard poiners.
+>    
+>    Therefore, make each reader clean up all deferred hazard pointers,
+>    which means that after the last reader finishes, there can no
+>    longer be any deferred hazard pointers, which means that the
+>    writer can terminate promptly.
+>    
+>    With this change, a 30-minute PREEMPT run on x86_64 with 8 CPUs ends
+>    with "End of test: SUCCESS" and with as many hazard pointers released
+>    from the pending lists as were deferred (reldefer: 983727 relundefer
+>    983727).
+>    
+>    The hang was found with the help of an LLM.
+>    
+>    [ paulmck: Make readers release deferred hazard pointers. ]
+>    
+>    Fixes: f23d7b47ced9 ("hazptrtorture: Add kthread to release deferred hazard pointers")
+>    Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
+>    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>
+>diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
+>index 7c8b5899fb011..3059ccb01979d 100644
+>--- a/kernel/rcu/hazptrtorture.c
+>+++ b/kernel/rcu/hazptrtorture.c
+>@@ -449,6 +449,28 @@ static void hazptr_torture_defer(struct hazptr_pending *hppp, struct torture_ran
+> 	atomic_long_inc(per_cpu_ptr(&hazptr_torture_releases_defer, raw_smp_processor_id()));
+> }
+> 
+>+/*
+>+ * Release the specified CPU's set of deferred/pending hazard pointers.
+>+ */
+>+static void hazptr_torture_do_one_pending(int cpu, struct torture_random_state *trsp)
+>+{
+>+	struct hazptr_pending *hppp;
+>+	struct hazptr_pending *hppp1;
+>+	struct llist_head *llhp;
+>+	struct llist_node *llnp;
+>+
+>+	llhp = per_cpu_ptr(&hazptr_pending, cpu);
+>+	llnp = llist_del_all(llhp);
+>+	if (!llnp)
+>+		return;
+>+	llist_for_each_entry_safe(hppp, hppp1, llnp, hpp_node) {
+>+		hazptr_torture_reader_tail(hppp, trsp);
+>+		atomic_long_inc(per_cpu_ptr(&hazptr_torture_releases_undefer,
+>+					    raw_smp_processor_id()));
+>+		kfree(hppp);
+>+	}
+>+}
+>+
+> /*
+>  * Hazard-pointer torture reader kthread.  Repeatedly dereferences
+>  * hazptr_torture_current, incrementing the corresponding element of the
+>@@ -513,31 +535,13 @@ static int hazptr_torture_reader(void *arg)
+> 		stutter_wait("hazptr_torture_reader");
+> 	} while (!torture_must_stop());
+> 	torture_kthread_stopping("hazptr_torture_reader");
+>+	// Each reader clears all CPUs, so nothing is left after all
+>+	// readers exit their for_each_possible_cpu() loops.
+>+	for_each_possible_cpu(cpu)
+>+		hazptr_torture_do_one_pending(cpu, &rand);
+> 	return 0;
+> }
+> 
+>-/*
+>- * Release the specified CPU's set of deferred/pending hazard pointers.
+>- */
+>-static void hazptr_torture_do_one_pending(int cpu, struct torture_random_state *trsp)
+>-{
+>-	struct hazptr_pending *hppp;
+>-	struct hazptr_pending *hppp1;
+>-	struct llist_head *llhp;
+>-	struct llist_node *llnp;
+>-
+>-	llhp = per_cpu_ptr(&hazptr_pending, cpu);
+>-	llnp = llist_del_all(llhp);
+>-	if (!llnp)
+>-		return;
+>-	llist_for_each_entry_safe(hppp, hppp1, llnp, hpp_node) {
+>-		hazptr_torture_reader_tail(hppp, trsp);
+>-		atomic_long_inc(per_cpu_ptr(&hazptr_torture_releases_undefer,
+>-					    raw_smp_processor_id()));
+>-		kfree(hppp);
+>-	}
+>-}
+>-
+> /*
+>  * Hazard-pointer release of deferred/pending hazard pointers.
+>  */
+>@@ -560,6 +564,7 @@ static int hazptr_torture_do_pending(void *arg)
+> 		// Omit stutter_wait() because this function needs to do cleanup.
+> 	} while (!torture_must_stop());
+> 	torture_kthread_stopping("hazptr_torture_do_pending");
+>+	// Readers clean up after themselves before exit.
+> 	return 0;
+> }
+> 
+>@@ -773,9 +778,7 @@ hazptr_torture_cleanup(void)
+> 		return;
+> 	}
+> 
+>-	torture_stop_kthread(hazptr_torture_do_pending, do_pending_task);
+> 	torture_stop_kthread(hazptr_torture_preempt, preempt_task);
+>-	torture_stop_kthread(hazptr_torture_writer, writer_task);
+> 
+> 	if (reader_tasks) {
+> 		for (i = 0; i < nrealreaders; i++)
+>@@ -785,6 +788,14 @@ hazptr_torture_cleanup(void)
+> 		reader_tasks = NULL;
+> 	}
+> 
+>+	/*
+>+	 * Stop the writer only after do_pending, and do_pending only after
+>+	 * the readers: the writer may be waiting on hazard pointers that
+>+	 * readers deferred, which do_pending releases once they stopped.
+>+	 */
+>+	torture_stop_kthread(hazptr_torture_do_pending, do_pending_task);
+>+	torture_stop_kthread(hazptr_torture_writer, writer_task);
+>+
+> 	torture_stop_kthread(hazptr_torture_stats, stats_task);
+> 
+> 	/* Do torture-type-specific cleanup operations.  */
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
- include/linux/rculist_nulls.h | 36 +++++++++++++++++++++++++++++------
- 1 file changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index a97c3bcb1656..054e477dd093 100644
---- a/include/linux/rculist_nulls.h
-+++ b/include/linux/rculist_nulls.h
-@@ -115,6 +115,33 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
- 		WRITE_ONCE(first->pprev, &n->next);
- }
- 
-+/**
-+ * hlist_nulls_add_behind_rcu - append after the last list entry
-+ * @n: the new element to add to the hash list.
-+ * @last: the last element in the list.
-+ *
-+ * Adds the specified element after @last while permitting racing RCU
-+ * traversals.  @last must be the last list entry, with its next
-+ * pointer holding the terminating nulls marker.
-+ *
-+ * The caller must take whatever precautions are necessary
-+ * (such as holding appropriate locks) to avoid racing
-+ * with another list-mutation primitive, such as hlist_nulls_add_head_rcu()
-+ * or hlist_nulls_del_rcu(), running on this same list.
-+ * However, it is perfectly legal to run concurrently with
-+ * the _rcu list-traversal primitives, such as
-+ * hlist_nulls_for_each_entry_rcu(), used to prevent memory-consistency
-+ * problems on Alpha CPUs.  Regardless of the type of CPU, the
-+ * list-traversal primitive must be guarded by rcu_read_lock().
-+ */
-+static inline void hlist_nulls_add_behind_rcu(struct hlist_nulls_node *n,
-+					      struct hlist_nulls_node *last)
-+{
-+	WRITE_ONCE(n->next, last->next);
-+	WRITE_ONCE(n->pprev, &last->next);
-+	rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
-+}
-+
- /**
-  * hlist_nulls_add_tail_rcu
-  * @n: the element to add to the hash list.
-@@ -143,13 +170,10 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
- 	for (i = h->first; !is_a_nulls(i); i = i->next)
- 		last = i;
- 
--	if (last) {
--		WRITE_ONCE(n->next, last->next);
--		WRITE_ONCE(n->pprev, &last->next);
--		rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
--	} else {
-+	if (last)
-+		hlist_nulls_add_behind_rcu(n, last);
-+	else
- 		hlist_nulls_add_head_rcu(n, h);
--	}
- }
- 
- /* after that hlist_nulls_del will work */
--- 
-2.53.0
+This looks okay to me.
 
+--- Thanks!
