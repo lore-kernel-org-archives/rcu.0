@@ -1,109 +1,94 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.51
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793749389;
-	b=LG5eSUFpHIbAIdOGny4VWNLqtSqgbIL9LrHSJfJKsJX1Ld3L30Ov96tdDPZML6a1UNmk
-	 x8spli4cAw/i1O56/qv/503sKUZb3x4Xqemjy6WV6O0vzz+j9+/gHVgphVcZXeCy+1HXh
-	 4jvQFBfM4Xow212+Oa08KC45VRYGyZ4mQFHoM2g1fQ5ZK65qF5EWZE5GbBirnYQi0UK8w
-	 +Ej3I1gyBG0qqEyTsddDbv/DJjKojEgQ22O7NkMe7Z4xxY37sl0ZgZAu+uq1i7iKrgH7J
-	 YF6eFI9iSB8WckHWOYPb7VvJZAG9ZaetJg7tKsrJzP5KUfpUadH+RLph7ZKFYZiwFpg==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793749389;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=0TmtvtXPpRF/twzDdIfwnX1S+VDt4Q6vGLAqJtu7vYk=;
-	b=1u0KsH/6LoVaZRgFsTjeabiJ2w6U0oIjofN4CUwFoV28q0C8mPZirBr2SapXJC4T0WIR
-	 FpbjV56hzgKISR+5I9T/cd5uzpEdeQUkq2eUFEnKedZhDkRp/xByg0bEAFbWyN//pS9dR
-	 Gv+9BtCXSzAUmjKv2WkAHhqI947/IAYHiuVcgeAYsAYr80/d6eVB2AC/aYrcFysTx+dv2
-	 J1hX5o7+VrlicuiKB27m7arzgvqLWdlsXcGhgjZmnQ7JWhD0mdt1iEZlB6GSx0Lbc6B+/
-	 EijojopFBilRiCXuoHo+HZ6kirMz2oZQjzGpfyDnLNGK7iA/q2KZBJnZ/HC+SHTV9bg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=xnm0mtJq;
-	arc=none smtp.remote-ip=209.85.221.51
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=40.107.209.24
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793750030;
+	b=D9lF265tgJfZf444PITBAi+02zvp9gVjnHVu5qHUXcmrHDjUPYiwgyKXTkw6yTF8BFTC
+	 sY6147Yh793Z4LIsDIEUAU8eJ9hDOi+6mLOy1AchGaND2w5jEOxiDe6559TK+5e1a43+E
+	 WAkiIp5kNjgbh2JBOmwpcoLCE9nN1HpweaQOuQTyv494pDQzc2vj02X034jTLkpYC2QXX
+	 +TgWaM72ntSgGV71Yb+s3Y/9MGUoNHhHZ44Z69cXoB71Rl3aQR6t0H/f+mYvmMtjw5fd6
+	 6GdOU5/sKsT5PqQD4ba9aqecYiHQoTR5tQxfqcSykpPu8z2y7IkQ/Ja1Ge6K5qtb8pQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793750030;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:Content-Type:Content-Disposition:
+	 In-Reply-To:X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=s4r5bSVojRKcNkUTojD15FdheNrK1abhODM3ds8JyHY=;
+	b=0DlhVdxHum8iHbjMGQ02Rs3r27k0ILnWbjRPWgdWfKmlwr1tu4s2Mq9cKXKM29h4WbDM
+	 uNZgOlN0NigDCAu69HebNlBDEmoVE0DtxqVKpqKEQZz+mNdhDbC5FnOvCyTNHi61TOWCG
+	 g8z0rlwtKnnhpDtaForEdwMqHJTSTATdI0gQ1bWVayRACzuoz7PqTzLwThm0Lla0PKtb+
+	 IkepRwbuI0oehkZfCuWu4oAwNa9OFQaYjUUr7a4ZvRSH1pdm6LvRLnyH9iuA0MZ5CYj/M
+	 GakQRtEWgGyxJuQdChQlGcwojeHEOnQfU+pJKvu9+Jrww0BJy9NbuCVwlBMAOD7tXaw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=nvidia.com;
+	spf=fail smtp.mailfrom=nvidia.com;
+	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=UOMrBNMN;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=40.107.209.24
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012024.outbound.protection.outlook.com [40.107.209.24])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8CB606A326
-	for <rcu@vger.kernel.org>; Tue,  3 Nov 2026 23:43:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BC8CB606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C025606A332;
+	Tue,  3 Nov 2026 23:53:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1C025606A332
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=xnm0mtJq
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-48e6eb21a8fso40796f8f.1
-        for <rcu@vger.kernel.org>; Tue, 03 Nov 2026 15:43:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793749382; x=1794354182; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=0TmtvtXPpRF/twzDdIfwnX1S+VDt4Q6vGLAqJtu7vYk=;
-        b=xnm0mtJqbkB7h9G/6sIwfu/wmAnSeVK4enwhz/WVKNoVuQp3IXNXsfreEKy1/hnXAl
-         oY3vXQvLDc5pOa7HK2xN5Htaruz26zZILXsP8MB67nIkqEHNYoueUUfbWeSoILXPYpSj
-         WgIKEe29QnHb0cdxpuhMfmYQpIP0TnHfiiryfOhpApkV4tiKQv3pDmmReJgd6Vj8VaDh
-         f7z3oycGwnUI/D/c9eZqZYceICv97qEPY0NnVFcAjs1Y9sqDmR3sStammSKeg/xbmUMJ
-         Gcjxv8ZfDiSasLpwfEFptU3qeFg31AGuIflLx6HnMyCf3VioZ4/dbCMizx3NTo5YOVJL
-         bvGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793749382; x=1794354182;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=0TmtvtXPpRF/twzDdIfwnX1S+VDt4Q6vGLAqJtu7vYk=;
-        b=ft+kCESxy5t84JMoaeh62+Ws6/274akJqEzpoCKUzxnwNhkYTwLIXx/ywP2dEuz4WW
-         QJBTKm2MjDYifE/ogUbk4j5a2fjyxneE3/pfkEQ2/GY8YJbO4gl1iRqcPF7tHJcjhs6y
-         IWnikkNfTbubTWSZPISvjmMha1rSntEtEwMYAxBflelroFUeBxQgSA6LPuThVlP+PPr5
-         fq6ac4MTA28XqnOPf3nTI+fBpx5iDRl4VQFiBrM3kOkWdj1HYUqK1c2xNotbNfgl0tTE
-         9Am+Gyea9ktWWY0AXsFhulYOKmYZ8OzZqvv8pNdCXZ4i53U8BxB1hcbRcMl5CW81GBuv
-         O1Ug==
-X-Forwarded-Encrypted: i=1; AKwUvBxl9irAYMq5sHroOQdpF1NeY8f3GAn5hs5b6Zk7JFu84t+d5h6e+dJ3grWiwEKOarONN6c=@vger.kernel.org
-X-Gm-Message-State: APuU4Z/drK419JTr5yytwwtES/h8S6vcaRtwY3znUa6uuWsPjhLctOa6
-	8KiU0Xn6e/BwyG+m7Pzllw46MIGEgtmJBPqBEA7m02yqH86pD5k5WBoe
-X-Gm-Gg: AYBFou0eMnskr888PCxcyqM+ZI9qOrZfWw1/BTJT01Q9J/yNqTsxuUWda94I6oWsVBN
-	qub1KLVopgIWhrdwGVzO3O2N+hV/GOfCJrppd9+1vcdCmx31eh4BTYT7jvrdbDm2rcbAFsPl+/V
-	MVnKQtE+gAJK6NYT2TFlI4XPlNH5lhHCsDWrjFWlGCVO9NwhzatmpR6kdmYN4V75YZ2xtNQr2x2
-	zpvhIX6a+V6w6g1MLhtFrMLObKRTKDY/C5QD5TokOCD2LtOgfA3lLJyZ4GPpNsjpJvuaSsYGXIZ
-	Al2VLsLzqn1rkPVO/Xton27bSLVrESi7fO87x9Lori0OYi0WyOpfK/9HFLpHV/IYhOYrxSZG69N
-	zoQgTbcLBd/ZWfTb8ZOiRxsCPyhMf9yGpI9Kvi63cCbK9X72TLQxyatGQ9PndzSWnOeRmqbO/rw
-	yrKX2lZhl08hbbKy+32PmqASavpV//gvu7XUar6S5582O8DWZydnUwojXBDcXZj05m+Q6za8n2I
-	HtQW5CFrJ556u5GJn+bdSrLRoUQ5ny6+NNOdYTYiKFUqKs4CcUI8YJAjC/hYB1dV1BsS1JqJ+/w
-	r4PR95cpk3ar6daWktC2mMJKrY34mS1vibibgEaep2HlWxcUXT/EoxHMw1WguRO4xhn4yuQoLw1
-	9LQ==
-X-Received: by 2002:a5d:4d82:0:b0:48b:a21:87f7 with SMTP id ffacd0b85a97d-48e6e4f4ff5mr25016512f8f.44.1793749381829;
-        Tue, 03 Nov 2026 15:43:01 -0800 (PST)
-Received: from andreayoga.wind3.hub ([31.189.68.219])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48feda1f100sm513060f8f.46.2026.11.03.15.42.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2026 15:43:01 -0800 (PST)
-From: Andrea Parri <parri.andrea@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Andrea Parri <parri.andrea@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Gary Guo <gary@garyguo.net>,
-	Bradley Morgan <brads@mainlining.org>,
-	Kunwu Chan <kunwu.chan@gmail.com>,
-	rcu@vger.kernel.org,
-	lkmm@lists.linux.dev,
+	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=UOMrBNMN
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=j6irapsErNfJgszhizUKWP2i1VQaVCYBESTOtwRBz9j6Rp54btsph2RMSCpfpUnqTIK32ygNi1QWBUFzJFiwW+ddTv+hTejPeaSJpbFano6R/lCpE7jKnbxHgp+sdXJD4vBzdSn7csPenVH+7SKu1862IVGNKot+S+x1F4MNDCl0w3lyyb+bBc0EKDndZ4ez1ZgEMBbKvDyLQgMd2cDgV6re05DDNOL6HMrm/KidQwgVBXCKnJ/Zj9Cm8bW6OifzGPifmxRg2NufqL3YLZDhvp7FMHcRzVDQLduE8PiL757GUQwv8D1xbGAezgmoDSj4tgcYoSxGRtd40Z49FYlUTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s4r5bSVojRKcNkUTojD15FdheNrK1abhODM3ds8JyHY=;
+ b=txi8AEsl5Un0xx1H/GgVI75DohL2J4IXELEzTD41XrRXGifitrLL4vmt0e/KJ4GjehUGHKP8Sw4Ioa3sd+WUAo4vqBAtRSziMQ+ngsCWwiqiHFQdhes7NqmmKDnyF497wlEFih9sp/UsKdq74jAnelXomOY+In/Pg2Ey0vvF03JDGEbNqMi3qtvhLhbNVKHz8vVTSce9FwWl0Va36RPR13UgCQNqlvy6kvaj+ixISX2gy2FuwvSzdzMO/KrX7G5txZLkRdGhQyhNT+NUtVzT66HTEPktysx1cIDvbC7HlWsPhAQjmJtzxcK1/0kO9skDo03DtsTlq2MkyMkDMzi1IA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s4r5bSVojRKcNkUTojD15FdheNrK1abhODM3ds8JyHY=;
+ b=UOMrBNMNmZekPHvY65+8Oxw02jkpCNx5i03TFUKEdra/UUFHO/lLRpUW/vgdq5mk2wdlXGDIPXUHqMgeuxW//Zn0bDYQTLQXUWPJktL5p2g+MmN+Xs0vkgRB+se7ce0bAhFhGPjotQ6GwqtFqsf9Vo8IArVHLaKE3WOhoSyTeFJQ3QJUrnD8yGyRkhD2wfIb3qqT6xYScDUHSYBIs93FuXZscjQ53uWF7Vl5PywztreUiX3ZTMyZEocRpZQgLCQBjkW+KyOmOtHr1sQOz6gZJiBBhHSkKVOZub+x42w4YGNtZXz4p3FY3jhkmMHmD1H6ddYEOujfwdsKgFpR1GP3eA==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB7742.namprd12.prod.outlook.com (2603:10b6:8:102::18)
+ by DM6PR12MB4124.namprd12.prod.outlook.com (2603:10b6:5:221::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.8; Tue, 3 Nov 2026
+ 23:53:46 +0000
+Received: from DM4PR12MB7742.namprd12.prod.outlook.com
+ ([fe80::8df:c519:298a:94f6]) by DM4PR12MB7742.namprd12.prod.outlook.com
+ ([fe80::8df:c519:298a:94f6%6]) with mapi id 15.21.0569.011; Tue, 3 Nov 2026
+ 23:53:46 +0000
+Date: Tue, 3 Nov 2026 18:53:44 -0500
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: Zqiang <qiang.zhang@linux.dev>
+Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	urezki@gmail.com, boqun@kernel.org, rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -rcu/dev 1/4] hazptrtorture: Release all deferred hazard pointers before stopping
-Date: Wed,  4 Nov 2026 00:42:41 +0100
-Message-ID: <20261103234246.2546810-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <ad753ec5-52ee-4fcf-8275-77095f42e8c9@paulmck-laptop>
-References: <20261027163811.2470569-1-parri.andrea@gmail.com> <20261027163811.2470569-2-parri.andrea@gmail.com> <eb59edbb-c6e8-49c6-a426-c55cdb792853@paulmck-laptop> <9da03ed6-fea2-44df-8aee-f7a61a1d35ce@paulmck-laptop> <178eaa0b-e7bd-455e-ac3c-f1115d731a52@paulmck-laptop> <20261103190507.1913628-1-parri.andrea@gmail.com> <ad753ec5-52ee-4fcf-8275-77095f42e8c9@paulmck-laptop>
+Subject: Re: [PATCH v2] rcutorture: Avoid create fwd_prog_tasks for
+ tasks-rude and srcu-atomic
+Message-ID: <20261103235344.GA4137395@joelbox>
+References: <ACA82057-9E74-41CD-8EEE-1D59E98D2D41@nvidia.com>
+ <2b7d3fd6bc409170cb5207d74eb9ded4a5874b53@linux.dev>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b7d3fd6bc409170cb5207d74eb9ded4a5874b53@linux.dev>
+X-ClientProxiedBy: BN9PR03CA0973.namprd03.prod.outlook.com
+ (2603:10b6:408:109::18) To DM4PR12MB7742.namprd12.prod.outlook.com
+ (2603:10b6:8:102::18)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -113,68 +98,244 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB7742:EE_|DM6PR12MB4124:EE_
+X-MS-Office365-Filtering-Correlation-Id: 531a3520-4000-480a-0ad9-08df3a05b329
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|23010399003|376014|1800799024|366016|6133799003|10067099003|22082099003|18002099003|3023799007|56012099006|261022075727099003|5023799004|11063799006|4143699003|261102123227099003|261022105027099003|261021121427099003|261022115727099003|261021130227099003|261026121527099003|261021123027099003|261026130827099003|261026140227099003|261028144727099003|261021135927099003|261022113327099003|261009223027099003;
+X-Microsoft-Antispam-Message-Info:
+	loXO/hda1VEBqLbHIP/z95XerHJXeUlzLZFroWwnmWIXz/h7TE8vAXeBXThBKDLbsWhfOvbLZtxnskJcKcQcGc17rLPS4k/KWAVkOjP4jLxrzK+YK9h/hJBgX/efrwFcPjehCHpRmjrThiu6fZafrA+mXYUgOLbUtQW1Vb1XeG8Opapjcrki89xFXN5VjH1tfq4IVnfGx/54OpTnM6w7QB9+r3pK8ltdi2dudBxkEPXojJ8YGGabTP943p7jN6mRRU8fxl22WjA+dmLAfvFPBTfSLH5Fvo3YyqnJYEPH3kI4spnuV8A11MALCDQzk+ni7rSr49ppmRSH/DCVgwr3W01ij92dntCIddKuXeJLQtlA9MrMrVqRS7DFKOQrxIO5srSa42YyFaMIBVRYMdE+YW6kHPNPpuv18SVEMzb+L7nnMLbQvNWr+JHnV1ooX3sax2otMxcqvBRDpwA6JVc0iyMrLhX26kC2PmH/Z37sTxGL4/Rx9g1GH3RwDmVYoPM8g/Xf88tWi/Vjd5FhJsVk9yFNn1Kf0DfuFJj6W0Rke7uVLzdazHJ9hBvIINL0tGedTesLDvwqYo8uGwcGkB0QEG4nfJ3PFmS8dPIvUEeoamNChi6DB3tD9IrCBaygF/4JXEGsdGUdFive2HKNT4u5AxHuzypSFQjmgs+4GB4Yu/0=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB7742.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(376014)(1800799024)(366016)(6133799003)(10067099003)(22082099003)(18002099003)(3023799007)(56012099006)(261022075727099003)(5023799004)(11063799006)(4143699003)(261102123227099003)(261022105027099003)(261021121427099003)(261022115727099003)(261021130227099003)(261026121527099003)(261021123027099003)(261026130827099003)(261026140227099003)(261028144727099003)(261021135927099003)(261022113327099003)(261009223027099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?MHn8zr+e2/qqeX+tkBMx65Fn+29wB/u2vuwCLKCuB0oeaAmHmzxOerWwxGEW?=
+ =?us-ascii?Q?HmMoJk6KTNOaAILGHaHUpX0QKWHqo0aSXFmlkBWYv2TI8hP/jZs4a3U6njNW?=
+ =?us-ascii?Q?ZG6XLvnN81dCuaIjMyAJ0LnV1h+JYQjZ2+wQ3WzPC7gilDPK/YFiCwkJPZHz?=
+ =?us-ascii?Q?bRTw/hqbZJybCeDsHT2FC43wTGCoyXVQ1BoKnoiNGMRjOUR1wRPbvPnyFyNP?=
+ =?us-ascii?Q?zbZs+dUydZdYjBK/fUP0KX3aE3ETkoIiXdZ8sh2O5NrHnnbUu5ijjqQSpoDh?=
+ =?us-ascii?Q?aKwEhT7m4/+e9TIxH9v69pNU8FStdfRI/CaXb121w8fd11hY9HWqfmxJu2fQ?=
+ =?us-ascii?Q?KjN7mkI2xbeDL7rM0it+vb6FQSGRBSTescYymzjEmI8oOg2hDZGFy1lqpWg7?=
+ =?us-ascii?Q?dB71sANWei1qVsqucxPMpH+oyup1bk5YTT9HbQmO+UTDf+zvVifIsTXaBcPf?=
+ =?us-ascii?Q?CoRotXAKq93r4Lfwk1/39uD1LRa+Tx+z09TuGBHQ+V0fn3+HwI+5f8nIYqD6?=
+ =?us-ascii?Q?SQL3YCyQTQtFJc8OfyB0RG70disY5xdq0dIOxEUjsCbt+S4yNIeXegdXSw/j?=
+ =?us-ascii?Q?R2YrfxqHK9g983u3rEqNE7IpERJwcnuFrUgS+oJNGjFPuVTf46MdrXDey9cv?=
+ =?us-ascii?Q?HVcYh2qn1Q2TzFG8dhPWxWjJ1gTO8rQ5WDuP/P4O3y58AeIzTW2EwCxuQYqi?=
+ =?us-ascii?Q?QgXbGrYYVehovdEMr+HIhnR8Clzvt1ncqcBqpSrSocaBrb+HjL/X6U2CQSrd?=
+ =?us-ascii?Q?jxsK2tzfxHM9kzyoLh+4AuPKWRYjztHNSl7G65zRAs/B++v6oUi+B5PVo+BF?=
+ =?us-ascii?Q?/JtFHoMfFPsPDzDWsoL3JB2xyts4UwBLBZJqBZ9puIaI0bAzLNeTgbCUQ5Kd?=
+ =?us-ascii?Q?T3KtoUq7dsCxWUlHXBDyMKVqzo4xT4oVr5AnNAt1d5A+o3/yb+VFa8WGFnaM?=
+ =?us-ascii?Q?FIjv/DfBMPHxY/6p3u7IAk3RutEIPnwJGdbiU/874TkuV1HfMuI1dzlgNRu+?=
+ =?us-ascii?Q?2hmSZfTjETUIEf8CioWuwS/oEf3F704fBLvefnKJGfeLu0VmibN6ROhE9mc9?=
+ =?us-ascii?Q?Bvx6YrA54roJABee9TemxFIJZqOlYIunsUunTpgqTnfNssdZ9rkDWkG46+Qw?=
+ =?us-ascii?Q?Nmd2wpytkTWPZgNUYMx8xaErcyY8FppzR1VaqtJOBaV0QjLnMK3zuAK7M5yo?=
+ =?us-ascii?Q?HpgAhgzHvcxekguSwKb0bOVbxbka/6fJxkFMFTm2nx8bEcbQMZRsNxR7yerl?=
+ =?us-ascii?Q?Bqyjvdx/yZrsQx5XIAxJn++srD3SzEnYPhvbVvDpera1dDcxGHQo/msjXzDr?=
+ =?us-ascii?Q?bId4VlEkxFFJ2PV6Bh56wqDsnLZirmGsAITctHbC6TAZ5O+NFOhtQZ33stgX?=
+ =?us-ascii?Q?g0n75AWKwnOwBbXsIwjxIY/u+PVZME/K2QlQGx7qUKVx+91QDOumWV+4QugZ?=
+ =?us-ascii?Q?yieZNmgiuKt1fGgWwSjIYCpMiw1tqNM9vck/c/Oq/Nit04OZk/IjprUMLi0w?=
+ =?us-ascii?Q?CKuHKioVoH0fV4te2ba7WnTiy6KxG/sB3tYl1LEN0iItfmK0mw+vrsyY53Ck?=
+ =?us-ascii?Q?SJKiHhgFgHQmRoTJa/wqwLos5VcivaRMRTAyrsU/iY4Ho/C6udfaAxLgresf?=
+ =?us-ascii?Q?+9TtSPYK5EjN7q1plH5kPeF4atg0ltR9m+Lxw+Uq9Jrxg+5BTQm92OLgaZPU?=
+ =?us-ascii?Q?o/HkN3OeDtE8177uii23RNu4HD+8KV03W+dPl5cIGjyhfTjnZ6Alej0ViE8t?=
+ =?us-ascii?Q?GJ3ssIJQNQ=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 531a3520-4000-480a-0ad9-08df3a05b329
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB7742.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2026 23:53:46.6799
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: X5m5wlwhZM6aL9hc3dgn1+zsM02ZB9kg46wDesK6QFf4MpUxRZVYPdlTOfjq2Wo15VWonM5egvvMsWruAYqp0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4124
 
-On Tue, Nov 03, 2026 at 12:44:07PM -0800, Paul E. McKenney wrote:
-> On Tue, Nov 03, 2026 at 08:05:06PM +0100, Andrea Parri wrote:
+On Mon, Nov 02, 2026 at 01:50:17PM +0000, Zqiang wrote:
+> > 
+> > > 
+> > > On Oct 30, 2026, at 8:14 AM, Zqiang <qiang.zhang@linux.dev> wrote:
+> > >  
+> > >  
+> > > 
+> > > > 
+> > > > 
+> > > > 
+> > >  On Fri, Oct 23, 2026 at 05:37:16PM +0800, Zqiang wrote:
+> > >  
+> > >  
+> > >  When running the tasks-rude and srcu-atomic tests, the fwd_prog_tasks
+> > >  kthread is created because the default value of fwd_progress is 1.
+> > >  however, the two RCU flavors not support ->call():
+> > >  
+> > >  1. tasks-rude: commit b428a9de9bba ("rcutorture: Stop testing RCU Tasks
+> > >  Rude asynchronous APIs") removed .call and .cb_barrier from tasks-rude,
+> > >  but left the .cbflood_max = 50000.
+> > >  
+> > >  2. srcu-atomic: srcu_torture_init_forbidden_apis() sets ->call to NULL
+> > >  for SRCU_READ_FLAVOR_ATOMIC runs, but leaves ->cbflood_max untouched.
+> > >  
+> > >  In both cases, the non-zero ->cbflood_max fools the check above into
+> > >  creating the fwd_prog_tasks kthreads, even though those kthreads cannot
+> > >  possibly carry out any forward-progress test:
+> > >  
+> > >  1. The rcu_torture_fwd_prog_cr() returns immediately due to cur_ops->call
+> > >  is NULL:
+> > >  
+> > >  [ 68.022674] rcu_torture_fwd_prog_cr: No ->call(), so no forward-progress test 0
+> > >  [ 129.462046] rcu_torture_fwd_prog_cr: No ->call(), so no forward-progress test 0
+> > >  [ 190.902123] rcu_torture_fwd_prog_cr: No ->call(), so no forward-progress test 0
+> > >  [ 252.343809] rcu_torture_fwd_prog_cr: No ->call(), so no forward-progress test 0
+> > >  
+> > >  2. The rcu_torture_fwd_prog_nr() is never even invoked, because its caller
+> > >  requires cur_ops->stall_dur, and neither tasks-rude nor srcu-atomic
+> > >  provide ->stall_dur (only rcu_ops does).
+> > >  
+> > >  Therefore, creating fwd_prog_tasks kthreads is pointless, this commit adds
+> > >  ->call and ->cb_barrier to the forward-progress check, rejecting flavors
+> > >  that lack the cbflood_max set and a positive ->stall_dur.
+> > >  
+> > >  simple verification output:
+> > >  
+> > >  [ 3.062959][ T1] srcu-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> > >  [ 2.922323][ T1] tasks-rude-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> > >  
+> > >  Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
+> > >  Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+> > >  
+> > > 
+> > > > 
+> > > > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> > > >  
+> > > >  It would nevertheless be good to run tests demonstrating that
+> > > >  forward-progress testing happens and does not happen on the same
+> > > >  rcu_torture_ops structures as before. Just in case I lost my
+> > > >  way through that boolean expression. ;-)
+> > > > 
+> > >  
+> > >  Ok, I see. thanks Paul ;-) .
+> > > 
+> > So let me know Zqiang once you are confident on the testing from and I will apply it for 7.5.
+> 
+> 
+> Hello, Joel
+> 
+> I have make simple testing for all rcu flavor:
 
-[...]
+Thanks Zqiang, I will apply it.
 
-> > >     hazptr_torture_cleanup() stops the kthreads in random order, which
+thanks,
+
+Joel Fernandes
+
+> 
+> rcu:
+> 
+> [    3.871868][  T158] rcu-torture: rcu_torture_fwd_progress task started
+> [    3.874347][    T1] tasks-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> [    3.862128][    T1] tasks-tracing-torture: Creating rcu_torture_fwd_prog task
+> [    3.857800][    T1] tasks-rude-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> [    3.435733][    T1] busted-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> 
+> srcu:
+> 
+> [    3.676067][    T1] srcu-torture: srcu_torture_init normal SRCU
+> [    3.691425][    T1] srcu-torture: Creating rcu_torture_fwd_prog task
+> 
+> [    3.467289][    T1] srcu-torture: srcu_torture_init NMI-safe SRCU
+> [    3.482983][    T1] srcu-torture: Creating rcu_torture_fwd_prog task
+> 
+> [    3.457597][    T1] srcu-torture: srcu_torture_init fast SRCU
+> [    3.475676][    T1] srcu-torture: Creating rcu_torture_fwd_prog task
+> 
+> [    3.381378][    T1] srcu-torture: srcu_torture_init fast-up/down SRCU
+> [    3.397417][    T1] srcu-torture: Creating rcu_torture_fwd_prog task
+> 
+> [    3.479642][    T1] srcu-torture: srcu_torture_init atomic SRCU
+> [    3.488532][    T1] srcu-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> 
+> srcud:
+> 
+> [    3.898271][    T1] srcud-torture: srcud_torture_init normal SRCU
+> [    3.915141][    T1] srcud-torture: Creating rcu_torture_fwd_prog task
+> 
+> [    3.586829][    T1] srcud-torture: srcud_torture_init NMI-safe SRCU
+> [    3.604943][  T146] srcud-torture: rcu_torture_fwd_progress task started
+> 
+> [    3.617095][    T1] srcud-torture: srcud_torture_init fast SRCU
+> [    3.635608][    T1] srcud-torture: Creating rcu_torture_fwd_prog task
+> 
+> [    3.915194][    T1] srcud-torture: srcud_torture_init fast-up/down SRCU
+> [    3.933086][    T1] srcud-torture: Creating rcu_torture_fwd_prog task
+> 
+> [    3.866575][    T1] srcud-torture: srcud_torture_init atomic SRCU
+> [    3.883949][    T1] srcud-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> 
+> srcud-busted:
+> 
+> [    3.382474][    T1] busted_srcud-torture: srcu_torture_init normal SRCU
+> [    3.389525][    T1] busted_srcud-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> 
+> [    3.423111][    T1] busted_srcud-torture: srcu_torture_init NMI-safe SRCU
+> [    3.432941][    T1] busted_srcud-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> 
+> [    3.364002][    T1] busted_srcud-torture: srcu_torture_init fast SRCU
+> [    3.372654][    T1] busted_srcud-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> 
+> [    3.860358][    T1] busted_srcud-torture: srcu_torture_init fast-up/down SRCU
+> [    3.870796][    T1] busted_srcud-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> 
+> [    3.364909][    T1] busted_srcud-torture: srcu_torture_init atomic SRCU
+> [    3.372280][    T1] busted_srcud-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> 
+> trivial:
+> 
+> [    3.858080][    T1] trivial-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> [    3.689060][    T1] trivial-preempt-torture: rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test
+> 
+> 
+> 
+> Thanks
+> Zqiang
+> 
+> > 
+> > thanks,
+> > 
+> > Joel Fernandes
+> > 
+> > > 
+> > > > 
+> > > > 
+> > > > 
+> > >  
+> > >  ---
+> > >  kernel/rcu/rcutorture.c | 5 ++---
+> > >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > >  
+> > >  diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> > >  index 968343be4e0d..92ff197f4789 100644
+> > >  --- a/kernel/rcu/rcutorture.c
+> > >  +++ b/kernel/rcu/rcutorture.c
+> > >  @@ -4007,9 +4007,8 @@ static int __init rcu_torture_fwd_prog_init(void)
+> > >  } else if (fwd_progress < 0) {
+> > >  fwd_progress = nr_cpu_ids;
+> > >  }
+> > >  - if ((!cur_ops->sync && !cur_ops->call) ||
+> > >  - (!cur_ops->cbflood_max && (!cur_ops->stall_dur || cur_ops->stall_dur() <= 0)) ||
+> > >  - cur_ops == &rcu_busted_ops) {
+> > >  + if (!cur_ops->sync || ((!cur_ops->call || !cur_ops->cb_barrier || !cur_ops->cbflood_max) &&
+> > >  + (!cur_ops->stall_dur || cur_ops->stall_dur() <= 0))) {
+> > >  VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, unsupported by RCU flavor under test");
+> > >  fwd_progress = 0;
+> > >  return 0;
+> > >  --
+> > >  2.17.1
+> > >  
+> > > 
+> > > > 
+> > > > 
+> > > >
+> > >
 > >
-> > The order is fixed: do_pending, preempt, the writer, then the readers.
->
-> That was my first thought, but then I remembered that torture_init_begin()
-> sets fullstop to FULLSTOP_DONTSTOP, which causes torture_must_stop()
-> to return true, thus stopping all the hazptrtorture kthread at about
-> the same time in some random order.
->
-> By the time hazptr_torture_cleanup() gets around to invoking
-> torture_stop_kthread() for the various kthreads, the game is up.
-
-torture_must_stop() does become true for all the kthreads at once,
-when torture_cleanup_begin() sets FULLSTOP_RMMOD, but each, once out of
-its loop, waits in torture_kthread_stopping() until
-hazptr_torture_cleanup() calls kthread_stop() on it, in the order above.
-
-[...]
-
-> I instead dropped the torture_stop_kthread() reordering from the most
-> recent version of this patch shown below.  (Which still contains the
-> above typos, but could you please check it otherwise?)
-
-With the pass after torture_kthread_stopping(), each reader reaches that
-pass only after kthread_stop() is called on it.  Cleanup now waits for
-the writer before making those calls:
-
-	/* hazptr_torture_cleanup(): */
-	torture_stop_kthread(hazptr_torture_writer, ...)  /* waits */
-	torture_stop_kthread(hazptr_torture_reader, ...)  /* releases */
-
-So a writer waiting in ->sync() on a deferred hazard pointer left after
-do_pending's last pass keeps kthread_stop() on it from returning, as in
-the hang this patch fixes, and the readers are never stopped.
-
-With ba9a3e4d3b237 and patches 2-4 on top (d0a4ec9443ee), both
-3-minute PREEMPT runs with kthread_do_pending_ms=10000 hang this way:
-after "Stopping hazptr_torture_writer task", the writer stays in
-->sync(), no reader is stopped, and 3823 and 4072 deferred hazard
-pointers are never released (reldefer - relundefer).
-
-Keeping the reordering, or doing the pass right after the reader's
-loop, before torture_kthread_stopping(), avoids this.  Your previous
-version, which keeps the reordering, passed those runs, as did the
-variant from my earlier reply, which does both.
-
-> > Also, "hazptrtorture: Nest a second hazard pointer in readers" conflicts
-> > with moving hazptr_torture_do_one_pending() up, as both add a function
-> > after hazptr_torture_defer(); keeping both resolves it.
->
-> I believe that I have resolved that correctly, but could you please
-> check v7.4-rc1..d0a4ec9443ee in my -rcu tree?
-
-The resolution looks right to me: it keeps both functions, and the
-patch adds and removes the same lines as in v1.
-
-Thanks,
-  Andrea
