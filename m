@@ -1,98 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793696241;
-	b=h6Xj90BpEp0MY6whCXCmx5kNLVc/crKMdZ6y0qXQzYHC2IDqhLFk5z4Zbo2TEI8ySVpo
-	 CLHsIKHZeUtD+pUc5jLZ6AzfdCPsTCBj1iZr/c3LcM3exRweq3M/phwskCm5zpUkhU6RN
-	 74RDt4lk8J/g12lTsvU7oNsqypI2S+Ind52pLvjmkWJ/TxVv5OxIL1/SVSyEX+0rq6RS4
-	 dAwVdM5BOzUN1VskDFeM0Ywh7WnkoersdA3B8xu0cMwiTPsVKMMxPw5F9Piy8QM0ECyHc
-	 asKSQV0vmglyDzJ5t4dt4NpUcC9Ok6rjIxO1zBy+lue0Q5EcnwtgOY4bArBPtHq8gmA==
+	t=1793700897;
+	b=X85ex9wCsYALGx7CUXgyFsde4qPmjZyDOdD2X9G0JHls5zQKQFu4An7fMoflTJ9V9Hg5
+	 8NAVJwEOgTWxYBTnleGBfp2sVYMtlhInD3pkKbRm3Mx5w3lVDN0ZhwjDA0g7Iim9rPYKh
+	 A02VWEMirJ38A6gpct57cNX2gAaAlUyhO/8tFNp6KNvn0s2dqS4DAb6j/xFoLQHSR0nqL
+	 mFgrhUMIxTSQFEzPpHMqWYzqaM8nA49kh8w6Dexq3O/HbXkMvIt3Fhehzf602jAzWXgY7
+	 DQ+ZC4KB2SesiCwAyVzX2EYXUCyif5z/4sqAKPHS2Ibj3CaSPqF5ArtKKnM8tPkMseA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793696241;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=Er/6bqz2N7+83QaIQ6D94RNvY6ZoeYk2XRlSx4xqVLM=;
-	b=X9MWd+RccJvxGmAV761/jD23R6u+AwdhwX/+BP/pJKIPp6jMPxXm/9HOkaRLgwGb3oFs
-	 TcppdadJLjRIwBBIqHCYUw9xCuuDFy8t0/K8RD5rdbdR8I0+sO+hBD9+ivvqlq1aKeMXN
-	 pSj047JBLYBhsopz9uMD11ja96lNtWSyv31gFgdJKcmucGf5AAjYZVS4qHvJ6mK/q6Pk2
-	 hrc8UqClDplabI/pmHnXaWJHPBbOs5GEOe9REZqA6dDZNDrcclgqf7V1eEVY5Qg1DLdNk
-	 z7qbCctJRb5u7Y8WTlkgl6VY9SVP7XYz7c8st+Wf4CSoqxhAuug4l8EjUiQEdY+3RrQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793700897;
+	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
+	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
+	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=jqwECtvJ6u0WXCetJHRwIFMx9iKDN0fT5jXgsr5loWQ=;
+	b=gRWUZtyh6clyC7R/kQoShSvj/98yxcYVf4CZgbvRUAqWW4b4ros9Uo8RoZSwdFlsWFQ9
+	 VoCuYszr19U4u1V61xmSg8EQFS06QliePo7TsoSv26cGDIo1witAF9GpOphW+qg/31h3+
+	 H9871XUZ826amYyoaYxUVQ6RGVngmvplVtLJ9IheKt1RRNZTpMzITD9UJc9dB/ycCpx5l
+	 FXgZPbvIXPeFzq9You+eWBZsZIN80dX6EI+N7j5314KzreMQO3fN30VqnIPwtcjz+3Rfq
+	 o6wrT6qJCXEwDBOJaDhm4fEKRc5p9Tq7E7Um/WK2YEPqz9foZeqzPJf7VTxwS5+SoJw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="C3/VARB9";
-	arc=none smtp.remote-ip=74.125.82.51
-Received: from mail-dl1-f51.google.com (mail-dl1-f51.google.com [74.125.82.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ARtF1On4;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50717606A32E
-	for <rcu@vger.kernel.org>; Tue,  3 Nov 2026 08:57:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 50717606A32E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F8E260A382A
+	for <rcu@vger.kernel.org>; Tue,  3 Nov 2026 10:14:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=C3/VARB9
-Received: by mail-dl1-f51.google.com with SMTP id a92af1059eb24-15dd124bbe7so5515291c88.1
-        for <rcu@vger.kernel.org>; Tue, 03 Nov 2026 00:57:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793696240; x=1794301040; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Er/6bqz2N7+83QaIQ6D94RNvY6ZoeYk2XRlSx4xqVLM=;
-        b=C3/VARB9Ki3INhlpjHk6uw34w0eGjBtr09D2pcJRau33CqrUBKiWngGSjA+cADcyCU
-         /g8gav+ogPg2gM2vm97bmSe4uN77DKvTC0++azS/JtNfZb+vtpWfj0h/t+IdQpZPISzr
-         NneQuIO31ZBa+SLp4ZgJvw0C5xtqOPLQ54p4Ou72UBGbwCrYQvp3R/4tOL2rJ2zv8nbM
-         IZKHxPw06svFbE8O/kXyNZ6LykNqU2tTGXtCSfmLFgis2lO2lczOoFf4/44wMV1Feq+M
-         1fdaeGPTHxI+HWPS1QPadsE4If1L+Ij+cF0apDlUreUjUZuST4N33nOf2F/d6D2/4udQ
-         69fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793696240; x=1794301040;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Er/6bqz2N7+83QaIQ6D94RNvY6ZoeYk2XRlSx4xqVLM=;
-        b=U1xSXqN3SKs7JKcO+dw9UXtZDJ8+MdxtjvY46vzAwdmRYotYFwJHFonbYFgMo439KB
-         BkDpJ6b8HDOZNl+F3FsLhyDqJHZLIROXl3D8UiWH6B7+t9w6jogmqLXXbb3wTRePc/Hz
-         9CFpm1KR34J9t5ZjL5O6uvEqO9DC4yLFt2j2RuQEFgoqL1oh0IG5sZOryQnQJCZFyD0a
-         zyyrezZ3ljjYqm8WFGtzDSg6naafQgNRXs7u50DwU+JGIbT7uY3CRW2SzOi/g1HuquHr
-         gCCsayRtqygdULrM+x7SUBBIsue8sfR3Q/opyYXExe2CeBHo2zNaawQGAQFGJcF8a1um
-         42nQ==
-X-Forwarded-Encrypted: i=1; AKwUvBzmobNKYWRKLyJH825sLKaRl1XL3LZ+LdIe+9L4QfAFYWAmfRDAL7uDVmZ0b0LVO+4FsD0=@vger.kernel.org
-X-Gm-Message-State: APuU4Z/hxKAIbJ4Cv55xp4eF0iOyEG4WQeWjTEGhfNjQEhd0MdNKGU/z
-	kezCEc5KR8PETIRVsPj2xKqBVg/AUGv+OEiTsG2TgzqTI1OG0AoxpAFq
-X-Gm-Gg: AYBFou2l1NqSJ8UvXOGIRuL/KSaDWANWYovUQ6bPCwriM7wEFQGT4CuQXCGaRJQzWLR
-	EuO3nL0zzvndciqvqqvWIB91QjV1YI67aq89tUmwBbCZrL7oZmz6l9ub7FWSStHMG25FmspNl+1
-	XuhzRvdkIHL2UtAFbloXP68Qo2QHb0M3uACtSGCiwFJ1AS2u3nprMROk8Zog8UPztYv+KhQDo4B
-	6RqzMvsYuefPFlH5rubMnrCzkU5Wjc/AEyL4lixe2TKR7jgJAtjzWG57lLX6oE4HGyyNTUWM8uu
-	htXMDeHnOGX2OS9PSx8m4d0tzojIoccEE89H1NVkPHr1cgWDFeAASHHTFA3CAHPURm2HOFSXJon
-	m9BCNnxDGtDhUFa5PsPNYmoE+fiV/OScxFzRU5uM++m72aB1OQmuWn7FzB9EDXsZs2v4SyabD8i
-	z07/itiAjCDqgY1vOPLlSe9RQykak7ZU30Yjip4x8j3JFFT2BOQaoByuX48uCf7e18seHdzdY2q
-	+XCX9b88+fD8OW3AyhheLj7um9Tlq4UsgmDX6y05OO1gh80+e4G+rfXjF+AKoHWL9yMd3J7H69i
-	gmyfb+Ts/F5HN6R9uQ/A
-X-Received: by 2002:a05:7022:1113:b0:1ac:9da7:e86e with SMTP id a92af1059eb24-1ac9dc67128mr17230382c88.30.1793696240266;
-        Tue, 03 Nov 2026 00:57:20 -0800 (PST)
-Received: from ubuntu.. ([23.254.208.9])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1ac1b38ac58sm39704029c88.23.2026.11.03.00.57.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2026 00:57:19 -0800 (PST)
-From: Qiliang Yuan <odys.yuan@gmail.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Keith Busch <kbusch@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	linux-nvme@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH] nvme: wait for SRCU readers before splicing the namespace list
-Date: Tue,  3 Nov 2026 03:57:13 -0500
-Message-ID: <20261103085713.3479756-1-odys.yuan@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261103081418.GB4301@lst.de>
-References: <20261103-bug-nvme-remove-ns-srcu-v1-1-e239087d63ac@gmail.com> <20261103081418.GB4301@lst.de>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ARtF1On4
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBB571F0157A
+	for <rcu@vger.kernel.org>; Tue,  3 Nov 2026 10:14:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793700896;
+	bh=jqwECtvJ6u0WXCetJHRwIFMx9iKDN0fT5jXgsr5loWQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=ARtF1On4Y3++hq+BvsbtHb9HfZ2OJj6B/TvjM1lge8G9PyPscyMjkYiubFnS5tI9S
+	 Xr03vbGBjVYXG+7PnPlB62hQRupMEEiHFSXEyfyBPlo+KJyQbj5Z+XtptO8OV1t7xB
+	 0qHgmAuRpmxZAC7d/NrggXosVlnpk1fwAhZmo8pqDu5cu0sA1Cj42GM3c/ONn7F7xQ
+	 8gMSFdXiGrl1nMPgI0CPsFQLVfK7vc1B4Llq4bTgArgSYDaQOtuPm/jU5brdnN+NU2
+	 1rG+zZrVX/XiRfuUYwf9AuAEVYgERIkMruNtEV+UBO/CiMy0J1JFAUcJWz6TzxBQYK
+	 c1XEHAhwQDkTA==
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-91b8306b9f8so69205116d6.3
+        for <rcu@vger.kernel.org>; Tue, 03 Nov 2026 02:14:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvByi0C3OucE4Va8oqczMaHxoeIxunl2B1RG5WBkkLS6Vnk2nW2p7rdl7JcYBDMZ/AOzs96s=@vger.kernel.org
+X-Gm-Message-State: APuU4Z/iEkiRiHTSSQftcosi3DPaurO+pa55EgO05cNIbE1qtfQ2mjAC
+	/FfZdl0Ft3nLGAT/1PnCQ2mAfJYnTc7dqrdrxgXbYWJQP9Ek91Y3Yg9aO1WIwIMRPux+vqFX4Sx
+	TijKknrkeKsjNqcrFV7Jg5dzVW6zNJ2o=
+X-Received: by 2002:a05:620a:8395:b0:93e:ce12:aadd with SMTP id
+ af79cd13be357-944217b270bmr1858889885a.58.1793700896121; Tue, 03 Nov 2026
+ 02:14:56 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -102,20 +59,39 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20261012205447.2717801-1-max.kellermann@ionos.com>
+ <20261012205447.2717801-3-max.kellermann@ionos.com> <CAGsJ_4zQh9HrvgaqD32_A=bSdqmPqP4oV_SxMXMEDBrHe4jjhg@mail.gmail.com>
+ <CAKPOu+_coR4Z=cbsWOG6zgbSWGvmp4=9=uUphkC3TWTTGn0Pqw@mail.gmail.com>
+In-Reply-To: <CAKPOu+_coR4Z=cbsWOG6zgbSWGvmp4=9=uUphkC3TWTTGn0Pqw@mail.gmail.com>
+From: Barry Song <baohua@kernel.org>
+Date: Tue, 3 Nov 2026 18:14:45 +0800
+X-Gmail-Original-Message-ID: <CAGsJ_4zOnfjsM_jR-hdeH4YwqKgRYNwj5pv8sFJz-0sJQqojEg@mail.gmail.com>
+X-Gm-Features: AclHuK_R4FODI0ZSMjhFi0nwMKEXiaxVpKfhugt2bmG4DXnFW2ixLEichw0jm98
+Message-ID: <CAGsJ_4zOnfjsM_jR-hdeH4YwqKgRYNwj5pv8sFJz-0sJQqojEg@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mm/vmscan: move code to lru_gen_{add,del}_memcg()
+To: Max Kellermann <max.kellermann@ionos.com>
+Cc: akpm@linux-foundation.org, kasong@tencent.com, qi.zheng@linux.dev, 
+	shakeel.butt@linux.dev, axelrasmussen@google.com, yuanchu@google.com, 
+	weixugc@google.com, baoquan.he@linux.dev, baolin.wang@linux.alibaba.com, 
+	david@kernel.org, ljs@kernel.org, liam@infradead.org, vbabka@kernel.org, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, hannes@cmpxchg.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 03, 2026 at 09:14:18AM +0100, Christoph Hellwig wrote:
-> This feels like a design issue with list_splice_init_rcu or rather
-> using list_splice_init_rcu with SRCU.  Do we need to encapsulate
-> and verify this logic in a list_splice_init_srcu so that other
-> potential users won't get it wrong again?
+On Mon, Nov 2, 2026 at 4:27=E2=80=AFPM Max Kellermann <max.kellermann@ionos=
+.com> wrote:
+>
+> On Sun, Nov 1, 2026 at 10:03=E2=80=AFPM Barry Song <baohua@kernel.org> wr=
+ote:
+> > T.J. series[1] removed MEMCG_LRU_OLD, i guess you will need some rebase=
+.
+>
+> Aye, will do if you decide the series is worth merging.
+>
 
-Makes sense. nvme is the only caller that pairs it with SRCU today; the
-others (btrfs, apparmor, ima, smack) protect their lists with plain RCU.
+Having to find the TAIL seems quite inefficient.
+I don't see why we shouldn't use your approach.
 
-I'll add list_splice_init_srcu(), which takes the srcu_struct to wait
-on, as a separate patch next to list_splice_init_rcu(), and switch nvme
-to it in v2.
-
-Thanks,
-Qiliang
+Best,
+Barry
