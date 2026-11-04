@@ -1,83 +1,83 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.180
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.181
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793811322;
-	b=kjEUqvrl0LLLTKqqxdl+ZYCZzTM/UtBDC+wPH0J0hdDP8BqG+shfv0Jj03pQfDtN1K/R
-	 N/ZYVft66yLa1jrRUR4BiNnuW+BCafKUK+7EzZKT34aS9zl6hphBo6RoPtCLm9/1mJPsJ
-	 tUKuh+xb+S1nhO8BsC8xYNaAG9dC3QvcVgj26q3EzRpDhvYqiqZJ6edrD6IiGBUdXWhCv
-	 HLoZ8dZsvnIsagwa8SlWPG431j/+nMpsyOMbdGrTw+zX0259Im/7P6BVcJg75ZvRh40Hl
-	 XAkKluSrT0xCp0tStMmjV9y74X3AL7QKLAiDQBPsOYTa1V+lx3Dsq1T9NPn6t0LUpMw==
+	t=1793811331;
+	b=aWvkDIFE8PMAqifIb/sRTJS2h9IPUJqNP1jxJZ3iirnDMSyI4W4O5eBNa/Q6UnsE/vw3
+	 9Jns6wEubeaCvV487ViK8H1Gbn8+CSqdh8awelsJmenPZ0/2hI+NxhI2fZ0FC1x7+f/Pl
+	 PWTxQ9WK1e/zNNEV4feXMaHzWkvVSj+TGBTmq1b2mQB5ZkhbqbVcbLtirh/4B27FvNvh+
+	 CcO6cCj7/RlHBDJCuARV1PCnmXmlZn0PgCk9+PzDO3uX0mDRsdTvoXO4tVLm4iEr7Tmx4
+	 geEDApJwetR035YpQFF83Zo8Fk/pwp9j3AXCOQLjHfbCbiqiAag/Z4jKeqU7E7PJniA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793811322;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793811331;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=yl/ZY+PDO6XN8izl21rZqNPkISM7G6L+Zw9AubDBAPI=;
-	b=IQz2vdu7gDaO3WbfnF53IKHU3D0WpAICl5jBE5cTA6TZ2ZraqZUd1DgDgsMT/WxSf4W4
-	 fVI/1gySa1+froeU8Oq6JUVi2pKKH7s1R6uA4z03dOJJhWmW54e22DGCmE3NzbpqUQpYO
-	 Xm0sjc8Hr547DX/EqD7AWx5XcNjCx1ZVfoKfkySWdPwWwpnzXW5wQkKUxEn8MFckN8uvP
-	 fTWKa/JxRcNkAIph+EDEfziuSnlQl5JKncR3APaiWPKiFWOEoKvJMoV7xDG69kTOCK/Dx
-	 /TdfR8v9gYwgZh2gkr5Z/szoiheVv5RB5dN8jruPsF4taTXXlUsLr08yneTTlK+CRYg==
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=svAmYvSZ5GutHDmHcCUE5c3ghjL8LeEt2/DysvEiXC8=;
+	b=rkac+c5lv+MqKrAJz5CWeqi1WTaIs/Atcd250WwkLaokfwHYc+EIkrX/Lw5bTtpiFUxn
+	 ZsdUbDZnX4Uwor3TQi2Ww3GvkFArN5YDN6Xb4nxkNQJC7k6Yjy3HCnpTz39YhCnatLHAe
+	 pEID/MqfpE8WZ7GjyAW9GDnClOMi/FOTyX9WEpeHGiiB+gOB7w7atTHY9bghXZ1DxtUvW
+	 Jjt8tV7uJNubVOlygoZooZ8P0lzGB5FBH7THiZS9g+tBqjj9NVk7RXUxvnaVRqz6hAMww
+	 oIILjcWRG//6oEG8jgxHfRH1U6C2x/sKhuk/sTT8W0hK+UYOr46zcAtRUDVMMSjDTtw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=t1Uo3YzH;
-	arc=none smtp.remote-ip=74.125.82.180
-Received: from mail-dy1-f180.google.com (mail-dy1-f180.google.com [74.125.82.180])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=q0uqz35L;
+	arc=none smtp.remote-ip=74.125.82.181
+Received: from mail-dy1-f181.google.com (mail-dy1-f181.google.com [74.125.82.181])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE53606A32C
-	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 16:55:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DBE53606A32C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8917606A328
+	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 16:55:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C8917606A328
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=t1Uo3YzH
-Received: by mail-dy1-f180.google.com with SMTP id 5a478bee46e88-36a18fc7a38so2021480eec.1
-        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 08:55:21 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=q0uqz35L
+Received: by mail-dy1-f181.google.com with SMTP id 5a478bee46e88-36d6e342f98so868122eec.0
+        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 08:55:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793811321; x=1794416121; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=yl/ZY+PDO6XN8izl21rZqNPkISM7G6L+Zw9AubDBAPI=;
-        b=t1Uo3YzHfzFIV1IqdOI0+CTfS3/LLL1zzTfILhiN2dI3fGeocV4xF1zkxa6GAm53f/
-         jUvqjrfCG58n6WXoU8DF2B/8ptX32AZlSmw5Mn53WzFEi1hufbxBp3WHxjeEbKAOphit
-         tvhJ3lMfkptQyM/I/upneewDjX3ZF95mWMj+m0KNTgu+mbXKuVh817/8IKqV5+Rv2FP0
-         zzj674ByGh1Tk7hUE9ZL9ptUrG9SDF8htEAMOfUYJZy7+4Nz4woO/KJCId9qj5pKq4Fj
-         5khJYeVjyRFmYTR29+Jdi2d693/P1mPXtMAaDD989eyt50RoZNpE4uW2Gnyt9GLCyJZk
-         KhhQ==
+        d=gmail.com; s=20260707; t=1793811330; x=1794416130; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=svAmYvSZ5GutHDmHcCUE5c3ghjL8LeEt2/DysvEiXC8=;
+        b=q0uqz35LO15DM4psgbOfG0V+FsAvkp5rl/pScZ0E/Zq8+SfrQji7h6wIFyIc7EcHTU
+         Y+lSGlLv/WcQ80KJXV6uMP1oQUKWLoRAUEQvnRpkkrEVTV0eIWFLJMCj+COsZSOKAhV9
+         Ph2AUvPaNZdKZwK7RhJvSBeA8edXi4plGh+ULoiBC58GpI+FrF7gPPNSwswEhmvMcjjs
+         mP07hEwy3jZ/X/RXk2MggMcaps8ZB/l9D5TJclAtn5NFRsuYSh3mP8fOuT+JQ4UWeBvJ
+         rKLlVf8objJ9AdWsPqUmuJSpI+5wM5qVRy+/FCa3HnqVQgdRSPMcwxd70SXcAbdcwATT
+         B4Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793811321; x=1794416121;
-        h=content-transfer-encoding:content-type:mime-version:message-id:date
-         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=yl/ZY+PDO6XN8izl21rZqNPkISM7G6L+Zw9AubDBAPI=;
-        b=YvG9YVMfH2lJbVAir2Va6EY3iiZQfz/Y5vwV2ZS7+Kb09XLQFb4o+blgTSyssiYSo6
-         nYUTtpJzHD+VjCEFHTOty/wrsEIsPc/BogmiEY7dC4PLf4KDAUDLw+J2oUlLFQAYVefb
-         VMpGaoPP8I9iB59gSpRUprtBNblG9PDdPsG1fLQi3Y1Kn2v3HrPCOVooSKOXcqyD8xiD
-         80/4UPIux/45QDlrfmbCWH5k/3wjmmjtzK/J73Nro3S1zw9nY+qzGwZIeHQjVBPArHw5
-         Mkp5N8LEVrSnYS5jLpnbSKyFpgr0I2Y+kQ4StYeWqWK7Fg/sJt4c7PliYDi9KHAobxQi
-         K9TQ==
-X-Forwarded-Encrypted: i=1; AKwUvBzNytGTuwtyWBxzWmd2WACTYcBYNefreX5zQo2/EtnEY92iOv3v2Bla10ud6S5AZj1v4GM=@vger.kernel.org
-X-Gm-Message-State: APuU4Z9V1OvdgPG0YtOICbNwNGcv6VPL838Aa3czsHN7RZpAeFNwRRdV
-	D+N/0HCFuvJbiAwAKA4gAaSATSW9JgbBoCoV5mUh3T1zOeCjH9iZcOcz
-X-Gm-Gg: AYBFou3AhZ06nCDw/avU+nF7joLk0/0x2YFVzMlXXgbbujmZj2s178TGQ/Og7FH3qdm
-	p3ofozQ56MjZP3s8DDpPH4JZ1NV3kID0wKm0eLJgXSEbt6u9Pfa5NGZIuMgvQ+uHkgAzIIIaDKk
-	9Q8yc7IfwfJvsT2HMe+PvtjQNK1heyaoaG9hNt8GZEh2AF69DtASbjAusVYjhLh7SHE8KyMnMsI
-	23DLzbaH4c6AeJZdWFKv52L5jEP9BeTt+YMV/clM2zCb91OeaW9MDTC9E/yRTbORkopWnTAM23d
-	Iqp5C1nr09fardlEwGh9nY1kQWCFF3NeWDOn/v8trh4D+pMvzEYZeAEe/IVcuY+PSg/G++UA73I
-	VGfXUx1xRORuBPWA5F8+RS+YqG73sJTRSEw9d7heGkpJeqLWKeYk2tEUkRXntM7ks3FIMrCYDWj
-	GanyMOYrGcXqiVplpzdS2z3CrZ0rQm21Gprf8WnNJlUbuFisY/i0KnH+BXW2WTpqKHjy+09uA9r
-	zoxdaOAhH50XbhEAIQREf+4klcrJqvUJWZJpLh6xl9mxPRhAuU2aZwNzf5tfD4q0+qwKMc03tz0
-	MbVzaoUtxJgbe2QgBoe+GZtDRThi9J8iQKfjl4M=
-X-Received: by 2002:a05:693c:6316:b0:369:fbc1:89c2 with SMTP id 5a478bee46e88-36a4235f4cemr24007502eec.8.1793811320020;
-        Wed, 04 Nov 2026 08:55:20 -0800 (PST)
+        d=1e100.net; s=20260707; t=1793811330; x=1794416130;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=svAmYvSZ5GutHDmHcCUE5c3ghjL8LeEt2/DysvEiXC8=;
+        b=u/rQRd/uVI1MW5ofB2DXsACaoIgE7nhk2J7V4IZZ97xzYb+GQacB6syEl0mEnK0x/B
+         On+o5A42dYPW1GHBQDTwB9/YtvH02iP9scf3Rl92+bckFu4uXUxNQGdFTc5rgb5gWgKH
+         Fgw8/6HvKyHW8rExDSfiLqEMlyw4LzmeMXBcDxQm3Cd3cxT21gKNZzST4sc9uwIXNgAF
+         c6ZBanHGjYxPcccrkjsKOBnj0J73+3wop5DalBP0dQl8klAVN90aZeVw58acPnlAO+7W
+         UG9JuZfwTh17tIIJ3eqOTLXqz0fhz0OUCgIyD8f7h+1NlPc5YUq84r/F238kLIfa5BEx
+         ULdg==
+X-Forwarded-Encrypted: i=1; AKwUvBz+IjVbT7VWyGtsE2L+jlJy2g6EHd5W6We7rHOpOviKQ9zO2DX0TA5Jn+CEMCCX7QTgPbY=@vger.kernel.org
+X-Gm-Message-State: APuU4Z8BrF9Tvc7JAFAQO1j547A17QhnFuTPlrg0xN+ebH7fhn7M94M4
+	GQeQQ5zRzt/DYQqW0/5IeP+5gIoLEB2FepVpJIwd+2BHTguEvmspV76o
+X-Gm-Gg: AYBFou2SmINHo4yUTgk0X2Z2K6aF7DSqblOCXIxTEp1l5Z2Y7IAqy+mKEpJmWox6uGh
+	9eykc4CRe7dCGleNGihGXKV1h8K1rrnxGwFKS6v1yKkOgCwc7M8BGdK6nr9kdFlmoNc4xnvaT8s
+	Pg4jPHUxjKwdo5U0EaAqNYDvBbZNehmNa53rl3yEHj7fvdELRPKyOHm1OVj/z4YLwjYfEjW4aqh
+	2l+T57jTzbFOQ4P4XmyhM7Cshg7Z+aJ778kip4l7vVR3q2hIUYaGFhIPX9JThh0ghMaAcQm8rrC
+	e+Zcs9/D5P6YvAt0progxsjcWhQF6n5UOzS2ARMiDQeibmzfis09LW+XsD1qVXTqo5EdT61HCZr
+	bediZ2THXKKa3BXmH49Q2wrIuYZ2ZOp1s+Spc+stOQyQx9fLs0FP+9LablkixrzDLTpCDVSmpnv
+	hpAqbeEjjouEmu69qF0Db0vJ+oO1Ag8GQzH/vRprObO/kBFmyYHv1/b7r+Ya7dBFaaOaJrGHwsE
+	GKMTH+LEClPdmZjAHfoy9vdiyhEYFF1dnSGDEFVPB1mGXmfpGzN2m9WSmcJBIUtVtiujNvWcXqI
+	h02bT0MQS5mwqspXCQnurCz0QOnIBLNhM4wdcHA=
+X-Received: by 2002:a05:7301:4242:b0:358:dfed:d0fe with SMTP id 5a478bee46e88-36a42219d4fmr23626146eec.5.1793811329298;
+        Wed, 04 Nov 2026 08:55:29 -0800 (PST)
 Received: from kernel.. ([216.195.201.23])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36ca38d46fcsm9019567eec.13.2026.11.04.08.55.10
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36ca38d46fcsm9019567eec.13.2026.11.04.08.55.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2026 08:55:19 -0800 (PST)
+        Wed, 04 Nov 2026 08:55:28 -0800 (PST)
 From: Kunwu Chan <kunwu.chan@gmail.com>
 To: paulmck@kernel.org,
 	boqun@kernel.org,
@@ -112,10 +112,12 @@ Cc: stern@rowland.harvard.edu,
 	linux-doc@vger.kernel.org,
 	rcu@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH 00/28] hazptr: shared-scan kthread, drain-assist, and stall detector
-Date: Thu,  5 Nov 2026 00:54:18 +0800
-Message-ID: <20261104165504.2430480-1-kunwu.chan@gmail.com>
+Subject: [PATCH 01/28] hazptr: Add shared scan kthread
+Date: Thu,  5 Nov 2026 00:54:19 +0800
+Message-ID: <20261104165504.2430480-2-kunwu.chan@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261104165504.2430480-1-kunwu.chan@gmail.com>
+References: <20261104165504.2430480-1-kunwu.chan@gmail.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -125,353 +127,200 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This series adds a shared-scan kthread to the hazard pointer
-implementation so that concurrent hazptr_synchronize() callers share
-a single Bloom-walk cycle instead of each busy-waiting on remote
-slots.  It also adds a drain-assist mechanism for sticky-address
-forward progress (the lockdep hash-bucket scenario raised by Lai
-Jiangshan [1]) and a waiter stall detector modeled on the RCU CPU
-stall detector.
+Batch concurrent hazptr_synchronize() callers into a single kthread
+scan.  Waiters sleep on completions instead of busy-waiting.
 
-Rebased onto origin/dev at 6e7df7157a91, which includes the
-try_acquire fast path and Andrea Parri's hazptrtorture fixes
-(shutdown hang, slot-owner race detection, nested acquire).
+The kthread processes queued waiters sequentially: for each waiter,
+it scans per-CPU slots and both overflow-list phases until the
+address is released.  This is the same scan the direct fallback
+performs, delegated to a kthread.
 
-v3: https://lore.kernel.org/all/20261005171529.1378809-1-kunwu.chan@gmail.com/
+Waiters are embedded in the caller's stack frame, so no dynamic
+allocation is needed in the synchronize path.  Fall back to the
+direct scan if the kthread is unavailable.
 
-1.  Drain-assist and forward progress
-====================================
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+Acked-by: Bradley Morgan <brads@mainlining.org>
+---
+ kernel/hazptr.c | 149 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 149 insertions(+)
 
-Lai Jiangshan pointed out [1] that the lockdep conversion, which
-uses a permanently-reachable hash-bucket address as the
-hazptr_synchronize() target, could starve: new lookups for
-unrelated keys in the same bucket keep re-acquiring the address,
-indefinitely blocking the waiter.
-
-Drain-assist (CONFIG_HAZPTR_DRAIN_ASSIST, default y) addresses
-this.  When a waiter has been blocked for 100+ scan cycles, the
-kthread snapshots which per-CPU and overflow-list slots hold the
-address: per-CPU slots are tracked via a bitmap, and each
-overflow-list slot is marked with a drain generation counter
-(drain_gen).  The reader cooperates on release by checking its
-own slot's drain_gen, clearing it, and decrementing the
-outstanding count.  The drain disengages when the bitmap is
-empty and the count reaches zero.  A remove-only re-snapshot
-recovers releases that happened during the engage walk, before
-the drain address was published.
-
-The mechanism is verified by:
-
-  - Drain litmus tests (herd7 + linux-kernel.cfg).
-  - HOTADDR: the same address is continuously re-published by
-    hammer readers; the waiter completes after the hammer stops.
-  - LONGHOLD: a legitimate 8-second hold with the stall timeout
-    set to 2 s so the detector reports during the hold; the
-    waiter completes after the holder releases.
-  - FAIRNESS: two stuck addresses with two waiters; drain
-    rotation confirmed (2 distinct addresses engaged, 3
-    fairness-cap disengages, both waiters complete after
-    release).
-
-The drain-assist provides empirical forward progress, but does
-not provide a formal starvation-freedom guarantee under
-continuous reader traffic.
-
-2.  Lockdep performance
-=======================
-
-The lockdep conversion (commit 20) replaces the system-wide
-synchronize_rcu_expedited() in lockdep_unregister_key() with a
-per-bucket hazptr_synchronize().  The motivation, following Boqun
-Feng's shazptr series, is to eliminate the function-call IPI to
-every online CPU per grace period.
-
-Measured on 96 CPUs with PROVE_LOCKING=y and 96 background
-hazptr readers: the wq_churn workload (workqueue create/destroy,
-each exercising lockdep_unregister_key()) generates about 3
-function-call IPIs per operation after subtracting the
-scheduling baseline.  The previous system-wide
-synchronize_rcu_expedited() path required an IPI to each of
-the 96 online CPUs per grace period, so this represents
-roughly a 30-fold reduction for this workload.
-
-Writer-side grace-period cost (rcuscale, nwriters=16, nreaders=0;
-effective per-GP = measuring-window duration divided by the total
-number of grace periods, from the module's summary line; ARM64
-KVM; the per-GP figure is an aggregate throughput metric, not
-a per-call latency):
-
-               24 CPU      96 CPU      128 CPU     256 CPU
-  hazptr        526 us       528 us       526 us       526 us
-  RCU          2650 us       928 us      3836 us      4230 us
-  SRCU          450 us       639 us      2352 us       706 us
-
-The comparison uses hazptr_synchronize(), synchronize_rcu(),
-and synchronize_srcu(), respectively.  Hazptr per-GP cost
-remains nearly constant across the tested CPU counts.  RCU and
-SRCU grace-period costs show larger variations across the
-tested CPU counts in this QEMU ARM64 environment; these
-results are from individual runs.
-
-This matches the v3 numbers (493-500 us for hazptr, 865 us for RCU,
-599 us for SRCU at 96 CPUs) within run-to-run variance: the shared
-scan kthread preserves the aggregate throughput of the v3
-per-waiter-scan protocol in this workload.  An individual hazptr_synchronize() call
-under this 16-writer load takes about 8 ms because a single scan
-cycle serves all concurrent waiters.
-
-Reader overhead (refscale, nreaders=-1, nruns=5, median, ARM64 KVM):
-
-               PROVE_LOCKING=n    PROVE_LOCKING=y
-  hazptr       22.2 ns            22.2 ns
-  RCU           4.8 ns          147.6 ns
-  SRCU         36.4 ns          163.8 ns
-
-Hazptr reader overhead is unaffected by PROVE_LOCKING (22.2 ns
-with and without).  Without PROVE_LOCKING, RCU has lower
-reader overhead than hazptr.  With PROVE_LOCKING enabled,
-while RCU and SRCU readers are heavily
-instrumented: RCU degrades 31x (4.8 ns to 147.6 ns) and SRCU
-degrades 4.5x (36.4 ns to 163.8 ns).  With PROVE_LOCKING enabled,
-the hazptr read path is about 7x faster than RCU's and SRCU's.
-
-These properties — flat per-GP cost across CPU counts, low
-IPI, and reader overhead that is largely unaffected by lockdep — make hazptr suited
-for short-critical-section readers under a stable, shared
-address, such as the lockdep key-hash lookup.
-
-(v3 reported 26.1 ns; the improvement is consistent with the try_acquire
-fast path in the base tree.)
-
-3.  Stall detector
-==================
-
-CONFIG_HAZPTR_STALL_DETECTOR (default y, 21 s timeout) is modeled
-on the RCU CPU stall detector.  After each scan cycle the kthread
-checks still-blocked waiters; on timeout it walks all per-CPU and
-overflow-list slots and reports each holder's pid, held time,
-acquire call site, and task stack under CONFIG_HAZPTR_DEBUG.
-Comparing consecutive reports distinguishes a single long-held
-reference from repeated publication by different readers.  The
-diagnostic message explains that long-lived references are a
-hazard-pointer feature, not necessarily a problem.
-
-Suggested by Paul E. McKenney.  Runtime sysfs controls
-(/sys/kernel/hazptr/hazptr_stall_timeout_ms and
-hazptr_stall_suppress) allow the administrator to adjust the
-timeout or suppress reports at runtime.
-
-4.  Changes since RFC v3
-====================
-
-- Rebased onto the try_acquire protocol.  Per-CPU
-  slots publish their target directly; the shared scan uses a
-  single-pass Bloom walk.  Dropped three v3 patches already
-  addressed upstream or by the rebase: "scan all per-CPU slots
-  before overflow lists" and "elide redundant first drain
-  pass" (rebase), and "hazptr: Fix two-phase hazptr_synchronize
-  race with detach" (merged upstream from Mathieu Desnoyers
-  [3]).
-
-- Added drain-assist, stall detector, lockdep conversion,
-  HOTADDR/LONGHOLD/FAIRNESS torture scenarios, hazptr.sh selftest,
-  rcuscale hazptr scale type.
-
-- Safety fixes found during verification: Bloom early-return on
-  empty slot, wildcard deferral in scans, exact-match fallback
-  for Bloom false positives, FORCE_SLOWPATH skip-before-try,
-  drain state re-initialized at engage, drain addr read with
-  smp_load_acquire, slot type identified via
-  hazptr_slot_is_backup().  Bloom filter collision-rate data
-  on request from Joel Fernandes: [2].
-
-- Build fixes: select TRACING for the torture test, export
-  drain_key and tracepoint for =m linkage.
-
-- The new base includes Andrea Parri's hazptrtorture fixes
-  (reader-exit deferred cleanup, nest_acquire, slot-owner
-  checks).  The HOTADDR/LONGHOLD/FAIRNESS scenarios are
-  integrated with these changes; all configured hazptrtorture scenarios
-  pass on the new base with nest_acquire enabled.
-
-- Suggested-by: Boqun Feng (drain-assist direction, lockdep
-  conversion, Bloom filter, slowpath debug, stall detector),
-  Paul E. McKenney (stall detector, runtime sysfs controls),
-  Mathieu Desnoyers (Bloom filter design). 
-
-Testing
-=======
-
-ARM64 KVM (all scenarios at 16 vCPUs, 30 s each; the CPU sweep
-runs PREEMPT at 8/16/32/64/128/256 vCPUs):
-
-  Scenario     hazptr BUG   verdict
-  ------------ -----------  -------
-  PREEMPT      0            SUCCESS
-  NOPREEMPT    0            SUCCESS
-  SLOWPATH     0            SUCCESS
-  LOCKDEP      0            SUCCESS
-  READERS0     0            SUCCESS
-  READERS4     0            SUCCESS
-  HOTADDR      0            SUCCESS
-  LONGHOLD     0            SUCCESS
-  FAIRNESS     0            SUCCESS
-  CPU 8-256    0            SUCCESS
-
-The PREEMPT scenario runs with deferral enabled
-(defer_modulus=16000) and nest_acquire=2, exercising the
-reader-exit deferred cleanup that Andrea Parri's fixes
-introduced; shutdown completes in under 100 ms.
-
-HOTADDR drain verification: 450 engage events, 445 complete
-disengages, 5 orphaned, 0 fairness-cap (the 5 orphaned
-drains were disengaged because the Bloom scan completed the
-waiter before the drain shut down).  LONGHOLD: 5 engage, 5 orphaned
-disengage (outstanding=0).  FAIRNESS: 4 engage across 2 distinct
-addresses, 3 fairness-cap disengages — drain rotation confirmed.
-
-LKMM litmus tests (herd7 + linux-kernel.cfg):
-
-  Litmus                            Result      Property
-  --------------------------------  ----------  --------------------
-  acquire-before-scan               Never       Publication ordering
-  bloom-wildcard-hole               Never       Wildcard deferral
-  drain-engage-wildcard             Never       Engage defers on wildcard
-  drain-generation-visibility       Never       Generation ordering for release hooks
-  drain-resnapshot-slot-race        Sometimes   Remove-only walk; handled by design
-  drain-safety                      Sometimes   Engage snapshot; covered by wildcard+re-engage
-  wildcard-flip-escape              Never       Legacy wildcard-flip protocol
-
-All 28 commits compile with 0 errors / 0 warnings ([ARCH], [GCC],
-four DRAIN x STALL Kconfig combinations, HAZPTR_TORTURE_TEST=m).
-
-Design notes
-============
-
-- The drain engages for one address at a time; a fairness cap
-  (HAZPTR_DRAIN_MAX_CYCLES) bounds each round and rotates to
-  the next stalled waiter.  Rotation is bounded but not
-  formally starvation-free: waiters positioned after the drain
-  target in the scanning list do not accumulate re-engage
-  cycles while another waiter's drain is active, so a
-  late-arriving waiter can wait roughly two drain windows
-  before its first turn.  The FAIRNESS torture scenario added
-  in this series observes the rotation empirically via the
-  kernel drain logs; the ARM64 run confirmed 2 distinct engaged
-  addresses and 3 fairness-cap disengages.
-
-- Key memory-ordering properties are tested by litmus tests: engage-wildcard,
-  generation-visibility, resnapshot-slot-race, and drain-safety
-  (see the litmus table above).  Forward progress requires
-  readers to release, which holds for the lockdep use case
-  (is_dynamic_key() is a short critical section); the stall
-  detector reports any waiter blocked beyond the timeout.
-
-[1] https://lore.kernel.org/all/as3aMmPdCHCXW6Ci@U-YXDQC754-96.local/
-[2] https://lore.kernel.org/rcu/CAN_Opa-=QsYFgZ-tENoqvpfqMhr=sZToFBs6NfbyTOpNLYQB1g@mail.gmail.com/
-[3] https://lore.kernel.org/all/20261011194902.97364-2-mathieu.desnoyers@efficios.com/
-
-Kunwu Chan (28):
-  hazptr: Add shared scan kthread
-  hazptr: Use Bloom filter for shared scan waiters
-  hazptr: Add scoped_guard() support
-  hazptr: Add debug option to force the acquire slow path
-  Documentation/litmus-tests: Add hazptr wildcard-flip escape test
-  Documentation/litmus-tests: Add hazptr acquire-before-scan test
-  hazptr: Fix kernel-doc of hazptr_release()
-  hazptrtorture: Add slowpath and lockdep scenarios
-  hazptrtorture: Add READERS4 and READERS0 torture configs
-  hazptrtorture: Add 128- and 256-CPU configs
-  selftests/rcutorture: Add hazptr torture test script
-  hazptr: Remove per-waiter scan fallback, simplify synchronize
-  hazptr: Add waiter-enqueue tracepoint
-  hazptr: Add waiter stall detector
-  hazptr: Add reader-assisted drain for stalled waiters
-  Documentation/litmus-tests: Add hazptr drain engage-wildcard test
-  Documentation/litmus-tests: Add hazptr drain resnapshot-slot-race test
-  Documentation/litmus-tests: Add hazptr drain safety test
-  Documentation/litmus-tests: Add hazptr drain generation-visibility test
-  locking/lockdep: Use hazptr to wait for dynamic key lookups
-  hazptrtorture: Add HOTADDR and LONGHOLD scenarios
-  hazptrtorture: Add drain fairness rotation scenario
-  rcuscale: Add hazptr scale type
-  hazptr: Add runtime sysfs controls for stall detector
-  hazptr: Select TRACING for HAZPTR_TORTURE_TEST to enable tracepoint
-  hazptrtorture: Add torture_type=none clean skip for rcuscale coexistence
-  hazptr: Add Bloom false-positive exact-match fallback
-  Documentation/litmus-tests: Add hazptr bloom wildcard-hole test
-
- Documentation/litmus-tests/README             |   37 +
- .../hazptr/hazptr-acquire-before-scan.litmus  |   45 +
- .../hazptr/hazptr-bloom-wildcard-hole.litmus  |   49 +
- .../hazptr-drain-engage-wildcard.litmus       |   44 +
- .../hazptr-drain-generation-visibility.litmus |   41 +
- .../hazptr-drain-resnapshot-slot-race.litmus  |   36 +
- .../hazptr/hazptr-drain-safety.litmus         |   43 +
- .../hazptr/hazptr-wildcard-flip-escape.litmus |   46 +
- include/linux/hazptr.h                        |   71 +-
- include/trace/events/hazptr.h                 |   29 +
- kernel/hazptr.c                               | 1120 ++++++++++++++++-
- kernel/locking/lockdep.c                      |   25 +-
- kernel/rcu/Kconfig.debug                      |   42 +
- kernel/rcu/hazptrtorture.c                    |  633 +++++++++-
- kernel/rcu/rcuscale.c                         |   67 +
- .../selftests/rcutorture/bin/hazptr.sh        |  382 ++++++
- .../rcutorture/configs/hazptr/CFLIST          |    9 +
- .../rcutorture/configs/hazptr/CPU128          |   16 +
- .../rcutorture/configs/hazptr/CPU128.boot     |    1 +
- .../rcutorture/configs/hazptr/CPU256          |   16 +
- .../rcutorture/configs/hazptr/CPU256.boot     |    1 +
- .../rcutorture/configs/hazptr/FAIRNESS        |   19 +
- .../rcutorture/configs/hazptr/FAIRNESS.boot   |    1 +
- .../rcutorture/configs/hazptr/HOTADDR         |   18 +
- .../rcutorture/configs/hazptr/HOTADDR.boot    |    1 +
- .../rcutorture/configs/hazptr/LOCKDEP         |   16 +
- .../rcutorture/configs/hazptr/LOCKDEP.boot    |    1 +
- .../rcutorture/configs/hazptr/LONGHOLD        |   18 +
- .../rcutorture/configs/hazptr/LONGHOLD.boot   |    1 +
- .../rcutorture/configs/hazptr/READERS0        |   16 +
- .../rcutorture/configs/hazptr/READERS0.boot   |    2 +
- .../rcutorture/configs/hazptr/READERS4        |   16 +
- .../rcutorture/configs/hazptr/READERS4.boot   |    2 +
- .../rcutorture/configs/hazptr/SLOWPATH        |   16 +
- .../rcutorture/configs/rcuscale/HAZPTR        |   13 +
- .../rcutorture/configs/rcuscale/HAZPTR.boot   |    1 +
- 36 files changed, 2854 insertions(+), 40 deletions(-)
- create mode 100644 Documentation/litmus-tests/hazptr/hazptr-acquire-before-scan.litmus
- create mode 100644 Documentation/litmus-tests/hazptr/hazptr-bloom-wildcard-hole.litmus
- create mode 100644 Documentation/litmus-tests/hazptr/hazptr-drain-engage-wildcard.litmus
- create mode 100644 Documentation/litmus-tests/hazptr/hazptr-drain-generation-visibility.litmus
- create mode 100644 Documentation/litmus-tests/hazptr/hazptr-drain-resnapshot-slot-race.litmus
- create mode 100644 Documentation/litmus-tests/hazptr/hazptr-drain-safety.litmus
- create mode 100644 Documentation/litmus-tests/hazptr/hazptr-wildcard-flip-escape.litmus
- create mode 100644 include/trace/events/hazptr.h
- create mode 100755 tools/testing/selftests/rcutorture/bin/hazptr.sh
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/CPU128
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/CPU128.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/CPU256
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/CPU256.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/FAIRNESS
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/FAIRNESS.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/HOTADDR
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/HOTADDR.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/LOCKDEP
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/LOCKDEP.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/LONGHOLD
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/LONGHOLD.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/READERS0
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/READERS0.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/READERS4
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/READERS4.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/SLOWPATH
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcuscale/HAZPTR
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcuscale/HAZPTR.boot
-
-
-base-commit: 6e7df7157a91757355e22a2ca46bafc35fbd6465
+diff --git a/kernel/hazptr.c b/kernel/hazptr.c
+index b06164aac3a7..013c24021c43 100644
+--- a/kernel/hazptr.c
++++ b/kernel/hazptr.c
+@@ -12,6 +12,10 @@
+ #include <linux/mutex.h>
+ #include <linux/list.h>
+ #include <linux/export.h>
++#include <linux/completion.h>
++#include <linux/kthread.h>
++#include <linux/swait.h>
++#include <linux/sched.h>
+ 
+ #define HAZPTR_WILDCARD	((void *) 1UL)
+ 
+@@ -234,6 +238,145 @@ void hazptr_scan_overflow_list_period(void *addr, unsigned int scan_idx)
+ 	}
+ }
+ 
++/* Helper: scan both overflow-list phases. */
++static void hazptr_scan_overflow_list_all(void *addr)
++{
++	unsigned int scan_idx = READ_ONCE(hazptr_overflow_list_phase);
++	int cpu;
++
++	for_each_possible_cpu(cpu) {
++		struct hazptr_overflow_list_flip *overflow_list_flip = per_cpu_ptr(&percpu_overflow_list_flip, cpu);
++
++		hazptr_synchronize_overflow_list(&overflow_list_flip->array[scan_idx], addr);
++		hazptr_synchronize_overflow_list(&overflow_list_flip->array[flip_list_phase(scan_idx)], addr);
++	}
++}
++
++/*
++ * Shared scan: batch concurrent hazptr_synchronize() callers into a
++ * single kthread-driven scan, avoiding redundant per-CPU and
++ * overflow-list walks per caller.  Waiters sleep on completions
++ * instead of busy-waiting.
++ */
++
++struct hazptr_waiter {
++	struct list_head node;
++	void *addr;
++	struct completion done;
++};
++
++struct hazptr_scan_state {
++	struct task_struct *kthread;
++	struct swait_queue_head wq;
++	bool wakeup;
++	struct mutex lock;
++	struct list_head pending;
++	struct list_head scanning;	/* kthread only */
++};
++static struct hazptr_scan_state hazptr_scan;
++
++/*
++ * Queue @addr for the shared scan.  The waiter lives on the caller's
++ * stack, so no allocation is needed.
++ */
++static void hazptr_synchronize_queued(void *addr)
++{
++	struct hazptr_waiter waiter = {
++		.addr = addr,
++	};
++
++	init_completion(&waiter.done);
++	INIT_LIST_HEAD(&waiter.node);
++
++	mutex_lock(&hazptr_scan.lock);
++	list_add_tail(&waiter.node, &hazptr_scan.pending);
++	if (!READ_ONCE(hazptr_scan.wakeup)) {
++		WRITE_ONCE(hazptr_scan.wakeup, true);
++		swake_up_one(&hazptr_scan.wq);
++	}
++	mutex_unlock(&hazptr_scan.lock);
++
++	wait_for_completion(&waiter.done);
++}
++
++static void hazptr_scan_do_cycle(void)
++{
++	struct hazptr_waiter *w, *n;
++	LIST_HEAD(done);
++
++	mutex_lock(&hazptr_phase_lock);
++	mutex_lock(&hazptr_scan.lock);
++	list_splice_tail_init(&hazptr_scan.pending, &hazptr_scan.scanning);
++	mutex_unlock(&hazptr_scan.lock);
++
++	if (list_empty(&hazptr_scan.scanning)) {
++		mutex_unlock(&hazptr_phase_lock);
++		return;
++	}
++
++	/*
++	 * Process each waiter: scan per-CPU slots and overflow lists
++	 * until the waiter's address is released.  This is the same
++	 * scan the direct fallback performs, delegated to a kthread so
++	 * callers sleep instead of busy-waiting.
++	 */
++	list_for_each_entry_safe(w, n, &hazptr_scan.scanning, node) {
++		hazptr_scan_cpu_slots(w->addr);
++		hazptr_scan_overflow_list_all(w->addr);
++		list_move(&w->node, &done);
++	}
++
++	mutex_unlock(&hazptr_phase_lock);
++
++	list_for_each_entry_safe(w, n, &done, node) {
++		list_del_init(&w->node);
++		complete(&w->done);
++	}
++}
++
++static int hazptr_scan_kthread(void *unused)
++{
++	for (;;) {
++		bool idle;
++
++		swait_event_idle_exclusive(hazptr_scan.wq,
++					   READ_ONCE(hazptr_scan.wakeup));
++		hazptr_scan_do_cycle();
++		mutex_lock(&hazptr_scan.lock);
++		idle = list_empty(&hazptr_scan.pending) &&
++		      list_empty(&hazptr_scan.scanning);
++		if (idle)
++			WRITE_ONCE(hazptr_scan.wakeup, false);
++		mutex_unlock(&hazptr_scan.lock);
++		if (idle)
++			continue;
++		schedule_timeout_idle(1);
++	}
++	return 0;
++}
++
++/*
++ * Initialize the scan kthread.  Failure falls back to the
++ * direct scan.
++ */
++static int __init hazptr_scan_init(void)
++{
++	struct task_struct *t;
++
++	init_swait_queue_head(&hazptr_scan.wq);
++	mutex_init(&hazptr_scan.lock);
++	INIT_LIST_HEAD(&hazptr_scan.pending);
++	INIT_LIST_HEAD(&hazptr_scan.scanning);
++
++	t = kthread_run(hazptr_scan_kthread, NULL, "hazptr_scan");
++	if (!IS_ERR(t))
++		smp_store_release(&hazptr_scan.kthread, t);
++	else
++		pr_warn("hazptr: scan kthread failed, using direct scan\n");
++	return 0;
++}
++core_initcall(hazptr_scan_init);
++
+ /*
+  * hazptr_synchronize: Wait until @addr is released from all slots.
+  *
+@@ -261,6 +404,12 @@ void hazptr_synchronize(void *addr)
+ 	/* Memory ordering: Store A before Load B. */
+ 	smp_mb();
+ 
++	/* Pairs with smp_store_release in hazptr_scan_init(). */
++	if (smp_load_acquire(&hazptr_scan.kthread)) {
++		hazptr_synchronize_queued(addr);
++		return;
++	}
++
+ 	guard(mutex)(&hazptr_phase_lock);
+ 
+ 	/* Scan per-CPU slots. */
 -- 
 2.43.0
 
