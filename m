@@ -1,97 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.46.9
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793750210;
-	b=YuPWTw7Dbnz2UCYD5USTyd9q8eCYLBtnvdNVXtpAEM4Gp1NlkTh9ca8uAGW9J09liQB5
-	 9OybXkV4yxqp7nQPMWnm6/XAI3EYU3sSRyVd9hkR6f3+87IPduQnQUn9dVvMiJLtGCSo3
-	 +KT6XGCw6AHxH+bFbJFBJwYblW4CTFFxfA2atyWuAgZ76Ukz8SZZGKsPWa+pgtQqmTeXQ
-	 hcI7n7PmEbOjCxSXwfG1Wm8qI74yvW23baR7IkDfOpk2MvY/0pGg5j1KyyqMC4wZcIpVc
-	 5DZpm+S0dVjPMjexhGj3vDBdo7q9cPcJUBYw3hH68FvkPliOuelN3H3+CsFUrkjDIYw==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793750210;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
-	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=pLSkilSijO8oOiwtwz1A+I2vkpv3gMltp0f/h38zo+g=;
-	b=UxgNTr9FpPOAvg/Gd3FsfzmruIbZ1BWmmVh9cR9dx/lp4JkRSY9skTP0DGjFxu8Czi/J
-	 7zMN70uymUw7C2Wi/07EUQtRd6RfiD3HS9ZFhECfvZzbynK5GbMnxHy9ck77NHKVbJXgw
-	 eYB9JEHkwfJkEECRZfSwoN9vuBQ5/mTlU1NzTqJefSEfS99EY0DHlzQgf8M/7Ht0jSvhW
-	 gFP1BdNqCCAv5VQhTZSpsz1xALl7gkZKS8fNOVYRsdzrUP0x+J+GL50SL1GstdoDmvUbT
-	 UQahQ6JOOciC4Fc5QMJ6mJuN5q/FxsWBRFBvecns/80QdgkY8hWvdkxu5fwNwfV5PJg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nvidia.com;
-	spf=fail smtp.mailfrom=nvidia.com;
-	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=aSeEtr7A;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.46.9
-Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010009.outbound.protection.outlook.com [52.101.46.9])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793762551;
+	b=q+nvjjnlqpBgGleF+B94JBM3BZdds1TvGy19sZvOWYtInj1P+jPF2x1t/+FT2C1rjN6+
+	 EJHO4GJPRV/s89DS/kzebksPrun82myYbDjxhtVgAoKu+LXHu5771msaI4qm7hdONQ0o9
+	 wvzr0bZpBTajqvqSVsihfmEJABmJGfL9WaUBoFIBpa4pmBwHSnkRcyJQYKzXGdIKwLjIB
+	 3QjAYBfxY8kiuVSBKDlv8dH/XJRm/wdjbLNU1Ov+S3K9020TsJf1cbLQecklUYaqyT3jW
+	 1f2ZO6Zg4cwnYXUKEUpumk280pSGdIIwC0MJTWe0ur5GCe2A1FDQHEgbNE3E8IFGI/Q==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793762551;
+	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
+	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
+	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=qWCFdcjUisnGbX9eq6UHrpBovt78PAdZKtud0fjPZzU=;
+	b=plr4xjAHMt1i3lYv6DF9Tj6Frwq54A8cR24p0zURI8xqCl/GBa8+XbnYPeMAyACTPhua
+	 FngX8OOiN4mrcte78hQgpWIx4y1AyUEkwvYnkhnVrGq1O9qc5jQQ6GYHFpiAuP4Yd8ezV
+	 2dh7kNbmPE2zEc/IIhD3eHSIF0XR5xZP71kej2flV9KrpCGorSAUtx37Myw65NjuTuA52
+	 XizjWA5NnAwXdlg1i3IIrfmlwx9Pth8NjzpHD/FlEyswgm7b1UR0qWbrQLHaZ/MbciMDD
+	 nLXwbYoaWg/A745x+ZlFLM4PZmJpaVSHv6NOZY6SBHZlUjhqlpY3lStVTzI/31cho0Q==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OaAyXkKQ;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86799606A324;
-	Tue,  3 Nov 2026 23:56:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 86799606A324
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E8B606A31B
+	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 03:22:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=aSeEtr7A
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=teEqz2epRc507sI/EVU83Y7EK3DUCd2SQmbIKNbyQ+34Vzuo82bQj84KMqVMUcXSXnS42VXQxPrHE89KG1SluEOGDJTINGo7iHq+rst5FKc6AFI5AaMLa47xMPY1F3/nJ/8FG+oOV8bH/0JWiW8YsjSSqPqpyZnw26KTqGHlaaowPAivm7Ug4XC6TfU4xBan6gXxYHCxTB76frTPET6xuFjXCZmo7M5kJmfYRL3jU+7VdywyvO0JDEiKurymWwsSZOPCOjf7dbvvd3Vz+HecKFOxCl/vbWbxyqWwoQkB8U3TO9a2z21ePtMcyYIKb2GRZQp0hO26jzOG2rB35m6Uxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pLSkilSijO8oOiwtwz1A+I2vkpv3gMltp0f/h38zo+g=;
- b=tgdqJHQyjtJJ0t1k8ji0L/nVEeEuqmuw/r8+kFJJFFEZHe/81cA338kOuDegl2Fv8v1GolPX3QYmqCjJ6p5vURjmCPUWcVTI1suUEcnN2+obgdd32LCUUOEVgQBJ+D5iVU/76uvQ2FCp+F628zC3/DEYAcwxwI0air9LQfIruQC+AgCPS3FQ1r2uCKlO6zgXlB686amO8XDa2jx4N/AOD/FN5CCGUzf//J0x2N5jxd/zbG6cRWeeJW18e3WuQsbSvU8nSh/FQxQxonIeZpMVstdXlkEm6YnWI0b7/NEElm3x1rVOMF7yEpTF08I4EQax0Agb3qvoL+71bpsD7xEjQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pLSkilSijO8oOiwtwz1A+I2vkpv3gMltp0f/h38zo+g=;
- b=aSeEtr7A8mfesJHVgaMQGBVtcO9P1L2WK8naZl8lxxV6ZjXsz+xUzMgKvPYBIhLfDMx4JjEwQc6niPcSsFoPRxq2W4Vk2tVAG+X6VRx1CME87OCPt4YXXZByOcl7i9j9Vfb+UwL60TDh6ieLJBnVFwD355JTXPruzGulwp3b2vG94OlmY5K7mWOi1zVaIKxkgB2+Nxg/60aYgOlgeKZDhocBpBUK3xJY0hx9qNZUsrT+F+2hu/6G52gLPGKrE7Lu+9XzGLLIUP3PjZ5W/B4KhhQTrOBqIFWIbAo8ynXfLuB5G2yWKjZzxlgaugtqCkITrSCyBMqINNUEIIJzmLua0w==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM4PR12MB7742.namprd12.prod.outlook.com (2603:10b6:8:102::18)
- by DM6PR12MB4124.namprd12.prod.outlook.com (2603:10b6:5:221::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.8; Tue, 3 Nov 2026
- 23:56:45 +0000
-Received: from DM4PR12MB7742.namprd12.prod.outlook.com
- ([fe80::8df:c519:298a:94f6]) by DM4PR12MB7742.namprd12.prod.outlook.com
- ([fe80::8df:c519:298a:94f6%6]) with mapi id 15.21.0569.011; Tue, 3 Nov 2026
- 23:56:45 +0000
-Date: Tue, 3 Nov 2026 18:56:43 -0500
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: KunWu Chan <kunwu.chan@gmail.com>
-Cc: jiangshanlai@gmail.com, paulmck@kernel.org, josh@joshtriplett.org,
-	work@onurozkan.dev, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	boqun@kernel.org, urezki@gmail.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, qiang.zhang@linux.dev,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/10] rcu: Improve callback diagnostics and validation
-Message-ID: <20261103235643.GA4146834@joelbox>
-References: <20261027070923.3054462-1-kunwu.chan@gmail.com>
- <20261027231315.GA3580680@joelbox>
- <CAN_Opa9n-iqRgQczQ5_ZpTMHFbjmW-6+ZYsCgCYdNfuprXLyFw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN_Opa9n-iqRgQczQ5_ZpTMHFbjmW-6+ZYsCgCYdNfuprXLyFw@mail.gmail.com>
-X-ClientProxiedBy: BL1PR13CA0365.namprd13.prod.outlook.com
- (2603:10b6:208:2c0::10) To DM4PR12MB7742.namprd12.prod.outlook.com
- (2603:10b6:8:102::18)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OaAyXkKQ
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9826D1F00919
+	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 03:22:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793762550;
+	bh=qWCFdcjUisnGbX9eq6UHrpBovt78PAdZKtud0fjPZzU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=OaAyXkKQDVaRqOtox0bAyPP7k4UrH5HsY8Ra0sVkUlpLe1/FsofiFRKQVo3PfP6iu
+	 uH8O+RlK/jDvUm1z3UespIMOj/0uC1AipSpHOg0x3QxJZriOfJQDIqJ1aP1Md1MxUu
+	 nUADCDXu1wqdRh8noXbrTNk9ocHQs/u4Fa7wcbC/UoqrTBmxBUI4MdNf0yTNsUUzkH
+	 Vyqu53OAuR1oVoHYkdE/YyTTNuHsELEAE/vu+Fc0dVvu4QCRIKsBdwAH9wdknibOvq
+	 8i8KUGsZwMTP7WM7m4m4mZWMbVPYrGsQf1+rKUU363gJucg6haAJ9UlaqyagneLu/n
+	 WqP9r1+9aheaQ==
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-93f1e5d7450so29537985a.2
+        for <rcu@vger.kernel.org>; Tue, 03 Nov 2026 19:22:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvBwx4Hd3WQzv48C9Us/Yj3YWlXqyjk6pXntxymgnHXO+7q4GUzQVQ3yxK8ArG3xdKTIQMBA=@vger.kernel.org
+X-Gm-Message-State: APuU4Z9TEq5bZVRZPfadmbaMtHrXNlBux2WOVuxLS5LDMbO+yL9R7Gda
+	pEvGbFLiSd92xdKyi5ivN6Z2LxmVGbYDndRaUBYJ526hazA9ouYYUkyrSyOCDT5ulxpDl/z33YW
+	GJboanXXJyTn4GWmniFfRSz4VasDIBNI=
+X-Received: by 2002:a05:620a:6495:b0:93f:571b:c733 with SMTP id
+ af79cd13be357-944216f2a98mr2641078985a.13.1793762550012; Tue, 03 Nov 2026
+ 19:22:30 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -101,177 +59,100 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB7742:EE_|DM6PR12MB4124:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9015721e-b1c9-44dd-8be9-08df3a061dcc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|23010399003|366016|1800799024|4143699003|261022075727099003|56012099006|11063799006|261021135927099003|261009223027099003|261026121527099003|261021123027099003|261102123227099003|261022105027099003|261021121427099003|261026140227099003|261028144727099003|10067099003|3023799007|18002099003|22082099003|6133799003;
-X-Microsoft-Antispam-Message-Info:
-	umyfXfHvOebGb2cMW1/lW2QF8F+UmBC6PCR/25+dSpGtK/gvsFBNelS9j+nS95DotXC5lrsQp54Vgi5TkKbMZH3zge9iU6PsBlh7qIJ4OgkQkhg4jvFWkRcq4VBotSae/WIeIrd8+zCZ/qrg3sx/a9jWLZ2RVuDBckPD4AT0HaUoY7Z8SjJHncU0+PhK9o4rtGk8qFzBgEh7B72GSmkguo4eysehnQMRPpXVQf5fab/KN+UnoDnVBmGy/q4PfClGeYG68HHNszIIU4dTw1my9RbneTs2JRW8p1T1tpKU81EGDuXqHpRpDvPZRGrNjlmjJGZhFpp68O1RDfCII52Lz7EQtE2ct3CdZhOi4iQUDBOnr5kQJDhiQAum3vCcQGCkJ+3pbzBougLyfVZt27nNVzhPVKPAd6TgXUMzLrWcbeRofSgKKVoRhRSbRn2eZDuO5+1QCHNN48i9LSY3leOx4NpWQ8zG+80PZyx+yyILkRnt2ZH9D+wZz2c9+j4nuTOtOpZ4wFAUgzPTSn2RvspzGgyYulcYE7ZXdagTsaH4yjUySeUv3eS8SoElkKZMYVcLKwUtlTvmPHbo5g8N2UlH6gfALVF8wWpi1GESpa63YJMgWaGGZhpvPo8YcQQVLY0g4z6cQ1KkrvgPqn+N3BA6Kcy1w9/w4k6cLy+87rBD2p8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB7742.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(23010399003)(366016)(1800799024)(4143699003)(261022075727099003)(56012099006)(11063799006)(261021135927099003)(261009223027099003)(261026121527099003)(261021123027099003)(261102123227099003)(261022105027099003)(261021121427099003)(261026140227099003)(261028144727099003)(10067099003)(3023799007)(18002099003)(22082099003)(6133799003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bFV4ZFBCa2R3eWdseDlMb3BpbzArVW9ra3dwaW9udjNaaERvemx1YjU0RkRa?=
- =?utf-8?B?OWZHbk80Ny9HdS9DdC9QRUpsQ3ljNHQxbGRTbm5IL1pGZUY0ang5aEpoN28r?=
- =?utf-8?B?YTJYM2FUajJ0emdaT1FOMGdFMjQrYmdIZ2J6MStCeFk2WjlqVUFMbHBHUXJY?=
- =?utf-8?B?Z3h1Z3lmVzVmZ3EwNi9lSURQMEFpZm83Y1pHczU0TzFoaFgvQ2ErMnBSV1Bs?=
- =?utf-8?B?b3BGczB5MzhFVVBKM0dSaXFodFFvWU5iUWg1OWx3WU1UR3hUN2g3Z2t6eEF6?=
- =?utf-8?B?cnRKREFkZGpKcU5pQkdsMTVtMElkOEJHTzBPTEdHTUZOenh1a3lzbHNXa3dv?=
- =?utf-8?B?UVZaeFJyWXQxWU9zczA0M2JFZEZmUnhCK2lsaUg5emZ3bW1ScFZabkwvSy9y?=
- =?utf-8?B?bmJhcm05bG1zRFFWQ2FkV3BGV1Y1UFNiYXhQV2ZTaTQvYXVTUTlmcXZvL2c3?=
- =?utf-8?B?UFI3MEw4RndrZVovSGdqeE1KUzBVZDZENlpzd0RMWGdQaytqNzdob2k4RzFJ?=
- =?utf-8?B?UzBFVU9qeGNITTdsQ3RTSGYrRC9xSmh5Z0R5N1FWT1VrOGpKV3dHalIwY1M4?=
- =?utf-8?B?OXVEdU1UaDNzR25jSEJFa01PZDkzWGZJdWdkdGZjSTNaZ1NCdnhkSkoxL1hL?=
- =?utf-8?B?bXBkcDIxempjem9VMVBwNDZwM0orUllUNWlJTTdRM0hUN1V1TzNIcm1saytq?=
- =?utf-8?B?a0RwZzFFNEVVWnR6OXIzOXhvSERITU02V05VZGswWTVsV0l4UzdQUWIwb1h4?=
- =?utf-8?B?VjVXeXNLZXFpbjBHbndGNE9nZVpzY0g5bEMrazkxcm4wdmNIYUxVOFVYaDlq?=
- =?utf-8?B?RjVkK3VLVi9LeEJwK2ZyMmtpMnFmTFRrbEVLQWtwZjZRTytzRmVYZTFrdTVE?=
- =?utf-8?B?U2lTMmJ5cGVITy93LzA3alRjZjF6dGlYMzVrbjVvTlNEN3NnZ25DZWxFMTB3?=
- =?utf-8?B?TG1FSkdPakk3V0lFSjFHMEdjZlBRWko4RGtvZnlET25zNnM1UzI0Vm5NeWJZ?=
- =?utf-8?B?d3FmWVEyZ0ZpQjNDOHpqQlNiUmZZamQ0OWpLUkt3OEt1M3NmUTM0MWpqNjdD?=
- =?utf-8?B?S1p2L3ZWMSt6OE9tbk1iVlNiaEpzdjl4VXFlRi9oaDlFYTF2OFRDZnAvd3Ra?=
- =?utf-8?B?VFA2dmk0T01GR0JpeGc3ZkxUZi9xcGRzUWowWHA1Z2dGZk5ObDdzdmIrc0lP?=
- =?utf-8?B?RnBYelNVcnRkT245bDlzM2dFdlJKeE82Y3R4RllkUlgyK2JzaE9QZllDdUtC?=
- =?utf-8?B?dXRCbU9yUlR6c0hNQVAzZ0ROZTNJWnQzcHBjcUJESldoY29WZ211NWRjcjVN?=
- =?utf-8?B?Q2lQZ2tZZGx6NXFRalRud1lBVStWWTB4eVlPdjlTdFdkS2VwOFJFMG1NSWlL?=
- =?utf-8?B?YWg1QW5vWDFrTUp0N2tLUTJuSTUrN3lWVUlCdUN2Yzd3UVNrY0RiQVVwNzkv?=
- =?utf-8?B?L2JxUDExdFpRZS9FaVRDTkVoYThlT1k1TjRiN1o4bVRGb0Z2OVJER1NCNmpp?=
- =?utf-8?B?a3N4OERuRmVSSWhMRysySGlkL05mdVNDZmJNSEljSmlBQ2lxdUxmSzJCdlZE?=
- =?utf-8?B?bTN4eWpqT01ucU4ydmFhMExzbjVrRlBQVi9yRjNZR2owb1RuSkN2VWxjQzFC?=
- =?utf-8?B?TENGbHlMVGNzSERJZ3NXZEMwVmM0Z1BTRThRVHNrK21HSDhGdUZaL2RaT29p?=
- =?utf-8?B?dEZLekMvb0tIalhkejZrR0tPSDdZekgySkR4QjZIWm9aY25FWFpGbGlGWm9R?=
- =?utf-8?B?ajBvUTk2OGZUaHgxKzd5SXBWQ01JSnhXcXBHdUt3bmVoZkZSNkFPZGpRSVN6?=
- =?utf-8?B?a0dMcDNtZEc3eDhxdk4zajVEbTZrYnEyZnRRR2Z0bWo5d2JtTUdIZEZNSDVv?=
- =?utf-8?B?Z1IzcGpMWHdlTTIybU00YnlDVzAzVUp4Z2YwR1VGVVFneFY1eG9RdTkvTGMr?=
- =?utf-8?B?aW1oUXcvVXVBZEVrd3ZuNWNDc3VYdmo4eWFOYkwzVzhuWG9KcEpnNnpEa0ZO?=
- =?utf-8?B?cUF2MEp4cXhxSWsxUHFoWUp0VTJEYU1TZ0EwcGVvTDlNNlV1czhOSmd2Y3l5?=
- =?utf-8?B?V2tTNWswWWNRVWJLNjVoNVRsWVdLVGg2MmJkcWhkWGFwMFc3TURpSFFiUThB?=
- =?utf-8?B?anRhTjR0N3pJbGpvMEhZcE5WYWNSa0YySnhieGZadHVqeUpNaEFGbDNsM2hJ?=
- =?utf-8?B?d2ZZK3BJRUJYdllzbEFiaUVCRU1aM1AzdnBsMVMwdVI1cjQxWUxVQ2hiLzh5?=
- =?utf-8?B?VnVrWVFiTEVWeU9BZWF0dkJ1VzVNY0dtTGltWmdPZDBMNEZCV2VxVHFGRmlF?=
- =?utf-8?B?M3NzM1Z2aUgwSFpIbnY1eEViNG5QQTh3aUxtN1RNNnVjbFpTWm9vdz09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9015721e-b1c9-44dd-8be9-08df3a061dcc
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB7742.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2026 23:56:45.5168
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QJwDzIUBqCswzZ2HT+tOJdCTrCSxCUaaVZto9fW3fq47PXvJUMADEpLbrvLLQTl+lM5Wy4rpWC4YgL0kcGme7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4124
+References: <20261103113711.1832834-1-max.kellermann@ionos.com> <20261103113711.1832834-3-max.kellermann@ionos.com>
+In-Reply-To: <20261103113711.1832834-3-max.kellermann@ionos.com>
+From: Barry Song <baohua@kernel.org>
+Date: Wed, 4 Nov 2026 11:22:18 +0800
+X-Gmail-Original-Message-ID: <CAGsJ_4wYYiHvDj4Bqbp_hg1H9-WsZvEBJ9h5eNdX-Kuib_f3DQ@mail.gmail.com>
+X-Gm-Features: AclHuK-AvYEfhHjWxuMhWnm_a9S3p2tuGRCOJc6VKi5CiT9DNeNzN9Ic67jOPpM
+Message-ID: <CAGsJ_4wYYiHvDj4Bqbp_hg1H9-WsZvEBJ9h5eNdX-Kuib_f3DQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] mm/vmscan: move code to lru_gen_{add,del}_memcg()
+To: Max Kellermann <max.kellermann@ionos.com>
+Cc: akpm@linux-foundation.org, kasong@tencent.com, qi.zheng@linux.dev, 
+	shakeel.butt@linux.dev, axelrasmussen@google.com, yuanchu@google.com, 
+	weixugc@google.com, baoquan.he@linux.dev, baolin.wang@linux.alibaba.com, 
+	david@kernel.org, ljs@kernel.org, liam@infradead.org, vbabka@kernel.org, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, hannes@cmpxchg.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 28, 2026 at 10:17:25AM +0800, KunWu Chan wrote:
-> On Wed, Oct 28, 2026 at 7:13 AM Joel Fernandes <joelagnelf@nvidia.com> wrote:
-> >
-> > On Tue, Oct 27, 2026 at 03:09:13PM +0800, Kunwu Chan wrote:
-> > > Hi,
-> > >
-> > > This series improves callback diagnostics and validation across RCU,
-> > > SRCU, and RCU Tasks.
-> > >
-> > > Patches 1-3 record callback registration stacks for KASAN in Tree
-> > > SRCU, Tiny SRCU, and Tiny RCU.  KASAN prints the recorded auxiliary
-> > > stack when reporting a use-after-free.
-> > >
-> > > Patches 4-6 add rcu_head alignment and NULL callback-function checks.
-> > >
-> > > Patches 7-10 detect duplicate callback enqueue attempts before
-> > > queueing, using the RCU head debug-object mechanism.  A duplicate
-> > > registration is rejected at entry and __ratelimit() controls the
-> > > diagnostic output group (pr_err, mem_dump_obj, dump_stack).
-> > > Detection requires CONFIG_DEBUG_OBJECTS_RCU_HEAD.
-> > >
-> > > Changes since v1:
-> > > - Patches 7-9: __ratelimit() + dump_stack() instead of hard-coded limit
-> > > - Patch 10 (new): same change for Tree RCU's rcu_do_enqueue()
-> > > - Patch 9: fixed log format to avoid pseudo-function names
-> > > - Tags: Reviewed-by (4-6), Suggested-by (7-10)
-> > > - v1: https://lore.kernel.org/all/20261023101841.2910719-1-kunwu.chan@gmail.com/
-> > >
-> > >
-> > > Testing:
-> > >   rcutorture with KASAN (SRCU-N, SRCU-P, SRCU-T, SRCU-U, TINY01,
-> > >   TINY02, TREE03, 3min each): all exitcode 0.
-> > >
-> > >   KASAN aux stack (QEMU, CONFIG_KASAN_GENERIC=y):
-> > >     Last potentially related work creation:
-> > >      kasan_save_stack+0x33/0x60
-> > >      kasan_record_aux_stack+0x8c/0xa0
-> > >      call_srcu+0xb2/0x390
-> > >
-> > >   Duplicate enqueue (QEMU, CONFIG_DEBUG_OBJECTS_RCU_HEAD=y):
-> > >     call_srcu(): Duplicate call_srcu() CB ... ->cb
-> > >     dump_stack_lvl+0x47/0x60
-> > >     call_rcu_tasks_generic(): Duplicate CB for RCU Tasks, ... ->cb
-> > >     dump_stack_lvl+0x47/0x60
-> > >     rcu_do_enqueue(): Double-freed CB ... ->cb  slab kmalloc-16 ...
-> > >
-> > >
-> > > Kunwu Chan (10):
-> > >   srcu: Record callback registration stack for KASAN
-> > >   srcutiny: Record callback registration stack for KASAN
-> > >   rcu: Record callback registration stack for Tiny RCU
-> > >   srcu: Validate callback arguments
-> > >   rcu: Validate callback arguments in Tiny RCU
-> > >   rcu-tasks: Validate callback arguments
-> > >   srcu: Detect duplicate callback enqueue at registration
-> > >   srcutiny: Detect duplicate callback enqueue
-> > >   rcu-tasks: Detect duplicate callback enqueue
-> > >   rcu: Improve duplicate callback diagnostics
-> >
-> >
-> > Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
-> 
-> Thanks, Joel.
-> 
-> >
-> > All look good to me, applying for further testing and review for 7.5. Did you
-> > also test double-call-srcu and confirm intended behavior? Thanks!
-> >
-> 
-> Yes, I tested double call_srcu() under QEMU with
-> CONFIG_DEBUG_OBJECTS_RCU_HEAD=y.
-> Both Tree SRCU (direct and deferred paths) and Tiny SRCU triggered the expected
-> duplicate-enqueue diagnostic with the callback symbol and dump_stack() output.
+On Tue, Nov 3, 2026 at 7:37=E2=80=AFPM Max Kellermann <max.kellermann@ionos=
+.com> wrote:
+>
+> Preparation for the following patch that adds tail caching.
+>
+> For simplicity, hlist_nulls_del_init_rcu() is now always used, which
+> is also valid during rotation, because the entry is immediately
+> reinserted under `memcg_lru.lock`.
+>
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> ---
+>  mm/vmscan.c | 36 ++++++++++++++++++++++++++++--------
+>  1 file changed, 28 insertions(+), 8 deletions(-)
+>
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 9959ca158ce8..aed56d452881 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -4556,6 +4556,29 @@ enum {
+>         MEMCG_LRU_YOUNG,
+>  };
+>
+> +static void lru_gen_add_memcg(struct lru_gen_memcg *memcg_lru,
+> +                             struct lru_gen_folio *lrugen,
+> +                             int gen, int bin, bool at_head)
+> +{
+> +       struct hlist_nulls_head *head =3D &memcg_lru->fifo[gen][bin];
+> +
+> +       lockdep_assert_held(&memcg_lru->lock);
+> +
+> +       if (at_head)
+> +               hlist_nulls_add_head_rcu(&lrugen->list, head);
+> +       else
+> +               hlist_nulls_add_tail_rcu(&lrugen->list, head);
 
-Great!
+T.J. 's patch[1] has actually removed the needs for hlist_nulls_add_head_rc=
+u
+and it has been in mm-new branch.
 
-> 
-> BTW, I'm working on follow-up rcutorture support for
-> duplicate-callback testing and
-> KASAN aux-stack verification.
+> +}
+> +
+> +static void lru_gen_del_memcg(struct lru_gen_memcg *memcg_lru,
+> +                             struct lru_gen_folio *lrugen,
+> +                             int gen)
+> +{
+> +       lockdep_assert_held(&memcg_lru->lock);
+> +
+> +       hlist_nulls_del_init_rcu(&lrugen->list);
+> +}
+> +
+>  static void lru_gen_rotate_memcg(struct lruvec *lruvec, int op)
+>  {
+>         int seg;
+> @@ -4584,12 +4607,9 @@ static void lru_gen_rotate_memcg(struct lruvec *lr=
+uvec, int op)
+>         WRITE_ONCE(lruvec->lrugen.seg, seg);
+>         WRITE_ONCE(lruvec->lrugen.gen, new);
+>
+> -       hlist_nulls_del_rcu(&lruvec->lrugen.list);
+> -
+> -       if (op =3D=3D MEMCG_LRU_OLD)
+> -               hlist_nulls_add_head_rcu(&lruvec->lrugen.list, &pgdat->me=
+mcg_lru.fifo[new][bin]);
+> -       else
+> -               hlist_nulls_add_tail_rcu(&lruvec->lrugen.list, &pgdat->me=
+mcg_lru.fifo[new][bin]);
+> +       lru_gen_del_memcg(&pgdat->memcg_lru, &lruvec->lrugen, old);
+> +       lru_gen_add_memcg(&pgdat->memcg_lru, &lruvec->lrugen, new, bin,
+> +                         op =3D=3D MEMCG_LRU_OLD);
 
-Nice! How is that coming along?
+Also, MEMCG_LRU_OLD has been removed as I replied to you in v1[2]
 
-thanks,
+[1]  https://lore.kernel.org/linux-mm/20261028010611.3929937-3-tjmercier@go=
+ogle.com/
+[2]  https://lore.kernel.org/linux-mm/CAGsJ_4zQh9HrvgaqD32_A=3DbSdqmPqP4oV_=
+SxMXMEDBrHe4jjhg@mail.gmail.com/
 
-Joel Fernandes
-
-
-> 
-> Thanks for review.
-> Kunwu
-> 
-> > thanks,
-> >
-> > Joel Fernandes
-> >
-> >
-> > >
-> > >  kernel/rcu/srcutiny.c | 34 ++++++++++++++++++++++++++++++++++
-> > >  kernel/rcu/srcutree.c | 36 ++++++++++++++++++++++++++++++------
-> > >  kernel/rcu/tasks.h    | 27 +++++++++++++++++++++++++++
-> > >  kernel/rcu/tiny.c     | 11 +++++++++++
-> > >  kernel/rcu/tree.c     |  9 +++++++--
-> > >  5 files changed, 109 insertions(+), 8 deletions(-)
-> > >
-> > >
-> > > base-commit: 940793b926aa94bf65ec404043050888e3053188
-> > > --
-> > > 2.43.0
-> > >
+Best,
+Barry
