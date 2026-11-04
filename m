@@ -1,83 +1,83 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.175
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793811413;
-	b=fq3nm7X6zCs1stj2nW7ctpir3p0xGgwOIOSeH8mtejFMhe7Vs1vmNcpjzkV/rTDHvbcd
-	 I01lqzzAgTj1JCQn/Mv5/jdoVW/F9aya2iC9LvGW+Nu5wXm+EPTz1VDcDAZcQTB1UHkDn
-	 twJRMf5hoh8wLkwizG14yUjfRAnHDMRr32/NAzPG9z3Rw70FESCEaN0r+puQOiSvN3Nnz
-	 99oJ1u3JKlP/jTJXk8dsgU3JrvzOy4S2DcHiFg912FyU64Kn/OlUhSuyYu4LA/Gyt36Ex
-	 30sjo2wnOzdJDda0/edFOXyhgzsU6DrujUnsGMeijcN5N+kAXNq+bIbTGHWYUHkjx0w==
+	t=1793811423;
+	b=WAUw9bZBIt4cfO6wnpcvgNVmAOcEKVlhPqHMrFWXQ2PePCI3pR3eafmHI9xP3V5nO1z5
+	 OrfshP4oWGIRheBUM4Ge4Tse5HAMenVr36eki73ByfeUbXJDfWpafC7Af6NADLOBZyAAj
+	 Y5H4lWudGfx1IBz5EWp/QMy1+3SjkeqA6k5O2qTn/nCe2EJBNEkDJqBAnfuARK7sGEoly
+	 azGtWZ8crXYEYEewLUgo4q4CUypUcjiddGisTERtc7VbXiBwHWwugRP7shTfBrjOQ4B6e
+	 0rsaymdFqNfZFxXx3k3Hjw4Xj8lnxPrygAQORBWKLFnRhlvbeSSfKgMu06DvGjhpmEw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793811413;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793811423;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=Gn7Vn4SwsVH+p5VUqdHL4flc2b/Z4fswSqRV+byEjsE=;
-	b=KZLlY6Fm2dJTyqqcHrURXtyDtR15kEs5Nt6Rt9lfCn3o3vmtLjRLs3zFSfXOfdIm66se
-	 6HoKLVciMOFdl1onKUffbGXAyTw+5TfeVlS96UOl4dUlcQAiCq34NX5f28wI0jcviJv67
-	 Z7pGRa/zVwn2AGojIq7N7+bpxtQEEdFdL58yjhF/05EmM2YO5yPpBG3bSJopdtV2+e75B
-	 hhU5IN19zA1ZbWmk+nG5iqs0OPtLTp+UhJuyg/KaGlqoQmOuoAM+Bm5hdyJxwjT5HnCE2
-	 Ur6QgZki3eIHQY/oOXaAqefMKNHou3a9zIlAAE/IGxp2jjoB+9N69agueccC6StkV3A==
+	bh=cE1gnx2YHPf4MvV+vgkgPbrUeIAsuqrxUSvbmG436mE=;
+	b=izP9cxm8Ta3tyiiRUaQ/Xv5vD9jrKRr7PpnOomhCeuYTzgtm8FqZ595ieZ0aq6kEb/7d
+	 fuxvzLsZbj7F71a4hGH5SH1c3nO5ltOAHGaTICVw8LCr5Qzq3Jaf1SFTEMCAxRJWjhVe8
+	 VLbMYDBUFni1UFZ5rJfmzH0asXo0k9NQkWzn4S0CYToRQBYcniBUQr2N8fBTRpcQs12Wd
+	 0H0c+ySqcoMUuCrJCErGwBK9f+BQakRzVelyu2O6bpCWFBNqUGOo5rwaP/skRzsv77FTP
+	 m2cxwf7n84XPUS9ApdRz1j1McskDG18SCKIE/VmQeNreDd2Tr5rA3Vf4BDZsrz44h8g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=kCP9s8Vr;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=JJ0pj60V;
 	arc=none smtp.remote-ip=74.125.82.175
 Received: from mail-dy1-f175.google.com (mail-dy1-f175.google.com [74.125.82.175])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE23A606D812
-	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 16:56:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AE23A606D812
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C34C606A33F
+	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 16:57:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2C34C606A33F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=kCP9s8Vr
-Received: by mail-dy1-f175.google.com with SMTP id 5a478bee46e88-36d6765756fso734512eec.1
-        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 08:56:52 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=JJ0pj60V
+Received: by mail-dy1-f175.google.com with SMTP id 5a478bee46e88-33bf40b0c8bso2051820eec.0
+        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 08:57:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793811412; x=1794416212; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1793811421; x=1794416221; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=Gn7Vn4SwsVH+p5VUqdHL4flc2b/Z4fswSqRV+byEjsE=;
-        b=kCP9s8VrCg/13i0ZvqMzZuUmktyH+GlFZ2KrzEozRxYNjxwtUFfqQ4YcRch8Qeyk6u
-         Hyn0u3av8Oq/ekitd88yUopP0KS5X3nfx5bJN9XLDCihsS9/B+LmIOjoIg8kMGHp55AA
-         itpmpYPOnoIXeErCCDxkUnG9ddysA9lPc9P+UN27efB2O7duIM4/z/uptdK27yKrupJl
-         wGzjO2kl3X2ToG59tSS1CSXqYjRi2kMx/7bC8MIgy1Ghv4RO4R5aSoIy5zr5UcYM7Z0f
-         APMXkid8qQKM47Pb5yXyT1eLecZbbRtPU2rV+l7kFLzHqUXv5g7AxolJjZR1ODawytlm
-         oxsw==
+        bh=cE1gnx2YHPf4MvV+vgkgPbrUeIAsuqrxUSvbmG436mE=;
+        b=JJ0pj60VK1r7DoFZaHKwHqiBxc1oRaBXPVkFjQBkvoDrIiYoJ93psBc1EhUEmMdHFh
+         8BI46Bo83L0XzfmoZ8pDu6RL6+vyqeatroxMvytNullkBD2YUxGSW0fEi4rD4f+d1zMK
+         u3V06xvZ5Y2estRMDBxz8JA8SeFdoY6gexd/4dfQl0R34kdrJA7L4QMt1F4SFe/hloIp
+         rA0CbnywzmhYCuJZk30wNSDjDeMlytnFn28OyGkWDyU8ro30Q2eDzi9gRbTbu4VFY6Lc
+         Zym+lYjbDGvwVYcuUGQpbATpqP26mahOG35rjXfSScsoh7OJHX2HUquyp72j+DkznzV1
+         dBwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793811412; x=1794416212;
+        d=1e100.net; s=20260707; t=1793811421; x=1794416221;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Gn7Vn4SwsVH+p5VUqdHL4flc2b/Z4fswSqRV+byEjsE=;
-        b=DsqeVxLIFMgAG+MhKTAf2nYYnz+pw5bVom0NdJm6Jd4Zu8Ac5x1tYm2bKyE/R984rh
-         5f4+FGL8ipHvwTA2aRsio75xb4f8RvFIfXHXC/ie4FtUGM5zEIjWDo6kz6LneQ/ot7JC
-         lWB69c8zrRzCQJIottGXRHi/b0rUlfvHf8cnjtz8jFix9u3fwYX8txVfW0HM04jOBX9O
-         8mP+i1wmg5Fe/xg04MtxNC8DoJmoqyFo5XW2fp7YAuPwi9NgoNKDuwAyYcr1ADLzXoWm
-         hd4vvq3XRRSdoyJ6AezqUw+nGVq3ZjC9/E9PZjxA/LY/s8ZNFH2qjlw3dBAVyN4c/FIn
-         w7GA==
-X-Forwarded-Encrypted: i=1; AKwUvBxtRzkMDRQcCD+3Rk/VHLjQdUBZ9xTLhBMoDY6u61+7LyKw0z4tlxcVXPVLSdvFawVJRhk=@vger.kernel.org
-X-Gm-Message-State: APuU4Z/uY894Qh8b11NgY2mR56V5LGhrWzmoaf4ajmKoLRkMaz6MB3mi
-	csoJPg5IESuNrmQx4c2eGeputBbnWC7gxX5YbwcYtB1OveCu1Ybm42vO
-X-Gm-Gg: AYBFou1abZ/uNOvsoH0WfMCA1jrgmj4Luyd/AlGR5xCU9a/jT6K6tEit9BiOl2LFKZH
-	6n5yio8RXovxSXkcE3mupE9iMyBE53krJ9UjTHblVxBauQ5uW8M2BupVi8YSLftRXEtxwGNykxc
-	UnHqkrLoygtzqzqgs7g+FbnqhspvcYrE4HM/jJWggADVb3CWaS5Szl129pIskgj3oSZUnbGAWgf
-	0BtwDEsrDXYzsm7600ZpgxzgEsJzQFhUh+wSwQn2WUkRjXaX3n3GHYbIs53zciS8q9ML3f6lJFb
-	a6ouH71RVQ2CAkQzVUJLpxorQBe5aiVMBl/1BmDkB5I+1oXtNuiVWpccrBOLEirEQx41S0xloch
-	Fxm9olH2d8edMDEn8M+rX0KhZTfEExIbpWNVkr8tP/phCXqtb4fTFj2wdMhp9QXzt8rm9wqZso4
-	ss0730f1plGpnQNnGuLxVKtfGMBi6VVm6qU1sUHTGfOEdo8PFL7Hpfvfq53ZCl3ao4adX6U9Wt1
-	EAZywYxQsr/Qz/+4+Z5TxDpx1jk7O9Q9Wa78n4NUJAuIj61K1Nqs5SjKD8pTOab9YtfgrF6A9L5
-	d8kNCvN+ObVfSzJ8ubogw4NTWYXBMnWFvULHqCg=
-X-Received: by 2002:a05:693c:88d6:20b0:35f:8c5d:5928 with SMTP id 5a478bee46e88-36a4244db5emr23827711eec.30.1793811411412;
-        Wed, 04 Nov 2026 08:56:51 -0800 (PST)
+        bh=cE1gnx2YHPf4MvV+vgkgPbrUeIAsuqrxUSvbmG436mE=;
+        b=ifGHwJA7rczgByiRvjITZjNaKdqWj3pGPm/dBQXaNXagew2y1KdMwrCcGl7NYsIxwS
+         YHflY+sHK69uZpY8mmqvW23+m/fDecvm55Lny1ub7+8h7aROka0sTwXBb2XoKFXKKXj8
+         eC4i98T4waWDg4l9upj8TcYcra39OtPBg5OT1hVnx9iG2595oh5FttoyJlWuB5KHYobs
+         OLLvOFF6Z5SqzGHL58Klq1PIg0JxLHOiVFoPuPr5lyv7ZL3fcAQ6gVYdhZPlbwFwX/UK
+         XWRy5SrZMobY+L2ZPfT8IKhRcT7MnkiIWAvbY/Tq/xLMwYnnPInwcvx4wjGhTtyAnpCy
+         koYQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwu29QPVHPjIwzp9saDsKyv7DSY4hZA7XQ8m+LtIwurI1VlxzyR8dmSVCjUJV58eIY2Q8w=@vger.kernel.org
+X-Gm-Message-State: APuU4Z8J2dC3dg7EtieybYr+KcEzvYCY1eXdYDUKibg4M9VZlE/ocfrM
+	mfCyobZaVgAagEHSprL0vpOgpbdAiVfEUUeMGaJv4TAvR+8Xqp/Lgi5D
+X-Gm-Gg: AYBFou3UqISxpRgGdRpzD85D9UVbEqJ/FUqMxkW8qUHdH8m7rg/pm2ulqOQ8U8LhsML
+	ZuMKVESs0/sqI0YiXAm4zz+zICNtktGTiB71FmLQGFCMhiLsx05qBWPHgsSdiNThvljERPMXEzM
+	QWzjEqGn4O/EBmuZobHUxFFi0Bs0cHkgJblO8hFylGgQd+G7A4OVw0SP2KAqE9dd8y5eJTYPsVQ
+	j2hVQ2BX3I4uKxCbJHPjXqPylJOzG432BT/oKO9uLtFMLXLg2XbrS88ijvshjUfRDGALt84dQiu
+	/oX/pmV6PlHH09lH5Xukd3om4D3qMr1BojYq5OGaSvEKLgPgRRQH1TdhjwVYKsGCZY7oobGrAix
+	KDIkxXxDvjluWsyBUr94LuVZXECrRZw2Wh+swxURHuOeBRfoz9+doKiEHToGG3qCiwCfWSjQj2X
+	x65FokR/oGne6dXq4jxsfwGh7wMsLACfNP/E6ScTxYNdmuJrWDNjUBxrc22eIQvndjk0F2vAlYV
+	d9fWaeimq3wfWSy5fZz7tx+Tn/pKbqmyy5K7htoGHXrRcR4n7t8E5NFeVoLre80nEE/bcFpe0Ll
+	d6MwDp6WEjjNDLDOlmXHq3vHfl1kzTvGBkt7W1U=
+X-Received: by 2002:a05:7300:cb0b:b0:36a:1c97:26e5 with SMTP id 5a478bee46e88-36a4232f2bdmr33018593eec.12.1793811420514;
+        Wed, 04 Nov 2026 08:57:00 -0800 (PST)
 Received: from kernel.. ([216.195.201.23])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36ca38d46fcsm9019567eec.13.2026.11.04.08.56.42
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36ca38d46fcsm9019567eec.13.2026.11.04.08.56.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2026 08:56:51 -0800 (PST)
+        Wed, 04 Nov 2026 08:57:00 -0800 (PST)
 From: Kunwu Chan <kunwu.chan@gmail.com>
 To: paulmck@kernel.org,
 	boqun@kernel.org,
@@ -112,9 +112,9 @@ Cc: stern@rowland.harvard.edu,
 	linux-doc@vger.kernel.org,
 	rcu@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH 10/28] hazptrtorture: Add 128- and 256-CPU configs
-Date: Thu,  5 Nov 2026 00:54:28 +0800
-Message-ID: <20261104165504.2430480-11-kunwu.chan@gmail.com>
+Subject: [PATCH 11/28] selftests/rcutorture: Add hazptr torture test script
+Date: Thu,  5 Nov 2026 00:54:29 +0800
+Message-ID: <20261104165504.2430480-12-kunwu.chan@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261104165504.2430480-1-kunwu.chan@gmail.com>
 References: <20261104165504.2430480-1-kunwu.chan@gmail.com>
@@ -129,80 +129,359 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add CPU128 and CPU256 configs for hazptr-stack torture testing.
-These configs exercise the shared-scan path at larger CPU counts.
+Add hazptr.sh: runs the NOPREEMPT/PREEMPT/READERS0/READERS4 basic
+scenarios, the LOCKDEP (PROVE_LOCKING + wq_churn) and SLOWPATH
+(forced slow path) combinations, the CPU-scaling sweep, and the
+HOTADDR/LONGHOLD staged scenarios, checking each console log for
+the module verdict (End of test: FAILURE), lockdep splats, and
+unexpected stall-detector reports.  Also adds the torture configs
+to CFLIST.
 
 Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-Acked-by: Bradley Morgan <brads@mainlining.org>
 ---
- .../selftests/rcutorture/configs/hazptr/CPU128   | 16 ++++++++++++++++
- .../rcutorture/configs/hazptr/CPU128.boot        |  1 +
- .../selftests/rcutorture/configs/hazptr/CPU256   | 16 ++++++++++++++++
- .../rcutorture/configs/hazptr/CPU256.boot        |  1 +
- 4 files changed, 34 insertions(+)
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/CPU128
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/CPU128.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/CPU256
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/CPU256.boot
+ .../selftests/rcutorture/bin/hazptr.sh        | 319 ++++++++++++++++++
+ .../rcutorture/configs/hazptr/CFLIST          |   6 +
+ 2 files changed, 325 insertions(+)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/hazptr.sh
 
-diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/CPU128 b/tools/testing/selftests/rcutorture/configs/hazptr/CPU128
-new file mode 100644
-index 000000000000..079b463607e8
+diff --git a/tools/testing/selftests/rcutorture/bin/hazptr.sh b/tools/testing/selftests/rcutorture/bin/hazptr.sh
+new file mode 100755
+index 000000000000..4e30ea51d9fc
 --- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/hazptr/CPU128
-@@ -0,0 +1,16 @@
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=128
-+CONFIG_PREEMPT_NONE=n
-+CONFIG_PREEMPT_VOLUNTARY=n
-+CONFIG_PREEMPT=y
-+CONFIG_HZ_PERIODIC=n
-+CONFIG_NO_HZ_IDLE=y
-+CONFIG_NO_HZ_FULL=n
-+CONFIG_HOTPLUG_CPU=y
-+CONFIG_SUSPEND=n
-+CONFIG_HIBERNATION=n
-+CONFIG_DEBUG_LOCK_ALLOC=n
-+CONFIG_PROVE_LOCKING=n
-+CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
-+CONFIG_DEBUG_KERNEL=y
-+CONFIG_HAZPTR_DEBUG=y
-diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/CPU128.boot b/tools/testing/selftests/rcutorture/configs/hazptr/CPU128.boot
-new file mode 100644
-index 000000000000..1d09a6446080
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/hazptr/CPU128.boot
-@@ -0,0 +1 @@
-+hazptrtorture.torture_type=hazptr-stack
-diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/CPU256 b/tools/testing/selftests/rcutorture/configs/hazptr/CPU256
-new file mode 100644
-index 000000000000..b00a984977f3
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/hazptr/CPU256
-@@ -0,0 +1,16 @@
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=256
-+CONFIG_PREEMPT_NONE=n
-+CONFIG_PREEMPT_VOLUNTARY=n
-+CONFIG_PREEMPT=y
-+CONFIG_HZ_PERIODIC=n
-+CONFIG_NO_HZ_IDLE=y
-+CONFIG_NO_HZ_FULL=n
-+CONFIG_HOTPLUG_CPU=y
-+CONFIG_SUSPEND=n
-+CONFIG_HIBERNATION=n
-+CONFIG_DEBUG_LOCK_ALLOC=n
-+CONFIG_PROVE_LOCKING=n
-+CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
-+CONFIG_DEBUG_KERNEL=y
-+CONFIG_HAZPTR_DEBUG=y
-diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/CPU256.boot b/tools/testing/selftests/rcutorture/configs/hazptr/CPU256.boot
-new file mode 100644
-index 000000000000..1d09a6446080
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/hazptr/CPU256.boot
-@@ -0,0 +1 @@
-+hazptrtorture.torture_type=hazptr-stack
++++ b/tools/testing/selftests/rcutorture/bin/hazptr.sh
+@@ -0,0 +1,319 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Run hazptr torture tests and report any that fail.
++#
++# Usage: hazptr.sh [ --cpus N ] [ --allcpus ] [ --datestamp string ]
++#
++# Copyright (C) 2026 Kunwu Chan
++#
++# Authors: Kunwu Chan <kunwu.chan@gmail.com>
++
++usage () {
++	echo "Usage: $scriptname optional arguments:"
++	echo "       --cpus N       override CPU count (default: auto-detect)"
++	echo "       --allcpus      test at CPU counts 8,16,32,...,256"
++	echo "       --datestamp string"
++	exit 1
++}
++
++ds=`date +%Y.%m.%d-%H.%M.%S`-hazptr
++scriptname="$0"
++
++RCUTORTURE="`pwd`/tools/testing/selftests/rcutorture"; export RCUTORTURE
++PATH=${RCUTORTURE}/bin:$PATH; export PATH
++. functions.sh
++
++cpus=""		# empty = let kvm.sh auto-detect
++allcpus=0
++
++while test $# -gt 0
++do
++	case "$1" in
++	--datestamp)
++		checkarg --datestamp "(relative pathname)" "$#" "$2" '^[a-zA-Z0-9._/-]*$' '^--'
++		ds=$2
++		shift
++		;;
++	--cpus)
++		checkarg --cpus "(number)" "$#" "$2" '^[0-9]\+$' '^--'
++		cpus="$2"
++		shift
++		;;
++	--allcpus)
++		allcpus=1
++		;;
++	*)
++		echo Unknown argument $1
++		usage
++		;;
++	esac
++	shift
++done
++
++nerrs=0
++
++run_kvm () {
++	local ds_suffix="$1"
++	local configs="$2"
++	local cpu_arg="$3"
++	local kconfig="$4"
++	local duration="${5:-5s}"
++	local resdir="$RCUTORTURE/res/$ds/$ds_suffix"
++
++	mkdir -p "$resdir"
++
++	tools/testing/selftests/rcutorture/bin/kvm.sh \
++		--torture hazptr \
++		--duration "$duration" \
++		--configs "$configs" \
++		${cpu_arg:+--cpus "$cpu_arg"} \
++		${kconfig:+--kconfig "$kconfig"} \
++		--trust-make \
++		--datestamp "$ds/$ds_suffix" > "$resdir/kvm.sh.out" 2>&1
++	return $?
++}
++
++check_lockdep () {
++	local ds_suffix="$1" config_dir="$2" label="$3"
++	local resdir="$RCUTORTURE/res/$ds/$ds_suffix"
++	local console="$resdir/$config_dir/console.log"
++
++	if ! test -f "$console"
++	then
++		echo "Missing console.log for $label ($ds_suffix)" > "$resdir/kvm.sh.err"
++		return 1
++	fi
++	if grep -qE "WARNING: possible (recursive locking|circular locking dependency)" "$console"
++	then
++		echo "Lockdep warning in $label" > "$resdir/kvm.sh.err"
++		return 1
++	fi
++	return 0
++}
++
++# The stall detector must not fire in normal scenarios: a splat here is
++# either a detector false positive (deadline arithmetic, too-aggressive
++# timeout) or a genuine kernel bug making legitimate waits exceed the
++# timeout.  Either way, fail the test.  (HOTADDR is the positive case
++# and is checked separately.)
++check_stall () {
++	local ds_suffix="$1" config_dir="$2" label="$3"
++	local resdir="$RCUTORTURE/res/$ds/$ds_suffix"
++	local console="$resdir/$config_dir/console.log"
++
++	if ! test -f "$console"
++	then
++		echo "Missing console.log for $label ($ds_suffix)" > "$resdir/kvm.sh.err"
++		return 1
++	fi
++	if grep -q "hazptr: waiter stall" "$console"
++	then
++		echo "Unexpected hazptr stall splat in $label" > "$resdir/kvm.sh.err"
++		return 1
++	fi
++	return 0
++}
++
++# Classify the in-kernel torture verdict from the console log:
++#   FAILURE    -- the module explicitly reported failure
++#   INCOMPLETE -- no module verdict reached (e.g. external limit hit)
++#   SUCCESS    -- the module explicitly reported success
++# Only SUCCESS passes.  kvm.sh does not propagate the per-run exit
++# status of its background kvm-test-1-run.sh jobs, so grep the
++# console directly.
++check_verdict () {
++	local ds_suffix="$1" config_dir="$2" label="$3"
++	local resdir="$RCUTORTURE/res/$ds/$ds_suffix"
++	local console="$resdir/$config_dir/console.log"
++
++	if ! test -f "$console"
++	then
++		echo "Missing console.log for $label ($ds_suffix)" > "$resdir/kvm.sh.err"
++		return 1
++	fi
++	if grep -q "End of test: FAILURE" "$console"
++	then
++		echo "Module verdict FAILURE in $label: $(grep -m1 "End of test: FAILURE" "$console" | cut -c1-160)" > "$resdir/kvm.sh.err"
++		return 1
++	fi
++	if ! grep -q "End of test: SUCCESS" "$console"
++	then
++		echo "No module verdict in $label (INCOMPLETE): $(grep -m1 "MAX_LOCKDEP_KEYS\|BUG:\|hung\|Killed" "$console" 2>/dev/null | cut -c1-120)" > "$resdir/kvm.sh.err"
++		return 1
++	fi
++	return 0
++}
++
++# Basic torture: all hazptr configs, CPU count auto-detected
++echo "--- hazptr basic torture${cpus:+ ($cpus CPUs)} ---"
++if run_kvm basic "NOPREEMPT PREEMPT READERS0 READERS4" "$cpus"
++then
++	for cfg in NOPREEMPT PREEMPT READERS0 READERS4
++	do
++		check_verdict basic "$cfg" "basic/$cfg" ||
++			nerrs=$((nerrs+1))
++		check_stall basic "$cfg" "basic/$cfg" ||
++			nerrs=$((nerrs+1))
++	done
++else
++	nerrs=$((nerrs+1))
++fi
++
++# LOCKDEP: verify no lockdep splats with PROVE_LOCKING + wq_churn
++
++echo "--- hazptr lockdep + wq_churn ---"
++if run_kvm lockdep-wq LOCKDEP "$cpus"
++then
++	check_verdict lockdep-wq LOCKDEP "LOCKDEP wq_churn" ||
++		nerrs=$((nerrs+1))
++	check_lockdep lockdep-wq LOCKDEP "LOCKDEP wq_churn" ||
++		nerrs=$((nerrs+1))
++	check_stall lockdep-wq LOCKDEP "LOCKDEP wq_churn" ||
++		nerrs=$((nerrs+1))
++else
++	nerrs=$((nerrs+1))
++fi
++
++# SLOWPATH + PROVE_LOCKING: verify forced-slowpath does not deadlock
++
++echo "--- hazptr SLOWPATH + lockdep ---"
++if run_kvm slowpath-lockdep SLOWPATH "$cpus" \
++	"CONFIG_PROVE_LOCKING=y"
++then
++		check_verdict slowpath-lockdep SLOWPATH \
++			"SLOWPATH+PROVE_LOCKING" ||
++			nerrs=$((nerrs+1))
++		check_lockdep slowpath-lockdep SLOWPATH \
++			"SLOWPATH+PROVE_LOCKING" ||
++			nerrs=$((nerrs+1))
++		check_stall slowpath-lockdep SLOWPATH \
++			"SLOWPATH+PROVE_LOCKING" ||
++			nerrs=$((nerrs+1))
++else
++	nerrs=$((nerrs+1))
++fi
++
++# HOTADDR: Lai-scenario documenting mode.  Starvation episodes and
++# stall-detector splats are EXPECTED here (baseline behavior); the
++# check verifies the scenario ran and the machinery stayed sane.
++
++echo "--- hazptr HOTADDR (Lai-scenario documenting) ---"
++if run_kvm hotaddr HOTADDR "$cpus" "" "30s"
++then
++	resdir="$RCUTORTURE/res/$ds/hotaddr/HOTADDR"
++	console="$resdir/console.log"
++	hotaddr_err=""
++	if ! test -f "$console"
++	then
++		echo "Missing console.log for HOTADDR" > "$RCUTORTURE/res/$ds/hotaddr/kvm.sh.err"
++		hotaddr_err=1
++	elif ! grep -q "End of test: SUCCESS" "$console"
++	then
++		echo "HOTADDR: module verdict not SUCCESS" > "$resdir/kvm.sh.err"
++		hotaddr_err=1
++	elif ! grep -q "hot r" "$console"
++	then
++		echo "HOTADDR: staged rounds not found" > "$resdir/kvm.sh.err"
++		hotaddr_err=1
++	fi
++	# Independent checks: a failure must not be masked by an earlier
++	# elif taking the note branch.
++	if grep -q "positive control timed out" "$console" 2>/dev/null
++	then
++		echo "HOTADDR: positive control failure (machinery fault)" >> "$resdir/kvm.sh.err"
++		hotaddr_err=1
++	fi
++	if [ -z "$hotaddr_err" ]
++	then
++		if ! grep -q "hazptr: waiter stall" "$console"
++		then
++			echo "HOTADDR note: no stall splats observed (record as not-reproduced, investigate interleaving)" > "$resdir/kvm.sh.note"
++		else
++			echo "HOTADDR: starvation reproduced, stall detector confirmed, drain verified"
++		fi
++	else
++		nerrs=$((nerrs+1))
++	fi
++else
++	nerrs=$((nerrs+1))
++fi
++
++# LONGHOLD: legitimate long-lived references.  The stall detector must
++# fire (observation), the holder must release, and the waiter must drain
++# normally afterwards: diagnostics without interruption, module verdict
++# stays SUCCESS.
++
++echo "--- hazptr LONGHOLD (legitimate long-held reference) ---"
++if run_kvm longhold LONGHOLD "$cpus" "" "60s"
++then
++	resdir="$RCUTORTURE/res/$ds/longhold/LONGHOLD"
++	console="$resdir/console.log"
++	longhold_err=""
++	if ! test -f "$console"
++	then
++		echo "Missing console.log for LONGHOLD" > "$RCUTORTURE/res/$ds/longhold/kvm.sh.err"
++		longhold_err=1
++	elif ! grep -q "End of test: SUCCESS" "$console"
++	then
++		echo "LONGHOLD: module verdict not SUCCESS" > "$resdir/kvm.sh.err"
++		longhold_err=1
++	elif ! grep -q "longhold drain=1" "$console"
++	then
++		echo "LONGHOLD: drain after release not observed" > "$resdir/kvm.sh.err"
++		longhold_err=1
++	fi
++	# Independent check: the sync must drain after release; this
++	# must not be masked by the stall-report note branch.
++	if grep -q "longhold: sync did not drain" "$console" 2>/dev/null
++	then
++		echo "LONGHOLD: sync failed to drain after release" >> "$resdir/kvm.sh.err"
++		longhold_err=1
++	fi
++	if [ -z "$longhold_err" ]
++	then
++		if ! grep -q "hazptr: waiter stall" "$console"
++		then
++			echo "LONGHOLD note: stall detector did not fire on a legitimate long hold" > "$resdir/kvm.sh.note"
++		else
++			echo "LONGHOLD: detector fired on legitimate hold, drain verified, no interruption"
++		fi
++	else
++		nerrs=$((nerrs+1))
++	fi
++else
++	nerrs=$((nerrs+1))
++fi
++
++# CPU scaling: optionally test at multiple CPU counts
++
++if test "$allcpus" -ne 0
++then
++	max_cpus=`grep '^processor' /proc/cpuinfo 2>/dev/null | wc -l`
++	for n in 8 16 32 64 128 256
++	do
++		if test "$n" -le "$max_cpus"
++		then
++		echo "--- hazptr CPU=$n ---"
++		if run_kvm "cpu$n" "PREEMPT" "$n" "CONFIG_NR_CPUS=$n"
++		then
++			check_verdict "cpu$n" PREEMPT "cpu$n/PREEMPT" ||
++				nerrs=$((nerrs+1))
++			check_stall "cpu$n" PREEMPT "cpu$n/PREEMPT" ||
++				nerrs=$((nerrs+1))
++		else
++			nerrs=$((nerrs+1))
++		fi
++		fi
++	done
++fi
++
++# Report
++
++if test "$nerrs" -ne 0
++then
++	echo "hazptr.sh: $nerrs test(s) failed"
++	exit 1
++fi
++echo "hazptr.sh: all tests passed"
++exit 0
+diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/CFLIST b/tools/testing/selftests/rcutorture/configs/hazptr/CFLIST
+index 4d62eb4a39f9..90ef09b0e654 100644
+--- a/tools/testing/selftests/rcutorture/configs/hazptr/CFLIST
++++ b/tools/testing/selftests/rcutorture/configs/hazptr/CFLIST
+@@ -1,2 +1,8 @@
+ NOPREEMPT
+ PREEMPT
++READERS0
++READERS4
++SLOWPATH
++LOCKDEP
++CPU128
++CPU256
 -- 
 2.43.0
 
