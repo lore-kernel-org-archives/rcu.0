@@ -1,83 +1,83 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.52
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.178
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793811386;
-	b=nW3fxrLjGV8pa3u+5bYOXXd47eFWR0dbSo5NoC7AWtxJO53Cw+ErKS0VRTnNJMUIjEh/
-	 ClasXmk4Abs9LgKIGjHrg81AiLJ4PoEQ4/T6yFaRbit8xgxsdsCyeiJDySX7f82DF7d8m
-	 VK/PYlKwqCtibCfq5srVD14Z2XoMWmTrM6fItfy8fZBhZVK/FN0TS5B5tkJ7WgaeS3jLr
-	 luzc92ZhQgHjeEvmT/akirG2Cha/hl19sy06zHLfGfejeGaWXziBkc+uw41YNT1RF3agY
-	 /XTjU37UZMuOpOJAfQQ1gOVxA/vEAs8nqmxg02885DqHBTpGYGKZnzGvkmKBT62duLA==
+	t=1793811395;
+	b=Y0lRJBFbv7WXKZZ7IuUXlkSoJIipDzGCmc7ZKGFuI8dHc7fTWq4eSQxoVq5NbdhOOylo
+	 gnWhTwLJV9FOq0qsIW6rqINcWLtrV22fTF+mA0kQj9kzIJUYQYdTuDoTKxMGce7IuksZb
+	 /Ox1uosfHTBxjOdTG1mOrE3qIcbsfleOO3y0IJJulVLm9I0gSnDBgNUfQZhLwixCRFv0p
+	 4e3/lGNgVJ+kTqxEZKBkWcy/f3DZeVp+P6H0z1yYHykKfUjPo2WR0NlFFAW3NlXqW/kKe
+	 NpkgkA9JdYrUb+Lh7Z31SoTigJB6HwNoUIW0k3Yaj6uuC7cW1TJRgQ8fpoW1WbC14Jg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793811386;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793811395;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=UXmgooCun45H9nlbuiuwQFHR9S540n6oe4h3LrE1mlU=;
-	b=x2DrWVV0tS4OuNZ0ogkBXXDpEusgTCzJV0VDgktgkQz+bKJV/NSegfDW/XJdmXlHIbfP
-	 HUKDB2YnOHa6lb9mLqn/TaNGY00fy62xsNfkq6OkaFx6VyLWnA0L3ICWwBQUsJSDhHleF
-	 HslKMXlGACSnmJdWaFdIS9i6bvUV26Xz86ZNeI67ADBs0tSw1ZZTDYHQ/MWIQLC6GTkO2
-	 OxylWUOvgRYOfty8jv8YBgl5tNaaaCxk0ULYvlsnepzry9umKNfa501gX9Nt3PiI80RU0
-	 THmptVac9Bg67PVymlOjz9cnDEHqYbxiWRv1APiExxpiseZH39iGwHEexYS91f2Pc7Q==
+	bh=P8jhzhdMxuYGAzmakVQAbRKMvL/Wa43vi3WcMVI8m4w=;
+	b=vJWBc6Qc3/Z+woFlE+UVmXs7pKqbmtLrlfQTlahAPsw16Zw7P2IQwG31lYW5qkt5Qj6G
+	 vF1Yg7X4IM1I02yc2O0+tIx837GX5PB2nHR8dx2TLYB9nHf4ShnMhh3rq7uNtJWiCPFRT
+	 w+a37uc++pz9J9GWosY0ugnvkg6QCMU4wnawXqBkQN5scUhl2iLcB2a819X3AJjWEJrBe
+	 IdD+5rgMK+bv5AT8ejpStWBrobW6Y4xm00DsFJu4zHPJ6psLDxD4afyv5SrTUR/ZA4W0T
+	 J9zUgME2+/0nQ+0BX4ECpVOIKCyZYNGqWoicmucsUoEjb6DicCR/iy1eeWx+IaPUsHA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Ds9ImoNF;
-	arc=none smtp.remote-ip=74.125.82.52
-Received: from mail-dl1-f52.google.com (mail-dl1-f52.google.com [74.125.82.52])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=rCHw+S6p;
+	arc=none smtp.remote-ip=74.125.82.178
+Received: from mail-dy1-f178.google.com (mail-dy1-f178.google.com [74.125.82.178])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 099CC606A338
-	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 16:56:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 099CC606A338
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09698606D80E
+	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 16:56:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 09698606D80E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Ds9ImoNF
-Received: by mail-dl1-f52.google.com with SMTP id a92af1059eb24-1931ff67a29so629069c88.1
-        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 08:56:25 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=rCHw+S6p
+Received: by mail-dy1-f178.google.com with SMTP id 5a478bee46e88-353804b591eso1732316eec.0
+        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 08:56:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793811385; x=1794416185; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1793811394; x=1794416194; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=UXmgooCun45H9nlbuiuwQFHR9S540n6oe4h3LrE1mlU=;
-        b=Ds9ImoNFnqIw6Qw1Xrge8SkX9ej0FZa29MRVRM8wFsA0dQhuXWwqhtoYP7h4kad5e+
-         CujAQIMvVoW8e/ktVA4RJkhE4uKZXGsISnstiGMOLDEmO9nifwT/0JQRpt004gFRJZka
-         aEN6hIa6lRyLDyjswYqiyD8FDsS/G+5MA7geCMPJHINQ1V8ZqZdDIveb0rMC984y8KI3
-         eR95uJTOaQOkLl/fbaGQHrdaL5TBwFQZNwuQsEHOhhRuT4aizhsDX+zooDipclNZN4so
-         bW+qgoLjH1gb/KVmb6CxV62RY4uS8XAiAEaBZKn2+qXwuceGSXYh9D9dKoNtagpVAIhu
-         D+qw==
+        bh=P8jhzhdMxuYGAzmakVQAbRKMvL/Wa43vi3WcMVI8m4w=;
+        b=rCHw+S6pMFx7a6bB0zwg3pMwUXqAIJM1xFGrooI6UPMW6s4ELsym4sfptgqmXhtlBy
+         v8FX/ojmua6TRr2qFvXbn6gBItIxjYdTaY0/N6JtUdkyGB4+0FO4bTKCID5J0qsyW72W
+         AoHA0CxWwh831koTnXb0C6SUuSNkfXjrFhq8cP363COvLDJnVADRJpWaEiPyPty9wCMe
+         nRPk3wv47iT2zbAVZcXBD2vOmhC7ryd3QUOdLYU8NX0N7cPgNdZhWNA1YwbPCSoDmxBZ
+         vehYzjSpzhpQBCOZ66x7YWy6f3kfO4qq41U/BL/vZIfQpgyY4BpXWtRB48wV2vUswVBF
+         9lwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793811385; x=1794416185;
+        d=1e100.net; s=20260707; t=1793811394; x=1794416194;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=UXmgooCun45H9nlbuiuwQFHR9S540n6oe4h3LrE1mlU=;
-        b=zSkHiRlcdS6poudKXFcgm7aP+/JbLIwFjrLpctfY2Wl9bOzYItp9eXRIgfP8zd4xis
-         Cqt7ItxeNjMlafWM3Ym9cRhOglzlmwkjVf2Y0VbsrG/TBb+0TQbnoNR6CJqXSrnWMM8m
-         kuqNaQQilMdBxOobGsQCFKctJjoOfhg0EDpZfBJF6JHK2il7zWGndt0Y5TkSSxt9A6eJ
-         zcV4Ud51LS7q+IOZ/nuabIIpoNelZybIT3jjANnFHHk6azlUt0oOkchfOHMeAAyCc3NF
-         3wzWEkINROewzBhQEhXLFAiwYm6QrcjuTaaC78bBIoQVMcTVi6Z0MJbyEwt4n+gxBnZ6
-         w2AQ==
-X-Forwarded-Encrypted: i=1; AKwUvBwP6PVPX0Ha1AZSz8ac2IQKlJ0nysQ24aBRXyQ7I0pfXgx/Pt8Ki8ZoWG90B/PPnwjveqM=@vger.kernel.org
-X-Gm-Message-State: APuU4Z/tzx+WqbMY0dDhuZDlkaYF2EFWdYtL6+n0N9bA0LzgbFtm+iOC
-	18ucwmd54F79CCXxHnFP4EUXmFpQT26Lo9bPwlnseCpnNR+Am7PZKs4rIm3zppyBfLsyUA==
-X-Gm-Gg: AYBFou0Ir78W97uptokdra878JigvfKl0BjUetYznGDY7QZYc6GdoAN3/lXHX9+AAxS
-	b1hdMrD7fomZYAgqeWfhZeTfigVQ7zqLwt8Kym4AGCqOsdixGuIliY1HR6cVtKRlIUNGEjqHctX
-	583SrPkTB0j4E+kstmaVnu9LPd3FNGO9b4qRiMZ+X0WAK/JWmonnAz/t97xMr0KsOrOxkt0DJK0
-	/gFzD4SLCLSJAuRIceLb2uK9tk+LsHSXlfk1i2TJt+2ZzTrAK7PX6S/YKVCfdGJasekBpI/kSTN
-	xgNDTiUnXD5ZBRFIF676nPXRgW8xLVSsVUvOwNO7clUYKt7nJ/1ON+SaooeTs/Jwzt9EmxZdBZR
-	ikDBFVqt5qRpJiWvRCxpJBTaT6BgtSHtrWz8Qm+m6rsNL2T8MQIKx+FFV0Wqp12gK+o1KabzRXW
-	YYCTiMnFImS7hRDQtiZaEzji5J6hW0WzhaJA3ZdFySBWc/PcFCiPWYVoDabkrwAu1SAt2Fe5lAU
-	wYTTE7w96mTwobW+aNdym22enrMfz9yfDw6ZNqnpdP+Ecwrg+JhRcmsxiSrMWXyglF0P06S/gfx
-	MsAHroAJSO7e84BnrJYQklk3OvgbO6K3lVKj9C4=
-X-Received: by 2002:a05:7301:3d06:b0:358:eccb:af7c with SMTP id 5a478bee46e88-36a42404840mr36237962eec.33.1793811384606;
-        Wed, 04 Nov 2026 08:56:24 -0800 (PST)
+        bh=P8jhzhdMxuYGAzmakVQAbRKMvL/Wa43vi3WcMVI8m4w=;
+        b=pAX039mDXV/FJSN87OjqyTh4JlHLzVxTUd8kXw3sQT+dWhQAyWwG/qAtNMJZwWtDUY
+         tIpLyGevqTtfuOIp5IYLx+F35HHMCyEvxoEgGmnX9uqxvdC2aaNng7GKsp1XOX/dJOiV
+         fud+m23tGn2cXlzlWKEGNMB/6JjZUugi0qxgLKb5IvdWNQgbk8gmD/EncRFT5KAzPuKP
+         IjsQD4dvloACT9EXT16WfXNdDPYt8YoQtVgNei8nZ4iuFgDcMPZ/fVmN4DErQZvyR2cO
+         2Aw3hLOP0yWVTdH15x337nvAg8n4dQVfvDUciDCzRR7iutqCDYQ0PTvVwrTi9g4Qg++x
+         eA8A==
+X-Forwarded-Encrypted: i=1; AKwUvByi8jGQE8vo0Gp/eQwL1QqIvwRMCJra/mF7xJepEwFpqnZzzjowPker0YiOourSRwt3CCU=@vger.kernel.org
+X-Gm-Message-State: APuU4Z/f+v6tGnBnYRFkJztGqZwkxlmbP+sVaHUpucvwV6pf+4ZBZwR9
+	d9GJiUUbzFGkAyc1ijmDnBqJP7ChkBJDnO2expWEsNOOhqfzLgg6gVom
+X-Gm-Gg: AYBFou2Bo1Hc6iYuftnPuOCzjxEJDuS+u1//Xnna6AH/VQhXCUv6yiGVE/405WfA3s9
+	bTetpbD86ZK0KN4WhfH5GR+g4/OBhBL50HeUb0gkjzS9pD7Hja16xgQnQw12BgvQvHxPgpJWfli
+	z4n3uaKZ2/iWv6pfe290zvQ3bOqdPOi/Zo7JiX1GikCw83mZyUbSC1DYcet4emRLZMwpJwYvDEt
+	jzpgTPm8cuxV1dUE99b7QrKeA6AtCAow6Kw2QBP47t5h3ZZ/WrjRr5lrtyBOboS3epFMIJ1YrSO
+	mgfsIiIDCsJU3r+Yqdb+CzddITVgs9qwBbm/gh1Q28KriLud5Jt5XGGRXZSOgGIkOFjDFJPJ2u5
+	pyM0i+WbyJAcnbIZJtcMF3m4fFUnNoFUaOTXKPd81pvGrSwZCGSOfmQVmf2aiewYP3Sm26zesJ0
+	Pc43W5rERISOBUisrkrsLOKaMq2no6KNm855p7Z8YsFWfmz1J78NaSXVXvpt1649gqlKsgnoGci
+	ASPgShrRRR2NJJiBiPbJqLpeKVY4oRjSY18V4UxFOlzduOnicg/CEhFAi00/0PRZCnOBaBIBiy6
+	pul3R5cKB1GanOgvSKUr+5KjBJ8tpuGTmOHzOtQ=
+X-Received: by 2002:a05:693c:83dc:10b0:365:d42a:f415 with SMTP id 5a478bee46e88-36a423454b2mr27554863eec.12.1793811393534;
+        Wed, 04 Nov 2026 08:56:33 -0800 (PST)
 Received: from kernel.. ([216.195.201.23])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36ca38d46fcsm9019567eec.13.2026.11.04.08.56.15
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36ca38d46fcsm9019567eec.13.2026.11.04.08.56.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2026 08:56:24 -0800 (PST)
+        Wed, 04 Nov 2026 08:56:33 -0800 (PST)
 From: Kunwu Chan <kunwu.chan@gmail.com>
 To: paulmck@kernel.org,
 	boqun@kernel.org,
@@ -112,9 +112,9 @@ Cc: stern@rowland.harvard.edu,
 	linux-doc@vger.kernel.org,
 	rcu@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH 07/28] hazptr: Fix kernel-doc of hazptr_release()
-Date: Thu,  5 Nov 2026 00:54:25 +0800
-Message-ID: <20261104165504.2430480-8-kunwu.chan@gmail.com>
+Subject: [PATCH 08/28] hazptrtorture: Add slowpath and lockdep scenarios
+Date: Thu,  5 Nov 2026 00:54:26 +0800
+Message-ID: <20261104165504.2430480-9-kunwu.chan@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261104165504.2430480-1-kunwu.chan@gmail.com>
 References: <20261104165504.2430480-1-kunwu.chan@gmail.com>
@@ -129,30 +129,187 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The second parameter of hazptr_release() is named @addr, not
-@addr_p.  It is the address passed to the matching
-hazptr_acquire().
+Add SLOWPATH and LOCKDEP configs: SLOWPATH enables
+CONFIG_HAZPTR_ACQUIRE_FORCE_SLOWPATH for slow-path stress; LOCKDEP
+combines PROVE_LOCKING with wq_churn=1 so each alloc_workqueue/
+destroy_workqueue pair exercises the lockdep hazptr paths.
 
-Fixes: 17969a0e7f7e ("hazptr: Upgrade kernel-doc headers")
+Suggested-by: Boqun Feng <boqun@kernel.org>
 Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-Acked-by: Bradley Morgan <brads@mainlining.org>
 ---
- include/linux/hazptr.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/hazptrtorture.c                    | 48 ++++++++++++++++++-
+ .../rcutorture/configs/hazptr/LOCKDEP         | 16 +++++++
+ .../rcutorture/configs/hazptr/LOCKDEP.boot    |  1 +
+ .../rcutorture/configs/hazptr/SLOWPATH        | 16 +++++++
+ 4 files changed, 79 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/LOCKDEP
+ create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/LOCKDEP.boot
+ create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/SLOWPATH
 
-diff --git a/include/linux/hazptr.h b/include/linux/hazptr.h
-index 299ad8a07156..0fb48518525b 100644
---- a/include/linux/hazptr.h
-+++ b/include/linux/hazptr.h
-@@ -315,7 +315,7 @@ static inline void hazptr_release_debug(struct hazptr_ctx *ctx, void *addr) { }
-  * hazptr_release - Release the specified hazard pointer
-  *
-  * @ctx: The hazard-pointer context that was passed to hazptr_acquire().
-- * @addr_p: The pointer that is to be hazard-pointer unprotected.
-+ * @addr: The address passed to the matching hazptr_acquire().
-  *
-  * Release the protected hazard pointer recorded in @ctx.
-  *
+diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
+index c8b7c208775b..fe09280d063c 100644
+--- a/kernel/rcu/hazptrtorture.c
++++ b/kernel/rcu/hazptrtorture.c
+@@ -23,6 +23,7 @@
+ #include <linux/torture.h>
+ #include <linux/hazptr.h>
+ #include <linux/rcupdate.h>
++#include <linux/workqueue.h>
+ 
+ #include "rcu.h"
+ 
+@@ -51,6 +52,8 @@ torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
+ torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s");
+ torture_param(int, stutter, 5, "Number of seconds to run/halt test");
+ torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
++torture_param(bool, wq_churn, false,
++	      "Churn workqueues to exercise lockdep dynamic keys");
+ 
+ static char *torture_type = "hazptr";
+ module_param(torture_type, charp, 0444);
+@@ -62,6 +65,7 @@ static struct task_struct *preempt_task;
+ static struct task_struct **reader_tasks;
+ static struct task_struct *do_pending_task;
+ static struct task_struct *stats_task;
++static struct task_struct *wq_churn_task;
+ 
+ #define HAZPTR_TORTURE_PIPE_LEN 10
+ 
+@@ -83,6 +87,7 @@ static atomic_t n_hazptr_torture_alloc;
+ static atomic_t n_hazptr_torture_alloc_fail;
+ static atomic_t n_hazptr_torture_free;
+ static atomic_t n_hazptr_torture_error;
++static atomic_t n_hazptr_torture_wq_churn;
+ static DEFINE_PER_CPU(atomic_long_t, hazptr_torture_acquires);
+ static DEFINE_PER_CPU(atomic_long_t, hazptr_torture_releases);
+ static DEFINE_PER_CPU(atomic_long_t, hazptr_torture_acquires_irq);
+@@ -668,13 +673,14 @@ hazptr_torture_stats_print(void)
+ 		atomic_read(&n_hazptr_torture_alloc_fail),
+ 		atomic_read(&n_hazptr_torture_free));
+ 	torture_onoff_stats();
+-	pr_cont("acq: %lld rel: %lld acqirq: %lld relirq: %lld reldefer: %lld relundefer %lld\n",
++	pr_cont("acq: %lld rel: %lld acqirq: %lld relirq: %lld reldefer: %lld relundefer %lld wqchurn: %d\n",
+ 		torture_sum_pcpu_atomic_long(&hazptr_torture_acquires),
+ 		torture_sum_pcpu_atomic_long(&hazptr_torture_releases),
+ 		torture_sum_pcpu_atomic_long(&hazptr_torture_acquires_irq),
+ 		torture_sum_pcpu_atomic_long(&hazptr_torture_releases_irq),
+ 		torture_sum_pcpu_atomic_long(&hazptr_torture_releases_defer),
+-		torture_sum_pcpu_atomic_long(&hazptr_torture_releases_undefer));
++		torture_sum_pcpu_atomic_long(&hazptr_torture_releases_undefer),
++		atomic_read(&n_hazptr_torture_wq_churn));
+ 
+ 	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
+ 	if (i > 1) {
+@@ -788,6 +794,38 @@ static int hazptr_torture_preempt(void *unused)
+ 	return 0;
+ }
+ 
++static void hazptr_torture_wq_churn_fn(struct work_struct *work)
++{
++}
++
++/*
++ * Repeatedly create and destroy workqueues.  Each workqueue creation
++ * registers a lockdep dynamic key and each destruction unregisters it,
++ * which exercises both is_dynamic_key() and lockdep_unregister_key().
++ */
++static int hazptr_torture_wq_churn(void *unused)
++{
++	VERBOSE_TOROUT_STRING("hazptr_torture_wq_churn task started");
++	do {
++		struct workqueue_struct *wq;
++		struct work_struct churn_work;
++
++		wq = alloc_workqueue("hazptr-torture-churn", WQ_PERCPU, 1);
++		if (!wq) {
++			torture_hrtimeout_ms(10, 10, NULL);
++			continue;
++		}
++		INIT_WORK(&churn_work, hazptr_torture_wq_churn_fn);
++		queue_work(wq, &churn_work);
++		flush_work(&churn_work);
++		destroy_workqueue(wq);
++		atomic_inc(&n_hazptr_torture_wq_churn);
++		stutter_wait("hazptr_torture_wq_churn");
++	} while (!torture_must_stop());
++	torture_kthread_stopping("hazptr_torture_wq_churn");
++	return 0;
++}
++
+ static void
+ hazptr_torture_cleanup(void)
+ {
+@@ -880,6 +918,7 @@ static int __init hazptr_torture_init(void)
+ 	atomic_set(&n_hazptr_torture_alloc_fail, 0);
+ 	atomic_set(&n_hazptr_torture_free, 0);
+ 	atomic_set(&n_hazptr_torture_error, 0);
++	atomic_set(&n_hazptr_torture_wq_churn, 0);
+ 	for (i = 0; i < HAZPTR_TORTURE_PIPE_LEN + 1; i++)
+ 		atomic_set(&hazptr_torture_wcount[i], 0);
+ 	for_each_possible_cpu(cpu) {
+@@ -960,6 +999,11 @@ static int __init hazptr_torture_init(void)
+ 		if (torture_init_error(firsterr))
+ 			goto unwind;
+ 	}
++	if (wq_churn) {
++		firsterr = torture_create_kthread(hazptr_torture_wq_churn, NULL, wq_churn_task);
++		if (torture_init_error(firsterr))
++			goto unwind;
++	}
+ 
+ 	torture_init_end();
+ 	return 0;
+diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/LOCKDEP b/tools/testing/selftests/rcutorture/configs/hazptr/LOCKDEP
+new file mode 100644
+index 000000000000..f0ff29925a54
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/hazptr/LOCKDEP
+@@ -0,0 +1,16 @@
++CONFIG_SMP=y
++CONFIG_NR_CPUS=16
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=y
++CONFIG_HZ_PERIODIC=n
++CONFIG_NO_HZ_IDLE=y
++CONFIG_NO_HZ_FULL=n
++CONFIG_HOTPLUG_CPU=y
++CONFIG_SUSPEND=n
++CONFIG_HIBERNATION=n
++CONFIG_DEBUG_LOCK_ALLOC=y
++CONFIG_PROVE_LOCKING=y
++CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
++CONFIG_DEBUG_KERNEL=y
++CONFIG_HAZPTR_DEBUG=y
+diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/LOCKDEP.boot b/tools/testing/selftests/rcutorture/configs/hazptr/LOCKDEP.boot
+new file mode 100644
+index 000000000000..7b16720214bd
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/hazptr/LOCKDEP.boot
+@@ -0,0 +1 @@
++hazptrtorture.wq_churn=1
+diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/SLOWPATH b/tools/testing/selftests/rcutorture/configs/hazptr/SLOWPATH
+new file mode 100644
+index 000000000000..4d13028ca84c
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/hazptr/SLOWPATH
+@@ -0,0 +1,16 @@
++CONFIG_SMP=y
++CONFIG_NR_CPUS=16
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=y
++CONFIG_HZ_PERIODIC=n
++CONFIG_NO_HZ_IDLE=y
++CONFIG_NO_HZ_FULL=n
++CONFIG_HOTPLUG_CPU=y
++CONFIG_SUSPEND=n
++CONFIG_HIBERNATION=n
++CONFIG_PROVE_LOCKING=n
++CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
++CONFIG_DEBUG_KERNEL=y
++CONFIG_HAZPTR_DEBUG=y
++CONFIG_HAZPTR_ACQUIRE_FORCE_SLOWPATH=y
 -- 
 2.43.0
 
