@@ -1,22 +1,22 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.194.45
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.201.9
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793803455;
-	b=eE7pN4wp7gqvooWNHwHPNtSDzh6OjMnHO4bvrBEjPmgyxu/jJo4NUdC42vmr8hXG7pjd
-	 jeyQ+7RN//s0ovdTAOswcdmxK9Udy/PhJB55svIs6zqST1B5w+J5lPPEElQekyGUSuRMG
-	 aSHYO7rfCassGYsOb8TRcEnrSB8xeaFz310/bjawUbtbGW6OI5otForWHZBKQylen/8Z1
-	 jKixUk7AicvXq1Yyci3nJg6zdUR0FSQsz0TvRWerkzeFYM924YP46Qtub5PiQJsnRyatu
-	 h2YWJ+XY50LIRHoGJMHUP7DZyaKJQblurAQRHgvOy+Nq4k7YgBXVyrrmWC3Z33cbpXA==
+	t=1793806267;
+	b=Uo+3z7QLWCBeREZla5Ji3vl6uVGan162KjQDvvTsO30zD5JPI9f2ax/taxWjPjjO63BT
+	 CUPiDKzdQd7vUT3ipWP7dea+6FgYeSeJ6rHCectbORHzh4hdlq04ElQLzqDjgPsDP+CBJ
+	 FXxn3gG4yyqleEg05/U/pTapyZfltIOdLN1vZWXsDIi9wEDHhQPNS6gZms92tIVtVUySJ
+	 x+ge5t/0f1602gaNoke727m4LSHtJnS0rQIeoDRTeFEokQXzdG7BipLDAJ6haeHe7K9nR
+	 dZEhBIHIFla/KNKG2zFee/jN3Jb0ejD8FweMWqkELo+hV/+bSY03+zCA6Pajx9Z/obA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793803455;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:Content-Type:Content-Disposition:X-ClientProxiedBy:
-	 MIME-Version:X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
-	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+	a=rsa-sha256; c=relaxed/relaxed; t=1793806267;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:Content-Transfer-Encoding:Content-Type:
+	 X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
 	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:
-	 X-MS-Exchange-AntiSpam-MessageData-1:X-OriginatorOrg:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
 	 X-MS-Exchange-CrossTenant-Network-Message-Id:
 	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
 	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
@@ -24,65 +24,77 @@ ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
 	 X-MS-Exchange-CrossTenant-UserPrincipalName:
 	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=8CWsXGRW4cXV/4Ig9ZY5w40sEg5DWBJ6K1rA5X6kY4c=;
-	b=hrB0OHa7NRyXmTD7Hk7ef7peRyGj+G6xEqWBl5KbtYS3oUm+T6MjCnsIZuWb3+06LcOA
-	 0j4b0/8BhMHsOXg2cO2/b1ZmDj//RxNf+7jXR4U7PVy0FGA3nkY6j2Y1KWOPtDi3O9eqI
-	 r2IimoCpb9HdgfzwMPUL/XIZmjvW4HpCcYz9ei1dPw8XLlSfL1I9hwEBdFC3d3D1P3k9D
-	 YhEztHxdJf9zlRJv4stgRZCbjdqREUGkYTfK1urNv3KRLIC6t4vuSdLnvWTB7BXPA9SY9
-	 /KVzxg1d/bPCgSZs7awcudYtNVbm3C2sOMJGWBH34M/JUl5owa/K5S/rGzni98m3bBQ==
+	bh=JPW24ng8UI3RbdNi64b/B9P9J/O1MRC1nFw7CjGwRx8=;
+	b=WI0Eepmk8b2C9FUtux4uC1KbJKlrt/EsmxPxG/hT5+ZHH+nJBHL6p20AbG1nWfEmmsx9
+	 5stQBC5B7w62LuWYiCV5jmqlcaZYsPJ/bN39pkitFFnzlg8nXqHENYe7YlV7tnRMbQjLi
+	 aMTHGUaGA7HYae8c5BxjPf6rL57lELJFzrZB9wFr5FbdwJFOGigUv307ujfRtqeHHTIC0
+	 JgNDAa3wAloJAXBKqBamTlSu/UIHCrreDx8BF1WL0SrHDsw+BVYTqAx4XlM1sakxGRii/
+	 89sGPBD39OfT7LIsLUpgtwEr7uTjsTZyXiFVonmdnuHBirIt1L1VVP2IVjEvvoDoXPw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=nvidia.com;
 	spf=fail smtp.mailfrom=nvidia.com;
-	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=kWRhfuYX;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.194.45
-Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011045.outbound.protection.outlook.com [40.93.194.45])
+	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=nw8hR26c;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.201.9
+Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11010009.outbound.protection.outlook.com [52.101.201.9])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83848606A32E
-	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 14:44:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 83848606A32E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB85606A31B;
+	Wed,  4 Nov 2026 15:31:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BCB85606A31B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=kWRhfuYX
+	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=nw8hR26c
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Fbef0O0XmpHBx75fkqxR85jMvYv6dQWEgjPKI1lLd2+1QYshcaecUKdGJS/IvobUQAm3ei6fiAPPegi9lv5PQqnHQp7gE2UL96Gt6oMc/eAG/8kKxj25o/mqsP8QeZ0Gic6jjMIUfi77BnUaB+PYXHXzhUR/SkpB9pMHTNyOJ5K7IcuoiB/rF6m1uq1Z3yxXkzs1JmYDok26I3qBDjeCvuvnMpSTU5qMhmwXuZzvkY6HV/oCJOq/kgnvTlaiAEw812rohuocxVeX2yqEtlp4rAOdo1ANaGjZ6/32NgDgyaWCls8jbbjfZyxHeBfd13YsarhXUURCpyLm+2qZyaGx7Q==
+ b=BINK4+/WVtyEAP16aoNjN9EXB/9kMK1I7MTVLyW+10kH3Gx6l4xWV1wFw/qmoTPP1GA3/IK1JA437yuLVRXMKvZuAlL04bh8g6/92v6tkrjWGCRMOEaLiA0SFww4ZEuR5PCZpVRxObtTYFwiipBt3yJjXzBXyBt3h4HaXqw4yh8HAL8gQWkgMrlOEFuwExwDOOtaymsseNUzm7xLJGwM2nkVBXxy0TDqP8Rf1NgA4k3y56ZQneMWgkou/b6+QBhHZvBdyIoxBkfamkOpHmW6oymxznYgjOBgtKsET+byR6oOMkal5L9mOBsuk4rf+13uriSN4YK5OWlxMwlnilo+Uw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8CWsXGRW4cXV/4Ig9ZY5w40sEg5DWBJ6K1rA5X6kY4c=;
- b=gcF+7CoJTzGeaNDT+exnJmicDqPkelAjEYEA2HcP4Hs+1wAAfExfngIRjxBqgh8zzwWN7fzzXea54X0CyTH/EBFIc+fKuikLYX1zs62ZyWMbeYJB1s7DtH0rzHZNzt4n96EUQ5JueLQz42iuT3M+hDJWbz2mGeckjtW5RfErr/vCxX9uWptgwU27RaxVq2UDER9XlzThzilxDmqjavBj6emtinISDnNtevBViqleHrE58BLxUc7tWekHI7Pc6hkSWn+QZeMZryIkNtVVzR1bsGdE8Hg1ktsN3I3sO2rPX1EnMoUMsLQpsPW4sFzAxQ3xUkqXpnbQaGIk9uoVvxzP/g==
+ bh=JPW24ng8UI3RbdNi64b/B9P9J/O1MRC1nFw7CjGwRx8=;
+ b=CKumEtz7DT+2PooJg46wH1Ix3YCQwAU5XEIuyMGNooHAThVeEfEE47OGsqnjaa3IUtBKp1Um/bNFzvLMfnqHsk5rQPgsdErzvitysn4AXsbVR2ufutsQj7j0grHfSj39X+usL8MaP4+j21LsdIyzfTbV7yGP8qtx81WrD1H0Qkk4k/00v26iOVbrvpOlXU9sRvLKxumYZwabusLeq8KVmRqz0cYSjuoA+BWvNJqDmoxR2zcKHM5BDdjQchFx8zFGEIkYeXyyq2qyARfTTZy+LUbzV4k4lca0lhgqSeXFLxkCTUGuQeT6VjF+G/2StVeSidzAa8CR2WtHD9qFPsLK8A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8CWsXGRW4cXV/4Ig9ZY5w40sEg5DWBJ6K1rA5X6kY4c=;
- b=kWRhfuYXNY+SpzqYpfFTwj9zdaR28kbSPQFZ0Npi/fEGmQ8xMomHpaIxw8LEzgTqcRTLljaSpzgJONScM8XeRFV36nGZaVsE+UgJk3lS2l1XtHfatLIEen0W3L+7KDKQRHjGKHueMr7ejrnLeYRdmYjG7TiNBIB2g6XgOjcIOu+dF7SfHUK5IsRG/0WE+/05PHN8JQqnGp+R1NB7NCDnh8oGGRhwWewDeGsHbNDQA+QB8JAzVn3P1WdeQiw0UPu9yeGf+cNqbyhNRnKoFdiXwxgOBV6SjYNXbph+w15r5YQL5CSPn/IfH5+pEuCUi4Ew1YGmOYOLinVWilKSdFTDXw==
+ bh=JPW24ng8UI3RbdNi64b/B9P9J/O1MRC1nFw7CjGwRx8=;
+ b=nw8hR26cbdd76ZAcZb86TIB1DJoDOvf3gyFKFqjdRkAyM/Nw3ZFCQNNnjHaptE/gpZIR+G5buiG2ugT6vuq0m0tHOoAEAIcLomaME6HQZiRmQS6pAvjAi0lsLck3kbgeMSQxwOhduAHXYybABhls8B384tMa2LjP8EHymFr2Gta8kCbnqz97F+RpBJd+2HxnTRZUbRJ7Iuj/NVE5wzvyMZ7MVrq/L3ghAtVPAwwZXGa+1rVodZRMYieWDU2ni0FmHSGgHqXWH789WCsi+/WsBfSoATBsDMSdYs71PRaZIDGkvH2IIDLW3oZyCdPGm1jOks3a++5VmJd68mouRDqpbQ==
 Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DM4PR12MB7742.namprd12.prod.outlook.com (2603:10b6:8:102::18)
- by SAAPR12MB370563.namprd12.prod.outlook.com (2603:10b6:802:303::16) with
+ by LV8PR12MB9110.namprd12.prod.outlook.com (2603:10b6:408:18b::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.10; Wed, 4 Nov
- 2026 14:44:12 +0000
+ 2026 15:31:01 +0000
 Received: from DM4PR12MB7742.namprd12.prod.outlook.com
  ([fe80::8df:c519:298a:94f6]) by DM4PR12MB7742.namprd12.prod.outlook.com
  ([fe80::8df:c519:298a:94f6%6]) with mapi id 15.21.0592.009; Wed, 4 Nov 2026
- 14:44:12 +0000
-Date: Wed, 4 Nov 2026 09:44:08 -0500
+ 15:31:01 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: rcu@vger.kernel.org, paulmck@kernel.org
-Subject: Possible debug objects issue with: rcu: Make call_rcu() safe to call
- from any context
-Message-ID: <20261104144408.GA250870@joelbox>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-ClientProxiedBy: CH0PR04CA0108.namprd04.prod.outlook.com
- (2603:10b6:610:75::23) To DM4PR12MB7742.namprd12.prod.outlook.com
+To: linux-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>
+Cc: Kunwu Chan <kunwu.chan@gmail.com>,
+	rcu@vger.kernel.org
+Subject: [PATCH] rcu-tasks: Track barrier callbacks in debugobjects
+Date: Wed,  4 Nov 2026 10:30:45 -0500
+Message-ID: <20261104153046.965890-1-joelagnelf@nvidia.com>
+X-Mailer: git-send-email 2.54.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MN2PR05CA0051.namprd05.prod.outlook.com
+ (2603:10b6:208:236::20) To DM4PR12MB7742.namprd12.prod.outlook.com
  (2603:10b6:8:102::18)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -94,310 +106,99 @@ List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB7742:EE_|SAAPR12MB370563:EE_
-X-MS-Office365-Filtering-Correlation-Id: f7f5936e-439f-4230-9925-08df3a82172e
+X-MS-TrafficTypeDiagnostic: DM4PR12MB7742:EE_|LV8PR12MB9110:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1d09957d-5754-441c-abca-08df3a88a184
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|23010399003|376014|10070799003|366016|1800799024|5023799004|11063799006|261009223027099003|56012099006|261021121427099003|261021123027099003|261009221227099003|261022075727099003|261102123227099003|261022105027099003|261026121527099003|261028144727099003|261026140227099003|10067099003|18002099003|6133799003;
+	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|23010399003|6133799003|10067099003|18002099003|921020|5023799004|11063799006|261022075727099003|261022105027099003|261026140227099003|261102123227099003|261028144727099003|261026121527099003|261021121427099003|56012099006|261009223027099003;
 X-Microsoft-Antispam-Message-Info:
-	T9f3lzq0BV+gA8C9F3vjl4WgPSbDTRTHb3BUiAQ/QE6IH7sqCoF/hJC+7Zt7YWBP/I/7qWJpJ0baXh2WHR+C39BttWo7DtmzEpkfbPTrsFfS8najIfK352shbiWpnF+ZPfGKijUZ4nC154blY8Pbt18NSf330eVmGLfXlvgYYB790oelcBcZ/TBJINumlJ9gi8QAi7xr1I9h+u8LA75xv1LYVuG/lu5KTAYLo/BDbPx7RH/LpGrePZMERzb3xud9MYJjQzO2PIasGGCV3HWZPzPfyXkD8Fz6Fy9fbvWGbphmrcPrLjnyja3n1zLttRZRcgGocKIMm1JsoEL5yjJVunoqT3JAzeCqRpZEjBwgnhZImcpe8kE+F74OyTZiGVxBMBEuQnLc2A7ATtBP9g0I76XtLeWhVzQxGXt3aES5r5Gh0sAd1pp0/jYxHHqQjzO8hBZH40Ylz6QpLJAb3CIVYImaY/h7K5R91o/pQB2z/f8d3a6x/QGGhXyiNoygolViUtJSNUa2BUUdvQxwTJ0UhOoa8YMKEtfzy46AosbyAUP1RX6UFf+e7k3B7jML88sjd6o2UoItyysENc9SN9xBOP+m4RbPU8soOlXS0Q87qUi1K8+/Q0UjEL2oTmRk9fD/mkAQFcsAxJr4evvaNKUqQyXz5hed1ARuaYoOyuXkR1s=
+	BK6+E77Qwvt7KTkRj/gxInx5W4mDTUoFW5Z16VQTgiRX3uuWZhQKM7FSKz8I274UotFsWQLV7/GkVEFd1O25V1vhE+nsdGh7Rc59IT1Y80E/TAm2ziyWZMWM9GB7ZeAC4P/XbNw7qHYvftnbWr3DTbJ0hM5meLEZCKtW07SuqZdBLNV9Tbn+q/D5U3PI7dlwb7Qhgg+oPNVbTW7C4q8ch+Cy5o6jIdfoJZphupqA1XWQBQePQzbrFsNgqjsxgZN7q0FIL3qDWgKf0/1udIwkAQqHTOUsrmHtR/Nm80l/As0DBJy3aueNPkrpKpHtF3n2+CBtPYR5idyKnYhJKujV9xh4uCTGP/r88CAxX+hmbBryA3WUROOA9nlpxOIPY3zeGKNjSklE90FnoO63kIbif/IXy6ojtaO7EEdg3blU0kNomG0/WOphiTjfnPJmq/spLigj2sFMMY61V6SWVEjIeCG5WhYXpj7Mqug4hxKcPxdUkcNjr1yI5JfKVtyU/GQ9Xi4PJwdmn898MOkIlufZIJmBWHjkVTbLbiHt4IaGCRCX5cRhcboiskonBPSLQrWQj13E6+X6TYcGQXG4tvl5+IGiM/49jMzOlajYzwai9Fdwy8OMyvYoQWDr3BowNJDjFSiNkXfE/w8YcpqRn+O+w/JrRvMLHoM7w+Cg57Cjrh2wx94/xskwwP30Z/+93v58Ku0TJbyutDSxK0oOhS3kJA==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB7742.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(376014)(10070799003)(366016)(1800799024)(5023799004)(11063799006)(261009223027099003)(56012099006)(261021121427099003)(261021123027099003)(261009221227099003)(261022075727099003)(261102123227099003)(261022105027099003)(261026121527099003)(261028144727099003)(261026140227099003)(10067099003)(18002099003)(6133799003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB7742.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(23010399003)(6133799003)(10067099003)(18002099003)(921020)(5023799004)(11063799006)(261022075727099003)(261022105027099003)(261026140227099003)(261102123227099003)(261028144727099003)(261026121527099003)(261021121427099003)(56012099006)(261009223027099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Pu4OO3mnym5hRkMp9i7YGcX6yeYlOGbQ9MVai+Fppud5yGXTzSy/++2kJIKC?=
- =?us-ascii?Q?GMVH07JeZcwaiZeymqQiblBo3a+HDR6udiDL0628P35fNNpplS7+H+HjlAIB?=
- =?us-ascii?Q?fShbwvUHwh2tAvk+wGJQqRRRBjbRtVosl6Dw1dNYtYYW+YL3XZxsaVRPLEhu?=
- =?us-ascii?Q?erBKbp0hV8J6BoMK+7WZ6IB7zPtkJh+12egG1HxHsepJKX+AZ7WAiQfBm7En?=
- =?us-ascii?Q?0qij3+c93ZqcugJc9MN05ZiaSKgLUmPGVoi9RRkDvSP3LScQ9ZA+Gpe4XaYb?=
- =?us-ascii?Q?Y45LA0v6I4BghoRZ22WViQ3uwxcNlF56UyAgWkA5JOqHrU8CNyBQsuRg3HYk?=
- =?us-ascii?Q?nHRnrWZLJXpwoXoXWXJl+GB3RSLIfP3WsYxg/KQgeI2vHJtClo+/ADCU93ea?=
- =?us-ascii?Q?wgOR45doX9Emi9InMWaT7fzctLERH0Y0hTUko/GGgKeZUzIBFZHuqat1QBs3?=
- =?us-ascii?Q?R9lEKfN8VTtSOr+Ki75zImO6mDQZ9NfBHXsy4ilxWg8VnIfBb/Wr6Fxb6E0l?=
- =?us-ascii?Q?0V1j7bmvjgCJ1nRPmM29uc5ZL+4txjaXrl7IOge8EqhCiFsCNrlhmJQP20mh?=
- =?us-ascii?Q?BspWCmHYI4iQmSAehKScBrh98qpk9XEsHrIDKtAFznSWwqQ4uraLWxxXPnd0?=
- =?us-ascii?Q?Z2tCKjNg7fXc0tEW0aa+JPE5Rbo3zqqDhe0CQjp9+F9mvR6Gb0EcyKSeCrnx?=
- =?us-ascii?Q?JuXcH0ytXLW5QHYMP+sSE1e/psxiEOZ6FUKbm7piq+vfkrkPPLs7OlN3vsiQ?=
- =?us-ascii?Q?+XOlxOabGcrRVa58TooC/E5p7KX0bQ0P+2zZiHiyXyIOLpDCuyLr2HouwEqz?=
- =?us-ascii?Q?4KN5Bdk4GioIU1JCt+tNfms1PkRXAoiGKmQ3CHG6BwSxECQ6UaijuBSa+BZQ?=
- =?us-ascii?Q?7ROIOdGaCbiUhbd4bIDvQwzgRZJhP3vs20qtJt1GHkdC3FeRfShwgPtaU9ov?=
- =?us-ascii?Q?Ib9i6voJziC0BV6g7PS8rn2NCr6bo1IZd0V2JV41AfzXKCwE1OeP0ZzpDW23?=
- =?us-ascii?Q?x5WxdvY+f7I+nIo2WVcijLZslTN8NqTzs3nQ229iuodPnnKvL3s7mSUr2sn4?=
- =?us-ascii?Q?H1srFjtNgDkbXGxpK2rU6xAIptMueLfS1qx1Bwp5w0fhPvekpaG6NnscdbcK?=
- =?us-ascii?Q?lK0VSm4lVWmUqpNGIBDkqcIeAl/P5frd/oq4n5ZKeozx477o+ANrmLQJofK6?=
- =?us-ascii?Q?h6awYPv5uySjrt1KjSjWDTWOytN/1pzhmOTBUdJRjD6gWsgi7SOcEptqIto1?=
- =?us-ascii?Q?JW6T86zTMpvSaUu5ORdZzu/s3fO0o7WvTka3kVFknNmUSnHaI4Oe8cP8sDYt?=
- =?us-ascii?Q?HNa+jOl+ie8FHnXOxBxELk5oyU3otWM86IQPFDMK47mkpEuejF6++8nTWQ/8?=
- =?us-ascii?Q?8olqxNe7nqsiLdaUNeUfrfGmAYoaZHf9CTRg5D9W2MjsN464/UF08+ecMUvF?=
- =?us-ascii?Q?jDsnWKKcWjcBeNnisZqddOIavabc3aC+fQXZz3IQ9b8J+5YvhLQCoHkkBwUC?=
- =?us-ascii?Q?wFNrjcvRmy7bYLhgxYa7ViRBMkTttEsE8ynoWgkP8xveNhxaC7LzQtrmNWQV?=
- =?us-ascii?Q?823CWwhbj6lV+84e8G6yXGB6xddQZ3knpP9T6y+k6IH5BgsIayCUAerZVNkU?=
- =?us-ascii?Q?G/aNUL6fOeM6g8xc+eQ+0E1JC/tvCKm9ka8rBhHdd72DyqEVdxObhvJoQVQ9?=
- =?us-ascii?Q?/HIcoeOChkPed4gjv8qJkzKvL8nV5Z6RhaRb948VMSKsTqCst+wJ7deLwW5k?=
- =?us-ascii?Q?o70JFfGh+UXYbkjnHM/9BzCI+QA2chYgrv/E+kj1YGDnO+jO+oH/5H2DvlsW?=
-X-MS-Exchange-AntiSpam-MessageData-1: L4D7iapcc8eubQ==
+	=?us-ascii?Q?MYIRa6btLmQTfOZnOWIpsrWbyhc25CYGRRfXCJUki571/4xbkPgVv+O1w4os?=
+ =?us-ascii?Q?8n2rOK9CQkN3bx6iH2HsuqLW73VTzyARn3CEedWu7+PuDNlxMlf/zsWGaVsv?=
+ =?us-ascii?Q?VHJjBXmmLn5/wHUevf+M1JXRmPVYoFDPQ5GUivSqWWKildB16uYtAS3XzIsg?=
+ =?us-ascii?Q?uPuDzM+r8h0GYdxhYSI2yXmdBR6kVwKbrf7oPwtdupgHvQGTBeF8UY7wqg44?=
+ =?us-ascii?Q?+obaXpOLRZexOMC7EZrkyNoysNpYfv6pHJrluNDWHwPUzsmrAQJufps/WVTg?=
+ =?us-ascii?Q?U0In5+aPzqHgTsLeocNl0fVqzdAhOfSA7LTp9pLbQyqhHfq2hY5YZYuwBNjD?=
+ =?us-ascii?Q?JwlI81LTgEImLCTxHCxlmnyLsoeDVoiQG6y7RMCnW5LA53bP8tpUAY3qQJTI?=
+ =?us-ascii?Q?EiYfqca/NQ5C5HGa06vI6wKcUTuaQkBNQ8/XAAlTStkI9RF2SWUOwvgbZ/5M?=
+ =?us-ascii?Q?cVBCTE3/HIrcPvXQtmtexyY8cVxA8Jr4wC5vEyfV8gPr9HcefcAIOvoyqpPC?=
+ =?us-ascii?Q?JOldQOK8NoNgnJ6mKU8XcuhStolt9ho22jt0vw0pkAnbA7w2JNa/hgWDlgzS?=
+ =?us-ascii?Q?y9Zoy9E5o4BT3/L60y96pw0th5DzlNG0xO6nBSnpAe/p05G4OJ/APScZ/OZL?=
+ =?us-ascii?Q?vD5dbVp/HNTxtp6UoSfz71XpjbARZiAHuR8XzcGQ+wbq0MH9oa7nEbp26n7S?=
+ =?us-ascii?Q?AEF6du/ThzEcxk4yXKmwFyjUeFgR18OdOtaNRcQMdrEvl3IEzBf9Mvnrrq3Y?=
+ =?us-ascii?Q?tudGdRDxIPlrRKT/TkAo139VRc5unmrAJ4eptmZC5iEoNMc6xh84+Cbtk/SJ?=
+ =?us-ascii?Q?8sYkzBuBBcEsVqxG7LDlYUZ6AFTay7sJ6VwgUPlfzEKQrGqgZvwamD1h+3PO?=
+ =?us-ascii?Q?Rmgn436KdrngNMRjKX7Yw0twbmTMmF8zXbRCd/KZxwuaSsabW9GS9foNHsOh?=
+ =?us-ascii?Q?7x301wKm9fKmGnsltW2SwO5Eevi8Y3a7WH2naWNSwvWcwKUugm4yKWukXNC8?=
+ =?us-ascii?Q?RzV0LTtZB3Qb4JNNU74575N58vvI31zKWCVkgKBKcaEvL9DDue6BUyerHuSR?=
+ =?us-ascii?Q?ES81JvwnJFepNeSp/5Zb+3VKvekDLGZW8nL+yv8YUi23kz90bsL91DSweCem?=
+ =?us-ascii?Q?TLyJB9z3ZCTg3PrI4co6PkKu+lUlqQZk33cc1CqImZqFUq/Ts+k22Gex7npS?=
+ =?us-ascii?Q?HkBTgm1WDMWsn4BG2Pql60vQ/8UVBLS9sETk3/5/RDEChMhcJ6ZeuB5OTZ49?=
+ =?us-ascii?Q?9JipjlsJcpSQbd46PEBg9ebLwLSv5mXKNuVoPx8zR3pEr0hZOTK0BV1GfVLa?=
+ =?us-ascii?Q?FrQMV4ifjOEPnfoW48kVTu0srvd3XVKAfLCSVEBo6rWQkkNJ0fmZDdVpkl7X?=
+ =?us-ascii?Q?ZltnTzajrDb3TLJ6AD5EAFujhBBJPupKyCDbAqnnm+Y8BNrCdVdrBwLabqOh?=
+ =?us-ascii?Q?aj+8Sv2oLScFX+nCd/zOAYE69VUvLeM5//WU07+Hkk54MjutIvHmGEExq/Hn?=
+ =?us-ascii?Q?xUPba8WjUh675LqdHrvSgkIEINObpW21RdDSLNu2wweW4aRJXi6wOg3huQTS?=
+ =?us-ascii?Q?U0N4pVnDI0d8asabpz2f3ZTStOSWD4NdPyVKCvqA9WKNQ1ljHIsqE1qtIoKh?=
+ =?us-ascii?Q?yhtUt200ltC3L8Mv1ZaCTqrO3Wircz4Xjz4QRJrmm4oF7F9SOUfQ+fc99Lx7?=
+ =?us-ascii?Q?j84bkqL8OPCc9cnM38YDvli+ycrriC4fpLIUXkLIuJRvp0gGOHF7WzEhlBag?=
+ =?us-ascii?Q?wGaZvL3hIA=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7f5936e-439f-4230-9925-08df3a82172e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d09957d-5754-441c-abca-08df3a88a184
 X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB7742.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2026 14:44:12.1249
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2026 15:31:01.1496
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vMx7h2F5qDlL1m3Rm1zNiWk09ls/95O8o2JecttLFjj3xTTTmFmExM5ka3Lpwqtd0P239h414Us4rqW4wEbYZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SAAPR12MB370563
+X-MS-Exchange-CrossTenant-UserPrincipalName: fvfJnIXvwhseNNqwTRPgQTQDbsnBF6nvav5vp/zz/+kQAZxk85K3E19nqab5wbDZx4DsPHjA8/O4STZYaHLLeQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9110
 
-Hello Puranjay,
+rcu_tasks_invoke_cbs() now unqueues each callback from debugobjects.
+However, rcu_barrier_tasks_generic() inserts its per-CPU barrier heads
+directly with rcu_segcblist_entrain(), bypassing the queue hook in
+call_rcu_tasks_generic(). This produces active_state and deactivate
+warnings for untracked objects when a barrier callback runs.
 
-My local LLM flagged a debug objects issue with the Make call_rcu() safe to
-call patch.
+Activate each barrier head before entrainment and undo that activation
+when there are no callbacks to entrain behind. Successful entrainment
+is balanced by the invocation path, as for ordinary callbacks.
 
-Apparently, it is possible that a double call_rcu can result in corruption
-of the deferred list before debug_objects gets a chance to look at it.
+The existing n_barrier_cbs=2 torture test reproduces the warnings before
+this change and completes without them afterwards.
 
-Can you take a look at my AI slop patch below that fixes this, and do some
-testing on this if it is a real issue and send a proper patch? Thank you so
-much.
+This fixes patch "rcu-tasks: Detect duplicate callback enqueue".
 
----8<-----------------------
-
-From 1a550f5c8386761aa9c5c5bf2ec28dcd74ecebec Mon Sep 17 00:00:00 2001
-From: Joel Fernandes <joelagnelf@nvidia.com>
-Date: Wed, 28 Oct 2026 06:50:58 -0400
-Subject: [PATCH] [TBC] rcu: Preserve deferred lists while checking duplicate
- callbacks
-
-The deferred call_rcu() path uses the callback head as its lockless list
-node. Registering that head twice can self-link the list and lose other
-callbacks before rcu_do_enqueue() checks for duplicates. The IRQ-disabled
-object_debug test reports a missing valid callback on both Tree and Tiny
-RCU, and an invoked duplicate on Tiny RCU.
-
-With DEBUG_OBJECTS_RCU_HEAD, stage callbacks in independent entries so
-duplicate heads cannot corrupt the list before the existing checker
-runs. Keep the checker in the drain instead of moving its blocking locks
-into NMI/reentrant registration. Use kmalloc_nolock()/kfree_nolock() for
-the entries, and drain them through the existing irq_work, barrier and
-CPU-offline paths. Match Tree RCU's leak callback handling in Tiny RCU.
-
-This costs one small allocation per deferred registration in debug
-builds. If metadata cannot be allocated, retain the original intrusive
-path rather than dropping valid callbacks. Duplicate containment is
-therefore best-effort in that fallback, as with failed debug tracking.
-Non-debug builds do not allocate entries.
-
-Fixes: af78eca13b03 ("rcu: Make call_rcu() safe to call from any context")
-Fixes: 0ed912d346fd ("rcu: Make Tiny call_rcu() safe to call from any context")
-Not-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: Kunwu Chan <kunwu.chan@gmail.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 ---
- kernel/rcu/rcu.h  | 30 ++++++++++++++++++++++++++++++
- kernel/rcu/tiny.c | 28 ++++++++++++++++++++++++++--
- kernel/rcu/tree.c | 25 ++++++++++++++++++++++---
- kernel/rcu/tree.h |  1 +
- 4 files changed, 79 insertions(+), 5 deletions(-)
+ kernel/rcu/tasks.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index d60444bf3a02..07613693e567 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -10,6 +10,7 @@
- #ifndef __LINUX_RCU_H
- #define __LINUX_RCU_H
- 
-+#include <linux/llist.h>
- #include <linux/slab.h>
- #include <trace/events/rcu.h>
- 
-@@ -583,6 +584,35 @@ static inline bool should_rcu_defer(void)
- 	       rcu_scheduler_active != RCU_SCHEDULER_INACTIVE;
- }
- 
-+/*
-+ * Debug checking must run after deferral, where it can take locks.  Use a
-+ * separate list node so duplicate heads cannot corrupt the deferred list
-+ * before debug_rcu_head_queue() gets a chance to reject them.
-+ * Allocation failure falls back to the intrusive list to preserve valid
-+ * callbacks; duplicate containment is best-effort in that case.
-+ */
-+struct rcu_defer_entry {
-+	struct llist_node node;
-+	struct rcu_head *head;
-+	rcu_callback_t func;
-+};
-+
-+static inline struct rcu_defer_entry *rcu_defer_entry_alloc(struct rcu_head *head,
-+							  rcu_callback_t func)
-+{
-+	struct rcu_defer_entry *entry;
-+
-+	if (!IS_ENABLED(CONFIG_DEBUG_OBJECTS_RCU_HEAD))
-+		return NULL;
-+
-+	entry = kmalloc_nolock(sizeof(*entry), 0, NUMA_NO_NODE);
-+	if (entry) {
-+		entry->head = head;
-+		entry->func = func;
-+	}
-+	return entry;
-+}
-+
- /* Drain an outgoing CPU's deferred SRCU callbacks; see rcutree_migrate_callbacks(). */
- void srcu_offline_drain(int cpu);
- 
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index ef0b0474f207..3efd151d30b1 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -48,14 +48,17 @@ static struct rcu_ctrlblk rcu_ctrlblk = {
- /*
-  * The callback list is only accessed with interrupts disabled, so a call_rcu()
-  * that arrives with interrupts off stages the callback on a lockless list that
-- * an irq_work re-issues later.  One global list and irq_work suffice, as Tiny
-- * RCU is uniprocessor.
-+ * an irq_work re-issues later.  Tiny RCU is uniprocessor, so the normal and
-+ * debug lists share one global irq_work.
-  */
- static void rcu_defer_drain(struct irq_work *iw);
- static LLIST_HEAD(rcu_defer_list);
-+static LLIST_HEAD(rcu_defer_debug_list);
- static struct irq_work rcu_defer_iw = IRQ_WORK_INIT_HARD(rcu_defer_drain);
- static bool rcu_defer_draining;
- 
-+static void rcu_leak_callback(struct rcu_head *head) { }
-+
- /*
-  * Also called by __rcu_defer_drain() to re-issue a deferred callback, so it
-  * must not re-check the deferral condition.
-@@ -70,6 +73,7 @@ static void rcu_do_enqueue(struct rcu_head *head, rcu_callback_t func)
- 			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->func);
- 			mem_dump_obj(head);
- 		}
-+		WRITE_ONCE(head->func, rcu_leak_callback);
- 		return;
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index d5d060a5c4b6..a20db323612b 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -470,9 +470,12 @@ static void __maybe_unused rcu_barrier_tasks_generic(struct rcu_tasks *rtp)
+ 			break;
+ 		rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
+ 		rtpcp->barrier_q_head.func = rcu_barrier_tasks_generic_cb;
++		debug_rcu_head_queue(&rtpcp->barrier_q_head);
+ 		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 		if (rcu_segcblist_entrain(&rtpcp->cblist, &rtpcp->barrier_q_head))
+ 			atomic_inc(&rtp->barrier_q_count);
++		else
++			debug_rcu_head_unqueue(&rtpcp->barrier_q_head);
+ 		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
  	}
- 
-@@ -108,6 +112,17 @@ static void __rcu_defer_drain(void)
- 		rcu_do_enqueue(head, head->func);
- 		drained = true;
- 	}
-+	if (IS_ENABLED(CONFIG_DEBUG_OBJECTS_RCU_HEAD)) {
-+		llist_for_each_safe(node, next, llist_del_all(&rcu_defer_debug_list)) {
-+			struct rcu_defer_entry *entry;
-+
-+			entry = llist_entry(node, struct rcu_defer_entry, node);
-+
-+			rcu_do_enqueue(entry->head, entry->func);
-+			kfree_nolock(entry);
-+			drained = true;
-+		}
-+	}
- 	local_irq_restore(flags);
- 
- 	if (drained)
-@@ -124,12 +139,21 @@ static void rcu_defer_drain(struct irq_work *iw)
- 
- static void call_rcu_defer(struct rcu_head *head, rcu_callback_t func)
- {
-+	struct rcu_defer_entry *entry;
-+
- 	/* A re-entrant call_rcu() during the drain would livelock it; drop it. */
- 	if (READ_ONCE(rcu_defer_draining) && !in_nmi()) {
- 		WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
- 			  "call_rcu() re-entered during callback drain; leaking callback\n");
- 		return;
- 	}
-+	entry = rcu_defer_entry_alloc(head, func);
-+	if (entry) {
-+		if (llist_add(&entry->node, &rcu_defer_debug_list))
-+			irq_work_queue(&rcu_defer_iw);
-+		return;
-+	}
-+	/* Keep valid callbacks working even if debug metadata cannot be allocated. */
- 	head->func = func;
- 	if (llist_add((struct llist_node *)head, &rcu_defer_list))
- 		irq_work_queue(&rcu_defer_iw);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a8ede50dbeff..9674cc44618b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3229,6 +3229,16 @@ static void __rcu_defer_drain(struct rcu_data *rdp)
- 		head->next = NULL;
- 		rcu_do_enqueue(head, head->func, false);
- 	}
-+	if (IS_ENABLED(CONFIG_DEBUG_OBJECTS_RCU_HEAD)) {
-+		llist_for_each_safe(node, next, llist_del_all(&rdp->defer_debug_head)) {
-+			struct rcu_defer_entry *entry;
-+
-+			entry = llist_entry(node, struct rcu_defer_entry, node);
-+
-+			rcu_do_enqueue(entry->head, entry->func, false);
-+			kfree_nolock(entry);
-+		}
-+	}
- 	raw_spin_unlock_irqrestore(&rdp->defer_lock, flags);
- }
- 
-@@ -3248,12 +3258,13 @@ static void rcu_defer_drain(struct irq_work *iw)
- }
- 
- /*
-- * Stage @head for this CPU's irq_work to re-issue once interrupts are on.  Only
-- * the drain side takes a lock, so this stays safe from NMI.
-+ * Stage @head for this CPU's irq_work to re-issue once interrupts are on.
-+ * Allocation uses nonblocking trylocks, and list insertion is lockless.
-  */
- static void call_rcu_defer(struct rcu_head *head, rcu_callback_t func)
- {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-+	struct rcu_defer_entry *entry;
- 
- 	/*
- 	 * Instrumentation on the enqueue path can re-enter here from inside the
-@@ -3265,6 +3276,13 @@ static void call_rcu_defer(struct rcu_head *head, rcu_callback_t func)
- 			  "call_rcu() re-entered during callback drain; leaking callback\n");
- 		return;
- 	}
-+	entry = rcu_defer_entry_alloc(head, func);
-+	if (entry) {
-+		if (llist_add(&entry->node, &rdp->defer_debug_head))
-+			irq_work_queue(&rdp->defer_work);
-+		return;
-+	}
-+	/* Keep valid callbacks working even if debug metadata cannot be allocated. */
- 	head->func = func;
- 	if (llist_add((struct llist_node *)head, &rdp->defer_head))
- 		irq_work_queue(&rdp->defer_work);
-@@ -4345,6 +4363,7 @@ rcu_boot_init_percpu_data(int cpu)
- 	rdp->last_sched_clock = jiffies;
- 	rdp->cpu = cpu;
- 	init_llist_head(&rdp->defer_head);
-+	init_llist_head(&rdp->defer_debug_head);
- 	raw_spin_lock_init(&rdp->defer_lock);
- 	rdp->defer_work = IRQ_WORK_INIT_HARD(rcu_defer_drain);
- 	rcu_boot_init_nocb_percpu_data(rdp);
-@@ -4646,7 +4665,7 @@ void rcutree_migrate_callbacks(int cpu)
- 
- 	/*
- 	 * Callbacks deferred past the point the outgoing CPU's irq_work can run
--	 * sit on ->defer_head, which the ->cblist migration below does not
-+	 * sit on the deferred lists, which the ->cblist migration below does not
- 	 * cover.  Drain them here, before the early returns.
- 	 */
- 	__rcu_defer_drain(rdp);
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index b7cac7a13b4f..da1f29c7c238 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -231,6 +231,7 @@ struct rcu_data {
- 
- 	/* Deferral of an NMI/reentrant call_rcu(); see __call_rcu_common(). */
- 	struct llist_head defer_head;
-+	struct llist_head defer_debug_head;
- 	struct irq_work defer_work;
- 	raw_spinlock_t defer_lock;
- 	bool defer_draining;
+ 	if (atomic_sub_and_test(2, &rtp->barrier_q_count))
 -- 
 2.54.0
 
