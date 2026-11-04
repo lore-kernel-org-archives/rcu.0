@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793780245;
-	b=MZ5zPuRVAw8UlhDh7El9LtYziT/9cpv/jM29/pHzpDc4Fbt7VkT1D0vihw9jowAtA0lf
-	 uINaVxie/60tLoCft6crfDx8eJjKQ9rzYhiFBctBxdI389dvvA+qqEsHigDRDfJzR4Im3
-	 +W2EnsrXenQVDu96fMmaCcwrhsG5jxViuhEcqgLeLepyUiexOv2uWAKCFAajXI23CqgVC
-	 iVEYGVaBptMft7VWVtB76Zcp7oC0CJlXE8nQFMeBDOhkGvTv7zQ3qaf2d7QJ27p1RP+x/
-	 DNs/CYYlCHKJnjxz5ixLVai6OYW46Tyl5PhtjZS0Wlp+byR+SDW/QB92rC4YIf0xAaA==
+	t=1793780355;
+	b=Ng9+e0MxQklZKYwwCvDcjl6SYB51EbY4ZP+sSFW9YEf96NJArW+inqOLaGnCoYkXLjy7
+	 PFKAK+MvqdbUSUWbppQIxbIdpwIS7zbJRn2YVaazkkSDiCUqoRsRXhZ66NiYilSsxRsyC
+	 hC9wIAV5Y4x3HIY+GrS6ozodxP+uQB1w1RdW4ynsSUnUutF4/v/VeS6NohnjXTdukfsxS
+	 wBasQHKufO0auW9W6Fbu1b5m1jMEIG7kF50mAne+xjTzAAe8Q6awxTWe56616EsJs24Ir
+	 NHFFf+mRwLkQQ8CSGT2sC024vBBw3qhIsgPlpe2kVjVCBHjBFaHIKkiUvRa9aXk7j4g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793780245;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793780355;
 	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
 	 Subject:Content-Language:To:Cc:References:From:Autocrypt:In-Reply-To:
 	 Content-Type:Content-Transfer-Encoding;
-	bh=sSlKHe6xc24svxDkA3PbRnbZQ2Hd6+8PIRLhRVLtkNA=;
-	b=NJjStKTfNipFDJDq9fcE+TM9ePfob4byx0sOhoaydsiRmE61jGgl2o+vZiabY7gKhvVM
-	 XMXyM7+oE2EzpVdskh0vtqJuDnIje5SNT1VCFLF3Itx7wkJ1mBMlqyNKMjwsve34kyfy4
-	 cToYQTla0WuAS9fks65FGBVWUqPZWSNDbZMqXDrCSVTH8Jcovi55Bs+eDJUYkD4auXXMp
-	 bxBU4aOpgqDkhLn9O84sRvUg5msTli+eCH3cNfn+Jyl3CzYmCb2oqSeMLayT9mQroNBUQ
-	 Lb+FxqDIWy3mwSAMm7YFus2gL7D0odQzcWoy+7m0Gvznb4q9Hik/S1wcUr6zTtUQgfg==
+	bh=Xc7V+QdXVVO/sqjZeREmJmMcVmU9QYnc9ONRFJK1OpE=;
+	b=VN7fIFYtiUyzgGq1qbC+W1Xurz+Z5xdx74bvPe5TPGZV96Dj28nJFyaWmNkSOD8yN6oK
+	 PU4Y8RNTLWHn8+R3VTo7shF3Sf+ekLLj0+RihZMec3KqNBbcf7RPb5Aw6YnW+w8nEARUX
+	 181v5bUj7xNvZMeafq+6rXoEeGiNpLuE0bn0+Ek1eyVDJ+siyeSpcakj1RGQ6PSWqe95q
+	 yL4dPMGIrP/qkh66ntxASqdE9mFcbs/Hr4ketgl0rqdUaDlQkll2MmFs7NXApWRc7rXol
+	 H93QRUuCIa4FJXlpKu+4lAIyeKNjnCGWbxjeaa8sktVEmVYRpPAv4ED/2EEbyEtfvNQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=bXTYrDSE;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="O3/snmKj";
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7CA606A326;
-	Wed,  4 Nov 2026 08:17:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C09AE606A32D;
+	Wed,  4 Nov 2026 08:19:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=bXTYrDSE
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D2DB1F000C1;
-	Wed,  4 Nov 2026 08:17:21 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=O3/snmKj
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79D9A1F0093A;
+	Wed,  4 Nov 2026 08:19:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793780244;
-	bh=sSlKHe6xc24svxDkA3PbRnbZQ2Hd6+8PIRLhRVLtkNA=;
+	s=k20260515; t=1793780354;
+	bh=Xc7V+QdXVVO/sqjZeREmJmMcVmU9QYnc9ONRFJK1OpE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=bXTYrDSE8v1k4UTrZsaWqhHJsS3KHpcVQ9MpNm3mcEPTD8vb2ex7rANe82ae4M8i/
-	 U+Ge7YFlUWCEP+xm3yD8oGT2QLL60w+3jeGfHcyFOzeMowbYgPtorwLeFSLQWRoFeh
-	 vKaFxSbDESgRLNr8rWHYeENa5CsIt+x0S+Hw+SDaqHy4nHKjSi9n+hqfwW6di2LYzU
-	 xbQjrqsjQGFpGz4zHt46mCInYTWrKSrUysrH238MZo9pFr/I/LN3RKu+vLVtg/E+W3
-	 mC/OYkkJrUji6ca7e4xgedrR5Lj2PqIbcDkFwq3tn2lxiWWhI7rbo/Goy/r3fDxpLJ
-	 5OQ3BzFslQzPQ==
-Message-ID: <634f37c7-6096-49db-8cfc-7c5421631322@kernel.org>
-Date: Wed, 4 Nov 2026 09:17:19 +0100
+	b=O3/snmKj+Oq77n3PttxztnuIcIFYN0EpcanrM6a2w6qax1v2/dRhnuLA3toFV34K/
+	 RNs5POBA8fBvDsg3p8XPozQad0dKkQz2UHF8RzJkXPzm6e71H/u8U+nNZtcu1dm7tw
+	 IU9xCcMQfRmxLcMHfUWkNMYcWggc+r5lj1zuBRMnIPDLukGt5tuu4+SqzzGVBxggNz
+	 SbFXmnKaF1qJeIA2lSQcrg01vtQ8uuE3mi9ypgm+zxJUWP7O5WGxetbbhSbGaj/YiA
+	 dYbkX1+We1DsmnHCKotFbMMOMMByTSVOlLGzxVykQGkoKp71qJsIS8Q5I/NyKf7Ojl
+	 cLFxy1Ooy022w==
+Message-ID: <e4951dae-e010-4d75-a4c1-397e7c5cd05e@kernel.org>
+Date: Wed, 4 Nov 2026 09:19:10 +0100
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -52,8 +52,8 @@ List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mm/slab: restore the rcutree. prefix of the
- kvfree_rcu parameters
+Subject: Re: [PATCH 2/2] mm/slab: don't queue the page cache work under
+ krcp->lock
 Content-Language: en-US
 To: Harry Yoo <harry@kernel.org>, Zhan Xusheng <zhanxusheng1024@gmail.com>
 Cc: urezki@gmail.com, paulmck@kernel.org, qiang.zhang@linux.dev,
@@ -61,7 +61,8 @@ Cc: urezki@gmail.com, paulmck@kernel.org, qiang.zhang@linux.dev,
  rientjes@google.com, roman.gushchin@linux.dev, linux-mm@kvack.org,
  rcu@vger.kernel.org, linux-kernel@vger.kernel.org, zhanxusheng@xiaomi.com
 References: <20261028134647.3176080-1-zhanxusheng1024@gmail.com>
- <auIRU802S4Z4yAmo@thinkstation> <auiedkWD41Ok95TT@thinkstation>
+ <20261028134647.3176080-2-zhanxusheng1024@gmail.com>
+ <auifTNDwbBTJeu81@thinkstation>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -102,47 +103,73 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <auiedkWD41Ok95TT@thinkstation>
+In-Reply-To: <auifTNDwbBTJeu81@thinkstation>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 11/2/26 15:33, Harry Yoo wrote:
-> I adjusted my feedback. End result:
+On 11/2/26 15:35, Harry Yoo wrote:
+> Here I added bit more context and adjusted comment. End result:
 > 
-> mm/slab: restore the rcutree. prefix of the kvfree_rcu parameters
+> mm/slab: don't queue the page cache work under krcp->lock
 > 
-> The move of kvfree_rcu() to mm/slab_common.c dropped the "rcutree."
-> MODULE_PARAM_PREFIX, so rcu_min_cached_objs and
-> rcu_delay_page_cache_fill_msec became slab_common.* and the documented
-> rcutree.* names are silently ignored.  Restore the prefix; the
-> slab_common.* names, never documented, stop working.
+> Commit 56292e8609e3 ("rcu/tree: Defer kvfree_rcu() allocation to a
+> clean context") deferred page allocations to a workqueue. To avoid
+> deadlocks with the scheduler, it used hrtimer to queue the work instead
+> of queueing it directly.
 > 
-> Fixes: bbe658d65802 ("mm/slab: Move kvfree_rcu() into SLAB")
+> Commit d0bfa8b3c411 ("kvfree_rcu: Release a page cache under memory
+> pressure") later added a backoff mechanism under memory pressure, but
+> did not consider that queue_delayed_work() with delay = 0 immediately
+> queues the work and introduced the deadlock commit 56292e8609e3 tried to
+> avoid.
+> 
+> run_page_cache_worker() runs under krcp->lock, from kvfree_call_rcu()
+> callers that may hold more, such as set_cpus_allowed_force() under
+> pi_lock, so it kicks the refill work from an hrtimer. Under memory
+> pressure it instead queues the work with a delay of
+> rcutree.rcu_delay_page_cache_fill_msec, which may be 0, and a zero delay
+> queues it at once, taking pool->lock under krcp->lock.
+> 
+> With the delay set to 0, calling kvfree_rcu() on vmalloc memory under
+> pi_lock after a drop_caches makes lockdep report:
+> 
+>   Chain exists of:
+>     &pool->lock --> &p->pi_lock --> krc.lock
+> 
+> Use the hrtimer when the delay is 0.
+> 
+> Fixes: d0bfa8b3c411 ("kvfree_rcu: Release a page cache under memory pressure")
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Zhan Xusheng <zhanxusheng@xiaomi.com>
-> Reviewed-by: Harry Yoo (Meta) <harry@kernel.org>
-> Link: https://patch.msgid.link/20261028134647.3176080-1-zhanxusheng1024@gmail.com
+> Link: https://patch.msgid.link/20261028134647.3176080-2-zhanxusheng1024@gmail.com
+> [ harry@kernel.org: add more context to changelog and adjust comment ]
 > Signed-off-by: Harry Yoo (Meta) <harry@kernel.org>
 
 Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
 > ---
->  mm/slab_common.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  mm/slab_common.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 > 
 > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 01c64ef661e7..41dea01a8c1f 100644
+> index 41dea01a8c1f..051ca63c0b67 100644
 > --- a/mm/slab_common.c
 > +++ b/mm/slab_common.c
-> @@ -1367,6 +1367,10 @@ void __init kvfree_rcu_init(void)
+> @@ -1987,7 +1987,15 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
 >  
->  #else /* CONFIG_KVFREE_RCU_BATCHED */
->  
-> +/* Keep the prefix inherited from RCU */
-> +#undef MODULE_PARAM_PREFIX
-> +#define MODULE_PARAM_PREFIX "rcutree."
-> +
->  /*
->   * This rcu parameter is runtime-read-only. It reflects
->   * a minimum allowed number of objects which can be cached
+>  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+>  			!atomic_xchg(&krcp->work_in_progress, 1)) {
+> -		if (atomic_read(&krcp->backoff_page_cache_fill)) {
+> +		/*
+> +		 * Use the hrtimer to avoid a deadlock with the scheduler
+> +		 * by waking up the worker directly. queue_delayed_work()
+> +		 * uses a timer to queue the work, so it's fine.
+> +		 * But with delay = 0 it queues the work immediately.
+> +		 * Fall back to the hrtimer in that case.
+> +		 */
+> +		if (atomic_read(&krcp->backoff_page_cache_fill) &&
+> +		    rcu_delay_page_cache_fill_msec) {
+>  			queue_delayed_work(rcu_reclaim_wq,
+>  				&krcp->page_cache_work,
+>  					msecs_to_jiffies(rcu_delay_page_cache_fill_msec));
 
