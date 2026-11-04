@@ -1,123 +1,64 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.181
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793811579;
-	b=Ak8Vmcy1ECvEyAsTx7Gx4K9YfiaXx7wCowPjUvwa+3noj2f6zo0gY3kcYNuUIvfvc6uO
-	 RgFQZkK351Jzw9fGmxY9R6IQJIHvdMJfHQ8n/SXl0KE/AwFKaCo05uCUqkRj01zLZmGDd
-	 9e6sBQZ2bXNZ6Wz7LerIaTblXXCNdzqxeLE97uJ57t2+OlejotPIeCNvXhmf6znc+v4Lz
-	 qGljkQaXFKo47BhLmE8gQR+Yk8zCEG/hvbB3y0OaR+tS2W3qsbFvsE699XRf8FOh9hYbk
-	 kzYU+maot1FlN11kw0EH3fnHoYUFA0xKg7YKCYhXwgHvz/8ie46hYD+y3m35p0hZ3AA==
+	t=1793812453;
+	b=u3c/bVjgRqtUIN1+cCvFXUPWlrWwhyinlyzESGK/qID0TM36rYDpLRTFvlzTWbWJ5i24
+	 7tavyyt6HZ9EPbQSIwLjFuzMs/N7CLhgFOUoLoWHiwkGl5vu+NA1FM8giW2fWc2ipcTXo
+	 YFOZCk2dgjGPjwpGsDLYQ5JgzXWaON63lbETPsZe03ZSlqXFnnNcspopejdLsQAQDqyVh
+	 OzdbIGG5JJK4m8IeB3UZ22Ab28QXt5tC7F8a5SAu8bDSYQBBkHFZ/SFFZgvmKf9xXVZKt
+	 B5Qoecaj7TqfPbnjvd1mT9/iIAwRLBibds5b9fwyyxZXriX4hnw5cCPHwe9HP2VH/Jw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793811579;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=cteKSNOPJ5AcN+4sRo9jQDZ7xAOL9wTKiT1G4A5c+WA=;
-	b=ymK7l0z5nRi+COCAT5tAtrPSykA+z6Psmrk5Lv99/FH+RGD5kiHQI50pbrgskz5l3GdX
-	 Wjiqq+Z8z1AS1+cN+94HHP7GgxzMvJ3hYPPpfqAIv5HLiUu4NN9umFqc7bNniTV/dxMjJ
-	 E11SRoF3+wnNPbdn68/R9NIN1PZiyNEzUxsUFt+HIIEIy0BqnT+ukfSoy9UdBHZeiLeHU
-	 iYX5+r76aMUeSkjuuYn9NPauyCK0daJTJaNAbadOw61Tibv7TeXu39Ymg3bbz3uJ0rd/m
-	 jptjdRLfYAWX8giWh1H70/kNZpDy42EpOmfIP9Uowf0QPq5e/pim44cowvgHEx21ebw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793812453;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=UoFgbUFr390e5Xu0VCDxVTfIqMC+VP5cBukPS2Qt+oc=;
+	b=B7+W5dh7dXdCGVIXW3/w99iKV1nQjJUL0rLw4XLikGA07zhmnmR7dbiXNHBBQavQXdSc
+	 bILdlRpWOwDtGvUwFKsu/czAyZjTTw0Oodl+SmHW0zL+I+scr2bXG6+NBHuflxjWLFvBo
+	 RsF9LusNEUcEtuIRHfeQF+QCSc1hDm5cqnWCMsDukkrAjUJIEf9wHuIzm2syCyyFPzwPR
+	 Kah9GIr0yGRYZvn/a184PGPwH4x1Vqi/170Wd8OkszPzCAgl0KNMGJloSxpvOlrgg6a74
+	 V1jcVGMxIum5TlcFgSQKO3TEh96O5Q95IBvf2SIlZlnUQLVCpuRbU5/774AP6NsHPrw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=jrse6usq;
-	arc=none smtp.remote-ip=74.125.82.181
-Received: from mail-dy1-f181.google.com (mail-dy1-f181.google.com [74.125.82.181])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=oQh2M+72;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1167C606D832
-	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 16:59:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1167C606D832
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D653606A31B;
+	Wed,  4 Nov 2026 17:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=jrse6usq
-Received: by mail-dy1-f181.google.com with SMTP id 5a478bee46e88-3535a54bed9so1233378eec.1
-        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 08:59:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793811578; x=1794416378; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=cteKSNOPJ5AcN+4sRo9jQDZ7xAOL9wTKiT1G4A5c+WA=;
-        b=jrse6usqBnrS+soUkCyFUg2F1RMgHEti6okHxkqcz8eXjyjL6hgO59HYse6SKdGg4S
-         gmhsRH2BukszB3rE1G+ljKLc9MeAFdzPhVvn5ghI+cUZOEDZs49P6E2pUJcqypTcVo/e
-         1p7oN0C8hNpdiiAZd58xsCRac5ExecZ8JbUWVaS9of6d8ewtNoh5E3iDr7qbTZgNyWoy
-         MeYxDmBgMk8kqfKyiKGEAfj7Qe+JJRsN1N8Kn1C9hjexqAgVvQOobQZU0tiyHNyixf53
-         j4xZoXo9nnFkK/q07aUOVg953ppzvaadCtW0T/zZajLGlqoa98FxyjdY3WwZXW4+j8BO
-         3tOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793811578; x=1794416378;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=cteKSNOPJ5AcN+4sRo9jQDZ7xAOL9wTKiT1G4A5c+WA=;
-        b=FPMEc+uP2TlTFoALvmC0sz4q4FR6C8nPquu1GhTw4l8P4lRqM2lvMreAlgcVgxDo5y
-         DQct7SAPBXdChOtU3qVugd2PK9CphCkZSRAu0mSryQ5Ek5cuSSx07q9QetEhAXOKPBeg
-         KgSBmcEjO4LI6a3jEQe4zDkcBfEq5JuahuTB7ziUp6q+QGws+T74ERIknb0Ano7lle/t
-         1lY8eZwUCX/BHJI7w+1MNYXCtKXLcTT7dB0AZ7eCRemkF47bk7KyuWCCqabalzOTyu8+
-         Zan531SCKFjkF2FGAcNOZJ1o0i4Kra5HmpcEbbgX+b13onMiz1gMgli7VLt3ZpD18g5r
-         XK9g==
-X-Forwarded-Encrypted: i=1; AKwUvBzT5cl+P5+W2328itgcKhlgucKiManFJm5vqvPDZYCMkcVqxAiLY9/8VurkO7il5qIXBM0=@vger.kernel.org
-X-Gm-Message-State: APuU4Z+0Pk8tnsuGy1qvVqf3XV99nfzLKEerIJazW30WOeaTrSb5pLPx
-	7dA+VLzunGNBgBLIp02b4TBaKP7Hxiwl727iyseOXpL27lBoug86uGW/
-X-Gm-Gg: AYBFou1g15os/gjzTAL7eEENvYuSm5MkK1/zthmFk1pspDnWAa+Sl8XrayR3YJwn+Mp
-	I3FvfePFYZn4m4gZANsD2rGOul8MzN84fHpaK2b+yEnSvMUZZhi5zcwWcgoMRAqNZLDZqBobj/V
-	f3Pzequ7s6EDHMBvnNEB+KGY2jDDzITPnFfPMxFzppOQN0YwWZsUDL0j5/TozEYMWmcK8PEj11+
-	hJY1PwHkVuqSQb7OlekIHyVBz+OlfYFM8ThYWji5ot8ziSO1z+rLrqzYz5yE8skNhVtbEix/Ro2
-	hJX1yxbuz1Gw0Sz330pT8POSJ4SEpFVoj2HACIK3Cz6vpJGKNjd+LSLNe5vwRyNy3hP4Hz402QW
-	c4FJ5QSonTpf9i9mEmBVi20KvDgF45y7LnnCVTNMhwSvKPPX/tNAYS++XdgWviSu8sIAyPCAI4i
-	oAX/8TmMrJzRUgXYxVYFwW1h4PNevdoXRYos19H3GKajzlbAVtWRYT8Ni/wQe7Xd8wMPrj/bSqm
-	gfu/vOj3lnD+cwxfTLie+awzCbwnXYeww6ebfuzNXHzK1kZtReGmw3WjpSBjMi7WrNBkZzatKhI
-	t//Ppup8aOvQ7ypNtuE3XNS5EzhUWFZxvavCpE00+LfN4dU0peTtJoCtHv0N
-X-Received: by 2002:a05:7301:fae:b0:351:1e2e:da4d with SMTP id 5a478bee46e88-36a424596c7mr24456857eec.23.1793811577443;
-        Wed, 04 Nov 2026 08:59:37 -0800 (PST)
-Received: from kernel.. ([216.195.201.23])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36ca38d46fcsm9019567eec.13.2026.11.04.08.59.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2026 08:59:36 -0800 (PST)
-From: Kunwu Chan <kunwu.chan@gmail.com>
-To: paulmck@kernel.org,
-	boqun@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	corbet@lwn.net,
-	mingo@redhat.com,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	josh@joshtriplett.org,
-	urezki@gmail.com,
-	dave@stgolabs.net
-Cc: stern@rowland.harvard.edu,
-	parri.andrea@gmail.com,
-	will@kernel.org,
-	dhowells@redhat.com,
-	j.alglave@ucl.ac.uk,
-	luc.maranget@inria.fr,
-	akiyks@gmail.com,
-	dlustig@nvidia.com,
-	joelagnelf@nvidia.com,
-	skhan@linuxfoundation.org,
-	rdunlap@infradead.org,
-	longman@redhat.com,
-	rostedt@goodmis.org,
-	qiang.zhang@linux.dev,
-	kunwu.chan@gmail.com,
-	brads@mainlining.org,
-	linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	lkmm@lists.linux.dev,
-	linux-doc@vger.kernel.org,
-	rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH 28/28] Documentation/litmus-tests: Add hazptr bloom wildcard-hole test
-Date: Thu,  5 Nov 2026 00:54:46 +0800
-Message-ID: <20261104165504.2430480-29-kunwu.chan@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261104165504.2430480-1-kunwu.chan@gmail.com>
-References: <20261104165504.2430480-1-kunwu.chan@gmail.com>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=oQh2M+72
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 499331F0093A;
+	Wed,  4 Nov 2026 17:14:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793812453;
+	bh=UoFgbUFr390e5Xu0VCDxVTfIqMC+VP5cBukPS2Qt+oc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=oQh2M+72G011a64t1DPXJOY1n2qjCueRpbSlNGk381Yw80jocTqJFuwhNo1od1Hpr
+	 aAt3mHZXGj4EKpHai9EZCvyS1ifQtjXR9gXvNouxi4xF/T5ASBDOJjXIQ1tGjNp27f
+	 zaLEEK2T/X9tvVigRBPwxf43vVqmrwHICQN+k7PMan+PuA/4/wCv+E7rZQjmDpMnYA
+	 kvjlwA6h90nrEIuZW/nIYZoIFY09sT7SfbJKXqqaA0Vh+sBwY5vnwyAluPB3VLIQ83
+	 1+eMz/zGaa77SNGlqVVv0xnlsUDbag2kLBgrphuLaNfW0r3CUAjqydvCTxH3DJfDHn
+	 2PAeDwDzVrO2g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 03788CE091F; Wed,  4 Nov 2026 09:14:13 -0800 (PST)
+Date: Wed, 4 Nov 2026 09:14:12 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Qiliang Yuan <odys.yuan@gmail.com>
+Cc: Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Onur =?iso-8859-1?Q?=D6zkan?= <work@onurozkan.dev>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] srcu: Add list_splice_init_srcu()
+Message-ID: <9f8c94ff-29e3-4ea5-b9ec-b04b2bc21b1c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20261104-bug-nvme-remove-ns-srcu-v2-0-feb64ecb96ca@gmail.com>
+ <20261104-bug-nvme-remove-ns-srcu-v2-1-feb64ecb96ca@gmail.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -127,97 +68,104 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261104-bug-nvme-remove-ns-srcu-v2-1-feb64ecb96ca@gmail.com>
 
-Test the wildcard-deferral of the shared-scan Bloom walk: a
-slow-path acquire that published a wildcard to an overflow-list
-slot cannot be missed by the kthread's post-wildcard slot read.
-Verified with herd7: Never 0 6.
+On Wed, Nov 04, 2026 at 01:30:39AM -0500, Qiliang Yuan wrote:
+> list_splice_init_rcu() makes a list look empty to new readers, waits for
+> the current ones with the given sync function, and only then links the
+> entries into the new list. The sync function takes no argument, so it
+> can wait for RCU readers but not for the readers of an srcu_struct.
+> 
+> Passing synchronize_rcu() for a list read under SRCU still builds, but
+> leaves SRCU readers on the entries while the last one's next pointer is
+> moved onto the new list head. nvme_remove_namespaces() does this today.
+> 
+> Add list_splice_init_srcu(), which waits for the readers of the given
+> srcu_struct instead.
+> 
+> Cc: stable@vger.kernel.org
+> Suggested-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Qiliang Yuan <odys.yuan@gmail.com>
 
-Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
----
- Documentation/litmus-tests/README             |  7 +++
- .../hazptr/hazptr-bloom-wildcard-hole.litmus  | 49 +++++++++++++++++++
- 2 files changed, 56 insertions(+)
- create mode 100644 Documentation/litmus-tests/hazptr/hazptr-bloom-wildcard-hole.litmus
+I am not inalterably opposed to adding a list_splice_init_srcu(),
+especially if quite a few more users show up, but here is what I was
+expecting people to do:
 
-diff --git a/Documentation/litmus-tests/README b/Documentation/litmus-tests/README
-index 79b0634ddb13..561319404126 100644
---- a/Documentation/litmus-tests/README
-+++ b/Documentation/litmus-tests/README
-@@ -111,6 +111,7 @@ hazptr-wildcard-flip-escape.litmus
-     scan: a straggling acquire that published the old wildcard after
-     the final walk cannot still load the unpublished object.
- 
-+
- hazptr-drain-engage-wildcard.litmus
-     Test the drain engage's wildcard defer: an engage that reads a
-     slot holding a wildcard (an in-flight slow-path acquire) must
-@@ -127,3 +128,9 @@ hazptr-drain-safety.litmus
- hazptr-drain-generation-visibility.litmus
-     Test the drain generation ordering: a release hook that observes
-     the new drain address also observes the new generation.
-+
-+hazptr-bloom-wildcard-hole.litmus
-+    Test the wildcard-deferral of the shared-scan Bloom walk: a
-+    slow-path acquire that published a wildcard to an overflow-list
-+    slot cannot be missed by the kthread's post-wildcard slot read
-+    (completion is deferred until the wildcard resolves).
-diff --git a/Documentation/litmus-tests/hazptr/hazptr-bloom-wildcard-hole.litmus b/Documentation/litmus-tests/hazptr/hazptr-bloom-wildcard-hole.litmus
-new file mode 100644
-index 000000000000..28a2bc1206c7
---- /dev/null
-+++ b/Documentation/litmus-tests/hazptr/hazptr-bloom-wildcard-hole.litmus
-@@ -0,0 +1,49 @@
-+C hazptr-bloom-wildcard-hole
-+
-+(*
-+ * Result: Never
-+ *
-+ * Wildcard handling in the shared-scan Bloom walk: a slow-path
-+ * acquire publishes HAZPTR_WILDCARD (Store B) to an overflow-list
-+ * slot before loading the target pointer (Load A) and publishing the
-+ * real address (Store C).  The scan kthread observes the wildcard
-+ * (r2=2, its walk loop keeps waiting) and defers completion
-+ * decisions; the model captures the final post-wildcard slot read
-+ * (r0) that gates completion.
-+ *
-+ * P0 models the kthread's post-wildcard read: it must not complete
-+ * the waiter based on a slot value observed before the reader's
-+ * Load A.  P1 is the slow-path reader.
-+ *
-+ * Question: can the kthread's post-wildcard slot read (r0) miss the
-+ * reader's Store C while the reader's Load A still saw the old
-+ * pointer (1:r1=1)?  The smp_mb() between Store B and Load A, paired
-+ * with the kthread waiting out the wildcard before its final
-+ * load-acquire, forbids it: Never.
-+ *)
-+
-+{
-+	slot = 2;
-+	head = 1;
-+}
-+
-+P0(int *slot, int *head)			/* scan kthread */
-+{
-+	int r0;
-+	int r2;
-+
-+	r2 = smp_load_acquire(slot);		/* walk sees wildcard... */
-+	r0 = smp_load_acquire(slot);		/* ...waits, reads again */
-+}
-+
-+P1(int *slot, int *head)			/* slow-path reader */
-+{
-+	int r1;
-+
-+	WRITE_ONCE(*slot, 2);			/* Store B: wildcard */
-+	smp_mb();
-+	r1 = READ_ONCE(*head);			/* Load A */
-+	WRITE_ONCE(*slot, 1);			/* Store C: real address */
-+}
-+
-+exists (0:r0=0 /\ 0:r2=2 /\ 1:r1=1)
--- 
-2.43.0
+	static void synchronize_my_srcu(void)
+	{
+		synchronize_srcu(&my_srcu);
+	}
 
+	...
+
+	list_splice_init_rcu(l, h, synchronize_my_srcu);
+
+We need at least six uses of the above idiom to break even on the line
+of code required for introducing a list_splice_init_srcu().
+
+							Thanx, Paul
+
+> ---
+>  include/linux/srcu.h | 36 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+> 
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index 1a8a465a5650d..d4dcaeb83e2b6 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -18,6 +18,7 @@
+>  
+>  #include <linux/mutex.h>
+>  #include <linux/rcupdate.h>
+> +#include <linux/rculist.h>
+>  #include <linux/workqueue.h>
+>  #include <linux/rcu_segcblist.h>
+>  
+> @@ -118,6 +119,41 @@ void cleanup_srcu_struct(struct srcu_struct *ssp);
+>  void synchronize_srcu(struct srcu_struct *ssp);
+>  void synchronize_srcu_atomic(struct srcu_struct *ssp);
+>  
+> +/**
+> + * list_splice_init_srcu - splice an SRCU-protected list into an existing list
+> + * @list:	the SRCU-protected list to splice
+> + * @head:	the place in the existing list to splice the first list into
+> + * @ssp:	the srcu_struct that readers of @list use
+> + *
+> + * Like list_splice_init_rcu(), but wait for the SRCU readers of @list
+> + * instead of RCU ones, so that none of them can follow a next pointer
+> + * onto @head.
+> + *
+> + * Note that this function blocks, and that the caller must prevent any
+> + * other updates to @list.
+> + */
+> +static inline void list_splice_init_srcu(struct list_head *list,
+> +					 struct list_head *head,
+> +					 struct srcu_struct *ssp)
+> +{
+> +	struct list_head *first = list->next;
+> +	struct list_head *last = list->prev;
+> +	struct list_head *next = head->next;
+> +
+> +	if (list_empty(list))
+> +		return;
+> +
+> +	INIT_LIST_HEAD_RCU(list);
+> +	synchronize_srcu(ssp);
+> +	ASSERT_EXCLUSIVE_ACCESS(*first);
+> +	ASSERT_EXCLUSIVE_ACCESS(*last);
+> +
+> +	last->next = next;
+> +	rcu_assign_pointer(list_next_rcu(head), first);
+> +	first->prev = head;
+> +	next->prev = last;
+> +}
+> +
+>  #define SRCU_GET_STATE_COMPLETED 0x1
+>  
+>  /**
+> 
+> -- 
+> 2.43.0
+> 
