@@ -1,55 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793762551;
-	b=q+nvjjnlqpBgGleF+B94JBM3BZdds1TvGy19sZvOWYtInj1P+jPF2x1t/+FT2C1rjN6+
-	 EJHO4GJPRV/s89DS/kzebksPrun82myYbDjxhtVgAoKu+LXHu5771msaI4qm7hdONQ0o9
-	 wvzr0bZpBTajqvqSVsihfmEJABmJGfL9WaUBoFIBpa4pmBwHSnkRcyJQYKzXGdIKwLjIB
-	 3QjAYBfxY8kiuVSBKDlv8dH/XJRm/wdjbLNU1Ov+S3K9020TsJf1cbLQecklUYaqyT3jW
-	 1f2ZO6Zg4cwnYXUKEUpumk280pSGdIIwC0MJTWe0ur5GCe2A1FDQHEgbNE3E8IFGI/Q==
+	t=1793763630;
+	b=zd3KVapIz1apD9UqH/liKqk9fiOzEFrnlm1FpXZwUy1Di4MKPqrRjV0JIBiyMqDE+vRs
+	 5yIzMH0VDCutiM5lG0jSNw4CNUKeDR7gkB4pMwzADFwsdShtfdMc7nAuP6PRmAqKcZpJY
+	 u8SkJDUwa7YTaQeI2cAw4yKpPPp5RQKVPEd3CV7TshEMvkCCan9e6iiiQ8HdiU6NHb8pe
+	 w9A1Ckgc1qKt3CunMnF/gBBX8/tTv74+ViaPh+hERi7b6LHpG7/13QWpLiXUB9E3Cm9Qd
+	 2Q9ZeZoLlLAJuFIusZ36REYJVPI3c3GgD/QXPhGqR4Ut/AIf2vsY56J/SSzzl2ctjPg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793762551;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793763630;
 	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
 	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=qWCFdcjUisnGbX9eq6UHrpBovt78PAdZKtud0fjPZzU=;
-	b=plr4xjAHMt1i3lYv6DF9Tj6Frwq54A8cR24p0zURI8xqCl/GBa8+XbnYPeMAyACTPhua
-	 FngX8OOiN4mrcte78hQgpWIx4y1AyUEkwvYnkhnVrGq1O9qc5jQQ6GYHFpiAuP4Yd8ezV
-	 2dh7kNbmPE2zEc/IIhD3eHSIF0XR5xZP71kej2flV9KrpCGorSAUtx37Myw65NjuTuA52
-	 XizjWA5NnAwXdlg1i3IIrfmlwx9Pth8NjzpHD/FlEyswgm7b1UR0qWbrQLHaZ/MbciMDD
-	 nLXwbYoaWg/A745x+ZlFLM4PZmJpaVSHv6NOZY6SBHZlUjhqlpY3lStVTzI/31cho0Q==
+	bh=+tZw0K5+jfSV2aRm7WOFqugUNHNTb6GHxCzlpfjuQew=;
+	b=IwfPVJDHfHYtz85DRmM7rp0/JouHrsTRiSS59S9/7W1lqKlXq/V6HB4EcI1HcwNGYdkt
+	 tXjjmr0ruFzHuh7SIXWAdJ+jeksPZ9aoFnuc5MXQSPd6d8ueK6C8Gkaj7bzXnL3EEGmvg
+	 Bu5uPDcbzpA9HI8opR1+EOglh9OWua6KG/Ud2uROMzyY0wXHLO8XefKCVyFJHP8nfMN+k
+	 Of4cUqQouR8NMLNH7DMnFYbjsdkP4/8hYsnq0UVBpIi8qL2yGLUeE68Qj74JmDXuRqVro
+	 lSvO8q9qbpKvK/LSRBr3SLca+dWEcIFeg1sm3zsiMqsZPaBTAIbmrseRWqgtgMeUjRw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OaAyXkKQ;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MogoHxc1;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E8B606A31B
-	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 03:22:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BFBC606A31B
+	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 03:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OaAyXkKQ
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9826D1F00919
-	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 03:22:30 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MogoHxc1
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 591101F00A02
+	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 03:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793762550;
-	bh=qWCFdcjUisnGbX9eq6UHrpBovt78PAdZKtud0fjPZzU=;
+	s=k20260515; t=1793763630;
+	bh=+tZw0K5+jfSV2aRm7WOFqugUNHNTb6GHxCzlpfjuQew=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=OaAyXkKQDVaRqOtox0bAyPP7k4UrH5HsY8Ra0sVkUlpLe1/FsofiFRKQVo3PfP6iu
-	 uH8O+RlK/jDvUm1z3UespIMOj/0uC1AipSpHOg0x3QxJZriOfJQDIqJ1aP1Md1MxUu
-	 nUADCDXu1wqdRh8noXbrTNk9ocHQs/u4Fa7wcbC/UoqrTBmxBUI4MdNf0yTNsUUzkH
-	 Vyqu53OAuR1oVoHYkdE/YyTTNuHsELEAE/vu+Fc0dVvu4QCRIKsBdwAH9wdknibOvq
-	 8i8KUGsZwMTP7WM7m4m4mZWMbVPYrGsQf1+rKUU363gJucg6haAJ9UlaqyagneLu/n
-	 WqP9r1+9aheaQ==
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-93f1e5d7450so29537985a.2
-        for <rcu@vger.kernel.org>; Tue, 03 Nov 2026 19:22:30 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvBwx4Hd3WQzv48C9Us/Yj3YWlXqyjk6pXntxymgnHXO+7q4GUzQVQ3yxK8ArG3xdKTIQMBA=@vger.kernel.org
-X-Gm-Message-State: APuU4Z9TEq5bZVRZPfadmbaMtHrXNlBux2WOVuxLS5LDMbO+yL9R7Gda
-	pEvGbFLiSd92xdKyi5ivN6Z2LxmVGbYDndRaUBYJ526hazA9ouYYUkyrSyOCDT5ulxpDl/z33YW
-	GJboanXXJyTn4GWmniFfRSz4VasDIBNI=
-X-Received: by 2002:a05:620a:6495:b0:93f:571b:c733 with SMTP id
- af79cd13be357-944216f2a98mr2641078985a.13.1793762550012; Tue, 03 Nov 2026
- 19:22:30 -0800 (PST)
+	b=MogoHxc1lDU2P1JZYWhARSR1ywNNKCZ8EfaS02CKoiTvz5PrWZR2PF50pgo5KbwYr
+	 4DB+o0PIXodT0XRysk7/W/FJ3GssiEo3GZe/I8DRjr5VScVGmrzSYpXy8wb3EZAQRn
+	 N9yFj/iSV7VxQu8MJctXaBVZLxgx3IDugiJDaiDqBGYTHmatKwSKUdZxPPde6mlugc
+	 5lkROUH1J+Dg/qvVOJRx3E5QjYc5tYut+NwMQvAuR0nOAnB5/8lPtBKHQR5G28Cs75
+	 A+bAtJCW7H/5vy0OicCC+tBWWZYzBvNK0tLnn0XSqgIqRHFfx7drVEGhKsKVgF7Ml/
+	 Np3l598dUmasw==
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-91c11468b5fso3263146d6.0
+        for <rcu@vger.kernel.org>; Tue, 03 Nov 2026 19:40:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvBz/qzgpaCwBem9VUmb640Eimw+b0Ef+bmmhk4IWoRkFWEOpIiFncUq16zVuOM4PQP+wtYs=@vger.kernel.org
+X-Gm-Message-State: APuU4Z+jGmwYybUxW2Z+AlCJ6EXgqG0136WS71aNjvIhEI1icvad3hYO
+	+awSvx1cTqY4EeHWOtGdVQ7HFDi7zmjm+M4rwaeC8lJu+Ae5Hu8NI1OCeTsAnPlsmCZzYmVzNjF
+	ZTXMoFVZoRpeZpy0Is7zVWxng41GkUqc=
+X-Received: by 2002:a05:620a:1a07:b0:93e:c12c:9dd3 with SMTP id
+ af79cd13be357-94421796eafmr2530707085a.83.1793763629745; Tue, 03 Nov 2026
+ 19:40:29 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -59,14 +59,15 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261103113711.1832834-1-max.kellermann@ionos.com> <20261103113711.1832834-3-max.kellermann@ionos.com>
-In-Reply-To: <20261103113711.1832834-3-max.kellermann@ionos.com>
+References: <20261103113711.1832834-1-max.kellermann@ionos.com> <20261103113711.1832834-4-max.kellermann@ionos.com>
+In-Reply-To: <20261103113711.1832834-4-max.kellermann@ionos.com>
 From: Barry Song <baohua@kernel.org>
-Date: Wed, 4 Nov 2026 11:22:18 +0800
-X-Gmail-Original-Message-ID: <CAGsJ_4wYYiHvDj4Bqbp_hg1H9-WsZvEBJ9h5eNdX-Kuib_f3DQ@mail.gmail.com>
-X-Gm-Features: AclHuK-AvYEfhHjWxuMhWnm_a9S3p2tuGRCOJc6VKi5CiT9DNeNzN9Ic67jOPpM
-Message-ID: <CAGsJ_4wYYiHvDj4Bqbp_hg1H9-WsZvEBJ9h5eNdX-Kuib_f3DQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] mm/vmscan: move code to lru_gen_{add,del}_memcg()
+Date: Wed, 4 Nov 2026 11:40:16 +0800
+X-Gmail-Original-Message-ID: <CAGsJ_4y+LX-CSnDJ59VT2nc-i=rB=4iMuBQYawMCktk-_SPykg@mail.gmail.com>
+X-Gm-Features: AclHuK_7q4sg1JpsDk1OEkyOWm8WF60WPZ6zY6tzDeYRFIK1cRTEyQLp5iaugqM
+Message-ID: <CAGsJ_4y+LX-CSnDJ59VT2nc-i=rB=4iMuBQYawMCktk-_SPykg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm/mglru: cache the last memcg node, make tail
+ insertion constant time
 To: Max Kellermann <max.kellermann@ionos.com>
 Cc: akpm@linux-foundation.org, kasong@tencent.com, qi.zheng@linux.dev, 
 	shakeel.butt@linux.dev, axelrasmussen@google.com, yuanchu@google.com, 
@@ -80,79 +81,73 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, Nov 3, 2026 at 7:37=E2=80=AFPM Max Kellermann <max.kellermann@ionos=
 .com> wrote:
 >
-> Preparation for the following patch that adds tail caching.
+> Rotating or onlining a memcg currently uses hlist_nulls_add_tail_rcu()
+> which walks the destination bin to find its tail while holding
+> `memcg_lru.lock` with interrupts disabled.  With thousands of cgroups,
+> this takes a long time and causes severe lock contention.
+
+This is the main cause of the soft lockups and RCU stalls,
+right? If so, we may want to add a Fixes tag.
+
+The fix itself may not be directly applicable to stable
+kernels, but based on the logic of this patch, we should
+be able to work out a backport, right?
+
+Another option is to leave the cleanups in patches 1 and 2
+out for now, and make patch 3 self-contained as the first
+patch in your series, if that makes backporting easier.
+
+You can then move the cleanups from patches 1 and 2 to
+follow the new patch 1.
+
 >
-> For simplicity, hlist_nulls_del_init_rcu() is now always used, which
-> is also valid during rotation, because the entry is immediately
-> reinserted under `memcg_lru.lock`.
+> Cache a pointer to each bin's last node, making tail insertion O(1).
+> This requires remembering the bin number (but the new struct field
+> occupies a hole, so it does not grow).
+>
+> In a micro benchmark that creates 1500 cgroups and repeatedly writes
+> `1024M swappiness=3D0` to `memory.reclaim` in 8 threads, the request
+> rate increases by a factor of 9.5 and the average duration of each
+> write request is reduced by 89%.
+>
+> All writes return EAGAIN in both runs; the benchmark measures the cost
+> of reclaim attempts that cannot meet their requested target, not
+> reclaimed throughput.
+
+I'd appreciate it if you could also mention Ridong's earlier
+work in the changelog:
+
+https://lore.kernel.org/all/20251119083722.1365680-1-chenridong@huaweicloud=
+.com/
+
 >
 > Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 > ---
->  mm/vmscan.c | 36 ++++++++++++++++++++++++++++--------
->  1 file changed, 28 insertions(+), 8 deletions(-)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 9959ca158ce8..aed56d452881 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -4556,6 +4556,29 @@ enum {
->         MEMCG_LRU_YOUNG,
->  };
->
-> +static void lru_gen_add_memcg(struct lru_gen_memcg *memcg_lru,
-> +                             struct lru_gen_folio *lrugen,
-> +                             int gen, int bin, bool at_head)
-> +{
-> +       struct hlist_nulls_head *head =3D &memcg_lru->fifo[gen][bin];
-> +
-> +       lockdep_assert_held(&memcg_lru->lock);
-> +
-> +       if (at_head)
-> +               hlist_nulls_add_head_rcu(&lrugen->list, head);
-> +       else
-> +               hlist_nulls_add_tail_rcu(&lrugen->list, head);
-
-T.J. 's patch[1] has actually removed the needs for hlist_nulls_add_head_rc=
-u
-and it has been in mm-new branch.
-
-> +}
-> +
-> +static void lru_gen_del_memcg(struct lru_gen_memcg *memcg_lru,
-> +                             struct lru_gen_folio *lrugen,
-> +                             int gen)
-> +{
-> +       lockdep_assert_held(&memcg_lru->lock);
-> +
-> +       hlist_nulls_del_init_rcu(&lrugen->list);
-> +}
-> +
->  static void lru_gen_rotate_memcg(struct lruvec *lruvec, int op)
+[...]
+> @@ -4561,21 +4561,37 @@ static void lru_gen_add_memcg(struct lru_gen_memc=
+g *memcg_lru,
+>                               int gen, int bin, bool at_head)
 >  {
->         int seg;
-> @@ -4584,12 +4607,9 @@ static void lru_gen_rotate_memcg(struct lruvec *lr=
-uvec, int op)
->         WRITE_ONCE(lruvec->lrugen.seg, seg);
->         WRITE_ONCE(lruvec->lrugen.gen, new);
+>         struct hlist_nulls_head *head =3D &memcg_lru->fifo[gen][bin];
+> +       struct hlist_nulls_node *last =3D memcg_lru->tail[gen][bin];
 >
-> -       hlist_nulls_del_rcu(&lruvec->lrugen.list);
-> -
-> -       if (op =3D=3D MEMCG_LRU_OLD)
-> -               hlist_nulls_add_head_rcu(&lruvec->lrugen.list, &pgdat->me=
-mcg_lru.fifo[new][bin]);
-> -       else
-> -               hlist_nulls_add_tail_rcu(&lruvec->lrugen.list, &pgdat->me=
-mcg_lru.fifo[new][bin]);
-> +       lru_gen_del_memcg(&pgdat->memcg_lru, &lruvec->lrugen, old);
-> +       lru_gen_add_memcg(&pgdat->memcg_lru, &lruvec->lrugen, new, bin,
-> +                         op =3D=3D MEMCG_LRU_OLD);
+>         lockdep_assert_held(&memcg_lru->lock);
+>
+> -       if (at_head)
+> +       lrugen->bin =3D bin;
+> +
+> +       if (at_head || !last)
+>                 hlist_nulls_add_head_rcu(&lrugen->list, head);
 
-Also, MEMCG_LRU_OLD has been removed as I replied to you in v1[2]
+Do we still need at_head now that MEMCG_LRU_OLD has been removed?
 
-[1]  https://lore.kernel.org/linux-mm/20261028010611.3929937-3-tjmercier@go=
-ogle.com/
-[2]  https://lore.kernel.org/linux-mm/CAGsJ_4zQh9HrvgaqD32_A=3DbSdqmPqP4oV_=
-SxMXMEDBrHe4jjhg@mail.gmail.com/
+>         else
+> -               hlist_nulls_add_tail_rcu(&lrugen->list, head);
+> +               hlist_nulls_add_behind_rcu(&lrugen->list, last);
+> +
+> +       if (!at_head || !last)
+> +               memcg_lru->tail[gen][bin] =3D &lrugen->list;
+>  }
 
 Best,
 Barry
