@@ -1,83 +1,83 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.180
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793811515;
-	b=c4YHvXBhIEA2URJFslQY+4yzd9BKWieNc7m05XNCw3ICVhI4RwbL0LNt+1im+ebDF+O2
-	 EW8+3PesUBECUiBSzy2CxS1w62nczNcWnHvCeJsflYb8oH8Dj6sgwSLFLJo3zLKAxdkA4
-	 G3w0LDlsE3hfONvxR+WyY4QlSjmhRi8qzYUTcF8SgvE8lmmrs2aO6icxq4arml83cuEnJ
-	 hirslJNAKOWkRsz+kS0zMe6A9OI3nB2JJBoRr4lQymicFIDjn4k6aly3qA3/zwAudSNCk
-	 HAuqxSUBeDU5bq1WP1Fw6dT/OR14MZIMcgrn7uLtZJuXErisc3eOhPSPHMYmhPdhCZA==
+	t=1793811524;
+	b=P6rd/QrX0VkXxjK6kFkF25m+Z35Q1FKFNAA+GrtLa8fmCIm7fr7iiGUoQ4j8YdrRPAIv
+	 Mt+BR++sqQVOK9B9balz6PYSslUHX3OSYi56VoQCflWnj0MQ6Jpg71MpL/yMzm+eGfqcB
+	 CZG/ezlMPZKGqHFd9OJf9tBJpei9KR9DYGSOevIiecTJuX1kJfvsEfkiqOLFetQDAqva1
+	 SQA5H8yiLIIrPNsOqCM9+1mal+jb5RxZu6v9nXquAU7lM3Rp4aUkKCWEp8C2zB8nL676d
+	 A2KtctjdeZSuyMa/bKeUSma6OZdXov9jFJmLZM8kC2DF5/orYzmcXdIWHhCJSp7x4UA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793811515;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793811524;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=YrwPg1aLfNhb1kUF+CS+7lPuMtjV4dJOxSOfR4tH8WA=;
-	b=KUUTufoxytHlAK/hkU20HAJxDGf2Yb+/S1ZmfMV3M4led5WAZ2meEY3M3s0U8pMaPV5G
-	 +PX5sGExRtTdAOVH8t/+PgttYRSLtNg29rKe/+1Vjt7Xahndd2RSFHPupmqnlNBlbB2MK
-	 3CuKmbcXNAiRX/bxcyE2wBAswThVFnQDEWIbvIcDLk6x8Xo+V2fOQZu89oHrmofPdpqrK
-	 r10JMrp9hcJoMu65OPHZhvGxaebHonlbmEERXx0TiwO4ns4m+DeFDRep5CoQgV09bsH8M
-	 g47aw6SAGhH11ob5h/rlnEFsz4jjUls8eYyr4X0AXIfOQudsYWJbE1Ajjtc0Vidyvag==
+	bh=LPhJ/LZWrehxYqi2srB7hOfC0/MmzJuEkML/aEZarl0=;
+	b=h05FX1Z4CQcHtkzcn/Mnk8qCMFuRrz75ZwQFKE6bUDk+fkFROMP1aTcL7ixDUuatOMLw
+	 je8dreW/iC8LeoPl/N9y+3Jq1QIOhtUaKmoNWJBgdu6l0S2MW8KrKLP5wbqDawtJT82sT
+	 2IDAxopaWou0dqXAVTBqKf8QyU+odS2qzAKAHgFG6e6ezG5IODqRasiMIihMKmE83O8L4
+	 3lk5fH9xv91n2fGIwSWMjrNuVAql/IoNd/afKpOZxPnyXAGjYHHkmlZ2dKGoGEj5VUZfz
+	 mDkTHnPqKmCPl5yuZdbWUbMpwEFRHDc62+wopbYk2zNk9vGi1gp538WJUOLdsdszaeA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=lZMDmwvv;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=hyt1yD5+;
 	arc=none smtp.remote-ip=74.125.82.180
 Received: from mail-dy1-f180.google.com (mail-dy1-f180.google.com [74.125.82.180])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965FC606A33D
-	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 16:58:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 965FC606A33D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B09606D802
+	for <rcu@vger.kernel.org>; Wed,  4 Nov 2026 16:58:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 66B09606D802
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=lZMDmwvv
-Received: by mail-dy1-f180.google.com with SMTP id 5a478bee46e88-35b2c599f43so1901930eec.0
-        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 08:58:34 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=hyt1yD5+
+Received: by mail-dy1-f180.google.com with SMTP id 5a478bee46e88-36dbde64409so286490eec.0
+        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 08:58:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793811514; x=1794416314; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1793811523; x=1794416323; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=YrwPg1aLfNhb1kUF+CS+7lPuMtjV4dJOxSOfR4tH8WA=;
-        b=lZMDmwvvuPcK/xvM1sbLb+HrCFXuzrgSlJhNCDu1ogFyGxa2hNwHFBiFQdSfKKMsw5
-         WgXhxPJCeHRJ3oQicQBetYrSDOgqqceVw+zt8EHLZrqel8ekqIQLam+aJmn20/hWUpCD
-         dUuTNyoNXOhL7tKTk+f0vvkVA4jzk2VJLuG2Vgwq5kHzLYa4bQZNSw2U/oenJdaVgDwD
-         r201OvnmL6SkBlUw1X5NDr6Z8HEgXTy8klW7KZJnELr1c5OxAbd1AuEC3PZPuTVP2v+F
-         HHUSjXm4XFaIuqy+rDK+20hv5nAOXuvQZA0bLYNmDAslaXN/vQmvfISKKvq4pcAX3eyI
-         M/FA==
+        bh=LPhJ/LZWrehxYqi2srB7hOfC0/MmzJuEkML/aEZarl0=;
+        b=hyt1yD5+jjpEugsWapKyMZusHbyyRtG0Zg8zegaXHJUzLqZqDfJPszfKMwqvjYCetj
+         IrJWMeImtzM7GirY49bM2dx7cObOOL7N5Fnjg+WMtKNow21yslpCrdMmoqyKy1JKYZb7
+         HSBDax1eDx/bfKPiGozjJAiPus92A2h3wak1w5kcJ9XsttzfsGltbO+5rakVtv1JKCCt
+         3YsBqfJApCHWCf8Wtx3EFCczzcK4TrEoAg4a2+CYhPWdSeNB1+RVTbkEmMatwgzNtq9o
+         WU/7ntw/yTf6kZi6In0JDuXse4r6ElsZnVli9DeG6p0sGR9houxwRgcJuDGjgpySqhUP
+         MW6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793811514; x=1794416314;
+        d=1e100.net; s=20260707; t=1793811523; x=1794416323;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=YrwPg1aLfNhb1kUF+CS+7lPuMtjV4dJOxSOfR4tH8WA=;
-        b=lm0Drj96uylEUOocAttmQbhtzniW9L3j/MOQl8qufwk66rp7OXODJQCA+aF78Rlybb
-         lbu8mb1oq/cU+g1nvu2LX9lNj41a3iqQ/rwH7khFSy7oqhfkOpKVNYfo73k1/hKUjJrg
-         JnQqIqyBO8wtR2C5GCR1dByv78MkKdEOSS6cSAXEwrd3GvJy+FQ9jbl1mHfIA+vkgObb
-         jFXlKbz8BvjByrIomAlJVNQu6MFzpZnRv2HqMK7c9Xfp5OFPKKcFOZoFQHEU+vSnx+zl
-         SVyhiKcuNhEqrjcMgzsUfGQBY8ujCFocX+9pYd9yT9pSmKPTVQOAwGRW+0qoJnx+tg9u
-         Sa/A==
-X-Forwarded-Encrypted: i=1; AKwUvBwUFptvop5Dvzihj1tfZSG9jSWQILIHh5bjqgBkwPgC8ZIsrRbpyhJOgmR2Bk6X6uOuFjI=@vger.kernel.org
-X-Gm-Message-State: APuU4Z+3FnEYGBE2SymB03ro4t7dlOX1MzkdQuZK3zFa3ecyfE2mlCSG
-	TIbIUMWSu7sm47cmOuKGf8M0fBRgDSg0Sk9HXilHqPClvsViGErK+oCt
-X-Gm-Gg: AYBFou1N7fbswHHuf+k21JHv9GoTrl/m1dNUpcMmXQz9bkcZtA49fGRXovzn/31+3j+
-	LP3mhwMvzf7WLCZjECWv4OJFCHZmJILnWoHX7+IfPq3dhU6Ro+7t1l6UKRoAPP3KsvUNUhPXzIJ
-	ARRL2FEQayCwxtJNixlEXVinIQNZe0r9jH+baRHhv+ef9P0aDWV0i0afZWno2tCl04D9JY/kq6j
-	h/DUBLmMieCN9OxwkpLcJDL8SXf/YyqylEV+23baEO6WWw74SWtZmSPA2PJDOuIGfnMcBFPCUnS
-	1C+Kw/Gx1EJRjh+gtLAiyDn41BrdpRwFDxUaL5C1WL0Z4h4bO/RtoqyMSmuPucGkjMDHWYZtDQh
-	ei/8mktKz5PDxuLMelSqjV5XlnGUMu4L413w4H041BFDpKU8kCX9GyM/ACureb3kC0vc+ShCX4A
-	qDPyomK0SkIGYVy5E/SZthxp59LjwS+gdwnhujRSviRLb0zJRPiSfbSQNeld5yUZjY/1ipH6+JI
-	x42J/gNr26XtAOr9jI5wUczwcYa2+8x4vB1W1GYtj1+Vd2YtS0GfKo/ChGFDUYq52K8PzrgsIlM
-	O0rYGTvKboHMvcu1qkYgZSwSNGqVZlGKNMDi/ag=
-X-Received: by 2002:a05:693c:6316:b0:36a:7bb7:4609 with SMTP id 5a478bee46e88-36a7bb74690mr9192755eec.34.1793811513063;
-        Wed, 04 Nov 2026 08:58:33 -0800 (PST)
+        bh=LPhJ/LZWrehxYqi2srB7hOfC0/MmzJuEkML/aEZarl0=;
+        b=KC9+dsrIVCLrhQRql7QHO+5nruUJx/eBqdnnPy/0yloc4DIrt9mnA0wZC1+AL/+nH8
+         5bQvREg2hO+d6+ediQMvcEyEt7q4SWrfDBnWUpnmScjX1rCicUjjnms0UsybYkWV3HDA
+         Sb++wU14uWkgFfWuHFHkPFki4xxURu9WrG6katjxXnU3OsLxeM46Ealfce7EzBzLAOZ1
+         2KYS3AFr8pAJcRV/gw0WFZyucP35v0lJsERkbymxKUjVCvMXwLWz3JwQ5MTdYfcWgoSv
+         j4VYrcI8uNeoatqRG9An8odMudPIaR4OEHWaIl/EACHG8xv3tvdwThV/HHl37pV41ym6
+         ax4Q==
+X-Forwarded-Encrypted: i=1; AKwUvBxFDJM5QlpBObTh42Tzqlu314o5oQRpbeKeqFa+7puQ+WyZbbJcD3UXkotjNZcYVCL9Vp0=@vger.kernel.org
+X-Gm-Message-State: APuU4Z/gXu5QotnhbgCXH67uvsRlx34CuyEbCJGej/hsIa/KNz1zuwTF
+	RpoBjH9/jw2FQf+kuNJ/qqz4sZbN9orESJIpmFHnJIdNKWfz/jttagNk
+X-Gm-Gg: AYBFou1cdtAj4gQYAA3HMgsF5bj1qqmv1A1Nbj+lGqQaJVWzp9K1eQy4bv7C4/D8cpL
+	rghoYPnHOc62GyFMwbGUoeH1dVxS40oXTaF/X9N9le0SH4QPR7/EZ5lF6zHTIrg5ycaWHZu5Fuu
+	gEEPVvt7QtOJkEZZAarsO1w41sO2HJ+g6xzWwtfPAyTxy5Sjo6jRocsgT8xwjuRNNjDrt4LoLte
+	WK/EPe8Uw4tr24JIDQgV8xb60hU2DG0Y6nCZKRdChGWrIIrGCKpsZ6yYMivKMr/UGVKd0QvshKm
+	0/3LQVd27Bbb02nqKxfQdL0tPNewZV0gViziY/3zvwWi71kYVCcMtVooWDsTaQW/yHLO7sqPEu+
+	/peFwEZwg9Y9rhUtEIK4zn1uoBsirKYJJzjJP/odn195O8ys2v6WiPUKA7xw8DudFDB4rtSjxa+
+	1yDW13RlPUkqJ3IurQ25QU5J9+qfsDRhUwi+cJgtz94wq1FHJIUVixLbwitNVlUmFWN9kFa9xlM
+	0vB7+hHD1J+72evvpKWXdEXkFXHneZrQAWT5g0wpeVLfUDw/cdD+ZGXjv5HULql6XzGU2suEL5G
+	2autMPUuOCzE+ZJIflpTAc0R23Kn5/v/vnf89l0=
+X-Received: by 2002:a05:693c:87c9:10b0:360:e2e6:f849 with SMTP id 5a478bee46e88-36a4241985bmr24785233eec.28.1793811522563;
+        Wed, 04 Nov 2026 08:58:42 -0800 (PST)
 Received: from kernel.. ([216.195.201.23])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36ca38d46fcsm9019567eec.13.2026.11.04.08.58.24
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36ca38d46fcsm9019567eec.13.2026.11.04.08.58.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2026 08:58:32 -0800 (PST)
+        Wed, 04 Nov 2026 08:58:41 -0800 (PST)
 From: Kunwu Chan <kunwu.chan@gmail.com>
 To: paulmck@kernel.org,
 	boqun@kernel.org,
@@ -112,9 +112,9 @@ Cc: stern@rowland.harvard.edu,
 	linux-doc@vger.kernel.org,
 	rcu@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH 21/28] hazptrtorture: Add HOTADDR and LONGHOLD scenarios
-Date: Thu,  5 Nov 2026 00:54:39 +0800
-Message-ID: <20261104165504.2430480-22-kunwu.chan@gmail.com>
+Subject: [PATCH 22/28] hazptrtorture: Add drain fairness rotation scenario
+Date: Thu,  5 Nov 2026 00:54:40 +0800
+Message-ID: <20261104165504.2430480-23-kunwu.chan@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261104165504.2430480-1-kunwu.chan@gmail.com>
 References: <20261104165504.2430480-1-kunwu.chan@gmail.com>
@@ -129,534 +129,368 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-HOTADDR: stages the sticky-address forward-progress scenario.
-LONGHOLD: validates legitimate long-held references.
+Two stuck addresses, each held by a dedicated holder for the
+whole observation window (hot_fair_ms), with two sync waiters
+launched back to back.  The first waiter's drain engages and,
+because its holder never releases, must hit the fairness cap;
+the second waiter's counter kept growing, so it gets the next
+drain turn.  Rotation evidence comes from the kernel drain logs:
+distinct addresses in "drain engaged" lines plus at least one
+"drain disengaged (fairness-cap" line.
+
+The module verdict only requires forward progress: after both
+holders release, both syncs must drain within 30 s.  Rotation
+observation is reported via console-log checks in hazptr.sh,
+graded as notes (not errors) when the window is too short for
+the configured HZ.
 
 Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 ---
- kernel/rcu/hazptrtorture.c                    | 384 +++++++++++++++++-
- .../rcutorture/configs/hazptr/CFLIST          |   2 +
- .../rcutorture/configs/hazptr/HOTADDR         |  18 +
- .../rcutorture/configs/hazptr/HOTADDR.boot    |   1 +
- .../rcutorture/configs/hazptr/LONGHOLD        |  18 +
- .../rcutorture/configs/hazptr/LONGHOLD.boot   |   1 +
- 6 files changed, 419 insertions(+), 5 deletions(-)
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/HOTADDR
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/HOTADDR.boot
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/LONGHOLD
- create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/LONGHOLD.boot
+ kernel/rcu/hazptrtorture.c                    | 211 +++++++++++++++++-
+ .../selftests/rcutorture/bin/hazptr.sh        |  51 +++++
+ .../rcutorture/configs/hazptr/CFLIST          |   1 +
+ .../rcutorture/configs/hazptr/FAIRNESS        |  19 ++
+ .../rcutorture/configs/hazptr/FAIRNESS.boot   |   1 +
+ 5 files changed, 281 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/FAIRNESS
+ create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/FAIRNESS.boot
 
 diff --git a/kernel/rcu/hazptrtorture.c b/kernel/rcu/hazptrtorture.c
-index fe09280d063c..5dbe04af7515 100644
+index 5dbe04af7515..787862a4d4eb 100644
 --- a/kernel/rcu/hazptrtorture.c
 +++ b/kernel/rcu/hazptrtorture.c
-@@ -24,6 +24,7 @@
- #include <linux/hazptr.h>
- #include <linux/rcupdate.h>
- #include <linux/workqueue.h>
-+#include <trace/events/hazptr.h>
- 
- #include "rcu.h"
- 
-@@ -54,6 +55,15 @@ torture_param(int, stutter, 5, "Number of seconds to run/halt test");
- torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
- torture_param(bool, wq_churn, false,
- 	      "Churn workqueues to exercise lockdep dynamic keys");
-+torture_param(int, nhotreaders, 0,
-+	      "Hot-addr hammer readers, 0 disables Lai-scenario");
-+torture_param(int, hot_hold_us, 20000,
-+	      "Hammer reader hold (us)");
-+torture_param(int, hot_hammer_ms, 3000, "Hammer window (ms)");
-+torture_param(int, hot_longhold_ms, 0,
-+	      "Long-hold round duration (ms), 0 disables; R0 holds past the stall timeout, no hammer");
-+torture_param(bool, starve_expected, false,
-+	      "Starvation episodes are expected (documenting mode)");
+@@ -64,6 +64,8 @@ torture_param(int, hot_longhold_ms, 0,
+ 	      "Long-hold round duration (ms), 0 disables; R0 holds past the stall timeout, no hammer");
+ torture_param(bool, starve_expected, false,
+ 	      "Starvation episodes are expected (documenting mode)");
++torture_param(int, hot_fair_ms, 0,
++	      "Drain fairness rotation window (ms), 0 disables");
  
  static char *torture_type = "hazptr";
  module_param(torture_type, charp, 0444);
-@@ -66,6 +76,22 @@ static struct task_struct **reader_tasks;
- static struct task_struct *do_pending_task;
- static struct task_struct *stats_task;
- static struct task_struct *wq_churn_task;
-+static struct task_struct *hot_stage_task;
-+static struct task_struct *hot_r0_task;
-+static struct task_struct **hot_reader_tasks;
-+static int hot_target_storage;
-+static void *hot_addr = &hot_target_storage;
-+static atomic_t n_hot_syncs;
-+static atomic_t n_hot_starves;
-+static atomic_t n_hot_in_seq;
-+static atomic_t hot_live_syncs;		/* transient sync kthreads alive */
-+static atomic_t hot_hammer_holding;	/* hammer readers currently holding */
-+static atomic_t hot_r0_gate;		/* 1: R0 may acquire for this round */
-+static DECLARE_COMPLETION(hot_enqueued);
-+static DECLARE_COMPLETION(hot_sync_done);
-+static DECLARE_COMPLETION(r0_held);
-+static DECLARE_COMPLETION(r0_release);
-+static bool hot_hammer_active;
+@@ -93,6 +95,24 @@ static DECLARE_COMPLETION(r0_held);
+ static DECLARE_COMPLETION(r0_release);
+ static bool hot_hammer_active;
  
++/* Fairness rotation scenario: two stuck addresses whose holders
++ * never release during the observation window.  Two sync waiters
++ * are launched; the drain fairness cap must rotate the drain
++ * between the two addresses instead of monopolizing one.
++ */
++static int fair_target_a;
++static int fair_target_b;
++static void *const fair_addr[2] = { &fair_target_a, &fair_target_b };
++static struct task_struct *fair_holder_tasks[2];
++static struct task_struct *fair_stage_task;
++static struct completion fair_held[2];
++static struct completion fair_release[2];
++static struct completion fair_released[2];
++static struct completion fair_sync_done[2];
++static atomic_t fair_live_syncs;
++static atomic_t n_fair_rounds;
++static atomic_t n_fair_timeout;
++
  #define HAZPTR_TORTURE_PIPE_LEN 10
  
-@@ -87,13 +113,13 @@ static atomic_t n_hazptr_torture_alloc;
- static atomic_t n_hazptr_torture_alloc_fail;
- static atomic_t n_hazptr_torture_free;
- static atomic_t n_hazptr_torture_error;
--static atomic_t n_hazptr_torture_wq_churn;
- static DEFINE_PER_CPU(atomic_long_t, hazptr_torture_acquires);
- static DEFINE_PER_CPU(atomic_long_t, hazptr_torture_releases);
- static DEFINE_PER_CPU(atomic_long_t, hazptr_torture_acquires_irq);
- static DEFINE_PER_CPU(atomic_long_t, hazptr_torture_releases_irq);
- static DEFINE_PER_CPU(atomic_long_t, hazptr_torture_releases_defer);
- static DEFINE_PER_CPU(atomic_long_t, hazptr_torture_releases_undefer);
-+static atomic_t n_hazptr_torture_wq_churn;
- static struct list_head hazptr_torture_removed;
- 
- // State for a deferred (AKA pending) hazard pointer
-@@ -681,6 +707,10 @@ hazptr_torture_stats_print(void)
+ // Update-side data structure used to check RCU readers.
+@@ -707,10 +727,13 @@ hazptr_torture_stats_print(void)
  		torture_sum_pcpu_atomic_long(&hazptr_torture_releases_defer),
  		torture_sum_pcpu_atomic_long(&hazptr_torture_releases_undefer),
  		atomic_read(&n_hazptr_torture_wq_churn));
-+	pr_cont(" hotsync: %d hotstarve: %d hotseq: %d",
-+		atomic_read(&n_hot_syncs),
-+		atomic_read(&n_hot_starves),
-+		atomic_read(&n_hot_in_seq));
+-	pr_cont(" hotsync: %d hotstarve: %d hotseq: %d",
++	pr_cont(" hotsync: %d hotstarve: %d hotseq: %d"
++		" fairrounds: %d fairtimeout: %d",
+ 		atomic_read(&n_hot_syncs),
+ 		atomic_read(&n_hot_starves),
+-		atomic_read(&n_hot_in_seq));
++		atomic_read(&n_hot_in_seq),
++		atomic_read(&n_fair_rounds),
++		atomic_read(&n_fair_timeout));
  
  	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
  	if (i > 1) {
-@@ -752,7 +782,8 @@ hazptr_torture_print_module_parms(struct hazptr_torture_ops *cur_ops, const char
- 		 "nest_acquire=%d "
- 		 "onoff_interval=%d onoff_holdoff=%d "
- 		 "preempt_duration=%d preempt_interval=%d "
--		 "reader_sleep_us=%d "
-+		 "reader_sleep_us=%d wq_churn=%d "
-+		 "nhotreaders=%d hot_hold_us=%d hot_hammer_ms=%d "
- 		 "shuffle_interval=%d shutdown_secs=%d stat_interval=%d stutter=%d "
- 		 "verbose=%d\n",
- 		 torture_type, tag, nrealreaders, nwriters,
-@@ -760,7 +791,8 @@ hazptr_torture_print_module_parms(struct hazptr_torture_ops *cur_ops, const char
- 		 nest_acquire,
- 		 onoff_interval, onoff_holdoff,
- 		 preempt_duration, preempt_interval,
--		 reader_sleep_us,
-+		 reader_sleep_us, wq_churn,
-+		 nhotreaders, hot_hold_us, hot_hammer_ms,
- 		 shuffle_interval, shutdown_secs, stat_interval, stutter,
- 		 verbose);
- }
-@@ -801,10 +833,14 @@ static void hazptr_torture_wq_churn_fn(struct work_struct *work)
- /*
-  * Repeatedly create and destroy workqueues.  Each workqueue creation
-  * registers a lockdep dynamic key and each destruction unregisters it,
-- * which exercises both is_dynamic_key() and lockdep_unregister_key().
-+ * which exercises both is_dynamic_key() and lockdep_unregister_key(),
-+ * the two lockdep paths that use hazptr.  Most useful in kernels with
-+ * CONFIG_PROVE_LOCKING=y and CONFIG_HAZPTR_ACQUIRE_FORCE_SLOWPATH=y.
-  */
- static int hazptr_torture_wq_churn(void *unused)
- {
-+	DEFINE_TORTURE_RANDOM(rand);
-+
- 	VERBOSE_TOROUT_STRING("hazptr_torture_wq_churn task started");
- 	do {
- 		struct workqueue_struct *wq;
-@@ -812,7 +848,7 @@ static int hazptr_torture_wq_churn(void *unused)
- 
- 		wq = alloc_workqueue("hazptr-torture-churn", WQ_PERCPU, 1);
- 		if (!wq) {
--			torture_hrtimeout_ms(10, 10, NULL);
-+			torture_hrtimeout_ms(10, 10, &rand);
- 			continue;
- 		}
- 		INIT_WORK(&churn_work, hazptr_torture_wq_churn_fn);
-@@ -826,6 +862,271 @@ static int hazptr_torture_wq_churn(void *unused)
+@@ -1127,6 +1150,152 @@ static int hazptr_torture_hot_stage(void *unused)
  	return 0;
  }
  
 +/*
-+ * Hot-addr staged scenario --- Lai's forward-progress test.
++ * Fairness rotation scenario --- two stuck addresses, two
++ * perpetual holders, two sync waiters.
 + *
-+ * Three persistent kthreads plus a per-round transient sync kthread:
-+ *   hot_r0_task      old reader: acquires hot_addr, signals, waits
-+ *                    for release command, then releases.
-+ *   hot_reader_tasks hammer readers: tight acquire/release loops on
-+ *                    hot_addr, long hold, near-zero gap, no stutter,
-+ *                    kthread_bind'd to distinct CPUs.
-+ *   hot_stage_task   orchestrator: drives the staged sequence round
-+ *                    by round, recording starvation episodes.
-+ *   hot_do_sync      transient per-round: hazptr_synchronize(hot_addr).
++ *   fair_holder_tasks[2]  each acquires its own address and holds
++ *                         it until commanded to release; the hold
++ *                         spans the whole observation window.
++ *   fair_stage_task       orchestrator: waits for both holds,
++ *                         launches both sync waiters (address A
++ *                         first so it is at the head of the
++ *                         scanning list), waits out the window,
++ *                         then releases both holders and requires
++ *                         both syncs to drain.
 + *
-+ * A tracepoint on waiter-enqueue confirms the waiter is on
-+ * hazptr_scan.pending before the orchestrator verifies the negative
-+ * control (sync must NOT have completed while R0 holds).
++ * The window must be long enough for the drain to engage (~100
++ * scan cycles) and hit the fairness cap (HAZPTR_DRAIN_MAX_CYCLES,
++ * default 1000) on address A, after which address B's waiter --
++ * whose re-engage counter kept growing -- gets the next drain
++ * turn.  Rotation evidence is read from the kernel drain logs
++ * ("drain engaged" for both addresses, at least one "drain
++ * disengaged (fairness-cap").
++ *
++ * The module verdict (n_hazptr_torture_error) does not depend on
++ * rotation: it fails only if a sync fails to drain after both
++ * holders released (a forward-progress regression).
 + */
-+
-+static void hot_probe_enqueue(void *__data, void *addr)
++static int hazptr_torture_fair_holder(void *arg)
 +{
-+	if (addr == hot_addr)
-+		complete(&hot_enqueued);
-+}
-+
-+/* Per-round transient sync kthread.  hot_live_syncs lets the
-+ * orchestrator and cleanup wait for exit, so no completion event
-+ * from one round can leak into the next.
-+ */
-+static int hazptr_torture_hot_do_sync(void *unused)
-+{
-+	hazptr_synchronize(hot_addr);
-+	complete(&hot_sync_done);
-+	atomic_dec(&hot_live_syncs);
-+	return 0;
-+}
-+
-+/* R0: acquires hot_addr, signals orchestrator, waits for release cmd.
-+ * The release wait is timeout-bounded so kthread_stop() at cleanup can
-+ * always join; the hazard pointer is always released before exit.
-+ * The one-shot gate ensures R0 does not re-acquire immediately after
-+ * releasing: re-acquisition is reserved for a new round, so a draining
-+ * waiter is never blocked by R0 itself.
-+ */
-+static int hazptr_torture_hot_r0(void *unused)
-+{
++	long i = (long)arg;
 +	struct hazptr_ctx ctx;
 +	void *p;
 +
-+	VERBOSE_TOROUT_STRING("hot_r0 task started");
-+	do {
-+		while (!atomic_read(&hot_r0_gate) && !torture_must_stop())
-+			schedule_timeout_interruptible(1);
++	VERBOSE_TOROUT_STRING("fair_holder task started");
++	p = fair_addr[i];
++	(void)hazptr_acquire(&ctx, &p);
++	complete(&fair_held[i]);
++	while (!wait_for_completion_timeout(&fair_release[i], HZ)) {
 +		if (torture_must_stop())
 +			break;
-+		atomic_set(&hot_r0_gate, 0);
-+		p = hot_addr;
-+		(void)hazptr_acquire(&ctx, &p);
-+		complete(&r0_held);
-+		while (!wait_for_completion_timeout(&r0_release, HZ)) {
-+			if (torture_must_stop())
-+				break;
-+		}
-+		hazptr_release(&ctx, p);
-+	} while (!torture_must_stop());
-+	torture_kthread_stopping("hot_r0");
-+	return 0;
-+}
-+
-+/* Hammer reader: parks while not hammering (hot_hammer_active false),
-+ * so it persists across rounds.  hot_hammer_holding counts live holds
-+ * and lets the orchestrator hand off R0 only once a hammer reader
-+ * actually holds the address -- no coverage gap at the seam.
-+ */
-+static int hazptr_torture_hot_reader(void *arg)
-+{
-+	int cpu = (long)arg;
-+	struct hazptr_ctx ctx;
-+	void *p;
-+	DEFINE_TORTURE_RANDOM(rand);
-+
-+	set_cpus_allowed_ptr(current, cpumask_of(cpu));
-+	for (;;) {
-+		while (!READ_ONCE(hot_hammer_active) && !torture_must_stop())
-+			schedule_timeout_interruptible(1);
-+		if (torture_must_stop())
-+			break;
-+		p = hot_addr;
-+		p = hazptr_acquire(&ctx, &p);
-+		atomic_inc(&hot_hammer_holding);
-+		torture_hrtimeout_us(hot_hold_us, 100, &rand);
-+		hazptr_release(&ctx, p);
-+		atomic_dec(&hot_hammer_holding);
-+		torture_hrtimeout_us(1, 1, &rand);
 +	}
-+	torture_kthread_stopping("hot_reader");
++	hazptr_release(&ctx, p);
++	complete(&fair_released[i]);
++	torture_kthread_stopping("fair_holder");
 +	return 0;
 +}
 +
-+/*
-+ * Orchestrator: one round per loop iteration.  All waits are
-+ * timeout-bounded so cleanup can always join this task.
-+ *
-+ * Phase   Action
-+ *  boot   Wait for R0's initial hold.
-+ *   P2    Launch transient sync kthread; wait for tracepoint
-+ *         confirmation (hot_enqueued).
-+ *   P3    Negative control (non-consuming completion_done()): sync
-+ *         must NOT be done while R0 still holds.
-+ *   P4    Handoff: start hammer, wait until a hammer reader holds
-+ *         (hot_hammer_holding > 0), then release R0 -- no gap.
-+ *   P5    Hammer window: poll sync for hot_hammer_ms.
-+ *         -> completes in window: n_hot_in_seq++.
-+ *         -> still pending:       n_hot_starves++ (episode; counts
-+ *            as test error only when !starve_expected).
-+ *   P6    Positive control: stop hammer, sync must drain within 5 s
-+ *         (skipped when P5 already observed completion).
-+ *  bottom  Drain this round's sync kthread (hot_live_syncs), wait for
-+ *          R0's next hold; jitter; loop unless must_stop.
++/* Transient per-round sync kthread.  fair_live_syncs is
++ * incremented by the stage before kthread_run() and decremented
++ * here at exit, so the count covers the full lifetime including
++ * the window between thread creation and first execution.
 + */
-+static int hazptr_torture_hot_stage(void *unused)
++static int hazptr_torture_fair_do_sync(void *arg)
 +{
-+	unsigned long round = 0;
-+	DEFINE_TORTURE_RANDOM(rand);
++	long i = (long)arg;
 +
-+	VERBOSE_TOROUT_STRING("hot_stage task started");
++	hazptr_synchronize(fair_addr[i]);
++	complete(&fair_sync_done[i]);
++	atomic_dec(&fair_live_syncs);
++	return 0;
++}
 +
-+	/* If the system is still booting, let it finish (same as the
-+	 * classic writer): a busy boot would make staged rounds record
-+	 * false starvation episodes and false stall splats. */
++static int hazptr_torture_fair_stage(void *unused)
++{
++	int i;
++
++	VERBOSE_TOROUT_STRING("fair_stage task started");
++
 +	while (!torture_must_stop() && !rcu_inkernel_boot_has_ended())
 +		schedule_timeout_interruptible(HZ);
++	{
++		bool sync_launched[2] = { false, false };
 +
-+	do {
-+		u64 t_sync_start;
-+		int done_in_window = 0, positive_done;
-+		struct task_struct *sync_task;
-+
-+		reinit_completion(&r0_held);
-+		reinit_completion(&r0_release);
-+		reinit_completion(&hot_sync_done);
-+		reinit_completion(&hot_enqueued);
-+		WRITE_ONCE(hot_hammer_active, false);
-+
-+		/* Gate R0 into a fresh hold and wait for it. */
-+		atomic_set(&hot_r0_gate, 1);
-+		while (!wait_for_completion_timeout(&r0_held, HZ)) {
++	/* Wait for both holders to acquire their addresses. */
++	for (i = 0; i < 2; i++) {
++		while (!wait_for_completion_timeout(&fair_held[i], HZ)) {
 +			if (torture_must_stop())
 +				goto out;
 +		}
++	}
 +
-+		/* P2: launch sync; confirm waiter enqueued. */
-+		t_sync_start = ktime_get_ns();
-+		atomic_inc(&hot_live_syncs);
-+		sync_task = kthread_run(hazptr_torture_hot_do_sync, NULL,
-+					"hot_do_sync");
-+		if (IS_ERR(sync_task)) {
-+			atomic_dec(&hot_live_syncs);
-+			pr_alert("%shot: sync kthread alloc failed r%lu\n",
-+				 TORTURE_FLAG, round);
-+			goto skip_round;
-+		}
-+		if (!wait_for_completion_timeout(&hot_enqueued, HZ)) {
-+			pr_alert("%shot: enqueue not confirmed r%lu\n",
-+				 TORTURE_FLAG, round);
-+			goto skip_round;
-+		}
++	/* Launch both sync waiters; A first so it leads the list. */
++	for (i = 0; i < 2; i++) {
++		struct task_struct *t;
 +
-+		/* P3 NEGATIVE CONTROL: sync must still be pending. */
-+		if (completion_done(&hot_sync_done)) {
-+			pr_alert("%shot: completed before R0 released r%lu\n",
-+				 TORTURE_FLAG, round);
++		atomic_inc(&fair_live_syncs);
++		t = kthread_run(hazptr_torture_fair_do_sync, (void *)(long)i,
++				"fair_do_sync");
++		if (IS_ERR(t)) {
++			atomic_dec(&fair_live_syncs);
++			pr_alert("%sfair: sync kthread alloc failed (%d)\n",
++				 TORTURE_FLAG, i);
++			atomic_inc(&n_hazptr_torture_error);
++			goto release;
++		}
++		sync_launched[i] = true;
++	}
++
++	/* Observation window: drains rotate via the fairness cap. */
++	{
++		unsigned long end = jiffies + msecs_to_jiffies(hot_fair_ms);
++
++		while (time_before(jiffies, end) && !torture_must_stop())
++			schedule_timeout_interruptible(HZ);
++	}
++
++	/* Negative observation: holders still hold, so the syncs
++	 * must not have completed during the window.
++	 */
++	for (i = 0; i < 2; i++) {
++		if (completion_done(&fair_sync_done[i])) {
++			pr_alert("%sfair: sync %d completed while holder holds\n",
++				 TORTURE_FLAG, i);
 +			atomic_inc(&n_hazptr_torture_error);
 +		}
++	}
 +
-+		/*
-+		 * LONGHOLD variant: no hammer.  R0 legitimately holds
-+		 * past the stall timeout; the detector should report
-+		 * (observation, not interruption), and after release the
-+		 * sync must drain normally.  Validates that long-lived
-+		 * references -- an hazptr feature -- do not break the
-+		 * machinery and are not treated as errors.
-+		 */
-+		if (hot_longhold_ms) {
-+			torture_hrtimeout_ms(hot_longhold_ms, 100, &rand);
-+			complete(&r0_release);
-+			done_in_window = wait_for_completion_timeout(
-+				&hot_sync_done, 5 * HZ);
-+			if (!done_in_window) {
-+				pr_alert("%shot: longhold: sync did not drain after release r%lu\n",
-+					 TORTURE_FLAG, round);
++release:
++	/* Release both holders; the syncs must now drain. */
++	for (i = 0; i < 2; i++)
++		complete(&fair_release[i]);
++	for (i = 0; i < 2; i++) {
++		unsigned long deadline = jiffies + 30 * HZ;
++
++		if (!sync_launched[i])
++			continue;
++		while (!wait_for_completion_timeout(&fair_sync_done[i], HZ)) {
++			if (torture_must_stop() ||
++			    time_after(jiffies, deadline)) {
++				pr_alert("%sfair: sync %d did not drain after release\n",
++					 TORTURE_FLAG, i);
 +				atomic_inc(&n_hazptr_torture_error);
-+			}
-+			atomic_inc(done_in_window ? &n_hot_in_seq
-+						  : &n_hot_starves);
-+			positive_done = done_in_window;
-+			{
-+				u64 dt = ktime_get_ns() - t_sync_start;
-+
-+				atomic_inc(&n_hot_syncs);
-+				pr_alert("%shot r%lu: longhold drain=%d dt_ns=%llu\n",
-+					 TORTURE_FLAG, round,
-+					 !!done_in_window, dt);
-+			}
-+			goto skip_round;
-+		}
-+
-+		/* P4: handoff -- hammer holds before R0 releases. */
-+		WRITE_ONCE(hot_hammer_active, true);
-+		while (!atomic_read(&hot_hammer_holding) &&
-+		       !torture_must_stop())
-+			schedule_timeout_interruptible(1);
-+		complete(&r0_release);
-+
-+		/* P5 HAMMER WINDOW. */
-+		done_in_window = wait_for_completion_timeout(
-+			&hot_sync_done, msecs_to_jiffies(hot_hammer_ms));
-+		if (done_in_window) {
-+			atomic_inc(&n_hot_in_seq);
-+		} else {
-+			atomic_inc(&n_hot_starves);
-+			if (!starve_expected)
-+				atomic_inc(&n_hazptr_torture_error);
-+		}
-+
-+		/* P6 POSITIVE CONTROL. */
-+		WRITE_ONCE(hot_hammer_active, false);
-+		if (done_in_window) {
-+			positive_done = 1;
-+		} else {
-+			positive_done = wait_for_completion_timeout(
-+				&hot_sync_done, 5 * HZ);
-+			if (!positive_done) {
-+				pr_alert("%shot: positive control timed out r%lu (machinery fault?)\n",
-+					 TORTURE_FLAG, round);
-+				atomic_inc(&n_hazptr_torture_error);
++				atomic_inc(&n_fair_timeout);
++				break;
 +			}
 +		}
-+
-+		{
-+			u64 dt = ktime_get_ns() - t_sync_start;
-+
-+			atomic_inc(&n_hot_syncs);
-+			pr_alert("%shot r%lu: starve=%d in_seq=%d pos=%d dt_ns=%llu\n",
-+				 TORTURE_FLAG, round, !done_in_window,
-+				 !!done_in_window, positive_done, dt);
-+		}
-+
-+	skip_round:
-+		/* Release R0 (harmless if already released) so an
-+		 * orphan sync from a skipped round can drain. */
-+		complete(&r0_release);
-+		/* Drain this round's sync kthread: no completion event
-+		 * may cross the round boundary. */
-+		while (atomic_read(&hot_live_syncs) && !torture_must_stop())
-+			schedule_timeout_interruptible(1);
-+		/* R0 parks on the gate after its release; the next round
-+		 * opens the gate and waits for its fresh hold above. */
-+		round++;
-+		torture_hrtimeout_ms(500, 200, &rand);
-+	} while (!torture_must_stop());
++	}
++	atomic_inc(&n_fair_rounds);
++	}
 +out:
-+	torture_kthread_stopping("hot_stage");
++	/* Unblock holders even on skip paths. */
++	for (i = 0; i < 2; i++)
++		complete(&fair_release[i]);
++	torture_kthread_stopping("fair_stage");
 +	return 0;
 +}
 +
  static void
  hazptr_torture_cleanup(void)
  {
-@@ -840,6 +1141,34 @@ hazptr_torture_cleanup(void)
+@@ -1169,6 +1338,24 @@ hazptr_torture_cleanup(void)
+ 		unregister_trace_hazptr_waiter_enqueue(hot_probe_enqueue, NULL);
+ 	}
  
- 	torture_stop_kthread(hazptr_torture_do_pending, do_pending_task);
- 	torture_stop_kthread(hazptr_torture_preempt, preempt_task);
-+	torture_stop_kthread(hazptr_torture_wq_churn, wq_churn_task);
-+
-+	/* Hot scenario: stop hammer readers first so pending syncs drain. */
-+	if (nhotreaders > 0 || hot_longhold_ms > 0) {
++	if (hot_fair_ms > 0) {
 +		int wait_ms = 5000;
 +
-+		WRITE_ONCE(hot_hammer_active, false);
-+		if (hot_reader_tasks) {
-+			for (i = 0; i < nhotreaders; i++)
-+				torture_stop_kthread(hazptr_torture_hot_reader,
-+						     hot_reader_tasks[i]);
-+			kfree(hot_reader_tasks);
-+			hot_reader_tasks = NULL;
-+		}
-+		torture_stop_kthread(hazptr_torture_hot_r0, hot_r0_task);
-+		torture_stop_kthread(hazptr_torture_hot_stage, hot_stage_task);
-+		/* Wait for any transient sync kthreads to exit so no
-+		 * module code is executing at unload. */
-+		while (atomic_read(&hot_live_syncs) && wait_ms > 0) {
++		for (i = 0; i < 2; i++)
++			complete(&fair_release[i]);
++		for (i = 0; i < 2; i++)
++			torture_stop_kthread(hazptr_torture_fair_holder,
++					     fair_holder_tasks[i]);
++		torture_stop_kthread(hazptr_torture_fair_stage, fair_stage_task);
++		while (atomic_read(&fair_live_syncs) && wait_ms > 0) {
 +			schedule_timeout_uninterruptible(msecs_to_jiffies(50));
 +			wait_ms -= 50;
 +		}
-+		if (atomic_read(&hot_live_syncs))
-+			pr_alert("%shot: %d sync kthread(s) still alive at exit\n",
-+				 TORTURE_FLAG, atomic_read(&hot_live_syncs));
-+		unregister_trace_hazptr_waiter_enqueue(hot_probe_enqueue, NULL);
++		if (atomic_read(&fair_live_syncs))
++			pr_alert("%sfair: %d sync kthread(s) still alive at exit\n",
++				 TORTURE_FLAG, atomic_read(&fair_live_syncs));
 +	}
 +
  	torture_stop_kthread(hazptr_torture_writer, writer_task);
  
  	if (reader_tasks) {
-@@ -873,6 +1202,8 @@ static int __init hazptr_torture_init(void)
- 	int firsterr = 0;
- 	static struct hazptr_torture_ops *torture_ops[] = { &hazptr_ops, &hazptr_stack_ops, };
- 
-+	if (!strcmp(torture_type, "none"))
-+		return 0;
- 	if (!torture_init_begin(torture_type, verbose))
- 		return -EBUSY;
- 
-@@ -919,6 +1250,10 @@ static int __init hazptr_torture_init(void)
- 	atomic_set(&n_hazptr_torture_free, 0);
- 	atomic_set(&n_hazptr_torture_error, 0);
- 	atomic_set(&n_hazptr_torture_wq_churn, 0);
-+	atomic_set(&n_hot_syncs, 0);
-+	atomic_set(&n_hot_starves, 0);
-+	atomic_set(&n_hot_in_seq, 0);
-+	atomic_set(&hot_r0_gate, 0);
- 	for (i = 0; i < HAZPTR_TORTURE_PIPE_LEN + 1; i++)
- 		atomic_set(&hazptr_torture_wcount[i], 0);
- 	for_each_possible_cpu(cpu) {
-@@ -1004,6 +1339,45 @@ static int __init hazptr_torture_init(void)
+@@ -1378,6 +1565,26 @@ static int __init hazptr_torture_init(void)
  		if (torture_init_error(firsterr))
  			goto unwind;
  	}
-+	if (nhotreaders > 0 || hot_longhold_ms > 0) {
-+		int cpu = 0, j;
-+
-+		firsterr = register_trace_hazptr_waiter_enqueue(hot_probe_enqueue, NULL);
-+		if (firsterr) {
-+			pr_alert("%shot: tracepoint registration failed: %d\n",
-+				 TORTURE_FLAG, firsterr);
-+			goto unwind;
-+		}
-+
-+		if (nhotreaders > 0) {
-+			hot_reader_tasks = kcalloc(nhotreaders,
-+						  sizeof(hot_reader_tasks[0]),
-+						  GFP_KERNEL);
-+			if (!hot_reader_tasks) {
-+				firsterr = -ENOMEM;
++	if (hot_fair_ms > 0) {
++		atomic_set(&fair_live_syncs, 0);
++		atomic_set(&n_fair_rounds, 0);
++		atomic_set(&n_fair_timeout, 0);
++		for (i = 0; i < 2; i++) {
++			init_completion(&fair_held[i]);
++			init_completion(&fair_release[i]);
++			init_completion(&fair_released[i]);
++			init_completion(&fair_sync_done[i]);
++			firsterr = torture_create_kthread(
++				hazptr_torture_fair_holder,
++				(void *)(long)i, fair_holder_tasks[i]);
++			if (torture_init_error(firsterr))
 +				goto unwind;
-+			}
-+			for (j = 0; j < nhotreaders; j++) {
-+				cpu = cpumask_next(cpu % num_online_cpus(),
-+						   cpu_online_mask);
-+				if (cpu >= nr_cpu_ids)
-+					cpu = cpumask_first(cpu_online_mask);
-+				firsterr = torture_create_kthread(
-+					hazptr_torture_hot_reader,
-+					(void *)(long)cpu, hot_reader_tasks[j]);
-+				if (torture_init_error(firsterr))
-+					goto unwind;
-+			}
 +		}
-+		firsterr = torture_create_kthread(hazptr_torture_hot_r0, NULL,
-+						  hot_r0_task);
-+		if (torture_init_error(firsterr))
-+			goto unwind;
-+		firsterr = torture_create_kthread(hazptr_torture_hot_stage,
-+						  NULL, hot_stage_task);
++		firsterr = torture_create_kthread(hazptr_torture_fair_stage,
++						  NULL, fair_stage_task);
 +		if (torture_init_error(firsterr))
 +			goto unwind;
 +	}
  
  	torture_init_end();
  	return 0;
+diff --git a/tools/testing/selftests/rcutorture/bin/hazptr.sh b/tools/testing/selftests/rcutorture/bin/hazptr.sh
+index d12735ddfefc..8109cb76bf04 100755
+--- a/tools/testing/selftests/rcutorture/bin/hazptr.sh
++++ b/tools/testing/selftests/rcutorture/bin/hazptr.sh
+@@ -297,6 +297,57 @@ else
+ 	nerrs=$((nerrs+1))
+ fi
+ 
++# FAIRNESS: drain rotation between two stuck addresses.  The
++# module verdict covers forward progress (syncs drain after
++# release); rotation itself is observed from the kernel drain
++# logs.
++
++echo "--- hazptr FAIRNESS (drain rotation) ---"
++if run_kvm fairness FAIRNESS "$cpus" "" "50s"
++then
++	resdir="$RCUTORTURE/res/$ds/fairness/FAIRNESS"
++	console="$resdir/console.log"
++	fair_err=""
++	if ! test -f "$console"
++	then
++		echo "Missing console.log for FAIRNESS" > "$RCUTORTURE/res/$ds/fairness/kvm.sh.err"
++		fair_err=1
++	elif ! grep -q "End of test: SUCCESS" "$console"
++	then
++		echo "FAIRNESS: module verdict not SUCCESS" > "$resdir/kvm.sh.err"
++		fair_err=1
++	elif ! grep -q "fair_stage task started" "$console"
++	then
++		echo "FAIRNESS: scenario did not run" > "$resdir/kvm.sh.err"
++		fair_err=1
++	elif grep -q "fair: sync .* did not drain" "$console"
++	then
++		echo "FAIRNESS: sync failed to drain after release" > "$resdir/kvm.sh.err"
++		fair_err=1
++	fi
++	if [ -z "$fair_err" ]
++	then
++		engages=$(grep -o "drain engaged for [0-9a-f]*" "$console" | sort -u | wc -l)
++		caps=$(grep -c "drain disengaged (fairness-cap" "$console")
++		if test "$engages" -ge 2 -a "$caps" -ge 1
++		then
++			echo "FAIRNESS: drain rotated between $engages addresses, $caps fairness-cap disengage(s)"
++		elif test "$caps" -ge 1
++		then
++			echo "FAIRNESS note: fairness-cap hit but only $engages address engaged (window may be short)" > "$resdir/kvm.sh.note"
++		else
++			echo "FAIRNESS note: no fairness-cap observed (window too short for HZ; consider larger hot_fair_ms)" > "$resdir/kvm.sh.note"
++		fi
++	fi
++	if [ -n "$fair_err" ]
++	then
++		nerrs=$((nerrs+1))
++	fi
++else
++	nerrs=$((nerrs+1))
++fi
++echo
++
+ # CPU scaling: optionally test at multiple CPU counts
+ 
+ if test "$allcpus" -ne 0
 diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/CFLIST b/tools/testing/selftests/rcutorture/configs/hazptr/CFLIST
-index 90ef09b0e654..b3f6137ce8ab 100644
+index b3f6137ce8ab..03ce4940ab4a 100644
 --- a/tools/testing/selftests/rcutorture/configs/hazptr/CFLIST
 +++ b/tools/testing/selftests/rcutorture/configs/hazptr/CFLIST
-@@ -6,3 +6,5 @@ SLOWPATH
- LOCKDEP
- CPU128
+@@ -8,3 +8,4 @@ CPU128
  CPU256
-+HOTADDR
-+LONGHOLD
-diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/HOTADDR b/tools/testing/selftests/rcutorture/configs/hazptr/HOTADDR
+ HOTADDR
+ LONGHOLD
++FAIRNESS
+diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/FAIRNESS b/tools/testing/selftests/rcutorture/configs/hazptr/FAIRNESS
 new file mode 100644
-index 000000000000..6f4d6746b63c
+index 000000000000..b81b57307036
 --- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/hazptr/HOTADDR
-@@ -0,0 +1,18 @@
++++ b/tools/testing/selftests/rcutorture/configs/hazptr/FAIRNESS
+@@ -0,0 +1,19 @@
 +CONFIG_SMP=y
 +CONFIG_NR_CPUS=16
 +CONFIG_PREEMPT_NONE=n
@@ -674,45 +508,15 @@ index 000000000000..6f4d6746b63c
 +CONFIG_DEBUG_KERNEL=y
 +CONFIG_HAZPTR_DEBUG=y
 +CONFIG_HAZPTR_STALL_DETECTOR=y
-+CONFIG_HAZPTR_STALL_TIMEOUT=1000
-diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/HOTADDR.boot b/tools/testing/selftests/rcutorture/configs/hazptr/HOTADDR.boot
++CONFIG_HAZPTR_STALL_TIMEOUT=60000
++CONFIG_HAZPTR_DRAIN_ASSIST=y
+diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/FAIRNESS.boot b/tools/testing/selftests/rcutorture/configs/hazptr/FAIRNESS.boot
 new file mode 100644
-index 000000000000..878b588e2e39
+index 000000000000..ef54cbfc5b50
 --- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/hazptr/HOTADDR.boot
++++ b/tools/testing/selftests/rcutorture/configs/hazptr/FAIRNESS.boot
 @@ -0,0 +1 @@
-+hazptrtorture.nreaders=0 hazptrtorture.nwriters=0 hazptrtorture.nhotreaders=4 hazptrtorture.hot_hold_us=20000 hazptrtorture.starve_expected=1 hazptrtorture.shutdown_secs=20
-diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/LONGHOLD b/tools/testing/selftests/rcutorture/configs/hazptr/LONGHOLD
-new file mode 100644
-index 000000000000..fe293638bbe2
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/hazptr/LONGHOLD
-@@ -0,0 +1,18 @@
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=16
-+CONFIG_PREEMPT_NONE=n
-+CONFIG_PREEMPT_VOLUNTARY=n
-+CONFIG_PREEMPT=y
-+CONFIG_HZ_PERIODIC=n
-+CONFIG_NO_HZ_IDLE=y
-+CONFIG_NO_HZ_FULL=n
-+CONFIG_HOTPLUG_CPU=y
-+CONFIG_SUSPEND=n
-+CONFIG_HIBERNATION=n
-+CONFIG_PROVE_LOCKING=n
-+CONFIG_DEBUG_LOCK_ALLOC=n
-+CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
-+CONFIG_DEBUG_KERNEL=y
-+CONFIG_HAZPTR_DEBUG=y
-+CONFIG_HAZPTR_STALL_DETECTOR=y
-+CONFIG_HAZPTR_STALL_TIMEOUT=2000
-diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/LONGHOLD.boot b/tools/testing/selftests/rcutorture/configs/hazptr/LONGHOLD.boot
-new file mode 100644
-index 000000000000..cbe30b6a09cc
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/hazptr/LONGHOLD.boot
-@@ -0,0 +1 @@
-+hazptrtorture.nreaders=0 hazptrtorture.nwriters=0 hazptrtorture.hot_longhold_ms=8000 hazptrtorture.shutdown_secs=40
++hazptrtorture.nreaders=0 hazptrtorture.nwriters=0 hazptrtorture.hot_fair_ms=30000 hazptrtorture.shutdown_secs=45
 -- 
 2.43.0
 
