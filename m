@@ -1,63 +1,67 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793903799;
-	b=T70lI6wIawnnlTWLm/YZq3iAbQk+9gXXZxakon4R9OxyK/uWvqZz7Svsqr0y1MGdoA38
-	 kCh+XAO48isz3inLI5aIFQFq5FWNC0nyO/wSnC596C47uzi27GmpP/QG0qxCXgEJ9bMdm
-	 18aENVb6ONwRu18Sd5pA7Tz6QmyK/vDObaTAkN8nLojZu+PfXwiqpULqaxcoamL8Ml4RI
-	 5GqvdDbrqZTRHpzlj8XsVD4i8VkRJe/LJwLUzfvyEuahb/6+b5e4A/wbDqZWe43ooy0P4
-	 QWPD3x3aUdJE2dYdFDeM2pb2G0dhozjvrA1pp7IxDRvnPUQRussz9qimyJhtXmguGSA==
+	t=1793904135;
+	b=Iv3OLBP1y1ecZxfDdQLhh/oI5YUtX/6ziOo08QRkHa14b3yYoSvByEBZ92HbrbSOdbG5
+	 sHFxmB/FFO1O5YW2Aw8F219PcdGJGMl/X3buiTa4B/v45NZ2HSofHzgms3SMNODRurJgG
+	 uzN21bW4peniQ2Xsd6HGyql7kQl/0mHfqGXUGHIeywVKEZeTaI0Xi31/YewxI2xiUqcRV
+	 h/ehP7akSSo8sLSASVx6WgfOIWDV7RiO5jb+9AtgyGXnu8DcqZbv4SPR2FlF7tEz1kQlM
+	 K6KFgy5kIxF47lxnhQBZj/sCde4AvsXHSG27lYCGeYNWAu3j+3bSJriMwFSnFJQcJMw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793903799;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793904135;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
 	 In-Reply-To;
-	bh=PQzQLYj3/4QpqtgyftolbBjLZgttgpD6Pbn7rRisaHQ=;
-	b=tD4fguDkJnsSnZFfijQNAz46eG/etTfsPumlUA1BzmP+fTExLS2vCpqsqwLGnw2V4RmN
-	 mZ4XfPDGzS3DwaSI95jK7E6aufd/H+BpaN+m7N1EGGVmB5hMOSWhwMuwfMFx8ut6G/RAd
-	 8IV8l50WoZiuOkNmzj18iBE7vNRSwyI+yRaWf2QlfGlHA6YA2fBXcSJS4ha6iVVyS/Bra
-	 WxcAHG05/VSfaO/wCaNZzw7Q8+zx4uTSXgiSTDu9ejFqOiwMcUpjfn7wT+JYaU2NiYF+V
-	 f2EEylHNSupn4AHECOahP4JQkBBvRsE7Vuk1JbzmziL6yqBqIjl452T4hr95ZhsX/fQ==
+	bh=DbVXtjmXEidjKGQfwT1FS56vvbuAVEYXJ6jbibWlecU=;
+	b=z5fsvRTO/D3nUjfcCTXrGMKktyu6dNAMD4+0NbxsBB7K/RKi0fSH9+bCCM2PBrjbF3Yi
+	 KtCoDkpPhS9nwaf8S8OXkH8UTAOZuHVJze5iREhDki/mSt7Qc4Zj2ZAdrTg3gKVJQA5nK
+	 hukGO42Is9vTc7PQI+thhWe5JSM7GXYAtNNaBeDYNbbvUK+ycKagI8KdSJ9HXa/nlWRRV
+	 ev377POPawnE8vnSeOely7RjXiOvIIBURYfVG5jAGzPMPpCQvSHf+x/A33Q+F8XUmIMaG
+	 Iv6fTcP2u4Pm7fgNpRQmWCr6erGne5oDtMlg0xEsU7mBNfO5Sk081rE8WTng6sFcXPQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=avu+02Si;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=e0Zf1xR7;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313C7606A326;
-	Thu,  5 Nov 2026 18:36:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F486606A31B;
+	Thu,  5 Nov 2026 18:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=avu+02Si
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C270E1F000C1;
-	Thu,  5 Nov 2026 18:36:38 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=e0Zf1xR7
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B3BA1F00A15;
+	Thu,  5 Nov 2026 18:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793903798;
-	bh=PQzQLYj3/4QpqtgyftolbBjLZgttgpD6Pbn7rRisaHQ=;
+	s=k20260515; t=1793904135;
+	bh=DbVXtjmXEidjKGQfwT1FS56vvbuAVEYXJ6jbibWlecU=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=avu+02Si1yeJGBhjpFIzCtiuyP/WhQtsiq2Z0xT6rwWX3QDqR98arrUmvovu08JIL
-	 Otl5yhBi/CgDzFyW9vi1Qui4bKmKhJT518A3HmnDIk/qTXZ5ef3G7D3ekS2TLCWgmR
-	 hRpbTY5/hSHDcLq6XbJ9fX2NdVa1/nwMpZwD59NGZwglyBVLjV8mWkCTdyH/gC6NHl
-	 bmHoh+cg+6jPuiosVygwgC76EMEDArjNgzchZ2zzXXF5U4THH/vwOkkehzfZmwVZ2k
-	 5mf5mPXB91vAtoY02JaQ6jIt7dbxVWPGS9q+AfRjk84aj8QoHDEGvwbf8hXIig9fEC
-	 f5/U+zK2ZfsYA==
+	b=e0Zf1xR7dRMzFDFTHUtoIE+NpuR4mSHskw2E5CphOe7jmB9j6B7W34yLw2x0/zdjd
+	 eQ2TVjkcC2AeuPP8BcEoqeukxvx9caP021CXYe0a1NgKFgUoCQMV+ZnrgkzgPmfXnL
+	 vcQT8meDFEuxAunwISS1dS7PLfIVbVKxSN7XGPupO8QlSdwU+3vwK/jujaia60Eazf
+	 gTFeNsE7kL4ycLnKocIO90gGZyeXSFCduzXrD0DqLlN9l2d5tFmj5fOcnPRPmGpRCM
+	 0ifGm0zpx8P3kxmNLaReE8oCGvVWvuWKEmM0dW0wG0Wt1VVgKLkSN1haX0nQPyK2gi
+	 iO5Hv2ygzI8ag==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 7D961CE0897; Thu,  5 Nov 2026 10:36:38 -0800 (PST)
-Date: Thu, 5 Nov 2026 10:36:38 -0800
+	id 02E7DCE0897; Thu,  5 Nov 2026 10:42:15 -0800 (PST)
+Date: Thu, 5 Nov 2026 10:42:14 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: rcu@vger.kernel.org, linux-rt-devel@lists.linux.dev,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
+To: Christoph Hellwig <hch@lst.de>
+Cc: Qiliang Yuan <odys.yuan@gmail.com>, Keith Busch <kbusch@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH] rcutorture: Don't try to disable to RT throttling.
-Message-ID: <2fbdb03e-1af8-489c-819a-7e3c7b0ed1be@paulmck-laptop>
+	Onur =?iso-8859-1?Q?=D6zkan?= <work@onurozkan.dev>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] srcu: Add list_splice_init_srcu()
+Message-ID: <493a0897-c117-4517-a3a4-6d84da9d30ae@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20261105165113.82N-rPMG@linutronix.de>
+References: <20261104-bug-nvme-remove-ns-srcu-v2-0-feb64ecb96ca@gmail.com>
+ <20261104-bug-nvme-remove-ns-srcu-v2-1-feb64ecb96ca@gmail.com>
+ <9f8c94ff-29e3-4ea5-b9ec-b04b2bc21b1c@paulmck-laptop>
+ <5b0e7c55-72b1-410a-982c-a62138b9e44c@paulmck-laptop>
+ <20261105074554.GA17781@lst.de>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -69,108 +73,16 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261105165113.82N-rPMG@linutronix.de>
+In-Reply-To: <20261105074554.GA17781@lst.de>
 
-On Thu, Nov 05, 2026 at 05:51:13PM +0100, Sebastian Andrzej Siewior wrote:
-> Commit 450efca7182a5 ("rcutorture: Disable RT throttling for boost
-> tests") added the ability to disable RT throttling while rcutorture was
-> run.
+On Thu, Nov 05, 2026 at 08:45:54AM +0100, Christoph Hellwig wrote:
+> On Wed, Nov 04, 2026 at 05:46:45PM -0800, Paul E. McKenney wrote:
+> > Given Qiliang's response:
+> > 
+> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> Since v6.12 the DL fair_server takes control of throttling and this
-> interface no longer serves this purpose. That sysctl control still
-> exists but serves a different cause.
-> 
-> There is no in-kernel interface to provide this feature, one needs to
-> echo -1 to each /sys/kernel/debug/sched/fair_server/cpu*/runtime file.
-> 
-> Since sysctl_sched_rt_runtime does not do what it once did, remove it
-> from rcutorture.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Thanks.  I assume you're fine if we carry this in the nvme tree?
 
-Thank you, but ouch...  Does this mean that there is no longer any useful
-in-kernel way to test RCU priority boosting?
+Please do!
 
 							Thanx, Paul
-
-> ---
->  kernel/rcu/rcu.h        |  2 --
->  kernel/rcu/rcutorture.c | 35 -----------------------------------
->  2 files changed, 37 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> index d60444bf3a02d..6d1034e49d411 100644
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -69,8 +69,6 @@
->  /* A complete grace period count */
->  #define RCU_SEQ_GP (RCU_SEQ_STATE_MASK + 1)
->  
-> -extern int sysctl_sched_rt_runtime;
-> -
->  /*
->   * Return the counter portion of a sequence number previously returned
->   * by rcu_seq_snap() or rcu_seq_current().
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 968343be4e0d1..acab425e72ad5 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -1333,39 +1333,6 @@ static unsigned long rcutorture_seq_diff(unsigned long new, unsigned long old)
->  	return cur_ops->gp_diff(new, old);
->  }
->  
-> -/*
-> - * RCU torture priority-boost testing.  Runs one real-time thread per
-> - * CPU for moderate bursts, repeatedly starting grace periods and waiting
-> - * for them to complete.  If a given grace period takes too long, we assume
-> - * that priority inversion has occurred.
-> - */
-> -
-> -static int old_rt_runtime = -1;
-> -
-> -static void rcu_torture_disable_rt_throttle(void)
-> -{
-> -	/*
-> -	 * Disable RT throttling so that rcutorture's boost threads don't get
-> -	 * throttled. Only possible if rcutorture is built-in otherwise the
-> -	 * user should manually do this by setting the sched_rt_period_us and
-> -	 * sched_rt_runtime sysctls.
-> -	 */
-> -	if (!IS_BUILTIN(CONFIG_RCU_TORTURE_TEST) || old_rt_runtime != -1)
-> -		return;
-> -
-> -	old_rt_runtime = sysctl_sched_rt_runtime;
-> -	sysctl_sched_rt_runtime = -1;
-> -}
-> -
-> -static void rcu_torture_enable_rt_throttle(void)
-> -{
-> -	if (!IS_BUILTIN(CONFIG_RCU_TORTURE_TEST) || old_rt_runtime == -1)
-> -		return;
-> -
-> -	sysctl_sched_rt_runtime = old_rt_runtime;
-> -	old_rt_runtime = -1;
-> -}
-> -
->  static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long *start)
->  {
->  	int cpu;
-> @@ -3390,7 +3357,6 @@ static int rcutorture_booster_cleanup(unsigned int cpu)
->  	mutex_lock(&boost_mutex);
->  	t = boost_tasks[cpu];
->  	boost_tasks[cpu] = NULL;
-> -	rcu_torture_enable_rt_throttle();
->  	mutex_unlock(&boost_mutex);
->  
->  	/* This must be outside of the mutex, otherwise deadlock! */
-> @@ -3428,7 +3394,6 @@ static int rcutorture_booster_init(unsigned int cpu)
->  
->  	/* Don't allow time recalculation while creating a new task. */
->  	mutex_lock(&boost_mutex);
-> -	rcu_torture_disable_rt_throttle();
->  	VERBOSE_TOROUT_STRING("Creating rcu_torture_boost task");
->  	boost_tasks[cpu] = kthread_run_on_cpu(rcu_torture_boost, NULL,
->  					      cpu, "rcu_torture_boost_%u");
-> -- 
-> 2.55.0
-> 
