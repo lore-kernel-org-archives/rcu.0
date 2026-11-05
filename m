@@ -1,62 +1,104 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=5.75.144.95
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.42
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793818893;
-	b=uj3mDnrqjNSPx9daWCCzTDzMYtROxViWqH5t7jqIK66cd1FA98Vhg5DK871QRCTmc8If
-	 4GXv08XtSuPcAN1rVfXTl3kFfZxN2CKjfmymB1rVnHI1FNtuD5LaChZF4gcpLfjOSEXB3
-	 3smgnLu/G1R7Ba0pLq+wGCh34EchWholtRs4bE2csTMTcoFne4Fk3rKSwmWT9K4H/KBv8
-	 ppAhLHhxiAbhrkezrM+iKwBKlOA0zI1zfqpGzNKfcQ6so4ePviNjDgUUWwjdZYYq4akI5
-	 erdu0E6jVsr72mYCQdWDea/tht+DPN0Eb7VdzUKDz8Ji+fYQst9Yot5Og5CFdmZIBVw==
+	t=1793841770;
+	b=UettbfPRmsT+7dqI15yDmTEDh1FR1DREZmVqKakpPW83YL+o6q+kByUVF4Nbi3v3/YN/
+	 PvO51dV3sQHHb30Hcsxk7jVRtH/burO9jPl6Zj+GEUgZbjxchW08vHWj4qF++ZtiZyfMT
+	 iGPU8bd3b/3F3Aays/cSaQuQ6mFt1YwSKu//jaToTTR0IhmAnsJ/enepu3p2eaPvYHC9n
+	 tjoyXbR02z4uM+U0C8hxjB8+peHAZHlby5ArQcZi6z43tEIUV4mnIER1kmhazNanxTSHt
+	 5aMr5ts+eN3JBTAfpGl62NN71BGu/prVRvUmythn0hvET7Kp7Ust14vYCS9JlTdJPOg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793818893;
-	h=DMARC-Filter:DKIM-Signature:DKIM-Signature:Date:From:To:CC:Subject:
-	 In-Reply-To:Message-ID:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=agSk+cFPktjD4lmleaUPN9v5OCRHldmWtEkAJi2dW2s=;
-	b=sOeuGxsk2l5JkYbSUoDW07Ms8HHnoEzvmegyNEMAuSHaQnfEg/uZ/0AIJpKW4N3Leyft
-	 Q2K6L+RQzdl9uiDgGD6Fr9XNPUxE1MIkxgk3jSfyX6KeVTOvbfqOa7PReycVlnGbJRZ2g
-	 bgAaLKb0UAPlrZt+cFvas5zwWszCA/iBqLqovoD4Fvhs0RPdbm0cBhfiDO4BxMntstDov
-	 nPKDnaBth3daJOFREIJYuaKHwSKpSqCQEI6n83IdxMpeMFVkEuvnz0HyGF12fbmFXxd2i
-	 lUp2mrolvmNpwdmfalwrFg9FJyC1GlcchGGVvxdHCKzQKNSe6czaGoFDWCyH/nJuqEQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793841770;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=PW259vEwVt6aepdEMnV/kf0Mt4lpxnzMAqh8bDDexfs=;
+	b=w4VwpZ7EiULN50US1p5aUHsg5YT4fUTgn4IZgBj+C5iuuObT5H0/YeQC4AJvo76B9EVr
+	 bRHDTagQApZkJIaYOJxYoYp8u6N5ILBxWoH/Kz9b1ViJryAldIDJYfZP4Lu7TiOu437q9
+	 liXZ4F7MEMK8DId+GNdDTCVBOeBw86hzbKiegtYytnvxo8ExxCdPK5ch+XA1FCIJPpzpf
+	 9MIiau5jFP0H/2916T6O9snpbCLgmEEyyn/TafLwOoxlHMAgHtZ1rPcogshuhjalcXOYq
+	 7hFRBD5GiWMzM0wqIb4lx0gdM50XHTgfOM1KRK5uRfVNcKUie8qKbJNwJlND8+kU8ZQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=mainlining.org;
-	spf=pass smtp.mailfrom=mainlining.org;
-	dkim=pass header.d=mainlining.org header.i=@mainlining.org header.a=rsa-sha256 header.s=202507r header.b="SRAUb/GV";
-	dkim=pass header.d=mainlining.org header.i=@mainlining.org header.a=ed25519-sha256 header.s=202507e header.b=BrYsymwf;
-	arc=none smtp.remote-ip=5.75.144.95
-Received: from mail.mainlining.org (mail.mainlining.org [5.75.144.95])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=wXXqLWq5;
+	arc=none smtp.remote-ip=74.125.82.42
+Received: from mail-dl1-f42.google.com (mail-dl1-f42.google.com [74.125.82.42])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 464FF606A31B;
-	Wed,  4 Nov 2026 19:01:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 464FF606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mainlining.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53AAF606A31B
+	for <rcu@vger.kernel.org>; Thu,  5 Nov 2026 01:22:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 53AAF606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mainlining.org header.i=@mainlining.org header.a=rsa-sha256 header.s=202507r header.b=SRAUb/GV;
-	dkim=pass header.d=mainlining.org header.i=@mainlining.org header.a=ed25519-sha256 header.s=202507e header.b=BrYsymwf
-DKIM-Signature: v=1; a=rsa-sha256; s=202507r; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1793818883; bh=agSk+cFPktjD4lmleaUPN9v
-	5OCRHldmWtEkAJi2dW2s=; b=SRAUb/GVki4GpidZse7+3EsGLr/rK7VIUjf5XkxwWtAR+GjSye
-	rO+JZJMWr4ulT5YjFK81VHHIf0Ah8/UAjVrKzUUBI4IBjfdTYx0rBYOCIaVqOJAw3sIN0gi/3Fi
-	y27G+QeKjt1ILV+YaNMxf9coQt3zcGf4Uecblhc6LLCDRmoml38o3HeDCzJX3tZL92+BYkItuST
-	XUDS/SIF07Z79m2A2alWvGhnuJmkOE+QwpVptkTVFh65zuA2dsIcWjHtv76i58SvjvCN62M46ds
-	XHv7yDsi1stEUP5p6xcrzrL3Q+OAFNAJoYoVT4szncJnOjRlOCvoNwHr9ok0uxJ8UcQ==;
-DKIM-Signature: v=1; a=ed25519-sha256; s=202507e; d=mainlining.org; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1793818883; bh=agSk+cFPktjD4lmleaUPN9v
-	5OCRHldmWtEkAJi2dW2s=; b=BrYsymwfmY+Jp9PuQnFzb8bV5OJT7hhOEcP97qdIjA+lZnzSwI
-	9WYQncpk3bt4oRSUerevyLwwvdIgWdX8PoCw==;
-Date: Wed, 04 Nov 2026 19:01:24 +0000
-From: Bradley Morgan <brads@mainlining.org>
-To: joelagnelf@nvidia.com
-CC: boqun@kernel.org, frederic@kernel.org, jiangshanlai@gmail.com,
- josh@joshtriplett.org, kunwu.chan@gmail.com, linux-kernel@vger.kernel.org,
- mathieu.desnoyers@efficios.com, neeraj.upadhyay@kernel.org,
- paulmck@kernel.org, qiang.zhang@linux.dev, rcu@vger.kernel.org,
- rostedt@goodmis.org, urezki@gmail.com
-Subject: Re: [PATCH] rcu-tasks: Track barrier callbacks in debugobjects
-In-Reply-To: <20261104153046.965890-1-joelagnelf@nvidia.com>
-Message-ID: <3AB3C8E1-9709-4F46-8283-27CAB4A264D6@mainlining.org>
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=wXXqLWq5
+Received: by mail-dl1-f42.google.com with SMTP id a92af1059eb24-15dd124bbe7so291939c88.1
+        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 17:22:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793841769; x=1794446569; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=PW259vEwVt6aepdEMnV/kf0Mt4lpxnzMAqh8bDDexfs=;
+        b=wXXqLWq51EnKuCV8eczEg3m42Y8tLQoCeEt86ccSCmBF8iNWxTJiWbe/B5I9DX0Dam
+         22BJ8WBPO1YrCZ6oc3u7dsit8THwZqmLvi3BWEly3Nq5gnMiXRcMrOJvIVOmf9Jbz+zt
+         grivGH0X685Zjrt9HwEfUbejqxqsSN+I909TqS8Wbhi2BX0lWnGKjYBV7mjpAYDuILTn
+         tbVRrbpIkAkYONNJuN5e6yaj/rmSDzAmSwjeGZN4EFKBOQpwbilT2eiS4KFAy+gWAwCt
+         2JIG9VZ+5tD0O1GsVvVZyg9cSjLOdqQVqo+QvkBrF2PaR6ttnUZMv+Uv//WQovl1oqk/
+         lvFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793841769; x=1794446569;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=PW259vEwVt6aepdEMnV/kf0Mt4lpxnzMAqh8bDDexfs=;
+        b=Tro8TOB09Ds5an5CTIfA5k4+DIUmdJ26Mt8n2Cft0gL1OHxUWG7o0DYXw1vuDmfWZk
+         NsMbi8RkePAmf1NL+EYvsJBeosnDzTI3BZJkE/kn55sdfIcIH7r9dp/3FRBSj/eceU6v
+         SMn8Pb96vA6a7nC29E4fEN06dM4V3ClqgQuki+jCrBpeErQdWRn6U5sPPIcuVWoc8udA
+         naacIlJEM3nBQzbqSAnwHNNB5rl9jFSJRWWK6nyhLl6HuF3taruXhXpB5eN0L/fc8lIF
+         xuBpOBHxn4i0MTmik3EuD7ovELbThLWnBK8E5PM9ZHqjqIHD44VUVB6fov/XjbUSZZwR
+         CmdQ==
+X-Forwarded-Encrypted: i=1; AKwUvBxxlmNPvJ8qIhLBS0IV6ehZUtRbsN1fXYwGBjtOWyfWe0hQJDk4D4I++10HZGIpYb/B1es=@vger.kernel.org
+X-Gm-Message-State: APuU4Z8O0Oz/tNHT9bA1SBzxRaotTy8bYoVJZ/Fqx80YBdHEXLuPYfXW
+	wjhPag2z4aEBQKv6rvjC1iidpZ91TPwl3UepZWWJAIyCsay46pv3k9eq
+X-Gm-Gg: AYBFou0wOwrmHJQTxyVBZoFlK3XCDYlVZ+S4Rr7S/+Gd16KBy0ihVpgowQDOkGM/II4
+	paUiypdWbVAr82+ukIA3RQZNqxokPHtsTMxEbMLSkaOtYiLkYJ6kdyrsdlczP3LmVQg6SIUWBVx
+	h1Jmu/OE7Yx1X+MMfDJMsdFG5++KOA7y918D3d0AsiYCmXtq3F7YFVk/iRW5y9jQqSUk+qgEaWi
+	8LvY/khRd4NdomL/qzp4PM733r2TADgxd0aisPOgrhc3nkeqMzdy5lD6I2o5Zg6ytnP0sE5dPfM
+	878ekGwOilPEXNPMQP07C3r3sEm6b/+1muHXqb4Pm1NaIsFmcz+0RkLzsJRbmUanDzm5Ht/huit
+	DOkjGLLDp3jk1XjhQmZDr9rYHOXZVeIsA8ZITwzqkjwseFLlGSb8np7/we0loWub9F+umjk39h/
+	EBaTKL7PUzn3SlLJaJK5bTHfid1s93tfWB+SaeJBUja+KPVMM7oEeGEO8Ae833ALZeTj6t8F8by
+	2+116y8pvKxHXqxscc2O2kcYl92d2WJrZ6OG13vsn/kuTCP3lu1G7R+E+wLB1wMV7q2ZvVqRDur
+	kFd9/Kl4zSjbSR5u5rRF
+X-Received: by 2002:a05:7022:281:20b0:1ac:91b6:8dfd with SMTP id a92af1059eb24-1ade9e3e335mr25492252c88.31.1793841769331;
+        Wed, 04 Nov 2026 17:22:49 -0800 (PST)
+Received: from ubuntu.. ([23.254.208.9])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b245c1bcedsm11526499c88.7.2026.11.04.17.22.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2026 17:22:48 -0800 (PST)
+From: Qiliang Yuan <odys.yuan@gmail.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Keith Busch <kbusch@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	=?utf-8?q?Onur_=C3=96zkan?= <work@onurozkan.dev>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-nvme@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] srcu: Add list_splice_init_srcu()
+Date: Wed,  4 Nov 2026 20:22:42 -0500
+Message-ID: <20261105012242.623962-1-odys.yuan@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <9f8c94ff-29e3-4ea5-b9ec-b04b2bc21b1c@paulmck-laptop>
+References: <20261104-bug-nvme-remove-ns-srcu-v2-0-feb64ecb96ca@gmail.com> <20261104-bug-nvme-remove-ns-srcu-v2-1-feb64ecb96ca@gmail.com> <9f8c94ff-29e3-4ea5-b9ec-b04b2bc21b1c@paulmck-laptop>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -66,59 +108,53 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
 Content-Transfer-Encoding: 8bit
 
-On 4 November 2026 15:30:45 GMT, Joel Fernandes <joelagnelf@nvidia.com>
-wrote:
->rcu_tasks_invoke_cbs() now unqueues each callback from debugobjects.
->However, rcu_barrier_tasks_generic() inserts its per-CPU barrier heads
->directly with rcu_segcblist_entrain(), bypassing the queue hook in
->call_rcu_tasks_generic(). This produces active_state and deactivate
->warnings for untracked objects when a barrier callback runs.
+On Wed, Nov 04, 2026 at 09:14:12AM -0800, Paul E. McKenney wrote:
+> I am not inalterably opposed to adding a list_splice_init_srcu(),
+> especially if quite a few more users show up, but here is what I was
+> expecting people to do:
 >
->Activate each barrier head before entrainment and undo that activation
->when there are no callbacks to entrain behind. Successful entrainment
->is balanced by the invocation path, as for ordinary callbacks.
+> 	static void synchronize_my_srcu(void)
+> 	{
+> 		synchronize_srcu(&my_srcu);
+> 	}
 >
->The existing n_barrier_cbs=2 torture test reproduces the warnings before
->this change and completes without them afterwards.
+> 	...
 >
->This fixes patch "rcu-tasks: Detect duplicate callback enqueue".
+> 	list_splice_init_rcu(l, h, synchronize_my_srcu);
 >
->Cc: Kunwu Chan <kunwu.chan@gmail.com>
->Cc: Paul E. McKenney <paulmck@kernel.org>
+> We need at least six uses of the above idiom to break even on the line
+> of code required for introducing a list_splice_init_srcu().
+
+That works for a global srcu_struct, but nvme has one per controller,
+next to the list it protects:
+
+	struct nvme_ctrl {
+		...
+		struct list_head namespaces;
+		struct mutex namespaces_lock;
+		struct srcu_struct srcu;
+		...
+	};
+
+nvme_init_ctrl() calls init_srcu_struct(&ctrl->srcu) for every
+controller, and readers walk the list under that controller's srcu,
+e.g. nvme_wait_freeze():
+
+	srcu_idx = srcu_read_lock(&ctrl->srcu);
+	list_for_each_entry_srcu(ns, &ctrl->namespaces, list,
+				 srcu_read_lock_held(&ctrl->srcu))
+		blk_mq_freeze_queue_wait(ns->queue);
+	srcu_read_unlock(&ctrl->srcu, srcu_idx);
+
+nvme_remove_namespaces() thus has to wait on the srcu of the controller
+being deleted, which a sync function that takes no argument can't get
+at.
+
+So the choice here is between list_splice_init_srcu(), as Christoph
+suggested on v1, and open-coding the splice in nvme_remove_namespaces()
+as v1 did. Which would you prefer?
 
 Thanks,
-
-Reviewed-by: Bradley Morgan <brads@mainlining.org>
-
->Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
->---
-> kernel/rcu/tasks.h | 3 +++
-> 1 file changed, 3 insertions(+)
->
->diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
->index d5d060a5c4b6..a20db323612b 100644
->--- a/kernel/rcu/tasks.h
->+++ b/kernel/rcu/tasks.h
->@@ -470,9 +470,12 @@ static void __maybe_unused rcu_barrier_tasks_generic(struct rcu_tasks *rtp)
-> 			break;
-> 		rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
-> 		rtpcp->barrier_q_head.func = rcu_barrier_tasks_generic_cb;
->+		debug_rcu_head_queue(&rtpcp->barrier_q_head);
-> 		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> 		if (rcu_segcblist_entrain(&rtpcp->cblist, &rtpcp->barrier_q_head))
-> 			atomic_inc(&rtp->barrier_q_count);
->+		else
->+		
-
-Wow!
-	debug_rcu_head_unqueue(&rtpcp->barrier_q_head);
-> 		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-> 	}
-> 	if (atomic_sub_and_test(2, &rtp->barrier_q_count))
->
-
---- Thanks!
+Qiliang
