@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=90.155.50.34
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793844071;
-	b=nE9k4HbRRCK+2NkENcBFft5yCe6D1B6ihcxmryonjnW9CbKZeG322nwB1JFT9Iq5iS70
-	 seKXFrsbCYgnrbqS249y22EVNSo0heVsiV5rcZtviaw/DT+/I9FjR41m2tiGLJxg7BV4k
-	 tsAP+NOPZSLPc6CfmETdbx3NXMNJ265iaezxDv7DW0wY/V58cpWLMqkjvOrYRnqnSx+u5
-	 Naz1Jlxl9ujlQYfGi24HuwM0AGDZWKV6L3V1v3CdJ2+ORXt/Qv0b5by5osM1qhDe3CQ2O
-	 AxaWS8diq4xydNrKk6CieXP50LHOYaJsVQk5rcDahsdTccQHBhTnUCK+yQ2XaoyxYAA==
+	t=1793844072;
+	b=pkvjtUBHzuAKm9eA+0tLb6dJr+cp/oYWz6moJhY7QfHZA5u4x0F3uh46Y1ZJnYh1kqH4
+	 XDXVskJR5/10gSxuUI0idEMMqpZNjXcLoXu2VbDjDmsm9uAc6o9jWjKMMm6yrSnBuwyQm
+	 D7F8s4qaCPqMDpok93i6N/kreTPT3ZNCFk+4n405I3IYTPG4BJhHWsl4faYPLrBO+DPjW
+	 a8lPgkcc3PtXZ4kwizoF6GGra/TzA/UtqjYxWk0nX6tGa5ZJcc9nvjeMydamY932uN/8Q
+	 UOynvJ6wEEXqjAxNrznG3+LS5xP6XkUzDbJM2uyHnw9tfETLeELCuDc69NhrYZVhxLg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793844071;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793844072;
 	h=DMARC-Filter:DKIM-Signature:Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:Sender:X-SRS-Rewrite;
-	bh=lQpJFDqY1tDguWTzIC8id9i9AgdhlJblnx5mnpydVTA=;
-	b=APvl0fvWH9KUj/axh4esBtPCb3WS5Xm9vpxCPRXmymt/anW48Wvt/kTU4vpMd9snQnKL
-	 LBnz9+B/1qIubZZX8SiIaJBybwT7WvA93RkClp1fnjab0nIY2g3hzGVP/Ow8Y3avNrn/A
-	 3fIDtLzHXVrzB6TzUFvvVcQI26fEDNCOV6IHzuGIEr1aGk75BnoasRA4wd46sFQ9W8gh0
-	 C9aFe2GbimTURqL7JJzUq460DbTfHM3Jn9+qUPiZfsaOzFIpbXRWJw/wenCN50ighrYfE
-	 oodCK2w+SQl/LtlogZXWZAcRahIqwYjuxh1Ohb891CqW7CvAqJBxvK5abLhvVMZsbyw==
+	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Sender:X-SRS-Rewrite;
+	bh=lXeVdKZgplIsnHrxxLZrBVIeJZ4mQkNiuMtdZoSEMdo=;
+	b=Pm/vdXk9kodH/2OJSAsykU2zJs3VBuCDtqhjNV1YJlqFAmJbJc2nCuu0gePzIy/aOn2M
+	 JAAHDkGa2qPmO2QK8jjxmnTj6RygPLVHfZJTOQkijUxOpxSZbFfrcBN2DJYmRUlv86F98
+	 fnZxSKv7y0Kv5Bqe/Axovqv3IInHKdWMO8LgVjNbQ08AAun+GAXcIm9Ioi5LPyRw9bE8Y
+	 6m4wF1QisBkkdWi+PNDqUPJndAMBZT2DoLmkCPZedptoS3fKScKwqKhK+H7fFW26XmOpT
+	 TUhqADDSGUL0wvH1jJ2OC7LnbUs+dB5rSnywb82QcqWJSd5+iflhcfOZFl6iJfDy13A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=infradead.org;
 	spf=none smtp.mailfrom=casper.srs.infradead.org;
-	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=e6kFedoC;
+	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=Q0mTKClI;
 	arc=none smtp.remote-ip=90.155.50.34
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD77B606A326;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA5E606A332;
 	Thu,  5 Nov 2026 02:01:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DD77B606A326
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DAA5E606A332
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=e6kFedoC
+	dkim=pass (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=Q0mTKClI
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=lQpJFDqY1tDguWTzIC8id9i9AgdhlJblnx5mnpydVTA=; b=e6kFedoCnPOnMG/kv4EOQLJ86M
-	X42CkCMN+MJaMEOmD0bS5rLDo9/rYUYoW//Oh4S5CSvw6WI35jOX4HtJXeJlSNs0/6ByKAcBtsOc2
-	Ig6AI2MgKd7y3e7gV9GKkXgqjLSaE9dSHZNdHrSfzY9CrM22lwNYM3nxcKICSL8hi43rBfcIScjKn
-	daA54Zu+hG9Qdi7NPI4uXI1DL6cLpNX9ZZ3/bpgS1FDjTOtfggn0wFicpw7YEuZnvCTKQWz0ad8T2
-	7GkgBy8Ia2JHcFgUjSRShwosji2mOskOwzG4PlMXSxKr4D4uNcMtaLHcBSAsCPhL6P4VO2d8Phgr/
-	omRGpp/A==;
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description;
+	bh=lXeVdKZgplIsnHrxxLZrBVIeJZ4mQkNiuMtdZoSEMdo=; b=Q0mTKClI9VooOYT679tqFrQtl6
+	xuCH0mZbWbK+FGnQpTilLo0MkCIpY8grbwbYQEqNuCnyjvdA8+Opdm7YOWLuyX96rDEz6WHzB0JK/
+	XaYo0OtsN1p2LxySiL65rwFkuU5lvRSJfdYSbSwgBZ70DANcbpyhNn5R9wZAznZ6+pWWKn4Zv5xKE
+	8if70cDKkbabaiNilOaf6GyvgNyXmGzDBwuDNWdxY48W07eIuvmiZNvQGWjD4FJz7vN+RWMZImJ/A
+	kykuL6uVDvg8KGxzjzg5WdX31h8n0QVDI0HlaMtdw9Yj0pr2NsDt8Kj4gnEOPpX3gpo3LxZlzHxsf
+	me7f1aOA==;
 Received: from [2001:8b0:10b:1::425] (helo=i7.infradead.org)
 	by casper.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOmmn-000000037j4-0EUg;
+	id 1xOmmn-000000037j3-0IyH;
 	Thu, 05 Nov 2026 02:01:05 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xOmmm-0000000AWD1-0Djs;
+	id 1xOmmm-0000000AWDJ-1Lfa;
 	Thu, 05 Nov 2026 02:01:04 +0000
 From: David Woodhouse <dwmw2@infradead.org>
 To: kvm@vger.kernel.org
@@ -66,10 +66,12 @@ Cc: linux-kernel@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	syzbot+208f7f3e5f59c11aeb90@syzkaller.appspotmail.com,
 	David Woodhouse <dwmw@amazon.co.uk>
-Subject: [PATCH v2 00/20] KVM: Use atomic SRCU for gfn-to-pfn cache, reinstate guest mode for x86 nesting
-Date: Thu,  5 Nov 2026 02:00:42 +0000
-Message-ID: <20261105020104.2507083-1-dwmw2@infradead.org>
+Subject: [PATCH v2 06/20] KVM: x86: Request the guest TLB flush from record_steal_time()
+Date: Thu,  5 Nov 2026 02:00:48 +0000
+Message-ID: <20261105020104.2507083-7-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20261105020104.2507083-1-dwmw2@infradead.org>
+References: <20261105020104.2507083-1-dwmw2@infradead.org>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -86,146 +88,88 @@ X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-Based on v7.4-rc1 (kvm/next doesn't have the atomic SRCU flavour yet),
-this series:
+record_steal_time() performs a TLB flush on the guest's behalf when the
+guest sets KVM_VCPU_FLUSH_TLB. With shadow paging,
+kvm_vcpu_flush_tlb_guest() ends up in mmu_sync_children(), which can
+reschedule via cond_resched_rwlock_write(). That is why the flush
+currently sits between a user_access_end() and a fresh
+user_access_begin(): it cannot be done while the guest page is mapped
+for access.
 
- • Converts the GPC to use atomic SRCU, ditching the rwlock which was a
-   scaling and latency problem, and which PREEMPT_RT hated because it
-   turned the rwlock into a sleeping lock¹.
+Raise KVM_REQ_TLB_FLUSH_GUEST instead of flushing inline, and move the
+processing of KVM_REQ_STEAL_UPDATE ahead of where the TLB flush requests
+are serviced in vcpu_enter_guest() so that the flush still happens before
+the vCPU enters the guest. There is no requirement for it to complete any
+earlier than that.
 
- • Fixes the pre-existing bugs which torture-testing that conversion
-   shook out: a guest-reachable dirty ring overflow from the hypercall
-   page write (128 pushes of the same gfn against 64 reserved entries,
-   without PML), and a lost TLB flush request in record_steal_time().
+kvm_make_request() on the vCPU which is running is nothing more than a
+barrier and a set_bit(), so unlike the flush itself it can be done from
+any context — which lets the surrounding access be simplified later.
 
- • Adds KVM_XEN_VCPU_ATTR_TYPE_WRITE_HYPERCALL_PAGE, for VMMs which
-   intercept the guest's MSR write and need to replay it from host
-   context².
+Note that the xchg() must stay where it is: it atomically consumes any
+KVM_VCPU_FLUSH_TLB which the guest has set, as required by commit
+b043138246a4 ("x86/KVM: Make sure KVM_VCPU_FLUSH_TLB flag is not missed").
 
- • Cleans up the intentional lack of dirty-tracking of Xen shinfo and
-   vcpu_info pages (Sean).
+Reported-by: Sashiko AI review <sashiko-bot@kernel.org>
+Closes: https://lore.kernel.org/all/20260530061932.7849D1F00893@smtp.kernel.org
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+---
+ arch/x86/kvm/x86.c | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
- • Converts steal-time / preempted status to use gfn_to_pfn_cache.
-   (Carsten)
-
- • Reinstates guest-mode pinning: replacing the old GUEST_USES_PFN
-   mode, letting nested state pages be cached and pinned while in
-   guest context.
-
- • nVMX: Uses GPC for the L1 MSR bitmap, and guest mode for APIC
-   access and vAPIC pages. (Fred)
-
- • nSVM: Uses GPC for vmcb12 / MSR-permissions / IO-permissions pages.
-   This cuts the vmcb12 transition cost measurably (selftest included).
-
- • Re-posts KVM_REQ_GET_NESTED_STATE_PAGES on memslot updates so the
-   pinned caches are revalidated lazily, riding out the transient
-   KVM_MEMSLOT_INVALID window of an in-flight update via the pending
-   request rather than ever entering L2 with a stale latched address.
-
-I had briefly split out some of the preliminary fixes and cleanups
-into a separate series which didn't depend on atomic SRCU. But I've
-joined it all back together now that atomic SRCU is merged. And I've
-ditched half of those 'fixes' as a bad idea anyway³.
-
-
-Tested: per-commit builds across the series; KVM selftests including
-the new invalidation, transition and race tests on 192-way AMD, and
-the applicable subset on Intel under PROVE_LOCKING + PROVE_RCU +
-DEBUG_ATOMIC_SLEEP (which catches the attribute-ioctl srcu fix on the
-very first xen_shinfo_test run when it's reverted; that config is now
-a standing part of the testing here). The new mmu_notifier race test
-asserts that every one of 5000 event channel deliveries into HVA-based
-caches survives continuous MADV_DONTNEED invalidation of the backing
-page, and soaks at 10/10.
-
-¹ https://syzkaller.appspot.com/bug?extid=208f7f3e5f59c11aeb90
-² https://lore.kernel.org/kvm/c855535b4262ecd41f67734d19e8f48a7f014c2a.camel@infradead.org/
-³ https://lore.kernel.org/kvm/ac6b1891d6bdf3a855a5b840c462a6e7d464a146.camel@infradead.org/
-
-v2: https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/gpc-srcu-v2
-
- • Absorb the fixes/cleanups which had been split out (and drop the
-   delivery-retry half of them³, plus the SCHEDOP_poll fix which Sean
-   is picking up separately)
- • Fix the mmu_notifier walk to wait out a grace period still owed by
-   a concurrent mutator
- • Keep kvm->srcu in the Xen attribute ioctls for the memslot lookups
- • Pair smp_mb__after_atomic()/__after_spinlock() for the publish/veto
-   store->load ordering
- • Nested: treat a refresh failure against a KVM_MEMSLOT_INVALID
-   placeholder as transient; re-set vmcs02 controls after a lazy
-   degradation heals; initialize caches once at vCPU creation
- • New: dirty ring overflow fix, WRITE_HYPERCALL_PAGE attribute,
-   the two Xen race selftests
-
-v1: https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/gpc-srcu
-    https://lore.kernel.org/kvm/20260920211920.928306-1-dwmw2@infradead.org/
-
-Carsten Stollmaier (1):
-  KVM: x86: Use gfn_to_pfn_cache for steal time / preempted status
-
-David Woodhouse (13):
-  KVM: x86/xen: Fill the hypercall page with a single guest write
-  KVM: x86/xen: Add KVM_XEN_VCPU_ATTR_TYPE_WRITE_HYPERCALL_PAGE
-  KVM: x86: Request the guest TLB flush from record_steal_time()
-  KVM: selftests: Actually deactivate the HVA-based shared_info cache in
-    xen_shinfo_test
-  KVM: pfncache: Use atomic SRCU for readers instead of a rwlock
-  KVM: pfncache: Add guest-mode pinning (GUEST_USES_PFN successor)
-  KVM: x86: Post KVM_REQ_GET_NESTED_STATE_PAGES on memslot updates
-  KVM: nSVM: Use a gfn_to_pfn_cache for the vmcb12 page
-  KVM: nSVM: Cache L1's MSR permissions map pages
-  KVM: nSVM: Cache L1's IO permissions map pages
-  KVM: selftests: Add nested transition benchmark
-  KVM: selftests: Add Xen evtchn vs memslot-update race test
-  KVM: selftests: Add Xen evtchn vs mmu_notifier race test for HVA
-    caches
-
-Fred Griffoul (3):
-  KVM: nVMX: Implement cache for L1 MSR bitmap
-  KVM: nVMX: Use pinned pfncache for L1 APIC virtualization pages
-  KVM: selftests: Add nested VMX APIC cache invalidation test
-
-Sean Christopherson (3):
-  KVM: x86/xen: Extract delivery of event to vCPU into a separate helper
-  KVM: x86/xen: Explicitly tag "shared info" page as never being dirty
-    tracked
-  KVM: x86/xen: Don't dirty track "vCPU info" page
-
- Documentation/virt/kvm/api.rst                |  27 +-
- arch/x86/include/asm/kvm_host.h               |   2 +-
- arch/x86/include/uapi/asm/kvm.h               |   3 +
- arch/x86/kvm/msrs.c                           |   7 +-
- arch/x86/kvm/svm/nested.c                     | 174 ++++-
- arch/x86/kvm/svm/svm.c                        |  17 +
- arch/x86/kvm/svm/svm.h                        |  29 +
- arch/x86/kvm/vmx/nested.c                     | 517 +++++++++++--
- arch/x86/kvm/vmx/nested.h                     |   1 +
- arch/x86/kvm/vmx/vmx.c                        |  13 +-
- arch/x86/kvm/vmx/vmx.h                        |  21 +-
- arch/x86/kvm/x86.c                            | 209 ++++--
- arch/x86/kvm/x86.h                            |  33 +
- arch/x86/kvm/xen.c                            | 380 ++++++----
- include/linux/kvm_host.h                      | 121 +++-
- include/linux/kvm_types.h                     |  64 +-
- include/linux/srcu.h                          |   7 +
- tools/testing/selftests/kvm/Makefile.kvm      |   4 +
- .../kvm/x86/nested_transition_bench.c         | 210 ++++++
- .../selftests/kvm/x86/vmx_apic_update_test.c  | 323 +++++++++
- .../kvm/x86/xen_evtchn_hva_notify_race_test.c | 188 +++++
- .../kvm/x86/xen_evtchn_memslot_race_test.c    | 232 ++++++
- .../selftests/kvm/x86/xen_shinfo_test.c       |   2 +-
- .../selftests/kvm/x86/xen_vmcall_test.c       | 118 +++
- virt/kvm/kvm_main.c                           |   9 +
- virt/kvm/pfncache.c                           | 677 +++++++++++++++---
- 26 files changed, 2962 insertions(+), 426 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/x86/nested_transition_bench.c
- create mode 100644 tools/testing/selftests/kvm/x86/vmx_apic_update_test.c
- create mode 100644 tools/testing/selftests/kvm/x86/xen_evtchn_hva_notify_race_test.c
- create mode 100644 tools/testing/selftests/kvm/x86/xen_evtchn_memslot_race_test.c
-
-base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 6a1f0404f029..3c26c0eb9865 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -2117,8 +2117,22 @@ static void record_steal_time(struct kvm_vcpu *vcpu)
+ 
+ 		trace_kvm_pv_tlb_flush(vcpu->vcpu_id,
+ 				       st_preempted & KVM_VCPU_FLUSH_TLB);
++		/*
++		 * Request the flush instead of performing it inline. With
++		 * shadow paging kvm_vcpu_flush_tlb_guest() can reschedule
++		 * (via mmu_sync_children()), so it could not be called while
++		 * the user access above was open. Requesting is just a bit
++		 * set on the running vCPU, and the request is serviced
++		 * before the vCPU enters the guest; nothing requires the
++		 * flush to have completed any earlier than that.
++		 *
++		 * Note the xchg above must remain as-is: it atomically
++		 * consumes any KVM_VCPU_FLUSH_TLB the guest set, as required
++		 * by commit b043138246a4 ("x86/KVM: Make sure
++		 * KVM_VCPU_FLUSH_TLB flag is not missed").
++		 */
+ 		if (st_preempted & KVM_VCPU_FLUSH_TLB)
+-			kvm_vcpu_flush_tlb_guest(vcpu);
++			kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
+ 
+ 		if (!user_access_begin(st, sizeof(*st)))
+ 			goto dirty;
+@@ -8168,6 +8182,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 			if (unlikely(r))
+ 				goto out;
+ 		}
++		/*
++		 * Process the steal time update before the TLB flush requests
++		 * are serviced below; record_steal_time() requests
++		 * KVM_REQ_TLB_FLUSH_GUEST on the guest's behalf rather than
++		 * performing the flush itself.
++		 */
++		if (kvm_check_request(KVM_REQ_STEAL_UPDATE, vcpu))
++			record_steal_time(vcpu);
+ 		if (kvm_check_request(KVM_REQ_MMU_SYNC, vcpu))
+ 			kvm_mmu_sync_roots(vcpu);
+ 		if (kvm_check_request(KVM_REQ_LOAD_MMU_PGD, vcpu))
+@@ -8217,8 +8239,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 			r = 1;
+ 			goto out;
+ 		}
+-		if (kvm_check_request(KVM_REQ_STEAL_UPDATE, vcpu))
+-			record_steal_time(vcpu);
+ 		if (kvm_check_request(KVM_REQ_PMU, vcpu))
+ 			kvm_pmu_handle_event(vcpu);
+ 		if (kvm_check_request(KVM_REQ_PMI, vcpu))
 -- 
 2.43.0
 
