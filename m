@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=90.155.92.199
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793844072;
-	b=pkvjtUBHzuAKm9eA+0tLb6dJr+cp/oYWz6moJhY7QfHZA5u4x0F3uh46Y1ZJnYh1kqH4
-	 XDXVskJR5/10gSxuUI0idEMMqpZNjXcLoXu2VbDjDmsm9uAc6o9jWjKMMm6yrSnBuwyQm
-	 D7F8s4qaCPqMDpok93i6N/kreTPT3ZNCFk+4n405I3IYTPG4BJhHWsl4faYPLrBO+DPjW
-	 a8lPgkcc3PtXZ4kwizoF6GGra/TzA/UtqjYxWk0nX6tGa5ZJcc9nvjeMydamY932uN/8Q
-	 UOynvJ6wEEXqjAxNrznG3+LS5xP6XkUzDbJM2uyHnw9tfETLeELCuDc69NhrYZVhxLg==
+	t=1793844079;
+	b=y8ElK9gPtWJmvTj+MsbhO9l738ikOpUTBySGMoKkT+8X5RatNY4G7V9JaTxZSwzOoS+n
+	 gBUxTB6QvIaunUcGarVktcihag2UdaMqR/gZutBpQAR+g7m/oZUV+5uRfIdVeDFXiTsoe
+	 172oadm8Av5/kYVJbokcxyoet6qdT3rQ7ZVQFacX0zZXEwJ6lYSCsTihTqTQTzHrj3A+m
+	 COpIzd8tAPm9NH/ASJ5Deh1pngat5r77AvMXiPBiNrsVrhenVYlsvuB2iivOGfUoAhap7
+	 NSR8Q0glhAZqXU0pZ42Psp1kVplEyi+W3lD/sbNIJj4bkea9cAkOxel3YwA/0drA6rw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793844072;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793844079;
 	h=DMARC-Filter:DKIM-Signature:Received:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Sender:X-SRS-Rewrite;
-	bh=lXeVdKZgplIsnHrxxLZrBVIeJZ4mQkNiuMtdZoSEMdo=;
-	b=Pm/vdXk9kodH/2OJSAsykU2zJs3VBuCDtqhjNV1YJlqFAmJbJc2nCuu0gePzIy/aOn2M
-	 JAAHDkGa2qPmO2QK8jjxmnTj6RygPLVHfZJTOQkijUxOpxSZbFfrcBN2DJYmRUlv86F98
-	 fnZxSKv7y0Kv5Bqe/Axovqv3IInHKdWMO8LgVjNbQ08AAun+GAXcIm9Ioi5LPyRw9bE8Y
-	 6m4wF1QisBkkdWi+PNDqUPJndAMBZT2DoLmkCPZedptoS3fKScKwqKhK+H7fFW26XmOpT
-	 TUhqADDSGUL0wvH1jJ2OC7LnbUs+dB5rSnywb82QcqWJSd5+iflhcfOZFl6iJfDy13A==
+	bh=HHbMXrntQTOJ5IPdESBOGZVApcYK5UI5lu9oMqvobYE=;
+	b=XuZbXpuUTXvPaiCY86dXynbJdTRqSr/Wyh01zFaVjrynEXt5gybKPfsO+NL9eLY+wnrt
+	 r/lMFqOhwkDgzuNpOSpU30nMnnecbGWOvEtrwbkY8X+dOnA2rHOXm+qwEPfnoOLyuFMN8
+	 ReFdnusBOXfj0I1NXfLlTIehxyOegcUnMX1r0Q/LD+jDICaKSFZNHjp5F11ZUMjo0JZgP
+	 VruAjkJumwhYhyhY1i8ZHmebDKJU1enkA4rrc0IK0n92L7d76k/GkpiU+4UtvQuc081N2
+	 1+ugoYmMw4g4jvHV7Sq2U0wV0PRysBkjrU0186NS2ngSf3DLDpwaJxbQeh6Bab3XkJQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=infradead.org;
-	spf=none smtp.mailfrom=casper.srs.infradead.org;
-	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=Q0mTKClI;
-	arc=none smtp.remote-ip=90.155.50.34
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	spf=none smtp.mailfrom=desiato.srs.infradead.org;
+	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=Ae+tqrD0;
+	arc=none smtp.remote-ip=90.155.92.199
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA5E606A332;
-	Thu,  5 Nov 2026 02:01:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DAA5E606A332
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC99606EEA6;
+	Thu,  5 Nov 2026 02:01:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0EC99606EEA6
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=Q0mTKClI
+	dkim=pass (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=Ae+tqrD0
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
+	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description;
-	bh=lXeVdKZgplIsnHrxxLZrBVIeJZ4mQkNiuMtdZoSEMdo=; b=Q0mTKClI9VooOYT679tqFrQtl6
-	xuCH0mZbWbK+FGnQpTilLo0MkCIpY8grbwbYQEqNuCnyjvdA8+Opdm7YOWLuyX96rDEz6WHzB0JK/
-	XaYo0OtsN1p2LxySiL65rwFkuU5lvRSJfdYSbSwgBZ70DANcbpyhNn5R9wZAznZ6+pWWKn4Zv5xKE
-	8if70cDKkbabaiNilOaf6GyvgNyXmGzDBwuDNWdxY48W07eIuvmiZNvQGWjD4FJz7vN+RWMZImJ/A
-	kykuL6uVDvg8KGxzjzg5WdX31h8n0QVDI0HlaMtdw9Yj0pr2NsDt8Kj4gnEOPpX3gpo3LxZlzHxsf
-	me7f1aOA==;
+	bh=HHbMXrntQTOJ5IPdESBOGZVApcYK5UI5lu9oMqvobYE=; b=Ae+tqrD0A5cIWp9q1MmrdrlOhm
+	x0DHa/HcBOUb8qpxiTZNQGso0gaFp60cS1T4G+k/gU+stshu3i38AotQfBfdAfTVoIaZt0GKHNtOv
+	1xIrt0/A/Qf433sSC8WDNBQT5CQu86Qs6LujeOtqo2kml1k9vlrsI1Rg8cJ4epb3o0SVHtLo10tDb
+	Bka/PNm22PqSLTkTcgJD7DwCbNWBvP1QbHQqVFnV/PQuKz76uTOKf+3XHGmyNLeMcSPI5oWqY05ar
+	DAuaXhf8/SNlQ9InzAkjGLZ4o4PRxsduxy4SN91W/GhAxZ7O3Ywe6d3KPGYt9qFII5v9FQYyj21e0
+	vIZZreKg==;
 Received: from [2001:8b0:10b:1::425] (helo=i7.infradead.org)
-	by casper.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOmmn-000000037j3-0IyH;
-	Thu, 05 Nov 2026 02:01:05 +0000
+	by desiato.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xOmmo-00000002ROR-265C;
+	Thu, 05 Nov 2026 02:01:08 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xOmmm-0000000AWDJ-1Lfa;
+	id 1xOmmm-0000000AWE6-3u0A;
 	Thu, 05 Nov 2026 02:01:04 +0000
 From: David Woodhouse <dwmw2@infradead.org>
 To: kvm@vger.kernel.org
@@ -66,9 +66,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	syzbot+208f7f3e5f59c11aeb90@syzkaller.appspotmail.com,
 	David Woodhouse <dwmw@amazon.co.uk>
-Subject: [PATCH v2 06/20] KVM: x86: Request the guest TLB flush from record_steal_time()
-Date: Thu,  5 Nov 2026 02:00:48 +0000
-Message-ID: <20261105020104.2507083-7-dwmw2@infradead.org>
+Subject: [PATCH v2 17/20] KVM: nSVM: Cache L1's IO permissions map pages
+Date: Thu,  5 Nov 2026 02:00:59 +0000
+Message-ID: <20261105020104.2507083-18-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20261105020104.2507083-1-dwmw2@infradead.org>
 References: <20261105020104.2507083-1-dwmw2@infradead.org>
@@ -84,92 +84,187 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-record_steal_time() performs a TLB flush on the guest's behalf when the
-guest sets KVM_VCPU_FLUSH_TLB. With shadow paging,
-kvm_vcpu_flush_tlb_guest() ends up in mmu_sync_children(), which can
-reschedule via cond_resched_rwlock_write(). That is why the flush
-currently sits between a user_access_end() and a fresh
-user_access_begin(): it cannot be done while the guest page is mapped
-for access.
+The per-intercept IOPM check on every trapped L2 IO instruction reads
+L1's IO permissions map with kvm_vcpu_read_guest() — a
+memremap/memunmap cycle per access with unmanaged guest memory. Cache
+the three IOPM pages in gfn_to_pfn_caches keyed on iopm_base_pa, as
+for the MSR permissions map.
 
-Raise KVM_REQ_TLB_FLUSH_GUEST instead of flushing inline, and move the
-processing of KVM_REQ_STEAL_UPDATE ahead of where the TLB flush requests
-are serviced in vcpu_enter_guest() so that the flush still happens before
-the vCPU enters the guest. There is no requirement for it to complete any
-earlier than that.
+Unlike the MSRPM accesses, an IOPM read is not naturally aligned: a
+two-byte read for a port range straddling a page boundary (e.g. ports
+0x7ff8-0x7fff at bytes 0xfff-0x1000) spans two pages, so read byte by
+byte, each from its own page's cache.
 
-kvm_make_request() on the vCPU which is running is nothing more than a
-barrier and a set_bit(), so unlike the flush itself it can be done from
-any context — which lets the surrounding access be simplified later.
+Failure semantics are preserved: an unreadable IOPM reflects the
+intercept to L1 (NESTED_EXIT_DONE).
 
-Note that the xchg() must stay where it is: it atomically consumes any
-KVM_VCPU_FLUSH_TLB which the guest has set, as required by commit
-b043138246a4 ("x86/KVM: Make sure KVM_VCPU_FLUSH_TLB flag is not missed").
-
-Reported-by: Sashiko AI review <sashiko-bot@kernel.org>
-Closes: https://lore.kernel.org/all/20260530061932.7849D1F00893@smtp.kernel.org
-Suggested-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 ---
- arch/x86/kvm/x86.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+ arch/x86/kvm/svm/nested.c | 71 +++++++++++++++++++++++++++++----------
+ arch/x86/kvm/svm/svm.c    |  2 ++
+ arch/x86/kvm/svm/svm.h    |  7 ++++
+ 3 files changed, 63 insertions(+), 17 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 6a1f0404f029..3c26c0eb9865 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2117,8 +2117,22 @@ static void record_steal_time(struct kvm_vcpu *vcpu)
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 4e22cd7a38e1..a682b7446c3e 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -1519,10 +1519,36 @@ static void nested_svm_triple_fault(struct kvm_vcpu *vcpu)
+ 	nested_svm_simple_vmexit(to_svm(vcpu), SVM_EXIT_SHUTDOWN);
+ }
  
- 		trace_kvm_pv_tlb_flush(vcpu->vcpu_id,
- 				       st_preempted & KVM_VCPU_FLUSH_TLB);
-+		/*
-+		 * Request the flush instead of performing it inline. With
-+		 * shadow paging kvm_vcpu_flush_tlb_guest() can reschedule
-+		 * (via mmu_sync_children()), so it could not be called while
-+		 * the user access above was open. Requesting is just a bit
-+		 * set on the running vCPU, and the request is serviced
-+		 * before the vCPU enters the guest; nothing requires the
-+		 * flush to have completed any earlier than that.
-+		 *
-+		 * Note the xchg above must remain as-is: it atomically
-+		 * consumes any KVM_VCPU_FLUSH_TLB the guest set, as required
-+		 * by commit b043138246a4 ("x86/KVM: Make sure
-+		 * KVM_VCPU_FLUSH_TLB flag is not missed").
-+		 */
- 		if (st_preempted & KVM_VCPU_FLUSH_TLB)
--			kvm_vcpu_flush_tlb_guest(vcpu);
-+			kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
++/*
++ * Initialize the nested gfn_to_pfn_caches, once per vCPU. Unlike the
++ * allocations in svm_allocate_nested(), the caches persist across
++ * EFER.SVME toggles: svm_free_nested() only deactivates them, and
++ * reuse goes through kvm_gpc_activate() without re-init.
++ */
++void svm_init_nested_caches(struct vcpu_svm *svm)
++{
++	int i;
++
++	kvm_gpc_init(&svm->nested.vmcb12_cache, svm->vcpu.kvm);
++
++	/*
++	 * KVM only ever reads the MSR and IO permissions maps, which L1 may
++	 * keep in memory that its VMM maps read-only: map the caches
++	 * read-only (which also means never marking them dirty), matching
++	 * the read semantics of the kvm_vcpu_read_guest() calls they
++	 * replace.
++	 */
++	for (i = 0; i < ARRAY_SIZE(svm->nested.msrpm12_cache); i++)
++		__kvm_gpc_init(&svm->nested.msrpm12_cache[i], svm->vcpu.kvm,
++			       false, true, NULL, 0);
++	for (i = 0; i < ARRAY_SIZE(svm->nested.iopm12_cache); i++)
++		__kvm_gpc_init(&svm->nested.iopm12_cache[i], svm->vcpu.kvm,
++			       false, true, NULL, 0);
++}
++
+ int svm_allocate_nested(struct vcpu_svm *svm)
+ {
+ 	struct page *vmcb02_page;
+-	int i;
  
- 		if (!user_access_begin(st, sizeof(*st)))
- 			goto dirty;
-@@ -8168,6 +8182,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 			if (unlikely(r))
- 				goto out;
- 		}
-+		/*
-+		 * Process the steal time update before the TLB flush requests
-+		 * are serviced below; record_steal_time() requests
-+		 * KVM_REQ_TLB_FLUSH_GUEST on the guest's behalf rather than
-+		 * performing the flush itself.
-+		 */
-+		if (kvm_check_request(KVM_REQ_STEAL_UPDATE, vcpu))
-+			record_steal_time(vcpu);
- 		if (kvm_check_request(KVM_REQ_MMU_SYNC, vcpu))
- 			kvm_mmu_sync_roots(vcpu);
- 		if (kvm_check_request(KVM_REQ_LOAD_MMU_PGD, vcpu))
-@@ -8217,8 +8239,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 			r = 1;
- 			goto out;
- 		}
--		if (kvm_check_request(KVM_REQ_STEAL_UPDATE, vcpu))
--			record_steal_time(vcpu);
- 		if (kvm_check_request(KVM_REQ_PMU, vcpu))
- 			kvm_pmu_handle_event(vcpu);
- 		if (kvm_check_request(KVM_REQ_PMI, vcpu))
+ 	if (svm->nested.initialized)
+ 		return 0;
+@@ -1539,18 +1565,6 @@ int svm_allocate_nested(struct vcpu_svm *svm)
+ 
+ 	svm->nested.vmcb02.cpu = -1;
+ 
+-	kvm_gpc_init(&svm->nested.vmcb12_cache, svm->vcpu.kvm);
+-
+-	/*
+-	 * KVM only ever reads the MSR permissions map, which L1 may keep in
+-	 * memory that its VMM maps read-only: map the cache read-only
+-	 * (which also means never marking it dirty), matching the read
+-	 * semantics of the kvm_vcpu_read_guest() calls it replaces.
+-	 */
+-	for (i = 0; i < ARRAY_SIZE(svm->nested.msrpm12_cache); i++)
+-		__kvm_gpc_init(&svm->nested.msrpm12_cache[i], svm->vcpu.kvm,
+-			       false, true, NULL, 0);
+-
+ 	svm->nested.initialized = true;
+ 	return 0;
+ 
+@@ -1575,6 +1589,8 @@ void svm_free_nested(struct vcpu_svm *svm)
+ 	kvm_gpc_deactivate(&svm->nested.vmcb12_cache);
+ 	for (i = 0; i < ARRAY_SIZE(svm->nested.msrpm12_cache); i++)
+ 		kvm_gpc_deactivate(&svm->nested.msrpm12_cache[i]);
++	for (i = 0; i < ARRAY_SIZE(svm->nested.iopm12_cache); i++)
++		kvm_gpc_deactivate(&svm->nested.iopm12_cache[i]);
+ 
+ 	__free_page(virt_to_page(svm->nested.vmcb02.ptr));
+ 	svm->nested.vmcb02.ptr = NULL;
+@@ -1654,7 +1670,7 @@ static int nested_svm_intercept_ioio(struct vcpu_svm *svm)
+ 	unsigned port, size, iopm_len;
+ 	u16 val, mask;
+ 	u8 start_bit;
+-	u64 gpa;
++	int i;
+ 
+ 	if (!(vmcb12_is_intercept(&svm->nested.ctl, INTERCEPT_IOIO_PROT)))
+ 		return NESTED_EXIT_HOST;
+@@ -1662,14 +1678,35 @@ static int nested_svm_intercept_ioio(struct vcpu_svm *svm)
+ 	port = svm->vmcb->control.exit_info_1 >> 16;
+ 	size = (svm->vmcb->control.exit_info_1 & SVM_IOIO_SIZE_MASK) >>
+ 		SVM_IOIO_SIZE_SHIFT;
+-	gpa  = svm->nested.ctl.iopm_base_pa + (port / 8);
+ 	start_bit = port % 8;
+ 	iopm_len = (start_bit + size > 8) ? 2 : 1;
+ 	mask = (0xf >> (4 - size)) << start_bit;
+ 	val = 0;
+ 
+-	if (kvm_vcpu_read_guest(&svm->vcpu, gpa, &val, iopm_len))
+-		return NESTED_EXIT_DONE;
++	/*
++	 * Read byte by byte: a two-byte read at the end of a page (e.g.
++	 * ports 0x7ff8-0x7fff spanning bytes 0xfff-0x1000) crosses into
++	 * the next page of the IOPM, i.e. the next cache.
++	 */
++	for (i = 0; i < iopm_len; i++) {
++		unsigned long offset = port / 8 + i;
++		struct gfn_to_pfn_cache *gpc;
++		gpa_t gpa;
++		int idx;
++
++		if (WARN_ON_ONCE(offset >= IOPM_SIZE))
++			return NESTED_EXIT_DONE;
++
++		gpc = &svm->nested.iopm12_cache[offset >> PAGE_SHIFT];
++		gpa = svm->nested.ctl.iopm_base_pa + (offset & PAGE_MASK);
++
++		idx = kvm_gpc_lock_page(gpc, gpa);
++		if (idx < 0)
++			return NESTED_EXIT_DONE;
++
++		val |= *(u8 *)(gpc->khva + offset_in_page(offset)) << (i * 8);
++		kvm_gpc_unlock(gpc, idx);
++	}
+ 
+ 	return (val & mask) ? NESTED_EXIT_DONE : NESTED_EXIT_HOST;
+ }
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index b78727cca9b1..f601e0650c36 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1382,6 +1382,8 @@ static int svm_vcpu_create(struct kvm_vcpu *vcpu)
+ 	svm->vmcb01.pa = __sme_set(page_to_pfn(vmcb01_page) << PAGE_SHIFT);
+ 	svm_switch_vmcb(svm, &svm->vmcb01);
+ 
++	svm_init_nested_caches(svm);
++
+ 	svm->guest_state_loaded = false;
+ 
+ 	return 0;
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 8a5dff5a9ee3..256eefb27a83 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -229,6 +229,12 @@ struct svm_nested_state {
+ 	 */
+ 	struct gfn_to_pfn_cache msrpm12_cache[MSRPM_SIZE / PAGE_SIZE];
+ 
++	/*
++	 * Cached mappings of the three pages of L1's IO permissions map,
++	 * keyed on ctl.iopm_base_pa, for the per-intercept checks.
++	 */
++	struct gfn_to_pfn_cache iopm12_cache[IOPM_SIZE / PAGE_SIZE];
++
+ 	/*
+ 	 * The MSR permissions map used for vmcb02, which is the merge result
+ 	 * of vmcb01 and vmcb12
+@@ -904,6 +910,7 @@ int __init nested_svm_init_msrpm_merge_offsets(void);
+ 
+ int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb_gpa, bool from_vmrun);
+ void svm_leave_nested(struct kvm_vcpu *vcpu);
++void svm_init_nested_caches(struct vcpu_svm *svm);
+ void svm_free_nested(struct vcpu_svm *svm);
+ int svm_allocate_nested(struct vcpu_svm *svm);
+ int nested_svm_vmrun(struct kvm_vcpu *vcpu);
 -- 
 2.43.0
 
