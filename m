@@ -1,77 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=90.155.92.199
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793844079;
-	b=I4UB3g2jdB7LkkVSyOUBQc9A6IRVFJ9TQjZpFwhsGj0fmcy0RTx8ui4JUECEOgDkYvOQ
-	 lOpDcW1bIEb48x2Ap9RhY9lfG4LdTfdrPUColSJ+hOro53gA6RywIylURa4gOoyAucJVM
-	 M369bSsgJfq082DT/gXGAZ6iQN9a+NjgW+omAdof0P/gbq6r72fs7EQBK/o1Yp4FPusna
-	 M0WA36YUxDyKxAFEXRm0JH+kt+ZNrVogZ6Itt+WhVAZBEkGzfODiJ2ffAw+p9VBjNDtTi
-	 m+8JM0pGYzS6uMUWpv7+Dl9owMSVsNq1N9Gcyq/JIsMN9O2SSqBLk493EaeAoHO+IQA==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793844079;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:Sender:X-SRS-Rewrite;
-	bh=MrykgqblsgkTBBhZT90jYeBND9vd1pcgeJZVOE7ReYk=;
-	b=nMx6o1clV6Eu4rSRLqzOLH7XDyfVORJsoWlnW9MMpZ1k5w4XnO3SrMEK/m3rmX2r8wW+
-	 XFdd2w/gUiE1U+OnpnnMyVnB6YzxSMgsBrVHbeDkBK9q6vd9i/dgVwcY5aqw4X/79CJbv
-	 mHY+Hkc/ThKz6yqxGGG/iBnZVRuVUs2iWZqwKjdYLU0/Cd/srpOHWxHMmbAgUcZ3XE+SR
-	 jojc220tw64CNzdu2ec2VqCtOiIULm2RnHPeGdUjQhDbY+Mp4ndAt0eEwbmlkBql8jR3V
-	 TEZRaofQvgzI5YepMLzB7O5yWOYnL0tkTqIQ/zWbTDhUsgu0Or9G0PsEGJ5cLrWsgZA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=infradead.org;
-	spf=none smtp.mailfrom=desiato.srs.infradead.org;
-	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=E89PU2Po;
-	arc=none smtp.remote-ip=90.155.92.199
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.47
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793847330;
+	b=CDDhsICz6+zQjQbgIqNuMj3MqhwPcuGgA5507LXgnqWj8NMTVQjwertyy+nlckkNW4xX
+	 QH0BoEaTYSV7SSscPk5b7AjT03HU6fpy043mR96Znwc91sAzmW1ztgVjKVc3jR/ltvEgR
+	 88HqNExs8nqVCS9V+fujixzgpu8lRAo0siJNfyeXjxKXnLhz6xtfGIS8kSF0cCyMcF0ig
+	 X/ABAtGEXkzbyORCj1KoiIgFL6WuPcwDgJVr6P9ab89stG8Hrft3JgwcZpZP8XRGTFDjX
+	 1he/jGkmcDLPGK1XNXiEVM/2aBU5g7CkoFocTvPS0CuZCDSu7azMzgTBDzHsbN18y3g==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793847330;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=jR7loNAHPL1UfcJr49MgWtfYGIhpgreosCIZ48GmVGQ=;
+	b=B6XCE8cc0BTg3Q3MBHA4yg7UnuCGUUrrWxZm93zSV5d7qqFM5oZ/xTA/l5tmHXaURFg8
+	 JTv/Sa6DPtOZ/37YkrpLm3d9hJTxNYIx5jyXj6FH0c1jr6yfjFzpEphikBoreSySVgcFb
+	 UFMuFkM+RzKXATrkpxXSxp1KdQShYRbAc6bjBaGI0qZJf3QzshSfGxpF5HPi3gMoAyOfT
+	 ow+/xyOlx05p3+g1ZBY+mv/RCnA7PidEVlU8rCoUvLJjCfBpfoe6VacM4aZ+2C+Cs+rqx
+	 sc1qUy2UFYASHH6ybF8L9CHfyzoJKy+prNT2caE5+17YDrP4iDZlXM+XYEIhbKF5iGw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=XCp1JIxC;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.47
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE16606EEA7;
-	Thu,  5 Nov 2026 02:01:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0EE16606EEA7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8978B606A31B
+	for <rcu@vger.kernel.org>; Thu,  5 Nov 2026 02:55:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8978B606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=E89PU2Po
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=MrykgqblsgkTBBhZT90jYeBND9vd1pcgeJZVOE7ReYk=; b=E89PU2Po5NQYe57K5iPKPyxkd6
-	EIFv08iZkTq/YiSNs1ncnEO5K7DjkjDC3IC3NUTXGYeevXC0fQe4r9thR/oKu5IlQI0WlB9Qya8Te
-	c7HrdPPF7zjoVGaa1EdF2FXEIHGmKdWODQsWFXfDNJTHa9r7nGsIGk7ZzsJEd0OxHB05SGUOKuNY2
-	aO4pJCl+2mJm5TNBhuBw3aGVvpsgp8T6pvG6ZV3zOsLyZd35My2L1XELY+FzEO+30p1n9YNHMqTGp
-	IuqlM18MEWRI7Dxy7omuWMw4q7MP3LDMfJDqlmEq/N1IFs6dMk4FApecH+BxctBp15fmddZD8tWGx
-	BKPpjO/A==;
-Received: from [2001:8b0:10b:1::425] (helo=i7.infradead.org)
-	by desiato.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOmmo-00000002ROP-25S4;
-	Thu, 05 Nov 2026 02:01:08 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xOmmm-0000000AWDu-3GYz;
-	Thu, 05 Nov 2026 02:01:04 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	rcu@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paul Durrant <paul@xen.org>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Fred Griffoul <fgriffo@amazon.co.uk>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Kunwu Chan <kunwu.chan@linux.dev>,
-	Kunwu Chan <kunwu.chan@gmail.com>,
-	syzbot+208f7f3e5f59c11aeb90@syzkaller.appspotmail.com,
-	David Woodhouse <dwmw@amazon.co.uk>
-Subject: [PATCH v2 14/20] KVM: selftests: Add nested VMX APIC cache invalidation test
-Date: Thu,  5 Nov 2026 02:00:56 +0000
-Message-ID: <20261105020104.2507083-15-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261105020104.2507083-1-dwmw2@infradead.org>
-References: <20261105020104.2507083-1-dwmw2@infradead.org>
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=XCp1JIxC
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4a2167bd087so11094665e9.3
+        for <rcu@vger.kernel.org>; Wed, 04 Nov 2026 18:55:30 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1793847329; cv=none;
+        d=google.com; s=arc-20260327;
+        b=WrbNDf6K6JYKMUGx5330vjcx4f+SSePGcuZyD1JraSXKjK49Xe98VNAaiS12pHSCMS
+         IfV6Ked0iObgugWItRPnHjU0u94m1Wv/OCxr3OUgSsAFXv/By0iPWQnlJa3XCf7Ejinz
+         XQoWRauY1TeoVtEGvwpuf1nxviBIjjyhWgtyoVRGv1JiXmUhpqA/3eJ34d2mFZTmmU99
+         pgIBEaTo7sSpWkioK+Dr3ayFB5KvTd5VZ/JhBxvG5S0xWhmW5fxg0svWByowTLF54oSX
+         GFgIeEcvD6IHu+gbvyzZWnRkXk7S9L8sjXktj6prrp1XLMQqcjnFynDe+3zCYN4dyPlp
+         UyPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=jR7loNAHPL1UfcJr49MgWtfYGIhpgreosCIZ48GmVGQ=;
+        fh=L3aJusg48vGjkOitHtHOgZIssVhJsI7N6onyMkIaPts=;
+        b=nBVC/3sPJgSRfCdOYmui6/HeROPavVizFqYC+u899acbXnnZFKjaygaL+5HhEASe4x
+         ezw3X5v/hDHj94vdvZh1Wmxwd06P4yCmfvAk9E8JyEDFfVHsOLf/tWT5URkLWUTUtt4z
+         sE3xxIGhBBagg8KUjLXltFBub6qF1fO4wowPfuZoSzdXvFO2TREi2uodsjO4ZW97pWB/
+         2MHrhYGe9Ea9qXbiYhYv+evDfW/kzHBjPhlPqQt0t2nZ8jJm2hspOXXJ72UlUXQRC1nE
+         BVjLXuczd4+KqoKTMRLmdS2BgSwoQZx1FThwQgQUosVggfel+aDjgsSdUWg42aTmbj/4
+         n0dw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793847329; x=1794452129; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=jR7loNAHPL1UfcJr49MgWtfYGIhpgreosCIZ48GmVGQ=;
+        b=XCp1JIxCz0JiH7VJnEPqhrFzh7f2B3ku9NmKDzaa+kU1MTro94csImVUBu7SiXupbe
+         bZH/HuvFqTOGINWY6rYdyQpdGarAug0MMkAu0GEbv5PMxqs57U898UepqTiEeRoDJvN+
+         BnlM0vUl1nyks6zkS++X7ZWD5ETzMWS6dkgXWh9f3z/j6ItN9i53UUa+iS8TVvEUt1MS
+         1T2niWLVZskoR/LOuTPqTPObNdL7WPHLOroTnv2esbgrR4qjuuJIIvEZhWb9kC82aujh
+         VyFazFDBFq/IA92ONa7wUUf9JsKGAlYcrkbnGWBW8i80W6R5obtkEYdppm2YMH3xDze7
+         Jl8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793847329; x=1794452129;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=jR7loNAHPL1UfcJr49MgWtfYGIhpgreosCIZ48GmVGQ=;
+        b=Ym42Qe5FcLzzQhHY89BSSCaMztVLcv2Iwqfkjr8eJWIxiRQeMJVmUTBSZHRv8UoymC
+         BVFAbVBeFxfdG+OTCZ54d8E9mLzA6nzgd5YixfIBnyN7A2QlFdkcnwZi/Ez+j4uTI1ft
+         aGD3VdtvBqoQdwRN1fptaPKRvHGDWH+WzTcsP9W4iQvmkEc48gIMwbTiq2NCnwZt3N5d
+         T32gAWl9YNSe8+zxqncnu8LB8Kz7GOB35bkGxwwwcIK1CietOEMjYxlPmAUKPMRMBuu6
+         EB15YokXgCM0Y1uBJQFQTVMQIh5XqyUCVHZw1a34n8lfRXK5M3yO1SGvfCq4ELdPk9gK
+         pAMA==
+X-Forwarded-Encrypted: i=1; AKwUvBzaYq0p3rUiL9ZMxZTQVqWyjyFHe/CgIRG59S/nFyU+ZbpYgOPWcWPP8rOrvCKatHwk8cs=@vger.kernel.org
+X-Gm-Message-State: APuU4Z/UFBZ4EkSBNRVWmT1jEEfe53BnksfP6PuusnvDqN0bES/9Vr3O
+	BOMqeThX6Y95djIPFCfsaPY+Ys0Nxac0sCUhZvaYogss1qJRCMiVU5NOg3wkpi3ZW3y9bQM3aUi
+	BWimEClCg0sRPodB/x3dSg9n605Um/LekuEDGXYGFMQ==
+X-Gm-Gg: AYBFou1/hnF1EHOeYTrgFaHYOhCz78DL5x5TNUVQnetGeeerHSHaF2+PN5bmueAQ+DF
+	IpcXivsGFBzIKOo9HDRFM0MJjDTVOXpbQSunWej2mK65ykxTMIoArNrGH/knN7q+af8JNeIhQoA
+	qcm9gmjB6/3siv4FMgjl2wGojLaYreGbil9KAGR7lCPeVq7IVHVRVP5m5kOJDQ0oa2vPwLFneTV
+	UImdM04OT6u7wPrGyS1ym3KPewr/jqDiiAAkF05wlN0iPyr3Av0ST8/yQ+fxS3QKBktuadKvzAC
+	5i9jNnfIxskGD/SV6HCM+bVJUOex2/qRGZFqCoP4uFAiXmgQyEhh7bMyNT0XMzIyCrDdZYbix8f
+	Umyl40hFfL4tVYrr3EQqpWiGjKz6K6RZQUL6q7w==
+X-Received: by 2002:a05:600c:848c:b0:4a5:dc5d:20f7 with SMTP id
+ 5b1f17b1804b1-4ac175669d8mr434677375e9.14.1793847328397; Wed, 04 Nov 2026
+ 18:55:28 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -81,382 +104,96 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+References: <20261104153046.965890-1-joelagnelf@nvidia.com>
+In-Reply-To: <20261104153046.965890-1-joelagnelf@nvidia.com>
+From: KunWu Chan <kunwu.chan@gmail.com>
+Date: Thu, 5 Nov 2026 10:55:17 +0800
+X-Gm-Features: AclHuK8fWNS4iqHr9EC6eqcHPc25Ps3rjrWEn5ef_l6R_L-fgVDB7DVBIpfqaWA
+Message-ID: <CAN_Opa9t9gL3O2dkBTiHKHAnJCbUNOYBmQkzWevCFr8r6ypGhQ@mail.gmail.com>
+Subject: Re: [PATCH] rcu-tasks: Track barrier callbacks in debugobjects
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Fred Griffoul <fgriffo@amazon.co.uk>
+Hi Joel,
 
-Add a selftest for the nested VMX APIC page caches: an L2 guest
-writes the APIC-access page while a second thread repeatedly
-invalidates the underlying mapping, either with
-madvise(MADV_DONTNEED) (MMU notifier path) or by moving the memslot
-away and back (memslot update path), so the GPA under test is
-repeatedly unbacked and re-latched.
+I ran into the same warnings while testing rcutorture changes on top
+of my earlier series,
+so thanks for posting the fix.
 
-The test asserts that L2 keeps running across the invalidations with
-no guest-visible errors, that at least one invalidation actually ran
-concurrently, and that the access only ever bounces to userspace as
-MMIO in the memslot-move variant (while the slot is moved away the
-GPA is unbacked; madvise never unbacks the GPA, so an MMIO exit
-there means KVM lost the mapping).
+Verified on x86_64 with torture_type=3Dtasks object_debug=3D1 n_barrier_cbs=
+=3D2:
 
-Signed-off-by: Fred Griffoul <fgriffo@amazon.co.uk>
+Without the patch, each barrier round triggers:
+ODEBUG: active_state not available (active state 0) object:
+(____ptrval____) object type: rcu_head hint: 0x0
 
-[dwmw2: Adapt to selftest API drift since the v4 posting: prepare_vmcs()
-        no longer takes an L2 stack (4c396f19de5d), vm_vaddr_t is now
-        gva_t, and the prepare_eptp()/nested_map*() EPT helpers were
-        replaced by vm_enable_tdp()/tdp_map()/
-        tdp_identity_map_default_memslots().]
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Assisted-by: LLM
----
- tools/testing/selftests/kvm/Makefile.kvm      |   1 +
- .../selftests/kvm/x86/vmx_apic_update_test.c  | 323 ++++++++++++++++++
- 2 files changed, 324 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/x86/vmx_apic_update_test.c
+With the patch applied, the warnings are gone, and 300+ barrier rounds
+complete cleanly.
 
-diff --git a/tools/testing/selftests/kvm/Makefile.kvm b/tools/testing/selftests/kvm/Makefile.kvm
-index 17a4256e9081..dcfe815f4a02 100644
---- a/tools/testing/selftests/kvm/Makefile.kvm
-+++ b/tools/testing/selftests/kvm/Makefile.kvm
-@@ -161,6 +161,7 @@ TEST_GEN_PROGS_x86 += x86/triple_fault_event_test
- TEST_GEN_PROGS_x86 += x86/recalc_apic_map_test
- TEST_GEN_PROGS_x86 += x86/aperfmperf_test
- TEST_GEN_PROGS_x86 += x86/guest_memfd_conversions_test
-+TEST_GEN_PROGS_x86 += x86/vmx_apic_update_test
- TEST_GEN_PROGS_x86 += access_tracking_perf_test
- TEST_GEN_PROGS_x86 += coalesced_io_test
- TEST_GEN_PROGS_x86 += dirty_log_perf_test
-diff --git a/tools/testing/selftests/kvm/x86/vmx_apic_update_test.c b/tools/testing/selftests/kvm/x86/vmx_apic_update_test.c
-new file mode 100644
-index 000000000000..357e10c88cd0
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86/vmx_apic_update_test.c
-@@ -0,0 +1,323 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * vmx_apic_update_test
-+ *
-+ * Copyright (C) 2025, Amazon.com, Inc. or its affiliates. All Rights Reserved.
-+ *
-+ * Test L2 guest APIC access page writes with concurrent MMU
-+ * notification and memslot move updates.
-+ */
-+#include <limits.h>
-+#include <pthread.h>
-+#include "test_util.h"
-+#include "kvm_util.h"
-+#include "processor.h"
-+#include "vmx.h"
-+
-+#define VAPIC_GPA	0xc0000000
-+#define VAPIC_SLOT	1
-+
-+
-+#define L2_DELAY	(100)
-+
-+static void l2_guest_code(void)
-+{
-+	uint32_t *vapic_addr = (uint32_t *) (VAPIC_GPA + 0x80);
-+
-+	/* Unroll the loop to avoid any compiler side effect */
-+
-+	WRITE_ONCE(*vapic_addr, 1 << 0);
-+	udelay(msecs_to_usecs(L2_DELAY));
-+
-+	WRITE_ONCE(*vapic_addr, 1 << 1);
-+	udelay(msecs_to_usecs(L2_DELAY));
-+
-+	WRITE_ONCE(*vapic_addr, 1 << 2);
-+	udelay(msecs_to_usecs(L2_DELAY));
-+
-+	WRITE_ONCE(*vapic_addr, 1 << 3);
-+	udelay(msecs_to_usecs(L2_DELAY));
-+
-+	WRITE_ONCE(*vapic_addr, 1 << 4);
-+	udelay(msecs_to_usecs(L2_DELAY));
-+
-+	WRITE_ONCE(*vapic_addr, 1 << 5);
-+	udelay(msecs_to_usecs(L2_DELAY));
-+
-+	WRITE_ONCE(*vapic_addr, 1 << 6);
-+	udelay(msecs_to_usecs(L2_DELAY));
-+
-+	WRITE_ONCE(*vapic_addr, 0);
-+	udelay(msecs_to_usecs(L2_DELAY));
-+
-+	/* Exit to L1 */
-+	vmcall();
-+}
-+
-+static void l1_guest_code(struct vmx_pages *vmx_pages)
-+{
-+	uint32_t control, exit_reason;
-+
-+	prepare_for_vmx_operation(vmx_pages);
-+	load_vmcs(vmx_pages);
-+	prepare_vmcs(vmx_pages, l2_guest_code);
-+
-+	/* Enable APIC access */
-+	control = vmread(CPU_BASED_VM_EXEC_CONTROL);
-+	control |= CPU_BASED_ACTIVATE_SECONDARY_CONTROLS;
-+	vmwrite(CPU_BASED_VM_EXEC_CONTROL, control);
-+	control = vmread(SECONDARY_VM_EXEC_CONTROL);
-+	control |= SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES;
-+	vmwrite(SECONDARY_VM_EXEC_CONTROL, control);
-+	vmwrite(APIC_ACCESS_ADDR, VAPIC_GPA);
-+
-+	GUEST_SYNC1(0);
-+	vmlaunch();
-+again:
-+	exit_reason = vmread(VM_EXIT_REASON);
-+	if (exit_reason == EXIT_REASON_APIC_ACCESS) {
-+		uint64_t guest_rip = vmread(GUEST_RIP);
-+		uint64_t instr_len = vmread(VM_EXIT_INSTRUCTION_LEN);
-+
-+		vmwrite(GUEST_RIP, guest_rip + instr_len);
-+		vmresume();
-+		goto again;
-+	}
-+
-+	GUEST_SYNC1(exit_reason);
-+	GUEST_ASSERT(exit_reason == EXIT_REASON_VMCALL);
-+	GUEST_DONE();
-+}
-+
-+static const char *progname;
-+static int update_period_ms = L2_DELAY / 4;
-+
-+struct update_control {
-+	pthread_mutex_t mutex;
-+	pthread_cond_t start_cond;
-+	struct kvm_vm *vm;
-+	bool running;
-+	bool started;
-+	int updates;
-+};
-+
-+static void wait_for_start_signal(struct update_control *ctrl)
-+{
-+	pthread_mutex_lock(&ctrl->mutex);
-+	while (!ctrl->started)
-+		pthread_cond_wait(&ctrl->start_cond, &ctrl->mutex);
-+
-+	pthread_mutex_unlock(&ctrl->mutex);
-+	printf("%s: starting update\n", progname);
-+}
-+
-+static bool is_running(struct update_control *ctrl)
-+{
-+	return READ_ONCE(ctrl->running);
-+}
-+
-+static void set_running(struct update_control *ctrl, bool running)
-+{
-+	WRITE_ONCE(ctrl->running, running);
-+}
-+
-+static void signal_thread_start(struct update_control *ctrl)
-+{
-+	pthread_mutex_lock(&ctrl->mutex);
-+	if (!ctrl->started) {
-+		ctrl->started = true;
-+		pthread_cond_signal(&ctrl->start_cond);
-+	}
-+	pthread_mutex_unlock(&ctrl->mutex);
-+}
-+
-+static void *update_madvise(void *arg)
-+{
-+	struct update_control *ctrl = arg;
-+	void *hva;
-+
-+	wait_for_start_signal(ctrl);
-+
-+	hva = addr_gpa2hva(ctrl->vm, VAPIC_GPA);
-+	memset(hva, 0x45, ctrl->vm->page_size);
-+
-+	while (is_running(ctrl)) {
-+		usleep(update_period_ms * 1000);
-+		madvise(hva, ctrl->vm->page_size, MADV_DONTNEED);
-+		ctrl->updates++;
-+	}
-+
-+	return NULL;
-+}
-+
-+static void *update_move_memslot(void *arg)
-+{
-+	struct update_control *ctrl = arg;
-+	uint64_t gpa = VAPIC_GPA;
-+
-+	wait_for_start_signal(ctrl);
-+
-+	/*
-+	 * Alternate the slot between VAPIC_GPA and an alternate address,
-+	 * so that the GPA under test is repeatedly unbacked (L2's APIC
-+	 * access bounces to userspace as MMIO) and re-backed (KVM must
-+	 * re-latch the page). Moving strictly away would change
-+	 * vCPU-visible state only once.
-+	 */
-+	while (is_running(ctrl)) {
-+		usleep(update_period_ms * 1000);
-+		gpa = (gpa == VAPIC_GPA) ? VAPIC_GPA + 0x10000 : VAPIC_GPA;
-+		vm_mem_region_move(ctrl->vm, VAPIC_SLOT, gpa);
-+		ctrl->updates++;
-+	}
-+
-+	return NULL;
-+}
-+
-+static void run(void * (*update)(void *), const char *name, bool mmio_ok)
-+{
-+	struct kvm_vm *vm;
-+	struct kvm_vcpu *vcpu;
-+	struct update_control ctrl;
-+	struct ucall uc;
-+	gva_t vmx_pages_gva;
-+	pthread_t update_thread;
-+	bool done = false;
-+
-+	vm = vm_create_with_one_vcpu(&vcpu, l1_guest_code);
-+
-+	/* Set up nested EPT */
-+	vm_enable_tdp(vm);
-+
-+	/* Allocate VMX pages */
-+	vcpu_alloc_vmx(vm, &vmx_pages_gva);
-+
-+	/* Allocate memory and create VAPIC memslot */
-+	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS, VAPIC_GPA,
-+				    VAPIC_SLOT, 1, 0);
-+
-+	/* Allocate guest page table */
-+	virt_map(vm, VAPIC_GPA, VAPIC_GPA, 1);
-+
-+	/* Identity-map everything, including the VAPIC page, in the EPT */
-+	tdp_identity_map_default_memslots(vm);
-+	tdp_map(vm, VAPIC_GPA, VAPIC_GPA, vm->page_size);
-+
-+	vcpu_args_set(vcpu, 1, vmx_pages_gva);
-+
-+	pthread_mutex_init(&ctrl.mutex, NULL);
-+	pthread_cond_init(&ctrl.start_cond, NULL);
-+	ctrl.vm = vm;
-+	ctrl.running = true;
-+	ctrl.started = false;
-+	ctrl.updates = 0;
-+
-+	kvm_pthread_create(&update_thread, NULL, update, &ctrl);
-+
-+	printf("%s: running %s (tsc_khz %lu)\n", progname, name, guest_tsc_khz);
-+
-+	while (!done) {
-+		vcpu_run(vcpu);
-+
-+		switch (vcpu->run->exit_reason) {
-+		case KVM_EXIT_IO:
-+			switch (get_ucall(vcpu, &uc)) {
-+			case UCALL_SYNC:
-+				printf("%s: sync(%ld)\n", progname, uc.args[0]);
-+				if (uc.args[0] == 0)
-+					signal_thread_start(&ctrl);
-+				break;
-+			case UCALL_ABORT:
-+				REPORT_GUEST_ASSERT(uc);
-+				/* NOT REACHED */
-+			case UCALL_DONE:
-+				done = true;
-+				break;
-+			default:
-+				TEST_ASSERT(false, "Unknown ucall %lu", uc.cmd);
-+			}
-+			break;
-+		case KVM_EXIT_MMIO:
-+			/*
-+			 * While the slot is moved away, the GPA under test
-+			 * is unbacked and the access legitimately bounces
-+			 * to userspace as MMIO (until the updater moves it
-+			 * back). madvise() never unbacks the GPA, so there
-+			 * an MMIO exit means KVM lost the mapping: fail.
-+			 */
-+			TEST_ASSERT(mmio_ok,
-+				    "%s: unexpected APIC MMIO access at 0x%llx",
-+				    progname, vcpu->run->mmio.phys_addr);
-+			printf
-+			    ("%s: APIC MMIO access at 0x%llx (memslot move effect)\n",
-+			     progname, vcpu->run->mmio.phys_addr);
-+			break;
-+		default:
-+			TEST_FAIL("%s: Unexpected exit reason: %d (flags 0x%x)",
-+				  progname,
-+				  vcpu->run->exit_reason, vcpu->run->flags);
-+		}
-+	}
-+
-+	set_running(&ctrl, false);
-+	if (!ctrl.started)
-+		signal_thread_start(&ctrl);
-+	kvm_pthread_join(update_thread, NULL);
-+	printf("%s: completed with %d updates\n", progname, ctrl.updates);
-+	TEST_ASSERT(ctrl.updates > 0,
-+		    "%s: %s performed no updates; nothing was tested",
-+		    progname, name);
-+
-+	pthread_mutex_destroy(&ctrl.mutex);
-+	pthread_cond_destroy(&ctrl.start_cond);
-+	kvm_vm_free(vm);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int opt_madvise = 0;
-+	int opt_memslot_move = 0;
-+
-+	TEST_REQUIRE(kvm_cpu_has(X86_FEATURE_VMX));
-+	TEST_REQUIRE(kvm_cpu_has_ept());
-+
-+	if (argc == 1) {
-+		opt_madvise = 1;
-+		opt_memslot_move = 1;
-+	} else {
-+		int opt;
-+
-+		while ((opt = getopt(argc, argv, "amp:")) != -1) {
-+			switch (opt) {
-+			case 'a':
-+				opt_madvise = 1;
-+				break;
-+			case 'm':
-+				opt_memslot_move = 1;
-+				break;
-+			case 'p':
-+				update_period_ms = atoi(optarg);
-+				TEST_ASSERT(update_period_ms > 0 &&
-+					    update_period_ms < INT_MAX / 1000,
-+					    "Update period must be a positive number of milliseconds, not '%s'",
-+					    optarg);
-+				break;
-+			default:
-+				exit(1);
-+			}
-+		}
-+	}
-+
-+	TEST_ASSERT(opt_madvise
-+		    || opt_memslot_move, "No update test configured");
-+
-+	progname = argv[0];
-+
-+	if (opt_madvise)
-+		run(update_madvise, "madvise", false);
-+
-+	if (opt_memslot_move)
-+		run(update_move_memslot, "move memslot", true);
-+
-+	return 0;
-+}
--- 
-2.43.0
+I'd like to include this as the first patch in my follow-up series,
+since the new
+rcutorture tasks coverage depends on it. Please let me know if that's an is=
+sue.
 
+Tested-by:  Kunwu Chan <chentao@kylinos.cn>
+Reviewed-by: Kunwu Chan <chentao@kylinos.cn>
+
+Thanks,
+Kunwu
+
+On Wed, Nov 4, 2026 at 11:31=E2=80=AFPM Joel Fernandes <joelagnelf@nvidia.c=
+om> wrote:
+>
+> rcu_tasks_invoke_cbs() now unqueues each callback from debugobjects.
+> However, rcu_barrier_tasks_generic() inserts its per-CPU barrier heads
+> directly with rcu_segcblist_entrain(), bypassing the queue hook in
+> call_rcu_tasks_generic(). This produces active_state and deactivate
+> warnings for untracked objects when a barrier callback runs.
+>
+> Activate each barrier head before entrainment and undo that activation
+> when there are no callbacks to entrain behind. Successful entrainment
+> is balanced by the invocation path, as for ordinary callbacks.
+>
+> The existing n_barrier_cbs=3D2 torture test reproduces the warnings befor=
+e
+> this change and completes without them afterwards.
+>
+> This fixes patch "rcu-tasks: Detect duplicate callback enqueue".
+>
+> Cc: Kunwu Chan <kunwu.chan@gmail.com>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> ---
+>  kernel/rcu/tasks.h | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index d5d060a5c4b6..a20db323612b 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -470,9 +470,12 @@ static void __maybe_unused rcu_barrier_tasks_generic=
+(struct rcu_tasks *rtp)
+>                         break;
+>                 rtpcp =3D per_cpu_ptr(rtp->rtpcpu, cpu);
+>                 rtpcp->barrier_q_head.func =3D rcu_barrier_tasks_generic_=
+cb;
+> +               debug_rcu_head_queue(&rtpcp->barrier_q_head);
+>                 raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+>                 if (rcu_segcblist_entrain(&rtpcp->cblist, &rtpcp->barrier=
+_q_head))
+>                         atomic_inc(&rtp->barrier_q_count);
+> +               else
+> +                       debug_rcu_head_unqueue(&rtpcp->barrier_q_head);
+>                 raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+>         }
+>         if (atomic_sub_and_test(2, &rtp->barrier_q_count))
+> --
+> 2.54.0
+>
