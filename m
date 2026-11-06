@@ -1,58 +1,80 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793967691;
-	b=r/vtSutJvzArlG+53h420b8RvqtIwHpjbaCoEeU9lav7ZaQp5UFSfxrePj0Gzjb+JgF7
-	 QSthgdeDwGa2eMF2n40nPwEiNuueWd13AtWa2oxiDvKQB07oRbjiM6WqXq26a/cmvtvnS
-	 EVB4t2hGPvdZZ08cXIsYBalY44OGXwkZCM3Yj8htF33XYNiP1T3b2nV3hWJRMoELRHNhU
-	 A6/ew3Sjrv4febOqlrJ7y2z60G1Yp7TnI3md0Lrji98ceE5vp6OZDR79OpMdpGJeBF//A
-	 eDozJYMV74cPLExhTFKuBrOc0q4htVHE/IrG9IruC0pQsJT8UENQOM+FGOC4GTLGR+w==
+	t=1793973846;
+	b=BDpNQmnsT12o5eJUsHxwJ8Vxmf6rOxoQuIbTOZ5oGdi90aRxlVqBZi1SPvUrSCOnibcI
+	 PPkr942qCZV294WFLqpA8fBW4tG8w3PCGsB8qtKiFE6ireLFpXS+pNPh8DHMDtzNB/RLZ
+	 Cxlpn9vBt6TOaCWpRu3ApX7qYlGkJxbRMzu5XEJM3jYquEOM5rkRf7/lj8otC9q1CMRJZ
+	 VCWVHn1sQZ3utu8EFDTGhLemqofDjX6qIohIb7cfiBCjGkSbUdR9yn3YqzqzeYH9/9FM9
+	 fIVtPM2B1LPv0QKzcoGwpf8IhWiRHzFtsCqVEOHRkjPpP+Pqta3E59mF5WYU7PRwbgw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793967691;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=cRzTH+yd4d8od9LM7sI2UHx2nrHb7DkZirOlIhvtcmU=;
-	b=cOGRsYFWj5AkxbiNgGVq+ofijt2Pcmc7lDWFkc3zZlXR2tQ65PQIWzFVJvKVgEBviajJ
-	 cjt+aT0ImWznCMEyoMWATUdtbAFawF0hwuIqMoVFjHhxvhiGOEW0+UrD9gXC2yk44SUys
-	 HeUYkAt61RhkBckdRjskw5xNorCau8n9goswhkWGbqoe6JkpkSJjGZ6ME4RLY45cvP93X
-	 Pa2jNAbVV6HSZPbGQDnb+PuAVV2QBMI7AnN9Ohk5fGKQ+6ZXWMsoI7Wwe/OB78lKttVey
-	 9FIFmvZpvOnqDRPRxJa9azRaEqJHIbzFg5V7xMbYkueHWTtGQGCyjZl05V1b/2LAf2A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793973846;
+	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=2POFqhBdX4hWO/hojONQrzEFt0JAY/xmNxctemziCs4=;
+	b=Ygarbe4ZmO8v8qCJScdYtwE8eFTcfQ5z7vwQP9WrVjztA9qhTMkmEh647TWVcrfajPh1
+	 dcIO8ITzBeOy+mfVCSmwBwsclSoaELuGQaaWK4+JrllS5gaL9M3X6DfqnHPZHekswrud1
+	 EhVOmlIOQfsHlm/jPv50m2EEGUn+5JLlcLXfjHC9feIhK+2K8QIr9tRrqyynkOPurH3UN
+	 4dLfgJ7ZoPkQf8NGtbeueQeWIs0o6uzpCfVT+TQo8KzOQVuFg134XvC144+qD0ZXTseTP
+	 zqakhzinlF88PG8as0HMgCIZt82XxOo7YX8oCfT4zRAmCC8S+EfUooZztnfRPo0MFFg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GZILsJYw;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=linutronix.de;
+	spf=pass smtp.mailfrom=linutronix.de;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=ddswAkxd;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=J8vrAzlw;
+	arc=none smtp.remote-ip=193.142.43.55
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B4B606A326;
-	Fri,  6 Nov 2026 12:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DDE0606A32E
+	for <rcu@vger.kernel.org>; Fri,  6 Nov 2026 14:04:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0DDE0606A32E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GZILsJYw
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F25F1F0089F;
-	Fri,  6 Nov 2026 12:21:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793967691;
-	bh=cRzTH+yd4d8od9LM7sI2UHx2nrHb7DkZirOlIhvtcmU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=GZILsJYwu5BayQcmz0opObBE0Ra84AH2emZVoDsYwET5lsnXq/90QfHCKSiuVcyng
-	 QK6GS6TxvENK+/sND0HJk/pISIlyglRaJyq+yYhObAQDtBYNHdEpVa63IlVAN5jN2n
-	 Bl71ZLc1hzVRPjVqVBic13CoXv5zTenBbEqK2e4ETjWnl2nEyM+OP3mMgP/jgfMMhI
-	 gkeW+EK9keSGXtJBvkIbdh35aMPfca1IHC/jAU7w9xnDnPoyviV3mUPcSBB7hkElxv
-	 wte2pRHKe9ddWnUtU/1XJDkCxQk3YddRhQ4Og723Jd8cfqg3VuPHeQIezaf2h/RZEN
-	 Fe1/F8bvxLhzA==
-Date: Fri, 6 Nov 2026 12:21:28 +0000
-From: Harry Yoo <harry@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Zhan Xusheng <zhanxusheng1024@gmail.com>, vbabka@kernel.org, 
-	paulmck@kernel.org, qiang.zhang@linux.dev, akpm@linux-foundation.org, 
-	hao.li@linux.dev, cl@gentwo.org, rientjes@google.com, roman.gushchin@linux.dev, 
-	linux-mm@kvack.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	zhanxusheng@xiaomi.com
-Subject: Re: [PATCH 2/2] mm/slab: don't queue the page cache work under
- krcp->lock
-Message-ID: <au3ELzm_s9vhs7UO@thinkstation>
-References: <20261028134647.3176080-1-zhanxusheng1024@gmail.com>
- <20261028134647.3176080-2-zhanxusheng1024@gmail.com>
- <au2fUYzBLv3uvj_2@milan>
+	dkim=pass (2048-bit key, unprotected) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=ddswAkxd;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=J8vrAzlw
+Date: Fri, 6 Nov 2026 15:04:01 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1793973843;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2POFqhBdX4hWO/hojONQrzEFt0JAY/xmNxctemziCs4=;
+	b=ddswAkxdodHlatVr2rgkk+Y0/hiKaDFaVHpxYwUxUGKJul2CAHWe+Nv2W6LjNnQY3sAiOb
+	XJ12aCfRGZ+Ovo4jNq3SzkSy5S2+GU/3EbDGo8fMCxnI2Lat1RMlUHbZLQiEJVIVxX10M3
+	LE4sIYQCHHv6DyPxmzvyApkQ6fxv7xZPbnBiPLWzF58MFsA7EJIHu3ftQtMkliub53psQ2
+	x59G6Xos7UgFcw11V04qin57U50dMT1XLaNp1i5MXSsfVptGcfxSau4zgIOv9F0t7YNxSm
+	+Q9fLWYtFsf11KxDE2Vr00nUXh7cX2zYz00uCxAYMwmAdHjPWHndM67VSh7HQg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1793973843;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2POFqhBdX4hWO/hojONQrzEFt0JAY/xmNxctemziCs4=;
+	b=J8vrAzlwb8GUXMcIC9A1kycm3NH6aQ31wmBz8kTWJ7dupY3htlibePGzYfFFdcNh7ysUXI
+	6knNgHI+oxoC2eBA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Andrea Righi <arighi@nvidia.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	"linux-rt-devel@lists.linux.dev" <linux-rt-devel@lists.linux.dev>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH] rcutorture: Don't try to disable to RT throttling.
+Message-ID: <20261106140401.90MH_6qt@linutronix.de>
+References: <20261105165113.82N-rPMG@linutronix.de>
+ <2fbdb03e-1af8-489c-819a-7e3c7b0ed1be@paulmck-laptop>
+ <5970553A-3833-43F1-A013-21757664FB8F@nvidia.com>
+ <auzXjQfYXs_gzx1y@gpd4>
+ <c81d8243-c130-44d8-bef6-e678ecb088ac@paulmck-laptop>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -62,90 +84,76 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <au2fUYzBLv3uvj_2@milan>
+In-Reply-To: <c81d8243-c130-44d8-bef6-e678ecb088ac@paulmck-laptop>
 
-On Fri, Nov 06, 2026 at 10:35:13AM +0100, Uladzislau Rezki wrote:
-> On Wed, Oct 28, 2026 at 09:46:47PM +0800, Zhan Xusheng wrote:
-> > From: Zhan Xusheng <zhanxusheng@xiaomi.com>
-> > 
-> > run_page_cache_worker() runs under krcp->lock, from kvfree_call_rcu()
-> > callers that may hold more, such as set_cpus_allowed_force() under
-> > pi_lock, so it kicks the refill work from an hrtimer.  Under memory
-> > pressure it instead queues the work with a delay of
-> > rcutree.rcu_delay_page_cache_fill_msec, which may be 0, and a zero delay
-> > queues it at once, taking pool->lock under krcp->lock.
-> > 
-> > With the delay set to 0, calling kvfree_rcu() on vmalloc memory under
-> > pi_lock after a drop_caches makes lockdep report:
-> > 
-> >   Chain exists of:
-> >     &pool->lock --> &p->pi_lock --> krc.lock
-> > 
-> > Use the hrtimer when the delay is 0.
-> > 
-> > Fixes: d0bfa8b3c411 ("kvfree_rcu: Release a page cache under memory pressure")
-> > Signed-off-by: Zhan Xusheng <zhanxusheng@xiaomi.com>
-> > ---
-> >  mm/slab_common.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> > index 3729aa7a6156..ef5ff0a20249 100644
-> > --- a/mm/slab_common.c
-> > +++ b/mm/slab_common.c
-> > @@ -1987,7 +1987,13 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
-> >  
-> >  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
-> >  			!atomic_xchg(&krcp->work_in_progress, 1)) {
-> > -		if (atomic_read(&krcp->backoff_page_cache_fill)) {
-> > +		/*
-> > +		 * A zero delay would queue the work right here, under
-> > +		 * krcp->lock and possibly the caller's pi_lock, so let the
-> > +		 * hrtimer do it.
-> > +		 */
-> > +		if (atomic_read(&krcp->backoff_page_cache_fill) &&
-> > +		    rcu_delay_page_cache_fill_msec) {
-> >  			queue_delayed_work(rcu_reclaim_wq,
-> >  				&krcp->page_cache_work,
-> >  					msecs_to_jiffies(rcu_delay_page_cache_fill_msec));
-> > -- 
-> > 2.43.0
-> > 
-> > 
-> Can we just clamp this to 1 - 100 seconds interval?
-
-You mean clamp to [1:100,000] milliseconds interval?
-
-> <snip>
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 7223a7596dab..2c9236236ac9 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -2249,12 +2249,12 @@ void __init kvfree_rcu_init(void)
->  			WQ_UNBOUND | WQ_MEM_RECLAIM, 0);
->  	WARN_ON(!rcu_reclaim_wq);
->  
-> -	/* Clamp it to [0:100] seconds interval. */
-> -	if (rcu_delay_page_cache_fill_msec < 0 ||
-> +	/* Clamp it to [1:100] seconds interval. */
-> +	if (rcu_delay_page_cache_fill_msec <= 0 ||
->  		rcu_delay_page_cache_fill_msec > 100 * MSEC_PER_SEC) {
->  
->  		rcu_delay_page_cache_fill_msec =
-> -			clamp(rcu_delay_page_cache_fill_msec, 0,
-> +			clamp(rcu_delay_page_cache_fill_msec, 1,
->  				(int) (100 * MSEC_PER_SEC));
->  
->  		pr_info("Adjusting rcutree.rcu_delay_page_cache_fill_msec to %d ms.\n",
-> <snip>
+On 2026-11-05 12:03:11 [-0800], Paul E. McKenney wrote:
+> > For rcutorture, I don't think there's a ready-made kernel interface,
+> > maybe we could add a sched helper that performs the same operation as
+> > the debugfs knobs?
 > 
-> so we forbid zero as value to use?
+> I would very much appreciate that.  ;-)
 
-IMO in general we should keep existing behaviour unless we could
-demonstrate setting a delay < 1ms is fundamentally flawed?
+This maybe? Since it is built-in only, there is no need to restore the
+old state, is there?
 
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1333,6 +1333,8 @@ static unsigned long rcutorture_seq_diff(unsigned long new, unsigned long old)
+ 	return cur_ops->gp_diff(new, old);
+ }
+ 
++void dl_server_fair_disable(unsigned int cpu);
++
+ static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long *start)
+ {
+ 	int cpu;
+@@ -3394,6 +3396,8 @@ static int rcutorture_booster_init(unsigned int cpu)
+ 
+ 	/* Don't allow time recalculation while creating a new task. */
+ 	mutex_lock(&boost_mutex);
++	if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST))
++		dl_server_fair_disable(cpu);
+ 	VERBOSE_TOROUT_STRING("Creating rcu_torture_boost task");
+ 	boost_tasks[cpu] = kthread_run_on_cpu(rcu_torture_boost, NULL,
+ 					      cpu, "rcu_torture_boost_%u");
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 076a6c2f017bb..45b1251922c4f 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1921,6 +1921,31 @@ int dl_server_apply_params(struct sched_dl_entity *dl_se, u64 runtime, u64 perio
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_RCU_TORTURE_TEST
++/*
++ * The RCU-TORTURE built-in test will disable fair-server to avoid any
++ * throttling while testing RCU-boosting.
++ * If compiled as module then the user needs to disable it manually before
++ * loading the module.
++ */
++void dl_server_fair_disable(unsigned int cpu);
++
++void dl_server_fair_disable(unsigned int cpu)
++{
++	struct rq *rq = cpu_rq(cpu);
++	int retval;
++
++	scoped_guard (rq_lock_irqsave, rq) {
++		struct sched_dl_entity *dl_se = &rq->fair_server;
++
++		update_rq_clock(rq);
++		dl_server_stop(dl_se);
++		retval = dl_server_apply_params(dl_se, 0, dl_se->dl_period, 0);
++	}
++	WARN_ON_ONCE(retval);
++}
++#endif
++
+ /*
+  * Add @dl_se's bw to the root-domain accounting.
+  *
 -- 
-Cheers,
-Harry / Hyeonggon
+2.55.0
+
