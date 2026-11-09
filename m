@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794262781;
-	b=j8b+iuKaMtSapxFMHyKTuqIay7fm7BjLGJzs510eW45AkxPNtRL0SS32ZcEnGrA8Q56T
-	 6q+TII2jBg7bez/QfLQJrN+e5M5M7cEVmAS92aOQTugUNAerSvD026Cicz5RpBgF3k1DK
-	 ljlhzql5eYqW/wVvJHrFBkRNn6AuWJLtmQxq3Kmjyvfg/tQAYbDlzOxEQ0NSaz9frKp9y
-	 TKMdZ29jPv77FmmGn04TgUvbAC/Mh3VPEkxH3bX6a/fGg0vAtdt8qXFPqvUkqWgj5pXHx
-	 HYjigMptvmGf/88D3Pp2qPEdeOpepMEYxN0lXl7sdxQOQeSYzh0sffwAsAnK0t7OowQ==
+	b=zAriGQJjAXMpzBL9YWgmw6uOlScceSyJS97KS74WQ4g8X3CVBB19zfCVhq9xNqhBl4/G
+	 0lhs7GI/N/MeMJkzcTxOWE8HeQSELlJqUL5MQ1JmI4skrAUgKx82dQYs7wJ6kw7/olckG
+	 /HxWdMEVdUw0jgu6+sIadOynEkj8KHHLdq5vX7foGdz5CCpu72mlO3fc7670AlLU3ZvnL
+	 yPQxdSNlBF6wBYEgTyPtdS+4qWkD+XDusar+rYe4CyU2NzCCF9lgYeKOJpGV2YusPmlWk
+	 eblTqNlIVX+KOQQGzWXwMsmNCTnMfsQBaLD/YWZJbXiIULugxamx0qtiHEis3l0Yfuw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794262781;
 	h=Received:DKIM-Signature:Received:From:To:Cc:Subject:Date:Message-Id:
 	 X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=OryNfxwVsVz5lbqPtFhffPyHOBTyKVHtLCZv06UqWZY=;
-	b=mILDib+4k/a8uCaLwTtLkx//Zng8WWp48tnB/RfiuqdwYvFRliKKGMb1pExAHJPGA+aK
-	 LAW8RmkjzpKWC/gbVMN9gnEQejgXDnXuhU3Y6cJe0M0DlbfyZfzI+3YRLtb0f+3IRDPnb
-	 MiuP6OdsFtsE+j+ifvmgCJXd6bXPxK5tsmBv9YZ9yWd/slz5Xl9xdiI25cJ539vXu1kpB
-	 ae903y/YtXcBnToi0VxmEcY07fTg4L45vKDXJ8NrzUbt97CFRagZpFePPucQE9P90m0yZ
-	 XVuxfe0WGOoa96Bcng5LaQOA0I+i85iWOnEen3cFEbLSvkwJsWOU30YsCefZtfjhcmQ==
+	bh=ieIwxx7aww9l648mtXdPCLcHQjOhw/DTkMOJRAxpEdU=;
+	b=KQtPl7mNjNEMl8jq0iw3ru08Ykh8U5EZzAxqK5nAAeySuCL9kj4rGweak6NDw3bxGMBB
+	 5YaY2WxCRis8SicsHJl30BQGFsEqCv3wv4YXukSB0EATltpQmZPafYqnVovglLXci7eoT
+	 YbGJt74nhaU54wS/MqxnRPnx794FwoiVu7z/BqRt1XpoQUjOkNJVos79pLkcM6pOb4pxw
+	 Dlau+fKZxjhvixyL1TY4DdF/0znCqiy77M2SOHxRe4E9vCKl30PHCtRLdsPquskv8HPJ1
+	 twyN6BldBgIZIoLiy6Ba38hfAtanaDOpFBm+fPWphgk8PEbsZKyP/fJ/fjWISf0xXdQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DF3w5oPE;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Y+bYfXyg;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179CC606A331;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66039606A333;
 	Mon,  9 Nov 2026 22:19:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DF3w5oPE
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4C041F008A4;
-	Mon,  9 Nov 2026 22:19:40 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Y+bYfXyg
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E27E1F008BD;
+	Mon,  9 Nov 2026 22:19:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794262780;
-	bh=OryNfxwVsVz5lbqPtFhffPyHOBTyKVHtLCZv06UqWZY=;
+	s=k20260515; t=1794262781;
+	bh=ieIwxx7aww9l648mtXdPCLcHQjOhw/DTkMOJRAxpEdU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=DF3w5oPEb9wrpwdMpIrI9KZt6v1J0RxTFT/kxTzRqsSEIdWBTwpwZkZkHp4Le9Kcu
-	 HtT25trnEDHhBX4gBXfAVow1YPm0NRrG2RCdj5JOC+CevaSr+iDlsulXO1RGvi0iGE
-	 szCgQof1g3R1saJOyxahE+Pg0TJYXljXUFFD/jeT9ESDgJz3C0GCvFhoWbLEas4vcP
-	 WenuFeFE+jPtev0xVRtVnoqTu8k/CUimF6Briy/GcaPuV5pk3Q3AS8UIizsqFDUMAe
-	 9w2L/K/kPlbVO1xtWabLt8kLLQnXu7aszUstWgHDf7lzqsEEDV0b6+gFvsWen0551Y
-	 eUUIfkOpMZEMg==
+	b=Y+bYfXygzrAg1w+bc2WSLfp4zREsjCyng7vmt0NA15o8TNEWFwv06x4Ox603qRNfP
+	 ghiMeBVqkt8B0GEuod5EtISRjJoZYUDbYjqRb0Jx91kXVKNiHJ0gL7+jLRZdh9jp6X
+	 YKs4Nduweee/eznd/Y1T6hZwkf8F2PWIfxkHsQx5870F+KJHtIQgFcoRd90DUzJecU
+	 fdoYbExtHVqD3AVGMAIXYphQCZdaqUMwlJQwOCoiwARI1m6YWwvTlKQkkHF2HEc2GG
+	 UsICsVgkT3QHstXV4v9UHt88LmwKMrIp6s4EKrr7qL/I9/qg7gZNcw44fzK8Do6dXH
+	 bTe9xF7vPHGvg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id AB92ACE0CC1; Mon,  9 Nov 2026 14:19:40 -0800 (PST)
+	id B3FA2CE0F2E; Mon,  9 Nov 2026 14:19:40 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 1/8] rcutorture: Enable RCU_BOOST where supported
-Date: Mon,  9 Nov 2026 14:19:32 -0800
-Message-Id: <20261109221939.2070171-1-paulmck@kernel.org>
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH 4/8] Documentation/litmus-tests: Add SRCU fastpath scan-before-anchor test
+Date: Mon,  9 Nov 2026 14:19:35 -0800
+Message-Id: <20261109221939.2070171-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <db8c185c-5523-48e5-abee-020503b4875f@paulmck-laptop>
 References: <db8c185c-5523-48e5-abee-020503b4875f@paulmck-laptop>
@@ -66,209 +66,121 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, RCU_BOOST depends on RCU_EXPERT, and is therefore often
-disabled in stress-test such as those run by syzbot.  This means that if
-syzbot runs a test that overloads CPUs on kernels built with PREEMPT_RCU,
-RCU CPU stall warnings are not unexpected.  What happens is that a
-low-priority task in an RCU read-side critical section is preempted,
-cannot be priority boosted, and stays that way for more than 21 seconds.
+From: Kunwu Chan <kunwu.chan@gmail.com>
 
-This commit therefore drops RCU_EXPERT from the RCU_BOOST "depends on"
-line and removes the prompt, thus directly driving RCU_BOOST from the
-kernel configuration so as to enable it anywhere it is supported and
-might help.
+If the synchronize_srcu_atomic() fastpath instead places its lock scan
+before the grace-period anchor, the scan can miss a reader whose
+increment was already visible before the anchor.  That reader already
+existed when the grace period started, so completing the grace period
+without waiting for it would violate the SRCU grace-period guarantee.
 
-This commit is also marked experimental because neither Ubuntu, Fedora,
-nor CentOS enable RCU_BOOST.  This suggests less testing of RCU priority
-boosting than one might wish.
+This litmus test models the reversed ordering, with the lock scan placed
+before the grace-period anchor.  "seq" models the grace-period anchor in
+->srcu_gp_seq and "ctr" models the per-CPU ->srcu_ctrs[].srcu_locks
+counter.  P0 scans the lock counter before writing the anchor, with an
+smp_mb() between them.  P1 models the reader-side counter increment.
+P2 models an observer that sees the reader's increment before seeing
+the anchor.
 
-Reported-by: Andrew Morton <akpm@linux-foundation.org>
-Closes: https://lore.kernel.org/all/20260805122952.6ae38af69a0457779cb44359@linux-foundation.org/
+The same outcome is allowed with this ordering, and herd7 reports
+"Sometimes".  The litmus-tests README is also updated to describe both
+SRCU fastpath tests.
+
+Tested with herd7 7.58 using linux-kernel.cfg.
+
+Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/Kconfig                                     | 10 ++++------
- tools/testing/selftests/rcutorture/configs/rcu/NOCB01  |  1 -
- tools/testing/selftests/rcutorture/configs/rcu/NOCB02  |  1 -
- tools/testing/selftests/rcutorture/configs/rcu/TREE01  |  1 -
- tools/testing/selftests/rcutorture/configs/rcu/TREE02  |  1 -
- tools/testing/selftests/rcutorture/configs/rcu/TREE08  |  1 -
- .../testing/selftests/rcutorture/configs/rcuscale/TINY |  1 -
- .../selftests/rcutorture/configs/rcuscale/TRACE01      |  1 -
- .../testing/selftests/rcutorture/configs/rcuscale/TREE |  1 -
- .../selftests/rcutorture/configs/rcuscale/TREE54       |  1 -
- .../selftests/rcutorture/configs/refscale/NOPREEMPT    |  1 -
- .../selftests/rcutorture/configs/refscale/PREEMPT      |  1 -
- .../testing/selftests/rcutorture/configs/refscale/TINY |  1 -
- 13 files changed, 4 insertions(+), 18 deletions(-)
+ Documentation/litmus-tests/README             | 19 +++++++
+ .../SRCU-fastpath-scan-before-anchor.litmus   | 52 +++++++++++++++++++
+ 2 files changed, 71 insertions(+)
+ create mode 100644 Documentation/litmus-tests/srcu/SRCU-fastpath-scan-before-anchor.litmus
 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index bc9483c0b5d84..7b605fa1f576e 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -237,17 +237,15 @@ config RCU_FANOUT_LEAF
- 	  Take the default if unsure.
- 
- config RCU_BOOST
--	bool "Enable RCU priority boosting"
--	depends on (RT_MUTEXES && PREEMPT_RCU && RCU_EXPERT) || PREEMPT_RT
--	default y if PREEMPT_RT
-+	bool
-+	default y if (RT_MUTEXES && PREEMPT_RCU) || PREEMPT_RT
- 	help
- 	  This option boosts the priority of preempted RCU readers that
- 	  block the current preemptible RCU grace period for too long.
- 	  This option also prevents heavy loads from blocking RCU
--	  callback invocation.
-+	  callback invocation.  It is now automatically enabled in
-+	  any kernel that can benefit from it and that can support it.
- 
--	  Say Y here if you are working with real-time apps or heavy loads
--	  Say N here if you are unsure.
- 
- config RCU_BOOST_DELAY
- 	int "Milliseconds to delay boosting after RCU grace-period start"
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/NOCB01 b/tools/testing/selftests/rcutorture/configs/rcu/NOCB01
-index bbe6d28210ab5..91ca7e8b5725f 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/NOCB01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/NOCB01
-@@ -14,7 +14,6 @@ CONFIG_RCU_FANOUT_LEAF=2
- CONFIG_RCU_NOCB_CPU=y
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_RCU_EQS_DEBUG=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/NOCB02 b/tools/testing/selftests/rcutorture/configs/rcu/NOCB02
-index 4c2b8cd6d8fdb..ed3f3f7b29e73 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/NOCB02
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/NOCB02
-@@ -14,7 +14,6 @@ CONFIG_RCU_FANOUT_LEAF=2
- CONFIG_RCU_NOCB_CPU=y
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_RCU_EQS_DEBUG=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE01 b/tools/testing/selftests/rcutorture/configs/rcu/TREE01
-index 54b1600c7eb5f..be5bf69a1b60f 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE01
-@@ -10,6 +10,5 @@ CONFIG_RCU_TRACE=y
- CONFIG_HOTPLUG_CPU=y
- CONFIG_RCU_NOCB_CPU=y
- CONFIG_DEBUG_LOCK_ALLOC=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE02 b/tools/testing/selftests/rcutorture/configs/rcu/TREE02
-index 2871ee599891d..36b9228ae7032 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE02
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE02
-@@ -13,7 +13,6 @@ CONFIG_RCU_FANOUT_LEAF=3
- CONFIG_RCU_NOCB_CPU=n
- CONFIG_DEBUG_LOCK_ALLOC=y
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_RCU_EXPERT=y
- CONFIG_DEBUG_OBJECTS=y
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE08 b/tools/testing/selftests/rcutorture/configs/rcu/TREE08
-index 8b561355b9ef2..ad7d7f873e1eb 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE08
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE08
-@@ -13,7 +13,6 @@ CONFIG_RCU_FANOUT_LEAF=2
- CONFIG_RCU_NOCB_CPU=y
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_RCU_EQS_DEBUG=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TINY b/tools/testing/selftests/rcutorture/configs/rcuscale/TINY
-index c1a7d38823fba..f611b69f11895 100644
---- a/tools/testing/selftests/rcutorture/configs/rcuscale/TINY
-+++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TINY
-@@ -11,7 +11,6 @@ CONFIG_NO_HZ_FULL=n
- CONFIG_RCU_NOCB_CPU=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_RCU_TRACE=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
-index f3f1368b83869..69f5764159df0 100644
---- a/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
-+++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
-@@ -11,7 +11,6 @@ CONFIG_NO_HZ_FULL=n
- CONFIG_RCU_NOCB_CPU=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_RCU_TRACE=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TREE b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE
-index b10706fd03a45..5122cf08d5db2 100644
---- a/tools/testing/selftests/rcutorture/configs/rcuscale/TREE
-+++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE
-@@ -12,7 +12,6 @@ CONFIG_HIBERNATION=n
- CONFIG_RCU_NOCB_CPU=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_RCU_TRACE=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54 b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54
-index 9f83e53727969..08d30edb3b99c 100644
---- a/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54
-+++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54
-@@ -15,7 +15,6 @@ CONFIG_RCU_FANOUT_LEAF=2
- CONFIG_RCU_NOCB_CPU=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_RCU_TRACE=y
-diff --git a/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
-index 1f215e17cbae2..3e7d7793acc73 100644
---- a/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
-+++ b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
-@@ -14,7 +14,6 @@ CONFIG_HIBERNATION=n
- CONFIG_RCU_NOCB_CPU=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_KPROBES=n
-diff --git a/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT b/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT
-index 52e3ef6740567..feed29cf043f6 100644
---- a/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT
-+++ b/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT
-@@ -12,6 +12,5 @@ CONFIG_HIBERNATION=n
- CONFIG_RCU_NOCB_CPU=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/refscale/TINY b/tools/testing/selftests/rcutorture/configs/refscale/TINY
-index 9a11b578ff344..b67ea7a9128b1 100644
---- a/tools/testing/selftests/rcutorture/configs/refscale/TINY
-+++ b/tools/testing/selftests/rcutorture/configs/refscale/TINY
-@@ -14,7 +14,6 @@ CONFIG_HIBERNATION=n
- CONFIG_RCU_NOCB_CPU=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_PROVE_LOCKING=n
--CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_KPROBES=n
+diff --git a/Documentation/litmus-tests/README b/Documentation/litmus-tests/README
+index 6c666f3422ea3..4d4ec9c6f2cc7 100644
+--- a/Documentation/litmus-tests/README
++++ b/Documentation/litmus-tests/README
+@@ -78,3 +78,22 @@ RCU+sync+read.litmus
+ RCU+sync+free.litmus
+     Both the above litmus tests demonstrate the RCU grace period guarantee
+     that an RCU read-side critical section can never span a grace period.
++
++SRCU (/srcu directory)
++----------------------
++
++SRCU-fastpath-anchor-before-scan.litmus
++    This models the synchronize_srcu_atomic() fastpath with the
++    grace-period anchor ordered before the lock-counter scan.  This
++    ordering prevents readers that existed before the grace period
++    from being missed by the scan.  See
++    SRCU-fastpath-scan-before-anchor.litmus for the reversed
++    ordering.
++
++SRCU-fastpath-scan-before-anchor.litmus
++    This models the synchronize_srcu_atomic() fastpath with the
++    lock-counter scan ordered before the grace-period anchor.  This
++    permits the scan to miss readers that existed before the grace
++    period, violating the SRCU grace-period guarantee.  See
++    SRCU-fastpath-anchor-before-scan.litmus for the opposite
++    ordering.
+diff --git a/Documentation/litmus-tests/srcu/SRCU-fastpath-scan-before-anchor.litmus b/Documentation/litmus-tests/srcu/SRCU-fastpath-scan-before-anchor.litmus
+new file mode 100644
+index 0000000000000..7df0641b5470f
+--- /dev/null
++++ b/Documentation/litmus-tests/srcu/SRCU-fastpath-scan-before-anchor.litmus
+@@ -0,0 +1,52 @@
++C SRCU-fastpath-scan-before-anchor
++
++(*
++ * Result: Sometimes
++ *
++ * If the synchronize_srcu_atomic() fastpath instead places its lock
++ * scan before the grace-period anchor, the scan can miss a reader whose
++ * increment was already visible before the anchor.  That reader already
++ * existed when the grace period started, so completing the grace period
++ * without waiting for it would violate the SRCU grace-period guarantee.
++ *
++ * This litmus test models the reversed ordering, with the lock scan
++ * placed before the grace-period anchor.  "seq" models the grace-period
++ * anchor in ->srcu_gp_seq and "ctr" models the per-CPU
++ * ->srcu_ctrs[].srcu_locks counter.  P0 scans the lock counter before
++ * writing the anchor, with an smp_mb() between them.  P1 models the
++ * reader-side counter increment.  P2 models an observer that sees the
++ * reader's increment before seeing the anchor.
++ *
++ * The same outcome is allowed with this ordering, and herd7 reports
++ * "Sometimes".  See SRCU-fastpath-anchor-before-scan.litmus for the
++ * opposite ordering, which forbids this outcome.
++ *)
++
++{}
++
++P0(int *seq, int *ctr)
++{
++	int r2;
++
++	r2 = READ_ONCE(*ctr);
++	smp_mb();
++	WRITE_ONCE(*seq, 1);
++}
++
++P1(int *ctr)
++{
++	WRITE_ONCE(*ctr, 1);
++}
++
++P2(int *seq, int *ctr)
++{
++	int r3;
++	int r4;
++
++	r3 = READ_ONCE(*ctr);
++	smp_mb();
++	r4 = READ_ONCE(*seq);
++}
++
++filter (0:r2 = 0)
++exists (2:r3 = 1 /\ 2:r4 = 0)
 -- 
 2.40.1
 
