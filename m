@@ -1,67 +1,53 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794249857;
-	b=TgXNA6I4Z9jQB1J5hL7xDtbM4z/ObArXzpZ3FgMdTOYlcu3uClIxdWNUQuq25GGW+iOH
-	 riHUzASKD7AQYieOlF/SJeAVp7S+S2g70ti4+uqOl9tBKy5ykZJb/pdY4d8cT6gOCGDUV
-	 YqUg6Fwo6yiZHPPF2stleEJZR2gLu2bOF8uKAtuH1vq2HgqV7luh0Wb0zO+dRM05sfNx9
-	 gTYy01lsQ3ZrpAULTM67XcmxH/MpyA+Cj+LAYqqdNiKYoAfiyKG1DQYzwd4CTnmFEFGwv
-	 xmWGDFp21KZHS8Trylx6NcbNkDO7kRvEPAi9oqE/1+36siQvvGlCB5QodZ2J3kJYbrg==
+	t=1794262770;
+	b=IfRbcgiHuI101zUK3Izt7sFmP7VKdAtM5WBoAatm+YOGUa/8ByW0c8iNDvxJAUiIg+pU
+	 DGN39/bvFLPqNU/litaTAM77wdIr4Q/TpJ9OKfG1HfQjt8j7F+y+gMM1FyD5TGI0MaHgn
+	 reV8P5SgGf1eVdujPk4+U36w65qABMvJiSK9mks6jMhwoP3Lb5hIyGdXu7U5ScniLgQV3
+	 u33CxKQ47Z1Vg85PUKcqy6qrwKPAzQYKfCMO65y13w56cy5msSQMqTwCD5aTzuQiSNN2r
+	 Hf2EW86EUJoOIJEOqNUsbMKSQo/DsQUIORKWOnPNlfXA9sc9JcQMi3ecces6x7Er5mg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794249857;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794262770;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To;
-	bh=nQXypYppoi0DRmP6r7VK69Yjx+zAm4GuIfrhfhMyqDg=;
-	b=DlNamKGV+npeQa4V1qD//srLzMY7VFyTO4FvEyjKkyptv3Fss4Q8Rf85NghDYQTjXvef
-	 HA1puR2F6tFzX/Shv8KS/gRLw2dGKR0tO5zk4o3pmaVXxPsTOc/nPOKJDWDvmxcvp8uqm
-	 x9GSk/B68oDOXN8z7hrSjqv0wS7RmNG8t5GCOkKhXHY3LXxOZmNXe1EhZa+8L7D7G2buq
-	 1JAACjohx0QoaV99qCOOlssptAF/eaNEdLj60hCdTQwOvxCNPmbajFP6ettcz/zH42bA1
-	 MKzwiJEM87n4h5oz02ByKbORsP0tBwljH39p+MackgsveJjysv/UBr3uCqv458Sr4JQ==
+	 Reply-To:MIME-Version:Content-Type:Content-Disposition;
+	bh=uTFq/YGCWeI9DuI1v8pepBGAfTcW7/CO0/S+sak4pCk=;
+	b=Ym4YuYtpwuczITa5pOvG2EIn977zonu1uzpoaXep1ugNw9hp92W+AV9KpZr2jSOITH+d
+	 bti+I3khW6qJcNA4vKzgxXZ2+CTdKso3NxOFV5Wgc41ytm3nBiDwKdz+Mje3xfmOo+fLx
+	 hr5zzQXzbqiSWxhP87aRMMV3qv7SRqXGMAauMa2NZzIa9YNLVdHkkOOsIvpL1t/PmC1n8
+	 3V9ylNSBGnB6YCD69QTuQ+CqCN6PYUhlCYpdUaBb2PO+Sto2B3MjVo8u0iykUI43frCQJ
+	 +LkroNYiZWSCt8yz+Enf6Odvk7mFbxVjb7DZpOmOlTASouJDtDuhSZG7+b3VdkRLIIg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=U0XFKKFe;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FUaBcCab;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB8E606A325;
-	Mon,  9 Nov 2026 18:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB71606A31C;
+	Mon,  9 Nov 2026 22:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=U0XFKKFe
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 101F31F0089F;
-	Mon,  9 Nov 2026 18:44:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FUaBcCab
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C61D61F0089F;
+	Mon,  9 Nov 2026 22:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794249857;
-	bh=nQXypYppoi0DRmP6r7VK69Yjx+zAm4GuIfrhfhMyqDg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=U0XFKKFeUe36mqjmeD4889LDgMRQG/sZy86/2O4Ca7Z/IIC2zntARbkrQxuW71OQr
-	 yJZdhTuhrgAd1Ug/Gr+mDzlQV3sQM2SuBKLVI9KnHer1JZA47NvEy9DJHFWjKU/F/f
-	 YzvlmF64/m83QgGV+XmSdVoO4r7nSfqZImCUkL4rthncDtNULsek1R29fhCMQUBJWT
-	 sRPIeYNiZYRYqm8I/+6cADFCI7TQyOXec0VqDFnMlcx51/nq/hW1vJBzZ7axgP+Mvc
-	 LZHDy97mI3R6M2cMgG5dOw5+gWeFlAX7r8tbRUB+RvJtgwulVBzEk3MoonMwfqCXEr
-	 aauOecnhSayOA==
+	s=k20260515; t=1794262769;
+	bh=uTFq/YGCWeI9DuI1v8pepBGAfTcW7/CO0/S+sak4pCk=;
+	h=Date:From:To:Cc:Subject:Reply-To;
+	b=FUaBcCabFp9bz/S/qX4sK1bELWbUe3Dl5gVmPbnl/x/hHMyIuMyh9isvb8vKm9Kcr
+	 yvO1o1KQnBp6t9TN8iJ6icHqmGN65LZQxiXcM7TY9TykpDb/9se7LylPQ+F86i11Ab
+	 KcYLM23lmxpmm+vl9TyyzBWf8UxJIptYyizyNjtcADyPePHZGsVQFEFq8sidZyVjbz
+	 LZywpmAyTQaMYOtGMb1ytIbC/HN0ynq6CkKEsuqglyaUDyHZ4gTtUwVqDv0/DRUbDS
+	 YGyB1OrfDhjHKq0NBYQFN95RVncG8RQ2a7Ntci9NS+GZIKTlWkAsutrL4+NvDOlkqs
+	 IpWgVK3dYVPUQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C442FCE0CC1; Mon,  9 Nov 2026 10:44:16 -0800 (PST)
-Date: Mon, 9 Nov 2026 10:44:16 -0800
+	id 7631FCE0CC1; Mon,  9 Nov 2026 14:19:29 -0800 (PST)
+Date: Mon, 9 Nov 2026 14:19:29 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcuscale: Constify struct rcu_scale_ops
-Message-ID: <730e60cb-30fd-43a3-8152-543b4ba5878e@paulmck-laptop>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH 0/8] Miscellaneous RCU updates for v7.5
+Message-ID: <db8c185c-5523-48e5-abee-020503b4875f@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <3f546f8e102ef271e7d5ac6d8b6a1f44d0fb20cb.1794085327.git.christophe.jaillet@wanadoo.fr>
- <20261108230623.GA3148953@joelbox>
- <2727df26-9f09-48c9-90b5-2d1416c3b2b1@wanadoo.fr>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -71,64 +57,60 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2727df26-9f09-48c9-90b5-2d1416c3b2b1@wanadoo.fr>
 
-On Mon, Nov 09, 2026 at 06:32:15PM +0100, Christophe JAILLET wrote:
-> Le 09/11/2026 à 00:06, Joel Fernandes a écrit :
-> > On Sat, Nov 07, 2026 at 10:02:25PM +0100, Christophe JAILLET wrote:
-> > > 'struct rcu_scale_ops' is not modified in this driver.
-> > > 
-> > > Constifying these structures moves some data to a read-only section, so
-> > > increases overall security, especially when the structure holds some
-> > > function pointers.
-> > > 
-> > > On a x86_64, with allmodconfig:
-> > > Before:
-> > > ======
-> > >     text	   data	    bss	    dec	    hex	filename
-> > >    45585	  24946	   2816	  73347	  11e83	kernel/rcu/rcuscale.o
-> > > 
-> > > After:
-> > > =====
-> > >     text	   data	    bss	    dec	    hex	filename
-> > >    46545	  23986	   2816	  73347	  11e83	kernel/rcu/rcuscale.o
-> > > 
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > ---
-> > > Compile tested only.
-> > 
-> > rcuscale is a test kernel module, is it worth adding boilerplate for
-> > non-production code sighting security reasons?
-> 
-> Oups, now I better understand Bradley Morgan comments.
-> 
-> I didn't notice it was a test module.
-> My patch makes no more sense, as it is not hardening runtime, so feel free
-> to just drop it.
-> 
-> Sorry for the noise and not seeing it by myself.
+Hello!
 
-Although the header comment does say "Read-Copy Update module-based
-scalability-test facility", maybe there is something that should be
-done to more clearly mark code that is not to be used in production.
-And maybe to inform the LLM review bots of this.
+This series provides miscellaneous updates for v7.5:
 
-But this is bigger than just RCU.
+1.	Enable RCU_BOOST where supported.
 
-Thoughts?
+2.	Disable RCU priority boost testing on non-TREE03 scenarios.
 
-							Thanx, Paul
+3.	Documentation/litmus-tests: Add SRCU fastpath anchor-before-scan
+	test, courtesy of Kunwu Chan.
 
-> CJ
-> 
-> > 
-> > Do you mind runtime testing it too if you still feel we should do it (and
-> > provide reasons why)?
-> > 
-> > thanks,
-> > 
-> > Joel Fernandes
-> > 
+4.	Documentation/litmus-tests: Add SRCU fastpath scan-before-anchor
+	test, courtesy of Kunwu Chan.
+
+5.	Add srcua scale type, courtesy of Kunwu Chan.
+
+6.	Consolidate per-writer arrays into struct writer_state, courtesy
+	of Joel Fernandes.
+
+7.	Print CPU that preempted stalled reader wants to run on.
+
+8.	Document additional RCU task-stall dump information.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/Documentation/RCU/stallwarn.rst                                         |   71 +++++
+ b/Documentation/litmus-tests/README                                       |   19 +
+ b/Documentation/litmus-tests/srcu/SRCU-fastpath-anchor-before-scan.litmus |   55 ++++
+ b/Documentation/litmus-tests/srcu/SRCU-fastpath-scan-before-anchor.litmus |   52 ++++
+ b/include/linux/sched.h                                                   |    2 
+ b/kernel/rcu/Kconfig                                                      |   10 
+ b/kernel/rcu/rcuscale.c                                                   |   41 +++
+ b/kernel/rcu/tree_stall.h                                                 |   33 ++
+ b/kernel/sched/core.c                                                     |   13 +
+ b/tools/testing/selftests/rcutorture/configs/rcu/NOCB01                   |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/NOCB02                   |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE01                   |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot              |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE02                   |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot              |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE08                   |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot              |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE09.boot              |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcuscale/TINY                |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01             |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE                |    1 
+ b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54              |    1 
+ b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT           |    1 
+ b/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT             |    1 
+ b/tools/testing/selftests/rcutorture/configs/refscale/TINY                |    1 
+ kernel/rcu/rcuscale.c                                                     |  129 ++++------
+ 26 files changed, 340 insertions(+), 101 deletions(-)
