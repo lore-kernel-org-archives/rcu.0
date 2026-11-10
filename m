@@ -1,78 +1,70 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794270326;
-	b=cmBRaJrLbK+NEmABl8QqBjrTcW2dg69UrMrj3IpcRyiNjV8IcotBpqdO8BS1FDYvSiVz
-	 Wuf3ts3WdCmBj65eueVGxReog6i6JVtjA2pajGWu0l5+q9fwdqX3F75OrD01QjcjJJQC3
-	 xPza9LUZCgG3TBnRLsVmBrmGyJczuzoqo7G5mBZukAhE2KlLDzxp0vPB3gfaNkWojuuE9
-	 lPxSliG5QP/wLUhs1MUkQ/fHHOXqb44o77hoEb9gIQeuEoce7dwS9Chh9Wm2FAj03r8oR
-	 Amjomt3RrD43sT1f2ewn5YYk5qHOET7v34+1k+LxYun/4oBlm1FpMkYwthBlW9k5c7A==
+	t=1794271548;
+	b=CFAwBysCMorwTnAXgTdY+86AzDby1q0/gmLsmToyB6FppUa6nOcA4e8UgQ57n+DMvIGJ
+	 JDRlYjA6pe/Flxc0NxMSCQKvzCfPsrAaC/8VZ/7aEYhtBpoQpgew23HkWkfsWMJ8x9JbR
+	 zd4eocTd3HW3/yUumpLlcY0rDTwpl4JbwGi5q/AA88u8Q0kArOsAWTJfAougFpOKIEoNo
+	 2vxl+mREFg9lmORMPk1uCUPpybvM2PJUk6k94JKt4y56tzfpQkl4HeioS4Cxpzu1KmyzG
+	 vfdfZCBkjOj24IZMEM17jMKsZRqsuJQ9K8vBfHMmtkl4D7kdpbwOKBk3v6aoYAQy78w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794270326;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794271548;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To;
-	bh=y0ysK1auGuUFCu9qoQQNCcNfYLTUBeRUgxBC82QBKzs=;
-	b=I8Ul/eiimtJDfd167EX1Cn1PPzjzJx3L/jtqVq6MlwLil+HLDgeZt8kuaqzx4GNWjCaB
-	 H7Zc66ASLNVvhKlRkYzqn4HNBnv43STBp4DfjJAJiFiD/xqIfJIWuaa2Md9nsnwcu837c
-	 Mnwsuw2MdwgiFoADZAC3rAwYwIrwdOnIdaCnQJkucr2RtJq0ctW1mt3NcwDVFR+5Gp2S6
-	 H7A0jT0hY0gpsBlmX7UEymmKESLf0qYF8DoMkAxlgxQMnKyynvX+ZtjlaFjJZmDTT7j+F
-	 viXrqMqch0Fo9udQEnAmFWJ4FhVi6isI8zC2ip4TewQeQOvaJMBiWLa7d7eiNPsQoSA==
+	 In-Reply-To;
+	bh=fcbUPbe6uH/pYtRrMttkaD8RGbk8+1aeFbed8cWIV9I=;
+	b=XG4e6y3/pOYpugFR/it2f7DALg+HtuLaY8g+/em7+RwjOcfgjSTt61aBOzv1TZHBp1kh
+	 cw8PeYIKT81cqP6zuPKQRRaHC0r9dbAw1gBW2tfmGpJMXGgFXxN5WvhVRYwAvovzXqzTj
+	 IFnEzxQe1jkPH33E5kVraA5nzoFAJrgZuQLjddOPQxoj7HupGLtS4BlS2L+r90+osJSnX
+	 wJO1MrbTC6fkVfryazSLEgwMytwPECzUsRxfOEqFwEi21bRobWnS9AzbCa3RX1gcOOZmf
+	 Y75zIz9wPMUq0AKG4UzA7RdnFg4oimOrxMklxlyZpDVHUnBB2z8xmVVt+MBfzIVLTZg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FYayyrAB;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QnnuhMwn;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E19B606A31C;
-	Tue, 10 Nov 2026 00:25:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4B3606A321;
+	Tue, 10 Nov 2026 00:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FYayyrAB
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 705041F0089F;
-	Tue, 10 Nov 2026 00:25:25 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QnnuhMwn
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60DE01F008A1;
+	Tue, 10 Nov 2026 00:45:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794270325;
-	bh=y0ysK1auGuUFCu9qoQQNCcNfYLTUBeRUgxBC82QBKzs=;
+	s=k20260515; t=1794271547;
+	bh=fcbUPbe6uH/pYtRrMttkaD8RGbk8+1aeFbed8cWIV9I=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=FYayyrABreZyKrfs5GnxwDNXAG6qEw7pfhFJR/5gPW0GhgmDjj6jkJVO4NZYTIJWp
-	 dzyLuZYJzkHl+PkcF5M9FvSUwnxY65rqvV5qaOF3kscSm75aWr4CBaarqzNzss+Ipw
-	 wW8fS7kI3UsOS4lztVPhDKZincfA0wV/epcwZpMnY36BlmDeTemmfGSrwaCy9Rm/Az
-	 GHfDohxthV30BPgMZC8z1FOsa0zh4mD1mR/EmzCnFfpY2ahqs5w4yN6wYtaZepBNNN
-	 fbWvON2zKFVHWrN6ux78MLeswKm4g9nBFjAy84iLuIFi9OqR0LUo1zX78yoXQKOoJm
-	 shyzjLe2pS5MQ==
+	b=QnnuhMwn6T3tQSTW1WDzk3fHQBeRqbMbP3+wrnjzx+c4q1R2GNHfe0ycX2soMUbPH
+	 10NvjImXBF2mf02hiF0WU4sd5fg8H7edygtQpz1QXn+bYx2nEr/KyHQ8gJpDAP6WuV
+	 /z8THO4Ug4jvPnOae4Ti9Wzd+lbrNEa+eyn6UQbqYYi5wkh4iZWaUhrdtd33YQOYVO
+	 WfEhDVHghxy0VliZG2BF8wFxx0TO3nyH53vC21cWZi/Mfhm4DHuMNMaWSMuV8v2WOs
+	 anPcsY43I7pmpWTkfCmKXXMUrM0PvO9UHqgKPvjB1S8/sPObDwTqhLEVHU8UA34KD2
+	 ReONysUVy6p7A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 298EFCE0C97; Mon,  9 Nov 2026 16:25:25 -0800 (PST)
-Date: Mon, 9 Nov 2026 16:25:25 -0800
+	id 29FD2CE0C97; Mon,  9 Nov 2026 16:45:47 -0800 (PST)
+Date: Mon, 9 Nov 2026 16:45:47 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Puranjay Mohan <puranjay@kernel.org>, linux-kernel@vger.kernel.org,
-	Boqun Feng <boqun@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Andrea Righi <arighi@nvidia.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	"linux-rt-devel@lists.linux.dev" <linux-rt-devel@lists.linux.dev>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Liam R . Howlett" <liam@infradead.org>,
-	Lorenzo Stoakes <ljs@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
-	Andrew Ballance <andrewjballance@gmail.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
-	rcu@vger.kernel.org
-Subject: Re: [RFC PATCH 00/12] RCU pseudo-transactions
-Message-ID: <853d8469-94a4-4b33-a0d5-d6d2138fe3ef@paulmck-laptop>
+	Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH] rcutorture: Don't try to disable to RT throttling.
+Message-ID: <5f5ffa5b-9fa5-4359-87fc-7558f37ff0eb@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com>
- <20261023181940.457424-1-puranjay@kernel.org>
- <f785237c-ee5e-4ad3-8ee9-79474f5f45c8@efficios.com>
- <9667c08c-333e-4fe5-9812-c5ccaa183e36@efficios.com>
+References: <20261105165113.82N-rPMG@linutronix.de>
+ <2fbdb03e-1af8-489c-819a-7e3c7b0ed1be@paulmck-laptop>
+ <5970553A-3833-43F1-A013-21757664FB8F@nvidia.com>
+ <auzXjQfYXs_gzx1y@gpd4>
+ <c81d8243-c130-44d8-bef6-e678ecb088ac@paulmck-laptop>
+ <20261106140401.90MH_6qt@linutronix.de>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -82,62 +74,96 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9667c08c-333e-4fe5-9812-c5ccaa183e36@efficios.com>
+In-Reply-To: <20261106140401.90MH_6qt@linutronix.de>
 
-On Tue, Oct 27, 2026 at 09:13:17PM -0400, Mathieu Desnoyers wrote:
-> On 2026-10-27 15:57, Mathieu Desnoyers wrote:
-> [...]
+On Fri, Nov 06, 2026 at 03:04:01PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2026-11-05 12:03:11 [-0800], Paul E. McKenney wrote:
+> > > For rcutorture, I don't think there's a ready-made kernel interface,
+> > > maybe we could add a sched helper that performs the same operation as
+> > > the debugfs knobs?
 > > 
-> > E) Use a preallocated per-cpu rcu-txn slab, synchronize txn descriptor reclaim with
-> >     RCU (steady state) and hazard pointers (OOM)
-> > 
-> > This is basically just pushing idea (D) further to remove the need for sleepable callers.
-> > We surround the rcu txn proxy pointer resolve with both a RCU read-side critical section
-> > and a hazard pointer slab address guard, thus protecting the use of the txn descriptor
-> > with two types of critical sections. The resolve would run with interrupts disabled.
-> > The "resolve" path of txn proxy is not a fast path, so we don't mind the extra overhead
-> > too much.
-> > 
-> > On the "remove" side, we typically have plenty of preallocated rcu-txn from the slab.
-> > In the common case, we keep using RCU deferral to free the rcu-txn in batches. This
-> > would implement a custom per-cpu pending list to enable the following "stealing"
-> > scheme.
-> > 
-> > In the rare cases where a user empties the slab, we move to a more aggressive
-> > mechanism based on synchronize_hazptr: we "steal" the batched in-flight RCU txn
-> > reclaims so we can fast-track their reclaim after a hazptr synchronize. This would
-> > all be using busy-wait and the only contexts we'd wait against have irqs disabled.
-> > 
-> > The motivation for handling the steady-state with RCU is throughput (no synchronize_hazptr
-> > on the typical "remove" case). Hazard pointers then handle the OOM corner case without
-> > requiring sleepable callers.
+> > I would very much appreciate that.  ;-)
 > 
-> Well it turns out that this approach has potential, but the hazard pointer
-> machinery is way overkill for this. We can replace my use of hazptr above by
-> a very simple RCU domain with the following characteristics:
-> 
-> - All RCU txn proxy resolves are RCU readers running with irqoff, protected by a
->   per-cpu counter (incremented on read lock and again on unlock),
-> - There is at most one reader per cpu at any time,
-> - We use a synchronize RCU on that domain on OOM for the pending slab reclaim
->   "steal" to do reclaim synchronously. This domain's synchronize RCU waits for
->   each CPU until it observes either an even counter or a counter transition.
-> - We disable preemption across rcu txn (e.g. list insert, remove).
-> 
-> So we'd keep using call_rcu to handle the steady-state reclaim of rcu txn,
-> but use this specialized irqoff RCU domain for the empty slab case.
-> 
-> Thoughts ?
+> This maybe? Since it is built-in only, there is no need to restore the
+> old state, is there?
 
-Atomic SRCU within interrupts-disabled regions seems to fit
-this bill: synchronize_srcu_atomic(), srcu_read_lock_atomic(),
-and srcu_read_unlock_atomic(), which interrupts disabled across
-the latter two.  Maybe srcu_read_lock_atomic_irqsave() and
-srcu_read_lock_atomic_irqrestore() if that helps.
+Hearing no objections, I will start testing this.  I am applying both of
+your patches from this email thread, but please let me know if something
+else would work better.
 
-Or am I missing a turn in your requirements?
+I would expect that this command would result in rcutorture complaining
+about priority-boost failures because SRCU does not support priority
+boosting.
+
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 15 --configs SRCU-P --bootargs "rcutorture.test_boost=2" --trust-make
+
+But please correct me if I missed a turn in here somewhere.
+
+And yes, in the built-in case we normally don't care about restoring
+state.  The usual situation is that the system (usually a guest OS)
+is brought down at the end of the test anyway, in contrast to running
+rcutorture non-builtin, that is, using modprobe and rmmod.
 
 							Thanx, Paul
+
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -1333,6 +1333,8 @@ static unsigned long rcutorture_seq_diff(unsigned long new, unsigned long old)
+>  	return cur_ops->gp_diff(new, old);
+>  }
+>  
+> +void dl_server_fair_disable(unsigned int cpu);
+> +
+>  static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long *start)
+>  {
+>  	int cpu;
+> @@ -3394,6 +3396,8 @@ static int rcutorture_booster_init(unsigned int cpu)
+>  
+>  	/* Don't allow time recalculation while creating a new task. */
+>  	mutex_lock(&boost_mutex);
+> +	if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST))
+> +		dl_server_fair_disable(cpu);
+>  	VERBOSE_TOROUT_STRING("Creating rcu_torture_boost task");
+>  	boost_tasks[cpu] = kthread_run_on_cpu(rcu_torture_boost, NULL,
+>  					      cpu, "rcu_torture_boost_%u");
+> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> index 076a6c2f017bb..45b1251922c4f 100644
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -1921,6 +1921,31 @@ int dl_server_apply_params(struct sched_dl_entity *dl_se, u64 runtime, u64 perio
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_RCU_TORTURE_TEST
+> +/*
+> + * The RCU-TORTURE built-in test will disable fair-server to avoid any
+> + * throttling while testing RCU-boosting.
+> + * If compiled as module then the user needs to disable it manually before
+> + * loading the module.
+> + */
+> +void dl_server_fair_disable(unsigned int cpu);
+> +
+> +void dl_server_fair_disable(unsigned int cpu)
+> +{
+> +	struct rq *rq = cpu_rq(cpu);
+> +	int retval;
+> +
+> +	scoped_guard (rq_lock_irqsave, rq) {
+> +		struct sched_dl_entity *dl_se = &rq->fair_server;
+> +
+> +		update_rq_clock(rq);
+> +		dl_server_stop(dl_se);
+> +		retval = dl_server_apply_params(dl_se, 0, dl_se->dl_period, 0);
+> +	}
+> +	WARN_ON_ONCE(retval);
+> +}
+> +#endif
+> +
+>  /*
+>   * Add @dl_se's bw to the root-domain accounting.
+>   *
+> -- 
+> 2.55.0
+> 
