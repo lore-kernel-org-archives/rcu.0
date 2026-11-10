@@ -1,48 +1,48 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794269375;
-	b=3Da9WDyNlAMNhEKKAhTgXkIJkxiRNmw4PR6kSMvxRP/nM7Z7rDW90c6mK80eB6me8oHR
-	 qSt+m57ezCyvx0xvN2SHQdK1nO52B+RsK8ixlHDHbl3/xnAq2yCMqPMBfP8VFiLuUQkPl
-	 I7GX1MqGOiAxwA2pX8apS3Dxcyl2i+ozBwCxf/vaweIemKOT5GnYqueE17G96gW7UaYn9
-	 BTT/7qX0T6Zp2CYrbxL3z8CS/6seWUb6ADWGuDfNZtJw2Vqvsls5QPm2CWCjlJcjckoXB
-	 O+SYTqBbQiPub2RFgiqbfUkEmr5+ECqTSZvjJM3okPGyMCYypVWKpbcjnQt5Sd7p07A==
+	t=1794269494;
+	b=CyGlT5Qk9Ndm9sPnFivde5mQMfpL6vilDY2Z6g7fdmNzdg1tfcM1mQZH4anUqTMph535
+	 VljH0Y6WWzIgzhIvDrNb+kw7PkAQICORK0wgVtRUtrB4tQ2/ZoAC0gQd8OXuvqh26TPk6
+	 YqUEpaXdIf+EToLr8AkuQbPyJf+hhn0UObw3mueCJJ0PItI0SbpcLu4TimkVaAbE/RNkq
+	 iK7Ea3YXVjJJtgErL5ZWHTb277H5cOhuFimCGjRaZpgN+t1NOtrzzq6PGEQ9O9BFwFwqO
+	 CSaJFXRubVSPqSpY+LM4+EZy4xqUzv+WYfcMbp4ofhm9G3afe/OkXQWdsAcdjK0CCOw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794269375;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794269494;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
 	 In-Reply-To;
-	bh=zz/y8Al2fvS+ck7SHQ75UQyOO0qUgFsq890s/WnyAZA=;
-	b=stVAO8tLpw1OgrNFeiVWvjpAAUy5ez8A16HXzp2/XfbPysxdcALl/3R3LLZi/X8rjq8k
-	 MVxjwwURzb7BL/KepzBFsUvlp9uj/qljy6DYiIp73SPcHEvc0h007fp/z5i+e0Y5WGnLI
-	 acZM/WwTAYc2X6QxqfQWGWXRoU2dxK9FnQZxjiFjBzKCuWyGanu34u5kpTysYJfB1PJiP
-	 eI+Kxvy4jUJdZDqxzaSOclp/u2Y1BtkyGQj+hq7NhqUv5lb9FwiedDdfnx1dQfGorq/Cy
-	 JkSEQJrpWAATSrxU/Es4jhJNpVmPAWS4bTP32+DNfVfND/TrqC+4YbwS5fzZerIJ/Rg==
+	bh=wECulbhH+/PYIsAouc/0+vQU/WPYaJWlZhevaQ1pdgA=;
+	b=zHCw96LkvW9I04c6F6RCYIClKNVJ6d+AfKULBs/vJLWhKjFyf8edy2IIlOkYr0OS3QEt
+	 HoAOfKXJ0K4pPLFnzKryAtgeWiPgn7Aw5R4tDkRAeZNrO3lDgC7XIign3iXsoGYJc8yCW
+	 6R4AZ5ezlBlv1i+aDnLoDiR0HN8QG30onfAZAVqFCMPXsjc5HTQIUWx6TyXwuBiXvnGX+
+	 yspmsgaPhqSKq+k1cx5xYfW+CDL+t4KCzlg6Lsdk8xPk6PGjqAhDNW6N1aLvzV8Jelcy8
+	 RztiQEikS0roiqS0xcC5JNmfsGVsHYgywn3XUq8I2sVap/rpnmuUYwx9LSZBrKFxokw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Y5xLVplx;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Cb11HATF;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC656606A31C;
-	Tue, 10 Nov 2026 00:09:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 310A4606A332;
+	Tue, 10 Nov 2026 00:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Y5xLVplx
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B65051F008A1;
-	Tue, 10 Nov 2026 00:09:34 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Cb11HATF
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A81B1F0089F;
+	Tue, 10 Nov 2026 00:11:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794269374;
-	bh=zz/y8Al2fvS+ck7SHQ75UQyOO0qUgFsq890s/WnyAZA=;
+	s=k20260515; t=1794269494;
+	bh=wECulbhH+/PYIsAouc/0+vQU/WPYaJWlZhevaQ1pdgA=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=Y5xLVplxHiVTZxyZL6FIyaQAGzYh1HV1CqbvjT+Fb7IVXRNhCLiTo/TsWvemrei6u
-	 QncjriJFGKtCRDE183zBO7cEnRHuRzeEuhxmO+KDLPCwD+94SLWyOYJrcAR1ojW5L9
-	 99CVmqQizVNCfo2J6saayg1XmbFhLNxUkB2yqxeXYU9va4cDEyEsw72cQFgdKTzdvf
-	 Dq3xdCDzeTtVWEO11Rb+eIAwupI5vb+ctHHFGHstArq8R3YCW7L+ZA10FxcOpiSjgH
-	 /9UJEMl4yX0syoCCkvtrlPeTNKWoATx3aK2wuIGYVCqBrgNAr9aZl75NY7lgfYJ7uH
-	 jz/c6NtFRpHrA==
+	b=Cb11HATF1t1c/JnWLzbX6q9oYoGbypkpkFMthwSuWR+x8rBlzHhwryRtY2/TCQ/am
+	 PWNp6x3m4Dawulyjak75YF9ctzy8tE5ve6hU8Z1Q2XmQt/TVE7lSteiqVyLNjaG0mc
+	 3uwDwEtOPUoZW/uL2/Wp95gOWl764BeFa/DG2TgVNnJ0mbA0ERGtLPVRieIDR/V64I
+	 yD8JNl2r5ZhHb4sZr4VSqWOhEJR4Ci/YHinqAVFTT+DjkmHIqbRwN3QWkil4rZ8BGv
+	 mz/swpIZRaSnYXiz7cfBUTin63uzSNtQnNEk5D6WywfoIY7bXy1BGupJyiDfUmeF+N
+	 qQpbh8OflLx+w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 7CBA7CE0C97; Mon,  9 Nov 2026 16:09:34 -0800 (PST)
-Date: Mon, 9 Nov 2026 16:09:34 -0800
+	id BEE6CCE0C97; Mon,  9 Nov 2026 16:11:33 -0800 (PST)
+Date: Mon, 9 Nov 2026 16:11:33 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Joel Fernandes <joelagnelf@nvidia.com>
 Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
@@ -52,14 +52,20 @@ Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] scftorture: Protect the initial affinity check
- from hotplug
-Message-ID: <5e9b466c-4ab4-4857-ba49-3fdf5820f772@paulmck-laptop>
+	Zqiang <qiang.zhang@linux.dev>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
+	kasan-dev@googlegroups.com, linux-mm@kvack.org
+Subject: Re: [PATCH v2 4/5] kasan: Avoid an unrelated RCU warning in the
+ callback test
+Message-ID: <c333cb25-d007-4a0c-a8d8-86187c67d747@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20261109000243.3936824-1-joelagnelf@nvidia.com>
- <20261109000243.3936824-4-joelagnelf@nvidia.com>
+ <20261109000243.3936824-5-joelagnelf@nvidia.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -71,65 +77,48 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261109000243.3936824-4-joelagnelf@nvidia.com>
+In-Reply-To: <20261109000243.3936824-5-joelagnelf@nvidia.com>
 
-On Sun, Nov 08, 2026 at 07:02:39PM -0500, Joel Fernandes wrote:
-> An invoker binds to its target CPU, sleeps for the holdoff interval, and
-> then warns if it is running elsewhere. CPU hotplug can offline the target
-> during that sleep and legitimately move the invoker. A built-in test with
-> matching worker and hotplug holdoffs reproduces this warning.
+On Sun, Nov 08, 2026 at 07:02:40PM -0500, Joel Fernandes wrote:
+> rcu_uaf() passes a false protection condition to
+> rcu_dereference_protected(), which produces a suspicious-RCU-usage
+> warning before the intended KASAN failure occurs.
 > 
-> Check the initial binding while holding cpus_read_lock(), before sleeping.
-> If the target is already offline, let the existing offline/rebind path
-> handle it instead of warning about an impossible initial binding. Release
-> the read lock before the holdoff and test loop so hotplug remains tested.
+> The pointer refers to a fresh allocation that has not been published to
+> readers. State that protection condition explicitly, leaving the intended
+> tests intact.
+> 
+> Test:
+> Built with CONFIG_KASAN_KUNIT_TEST=m
+> Booted Qemu guest (8 CPUs), ran modprobe kasan_test filtered to kasan.*rcu_uaf*
 > 
 > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 
-Good catch!
-
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
+And yes, the second argument to rcu_dereference_protected() is a boolean,
+not a pointer.  Good catch!
+
 > ---
->  kernel/scftorture.c | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
+>  mm/kasan/kasan_test_c.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-> index ff9a8271a464..64ee2c5cf51c 100644
-> --- a/kernel/scftorture.c
-> +++ b/kernel/scftorture.c
-> @@ -479,19 +479,24 @@ static int scftorture_invoker(void *arg)
+> diff --git a/mm/kasan/kasan_test_c.c b/mm/kasan/kasan_test_c.c
+> index b9e167ed5be3..4e23765d722c 100644
+> --- a/mm/kasan/kasan_test_c.c
+> +++ b/mm/kasan/kasan_test_c.c
+> @@ -967,8 +967,9 @@ static void rcu_uaf(struct kunit *test)
+>  	ptr = kmalloc_obj(struct kasan_rcu_info);
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
 >  
->  	VERBOSE_SCFTORTOUT("scftorture_invoker %d: task started", scfp->cpu);
->  	cpu = scfp->cpu % nr_cpu_ids;
-> -	WARN_ON_ONCE(set_cpus_allowed_ptr(current, cpumask_of(cpu)));
-> +	cpus_read_lock();
-> +	if (cpu_online(cpu)) {
-> +		WARN_ON_ONCE(set_cpus_allowed_ptr(current, cpumask_of(cpu)));
-> +		/* Check affinity before hotplug can move this task away. */
-> +		curcpu = raw_smp_processor_id();
-> +		WARN_ONCE(curcpu != cpu,
-> +			  "%s: Wanted CPU %d, running on %d, nr_cpu_ids = %d\n",
-> +			  __func__, scfp->cpu, curcpu, nr_cpu_ids);
-> +	} else {
-> +		was_offline = true;
-> +	}
-> +	cpus_read_unlock();
->  	set_user_nice(current, MAX_NICE);
->  	if (holdoff)
->  		schedule_timeout_interruptible(holdoff * HZ);
+> +	/* The freshly allocated object has not been published to readers. */
+>  	global_rcu_ptr = rcu_dereference_protected(
+> -				(struct kasan_rcu_info __rcu *)ptr, NULL);
+> +				(struct kasan_rcu_info __rcu *)ptr, true);
 >  
->  	VERBOSE_SCFTORTOUT("scftorture_invoker %d: Waiting for all SCF torturers from cpu %d", scfp->cpu, raw_smp_processor_id());
->  
-> -	// Make sure that the CPU is affinitized appropriately during testing.
-> -	curcpu = raw_smp_processor_id();
-> -	WARN_ONCE(curcpu != cpu,
-> -		  "%s: Wanted CPU %d, running on %d, nr_cpu_ids = %d\n",
-> -		  __func__, scfp->cpu, curcpu, nr_cpu_ids);
-> -
->  	if (atomic_dec_return(&n_started))
->  		while (atomic_read_acquire(&n_started)) {
->  			if (torture_must_stop()) {
+>  	KUNIT_EXPECT_KASAN_FAIL_READ(test,
+>  			call_rcu(&global_rcu_ptr->rcu, rcu_uaf_reclaim);
 > -- 
 > 2.54.0
+> 
 > 
