@@ -1,80 +1,92 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.43
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794274481;
-	b=mCTgEuZqEmT43TgjfRbPe/CrY5QcfquOWXTQCqa4tgSBdhmprSAZdqAY8lP4uTehu/f0
-	 gdU5OZsL62YpFg1Pty3TouzG8S7Sqmx6qy68v/I3JLJ11nqgyLUz/yZCcIwQqZnp9Og/d
-	 ew8AXCfJl/0gBiXiVMJPc0fpExeOAysjUToNr/QpvGChC6URFovMKUxmyoc1imYkBo8O/
-	 0LKc/XR6D6JxoRENxq8v05w+dlRs4xOLDKdXQvq8O9fDb/ni8ZouI8enMEtwlWj41Dr52
-	 WAyqaf4iBSDLXMGVKJq5BGGYbb8AMXtqx1k3vhl7QGcgH7WtHc7eHgtzcoj2U+GChEg==
+	t=1794287226;
+	b=EQ4eb3rC4WteFoL2QoZ4QBIALEt2apsfrXTgCn9kEIzudfQ+Ea0nN/t6vt8XUVcGg/f8
+	 AFyWDdfqtMBAWtKd3J9zhcxEjVmHd8L8LjW7zDg3C5ODoeAbQY4demuX3a3c4/YJRgPpA
+	 RBotSaJu8mS02tPTn85wjZpNM1naRqV2mjLXFJS7FugT7tbJEOhQuJ3Q1yH5UuNo+Nvbl
+	 1nPCIFX3hIC80UPnwok/qWexG+x493jAoXgVg6osM/0udDnLEOB2BqNJoqmdzshvcxhlv
+	 ziGH2v/ZHbDQFAkbDajgPSGvcK816Qmiki3BKSLt3sTrdU+7z3fM2Acw96VIJZTILsQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794274481;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=7DLbqVwKut81UJQz2eVhLGMdnz2UGDrpeK5bP7AZPjM=;
-	b=qMb3lkNZudkGQwdToEY0WSUhemZ8+DsksO+ekIGPVouZPQ3oLJHGW6sgO+hdo5eXMDtE
-	 wUVrAhqfqlmp79XHsVF3XIXA9FZTAIO6R35MF7oxivRFb2EmDbaCL1M6m8w61BpyyCThv
-	 SogZIws4QM/gAx+pEajqVH3q/BIfeBpNfVkBSqekZMnUwF79QybfcDGM0fSSID//I8mPN
-	 IP3gN9WHzPXDpGrqx4sAM/Bx8UHRmLssJ30TW4FVxCtkcgeY7GKwyFQhRlIzUKSXBBizX
-	 4LSzahbEndvO2TMC2WLeqOj01J0PFfDvt0p0IZJjB2hKH5484On/aa+NnRCatX8CoJA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794287226;
+	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To;
+	bh=2seNUxR80lWFNHMOtGuOcjLvb6hw83oNlRxRNGGUWvE=;
+	b=gwZDgfTbclyCQT4h5HEgEj4Kc3RpRAPvpU2vx28T5xQ4oMXXGq3R7kqmtuqLxjx5Z9Gu
+	 4RxxJVy3ID5w49Ytc1i2DJiU/3Q3Tzdt7lT2iyQTBwiaNQMWX1wUrW2aMf549SIQzeSTe
+	 bLSYgvgOeU5z8+geDt4n9pt4j/xvrmU1xsLAGFdwoz2PD0jobie517rd/UztvbowJnRyt
+	 l+F2SYrRorlvGv4O2yrDXSg6wCobqJEoTOWqcE2zcE0wmhc3QhVMjdnNQPlHMU1Ti6yKy
+	 +9/evY23ODyYCdFITX1T1Hn5LDBdzqUR1drJRiKePoMjXZslNmnVLjCuNhD7SLZdN0A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=frbjRNm4;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=none header.from=cryspen.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	arc=none smtp.remote-ip=209.85.221.43
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBCC3606A31C;
-	Tue, 10 Nov 2026 01:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=frbjRNm4
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50C8D1F0089F;
-	Tue, 10 Nov 2026 01:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794274480;
-	bh=7DLbqVwKut81UJQz2eVhLGMdnz2UGDrpeK5bP7AZPjM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=frbjRNm4ypnIa8r11pCsYtVX8qqs79/UoQ8MKYE4b95DIDJuu9KNdum5qsfgOH9kU
-	 /ClYy9NxMY6n+wGS7/bqu8/OVYVSJ0CleG4JRpSgFvTZ9kfUwfDLL+s3bwVcRaXwrg
-	 I9UxgmAZNH7cZPt5kcBwK2Y9yziGvWrYzEz6LfOYD7meaIAQj1MhMZTJPJSy57Vbfl
-	 aBtBbVnBllPkjjFGudNtLs/rczbQYF83HCLiByt6wYoBqzBIkA5SBigae8zai+AF6R
-	 RSHv2ZdNPaZiRUBfl/om+5mLRcjJWZsOEWTc1S3BKudjh+P3X6oVOa80U24tvfeN8r
-	 ASaB2BeQVX4rA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 02C76CE0DDC; Mon,  9 Nov 2026 17:34:40 -0800 (PST)
-Date: Mon, 9 Nov 2026 17:34:39 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Puranjay Mohan <puranjay@kernel.org>, linux-kernel@vger.kernel.org,
-	Boqun Feng <boqun@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8C8606A32E
+	for <rcu@vger.kernel.org>; Tue, 10 Nov 2026 05:07:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AD8C8606A32E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cryspen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-492690dd5daso1062255f8f.1
+        for <rcu@vger.kernel.org>; Mon, 09 Nov 2026 21:07:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794287224; x=1794892024;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=2seNUxR80lWFNHMOtGuOcjLvb6hw83oNlRxRNGGUWvE=;
+        b=O9nXdhQ2SHAnhw9WzNXQYNQCVZP7ns6uamnoN8aHTXQiTIF/C9PA7nKhz9S/IMyyyh
+         exTSVxM2u6mIvK61SHLlCgMUBUwKzr5VEI5Ht/BKYuUZmnWeLde8lao6qYJ3tCF70HEv
+         h69PSW2Faj8ORIDtG1IJKyt8T6v5T/iXQMyzmM3WdZ8HTLNAcFvI8j/YTVB30/zTBbN1
+         9XxIWwC2vzN0wo2OTLxBDJ6T8886IpdPDEqPK5vFfvwUV1WOAPkJ4tUD0/URsJ46QbaT
+         oLMcSLrI+Wzvf+baRtJs/MTWy7ovDqWnqu56yq6u7KncKe0AI8JzUzXInA00DudmMDCN
+         bu1w==
+X-Forwarded-Encrypted: i=1; AL+hErGHAzcaUmE5BnVhr8eW4NbpDqHrP1wvkQeKfJ/Mcp62TrVucFYIXybM48KJ+stE+WDATzA=@vger.kernel.org
+X-Gm-Message-State: APuU4Z9e7/iwwri6TuaEtsRveioYa+YPY6WsxaLvmy1Jy+thNr7k9Mdb
+	uG5Nr1xgXYz+hz1Ym/CI4Nkli/U0zV/nqghFujuruuDsvWQx7SlWbkGf
+X-Gm-Gg: AYBFou2lscn+iVUQUQGJNW3YZ702FiE8V3g20qysgBoJje28VnDOUaQYgWSLzRFyVNm
+	2JN34/epSv/117LglFPFZZryYpZnk9MO733bTQwr9nvDzCLI/PuNcAjUyLpTWW0pqcqe/q/h6+g
+	YDaSEXnil5dtZbAFloRrulu9ZUA+RsfXsacqVOnCWgUDniiI58/plVxZ9KX+kQFImXMrqqEAL40
+	s6jHcMnvi24/tVx42PyaZc88eqZZoyjd9+2hcQFhsSVbIVLIxQXZXa5MEgtlL3npclcsY8Dpns2
+	4UPLoPe5Kr2/uOLakaUFOv+NRA4RTFI5AYh6ZMX+PHD+aNy05HLyw3W6bwMM04vo3NS2W3E9Dsx
+	YdgCrnz/ZYm7jGygrIuwwSaFL4WDZf25kSQH1D/F8d3rjs5VikoLVSFfn+b25lyCpTAlec6vqw8
+	K0iLQ1yV20lhmzwcqOo/DvHJMfLMymMNMEBfoiilzu00fXkb3wzFRpqdntQwk2EqOxkWj9+fNAQ
+	obBTZGwbiFWClAS3eqsCsxOKC1iZAeqwr7Npm/+KEPQVcL9V5f4/mdLJhhLRmFqP1y9NpchOc9r
+	1ACC/KEYMpKOYUyvQ6Y8kPei4mcW/vhWItOiHSsm6KmmOJBxG1XzbG2OHHtLLY2HwWzLzTcz2h3
+	5y3vrV2SuIm4rxeDC0+NTc5Pl+8Lm+6w2vTROUtvpVHROL95/3pqMyEqmSfcKFK0+h3GRWj25a/
+	dE0DZaWsNvFA==
+X-Received: by 2002:a05:6000:25fb:b0:48c:7f18:c85e with SMTP id ffacd0b85a97d-498305da14amr2288609f8f.45.1794287223902;
+        Mon, 09 Nov 2026 21:07:03 -0800 (PST)
+Received: from localhost ([2c0f:3d00:6be:8900:ce5e:9212:ea4b:f30])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4988bdef64dsm1332172f8f.20.2026.11.09.21.07.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2026 21:07:03 -0800 (PST)
+Date: Tue, 10 Nov 2026 08:06:59 +0300
+From: Dan Carpenter <dan@cryspen.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Liam R . Howlett" <liam@infradead.org>,
-	Lorenzo Stoakes <ljs@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
-	Andrew Ballance <andrewjballance@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
-	rcu@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC PATCH 00/12] RCU pseudo-transactions
-Message-ID: <3cb75140-1d10-4de3-86e6-c9d70edd2da5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com>
- <20261023181940.457424-1-puranjay@kernel.org>
- <f785237c-ee5e-4ad3-8ee9-79474f5f45c8@efficios.com>
- <9667c08c-333e-4fe5-9812-c5ccaa183e36@efficios.com>
- <853d8469-94a4-4b33-a0d5-d6d2138fe3ef@paulmck-laptop>
- <597586c9-35ae-43bd-9b79-7abf62057838@efficios.com>
+	Zqiang <qiang.zhang@linux.dev>, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcuscale: Constify struct rcu_scale_ops
+Message-ID: <avKmc-690MOAGJc5@stanley.mountain>
+References: <3f546f8e102ef271e7d5ac6d8b6a1f44d0fb20cb.1794085327.git.christophe.jaillet@wanadoo.fr>
+ <20261108230623.GA3148953@joelbox>
+ <2727df26-9f09-48c9-90b5-2d1416c3b2b1@wanadoo.fr>
+ <730e60cb-30fd-43a3-8152-543b4ba5878e@paulmck-laptop>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -84,87 +96,63 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <597586c9-35ae-43bd-9b79-7abf62057838@efficios.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <730e60cb-30fd-43a3-8152-543b4ba5878e@paulmck-laptop>
 
-On Mon, Nov 09, 2026 at 08:00:12PM -0500, Mathieu Desnoyers wrote:
-> On 2026-11-09 19:25, Paul E. McKenney wrote:
-> > On Tue, Oct 27, 2026 at 09:13:17PM -0400, Mathieu Desnoyers wrote:
-> [...]
-> >> So we'd keep using call_rcu to handle the steady-state reclaim of rcu
-> txn,
-> >> but use this specialized irqoff RCU domain for the empty slab case.
-> >>
-> >> Thoughts ?
-> >
-> > Atomic SRCU within interrupts-disabled regions seems to fit
-> > this bill: synchronize_srcu_atomic(), srcu_read_lock_atomic(),
-> > and srcu_read_unlock_atomic(), which interrupts disabled across
-> > the latter two.  Maybe srcu_read_lock_atomic_irqsave() and
-> > srcu_read_lock_atomic_irqrestore() if that helps.
-> >
-> > Or am I missing a turn in your requirements?
+On Mon, Nov 09, 2026 at 10:44:16AM -0800, Paul E. McKenney wrote:
+> On Mon, Nov 09, 2026 at 06:32:15PM +0100, Christophe JAILLET wrote:
+> > Le 09/11/2026 à 00:06, Joel Fernandes a écrit :
+> > > On Sat, Nov 07, 2026 at 10:02:25PM +0100, Christophe JAILLET wrote:
+> > > > 'struct rcu_scale_ops' is not modified in this driver.
+> > > > 
+> > > > Constifying these structures moves some data to a read-only section, so
+> > > > increases overall security, especially when the structure holds some
+> > > > function pointers.
+> > > > 
+> > > > On a x86_64, with allmodconfig:
+> > > > Before:
+> > > > ======
+> > > >     text	   data	    bss	    dec	    hex	filename
+> > > >    45585	  24946	   2816	  73347	  11e83	kernel/rcu/rcuscale.o
+> > > > 
+> > > > After:
+> > > > =====
+> > > >     text	   data	    bss	    dec	    hex	filename
+> > > >    46545	  23986	   2816	  73347	  11e83	kernel/rcu/rcuscale.o
+> > > > 
+> > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > > > ---
+> > > > Compile tested only.
+> > > 
+> > > rcuscale is a test kernel module, is it worth adding boilerplate for
+> > > non-production code sighting security reasons?
+> > 
+> > Oups, now I better understand Bradley Morgan comments.
+> > 
+> > I didn't notice it was a test module.
+> > My patch makes no more sense, as it is not hardening runtime, so feel free
+> > to just drop it.
+> > 
+> > Sorry for the noise and not seeing it by myself.
 > 
-> It fits well, thanks! It would replace the per-CPU counters I wrote
-> for this domain. The steady state stays on call_rcu(), so the
-> srcu_struct would only see synchronize_srcu_atomic(), never
-> call_srcu(). I see two gaps between my requirements and your
-> proposal:
+> Although the header comment does say "Read-Copy Update module-based
+> scalability-test facility", maybe there is something that should be
+> done to more clearly mark code that is not to be used in production.
+> And maybe to inform the LLM review bots of this.
 > 
-> First, NMI readers. rcu_txn_dereference() should work in any context,
-> NMI included, as rcu_dereference() does. A tracer or a BPF program can
-> walk an rcu_txn list from NMI. The atomic flavor uses
-> __srcu_read_lock(). Its this_cpu_inc() is not NMI-safe on every
-> architecture. And one srcu_struct cannot mix the atomic flavor with
-> the nmisafe one.
->
-> Could the atomic flavor count its readers as srcu_read_lock_nmisafe()
-> does? Then a reader could also enter from NMI. The code I have for the
-> next version keeps one counter per NMI nesting level for this. With
-> SRCU, the sums of locks and unlocks handle the nesting already.
+> But this is bigger than just RCU.
 
-The other user that I know of is David Woodhouse, now CCed.
+Christophe has been constify things for years and years.  There is
+an argument to be made that it's just the right thing to do whether
+this is test code or not.  Someone might copy and paste it, for
+example.
 
-David, would you be OK with srcu_read_lock_atomic() using NMI-safe
-counters, similar to __srcu_read_lock_fast()?
+Of course, everyone is overloaded with AI.  I feel like normal cleanup
+patches are more likely to get NAKed because everyone is just totally
+overwhelmed.
 
-(Yes, I *could* make only your _irqsave() and _irqrestore() variants
-NMI-safe, but then we have to enforce different srcu_struct structures
-for _irqsave() and not.)
+regards,
+dan carpenter
 
-> Second, interrupts off. The wait for readers can run with interrupts
-> disabled, for example in a list delete under a raw spinlock. The
-> kerneldoc of synchronize_srcu_atomic() then requires the readers
-> to disable interrupts too. So yes, the irqsave and irqrestore variants
-> would help. The readers would use them instead of preemption off.
-> 
-> Would you prefer to add these two variants on the SRCU side, or should
-> I prototype them with the next version of this series?
-
-Your choice!
-
-If you would like to do it, the trick is to make srcu_read_lock_atomic()
-and srcu_read_unlock_atomic() invoke __srcu_read_lock_fast() and
-__srcu_read_unlock_fast(), respectively, instead of __srcu_read_lock()
-and __srcu_read_unlock(), again respectively.
-
-Then there would need to be an srcu_read_lock_atomic_irqsafe() and
-srcu_read_unlock_irqrestore(), which would (as you say), replace
-preempt_disable() with local_irq_save() and preempt_enable()
-with local_irq_restore().  There would be a flags argument that
-as far as I know requires srcu_read_lock_atomic_irqsafe() and
-srcu_read_unlock_irqrestore() be macros.  It would be good to share code
-with srcu_read_lock_atomic() and srcu_read_unlock_atomic().
-
-And kernel/rcu/rcutorture.c would need a bit of tweaking to test
-this new interface, which should be discoverable by looking for
-the code that tests srcu_read_{,un}lock_atomic().  Maybe just make
-srcu_torture_read_lock() randomly decide between srcu_read_lock_atomic()
-and srcu_read_lock_atomic_irqsave(), and have srcu_torture_read_unlock()
-follow that decision.
-
-One potentially tricky part here is that rcutorture is not set up to
-pass a flags variable from a read-lock to the corresponding read-unlock.
-
-							Thanx, Paul
