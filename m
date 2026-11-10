@@ -1,92 +1,82 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794287226;
-	b=EQ4eb3rC4WteFoL2QoZ4QBIALEt2apsfrXTgCn9kEIzudfQ+Ea0nN/t6vt8XUVcGg/f8
-	 AFyWDdfqtMBAWtKd3J9zhcxEjVmHd8L8LjW7zDg3C5ODoeAbQY4demuX3a3c4/YJRgPpA
-	 RBotSaJu8mS02tPTn85wjZpNM1naRqV2mjLXFJS7FugT7tbJEOhQuJ3Q1yH5UuNo+Nvbl
-	 1nPCIFX3hIC80UPnwok/qWexG+x493jAoXgVg6osM/0udDnLEOB2BqNJoqmdzshvcxhlv
-	 ziGH2v/ZHbDQFAkbDajgPSGvcK816Qmiki3BKSLt3sTrdU+7z3fM2Acw96VIJZTILsQ==
+	t=1794298187;
+	b=BzesBGuodrOwrHEtBmqhff82j7OyQ+HLp60xfp7a+4OlTzD4EZnN2AJeKbVG5WmoHQqL
+	 slz9r1cmLom8f3X1uXUXThztbP4VeHr60TgK0+FJ3i+pdz5j0zCIxCE6VSNQ0ZNMU7QQU
+	 iTIebTVPsyodNpY7By8aiNGIywZfYPX7eK2QyxEEfUKyP3AdtNAiDRYeD8MWYS94AFsCv
+	 ldyGBLFP0cRNvzB/E1T3Gl21YGDk989X4gVGeqhVbmbpuxsQ0T/ePuXNVykRNDEIvP1yC
+	 k22KqhdakJiSVv5PxJGQCHH6TQedAnjbJIRdi8oWUitL3RY/2YGfDI6Uur7AKApN78w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794287226;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To;
-	bh=2seNUxR80lWFNHMOtGuOcjLvb6hw83oNlRxRNGGUWvE=;
-	b=gwZDgfTbclyCQT4h5HEgEj4Kc3RpRAPvpU2vx28T5xQ4oMXXGq3R7kqmtuqLxjx5Z9Gu
-	 4RxxJVy3ID5w49Ytc1i2DJiU/3Q3Tzdt7lT2iyQTBwiaNQMWX1wUrW2aMf549SIQzeSTe
-	 bLSYgvgOeU5z8+geDt4n9pt4j/xvrmU1xsLAGFdwoz2PD0jobie517rd/UztvbowJnRyt
-	 l+F2SYrRorlvGv4O2yrDXSg6wCobqJEoTOWqcE2zcE0wmhc3QhVMjdnNQPlHMU1Ti6yKy
-	 +9/evY23ODyYCdFITX1T1Hn5LDBdzqUR1drJRiKePoMjXZslNmnVLjCuNhD7SLZdN0A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794298187;
+	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=c2qCJTJTcCHZf6cE2IYQnsWT3X7zyuhCPskU0MKXrgQ=;
+	b=yPZ2qOvGrFRVW6s1t/g9Bdp544mttU94ByMXPXHOzT9ok6Dln00KlDFs7xP0hXv6yTry
+	 qXYlVwxjv/EZmb7uuf7aQvycgwl/GBSnL7DaZvOiiPAXRsyyIOvpVboDtPtgVVyv037Wi
+	 jO1gBGwqOvUnvRkneUsWQcnOqBBW3pHR2+ekO059qNcZ+3Pf2gjoVEt2moQB/k77lR83m
+	 0tY5qtVADgsm42RtuV+V0XaMEFOrpp8iJUANN45u489NPKzUWGFBFSQEK1rxrP66Ehgub
+	 brfyPViUvrb99Kaf8cP2jk3dt6LgryIsNkd5niK5OcgSZGaPhLJzMtq8BaDtyWhZUTw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=cryspen.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.221.43
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=linutronix.de;
+	spf=pass smtp.mailfrom=linutronix.de;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=1sx+DThx;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=hUC1VwOV;
+	arc=none smtp.remote-ip=193.142.43.55
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8C8606A32E
-	for <rcu@vger.kernel.org>; Tue, 10 Nov 2026 05:07:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AD8C8606A32E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cryspen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-492690dd5daso1062255f8f.1
-        for <rcu@vger.kernel.org>; Mon, 09 Nov 2026 21:07:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794287224; x=1794892024;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=2seNUxR80lWFNHMOtGuOcjLvb6hw83oNlRxRNGGUWvE=;
-        b=O9nXdhQ2SHAnhw9WzNXQYNQCVZP7ns6uamnoN8aHTXQiTIF/C9PA7nKhz9S/IMyyyh
-         exTSVxM2u6mIvK61SHLlCgMUBUwKzr5VEI5Ht/BKYuUZmnWeLde8lao6qYJ3tCF70HEv
-         h69PSW2Faj8ORIDtG1IJKyt8T6v5T/iXQMyzmM3WdZ8HTLNAcFvI8j/YTVB30/zTBbN1
-         9XxIWwC2vzN0wo2OTLxBDJ6T8886IpdPDEqPK5vFfvwUV1WOAPkJ4tUD0/URsJ46QbaT
-         oLMcSLrI+Wzvf+baRtJs/MTWy7ovDqWnqu56yq6u7KncKe0AI8JzUzXInA00DudmMDCN
-         bu1w==
-X-Forwarded-Encrypted: i=1; AL+hErGHAzcaUmE5BnVhr8eW4NbpDqHrP1wvkQeKfJ/Mcp62TrVucFYIXybM48KJ+stE+WDATzA=@vger.kernel.org
-X-Gm-Message-State: APuU4Z9e7/iwwri6TuaEtsRveioYa+YPY6WsxaLvmy1Jy+thNr7k9Mdb
-	uG5Nr1xgXYz+hz1Ym/CI4Nkli/U0zV/nqghFujuruuDsvWQx7SlWbkGf
-X-Gm-Gg: AYBFou2lscn+iVUQUQGJNW3YZ702FiE8V3g20qysgBoJje28VnDOUaQYgWSLzRFyVNm
-	2JN34/epSv/117LglFPFZZryYpZnk9MO733bTQwr9nvDzCLI/PuNcAjUyLpTWW0pqcqe/q/h6+g
-	YDaSEXnil5dtZbAFloRrulu9ZUA+RsfXsacqVOnCWgUDniiI58/plVxZ9KX+kQFImXMrqqEAL40
-	s6jHcMnvi24/tVx42PyaZc88eqZZoyjd9+2hcQFhsSVbIVLIxQXZXa5MEgtlL3npclcsY8Dpns2
-	4UPLoPe5Kr2/uOLakaUFOv+NRA4RTFI5AYh6ZMX+PHD+aNy05HLyw3W6bwMM04vo3NS2W3E9Dsx
-	YdgCrnz/ZYm7jGygrIuwwSaFL4WDZf25kSQH1D/F8d3rjs5VikoLVSFfn+b25lyCpTAlec6vqw8
-	K0iLQ1yV20lhmzwcqOo/DvHJMfLMymMNMEBfoiilzu00fXkb3wzFRpqdntQwk2EqOxkWj9+fNAQ
-	obBTZGwbiFWClAS3eqsCsxOKC1iZAeqwr7Npm/+KEPQVcL9V5f4/mdLJhhLRmFqP1y9NpchOc9r
-	1ACC/KEYMpKOYUyvQ6Y8kPei4mcW/vhWItOiHSsm6KmmOJBxG1XzbG2OHHtLLY2HwWzLzTcz2h3
-	5y3vrV2SuIm4rxeDC0+NTc5Pl+8Lm+6w2vTROUtvpVHROL95/3pqMyEqmSfcKFK0+h3GRWj25a/
-	dE0DZaWsNvFA==
-X-Received: by 2002:a05:6000:25fb:b0:48c:7f18:c85e with SMTP id ffacd0b85a97d-498305da14amr2288609f8f.45.1794287223902;
-        Mon, 09 Nov 2026 21:07:03 -0800 (PST)
-Received: from localhost ([2c0f:3d00:6be:8900:ce5e:9212:ea4b:f30])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4988bdef64dsm1332172f8f.20.2026.11.09.21.07.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2026 21:07:03 -0800 (PST)
-Date: Tue, 10 Nov 2026 08:06:59 +0300
-From: Dan Carpenter <dan@cryspen.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B505960A2608
+	for <rcu@vger.kernel.org>; Tue, 10 Nov 2026 08:09:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B505960A2608
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=1sx+DThx;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=hUC1VwOV
+Date: Tue, 10 Nov 2026 09:09:42 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1794298184;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c2qCJTJTcCHZf6cE2IYQnsWT3X7zyuhCPskU0MKXrgQ=;
+	b=1sx+DThxqL79EQec3hFn2UEJuvkhE/i25n/sqP34XBQc2cW+VT4bKVEimdWj2OBSf9Aoke
+	nkVzbIQ+3ZCzJYx18mKTdPglB76ey0BgDq+BqVsuuJFiYeSAb04PsE1K5dtZtwIjfxJPzw
+	NDcz3XsgWcKuAoFqoHVORbpysHDIHONU6Ae1BX9CSWYRgHbVmUf+8xSuf1+WooT3nOlln6
+	QTp3KLGZkkb1jD5DPV4i/QF6uXHBnNRwSnHIHhFg/uccf3eUjOsliwZvmgbm+RuQ6TaKFI
+	XYkznZG2hOX1dT3pY0key68u0yYqVqmySYYqGh7V2o/VkZGkzRT1p4hO8x+S7A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1794298184;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c2qCJTJTcCHZf6cE2IYQnsWT3X7zyuhCPskU0MKXrgQ=;
+	b=hUC1VwOVpgnVuakNt27Tlt3/xte7tzjqV1T0Zgtj9roF+p5Ffy9zMXqLh3luL9iCOFrJW8
+	P50CiMbLnEN278Cw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+Cc: Andrea Righi <arighi@nvidia.com>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Josh Triplett <josh@joshtriplett.org>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	"linux-rt-devel@lists.linux.dev" <linux-rt-devel@lists.linux.dev>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcuscale: Constify struct rcu_scale_ops
-Message-ID: <avKmc-690MOAGJc5@stanley.mountain>
-References: <3f546f8e102ef271e7d5ac6d8b6a1f44d0fb20cb.1794085327.git.christophe.jaillet@wanadoo.fr>
- <20261108230623.GA3148953@joelbox>
- <2727df26-9f09-48c9-90b5-2d1416c3b2b1@wanadoo.fr>
- <730e60cb-30fd-43a3-8152-543b4ba5878e@paulmck-laptop>
+	Davidlohr Bueso <dave@stgolabs.net>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH] rcutorture: Don't try to disable to RT throttling.
+Message-ID: <20261110080942.QxKXirzI@linutronix.de>
+References: <20261105165113.82N-rPMG@linutronix.de>
+ <2fbdb03e-1af8-489c-819a-7e3c7b0ed1be@paulmck-laptop>
+ <5970553A-3833-43F1-A013-21757664FB8F@nvidia.com>
+ <auzXjQfYXs_gzx1y@gpd4>
+ <c81d8243-c130-44d8-bef6-e678ecb088ac@paulmck-laptop>
+ <20261106140401.90MH_6qt@linutronix.de>
+ <5f5ffa5b-9fa5-4359-87fc-7558f37ff0eb@paulmck-laptop>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -96,63 +86,63 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <730e60cb-30fd-43a3-8152-543b4ba5878e@paulmck-laptop>
+In-Reply-To: <5f5ffa5b-9fa5-4359-87fc-7558f37ff0eb@paulmck-laptop>
 
-On Mon, Nov 09, 2026 at 10:44:16AM -0800, Paul E. McKenney wrote:
-> On Mon, Nov 09, 2026 at 06:32:15PM +0100, Christophe JAILLET wrote:
-> > Le 09/11/2026 à 00:06, Joel Fernandes a écrit :
-> > > On Sat, Nov 07, 2026 at 10:02:25PM +0100, Christophe JAILLET wrote:
-> > > > 'struct rcu_scale_ops' is not modified in this driver.
-> > > > 
-> > > > Constifying these structures moves some data to a read-only section, so
-> > > > increases overall security, especially when the structure holds some
-> > > > function pointers.
-> > > > 
-> > > > On a x86_64, with allmodconfig:
-> > > > Before:
-> > > > ======
-> > > >     text	   data	    bss	    dec	    hex	filename
-> > > >    45585	  24946	   2816	  73347	  11e83	kernel/rcu/rcuscale.o
-> > > > 
-> > > > After:
-> > > > =====
-> > > >     text	   data	    bss	    dec	    hex	filename
-> > > >    46545	  23986	   2816	  73347	  11e83	kernel/rcu/rcuscale.o
-> > > > 
-> > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > > ---
-> > > > Compile tested only.
+On 2026-11-09 16:45:47 [-0800], Paul E. McKenney wrote:
+> On Fri, Nov 06, 2026 at 03:04:01PM +0100, Sebastian Andrzej Siewior wrote:
+> > On 2026-11-05 12:03:11 [-0800], Paul E. McKenney wrote:
+> > > > For rcutorture, I don't think there's a ready-made kernel interface,
+> > > > maybe we could add a sched helper that performs the same operation as
+> > > > the debugfs knobs?
 > > > 
-> > > rcuscale is a test kernel module, is it worth adding boilerplate for
-> > > non-production code sighting security reasons?
+> > > I would very much appreciate that.  ;-)
 > > 
-> > Oups, now I better understand Bradley Morgan comments.
-> > 
-> > I didn't notice it was a test module.
-> > My patch makes no more sense, as it is not hardening runtime, so feel free
-> > to just drop it.
-> > 
-> > Sorry for the noise and not seeing it by myself.
+> > This maybe? Since it is built-in only, there is no need to restore the
+> > old state, is there?
 > 
-> Although the header comment does say "Read-Copy Update module-based
-> scalability-test facility", maybe there is something that should be
-> done to more clearly mark code that is not to be used in production.
-> And maybe to inform the LLM review bots of this.
+> Hearing no objections, I will start testing this.  I am applying both of
+> your patches from this email thread, but please let me know if something
+> else would work better.
+
+I have kept the first one and added a proper body for the second. I
+intend to repost it later today if nothing goes wrong.
+
+> I would expect that this command would result in rcutorture complaining
+> about priority-boost failures because SRCU does not support priority
+> boosting.
 > 
-> But this is bigger than just RCU.
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 15 --configs SRCU-P --bootargs "rcutorture.test_boost=2" --trust-make
+> 
+> But please correct me if I missed a turn in here somewhere.
 
-Christophe has been constify things for years and years.  There is
-an argument to be made that it's just the right thing to do whether
-this is test code or not.  Someone might copy and paste it, for
-example.
+SRCU doesn't do boosting so yes.
+I just stared at rcu_torture_boost() and I probably miss bits. I would
+expect this thread to run at SCHED_OTHER and then run at 100% for a
+period of time within a RCU-read section. Once the RCU machinery decides
+to start a GP and force a quiescent state it would instruct rcub/ to
+boost the tasks which stayed in their RCU read section (I *think* to be
+in RCU-section is enough because the idea was once to get task back on
+CPU which were scheduled out while in their RCU read section).
+Once this happens, the task should be with SCHED_FIFO priority and could
+leave the RCU section, un-boosting itself and passing the test.
+I don't see RCU-read locks but this might be done differently. I see
+multiple sched_set_fifo_low(current) but this shouldn't change. (Your
+priority shouldn't change (becomes lower) if your higher priority is
+due to priority-boosting.)
 
-Of course, everyone is overloaded with AI.  I feel like normal cleanup
-patches are more likely to get NAKed because everyone is just totally
-overwhelmed.
+Your rcu_torture_boost() runs at FIFO-1. So if it does what I described
+but at FIFO-1 and rcub runs at FIFO-2 then it should still work.
+Throttling should just make it go slower.
 
-regards,
-dan carpenter
+> And yes, in the built-in case we normally don't care about restoring
+> state.  The usual situation is that the system (usually a guest OS)
+> is brought down at the end of the test anyway, in contrast to running
+> rcutorture non-builtin, that is, using modprobe and rmmod.
 
+this makes things easier.
+
+> 							Thanx, Paul
+
+Sebastian
