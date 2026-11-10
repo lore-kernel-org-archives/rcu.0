@@ -1,50 +1,50 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=158.69.130.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794338942;
-	b=gZLn5HmvgAz8BT2N8DpiUih4Wb2iIxBOs4HNKixVgY83vQkcagchjvNKgMCN4DFGWB6o
-	 BHiT1xMyzHe9z8BpShVcfBNL4f4ojmENoWsnfrxhj03iMjqInqOdq9NxtQccdYALk+igW
-	 oEfNkaWDLjIe5GToCQX4aks9dSVycVNSv+M3hqI8szTthBVYiwi8EgShyE+H5yeU7s1O9
-	 8rjqPHHJSAocRS4Hn6WWfiQ/4YUh1CGTcz1cCpsf9qDF+S1lCph4UiMFkF+EMdiQXlA7M
-	 U34yWDiGKHO3N6SJd4KkTMgTaWV9R9OxePb6oP+LuFn/mvSCzqvBLjT9PcNbW82LKmQ==
+	b=TVtBHqlO06at9dZnQ6oJKBcohmkOh+q4iN5IMSacjdIzr3k1CkmKzGH/OxaGNPNLW/yD
+	 8RXonEV/o+jWgt8YZpMZbTl6p4rlJrLo4AGckVprRXNQ133E+VMFLq7w96EwbqrXOJc9B
+	 7oaiubru5M1kly0FKL9/TGm20HpCMbI2JQZGR3+yxqLLIJGrnp5fLZKFrewmeUVUzikGf
+	 2D+MxP9+s799s/o6jevQS9L7bo6QPWzHJTyJF6XBYaccdAwYr7n9/n6GUVHDCJ3qDJ0Kt
+	 AI6f8/5S0ls3fzxd+8IfGCNWbDTxiKE3fyp88+we+48zJVkWIFAT1fHqY1eb+c4gHhg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794338942;
 	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
 	 Message-Id:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=WdVysHpiv9k2Rk32uMh5ZOlKJvP5JpLNPcRzIpV1Nls=;
-	b=wX6sU8Am7DRnOqDJAxEM+MP6EBgDX5IeGLle1wjujAC3LQeKqiz3U4w40+lg1Rg7g/x2
-	 rLUtbZ0Tmq2EPGncNFqWOWMFVNmhAHe0NDSEl7+CeC3jOq4LY4APJV7q9ECsAOjob8li3
-	 k6b7ykSY/3lRzYZaXHfQzpvVto4MnMjcDZJf/NF6VE8hHRd0p6EwcMxn52yj4B1/JjXYd
-	 KOEAqyVdHc77Qsxy4MGS0RN+k71PSUcv8M3CwnPWlHkpz0OCzcnu0cjFxRVsN8zwZDBgd
-	 NjVaXiMH2xHy502zYXgcgstmu0zQdsJIVKC+lTIbKqNlZITQdvbS9DqanWUHn3/Jvcg==
+	bh=dyKcnLAvAYKtrMEMzfs0adKmhf/djCkSCIhMXt4fJbE=;
+	b=jKpvoROh/eZmz1522fPEOq8y1urrnxeQZIkYxgALHKOqAxCYMFLt5oNIsJktnwmr0rtf
+	 VbMNdEoc36xO9VcuXIMU8aLOaPdI2Xt7DkoAIB921XdxRLNaGdQhuQ+xguQ6lrwIKndVA
+	 ugq5HIsnIHPHE3wfz4RgM5EaRWKMr/C52wRkS5IY0sqiHG8xN+et4lT4fQNCsXiaI3ilW
+	 cXM1XjxwN1yseuGI2OVA301yiWXNZLbo7q65k/70Ydr1l8/0GBLI6SvRmyKEApBPBP/BX
+	 zEyweisWweEl6f1hVb3rwi4u5f55cnmz3yqK5SX+mVIBul3kDhEdy/Ep6CyuSt9y+wA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=efficios.com;
 	spf=pass smtp.mailfrom=efficios.com;
-	dkim=pass header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=mxPOxszD;
+	dkim=pass header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=ZnJCOPwx;
 	arc=none smtp.remote-ip=158.69.130.18
 Received: from smtpout.efficios.com (smtpout.efficios.com [158.69.130.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92E47606A32D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45155606A31C;
 	Tue, 10 Nov 2026 19:29:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 92E47606A32D
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 45155606A31C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=mxPOxszD
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=ZnJCOPwx
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
 	s=smtpout1; t=1794338934;
-	bh=WdVysHpiv9k2Rk32uMh5ZOlKJvP5JpLNPcRzIpV1Nls=;
+	bh=dyKcnLAvAYKtrMEMzfs0adKmhf/djCkSCIhMXt4fJbE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mxPOxszD8ugPPTvkmM3sbXDVYsv0DUQykZusO1wYvzU+/NuEaU34RFppxclAmS7bw
-	 13c29tlfSd24Ibdu+z+H181HbWaFxYiyCUwjOdhvVjgdUVrjtOkdjPuAT2wwIW4cYD
-	 KrSDkTZU4rDYQmtS+Cx9hXMK4Mfj7LyIIF/4XWfipwz0KZZjlIUL1EzBZFCl78aPx5
-	 RJX4CMb6cwy/Ne5L6LYHtxQ93vm6dj5Z2J11GBMUno2GqVytMM5SUUSb5EpghmSPfy
-	 KrC+SUmus5bM7WbNtQWVvofeZcxvHs8hh8oWz+uxuWjw3Rao56OhL0/gNYxLBb9gca
-	 wWvT60OukKWqQ==
+	b=ZnJCOPwxvM6jMh4QBIj27YZrR8mgDEE0cxmrvL4Uwyc5pJnnQwlcuD4o7BzRS5rPl
+	 gP0b74zSX7oKHapGDziAyK7SXcrEcE962h0WP+jV9FvaZ1MuwUDZ9AESqTSCyrUMd0
+	 lqgTNkde0Te8SSJA4lHmUqNl8TKDrw2wHix2T3Vu4QHXmwWNMm7DqWlNvEWRZLaCqm
+	 J387FdhfH4IGkSSr+Sorhc0qtbEtiovGBsmjy+FMEjZFYpJJMnNT9YDJy8LzwkXkmU
+	 Q3/jwp4GDs/VyljApvW5wIp0hKyP1QQvuMfRNcfn2MKEkE8b4hMqjGaQpil2fgDibF
+	 STMH0ot1DiQWQ==
 Received: from thinkos.internal.efficios.com (mtl.efficios.com [216.120.195.104])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4jPGsy6DxGzNHR;
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4jPGsy344fzNHQ;
 	Tue, 10 Nov 2026 14:28:54 -0500 (EST)
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>
@@ -64,9 +64,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Puranjay Mohan <puranjay@kernel.org>,
 	rcu@vger.kernel.org
-Subject: [PATCH 4/4] rcutorture: Test the irqsave forms of atomic SRCU readers
-Date: Tue, 10 Nov 2026 14:28:44 -0500
-Message-Id: <20261110192844.44713-5-mathieu.desnoyers@efficios.com>
+Subject: [PATCH 1/4] srcu: Make atomic SRCU readers NMI-safe
+Date: Tue, 10 Nov 2026 14:28:41 -0500
+Message-Id: <20261110192844.44713-2-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20261110192844.44713-1-mathieu.desnoyers@efficios.com>
 References: <20261110192844.44713-1-mathieu.desnoyers@efficios.com>
@@ -81,170 +81,101 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Nothing tests srcu_read_lock_atomic_irqsave() and
-srcu_read_unlock_atomic_irqrestore(). Testing them in the normal readers
-has two obstacles. rcutorture_one_extend() ends the readers of a CPU in
-any order, but each irqrestore restores the state its own irqsave saw.
-It also enables interrupts and bottom halves within readers, which an
-irqsave reader forbids.
+Atomic SRCU readers count themselves with __srcu_read_lock(), whose
+this_cpu_inc() is not NMI-safe on every architecture. With
+CONFIG_PROVE_RCU, which lockdep enables, __srcu_check_read_flavor() also
+warns when an atomic reader runs in NMI. So an NMI handler cannot use
+atomic SRCU, while a tracer or a BPF program may need to read a
+structure that atomic SRCU protects.
 
-Add an atomic_irqsave module parameter. With it, half the atomic
-readers use the irqsave forms, alternating per CPU. A per-CPU count
-tracks these readers: the first one saves the interrupt state, and only
-the last one restores it. The others restore the current state, with
-interrupts disabled. The parameter also removes the bottom-half and
-interrupt reader extensions, and the reader end under ->pi_lock, which
-would enable interrupts under a raw spinlock.
+Count atomic readers with __srcu_read_lock_nmisafe() and
+__srcu_read_unlock_nmisafe() instead. They use NMI-safe increments on
+the architectures that need them, and keep the full barriers that
+synchronize_srcu_atomic() pairs with. The __srcu_read_lock_fast()
+helpers have no such barriers: they rely on a grace period that calls
+synchronize_rcu(), which synchronize_srcu_atomic() cannot do while it
+spins.
 
-An irqsave reader checks that interrupts are still disabled when it
-ends.
+Also accept the atomic flavor in NMI in __srcu_check_read_flavor().
+Annotate an atomic reader in NMI as a trylock for lockdep, as
+srcu_read_lock_nmisafe() does. An NMI can interrupt lockdep itself, and
+lockdep then reports any other acquisition of a lock that a grace
+period has used.
 
-Add an atomic-srcu-irqsave run of SRCU-P to torture.sh.
+On the architectures that need NMI-safe counters, every atomic reader
+now pays an atomic increment at lock and at unlock.
 
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 ---
- kernel/rcu/rcutorture.c                       | 74 +++++++++++++++++--
- .../selftests/rcutorture/bin/torture.sh       |  6 ++
- 2 files changed, 75 insertions(+), 5 deletions(-)
+ include/linux/srcu.h  | 18 ++++++++++++++----
+ kernel/rcu/srcutree.c |  3 ++-
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 3b9c08a094cd..99dde988f974 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -134,6 +134,7 @@ torture_param(int, preempt_interval, MSEC_PER_SEC, "Interval between preemptions
- torture_param(int, read_exit_delay, 13, "Delay between read-then-exit episodes (s)");
- torture_param(int, read_exit_burst, 16, "# of read-then-exit bursts per episode, zero to disable");
- torture_param(int, reader_flavor, SRCU_READ_FLAVOR_NORMAL, "Reader flavors to use, one per bit.");
-+torture_param(bool, atomic_irqsave, false, "Half the atomic SRCU readers disable irqs");
- torture_param(int, shuffle_interval, 3, "Number of seconds between shuffles");
- torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
- torture_param(int, stall_cpu, 0, "Stall duration (s), zero to disable.");
-@@ -728,6 +729,66 @@ static void srcu_torture_init_forbidden_apis(void)
- 	cur_ops->start_gp_poll = NULL;
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 1a8a465a5650..7a338e3a63d3 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -92,7 +92,7 @@ int init_srcu_struct_atomic(struct srcu_struct *ssp);
+ //					0x04		// SRCU-lite is no longer with us.
+ #define SRCU_READ_FLAVOR_FAST		0x04		// srcu_read_lock_fast(), also NMI-safe.
+ #define SRCU_READ_FLAVOR_FAST_UPDOWN	0x08		// srcu_read_lock_fast_updown().
+-#define SRCU_READ_FLAVOR_ATOMIC		0x10		// srcu_read_lock_atomic().
++#define SRCU_READ_FLAVOR_ATOMIC		0x10		// srcu_read_lock_atomic(), also NMI-safe.
+ #define SRCU_READ_FLAVOR_ALL		(SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_NMI | \
+ 					 SRCU_READ_FLAVOR_FAST | SRCU_READ_FLAVOR_FAST_UPDOWN | \
+ 					 SRCU_READ_FLAVOR_ATOMIC)
+@@ -336,6 +336,9 @@ static inline int srcu_read_lock(struct srcu_struct *ssp)
+  * The lock and matching srcu_read_unlock_atomic() must be invoked on
+  * the same CPU, from the same context; passing the return value to
+  * another task is not permitted for this flavor.
++ *
++ * This function is NMI-safe, in a manner similar to
++ * srcu_read_lock_nmisafe().
+  */
+ static inline int srcu_read_lock_atomic(struct srcu_struct *ssp)
+ 	__acquires_shared(ssp)
+@@ -355,8 +358,15 @@ static inline int srcu_read_lock_atomic(struct srcu_struct *ssp)
+ 	if (in_task())
+ 		non_block_start();
+ 	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_ATOMIC);
+-	retval = __srcu_read_lock(ssp);
+-	srcu_lock_acquire(&ssp->dep_map);
++	retval = __srcu_read_lock_nmisafe(ssp);
++	/*
++	 * An NMI may interrupt lockdep itself.  Annotate it as a trylock
++	 * there, as srcu_read_lock_nmisafe() does.
++	 */
++	if (in_nmi())
++		rcu_try_lock_acquire(&ssp->dep_map);
++	else
++		srcu_lock_acquire(&ssp->dep_map);
+ 	return retval;
  }
  
-+/*
-+ * With atomic_irqsave, half the atomic SRCU readers disable interrupts instead
-+ * of preemption.  rcutorture_one_extend() may end the readers of a CPU in any
-+ * order, so the first one saves the interrupt state and the last one restores
-+ * it.  An extension must then neither enable interrupts nor enable bottom
-+ * halves within such a reader, and no reader may end under ->pi_lock.
-+ */
-+#define SRCU_TORTURE_IRQSAVE	0x20	// The reader disabled interrupts.
-+
-+struct srcu_torture_irqsave {
-+	unsigned int count;	// Picks the form of the next reader.
-+	int depth;		// Readers of this CPU that disabled interrupts.
-+	unsigned long flags;	// Interrupt state before the first one.
-+};
-+
-+static DEFINE_PER_CPU(struct srcu_torture_irqsave, srcu_torture_irqsave);
-+
-+static void srcu_torture_init_irqsave(void)
-+{
-+	if (!atomic_irqsave || !(reader_flavor & SRCU_READ_FLAVOR_ATOMIC))
-+		return;
-+	cur_ops->extendables &= ~(RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH |
-+				  RCUTORTURE_RDR_IRQ);
-+	cur_ops->no_pi_lock = 1;
-+	VERBOSE_TOROUT_STRING("srcu_torture_init atomic SRCU, irqsave readers");
-+}
-+
-+static int srcu_torture_read_lock_atomic(void)
-+{
-+	struct srcu_torture_irqsave *stip;
-+	unsigned long flags;
-+	int idx;
-+
-+	if (!atomic_irqsave || in_nmi() || !(this_cpu_inc_return(srcu_torture_irqsave.count) & 0x1))
-+		return srcu_read_lock_atomic(srcu_ctlp);
-+	idx = srcu_read_lock_atomic_irqsave(srcu_ctlp, flags);
-+	stip = this_cpu_ptr(&srcu_torture_irqsave);
-+	if (!stip->depth++)
-+		stip->flags = flags;
-+	return idx | SRCU_TORTURE_IRQSAVE;
-+}
-+
-+static void srcu_torture_read_unlock_atomic(int idx)
-+{
-+	struct srcu_torture_irqsave *stip;
-+	unsigned long flags;
-+
-+	if (!(idx & SRCU_TORTURE_IRQSAVE)) {
-+		srcu_read_unlock_atomic(srcu_ctlp, idx);
-+		return;
-+	}
-+	idx &= ~SRCU_TORTURE_IRQSAVE;
-+	WARN_ON_ONCE(!irqs_disabled());  // Its section must be interrupts-off.
-+	stip = this_cpu_ptr(&srcu_torture_irqsave);
-+	local_save_flags(flags);  // Disabled: keep it so for the other readers.
-+	if (!WARN_ON_ONCE(stip->depth <= 0) && !--stip->depth)
-+		flags = stip->flags;
-+	srcu_read_unlock_atomic_irqrestore(srcu_ctlp, idx, flags);
-+}
-+
- static void srcu_torture_init(void)
- {
- 	rcu_sync_torture_init();
-@@ -747,6 +808,7 @@ static void srcu_torture_init(void)
- 		srcu_ctlp = &srcu_ctla;
- 		VERBOSE_TOROUT_STRING("srcu_torture_init atomic SRCU");
- 		srcu_torture_init_forbidden_apis();
-+		srcu_torture_init_irqsave();
- 	}
- }
+@@ -563,7 +573,7 @@ static inline void srcu_read_unlock_atomic(struct srcu_struct *ssp, int idx)
+ 	WARN_ON_ONCE(idx & ~0x1);
+ 	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_ATOMIC);
+ 	srcu_lock_release(&ssp->dep_map);
+-	__srcu_read_unlock(ssp, idx);
++	__srcu_read_unlock_nmisafe(ssp, idx);
+ 	if (in_task())
+ 		non_block_end();
+ 	preempt_enable();
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 2b0e2b2d2c18..6aebd3e31654 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -828,7 +828,8 @@ void __srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
  
-@@ -786,9 +848,9 @@ static int srcu_torture_read_lock(void)
- 		ret += idx << 3;
- 	}
- 	if (reader_flavor & SRCU_READ_FLAVOR_ATOMIC) {
--		idx = srcu_read_lock_atomic(srcu_ctlp);
--		WARN_ON_ONCE(idx & ~0x1);
--		ret += idx << 4;
-+		idx = srcu_torture_read_lock_atomic();
-+		WARN_ON_ONCE(idx & ~(0x1 | SRCU_TORTURE_IRQSAVE));
-+		ret += ((idx & 0x1) << 4) | (idx & SRCU_TORTURE_IRQSAVE);
- 	}
- 	return ret;
- }
-@@ -828,9 +890,10 @@ srcu_read_delay(struct torture_random_state *rrsp, struct rt_read_seg *rtrsp)
+ 	/* NMI-unsafe use in NMI is a bad sign, as is multi-bit read_flavor values. */
+ 	WARN_ON_ONCE(read_flavor != SRCU_READ_FLAVOR_NMI &&
+-		     read_flavor != SRCU_READ_FLAVOR_FAST && in_nmi());
++		     read_flavor != SRCU_READ_FLAVOR_FAST &&
++		     read_flavor != SRCU_READ_FLAVOR_ATOMIC && in_nmi());
+ 	WARN_ON_ONCE(read_flavor & (read_flavor - 1));
  
- static void srcu_torture_read_unlock(int idx)
- {
--	WARN_ON_ONCE((reader_flavor && (idx & ~reader_flavor)) || (!reader_flavor && (idx & ~0x1)));
-+	WARN_ON_ONCE((reader_flavor && (idx & ~(reader_flavor | SRCU_TORTURE_IRQSAVE))) ||
-+		     (!reader_flavor && (idx & ~0x1)));
- 	if (reader_flavor & SRCU_READ_FLAVOR_ATOMIC)
--		srcu_read_unlock_atomic(srcu_ctlp, (idx & 0x10) >> 4);
-+		srcu_torture_read_unlock_atomic(((idx & 0x10) >> 4) | (idx & SRCU_TORTURE_IRQSAVE));
- 	if (reader_flavor & SRCU_READ_FLAVOR_FAST_UPDOWN)
- 		srcu_read_unlock_fast_updown(srcu_ctlp,
- 					     __srcu_ctr_to_ptr(srcu_ctlp, (idx & 0x8) >> 3));
-@@ -1015,6 +1078,7 @@ static void srcud_torture_init(void)
- 		WARN_ON(init_srcu_struct_atomic(&srcu_ctld));
- 		VERBOSE_TOROUT_STRING("srcud_torture_init atomic SRCU");
- 		srcu_torture_init_forbidden_apis();
-+		srcu_torture_init_irqsave();
- 	} else {
- 		WARN_ON(init_srcu_struct(&srcu_ctld));
- 	}
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index e7b578ec152f..18a03fad1038 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -519,6 +519,12 @@ then
- 	torture_set "atomic-srcu" tools/testing/selftests/rcutorture/bin/kvm.sh \
- 		--allcpus --duration "$duration_rcutorture" \
- 		--configs "$configs_atomic_srcu" --trust-make
-+
-+	# Half the readers then use srcu_read_lock_atomic_irqsave().
-+	torture_bootargs="rcutorture.reader_flavor=0x10 rcutorture.atomic_irqsave=1"
-+	torture_set "atomic-srcu-irqsave" tools/testing/selftests/rcutorture/bin/kvm.sh \
-+		--allcpus --duration "$duration_rcutorture" \
-+		--configs "SRCU-P" --trust-make
- fi
- 
- if test "$do_locktorture" = "yes"
+ 	sdp = raw_cpu_ptr(ssp->sda);
 -- 
 2.47.3
 
