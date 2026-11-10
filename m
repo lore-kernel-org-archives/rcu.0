@@ -1,64 +1,83 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=91.218.175.114
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794337301;
-	b=LZxdPnc9OXWxtp3m0TbQ1ivCTHKF5sXdcm6NFGtOfS0SP9o3+qEDiFtzIZKLl1vDYhA9
-	 QPLsaH0x8bSoTgOeZHHlyA9N07redPZsfyf7RR1SGSO70g8vU/XdQgYE96Royf3f/G4pr
-	 NUPa/mUvmXiOVpyA6o4GLMN8ReAFHOCeZ/zWQ18/q84qJbq7b+HNXyZTABO5hdE/0+ewY
-	 EYNgCgWK7LNm72BevlMvp+HUQwvsQYPTq52EFXp5EDqI3fAWXpLqNV84Df3VjAkDwLHGQ
-	 Wj8qo4tAMrS64RuYp6bY119PdjFuYfMIjo8uL9yjhuqmDa56Pcy+EX8oqWLRf9yDkEg==
+	t=1794337392;
+	b=Ngxaue9bzOMIj9SM1Nm4oLHSQg57oCbrexyvhJEnqrtqyI4As8lZdR99RTgN009Aaw+L
+	 QrOWkRUA5iz3hOC/sHq3WFqRYWf+1ifUrTErrgK+IYdZwAs/XsOGnzVx/s0NZ9ErXIM+T
+	 IZcm6P+PVc5E04w6btBUHYLJSB0iu23K4aw/bPZZDEAi08/jRDLZR8aN8Fwt8sE+Hz/Z5
+	 bhyvt2W2glJmWd16K5KGMdui8VSaSWhjfuV9HGmNH7HqKdbdrVbqEPIMdILwWhi98NFuh
+	 X1ban9DLNVBwMpkt+jLAfw6Q5KlDfGq47umfq/DryTLI5hpSnzed5aNPflg8W4aJ53Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794337301;
-	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
-	 X-Mizu-Trace-ID:X-Migadu-Flow:Date:From:To:CC:Subject:In-Reply-To:
-	 Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=ANGsAW3ddISCEyK4d//HKeoYe5zuJzrn5kEwLtvmkDM=;
-	b=vo26WBOty+WuEz9TkOlTt+haZ4F97jaXgK7QEpTpQYZyPrEl2wL7I5UcivdwyOndowoi
-	 Q0UqYdclGAqLyXR/K6ySnsKbXw9p/8PNFEvLrAxOh6JS3KmH87mZOZMXVDcpFGzQmd57P
-	 dRRr/fKbOPM5jYUVyNnY6XKjhlOldWYF+MH+Agmd0CPdxWuJMtMmfOoKwPHtrPEr3CJ/s
-	 l0aHUuuCCuAXdhEmtw1jyQjPT5Usizk37UlSRQIL/6oMic7rIbZ5FPvXw+WQWXQGiW0oC
-	 JqTczl5ANilX3mrl+QpJXXqRAivjCFuUG7UyWk5imdGg3SRj77xjf/XmeMBV0u4buRg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794337392;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=bekQ0kWwdLRAS0Ig0iEy6992/HDQ2m8y9hYfsYqrh/c=;
+	b=3BrstzuPHRZKxuO5AdTW13CxKbS3phspri7Qd6B99Biu3WQtYVR0lpu/dPUb9nqF1typ
+	 rPQupD73j5Mj8a23oLB1O6I/eK14CBTVDukte6Iw87STu2UvK4AYVVjlKg594w38ygawC
+	 lP5YRW4J1sG7YUC72E8GElljfckJpZZY3WX4VkTB1EIr+hjlTqD+FYoDgQgfTnWzB8gQi
+	 QtQaZIkklGJAus0SCc/cpLcCI4Cx/MmnIyb7jcA7CCSBMGzlm1ri9ownOvwPSWGM6AeWF
+	 cBf5FKpqjjPzXynQfhluUddA/e1O697RkVppUV4gYQCTX4WCBc1OA2C3VxAIhickRlw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.dev;
-	spf=pass smtp.mailfrom=linux.dev;
-	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=VCkwheyk;
-	arc=none smtp.remote-ip=91.218.175.114
-Received: from mta0.migadu.com (out-114.mta0.migadu.com [91.218.175.114])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hYddgtLb;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05175606A326
-	for <rcu@vger.kernel.org>; Tue, 10 Nov 2026 19:01:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 05175606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87107606A321;
+	Tue, 10 Nov 2026 19:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=VCkwheyk
-X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=n6jhI9QzIIOuQuMEhfxCfvU9Cq83yhTDFf2khKzfCyE=;
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1794337297; v=1; x=1794942097;
- b=VCkwheyk2MSmuDtSZjjN4wklntbwI5Gk74s1ue9+wDMxbdtVzBivQZxQkFrgqI94uL+8VD3w
- xw/RdhRepjFpf/P9ELNb7RZnXQi0EUtFQCzEsUFsDo7ewm5MFmgUJ3xFFc/IT1Bz4pUlPmRU1KH
- UQWZqKtxBaTO4sKbqQeTXU+4=
-X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 9b3cd5053f99a7d5;
-	Tue, 10 Nov 2026 19:01:36 +0000
-X-Mizu-Trace-ID: 9b3cd5053f99a7d5
-X-Migadu-Flow: FLOW_OUT
-Date: Tue, 10 Nov 2026 19:01:36 +0000
-From: Bradley Morgan <bradley.morgan@linux.dev>
-To: paulmck@kernel.org
-CC: boqun@kernel.org, christophe.jaillet@wanadoo.fr, dan@cryspen.com,
- dave@stgolabs.net, frederic@kernel.org, jiangshanlai@gmail.com,
- joelagnelf@nvidia.com, josh@joshtriplett.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- mathieu.desnoyers@efficios.com, neeraj.upadhyay@kernel.org,
- qiang.zhang@linux.dev, rcu@vger.kernel.org, rostedt@goodmis.org,
- urezki@gmail.com
-Subject: Re: [PATCH] rcuscale: Constify struct rcu_scale_ops
-In-Reply-To: <b6f19ac5-1336-43f4-8bb3-a891984adb19@paulmck-laptop>
-Message-ID: <CE48A881-9AAF-467F-A0FF-C8F853643888@linux.dev>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hYddgtLb
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FA241F008A1;
+	Tue, 10 Nov 2026 19:03:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794337392;
+	bh=bekQ0kWwdLRAS0Ig0iEy6992/HDQ2m8y9hYfsYqrh/c=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=hYddgtLbSEF2hew9xCqpEA8t7m3zVPJ2cSJ++Bm2xcEs+eWPjE0niEKK84RTINEDr
+	 7xRSHw77d5sAHIR21msrfdLWObmYMUAE13+ZjgITPaJHuaEWcW+n+mvkQSYaxCnVfw
+	 Ls21375DT3tFUcDJxD2m6E2EMLxZRiqxpiY+NvYNrLmRrj115x/7ukJpgduZaCJgVz
+	 UfblOgLqwLJaN0un1NR16UxJEkBENKJ8hwGerneD5K7xSybPUKvlh5kXrtQLGzNZrJ
+	 +m6Rs5732a6/B0RLMryO6wEMx/8iFylUc7a8Q7ZX5OmYCNxhR4IHqHEKXUPDQA8wzL
+	 M2UeAz4k2OWTA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id DAD95CE0AD8; Tue, 10 Nov 2026 11:03:11 -0800 (PST)
+Date: Tue, 10 Nov 2026 11:03:11 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Puranjay Mohan <puranjay@kernel.org>, linux-kernel@vger.kernel.org,
+	Boqun Feng <boqun@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Liam R . Howlett" <liam@infradead.org>,
+	Lorenzo Stoakes <ljs@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
+	Andrew Ballance <andrewjballance@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+	rcu@vger.kernel.org
+Subject: Re: [RFC PATCH 00/12] RCU pseudo-transactions
+Message-ID: <06b1b844-8c2c-4199-b8ca-5d6e21cb1c58@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20261016133319.433617-1-mathieu.desnoyers@efficios.com>
+ <20261023181940.457424-1-puranjay@kernel.org>
+ <f785237c-ee5e-4ad3-8ee9-79474f5f45c8@efficios.com>
+ <9667c08c-333e-4fe5-9812-c5ccaa183e36@efficios.com>
+ <853d8469-94a4-4b33-a0d5-d6d2138fe3ef@paulmck-laptop>
+ <597586c9-35ae-43bd-9b79-7abf62057838@efficios.com>
+ <3cb75140-1d10-4de3-86e6-c9d70edd2da5@paulmck-laptop>
+ <84fdca577207092bd16fc8f3949c9b7a776750ba.camel@infradead.org>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -68,84 +87,34 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <84fdca577207092bd16fc8f3949c9b7a776750ba.camel@infradead.org>
 
-On 10 November 2026 18:34:00 GMT, "Paul E. McKenney" <paulmck@kernel.org>
-wrote:
->On Tue, Nov 10, 2026 at 08:06:59AM +0300, Dan Carpenter wrote:
->> On Mon, Nov 09, 2026 at 10:44:16AM -0800, Paul E. McKenney wrote:
->> > On Mon, Nov 09, 2026 at 06:32:15PM +0100, Christophe JAILLET wrote:
->> > > Le 09/11/2026 Ã  00:06, Joel Fernandes a Ã©critÂ :
->> > > > On Sat, Nov 07, 2026 at 10:02:25PM +0100, Christophe JAILLET
->wrote:
->> > > > > 'struct rcu_scale_ops' is not modified in this driver.
->> > > > > 
->> > > > > Constifying these structures moves some data to a read-only
->section, so
->> > > > > increases overall security, especially when the structure holds
->some
->> > > > > function pointers.
->> > > > > 
->> > > > > On a x86_64, with allmodconfig:
->> > > > > Before:
->> > > > > ======
->> > > > >     text	   data	    bss	    dec	    hex	filename
->> > > > >    45585	  24946	   2816	  73347	  11e83	kernel/rcu/rcuscale.o
->> > > > > 
->> > > > > After:
->> > > > > =====
->> > > > >     text	   data	    bss	    dec	    hex	filename
->> > > > >    46545	  23986	   2816	  73347	  11e83	kernel/rcu/rcuscale.o
->> > > > > 
->> > > > > Signed-off-by: Christophe JAILLET
-><christophe.jaillet@wanadoo.fr>
->> > > > > ---
->> > > > > Compile tested only.
->> > > > 
->> > > > rcuscale is a test kernel module, is it worth adding boilerplate
->for
->> > > > non-production code sighting security reasons?
->> > > 
->> > > Oups, now I better understand Bradley Morgan comments.
->> > > 
->> > > I didn't notice it was a test module.
->> > > My patch makes no more sense, as it is not hardening runtime, so
->feel free
->> > > to just drop it.
->> > > 
->> > > Sorry for the noise and not seeing it by myself.
->> > 
->> > Although the header comment does say "Read-Copy Update module-based
->> > scalability-test facility", maybe there is something that should be
->> > done to more clearly mark code that is not to be used in production.
->> > And maybe to inform the LLM review bots of this.
->> > 
->> > But this is bigger than just RCU.
->> 
->> Christophe has been constify things for years and years.  There is
->> an argument to be made that it's just the right thing to do whether
->> this is test code or not.  Someone might copy and paste it, for
->> example.
->> 
->> Of course, everyone is overloaded with AI.  I feel like normal cleanup
->> patches are more likely to get NAKed because everyone is just totally
->> overwhelmed.
->
->Fair enough, though rcutorture.c (in the same directory as rcuscale.c)
->*does* write to its counterpart to this structure.  The point being that
->this is an optimization-like thing rather than a prohibition-like thing.
->
->So we might want some way to differentiate between these two cases.
+On Tue, Nov 10, 2026 at 10:49:03AM -0800, David Woodhouse wrote:
+> On Mon, 2026-11-09 at 17:34 -0800, Paul E. McKenney wrote:
+> > > Could the atomic flavor count its readers as srcu_read_lock_nmisafe()
+> > > does? Then a reader could also enter from NMI. The code I have for the
+> > > next version keeps one counter per NMI nesting level for this. With
+> > > SRCU, the sums of locks and unlocks handle the nesting already.
+> > 
+> > The other user that I know of is David Woodhouse, now CCed.
+> > 
+> > David, would you be OK with srcu_read_lock_atomic() using NMI-safe
+> > counters, similar to __srcu_read_lock_fast()?
+> 
+> I can't see any reason why I should object to that, as long as the
+> synchronize_srcu_atomic() stays in the 4-16µs bracket which was our
+> major criterion for this approach.
 
-Well, I'm not saying "no this shouldn't happen", but the benefits are
-negligible ISH. Well, Paul, what do you reckon? I'm not fussed, just a bit
-"ehhh..."
+Then full speed ahead!  ;-)
 
->
->							Thanx, Paul
->
->
+> I'm still iterating on the KVM GPC use case¹, as sashiko-bot keeps
+> finding things that my own local sashiko runs don't. 
+> 
+> ¹ https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/gpc-srcu-v3
 
---- Thanks!
+I know that feeling...
+
+							Thanx, Paul
