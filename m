@@ -1,54 +1,70 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794332525;
-	b=Ux2i8wkGk5w85rTk8TDd+MHt5B/RiNjV6rjRZDoRFRDc4ibKv/kjIAikrnUWdbc1Mifw
-	 WkOAdiI70qPQE4WT0UE125/S5E7u64qjW0ruA+or/Kqqjb/cKUHAehXC7idPEwayUuBfF
-	 +JZtrJ+ojbzvAq9tr5MhWN/YD9y07S1ckNfn7TGxUYNhSKtehu4t//4D1v64fqapLdXd+
-	 7bmIISRy/eaPEr/3JcbdEFPoEMGabsjmyR5ZV8hWSixauVlGE5YtBdr/A4yRSxLa5Tdcb
-	 SdC0q6KSm6iZ5rWcTGwJ2pEnYc3RSs39CguhZLUM7C0tcvSG0ClDCYPYYmrttVREW+A==
+	t=1794335641;
+	b=48S1OPiAVGlnBIxFqdN9qkl5Cn8+bWl+17ED0JzuLi2z8uqbBDbpYfChHrg7rGnQT1sB
+	 5D0nf+yeRAh//e67ki5FqEkhMhSie3scg928oJUpjAJS713iyO49XrL1NjfXFbw88QNSm
+	 T+jCTuP7FB1j8b8yzORwYYBnpyJs/iZUkIpY8wqG3bRfPQ3d3Lp6KcUOvqXWAuxuQG3U3
+	 6FAMe5d1He+wlLFFFgM3MDiLq7gXmuDJJkM+TpUCo8RIk4jbGNwQpXCSGvIuxSGfB4V/h
+	 iRNkfFO/wg6DnaQe4tl53esaQAbKrgPl5nKFF5NG05S6scQk3kVYG/i76FYuYCe0u9w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794332525;
-	h=DMARC-Filter:DKIM-Signature:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Subject:To:Cc:References:Content-Language:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=z6qhmSVVpuzuoGiVpBIjsGohvtx1OvBYwJqje5IRlEA=;
-	b=VGkRl0117BikZJ5WHBXrbXn+tDrS8r/ltLT/EjDTJJ3X/snS2Fyw/nVB0M7XbN6ywlkd
-	 9IzzHhmmQwpm2OVEHmcd1wso70bHXyHpYMYpU/Ws4FH5BfAsGuW6TG58eau5ctFxj22Hk
-	 Rgcq0GuCwIPe97bG4IGbt/lDRzajuM4+74yaRc2+9gOxYL02LOcNQzttJJhVJrs+e8bUZ
-	 iR3IkqCRNaQjkqzpdedwQXRFRHGb8BgAT3osCFp8oS0f6U1F7qJrbpiiQShaVgIkYvcr9
-	 S7wGtrjHc9prZVJ0zwy612aeBKJ4IXgQCP5xZg0d32YZ3p3/QwGnTRlJnxcJQrYrhnA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794335641;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=Jg5A0iY77qVWbqkVY2Nzm1SMa2Mda71LdXppl8oQAGE=;
+	b=fVgHXt/HtYBccp9T54edNqitqra2RUzwa+/Qj68WaTyDTYra4vbViYoYXlmiZtrq9Xy1
+	 u6nuxb1i2OzmdG1Y19X0WNRNUjk5JfKxmmZaKCAlBoi8mhondng7E2lHBps0+BkKXjA5p
+	 PArklmoF/y8RebFgPSA2ztzSTHrPLgBNDhW0IWXcubtrR4Fy3X0PctpmRn4XLf81TWq2y
+	 sg+8imw1e5wWCwCbWr+JUW2UvS5dRt+TMj07Ze4gS8G2oFpoay9otv/prAFP13V5U3H3k
+	 sX8TUnnW/mojTbLT5gECQ4EQMyVsf979iZmFIkc+heUYBNbFvFdIgYWKfUiJeKxUkfg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=infradead.org;
-	spf=pass smtp.mailfrom=infradead.org;
-	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ADIqkJTK;
-	arc=none smtp.remote-ip=198.137.202.133
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J4VKYkxG;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FB30606A321;
-	Tue, 10 Nov 2026 17:42:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4FB30606A321
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020F5606A320;
+	Tue, 10 Nov 2026 18:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ADIqkJTK
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=z6qhmSVVpuzuoGiVpBIjsGohvtx1OvBYwJqje5IRlEA=; b=ADIqkJTKAtvjpq7/dfR8LPX80y
-	Y2NsltStTJhp6BWwpgTUgzZoFXfsBbbdDmz4OZdYaJDKRzwoMSiKN+0SOWGSG5OZ9kp1QUR4ElkI2
-	CV3qiRAUsDcpxZPMu4chxZx34LCGOAkS0MplFPiezBoufqNbAIWv5ar9P2ZenFNtC7QxPxCQbSbJY
-	KSrYOYwAT0Um8DaltWGQwNiUXjcNJjBWU9feEb+0wJa11RCgnMluWtGr/Y9TM/kzUZEx/eQghRwFO
-	ptOMrW4R4by+8PTgXEQAnyqjBrN/w9U12K74ve6up5WByn+zSB7UmXySJ8KhIUK48VVipisvuRB/x
-	NjlJvGyw==;
-Received: from [50.53.43.113] (helo=[192.168.254.34])
-	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQpr7-00000004ht1-39q4;
-	Tue, 10 Nov 2026 17:42:01 +0000
-Message-ID: <1927ace7-86f4-463e-bdda-b3a5bc300eb2@infradead.org>
-Date: Tue, 10 Nov 2026 09:42:00 -0800
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J4VKYkxG
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC6581F0089F;
+	Tue, 10 Nov 2026 18:34:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794335640;
+	bh=Jg5A0iY77qVWbqkVY2Nzm1SMa2Mda71LdXppl8oQAGE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=J4VKYkxGUz5OIifsV7YW4V1irx7HRPZ242aaxR2fWIx8uVvgOCAxycvBfp6wSvek5
+	 uUoM24ys6VCYVdBdOXhRXwYb0pYdowiw+3XXSsndylxyIx7rKqDnmmQw6fvAD/vGos
+	 bkzw4V60MCiFTd1DMLdZZHgVQBXeZz3L670dmVMXGfetVdPzkjGLmUbkodIX/v6cqh
+	 lJvsmBHIXqQLvVm9DmmGFPuwWK1mpJbr2IOqNNfSTpCAl5+PRM6X/OrPjt/VEgcLrX
+	 ymOm4mbaiL4G19xEWofnTkQGz4ZRVj+Flt6Fj1WuGAYkQ+ypjGqI5oz23P5LRUTdMO
+	 F9SslIzC6jZGA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 4FD42CE0AD8; Tue, 10 Nov 2026 10:34:00 -0800 (PST)
+Date: Tue, 10 Nov 2026 10:34:00 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Dan Carpenter <dan@cryspen.com>
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcuscale: Constify struct rcu_scale_ops
+Message-ID: <b6f19ac5-1336-43f4-8bb3-a891984adb19@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <3f546f8e102ef271e7d5ac6d8b6a1f44d0fb20cb.1794085327.git.christophe.jaillet@wanadoo.fr>
+ <20261108230623.GA3148953@joelbox>
+ <2727df26-9f09-48c9-90b5-2d1416c3b2b1@wanadoo.fr>
+ <730e60cb-30fd-43a3-8152-543b4ba5878e@paulmck-laptop>
+ <avKmc-690MOAGJc5@stanley.mountain>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -58,67 +74,68 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/7] sched: Mark RT_GROUP_SCHED broken
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, rcu@vger.kernel.org,
- linux-doc@vger.kernel.org
-Cc: John Ogness <john.ogness@linutronix.de>, Jonathan Corbet
- <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- luca abeni <luca.abeni@santannapisa.it>,
- Yuri Andriaccio <yurand2000@gmail.com>,
- Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Davidlohr Bueso <dave@stgolabs.net>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Qais Yousef <qyousef@layalina.io>
-References: <20261110-sched_dl-v2-0-cc9399f7aeb1@linutronix.de>
- <20261110-sched_dl-v2-1-cc9399f7aeb1@linutronix.de>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20261110-sched_dl-v2-1-cc9399f7aeb1@linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <avKmc-690MOAGJc5@stanley.mountain>
 
+On Tue, Nov 10, 2026 at 08:06:59AM +0300, Dan Carpenter wrote:
+> On Mon, Nov 09, 2026 at 10:44:16AM -0800, Paul E. McKenney wrote:
+> > On Mon, Nov 09, 2026 at 06:32:15PM +0100, Christophe JAILLET wrote:
+> > > Le 09/11/2026 à 00:06, Joel Fernandes a écrit :
+> > > > On Sat, Nov 07, 2026 at 10:02:25PM +0100, Christophe JAILLET wrote:
+> > > > > 'struct rcu_scale_ops' is not modified in this driver.
+> > > > > 
+> > > > > Constifying these structures moves some data to a read-only section, so
+> > > > > increases overall security, especially when the structure holds some
+> > > > > function pointers.
+> > > > > 
+> > > > > On a x86_64, with allmodconfig:
+> > > > > Before:
+> > > > > ======
+> > > > >     text	   data	    bss	    dec	    hex	filename
+> > > > >    45585	  24946	   2816	  73347	  11e83	kernel/rcu/rcuscale.o
+> > > > > 
+> > > > > After:
+> > > > > =====
+> > > > >     text	   data	    bss	    dec	    hex	filename
+> > > > >    46545	  23986	   2816	  73347	  11e83	kernel/rcu/rcuscale.o
+> > > > > 
+> > > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > > > > ---
+> > > > > Compile tested only.
+> > > > 
+> > > > rcuscale is a test kernel module, is it worth adding boilerplate for
+> > > > non-production code sighting security reasons?
+> > > 
+> > > Oups, now I better understand Bradley Morgan comments.
+> > > 
+> > > I didn't notice it was a test module.
+> > > My patch makes no more sense, as it is not hardening runtime, so feel free
+> > > to just drop it.
+> > > 
+> > > Sorry for the noise and not seeing it by myself.
+> > 
+> > Although the header comment does say "Read-Copy Update module-based
+> > scalability-test facility", maybe there is something that should be
+> > done to more clearly mark code that is not to be used in production.
+> > And maybe to inform the LLM review bots of this.
+> > 
+> > But this is bigger than just RCU.
+> 
+> Christophe has been constify things for years and years.  There is
+> an argument to be made that it's just the right thing to do whether
+> this is test code or not.  Someone might copy and paste it, for
+> example.
+> 
+> Of course, everyone is overloaded with AI.  I feel like normal cleanup
+> patches are more likely to get NAKed because everyone is just totally
+> overwhelmed.
 
+Fair enough, though rcutorture.c (in the same directory as rcuscale.c)
+*does* write to its counterpart to this structure.  The point being that
+this is an optimization-like thing rather than a prohibition-like thing.
 
-On 11/10/26 9:34 AM, Sebastian Andrzej Siewior wrote:
-> diff --git a/Documentation/scheduler/sched-rt-group.rst b/Documentation/scheduler/sched-rt-group.rst
-> index ab464335d3204..788df93cb3a04 100644
-> --- a/Documentation/scheduler/sched-rt-group.rst
-> +++ b/Documentation/scheduler/sched-rt-group.rst
-> @@ -18,6 +18,11 @@ Real-Time group scheduling
->  0. WARNING
->  ==========
->  
-> + This document applies to RT group scheduling provided by CONFIG_RT_GROUP_SCHED.
-> + If you don't use, schedule real-time tasks and experience throttling issues
+So we might want some way to differentiate between these two cases.
 
--ENOPARSE.  Is that:
-    If you don't use or schedule real-time tasks and experience throttling issues,
-
-
-
-> + please look into Documentation/scheduler/sched-deadline.rst and there for the
-
-                                                                for the
-
-> + fair_server.
-
--- 
-~Randy
-
+							Thanx, Paul
