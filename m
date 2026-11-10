@@ -1,48 +1,48 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794269494;
-	b=CyGlT5Qk9Ndm9sPnFivde5mQMfpL6vilDY2Z6g7fdmNzdg1tfcM1mQZH4anUqTMph535
-	 VljH0Y6WWzIgzhIvDrNb+kw7PkAQICORK0wgVtRUtrB4tQ2/ZoAC0gQd8OXuvqh26TPk6
-	 YqUEpaXdIf+EToLr8AkuQbPyJf+hhn0UObw3mueCJJ0PItI0SbpcLu4TimkVaAbE/RNkq
-	 iK7Ea3YXVjJJtgErL5ZWHTb277H5cOhuFimCGjRaZpgN+t1NOtrzzq6PGEQ9O9BFwFwqO
-	 CSaJFXRubVSPqSpY+LM4+EZy4xqUzv+WYfcMbp4ofhm9G3afe/OkXQWdsAcdjK0CCOw==
+	t=1794269544;
+	b=mXHocm16ItZfqkakgAOcRszMIkaBhhBD/gkqOBn5Z0Dr4BsgWDbVmDOPvs2GBTjOeViw
+	 9Jg/fmKzZ88Czql5QBM0GpQmCLMZ89cTrDeHLBWc1K/Evb+gmuwIvA1FoLBaqfbjrbOMY
+	 63VqZHsAXnZv/sUOCwCjLZrh9Nalq+ZsiHSR6FBVAIES/m4Y27lamDufdvf8qtFZL3eZl
+	 aIJbWUqKguduwgN+YM0Hl41pH5opaTMnTj5/dEMucSqdWHZgxc6nUNtQsO25weEmV5pyW
+	 U/V2hKN/xAz03OTrhZdu9u3nQZxgXJooD7G8yqtgm0GUdAH3r/msHsNIbjxm32dgfBQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794269494;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794269544;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
 	 In-Reply-To;
-	bh=wECulbhH+/PYIsAouc/0+vQU/WPYaJWlZhevaQ1pdgA=;
-	b=zHCw96LkvW9I04c6F6RCYIClKNVJ6d+AfKULBs/vJLWhKjFyf8edy2IIlOkYr0OS3QEt
-	 HoAOfKXJ0K4pPLFnzKryAtgeWiPgn7Aw5R4tDkRAeZNrO3lDgC7XIign3iXsoGYJc8yCW
-	 6R4AZ5ezlBlv1i+aDnLoDiR0HN8QG30onfAZAVqFCMPXsjc5HTQIUWx6TyXwuBiXvnGX+
-	 yspmsgaPhqSKq+k1cx5xYfW+CDL+t4KCzlg6Lsdk8xPk6PGjqAhDNW6N1aLvzV8Jelcy8
-	 RztiQEikS0roiqS0xcC5JNmfsGVsHYgywn3XUq8I2sVap/rpnmuUYwx9LSZBrKFxokw==
+	bh=IcvF0Y2+Ue8K/A4VcRAwUtlLAARKuCPNclQYGp+xjhw=;
+	b=pONIBdtsEIuwgjW95OjZ1x0L2noJ25hrN4tA/s1z3n8A4juHdKzYXB7CMyKUehNdlJA8
+	 RDkrXYEr2Pyrm37PZM66I/Zq+9kdKrOUjlSa53z4xJdWHKQw5+trDSTn5WYgbWkLMZOMu
+	 2RxSCDhB9i5JDaRfxoRdxCMdAeS11cStLKgRU7a7RVhJkQrqK8YcVbk5ykno5MYFOvWji
+	 ohouVeZ1KsqJeIrEcoSEwwZKMk2u1L2LgEEmVBUlnVa2yk0gPhPzx/X6yFuwUQliI85v8
+	 B0xav1UYWn55X0TnLC9DHOc6ufgzpdS7i3rueNdYLNlVYbsXzhJxccF4FiTfOHiEZzg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Cb11HATF;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KB2ZRlhR;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 310A4606A332;
-	Tue, 10 Nov 2026 00:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4E9E606A321;
+	Tue, 10 Nov 2026 00:12:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Cb11HATF
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A81B1F0089F;
-	Tue, 10 Nov 2026 00:11:34 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KB2ZRlhR
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C7651F008A1;
+	Tue, 10 Nov 2026 00:12:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794269494;
-	bh=wECulbhH+/PYIsAouc/0+vQU/WPYaJWlZhevaQ1pdgA=;
+	s=k20260515; t=1794269543;
+	bh=IcvF0Y2+Ue8K/A4VcRAwUtlLAARKuCPNclQYGp+xjhw=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=Cb11HATF1t1c/JnWLzbX6q9oYoGbypkpkFMthwSuWR+x8rBlzHhwryRtY2/TCQ/am
-	 PWNp6x3m4Dawulyjak75YF9ctzy8tE5ve6hU8Z1Q2XmQt/TVE7lSteiqVyLNjaG0mc
-	 3uwDwEtOPUoZW/uL2/Wp95gOWl764BeFa/DG2TgVNnJ0mbA0ERGtLPVRieIDR/V64I
-	 yD8JNl2r5ZhHb4sZr4VSqWOhEJR4Ci/YHinqAVFTT+DjkmHIqbRwN3QWkil4rZ8BGv
-	 mz/swpIZRaSnYXiz7cfBUTin63uzSNtQnNEk5D6WywfoIY7bXy1BGupJyiDfUmeF+N
-	 qQpbh8OflLx+w==
+	b=KB2ZRlhRUGV/qguOKLpGMCqnKUz0WRWQ5tiWXXT4tDz5ItWZ+86EKOnomMsWF//ef
+	 xvA3TkoJ54YySjY6T0phu1PnO7u7tSPjVfu0qyqLSamqFgwFtAezkwytlAk3IBc52y
+	 hTYo+ObXvc1LOPfV/H7/TQ/4SNNJ+jXDUd6AU+vt4dxufzuM7Noc4GX2dKwjjmoDBC
+	 BCwdEb9kCVV7KPUjKw8pEbaOm/6YBuXwfOSSd2ESaKQ9nD31B3ZfvoDE1V8qG8yzE/
+	 CnFrdVrqvr+m85uma9U8vsJZhw7Gyq+sDAfh54MzdKt8dhdxvXjndGS0NVQxL2bVGv
+	 NbeM77QAyftTQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BEE6CCE0C97; Mon,  9 Nov 2026 16:11:33 -0800 (PST)
-Date: Mon, 9 Nov 2026 16:11:33 -0800
+	id 63BCECE0C97; Mon,  9 Nov 2026 16:12:23 -0800 (PST)
+Date: Mon, 9 Nov 2026 16:12:23 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Joel Fernandes <joelagnelf@nvidia.com>
 Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
@@ -52,20 +52,13 @@ Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
-	kasan-dev@googlegroups.com, linux-mm@kvack.org
-Subject: Re: [PATCH v2 4/5] kasan: Avoid an unrelated RCU warning in the
- callback test
-Message-ID: <c333cb25-d007-4a0c-a8d8-86187c67d747@paulmck-laptop>
+	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] MAINTAINERS: Add scftorture to TORTURE-TEST
+ MODULES
+Message-ID: <69f1c0b3-a314-4743-9fce-1d9d726f071c@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20261109000243.3936824-1-joelagnelf@nvidia.com>
- <20261109000243.3936824-5-joelagnelf@nvidia.com>
+ <20261109000243.3936824-6-joelagnelf@nvidia.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -77,48 +70,47 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261109000243.3936824-5-joelagnelf@nvidia.com>
+In-Reply-To: <20261109000243.3936824-6-joelagnelf@nvidia.com>
 
-On Sun, Nov 08, 2026 at 07:02:40PM -0500, Joel Fernandes wrote:
-> rcu_uaf() passes a false protection condition to
-> rcu_dereference_protected(), which produces a suspicious-RCU-usage
-> warning before the intended KASAN failure occurs.
+On Sun, Nov 08, 2026 at 07:02:41PM -0500, Joel Fernandes wrote:
+> kernel/scftorture.c has no MAINTAINERS entry, so get_maintainer.pl
+> reports only the linux-kernel list for it. It is one of the torture-test
+> modules alongside rcutorture, locktorture and refscale, so list it in
+> the TORTURE-TEST MODULES entry.
 > 
-> The pointer refers to a fresh allocation that has not been published to
-> readers. State that protection condition explicitly, leaving the intended
-> tests intact.
-> 
-> Test:
-> Built with CONFIG_KASAN_KUNIT_TEST=m
-> Booted Qemu guest (8 CPUs), ran modprobe kasan_test filtered to kasan.*rcu_uaf*
+> While add it, add me as M: to torture modules as well as I have
+> contributed patches/fixes to it over the years and use it for RCU.
 > 
 > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 
+Welcome aboard!  As usual, congratulations and condolences!  ;-)
+
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-And yes, the second argument to rcu_dereference_protected() is a boolean,
-not a pointer.  Good catch!
-
 > ---
->  mm/kasan/kasan_test_c.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  MAINTAINERS | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/mm/kasan/kasan_test_c.c b/mm/kasan/kasan_test_c.c
-> index b9e167ed5be3..4e23765d722c 100644
-> --- a/mm/kasan/kasan_test_c.c
-> +++ b/mm/kasan/kasan_test_c.c
-> @@ -967,8 +967,9 @@ static void rcu_uaf(struct kunit *test)
->  	ptr = kmalloc_obj(struct kasan_rcu_info);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 93abbb315065..5c068224048a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -28282,6 +28282,7 @@ TORTURE-TEST MODULES
+>  M:	Davidlohr Bueso <dave@stgolabs.net>
+>  M:	"Paul E. McKenney" <paulmck@kernel.org>
+>  M:	Josh Triplett <josh@joshtriplett.org>
+> +M:	Joel Fernandes <joelagnelf@nvidia.com>
+>  L:	linux-kernel@vger.kernel.org
+>  S:	Supported
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git rcu/dev
+> @@ -28290,6 +28291,7 @@ F:	kernel/locking/locktorture.c
+>  F:	kernel/rcu/rcuscale.c
+>  F:	kernel/rcu/rcutorture.c
+>  F:	kernel/rcu/refscale.c
+> +F:	kernel/scftorture.c
+>  F:	kernel/torture.c
 >  
-> +	/* The freshly allocated object has not been published to readers. */
->  	global_rcu_ptr = rcu_dereference_protected(
-> -				(struct kasan_rcu_info __rcu *)ptr, NULL);
-> +				(struct kasan_rcu_info __rcu *)ptr, true);
->  
->  	KUNIT_EXPECT_KASAN_FAIL_READ(test,
->  			call_rcu(&global_rcu_ptr->rcu, rcu_uaf_reclaim);
+>  TOSHIBA ACPI EXTRAS DRIVER
 > -- 
 > 2.54.0
-> 
 > 
