@@ -1,73 +1,69 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794345283;
-	b=XyxHRhZdwBUXvH8/zsGsK88Cb0DKtbujxuVbA2Mhh1a2kZc39UQYEICHvqOgXCd8yUPK
-	 o0GRjsAF3A/keYPD9OR8c5OZDektAbW4HO3JhMTaxz4jS2IWFsF/FmfSCYn3ie558whQv
-	 tJ1K38XrAFdDx5/9yZyZ3VeGC/RPcUjM7WbqRbo1AUNIuWcMwxUg9cfjtyS7QGCqYtNc5
-	 sIVwN3+twXZ/Y0Y94NVPSDg1GBBvbGS3pjg1ifAS35LAMDlb783Ea2shWGF6e0JDNXPZJ
-	 1mjdYhX4J+K1HujpmR+xTAgHZUnEVmHSv/kV5wbhV99AJGUgKRyZ1csI5FtxaSUFYzA==
+	t=1794346314;
+	b=bjJVm7xtRvVLW0JQYk86uDgZpgR/BT2HWuc/w3Q3xy+Th4HNYsPS0rmUigQbSlMZ/A3Z
+	 RWE5L+My2AekEEoiBt6zFwmiVGvH/pVsNfMvDfT+hbRmkQMejG13X34UYqJL9ebsUSx2u
+	 +ykb8m2pUKtQpvJDgAG2tDfyokqCgk0MBdvc/xOd0id59YdyNTkgLknFM2GqC/qvG2mh8
+	 w9XAEhG38+S69rIcNnaGR+AXVSaky2jZy/JZlikMTvs4Ai6IjV9xa8kheB9RDviSJ8qCS
+	 +TywkV5IE2l4VBbK5QvoJqyWWAR3CILBHyki26wrwMEjR/79eG4iGcIgVxFWgp8Ajog==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794345283;
-	h=DMARC-Filter:DKIM-Signature:Received:Message-ID:Subject:From:To:Cc:
-	 Date:In-Reply-To:References:Content-Type:User-Agent:MIME-Version:
-	 X-SRS-Rewrite;
-	bh=QQrHnYDyygVgTjK8FaoUWk5CM7nixWrNnX9TzMFQ8J4=;
-	b=1jafEDAdltwih56JqyCmmZI7HhhNZJsRsZcVTRBTOtIuyzU29iIH+rMxQbEEpWHy615y
-	 W1LzE6QeONSPgnWJmkrB86BowzFgWEIfyiXdix0qlNevq0yMlHIZ5pBaY8XmE+afIKxkA
-	 OZVcU+l9h6gkIHBrkJX5BwTmTsrGAOq/ShKs5OPPrehBNA5EY5Let04BFn2ura5ubKODW
-	 ZPkloybykXD8sVR9TYldpLPRPfmG1Nc92TSXj7GwU8raD+dewHtN6aRM5Nu2qIuMADFAS
-	 HShlJGvE9IOY1ng4uVlL47icMdXN8AL+SSH04mRYUFpoj3AUs+Td5yYOhKafiiwGPqw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794346314;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=Kh0ZeYdYoNYqCwSPGE+2Sg6clJviXZAk10ucqwqx6js=;
+	b=KqGHyQ5ukH/rhJLOT+BMuhYTVw5fSMYEaFcPtcANGyH9Zh8c4glDbG3n6aka6DLLy6AP
+	 kQXnT+PTDaNRmqM3a0uzkjdZOGhZbYNUfl7Q00FJlKyhPnJX30wYtZlT0O6UqOoqqLmo5
+	 AZJMBs961r28lRzY9paGC9JcL+FqmyKee0mJCDa4del7vimquNaVvgrjdYjl6NIwbA5Pz
+	 T9hx4wbf+9mnvPeHAwq1Z1ApMSjDGfbg1qen0U3ke+m5Y6Uf4dGVkzBjmI8qmdXnKgQhE
+	 UnOMR4h4lpgQYKZ2+9qVeJYh2JiKhTBIBlT2BPacrLBQDnll7AJbCAKOX9yLLOBgjMA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=infradead.org;
-	spf=none smtp.mailfrom=casper.srs.infradead.org;
-	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b="IFBUK6/x";
-	arc=none smtp.remote-ip=90.155.50.34
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dd4VGTkO;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE2F606A31C;
-	Tue, 10 Nov 2026 21:14:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8EE2F606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9069C606A31C;
+	Tue, 10 Nov 2026 21:31:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=IFBUK6/x
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=QQrHnYDyygVgTjK8FaoUWk5CM7nixWrNnX9TzMFQ8J4=; b=IFBUK6/xeWArcLZFycxYfzmDgi
-	PwfRXLKo2PvxTZ8mYB0Pj6PqKXFpFhpXrBA4Y+Jt6auQnhClZn/xyMfJhZ7ZayrFC9mVGj4xZlbw2
-	XJRIqfPeR0Wpux3IPHtLzs4OlnWS64ov+70DKxiU08eWrzRaBpMN8Cvvh0Z/UIaLY/khqMS49hdO8
-	X76ObEuNvC1/k1H4/GLk3k0u/9Y7SpaxvTon83u5Cn5gjtnVInkw3/g99WDUt2/nSTu48apqbWu9X
-	+fb0nGrebm1Ayb4f4h4oMsm/+g6EBWR//CI1mcUpRwRbZJGvdmVEcCoAhvuGUBl2Y+rb4ccH0x3fK
-	i3oTDI5w==;
-Received: from [205.251.233.52] (helo=u09cd745991455d.ant.amazon.com)
-	by casper.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQtAl-00000001hqw-2Yls;
-	Tue, 10 Nov 2026 21:14:35 +0000
-Message-ID: <ccaa2d3b80a798e1513956fa436742c1e0fb50fe.camel@infradead.org>
-Subject: Re: [PATCH v2 06/20] KVM: x86: Request the guest TLB flush from
- record_steal_time()
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, Paolo Bonzini <pbonzini@redhat.com>, Paul
- Durrant <paul@xen.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, Fred
- Griffoul <fgriffo@amazon.co.uk>,  "Paul E . McKenney"	
- <paulmck@kernel.org>, Kunwu Chan <kunwu.chan@linux.dev>, Kunwu Chan	
- <kunwu.chan@gmail.com>,
- syzbot+208f7f3e5f59c11aeb90@syzkaller.appspotmail.com
-Date: Tue, 10 Nov 2026 13:14:26 -0800
-In-Reply-To: <avN8aJIHiX4xyTNO@seanjc-mac.roam.internal>
-References: <20261105020104.2507083-1-dwmw2@infradead.org>
-	 <20261105020104.2507083-7-dwmw2@infradead.org>
-	 <avN8aJIHiX4xyTNO@seanjc-mac.roam.internal>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-9Cprd400OC3+mQXdbHGV"
-User-Agent: Evolution 3.62.0-0ubuntu1~ppa1~24.04 
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dd4VGTkO
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E49E1F0089F;
+	Tue, 10 Nov 2026 21:31:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794346313;
+	bh=Kh0ZeYdYoNYqCwSPGE+2Sg6clJviXZAk10ucqwqx6js=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=dd4VGTkO8Alc2PCdu3gxUC1EpOTi24quLZGagayrE/IQoUuhcLtwa3IJCC1BW1VQt
+	 AAYBOkYk+9O37qbi/PKBM90IqpSpS/cmHBVvgKoo6HBUFk1ZiJjLFSm5ORlCsQvqwI
+	 dkdkkSxHYJV8eOaehA+52IoAKoNq/GavfybO0vI+fF/4LtUymJMhHtQZZ8VAHyxMi7
+	 C6eOmDRbxoYLybevt5ygucmvBzBq0rp5p4Y9l7ftangmm30ca3/k3uLhTDj001aVDq
+	 CG037/9q6ji+yYYcphQKxJTbSIYLcAP4XiT/jpU8mF7Q+xiqTcK64PGmu1n9S/DXth
+	 RS59+gFPKwP7A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C1A09CE0AD8; Tue, 10 Nov 2026 13:31:52 -0800 (PST)
+Date: Tue, 10 Nov 2026 13:31:52 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Kunwu Chan <kunwu.chan@gmail.com>
+Cc: boqun@kernel.org, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, corbet@lwn.net, mingo@redhat.com,
+	frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	josh@joshtriplett.org, urezki@gmail.com, dave@stgolabs.net,
+	stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+	dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+	akiyks@gmail.com, dlustig@nvidia.com, joelagnelf@nvidia.com,
+	skhan@linuxfoundation.org, rdunlap@infradead.org,
+	longman@redhat.com, rostedt@goodmis.org, qiang.zhang@linux.dev,
+	brads@mainlining.org, linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, lkmm@lists.linux.dev,
+	linux-doc@vger.kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 26/28] hazptrtorture: Add torture_type=none clean skip
+ for rcuscale coexistence
+Message-ID: <444c9bb1-fccc-44ff-8bcb-a04dd36eeecb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20261104165504.2430480-1-kunwu.chan@gmail.com>
+ <20261104165504.2430480-27-kunwu.chan@gmail.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -77,224 +73,68 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261104165504.2430480-27-kunwu.chan@gmail.com>
 
+On Thu, Nov 05, 2026 at 12:54:44AM +0800, Kunwu Chan wrote:
+> When both HAZPTR_TORTURE_TEST and RCU_SCALE_TEST are built into
+> the same kernel, hazptrtorture calls torture_init_begin() first
+> and rcuscale fails with -EBUSY.  torture_type=none makes
+> hazptrtorture return early without registering, allowing the
+> rcuscale hazptr scale type to run in the same boot.
+> 
+> Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
 
---=-9Cprd400OC3+mQXdbHGV
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+You are only supposed to build one of them into the kernel at a time,
+so the intent of the torture_init_begin() failure paths is to enforce
+this rule.  If you want to run both in the same kernel, the way to do
+that is to build both as kernel modules, then do modprobe and then rmmod
+of the first one, followed by modprobe and rmmod of the second one.
 
-On Tue, 2026-11-10 at 12:19 -0800, Sean Christopherson wrote:
-> On Thu, Nov 05, 2026, David Woodhouse wrote:
-> > From: David Woodhouse <dwmw@amazon.co.uk>
-> >=20
-> > record_steal_time() performs a TLB flush on the guest's behalf when
-> > the
-> > guest sets KVM_VCPU_FLUSH_TLB. With shadow paging,
-> > kvm_vcpu_flush_tlb_guest() ends up in mmu_sync_children(), which
-> > can
-> > reschedule via cond_resched_rwlock_write(). That is why the flush
-> > currently sits between a user_access_end() and a fresh
-> > user_access_begin(): it cannot be done while the guest page is
-> > mapped
-> > for access.
-> >=20
-> > Raise KVM_REQ_TLB_FLUSH_GUEST instead of flushing inline, and move
-> > the
-> > processing of KVM_REQ_STEAL_UPDATE ahead of where the TLB flush
-> > requests
-> > are serviced in vcpu_enter_guest() so that the flush still happens
-> > before
-> > the vCPU enters the guest. There is no requirement for it to
-> > complete any
-> > earlier than that.
-> >=20
-> > kvm_make_request() on the vCPU which is running is nothing more
-> > than a
-> > barrier and a set_bit(), so unlike the flush itself it can be done
-> > from
-> > any context =E2=80=94 which lets the surrounding access be simplified
-> > later.
-> >=20
-> > Note that the xchg() must stay where it is: it atomically consumes
-> > any
-> > KVM_VCPU_FLUSH_TLB which the guest has set, as required by commit
-> > b043138246a4 ("x86/KVM: Make sure KVM_VCPU_FLUSH_TLB flag is not
-> > missed").
-> >=20
-> > Reported-by: Sashiko AI review <sashiko-bot@kernel.org>
-> > Closes:
-> > https://lore.kernel.org/all/20260530061932.7849D1F00893@smtp.kernel.org
-> > Suggested-by: Sean Christopherson <seanjc@google.com>
-> > Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> > ---
-> > =C2=A0arch/x86/kvm/x86.c | 26 +++++++++++++++++++++++---
-> > =C2=A01 file changed, 23 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 6a1f0404f029..3c26c0eb9865 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -2117,8 +2117,22 @@ static void record_steal_time(struct
-> > kvm_vcpu *vcpu)
-> > =C2=A0
-> > =C2=A0		trace_kvm_pv_tlb_flush(vcpu->vcpu_id,
-> > =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st_preempted &
-> > KVM_VCPU_FLUSH_TLB);
-> > +		/*
-> > +		 * Request the flush instead of performing it
-> > inline. With
-> > +		 * shadow paging kvm_vcpu_flush_tlb_guest() can
-> > reschedule
-> > +		 * (via mmu_sync_children()), so it could not be
-> > called while
-> > +		 * the user access above was open. Requesting is
-> > just a bit
-> > +		 * set on the running vCPU, and the request is
-> > serviced
-> > +		 * before the vCPU enters the guest; nothing
-> > requires the
-> > +		 * flush to have completed any earlier than that.
->=20
-> Argh, I completely forgot about this.=C2=A0 It throws a big wrench in my =
-plans to fix
-> a mishandled TLB flush without using a deferred mechanism[1].=C2=A0 I rea=
-lly don't like
-> having to re-introduce deferred flags, but the diff is a lot smaller[2].=
-=C2=A0 On the
-> other hand, I still don't like the idea of delaying the MMU sync until th=
-e nested
-> VM-Exit.
->=20
-> I think I'll see how gross it is to do something like add a
-> KVM_REQ_PV_TLB_FLUSH.
->=20
-> [1] https://lore.kernel.org/all/au0R41xbEJ_9W_9z@google.com
-> [2] https://lore.kernel.org/all/auDkX94UTjrLNmqp@google.com
+So please help me out here.  Why do we need to allow both rcuscale and
+hazptrtorture to be built into the same kernel?
 
-It's still OK just to do the TLB flush synchronously from the end of
-record_steal_time() after clearing KVM_VCPU_FLUSH_TLB and dropping the
-GPC lock.
+If your desire is simply better handling of an error condition, an
+alternative is to force either a Kconfig or build failure when more than
+one of the modules invoking torture_init_begin() is built into the same
+kernel at the same time.
 
-You suggested using KVM_REQ_TLB_FLUSH_GUEST in
-https://lore.kernel.org/all/aidiOemcna1Un9wG@google.com/ but if it now
-makes you sad, I'm happy to go back to the original approach (noting
-that it loses the coalescing of multiple flushes).
+							Thanx, Paul
 
---=-9Cprd400OC3+mQXdbHGV
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCE8Ew
-ggWvMIIEl6ADAgECAhANkOKMSmGXhF5eMl0rsRhvMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYT
-AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAi
-BgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBHMjAeFw0yNDAzMTMwMDAwMDBaFw0zNDAz
-MTIyMzU5NTlaMGIxCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UE
-AxMxRGlnaUNlcnQgQXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTCCAiIw
-DQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAOfSIeC0vv1xPQ+dgSxbIIrkaru6skAWJYaGFzmv
-q4Kq+2wU2jxhcWlJg/JeP5jEkq/LM3pn5aaLao79j+XRmS7J1ZpJKUODJVoM4s9MQJhTMvo4qS5Z
-S64g6QR7Obkz3I1Lr3aWeSBmDDEyzue+NKtuWZ1Cxy3RdXo/w5HgRc3l2AercOM3Gt1XonTzEtTb
-Z/Hwc0Sn9Gz8RmGRK6Ka4hVDl8q/2l110KaV233Kh5etP0csXS8MIMdVRfRu3sc5hp13DG7lCKzK
-72a2GEpI8Wpl26G6I1/LMzz/98T+FqjTqxsdquk7Cj7m2vKGLW1BorpQH7WFGPdJQXJe1hfbfiZA
-CcVdCtl4nAacFacmsiArZBfX7AQGL7isvHUwwYFEtcApyGW4p2Lt+t8nvU0CANA6BHOpOz1xOP8W
-mAESbUriIjyuTUf3fJ9oDNCurVqhASMJCDaWI3lYX/QAoiAzt6akqbbZxo2ujW7mGGqc0KxqE2cs
-h2T79v7pC8aUtHBfwNrTR19GnZVxE0eQ7ViIQhR6mpSaUQFA9sG+cmD2G8TnCgYsLa0q8De6F61a
-CBevQGHNzrbZ3JAMneveYg/Jy1XxQHDRcvrMfWKe0jjcWbdKYlaGVPm5V1ILwYz7Yv5ewo3NUrxI
-GJiywe9qPhuJSDZs7VehTuI0FxGIsgKzVjgbAgMBAAGjggFcMIIBWDASBgNVHRMBAf8ECDAGAQH/
-AgEAMB0GA1UdDgQWBBT3m6JO05fF9DQPQw6Bhc6RkzKv+TAfBgNVHSMEGDAWgBTOw0q5mVXyuNtg
-v6l+vVa1lzan1jAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MHkGCCsGAQUFBwEBBG0wazAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEMG
-CCsGAQUFBzAChjdodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURS
-b290RzIuY3J0MEUGA1UdHwQ+MDwwOqA4oDaGNGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdp
-Q2VydEFzc3VyZWRJRFJvb3RHMi5jcmwwEQYDVR0gBAowCDAGBgRVHSAAMA0GCSqGSIb3DQEBDAUA
-A4IBAQA+b8Uw53sDspdZgukU+qzLyyHkcjlxGGhHlP+zrmDLKm1wEFvCRS2pili3Hy67i8N4N5NU
-vw5Rg6kv3lxb9S9Rktxk43k+tvm68pl7OxQE55ZjVY87P0lUPGwEqOOwLLyH02ZQcsfq5p5LrOH9
-0JvmvZ1yy73HS+VpDAqOlytE0NSvTIRqFFkKQGQwfjvtql9YflujuNNvJztjBaHKYZsnNSg+J38o
-jYq4TP3pSg3UdVH0PncVjPQyqxC9xef5Xae92Kbkzol3x7Nel3A1bwAkalrDMspvTHvey6LfiBks
-FIqviTnoy7fgjaRAJgHS+RXx/cmuRd3rUAclSVVrYu8RMIIHAzCCBOugAwIBAgIQAzUotrsybJHx
-HTjKOIVdIDANBgkqhkiG9w0BAQsFADBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQs
-IEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFzc3VyZWQgRzIgU01JTUUgUlNBNDA5NiBTSEEzODQg
-MjAyNCBDQTEwHhcNMjYwNzE4MDAwMDAwWhcNMjgwMTA0MjM1OTU5WjAeMRwwGgYDVQQDDBNkd213
-MkBpbmZyYWRlYWQub3JnMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA2pYux73kdbYX
-sWF8f1u6DJP91qcqaZetsyfPkZk0B+MmXmAEv0kVes5n15V2mbDThOnpoPFly0UugQO9JYqLfrtD
-tKD5yL58fgrDB9Dw+LQikgrHafl6YSCds5AvUu/8hw2J6noKrcOLJpKlKn9Fl/4IB9Q3JIdLx5aa
-EtTqMalIPqHFOlgrJ7s+aua8xbB8YQ9ahqYBXWRJNv3P/2b1DYtdrz1oqZPE3CcB8Pc6Gf2a1Tcm
-6TAgtEx7Cf1BFcrsrMz7TWHmGQITieNb2r9UYWSc2Gp+GtYFNJCgT0JJXKUBIauPMKBLteYrL8Fo
-ff/uY44dC/mDWjdCP/5x0qelPQjlBvWdHL5zvBTOj06rJ0m3HNI/hnIcDh0Qu2j9reb9rLVcdym6
-bWmBM4uDEB8Zv9Ph0KTBFSy1IosyakuD1j1Os30EzjGfbi0EUXIvnOcYbTBAbM5UAzrxEHMhBvoX
-Pvnx+OyvjJmc9tWxTX6AcSz+m40esbT17URBeZS18afgieiikm5TynlUYP1LciR3hSgGVzvGXnKO
-02VDFR5itGWdRKZ2W5wIShNfWfhSa0D0K5UdIDt5Qc7sjzwK1Yb1sY5Tu0uA5mhIS82q1ov83uxB
-sFkriNnhGv/M1NCDVLBiOMsHu73qUM+yKmgKLwF9Hfn9WI25glbAMI4S5r3hYzcCAwEAAaOCAfcw
-ggHzMB8GA1UdIwQYMBaAFPebok7Tl8X0NA9DDoGFzpGTMq/5MB0GA1UdDgQWBBRcYhqbcGzn1jrT
-JOZaB8O7qllDpzAwBgNVHREEKTAngRNkd213MkBpbmZyYWRlYWQub3JngRBkYXZpZEB3b29kaG91
-LnNlMBQGA1UdIAQNMAswCQYHZ4EMAQUBAjAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0lBBYwFAYIKwYB
-BQUHAwIGCCsGAQUFBwMEMIGpBgNVHR8EgaEwgZ4wTaBLoEmGR2h0dHA6Ly9jcmwzLmRpZ2ljZXJ0
-LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsME2gS6BJ
-hkdodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZT
-SEEzODQyMDI0Q0ExLmNybDCBjQYIKwYBBQUHAQEEgYAwfjAkBggrBgEFBQcwAYYYaHR0cDovL29j
-c3AuZGlnaWNlcnQuY29tMFYGCCsGAQUFBzAChkpodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20v
-RGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZTSEEzODQyMDI0Q0ExLmNydDANBgkqhkiG9w0B
-AQsFAAOCAgEAocabrh1cPd5s3vY5rnlBVQSTc7zs2ZWs67dAIltR+05WELrYClVzzUhMs/LOJPlr
-EUo45UDDomXq38DxFepaPd9+iNLjXfn33EX/IG44j04lU/oF/Rg9VeQILkYLbCZ/x9wOjNHZc4SN
-ydY7Dhvf/sT5aBz88u7D5+azZJ7Qf1U57wYseCH1Mt0nDrtr5y19IJ8D9xJJ33RFL6vfpHZBBAQ8
-+3RqkKNxLoV2aFvQhxdhjNLDqTv3LjUIdicwPraN7JkxEu7CV2Lka7eRqJgkWL7SK0YmBjGpRafs
-+icP/ON5RCCKTTb6VlX8eTG2sJJfsFhvJNCCt6xexbWzWtIrfP7NvPBvwBB737AyEGBZkS5aNizT
-McURJGTv9UKvBh1LF/+tNhYtLvPCN7oecGzhCHht9jcwSkygTo3Y6YlK3QgOu+ncmiBbfeuwlLZ1
-LxbYvG6hgNqXv7u6YyADbYajAQJXJ2OQen39pm3Q/AQSyLYG+B8lDglWsM8tYXPlEdrYJcksGK6F
-nqIX6Bumn43rBooLJdiZp4WmfWdL2pxe+LxRDjprmqu1WprixDxULSTOKJZoqTlugs6y3Bc+if+s
-gHnBBtz9WQ6MtPHkh7zONDAFIKcBmv8OqPQCx0F3Wv3OEybwMpXx0OsKgK8wLldaX1pXcMuyDgTL
-Sqs0AV0OHUgwggcDMIIE66ADAgECAhADNSi2uzJskfEdOMo4hV0gMA0GCSqGSIb3DQEBCwUAMGIx
-CzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UEAxMxRGlnaUNlcnQg
-QXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTAeFw0yNjA3MTgwMDAwMDBa
-Fw0yODAxMDQyMzU5NTlaMB4xHDAaBgNVBAMME2R3bXcyQGluZnJhZGVhZC5vcmcwggIiMA0GCSqG
-SIb3DQEBAQUAA4ICDwAwggIKAoICAQDali7HveR1thexYXx/W7oMk/3Wpyppl62zJ8+RmTQH4yZe
-YAS/SRV6zmfXlXaZsNOE6emg8WXLRS6BA70liot+u0O0oPnIvnx+CsMH0PD4tCKSCsdp+XphIJ2z
-kC9S7/yHDYnqegqtw4smkqUqf0WX/ggH1Dckh0vHlpoS1OoxqUg+ocU6WCsnuz5q5rzFsHxhD1qG
-pgFdZEk2/c//ZvUNi12vPWipk8TcJwHw9zoZ/ZrVNybpMCC0THsJ/UEVyuyszPtNYeYZAhOJ41va
-v1RhZJzYan4a1gU0kKBPQklcpQEhq48woEu15isvwWh9/+5jjh0L+YNaN0I//nHSp6U9COUG9Z0c
-vnO8FM6PTqsnSbcc0j+GchwOHRC7aP2t5v2stVx3KbptaYEzi4MQHxm/0+HQpMEVLLUiizJqS4PW
-PU6zfQTOMZ9uLQRRci+c5xhtMEBszlQDOvEQcyEG+hc++fH47K+MmZz21bFNfoBxLP6bjR6xtPXt
-REF5lLXxp+CJ6KKSblPKeVRg/UtyJHeFKAZXO8Zeco7TZUMVHmK0ZZ1EpnZbnAhKE19Z+FJrQPQr
-lR0gO3lBzuyPPArVhvWxjlO7S4DmaEhLzarWi/ze7EGwWSuI2eEa/8zU0INUsGI4ywe7vepQz7Iq
-aAovAX0d+f1YjbmCVsAwjhLmveFjNwIDAQABo4IB9zCCAfMwHwYDVR0jBBgwFoAU95uiTtOXxfQ0
-D0MOgYXOkZMyr/kwHQYDVR0OBBYEFFxiGptwbOfWOtMk5loHw7uqWUOnMDAGA1UdEQQpMCeBE2R3
-bXcyQGluZnJhZGVhZC5vcmeBEGRhdmlkQHdvb2Rob3Uuc2UwFAYDVR0gBA0wCzAJBgdngQwBBQEC
-MA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwgakGA1UdHwSB
-oTCBnjBNoEugSYZHaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZEcyU01J
-TUVSU0E0MDk2U0hBMzg0MjAyNENBMS5jcmwwTaBLoEmGR2h0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNv
-bS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsMIGNBggrBgEF
-BQcBAQSBgDB+MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wVgYIKwYBBQUH
-MAKGSmh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNB
-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
-zkWWw3ewrC6+wtxtI7TdkuQAAAAAAAA=
-
-
---=-9Cprd400OC3+mQXdbHGV--
+> ---
+>  .../selftests/rcutorture/configs/rcuscale/HAZPTR    | 13 +++++++++++++
+>  .../rcutorture/configs/rcuscale/HAZPTR.boot         |  1 +
+>  2 files changed, 14 insertions(+)
+>  create mode 100644 tools/testing/selftests/rcutorture/configs/rcuscale/HAZPTR
+>  create mode 100644 tools/testing/selftests/rcutorture/configs/rcuscale/HAZPTR.boot
+> 
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/HAZPTR b/tools/testing/selftests/rcutorture/configs/rcuscale/HAZPTR
+> new file mode 100644
+> index 000000000000..c5e9cf0184ae
+> --- /dev/null
+> +++ b/tools/testing/selftests/rcutorture/configs/rcuscale/HAZPTR
+> @@ -0,0 +1,13 @@
+> +CONFIG_SMP=y
+> +CONFIG_NR_CPUS=128
+> +CONFIG_PREEMPT=y
+> +CONFIG_HZ_PERIODIC=n
+> +CONFIG_NO_HZ_IDLE=y
+> +CONFIG_HOTPLUG_CPU=y
+> +CONFIG_DEBUG_KERNEL=y
+> +CONFIG_HAZPTR_TORTURE_TEST=y
+> +CONFIG_HAZPTR_DEBUG=y
+> +CONFIG_HAZPTR_STALL_DETECTOR=y
+> +CONFIG_HAZPTR_STALL_TIMEOUT=1000
+> +CONFIG_HAZPTR_DRAIN_ASSIST=y
+> +CONFIG_RCU_SCALE_TEST=y
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/HAZPTR.boot b/tools/testing/selftests/rcutorture/configs/rcuscale/HAZPTR.boot
+> new file mode 100644
+> index 000000000000..e9cca4cf453b
+> --- /dev/null
+> +++ b/tools/testing/selftests/rcutorture/configs/rcuscale/HAZPTR.boot
+> @@ -0,0 +1 @@
+> +hazptrtorture.torture_type=none
+> -- 
+> 2.43.0
+> 
