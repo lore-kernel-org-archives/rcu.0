@@ -1,84 +1,76 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.199
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794340605;
-	b=dKxJ2WLNx+SijmprHu80cDFcuUe4oxUE2Rvl7oT0fQO2nnl+Q/ZPpZpKI9Ec9y3vDe4+
-	 mrRwYAb07XVlBp0XywCc72hPTvezMaa7uMP+QLCIs1W+EYdOZpR1NDa4KNHWihcLIsRT8
-	 M+ZrS1FEsheazW62P3CSWdLl6FJLkQbaodo1a2WFd0/8ZepXUI9r+Uhu1lTHV9GKjYif7
-	 J39+3fHLnpeN77OcBLOgzAFldihnfcpqkKBkd4j+SmxnTcGNWfzyN30YeHVtkXwT+5QKW
-	 lAs4kxIpEVSdpkcBo4Di+XX5ldjmM92mXnxi1udZfcXG/RzA2fAY1FvyMV5D9x3zsQQ==
+	t=1794341695;
+	b=O/S0ZsUwHoGkhBpz6Ak4CiTH9cBmfplPufdvHhqOF7ru8xpVRVmRaRwdtqtMp72VtfaR
+	 LRspm0ZCZBSDaQHolrvs7uD4t9kfUZI2PlqJHR13sdXOLdllmzF11DC546UUL1xfVwloe
+	 b+vWcuVNlVPTm+mIqjxsQMNQ6hHkZC/LVGSoPOp8B+OGvrkwFGCA9jxD1MVR/li9Ju9AO
+	 jrap+RB+9CznSGHOJRXDqHwW5Iuy9NoOibPFzV5fhhYGbYconK+NJ+ZleGlhJDR8MxvEB
+	 Uz9vP5YhenCZIEZADvJDBBLAZhjnLxpjhaXAssT/auO30tW1AIupXMSXmgHLzeRZPWw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794340605;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To;
-	bh=X0P1xn7DMOwro4V4hfNIR9IZH4WRiTAHbOHV5MPmvj8=;
-	b=lLmeaF5K7Y2BJ25jPYJzv9tlxsUZUgdrtpIweuzxiKvhXMrFwEg+M4fu0mEFns/CplSU
-	 tQ1+tdzFfYB88uuxXBMG/O9ZdljEA0kd8QZm2zBf/lI9tEG3MsSFHLfYa3IMvE4CQTB4l
-	 jXjt6/srSATihzErG6Q72wDIiGKP4aSCpidhmAJ2AoPorMG0Fu2mJDlzXNpt1skdH+QU3
-	 LAdVBzFViIOZklucxryARsWYZumwAA7dkXeOfWsZ2Dd1S8b81FWE9bCc60TLSl8/q/jV+
-	 xgQ3KmqUo03ldXAHYkBz2atjoBGF4/a9PcK4bKVJlKCX3WEMZ1CzSyMCbfMd1uDDa1g==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794341695;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:Date:In-Reply-To:
+	 Mime-Version:References:Message-ID:Subject:From:To:Cc:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=14T1p32+VtvUlhSErH4xscJ3EXnpusJwKW/S5Km45yo=;
+	b=pnrxp67oCoc33+Zs6lN66Cihah4G24LJDK7JF2qmccfKm3LTVBpDJopQFVxLNxQxJRqI
+	 PPuovab9dTlkWoBcDWoYflhs27GqzOxVNC9wr7q2IUDtKt6ZVlLL126FzdIuw5NcH0fQj
+	 vNFck8k1hpOff0fD8fxKbGsH47hWsmvf0oiMzbSuS/lb1mLn4QBqE+AO906rCxCMZrYYF
+	 Rfnj1nz2TRUNncdKjN/AnGd57BVnXGG2G9HLKXEI0BrPRQInP9JHsISEJf/F0J9fL38+a
+	 WUvQWqtUMp+Ukmuu9eJ+L0cSoHlJs1Z3QWobyZO9YWXlXL5oj+u7i7kx3A82/AZ+aBQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MSWBwruB;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=google.com;
+	spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com;
+	dkim=pass header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=LwiHVhPi;
+	arc=none smtp.remote-ip=209.85.214.199
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FCCB606A326;
-	Tue, 10 Nov 2026 19:56:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63BA606A325
+	for <rcu@vger.kernel.org>; Tue, 10 Nov 2026 20:14:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B63BA606A325
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MSWBwruB
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94EF31F0089F;
-	Tue, 10 Nov 2026 19:56:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794340604;
-	bh=X0P1xn7DMOwro4V4hfNIR9IZH4WRiTAHbOHV5MPmvj8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=MSWBwruBUwX1RFyh5/WNLBZ1zTHwWKVzlH4BzIEmxirvu2ExjyCQVncKoL0+jQd9o
-	 ShWrZjkqNuBfHzZXLFt1TnHByiozoCE2DNLL8ALLtf8xSQkwJeh1e9ne8TRZeSa9qa
-	 3+UYyT4DcHl/q/NzIxmE1s9uMVRYD7wsSsHA74Nx6l7nVFZwvDMUljqp8maIV241Tu
-	 WZh2W1ypx4wHX8ZKhuHrSMA5RwPChgVDDMoa0fyzoFmtC9gcJoJ+fru+3p+YgOPkEL
-	 J+yxrkeY8brOsY7KypjsZWnfqzSNLhI+AV8U504NTDg63GgC+FNF5L6pcy981vRV0m
-	 HTX/xjFvpYEmA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4F13ECE0AD8; Tue, 10 Nov 2026 11:56:44 -0800 (PST)
-Date: Tue, 10 Nov 2026 11:56:44 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-	John Ogness <john.ogness@linutronix.de>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	luca abeni <luca.abeni@santannapisa.it>,
-	Yuri Andriaccio <yurand2000@gmail.com>,
-	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Qais Yousef <qyousef@layalina.io>
-Subject: Re: [PATCH v2 0/7] sched: RT throttling cleanup and a bit of
- documentation
-Message-ID: <c2bf89ce-b9de-43cf-839b-395d28b2275c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20261110-sched_dl-v2-0-cc9399f7aeb1@linutronix.de>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=LwiHVhPi
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2ed1fbae872so34630815ad.2
+        for <rcu@vger.kernel.org>; Tue, 10 Nov 2026 12:14:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20260707; t=1794341694; x=1794946494; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:from:subject
+         :message-id:references:mime-version:in-reply-to:date:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=14T1p32+VtvUlhSErH4xscJ3EXnpusJwKW/S5Km45yo=;
+        b=LwiHVhPi4e5g2jJg7nU1IvdqBzyzYhNnzRG143klAGsgg4KHx0IBXebsdt84Xu5Wib
+         pbMwqJaPfbwnguC+Mk7Hu3177pzJha7j+Y4TK2uP5Y7okUMxO4ta7nITVUPnHABZumeg
+         T+wn42JzHhCRHQee7bZsxmBKWD6nQCMAMg4lQUlnz6OHbvFnMZKaCk56W56QHoYY4wP+
+         iZocqzGgiPMwgfKo/aw2+eU4rJAV5XwrBOh9Vte7vRub8IzOZBgupShNuriPaxh5E901
+         WUyjRGkBqGpcuqaCMUGMygsykzGNluKAO+h9nIzTMTaG66Ma0ZSMUslT9ux5MlM560ku
+         qcVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794341694; x=1794946494;
+        h=content-transfer-encoding:content-type:cc:to:from:subject
+         :message-id:references:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=14T1p32+VtvUlhSErH4xscJ3EXnpusJwKW/S5Km45yo=;
+        b=qOxS0I9wWvS9dY1w8J9svKonb7X8MzG38g0kJSKsybYrvoeB7/iOqWBp6n2e9hg/6l
+         /p5YVont40ip8XlEWw9BdodCG/ind9EULXi0THDDmre1gAv2pWJXAeaN94WjgLZx0/PK
+         /lw3HKYgGDPa4S53rRNj0BjPogTR9S313V0jWv0PYtlULfYiWHtcJNgkgOk3WsQ8Cs5G
+         E9onJNoT2dl5nrFBVOuFzK9LSh4EgfANrKbeBY5uFi1iGdVKSNxV6i0K+EfEfTEYSTnJ
+         x8wIibOqyIDdY7AseDtesXQKbFx9cMV2aNQmDu8w0GyehXparbk3IEhl1PiDOPuoO0jQ
+         TBLg==
+X-Forwarded-Encrypted: i=1; AL+hErE4hp88BLG+mnQiZZvybEDcRyPYbro/PRm/JsUz/2Led4FenJJpDc3lBQNF2wfnNDowbDM=@vger.kernel.org
+X-Gm-Message-State: APuU4Z/0Pn5cEBFP1mqd80bSsRKeO2mqlqVgddbYuUQ5pzWHTtl3yqVj
+	lELxv8rh98Sp2EBxhEJbBrXC4DZQNiJJAxo7ijTSevzEEzoHzckpFeDIpIvmBRLK4+k647CqG2y
+	HJoyK8A==
+X-Received: from plim16.prod.google.com ([2002:a17:903:3b50:b0:2e3:bd2:38ec])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:904:b0:2e9:4048:3031
+ with SMTP id d9443c01a7336-2edd7a1102dmr2284595ad.39.1794341693808; Tue, 10
+ Nov 2026 12:14:53 -0800 (PST)
+Date: Tue, 10 Nov 2026 12:14:53 -0800
+In-Reply-To: <cd458ee9a0c2405349cd2aaecb180f0b2e757aa3.camel@infradead.org>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -87,93 +79,67 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20261110-sched_dl-v2-0-cc9399f7aeb1@linutronix.de>
+Mime-Version: 1.0
+References: <20261105020104.2507083-1-dwmw2@infradead.org> <cd458ee9a0c2405349cd2aaecb180f0b2e757aa3.camel@infradead.org>
+Message-ID: <avN7PfMdfZcYl7Gt@seanjc-mac.roam.internal>
+Subject: Re: [PATCH v2 00/20] KVM: Use atomic SRCU for gfn-to-pfn cache,
+ reinstate guest mode for x86 nesting
+From: Sean Christopherson <seanjc@google.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, rcu@vger.kernel.org, 
+	linux-rt-devel@lists.linux.dev, Paolo Bonzini <pbonzini@redhat.com>, 
+	Paul Durrant <paul@xen.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, Fred Griffoul <fgriffo@amazon.co.uk>, 
+	"Paul E . McKenney" <paulmck@kernel.org>, Kunwu Chan <kunwu.chan@linux.dev>, 
+	Kunwu Chan <kunwu.chan@gmail.com>, 
+	syzbot+208f7f3e5f59c11aeb90@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 10, 2026 at 06:34:42PM +0100, Sebastian Andrzej Siewior wrote:
-> People used to disable the RT throttling mechanism by writing -1 to
-> /proc/sys/kernel/sched_rt_runtime_us. Since v6.12 they can still do this
-> but they don't disable RT throttling anymore. Instead this throttling
-> mechanism has been taken over by the fair_server which can be configured
-> via debugfs.
-> This is not really documented by a hint appeared a few cycles later in
-> Documentation/scheduler/sched-rt-group.rst. This can be found once you
-> know what you are looking for because this document describes the RT
-> group scheduling (CONFIG_RT_GROUP_SCHED). The fair_server is used even
-> without it.
-> The then there is global DL resource control which also shares this
-> file proc file (which is stuck if CONFIG_RT_GROUP_SCHED is enabled).
+On Tue, Nov 10, 2026, David Woodhouse wrote:
+> On Thu, 2026-11-05 at 02:00 +0000, David Woodhouse wrote:
+> > From: David Woodhouse <dwmw@amazon.co.uk>
+> >=20
+> > Based on v7.4-rc1 (kvm/next doesn't have the atomic SRCU flavour yet),
+> > this series:
+> >=20
+> > =C2=A0=E2=80=A2 Converts the GPC to use atomic SRCU, ditching the rwloc=
+k which was a
+> > =C2=A0=C2=A0 scaling and latency problem, and which PREEMPT_RT hated be=
+cause it
+> > =C2=A0=C2=A0 turned the rwlock into a sleeping lock=C2=B9.
+> >=20
+> > =C2=A0=E2=80=A2 Fixes the pre-existing bugs which torture-testing that =
+conversion
+> > =C2=A0=C2=A0 shook out: a guest-reachable dirty ring overflow from the =
+hypercall
+> > =C2=A0=C2=A0 page write (128 pushes of the same gfn against 64 reserved=
+ entries,
+> > =C2=A0=C2=A0 without PML), and a lost TLB flush request in record_steal=
+_time().
+> >=20
+> > =C2=A0=E2=80=A2 Adds KVM_XEN_VCPU_ATTR_TYPE_WRITE_HYPERCALL_PAGE, for V=
+MMs which
+> > =C2=A0=C2=A0 intercept the guest's MSR write and need to replay it from=
+ host
+> > =C2=A0=C2=A0 context=C2=B2.
+> >=20
+> > =C2=A0=E2=80=A2 Cleans up the intentional lack of dirty-tracking of Xen=
+ shinfo and
+> > =C2=A0=C2=A0 vcpu_info pages (Sean).
+> >=20
+> > =C2=A0=E2=80=A2 Converts steal-time / preempted status to use gfn_to_pf=
+n_cache.
+> > =C2=A0=C2=A0 (Carsten)
+> >=20
+>=20
+> I love it when sashiko-bot finds things which my own local runs don't.
+> I'm still iterating on the latter part of the series; I think it
+> probably makes sense to merge the first half (patches 1-9 above), and
+> the nested parts (below) can come later.
+>=20
+> Sean, what do you think?
 
-Nice, thank you!
-
-Unfortunately but unsurprisingly, this gets the same divide-by-zero
-issue reported (belatedly) on the earlier series:
-
-https://lore.kernel.org/all/e58e48c3-ac62-40cd-b5d3-2de87db12496@paulmck-laptop/
-
-							Thanx, Paul
-
-> This little series:
-> - Marks CONFIG_RT_GROUP_SCHED as broken because I was not allowed to
->   remove it.
-> 
-> - Untangles DL usage of sched_rt_runtime_us and moves it to
->     /sys/kernel/sched/dl_period_us
->     /sys/kernel/sched/dl_runtime_us
-> 
->   This keeps the _us sematic that we used to have /proc. It _could_ be
->   changed to ns instead.
-> 
-> - Moves rcutorture away from the procfs interface since it tries to
->   shutdown the fair_server for its testing.
-> 
-> - Adds sysfs interface under /sys/kernel/sched/cpuX to represent the
->   runqueues. The only knob for now is fair_server_{period|runtime}
->   representing the fair_server parameters. If all goes well, debugfs
->   could be removed. The ext server could be moved, too.
-> 
-> - I tried to correct/ update documentation while at it. I added the -doc
->   folks on Cc so they are aware. I can drop them in the next posting, I
->   expect that this gets routed via the sched/-tip.
-> 
-> v1…v2: https://lore.kernel.org/all/20261105164724.yxONBd03@linutronix.de/
->   - Tejun and PeterZ asked for marking CONFIG_RT_GROUP_SCHED broken
->     first.
->   - Everything after patch #1 that got queued up.
-> 
-> RFC…v1: https://lore.kernel.org/all/20261023161348.t3lpPLQZ@linutronix.de/
->   - Try to remove RT-GROUP-sched after figuring out that it is useless.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
-> Sebastian Andrzej Siewior (7):
->       sched: Mark RT_GROUP_SCHED broken
->       rcutorture: Don't try to disable to RT throttling.
->       sched: rcutorture: Allow to disable DL fair_server
->       sched: Move DL's admission control to sysfs
->       sched: Limit sysctl sched_rt_{period|runtime}_us to RT_GROUP_SCHED
->       sched: Add sysfs files for the per-CPU fair_server knobs
->       Documentation/sched: Add fairserver to sched-deadline
-> 
->  Documentation/arch/arm64/asymmetric-32bit.rst |   2 +-
->  Documentation/scheduler/sched-deadline.rst    |  36 ++-
->  Documentation/scheduler/sched-rt-group.rst    |   7 +-
->  init/Kconfig                                  |   2 +-
->  kernel/rcu/rcu.h                              |   2 -
->  kernel/rcu/rcutorture.c                       |  37 +--
->  kernel/sched/deadline.c                       | 338 +++++++++++++++++++++++++-
->  kernel/sched/debug.c                          |  56 +----
->  kernel/sched/features.h                       |   2 +
->  kernel/sched/rt.c                             |  61 ++---
->  kernel/sched/sched.h                          |  55 +++--
->  11 files changed, 423 insertions(+), 175 deletions(-)
-> ---
-> base-commit: fd9230005e85472b81c1c7c16afe93dd878996b1
-> change-id: 20261110-sched_dl-a9727787112f
-> 
-> Best regards,
-> --  
-> Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Ya, I'm definitely in favor of that.  Even if Sashiko didn't find anything,=
+ I
+think I'd want to grab the GUEST_USES_PFN stuff separately.
