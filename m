@@ -1,74 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794418238;
-	b=IZgKg27ou7b2IGEEhWcImYnal9wBzptodvuJRIxgzzQ4M1bdcYIQ8txuCSVhPnorGQtd
-	 d8gH5tXU0IcQJfNwHo0d1xnsQ/f1EV4VVpfYHoGsBFen1dAW2vTTqgZK297Y0K4Tbuu8n
-	 S1JrASzajcTW8EQu2+kJtaU2iSbRIw1mMA7d7z+1BIXbEEWuSQiYRvujCdAx3pKt6Cgfl
-	 FwWoCr/N/whmXLKmSuSxtdV9EgJuBqvuU83GYWHiEBQXHTj5mW8bnR/O6o88zGjGjz1PT
-	 pv4kDWQfGL0d++pnIEu+rHUGWyvgVXdpqHTaN+mGxb40fhYgKNdPrAEPUNGkMviIBgw==
+	t=1794418353;
+	b=SUHwdDctKdLFl4lhteSYwlOS/WQhSwoGoWHceUc8UcIavNuQ6wNr3I8llhCBGAfZ3HZt
+	 ws+ZEKnSJrA4VM11QuT/4mtczVrlyj232I0iIjJOGUm1WtyH2L+D3mfzWoPKMhut1iZ1q
+	 dIYr1KtsZnGs8OXghmD2iGsWCeqG6rd9ZE0ZsUsJqRx7U2Fm5PNCf3jxQZEIlPw36yUXB
+	 04Borr2kvpzBMorZeZtrkIa5/5EBPJjv8ZxfY8x73RmJ56HEmK6Lojqpa+hyIHPZmZEPM
+	 TNY6STQ4zb7XHNvD0riGg2VsofMAi5ZDJ+CBkkgULCdg+BfJaNn1NvUjiYajGh7bF3A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794418238;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=8pteISZo4JGnjEYYdv5X/rO0NwT3i1wKYr/LELsdGIE=;
-	b=s3THXoIAJs/0SX5OWYiNUqYYspk7cl865JyPn79MmP+YNpCGrQFaP7uJHWsPDV24KUZK
-	 SS0hDJELMk4LR4VGmB4hMqqg0JmwVaPXpyks7iZFK4hJi1fVR/9v+56IHZfGduEvPzEm0
-	 9ZHJym+0v79EdwtiBmlmkyIyziAQhHolQRxr2LVYLF6ciNkmOMaFgQ/fjhkazl8/gDuYO
-	 Hgnqje72YD1gSKdGYKalN+YbbI+qSJOsn5/QjKrzW6Pmk56fzXi+cdwszk7kuCChqIdF6
-	 gefL+2zOAWcxL98ELAy9wLh2412eK3vWTL5Sfl8G2EAvJVp58cNwJ+/OQBRaj0WatVg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794418353;
+	h=Received:DKIM-Signature:Received:X-Gm-Message-State:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:
+	 X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=ywa8GwVt/KmL5oJA+4U2uk95z2A84lRU6JltZ9dFa1g=;
+	b=NlMRI3qIC/j2OIN1gFD7cBk4/DcDHZN7Dj8m2z/MmoT+tGSzckzWQK78S6wpZY2J8QOU
+	 qDaW9vdi+qClGZVOg60DjC+ybWXZDNya1OT6YemIshs8oZ6wAmZWcOaa4scrO3FuIYt0u
+	 eK1eAYT88Rje8HwAAtUTRddKt4V63r1ZQgNUQdfsIpHt16NGqvvXcXiaLBXpDHrIySL7P
+	 YcEwVZOz8SJYlYCTMbQ44+g8TzHB0oWZK88/6h+BW2lEiA2oI1j7s6Lj8CzMs1PMXz5nm
+	 s5bNQX4bTVb8QjQO+tLquqpP7+TQiSJ66sZF3S/54phE95x4OxAGGBxF7V5ckuQboTg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jHGW0Gp7;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NGcmfYsV;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80249606A31C;
-	Wed, 11 Nov 2026 17:30:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C8D606A327
+	for <rcu@vger.kernel.org>; Wed, 11 Nov 2026 17:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jHGW0Gp7
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 226971F00A05;
-	Wed, 11 Nov 2026 17:30:38 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NGcmfYsV
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B89CC1F00A05
+	for <rcu@vger.kernel.org>; Wed, 11 Nov 2026 17:32:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794418238;
-	bh=8pteISZo4JGnjEYYdv5X/rO0NwT3i1wKYr/LELsdGIE=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=jHGW0Gp7FwCUKCnNuQ1C2BG/P3iuwP9SasaZCl1IzO/H/s20mRXtEtN74YxBwzaGc
-	 CsWff9u7suZPOX5CM1D18TDvD9XbpH3UnCwch17MZ/lVkpLvfAL25LCpA5oQscfd5O
-	 QHLvCNwJWg1J0RpP5azpsUZZDo1+p06I/g7Z7pas5PEZuAnmPskMrx0rfffvDgDOfS
-	 Z9o2075EajDu7gA3u3OxEtdZGv3jDlsxf2/IKSWhFHwxSCmPjSfH4oKAXmppgai+Cl
-	 ISBkqyR8fZPV0/O6n5em0Zc1uZQLca0G/HJh9z3h9KsyQQnbfJt2Xu21SkeFuDLJ9O
-	 /6HEVX6i3rSjQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id DA5ADCE0840; Wed, 11 Nov 2026 09:30:37 -0800 (PST)
-Date: Wed, 11 Nov 2026 09:30:37 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Andrea Righi <arighi@nvidia.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-	"linux-rt-devel@lists.linux.dev" <linux-rt-devel@lists.linux.dev>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH] rcutorture: Don't try to disable to RT throttling.
-Message-ID: <3e7f1b45-7163-4abd-b686-a17f137ecab9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20261105165113.82N-rPMG@linutronix.de>
- <2fbdb03e-1af8-489c-819a-7e3c7b0ed1be@paulmck-laptop>
- <5970553A-3833-43F1-A013-21757664FB8F@nvidia.com>
- <auzXjQfYXs_gzx1y@gpd4>
- <c81d8243-c130-44d8-bef6-e678ecb088ac@paulmck-laptop>
- <20261106140401.90MH_6qt@linutronix.de>
- <5f5ffa5b-9fa5-4359-87fc-7558f37ff0eb@paulmck-laptop>
- <20261110080942.QxKXirzI@linutronix.de>
- <e58e48c3-ac62-40cd-b5d3-2de87db12496@paulmck-laptop>
- <20261111154319.2Iu5wbqr@linutronix.de>
+	s=k20260515; t=1794418352;
+	bh=ywa8GwVt/KmL5oJA+4U2uk95z2A84lRU6JltZ9dFa1g=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=NGcmfYsVMNK2jIfECKW6t+ogu13Iy6hUN7/rS1lQ+V8MSkXzcuVEYy9UxV08PriOH
+	 SfNc851qukWrDdzXQweALyQHN+zDLztgOwD476HRau2sboh1Xqb34XcSxSJk8Q8rLe
+	 s9oa+HN1AUS6gEbTRTofZpPjmYN/NWLPgxEL9gxWIICy+UH3S8nYZq8ykFPxk6vkRS
+	 aYw9Qu/HBioGO0BDWkkYK91BgzWzbMjNkszfZzJnPzw9X1dfLrthrFo/xjcjKDoKr6
+	 pkYj9HJI8lnT3PC5Dc83Vq+jLrYxJt8RNoOnd3UBkfG43dK1hhCCse+0fsv/POTAWp
+	 c+6O+wCwiNFrQ==
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-93cc1ab5f6cso428685285a.0
+        for <rcu@vger.kernel.org>; Wed, 11 Nov 2026 09:32:32 -0800 (PST)
+X-Gm-Message-State: APuU4Z8HXWxFzjpYpkI4aEuZN1rWhh1tp6AptwE8F99erusOkijOtSIW
+	SwYB9oXr0x4A3z0BZ981zqrZfZSMzt4XCB62RJvqBMmUCIOYnx4NLYxhcXP/OAWwnBNbXUqASXY
+	duoRi4BZJTgAZi0AmsolcYe/FIaimJJw=
+X-Received: by 2002:a05:620a:2a04:b0:947:8018:978e with SMTP id
+ af79cd13be357-947afcd6a2dmr491643685a.6.1794418351931; Wed, 11 Nov 2026
+ 09:32:31 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -78,57 +58,61 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261111154319.2Iu5wbqr@linutronix.de>
+References: <20261111053551.3367903-1-song@kernel.org> <20261111155441.GA1829883@joelbox>
+In-Reply-To: <20261111155441.GA1829883@joelbox>
+From: Song Liu <song@kernel.org>
+Date: Wed, 11 Nov 2026 09:32:19 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6_WsuabPQ6unancwouSPZStQQZa8WoDG82-n6Bi5gPhg@mail.gmail.com>
+X-Gm-Features: AclHuK_XeHXwre1C2swC-LPtC0Eivggyjbn1-sGfs75SfQVLn2Iu7oIm5rK3Dq0
+Message-ID: <CAPhsuW6_WsuabPQ6unancwouSPZStQQZa8WoDG82-n6Bi5gPhg@mail.gmail.com>
+Subject: Re: [PATCH] rcu-tasks: Use pr_debug() for callback contend/collapse messages
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: rcu@vger.kernel.org, paulmck@kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com, rostedt@goodmis.org, leitao@debian.org, 
+	david.dai@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 11, 2026 at 04:43:19PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2026-11-10 10:48:31 [-0800], Paul E. McKenney wrote:
-> > Unfortunately, my overnight run of TREE03, which does do RCU priority
-> > boosting and has for some years, fails with the splat shown at the end
-> > of this email.  Things go rapidly downhill from there.
-> > 
-> > For reference, I used this command on a 16-hardware-thread x86
-> > laptop:
-> > 
-> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 9h --configs TREE03 --bootargs "rcutorture.test_boost=2" --trust-make
-> > 
-> > The "rcutorture.test_boost=2" is redundant but I was lazy.
-> 
-> I identified the issue. The hotplug notifier runs too early. This is
-> only an issue if the CPU goes up because during "init" the notifier is
-> run while CPU is marked active.
-
-I hesitate to disable CPU hotplug during RCU priority boosting...  Yes,
-one could argue that real-time workloads shouldn't be doing CPU hotplug.
-Except that others seem to be working towards making CPU hotplug more
-friendly to real-time situations.
-
-But what fix did you have in mind?
-
-> I remember you have a test where the VM/system has X CPUs but you boot
-> with maxcpus=Y where Y < X. In that case the throttler is only disabled
-> on the Y CPUs. If the remaining CPUs are then enabled at runtime then
-> the fair_server remains enabled/ can't be disabled from the hotplug
-> notifier.
-
-That is TREE01, and you are right, that might be even more challenging
-than the TREE03 scenario called out earlier.
-
-I am OK disabling rcutorture testing of RCU priority boosting on TREE01.
-In fact, there is already a commit headed towards the v7.4 merge window
-that does just that:
-
-1e924ea92887 ("rcutorture: Disable RCU priority boost testing on non-TREE03 scenarios")
-
-> >> this makes things easier.
+On Wed, Nov 11, 2026 at 7:54=E2=80=AFAM Joel Fernandes <joelagnelf@nvidia.c=
+om> wrote:
+>
+> On Tue, Nov 10, 2026 at 09:35:51PM -0800, Song Liu wrote:
+> > Commit 5de907d24919 ("rcu-tasks: Disable callback contend/collapse
+> > messages by default") added the rcupdate.rcu_task_collapse_debug module
+> > parameter to gate the three pr_info() messages that report RCU Tasks
+> > switching between CPU-0 and per-CPU callback queuing.
 > >
-> >Don't worry, it won't happen again.  ;-)
-> 
-> However. I could make sure that the fair_server is not enabled on init
-> if the rcu_throttler is built-in. This would make it easier again.
+> > The kernel already has a mechanism for debug-only messages that are off
+> > by default: pr_debug().  Use pr_debug() for these messages, and remove
+> > the rcu_task_collapse_debug module parameter, its documentation, and
+> > its boot-time announcement.
+> >
+> > The messages stay off by default.  On CONFIG_DYNAMIC_DEBUG=3Dy kernels,
+> > they can be enabled at boot with:
+> >
+> >   dyndbg=3D"file kernel/rcu/tasks.h +p"
+> >
+> > or at runtime with:
+> >
+> >   echo 'file kernel/rcu/tasks.h +p' > /proc/dynamic_debug/control
+> >
+> > Assisted-by: Claude:claude-opus-5
+> > Signed-off-by: Song Liu <song@kernel.org>
+>
+> Makes sense to me,
+>
+> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+>
+> Will apply for 7.5.
 
-At this point, anything that would work and be reasonably robust against
-future scheduler changes would be very welcome!  ;-)
+How about we queue this for 7.4, say rc3 or rc4.
 
-							Thanx, Paul
+If we delay until 7.5, 7.4 kernel will be the only one that has
+rcupdate.rcu_task_collapse_debug. IOW, if we merge it to 7.4,
+no official kernel will have rcupdate.rcu_task_collapse_debug
+at all.
+
+WDYT?
+
+Thanks,
+Song
