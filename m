@@ -1,75 +1,84 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=158.69.130.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794409200;
-	b=JcQqFnBsZ5ePOUVFoo89zTFHWvMggHMaQRTm2lcrKlgvHiCPX7akH/74dpzYY+fFX2+i
-	 MrWNxsxbsP5pNZm1Uj1/70GxNeO2jM0pkFf3AfQysmsG3GX0LqSO8hrqyqCpfYja9nXqe
-	 TykjLC2aW9z+dI7jEta+c113X6KXAiHvqEzKqqX3tPxckfeaAcgLkw9hjgfF2PCG42tOS
-	 t/Hqs2rlotawXgXlZeLTALk2i8o0ctph6AJ5VhE4bi2+MZ17xbCLSQnFNHuJkMZXw90e1
-	 eWTWG1aUBFY2aSD0yESoj7O5pQzmujvCwe0+46pxuU/oJbVLtDB8Y02l9plJOmaGqgg==
+	t=1794411805;
+	b=ROSFq50DQ1Z57nVQyvdEsYdMQeXYtvQdAqnNqDwIPDm0Y6kRZlM59DKN1k47PYKQRwpB
+	 r9kQfqhsZuMfqdHYygYIeyS8uVjxsTBT63AeXQAUiGiQeHc8+njkOIdWSXcF5NaUKXDOm
+	 gAwtNm5tGn0rFtcTu5bH75VpqSLXequtxFz1RYCSQspSWjqcqHcLYP2PJRWYZpxhOwOI3
+	 EJZiTecH+30jxqB1N0PRhnbZCw86vRsqWdkOemF0sg7Cqjpbq66ZXdqh9AX1oOL9pSloX
+	 +EIyRibO8OilxBfYoSqzvqzx6vh/7ICNCMzFRYddcaJBRoF3UfboqX9Yh17kV67vn3w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794409200;
-	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-Id:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=GjZxm924JI2zUW2GYxpgy1Xxm5py5Z2Y9wPf64OHn6o=;
-	b=ZPNpkwYsN5bGxtagaKBy8pW2wJ/kNjdG/x85UM9sBJ5zr+Uo3xiHrSASd8ef9bSVf+O7
-	 su8/92c6WHQvPETecqVWYrowxytpr7NHJQ9sFela1tXiBNfDHYotjoUQDmeyH40qrqbfk
-	 NmvQdZbK2p8PU7qNmDqMPK/qHEFlW1cZmT4s2Mcf8/m/bzXC/nAeLRk9UHX2kpEORc4NF
-	 cv504Wiry8ym8q/B/vybEkUlcha6XlOECcxKzZfJXoA0fT8AfKKKKI828jZ1T6t1DtA0a
-	 24bKeTnB5SuKj3ZX0XTltG/im3kYesxBrEhw1ytrw1RfBuCNnTKfMK4CM7sOyvXVPTw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794411805;
+	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=+j+CUhgCY4xVSkjxHmOnbjeGHM1DsYRgRzd/ZrPTp+E=;
+	b=dIirZ9UozCJxvlqx7MZ5ARQFGw5lpljiVHcqTnPOF4v2kIcafJWnaRZaUbTw36Us7Teg
+	 MdBIXtTE7v4KE+OJ1r1UShW5I7I1CaKFRbIyCoN8BcitgzPzxjIwiJLAIlXQwot3ivQRB
+	 YHKq2p7GpLHSi7wiItYipKud2BRQy3yPYlGrDtGzcJ6NtmyeLodGlJ52EhQsMpO8d9QbW
+	 OE7HponJkMA3B+eMme0DOTQ4nZnz056KxVVgXyPG9Pd4BhUhvbVvhIyWljxlNrqIskgtz
+	 2eeFWE9W8o9BJMDd3E32BT5+PZyk+oZIpmzXcPtR8LGzTWCuaK7Ut8zmhm32Rbc0pKA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=efficios.com;
-	spf=pass smtp.mailfrom=efficios.com;
-	dkim=pass header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=na9oywhW;
-	arc=none smtp.remote-ip=158.69.130.18
-Received: from smtpout.efficios.com (smtpout.efficios.com [158.69.130.18])
+	dmarc=pass header.from=linutronix.de;
+	spf=pass smtp.mailfrom=linutronix.de;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=rhdaXThs;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=jxOp4G9I;
+	arc=none smtp.remote-ip=193.142.43.55
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 964E2606A8B2;
-	Wed, 11 Nov 2026 14:59:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 964E2606A8B2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15EB606A324
+	for <rcu@vger.kernel.org>; Wed, 11 Nov 2026 15:43:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A15EB606A324
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=na9oywhW
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-	s=smtpout1; t=1794409198;
-	bh=GjZxm924JI2zUW2GYxpgy1Xxm5py5Z2Y9wPf64OHn6o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=na9oywhWA4WEsHGnGonDo1AjsKHy3Jg3MIRQdLjAGgsFtQrzDuB3FrnltvjD9UVvG
-	 KxGgXCHb9X9tPPkDm2UAGOvTCC/IP2HBXpFyKiu0EXCyu8ePHK6Y0+NwyyS1Lr6Uz+
-	 HBBmBKSSog2XMioEXkt+Ihw1130StaOhHE+bbBtGEJ9b64LwNLgozJ44HWDpM0h05G
-	 RdMcbpE3W1IGZnJhvWo2Lo+4inJfpRlu37gzRgn4T2PS/iUI/eI2KKqLrlIpiU82uM
-	 JWkT9zuyVXwrNlb/2QrRcIF/r5C4wTed+ucGp1NlzDQYji2JoLvZQmy1kzN7XLf2e8
-	 Ar1hrnaEMxsog==
-Received: from thinkos.internal.efficios.com (mtl.efficios.com [216.120.195.104])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4jPmsB00k8zMxc;
-	Wed, 11 Nov 2026 09:59:57 -0500 (EST)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: "Paul E . McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	David Woodhouse <dwmw2@infradead.org>,
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=rhdaXThs;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=jxOp4G9I
+Date: Wed, 11 Nov 2026 16:43:19 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1794411801;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+j+CUhgCY4xVSkjxHmOnbjeGHM1DsYRgRzd/ZrPTp+E=;
+	b=rhdaXThsY1z07Ytux32DNUIaZx3lRjGdsI8Ci1Zyf/r/g2jGVBgASBniRxm1S2vYo8+7VU
+	IQqPmCQQEBafv6/mzIAHKPzRSd8Gg9R9+dKiZ1Aug6q1JCX7BCmP6va18QuCY6H0yJyyGB
+	TR4yalWSD86Gg2Ct7ZczFsYhZfvDPPuA3aZicxZ24yKCTw1XgqjkBXkh1BN6p3XGwiHFBo
+	uml3ABoBPg7vfDC3Y6FuQAGi3l7akswmG+Y1fRK3BVLU92ZnN5emPOZF6epbakm/cVJvmq
+	pbhJ010IP4XCw0x2aclzYyqRZ3bTz9T8tOL6axYwUOz2ju4k8Gm/zgfMT1aVPQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1794411801;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+j+CUhgCY4xVSkjxHmOnbjeGHM1DsYRgRzd/ZrPTp+E=;
+	b=jxOp4G9IrHaQ9pJDscQDmwS61IKJaYEZbIEzPlEU8AQ+C+FMcHrfSHKvJ0ckBn71/vlkl5
+	D8xa9rDm/0/ChsCw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Andrea Righi <arighi@nvidia.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	"linux-rt-devel@lists.linux.dev" <linux-rt-devel@lists.linux.dev>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Kunwu Chan <kunwu.chan@gmail.com>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	rcu@vger.kernel.org
-Subject: [PATCH v2 5/7] rcutorture: Run NMI-safe SRCU readers from NMI
-Date: Wed, 11 Nov 2026 09:59:47 -0500
-Message-Id: <20261111145949.70845-6-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20261111145949.70845-1-mathieu.desnoyers@efficios.com>
-References: <20261111145949.70845-1-mathieu.desnoyers@efficios.com>
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH] rcutorture: Don't try to disable to RT throttling.
+Message-ID: <20261111154319.2Iu5wbqr@linutronix.de>
+References: <20261105165113.82N-rPMG@linutronix.de>
+ <2fbdb03e-1af8-489c-819a-7e3c7b0ed1be@paulmck-laptop>
+ <5970553A-3833-43F1-A013-21757664FB8F@nvidia.com>
+ <auzXjQfYXs_gzx1y@gpd4>
+ <c81d8243-c130-44d8-bef6-e678ecb088ac@paulmck-laptop>
+ <20261106140401.90MH_6qt@linutronix.de>
+ <5f5ffa5b-9fa5-4359-87fc-7558f37ff0eb@paulmck-laptop>
+ <20261110080942.QxKXirzI@linutronix.de>
+ <e58e48c3-ac62-40cd-b5d3-2de87db12496@paulmck-laptop>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -79,277 +88,36 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e58e48c3-ac62-40cd-b5d3-2de87db12496@paulmck-laptop>
 
-rcutorture exercises ->call() from NMI, but never runs a reader there.
-So nothing tests the NMI-safe reader flavors where it matters most: in
-an NMI that interrupts another reader during its counter update.
+On 2026-11-10 10:48:31 [-0800], Paul E. McKenney wrote:
+> Unfortunately, my overnight run of TREE03, which does do RCU priority
+> boosting and has for some years, fails with the splat shown at the end
+> of this email.  Things go rapidly downhill from there.
+> 
+> For reference, I used this command on a 16-hardware-thread x86
+> laptop:
+> 
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 9h --configs TREE03 --bootargs "rcutorture.test_boost=2" --trust-make
+> 
+> The "rcutorture.test_boost=2" is redundant but I was lazy.
 
-Run a reader from the same per-CPU perf-counter NMI, when every reader
-flavor in use is NMI-safe. These flavors are srcu_read_lock_nmisafe(),
-srcu_read_lock_fast() and srcu_read_lock_atomic(). A new ops hook,
-->nmi_reader_capable(), reports whether the reader flavors in use are
-all NMI-safe. A new nmi_readers module parameter, on by default, enables
-these NMI readers. The statistics count these readers as nmi-reads.
+I identified the issue. The hotplug notifier runs too early. This is
+only an issue if the CPU goes up because during "init" the notifier is
+run while CPU is marked active.
+I remember you have a test where the VM/system has X CPUs but you boot
+with maxcpus=Y where Y < X. In that case the throttler is only disabled
+on the Y CPUs. If the remaining CPUs are then enabled at runtime then
+the fair_server remains enabled/ can't be disabled from the hotplug
+notifier.
 
-The reader loads rcu_torture_current and checks its element as the
-other readers do. The element must not be freed before the reader ends.
-It must not go through two grace periods either.
+>> this makes things easier.
+>
+>Don't worry, it won't happen again.  ;-)
 
-The other readers count their pipe and batch values with this_cpu_inc().
-On some architectures, an NMI may interrupt it. So the NMI reader counts
-its values in arrays of atomic counters of its own. The statistics print
-them as "NMI Reader Pipe:" and "NMI Reader Batch:". A too-short grace
-period seen in NMI gets the same "!!!" and the same warning as for the
-other readers.
+However. I could make sure that the fair_server is not enabled on init
+if the rcu_throttler is built-in. This would make it easier again.
 
-The NMI may interrupt lockdep, which then does not record the reader.
-So the reader loads the pointer with rcu_dereference_raw().
-
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
----
- kernel/rcu/rcutorture.c | 96 ++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 90 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 93ca7f06371e..9889293c968b 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -117,6 +117,7 @@ torture_param(int, n_barrier_cbs, 0, "# of callbacks/kthreads for barrier testin
- torture_param(int, n_up_down, 32, "# of concurrent up/down hrtimer-based RCU readers");
- torture_param(int, nfakewriters, 4, "Number of RCU fake writer threads");
- torture_param(bool, nmi_calls, true, "Exercise ->call() from NMI on nmi_capable flavors");
-+torture_param(bool, nmi_readers, true, "Run readers from NMI with NMI-safe reader flavors");
- torture_param(int, nreaders, -1, "Number of RCU reader threads");
- torture_param(bool, nwriters, 1, "Number of RCU writer threads (0 or 1)");
- torture_param(int, object_debug, 0, "Enable debug-object double call_rcu() testing");
-@@ -220,6 +221,11 @@ static atomic_long_t n_rcu_torture_timers;
- static atomic_long_t n_rcu_torture_irqs;
- static atomic_long_t n_rcu_torture_nmi_call;
- static atomic_long_t n_rcu_torture_nmi_cb;
-+static atomic_long_t n_rcu_torture_nmi_read;
-+// Pipe and batch counts of the readers in NMI, as rcu_torture_count and
-+// rcu_torture_batch for the others.  An NMI may interrupt this_cpu_inc().
-+static atomic_long_t rcu_torture_nmi_pipe[RCU_TORTURE_PIPE_LEN + 1];
-+static atomic_long_t rcu_torture_nmi_batch[RCU_TORTURE_PIPE_LEN + 1];
- static long n_barrier_attempts;
- static long n_barrier_successes; /* did rcu_barrier test succeed? */
- static unsigned long n_read_exits;
-@@ -438,6 +444,7 @@ struct rcu_torture_ops {
- 	long cbflood_max;
- 	int irq_capable;
- 	int nmi_capable;
-+	bool (*nmi_reader_capable)(void); // Are ->readlock() and ->readunlock() NMI-safe?
- 	int can_boost;
- 	int extendables;
- 	int slow_gps;
-@@ -790,6 +797,14 @@ static int srcu_torture_read_lock(void)
- 	return ret;
- }
- 
-+// Only these reader flavors may be used from NMI.
-+static bool srcu_torture_nmi_reader_capable(void)
-+{
-+	return reader_flavor &&
-+	       !(reader_flavor & ~(SRCU_READ_FLAVOR_NMI | SRCU_READ_FLAVOR_FAST |
-+				   SRCU_READ_FLAVOR_ATOMIC));
-+}
-+
- static void
- srcu_read_delay(struct torture_random_state *rrsp, struct rt_read_seg *rtrsp)
- {
-@@ -981,6 +996,7 @@ static struct rcu_torture_ops srcu_ops = {
- 	.have_up_down	= IS_ENABLED(CONFIG_TINY_SRCU)
- 				? 0 : SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_FAST_UPDOWN,
- 	.nmi_capable	= 1,
-+	.nmi_reader_capable = srcu_torture_nmi_reader_capable,
- 	.name		= "srcu"
- };
- 
-@@ -1049,6 +1065,7 @@ static struct rcu_torture_ops srcud_ops = {
- 	.have_up_down	= IS_ENABLED(CONFIG_TINY_SRCU)
- 				? 0 : SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_FAST_UPDOWN,
- 	.nmi_capable	= 1,
-+	.nmi_reader_capable = srcu_torture_nmi_reader_capable,
- 	.name		= "srcud"
- };
- 
-@@ -2711,6 +2728,10 @@ static DEFINE_TORTURE_RANDOM_PERCPU(rcu_torture_timer_rand);
-  * per-CPU hardware perf counter overflows into an NMI, and its handler submits
-  * a preallocated callback via ->call().  One callback per CPU is in flight at a
-  * time (guarded by an atomic) to avoid allocating in NMI.
-+ *
-+ * The same handler also runs a reader, for flavors whose ->nmi_reader_capable()
-+ * says that their readers are NMI-safe.  The reader may interrupt another
-+ * reader on its CPU, in the middle of its counter update.
-  */
- #ifdef CONFIG_PERF_EVENTS
- static struct perf_event_attr rcu_torture_nmi_attr = {
-@@ -2735,6 +2756,8 @@ struct rcu_torture_nmi_cb {
- 
- static struct perf_event **rcu_torture_nmi_events;
- static int rcu_torture_nmi_hp_state;
-+static bool rcu_torture_nmi_do_calls;
-+static bool rcu_torture_nmi_do_reads;
- static DEFINE_PER_CPU(struct rcu_torture_nmi_cb, rcu_torture_nmi_cb);
- 
- static void rcu_torture_nmi_invoked(struct rcu_head *rhp)
-@@ -2745,6 +2768,34 @@ static void rcu_torture_nmi_invoked(struct rcu_head *rhp)
- 	atomic_set(&rtncp->inuse, 0);
- }
- 
-+/*
-+ * A reader in NMI.  The NMI may interrupt lockdep, which then does not record
-+ * the reader, so the pointer is loaded without a lockdep check.  The element
-+ * must not go through two grace periods before the reader ends.
-+ * rcu_torture_stats_print() checks this in the pipe counts.
-+ */
-+static void rcu_torture_nmi_read(void)
-+{
-+	unsigned long started, completed;
-+	struct rcu_torture *p;
-+	int idx, pipe_count;
-+
-+	idx = cur_ops->readlock();
-+	started = cur_ops->get_gp_seq();
-+	p = rcu_dereference_raw(rcu_torture_current);
-+	if (p) {
-+		if (!READ_ONCE(p->rtort_mbtest))
-+			atomic_inc(&n_rcu_torture_mberror);
-+		pipe_count = min(READ_ONCE(p->rtort_pipe_count), RCU_TORTURE_PIPE_LEN);
-+		completed = rcutorture_seq_diff(cur_ops->get_gp_seq(), started);
-+		completed = min_t(unsigned long, completed, RCU_TORTURE_PIPE_LEN);
-+		atomic_long_inc(&rcu_torture_nmi_pipe[pipe_count]);
-+		atomic_long_inc(&rcu_torture_nmi_batch[completed]);
-+	}
-+	cur_ops->readunlock(idx);
-+	atomic_long_inc(&n_rcu_torture_nmi_read);
-+}
-+
- static void rcu_torture_nmi_overflow(struct perf_event *event,
- 				     struct perf_sample_data *data,
- 				     struct pt_regs *regs)
-@@ -2753,10 +2804,12 @@ static void rcu_torture_nmi_overflow(struct perf_event *event,
- 
- 	if (!in_nmi())
- 		return;
--	if (cur_ops->call && !atomic_xchg(&rtncp->inuse, 1)) {
-+	if (rcu_torture_nmi_do_calls && !atomic_xchg(&rtncp->inuse, 1)) {
- 		atomic_long_inc(&n_rcu_torture_nmi_call);
- 		cur_ops->call(&rtncp->rh, rcu_torture_nmi_invoked);
- 	}
-+	if (rcu_torture_nmi_do_reads)
-+		rcu_torture_nmi_read();
- }
- 
- static int rcu_torture_nmi_online(unsigned int cpu)
-@@ -2789,7 +2842,10 @@ static void rcu_torture_nmi_init(void)
- {
- 	int ret;
- 
--	if (!nmi_calls || !cur_ops->nmi_capable || !cur_ops->call)
-+	rcu_torture_nmi_do_calls = nmi_calls && cur_ops->nmi_capable && cur_ops->call;
-+	rcu_torture_nmi_do_reads = nmi_readers && cur_ops->nmi_reader_capable &&
-+				   cur_ops->nmi_reader_capable();
-+	if (!rcu_torture_nmi_do_calls && !rcu_torture_nmi_do_reads)
- 		return;
- 	rcu_torture_nmi_events = kzalloc_objs(*rcu_torture_nmi_events,
- 					      nr_cpu_ids);
-@@ -2815,9 +2871,12 @@ static void rcu_torture_nmi_cleanup(void)
- 	}
- 	kfree(rcu_torture_nmi_events);
- 	rcu_torture_nmi_events = NULL;
--	if (!atomic_long_read(&n_rcu_torture_nmi_call))
-+	if (rcu_torture_nmi_do_calls && !atomic_long_read(&n_rcu_torture_nmi_call))
- 		pr_alert("%s: nmi_calls set but no ->call() ever issued from NMI, so NMI ->call() went untested (no PMU, or NMIs unavailable here).\n",
- 			 __func__);
-+	if (rcu_torture_nmi_do_reads && !atomic_long_read(&n_rcu_torture_nmi_read))
-+		pr_alert("%s: nmi_readers set but no reader ever ran in NMI, so NMI readers went untested (no PMU, or NMIs unavailable here).\n",
-+			 __func__);
- }
- #else /* #ifdef CONFIG_PERF_EVENTS */
- static void rcu_torture_nmi_init(void) { }
-@@ -3152,6 +3211,7 @@ rcu_torture_stats_print(void)
- 	int cpu;
- 	int i;
- 	long pipesummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
-+	int j;
- 	long batchsummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
- 	long n_gpwraps = 0;
- 	unsigned long ndowns = 0;
-@@ -3183,6 +3243,10 @@ rcu_torture_stats_print(void)
- 		if (pipesummary[i] != 0)
- 			break;
- 	} // The value of variable "i" is used later, so don't clobber it!
-+	for (j = RCU_TORTURE_PIPE_LEN; j >= 0; j--) {
-+		if (atomic_long_read(&rcu_torture_nmi_pipe[j]))
-+			break;
-+	} // Same for "j", for the readers in NMI.
- 
- 	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
- 	rtcp = rcu_access_pointer(rcu_torture_current);
-@@ -3212,9 +3276,10 @@ rcu_torture_stats_print(void)
- 		data_race(n_barrier_attempts),
- 		data_race(n_rcu_torture_barrier_error));
- 	pr_cont("read-exits: %ld ", data_race(n_read_exits)); // Statistic.
--	pr_cont("nmi-calls: %ld nmi-cbs: %ld ",
-+	pr_cont("nmi-calls: %ld nmi-cbs: %ld nmi-reads: %ld ",
- 		atomic_long_read(&n_rcu_torture_nmi_call),
--		atomic_long_read(&n_rcu_torture_nmi_cb));
-+		atomic_long_read(&n_rcu_torture_nmi_cb),
-+		atomic_long_read(&n_rcu_torture_nmi_read));
- 	pr_cont("nocb-toggles: %ld:%ld ",
- 		atomic_long_read(&n_nocb_offload), atomic_long_read(&n_nocb_deoffload));
- 	pr_cont("gpwraps: %ld\n", n_gpwraps);
-@@ -3223,7 +3288,7 @@ rcu_torture_stats_print(void)
- 	if (atomic_read(&n_rcu_torture_mberror) ||
- 	    atomic_read(&n_rcu_torture_mbchk_fail) ||
- 	    n_rcu_torture_barrier_error || n_rcu_torture_boost_ktrerror ||
--	    n_rcu_torture_boost_failure || i > 1) {
-+	    n_rcu_torture_boost_failure || i > 1 || j > 1) {
- 		pr_cont("%s", "!!! ");
- 		atomic_inc(&n_rcu_torture_error);
- 		WARN_ON_ONCE(atomic_read(&n_rcu_torture_mberror));
-@@ -3232,6 +3297,7 @@ rcu_torture_stats_print(void)
- 		WARN_ON_ONCE(n_rcu_torture_boost_ktrerror); // no boost kthread
- 		WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost failed (TIMER_SOFTIRQ RT prio?)
- 		WARN_ON_ONCE(i > 1); // Too-short grace period
-+		WARN_ON_ONCE(j > 1); // Too-short grace period, reader in NMI
- 	}
- 	pr_cont("Reader Pipe: ");
- 	for (i = 0; i < RCU_TORTURE_PIPE_LEN + 1; i++)
-@@ -3244,6 +3310,20 @@ rcu_torture_stats_print(void)
- 		pr_cont(" %ld", batchsummary[i]);
- 	pr_cont("\n");
- 
-+	if (atomic_long_read(&n_rcu_torture_nmi_read)) {
-+		pr_alert("%s%s ", torture_type, TORTURE_FLAG);
-+		pr_cont("NMI Reader Pipe: ");
-+		for (i = 0; i < RCU_TORTURE_PIPE_LEN + 1; i++)
-+			pr_cont(" %ld", atomic_long_read(&rcu_torture_nmi_pipe[i]));
-+		pr_cont("\n");
-+
-+		pr_alert("%s%s ", torture_type, TORTURE_FLAG);
-+		pr_cont("NMI Reader Batch: ");
-+		for (i = 0; i < RCU_TORTURE_PIPE_LEN + 1; i++)
-+			pr_cont(" %ld", atomic_long_read(&rcu_torture_nmi_batch[i]));
-+		pr_cont("\n");
-+	}
-+
- 	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
- 	pr_cont("Free-Block Circulation: ");
- 	for (i = 0; i < RCU_TORTURE_PIPE_LEN + 1; i++) {
-@@ -5049,6 +5129,10 @@ rcu_torture_init(void)
- 			per_cpu(rcu_torture_batch, cpu)[i] = 0;
- 		}
- 	}
-+	for (i = 0; i < RCU_TORTURE_PIPE_LEN + 1; i++) {
-+		atomic_long_set(&rcu_torture_nmi_pipe[i], 0);
-+		atomic_long_set(&rcu_torture_nmi_batch[i], 0);
-+	}
- 	err_segs_recorded = 0;
- 	rt_read_nsegs = 0;
- 
--- 
-2.47.3
-
+Sebastian
