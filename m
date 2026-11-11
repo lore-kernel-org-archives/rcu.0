@@ -1,51 +1,51 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794426632;
-	b=39z0Eye2U5MsspP6g0/Eq3iA2HZq2N44uRxL4BearjfKZLDGh4z+aBym9LZu1vegk0LJ
-	 YpgAGYLuagBrPIVY0h3HReCdMx5z78CmdUfoKjqJR3Vus9NGJoD9JG8uastNvPEwmeUuI
-	 DtJXx8LSJaaZAbO7CFMCyuifuCh3eRNG2E9OTNn/oCsEkjP25i2PNxLd6TmVOtGF/zuQR
-	 HT8uB/aI68SsRmtTGuYza6Ra9/VqD1NS+2YEzxMDzW6w0aezVyYl9g6KnLsRC+Rl7P4SV
-	 uoumVWOLydYFD3rfA28oA8DH4LoA8hfnNhkAEvTJ+fD7HMOvYX+iSBkjLX+/KZaV5Uw==
+	t=1794426947;
+	b=0H9Ve8OTzz06ro/r2bjZI2Th9PfQ2gQBBu5+nW4NMvuX7p1lQJKhKi6HdUZJ5MlbBfdQ
+	 ocVSkt0mrzMAcnwbG0xCYcv1E3u9PGLCqpF9C/wQpo970rN3b/OfVbrsbKQeKUqFzIydf
+	 Sm4y1dL822WEaQ0xqKMsnThqIjVMCggHQtPtZhUeMUtQEaAVhpMWho6lEBz4scZJwvjWP
+	 yA+wD8fnUZqgxo72JZC2XJ1b9G8x8sxX5XV/8UFQAYPxysKIfaO/ocAMTR4BH0BM7aYuy
+	 npzz4mrXOGUN69kx+jimOL/2rw9h/0VLGbCzB9ZQOBA5VpIs75cpRHhGjHDnPHKT4EQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794426632;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794426947;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To;
-	bh=L3UVurAsGYKzoZpueYiC1v8hle2LfnSk0xkR20EDL5c=;
-	b=gussfwtfxD5QL7TcaTmx+/2eYy3rxvF+8WpsFVG0vDAaBabpAsM3oOypSDTi6vKKxtCh
-	 yJhROMTWDwj3RJPFX9emnfJjpG4aGrIOGIBTCDq0OklN8u6XJwoISH7UnOlKNBAXfHyzP
-	 uF9JVEpqqNdC0KZ/amg5Zsa/Zh+Z7K6ougOhcpZj34h5p7fmV2sFBJvFKPcjr+48BvaB5
-	 0YzRk4hSJnpQ03QwlD6qunI/NB7TrkSkUicwo8De0ZSdv0ZNIF8mhgo4FZtjOVdhT3mNe
-	 9nXYbnw5Iy4AdjTU9JUH28gqXXFFbUIE3au5SH/VPss9hFJF9o1PQs+9n6hx7v7QyGA==
+	 In-Reply-To;
+	bh=6bNA0Ukkyhny+gh/+wuX405ug+L/ynF/BbCiaYwvDfA=;
+	b=oBTIA7q/Ib7jFawSYAc9uqGE3QZv8sFYoXmxbZnSALQ3ftqCHQ1x+tRg7iG78jd12o7A
+	 HsgS8E+s9v8TNEq1ak4EqK4PPvEVITf88zpaXIOxVMIKDS3Zb/Z4F3kGz8jNRPnFCYkqg
+	 95w/rt/43HBFr0+tbpzkLakC//Z3ZXCzJB8CcnFLUsaaREMFl0XL2zOzGKNvnVaad9Ozk
+	 0vpHRiJNDwxK8E16YvAtXsMmdzdTbuxB4/eDXu+J8WxFIoNYtZqTABv6q2IwBnfQe7ohe
+	 wa8envT4K/ljBQelIcShYsxzU8scGCdpAozhv2eTebqtdgrw9PQX02h59vgc6RBkoXQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hDEUXvhu;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="Y73Tp/YG";
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96A22606A31C;
-	Wed, 11 Nov 2026 19:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED0A606A896;
+	Wed, 11 Nov 2026 19:55:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hDEUXvhu
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F37E1F00A05;
-	Wed, 11 Nov 2026 19:50:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Y73Tp/YG
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F248E1F00A0F;
+	Wed, 11 Nov 2026 19:55:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794426632;
-	bh=L3UVurAsGYKzoZpueYiC1v8hle2LfnSk0xkR20EDL5c=;
+	s=k20260515; t=1794426947;
+	bh=6bNA0Ukkyhny+gh/+wuX405ug+L/ynF/BbCiaYwvDfA=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=hDEUXvhu4EiG9gHrrFHayF1Rf8sUJ3aTyrhxV1YGCVhClwaBkLX3KjjfjLhN7aTTW
-	 XaMRzi8Z4fubV+oFAeJKsECDQA9qFPhXU54X2wVN+p/nxkQopUcTqBBKh8veBuXT8q
-	 5z4Kp3Ed1HVpYl8N8q2IT0dtGQHFrxZHcCpbFoMuA5d6ZbT7w/6UPuq3U5V0ysvJ3d
-	 5BdKxKmo2kERri2onCxpGpZJxI75maEOPDwPKHMuCRIHIQ7GLLuq8O9bS7iTWk9l62
-	 SMQ3Lvdaxj0J0aee7cgADUtHC+xFrqRAMCXG9HDfQNypbdFEFUadQLk13dPk9N2oAN
-	 STsJsfIQUxUZQ==
+	b=Y73Tp/YGXVsxKQeevziCAcCtO+w1VUwIAd/ibVxGoCbwS664AciSkWl0CV2ZYse1t
+	 tbmeHdpUxD6AaRoKfIqpcQuIikQELdmTD5sGVJhIEi3+tGyhr/c9MCd5/K6aYz0mJH
+	 7tfx8KmIRNEynz4VH38ldMVxWT4pxGYAKJQix8gxNoZHCBv49Pp5JgqlxtJ4a5oIQk
+	 4md+u9jWPmh2PYYxoxLdFAIFXgQoB+zqlbDWbZ4HR0zJnAqeoewhrI8fd+NrEbqe8P
+	 OwQv0lXcPVoLtX4/IcBQ6FXO49+iToAzMgnet0SudONA+lZ+fjQZFjR1gYLo2ggg9+
+	 r54tTnPsKfLUw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 38E82CE08D1; Wed, 11 Nov 2026 11:50:32 -0800 (PST)
-Date: Wed, 11 Nov 2026 11:50:32 -0800
+	id B8A9ECE08D1; Wed, 11 Nov 2026 11:55:46 -0800 (PST)
+Date: Wed, 11 Nov 2026 11:55:46 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+Cc: linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
@@ -56,15 +56,11 @@ Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
 	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] srcu: NMI-safe atomic SRCU readers, and their
- irqsave forms
-Message-ID: <5f4c0d2c-5abb-4aa5-9332-dc3da315cc76@paulmck-laptop>
+Subject: Re: [PATCH v2 3/7] srcu: Make atomic SRCU readers NMI-safe
+Message-ID: <39f69863-032d-41b8-8d64-22eed2b62223@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20261111145949.70845-1-mathieu.desnoyers@efficios.com>
- <50d177ddb1de4b84e9fd2cbd2ec5bdb7e32845d4.camel@infradead.org>
- <0782c3e7-9766-440c-b21e-e89b822927ee@efficios.com>
- <a8b4f18d81397124690a567b6a42da83ef2bc757.camel@infradead.org>
- <5edbc292-0004-43b7-9371-c3695afd9128@efficios.com>
+ <20261111145949.70845-4-mathieu.desnoyers@efficios.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -74,32 +70,109 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5edbc292-0004-43b7-9371-c3695afd9128@efficios.com>
+In-Reply-To: <20261111145949.70845-4-mathieu.desnoyers@efficios.com>
 
-On Wed, Nov 11, 2026 at 02:40:36PM -0500, Mathieu Desnoyers wrote:
-> On 2026-11-11 14:37, David Woodhouse wrote:
-> > On Wed, 2026-11-11 at 14:33 -0500, Mathieu Desnoyers wrote:
-> > > On 2026-11-11 14:02, David Woodhouse wrote:
-> > > > The latter claim is only true in __srcu_read_lock_fast()/_fast_updown()
-> > > > isn't it? Not in the atomic-SRCU. Unless we do something like this on
-> > > > top?
-> > > 
-> > > It is true for the atomic readers as well.  Without
-> > > CONFIG_NEED_SRCU_NMI_SAFE, include/linux/srcu.h defines
-> > > __srcu_read_lock_nmisafe() as an inline that calls __srcu_read_lock(),
-> > > and the same for unlock.  So x86 keeps this_cpu_inc() and smp_mb().
-> > > Your diff selects the same functions by hand.
-> > > 
-> > > Only the architectures that select NEED_SRCU_NMI_SAFE get the atomic
-> > > increments.
-> > 
-> > You are lost in a twisty maze of helper functions, all alike...
+On Wed, Nov 11, 2026 at 09:59:45AM -0500, Mathieu Desnoyers wrote:
+> Atomic SRCU readers count themselves with __srcu_read_lock(), whose
+> this_cpu_inc() is not NMI-safe on every architecture. With
+> CONFIG_PROVE_RCU, which lockdep enables, __srcu_check_read_flavor() also
+> warns when an atomic reader runs in NMI. So an NMI handler cannot use
+> atomic SRCU, while a tracer or a BPF program may need to read a
+> structure that atomic SRCU protects.
 > 
-> I guess I had the best mentor in that regard! ;-)
+> Count atomic readers with __srcu_read_lock_nmisafe() and
+> __srcu_read_unlock_nmisafe() instead. They use NMI-safe increments on
+> the architectures that need them, and keep the full barriers that
+> synchronize_srcu_atomic() pairs with. The __srcu_read_lock_fast()
+> helpers have no such barriers: they rely on a grace period that calls
+> synchronize_rcu(), which synchronize_srcu_atomic() cannot do while it
+> spins.
+> 
+> Also accept the atomic flavor in NMI in __srcu_check_read_flavor().
+> Annotate an atomic reader in NMI as a trylock for lockdep, as
+> srcu_read_lock_nmisafe() does. An NMI can interrupt lockdep itself, and
+> lockdep then reports any other acquisition of a lock that a grace
+> period has used.
+> 
+> On the architectures that need NMI-safe counters, every atomic reader
+> now pays an atomic increment at lock and at unlock.
+> 
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-I resemble that remark!  ;-)
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-							Thanx, Paul
+> ---
+>  include/linux/srcu.h  | 18 ++++++++++++++----
+>  kernel/rcu/srcutree.c |  3 ++-
+>  2 files changed, 16 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index d4dcaeb83e2b..e3b541ceb8dd 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -93,7 +93,7 @@ int init_srcu_struct_atomic(struct srcu_struct *ssp);
+>  //					0x04		// SRCU-lite is no longer with us.
+>  #define SRCU_READ_FLAVOR_FAST		0x04		// srcu_read_lock_fast(), also NMI-safe.
+>  #define SRCU_READ_FLAVOR_FAST_UPDOWN	0x08		// srcu_read_lock_fast_updown().
+> -#define SRCU_READ_FLAVOR_ATOMIC		0x10		// srcu_read_lock_atomic().
+> +#define SRCU_READ_FLAVOR_ATOMIC		0x10		// srcu_read_lock_atomic(), also NMI-safe.
+>  #define SRCU_READ_FLAVOR_ALL		(SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_NMI | \
+>  					 SRCU_READ_FLAVOR_FAST | SRCU_READ_FLAVOR_FAST_UPDOWN | \
+>  					 SRCU_READ_FLAVOR_ATOMIC)
+> @@ -372,6 +372,9 @@ static inline int srcu_read_lock(struct srcu_struct *ssp)
+>   * The lock and matching srcu_read_unlock_atomic() must be invoked on
+>   * the same CPU, from the same context; passing the return value to
+>   * another task is not permitted for this flavor.
+> + *
+> + * This function is NMI-safe, in a manner similar to
+> + * srcu_read_lock_nmisafe().
+>   */
+>  static inline int srcu_read_lock_atomic(struct srcu_struct *ssp)
+>  	__acquires_shared(ssp)
+> @@ -391,8 +394,15 @@ static inline int srcu_read_lock_atomic(struct srcu_struct *ssp)
+>  	if (in_task())
+>  		non_block_start();
+>  	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_ATOMIC);
+> -	retval = __srcu_read_lock(ssp);
+> -	srcu_lock_acquire(&ssp->dep_map);
+> +	retval = __srcu_read_lock_nmisafe(ssp);
+> +	/*
+> +	 * An NMI may interrupt lockdep itself.  Annotate it as a trylock
+> +	 * there, as srcu_read_lock_nmisafe() does.
+> +	 */
+> +	if (in_nmi())
+> +		rcu_try_lock_acquire(&ssp->dep_map);
+> +	else
+> +		srcu_lock_acquire(&ssp->dep_map);
+>  	return retval;
+>  }
+>  
+> @@ -599,7 +609,7 @@ static inline void srcu_read_unlock_atomic(struct srcu_struct *ssp, int idx)
+>  	WARN_ON_ONCE(idx & ~0x1);
+>  	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_ATOMIC);
+>  	srcu_lock_release(&ssp->dep_map);
+> -	__srcu_read_unlock(ssp, idx);
+> +	__srcu_read_unlock_nmisafe(ssp, idx);
+>  	if (in_task())
+>  		non_block_end();
+>  	preempt_enable();
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 8075da4b1bb5..8fa366861dcc 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -828,7 +828,8 @@ void __srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
+>  
+>  	/* NMI-unsafe use in NMI is a bad sign, as is multi-bit read_flavor values. */
+>  	WARN_ON_ONCE(read_flavor != SRCU_READ_FLAVOR_NMI &&
+> -		     read_flavor != SRCU_READ_FLAVOR_FAST && in_nmi());
+> +		     read_flavor != SRCU_READ_FLAVOR_FAST &&
+> +		     read_flavor != SRCU_READ_FLAVOR_ATOMIC && in_nmi());
+>  	WARN_ON_ONCE(read_flavor & (read_flavor - 1));
+>  
+>  	sdp = raw_cpu_ptr(ssp->sda);
+> -- 
+> 2.47.3
+> 
