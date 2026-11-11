@@ -1,84 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794411805;
-	b=ROSFq50DQ1Z57nVQyvdEsYdMQeXYtvQdAqnNqDwIPDm0Y6kRZlM59DKN1k47PYKQRwpB
-	 r9kQfqhsZuMfqdHYygYIeyS8uVjxsTBT63AeXQAUiGiQeHc8+njkOIdWSXcF5NaUKXDOm
-	 gAwtNm5tGn0rFtcTu5bH75VpqSLXequtxFz1RYCSQspSWjqcqHcLYP2PJRWYZpxhOwOI3
-	 EJZiTecH+30jxqB1N0PRhnbZCw86vRsqWdkOemF0sg7Cqjpbq66ZXdqh9AX1oOL9pSloX
-	 +EIyRibO8OilxBfYoSqzvqzx6vh/7ICNCMzFRYddcaJBRoF3UfboqX9Yh17kV67vn3w==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794411805;
-	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=+j+CUhgCY4xVSkjxHmOnbjeGHM1DsYRgRzd/ZrPTp+E=;
-	b=dIirZ9UozCJxvlqx7MZ5ARQFGw5lpljiVHcqTnPOF4v2kIcafJWnaRZaUbTw36Us7Teg
-	 MdBIXtTE7v4KE+OJ1r1UShW5I7I1CaKFRbIyCoN8BcitgzPzxjIwiJLAIlXQwot3ivQRB
-	 YHKq2p7GpLHSi7wiItYipKud2BRQy3yPYlGrDtGzcJ6NtmyeLodGlJ52EhQsMpO8d9QbW
-	 OE7HponJkMA3B+eMme0DOTQ4nZnz056KxVVgXyPG9Pd4BhUhvbVvhIyWljxlNrqIskgtz
-	 2eeFWE9W8o9BJMDd3E32BT5+PZyk+oZIpmzXcPtR8LGzTWCuaK7Ut8zmhm32Rbc0pKA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linutronix.de;
-	spf=pass smtp.mailfrom=linutronix.de;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=rhdaXThs;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=jxOp4G9I;
-	arc=none smtp.remote-ip=193.142.43.55
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.53.10
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794412488;
+	b=MhUo5nfTRXFXOSqYUuw6e69GfcGNQlPVEQpN4f+6oGDVlvqzbv4gBjpi64IGZuU3eDa0
+	 nv2AVOM2HCagfI/f9DuM0KcHoGULy1Qgpm0Mwy7nPu3WJGNY8iPJAmfVExulLNIBYKTNY
+	 SSYnYKWEvS3iax1QTGO+OxiWNrbhG1b2t2X/QFQ/uCnlxP1rKuh00Q6zqGKIkY75fDYW0
+	 PTLbc0a8gz1jzQlWkTIsBluX2UDHKFG5XazX8Be6udsWCENKyTEcMpmdMM+G8SWcSFATi
+	 ySUvcK8ufx4uYK5N9wsgTFHUYO0umcpOU0vfQ03O3bimhoJRC/Oo5ppWo55FvfDaEyw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794412488;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:Content-Type:Content-Disposition:
+	 In-Reply-To:X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=7hAIthPPH2hVY2TgCctLYfF1/xUrBisDOjTbFKSE0Sc=;
+	b=W0Iu7s0KgpHXdx2Thavrb65lp9X+gAGR/GuWxHAuU43OJBmQRao+a65kHFU5btozBpds
+	 osx/6SIqDm3aPGkopCzMS3qBrtLZkzjIv7BCJXI+dVJ5BRQnWW2kcWKCYHc/9biYuFtbu
+	 PpgLaJXkXd8Xn8aK67ibNunIE8AYc5mJucIDyJGaWopcWcWvlIawN+jxk9bDkoS56LYjv
+	 cgvhQ7SGSSccVfmUvckrZEtPr6uDooVE2P6auRDU8gxCrHsGPzAuh7j5C9K59ALQ43bxw
+	 Xv0TRm1bbGpCxSPq3coxztjQGQib1rxzkLaTqmNA9WE6aBev+T0G0Vdlhdk5DrqiNdw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=nvidia.com;
+	spf=fail smtp.mailfrom=nvidia.com;
+	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=BfkdUczh;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.53.10
+Received: from BL0PR03CU003.outbound.protection.outlook.com (mail-eastusazon11012010.outbound.protection.outlook.com [52.101.53.10])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15EB606A324
-	for <rcu@vger.kernel.org>; Wed, 11 Nov 2026 15:43:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A15EB606A324
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56DAF606A324;
+	Wed, 11 Nov 2026 15:54:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 56DAF606A324
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=rhdaXThs;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=jxOp4G9I
-Date: Wed, 11 Nov 2026 16:43:19 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1794411801;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+j+CUhgCY4xVSkjxHmOnbjeGHM1DsYRgRzd/ZrPTp+E=;
-	b=rhdaXThsY1z07Ytux32DNUIaZx3lRjGdsI8Ci1Zyf/r/g2jGVBgASBniRxm1S2vYo8+7VU
-	IQqPmCQQEBafv6/mzIAHKPzRSd8Gg9R9+dKiZ1Aug6q1JCX7BCmP6va18QuCY6H0yJyyGB
-	TR4yalWSD86Gg2Ct7ZczFsYhZfvDPPuA3aZicxZ24yKCTw1XgqjkBXkh1BN6p3XGwiHFBo
-	uml3ABoBPg7vfDC3Y6FuQAGi3l7akswmG+Y1fRK3BVLU92ZnN5emPOZF6epbakm/cVJvmq
-	pbhJ010IP4XCw0x2aclzYyqRZ3bTz9T8tOL6axYwUOz2ju4k8Gm/zgfMT1aVPQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1794411801;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+j+CUhgCY4xVSkjxHmOnbjeGHM1DsYRgRzd/ZrPTp+E=;
-	b=jxOp4G9IrHaQ9pJDscQDmwS61IKJaYEZbIEzPlEU8AQ+C+FMcHrfSHKvJ0ckBn71/vlkl5
-	D8xa9rDm/0/ChsCw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Andrea Righi <arighi@nvidia.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-	"linux-rt-devel@lists.linux.dev" <linux-rt-devel@lists.linux.dev>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH] rcutorture: Don't try to disable to RT throttling.
-Message-ID: <20261111154319.2Iu5wbqr@linutronix.de>
-References: <20261105165113.82N-rPMG@linutronix.de>
- <2fbdb03e-1af8-489c-819a-7e3c7b0ed1be@paulmck-laptop>
- <5970553A-3833-43F1-A013-21757664FB8F@nvidia.com>
- <auzXjQfYXs_gzx1y@gpd4>
- <c81d8243-c130-44d8-bef6-e678ecb088ac@paulmck-laptop>
- <20261106140401.90MH_6qt@linutronix.de>
- <5f5ffa5b-9fa5-4359-87fc-7558f37ff0eb@paulmck-laptop>
- <20261110080942.QxKXirzI@linutronix.de>
- <e58e48c3-ac62-40cd-b5d3-2de87db12496@paulmck-laptop>
+	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=BfkdUczh
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=rkgT8joAkja9SGog/GrUi6Nlvq9oznVGtas3hTzIxy2FNuW0JHPieP7xFlMakecn54tg6q4ZNsYMSaaJRBByCLRF2Ipaj6RRB2HzNwNrHBrRa6XVb6jxYLrjNrH0QFQfeFrDGDngyx6hcqZPnURQYPn3A3kRDgqhvNEo/MRNLbWofJdn1LxFe4cwEhI4v+coNkFcfD3b8gaZn5+fnrHE+mW/TrrN7IsppeJs4R9bXh5UI5h/izJicgJIM79Sw8fGW4t+XNXiHpEsQcKYPay3C5ID/XcUqgCbZlKrUW6dDi2YinCjOcMVjRSwdiYqPpQHImh6BaNFdPeYPVN2ZKg1nA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7hAIthPPH2hVY2TgCctLYfF1/xUrBisDOjTbFKSE0Sc=;
+ b=D1rta2pQiw6Xxn9NR/iXbh7CjdQPjk42kYXfWCznPkoH979V46R3gpncNXC9vsckPSvTdU00N7TkngOwXJFsrFsT9FjKUasKmO17kd9w/0CbT+sxHv/NFyhOyWR+Dp13/SEVlMbjlZXKJ7dpc0CeFEuQ0Eltjtr+kLBBH3pLumMOHKVwTbOGMGEv2mhx1LTIz9qjouihJWFjCnK7UgszeIj/7tDyzFiz6DRaqwJ7yQoqCL4jxFM49QL+YDKXD6i2eFQwdxERTuzJubsynqLg0FcTs/QB03wnTzWzRH7C19nJrLdMtUIAv+XsEWWkpVPXLpULsX6Apk5Wv7W+JmoCyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7hAIthPPH2hVY2TgCctLYfF1/xUrBisDOjTbFKSE0Sc=;
+ b=BfkdUczhBFG3/6snd8Gbgltsrd+2SnLS5algS1DNdVUZYb1VHNXRK6bdxmi1oehkT2k86NqK2KRRKmlafilasIJmRc9cWLfLN3TPjpncPLKvfmKkd6TRUIQFgqG1V58NL7E5lVSgdg7emTcHzI9oQnpCyTm7JhhR6Pc6lLMjdo/IpDPk5NWMBxyVlWsD2kd9hUabo752LJkk81vcF3/MB0ViZIOD5KTtb+OE1i9F6xA7TgdcXQXTPg6zge4CMuwnMN1d623uvT9P3m+GaSNvyCleWH9FPXM3yPgvAvoB22Jexqs9H136MbxYvH6hs+vjd4Z9a30STzKG4GYBfREy/w==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB7742.namprd12.prod.outlook.com (2603:10b6:8:102::18)
+ by SJ2PR12MB9161.namprd12.prod.outlook.com (2603:10b6:a03:566::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.12; Wed, 11 Nov
+ 2026 15:54:45 +0000
+Received: from DM4PR12MB7742.namprd12.prod.outlook.com
+ ([fe80::8df:c519:298a:94f6]) by DM4PR12MB7742.namprd12.prod.outlook.com
+ ([fe80::8df:c519:298a:94f6%6]) with mapi id 15.21.0615.007; Wed, 11 Nov 2026
+ 15:54:44 +0000
+Date: Wed, 11 Nov 2026 10:54:41 -0500
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: Song Liu <song@kernel.org>
+Cc: rcu@vger.kernel.org, paulmck@kernel.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com, rostedt@goodmis.org, leitao@debian.org,
+	david.dai@linux.dev
+Subject: Re: [PATCH] rcu-tasks: Use pr_debug() for callback contend/collapse
+ messages
+Message-ID: <20261111155441.GA1829883@joelbox>
+References: <20261111053551.3367903-1-song@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261111053551.3367903-1-song@kernel.org>
+X-ClientProxiedBy: MN0P220CA0006.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:208:52e::30) To DM4PR12MB7742.namprd12.prod.outlook.com
+ (2603:10b6:8:102::18)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -88,36 +97,172 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e58e48c3-ac62-40cd-b5d3-2de87db12496@paulmck-laptop>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB7742:EE_|SJ2PR12MB9161:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8a6b4605-4931-4886-32a3-08df400c1aff
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|1800799024|366016|23010399003|22082099003|18002099003|10067099003|3023799007|261009223027099003|11063799006|56012099006|261102123227099003|261026121527099003|261021121427099003|261021123027099003|261022075727099003;
+X-Microsoft-Antispam-Message-Info:
+	OpjgUcYUy5P1RNDk0uw6sYjcMUCcIjfuaEpYD1CDWDkURDFSfuGxdv4rY+LaFa7nuhzd3C+O06Maky9OzGOV2xd7sY55W7HepaS6BWWUoGpnWlannF0i4YrHlfRDOFWaovjaJGBwkxIxn+kmq0wlLMgE1dEhUzJnL7UD+XQNFQOnoz0yAxIVW6+PaTRYAZ3olP9jPdWVESES/JdyEl+kIhk7XnzvgXUOnni3fbmdt8lk8FVjqqf8sE6yH3VN5fn9Wk98xkK5QHAXTlYxy/j/S5Yu3lNHPBCFmcwimCmmK/iE8x9lBAmNdklU2t54YlpMCXyiFz17M6X9+zBaJm88Ip4St/OYurT2sy5QqZJBx+TlXUog8QAHGFtH0UUoS8MD8/GwmfKFOMXNYtWUgiMnTvvj9EVFM1D3liulyyGVSKJDBNgymoihgQPM1Mv/ix2hOZCDp4S7IPofW6QJrsac/0eglCK+oYHxPwAJ9ASfptsD9h47Etppr7lSZlJwM5j1+aKi/7o9OYYNIG4flnnqV9Y9Na5ssHdGHxRtP9q8K272XsjbJwRwo7l8Hx7hcRDsuMpArI2ODNGu2DHm8e2BVV1ZXUuFFaAzFQFOJPd5PoJp+wwtCsmOvs5MFojCa5owANuKH4Kaw5SifDsQH021YzhZHYQY3P+CQmUXmJjsGOk=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB7742.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(23010399003)(22082099003)(18002099003)(10067099003)(3023799007)(261009223027099003)(11063799006)(56012099006)(261102123227099003)(261026121527099003)(261021121427099003)(261021123027099003)(261022075727099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?6I4Mnf4zP5+r1LAFDCeL6sxCfAGjKAVUg0WYv35RaJ3AFZKPbG4wpZ7694Ad?=
+ =?us-ascii?Q?stIfAS0LtY62Uvoopzw+BK2HnUdsdk8NzNgsG0KYSbHIH6OQmsGhZ/auXLAb?=
+ =?us-ascii?Q?Xbym5iAOrY9fcEulfkpxDjAQH/L9EEh8NmMJSW5LeDVGGsBFJVFHLOY6GT1r?=
+ =?us-ascii?Q?oVdZU/pFo/N9eEvvGrLAvJPTaYqv6Rl6N7tMNUNXmow2b+cwZj9W1RMjvSOS?=
+ =?us-ascii?Q?Gt8zWvy/yoHQWr9VutUaLKv33Ce1EvJAGBmsYVvQWTex7jaWchuFOpXVyuy/?=
+ =?us-ascii?Q?EGVljAdJUGhwKw4yh7GKJsDO7OPOwKDhZx1z5yYLVPWl60h2Sx5MOlu/9OUc?=
+ =?us-ascii?Q?7CqtdTADvJRxMuyH5EkcTJyqqEvVy6em2/H6SsG2VSgMvmsuu7AwfxkCfGu5?=
+ =?us-ascii?Q?hPx/DU5LRnAqiLpPS1yHzgKrKCHBekJq31qzOoS9FvVBpwa78UF++OcosmK+?=
+ =?us-ascii?Q?0xNmpfpI+zT4+ZrWOYTH94t6X0iqhQL7QfmYO4O256TCZccx2o/RZjzYJw/c?=
+ =?us-ascii?Q?yJqOuoT0SotSJYSrwtgBXICMNhQ/T+txgaXHMbVjEgA2FaTiqkdgkms7tICd?=
+ =?us-ascii?Q?KDxl11C/fl+d0WmYr8nuTcTdweFKOuAM07Z/bItbK2CO0Mt4BRtzmLkNBxU8?=
+ =?us-ascii?Q?HXyENRkhPZxx2nk7DatzoOcGD8qafhSUvNriI7RfDruaDOzUtEYiM0pIu72u?=
+ =?us-ascii?Q?6aAHXFO4THVcZNzECmPYbnoaadhx/XASkkMQPR/Jb7eWft2PNKp/NZu//Sho?=
+ =?us-ascii?Q?mAfSihaqKTR7Myv7C2caqGUxGugEXCO3pFZKmLrxPo5gA0k3kH++g8ttmfoe?=
+ =?us-ascii?Q?Ln6/apTbx7TDH2dOKVX8hDLXIe0RjKx/fWFxzO77r8MzTKmEkuQ2uitS1Sb0?=
+ =?us-ascii?Q?NgnbrLrQe4Myh+GZ+hA0l1lpVFQRjSiX9y6HeXdDFPrzOgkb/L8W4A6bdVur?=
+ =?us-ascii?Q?Dofo1D9jvlv+1eCd967zLvB9XcKlxQ8dmeMU+bZ6PAYu0g42/4qaPrGbJ9hj?=
+ =?us-ascii?Q?5/Cq3mljCXyy/2DcIZO/LJ84Agn/fwovDH9Xh0Z+Vz7zUhgqIjgFQ8KOgcd2?=
+ =?us-ascii?Q?xT16mc2Til3IDlUHxAjFe43yujYKSp3JKAg81OfhA8rT/w+ybrIbCepubXSX?=
+ =?us-ascii?Q?ts4wnh+8/30yEewFwLRjlzbkgaAy9sfZW0dOpI7BIo2LeTDhMc45Zy4CcbqB?=
+ =?us-ascii?Q?tknBr84hWAyvTg2nqkCin5fZjMNgw5ZBTJ75YIAAhHq/PpjmwVzdaMCEccdW?=
+ =?us-ascii?Q?xkvtNq09D9i9azqgfe62xrRL7slh8iGo2hHt4o9BlYsWHEEObftyhl/wWDsM?=
+ =?us-ascii?Q?fgCzooC3ertVdT1K/TVUIV77au0x3mxQUIUgvB8sqTSjVdEpNcgjmWS0QCDJ?=
+ =?us-ascii?Q?NV3BCabqmlcdr0gGRM4Eolyxc/ZdhzGLdDvY5QW3a4lUu65uV/43xHswBGoP?=
+ =?us-ascii?Q?0tUKSWobhXTnTjqwy+zY90ohSeqslr1D4ssVIB5LsSfShFfl1Pl5rGvjNIEB?=
+ =?us-ascii?Q?/6UUNDVxidLQIRo9Pef3ISImlGyriO6e5FQrjXPHWqKEUabGToPM2OsPpTJi?=
+ =?us-ascii?Q?rm5oKd94NwVg2/DVxgyCQ+S56J9bedux1rR6YKyL4AG3bzFWg/yhBTTZGIR/?=
+ =?us-ascii?Q?jZRT6x3ULjAlbaxXuR9IXOJlYDsPxHpvOknUkvAFYEGFNrem80+/BHZ+42Os?=
+ =?us-ascii?Q?y0pjUtkrjgyvLbsZy9mQve3InJ4qd+pOzlqCPtI8+9QDvUpzhGOWfydK0uYr?=
+ =?us-ascii?Q?ta4Iug5QXA=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a6b4605-4931-4886-32a3-08df400c1aff
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB7742.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2026 15:54:44.8709
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: efIyg7YwRM8x6rAAgPSsdH4ECmPocDzXGv+6Q0H7ARdKWq97XBM6hZi5JybmH72UCwl9eXhHDe4Fys9Nfpcppg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9161
 
-On 2026-11-10 10:48:31 [-0800], Paul E. McKenney wrote:
-> Unfortunately, my overnight run of TREE03, which does do RCU priority
-> boosting and has for some years, fails with the splat shown at the end
-> of this email.  Things go rapidly downhill from there.
+On Tue, Nov 10, 2026 at 09:35:51PM -0800, Song Liu wrote:
+> Commit 5de907d24919 ("rcu-tasks: Disable callback contend/collapse
+> messages by default") added the rcupdate.rcu_task_collapse_debug module
+> parameter to gate the three pr_info() messages that report RCU Tasks
+> switching between CPU-0 and per-CPU callback queuing.
 > 
-> For reference, I used this command on a 16-hardware-thread x86
-> laptop:
+> The kernel already has a mechanism for debug-only messages that are off
+> by default: pr_debug().  Use pr_debug() for these messages, and remove
+> the rcu_task_collapse_debug module parameter, its documentation, and
+> its boot-time announcement.
 > 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 9h --configs TREE03 --bootargs "rcutorture.test_boost=2" --trust-make
+> The messages stay off by default.  On CONFIG_DYNAMIC_DEBUG=y kernels,
+> they can be enabled at boot with:
 > 
-> The "rcutorture.test_boost=2" is redundant but I was lazy.
+>   dyndbg="file kernel/rcu/tasks.h +p"
+> 
+> or at runtime with:
+> 
+>   echo 'file kernel/rcu/tasks.h +p' > /proc/dynamic_debug/control
+> 
+> Assisted-by: Claude:claude-opus-5
+> Signed-off-by: Song Liu <song@kernel.org>
 
-I identified the issue. The hotplug notifier runs too early. This is
-only an issue if the CPU goes up because during "init" the notifier is
-run while CPU is marked active.
-I remember you have a test where the VM/system has X CPUs but you boot
-with maxcpus=Y where Y < X. In that case the throttler is only disabled
-on the Y CPUs. If the remaining CPUs are then enabled at runtime then
-the fair_server remains enabled/ can't be disabled from the hotplug
-notifier.
+Makes sense to me,
 
->> this makes things easier.
->
->Don't worry, it won't happen again.  ;-)
+Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
 
-However. I could make sure that the fair_server is not enabled on init
-if the rcu_throttler is built-in. This would make it easier again.
+Will apply for 7.5.
 
-Sebastian
+thanks,
+
+Joel Fernandes
+
+
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt |  7 -------
+>  kernel/rcu/tasks.h                              | 15 +++------------
+>  2 files changed, 3 insertions(+), 19 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 0b3c140babd9..176648941aec 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -6369,13 +6369,6 @@ Kernel parameters
+>  			period to instead use normal non-expedited
+>  			grace-period processing.
+>  
+> -	rcupdate.rcu_task_collapse_debug= [KNL]
+> -			Enable debugging prints that record when RCU Tasks
+> -			and RCU Tasks Trace expand to per-CPU callback
+> -			queuing and collapse back to CPU-0 queuing.
+> -			This is default-disabled due to the fact that
+> -			some workloads can make it quite noisy.
+> -
+>  	rcupdate.rcu_task_collapse_lim= [KNL]
+>  			Set the maximum number of callbacks present
+>  			at the beginning of a grace period that allows
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index fcac7361ec51..743f777b4c18 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -178,8 +178,6 @@ static int rcu_task_contend_lim __read_mostly = 100;
+>  module_param(rcu_task_contend_lim, int, 0444);
+>  static int rcu_task_collapse_lim __read_mostly = 10;
+>  module_param(rcu_task_collapse_lim, int, 0444);
+> -static bool rcu_task_collapse_debug __read_mostly;
+> -module_param(rcu_task_collapse_debug, bool, 0644);
+>  static int rcu_task_lazy_lim __read_mostly = 32;
+>  module_param(rcu_task_lazy_lim, int, 0444);
+>  
+> @@ -392,8 +390,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+>  			WRITE_ONCE(rtp->percpu_enqueue_shift, 0);
+>  			WRITE_ONCE(rtp->percpu_dequeue_lim, rcu_task_cpu_ids);
+>  			smp_store_release(&rtp->percpu_enqueue_lim, rcu_task_cpu_ids);
+> -			if (data_race(rcu_task_collapse_debug))
+> -				pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
+> +			pr_debug("Switching %s to per-CPU callback queuing.\n", rtp->name);
+>  		}
+>  		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+>  	}
+> @@ -514,9 +511,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+>  			smp_store_release(&rtp->percpu_enqueue_lim, 1);
+>  			rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
+>  			gpdone = false;
+> -			if (data_race(rcu_task_collapse_debug))
+> -				pr_info("Starting switch %s to CPU-0 callback queuing.\n",
+> -					rtp->name);
+> +			pr_debug("Starting switch %s to CPU-0 callback queuing.\n", rtp->name);
+>  		}
+>  		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+>  	}
+> @@ -524,9 +519,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+>  		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+>  		if (rtp->percpu_enqueue_lim < rtp->percpu_dequeue_lim) {
+>  			WRITE_ONCE(rtp->percpu_dequeue_lim, 1);
+> -			if (data_race(rcu_task_collapse_debug))
+> -				pr_info("Completing switch %s to CPU-0 callback queuing.\n",
+> -					rtp->name);
+> +			pr_debug("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
+>  		}
+>  		if (rtp->percpu_dequeue_lim == 1) {
+>  			for (cpu = rtp->percpu_dequeue_lim; cpu < rcu_task_cpu_ids; cpu++) {
+> @@ -711,8 +704,6 @@ static void __init rcu_tasks_bootup_oddness(void)
+>  		pr_info("\tTasks-RCU CPU stall info multiplier clamped to %d (rcu_task_stall_info_mult).\n", rtsimc);
+>  		rcu_task_stall_info_mult = rtsimc;
+>  	}
+> -	if (rcu_task_collapse_debug)
+> -		pr_info("\tTasks-RCU callback contend/collapse debug enabled.\n");
+>  #endif /* #ifdef CONFIG_TASKS_RCU */
+>  #ifdef CONFIG_TASKS_RCU
+>  	pr_info("\tTrampoline variant of Tasks RCU enabled.\n");
+> -- 
+> 2.53.0-Meta
+> 
