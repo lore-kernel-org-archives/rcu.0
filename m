@@ -1,54 +1,60 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794364523;
-	b=RlieoZjlVimJoVMzyN5JaD2aS4UhSTCl040GayujCD6HOaHjiXyJAOIsSk3YgoF3V0Z6
-	 RBoRK7w4HAo+wzIhysgeb+rqtA6D5OtDy0GEYFXmatw7SMNYOJfKqTsHoK4H4Im+19/mA
-	 wbLzOoP4MAJfyGUoTlu7CnHpJd9NkDLaa4o5TritQ8VG3H8LL8D8jCMjI1LNOtaVK33WY
-	 ERb6dqKvAHSzgQJzDnR/Goi4vEDidSsQcIcSBYXC8gefVtV2UIW+KWazJdqLZhbHIF9Qw
-	 BkODWemBldeH0YD46y9M5cvGThmJAcA+/FXl352n8mfFdJfB+HzNzxCItM9KbngnuZA==
+	t=1794369148;
+	b=wivGGD/QjreAjE1dILqU+fBnLcafJFRAIpmZXgK+UhYuwJzYcsvBWX1L5paAzHrzZnYL
+	 gbcS99f0RAXxOY6snCAzJpm+uXwd0MG645P2IvPNNEM35mbEa1BlxQUxcUIkyMi5H8pyX
+	 MK7iDtsirLOzB4hnp7l/pLSgivw9sAXNGXrackmyFrWRvrB4BQUth+vdjFStg8CExKo6L
+	 LZxZXYN0u6I/Dx2iAIRih6AqigpOxBNC5L4MbpMkz46QgMfwH3jmnnuoYfiKfQfz12M6m
+	 uxMFC+cMip1mBAFdSX/jZpl2ocWlFVMxxNHy0hBO5PVQg6NZgwelk3R+W1ZzeYHctJw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794364523;
-	h=Received:DKIM-Signature:Received:X-Gm-Message-State:X-Received:
-	 MIME-Version:References:In-Reply-To:From:Date:
-	 X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=euuwGDlTqbNLwuO6W0jOczwpzF/Do0MJ09kIFghbAFs=;
-	b=knhYeUhyNjOC5Zi45U0Q2QxChQwvjahY4t0GB9PRDCOjhRJKukpzv+6J+KMH/Cy+n4Wo
-	 Nvxwc6WV6g3WtfVd3K1XXvS5uosmtLsvTR5O7QwhXknjMXYq8gx2MECXtzHgnuoxM9B3B
-	 CNz1Tua3jQjqzpB4oxzuLQY3j/yE9QsjS0DCTxEzdZzCCMs2DWflQhrCDgZhxhGaUeM0b
-	 Iybq8WY1uXhMoclACSXNm4HRGHa1EQt6ibfuMeDFI4K8bqaioit7nfUmJraLhb1i/9epy
-	 8WzzaGnOrbGThQ/tEovwZufBV4E47tvQPxIk0GalZxv3D/wPw7wnp6oZXQldeYrMCLg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794369148;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=6AbepVJa4qHUTUKwjC/NUlqffa8+4uX4K7QcO3IO45k=;
+	b=E3HtDnumInqjWtWpjUx/IMMDdRHz4C4sYR9jc2a74Tptk6KepPd7oSn8DsGdoY01tSi8
+	 0G4EsPQtlIbCiufBb9t1WVKP9pcNA8WGnanbfvYyqTFhqpSG87ILpdhUsanKoNHuQjtd/
+	 SK3mlV+8/FIbdqdA5AGDA2VCF+OtIcYhxpL9f4v4CypOj4GtOnvfZySgstcVUqfgYRdqC
+	 vgaosrNgOI6sDRDKL98JLB/kUoz9Ql/QU3a3NudyBE+c5P+jnSl2bZz4VHznLwsHdx0cD
+	 6SMY29hm4UCNM56mne2HFYURTCM8muvVFhoT5395I+Q+7VBR5pc6SK2wyJ4EDU2KwvQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OyAbTRqz;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fqZK0pTH;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C090606A31C
-	for <rcu@vger.kernel.org>; Wed, 11 Nov 2026 02:35:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0030606A321;
+	Wed, 11 Nov 2026 03:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OyAbTRqz
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21A341F00A06
-	for <rcu@vger.kernel.org>; Wed, 11 Nov 2026 02:35:23 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fqZK0pTH
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A91C1F0093C;
+	Wed, 11 Nov 2026 03:52:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794364523;
-	bh=euuwGDlTqbNLwuO6W0jOczwpzF/Do0MJ09kIFghbAFs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=OyAbTRqzDvdvc9L0om6YO/BDcXMr2jkDjvFTo1ymA1fLPp00MuBvCEpdYjghFuJKg
-	 VjqasRpK+SmIJ1v7DkkDSkZL7aR8kVhuK/AUAP3Gu6QNw/2DAT3ZrdvcsY8zuYH7BY
-	 pi44Rg6eXRR9gL7pCNmVr+4jiEYpR0ZfUbcgPQ5kp0o8g4wsa+56GCmt2oCc+DyoMx
-	 1r45Wu0V/Na//zgBjITzg/0VOrKwvkkLmXxpSep4v8qemZmJ2Q33uAGZ6k6At6DMfs
-	 1TmNu2pI9fuAIZTmAy4tS21CIGdU8Skah7HLXAI5BSqQQaV8rf+RbO0Pw11kEVvDw7
-	 66uOPTl2l+R+A==
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-93ece7a73b9so295109085a.3
-        for <rcu@vger.kernel.org>; Tue, 10 Nov 2026 18:35:23 -0800 (PST)
-X-Gm-Message-State: APuU4Z/KbzitN7D+xwr7dAmvVlB62unQGdrHH6q+YsE8VCrqJdivJYRM
-	MwLFp7SRsPBxCH+mAYgJfMTbW67RpqrZ9ycC3mLB5d2gXtfY1JMrb8jZFxpU8EBAiusSVz8OV9o
-	XsCRs7j990kkZUR4x2qXxJOMYRdpZNuM=
-X-Received: by 2002:a05:620a:4412:b0:93e:dcb4:c73e with SMTP id
- af79cd13be357-947afcd2eeamr185055985a.5.1794364522335; Tue, 10 Nov 2026
- 18:35:22 -0800 (PST)
+	s=k20260515; t=1794369148;
+	bh=6AbepVJa4qHUTUKwjC/NUlqffa8+4uX4K7QcO3IO45k=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=fqZK0pTHo7mLXPaqRTNuL2e6ZBoQstWVHMEtscVjL2e1+y/ZFIvevACkiVjCWpdqi
+	 gRYR5/ANBid7PKncuFfGt0C7wlghz5GzgWb8HLJkKBVedQy1O5aUfdiSP0aYi17Emk
+	 /CutmJMnqLtCbER8V3DiPoq+262xib/Nz7wZ2MvN6VTahhcN2CVvCBgOY8pM9witCZ
+	 TNsqNjgzFMTMJ0BcW7odgwkZa3AqtXWN9paam4Ufh4EMg0KHg1dnlTx2wGT9j47e4E
+	 EWXZ/fXJy2jJciSZ6eZZuotACrQwsaoGhWua2vgS+tPwdCc9PVFB3Kfnboc8OVJGeF
+	 0r0n5sOVNu1Tg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id F0F5BCE251D; Tue, 10 Nov 2026 19:52:27 -0800 (PST)
+Date: Tue, 10 Nov 2026 19:52:27 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Breno Leitao <leitao@debian.org>,
+	David Dai <david.dai@linux.dev>
+Subject: Re: [PATCH v2 09/10] rcu-tasks: Disable callback contend/collapse
+ messages by default
+Message-ID: <0952b823-990f-4a57-b090-f2cb1a1388c2@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop>
+ <20261007204511.1982646-9-paulmck@kernel.org>
+ <CAPhsuW6jBj1Sjm8SO_HO13oBgq-5gqKptgT_h3OWYoLDQggL7w@mail.gmail.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -58,54 +64,47 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop> <20261007204511.1982646-9-paulmck@kernel.org>
-In-Reply-To: <20261007204511.1982646-9-paulmck@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Tue, 10 Nov 2026 18:35:10 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6jBj1Sjm8SO_HO13oBgq-5gqKptgT_h3OWYoLDQggL7w@mail.gmail.com>
-X-Gm-Features: AclHuK-OOja6wKy_OP1KXngfb4J3ZR0GNHjQEnFWxc0Auk9QilRAjp2JWvzu5uU
-Message-ID: <CAPhsuW6jBj1Sjm8SO_HO13oBgq-5gqKptgT_h3OWYoLDQggL7w@mail.gmail.com>
-Subject: Re: [PATCH v2 09/10] rcu-tasks: Disable callback contend/collapse
- messages by default
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
-	rostedt@goodmis.org, Breno Leitao <leitao@debian.org>, David Dai <david.dai@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW6jBj1Sjm8SO_HO13oBgq-5gqKptgT_h3OWYoLDQggL7w@mail.gmail.com>
 
-On Wed, Oct 7, 2026 at 1:45=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
-[...]
-> index 627295396cd91..fcac7361ec51e 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -178,6 +178,8 @@ static int rcu_task_contend_lim __read_mostly =3D 100=
-;
->  module_param(rcu_task_contend_lim, int, 0444);
->  static int rcu_task_collapse_lim __read_mostly =3D 10;
->  module_param(rcu_task_collapse_lim, int, 0444);
-> +static bool rcu_task_collapse_debug __read_mostly;
-> +module_param(rcu_task_collapse_debug, bool, 0644);
->  static int rcu_task_lazy_lim __read_mostly =3D 32;
->  module_param(rcu_task_lazy_lim, int, 0444);
+On Tue, Nov 10, 2026 at 06:35:10PM -0800, Song Liu wrote:
+> On Wed, Oct 7, 2026 at 1:45 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> [...]
+> > index 627295396cd91..fcac7361ec51e 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -178,6 +178,8 @@ static int rcu_task_contend_lim __read_mostly = 100;
+> >  module_param(rcu_task_contend_lim, int, 0444);
+> >  static int rcu_task_collapse_lim __read_mostly = 10;
+> >  module_param(rcu_task_collapse_lim, int, 0444);
+> > +static bool rcu_task_collapse_debug __read_mostly;
+> > +module_param(rcu_task_collapse_debug, bool, 0644);
+> >  static int rcu_task_lazy_lim __read_mostly = 32;
+> >  module_param(rcu_task_lazy_lim, int, 0444);
+> 
+> Rookie question: Instead of adding a new module_param and gating the
+> pr_info with it, can we use pr_debug here?
 
-Rookie question: Instead of adding a new module_param and gating the
-pr_info with it, can we use pr_debug here?
+Good question, actually.  If it is OK for everyone (not just our
+employer!)  for the global pr_debug() control to also control this,
+that would be fewer lines of code.
 
-Thanks,
-Song
+This one is already in mainline.  If you feel strongly enough about it and
+are sure that pr_debug() works globally, would you like to send a patch?
 
+							Thanx, Paul
 
-> @@ -390,7 +392,8 @@ static void call_rcu_tasks_generic(struct rcu_head *r=
-hp, rcu_callback_t func,
->                         WRITE_ONCE(rtp->percpu_enqueue_shift, 0);
->                         WRITE_ONCE(rtp->percpu_dequeue_lim, rcu_task_cpu_=
-ids);
->                         smp_store_release(&rtp->percpu_enqueue_lim, rcu_t=
-ask_cpu_ids);
-> -                       pr_info("Switching %s to per-CPU callback queuing=
-.\n", rtp->name);
-> +                       if (data_race(rcu_task_collapse_debug))
-> +                               pr_info("Switching %s to per-CPU callback=
- queuing.\n", rtp->name);
-[...]
+> Thanks,
+> Song
+> 
+> 
+> > @@ -390,7 +392,8 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+> >                         WRITE_ONCE(rtp->percpu_enqueue_shift, 0);
+> >                         WRITE_ONCE(rtp->percpu_dequeue_lim, rcu_task_cpu_ids);
+> >                         smp_store_release(&rtp->percpu_enqueue_lim, rcu_task_cpu_ids);
+> > -                       pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
+> > +                       if (data_race(rcu_task_collapse_debug))
+> > +                               pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
+> [...]
