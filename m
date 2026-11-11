@@ -1,48 +1,48 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794350785;
-	b=NdFKWKVmKP5f0H4gvTRjmvJ/CPfNQ0CHbtCmJpPPZf+ImBCHE53kRdF4eGEBBMCkjO1n
-	 DHwXw66HesRvwxim1UppzjZ6nKNCgGZN5/cfMXpLeSiVRXsm8qg3pLDsaRTE1TRYVvF5U
-	 Zrcxf9lAN7Cauwi98oaScEDoaPLYK17euLfPL6bk/snAGxh2tfSuxe2JDPAfy5WKMd+sZ
-	 j+28RNMC8vvFO2ZQEi8YeV0+nUBFypgO+7t6JNLz5al0+5AueXnZMo2fqS/tIj0lKOsUm
-	 RWwe2wTHjx6NacqGOek17evHQVFcHQ4atmj9wpH+L+jJuA+mM0xC7i3TXxj3KvzwqAA==
+	t=1794356980;
+	b=DgyQEbiIXvJkDM4uHMjKQPoToKWPzHB5RzVlm0sKvufKgGqwyHKS1qrHw3GB9ERIOKlP
+	 d72OILrEqW0kfXq1+cFinc5+GQag5J63rVyIaGr1ONFvCIjn6d0uDmd8YtCm3VENwxqYq
+	 llikpMSfTbEUPPNS5UnnN3oUK/tIpo2l7Tda9l33KA+YwzfBAQ7s1uog/YjmGULKookyk
+	 4SKoJzvvJhkGTRNlEN0rFW4a0SO/Gkcj6LbJoboNrCqQBeiWeu8p3d54FFv56GFAwu9SC
+	 EYcxKENXYlY/B6FJl9t9m+07TlBaAk+/ZyNME94Fm3qqbpb1+UgJ8105afy7le97H9g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794350785;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794356980;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
 	 In-Reply-To;
-	bh=lEj15H99kgOc31r/1P/dL3/dkxrGaSx+nMeoaCzfsQQ=;
-	b=RGJmC55fATb2d/UAns9PYcY+68TJyY5pXtoxxu9B7r5Wc2ylXUZg/X2gJdML0QYCPHcd
-	 JaxT5PGH6DDRyw6GBsnoUScXWhtFVXitUHS0f2I+tnSgg5diCDx3mTO7SstNA/c251L1O
-	 pr8sqdMiO5C3THqGeJT0WFhUQPh3z+E0MdIUTPLysJpKfudgwk+XnnGAbuzT2OjJTwM4V
-	 eo85h53ayQfeieKPACj6v+GSvHOHbAr4NzgxkHA/ERwOpmS2eKL2jZDxnsSBoALWDJotZ
-	 9F0AXw84SIvucLatc+FE7BynSvzt2+ZayIZlcCeQS/3SC6rLrspElo79EG6kN2A28Bw==
+	bh=bfBI+4VGGG2nZ0droobSitMGQEwz44IajhqVNMUDhgE=;
+	b=DthrX/6O4+Wg9LD9xFNFtjpyF19IIMEEmvesR4AlUEGkrxQ7mPy+kqBuhAXlosKfaxNg
+	 EPek99MWaY1r//9O6nsSJusDl8O/mfm3OalDuKdcU3Roz+u2+RAViDXFTONXe1+DGsBFG
+	 6ALjdFtEtGEVSDbDWB//PFM2nyeZgtSNacFOqCOoWpMAAWMgGoKWP+y+NMQkzTUGb8RX4
+	 IaRpqE/TMJh2MEVPV/DOxLcVonRCGKiOph2BKyFSIHG8T1OXpTnoS6GRFeqcEqAC5MT5k
+	 XZk8fC5n0pEoEBWnzRQDD2s5x12Xt1m810QEjFEWtXT1L0v5N1snp2DxOlTXdtPo1tQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dJVMWi3M;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ns4J7CE5;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A982606A31C;
-	Tue, 10 Nov 2026 22:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159A1606A31C;
+	Wed, 11 Nov 2026 00:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dJVMWi3M
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EA2E1F0093C;
-	Tue, 10 Nov 2026 22:46:25 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ns4J7CE5
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0F841F0089F;
+	Wed, 11 Nov 2026 00:29:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794350785;
-	bh=lEj15H99kgOc31r/1P/dL3/dkxrGaSx+nMeoaCzfsQQ=;
+	s=k20260515; t=1794356979;
+	bh=bfBI+4VGGG2nZ0droobSitMGQEwz44IajhqVNMUDhgE=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=dJVMWi3MmsxtpjCmBk2tFZWukrqy45m5aOaH5NyjvcA3VB2rBGWpaQ+YpPNDVfkqX
-	 +EHdQE/l1bG5e315+A4hUn6PGYmHRIjHa1kUgZq67rGrQidYLdl8XKChvhsgVoBd9o
-	 PWkPvIV0KPXiTb4qasHv6ugupUQWBk/q2blbmaRyXQNIPNOKIV2NEwPWlDqK8Fzgmr
-	 nMfAofqXTuCvok8lbBgs0rzWdSTmtxC9leVvcD8pObCFmWQ5+otDaK+VaCcCr2UwcT
-	 ZyBiUOQbrhjU+o5YZlKlyieoHy5DRbMige6loOTJUtGhbtYDlHxfu+qKZ0NQX66D1h
-	 mbHHvFI/9Q31w==
+	b=ns4J7CE5PPdDRipBFoN+iFpeTr+LsTy8iFexxhnZsj4TZInE+U1xH8s4DmcHjAxsn
+	 8rcAmzc25KYwGyzT4uBlEdLfim3RzauT7AdvR5rkULiXrypPAOmQLPQQ7YkM2w3wPR
+	 DsTWMwZ9vrdrOHlYn5k2d9QHAd6nO09MQ0Q6Qn8oQtlCoIee3RISEXwMzi/yp3g1bz
+	 LX0guoEUEy0FVMejEe0XGKw9s9U5Q5K5tZmpvgjo7ZDqcwHIm6x0Q+Mm+f5XT0VGko
+	 rlLPidrE0nurzMDASAq2fib1ILmf9xKp9mk6L7yVpy6S0pndlr0R0sXZYuKppTRGTI
+	 1yTl0jq0UCteA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D54A1CE0AD8; Tue, 10 Nov 2026 14:46:24 -0800 (PST)
-Date: Tue, 10 Nov 2026 14:46:24 -0800
+	id 719D7CE251D; Tue, 10 Nov 2026 16:29:39 -0800 (PST)
+Date: Tue, 10 Nov 2026 16:29:39 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -56,11 +56,13 @@ Cc: linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
 	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 3/4] rcutorture: Run NMI-safe SRCU readers from NMI
-Message-ID: <9fbcb43b-ddea-44bf-b339-d01ba723d5a2@paulmck-laptop>
+Subject: Re: [PATCH 4/4] rcutorture: Test the irqsave forms of atomic SRCU
+ readers
+Message-ID: <7551edf4-935e-42e1-84e0-290b9af4aaf3@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20261110192844.44713-1-mathieu.desnoyers@efficios.com>
- <20261110192844.44713-4-mathieu.desnoyers@efficios.com>
+ <20261110192844.44713-5-mathieu.desnoyers@efficios.com>
+ <42972bc1-721c-4bdb-8599-10f6f30cd89d@paulmck-laptop>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -72,222 +74,250 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261110192844.44713-4-mathieu.desnoyers@efficios.com>
+In-Reply-To: <42972bc1-721c-4bdb-8599-10f6f30cd89d@paulmck-laptop>
 
-On Tue, Nov 10, 2026 at 02:28:43PM -0500, Mathieu Desnoyers wrote:
-> rcutorture exercises ->call() from NMI, but never runs a reader there.
-> So nothing tests the NMI-safe reader flavors where it matters most: in
-> an NMI that interrupts another reader during its counter update.
+On Tue, Nov 10, 2026 at 02:33:20PM -0800, Paul E. McKenney wrote:
+> On Tue, Nov 10, 2026 at 02:28:44PM -0500, Mathieu Desnoyers wrote:
+> > Nothing tests srcu_read_lock_atomic_irqsave() and
+> > srcu_read_unlock_atomic_irqrestore(). Testing them in the normal readers
+> > has two obstacles. rcutorture_one_extend() ends the readers of a CPU in
+> > any order, but each irqrestore restores the state its own irqsave saw.
+> > It also enables interrupts and bottom halves within readers, which an
+> > irqsave reader forbids.
+> > 
+> > Add an atomic_irqsave module parameter. With it, half the atomic
+> > readers use the irqsave forms, alternating per CPU. A per-CPU count
+> > tracks these readers: the first one saves the interrupt state, and only
+> > the last one restores it. The others restore the current state, with
+> > interrupts disabled. The parameter also removes the bottom-half and
+> > interrupt reader extensions, and the reader end under ->pi_lock, which
+> > would enable interrupts under a raw spinlock.
+> > 
+> > An irqsave reader checks that interrupts are still disabled when it
+> > ends.
+> > 
+> > Add an atomic-srcu-irqsave run of SRCU-P to torture.sh.
+> > 
+> > Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 > 
-> Run a reader from the same per-CPU perf-counter NMI, when every reader
-> flavor in use is NMI-safe. These flavors are srcu_read_lock_nmisafe(),
-> srcu_read_lock_fast() and srcu_read_lock_atomic(). A new ops hook,
-> ->nmi_reader_capable(), reports whether the reader flavors in use are
-> all NMI-safe. A new nmi_readers module parameter, on by default, enables
-> these NMI readers. The statistics count these readers as nmi-reads.
+> Cute trick with the per-CPU variable for the flags value!  ;-)
 > 
-> The reader loads rcu_torture_current and checks its element as the
-> other readers do. The element must not be freed before the reader ends.
-> It must not go through two grace periods either.
+> A few questions and comments below.
 > 
-> The NMI may interrupt lockdep, which then does not record the reader.
-> So the reader loads the pointer with rcu_dereference_raw().
+> I am pulling this series in for testing and further review, but I do
+> understand that it might need to be replaced by a later version.
+
+And it passes initial "smoke" tests.  ;-)
+
+							Thanx, Paul
+
+> > ---
+> >  kernel/rcu/rcutorture.c                       | 74 +++++++++++++++++--
+> >  .../selftests/rcutorture/bin/torture.sh       |  6 ++
+> >  2 files changed, 75 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> > index 3b9c08a094cd..99dde988f974 100644
+> > --- a/kernel/rcu/rcutorture.c
+> > +++ b/kernel/rcu/rcutorture.c
+> > @@ -134,6 +134,7 @@ torture_param(int, preempt_interval, MSEC_PER_SEC, "Interval between preemptions
+> >  torture_param(int, read_exit_delay, 13, "Delay between read-then-exit episodes (s)");
+> >  torture_param(int, read_exit_burst, 16, "# of read-then-exit bursts per episode, zero to disable");
+> >  torture_param(int, reader_flavor, SRCU_READ_FLAVOR_NORMAL, "Reader flavors to use, one per bit.");
+> > +torture_param(bool, atomic_irqsave, false, "Half the atomic SRCU readers disable irqs");
 > 
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-
-A good addition!  Vanilla RCU could benefit from this as well, but that
-can be done later.
-
-A few questions below.
-
-						Thanx, Paul
-
-> ---
->  kernel/rcu/rcutorture.c | 60 +++++++++++++++++++++++++++++++++++++----
->  1 file changed, 55 insertions(+), 5 deletions(-)
+> What happens if there is only one reader?  Hey, you knew that this
+> question was coming!  ;-)
 > 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 968343be4e0d..3b9c08a094cd 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -117,6 +117,7 @@ torture_param(int, n_barrier_cbs, 0, "# of callbacks/kthreads for barrier testin
->  torture_param(int, n_up_down, 32, "# of concurrent up/down hrtimer-based RCU readers");
->  torture_param(int, nfakewriters, 4, "Number of RCU fake writer threads");
->  torture_param(bool, nmi_calls, true, "Exercise ->call() from NMI on nmi_capable flavors");
-> +torture_param(bool, nmi_readers, true, "Run readers from NMI with NMI-safe reader flavors");
->  torture_param(int, nreaders, -1, "Number of RCU reader threads");
->  torture_param(bool, nwriters, 1, "Number of RCU writer threads (0 or 1)");
->  torture_param(int, object_debug, 0, "Enable debug-object double call_rcu() testing");
-> @@ -220,6 +221,7 @@ static atomic_long_t n_rcu_torture_timers;
->  static atomic_long_t n_rcu_torture_irqs;
->  static atomic_long_t n_rcu_torture_nmi_call;
->  static atomic_long_t n_rcu_torture_nmi_cb;
-> +static atomic_long_t n_rcu_torture_nmi_read;
->  static long n_barrier_attempts;
->  static long n_barrier_successes; /* did rcu_barrier test succeed? */
->  static unsigned long n_read_exits;
-> @@ -438,6 +440,7 @@ struct rcu_torture_ops {
->  	long cbflood_max;
->  	int irq_capable;
->  	int nmi_capable;
-> +	bool (*nmi_reader_capable)(void); // Are ->readlock() and ->readunlock() NMI-safe?
->  	int can_boost;
->  	int extendables;
->  	int slow_gps;
-> @@ -790,6 +793,14 @@ static int srcu_torture_read_lock(void)
->  	return ret;
->  }
->  
-> +// Only these reader flavors may be used from NMI.
-> +static bool srcu_torture_nmi_reader_capable(void)
-> +{
-> +	return reader_flavor &&
-> +	       !(reader_flavor & ~(SRCU_READ_FLAVOR_NMI | SRCU_READ_FLAVOR_FAST |
-> +				   SRCU_READ_FLAVOR_ATOMIC));
-> +}
-> +
->  static void
->  srcu_read_delay(struct torture_random_state *rrsp, struct rt_read_seg *rtrsp)
->  {
-> @@ -981,6 +992,7 @@ static struct rcu_torture_ops srcu_ops = {
->  	.have_up_down	= IS_ENABLED(CONFIG_TINY_SRCU)
->  				? 0 : SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_FAST_UPDOWN,
->  	.nmi_capable	= 1,
-> +	.nmi_reader_capable = srcu_torture_nmi_reader_capable,
->  	.name		= "srcu"
->  };
->  
-> @@ -1049,6 +1061,7 @@ static struct rcu_torture_ops srcud_ops = {
->  	.have_up_down	= IS_ENABLED(CONFIG_TINY_SRCU)
->  				? 0 : SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_FAST_UPDOWN,
->  	.nmi_capable	= 1,
-> +	.nmi_reader_capable = srcu_torture_nmi_reader_capable,
->  	.name		= "srcud"
->  };
->  
-> @@ -2711,6 +2724,10 @@ static DEFINE_TORTURE_RANDOM_PERCPU(rcu_torture_timer_rand);
->   * per-CPU hardware perf counter overflows into an NMI, and its handler submits
->   * a preallocated callback via ->call().  One callback per CPU is in flight at a
->   * time (guarded by an atomic) to avoid allocating in NMI.
-> + *
-> + * The same handler also runs a reader, for flavors whose ->nmi_reader_capable()
-> + * says that their readers are NMI-safe.  The reader may interrupt another
-> + * reader on its CPU, in the middle of its counter update.
->   */
->  #ifdef CONFIG_PERF_EVENTS
->  static struct perf_event_attr rcu_torture_nmi_attr = {
-> @@ -2735,6 +2752,8 @@ struct rcu_torture_nmi_cb {
->  
->  static struct perf_event **rcu_torture_nmi_events;
->  static int rcu_torture_nmi_hp_state;
-> +static bool rcu_torture_nmi_do_calls;
-> +static bool rcu_torture_nmi_do_reads;
->  static DEFINE_PER_CPU(struct rcu_torture_nmi_cb, rcu_torture_nmi_cb);
->  
->  static void rcu_torture_nmi_invoked(struct rcu_head *rhp)
-> @@ -2745,6 +2764,28 @@ static void rcu_torture_nmi_invoked(struct rcu_head *rhp)
->  	atomic_set(&rtncp->inuse, 0);
->  }
->  
-> +/*
-> + * A reader in NMI.  The NMI may interrupt lockdep, which then does not record
-> + * the reader, so the pointer is loaded without a lockdep check.  The element
-> + * must not go through two grace periods before the reader ends.
-> + */
-> +static void rcu_torture_nmi_read(void)
-> +{
-> +	struct rcu_torture *p;
-> +	int idx;
-> +
-> +	idx = cur_ops->readlock();
-> +	p = rcu_dereference_raw(rcu_torture_current);
-> +	if (p) {
-> +		if (!READ_ONCE(p->rtort_mbtest))
-> +			atomic_inc(&n_rcu_torture_mberror);
-> +		if (READ_ONCE(p->rtort_pipe_count) > 1)
-> +			atomic_inc(&n_rcu_torture_error);
-
-Doesn't this miss doing a splat on RCU too-short grace period?
-
-One way to handle this is to have a separate n_rcu_torture_nmi_error
-counter and then have rcu_torture_stats_print() sample this counter before
-the "for (i = RCU_TORTURE_PIPE_LEN; i >= 0; i--)" loop and apply it there.
-
-But that loses the visible count in the "Reader Pipe:" line.  Which
-would be *really* confusing.  And we don't need atomic operations
-slowing up non-NMI RCU readers, either.
-
-Maybe a separate global array for NMIs, parallel to the "Reader Pipe:"
-and "Reader Batch:" arrays, that is atomically updated and printed
-separately, maybe "NMI Reader Pipe:" or similar?
-
-Or is there a better way?
-
-> +	}
-> +	cur_ops->readunlock(idx);
-> +	atomic_long_inc(&n_rcu_torture_nmi_read);
-> +}
-> +
->  static void rcu_torture_nmi_overflow(struct perf_event *event,
->  				     struct perf_sample_data *data,
->  				     struct pt_regs *regs)
-> @@ -2753,10 +2794,12 @@ static void rcu_torture_nmi_overflow(struct perf_event *event,
->  
->  	if (!in_nmi())
->  		return;
-> -	if (cur_ops->call && !atomic_xchg(&rtncp->inuse, 1)) {
-> +	if (rcu_torture_nmi_do_calls && !atomic_xchg(&rtncp->inuse, 1)) {
->  		atomic_long_inc(&n_rcu_torture_nmi_call);
->  		cur_ops->call(&rtncp->rh, rcu_torture_nmi_invoked);
-
-OK, the invocation of ->call() without testing ->call() is OK because
-rcu_torture_nmi_do_calls never gets set if ->call() is NULL.
-
->  	}
-> +	if (rcu_torture_nmi_do_reads)
-> +		rcu_torture_nmi_read();
->  }
->  
->  static int rcu_torture_nmi_online(unsigned int cpu)
-> @@ -2789,7 +2832,10 @@ static void rcu_torture_nmi_init(void)
->  {
->  	int ret;
->  
-> -	if (!nmi_calls || !cur_ops->nmi_capable || !cur_ops->call)
-> +	rcu_torture_nmi_do_calls = nmi_calls && cur_ops->nmi_capable && cur_ops->call;
-> +	rcu_torture_nmi_do_reads = nmi_readers && cur_ops->nmi_reader_capable &&
-> +				   cur_ops->nmi_reader_capable();
-> +	if (!rcu_torture_nmi_do_calls && !rcu_torture_nmi_do_reads)
->  		return;
->  	rcu_torture_nmi_events = kcalloc(nr_cpu_ids, sizeof(*rcu_torture_nmi_events),
->  					 GFP_KERNEL);
-> @@ -2815,9 +2861,12 @@ static void rcu_torture_nmi_cleanup(void)
->  	}
->  	kfree(rcu_torture_nmi_events);
->  	rcu_torture_nmi_events = NULL;
-> -	if (!atomic_long_read(&n_rcu_torture_nmi_call))
-> +	if (rcu_torture_nmi_do_calls && !atomic_long_read(&n_rcu_torture_nmi_call))
->  		pr_alert("%s: nmi_calls set but no ->call() ever issued from NMI, so NMI ->call() went untested (no PMU, or NMIs unavailable here).\n",
->  			 __func__);
-> +	if (rcu_torture_nmi_do_reads && !atomic_long_read(&n_rcu_torture_nmi_read))
-> +		pr_alert("%s: nmi_readers set but no reader ever ran in NMI, so NMI readers went untested (no PMU, or NMIs unavailable here).\n",
-> +			 __func__);
->  }
->  #else /* #ifdef CONFIG_PERF_EVENTS */
->  static void rcu_torture_nmi_init(void) { }
-> @@ -3212,9 +3261,10 @@ rcu_torture_stats_print(void)
->  		data_race(n_barrier_attempts),
->  		data_race(n_rcu_torture_barrier_error));
->  	pr_cont("read-exits: %ld ", data_race(n_read_exits)); // Statistic.
-> -	pr_cont("nmi-calls: %ld nmi-cbs: %ld ",
-> +	pr_cont("nmi-calls: %ld nmi-cbs: %ld nmi-reads: %ld ",
->  		atomic_long_read(&n_rcu_torture_nmi_call),
-> -		atomic_long_read(&n_rcu_torture_nmi_cb));
-> +		atomic_long_read(&n_rcu_torture_nmi_cb),
-> +		atomic_long_read(&n_rcu_torture_nmi_read));
->  	pr_cont("nocb-toggles: %ld:%ld ",
->  		atomic_long_read(&n_nocb_offload), atomic_long_read(&n_nocb_deoffload));
->  	pr_cont("gpwraps: %ld\n", n_gpwraps);
-> -- 
-> 2.47.3
+> (And I see the use of ->count below.)
+> 
+> >  torture_param(int, shuffle_interval, 3, "Number of seconds between shuffles");
+> >  torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
+> >  torture_param(int, stall_cpu, 0, "Stall duration (s), zero to disable.");
+> > @@ -728,6 +729,66 @@ static void srcu_torture_init_forbidden_apis(void)
+> >  	cur_ops->start_gp_poll = NULL;
+> >  }
+> >  
+> > +/*
+> > + * With atomic_irqsave, half the atomic SRCU readers disable interrupts instead
+> > + * of preemption.  rcutorture_one_extend() may end the readers of a CPU in any
+> > + * order, so the first one saves the interrupt state and the last one restores
+> > + * it.  An extension must then neither enable interrupts nor enable bottom
+> > + * halves within such a reader, and no reader may end under ->pi_lock.
+> > + */
+> 
+> Good point:  SRCU does not flatten readers by default, but you really
+> need to for the _irqsave() case.
+> 
+> > +#define SRCU_TORTURE_IRQSAVE	0x20	// The reader disabled interrupts.
+> 
+> Is this supposed to slot into the RCUTORTURE_RDR_* bit positions?
+> If so, it is overwriting RCUTORTURE_RDR_RCU_1.  Or is this a trick
+> that you are using to make half of the readers disable interrupts?
+> If so, let's please make this more explicit and more obvious to someone
+> (like yourself) who might be reading the RCUTORTURE_RDR_* bit position
+> definitions some time in the future.  ;-)
+> 
+> Except...  The rule is that RCUTORTURE_RDR_RCU_2 cannot be set unless
+> RCUTORTURE_RDR_RCU_1 is also set.  So there needs to be some other way
+> to get the "half the readers doing _irqsave()" effect.  (And I now see
+> the use of ->count below.)
+> 
+> If this is independent of the RCUTORTURE_RDR_* bit positions, why
+> the 0x20?
+> 
+> > +struct srcu_torture_irqsave {
+> > +	unsigned int count;	// Picks the form of the next reader.
+> 
+> Like maybe this count being odd or even, for example.  ;-)
+> 
+> And I do see below that this is in fact the strategy.  Very good!
+> 
+> > +	int depth;		// Readers of this CPU that disabled interrupts.
+> > +	unsigned long flags;	// Interrupt state before the first one.
+> > +};
+> > +
+> > +static DEFINE_PER_CPU(struct srcu_torture_irqsave, srcu_torture_irqsave);
+> > +
+> > +static void srcu_torture_init_irqsave(void)
+> > +{
+> > +	if (!atomic_irqsave || !(reader_flavor & SRCU_READ_FLAVOR_ATOMIC))
+> > +		return;
+> > +	cur_ops->extendables &= ~(RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH |
+> > +				  RCUTORTURE_RDR_IRQ);
+> 
+> All the "srcu*" torture types implicitly set ->extendables to zero, so
+> you shouldn't need this.  The exception is the "busted_srcud" torture
+> type, which is supposed to fail anyway.  Or is "busted_srcud" the case
+> that this code is trying to handle?
+> 
+> If so, an alternative approach would be to only do the _irqsave()
+> readers when ->extendables is equal to zero.  Which is admittedly still
+> a bit hacky.
+> 
+> > +	cur_ops->no_pi_lock = 1;
+> > +	VERBOSE_TOROUT_STRING("srcu_torture_init atomic SRCU, irqsave readers");
+> > +}
+> > +
+> > +static int srcu_torture_read_lock_atomic(void)
+> > +{
+> > +	struct srcu_torture_irqsave *stip;
+> > +	unsigned long flags;
+> > +	int idx;
+> > +
+> > +	if (!atomic_irqsave || in_nmi() || !(this_cpu_inc_return(srcu_torture_irqsave.count) & 0x1))
+> 
+> The suggestion above would add "|| cur_ops->extendables" to the above
+> condition.  Atomic SRCU readers are a bit heavyweight, so the extra
+> runtime overhead should not be a concern.
+> 
+> > +		return srcu_read_lock_atomic(srcu_ctlp);
+> > +	idx = srcu_read_lock_atomic_irqsave(srcu_ctlp, flags);
+> > +	stip = this_cpu_ptr(&srcu_torture_irqsave);
+> > +	if (!stip->depth++)
+> > +		stip->flags = flags;
+> > +	return idx | SRCU_TORTURE_IRQSAVE;
+> 
+> OK, so the value of 0x20 instead goes into RCUTORTURE_RDR_MASK_1 and
+> maybe also into RCUTORTURE_RDR_MASK_2, correct?
+> 
+> If so, it would be good to define SRCU_TORTURE_IRQSAVE somewhere near
+> the definitions of RCUTORTURE_RDR_MASK_1 and RCUTORTURE_RDR_MASK_2.
+> 
+> /me scratches his head trying to think why 0x20 instead of 0x2, 0x10,
+> or whatever...
+> 
+> Ah, because there are five reader flavors, which consume bits 0x1 through
+> 0x10.  But we have been adding reader flavors at a surprisingly fast clip.
+> Might you therefore be willing to instead consider the value 0x80?
+> 
+> > +}
+> > +
+> > +static void srcu_torture_read_unlock_atomic(int idx)
+> > +{
+> > +	struct srcu_torture_irqsave *stip;
+> > +	unsigned long flags;
+> > +
+> > +	if (!(idx & SRCU_TORTURE_IRQSAVE)) {
+> > +		srcu_read_unlock_atomic(srcu_ctlp, idx);
+> > +		return;
+> > +	}
+> > +	idx &= ~SRCU_TORTURE_IRQSAVE;
+> > +	WARN_ON_ONCE(!irqs_disabled());  // Its section must be interrupts-off.
+> > +	stip = this_cpu_ptr(&srcu_torture_irqsave);
+> > +	local_save_flags(flags);  // Disabled: keep it so for the other readers.
+> > +	if (!WARN_ON_ONCE(stip->depth <= 0) && !--stip->depth)
+> > +		flags = stip->flags;
+> > +	srcu_read_unlock_atomic_irqrestore(srcu_ctlp, idx, flags);
+> > +}
+> > +
+> >  static void srcu_torture_init(void)
+> >  {
+> >  	rcu_sync_torture_init();
+> > @@ -747,6 +808,7 @@ static void srcu_torture_init(void)
+> >  		srcu_ctlp = &srcu_ctla;
+> >  		VERBOSE_TOROUT_STRING("srcu_torture_init atomic SRCU");
+> >  		srcu_torture_init_forbidden_apis();
+> > +		srcu_torture_init_irqsave();
+> >  	}
+> >  }
+> >  
+> > @@ -786,9 +848,9 @@ static int srcu_torture_read_lock(void)
+> >  		ret += idx << 3;
+> >  	}
+> >  	if (reader_flavor & SRCU_READ_FLAVOR_ATOMIC) {
+> > -		idx = srcu_read_lock_atomic(srcu_ctlp);
+> > -		WARN_ON_ONCE(idx & ~0x1);
+> > -		ret += idx << 4;
+> > +		idx = srcu_torture_read_lock_atomic();
+> > +		WARN_ON_ONCE(idx & ~(0x1 | SRCU_TORTURE_IRQSAVE));
+> > +		ret += ((idx & 0x1) << 4) | (idx & SRCU_TORTURE_IRQSAVE);
+> 
+> This bit manipulation is getting a bit ornate, but that is a separate
+> issue and can be dealt with later.  And who knows?  This might be optimal.
+> 
+> >  	}
+> >  	return ret;
+> >  }
+> > @@ -828,9 +890,10 @@ srcu_read_delay(struct torture_random_state *rrsp, struct rt_read_seg *rtrsp)
+> >  
+> >  static void srcu_torture_read_unlock(int idx)
+> >  {
+> > -	WARN_ON_ONCE((reader_flavor && (idx & ~reader_flavor)) || (!reader_flavor && (idx & ~0x1)));
+> > +	WARN_ON_ONCE((reader_flavor && (idx & ~(reader_flavor | SRCU_TORTURE_IRQSAVE))) ||
+> > +		     (!reader_flavor && (idx & ~0x1)));
+> >  	if (reader_flavor & SRCU_READ_FLAVOR_ATOMIC)
+> > -		srcu_read_unlock_atomic(srcu_ctlp, (idx & 0x10) >> 4);
+> > +		srcu_torture_read_unlock_atomic(((idx & 0x10) >> 4) | (idx & SRCU_TORTURE_IRQSAVE));
+> >  	if (reader_flavor & SRCU_READ_FLAVOR_FAST_UPDOWN)
+> >  		srcu_read_unlock_fast_updown(srcu_ctlp,
+> >  					     __srcu_ctr_to_ptr(srcu_ctlp, (idx & 0x8) >> 3));
+> > @@ -1015,6 +1078,7 @@ static void srcud_torture_init(void)
+> >  		WARN_ON(init_srcu_struct_atomic(&srcu_ctld));
+> >  		VERBOSE_TOROUT_STRING("srcud_torture_init atomic SRCU");
+> >  		srcu_torture_init_forbidden_apis();
+> > +		srcu_torture_init_irqsave();
+> >  	} else {
+> >  		WARN_ON(init_srcu_struct(&srcu_ctld));
+> >  	}
+> > diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+> > index e7b578ec152f..18a03fad1038 100755
+> > --- a/tools/testing/selftests/rcutorture/bin/torture.sh
+> > +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+> > @@ -519,6 +519,12 @@ then
+> >  	torture_set "atomic-srcu" tools/testing/selftests/rcutorture/bin/kvm.sh \
+> >  		--allcpus --duration "$duration_rcutorture" \
+> >  		--configs "$configs_atomic_srcu" --trust-make
+> > +
+> > +	# Half the readers then use srcu_read_lock_atomic_irqsave().
+> > +	torture_bootargs="rcutorture.reader_flavor=0x10 rcutorture.atomic_irqsave=1"
+> > +	torture_set "atomic-srcu-irqsave" tools/testing/selftests/rcutorture/bin/kvm.sh \
+> > +		--allcpus --duration "$duration_rcutorture" \
+> > +		--configs "SRCU-P" --trust-make
+> >  fi
+> >  
+> >  if test "$do_locktorture" = "yes"
+> > -- 
+> > 2.47.3
+> > 
 > 
