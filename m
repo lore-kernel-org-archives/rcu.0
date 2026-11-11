@@ -1,50 +1,50 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=158.69.130.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794409199;
-	b=tqAPlGjbShoP1+/A2fBozZcW8ndvpuQLCExNZ8AWkASM1HZKwNhFAou73ifKJlgWvzfL
-	 71EjNl+3ycm1/Qyt5VTJn4keK0Uufn0tGK+/u/R8GWPtz37r1cZcbByybuoqY+pHsBoBf
-	 L9DCl80qz5s0B+3QCKICmgs3sRNIpm8sS+U7vxKLQpGP2t9FhyXFB9399T7h3TD75UIuW
-	 b+HbhQsBVPRCua2/d4JbhTvzvFamSOHPqruay/tY3UK5Emhy6/h5SnK6+7VhIK8Fgmq8i
-	 8AIIj49vlno1AjK2tcQDUiaWsszIOvR2pZVo2VqFSeNs8MIU8wNxw0skCmw28jpjH8A==
+	b=0Imslrw2DHRXhHvh6ocmoHUSTevcBpOFaJDirhDAlSbxj1PO3Ukpew1MPZf41o2E+zV+
+	 0TuXhtttMaxHVykdAS5kYvErQogyRV4Zb9iG3lQiNcPZY9hU0BqgtQKaqToB8RjIEl0dq
+	 KVRp1GRoGsgwO52k9453fuuAEtp/J1hT6UIpdx+kINU+EW+eMVqYEbz0WGLYiCugmeQ0b
+	 bxB/qkYTaF2w13lA/3lrp2hElkRi5uedgWP9wU8mNLrnhWZKgsnsfQi9csqAC9aJy1ue/
+	 Ol8Yn4uv9e9tBJtt71xxIpYDPL7Xbyj5WzGCdlbOd3+QNx+jiXjy7qM6Ca9FNGoxRzg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794409199;
 	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
 	 Message-Id:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=Mp91bdbni8GZDIBtClgcwxl0ov59ummE1gxOxhSJsjY=;
-	b=M/3Rx6Ltc376cy85tMnHTU5q7TrPr/EwB8WzI0V5fvftETmYB3o5+iWk1QBPB8KQx4UG
-	 0/dV9AlF4+kCHBG0hlM+ncKdMmYQv03MFLpd/Z0bhONFk722MsEEQIznZaX8T1CPKl2xA
-	 3EMDrVQh2xaDICzfhH9HHti1Kp7Tzj1UL3IlPh5meTpYcV1zrVWTOyj/RoUcSY92i0ahp
-	 PkzDQInfK+kUDJtMyYk09GpjnITSl2ZcRJb/n3dgA6dueemHAJfAw7nXMLcL6YK+IPQ49
-	 JN6tV8/5UhvQ66M7/0P9bb+pLAu4xPykNBaFtwYU5zqbWfPTPVouLzdA5j1aWZS13YA==
+	bh=bm+n2tFEGGt2zoKOXv4G0G707ijjxMSsqQFFCRwLWSE=;
+	b=Epl76fagxuTXK1bjawMzGd1qYfc5mE7ynCSdJjHDgzCauwSpU79OkFGHXGvRmavZh4Mk
+	 JvAmqMw5+yBY2ZhEcT0Fhl8Y9kMD/rHr97tlB5xafqVgTAJI+cB3bVlCGrPhuyS6OrRkk
+	 pTp81B70QdSwOSo0z2BHLUnIvwTZNWsDelW9UJsXdsUE/31RY1t+v/KRevGGMSKZKddBC
+	 4zRwazY6RJtkuUL8vyx0EztCqJvJSibIwm/IlT7Gy+aPU+2yqCX/c4PuLE0HofHxCL3ZU
+	 mLGUTZx8T2BT/VjaMWqV4cgLV9dUTq9xS+lsLfYTXU3WjZhuXDtVLHpUsFAq3tmJrRg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=efficios.com;
 	spf=pass smtp.mailfrom=efficios.com;
-	dkim=pass header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b="qci/iEt5";
+	dkim=pass header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=v4tabJxP;
 	arc=none smtp.remote-ip=158.69.130.18
 Received: from smtpout.efficios.com (smtpout.efficios.com [158.69.130.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C662606A882;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53D6C606A881;
 	Wed, 11 Nov 2026 14:59:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9C662606A882
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 53D6C606A881
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=qci/iEt5
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=v4tabJxP
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
 	s=smtpout1; t=1794409197;
-	bh=Mp91bdbni8GZDIBtClgcwxl0ov59ummE1gxOxhSJsjY=;
+	bh=bm+n2tFEGGt2zoKOXv4G0G707ijjxMSsqQFFCRwLWSE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qci/iEt5nov/NU/dtH1JBlwHhrWC6FoIxfbXLjHDNPKM7UvWdR6pOPa60u80qOLKH
-	 OWAwdqq6axGk371VZpMmHC4MgkXRkj5m/RnmifgXKhZTmcnLyJJusb5Er3bEomJUsv
-	 SK5xYTJa02y1H/9v25gspM/Lj/Ea+7x+Rco7G+JTeSi42EuJOKuOpa5pvFn/3qMnhw
-	 hWHaKQZCR7SG2tgWQjvJjbij7QZfZyaSbRfwRmBtCUfcOxWWPf+2/Sm9q+zancj2RO
-	 t3AP+IdoT3uRItA/3BLGtEUy1kULbbavPcJtIM3xHASooslVJqXoZV6wVeOsF/eYBH
-	 scjczYS/7ixeA==
+	b=v4tabJxPsdiWW8zifVio/TqVQg529NwS2wxly5tgZisG4nlFRFlMWxiNpjRVkTZDN
+	 qrWZGIl2QeA3moXiCsjyKqYfyh8X/6zkI4pcLbuYQN0O9DzdIJ4uwQlHFaTcjYZlnv
+	 ZyDC6h1+3vVJbSxRh6LvCtK+3f9XRlPXN4TWYQsDwH0sGoiBCEUKrXcqpleJf5lwiS
+	 aNzb/2MVllGecEPwq+NTealGZgAtRfwh2TwyQpKib9+M86oYYhfNeINzHGJ6iKI3NX
+	 Xk4qUkml1lA+d03PG3qrddDPBuswUiorgltwD+pKlkj0Hnj+Afb0NEGvHpufMB6Vee
+	 egQcdKNWvMxjA==
 Received: from thinkos.internal.efficios.com (mtl.efficios.com [216.120.195.104])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4jPms963qDzMxb;
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4jPms92tcTzNgh;
 	Wed, 11 Nov 2026 09:59:57 -0500 (EST)
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>
@@ -64,9 +64,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Puranjay Mohan <puranjay@kernel.org>,
 	rcu@vger.kernel.org
-Subject: [PATCH v2 4/7] srcu: Add irqsave variants of the atomic SRCU readers
-Date: Wed, 11 Nov 2026 09:59:46 -0500
-Message-Id: <20261111145949.70845-5-mathieu.desnoyers@efficios.com>
+Subject: [PATCH v2 1/7] srcutiny: Do not call synchronize_rcu() from synchronize_srcu_atomic()
+Date: Wed, 11 Nov 2026 09:59:43 -0500
+Message-Id: <20261111145949.70845-2-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20261111145949.70845-1-mathieu.desnoyers@efficios.com>
 References: <20261111145949.70845-1-mathieu.desnoyers@efficios.com>
@@ -81,165 +81,60 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-synchronize_srcu_atomic() may be invoked with interrupts disabled, for
-example under a raw spinlock. Its kerneldoc then requires every reader
-of that srcu_struct to disable interrupts too. srcu_read_lock_atomic()
-only disables preemption, so such a reader has to disable interrupts
-itself around it.
+synchronize_srcu_atomic() never blocks, so that it can be called from
+atomic context.  This includes interrupt handlers, and code within
+rcu_read_lock().
 
-Add srcu_read_lock_atomic_irqsave() and
-srcu_read_unlock_atomic_irqrestore(). They disable interrupts instead
-of preemption, and keep the interrupt state in a flags argument, so
-they are macros. Both forms share the rest of the reader through
-__srcu_read_lock_atomic() and __srcu_read_unlock_atomic().
+With CONFIG_PREEMPTION=y, the Tiny SRCU version first calls
+synchronize_rcu().  Tiny synchronize_rcu() does not wait: it only
+advances rcu_ctrlblk.gp_seq.  This is valid where the caller is in a
+quiescent state, in task context and outside of any RCU reader.
 
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+The callers of synchronize_srcu_atomic() need not be in a quiescent
+state.  An interrupt handler may have interrupted an RCU reader.  A
+caller within rcu_read_lock() is itself an RCU reader.  In both cases,
+synchronize_rcu() ends an RCU grace period while an RCU reader is still
+in its critical section.  poll_state_synchronize_rcu() would then
+report a grace period that did not happen.  The caller within
+rcu_read_lock() also gets "Illegal synchronize_rcu() in RCU read-side
+critical section" from lockdep.
+
+srcu_drive_gp() has the same call.  There, it makes an RCU Tasks
+Trace grace period imply an RCU grace period.  RCU Tasks Trace uses
+call_srcu() and synchronize_srcu(), which are both forbidden on a
+srcu_struct that uses synchronize_srcu_atomic().  And the Tree SRCU
+version of synchronize_srcu_atomic() does not wait for an RCU grace
+period either.
+
+Fix this by removing the call.
+
+This was found by reading the code.  An rcutorture test added later in
+this series fails without this change.
+
+Fixes: a48669f0c49c ("srcutiny: Add an atomic Tiny SRCU")
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 ---
- include/linux/srcu.h | 100 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 75 insertions(+), 25 deletions(-)
+ kernel/rcu/srcutiny.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index e3b541ceb8dd..11e9ad914a71 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -357,31 +357,15 @@ static inline int srcu_read_lock(struct srcu_struct *ssp)
- 	return retval;
- }
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 63a3f0a8bc53..d58f4160f925 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -367,9 +367,10 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
+ 		return;
  
--/**
-- * srcu_read_lock_atomic - register a new reader promising an atomic section
-- * @ssp: srcu_struct in which to register the new reader.
-- *
-- * As srcu_read_lock(), but the caller promises that the read-side
-- * critical section never sleeps and never blocks on anything which
-- * may itself depend on memory allocation to make progress. Preemption
-- * is disabled for the duration, which both enforces that promise (any
-- * sleepable call in the section will splat on every configuration)
-- * and bounds the section so that the update side may spin rather
-- * than sleep when waiting for readers: see synchronize_srcu_atomic().
-- *
-- * The lock and matching srcu_read_unlock_atomic() must be invoked on
-- * the same CPU, from the same context; passing the return value to
-- * another task is not permitted for this flavor.
-- *
-- * This function is NMI-safe, in a manner similar to
-- * srcu_read_lock_nmisafe().
-+/*
-+ * Register an atomic-section reader.  The caller has disabled preemption,
-+ * or interrupts.
-  */
--static inline int srcu_read_lock_atomic(struct srcu_struct *ssp)
-+static inline int __srcu_read_lock_atomic(struct srcu_struct *ssp)
- 	__acquires_shared(ssp)
- {
- 	int retval;
+-	if (IS_ENABLED(CONFIG_PREEMPTION))
+-		synchronize_rcu(); // Needed for RCU Tasks Trace to imply RCU grace period.
+-				   // And in Tiny RCU, it is near zero cost and doesn't block.
++	// No synchronize_rcu() here, unlike in srcu_drive_gp().  The caller
++	// may be in an interrupt handler or within rcu_read_lock().  Tiny
++	// synchronize_rcu() would then end an RCU grace period that an RCU
++	// reader still holds up.
  
--	preempt_disable();
- 	/*
- 	 * Arm might_sleep() to catch even a *potentially* sleeping call
- 	 * in the section, not just an actual schedule: the atomic-domain
-@@ -406,6 +390,50 @@ static inline int srcu_read_lock_atomic(struct srcu_struct *ssp)
- 	return retval;
- }
- 
-+/**
-+ * srcu_read_lock_atomic - register a new reader promising an atomic section
-+ * @ssp: srcu_struct in which to register the new reader.
-+ *
-+ * As srcu_read_lock(), but the caller promises that the read-side
-+ * critical section never sleeps and never blocks on anything which
-+ * may itself depend on memory allocation to make progress. Preemption
-+ * is disabled for the duration, which both enforces that promise (any
-+ * sleepable call in the section will splat on every configuration)
-+ * and bounds the section so that the update side may spin rather
-+ * than sleep when waiting for readers: see synchronize_srcu_atomic().
-+ *
-+ * The lock and matching srcu_read_unlock_atomic() must be invoked on
-+ * the same CPU, from the same context; passing the return value to
-+ * another task is not permitted for this flavor.
-+ *
-+ * This function is NMI-safe, in a manner similar to
-+ * srcu_read_lock_nmisafe().
-+ */
-+static inline int srcu_read_lock_atomic(struct srcu_struct *ssp)
-+	__acquires_shared(ssp)
-+{
-+	preempt_disable();
-+	return __srcu_read_lock_atomic(ssp);
-+}
-+
-+/**
-+ * srcu_read_lock_atomic_irqsave - register an atomic reader, interrupts off
-+ * @ssp: srcu_struct in which to register the new reader.
-+ * @flags: interrupt state to restore at srcu_read_unlock_atomic_irqrestore().
-+ *
-+ * As srcu_read_lock_atomic(), but with interrupts disabled for the
-+ * duration instead of preemption.  Use it when synchronize_srcu_atomic()
-+ * may be invoked with interrupts disabled for this srcu_struct: its
-+ * readers must then disable interrupts too.
-+ *
-+ * Returns the index to pass to srcu_read_unlock_atomic_irqrestore().
-+ */
-+#define srcu_read_lock_atomic_irqsave(ssp, flags)			\
-+({									\
-+	local_irq_save(flags);						\
-+	__srcu_read_lock_atomic((ssp));					\
-+})
-+
- /**
-  * srcu_read_lock_fast - register a new reader for an SRCU-protected structure.
-  * @ssp: srcu_struct in which to register the new reader.
-@@ -598,12 +626,11 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
- 	__srcu_read_unlock(ssp, idx);
- }
- 
--/**
-- * srcu_read_unlock_atomic - unregister an atomic-section reader
-- * @ssp: srcu_struct from which to unregister the old reader.
-- * @idx: return value from corresponding srcu_read_lock_atomic().
-+/*
-+ * Unregister an atomic-section reader.  The caller then enables preemption,
-+ * or interrupts, again.
-  */
--static inline void srcu_read_unlock_atomic(struct srcu_struct *ssp, int idx)
-+static inline void __srcu_read_unlock_atomic(struct srcu_struct *ssp, int idx)
- 	__releases_shared(ssp)
- {
- 	WARN_ON_ONCE(idx & ~0x1);
-@@ -612,9 +639,32 @@ static inline void srcu_read_unlock_atomic(struct srcu_struct *ssp, int idx)
- 	__srcu_read_unlock_nmisafe(ssp, idx);
- 	if (in_task())
- 		non_block_end();
-+}
-+
-+/**
-+ * srcu_read_unlock_atomic - unregister an atomic-section reader
-+ * @ssp: srcu_struct from which to unregister the old reader.
-+ * @idx: return value from corresponding srcu_read_lock_atomic().
-+ */
-+static inline void srcu_read_unlock_atomic(struct srcu_struct *ssp, int idx)
-+	__releases_shared(ssp)
-+{
-+	__srcu_read_unlock_atomic(ssp, idx);
- 	preempt_enable();
- }
- 
-+/**
-+ * srcu_read_unlock_atomic_irqrestore - unregister an irqsave atomic reader
-+ * @ssp: srcu_struct from which to unregister the old reader.
-+ * @idx: return value from corresponding srcu_read_lock_atomic_irqsave().
-+ * @flags: interrupt state saved by srcu_read_lock_atomic_irqsave().
-+ */
-+#define srcu_read_unlock_atomic_irqrestore(ssp, idx, flags)		\
-+do {									\
-+	__srcu_read_unlock_atomic((ssp), (idx));			\
-+	local_irq_restore(flags);					\
-+} while (0)
-+
- /**
-  * srcu_read_unlock_fast - unregister a old reader from an SRCU-protected structure.
-  * @ssp: srcu_struct in which to unregister the old reader.
+ 	// Usually, there will be no readers.
+ 	preempt_disable();  // Guard against lazy preemption and some other grace period.
 -- 
 2.47.3
 
