@@ -1,50 +1,50 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=158.69.130.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794409199;
-	b=0Imslrw2DHRXhHvh6ocmoHUSTevcBpOFaJDirhDAlSbxj1PO3Ukpew1MPZf41o2E+zV+
-	 0TuXhtttMaxHVykdAS5kYvErQogyRV4Zb9iG3lQiNcPZY9hU0BqgtQKaqToB8RjIEl0dq
-	 KVRp1GRoGsgwO52k9453fuuAEtp/J1hT6UIpdx+kINU+EW+eMVqYEbz0WGLYiCugmeQ0b
-	 bxB/qkYTaF2w13lA/3lrp2hElkRi5uedgWP9wU8mNLrnhWZKgsnsfQi9csqAC9aJy1ue/
-	 Ol8Yn4uv9e9tBJtt71xxIpYDPL7Xbyj5WzGCdlbOd3+QNx+jiXjy7qM6Ca9FNGoxRzg==
+	b=lLgkS43+80GhIBtL5TOc+0jcCUzSXY+5oM0qTmY/29G8EuL76mUjZaMQs0s4Rvpy+4lK
+	 H9kPMxubKwp87r633W9tuNu+ch0jWwwUmbFi0qqM96yMaRgt92ls0g8iS76TR5ZvmvN0K
+	 hqY9PZR+3L1BtxpWBTjCwb6WK0m20dlLkKDTkDyN/38P2mILvIDMDnB6fjblfZmwGzuMQ
+	 rAhGi64sABQidc6lRcyU4VTI85+TZRJoAiaWi6TTlMFOG04nZQl1TGaZjFjYjm4tavqFt
+	 7AldBQKbgbkqi4iPOxfXBo13lIO3/zkCoNH/6u9mSqehd52myQ/Jvwnf+88NEMw3/BA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794409199;
 	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
 	 Message-Id:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=bm+n2tFEGGt2zoKOXv4G0G707ijjxMSsqQFFCRwLWSE=;
-	b=Epl76fagxuTXK1bjawMzGd1qYfc5mE7ynCSdJjHDgzCauwSpU79OkFGHXGvRmavZh4Mk
-	 JvAmqMw5+yBY2ZhEcT0Fhl8Y9kMD/rHr97tlB5xafqVgTAJI+cB3bVlCGrPhuyS6OrRkk
-	 pTp81B70QdSwOSo0z2BHLUnIvwTZNWsDelW9UJsXdsUE/31RY1t+v/KRevGGMSKZKddBC
-	 4zRwazY6RJtkuUL8vyx0EztCqJvJSibIwm/IlT7Gy+aPU+2yqCX/c4PuLE0HofHxCL3ZU
-	 mLGUTZx8T2BT/VjaMWqV4cgLV9dUTq9xS+lsLfYTXU3WjZhuXDtVLHpUsFAq3tmJrRg==
+	bh=GGgoUm9zsWSiRU5uF6nIaDWAlte8dUdT5DAhAr4Yf+I=;
+	b=1h+fUKADl+ewHZy5chtOnIG+W2UWve8Y+5YYTCtoL7tfiH4qv82ZNmUsmfDME1jJWmIW
+	 uEmot7/Ld9VhzKiyCyFHY3jLUqcfK9uU7cjHhAgDCaAB32WuoKMA4OG0HPyzGvM0fSeZj
+	 KxBNa3uSdDDZfdnw0fUYdLtdfPeupH3dYBVbFkmgqHPC2UPFbeTDvSzo3G8OIej5PL8RH
+	 rCnxlX+BXuJ3k2j3WCq4ab7w/2mSM8eAZ2BhKfSi9xT+RJUeC3XUHmbOtErduF7CM0HpI
+	 T5hcKeOTWOlKdzL5kKVYxDfAZl0i75c5kpYBhtEAX3RNQRrYo5mG0mucRxIVdYKPnpQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=efficios.com;
 	spf=pass smtp.mailfrom=efficios.com;
-	dkim=pass header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=v4tabJxP;
+	dkim=pass header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=v9n5v8wc;
 	arc=none smtp.remote-ip=158.69.130.18
 Received: from smtpout.efficios.com (smtpout.efficios.com [158.69.130.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53D6C606A881;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C21606A332;
 	Wed, 11 Nov 2026 14:59:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 53D6C606A881
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 53C21606A332
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=v4tabJxP
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=v9n5v8wc
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
 	s=smtpout1; t=1794409197;
-	bh=bm+n2tFEGGt2zoKOXv4G0G707ijjxMSsqQFFCRwLWSE=;
+	bh=GGgoUm9zsWSiRU5uF6nIaDWAlte8dUdT5DAhAr4Yf+I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=v4tabJxPsdiWW8zifVio/TqVQg529NwS2wxly5tgZisG4nlFRFlMWxiNpjRVkTZDN
-	 qrWZGIl2QeA3moXiCsjyKqYfyh8X/6zkI4pcLbuYQN0O9DzdIJ4uwQlHFaTcjYZlnv
-	 ZyDC6h1+3vVJbSxRh6LvCtK+3f9XRlPXN4TWYQsDwH0sGoiBCEUKrXcqpleJf5lwiS
-	 aNzb/2MVllGecEPwq+NTealGZgAtRfwh2TwyQpKib9+M86oYYhfNeINzHGJ6iKI3NX
-	 Xk4qUkml1lA+d03PG3qrddDPBuswUiorgltwD+pKlkj0Hnj+Afb0NEGvHpufMB6Vee
-	 egQcdKNWvMxjA==
+	b=v9n5v8wcAIiagjzBnJdSUKlcXCdrOJLtOQUjcbsyCybV8D0vx9cXqtiva2/CvtQ6V
+	 hF6HzdxCedMzNbVWDnsUtsMbxoStp7FAooFRwINsNCzPor5LNrkewuRIha+ljsLc8p
+	 pgby7QIOc7xGKCgli9wepFlApMCPj9iPvyrJOo56X7exlHHfBWpk9ECBRCUyb2HGrw
+	 HcJO/vKnH/2r1z4u2Sve4wmdqUrbP4hFCFE2/9Pxu7DnXDMBpQ2ljVOB7/tyGlDl55
+	 c8m8VUNmkWRG3z/PXdjFPiT6DOFu3dkqS3cWM4nqRPqDmubLbFZZASJw/oXtBFfR25
+	 1wyyPScQLGnkg==
 Received: from thinkos.internal.efficios.com (mtl.efficios.com [216.120.195.104])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4jPms92tcTzNgh;
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4jPms93xt2zNgj;
 	Wed, 11 Nov 2026 09:59:57 -0500 (EST)
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>
@@ -64,9 +64,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Puranjay Mohan <puranjay@kernel.org>,
 	rcu@vger.kernel.org
-Subject: [PATCH v2 1/7] srcutiny: Do not call synchronize_rcu() from synchronize_srcu_atomic()
-Date: Wed, 11 Nov 2026 09:59:43 -0500
-Message-Id: <20261111145949.70845-2-mathieu.desnoyers@efficios.com>
+Subject: [PATCH v2 2/7] srcu: Rule for using synchronize_srcu_atomic() from interrupt handlers
+Date: Wed, 11 Nov 2026 09:59:44 -0500
+Message-Id: <20261111145949.70845-3-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20261111145949.70845-1-mathieu.desnoyers@efficios.com>
 References: <20261111145949.70845-1-mathieu.desnoyers@efficios.com>
@@ -81,60 +81,83 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-synchronize_srcu_atomic() never blocks, so that it can be called from
-atomic context.  This includes interrupt handlers, and code within
-rcu_read_lock().
+This is about the update side.  A user that calls
+synchronize_srcu_atomic() from an interrupt handler must disable
+interrupts around all its calls on that srcu_struct, task context
+included.  Document this rule, and warn when it is broken.  The rules
+for readers are unchanged.
 
-With CONFIG_PREEMPTION=y, the Tiny SRCU version first calls
-synchronize_rcu().  Tiny synchronize_rcu() does not wait: it only
-advances rcu_ctrlblk.gp_seq.  This is valid where the caller is in a
-quiescent state, in task context and outside of any RCU reader.
+synchronize_srcu_atomic() spins rather than sleeps, so it may be called
+from atomic context, interrupt handlers included.  Its callers on one
+srcu_struct exclude each other with ->srcu_atomic_gp_flag.  One of them
+drives the grace period.  The others spin until a grace period ends.
 
-The callers of synchronize_srcu_atomic() need not be in a quiescent
-state.  An interrupt handler may have interrupted an RCU reader.  A
-caller within rcu_read_lock() is itself an RCU reader.  In both cases,
-synchronize_rcu() ends an RCU grace period while an RCU reader is still
-in its critical section.  poll_state_synchronize_rcu() would then
-report a grace period that did not happen.  The caller within
-rcu_read_lock() also gets "Illegal synchronize_rcu() in RCU read-side
-critical section" from lockdep.
+The flag owner disables only preemption.  So an interrupt can arrive on
+its CPU while it holds the flag.  If that interrupt handler calls
+synchronize_srcu_atomic() on the same srcu_struct, it spins forever:
 
-srcu_drive_gp() has the same call.  There, it makes an RCU Tasks
-Trace grace period imply an RCU grace period.  RCU Tasks Trace uses
-call_srcu() and synchronize_srcu(), which are both forbidden on a
-srcu_struct that uses synchronize_srcu_atomic().  And the Tree SRCU
-version of synchronize_srcu_atomic() does not wait for an RCU grace
-period either.
+  CPU 0, task                        CPU 0, hardirq
+  synchronize_srcu_atomic()
+    takes ->srcu_atomic_gp_flag
+                                     synchronize_srcu_atomic()
+                                       spins until a grace period ends
+                                       it never ends: its driver is the
+                                       task this interrupt interrupted
 
-Fix this by removing the call.
+Nothing reports it.  lockdep cannot, because lock_sync() records no
+interrupt state.
 
-This was found by reading the code.  An rcutorture test added later in
-this series fails without this change.
+synchronize_srcu_atomic() cannot disable interrupts itself.  A reader
+that disables only preemption may wait for an IPI to the waiter's CPU.
+That IPI never runs while the waiter spins with interrupts disabled.
+The kernel-doc already lets the caller choose the waiter's context.
+It then asks the readers to run in that context, or a stricter one.
 
-Fixes: a48669f0c49c ("srcutiny: Add an atomic Tiny SRCU")
+So the caller disables interrupts.  The existing reader rule then
+requires the readers of that srcu_struct to disable interrupts too.
+
+Also store the owner's CPU number plus one in the flag, instead of 1.
+A waiter that finds its own CPU as the owner warns once, rather than
+hanging silently.
+
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 ---
- kernel/rcu/srcutiny.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ kernel/rcu/srcutree.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index 63a3f0a8bc53..d58f4160f925 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -367,9 +367,10 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
- 	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
- 		return;
- 
--	if (IS_ENABLED(CONFIG_PREEMPTION))
--		synchronize_rcu(); // Needed for RCU Tasks Trace to imply RCU grace period.
--				   // And in Tiny RCU, it is near zero cost and doesn't block.
-+	// No synchronize_rcu() here, unlike in srcu_drive_gp().  The caller
-+	// may be in an interrupt handler or within rcu_read_lock().  Tiny
-+	// synchronize_rcu() would then end an RCU grace period that an RCU
-+	// reader still holds up.
- 
- 	// Usually, there will be no readers.
- 	preempt_disable();  // Guard against lazy preemption and some other grace period.
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 2b0e2b2d2c18..8075da4b1bb5 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -2108,6 +2108,13 @@ static void srcu_advance_state(struct srcu_struct *ssp, bool is_atomic)
+  * and srcu_read_unlock_atomic() must be invoked from that same context,
+  * or one that is even more strict.
+  *
++ * If synchronize_srcu_atomic() is invoked from an interrupt handler for
++ * a given srcu_struct structure, then for that structure, all calls to
++ * synchronize_srcu_atomic() must be invoked with interrupts disabled,
++ * including those from task context.  Its callers take turns to drive a
++ * grace period, and the others spin until it ends.  An interrupt handler
++ * that calls it on the CPU of an interrupted caller would spin forever.
++ *
+  * If synchronize_srcu_atomic() is invoked on a given srcu_struct
+  * structure, then none of call_srcu(), synchronize_srcu(),
+  * synchronize_srcu_expedited(), start_poll_synchronize_srcu(),
+@@ -2144,7 +2151,13 @@ void synchronize_srcu_atomic(struct srcu_struct *ssp)
+ 	srcu_state = get_state_synchronize_srcu(ssp);
+ 	preempt_disable();
+ 	while (atomic_read(&sup->srcu_atomic_gp_flag) ||
+-	       atomic_xchg(&sup->srcu_atomic_gp_flag, 1)) {
++	       atomic_cmpxchg(&sup->srcu_atomic_gp_flag, 0,
++			      smp_processor_id() + 1)) {
++		// The flag holds its owner's CPU number plus one.  An owner on
++		// this CPU is a caller that this one interrupted.  It cannot
++		// release the flag, so this caller would spin forever.
++		WARN_ON_ONCE(atomic_read(&sup->srcu_atomic_gp_flag) ==
++			     smp_processor_id() + 1);
+ 		preempt_enable();
+ 		if (poll_state_synchronize_srcu(ssp, srcu_state))
+ 			return;
 -- 
 2.47.3
 
