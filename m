@@ -1,54 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794375244;
-	b=LwKCEqivbcx/dXdX0U0LUoIzgKPv4QtbMJn7SqYyiCk3eagoDLPOCfMCs/O6r9IATSI/
-	 BC7e16J54ID+WwFvqfTF9mSs0Q8DW9gOTQDimvOWyXxeVQ/HHNiTkEcsyB3540zbxKPhe
-	 RWJbZj81wbAqjETSelX66C0NdllnuvNSHLVyR5zdle6cutGPsx10H7J22Anlb638alc1i
-	 RfmvXyJUSOuE7dvT3B84iM91lbVUNTvlwxBGV1qNpehJfItdoOBCR8AsEuAk3Ao0z+dd8
-	 HTdVgztb3Dz84P5QE1Vz2z3pAE06U/qhVGz7VhJkGBsEdfjZw3wXPxmGMiwiVktnx0g==
+	t=1794375358;
+	b=GF+sG/woqWC24lmIVahZqj3tkxo4lvX4EVBqg4oXEUTtsbmS+cYMw+ZGSO+6+PBxdyUA
+	 uuRfuwAobH3Xp6e48/pa5lW6x65kX2R3J7WfwIgUDC5thqssK5kJ9JkJjegrTkyOv2Y4h
+	 KlHhcUJO9ioiIGLmd+WUpzojyDve8B3+BBrHM0tvhEFF+duO8Jn0ObESKJwrNPYEjCUgO
+	 I2Cok4N+rygwVtg+/ppN1F/R5tBJZmZ0e1Hg/PQ4aBj0Uy7Ws0wOdbirC8v58/vP8OOfB
+	 BgTCvgib30SKuK+Ha4w1+r2Wx73pdR7liYMTaJ/doyD6YrTz9he1XKhM4jACCf/Z/ZQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794375244;
-	h=Received:DKIM-Signature:Received:X-Gm-Message-State:X-Received:
-	 MIME-Version:References:In-Reply-To:From:Date:
-	 X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=1FSmPlwQX8ZiVujfSQykkDxj0SSCHYMwsUrpHpmFlkE=;
-	b=0V5Sifv5jufeFlFMqk3DSScCH9D2jDgIO//pyLnhkSe8XE5xJyNlL5RA216Nvej9rfP1
-	 ydvwlIkTwHqiDu+ilmvLIZOB04QUrQfk5eRfvwGc08e7lFx7h0RUi+KWDxDqseGSJ5JTs
-	 gqPE8pIRk4KKxMLOHPZi+OaOUAHPlC/FXKk9gv2ej3KR6K9ufKzdiHiJWe2y+CE6THVwj
-	 2hIJEWTMcwF6KAlUsCceWzyEt1VWDj6WvHAHbcueiqE2dkKORxgBpmL1L7VyMYUgmBUBU
-	 y0XzfybsZ2175ZqWzKcyRmhlUV6wVRq+9jB9BZnkerun5zPmbUeJLvs3oF6X6+HMjIA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794375358;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=AlOVI4d/PmC2P0LcNq83nBnChqQ4tWInDLtYGmrQi7k=;
+	b=rGRoWYp6ITEHj0bg/F2dQ32XOPRaGFjYViq1gvJmdksxRs6FLklmxx1S1xORYj9Sx4Pr
+	 Mwn539YU2mA/UUt1rsskr7kiQ/WJhjtMhb/KXE9VRCwvyVURNPkpQWdai3l32lj+deOkW
+	 yMsc+/dfOhs3DFAi1F+opRLqdLvWqrsYbgyBNHc5pWGRr31QTFR8l9o77aSYwl1QtIE6M
+	 lDnrwfD0LDHWUz2HdRh/XXfkNF+OdCHcBgO4UDHE06BeFF4ObRU33q2QWpNfICDxL2C6k
+	 ifI57HXcQjjFpIE5IU4xOfDsviqsyS27T9/CK1xL+wXXpPoEWpF1tZvBT3VlRn/Bc8A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="czm/h+eB";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OEqaARNZ;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CA8C606A320
-	for <rcu@vger.kernel.org>; Wed, 11 Nov 2026 05:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4E4C606A31C;
+	Wed, 11 Nov 2026 05:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=czm/h+eB
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E9D41F0093C
-	for <rcu@vger.kernel.org>; Wed, 11 Nov 2026 05:34:04 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OEqaARNZ
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E331F0089F;
+	Wed, 11 Nov 2026 05:35:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794375244;
-	bh=1FSmPlwQX8ZiVujfSQykkDxj0SSCHYMwsUrpHpmFlkE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=czm/h+eBMfQ1+n477FDv4jREaIeSEGUdiCZ5RhrAZYlqE+jGU9Yv7tT0YCsRKz63O
-	 vT4148f5TT5rVTx2jlOUmTZRHWXIpMC8sucJqxN3+dYvqVRVv/2ufsXJM/OWucaV4P
-	 zoHFaIB38uZo2jSelh27AnNDQXYLsV6T7ZiNlBPh5GmperELUTnewy5vC0xLleVL49
-	 onLjee43taSnGROxvKhGZSInaBzDhnzFy2ZDiVhDHsuuDO1vk8Yet2kj7ZGGsSRoOk
-	 8dziyGVYitS9m/t6qg+Tv/LO02ZWYtCevJNIQKZ9skRms6TTrdvL1oFb04zql44zml
-	 9D5l4BiOVyo4w==
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-93cc1ab5f6cso355700285a.0
-        for <rcu@vger.kernel.org>; Tue, 10 Nov 2026 21:34:04 -0800 (PST)
-X-Gm-Message-State: APuU4Z9b31loxUfmj07nRDka7EoZgS5VmleDQDbxqv410eyneBJvN31l
-	hSCSVTqpGgU10mVuJfeNLG9xZ5q16WB+5OWr8Y6yHYYqNecofzZ2DVFlC0s98ggevfuhC/etlj7
-	x7LegOVu8zfM9LFa8S8liEUOhxEcxJII=
-X-Received: by 2002:a05:620a:318f:b0:93f:11ee:ba5f with SMTP id
- af79cd13be357-947b006ea32mr221297485a.79.1794375243375; Tue, 10 Nov 2026
- 21:34:03 -0800 (PST)
+	s=k20260515; t=1794375357;
+	bh=AlOVI4d/PmC2P0LcNq83nBnChqQ4tWInDLtYGmrQi7k=;
+	h=From:To:Cc:Subject:Date;
+	b=OEqaARNZkqEx+i4XhyraBVxOnG+gYMMjxqZQ22YA9vbUF3MI9SKCp3OP3I2Ty7vJn
+	 z6ZOyuh0RLOKOsrbe9tWFoEU1RcaLMhmxgxr+aim6N6SMERx6+teo4w28lYZFbIpLD
+	 ohtV9B50I55TCGDKIS/MAEpAM5Ww+DEsczlDwqkmoMGzlL2OMvQWy8wjjvFigN8vRb
+	 xdHnwnq7U3Da/ig+C3rG9eHeh+9g1uEoZg50/Ev/fZJTCsLYjTqBk55O9cvYpLB2Sr
+	 aRQnz3LO+djRI2m3LYJZaSO767GDOzRhhbSr1gEidHuUvz6+R6+/ciwJJGZRW0idBA
+	 f0nP3dIv//DnQ==
+From: Song Liu <song@kernel.org>
+To: rcu@vger.kernel.org,
+	paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	leitao@debian.org,
+	david.dai@linux.dev,
+	Song Liu <song@kernel.org>
+Subject: [PATCH] rcu-tasks: Use pr_debug() for callback contend/collapse messages
+Date: Tue, 10 Nov 2026 21:35:51 -0800
+Message-ID: <20261111053551.3367903-1-song@kernel.org>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -58,55 +61,106 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <df33a614-9c3d-423d-9d31-b1846cb1f1d6@paulmck-laptop>
- <20261007204511.1982646-9-paulmck@kernel.org> <CAPhsuW6jBj1Sjm8SO_HO13oBgq-5gqKptgT_h3OWYoLDQggL7w@mail.gmail.com>
- <0952b823-990f-4a57-b090-f2cb1a1388c2@paulmck-laptop>
-In-Reply-To: <0952b823-990f-4a57-b090-f2cb1a1388c2@paulmck-laptop>
-From: Song Liu <song@kernel.org>
-Date: Tue, 10 Nov 2026 21:33:51 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6_muF67Vztj1SxmamDjK7y6Ds815r3WBn8xVXdDqTk9w@mail.gmail.com>
-X-Gm-Features: AclHuK8fUPrKgNHXu_Aq4UKpa5bxqhfOpnzb8gK1pwur722TdA3KEBL-EII2TLE
-Message-ID: <CAPhsuW6_muF67Vztj1SxmamDjK7y6Ds815r3WBn8xVXdDqTk9w@mail.gmail.com>
-Subject: Re: [PATCH v2 09/10] rcu-tasks: Disable callback contend/collapse
- messages by default
-To: paulmck@kernel.org
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
-	rostedt@goodmis.org, Breno Leitao <leitao@debian.org>, David Dai <david.dai@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Nov 10, 2026 at 7:52=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Tue, Nov 10, 2026 at 06:35:10PM -0800, Song Liu wrote:
-> > On Wed, Oct 7, 2026 at 1:45=E2=80=AFPM Paul E. McKenney <paulmck@kernel=
-.org> wrote:
-> > [...]
-> > > index 627295396cd91..fcac7361ec51e 100644
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> > > @@ -178,6 +178,8 @@ static int rcu_task_contend_lim __read_mostly =3D=
- 100;
-> > >  module_param(rcu_task_contend_lim, int, 0444);
-> > >  static int rcu_task_collapse_lim __read_mostly =3D 10;
-> > >  module_param(rcu_task_collapse_lim, int, 0444);
-> > > +static bool rcu_task_collapse_debug __read_mostly;
-> > > +module_param(rcu_task_collapse_debug, bool, 0644);
-> > >  static int rcu_task_lazy_lim __read_mostly =3D 32;
-> > >  module_param(rcu_task_lazy_lim, int, 0444);
-> >
-> > Rookie question: Instead of adding a new module_param and gating the
-> > pr_info with it, can we use pr_debug here?
->
-> Good question, actually.  If it is OK for everyone (not just our
-> employer!)  for the global pr_debug() control to also control this,
-> that would be fewer lines of code.
->
-> This one is already in mainline.  If you feel strongly enough about it an=
-d
-> are sure that pr_debug() works globally, would you like to send a patch?
+Commit 5de907d24919 ("rcu-tasks: Disable callback contend/collapse
+messages by default") added the rcupdate.rcu_task_collapse_debug module
+parameter to gate the three pr_info() messages that report RCU Tasks
+switching between CPU-0 and per-CPU callback queuing.
 
-Yes, I think using pr_debug is better. Will send a patch shortly.
+The kernel already has a mechanism for debug-only messages that are off
+by default: pr_debug().  Use pr_debug() for these messages, and remove
+the rcu_task_collapse_debug module parameter, its documentation, and
+its boot-time announcement.
 
-Thanks,
-Song
+The messages stay off by default.  On CONFIG_DYNAMIC_DEBUG=y kernels,
+they can be enabled at boot with:
+
+  dyndbg="file kernel/rcu/tasks.h +p"
+
+or at runtime with:
+
+  echo 'file kernel/rcu/tasks.h +p' > /proc/dynamic_debug/control
+
+Assisted-by: Claude:claude-opus-5
+Signed-off-by: Song Liu <song@kernel.org>
+---
+ Documentation/admin-guide/kernel-parameters.txt |  7 -------
+ kernel/rcu/tasks.h                              | 15 +++------------
+ 2 files changed, 3 insertions(+), 19 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0b3c140babd9..176648941aec 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6369,13 +6369,6 @@ Kernel parameters
+ 			period to instead use normal non-expedited
+ 			grace-period processing.
+ 
+-	rcupdate.rcu_task_collapse_debug= [KNL]
+-			Enable debugging prints that record when RCU Tasks
+-			and RCU Tasks Trace expand to per-CPU callback
+-			queuing and collapse back to CPU-0 queuing.
+-			This is default-disabled due to the fact that
+-			some workloads can make it quite noisy.
+-
+ 	rcupdate.rcu_task_collapse_lim= [KNL]
+ 			Set the maximum number of callbacks present
+ 			at the beginning of a grace period that allows
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index fcac7361ec51..743f777b4c18 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -178,8 +178,6 @@ static int rcu_task_contend_lim __read_mostly = 100;
+ module_param(rcu_task_contend_lim, int, 0444);
+ static int rcu_task_collapse_lim __read_mostly = 10;
+ module_param(rcu_task_collapse_lim, int, 0444);
+-static bool rcu_task_collapse_debug __read_mostly;
+-module_param(rcu_task_collapse_debug, bool, 0644);
+ static int rcu_task_lazy_lim __read_mostly = 32;
+ module_param(rcu_task_lazy_lim, int, 0444);
+ 
+@@ -392,8 +390,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 			WRITE_ONCE(rtp->percpu_enqueue_shift, 0);
+ 			WRITE_ONCE(rtp->percpu_dequeue_lim, rcu_task_cpu_ids);
+ 			smp_store_release(&rtp->percpu_enqueue_lim, rcu_task_cpu_ids);
+-			if (data_race(rcu_task_collapse_debug))
+-				pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
++			pr_debug("Switching %s to per-CPU callback queuing.\n", rtp->name);
+ 		}
+ 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 	}
+@@ -514,9 +511,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ 			smp_store_release(&rtp->percpu_enqueue_lim, 1);
+ 			rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
+ 			gpdone = false;
+-			if (data_race(rcu_task_collapse_debug))
+-				pr_info("Starting switch %s to CPU-0 callback queuing.\n",
+-					rtp->name);
++			pr_debug("Starting switch %s to CPU-0 callback queuing.\n", rtp->name);
+ 		}
+ 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 	}
+@@ -524,9 +519,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+ 		if (rtp->percpu_enqueue_lim < rtp->percpu_dequeue_lim) {
+ 			WRITE_ONCE(rtp->percpu_dequeue_lim, 1);
+-			if (data_race(rcu_task_collapse_debug))
+-				pr_info("Completing switch %s to CPU-0 callback queuing.\n",
+-					rtp->name);
++			pr_debug("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
+ 		}
+ 		if (rtp->percpu_dequeue_lim == 1) {
+ 			for (cpu = rtp->percpu_dequeue_lim; cpu < rcu_task_cpu_ids; cpu++) {
+@@ -711,8 +704,6 @@ static void __init rcu_tasks_bootup_oddness(void)
+ 		pr_info("\tTasks-RCU CPU stall info multiplier clamped to %d (rcu_task_stall_info_mult).\n", rtsimc);
+ 		rcu_task_stall_info_mult = rtsimc;
+ 	}
+-	if (rcu_task_collapse_debug)
+-		pr_info("\tTasks-RCU callback contend/collapse debug enabled.\n");
+ #endif /* #ifdef CONFIG_TASKS_RCU */
+ #ifdef CONFIG_TASKS_RCU
+ 	pr_info("\tTrampoline variant of Tasks RCU enabled.\n");
+-- 
+2.53.0-Meta
+
