@@ -1,96 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794497092;
-	b=wbSqDihNvO06KZt2gqOQWrQsldsO2sIxu5JpcKsRUlwubQbP0qN8wuJo3GZG9eztFnLk
-	 7cEXxGSYc1nOgGvufpOhSfdm6ouQV5bT0b3+Zti0cmwl7zz+pWEP2C9XKI5Xv9fBm8Mhg
-	 GgyyoQcgWnteSMpOFOXkE5JL2JsGm1qcyqAzebFEP03Ksyfy0VxnzzPbEWLMrnH0Xh0zg
-	 HixJiZ5E0OgBDUXKHQRmtD1aCRapxFXyDr5LJYr1SeiWb8mFV0ojs5wE7TzZXRYriMJSm
-	 EKs9K61lSINpAjHAZGrGuJq1Sq3XvSIUy6sKuRCVk8buXhOnk2Kwq+9zBslLDQmpw0A==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794497092;
-	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=juYtRRHMjWPIclkbiXs3Tnl2bycAjKMpFCBpuknhHPI=;
-	b=ORpBhs+VNFPwTAQhVoETIOsy+/r/1bcd3dK2zldBlZs4UbHRuTx6kgzAXXRlg1DDDhP/
-	 ueTrnxkgnrgAS2Zt97z/V7fByF9Y1ktSJWaMIR99Y1kcDybZ6bT49imyC9rtwMpE1deok
-	 yY1D32P34LOuyijrK+ni7wXUdQJJLGaxwLeL41/stk8NFyE8FMjj328jr2jkkaSMCIY/d
-	 CrdqWEMTTzJK9CiQhSNRN8Ig56bi/UbP8lykoYVMCfs6u3cXdg0oxeNxycYiFTwsk/We0
-	 ERPyB/U8Ze6wWOgJ9s/JsYzEeX+9YA3kQOVijJFGFqb4w+0EbrmBafnthKcU44oTNcA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linutronix.de;
-	spf=pass smtp.mailfrom=linutronix.de;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b="Qi/grySZ";
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=SH5FMWEk;
-	arc=none smtp.remote-ip=193.142.43.55
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.41
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794499201;
+	b=bp7SDdjdX+4GPBPnyTkGrj722NFWV/JSF9XFh3fEB1E+aQ7pPaiOJhpxW55/3or8ocMg
+	 mWTh+FpdM2gIyrckYMhR67P0QQ3gt71yI4eQiedKTjU08QXFa66MXD+qkNewABSgA/zsV
+	 z+iZXbv98eDkZ2Im/YP+g0YXSGrbUbXcjERsmar6Fkb2vS6GwP6qpR/P+ZCgEDxfiGTV8
+	 AZ2hsu/9VKL2EslD6IkC707DJq3BU9SEReqX6bcFEdQXKlp0XGdl3FNfU8bFyORnRp2S4
+	 VD7osravimGV+fLTD3lFK2+tM3djIKRB2Olt5igfMtIaUu+ljRI1i2V2Rg5+gh9PteQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794499201;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=o1Dliguz4u44qwi4R1eK834/qPlvvb9pc8ymG3pNfYo=;
+	b=LqUnw7Bp8XDW2ihikoWnCDLlpRNV5cj7854G23rsMel/KGpClGBXfyT0T/4clVCYkjSs
+	 5Q1x2UITCCb4UP/CCxoH7egxDP6BxR9zwSWVHGCSqq+iCXiiMqQb+RcTGEp1UG08RGrAz
+	 YVgK4t8DEBV8qcV/eW8mGiP2GSjK7eJqiXRkEyVmlJayQoX+Me+q+T+xVYU1f+CWX/kAz
+	 cPC3csyPGNiKp6N/+sa/xD2OZjMqxl+kU/DM/Ff6EY3LRE7VhgHhcBp7Gye55aQtZvGtL
+	 cAYQpl2di1Cr7wwPOuYkBKqGI//mXH//4Ng3N5fYPWP2527G4LQ1ERkwobIs94IH8+w==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="VNq/TS9Y";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.41
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF94D60A2607;
-	Thu, 12 Nov 2026 15:24:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AF94D60A2607
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A065606A323
+	for <rcu@vger.kernel.org>; Thu, 12 Nov 2026 16:00:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1A065606A323
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=Qi/grySZ;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=SH5FMWEk
-Date: Thu, 12 Nov 2026 16:24:46 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1794497089;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=juYtRRHMjWPIclkbiXs3Tnl2bycAjKMpFCBpuknhHPI=;
-	b=Qi/grySZIrRaJ93RA5uI25BI6KfrQnUqAtF6Rf7+aMLx4D00SHjpJbLmo+BctsMkzDKGgL
-	hDMTia9tb7LorDmWBS4gloetNGV4wW7/uDabrX4VEPJnKzynlAYptW/7ZxvA/ygwiFmdDz
-	cSyvas609NCTBG4GZz3i8gafGomgy1iRG87rsG2GeTNwqC6H5zQqCc7XurQ5MUeM8pc8xE
-	NtD6HCFPbdmnqWKXPf9YciRRZAW/1ap1CgsUjkeEe67YhAv6F7tADD3NUhvKf5nNUr3/5V
-	IkRTw1aZxjFvN37fpJrqLxZWHqogT+IuG6DFgT9C1BY1LWTw3mylQ5IjSzfLig==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1794497089;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=juYtRRHMjWPIclkbiXs3Tnl2bycAjKMpFCBpuknhHPI=;
-	b=SH5FMWEkY6wITOgzqZep0yejRfNPKqDYkaqq1NL0VbdxIhYTQWxNJRVzf7bmTACRuyINwU
-	Y1YAjO4K7KsRRxCw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Juri Lelli <juri.lelli@redhat.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, rcu@vger.kernel.org,
-	linux-doc@vger.kernel.org, John Ogness <john.ogness@linutronix.de>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	luca abeni <luca.abeni@santannapisa.it>,
-	Yuri Andriaccio <yurand2000@gmail.com>,
-	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-	Qais Yousef <qyousef@layalina.io>
-Subject: Re: [PATCH v2 0/7] sched: RT throttling cleanup and a bit of
- documentation
-Message-ID: <20261112152446.r1FzXVCR@linutronix.de>
-References: <20261110-sched_dl-v2-0-cc9399f7aeb1@linutronix.de>
- <c2bf89ce-b9de-43cf-839b-395d28b2275c@paulmck-laptop>
- <avXUstjABxdTZaxM@jlelli-thinkpadt14gen4.remote.csb>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=VNq/TS9Y
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4a215e64962so49173515e9.1
+        for <rcu@vger.kernel.org>; Thu, 12 Nov 2026 08:00:00 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1794499199; cv=none;
+        d=google.com; s=arc-20260327;
+        b=IdazB9jexhf/TqMlN4KzytGVAEvla+tkT+bWU7N5U23HQqUy5JKCAX7SOWM7psmuNw
+         Ld+2i322KV5DjEJ9iSjVIrBV957jus+Z92UBtuLRuE2rmkEoWHLSwmX3n1K/32xcoU2D
+         e1wVtNkfQlhGxGumYNHDbP4IOGLZswzhBCedPSn0AwnCxJfX4KhO2ssUiGFwTJgsHD+y
+         jQmFi7EgMYeQIoaSl54AA1Cy0DCxIiqTWDOL/8tW9Z6jOgR8HjI6LtS1+tJlSWACYKui
+         ROEclVKFRpBKHW4bZZZb7hlDh0wTenTlqhQl/rb4QVUeCt7IP1m/pNJHXn9mC5DGX1vI
+         blQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=o1Dliguz4u44qwi4R1eK834/qPlvvb9pc8ymG3pNfYo=;
+        fh=IjGiBNYkGHEwzd6jrQkp3uacKKfw47r6l5K74lmQ3Ps=;
+        b=k3srWTradQ/rL+M+/9iIw827f+Fw5ZteFy6zuqZRjonNeygwdIqJQXIw5uc1oEtncx
+         SaBks6T6Qi5/tUolMA7EzTxVoMPzf7F3JfW2NmGACfxwHWspmGKf9/UDpBHRguvFwtUS
+         Agbz1R6JwALe1SU6KWqB/iAeZB1kTJebztQ8/PhULBPdiGGnSF53X2zVlsdVu7134+PP
+         4gKw8Ye0nZ1/8YbN61PvNgTHLkUKUjrKUv+yfhll1TGaZO6F4qd2aF7BzZ3sZtg/68g3
+         TcpPKZtR+5QLLigrEQOdL6QWnfvkVknxkTQC4J0fqjw5tvIDAP+eXGtwTuXMS1x6l9x+
+         zAQw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794499199; x=1795103999; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=o1Dliguz4u44qwi4R1eK834/qPlvvb9pc8ymG3pNfYo=;
+        b=VNq/TS9YxMxpbxP3+3LmkMowYv8beN+AZb3BYPOxmeYCeq9+wN7D+1Kyz71UyEdZF4
+         IkvZSUOob95mNXALzE8xn3UgGVvP1eilHuH2U+u79e5E6ebphwRqn0mF6VRmKlKbGuJV
+         tX0doJRuOkq2kcmCTLV6p8qoCbmNRJKe+nDaeE5VHBDXVlMDcguz4kusAP5WttG8yNL9
+         3VO7sjdZKkPWklzSyO1jeUoz0ev96lP1NhlgObkTjbJ0pR8NLBKYy+7KOmYJ4U2CmPlt
+         2g4GlHdLb9s+LAr08FGs3b8IRKIIoVRwlbqGIrwvA4w3PCfbmNbrUIrHWx1ydZ4pSl2y
+         z6Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794499199; x=1795103999;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=o1Dliguz4u44qwi4R1eK834/qPlvvb9pc8ymG3pNfYo=;
+        b=JwGQHQbJm9ql1O8CGnR+v0CmXWbM1M9g/1ND/A7/LqBL278VosFO6rpEXuqBsU6BYk
+         dt0hQPuVNCHESqI8kyQub6KQPGM/zicALOokX1avz95qPgnr4eTW1maWBEaWIb+WQOGc
+         z727A5iMw8I3uVnl+Y5mLhK/Iwwgku9RMchz7IRvgSuaciGFa/St1AsBOt5pMXVkpQSk
+         9iN/stmMIA//1Qu0/t8rizTViiTdmbHm9YVr3BY/XMsi1CwD2ecz89/ZmZtbCWjk7D1b
+         PzzALGzjB8fmPesJHEaQM3OetE6WqgzKvr4+LwIsiXRfocHWmf0VZHIAREK4SS7L2LCZ
+         841Q==
+X-Forwarded-Encrypted: i=1; AL+hErHjv5oi4479L7Jrkgkp87d9AJOWRw6SgjPw7ppMIH/+CZ6rfuJwLVmf4NGlvp9b/JWndqs=@vger.kernel.org
+X-Gm-Message-State: APuU4Z8ldkSXNciuVuyXgmZ3WhQnmBW6uteMtSmhB4ODxPzdH8hz++c0
+	1fmUtE0AoAMNBzVZhRWT1KnlVFCiVn3qMHqLUD6SZrjcCBi0c54Zz3WjnEMOQcNQWBocJ3WMVTn
+	ls/5ppSyTrZX965TWPPNXwyM70otFTZ0=
+X-Gm-Gg: AYBFou16GBaKT1AqJ3eVOrX5AYWCVrWZ1+7brR8ajJPM8Ot/kB9Hfetp7oI96uZx9Dl
+	FRsAD4Q/hHLFpu48rNOdBKFn4LMZvfZhj/mPi9cHXfVsejX/H/xxVCQu7Pn9KDv9M3W16EGhc7q
+	QVKuuovGnNnOc7SU8elPQFjeFXfr1HOylcVyt0X9oGVFJ6ySKS/3obMufj4Kbuv15Kx6uaZUZ+u
+	cGbMKYMsbezon8Ecm3UdNEPkDCuonZQi00aVx8CzXArrWwFXbjTgFE43e0Gr1FUVq1F7DZuGhhq
+	NE4jacxe2AA37AQ9kb4MTnC37pZt8oj1bR8OjmQVl6iAE9TSlecf1/0Mf6GVbSu5+FqNAl0H3ex
+	IXVwFLc1eUEifW70iT+Zc77Tv+14XAc+5fUd7/AeDGsq/BbgC+8D6Q+938XBYMWDUcK+szA==
+X-Received: by 2002:a05:600c:e558:20b0:4bb:4b30:8042 with SMTP id
+ 5b1f17b1804b1-4bb4b308088mr61967275e9.19.1794499199056; Thu, 12 Nov 2026
+ 07:59:59 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -100,29 +104,133 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <avXUstjABxdTZaxM@jlelli-thinkpadt14gen4.remote.csb>
+References: <20261104165504.2430480-1-kunwu.chan@gmail.com>
+ <20261104165504.2430480-11-kunwu.chan@gmail.com> <83463788-5e18-4932-99c9-4cbf4148a213@paulmck-laptop>
+In-Reply-To: <83463788-5e18-4932-99c9-4cbf4148a213@paulmck-laptop>
+From: KunWu Chan <kunwu.chan@gmail.com>
+Date: Thu, 12 Nov 2026 23:59:47 +0800
+X-Gm-Features: AclHuK-mTFCsu5EzH21jY8YFD-8az2xhySVKCOowInql9XH_2VCFG8c3gHLmBa8
+Message-ID: <CAN_Opa-bdkVQWNHm1N7Kk-sD36SM8Z99odPkCTngcnkWwU8tpw@mail.gmail.com>
+Subject: Re: [PATCH 10/28] hazptrtorture: Add 128- and 256-CPU configs
+To: paulmck@kernel.org
+Cc: boqun@kernel.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, 
+	corbet@lwn.net, mingo@redhat.com, frederic@kernel.org, 
+	neeraj.upadhyay@kernel.org, josh@joshtriplett.org, urezki@gmail.com, 
+	dave@stgolabs.net, stern@rowland.harvard.edu, parri.andrea@gmail.com, 
+	will@kernel.org, dhowells@redhat.com, j.alglave@ucl.ac.uk, 
+	luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com, 
+	joelagnelf@nvidia.com, skhan@linuxfoundation.org, rdunlap@infradead.org, 
+	longman@redhat.com, rostedt@goodmis.org, qiang.zhang@linux.dev, 
+	brads@mainlining.org, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, lkmm@lists.linux.dev, linux-doc@vger.kernel.org, 
+	rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2026-11-12 16:01:06 [+0100], Juri Lelli wrote:
-> Hello,
-Hi,
+On Wed, Nov 11, 2026 at 5:35=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Thu, Nov 05, 2026 at 12:54:28AM +0800, Kunwu Chan wrote:
+> > Add CPU128 and CPU256 configs for hazptr-stack torture testing.
+> > These configs exercise the shared-scan path at larger CPU counts.
+> >
+> > Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
+>
+> For these, why not instead add '--kconfig "CONFIG_NR_CPUS=3D128"' to a
+> run in torture.sh?  Ditto for 256 CPUs.  These will override the values
+> given in the hazptr Kconfig files.
+>
 
-> I wonder if this fixes is
-> 
-> https://lore.kernel.org/lkml/20261108185406.1549770-6-mathieu.desnoyers@efficios.com/
+Hi Paul,
 
-Looks like it.
-I delayed the update to the thread which runs on the CPU and replaced
-the cpu_online() check with cpu_active(). It still aborts if it is not
-up. The other alternative is to skip sched_init_dl_servers() with
-RCU_TORTURE built-in.
+Agreed. I added these to keep the 128- and 256-CPU cases explicit
+and repeatable, but the configurations duplicate PREEMPT. I'll
+drop the separate configs and retain the cases as scripted PREEMPT
+runs using --cpus N and --kconfig "CONFIG_NR_CPUS=3DN".
 
-Side note: If you boot a 4 CPU system with maxcpus=2 then CPU 2+3 is
-offline. You can online them manually. sched_init_dl_servers() will not
-initialise them.
+Thanks,
+Kunwu
 
-> Thanks,
-> Juri
-
-Sebastian
+>                                                         Thanx, Paul
+>
+> > Acked-by: Bradley Morgan <brads@mainlining.org>
+> > ---
+> >  .../selftests/rcutorture/configs/hazptr/CPU128   | 16 ++++++++++++++++
+> >  .../rcutorture/configs/hazptr/CPU128.boot        |  1 +
+> >  .../selftests/rcutorture/configs/hazptr/CPU256   | 16 ++++++++++++++++
+> >  .../rcutorture/configs/hazptr/CPU256.boot        |  1 +
+> >  4 files changed, 34 insertions(+)
+> >  create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/C=
+PU128
+> >  create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/C=
+PU128.boot
+> >  create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/C=
+PU256
+> >  create mode 100644 tools/testing/selftests/rcutorture/configs/hazptr/C=
+PU256.boot
+> >
+> > diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/CPU128 b=
+/tools/testing/selftests/rcutorture/configs/hazptr/CPU128
+> > new file mode 100644
+> > index 000000000000..079b463607e8
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/rcutorture/configs/hazptr/CPU128
+> > @@ -0,0 +1,16 @@
+> > +CONFIG_SMP=3Dy
+> > +CONFIG_NR_CPUS=3D128
+> > +CONFIG_PREEMPT_NONE=3Dn
+> > +CONFIG_PREEMPT_VOLUNTARY=3Dn
+> > +CONFIG_PREEMPT=3Dy
+> > +CONFIG_HZ_PERIODIC=3Dn
+> > +CONFIG_NO_HZ_IDLE=3Dy
+> > +CONFIG_NO_HZ_FULL=3Dn
+> > +CONFIG_HOTPLUG_CPU=3Dy
+> > +CONFIG_SUSPEND=3Dn
+> > +CONFIG_HIBERNATION=3Dn
+> > +CONFIG_DEBUG_LOCK_ALLOC=3Dn
+> > +CONFIG_PROVE_LOCKING=3Dn
+> > +CONFIG_DEBUG_OBJECTS_RCU_HEAD=3Dn
+> > +CONFIG_DEBUG_KERNEL=3Dy
+> > +CONFIG_HAZPTR_DEBUG=3Dy
+> > diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/CPU128.b=
+oot b/tools/testing/selftests/rcutorture/configs/hazptr/CPU128.boot
+> > new file mode 100644
+> > index 000000000000..1d09a6446080
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/rcutorture/configs/hazptr/CPU128.boot
+> > @@ -0,0 +1 @@
+> > +hazptrtorture.torture_type=3Dhazptr-stack
+> > diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/CPU256 b=
+/tools/testing/selftests/rcutorture/configs/hazptr/CPU256
+> > new file mode 100644
+> > index 000000000000..b00a984977f3
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/rcutorture/configs/hazptr/CPU256
+> > @@ -0,0 +1,16 @@
+> > +CONFIG_SMP=3Dy
+> > +CONFIG_NR_CPUS=3D256
+> > +CONFIG_PREEMPT_NONE=3Dn
+> > +CONFIG_PREEMPT_VOLUNTARY=3Dn
+> > +CONFIG_PREEMPT=3Dy
+> > +CONFIG_HZ_PERIODIC=3Dn
+> > +CONFIG_NO_HZ_IDLE=3Dy
+> > +CONFIG_NO_HZ_FULL=3Dn
+> > +CONFIG_HOTPLUG_CPU=3Dy
+> > +CONFIG_SUSPEND=3Dn
+> > +CONFIG_HIBERNATION=3Dn
+> > +CONFIG_DEBUG_LOCK_ALLOC=3Dn
+> > +CONFIG_PROVE_LOCKING=3Dn
+> > +CONFIG_DEBUG_OBJECTS_RCU_HEAD=3Dn
+> > +CONFIG_DEBUG_KERNEL=3Dy
+> > +CONFIG_HAZPTR_DEBUG=3Dy
+> > diff --git a/tools/testing/selftests/rcutorture/configs/hazptr/CPU256.b=
+oot b/tools/testing/selftests/rcutorture/configs/hazptr/CPU256.boot
+> > new file mode 100644
+> > index 000000000000..1d09a6446080
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/rcutorture/configs/hazptr/CPU256.boot
+> > @@ -0,0 +1 @@
+> > +hazptrtorture.torture_type=3Dhazptr-stack
+> > --
+> > 2.43.0
+> >
