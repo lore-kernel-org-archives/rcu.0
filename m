@@ -1,107 +1,72 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.191.109
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794447174;
-	b=bew1OR0meIkFOOoDVJ01o4r4eBWWzsOYxWCpwMBY/vFnHhej+bZmSfrqaxxaZ5mpydDC
-	 OeFaH4OU4xNMCWWHPPhxXwmuP8HHDm+yso8qqRatu9JDf0/okRS0eW23KlKfFZvMNCHOu
-	 LjtfXORuU5jQgvQsZf51bCVGHfC3HP0w/GXqp/0x43oLDOGrKLeCwVabfxSOoHK62hRqq
-	 DDM+knJQZfpW/tTH0bqnW9ryimt5px5MpQMn3L8iEBL5Q8Is+qrMOdot6nd1lq/3ajsE/
-	 KrTOzsat25ti17IPEs2vdYPW4UOq2VH3PtHuex0Nho11Jtjqa9Ax11e49AgLFwcsPMw==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794447174;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:Message-ID:Date:
-	 User-Agent:Subject:To:Cc:References:From:Content-Language:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
-	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:
-	 X-MS-Exchange-AntiSpam-MessageData-1:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=kL3qS2X4V0rTwk0XQZV8vV6zPfc+zr3/+ZkOSUt7vNw=;
-	b=h7SwdyPAQQryZv9wkCaaf0NPIXP1gJaQCDgkKNS1anTc/J7kbEHPHlG86Fza4IkdDyRp
-	 Ddz6+W7a5rkm6Vnfla1oJ/CurJuRTggf5lRvhtbZRaJRBSzXqU7C31BDcGjWpX/qiRcur
-	 K6z0YaWisLxzCIhck6XWj4gBeZZ8pPjZsWjFT6PzyXqQjQ72rnnoBB3DmEnqK/Ntfr0Pm
-	 18iLGJfX6pPGGhQm4O3a4SuYGeYcUjYoxBqiMnxQvGjgl6E1pe6yltC6RTIpPYDsgIqj7
-	 OC3vSG1w2DhF67BSrQRXLvnTKa6EGKh/rAgLsl+5B3lfXFx74ClOEC40Yk1XriOv9Dg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=efficios.com;
-	spf=pass smtp.mailfrom=efficios.com;
-	dkim=pass header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=selector1 header.b="KLRRA/Vy";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.191.109
-Received: from YQZPR01CU011.outbound.protection.outlook.com (mail-canadaeastazon11020109.outbound.protection.outlook.com [52.101.191.109])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=90.155.50.34
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794448438;
+	b=jZDUkeQ1QL3N3O2BKSPY76QpUNOxMuP6WTSp2YkHfjGpyPfKofL8IiToVe9vtKUhPgAy
+	 /afjHEoj6afKNuw9eRB8L3pERXSDdBuNFJyJQjKvVaRvfn+xLHrZe4xHeBm7NP1TTv6nK
+	 wXqkA+/fqtdOmOew8CznEp1lOy6Uz96UsjP5o++QNZ5vk4g8CYxuVhv63UJNPlZ75fdn6
+	 elVbEfQcb0tCNotaBZrRK5gT95mdBPqEoQ81ZxMwEOtp2OXxHa7Uk+hvGOHVL1b1iJCO3
+	 xG6FMnx9yMHUAfVuRoC6fOniVkX1+V5Dg84Om5+m/00gdoIDASpqingKEqhqKYEAmhA==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794448438;
+	h=DMARC-Filter:DKIM-Signature:Received:Message-ID:Subject:From:To:Cc:
+	 Date:In-Reply-To:References:Content-Type:User-Agent:MIME-Version:
+	 X-SRS-Rewrite;
+	bh=Qs+dUUmGwoCW9p8QsDKZPJUx5Tg8JM0cwaUKiiVMTwc=;
+	b=m8FBm/Mw7MVtYcJcjKFLkOiGchqCHIripqHl/DVCJaCZSPl2672oHvtC+1sFOdWmMr3N
+	 pXLwkTbG6cPkdpEOBaoo0Tjnln9/5mwj4DSg44eLNQNpSA9ep10e8QU4IuKjC3uZPkeRE
+	 LcjV93BQKIBqiNjsSSqtFitw2Ucnap3gHYD4SVO3AcQSMU+73Sg1YCRZ8vYUY0cH2jJj5
+	 4B69wOsn3MB4xsR44lXc8zQ0OhzHXgRq4ZPCMtCsAF3acL8ldjW/xalI9w2wH/+3lzdhB
+	 7zabSvc8SbJPmV5zigzuLP6QYEUK6NqGMMOasvHieVSSUVHzhS2esMw8WgTSU2Q+ZYA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=infradead.org;
+	spf=none smtp.mailfrom=casper.srs.infradead.org;
+	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=CAXAoGNb;
+	arc=none smtp.remote-ip=90.155.50.34
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4D2606AD69;
-	Thu, 12 Nov 2026 01:32:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0B4D2606AD69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5A0606A321;
+	Thu, 12 Nov 2026 01:53:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EE5A0606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=selector1 header.b=KLRRA/Vy
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ySGtFzVxYM4viNY/CIGCNV4jPlKPcaSmXc3CrZqJBtZvzxpMVNBmpkgCPyG8StdnQoEVpQIOL/lLXXLcaVMcgp3dY+SYAwKC7HNt2fM2oTdhxGUyVxpZiOm+NVfH6hKc2V6gOTASBdx5O30dx7gcBAJoQL+ktMEvY83S+ehvJPddirpurqStrRrEo0y28Ej8qwcIJkXCvwX+32PdaQsSyr19RRPUnUEs2Yh80AxjkkTt4WZjHh2Xa8ivQhIKHhBCpEM68Uk55POaVdLsPeEtFWaHYci1I4KESCamdMbEKV/L0U58RmxkGxm6GI8zeWPQ31dkV70npApQpvn0zbgrOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kL3qS2X4V0rTwk0XQZV8vV6zPfc+zr3/+ZkOSUt7vNw=;
- b=xEqA1qn6ac8GuiVhwM9PG5QxQ8RfeyU1mpS8Z3Gr5OyK7JnoxddNn3xOWFozW73ufomalrZv9tGrHfplOs40rlhZMUEDHuQCk5uT6LpUdO1avx21MzO4ZV6jFEHiyk1+/5xf+ssK9xLGDI8DkIAXAMPAOpbQkI7LnVS4gkf6f49krb7D1cvYnOdsyO8wbleo7f3qom+Otc4EYmcmkK0BtmS0dLi+n38GwY1pqO7hU+qL0EiJHX+JzI52gOmTURu7LIDpaz0+qPV7EN4tPet+mFx5ZjSuPwowdfetW3OlQ3nZc6/RCYverAtqqHcqxp1xN34LH2nW73m2gV5Unc8eaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
- dkim=pass header.d=efficios.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kL3qS2X4V0rTwk0XQZV8vV6zPfc+zr3/+ZkOSUt7vNw=;
- b=KLRRA/VyUBtpI+ACIf7+Re3TNJb6O9KgwF0Ar1gcnpWv5rFmTK5xvAPQhBblxhPh3o9oJOS1FhR+ySop/E7BkQ7tgKQVooXU7Tq3uO4qkgD5QCOWFtQkV/9n7HA9CM4ohKifrzeZKUnHqucjFUQEzUXdsKKT2rT+bfYI5uDeQga5BClZ1y70vOlP9XgHXxe3fQIZuemkXUWfzJ4xptwsRW+6Qjn4XhPCOSFXv1YwYoowCOtceuEjnlOo6dbb3XB8JUknISM6jYW8gKevB7gwYb+SmsEyzM3OT22vkvDLXM7vHl+L+G35KdFO9iTjTsB26HYfdONNsMeBmDkyAG1reg==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=efficios.com;
-Received: from YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:1d0::10) by YT2PR01MB8232.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:b3::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.615.9; Thu, 12 Nov
- 2026 01:32:50 +0000
-Received: from YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::6b9e:a901:67c5:7ddc]) by YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::6b9e:a901:67c5:7ddc%6]) with mapi id 15.21.0615.008; Thu, 12 Nov 2026
- 01:32:50 +0000
-Message-ID: <fc1bbc25-a410-42bd-b5b9-d734d2444b70@efficios.com>
-Date: Wed, 11 Nov 2026 20:32:48 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/7] srcu: Add irqsave variants of the atomic SRCU
- readers
-To: paulmck@kernel.org
-Cc: linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Davidlohr Bueso <dave@stgolabs.net>, Kunwu Chan <kunwu.chan@gmail.com>,
- Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=CAXAoGNb
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Qs+dUUmGwoCW9p8QsDKZPJUx5Tg8JM0cwaUKiiVMTwc=; b=CAXAoGNbs6Q5k+GLstzvpM7w8D
+	otGxRVP4zpvL1wVAkPR/kbFQPNp6cIOsB0Zm2amt4dbR8b3WPA/fEkS3HgPNtBcNuAVxFirzEbfQP
+	6gryriryJoV0LxFueijpia2xXdfMRIoG1SrtDeVpjsxkx7qbwqEj8YmemVaIKJrEiUCehkEfw6w9j
+	lG+65dB/SsvlVgeKbr7Iligd8YT3WTF47lD7A/+Oh3jzR2YGQjINajjYTnEsYOwnEOl6BuqQ+FRPt
+	DpnALdvSipBYJJHlCspsQyiYNqJ06HkEOTMR0hAZb66XL4uJUcZ7zGiWWXTAW1Ufsrrp3jGsOguun
+	19paRzcg==;
+Received: from [205.251.233.108] (helo=freeip.amazon.com)
+	by casper.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xRK0d-00000001OIO-2q6r;
+	Thu, 12 Nov 2026 01:53:52 +0000
+Message-ID: <f4e56be61d46472ab1484900ba13bfc6e51a16b6.camel@infradead.org>
+Subject: Re: [PATCH v2 0/7] srcu: NMI-safe atomic SRCU readers, and their
+ irqsave forms
+From: David Woodhouse <dwmw2@infradead.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, "Paul E . McKenney"
+	 <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+  Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes
+ <joelagnelf@nvidia.com>, Josh Triplett	 <josh@joshtriplett.org>, Boqun Feng
+ <boqun@kernel.org>, Uladzislau Rezki	 <urezki@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Lai Jiangshan	 <jiangshanlai@gmail.com>, Zqiang
+ <qiang.zhang@linux.dev>, Davidlohr Bueso	 <dave@stgolabs.net>, Kunwu Chan
+ <kunwu.chan@gmail.com>, Puranjay Mohan	 <puranjay@kernel.org>,
+ rcu@vger.kernel.org
+Date: Wed, 11 Nov 2026 18:53:47 -0700
+In-Reply-To: <20261111145949.70845-1-mathieu.desnoyers@efficios.com>
 References: <20261111145949.70845-1-mathieu.desnoyers@efficios.com>
- <20261111145949.70845-5-mathieu.desnoyers@efficios.com>
- <0f5b9d22-353a-4e30-91e1-aeea47461583@paulmck-laptop>
- <31ba97d2-f02e-4c43-a9a6-5ed49263c511@paulmck-laptop>
- <9207ad1c-fe1c-4041-80c2-52723bc58486@efficios.com>
- <9fc742ab-457c-41e2-ba05-0ef0bb15d00b@paulmck-laptop>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <9fc742ab-457c-41e2-ba05-0ef0bb15d00b@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQZPR01CA0040.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:86::10) To YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:1d0::10)
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+	boundary="=-bpSJx5pYageWojTnVvvl"
+User-Agent: Evolution 3.62.0-0ubuntu1~ppa1~24.04 
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -111,123 +76,210 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: YT6PR01MB491026:EE_|YT2PR01MB8232:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6b5d88b5-97fe-43ee-a950-08df405cdd0d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|10070799003|23010399003|376014|7416014|366016|1800799024|10067099003|4143699003|5023799004|56012099006|261026121527099003|261021121427099003|261102123227099003|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	LvKh5O41hdB72FjzS5vrZ3gISfjsVpfZZMHOl1bO2hQRCb7mmbQ7Dc4LtTBdEbcRzCPbs782N+FbhMp/p96C/gA01BUy+3QnWMRUq5/DQ+qz1weWkghntwUMh7GjHXKnyx+C78HQohZR/HfzuBo1U1ufcP1yQNgufX9qk2Lin6PS/4W07QNOwScl7AAT7wwDyW8VT9VICIpF+6BebHZTt1K3MOgpIedCadSA/G6nXXJP5G6OtykD3lR+Jke2w/EFZiGpTaATXNNeKyyw76her0YEjzy3n9FKyHTFbML6b6GTT3VfLFVZymovCclDBoiiU8uqzCKaLNxY9+LavtyO9h3SxTv0Hpa21ewzquVyiOvFiDhibqi+u49tfogVPrT4yV0EwiPv4TJ+A/wcIKaXElycBEtYHcN30JblFV6+BvKupk2eumXAV7lTaJo28ZrvM8UWKYr9Ulvj3OdV8lTO8v+dzJdyPnkp4YPaa5mn7is0SBqLtCdtm0e1yiB6R0hImnvO7XLM2AFTmNHtDeYLroG0OlTSdrrSgx5fE5DdEC0mylbcXjU3GewyZ2HalFbompopSsiMuXdN1kUjp8tAlvafoZF4kA07sOvBzTox4I4=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(23010399003)(376014)(7416014)(366016)(1800799024)(10067099003)(4143699003)(5023799004)(56012099006)(261026121527099003)(261021121427099003)(261102123227099003)(22082099003)(18002099003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?RlZEdmxvVDdLY0dTWU9IL0JEL0hhSEFCWDJ2L0JqeW9OL3NPWTdrdm8wUnow?=
- =?utf-8?B?NThlYjNXY2hEZ0FKbUUvQk5ML1BJaHE5S1E4ZE5JR1FBWlpnVzg4Y1VLeTZq?=
- =?utf-8?B?Z0MwcmxLOEhHUVdNQ2NiQ2haNmxFdFZidFBhNFVtSzNMU2VFT25UQ1NwQnJS?=
- =?utf-8?B?L0lrOWpEY0JtNDI4OU1wUDVhdkh1eGRyemZoUXlDSmRBZDZOcXZzRDMwZFg5?=
- =?utf-8?B?YjVsWU9FYjVHaW4rNWczNDBuWks2WFNxK3Q3dkhTRTJZd2hFelFXbnRHV3R5?=
- =?utf-8?B?MXp5YllBWTdDYWs2UVdNcE1YUEM2QUVZMU4wNkNHMUIvcXZpdmZjbGRXWTJG?=
- =?utf-8?B?QzJJNUkyNlQ4OThyZnNaTjdIY0UrOGpKUVNrS1dOT0h0a3JBdUZUNzhHTVJS?=
- =?utf-8?B?ZFlWZlJFWlZONjE2S0U5bUtWK2d6S3FXWVE2eWxyOXNaWUdjdzhrdFZrdkxS?=
- =?utf-8?B?N3BMSDRJN1BiSXNESEQzY0RzcHFaM0U0K2w4b1JQSWgxbVNQamZwS1ZoUldk?=
- =?utf-8?B?ZzFSSU94ZkkvTjBBTGpoUDVnUGJGMUZQUXUwTDNIWVRqSmROWjVuQXB2dnBO?=
- =?utf-8?B?NXVMUGFIUTZJMWFSVzVoTjhialZ3dlY0QVV2Ni9QTUVWOSs2OEhpMGpNY012?=
- =?utf-8?B?UVFHU2lMQXp0UmM0Tm0yb3dIbDBza0JwVS85YXFWOEI4R0VMMnFSdGx6OG91?=
- =?utf-8?B?WUU1cWorcGFhYVhHd1pnNm4wSTV1dmVpS0NLM2dIMVFCRVNhaGtoR25OdVZP?=
- =?utf-8?B?NGZPWnNDRnEyVHpaeEkxZy9RbXJFdVJaWlNiMkMrbVhZKzdDWlFlTmRoYnE3?=
- =?utf-8?B?d3dUSmFzQ1NRNFg5UnMrZlpGOXF3ZW43SW9IT3VJMlBRcmRDS0FZLzY0L2Fq?=
- =?utf-8?B?YUFvdGZtRkFEZ1BXYjNiOXl1TmxLeHQwRHhXQVlWUklXN0xTczM1VXJYNWZ0?=
- =?utf-8?B?RXFkelBsVUVPYkNlOHZLVXN2VG9JTmJMc21zcGQ0ZjdGMlVSOGNmZUhOTS9N?=
- =?utf-8?B?RVB2eGhSMytUY3hIYndjRTAvVmhyTzFZM2VqY005WUtxL0xuWWZSODRxT0FD?=
- =?utf-8?B?QjBuelhVUmNEUzVqTEtOcFdNMjVMSTVFRVVoMzJUbkZQYkhlRXlYN0NIeVhn?=
- =?utf-8?B?ZFBNVnMxWW1XWWFzaVZoNGlsc3d2S1JpZ281NXIzU1h0cVR4U2xuUk9LV09T?=
- =?utf-8?B?NFdBcElCT2JVVC9kS0pXTjhHa0E4NDJMWDh5NjJqZkRuVzEraUUvS25DZkM4?=
- =?utf-8?B?Mmc5R1R4VTBBbE1ab3dUT1ZqTWw1UWF6dlR2ajFyRnJXc2RZTWJHc3NJTU1a?=
- =?utf-8?B?UGZMc2xBdjBBM3BlNWQ1ajZxRXNTblJ2ZmtHQlZqSGJTa3BpWDJhUEZPVTR1?=
- =?utf-8?B?SGcvRTZqaGpWS1RucG9NS2FlMlpydnVMU3hZVXhOc2Yzb1JzVDJkQWVDaWZi?=
- =?utf-8?B?MndQSGI3MGhpcUpjTm96djV3WlhPMGNkeWdoYkN4ZFBEZ3NkMFBUNjNIdjc3?=
- =?utf-8?B?SUJjMjVwbVdCTWlSVE81d3haNitlSVRmZWlyb1RyeU9FbUVUMGRETXc0SWl6?=
- =?utf-8?B?RjBSWmdkMXZJRXI4Q2ZtRlBaaWYxbmc5aktBQi9QQ0xmK2FNSTJtRGlSSFNq?=
- =?utf-8?B?UzVXNmhmZU94NkZoNkhiZG9JY2p1N0tBdGs2QTNpL1dObDlwVDRCZytub1I5?=
- =?utf-8?B?MHY1OUF6MVZ2QUdtbHA4N3d3RXQ2UTk2TDZvTXBBZHk4NnByRnJTVGM1SGpS?=
- =?utf-8?B?ODYzZzRsb2ZudmU0YnR3dlRlTGdGZDNRMGQwaEpaN3ZmQmI0ZGExb2FFL0Fp?=
- =?utf-8?B?RUpXVmJ0ay9WOGtoci9ERTZRbFB5R0MrdTNFeUpmc3BWM3dyRS92VjVXQmJM?=
- =?utf-8?B?MlI1aDg1Mmd0UkM1bitXUzZ2RVVNZ3NwKzBaajB3MENJTUM2czJIdkFSTzlx?=
- =?utf-8?B?TWxSa0JzVWYvMFFmOVQwSjVETjdpTmRkMGFIaWU1bU10QjE5b0U3aDd4Wm9B?=
- =?utf-8?B?NGUva21YUytYZEQvdnF5NU5NdWdwTnFub09IeTNOVHFCTUJCVXFXaklEREJ1?=
- =?utf-8?B?UStTVzhoNGYxU2dHcUFiSmJYUkw4K0E4citac0VFUG5SY0Ewd29kM2JnZGVZ?=
- =?utf-8?B?SDB3YWRPQUtFdW1jMFFlV2ZLVGRpNlAvMGtscTA3N011b2RjNy9NVFU5Szd3?=
- =?utf-8?B?R3drQjg4cm5OZHVOcTltc0ZaUk9Bd3RaenI1VVlvNW96WmphWUFXdHN1QXU4?=
- =?utf-8?B?YnFDVno2ck8ydEFVbzlXRkxaR1gxTWwyakhWVG8zdTlaNTNKV1ZnTyticy85?=
- =?utf-8?B?Zk9ieWMxUHZxempiU1hES1pDSmNXYzZpckdUUDRvemJtUTBQNHYvVm9QZktJ?=
- =?utf-8?Q?F/E3+pIU+qeV+a1AZhffhlWm2XI0Bo5ueuiVGgrAEv1pX?=
-X-MS-Exchange-AntiSpam-MessageData-1: hWDDh/4VOmW58f+t5gMGz6Wv/OICtdLeLRA=
-X-OriginatorOrg: efficios.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b5d88b5-97fe-43ee-a950-08df405cdd0d
-X-MS-Exchange-CrossTenant-AuthSource: YT6PR01MB491026.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2026 01:32:50.0593
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tjcmZNXTHiVlxPEWkYluX9cSCBZMfEOMEVX6+JcnDbFfNwhtCjt/HcSxActKmHOiZ+HQwDJtPrYDlnOKNWfQWkOSAhPgGULV0wVu7qmg8Dk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT2PR01MB8232
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
-On 2026-11-11 19:07, Paul E. McKenney wrote:
-[...]
-> Although that doesn't help on my laptop, it does work on my x86 test
-> system.
 
-Is the laptop a hybrid CPU, with P-cores and E-cores?  KVM gives its
-guests no PMU on those.  kvm_init_pmu_capability() in arch/x86/kvm/pmu.c
-clears enable_pmu under X86_FEATURE_HYBRID_CPU.
+--=-bpSJx5pYageWojTnVvvl
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Perhaps something like the following would be helpful in keeping this
-> well-tested?
+On Wed, 2026-11-11 at 09:59 -0500, Mathieu Desnoyers wrote:
+> Hi Paul,
+>=20
+> This series adapts atomic SRCU to the needs of RCU pseudo-transactions
+> [1], as we discussed [2].=C2=A0 Their readers resolve a proxy within a sh=
+ort
+> section, in any context, NMI included.=C2=A0 A writer waits for these
+> sections without sleeping, from task, softirq or hardirq context.
+> Atomic SRCU fits, with one fix, one rule made explicit and two
+> additions:
+>=20
+> - Patch 1 fixes Tiny synchronize_srcu_atomic().=C2=A0 With
+> =C2=A0 CONFIG_PREEMPTION=3Dy, it called synchronize_rcu(), which ends an =
+RCU
+> =C2=A0 grace period on Tiny RCU.=C2=A0 That is wrong when the caller is i=
+n an
+> =C2=A0 interrupt handler or within rcu_read_lock().
+> - Patch 2 is about calling synchronize_srcu_atomic() from an interrupt
+> =C2=A0 handler.=C2=A0 All calls on that srcu_struct, task context include=
+d, must
+> =C2=A0 then disable interrupts around it.=C2=A0 Otherwise, the interrupt =
+handler
+> =C2=A0 may spin forever on the CPU of a waiter it interrupted.=C2=A0 Patc=
+h 2
+> =C2=A0 documents this rule, and warns when it is broken.
+> - Patch 3 makes the atomic readers NMI-safe.=C2=A0 They use the counter
+> =C2=A0 increments of __srcu_read_lock_nmisafe(), which keep the full barr=
+iers
+> =C2=A0 that synchronize_srcu_atomic() pairs with.
+> - Patch 4 adds srcu_read_lock_atomic_irqsave() and
+> =C2=A0 srcu_read_unlock_atomic_irqrestore().=C2=A0 They disable interrupt=
+s instead
+> =C2=A0 of preemption, for a domain whose writers wait with interrupts
+> =C2=A0 disabled.
+> - Patch 5 makes rcutorture run readers from NMI, for the NMI-safe reader
+> =C2=A0 flavors.
+> - Patch 6 makes rcutorture alternate the atomic readers of each CPU with
+> =C2=A0 irqsave readers, with a new atomic_irqsave parameter.=C2=A0 It als=
+o adds an
+> =C2=A0 SRCU-P run of this mode to torture.sh.
+> - Patch 7 makes rcutorture check what patch 1 fixes.
+>=20
+> Patch 2 does not make synchronize_srcu_atomic() disable interrupts
+> itself.=C2=A0 A reader that disables only preemption may wait for an IPI =
+to
+> the waiter's CPU, and that IPI would never run.=C2=A0 Only the caller kno=
+ws
+> that its readers disable interrupts.
+>=20
+> On architectures without NMI-safe this_cpu_inc(), every atomic reader
+> now pays an atomic increment at lock and at unlock.=C2=A0 The update side=
+ is
+> unchanged.=C2=A0 On architectures with NMI-safe this_cpu_inc(), such as x=
+86,
+> the readers use the same counter increments as before.=C2=A0 David agreed=
+ to
+> the change, as long as synchronize_srcu_atomic() stays within the 4-16us
+> it was designed for [3].
 
-Yes, that would help.  Three comments on the patch:
+Tested-by: David Woodhouse <dwmw@amazon.co.uk>
 
-[...]
-> +             qemu_args='--qemu-args "-cpu host,pmu=on"'
-[...]
-> +             --configs "SRCU-P" ${qemu_args} --trust-make
+I gave it a spin on the 192-way Granite Rapids box I've been using for
+the KVM gfn-to-pfn-cache conversion to atomic SRCU.
 
-1) The quotes inside the variable stay literal.  The expansion is split
-    on spaces, so kvm.sh gets three words:
+All my torture tests pass, including the mmu_notifier race test which
+does a full invalidate/refresh cycle for every one of 5000 event
+channel deliveries. That works out at over 1.2 million calls to
+synchronize_srcu_atomic() per run, of which 99.4% are below 8=C2=B5s:
 
-        --qemu-args
-        "-cpu
-        host,pmu=on"
+                with series          without
+    [4, 8)=C2=B5s     99.388%             99.458%
+    [8, 16)       0.583%             0.508%
+    [16, 32)      0.026%             0.032%
+    > 32=C2=B5s        0.003%             0.002%
+    worst        128-256=C2=B5s bucket    512=C2=B5s-1ms bucket
+    (n)          1235551             1126320
 
-    A kvm.sh --dryrun with these arguments stops with:
+So it's basically identical to the same measurement without your
+series, which is fairly much as we expected.
 
-        --qemu-args (qemu arguments) ""-cpu" must match "^-"
+Also, rcutorture with reader_flavor=3D0x10 ran clean for five minutes,
+for whatever that's worth on a config where NEED_SRCU_NMI_SAFE is off.
 
-    Keeping only the value in the variable works:
+--=-bpSJx5pYageWojTnVvvl
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-        qemu_arg="-cpu host,pmu=on"
-        [...]
-        --configs "SRCU-P" ${qemu_arg:+--qemu-args "$qemu_arg"} --trust-make
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCE8Ew
+ggWvMIIEl6ADAgECAhANkOKMSmGXhF5eMl0rsRhvMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYT
+AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAi
+BgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBHMjAeFw0yNDAzMTMwMDAwMDBaFw0zNDAz
+MTIyMzU5NTlaMGIxCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UE
+AxMxRGlnaUNlcnQgQXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTCCAiIw
+DQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAOfSIeC0vv1xPQ+dgSxbIIrkaru6skAWJYaGFzmv
+q4Kq+2wU2jxhcWlJg/JeP5jEkq/LM3pn5aaLao79j+XRmS7J1ZpJKUODJVoM4s9MQJhTMvo4qS5Z
+S64g6QR7Obkz3I1Lr3aWeSBmDDEyzue+NKtuWZ1Cxy3RdXo/w5HgRc3l2AercOM3Gt1XonTzEtTb
+Z/Hwc0Sn9Gz8RmGRK6Ka4hVDl8q/2l110KaV233Kh5etP0csXS8MIMdVRfRu3sc5hp13DG7lCKzK
+72a2GEpI8Wpl26G6I1/LMzz/98T+FqjTqxsdquk7Cj7m2vKGLW1BorpQH7WFGPdJQXJe1hfbfiZA
+CcVdCtl4nAacFacmsiArZBfX7AQGL7isvHUwwYFEtcApyGW4p2Lt+t8nvU0CANA6BHOpOz1xOP8W
+mAESbUriIjyuTUf3fJ9oDNCurVqhASMJCDaWI3lYX/QAoiAzt6akqbbZxo2ujW7mGGqc0KxqE2cs
+h2T79v7pC8aUtHBfwNrTR19GnZVxE0eQ7ViIQhR6mpSaUQFA9sG+cmD2G8TnCgYsLa0q8De6F61a
+CBevQGHNzrbZ3JAMneveYg/Jy1XxQHDRcvrMfWKe0jjcWbdKYlaGVPm5V1ILwYz7Yv5ewo3NUrxI
+GJiywe9qPhuJSDZs7VehTuI0FxGIsgKzVjgbAgMBAAGjggFcMIIBWDASBgNVHRMBAf8ECDAGAQH/
+AgEAMB0GA1UdDgQWBBT3m6JO05fF9DQPQw6Bhc6RkzKv+TAfBgNVHSMEGDAWgBTOw0q5mVXyuNtg
+v6l+vVa1lzan1jAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MHkGCCsGAQUFBwEBBG0wazAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEMG
+CCsGAQUFBzAChjdodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURS
+b290RzIuY3J0MEUGA1UdHwQ+MDwwOqA4oDaGNGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdp
+Q2VydEFzc3VyZWRJRFJvb3RHMi5jcmwwEQYDVR0gBAowCDAGBgRVHSAAMA0GCSqGSIb3DQEBDAUA
+A4IBAQA+b8Uw53sDspdZgukU+qzLyyHkcjlxGGhHlP+zrmDLKm1wEFvCRS2pili3Hy67i8N4N5NU
+vw5Rg6kv3lxb9S9Rktxk43k+tvm68pl7OxQE55ZjVY87P0lUPGwEqOOwLLyH02ZQcsfq5p5LrOH9
+0JvmvZ1yy73HS+VpDAqOlytE0NSvTIRqFFkKQGQwfjvtql9YflujuNNvJztjBaHKYZsnNSg+J38o
+jYq4TP3pSg3UdVH0PncVjPQyqxC9xef5Xae92Kbkzol3x7Nel3A1bwAkalrDMspvTHvey6LfiBks
+FIqviTnoy7fgjaRAJgHS+RXx/cmuRd3rUAclSVVrYu8RMIIHAzCCBOugAwIBAgIQAzUotrsybJHx
+HTjKOIVdIDANBgkqhkiG9w0BAQsFADBiMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQs
+IEluYy4xOjA4BgNVBAMTMURpZ2lDZXJ0IEFzc3VyZWQgRzIgU01JTUUgUlNBNDA5NiBTSEEzODQg
+MjAyNCBDQTEwHhcNMjYwNzE4MDAwMDAwWhcNMjgwMTA0MjM1OTU5WjAeMRwwGgYDVQQDDBNkd213
+MkBpbmZyYWRlYWQub3JnMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA2pYux73kdbYX
+sWF8f1u6DJP91qcqaZetsyfPkZk0B+MmXmAEv0kVes5n15V2mbDThOnpoPFly0UugQO9JYqLfrtD
+tKD5yL58fgrDB9Dw+LQikgrHafl6YSCds5AvUu/8hw2J6noKrcOLJpKlKn9Fl/4IB9Q3JIdLx5aa
+EtTqMalIPqHFOlgrJ7s+aua8xbB8YQ9ahqYBXWRJNv3P/2b1DYtdrz1oqZPE3CcB8Pc6Gf2a1Tcm
+6TAgtEx7Cf1BFcrsrMz7TWHmGQITieNb2r9UYWSc2Gp+GtYFNJCgT0JJXKUBIauPMKBLteYrL8Fo
+ff/uY44dC/mDWjdCP/5x0qelPQjlBvWdHL5zvBTOj06rJ0m3HNI/hnIcDh0Qu2j9reb9rLVcdym6
+bWmBM4uDEB8Zv9Ph0KTBFSy1IosyakuD1j1Os30EzjGfbi0EUXIvnOcYbTBAbM5UAzrxEHMhBvoX
+Pvnx+OyvjJmc9tWxTX6AcSz+m40esbT17URBeZS18afgieiikm5TynlUYP1LciR3hSgGVzvGXnKO
+02VDFR5itGWdRKZ2W5wIShNfWfhSa0D0K5UdIDt5Qc7sjzwK1Yb1sY5Tu0uA5mhIS82q1ov83uxB
+sFkriNnhGv/M1NCDVLBiOMsHu73qUM+yKmgKLwF9Hfn9WI25glbAMI4S5r3hYzcCAwEAAaOCAfcw
+ggHzMB8GA1UdIwQYMBaAFPebok7Tl8X0NA9DDoGFzpGTMq/5MB0GA1UdDgQWBBRcYhqbcGzn1jrT
+JOZaB8O7qllDpzAwBgNVHREEKTAngRNkd213MkBpbmZyYWRlYWQub3JngRBkYXZpZEB3b29kaG91
+LnNlMBQGA1UdIAQNMAswCQYHZ4EMAQUBAjAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0lBBYwFAYIKwYB
+BQUHAwIGCCsGAQUFBwMEMIGpBgNVHR8EgaEwgZ4wTaBLoEmGR2h0dHA6Ly9jcmwzLmRpZ2ljZXJ0
+LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsME2gS6BJ
+hkdodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZT
+SEEzODQyMDI0Q0ExLmNybDCBjQYIKwYBBQUHAQEEgYAwfjAkBggrBgEFBQcwAYYYaHR0cDovL29j
+c3AuZGlnaWNlcnQuY29tMFYGCCsGAQUFBzAChkpodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20v
+RGlnaUNlcnRBc3N1cmVkRzJTTUlNRVJTQTQwOTZTSEEzODQyMDI0Q0ExLmNydDANBgkqhkiG9w0B
+AQsFAAOCAgEAocabrh1cPd5s3vY5rnlBVQSTc7zs2ZWs67dAIltR+05WELrYClVzzUhMs/LOJPlr
+EUo45UDDomXq38DxFepaPd9+iNLjXfn33EX/IG44j04lU/oF/Rg9VeQILkYLbCZ/x9wOjNHZc4SN
+ydY7Dhvf/sT5aBz88u7D5+azZJ7Qf1U57wYseCH1Mt0nDrtr5y19IJ8D9xJJ33RFL6vfpHZBBAQ8
++3RqkKNxLoV2aFvQhxdhjNLDqTv3LjUIdicwPraN7JkxEu7CV2Lka7eRqJgkWL7SK0YmBjGpRafs
++icP/ON5RCCKTTb6VlX8eTG2sJJfsFhvJNCCt6xexbWzWtIrfP7NvPBvwBB737AyEGBZkS5aNizT
+McURJGTv9UKvBh1LF/+tNhYtLvPCN7oecGzhCHht9jcwSkygTo3Y6YlK3QgOu+ncmiBbfeuwlLZ1
+LxbYvG6hgNqXv7u6YyADbYajAQJXJ2OQen39pm3Q/AQSyLYG+B8lDglWsM8tYXPlEdrYJcksGK6F
+nqIX6Bumn43rBooLJdiZp4WmfWdL2pxe+LxRDjprmqu1WprixDxULSTOKJZoqTlugs6y3Bc+if+s
+gHnBBtz9WQ6MtPHkh7zONDAFIKcBmv8OqPQCx0F3Wv3OEybwMpXx0OsKgK8wLldaX1pXcMuyDgTL
+Sqs0AV0OHUgwggcDMIIE66ADAgECAhADNSi2uzJskfEdOMo4hV0gMA0GCSqGSIb3DQEBCwUAMGIx
+CzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE6MDgGA1UEAxMxRGlnaUNlcnQg
+QXNzdXJlZCBHMiBTTUlNRSBSU0E0MDk2IFNIQTM4NCAyMDI0IENBMTAeFw0yNjA3MTgwMDAwMDBa
+Fw0yODAxMDQyMzU5NTlaMB4xHDAaBgNVBAMME2R3bXcyQGluZnJhZGVhZC5vcmcwggIiMA0GCSqG
+SIb3DQEBAQUAA4ICDwAwggIKAoICAQDali7HveR1thexYXx/W7oMk/3Wpyppl62zJ8+RmTQH4yZe
+YAS/SRV6zmfXlXaZsNOE6emg8WXLRS6BA70liot+u0O0oPnIvnx+CsMH0PD4tCKSCsdp+XphIJ2z
+kC9S7/yHDYnqegqtw4smkqUqf0WX/ggH1Dckh0vHlpoS1OoxqUg+ocU6WCsnuz5q5rzFsHxhD1qG
+pgFdZEk2/c//ZvUNi12vPWipk8TcJwHw9zoZ/ZrVNybpMCC0THsJ/UEVyuyszPtNYeYZAhOJ41va
+v1RhZJzYan4a1gU0kKBPQklcpQEhq48woEu15isvwWh9/+5jjh0L+YNaN0I//nHSp6U9COUG9Z0c
+vnO8FM6PTqsnSbcc0j+GchwOHRC7aP2t5v2stVx3KbptaYEzi4MQHxm/0+HQpMEVLLUiizJqS4PW
+PU6zfQTOMZ9uLQRRci+c5xhtMEBszlQDOvEQcyEG+hc++fH47K+MmZz21bFNfoBxLP6bjR6xtPXt
+REF5lLXxp+CJ6KKSblPKeVRg/UtyJHeFKAZXO8Zeco7TZUMVHmK0ZZ1EpnZbnAhKE19Z+FJrQPQr
+lR0gO3lBzuyPPArVhvWxjlO7S4DmaEhLzarWi/ze7EGwWSuI2eEa/8zU0INUsGI4ywe7vepQz7Iq
+aAovAX0d+f1YjbmCVsAwjhLmveFjNwIDAQABo4IB9zCCAfMwHwYDVR0jBBgwFoAU95uiTtOXxfQ0
+D0MOgYXOkZMyr/kwHQYDVR0OBBYEFFxiGptwbOfWOtMk5loHw7uqWUOnMDAGA1UdEQQpMCeBE2R3
+bXcyQGluZnJhZGVhZC5vcmeBEGRhdmlkQHdvb2Rob3Uuc2UwFAYDVR0gBA0wCzAJBgdngQwBBQEC
+MA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwgakGA1UdHwSB
+oTCBnjBNoEugSYZHaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZEcyU01J
+TUVSU0E0MDk2U0hBMzg0MjAyNENBMS5jcmwwTaBLoEmGR2h0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNv
+bS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNBNDA5NlNIQTM4NDIwMjRDQTEuY3JsMIGNBggrBgEF
+BQcBAQSBgDB+MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wVgYIKwYBBQUH
+MAKGSmh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRHMlNNSU1FUlNB
+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
+qPNVOz4XnwHb3wAbaA+4LWsAAAAAAAA=
 
-    It expands to two words when set, and to nothing when empty.  I
-    checked it with kvm.sh --dryrun only.
 
-2) nmi_readers and nmi_calls both default to true.  So the two boot
-    arguments change nothing.  They are fine if you want them explicit.
-
-3) The "atomic-srcu" run just above also runs readers in NMI, by
-    default.  It still starts without a PMU, so it keeps printing the
-    "went untested" lines.  It could take the same qemu argument.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+--=-bpSJx5pYageWojTnVvvl--
