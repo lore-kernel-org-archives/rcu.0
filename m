@@ -1,64 +1,75 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794511686;
-	b=25R1Id6+JmRQ4E0+T7KrkXzdAoweQfS0OZsAJfOlMMFRCkjOkVOGTrlui6kEDOx90mWe
-	 zhkgaQNtW/pxfNlcUlBFepqa7Czb/BBrAUc3ksrSh1iv8R2qYYGjkY1/R8LM/kRTepckj
-	 VpOU7zevh/1EF3yUiP1O6R16j//8jPbCtOYQnbscRu+nf9j2nw3f85lbLXB5IRpHFWlGB
-	 YiIykA9BW45+UKlbLjryUwnoPNbWi0sjIVcWzRKLTytCByZZaQkvOKnK6MMj7n31A4aW5
-	 Ci6r/h6AsP/FtIx8OnZW3RrpEd88WTzdL3n/aMAm0R0T7BAVNtFcpYajbRB7dgjbE6A==
+	t=1794514083;
+	b=yuEDP/Y9J28nYJ8NtpKYgtJquvsQyhi/ZQhBFoP+bdcUt+JPNHu5KbEkZtOxWBKTEayy
+	 mAzvfvmSN+g/gBBuAPUewHf9U8rPwnXZLiTrmTxs6sMG5HaZRFp93ObiZHEMxAVCK1XZ4
+	 mjPbPJeFsCx0/BzhbzkTlR+vCTgy/03CCasSScVRCoc5XJXxmZKO3OFp+DUsUfT4M6Be5
+	 Z7SKMn0+waLBiJGOM7EJvKsamKuUILxo4545xKLB+Ll7N9Nhc+5eqD/rcW0QjVhg6qEJ3
+	 JNNFjWYUm/jYzRuvRXgHcn+l/kANOO84iBRzLYMjnvtZHZ4tukrEgQz8GT9UlVXih9A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794511686;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794514083;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
 	 In-Reply-To;
-	bh=Wp0urfq61yNXrOEhEx3kr5H9rFjj647tUQQ+T0MMReU=;
-	b=t+pI8I30rG9PKXmWNARe9oWFGu+a30lApiMV765bzaYZgYiOo+VKxquY4/EaihX5cO7m
-	 ILrDrMH0RKF7Xfik48UHX0Pk9+wm1oKN6xhgin5IZfpDfmEtyPZ49509I9m8fKJtOIwBG
-	 lw0vzAcxXDBBv+dSIVVWX+oWQ6o+lZRl4LGPnMHf63UPHnf0S+cuDmfEkw+7vELxOREg/
-	 a8fkdqd3sDQHbTsK/2ZiuVcm6GtLHBImPBsEhgHlZBc6PqEuQUxKX3szrNS3Sw6RJRxje
-	 QAXhUAXYmjBNwp03Fn5YPOXwtjJJ5FISG3s0E/rE134u2b4CBUV0ZFVzvNs68fpPVbw==
+	bh=oS5LTizZXap4FfvjUWL2dHNcegZ/dEibKUjWK4UW7Mw=;
+	b=3oEUteE3KfRdmeXzOXGY1zlEPFMwXoZ/y8bQXlrIIWMub3B7KsC06IlwfdOM6ntkfr/m
+	 P7E6mM/bwd49lxHY//JPAlrMN87K7BzMoNXBM4yiqPd5aSWvOg3ueXsxGEqcwCdVTNFIb
+	 ejuAEpDuIufj367yNnsd7/3gaIVtYOOZDJf+IKHredm73qudCfDTn1lXo5VZDv0SiZblG
+	 gbU1e7xBPXYqqmcT6u08oZKXYFihv1afNgA69RQE+U2bUdoCW3Rr5EfX3bwoRWJeoBZbY
+	 nnZgHSXXD3PFSNUMnBqmodz5S7iOA3NTK7mOFr75LZjSUbr2N/qNGongflN6rZuDkow==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gSXo8Uyl;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=K8DI6sCL;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23302606A327;
-	Thu, 12 Nov 2026 19:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339BA606A31C;
+	Thu, 12 Nov 2026 20:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gSXo8Uyl
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED1C31F000C5;
-	Thu, 12 Nov 2026 19:28:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=K8DI6sCL
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C2301F000C4;
+	Thu, 12 Nov 2026 20:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794511686;
-	bh=Wp0urfq61yNXrOEhEx3kr5H9rFjj647tUQQ+T0MMReU=;
+	s=k20260515; t=1794514083;
+	bh=oS5LTizZXap4FfvjUWL2dHNcegZ/dEibKUjWK4UW7Mw=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=gSXo8Uyl/WPN5vlQICWamKQIdubeL88aAuQUlTRh4JJc0Ulvy/kgTt7OnwngztVEu
-	 qb65h0Q+7M1e6R3jqvigw7CIn+RqcBy35OaKavUkNU//Jt04xk87jua86vjtAi58Bk
-	 1JpZAPb3/4OHnfydKqvoiZ7JofZnW92oO9KLua62SFpSnf6yZnsr9Cj9vNXgxScNdX
-	 Rgph/Eb29Xk4Od382Nser80pc/UutRXX5M/1QqXMtARkVmLaDuPLj5/7j5SEZ3TYMF
-	 1ML//C4uUWSqI/2YLKLtnsy/rKK5T+bq5oTo3i6ACAa5kjCfQFg3t1gow/noGnq+9I
-	 rqao2P/ZNC64w==
+	b=K8DI6sCLkA6zir4U8oSCpjxNDPGsyaG2hIxZQ4XjMTD/OuTIKrDPKzksGqL6cixwQ
+	 +oa+HCHXUYRlIf2J2VJ2kOJzTdnLYxwBFjkrGkKpbo/dPsIh/HWK6EA+jnbDRlruc3
+	 KOR4ssAuOpPEJcNt85Vxu/uEkBCm9OxM1uAD1YpiV0oAOL/StVmzeO0v2olxgv51Ei
+	 L+O+Kd+DCFtFbwjUIbUHCKD69hrBT6NwurZJ6pgmgwsoz6QLZYYicnvnGLvyVphVUg
+	 j1JBjZ/wQg1V4fPnX+OW84uDPSz1sOyIKDqoS22bF7RQjJux59gglbKXGtXl5kteIX
+	 jG7XVtaWfzCKQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id ADFD6CE0840; Thu, 12 Nov 2026 11:28:05 -0800 (PST)
-Date: Thu, 12 Nov 2026 11:28:05 -0800
+	id C2D1CCE0B0B; Thu, 12 Nov 2026 12:08:02 -0800 (PST)
+Date: Thu, 12 Nov 2026 12:08:02 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH] torture: Forgive SMT-control failures in CPU-hotplug
- testing
-Message-ID: <f5775bef-72ad-4d76-87d2-dc5d23fb96ca@paulmck-laptop>
+	Kunwu Chan <kunwu.chan@gmail.com>,
+	Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] srcu: Add irqsave variants of the atomic SRCU
+ readers
+Message-ID: <321aa8c1-59a0-4e9c-84d5-6954313a38b6@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20261112175220.767903-1-joelagnelf@nvidia.com>
+References: <20261111145949.70845-1-mathieu.desnoyers@efficios.com>
+ <20261111145949.70845-5-mathieu.desnoyers@efficios.com>
+ <0f5b9d22-353a-4e30-91e1-aeea47461583@paulmck-laptop>
+ <31ba97d2-f02e-4c43-a9a6-5ed49263c511@paulmck-laptop>
+ <9207ad1c-fe1c-4041-80c2-52723bc58486@efficios.com>
+ <9fc742ab-457c-41e2-ba05-0ef0bb15d00b@paulmck-laptop>
+ <fc1bbc25-a410-42bd-b5b9-d734d2444b70@efficios.com>
+ <78c1a437-ee80-4e83-8806-a7f7113a4b63@paulmck-laptop>
+ <b81abda5-e882-42e8-b780-6db34fdd0092@efficios.com>
+ <408366d0-3612-47a2-bfce-7ee52828f3ae@paulmck-laptop>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -70,113 +81,65 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261112175220.767903-1-joelagnelf@nvidia.com>
+In-Reply-To: <408366d0-3612-47a2-bfce-7ee52828f3ae@paulmck-laptop>
 
-On Thu, Nov 12, 2026 at 12:52:20PM -0500, Joel Fernandes wrote:
-> The onoff task ends rcutorture with "End of test: RCU_HOTPLUG" if any
-> CPU-hotplug attempt fails, other than -EBUSY during boot.  Toggling
-> /sys/devices/system/cpu/smt/control while onoff runs causes two failures
-> that are not the test's fault.  cpu_up() returns -EPERM for an SMT thread
-> that SMT control keeps offline, and device_online() and device_offline()
-> return 1 when the toggle already did the operation.
+On Wed, Nov 11, 2026 at 08:25:30PM -0800, Paul E. McKenney wrote:
+> On Wed, Nov 11, 2026 at 09:50:26PM -0500, Mathieu Desnoyers wrote:
+> > On 2026-11-11 21:13, Paul E. McKenney wrote:
+> > [...]
+> > > I used the same trick that I have used elsewhere, keeping a separate
+> > > variable for the tag ("--qemu-args") and the argument itself, as shown
+> > > in the diff below on top of my earlier patch.
+> > [...]
+> > > +             --configs "SRCU-P" "${qemu_tag}" "${qemu_args}" --trust-make
+> > 
+> > This works on x86.  On arm64 both variables are empty, so kvm.sh gets
+> > two empty arguments.  A kvm.sh --dryrun with "" "" in that place stops
+> > with:
+> > 
+> >     Unknown argument
+> > 
+> > Dropping the quotes does not help: the value has a space in it.  So I
+> > think this one needs either the ${qemu_arg:+...} form, or a test around
+> > the torture_set call.
 > 
-> Repro: in a 16-vCPU guest (8 cores, 2 threads), run
-> "modprobe rcutorture onoff_interval=1 gp_exp=0" while looping
-> "echo off/on > smt/control" for 120 seconds.  This ended in RCU_HOTPLUG,
-> with no reader errors.  With this change it ends in SUCCESS.
+> Ah, you need the kvm.sh hunk of this commit in my -rcu tree:
 > 
-> Forgive these like boot-time -EBUSY, by not counting the attempt.
+> 436f3c6b27de ("torture.sh: Add hazptr torturing")
 > 
-> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> Which I clearly need to extract from hazard pointers and get more widely
+> available.  Diff shown below.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+But after playing with the ${:+} syntax a bit more, sold!!!  Thank you
+for the tutorial.
 
-> ---
->  kernel/torture.c | 40 ++++++++++++++++++++++++++++------------
->  1 file changed, 28 insertions(+), 12 deletions(-)
+I will be applying that to the hazard-pointers stack as well, but keeping
+the forgiveness of empty arguments just in case.
+
+							Thanx, Paul
+
+> > > I will add it there, also.
+> > > 
+> > > And to the --do-rcutorture stuff as well.
+> > 
+> > Sounds good.
 > 
-> diff --git a/kernel/torture.c b/kernel/torture.c
-> index 8c4e6b2fe8ba..b860c99e9ca7 100644
-> --- a/kernel/torture.c
-> +++ b/kernel/torture.c
-> @@ -194,6 +194,24 @@ int torture_num_online_cpus(void)
->  }
->  EXPORT_SYMBOL_GPL(torture_num_online_cpus);
->  
-> +/*
-> + * If the CPU-hotplug failure is not the torture test's fault, return a
-> + * string saying why it is forgiven.  Otherwise, return NULL.
-> + */
-> +static const char *torture_onoff_forgive(int ret)
-> +{
-> +	// PCI probe frequently disables hotplug during boot.
-> +	if (!rcu_inkernel_boot_has_ended() && ret == -EBUSY)
-> +		return " (-EBUSY forgiven during boot)";
-> +	// Hotplug is forbidden, for example by SMT control.
-> +	if (ret == -EPERM)
-> +		return " (-EPERM forgiven, hotplug forbidden)";
-> +	// Something else, such as SMT control, already did the operation.
-> +	if (ret == 1)
-> +		return " (already in requested state, forgiven)";
-> +	return NULL;
-> +}
-> +
->  /*
->   * Attempt to take a CPU offline.  Return false if the CPU is already
->   * offline or if it is not subject to CPU-hotplug operations.  The
-> @@ -204,7 +222,7 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
->  {
->  	unsigned long delta;
->  	int ret;
-> -	char *s;
-> +	const char *s;
->  	unsigned long starttime;
->  
->  	if (!cpu_online(cpu) || !cpu_is_hotpluggable(cpu))
-> @@ -220,12 +238,11 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
->  	(*n_offl_attempts)++;
->  	ret = remove_cpu(cpu);
->  	if (ret) {
-> -		s = "";
-> -		if (!rcu_inkernel_boot_has_ended() && ret == -EBUSY) {
-> -			// PCI probe frequently disables hotplug during boot.
-> +		s = torture_onoff_forgive(ret);
-> +		if (s)
->  			(*n_offl_attempts)--;
-> -			s = " (-EBUSY forgiven during boot)";
-> -		}
-> +		else
-> +			s = "";
->  		if (verbose)
->  			pr_alert("%s" TORTURE_FLAG
->  				 "torture_onoff task: offline %d failed%s: errno %d\n",
-> @@ -266,7 +283,7 @@ bool torture_online(int cpu, long *n_onl_attempts, long *n_onl_successes,
->  {
->  	unsigned long delta;
->  	int ret;
-> -	char *s;
-> +	const char *s;
->  	unsigned long starttime;
->  
->  	if (cpu_online(cpu) || !cpu_is_hotpluggable(cpu))
-> @@ -280,12 +297,11 @@ bool torture_online(int cpu, long *n_onl_attempts, long *n_onl_successes,
->  	(*n_onl_attempts)++;
->  	ret = add_cpu(cpu);
->  	if (ret) {
-> -		s = "";
-> -		if (!rcu_inkernel_boot_has_ended() && ret == -EBUSY) {
-> -			// PCI probe frequently disables hotplug during boot.
-> +		s = torture_onoff_forgive(ret);
-> +		if (s)
->  			(*n_onl_attempts)--;
-> -			s = " (-EBUSY forgiven during boot)";
-> -		}
-> +		else
-> +			s = "";
->  		if (verbose)
->  			pr_alert("%s" TORTURE_FLAG
->  				 "torture_onoff task: online %d failed%s: errno %d\n",
-> -- 
-> 2.54.0
+> 							Thanx, Paul
 > 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+> index 32c3199976388..86dd5c131d226 100755
+> --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
+> +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+> @@ -271,6 +271,9 @@ do
+>  	--trust-make)
+>  		TORTURE_TRUST_MAKE="y"
+>  		;;
+> +	"")
+> +		# torture.sh can pass empty arguments.  Ignore them.
+> +		;;
+>  	*)
+>  		echo Unknown argument $1
+>  		usage
 > 
