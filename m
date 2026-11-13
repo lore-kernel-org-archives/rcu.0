@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794531035;
-	b=q74LzX6+u4bv9G46JZDZiSKO61RUlJarH4LA2jt9Z5+ToFlDtWnElOPi7ZKoszxSnL/R
-	 Z6JeK0RDZQyaefWMpZV1N3s9AacRUVKaySBnEb0cHrtnuKtU/NGttJMLeMGGE4bpI58iN
-	 jT/f5Qrk+ul40VDGVBGQem1lssDW4Jr/MoPBx7ewQinGIgkFkiyw9W4GWrjxxetgZqp+7
-	 rfolFJXnpWbBvURRu728j9LnmaGxT7TVlJ8fcv1QdBbQjOZI15i7N0SuoubpvfkBlUkO/
-	 id7Gmh/oMXZq8JmuJcpPkG/Ts9uPlfpVNchWHmXs5gb8gFJJ5zZrrDztXneITW+m7fg==
+	t=1794531036;
+	b=EliuSa0etOSHAyUjhzqI9idqM9O3WwwH5nnGcV7cLo58nUz+slhHzBoWregD5R/KiWkK
+	 dyDH1G/xeDAmn5K6rr8+WBtwgN8arbCyuayTO7EOrWQU6OdrHw06dJWa6SGTIdyl7Swyu
+	 96AeQpwIzyzh1+ZC97/dnA+BtfdEtPKxppsC8xbMaoQWkj01EY/qZVfMXTJ4H5lZWb5pT
+	 AC8n5PTdClrZYc2gHpDE/rU0gTlk/k1ecwUqdd9zpgTl+CsMEgKBNzo2WDMCf/ybX4KCv
+	 W5HXNmzFNWHN6LjtUkszkmrXxvsv+Rut5axHQYoNHKuv5Yzn7zUGrkhNQq98fLhLSDA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794531035;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794531036;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=FekEKo5wh9dK9x2tt/oaB48ZaKcR3xC9BKWYBXgHibk=;
-	b=OcfcaFhS9L3xdoV4Pt3BnxpohM3NLGAgv8D0DBk5cnEb9IlNQPUjgZDhd0Nm8KXfua7G
-	 AwEyEtYeuHy9MQ50wo9lfQPob77+VZtKQabbpUp30AQaJn09480+aZ3nNcovU9OiJ+0FB
-	 xDbgj7pyaZ+zCEBnVbgj02S45tYlEaLzsqUDvmhU+2AijwMEEaJxHXLOUSgC3pAkCgzWb
-	 8+ljTVPt/rLxVpMCis6wV4IVreaYpOrklzTWchSn4FMz6k55Tk407zt92rBfwQghqoTWg
-	 ZAWV+KQxCqrFCxl+YESt53foPjnjpDWYVnERz1yV23sy7E51ktZ+0fubWYbDDZvVNkQ==
+	bh=1IRuvUkQTRkQ+ilf6p3cBYjTfeE1ubS23ik55VclfyQ=;
+	b=tT8BbP4Njd9R3fwQt3/WS7rKXbZnpNlyi54+gsWS33pVxnMVIH5SKifAhx0AOD/bDsxc
+	 uDR5FjqGOnIRPjQ2fcLIlISuh5QGtXxJus5N9AWzs0tZQnEIgFgtgNq8iyhz67f/nDLQ+
+	 erNra1lid6lczvvVtNu9dNKdcgHMC2oTWm3XdGnVhkBr5eOWWaNOi0/yplSjz8d0Lv4rp
+	 ROWa1CPH21bcyb9NQdnuTBxl1tAlYf3s1CRHo83OZnx5pjHbloOwDvmZ6sq4XW6ejscGu
+	 dp32vJqZjLobwmP39FrfOa0HkgtHzIhazrblIp4zD/visspJ7M4jjxliPmdK4q/3lrg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZNHc9WkJ;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CQEDJq36;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id F2EF160A3832;
-	Fri, 13 Nov 2026 00:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id A0C1E60A5BC9;
+	Fri, 13 Nov 2026 00:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZNHc9WkJ
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 4D9DA1F000C5;
-	Fri, 13 Nov 2026 00:50:34 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CQEDJq36
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 314C01F000C9;
+	Fri, 13 Nov 2026 00:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794531034;
-	bh=FekEKo5wh9dK9x2tt/oaB48ZaKcR3xC9BKWYBXgHibk=;
+	s=k20260515; t=1794531036;
+	bh=1IRuvUkQTRkQ+ilf6p3cBYjTfeE1ubS23ik55VclfyQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ZNHc9WkJEBvdfl+QNjb7xp5eGFCAHvM/JpbnIfCTuOw77DT/kK70jvpmxyY70u5QI
-	 uIdBeL4EcJDCPRy8pUnIIQehrkr+hrtiCGjeeX/H9gaJZv745Wy4yFgb/A4A9aF775
-	 /epQ17TqhMShBKQXzqhtwTJglai5pv8Z+PxmeeyYgiNPS+2CW2+4NI53ejpl9JSCi2
-	 kJQSpRuTSmn4lIue+tAk2jrcL3IKGF7ldP0vAYxujWkyvdnd9bHUaenEEISodoGr/G
-	 mlbpEVifY/7yDvNuQ+nfQeP31UirEUNeEm+i7GEKiwyr5AP8k9JwsnhQoceo1ldyLk
-	 Ry66id/4I+BpA==
+	b=CQEDJq36P/UajLs/igvB6eB7u6YzP9+Ixhti+TVNdMJO41zgugiJo/9iREQ6wvRiZ
+	 zqCwHCwKgP4aOp+ERC1S0nwHl85mpyrY5F5Z7kSZgC+2Q/P70l2PNrf/o9HtXC4ElL
+	 h2NvqzwPG9r4L42goQeLfaveOiGnwXF/EivP2wLbQ28Ldos3/5roAANZOFi+q1CGgp
+	 03hqyXA+QE1/Ty/GSgdcY2WbKc/0+xXU5t2o8qFSs8WKx8VFlmdFrN5TF+u1ZS+giP
+	 9l2T39aHjVzQdxCWjt6Z0hO78E5dbKIUYoMktl51GXL2NBxY4UnGdH1j5Ecaw8hcOU
+	 Q3l/TGPji1DFg==
 From: Joel Fernandes <jfern@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	"Paul E . McKenney" <paulmck@kernel.org>,
@@ -56,9 +56,9 @@ To: linux-kernel@vger.kernel.org,
 Cc: rcu@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH for-v7.5 08/11] srcu: Detect duplicate callback enqueue at registration
-Date: Thu, 12 Nov 2026 19:50:10 -0500
-Message-ID: <20261113005017.2772440-9-jfern@kernel.org>
+Subject: [PATCH for-v7.5 09/11] srcutiny: Detect duplicate callback enqueue
+Date: Thu, 12 Nov 2026 19:50:11 -0500
+Message-ID: <20261113005017.2772440-10-jfern@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261113005017.2772440-1-jfern@kernel.org>
 References: <20261113005017.2772440-1-jfern@kernel.org>
@@ -75,67 +75,77 @@ Content-Transfer-Encoding: 8bit
 
 From: Kunwu Chan <kunwu.chan@gmail.com>
 
-Move the duplicate-callback check from srcu_do_enqueue() to
-__call_srcu() entry so that detected duplicate registrations
-are rejected before they reach the deferred-list enqueue path.
-Use __ratelimit() to limit the diagnostic output (error message,
-object dump, and stack trace) as a group.
+Detect duplicate callback enqueue attempts at call_srcu()
+entry, before the deferred list can be corrupted.  Use
+__ratelimit() for the diagnostic output group.
 
 Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 Reviewed-by: Joel Fernandes <jfern@kernel.org>
 Signed-off-by: Joel Fernandes <jfern@kernel.org>
 ---
- kernel/rcu/srcutree.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ kernel/rcu/srcutiny.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 76f074f67299..778d8507dc80 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -23,10 +23,12 @@
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 98864977bed2..4c1e8d8595b3 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -12,9 +12,11 @@
+ #include <linux/irq_work.h>
  #include <linux/kasan.h>
  #include <linux/llist.h>
++#include <linux/mm.h>
+ #include <linux/mutex.h>
+ #include <linux/preempt.h>
  #include <linux/rcupdate_wait.h>
 +#include <linux/ratelimit.h>
  #include <linux/sched.h>
- #include <linux/smp.h>
  #include <linux/delay.h>
- #include <linux/module.h>
-+#include <linux/mm.h>
- #include <linux/slab.h>
  #include <linux/srcu.h>
- 
-@@ -1511,12 +1513,6 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
- 			    rcu_callback_t func, bool do_norm)
- {
--	if (debug_rcu_head_queue(rhp)) {
--		/* Probable double call_srcu(), so leak the callback. */
--		WRITE_ONCE(rhp->func, srcu_leak_callback);
--		WARN_ONCE(1, "call_srcu(): Leaked duplicate callback\n");
--		return;
--	}
- 	rhp->func = func;
- 	(void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
- }
-@@ -1526,6 +1522,10 @@ static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
-  * disabled, so defer when interrupts are already off rather than enqueue into
-  * an operation that may be in flight on this CPU.
+@@ -178,6 +180,7 @@ void srcu_drive_gp(struct work_struct *wp)
+ 	while (lh) {
+ 		rhp = lh;
+ 		lh = lh->next;
++		debug_rcu_head_unqueue(rhp);
+ 		debug_rcu_head_callback(rhp);
+ 		local_bh_disable();
+ 		rhp->func(rhp);
+@@ -235,6 +238,8 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
+  * Also called by __srcu_defer_drain() to re-issue a deferred callback, so it
+  * must not re-check the deferral condition.
   */
-+static DEFINE_RATELIMIT_STATE(rcu_srcu_dup_rs,
++static void srcu_leak_callback(struct rcu_head *rhp) { }
++
+ static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
+ 			    rcu_callback_t func)
+ {
+@@ -272,6 +277,8 @@ static void __srcu_defer_drain(struct srcu_struct *ssp)
+ 	llist_for_each_safe(node, next, llist_del_all(&ssp->defer_cbs)) {
+ 		struct rcu_head *rhp = (struct rcu_head *)node;
+ 
++		/* Bounds a node self-linked by a double call_srcu(). */
++		rhp->next = NULL;
+ 		srcu_do_enqueue(ssp, rhp, rhp->func);
+ 	}
+ 	local_irq_restore(flags);
+@@ -288,6 +295,10 @@ void srcu_defer_drain(struct irq_work *iw)
+ }
+ EXPORT_SYMBOL_GPL(srcu_defer_drain);
+ 
++static DEFINE_RATELIMIT_STATE(rcu_srcutiny_dup_rs,
 +			      DEFAULT_RATELIMIT_INTERVAL,
 +			      DEFAULT_RATELIMIT_BURST);
 +
- static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 			rcu_callback_t func, bool do_norm)
+ void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+ 	       rcu_callback_t func)
  {
-@@ -1539,6 +1539,17 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+@@ -298,6 +309,17 @@ void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
  	if (WARN_ON_ONCE(!func))
  		return;
  
 +	if (debug_rcu_head_queue(rhp)) {
-+		if (__ratelimit(&rcu_srcu_dup_rs)) {
++		if (__ratelimit(&rcu_srcutiny_dup_rs)) {
 +			pr_err("%s(): Duplicate call_srcu() CB %p->%pS()\n",
 +			       __func__, rhp, rhp->func);
 +			mem_dump_obj(rhp);
@@ -148,14 +158,14 @@ index 76f074f67299..778d8507dc80 100644
  	/* Record the caller: the irq_work's stack says nothing about it. */
  	kasan_record_aux_stack(rhp);
  
-@@ -1554,6 +1565,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 		if (READ_ONCE(sndp->draining) && !in_nmi()) {
+@@ -306,6 +328,7 @@ void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+ 		if (READ_ONCE(srcu_defer_draining) && !in_nmi()) {
  			WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
  				  "call_srcu() re-entered during callback drain; leaking callback\n");
 +			debug_rcu_head_unqueue(rhp);
  			return;
  		}
- 		sdp = this_cpu_ptr(ssp->sda);
+ 		rhp->func = func;
 -- 
 2.54.0
 
