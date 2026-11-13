@@ -1,104 +1,79 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794567042;
-	b=DSbRxA8yiGUh8kWF0tsxBVNQHHc7Eu0akgjKeh46uAH3Z4LbT9riOrJolAWYpZZ4yrRP
-	 dodn5UEMioY4WkKUdLgGja3vwyw7XzxGFt6TG7BmEzpWa/5OyhARmz2JwHsQPnoNUMXK7
-	 xYYO7xNbajvan0cREoh0kToN8hPWNgI3aGqThmw/xptspeIaygorNoTWIbjYvJYUj+Hls
-	 yw2pht35Dshsjfs4rQ9kc7rzOcj+tqw3ImsURZYqi59z+IKAodLRVAatsHkArtf5kq2BR
-	 MYWdKGBig5/aqpHi333OoQ0QFH1pDSlCIsAPQiIcwbkXoRKaO27pqpBJUqXTG1z/aBw==
+	t=1794567325;
+	b=udQLGVkoNCcmqs4czpYT07sG6oHVjTU802XZh/V5SBTRLAF6bkOlAd+qrkK6N91jL5XH
+	 jMmzmA3kCXAYCZ8eRLftwqkup6VKHXPeQaNBXJDnm62Jb+mRJpgk3cqsrF9V51Eywvb2d
+	 MR1TJ8jF753TqXtWL8NshyWfbCbWbV4RU4L+GBFyBNV8zp/x2rr5k918qrfyZMNxpj7w+
+	 xCwzsJj0RGTrVOBlEivaXo/smhw74rW+r9BFlN75zkUreqri6JS/i5ljeC0Zr9OHfKicm
+	 CNOE2AvqfucPlBgQ37UsbvhXFXk7NevgVUoXpkkENt+ItPNUwqsZL8pzsY0wrDP6iZw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794567042;
-	h=DMARC-Filter:From:DKIM-Signature:DKIM-Signature:To:Cc:Subject:Date:
-	 Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=qKATZfaP7j93mPzPK2LI85ABT996WxYe1HUN7LIOWWs=;
-	b=HZwBG73bK5MXcgQPQkvj7RvIWo92iEYRoigAteFKAbdkOny7Wlv+07umEIHpFGZasiRR
-	 Mi18XOflO/AZncYg6/gB7OQ3PFfEU5oJj3iFTY1Duokk5Q7adWxaXnh6niE6COH6rhniv
-	 0FqfV3yLbyhoohYB3GBpEL4igi0vJpd23w2ljnRzyWoooSls57j5HCEkLmpFNS69zvrha
-	 WtOPYNYHfg7MAKMGHZ8wHplI8iG9hhUYeV7JaLwczm+khUyucAsKneXjiG44pncZtQwGv
-	 Fg7xuroxWCL6NZ7atCsH7um8I6i1zMfaC+s9ISmg+68SWX7Qc3o/hnz8x0/xj2OyJ/A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794567325;
+	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=dVD2sgjeIdy2wIdfd/QmoCMe4rJiJI4y+gjhCqqw+84=;
+	b=AfR64Wy6Ov75nnR9tmEi22km366vH9hmxXJW5T/ZTy4KlyiRAgSgKXyzG+4bkRrEteYq
+	 vnL5Dm+wWXgNlFqZn0WfhYf56ITHAFvR30ceuDEDeizV5+It7g/cEWw1TBvAGCkUUJq0h
+	 A9Ka5rv+aTjfEsGVtiZKgJLLgh8OwVK3sfsulIQ+xPLc4fElM7aaN6H3dCMyH7tNWB4Yo
+	 0rn5ZR8/YLDPy7lyW5B8LI1tyWFLKNxOP9eN1/PAysFWwhe6QjcoSnl+ct7fEoBCBiikp
+	 /o94u2y9X/sP9TMOwG/bNaFUqeCdK7Xm0zVKggfXWBWmlicJbr7zGff64FfDpt2xHeg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=linutronix.de;
 	spf=pass smtp.mailfrom=linutronix.de;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=zXlIeLQm;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=LmL4VpeG;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=PAZcnNUn;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b="UF6Dopc/";
 	arc=none smtp.remote-ip=193.142.43.55
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5849A60A2621;
-	Fri, 13 Nov 2026 10:50:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5849A60A2621
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3535606BDA8;
+	Fri, 13 Nov 2026 10:55:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A3535606BDA8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=zXlIeLQm;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=LmL4VpeG
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=PAZcnNUn;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=UF6Dopc/
+Date: Fri, 13 Nov 2026 11:55:21 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1794567040;
+	s=2020; t=1794567323;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qKATZfaP7j93mPzPK2LI85ABT996WxYe1HUN7LIOWWs=;
-	b=zXlIeLQmBG1ux3nUFjTlGOJDrBaxToMN0OdlYlHrKRf2zEunqnLosDGNZ/GeqQw0HqFjAm
-	fV6prU9gxlIeq4IjzwsJWpNg2MkqIMP05K8xme6aTNrsaHkqXa2ZkDnpRxoLiSkPACRTvV
-	hw61bSjZycWlz5xRU55zOm+glOiZ8Sndord7CvN0TEorW5aMtSjfAJpjnddiiXi5TfVx3w
-	BE8lkh8Q8KOwpyBU+D3F31EnNnyhvZXaO88Zhr3dfiTI0/+NLwWZcCzvXjyiIyfaAcq8hP
-	qB/H09dniPahJ2jMIM3q1D6Qt0oh8DG3ic3j2HPRnmFZgwmwvA0Nmf0VK7jtNg==
+	bh=dVD2sgjeIdy2wIdfd/QmoCMe4rJiJI4y+gjhCqqw+84=;
+	b=PAZcnNUn9q2dQQtHfk6NotT8Q5KEWCdd6Ef64+esc8uiqJvLMtL3QctPC6ujTqe3Xn5kYN
+	YPtsqN1L0wIDpFlTHU9t2x6PY2X837x5kxuU7oW1QzCjfSXDj2UUXL/TIL5IWmmYCJ8DHK
+	+3r2aq2QhEiWWn90EQcwp0RKGR9RRM6GoT7+Zrv/p3PTzp7RxBq+6M1qc9NpbMG+ZJMmfL
+	u3DZX/Fqnz3gUs+OSJ8SHu93bGUbtfAXphCcgthxmQmAtXt1K8Y+E7AjI5Boswdg0Uqveo
+	AAv9/prh4ACCpLsZQHr7kWacKePQDEg2FamoOwUPIS8FyB1Hgfc93x1vbAZjJQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1794567040;
+	s=2020e; t=1794567323;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qKATZfaP7j93mPzPK2LI85ABT996WxYe1HUN7LIOWWs=;
-	b=LmL4VpeGvKLQSQpcS9ht5HCIVeiq9actrPPxXHcawHQCvlCGhctfcJh36PcuBUhW+FNYrX
-	n7b2TgA9kuc8+dBQ==
-To: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	rcu@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	luca abeni <luca.abeni@santannapisa.it>,
-	Yuri Andriaccio <yurand2000@gmail.com>,
-	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
+	bh=dVD2sgjeIdy2wIdfd/QmoCMe4rJiJI4y+gjhCqqw+84=;
+	b=UF6Dopc/ixvr1b8REKTtcZtOFBk/zFRwvYDANMwBDKZCzmat0FDQCbovwqH+QJdOfts/Nn
+	+xI0aamwYVls5TBQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-	Qais Yousef <qyousef@layalina.io>,
-	John Ogness <john.ogness@linutronix.de>
-Subject: [PATCH v3 8/8] Documentation/sched: Add fairserver to sched-deadline
-Date: Fri, 13 Nov 2026 11:50:29 +0100
-Message-ID: <20261113-sched_dl-v3-8-a76ffa1cdeee@linutronix.de>
-In-Reply-To: <20261113-sched_dl-v3-0-a76ffa1cdeee@linutronix.de>
-References: <20261113-sched_dl-v3-0-a76ffa1cdeee@linutronix.de>
+	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC 0/7] rcutorture: Rewrite RCU priority-boost test
+ around a CPU-hungry reader
+Message-ID: <20261113105521.spnkuQ7u@linutronix.de>
+References: <20261111213826.2035045-1-joelagnelf@nvidia.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -108,63 +83,16 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20261111213826.2035045-1-joelagnelf@nvidia.com>
 
-The fair_server ensures the fair-class gets CPU run-time and throttles
-even the rt-class if needed. Add this bit of wisdom and the recently
-added sysfs knobs for configutiation.
+On 2026-11-11 16:38:18 [-0500], Joel Fernandes wrote:
+> Related work: Sebastian's recent series on the DL fair_server taking over RT
+> throttling [1], with its RFC [2], also touches rcutorture's handling of RT
+> throttling. This patch should simplify or make those patches unnecessary.
 
-Assisted-by: LLM
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- Documentation/scheduler/sched-deadline.rst | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+Let me look at this. If this works out then the disabling of the
+fair_server becomes no longer required which would be my favorite, too.
 
-diff --git a/Documentation/scheduler/sched-deadline.rst b/Documentation/sch=
-eduler/sched-deadline.rst
-index 23ea88b2ed7dc..f0d667e09d10c 100644
---- a/Documentation/scheduler/sched-deadline.rst
-+++ b/Documentation/scheduler/sched-deadline.rst
-@@ -577,7 +577,8 @@ Deadline Task Scheduling
-  level.
-=20
-  A main difference between deadline bandwidth management and RT-throttling
-- is that -deadline tasks have bandwidth on their own (while -rt ones don't=
-!),
-+ is that -deadline tasks have bandwidth on their own (while -rt have only
-+ throttling via the fair_server),
-  and thus we don't need a higher level throttling mechanism to enforce the
-  desired bandwidth. In other words, this means that interface parameters a=
-re
-  only used at admission control time (i.e., when the user calls
-@@ -604,6 +605,24 @@ Deadline Task Scheduling
-  be thus free of oversubscribing the system up to any arbitrary level.
-  This is done by writing -1 in /sys/kernel/sched/dl_runtime_us.
-=20
-+4.1.1 Fair server settings
-+--------------------------
-+
-+ The fair server ensures that fair-class tasks (SCHED_OTHER) are not starv=
-ed
-+ and can be scheduled even when tasks in the RT scheduling class
-+ (SCHED_FIFO and SCHED_RR) are consuming all CPU time. It replaces the
-+ legacy RT throttling mechanism, which was configured through the procfs
-+ interface.
-+
-+ The fair server executes fair-class tasks through a deadline-scheduling
-+ server with a runtime budget. It guarantees that the runtime configured by
-+ fair_server_runtime is provided within the interval defined by
-+ fair_server_period.
-+
-+ Both values are specified in nanoseconds and can be configured on a
-+ per-CPU basis through /sys/kernel/sched/cpuX. Setting
-+ fair_server_runtime to 0 disables the fair server on the corresponding
-+ CPU.
-=20
- 4.2 Task interface
- ------------------
-
---=20
-2.55.0
-
+Sebastian
