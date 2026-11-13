@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794531036;
-	b=EliuSa0etOSHAyUjhzqI9idqM9O3WwwH5nnGcV7cLo58nUz+slhHzBoWregD5R/KiWkK
-	 dyDH1G/xeDAmn5K6rr8+WBtwgN8arbCyuayTO7EOrWQU6OdrHw06dJWa6SGTIdyl7Swyu
-	 96AeQpwIzyzh1+ZC97/dnA+BtfdEtPKxppsC8xbMaoQWkj01EY/qZVfMXTJ4H5lZWb5pT
-	 AC8n5PTdClrZYc2gHpDE/rU0gTlk/k1ecwUqdd9zpgTl+CsMEgKBNzo2WDMCf/ybX4KCv
-	 W5HXNmzFNWHN6LjtUkszkmrXxvsv+Rut5axHQYoNHKuv5Yzn7zUGrkhNQq98fLhLSDA==
+	t=1794531038;
+	b=iET0DyJDBEbJmr1DpZ3eVqEJdxvEThVggwpHEB5lbiLjnrnQ8O8saXf5dfcudv/a+l9R
+	 9K1/yD8E0qj2WY9/BaU9EYqArTN/qfPwjIHTMNkEEykG0+As6BXOyOdWnciJEgnobPrY2
+	 PBVq6QM7fOLICRNnAFXLDFkv/0VISjmT5UnibrA6KNc/kKCx1qQk457f1WkQpW9SOrums
+	 iCAa7QSqvIQmD6cmWTiSpGANe29N112jncUZAiG65kRZcz/nlyRurRas/9TV/l23J1sBC
+	 BIQQXW7A4t5zHMVTqRm860KtRsW8dEXv6fK5Xdd4gZc+hI16wlJ4zC26EXtrH01fU6A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794531036;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794531038;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=1IRuvUkQTRkQ+ilf6p3cBYjTfeE1ubS23ik55VclfyQ=;
-	b=tT8BbP4Njd9R3fwQt3/WS7rKXbZnpNlyi54+gsWS33pVxnMVIH5SKifAhx0AOD/bDsxc
-	 uDR5FjqGOnIRPjQ2fcLIlISuh5QGtXxJus5N9AWzs0tZQnEIgFgtgNq8iyhz67f/nDLQ+
-	 erNra1lid6lczvvVtNu9dNKdcgHMC2oTWm3XdGnVhkBr5eOWWaNOi0/yplSjz8d0Lv4rp
-	 ROWa1CPH21bcyb9NQdnuTBxl1tAlYf3s1CRHo83OZnx5pjHbloOwDvmZ6sq4XW6ejscGu
-	 dp32vJqZjLobwmP39FrfOa0HkgtHzIhazrblIp4zD/visspJ7M4jjxliPmdK4q/3lrg==
+	bh=sNDtcBRE683DcJbnhsJYyrj+yRqwTXKSncfs5WnNGwM=;
+	b=r7r1s0xhZpjZs2SlzeDBLXq2QqiLK2KuE3Jb5YSvhLv82Taxrwe3yLpU1/8gihKqlxzQ
+	 hiRkR6/pn7mOfsqYCx0W3oKIhBn/cZevZNbN6FgijOFU4+TK3t85EarbYBchh7KQHC7vo
+	 /I9vrCjq9Ki6s/MRDA29SOhcWS6TW4gGNvahYJpiGgWeFC90i0kfxQ3372Igwi+iEielb
+	 XB/ByG5duKFnozs1aOdyA6kvgBGqgZMiJzinyZ1m758Pz8Qhyc3PUPcT9pcrSUk3d6pRr
+	 oWW44ORubipfi85KR96UBa0IU+56n9s//nwa8wNZnfRlKeXXlDYCjXYhU8XyLnlPtjw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CQEDJq36;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=a+3cZ3AP;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id A0C1E60A5BC9;
-	Fri, 13 Nov 2026 00:50:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id BE49560A5BE1;
+	Fri, 13 Nov 2026 00:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CQEDJq36
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 314C01F000C9;
-	Fri, 13 Nov 2026 00:50:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=a+3cZ3AP
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 0FECE1F000C4;
+	Fri, 13 Nov 2026 00:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794531036;
-	bh=1IRuvUkQTRkQ+ilf6p3cBYjTfeE1ubS23ik55VclfyQ=;
+	s=k20260515; t=1794531038;
+	bh=sNDtcBRE683DcJbnhsJYyrj+yRqwTXKSncfs5WnNGwM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=CQEDJq36P/UajLs/igvB6eB7u6YzP9+Ixhti+TVNdMJO41zgugiJo/9iREQ6wvRiZ
-	 zqCwHCwKgP4aOp+ERC1S0nwHl85mpyrY5F5Z7kSZgC+2Q/P70l2PNrf/o9HtXC4ElL
-	 h2NvqzwPG9r4L42goQeLfaveOiGnwXF/EivP2wLbQ28Ldos3/5roAANZOFi+q1CGgp
-	 03hqyXA+QE1/Ty/GSgdcY2WbKc/0+xXU5t2o8qFSs8WKx8VFlmdFrN5TF+u1ZS+giP
-	 9l2T39aHjVzQdxCWjt6Z0hO78E5dbKIUYoMktl51GXL2NBxY4UnGdH1j5Ecaw8hcOU
-	 Q3l/TGPji1DFg==
+	b=a+3cZ3APsxaHiFX5spVk6IKLbkxSZyyJpNiTRAE39n//R7vAyhE2QXN9b9EcCMPoy
+	 NuEKkdSAqh05NA+8IeJch6qF1IupfHoSH8VTpX93y9pyJbY7fpuJlN4biQrQ5qXjEl
+	 R0119mPR5SoC78dZf8ZeDqtaGVJ/9baHtiLBryR4Q+Vy20i2Zho5QX8fzaIW/h2ffz
+	 lTB2pR/sC7yXaM9b+zSPUERPOV5TqOoWEwtDcxrrXmQwcXBv60k0abw8bbqaCrs12v
+	 CSfDep+uTH6NSFWoa/bghrWLXHjMLmohGrGAUngyAY1PaRi+nSbt15MfJfUTJWe0BJ
+	 5MOWf1KedozMg==
 From: Joel Fernandes <jfern@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	"Paul E . McKenney" <paulmck@kernel.org>,
@@ -51,14 +51,13 @@ To: linux-kernel@vger.kernel.org,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
+	Zqiang <qiang.zhang@linux.dev>
 Cc: rcu@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH for-v7.5 09/11] srcutiny: Detect duplicate callback enqueue
-Date: Thu, 12 Nov 2026 19:50:11 -0500
-Message-ID: <20261113005017.2772440-10-jfern@kernel.org>
+Subject: [PATCH for-v7.5 10/11] rcu-tasks: Detect duplicate callback enqueue
+Date: Thu, 12 Nov 2026 19:50:12 -0500
+Message-ID: <20261113005017.2772440-11-jfern@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261113005017.2772440-1-jfern@kernel.org>
 References: <20261113005017.2772440-1-jfern@kernel.org>
@@ -75,97 +74,88 @@ Content-Transfer-Encoding: 8bit
 
 From: Kunwu Chan <kunwu.chan@gmail.com>
 
-Detect duplicate callback enqueue attempts at call_srcu()
-entry, before the deferred list can be corrupted.  Use
-__ratelimit() for the diagnostic output group.
+Detect duplicate callback enqueue attempts in the generic
+RCU Tasks callback registration path.  Use __ratelimit()
+for the diagnostic output group.
+
+[ joel: Activate each rcu_barrier_tasks_generic() barrier head in
+debugobjects before entrainment, and undo that activation when nothing
+is entrained, so that barrier callbacks no longer trigger active_state
+and deactivate warnings for untracked objects. ]
 
 Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 Reviewed-by: Joel Fernandes <jfern@kernel.org>
 Signed-off-by: Joel Fernandes <jfern@kernel.org>
 ---
- kernel/rcu/srcutiny.c | 23 +++++++++++++++++++++++
+ kernel/rcu/tasks.h | 23 +++++++++++++++++++++++
  1 file changed, 23 insertions(+)
 
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index 98864977bed2..4c1e8d8595b3 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -12,9 +12,11 @@
- #include <linux/irq_work.h>
- #include <linux/kasan.h>
- #include <linux/llist.h>
-+#include <linux/mm.h>
- #include <linux/mutex.h>
- #include <linux/preempt.h>
- #include <linux/rcupdate_wait.h>
-+#include <linux/ratelimit.h>
- #include <linux/sched.h>
- #include <linux/delay.h>
- #include <linux/srcu.h>
-@@ -178,6 +180,7 @@ void srcu_drive_gp(struct work_struct *wp)
- 	while (lh) {
- 		rhp = lh;
- 		lh = lh->next;
-+		debug_rcu_head_unqueue(rhp);
- 		debug_rcu_head_callback(rhp);
- 		local_bh_disable();
- 		rhp->func(rhp);
-@@ -235,6 +238,8 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
-  * Also called by __srcu_defer_drain() to re-issue a deferred callback, so it
-  * must not re-check the deferral condition.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index a1883cf5b5d1..c1e456e08e66 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -6,6 +6,8 @@
   */
-+static void srcu_leak_callback(struct rcu_head *rhp) { }
-+
- static void srcu_do_enqueue(struct srcu_struct *ssp, struct rcu_head *rhp,
- 			    rcu_callback_t func)
- {
-@@ -272,6 +277,8 @@ static void __srcu_defer_drain(struct srcu_struct *ssp)
- 	llist_for_each_safe(node, next, llist_del_all(&ssp->defer_cbs)) {
- 		struct rcu_head *rhp = (struct rcu_head *)node;
  
-+		/* Bounds a node self-linked by a double call_srcu(). */
-+		rhp->next = NULL;
- 		srcu_do_enqueue(ssp, rhp, rhp->func);
- 	}
- 	local_irq_restore(flags);
-@@ -288,6 +295,10 @@ void srcu_defer_drain(struct irq_work *iw)
+ #ifdef CONFIG_TASKS_RCU_GENERIC
++#include <linux/mm.h>
++#include <linux/ratelimit.h>
+ #include "rcu_segcblist.h"
+ 
+ ////////////////////////////////////////////////////////////////////////
+@@ -337,6 +339,12 @@ static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp)
  }
- EXPORT_SYMBOL_GPL(srcu_defer_drain);
  
-+static DEFINE_RATELIMIT_STATE(rcu_srcutiny_dup_rs,
+ // Enqueue a callback for the specified flavor of Tasks RCU.
++static void rcu_tasks_leak_callback(struct rcu_head *rhp) { }
++
++static DEFINE_RATELIMIT_STATE(rcu_tasks_dup_rs,
 +			      DEFAULT_RATELIMIT_INTERVAL,
 +			      DEFAULT_RATELIMIT_BURST);
 +
- void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 	       rcu_callback_t func)
+ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 				   struct rcu_tasks *rtp)
  {
-@@ -298,6 +309,17 @@ void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+@@ -356,6 +364,17 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
  	if (WARN_ON_ONCE(!func))
  		return;
  
 +	if (debug_rcu_head_queue(rhp)) {
-+		if (__ratelimit(&rcu_srcutiny_dup_rs)) {
-+			pr_err("%s(): Duplicate call_srcu() CB %p->%pS()\n",
-+			       __func__, rhp, rhp->func);
++		if (__ratelimit(&rcu_tasks_dup_rs)) {
++			pr_err("%s(): Duplicate CB for %s, %p->%pS()\n",
++			       __func__, rtp->name, rhp, rhp->func);
 +			mem_dump_obj(rhp);
 +			dump_stack();
 +		}
-+		WRITE_ONCE(rhp->func, srcu_leak_callback);
++		WRITE_ONCE(rhp->func, rcu_tasks_leak_callback);
 +		return;
 +	}
 +
- 	/* Record the caller: the irq_work's stack says nothing about it. */
- 	kasan_record_aux_stack(rhp);
- 
-@@ -306,6 +328,7 @@ void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 		if (READ_ONCE(srcu_defer_draining) && !in_nmi()) {
- 			WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU),
- 				  "call_srcu() re-entered during callback drain; leaking callback\n");
-+			debug_rcu_head_unqueue(rhp);
- 			return;
- 		}
- 		rhp->func = func;
+ 	rhp->next = NULL;
+ 	rhp->func = func;
+ 	local_irq_save(flags);
+@@ -448,9 +467,12 @@ static void __maybe_unused rcu_barrier_tasks_generic(struct rcu_tasks *rtp)
+ 			break;
+ 		rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
+ 		rtpcp->barrier_q_head.func = rcu_barrier_tasks_generic_cb;
++		debug_rcu_head_queue(&rtpcp->barrier_q_head);
+ 		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 		if (rcu_segcblist_entrain(&rtpcp->cblist, &rtpcp->barrier_q_head))
+ 			atomic_inc(&rtp->barrier_q_count);
++		else
++			debug_rcu_head_unqueue(&rtpcp->barrier_q_head);
+ 		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+ 	}
+ 	if (atomic_sub_and_test(2, &rtp->barrier_q_count))
+@@ -579,6 +601,7 @@ static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu
+ 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+ 	len = rcl.len;
+ 	for (rhp = rcu_cblist_dequeue(&rcl); rhp; rhp = rcu_cblist_dequeue(&rcl)) {
++		debug_rcu_head_unqueue(rhp);
+ 		debug_rcu_head_callback(rhp);
+ 		local_bh_disable();
+ 		rhp->func(rhp);
 -- 
 2.54.0
 
