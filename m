@@ -1,60 +1,60 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794567325;
-	b=udQLGVkoNCcmqs4czpYT07sG6oHVjTU802XZh/V5SBTRLAF6bkOlAd+qrkK6N91jL5XH
-	 jMmzmA3kCXAYCZ8eRLftwqkup6VKHXPeQaNBXJDnm62Jb+mRJpgk3cqsrF9V51Eywvb2d
-	 MR1TJ8jF753TqXtWL8NshyWfbCbWbV4RU4L+GBFyBNV8zp/x2rr5k918qrfyZMNxpj7w+
-	 xCwzsJj0RGTrVOBlEivaXo/smhw74rW+r9BFlN75zkUreqri6JS/i5ljeC0Zr9OHfKicm
-	 CNOE2AvqfucPlBgQ37UsbvhXFXk7NevgVUoXpkkENt+ItPNUwqsZL8pzsY0wrDP6iZw==
+	t=1794571311;
+	b=XiykCP2tyX56ObDe7woRqGEMx46BMWQSbSlL/QQVYzZyJ9qlw/0D5NRuaiIPexE6oWkv
+	 1yjjQmNGqEBipPBdU6G0lD9MlFq4C2Uy7lFFC1dizLa73knZvddaJQjhtDNvaGNoYZism
+	 ZXCRnu216wlQgcMTG3bJMGAAVC4O1b41WPqZtjbxF6q5XWLQm9S2DXlK5ZP5tWqLdLQdR
+	 PaHbx1vgC7+5mfQaDlAWs41D5Y4G3o7J6/XS1uo0SbzxgW8qSg1NYIm8cc1mij65pIsKt
+	 YDm+e3yMgAHeQiDj3GAoMvoW3fNLczDQjcu6gtTIGh2BivehJX4rSGdUM7RjcGIQbbg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794567325;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794571311;
 	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
 	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
 	 In-Reply-To;
-	bh=dVD2sgjeIdy2wIdfd/QmoCMe4rJiJI4y+gjhCqqw+84=;
-	b=AfR64Wy6Ov75nnR9tmEi22km366vH9hmxXJW5T/ZTy4KlyiRAgSgKXyzG+4bkRrEteYq
-	 vnL5Dm+wWXgNlFqZn0WfhYf56ITHAFvR30ceuDEDeizV5+It7g/cEWw1TBvAGCkUUJq0h
-	 A9Ka5rv+aTjfEsGVtiZKgJLLgh8OwVK3sfsulIQ+xPLc4fElM7aaN6H3dCMyH7tNWB4Yo
-	 0rn5ZR8/YLDPy7lyW5B8LI1tyWFLKNxOP9eN1/PAysFWwhe6QjcoSnl+ct7fEoBCBiikp
-	 /o94u2y9X/sP9TMOwG/bNaFUqeCdK7Xm0zVKggfXWBWmlicJbr7zGff64FfDpt2xHeg==
+	bh=DqrOoHqxLKKJ53U6SJQjDkCjDTKQIVBfhMm5uKGdJlE=;
+	b=30uerlLTIU8XCc7tdggJQlnSIvuQaAZN6N5jrs9qbYkmnd7fdZP8+NPDCAzF5euCdcvE
+	 x/MdnV7dN+CIFN5wBPOYLColAQaUzCIJzNf8/A20iikiKo9CGdGFkCXqErBUEaXwnjiRw
+	 B5An8fZEfOJyhnFA0m1TEjqiETrueTi0Wwkbla2yC9tw3+pvQgqRaKJGJE1CZP9E6K4+d
+	 Z2EygPZMbNrykJ1l8QwghAz0D/MU1kWX5CZB3RfoAdF6bzxcstALDIUWipMiut95/vTPV
+	 U4wbRqlxRh8iEzSn+jnda2YUUBSA2hqyUl67Y5ROWsTQWTxPvRvd56amSTQWJ7ELxGw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=linutronix.de;
 	spf=pass smtp.mailfrom=linutronix.de;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=PAZcnNUn;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b="UF6Dopc/";
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b="MlTn1+/M";
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=2zXk7jhv;
 	arc=none smtp.remote-ip=193.142.43.55
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3535606BDA8;
-	Fri, 13 Nov 2026 10:55:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A3535606BDA8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 405C3606DF63;
+	Fri, 13 Nov 2026 12:01:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 405C3606DF63
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=PAZcnNUn;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=UF6Dopc/
-Date: Fri, 13 Nov 2026 11:55:21 +0100
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=MlTn1+/M;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=2zXk7jhv
+Date: Fri, 13 Nov 2026 13:01:45 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1794567323;
+	s=2020; t=1794571307;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dVD2sgjeIdy2wIdfd/QmoCMe4rJiJI4y+gjhCqqw+84=;
-	b=PAZcnNUn9q2dQQtHfk6NotT8Q5KEWCdd6Ef64+esc8uiqJvLMtL3QctPC6ujTqe3Xn5kYN
-	YPtsqN1L0wIDpFlTHU9t2x6PY2X837x5kxuU7oW1QzCjfSXDj2UUXL/TIL5IWmmYCJ8DHK
-	+3r2aq2QhEiWWn90EQcwp0RKGR9RRM6GoT7+Zrv/p3PTzp7RxBq+6M1qc9NpbMG+ZJMmfL
-	u3DZX/Fqnz3gUs+OSJ8SHu93bGUbtfAXphCcgthxmQmAtXt1K8Y+E7AjI5Boswdg0Uqveo
-	AAv9/prh4ACCpLsZQHr7kWacKePQDEg2FamoOwUPIS8FyB1Hgfc93x1vbAZjJQ==
+	bh=DqrOoHqxLKKJ53U6SJQjDkCjDTKQIVBfhMm5uKGdJlE=;
+	b=MlTn1+/MmrBlx7Y7yqHKLjly6o7bY8Z6cyG+V5WdX6XRFZY5k5fzaLqEYLmhSC68v+Xn7B
+	067GFshZaWA1MnixPBkhvMbZVIWgO6O0bbMGrMRX7UUsgy7xbuAwqLzEt2dNq5qU0dJLuz
+	FN0ezYSVrkfq6KLJqZTVCgKOYldaWXJUiq/XgLJEaiFqEzvU02vwEUogcmFtH+4ZiW0IAP
+	YDoAf3LS7Im8N9J8jqLGcDnWOXCQ6oOp1kRm9ba/GQd9WylkPvhF/jw2J3lqKdxB5R3UZY
+	3c+ViOFDNboyHQm13TE+8hSaic3z0Mbtu6w5y7Mnnef6vTR+A1TDyL0suBzEdg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1794567323;
+	s=2020e; t=1794571307;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dVD2sgjeIdy2wIdfd/QmoCMe4rJiJI4y+gjhCqqw+84=;
-	b=UF6Dopc/ixvr1b8REKTtcZtOFBk/zFRwvYDANMwBDKZCzmat0FDQCbovwqH+QJdOfts/Nn
-	+xI0aamwYVls5TBQ==
+	bh=DqrOoHqxLKKJ53U6SJQjDkCjDTKQIVBfhMm5uKGdJlE=;
+	b=2zXk7jhv+ze7ZILsEQpq7uj3JNPVreGoYoz7Xw2wfBialNYyuq+e0SRKmJ6FTd02tjfvt9
+	CfN5U2Id3xisCuBg==
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To: Joel Fernandes <joelagnelf@nvidia.com>
 Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -70,10 +70,11 @@ Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Jonathan Corbet <corbet@lwn.net>,
 	Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC 0/7] rcutorture: Rewrite RCU priority-boost test
+Subject: Re: [PATCH RFC 1/7] rcutorture: Rewrite RCU priority-boost test
  around a CPU-hungry reader
-Message-ID: <20261113105521.spnkuQ7u@linutronix.de>
+Message-ID: <20261113120145.WctZny5P@linutronix.de>
 References: <20261111213826.2035045-1-joelagnelf@nvidia.com>
+ <20261111213826.2035045-2-joelagnelf@nvidia.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -85,14 +86,20 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20261111213826.2035045-1-joelagnelf@nvidia.com>
+In-Reply-To: <20261111213826.2035045-2-joelagnelf@nvidia.com>
 
-On 2026-11-11 16:38:18 [-0500], Joel Fernandes wrote:
-> Related work: Sebastian's recent series on the DL fair_server taking over RT
-> throttling [1], with its RFC [2], also touches rcutorture's handling of RT
-> throttling. This patch should simplify or make those patches unnecessary.
+On 2026-11-11 16:38:19 [-0500], Joel Fernandes wrote:
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> +	init_completion(&br.done);
+> +	t = kthread_create(rcu_torture_boost_reader, &br, "rcu_torture_boost_rdr");
+> +	if (IS_ERR(t)) {
+> +		n_rcu_torture_boost_ktrerror++;
+> +		return;
+> +	}
+> +	kthread_bind(t, raw_smp_processor_id());
+> +	wake_up_process(t);
 
-Let me look at this. If this works out then the disabling of the
-fair_server becomes no longer required which would be my favorite, too.
+=> kthread_run_on_cpu()
 
 Sebastian
