@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794530995;
-	b=jHQ5ndGoeycF3020nFmckqjJQmv0dtqUF6eIGneCVbFA/dteurayw76E6SzNPffzWls2
-	 70WZXMXKFGUl8HfMyaMzCb6SxVT3T/Z3pRKPqggtZ3hYqZ17Qslv3Z8QApgL5jjyBJSvT
-	 DB6/6YTOUvn+hN2c4RrnteRkmpE8Jm/AL7G+98V3vU77/6+oOYsjxDTf5gCecYezU6NGo
-	 BCu5wvXk0jUaIcOWT5EJEx//IRg/540AMIqkL0HE8fEzxXnxI4LsSbCMEs+zuF9PmNIt2
-	 zyyFgS+xBfZXoIbsL/+qargjZXUOa8TVqh2dHcYCXyJAM0lu0yuPuAwgjlBGYEFYsHA==
+	t=1794530997;
+	b=xianziwRT6ZTkWleokCzEzSe/LXJVyqkrKIVjonmC4+yOzReuYOWtvT0WgTmDCDw348O
+	 UOBgRLb1FUKFXSU3y/+ma7NfWoTx33WurLk3mv4iK0UPg6zPdG7oWTP3yMPwdygQfyBgn
+	 eHlPYLkll1XwdTvAPBhJ+PMSbBwsMcYonLwnmd1JG6uZgtPoIZVovWYiPZFxTxgtA9kuZ
+	 0F/XWg3r5L0b1yZE51UArYd9nf52Fqs2UwgpbUASeawdxj+R8o54Tl4P6P6beWUecJpjL
+	 6wjcJiGHwondU3vClRv676jxFRSRlLbH432+zl+WOxOoOQ/ME6y2auSBvfKrfJcEHuA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794530995;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794530997;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=oCjlz6BygxvB+1x+d/mpEdbtUoFPvED0xyYHks2iJfw=;
-	b=x1cm6MvE1suXE/WRDgVJYg1itP6GlN3Cqu2ixg36CIJ7/RIzRYmKtO6XtlK3eTh4U/K2
-	 ezUVuFlZ/uehjxp6FRZ2j8Ixzep/tk3rx8I7Yk96vsL0DR1PqebCWL7DFbv2Qm5e88SRO
-	 m0YOwuCQKVrhQfPPozMTxyjCE0dAG3IZAeCGQMW/8+fYPjio9bJXJEJyt5bdx5phbVPUx
-	 ztvMKwQp/mmUvYUti/P8F9sM5vQ5XhRB1CthySocCkuxaj5gQPT4p2/pcfbWviJgG4uDy
-	 2f2ynfMV8H6XZEweoXOf5J3FofH/sOQDNMyx1SXdD7kytyYN0vtLnajq4uaeqjc1i+Q==
+	bh=by4pnn7UUwtR1dcWkA5l3Hqdi+jnIaBieMR4UKUf5fA=;
+	b=1TsmuZB9mRz+joqnYkgFsPcyFm6NIoy223TbGu7yEiFjyJsDq7+skCdEDqtiMWC9oxtu
+	 giZQxPLNcYA8lPSasOEFG6Vl4GsBXdHqgWh3FMoXGhApNFZz7uErk8fR7C29vt+KM4DIM
+	 tmCPTfv0nRdD4LJKSW0S5EOcxDZ4J51jmxNkDs4iaYZOqmU4W7EakVXV86PngOrqjLnnB
+	 X9AW6FnI9ZVpJKRqQy5OGECAZlzfSJCYN42BFdL1cQOtLbQlyb1klDZHWvrHL3WheWyyy
+	 A2nmWA65Yw/dqiZr4DGeVocXH5Pp8zbAVQyvFcq3KtjZQqwo9tDVQiJ2imBX/2mXwuA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eKN1NXPU;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Gk9kIc9Y;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 87D3D606A89C;
-	Fri, 13 Nov 2026 00:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 7A660606A89E;
+	Fri, 13 Nov 2026 00:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eKN1NXPU
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id D78531F000C4;
-	Fri, 13 Nov 2026 00:49:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Gk9kIc9Y
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id C7FB61F000C5;
+	Fri, 13 Nov 2026 00:49:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794530995;
-	bh=oCjlz6BygxvB+1x+d/mpEdbtUoFPvED0xyYHks2iJfw=;
+	s=k20260515; t=1794530997;
+	bh=by4pnn7UUwtR1dcWkA5l3Hqdi+jnIaBieMR4UKUf5fA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=eKN1NXPUbr2EOzDJBq+C9eQU6X11GMya/jMDSzhxW1sKDQi7seCs+gdTkNVtHys2M
-	 1iXNSBTrSLZndNDtku/2q1+E1SD/IdH4oy8dk3+rBTFTntPUywLErfUTGlpAVRrmve
-	 xR+DyAtZ5nVWJV232x6qoHW93wpnJQwqXEn6IzXOcOJp87Af16qrmLfWCJ9YG5UchI
-	 TIQe/f2Tz5QY9IotLH73yRJ8EUzBsHhN3APzDSk8FQO2hlyHWN2N/78J20QuvNvq4t
-	 OK37EXiAj0R4XLy1XONwnpxCCeHrFuFtHm9NWCMx2GTKr1Iv1Uq3eHH5yhOCEmyQIN
-	 CEpnfkRt6LoYw==
+	b=Gk9kIc9YfKPN1a+chXmm1fauIHMrlVr/P2bj4SxeKbeQkpToe7imgUW0S8uMk1a7w
+	 bV/yDZ8EXQW6RaIzZX/MxuCui/o9E6sCkoXw6s3z/UX58q8Uyu8f5PhKV8SuZnp6cR
+	 I2pSjyfpSzxP1n15wynJ0V/3p2+fj3DEwb9OZCg88lI3dngYBNk8Ddf/8s7AUX8kFC
+	 Flg4wSK0UreVnLr8/62GQbhtXO6CM8/thpq3FUPMQerebR9PS1kuYARBsyAt1fyRyJ
+	 wIeGD9w9CzmxMadKh6UjJhckeKjVTXFYfDVAvyyRJyq3LVhGEa9CTONB3GU1gWztmI
+	 K9Q9VUPOq64mA==
 From: Joel Fernandes <jfern@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	"Paul E . McKenney" <paulmck@kernel.org>,
@@ -52,12 +52,15 @@ To: linux-kernel@vger.kernel.org,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>,
-	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>
 Cc: rcu@vger.kernel.org,
-	Yury Norov <ynorov@nvidia.com>
-Subject: [PATCH for-v7.5 3/5] rcu: assert static storage for RCU sync and SRCU definitions
-Date: Thu, 12 Nov 2026 19:49:42 -0500
-Message-ID: <20261113004946.2758197-4-jfern@kernel.org>
+	Song Liu <song@kernel.org>,
+	linux-doc@vger.kernel.org
+Subject: [PATCH for-v7.5 4/5] rcu-tasks: Use pr_debug() for callback contend/collapse messages
+Date: Thu, 12 Nov 2026 19:49:43 -0500
+Message-ID: <20261113004946.2758197-5-jfern@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261113004946.2758197-1-jfern@kernel.org>
 References: <20261113004946.2758197-1-jfern@kernel.org>
@@ -72,101 +75,107 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Yury Norov <ynorov@nvidia.com>
+From: Song Liu <song@kernel.org>
 
-DEFINE_RCU_SYNC() contains a statically initialized wait queue. SRCU
-static definitions similarly rely on persistent lockdep keys and, in
-Tiny SRCU, a statically initialized work item.
+Commit 5de907d24919 ("rcu-tasks: Disable callback contend/collapse
+messages by default") added the rcupdate.rcu_task_collapse_debug module
+parameter to gate the three pr_info() messages that report RCU Tasks
+switching between CPU-0 and per-CPU callback queuing.
 
-Add ASSERT_STATIC_STORAGE() to DEFINE_RCU_SYNC(), both Tree SRCU
-__DEFINE_SRCU() variants and Tiny SRCU's common DEFINE_SRCU() declaration.
-This covers the non-static FAST and FAST_UPDOWN wrappers too. Tiny SRCU's
-explicitly static declarations already enforce the required duration.
-The existing per-CPU restrictions on Tree SRCU declarations still apply.
+The kernel already has a mechanism for debug-only messages that are off
+by default: pr_debug().  Use pr_debug() for these messages, and remove
+the rcu_task_collapse_debug module parameter, its documentation, and
+its boot-time announcement.
 
-Assisted-by: OpenAI Codex
-Signed-off-by: Yury Norov <ynorov@nvidia.com>
-Reviewed-by: Joel Fernandes <jfern@kernel.org>
+The messages stay off by default.  On CONFIG_DYNAMIC_DEBUG=y kernels,
+they can be enabled at boot with:
+
+  dyndbg="file kernel/rcu/tasks.h +p"
+
+or at runtime with:
+
+  echo 'file kernel/rcu/tasks.h +p' > /proc/dynamic_debug/control
+
+Assisted-by: Claude:claude-opus-5
+Signed-off-by: Song Liu <song@kernel.org>
 Signed-off-by: Joel Fernandes <jfern@kernel.org>
 ---
- include/linux/rcu_sync.h | 4 +++-
- include/linux/srcutiny.h | 4 +++-
- include/linux/srcutree.h | 7 +++++--
- 3 files changed, 11 insertions(+), 4 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt |  7 -------
+ kernel/rcu/tasks.h                              | 15 +++------------
+ 2 files changed, 3 insertions(+), 19 deletions(-)
 
-diff --git a/include/linux/rcu_sync.h b/include/linux/rcu_sync.h
-index 3860dbb9107a..c10b6d30561a 100644
---- a/include/linux/rcu_sync.h
-+++ b/include/linux/rcu_sync.h
-@@ -10,6 +10,7 @@
- #ifndef _LINUX_RCU_SYNC_H_
- #define _LINUX_RCU_SYNC_H_
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0b3c140babd9..176648941aec 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6369,13 +6369,6 @@ Kernel parameters
+ 			period to instead use normal non-expedited
+ 			grace-period processing.
  
-+#include <linux/compiler.h>
- #include <linux/wait.h>
- #include <linux/rcupdate.h>
+-	rcupdate.rcu_task_collapse_debug= [KNL]
+-			Enable debugging prints that record when RCU Tasks
+-			and RCU Tasks Trace expand to per-CPU callback
+-			queuing and collapse back to CPU-0 queuing.
+-			This is default-disabled due to the fact that
+-			some workloads can make it quite noisy.
+-
+ 	rcupdate.rcu_task_collapse_lim= [KNL]
+ 			Set the maximum number of callbacks present
+ 			at the beginning of a grace period that allows
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index a59aa8b6ab05..0eec90464d64 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -178,8 +178,6 @@ static int rcu_task_contend_lim __read_mostly = 100;
+ module_param(rcu_task_contend_lim, int, 0444);
+ static int rcu_task_collapse_lim __read_mostly = 10;
+ module_param(rcu_task_collapse_lim, int, 0444);
+-static bool rcu_task_collapse_debug __read_mostly;
+-module_param(rcu_task_collapse_debug, bool, 0644);
+ static int rcu_task_lazy_lim __read_mostly = 32;
+ module_param(rcu_task_lazy_lim, int, 0444);
  
-@@ -48,6 +49,7 @@ extern void rcu_sync_dtor(struct rcu_sync *);
+@@ -392,8 +390,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 			WRITE_ONCE(rtp->percpu_enqueue_shift, 0);
+ 			WRITE_ONCE(rtp->percpu_dequeue_lim, rcu_task_cpu_ids);
+ 			smp_store_release(&rtp->percpu_enqueue_lim, rcu_task_cpu_ids);
+-			if (data_race(rcu_task_collapse_debug))
+-				pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
++			pr_debug("Switching %s to per-CPU callback queuing.\n", rtp->name);
+ 		}
+ 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
  	}
- 
- #define	DEFINE_RCU_SYNC(name)	\
--	struct rcu_sync name = __RCU_SYNC_INITIALIZER(name)
-+	struct rcu_sync name = __RCU_SYNC_INITIALIZER(name);	\
-+	ASSERT_STATIC_STORAGE(name)
- 
- #endif /* _LINUX_RCU_SYNC_H_ */
-diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-index 47a368f945e3..82901b45c9e1 100644
---- a/include/linux/srcutiny.h
-+++ b/include/linux/srcutiny.h
-@@ -11,6 +11,7 @@
- #ifndef _LINUX_SRCU_TINY_H
- #define _LINUX_SRCU_TINY_H
- 
-+#include <linux/compiler.h>
- #include <linux/irq_work_types.h>
- #include <linux/llist.h>
- #include <linux/swait.h>
-@@ -56,7 +57,8 @@ void srcu_defer_drain(struct irq_work *irq_work);
-  * Tree SRCU, which needs some per-CPU data.
-  */
- #define DEFINE_SRCU(name) \
--	struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
-+	struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name);	\
-+	ASSERT_STATIC_STORAGE(name)
- #define DEFINE_STATIC_SRCU(name) \
- 	static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name, name, name)
- #define DEFINE_SRCU_FAST(name) DEFINE_SRCU(name)
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 93b76e543894..332d228da270 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -11,6 +11,7 @@
- #ifndef _LINUX_SRCU_TREE_H
- #define _LINUX_SRCU_TREE_H
- 
-+#include <linux/compiler.h>
- #include <linux/rcu_node_tree.h>
- #include <linux/completion.h>
- #include <linux/irq_work_types.h>
-@@ -228,13 +229,15 @@ struct srcu_struct {
- 								      fast);			\
- 	extern struct srcu_struct * const __srcu_struct_##name;					\
- 	struct srcu_struct * const __srcu_struct_##name						\
--		__section("___srcu_struct_ptrs") = &name
-+		__section("___srcu_struct_ptrs") = &name;					\
-+	ASSERT_STATIC_STORAGE(name)
- #else
- # define __DEFINE_SRCU(name, fast, is_static)							\
- 	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);				\
- 	static struct srcu_usage name##_srcu_usage = __SRCU_USAGE_INIT(name##_srcu_usage);	\
- 	is_static struct srcu_struct name =							\
--		__SRCU_STRUCT_INIT(name, name##_srcu_usage, name##_srcu_data, fast)
-+		__SRCU_STRUCT_INIT(name, name##_srcu_usage, name##_srcu_data, fast);		\
-+	ASSERT_STATIC_STORAGE(name)
- #endif
- #define DEFINE_SRCU(name)		__DEFINE_SRCU(name, 0, /* !static */)
- #define DEFINE_STATIC_SRCU(name)	__DEFINE_SRCU(name, 0, static)
+@@ -514,9 +511,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ 			smp_store_release(&rtp->percpu_enqueue_lim, 1);
+ 			rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
+ 			gpdone = false;
+-			if (data_race(rcu_task_collapse_debug))
+-				pr_info("Starting switch %s to CPU-0 callback queuing.\n",
+-					rtp->name);
++			pr_debug("Starting switch %s to CPU-0 callback queuing.\n", rtp->name);
+ 		}
+ 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 	}
+@@ -524,9 +519,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+ 		if (rtp->percpu_enqueue_lim < rtp->percpu_dequeue_lim) {
+ 			WRITE_ONCE(rtp->percpu_dequeue_lim, 1);
+-			if (data_race(rcu_task_collapse_debug))
+-				pr_info("Completing switch %s to CPU-0 callback queuing.\n",
+-					rtp->name);
++			pr_debug("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
+ 		}
+ 		if (rtp->percpu_dequeue_lim == 1) {
+ 			for (cpu = rtp->percpu_dequeue_lim; cpu < rcu_task_cpu_ids; cpu++) {
+@@ -711,8 +704,6 @@ static void __init rcu_tasks_bootup_oddness(void)
+ 		pr_info("\tTasks-RCU CPU stall info multiplier clamped to %d (rcu_task_stall_info_mult).\n", rtsimc);
+ 		rcu_task_stall_info_mult = rtsimc;
+ 	}
+-	if (rcu_task_collapse_debug)
+-		pr_info("\tTasks-RCU callback contend/collapse debug enabled.\n");
+ #endif /* #ifdef CONFIG_TASKS_RCU */
+ #ifdef CONFIG_TASKS_RCU
+ 	pr_info("\tTrampoline variant of Tasks RCU enabled.\n");
 -- 
 2.54.0
 
