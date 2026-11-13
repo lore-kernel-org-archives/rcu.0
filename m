@@ -1,65 +1,97 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794531499;
-	b=24EFPzgyx9lHV7E+TY496DVOMEI5+W/VlckXrxDRVrboJdSI8NJN0gQUN0QRsCfdWDR8
-	 A70efbbtlFuOViHVK/NhFy7QdJXPlZgHJlpQQlcdIfDpW364c7MVe9OldjoClC5Harhod
-	 MLbnZUoiAvOeOUTSD1YS596D9g2ox/rrw7dbCVWXRHRd/YrnznACfzJvIaN7ikybHxi3E
-	 +NlQlXaKBccMecV/8Juje4qwivD3rP0KUSrWbgUpbngOHcAxqHDfllaILgNybHAePl4Tm
-	 Td8LZazfElEd+rPF2pCTt72rlgeyAcsvd8nPsRIZ1OleTZYsU3jjAwjJ/Kh2QL8Fj0Q==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794531499;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=B7RYo3yC1mhzOBCyNWXKDdJRMoBz+kSlrVKc6a18mLw=;
-	b=IOkZLj1niCo67hYvixquKSs1HOnkSYryxaExxythSvMSsiyx1SxV+YFunbvaiLqjK9wK
-	 lijBf6sTKSu+1V8AcUOhbz6TeOnozIq2nz0TsYQOVROkrpcTSIOw6QRGRPsipiluDadI5
-	 9rTiDx58S1LixvvhHkcpTeilTX9tI0mvZczn4MOoar2QBh2LkRuOHdoCI+EkcSPUQU3Hm
-	 Rs3gnz4U+aDJYJ0T2+Owv0WQlAZAwj3hz43FXUMbbFJEgxT4EN6hDsu7uqaUqwiOQbjkp
-	 V6Qmf+CHbGw6Ki615M6q6uZY7K8wTWktt3wh6j0/KdZkAXCMuVdQdwFBytEjJm/AZJg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=H33LFaG6;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.43
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794531701;
+	b=ghY0bwCFeQSwXRTcdC9zy7ukAlqMaDoyUqDDoHa6gP2ro5E+pT4Ub/YC7mV5iEIhIl7t
+	 nIUheL0/JSt0Sra/Gw08xkgyfvMeDcMYyIu5udAwJD4mBfm+b5EsKOef+vUcXN499XfoP
+	 MErkjUgOvgC0f4L1Dp/G8suoJ+54xVDfM25TwGoyAwruvd+LjlcBTvLzJXxRoTi1GQxd4
+	 R0ej+YYUqQEdYJH4myn+aQXs1s1ycOPrN6Fhtdc4Bg0XshoYvNCDPe4S5weHg/NOdKlm3
+	 8kRpG7yBsdGU4Je55WUgPTUkq/5luqRfqAui21N8ZPMGpa59UQjeVaVPwsfT/MZf+Ng==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794531701;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=xsqNy8x4lmXAXvHwF9gkwZoG25xYnfN0MsYpVbWeuyQ=;
+	b=e8VpRCXjwZausIAiuaJpJM0ba2vVE1IxwdXFljO6cxni71ViXISyhSJPQnUi7yekl0FF
+	 BgflUjpdC1f/5y/Fwf6SiENMJ+lEJezuxD5hS7K+F7YsaQIffjO1t4uSmt+Xv44GjbNdv
+	 8IB7mCMD5V9tDL4J/KvVeSI5J/F+BibVGsmJoHYMfUdX3YgA794AhlPanYgSSJ/OwOxVI
+	 1YB4ffyAqp63uXO6liG7/isInTFW0xnjpchDBCCkrZ6hxjTDMMFUn1sguctNXWm/68fIV
+	 xwJk/k7Ia1oBbX9+NjJVH8SDZqfiPuSIzeeMSgJSl8vriaLliSgPCfM4Ele3L+2SZZw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=joelfernandes.org;
+	spf=pass smtp.mailfrom=joelfernandes.org;
+	dkim=pass header.d=joelfernandes.org header.i=@joelfernandes.org header.a=rsa-sha256 header.s=google header.b=G1jbsG+S;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.43
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id C742660A5BE1;
-	Fri, 13 Nov 2026 00:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027E3606A31C
+	for <rcu@vger.kernel.org>; Fri, 13 Nov 2026 01:01:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 027E3606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=H33LFaG6
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 26DE01F000C4;
-	Fri, 13 Nov 2026 00:58:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794531499;
-	bh=B7RYo3yC1mhzOBCyNWXKDdJRMoBz+kSlrVKc6a18mLw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=H33LFaG6k6ZL6JUKH/Mrghwi1gV68eMkih7OqOZeddQwCAwqqpc+dZgD2jcYx6/q2
-	 YpuxXTHTejKWF5ge7oQkLzUTAO1nzXT9mxMfIAxj9z8Nw21Lqd13DfPyqoyLT+wY/P
-	 I4ypPbqS8PEBieITcwqJpeQ6wX9YqOSRupN78rk62/ubGGYF9XIPISgR1C8e0NcGzi
-	 TTgi/22enUhMegIOSxW3/wwJ4UpjnbEJdTJLMwEr1X1noQYYJ5Y7UCe9HwH1W4418K
-	 W6pZEUNfYL8ivsNv1cRA5tzepSOot6q8Ro+29A8w5mi9M2+eBYytuphjxJLm4/Fnu/
-	 ecpcPeSGxT7HQ==
-From: Joel Fernandes <jfern@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <jfern@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Davidlohr Bueso <dave@stgolabs.net>
-Cc: rcu@vger.kernel.org
-Subject: [PATCH for-v7.5 14/14] torture: Forgive SMT-control failures in CPU-hotplug testing
-Date: Thu, 12 Nov 2026 19:57:41 -0500
-Message-ID: <20261113005747.2977123-15-jfern@kernel.org>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20261113005747.2977123-1-jfern@kernel.org>
-References: <20261113005747.2977123-1-jfern@kernel.org>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.a=rsa-sha256 header.s=google header.b=G1jbsG+S
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4a4d7ae1ae9so2679495e9.1
+        for <rcu@vger.kernel.org>; Thu, 12 Nov 2026 17:01:39 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1794531698; cv=none;
+        d=google.com; s=arc-20260327;
+        b=CEhZNOJ+6G21zoIekHZGCNp9qg/1hl7FPE8Jyhma1CWWfjh7tcDleSqGdQS3LTbNpS
+         7GTmCAeOiJgwi2Pgdso1xr9/LkbL62cMEV0OPLw64dfRakBC2IDNJmidInOPqmo1U3pC
+         3P1NH8k0kMZwti+6qRq5P7W3vKwcgNuRa9+BiTgYJPH3p2ym3J/fK+0gRxQ1w8Q/nUaw
+         eV9h3TCpYbsqPPartNjXMPrCS4YCf5g+TNU3nlITdYmBNICC1RVozMf0BEocymz4d/Rt
+         44+FO2vknCMHnEbvhYEe8UbpqfEJorTWdahj+JHUFcBZrK9hOHfWPQOHmBE9wtbO/tMi
+         UWIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=xsqNy8x4lmXAXvHwF9gkwZoG25xYnfN0MsYpVbWeuyQ=;
+        fh=GVZXdus0SNidJPS1KKf9pH0EgBum/X6OmJrriK22Kwo=;
+        b=if/GrpdgdQmE4FtHvo0iuBi/fp2vq+tc4fx9XkQS8JAVmIlL07r8xqROR/8YWHHkbR
+         0jJEhRWhaUYlMuyk6/xSmY21MZGkjOg0B/qLSnBeYNdnCrVGC54vRfLwi2c7ILNTWxWn
+         eONaGu3keoVkJZ8p3X5kEd/vh/VAJPnhJzdBnvLG26J4N3fd0/3nUeA04b93JqDsQjoU
+         khBm2nHVYM3Pv8zYRu+BhBy7wOtFc+kvtsg9l4VxNzFFR3zQN34pXYKj+0Twr3pUXUXE
+         MmjqJg3ajhQ3d11WUWF8nj/PJd2bOSV5twkYaqHxMLGkEC+6I08WC5li9qzH+pc81OTa
+         mhyw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1794531698; x=1795136498; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=xsqNy8x4lmXAXvHwF9gkwZoG25xYnfN0MsYpVbWeuyQ=;
+        b=G1jbsG+SSau2XzDeW1OBYgcZTEKbYsSnIFjCz5jzxju2YOgwgfGuinOztdcmDgtqWf
+         gs2+QeCPNvtJ/fn1ygL0g7bEy34oR7Y0N3LEL4YlJ9fDk3GdFupL6jpH7jf55PP3vmfg
+         a2MC+9Pbb3enm3e5qIZT7H9J+PCKaYqIYCk1o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794531698; x=1795136498;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=xsqNy8x4lmXAXvHwF9gkwZoG25xYnfN0MsYpVbWeuyQ=;
+        b=JRuphpV/YYoworP8+7GxhJipwhgZyQg/+gtApndo5+9Uexk4pMwheLXqn6h6b1v+KF
+         3hyd0JnMEGxhTVK7D61SBhd9mvxgD7k0Y8JyWPUc/9L1QTIhxut+4Pmdp6rrIKLi6TA5
+         ruJ+UjpA5SMRuIsUKOHkCfw1z20cNAstqR0Ap28Zhlovq9d0xhJPR0IegkKGKmsiivJq
+         5DS7oGMIP7sgts6eWiQX8cdNH1Qrxu6St8pd778BotprVeAK4RCDLs5yiLv67FIWwsny
+         0dVV5oipAKq7ld9E5hpcuS6KOFh/iYr/6oEDSD79E5oSuDkbJNXwjQBT6ZyTqG8Kl5wm
+         Jtvw==
+X-Forwarded-Encrypted: i=1; AL+hErGSBpbyXzJOBf++xe6LB27pbwH3goHJcQ75ZZm4x/h4AsvhgehNSIeljO0W4i43lKL8Fs4=@vger.kernel.org
+X-Gm-Message-State: APuU4Z8T9RVgbXzfJX0W7phOSxIHhtNJqfeSMJtJN+CVO/z6TxFyPygR
+	QNN8h4mjkfr2NeFaA68zNv6f1uX4wl9VRVb4p4eRESt7o9IO5M5nn4X2m9YVFCLZPEQim1S6e2f
+	9OU79f1zeyq0VdzdETpTKk4kR6IwWv6/XEOCDBjBOoA==
+X-Gm-Gg: AYBFou1bwelGeGJat/x95L5/r17ugtH9i5lzZD4VqzZ40kj4S1e0fJSGHcbazo0SiZ6
+	V0Qf4Eil+byAWwmKBPdJMfNb5nPPPjvBr2uLWszddk/++NN+JAhHhqGSnZnA6QiIYiIc0nW34xm
+	DhFbWcvak/B9lt9mu1Qw7wira0V1ofiwGkTbYar++Hpw+CYAhlaiQwaHWrkUDwqDmYuVftPc/B9
+	zYztepPLCnR/pDHadEclTUkyqRNp1KeOqf+DkawWh7y9NCGyBa2QQAA2ELSnO8nIKtwmEHTnRw4
+	Jb9v+aopnry4d5IG3w5ZbdGMXNEVuUdEkMSLl2XhqI3CL9yLXdl9JI2N/ghbrloaTos8TYR0H3m
+	ADrFRk92y+dwyirLm46msQLwUz62CiycYT3GaF3n+vOFo6tzkItf5kAdGPn0=
+X-Received: by 2002:a05:600c:8b8c:b0:4a2:1197:1de0 with SMTP id
+ 5b1f17b1804b1-4bb55a7a460mr17515855e9.19.1794531698338; Thu, 12 Nov 2026
+ 17:01:38 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -69,108 +101,57 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20261113004946.2758197-1-jfern@kernel.org> <20261113004946.2758197-5-jfern@kernel.org>
+In-Reply-To: <20261113004946.2758197-5-jfern@kernel.org>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Thu, 12 Nov 2026 20:01:25 -0500
+X-Gm-Features: AclHuK-BlMNbouTRIZA68HB056zVMIxCfaWWRZW7PBno_ghygL1wLUmiCANRO7s
+Message-ID: <CAEXW_YTY1rjYH8FwvLvc1JbOQYDuXTP7BEE0a6eoRfu+-ZC6-g@mail.gmail.com>
+Subject: Re: [PATCH for-v7.5 4/5] rcu-tasks: Use pr_debug() for callback
+ contend/collapse messages
+To: Joel Fernandes <jfern@kernel.org>
+Cc: linux-kernel@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang@linux.dev>, Jonathan Corbet <corbet@lwn.net>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, rcu@vger.kernel.org, 
+	Song Liu <song@kernel.org>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The onoff task ends rcutorture with "End of test: RCU_HOTPLUG" if any
-CPU-hotplug attempt fails, other than -EBUSY during boot.  Toggling
-/sys/devices/system/cpu/smt/control while onoff runs causes two failures
-that are not the test's fault.  cpu_up() returns -EPERM for an SMT thread
-that SMT control keeps offline, and device_online() and device_offline()
-return 1 when the toggle already did the operation.
+On Thu, Nov 12, 2026 at 7:49=E2=80=AFPM Joel Fernandes <jfern@kernel.org> w=
+rote:
+>
+> From: Song Liu <song@kernel.org>
+>
+> Commit 5de907d24919 ("rcu-tasks: Disable callback contend/collapse
+> messages by default") added the rcupdate.rcu_task_collapse_debug module
+> parameter to gate the three pr_info() messages that report RCU Tasks
+> switching between CPU-0 and per-CPU callback queuing.
+>
+> The kernel already has a mechanism for debug-only messages that are off
+> by default: pr_debug().  Use pr_debug() for these messages, and remove
+> the rcu_task_collapse_debug module parameter, its documentation, and
+> its boot-time announcement.
+>
+> The messages stay off by default.  On CONFIG_DYNAMIC_DEBUG=3Dy kernels,
+> they can be enabled at boot with:
+>
+>   dyndbg=3D"file kernel/rcu/tasks.h +p"
+>
+> or at runtime with:
+>
+>   echo 'file kernel/rcu/tasks.h +p' > /proc/dynamic_debug/control
+>
+> Assisted-by: Claude:claude-opus-5
+> Signed-off-by: Song Liu <song@kernel.org>
+> Signed-off-by: Joel Fernandes <jfern@kernel.org>
 
-Repro: in a 16-vCPU guest (8 cores, 2 threads), run
-"modprobe rcutorture onoff_interval=1 gp_exp=0" while looping
-"echo off/on > smt/control" for 120 seconds.  This ended in RCU_HOTPLUG,
-with no reader errors.  With this change it ends in SUCCESS.
+Btw, even though I included this in the 'for-7.5', I am planning to
+send it for 7.4-rc as we discussed, so please ignore it in this set.
 
-Forgive these like boot-time -EBUSY, by not counting the attempt.
+thanks,
 
-Signed-off-by: Joel Fernandes <jfern@kernel.org>
----
- kernel/torture.c | 40 ++++++++++++++++++++++++++++------------
- 1 file changed, 28 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/torture.c b/kernel/torture.c
-index 8c4e6b2fe8ba..b860c99e9ca7 100644
---- a/kernel/torture.c
-+++ b/kernel/torture.c
-@@ -194,6 +194,24 @@ int torture_num_online_cpus(void)
- }
- EXPORT_SYMBOL_GPL(torture_num_online_cpus);
- 
-+/*
-+ * If the CPU-hotplug failure is not the torture test's fault, return a
-+ * string saying why it is forgiven.  Otherwise, return NULL.
-+ */
-+static const char *torture_onoff_forgive(int ret)
-+{
-+	// PCI probe frequently disables hotplug during boot.
-+	if (!rcu_inkernel_boot_has_ended() && ret == -EBUSY)
-+		return " (-EBUSY forgiven during boot)";
-+	// Hotplug is forbidden, for example by SMT control.
-+	if (ret == -EPERM)
-+		return " (-EPERM forgiven, hotplug forbidden)";
-+	// Something else, such as SMT control, already did the operation.
-+	if (ret == 1)
-+		return " (already in requested state, forgiven)";
-+	return NULL;
-+}
-+
- /*
-  * Attempt to take a CPU offline.  Return false if the CPU is already
-  * offline or if it is not subject to CPU-hotplug operations.  The
-@@ -204,7 +222,7 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
- {
- 	unsigned long delta;
- 	int ret;
--	char *s;
-+	const char *s;
- 	unsigned long starttime;
- 
- 	if (!cpu_online(cpu) || !cpu_is_hotpluggable(cpu))
-@@ -220,12 +238,11 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
- 	(*n_offl_attempts)++;
- 	ret = remove_cpu(cpu);
- 	if (ret) {
--		s = "";
--		if (!rcu_inkernel_boot_has_ended() && ret == -EBUSY) {
--			// PCI probe frequently disables hotplug during boot.
-+		s = torture_onoff_forgive(ret);
-+		if (s)
- 			(*n_offl_attempts)--;
--			s = " (-EBUSY forgiven during boot)";
--		}
-+		else
-+			s = "";
- 		if (verbose)
- 			pr_alert("%s" TORTURE_FLAG
- 				 "torture_onoff task: offline %d failed%s: errno %d\n",
-@@ -266,7 +283,7 @@ bool torture_online(int cpu, long *n_onl_attempts, long *n_onl_successes,
- {
- 	unsigned long delta;
- 	int ret;
--	char *s;
-+	const char *s;
- 	unsigned long starttime;
- 
- 	if (cpu_online(cpu) || !cpu_is_hotpluggable(cpu))
-@@ -280,12 +297,11 @@ bool torture_online(int cpu, long *n_onl_attempts, long *n_onl_successes,
- 	(*n_onl_attempts)++;
- 	ret = add_cpu(cpu);
- 	if (ret) {
--		s = "";
--		if (!rcu_inkernel_boot_has_ended() && ret == -EBUSY) {
--			// PCI probe frequently disables hotplug during boot.
-+		s = torture_onoff_forgive(ret);
-+		if (s)
- 			(*n_onl_attempts)--;
--			s = " (-EBUSY forgiven during boot)";
--		}
-+		else
-+			s = "";
- 		if (verbose)
- 			pr_alert("%s" TORTURE_FLAG
- 				 "torture_onoff task: online %d failed%s: errno %d\n",
--- 
-2.54.0
-
+Joel Fernandes
