@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794530997;
-	b=xianziwRT6ZTkWleokCzEzSe/LXJVyqkrKIVjonmC4+yOzReuYOWtvT0WgTmDCDw348O
-	 UOBgRLb1FUKFXSU3y/+ma7NfWoTx33WurLk3mv4iK0UPg6zPdG7oWTP3yMPwdygQfyBgn
-	 eHlPYLkll1XwdTvAPBhJ+PMSbBwsMcYonLwnmd1JG6uZgtPoIZVovWYiPZFxTxgtA9kuZ
-	 0F/XWg3r5L0b1yZE51UArYd9nf52Fqs2UwgpbUASeawdxj+R8o54Tl4P6P6beWUecJpjL
-	 6wjcJiGHwondU3vClRv676jxFRSRlLbH432+zl+WOxOoOQ/ME6y2auSBvfKrfJcEHuA==
+	t=1794530999;
+	b=FwjMU1r42gDDuCsHqoPQPYd5yw7MhrxtWHEgvZu/HCWg643rxWWPSo5RTBJlEEalXDC9
+	 rWokUZeid4FpHkbXNWPZsVugFY0wY8gwEltqASzCYCCSRO/lcsHKRl7Ez/xa/MAm6QUx2
+	 7LxGXeKL+6hBsES+0fQNQldwe+J9F/X4VUrnPYarRmoF8uuZYImLtPDl5PM3QG2AVNnw9
+	 WMkfy1mbEcILcfeeL84kamirRjqpYbWDZ+UWtjL6fAEabTag0pbFu6/ZBBDeptrtAmk0V
+	 Km84gQsL8NtDPiW/EL0VboSHBj5V0K4fgNAUesCjiHD7gJCCN/Ie0gJo4gV+Zj4oc1Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794530997;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794530999;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=by4pnn7UUwtR1dcWkA5l3Hqdi+jnIaBieMR4UKUf5fA=;
-	b=1TsmuZB9mRz+joqnYkgFsPcyFm6NIoy223TbGu7yEiFjyJsDq7+skCdEDqtiMWC9oxtu
-	 giZQxPLNcYA8lPSasOEFG6Vl4GsBXdHqgWh3FMoXGhApNFZz7uErk8fR7C29vt+KM4DIM
-	 tmCPTfv0nRdD4LJKSW0S5EOcxDZ4J51jmxNkDs4iaYZOqmU4W7EakVXV86PngOrqjLnnB
-	 X9AW6FnI9ZVpJKRqQy5OGECAZlzfSJCYN42BFdL1cQOtLbQlyb1klDZHWvrHL3WheWyyy
-	 A2nmWA65Yw/dqiZr4DGeVocXH5Pp8zbAVQyvFcq3KtjZQqwo9tDVQiJ2imBX/2mXwuA==
+	bh=mammJvdWasvAO8ivxo8p3ZSf9bVtHP0oKGV1IVgegGs=;
+	b=nwm15ayvapy1aSfQaO2daFKXHXPcBXAVef831Le1LX829EWM98i7gtGAK8hyydDjsISn
+	 pp23LwLAGhfuTaw93uRtNniFBke2mydTuSCn6zA5vAM8f5TAQGnCE1OnlSFzGI8jStYuZ
+	 OM0CG0wQSY9H0mYGAcA5HX7atRj/xn5j2IkhIb623Oe1hGodlGxz1wfCSyP9sX7p52LMN
+	 cqLTHlq71ifWF5WUcMDJnInPaht+iXoW7i8X90udT1DA3xrL86K2gt3xHcHHBwFDBU8qw
+	 29fcu37CbKjtQpjOXUTYMY3VYBcrmmldwezlE6dux/M6t7XsyU/dH/vv8tOqzj8sHtw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Gk9kIc9Y;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KYTVys7i;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 7A660606A89E;
-	Fri, 13 Nov 2026 00:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 79F1B60A2600;
+	Fri, 13 Nov 2026 00:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Gk9kIc9Y
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id C7FB61F000C5;
-	Fri, 13 Nov 2026 00:49:56 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KYTVys7i
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id B95A51F000CE;
+	Fri, 13 Nov 2026 00:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794530997;
-	bh=by4pnn7UUwtR1dcWkA5l3Hqdi+jnIaBieMR4UKUf5fA=;
+	s=k20260515; t=1794530999;
+	bh=mammJvdWasvAO8ivxo8p3ZSf9bVtHP0oKGV1IVgegGs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Gk9kIc9YfKPN1a+chXmm1fauIHMrlVr/P2bj4SxeKbeQkpToe7imgUW0S8uMk1a7w
-	 bV/yDZ8EXQW6RaIzZX/MxuCui/o9E6sCkoXw6s3z/UX58q8Uyu8f5PhKV8SuZnp6cR
-	 I2pSjyfpSzxP1n15wynJ0V/3p2+fj3DEwb9OZCg88lI3dngYBNk8Ddf/8s7AUX8kFC
-	 Flg4wSK0UreVnLr8/62GQbhtXO6CM8/thpq3FUPMQerebR9PS1kuYARBsyAt1fyRyJ
-	 wIeGD9w9CzmxMadKh6UjJhckeKjVTXFYfDVAvyyRJyq3LVhGEa9CTONB3GU1gWztmI
-	 K9Q9VUPOq64mA==
+	b=KYTVys7inrutEn4q7Rnyfcm9syh9FM1q25+LBHwoyVe8d9grH46Ax/IKg+1XcY8jC
+	 eQtWVhYb7vaQFBq3P/XP4NgKqVV78jpLJVMdTVHj1Pex+udVbQPdeTGzVI+2X/Q8Ck
+	 Hum9KjVFi2xvDFP6t168yjeiE6ou+TjxuZKc5Vk4IxHrv5ZTacTZ9fkxsftWgnkw+F
+	 HXBro7ayiqgoi//JJbJ9OUj2Ll3Y8qi0Qn2UxsHzgZJEoYmoJ/qM3GigtF3lYrPv5x
+	 yCWZsVxfCmC2NMTknfE52Cx+I7u17dnyQgrGBLFJ+YgSjVW3sBOdx7BdMYGS0BL9OU
+	 5moq2CR+F53qA==
 From: Joel Fernandes <jfern@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	"Paul E . McKenney" <paulmck@kernel.org>,
@@ -52,15 +52,15 @@ To: linux-kernel@vger.kernel.org,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>
+	Thomas Gleixner <tglx@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
 Cc: rcu@vger.kernel.org,
-	Song Liu <song@kernel.org>,
-	linux-doc@vger.kernel.org
-Subject: [PATCH for-v7.5 4/5] rcu-tasks: Use pr_debug() for callback contend/collapse messages
-Date: Thu, 12 Nov 2026 19:49:43 -0500
-Message-ID: <20261113004946.2758197-5-jfern@kernel.org>
+	Vishal Chourasia <vishalc@linux.ibm.com>,
+	Samir <samir@linux.ibm.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>
+Subject: [PATCH for-v7.5 5/5] cpuhp: Expedite RCU when toggling system-wide SMT mode
+Date: Thu, 12 Nov 2026 19:49:44 -0500
+Message-ID: <20261113004946.2758197-6-jfern@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261113004946.2758197-1-jfern@kernel.org>
 References: <20261113004946.2758197-1-jfern@kernel.org>
@@ -75,107 +75,122 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Song Liu <song@kernel.org>
+From: Vishal Chourasia <vishalc@linux.ibm.com>
 
-Commit 5de907d24919 ("rcu-tasks: Disable callback contend/collapse
-messages by default") added the rcupdate.rcu_task_collapse_debug module
-parameter to gate the three pr_info() messages that report RCU Tasks
-switching between CPU-0 and per-CPU callback queuing.
+On large idle systems, changing system-wide SMT level using the sysfs
+control interface still takes approximately 40-55 minutes. Changing SMT
+levels is an user triggered operation generally done when systems are
+fairly idle. This causes users to be blocked from doing other subsequent
+work.
 
-The kernel already has a mechanism for debug-only messages that are off
-by default: pr_debug().  Use pr_debug() for these messages, and remove
-the rcu_task_collapse_debug module parameter, its documentation, and
-its boot-time announcement.
+Analyzing the collected profile data during SMT level switch, showed
+that CPU hotplug machinery was blocked on synchronize_rcu() calls.
 
-The messages stay off by default.  On CONFIG_DYNAMIC_DEBUG=y kernels,
-they can be enabled at boot with:
+Expedite RCU grace periods for the entire duration of triggered SMT
+switch operation via the sysfs control interface. Individual CPU hotplug
+operations via the online/offline interface are not affected.
 
-  dyndbg="file kernel/rcu/tasks.h +p"
+On a PPC64 system with 400 CPUs:
 
-or at runtime with:
+  SMT8 to SMT1:
+    before:  1m14s
+    after:   3.2s   (~23x faster)
 
-  echo 'file kernel/rcu/tasks.h +p' > /proc/dynamic_debug/control
+  SMT1 to SMT8:
+    before:  2m27s
+    after:   2.5s   (~58x faster)
 
-Assisted-by: Claude:claude-opus-5
-Signed-off-by: Song Liu <song@kernel.org>
+On a large config system with 1920 CPUs, completion time improves from
+~1 hour to 5-6 minutes.
+
+Tested-by: Samir <samir@linux.ibm.com>
+Reviewed-by: Shrikanth Hegde <sshegde@linux.ibm.com>
+Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes <jfern@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  7 -------
- kernel/rcu/tasks.h                              | 15 +++------------
- 2 files changed, 3 insertions(+), 19 deletions(-)
+ include/linux/rcupdate.h | 8 ++++++++
+ kernel/cpu.c             | 4 ++++
+ kernel/rcu/rcu.h         | 4 ----
+ 3 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 0b3c140babd9..176648941aec 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -6369,13 +6369,6 @@ Kernel parameters
- 			period to instead use normal non-expedited
- 			grace-period processing.
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 3f74ae6d6e1f..e498e21172da 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -1213,6 +1213,14 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
+ extern int rcu_expedited;
+ extern int rcu_normal;
  
--	rcupdate.rcu_task_collapse_debug= [KNL]
--			Enable debugging prints that record when RCU Tasks
--			and RCU Tasks Trace expand to per-CPU callback
--			queuing and collapse back to CPU-0 queuing.
--			This is default-disabled due to the fact that
--			some workloads can make it quite noisy.
--
- 	rcupdate.rcu_task_collapse_lim= [KNL]
- 			Set the maximum number of callbacks present
- 			at the beginning of a grace period that allows
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index a59aa8b6ab05..0eec90464d64 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -178,8 +178,6 @@ static int rcu_task_contend_lim __read_mostly = 100;
- module_param(rcu_task_contend_lim, int, 0444);
- static int rcu_task_collapse_lim __read_mostly = 10;
- module_param(rcu_task_collapse_lim, int, 0444);
--static bool rcu_task_collapse_debug __read_mostly;
--module_param(rcu_task_collapse_debug, bool, 0644);
- static int rcu_task_lazy_lim __read_mostly = 32;
- module_param(rcu_task_lazy_lim, int, 0444);
++#ifdef CONFIG_TINY_RCU
++static inline void rcu_expedite_gp(void) { }
++static inline void rcu_unexpedite_gp(void) { }
++#else
++void rcu_expedite_gp(void);
++void rcu_unexpedite_gp(void);
++#endif
++
+ DEFINE_LOCK_GUARD_0(rcu, rcu_read_lock(), rcu_read_unlock())
+ DECLARE_LOCK_GUARD_0_ATTRS(rcu, __acquires_shared(RCU), __releases_shared(RCU))
  
-@@ -392,8 +390,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
- 			WRITE_ONCE(rtp->percpu_enqueue_shift, 0);
- 			WRITE_ONCE(rtp->percpu_dequeue_lim, rcu_task_cpu_ids);
- 			smp_store_release(&rtp->percpu_enqueue_lim, rcu_task_cpu_ids);
--			if (data_race(rcu_task_collapse_debug))
--				pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
-+			pr_debug("Switching %s to per-CPU callback queuing.\n", rtp->name);
- 		}
- 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 376d297a6292..d7dc1022bf6f 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -2658,6 +2658,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+ 	int cpu, ret = 0;
+ 
+ 	cpu_maps_update_begin();
++	rcu_expedite_gp();
+ 	for_each_online_cpu(cpu) {
+ 		if (topology_is_primary_thread(cpu))
+ 			continue;
+@@ -2687,6 +2688,7 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
  	}
-@@ -514,9 +511,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
- 			smp_store_release(&rtp->percpu_enqueue_lim, 1);
- 			rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
- 			gpdone = false;
--			if (data_race(rcu_task_collapse_debug))
--				pr_info("Starting switch %s to CPU-0 callback queuing.\n",
--					rtp->name);
-+			pr_debug("Starting switch %s to CPU-0 callback queuing.\n", rtp->name);
- 		}
- 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 	if (!ret)
+ 		cpu_smt_control = ctrlval;
++	rcu_unexpedite_gp();
+ 	cpu_maps_update_done();
+ 	return ret;
+ }
+@@ -2704,6 +2706,7 @@ int cpuhp_smt_enable(void)
+ 	int cpu, ret = 0;
+ 
+ 	cpu_maps_update_begin();
++	rcu_expedite_gp();
+ 	cpu_smt_control = CPU_SMT_ENABLED;
+ 	for_each_present_cpu(cpu) {
+ 		/* Skip online CPUs and CPUs on offline nodes */
+@@ -2717,6 +2720,7 @@ int cpuhp_smt_enable(void)
+ 		/* See comment in cpuhp_smt_disable() */
+ 		cpuhp_online_cpu_device(cpu);
  	}
-@@ -524,9 +519,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
- 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
- 		if (rtp->percpu_enqueue_lim < rtp->percpu_dequeue_lim) {
- 			WRITE_ONCE(rtp->percpu_dequeue_lim, 1);
--			if (data_race(rcu_task_collapse_debug))
--				pr_info("Completing switch %s to CPU-0 callback queuing.\n",
--					rtp->name);
-+			pr_debug("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
- 		}
- 		if (rtp->percpu_dequeue_lim == 1) {
- 			for (cpu = rtp->percpu_dequeue_lim; cpu < rcu_task_cpu_ids; cpu++) {
-@@ -711,8 +704,6 @@ static void __init rcu_tasks_bootup_oddness(void)
- 		pr_info("\tTasks-RCU CPU stall info multiplier clamped to %d (rcu_task_stall_info_mult).\n", rtsimc);
- 		rcu_task_stall_info_mult = rtsimc;
- 	}
--	if (rcu_task_collapse_debug)
--		pr_info("\tTasks-RCU callback contend/collapse debug enabled.\n");
- #endif /* #ifdef CONFIG_TASKS_RCU */
- #ifdef CONFIG_TASKS_RCU
- 	pr_info("\tTrampoline variant of Tasks RCU enabled.\n");
++	rcu_unexpedite_gp();
+ 	cpu_maps_update_done();
+ 	return ret;
+ }
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index d60444bf3a02..7cae7e64e96d 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -530,8 +530,6 @@ do {									\
+ static inline bool rcu_gp_is_normal(void) { return true; }
+ static inline bool rcu_gp_is_expedited(void) { return false; }
+ static inline bool rcu_async_should_hurry(void) { return false; }
+-static inline void rcu_expedite_gp(void) { }
+-static inline void rcu_unexpedite_gp(void) { }
+ static inline void rcu_async_hurry(void) { }
+ static inline void rcu_async_relax(void) { }
+ static inline bool rcu_cpu_online(int cpu) { return true; }
+@@ -539,8 +537,6 @@ static inline bool rcu_cpu_online(int cpu) { return true; }
+ bool rcu_gp_is_normal(void);     /* Internal RCU use. */
+ bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
+ bool rcu_async_should_hurry(void);  /* Internal RCU use. */
+-void rcu_expedite_gp(void);
+-void rcu_unexpedite_gp(void);
+ void rcu_async_hurry(void);
+ void rcu_async_relax(void);
+ void rcupdate_announce_bootup_oddness(void);
 -- 
 2.54.0
 
