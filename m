@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794531029;
-	b=MqAaDPXWyctNJAhdypnL9zmE7a2E5E557kY8eYXjg3pe9oJIpSu3vtpdPu7Bn4pl0pcZ
-	 J2vykffk42umQlWjmKKDUJ7LnW2+GhqzAijPRy/Lt7zLYWMyEKsSWXwSvC8A5zTLA6Olc
-	 99vOXVtT6J9nJjbOMU+JqucWVwbyeNoQ3aHAZFNBf7TGqfMrp3q42ke78NAbiNhgU3EyF
-	 j+jMd7Ep/+7wXc5fmzeO8N640ZSbINtwFtP7gLFzeaduxEUKUlud+knZiJIKQb8t6mD/O
-	 tu8sRSGNrkqAWl1LAHsKOwqLXvV3MkSW+48Lqs/6pytP0T2F2yfz0jk35uRKan5ihJg==
+	t=1794531031;
+	b=rffirzfmYjXutPJy6t0JjLgsTt8q2trvAmJ0HHRXf8Nbzbhnt0Oan3ozsS1b4Ksw1Drs
+	 Ab1yCZ91dmJddwvClXjP0sJL/hNhUzcnfzxFz+aeNeJ4ZvsatsJXY80NC2M3wR6Kt12Bf
+	 j6H0s1hwLxu4bfUVRDS9bsZEQ5nuZZ3SUnoFET6W9upvZ0TbgBssLRDnXeKbHYeRP1NaD
+	 Td299ZIjJKbHF1+Lu2ikEXMQObxumwE3LTOlq1Lja4nAywre/xfLhCFBfnBtgej5DIZW0
+	 gV+l4TLKYnd6qM/uEiH5KA9az5u/TRcS90UXSyDI9+2IjmABoKJ58SEs5qyRld1+ZTQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794531029;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794531031;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=jVfyoLnDGmmilsJ+3jf3unO3KLgq7TUTUHr9b1lHMBQ=;
-	b=J2uTbVThh5731SRCuPeWcOE+xfBxsX2tVozlBoKThEvGHO4QzhwR75dK4cV9bu/UCyvZ
-	 nVGP9rfJxwRDdU3/2qxiNoEh8gfTvp4d/Cv7OkMpa9NVEpOCbOE5Mi5ICz0K0xTntxoPw
-	 ZboUqSN3j0JSVI6JJCYKzWY132PlNiC74C7OQugjclGMsYVnYMJlFLFIbENYZTneLjrHi
-	 5W+4JwKyTikgnH9WdrKHZuo03wOlr2UnPe89yQUuPkaEt+znbo9hx1Mre72ioQId21wBL
-	 2yDwQ7Ij2GAHCvjVYv5uASXBtYLFCoiaw7CQ4wgr/hlZXOVRbGTIbj6ZdmQFMUO4VFA==
+	bh=1a4g1x9vsYzzv++fXoooojmy+PmtFfgrh5pDZvJXW2M=;
+	b=TkZrbFBbtN9+RXCEH0Ac6P67W3X8UwPcOBAwr3TMyTvHZR3WecSsoStXMjpBCjaOaehu
+	 kp06LFxe2ys0a1T4lORRWsmAQ3W6sh7UL0LTYoaC3x/em50ZB/mDDO9xA2bpGpEWFkMq0
+	 Fa7Bu6cqmV5/OpON4T47RsZIwEGRGbKo5H/NgCk9FuE0F//mn+xotYk2kWYPsRiHDhfkX
+	 2NSZ1Vn5pTHE/52fHa3xudiRMs/EsFWOSCqXGdyOdp5NO3dz3xU79FbHGEWdXWrjZ7eVi
+	 W7nbZwWOAxy2RtodbmxgsIzr7wOB/B0MExJt8HPZ7gROJJ0/gtgZ29ofN+YPY3dG+7Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=itNgnD5m;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ce9S9ctW;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 1D53F60A380A;
-	Fri, 13 Nov 2026 00:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 3EBE0606A8B5;
+	Fri, 13 Nov 2026 00:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=itNgnD5m
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 9385F1F000C4;
-	Fri, 13 Nov 2026 00:50:28 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ce9S9ctW
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 8396C1F000C4;
+	Fri, 13 Nov 2026 00:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794531028;
-	bh=jVfyoLnDGmmilsJ+3jf3unO3KLgq7TUTUHr9b1lHMBQ=;
+	s=k20260515; t=1794531030;
+	bh=1a4g1x9vsYzzv++fXoooojmy+PmtFfgrh5pDZvJXW2M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=itNgnD5mAfcKhA7/eQf+6jnWrA95phtIHIUM3hzGFtlE3HGg7BKbZp+6DO8Q+8Nws
-	 slOhhC7rISGBx5/VmCTHD7M51XQ+K3ztvvImJKCrKXdzKjNd847v4Glbh2vW59kRel
-	 +duFTiF3n8Q4R3LfNWFfhdy65wvUpEH6UOncDPjx9KZQ3V+QH1jrzbOzn+XRR+gjAO
-	 Zsm6nUTXeT1vEZtlbnuxpjXQRfu3p/bMO7aVVNrVW1yGXbBwp4oKrf8YUfs20b8hXv
-	 iBPIZtlSgU9ogeTOSY3u2Y0aNgkY1H7+vco3nbUY2sWQJue0eC4KRy9MpUrNmB7t0u
-	 vf5S9E4jXiHNA==
+	b=Ce9S9ctWaxvAvG33UhIjXrnbWPxeVap98BcDhLtOhHs/pcmupcO2vVe94v75K0KLH
+	 zuEdUz6LIbh2Tu1N/+w9D/s9TZXT+zwyP2B9cDedem3fymV7GFChpmkUQs7swMgmX3
+	 nzVpLYAQUvwoJqz3kbttRsCHRJohmhjQd4ZVnAPVy5yvaiV7foXWpWP6/jtpcH+ZNl
+	 gprkn0mjXyE3WtNL/JWoF7eRPa0eB8dgfMRCh7yh0Nryn/UlwsfEKDQ6VfgyIkOXRf
+	 WW9j4AnxFW/9ROpuwkT3yxeIkVT98cAfFG8P+8dpMyeeY0GW/nHCWhA8vmCeUZJ1rn
+	 hS7VKUqEWPzWA==
 From: Joel Fernandes <jfern@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	"Paul E . McKenney" <paulmck@kernel.org>,
@@ -51,14 +51,13 @@ To: linux-kernel@vger.kernel.org,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	=?UTF-8?q?Onur=20=C3=96zkan?= <work@onurozkan.dev>
+	Zqiang <qiang.zhang@linux.dev>
 Cc: rcu@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH for-v7.5 05/11] srcu: Validate callback arguments
-Date: Thu, 12 Nov 2026 19:50:07 -0500
-Message-ID: <20261113005017.2772440-6-jfern@kernel.org>
+Subject: [PATCH for-v7.5 06/11] rcu: Validate callback arguments in Tiny RCU
+Date: Thu, 12 Nov 2026 19:50:08 -0500
+Message-ID: <20261113005017.2772440-7-jfern@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261113005017.2772440-1-jfern@kernel.org>
 References: <20261113005017.2772440-1-jfern@kernel.org>
@@ -76,52 +75,33 @@ Content-Transfer-Encoding: 8bit
 From: Kunwu Chan <kunwu.chan@gmail.com>
 
 Check callback-head alignment and reject NULL callback
-functions in the SRCU callback registration paths.
+functions in Tiny RCU's call_rcu() path.
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 Reviewed-by: Joel Fernandes <jfern@kernel.org>
 Signed-off-by: Joel Fernandes <jfern@kernel.org>
 ---
- kernel/rcu/srcutiny.c | 7 +++++++
- kernel/rcu/srcutree.c | 7 +++++++
- 2 files changed, 14 insertions(+)
+ kernel/rcu/tiny.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index 3ee28885b96f..98864977bed2 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -291,6 +291,13 @@ EXPORT_SYMBOL_GPL(srcu_defer_drain);
- void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 	       rcu_callback_t func)
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index bd22fa43108d..ef0b0474f207 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -252,6 +252,13 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
+  */
+ void call_rcu(struct rcu_head *head, rcu_callback_t func)
  {
 +	/* Misaligned rcu_head! */
-+	WARN_ON_ONCE((unsigned long)rhp & (sizeof(void *) - 1));
++	WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
 +
 +	/* Avoid NULL dereference if callback is NULL. */
 +	if (WARN_ON_ONCE(!func))
 +		return;
 +
  	/* Record the caller: the irq_work's stack says nothing about it. */
- 	kasan_record_aux_stack(rhp);
- 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 46fe2f0cef85..76f074f67299 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1532,6 +1532,13 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 	if (WARN_ON_ONCE(ssp->srcu_reader_flavor == SRCU_READ_FLAVOR_ATOMIC))
- 		return; // Leak the callback rather than corrupt SRCU state.
- 
-+	/* Misaligned rcu_head! */
-+	WARN_ON_ONCE((unsigned long)rhp & (sizeof(void *) - 1));
-+
-+	/* Avoid NULL dereference if callback is NULL. */
-+	if (WARN_ON_ONCE(!func))
-+		return;
-+
- 	/* Record the caller: the irq_work's stack says nothing about it. */
- 	kasan_record_aux_stack(rhp);
+ 	kasan_record_aux_stack(head);
  
 -- 
 2.54.0
