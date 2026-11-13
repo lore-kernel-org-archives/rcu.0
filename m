@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794531488;
-	b=W2VTUP1lvNFB8V/12SCpb7UP3LmrNe3T8vaE7AbZDuU/dDCMeehB86cV9ZrsdcuaLFKL
-	 m+IY5616okmxPj5UnHEqjN/8+gJsGJXSNP3Ib8VK4CJIRM4VEKS+4h+wWyxxXSqzAM9cj
-	 YCRdyHtUugtcQc7QbstM0x9RXrHuXER+EqiM4XcXVxQ1yREBe6FRiqOZHGiUWe6P9+4qh
-	 giab4rm/DHtno511oArcWmLMG7M6hZK38TG2bT2JglppBzfG7BPo3Gm/Az8JnYSYAHbRa
-	 jCKa5y1JGJRGodsQiVQz6w9lAr3baDR1PspKd/stLVMIPRULnDcVRv/1al3QF9h0b2Q==
+	t=1794531490;
+	b=Y+YBd/xq7Hgz/UnaCJLK5IgwRetZBMXt430bjPdQQDmSMJK2DTtc1HDccMGD4rJgXYJ2
+	 Wl81XGvR3D3qup9FPgusjaZ5bzcoE5wZih1b3a+dhiMjnFMXdwh1Q6DJ6s/1jqdEBYu7N
+	 xWO4Gi2i9hwYsV4xtyudeMVhXmDogJpHWoG+/NA1Y9SCVbzPS0gaEAAP+NZ+zUziADhbF
+	 YPfXgg9AZKp7MfLWOtpEgS1zZZiX8EEUDm29UWMCSyNxE/BKLFT9QeyUs/1sIUHjW8orl
+	 LxVUukdw6JCU9xNrk3DadRUlulLbLBNTpWvDs3J0tplS7jJ1bG8Tns1vsLsCKn7eXCg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794531488;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794531490;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=9KrAdULCzzi+o1kFy+xOWC2+HcJXlxBlTraQzryexnE=;
-	b=ZEs/RUFPHJic21MRiciwFAtfaxeaM3MAgJWvyYp9GTFJ3V5ZYVWjicNGQV1aErP81+cX
-	 dci9eo83sckNpX3eiTlwCWchT8kuqL00NOVcmRIIuOrjXjrIn1As+fHTG6TowNNtCEOT4
-	 7yZus+blauHMS4LCJq/+l/K6Ql2BUTMWNR+OB0f4ni61HJ4Ahhgyt4nkTnnznP9UpNMYq
-	 hkb3xQYm6MZp37oAe9+TXtHD+RPC7oPQTyx25sgeoTG++F11SrOyI9xku0JfdAgTEu/mj
-	 zAB7M+wNBQ+GsKR1NZQj6orewtmHtuEkDO0le0Wc/wLj2fsN7k198VifxVCUUBw9Cpg==
+	bh=uRRAf3AQkNKd4Tp8uLsmM8FqpKIe7hGQwxP7ypFTuT8=;
+	b=ARQHJLTspjFucWp9I1yibitRMpRi9yN5LS1xg66C7uESx2pkhAaNnsPpCitMJljl/vAs
+	 Hwp7LlqgZvDjkZIKBw1g8c7lNtowr8ZaIxq/scph92IVWJcovowPSp8ySWRIN3LRDOeRo
+	 lpY1HQmzNRB1lJgGSSnRh1knCa0pmswgdnR+vunXOXkJkuR6QGgBgcfHMW74V+bg7s0bk
+	 kz/frlbEbFwIxj9hL0pI3W/x4b979siTXEj9MYK7SYiNCtGuqRjIhV6pED07ec82DKaka
+	 7FRXFChnfdKrBwlJTaKlV5Q8Way/OyqC6/pLNrmxlnwNDkktRdlBFjakj6sJFsJJzDg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=L5VMZD1b;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RMnWLbx8;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id C8432606A890;
-	Fri, 13 Nov 2026 00:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id A8C8C606A893;
+	Fri, 13 Nov 2026 00:58:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=L5VMZD1b
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 4BC641F000C5;
-	Fri, 13 Nov 2026 00:58:08 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RMnWLbx8
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 373891F000C4;
+	Fri, 13 Nov 2026 00:58:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794531488;
-	bh=9KrAdULCzzi+o1kFy+xOWC2+HcJXlxBlTraQzryexnE=;
+	s=k20260515; t=1794531490;
+	bh=uRRAf3AQkNKd4Tp8uLsmM8FqpKIe7hGQwxP7ypFTuT8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=L5VMZD1bBeWBBKyH7KzbMN/ekUzo9lSI24LOdbzOuvH8EhKtd28O1jNpwXQLfJp91
-	 eFHx90apAgYoKbcLWmZNbaDV/1pxmX0uTW7ryujlQ4YiorbWrbgvD2v08Lr0o0KVpA
-	 n91kXAqFzaHNB2Wb9YAIEacumZGRAuiwCwN31C1freJKyo80517fhWzvtbzEzyXMgy
-	 Ry5+vCXH+DEddiHx78U6RQ01kSUsvSg2ow9BDqRwLbY0kgTT16ce7p6/yymUNCjChq
-	 hn2WFvBjbyXo/M01yzm9HY6aDdOnyJSa94jW2dPOfvku3gE20XOC88nJ1+OCSox/B1
-	 UbCnhCd7dQurQ==
+	b=RMnWLbx8U30mcI5d7I5UvJRkQEcGxNAaCCS1evaFSNDMVNYgLi/4KKXKlUEl8LEf4
+	 mapkmqsAhpVPg9Gx5VqDK1NbTFrr933R6pgUHXct/TQnZXS3ypsLBon1duuRYYwd10
+	 YdOQ8zKDMoA5lQQzUOXogKXFeNnbVcydpvOCVOTY/3Sqk76VCVEz+Z1jlga8wBZXy+
+	 wF1UgtLiZmSDnRC/E7Gbc0TxLfULOsuQSNMDe6Ztaa2o2fIKiEHI96DupIi8/JSsPi
+	 KHS4+7ffmaA7viSrtwERHjUZ+qj4ziD715fHAkI162DdzOU5YciLoPCyiI5Z3WhZfU
+	 R8HNVHdE8oTJA==
 From: Joel Fernandes <jfern@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	"Paul E . McKenney" <paulmck@kernel.org>,
@@ -53,11 +53,10 @@ To: linux-kernel@vger.kernel.org,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>,
 	Davidlohr Bueso <dave@stgolabs.net>
-Cc: rcu@vger.kernel.org,
-	Kunwu Chan <kunwu.chan@gmail.com>
-Subject: [PATCH for-v7.5 09/14] rcuscale: Add srcua scale type
-Date: Thu, 12 Nov 2026 19:57:36 -0500
-Message-ID: <20261113005747.2977123-10-jfern@kernel.org>
+Cc: rcu@vger.kernel.org
+Subject: [PATCH for-v7.5 10/14] scftorture: Reject empty workloads before starting helpers
+Date: Thu, 12 Nov 2026 19:57:37 -0500
+Message-ID: <20261113005747.2977123-11-jfern@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261113005747.2977123-1-jfern@kernel.org>
 References: <20261113005747.2977123-1-jfern@kernel.org>
@@ -72,79 +71,54 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Kunwu Chan <kunwu.chan@gmail.com>
+A module loaded with nthreads=0 starts its statistics task, but cleanup
+skips stopping that task. Unloading the module then leaves it executing
+freed module text. Reject a zero thread count before starting helpers;
+negative counts still select the online CPU count.
 
-Add support for scaling atomic SRCU grace periods using
-srcu_read_lock_atomic()/srcu_read_unlock_atomic() and
-synchronize_srcu_atomic().
+Also, when built as a module with reschedule-only, this leaves the
+selector empty because resched_cpu() is unavailable to modules. It warns
+while selecting an operation, invokes no callbacks, and can nevertheless
+report SUCCESS.  Reject an empty effective selector after filtering
+unsupported operations.
 
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Kunwu Chan <kunwu.chan@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Both failures were reproduced in a guest without the patches.
+
 Signed-off-by: Joel Fernandes <jfern@kernel.org>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcuscale.c | 41 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 40 insertions(+), 1 deletion(-)
+ kernel/scftorture.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 41abf05a14d9..687249d686a5 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -297,6 +297,44 @@ static struct rcu_scale_ops srcud_ops = {
- 	.name		= "srcud"
- };
+diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+index 603b2dba1536..ff9a8271a464 100644
+--- a/kernel/scftorture.c
++++ b/kernel/scftorture.c
+@@ -588,6 +588,12 @@ static int __init scf_torture_init(void)
  
-+static struct srcu_struct srcua;
-+
-+static int srcu_scale_atomic_read_lock(void)
-+{
-+	return srcu_read_lock_atomic(srcu_ctlp);
-+}
-+
-+static void srcu_scale_atomic_read_unlock(int idx)
-+{
-+	srcu_read_unlock_atomic(srcu_ctlp, idx);
-+}
-+
-+static void srcu_scale_atomic_synchronize(void)
-+{
-+	synchronize_srcu_atomic(srcu_ctlp);
-+}
-+
-+static void srcu_atomic_scale_init(void)
-+{
-+	srcu_ctlp = &srcua;
-+	init_srcu_struct_atomic(srcu_ctlp);
-+}
-+
-+static struct rcu_scale_ops srcua_ops = {
-+	.ptype		= SRCU_FLAVOR,
-+	.init		= srcu_atomic_scale_init,
-+	.cleanup	= srcu_sync_scale_cleanup,
-+	.readlock	= srcu_scale_atomic_read_lock,
-+	.readunlock	= srcu_scale_atomic_read_unlock,
-+	.get_gp_seq	= srcu_scale_completed,
-+	.gp_diff	= rcu_seq_diff,
-+	.exp_completed	= srcu_scale_completed,
-+	.sync		= srcu_scale_atomic_synchronize,
-+	.exp_sync	= srcu_scale_atomic_synchronize,
-+	.stats		= srcu_scale_stats,
-+	.name		= "srcua"
-+};
-+
- #ifdef CONFIG_TASKS_RCU
+ 	scftorture_print_module_parms("Start of test");
  
- /*
-@@ -1100,7 +1138,8 @@ rcu_scale_init(void)
- 	long i;
- 	long j;
- 	static struct rcu_scale_ops *scale_ops[] = {
--		&rcu_ops, &srcu_ops, &srcud_ops, TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
-+		&rcu_ops, &srcu_ops, &srcua_ops, &srcud_ops,
-+		TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
- 	};
++	if (!nthreads) {
++		SCFTORTOUT_ERRSTRING("nthreads must be nonzero");
++		firsterr = -EINVAL;
++		goto unwind;
++	}
++
+ 	if (weight_resched <= 0 &&
+ 	    weight_single <= 0 && weight_single_rpc <= 0 && weight_single_wait <= 0 &&
+ 	    weight_many <= 0 && weight_many_wait <= 0 &&
+@@ -636,6 +642,11 @@ static int __init scf_torture_init(void)
+ 	scf_sel_add(weight_many_wait1, SCF_PRIM_MANY, true);
+ 	scf_sel_add(weight_all1, SCF_PRIM_ALL, false);
+ 	scf_sel_add(weight_all_wait1, SCF_PRIM_ALL, true);
++	if (!scf_sel_array_len) {
++		SCFTORTOUT_ERRSTRING("no supported operations selected");
++		firsterr = -EINVAL;
++		goto unwind;
++	}
+ 	scf_sel_dump();
  
- 	if (!torture_init_begin(scale_type, verbose))
+ 	if (onoff_interval > 0) {
 -- 
 2.54.0
 
