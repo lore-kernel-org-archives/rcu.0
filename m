@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794530991;
-	b=UflQr62y0Xgje6LdP6dd1RYyx3OHzFRxEIVaWvGWNTG2SaOmLUDR+LRuoCco47P3gM7E
-	 hBWU//dGL3u6UZB2l6nVBtw/i+XvPeX5s/y3y7Q7yLU5TitmBu/bxBKxDM2WsohBhhIRR
-	 vXUOlhhCIKKX8X3Ta0zS3GbsOz8wv6qMB5gbJgy4/PKuZdbChXsb7b+IzOZtfmYNKIiGo
-	 E5FKL4BD1nuhFNrVi0EDPMbVuh+c1JmFa1Rbl7R2h0yf/YhUGXSsVarFAa6h+znarui4U
-	 rvpxg4rKbusILn/uvGYllicQRCPoFRbq97CJ2n9UqgjLZ+2IlXCkw/sIsHqMQP1SsJw==
+	t=1794530993;
+	b=hWDLgWEed2I5EaAHg+HS3Q+nqyIVlUQYPxCc6Vuy+9tktbfxp2OQXVJM+FzPDvsfdByI
+	 d5EpEgYXvyzb+Km7YguhYhJVmcFZNdSCXCL1ydQPaijVOjV34tSyWGD7sb/tMsYr+NLbu
+	 1gOBtd0xSsAE7ylPzEu1P8PPq5/IrLujoUJb35qOQb6fLwoX/hLwvahUD7vO6oLZJTdYa
+	 KYGoGjHmFAv14ogsFtnWn9EpJ+D5y2fb41J5Q0BqzNnT9ruUoHY4Ag7sOM6Ly6zpmQ50n
+	 prBQemojv4IV92jvUw3Ewfa0MHtgVxuc+2jMGXN3FFSYYuXk8OsMlVYjR9mwUGmXK0w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794530991;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794530993;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=lerioq4d56SPhYkjt+RCN3wpafD+rha2cfoz6Qv82Dw=;
-	b=qhtzr1jeXbPY1JnfycMWGlJRgCJwXqhdcv6RmmnPgeYqXSimgnUGzl3H/Q92cik7b/tE
-	 3QF0JOdTPh9cuLPyGULOv+jwp2Iwo3ddThy5EnUsdTZVjA2Ex/bwcaWX+nh1560+nusSB
-	 5C8J9hC44hWhz4k6ZUYWM/fJcB+Q4OkQ2Pm77JxTs8M/VCboEojpVvgjNem3EXVMpGBqb
-	 TMHAwI1b4sPPKV2TUPBnv+0I8FUqXVvVr4ho3C7KkOXVaFn8TJwM5Fd0t6/G7UVhsLvmN
-	 wPgpE8pUoLET13RSY1PT7kqMs+LQytA6tE/URaZ7M9C/Lj+IEWtHEEPu7uhzhgxFmiQ==
+	bh=BtqRQYWJz1FxpEXn8uRRkglHdLqa9ytBLROzu5x/QHI=;
+	b=1PsmRft/HiGng1Qbcni2aZWTYgK2YNH07VJXuhKs5ga8RPaUomLWlCu11td3Ly97vdvR
+	 xy8pfjVzZPY7GKRDc+lvZo8m8VDaxdgIWw4QuZtu7GnGiYoheuBX5mX6udMcY3I7+3YWR
+	 hPYVVLYkXdF728ull3t9pD9DAZJgbj/CMKYVZoWw8d0E2shfwEcxn/rVtQGD7F30Kp/In
+	 f1IqK87Bir+ad2Mfu1tKp/4d96a9w/AMXlsreyb+ljiHJrizGuIdvDrqMyo0PTxLoCHm6
+	 qE1Ysx0yCHxYRjeNz0VroYt3b2g9Drhk87RiPDCwQSp+w4t+zSTKcDG974+J32M3TXg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=P1Xqe5NW;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iRpTllLk;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id A29F0606A32D;
-	Fri, 13 Nov 2026 00:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 8E72F606A88E;
+	Fri, 13 Nov 2026 00:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=P1Xqe5NW
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 011E91F000C4;
-	Fri, 13 Nov 2026 00:49:50 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iRpTllLk
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id D0B481F000CA;
+	Fri, 13 Nov 2026 00:49:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794530991;
-	bh=lerioq4d56SPhYkjt+RCN3wpafD+rha2cfoz6Qv82Dw=;
+	s=k20260515; t=1794530993;
+	bh=BtqRQYWJz1FxpEXn8uRRkglHdLqa9ytBLROzu5x/QHI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=P1Xqe5NWbSN3fIZBjJ4VgjIAr/miILeoBjAdI24rAPXf8HVuPXTge+5lE6YvRLAhz
-	 WptsUqO1L9RYLD6FXE52445PGGJ4f/GM8A2T77BBFTkPJcLyKmeoZDdVj0JY0BekM6
-	 3DCrW6Imij4bb3p8Lr+BvBe6rhxqAMHdn3F+OeBXvmhDZqPzf7rnjS67HIkKafPuUn
-	 ES3X8YHcbZcjiS1RGDo0icvzW0wC3yZUFgogfvL0hskTXdIw//MQ6Z6gQ/UqkUv7Zi
-	 Je4bKFSL1YpZr+Um0IGZ3axHa8AhU/97ERqN6lBfoXlxrgBAlEAzcXRdP5M/+DiD5W
-	 KGsCQXZP1FP7A==
+	b=iRpTllLkKDal2ZvuY6Eixhzu2B7UefpPHm8f5FR3QFGU+aA2IjE20qgWh0n6jCKDG
+	 L8X2ORI0To9BfM11xvfVmdLZgKSmKBCahKtt3B01AwslmgY99NNOgUQS2ZtGDKbkfn
+	 rCGhw4gQrFn8JtET9JbvPMVqWD7TJC1jUhgX047dLQHoGBn56bN1/CY0NacHD4nHJP
+	 w/Y2LuQOH8DHHeggjYv8wCQr4Oa7bZCbJywtUfl2oVsDznThrED8mfjZSWmbD7Sy8h
+	 2T8FSfb71ImXcyJNOp2w8GRB/FF+qRoqL8bMoo77yZpHQYhNXmB0C5Gg+e14Y1trKw
+	 w5uMyRQvdlx2Q==
 From: Joel Fernandes <jfern@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	"Paul E . McKenney" <paulmck@kernel.org>,
@@ -51,16 +51,12 @@ To: linux-kernel@vger.kernel.org,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Guo Ren <guoren@kernel.org>
+	Zqiang <qiang.zhang@linux.dev>
 Cc: rcu@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	stable@vger.kernel.org,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	linux-csky@vger.kernel.org
-Subject: [PATCH for-v7.5 1/5] srcu: Select IRQ_WORK for Tiny SRCU
-Date: Thu, 12 Nov 2026 19:49:40 -0500
-Message-ID: <20261113004946.2758197-2-jfern@kernel.org>
+	Bradley Morgan <brads@mainlining.org>
+Subject: [PATCH for-v7.5 2/5] rcu-tasks: Avoid alloc_percpu() failure in rcu_tasks_rude_wait_gp()
+Date: Thu, 12 Nov 2026 19:49:41 -0500
+Message-ID: <20261113004946.2758197-3-jfern@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261113004946.2758197-1-jfern@kernel.org>
 References: <20261113004946.2758197-1-jfern@kernel.org>
@@ -75,40 +71,85 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Tiny SRCU uses irq_work_queue() to start grace periods and
-irq_work_sync() to wait for pending work. However, TINY_SRCU does not
-select IRQ_WORK, so configurations that do not otherwise enable it
-fail to link with undefined references to these functions.
+From: Zqiang <qiang.zhang@linux.dev>
 
-Guenter reported this failure with csky tinyconfig on the 6.12 and
-6.6 stable trees. Current kernels enable IRQ_WORK indirectly through
-SLUB, but Tiny SRCU should declare its own dependency.
+The RCU Tasks Rude grace period is implemented by invoking the
+schedule_on_each_cpu() with an empty work function, which forces a context
+switch on every online CPU and guarantees that all RCU Tasks Rude read
+critical sections have completed. However, schedule_on_each_cpu() can
+fail (via alloc_percpu() returning -ENOMEM) and returns immediately, in
+which case those context switches never happen and also not wait for tasks
+to exit the RCU Tasks Rude read critical section, too-short grace period
+happen.
 
-Select IRQ_WORK from TINY_SRCU to ensure that its irq_work calls are
-supported independently of other configuration options.
+This commit therefore replace schedule_on_each_cpu() with a statically
+defined per-CPU work_struct, which is allocated at compile time and cannot
+fail in this path. rcu_tasks_rude_wait_gp() now holds CPU-hotplug readlock,
+schedules rcu_tasks_be_rude() on each online CPUs, and flush each work item
+before returning. This preserves the original behavior of the synchronous
+API while removing both the runtime allocation.
 
-Fixes: a6fc88b22bc8 ("srcu: Use irq_work to start GP in tiny SRCU")
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Closes: https://lore.kernel.org/r/49da816c-8082-46f1-bb12-f0d6187bb06a@roeck-us.net/
-Suggested-by: Guenter Roeck <linux@roeck-us.net>
-Cc: stable@vger.kernel.org
+Suggested-by: Bradley Morgan <brads@mainlining.org>
+Signed-off-by: Zqiang <qiang.zhang@linux.dev>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes <jfern@kernel.org>
 ---
- kernel/rcu/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/tasks.h | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index bc9483c0b5d8..b6d3597758fc 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -56,6 +56,7 @@ config RCU_EXPERT
- config TINY_SRCU
- 	bool
- 	default y if TINY_RCU
-+	select IRQ_WORK
- 	help
- 	  This option selects the single-CPU non-preemptible version of SRCU.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index fcac7361ec51..a59aa8b6ab05 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1342,11 +1342,17 @@ void exit_tasks_rcu_finish(void) { }
+ ////////////////////////////////////////////////////////////////////////
+ //
+ // "Rude" variant of Tasks RCU, inspired by Steve Rostedt's
+-// trick of passing an empty function to schedule_on_each_cpu().
++// trick of passing an empty function to per-CPUs workqueue.
+ // This approach provides batching of concurrent calls to the synchronous
+-// synchronize_rcu_tasks_rude() API.  This invokes schedule_on_each_cpu()
+-// in order to send IPIs far and wide and induces otherwise unnecessary
+-// context switches on all online CPUs, whether idle or not.
++// synchronize_rcu_tasks_rude() API.  A no-op work item is scheduled on
++// each online CPUs, in order to send IPIs far and wide and induces otherwise
++// unnecessary context switches on all online CPUs, whether idle or not.
++//
++// A statically defined per-CPU work_struct is used instead of a
++// runtime-allocated one, which can fail under memory pressure. Each
++// CPU's work item is scheduled with schedule_work_on() and waited for
++// with flush_work(), under the read side of the CPU-hotplug lock so the
++// set of online CPUs cannot change mid-iteration.
+ //
+ // Callback handling is provided by the rcu_tasks_kthread() function.
+ //
+@@ -1357,11 +1363,25 @@ static void rcu_tasks_be_rude(struct work_struct *work)
+ {
+ }
  
++static DEFINE_PER_CPU(struct work_struct, tasks_rude_work);
++
+ // Wait for one rude RCU-tasks grace period.
+ static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
+ {
++	int cpu;
++
++	guard(cpus_read_lock)();
+ 	rtp->n_ipis += cpumask_weight(cpu_online_mask);
+-	schedule_on_each_cpu(rcu_tasks_be_rude);
++
++	for_each_online_cpu(cpu) {
++		struct work_struct *work = &per_cpu(tasks_rude_work, cpu);
++
++		INIT_WORK(work, rcu_tasks_be_rude);
++		schedule_work_on(cpu, work);
++	}
++
++	for_each_online_cpu(cpu)
++		flush_work(&per_cpu(tasks_rude_work, cpu));
+ }
+ 
+ static void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
 -- 
 2.54.0
 
